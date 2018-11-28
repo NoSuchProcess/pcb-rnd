@@ -460,8 +460,8 @@
  ../src_3rd/genvector/genvector_undef.h layer_grp.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h conf_core.h conf.h \
  pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
- list_conf.h drc.h idpath.h hid_dad.h compat_misc.h hid_attrib.h \
- hid_dad_tree.h hid_dad.h
+ list_conf.h drc.h idpath.h draw.h hid_inlines.h hid_dad.h compat_misc.h \
+ hid_attrib.h hid_dad_tree.h hid_dad.h
 ../src_plugins/distalign/distalign.o: \
  ../src_plugins/distalign/distalign.c board.h ../config.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
@@ -751,8 +751,8 @@
  obj_rat.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
  rtree.h ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h error.h layer.h \
- plugins.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h error.h \
+ layer.h plugins.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h pcb-printf.h \
  compat_misc.h ../src_plugins/export_dxf/lht_template.h safe_fs.h \
@@ -829,10 +829,10 @@
  obj_rat.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
  rtree.h ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h rats.h netlist.h \
- route_style.h hid_cam.h hid_attrib.h layer.h compat_misc.h safe_fs.h \
- hid.h hid_nogui.h hid_draw_helpers.h ../src_plugins/export_gcode/gcode.h \
- ../src_plugins/export_gcode/bitmap.h \
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h rats.h \
+ netlist.h route_style.h hid_cam.h hid_attrib.h layer.h compat_misc.h \
+ safe_fs.h hid.h hid_nogui.h hid_draw_helpers.h \
+ ../src_plugins/export_gcode/gcode.h ../src_plugins/export_gcode/bitmap.h \
  ../src_plugins/export_gcode/potracelib.h \
  ../src_plugins/export_gcode/curve.h \
  ../src_plugins/export_gcode/auxiliary.h \
@@ -952,7 +952,7 @@
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h data_it.h data.h \
- compat_misc.h plugins.h ../src_3rd/puplug/puplug.h \
+ draw.h compat_misc.h plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h safe_fs.h obj_subc_parent.h obj_pstk_inlines.h \
@@ -1004,8 +1004,8 @@
  obj_subc.h ../src_3rd/libminuid/libminuid.h rtree.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h error.h layer.h \
- math_helper.h misc_util.h plugins.h ../src_3rd/puplug/puplug.h \
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h error.h \
+ layer.h math_helper.h misc_util.h plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h safe_fs.h obj_pstk_inlines.h data.h thermal.h \
@@ -1035,8 +1035,8 @@
  obj_subc.h ../src_3rd/libminuid/libminuid.h rtree.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h error.h layer.h \
- misc_util.h compat_misc.h plugins.h ../src_3rd/puplug/puplug.h \
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h error.h \
+ layer.h misc_util.h compat_misc.h plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h safe_fs.h funchash_core.h funchash.h \
@@ -1063,7 +1063,7 @@
  obj_rat.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
  rtree.h ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h layer.h \
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h layer.h \
  pcb-printf.h safe_fs.h hid.h hid_nogui.h hid_draw_helpers.h \
  ../src_plugins/export_ps/ps.h hid_init.h hid_attrib.h hid_cam.h \
  hid_attrib.h hid_flags.h hid_color.h funchash_core.h funchash.h \
@@ -1144,8 +1144,8 @@
  obj_rat.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
  rtree.h ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h error.h layer.h \
- misc_util.h compat_misc.h plugins.h ../src_3rd/puplug/puplug.h \
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h error.h \
+ layer.h misc_util.h compat_misc.h plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h safe_fs.h funchash_core.h funchash.h \
@@ -1453,8 +1453,8 @@
  obj_rat.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
  rtree.h ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h layer.h grid.h \
- board.h vtroutestyle.h library.h rats_patch.h hid_draw_helpers.h \
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h layer.h \
+ grid.h board.h vtroutestyle.h library.h rats_patch.h hid_draw_helpers.h \
  hid_attrib.h hid_color.h funchash_core.h funchash.h funchash_core_list.h \
  ../src_plugins/lib_gtk_hid/gui.h hid.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h unit.h pcb_bool.h \
@@ -1834,8 +1834,8 @@
  obj_rat.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
  rtree.h ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h crosshair.h \
- conf_hid.h layer.h pcb-printf.h event.h error.h plugins.h \
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h \
+ crosshair.h conf_hid.h layer.h pcb-printf.h event.h error.h plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h macro.h safe_fs.h \
@@ -1964,12 +1964,13 @@
  rtree.h ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h layer.h pcb-printf.h plugins.h ../src_3rd/puplug/puplug.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
- ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/error.h compat_misc.h funchash_core.h funchash.h \
- funchash_core_list.h event.h ../src_plugins/hid_remote/proto.h \
- hid_draw_helpers.h hid_nogui.h actions.h hid_init.h dolists.h
+ vtpadstack_t.h draw.h layer.h pcb-printf.h plugins.h \
+ ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h compat_misc.h \
+ funchash_core.h funchash.h funchash_core_list.h event.h \
+ ../src_plugins/hid_remote/proto.h hid_draw_helpers.h hid_nogui.h \
+ actions.h hid_init.h dolists.h
 ../src_plugins/import_dsn/dsn.o: ../src_plugins/import_dsn/dsn.c \
  ../config.h ../src_3rd/gensexpr/gsxl.h \
  ../src_3rd/gensexpr/gensexpr_impl.h ../src_3rd/gensexpr/gsx_parse.h \
