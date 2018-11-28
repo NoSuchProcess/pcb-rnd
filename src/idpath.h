@@ -26,6 +26,9 @@
  *
  */
 
+#ifndef PCB_IDPATH_H
+#define PCB_IDPATH_H
+
 #include <genlist/gendlist.h>
 
 typedef struct pcb_idpath_s {
@@ -53,3 +56,5 @@ typedef struct pcb_idpath_s {
 pcb_idpath_t *pcb_obj2idpath(pcb_any_obj_t *obj);
 pcb_any_obj_t *pcb_idpath2obj(pcb_data_t *data, const pcb_idpath_t *path);
 void pcb_idpath_destroy(pcb_idpath_t *path);
+
+#endif
