@@ -91,7 +91,7 @@ pcb_idpath_t *pcb_obj2idpath(pcb_any_obj_t *obj)
 	if (idpath_map(NULL, obj, 0, &len) != 0)
 		return NULL;
 
-	idp = malloc(sizeof(pcb_idpath_t) + (sizeof(long int) * (len-1)));
+	idp = calloc(sizeof(pcb_idpath_t), (sizeof(long int) * (len-1)));
 	if (idpath_map(idp, obj, len-1, NULL) != 0) {
 		free(idp);
 		return NULL;
