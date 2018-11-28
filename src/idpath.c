@@ -133,3 +133,10 @@ void pcb_idpath_destroy(pcb_idpath_t *path)
 	free(path);
 }
 
+void pcb_idpath_list_clear(pcb_idpath_list_t *lst)
+{
+	pcb_idpath_t *i;
+	for(i = pcb_idpath_list_first(lst); i != NULL; i = pcb_drc_list_next(i))
+		pcb_idpath_destroy(i);
+}
+
