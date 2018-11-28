@@ -897,15 +897,16 @@ static void pcb_draw_obj_label(pcb_draw_info_t *info, pcb_layergrp_id_t gid, pcb
  * HID drawing callback.
  */
 
-static pcb_hid_t *expose_begin(pcb_hid_t *hid)
+static void expose_begin(pcb_output_t *save, pcb_hid_t *hid)
 {
-	pcb_hid_t *old_gui = pcb_gui;
+	memcpy(save, &pcb_draw_out, sizeof(pcb_output_t));
+	save->hid = pcb_gui;
 
 	delayed_labels_enabled = pcb_true;
 	vtp0_truncate(&delayed_labels, 0);
 	vtp0_truncate(&delayed_objs, 0);
 
-	pcb_gui = hid;
+	pcb_gui = pcb_draw_out.hid = hid;
 	pcb_draw_out.fgGC = pcb_hid_make_gc();
 	pcb_draw_out.padGC = pcb_hid_make_gc();
 	pcb_draw_out.backpadGC = pcb_hid_make_gc();
@@ -929,11 +930,9 @@ static pcb_hid_t *expose_begin(pcb_hid_t *hid)
 	pcb_hid_set_line_cap(pcb_draw_out.padselGC, pcb_cap_square);
 	pcb_hid_set_line_width(pcb_draw_out.padGC, -1);
 	pcb_hid_set_line_cap(pcb_draw_out.padGC, pcb_cap_square);
-
-	return old_gui;
 }
 
-static void expose_end(pcb_hid_t *old_gui)
+static void expose_end(pcb_output_t *save)
 {
 	pcb_hid_destroy_gc(pcb_draw_out.fgGC);
 	pcb_hid_destroy_gc(pcb_draw_out.padGC);
@@ -941,35 +940,41 @@ static void expose_end(pcb_hid_t *old_gui)
 	pcb_hid_destroy_gc(pcb_draw_out.padselGC);
 	pcb_hid_destroy_gc(pcb_draw_out.drillGC);
 	pcb_hid_destroy_gc(pcb_draw_out.pmGC);
-	pcb_gui = old_gui;
 
 	pcb_draw_out.fgGC = NULL;
 
 	delayed_labels_enabled = pcb_false;
 	vtp0_truncate(&delayed_labels, 0);
 	vtp0_truncate(&delayed_objs, 0);
+
+	memcpy(&pcb_draw_out, save, sizeof(pcb_output_t));
+	pcb_gui = pcb_draw_out.hid;
 }
 
 void pcb_hid_expose_all(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx)
 {
 	if (!pcb_draw_inhibit) {
-		pcb_hid_t *old_gui = expose_begin(hid);
+		pcb_output_t save;
 		pcb_draw_info_t info;
+
+		expose_begin(&save, hid);
 		info.pcb = PCB;
 		info.drawn_area = &ctx->view;
 		info.xform_caller = info.xform = NULL;
 		info.layer = NULL;
 		draw_everything(&info);
-		expose_end(old_gui);
+		expose_end(&save);
 	}
 }
 
 void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 {
-	pcb_hid_t *old_gui = expose_begin(hid);
+	pcb_output_t save;
 	unsigned long lflg = pcb_layer_flags(PCB, e->content.layer_id);
 	int purpi = -1;
 	int fx, fy;
+
+	expose_begin(&save, hid);
 
 	if (lflg & PCB_LYT_LOGICAL) {
 		fx = conf_core.editor.view.flip_x;
@@ -1008,7 +1013,7 @@ void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 	else
 		pcb_message(PCB_MSG_ERROR, "Internal error: don't know how to draw layer %ld for preview; please report this bug.\n", e->content.layer_id);
 
-	expose_end(old_gui);
+	expose_end(&save);
 
 	if (lflg & PCB_LYT_LOGICAL) {
 		conf_force_set_bool(conf_core.editor.view.flip_x, fx);
@@ -1018,7 +1023,8 @@ void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 
 void pcb_hid_expose_generic(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 {
-	pcb_hid_t *old_gui = expose_begin(hid);
+	pcb_output_t save;
+	expose_begin(&save, hid);
 
 	if ((pcb_layer_gui_set_vlayer(PCB, PCB_VLY_DIALOG, 0, NULL)) || (e->force)) {
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, &e->view);
@@ -1027,7 +1033,7 @@ void pcb_hid_expose_generic(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, 1, &e->view);
 		pcb_gui->end_layer();
 	}
-	expose_end(old_gui);
+	expose_end(&save);
 }
 
 static const char *lab_with_intconn(int intconn, const char *lab, char *buff, int bufflen)

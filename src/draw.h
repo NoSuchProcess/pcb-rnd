@@ -34,6 +34,7 @@
 
 /* holds information about output window */
 typedef struct {
+	pcb_hid_t *hid;
 	pcb_hid_gc_t drillGC, fgGC, pmGC;                      /* changed from some routines */
 	pcb_hid_gc_t active_padGC, backpadGC, padGC, padselGC; /* pads are drawn with this gc */
 	unsigned direct:1;                                     /* starts as 1 and becomes 0 before the first compositing layer group is reset */
