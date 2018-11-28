@@ -97,6 +97,7 @@ pcb_idpath_t *pcb_obj2idpath(pcb_any_obj_t *obj)
 		return NULL;
 	}
 
+	idp->len = len;
 	return idp;
 }
 
