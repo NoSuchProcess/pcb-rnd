@@ -50,3 +50,14 @@ void pcb_box_rotate90(pcb_box_t *Box, pcb_coord_t X, pcb_coord_t Y, unsigned Num
 	Box->X2 = MAX(x1, x2);
 	Box->Y2 = MAX(y1, y2);
 }
+
+void pcb_box_enlarge(pcb_box_t *box, double xfactor, double yfactor)
+{
+	double w = (double)(box->X2 - box->X1) * xfactor / 2.0;
+	double h = (double)(box->Y2 - box->Y1) * yfactor / 2.0;
+
+	box->X1 = pcb_round(box->X1 - w);
+	box->Y1 = pcb_round(box->Y1 - h);
+	box->X2 = pcb_round(box->X2 + w);
+	box->Y2 = pcb_round(box->Y2 + h);
+}

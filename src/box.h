@@ -256,4 +256,7 @@ void pcb_set_point_bounding_box(pcb_point_t *Pnt);
 /* rotates a box in 90 degree steps */
 void pcb_box_rotate90(pcb_box_t *Box, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
 
+/* Enlarge a box by adding current width,height multiplied by xfactor,yfactor */
+void pcb_box_enlarge(pcb_box_t *box, double xfactor, double yfactor);
+
 #endif /* __BOX_H_INCLUDED__ */
