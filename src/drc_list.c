@@ -40,6 +40,8 @@
 void pcb_drc_free(pcb_drc_violation_t *item)
 {
 	pcb_drc_list_remove(item);
+	pcb_idpath_list_clear(&item->objs[0]);
+	pcb_idpath_list_clear(&item->objs[1]);
 	free(item->title);
 	free(item->explanation);
 	free(item);

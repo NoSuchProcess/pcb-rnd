@@ -46,7 +46,7 @@ static unsigned long int pcb_drc_next_uid = 0;
 static pcb_drc_violation_t *pcb_drc_violation_new(
 	const char *title, const char *explanation,
 	pcb_bool have_measured, pcb_coord_t measured_value,
-	pcb_coord_t required_value, vtid_t objs[2])
+	pcb_coord_t required_value, pcb_idpath_list_t objs[2])
 {
 	pcb_drc_violation_t *violation = calloc(sizeof(pcb_drc_violation_t), 1);
 
@@ -82,19 +82,24 @@ static void append_drc_dialog_message(const char *fmt, ...)
 static void GotoError(void);
 
 /* Build a list of the of offending items by ID */
-static void drc_append_obj(vtid_t objs[2], pcb_any_obj_t *obj)
+static void drc_append_obj(pcb_idpath_list_t objs[2], pcb_any_obj_t *obj)
 {
+	pcb_idpath_t *idp;
+
 	switch(obj->type) {
 	case PCB_OBJ_LINE:
 	case PCB_OBJ_ARC:
 	case PCB_OBJ_POLY:
 	case PCB_OBJ_PSTK:
 	case PCB_OBJ_RAT:
-		vtid_append(&objs[0], obj->ID);
-		return;
-
+		idp = pcb_obj2idpath(obj);
+		if (idp == NULL)
+			pcb_message(PCB_MSG_ERROR, "Internal error in drc_append_obj: can not resolve object id path\n");
+		else
+			pcb_idpath_list_append(&objs[0], idp);
+		break;
 	default:
-		fprintf(stderr, "Internal error in drc_append_obj: unknown object type %i\n", thing_type);
+		pcb_message(PCB_MSG_ERROR, "Internal error in drc_append_obj: unknown object type %i\n", obj->type);
 	}
 }
 
@@ -121,17 +126,18 @@ static void append_drc_violation(pcb_drc_list_t *lst, pcb_drc_violation_t *viola
 void drc_auto_loc(pcb_drc_violation_t *v)
 {
 	int g;
-	size_t n;
 	pcb_box_t b;
 	pcb_any_obj_t *obj;
+	pcb_idpath_t *idp;
 
 	/* special case: no object - leave coords unloaded/invalid */
-	if ((v->objs[0].used < 1) && (v->objs[1].used < 1))
+	if ((pcb_idpath_list_length(&v->objs[0]) < 1) && (pcb_idpath_list_length(&v->objs[1]) < 1))
 		return;
 
 	/* special case: single objet in group A, use the center */
-	if (v->objs[0].used == 1) {
-		obj = htip_get(&PCB->Data->id2obj, v->objs[0].array[0]);
+	if (pcb_idpath_list_length(&v->objs[0]) == 1) {
+		idp = pcb_idpath_list_first(&v->objs[0]);
+		obj = pcb_idpath2obj(PCB->Data, idp);
 		if (obj != NULL) {
 			v->have_coord = 1;
 			pcb_obj_center(obj, &v->x, &v->y);
@@ -143,8 +149,8 @@ void drc_auto_loc(pcb_drc_violation_t *v)
 	b.X1 = b.Y1 = PCB_MAX_COORD;
 	b.X2 = b.Y2 = -PCB_MAX_COORD;
 	for(g = 0; g < 2; g++) {
-		for(n = 0; n < v->objs[g].used; n++) {
-			obj = htip_get(&PCB->Data->id2obj, v->objs[g].array[n]);
+		for(idp = pcb_idpath_list_first(&v->objs[g]); idp != NULL; idp = pcb_idpath_list_next(idp)) {
+			obj = pcb_idpath2obj(PCB->Data, idp);
 			if (obj != NULL) {
 				v->have_coord = 1;
 				pcb_box_bump_box(&b, &obj->BoundingBox);
@@ -189,7 +195,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t
 	pcb_line_t *line = (pcb_line_t *)ptr2;
 	pcb_arc_t *arc = (pcb_arc_t *)ptr2;
 	pcb_pstk_t *ps = (pcb_pstk_t *)ptr2;
-	vtid_t objs[2];
+	pcb_idpath_list_t objs[2];
 
 	memset(objs, 0, sizeof(objs));
 
@@ -251,7 +257,7 @@ unsigned long pcb_obj_type2oldtype(pcb_objtype_t type);
 static int drc_text(pcb_drc_list_t *lst, pcb_layer_t *layer, pcb_text_t *text, pcb_coord_t min_wid)
 {
 	pcb_drc_violation_t *violation;
-	vtid_t objs[2];
+	pcb_idpath_list_t objs[2];
 
 	memset(objs, 0, sizeof(objs));
 
@@ -285,7 +291,7 @@ int pcb_drc_all(pcb_drc_list_t *lst)
 {
 	pcb_drc_violation_t *violation;
 	int nopastecnt = 0;
-	vtid_t objs[2];
+	pcb_idpath_list_t objs[2];
 
 	memset(objs, 0, sizeof(objs));
 
@@ -511,7 +517,7 @@ int pcb_drc_all(pcb_drc_list_t *lst)
 static pcb_bool DRCFind(pcb_drc_list_t *lst, int What, void *ptr1, void *ptr2, void *ptr3)
 {
 	pcb_drc_violation_t *violation;
-	vtid_t objs[2];
+	pcb_idpath_list_t objs[2];
 
 	memset(objs, 0, sizeof(objs));
 

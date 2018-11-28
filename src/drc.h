@@ -31,7 +31,7 @@
 
 #include <genlist/gendlist.h>
 #include "unit.h"
-#include "vtid.h"
+#include "idpath.h"
 #include "box.h"
 
 typedef struct drc_violation_s pcb_drc_violation_t;
@@ -49,7 +49,7 @@ struct drc_violation_s {
 	pcb_coord_t measured_value;
 	pcb_coord_t required_value;
 
-	vtid_t objs[2];               /* two groups of offending objects */
+	pcb_idpath_list_t objs[2];    /* two groups of offending objects */
 
 	gdl_elem_t link;              /* always part of a list */
 };
