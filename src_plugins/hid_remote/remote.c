@@ -8,6 +8,7 @@
 #include "board.h"
 #include "hid.h"
 #include "data.h"
+#include "draw.h"
 #include "layer.h"
 #include "pcb-printf.h"
 #include "plugins.h"
@@ -106,7 +107,7 @@ static void remote_do_export(pcb_hid_attr_val_t * options)
 	if (remote_proto_send_ready() != 0)
 		exit(1);
 
-	pcb_hid_expose_all(&remote_hid, &ctx);
+	pcb_hid_expose_all(&remote_hid, &ctx, NULL);
 
 /* main loop, parser */
 	if (remote_proto_parse_all() != 0)

@@ -10,6 +10,7 @@
 #include "math_helper.h"
 #include "board.h"
 #include "data.h"
+#include "draw.h"
 #include "layer.h"
 #include "pcb-printf.h"
 #include "safe_fs.h"
@@ -306,7 +307,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	fprintf(f, "/a { gsave setlinewidth translate scale 0 0 1 5 3 roll arc stroke grestore} bind def\n");
 
 	ctx.view = *bounds;
-	pcb_hid_expose_all(&eps_hid, &ctx);
+	pcb_hid_expose_all(&eps_hid, &ctx, NULL);
 
 	fprintf(f, "showpage\n");
 

@@ -556,16 +556,6 @@ struct pcb_hid_expose_ctx_s {
 
 typedef void (*pcb_hid_expose_t)(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx);
 
-/* Normal expose: draw all layers with all flags (no .content is used) */
-void pcb_hid_expose_all(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *region);
-
-/* Layer preview expose: draws a single layer; content.layer_id is used */
-void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ly);
-
-/* generic, dialog/callbakc based preview expose */
-void pcb_hid_expose_generic(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e);
-
-
 /* This is initially set to a "no-gui" GUI, and later reset by
    main. hid_expose_callback also temporarily set it for drawing. */
 extern pcb_hid_t *pcb_gui;

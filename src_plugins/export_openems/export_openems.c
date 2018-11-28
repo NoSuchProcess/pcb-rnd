@@ -36,6 +36,7 @@
 #include "board.h"
 #include "data.h"
 #include "data_it.h"
+#include "draw.h"
 #include "compat_misc.h"
 #include "plugins.h"
 #include "safe_fs.h"
@@ -610,7 +611,7 @@ void openems_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options)
 	openems_write_outline(&wctx);
 
 	fprintf(wctx.f, "%%%%%% Copper objects\n");
-	pcb_hid_expose_all(&openems_hid, &ctx);
+	pcb_hid_expose_all(&openems_hid, &ctx, NULL);
 
 	fprintf(wctx.f, "%%%%%% Testpoints on terminals\n");
 	openems_write_testpoints(&wctx, wctx.pcb->Data);

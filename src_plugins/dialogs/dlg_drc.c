@@ -156,7 +156,7 @@ static void drc_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, p
 	/* draw the board */
 	old_termlab = pcb_draw_force_termlab;
 	pcb_draw_force_termlab = 1;
-	pcb_hid_expose_all(pcb_gui, e);
+	pcb_hid_expose_all(pcb_gui, e, NULL);
 	pcb_draw_force_termlab = old_termlab;
 }
 

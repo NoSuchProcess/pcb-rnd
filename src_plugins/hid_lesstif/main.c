@@ -15,6 +15,7 @@
 #include <setjmp.h>
 
 #include "data.h"
+#include "draw.h"
 #include "crosshair.h"
 #include "conf_hid.h"
 #include "layer.h"
@@ -747,7 +748,7 @@ static fgw_error_t pcb_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	time(&start);
 	do {
 		XFillRectangle(display, pixmap, bg_gc, 0, 0, view_width, view_height);
-		pcb_hid_expose_all(&lesstif_hid, &ctx);
+		pcb_hid_expose_all(&lesstif_hid, &ctx, NULL);
 		XSync(display, 0);
 		time(&end);
 		i++;
@@ -2379,7 +2380,7 @@ static Boolean idle_proc(XtPointer dummy)
 			}
 		}
 		DrawBackgroundImage();
-		pcb_hid_expose_all(&lesstif_hid, &ctx);
+		pcb_hid_expose_all(&lesstif_hid, &ctx, NULL);
 		lesstif_drawing_mode = PCB_HID_COMP_POSITIVE;
 		draw_grid();
 		show_crosshair(0);					/* To keep the drawn / not drawn info correct */

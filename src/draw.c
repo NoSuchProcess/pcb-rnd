@@ -951,7 +951,7 @@ static void expose_end(pcb_output_t *save)
 	pcb_gui = pcb_draw_out.hid;
 }
 
-void pcb_hid_expose_all(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx)
+void pcb_hid_expose_all(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx, pcb_xform_t *xform_caller)
 {
 	if (!pcb_draw_inhibit) {
 		pcb_output_t save;
@@ -960,7 +960,7 @@ void pcb_hid_expose_all(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx)
 		expose_begin(&save, hid);
 		info.pcb = PCB;
 		info.drawn_area = &ctx->view;
-		info.xform_caller = info.xform = NULL;
+		info.xform_caller = info.xform = xform_caller;
 		info.layer = NULL;
 		draw_everything(&info);
 		expose_end(&save);

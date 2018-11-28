@@ -5,6 +5,7 @@
 
 #include "crosshair.h"
 #include "data.h"
+#include "draw.h"
 #include "layer.h"
 #include "grid.h"
 #include "hid_draw_helpers.h"
@@ -1153,7 +1154,7 @@ static void redraw_region(GdkRectangle * rect)
 
 	ghid_gdk_draw_bg_image();
 
-	pcb_hid_expose_all(&gtk2_gdk_hid, &ctx);
+	pcb_hid_expose_all(&gtk2_gdk_hid, &ctx, NULL);
 	ghid_gdk_draw_grid();
 
 	/* In some cases we are called with the crosshair still off */
