@@ -239,9 +239,6 @@ static gboolean ghid_preview_expose(GtkWidget * widget, pcb_gtk_expose_t * ev)
 		preview->expose_data.view.Y2 = preview->y_max;
 		return preview->expose(widget, ev, pcb_hid_expose_layer, &preview->expose_data);
 
-	case PCB_GTK_PREVIEW_BOARD:
-		return preview->expose(widget, ev, pcb_hid_expose_all, &preview->expose_data);
-
 	case PCB_GTK_PREVIEW_INVALID:
 	case PCB_GTK_PREVIEW_kind_max:
 		return FALSE;
@@ -567,16 +564,6 @@ GtkWidget *pcb_gtk_preview_generic_new(pcb_gtk_common_t * com, pcb_gtk_init_draw
 GtkWidget *pcb_gtk_preview_layer_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer)
 {
 	return pcb_gtk_preview_any_new(com, init_widget, expose, layer, NULL);
-}
-
-GtkWidget *pcb_gtk_preview_board_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose)
-{
-	GtkWidget *w = pcb_gtk_preview_any_new(com, init_widget, expose, -1, NULL);
-	pcb_gtk_preview_t *p = (pcb_gtk_preview_t *)w;
-	g_object_set(G_OBJECT(w), "kind", PCB_GTK_PREVIEW_BOARD, NULL);
-	p->view.height = PCB->MaxHeight;
-	p->view.width = PCB->MaxWidth;
-	return w;
 }
 
 void pcb_gtk_preview_board_zoomto(pcb_gtk_preview_t *p, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int canvas_width, int canvas_height)

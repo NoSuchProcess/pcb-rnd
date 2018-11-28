@@ -63,7 +63,6 @@ typedef pcb_bool(*pcb_gtk_preview_mouse_ev_t)(void *widget, void *draw_data, pcb
 typedef enum pcb_gtk_preview_kind_e {
 	PCB_GTK_PREVIEW_INVALID,
 	PCB_GTK_PREVIEW_LAYER,  /* specific (oftne virtual) layer */
-	PCB_GTK_PREVIEW_BOARD,  /* render the board (whole layer stack) */
 	PCB_GTK_PREVIEW_GENERIC,/* generic callback based draw */
 
 	PCB_GTK_PREVIEW_kind_max
@@ -109,8 +108,6 @@ GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widge
 GtkWidget *pcb_gtk_preview_layer_new(pcb_gtk_common_t * com,
 																		 pcb_gtk_init_drawing_widget_t init_widget,
 																		 pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer);
-
-GtkWidget *pcb_gtk_preview_board_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose);
 
 void pcb_gtk_preview_board_zoomto(pcb_gtk_preview_t *p, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int canvas_width, int canvas_height);
 
