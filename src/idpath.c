@@ -103,13 +103,13 @@ pcb_idpath_t *pcb_obj2idpath(pcb_any_obj_t *obj)
 
 static pcb_any_obj_t *idpath2obj(pcb_data_t *data, const pcb_idpath_t *path, int level)
 {
-	pcb_any_obj_t *obj = htip_get(&data->id2obj, path->id[level]);
-
-	if (obj == NULL)
-		return NULL;
 
 	for(;;) {
+		pcb_any_obj_t *obj = htip_get(&data->id2obj, path->id[level]);
 		pcb_subc_t *sc = (pcb_subc_t *)obj;
+
+		if (obj == NULL)
+			return NULL;
 
 		level++;
 		if (level == path->len)
