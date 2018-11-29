@@ -88,10 +88,18 @@ void drc2dlg(drc_ctx_t *ctx)
 
 	/* add all items */
 	for(v = pcb_drc_list_first(&ctx->drc); v != NULL; v = pcb_drc_list_next(v)) {
-		pcb_hid_row_t *r;
+		pcb_hid_row_t *r, *rt;
+		rt = htsp_get(&tree->paths, v->type);
+		if (rt == NULL) {
+			cell[0] = pcb_strdup(v->type);
+			cell[1] = pcb_strdup("");
+			rt = pcb_dad_tree_append(attr, NULL, cell);
+			rt->user_data2.lng = 0;
+		}
+
 		cell[0] = pcb_strdup_printf("%lu", v->uid);
 		cell[1] = pcb_strdup(v->title);
-		r = pcb_dad_tree_append(attr, NULL, cell);
+		r = pcb_dad_tree_append_under(attr, rt, cell);
 		r->user_data2.lng = v->uid;
 	}
 
@@ -237,7 +245,7 @@ static void pcb_dlg_drc(drc_ctx_t *ctx, const char *title)
 					ctx->wcount = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_END(ctx->dlg);
 
-				PCB_DAD_TREE(ctx->dlg, 2, 0, hdr);
+				PCB_DAD_TREE(ctx->dlg, 2, 1, hdr);
 					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_SCROLL | PCB_HATF_EXPFILL);
 					PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, drc_select);
 					PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
