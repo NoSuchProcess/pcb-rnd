@@ -762,7 +762,7 @@ void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, char *layers,
 
 	info.pcb = pcb;
 	info.drawn_area = drawn_area;
-	info.xform_caller = info.xform = NULL;
+	info.xform_caller = info.xform_exporter = info.xform = NULL;
 	info.layer = NULL;
 	info.objcb.pstk.gid = -1;
 	info.objcb.pstk.holetype = PCB_PHOLE_UNPLATED | PCB_PHOLE_PLATED;

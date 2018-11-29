@@ -52,7 +52,8 @@ typedef enum {
 typedef struct pcb_draw_info_s {
 	pcb_board_t *pcb;
 	const pcb_box_t *drawn_area;
-	pcb_xform_t *xform_caller;             /* the extra transformation the caller requested */
+	pcb_xform_t *xform_caller;             /* the extra transformation the caller requested (the one who has initiated the rendering, e.g. throuh pcb_draw_everything()) */
+	pcb_xform_t *xform_exporter;           /* the extra transformation the exporter requested (e.g. because of cam) */
 	pcb_xform_t *xform;                    /* the final transformation applied on objects */
 
 	const pcb_layer_t *layer;

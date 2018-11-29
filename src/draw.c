@@ -186,12 +186,12 @@ static void draw_everything_holes(pcb_draw_info_t *info, pcb_layergrp_id_t gid)
 	int plated, unplated;
 	pcb_board_count_holes(PCB, &plated, &unplated, info->drawn_area);
 
-	if (plated && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_PLATED_DRILL, 0, &info->xform_caller)) {
+	if (plated && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_PLATED_DRILL, 0, &info->xform_exporter)) {
 		pcb_draw_pstk_holes(info, gid, PCB_PHOLE_PLATED);
 		pcb_gui->end_layer();
 	}
 
-	if (unplated && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_UNPLATED_DRILL, 0, &info->xform_caller)) {
+	if (unplated && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_UNPLATED_DRILL, 0, &info->xform_exporter)) {
 		pcb_draw_pstk_holes(info, gid, PCB_PHOLE_UNPLATED);
 		pcb_gui->end_layer();
 	}
@@ -204,22 +204,22 @@ static void draw_virtual_layers(pcb_draw_info_t *info)
 	hid_exp.view = *info->drawn_area;
 	hid_exp.force = 0;
 
-	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_TOP_ASSY, 0, &info->xform_caller)) {
+	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_TOP_ASSY, 0, &info->xform_exporter)) {
 		pcb_draw_assembly(info, PCB_LYT_TOP);
 		pcb_gui->end_layer();
 	}
 
-	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_BOTTOM_ASSY, 0, &info->xform_caller)) {
+	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_BOTTOM_ASSY, 0, &info->xform_exporter)) {
 		pcb_draw_assembly(info, PCB_LYT_BOTTOM);
 		pcb_gui->end_layer();
 	}
 
-	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_FAB, 0, &info->xform_caller)) {
+	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_FAB, 0, &info->xform_exporter)) {
 		pcb_stub_draw_fab(info, pcb_draw_out.fgGC, &hid_exp);
 		pcb_gui->end_layer();
 	}
 
-	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_CSECT, 0, &info->xform_caller)) {
+	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_CSECT, 0, &info->xform_exporter)) {
 		pcb_stub_draw_csect(pcb_draw_out.fgGC, &hid_exp);
 		pcb_gui->end_layer();
 	}
@@ -240,7 +240,7 @@ static void draw_ui_layers(pcb_draw_info_t *info)
 	}
 
 	/* if there's any UI layer, try to draw them */
-	if ((first != NULL) && pcb_layer_gui_set_g_ui(first, 0, &info->xform_caller)) {
+	if ((first != NULL) && pcb_layer_gui_set_g_ui(first, 0, &info->xform_exporter)) {
 		int have_canvas = 0;
 		for(i = 0; i < vtp0_len(&pcb_uilayers); i++) {
 			ly = pcb_uilayers.array[i];
@@ -364,7 +364,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	/*
 	 * first draw all 'invisible' stuff
 	 */
-	if (!conf_core.editor.check_planes && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_INVISIBLE, 0, &info->xform_caller)) {
+	if (!conf_core.editor.check_planes && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_INVISIBLE, 0, &info->xform_exporter)) {
 		pcb_layer_type_t side = PCB_LYT_INVISIBLE_SIDE();
 		pcb_draw_silk_doc(info, side, PCB_LYT_DOC, 0, 1);
 		pcb_draw_silk_doc(info, side, PCB_LYT_SILK, 0, 1);
@@ -387,7 +387,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	for (i = ngroups - 1; i >= 0; i--) {
 		pcb_layergrp_id_t group = drawn_groups[i];
 
-		if (pcb_layer_gui_set_glayer(PCB, group, 0, &info->xform_caller)) {
+		if (pcb_layer_gui_set_glayer(PCB, group, 0, &info->xform_exporter)) {
 			int is_current = 0;
 			pcb_layergrp_id_t cgrp = CURRENT->meta.real.grp;
 
@@ -419,13 +419,13 @@ static void draw_everything(pcb_draw_info_t *info)
 
 	/* Draw the solder mask if turned on */
 	gid = pcb_layergrp_get_top_mask();
-	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, 0, &info->xform_caller))) {
+	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, 0, &info->xform_exporter))) {
 		pcb_draw_mask(info, PCB_COMPONENT_SIDE);
 		pcb_gui->end_layer();
 	}
 
 	gid = pcb_layergrp_get_bottom_mask();
-	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, 0, &info->xform_caller))) {
+	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, 0, &info->xform_exporter))) {
 		pcb_draw_mask(info, PCB_SOLDER_SIDE);
 		pcb_gui->end_layer();
 	}
@@ -451,7 +451,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	gid = pcb_layergrp_get_top_paste();
 	if (gid >= 0)
 		paste_empty = pcb_layergrp_is_empty(PCB, gid);
-	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, paste_empty, &info->xform_caller))) {
+	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, paste_empty, &info->xform_exporter))) {
 		pcb_draw_paste(info, PCB_COMPONENT_SIDE);
 		pcb_gui->end_layer();
 	}
@@ -459,7 +459,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	gid = pcb_layergrp_get_bottom_paste();
 	if (gid >= 0)
 		paste_empty = pcb_layergrp_is_empty(PCB, gid);
-	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, paste_empty, &info->xform_caller))) {
+	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, paste_empty, &info->xform_exporter))) {
 		pcb_draw_paste(info, PCB_SOLDER_SIDE);
 		pcb_gui->end_layer();
 	}
@@ -589,6 +589,14 @@ static void xform_setup(pcb_draw_info_t *info, pcb_xform_t *dst, const pcb_layer
 		else
 			pcb_xform_add(dst, info->xform_caller);
 	}
+	if (info->xform_exporter != NULL) {
+		if (info->xform == NULL) {
+			info->xform = dst;
+			pcb_xform_copy(dst, info->xform_exporter);
+		}
+		else
+			pcb_xform_add(dst, info->xform_exporter);
+	}
 }
 
 void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
@@ -601,11 +609,9 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 
 	xform_setup(info, &xform, Layer);
 
-printf("draw layer: %s %p %d\n", Layer->name, info->xform, info->xform != NULL ? info->xform->layer_faded : 0);
-	if (((info->xform_caller != NULL) && (info->xform_caller->layer_faded)) || ((info->xform != NULL) && (info->xform->layer_faded))) {
+	if (xform.layer_faded) {
 		orig_color = Layer->meta.real.color;
 		pcb_lighten_color(orig_color, new_color, 0.5);
-		printf(" LY COLOR %s -> %s\n", Layer->meta.real.color, new_color);
 		Layer->meta.real.color = new_color;
 	}
 
@@ -655,7 +661,7 @@ printf("draw layer: %s %p %d\n", Layer->name, info->xform, info->xform != NULL ?
 	info->layer = NULL;
 	info->xform = NULL;
 
-	if (((info->xform_caller != NULL) && (info->xform_caller->layer_faded)) || ((info->xform != NULL) && (info->xform->layer_faded)))
+	if (xform.layer_faded)
 		Layer->meta.real.color = orig_color;
 }
 
@@ -666,7 +672,7 @@ void pcb_draw_layer_noxform(pcb_board_t *pcb, const pcb_layer_t *Layer, const pc
 
 	info.pcb = pcb;
 	info.drawn_area = screen;
-	info.xform_caller = info.xform = NULL;
+	info.xform_exporter = info.xform = NULL;
 
 	/* fix screen coord order */
 	if ((screen->X2 <= screen->X1) || (screen->Y2 <= screen->Y1)) {
@@ -704,7 +710,7 @@ void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_
 
 	info.pcb = pcb;
 	info.drawn_area = screen;
-	info.xform_caller = info.xform = NULL;
+	info.xform_exporter = info.xform = NULL;
 
 	xform_setup(&info, &tmp, Layer);
 
@@ -973,7 +979,8 @@ void pcb_hid_expose_all(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx, pcb_xf
 		expose_begin(&save, hid);
 		info.pcb = PCB;
 		info.drawn_area = &ctx->view;
-		info.xform_caller = info.xform = xform_caller;
+		info.xform_caller = xform_caller;
+		info.xform = info.xform_exporter = NULL;
 		info.layer = NULL;
 		draw_everything(&info);
 		expose_end(&save);

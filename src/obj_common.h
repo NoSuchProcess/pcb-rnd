@@ -99,6 +99,8 @@ typedef struct pcb_xform_s {   /* generic object transformation */
 	pcb_coord_t bloat;           /* if non-zero, bloat (positive) or shrink (negative) by this value */
 
 	unsigned layer_faded:1;      /* draw layer colors faded */
+
+	/* WARNING: After adding new fields, make sure to update pcb_xform_add() below */
 } pcb_xform_t;
 
 #define pcb_xform_clear(dst)      memset(dst, 0, sizeof(pcb_xform_t))
@@ -108,6 +110,7 @@ typedef struct pcb_xform_s {   /* generic object transformation */
 		pcb_xform_t *__dst__ = dst; \
 		const pcb_xform_t *__src__ = src; \
 		__dst__->bloat += __src__->bloat; \
+		__dst__->layer_faded |= __src__->layer_faded; \
 	} while(0)
 #define pcb_xform_is_nop(src) ((src)->bloat == 0)
 
