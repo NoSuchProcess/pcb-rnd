@@ -9,7 +9,6 @@
 	- import sch. shouldn't select elements to be removed but put them on a drc list
 	- display number of items at top of drc window
 	- export to file 
-	- BUG: DRC hilight: for each drc error, have two groups of objects with different color highlight. SetThing assumes there will be only 1 object; this was broken in the original design [report: Igor2]
 	- CLEANUP: remove find_act.c: move drc() to gui actions and make it a dispatcher
 - CLEANUP: rewrite the preview API:
 	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
