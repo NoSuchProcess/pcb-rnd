@@ -35,9 +35,12 @@
 #include "conf_core.h"
 #include "drc.h"
 #include "draw.h"
+#include "event.h"
 #include "hid_inlines.h"
 #include "hid_dad.h"
 #include "hid_dad_tree.h"
+
+static const const char *drc_cookie = "dlg_drc";
 
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
@@ -133,7 +136,6 @@ static char *re_wrap(char *inp, int len)
 
 static void drc_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
-	pcb_hid_attr_val_t hv;
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
 	drc_ctx_t *ctx = tree->user_ctx;
 	pcb_drc_violation_t *v = NULL;
@@ -225,6 +227,19 @@ static pcb_bool drc_mouse_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv
 }
 
 
+static void drc_preview_update_cb(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	drc_ctx_t *ctx = user_data;
+	pcb_hid_attr_val_t hv;
+
+	if ((ctx == NULL) || (!ctx->active) || (ctx->selected == 0))
+		return;
+
+	hv.str_value = NULL;
+	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
+}
+
+
 static void pcb_dlg_drc(drc_ctx_t *ctx, const char *title)
 {
 	const char *hdr[] = { "ID", "title", NULL };
@@ -291,24 +306,31 @@ static void pcb_dlg_drc(drc_ctx_t *ctx, const char *title)
 	ctx->active = 1;
 }
 
+
+static drc_ctx_t drc_gui_ctx = {0};
 const char pcb_acts_DRC[] = "DRC()\n";
 const char pcb_acth_DRC[] = "Execute drc checks";
 fgw_error_t pcb_act_DRC(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
-	static drc_ctx_t ctx = {0};
 
-	if (!ctx.active) {
-		ctx.pcb = PCB;
-		pcb_dlg_drc(&ctx, "DRC violations");
+	if (!drc_gui_ctx.active) {
+		drc_gui_ctx.pcb = PCB;
+		pcb_dlg_drc(&drc_gui_ctx, "DRC violations");
 	}
 
-	pcb_drc_all(&ctx.drc);
-	drc2dlg(&ctx);
+	pcb_drc_all(&drc_gui_ctx.drc);
+	drc2dlg(&drc_gui_ctx);
 
 	return 0;
 }
 
 void pcb_drc_dlg_uninit(void)
 {
+	pcb_event_unbind_allcookie(drc_cookie);
 	vtp0_uninit(&drc_color_save);
+}
+
+void pcb_drc_dlg_init(void)
+{
+	pcb_event_bind(PCB_EVENT_USER_INPUT_POST, drc_preview_update_cb, &drc_gui_ctx, drc_cookie);
 }

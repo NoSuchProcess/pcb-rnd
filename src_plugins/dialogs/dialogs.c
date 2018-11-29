@@ -93,5 +93,6 @@ int pplg_init_dialogs(void)
 	dlg_pref_init();
 	dlg_pstklib_init();
 	pcb_dlg_undo_init();
+	pcb_drc_dlg_init();
 	return 0;
 }
