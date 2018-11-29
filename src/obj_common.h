@@ -100,7 +100,7 @@ typedef struct pcb_xform_s {   /* generic object transformation */
 
 	unsigned layer_faded:1;      /* draw layer colors faded */
 
-	/* WARNING: After adding new fields, make sure to update pcb_xform_add() below */
+	/* WARNING: After adding new fields, make sure to update pcb_xform_add() and pcb_xform_is_nop() below */
 } pcb_xform_t;
 
 #define pcb_xform_clear(dst)      memset(dst, 0, sizeof(pcb_xform_t))
@@ -112,7 +112,7 @@ typedef struct pcb_xform_s {   /* generic object transformation */
 		__dst__->bloat += __src__->bloat; \
 		__dst__->layer_faded |= __src__->layer_faded; \
 	} while(0)
-#define pcb_xform_is_nop(src) ((src)->bloat == 0)
+#define pcb_xform_is_nop(src) (((src)->bloat == 0) && ((src)->layer_faded == 0))
 
 /* Standard 2d matrix transformation using mx as pcb_xform_mx_t */
 #define pcb_xform_x(mx, x_in, y_in) ((double)(x_in) * mx[0] + (double)(y_in) * mx[1] + mx[2])
