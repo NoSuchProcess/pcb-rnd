@@ -603,6 +603,11 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 			ctx->inhibit_valchg = save;
 			return ret;
 
+		case PCB_HATT_PREVIEW:
+			ret = ghid_preview_set(ctx, idx, val);
+			ctx->inhibit_valchg = save;
+			return ret;
+
 		case PCB_HATT_BEGIN_HPANE:
 		case PCB_HATT_BEGIN_VPANE:
 			ret = ghid_pane_set(ctx, idx, val);
