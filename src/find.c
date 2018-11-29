@@ -123,7 +123,9 @@ typedef struct {
 static pcb_coord_t Bloat = 0;
 static int TheFlag = PCB_FLAG_FOUND;
 static int OldFlag = PCB_FLAG_FOUND;
-static void  *pcb_found_obj1;
+
+/* on DRC hit: the two offending objects */
+static void  *pcb_found_obj1, *pcb_found_obj2;
 
 pcb_find_callback_t pcb_find_callback = NULL;
 #define make_callback(current_type, current_ptr, from_type, from_ptr, type) \
@@ -159,7 +161,7 @@ static void pcb_print_conn_subc_name(pcb_subc_t *, FILE *);
 static void pcb_print_conn_list_entry(char *, pcb_subc_t *, pcb_bool, FILE *);
 static void DumpList(void);
 static pcb_bool ListStart(pcb_any_obj_t *obj);
-static pcb_bool SetThing(void *group1_obj);
+static pcb_bool SetThing(void *group1_obj, void *group2_obj);
 
 
 #include "find_geo.c"

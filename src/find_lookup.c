@@ -63,7 +63,7 @@ static pcb_bool ADD_PS_TO_LIST(pcb_pstk_t *ps, int from_type, void *from_ptr, pc
 		printf("ADD_PS_TO_LIST overflow! num=%d size=%d\n", PadstackList.Number, PadstackList.Size);
 #endif
 	if (drc && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps))
-		return SetThing(ps);
+		return SetThing(ps, from_ptr);
 	return pcb_false;
 }
 
@@ -80,7 +80,7 @@ static pcb_bool ADD_PADSTACK_TO_LIST(pcb_pstk_t *ps, int from_type, void *from_p
 		printf("ADD_PADSTACK_TO_LIST overflow! num=%d size=%d\n", PVList.Number, PVList.Size);
 #endif
 	if (drc && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) && (ps->parent.data->parent_type == PCB_PARENT_SUBC))
-		return SetThing(ps);
+		return SetThing(ps, from_ptr);
 	return pcb_false;
 }
 
@@ -99,7 +99,7 @@ static pcb_bool ADD_LINE_TO_LIST(pcb_layer_id_t L, pcb_line_t *Ptr, int from_typ
 		printf("ADD_LINE_TO_LIST overflow! lay=%d, num=%d size=%d\n", L, LineList[(L)].Number, LineList[(L)].Size);
 #endif
 	if (drc && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, (Ptr)))
-		return SetThing(Ptr);
+		return SetThing(Ptr, from_ptr);
 	return pcb_false;
 }
 
@@ -119,7 +119,7 @@ static pcb_bool ADD_ARC_TO_LIST(pcb_cardinal_t L, pcb_arc_t *Ptr, int from_type,
 		printf("ADD_ARC_TO_LIST overflow! lay=%d, num=%d size=%d\n", L, ArcList[(L)].Number, ArcList[(L)].Size);
 #endif
 	if (drc && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, (Ptr)))
-		return SetThing(Ptr);
+		return SetThing(Ptr, from_ptr);
 	return pcb_false;
 }
 
@@ -136,7 +136,7 @@ static pcb_bool ADD_RAT_TO_LIST(pcb_rat_t *Ptr, int from_type, void *from_ptr, p
 		printf("ADD_RAT_TO_LIST overflow! num=%d size=%d\n", RatList.Number, RatList.Size);
 #endif
 	if (drc && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, (Ptr)))
-		return SetThing(Ptr);
+		return SetThing(Ptr, from_ptr);
 	return pcb_false;
 }
 
@@ -156,13 +156,14 @@ static pcb_bool ADD_POLYGON_TO_LIST(pcb_cardinal_t L, pcb_poly_t *Ptr, int from_
 		printf("ADD_ARC_TO_LIST overflow! lay=%d, num=%d size=%d\n", L, PolygonList[(L)].Number, PolygonList[(L)].Size);
 #endif
 	if (drc && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, (Ptr)))
-		return SetThing(Ptr);
+		return SetThing(Ptr, from_ptr);
 	return pcb_false;
 }
 
-pcb_bool SetThing(void *obj1)
+pcb_bool SetThing(void *obj1, void *obj2)
 {
 	pcb_found_obj1 = obj1;
+	pcb_found_obj2 = obj2;
 	return pcb_true;
 }
 
