@@ -609,7 +609,7 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 
 	xform_setup(info, &xform, Layer);
 
-	if (xform.layer_faded) {
+	if ((info->xform != NULL) && (info->xform->layer_faded)) {
 		orig_color = Layer->meta.real.color;
 		pcb_lighten_color(orig_color, new_color, 0.5);
 		Layer->meta.real.color = new_color;
@@ -661,7 +661,7 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 	info->layer = NULL;
 	info->xform = NULL;
 
-	if (xform.layer_faded)
+	if ((info->xform != NULL) && (info->xform->layer_faded))
 		Layer->meta.real.color = orig_color;
 }
 
