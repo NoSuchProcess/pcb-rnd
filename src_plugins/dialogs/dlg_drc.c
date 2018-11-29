@@ -191,7 +191,7 @@ static void drc_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, p
 				}
 				else
 					vtp0_append(&drc_color_save, NULL);
-				memcpy(obj->override_color, offend_color[g], 8);
+				strcpy(obj->override_color, offend_color[g]);
 			}
 		}
 	}
@@ -209,7 +209,7 @@ static void drc_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, p
 		pcb_any_obj_t *obj = p[0];
 		char *s = p[1];
 		if (s != NULL) {
-			memcpy(obj->override_color, s, 8);
+			strcpy(obj->override_color, s);
 			free(s);
 		}
 		else
