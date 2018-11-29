@@ -591,13 +591,23 @@ static void xform_setup(pcb_draw_info_t *info, pcb_xform_t *dst, const pcb_layer
 	}
 }
 
-void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer)
+void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 {
 	unsigned int lflg = 0;
 	int may_have_delayed = 0;
 	pcb_xform_t xform;
+	char *orig_color, new_color[8];
+	pcb_layer_t *Layer = (pcb_layer_t *)Layer_; /* ugly hack until layer color is moved into info */
 
 	xform_setup(info, &xform, Layer);
+
+printf("draw layer: %s %p %d\n", Layer->name, info->xform, info->xform != NULL ? info->xform->layer_faded : 0);
+	if (((info->xform_caller != NULL) && (info->xform_caller->layer_faded)) || ((info->xform != NULL) && (info->xform->layer_faded))) {
+		orig_color = Layer->meta.real.color;
+		pcb_lighten_color(orig_color, new_color, 0.5);
+		printf(" LY COLOR %s -> %s\n", Layer->meta.real.color, new_color);
+		Layer->meta.real.color = new_color;
+	}
 
 	lflg = pcb_layer_flags_(Layer);
 	if (PCB_LAYERFLG_ON_VISIBLE_SIDE(lflg))
@@ -644,6 +654,9 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer)
 
 	info->layer = NULL;
 	info->xform = NULL;
+
+	if (((info->xform_caller != NULL) && (info->xform_caller->layer_faded)) || ((info->xform != NULL) && (info->xform->layer_faded)))
+		Layer->meta.real.color = orig_color;
 }
 
 void pcb_draw_layer_noxform(pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_box_t *screen)

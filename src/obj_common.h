@@ -96,7 +96,9 @@ typedef double pcb_xform_mx_t[9];
 #define PCB_XFORM_MX_IDENT {1,0,0,   0,1,0,   0,0,1}
 
 typedef struct pcb_xform_s {   /* generic object transformation */
-	pcb_coord_t bloat;   /* if non-zero, bloat (positive) or shrink (negative) by this value */
+	pcb_coord_t bloat;           /* if non-zero, bloat (positive) or shrink (negative) by this value */
+
+	unsigned layer_faded:1;      /* draw layer colors faded */
 } pcb_xform_t;
 
 #define pcb_xform_clear(dst)      memset(dst, 0, sizeof(pcb_xform_t))
