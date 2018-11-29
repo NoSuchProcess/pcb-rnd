@@ -69,7 +69,7 @@ void drc2dlg(drc_ctx_t *ctx)
 	pcb_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
 	pcb_hid_row_t *r;
-	char *cell[2], *cursor_path = NULL;
+	char *cell[3], *cursor_path = NULL;
 
 	sprintf(tmp, "%d", pcb_drc_list_length(&ctx->drc));
 	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wcount, str_value, tmp);
@@ -87,6 +87,7 @@ void drc2dlg(drc_ctx_t *ctx)
 		pcb_dad_tree_remove(attr, r);
 
 	/* add all items */
+	cell[2] = NULL;
 	for(v = pcb_drc_list_first(&ctx->drc); v != NULL; v = pcb_drc_list_next(v)) {
 		pcb_hid_row_t *r, *rt;
 		rt = htsp_get(&tree->paths, v->type);
