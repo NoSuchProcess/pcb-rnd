@@ -176,7 +176,10 @@ static void pcb_dlg_drc(drc_ctx_t *ctx, const char *title)
 
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
+		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+
 		PCB_DAD_BEGIN_HPANE(ctx->dlg);
+			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 
 			/* left */
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
