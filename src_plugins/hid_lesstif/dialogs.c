@@ -1027,6 +1027,9 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 		case PCB_HATT_PROGRESS:
 			ltf_progress_set(ctx, idx, val->real_value);
 			break;
+		case PCB_HATT_PREVIEW:
+			ltf_preview_set(ctx, idx, val->real_value);
+			break;
 		case PCB_HATT_ENUM:
 			for (n = 0; ctx->attrs[idx].enumerations[n]; n++) {
 				if (n == val->int_value) {

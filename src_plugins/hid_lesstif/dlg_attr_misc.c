@@ -74,6 +74,18 @@ static void ltf_preview_expose(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 	prv->user_expose_cb(attr, prv, gc, e);
 }
 
+static void ltf_preview_set(lesstif_attr_dlg_t *ctx, int idx, double val)
+{
+	Widget pw = ctx->wl[idx];
+	pcb_ltf_preview_t *pd;
+
+	stdarg_n = 0;
+	stdarg(XmNuserData, &pd);
+	XtGetValues(pw, stdarg_args, stdarg_n);
+
+	pcb_ltf_preview_redraw(pd);
+}
+
 static void ltf_preview_zoomto(pcb_hid_attribute_t *attr, void *hid_ctx, const pcb_box_t *view)
 {
 	pcb_hid_preview_t *prv = (pcb_hid_preview_t *)attr->enumerations;
@@ -178,6 +190,7 @@ static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 	stdarg(XmNrightAttachment, XmATTACH_FORM);
 	stdarg(XmNtopAttachment, XmATTACH_FORM);
 	stdarg(XmNbottomAttachment, XmATTACH_FORM);
+	stdarg(XmNuserData, pd);
 	pw = XmCreateDrawingArea(parent, XmStrCast("dad_preview"), stdarg_args, stdarg_n);
 	XtManageChild(pw);
 
