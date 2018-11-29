@@ -50,7 +50,7 @@ static inline pcb_r_dir_t r_search_pt(pcb_rtree_t * rtree, const pcb_point_t * p
 
 /* Connection lookup functions */
 
-static pcb_bool ADD_PS_TO_LIST(pcb_pstk_t *ps, int from_type, void *from_ptr, pcb_found_conn_type_t type)
+static pcb_bool ADD_PS_TO_LIST(pcb_pstk_t *ps, int from_type, void *from_ptr, pcb_found_conn_type_t type, void *orig_from)
 {
 	if (User)
 		pcb_undo_add_obj_to_flag(ps);
@@ -63,11 +63,11 @@ static pcb_bool ADD_PS_TO_LIST(pcb_pstk_t *ps, int from_type, void *from_ptr, pc
 		printf("ADD_PS_TO_LIST overflow! num=%d size=%d\n", PadstackList.Number, PadstackList.Size);
 #endif
 	if (drc && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps))
-		return SetThing(ps, from_ptr);
+		return SetThing(ps, orig_from);
 	return pcb_false;
 }
 
-static pcb_bool ADD_PADSTACK_TO_LIST(pcb_pstk_t *ps, int from_type, void *from_ptr, pcb_found_conn_type_t type)
+static pcb_bool ADD_PADSTACK_TO_LIST(pcb_pstk_t *ps, int from_type, void *from_ptr, pcb_found_conn_type_t type, void *orig_from)
 {
 	if (User)
 		pcb_undo_add_obj_to_flag(ps);
@@ -80,11 +80,11 @@ static pcb_bool ADD_PADSTACK_TO_LIST(pcb_pstk_t *ps, int from_type, void *from_p
 		printf("ADD_PADSTACK_TO_LIST overflow! num=%d size=%d\n", PVList.Number, PVList.Size);
 #endif
 	if (drc && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) && (ps->parent.data->parent_type == PCB_PARENT_SUBC))
-		return SetThing(ps, from_ptr);
+		return SetThing(ps, orig_from);
 	return pcb_false;
 }
 
-static pcb_bool ADD_LINE_TO_LIST(pcb_layer_id_t L, pcb_line_t *Ptr, int from_type, void *from_ptr, pcb_found_conn_type_t type)
+static pcb_bool ADD_LINE_TO_LIST(pcb_layer_id_t L, pcb_line_t *Ptr, int from_type, void *from_ptr, pcb_found_conn_type_t type, void *orig_from)
 {
 	if (LineList[L].Data == NULL)
 		return pcb_false;
@@ -99,11 +99,11 @@ static pcb_bool ADD_LINE_TO_LIST(pcb_layer_id_t L, pcb_line_t *Ptr, int from_typ
 		printf("ADD_LINE_TO_LIST overflow! lay=%d, num=%d size=%d\n", L, LineList[(L)].Number, LineList[(L)].Size);
 #endif
 	if (drc && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, (Ptr)))
-		return SetThing(Ptr, from_ptr);
+		return SetThing(Ptr, orig_from);
 	return pcb_false;
 }
 
-static pcb_bool ADD_ARC_TO_LIST(pcb_cardinal_t L, pcb_arc_t *Ptr, int from_type, void *from_ptr, pcb_found_conn_type_t type)
+static pcb_bool ADD_ARC_TO_LIST(pcb_cardinal_t L, pcb_arc_t *Ptr, int from_type, void *from_ptr, pcb_found_conn_type_t type, void *orig_from)
 {
 	if (ArcList[L].Data == NULL)
 		return pcb_false;
@@ -119,11 +119,11 @@ static pcb_bool ADD_ARC_TO_LIST(pcb_cardinal_t L, pcb_arc_t *Ptr, int from_type,
 		printf("ADD_ARC_TO_LIST overflow! lay=%d, num=%d size=%d\n", L, ArcList[(L)].Number, ArcList[(L)].Size);
 #endif
 	if (drc && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, (Ptr)))
-		return SetThing(Ptr, from_ptr);
+		return SetThing(Ptr, orig_from);
 	return pcb_false;
 }
 
-static pcb_bool ADD_RAT_TO_LIST(pcb_rat_t *Ptr, int from_type, void *from_ptr, pcb_found_conn_type_t type)
+static pcb_bool ADD_RAT_TO_LIST(pcb_rat_t *Ptr, int from_type, void *from_ptr, pcb_found_conn_type_t type, void *orig_from)
 {
 	if (User)
 		pcb_undo_add_obj_to_flag(Ptr);
@@ -136,11 +136,11 @@ static pcb_bool ADD_RAT_TO_LIST(pcb_rat_t *Ptr, int from_type, void *from_ptr, p
 		printf("ADD_RAT_TO_LIST overflow! num=%d size=%d\n", RatList.Number, RatList.Size);
 #endif
 	if (drc && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, (Ptr)))
-		return SetThing(Ptr, from_ptr);
+		return SetThing(Ptr, orig_from);
 	return pcb_false;
 }
 
-static pcb_bool ADD_POLYGON_TO_LIST(pcb_cardinal_t L, pcb_poly_t *Ptr, int from_type, void *from_ptr, pcb_found_conn_type_t type)
+static pcb_bool ADD_POLYGON_TO_LIST(pcb_cardinal_t L, pcb_poly_t *Ptr, int from_type, void *from_ptr, pcb_found_conn_type_t type, void *orig_from)
 {
 	if (PolygonList[L].Data == NULL)
 		return pcb_false;
@@ -156,7 +156,7 @@ static pcb_bool ADD_POLYGON_TO_LIST(pcb_cardinal_t L, pcb_poly_t *Ptr, int from_
 		printf("ADD_ARC_TO_LIST overflow! lay=%d, num=%d size=%d\n", L, PolygonList[(L)].Number, PolygonList[(L)].Size);
 #endif
 	if (drc && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, (Ptr)))
-		return SetThing(Ptr, from_ptr);
+		return SetThing(Ptr, orig_from);
 	return pcb_false;
 }
 
@@ -250,12 +250,20 @@ struct lo_info {
 	pcb_arc_t arc;
 	pcb_poly_t polygon;
 	pcb_rat_t rat;
+
+	pcb_layer_id_t *orig_layer;
+	pcb_line_t *orig_line;
+	pcb_arc_t *orig_arc;
+	pcb_poly_t *orig_polygon;
+	pcb_rat_t *orig_rat;
+
 	jmp_buf env;
 };
 
 struct ps_info {
 	pcb_layer_id_t layer;
 	pcb_pstk_t ps;
+	pcb_pstk_t *orig_ps;
 	jmp_buf env;
 };
 
@@ -265,7 +273,7 @@ static pcb_r_dir_t LOCtoPSline_callback(const pcb_box_t * b, void *cl)
 	struct ps_info *i = (struct ps_info *) cl;
 
 	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_pstk_intersect_line(&i->ps, line) && !INOCN(&i->ps, line)) {
-		if (ADD_LINE_TO_LIST(i->layer, line, PCB_OBJ_PSTK, &i->ps, PCB_FCT_COPPER))
+		if (ADD_LINE_TO_LIST(i->layer, line, PCB_OBJ_PSTK, &i->ps, PCB_FCT_COPPER, i->orig_ps))
 			longjmp(i->env, 1);
 	}
 	return PCB_R_DIR_NOT_FOUND;
@@ -277,7 +285,7 @@ static pcb_r_dir_t LOCtoPSarc_callback(const pcb_box_t * b, void *cl)
 	struct ps_info *i = (struct ps_info *) cl;
 
 	if (!PCB_FLAG_TEST(TheFlag, arc) && pcb_pstk_intersect_arc(&i->ps, arc) && !INOCN(&i->ps, arc)) {
-		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_OBJ_PSTK, &i->ps, PCB_FCT_COPPER))
+		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_OBJ_PSTK, &i->ps, PCB_FCT_COPPER, i->orig_ps))
 			longjmp(i->env, 1);
 	}
 	return PCB_R_DIR_NOT_FOUND;
@@ -288,7 +296,7 @@ static pcb_r_dir_t LOCtoPSrat_callback(const pcb_box_t * b, void *cl)
 	pcb_rat_t *rat = (pcb_rat_t *) b;
 	struct ps_info *i = (struct ps_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, rat) && pcb_pstk_intersect_rat(&i->ps, rat) && ADD_RAT_TO_LIST(rat, PCB_OBJ_PSTK, &i->ps, PCB_FCT_RAT))
+	if (!PCB_FLAG_TEST(TheFlag, rat) && pcb_pstk_intersect_rat(&i->ps, rat) && ADD_RAT_TO_LIST(rat, PCB_OBJ_PSTK, &i->ps, PCB_FCT_RAT, i->orig_ps))
 		longjmp(i->env, 1);
 	return PCB_R_DIR_NOT_FOUND;
 }
@@ -299,7 +307,7 @@ static pcb_r_dir_t LOCtoPSpoly_callback(const pcb_box_t * b, void *cl)
 	struct ps_info *i = (struct ps_info *) cl;
 
 	if (!PCB_FLAG_TEST(TheFlag, polygon) && pcb_pstk_intersect_poly(&i->ps, polygon) && !INOCN(&i->ps, polygon)) {
-		if (ADD_POLYGON_TO_LIST(i->layer, polygon, PCB_OBJ_PSTK, &i->ps, PCB_FCT_COPPER))
+		if (ADD_POLYGON_TO_LIST(i->layer, polygon, PCB_OBJ_PSTK, &i->ps, PCB_FCT_COPPER, i->orig_ps))
 			longjmp(i->env, 1);
 	}
 
@@ -312,7 +320,7 @@ static pcb_r_dir_t PStoPS_callback(const pcb_box_t *b, void *cl)
 	struct ps_info *i = (struct ps_info *)cl;
 
 	if (!PCB_FLAG_TEST(TheFlag, ps2) && pcb_pstk_intersect_pstk(&i->ps, ps2) && !INOCN(&i->ps, ps2)) {
-		if (ADD_PADSTACK_TO_LIST(ps2, PCB_OBJ_PSTK, &i->ps, PCB_FCT_COPPER))
+		if (ADD_PADSTACK_TO_LIST(ps2, PCB_OBJ_PSTK, &i->ps, PCB_FCT_COPPER, i->orig_ps))
 			longjmp(i->env, 1);
 	}
 
@@ -332,6 +340,7 @@ static pcb_bool LookupLOConnectionsToPSList(pcb_bool AndRats)
 		/* get pointer to data */
 		orig_ps = (PADSTACKLIST_ENTRY(PadstackList.Location));
 		info.ps = *orig_ps;
+		info.orig_ps = orig_ps;
 		EXPAND_BOUNDS(&info.ps);
 
 		/* subc intconn jumps */
@@ -465,7 +474,7 @@ static pcb_r_dir_t ps_line_callback(const pcb_box_t * b, void *cl)
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!PCB_FLAG_TEST(TheFlag, ps) && pcb_pstk_intersect_line(ps, &i->line) && !INOCN(ps, &i->line)) {
-		if (ADD_PS_TO_LIST(ps, PCB_OBJ_LINE, &i->line, PCB_FCT_COPPER))
+		if (ADD_PS_TO_LIST(ps, PCB_OBJ_LINE, &i->line, PCB_FCT_COPPER, i->orig_line))
 			longjmp(i->env, 1);
 	}
 	return PCB_R_DIR_NOT_FOUND;
@@ -477,7 +486,7 @@ static pcb_r_dir_t ps_arc_callback(const pcb_box_t * b, void *cl)
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!PCB_FLAG_TEST(TheFlag, ps) && pcb_pstk_intersect_arc(ps, &i->arc) && !INOCN(ps, &i->arc)) {
-		if (ADD_PS_TO_LIST(ps, PCB_OBJ_ARC, &i->arc, PCB_FCT_COPPER))
+		if (ADD_PS_TO_LIST(ps, PCB_OBJ_ARC, &i->arc, PCB_FCT_COPPER, i->orig_arc))
 			longjmp(i->env, 1);
 	}
 	return PCB_R_DIR_NOT_FOUND;
@@ -489,7 +498,7 @@ static pcb_r_dir_t ps_poly_callback(const pcb_box_t * b, void *cl)
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!PCB_FLAG_TEST(TheFlag, ps) && pcb_pstk_intersect_poly(ps, &i->polygon) && !INOCN(ps, &i->polygon)) {
-		if (ADD_PS_TO_LIST(ps, PCB_OBJ_POLY, &i->polygon, PCB_FCT_COPPER))
+		if (ADD_PS_TO_LIST(ps, PCB_OBJ_POLY, &i->polygon, PCB_FCT_COPPER, i->orig_polygon))
 			longjmp(i->env, 1);
 	}
 
@@ -503,7 +512,7 @@ static pcb_r_dir_t ps_rat_callback(const pcb_box_t * b, void *cl)
 
 	/* rats can't cause DRC so there is no early exit */
 	if (!PCB_FLAG_TEST(TheFlag, ps) && pcb_pstk_intersect_rat(ps, &i->rat))
-		ADD_PS_TO_LIST(ps, PCB_OBJ_RAT, &i->rat, PCB_FCT_RAT);
+		ADD_PS_TO_LIST(ps, PCB_OBJ_RAT, &i->rat, PCB_FCT_RAT, i->orig_rat);
 	return PCB_R_DIR_NOT_FOUND;
 }
 
@@ -532,6 +541,7 @@ static pcb_bool LookupPSConnectionsToLOList(pcb_bool AndRats)
 		while (LineList[layer].Location < LineList[layer].Number) {
 			pcb_line_t *orig_line = (LINELIST_ENTRY(layer, LineList[layer].Location));
 			info.line = *orig_line;
+			info.orig_line = orig_line;
 			EXPAND_BOUNDS(&info.line);
 
 			/* subc intconn jumps */
@@ -549,6 +559,7 @@ static pcb_bool LookupPSConnectionsToLOList(pcb_bool AndRats)
 		while (ArcList[layer].Location < ArcList[layer].Number) {
 			pcb_arc_t *orig_arc = (ARCLIST_ENTRY(layer, ArcList[layer].Location));
 			info.arc = *orig_arc;
+			info.orig_arc = orig_arc;
 			EXPAND_BOUNDS(&info.arc);
 
 			/* subc intconn jumps */
@@ -567,6 +578,7 @@ static pcb_bool LookupPSConnectionsToLOList(pcb_bool AndRats)
 		while (PolygonList[layer].Location < PolygonList[layer].Number) {
 			pcb_poly_t *orig_poly = (POLYGONLIST_ENTRY(layer, PolygonList[layer].Location));
 			info.polygon = *orig_poly;
+			info.orig_polygon = orig_poly;
 			EXPAND_BOUNDS(&info.polygon);
 
 			/* subc intconn jumps */
@@ -589,6 +601,7 @@ static pcb_bool LookupPSConnectionsToLOList(pcb_bool AndRats)
 	if (AndRats) {
 		while (RatList.Location < RatList.Number) {
 			info.rat = *(RATLIST_ENTRY(RatList.Location));
+			info.orig_rat = (RATLIST_ENTRY(RatList.Location));
 			r_search_pt(PCB->Data->padstack_tree, &info.rat.Point1, 1, NULL, ps_rat_callback, &info, NULL);
 			r_search_pt(PCB->Data->padstack_tree, &info.rat.Point2, 1, NULL, ps_rat_callback, &info, NULL);
 
@@ -604,7 +617,7 @@ static pcb_r_dir_t LOCtoArcLine_callback(const pcb_box_t * b, void *cl)
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_intersect_line_arc(line, &i->arc) && !INOCN(line, &i->arc)) {
-		if (ADD_LINE_TO_LIST(i->layer, line, PCB_OBJ_ARC, &i->arc, PCB_FCT_COPPER))
+		if (ADD_LINE_TO_LIST(i->layer, line, PCB_OBJ_ARC, &i->arc, PCB_FCT_COPPER, i->orig_arc))
 			longjmp(i->env, 1);
 	}
 	return PCB_R_DIR_NOT_FOUND;
@@ -618,7 +631,7 @@ static pcb_r_dir_t LOCtoArcArc_callback(const pcb_box_t * b, void *cl)
 	if (!arc->Thickness)
 		return 0;
 	if (!PCB_FLAG_TEST(TheFlag, arc) && ArcArcIntersect(&i->arc, arc) && !INOCN(&i->arc, arc)) {
-		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_OBJ_ARC, &i->arc, PCB_FCT_COPPER))
+		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_OBJ_ARC, &i->arc, PCB_FCT_COPPER, i->orig_arc))
 			longjmp(i->env, 1);
 	}
 	return PCB_R_DIR_NOT_FOUND;
@@ -632,12 +645,12 @@ static pcb_r_dir_t LOCtoArcRat_callback(const pcb_box_t *b, void *cl)
 	if (!PCB_FLAG_TEST(TheFlag, rat)) {
 		if ((rat->group1 == i->layer)
 				&& IsRatPointOnArcSpec(&rat->Point1, &i->arc)) {
-			if (ADD_RAT_TO_LIST(rat, PCB_OBJ_ARC, &i->arc, PCB_FCT_RAT))
+			if (ADD_RAT_TO_LIST(rat, PCB_OBJ_ARC, &i->arc, PCB_FCT_RAT, i->orig_arc))
 				longjmp(i->env, 1);
 		}
 		else if ((rat->group2 == i->layer)
 						 && IsRatPointOnArcSpec(&rat->Point2, &i->arc)) {
-			if (ADD_RAT_TO_LIST(rat, PCB_OBJ_ARC, &i->arc, PCB_FCT_RAT))
+			if (ADD_RAT_TO_LIST(rat, PCB_OBJ_ARC, &i->arc, PCB_FCT_RAT, i->orig_arc))
 				longjmp(i->env, 1);
 		}
 	}
@@ -655,6 +668,7 @@ static pcb_bool LookupLOConnectionsToArc(pcb_arc_t *Arc, pcb_cardinal_t LayerGro
 	struct lo_info info;
 
 	info.arc = *Arc;
+	info.orig_arc = Arc;
 	EXPAND_BOUNDS(&info.arc);
 
 
@@ -692,7 +706,7 @@ static pcb_bool LookupLOConnectionsToArc(pcb_arc_t *Arc, pcb_cardinal_t LayerGro
 			for(b = pcb_r_first(PCB->Data->Layer[layer].polygon_tree, &it); b != NULL; b = pcb_r_next(&it)) {
 				pcb_poly_t *polygon = (pcb_poly_t *)b;
 				if (!PCB_FLAG_TEST(TheFlag, polygon) && pcb_is_arc_in_poly(Arc, polygon)
-						&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_OBJ_ARC, Arc, PCB_FCT_COPPER))
+						&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_OBJ_ARC, Arc, PCB_FCT_COPPER, Arc))
 					return pcb_true;
 			}
 			pcb_r_end(&it);
@@ -708,7 +722,7 @@ static pcb_r_dir_t LOCtoLineLine_callback(const pcb_box_t * b, void *cl)
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_intersect_line_line(&i->line, line) && !INOCN(&i->line, line)) {
-		if (ADD_LINE_TO_LIST(i->layer, line, PCB_OBJ_LINE, &i->line, PCB_FCT_COPPER))
+		if (ADD_LINE_TO_LIST(i->layer, line, PCB_OBJ_LINE, &i->line, PCB_FCT_COPPER, i->orig_line))
 			longjmp(i->env, 1);
 	}
 	return PCB_R_DIR_NOT_FOUND;
@@ -722,7 +736,7 @@ static pcb_r_dir_t LOCtoLineArc_callback(const pcb_box_t * b, void *cl)
 	if (!arc->Thickness)
 		return 0;
 	if (!PCB_FLAG_TEST(TheFlag, arc) && pcb_intersect_line_arc(&i->line, arc) && !INOCN(&i->line, arc)) {
-		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_OBJ_LINE, &i->line, PCB_FCT_COPPER))
+		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_OBJ_LINE, &i->line, PCB_FCT_COPPER, i->orig_line))
 			longjmp(i->env, 1);
 	}
 	return PCB_R_DIR_NOT_FOUND;
@@ -736,12 +750,12 @@ static pcb_r_dir_t LOCtoLineRat_callback(const pcb_box_t * b, void *cl)
 	if (!PCB_FLAG_TEST(TheFlag, rat)) {
 		if ((rat->group1 == i->layer)
 				&& IsRatPointOnLineSpec(&rat->Point1, &i->line)) {
-			if (ADD_RAT_TO_LIST(rat, PCB_OBJ_LINE, &i->line, PCB_FCT_RAT))
+			if (ADD_RAT_TO_LIST(rat, PCB_OBJ_LINE, &i->line, PCB_FCT_RAT, i->orig_line))
 				longjmp(i->env, 1);
 		}
 		else if ((rat->group2 == i->layer)
 						 && IsRatPointOnLineSpec(&rat->Point2, &i->line)) {
-			if (ADD_RAT_TO_LIST(rat, PCB_OBJ_LINE, &i->line, PCB_FCT_RAT))
+			if (ADD_RAT_TO_LIST(rat, PCB_OBJ_LINE, &i->line, PCB_FCT_RAT, i->orig_line))
 				longjmp(i->env, 1);
 		}
 	}
@@ -759,6 +773,7 @@ static pcb_bool LookupLOConnectionsToLine(pcb_line_t *Line, pcb_cardinal_t Layer
 	struct lo_info info;
 
 	info.line = *Line;
+	info.orig_line = Line;
 	info.layer = LayerGroup;
 	EXPAND_BOUNDS(&info.line)
 		/* add the new rat lines */
@@ -791,7 +806,7 @@ static pcb_bool LookupLOConnectionsToLine(pcb_line_t *Line, pcb_cardinal_t Layer
 			for(b = pcb_r_first(PCB->Data->Layer[layer].polygon_tree, &it); b != NULL; b = pcb_r_next(&it)) {
 				pcb_poly_t *polygon = (pcb_poly_t *)b;
 				if (!PCB_FLAG_TEST(TheFlag, polygon) && pcb_is_line_in_poly(Line, polygon)
-						&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_OBJ_LINE, Line, PCB_FCT_COPPER))
+						&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_OBJ_LINE, Line, PCB_FCT_COPPER, Line))
 					return pcb_true;
 			}
 			pcb_r_end(&it);
@@ -814,7 +829,7 @@ static pcb_r_dir_t LOCtoRatLine_callback(const pcb_box_t * b, void *cl)
 	struct rat_info *i = (struct rat_info *) cl;
 
 	if (!PCB_FLAG_TEST(TheFlag, line) && IsRatPointOnLineSpec(i->Point, line)) {
-		if (ADD_LINE_TO_LIST(i->layer, line, PCB_OBJ_RAT, &i->Point, PCB_FCT_RAT))
+		if (ADD_LINE_TO_LIST(i->layer, line, PCB_OBJ_RAT, &i->Point, PCB_FCT_RAT, NULL))
 			longjmp(i->env, 1);
 	}
 	return PCB_R_DIR_NOT_FOUND;
@@ -826,7 +841,7 @@ static pcb_r_dir_t LOCtoRatArc_callback(const pcb_box_t * b, void *cl)
 	struct rat_info *i = (struct rat_info *) cl;
 
 	if (!PCB_FLAG_TEST(TheFlag, arc) && IsRatPointOnArcSpec(i->Point, arc)) {
-		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_OBJ_RAT, &i->Point, PCB_FCT_RAT))
+		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_OBJ_RAT, &i->Point, PCB_FCT_RAT, NULL))
 			longjmp(i->env, 1);
 	}
 	return PCB_R_DIR_NOT_FOUND;
@@ -838,7 +853,7 @@ static pcb_r_dir_t LOCtoRatPoly_callback(const pcb_box_t * b, void *cl)
 	struct rat_info *i = (struct rat_info *) cl;
 
 	if (!PCB_FLAG_TEST(TheFlag, polygon) && polygon->Clipped && IsRatPointOnPoly(i->Point, polygon)) {
-		if (ADD_POLYGON_TO_LIST(i->layer, polygon, PCB_OBJ_RAT, &i->Point, PCB_FCT_RAT))
+		if (ADD_POLYGON_TO_LIST(i->layer, polygon, PCB_OBJ_RAT, &i->Point, PCB_FCT_RAT, NULL))
 			longjmp(i->env, 1);
 	}
 	return PCB_R_DIR_NOT_FOUND;
@@ -882,7 +897,7 @@ static pcb_r_dir_t LOCtoPolyLine_callback(const pcb_box_t * b, void *cl)
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_is_line_in_poly(line, &i->polygon) && !INOCN(line, &i->polygon)) {
-		if (ADD_LINE_TO_LIST(i->layer, line, PCB_OBJ_POLY, &i->polygon, PCB_FCT_COPPER))
+		if (ADD_LINE_TO_LIST(i->layer, line, PCB_OBJ_POLY, &i->polygon, PCB_FCT_COPPER, i->orig_polygon))
 			longjmp(i->env, 1);
 	}
 	return PCB_R_DIR_NOT_FOUND;
@@ -896,7 +911,7 @@ static pcb_r_dir_t LOCtoPolyArc_callback(const pcb_box_t * b, void *cl)
 	if (!arc->Thickness)
 		return 0;
 	if (!PCB_FLAG_TEST(TheFlag, arc) && pcb_is_arc_in_poly(arc, &i->polygon) && !INOCN(arc, &i->polygon)) {
-		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_OBJ_POLY, &i->polygon, PCB_FCT_COPPER))
+		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_OBJ_POLY, &i->polygon, PCB_FCT_COPPER, i->orig_polygon))
 			longjmp(i->env, 1);
 	}
 	return 0;
@@ -910,7 +925,7 @@ static pcb_r_dir_t LOCtoPolyRat_callback(const pcb_box_t * b, void *cl)
 	if (!PCB_FLAG_TEST(TheFlag, rat)) {
 		if (((rat->group1 == i->layer) && IsRatPointOnPoly(&rat->Point1, &i->polygon))
 			|| ((rat->group2 == i->layer) && IsRatPointOnPoly(&rat->Point2, &i->polygon))) {
-			if (ADD_RAT_TO_LIST(rat, PCB_OBJ_POLY, &i->polygon, PCB_FCT_RAT))
+			if (ADD_RAT_TO_LIST(rat, PCB_OBJ_POLY, &i->polygon, PCB_FCT_RAT, i->orig_polygon))
 				longjmp(i->env, 1);
 		}
 	}
@@ -928,6 +943,7 @@ static pcb_bool LookupLOConnectionsToPolygon(pcb_poly_t *Polygon, pcb_cardinal_t
 	if (!Polygon->Clipped)
 		return pcb_false;
 	info.polygon = *Polygon;
+	info.orig_polygon = Polygon;
 	EXPAND_BOUNDS(&info.polygon);
 	info.layer = LayerGroup;
 	/* check rats */
@@ -950,7 +966,7 @@ static pcb_bool LookupLOConnectionsToPolygon(pcb_poly_t *Polygon, pcb_cardinal_t
 				pcb_poly_t *polygon = (pcb_poly_t *)b;
 				if (!PCB_FLAG_TEST(TheFlag, polygon)
 						&& pcb_is_poly_in_poly(polygon, Polygon)
-						&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_OBJ_POLY, Polygon, PCB_FCT_COPPER))
+						&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_OBJ_POLY, Polygon, PCB_FCT_COPPER, Polygon))
 					return pcb_true;
 			}
 			pcb_r_end(&it);
