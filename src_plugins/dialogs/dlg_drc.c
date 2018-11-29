@@ -88,9 +88,11 @@ void drc2dlg(drc_ctx_t *ctx)
 
 	/* add all items */
 	for(v = pcb_drc_list_first(&ctx->drc); v != NULL; v = pcb_drc_list_next(v)) {
+		pcb_hid_row_t *r;
 		cell[0] = pcb_strdup_printf("%lu", v->uid);
 		cell[1] = pcb_strdup(v->title);
-		pcb_dad_tree_append(attr, NULL, cell);
+		r = pcb_dad_tree_append(attr, NULL, cell);
+		r->user_data2.lng = v->uid;
 	}
 
 	/* restore cursor */
@@ -128,7 +130,7 @@ static void drc_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t
 	pcb_drc_violation_t *v = NULL;
 
 	if (row != NULL) {
-		ctx->selected = strtoul(row->cell[0], NULL, 10);
+		ctx->selected = row->user_data2.lng;
 		v = pcb_drc_by_uid(&ctx->drc, ctx->selected);
 		if (v != NULL) {
 			pcb_drc_goto(v);
