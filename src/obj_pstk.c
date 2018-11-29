@@ -359,6 +359,8 @@ static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, c
 		else {
 			if (layer_color != NULL)
 				color = layer_color;
+			else if (PCB_HAS_COLOROVERRIDE(ps))
+				color = ps->override_color;
 			else if (is_current)
 				color = conf_core.appearance.color.via;
 			else
@@ -384,6 +386,8 @@ static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, c
 		else
 			if (layer_color != NULL)
 				color = layer_color;
+			else if (PCB_HAS_COLOROVERRIDE(ps))
+				color = ps->override_color;
 			else if (is_current)
 				color = conf_core.appearance.color.pin;
 			else
