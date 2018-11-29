@@ -159,7 +159,7 @@ static void pcb_print_conn_subc_name(pcb_subc_t *, FILE *);
 static void pcb_print_conn_list_entry(char *, pcb_subc_t *, pcb_bool, FILE *);
 static void DumpList(void);
 static pcb_bool ListStart(pcb_any_obj_t *obj);
-static pcb_bool SetThing(int, void *, void *, void *);
+static pcb_bool SetThing(void *group1_obj);
 
 
 #include "find_geo.c"
