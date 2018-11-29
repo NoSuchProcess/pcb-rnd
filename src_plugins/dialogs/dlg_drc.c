@@ -31,6 +31,7 @@
 #include <genht/hash.h>
 
 #include "actions.h"
+#include "board.h"
 #include "conf_core.h"
 #include "drc.h"
 #include "draw.h"
@@ -148,11 +149,41 @@ static void drc_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t
 	pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &v->bbox);
 }
 
+static vtp0_t drc_color_save;
+
 static void drc_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
+	drc_ctx_t *ctx = prv->user_ctx;
 	pcb_xform_t xform;
-	int old_termlab;
+	int old_termlab, g;
+	static const char *offend_color[] = {"#ff0000", "#0000ff"};
+	pcb_drc_violation_t *v = pcb_drc_by_uid(&ctx->drc, ctx->selected);
+	size_t n;
+	void **p;
+
+	if (v == NULL)
+		return;
+
 	/* NOTE: zoom box was already set on select */
+
+	/* save offending object colors */
+	vtp0_truncate(&drc_color_save, 0);
+	for(g = 0; g < 2; g++) {
+		pcb_idpath_t *i;
+		for(i = pcb_idpath_list_first(&v->objs[g]); i != NULL; /*i = pcb_idpath_list_next(i)*/i=0) {
+			pcb_any_obj_t *obj = pcb_idpath2obj(ctx->pcb->Data, i);
+			if ((obj != NULL) && (obj->type & PCB_OBJ_CLASS_REAL)) {
+				vtp0_append(&drc_color_save, obj);
+				if (obj->override_color != NULL) {
+					char *save = pcb_strdup(obj->override_color);
+					vtp0_append(&drc_color_save, save);
+				}
+				else
+					vtp0_append(&drc_color_save, NULL);
+				memcpy(obj->override_color, offend_color[g], 8);
+			}
+		}
+	}
 
 	/* draw the board */
 	old_termlab = pcb_draw_force_termlab;
@@ -161,6 +192,19 @@ static void drc_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, p
 	xform.layer_faded = 1;
 	pcb_hid_expose_all(pcb_gui, e, &xform);
 	pcb_draw_force_termlab = old_termlab;
+
+	/* restore object color */
+	for(n = 0, p = drc_color_save.array; n < drc_color_save.used; n+=2,p+=2) {
+		pcb_any_obj_t *obj = p[0];
+		char *s = p[1];
+		if (s != NULL) {
+			memcpy(obj->override_color, s, 8);
+			free(s);
+		}
+		else
+			*obj->override_color = '\0';
+	}
+	vtp0_truncate(&drc_color_save, 0);
 }
 
 
@@ -242,11 +286,18 @@ fgw_error_t pcb_act_DRC(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	static drc_ctx_t ctx = {0};
 
-	if (!ctx.active)
+	if (!ctx.active) {
+		ctx.pcb = PCB;
 		pcb_dlg_drc(&ctx, "DRC violations");
+	}
 
 	pcb_drc_all(&ctx.drc);
 	drc2dlg(&ctx);
 
 	return 0;
+}
+
+void pcb_drc_dlg_uninit(void)
+{
+	vtp0_uninit(&drc_color_save);
 }
