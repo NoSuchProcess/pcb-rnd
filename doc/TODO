@@ -2,15 +2,15 @@
 
 1. For the upcoming release ===============================================================================
 - CLEANUP: DRC rewrite: extend the DRC window to be a generic location list (or rather rewrite with DAD!)
+	- BUG: DAD dialog: finish the code for buttons
+	- xor draw stops working after the first preview
 	- buttons to select one or all items or all items including locked
 	- io infra for save incompatibility note with DRC list
 	- import sch. shouldn't select elements to be removed but put them on a drc list
 	- display number of items at top of drc window
 	- export to file 
 	- BUG: DRC hilight: for each drc error, have two groups of objects with different color highlight. SetThing assumes there will be only 1 object; this was broken in the original design [report: Igor2]
-	- BUG: DRC rendering broke -> rather rewrite using DAD [report: Igor2]
-	- CLEANUP: remove find_act.c
-	- CLEANUP: remove drc.h include wherever possible
+	- CLEANUP: remove find_act.c: move drc() to gui actions and make it a dispatcher
 - CLEANUP: rewrite the preview API:
 	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
 	- there should be a view context in core associated with this, that contains flips so the view can be decoupled from board flip config (library preview)
