@@ -150,13 +150,16 @@ static void drc_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t
 
 static void drc_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
+	pcb_xform_t xform;
 	int old_termlab;
 	/* NOTE: zoom box was already set on select */
 
 	/* draw the board */
 	old_termlab = pcb_draw_force_termlab;
 	pcb_draw_force_termlab = 1;
-	pcb_hid_expose_all(pcb_gui, e, NULL);
+	memset(&xform, 0, sizeof(xform));
+	xform.layer_faded = 1;
+	pcb_hid_expose_all(pcb_gui, e, &xform);
 	pcb_draw_force_termlab = old_termlab;
 }
 
