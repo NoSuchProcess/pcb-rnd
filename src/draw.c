@@ -658,11 +658,11 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 	out:;
 		pcb_draw_out.active_padGC = NULL;
 
-	info->layer = NULL;
-	info->xform = NULL;
-
 	if ((info->xform != NULL) && (info->xform->layer_faded))
 		Layer->meta.real.color = orig_color;
+
+	info->layer = NULL;
+	info->xform = NULL;
 }
 
 void pcb_draw_layer_noxform(pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_box_t *screen)
