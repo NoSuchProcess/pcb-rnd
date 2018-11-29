@@ -123,8 +123,8 @@ typedef struct {
 static pcb_coord_t Bloat = 0;
 static int TheFlag = PCB_FLAG_FOUND;
 static int OldFlag = PCB_FLAG_FOUND;
-static void *thing_ptr1, *thing_ptr2, *thing_ptr3;
-static int thing_type;
+static void  *pcb_found_obj1;
+
 pcb_find_callback_t pcb_find_callback = NULL;
 #define make_callback(current_type, current_ptr, from_type, from_ptr, type) \
 	do { \

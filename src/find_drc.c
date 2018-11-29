@@ -559,7 +559,7 @@ static pcb_bool DRCFind(pcb_drc_list_t *lst, int What, void *ptr1, void *ptr2, v
 			User = pcb_false;
 			drc = pcb_false;
 			drcerr_count++;
-			drc_append_obj(objs, (pcb_any_obj_t *)thing_ptr2);
+			drc_append_obj(objs, (pcb_any_obj_t *)pcb_found_obj1);
 			violation = pcb_drc_violation_new("broken",
 				"Potential for broken trace",
 				"Insufficient overlap between objects can lead to broken tracks\n" "due to registration errors with old wheel style photo-plotters.",
@@ -602,7 +602,7 @@ static pcb_bool DRCFind(pcb_drc_list_t *lst, int What, void *ptr1, void *ptr2, v
 		DoIt(pcb_true, pcb_true);
 		DumpList();
 		drcerr_count++;
-		drc_append_obj(objs, (pcb_any_obj_t *)thing_ptr2);
+		drc_append_obj(objs, (pcb_any_obj_t *)pcb_found_obj1);
 		violation = pcb_drc_violation_new("short",
 			"Copper areas too close",
 			"Circuits that are too close may bridge during imaging, etching,\n" "plating, or soldering processes resulting in a direct short.",
@@ -620,7 +620,7 @@ static pcb_bool DRCFind(pcb_drc_list_t *lst, int What, void *ptr1, void *ptr2, v
 		/* highlight the rest of the encroaching net so it's not reported again */
 		TheFlag |= PCB_FLAG_SELECTED;
 		Bloat = 0;
-		ListStart(thing_ptr2);
+		ListStart(pcb_found_obj1);
 		DoIt(pcb_true, pcb_true);
 		DumpList();
 		drc = pcb_true;
@@ -638,7 +638,7 @@ static pcb_bool DRCFind(pcb_drc_list_t *lst, int What, void *ptr1, void *ptr2, v
 static void GotoError(void)
 {
 	pcb_coord_t X, Y;
-	pcb_any_obj_t *obj = (pcb_any_obj_t *)thing_ptr2;
+	pcb_any_obj_t *obj = (pcb_any_obj_t *)pcb_found_obj1;
 
 	pcb_obj_center(obj, &X, &Y);
 

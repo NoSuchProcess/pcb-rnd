@@ -162,10 +162,7 @@ static pcb_bool ADD_POLYGON_TO_LIST(pcb_cardinal_t L, pcb_poly_t *Ptr, int from_
 
 pcb_bool SetThing(int type, void *ptr1, void *ptr2, void *ptr3)
 {
-	thing_ptr1 = ptr1;
-	thing_ptr2 = ptr2;
-	thing_ptr3 = ptr3;
-	thing_type = type;
+	pcb_found_obj1 = ptr2;
 	return pcb_true;
 }
 
