@@ -638,14 +638,14 @@ static pcb_bool DRCFind(pcb_drc_list_t *lst, int What, void *ptr1, void *ptr2, v
 static void GotoError(void)
 {
 	pcb_coord_t X, Y;
+	pcb_any_obj_t *obj = (pcb_any_obj_t *)thing_ptr2;
 
-	pcb_obj_center((pcb_any_obj_t *)thing_ptr2, &X, &Y);
+	pcb_obj_center(obj, &X, &Y);
 
-	switch (thing_type) {
-	case PCB_OBJ_LINE:
-	case PCB_OBJ_ARC:
-	case PCB_OBJ_POLY:
-		pcb_layervis_change_group_vis(pcb_layer_id(PCB->Data, (pcb_layer_t *) thing_ptr1), pcb_true, pcb_true);
+	if (obj->parent_type == PCB_PARENT_LAYER) {
+		pcb_layer_t *layer = pcb_layer_get_real(obj->parent.layer);
+		if (layer != NULL)
+			pcb_layervis_change_group_vis(pcb_layer_id(PCB->Data, layer), pcb_true, pcb_true);
 	}
 	pcb_center_display(X, Y);
 }
