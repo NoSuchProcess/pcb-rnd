@@ -38,8 +38,6 @@
 #include "obj_poly_draw.h"
 #include "obj_pstk_draw.h"
 
-static pcb_bool DRCFind(pcb_view_list_t *lst, int What, void *ptr1, void *ptr2, void *ptr3);
-
 /* DRC clearance callback */
 static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t *polygon, int type, void *ptr1, void *ptr2, void *user_data)
 {
@@ -115,6 +113,107 @@ static int drc_text(pcb_view_list_t *lst, pcb_layer_t *layer, pcb_text_t *text, 
 		pcb_undo(pcb_false);
 	}
 	return 0;
+}
+
+/* Check for DRC violations on a single net starting from the pad or pin
+   sees if the connectivity changes when everything is bloated, or shrunk */
+static pcb_bool DRCFind(pcb_view_list_t *lst, int What, void *ptr1, void *ptr2, void *ptr3)
+{
+	pcb_view_t *violation;
+
+	if (conf_core.design.shrink != 0) {
+		Bloat = -conf_core.design.shrink;
+		TheFlag = PCB_FLAG_DRC | PCB_FLAG_SELECTED;
+		ListStart(ptr2);
+		DoIt(pcb_true, pcb_false);
+		/* ok now the shrunk net has the PCB_FLAG_SELECTED set */
+		DumpList();
+		TheFlag = PCB_FLAG_FOUND;
+		ListStart(ptr2);
+		Bloat = 0;
+		drc = pcb_true;									/* abort the search if we find anything not already found */
+		if (DoIt(pcb_true, pcb_false)) {
+			DumpList();
+			/* make the flag changes undoable */
+			TheFlag = PCB_FLAG_FOUND | PCB_FLAG_SELECTED;
+			pcb_reset_conns(pcb_false);
+			User = pcb_true;
+			drc = pcb_false;
+			Bloat = -conf_core.design.shrink;
+			TheFlag = PCB_FLAG_SELECTED;
+			ListStart(ptr2);
+			DoIt(pcb_true, pcb_true);
+			DumpList();
+			ListStart(ptr2);
+			TheFlag = PCB_FLAG_FOUND;
+			Bloat = 0;
+			drc = pcb_true;
+			DoIt(pcb_true, pcb_true);
+			DumpList();
+			User = pcb_false;
+			drc = pcb_false;
+			violation = pcb_view_new("broken", "Potential for broken trace", "Insufficient overlap between objects can lead to broken tracks\ndue to registration errors with old wheel style photo-plotters.");
+			pcb_drc_set_data(violation, NULL, conf_core.design.shrink);
+			pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)pcb_found_obj1);
+			pcb_view_append_obj(violation, 1, (pcb_any_obj_t *)pcb_found_obj2);
+			pcb_view_set_bbox_by_objs(PCB->Data, violation);
+			pcb_view_list_append(lst, violation);
+
+			pcb_undo_inc_serial();
+			pcb_undo(pcb_true);
+		}
+		DumpList();
+	}
+	/* now check the bloated condition */
+	drc = pcb_false;
+	pcb_reset_conns(pcb_false);
+	TheFlag = PCB_FLAG_FOUND;
+	ListStart(ptr2);
+	Bloat = conf_core.design.bloat;
+	drc = pcb_true;
+	while (DoIt(pcb_true, pcb_false)) {
+		DumpList();
+		/* make the flag changes undoable */
+		TheFlag = PCB_FLAG_FOUND | PCB_FLAG_SELECTED;
+		pcb_reset_conns(pcb_false);
+		User = pcb_true;
+		drc = pcb_false;
+		Bloat = 0;
+		TheFlag = PCB_FLAG_SELECTED;
+		ListStart(ptr2);
+		DoIt(pcb_true, pcb_true);
+		DumpList();
+		TheFlag = PCB_FLAG_FOUND;
+		ListStart(ptr2);
+		Bloat = conf_core.design.bloat;
+		drc = pcb_true;
+		DoIt(pcb_true, pcb_true);
+		DumpList();
+		violation = pcb_view_new("short", "Copper areas too close", "Circuits that are too close may bridge during imaging, etching,\nplating, or soldering processes resulting in a direct short.");
+		pcb_drc_set_data(violation, NULL, conf_core.design.bloat);
+		pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)pcb_found_obj1);
+		pcb_view_append_obj(violation, 1, (pcb_any_obj_t *)pcb_found_obj2);
+		pcb_view_set_bbox_by_objs(PCB->Data, violation);
+		pcb_view_list_append(lst, violation);
+		User = pcb_false;
+		drc = pcb_false;
+		pcb_undo_inc_serial();
+		pcb_undo(pcb_true);
+		/* highlight the rest of the encroaching net so it's not reported again */
+		TheFlag |= PCB_FLAG_SELECTED;
+		Bloat = 0;
+		ListStart(pcb_found_obj1);
+		DoIt(pcb_true, pcb_true);
+		DumpList();
+		drc = pcb_true;
+		Bloat = conf_core.design.bloat;
+		ListStart(ptr2);
+	}
+	drc = pcb_false;
+	DumpList();
+	TheFlag = PCB_FLAG_FOUND | PCB_FLAG_SELECTED | PCB_FLAG_DRC;
+	pcb_reset_conns(pcb_false);
+	return pcb_false;
 }
 
 void pcb_drc_all(pcb_view_list_t *lst)
@@ -297,104 +396,3 @@ void pcb_drc_all(pcb_view_list_t *lst)
 }
 
 
-
-/* Check for DRC violations on a single net starting from the pad or pin
-   sees if the connectivity changes when everything is bloated, or shrunk */
-static pcb_bool DRCFind(pcb_view_list_t *lst, int What, void *ptr1, void *ptr2, void *ptr3)
-{
-	pcb_view_t *violation;
-
-	if (conf_core.design.shrink != 0) {
-		Bloat = -conf_core.design.shrink;
-		TheFlag = PCB_FLAG_DRC | PCB_FLAG_SELECTED;
-		ListStart(ptr2);
-		DoIt(pcb_true, pcb_false);
-		/* ok now the shrunk net has the PCB_FLAG_SELECTED set */
-		DumpList();
-		TheFlag = PCB_FLAG_FOUND;
-		ListStart(ptr2);
-		Bloat = 0;
-		drc = pcb_true;									/* abort the search if we find anything not already found */
-		if (DoIt(pcb_true, pcb_false)) {
-			DumpList();
-			/* make the flag changes undoable */
-			TheFlag = PCB_FLAG_FOUND | PCB_FLAG_SELECTED;
-			pcb_reset_conns(pcb_false);
-			User = pcb_true;
-			drc = pcb_false;
-			Bloat = -conf_core.design.shrink;
-			TheFlag = PCB_FLAG_SELECTED;
-			ListStart(ptr2);
-			DoIt(pcb_true, pcb_true);
-			DumpList();
-			ListStart(ptr2);
-			TheFlag = PCB_FLAG_FOUND;
-			Bloat = 0;
-			drc = pcb_true;
-			DoIt(pcb_true, pcb_true);
-			DumpList();
-			User = pcb_false;
-			drc = pcb_false;
-			violation = pcb_view_new("broken", "Potential for broken trace", "Insufficient overlap between objects can lead to broken tracks\ndue to registration errors with old wheel style photo-plotters.");
-			pcb_drc_set_data(violation, NULL, conf_core.design.shrink);
-			pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)pcb_found_obj1);
-			pcb_view_append_obj(violation, 1, (pcb_any_obj_t *)pcb_found_obj2);
-			pcb_view_set_bbox_by_objs(PCB->Data, violation);
-			pcb_view_list_append(lst, violation);
-
-			pcb_undo_inc_serial();
-			pcb_undo(pcb_true);
-		}
-		DumpList();
-	}
-	/* now check the bloated condition */
-	drc = pcb_false;
-	pcb_reset_conns(pcb_false);
-	TheFlag = PCB_FLAG_FOUND;
-	ListStart(ptr2);
-	Bloat = conf_core.design.bloat;
-	drc = pcb_true;
-	while (DoIt(pcb_true, pcb_false)) {
-		DumpList();
-		/* make the flag changes undoable */
-		TheFlag = PCB_FLAG_FOUND | PCB_FLAG_SELECTED;
-		pcb_reset_conns(pcb_false);
-		User = pcb_true;
-		drc = pcb_false;
-		Bloat = 0;
-		TheFlag = PCB_FLAG_SELECTED;
-		ListStart(ptr2);
-		DoIt(pcb_true, pcb_true);
-		DumpList();
-		TheFlag = PCB_FLAG_FOUND;
-		ListStart(ptr2);
-		Bloat = conf_core.design.bloat;
-		drc = pcb_true;
-		DoIt(pcb_true, pcb_true);
-		DumpList();
-		violation = pcb_view_new("short", "Copper areas too close", "Circuits that are too close may bridge during imaging, etching,\nplating, or soldering processes resulting in a direct short.");
-		pcb_drc_set_data(violation, NULL, conf_core.design.bloat);
-		pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)pcb_found_obj1);
-		pcb_view_append_obj(violation, 1, (pcb_any_obj_t *)pcb_found_obj2);
-		pcb_view_set_bbox_by_objs(PCB->Data, violation);
-		pcb_view_list_append(lst, violation);
-		User = pcb_false;
-		drc = pcb_false;
-		pcb_undo_inc_serial();
-		pcb_undo(pcb_true);
-		/* highlight the rest of the encroaching net so it's not reported again */
-		TheFlag |= PCB_FLAG_SELECTED;
-		Bloat = 0;
-		ListStart(pcb_found_obj1);
-		DoIt(pcb_true, pcb_true);
-		DumpList();
-		drc = pcb_true;
-		Bloat = conf_core.design.bloat;
-		ListStart(ptr2);
-	}
-	drc = pcb_false;
-	DumpList();
-	TheFlag = PCB_FLAG_FOUND | PCB_FLAG_SELECTED | PCB_FLAG_DRC;
-	pcb_reset_conns(pcb_false);
-	return pcb_false;
-}
