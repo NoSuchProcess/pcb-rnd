@@ -39,7 +39,6 @@
 #include "obj_poly_draw.h"
 #include "obj_pstk_draw.h"
 
-static void GotoError(void);
 static pcb_bool DRCFind(pcb_view_list_t *lst, int What, void *ptr1, void *ptr2, void *ptr3);
 
 static void pcb_drc_set_data(pcb_view_t *violation,
@@ -67,8 +66,6 @@ static void append_drc_dialog_message(const char *fmt, ...)
 	pcb_append_vprintf(&drc_dialog_message, fmt, ap);
 	va_end(ap);
 }
-
-static void GotoError(void);
 
 /* Build a list of the of offending items by ID */
 static void drc_append_obj(pcb_view_t *view, int grp, pcb_any_obj_t *obj)
@@ -614,20 +611,4 @@ static pcb_bool DRCFind(pcb_view_list_t *lst, int What, void *ptr1, void *ptr2, 
 	TheFlag = PCB_FLAG_FOUND | PCB_FLAG_SELECTED | PCB_FLAG_DRC;
 	pcb_reset_conns(pcb_false);
 	return pcb_false;
-}
-
-/* center the display to show the offending item (thing) */
-static void GotoError(void)
-{
-	pcb_coord_t X, Y;
-	pcb_any_obj_t *obj = (pcb_any_obj_t *)pcb_found_obj1;
-
-	pcb_obj_center(obj, &X, &Y);
-
-	if (obj->parent_type == PCB_PARENT_LAYER) {
-		pcb_layer_t *layer = pcb_layer_get_real(obj->parent.layer);
-		if (layer != NULL)
-			pcb_layervis_change_group_vis(pcb_layer_id(PCB->Data, layer), pcb_true, pcb_true);
-	}
-	pcb_center_display(X, Y);
 }
