@@ -53,7 +53,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t
 		if (line->Clearance < 2 * conf_core.design.bloat) {
 			pcb_undo_add_obj_to_flag(ptr2);
 			PCB_FLAG_SET(TheFlag, line);
-			message = "Line with insufficient clearance inside polygon\n";
+			message = "Line with insufficient clearance inside polygon";
 			goto doIsBad;
 		}
 		break;
@@ -61,7 +61,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t
 		if (arc->Clearance < 2 * conf_core.design.bloat) {
 			pcb_undo_add_obj_to_flag(ptr2);
 			PCB_FLAG_SET(TheFlag, arc);
-			message = "Arc with insufficient clearance inside polygon\n";
+			message = "Arc with insufficient clearance inside polygon";
 			goto doIsBad;
 		}
 		break;
@@ -69,7 +69,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t
 		if (pcb_pstk_drc_check_clearance(ps, polygon, 2 * conf_core.design.bloat) != 0) {
 			pcb_undo_add_obj_to_flag(ptr2);
 			PCB_FLAG_SET(TheFlag, ps);
-			message = "Padstack with insufficient clearance inside polygon\n";
+			message = "Padstack with insufficient clearance inside polygon";
 			goto doIsBad;
 		}
 		break;
