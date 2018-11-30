@@ -48,9 +48,6 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t
 	pcb_line_t *line = (pcb_line_t *)ptr2;
 	pcb_arc_t *arc = (pcb_arc_t *)ptr2;
 	pcb_pstk_t *ps = (pcb_pstk_t *)ptr2;
-	pcb_idpath_list_t objs[2];
-
-	memset(objs, 0, sizeof(objs));
 
 	switch (type) {
 	case PCB_OBJ_LINE:
@@ -102,9 +99,6 @@ unsigned long pcb_obj_type2oldtype(pcb_objtype_t type);
 static int drc_text(pcb_view_list_t *lst, pcb_layer_t *layer, pcb_text_t *text, pcb_coord_t min_wid)
 {
 	pcb_view_t *violation;
-	pcb_idpath_list_t objs[2];
-
-	memset(objs, 0, sizeof(objs));
 
 	if (text->thickness == 0)
 		return 0; /* automatic thickness is always valid - ensured by the renderer */
@@ -127,9 +121,6 @@ void pcb_drc_all(pcb_view_list_t *lst)
 {
 	pcb_view_t *violation;
 	int nopastecnt = 0;
-	pcb_idpath_list_t objs[2];
-
-	memset(objs, 0, sizeof(objs));
 
 	IsBad = pcb_false;
 	pcb_layervis_save_stack();
@@ -312,9 +303,6 @@ void pcb_drc_all(pcb_view_list_t *lst)
 static pcb_bool DRCFind(pcb_view_list_t *lst, int What, void *ptr1, void *ptr2, void *ptr3)
 {
 	pcb_view_t *violation;
-	pcb_idpath_list_t objs[2];
-
-	memset(objs, 0, sizeof(objs));
 
 	if (conf_core.design.shrink != 0) {
 		Bloat = -conf_core.design.shrink;
