@@ -105,6 +105,7 @@ void view2dlg(view_ctx_t *ctx)
 		cell[1] = pcb_strdup(v->title);
 		r = pcb_dad_tree_append_under(attr, rt, cell);
 		r->user_data2.lng = v->uid;
+		pcb_dad_tree_expcoll(attr, rt, 1, 0);
 	}
 
 	/* restore cursor */
