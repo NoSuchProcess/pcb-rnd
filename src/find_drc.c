@@ -39,16 +39,16 @@
 #include "obj_pstk_draw.h"
 
 static void GotoError(void);
-static pcb_bool DRCFind(pcb_drc_list_t *lst, int What, void *ptr1, void *ptr2, void *ptr3);
+static pcb_bool DRCFind(pcb_view_list_t *lst, int What, void *ptr1, void *ptr2, void *ptr3);
 
 static unsigned long int pcb_drc_next_uid = 0;
 
-static pcb_drc_violation_t *pcb_drc_violation_new(
+static pcb_view_t *pcb_drc_violation_new(
 	const char *type, const char *title, const char *explanation,
 	pcb_bool have_measured, pcb_coord_t measured_value,
 	pcb_coord_t required_value, pcb_idpath_list_t objs[2])
 {
-	pcb_drc_violation_t *violation = calloc(sizeof(pcb_drc_violation_t), 1);
+	pcb_view_t *violation = calloc(sizeof(pcb_view_t), 1);
 
 	pcb_drc_next_uid++;
 	violation->uid = pcb_drc_next_uid;
@@ -104,7 +104,7 @@ static void drc_append_obj(pcb_idpath_list_t objs[2], int grp, pcb_any_obj_t *ob
 	}
 }
 
-static void append_drc_violation(pcb_drc_list_t *lst, pcb_drc_violation_t *violation)
+static void append_drc_violation(pcb_view_list_t *lst, pcb_view_t *violation)
 {
 #if 0
 	if (pcb_gui->drc_gui != NULL) {
@@ -123,10 +123,10 @@ static void append_drc_violation(pcb_drc_list_t *lst, pcb_drc_violation_t *viola
 	}
 #endif
 
-	pcb_drc_list_append(lst, violation);
+	pcb_view_list_append(lst, violation);
 }
 
-void drc_auto_loc(pcb_drc_violation_t *v)
+void drc_auto_loc(pcb_view_t *v)
 {
 	int g;
 	pcb_box_t b;
@@ -197,7 +197,7 @@ static int throw_drc_dialog(void)
 static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t *polygon, int type, void *ptr1, void *ptr2, void *user_data)
 {
 	const char *message;
-	pcb_drc_violation_t *violation;
+	pcb_view_t *violation;
 	pcb_line_t *line = (pcb_line_t *)ptr2;
 	pcb_arc_t *arc = (pcb_arc_t *)ptr2;
 	pcb_pstk_t *ps = (pcb_pstk_t *)ptr2;
@@ -260,9 +260,9 @@ doIsBad:
 
 unsigned long pcb_obj_type2oldtype(pcb_objtype_t type);
 
-static int drc_text(pcb_drc_list_t *lst, pcb_layer_t *layer, pcb_text_t *text, pcb_coord_t min_wid)
+static int drc_text(pcb_view_list_t *lst, pcb_layer_t *layer, pcb_text_t *text, pcb_coord_t min_wid)
 {
-	pcb_drc_violation_t *violation;
+	pcb_view_t *violation;
 	pcb_idpath_list_t objs[2];
 
 	memset(objs, 0, sizeof(objs));
@@ -293,9 +293,9 @@ static int drc_text(pcb_drc_list_t *lst, pcb_layer_t *layer, pcb_text_t *text, p
 }
 
 /* Check for DRC violations see if the connectivity changes when everything is bloated, or shrunk */
-int pcb_drc_all(pcb_drc_list_t *lst)
+int pcb_drc_all(pcb_view_list_t *lst)
 {
-	pcb_drc_violation_t *violation;
+	pcb_view_t *violation;
 	int nopastecnt = 0;
 	pcb_idpath_list_t objs[2];
 
@@ -520,9 +520,9 @@ int pcb_drc_all(pcb_drc_list_t *lst)
 
 /* Check for DRC violations on a single net starting from the pad or pin
    sees if the connectivity changes when everything is bloated, or shrunk */
-static pcb_bool DRCFind(pcb_drc_list_t *lst, int What, void *ptr1, void *ptr2, void *ptr3)
+static pcb_bool DRCFind(pcb_view_list_t *lst, int What, void *ptr1, void *ptr2, void *ptr3)
 {
-	pcb_drc_violation_t *violation;
+	pcb_view_t *violation;
 	pcb_idpath_list_t objs[2];
 
 	memset(objs, 0, sizeof(objs));

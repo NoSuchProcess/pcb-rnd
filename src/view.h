@@ -26,16 +26,16 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  *
  */
-#ifndef PCB_DRC_H
-#define PCB_DRC_H
+#ifndef PCB_VIEW_H
+#define PCB_VIEW_H
 
 #include <genlist/gendlist.h>
 #include "unit.h"
 #include "idpath.h"
 #include "box.h"
 
-typedef struct drc_violation_s pcb_drc_violation_t;
-struct drc_violation_s {
+typedef struct pcb_view_s pcb_view_t;
+struct pcb_view_s {
 	unsigned long int uid;        /* ID unique for each violation within the drc subsystem (for GUI identification of violations) */
 
 	char *type;
@@ -56,30 +56,33 @@ struct drc_violation_s {
 };
 
 /* List of drc violations */
-#define TDL(x)      pcb_drc_list_ ## x
-#define TDL_LIST_T  pcb_drc_list_t
-#define TDL_ITEM_T  pcb_drc_violation_t
+#define TDL(x)      pcb_view_list_ ## x
+#define TDL_LIST_T  pcb_view_list_t
+#define TDL_ITEM_T  pcb_view_t
 #define TDL_FIELD   link
 #define TDL_SIZE_T  size_t
 #define TDL_FUNC
 
-#define pcb_drc_list_foreach(list, iterator, loop_elem) \
+#define pcb_view_list_foreach(list, iterator, loop_elem) \
 	gdl_foreach_((&((list)->lst)), (iterator), (loop_elem))
 
 #include <genlist/gentdlist_impl.h>
 #include <genlist/gentdlist_undef.h>
 
-void pcb_drc_free(pcb_drc_violation_t *item);
+void pcb_view_free(pcb_view_t *item);
 
-void pcb_drc_list_free_fields(pcb_drc_list_t *lst);
-void pcb_drc_list_free(pcb_drc_list_t *lst);
+void pcb_view_list_free_fields(pcb_view_list_t *lst);
+void pcb_view_list_free(pcb_view_list_t *lst);
 
-int pcb_drc_all(pcb_drc_list_t *lst);
 
 /* Slow, linear search for an UID in a list; returns NULL if not found */
-pcb_drc_violation_t *pcb_drc_by_uid(const pcb_drc_list_t *lst, unsigned long int uid);
+pcb_view_t *pcb_view_by_uid(const pcb_view_list_t *lst, unsigned long int uid);
 
 /* Zoom the drawing area to the drc error */
-void pcb_drc_goto(pcb_drc_violation_t *item);
+void pcb_view_goto(pcb_view_t *item);
+
+
+/*** temporary, until moved out to a plugin ***/
+int pcb_drc_all(pcb_view_list_t *lst);
 
 #endif

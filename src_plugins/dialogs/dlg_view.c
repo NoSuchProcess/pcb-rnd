@@ -45,7 +45,7 @@ static const const char *dlg_view_cookie = "dlg_drc";
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	pcb_board_t *pcb;
-	pcb_drc_list_t drc;
+	pcb_view_list_t drc;
 	int alloced, active;
 
 	unsigned long int selected;
@@ -68,13 +68,13 @@ static void view_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 void view2dlg(view_ctx_t *ctx)
 {
 	char tmp[32];
-	pcb_drc_violation_t *v;
+	pcb_view_t *v;
 	pcb_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
 	pcb_hid_row_t *r;
 	char *cell[3], *cursor_path = NULL;
 
-	sprintf(tmp, "%d", pcb_drc_list_length(&ctx->drc));
+	sprintf(tmp, "%d", pcb_view_list_length(&ctx->drc));
 	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wcount, str_value, tmp);
 
 	attr = &ctx->dlg[ctx->wlist];
@@ -91,7 +91,7 @@ void view2dlg(view_ctx_t *ctx)
 
 	/* add all items */
 	cell[2] = NULL;
-	for(v = pcb_drc_list_first(&ctx->drc); v != NULL; v = pcb_drc_list_next(v)) {
+	for(v = pcb_view_list_first(&ctx->drc); v != NULL; v = pcb_view_list_next(v)) {
 		pcb_hid_row_t *r, *rt;
 		rt = htsp_get(&tree->paths, v->type);
 		if (rt == NULL) {
@@ -138,13 +138,13 @@ static void view_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_
 {
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
 	view_ctx_t *ctx = tree->user_ctx;
-	pcb_drc_violation_t *v = NULL;
+	pcb_view_t *v = NULL;
 
 	if (row != NULL) {
 		ctx->selected = row->user_data2.lng;
-		v = pcb_drc_by_uid(&ctx->drc, ctx->selected);
+		v = pcb_view_by_uid(&ctx->drc, ctx->selected);
 		if (v != NULL) {
-			pcb_drc_goto(v);
+			pcb_view_goto(v);
 			PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wexplanation, str_value, re_wrap(pcb_strdup(v->explanation), 32));
 			if (v->have_measured)
 				PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup_printf("%m+required: %$ms\nmeasured: %$ms\n", conf_core.editor.grid_unit->allow, v->required_value, v->measured_value));
@@ -170,7 +170,7 @@ static void view_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	pcb_xform_t xform;
 	int old_termlab, g;
 	static const char *offend_color[] = {"#ff0000", "#0000ff"};
-	pcb_drc_violation_t *v = pcb_drc_by_uid(&ctx->drc, ctx->selected);
+	pcb_view_t *v = pcb_view_by_uid(&ctx->drc, ctx->selected);
 	size_t n;
 	void **p;
 
