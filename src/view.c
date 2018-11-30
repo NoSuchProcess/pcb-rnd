@@ -136,6 +136,8 @@ void pcb_view_append_obj(pcb_view_t *view, int grp, pcb_any_obj_t *obj)
 	assert((grp == 0) || (grp == 1));
 
 	switch(obj->type) {
+		case PCB_OBJ_TEXT:
+		case PCB_OBJ_SUBC:
 		case PCB_OBJ_LINE:
 		case PCB_OBJ_ARC:
 		case PCB_OBJ_POLY:
