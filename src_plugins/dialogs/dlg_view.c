@@ -134,12 +134,17 @@ static void view2dlg_pos(view_ctx_t *ctx)
 		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wpos, str_value, pcb_strdup(""));
 }
 
-static void view2dlg(view_ctx_t *ctx)
+static void view2dlg_count(view_ctx_t *ctx)
 {
 	char tmp[32];
 
 	sprintf(tmp, "%d", pcb_view_list_length(ctx->lst));
 	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wcount, str_value, pcb_strdup(tmp));
+}
+
+static void view2dlg(view_ctx_t *ctx)
+{
+	view2dlg_count(ctx);
 
 	if (ctx->wlist >= 0)
 		view2dlg_list(ctx);
@@ -297,32 +302,6 @@ static void view_close_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	view_close_cb(caller_data, 0);
 }
 
-static void view_del_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
-{
-	view_ctx_t *ctx = caller_data;
-	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
-	pcb_hid_row_t *rc, *r = pcb_dad_tree_get_selected(attr);
-	pcb_view_t *v;
-
-	if (r->user_data2.lng == 0) {
-		/* remove a whole category - assume a single level */
-		for(rc = gdl_first(&r->children); rc != NULL; rc = gdl_next(&r->children, rc)) {
-			v = pcb_view_by_uid(ctx->lst, rc->user_data2.lng);
-			pcb_dad_tree_remove(attr, rc);
-			if (v != NULL)
-				pcb_view_free(v);
-		}
-		pcb_dad_tree_remove(attr, r);
-	}
-	else {
-		/* remove a single item */
-		v = pcb_view_by_uid(ctx->lst, r->user_data2.lng);
-		pcb_dad_tree_remove(attr, r);
-		if (v != NULL)
-			pcb_view_free(v);
-	}
-}
-
 static void view_stepped(view_ctx_t *ctx, pcb_view_t *v)
 {
 	if (v == NULL)
@@ -330,6 +309,46 @@ static void view_stepped(view_ctx_t *ctx, pcb_view_t *v)
 	ctx->selected = v->uid;
 	view_simple_show(ctx);
 	view2dlg_pos(ctx);
+}
+
+static void view_del_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
+{
+	view_ctx_t *ctx = caller_data;
+	pcb_view_t *v, *newv;
+
+	if (ctx->wlist < 0) { /* simplified dialog, no list */
+		v = pcb_view_by_uid(ctx->lst, ctx->selected);
+		if (v == NULL)
+			return;
+		newv = pcb_view_list_next(v);
+		if (newv == NULL)
+			newv = pcb_view_list_first(ctx->lst);
+		pcb_view_free(v);
+		view_stepped(ctx, newv);
+		view2dlg_count(ctx);
+	}
+	else { /* full dialog, go by the list */
+		pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
+		pcb_hid_row_t *rc, *r = pcb_dad_tree_get_selected(attr);
+
+		if (r->user_data2.lng == 0) {
+			/* remove a whole category - assume a single level */
+			for(rc = gdl_first(&r->children); rc != NULL; rc = gdl_next(&r->children, rc)) {
+				v = pcb_view_by_uid(ctx->lst, rc->user_data2.lng);
+				pcb_dad_tree_remove(attr, rc);
+				if (v != NULL)
+					pcb_view_free(v);
+			}
+			pcb_dad_tree_remove(attr, r);
+		}
+		else {
+			/* remove a single item */
+			v = pcb_view_by_uid(ctx->lst, r->user_data2.lng);
+			pcb_dad_tree_remove(attr, r);
+			if (v != NULL)
+				pcb_view_free(v);
+		}
+	}
 }
 
 static void simple_rewind(view_ctx_t *ctx)
