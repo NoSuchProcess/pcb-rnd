@@ -357,12 +357,12 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 	}
 	if (strncmp(*input, "boardw%", 7) == 0) {
 		*input += 7;
-		pcb_append_printf(s, "%m+%mS", xy_unit->allow, PCB->MaxWidth);
+		pcb_append_printf(s, "%m+%mN", xy_unit->allow, PCB->MaxWidth);
 		return 0;
 	}
 	if (strncmp(*input, "boardh%", 7) == 0) {
 		*input += 7;
-		pcb_append_printf(s, "%m+%mS", xy_unit->allow, PCB->MaxHeight);
+		pcb_append_printf(s, "%m+%mN", xy_unit->allow, PCB->MaxHeight);
 		return 0;
 	}
 	if (strncmp(*input, "subc.", 5) == 0) {
@@ -472,22 +472,22 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		}
 		if (strncmp(*input, "x%", 2) == 0) {
 			*input += 2;
-			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->x);
+			pcb_append_printf(s, "%m+%mN", xy_unit->allow, ctx->x);
 			return 0;
 		}
 		if (strncmp(*input, "y%", 2) == 0) {
 			*input += 2;
-			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->y);
+			pcb_append_printf(s, "%m+%mN", xy_unit->allow, ctx->y);
 			return 0;
 		}
 		if (strncmp(*input, "padcx%", 6) == 0) {
 			*input += 6;
-			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->pad_cx);
+			pcb_append_printf(s, "%m+%mN", xy_unit->allow, ctx->pad_cx);
 			return 0;
 		}
 		if (strncmp(*input, "padcy%", 6) == 0) {
 			*input += 6;
-			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->pad_cy);
+			pcb_append_printf(s, "%m+%mN", xy_unit->allow, ctx->pad_cy);
 			return 0;
 		}
 		if (strncmp(*input, "rot%", 4) == 0) {
@@ -545,22 +545,22 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		}
 		if (strncmp(*input, "pad_width%", 10) == 0) {
 			*input += 10;
-			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->pad_w);
+			pcb_append_printf(s, "%m+%mN", xy_unit->allow, ctx->pad_w);
 			return 0;
 		}
 		if (strncmp(*input, "pad_height%", 11) == 0) {
 			*input += 11;
-			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->pad_h);
+			pcb_append_printf(s, "%m+%mN", xy_unit->allow, ctx->pad_h);
 			return 0;
 		}
 		if (strncmp(*input, "pad_width_prerot%", 17) == 0) {
 			*input += 17;
-			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->prpad_w);
+			pcb_append_printf(s, "%m+%mN", xy_unit->allow, ctx->prpad_w);
 			return 0;
 		}
 		if (strncmp(*input, "pad_height_prerot%", 18) == 0) {
 			*input += 18;
-			pcb_append_printf(s, "%m+%mS", xy_unit->allow, ctx->prpad_h);
+			pcb_append_printf(s, "%m+%mN", xy_unit->allow, ctx->prpad_h);
 			return 0;
 		}
 		if (strncmp(*input, "smdvsthru%", 10) == 0) {
