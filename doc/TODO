@@ -9,7 +9,6 @@
 	- io warn:
 		- io infra for save incompatibility note with DRC list
 	- import:
-		- buttons to select one or all items or all items including locked
 		- import sch. shouldn't select elements to be removed but put them on a drc list
 - CLEANUP: rewrite the preview API:
 	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
