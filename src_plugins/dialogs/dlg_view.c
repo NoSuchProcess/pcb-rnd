@@ -321,7 +321,7 @@ static void view_del_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	}
 }
 
-static void pcb_dlg_drc_full(view_ctx_t *ctx, const char *title)
+static void pcb_dlg_view_full(view_ctx_t *ctx, const char *title)
 {
 	const char *hdr[] = { "ID", "title", NULL };
 
@@ -399,7 +399,7 @@ static void pcb_dlg_drc_full(view_ctx_t *ctx, const char *title)
 	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wbtn_pasteb, 0);
 }
 
-static void pcb_dlg_drc_simplified(view_ctx_t *ctx, const char *title)
+static void pcb_dlg_view_simplified(view_ctx_t *ctx, const char *title)
 {
 	pcb_view_t *v;
 
@@ -477,9 +477,9 @@ fgw_error_t pcb_act_DRC(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		drc_gui_ctx.lst = &pcb_drc_lst;
 		drc_gui_ctx.refresh = drc_refresh;
 		if (pcb_strcasecmp(dlg_type, "simple") == 0)
-			pcb_dlg_drc_simplified(&drc_gui_ctx, "DRC violations");
+			pcb_dlg_view_simplified(&drc_gui_ctx, "DRC violations");
 		else
-			pcb_dlg_drc_full(&drc_gui_ctx, "DRC violations");
+			pcb_dlg_view_full(&drc_gui_ctx, "DRC violations");
 	}
 
 	view_refresh(&drc_gui_ctx);
