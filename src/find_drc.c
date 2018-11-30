@@ -56,9 +56,11 @@ static pcb_view_t *pcb_drc_violation_new(
 	violation->type = pcb_strdup(type);
 	violation->title = pcb_strdup(title);
 	violation->explanation = pcb_strdup(explanation);
-	violation->have_measured = have_measured;
-	violation->measured_value = measured_value;
-	violation->required_value = required_value;
+
+	violation->data_type = PCB_VIEW_DRC;
+	violation->data.drc.have_measured = have_measured;
+	violation->data.drc.measured_value = measured_value;
+	violation->data.drc.required_value = required_value;
 	memcpy(&violation->objs, objs, sizeof(violation->objs));
 	memset(objs, 0, sizeof(violation->objs));
 	return violation;

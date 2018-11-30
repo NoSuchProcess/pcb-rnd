@@ -39,6 +39,12 @@
    data (e.g. drc size values) */
 
 typedef struct pcb_view_s pcb_view_t;
+
+typedef enum pcb_view_type_e {
+	PCB_VIEW_PLAIN,       /* has no data */
+	PCB_VIEW_DRC
+} pcb_view_type_t;
+
 struct pcb_view_s {
 	unsigned long int uid;        /* ID unique for each view (for GUI identification) - 0 means invalid */
 
@@ -55,9 +61,14 @@ struct pcb_view_s {
 	pcb_coord_t x, y;             /* optional: a coord to mark on the preview  */
 	pcb_idpath_list_t objs[2];    /* optional: two groups of objects to highlight on preview */
 
-	unsigned have_measured:1;
-	pcb_coord_t measured_value;
-	pcb_coord_t required_value;
+	pcb_view_type_t data_type;
+	union {
+		struct {
+			unsigned have_measured:1;
+			pcb_coord_t measured_value;
+			pcb_coord_t required_value;
+		} drc;
+	} data;
 
 	gdl_elem_t link;              /* always part of a list */
 };

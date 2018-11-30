@@ -146,10 +146,14 @@ static void view_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_
 		if (v != NULL) {
 			pcb_view_goto(v);
 			PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wexplanation, str_value, re_wrap(pcb_strdup(v->explanation), 32));
-			if (v->have_measured)
-				PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup_printf("%m+required: %$ms\nmeasured: %$ms\n", conf_core.editor.grid_unit->allow, v->required_value, v->measured_value));
-			else
-				PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup_printf("%m+required: %$ms\n", conf_core.editor.grid_unit->allow, v->required_value));
+			switch(v->data_type) {
+				case PCB_VIEW_DRC:
+					if (v->data.drc.have_measured)
+						PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup_printf("DRC: %m+required: %$ms\nmeasured: %$ms\n", conf_core.editor.grid_unit->allow, v->data.drc.required_value, v->data.drc.measured_value));
+					else
+						PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup_printf("DRC: %m+required: %$ms\n", conf_core.editor.grid_unit->allow, v->data.drc.required_value));
+					break;
+			}
 		}
 	}
 
