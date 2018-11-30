@@ -109,6 +109,6 @@ void pcb_view_append_obj(pcb_view_t *view, int grp, pcb_any_obj_t *obj);
 void pcb_view_set_bbox_by_objs(pcb_data_t *data, pcb_view_t *v);
 
 /*** temporary, until moved out to a plugin ***/
-int pcb_drc_all(pcb_view_list_t *lst);
+void pcb_drc_all(pcb_view_list_t *lst);
 
 #endif
