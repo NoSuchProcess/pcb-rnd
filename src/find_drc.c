@@ -218,27 +218,9 @@ static pcb_bool DRCFind(pcb_view_list_t *lst, int What, void *ptr1, void *ptr2, 
 
 static pcb_bool IsBad = pcb_false;
 
-void pcb_drc_all(pcb_view_list_t *lst)
+/* search short/breaks from subcircuit terminals */
+static void drc_nets_from_subc_term(pcb_view_list_t *lst)
 {
-	pcb_view_t *violation;
-	int nopastecnt = 0;
-
-	IsBad = pcb_false;
-	pcb_layervis_save_stack();
-	pcb_layervis_reset_stack();
-	pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
-	pcb_conn_lookup_init();
-
-	TheFlag = PCB_FLAG_FOUND | PCB_FLAG_DRC | PCB_FLAG_SELECTED;
-
-	if (pcb_reset_conns(pcb_true)) {
-		pcb_undo_inc_serial();
-		pcb_draw();
-	}
-
-	User = pcb_false;
-
-	/* search net (bloat) from subcircuit terminals */
 	PCB_SUBC_LOOP(PCB->Data);
 	{
 		pcb_any_obj_t *o;
@@ -256,43 +238,49 @@ void pcb_drc_all(pcb_view_list_t *lst)
 		}
 	}
 	PCB_END_LOOP;
+}
 
-	if (!IsBad)
+/* search short/breaks from non-subc padstacks */
+static void drc_nets_from_pstk(pcb_view_list_t *lst)
+{
 	PCB_PADSTACK_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_DRC, padstack)
 				&& DRCFind(lst, PCB_OBJ_PSTK, (void *) padstack, (void *) padstack, (void *) padstack)) {
-			IsBad = pcb_true;
 			break;
 		}
 	}
 	PCB_END_LOOP;
+}
 
-	TheFlag = (IsBad) ? PCB_FLAG_DRC : (PCB_FLAG_FOUND | PCB_FLAG_DRC | PCB_FLAG_SELECTED);
-	pcb_reset_conns(pcb_false);
-	TheFlag = PCB_FLAG_SELECTED;
-	/* check minimum widths and polygon clearances */
-	if (!IsBad) {
-		PCB_TEXT_COPPER_LOOP(PCB->Data);
-		{
-			if (drc_text(lst, layer, text, conf_core.design.min_wid))
-				break;
-		}
-		PCB_ENDALL_LOOP;
 
-		PCB_SILK_COPPER_LOOP(PCB->Data);
-		{
-			if (drc_text(lst, layer, text, conf_core.design.min_slk))
-				break;
-		}
-		PCB_ENDALL_LOOP;
+/* text: check minimum widths */
+void drc_all_texts(pcb_view_list_t *lst)
+{
+	PCB_TEXT_COPPER_LOOP(PCB->Data);
+	{
+		if (drc_text(lst, layer, text, conf_core.design.min_wid))
+			break;
+	}
+	PCB_ENDALL_LOOP;
+
+	PCB_SILK_COPPER_LOOP(PCB->Data);
+	{
+		if (drc_text(lst, layer, text, conf_core.design.min_slk))
+			break;
+	}
+	PCB_ENDALL_LOOP;
+}
+
+/* copper lines: check minimum widths and polygon clearances */
+void drc_copper_lines(pcb_view_list_t *lst)
+{
+	pcb_view_t *violation;
 
 		PCB_LINE_COPPER_LOOP(PCB->Data);
 		{
 			/* check line clearances in polygons */
 			pcb_poly_plows(PCB->Data, PCB_OBJ_LINE, layer, line, drc_callback, lst);
-			if (IsBad)
-				break;
 			if (line->Thickness < conf_core.design.min_wid) {
 				pcb_undo_add_obj_to_flag(line);
 				PCB_FLAG_SET(TheFlag, line);
@@ -307,13 +295,16 @@ void pcb_drc_all(pcb_view_list_t *lst)
 			}
 		}
 		PCB_ENDALL_LOOP;
-	}
-	if (!IsBad) {
+}
+
+/* copper arcs: check minimum widths and polygon clearances */
+void drc_copper_arcs(pcb_view_list_t *lst)
+{
+	pcb_view_t *violation;
+
 		PCB_ARC_COPPER_LOOP(PCB->Data);
 		{
 			pcb_poly_plows(PCB->Data, PCB_OBJ_ARC, layer, arc, drc_callback, lst);
-			if (IsBad)
-				break;
 			if (arc->Thickness < conf_core.design.min_wid) {
 				pcb_undo_add_obj_to_flag(arc);
 				PCB_FLAG_SET(TheFlag, arc);
@@ -328,7 +319,44 @@ void pcb_drc_all(pcb_view_list_t *lst)
 			}
 		}
 		PCB_ENDALL_LOOP;
+}
+
+
+static void drc_reset(void)
+{
+	TheFlag = PCB_FLAG_FOUND | PCB_FLAG_DRC | PCB_FLAG_SELECTED;
+	pcb_reset_conns(pcb_false);
+}
+
+void pcb_drc_all(pcb_view_list_t *lst)
+{
+	pcb_view_t *violation;
+	int nopastecnt = 0;
+
+	IsBad = pcb_false;
+	pcb_layervis_save_stack();
+	pcb_layervis_reset_stack();
+	pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
+	pcb_conn_lookup_init();
+
+	TheFlag = PCB_FLAG_FOUND | PCB_FLAG_DRC | PCB_FLAG_SELECTED;
+	if (pcb_reset_conns(pcb_true)) {
+		pcb_undo_inc_serial();
+		pcb_draw();
 	}
+
+	User = pcb_false;
+
+	drc_nets_from_subc_term(lst);
+	drc_reset();
+	drc_nets_from_pstk(lst);
+	drc_reset();
+
+	TheFlag = PCB_FLAG_SELECTED;
+	drc_all_texts(lst);
+	drc_copper_lines(lst);
+	drc_copper_arcs(lst);
+
 
 	if (!IsBad) {
 		PCB_PADSTACK_LOOP(PCB->Data);
