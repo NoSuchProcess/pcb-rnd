@@ -315,10 +315,10 @@ static void pcb_dlg_drc(view_ctx_t *ctx, const char *title)
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
 			PCB_DAD_BUTTON(ctx->dlg, "Refresh");
 				PCB_DAD_CHANGE_CB(ctx->dlg, refresh_cb);
-					PCB_DAD_BEGIN_HBOX(ctx->dlg);
-						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
-					PCB_DAD_END(ctx->dlg);
-					PCB_DAD_BUTTON(ctx->dlg, "Close");
+			PCB_DAD_BEGIN_HBOX(ctx->dlg);
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_END(ctx->dlg);
+			PCB_DAD_BUTTON(ctx->dlg, "Close");
 		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);
 
