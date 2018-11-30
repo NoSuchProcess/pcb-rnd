@@ -56,6 +56,7 @@ struct view_ctx_s {
 	unsigned long int selected;
 
 	int wlist, wcount, wprev, wexplanation, wmeasure;
+	int wbtn_pasteb, wbtn_pastea, wbtn_copy, wbtn_cut;
 };
 
 view_ctx_t view_ctx;
@@ -324,14 +325,18 @@ static void pcb_dlg_drc(view_ctx_t *ctx, const char *title)
 
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
 					PCB_DAD_BUTTON(ctx->dlg, "Copy");
+						ctx->wbtn_copy = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_BUTTON(ctx->dlg, "Cut");
+						ctx->wbtn_cut = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_BUTTON(ctx->dlg, "Del");
 						PCB_DAD_CHANGE_CB(ctx->dlg, view_del_btn_cb);
 				PCB_DAD_END(ctx->dlg);
 
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
 					PCB_DAD_BUTTON(ctx->dlg, "Paste before");
+						ctx->wbtn_pasteb = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_BUTTON(ctx->dlg, "Paste after");
+						ctx->wbtn_pastea = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_END(ctx->dlg);
 			PCB_DAD_END(ctx->dlg);
 
@@ -362,6 +367,10 @@ static void pcb_dlg_drc(view_ctx_t *ctx, const char *title)
 	PCB_DAD_NEW(ctx->dlg, title, "", ctx, pcb_false, view_close_cb);
 
 	ctx->active = 1;
+	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wbtn_copy, 0);
+	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wbtn_cut, 0);
+	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wbtn_pastea, 0);
+	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wbtn_pasteb, 0);
 }
 
 static void drc_refresh(view_ctx_t *ctx)
