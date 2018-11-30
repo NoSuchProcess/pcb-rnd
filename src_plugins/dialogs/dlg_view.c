@@ -167,15 +167,9 @@ static char *re_wrap(char *inp, int len)
 	return inp;
 }
 
-static void view_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+pcb_view_t *view_simple_show(view_ctx_t *ctx)
 {
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
-	view_ctx_t *ctx = tree->user_ctx;
-	pcb_view_t *v = NULL;
-
-	if (row != NULL) {
-		ctx->selected = row->user_data2.lng;
-		v = pcb_view_by_uid(ctx->lst, ctx->selected);
+	pcb_view_t *v = pcb_view_by_uid(ctx->lst, ctx->selected);
 		if (v != NULL) {
 			pcb_view_goto(v);
 			PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wexplanation, str_value, re_wrap(pcb_strdup(v->explanation), 32));
@@ -191,6 +185,18 @@ static void view_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_
 					break;
 			}
 		}
+	return v;
+}
+
+static void view_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+{
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	view_ctx_t *ctx = tree->user_ctx;
+	pcb_view_t *v = NULL;
+
+	if (row != NULL) {
+		ctx->selected = row->user_data2.lng;
+		v = view_simple_show(ctx);
 	}
 
 	if (v == NULL) {
@@ -457,6 +463,7 @@ static void pcb_dlg_view_simplified(view_ctx_t *ctx, const char *title)
 		ctx->selected = v->uid;
 	else
 		ctx->selected = 0;
+	view_simple_show(ctx);
 }
 
 static void drc_refresh(view_ctx_t *ctx)
