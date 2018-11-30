@@ -81,6 +81,23 @@ pcb_view_t *pcb_view_by_uid(const pcb_view_list_t *lst, unsigned long int uid)
 	return NULL;
 }
 
+pcb_view_t *pcb_view_by_uid_cnt(const pcb_view_list_t *lst, unsigned long int uid, size_t *cnt)
+{
+	pcb_view_t *v;
+	size_t c = 0;
+
+	for(v = pcb_view_list_first((pcb_view_list_t *)lst); v != NULL; v = pcb_view_list_next(v), cnt++) {
+		if (v->uid == uid) {
+			*cnt = c;
+			return v;
+		}
+	}
+
+	*cnt = -1;
+	return NULL;
+}
+
+
 void pcb_view_goto(pcb_view_t *item)
 {
 	if (item->have_bbox) {

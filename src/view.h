@@ -93,8 +93,10 @@ void pcb_view_list_free_fields(pcb_view_list_t *lst);
 void pcb_view_list_free(pcb_view_list_t *lst);
 
 
-/* Slow, linear search for an UID in a list; returns NULL if not found */
+/* Slow, linear search for an UID in a list; returns NULL if not found;
+   optionally count the number of preceeding items and sotre it in cnt. */
 pcb_view_t *pcb_view_by_uid(const pcb_view_list_t *lst, unsigned long int uid);
+pcb_view_t *pcb_view_by_uid_cnt(const pcb_view_list_t *lst, unsigned long int uid, size_t *cnt);
 
 /* Zoom the drawing area to the drc error */
 void pcb_view_goto(pcb_view_t *item);
