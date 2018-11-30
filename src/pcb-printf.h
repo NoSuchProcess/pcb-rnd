@@ -50,6 +50,7 @@
  *   %mL    output a measure in scaled (mil/in) imperial
  *   %ms    output a measure in most natural mm/mil units
  *   %mS    output a measure in most natural scaled units
+ *   %mN    output a measure in requested natural units (enforces the choice of %m+ without further modifications)
  *   %mH    output a measure in most human readable scaled units
  *   %md    output a pair of measures in most natural mm/mil units
  *   %mD    output a pair of measures in most natural scaled units
@@ -59,7 +60,7 @@
  *   %m*    output a measure with unit given as an additional
  *          const char* parameter
  *   %m+    accepts an e_allow parameter that masks all subsequent
- *          "natural" (S/D/3/.../9) specifiers to only use certain
+ *          "natural" (N/S/D/3/.../9) specifiers to only use certain
  *          units
  *   %mr    output a measure in a unit readable by parse_l.l
  *          (outputs in centimil without units - compatibility with mainline)

@@ -605,6 +605,9 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 				case 'S':
 					if (CoordsToString(string, value, 1, &spec, mask & PCB_UNIT_ALLOW_NATURAL, suffix) != 0) goto err;
 					break;
+				case 'N':
+					if (CoordsToString(string, value, 1, &spec, mask, suffix) != 0) goto err;
+					break;
 				case 'H':
 					if (CoordsToHumanString(string, value[0], &spec, suffix) != 0) goto err;
 					break;
