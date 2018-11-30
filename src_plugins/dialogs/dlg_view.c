@@ -40,6 +40,7 @@
 #include "hid_inlines.h"
 #include "hid_dad.h"
 #include "hid_dad_tree.h"
+#include "undo.h"
 
 static const char *dlg_view_cookie = "dlg_drc";
 
@@ -280,9 +281,8 @@ void view_refresh(view_ctx_t *ctx)
 	view2dlg(ctx);
 }
 
-static void view_preview_update_cb(void *user_data, int argc, pcb_event_arg_t argv[])
+static void view_preview_update(view_ctx_t *ctx)
 {
-	view_ctx_t *ctx = user_data;
 	pcb_hid_attr_val_t hv;
 
 	if ((ctx == NULL) || (!ctx->active) || (ctx->selected == 0))
@@ -290,6 +290,11 @@ static void view_preview_update_cb(void *user_data, int argc, pcb_event_arg_t ar
 
 	hv.str_value = NULL;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
+}
+
+static void view_preview_update_cb(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	view_preview_update((view_ctx_t *)user_data);
 }
 
 static void view_refresh_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -348,6 +353,48 @@ static void view_del_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 			if (v != NULL)
 				pcb_view_free(v);
 		}
+	}
+}
+
+static void view_select_obj(view_ctx_t *ctx, pcb_view_t *v)
+{
+	pcb_idpath_t *i;
+	int chg = 0;
+
+	if (v == NULL)
+		return;
+
+	for(i = pcb_idpath_list_first(&v->objs[0]); i != NULL; i = pcb_idpath_list_next(i)) {
+		pcb_any_obj_t *obj = pcb_idpath2obj(ctx->pcb->Data, i);
+		if ((obj != NULL) && (obj->type & PCB_OBJ_CLASS_REAL)) {
+			pcb_undo_add_obj_to_flag((void *)obj);
+			pcb_draw_obj(obj);
+			PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, 1, obj);
+			chg = 1;
+		}
+	}
+
+	if (chg) {
+		pcb_board_set_changed_flag(pcb_true);
+		view_preview_update(ctx);
+	}
+}
+
+static void view_select_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
+{
+	view_ctx_t *ctx = caller_data;
+	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
+	pcb_hid_row_t *rc, *r = pcb_dad_tree_get_selected(attr);
+
+	if (r->user_data2.lng == 0) {
+		/* select a whole category - assume a single level */
+		for(rc = gdl_first(&r->children); rc != NULL; rc = gdl_next(&r->children, rc)) {
+			view_select_obj(ctx, pcb_view_by_uid(ctx->lst, rc->user_data2.lng));
+		}
+	}
+	else {
+		/* select a single item */
+		view_select_obj(ctx, pcb_view_by_uid(ctx->lst, r->user_data2.lng));
 	}
 }
 
@@ -422,6 +469,8 @@ static void pcb_dlg_view_full(view_ctx_t *ctx, const char *title)
 						ctx->wbtn_cut = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_BUTTON(ctx->dlg, "Del");
 						PCB_DAD_CHANGE_CB(ctx->dlg, view_del_btn_cb);
+					PCB_DAD_BUTTON(ctx->dlg, "Select");
+						PCB_DAD_CHANGE_CB(ctx->dlg, view_select_btn_cb);
 				PCB_DAD_END(ctx->dlg);
 
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
