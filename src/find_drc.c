@@ -67,28 +67,6 @@ static void append_drc_dialog_message(const char *fmt, ...)
 	va_end(ap);
 }
 
-static void append_drc_violation(pcb_view_list_t *lst, pcb_view_t *violation)
-{
-#if 0
-	if (pcb_gui->drc_gui != NULL) {
-		pcb_gui->drc_gui->append_drc_violation(violation);
-	}
-	else {
-		/* Fallback to formatting the violation message as text */
-		append_drc_dialog_message("%s\n", violation->title);
-		append_drc_dialog_message("%m+near %$mD\n", conf_core.editor.grid_unit->allow, violation->x, violation->y);
-		GotoError();
-	}
-
-	if (pcb_gui->drc_gui == NULL || pcb_gui->drc_gui->log_drc_violations) {
-		pcb_message(PCB_MSG_WARNING, "WARNING!  Design Rule error - %s\n", violation->title);
-		pcb_message(PCB_MSG_WARNING, "%m+near location %$mD\n", conf_core.editor.grid_unit->allow, violation->x, violation->y);
-	}
-#endif
-
-	pcb_view_list_append(lst, violation);
-}
-
 /* message when asked about continuing DRC checks after next violation is found. */
 #define DRC_CONTINUE "Press Next to continue DRC checking"
 #define DRC_NEXT "Next"
@@ -198,7 +176,7 @@ static int drc_text(pcb_view_list_t *lst, pcb_layer_t *layer, pcb_text_t *text, 
 			text->thickness, min_wid);
 		pcb_drc_append_obj(violation, 0, (pcb_any_obj_t *)text);
 		pcb_drc_set_bbox_by_objs(PCB->Data, violation);
-		append_drc_violation(lst, violation);
+		pcb_view_list_append(lst, violation);
 		if (!throw_drc_dialog()) {
 			IsBad = pcb_true;
 			return 1;
@@ -302,7 +280,7 @@ int pcb_drc_all(pcb_view_list_t *lst)
 					line->Thickness, conf_core.design.min_wid);
 				pcb_drc_append_obj(violation, 0, (pcb_any_obj_t *)line);
 				pcb_drc_set_bbox_by_objs(PCB->Data, violation);
-				append_drc_violation(lst, violation);
+				pcb_view_list_append(lst, violation);
 				if (!throw_drc_dialog()) {
 					IsBad = pcb_true;
 					break;
@@ -330,7 +308,7 @@ int pcb_drc_all(pcb_view_list_t *lst)
 					arc->Thickness, conf_core.design.min_wid);
 				pcb_drc_append_obj(violation, 0, (pcb_any_obj_t *)arc);
 				pcb_drc_set_bbox_by_objs(PCB->Data, violation);
-				append_drc_violation(lst, violation);
+				pcb_view_list_append(lst, violation);
 				if (!throw_drc_dialog()) {
 					IsBad = pcb_true;
 					break;
@@ -363,7 +341,7 @@ int pcb_drc_all(pcb_view_list_t *lst)
 						conf_core.design.min_ring);
 					pcb_drc_append_obj(violation, 0, (pcb_any_obj_t *)padstack);
 					pcb_drc_set_bbox_by_objs(PCB->Data, violation);
-					append_drc_violation(lst, violation);
+					pcb_view_list_append(lst, violation);
 				}
 				if (hole > 0) {
 					drcerr_count++;
@@ -373,7 +351,7 @@ int pcb_drc_all(pcb_view_list_t *lst)
 						hole, conf_core.design.min_drill);
 					pcb_drc_append_obj(violation, 0, (pcb_any_obj_t *)padstack);
 					pcb_drc_set_bbox_by_objs(PCB->Data, violation);
-					append_drc_violation(lst, violation);
+					pcb_view_list_append(lst, violation);
 				}
 				if (!throw_drc_dialog()) {
 					IsBad = pcb_true;
@@ -404,7 +382,7 @@ int pcb_drc_all(pcb_view_list_t *lst)
 					line->Thickness, conf_core.design.min_slk);
 				pcb_drc_append_obj(violation, 0, (pcb_any_obj_t *)line);
 				pcb_drc_set_bbox_by_objs(PCB->Data, violation);
-				append_drc_violation(lst, violation);
+				pcb_view_list_append(lst, violation);
 				if (!throw_drc_dialog()) {
 					IsBad = pcb_true;
 					break;
@@ -479,7 +457,7 @@ static pcb_bool DRCFind(pcb_view_list_t *lst, int What, void *ptr1, void *ptr2, 
 			pcb_drc_append_obj(violation, 0, (pcb_any_obj_t *)pcb_found_obj1);
 			pcb_drc_append_obj(violation, 1, (pcb_any_obj_t *)pcb_found_obj2);
 			pcb_drc_set_bbox_by_objs(PCB->Data, violation);
-			append_drc_violation(lst, violation);
+			pcb_view_list_append(lst, violation);
 
 			if (!throw_drc_dialog())
 				return pcb_true;
@@ -522,7 +500,7 @@ static pcb_bool DRCFind(pcb_view_list_t *lst, int What, void *ptr1, void *ptr2, 
 		pcb_drc_append_obj(violation, 0, (pcb_any_obj_t *)pcb_found_obj1);
 		pcb_drc_append_obj(violation, 1, (pcb_any_obj_t *)pcb_found_obj2);
 		pcb_drc_set_bbox_by_objs(PCB->Data, violation);
-		append_drc_violation(lst, violation);
+		pcb_view_list_append(lst, violation);
 		User = pcb_false;
 		drc = pcb_false;
 		if (!throw_drc_dialog())
