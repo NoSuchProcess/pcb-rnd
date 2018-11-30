@@ -122,14 +122,13 @@ static void view2dlg_list(view_ctx_t *ctx)
 
 static void view2dlg_pos(view_ctx_t *ctx)
 {
-	size_t cnt;
+	long cnt;
 
 	pcb_view_by_uid_cnt(ctx->lst, ctx->selected, &cnt);
-
 	if (cnt >= 0) {
 		char tmp[32];
-		sprintf(tmp, "%d", cnt+1);
-		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wpos, str_value, tmp);
+		sprintf(tmp, "%ld", cnt+1);
+		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wpos, str_value, pcb_strdup(tmp));
 	}
 	else
 		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wpos, str_value, pcb_strdup(""));
@@ -140,7 +139,7 @@ static void view2dlg(view_ctx_t *ctx)
 	char tmp[32];
 
 	sprintf(tmp, "%d", pcb_view_list_length(ctx->lst));
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wcount, str_value, tmp);
+	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wcount, str_value, pcb_strdup(tmp));
 
 	if (ctx->wlist >= 0)
 		view2dlg_list(ctx);
@@ -327,6 +326,40 @@ static void view_del_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	}
 }
 
+static void view_stepped(view_ctx_t *ctx, pcb_view_t *v)
+{
+	if (v == NULL)
+		return;
+	ctx->selected = v->uid;
+	view_simple_show(ctx);
+	view2dlg_pos(ctx);
+}
+
+static void view_prev_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	view_ctx_t *ctx = caller_data;
+	pcb_view_t *v = pcb_view_by_uid(ctx->lst, ctx->selected);
+
+	if (v == NULL)
+		v = pcb_view_list_first(ctx->lst);
+	else
+		v = pcb_view_list_prev(v);
+	view_stepped(ctx, v);
+}
+
+static void view_next_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	view_ctx_t *ctx = caller_data;
+	pcb_view_t *v = pcb_view_by_uid(ctx->lst, ctx->selected);
+
+	if (v == NULL)
+		v = pcb_view_list_first(ctx->lst);
+	else
+		v = pcb_view_list_next(v);
+	view_stepped(ctx, v);
+}
+
+
 static void pcb_dlg_view_full(view_ctx_t *ctx, const char *title)
 {
 	const char *hdr[] = { "ID", "title", NULL };
@@ -429,6 +462,7 @@ static void pcb_dlg_view_simplified(view_ctx_t *ctx, const char *title)
 
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
 			PCB_DAD_BUTTON(ctx->dlg, "Previous");
+				PCB_DAD_CHANGE_CB(ctx->dlg, view_prev_btn_cb);
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 				PCB_DAD_LABEL(ctx->dlg, "na");
@@ -440,6 +474,7 @@ static void pcb_dlg_view_simplified(view_ctx_t *ctx, const char *title)
 			PCB_DAD_BUTTON(ctx->dlg, "Del");
 				PCB_DAD_CHANGE_CB(ctx->dlg, view_del_btn_cb);
 			PCB_DAD_BUTTON(ctx->dlg, "Next");
+				PCB_DAD_CHANGE_CB(ctx->dlg, view_next_btn_cb);
 		PCB_DAD_END(ctx->dlg);
 
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
