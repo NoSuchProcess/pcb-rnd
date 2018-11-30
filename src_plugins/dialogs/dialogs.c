@@ -81,7 +81,7 @@ void pplg_uninit_dialogs(void)
 	dlg_pref_uninit();
 	pcb_act_dad_uninit();
 	pcb_remove_actions_by_cookie(dialogs_cookie);
-	pcb_drc_dlg_uninit();
+	pcb_view_dlg_uninit();
 }
 
 #include "dolists.h"
@@ -93,6 +93,6 @@ int pplg_init_dialogs(void)
 	dlg_pref_init();
 	dlg_pstklib_init();
 	pcb_dlg_undo_init();
-	pcb_drc_dlg_init();
+	pcb_view_dlg_init();
 	return 0;
 }

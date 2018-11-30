@@ -40,7 +40,7 @@
 #include "hid_dad.h"
 #include "hid_dad_tree.h"
 
-static const const char *drc_cookie = "dlg_drc";
+static const const char *dlg_view_cookie = "dlg_drc";
 
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
@@ -51,13 +51,13 @@ typedef struct {
 	unsigned long int selected;
 
 	int wlist, wcount, wprev, wexplanation, wmeasure;
-} drc_ctx_t;
+} view_ctx_t;
 
-drc_ctx_t drc_ctx;
+view_ctx_t view_ctx;
 
-static void drc_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void view_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
-	drc_ctx_t *ctx = caller_data;
+	view_ctx_t *ctx = caller_data;
 
 
 	PCB_DAD_FREE(ctx->dlg);
@@ -65,7 +65,7 @@ static void drc_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 		free(ctx);
 }
 
-void drc2dlg(drc_ctx_t *ctx)
+void view2dlg(view_ctx_t *ctx)
 {
 	char tmp[32];
 	pcb_drc_violation_t *v;
@@ -134,10 +134,10 @@ static char *re_wrap(char *inp, int len)
 	return inp;
 }
 
-static void drc_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void view_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
-	drc_ctx_t *ctx = tree->user_ctx;
+	view_ctx_t *ctx = tree->user_ctx;
 	pcb_drc_violation_t *v = NULL;
 
 	if (row != NULL) {
@@ -162,11 +162,11 @@ static void drc_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t
 	pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &v->bbox);
 }
 
-static vtp0_t drc_color_save;
+static vtp0_t view_color_save;
 
-static void drc_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
+static void view_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
-	drc_ctx_t *ctx = prv->user_ctx;
+	view_ctx_t *ctx = prv->user_ctx;
 	pcb_xform_t xform;
 	int old_termlab, g;
 	static const char *offend_color[] = {"#ff0000", "#0000ff"};
@@ -180,19 +180,19 @@ static void drc_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, p
 	/* NOTE: zoom box was already set on select */
 
 	/* save offending object colors */
-	vtp0_truncate(&drc_color_save, 0);
+	vtp0_truncate(&view_color_save, 0);
 	for(g = 0; g < 2; g++) {
 		pcb_idpath_t *i;
 		for(i = pcb_idpath_list_first(&v->objs[g]); i != NULL; /*i = pcb_idpath_list_next(i)*/i=0) {
 			pcb_any_obj_t *obj = pcb_idpath2obj(ctx->pcb->Data, i);
 			if ((obj != NULL) && (obj->type & PCB_OBJ_CLASS_REAL)) {
-				vtp0_append(&drc_color_save, obj);
+				vtp0_append(&view_color_save, obj);
 				if (obj->override_color != NULL) {
 					char *save = pcb_strdup(obj->override_color);
-					vtp0_append(&drc_color_save, save);
+					vtp0_append(&view_color_save, save);
 				}
 				else
-					vtp0_append(&drc_color_save, NULL);
+					vtp0_append(&view_color_save, NULL);
 				strcpy(obj->override_color, offend_color[g]);
 			}
 		}
@@ -207,7 +207,7 @@ static void drc_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, p
 	pcb_draw_force_termlab = old_termlab;
 
 	/* restore object color */
-	for(n = 0, p = drc_color_save.array; n < drc_color_save.used; n+=2,p+=2) {
+	for(n = 0, p = view_color_save.array; n < view_color_save.used; n+=2,p+=2) {
 		pcb_any_obj_t *obj = p[0];
 		char *s = p[1];
 		if (s != NULL) {
@@ -217,19 +217,19 @@ static void drc_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, p
 		else
 			*obj->override_color = '\0';
 	}
-	vtp0_truncate(&drc_color_save, 0);
+	vtp0_truncate(&view_color_save, 0);
 }
 
 
-static pcb_bool drc_mouse_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
+static pcb_bool view_mouse_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
 {
 	return pcb_false; /* don't redraw */
 }
 
 
-static void drc_preview_update_cb(void *user_data, int argc, pcb_event_arg_t argv[])
+static void view_preview_update_cb(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	drc_ctx_t *ctx = user_data;
+	view_ctx_t *ctx = user_data;
 	pcb_hid_attr_val_t hv;
 
 	if ((ctx == NULL) || (!ctx->active) || (ctx->selected == 0))
@@ -240,7 +240,7 @@ static void drc_preview_update_cb(void *user_data, int argc, pcb_event_arg_t arg
 }
 
 
-static void pcb_dlg_drc(drc_ctx_t *ctx, const char *title)
+static void pcb_dlg_drc(view_ctx_t *ctx, const char *title)
 {
 	const char *hdr[] = { "ID", "title", NULL };
 
@@ -263,7 +263,7 @@ static void pcb_dlg_drc(drc_ctx_t *ctx, const char *title)
 
 				PCB_DAD_TREE(ctx->dlg, 2, 1, hdr);
 					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_SCROLL | PCB_HATF_EXPFILL);
-					PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, drc_select);
+					PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, view_select);
 					PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
 					ctx->wlist = PCB_DAD_CURRENT(ctx->dlg);
 
@@ -282,7 +282,7 @@ static void pcb_dlg_drc(drc_ctx_t *ctx, const char *title)
 			/* right */
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
-				PCB_DAD_PREVIEW(ctx->dlg, drc_expose_cb, drc_mouse_cb, NULL, NULL, ctx);
+				PCB_DAD_PREVIEW(ctx->dlg, view_expose_cb, view_mouse_cb, NULL, NULL, ctx);
 					ctx->wprev = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 				PCB_DAD_LABEL(ctx->dlg, "(explanation)");
@@ -301,13 +301,13 @@ static void pcb_dlg_drc(drc_ctx_t *ctx, const char *title)
 		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);
 
-	PCB_DAD_NEW(ctx->dlg, title, "", ctx, pcb_false, drc_close_cb);
+	PCB_DAD_NEW(ctx->dlg, title, "", ctx, pcb_false, view_close_cb);
 
 	ctx->active = 1;
 }
 
 
-static drc_ctx_t drc_gui_ctx = {0};
+static view_ctx_t drc_gui_ctx = {0};
 const char pcb_acts_DRC[] = "DRC()\n";
 const char pcb_acth_DRC[] = "Execute drc checks";
 fgw_error_t pcb_act_DRC(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
@@ -319,18 +319,18 @@ fgw_error_t pcb_act_DRC(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	}
 
 	pcb_drc_all(&drc_gui_ctx.drc);
-	drc2dlg(&drc_gui_ctx);
+	view2dlg(&drc_gui_ctx);
 
 	return 0;
 }
 
-void pcb_drc_dlg_uninit(void)
+void pcb_view_dlg_uninit(void)
 {
-	pcb_event_unbind_allcookie(drc_cookie);
-	vtp0_uninit(&drc_color_save);
+	pcb_event_unbind_allcookie(dlg_view_cookie);
+	vtp0_uninit(&view_color_save);
 }
 
-void pcb_drc_dlg_init(void)
+void pcb_view_dlg_init(void)
 {
-	pcb_event_bind(PCB_EVENT_USER_INPUT_POST, drc_preview_update_cb, &drc_gui_ctx, drc_cookie);
+	pcb_event_bind(PCB_EVENT_USER_INPUT_POST, view_preview_update_cb, &drc_gui_ctx, dlg_view_cookie);
 }
