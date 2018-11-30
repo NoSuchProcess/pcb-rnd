@@ -170,21 +170,21 @@ static char *re_wrap(char *inp, int len)
 pcb_view_t *view_simple_show(view_ctx_t *ctx)
 {
 	pcb_view_t *v = pcb_view_by_uid(ctx->lst, ctx->selected);
-		if (v != NULL) {
-			pcb_view_goto(v);
-			PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wexplanation, str_value, re_wrap(pcb_strdup(v->explanation), 32));
-			switch(v->data_type) {
-				case PCB_VIEW_PLAIN:
-					PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup(""));
-					break;
-				case PCB_VIEW_DRC:
-					if (v->data.drc.have_measured)
-						PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup_printf("DRC: %m+required: %$ms\nmeasured: %$ms\n", conf_core.editor.grid_unit->allow, v->data.drc.required_value, v->data.drc.measured_value));
-					else
-						PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup_printf("DRC: %m+required: %$ms\n", conf_core.editor.grid_unit->allow, v->data.drc.required_value));
-					break;
-			}
+	if (v != NULL) {
+		pcb_view_goto(v);
+		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wexplanation, str_value, re_wrap(pcb_strdup(v->explanation), 32));
+		switch(v->data_type) {
+			case PCB_VIEW_PLAIN:
+				PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup(""));
+				break;
+			case PCB_VIEW_DRC:
+				if (v->data.drc.have_measured)
+					PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup_printf("DRC: %m+required: %$ms\nmeasured: %$ms\n", conf_core.editor.grid_unit->allow, v->data.drc.required_value, v->data.drc.measured_value));
+				else
+					PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup_printf("DRC: %m+required: %$ms\n", conf_core.editor.grid_unit->allow, v->data.drc.required_value));
+				break;
 		}
+	}
 	return v;
 }
 
