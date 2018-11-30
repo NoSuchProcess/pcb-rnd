@@ -142,7 +142,7 @@ void drc_auto_loc(pcb_view_t *v)
 		idp = pcb_idpath_list_first(&v->objs[0]);
 		obj = pcb_idpath2obj(PCB->Data, idp);
 		if (obj != NULL) {
-			v->have_coord = 1;
+			v->have_bbox = 1;
 			pcb_obj_center(obj, &v->x, &v->y);
 			memcpy(&v->bbox, &obj->BoundingBox, sizeof(obj->BoundingBox));
 			pcb_box_enlarge(&v->bbox, 0.25, 0.25);
@@ -156,13 +156,13 @@ void drc_auto_loc(pcb_view_t *v)
 		for(idp = pcb_idpath_list_first(&v->objs[g]); idp != NULL; idp = pcb_idpath_list_next(idp)) {
 			obj = pcb_idpath2obj(PCB->Data, idp);
 			if (obj != NULL) {
-				v->have_coord = 1;
+				v->have_bbox = 1;
 				pcb_box_bump_box(&b, &obj->BoundingBox);
 			}
 		}
 	}
 
-	if (v->have_coord) {
+	if (v->have_bbox) {
 		v->x = (b.X1 + b.X2)/2;
 		v->y = (b.Y1 + b.Y2)/2;
 		memcpy(&v->bbox, &b, sizeof(b));

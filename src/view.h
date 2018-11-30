@@ -40,13 +40,16 @@
 
 typedef struct pcb_view_s pcb_view_t;
 struct pcb_view_s {
-	unsigned long int uid;        /* ID unique for each violation within the drc subsystem (for GUI identification of violations) */
+	unsigned long int uid;        /* ID unique for each view (for GUI identification) - 0 means invalid */
 
 	char *type;
 	char *title;
 	char *explanation;
 
-	unsigned have_coord:1;
+	/* these indicate whether some of the following fields are valid */
+	unsigned have_bbox:1;
+	unsigned have_xy:1;
+
 	pcb_box_t bbox;               /* bounding box of all error objects (in both groups) */
 
 	pcb_coord_t x, y;             /* optional: a coord to mark on the preview  */

@@ -76,7 +76,7 @@ pcb_view_t *pcb_view_by_uid(const pcb_view_list_t *lst, unsigned long int uid)
 
 void pcb_view_goto(pcb_view_t *item)
 {
-	if (item->have_coord) {
+	if (item->have_bbox) {
 		fgw_arg_t res, argv[5];
 
 		argv[1].type = FGW_COORD; fgw_coord(&argv[1]) = item->bbox.X1;
