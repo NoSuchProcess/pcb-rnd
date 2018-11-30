@@ -269,6 +269,32 @@ static void view_close_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	view_close_cb(caller_data, 0);
 }
 
+static void view_del_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
+{
+	view_ctx_t *ctx = caller_data;
+	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
+	pcb_hid_row_t *rc, *r = pcb_dad_tree_get_selected(attr);
+	pcb_view_t *v;
+
+	if (r->user_data2.lng == 0) {
+		/* remove a whole category - assume a single level */
+		for(rc = gdl_first(&r->children); rc != NULL; rc = gdl_next(&r->children, rc)) {
+			v = pcb_view_by_uid(ctx->lst, rc->user_data2.lng);
+			pcb_dad_tree_remove(attr, rc);
+			if (v != NULL)
+				pcb_view_free(v);
+		}
+		pcb_dad_tree_remove(attr, r);
+	}
+	else {
+		/* remove a single item */
+		v = pcb_view_by_uid(ctx->lst, r->user_data2.lng);
+		pcb_dad_tree_remove(attr, r);
+		if (v != NULL)
+			pcb_view_free(v);
+	}
+}
+
 static void pcb_dlg_drc(view_ctx_t *ctx, const char *title)
 {
 	const char *hdr[] = { "ID", "title", NULL };
@@ -300,6 +326,7 @@ static void pcb_dlg_drc(view_ctx_t *ctx, const char *title)
 					PCB_DAD_BUTTON(ctx->dlg, "Copy");
 					PCB_DAD_BUTTON(ctx->dlg, "Cut");
 					PCB_DAD_BUTTON(ctx->dlg, "Del");
+						PCB_DAD_CHANGE_CB(ctx->dlg, view_del_btn_cb);
 				PCB_DAD_END(ctx->dlg);
 
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
