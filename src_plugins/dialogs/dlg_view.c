@@ -260,6 +260,11 @@ static void refresh_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 	view_refresh((view_ctx_t *)caller_data);
 }
 
+static void view_close_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	view_close_cb(caller_data, 0);
+}
+
 static void pcb_dlg_drc(view_ctx_t *ctx, const char *title)
 {
 	const char *hdr[] = { "ID", "title", NULL };
@@ -319,6 +324,7 @@ static void pcb_dlg_drc(view_ctx_t *ctx, const char *title)
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_END(ctx->dlg);
 			PCB_DAD_BUTTON(ctx->dlg, "Close");
+				PCB_DAD_CHANGE_CB(ctx->dlg, view_close_btn_cb);
 		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);
 
