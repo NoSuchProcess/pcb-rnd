@@ -102,6 +102,12 @@ void pcb_view_goto(pcb_view_t *item);
 /* Allocate a new, floating (unlinked) view with no data or bbox */
 pcb_view_t *pcb_view_new(const char *type, const char *title, const char *explanation);
 
+/* Append obj to one of the object groups in view (resolving to idpath) */
+void pcb_view_append_obj(pcb_view_t *view, int grp, pcb_any_obj_t *obj);
+
+/* Calculate and set v->bbox from v->objs[] bboxes */
+void pcb_view_set_bbox_by_objs(pcb_data_t *data, pcb_view_t *v);
+
 /*** temporary, until moved out to a plugin ***/
 int pcb_drc_all(pcb_view_list_t *lst);
 

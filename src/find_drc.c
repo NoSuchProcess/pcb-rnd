@@ -90,8 +90,8 @@ doIsBad:
 	drcerr_count++;
 	violation = pcb_view_new("short", message, "Circuits that are too close may bridge during imaging, etching,\n" "plating, or soldering processes resulting in a direct short.");
 	pcb_drc_set_data(violation, NULL, conf_core.design.bloat);
-	pcb_drc_append_obj(violation, 0, (pcb_any_obj_t *)ptr2);
-	pcb_drc_set_bbox_by_objs(PCB->Data, violation);
+	pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)ptr2);
+	pcb_view_set_bbox_by_objs(PCB->Data, violation);
 	pcb_undo_inc_serial();
 	pcb_undo(pcb_true);
 	return PCB_R_DIR_NOT_FOUND;
@@ -116,8 +116,8 @@ static int drc_text(pcb_view_list_t *lst, pcb_layer_t *layer, pcb_text_t *text, 
 		drcerr_count++;
 		violation = pcb_view_new("thin", "Text thickness is too thin", "Process specifications dictate a minimum feature-width\nthat can reliably be reproduced");
 		pcb_drc_set_data(violation, &text->thickness, min_wid);
-		pcb_drc_append_obj(violation, 0, (pcb_any_obj_t *)text);
-		pcb_drc_set_bbox_by_objs(PCB->Data, violation);
+		pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)text);
+		pcb_view_set_bbox_by_objs(PCB->Data, violation);
 		pcb_view_list_append(lst, violation);
 		pcb_undo_inc_serial();
 		pcb_undo(pcb_false);
@@ -212,8 +212,8 @@ int pcb_drc_all(pcb_view_list_t *lst)
 				drcerr_count++;
 				violation = pcb_view_new("thin", "Line width is too thin", "Process specifications dictate a minimum feature-width\nthat can reliably be reproduced");
 				pcb_drc_set_data(violation, &line->Thickness, conf_core.design.min_wid);
-				pcb_drc_append_obj(violation, 0, (pcb_any_obj_t *)line);
-				pcb_drc_set_bbox_by_objs(PCB->Data, violation);
+				pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)line);
+				pcb_view_set_bbox_by_objs(PCB->Data, violation);
 				pcb_view_list_append(lst, violation);
 				pcb_undo_inc_serial();
 				pcb_undo(pcb_false);
@@ -234,8 +234,8 @@ int pcb_drc_all(pcb_view_list_t *lst)
 				drcerr_count++;
 				violation = pcb_view_new("thin", "Arc width is too thin", "Process specifications dictate a minimum feature-width\nthat can reliably be reproduced");
 				pcb_drc_set_data(violation, &arc->Thickness, conf_core.design.min_wid);
-				pcb_drc_append_obj(violation, 0, (pcb_any_obj_t *)arc);
-				pcb_drc_set_bbox_by_objs(PCB->Data, violation);
+				pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)arc);
+				pcb_view_set_bbox_by_objs(PCB->Data, violation);
 				pcb_view_list_append(lst, violation);
 				pcb_undo_inc_serial();
 				pcb_undo(pcb_false);
@@ -260,16 +260,16 @@ int pcb_drc_all(pcb_view_list_t *lst)
 					drcerr_count++;
 					violation = pcb_view_new("thin", "padstack annular ring too small", "Annular rings that are too small may erode during etching,\nresulting in a broken connection");
 					pcb_drc_set_data(violation, &ring, conf_core.design.min_ring);
-					pcb_drc_append_obj(violation, 0, (pcb_any_obj_t *)padstack);
-					pcb_drc_set_bbox_by_objs(PCB->Data, violation);
+					pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)padstack);
+					pcb_view_set_bbox_by_objs(PCB->Data, violation);
 					pcb_view_list_append(lst, violation);
 				}
 				if (hole > 0) {
 					drcerr_count++;
 					violation = pcb_view_new("drill", "Padstack drill size is too small", "Process rules dictate the minimum drill size which can be used");
 					pcb_drc_set_data(violation, &hole, conf_core.design.min_drill);
-					pcb_drc_append_obj(violation, 0, (pcb_any_obj_t *)padstack);
-					pcb_drc_set_bbox_by_objs(PCB->Data, violation);
+					pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)padstack);
+					pcb_view_set_bbox_by_objs(PCB->Data, violation);
 					pcb_view_list_append(lst, violation);
 				}
 			}
@@ -293,8 +293,8 @@ int pcb_drc_all(pcb_view_list_t *lst)
 				drcerr_count++;
 				violation = pcb_view_new("thin", "Silk line is too thin", "Process specifications dictate a minimum silkscreen feature-width\nthat can reliably be reproduced");
 				pcb_drc_set_data(violation, &line->Thickness, conf_core.design.min_slk);
-				pcb_drc_append_obj(violation, 0, (pcb_any_obj_t *)line);
-				pcb_drc_set_bbox_by_objs(PCB->Data, violation);
+				pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)line);
+				pcb_view_set_bbox_by_objs(PCB->Data, violation);
 				pcb_view_list_append(lst, violation);
 			}
 		}
@@ -360,9 +360,9 @@ static pcb_bool DRCFind(pcb_view_list_t *lst, int What, void *ptr1, void *ptr2, 
 			drcerr_count++;
 			violation = pcb_view_new("broken", "Potential for broken trace", "Insufficient overlap between objects can lead to broken tracks\ndue to registration errors with old wheel style photo-plotters.");
 			pcb_drc_set_data(violation, NULL, conf_core.design.shrink);
-			pcb_drc_append_obj(violation, 0, (pcb_any_obj_t *)pcb_found_obj1);
-			pcb_drc_append_obj(violation, 1, (pcb_any_obj_t *)pcb_found_obj2);
-			pcb_drc_set_bbox_by_objs(PCB->Data, violation);
+			pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)pcb_found_obj1);
+			pcb_view_append_obj(violation, 1, (pcb_any_obj_t *)pcb_found_obj2);
+			pcb_view_set_bbox_by_objs(PCB->Data, violation);
 			pcb_view_list_append(lst, violation);
 
 			pcb_undo_inc_serial();
@@ -398,9 +398,9 @@ static pcb_bool DRCFind(pcb_view_list_t *lst, int What, void *ptr1, void *ptr2, 
 		drcerr_count++;
 		violation = pcb_view_new("short", "Copper areas too close", "Circuits that are too close may bridge during imaging, etching,\nplating, or soldering processes resulting in a direct short.");
 		pcb_drc_set_data(violation, NULL, conf_core.design.bloat);
-		pcb_drc_append_obj(violation, 0, (pcb_any_obj_t *)pcb_found_obj1);
-		pcb_drc_append_obj(violation, 1, (pcb_any_obj_t *)pcb_found_obj2);
-		pcb_drc_set_bbox_by_objs(PCB->Data, violation);
+		pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)pcb_found_obj1);
+		pcb_view_append_obj(violation, 1, (pcb_any_obj_t *)pcb_found_obj2);
+		pcb_view_set_bbox_by_objs(PCB->Data, violation);
 		pcb_view_list_append(lst, violation);
 		User = pcb_false;
 		drc = pcb_false;

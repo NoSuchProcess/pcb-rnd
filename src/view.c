@@ -36,8 +36,11 @@
 #undef TDL_DONT_UNDEF
 #include <genlist/gentdlist_undef.h>
 
+#include <assert.h>
+
 #include "actions.h"
 #include "compat_misc.h"
+#include "error.h"
 
 static unsigned long int pcb_view_next_uid = 0;
 
@@ -109,3 +112,69 @@ pcb_view_t *pcb_view_new(const char *type, const char *title, const char *explan
 	return v;
 }
 
+void pcb_view_append_obj(pcb_view_t *view, int grp, pcb_any_obj_t *obj)
+{
+	pcb_idpath_t *idp;
+
+	assert((grp == 0) || (grp == 1));
+
+	switch(obj->type) {
+		case PCB_OBJ_LINE:
+		case PCB_OBJ_ARC:
+		case PCB_OBJ_POLY:
+		case PCB_OBJ_PSTK:
+		case PCB_OBJ_RAT:
+			idp = pcb_obj2idpath(obj);
+			if (idp == NULL)
+				pcb_message(PCB_MSG_ERROR, "Internal error in pcb_drc_append_obj: can not resolve object id path\n");
+			else
+				pcb_idpath_list_append(&view->objs[grp], idp);
+			break;
+		default:
+			pcb_message(PCB_MSG_ERROR, "Internal error in pcb_drc_append_obj: unknown object type %i\n", obj->type);
+	}
+}
+
+void pcb_view_set_bbox_by_objs(pcb_data_t *data, pcb_view_t *v)
+{
+	int g;
+	pcb_box_t b;
+	pcb_any_obj_t *obj;
+	pcb_idpath_t *idp;
+
+	/* special case: no object - leave coords unloaded/invalid */
+	if ((pcb_idpath_list_length(&v->objs[0]) < 1) && (pcb_idpath_list_length(&v->objs[1]) < 1))
+		return;
+
+	/* special case: single objet in group A, use the center */
+	if (pcb_idpath_list_length(&v->objs[0]) == 1) {
+		idp = pcb_idpath_list_first(&v->objs[0]);
+		obj = pcb_idpath2obj(data, idp);
+		if (obj != NULL) {
+			v->have_bbox = 1;
+			pcb_obj_center(obj, &v->x, &v->y);
+			memcpy(&v->bbox, &obj->BoundingBox, sizeof(obj->BoundingBox));
+			pcb_box_enlarge(&v->bbox, 0.25, 0.25);
+			return;
+		}
+	}
+
+	b.X1 = b.Y1 = PCB_MAX_COORD;
+	b.X2 = b.Y2 = -PCB_MAX_COORD;
+	for(g = 0; g < 2; g++) {
+		for(idp = pcb_idpath_list_first(&v->objs[g]); idp != NULL; idp = pcb_idpath_list_next(idp)) {
+			obj = pcb_idpath2obj(data, idp);
+			if (obj != NULL) {
+				v->have_bbox = 1;
+				pcb_box_bump_box(&b, &obj->BoundingBox);
+			}
+		}
+	}
+
+	if (v->have_bbox) {
+		v->x = (b.X1 + b.X2)/2;
+		v->y = (b.Y1 + b.Y2)/2;
+		memcpy(&v->bbox, &b, sizeof(b));
+		pcb_box_enlarge(&v->bbox, 0.25, 0.25);
+	}
+}
