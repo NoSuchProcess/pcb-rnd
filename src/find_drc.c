@@ -216,6 +216,8 @@ static pcb_bool DRCFind(pcb_view_list_t *lst, int What, void *ptr1, void *ptr2, 
 	return pcb_false;
 }
 
+static pcb_bool IsBad = pcb_false;
+
 void pcb_drc_all(pcb_view_list_t *lst)
 {
 	pcb_view_t *violation;
