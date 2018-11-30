@@ -113,7 +113,7 @@ static void append_drc_violation(pcb_view_list_t *lst, pcb_view_t *violation)
 	pcb_view_list_append(lst, violation);
 }
 
-void drc_auto_loc(pcb_view_t *v)
+void pcb_drc_set_bbox_by_objs(pcb_view_t *v)
 {
 	int g;
 	pcb_box_t b;
@@ -234,7 +234,7 @@ doIsBad:
 		0, /* MAGNITUDE OF ERROR UNKNOWN */
 		conf_core.design.bloat);
 	drc_append_obj(violation, 0, (pcb_any_obj_t *)ptr2);
-	drc_auto_loc(violation);
+	pcb_drc_set_bbox_by_objs(violation);
 	if (!throw_drc_dialog()) {
 		IsBad = pcb_true;
 		return PCB_R_DIR_FOUND_CONTINUE;
@@ -266,7 +266,7 @@ static int drc_text(pcb_view_list_t *lst, pcb_layer_t *layer, pcb_text_t *text, 
 			pcb_true, /* MEASUREMENT OF ERROR KNOWN */
 			text->thickness, min_wid);
 		drc_append_obj(violation, 0, (pcb_any_obj_t *)text);
-		drc_auto_loc(violation);
+		pcb_drc_set_bbox_by_objs(violation);
 		append_drc_violation(lst, violation);
 		if (!throw_drc_dialog()) {
 			IsBad = pcb_true;
@@ -370,7 +370,7 @@ int pcb_drc_all(pcb_view_list_t *lst)
 					pcb_true, /* MEASUREMENT OF ERROR KNOWN */
 					line->Thickness, conf_core.design.min_wid);
 				drc_append_obj(violation, 0, (pcb_any_obj_t *)line);
-				drc_auto_loc(violation);
+				pcb_drc_set_bbox_by_objs(violation);
 				append_drc_violation(lst, violation);
 				if (!throw_drc_dialog()) {
 					IsBad = pcb_true;
@@ -398,7 +398,7 @@ int pcb_drc_all(pcb_view_list_t *lst)
 					pcb_true, /* MEASUREMENT OF ERROR KNOWN */
 					arc->Thickness, conf_core.design.min_wid);
 				drc_append_obj(violation, 0, (pcb_any_obj_t *)arc);
-				drc_auto_loc(violation);
+				pcb_drc_set_bbox_by_objs(violation);
 				append_drc_violation(lst, violation);
 				if (!throw_drc_dialog()) {
 					IsBad = pcb_true;
@@ -431,7 +431,7 @@ int pcb_drc_all(pcb_view_list_t *lst)
 						ring,
 						conf_core.design.min_ring);
 					drc_append_obj(violation, 0, (pcb_any_obj_t *)padstack);
-					drc_auto_loc(violation);
+					pcb_drc_set_bbox_by_objs(violation);
 					append_drc_violation(lst, violation);
 				}
 				if (hole > 0) {
@@ -441,7 +441,7 @@ int pcb_drc_all(pcb_view_list_t *lst)
 						pcb_true, /* MEASUREMENT OF ERROR KNOWN */
 						hole, conf_core.design.min_drill);
 					drc_append_obj(violation, 0, (pcb_any_obj_t *)padstack);
-					drc_auto_loc(violation);
+					pcb_drc_set_bbox_by_objs(violation);
 					append_drc_violation(lst, violation);
 				}
 				if (!throw_drc_dialog()) {
@@ -472,7 +472,7 @@ int pcb_drc_all(pcb_view_list_t *lst)
 					pcb_true, /* MEASUREMENT OF ERROR KNOWN */
 					line->Thickness, conf_core.design.min_slk);
 				drc_append_obj(violation, 0, (pcb_any_obj_t *)line);
-				drc_auto_loc(violation);
+				pcb_drc_set_bbox_by_objs(violation);
 				append_drc_violation(lst, violation);
 				if (!throw_drc_dialog()) {
 					IsBad = pcb_true;
@@ -547,7 +547,7 @@ static pcb_bool DRCFind(pcb_view_list_t *lst, int What, void *ptr1, void *ptr2, 
 				conf_core.design.shrink);
 			drc_append_obj(violation, 0, (pcb_any_obj_t *)pcb_found_obj1);
 			drc_append_obj(violation, 1, (pcb_any_obj_t *)pcb_found_obj2);
-			drc_auto_loc(violation);
+			pcb_drc_set_bbox_by_objs(violation);
 			append_drc_violation(lst, violation);
 
 			if (!throw_drc_dialog())
@@ -590,7 +590,7 @@ static pcb_bool DRCFind(pcb_view_list_t *lst, int What, void *ptr1, void *ptr2, 
 			conf_core.design.bloat);
 		drc_append_obj(violation, 0, (pcb_any_obj_t *)pcb_found_obj1);
 		drc_append_obj(violation, 1, (pcb_any_obj_t *)pcb_found_obj2);
-		drc_auto_loc(violation);
+		pcb_drc_set_bbox_by_objs(violation);
 		append_drc_violation(lst, violation);
 		User = pcb_false;
 		drc = pcb_false;
