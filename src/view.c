@@ -86,7 +86,7 @@ pcb_view_t *pcb_view_by_uid_cnt(const pcb_view_list_t *lst, unsigned long int ui
 	pcb_view_t *v;
 	long c = 0;
 
-	for(v = pcb_view_list_first((pcb_view_list_t *)lst); v != NULL; v = pcb_view_list_next(v), cnt++) {
+	for(v = pcb_view_list_first((pcb_view_list_t *)lst); v != NULL; v = pcb_view_list_next(v), c++) {
 		if (v->uid == uid) {
 			*cnt = c;
 			return v;
