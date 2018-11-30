@@ -28,3 +28,27 @@
 #include "config.h"
 
 #include "drc.h"
+#include "error.h"
+#include "idpath.h"
+
+/* Build a list of the of offending items by ID */
+void pcb_drc_append_obj(pcb_view_t *view, int grp, pcb_any_obj_t *obj)
+{
+	pcb_idpath_t *idp;
+
+	switch(obj->type) {
+		case PCB_OBJ_LINE:
+		case PCB_OBJ_ARC:
+		case PCB_OBJ_POLY:
+		case PCB_OBJ_PSTK:
+		case PCB_OBJ_RAT:
+			idp = pcb_obj2idpath(obj);
+			if (idp == NULL)
+				pcb_message(PCB_MSG_ERROR, "Internal error in pcb_drc_append_obj: can not resolve object id path\n");
+			else
+				pcb_idpath_list_append(&view->objs[grp], idp);
+			break;
+		default:
+			pcb_message(PCB_MSG_ERROR, "Internal error in pcb_drc_append_obj: unknown object type %i\n", obj->type);
+	}
+}
