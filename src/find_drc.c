@@ -322,32 +322,32 @@ void drc_global_pstks(pcb_view_list_t *lst)
 {
 	pcb_view_t *violation;
 
-		PCB_PADSTACK_LOOP(PCB->Data);
-		{
-			pcb_coord_t ring = 0, hole = 0;
-			pcb_poly_plows(PCB->Data, PCB_OBJ_PSTK, padstack, padstack, drc_callback, lst);
-			pcb_pstk_drc_check_and_warn(padstack, &ring, &hole);
-			if ((ring > 0) || (hole > 0)) {
-				pcb_undo_add_obj_to_flag(padstack);
-				PCB_FLAG_SET(TheFlag, padstack);
-				pcb_pstk_invalidate_draw(padstack);
-				if (ring) {
-					violation = pcb_view_new("thin", "padstack annular ring too small", "Annular rings that are too small may erode during etching,\nresulting in a broken connection");
-					pcb_drc_set_data(violation, &ring, conf_core.design.min_ring);
-					pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)padstack);
-					pcb_view_set_bbox_by_objs(PCB->Data, violation);
-					pcb_view_list_append(lst, violation);
-				}
-				if (hole > 0) {
-					violation = pcb_view_new("drill", "Padstack drill size is too small", "Process rules dictate the minimum drill size which can be used");
-					pcb_drc_set_data(violation, &hole, conf_core.design.min_drill);
-					pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)padstack);
-					pcb_view_set_bbox_by_objs(PCB->Data, violation);
-					pcb_view_list_append(lst, violation);
-				}
+	PCB_PADSTACK_LOOP(PCB->Data);
+	{
+		pcb_coord_t ring = 0, hole = 0;
+		pcb_poly_plows(PCB->Data, PCB_OBJ_PSTK, padstack, padstack, drc_callback, lst);
+		pcb_pstk_drc_check_and_warn(padstack, &ring, &hole);
+		if ((ring > 0) || (hole > 0)) {
+			pcb_undo_add_obj_to_flag(padstack);
+			PCB_FLAG_SET(TheFlag, padstack);
+			pcb_pstk_invalidate_draw(padstack);
+			if (ring) {
+				violation = pcb_view_new("thin", "padstack annular ring too small", "Annular rings that are too small may erode during etching,\nresulting in a broken connection");
+				pcb_drc_set_data(violation, &ring, conf_core.design.min_ring);
+				pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)padstack);
+				pcb_view_set_bbox_by_objs(PCB->Data, violation);
+				pcb_view_list_append(lst, violation);
+			}
+			if (hole > 0) {
+				violation = pcb_view_new("drill", "Padstack drill size is too small", "Process rules dictate the minimum drill size which can be used");
+				pcb_drc_set_data(violation, &hole, conf_core.design.min_drill);
+				pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)padstack);
+				pcb_view_set_bbox_by_objs(PCB->Data, violation);
+				pcb_view_list_append(lst, violation);
 			}
 		}
-		PCB_END_LOOP;
+	}
+	PCB_END_LOOP;
 }
 
 /* check silkscreen minimum widths outside of subcircuits */
@@ -357,19 +357,19 @@ void drc_global_silk_lines(pcb_view_list_t *lst)
 
 #warning DRC TODO: need to check text and polygons too!
 	TheFlag = PCB_FLAG_SELECTED;
-		PCB_LINE_SILK_LOOP(PCB->Data);
-		{
-			if (line->Thickness < conf_core.design.min_slk) {
-				PCB_FLAG_SET(TheFlag, line);
-				pcb_line_invalidate_draw(layer, line);
-				violation = pcb_view_new("thin", "Silk line is too thin", "Process specifications dictate a minimum silkscreen feature-width\nthat can reliably be reproduced");
-				pcb_drc_set_data(violation, &line->Thickness, conf_core.design.min_slk);
-				pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)line);
-				pcb_view_set_bbox_by_objs(PCB->Data, violation);
-				pcb_view_list_append(lst, violation);
-			}
+	PCB_LINE_SILK_LOOP(PCB->Data);
+	{
+		if (line->Thickness < conf_core.design.min_slk) {
+			PCB_FLAG_SET(TheFlag, line);
+			pcb_line_invalidate_draw(layer, line);
+			violation = pcb_view_new("thin", "Silk line is too thin", "Process specifications dictate a minimum silkscreen feature-width\nthat can reliably be reproduced");
+			pcb_drc_set_data(violation, &line->Thickness, conf_core.design.min_slk);
+			pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)line);
+			pcb_view_set_bbox_by_objs(PCB->Data, violation);
+			pcb_view_list_append(lst, violation);
 		}
-		PCB_ENDALL_LOOP;
+	}
+	PCB_ENDALL_LOOP;
 }
 
 
@@ -379,8 +379,11 @@ static void drc_reset(void)
 	pcb_reset_conns(pcb_false);
 }
 
-void pcb_drc_all(pcb_view_list_t *lst)
+void pcb_drc_all()
 {
+	pcb_view_list_t *lst = &pcb_drc_lst;
+	pcb_view_list_free_fields(lst);
+
 	pcb_layervis_save_stack();
 	pcb_layervis_reset_stack();
 	pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);

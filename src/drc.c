@@ -29,6 +29,8 @@
 
 #include "drc.h"
 
+pcb_view_list_t pcb_drc_lst;
+
 void pcb_drc_set_data(pcb_view_t *violation, const pcb_coord_t *measured_value, pcb_coord_t required_value)
 {
 	violation->data_type = PCB_VIEW_DRC;

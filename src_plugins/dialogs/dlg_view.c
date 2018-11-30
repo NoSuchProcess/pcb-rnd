@@ -35,6 +35,7 @@
 #include "conf_core.h"
 #include "view.h"
 #include "draw.h"
+#include "drc.h"
 #include "event.h"
 #include "hid_inlines.h"
 #include "hid_dad.h"
@@ -45,7 +46,8 @@ static const const char *dlg_view_cookie = "dlg_drc";
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	pcb_board_t *pcb;
-	pcb_view_list_t drc;
+	pcb_view_list_t *lst;
+	pcb_view_list_t lst_local;
 	int alloced, active;
 
 	unsigned long int selected;
@@ -74,7 +76,7 @@ void view2dlg(view_ctx_t *ctx)
 	pcb_hid_row_t *r;
 	char *cell[3], *cursor_path = NULL;
 
-	sprintf(tmp, "%d", pcb_view_list_length(&ctx->drc));
+	sprintf(tmp, "%d", pcb_view_list_length(ctx->lst));
 	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wcount, str_value, tmp);
 
 	attr = &ctx->dlg[ctx->wlist];
@@ -91,7 +93,7 @@ void view2dlg(view_ctx_t *ctx)
 
 	/* add all items */
 	cell[2] = NULL;
-	for(v = pcb_view_list_first(&ctx->drc); v != NULL; v = pcb_view_list_next(v)) {
+	for(v = pcb_view_list_first(ctx->lst); v != NULL; v = pcb_view_list_next(v)) {
 		pcb_hid_row_t *r, *rt;
 		rt = htsp_get(&tree->paths, v->type);
 		if (rt == NULL) {
@@ -143,7 +145,7 @@ static void view_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_
 
 	if (row != NULL) {
 		ctx->selected = row->user_data2.lng;
-		v = pcb_view_by_uid(&ctx->drc, ctx->selected);
+		v = pcb_view_by_uid(ctx->lst, ctx->selected);
 		if (v != NULL) {
 			pcb_view_goto(v);
 			PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wexplanation, str_value, re_wrap(pcb_strdup(v->explanation), 32));
@@ -175,7 +177,7 @@ static void view_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	pcb_xform_t xform;
 	int old_termlab, g;
 	static const char *offend_color[] = {"#ff0000", "#0000ff"};
-	pcb_view_t *v = pcb_view_by_uid(&ctx->drc, ctx->selected);
+	pcb_view_t *v = pcb_view_by_uid(ctx->lst, ctx->selected);
 	size_t n;
 	void **p;
 
@@ -323,7 +325,8 @@ fgw_error_t pcb_act_DRC(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 		pcb_dlg_drc(&drc_gui_ctx, "DRC violations");
 	}
 
-	pcb_drc_all(&drc_gui_ctx.drc);
+	pcb_drc_all();
+	drc_gui_ctx.lst = &pcb_drc_lst;
 	view2dlg(&drc_gui_ctx);
 
 	return 0;
