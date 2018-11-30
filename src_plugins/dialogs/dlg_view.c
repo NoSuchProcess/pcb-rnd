@@ -43,17 +43,20 @@
 
 static const const char *dlg_view_cookie = "dlg_drc";
 
-typedef struct {
+typedef struct view_ctx_s view_ctx_t;
+struct view_ctx_s {
 	PCB_DAD_DECL_NOINIT(dlg)
 	pcb_board_t *pcb;
 	pcb_view_list_t *lst;
 	pcb_view_list_t lst_local;
 	int alloced, active;
 
+	void (*refresh)(view_ctx_t *ctx);
+
 	unsigned long int selected;
 
 	int wlist, wcount, wprev, wexplanation, wmeasure;
-} view_ctx_t;
+};
 
 view_ctx_t view_ctx;
 
@@ -233,6 +236,12 @@ static pcb_bool view_mouse_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *pr
 	return pcb_false; /* don't redraw */
 }
 
+void view_refresh(view_ctx_t *ctx)
+{
+	if (ctx->refresh != NULL)
+		ctx->refresh(ctx);
+	view2dlg(ctx);
+}
 
 static void view_preview_update_cb(void *user_data, int argc, pcb_event_arg_t argv[])
 {
@@ -246,6 +255,10 @@ static void view_preview_update_cb(void *user_data, int argc, pcb_event_arg_t ar
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
 }
 
+static void refresh_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	view_refresh((view_ctx_t *)caller_data);
+}
 
 static void pcb_dlg_drc(view_ctx_t *ctx, const char *title)
 {
@@ -301,6 +314,7 @@ static void pcb_dlg_drc(view_ctx_t *ctx, const char *title)
 
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
 			PCB_DAD_BUTTON(ctx->dlg, "Refresh");
+				PCB_DAD_CHANGE_CB(ctx->dlg, refresh_cb);
 					PCB_DAD_BEGIN_HBOX(ctx->dlg);
 						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 					PCB_DAD_END(ctx->dlg);
@@ -313,6 +327,11 @@ static void pcb_dlg_drc(view_ctx_t *ctx, const char *title)
 	ctx->active = 1;
 }
 
+static void drc_refresh(view_ctx_t *ctx)
+{
+	ctx->lst = &pcb_drc_lst;
+	pcb_drc_all();
+}
 
 static view_ctx_t drc_gui_ctx = {0};
 const char pcb_acts_DRC[] = "DRC()\n";
@@ -322,12 +341,11 @@ fgw_error_t pcb_act_DRC(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 
 	if (!drc_gui_ctx.active) {
 		drc_gui_ctx.pcb = PCB;
+		drc_gui_ctx.refresh = drc_refresh;
 		pcb_dlg_drc(&drc_gui_ctx, "DRC violations");
 	}
 
-	pcb_drc_all();
-	drc_gui_ctx.lst = &pcb_drc_lst;
-	view2dlg(&drc_gui_ctx);
+	view_refresh(&drc_gui_ctx);
 
 	return 0;
 }
