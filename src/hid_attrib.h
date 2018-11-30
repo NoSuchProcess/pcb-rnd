@@ -111,6 +111,8 @@ struct pcb_hid_preview_s {
 	pcb_box_t initial_view;
 	unsigned initial_view_valid:1;
 
+	int min_sizex_px, min_sizey_px; /* hint: widget minimum size in pixels */
+
 	/* optional callbacks the user set after widget creation */
 	void *user_ctx;
 	void (*user_free_cb)(pcb_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx);

@@ -183,8 +183,8 @@ static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 	}
 
 	stdarg_n = 0;
-	stdarg(XmNwidth, 200);
-	stdarg(XmNheight, 200);
+	stdarg(XmNwidth, prv->min_sizex_px);
+	stdarg(XmNheight, prv->min_sizey_px);
 	stdarg(XmNresizePolicy, XmRESIZE_GROW);
 	stdarg(XmNleftAttachment, XmATTACH_FORM);
 	stdarg(XmNrightAttachment, XmATTACH_FORM);

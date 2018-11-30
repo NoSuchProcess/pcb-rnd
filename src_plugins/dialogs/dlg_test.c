@@ -157,7 +157,7 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		/* tab 3: preview */
 		PCB_DAD_BEGIN_VBOX(ctx.dlg);
-			PCB_DAD_PREVIEW(ctx.dlg, prv_expose, prv_mouse, NULL, NULL, NULL);
+			PCB_DAD_PREVIEW(ctx.dlg, prv_expose, prv_mouse, NULL, NULL, 200, 200, NULL);
 			PCB_DAD_LABEL(ctx.dlg, "This is a cool preview widget.");
 		PCB_DAD_END(ctx.dlg);
 	PCB_DAD_END(ctx.dlg);

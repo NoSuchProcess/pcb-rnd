@@ -121,6 +121,6 @@ static GtkWidget *ghid_preview_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr
 	p->y_max = PCB_MM_TO_COORD(100);
 	p->w_pixels = PCB_MM_TO_COORD(10);
 	p->h_pixels = PCB_MM_TO_COORD(10);
-	gtk_widget_set_size_request(prv, 200, 200);
+	gtk_widget_set_size_request(prv, hp->min_sizex_px, hp->min_sizey_px);
 	return prv;
 }

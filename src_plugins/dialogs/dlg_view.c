@@ -435,7 +435,7 @@ static void pcb_dlg_view_full(view_ctx_t *ctx, const char *title)
 			/* right */
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
-				PCB_DAD_PREVIEW(ctx->dlg, view_expose_cb, view_mouse_cb, NULL, NULL, ctx);
+				PCB_DAD_PREVIEW(ctx->dlg, view_expose_cb, view_mouse_cb, NULL, NULL, 100, 100, ctx);
 					ctx->wprev = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 				PCB_DAD_LABEL(ctx->dlg, "(explanation)");
@@ -476,7 +476,7 @@ static void pcb_dlg_view_simplified(view_ctx_t *ctx, const char *title)
 
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
 			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
-			PCB_DAD_PREVIEW(ctx->dlg, view_expose_cb, view_mouse_cb, NULL, NULL, ctx);
+			PCB_DAD_PREVIEW(ctx->dlg, view_expose_cb, view_mouse_cb, NULL, NULL, 100, 100, ctx);
 				ctx->wprev = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
