@@ -231,7 +231,7 @@ static void view_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	vtp0_truncate(&view_color_save, 0);
 	for(g = 0; g < 2; g++) {
 		pcb_idpath_t *i;
-		for(i = pcb_idpath_list_first(&v->objs[g]); i != NULL; /*i = pcb_idpath_list_next(i)*/i=0) {
+		for(i = pcb_idpath_list_first(&v->objs[g]); i != NULL; i = pcb_idpath_list_next(i)) {
 			pcb_any_obj_t *obj = pcb_idpath2obj(ctx->pcb->Data, i);
 			if ((obj != NULL) && (obj->type & PCB_OBJ_CLASS_REAL)) {
 				vtp0_append(&view_color_save, obj);
