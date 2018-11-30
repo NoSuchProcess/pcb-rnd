@@ -57,14 +57,12 @@ void pcb_drc_append_obj(pcb_view_t *view, int grp, pcb_any_obj_t *obj)
 	}
 }
 
-#include "board.h"
-void pcb_drc_set_bbox_by_objs(pcb_view_t *v)
+void pcb_drc_set_bbox_by_objs(pcb_data_t *data, pcb_view_t *v)
 {
 	int g;
 	pcb_box_t b;
 	pcb_any_obj_t *obj;
 	pcb_idpath_t *idp;
-	pcb_data_t *data = PCB->Data;
 
 	/* special case: no object - leave coords unloaded/invalid */
 	if ((pcb_idpath_list_length(&v->objs[0]) < 1) && (pcb_idpath_list_length(&v->objs[1]) < 1))
