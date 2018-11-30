@@ -381,8 +381,6 @@ static void drc_reset(void)
 
 void pcb_drc_all(pcb_view_list_t *lst)
 {
-	int nopastecnt = 0;
-
 	pcb_layervis_save_stack();
 	pcb_layervis_reset_stack();
 	pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
@@ -418,10 +416,6 @@ void pcb_drc_all(pcb_view_list_t *lst)
 	pcb_layervis_restore_stack();
 	pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	pcb_gui->invalidate_all();
-
-	if (nopastecnt > 0) {
-		pcb_message(PCB_MSG_WARNING, "Warning:  %d pad%s the nopaste flag set.\n", nopastecnt, nopastecnt > 1 ? "s have" : " has");
-	}
 }
 
 
