@@ -335,6 +335,17 @@ static void view_stepped(view_ctx_t *ctx, pcb_view_t *v)
 	view2dlg_pos(ctx);
 }
 
+static void simple_rewind(view_ctx_t *ctx)
+{
+	pcb_view_t *v = pcb_view_list_first(ctx->lst);
+	if (v != NULL) {
+		ctx->selected = v->uid;
+		view_stepped(ctx, v);
+	}
+	else
+		ctx->selected = 0;
+}
+
 static void view_prev_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	view_ctx_t *ctx = caller_data;
@@ -498,12 +509,15 @@ static void pcb_dlg_view_simplified(view_ctx_t *ctx, const char *title)
 		ctx->selected = v->uid;
 	else
 		ctx->selected = 0;
-	view_simple_show(ctx);
+	simple_rewind(ctx);
 }
 
 static void drc_refresh(view_ctx_t *ctx)
 {
 	pcb_drc_all();
+
+	if (ctx->wlist < 0)
+		simple_rewind(ctx);
 }
 
 static view_ctx_t drc_gui_ctx = {0};
