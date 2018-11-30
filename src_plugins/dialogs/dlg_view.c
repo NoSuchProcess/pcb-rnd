@@ -129,10 +129,10 @@ static void view2dlg_pos(view_ctx_t *ctx)
 	if (cnt >= 0) {
 		char tmp[32];
 		sprintf(tmp, "%d", cnt+1);
-		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wcount, str_value, tmp);
+		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wpos, str_value, tmp);
 	}
 	else
-		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wcount, str_value, pcb_strdup(""));
+		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wpos, str_value, pcb_strdup(""));
 }
 
 static void view2dlg(view_ctx_t *ctx)
