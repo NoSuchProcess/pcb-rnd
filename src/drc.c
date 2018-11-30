@@ -100,3 +100,16 @@ void pcb_drc_set_bbox_by_objs(pcb_data_t *data, pcb_view_t *v)
 		pcb_box_enlarge(&v->bbox, 0.25, 0.25);
 	}
 }
+
+void pcb_drc_set_data(pcb_view_t *violation, const pcb_coord_t *measured_value, pcb_coord_t required_value)
+{
+	violation->data_type = PCB_VIEW_DRC;
+	violation->data.drc.required_value = required_value;
+	if (measured_value != NULL) {
+		violation->data.drc.have_measured = 1;
+		violation->data.drc.measured_value = *measured_value;
+	}
+	else
+		violation->data.drc.have_measured = 0;
+}
+

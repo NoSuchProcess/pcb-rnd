@@ -40,5 +40,8 @@ void pcb_drc_append_obj(pcb_view_t *view, int grp, pcb_any_obj_t *obj);
 /* Calculate and set v->bbox from v->objs[] bboxes */
 void pcb_drc_set_bbox_by_objs(pcb_data_t *data, pcb_view_t *v);
 
+/* Load drc-specific fields of a view; if measured_value is NULL, it is not available */
+void pcb_drc_set_data(pcb_view_t *violation, const pcb_coord_t *measured_value, pcb_coord_t required_value);
+
 #endif
 

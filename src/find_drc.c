@@ -40,19 +40,6 @@
 
 static pcb_bool DRCFind(pcb_view_list_t *lst, int What, void *ptr1, void *ptr2, void *ptr3);
 
-/* Load drc-specific fields of a view; if measured_value is NULL, it is not available */
-void pcb_drc_set_data(pcb_view_t *violation, const pcb_coord_t *measured_value, pcb_coord_t required_value)
-{
-	violation->data_type = PCB_VIEW_DRC;
-	violation->data.drc.required_value = required_value;
-	if (measured_value != NULL) {
-		violation->data.drc.have_measured = 1;
-		violation->data.drc.measured_value = *measured_value;
-	}
-	else
-		violation->data.drc.have_measured = 0;
-}
-
 /* DRC clearance callback */
 static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t *polygon, int type, void *ptr1, void *ptr2, void *user_data)
 {
