@@ -43,15 +43,12 @@ static pcb_bool DRCFind(pcb_view_list_t *lst, int What, void *ptr1, void *ptr2, 
 
 static void pcb_drc_set_data(pcb_view_t *violation,
 	pcb_bool have_measured, pcb_coord_t measured_value,
-	pcb_coord_t required_value, pcb_idpath_list_t objs[2])
+	pcb_coord_t required_value)
 {
 	violation->data_type = PCB_VIEW_DRC;
 	violation->data.drc.have_measured = have_measured;
 	violation->data.drc.measured_value = measured_value;
 	violation->data.drc.required_value = required_value;
-	memcpy(&violation->objs, objs, sizeof(violation->objs));
-	memset(objs, 0, sizeof(violation->objs));
-	return violation;
 }
 
 static gds_t drc_dialog_message;
@@ -73,7 +70,7 @@ static void append_drc_dialog_message(const char *fmt, ...)
 static void GotoError(void);
 
 /* Build a list of the of offending items by ID */
-static void drc_append_obj(pcb_idpath_list_t objs[2], int grp, pcb_any_obj_t *obj)
+static void drc_append_obj(pcb_view_t *view, int grp, pcb_any_obj_t *obj)
 {
 	pcb_idpath_t *idp;
 
@@ -87,7 +84,7 @@ static void drc_append_obj(pcb_idpath_list_t objs[2], int grp, pcb_any_obj_t *ob
 		if (idp == NULL)
 			pcb_message(PCB_MSG_ERROR, "Internal error in drc_append_obj: can not resolve object id path\n");
 		else
-			pcb_idpath_list_append(&objs[grp], idp);
+			pcb_idpath_list_append(&view->objs[grp], idp);
 		break;
 	default:
 		pcb_message(PCB_MSG_ERROR, "Internal error in drc_append_obj: unknown object type %i\n", obj->type);
@@ -231,12 +228,12 @@ doIsBad:
 	pcb_poly_invalidate_draw(layer, polygon);
 	pcb_draw_obj((pcb_any_obj_t *)ptr2);
 	drcerr_count++;
-	drc_append_obj(objs, 0, (pcb_any_obj_t *)ptr2);
 	violation = pcb_view_new("short", message, "Circuits that are too close may bridge during imaging, etching,\n" "plating, or soldering processes resulting in a direct short.");
 	pcb_drc_set_data(violation,
 		pcb_false, /* MEASUREMENT OF ERROR UNKNOWN */
 		0, /* MAGNITUDE OF ERROR UNKNOWN */
-		conf_core.design.bloat, objs);
+		conf_core.design.bloat);
+	drc_append_obj(violation, 0, (pcb_any_obj_t *)ptr2);
 	drc_auto_loc(violation);
 	if (!throw_drc_dialog()) {
 		IsBad = pcb_true;
@@ -264,11 +261,11 @@ static int drc_text(pcb_view_list_t *lst, pcb_layer_t *layer, pcb_text_t *text, 
 		PCB_FLAG_SET(TheFlag, text);
 		pcb_text_invalidate_draw(layer, text);
 		drcerr_count++;
-		drc_append_obj(objs, 0, (pcb_any_obj_t *)text);
 		violation = pcb_view_new("thin", "Text thickness is too thin", "Process specifications dictate a minimum feature-width\nthat can reliably be reproduced");
 		pcb_drc_set_data(violation,
 			pcb_true, /* MEASUREMENT OF ERROR KNOWN */
-			text->thickness, min_wid, objs);
+			text->thickness, min_wid);
+		drc_append_obj(violation, 0, (pcb_any_obj_t *)text);
 		drc_auto_loc(violation);
 		append_drc_violation(lst, violation);
 		if (!throw_drc_dialog()) {
@@ -368,11 +365,11 @@ int pcb_drc_all(pcb_view_list_t *lst)
 				PCB_FLAG_SET(TheFlag, line);
 				pcb_line_invalidate_draw(layer, line);
 				drcerr_count++;
-				drc_append_obj(objs, 0, (pcb_any_obj_t *)line);
 				violation = pcb_view_new("thin", "Line width is too thin", "Process specifications dictate a minimum feature-width\nthat can reliably be reproduced");
 				pcb_drc_set_data(violation,
 					pcb_true, /* MEASUREMENT OF ERROR KNOWN */
-					line->Thickness, conf_core.design.min_wid, objs);
+					line->Thickness, conf_core.design.min_wid);
+				drc_append_obj(violation, 0, (pcb_any_obj_t *)line);
 				drc_auto_loc(violation);
 				append_drc_violation(lst, violation);
 				if (!throw_drc_dialog()) {
@@ -396,11 +393,11 @@ int pcb_drc_all(pcb_view_list_t *lst)
 				PCB_FLAG_SET(TheFlag, arc);
 				pcb_arc_invalidate_draw(layer, arc);
 				drcerr_count++;
-				drc_append_obj(objs, 0, (pcb_any_obj_t *)arc);
 				violation = pcb_view_new("thin", "Arc width is too thin", "Process specifications dictate a minimum feature-width\nthat can reliably be reproduced");
 				pcb_drc_set_data(violation,
 					pcb_true, /* MEASUREMENT OF ERROR KNOWN */
-					arc->Thickness, conf_core.design.min_wid, objs);
+					arc->Thickness, conf_core.design.min_wid);
+				drc_append_obj(violation, 0, (pcb_any_obj_t *)arc);
 				drc_auto_loc(violation);
 				append_drc_violation(lst, violation);
 				if (!throw_drc_dialog()) {
@@ -428,22 +425,22 @@ int pcb_drc_all(pcb_view_list_t *lst)
 				pcb_pstk_invalidate_draw(padstack);
 				if (ring) {
 					drcerr_count++;
-					drc_append_obj(objs, 0, (pcb_any_obj_t *)padstack);
 					violation = pcb_view_new("thin", "padstack annular ring too small", "Annular rings that are too small may erode during etching,\nresulting in a broken connection");
 					pcb_drc_set_data(violation,
 						pcb_true, /* MEASUREMENT OF ERROR KNOWN */
 						ring,
-						conf_core.design.min_ring, objs);
+						conf_core.design.min_ring);
+					drc_append_obj(violation, 0, (pcb_any_obj_t *)padstack);
 					drc_auto_loc(violation);
 					append_drc_violation(lst, violation);
 				}
 				if (hole > 0) {
 					drcerr_count++;
-					drc_append_obj(objs, 0, (pcb_any_obj_t *)padstack);
 					violation = pcb_view_new("drill", "Padstack drill size is too small", "Process rules dictate the minimum drill size which can be used");
 					pcb_drc_set_data(violation,
 						pcb_true, /* MEASUREMENT OF ERROR KNOWN */
-						hole, conf_core.design.min_drill, objs);
+						hole, conf_core.design.min_drill);
+					drc_append_obj(violation, 0, (pcb_any_obj_t *)padstack);
 					drc_auto_loc(violation);
 					append_drc_violation(lst, violation);
 				}
@@ -470,11 +467,11 @@ int pcb_drc_all(pcb_view_list_t *lst)
 				PCB_FLAG_SET(TheFlag, line);
 				pcb_line_invalidate_draw(layer, line);
 				drcerr_count++;
-				drc_append_obj(objs, 0, (pcb_any_obj_t *)line);
 				violation = pcb_view_new("thin", "Silk line is too thin", "Process specifications dictate a minimum silkscreen feature-width\nthat can reliably be reproduced");
 				pcb_drc_set_data(violation,
 					pcb_true, /* MEASUREMENT OF ERROR KNOWN */
-					line->Thickness, conf_core.design.min_slk, objs);
+					line->Thickness, conf_core.design.min_slk);
+				drc_append_obj(violation, 0, (pcb_any_obj_t *)line);
 				drc_auto_loc(violation);
 				append_drc_violation(lst, violation);
 				if (!throw_drc_dialog()) {
@@ -543,13 +540,13 @@ static pcb_bool DRCFind(pcb_view_list_t *lst, int What, void *ptr1, void *ptr2, 
 			User = pcb_false;
 			drc = pcb_false;
 			drcerr_count++;
-			drc_append_obj(objs, 0, (pcb_any_obj_t *)pcb_found_obj1);
-			drc_append_obj(objs, 1, (pcb_any_obj_t *)pcb_found_obj2);
 			violation = pcb_view_new("broken", "Potential for broken trace", "Insufficient overlap between objects can lead to broken tracks\ndue to registration errors with old wheel style photo-plotters.");
 			pcb_drc_set_data(violation,
 				pcb_false, /* MEASUREMENT OF ERROR UNKNOWN */
 				0, /* MAGNITUDE OF ERROR UNKNOWN */
-				conf_core.design.shrink, objs);
+				conf_core.design.shrink);
+			drc_append_obj(violation, 0, (pcb_any_obj_t *)pcb_found_obj1);
+			drc_append_obj(violation, 1, (pcb_any_obj_t *)pcb_found_obj2);
 			drc_auto_loc(violation);
 			append_drc_violation(lst, violation);
 
@@ -586,13 +583,13 @@ static pcb_bool DRCFind(pcb_view_list_t *lst, int What, void *ptr1, void *ptr2, 
 		DoIt(pcb_true, pcb_true);
 		DumpList();
 		drcerr_count++;
-		drc_append_obj(objs, 0, (pcb_any_obj_t *)pcb_found_obj1);
-		drc_append_obj(objs, 1, (pcb_any_obj_t *)pcb_found_obj2);
 		violation = pcb_view_new("short", "Copper areas too close", "Circuits that are too close may bridge during imaging, etching,\nplating, or soldering processes resulting in a direct short.");
 		pcb_drc_set_data(violation,
 			pcb_false, /* MEASUREMENT OF ERROR UNKNOWN */
 			0, /* MAGNITUDE OF ERROR UNKNOWN */
-			conf_core.design.bloat, objs);
+			conf_core.design.bloat);
+		drc_append_obj(violation, 0, (pcb_any_obj_t *)pcb_found_obj1);
+		drc_append_obj(violation, 1, (pcb_any_obj_t *)pcb_found_obj2);
 		drc_auto_loc(violation);
 		append_drc_violation(lst, violation);
 		User = pcb_false;
