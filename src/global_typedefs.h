@@ -68,6 +68,8 @@ typedef struct pcb_clrcache_s pcb_clrcache_t;
 
 typedef struct pcb_action_s pcb_action_t;
 
+typedef struct pcb_view_s pcb_view_t;
+
 #include "pcb_bool.h"
 
 #include "unit.h"

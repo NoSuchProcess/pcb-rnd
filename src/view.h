@@ -37,8 +37,6 @@
    of objects to highlight on preview and some optional, application-specific
    data (e.g. drc size values) */
 
-typedef struct pcb_view_s pcb_view_t;
-
 typedef enum pcb_view_type_e {
 	PCB_VIEW_PLAIN,       /* has no data */
 	PCB_VIEW_DRC
