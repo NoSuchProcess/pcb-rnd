@@ -33,7 +33,7 @@
 #include "actions.h"
 #include "board.h"
 #include "conf_core.h"
-#include "drc.h"
+#include "view.h"
 #include "draw.h"
 #include "event.h"
 #include "hid_inlines.h"

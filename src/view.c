@@ -28,7 +28,7 @@
 #include "config.h"
 
 #define TDL_DONT_UNDEF
-#include "drc.h"
+#include "view.h"
 #include <genlist/gentdlist_impl.c>
 #undef TDL_DONT_UNDEF
 #include <genlist/gentdlist_undef.h>

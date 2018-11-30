@@ -48,7 +48,7 @@
 #include "dlg_lib_pstk.c"
 #include "dlg_undo.c"
 
-#include "dlg_drc.h"
+#include "dlg_view.h"
 #include "act_dad.h"
 
 pcb_action_t dialogs_action_list[] = {

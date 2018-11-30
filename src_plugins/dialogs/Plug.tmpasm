@@ -2,7 +2,7 @@ put /local/pcb/mod {dialogs}
 put /local/pcb/mod/OBJS [@
  $(PLUGDIR)/dialogs/dialogs.o
  $(PLUGDIR)/dialogs/act_dad.o
- $(PLUGDIR)/dialogs/dlg_drc.o
+ $(PLUGDIR)/dialogs/dlg_view.o
 @]
 
 switch /local/pcb/dialogs/controls

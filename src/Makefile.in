@@ -71,7 +71,6 @@ append /local/pcb/OBJS [@
 	crosshair.o
 	data.o
 	draw.o
-	drc_list.o
 	error.o
 	event.o
 	font.o
@@ -187,6 +186,7 @@ append /local/pcb/OBJS [@
 	undo_act.o
 	undo_old.o
 	unit.o
+	view.o
 	vtlibrary.o
 	vtc0.o
 	vtonpoint.o
