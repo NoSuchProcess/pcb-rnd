@@ -37,5 +37,8 @@
 /* Append obj to one of the object groups in view (resolving to idpath) */
 void pcb_drc_append_obj(pcb_view_t *view, int grp, pcb_any_obj_t *obj);
 
+/* Calculate and set v->bbox from v->objs[] bboxes */
+void pcb_drc_set_bbox_by_objs(pcb_view_t *v);
+
 #endif
 

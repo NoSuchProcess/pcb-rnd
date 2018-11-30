@@ -56,3 +56,49 @@ void pcb_drc_append_obj(pcb_view_t *view, int grp, pcb_any_obj_t *obj)
 			pcb_message(PCB_MSG_ERROR, "Internal error in pcb_drc_append_obj: unknown object type %i\n", obj->type);
 	}
 }
+
+#include "board.h"
+void pcb_drc_set_bbox_by_objs(pcb_view_t *v)
+{
+	int g;
+	pcb_box_t b;
+	pcb_any_obj_t *obj;
+	pcb_idpath_t *idp;
+	pcb_data_t *data = PCB->Data;
+
+	/* special case: no object - leave coords unloaded/invalid */
+	if ((pcb_idpath_list_length(&v->objs[0]) < 1) && (pcb_idpath_list_length(&v->objs[1]) < 1))
+		return;
+
+	/* special case: single objet in group A, use the center */
+	if (pcb_idpath_list_length(&v->objs[0]) == 1) {
+		idp = pcb_idpath_list_first(&v->objs[0]);
+		obj = pcb_idpath2obj(data, idp);
+		if (obj != NULL) {
+			v->have_bbox = 1;
+			pcb_obj_center(obj, &v->x, &v->y);
+			memcpy(&v->bbox, &obj->BoundingBox, sizeof(obj->BoundingBox));
+			pcb_box_enlarge(&v->bbox, 0.25, 0.25);
+			return;
+		}
+	}
+
+	b.X1 = b.Y1 = PCB_MAX_COORD;
+	b.X2 = b.Y2 = -PCB_MAX_COORD;
+	for(g = 0; g < 2; g++) {
+		for(idp = pcb_idpath_list_first(&v->objs[g]); idp != NULL; idp = pcb_idpath_list_next(idp)) {
+			obj = pcb_idpath2obj(data, idp);
+			if (obj != NULL) {
+				v->have_bbox = 1;
+				pcb_box_bump_box(&b, &obj->BoundingBox);
+			}
+		}
+	}
+
+	if (v->have_bbox) {
+		v->x = (b.X1 + b.X2)/2;
+		v->y = (b.Y1 + b.Y2)/2;
+		memcpy(&v->bbox, &b, sizeof(b));
+		pcb_box_enlarge(&v->bbox, 0.25, 0.25);
+	}
+}
