@@ -30,7 +30,6 @@
 
 #include "drc.h"
 #include "view.h"
-#include "compat_nls.h"
 #include "data_it.h"
 
 #include "obj_arc_draw.h"
@@ -49,22 +48,6 @@ static void pcb_drc_set_data(pcb_view_t *violation,
 	violation->data.drc.have_measured = have_measured;
 	violation->data.drc.measured_value = measured_value;
 	violation->data.drc.required_value = required_value;
-}
-
-static gds_t drc_dialog_message;
-static void reset_drc_dialog_message(void)
-{
-	gds_truncate(&drc_dialog_message, 0);
-/*	if (pcb_gui->drc_gui != NULL)
-		pcb_gui->drc_gui->reset_drc_dialog_message();*/
-}
-
-static void append_drc_dialog_message(const char *fmt, ...)
-{
-	va_list ap;
-	va_start(ap, fmt);
-	pcb_append_vprintf(&drc_dialog_message, fmt, ap);
-	va_end(ap);
 }
 
 /* DRC clearance callback */
@@ -165,8 +148,6 @@ int pcb_drc_all(pcb_view_list_t *lst)
 	pcb_idpath_list_t objs[2];
 
 	memset(objs, 0, sizeof(objs));
-
-	reset_drc_dialog_message();
 
 	IsBad = pcb_false;
 	drcerr_count = 0;
