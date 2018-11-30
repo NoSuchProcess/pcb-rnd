@@ -43,6 +43,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t
 {
 	const char *message;
 	pcb_view_t *violation;
+	pcb_view_list_t *lst = user_data;
 	pcb_line_t *line = (pcb_line_t *)ptr2;
 	pcb_arc_t *arc = (pcb_arc_t *)ptr2;
 	pcb_pstk_t *ps = (pcb_pstk_t *)ptr2;
@@ -86,6 +87,7 @@ doIsBad:
 	pcb_drc_set_data(violation, NULL, conf_core.design.bloat);
 	pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)ptr2);
 	pcb_view_set_bbox_by_objs(PCB->Data, violation);
+	pcb_view_list_append(lst, violation);
 	pcb_undo_inc_serial();
 	pcb_undo(pcb_true);
 	return PCB_R_DIR_NOT_FOUND;
