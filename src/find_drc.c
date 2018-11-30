@@ -245,10 +245,8 @@ static void drc_nets_from_pstk(pcb_view_list_t *lst)
 {
 	PCB_PADSTACK_LOOP(PCB->Data);
 	{
-		if (!PCB_FLAG_TEST(PCB_FLAG_DRC, padstack)
-				&& DRCFind(lst, PCB_OBJ_PSTK, (void *) padstack, (void *) padstack, (void *) padstack)) {
+		if (!PCB_FLAG_TEST(PCB_FLAG_DRC, padstack) && DRCFind(lst, PCB_OBJ_PSTK, (void *)padstack, (void *)padstack, (void *)padstack))
 			break;
-		}
 	}
 	PCB_END_LOOP;
 }
@@ -277,24 +275,24 @@ void drc_copper_lines(pcb_view_list_t *lst)
 {
 	pcb_view_t *violation;
 
-		PCB_LINE_COPPER_LOOP(PCB->Data);
-		{
-			/* check line clearances in polygons */
-			pcb_poly_plows(PCB->Data, PCB_OBJ_LINE, layer, line, drc_callback, lst);
-			if (line->Thickness < conf_core.design.min_wid) {
-				pcb_undo_add_obj_to_flag(line);
-				PCB_FLAG_SET(TheFlag, line);
-				pcb_line_invalidate_draw(layer, line);
-				violation = pcb_view_new("thin", "Line width is too thin", "Process specifications dictate a minimum feature-width\nthat can reliably be reproduced");
-				pcb_drc_set_data(violation, &line->Thickness, conf_core.design.min_wid);
-				pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)line);
-				pcb_view_set_bbox_by_objs(PCB->Data, violation);
-				pcb_view_list_append(lst, violation);
-				pcb_undo_inc_serial();
-				pcb_undo(pcb_false);
-			}
+	PCB_LINE_COPPER_LOOP(PCB->Data);
+	{
+		/* check line clearances in polygons */
+		pcb_poly_plows(PCB->Data, PCB_OBJ_LINE, layer, line, drc_callback, lst);
+		if (line->Thickness < conf_core.design.min_wid) {
+			pcb_undo_add_obj_to_flag(line);
+			PCB_FLAG_SET(TheFlag, line);
+			pcb_line_invalidate_draw(layer, line);
+			violation = pcb_view_new("thin", "Line width is too thin", "Process specifications dictate a minimum feature-width\nthat can reliably be reproduced");
+			pcb_drc_set_data(violation, &line->Thickness, conf_core.design.min_wid);
+			pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)line);
+			pcb_view_set_bbox_by_objs(PCB->Data, violation);
+			pcb_view_list_append(lst, violation);
+			pcb_undo_inc_serial();
+			pcb_undo(pcb_false);
 		}
-		PCB_ENDALL_LOOP;
+	}
+	PCB_ENDALL_LOOP;
 }
 
 /* copper arcs: check minimum widths and polygon clearances */
@@ -302,23 +300,23 @@ void drc_copper_arcs(pcb_view_list_t *lst)
 {
 	pcb_view_t *violation;
 
-		PCB_ARC_COPPER_LOOP(PCB->Data);
-		{
-			pcb_poly_plows(PCB->Data, PCB_OBJ_ARC, layer, arc, drc_callback, lst);
-			if (arc->Thickness < conf_core.design.min_wid) {
-				pcb_undo_add_obj_to_flag(arc);
-				PCB_FLAG_SET(TheFlag, arc);
-				pcb_arc_invalidate_draw(layer, arc);
-				violation = pcb_view_new("thin", "Arc width is too thin", "Process specifications dictate a minimum feature-width\nthat can reliably be reproduced");
-				pcb_drc_set_data(violation, &arc->Thickness, conf_core.design.min_wid);
-				pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)arc);
-				pcb_view_set_bbox_by_objs(PCB->Data, violation);
-				pcb_view_list_append(lst, violation);
-				pcb_undo_inc_serial();
-				pcb_undo(pcb_false);
-			}
+	PCB_ARC_COPPER_LOOP(PCB->Data);
+	{
+		pcb_poly_plows(PCB->Data, PCB_OBJ_ARC, layer, arc, drc_callback, lst);
+		if (arc->Thickness < conf_core.design.min_wid) {
+			pcb_undo_add_obj_to_flag(arc);
+			PCB_FLAG_SET(TheFlag, arc);
+			pcb_arc_invalidate_draw(layer, arc);
+			violation = pcb_view_new("thin", "Arc width is too thin", "Process specifications dictate a minimum feature-width\nthat can reliably be reproduced");
+			pcb_drc_set_data(violation, &arc->Thickness, conf_core.design.min_wid);
+			pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)arc);
+			pcb_view_set_bbox_by_objs(PCB->Data, violation);
+			pcb_view_list_append(lst, violation);
+			pcb_undo_inc_serial();
+			pcb_undo(pcb_false);
 		}
-		PCB_ENDALL_LOOP;
+	}
+	PCB_ENDALL_LOOP;
 }
 
 
