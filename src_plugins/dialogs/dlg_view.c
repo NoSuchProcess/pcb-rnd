@@ -41,7 +41,7 @@
 #include "hid_dad.h"
 #include "hid_dad_tree.h"
 
-static const const char *dlg_view_cookie = "dlg_drc";
+static const char *dlg_view_cookie = "dlg_drc";
 
 typedef struct view_ctx_s view_ctx_t;
 struct view_ctx_s {
