@@ -34,6 +34,10 @@
 #include "idpath.h"
 #include "box.h"
 
+/* A saved view on the board (e.g. a drc violation); metadata includes two lists
+   of objects to highlight on preview and some optional, application-specific
+   data (e.g. drc size values) */
+
 typedef struct pcb_view_s pcb_view_t;
 struct pcb_view_s {
 	unsigned long int uid;        /* ID unique for each violation within the drc subsystem (for GUI identification of violations) */
@@ -43,14 +47,14 @@ struct pcb_view_s {
 	char *explanation;
 
 	unsigned have_coord:1;
-	pcb_coord_t x, y;             /* center of error, for the indication */
 	pcb_box_t bbox;               /* bounding box of all error objects (in both groups) */
+
+	pcb_coord_t x, y;             /* optional: a coord to mark on the preview  */
+	pcb_idpath_list_t objs[2];    /* optional: two groups of objects to highlight on preview */
 
 	unsigned have_measured:1;
 	pcb_coord_t measured_value;
 	pcb_coord_t required_value;
-
-	pcb_idpath_list_t objs[2];    /* two groups of offending objects */
 
 	gdl_elem_t link;              /* always part of a list */
 };
@@ -69,9 +73,12 @@ struct pcb_view_s {
 #include <genlist/gentdlist_impl.h>
 #include <genlist/gentdlist_undef.h>
 
+/* Free all fields and the view pointer too */
 void pcb_view_free(pcb_view_t *item);
 
+/* Free all items and empty the list but do not free the list pointer */
 void pcb_view_list_free_fields(pcb_view_list_t *lst);
+
 void pcb_view_list_free(pcb_view_list_t *lst);
 
 
