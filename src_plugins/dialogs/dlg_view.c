@@ -55,7 +55,7 @@ struct view_ctx_s {
 
 	unsigned long int selected;
 
-	int wlist, wcount, wprev, wexplanation, wmeasure;
+	int wpos, wlist, wcount, wprev, wexplanation, wmeasure;
 	int wbtn_pasteb, wbtn_pastea, wbtn_copy, wbtn_cut;
 };
 
@@ -72,17 +72,13 @@ static void view_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 		ctx->active = 0;
 }
 
-void view2dlg(view_ctx_t *ctx)
+static void view2dlg_list(view_ctx_t *ctx)
 {
-	char tmp[32];
 	pcb_view_t *v;
 	pcb_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
 	pcb_hid_row_t *r;
 	char *cell[3], *cursor_path = NULL;
-
-	sprintf(tmp, "%d", pcb_view_list_length(ctx->lst));
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wcount, str_value, tmp);
 
 	attr = &ctx->dlg[ctx->wlist];
 	tree = (pcb_hid_tree_t *)attr->enumerations;
@@ -122,6 +118,35 @@ void view2dlg(view_ctx_t *ctx)
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
 		free(cursor_path);
 	}
+}
+
+static void view2dlg_pos(view_ctx_t *ctx)
+{
+	size_t cnt;
+
+	pcb_view_by_uid_cnt(ctx->lst, ctx->selected, &cnt);
+
+	if (cnt >= 0) {
+		char tmp[32];
+		sprintf(tmp, "%d", cnt+1);
+		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wcount, str_value, tmp);
+	}
+	else
+		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wcount, str_value, pcb_strdup(""));
+}
+
+static void view2dlg(view_ctx_t *ctx)
+{
+	char tmp[32];
+
+	sprintf(tmp, "%d", pcb_view_list_length(ctx->lst));
+	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wcount, str_value, tmp);
+
+	if (ctx->wlist >= 0)
+		view2dlg_list(ctx);
+
+	if (ctx->wpos >= 0)
+		view2dlg_pos(ctx);
 }
 
 static char *re_wrap(char *inp, int len)
@@ -296,10 +321,11 @@ static void view_del_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	}
 }
 
-static void pcb_dlg_drc(view_ctx_t *ctx, const char *title)
+static void pcb_dlg_drc_full(view_ctx_t *ctx, const char *title)
 {
 	const char *hdr[] = { "ID", "title", NULL };
 
+	ctx->wpos = -1;
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
 		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
@@ -373,22 +399,87 @@ static void pcb_dlg_drc(view_ctx_t *ctx, const char *title)
 	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wbtn_pasteb, 0);
 }
 
+static void pcb_dlg_drc_simplified(view_ctx_t *ctx, const char *title)
+{
+	pcb_view_t *v;
+
+	ctx->wlist = -1;
+
+	PCB_DAD_BEGIN_VBOX(ctx->dlg);
+		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+
+		PCB_DAD_BEGIN_HBOX(ctx->dlg);
+			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_PREVIEW(ctx->dlg, view_expose_cb, view_mouse_cb, NULL, NULL, ctx);
+				ctx->wprev = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_BEGIN_VBOX(ctx->dlg);
+				PCB_DAD_LABEL(ctx->dlg, "(explanation)");
+					ctx->wexplanation = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_LABEL(ctx->dlg, "(measure)");
+					ctx->wmeasure = PCB_DAD_CURRENT(ctx->dlg);
+			PCB_DAD_END(ctx->dlg);
+		PCB_DAD_END(ctx->dlg);
+
+		PCB_DAD_BEGIN_HBOX(ctx->dlg);
+			PCB_DAD_BUTTON(ctx->dlg, "Previous");
+			PCB_DAD_BEGIN_HBOX(ctx->dlg);
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_LABEL(ctx->dlg, "na");
+					ctx->wpos = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_LABEL(ctx->dlg, "/");
+				PCB_DAD_LABEL(ctx->dlg, "na");
+					ctx->wcount = PCB_DAD_CURRENT(ctx->dlg);
+			PCB_DAD_END(ctx->dlg);
+			PCB_DAD_BUTTON(ctx->dlg, "Del");
+				PCB_DAD_CHANGE_CB(ctx->dlg, view_del_btn_cb);
+			PCB_DAD_BUTTON(ctx->dlg, "Next");
+		PCB_DAD_END(ctx->dlg);
+
+		PCB_DAD_BEGIN_HBOX(ctx->dlg);
+			PCB_DAD_BUTTON(ctx->dlg, "Refresh");
+				PCB_DAD_CHANGE_CB(ctx->dlg, view_refresh_btn_cb);
+			PCB_DAD_BEGIN_HBOX(ctx->dlg);
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_END(ctx->dlg);
+			PCB_DAD_BUTTON(ctx->dlg, "Close");
+				PCB_DAD_CHANGE_CB(ctx->dlg, view_close_btn_cb);
+		PCB_DAD_END(ctx->dlg);
+
+	PCB_DAD_END(ctx->dlg);
+
+	PCB_DAD_NEW(ctx->dlg, title, "", ctx, pcb_false, view_close_cb);
+
+	ctx->active = 1;
+
+	v = pcb_view_list_first(ctx->lst);
+	if (v != NULL)
+		ctx->selected = v->uid;
+	else
+		ctx->selected = 0;
+}
+
 static void drc_refresh(view_ctx_t *ctx)
 {
-	ctx->lst = &pcb_drc_lst;
 	pcb_drc_all();
 }
 
 static view_ctx_t drc_gui_ctx = {0};
-const char pcb_acts_DRC[] = "DRC()\n";
+const char pcb_acts_DRC[] = "DRC(list|simple)\n";
 const char pcb_acth_DRC[] = "Execute drc checks";
-fgw_error_t pcb_act_DRC(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t pcb_act_DRC(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	const char *dlg_type = "list";
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, DRC, dlg_type = argv[1].val.str);
 
 	if (!drc_gui_ctx.active) {
 		drc_gui_ctx.pcb = PCB;
+		drc_gui_ctx.lst = &pcb_drc_lst;
 		drc_gui_ctx.refresh = drc_refresh;
-		pcb_dlg_drc(&drc_gui_ctx, "DRC violations");
+		if (pcb_strcasecmp(dlg_type, "simple") == 0)
+			pcb_dlg_drc_simplified(&drc_gui_ctx, "DRC violations");
+		else
+			pcb_dlg_drc_full(&drc_gui_ctx, "DRC violations");
 	}
 
 	view_refresh(&drc_gui_ctx);
