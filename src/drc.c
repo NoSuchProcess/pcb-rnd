@@ -27,7 +27,10 @@
  */
 #include "config.h"
 
+#include "actions.h"
 #include "drc.h"
+#include "compat_misc.h"
+
 
 pcb_view_list_t pcb_drc_lst;
 
@@ -43,3 +46,34 @@ void pcb_drc_set_data(pcb_view_t *violation, const pcb_coord_t *measured_value, 
 		violation->data.drc.have_measured = 0;
 }
 
+
+static const char pcb_acts_DRC[] = "DRC([list|simple])";
+static const char pcb_acth_DRC[] = "Invoke the DRC check. Results are presented as the argument requests.";
+/* DOC: drc.html */
+static fgw_error_t pcb_act_DRC(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *dlg_type = "list";
+	fgw_arg_t args[2];
+
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, DRC, dlg_type = argv[1].val.str);
+	args[1].type = FGW_STR;
+
+	if (pcb_strcasecmp(dlg_type, "list") == 0) {
+		args[1].val.str = "list";
+		return pcb_actionv_bin("drcdialog", res, 2, args);
+	}
+
+	if (pcb_strcasecmp(dlg_type, "simple") == 0) {
+		args[1].val.str = "simple";
+		return pcb_actionv_bin("drcdialog", res, 2, args);
+	}
+
+	PCB_ACT_IRES(-1);
+	return 0;
+}
+
+pcb_action_t find_action_list[] = {
+	{"DRC", pcb_act_DRC, pcb_acth_DRC, pcb_acts_DRC}
+};
+
+PCB_REGISTER_ACTIONS(find_action_list, NULL)
