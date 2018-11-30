@@ -67,28 +67,6 @@ static void append_drc_dialog_message(const char *fmt, ...)
 	va_end(ap);
 }
 
-/* message when asked about continuing DRC checks after next violation is found. */
-#define DRC_CONTINUE "Press Next to continue DRC checking"
-#define DRC_NEXT "Next"
-#define DRC_CANCEL "Cancel"
-
-static int throw_drc_dialog(void)
-{
-	int r = 0;
-#if 0
-	if (pcb_gui->drc_gui != NULL) {
-		r = pcb_gui->drc_gui->throw_drc_dialog();
-	}
-	else {
-		/* Fallback to formatting the violation message as text */
-		append_drc_dialog_message(DRC_CONTINUE);
-		r = pcb_gui->confirm_dialog(drc_dialog_message.array, DRC_CANCEL, DRC_NEXT);
-		reset_drc_dialog_message();
-	}
-#endif
-	return r;
-}
-
 /* DRC clearance callback */
 static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t *polygon, int type, void *ptr1, void *ptr2, void *user_data)
 {
@@ -144,10 +122,6 @@ doIsBad:
 		conf_core.design.bloat);
 	pcb_drc_append_obj(violation, 0, (pcb_any_obj_t *)ptr2);
 	pcb_drc_set_bbox_by_objs(PCB->Data, violation);
-	if (!throw_drc_dialog()) {
-		IsBad = pcb_true;
-		return PCB_R_DIR_FOUND_CONTINUE;
-	}
 	pcb_undo_inc_serial();
 	pcb_undo(pcb_true);
 	return PCB_R_DIR_NOT_FOUND;
@@ -177,10 +151,6 @@ static int drc_text(pcb_view_list_t *lst, pcb_layer_t *layer, pcb_text_t *text, 
 		pcb_drc_append_obj(violation, 0, (pcb_any_obj_t *)text);
 		pcb_drc_set_bbox_by_objs(PCB->Data, violation);
 		pcb_view_list_append(lst, violation);
-		if (!throw_drc_dialog()) {
-			IsBad = pcb_true;
-			return 1;
-		}
 		pcb_undo_inc_serial();
 		pcb_undo(pcb_false);
 	}
@@ -281,10 +251,6 @@ int pcb_drc_all(pcb_view_list_t *lst)
 				pcb_drc_append_obj(violation, 0, (pcb_any_obj_t *)line);
 				pcb_drc_set_bbox_by_objs(PCB->Data, violation);
 				pcb_view_list_append(lst, violation);
-				if (!throw_drc_dialog()) {
-					IsBad = pcb_true;
-					break;
-				}
 				pcb_undo_inc_serial();
 				pcb_undo(pcb_false);
 			}
@@ -309,10 +275,6 @@ int pcb_drc_all(pcb_view_list_t *lst)
 				pcb_drc_append_obj(violation, 0, (pcb_any_obj_t *)arc);
 				pcb_drc_set_bbox_by_objs(PCB->Data, violation);
 				pcb_view_list_append(lst, violation);
-				if (!throw_drc_dialog()) {
-					IsBad = pcb_true;
-					break;
-				}
 				pcb_undo_inc_serial();
 				pcb_undo(pcb_false);
 			}
@@ -353,10 +315,6 @@ int pcb_drc_all(pcb_view_list_t *lst)
 					pcb_drc_set_bbox_by_objs(PCB->Data, violation);
 					pcb_view_list_append(lst, violation);
 				}
-				if (!throw_drc_dialog()) {
-					IsBad = pcb_true;
-					break;
-				}
 			}
 		}
 		PCB_END_LOOP;
@@ -383,10 +341,6 @@ int pcb_drc_all(pcb_view_list_t *lst)
 				pcb_drc_append_obj(violation, 0, (pcb_any_obj_t *)line);
 				pcb_drc_set_bbox_by_objs(PCB->Data, violation);
 				pcb_view_list_append(lst, violation);
-				if (!throw_drc_dialog()) {
-					IsBad = pcb_true;
-					break;
-				}
 			}
 		}
 		PCB_ENDALL_LOOP;
@@ -459,8 +413,6 @@ static pcb_bool DRCFind(pcb_view_list_t *lst, int What, void *ptr1, void *ptr2, 
 			pcb_drc_set_bbox_by_objs(PCB->Data, violation);
 			pcb_view_list_append(lst, violation);
 
-			if (!throw_drc_dialog())
-				return pcb_true;
 			pcb_undo_inc_serial();
 			pcb_undo(pcb_true);
 		}
@@ -503,8 +455,6 @@ static pcb_bool DRCFind(pcb_view_list_t *lst, int What, void *ptr1, void *ptr2, 
 		pcb_view_list_append(lst, violation);
 		User = pcb_false;
 		drc = pcb_false;
-		if (!throw_drc_dialog())
-			return pcb_true;
 		pcb_undo_inc_serial();
 		pcb_undo(pcb_true);
 		/* highlight the rest of the encroaching net so it's not reported again */
