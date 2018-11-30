@@ -537,12 +537,12 @@ static void drc_refresh(view_ctx_t *ctx)
 }
 
 static view_ctx_t drc_gui_ctx = {0};
-const char pcb_acts_DRC[] = "DRC(list|simple)\n";
-const char pcb_acth_DRC[] = "Execute drc checks";
-fgw_error_t pcb_act_DRC(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+const char pcb_acts_DrcDialog[] = "DrcDialog([list|simple])\n";
+const char pcb_acth_DrcDialog[] = "Execute drc checks and invoke a view list dialog box for presenting the results";
+fgw_error_t pcb_act_DrcDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *dlg_type = "list";
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, DRC, dlg_type = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, DrcDialog, dlg_type = argv[1].val.str);
 
 	if (!drc_gui_ctx.active) {
 		drc_gui_ctx.pcb = PCB;

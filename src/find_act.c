@@ -38,46 +38,35 @@
 #include "data.h"
 #include "error.h"
 #include "find.h"
-#include "compat_nls.h"
+#include "compat_misc.h"
 
-static const char drc_syntax[] = "DRC()";
-static const char drc_help[] = "Invoke the DRC check.";
+static const char pcb_acts_DRC[] = "DRC([list|simple])";
+static const char pcb_acth_DRC[] = "Invoke the DRC check. Results are presented as the argument requests.";
 /* DOC: drc.html */
-static fgw_error_t pcb_act_DRCheck(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t pcb_act_DRC(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	int count = 0;
-#if 0
-	pcb_view_list_t lst;
+	const char *dlg_type = "list";
+	fgw_arg_t args[2];
 
-	if (pcb_gui->drc_gui == NULL || pcb_gui->drc_gui->log_drc_overview) {
-		pcb_message(PCB_MSG_INFO, _("%m+Rules are minspace %$mS, minoverlap %$mS "
-							"minwidth %$mS, minsilk %$mS\n"
-							"min drill %$mS, min annular ring %$mS\n"),
-						conf_core.editor.grid_unit->allow, conf_core.design.bloat, conf_core.design.shrink, conf_core.design.min_wid, conf_core.design.min_slk, conf_core.design.min_drill, conf_core.design.min_ring);
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, DRC, dlg_type = argv[1].val.str);
+	args[1].type = FGW_STR;
+
+	if (pcb_strcasecmp(dlg_type, "list") == 0) {
+		args[1].val.str = "list";
+		return pcb_actionv_bin("drcdialog", res, 2, args);
 	}
 
-	memset(&lst, 0, sizeof(lst));
-	count = pcb_drc_all(&lst);
-	if (pcb_gui->drc_gui == NULL || pcb_gui->drc_gui->log_drc_overview) {
-		if (count == 0)
-			pcb_message(PCB_MSG_INFO, _("No DRC problems found.\n"));
-		else if (count > 0)
-			pcb_message(PCB_MSG_INFO, _("Found %d design rule errors.\n"), count);
-		else
-			pcb_message(PCB_MSG_INFO, _("Aborted DRC after %d design rule errors.\n"), -count);
+	if (pcb_strcasecmp(dlg_type, "simple") == 0) {
+		args[1].val.str = "simple";
+		return pcb_actionv_bin("drcdialog", res, 2, args);
 	}
 
-	pcb_view_list_free_fields(&lst);
-#endif
-
-	pcb_message(PCB_MSG_ERROR, "drc() is disabled for the rewrite, please use drc2()\n");
-
-	PCB_ACT_IRES(count);
+	PCB_ACT_IRES(-1);
 	return 0;
 }
 
 pcb_action_t find_action_list[] = {
-	{"DRC", pcb_act_DRCheck, drc_help, drc_syntax}
+	{"DRC", pcb_act_DRC, pcb_acth_DRC, pcb_acts_DRC}
 };
 
 PCB_REGISTER_ACTIONS(find_action_list, NULL)

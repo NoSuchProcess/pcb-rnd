@@ -65,7 +65,7 @@ pcb_action_t dialogs_action_list[] = {
 	{"pstklib", pcb_act_pstklib, pcb_acth_pstklib, pcb_acts_pstklib},
 	{"UndoDialog", pcb_act_UndoDialog, pcb_acth_UndoDialog, pcb_acts_UndoDialog},
 	{"dad", pcb_act_dad, pcb_acth_dad, pcb_acts_dad},
-	{"DRC2", pcb_act_DRC, pcb_acth_DRC, pcb_acts_DRC}
+	{"DrcDialog", pcb_act_DrcDialog, pcb_acth_DrcDialog, pcb_acts_DrcDialog}
 };
 
 static const char *dialogs_cookie = "dialogs plugin";
