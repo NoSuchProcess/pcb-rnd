@@ -255,7 +255,7 @@ static void view_preview_update_cb(void *user_data, int argc, pcb_event_arg_t ar
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
 }
 
-static void refresh_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void view_refresh_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	view_refresh((view_ctx_t *)caller_data);
 }
@@ -319,7 +319,7 @@ static void pcb_dlg_drc(view_ctx_t *ctx, const char *title)
 
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
 			PCB_DAD_BUTTON(ctx->dlg, "Refresh");
-				PCB_DAD_CHANGE_CB(ctx->dlg, refresh_cb);
+				PCB_DAD_CHANGE_CB(ctx->dlg, view_refresh_btn_cb);
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_END(ctx->dlg);
