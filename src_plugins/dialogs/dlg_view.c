@@ -163,8 +163,8 @@ static void view_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_
 		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wexplanation, str_value, pcb_strdup(""));
 		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup(""));
 	}
-
-	pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &v->bbox);
+	else
+		pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &v->bbox);
 }
 
 static vtp0_t view_color_save;
