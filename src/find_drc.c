@@ -374,6 +374,47 @@ void drc_global_silk_lines(pcb_view_list_t *lst)
 	PCB_ENDALL_LOOP;
 }
 
+static void drc_beyond_extents(pcb_view_list_t *lst, pcb_data_t *data)
+{
+	pcb_any_obj_t *o;
+	pcb_data_it_t it;
+	pcb_view_t *violation;
+
+	for(o = pcb_data_first(&it, data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
+		const char *message = NULL;
+		pcb_coord_t measured, required;
+		
+		if (o->BoundingBox.X1 > PCB->MaxWidth) {
+			message = "Beyond the drawing area, to the right";
+			measured = o->BoundingBox.X1;
+			required = PCB->MaxWidth;
+		}
+		else if (o->BoundingBox.Y1 > PCB->MaxHeight) {
+			message = "Beyond the drawing area, to the bottom";
+			measured = o->BoundingBox.Y1;
+			required = PCB->MaxHeight;
+		}
+		else if (o->BoundingBox.X2 < 0) {
+			message = "Beyond the drawing area, to the left";
+			measured = o->BoundingBox.X2;
+			required = 0;
+		}
+		else if (o->BoundingBox.Y2 < 0) {
+			message = "Beyond the drawing area, to the top";
+			measured = o->BoundingBox.Y2;
+			required = 0;
+		}
+
+
+		if (message != NULL) {
+			violation = pcb_view_new("beyond", message, "Object hard to edit or export because being outside of the drawing area.");
+			pcb_drc_set_data(violation, &measured, required);
+			pcb_view_append_obj(violation, 0, o);
+			pcb_view_set_bbox_by_objs(PCB->Data, violation);
+			pcb_view_list_append(lst, violation);
+		}
+	}
+}
 
 static void drc_reset(void)
 {
@@ -409,6 +450,7 @@ void pcb_drc_all()
 	drc_copper_lines(lst);
 	drc_copper_arcs(lst);
 	drc_global_pstks(lst);
+	drc_beyond_extents(lst, PCB->Data);
 
 	pcb_conn_lookup_uninit();
 	TheFlag = PCB_FLAG_FOUND;
