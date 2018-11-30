@@ -2,14 +2,15 @@
 
 1. For the upcoming release ===============================================================================
 - CLEANUP: DRC rewrite: extend the DRC window to be a generic location list (or rather rewrite with DAD!)
-	- DAD dialog: copy & paste buttons
+	- lihata support:
+		- DAD dialog: copy & paste buttons
+		- export to file 
 	- BUG: xor draw stops working after the first preview
 	- io warn:
 		- io infra for save incompatibility note with DRC list
 	- import:
 		- buttons to select one or all items or all items including locked
 		- import sch. shouldn't select elements to be removed but put them on a drc list
-	- export to file 
 - CLEANUP: rewrite the preview API:
 	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
 	- there should be a view context in core associated with this, that contains flips so the view can be decoupled from board flip config (library preview)
