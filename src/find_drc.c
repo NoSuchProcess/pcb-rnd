@@ -28,6 +28,7 @@
  *
  */
 
+#include "drc.h"
 #include "view.h"
 #include "compat_nls.h"
 #include "data_it.h"

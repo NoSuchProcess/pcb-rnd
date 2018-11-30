@@ -71,6 +71,7 @@ append /local/pcb/OBJS [@
 	crosshair.o
 	data.o
 	draw.o
+	drc.o
 	error.o
 	event.o
 	font.o
