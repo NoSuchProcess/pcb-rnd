@@ -64,10 +64,11 @@ static void view_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	view_ctx_t *ctx = caller_data;
 
-
 	PCB_DAD_FREE(ctx->dlg);
 	if (ctx->alloced)
 		free(ctx);
+	else
+		ctx->active = 0;
 }
 
 void view2dlg(view_ctx_t *ctx)
