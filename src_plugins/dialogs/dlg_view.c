@@ -153,6 +153,9 @@ static void view_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_
 			pcb_view_goto(v);
 			PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wexplanation, str_value, re_wrap(pcb_strdup(v->explanation), 32));
 			switch(v->data_type) {
+				case PCB_VIEW_PLAIN:
+					PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup(""));
+					break;
 				case PCB_VIEW_DRC:
 					if (v->data.drc.have_measured)
 						PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup_printf("DRC: %m+required: %$ms\nmeasured: %$ms\n", conf_core.editor.grid_unit->allow, v->data.drc.required_value, v->data.drc.measured_value));
