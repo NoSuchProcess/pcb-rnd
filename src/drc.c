@@ -27,6 +27,8 @@
  */
 #include "config.h"
 
+#include <assert.h>
+
 #include "drc.h"
 #include "error.h"
 #include "idpath.h"
@@ -35,6 +37,8 @@
 void pcb_drc_append_obj(pcb_view_t *view, int grp, pcb_any_obj_t *obj)
 {
 	pcb_idpath_t *idp;
+
+	assert((grp == 0) || (grp == 1));
 
 	switch(obj->type) {
 		case PCB_OBJ_LINE:
