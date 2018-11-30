@@ -476,13 +476,14 @@ fgw_error_t pcb_act_DRC(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		drc_gui_ctx.pcb = PCB;
 		drc_gui_ctx.lst = &pcb_drc_lst;
 		drc_gui_ctx.refresh = drc_refresh;
+		pcb_drc_all();
 		if (pcb_strcasecmp(dlg_type, "simple") == 0)
 			pcb_dlg_view_simplified(&drc_gui_ctx, "DRC violations");
 		else
 			pcb_dlg_view_full(&drc_gui_ctx, "DRC violations");
 	}
 
-	view_refresh(&drc_gui_ctx);
+	view2dlg(&drc_gui_ctx);
 
 	return 0;
 }
