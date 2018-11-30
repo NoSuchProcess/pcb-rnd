@@ -99,6 +99,8 @@ pcb_view_t *pcb_view_by_uid(const pcb_view_list_t *lst, unsigned long int uid);
 /* Zoom the drawing area to the drc error */
 void pcb_view_goto(pcb_view_t *item);
 
+/* Allocate a new, floating (unlinked) view with no data or bbox */
+pcb_view_t *pcb_view_new(const char *type, const char *title, const char *explanation);
 
 /*** temporary, until moved out to a plugin ***/
 int pcb_drc_all(pcb_view_list_t *lst);

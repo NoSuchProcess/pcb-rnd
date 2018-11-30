@@ -36,9 +36,10 @@
 #undef TDL_DONT_UNDEF
 #include <genlist/gentdlist_undef.h>
 
-
 #include "actions.h"
+#include "compat_misc.h"
 
+static unsigned long int pcb_view_next_uid = 0;
 
 void pcb_view_free(pcb_view_t *item)
 {
@@ -88,5 +89,23 @@ void pcb_view_goto(pcb_view_t *item)
 		argv[4].type = FGW_COORD; fgw_coord(&argv[4]) = item->bbox.Y2;
 		pcb_actionv_bin("zoom", &res, 5, argv);
 	}
+}
+
+pcb_view_t *pcb_view_new(const char *type, const char *title, const char *explanation)
+{
+	pcb_view_t *v = calloc(sizeof(pcb_view_t), 1);
+
+	pcb_view_next_uid++;
+	v->uid = pcb_view_next_uid;
+
+	if (type == NULL) type = "";
+	if (title == NULL) title = "";
+	if (explanation == NULL) explanation = "";
+
+	v->type = pcb_strdup(type);
+	v->title = pcb_strdup(title);
+	v->explanation = pcb_strdup(explanation);
+
+	return v;
 }
 

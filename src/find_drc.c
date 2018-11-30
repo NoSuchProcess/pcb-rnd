@@ -41,21 +41,12 @@
 static void GotoError(void);
 static pcb_bool DRCFind(pcb_view_list_t *lst, int What, void *ptr1, void *ptr2, void *ptr3);
 
-static unsigned long int pcb_drc_next_uid = 0;
-
 static pcb_view_t *pcb_drc_violation_new(
 	const char *type, const char *title, const char *explanation,
 	pcb_bool have_measured, pcb_coord_t measured_value,
 	pcb_coord_t required_value, pcb_idpath_list_t objs[2])
 {
-	pcb_view_t *violation = calloc(sizeof(pcb_view_t), 1);
-
-	pcb_drc_next_uid++;
-	violation->uid = pcb_drc_next_uid;
-
-	violation->type = pcb_strdup(type);
-	violation->title = pcb_strdup(title);
-	violation->explanation = pcb_strdup(explanation);
+	pcb_view_t *violation = pcb_view_new(type, title, explanation);
 
 	violation->data_type = PCB_VIEW_DRC;
 	violation->data.drc.have_measured = have_measured;
