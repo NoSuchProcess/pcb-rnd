@@ -28,6 +28,7 @@
 - FEATURE: make propset() able to change board properties if first arg is "board" (change baord size) [report: rqsall]
 - FEATURE: lesstif does not allow "save as" in non alien format [report: erich]
 - FEATURE: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
+- FEATURE: padstack editor: indicate if a proto layer does not map to current board layer [report: Erich]
 + BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
 - CLEANUP: boardflip rewrite: use data_mirror
 	- BUG: can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
@@ -54,6 +55,8 @@
 - BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
+- BUG: scconfig: if libgd is not detected, there's an extra error on disable-gd-gif [report: Erich]
+
 
 2. For later releases ===============================================================================
 - CLEANUP: remove pcb_rubber_band_alloc() and use genvector
