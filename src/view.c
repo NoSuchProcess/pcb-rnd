@@ -27,6 +27,9 @@
  */
 #include "config.h"
 
+#include "idpath.h"
+#include <genlist/gentdlist_undef.h>
+
 #define TDL_DONT_UNDEF
 #include "view.h"
 #include <genlist/gentdlist_impl.c>
