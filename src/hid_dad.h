@@ -59,6 +59,11 @@ do { \
 	} \
 	free(table); \
 	free(table ## _result); \
+	table = NULL; \
+	table ## _result = NULL; \
+	table ## _hid_ctx = NULL; \
+	table ## _len = 0; \
+	table ## _alloced = 0; \
 } while(0)
 
 #define PCB_DAD_NEW(table, title, descr, caller_data, modal, ev_cb) \
