@@ -63,6 +63,7 @@
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"
 #include "obj_subc_parent.h"
+#include "hid_dad.h"
 
 #include <genregex/regex_sei.h>
 
@@ -72,6 +73,30 @@ static const char pcb_acts_Report[] = "Report(Object|DrillReport|FoundPins|NetLe
 static const char pcb_acth_Report[] = "Produce various report.";
 
 #define USER_UNITMASK (conf_core.editor.grid_unit->allow)
+
+
+typedef struct rdialog_ctx_s {
+	PCB_DAD_DECL_NOINIT(dlg)
+} rdialog_ctx_t;
+
+static void rdialog_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+{
+	rdialog_ctx_t *ctx = caller_data;
+	PCB_DAD_FREE(ctx->dlg);
+	free(ctx);
+}
+
+static void rdialog(const char *name, const char *content)
+{
+	rdialog_ctx_t *ctx = calloc(sizeof(rdialog_ctx_t), 1);
+
+	PCB_DAD_BEGIN_VBOX(ctx->dlg);
+		PCB_DAD_LABEL(ctx->dlg, content);
+	PCB_DAD_END(ctx->dlg);
+
+	PCB_DAD_NEW(ctx->dlg, name, "EDIT THIS", ctx, pcb_false, rdialog_close_cb);
+}
+
 
 static int report_drills(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -112,8 +137,9 @@ static int report_drills(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			thestring++;
 	}
 	drill_info_free(AllDrills);
+
 	/* create dialog box */
-	pcb_gui->report_dialog("Drill Report", stringlist);
+	rdialog("Drill Report", stringlist);
 
 	free(stringlist);
 	return 0;
@@ -386,7 +412,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	if ((how != NULL) && (strcmp(how, "log") == 0))
 		pcb_message(PCB_MSG_INFO, "--- Report ---\n%s---\n", report);
 	else
-		pcb_gui->report_dialog("Report", report);
+		rdialog("Report", report);
 	free(report);
 
 	PCB_ACT_IRES(0);
@@ -411,7 +437,7 @@ static int report_found_pins(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_append_printf(&list, "%s-%s,%c", subc->refdes, o->term, ((col++ % (conf_report.plugins.report.columns + 1)) == conf_report.plugins.report.columns) ? '\n' : ' ');
 	}
 
-	pcb_gui->report_dialog("Report", list.array);
+	rdialog("Report", list.array);
 	gds_uninit(&list);
 	return 0;
 }
