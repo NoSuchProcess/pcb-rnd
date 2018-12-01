@@ -527,8 +527,13 @@ struct pcb_hid_s {
 	/* Place format/data/len on the clipboard; return 0 on success */
 	int (*clip_set)(pcb_hid_clipfmt_t format, const void *data, size_t len);
 
-	/* retrieve format/data/len from the clipboard; return 0 on success */
-	int (*clip_get)(pcb_hid_clipfmt_t *format, const void **data, size_t *len);
+	/* retrieve format/data/len from the clipboard; return 0 on success;
+	   data is a copy of the data, modifiable by the caller */
+	int (*clip_get)(pcb_hid_clipfmt_t *format, void **data, size_t *len);
+
+	/* release the data from the last clip_get(); clip_get() and clip_free() should
+	   be called in pair */
+	int (*clip_free)(pcb_hid_clipfmt_t format, void *data, size_t len);
 };
 
 /* One of these functions (in the common code) will be called whenever the GUI

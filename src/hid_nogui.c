@@ -462,13 +462,25 @@ static int nogui_clip_set(pcb_hid_clipfmt_t format, const void *data, size_t len
 static int nogui_clip_get(pcb_hid_clipfmt_t *format, const void **data, size_t *len)
 {
 	if (clip_data == NULL) {
+		*data = NULL;
 		clip_warn();
 		return -1;
 	}
+	*data = malloc(clip_len);
+	if (*data == NULL) {
+		*data = NULL;
+		return -1;
+	}
+
+	memcpy(*data, clip_data, clip_len);
 	*format = clip_format;
-	*data = clip_data;
 	*len = clip_len;
 	return clip_warn();
+}
+
+static int nogui_clip_free(pcb_hid_clipfmt_t format, void *data, size_t len)
+{
+	free(data);
 }
 
 
@@ -525,6 +537,7 @@ void pcb_hid_nogui_init(pcb_hid_t * hid)
 	hid->create_menu = nogui_create_menu;
 	hid->clip_set = nogui_clip_set;
 	hid->clip_get = nogui_clip_get;
+	hid->clip_free = nogui_clip_free;
 }
 
 static pcb_hid_t nogui_hid;
