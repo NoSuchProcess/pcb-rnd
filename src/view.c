@@ -253,7 +253,7 @@ void pcb_view_save(pcb_view_t *v, gds_t *dst, const char *prefix)
 			break;
 		case PCB_VIEW_DRC:
 			pcb_append_printf(dst, "%s  data_type = drc\n", prefix);
-			pcb_append_printf(dst, "%s  data {\n", prefix);
+			pcb_append_printf(dst, "%s  ha:data {\n", prefix);
 			pcb_append_printf(dst, "%s    required_value = %.08$$mm\n", prefix, v->data.drc.required_value);
 			if (v->data.drc.have_measured)
 				pcb_append_printf(dst, "%s    measured_value = %.08$$mm\n", prefix, v->data.drc.measured_value);
@@ -334,12 +334,16 @@ static void pcb_view_load_objs(pcb_view_t *dst, int grp, lht_node_t *olist)
 	}
 }
 
+#define LOADERR "Error loading view: "
+
 pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
 {
 	load_ctx_t *ctx = load_ctx;
 	lht_node_t *n, *c;
 	unsigned long int uid;
 	char *end;
+	pcb_view_type_t data_type;
+	pcb_bool succ;
 
 	if (ctx->next == NULL)
 		return NULL;
@@ -351,10 +355,22 @@ pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
 	if (*end != '\0')
 		return NULL;
 
+	data_type = PCB_VIEW_PLAIN;
+	n = lht_dom_hash_get(ctx->next, "data_type");
+	if ((n != NULL) && (n->type == LHT_TEXT)) {
+		if (strcmp(n->data.text.value, "drc") == 0)
+			data_type = PCB_VIEW_DRC;
+		else if (strcmp(n->data.text.value, "plain") == 0)
+			data_type = PCB_VIEW_PLAIN;
+		else
+			return NULL;
+	}
+
 	if (dst == NULL)
 		dst = calloc(sizeof(pcb_view_t), 1);
 
 	dst->uid = uid;
+	dst->data_type= data_type;
 
 	n = lht_dom_hash_get(ctx->next, "type");
 	if ((n != NULL) && (n->type == LHT_TEXT)) {
@@ -377,7 +393,6 @@ pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
 	n = lht_dom_hash_get(ctx->next, "bbox");
 	if ((n != NULL) && (n->type == LHT_LIST)) {
 		int ok = 0;
-		pcb_bool succ;
 
 		c = n->data.list.first;
 		if ((c != NULL) && (c->type == LHT_TEXT)) {
@@ -407,7 +422,6 @@ pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
 	n = lht_dom_hash_get(ctx->next, "xy");
 	if ((n != NULL) && (n->type == LHT_LIST)) {
 		int ok = 0;
-		pcb_bool succ;
 
 		c = n->data.list.first;
 		if ((c != NULL) && (c->type == LHT_TEXT)) {
@@ -431,6 +445,29 @@ pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
 	n = lht_dom_hash_get(ctx->next, "objs.1");
 	if ((n != NULL) && (n->type == LHT_LIST))
 		pcb_view_load_objs(dst, 1, n);
+
+	switch(dst->data_type) {
+		case PCB_VIEW_PLAIN: break;
+		case PCB_VIEW_DRC:
+			n = lht_dom_hash_get(ctx->next, "data");
+			if ((n != NULL) && (n->type == LHT_HASH)) {
+				c = lht_dom_hash_get(n, "required_value");
+				if ((c != NULL) && (c->type == LHT_TEXT)) {
+					dst->data.drc.required_value = pcb_get_value(c->data.text.value, NULL, NULL, &succ);
+					if (!succ)
+						pcb_message(PCB_MSG_ERROR, LOADERR "invalid drc required value: '%s'\n", c->data.text.value);
+				}
+				c = lht_dom_hash_get(n, "measured_value");
+				if ((c != NULL) && (c->type == LHT_TEXT)) {
+					dst->data.drc.measured_value = pcb_get_value(c->data.text.value, NULL, NULL, &succ);
+					if (succ)
+						dst->data.drc.have_measured = 1;
+					else
+						pcb_message(PCB_MSG_ERROR, LOADERR "invalid drc measured value: '%s'\n", c->data.text.value);
+				}
+			}
+			break;
+	}
 
 	ctx->next = ctx->next->next;
 	return dst;
