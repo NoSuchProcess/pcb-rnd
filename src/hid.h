@@ -126,6 +126,10 @@ typedef struct pcb_menu_prop_s {
 	const char *cookie;     /* used for cookie based removal */
 } pcb_menu_prop_t;
 
+typedef enum pcb_hid_clipfmt_e {
+	PCB_HID_CLIPFMT_TEXT              /* plain text (c string with the \0 included) */
+} pcb_hid_clipfmt_t;
+
 typedef struct pcb_hid_s pcb_hid_t;
 
 /* This is the main HID structure.  */
@@ -518,6 +522,13 @@ struct pcb_hid_s {
 	    - if cursor is not NULL, load the value with the cursor (or -1 if not supported)
 	   Return the current command entry content in a read-only string */
 	const char *(*command_entry)(const char *ovr, int *cursor);
+
+	/*** clipboard handling for GUI HIDs ***/
+	/* Place format/data/len on the clipboard; return 0 on success */
+	int (*clip_set)(pcb_hid_clipfmt_t format, const void *data, size_t len);
+
+	/* retrieve format/data/len from the clipboard; return 0 on success */
+	int (*clip_get)(pcb_hid_clipfmt_t *format, const void **data, size_t *len);
 };
 
 /* One of these functions (in the common code) will be called whenever the GUI
