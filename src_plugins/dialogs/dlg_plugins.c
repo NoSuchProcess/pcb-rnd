@@ -28,10 +28,10 @@ static const char pcb_acts_ManagePlugins[] = "ManagePlugins()\n";
 static const char pcb_acth_ManagePlugins[] = "Manage plugins dialog.";
 static fgw_error_t pcb_act_ManagePlugins(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_DAD_DECL(dlg);
 	pup_plugin_t *p;
 	int nump = 0, numb = 0;
 	gds_t str;
+	PCB_DAD_DECL(dlg);
 
 	gds_init(&str);
 
