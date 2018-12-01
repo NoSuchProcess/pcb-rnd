@@ -1,11 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- CLEANUP: DRC rewrite: extend the DRC window to be a generic location list (or rather rewrite with DAD!)
-	- import sch. shouldn't select elements to be removed but put them on a drc list
-	- FEATURE: lesstif clipboard API with XmClipboardCopy
-	- DOC: document the view lht format
-	- BUG: xor draw stops working after the first preview
 - CLEANUP: rewrite the preview API:
 	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
 	- there should be a view context in core associated with this, that contains flips so the view can be decoupled from board flip config (library preview)
@@ -18,6 +13,12 @@
 - CLEANUP: dad: make the implicit dialog ok/cancel buttons configurable or do not use them at all; e.g. export dialog is confusing [report: Cyril, ml2409]
 - CLEANUP: library window DAD-ification: remove pcb_act_LibraryShow()
 	- FEATURE: library window: allow long tags and long location text to split
+- FEATURE: view lists
+	- FEATURE: import sch. shouldn't select elements to be removed but put them on a drc list
+	- FEATURE: lesstif clipboard API with XmClipboardCopy
+	- FEATURE: generic, non-modal, multi-instance user view list DAD dialog
+	- DOC: document the view lht format
+	- BUG: xor draw stops working after the first preview
 - FEATURE: auto calculated alternative action names to convert between CamelCase and underscores [report: igor2]
 - FEATURE: session persistent DAD message log (messages are flushed after dialog is closed?) [report: Miloh]
 - FEATURE: make propset() able to change board properties if first arg is "board" (change baord size) [report: rqsall]
