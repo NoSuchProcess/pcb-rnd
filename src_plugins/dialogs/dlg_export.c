@@ -76,9 +76,27 @@ static void export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 	pcb_message(PCB_MSG_ERROR, "Internal error: can not find which exporter to call\n");
 }
 
+/* copy back the attribute values from the DAD dialog to exporter dialog so
+   that values are preserved */
+static void copy_attrs_back(export_ctx_t *ctx)
+{
+	int n, i;
+
+	for(n = 0; n < ctx->len; n++) {
+		int numa = export_ctx.numa[n], firsta = export_ctx.first_attr[n];
+		pcb_hid_attribute_t *attrs = export_ctx.ea[n];
+
+		for(i = 0; i < numa; i++)
+			memcpy(&attrs[i].default_val, &ctx->dlg[i+firsta].default_val, sizeof(pcb_hid_attr_val_t));
+	}
+}
+
 static void export_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	export_ctx_t *ctx = caller_data;
+
+	copy_attrs_back(ctx);
+
 	PCB_DAD_FREE(ctx->dlg);
 	free(ctx->hid);
 	free(ctx->tab_name);
