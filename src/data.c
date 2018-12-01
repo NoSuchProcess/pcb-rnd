@@ -651,7 +651,8 @@ pcb_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const pcb_b
 	if (!vis_only || PCB->RatOn)
 		if (types & PCB_OBJ_RAT)  rsearch(data->rat_tree);
 
-	if (types & PCB_OBJ_PSTK) rsearch(data->padstack_tree);
+	if (!vis_only || PCB->pstk_on || PCB->hole_on)
+		if (types & PCB_OBJ_PSTK) rsearch(data->padstack_tree);
 
 	if (!vis_only || PCB->SubcOn)
 		if (types & PCB_OBJ_SUBC) rsearch(data->subc_tree);
