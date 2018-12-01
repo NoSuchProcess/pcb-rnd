@@ -238,7 +238,7 @@ void pcb_view_save(pcb_view_t *v, gds_t *dst, const char *prefix)
 			pcb_idpath_t *i;
 			pcb_append_printf(dst, "%s  li:objs.%d {\n", prefix, g);
 			for(i = pcb_idpath_list_first(&v->objs[g]); i != NULL; i = pcb_idpath_list_next(i)) {
-				pcb_append_printf(dst, "%s    {", prefix);
+				pcb_append_printf(dst, "%s    li:id {", prefix);
 				for(n = 0; n < i->len; n++)
 					pcb_append_printf(dst, "%ld;", i->id[n]);
 				pcb_append_printf(dst, "}\n", prefix);
@@ -310,6 +310,29 @@ void *pcb_view_load_start_str(const char *src)
 	return NULL;
 }
 
+static void pcb_view_load_objs(pcb_view_t *dst, int grp, lht_node_t *olist)
+{
+	lht_node_t *n, *m;
+	for(n = olist->data.list.first; n != NULL; n = n->next) {
+		if ((n->type == LHT_LIST) && (strcmp(n->name, "id") == 0)) {
+			pcb_idpath_t *i;
+			int len, cnt;
+
+			for(m = n->data.list.first, len = 0; m != NULL; m = m->next) {
+				if (m->type != LHT_TEXT)
+					goto nope;
+				len++;
+			}
+
+			i = pcb_idpath_alloc(len);
+			for(m = n->data.list.first, cnt = 0; m != NULL; m = m->next, cnt++)
+				i->id[cnt] = strtol(m->data.text.value, NULL, 10);
+
+			pcb_idpath_list_append(&dst->objs[grp], i);
+		}
+		nope:;
+	}
+}
 
 pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
 {
@@ -400,6 +423,14 @@ pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
 		if ((c == NULL) && (ok == 2))
 			dst->have_bbox = 1;
 	}
+
+	n = lht_dom_hash_get(ctx->next, "objs.0");
+	if ((n != NULL) && (n->type == LHT_LIST))
+		pcb_view_load_objs(dst, 0, n);
+
+	n = lht_dom_hash_get(ctx->next, "objs.1");
+	if ((n != NULL) && (n->type == LHT_LIST))
+		pcb_view_load_objs(dst, 1, n);
 
 	ctx->next = ctx->next->next;
 	return dst;
