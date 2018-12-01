@@ -315,6 +315,8 @@ pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
 {
 	load_ctx_t *ctx = load_ctx;
 	lht_node_t *n, *c;
+	unsigned long int uid;
+	char *end;
 
 	if (ctx->next == NULL)
 		return NULL;
@@ -322,8 +324,14 @@ pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
 	if ((ctx->next->type != LHT_HASH) || (strncmp(ctx->next->name, "view.", 5) != 0))
 		return NULL;
 
+	uid = strtoul(ctx->next->name + 5, &end, 10);
+	if (*end != '\0')
+		return NULL;
+
 	if (dst == NULL)
 		dst = calloc(sizeof(pcb_view_t), 1);
+
+	dst->uid = uid;
 
 	n = lht_dom_hash_get(ctx->next, "type");
 	if ((n != NULL) && (n->type == LHT_TEXT)) {
