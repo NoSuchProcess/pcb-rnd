@@ -384,7 +384,7 @@ static void view_copy_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 			pcb_view_save(v, &tmp, "  ");
 	}
 	gds_append_str(&tmp, "}\n");
-	printf("%s\n", tmp.array);
+	pcb_gui->clip_set(PCB_HID_CLIPFMT_TEXT, tmp.array, tmp.used+1);
 	gds_uninit(&tmp);
 }
 
