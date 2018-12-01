@@ -457,7 +457,7 @@ static pcb_bool UndoOtherSide(UndoListTypePtr Entry)
 		pcb_subc_t *subc = (pcb_subc_t *)ptr3;
 		if (pcb_undo_and_draw)
 			EraseSubc(subc);
-		pcb_subc_change_side(&subc, Entry->Data.Move.DY);
+		pcb_subc_change_side(subc, Entry->Data.Move.DY);
 		if (pcb_undo_and_draw)
 			DrawSubc(subc);
 		return pcb_true;

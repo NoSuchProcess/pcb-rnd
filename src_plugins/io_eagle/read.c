@@ -1420,7 +1420,7 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 			}
 
 			if (back)
-				pcb_subc_change_side(&new_subc, 2 * y - st->pcb->MaxHeight);
+				pcb_subc_change_side(new_subc, 2 * y - st->pcb->MaxHeight);
 
 			size_bump(st, new_subc->BoundingBox.X2, new_subc->BoundingBox.Y2);
 		}

@@ -691,7 +691,7 @@ void doPerturb(vtp0_t *selected, PerturbationType *pt, pcb_bool undo)
 			else {
 				pcb_cardinal_t n;
 				pcb_coord_t y = bb->Y1;
-				pcb_subc_change_side(&subc, (bb->Y1+bb->Y2)/2);
+				pcb_subc_change_side(subc, (bb->Y1+bb->Y2)/2);
 				/* mirroring moves the subc.  move it back. */
 				pcb_subc_move(subc, 0, y - subc->BoundingBox.Y1, 1);
 				for(n = 0; n < vtp0_len(selected); n++)

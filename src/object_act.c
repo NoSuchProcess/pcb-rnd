@@ -267,7 +267,7 @@ static fgw_error_t pcb_act_Flip(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if ((pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID) {
 				pcb_subc_t *subc = (pcb_subc_t *)ptrtmp;
 				pcb_undo_freeze_serial();
-				pcb_subc_change_side(&subc, 2 * pcb_crosshair.Y - PCB->MaxHeight);
+				pcb_subc_change_side(subc, 2 * pcb_crosshair.Y - PCB->MaxHeight);
 				pcb_undo_unfreeze_serial();
 				pcb_undo_inc_serial();
 				pcb_draw();
@@ -554,7 +554,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				pcb_coord_t pcx = 0, pcy = 0;
 				pcb_subc_get_origin(psc, &pcx, &pcy);
 				if (!orig_on_top)
-					pcb_subc_change_side(&psc, pcy * 2 - PCB->MaxHeight);
+					pcb_subc_change_side(psc, pcy * 2 - PCB->MaxHeight);
 				if (orig_rot != 0) {
 					double cosa, sina;
 					cosa = cos(orig_rot / PCB_RAD_TO_DEG);

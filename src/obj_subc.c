@@ -1019,7 +1019,7 @@ void *pcb_subcop_copy(pcb_opctx_t *ctx, pcb_subc_t *src)
 		pcb_undo_inc_serial();
 		last = pcb_undo_serial();
 #warning subc TODO: should not depend on crosshair, because of automatic/scripted placement; test case 1: load subc footprint in buffer, swap side to bottom, place; test case 2: bug_files/cmd_element, execute the cmd while being on the bottom side, without crosshair set subcircuits catapult to negative y
-		pcb_subc_change_side(&sc, 2 * pcb_crosshair.Y - PCB->MaxHeight);
+		pcb_subc_change_side(sc, 2 * pcb_crosshair.Y - PCB->MaxHeight);
 		pcb_undo_truncate_from(last);
 		
 	}
@@ -1108,7 +1108,7 @@ pcb_bool pcb_selected_subc_change_side(void)
 		PCB_SUBC_LOOP(PCB->Data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc)) {
-				change |= pcb_subc_change_side(&subc, 2 * pcb_crosshair.Y - PCB->MaxHeight);
+				change |= pcb_subc_change_side(subc, 2 * pcb_crosshair.Y - PCB->MaxHeight);
 			}
 		}
 		PCB_END_LOOP;
@@ -1527,41 +1527,41 @@ void pcb_subc_scale(pcb_data_t *data, pcb_subc_t *subc, double sx, double sy, do
 }
 
 
-pcb_bool pcb_subc_change_side(pcb_subc_t **subc, pcb_coord_t yoff)
+pcb_bool pcb_subc_change_side(pcb_subc_t *subc, pcb_coord_t yoff)
 {
 	int n;
 	pcb_board_t *pcb;
 	pcb_data_t *data;
 
-	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, *subc))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, subc))
 		return pcb_false;
 
-	assert((*subc)->parent_type = PCB_PARENT_DATA);
-	data = (*subc)->parent.data;
+	assert(subc->parent_type = PCB_PARENT_DATA);
+	data = subc->parent.data;
 	pcb = pcb_data_get_top(data);
 
 	/* mirror object geometry and stackup */
 
 	if ((data != NULL) && (data->subc_tree != NULL))
-		pcb_r_delete_entry(data->subc_tree, (pcb_box_t *)(*subc));
+		pcb_r_delete_entry(data->subc_tree, (pcb_box_t *)subc);
 
 	pcb_undo_freeze_add();
-	pcb_data_mirror((*subc)->data, yoff, PCB_TXM_SIDE, 1);
+	pcb_data_mirror(subc->data, yoff, PCB_TXM_SIDE, 1);
 	pcb_undo_unfreeze_add();
 
-	for(n = 0; n < (*subc)->data->LayerN; n++) {
-		pcb_layer_t *ly = (*subc)->data->Layer + n;
+	for(n = 0; n < subc->data->LayerN; n++) {
+		pcb_layer_t *ly = subc->data->Layer + n;
 		ly->meta.bound.type = pcb_layer_mirror_type(ly->meta.bound.type);
 		ly->meta.bound.stack_offs = -ly->meta.bound.stack_offs;
 	}
-	pcb_subc_rebind(pcb, *subc);
+	pcb_subc_rebind(pcb, subc);
 
-	pcb_subc_bbox(*subc);
+	pcb_subc_bbox(subc);
 
 	if ((data != NULL) && (data->subc_tree != NULL))
-		pcb_r_insert_entry(data->subc_tree, (pcb_box_t *)(*subc));
+		pcb_r_insert_entry(data->subc_tree, (pcb_box_t *)subc);
 
-	pcb_undo_add_subc_to_otherside(PCB_OBJ_SUBC, *subc, *subc, *subc, yoff);
+	pcb_undo_add_subc_to_otherside(PCB_OBJ_SUBC, subc, subc, subc, yoff);
 
 	return pcb_true;
 }

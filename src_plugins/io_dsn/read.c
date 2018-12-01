@@ -1569,7 +1569,7 @@ static int dsn_parse_place_component(dsn_read_t *ctx, gsxl_node_t *plr, int mirr
 
 		if (mirror_first) {
 			if (need_mirror)
-				pcb_subc_change_side(&nsc, crd[1] * 2 - PCB->MaxHeight);
+				pcb_subc_change_side(nsc, crd[1] * 2 - PCB->MaxHeight);
 			if (rot != 0.0)
 				pcb_subc_rotate(nsc, crd[0], crd[1], cos(rot / PCB_RAD_TO_DEG), sin(rot / PCB_RAD_TO_DEG), rot);
 		}
@@ -1577,7 +1577,7 @@ static int dsn_parse_place_component(dsn_read_t *ctx, gsxl_node_t *plr, int mirr
 			if (rot != 0.0)
 				pcb_subc_rotate(nsc, crd[0], crd[1], cos(rot / PCB_RAD_TO_DEG), sin(rot / PCB_RAD_TO_DEG), rot);
 			if (need_mirror)
-				pcb_subc_change_side(&nsc, crd[1] * 2 - PCB->MaxHeight);
+				pcb_subc_change_side(nsc, crd[1] * 2 - PCB->MaxHeight);
 		}
 	}
 
