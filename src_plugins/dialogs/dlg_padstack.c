@@ -105,6 +105,9 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 	char shp_found[32];
 	pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape(pse->ps);
 
+	if (ts == NULL)
+		return;
+
 	htype = pcb_pstk_bbspan(pse->pcb, pse->ps, &top_gid, &bottom_gid, &proto);
 	top_grp = pcb_get_layergrp(pse->pcb, top_gid);
 	bottom_grp = pcb_get_layergrp(pse->pcb, bottom_gid);
