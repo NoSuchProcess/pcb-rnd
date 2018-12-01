@@ -29,6 +29,7 @@
 #define PCB_VIEW_H
 
 #include <genlist/gendlist.h>
+#include <genvector/gds_char.h>
 #include "unit.h"
 #include "idpath.h"
 #include "box.h"
@@ -109,5 +110,9 @@ void pcb_view_append_obj(pcb_view_t *view, int grp, pcb_any_obj_t *obj);
 
 /* Calculate and set v->bbox from v->objs[] bboxes */
 void pcb_view_set_bbox_by_objs(pcb_data_t *data, pcb_view_t *v);
+
+/* Serialize/save a view into dst as a lihata string, each line optionally
+   prefixed (prefix can be NULL) */
+void pcb_view_save(pcb_view_t *v, gds_t *dst, const char *prefix);
 
 #endif
