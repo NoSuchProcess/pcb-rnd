@@ -290,18 +290,8 @@ void pcb_view_load_end(void *load_ctx)
 	free(ctx);
 }
 
-void *pcb_view_load_start_str(const char *src)
+static void *view_load_post(load_ctx_t *ctx)
 {
-	load_ctx_t *ctx = malloc(sizeof(load_ctx_t));
-
-	ctx->doc = lht_dom_init();
-
-	for(; *src != '\0'; src++) {
-		lht_err_t err = lht_dom_parser_char(ctx->doc, *src);
-		if ((err != LHTE_SUCCESS) && (err != LHTE_STOP))
-			goto error;
-	}
-
 	if (ctx->doc->root == NULL)
 		goto error;
 
@@ -322,6 +312,22 @@ void *pcb_view_load_start_str(const char *src)
 	error:;
 	pcb_view_load_end(ctx);
 	return NULL;
+}
+
+void *pcb_view_load_start_str(const char *src)
+{
+	load_ctx_t *ctx = malloc(sizeof(load_ctx_t));
+
+	ctx->doc = lht_dom_init();
+
+	for(; *src != '\0'; src++) {
+		lht_err_t err = lht_dom_parser_char(ctx->doc, *src);
+		if ((err != LHTE_SUCCESS) && (err != LHTE_STOP)) {
+			pcb_view_load_end(ctx);
+			return NULL;
+		}
+	}
+	return view_load_post(ctx);
 }
 
 #define LOADERR "Error loading view: "
