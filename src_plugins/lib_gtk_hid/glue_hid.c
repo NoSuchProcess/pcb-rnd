@@ -473,6 +473,45 @@ static const char *ghid_command_entry(const char *ovr, int *cursor)
 	return pcb_gtk_cmd_command_entry(&ghidgui->topwin.cmd, ovr, cursor);
 }
 
+static int ghid_clip_set(pcb_hid_clipfmt_t format, const void *data, size_t len)
+{
+	GtkClipboard *cbrd = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+
+	switch(format) {
+		case PCB_HID_CLIPFMT_TEXT:
+			gtk_clipboard_set_text(cbrd, data, len);
+			break;
+	}
+	return 0;
+}
+
+
+
+int ghid_clip_get(pcb_hid_clipfmt_t *format, void **data, size_t *len)
+{
+	GtkClipboard *cbrd = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+
+	if (gtk_clipboard_wait_is_text_available(cbrd)) {
+		gchar *txt = gtk_clipboard_wait_for_text(cbrd);
+		*format = PCB_HID_CLIPFMT_TEXT;
+		*data = txt;
+		*len = strlen(txt) + 1;
+		return 0;
+	}
+
+	return -1;
+}
+
+int ghid_clip_free(pcb_hid_clipfmt_t format, void *data, size_t len)
+{
+	switch(format) {
+		case PCB_HID_CLIPFMT_TEXT:
+			g_free(data);
+			break;
+	}
+	return 0;
+}
+
 void ghid_glue_hid_init(pcb_hid_t *dst)
 {
 	memset(dst, 0, sizeof(pcb_hid_t));
@@ -535,6 +574,10 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->remove_menu = ghid_remove_menu;
 	dst->remove_menu_node = ghid_remove_menu_node;
 	dst->update_menu_checkbox = ghid_update_menu_checkbox;
+
+	dst->clip_set  = ghid_clip_set;
+	dst->clip_get  = ghid_clip_get;
+	dst->clip_free = ghid_clip_free;
 
 	dst->usage = ghid_usage;
 }
