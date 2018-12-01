@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 - CLEANUP: DRC rewrite: extend the DRC window to be a generic location list (or rather rewrite with DAD!)
-	- io warn: io infra for save incompatibility note with DRC list
 	- import sch. shouldn't select elements to be removed but put them on a drc list
 	- FEATURE: lesstif clipboard API with XmClipboardCopy
 	- DOC: document the view lht format
