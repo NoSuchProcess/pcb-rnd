@@ -229,9 +229,9 @@ void pcb_view_save(pcb_view_t *v, gds_t *dst, const char *prefix)
 	view_append_str(dst, prefix, "title", v->title);
 	view_append_str(dst, prefix, "description", v->description);
 	if (v->have_bbox)
-		pcb_append_printf(dst, "%s  bbox = {%.08$$mm; %.08$$mm; %.08$$mm; %.08$$mm;}\n", prefix, v->bbox.X1, v->bbox.Y1, v->bbox.X2, v->bbox.Y2);
+		pcb_append_printf(dst, "%s  li:bbox = {%.08$$mm; %.08$$mm; %.08$$mm; %.08$$mm;}\n", prefix, v->bbox.X1, v->bbox.Y1, v->bbox.X2, v->bbox.Y2);
 	if (v->have_xy)
-		pcb_append_printf(dst, "%s  xy = {%.08$$mm; %.08$$mm;}\n", prefix, v->x, v->y);
+		pcb_append_printf(dst, "%s  li:xy = {%.08$$mm; %.08$$mm;}\n", prefix, v->x, v->y);
 
 	for(g = 0; g < 2; g++) {
 		if (pcb_idpath_list_length(&v->objs[g]) > 0) {
