@@ -341,7 +341,8 @@ int pcb_actionv(const char *name, int argc, const char **argsv)
 	res.type = FGW_INVALID;
 	if (pcb_actionv_(f, &res, argc+1, argv) != 0)
 		return -1;
-	fgw_arg_conv(&pcb_fgw, &res, FGW_INT);
+	if (fgw_arg_conv(&pcb_fgw, &res, FGW_INT) != 0)
+		return -1;
 	return res.val.nat_int;
 }
 
