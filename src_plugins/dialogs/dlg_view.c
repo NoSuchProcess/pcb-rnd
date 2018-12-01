@@ -370,7 +370,7 @@ static void view_copy_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 
 	gds_init(&tmp);
 
-	gds_append_str(&tmp, "li:view_list.v1 {\n");
+	pcb_view_save_list_begin(&tmp, NULL);
 	if (r->user_data2.lng == 0) {
 		/* dump a whole category */
 		for(rc = gdl_first(&r->children); rc != NULL; rc = gdl_next(&r->children, rc)) {
@@ -391,7 +391,7 @@ static void view_copy_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 				pcb_view_free(v);
 		}
 	}
-	gds_append_str(&tmp, "}\n");
+	pcb_view_save_list_end(&tmp, NULL);
 	pcb_gui->clip_set(PCB_HID_CLIPFMT_TEXT, tmp.array, tmp.used+1);
 	gds_uninit(&tmp);
 	if (cut)

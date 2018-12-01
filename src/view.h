@@ -111,6 +111,14 @@ void pcb_view_append_obj(pcb_view_t *view, int grp, pcb_any_obj_t *obj);
 /* Calculate and set v->bbox from v->objs[] bboxes */
 void pcb_view_set_bbox_by_objs(pcb_data_t *data, pcb_view_t *v);
 
+
+/*** Save a serialized view (or list of views) ***/
+
+/* In case of saving a list or saving into a file, call begin/end before/after
+   saving the view item */
+void pcb_view_save_list_begin(gds_t *dst, const char *prefix);
+void pcb_view_save_list_end(gds_t *dst, const char *prefix);
+
 /* Serialize/save a view into dst as a lihata string, each line optionally
    prefixed (prefix can be NULL) */
 void pcb_view_save(pcb_view_t *v, gds_t *dst, const char *prefix);

@@ -217,6 +217,20 @@ static void view_append_str(gds_t *dst, const char *prefix, const char *key, con
 	gds_append_str(dst, "}\n");
 }
 
+void pcb_view_save_list_begin(gds_t *dst, const char *prefix)
+{
+	if (prefix != NULL)
+		gds_append_str(dst, prefix);
+	gds_append_str(dst, "li:view_list.v1 {\n");
+}
+
+void pcb_view_save_list_end(gds_t *dst, const char *prefix)
+{
+	if (prefix != NULL)
+		gds_append_str(dst, prefix);
+	gds_append_str(dst, "}\n");
+}
+
 void pcb_view_save(pcb_view_t *v, gds_t *dst, const char *prefix)
 {
 	int g, n;
