@@ -459,7 +459,7 @@ static int nogui_clip_set(pcb_hid_clipfmt_t format, const void *data, size_t len
 	return clip_warn();
 }
 
-static int nogui_clip_get(pcb_hid_clipfmt_t *format, const void **data, size_t *len)
+static int nogui_clip_get(pcb_hid_clipfmt_t *format, void **data, size_t *len)
 {
 	if (clip_data == NULL) {
 		*data = NULL;
