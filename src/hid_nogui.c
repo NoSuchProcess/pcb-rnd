@@ -431,6 +431,47 @@ static void nogui_create_menu(const char *menu_path, const pcb_menu_prop_t *prop
 {
 }
 
+static int clip_warn(void)
+{
+	static int warned = 0;
+	if (!warned) {
+		pcb_message(PCB_MSG_ERROR, "The current GUI HID does not support clipboard.\nClipboard is emulated, not shared withother programs\n");
+		warned = 1;
+	}
+	return 0;
+}
+
+static void *clip_data = NULL;
+static size_t clip_len;
+static pcb_hid_clipfmt_t clip_format;
+
+static int nogui_clip_set(pcb_hid_clipfmt_t format, const void *data, size_t len)
+{
+	free(clip_data);
+	clip_data = malloc(len);
+	if (clip_data != NULL) {
+		memcpy(clip_data, data, len);
+		clip_len = len;
+		clip_format = format;
+	}
+	else
+		clip_data = NULL;
+	return clip_warn();
+}
+
+static int nogui_clip_get(pcb_hid_clipfmt_t *format, const void **data, size_t *len)
+{
+	if (clip_data == NULL) {
+		clip_warn();
+		return -1;
+	}
+	*format = clip_format;
+	*data = clip_data;
+	*len = clip_len;
+	return clip_warn();
+}
+
+
 void pcb_hid_nogui_init(pcb_hid_t * hid)
 {
 	hid->get_export_options = nogui_get_export_options;
@@ -482,6 +523,8 @@ void pcb_hid_nogui_init(pcb_hid_t * hid)
 	hid->beep = nogui_beep;
 	hid->progress = nogui_progress;
 	hid->create_menu = nogui_create_menu;
+	hid->clip_set = nogui_clip_set;
+	hid->clip_get = nogui_clip_get;
 }
 
 static pcb_hid_t nogui_hid;
