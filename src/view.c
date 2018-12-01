@@ -51,7 +51,7 @@ void pcb_view_free(pcb_view_t *item)
 	pcb_idpath_list_clear(&item->objs[0]);
 	pcb_idpath_list_clear(&item->objs[1]);
 	free(item->title);
-	free(item->explanation);
+	free(item->description);
 	free(item);
 }
 
@@ -112,7 +112,7 @@ void pcb_view_goto(pcb_view_t *item)
 	}
 }
 
-pcb_view_t *pcb_view_new(const char *type, const char *title, const char *explanation)
+pcb_view_t *pcb_view_new(const char *type, const char *title, const char *description)
 {
 	pcb_view_t *v = calloc(sizeof(pcb_view_t), 1);
 
@@ -121,11 +121,11 @@ pcb_view_t *pcb_view_new(const char *type, const char *title, const char *explan
 
 	if (type == NULL) type = "";
 	if (title == NULL) title = "";
-	if (explanation == NULL) explanation = "";
+	if (description == NULL) description = "";
 
 	v->type = pcb_strdup(type);
 	v->title = pcb_strdup(title);
-	v->explanation = pcb_strdup(explanation);
+	v->description = pcb_strdup(description);
 
 	return v;
 }
@@ -225,7 +225,7 @@ void pcb_view_save(pcb_view_t *v, gds_t *dst, const char *prefix)
 	pcb_append_printf(dst, "%sha:view.%lu {\n", prefix, v->uid);
 	view_append_str(dst, prefix, "type", v->type);
 	view_append_str(dst, prefix, "title", v->title);
-	view_append_str(dst, prefix, "explanation", v->explanation);
+	view_append_str(dst, prefix, "description", v->description);
 	if (v->have_bbox)
 		pcb_append_printf(dst, "%s  bbox = {%.08$$mm; %.08$$mm; %.08$$mm; %.08$$mm;}\n", prefix, v->bbox.X1, v->bbox.Y1, v->bbox.X2, v->bbox.Y2);
 	if (v->have_xy)

@@ -48,7 +48,7 @@ struct pcb_view_s {
 
 	char *type;
 	char *title;
-	char *explanation;
+	char *description;
 
 	/* these indicate whether some of the following fields are valid */
 	unsigned have_bbox:1;
@@ -103,7 +103,7 @@ pcb_view_t *pcb_view_by_uid_cnt(const pcb_view_list_t *lst, unsigned long int ui
 void pcb_view_goto(pcb_view_t *item);
 
 /* Allocate a new, floating (unlinked) view with no data or bbox */
-pcb_view_t *pcb_view_new(const char *type, const char *title, const char *explanation);
+pcb_view_t *pcb_view_new(const char *type, const char *title, const char *description);
 
 /* Append obj to one of the object groups in view (resolving to idpath) */
 void pcb_view_append_obj(pcb_view_t *view, int grp, pcb_any_obj_t *obj);

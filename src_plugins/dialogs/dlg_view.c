@@ -56,7 +56,7 @@ struct view_ctx_s {
 
 	unsigned long int selected;
 
-	int wpos, wlist, wcount, wprev, wexplanation, wmeasure;
+	int wpos, wlist, wcount, wprev, wdescription, wmeasure;
 	int wbtn_pasteb, wbtn_pastea, wbtn_copy, wbtn_cut;
 };
 
@@ -177,7 +177,7 @@ void view_simple_show(view_ctx_t *ctx)
 	pcb_view_t *v = pcb_view_by_uid(ctx->lst, ctx->selected);
 	if (v != NULL) {
 		pcb_view_goto(v);
-		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wexplanation, str_value, re_wrap(pcb_strdup(v->explanation), 32));
+		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdescription, str_value, re_wrap(pcb_strdup(v->description), 32));
 		switch(v->data_type) {
 			case PCB_VIEW_PLAIN:
 				PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup(""));
@@ -193,7 +193,7 @@ void view_simple_show(view_ctx_t *ctx)
 
 	if (v == NULL) {
 		ctx->selected = 0;
-		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wexplanation, str_value, pcb_strdup(""));
+		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdescription, str_value, pcb_strdup(""));
 		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup(""));
 	}
 	else
@@ -520,8 +520,8 @@ static void pcb_dlg_view_full(view_ctx_t *ctx, const char *title)
 				PCB_DAD_PREVIEW(ctx->dlg, view_expose_cb, view_mouse_cb, NULL, NULL, 100, 100, ctx);
 					ctx->wprev = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
-				PCB_DAD_LABEL(ctx->dlg, "(explanation)");
-					ctx->wexplanation = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_LABEL(ctx->dlg, "(description)");
+					ctx->wdescription = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_LABEL(ctx->dlg, "(measure)");
 					ctx->wmeasure = PCB_DAD_CURRENT(ctx->dlg);
 			PCB_DAD_END(ctx->dlg);
@@ -561,8 +561,8 @@ static void pcb_dlg_view_simplified(view_ctx_t *ctx, const char *title)
 				ctx->wprev = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
-				PCB_DAD_LABEL(ctx->dlg, "(explanation)");
-					ctx->wexplanation = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_LABEL(ctx->dlg, "(description)");
+					ctx->wdescription = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_LABEL(ctx->dlg, "(measure)");
 					ctx->wmeasure = PCB_DAD_CURRENT(ctx->dlg);
 			PCB_DAD_END(ctx->dlg);

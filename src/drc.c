@@ -84,7 +84,7 @@ static fgw_error_t pcb_act_DRC(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_printf("%m+required value %$mS\n", conf_core.editor.grid_unit->allow, v->data.drc.required_value);
 			if (v->data.drc.have_measured)
 				pcb_printf("%m+measured value %$mS\n", conf_core.editor.grid_unit->allow, v->data.drc.measured_value);
-			printf("%s\n\n", v->explanation);
+			printf("%s\n\n", v->description);
 		}
 	}
 	else if (pcb_strcasecmp(dlg_type, "log") == 0) {
@@ -98,7 +98,7 @@ static fgw_error_t pcb_act_DRC(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_printf("%m+required value %$mS\n", conf_core.editor.grid_unit->allow, v->data.drc.required_value);
 			if (v->data.drc.have_measured)
 				pcb_message(PCB_MSG_INFO, "%m+measured value %$mS\n", conf_core.editor.grid_unit->allow, v->data.drc.measured_value);
-			pcb_message(PCB_MSG_INFO, "%s\n\n", v->explanation);
+			pcb_message(PCB_MSG_INFO, "%s\n\n", v->description);
 		}
 	}
 	if (pcb_strcasecmp(dlg_type, "dump") == 0) {
@@ -115,10 +115,10 @@ static fgw_error_t pcb_act_DRC(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_printf("R%$mm\n", v->data.drc.required_value);
 			if (v->data.drc.have_measured)
 				pcb_printf("M%$mm\n", v->data.drc.measured_value);
-			for(s = v->explanation; *s != '\0'; s++)
+			for(s = v->description; *s != '\0'; s++)
 				if (*s == '\n')
 					*s = ' ';
-			printf("E%s\n\n", v->explanation);
+			printf("E%s\n\n", v->description);
 		}
 	}
 	else if (pcb_strcasecmp(dlg_type, "count") == 0)
