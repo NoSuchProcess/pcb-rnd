@@ -502,14 +502,13 @@ int ghid_clip_get(pcb_hid_clipfmt_t *format, void **data, size_t *len)
 	return -1;
 }
 
-int ghid_clip_free(pcb_hid_clipfmt_t format, void *data, size_t len)
+void ghid_clip_free(pcb_hid_clipfmt_t format, void *data, size_t len)
 {
 	switch(format) {
 		case PCB_HID_CLIPFMT_TEXT:
 			g_free(data);
 			break;
 	}
-	return 0;
 }
 
 void ghid_glue_hid_init(pcb_hid_t *dst)

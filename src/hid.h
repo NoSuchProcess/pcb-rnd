@@ -533,7 +533,7 @@ struct pcb_hid_s {
 
 	/* release the data from the last clip_get(); clip_get() and clip_free() should
 	   be called in pair */
-	int (*clip_free)(pcb_hid_clipfmt_t format, void *data, size_t len);
+	void (*clip_free)(pcb_hid_clipfmt_t format, void *data, size_t len);
 };
 
 /* One of these functions (in the common code) will be called whenever the GUI
