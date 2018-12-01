@@ -170,7 +170,7 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 
 	{
 		int not_found = 0;
-		for(n = 0; n < ts->len; n++)
+		for(n = 0; n < MIN((int)ts->len, (int)sizeof(shp_found)); n++)
 			if (shp_found[n] == 0)
 				not_found++;
 		if (not_found)
