@@ -129,7 +129,7 @@ static int kicad_map_layers(wctx_t *ctx)
 		gid[0] = -1;
 		ngrp = pcb_layergrp_list(ctx->pcb, fl->type, gid, KICAD_COPPERS);
 		if ((fl->place != FLP_COP_INT) && (ngrp > 1))
-			pcb_io_incompat_save(ctx->pcb->Data, NULL, "Multiple layer groups of the same type - exporting only the first", "Merge the groups");
+			pcb_io_incompat_save(ctx->pcb->Data, NULL, "group", "Multiple layer groups of the same type - exporting only the first", "Merge the groups");
 
 		switch(fl->place) {
 			case FLP_COP_FIRST:
@@ -140,7 +140,7 @@ static int kicad_map_layers(wctx_t *ctx)
 				for(n = 0; n < ngrp; n++) {
 					idx = inner;
 					if (inner >= KICAD_COPPERS-1) {
-						pcb_io_incompat_save(ctx->pcb->Data, NULL, "Too many internal layer groups, omitting some", "Use fewer groups");
+						pcb_io_incompat_save(ctx->pcb->Data, NULL, "layer", "Too many internal layer groups, omitting some", "Use fewer groups");
 						continue;
 					}
 					sprintf(ctx->layer[idx].name, fl->name, idx);
@@ -168,7 +168,7 @@ static int kicad_map_layers(wctx_t *ctx)
 				if (gid[0] >= 0)
 					misc++;
 				if (misc >= KICAD_MAX_LAYERS-1) {
-					pcb_io_incompat_save(ctx->pcb->Data, NULL, "Too many internal layer groups, omitting some", "Use fewer groups");
+					pcb_io_incompat_save(ctx->pcb->Data, NULL, "layer", "Too many internal layer groups, omitting some", "Use fewer groups");
 					continue;
 				}
 				break;
@@ -189,16 +189,16 @@ static int kicad_map_layers(wctx_t *ctx)
 	for(n = 0; n < ctx->pcb->LayerGroups.len; n++) {
 		pcb_layergrp_t *grp = &ctx->pcb->LayerGroups.grp[n];
 		if ((mapped[n] == 0) && !(grp->ltype & PCB_LYT_SUBSTRATE))
-			pcb_io_incompat_save(ctx->pcb->Data, NULL, "Failed to map layer for export - layer omitted", grp->name);
+			pcb_io_incompat_save(ctx->pcb->Data, NULL, "layer", "Failed to map layer for export - layer omitted", grp->name);
 		else if (mapped[n] > 1)
-			pcb_io_incompat_save(ctx->pcb->Data, NULL, "Mapped layer for export multiple times", grp->name);
+			pcb_io_incompat_save(ctx->pcb->Data, NULL, "layer", "Mapped layer for export multiple times", grp->name);
 	}
 
 	free(mapped);
 	ctx->num_layers++;
 
 	if (ctx->num_layers < 3)
-		pcb_io_incompat_save(ctx->pcb->Data, NULL, "Warning: low output layer count", NULL);
+		pcb_io_incompat_save(ctx->pcb->Data, NULL, "layer", "Warning: low output layer count", NULL);
 	return 0;
 }
 
@@ -290,7 +290,7 @@ static void kicad_print_arc(const wctx_t *ctx, const klayer_t *kly, pcb_arc_t *a
 		case KLYT_COPPER:
 #warning TODO: this should be a proper line approximation using a helper (to be written)
 			pcb_fprintf(ctx->f, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n", copperStartX, copperStartY, xEnd, yEnd, kly->name, arc->Thickness); /* neglect (net ___ ) for now */
-			pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)arc, "Kicad does not support copper arcs; using line approximation", NULL);
+			pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)arc, "copper-arc", "Kicad does not support copper arcs; using line approximation", NULL);
 			break;
 		case KLYT_GR:
 			pcb_fprintf(ctx->f, "(gr_arc (start %.3mm %.3mm) (end %.3mm %.3mm) (angle %ma) (layer %s) (width %.3mm))\n", xStart, yStart, xEnd, yEnd, arc->Delta, kly->name, arc->Thickness);
@@ -317,7 +317,7 @@ static void kicad_print_text(const wctx_t *ctx, const klayer_t *kly, pcb_text_t 
 	pcb_coord_t halfStringHeight;
 
 	if (!(kly->lyt & PCB_LYT_COPPER) && !(kly->lyt & PCB_LYT_SILK)) {
-		pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)text, "Kicad supports text only on copper or silk - omitting text object on misc layer", NULL);
+		pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)text, "text-layer", "Kicad supports text only on copper or silk - omitting text object on misc layer", NULL);
 		return;
 	}
 
@@ -413,7 +413,7 @@ static void kicad_print_poly(const wctx_t *ctx, const klayer_t *kly, pcb_poly_t 
 
 	if (polygon->HoleIndexN != 0) {
 #warning TODO: does kicad suppor holes? of so, use them; else (and only else) there is a polygon.h call that can split up a holed poly into a set of hole-free polygons
-		pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)polygon, "can't export polygon with holes", NULL);
+		pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)polygon, "poly-hole", "can't export polygon with holes", NULL);
 		return;
 	}
 
@@ -464,7 +464,7 @@ static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, const klayer_t *kly,
 	textlist_foreach(&ly->Text, &it, text) {
 		if (kly->type == KLYT_FP) {
 			if (!PCB_FLAG_TEST(PCB_FLAG_DYNTEXT, text)) {
-				pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)text, "can't export custom text in footprint", NULL);
+				pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)text, "subc-text", "can't export custom text in footprint", NULL);
 				break;
 			}
 			else
@@ -496,11 +496,11 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind, pcb_coord_
 		double psrot;
 
 		if (is_subc && (ps->term == NULL)) {
-			pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "can't export non-terminal padstack in subcircuit, omitting the object", NULL);
+			pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "padstack-nonterm", "can't export non-terminal padstack in subcircuit, omitting the object", NULL);
 			continue;
 		}
 		if (!is_subc && (ps->term != NULL)) {
-			pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "can't export terminal info for a padstack outside of a subcircuit (omitting terminal info)", NULL);
+			pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "padstack-nonsubc", "can't export terminal info for a padstack outside of a subcircuit (omitting terminal info)", NULL);
 			continue;
 		}
 
@@ -589,16 +589,16 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind, pcb_coord_
 				fprintf(ctx->f, "))\n");
 			}
 			else
-				pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Can't convert padstack to pin or pad", "use a simpler, uniform shape");
+				pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "padstack-shape", "Can't convert padstack to pin or pad", "use a simpler, uniform shape");
 		}
 		else { /* global via */
 			if (!pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
-				pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Can not convert padstack to old-style via", "Use round, uniform-shaped vias only");
+				pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "padstack-shape", "Can not convert padstack to old-style via", "Use round, uniform-shaped vias only");
 				continue;
 			}
 
 			if (cshape != PCB_PSTK_COMPAT_ROUND) {
-				pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Can not convert padstack to via", "only round vias are supported");
+				pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "padstack-shape", "Can not convert padstack to via", "only round vias are supported");
 				continue;
 			}
 #warning TODO: set klayer_from and klayer_to using bb span of ps
@@ -637,7 +637,7 @@ void kicad_print_data(wctx_t *ctx, pcb_data_t *data, int ind, pcb_coord_t dx, pc
 		}
 
 		if (!found) {
-			pcb_io_incompat_save(data, NULL, "unmapped layer on data export", NULL);
+			pcb_io_incompat_save(data, NULL, "layer", "unmapped layer on data export", NULL);
 			continue;
 		}
 
@@ -688,11 +688,11 @@ static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, 
 		/* let's not skip duplicate elements for layout export */
 
 		if (pcb_subc_get_origin(subc, &sox, &soy) != 0) {
-			pcb_io_incompat_save(Data, (pcb_any_obj_t *)subc, "Failed to get origin of subcircuit", "fix the missing subc-aux layer");
+			pcb_io_incompat_save(Data, (pcb_any_obj_t *)subc, "subc-place", "Failed to get origin of subcircuit", "fix the missing subc-aux layer");
 			continue;
 		}
 		if (pcb_subc_get_side(subc, &on_bottom) != 0) {
-			pcb_io_incompat_save(Data, (pcb_any_obj_t *)subc, "Failed to get placement side of subcircuit", "fix the missing subc-aux layer");
+			pcb_io_incompat_save(Data, (pcb_any_obj_t *)subc, "subc-place", "Failed to get placement side of subcircuit", "fix the missing subc-aux layer");
 			continue;
 		}
 

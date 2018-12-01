@@ -150,7 +150,7 @@ static int layer_map(unsigned int lflg, int *fidoly_next, const char *lyname)
 	(*fidoly_next)++;
 	if (*fidoly_next > 15) {
 		char *msg = pcb_strdup_printf("FidoCadJ can't handle this many layers - layer %s is not exported\n", lyname);
-		pcb_io_incompat_save(NULL, NULL, msg, NULL);
+		pcb_io_incompat_save(NULL, NULL, "layer", msg, NULL);
 		free(msg);
 		return -1;
 	}
@@ -160,7 +160,7 @@ static int layer_map(unsigned int lflg, int *fidoly_next, const char *lyname)
 static void write_custom_subc(FILE *f, pcb_subc_t *sc)
 {
 	char *msg = pcb_strdup_printf("Can't export custom footprint for %s yet\n", sc->refdes);
-	pcb_io_incompat_save(sc->parent.data, (pcb_any_obj_t *)sc, msg, "subcircuit omitted - add the footprint type on the footprint list!");
+	pcb_io_incompat_save(sc->parent.data, (pcb_any_obj_t *)sc, msg, "subc", "subcircuit omitted - add the footprint type on the footprint list!");
 	free(msg);
 }
 
@@ -229,7 +229,7 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 			pcb_pline_t *pl = polygon->Clipped->contours;
 
 			if (polygon->HoleIndexN > 0) {
-				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)polygon, "FidoCadJ can't handle holes in polygons, ignoring holes for this export", "(some of the polygons will look different unless you remove the holes or split up the polygons)");
+				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)polygon, "polygon", "FidoCadJ can't handle holes in polygons, ignoring holes for this export", "(some of the polygons will look different unless you remove the holes or split up the polygons)");
 			}
 
 			fprintf(f, "PP %ld %ld", crd(pl->head.point[0]), crd(pl->head.point[1]));
@@ -292,17 +292,17 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 		pcb_pstk_compshape_t cshape;
 		pcb_bool plated;
 		if (!pcb_pstk_export_compat_via(padstack, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
-			pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "can't export non-uniform padstacl", "use a simpler padstack - omiting this one from the export");
+			pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "padstack-uniformity", "can't export non-uniform padstacl", "use a simpler padstack - omiting this one from the export");
 			continue;
 		}
 		switch(cshape) {
 			case PCB_PSTK_COMPAT_OCTAGON:
-				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "can't export octagonal shape", "use round or square instead; (fallback to round for now)");
+				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "padstack-shape", "can't export octagonal shape", "use round or square instead; (fallback to round for now)");
 				/* fall-through */
 			case PCB_PSTK_COMPAT_ROUND:  oshape = 0; break;
 			case PCB_PSTK_COMPAT_SQUARE: oshape = 1; break;  /* rectangle with sharp corners */
 			default:
-				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "can't export shaped padstack", "use round or square instead; (fallback to round for now)");
+				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "padstack-shape", "can't export shaped padstack", "use round or square instead; (fallback to round for now)");
 				oshape = 0;
 		}
 		fprintf(f, "pa %ld %ld %ld %ld %ld %d\n", crd(x), crd(y), crd(pad_dia), crd(pad_dia), crd(drill_dia), oshape);
@@ -316,7 +316,7 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 			double rot = 0.0;
 			int on_bottom = 0;
 			if (pcb_subc_get_origin(subc, &x, &y)) {
-				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)subc, "can't figure subcircuit origin", "omitting this part until the proper subc-aux layer objects are added");
+				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)subc, "subc", "can't figure subcircuit origin", "omitting this part until the proper subc-aux layer objects are added");
 				continue;
 			}
 			pcb_subc_get_rotation(subc, &rot);

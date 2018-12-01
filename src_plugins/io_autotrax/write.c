@@ -99,7 +99,7 @@ static void wrax_map_layer_error(wctx_t *ctx, pcb_layergrp_t *grp, const char *m
 {
 	char tmp[256];
 	pcb_snprintf(tmp, sizeof(tmp), "%s (omitting layer group): %s", msg, grp->name);
-	pcb_io_incompat_save(ctx->pcb->Data, NULL, tmp, hint);
+	pcb_io_incompat_save(ctx->pcb->Data, NULL, "layer", tmp, hint);
 }
 
 static int wrax_map_layers(wctx_t *ctx)
@@ -157,11 +157,11 @@ static int wrax_padstack(wctx_t *ctx, pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_
 		name = ps->term;
 		for(s = name, len = 0; *s != '\0'; s++,len++) {
 			if (!isalnum(*s)) {
-				pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "autotrax pad name (terminal name) must consists of alphanumeric characters only - omitting padstack", "rename the terminal to something simpler");
+				pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "padname", "autotrax pad name (terminal name) must consists of alphanumeric characters only - omitting padstack", "rename the terminal to something simpler");
 				return 0;
 			}
 			if (len >= 4) {
-				pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "autotrax pad name (terminal name) must consists of alphanumeric characters only - omitting padstack", "rename the terminal to something simpler");
+				pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "padname", "autotrax pad name (terminal name) must consists of alphanumeric characters only - omitting padstack", "rename the terminal to something simpler");
 				return 0;
 			}
 		}
@@ -175,7 +175,7 @@ static int wrax_padstack(wctx_t *ctx, pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_
 	}
 	else if (pcb_pstk_export_compat_pad(ps, &x1, &y1, &x2, &y2, &thickness, &clearance, &mask, &square, &nopaste)) {
 		if ((x1 != x2) && (y1 != y2)) {
-			pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "can not export rotated rectangular/line pin/pad/via", "shape must be axis-aligned");
+			pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "padstack-rot", "can not export rotated rectangular/line pin/pad/via", "shape must be axis-aligned");
 			return 0;
 		}
 		/* convert to the same format as via */
@@ -192,12 +192,12 @@ static int wrax_padstack(wctx_t *ctx, pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_
 		alayer = 1;
 	}
 	else {
-		pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "can not export complex pin/pad/via", "use uniform shaped pins/vias and simpler pads, with simple shapes (no generic polygons)");
+		pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "padstack-shape", "can not export complex pin/pad/via", "use uniform shaped pins/vias and simpler pads, with simple shapes (no generic polygons)");
 		return 0;
 	}
 
 	if ((cshape != PCB_PSTK_COMPAT_ROUND) && (ps->rot != 0)) {
-		pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "can not export rotated pin/pad/via", "remove rotation, shapes must be axis-aligned");
+		pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "padstack-rot", "can not export rotated pin/pad/via", "remove rotation, shapes must be axis-aligned");
 		return 0;
 	}
 
@@ -207,7 +207,7 @@ static int wrax_padstack(wctx_t *ctx, pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_
 		case PCB_PSTK_COMPAT_OCTAGON: ashape = 3; break;
 		case PCB_PSTK_COMPAT_RRECT:   ashape = 4; break;
 		default:
-			pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "can not export: invalid pad shape", "use circle, octagon, rectangle or round rectangle");
+			pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "padstack-shape", "can not export: invalid pad shape", "use circle, octagon, rectangle or round rectangle");
 			return 0;
 	}
 
@@ -640,7 +640,7 @@ int wrax_data(wctx_t *ctx, pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy)
 		if (alid == 0) {
 			char tmp[256];
 			pcb_snprintf(tmp, sizeof(tmp), "Ignoring unmapped layer: %s", ly->name);
-			pcb_io_incompat_save(data, NULL, tmp, NULL);
+			pcb_io_incompat_save(data, NULL, "layer", tmp, NULL);
 			continue;
 		}
 		wrax_lines(ctx, alid, ly, dx, dy, in_subc);

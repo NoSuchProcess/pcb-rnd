@@ -91,7 +91,7 @@ static int write_kicad_legacy_layout_vias(FILE *FP, pcb_data_t *Data, pcb_coord_
 	padstacklist_foreach(&Data->padstack, &it, ps) {
 		if (pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
 			if (cshape != PCB_PSTK_COMPAT_ROUND) {
-				pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Failed to export via: only round shaped vias, with copper ring, are supported", NULL);
+				pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "via", "Failed to export via: only round shaped vias, with copper ring, are supported", NULL);
 				continue;
 			}
 
@@ -367,11 +367,11 @@ static int io_kicad_legacy_write_subc(FILE *FP, pcb_board_t *pcb, pcb_subc_t *su
 	int n, silkLayer;
 
 	if (pcb_subc_get_origin(subc, &sox, &soy) != 0) {
-		pcb_io_incompat_save(subc->parent.data, (pcb_any_obj_t *)subc, "Failed to get origin of subcircuit", "fix the missing subc-aux layer");
+		pcb_io_incompat_save(subc->parent.data, (pcb_any_obj_t *)subc, "subc-place", "Failed to get origin of subcircuit", "fix the missing subc-aux layer");
 		return -1;
 	}
 	if (pcb_subc_get_side(subc, &on_bottom) != 0) {
-		pcb_io_incompat_save(subc->parent.data, (pcb_any_obj_t *)subc, "Failed to get placement side of subcircuit", "fix the missing subc-aux layer");
+		pcb_io_incompat_save(subc->parent.data, (pcb_any_obj_t *)subc, "subc-place", "Failed to get placement side of subcircuit", "fix the missing subc-aux layer");
 		return -1;
 	}
 
@@ -411,7 +411,7 @@ static int io_kicad_legacy_write_subc(FILE *FP, pcb_board_t *pcb, pcb_subc_t *su
 		double psrot;
 
 		if (ps->term == NULL) {
-			pcb_io_incompat_save(subc->data, (pcb_any_obj_t *)ps, "can't export non-terminal padstack in subcircuit, omitting the object", NULL);
+			pcb_io_incompat_save(subc->data, (pcb_any_obj_t *)ps, "padstack-nonterm", "can't export non-terminal padstack in subcircuit, omitting the object", NULL);
 			continue;
 		}
 
@@ -428,7 +428,7 @@ static int io_kicad_legacy_write_subc(FILE *FP, pcb_board_t *pcb, pcb_subc_t *su
 			if (cshape == PCB_PSTK_COMPAT_SQUARE) fputs(" R ", FP);
 			else if (cshape == PCB_PSTK_COMPAT_ROUND) fputs(" C ", FP);
 			else {
-				pcb_io_incompat_save(subc->data, (pcb_any_obj_t *)ps, "can't export shaped pin; needs to be square or circular - using circular instead", NULL);
+				pcb_io_incompat_save(subc->data, (pcb_any_obj_t *)ps, "padstack-shape", "can't export shaped pin; needs to be square or circular - using circular instead", NULL);
 				fputs(" C ", FP);
 			}
 			pcb_fprintf(FP, "%.0mk %.0mk ", pad_dia, pad_dia); /* height = width */
@@ -532,7 +532,7 @@ static int io_kicad_legacy_write_subc(FILE *FP, pcb_board_t *pcb, pcb_subc_t *su
 			fputs("$EndPAD\n", FP);
 		}
 		else
-			pcb_io_incompat_save(subc->data, (pcb_any_obj_t *)ps, "Can't convert padstack to pin or pad", "use a simpler, uniform shape");
+			pcb_io_incompat_save(subc->data, (pcb_any_obj_t *)ps, "padstack-shape", "Can't convert padstack to pin or pad", "use a simpler, uniform shape");
 
 	}
 
@@ -549,17 +549,17 @@ static int io_kicad_legacy_write_subc(FILE *FP, pcb_board_t *pcb, pcb_subc_t *su
 
 		if (!(lyt & PCB_LYT_SILK)) {
 			linelist_foreach(&ly->Line, &it, line)
-				pcb_io_incompat_save(subc->data, (pcb_any_obj_t *)line, "can't save non-silk lines in subcircuits", "convert terminals to padstacks, remove the rest");
+				pcb_io_incompat_save(subc->data, (pcb_any_obj_t *)line, "subc-obj", "can't save non-silk lines in subcircuits", "convert terminals to padstacks, remove the rest");
 			arclist_foreach(&ly->Arc, &it, arc)
-				pcb_io_incompat_save(subc->data, (pcb_any_obj_t *)arc, "can't save non-silk arc in subcircuits", "remove this arc");
+				pcb_io_incompat_save(subc->data, (pcb_any_obj_t *)arc, "subc-obj", "can't save non-silk arc in subcircuits", "remove this arc");
 		}
 
 		polylist_foreach(&ly->Polygon, &it, poly)
-			pcb_io_incompat_save(subc->data, (pcb_any_obj_t *)poly, "can't save polygons in subcircuits", "convert square terminals to padstacks, remove the rest");
+			pcb_io_incompat_save(subc->data, (pcb_any_obj_t *)poly, "subc-obj", "can't save polygons in subcircuits", "convert square terminals to padstacks, remove the rest");
 
 		textlist_foreach(&ly->Text, &it, text)
 			if (!PCB_FLAG_TEST(PCB_FLAG_DYNTEXT, text))
-				pcb_io_incompat_save(subc->data, (pcb_any_obj_t *)text, "can't save text in subcircuits", "remove the text object");
+				pcb_io_incompat_save(subc->data, (pcb_any_obj_t *)text, "subc-obj", "can't save text in subcircuits", "remove the text object");
 
 		silkLayer = (lyt & PCB_LYT_BOTTOM) ? 20 : 21;
 

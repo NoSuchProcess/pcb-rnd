@@ -116,7 +116,7 @@ static void scad_insert_models(void)
 			int on_bottom = 0;
 			
 			if (pcb_subc_get_origin(subc, &ox, &oy) != 0) {
-				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)subc, "Failed to get origin of subcircuit", "fix the missing subc-aux layer");
+				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)subc, "subc-place", "Failed to get origin of subcircuit", "fix the missing subc-aux layer");
 				continue;
 			}
 			pcb_subc_get_rotation(subc, &rot);

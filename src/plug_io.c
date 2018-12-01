@@ -1078,16 +1078,16 @@ void pcb_io_list_free(pcb_io_formats_t *out)
 	}
 }
 
-pcb_cardinal_t pcb_io_incompat_save(pcb_data_t *data, pcb_any_obj_t *obj, const char *desc, const char *hint)
+pcb_cardinal_t pcb_io_incompat_save(pcb_data_t *data, pcb_any_obj_t *obj, const char *type, const char *title, const char *description)
 {
-	pcb_message(PCB_MSG_ERROR, "save error: %s\n", desc);
+	pcb_message(PCB_MSG_ERROR, "save error: %s\n", title);
 	if (obj != NULL) {
 		pcb_coord_t x = (obj->BoundingBox.X1 + obj->BoundingBox.X2)/2;
 		pcb_coord_t y = (obj->BoundingBox.Y1 + obj->BoundingBox.Y2)/2;
 		pcb_message(PCB_MSG_ERROR, " near %$mm %$mm\n", x, y);
 	}
-	if (hint != NULL)
-		pcb_message(PCB_MSG_ERROR, " (%s)\n", hint);
+	if (description != NULL)
+		pcb_message(PCB_MSG_ERROR, " (%s)\n", description);
 	return 0;
 }
 

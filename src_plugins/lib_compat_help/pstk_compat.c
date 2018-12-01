@@ -709,7 +709,7 @@ pcb_flag_t pcb_pstk_compat_pinvia_flag(pcb_pstk_t *ps, pcb_pstk_compshape_t csha
 				flg.q = cshape;
 			}
 			else
-				pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "Failed to convert shape to old-style pin/via", "Old pin/via format is very much restricted; try to use a simpler shape (e.g. circle)");
+				pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "padstack-shape", "Failed to convert shape to old-style pin/via", "Old pin/via format is very much restricted; try to use a simpler shape (e.g. circle)");
 	}
 
 	for(n = 0; n < sizeof(flg.t) / sizeof(flg.t[0]); n++) {
@@ -723,7 +723,7 @@ pcb_flag_t pcb_pstk_compat_pinvia_flag(pcb_pstk_t *ps, pcb_pstk_compshape_t csha
 			case PCB_THERMAL_SOLID: nt = 3; break;
 			case PCB_THERMAL_ROUND | PCB_THERMAL_DIAGONAL: nt = 4; break;
 			case PCB_THERMAL_ROUND: nt = 5; break;
-			default: nt = 0; pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "Failed to convert thermal to old-style via", "Old via format is very much restricted; try to use a simpler thermal shape");
+			default: nt = 0; pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "padstack-shape", "Failed to convert thermal to old-style via", "Old via format is very much restricted; try to use a simpler thermal shape");
 		}
 		PCB_FLAG_THERM_ASSIGN_(n, nt, flg);
 	}

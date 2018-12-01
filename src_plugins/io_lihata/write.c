@@ -293,7 +293,7 @@ void build_thermal_heavy(lht_node_t *dst, pcb_any_obj_t *o)
 	}
 
 	if (wrver < 4)
-		pcb_io_incompat_save(NULL, o, "lihata boards before version v4 did not support heavy terminal vias\n", "Either save in lihata v4+ or do not use heavy terminal thermals");
+		pcb_io_incompat_save(NULL, o, "thermal", "lihata boards before version v4 did not support heavy terminal vias\n", "Either save in lihata v4+ or do not use heavy terminal thermals");
 
 	th = lht_dom_node_alloc(LHT_LIST, "thermal");
 	lht_dom_hash_put(dst, th);
@@ -424,7 +424,7 @@ static lht_node_t *build_pstk_pinvia(pcb_data_t *data, pcb_pstk_t *ps, pcb_bool 
 
 
 	if (!pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
-		pcb_io_incompat_save(data, (pcb_any_obj_t *)ps, "Failed to convert to old-style via", "Old via format is very much restricted; try to use a simpler, uniform shape padstack");
+		pcb_io_incompat_save(data, (pcb_any_obj_t *)ps, "padstack-old", "Failed to convert to old-style via", "Old via format is very much restricted; try to use a simpler, uniform shape padstack");
 		return NULL;
 	}
 
@@ -459,7 +459,7 @@ static lht_node_t *build_pstk_pad(pcb_data_t *data, pcb_pstk_t *ps, pcb_coord_t 
 	pcb_flag_t flg;
 
 	if (!pcb_pstk_export_compat_pad(ps, &x1, &y1, &x2, &y2, &thickness, &clearance, &mask, &square, &nopaste)) {
-		pcb_io_incompat_save(data, (pcb_any_obj_t *)ps, "Failed to convert to old-style pad", "Old pad format is very much restricted; try to use a simpler, uniform shape padstack, square or round-cap line based");
+		pcb_io_incompat_save(data, (pcb_any_obj_t *)ps, "padstack-old", "Failed to convert to old-style pad", "Old pad format is very much restricted; try to use a simpler, uniform shape padstack, square or round-cap line based");
 		return NULL;
 	}
 
@@ -564,12 +564,12 @@ static lht_node_t *build_pcb_text(const char *role, pcb_text_t *text)
 	else {
 		int dir;
 		if (!pcb_text_old_direction(&dir, text->rot))
-			pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "versions below lihata board v6 do not support arbitrary text rotation - rounding to 90 degree rotation", "Use only 90 degree rotations through the direction field");
+			pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text-rot", "versions below lihata board v6 do not support arbitrary text rotation - rounding to 90 degree rotation", "Use only 90 degree rotations through the direction field");
 
 		lht_dom_hash_put(obj, build_textf("direction", "%d", dir));
 
 		if (text->thickness > 0)
-			pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "versions below lihata board v6 do not support arbitrary text width - will render with default width", "Leave the thickness field empty (zero) and depend on the automatism");
+			pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text-width", "versions below lihata board v6 do not support arbitrary text width - will render with default width", "Leave the thickness field empty (zero) and depend on the automatism");
 	}
 
 	if (role != NULL)
@@ -589,7 +589,7 @@ static lht_node_t *build_subc_element(pcb_subc_t *subc)
 
 	if (pcb_subc_get_origin(subc, &ox, &oy) != 0) {
 		assert(subc->parent_type == PCB_PARENT_DATA);
-		pcb_io_incompat_save(subc->parent.data, (pcb_any_obj_t *)subc, "Failed to convert subc to old-style element: missing origin", "make sure the subcircuit has the vectors on its subc-aux layer");
+		pcb_io_incompat_save(subc->parent.data, (pcb_any_obj_t *)subc, "subc-elem", "Failed to convert subc to old-style element: missing origin", "make sure the subcircuit has the vectors on its subc-aux layer");
 		return NULL;
 	}
 
@@ -636,17 +636,17 @@ static lht_node_t *build_subc_element(pcb_subc_t *subc)
 					}
 				}
 				else {
-					pcb_io_incompat_save(subc->parent.data, (pcb_any_obj_t *)text, "can't export custom silk text object", "the only text old pcb elements support is the refdes/value/description text");
+					pcb_io_incompat_save(subc->parent.data, (pcb_any_obj_t *)text, "subc-text", "can't export custom silk text object", "the only text old pcb elements support is the refdes/value/description text");
 				}
 			}
 			if (polylist_length(&ly->Polygon) > 0) {
 				char *desc = pcb_strdup_printf("Polygons on layer %s can not be exported in an element", ly->name);
-				pcb_io_incompat_save(subc->data, NULL, desc, "only lines and arcs are exported");
+				pcb_io_incompat_save(subc->data, NULL, desc, "subc-objs", "only lines and arcs are exported");
 				free(desc);
 			}
 			if (textlist_length(&ly->Text) > 1) {
 				char *desc = pcb_strdup_printf("Text on layer %s can not be exported in an element", ly->name);
-				pcb_io_incompat_save(subc->data, NULL, desc, "only lines and arcs are exported");
+				pcb_io_incompat_save(subc->data, NULL, desc, "subc-objs", "only lines and arcs are exported");
 				free(desc);
 			}
 			continue;
@@ -654,7 +654,7 @@ static lht_node_t *build_subc_element(pcb_subc_t *subc)
 
 		if (!(ly->meta.bound.type & PCB_LYT_VIRTUAL) && (!pcb_layer_is_pure_empty(ly))) {
 			char *desc = pcb_strdup_printf("Objects on layer %s can not be exported in an element", ly->name);
-			pcb_io_incompat_save(subc->data, NULL, desc, "only top silk lines and arcs are exported; heavy terminals are not supported, use padstacks only");
+			pcb_io_incompat_save(subc->data, NULL, desc, "subc-layer", "only top silk lines and arcs are exported; heavy terminals are not supported, use padstacks only");
 			free(desc);
 		}
 	}
@@ -668,11 +668,11 @@ static lht_node_t *build_subc_element(pcb_subc_t *subc)
 		if (nps != NULL)
 			lht_dom_list_append(lst, nps);
 		else
-			pcb_io_incompat_save(subc->data, (pcb_any_obj_t *)ps, "Padstack can not be exported as pin or pad", "use simpler padstack; for pins, all copper layers must have the same shape and there must be no paste; for pads, use a line or a rectangle; paste and mask must match the copper shape");
+			pcb_io_incompat_save(subc->data, (pcb_any_obj_t *)ps, "padstack-old", "Padstack can not be exported as pin or pad", "use simpler padstack; for pins, all copper layers must have the same shape and there must be no paste; for pads, use a line or a rectangle; paste and mask must match the copper shape");
 	}
 
 	if (!seen_refdes)
-		pcb_io_incompat_save(subc->parent.data, (pcb_any_obj_t *)subc, "can't export subcircuit without refdes text on silk", "old pcb elements require refdes text on silk");
+		pcb_io_incompat_save(subc->parent.data, (pcb_any_obj_t *)subc, "subc-refdes", "can't export subcircuit without refdes text on silk", "old pcb elements require refdes text on silk");
 
 	return obj;
 }
@@ -746,7 +746,7 @@ static lht_node_t *build_pstk_protos(pcb_data_t *data, pcb_vtpadstack_proto_t *p
 			if (wrver >= 5)
 				lht_dom_hash_put(nproto, build_text("name", proto->name));
 			else
-				pcb_io_incompat_save(NULL, NULL, "versions below lihata board v5 do not support padstack prototype names\n", "Be aware that padstack proto names are lost in save or use lihata board v5 or higher");
+				pcb_io_incompat_save(NULL, NULL, "padstack-name", "versions below lihata board v5 do not support padstack prototype names\n", "Be aware that padstack proto names are lost in save or use lihata board v5 or higher");
 		}
 		else
 			lht_dom_hash_put(nproto, dummy_node("name"));
@@ -761,7 +761,7 @@ static lht_node_t *build_pstk_protos(pcb_data_t *data, pcb_vtpadstack_proto_t *p
 
 			save_mask = shape->layer_mask & lyt_permit;
 			if (save_mask != shape->layer_mask) {
-				pcb_io_incompat_save(data, NULL, "Can not save padstack prototype properly because it uses a layer type not supported by this version of lihata padstack.", "Either save in the latest lihata - or accept that some shapes are omitted");
+				pcb_io_incompat_save(data, NULL, "padstack-layer", "Can not save padstack prototype properly because it uses a layer type not supported by this version of lihata padstack.", "Either save in the latest lihata - or accept that some shapes are omitted");
 				continue;
 			}
 
@@ -800,7 +800,7 @@ static lht_node_t *build_pstk_protos(pcb_data_t *data, pcb_vtpadstack_proto_t *p
 					break;
 				case PCB_PSSH_HSHADOW:
 					if (wrver < 6) {
-						pcb_io_incompat_save(data, NULL, "Can not save padstack prototype shape \"hshadow\" in lihata formats below version 6.", "Either save in lihata v6 - or accept that the padstack will connect more layers than it should.");
+						pcb_io_incompat_save(data, NULL, "padstack-shape", "Can not save padstack prototype shape \"hshadow\" in lihata formats below version 6.", "Either save in lihata v6 - or accept that the padstack will connect more layers than it should.");
 						nshapeo = lht_dom_node_alloc(LHT_HASH, "ps_circ");
 						lht_dom_hash_put(nshapeo, build_textf("dia", CFMT, 1));
 					}
@@ -876,7 +876,7 @@ static lht_node_t *build_layer_stack(pcb_board_t *pcb)
 		if (wrver >= 5)
 			lht_dom_hash_put(grp, build_attributes(&g->Attributes));
 		else if (g->Attributes.Number > 0)
-			pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)g, "Can not save layer group attributes in lihata formats below version 5.", "Either save in lihata v5 - or accept that attributes are not saved");
+			pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)g, "group-meta", "Can not save layer group attributes in lihata formats below version 5.", "Either save in lihata v5 - or accept that attributes are not saved");
 
 		lht_dom_hash_put(grp, build_text("name", g->name));
 		lht_dom_hash_put(grp, layers = lht_dom_node_alloc(LHT_LIST, "layers"));
@@ -888,7 +888,7 @@ static lht_node_t *build_layer_stack(pcb_board_t *pcb)
 			int is_outline = (PCB_LAYER_IS_OUTLINE(g->ltype, g->purpi));
 
 			if ((!is_outline) && (g->purpose != NULL))
-				pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)g, "Can not save layer group purpose in lihata formats below version 6.", "Either save in lihata v6 - or accept that these layers will change type in the file");
+				pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)g, "group-meta", "Can not save layer group purpose in lihata formats below version 6.", "Either save in lihata v6 - or accept that these layers will change type in the file");
 
 			if (is_outline) {
 				lht_dom_hash_put(grp, flags = lht_dom_node_alloc(LHT_HASH, "type"));
@@ -896,13 +896,13 @@ static lht_node_t *build_layer_stack(pcb_board_t *pcb)
 				lht_dom_hash_put(flags, build_text("outline", "1"));
 				outlines++;
 				if (outlines > 1) {
-					pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)g, "Can not save multiple outline layer groups in lihata board version below v6", "Save in lihata board v6");
+					pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)g, "group", "Can not save multiple outline layer groups in lihata board version below v6", "Save in lihata board v6");
 					return NULL;
 				}
 			}
 			else if ((lyt & PCB_LYT_DOC) || (lyt & PCB_LYT_MECH) || (lyt & PCB_LYT_BOUNDARY)) {
 				lyt &= ~(PCB_LYT_DOC | PCB_LYT_MECH | PCB_LYT_BOUNDARY);
-				pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)g, "Can not save layer group type DOC or MECH in lihata formats below version 6, saving as MISC.", "Either save in lihata v6 - or accept that these layers will change type in the file");
+				pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)g, "group", "Can not save layer group type DOC or MECH in lihata formats below version 6, saving as MISC.", "Either save in lihata v6 - or accept that these layers will change type in the file");
 			}
 		}
 		else {
@@ -1037,14 +1037,14 @@ static lht_node_t *build_data_layers(pcb_data_t *data)
 
 		g = pcb_get_grp(&PCB->LayerGroups, PCB_LYT_BOTTOM, PCB_LYT_SILK);
 		if (g == NULL) {
-			pcb_io_incompat_save(NULL, NULL, "lihata board v1 did not support a layer stackup without bottom silk\n", "Either create the top silk layer or save in at least v2\nNote: only pcb-rnd above 2.1.0 will load boards without silk; best use v6 or higher.");
+			pcb_io_incompat_save(NULL, NULL, "layer", "lihata board v1 did not support a layer stackup without bottom silk\n", "Either create the top silk layer or save in at least v2\nNote: only pcb-rnd above 2.1.0 will load boards without silk; best use v6 or higher.");
 			return NULL;
 		}
 		grp[g - PCB->LayerGroups.grp] = gbottom;
 
 		g = pcb_get_grp(&PCB->LayerGroups, PCB_LYT_TOP, PCB_LYT_SILK);
 		if (g == NULL) {
-			pcb_io_incompat_save(NULL, NULL, "lihata board v1 did not support a layer stackup without top silk\n", "Either create the top silk layer or save in at least v2\nNote: only pcb-rnd above 2.1.0 will load boards without silk; best use v6 or higher.");
+			pcb_io_incompat_save(NULL, NULL, "layer", "lihata board v1 did not support a layer stackup without top silk\n", "Either create the top silk layer or save in at least v2\nNote: only pcb-rnd above 2.1.0 will load boards without silk; best use v6 or higher.");
 			return NULL;
 		}
 		grp[g - PCB->LayerGroups.grp] = gtop;
@@ -1234,17 +1234,17 @@ static lht_node_t *build_styles(vtroutestyle_t *styles)
 			lht_dom_hash_put(sn, dummy_text_node("via_proto"));
 		}
 		else
-			pcb_io_incompat_save(NULL, NULL, "lihata boards before version v5 did not support padstack prototype in route style\n", "Either save in lihata v5+ or be aware of losing this information");
+			pcb_io_incompat_save(NULL, NULL, "route-style", "lihata boards before version v5 did not support padstack prototype in route style\n", "Either save in lihata v5+ or be aware of losing this information");
 
 		if (wrver >= 6)
 			lht_dom_hash_put(sn, build_textf("text_thick", CFMT, s->textt));
 		else if (s->textt > 0)
-			pcb_io_incompat_save(NULL, NULL, "lihata boards before version v6 did not support text thickness in route style\n", "Either save in lihata v6+ or be aware of losing this information");
+			pcb_io_incompat_save(NULL, NULL, "route-style", "lihata boards before version v6 did not support text thickness in route style\n", "Either save in lihata v6+ or be aware of losing this information");
 
 		if (wrver >= 6)
 			lht_dom_hash_put(sn, build_textf("text_scale", "%d", s->texts));
 		else if (s->texts > 0)
-			pcb_io_incompat_save(NULL, NULL, "lihata boards before version v6 did not support text scale in route style\n", "Either save in lihata v6+ or be aware of losing this information");
+			pcb_io_incompat_save(NULL, NULL, "route-style", "lihata boards before version v6 did not support text scale in route style\n", "Either save in lihata v6+ or be aware of losing this information");
 
 		lht_dom_hash_put(sn, build_attributes(&s->attr));
 	}
@@ -1274,7 +1274,7 @@ static lht_node_t *build_netlist(pcb_lib_t *netlist, const char *name, int *none
 		if (wrver >= 5)
 			lht_dom_hash_put(nnet, build_attributes(&menu->Attributes));
 		else if (menu->Attributes.Number > 0)
-			pcb_io_incompat_save(NULL, (pcb_any_obj_t *)menu, "Can not save netlist attributes in lihata formats below version 5.", "Either save in lihata v5 - or accept that attributes are not saved");
+			pcb_io_incompat_save(NULL, (pcb_any_obj_t *)menu, "net-attr", "Can not save netlist attributes in lihata formats below version 5.", "Either save in lihata v5 - or accept that attributes are not saved");
 
 		pl = lht_dom_node_alloc(LHT_LIST, "conn");
 		lht_dom_hash_put(nnet, pl);

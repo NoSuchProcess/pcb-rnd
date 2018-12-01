@@ -312,7 +312,7 @@ static void WritePCBDataHeader(FILE * FP)
 								PCB->RouteStyle.array[group].Diameter, PCB->RouteStyle.array[group].Hole, PCB->RouteStyle.array[group].Clearance);
 	}
 	else {
-		pcb_io_incompat_save(PCB->Data, NULL, "There are no routing styles - many versions of gEDA/PCB will segfault on loading the file", "Create exactly 4 routing styles.");
+		pcb_io_incompat_save(PCB->Data, NULL, "route-style", "There are no routing styles - many versions of gEDA/PCB will segfault on loading the file", "Create exactly 4 routing styles.");
 		fprintf(FP, "\"]\n\n");
 	}
 }
@@ -354,7 +354,7 @@ static void WriteViaData(FILE * FP, pcb_data_t *Data)
 		char *name = pcb_attribute_get(&ps->Attributes, "name");
 
 		if (!pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
-			pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "Failed to convert to old-style via", "Old via format is very much restricted; try to use a simpler, uniform shape padstack");
+			pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "via", "Failed to convert to old-style via", "Old via format is very much restricted; try to use a simpler, uniform shape padstack");
 			continue;
 		}
 
@@ -407,7 +407,7 @@ static void WritePCBNetlistData(FILE * FP)
 static void WritePCBNetlistPatchData(FILE * FP)
 {
 	if (PCB->NetlistPatches != NULL) {
-		pcb_io_incompat_save(PCB->Data, NULL, "Saving netlist patch makes the file incompatible with geda/pcb.", "Either remove (or resolve) your netlist patches before save or remove the NetListPatch() subtree manually from the saved file before using with geda/pcb.");
+		pcb_io_incompat_save(PCB->Data, NULL, "net-patch", "Saving netlist patch makes the file incompatible with geda/pcb.", "Either remove (or resolve) your netlist patches before save or remove the NetListPatch() subtree manually from the saved file before using with geda/pcb.");
 		fprintf(FP, "NetListPatch()\n(\n");
 		pcb_ratspatch_fexport(PCB, FP, 1);
 		fprintf(FP, ")\n");
@@ -492,7 +492,7 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 					fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_flag_make(fl), PCB_OBJ_PAD, &ic, 1));
 			}
 			else
-				pcb_io_incompat_save(sc->data, (pcb_any_obj_t *)ps, "Padstack can not be exported as pin or pad", "use simpler padstack; for pins, all copper layers must have the same shape and there must be no paste; for pads, use a line or a rectangle; paste and mask must match the copper shape");
+				pcb_io_incompat_save(sc->data, (pcb_any_obj_t *)ps, "pin-pad", "Padstack can not be exported as pin or pad", "use simpler padstack; for pins, all copper layers must have the same shape and there must be no paste; for pads, use a line or a rectangle; paste and mask must match the copper shape");
 		}
 
 		for(l = 0; l < sc->data->LayerN; l++) {
@@ -514,12 +514,12 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 				}
 				if (polylist_length(&ly->Polygon) > 0) {
 					char *desc = pcb_strdup_printf("Polygons on layer %s can not be exported in an element\n", ly->name);
-					pcb_io_incompat_save(sc->data, NULL, desc, "only lines and arcs are exported");
+					pcb_io_incompat_save(sc->data, NULL, desc, "element-obj", "only lines and arcs are exported");
 					free(desc);
 				}
 				if (textlist_length(&ly->Text) > 1) {
 					char *desc = pcb_strdup_printf("Text on layer %s can not be exported in an element\n", ly->name);
-					pcb_io_incompat_save(sc->data, NULL, desc, "only lines and arcs are exported");
+					pcb_io_incompat_save(sc->data, NULL, desc, "element-obj", "only lines and arcs are exported");
 					free(desc);
 				}
 				continue;
@@ -527,7 +527,7 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 
 			if (!(ly->meta.bound.type & PCB_LYT_VIRTUAL) && (!pcb_layer_is_pure_empty(ly))) {
 				char *desc = pcb_strdup_printf("Objects on layer %s can not be exported in an element\n", ly->name);
-				pcb_io_incompat_save(sc->data, NULL, desc, "only top silk lines and arcs are exported; heavy terminals are not supported, use padstacks only");
+				pcb_io_incompat_save(sc->data, NULL, desc, "element-layer", "only top silk lines and arcs are exported; heavy terminals are not supported, use padstacks only");
 				free(desc);
 			}
 		}
@@ -662,7 +662,7 @@ static void WriteLayers(FILE *FP, pcb_data_t *data)
 		if ((!(lyt & (PCB_LYT_COPPER | PCB_LYT_SILK))) && (!PCB_LAYER_IS_ROUTE(lyt, purpi))) {
 			if (!pcb_layer_is_pure_empty(ly)) {
 				char *desc = pcb_strdup_printf("Layer %s can be exported only as a copper layer\n", ly->name);
-				pcb_io_incompat_save(data, NULL, desc, NULL);
+				pcb_io_incompat_save(data, NULL, "layer", desc, NULL);
 				free(desc);
 			}
 		}
