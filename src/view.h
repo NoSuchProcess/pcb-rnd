@@ -115,4 +115,18 @@ void pcb_view_set_bbox_by_objs(pcb_data_t *data, pcb_view_t *v);
    prefixed (prefix can be NULL) */
 void pcb_view_save(pcb_view_t *v, gds_t *dst, const char *prefix);
 
+
+/*** Load a serialized view (or list of views) ***/
+
+/* Parse a serialized string into memory; returns a load_ctx or NULL on error */
+void *pcb_view_load_start_str(const char *src);
+
+/* Load the next item from load_ctx; returns NULL on error if there are no
+   more items. If dst is not NULL, it's returned on success; else a newly
+   allocated pcb_view_t is returned on success. */
+pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst);
+
+/* call after the last item or to cancel the load */
+void pcb_view_load_end(void *load_ctx);
+
 #endif

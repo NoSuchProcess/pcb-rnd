@@ -36,6 +36,8 @@
 #undef TDL_DONT_UNDEF
 #include <genlist/gentdlist_undef.h>
 
+#include <liblihata/dom.h>
+
 #include <assert.h>
 
 #include "actions.h"
@@ -261,3 +263,137 @@ void pcb_view_save(pcb_view_t *v, gds_t *dst, const char *prefix)
 
 	pcb_append_printf(dst, "%s}\n", prefix);
 }
+
+typedef struct {
+	lht_doc_t *doc;
+	lht_node_t *next;
+} load_ctx_t;
+
+void pcb_view_load_end(void *load_ctx)
+{
+	load_ctx_t *ctx = load_ctx;
+	lht_dom_uninit(ctx->doc);
+	free(ctx);
+}
+
+void *pcb_view_load_start_str(const char *src)
+{
+	load_ctx_t *ctx = malloc(sizeof(load_ctx_t));
+
+	ctx->doc = lht_dom_init();
+
+	for(; *src != '\0'; src++) {
+		lht_err_t err = lht_dom_parser_char(ctx->doc, *src);
+		if ((err != LHTE_SUCCESS) && (err != LHTE_STOP))
+			goto error;
+	}
+
+	if (ctx->doc->root == NULL)
+		goto error;
+
+	if (ctx->doc->root->type == LHT_LIST) {
+		if (strcmp(ctx->doc->root->name, "view_list.v1") != 0)
+			goto error;
+		ctx->next = ctx->doc->root->data.list.first;
+		return ctx;
+	}
+
+	if (ctx->doc->root->type == LHT_HASH) {
+		if (strncmp(ctx->doc->root->name, "view.", 5) != 0)
+			goto error;
+		ctx->next = ctx->doc->root;
+		return ctx;
+	}
+
+	error:;
+	pcb_view_load_end(ctx);
+	return NULL;
+}
+
+
+pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
+{
+	load_ctx_t *ctx = load_ctx;
+	lht_node_t *n, *c;
+
+	if (ctx->next == NULL)
+		return NULL;
+
+	if ((ctx->next->type != LHT_HASH) || (strncmp(ctx->next->name, "view.", 5) != 0))
+		return NULL;
+
+	if (dst == NULL)
+		dst = calloc(sizeof(pcb_view_t), 1);
+
+	n = lht_dom_hash_get(ctx->next, "type");
+	if ((n != NULL) && (n->type == LHT_TEXT)) {
+		dst->type = n->data.text.value;
+		n->data.text.value = NULL;
+	}
+
+	n = lht_dom_hash_get(ctx->next, "title");
+	if ((n != NULL) && (n->type == LHT_TEXT)) {
+		dst->title = n->data.text.value;
+		n->data.text.value = NULL;
+	}
+
+	n = lht_dom_hash_get(ctx->next, "description");
+	if ((n != NULL) && (n->type == LHT_TEXT)) {
+		dst->description = n->data.text.value;
+		n->data.text.value = NULL;
+	}
+
+	n = lht_dom_hash_get(ctx->next, "bbox");
+	if ((n != NULL) && (n->type == LHT_LIST)) {
+		int ok = 0;
+		pcb_bool succ;
+
+		c = n->data.list.first;
+		if ((c != NULL) && (c->type == LHT_TEXT)) {
+			dst->bbox.X1 = pcb_get_value(c->data.text.value, NULL, NULL, &succ);
+			if (succ) ok++;
+			c = c->next;
+		}
+		if ((c != NULL) && (c->type == LHT_TEXT)) {
+			dst->bbox.Y1 = pcb_get_value(c->data.text.value, NULL, NULL, &succ);
+			if (succ) ok++;
+			c = c->next;
+		}
+		if ((c != NULL) && (c->type == LHT_TEXT)) {
+			dst->bbox.X2 = pcb_get_value(c->data.text.value, NULL, NULL, &succ);
+			if (succ) ok++;
+			c = c->next;
+		}
+		if ((c != NULL) && (c->type == LHT_TEXT)) {
+			dst->bbox.Y2 = pcb_get_value(c->data.text.value, NULL, NULL, &succ);
+			if (succ) ok++;
+			c = c->next;
+		}
+		if ((c == NULL) && (ok == 4))
+			dst->have_bbox = 1;
+	}
+
+	n = lht_dom_hash_get(ctx->next, "xy");
+	if ((n != NULL) && (n->type == LHT_LIST)) {
+		int ok = 0;
+		pcb_bool succ;
+
+		c = n->data.list.first;
+		if ((c != NULL) && (c->type == LHT_TEXT)) {
+			dst->x = pcb_get_value(c->data.text.value, NULL, NULL, &succ);
+			if (succ) ok++;
+			c = c->next;
+		}
+		if ((c != NULL) && (c->type == LHT_TEXT)) {
+			dst->y = pcb_get_value(c->data.text.value, NULL, NULL, &succ);
+			if (succ) ok++;
+			c = c->next;
+		}
+		if ((c == NULL) && (ok == 2))
+			dst->have_bbox = 1;
+	}
+
+	ctx->next = ctx->next->next;
+	return dst;
+}
+
