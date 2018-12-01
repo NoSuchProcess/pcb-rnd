@@ -28,6 +28,7 @@
 #ifndef PCB_VIEW_H
 #define PCB_VIEW_H
 
+#include <stdio.h>
 #include <genlist/gendlist.h>
 #include <genvector/gds_char.h>
 #include "unit.h"
@@ -126,8 +127,10 @@ void pcb_view_save(pcb_view_t *v, gds_t *dst, const char *prefix);
 
 /*** Load a serialized view (or list of views) ***/
 
-/* Parse a serialized string into memory; returns a load_ctx or NULL on error */
+/* Parse a serialized string/file into memory; returns a load_ctx or NULL on
+   error. Does not close the file. */
 void *pcb_view_load_start_str(const char *src);
+void *pcb_view_load_start_file(FILE *f);
 
 /* Load the next item from load_ctx; returns NULL on error if there are no
    more items. If dst is not NULL, it's returned on success; else a newly

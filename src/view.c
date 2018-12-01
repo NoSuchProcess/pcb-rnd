@@ -330,6 +330,23 @@ void *pcb_view_load_start_str(const char *src)
 	return view_load_post(ctx);
 }
 
+void *pcb_view_load_start_file(FILE *f)
+{
+	int c;
+	load_ctx_t *ctx = malloc(sizeof(load_ctx_t));
+
+	ctx->doc = lht_dom_init();
+
+	while((c = fgetc(f)) != EOF) {
+		lht_err_t err = lht_dom_parser_char(ctx->doc, c);
+		if ((err != LHTE_SUCCESS) && (err != LHTE_STOP)) {
+			pcb_view_load_end(ctx);
+			return NULL;
+		}
+	}
+	return view_load_post(ctx);
+}
+
 #define LOADERR "Error loading view: "
 
 static void pcb_view_load_objs(pcb_view_t *dst, int grp, lht_node_t *olist)
