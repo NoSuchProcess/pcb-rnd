@@ -411,42 +411,6 @@ int lesstif_close_confirm_dialog()
 }
 
 /* ------------------------------------------------------------ */
-
-static Widget report = 0, report_form;
-
-void lesstif_report_dialog(const char *title, const char *msg)
-{
-	if (!report) {
-		if (mainwind == 0)
-			return;
-
-		stdarg_n = 0;
-		stdarg(XmNautoUnmanage, False);
-		stdarg(XmNwidth, 600);
-		stdarg(XmNheight, 200);
-		stdarg(XmNtitle, title);
-		report_form = XmCreateFormDialog(mainwind, XmStrCast("report"), stdarg_args, stdarg_n);
-
-		stdarg_n = 0;
-		stdarg(XmNeditable, False);
-		stdarg(XmNeditMode, XmMULTI_LINE_EDIT);
-		stdarg(XmNcursorPositionVisible, False);
-		stdarg(XmNtopAttachment, XmATTACH_FORM);
-		stdarg(XmNleftAttachment, XmATTACH_FORM);
-		stdarg(XmNrightAttachment, XmATTACH_FORM);
-		stdarg(XmNbottomAttachment, XmATTACH_FORM);
-		report = XmCreateScrolledText(report_form, XmStrCast("text"), stdarg_args, stdarg_n);
-		XtManageChild(report);
-	}
-	stdarg_n = 0;
-	stdarg(XmNtitle, title);
-	XtSetValues(report_form, stdarg_args, stdarg_n);
-	XmTextSetString(report, (char *) msg);
-
-	XtManageChild(report_form);
-}
-
-/* ------------------------------------------------------------ */
 /* FIXME -- make this a proper file select dialog box */
 char *lesstif_fileselect(const char *title, const char *descr,
 												 const char *default_file, const char *default_ext, const char *history_tag, int flags)

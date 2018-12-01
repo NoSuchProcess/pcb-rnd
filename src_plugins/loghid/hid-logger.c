@@ -201,12 +201,6 @@ static void log_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 	delegatee_->fill_rect(gc, x1, y1, x2, y2);
 }
 
-static void log_report_dialog(const char *title, const char *msg)
-{
-	pcb_fprintf(out_, "report_dialog(\"%s\", \"%s\")\n", title, msg);
-	delegatee_->report_dialog(title, msg);
-}
-
 static void log_beep()
 {
 	pcb_fprintf(out_, "beep();   BEEEP   .... BEEEEEEEP\n");
@@ -258,7 +252,6 @@ void create_log_hid(FILE *log_out, pcb_hid_t *loghid, pcb_hid_t *delegatee)
 	REGISTER_IF_NOT_NULL(fill_pcb_polygon);
 	REGISTER_IF_NOT_NULL(thindraw_pcb_polygon);
 	REGISTER_IF_NOT_NULL(fill_rect);
-	REGISTER_IF_NOT_NULL(report_dialog);
 	REGISTER_IF_NOT_NULL(beep);
 
 #undef REGISTER_IF_NOT_NULL

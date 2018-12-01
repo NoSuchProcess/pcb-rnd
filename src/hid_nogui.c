@@ -336,11 +336,6 @@ static int nogui_close_confirm_dialog()
 	return nogui_confirm_dialog(_("OK to lose data ?"), NULL);
 }
 
-static void nogui_report_dialog(const char *title, const char *msg)
-{
-	printf("--- %s ---\n%s\n", title, msg);
-}
-
 static char *nogui_prompt_for(const char *msg, const char *default_string)
 {
 	char *answer;
@@ -477,7 +472,6 @@ void pcb_hid_nogui_init(pcb_hid_t * hid)
 	hid->logv = nogui_logv;
 	hid->confirm_dialog = nogui_confirm_dialog;
 	hid->close_confirm_dialog = nogui_close_confirm_dialog;
-	hid->report_dialog = nogui_report_dialog;
 	hid->prompt_for = nogui_prompt_for;
 	hid->fileselect = nogui_fileselect;
 	hid->attr_dlg_new = nogui_attr_dlg_new;

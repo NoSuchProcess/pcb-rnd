@@ -354,9 +354,6 @@ struct pcb_hid_s {
 #define HID_CLOSE_CONFIRM_CANCEL 0
 #define HID_CLOSE_CONFIRM_OK     1
 
-	/* Just prints text.  */
-	void (*report_dialog)(const char *title, const char *msg);
-
 	/* Prompts the user to enter a string, returns the string.  If
 	   default_string isn't NULL, the form is pre-filled with this
 	   value.  "msg" is like "Enter value:".  Returns NULL on cancel. */
