@@ -47,6 +47,7 @@
 #include "dlg_pref.c"
 #include "dlg_lib_pstk.c"
 #include "dlg_undo.c"
+#include "dlg_plugins.c"
 
 #include "dlg_view.h"
 #include "act_dad.h"
@@ -64,6 +65,7 @@ pcb_action_t dialogs_action_list[] = {
 	{"Preferences", pcb_act_Preferences, pcb_acth_Preferences, pcb_acts_Preferences},
 	{"pstklib", pcb_act_pstklib, pcb_acth_pstklib, pcb_acts_pstklib},
 	{"UndoDialog", pcb_act_UndoDialog, pcb_acth_UndoDialog, pcb_acts_UndoDialog},
+	{"ManagePlugins", pcb_act_ManagePlugins, pcb_acth_ManagePlugins, pcb_acts_ManagePlugins},
 	{"dad", pcb_act_dad, pcb_acth_dad, pcb_acts_dad},
 	{"DrcDialog", pcb_act_DrcDialog, pcb_acth_DrcDialog, pcb_acts_DrcDialog}
 };

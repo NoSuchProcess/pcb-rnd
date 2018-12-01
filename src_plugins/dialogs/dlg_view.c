@@ -356,6 +356,38 @@ static void view_del_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	}
 }
 
+static void view_copy_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
+{
+	view_ctx_t *ctx = caller_data;
+	pcb_view_t *v, *newv;
+	gds_t tmp;
+	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
+	pcb_hid_row_t *rc, *r = pcb_dad_tree_get_selected(attr);
+
+	/* only full dialog, go by the list */
+
+	gds_init(&tmp);
+
+	gds_append_str(&tmp, "li:view_list.v1 {\n");
+	if (r->user_data2.lng == 0) {
+		/* dump a whole category */
+		for(rc = gdl_first(&r->children); rc != NULL; rc = gdl_next(&r->children, rc)) {
+			v = pcb_view_by_uid(ctx->lst, rc->user_data2.lng);
+			if (v != NULL)
+				pcb_view_save(v, &tmp, "  ");
+		}
+	}
+	else {
+		/* dump a single item */
+		v = pcb_view_by_uid(ctx->lst, r->user_data2.lng);
+		if (v != NULL)
+			pcb_view_save(v, &tmp, "  ");
+	}
+	gds_append_str(&tmp, "}\n");
+	printf("%s\n", tmp.array);
+	gds_uninit(&tmp);
+}
+
 static void view_select_obj(view_ctx_t *ctx, pcb_view_t *v)
 {
 	pcb_idpath_t *i;
@@ -465,6 +497,7 @@ static void pcb_dlg_view_full(view_ctx_t *ctx, const char *title)
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
 					PCB_DAD_BUTTON(ctx->dlg, "Copy");
 						ctx->wbtn_copy = PCB_DAD_CURRENT(ctx->dlg);
+						PCB_DAD_CHANGE_CB(ctx->dlg, view_copy_btn_cb);
 					PCB_DAD_BUTTON(ctx->dlg, "Cut");
 						ctx->wbtn_cut = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_BUTTON(ctx->dlg, "Del");
@@ -508,7 +541,6 @@ static void pcb_dlg_view_full(view_ctx_t *ctx, const char *title)
 	PCB_DAD_NEW(ctx->dlg, title, "", ctx, pcb_false, view_close_cb);
 
 	ctx->active = 1;
-	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wbtn_copy, 0);
 	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wbtn_cut, 0);
 	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wbtn_pastea, 0);
 	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wbtn_pasteb, 0);
