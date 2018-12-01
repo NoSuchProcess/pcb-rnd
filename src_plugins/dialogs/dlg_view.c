@@ -388,6 +388,62 @@ static void view_copy_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	gds_uninit(&tmp);
 }
 
+static void view_paste_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
+{
+	view_ctx_t *ctx = caller_data;
+	pcb_hid_clipfmt_t cformat;
+	void *cdata, *load_ctx;
+	size_t clen;
+	pcb_view_t *v, *vt;
+	int btn_idx = attr_btn - ctx->dlg;
+	int before = (btn_idx == ctx->wbtn_pasteb);
+	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
+	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
+
+	if (r == NULL)
+		return;
+
+	/* if cursor is a category */
+	if (r->user_data2.lng == 0) {
+		before = 1;
+		r = gdl_first(&r->children);
+		if (r == NULL)
+			return;
+	}
+	vt = pcb_view_by_uid(ctx->lst, r->user_data2.lng);
+	if (vt == NULL)
+		return;
+
+	if (pcb_gui->clip_get(&cformat, &cdata, &clen) != 0)
+		return;
+
+	if (cformat != PCB_HID_CLIPFMT_TEXT) {
+		pcb_gui->clip_free(cformat, cdata, clen);
+		return;
+	}
+
+	load_ctx = pcb_view_load_start_str(cdata);
+	pcb_gui->clip_free(cformat, cdata, clen);
+	if (load_ctx == NULL)
+		return;
+
+	for(;;) {
+		v = pcb_view_load_next(load_ctx, NULL);
+		if (v == NULL)
+			break;
+		if (before)
+			pcb_view_list_insert_before(ctx->lst, vt, v);
+		else
+			pcb_view_list_insert_after(ctx->lst, vt, v);
+		
+		vt = v;
+		before = 0;
+	}
+
+	pcb_view_load_end(load_ctx);
+	view2dlg_list(ctx);
+}
+
 static void view_select_obj(view_ctx_t *ctx, pcb_view_t *v)
 {
 	pcb_idpath_t *i;
@@ -509,8 +565,10 @@ static void pcb_dlg_view_full(view_ctx_t *ctx, const char *title)
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
 					PCB_DAD_BUTTON(ctx->dlg, "Paste before");
 						ctx->wbtn_pasteb = PCB_DAD_CURRENT(ctx->dlg);
+						PCB_DAD_CHANGE_CB(ctx->dlg, view_paste_btn_cb);
 					PCB_DAD_BUTTON(ctx->dlg, "Paste after");
 						ctx->wbtn_pastea = PCB_DAD_CURRENT(ctx->dlg);
+						PCB_DAD_CHANGE_CB(ctx->dlg, view_paste_btn_cb);
 				PCB_DAD_END(ctx->dlg);
 			PCB_DAD_END(ctx->dlg);
 
@@ -542,8 +600,6 @@ static void pcb_dlg_view_full(view_ctx_t *ctx, const char *title)
 
 	ctx->active = 1;
 	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wbtn_cut, 0);
-	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wbtn_pastea, 0);
-	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wbtn_pasteb, 0);
 }
 
 static void pcb_dlg_view_simplified(view_ctx_t *ctx, const char *title)
