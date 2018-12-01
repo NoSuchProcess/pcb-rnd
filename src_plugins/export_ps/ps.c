@@ -238,19 +238,6 @@ Postscript output in color.
 
 /* %start-doc options "91 Postscript Export"
 @ftable @code
-@cindex ps-bloat
-@item --ps-bloat <num>
-Amount to add to trace/pad/pin edges.
-OBSOLETE - do not use.
-@end ftable
-%end-doc
-*/
-	{"ps-bloat", "Amount to add to trace/pad/pin edges (OBSOLETE - do not use)",
-	 PCB_HATT_COORD, -PCB_MIL_TO_COORD(100), PCB_MIL_TO_COORD(100), {0, 0, 0}, 0, 0},
-#define HA_psbloat 8
-
-/* %start-doc options "91 Postscript Export"
-@ftable @code
 @cindex ps-invert
 @item --ps-invert
 Draw objects as white-on-black.
@@ -259,7 +246,7 @@ Draw objects as white-on-black.
 */
 	{"ps-invert", "Draw objects as white-on-black",
 	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_psinvert 9
+#define HA_psinvert 8
 
 /* %start-doc options "91 Postscript Export"
 @ftable @code
@@ -275,7 +262,7 @@ to @samp{A10}, @samp{B0} to @samp{B10}, @samp{Letter}, @samp{11x17},
 */
 	{"media", "media type",
 	 PCB_HATT_ENUM, 0, 0, {22, 0, 0}, medias, 0},
-#define HA_media 10
+#define HA_media 9
 
 /* %start-doc options "91 Postscript Export"
 @ftable @code
@@ -287,7 +274,7 @@ Fade amount for assembly drawings (0.0=missing, 1.0=solid).
 */
 	{"psfade", "Fade amount for assembly drawings (0.0=missing, 1.0=solid)",
 	 PCB_HATT_REAL, 0, 1, {0, 0, 0.40}, 0, 0},
-#define HA_psfade 11
+#define HA_psfade 10
 
 /* %start-doc options "91 Postscript Export"
 @ftable @code
@@ -298,7 +285,7 @@ Scale value to compensate for printer sizing errors (1.0 = full scale).
 */
 	{"scale", "Scale value to compensate for printer sizing errors (1.0 = full scale)",
 	 PCB_HATT_REAL, 0.01, 4, {0, 0, 1.00}, 0, 0},
-#define HA_scale 12
+#define HA_scale 11
 
 /* %start-doc options "91 Postscript Export"
 @ftable @code
@@ -310,7 +297,7 @@ Produce multiple files, one per page, instead of a single multi page file.
 */
 	{"multi-file", "Produce multiple files, one per page, instead of a single file",
 	 PCB_HATT_BOOL, 0, 0, {0, 0, 0.40}, 0, 0},
-#define HA_multifile 13
+#define HA_multifile 12
 
 /* %start-doc options "91 Postscript Export"
 @ftable @code
@@ -321,7 +308,7 @@ Paper width. Used for x-Axis calibration.
 */
 	{"xcalib", "Paper width. Used for x-Axis calibration",
 	 PCB_HATT_REAL, 0, 2, {0, 0, 1.0}, 0, 0},
-#define HA_xcalib 14
+#define HA_xcalib 13
 
 /* %start-doc options "91 Postscript Export"
 @ftable @code
@@ -332,7 +319,7 @@ Paper height. Used for y-Axis calibration.
 */
 	{"ycalib", "Paper height. Used for y-Axis calibration",
 	 PCB_HATT_REAL, 0, 2, {0, 0, 1.0}, 0, 0},
-#define HA_ycalib 15
+#define HA_ycalib 14
 
 /* %start-doc options "91 Postscript Export"
 @ftable @code
@@ -343,7 +330,7 @@ Draw drill holes in pins / vias, instead of leaving solid copper.
 */
 	{"drill-copper", "Draw drill holes in pins / vias, instead of leaving solid copper",
 	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
-#define HA_drillcopper 16
+#define HA_drillcopper 15
 
 /* %start-doc options "91 Postscript Export"
 @ftable @code
@@ -355,7 +342,7 @@ Print file name and scale on printout.
 */
 	{"show-legend", "Print file name and scale on printout",
 	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
-#define HA_legend 17
+#define HA_legend 16
 
 /* %start-doc options "91 Postscript Export"
 @ftable @code
@@ -367,7 +354,7 @@ Generate Table of Contents
 */
 	{"show-toc", "Print Table of Content",
 	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
-#define HA_toc 18
+#define HA_toc 17
 
 
 /* %start-doc options "91 Postscript Export"
@@ -380,12 +367,12 @@ Merge all drawings on a single page
 */
 	{"single-page", "Merge all drawings on a single page",
 	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_single_page 19
+#define HA_single_page 18
 
 
 	{"cam", "CAM instruction",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_cam 20
+#define HA_cam 19
 
 };
 
@@ -413,7 +400,6 @@ static struct {
 	pcb_bool automirror;
 	pcb_bool incolor;
 	pcb_bool doing_toc;
-	pcb_coord_t bloat;
 	pcb_bool invert;
 	int media_idx;
 	pcb_bool drillcopper;
@@ -632,7 +618,6 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	global.fillpage = options[HA_fillpage].int_value;
 	global.automirror = options[HA_automirror].int_value;
 	global.incolor = options[HA_color].int_value;
-	global.bloat = options[HA_psbloat].coord_value;
 	global.invert = options[HA_psinvert].int_value;
 	global.fade_ratio = PCB_CLAMP(options[HA_psfade].real_value, 0, 1);
 	global.media_idx = options[HA_media].int_value;
@@ -958,7 +943,7 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 			pcb_fprintf(global.f,
 									"0 setgray %mi setlinewidth 0 0 moveto 0 "
 									"%mi lineto %mi %mi lineto %mi 0 lineto closepath %s\n",
-									conf_core.design.min_wid + 2 * global.bloat,
+									conf_core.design.min_wid,
 									PCB->MaxHeight, PCB->MaxWidth, PCB->MaxHeight, PCB->MaxWidth, global.invert ? "fill" : "stroke");
 		}
 
@@ -1089,7 +1074,7 @@ static void use_gc(pcb_hid_gc_t gc)
 		abort();
 	}
 	if (global.linewidth != gc->width) {
-		pcb_fprintf(global.f, "%mi setlinewidth\n", gc->width + (gc->erase ? -2 : 2) * global.bloat);
+		pcb_fprintf(global.f, "%mi setlinewidth\n", gc->width);
 		global.linewidth = gc->width;
 	}
 	if (lastcap != gc->cap) {
@@ -1204,7 +1189,7 @@ static void ps_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coo
 	if (w == 0) /* make sure not to div by zero; this hack will have very similar effect */
 		w = 0.0001;
 	pcb_fprintf(global.f, "%ma %ma %mi %mi %mi %mi %f a\n",
-							sa, ea, -width, height, cx, cy, (double)(global.linewidth + 2 * global.bloat) / w);
+							sa, ea, -width, height, cx, cy, (double)(global.linewidth) / w);
 }
 
 static void ps_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
@@ -1213,7 +1198,7 @@ static void ps_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_
 	if (!gc->erase || !global.is_copper || global.drillcopper) {
 		if (gc->erase && global.is_copper && global.drill_helper && radius >= conf_core.design.min_drill / 4)
 			radius = conf_core.design.min_drill / 4;
-		pcb_fprintf(global.f, "%mi %mi %mi c\n", cx, cy, radius + (gc->erase ? -1 : 1) * global.bloat);
+		pcb_fprintf(global.f, "%mi %mi %mi c\n", cx, cy, radius);
 	}
 }
 
@@ -1339,7 +1324,7 @@ static void ps_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_co
 		return;
 	}
 #endif
-	pcb_fprintf(global.f, "%mi %mi %mi %mi r\n", x1 - global.bloat, y1 - global.bloat, x2 + global.bloat, y2 + global.bloat);
+	pcb_fprintf(global.f, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
 }
 
 pcb_hid_attribute_t ps_calib_attribute_list[] = {
