@@ -6,6 +6,18 @@
 	- there should be a view context in core associated with this, that contains flips so the view can be decoupled from board flip config (library preview)
 	- ... but there also should be an option for going with board flip (drc view)
 	- CLEANUP: remove preview for layers -> use the generic expose preview (requires switching to the new preferences dialog for the layer stackup) [report: Igor2]
+- CLEANUP: boardflip rewrite: use data_mirror
+	- BUG: can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
+	- BUG: boardflip() action moves the objects and doesn't move the subc outline and origin (repro: place single part, run boardflip) [report:Miloh]
+- CLEANUP: propedit revamp:
+	- move the property editor out from gtk, using the DAD, into propedit
+	- test under lesstif
+	- remove Attribute()
+	- CLEANUP: think over how to handle subc selection: selecting all parts automatically is bad for propedit; bug_files/subcsel.bug [report: Wojciech]
+	- CLEANUP: propedit rewrite: new action UI should allow operation on object and object ID instead of selection; bug_files/subcsel.bug [report: Wojciech]
+	- BUG: adding attribute works on subc parts but deleting attribute stops after deleiting it from a subc; bug_files/subcsel.bug [report: Wojciech]
+	- FEATURE: the property editor should display a stat of number/type of objects selected [report: Igor2]
+	- CLEANUP: pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
 - CLEANUP: remove compact_vertical from gtk - see bug_files/remove_compact.txt
 - BUG: search for #gtkzoom in lib_gtk_common; bug reprod: set pcb height to 50 mil, {w l} -> zooms are off because of the clamp [report: Igor2]
 - CLEANUP: dad: make the implicit dialog ok/cancel buttons configurable or do not use them at all; e.g. export dialog is confusing [report: Cyril, ml2409]
@@ -24,18 +36,6 @@
 - FEATURE: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
 - FEATURE: padstack editor: indicate if a proto layer does not map to current board layer [report: Erich]
 + BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
-- CLEANUP: boardflip rewrite: use data_mirror
-	- BUG: can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
-	- BUG: boardflip() action moves the objects and doesn't move the subc outline and origin (repro: place single part, run boardflip) [report:Miloh]
-- CLEANUP: propedit revamp:
-	- move the property editor out from gtk, using the DAD, into propedit
-	- test under lesstif
-	- remove Attribute()
-	- CLEANUP: think over how to handle subc selection: selecting all parts automatically is bad for propedit; bug_files/subcsel.bug [report: Wojciech]
-	- CLEANUP: propedit rewrite: new action UI should allow operation on object and object ID instead of selection; bug_files/subcsel.bug [report: Wojciech]
-	- BUG: adding attribute works on subc parts but deleting attribute stops after deleiting it from a subc; bug_files/subcsel.bug [report: Wojciech]
-	- FEATURE: the property editor should display a stat of number/type of objects selected [report: Igor2]
-	- CLEANUP: pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
 - BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
 - BUG: bug_files/obsconf.lht: load, get a warning for obsolete config; save into a new file and the broken conf node is not removed [report: keantoken]
 - BUG: create 3 rectangles: top copper, bottom copper, intern copper; convert to padstack; when there's no hole, the intern copper layer is not rendered [report: Igor2]
