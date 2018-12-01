@@ -148,10 +148,8 @@ static pcb_hid_attr_val_t eps_values[NUM_OPTIONS];
 
 static pcb_hid_attribute_t *eps_get_export_options(int *n)
 {
-	static char *last_made_filename = 0;
-
 	if (PCB)
-		pcb_derive_default_filename(PCB->Filename, &eps_attribute_list[HA_psfile], ".eps", &last_made_filename);
+		pcb_derive_default_filename(PCB->Filename, &eps_attribute_list[HA_psfile], ".eps");
 
 	if (n)
 		*n = NUM_OPTIONS;

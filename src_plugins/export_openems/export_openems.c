@@ -165,12 +165,11 @@ static pcb_hid_attr_val_t openems_values[NUM_OPTIONS];
 
 static pcb_hid_attribute_t *openems_get_export_options(int *n)
 {
-	static char *last_made_filename = 0;
 	const char *suffix = ".m";
 	pcb_mesh_t *mesh = pcb_mesg_get(MESH_NAME);
 
 	if (PCB)
-		pcb_derive_default_filename(PCB->Filename, &openems_attribute_list[HA_openemsfile], suffix, &last_made_filename);
+		pcb_derive_default_filename(PCB->Filename, &openems_attribute_list[HA_openemsfile], suffix);
 
 	if (mesh != NULL) {
 		openems_attribute_list[HA_def_substrate_thick].default_val.coord_value = mesh->def_subs_thick;

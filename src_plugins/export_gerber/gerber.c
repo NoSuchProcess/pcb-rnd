@@ -365,9 +365,8 @@ static pcb_hid_attr_val_t gerber_values[NUM_OPTIONS];
 
 static pcb_hid_attribute_t *gerber_get_export_options(int *n)
 {
-	static char *last_made_filename = NULL;
 	if (PCB)
-		pcb_derive_default_filename(PCB->Filename, &gerber_options[HA_gerberfile], "", &last_made_filename);
+		pcb_derive_default_filename(PCB->Filename, &gerber_options[HA_gerberfile], "");
 
 	if (n)
 		*n = NUM_OPTIONS;

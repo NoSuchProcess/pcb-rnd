@@ -203,11 +203,10 @@ static pcb_hid_attr_val_t dxf_values[NUM_OPTIONS];
 
 static pcb_hid_attribute_t *dxf_get_export_options(int *n)
 {
-	static char *last_made_filename = 0;
 	const char *suffix = ".dxf";
 
 	if (PCB)
-		pcb_derive_default_filename(PCB->Filename, &dxf_attribute_list[HA_dxffile], suffix, &last_made_filename);
+		pcb_derive_default_filename(PCB->Filename, &dxf_attribute_list[HA_dxffile], suffix);
 
 	if (n)
 		*n = NUM_OPTIONS;

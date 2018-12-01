@@ -488,11 +488,10 @@ static const char *get_file_suffix(void)
 
 static pcb_hid_attribute_t *png_get_export_options(int *n)
 {
-	static char *last_made_filename = 0;
 	const char *suffix = get_file_suffix();
 
 	if (PCB)
-		pcb_derive_default_filename(PCB->Filename, &png_attribute_list[HA_pngfile], suffix, &last_made_filename);
+		pcb_derive_default_filename(PCB->Filename, &png_attribute_list[HA_pngfile], suffix);
 
 	if (n)
 		*n = NUM_OPTIONS;

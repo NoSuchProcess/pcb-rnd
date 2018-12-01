@@ -95,7 +95,6 @@ static void free_fmts(void)
 
 static pcb_hid_attribute_t *xy_get_export_options(int *n)
 {
-	static char *last_xy_filename = 0;
 	static int last_unit_value = -1;
 	conf_listitem_t *li;
 	int idx;
@@ -143,7 +142,7 @@ static pcb_hid_attribute_t *xy_get_export_options(int *n)
 		last_unit_value = xy_options[HA_unit].default_val.int_value;
 	}
 	if (PCB)
-		pcb_derive_default_filename(PCB->Filename, &xy_options[HA_xyfile], ".xy", &last_xy_filename);
+		pcb_derive_default_filename(PCB->Filename, &xy_options[HA_xyfile], ".xy");
 
 	if (n)
 		*n = NUM_OPTIONS;

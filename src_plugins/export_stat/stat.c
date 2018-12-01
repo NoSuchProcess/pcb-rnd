@@ -111,11 +111,10 @@ static pcb_hid_attr_val_t stat_values[NUM_OPTIONS];
 
 static pcb_hid_attribute_t *stat_get_export_options(int *n)
 {
-	static char *last_made_filename = 0;
 	const char *suffix = ".stat.lht";
 
 	if (PCB)
-		pcb_derive_default_filename(PCB->Filename, &stat_attribute_list[HA_statfile], suffix, &last_made_filename);
+		pcb_derive_default_filename(PCB->Filename, &stat_attribute_list[HA_statfile], suffix);
 
 	if (n)
 		*n = NUM_OPTIONS;

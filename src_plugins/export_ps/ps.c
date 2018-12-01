@@ -438,9 +438,8 @@ static struct {
 
 static pcb_hid_attribute_t *ps_get_export_options(int *n)
 {
-	static char *last_made_filename = 0;
 	if (PCB)
-		pcb_derive_default_filename(PCB->Filename, &ps_attribute_list[HA_psfile], ".ps", &last_made_filename);
+		pcb_derive_default_filename(PCB->Filename, &ps_attribute_list[HA_psfile], ".ps");
 
 	if (n)
 		*n = NUM_OPTIONS;

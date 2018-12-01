@@ -100,7 +100,7 @@ char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags,
 }
 
 
-void pcb_derive_default_filename(const char *pcbfile, pcb_hid_attribute_t * filename_attrib, const char *suffix, char **memory)
+void pcb_derive_default_filename(const char *pcbfile, pcb_hid_attribute_t * filename_attrib, const char *suffix)
 {
 	char *buf;
 	const char *pf;
@@ -110,12 +110,7 @@ void pcb_derive_default_filename(const char *pcbfile, pcb_hid_attribute_t * file
 	else
 		pf = pcbfile;
 
-	if (memory && filename_attrib->default_val.str_value != *memory)
-		return;
-
 	buf = (char *) malloc(strlen(pf) + strlen(suffix) + 1);
-	if (memory)
-		*memory = buf;
 	if (buf) {
 		size_t bl;
 		pcb_plug_io_t *i;

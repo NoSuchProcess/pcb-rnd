@@ -237,7 +237,6 @@ static int gcode_parse_arguments(int *argc, char ***argv)
 
 static pcb_hid_attribute_t *gcode_get_export_options(int *n)
 {
-	static char *last_made_filename = 0;
 	static int last_unit_value = -1;
 
 	if (gcode_attribute_list[HA_unit].default_val.int_value == last_unit_value) {
@@ -249,7 +248,7 @@ static pcb_hid_attribute_t *gcode_get_export_options(int *n)
 	}
 
 	if (PCB) {
-		pcb_derive_default_filename(PCB->Filename, &gcode_attribute_list[HA_basename], ".gcode", &last_made_filename);
+		pcb_derive_default_filename(PCB->Filename, &gcode_attribute_list[HA_basename], ".gcode");
 	}
 	if (n) {
 		*n = NUM_OPTIONS;

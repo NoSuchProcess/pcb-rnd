@@ -87,11 +87,10 @@ static pcb_hid_attr_val_t fidocadj_values[NUM_OPTIONS];
 
 static pcb_hid_attribute_t *fidocadj_get_export_options(int *n)
 {
-	static char *last_made_filename = 0;
 	const char *suffix = ".fcd";
 
 	if (PCB)
-		pcb_derive_default_filename(PCB->Filename, &fidocadj_attribute_list[HA_fidocadjfile], suffix, &last_made_filename);
+		pcb_derive_default_filename(PCB->Filename, &fidocadj_attribute_list[HA_fidocadjfile], suffix);
 
 	if (n)
 		*n = NUM_OPTIONS;
