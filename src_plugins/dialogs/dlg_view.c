@@ -356,7 +356,7 @@ static void view_del_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 static void view_copy_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
 {
 	view_ctx_t *ctx = caller_data;
-	pcb_view_t *v, *newv;
+	pcb_view_t *v;
 	gds_t tmp;
 	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
 	pcb_hid_row_t *rc, *r = pcb_dad_tree_get_selected(attr);
@@ -402,7 +402,6 @@ static void view_paste_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	void *cdata, *load_ctx;
 	size_t clen;
 	pcb_view_t *v, *vt;
-	int btn_idx = attr_btn - ctx->dlg;
 	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
 	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
 
@@ -619,7 +618,6 @@ static void pcb_dlg_view_full(view_ctx_t *ctx, const char *title)
 
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
 					PCB_DAD_BUTTON(ctx->dlg, "Copy");
-						PCB_DAD_CURRENT(ctx->dlg);
 						PCB_DAD_CHANGE_CB(ctx->dlg, view_copy_btn_cb);
 					PCB_DAD_BUTTON(ctx->dlg, "Cut");
 						ctx->wbtn_cut = PCB_DAD_CURRENT(ctx->dlg);
