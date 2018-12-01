@@ -41,6 +41,7 @@
 #include "hid_dad.h"
 #include "hid_dad_tree.h"
 #include "undo.h"
+#include "safe_fs.h"
 
 static const char *dlg_view_cookie = "dlg_drc";
 
@@ -478,7 +479,40 @@ static void view_save_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 
 static void view_load_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
 {
+	view_ctx_t *ctx = caller_data;
+	pcb_view_t *v;
+	char *fn;
+	FILE *f;
+	void *load_ctx;
 
+	fn = pcb_gui->fileselect("Load view list", "Load all views from the list", "view.lht", "lht", "view", HID_FILESELECT_READ);
+	if (fn == NULL)
+		return;
+
+	f = pcb_fopen(fn, "r");
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Can't open %s for read\n", fn);
+		return;
+	}
+
+	load_ctx = pcb_view_load_start_file(f);
+	if (load_ctx == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Error parsing %s - is it a view list?\n", fn);
+		fclose(f);
+		return;
+	}
+	fclose(f);
+
+	pcb_view_list_free_fields(ctx->lst);
+	for(;;) {
+		v = pcb_view_load_next(load_ctx, NULL);
+		if (v == NULL)
+			break;
+		pcb_view_list_append(ctx->lst, v);
+	}
+
+	pcb_view_load_end(load_ctx);
+	view2dlg_list(ctx);
 }
 
 static void view_select_obj(view_ctx_t *ctx, pcb_view_t *v)
