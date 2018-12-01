@@ -103,14 +103,14 @@ char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags,
 void pcb_derive_default_filename(const char *pcbfile, pcb_hid_attribute_t * filename_attrib, const char *suffix, char **memory)
 {
 	char *buf;
-	char *pf;
+	const char *pf;
 
 	if (pcbfile == NULL)
-		pf = pcb_strdup("unknown.pcb");
+		pf = "unknown.pcb";
 	else
-		pf = pcb_strdup(pcbfile);
+		pf = pcbfile;
 
-	if (!pf || (memory && filename_attrib->default_val.str_value != *memory))
+	if (memory && filename_attrib->default_val.str_value != *memory)
 		return;
 
 	buf = (char *) malloc(strlen(pf) + strlen(suffix) + 1);
@@ -135,8 +135,6 @@ void pcb_derive_default_filename(const char *pcbfile, pcb_hid_attribute_t * file
 			free((void *) filename_attrib->default_val.str_value);
 		filename_attrib->default_val.str_value = buf;
 	}
-
-	free(pf);
 }
 
 /* remove leading and trailing whitespace */
