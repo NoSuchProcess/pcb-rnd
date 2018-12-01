@@ -82,6 +82,14 @@ static int idpath_map(pcb_idpath_t *idp, pcb_any_obj_t *obj, int level, int *num
 	return -1;
 }
 
+pcb_idpath_t *pcb_idpath_alloc(int len)
+{
+	pcb_idpath_t *idp;
+	idp = calloc(1, sizeof(pcb_idpath_t) + (sizeof(long int) * (len-1)));
+	idp->len = len;
+	return idp;
+}
+
 pcb_idpath_t *pcb_obj2idpath(pcb_any_obj_t *obj)
 {
 	pcb_idpath_t *idp;
@@ -91,13 +99,12 @@ pcb_idpath_t *pcb_obj2idpath(pcb_any_obj_t *obj)
 	if (idpath_map(NULL, obj, 0, &len) != 0)
 		return NULL;
 
-	idp = calloc(1, sizeof(pcb_idpath_t) + (sizeof(long int) * (len-1)));
+	idp = pcb_idpath_alloc(len);
 	if (idpath_map(idp, obj, len-1, NULL) != 0) {
 		free(idp);
 		return NULL;
 	}
 
-	idp->len = len;
 	return idp;
 }
 
