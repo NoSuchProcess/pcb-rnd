@@ -57,7 +57,7 @@ struct view_ctx_s {
 	unsigned long int selected;
 
 	int wpos, wlist, wcount, wprev, wdescription, wmeasure;
-	int wbtn_copy, wbtn_cut;
+	int wbtn_cut;
 };
 
 view_ctx_t view_ctx;
@@ -363,6 +363,8 @@ static void view_copy_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	gds_t tmp;
 	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
 	pcb_hid_row_t *rc, *r = pcb_dad_tree_get_selected(attr);
+	int btn_idx = attr_btn - ctx->dlg;
+	int cut = (ctx->wbtn_cut == btn_idx);
 
 	/* only full dialog, go by the list */
 
@@ -373,19 +375,27 @@ static void view_copy_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 		/* dump a whole category */
 		for(rc = gdl_first(&r->children); rc != NULL; rc = gdl_next(&r->children, rc)) {
 			v = pcb_view_by_uid(ctx->lst, rc->user_data2.lng);
-			if (v != NULL)
+			if (v != NULL) {
 				pcb_view_save(v, &tmp, "  ");
+				if (cut)
+					pcb_view_free(v);
+			}
 		}
 	}
 	else {
 		/* dump a single item */
 		v = pcb_view_by_uid(ctx->lst, r->user_data2.lng);
-		if (v != NULL)
+		if (v != NULL) {
 			pcb_view_save(v, &tmp, "  ");
+			if (cut)
+				pcb_view_free(v);
+		}
 	}
 	gds_append_str(&tmp, "}\n");
 	pcb_gui->clip_set(PCB_HID_CLIPFMT_TEXT, tmp.array, tmp.used+1);
 	gds_uninit(&tmp);
+	if (cut)
+		view2dlg_list(ctx);
 }
 
 static void view_paste_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
@@ -545,10 +555,11 @@ static void pcb_dlg_view_full(view_ctx_t *ctx, const char *title)
 
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
 					PCB_DAD_BUTTON(ctx->dlg, "Copy");
-						ctx->wbtn_copy = PCB_DAD_CURRENT(ctx->dlg);
+						PCB_DAD_CURRENT(ctx->dlg);
 						PCB_DAD_CHANGE_CB(ctx->dlg, view_copy_btn_cb);
 					PCB_DAD_BUTTON(ctx->dlg, "Cut");
 						ctx->wbtn_cut = PCB_DAD_CURRENT(ctx->dlg);
+						PCB_DAD_CHANGE_CB(ctx->dlg, view_copy_btn_cb);
 					PCB_DAD_BUTTON(ctx->dlg, "Paste");
 						PCB_DAD_CHANGE_CB(ctx->dlg, view_paste_btn_cb);
 					PCB_DAD_BUTTON(ctx->dlg, "Del");
@@ -585,7 +596,6 @@ static void pcb_dlg_view_full(view_ctx_t *ctx, const char *title)
 	PCB_DAD_NEW(ctx->dlg, title, "", ctx, pcb_false, view_close_cb);
 
 	ctx->active = 1;
-	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wbtn_cut, 0);
 }
 
 static void pcb_dlg_view_simplified(view_ctx_t *ctx, const char *title)
