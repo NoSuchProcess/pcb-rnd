@@ -447,6 +447,40 @@ static void view_paste_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	view2dlg_list(ctx);
 }
 
+static void view_save_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
+{
+	view_ctx_t *ctx = caller_data;
+	gds_t tmp;
+	pcb_view_t *v;
+	char *fn;
+	FILE *f;
+
+	fn = pcb_gui->fileselect("Save view list", "Save all views from the list", "view.lht", "lht", "view", 0);
+	if (fn == NULL)
+		return;
+
+	f = pcb_fopen(fn, "w");
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Can't open %s for write\n", fn);
+		return;
+	}
+
+	gds_init(&tmp);
+	pcb_view_save_list_begin(&tmp, NULL);
+	for(v = pcb_view_list_first(ctx->lst); v != NULL; v = pcb_view_list_next(v))
+		pcb_view_save(v, &tmp, "  ");
+	pcb_view_save_list_end(&tmp, NULL);
+
+	fprintf(f, "%s", tmp.array);
+	fclose(f);
+	gds_uninit(&tmp);
+}
+
+static void view_load_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
+{
+
+}
+
 static void view_select_obj(view_ctx_t *ctx, pcb_view_t *v)
 {
 	pcb_idpath_t *i;
@@ -583,6 +617,10 @@ static void pcb_dlg_view_full(view_ctx_t *ctx, const char *title)
 		PCB_DAD_END(ctx->dlg);
 
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
+			PCB_DAD_BUTTON(ctx->dlg, "Save all");
+				PCB_DAD_CHANGE_CB(ctx->dlg, view_save_btn_cb);
+			PCB_DAD_BUTTON(ctx->dlg, "Load all");
+				PCB_DAD_CHANGE_CB(ctx->dlg, view_load_btn_cb);
 			PCB_DAD_BUTTON(ctx->dlg, "Refresh");
 				PCB_DAD_CHANGE_CB(ctx->dlg, view_refresh_btn_cb);
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
