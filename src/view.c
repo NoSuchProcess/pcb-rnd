@@ -310,6 +310,8 @@ void *pcb_view_load_start_str(const char *src)
 	return NULL;
 }
 
+#define LOADERR "Error loading view: "
+
 static void pcb_view_load_objs(pcb_view_t *dst, int grp, lht_node_t *olist)
 {
 	lht_node_t *n, *m;
@@ -319,8 +321,10 @@ static void pcb_view_load_objs(pcb_view_t *dst, int grp, lht_node_t *olist)
 			int len, cnt;
 
 			for(m = n->data.list.first, len = 0; m != NULL; m = m->next) {
-				if (m->type != LHT_TEXT)
+				if (m->type != LHT_TEXT) {
+					pcb_message(PCB_MSG_ERROR, LOADERR "Invalid object id (non-text)\n");
 					goto nope;
+				}
 				len++;
 			}
 
@@ -330,11 +334,11 @@ static void pcb_view_load_objs(pcb_view_t *dst, int grp, lht_node_t *olist)
 
 			pcb_idpath_list_append(&dst->objs[grp], i);
 		}
+		else
+			pcb_message(PCB_MSG_ERROR, LOADERR "Invalid object id-path\n");
 		nope:;
 	}
 }
-
-#define LOADERR "Error loading view: "
 
 pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
 {
@@ -362,8 +366,10 @@ pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
 			data_type = PCB_VIEW_DRC;
 		else if (strcmp(n->data.text.value, "plain") == 0)
 			data_type = PCB_VIEW_PLAIN;
-		else
+		else {
+			pcb_message(PCB_MSG_ERROR, LOADERR "Invalid data type: '%s'\n", n->data.text.value);
 			return NULL;
+		}
 	}
 
 	if (dst == NULL)
@@ -417,6 +423,8 @@ pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
 		}
 		if ((c == NULL) && (ok == 4))
 			dst->have_bbox = 1;
+		else
+			pcb_message(PCB_MSG_ERROR, LOADERR "Invalid bbox values\n");
 	}
 
 	n = lht_dom_hash_get(ctx->next, "xy");
@@ -436,6 +444,8 @@ pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
 		}
 		if ((c == NULL) && (ok == 2))
 			dst->have_bbox = 1;
+		else
+			pcb_message(PCB_MSG_ERROR, LOADERR "Invalid xy values\n");
 	}
 
 	n = lht_dom_hash_get(ctx->next, "objs.0");
