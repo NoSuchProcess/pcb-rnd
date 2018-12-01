@@ -141,7 +141,7 @@ static pcb_hid_attribute_t *xy_get_export_options(int *n)
 			xy_options[HA_unit].default_val.int_value = get_unit_struct("mil")->index;
 		last_unit_value = xy_options[HA_unit].default_val.int_value;
 	}
-	if (PCB)
+	if ((PCB != NULL)  && (xy_options[HA_xyfile].default_val.str_value == NULL))
 		pcb_derive_default_filename(PCB->Filename, &xy_options[HA_xyfile], ".xy");
 
 	if (n)

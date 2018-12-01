@@ -108,9 +108,8 @@ static const char *dsn_filename;
 
 static pcb_hid_attribute_t *dsn_get_export_options(int *n)
 {
-	if (PCB) {
+	if ((PCB != NULL)  && (dsn_options[HA_dsnfile].default_val.str_value == NULL))
 		pcb_derive_default_filename(PCB->Filename, &dsn_options[HA_dsnfile], ".dsn");
-	}
 	if (n)
 		*n = NUM_OPTIONS;
 	return dsn_options;

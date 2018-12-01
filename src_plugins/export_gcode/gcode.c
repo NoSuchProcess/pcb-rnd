@@ -247,9 +247,8 @@ static pcb_hid_attribute_t *gcode_get_export_options(int *n)
 		last_unit_value = gcode_attribute_list[HA_unit].default_val.int_value;
 	}
 
-	if (PCB) {
+	if ((PCB != NULL)  && (gcode_attribute_list[HA_basename].default_val.str_value == NULL))
 		pcb_derive_default_filename(PCB->Filename, &gcode_attribute_list[HA_basename], ".gcode");
-	}
 	if (n) {
 		*n = NUM_OPTIONS;
 	}

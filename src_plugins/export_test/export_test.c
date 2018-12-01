@@ -43,9 +43,8 @@ static const char *export_test_filename;
 
 static pcb_hid_attribute_t *export_test_get_export_options(int *n)
 {
-	if (PCB) {
+	if ((PCB != NULL)  && (export_test_options[HA_export_testfile].default_val.str_value == NULL))
 		pcb_derive_default_filename(PCB->Filename, &export_test_options[HA_export_testfile], ".export_test");
-	}
 
 	if (n)
 		*n = NUM_OPTIONS;

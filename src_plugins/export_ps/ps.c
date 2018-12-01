@@ -438,7 +438,7 @@ static struct {
 
 static pcb_hid_attribute_t *ps_get_export_options(int *n)
 {
-	if (PCB)
+	if ((PCB != NULL) && (ps_attribute_list[HA_psfile].default_val.str_value == NULL))
 		pcb_derive_default_filename(PCB->Filename, &ps_attribute_list[HA_psfile], ".ps");
 
 	if (n)

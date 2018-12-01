@@ -113,7 +113,7 @@ static pcb_hid_attribute_t *stat_get_export_options(int *n)
 {
 	const char *suffix = ".stat.lht";
 
-	if (PCB)
+	if ((PCB != NULL)  && (stat_attribute_list[HA_statfile].default_val.str_value == NULL))
 		pcb_derive_default_filename(PCB->Filename, &stat_attribute_list[HA_statfile], suffix);
 
 	if (n)

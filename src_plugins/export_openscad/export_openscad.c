@@ -132,7 +132,7 @@ static pcb_hid_attribute_t *openscad_get_export_options(int *n)
 {
 	const char *suffix = ".scad";
 
-	if (PCB)
+	if ((PCB != NULL)  && (openscad_attribute_list[HA_openscadfile].default_val.str_value == NULL))
 		pcb_derive_default_filename(PCB->Filename, &openscad_attribute_list[HA_openscadfile], suffix);
 
 	if (n)

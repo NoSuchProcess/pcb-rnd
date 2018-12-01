@@ -414,7 +414,7 @@ static pcb_hid_attr_val_t ipcd356_values[NUM_OPTIONS];
 
 static pcb_hid_attribute_t *ipcd356_get_export_options(int *n)
 {
-	if (PCB != NULL)
+	if ((PCB != NULL) && (ipcd356_options[HA_ipcd356_filename].default_val.str_value == NULL))
 		pcb_derive_default_filename(PCB->Filename, &ipcd356_options[HA_ipcd356_filename], ".net");
 
 	if (n != NULL)

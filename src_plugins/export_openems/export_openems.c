@@ -168,7 +168,7 @@ static pcb_hid_attribute_t *openems_get_export_options(int *n)
 	const char *suffix = ".m";
 	pcb_mesh_t *mesh = pcb_mesg_get(MESH_NAME);
 
-	if (PCB)
+	if ((PCB != NULL)  && (openems_attribute_list[HA_openemsfile].default_val.str_value == NULL))
 		pcb_derive_default_filename(PCB->Filename, &openems_attribute_list[HA_openemsfile], suffix);
 
 	if (mesh != NULL) {
