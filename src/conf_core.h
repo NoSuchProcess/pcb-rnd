@@ -63,6 +63,7 @@ typedef struct {
 		CFT_REAL route_radius;             /* temporary: route draw helper's arc radius at corners (factor of the trace thickness) */
 
 		CFT_BOOLEAN io_incomp_popup;       /* wether to enable popping up the io incompatibility list dialog on save incompatibility errors */
+		CFT_STRING io_incomp_style;        /* view listing style (list or simple), when io_incomp_popup is true */
 
 		CFT_INTEGER click_time;            /* default time for click expiration, in ms */
 
