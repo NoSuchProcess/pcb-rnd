@@ -57,7 +57,7 @@ struct view_ctx_s {
 	unsigned long int selected;
 
 	int wpos, wlist, wcount, wprev, wdescription, wmeasure;
-	int wbtn_pasteb, wbtn_pastea, wbtn_copy, wbtn_cut;
+	int wbtn_copy, wbtn_cut;
 };
 
 view_ctx_t view_ctx;
@@ -396,7 +396,6 @@ static void view_paste_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	size_t clen;
 	pcb_view_t *v, *vt;
 	int btn_idx = attr_btn - ctx->dlg;
-	int before = (btn_idx == ctx->wbtn_pasteb);
 	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
 	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
 
@@ -405,7 +404,6 @@ static void view_paste_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 
 	/* if cursor is a category */
 	if (r->user_data2.lng == 0) {
-		before = 1;
 		r = gdl_first(&r->children);
 		if (r == NULL)
 			return;
@@ -431,13 +429,8 @@ static void view_paste_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		v = pcb_view_load_next(load_ctx, NULL);
 		if (v == NULL)
 			break;
-		if (before)
-			pcb_view_list_insert_before(ctx->lst, vt, v);
-		else
-			pcb_view_list_insert_after(ctx->lst, vt, v);
-		
+		pcb_view_list_insert_before(ctx->lst, vt, v);
 		vt = v;
-		before = 0;
 	}
 
 	pcb_view_load_end(load_ctx);
@@ -556,19 +549,12 @@ static void pcb_dlg_view_full(view_ctx_t *ctx, const char *title)
 						PCB_DAD_CHANGE_CB(ctx->dlg, view_copy_btn_cb);
 					PCB_DAD_BUTTON(ctx->dlg, "Cut");
 						ctx->wbtn_cut = PCB_DAD_CURRENT(ctx->dlg);
+					PCB_DAD_BUTTON(ctx->dlg, "Paste");
+						PCB_DAD_CHANGE_CB(ctx->dlg, view_paste_btn_cb);
 					PCB_DAD_BUTTON(ctx->dlg, "Del");
 						PCB_DAD_CHANGE_CB(ctx->dlg, view_del_btn_cb);
 					PCB_DAD_BUTTON(ctx->dlg, "Select");
 						PCB_DAD_CHANGE_CB(ctx->dlg, view_select_btn_cb);
-				PCB_DAD_END(ctx->dlg);
-
-				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_BUTTON(ctx->dlg, "Paste before");
-						ctx->wbtn_pasteb = PCB_DAD_CURRENT(ctx->dlg);
-						PCB_DAD_CHANGE_CB(ctx->dlg, view_paste_btn_cb);
-					PCB_DAD_BUTTON(ctx->dlg, "Paste after");
-						ctx->wbtn_pastea = PCB_DAD_CURRENT(ctx->dlg);
-						PCB_DAD_CHANGE_CB(ctx->dlg, view_paste_btn_cb);
 				PCB_DAD_END(ctx->dlg);
 			PCB_DAD_END(ctx->dlg);
 
