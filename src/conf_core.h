@@ -62,6 +62,8 @@ typedef struct {
 		CFT_BOOLEAN auto_via;              /* when drawing traces and switching layers or when moving an object from one layer to another, try to keep connections by automatically inserting vias. */
 		CFT_REAL route_radius;             /* temporary: route draw helper's arc radius at corners (factor of the trace thickness) */
 
+		CFT_BOOLEAN io_incomp_popup;       /* wether to enable popping up the io incompatibility list dialog on save incompatibility errors */
+
 		CFT_INTEGER click_time;            /* default time for click expiration, in ms */
 
 		struct view {

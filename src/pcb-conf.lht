@@ -49,6 +49,7 @@ li:pcb-rnd-conf-v1 {
 			beep_when_finished = 0
 			click_time = 200
 			auto_via = 1
+			io_incomp_popup = 1
 			ha:view {
 				flip_x = 0
 				flip_y = 0

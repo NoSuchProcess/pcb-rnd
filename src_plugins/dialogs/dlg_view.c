@@ -293,10 +293,6 @@ static void view_preview_update(view_ctx_t *ctx)
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
 }
 
-static void view_preview_update_cb(void *user_data, int argc, pcb_event_arg_t argv[])
-{
-	view_preview_update((view_ctx_t *)user_data);
-}
 
 static void view_refresh_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
@@ -767,6 +763,38 @@ fgw_error_t pcb_act_DrcDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+extern pcb_view_list_t pcb_io_incompat_lst;
+static view_ctx_t io_gui_ctx = {0};
+const char pcb_acts_IOIncompatList[] = "IOIncompatList([list|simple])\n";
+const char pcb_acth_IOIncompatList[] = "Present the format incompatibilities of the last save to file operation.";
+fgw_error_t pcb_act_IOIncompatList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *dlg_type = "list";
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, DrcDialog, dlg_type = argv[1].val.str);
+
+	if (!io_gui_ctx.active) {
+		io_gui_ctx.pcb = PCB;
+		io_gui_ctx.lst = &pcb_io_incompat_lst;
+		io_gui_ctx.refresh = NULL;
+		if (pcb_strcasecmp(dlg_type, "simple") == 0)
+			pcb_dlg_view_simplified(&io_gui_ctx, "IO incompatibilities in last save");
+		else
+			pcb_dlg_view_full(&io_gui_ctx, "IO incompatibilities in last save");
+	}
+
+	view2dlg(&io_gui_ctx);
+
+	return 0;
+}
+
+static void view_preview_update_cb(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	if (drc_gui_ctx.active)
+		view_preview_update(&drc_gui_ctx);
+	if (io_gui_ctx.active)
+	view_preview_update(&io_gui_ctx);
+}
+
 void pcb_view_dlg_uninit(void)
 {
 	pcb_event_unbind_allcookie(dlg_view_cookie);
@@ -775,5 +803,5 @@ void pcb_view_dlg_uninit(void)
 
 void pcb_view_dlg_init(void)
 {
-	pcb_event_bind(PCB_EVENT_USER_INPUT_POST, view_preview_update_cb, &drc_gui_ctx, dlg_view_cookie);
+	pcb_event_bind(PCB_EVENT_USER_INPUT_POST, view_preview_update_cb, NULL, dlg_view_cookie);
 }

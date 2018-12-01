@@ -69,12 +69,15 @@
 #include "plug_footprint.h"
 #include "build_run.h"
 #include "macro.h"
+#include "view.h"
 
 /* for opendir */
 #include "compat_inc.h"
 
 pcb_plug_io_t *pcb_plug_io_chain = NULL;
 int pcb_io_err_inhibit = 0;
+pcb_view_list_t pcb_io_incompat_lst;
+static pcb_bool pcb_io_incompat_lst_enable = pcb_false;
 
 static void plug_io_err(int res, const char *what, const char *filename)
 {
@@ -750,13 +753,26 @@ int pcb_save_pcb(const char *file, const char *fmt)
 {
 	int retcode;
 
-	if (pcb_gui->notify_save_pcb == NULL)
-		return pcb_write_pipe(file, pcb_true, fmt, pcb_false);
+	pcb_io_incompat_lst_enable = pcb_true;
+	if (conf_core.editor.io_incomp_popup)
+		pcb_view_list_free_fields(&pcb_io_incompat_lst);
 
-	pcb_gui->notify_save_pcb(file, pcb_false);
-	retcode = pcb_write_pipe(file, pcb_true, fmt, pcb_false);
-	pcb_gui->notify_save_pcb(file, pcb_true);
+	if (pcb_gui->notify_save_pcb != NULL) {
+		pcb_gui->notify_save_pcb(file, pcb_false);
+		retcode = pcb_write_pipe(file, pcb_true, fmt, pcb_false);
+		pcb_gui->notify_save_pcb(file, pcb_true);
+	}
+	else
+		retcode = pcb_write_pipe(file, pcb_true, fmt, pcb_false);
 
+	pcb_io_incompat_lst_enable = pcb_false;
+	if (conf_core.editor.io_incomp_popup) {
+		long int len = pcb_view_list_length(&pcb_io_incompat_lst);
+		if (len > 0)
+			pcb_message(PCB_MSG_ERROR, "There were %ld save incompatibility errors.\nData in memory is not affected, but the file created may be slightly broken.\nSee the popup view listing for detauls.\n", len);
+		pcb_actionl("IOincompatList", "show", NULL);
+	}
+	else 
 	return retcode;
 }
 
@@ -1078,22 +1094,35 @@ void pcb_io_list_free(pcb_io_formats_t *out)
 	}
 }
 
+
 pcb_cardinal_t pcb_io_incompat_save(pcb_data_t *data, pcb_any_obj_t *obj, const char *type, const char *title, const char *description)
 {
-	pcb_message(PCB_MSG_ERROR, "save error: %s\n", title);
-	if (obj != NULL) {
-		pcb_coord_t x = (obj->BoundingBox.X1 + obj->BoundingBox.X2)/2;
-		pcb_coord_t y = (obj->BoundingBox.Y1 + obj->BoundingBox.Y2)/2;
-		pcb_message(PCB_MSG_ERROR, " near %$mm %$mm\n", x, y);
+
+	if ((pcb_io_incompat_lst_enable) && (conf_core.editor.io_incomp_popup)) {
+		pcb_view_t *violation = pcb_view_new(type, title, description);
+		if ((obj != NULL) && (obj->type & PCB_OBJ_CLASS_REAL)) {
+			pcb_view_append_obj(violation, 0, obj);
+			pcb_view_set_bbox_by_objs(PCB->Data, violation);
+		}
+		pcb_view_list_append(&pcb_io_incompat_lst, violation);
 	}
-	if (description != NULL)
-		pcb_message(PCB_MSG_ERROR, " (%s)\n", description);
+	else {
+		pcb_message(PCB_MSG_ERROR, "save error: %s\n", title);
+		if (obj != NULL) {
+			pcb_coord_t x = (obj->BoundingBox.X1 + obj->BoundingBox.X2)/2;
+			pcb_coord_t y = (obj->BoundingBox.Y1 + obj->BoundingBox.Y2)/2;
+			pcb_message(PCB_MSG_ERROR, " near %$mm %$mm\n", x, y);
+		}
+		if (description != NULL)
+			pcb_message(PCB_MSG_ERROR, " (%s)\n", description);
+	}
 	return 0;
 }
 
 
 void pcb_io_uninit(void)
 {
+	pcb_view_list_free_fields(&pcb_io_incompat_lst);
 	if (pcb_plug_io_chain != NULL) {
 		pcb_message(PCB_MSG_ERROR, "pcb_plug_io_chain is not empty; a plugin did not remove itself from the chain. Fix your plugins!\n");
 		pcb_message(PCB_MSG_ERROR, "head: desc='%s'\n", pcb_plug_io_chain->description);

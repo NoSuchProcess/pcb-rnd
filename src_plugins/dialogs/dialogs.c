@@ -67,7 +67,8 @@ pcb_action_t dialogs_action_list[] = {
 	{"UndoDialog", pcb_act_UndoDialog, pcb_acth_UndoDialog, pcb_acts_UndoDialog},
 	{"ManagePlugins", pcb_act_ManagePlugins, pcb_acth_ManagePlugins, pcb_acts_ManagePlugins},
 	{"dad", pcb_act_dad, pcb_acth_dad, pcb_acts_dad},
-	{"DrcDialog", pcb_act_DrcDialog, pcb_acth_DrcDialog, pcb_acts_DrcDialog}
+	{"DrcDialog", pcb_act_DrcDialog, pcb_acth_DrcDialog, pcb_acts_DrcDialog},
+	{"IOIncompatList", pcb_act_IOIncompatList, pcb_acth_IOIncompatList, pcb_acts_IOIncompatList}
 };
 
 static const char *dialogs_cookie = "dialogs plugin";
