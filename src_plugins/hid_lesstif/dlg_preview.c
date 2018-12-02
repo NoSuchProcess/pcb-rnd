@@ -267,27 +267,3 @@ static PreviewData *lesstif_show_layer(pcb_layer_id_t layer, const char *title, 
 	return pd;
 }
 
-/***************** instance for layer group edit **********************/
-
-#include "stub_draw.h"
-
-static PreviewData *layergrp_edit = NULL;
-
-static void layergrp_pre_close(struct PreviewData *pd)
-{
-	if (pd == layergrp_edit)
-		layergrp_edit = NULL;
-}
-
-void lesstif_show_layergrp_edit(void)
-{
-	pcb_layer_id_t lid;
-	if (layergrp_edit != NULL)
-		return;
-	if (pcb_layer_listp(PCB, PCB_LYT_VIRTUAL, &lid, 1, F_csect, NULL) > 0) {
-		layergrp_edit = lesstif_show_layer(lid, "Layer groups", 0);
-		layergrp_edit->mouse_ev = pcb_stub_draw_csect_mouse_ev;
-		layergrp_edit->pre_close = layergrp_pre_close;
-	}
-}
-

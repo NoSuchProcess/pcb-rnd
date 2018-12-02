@@ -1388,17 +1388,6 @@ void lesstif_update_layer_groups()
 #warning layer TODO: call a redraw on the edit group
 }
 
-static const char pcb_acts_EditLayerGroups[] = "EditLayerGroups()";
-static const char pcb_acth_EditLayerGroups[] = "Let the user change the layer groupings";
-/* DOC: editlayergroups.html */
-extern void lesstif_show_layergrp_edit(void);
-static fgw_error_t pcb_act_EditLayerGroups(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	lesstif_show_layergrp_edit();
-	PCB_ACT_IRES(0);
-	return 0;
-}
-
 /* ------------------------------------------------------------ */
 
 typedef struct {
@@ -1778,7 +1767,6 @@ pcb_action_t lesstif_dialog_action_list[] = {
 	{"Confirm", pcb_act_ConfirmAction, pcb_acth_ConfirmAction, pcb_acts_ConfirmAction},
 	{"Print", pcb_act_Print, pcb_acth_Print, pcb_acts_Print},
 	{"AdjustSizes", pcb_act_AdjustSizes, pcb_acth_AdjustSizes, pcb_acts_AdjustSizes},
-	{"EditLayerGroups", pcb_act_EditLayerGroups, pcb_acth_EditLayerGroups, pcb_acts_EditLayerGroups},
 	{"ImportGUI", pcb_act_ImportGUI, pcb_acth_ImportGUI, pcb_acts_ImportGUI}
 };
 
