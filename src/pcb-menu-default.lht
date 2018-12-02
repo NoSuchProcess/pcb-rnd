@@ -267,7 +267,7 @@ ha:{
 							li:submenu {
 								@layerview
 								-
-								ha:Edit Layer Groups      = { action=EditLayerGroups() }
+								ha:Edit Layer Groups      = { action=Preferences("layers") }
 							}
 						}
 						ha:Current Layer {
