@@ -145,8 +145,8 @@ static void cr_draw_line(cairo_t * cr, int fill, double x1, double y1, double x2
 
 	cairo_move_to(cr, x1, y1);
 	cairo_line_to(cr, x2, y2);
+TODO("gtk3: What means 'fill a line'? cairo_fill is not appropriate if path is only a line.")
 	if (fill)
-TODO("gtk3: What means "fill a line" ? cairo_fill is not appropriate if path is only a line.")
 		cairo_fill(cr);
 	else
 		cairo_stroke(cr);
