@@ -1853,7 +1853,7 @@
  ../src_plugins/lib_hid_common/cli_history.h \
  ../src_plugins/hid_lesstif/wt_preview.c \
  ../src_plugins/hid_lesstif/wt_preview.h \
- ../src_plugins/hid_lesstif/dlg_preview.c stub_draw.h draw.h dolists.h
+ stub_draw.h draw.h dolists.h
 ../src_plugins/hid_lesstif/menu.o: ../src_plugins/hid_lesstif/menu.c \
  ../src_plugins/hid_lesstif/xincludes.h ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
