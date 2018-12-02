@@ -445,31 +445,18 @@ GType pcb_gtk_preview_get_type()
 	return ghid_preview_type;
 }
 
-GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget,
-															 pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw)
+GtkWidget *pcb_gtk_preview_generic_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget,
+																			pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw, pcb_gtk_preview_config_t config, void *draw_data)
 {
-	pcb_gtk_preview_t *preview;
+	pcb_gtk_preview_t *prv = (pcb_gtk_preview_t *)g_object_new(
+		PCB_GTK_TYPE_PREVIEW,
+		"com", com, "gport", com->gport, "init-widget", init_widget,
+		"expose", expose, "dialog_draw", dialog_draw,
+		"config", config, "draw_data", draw_data,
+		"width-request", 50, "height-request", 50,
+		NULL);
+	prv->init_drawing_widget(GTK_WIDGET(prv), prv->gport);
 
-	preview = (pcb_gtk_preview_t *) g_object_new(PCB_GTK_TYPE_PREVIEW,
-																							 "com", com,
-																							 "gport", com->gport,
-																							 "init-widget", init_widget,
-																							 "expose", expose,
-																							 "dialog_draw", dialog_draw,
-																							 NULL);
-
-	preview->init_drawing_widget(GTK_WIDGET(preview), preview->gport);
-
-	return GTK_WIDGET(preview);
-}
-
-static GtkWidget *pcb_gtk_preview_any_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget,
-																		 pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw)
-{
-	pcb_gtk_preview_t *prv;
-
-	prv = (pcb_gtk_preview_t *) pcb_gtk_preview_new(com, init_widget, expose, dialog_draw);
-	g_object_set(G_OBJECT(prv), "width-request", 50, "height-request", 50, NULL);
 
 #warning TODO: maybe expose these through the object API so the caller can set it up?
 	memset(&prv->view, 0, sizeof(prv->view));
@@ -501,17 +488,6 @@ static GtkWidget *pcb_gtk_preview_any_new(pcb_gtk_common_t *com, pcb_gtk_init_dr
 */
 
 	return GTK_WIDGET(prv);
-}
-
-GtkWidget *pcb_gtk_preview_generic_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget,
-																			pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw, pcb_gtk_preview_config_t config, void *draw_data)
-{
-	GtkWidget *preview;
-
-	preview = pcb_gtk_preview_any_new(com, init_widget, expose, dialog_draw);
-	g_object_set(G_OBJECT(preview), "config", config, "draw_data", draw_data, NULL);
-
-	return preview;
 }
 
 void pcb_gtk_preview_board_zoomto(pcb_gtk_preview_t *p, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int canvas_width, int canvas_height)
