@@ -18,6 +18,13 @@
 - CLEANUP: dad: make the implicit dialog ok/cancel buttons configurable or do not use them at all; e.g. export dialog is confusing [report: Cyril, ml2409]
 - CLEANUP: library window DAD-ification: remove pcb_act_LibraryShow()
 	- FEATURE: library window: allow long tags and long location text to split
+- FEATURE: route style upgrade to prototypes (depends on tree in lesstif!):
+	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
+	- BUG: padstack doesn't show drc xor shape while moving - because the whole drawing is a cheat for old vias [report: igor2]
+	- replace the route style dialog box's via part
+	- proto copy to buffer - a buffer with a single padstack should also serve as a prototype copy vehicle? or just import by a list from the buffer
+	- load/import from buffer and file
+	- CLEANUP: remove PCB_MIN_PINORVIA* PCB_DEFAULT_DRILLINGHOLE macros - nothing should use them anymore
 - FEATURE: view lists
 	- FEATURE: import sch. shouldn't select elements to be removed but put them on a drc list
 	- FEATURE: lesstif clipboard API with XmClipboardCopy
@@ -58,13 +65,6 @@
 
 2. For later releases ===============================================================================
 - CLEANUP: remove pcb_rubber_band_alloc() and use genvector
-- FEATURE: route style upgrade to prototypes:
-	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
-	- BUG: padstack doesn't show drc xor shape while moving - because the whole drawing is a cheat for old vias [report: igor2]
-	- replace the route style dialog box's via part
-	- proto copy to buffer - a buffer with a single padstack should also serve as a prototype copy vehicle? or just import by a list from the buffer
-	- load/import from buffer and file
-	- CLEANUP: remove PCB_MIN_PINORVIA* PCB_DEFAULT_DRILLINGHOLE macros - nothing should use them anymore
 - CLEANUP: find.c rewrite:
 	- CLEANUP: a new "report(NetLength)" should not care about netlists but depend on find.c only
 	- CLEANUP: netlist rewrite
