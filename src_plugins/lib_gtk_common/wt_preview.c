@@ -88,7 +88,7 @@ void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const pcb_box_t *data_vi
 }
 
 
-static void preview_set_view(pcb_gtk_preview_t * preview)
+static void preview_set_view(pcb_gtk_preview_t *preview)
 {
 	pcb_box_t view;
 
@@ -126,7 +126,7 @@ static GObjectClass *ghid_preview_parent_class = NULL;
 
 /* Initialises the preview object once it is constructed. Chains up in case
    the parent class wants to do anything too. object is the preview object. */
-static void ghid_preview_constructed(GObject * object)
+static void ghid_preview_constructed(GObject *object)
 {
 	if (G_OBJECT_CLASS(ghid_preview_parent_class)->constructed != NULL)
 		G_OBJECT_CLASS(ghid_preview_parent_class)->constructed(object);
@@ -134,7 +134,7 @@ static void ghid_preview_constructed(GObject * object)
 
 /* Just before the pcb_gtk_preview_t GObject is finalized, free our
    allocated data, and then chain up to the parent's finalize handler. */
-static void ghid_preview_finalize(GObject * object)
+static void ghid_preview_finalize(GObject *object)
 {
 	pcb_gtk_preview_t *preview = PCB_GTK_PREVIEW(object);
 
@@ -144,7 +144,7 @@ static void ghid_preview_finalize(GObject * object)
 	G_OBJECT_CLASS(ghid_preview_parent_class)->finalize(object);
 }
 
-static void ghid_preview_set_property(GObject * object, guint property_id, const GValue * value, GParamSpec * pspec)
+static void ghid_preview_set_property(GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
 {
 	pcb_gtk_preview_t *preview = PCB_GTK_PREVIEW(object);
 	GdkWindow *window = gtk_widget_get_window(GTK_WIDGET(preview));
@@ -178,7 +178,7 @@ static void ghid_preview_set_property(GObject * object, guint property_id, const
 	}
 }
 
-static void ghid_preview_get_property(GObject * object, guint property_id, GValue * value, GParamSpec * pspec)
+static void ghid_preview_get_property(GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
 	switch (property_id) {
 	default:
@@ -187,31 +187,31 @@ static void ghid_preview_get_property(GObject * object, guint property_id, GValu
 }
 
 /* Converter: set up a pinout expose and use the generic preview expose call */
-static gboolean ghid_preview_expose(GtkWidget * widget, pcb_gtk_expose_t * ev)
+static gboolean ghid_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev)
 {
 	pcb_gtk_preview_t *preview = PCB_GTK_PREVIEW(widget);
 	gboolean res;
 	int save_fx, save_fy;
 
-		preview->expose_data.view.X1 = preview->x_min;
-		preview->expose_data.view.Y1 = preview->y_min;
-		preview->expose_data.view.X2 = preview->x_max;
-		preview->expose_data.view.Y2 = preview->y_max;
-		save_fx = conf_core.editor.view.flip_x;
-		save_fy = conf_core.editor.view.flip_y;
-		conf_force_set_bool(conf_core.editor.view.flip_x, 0);
-		conf_force_set_bool(conf_core.editor.view.flip_y, 0);
+	preview->expose_data.view.X1 = preview->x_min;
+	preview->expose_data.view.Y1 = preview->y_min;
+	preview->expose_data.view.X2 = preview->x_max;
+	preview->expose_data.view.Y2 = preview->y_max;
+	save_fx = conf_core.editor.view.flip_x;
+	save_fy = conf_core.editor.view.flip_y;
+	conf_force_set_bool(conf_core.editor.view.flip_x, 0);
+	conf_force_set_bool(conf_core.editor.view.flip_y, 0);
 
-		res = preview->expose(widget, ev, pcb_hid_expose_generic, &preview->expose_data);
+	res = preview->expose(widget, ev, pcb_hid_expose_generic, &preview->expose_data);
 
-		conf_force_set_bool(conf_core.editor.view.flip_x, save_fx);
-		conf_force_set_bool(conf_core.editor.view.flip_y, save_fy);
+	conf_force_set_bool(conf_core.editor.view.flip_x, save_fx);
+	conf_force_set_bool(conf_core.editor.view.flip_y, save_fy);
 
-		return res;
+	return res;
 }
 
 /* Override parent virtual class methods as needed and register GObject properties. */
-static void ghid_preview_class_init(pcb_gtk_preview_class_t * klass)
+static void ghid_preview_class_init(pcb_gtk_preview_class_t *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
 	GtkWidgetClass *gtk_widget_class = GTK_WIDGET_CLASS(klass);
@@ -242,7 +242,7 @@ static void ghid_preview_class_init(pcb_gtk_preview_class_t * klass)
 																	g_param_spec_pointer("config", "", "", G_PARAM_WRITABLE));
 }
 
-static void update_expose_data(pcb_gtk_preview_t * prv)
+static void update_expose_data(pcb_gtk_preview_t *prv)
 {
 	pcb_gtk_zoom_post(&prv->view);
 	prv->expose_data.view.X1 = prv->view.x0;
@@ -257,7 +257,7 @@ static void update_expose_data(pcb_gtk_preview_t * prv)
 }
 
 
-static gboolean preview_configure_event_cb(GtkWidget * w, GdkEventConfigure * ev, void *tmp)
+static gboolean preview_configure_event_cb(GtkWidget *w, GdkEventConfigure *ev, void *tmp)
 {
 	int need_rezoom;
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *) w;
@@ -286,7 +286,7 @@ static gboolean preview_configure_event_cb(GtkWidget * w, GdkEventConfigure * ev
 }
 
 
-static gboolean button_press(GtkWidget * w, pcb_hid_cfg_mod_t btn)
+static gboolean button_press(GtkWidget *w, pcb_hid_cfg_mod_t btn)
 {
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *) w;
 	pcb_coord_t cx, cy;
@@ -332,12 +332,12 @@ do_zoom:;
 	return FALSE;
 }
 
-static gboolean preview_button_press_cb(GtkWidget * w, GdkEventButton * ev, gpointer data)
+static gboolean preview_button_press_cb(GtkWidget *w, GdkEventButton *ev, gpointer data)
 {
 	return button_press(w, ghid_mouse_button(ev->button));
 }
 
-static gboolean preview_scroll_cb(GtkWidget * w, GdkEventScroll * ev, gpointer data)
+static gboolean preview_scroll_cb(GtkWidget *w, GdkEventScroll *ev, gpointer data)
 {
 	switch (ev->direction) {
 	case GDK_SCROLL_UP:
@@ -349,7 +349,7 @@ static gboolean preview_scroll_cb(GtkWidget * w, GdkEventScroll * ev, gpointer d
 	return FALSE;
 }
 
-static gboolean preview_button_release_cb(GtkWidget * w, GdkEventButton * ev, gpointer data)
+static gboolean preview_button_release_cb(GtkWidget *w, GdkEventButton *ev, gpointer data)
 {
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *) w;
 	gint wx, wy;
@@ -380,7 +380,7 @@ static gboolean preview_button_release_cb(GtkWidget * w, GdkEventButton * ev, gp
 	return FALSE;
 }
 
-static gboolean preview_motion_cb(GtkWidget * w, GdkEventMotion * ev, gpointer data)
+static gboolean preview_motion_cb(GtkWidget *w, GdkEventMotion *ev, gpointer data)
 {
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *) w;
 	pcb_coord_t cx, cy;
@@ -408,12 +408,12 @@ static gboolean preview_motion_cb(GtkWidget * w, GdkEventMotion * ev, gpointer d
 }
 
 /*
-static gboolean preview_key_press_cb(GtkWidget *preview, GdkEventKey * kev, gpointer data)
+static gboolean preview_key_press_cb(GtkWidget *preview, GdkEventKey *kev, gpointer data)
 {
 	printf("kp\n");
 }
 
-static gboolean preview_key_release_cb(GtkWidget *preview, GdkEventKey * kev, gpointer data)
+static gboolean preview_key_release_cb(GtkWidget *preview, GdkEventKey *kev, gpointer data)
 {
 	printf("kr\n");
 }
@@ -445,7 +445,7 @@ GType pcb_gtk_preview_get_type()
 	return ghid_preview_type;
 }
 
-GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widget_t init_widget,
+GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget,
 															 pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw)
 {
 	pcb_gtk_preview_t *preview;
@@ -463,7 +463,7 @@ GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widg
 	return GTK_WIDGET(preview);
 }
 
-static GtkWidget *pcb_gtk_preview_any_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widget_t init_widget,
+static GtkWidget *pcb_gtk_preview_any_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget,
 																		 pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw)
 {
 	pcb_gtk_preview_t *prv;
@@ -503,7 +503,7 @@ static GtkWidget *pcb_gtk_preview_any_new(pcb_gtk_common_t * com, pcb_gtk_init_d
 	return GTK_WIDGET(prv);
 }
 
-GtkWidget *pcb_gtk_preview_generic_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widget_t init_widget,
+GtkWidget *pcb_gtk_preview_generic_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget,
 																			pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw, pcb_gtk_preview_config_t config, void *draw_data)
 {
 	GtkWidget *preview;
@@ -544,7 +544,7 @@ void pcb_gtk_preview_board_zoomto(pcb_gtk_preview_t *p, pcb_coord_t x1, pcb_coor
 	pcb_gtk_zoom_view_win(&p->view, x1, y1, x2, y2);
 }
 
-void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t * preview, int *width, int *height)
+void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t *preview, int *width, int *height)
 {
 	*width = preview->w_pixels;
 	*height = preview->h_pixels;

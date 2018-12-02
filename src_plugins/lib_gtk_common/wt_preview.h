@@ -55,9 +55,9 @@ struct pcb_gtk_preview_class_s {
 	GtkDrawingAreaClass parent_class;
 };
 
-typedef void (*pcb_gtk_init_drawing_widget_t)(GtkWidget * widget, void *port);
+typedef void (*pcb_gtk_init_drawing_widget_t)(GtkWidget *widget, void *port);
 typedef void (*pcb_gtk_preview_config_t)(pcb_gtk_preview_t *gp, GtkWidget *widget);
-typedef gboolean(*pcb_gtk_preview_expose_t)(GtkWidget * widget, pcb_gtk_expose_t * ev, pcb_hid_expose_t expcall, pcb_hid_expose_ctx_t * ctx);
+typedef gboolean(*pcb_gtk_preview_expose_t)(GtkWidget *widget, pcb_gtk_expose_t *ev, pcb_hid_expose_t expcall, pcb_hid_expose_ctx_t *ctx);
 typedef pcb_bool(*pcb_gtk_preview_mouse_ev_t)(void *widget, void *draw_data, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y);
 
 struct pcb_gtk_preview_s {
@@ -90,7 +90,7 @@ struct pcb_gtk_preview_s {
 GType pcb_gtk_preview_get_type(void);
 
 /* Queries the natural size of a preview widget */
-void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t * preview, int *width, int *height);
+void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t *preview, int *width, int *height);
 
 /* Generic, callback based API */
 GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw);
@@ -98,7 +98,7 @@ GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widge
 /* Application-specific shorthands */
 void pcb_gtk_preview_board_zoomto(pcb_gtk_preview_t *p, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int canvas_width, int canvas_height);
 
-GtkWidget *pcb_gtk_preview_generic_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widget_t init_widget,
+GtkWidget *pcb_gtk_preview_generic_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget,
 																			pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw, pcb_gtk_preview_config_t config, void *draw_data);
 
 void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const pcb_box_t *data_view);
