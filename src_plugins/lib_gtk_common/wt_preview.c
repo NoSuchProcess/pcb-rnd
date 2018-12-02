@@ -118,7 +118,7 @@ enum {
 	PROP_KIND = 5,
 	PROP_COM = 7,
 	PROP_DIALOG_DRAW = 8, /* for PCB_LYT_DIALOG */
-	PROP_GENERIC = 9,
+	PROP_DRAW_DATA = 9,
 	PROP_CONFIG = 10
 };
 
@@ -162,7 +162,7 @@ static void ghid_preview_set_property(GObject * object, guint property_id, const
 	case PROP_EXPOSE:
 		preview->expose = (void *) g_value_get_pointer(value);
 		break;
-	case PROP_GENERIC:
+	case PROP_DRAW_DATA:
 		preview->expose_data.content.draw_data = g_value_get_pointer(value);
 		if (window != NULL)
 			gdk_window_invalidate_rect(window, NULL, FALSE);
@@ -235,8 +235,8 @@ static void ghid_preview_class_init(pcb_gtk_preview_class_t * klass)
 
 	g_object_class_install_property(gobject_class, PROP_DIALOG_DRAW, g_param_spec_pointer("dialog_draw", "", "", G_PARAM_WRITABLE));
 
-	g_object_class_install_property(gobject_class, PROP_GENERIC,
-																	g_param_spec_pointer("generic", "", "", G_PARAM_WRITABLE));
+	g_object_class_install_property(gobject_class, PROP_DRAW_DATA,
+																	g_param_spec_pointer("draw_data", "", "", G_PARAM_WRITABLE));
 
 	g_object_class_install_property(gobject_class, PROP_CONFIG,
 																	g_param_spec_pointer("config", "", "", G_PARAM_WRITABLE));
@@ -509,7 +509,7 @@ GtkWidget *pcb_gtk_preview_generic_new(pcb_gtk_common_t * com, pcb_gtk_init_draw
 	GtkWidget *preview;
 
 	preview = pcb_gtk_preview_any_new(com, init_widget, expose, -1, dialog_draw);
-	g_object_set(G_OBJECT(preview), "config", config, "generic", draw_data, NULL);
+	g_object_set(G_OBJECT(preview), "config", config, "draw_data", draw_data, NULL);
 
 	return preview;
 }
