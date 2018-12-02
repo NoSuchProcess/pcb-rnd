@@ -183,7 +183,7 @@ fgw_error_t pcb_act_padstackplace(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if ((pids == NULL) || (strcmp(pids, "default") == 0)) {
-#warning padstack TODO: style default proto
+TODO("pstk: style default proto")
 		pid = 0;
 	}
 	else {

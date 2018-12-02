@@ -49,7 +49,7 @@ static pcb_bool ListsEmpty(pcb_bool AndRats)
 static void reassign_no_drc_flags(void)
 {
 	int layer;
-#warning layer TODO: decide whether it is from attribute or not
+TODO("layer: decide whether it is from attribute or not")
 	for (layer = 0; layer < pcb_max_layer; layer++) {
 		pcb_layer_t *l = LAYER_PTR(layer);
 		l->meta.real.no_drc = pcb_attribute_get(&l->Attributes, "PCB::skip-drc") != NULL;
@@ -250,7 +250,7 @@ void pcb_lookup_conn_by_pin(int type, void *ptr1)
 	pcb_conn_lookup_uninit();
 }
 
-#warning cleanup TODO: keep only PCB_OBJ_* and remove this function
+TODO("cleanup: keep only PCB_OBJ_* and remove this function")
 unsigned long pcb_obj_type2oldtype(pcb_objtype_t type)
 {
 	switch(type) {

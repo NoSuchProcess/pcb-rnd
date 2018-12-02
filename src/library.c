@@ -26,12 +26,13 @@
  *
  */
 
-#warning cleanup TODO: replace this with genvect
+#include "config.h"
+
+TODO("cleanup: replace this with genvect")
 
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "config.h"
 #include "library.h"
 #include "macro.h"
 #include "compat_misc.h"

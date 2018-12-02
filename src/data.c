@@ -606,7 +606,7 @@ void pcb_data_list_by_flag(pcb_data_t *data, vtp0_t *dst, pcb_objtype_t type, un
 
 void pcb_data_list_terms(pcb_data_t *data, vtp0_t *dst, pcb_objtype_t type)
 {
-#warning subc TODO: subc in subc
+TODO("subc TODO: subc in subc")
 /*	if (type & PCB_OBJ_SUBC) PCB_SUBC_LOOP(data); {
 		if (subc->term != NULL) vtp0_append(dst, subc);
 	} PCB_END_LOOP;*/
@@ -791,7 +791,7 @@ void pcb_data_flag_change(pcb_data_t *data, pcb_objtype_t mask, int how, unsigne
 	}
 }
 
-#warning TODO: rewrite to be more generic
+TODO("rewrite to be more generic")
 #include "obj_pstk_draw.h"
 #include "obj_text_draw.h"
 #include "obj_poly_draw.h"

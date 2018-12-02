@@ -52,7 +52,7 @@
 #include "obj_pstk_draw.h"
 #include "obj_rat_draw.h"
 
-#warning padstack TODO: remove this when via is removed and the padstack is created from style directly
+TODO("pstk: remove this when via is removed and the padstack is created from style directly")
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 
 static pcb_layer_t *last_layer;
@@ -101,7 +101,7 @@ static void notify_line(void)
 		pcb_crosshair_set_local_ref(pcb_crosshair.X, pcb_crosshair.Y, pcb_true);
 	switch (pcb_crosshair.AttachedLine.State) {
 	case PCB_CH_STATE_FIRST:						/* first point */
-#warning subc TODO: this should work on heavy terminals too!
+TODO("subc: this should work on heavy terminals too!")
 		if (PCB->RatDraw && pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &ptr1, &ptr1, &ptr1) == PCB_OBJ_VOID) {
 			pcb_gui->beep();
 			break;
@@ -170,6 +170,7 @@ void pcb_tool_line_notify_mode(void)
 		/* place a via if vias are visible, the layer is
 			 in a new group since the last line and there
 			 isn't a pin already here */
+TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too")
 		if (conf_core.editor.auto_via && PCB->pstk_on
 				&& pcb_layer_get_group_(CURRENT) != pcb_layer_get_group_(last_layer)
 				&& pcb_search_obj_by_location(PCB_OBJ_CLASS_PIN, &ptr1, &ptr2, &ptr3,
@@ -180,7 +181,6 @@ void pcb_tool_line_notify_mode(void)
 				&& (pcb_layer_flags_(CURRENT) & PCB_LYT_COPPER)
 				&& (pcb_layer_flags_(last_layer) & PCB_LYT_COPPER)
 				&& (!PCB->is_footprint)
-#warning pdstk TODO #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too
 				&& ((ps = pcb_pstk_new_compat_via(PCB->Data, -1,
 															pcb_crosshair.AttachedLine.Point1.X,
 															pcb_crosshair.AttachedLine.Point1.Y,
@@ -261,6 +261,7 @@ void pcb_tool_line_notify_mode(void)
 			/* place a via if vias are visible, the layer is
 				 in a new group since the last line and there
 				 isn't a pin already here */
+TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too")
 			if (PCB->pstk_on
 					&& pcb_layer_get_group_(CURRENT) != pcb_layer_get_group_(last_layer) 
 					&& (pcb_layer_flags_(CURRENT) & PCB_LYT_COPPER)
@@ -270,7 +271,6 @@ void pcb_tool_line_notify_mode(void)
 																 pcb_crosshair.AttachedLine.Point1.X,
 																 pcb_crosshair.AttachedLine.Point1.Y,
 																 conf_core.design.via_thickness / 2) == PCB_OBJ_VOID
-#warning pdstk TODO #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too
 				&& ((ps = pcb_pstk_new_compat_via(PCB->Data, -1,
 															pcb_crosshair.AttachedLine.Point1.X,
 															pcb_crosshair.AttachedLine.Point1.Y,

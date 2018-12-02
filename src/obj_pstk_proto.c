@@ -48,7 +48,7 @@ static const char core_proto_cookie[] = "padstack prototypes";
 
 void pcb_pstk_proto_free_fields(pcb_pstk_proto_t *dst)
 {
-#warning TODO: do a full field free here
+TODO("do a full field free here")
 	dst->in_use = 0;
 }
 
@@ -374,7 +374,7 @@ int pcb_pstk_proto_breakup(pcb_data_t *dst, pcb_pstk_t *src, pcb_bool remove_src
 			ly = &dst->Layer[lid];
 			lyt = pcb_layer_flags_(ly);
 
-#warning layer TODO: make a real scoring mechanism here instead of ly1, ly2, ly3
+TODO("layer: make a real scoring mechanism here instead of ly1, ly2, ly3")
 			/* cheat: pretend boundary layers are mech layers because padstack layer types are interested only in mech layers */
 			if (lyt & PCB_LYT_BOUNDARY) {
 				lyt &= ~PCB_LYT_BOUNDARY;
@@ -873,7 +873,7 @@ int pcb_pstk_proto_change_hole(pcb_pstk_proto_t *proto, const int *hplated, cons
 
 int pcb_pstk_proto_change_name(pcb_pstk_proto_t *proto, const char *new_name)
 {
-#warning undo TODO: make this undoable (check how pcb_pstk_proto_change_hole() does it)
+TODO("undo: make this undoable (check how pcb_pstk_proto_change_hole() does it)")
 	free(proto->name);
 	if ((new_name == NULL) || (*new_name == '\0'))
 		proto->name = NULL;

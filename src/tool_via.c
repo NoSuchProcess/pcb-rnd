@@ -47,7 +47,7 @@
 
 #include "obj_pstk_draw.h"
 
-#warning padstack TODO: remove this when via is removed and the padstack is created from style directly
+TODO("padstack: remove this when via is removed and the padstack is created from style directly")
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 
 void pcb_tool_via_notify_mode(void)
@@ -63,7 +63,7 @@ void pcb_tool_via_notify_mode(void)
 		return;
 	}
 
-#warning pdstk TODO #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too
+TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too")
 	{
 		pcb_pstk_t *ps = pcb_pstk_new_compat_via(PCB->Data, -1, pcb_tool_note.X, pcb_tool_note.Y,
 			conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,
@@ -92,7 +92,7 @@ static void xor_draw_fake_via(pcb_coord_t x, pcb_coord_t y, pcb_coord_t dia, pcb
 
 void pcb_tool_via_draw_attached(void)
 {
-#warning padstack TODO: replace this when route style has a prototype
+TODO("pstk: replace this when route style has a prototype")
 	xor_draw_fake_via(pcb_crosshair.X, pcb_crosshair.Y, conf_core.design.via_thickness, 0);
 	if (conf_core.editor.show_drc) {
 		/* XXX: Naughty cheat - use the mask to draw DRC clearance! */

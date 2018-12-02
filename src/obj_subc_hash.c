@@ -52,7 +52,7 @@ int pcb_subc_eq(pcb_subc_t *sc1, pcb_subc_t *sc2)
 	for(lid = 0; lid < sc1->data->LayerN; lid++) {
 		pcb_layer_t *ly1 = &sc1->data->Layer[lid];
 		pcb_layer_t *ly2 = &sc2->data->Layer[lid];
-#warning TODO:
+TODO("todo")
 /*		if (!pcb_layer_eq_bound(ly1, tr1.on_bottom, ly2, tr2.on_bottom)) return 0;*/
 		if (arclist_length(&ly1->Arc) != arclist_length(&ly2->Arc)) return 0;
 	}
@@ -104,7 +104,7 @@ int pcb_subc_eq(pcb_subc_t *sc1, pcb_subc_t *sc2)
 			if (!pcb_pstk_eq(&tr1, p1, &tr2, p2)) return 0;
 			p2 = padstacklist_next(p2);
 		}
-#warning subc TODO: subc-in-subc eq check
+TODO("subc: subc-in-subc eq check")
 	}
 
 	return 1;
@@ -152,7 +152,7 @@ unsigned int pcb_subc_hash(pcb_subc_t *sc)
 	/* hash global objects */
 	{
 		pcb_pstk_t *ps;
-#warning subc TODO: subc in subc: trans in trans
+TODO("subc: subc in subc: trans in trans")
 #if 0
 		pcb_subc_t *s;
 		subclist_foreach(&sc->data->subc, &it, s)

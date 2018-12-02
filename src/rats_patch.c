@@ -253,7 +253,7 @@ int pcb_ratspatch_apply(pcb_board_t *pcb, pcb_ratspatch_line_t * patch)
 	case RATP_DEL_CONN:
 		return rats_patch_apply_conn(pcb, patch, 1);
 	case RATP_CHANGE_ATTRIB:
-#warning TODO: just check wheter it is still valid
+TODO("just check wheter it is still valid")
 		break;
 	}
 	return 0;
