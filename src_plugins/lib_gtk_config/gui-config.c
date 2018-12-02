@@ -35,6 +35,7 @@
 #include <stdlib.h>
 #include <genht/hash.h>
 
+#include "actions.h"
 #include "board.h"
 #include "data.h"
 #include "event.h"
@@ -1099,6 +1100,11 @@ static GtkWidget *ghid_notebook_page(GtkWidget *tabs, const char *name, gint pad
 	return vbox;
 }
 
+static void new_csect_cb(GtkButton *widget, const char *ctx)
+{
+	pcb_actionl("preferences", "layers", NULL);
+}
+
 static void config_layers_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
 {
 	GtkWidget *tabs, *vbox, *text, *content_vbox, *prv;
@@ -1115,13 +1121,10 @@ static void config_layers_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com
 /* -- Layer stack tab */
 	vbox = ghid_notebook_page(tabs, _("Physical layer stack"), 0, 6);
 	if (pcb_layer_listp(PCB, PCB_LYT_VIRTUAL, &lid, 1, F_csect, NULL) > 0) {
-		pcb_gtk_preview_t *p;
-		prv = pcb_gtk_preview_layer_new(com, com->init_drawing_widget, com->preview_expose, lid);
-		gtk_box_pack_start(GTK_BOX(vbox), prv, TRUE, TRUE, 0);
-		p = (pcb_gtk_preview_t *) prv;
-		p->view.width = PCB_MM_TO_COORD(152);
-		p->view.height = PCB_MM_TO_COORD(150);
-		p->mouse_cb = pcb_stub_draw_csect_mouse_ev;
+		GtkWidget *button = gtk_button_new_with_label("Open");
+		gtk_widget_set_tooltip_text(GTK_WIDGET(button), "Moved to the new preferences dialog");
+		gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
+		g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(new_csect_cb), NULL);
 	}
 
 /* -- Info tab */
