@@ -8,5 +8,4 @@ dep lib_gtk_config
 dep lib_gtk_hid
 dep lib_hid_gl
 dep draw_csect
-dep draw_fontsel
 autoload 1

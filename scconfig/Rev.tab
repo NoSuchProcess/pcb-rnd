@@ -1,4 +1,4 @@
-21313	configure	HID API cleanup
+21362	configure	HID API cleanup, including dialogs rewritten with DAD
 21289	configure	new drc infra and GUI
 21098	configure	old pinout dialog removal
 20317	configure	new core color infra

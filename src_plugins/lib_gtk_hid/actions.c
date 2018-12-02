@@ -47,7 +47,6 @@
 #include "../src_plugins/lib_gtk_common/dlg_log.h"
 #include "../src_plugins/lib_gtk_common/dlg_netlist.h"
 #include "../src_plugins/lib_gtk_common/dlg_search.h"
-#include "../src_plugins/lib_gtk_common/dlg_fontsel.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
 
 #include "actions.h"
@@ -63,37 +62,6 @@ static fgw_error_t pcb_act_AdjustStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		PCB_ACT_FAIL(AdjustStyle);
 
 	pcb_gtk_route_style_edit_dialog(&ghidgui->common, GHID_ROUTE_STYLE(ghidgui->topwin.route_style_selector));
-	PCB_ACT_IRES(0);
-	return 0;
-}
-
-static const char pcb_acts_fontsel[] = "FontSel()\n";
-static const char pcb_acth_fontsel[] = "Select the font to draw new text with.";
-static fgw_error_t pcb_act_fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	const char *op = NULL;
-	if (argc > 2)
-		PCB_ACT_FAIL(fontsel);
-
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, fontsel, op = argv[1].val.str);
-
-	if (op != NULL) {
-		if (pcb_strcasecmp(op, "Object") == 0) {
-			pcb_coord_t x, y;
-			int type;
-			void *ptr1, *ptr2, *ptr3;
-			pcb_hid_get_coords(_("Select an Object"), &x, &y, 0);
-			if ((type = pcb_search_screen(x, y, PCB_CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
-/*				pcb_undo_save_serial();*/
-				pcb_gtk_dlg_fontsel(&ghidgui->common, ptr1, ptr2, type, 1);
-			}
-		}
-		else
-			PCB_ACT_FAIL(fontsel);
-	}
-	else
-		pcb_gtk_dlg_fontsel(&ghidgui->common, NULL, NULL, 0, 0);
-
 	PCB_ACT_IRES(0);
 	return 0;
 }
@@ -377,7 +345,6 @@ static fgw_error_t pcb_act_EditLayerGroups(fgw_arg_t *res, int argc, fgw_arg_t *
 
 pcb_action_t ghid_menu_action_list[] = {
 	{"AdjustStyle", pcb_act_AdjustStyle, pcb_acth_AdjustStyle, pcb_acts_AdjustStyle},
-	{"fontsel", pcb_act_fontsel, pcb_acth_fontsel, pcb_acts_fontsel}
 };
 
 PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_act_cookie)

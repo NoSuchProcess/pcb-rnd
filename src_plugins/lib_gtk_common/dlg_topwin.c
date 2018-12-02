@@ -58,7 +58,6 @@
 #include "bu_icons.h"
 #include "bu_info_bar.h"
 #include "dlg_route_style.h"
-#include "dlg_fontsel.h"
 #include "util_str.h"
 #include "util_listener.h"
 #include "in_mouse.h"

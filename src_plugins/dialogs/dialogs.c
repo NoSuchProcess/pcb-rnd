@@ -70,7 +70,7 @@ pcb_action_t dialogs_action_list[] = {
 	{"dad", pcb_act_dad, pcb_acth_dad, pcb_acts_dad},
 	{"DrcDialog", pcb_act_DrcDialog, pcb_acth_DrcDialog, pcb_acts_DrcDialog},
 	{"IOIncompatList", pcb_act_IOIncompatList, pcb_acth_IOIncompatList, pcb_acts_IOIncompatList},
-	{"Fontsel2", pcb_act_Fontsel, pcb_acth_Fontsel, pcb_acts_Fontsel}
+	{"Fontsel", pcb_act_Fontsel, pcb_acth_Fontsel, pcb_acts_Fontsel}
 };
 
 static const char *dialogs_cookie = "dialogs plugin";

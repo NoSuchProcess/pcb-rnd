@@ -2,10 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 - CLEANUP: fontsel
-	- add per object font change to the new action
-	- remove gtk pup dep
-	- remove lesstif pup dep
-	- rename action to fontsel
 	- remove dlg_fontsel local callbacks
 	- simplify the stub object pointers, keep only obj
 	- rewrite buttons?

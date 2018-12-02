@@ -1399,37 +1399,6 @@ static fgw_error_t pcb_act_EditLayerGroups(fgw_arg_t *res, int argc, fgw_arg_t *
 	return 0;
 }
 
-
-static const char pcb_acts_fontsel[] = "EditLayerGroups()";
-static const char pcb_acth_fontsel[] = "Let the user change fonts";
-extern void lesstif_show_fontsel_edit(pcb_layer_t *txtly, pcb_text_t *txt, int type);
-static fgw_error_t pcb_act_fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	if (argc > 2)
-		PCB_ACT_FAIL(fontsel);
-
-	if (argc > 1) {
-		const char *op;
-		PCB_ACT_CONVARG(1, FGW_STR, fontsel, op = argv[1].val.str);
-		if (pcb_strcasecmp(op, "Object") == 0) {
-			pcb_coord_t x, y;
-			int type;
-			void *ptr1, *ptr2, *ptr3;
-			pcb_hid_get_coords(_("Select an Object"), &x, &y, 0);
-			if ((type = pcb_search_screen(x, y, PCB_CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
-/*				pcb_undo_save_serial();*/
-				lesstif_show_fontsel_edit(ptr1, ptr2, type);
-			}
-		}
-		else
-			PCB_ACT_FAIL(fontsel);
-	}
-	else
-		lesstif_show_fontsel_edit(NULL, NULL, 0);
-	PCB_ACT_IRES(0);
-	return 0;
-}
-
 /* ------------------------------------------------------------ */
 
 typedef struct {
@@ -1810,7 +1779,6 @@ pcb_action_t lesstif_dialog_action_list[] = {
 	{"Print", pcb_act_Print, pcb_acth_Print, pcb_acts_Print},
 	{"AdjustSizes", pcb_act_AdjustSizes, pcb_acth_AdjustSizes, pcb_acts_AdjustSizes},
 	{"EditLayerGroups", pcb_act_EditLayerGroups, pcb_acth_EditLayerGroups, pcb_acts_EditLayerGroups},
-	{"FontSel", pcb_act_fontsel, pcb_acth_fontsel, pcb_acts_fontsel},
 	{"ImportGUI", pcb_act_ImportGUI, pcb_acth_ImportGUI, pcb_acts_ImportGUI}
 };
 

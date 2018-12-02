@@ -5,7 +5,6 @@ $state works
 $package hid-lesstif
 default buildin
 dep draw_csect
-dep draw_fontsel
 dep lib_hid_common
 dep dialogs
 autoload 1
