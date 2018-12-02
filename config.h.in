@@ -147,6 +147,17 @@ print {\n}
 print_ternary ?signal/names/SIGQUIT/presents    {#define PCB_HAVE_SIGQUIT 1} {/* #undef PCB_HAVE_SIGQUIT */}
 print {\n}
 
+print {\n/* Code warnings for TODO, portable (unlike #warning) */}
+if ?cc/pragma_message
+then
+print [@
+#define DO_PRAGMA(arg) _Pragma(#arg)
+#define TODO(x) DO_PRAGMA(message("TODO: " #x))
+@]
+else
+print {\n/* Not available */\n#define TODO(x)\n}
+end
+
 print [@
 
 /* The host "triplet" - it's really a pair now: machine-os */

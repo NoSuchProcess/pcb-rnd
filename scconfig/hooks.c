@@ -378,6 +378,7 @@ int hook_detect_target()
 	target_ped = get("/target/cc/argstd/pedantic");
 	target_pg = get("/target/cc/argstd/pg");
 	target_no_pie = get("/target/cc/argstd/no-pie");
+	require("cc/pragma_message",  0, 0);
 
 	{ /* need to set debug flags here to make sure libs are detected with the modified cflags; -ansi matters in what #defines we need for some #includes */
 		const char *tmp, *fpic, *debug;
