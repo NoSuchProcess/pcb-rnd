@@ -132,7 +132,6 @@ static void pcb_draw_font(pcb_hid_gc_t gc, pcb_font_t *f, int x, int *y)
 static void pcb_draw_fontsel(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
 	int y = 0;
-	pcb_text_t *t;
 
 	font_coords = 0;
 	pcb_draw_font(gc, &PCB->fontkit.dflt, 0, &y);
