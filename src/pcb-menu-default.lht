@@ -634,6 +634,7 @@ ha:{
 				ha:Edit flags...          { action=FlagEdit() }
 				ha:Edit text              { action=ChangeName(Object) }
 				ha:Set Same Style         { action=SetSame() }
+				ha:Change font...         { action=Fontsel(Object) }
 				-
 				ha:Remove text            { li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
 				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Mode(PasteBuffer) } }
