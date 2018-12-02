@@ -62,7 +62,6 @@ typedef pcb_bool(*pcb_gtk_preview_mouse_ev_t)(void *widget, void *draw_data, pcb
 
 typedef enum pcb_gtk_preview_kind_e {
 	PCB_GTK_PREVIEW_INVALID,
-	PCB_GTK_PREVIEW_LAYER,  /* specific (oftne virtual) layer */
 	PCB_GTK_PREVIEW_GENERIC,/* generic callback based draw */
 
 	PCB_GTK_PREVIEW_kind_max
@@ -105,10 +104,6 @@ void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t * preview, int *width, int *h
 GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw);
 
 /* Application-specific shorthands */
-GtkWidget *pcb_gtk_preview_layer_new(pcb_gtk_common_t * com,
-																		 pcb_gtk_init_drawing_widget_t init_widget,
-																		 pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer);
-
 void pcb_gtk_preview_board_zoomto(pcb_gtk_preview_t *p, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int canvas_width, int canvas_height);
 
 GtkWidget *pcb_gtk_preview_dialog_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw);

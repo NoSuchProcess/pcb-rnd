@@ -58,7 +58,7 @@ static void perview_update_offs(pcb_gtk_preview_t *preview)
 	yf = (double)preview->view.height / preview->view.canvas_height;
 	preview->view.coord_per_px = (xf > yf ? xf : yf);
 
-	if ((preview->kind == PCB_GTK_PREVIEW_GENERIC) || (preview->kind == PCB_GTK_PREVIEW_LAYER)) {
+	if (preview->kind == PCB_GTK_PREVIEW_GENERIC) {
 		preview->xoffs = (pcb_coord_t)(preview->view.width / 2 - preview->view.canvas_width * preview->view.coord_per_px / 2);
 		preview->yoffs = (pcb_coord_t)(preview->view.height / 2 - preview->view.canvas_height * preview->view.coord_per_px / 2);
 	}
@@ -126,7 +126,6 @@ enum {
 	PROP_INIT_WIDGET = 3,
 	PROP_EXPOSE = 4,
 	PROP_KIND = 5,
-	PROP_LAYER = 6,
 	PROP_COM = 7,
 	PROP_DIALOG_DRAW = 8, /* for PCB_LYT_DIALOG */
 	PROP_GENERIC = 9,
@@ -175,12 +174,6 @@ static void ghid_preview_set_property(GObject * object, guint property_id, const
 		break;
 	case PROP_KIND:
 		preview->kind = g_value_get_int(value);
-		break;
-	case PROP_LAYER:
-		preview->kind = PCB_GTK_PREVIEW_LAYER;
-		preview->expose_data.content.layer_id = g_value_get_long(value);
-		if (window != NULL)
-			gdk_window_invalidate_rect(window, NULL, FALSE);
 		break;
 	case PROP_GENERIC:
 		preview->kind = PCB_GTK_PREVIEW_GENERIC;
@@ -232,13 +225,6 @@ static gboolean ghid_preview_expose(GtkWidget * widget, pcb_gtk_expose_t * ev)
 
 		return res;
 
-	case PCB_GTK_PREVIEW_LAYER:
-		preview->expose_data.view.X1 = preview->x_min;
-		preview->expose_data.view.Y1 = preview->y_min;
-		preview->expose_data.view.X2 = preview->x_max;
-		preview->expose_data.view.Y2 = preview->y_max;
-		return preview->expose(widget, ev, pcb_hid_expose_layer, &preview->expose_data);
-
 	case PCB_GTK_PREVIEW_INVALID:
 	case PCB_GTK_PREVIEW_kind_max:
 		return FALSE;
@@ -272,9 +258,6 @@ static void ghid_preview_class_init(pcb_gtk_preview_class_t * klass)
 
 	g_object_class_install_property(gobject_class, PROP_KIND,
 																	g_param_spec_int("kind", "", "", 0, PCB_GTK_PREVIEW_kind_max - 1, 0, G_PARAM_WRITABLE));
-
-	g_object_class_install_property(gobject_class, PROP_LAYER,
-																	g_param_spec_long("layer", "", "", -(1UL << 31), (1UL << 31) - 1, -1, G_PARAM_WRITABLE));
 
 	g_object_class_install_property(gobject_class, PROP_DIALOG_DRAW, g_param_spec_pointer("dialog_draw", "", "", G_PARAM_WRITABLE));
 
@@ -559,11 +542,6 @@ GtkWidget *pcb_gtk_preview_generic_new(pcb_gtk_common_t * com, pcb_gtk_init_draw
 	g_object_set(G_OBJECT(preview),"kind", PCB_GTK_PREVIEW_GENERIC, "config", config, "generic", draw_data, NULL);
 
 	return preview;
-}
-
-GtkWidget *pcb_gtk_preview_layer_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer)
-{
-	return pcb_gtk_preview_any_new(com, init_widget, expose, layer, NULL);
 }
 
 void pcb_gtk_preview_board_zoomto(pcb_gtk_preview_t *p, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int canvas_width, int canvas_height)
