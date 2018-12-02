@@ -171,10 +171,11 @@ int hook_custom_arg(const char *key, const char *value)
 	require = 1 - check if dependencies are met, disable plugins that have
 	              unmet deps
 */
-void plugin_dep1(int require, const char *plugin, const char *deps_on)
+int plugin_dep1(int require, const char *plugin, const char *deps_on)
 {
 	char buff[1024];
 	const char *st_plugin, *st_deps_on;
+	int dep_chg = 0;
 
 	sprintf(buff, "/local/pcb/%s/controls", plugin);
 	st_plugin = get(buff);
@@ -188,6 +189,7 @@ void plugin_dep1(int require, const char *plugin, const char *deps_on)
 				report_repeat(buff);
 				sprintf(buff, "Disable-%s", plugin);
 				hook_custom_arg(buff, NULL);
+				dep_chg++;
 			}
 		}
 		else if ((strcmp(st_plugin, splugin) == 0)) {
@@ -196,6 +198,7 @@ void plugin_dep1(int require, const char *plugin, const char *deps_on)
 				report_repeat(buff);
 				sprintf(buff, "Disable-%s", plugin);
 				hook_custom_arg(buff, NULL);
+				dep_chg++;
 			}
 		}
 	}
@@ -206,7 +209,9 @@ void plugin_dep1(int require, const char *plugin, const char *deps_on)
 			if ((st_deps_on == NULL) || (strcmp(st_deps_on, "disable") == 0))
 				put(buff, splugin);
 		}
+		dep_chg++;
 	}
+	return dep_chg;
 }
 
 static void all_plugin_select(const char *state, int force)
@@ -226,15 +231,17 @@ static void all_plugin_select(const char *state, int force)
 #include "plugins.h"
 }
 
-void plugin_deps(int require)
+int plugin_deps(int require)
 {
+	int dep_chg = 0;
 #undef plugin_def
 #undef plugin_header
 #undef plugin_dep
 #define plugin_def(name, desc, default_, all_)
 #define plugin_header(sect)
-#define plugin_dep(plg, on) plugin_dep1(require, plg, on);
+#define plugin_dep(plg, on) dep_chg += plugin_dep1(require, plg, on);
 #include "plugins.h"
+	return dep_chg;
 }
 
 
@@ -305,7 +312,12 @@ static int all_plugin_check_explicit(void)
 /* Runs after all arguments are read and parsed */
 int hook_postarg()
 {
-	plugin_deps(0);
+	int limit = 128;
+
+	/* repeat as long as there are changes - this makes it "recursive" on
+	   resolving deps */
+	while(plugin_deps(0) && (limit > 0)) limit--;
+
 	return 0;
 }
 
