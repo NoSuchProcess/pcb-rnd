@@ -34,7 +34,6 @@ typedef struct{
 
 	pcb_text_t *old_txt;
 	pcb_layer_t *old_layer;
-	int old_type;
 } fontsel_ctx_t;
 
 fontsel_ctx_t fontsel_ctx;
@@ -45,7 +44,6 @@ static void fontsel_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 
 	*pcb_stub_draw_fontsel_text_obj = ctx->old_txt;
 	*pcb_stub_draw_fontsel_layer_obj = ctx->old_layer;
-	*pcb_stub_draw_fontsel_text_type = ctx->old_type;
 
 	PCB_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(fontsel_ctx_t));
@@ -94,10 +92,8 @@ static fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	fontsel_ctx.old_txt = *pcb_stub_draw_fontsel_text_obj;
 	fontsel_ctx.old_layer = *pcb_stub_draw_fontsel_layer_obj;
-	fontsel_ctx.old_type = *pcb_stub_draw_fontsel_text_type;
 	*pcb_stub_draw_fontsel_text_obj = NULL;
 	*pcb_stub_draw_fontsel_layer_obj = NULL;
-	*pcb_stub_draw_fontsel_text_type = 0;
 
 	if (op != NULL) {
 		if (pcb_strcasecmp(op, "Object") == 0) {
@@ -108,7 +104,6 @@ static fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if ((type = pcb_search_screen(x, y, PCB_CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 				*pcb_stub_draw_fontsel_text_obj = ptr2;
 				*pcb_stub_draw_fontsel_layer_obj = ptr1;
-				*pcb_stub_draw_fontsel_text_type = type;
 			}
 		}
 		else
