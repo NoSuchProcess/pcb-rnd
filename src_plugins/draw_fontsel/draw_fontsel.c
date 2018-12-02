@@ -98,9 +98,6 @@ typedef struct {
 
 font_coord_t font_coord[MAX_FONT];
 int font_coords;
-int font_new_y1, font_new_y2;
-int font_replace_y1, font_replace_y2;
-int font_del_y1, font_del_y2;
 
 pcb_text_t *fontsel_txt = NULL;
 
@@ -134,45 +131,17 @@ static void pcb_draw_font(pcb_hid_gc_t gc, pcb_font_t *f, int x, int *y)
 
 static void pcb_draw_fontsel(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
-	int y = 10;
+	int y = 0;
 	pcb_text_t *t;
 
-	pcb_gui->set_color(gc, "#FF0000");
-	dtext(0, 0, 300, 0, "Select font");
-
 	font_coords = 0;
-	pcb_draw_font(gc, &PCB->fontkit.dflt, 10, &y);
+	pcb_draw_font(gc, &PCB->fontkit.dflt, 0, &y);
 
 	if (PCB->fontkit.hash_inited) {
 		htip_entry_t *e;
 		for (e = htip_first(&PCB->fontkit.fonts); e; e = htip_next(&PCB->fontkit.fonts, e))
-			pcb_draw_font(gc, e->value, 10, &y);
+			pcb_draw_font(gc, e->value, 0, &y);
 	}
-
-	/* New font */
-	pcb_gui->set_color(gc, "#000000");
-	t = dtext(5, y, 250, 0, "[Load font from file]");
-	pcb_text_bbox(pcb_font(PCB, 0, 1), t);
-	font_new_y1 = y;
-	y += pcb_round(PCB_COORD_TO_MM(t->BoundingBox.Y2 - t->BoundingBox.Y1) + 0.5);
-	font_new_y2 = y;
-	
-	/* Replace font */
-	pcb_gui->set_color(gc, "#000000");
-	t = dtext(5, y, 250, 0, "[Replace font]");
-	pcb_text_bbox(pcb_font(PCB, 0, 1), t);
-	font_replace_y1 = y;
-	y += pcb_round(PCB_COORD_TO_MM(t->BoundingBox.Y2 - t->BoundingBox.Y1) + 0.5);
-	font_replace_y2 = y;
-
-	/* Del font */
-	pcb_gui->set_color(gc, "#550000");
-	t = dtext(5, y, 250, 0, "[Remove current font]");
-	pcb_text_bbox(pcb_font(PCB, 0, 1), t);
-	font_del_y1 = y;
-	y += pcb_round(PCB_COORD_TO_MM(t->BoundingBox.Y2 - t->BoundingBox.Y1) + 0.5);
-	font_del_y2 = y;
-
 }
 
 static pcb_font_id_t lookup_fid_for_coord(int ymm)
@@ -208,25 +177,6 @@ static pcb_bool pcb_mouse_fontsel(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_co
 					}
 					pcb_gui->invalidate_all();
 				}
-				return 1;
-			}
-			else if ((ymm >= font_new_y1) && (ymm <= font_new_y2)) {
-				pcb_actionl("LoadFontFrom", NULL); /* modal, blocking */
-				return 1;
-			}
-			else if ((ymm >= font_replace_y1) && (ymm <= font_replace_y2)) {
-				char file[1] = "", id[5];
-				pcb_snprintf(id, sizeof(id), "%ld", conf_core.design.text_font_id);
-				pcb_actionl("LoadFontFrom", file, id, NULL); /* modal, blocking */
-				return 1;
-			}
-			else if ((ymm >= font_del_y1) && (ymm <= font_del_y2)) {
-				if (conf_core.design.text_font_id == 0) {
-					pcb_message(PCB_MSG_ERROR, "Can not remove the default font.\n");
-					return 0;
-				}
-				pcb_del_font(&PCB->fontkit, conf_core.design.text_font_id);
-				conf_set(CFR_DESIGN, "design/text_font_id", 0, "0", POL_OVERWRITE);
 				return 1;
 			}
 	}

@@ -30,6 +30,7 @@
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	pcb_board_t *pcb;
+	int wprev;
 	int active;
 
 	pcb_text_t *old_txt;
@@ -61,17 +62,41 @@ void fontsel_free_cb(pcb_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx)
 {
 }
 
+static void fontsel_preview_update(fontsel_ctx_t *ctx)
+{
+	pcb_hid_attr_val_t hv;
+
+	if ((ctx == NULL) || (!ctx->active))
+		return;
+
+	hv.str_value = NULL;
+	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
+}
+
 
 static void btn_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
+	pcb_actionl("LoadFontFrom", NULL); /* modal, blocking */
+	fontsel_preview_update((fontsel_ctx_t *)caller_data);
 }
 
 static void btn_replace_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
+	char file[1] = "", id[5];
+	pcb_snprintf(id, sizeof(id), "%ld", conf_core.design.text_font_id);
+	pcb_actionl("LoadFontFrom", file, id, NULL); /* modal, blocking */
+	fontsel_preview_update((fontsel_ctx_t *)caller_data);
 }
 
 static void btn_remove_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
+	if (conf_core.design.text_font_id == 0) {
+		pcb_message(PCB_MSG_ERROR, "Can not remove the default font.\n");
+		return;
+	}
+	pcb_del_font(&PCB->fontkit, conf_core.design.text_font_id);
+	conf_set(CFR_DESIGN, "design/text_font_id", 0, "0", POL_OVERWRITE);
+	fontsel_preview_update((fontsel_ctx_t *)caller_data);
 }
 
 
@@ -86,6 +111,7 @@ static void pcb_dlg_foo(pcb_board_t *pcb)
 		PCB_DAD_COMPFLAG(fontsel_ctx.dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_PREVIEW(fontsel_ctx.dlg, fontsel_expose_cb, fontsel_mouse_cb, fontsel_free_cb, &vbox, 200, 200, &fontsel_ctx);
 			PCB_DAD_COMPFLAG(fontsel_ctx.dlg, PCB_HATF_EXPFILL);
+			fontsel_ctx.wprev = PCB_DAD_CURRENT(fontsel_ctx.dlg);
 		PCB_DAD_BEGIN_HBOX(fontsel_ctx.dlg);
 		PCB_DAD_BUTTON(fontsel_ctx.dlg, "Load font");
 			PCB_DAD_CHANGE_CB(fontsel_ctx.dlg, btn_load_cb);
