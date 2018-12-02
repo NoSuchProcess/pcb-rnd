@@ -1107,7 +1107,7 @@ static void new_csect_cb(GtkButton *widget, const char *ctx)
 
 static void config_layers_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
 {
-	GtkWidget *tabs, *vbox, *text, *content_vbox, *prv;
+	GtkWidget *tabs, *vbox, *text, *content_vbox;
 	pcb_layer_id_t lid;
 	gint i;
 
