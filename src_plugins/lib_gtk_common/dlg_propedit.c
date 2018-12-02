@@ -511,18 +511,6 @@ GtkWidget *pcb_gtk_dlg_propedit_create(pcb_gtk_dlg_propedit_t *dlg, pcb_gtk_comm
 
 /***** RIGHT *****/
 /* preview */
-	prop_preview_init();
-	prv = pcb_gtk_preview_dialog_new(com, com->init_drawing_widget, com->preview_expose, prop_preview_draw);
-
-	p = (pcb_gtk_preview_t *) prv;
-	p->view.x0 = PCB_MIL_TO_COORD(800);
-	p->view.y0 = PCB_MIL_TO_COORD(800);
-	p->view.coord_per_px = PCB_MIL_TO_COORD(2.5);
-	pcb_gtk_zoom_post(&p->view);
-
-	gtk_widget_set_size_request(prv, 150, 150);
-
-	gtk_box_pack_start(GTK_BOX(vbox_edit), prv, TRUE, TRUE, 4);
 
 	label = gtk_label_new("Change property\nof all objects");
 	gtk_box_pack_start(GTK_BOX(vbox_edit), label, FALSE, TRUE, 4);

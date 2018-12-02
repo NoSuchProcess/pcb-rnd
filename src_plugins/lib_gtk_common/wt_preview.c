@@ -574,16 +574,6 @@ void pcb_gtk_preview_board_zoomto(pcb_gtk_preview_t *p, pcb_coord_t x1, pcb_coor
 	pcb_gtk_zoom_view_win(&p->view, x1, y1, x2, y2);
 }
 
-
-GtkWidget *pcb_gtk_preview_dialog_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw)
-{
-	pcb_layer_id_t lid;
-	if (pcb_layer_list(PCB, PCB_LYT_DIALOG, &lid, 1) > 0)
-		return pcb_gtk_preview_any_new(com, init_widget, expose, lid, dialog_draw);
-	else
-		return NULL;
-}
-
 void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t * preview, int *width, int *height)
 {
 	*width = preview->w_pixels;
