@@ -222,7 +222,7 @@ pcb_poly_t *contour2poly(pcb_board_t *pcb, vtp0_t *objs, vti0_t *ends, pcb_topol
 				}
 				break;
 			case PCB_OBJ_ARC:
-#warning TODO: fix this with a real approx
+TODO(": fix this with a real approx")
 				pcb_arc_get_end(a, end[0], &x, &y);
 				pcb_poly_point_new(poly, x, y);
 				pcb_arc_middle(a, &x, &y);
@@ -238,7 +238,7 @@ pcb_poly_t *contour2poly(pcb_board_t *pcb, vtp0_t *objs, vti0_t *ends, pcb_topol
 		pcb_add_poly_on_layer(layer, poly);
 		pcb_poly_init_clip(pcb->Data, layer, poly);
 		pcb_poly_invalidate_draw(layer, poly);
-#warning TODO: use pcb_board_set_changed_flag(), but decouple that from PCB
+TODO(": use pcb_board_set_changed_flag(), but decouple that from PCB")
 		pcb->Changed = pcb_true;
 	}
 

@@ -80,7 +80,7 @@ static void export_test_do_export(pcb_hid_attr_val_t * options)
 	if (!export_test_filename)
 		export_test_filename = "pcb-out.export_test";
 	else {
-#warning TODO: set some FILE *fp to stdout
+TODO(": set some FILE *fp to stdout")
 	}
 
 	Printexport_test();

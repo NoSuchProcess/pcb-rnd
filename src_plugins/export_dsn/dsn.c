@@ -131,7 +131,7 @@ static void print_structure(FILE * fp)
 		if (!(g->ltype & PCB_LYT_COPPER))
 			continue;
 
-#warning TODO: revise this; use attributes instead
+TODO(": revise this; use attributes instead")
 		/* see if group has same name as a net and make it a power layer */
 		/* loop thru all nets */
 		for(ni = 0; ni < PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN; ni++) {
@@ -193,7 +193,7 @@ static void print_placement(FILE * fp)
 	}
 	PCB_END_LOOP;
 
-#warning padstack TODO: check if real shapes are exported
+TODO("padstack: check if real shapes are exported")
 	PCB_PADSTACK_LOOP(PCB->Data);
 	{ /* add mounting holes */
 		pcb_fprintf(fp, "    (component %d\n", padstack->ID);
@@ -245,7 +245,7 @@ static void print_lineshape(gds_t *term_shapes, pcb_pstk_line_t *lin, pcb_coord_
 	ltmp.Thickness = lin->thickness;
 	pcb_sqline_to_rect(&ltmp, x, y);
 
-#warning padstack TODO: this ignores round cap
+TODO("padstack: this ignores round cap")
 
 	fld = 0;
 	for(n = 0; n < 4; n++) {
@@ -266,7 +266,7 @@ static void print_circshape(gds_t *term_shapes, pcb_pstk_circ_t *circ, pcb_coord
 	pcb_snprintf(tmp, sizeof(tmp), "        (circle \"%d__%s\"", GRP_NAME(grp));
 	gds_append_str(term_shapes, tmp);
 
-#warning padstack TODO: this ignores circle center offset
+TODO("padstack: this ignores circle center offset")
 
 	pcb_snprintf(tmp, sizeof(tmp), " %.6mm)\n", circ->dia);
 	gds_append_str(term_shapes, tmp);

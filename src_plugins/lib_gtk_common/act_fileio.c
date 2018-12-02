@@ -108,7 +108,7 @@ fgw_error_t pcb_gtk_act_load(GtkWidget *top_window, fgw_arg_t *res, int argc, fg
 	return 0;
 }
 
-#warning TODO: this should be more or less common with lesstif
+TODO(": this should be more or less common with lesstif")
 const char pcb_gtk_acts_save[] = "Save()\n" "Save(Layout|LayoutAs)\n" "Save(AllConnections|AllUnusedPins|ElementConnections)\n" "Save(PasteBuffer)";
 const char pcb_gtk_acth_save[] = "Save layout and/or element data to a user-selected file.";
 /* DOC: save.html */

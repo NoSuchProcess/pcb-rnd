@@ -113,7 +113,7 @@ static void button_ins_cb(GtkButton * button, gtk_conf_list_t *cl)
 	gtk_list_store_insert_before(cl->l, &iter, sibl);
 
 	rebuild(cl);
-#warning TODO: insert new item at idx
+TODO(": insert new item at idx")
 	nd = NULL;
 
 	fill_misc_cols(cl, idx, &iter, nd);
@@ -129,7 +129,7 @@ static void button_del_cb(GtkButton * button, gtk_conf_list_t *cl)
 
 	gtk_list_store_remove(cl->l, &iter);
 	rebuild(cl);
-#warning TODO: remove list item idx
+TODO(": remove list item idx")
 	
 	/* set cursor to where the user may expect it */
 	max = gtk_tree_model_iter_n_children(gtk_tree_view_get_model(GTK_TREE_VIEW(cl->t)), NULL) - 1;
@@ -160,7 +160,7 @@ static void button_sel_cb(GtkButton * button, gtk_conf_list_t *cl)
 			fn = cl->file_chooser_postproc(fno);
 
 		gtk_list_store_set(cl->l, &iter, cl->col_data, fn, -1);
-#warning TODO: replace list item idx
+TODO(": replace list item idx")
 		rebuild(cl);
 		g_free(fno);
 	}
@@ -176,7 +176,7 @@ static void cell_edited_cb(GtkCellRendererText *cell, gchar *path, gchar *new_te
 	cl->editing = 0;
 
 	gtk_list_store_set(cl->l, &iter, cl->col_data, new_text, -1);
-#warning TODO: replace list item idx
+TODO(": replace list item idx")
 	rebuild(cl);
 }
 

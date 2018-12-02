@@ -208,7 +208,7 @@ static void netnode_browse(Widget w, XtPointer v, XmListCallbackStruct * cbs)
 	}
 	*pname++ = 0;
 
-#warning subc TODO
+TODO("subc TODO")
 #if 0
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{

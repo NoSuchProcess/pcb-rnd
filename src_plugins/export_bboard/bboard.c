@@ -396,7 +396,7 @@ static void bboard_export_element_cairo(pcb_subc_t *subc, pcb_bool onsolder)
 			*s2 = 0;
 			offset_in_model = bboard_parse_offset(s2 + 1, &ox, &oy);
 		}
-#warning subc TODO: rewrite
+TODO("subc: rewrite")
 #if 0
 		if (!PCB_EMPTY_STRING_P(PCB_ELEM_NAME_VALUE(element))) {
 			fname = bboard_get_model_filename(s, PCB_ELEM_NAME_VALUE(element), pcb_true);
@@ -416,7 +416,7 @@ static void bboard_export_element_cairo(pcb_subc_t *subc, pcb_bool onsolder)
 
 		s = pcb_attribute_get(&(subc->Attributes), "Footprint::File");
 		if (s) {
-#warning subc TODO: rewrite
+TODO("subc: rewrite")
 #if 0
 			if (!PCB_EMPTY_STRING_P(PCB_ELEM_NAME_VALUE(element))) {
 				fname = bboard_get_model_filename(s, PCB_ELEM_NAME_VALUE(element), pcb_true);
@@ -429,7 +429,7 @@ static void bboard_export_element_cairo(pcb_subc_t *subc, pcb_bool onsolder)
 		}
 	}
 	if (!fname) {
-#warning subc TODO: rewrite
+TODO("subc: rewrite")
 #if 0
 		s = PCB_ELEM_NAME_DESCRIPTION(element);
 		if (!PCB_EMPTY_STRING_P(PCB_ELEM_NAME_DESCRIPTION(element))) {
@@ -532,7 +532,7 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 
 	bboard_init_board_cairo(PCB->MaxWidth, PCB->MaxHeight, bboard_bgcolor, options[HA_antialias].int_value);
 
-#warning subc TODO: rewrite
+TODO("subc: rewrite")
 #if 0
 	/* write out components on solder side */
 	PCB_ELEMENT_LOOP(PCB->Data);
@@ -576,7 +576,7 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 			PCB_END_LOOP;
 			PCB_ARC_LOOP(&(PCB->Data->Layer[i]));
 			{
-#warning TODO: remove x1;y1;x2;y2
+TODO(": remove x1;y1;x2;y2")
 				bboard_draw_arc_cairo(/*arc->Point1.X, arc->Point1.Y,
 															arc->Point2.X, arc->Point2.Y,*/
 															arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness);

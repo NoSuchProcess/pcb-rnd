@@ -1,4 +1,4 @@
-#warning cleanup TODO: move this back to undo_old.c
+TODO("cleanup: move this back to undo_old.c")
 
 typedef struct {								/* information about a change command */
 	char *Name;

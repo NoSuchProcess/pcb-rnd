@@ -79,7 +79,7 @@ htsp_t *pcb_props_init(void)
 
 void pcb_props_uninit(htsp_t *props)
 {
-#warning TODO
+TODO("TODO")
 }
 
 /* Retrieve values for a prop */

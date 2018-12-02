@@ -157,7 +157,7 @@ pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_la
 
 	if ((line->Point1.X == line->Point2.X) && (line->Point1.Y == line->Point2.Y)) {
 		/* conrer case zero-long line is a circle: do the same as for vias */
-#warning thermal TODO
+TODO("thermal TODO")
 		abort();
 	}
 

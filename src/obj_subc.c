@@ -623,7 +623,7 @@ void pcb_xordraw_subc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY, int use_cu
 
 		arclist_foreach(&ly->Arc, &it, arc) {
 			if(arc->Width != arc->Height) {
-#warning TODO: The wireframe arc drawing code cannot draw ellipses yet so draw the elliptical arc with a thin line 
+TODO(": The wireframe arc drawing code cannot draw ellipses yet so draw the elliptical arc with a thin line ")
 				double sa = mirr ? PCB_SWAP_ANGLE(arc->StartAngle) : arc->StartAngle;
 				double da = mirr ? PCB_SWAP_DELTA(arc->Delta) : arc->Delta;
 				pcb_gui->draw_arc(pcb_crosshair.GC, DX + PCB_CSWAP_X(arc->X, w, mirr), DY + PCB_CSWAP_Y(arc->Y, h, mirr), arc->Width, arc->Height, sa, da);
@@ -1018,7 +1018,7 @@ void *pcb_subcop_copy(pcb_opctx_t *ctx, pcb_subc_t *src)
 		/* move-to-the-other-side is not undoable: it's part of the placement */
 		pcb_undo_inc_serial();
 		last = pcb_undo_serial();
-#warning subc TODO: should not depend on crosshair, because of automatic/scripted placement; test case 1: load subc footprint in buffer, swap side to bottom, place; test case 2: bug_files/cmd_element, execute the cmd while being on the bottom side, without crosshair set subcircuits catapult to negative y
+TODO("subc: should not depend on crosshair, because of automatic/scripted placement; test case 1: load subc footprint in buffer, swap side to bottom, place; test case 2: bug_files/cmd_element, execute the cmd while being on the bottom side, without crosshair set subcircuits catapult to negative y")
 		pcb_subc_change_side(sc, 2 * pcb_crosshair.Y - PCB->MaxHeight);
 		pcb_undo_truncate_from(last);
 		
@@ -1388,7 +1388,7 @@ void pcb_subc_bind_globals(pcb_board_t *pcb, pcb_subc_t *subc)
 	if (pcb->Data->padstack_tree == NULL)
 		pcb->Data->padstack_tree = pcb_r_create_tree();
 	subc->data->padstack_tree = pcb->Data->padstack_tree;
-#warning subc TODO: subc-in-subc: bind subc rtree
+TODO("subc: subc-in-subc: bind subc rtree")
 }
 
 void *pcb_subcop_change_size(pcb_opctx_t *ctx, pcb_subc_t *sc)
@@ -1417,7 +1417,7 @@ void *pcb_subcop_change_2nd_size(pcb_opctx_t *ctx, pcb_subc_t *sc)
 
 void *pcb_subcop_change_nonetlist(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
-#warning subc TODO: add undo
+TODO("subc: add undo")
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, sc))
 		return NULL;
 	PCB_FLAG_TOGGLE(PCB_FLAG_NONETLIST, sc);
@@ -1473,7 +1473,7 @@ void *pcb_subcop_change_flag(pcb_opctx_t *ctx, pcb_subc_t *sc)
 		pcb_subc_flags = pcb_obj_valid_flags(PCB_OBJ_SUBC);
 
 	if (ctx->chgflag.flag == PCB_FLAG_FLOATER) {
-#warning subc TODO: subc-in-subc: can a whole subc be a floater? - add undo!
+TODO("subc: subc-in-subc: can a whole subc be a floater? - add undo!")
 		PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, sc);
 		return sc;
 	}
@@ -1729,7 +1729,7 @@ void pcb_subc_draw_preview(const pcb_subc_t *sc, const pcb_box_t *drawn_area)
 
 pcb_subc_t *pcb_subc_by_refdes(pcb_data_t *base, const char *name)
 {
-#warning subc TODO: hierarchy
+TODO("subc: hierarchy")
 	PCB_SUBC_LOOP(base);
 	{
 		if ((subc->refdes != NULL) && (PCB_NSTRCMP(subc->refdes, name) == 0))
@@ -1748,7 +1748,7 @@ pcb_subc_t *pcb_subc_by_id(pcb_data_t *base, long int ID)
 	   the subc is being rotated.
 	
 	   The solution will be the ID hash. */
-#warning subc TODO: hierarchy
+TODO("subc: hierarchy")
 	PCB_SUBC_LOOP(base);
 	{
 		if (subc->ID == ID)

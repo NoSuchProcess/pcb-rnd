@@ -477,7 +477,7 @@ pcb_bool pcb_chg_selected_radius(int types, int is_start, pcb_angle_t Difference
 	return change;
 }
 
-#warning subc TODO: check if it is true:
+TODO("subc: check if it is true:")
 /* ---------------------------------------------------------------------------
  * changes the size of the passed object; subc size is silk size (TODO: check if it is true)
  * Returns pcb_true if anything is changed
@@ -500,7 +500,7 @@ pcb_bool pcb_chg_obj_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coor
 	return change;
 }
 
-#warning subc TODO: check if it is true:
+TODO("subc: check if it is true:")
 /* ---------------------------------------------------------------------------
  * changes the size of the passed object; element size is pin ring sizes
  * Returns pcb_true if anything is changed

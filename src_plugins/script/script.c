@@ -250,7 +250,7 @@ static int script_load(const char *id, const char *fn, const char *lang)
 	}
 
 	if (lang == NULL) {
-#warning TODO: guess
+TODO(": guess")
 		pcb_message(PCB_MSG_ERROR, "Can not load script %s from file %s: failed to guess language from file name\n", id, fn);
 		return -1;
 	}

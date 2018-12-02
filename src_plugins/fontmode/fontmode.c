@@ -115,7 +115,7 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (pcb_actionl("New", "Font", 0))
 		return 1;
 
-#warning TODO do we need to change design.bloat here?
+TODO("TODO do we need to change design.bloat here?")
 	conf_set(CFR_DESIGN, "editor/grid_unit", -1, "mil", POL_OVERWRITE);
 	conf_set_design("design/bloat", "%s", "1");
 	conf_set_design("design/shrink", "%s", "1");

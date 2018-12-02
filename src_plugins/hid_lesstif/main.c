@@ -219,13 +219,14 @@ Location of the @file{pcb-menu.res} file which defines the menu for the lesstif 
 @end ftable
 %end-doc
 */
-#warning TODO#1: this should be generic and not depend on the HID
 /*
 	{"pcb-menu", "Location of pcb-menu.res file",
 		PCB_HATT_STRING, 0, 0, {0, PCBSHAREDIR "/pcb-menu.res", 0}, 0, &lesstif_pcbmenu_path}
 #define HA_pcbmenu 3
 */
 };
+
+TODO("menu: pcb-menu should be generic and not depend on the HID")
 
 PCB_REGISTER_ATTRIBUTES(lesstif_attribute_list, lesstif_cookie)
 
@@ -521,7 +522,7 @@ static int group_showing(int g, int *c)
 	return 0;
 }
 
-#warning TODO: ui_zoomplan.c does the same, maybe make the code common?
+TODO(": ui_zoomplan.c does the same, maybe make the code common?")
 static fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *op = NULL, *b = "";
@@ -1611,7 +1612,7 @@ static unsigned short int lesstif_translate_key(const char *desc, int len)
 
 int lesstif_key_name(unsigned short int key_raw, char *out, int out_len)
 {
-#warning TODO#3: do not ingore key_tr (either of them is 0)
+TODO("TODO#3: do not ingore key_tr (either of them is 0)")
 	char *name = XKeysymToString(key_raw);
 	if (name == NULL)
 		return -1;
@@ -2667,7 +2668,7 @@ static Boolean idle_proc(XtPointer dummy)
 		}
 	}
 
-#warning TODO: remove this, update-on should handle all cases
+TODO(": remove this, update-on should handle all cases")
 	lesstif_update_widget_flags(NULL);
 
 	show_crosshair(1);
@@ -3084,7 +3085,7 @@ static void lesstif_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pc
 	XDrawArc(display, pixmap, my_gc, cx, cy, width * 2, height * 2, (start_angle + 180) * 64, delta_angle * 64);
 	if (use_mask() && !conf_core.editor.thin_draw)
 		XDrawArc(display, mask_bitmap, mask_gc, cx, cy, width * 2, height * 2, (start_angle + 180) * 64, delta_angle * 64);
-#warning TODO: make this #if a flag and add it in the gtk hid as well
+TODO(": make this #if a flag and add it in the gtk hid as well")
 #if 0
 	/* Enable this if you want to see the center and radii of drawn
 	   arcs, for debugging.  */

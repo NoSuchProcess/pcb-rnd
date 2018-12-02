@@ -114,7 +114,7 @@ static GtkWidget *ghid_preview_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr
 	p->mouse_cb = ghid_preview_mouse;
 
 /*	p->overlay_draw_cb = pcb_stub_draw_csect_overlay;*/
-#warning TODO make these configurable:
+TODO("TODO make these configurable:")
 	p->x_min = 0;
 	p->y_min = 0;
 	p->x_max = PCB_MM_TO_COORD(100);

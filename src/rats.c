@@ -128,7 +128,7 @@ static pcb_bool pcb_term_find_name_term(const char *refdes, const char *termid, 
 		pcb_obj_center(obj, &conn->X, &conn->Y);
 		if (obj->type == PCB_OBJ_PSTK)
 			conn->group = rat_padstack_side((pcb_pstk_t *)obj);
-#warning subc TODO: heavy terminals: calculate side
+TODO("subc: heavy terminals: calculate side")
 		return pcb_true;
 	}
 
@@ -176,13 +176,13 @@ static const char *get_refdes(void *ptr1)
 	return "<invalid>";
 }
 
-#warning padstack TODO: remove this bloat
+TODO("padstack: remove this bloat")
 static const char *get_termid(pcb_any_obj_t *obj)
 {
 	return obj->term;
 }
 
-#warning padstack TODO: consider using some data.h call instead of this local implementation
+TODO("padstack: consider using some data.h call instead of this local implementation")
 static void clear_drc_flag(int clear_ratconn)
 {
 	pcb_rtree_it_t it;
@@ -463,7 +463,7 @@ static void gather_subnet_objs(pcb_data_t *data, pcb_netlist_t *Netl, pcb_net_t 
 		}
 	}
 	PCB_ENDALL_LOOP;
-#warning term TODO: and what about arcs and text?
+TODO("term: and what about arcs and text?")
 	/* add polygons so the auto-router can see them as targets */
 	PCB_POLY_COPPER_LOOP(data);
 	{

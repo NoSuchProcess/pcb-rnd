@@ -108,13 +108,13 @@ static const char *eagle_bin_prop(trparse_t *pst, trnode_t *node, const char *ke
 static const char *eagle_bin_text(trparse_t *pst, trnode_t *node)
 {
 	/*egb_node_t *nd = (egb_node_t *)node;*/
-#warning TODO
+TODO("TODO")
 	return NULL;
 }
 
 static int eagle_bin_is_text(trparse_t *pst, trnode_t *node)
 {
-#warning TODO
+TODO("TODO")
 	return 0;
 }
 

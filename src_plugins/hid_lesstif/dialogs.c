@@ -1385,7 +1385,7 @@ static fgw_error_t pcb_act_AdjustSizes(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 void lesstif_update_layer_groups()
 {
-#warning layer TODO: call a redraw on the edit group
+TODO("layer: call a redraw on the edit group")
 }
 
 /* ------------------------------------------------------------ */

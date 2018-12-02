@@ -1037,7 +1037,7 @@ pcb_bool pcb_is_point_on_arc(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, p
 		double ang, dx, dy;
 		pcb_coord_t ax, ay, d;
 
-#warning TODO: elliptical arc: rewrite this, as it does not work properly on extreme cases
+TODO(": elliptical arc: rewrite this, as it does not work properly on extreme cases")
 		dy = (double)(Y - Arc->Y) / (double)Arc->Height;
 		dx = (double)(X - Arc->X) / (double)Arc->Width;
 		ang = -atan2(dy, dx);
@@ -1428,7 +1428,7 @@ int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result2, void
 		PCB_END_LOOP;
 	}
 
-#warning subc TODO: once elements are gone, rewrite these to search the rtree instead of recursion
+TODO("subc: once elements are gone, rewrite these to search the rtree instead of recursion")
 	PCB_SUBC_LOOP(Base);
 	{
 		int res;

@@ -362,7 +362,7 @@ pcb_polyarea_t *pcb_poly_from_octagon(pcb_coord_t x, pcb_coord_t y, pcb_coord_t 
 
 	pcb_poly_square_pin_factors(style, xm, ym);
 
-#warning TODO: rewrite this to use the same table as the square/oct pin draw function
+TODO(": rewrite this to use the same table as the square/oct pin draw function")
 	/* point 7 */
 	v[0] = x + ROUND(radius * 0.5) * xm[7];
 	v[1] = y + ROUND(radius * PCB_TAN_22_5_DEGREE_2) * ym[7];
@@ -1790,7 +1790,7 @@ int pcb_poly_plows(pcb_data_t *Data, int type, void *ptr1, void *ptr2,
 		if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, (pcb_line_t *) ptr2))
 			return 0;
 		/* non-copper (e.g. silk, outline) doesn't plow */
-#warning TODO: use pcb_layer_flags_ here - but what PCB?
+TODO(": use pcb_layer_flags_ here - but what PCB?")
 		if (!(pcb_layer_flags(PCB, pcb_layer_id(Data, (pcb_layer_t *) ptr1) & PCB_LYT_COPPER)))
 			return 0;
 		doit:;
@@ -1885,7 +1885,7 @@ pcb_bool pcb_poly_is_rect_in_p(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, p
 	return pcb_poly_isects_poly(s, p, pcb_true);
 }
 
-#warning TODO: this should be in polygon1.c
+TODO(": this should be in polygon1.c")
 /* NB: This function will free the passed pcb_polyarea_t.
  *     It must only be passed a single pcb_polyarea_t (pa->f == pa->b == pa)
  */

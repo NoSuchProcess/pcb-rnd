@@ -74,7 +74,7 @@ static void pcb_gtk_pan_common(pcb_gtk_view_t *v)
 	/* Don't pan so far the board is completely off the screen */
 	v->x0 = MAX(-v->width, v->x0);
 	v->y0 = MAX(-v->height, v->y0);
-#warning TODO: #gtkzoom: do not use PCB sizes here, as we may be in a preview
+TODO(": #gtkzoom: do not use PCB sizes here, as we may be in a preview")
 	v->x0 = MIN(v->x0, PCB->MaxWidth);
 	v->y0 = MIN(v->y0, PCB->MaxHeight);
 
@@ -158,7 +158,7 @@ void pcb_gtk_zoom_view_rel(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t 
 	ghid_zoom_view_abs(v, center_x, center_y, v->coord_per_px * factor);
 }
 
-#warning TODO: remove this and make the side-correct version the default (rename that to this short name); check when looking from the bottom: library window, drc window
+TODO(": remove this and make the side-correct version the default (rename that to this short name); check when looking from the bottom: library window, drc window")
 void pcb_gtk_zoom_view_win(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	double xf, yf;

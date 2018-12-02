@@ -130,7 +130,7 @@ typedef struct {
 	pcb_any_obj_t *other;					/* for exchange */
 } PerturbationType;
 
-#warning cleanup TODO: remove this and use genvect
+TODO("cleanup: remove this and use genvect")
 #define STEP_POINT 100
 
 /* get next slot for a box, allocates memory if necessary */
@@ -406,7 +406,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		int onbtm = 0;
 
 		pcb_subc_get_side(subc, &onbtm);
-#warning subc TODO: this ignores the possibility of other-side pads; need to do this on a per object basis
+TODO("subc: this ignores the possibility of other-side pads; need to do this on a per object basis")
 		if (onbtm) {
 			thisside = &solderside;
 			otherside = &componentside;
@@ -423,7 +423,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 			if (o->term == NULL)
 				continue; /* we are interested in terminals only */
 
-#warning subc TODO: look up clearance
+TODO("subc: look up clearance")
 			clearance = 0;
 			EXPANDRECTXY(box,
 				o->BoundingBox.X1 - clearance, o->BoundingBox.Y1 - clearance,
@@ -470,7 +470,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		vtp0_t seboxes, ceboxes;
 		struct ebox {
 			pcb_box_t box;
-#warning subc TODO: when elements are removed, turn this into pcb_subc_t * and remove the fields below
+TODO("subc: when elements are removed, turn this into pcb_subc_t * and remove the fields below")
 			pcb_any_obj_t *comp;
 			const char *refdes;
 			int rot90;

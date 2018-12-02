@@ -1662,7 +1662,7 @@ static int io_lihata_dump_1st_subc(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *data
 
 	/* bump version if features require */
 	sc = pcb_subclist_first(&data->subc);
-#warning subc TODO: for subc-in-subc this should be recursive
+TODO("subc: for subc-in-subc this should be recursive")
 	if (padstacklist_first(&sc->data->padstack) != NULL) {
 		if (wrver < 4) {
 			pcb_message(PCB_MSG_WARNING, "Had to bump lihata subc version to 4 because the subcircuit contains padstacks.\n");

@@ -257,7 +257,7 @@ static fgw_error_t pcb_act_LayerBinding(fgw_arg_t *res, int argc, fgw_arg_t *arg
 		ctx.data = ctx.subc->data;
 	}
 	else if (op == F_Selected) {
-#warning subc TODO
+TODO("subc TODO")
 		pcb_message(PCB_MSG_ERROR, "TODO\n");
 		return 1;
 	}

@@ -172,7 +172,7 @@ typedef struct {
 	char str[1]; /* must be the last item, spans longer than 1 */
 } term_rename_t;
 
-#warning TODO: get rid of the two parallel type systems
+TODO(": get rid of the two parallel type systems")
 extern unsigned long pcb_obj_type2oldtype(pcb_objtype_t type);
 
 static int undo_term_rename_swap(void *udata)

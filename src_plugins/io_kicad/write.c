@@ -265,7 +265,7 @@ static void kicad_print_arc(const wctx_t *ctx, const klayer_t *kly, pcb_arc_t *a
 		localArc.Height = radius;
 	}
 
-#warning TODO: what do we need this for?
+TODO(": what do we need this for?")
 #if 0
 	/* Return the x;y coordinate of the endpoint of an arc; if which is 0, return
 	   the endpoint that corresponds to StartAngle, else return the end angle's. */
@@ -288,7 +288,7 @@ static void kicad_print_arc(const wctx_t *ctx, const klayer_t *kly, pcb_arc_t *a
 
 	switch(kly->type) {
 		case KLYT_COPPER:
-#warning TODO: this should be a proper line approximation using a helper (to be written)
+TODO(": this should be a proper line approximation using a helper (to be written)")
 			pcb_fprintf(ctx->f, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n", copperStartX, copperStartY, xEnd, yEnd, kly->name, arc->Thickness); /* neglect (net ___ ) for now */
 			pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)arc, "copper-arc", "Kicad does not support copper arcs; using line approximation", NULL);
 			break;
@@ -338,7 +338,7 @@ static void kicad_print_text(const wctx_t *ctx, const klayer_t *kly, pcb_text_t 
 		halfStringHeight = -halfStringHeight;
 	}
 
-#warning textrot TODO: use the degrees instead of 90 deg steps
+TODO("textrot: use the degrees instead of 90 deg steps")
 	pcb_text_old_direction(&direction, text->rot);
 	if (direction == 3) { /*vertical down */
 		if (kly->lyt & PCB_LYT_BOTTOM) { /* back copper or silk */
@@ -412,14 +412,14 @@ static void kicad_print_poly(const wctx_t *ctx, const klayer_t *kly, pcb_poly_t 
 	int i, j;
 
 	if (polygon->HoleIndexN != 0) {
-#warning TODO: does kicad suppor holes? of so, use them; else (and only else) there is a polygon.h call that can split up a holed poly into a set of hole-free polygons
+TODO(": does kicad suppor holes? of so, use them; else (and only else) there is a polygon.h call that can split up a holed poly into a set of hole-free polygons")
 		pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)polygon, "poly-hole", "can't export polygon with holes", NULL);
 		return;
 	}
 
 	/* preliminaries for zone settings */
-#warning TODO: never hardwire tstamp
-#warning TODO: do not hardwire thicknesses and gaps and hatch values!
+TODO(": never hardwire tstamp")
+TODO(": do not hardwire thicknesses and gaps and hatch values!")
 	fprintf(ctx->f, "%*s(zone (net 0) (net_name \"\") (layer %s) (tstamp 478E3FC8) (hatch edge 0.508)\n", ind, "", kly->name);
 	fprintf(ctx->f, "%*s(connect_pads no (clearance 0.508))\n", ind + 2, "");
 	fprintf(ctx->f, "%*s(min_thickness 0.4826)\n", ind + 2, "");
@@ -511,7 +511,7 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind, pcb_coord_
 		if (is_subc) {
 			if (pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
 				fprintf(ctx->f, "%*s", ind, "");
-#warning TODO: handle all cshapes (throw warnings)
+TODO(": handle all cshapes (throw warnings)")
 				pcb_fprintf(ctx->f, "(pad %s thru_hole %s (at %.3mm %.3mm %f) (size %.3mm %.3mm) (drill %.3mm) (layers %s %s))\n",
 					ps->term, ((cshape == PCB_PSTK_COMPAT_SQUARE) ? "rect" : "oval"),
 					x + dx, y + dy, psrot,
@@ -566,7 +566,7 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind, pcb_coord_
 								shape_str = "oval";
 								break;
 							case PCB_PSSH_HSHADOW:
-#warning hshadow TODO
+TODO("hshadow TODO")
 								break;
 						}
 					}
@@ -601,7 +601,7 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind, pcb_coord_
 				pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "padstack-shape", "Can not convert padstack to via", "only round vias are supported");
 				continue;
 			}
-#warning TODO: set klayer_from and klayer_to using bb span of ps
+TODO(": set klayer_from and klayer_to using bb span of ps")
 
 			fprintf(ctx->f, "%*s", ind, "");
 			pcb_fprintf(ctx->f, "(via (at %.3mm %.3mm) (size %.3mm) (layers %s %s))\n",
@@ -641,7 +641,7 @@ void kicad_print_data(wctx_t *ctx, pcb_data_t *data, int ind, pcb_coord_t dx, pc
 			continue;
 		}
 
-#warning TODO: this should be a safe lookup, merged with kicad_sexpr_layer_to_text()
+TODO(": this should be a safe lookup, merged with kicad_sexpr_layer_to_text()")
 		kly.name = kicad_sexpr_layer_to_text(ctx, klayer);
 		kly.ly = ly;
 		kly.lyt = pcb_layer_flags_(ly);
@@ -669,7 +669,7 @@ static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, 
 	const char *currentElementRef;
 	const char *currentElementVal;
 
-#warning TODO: revise this for subc
+TODO(": revise this for subc")
 /*	elementlist_dedup_initializer(ededup);*/
 
 	/* Now initialize the group with defaults */
@@ -679,12 +679,12 @@ static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, 
 		pcb_coord_t xPos, yPos, sox, soy;
 		int on_bottom;
 
-#warning TODO: get this from data table (see also #1)
+TODO(": get this from data table (see also #1)")
 		int silkLayer = 21; /* hard coded default, 20 is bottom silk */
 		int copperLayer = 15; /* hard coded default, 0 is bottom copper */
 
 		/* elementlist_dedup_skip(ededup, element);  */
-#warning TODO: why?
+TODO(": why?")
 		/* let's not skip duplicate elements for layout export */
 
 		if (pcb_subc_get_origin(subc, &sox, &soy) != 0) {
@@ -704,8 +704,8 @@ static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, 
 			copperLayer = 0;
 		}
 
-#warning TODO: we should probably do unm_name() on the refdes, not on footprint-name?
-#warning TODO: the unique name makes no sense if we override it with unknown - if the unique name is NULL, it is more likely a save-incompatibility error
+TODO(": we should probably do unm_name() on the refdes, not on footprint-name?")
+TODO(": the unique name makes no sense if we override it with unknown - if the unique name is NULL, it is more likely a save-incompatibility error")
 		currentElementName = unm_name(&group1, pcb_attribute_get(&subc->Attributes, "footprint"), subc);
 		if (currentElementName == NULL) {
 			currentElementName = "unknown";
@@ -719,7 +719,7 @@ static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, 
 			currentElementVal = "unknown";
 		}
 
-#warning TODO: why the heck do we hardwire timestamps?!!?!?!
+TODO(": why the heck do we hardwire timestamps?!!?!?!")
 		fprintf(ctx->f, "%*s", ind, "");
 		pcb_fprintf(ctx->f, "(module %[4] (layer %s) (tedit 4E4C0E65) (tstamp 5127A136)\n", currentElementName, kicad_sexpr_layer_to_text(ctx, copperLayer));
 		fprintf(ctx->f, "%*s", ind + 2, "");
@@ -730,37 +730,37 @@ static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, 
 
 		fprintf(ctx->f, "%*s", ind + 2, "");
 
-#warning TODO: do not hardwire these coords, look up the first silk dyntext coords instead
+TODO(": do not hardwire these coords, look up the first silk dyntext coords instead")
 		pcb_fprintf(ctx->f, "(fp_text reference %[4] (at 0.0 -2.56) ", currentElementRef);
 		pcb_fprintf(ctx->f, "(layer %s)\n", kicad_sexpr_layer_to_text(ctx, silkLayer));
 
-#warning TODO: do not hardwire font sizes here, look up the first silk dyntext sizes instead
+TODO(": do not hardwire font sizes here, look up the first silk dyntext sizes instead")
 		fprintf(ctx->f, "%*s", ind + 4, "");
 		fprintf(ctx->f, "(effects (font (size 1.397 1.27) (thickness 0.2032)))\n");
 		fprintf(ctx->f, "%*s)\n", ind + 2, "");
 
-#warning TODO: do not hardwire these coords, look up the first silk dyntext coords instead
+TODO(": do not hardwire these coords, look up the first silk dyntext coords instead")
 		fprintf(ctx->f, "%*s", ind + 2, "");
 		pcb_fprintf(ctx->f, "(fp_text value %[4] (at 0.0 -1.27) ", currentElementVal);
 		pcb_fprintf(ctx->f, "(layer %s)\n", kicad_sexpr_layer_to_text(ctx, silkLayer));
 
-#warning TODO: do not hardwire font sizes here, look up the first silk dyntext sizes instead
+TODO(": do not hardwire font sizes here, look up the first silk dyntext sizes instead")
 		fprintf(ctx->f, "%*s", ind + 4, "");
 		fprintf(ctx->f, "(effects (font (size 1.397 1.27) (thickness 0.2032)))\n");
 		fprintf(ctx->f, "%*s)\n", ind + 2, "");
 
 		kicad_print_data(ctx, subc->data, ind+2, -sox, -soy);
 
-#warning TODO: export padstacks
-#warning TODO: warn for vias
-#warning TODO: warn for heavy terminals
+TODO(": export padstacks")
+TODO(": warn for vias")
+TODO(": warn for heavy terminals")
 
 		fprintf(ctx->f, "%*s)\n\n", ind, ""); /*  finish off module */
 	}
 	/* Release unique name utility memory */
 	unm_uninit(&group1);
 
-#warning TODO: revise this for subc
+TODO(": revise this for subc")
 	/* free the state used for deduplication */
 /*	elementlist_dedup_free(ededup);*/
 
@@ -769,7 +769,7 @@ static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, 
 
 static int write_kicad_layout_via_drill_size(FILE *FP, pcb_cardinal_t indentation)
 {
-#warning TODO: do not hardwire the drill size here - does kicad support only one size, or what?
+TODO(": do not hardwire the drill size here - does kicad support only one size, or what?")
 	fprintf(FP, "%*s", indentation, "");
 	pcb_fprintf(FP, "(via_drill 0.635)\n"); /* mm format, default for now, ~= 0.635mm */
 	return 0;
@@ -785,7 +785,7 @@ int io_kicad_write_element(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 		return -1;
 	}
 
-#warning TODO: make this initialization a common function with write_kicad_layout()
+TODO(": make this initialization a common function with write_kicad_layout()")
 	pcb_printf_slot[4] = "%{\\()\t\r\n \"}mq";
 
 	wctx.f = FP;
@@ -832,7 +832,7 @@ static void kicad_paper(wctx_t *ctx, int ind)
 	int sheetWidth = A4WidthMil;
 	int paperSize = 4; /* default paper size is A4 */
 
-#warning TODO: rewrite this: rather have a table and a loop that hardwired calculations in code
+TODO(": rewrite this: rather have a table and a loop that hardwired calculations in code")
 	/* we sort out the needed kicad sheet size here, using A4, A3, A2, A1 or A0 size as needed */
 	if (PCB_COORD_TO_MIL(PCB->MaxWidth) > A4WidthMil || PCB_COORD_TO_MIL(PCB->MaxHeight) > A4HeightMil) {
 		sheetHeight = A4WidthMil; /* 11.7" */

@@ -136,7 +136,7 @@ static void parse_pstk(hkp_ctx_t *ctx, pcb_subc_t *subc, char *ps, pcb_coord_t p
 				hs++;
 				w = pcb_get_value(curr, ctx->unit, NULL, NULL);
 				h = pcb_get_value(hs, ctx->unit, NULL, NULL);
-#warning padstack TODO: rewrite
+TODO("padstack: rewrite")
 #if 0
 				pcb_element_pad_new_rect(elem, px+w/2, py+h/2, px-w/2, py-h/2, cl, ms, name, name, flags);
 #endif
@@ -162,7 +162,7 @@ static void parse_pstk(hkp_ctx_t *ctx, pcb_subc_t *subc, char *ps, pcb_coord_t p
 		}
 	}
 
-#warning padstack TODO: rewrite
+TODO("padstack: rewrite")
 #if 0
 	if (hole > 0) {
 		pcb_element_pin_new(elem, px, py, thickness, cl, ms, hole, name, name, flags);
@@ -214,7 +214,7 @@ static void parse_silk(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd)
 		parse_xy(ctx, tmp->argv[1], &px, &py);
 		for(n = 2; n < tmp->argc; n++) {
 			parse_xy(ctx, tmp->argv[n], &x, &y);
-#warning subc TODO: rewrite this for subcircuits
+TODO("subc: rewrite this for subcircuits")
 #if 0
 			pcb_element_line_new(elem, px, py, x, y, th);
 #endif
@@ -253,7 +253,7 @@ static void parse_package(hkp_ctx_t *ctx, node_t *nd)
 		}
 	}
 
-#warning subc TODO: rewrite for subc
+TODO("subc: rewrite for subc")
 #if 0
 	elem = pcb_element_new(ctx->pcb->Data, NULL, pcb_font(ctx->pcb, 0, 1),
 		flags, desc, refdes, value, tx, ty, dir, 100, flags, 0);

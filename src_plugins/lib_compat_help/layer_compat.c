@@ -35,7 +35,7 @@
 #include "board.h"
 #include "data.h"
 
-#warning padstack TODO: rewrite this for padstack, if needed
+TODO("padstack: rewrite this for padstack, if needed")
 #if 0
 static void swap_one_thermal(int lid1, int lid2, pcb_pin_t * pin)
 {
@@ -61,7 +61,7 @@ int pcb_layer_swap(pcb_board_t *pcb, pcb_layer_id_t lid1, pcb_layer_id_t lid2)
 	pcb_layer_move_(&pcb->Data->Layer[lid1], &l2tmp);
 	pcb_layer_move_(&pcb->Data->Layer[lid2], &l1tmp);
 
-#warning padstack TODO: rewrite this for padstack, if needed
+TODO("padstack: rewrite this for padstack, if needed")
 #if 0
 	PCB_VIA_LOOP(pcb->Data);
 	{

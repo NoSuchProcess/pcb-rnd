@@ -347,7 +347,7 @@ pcb_bool pcb_tool_should_snap_offgrid_line(pcb_layer_t *layer, pcb_line_t *line)
 		return pcb_false;
 }
 
-#warning tool TODO: move this out to a tool plugin
+TODO("tool: move this out to a tool plugin")
 
 #include "tool_arc.h"
 #include "tool_arrow.h"

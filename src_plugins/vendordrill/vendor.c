@@ -541,7 +541,7 @@ static pcb_bool vendorIsSubcMappable(pcb_subc_t *subc)
 	if (!conf_vendor.plugins.vendor.enable)
 		return pcb_false;
 
-#warning TODO: these 3 loops should be wrapped in a single loop that iterates over attribute keys
+TODO(": these 3 loops should be wrapped in a single loop that iterates over attribute keys")
 	noskip = 1;
 	for (i = 0; i < n_refdes; i++) {
 		if ((PCB_NSTRCMP(PCB_UNKNOWN(subc->refdes), ignore_refdes[i]) == 0)

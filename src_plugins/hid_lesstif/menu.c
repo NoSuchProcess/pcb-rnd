@@ -272,7 +272,7 @@ int lesstif_key_event(XKeyEvent * e)
 	}
 
 /*	printf("KEY lookup: mod=%x sym=%x/%d\n", mods, sym, slen); */
-#warning TODO#3: pass on raw and translated keys
+TODO("TODO#3: pass on raw and translated keys")
 	slen = pcb_hid_cfg_keys_input(&lesstif_keymap, mods, sym, sym);
 	if (slen <= 0)
 		return 1;
@@ -416,7 +416,7 @@ static void add_res2menu_named(Widget menu, lht_node_t *ins_after, lht_node_t *n
 			stdarg(XmNacceleratorText, as);
 		}
 
-#warning TODO: remove this call
+TODO(": remove this call")
 		note_accelerator(node);
 	}
 
@@ -509,7 +509,7 @@ static void add_res2menu_named(Widget menu, lht_node_t *ins_after, lht_node_t *n
 
 static void add_res2menu_text_special(Widget menu, lht_node_t *node, XtCallbackProc callback)
 {
-#warning TODO: make this a flag hash, also in the gtk hid
+TODO(": make this a flag hash, also in the gtk hid")
 	Widget btn = NULL;
 	stdarg_n = 0;
 	if (*node->data.text.value == '@') {

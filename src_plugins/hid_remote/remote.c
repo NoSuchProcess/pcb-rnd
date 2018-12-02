@@ -66,7 +66,7 @@ static void remote_send_all_layers()
 
 	used = pcb_layer_list_any(PCB, PCB_LYT_ANYTHING | PCB_LYT_ANYWHERE | PCB_LYT_VIRTUAL, arr, sizeof(arr)/sizeof(arr[0]));
 
-#warning layer TODO: remove this temporary hack for virtual layers
+TODO("layer: remove this temporary hack for virtual layers")
 	for(n = 0; n < used; n++) {
 		const char *name;
 		pcb_layer_id_t layer_id = arr[n];
@@ -99,7 +99,7 @@ static void remote_do_export(pcb_hid_attr_val_t * options)
 	ctx.view.X2 = PCB->MaxWidth;
 	ctx.view.Y2 = PCB->MaxHeight;
 
-#warning TODO: wait for a connection?
+TODO(": wait for a connection?")
 	remote_proto_send_ver();
 	remote_proto_send_unit();
 	remote_proto_send_brddim(PCB->MaxWidth, PCB->MaxHeight);
@@ -145,7 +145,7 @@ static int remote_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 	if (group >= 0)
 		proto_send_set_layer_group(group, purpose, is_empty);
 	else {
-#warning layer TODO: remove this temporary hack for virtual layers
+TODO("layer: remove this temporary hack for virtual layers")
 		proto_send_set_layer_group(layer, purpose, is_empty);
 	}
 

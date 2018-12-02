@@ -1069,7 +1069,7 @@ int bin_rot2degrees(const char *rot, char *tmp, int mirrored)
 		deg = strtol(rot, &end, 10);
 		/*printf("Calculated deg == %ld pre bin_rot2degree conversion\n", deg);*/
 		if (*end != '\0') {
-#warning TODO: convert this to proper error reporting
+TODO(": convert this to proper error reporting")
 			printf("unexpected binary field 'rot' value suffix\n");
 			return -1;
 		}
@@ -1116,7 +1116,7 @@ int read_notes(void *ctx, FILE *f, const char *fn, egb_ctx_t *egb_ctx)
 	text_remaining = egb_ctx->free_text_len = (int)load_long(block, 4, 2);
 	text_remaining += 4; /* there seems to be a 4 byte checksum or something at the end */
 
-#warning TODO instead of skipping the text, we need to load it completely with drc_ctx->free_text pointing to it
+TODO("TODO instead of skipping the text, we need to load it completely with drc_ctx->free_text pointing to it")
 	while (text_remaining > 400) {
 		if (fread(free_text, 1, 400, f) != 400) {
 			pcb_message(PCB_MSG_ERROR, "Short attempted free text block read. Truncated file?\n");
@@ -1147,7 +1147,7 @@ int read_drc(void *ctx, FILE *f, const char *fn, egb_ctx_t *drc_ctx)
 	drc_ctx->rvPadBottom = 0.25;
 
 	if (fread(block, 1, 4, f) != 4) {
-#warning TODO: convert this to proper error reporting
+TODO(": convert this to proper error reporting")
 		pcb_trace("E: short attempted DRC preamble read; preamble not found. Truncated file?\n");
 		return -1;
 	}
@@ -1157,7 +1157,7 @@ int read_drc(void *ctx, FILE *f, const char *fn, egb_ctx_t *drc_ctx)
 		&& load_long(block, 1, 1) == 0x04
 		&& load_long(block, 2, 1) == 0x00
 		&& load_long(block, 3, 1) == 0x20)) {
-#warning TODO: convert this to proper error reporting
+TODO(": convert this to proper error reporting")
 		pcb_trace("E: start of DRC preamble not found where it was expected.\n");
 		pcb_trace("E: drc byte 0 : %d\n", (int)load_long(block, 0, 1) );
 		pcb_trace("E: drc byte 1 : %d\n", (int)load_long(block, 1, 1) );
@@ -1168,13 +1168,13 @@ int read_drc(void *ctx, FILE *f, const char *fn, egb_ctx_t *drc_ctx)
 
 	while (!DRC_preamble_end_found) {
 		if (fread(&c, 1, 1, f) != 1) { /* the text preamble is not necessarily n * 4 bytes */
-#warning TODO: convert this to proper error reporting
+TODO(": convert this to proper error reporting")
 			pcb_trace("E: short attempted DRC preamble read. Truncated file?\n");
 			return -1;
 		} else {
 			if (c == '\0') { /* so we step through, looking for each 0x00 */
 				if (fread(block, 1, 4, f) != 4) { /* the text preamble seems to n * 24 bytes */
-#warning TODO: convert this to proper error reporting
+TODO(": convert this to proper error reporting")
 					pcb_trace("E: short attempted DRC preamble read. Truncated file?\n");
 					return -1;
 				}
@@ -1189,7 +1189,7 @@ int read_drc(void *ctx, FILE *f, const char *fn, egb_ctx_t *drc_ctx)
 	}
 
 	if (fread(DRC_block, 1, DRC_length_used, f) != DRC_length_used) {
-#warning TODO: convert this to proper error reporting
+TODO(": convert this to proper error reporting")
 		pcb_trace("E: short DRC value block read. DRC section incomplete. Truncated file?\n");
 		return -1;
 	}
@@ -1277,7 +1277,7 @@ int read_block(long *numblocks, int level, void *ctx, FILE *f, const char *fn, e
 
 	/* load the current block */
 	if (fread(block, 1, 24, f) != 24) {
-#warning TODO: convert this to proper error reporting
+TODO(": convert this to proper error reporting")
 		pcb_trace("E: short read\n");
 		return -1;
 	}
@@ -1308,7 +1308,7 @@ int read_block(long *numblocks, int level, void *ctx, FILE *f, const char *fn, e
 			goto found;
 	}
 
-#warning TODO: convert this to proper error reporting
+TODO(": convert this to proper error reporting")
 	pcb_trace("E: unknown block ID 0x%02x%02x at offset %ld\n", block[0], block[1], ftell(f));
 	return -1;
 
@@ -1478,7 +1478,7 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 			egb_node_prop_set(elem, "StartAngle", "180");
 			egb_node_prop_set(elem, "Delta", "90");
 		} else {
-#warning TODO need negative flags checked for c, x1, x2, y1, y2 > ~=838mm
+TODO("TODO need negative flags checked for c, x1, x2, y1, y2 > ~=838mm")
 			delta_x = (double)(x1 - cx);
 			delta_y = (double)(y1 - cy);
 			theta_1 = PCB_RAD_TO_DEG*atan2(-delta_y, delta_x);
@@ -1508,7 +1508,7 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 			sprintf(itoa_buffer, "%ld", (long)(delta_theta));
 			egb_node_prop_set(elem, "Delta", itoa_buffer);
 		}
-#warning TODO still need to fine tune non-trivial non 90 degree arcs start and delta for 0x81, 0x00
+TODO("TODO still need to fine tune non-trivial non 90 degree arcs start and delta for 0x81, 0x00")
 	} else if ((linetype > 0 && linetype != 0x81) || arctype > 0) {
 		int x1_ok, x2_ok, y1_ok, y2_ok, cxy_ok;
 		x1_ok = x2_ok = y1_ok = y2_ok = cxy_ok = 0;
@@ -1764,7 +1764,7 @@ static int postprocess_wires(void *ctx, egb_node_t *root)
 				}
 				break;
 		case 129:
-#warning TODO: convert this to proper error reporting
+TODO(": convert this to proper error reporting")
 				pcb_trace("Process linetype 129\n");
 				break;
 	}
@@ -1930,7 +1930,7 @@ static int postprocess_dimensions(void *ctx, egb_node_t *root)
 	long half_diameter = 0;
 	long half_size = 0;
 	char tmp[32];
-#warning TODO padstacks - need to convert obround pins to appropriate padstack types
+TODO("TODO padstacks - need to convert obround pins to appropriate padstack types")
 	if (root != NULL && (root->id == PCB_EGKW_SECT_PAD
 		|| root->id == PCB_EGKW_SECT_HOLE || root->id == PCB_EGKW_SECT_VIA
 		|| root->id == PCB_EGKW_SECT_TEXT)) {
@@ -2029,8 +2029,8 @@ static int postproc_elements(void *ctx, egb_ctx_t *egb_ctx)
 	return 0;
 }
 
-#warning TODO netlist - this code flattens the signals so the XML parser finds everything, but connectivity info for nested nets is not preserved in the process #
-#warning TODO netlist labels - eagle bin often has invalid net labels, i.e.'-', '+' so may need to filter#
+TODO("TODO netlist - this code flattens the signals so the XML parser finds everything, but connectivity info for nested nets is not preserved in the process #")
+TODO("TODO netlist labels - eagle bin often has invalid net labels, i.e.'-', '+' so may need to filter#")
 /* take any sub level signal /signals/signal1/signal2 and move it up a level to /signals/signal2 */
 static int postproc_signal(void *ctx, egb_ctx_t *egb_ctx)
 {
@@ -2166,7 +2166,7 @@ static int postproc(void *ctx, egb_node_t *root, egb_ctx_t *drc_ctx)
 
 	eagle_bin_ctx.board = find_node(eagle_bin_ctx.drawing->first_child, PCB_EGKW_SECT_BOARD);
 	if (eagle_bin_ctx.board == NULL) {
-#warning TODO: convert this to proper error reporting
+TODO(": convert this to proper error reporting")
 		pcb_trace("No board node found, this may be a library file.\n");
 	} else {
 		/* the following code relies on the board node being present, i.e. a layout */
@@ -2174,7 +2174,7 @@ static int postproc(void *ctx, egb_node_t *root, egb_ctx_t *drc_ctx)
 		eagle_bin_ctx.drc = egb_node_append(eagle_bin_ctx.board, egb_node_alloc(PCB_EGKW_SECT_DRC, "designrules"));
 		eagle_bin_ctx.libraries = find_node_name(eagle_bin_ctx.board->first_child, "libraries");
 		if (eagle_bin_ctx.libraries == NULL) { /* layouts have a libraries node it seems */
-#warning TODO: convert this to proper error reporting
+TODO(": convert this to proper error reporting")
 			pcb_trace("Eagle binary layout is missing a board/libraries node.\n");
 			return -1;
 		}
@@ -2233,7 +2233,7 @@ int pcb_egle_bin_load(void *ctx, FILE *f, const char *fn, egb_node_t **root)
 
 	res = read_block(numblocks, 1, ctx, f, fn, *root);
 	if (res < 0) {
-#warning TODO: convert this to proper error reporting
+TODO(": convert this to proper error reporting")
 		pcb_trace("Problem with remaining blocks... is this a library file?\n");
 		return res;
 	}
@@ -2243,7 +2243,7 @@ int pcb_egle_bin_load(void *ctx, FILE *f, const char *fn, egb_node_t **root)
 	read_notes(ctx, f, fn, &eagle_bin_ctx);
 	/* read_drc will determine sane defaults if no DRC block found */
 	if (read_drc(ctx, f, fn, &eagle_bin_ctx) != 0) {
-#warning TODO: convert this to proper error reporting
+TODO(": convert this to proper error reporting")
 		pcb_trace("No DRC section found, either a v3 binary file or a binary library file.\n");
 	} /* we now use the eagle_bin_ctx results for post_proc */
 

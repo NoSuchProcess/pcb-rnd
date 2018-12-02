@@ -61,7 +61,7 @@
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 #include "../src_plugins/lib_compat_help/elem_rot.h"
 
-#warning cleanup TODO: put these in a gloal load-context-struct
+TODO("cleanup: put these in a gloal load-context-struct")
 vtp0_t post_ids, post_thermal_old, post_thermal_heavy;
 static int rdver;
 unsigned long warned, old_model_warned;
@@ -843,7 +843,7 @@ static int parse_pcb_text(pcb_layer_t *ly, lht_node_t *obj)
 			text->rot = 0;
 	}
 
-#warning TODO: get the font
+TODO(": get the font")
 	if (ly != NULL)
 		pcb_add_text_on_layer(ly, text, pcb_font(PCB, text->fid, 1));
 
@@ -1283,7 +1283,7 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	else
 		return iolht_error(obj, "invalid element: objects is not a list\n");
 
-#warning subc TODO: TextFlags
+TODO("subc: TextFlags")
 	txt = pcb_subc_add_refdes_text(subc, tx, ty, tdir, tscale, onsld);
 
 	pcb_subc_xy_rot_pnp(subc, ox, oy, onsld);
@@ -1684,7 +1684,7 @@ static int parse_data_pstk_shape_v4(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht
 	if ((nlyt != NULL) && (nlyt->type == LHT_HASH))
 		res = parse_layer_type(&dst->layer_mask, &prp, nlyt, "padstack shape");
 
-#warning layer TODO: shape v6 and support for prp
+TODO("layer: shape v6 and support for prp")
 
 	if (res != 0)
 		return iolht_error(nlyt != NULL ? nlyt : nshape, "Failed to parse pad stack shape (layer mask)\n");
@@ -1994,7 +1994,7 @@ static int parse_fontkit(pcb_fontkit_t *fk, lht_node_t *nd)
 			f = &fk->dflt;
 		}
 
-#warning TODO: check return val
+TODO(": check return val")
 		parse_font(f, n);
 	}
 

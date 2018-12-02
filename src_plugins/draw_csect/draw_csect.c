@@ -478,8 +478,8 @@ static void draw_csect(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 			color = COLOR_MISC;
 			stepf = 3;
 		}
-#warning layer TODO: handle multiple outline layers
 		else if (g->ltype & PCB_LYT_BOUNDARY) {
+TODO("layer: handle multiple outline layers")
 			outline_gid = gid;
 			continue;
 		}

@@ -67,7 +67,7 @@ static int io_kicad_legacy_write_subc_index(FILE *FP, pcb_data_t *Data)
 		if (pcb_data_is_empty(subc->data))
 			continue;
 
-#warning TODO: need a subc dedup
+TODO(": need a subc dedup")
 /*		elementlist_dedup_skip(ededup, element);*/
 
 		fprintf(FP, "%s\n", unm_name(&group1, or_empty(pcb_attribute_get(&subc->Attributes, "footprint")), subc));
@@ -97,8 +97,8 @@ static int write_kicad_legacy_layout_vias(FILE *FP, pcb_data_t *Data, pcb_coord_
 
 			pcb_fprintf(FP, "Po 3 %.0mk %.0mk %.0mk %.0mk %.0mk\n", /* testing kicad printf */
 				x + xOffset, y + yOffset, x + xOffset, y + yOffset, pad_dia);
-#warning TODO: check if drill_dia can be applied
-#warning TODO: bbvia
+TODO(": check if drill_dia can be applied")
+TODO(": bbvia")
 			pcb_fprintf(FP, "De 15 1 0 0 0\n"); /* this is equivalent to 0F, via from 15 -> 0 */
 		}
 	}
@@ -108,7 +108,7 @@ static int write_kicad_legacy_layout_vias(FILE *FP, pcb_data_t *Data, pcb_coord_
 /* generates a default via drill size for the layout */
 static int write_kicad_legacy_layout_via_drill_size(FILE *FP)
 {
-#warning TODO: do not hardwire this
+TODO(": do not hardwire this")
 	pcb_fprintf(FP, "ViaDrill 250\n"); /* decimil format, default for now, ~= 0.635mm */
 	return 0;
 }
@@ -247,8 +247,8 @@ static int write_kicad_legacy_layout_text(FILE *FP, pcb_cardinal_t number, pcb_l
 					halfStringHeight = -halfStringHeight;
 				}
 
-#warning code duplication with io_kicad - clean that up after fixing textrot!
-#warning textrot TODO: use the angle, not n*90 deg
+TODO("code duplication with io_kicad - clean that up after fixing textrot!")
+TODO("textrot: use the angle, not n*90 deg")
 				pcb_text_old_direction(&direction, text->rot);
 				if (direction == 3) { /*vertical down */
 					if (currentLayer == 0 || currentLayer == 20) { /* back copper or silk */
@@ -388,17 +388,17 @@ static int io_kicad_legacy_write_subc(FILE *FP, pcb_board_t *pcb, pcb_subc_t *su
 	}
 
 	fprintf(FP, "$MODULE %s\n", uname);
-#warning TODO: do not hardwire time stamps
+TODO(": do not hardwire time stamps")
 	pcb_fprintf(FP, "Po %.0mk %.0mk 0 %d 51534DFF 00000000 ~~\n", ox, oy, copperLayer);
 	fprintf(FP, "Li %s\n", uname); /* This needs to be unique */
 	fprintf(FP, "Cd %s\n", uname);
 	fputs("Sc 0\n", FP);
 	fputs("AR\n", FP);
-#warning TODO: is this the origin point? if so, it should be sox and soy
+TODO(": is this the origin point? if so, it should be sox and soy")
 	fputs("Op 0 0 0\n", FP);
 
-#warning TODO: do not hardwire coords
-#warning TODO: figure how to turn off displaying these
+TODO(": do not hardwire coords")
+TODO(": figure how to turn off displaying these")
 	fprintf(FP, "T0 0 -4000 600 600 0 120 N V %d N \"%s\"\n", silkLayer, or_empty(pcb_attribute_get(&subc->Attributes, "refdes")));
 	fprintf(FP, "T1 0 -5000 600 600 0 120 N V %d N \"%s\"\n", silkLayer, or_empty(pcb_attribute_get(&subc->Attributes, "value")));
 	fprintf(FP, "T2 0 -6000 600 600 0 120 N V %d N \"%s\"\n", silkLayer, or_empty(pcb_attribute_get(&subc->Attributes, "footprint")));
@@ -453,7 +453,7 @@ static int io_kicad_legacy_write_subc(FILE *FP, pcb_board_t *pcb, pcb_subc_t *su
 
 			fputs("$PAD\n", FP); /* start pad descriptor for an smd pad */
 
-#warning TODO: remove this code dup with io_kicad
+TODO(": remove this code dup with io_kicad")
 			for(n = 0; n < tshp->len; n++) {
 				if (tshp->shape[n].layer_mask & PCB_LYT_COPPER) {
 					int i;
@@ -502,7 +502,7 @@ static int io_kicad_legacy_write_subc(FILE *FP, pcb_board_t *pcb, pcb_subc_t *su
 							shape_chr = 'C';
 							break;
 						case PCB_PSSH_HSHADOW:
-#warning hshadow TODO
+TODO("hshadow TODO")
 							shape_chr = 'C';
 							cx = 0;
 							cy = 0;
@@ -607,7 +607,7 @@ static int write_kicad_legacy_layout_subcs(FILE *FP, pcb_board_t *Layout, pcb_da
 
 	subclist_foreach(&Data->subc, &sit, subc) {
 		const char *uname = unm_name(&group1, or_empty(pcb_attribute_get(&subc->Attributes, "footprint")), subc);
-#warning TODO: what did we need this for?
+TODO(": what did we need this for?")
 /*		elementlist_dedup_skip(ededup, element); /* skip duplicate elements */
 		io_kicad_legacy_write_subc(FP, PCB, subc, xOffset, yOffset, uname);
 	}
@@ -666,7 +666,7 @@ int io_kicad_legacy_write_buffer(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buf
 		return -1;
 	}
 
-#warning TODO: no hardwiring of dates
+TODO(": no hardwiring of dates")
 	fputs("PCBNEW-LibModule-V1	jan 01 jan 2016 00:00:01 CET\n", FP);
 	fputs("$INDEX\n", FP);
 	io_kicad_legacy_write_subc_index(FP, buff->Data);
@@ -719,7 +719,7 @@ int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_file
 
 	fputs("$SHEETDESCR\n", FP);
 
-#warning TODO: se this from io_kicad, do not duplicate the code here
+TODO(": se this from io_kicad, do not duplicate the code here")
 	/* we sort out the needed kicad sheet size here, using A4, A3, A2, A1 or A0 size as needed */
 	if (PCB_COORD_TO_MIL(PCB->MaxWidth) > A4WidthMil || PCB_COORD_TO_MIL(PCB->MaxHeight) > A4HeightMil) {
 		sheetHeight = A4WidthMil; /* 11.7" */

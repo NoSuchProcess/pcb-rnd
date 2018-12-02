@@ -1416,7 +1416,7 @@ static pcb_r_dir_t gp_pstk_cb(const pcb_box_t *b, void *cb)
 			gp_point(ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2, 0);
 			break;
 		case PCB_PSSH_POLY:
-#warning TODO: we lump poly padstacks in with square; safe, but not optimal; rather use the real shape
+TODO(": we lump poly padstacks in with square; safe, but not optimal; rather use the real shape")
 		case PCB_PSSH_LINE:
 			gp_point(ps->BoundingBox.X1, ps->BoundingBox.Y1, 0, 0);
 			gp_point(ps->BoundingBox.X1, ps->BoundingBox.Y2, 0, 0);

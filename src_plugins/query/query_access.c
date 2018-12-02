@@ -119,7 +119,7 @@ static int list_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter
 void pcb_qry_list_all(pcb_qry_val_t *lst, pcb_objtype_t mask)
 {
 	assert(lst->type == PCBQ_VT_LST);
-#warning TODO: rather do rtree search here to avoid recursion
+TODO(": rather do rtree search here to avoid recursion")
 	pcb_loop_all(PCB, &lst->data.lst,
 		(mask & PCB_OBJ_LAYER) ? list_layer_cb : NULL,
 		(mask & PCB_OBJ_LINE) ? list_line_cb : NULL,
@@ -393,7 +393,7 @@ static int field_line(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 
 static double pcb_arc_len(pcb_arc_t *a)
 {
-#warning TODO: this breaks for elliptics; see http://tutorial.math.lamar.edu/Classes/CalcII/ArcLength.aspx
+TODO(": this breaks for elliptics; see http://tutorial.math.lamar.edu/Classes/CalcII/ArcLength.aspx")
 	double r = (a->Width + a->Height)/2;
 	return r * M_PI / 180.0 * a->Delta;
 }
@@ -537,7 +537,7 @@ static int field_rat(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 
 	fld2str_req(s1, fld, 0);
 	fld2str_opt(s2, fld, 1);*/
-#warning TODO
+TODO("TODO")
 	PCB_QRY_RET_INV(res);
 }
 
@@ -650,7 +650,7 @@ static int field_net(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 
 	fld2str_req(s1, fld, 0);
 	fld2str_opt(s2, fld, 1);*/
-#warning TODO
+TODO("TODO")
 	PCB_QRY_RET_INV(res);
 }
 
@@ -763,7 +763,7 @@ int pcb_qry_obj_field(pcb_qry_val_t *objval, pcb_qry_node_t *fld, pcb_qry_val_t 
 
 		case PCB_OBJ_NET:      return field_net(obj, fld, res);
 		case PCB_OBJ_LAYER:    return field_layer(obj, fld, res);
-#warning layer TODO
+TODO("layer TODO")
 		case PCB_OBJ_LAYERGRP:
 		default:;
 	}

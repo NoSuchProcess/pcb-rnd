@@ -86,7 +86,7 @@ fgw_error_t pcb_act_LoadhypFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-#warning TODO: rewrite this - this is very unpcb-rnd
+TODO(": rewrite this - this is very unpcb-rnd")
 #if 0
 	int i = 0;
 	/* 
@@ -182,7 +182,7 @@ int pplg_init_io_hyp(void)
 	io_hyp.description = "hyperlynx";
 	io_hyp.save_preference_prio = 30;
 	io_hyp.default_extension = ".hyp";
-#warning TODO: look these up
+TODO(": look these up")
 	io_hyp.fp_extension = ".hyp_mod";
 	io_hyp.mime_type = "application/x-hyp-pcb";
 

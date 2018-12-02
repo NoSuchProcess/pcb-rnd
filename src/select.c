@@ -193,7 +193,7 @@ do { \
  *  returns a list of object IDs matched the search and loads len with the
  *  length of the list. Returns NULL on no match.
  */
-#warning cleanup TODO: should be rewritten with generic ops and rtree
+TODO("cleanup: should be rewritten with generic ops and rtree")
 static long int *ListBlock_(pcb_board_t *pcb, pcb_box_t *Box, pcb_bool Flag, int *len)
 {
 	int changed = 0;

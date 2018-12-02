@@ -369,7 +369,7 @@ void hyp_error(const char *msg)
 /*
  * find padstack by name 
  */
-#warning TODO: use a hash instead
+TODO(": use a hash instead")
 padstack_t *hyp_pstk_by_name(char *padstack_name)
 {
 	padstack_t *i;
@@ -417,7 +417,7 @@ void hyp_netlist_end()
 /*
  * find hyperlynx device by name 
  */
-#warning TODO: convert this into a hash
+TODO(": convert this into a hash")
 device_t *hyp_device_by_name(char *device_name)
 {
 	device_t *i;
@@ -1828,7 +1828,7 @@ static pcb_pstk_t *hyp_new_pstk(padstack_t *padstk, pcb_data_t *data, pcb_coord_
 
 		mdef = strcmp(i->layer_name, "MDEF") == 0;
 		top_or_bottom = 0;
-#warning TODO: check if mask/paste layers can be acquired explicitly as non-metal layers
+TODO(": check if mask/paste layers can be acquired explicitly as non-metal layers")
 		if (mdef || (strcmp(i->layer_name, ln_top) == 0)) {
 			if (!have_top) {
 				hyp_pstk_add_shp(sh, &sh_used, sh_max, i, PCB_LYT_TOP | PCB_LYT_COPPER, 0, 0);

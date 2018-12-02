@@ -241,7 +241,7 @@ typedef struct {
 void ghid_config_init(void)
 {
 	hid_gtk_wgeo_old = hid_gtk_wgeo = conf_hid_gtk.plugins.hid_gtk.window_geometry;
-#warning CONF TODO: inject the internal part here?
+TODO("CONF: inject the internal part here?")
 }
 
 typedef struct {
@@ -803,7 +803,7 @@ static char *get_misc_col_data(int row, int col, lht_node_t * nd)
 	return NULL;
 }
 
-#warning TODO: leak: this is never free()d
+TODO(": leak: this is never free()d")
 lht_doc_t *config_library_lst_doc;
 lht_node_t *config_library_lst;
 
@@ -1034,7 +1034,7 @@ static const gchar *layer_info_text[] = {
 	/* Construct a layer group string.  Follow logic in WritePCBDataHeader(),
 	   |  but use g_string functions.
 	 */
-#warning layer TODO: kill this func, have a centralized C89 implementation and use g_strdup for glib
+TODO("layer: kill this func, have a centralized C89 implementation and use g_strdup for glib")
 static gchar *make_layer_group_string(pcb_layer_stack_t * lg)
 {
 	GString *string;
@@ -1200,7 +1200,7 @@ static void config_color_button_create(pcb_gtk_common_t *com, GtkWidget *box, co
 	gtk_box_pack_start(GTK_BOX(box), hbox, FALSE, FALSE, 0);
 
 	if ((ci == NULL) || (idx > 0)) {
-#warning LEAK: this is never free()d
+TODO("LEAK: this is never free()d")
 		ci = malloc(sizeof(cfg_color_idx_t));
 		ci->cfg = cfg;
 		ci->idx = idx;
@@ -2105,7 +2105,7 @@ static void config_auto_apply_cb(GtkButton * btn, void *data)
 
 	config_page_update_auto(nat);
 	if (update_clr) {
-#warning TODO: conf hooks should solve these
+TODO(": conf hooks should solve these")
 		com->set_special_colors(nat);
 		com->layer_buttons_update();
 		com->invalidate_all();

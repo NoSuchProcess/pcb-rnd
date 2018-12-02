@@ -57,7 +57,7 @@ static mesh_dlg_t ia;
 #	define mesh_trace pcb_trace
 #endif
 
-#warning reorder to avoid fwd decl
+TODO("reorder to avoid fwd decl")
 static void mesh_auto_add_smooth(vtc0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_coord_t d1, pcb_coord_t d, pcb_coord_t d2);
 
 static void mesh_add_edge(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t crd)
@@ -138,7 +138,7 @@ static int mesh_gen_obj(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 		}
 	}
 
-#warning TODO: text and padstacks
+TODO(": text and padstacks")
 
 	polylist_foreach(&mesh->layer->Polygon, &it, poly) {
 		pcb_poly_it_t it;
@@ -236,7 +236,7 @@ static void mesh_maybe_add_edge(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_
 
 	c = bsearch(&ctx, mesh->line[dir].edge.array, vtc0_len(&mesh->line[dir].edge), sizeof(pcb_coord_t), cmp_maybe_add);
 	if (c == NULL) {
-#warning TODO: optimization: run a second bsearch and insert instead of this; testing: 45 deg line (won't have axis aligned edge for the 2/3 1/3 rule)
+TODO(": optimization: run a second bsearch and insert instead of this; testing: 45 deg line (won't have axis aligned edge for the 2/3 1/3 rule)")
 		vtc0_append(&mesh->line[dir].edge, at);
 		qsort(mesh->line[dir].edge.array, vtc0_len(&mesh->line[dir].edge), sizeof(pcb_coord_t), cmp_coord);
 	}

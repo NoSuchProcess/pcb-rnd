@@ -55,7 +55,7 @@
 #include "obj_rat_draw.h"
 #include "obj_pstk_draw.h"
 
-#warning padstack TODO: remove this when via is removed and the padstack is created from style directly
+TODO("padstack: remove this when via is removed and the padstack is created from style directly")
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 
 
@@ -246,7 +246,7 @@ pcb_line_t *pcb_line_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb
 	Line->Clearance = Clearance;
 	Line->Point1.X = X1;
 	Line->Point1.Y = Y1;
-#warning ID TODO: register points too
+TODO("ID: register points too")
 	Line->Point1.ID = pcb_create_ID_get();
 	Line->Point2.X = X2;
 	Line->Point2.Y = Y2;
@@ -343,7 +343,7 @@ pcb_coord_t pcb_line_length(const pcb_line_t *line)
 {
 	pcb_coord_t dx = line->Point1.X - line->Point2.X;
 	pcb_coord_t dy = line->Point1.Y - line->Point2.Y;
-#warning TODO: use the distance func instead
+TODO(": use the distance func instead")
 	return pcb_round(sqrt((double)dx*(double)dx + (double)dy*(double)dy));
 }
 
@@ -680,7 +680,7 @@ static pcb_r_dir_t moveline_callback(const pcb_box_t * b, void *cl)
 	struct via_info *i = (struct via_info *) cl;
 	pcb_pstk_t *ps;
 
-#warning pdstk TODO #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too
+TODO("pdstk TODO #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too")
 	if ((ps = pcb_pstk_new_compat_via(PCB->Data, -1, i->X, i->Y, conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance, 0, PCB_PSTK_COMPAT_ROUND, pcb_true)) != NULL) {
 		pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, ps, ps, ps);
 		pcb_pstk_invalidate_draw(ps);

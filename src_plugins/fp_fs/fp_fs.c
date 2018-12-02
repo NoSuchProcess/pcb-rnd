@@ -170,7 +170,7 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 		 * may exist in a library tree to provide an html browsable
 		 * index of the library.
 		 */
-#warning fp TODO: make this a configurable list
+TODO("fp: make this a configurable list")
 		l = strlen(subdirentry->d_name);
 		if (!stat(subdirentry->d_name, &buffer)
 				&& subdirentry->d_name[0] != '.'
@@ -345,7 +345,7 @@ static char *fp_fs_search(const char *search_path, const char *basename, int par
 	return NULL;
 }
 
-#warning subc TODO: should be handled in io_*
+TODO("subc: should be handled in io_*")
 /* Decide about the type of a footprint file:
    - it is a file element if the first non-comment is "Element(" or "Element["
    - else it is a parametric element (footprint generator) if it contains
@@ -370,7 +370,7 @@ static pcb_fptype_t pcb_fp_file_type(const char *fn, void ***tags)
 	int Talloced = 0, Tused = 0;
 	pcb_fptype_t ret = PCB_FP_INVALID;
 
-#warning fp TODO: rather call plug_io if it is not parametric
+TODO("fp: rather call plug_io if it is not parametric")
 	if (tags != NULL)
 		*tags = NULL;
 
@@ -395,8 +395,8 @@ static pcb_fptype_t pcb_fp_file_type(const char *fn, void ***tags)
 				state = ST_COMMENT;
 				break;
 			}
-#warning fp TODO: rather call plug_io if it is not parametric
 			else if ((first_element) && (c == 'l')) {
+TODO("fp: rather call plug_io if it is not parametric")
 				char s[23];
 				/* li:pcb-rnd-subcircuit */
 				fgets(s, 21, f);

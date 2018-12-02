@@ -219,7 +219,7 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 		PCB_END_LOOP;
 
 		PCB_ARC_LOOP(ly) {
-#warning TODO: fprintf() some curve using arc->*
+TODO(": fprintf() some curve using arc->*")
 			;
 		}
 		PCB_END_LOOP;
@@ -271,7 +271,7 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 					y0 -= sy;
 					break;
 			}*/
-#warning textrot TODO: can we exprot rotation with %f?
+TODO("textrot: can we exprot rotation with %f?")
 			fprintf(f, "TY %ld %ld %ld %ld %d 1 %d * ", /* 1 = bold */
 				crd(x0), crd(y0), crd(glyphy), crd(glyphx),
 				(int)pcb_round(text->rot), fidoly);
@@ -322,8 +322,8 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 			pcb_subc_get_rotation(subc, &rot);
 			pcb_subc_get_side(subc, &on_bottom);
 
-#warning TODO: figure how to store rotation
-#warning TODO: figure how to store side
+TODO(": figure how to store rotation")
+TODO(": figure how to store side")
 			fprintf(f, "MC %ld %ld %d 0 %s\n", crd(x), crd(y), 0, fp);
 		}
 		else

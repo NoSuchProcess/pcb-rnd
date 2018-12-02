@@ -174,7 +174,7 @@ static char *LayerGroupsToString(pcb_layer_stack_t *lg)
 	char *cp = buf;
 	char sep = 0;
 	int group, entry;
-#warning layer TODO: revise this loop to save only what the original code saved
+TODO("layer: revise this loop to save only what the original code saved")
 	for (group = 0; group < pcb_max_group(PCB); group++)
 		if (PCB->LayerGroups.grp[group].len) {
 			unsigned int gflg = pcb_layergrp_flags(PCB, group);
@@ -437,7 +437,7 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 			rx = trefdes->X - ox;
 			ry = trefdes->Y - oy;
 			if (!pcb_text_old_direction(&rdir, trefdes->rot)) {
-#warning textrot TODO: incompatibility warning
+TODO("textrot: incompatibility warning")
 			}
 			rscale = trefdes->Scale;
 		}
@@ -585,7 +585,7 @@ static void WriteLayerData(FILE * FP, pcb_cardinal_t Number, pcb_layer_t *layer)
 		textlist_foreach(&layer->Text, &it, text) {
 			int dir;
 			if (!pcb_text_old_direction(&dir, text->rot)) {
-#warning textrot TODO: incompatibility warning
+TODO("textrot: incompatibility warning")
 			}
 			pcb_fprintf(FP, "\tText[%[0] %[0] %d %d ", text->X, text->Y, dir, text->Scale);
 			pcb_print_quoted_string(FP, (char *) PCB_EMPTY(text->TextString));
@@ -1007,7 +1007,7 @@ pcb_subc_t *io_pcb_element_new(pcb_data_t *Data, pcb_subc_t *subc,
 	if (Value != NULL)
 		pcb_attribute_put(&sc->Attributes, "value", Value);
 
-#warning subc TODO: TextFlags
+TODO("subc: TextFlags")
 	if (!(Flags.f & PCB_FLAG_HIDENAME))
 		txt = pcb_subc_add_refdes_text(sc, TextX, TextY, Direction, TextScale, yysubc_bottom);
 

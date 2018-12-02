@@ -181,7 +181,7 @@ typedef struct {
 	int nunplated;
 } HoleCountStruct;
 
-#warning padstack TODO: move this to obj_pstk.c after pinvia removal
+TODO("padstack: move this to obj_pstk.c after pinvia removal")
 #include "obj_pstk_inlines.h"
 static pcb_r_dir_t hole_counting_callback(const pcb_box_t * b, void *cl)
 {

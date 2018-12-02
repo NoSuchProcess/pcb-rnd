@@ -788,7 +788,7 @@ static GtkWidget *create_lib_treeview(pcb_gtk_library_t * library_window)
 	return vbox;
 }
 
-#warning TODO: figure how this can be passed to the constructor without a global var
+TODO(": figure how this can be passed to the constructor without a global var")
 static pcb_gtk_common_t *lwcom;
 
 static void pinout_expose(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)

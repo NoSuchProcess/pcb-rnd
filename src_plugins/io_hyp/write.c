@@ -181,17 +181,17 @@ void hyp_pstk_shape(hyp_wr_t *wr, const char *lynam, const pcb_pstk_shape_t *shp
 {
 	pcb_coord_t sx, sy, minx, miny, maxx, maxy;
 	int shnum = 0, n;
-#warning TODO: this ignores rotation
+TODO(": this ignores rotation")
 	switch(shp->shape) {
 		case PCB_PSSH_HSHADOW:
-#warning hshadow TODO
+TODO("hshadow TODO")
 			break;
 		case PCB_PSSH_CIRC:
 			sx = sy = shp->data.circ.dia;
 			shnum = 0;
 			break;
 		case PCB_PSSH_POLY:
-#warning TODO: check if it is a rectangle
+TODO(": check if it is a rectangle")
 			minx = maxx = shp->data.poly.x[0];
 			miny = maxy = shp->data.poly.y[0];
 			for(n = 1; n < shp->data.poly.len; n++) {
@@ -401,7 +401,7 @@ static int write_board(hyp_wr_t * wr)
 				if (l == NULL)
 					continue;
 
-#warning layer TODO: refuse negative layers and warn for objects other than line/arc
+TODO("layer: refuse negative layers and warn for objects other than line/arc")
 
 				linelist_foreach(&l->Line, &it, line) {
 					write_pr_line(wr, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);

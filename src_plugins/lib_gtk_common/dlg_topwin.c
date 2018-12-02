@@ -204,7 +204,7 @@ void pcb_gtk_tw_window_set_name_label(pcb_gtk_topwin_t *tw, gchar *name)
 	if (!tw->active)
 		return;
 
-#warning TODO: use some gds here to speed things up
+TODO(": use some gds here to speed things up")
 
 	pcb_gtk_g_strdup(&(tw->name_label_string), name);
 	if (!tw->name_label_string || !*tw->name_label_string)
@@ -234,7 +234,7 @@ void pcb_gtk_tw_layer_vis_update(pcb_gtk_topwin_t *tw)
 /* Called when user clicks OK on route style dialog */
 void pcb_gtk_tw_route_styles_edited_cb(pcb_gtk_topwin_t *tw)
 {
-#warning TODO: generate a route styles changed event
+TODO(": generate a route styles changed event")
 }
 
 /*

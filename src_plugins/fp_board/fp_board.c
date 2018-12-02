@@ -119,7 +119,7 @@ static FILE *fp_board_fopen(pcb_plug_fp_t *ctx, const char *path, const char *na
 		if (id == req_id) {
 /*			if (strcmp(element->Name[PCB_ELEMNAME_IDX_DESCRIPTION].TextString, l->name)) */
 
-#warning TODO: extend the API:
+TODO(": extend the API:")
 			/* This is not pretty: we are saving the element to a file so we can return a FILE *.
 			   Later on we should just return the footprint. */
 			memset(&op, 0, sizeof(op));
@@ -145,7 +145,7 @@ err:;
 static void fp_board_fclose(pcb_plug_fp_t *ctx, FILE * f, pcb_fp_fopen_ctx_t *fctx)
 {
 	fclose(f);
-#warning TODO: remove file
+TODO(": remove file")
 }
 
 

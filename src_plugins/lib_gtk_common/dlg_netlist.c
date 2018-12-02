@@ -482,7 +482,7 @@ static void netlist_find_cb(GtkWidget * widget, gpointer data)
 	pcb_actionl("netlist", "find", name, NULL);
 }
 
-#warning padstack TODO: this seems to be duplicate in lesstif
+TODO("padstack: this seems to be duplicate in lesstif")
 static void netlist_rip_up_cb(GtkWidget * widget, gpointer data)
 {
 

@@ -69,7 +69,7 @@ static void LOC_int_conn_subc(pcb_subc_t *s, int ic, int from_type, void *from_p
 	}
 	PCB_ENDALL_LOOP;
 
-#warning subc TODO
+TODO("subc TODO")
 #if 0
 no find through text yet
 	PCB_TEXT_COPPER_LOOP(s->data);

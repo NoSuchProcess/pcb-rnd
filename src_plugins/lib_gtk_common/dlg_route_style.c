@@ -236,7 +236,7 @@ static void delete_button_cb(GtkButton *button, pcb_gtk_dlg_route_style_t *dialo
 	dialog->inhibit_style_change = 1;
 	pcb_gtk_route_style_empty(dialog->rss);
 
-#warning TODO: some of these should be in core
+TODO(": some of these should be in core")
 	pcb_gtk_route_style_copy(dialog->rss->selected);
 
 	vtroutestyle_remove(&PCB->RouteStyle, dialog->rss->selected, 1);

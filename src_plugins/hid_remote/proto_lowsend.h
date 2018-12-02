@@ -81,7 +81,7 @@ static int sendf(proto_ctx_t *ctx, const char *fmt, ...)
 	return 0;
 }
 
-#warning TODO: this is unsafe, s can have %
+TODO(": this is unsafe, s can have %")
 static int sends(proto_ctx_t *ctx, const char *s)
 {
 	if (s == NULL)

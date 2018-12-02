@@ -705,7 +705,7 @@ int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t ne
 		pcb_layergrp_t *g;
 		int grp_idx, remaining;
 
-#warning layer TODO remove objects, free fields layer_free(&pcb->Data->Layer[old_index]);
+TODO("layer TODO remove objects, free fields layer_free(&pcb->Data->Layer[old_index]);")
 
 		/* remove the current lid from its group */
 		g = pcb_get_layergrp(pcb, pcb->Data->Layer[old_index].meta.real.grp);
@@ -1075,7 +1075,7 @@ int pcb_layer_gui_set_vlayer(pcb_board_t *pcb, pcb_virtual_layer_t vid, int is_e
 	if (xform != NULL)
 		*xform = NULL;
 
-#warning layer TODO: need to pass the flags of the group, not the flags of the layer once we have a group for each layer
+TODO("layer: need to pass the flags of the group, not the flags of the layer once we have a group for each layer")
 	if (pcb_gui->set_layer_group != NULL) {
 		pcb_layergrp_id_t grp;
 		pcb_layer_id_t lid = v->new_id;

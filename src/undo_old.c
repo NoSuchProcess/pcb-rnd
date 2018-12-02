@@ -993,7 +993,7 @@ void pcb_undo_move_obj_to_remove(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 			if (subc != NULL)
 				r->p_subc_id = subc->ID;
 			break;
-#warning subc TODO: floater subc in subc should remember its subc parent too
+TODO("subc: floater subc in subc should remember its subc parent too")
 		default:
 			break;
 	}

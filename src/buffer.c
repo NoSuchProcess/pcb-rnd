@@ -539,7 +539,7 @@ void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 	/* swap layer groups when balanced */
 	sgroup = pcb_layer_get_group(pcb, SLayer);
 	cgroup = pcb_layer_get_group(pcb, CLayer);
-#warning layer TODO: revise this code for the generic physical layer support; move this code to layer*.c
+TODO("layer: revise this code for the generic physical layer support; move this code to layer*.c")
 	if (pcb->LayerGroups.grp[cgroup].len == pcb->LayerGroups.grp[sgroup].len) {
 		for (j = k = 0; j < pcb->LayerGroups.grp[sgroup].len; j++) {
 			pcb_layer_id_t cnumber = pcb->LayerGroups.grp[cgroup].lid[k];
@@ -676,7 +676,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 
 		/* set up a dummy board to work around that pcb_pstkop_copy() requires a
 		   pcb_board_t instead of a pcb_data_t */
-#warning subc TODO: fix this after the element removal
+TODO("subc: fix this after the element removal")
 		if (pcb->is_footprint) {
 			pcb_subc_t *sc = pcb_subclist_first(&pcb->Data->subc);
 			if (sc != NULL) {

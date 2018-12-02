@@ -458,7 +458,7 @@ GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widge
 	prv->init_drawing_widget(GTK_WIDGET(prv), prv->gport);
 
 
-#warning TODO: maybe expose these through the object API so the caller can set it up?
+TODO(": maybe expose these through the object API so the caller can set it up?")
 	memset(&prv->view, 0, sizeof(prv->view));
 	prv->view.width = PCB_MM_TO_COORD(110);
 	prv->view.height = PCB_MM_TO_COORD(110);

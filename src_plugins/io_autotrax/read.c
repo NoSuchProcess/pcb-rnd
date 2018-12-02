@@ -221,12 +221,12 @@ static int rdax_text(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 	if (lyt & PCB_LYT_BOTTOM) Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
 	else Flags = pcb_flag_make(0);
 
-#warning textrot TODO: is there a real rotation angle available?
+TODO("textrot: is there a real rotation angle available?")
 	if (pcb_text_new(ly, pcb_font(st->pcb, 0, 1), X, Y, 90.0*direction, scaling, 0, t, Flags) != 0)
 		return 1;
 	return -1;
 
-#warning TODO: do not use strlen() for this, decide where to move this code
+TODO(": do not use strlen() for this, decide where to move this code")
 /*
 		if (strlen(t) == 0) {
 			pcb_message(PCB_MSG_ERROR, "Empty free string not placed on layout, %s:%d\n", st->Filename, st->lineno);
@@ -548,7 +548,7 @@ static int rdax_pad(read_state_t *st, FILE *FP, pcb_subc_t *subc, int component)
 	}
 
 /* now find name as string on next line and copy it */
-#warning TODO: can not exit above if we need to read this line
+TODO(": can not exit above if we need to read this line")
 	if (fgetline(line, sizeof(line), FP, st->lineno) == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Error parsing pad text field line, %s:%d\n", st->Filename, st->lineno);
 		return -1;
@@ -649,7 +649,7 @@ static int rdax_pad(read_state_t *st, FILE *FP, pcb_subc_t *subc, int component)
 				break;
 			case 2: /* rect */
 			case 4: /* round-rect - for now */
-#warning TODO: generate round-rect
+TODO(": generate round-rect")
 				for(n = 0; n < 7; n++) {
 					pcb_coord_t clr = (sh[n].layer_mask & PCB_LYT_MASK) ? Clearance : 0;
 					if (sh[n].layer_mask == 0) break;
@@ -657,7 +657,7 @@ static int rdax_pad(read_state_t *st, FILE *FP, pcb_subc_t *subc, int component)
 				}
 				break;
 			case 3: /* octa */
-#warning TODO: generate octa
+TODO(": generate octa")
 			default:
 				pcb_message(PCB_MSG_ERROR, "Unsupported FP shape: %d, %s:%d.\n", Shape, st->Filename, st->lineno);
 				return 0;
@@ -700,7 +700,7 @@ static int rdax_fill(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 			valid &= success;
 			Y2 = pcb_get_value_ex(argv[3], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
-#warning TODO: do not use get_value_ex for plain integers (revise the whole file for this)
+TODO(": do not use get_value_ex for plain integers (revise the whole file for this)")
 			autotrax_layer = pcb_get_value_ex(argv[4], NULL, NULL, NULL, NULL, &success);
 			valid &= (success && (autotrax_layer > 0) && (autotrax_layer < 14));
 			qparse_free(argc, &argv);
@@ -717,7 +717,7 @@ static int rdax_fill(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 		return -1;
 	}
 
-#warning TODO: figure if autotrax really converts layer 1 and 6 polygons to pads
+TODO(": figure if autotrax really converts layer 1 and 6 polygons to pads")
 	if ((subc == NULL) || ((autotrax_layer != 1) && (autotrax_layer != 6))) {
 		ly = autotrax_get_layer(st, subc, autotrax_layer, "polygon");
 		if (ly == NULL)
@@ -1001,7 +1001,7 @@ static int rdax_component(read_state_t *st, FILE *FP)
 			valid &= success;
 			module_Y = pcb_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
-#warning TODO: load placement status and apply PCB_FLAG_LOCK if needed
+TODO(": load placement status and apply PCB_FLAG_LOCK if needed")
 			qparse_free(argc, &argv);
 		}
 		else {
@@ -1037,13 +1037,13 @@ static int rdax_component(read_state_t *st, FILE *FP)
 				}
 				else {
 					pcb_message(PCB_MSG_ERROR, "Empty module/COMP found, not added to layout, %s:%d\n", st->Filename, st->lineno);
-#warning TODO safely free new_module
+TODO("TODO safely free new_module")
 					return 0;
 				}
 			}
 		}
 		else if (length >= 2) {
-#warning TODO: this does not handle return -1
+TODO(": this does not handle return -1")
 			if (strncmp(s, "CT", 2) == 0) {
 				nonempty |= rdax_track(st, FP, new_module);
 			}

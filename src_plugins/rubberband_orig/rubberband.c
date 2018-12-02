@@ -1338,12 +1338,12 @@ static void rbe_rotate90(void *user_data, int argc, pcb_event_arg_t argv[])
 
 static void rbe_rotate(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-#warning TODO
+TODO("TODO")
 }
 
 static void rbe_rename(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-#warning TODO: rewrite this for subc - also move it out from rubberband, it has nothing to do with the feature - should be some generic rat line invalidation mechanism
+TODO(": rewrite this for subc - also move it out from rubberband, it has nothing to do with the feature - should be some generic rat line invalidation mechanism")
 #if 0
 	rubber_ctx_t *rbnd = user_data;
 	int type = argv[1].d.i;

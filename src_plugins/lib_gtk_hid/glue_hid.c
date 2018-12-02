@@ -165,7 +165,7 @@ void gtkhid_do_export(pcb_hid_attr_val_t *options)
 	gport->drawing_area = ghidgui->topwin.drawing_area;
 	gport->mouse.top_window = ghidgui->common.top_window;
 
-#warning TODO: move this to render init
+TODO(": move this to render init")
 	/* Mouse and key events will need to be intercepted when PCB needs a
 	   |  location from the user.
 	 */

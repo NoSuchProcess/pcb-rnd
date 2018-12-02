@@ -176,7 +176,7 @@ static pcb_hid_attribute_t *openems_get_export_options(int *n)
 		openems_attribute_list[HA_def_copper_thick].default_val.coord_value = mesh->def_copper_thick;
 	}
 
-#warning TODO: when export dialogs change into DAD, this hack to convert the strings to allocated ones will not be needed anymore
+TODO(": when export dialogs change into DAD, this hack to convert the strings to allocated ones will not be needed anymore")
 	openems_attribute_list[HA_f_max].default_val.str_value = pcb_strdup(openems_attribute_list[HA_f_max].default_val.str_value);
 	openems_attribute_list[HA_excite].default_val.str_value = pcb_strdup(openems_attribute_list[HA_excite].default_val.str_value);
 	openems_attribute_list[HA_def_copper_cond].default_val.str_value = pcb_strdup(openems_attribute_list[HA_def_copper_cond].default_val.str_value);
@@ -240,9 +240,9 @@ static void print_lparm(wctx_t *ctx, pcb_layergrp_t *grp, const char *attr, int 
 {
 	int opt;
 
-#warning TODO: this needs layer group attributes in core (planned for lihata v5)
+TODO(": this needs layer group attributes in core (planned for lihata v5)")
 #if 0
-#warning TODO: try openems::attr first - make a new core call for prefixed get, this will be a real common pattern
+TODO(": try openems::attr first - make a new core call for prefixed get, this will be a real common pattern")
 	const char *val = pcb_attribute_get(&grp->Attributes, attr);
 
 	if (val != NULL) {
@@ -498,7 +498,7 @@ static void openems_write_testpoints(wctx_t *ctx, pcb_data_t *data)
 					if (gid2 < 0)
 						break;
 
-#warning TODO: check if there is copper object on hid2 at x;y
+TODO(": check if there is copper object on hid2 at x;y")
 
 					if (pcb_attribute_get(&o->Attributes, "openems::vport-reverse") == NULL)
 						openems_vport_write(ctx, (pcb_any_obj_t *)ps, ps->x, ps->y, gid1, gid2, port_name);

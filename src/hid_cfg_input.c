@@ -199,7 +199,7 @@ int pcb_hid_cfg_keys_init(pcb_hid_cfg_keys_t *km)
 
 int pcb_hid_cfg_keys_uninit(pcb_hid_cfg_keys_t *km)
 {
-#warning TODO: recursive free of nodes
+TODO(": recursive free of nodes")
 	htpp_uninit(&km->keys);
 	return 0;
 }
@@ -373,7 +373,7 @@ int pcb_hid_cfg_keys_add_by_strdesc_(pcb_hid_cfg_keys_t *km, const char *keydesc
 		s = pcb_hid_cfg_keys_add_under(km, lasts, mods[n], key_raws[n], key_trs[n], terminal, &errmsg);
 		if (s == NULL) {
 			pcb_message(PCB_MSG_ERROR, "Failed to add hotkey binding: %s: %s\n", keydesc, errmsg);
-#warning TODO: free stuff?
+TODO(": free stuff?")
 			return -1;
 		}
 		if (terminal)

@@ -146,7 +146,7 @@ static void cr_draw_line(cairo_t * cr, int fill, double x1, double y1, double x2
 	cairo_move_to(cr, x1, y1);
 	cairo_line_to(cr, x2, y2);
 	if (fill)
-#warning gtk3 TODO: What means "fill a line" ? cairo_fill is not appropriate if path is only a line.
+TODO("gtk3: What means "fill a line" ? cairo_fill is not appropriate if path is only a line.")
 		cairo_fill(cr);
 	else
 		cairo_stroke(cr);
@@ -264,7 +264,7 @@ static void ghid_cairo_end_layer_group(void)
 	end_subcomposite();
 }
 
-#warning TODO: misleading comment or broken code
+TODO(": misleading comment or broken code")
 /* Do not clean up internal structures, as they will be used probably elsewhere. */
 static void ghid_cairo_destroy_gc(pcb_hid_gc_t gc)
 {
@@ -284,7 +284,7 @@ static pcb_hid_gc_t ghid_cairo_make_gc(void)
 	return rv;
 }
 
-#warning gtk3 TODO: check if clipping is not necessary
+TODO("gtk3: check if clipping is not necessary")
 //static void set_clip(render_priv_t * priv, cairo_t * cr)
 //{
 //	if (cr == NULL)
@@ -491,7 +491,7 @@ static void ghid_cairo_draw_grid(void)
 	//}
 
 	cairo_save(cr);
-#warning gtk3 TODO: deal with gc
+TODO("gtk3: deal with gc")
 	cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
 	cairo_set_line_width(cr, 1.0);
 	gdk_cairo_set_source_rgba(cr, &priv->grid_color);
@@ -912,7 +912,7 @@ static void ghid_cairo_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy,
 	angle1 *= (M_PI / 180.0);
 	angle2 *= (M_PI / 180.0);
 	cairo_save(priv->cr);
-#warning gtk3 TODO: this will draw an arc of a circle, not an ellipse! Explore matrix transformation here.
+TODO("gtk3: this will draw an arc of a circle, not an ellipse! Explore matrix transformation here.")
 	cairo_arc(priv->cr, pcb_round(Vxd(cx)), pcb_round(Vyd(cy)), Vzd(radius), angle1, angle2);
 	cairo_stroke(priv->cr);
 	cairo_restore(priv->cr);
@@ -1367,7 +1367,7 @@ static void show_crosshair(gboolean paint_new_location)
 	if (gport->view.crosshair_x < 0 || !ghidgui->topwin.active || !gport->view.has_entered)
 		return;
 
-#warning gtk3 TODO: when CrossColor changed from config
+TODO("gtk3: when CrossColor changed from config")
 	map_color_string(conf_core.appearance.color.cross, &priv->crosshair_color);
 	//cr = priv->cr_drawing_area;
 	cr = priv->cr;
@@ -1380,7 +1380,7 @@ static void show_crosshair(gboolean paint_new_location)
 	//  gdk_gc_set_function(xor_gc, GDK_XOR);
 	//  gdk_gc_set_clip_origin(xor_gc, 0, 0);
 	//  set_clip(priv, xor_gc);
-#warning gtk3 TODO:FIXME: when CrossColor changed from config
+TODO("gtk3:FIXME: when CrossColor changed from config")
 	//  map_color_string(conf_core.appearance.color.cross, &cross_color);
 	//}
 	x = Vx(gport->view.crosshair_x);

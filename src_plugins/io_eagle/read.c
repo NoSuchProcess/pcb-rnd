@@ -306,7 +306,7 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 			ly->visible = eagle_get_attrl(st, n, "visible", -1);
 			ly->active  = eagle_get_attrl(st, n, "active", -1);
 			ly->lid     = -1;
-#warning TODO we are reading uint as signed int when getting layer, and ignoring half of them
+TODO("TODO we are reading uint as signed int when getting layer, and ignoring half of them")
 			id = eagle_get_attrl(st, n, "number", -1);
 			if (id >= 0) {
 				htip_set(&st->layers, id, ly); /* all listed layers get a hash */
@@ -377,7 +377,7 @@ static pcb_layer_t *eagle_layer_get(read_state_t *st, int id, eagle_loc_t loc, v
 
 	/* if more than 51 or 52 are considered useful, we could relax the test here: */
 	if ((ly == NULL) || (ly->lid < 0)) {
-#warning TODO: move this out to a separate function
+TODO(": move this out to a separate function")
 		if (id == 51 || id == 52) {
 			/* create docu on the first reference */
 		pcb_layer_type_t typ;
@@ -530,8 +530,8 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 		pcb_message(PCB_MSG_ERROR, "Failed to allocate text layer 'ly' via eagle_layer_get(st, ln)\n");
 		return 0;
 	}
-#warning TODO text - need better filtering/exclusion of unsupported text layers +/- correct flags
-#warning TODO: remove this hack - if there is a bug, fix it, do not work it around like this
+TODO("TODO text - need better filtering/exclusion of unsupported text layers +/- correct flags")
+TODO(": remove this hack - if there is a bug, fix it, do not work it around like this")
 	if (ln == 51) {
 		ln = 21; /* we seem to trigger a segfault if we create text with ln = 51 */
 		pcb_message(PCB_MSG_WARNING, "Moved text on tDocu layer: 51 to top silk\n", ln);
@@ -548,7 +548,7 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 		return 0;
 	}
 
-#warning TODO: need to convert
+TODO(": need to convert")
 	if (text_val == NULL) {
 		text_val = (const char *)GET_TEXT(CHILDREN(subtree));
 	}
@@ -577,7 +577,7 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 		}
 	}
 
-#warning textrot TODO: check if we can just use the angle
+TODO("textrot: check if we can just use the angle")
 	pcb_text_new(ly, pcb_font(st->pcb, 0, 1), X, Y, 90.0*text_direction, text_scaling, 0, text_val, text_flags);
 	return 0;
 }
@@ -642,7 +642,7 @@ static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int t
 		return 0;
 	}
 
-#warning TODO: rewrite this with only one lin
+TODO(": rewrite this with only one lin")
 	lin1 = pcb_line_alloc(ly);
 	lin2 = pcb_line_alloc(ly);
 	lin3 = pcb_line_alloc(ly);
@@ -700,7 +700,7 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 	long lt = eagle_get_attrl(st, subtree, "linetype", -1); /* present if bin file */
 	double curve = eagle_get_attrd(st, subtree, "curve", 0); /*present if a wire "arc" */
 
-#warning TODO: need to process curve value if present to draw an arc, not a line
+TODO(": need to process curve value if present to draw an arc, not a line")
 	if (curve) {
 		pcb_message(PCB_MSG_ERROR, "Curved wire not yet handled in eagle_read_wire()\n");
 	}
@@ -753,9 +753,9 @@ typedef enum {
 static pcb_pstk_t *eagle_create_pstk(read_state_t *st, pcb_data_t *data, pcb_coord_t x, pcb_coord_t y, eagle_pstk_shape_t shape, pcb_coord_t dx, pcb_coord_t dy, pcb_coord_t clr, pcb_coord_t drill_dia, int roundness, int rot, int onbottom, pcb_bool plated)
 {
 	pcb_pstk_shape_t shapes[8];
-#warning TODO need to establish how mask clearance is defined and done in eagle
+TODO("TODO need to establish how mask clearance is defined and done in eagle")
 	pcb_coord_t mask_gap = clr;
-#warning TODO need to establish how paste clearance, if any, is defined and done in eagle
+TODO("TODO need to establish how paste clearance, if any, is defined and done in eagle")
 	pcb_coord_t paste_gap = 0;
 	switch (shape) {
 		case EAGLE_PSH_SQUARE:
@@ -783,7 +783,7 @@ static pcb_pstk_t *eagle_create_pstk(read_state_t *st, pcb_data_t *data, pcb_coo
 			shapes[7].layer_mask = 0;
 			break;
 		case EAGLE_PSH_OCTAGON:
-#warning TODO need octagon shape generation function/API accessible from read.c padstack creation function
+TODO("TODO need octagon shape generation function/API accessible from read.c padstack creation function")
 		case EAGLE_PSH_ROUND:
 			assert(dx == dy);
 		case EAGLE_PSH_LONG:
@@ -812,7 +812,7 @@ static pcb_pstk_t *eagle_create_pstk(read_state_t *st, pcb_data_t *data, pcb_coo
 			break;
 		case EAGLE_PSH_SMD:
 			{
-#warning TODO need to implement SMD roundness 
+TODO("TODO need to implement SMD roundness ")
 				pcb_layer_type_t side = onbottom ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
 				shapes[0].layer_mask = side | PCB_LYT_MASK;
 				shapes[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO;
@@ -827,7 +827,7 @@ static pcb_pstk_t *eagle_create_pstk(read_state_t *st, pcb_data_t *data, pcb_coo
 			}
 			break;
 		case EAGLE_PSH_OFFSET:
-#warning TODO need OFFSET shape generation function, once OFFSET object understood
+TODO("TODO need OFFSET shape generation function, once OFFSET object understood")
 			return NULL;
 	}
 	return pcb_pstk_new_from_shape(data, x, y, drill_dia, plated, clr, shapes);
@@ -855,12 +855,12 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 	rot = eagle_rot2degrees(eagle_get_attrs(st, subtree, "rot", 0));
 	roundness = eagle_get_attrl(st, subtree, "roundness", 0);
 
-#warning TODO need to load thermals flags to set clearance; may in fact be more contactref related.
+TODO("TODO need to load thermals flags to set clearance; may in fact be more contactref related.")
 
-#warning TODO: this should be coming from the eagle file
+TODO(": this should be coming from the eagle file")
 	clr = conf_core.design.clearance;
 
-#warning TODO padstacks - consider roundrect, oval etc shapes when padstacks available
+TODO("TODO padstacks - consider roundrect, oval etc shapes when padstacks available")
 #if 0
 	if (roundness >= 65) /* round smd pads found in fiducials, some discretes, it seems */
 		PCB_FLAG_CLEAR(PCB_FLAG_SQUARE, pad);
@@ -879,7 +879,7 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 		pcb_pstk_shape_rot(&sh[2], sina, cosa, rot);
 	}
 
-#warning TODO: call eagle_create_pstk() instead
+TODO(": call eagle_create_pstk() instead")
 	ps = pcb_pstk_new_from_shape(subc->data, x, y, 0, 0, clr, sh);
 
 	if (ps == NULL)
@@ -922,11 +922,11 @@ static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj
 	if ((dia - drill) / 2.0 < st->ms_width)
 		dia = drill + 2*st->ms_width;
 
-#warning padstack TODO: process the extent attribute for bbvia
-#warning padstack TODO: revise this for numeric values ?
+TODO("padstack: process the extent attribute for bbvia")
+TODO("padstack: revise this for numeric values ?")
 	/* shape = {square, round, octagon, long, offset} binary */
 
-#warning TODO: call eagle_create_pstk() instead
+TODO(": call eagle_create_pstk() instead")
 	if (shape != NULL) {
 		if ((strcmp(shape, "octagon") == 0) || (strcmp(shape, "2") == 0))
 			cshp = PCB_PSTK_COMPAT_OCTAGON;
@@ -1011,7 +1011,7 @@ static int eagle_read_pkg_txt(read_state_t *st, trnode_t *subtree, void *obj, in
 	return 0;
 }
 
-#warning TODO: eliminate this fwd declaration by reorder
+TODO(": eliminate this fwd declaration by reorder")
 static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int type);
 
 static int eagle_read_pkg(read_state_t *st, trnode_t *subtree, pcb_subc_t *subc)
@@ -1063,13 +1063,13 @@ static int eagle_read_library_file_pkgs(read_state_t *st, trnode_t *subtree, voi
 			pcb_attribute_put(&subc->Attributes, "footprint", eagle_get_attrs(st, n, "package", NULL));
 
 			pcb_subc_bbox(subc);
-#warning subc TODO: revise this: are we loading an instance here? do we need to place it? do not even bump if not!
+TODO("subc: revise this: are we loading an instance here? do we need to place it? do not even bump if not!")
 			if (st->pcb->Data->subc_tree == NULL)
 				st->pcb->Data->subc_tree = pcb_r_create_tree();
 			pcb_r_insert_entry(st->pcb->Data->subc_tree, (pcb_box_t *)subc);
 			pcb_subc_rebind(st->pcb, subc);
 
-#warning TODO: revise rotation and flip
+TODO(": revise rotation and flip")
 #if 0
 			if ((moduleRotation == 90) || (moduleRotation == 180) || (moduleRotation == 270)) {
 				/* lossles module rotation for round steps */
@@ -1228,7 +1228,7 @@ static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int t
 					size_bump(st, x, y);
 					break;
 			}
-#warning TODO can remove the following if dealt with in post processor for binary tree
+TODO("TODO can remove the following if dealt with in post processor for binary tree")
 		} else if (STRCMP(NODENAME(n), "wire") == 0) { /* binary format vertices it seems */
 			pcb_coord_t x, y;
 			x = eagle_get_attrc(st, n, "linetype_0_x1", 0);
@@ -1297,7 +1297,7 @@ static void eagle_read_subc_attrs(read_state_t *st, trnode_t *nd, pcb_subc_t *su
 	if (!add_text)
 		return;
 
-#warning TODO: text objects should be already created in the library; we should probably set the attributes here only
+TODO(": text objects should be already created in the library; we should probably set the attributes here only")
 #if 0
 	y += EAGLE_TEXT_SIZE_100;
 
@@ -1393,7 +1393,7 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 			pcb_subc_bbox(new_subc);
 			pcb_subc_rebind(st->pcb, new_subc);
 
-#warning subc TODO: why not use the arbtirary angle rot?
+TODO("subc: why not use the arbtirary angle rot?")
 			if (rot != NULL) {
 				char *end;
 				double ang = strtod(rot+1, &end);
@@ -1445,7 +1445,7 @@ static int eagle_read_plain(read_state_t *st, trnode_t *subtree, void *obj, int 
 		{NULL, NULL}
 	};
 
-#warning TODO: test (should process these probably no-net-no-signal objects)
+TODO(": test (should process these probably no-net-no-signal objects)")
 	return eagle_foreach_dispatch(st, CHILDREN(subtree), disp, NULL, ON_BOARD);
 }
 
@@ -1605,7 +1605,7 @@ static void st_uninit(read_state_t *st)
 
 static int post_process_thermals(read_state_t *st)
 {
-#warning TODO: process thermals
+TODO(": process thermals")
 	PCB_PADSTACK_LOOP(st->pcb->Data);
 	{
 	}

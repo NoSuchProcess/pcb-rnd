@@ -28,7 +28,7 @@
  */
 
 
-#warning TODO: implement text intersections
+TODO(": implement text intersections")
 pcb_bool pcb_intersect_text_line(pcb_text_t *a, pcb_line_t *b) { return pcb_false; }
 pcb_bool pcb_intersect_text_text(pcb_text_t *a, pcb_text_t *b) { return pcb_false; }
 pcb_bool pcb_intersect_text_poly(pcb_text_t *a, pcb_poly_t *b) { return pcb_false; }

@@ -335,7 +335,7 @@ static proto_node_t *remote_proto_parse(const char *wait_for, int cache_msgs)
 				if ((wait_for != NULL) && (strcmp(wait_for, pctx.pcmd) == 0))
 					return pctx.targ;
 				if (cache_msgs) {
-#warning TODO
+TODO("TODO")
 				}
 				else
 					proto_exec_cmd(pctx.pcmd, pctx.targ);

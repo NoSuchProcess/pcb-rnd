@@ -373,7 +373,7 @@ static void ipcd356_write(pcb_board_t *pcb, FILE *f)
 
 	ipcd356_write_head(&ctx);
 	PCB_SUBC_LOOP(pcb->Data); {
-#warning subc TODO: subc-in-subc
+TODO("subc: subc-in-subc")
 		PCB_PADSTACK_LOOP(subc->data); {
 			ipcd356_write_pstk(&ctx, subc, padstack);
 		} PCB_END_LOOP;

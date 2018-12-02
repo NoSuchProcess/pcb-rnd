@@ -357,7 +357,7 @@ void drc_global_silk_lines(pcb_view_list_t *lst)
 {
 	pcb_view_t *violation;
 
-#warning DRC TODO: need to check text and polygons too!
+TODO("DRC: need to check text and polygons too!")
 	TheFlag = PCB_FLAG_SELECTED;
 	PCB_LINE_SILK_LOOP(PCB->Data);
 	{

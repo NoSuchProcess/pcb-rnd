@@ -48,7 +48,7 @@ static GtkVBox *pcb_gtk_route_style_parent_class;
 guint pcb_gtk_route_style_signals_id[STYLE_LAST_SIGNAL] = { 0 };
 
 
-#warning TODO: this should be in core
+TODO(": this should be in core")
 void pcb_gtk_route_style_copy(int idx)
 {
 	pcb_route_style_t *drst;

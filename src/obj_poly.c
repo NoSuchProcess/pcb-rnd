@@ -408,7 +408,7 @@ pcb_point_t *pcb_poly_point_new(pcb_poly_t *Polygon, pcb_coord_t X, pcb_coord_t 
 	/* copy values */
 	point->X = X;
 	point->Y = Y;
-#warning ID TODO: register points too
+TODO("ID: register points too")
 	point->ID = pcb_create_ID_get();
 	return point;
 }
@@ -1172,7 +1172,7 @@ void pcb_poly_draw_(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_term_g
 				x = (n->prev->point[0] + n->point[0] + n->next->point[0]) / 3;
 				y = (n->prev->point[1] + n->point[1] + n->next->point[1]) / 3;
 
-#warning subc TODO: check if x;y is within the poly, but use a cheaper method than the official
+TODO("subc: check if x;y is within the poly, but use a cheaper method than the official")
 				r = PCB_DRAW_TERM_GFX_WIDTH;
 				pcb_hid_set_line_width(pcb_draw_out.fgGC, r);
 				pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);

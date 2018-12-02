@@ -106,7 +106,7 @@ int list_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter)
 	PCB_PADSTACK_LOOP(subc->data) {
 		list_pstk_cb(ctx, pcb, padstack);
 	} PCB_END_LOOP;
-#warning subc TODO: heavy terminals - test on io_hyp
+TODO("subc: heavy terminals - test on io_hyp")
 	return 0;
 }
 

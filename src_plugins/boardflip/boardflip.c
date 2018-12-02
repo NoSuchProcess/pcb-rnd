@@ -141,7 +141,7 @@ void pcb_flip_data(pcb_data_t *data, pcb_bool flip_x, pcb_bool flip_y, pcb_coord
 	{
 		pcb_flip_data(subc->data, flip_x, flip_y, xo, yo, et_swap_sides);
 		if (et_swap_sides) {
-#warning subc TODO: layer mirror, also test one-sided padstack
+TODO("subc: layer mirror, also test one-sided padstack")
 		}
 	}
 	PCB_END_LOOP;

@@ -62,7 +62,7 @@ void pplg_uninit_lib_hid_common(void)
 
 int pplg_init_lib_hid_common(void)
 {
-#warning padstack TODO: remove some paths when route style has proto
+TODO("padstack: remove some paths when route style has proto")
 	const char **rp, *rpaths[] = {"design/line_thickness", "design/via_thickness", "design/via_drilling_hole", "design/clearance", NULL};
 	static conf_hid_callbacks_t ccb, rcb[sizeof(rpaths)/sizeof(rpaths[0])];
 	conf_native_t *nat;

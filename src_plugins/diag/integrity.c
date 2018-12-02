@@ -294,7 +294,7 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 	if (id_chk_cnt != 0)
 		pcb_message(PCB_MSG_ERROR, CHK "id hash contains %ld excess IDs in %s\n", id_chk_cnt, whose);
 
-#warning subc TODO: check buffers: parents
+TODO("subc: check buffers: parents")
 }
 
 static void chk_layergrps(pcb_board_t *pcb)

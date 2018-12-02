@@ -2920,7 +2920,7 @@ pcb_bool pcb_polyarea_contour_check_(pcb_pline_t *a, pa_chk_res_t *res)
 					return PA_CHK_ERROR(res, "icnt > 1 (%d) at %mm;%mm or  %mm;%mm", icnt, a1->point[0], a1->point[1], a2->point[0], a2->point[1]);
 				}
 
-#warning TODO: ugly workaround: test where exactly the intersection happens and tune the endpoint of the line
+TODO(": ugly workaround: test where exactly the intersection happens and tune the endpoint of the line")
 				/* EPSILON^2 for endpoint matching; the bool algebra code is not
 				   perfect and causes tiny self intersections at the end of sharp
 				   spikes. Accept at most 10 nanometer of such intersection */

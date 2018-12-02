@@ -104,7 +104,7 @@ static void pref_lib_conf2dlg_post(conf_native_t *cfg, int arr_idx)
 	}
 }
 
-#warning TODO: move this to liblihata
+TODO(": move this to liblihata")
 static void lht_clean_list(lht_node_t * lst)
 {
 	lht_node_t *n;

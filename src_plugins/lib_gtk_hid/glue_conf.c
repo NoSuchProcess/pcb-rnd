@@ -127,7 +127,7 @@ void ghid_conf_regs(const char *cookie)
 
 	init_conf_watch(&cbs_rst[0], "design/line_thickness", ghid_confchg_rst);
 	init_conf_watch(&cbs_rst[1], "design/clearance", ghid_confchg_rst);
-#warning padstack TODO: remove some paths when route style has proto
+TODO("padstack: remove some paths when route style has proto")
 	init_conf_watch(&cbs_rst[2], "design/via_thickness", ghid_confchg_rst);
 	init_conf_watch(&cbs_rst[3], "design/via_drilling_hole", ghid_confchg_rst);
 

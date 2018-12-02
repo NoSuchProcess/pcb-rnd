@@ -34,7 +34,7 @@
 #include "find.h"
 
 
-#warning TODO: remove this once the operations are free of ptrs
+TODO(": remove this once the operations are free of ptrs")
 extern unsigned long pcb_obj_type2oldtype(pcb_objtype_t type);
 
 

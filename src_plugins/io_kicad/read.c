@@ -185,7 +185,7 @@ do { \
 /* kicad_pcb/parse_page */
 static int kicad_parse_page_size(read_state_t *st, gsxl_node_t *subtree)
 {
-#warning TODO: size can be determined by kicad_pcb/general/area - when that is present, prefer that over the page size (see via1.kicad_pcb)
+TODO(": size can be determined by kicad_pcb/general/area - when that is present, prefer that over the page size (see via1.kicad_pcb)")
 	if (subtree != NULL && subtree->str != NULL) {
 		if (strcmp("A4", subtree->str) == 0) {
 			st->pcb->MaxWidth = PCB_MM_TO_COORD(297.0);
@@ -331,7 +331,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 				}
 			}
 			else if (n->str != NULL && strcmp("hide", n->str) == 0) {
-#warning TODO
+TODO("TODO")
 			}
 			else if (n->str != NULL && strcmp("effects", n->str) == 0) {
 				for(m = n->children; m != NULL; m = m->next) {
@@ -394,7 +394,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 	}
 	required = BV(0) | BV(1) | BV(2) | BV(3);
 	if ((tally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
-#warning TODO: this will never be NULL; what are we trying to check here?
+TODO(": this will never be NULL; what are we trying to check here?")
 		if (&st->pcb->fontkit.dflt == NULL) {
 			pcb_font_create_default(st->pcb);
 		}
@@ -440,7 +440,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 			}
 		}
 
-#warning textrot TODO: check if we can just use the rotation angle
+TODO("textrot: check if we can just use the rotation angle")
 		pcb_text_new(&st->pcb->Data->Layer[PCBLayer], pcb_font(st->pcb, 0, 1), X, Y, 90.0*direction, scaling, 0, text, Flags);
 		return 0; /* create new font */
 	}
@@ -920,8 +920,8 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 
 	if (subtree->str != NULL) {
 		for(n = subtree; n != NULL; n = n->next) {
-#warning TODO: it is enough to test n->str == NULL only once, and do a "continue"
-#warning TODO: none of the kicad_errors() here should refer to subtree - they should use n or even n->children
+TODO(": it is enough to test n->str == NULL only once, and do a "continue"")
+TODO(": none of the kicad_errors() here should refer to subtree - they should use n or even n->children")
 			if (n->str != NULL && strcmp("start", n->str) == 0) {
 				SEEN_NO_DUP(tally, 0);
 				if (n->children != NULL && n->children->str != NULL) {
@@ -1022,7 +1022,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 				}
 			}
 			else if (n->str != NULL && strcmp("status", n->str) == 0) {
-#warning TODO: process this
+TODO(": process this")
 			}
 			else
 				return kicad_error(n, "unexpected empty/NULL segment argument node: '%s'", n->str);
@@ -1041,7 +1041,7 @@ static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, con
 {
 	pcb_layer_id_t id = -1;
 	pcb_layergrp_id_t gid = -1;
-#warning TODO: we should not depend on layer IDs other than 0
+TODO(": we should not depend on layer IDs other than 0")
 	switch (lnum) {
 		case 0:
 		case 15:
@@ -1069,7 +1069,7 @@ pcb_actionl("dumpcsect", NULL);*/
 			}
 			else if ((lname[1] == '.') && ((lname[0] == 'F') || (lname[0] == 'B'))) {
 				/* F. or B. layers */
-#warning TODO: update this: we have explicit silk, paste and mask now
+TODO(": update this: we have explicit silk, paste and mask now")
 				if (strcmp(lname + 2, "SilkS") == 0)
 					return 0; /* silk layers are implicit */
 #if 0
@@ -1196,7 +1196,7 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 		res |= kicad_reg_layer(st, "Top", PCB_LYT_COPPER | PCB_LYT_TOP, NULL);
 		res |= kicad_reg_layer(st, "Bottom", PCB_LYT_COPPER | PCB_LYT_BOTTOM, NULL);
 
-#warning layer TODO:
+TODO("layer:")
 		/*
 		   We don't have custom mask layers yet
 		   res |= kicad_reg_layer(st, "F.Mask",  PCB_LYT_MASK | PCB_LYT_TOP, NULL);
@@ -1355,7 +1355,7 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 	if (pinName != NULL)
 		pcb_attribute_put(&ps->Attributes, "term", pinName);
 
-#warning TODO: pad rotation?
+TODO(": pad rotation?")
 #if 0
 		/* the rotation value describes rotation to the pad
 		   versus the original pad orientation, _NOT_ rotation
@@ -1450,7 +1450,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	pcb_layer_t *subc_layer;
 	pcb_layer_type_t smd_side;
 
-#warning TODO: this should be coming from the s-expr file preferences part
+TODO(": this should be coming from the s-expr file preferences part")
 	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
 
 	if (st->pcb == NULL) {
@@ -1746,7 +1746,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				}
 				required = BV(0) | BV(1) | BV(4) | BV(7) | BV(8);
 				if ((tally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
-#warning TODO: this will never be NULL; what are we trying to check here?
+TODO(": this will never be NULL; what are we trying to check here?")
 					if (&st->pcb->fontkit.dflt == NULL) {
 						pcb_font_create_default(st->pcb);
 					}
@@ -1910,7 +1910,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						}
 					}
 					else if (m->str != NULL && strcmp("layers", m->str) == 0) {
-#warning TODO: rather pass this subtree directly to the shape generator code so it does not need to guess the layers
+TODO(": rather pass this subtree directly to the shape generator code so it does not need to guess the layers")
 						if (SMD) { /* skip testing for pins */
 							SEEN_NO_DUP(featureTally, 2);
 							smd_side = 0;
@@ -2254,8 +2254,8 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 								return kicad_error(subtree, "unexpected fp_arc end Y null node.");
 							}
 						}
-#warning TODO: this is just code duplication of fp_line code
 						else if (l->str != NULL && strcmp("layer", l->str) == 0) {
+TODO("this is just code duplication of fp_line code")
 							SEEN_NO_DUP(featureTally, 6);
 							if (l->children != NULL && l->children->str != NULL) {
 								SEEN_NO_DUP(featureTally, 7);
@@ -2359,7 +2359,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 
 		if (subc != NULL) {
 			if (moduleEmpty) { /* should try and use module empty function here */
-#warning TODO: why do we try to do this? an error is an error
+TODO(": why do we try to do this? an error is an error")
 				Thickness = PCB_MM_TO_COORD(0.200);
 			}
 
@@ -2693,7 +2693,7 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 		pcb_message(PCB_MSG_WARNING, "Had to make changes to the coords so that the design fits the board.\n");
 	pcb_layer_colors_from_conf(Ptr, 1);
 
-#warning TODO: free the layer hash
+TODO(": free the layer hash")
 
 	return readres;
 }

@@ -820,7 +820,7 @@ int conf_merge_patch_item(const char *path, lht_node_t *n, conf_role_t role, int
 				pcb_hid_cfg_error(n, "Attempt to initialize a scalar with a list - this node should be a text node\n");
 			break;
 		case LHT_SYMLINK:
-#warning TODO
+TODO("TODO")
 			break;
 		case LHT_INVALID_TYPE:
 		case LHT_TABLE:
@@ -1802,7 +1802,7 @@ int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role,
 		}
 
 		if (f != NULL) {
-#warning CONF TODO: a project file needs to be loaded, merged, then written (to preserve non-config nodes)
+TODO("CONF: a project file needs to be loaded, merged, then written (to preserve non-config nodes)")
 			lht_dom_export(r->doc->root, f, "");
 			fail = 0;
 			conf_lht_dirty[role] = 0;

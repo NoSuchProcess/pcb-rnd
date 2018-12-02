@@ -98,7 +98,7 @@ void pcb_draw_delay_obj_add(pcb_any_obj_t *obj)
 }
 
 
-#warning cleanup TODO: this should be cached
+TODO("cleanup: this should be cached")
 void pcb_lighten_color(const char *orig, char buf[8], double factor)
 {
 	unsigned int r, g, b;

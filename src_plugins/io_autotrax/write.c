@@ -188,7 +188,7 @@ static int wrax_padstack(wctx_t *ctx, pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_
 		h = y2 - y1;
 		drill_dia = 0;
 
-#warning TODO: need to figure which side the padstack is on!
+TODO(": need to figure which side the padstack is on!")
 		alayer = 1;
 	}
 	else {
@@ -216,8 +216,8 @@ static int wrax_padstack(wctx_t *ctx, pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_
 	else
 		fputs("FP ", ctx->f);
 
-#warning TODO: figure which is the gnd and which is the power plane
-#warning TODO: add checks for thermals: only gnd/pwr can have them, warn for others
+TODO(": figure which is the gnd and which is the power plane")
+TODO(": add checks for thermals: only gnd/pwr can have them, warn for others")
 
 	pcb_fprintf(ctx->f, "%.0ml %.0ml %.0ml %.0ml %d %.0ml 1 %d\r\n",
 		x+dx, PCB->MaxHeight - (y+dy), w, h,
@@ -300,7 +300,7 @@ static int pcb_rnd_arc_to_autotrax_segments(pcb_angle_t arc_start, pcb_angle_t a
 		arc_start -= arc_delta;
 	}
 
-#warning TODO arc segments less than 90 degrees do not convert well.
+TODO("TODO arc segments less than 90 degrees do not convert well.")
 
 	while(arc_start < 0)
 		arc_start += 360;
@@ -436,7 +436,7 @@ static int wrax_text(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer, pcb
 
 	int index = 0;
 
-#warning TODO: why do we hardwire this here?
+TODO(": why do we hardwire this here?")
 	default_stroke_thickness = 200000;
 
 	/* write information about non empty layers */
@@ -446,7 +446,7 @@ static int wrax_text(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer, pcb
 			int direction;
 			
 			if (pcb_text_old_direction(&direction, text->rot) != 0) {
-#warning TODO: indicate save incompatibility
+TODO(": indicate save incompatibility")
 			}
 
 			if (current_layer < 9) { /* copper or silk layer text */
@@ -499,11 +499,11 @@ static int wrax_subc(wctx_t *ctx, pcb_subc_t *subc)
 	pcb_box_t *box = &subc->BoundingBox;
 	pcb_coord_t xPos, yPos, yPos2, yPos3;
 
-#warning TODO: do not hardcode things like this, especially when actual data is available
+TODO(": do not hardcode things like this, especially when actual data is available")
 	pcb_coord_t text_offset = PCB_MIL_TO_COORD(400); /* this gives good placement of refdes relative to element */
 
-#warning TODO: rename these variables to something more expressive
-#warning TODO: instead of hardwiring coords, just read existing dyntex coords
+TODO(": rename these variables to something more expressive")
+TODO(": instead of hardwiring coords, just read existing dyntex coords")
 	xPos = (box->X1 + box->X2) / 2;
 	yPos = PCB->MaxHeight - (box->Y1 - text_offset);
 	yPos2 = yPos - PCB_MIL_TO_COORD(200);
@@ -511,7 +511,7 @@ static int wrax_subc(wctx_t *ctx, pcb_subc_t *subc)
 
 	pcb_subc_get_side(subc, &on_bottom);
 
-#warning TODO: do not hardwire these layers, even if the autotrax format hardwires them - look them up from the static table, let the hardwiring happen only at one place
+TODO(": do not hardwire these layers, even if the autotrax format hardwires them - look them up from the static table, let the hardwiring happen only at one place")
 	if (on_bottom)
 		silk_layer = 8;
 	else
@@ -563,7 +563,7 @@ static int wrax_polygons(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer,
 			if (pcb_cpoly_is_simple_rect(polygon)) {
 				pcb_trace(" simple rectangular polyogon\n");
 
-#warning TODO: why do we recalculate the bounding box here?
+TODO(": why do we recalculate the bounding box here?")
 				minx = maxx = polygon->Points[0].X;
 				miny = maxy = polygon->Points[0].Y;
 
@@ -592,7 +592,7 @@ static int wrax_polygons(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer,
 				pcb_coord_t Thickness;
 				Thickness = PCB_MIL_TO_COORD(10);
 				autotrax_cpoly_hatch_lines(ctx, polygon, PCB_CPOLY_HATCH_HORIZONTAL | PCB_CPOLY_HATCH_VERTICAL, Thickness * 3, Thickness, current_layer, dx, dy);
-#warning TODO: do we really need to reimplement this, can not cpoly_hatch_lines handle it?
+TODO(": do we really need to reimplement this, can not cpoly_hatch_lines handle it?")
 				for(pa = pcb_poly_island_first(polygon, &poly_it); pa != NULL; pa = pcb_poly_island_next(&poly_it)) {
 					/* now generate cross hatch lines for polygon island export */
 					pcb_pline_t *pl, *track;
@@ -667,7 +667,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename
 	wctx.f = FP;
 	wctx.pcb = PCB;
 
-#warning TODO: this is a bug - exporting to a file shall not change the content we are exporting
+TODO(": this is a bug - exporting to a file shall not change the content we are exporting")
 	if (pcb_board_normalize(PCB) < 0) {
 		pcb_message(PCB_MSG_ERROR, "Unable to normalise layout prior to attempting export.\n");
 		return -1;

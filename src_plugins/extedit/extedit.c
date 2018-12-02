@@ -187,7 +187,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		type = pcb_search_screen(x, y, EXTEDIT_TYPES, &ptr1, &ptr2, &ptr3);
 	}
 	else if ((argc > 1) && (pcb_strcasecmp(cmd, "selected") == 0)) {
-#warning TODO
+TODO("TODO")
 		pcb_message(PCB_MSG_ERROR, "\"Selected\" not supported yet\n");
 		PCB_ACT_IRES(1);
 		return 0;
