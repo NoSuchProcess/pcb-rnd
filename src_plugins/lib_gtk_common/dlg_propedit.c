@@ -295,102 +295,6 @@ static void do_apply_cb(GtkWidget * tree, pcb_gtk_dlg_propedit_t * dlg)
 
 static pcb_board_t preview_pcb;
 
-static void prop_preview_init(void)
-{
-	pcb_poly_t *v;
-	pcb_layer_id_t n;
-	pcb_board_t *old_pcb;
-	old_pcb = PCB;
-	PCB = &preview_pcb;
-
-	memset(&preview_pcb, 0, sizeof(preview_pcb));
-	preview_pcb.Data = pcb_buffer_new(&preview_pcb);
-	preview_pcb.MaxWidth = preview_pcb.MaxHeight = PCB_MIL_TO_COORD(1000);
-	pcb_font_create_default(&preview_pcb);
-	preview_pcb.pstk_on = 1;
-
-	for (n = 0; n < 2; n++) {
-		preview_pcb.Data->Layer[n].is_bound = 0;
-		preview_pcb.Data->Layer[n].meta.real.vis = 1;
-		preview_pcb.Data->Layer[n].meta.real.color = pcb_strdup(old_pcb->Data->Layer[n].meta.real.color);
-		preview_pcb.Data->Layer[n].name = pcb_strdup("preview dummy");
-		
-	}
-
-	memcpy(&preview_pcb.LayerGroups, &old_pcb->LayerGroups, sizeof(old_pcb->LayerGroups));
-	preview_pcb.Data->LayerN = 1;
-	preview_pcb.Data->Layer[0].meta.real.grp = 0;
-	preview_pcb.LayerGroups.grp[0].ltype = PCB_LYT_COPPER | PCB_LYT_TOP;
-	preview_pcb.LayerGroups.grp[0].lid[0] = 0;
-	preview_pcb.LayerGroups.grp[0].len = 1;
-	preview_pcb.LayerGroups.grp[0].parent.any = NULL;
-	preview_pcb.LayerGroups.grp[0].parent_type = PCB_PARENT_INVALID;
-	preview_pcb.LayerGroups.grp[0].type = PCB_OBJ_LAYERGRP;
-	preview_pcb.LayerGroups.len = 1;
-	PCB_SET_PARENT(preview_pcb.Data, board, &preview_pcb);
-	preview_pcb.Data->Layer[0].parent.data = preview_pcb.Data;
-	preview_pcb.Data->Layer[0].parent_type = PCB_PARENT_DATA;
-	preview_pcb.Data->Layer[0].type = PCB_OBJ_LAYER;
-
-#warning TODO: preview_pcb is never freed
-
-#warning padstack TODO: create a padstack
-#if 0
-	pcb_via_new(preview_pcb.Data,
-							PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
-							PCB_MIL_TO_COORD(50), PCB_MIL_TO_COORD(40), 0, PCB_MIL_TO_COORD(20), "", pcb_no_flags());
-#endif
-
-	pcb_line_new(preview_pcb.Data->Layer + 0,
-							 PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
-							 PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1300),
-							 PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(40), pcb_flag_make(PCB_FLAG_CLEARLINE));
-
-	pcb_arc_new(preview_pcb.Data->Layer + 0,
-							PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
-							PCB_MIL_TO_COORD(100), PCB_MIL_TO_COORD(100),
-							0.0, 90.0, PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(40), pcb_flag_make(PCB_FLAG_CLEARLINE), pcb_false);
-
-	pcb_text_new(preview_pcb.Data->Layer + 0, pcb_font(PCB, 0, 1),
-							 PCB_MIL_TO_COORD(850), PCB_MIL_TO_COORD(1150), 0, 100, 0, "Text", pcb_flag_make(PCB_FLAG_CLEARLINE));
-
-	v = pcb_poly_new_from_rectangle(preview_pcb.Data->Layer + 0,
-																									 PCB_MIL_TO_COORD(10), PCB_MIL_TO_COORD(10),
-																									 PCB_MIL_TO_COORD(1200), PCB_MIL_TO_COORD(1200),
-																									 0, pcb_flag_make(PCB_FLAG_CLEARPOLY));
-	pcb_poly_init_clip(preview_pcb.Data, preview_pcb.Data->Layer + 0, v);
-	PCB = old_pcb;
-
-/*
-	{
-		GdkGC *gc = gdk_gc_new(GDK_DRAWABLE(gport->top_window->window));
-		GdkColor clr = {0, 0, 0, 0};
-		int x, y;
-		double zm = 40000 * zoom1;
-
-		gdk_gc_set_rgb_fg_color(gc, &clr);
-
-		x = (PCB_MIL_TO_COORD(1000) - cx) / zm + 0.5 + 200;
-		y = (PCB_MIL_TO_COORD(1000) - cy) / zm + 0.5 + 150;
-		gdk_draw_line(pm, gc, x, y, 0, 0);
-		gdk_draw_line(pm, gc, x+1, y+1, 1, 1);
-		gdk_draw_line(pm, gc, x-1, y-1, -1, -1);
-	}
-*/
-}
-
-static void prop_preview_draw(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
-{
-	pcb_board_t *old_pcb;
-#warning TODO: do not reimplement draw.c code here:
-	old_pcb = PCB;
-	PCB = &preview_pcb;
-/*	pcb_draw_layer_noxform(PCB, &(PCB->Data->Layer[0]), &e->view);
-	pcb_draw_ppv(0, &e->view);*/
-	PCB = old_pcb;
-}
-
-
 /*static void sort_by_name(GtkTreeModel *liststore)
 {
 	GtkTreeSortable *sortable = GTK_TREE_SORTABLE(liststore);
@@ -442,11 +346,9 @@ static void make_sortable(GtkTreeModel * liststore)
 GtkWidget *pcb_gtk_dlg_propedit_create(pcb_gtk_dlg_propedit_t *dlg, pcb_gtk_common_t *com)
 {
 	GtkWidget *window, *vbox_tree, *vbox_edit, *hbox_win, *label, *scrolled_win;
-	GtkWidget *hbx, *dummy, *box_val_edit, *prv;
+	GtkWidget *hbx, *dummy, *box_val_edit;
 	GtkCellRenderer *renderer;
 	GtkWidget *content_area;
-	pcb_gtk_preview_t *p;
-
 
 	dlg->last_add_iter_valid = 0;
 	dlg->com = com;
