@@ -1,8 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- CLEANUP: fontsel
-	- rewrite buttons?
 - CLEANUP: rewrite the preview API:
 	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
 	- there should be a view context in core associated with this, that contains flips so the view can be decoupled from board flip config (library preview)
