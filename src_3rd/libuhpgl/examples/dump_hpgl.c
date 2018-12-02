@@ -56,7 +56,7 @@ static int dump_circ(uhpgl_ctx_t *ctx, uhpgl_arc_t *circ)
 
 static int dump_poly(uhpgl_ctx_t *ctx, uhpgl_poly_t *poly)
 {
-#warning TODO
+/*#warning TODO*/
 	return 0;
 }
 
