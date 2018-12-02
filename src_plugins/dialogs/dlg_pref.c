@@ -39,6 +39,7 @@
 #include "dlg_pref_board.c"
 #include "dlg_pref_general.c"
 #include "dlg_pref_lib.c"
+#include "dlg_pref_layer.c"
 
 pref_ctx_t pref_ctx;
 static const char *pref_cookie = "preferences dialog";
@@ -257,7 +258,7 @@ static void pcb_dlg_pref(const char *target_tab_str)
 		PCB_DAD_END(pref_ctx.dlg);
 
 		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Layers */
-			PCB_DAD_LABEL(pref_ctx.dlg, "TODO");
+			pcb_dlg_pref_layer_create(&pref_ctx);
 		PCB_DAD_END(pref_ctx.dlg);
 
 		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Colors */
