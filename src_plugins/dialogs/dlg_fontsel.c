@@ -31,6 +31,10 @@ typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	pcb_board_t *pcb;
 	int active;
+
+	pcb_text_t *old_txt;
+	pcb_layer_t *old_layer;
+	int old_type;
 } fontsel_ctx_t;
 
 fontsel_ctx_t fontsel_ctx;
@@ -38,6 +42,11 @@ fontsel_ctx_t fontsel_ctx;
 static void fontsel_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	fontsel_ctx_t *ctx = caller_data;
+
+	*pcb_stub_draw_fontsel_text_obj = ctx->old_txt;
+	*pcb_stub_draw_fontsel_layer_obj = ctx->old_layer;
+	*pcb_stub_draw_fontsel_text_type = ctx->old_type;
+
 	PCB_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(fontsel_ctx_t));
 }
@@ -75,8 +84,36 @@ static void pcb_dlg_foo(pcb_board_t *pcb)
 
 static const char pcb_acts_Fontsel[] = "Fontsel2()\n";
 static const char pcb_acth_Fontsel[] = "Open the font selection dialog";
-static fgw_error_t pcb_act_Fontsel(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+static fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	const char *op = NULL;
+	if (argc > 2)
+		PCB_ACT_FAIL(Fontsel);
+
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, Fontsel, op = argv[1].val.str);
+
+	fontsel_ctx.old_txt = *pcb_stub_draw_fontsel_text_obj;
+	fontsel_ctx.old_layer = *pcb_stub_draw_fontsel_layer_obj;
+	fontsel_ctx.old_type = *pcb_stub_draw_fontsel_text_type;
+	*pcb_stub_draw_fontsel_text_obj = NULL;
+	*pcb_stub_draw_fontsel_layer_obj = NULL;
+	*pcb_stub_draw_fontsel_text_type = 0;
+
+	if (op != NULL) {
+		if (pcb_strcasecmp(op, "Object") == 0) {
+			pcb_coord_t x, y;
+			int type;
+			void *ptr1, *ptr2, *ptr3;
+			pcb_hid_get_coords("Select an Object", &x, &y, 0);
+			if ((type = pcb_search_screen(x, y, PCB_CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
+				*pcb_stub_draw_fontsel_text_obj = ptr2;
+				*pcb_stub_draw_fontsel_layer_obj = ptr1;
+				*pcb_stub_draw_fontsel_text_type = type;
+			}
+		}
+		else
+			PCB_ACT_FAIL(Fontsel);
+	}
 	pcb_dlg_foo(PCB);
 	return 0;
 }
