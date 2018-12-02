@@ -57,6 +57,9 @@
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - BUG: scconfig: if libgd is not detected, there's an extra error on disable-gd-gif [report: Erich]
+- BUG: fontsel [report: Igor2]
+	- BUG: can't replace font when editing for a text object - shouldn't depend on conf_core
+	- BUG: replace font id=1 when fontsel runs for board seems to replace font 0
 
 2. For later releases ===============================================================================
 - CLEANUP: remove pcb_rubber_band_alloc() and use genvector
