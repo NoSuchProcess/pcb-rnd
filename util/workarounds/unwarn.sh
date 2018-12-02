@@ -7,7 +7,9 @@
 
 sed '
 	/^#[ \t]*warning.*/ {
-		s@^@/*@
-		s@$@*/@
+		s@^@TODO("@
+		s@$@")@
+		s@ *TODO:@:@
+		s@#[ \t]*warning *@:@
 	}
 ' < "$1" > "$1.tmp" && mv "$1.tmp" "$1"
