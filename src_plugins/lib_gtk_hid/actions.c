@@ -335,14 +335,6 @@ static fgw_error_t pcb_act_importgui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
  *
  */
 
-static const char pcb_acts_EditLayerGroups[] = "EditLayerGroups()";
-static const char pcb_acth_EditLayerGroups[] = N_("Pop up the gui that edits the layer groups (layer stackup).");
-/* DOC: editlayergroups.html */
-static fgw_error_t pcb_act_EditLayerGroups(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	return fgw_vcall(&pcb_fgw, res, "dowindows", FGW_STR, "Preferences", FGW_STR, "1", FGW_STR, "User PoV/Layers", 0);
-}
-
 pcb_action_t ghid_menu_action_list[] = {
 	{"AdjustStyle", pcb_act_AdjustStyle, pcb_acth_AdjustStyle, pcb_acts_AdjustStyle},
 };
@@ -354,7 +346,6 @@ pcb_action_t ghid_main_action_list[] = {
 	{"Center", pcb_act_Center, pcb_acth_center, pcb_acts_center},
 	{"Command", pcb_act_Command},
 	{"DoWindows", pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows},
-	{"EditLayerGroups", pcb_act_EditLayerGroups, pcb_acth_EditLayerGroups, pcb_acts_EditLayerGroups},
 	{"ImportGUI", pcb_act_importgui, pcb_gtk_acth_importgui, pcb_gtk_acts_importgui},
 	{"Load", pcb_act_load },
 	{"LogShowOnAppend", pcb_gtk_act_logshowonappend, pcb_gtk_acth_logshowonappend, pcb_gtk_acts_logshowonappend},
