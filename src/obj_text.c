@@ -802,8 +802,12 @@ void pcb_text_scale(pcb_text_t *text, double sx, double sy, double sth)
 }
 
 
-void pcb_text_set_font(pcb_layer_t *layer, pcb_text_t *text, pcb_font_id_t fid)
+void pcb_text_set_font(pcb_text_t *text, pcb_font_id_t fid)
 {
+	pcb_layer_t *layer = text->parent.layer;
+
+	assert(text->parent_type = PCB_PARENT_LAYER);
+
 	pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_TEXT, layer, text);
 	pcb_r_delete_entry(layer->text_tree, (pcb_box_t *) text);
 	text->fid = fid;
