@@ -464,12 +464,12 @@ GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widg
 }
 
 static GtkWidget *pcb_gtk_preview_any_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widget_t init_widget,
-																		 pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer, pcb_hid_dialog_draw_t dialog_draw)
+																		 pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw)
 {
 	pcb_gtk_preview_t *prv;
 
 	prv = (pcb_gtk_preview_t *) pcb_gtk_preview_new(com, init_widget, expose, dialog_draw);
-	g_object_set(G_OBJECT(prv), "layer", layer, "width-request", 50, "height-request", 50, NULL);
+	g_object_set(G_OBJECT(prv), "width-request", 50, "height-request", 50, NULL);
 
 #warning TODO: maybe expose these through the object API so the caller can set it up?
 	memset(&prv->view, 0, sizeof(prv->view));
@@ -508,7 +508,7 @@ GtkWidget *pcb_gtk_preview_generic_new(pcb_gtk_common_t * com, pcb_gtk_init_draw
 {
 	GtkWidget *preview;
 
-	preview = pcb_gtk_preview_any_new(com, init_widget, expose, -1, dialog_draw);
+	preview = pcb_gtk_preview_any_new(com, init_widget, expose, dialog_draw);
 	g_object_set(G_OBJECT(preview), "config", config, "draw_data", draw_data, NULL);
 
 	return preview;
