@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 - CLEANUP: fontsel
-	- remove dlg_fontsel local callbacks
 	- simplify the stub object pointers, keep only obj
 	- rewrite buttons?
 - CLEANUP: rewrite the preview API:
@@ -54,7 +53,10 @@
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - BUG: scconfig: if libgd is not detected, there's an extra error on disable-gd-gif [report: Erich]
-
+- BUG: start a new board while fontsel is open [report: Igor2]
+	- should get notified by pcb change
+	- should not remember object by pointer but by idpath
+	- reset the idpath on pcb change
 
 2. For later releases ===============================================================================
 - CLEANUP: remove pcb_rubber_band_alloc() and use genvector
