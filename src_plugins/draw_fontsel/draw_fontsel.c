@@ -103,7 +103,6 @@ int font_replace_y1, font_replace_y2;
 int font_del_y1, font_del_y2;
 
 pcb_text_t *fontsel_txt = NULL;
-pcb_layer_t *fontsel_layer = NULL;
 
 static void pcb_draw_font(pcb_hid_gc_t gc, pcb_font_t *f, int x, int *y)
 {
@@ -246,7 +245,5 @@ int pplg_init_draw_fontsel(void)
 	pcb_stub_draw_fontsel = pcb_draw_fontsel;
 	pcb_stub_draw_fontsel_mouse_ev = pcb_mouse_fontsel;
 	pcb_stub_draw_fontsel_text_obj = &fontsel_txt;
-	pcb_stub_draw_fontsel_layer_obj = &fontsel_layer;
-
 	return 0;
 }
