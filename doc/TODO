@@ -1,9 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- CLEANUP: rewrite the preview API:
-	- there should be a view context in core associated with this, that contains flips so the view can be decoupled from board flip config (library preview)
-	- ... but there also should be an option for going with board flip (drc view)
 - CLEANUP: boardflip rewrite: use data_mirror
 	- BUG: can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
 	- BUG: boardflip() action moves the objects and doesn't move the subc outline and origin (repro: place single part, run boardflip) [report:Miloh]
@@ -38,6 +35,7 @@
 	- should get notified by pcb change
 	- should not remember object by pointer but by idpath
 	- reset the idpath on pcb change
+- FEATURE: drc preview: follow board flips (should be a DAD preview flag) [report: Igor2]
 + BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
 - BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
 - BUG: bug_files/obsconf.lht: load, get a warning for obsolete config; save into a new file and the broken conf node is not removed [report: keantoken]
