@@ -3,5 +3,6 @@ $short HID-independent GUI dialogs
 $long Interactive core functionality: HID-independent GUI dialogs (enabled by GUI HIDs)
 $package lib-gui
 $state works
+dep draw_fontsel
 default disable
 autoload 1
