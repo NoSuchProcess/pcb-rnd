@@ -10,6 +10,6 @@ sed '
 		s@^@TODO("@
 		s@$@")@
 		s@ *TODO:@:@
-		s@#[ \t]*warning *@:@
+		s@#[ \t]*warning *@@
 	}
 ' < "$1" > "$1.tmp" && mv "$1.tmp" "$1"
