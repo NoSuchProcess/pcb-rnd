@@ -58,17 +58,8 @@ static void perview_update_offs(pcb_gtk_preview_t *preview)
 	yf = (double)preview->view.height / preview->view.canvas_height;
 	preview->view.coord_per_px = (xf > yf ? xf : yf);
 
-	if (preview->kind == PCB_GTK_PREVIEW_GENERIC) {
-		preview->xoffs = (pcb_coord_t)(preview->view.width / 2 - preview->view.canvas_width * preview->view.coord_per_px / 2);
-		preview->yoffs = (pcb_coord_t)(preview->view.height / 2 - preview->view.canvas_height * preview->view.coord_per_px / 2);
-	}
-	else {
-		/* Ugly hack: at the end we will have only GENERIC preview, so there's
-		   no point in fixing up mouse actions properly for the non-generic ones,
-		   but we don't want to risk current behavior until they are converted to
-		   GENERIC */
-		preview->xoffs = preview->yoffs = 0;
-	}
+	preview->xoffs = (pcb_coord_t)(preview->view.width / 2 - preview->view.canvas_width * preview->view.coord_per_px / 2);
+	preview->yoffs = (pcb_coord_t)(preview->view.height / 2 - preview->view.canvas_height * preview->view.coord_per_px / 2);
 }
 
 static void pcb_gtk_preview_update_x0y0(pcb_gtk_preview_t *preview)
@@ -106,7 +97,6 @@ static void preview_set_view(pcb_gtk_preview_t * preview)
 	view.X2 = preview->obj->BoundingBox.X2;
 	view.Y2 = preview->obj->BoundingBox.Y2;
 	pcb_gtk_preview_zoomto(preview, &view);
-#warning switch for .kind here and do a zoom-to-extend on layer
 }
 
 static void preview_set_data(pcb_gtk_preview_t *preview, pcb_any_obj_t *obj)
@@ -172,11 +162,7 @@ static void ghid_preview_set_property(GObject * object, guint property_id, const
 	case PROP_EXPOSE:
 		preview->expose = (void *) g_value_get_pointer(value);
 		break;
-	case PROP_KIND:
-		preview->kind = g_value_get_int(value);
-		break;
 	case PROP_GENERIC:
-		preview->kind = PCB_GTK_PREVIEW_GENERIC;
 		preview->expose_data.content.draw_data = g_value_get_pointer(value);
 		if (window != NULL)
 			gdk_window_invalidate_rect(window, NULL, FALSE);
@@ -207,8 +193,6 @@ static gboolean ghid_preview_expose(GtkWidget * widget, pcb_gtk_expose_t * ev)
 	gboolean res;
 	int save_fx, save_fy;
 
-	switch (preview->kind) {
-	case PCB_GTK_PREVIEW_GENERIC:
 		preview->expose_data.view.X1 = preview->x_min;
 		preview->expose_data.view.Y1 = preview->y_min;
 		preview->expose_data.view.X2 = preview->x_max;
@@ -224,13 +208,6 @@ static gboolean ghid_preview_expose(GtkWidget * widget, pcb_gtk_expose_t * ev)
 		conf_force_set_bool(conf_core.editor.view.flip_y, save_fy);
 
 		return res;
-
-	case PCB_GTK_PREVIEW_INVALID:
-	case PCB_GTK_PREVIEW_kind_max:
-		return FALSE;
-	}
-
-	return FALSE;
 }
 
 /* Override parent virtual class methods as needed and register GObject properties. */
@@ -255,9 +232,6 @@ static void ghid_preview_class_init(pcb_gtk_preview_class_t * klass)
 																	g_param_spec_pointer("init-widget", "", "", G_PARAM_WRITABLE));
 
 	g_object_class_install_property(gobject_class, PROP_EXPOSE, g_param_spec_pointer("expose", "", "", G_PARAM_WRITABLE));
-
-	g_object_class_install_property(gobject_class, PROP_KIND,
-																	g_param_spec_int("kind", "", "", 0, PCB_GTK_PREVIEW_kind_max - 1, 0, G_PARAM_WRITABLE));
 
 	g_object_class_install_property(gobject_class, PROP_DIALOG_DRAW, g_param_spec_pointer("dialog_draw", "", "", G_PARAM_WRITABLE));
 
@@ -320,8 +294,7 @@ static gboolean button_press(GtkWidget * w, pcb_hid_cfg_mod_t btn)
 	get_ptr(preview, &cx, &cy, &wx, &wy);
 	void *draw_data = NULL;
 
-	if (preview->kind == PCB_GTK_PREVIEW_GENERIC)
-		draw_data = preview->expose_data.content.draw_data;
+	draw_data = preview->expose_data.content.draw_data;
 
 	switch (btn) {
 	case PCB_MB_LEFT:
@@ -383,8 +356,7 @@ static gboolean preview_button_release_cb(GtkWidget * w, GdkEventButton * ev, gp
 	pcb_coord_t cx, cy;
 	void *draw_data = NULL;
 
-	if (preview->kind == PCB_GTK_PREVIEW_GENERIC)
-		draw_data = preview->expose_data.content.draw_data;
+	draw_data = preview->expose_data.content.draw_data;
 
 	get_ptr(preview, &cx, &cy, &wx, &wy);
 
@@ -415,8 +387,7 @@ static gboolean preview_motion_cb(GtkWidget * w, GdkEventMotion * ev, gpointer d
 	gint wx, wy;
 	void *draw_data = NULL;
 
-	if (preview->kind == PCB_GTK_PREVIEW_GENERIC)
-		draw_data = preview->expose_data.content.draw_data;
+	draw_data = preview->expose_data.content.draw_data;
 
 	get_ptr(preview, &cx, &cy, &wx, &wy);
 	if (preview->view.panning) {
@@ -483,7 +454,6 @@ GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t * com, pcb_gtk_init_drawing_widg
 																							 "com", com,
 																							 "gport", com->gport,
 																							 "init-widget", init_widget,
-																							 "kind", PCB_GTK_PREVIEW_GENERIC,
 																							 "expose", expose,
 																							 "dialog_draw", dialog_draw,
 																							 NULL);
@@ -539,7 +509,7 @@ GtkWidget *pcb_gtk_preview_generic_new(pcb_gtk_common_t * com, pcb_gtk_init_draw
 	GtkWidget *preview;
 
 	preview = pcb_gtk_preview_any_new(com, init_widget, expose, -1, dialog_draw);
-	g_object_set(G_OBJECT(preview),"kind", PCB_GTK_PREVIEW_GENERIC, "config", config, "generic", draw_data, NULL);
+	g_object_set(G_OBJECT(preview), "config", config, "generic", draw_data, NULL);
 
 	return preview;
 }
