@@ -27,7 +27,14 @@
 #include "wt_preview.h"
 #include "hid_attrib.h"
 
-static int widget_depth(Widget w);
+static int widget_depth(Widget w) {
+	Arg args[1];
+	int depth;
+
+	XtSetArg(args[0], XtNdepth, &depth);
+	XtGetValues(w, args, 1);
+	return depth;
+}
 
 void pcb_ltf_preview_zoom_update(pcb_ltf_preview_t *pd)
 {
