@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 - CLEANUP: fontsel
-	- simplify the stub object pointers, keep only obj
 	- rewrite buttons?
 - CLEANUP: rewrite the preview API:
 	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
@@ -38,6 +37,11 @@
 - FEATURE: lesstif does not allow "save as" in non alien format [report: erich]
 - FEATURE: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
 - FEATURE: padstack editor: indicate if a proto layer does not map to current board layer [report: Erich]
+- FEATURE: non-modal fontsel: start a new board while fontsel is open [report: Igor2]
+	- make fontsel non-modal
+	- should get notified by pcb change
+	- should not remember object by pointer but by idpath
+	- reset the idpath on pcb change
 + BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
 - BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
 - BUG: bug_files/obsconf.lht: load, get a warning for obsolete config; save into a new file and the broken conf node is not removed [report: keantoken]
@@ -53,10 +57,6 @@
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - BUG: scconfig: if libgd is not detected, there's an extra error on disable-gd-gif [report: Erich]
-- BUG: start a new board while fontsel is open [report: Igor2]
-	- should get notified by pcb change
-	- should not remember object by pointer but by idpath
-	- reset the idpath on pcb change
 
 2. For later releases ===============================================================================
 - CLEANUP: remove pcb_rubber_band_alloc() and use genvector
