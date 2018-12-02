@@ -61,6 +61,20 @@ void fontsel_free_cb(pcb_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx)
 {
 }
 
+
+static void btn_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+}
+
+static void btn_replace_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+}
+
+static void btn_remove_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+}
+
+
 static void pcb_dlg_foo(pcb_board_t *pcb)
 {
 	pcb_box_t vbox = {0, 0, PCB_MM_TO_COORD(55), PCB_MM_TO_COORD(55)};
@@ -72,6 +86,17 @@ static void pcb_dlg_foo(pcb_board_t *pcb)
 		PCB_DAD_COMPFLAG(fontsel_ctx.dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_PREVIEW(fontsel_ctx.dlg, fontsel_expose_cb, fontsel_mouse_cb, fontsel_free_cb, &vbox, 200, 200, &fontsel_ctx);
 			PCB_DAD_COMPFLAG(fontsel_ctx.dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_BEGIN_HBOX(fontsel_ctx.dlg);
+		PCB_DAD_BUTTON(fontsel_ctx.dlg, "Load font");
+			PCB_DAD_CHANGE_CB(fontsel_ctx.dlg, btn_load_cb);
+			PCB_DAD_HELP(fontsel_ctx.dlg, "Load new font from disk");
+		PCB_DAD_BUTTON(fontsel_ctx.dlg, "Replace font");
+			PCB_DAD_CHANGE_CB(fontsel_ctx.dlg, btn_replace_cb);
+			PCB_DAD_HELP(fontsel_ctx.dlg, "Replace currently selected font\nwith new font loaded from disk");
+		PCB_DAD_BUTTON(fontsel_ctx.dlg, "Remove font");
+			PCB_DAD_CHANGE_CB(fontsel_ctx.dlg, btn_remove_cb);
+			PCB_DAD_HELP(fontsel_ctx.dlg, "Remove currently selected font");
+		PCB_DAD_END(fontsel_ctx.dlg);
 	PCB_DAD_END(fontsel_ctx.dlg);
 
 	fontsel_ctx.active = 1;
