@@ -445,7 +445,7 @@ GType pcb_gtk_preview_get_type()
 	return ghid_preview_type;
 }
 
-GtkWidget *pcb_gtk_preview_generic_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget,
+GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget,
 																			pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw, pcb_gtk_preview_config_t config, void *draw_data)
 {
 	pcb_gtk_preview_t *prv = (pcb_gtk_preview_t *)g_object_new(

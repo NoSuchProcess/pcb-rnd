@@ -95,7 +95,7 @@ void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t *preview, int *width, int *he
 /* Application-specific shorthands */
 void pcb_gtk_preview_board_zoomto(pcb_gtk_preview_t *p, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int canvas_width, int canvas_height);
 
-GtkWidget *pcb_gtk_preview_generic_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget,
+GtkWidget *pcb_gtk_generic_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget,
 																			pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw, pcb_gtk_preview_config_t config, void *draw_data);
 
 void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const pcb_box_t *data_view);

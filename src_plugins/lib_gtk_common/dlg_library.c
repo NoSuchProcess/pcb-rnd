@@ -851,7 +851,7 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 																	/* GtkFrame */
 																	"label", _("Preview"), NULL));
 
-	preview = pcb_gtk_preview_generic_new(lwcom, lwcom->init_drawing_widget, lwcom->preview_expose, pinout_expose, NULL, NULL);
+	preview = pcb_gtk_preview_new(lwcom, lwcom->init_drawing_widget, lwcom->preview_expose, pinout_expose, NULL, NULL);
 	gtk_widget_set_size_request(preview, 150, 150);
 
 	preview_text = gtk_label_new("");

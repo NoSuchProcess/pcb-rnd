@@ -107,7 +107,7 @@ static GtkWidget *ghid_preview_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr
 	hp->hid_zoomto_cb = ghid_preview_zoomto;
 
 	bparent = frame_scroll(parent, attr->pcb_hatt_flags);
-	prv = pcb_gtk_preview_generic_new(ctx->com, ctx->com->init_drawing_widget, ctx->com->preview_expose, ghid_preview_expose, ghid_preview_config, attr->enumerations);
+	prv = pcb_gtk_preview_new(ctx->com, ctx->com->init_drawing_widget, ctx->com->preview_expose, ghid_preview_expose, ghid_preview_config, attr->enumerations);
 	gtk_box_pack_start(GTK_BOX(bparent), prv, TRUE, TRUE, 0);
 	gtk_widget_set_tooltip_text(prv, attr->help_text);
 	p = (pcb_gtk_preview_t *) prv;
