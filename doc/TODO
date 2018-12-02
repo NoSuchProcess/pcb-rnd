@@ -2,10 +2,8 @@
 
 1. For the upcoming release ===============================================================================
 - CLEANUP: rewrite the preview API:
-	- instead of various hardwired methods (board, virtual layer, pinout), core should support callbacks
 	- there should be a view context in core associated with this, that contains flips so the view can be decoupled from board flip config (library preview)
 	- ... but there also should be an option for going with board flip (drc view)
-	- CLEANUP: remove preview for layers -> use the generic expose preview (requires switching to the new preferences dialog for the layer stackup) [report: Igor2]
 - CLEANUP: boardflip rewrite: use data_mirror
 	- BUG: can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
 	- BUG: boardflip() action moves the objects and doesn't move the subc outline and origin (repro: place single part, run boardflip) [report:Miloh]
@@ -55,6 +53,7 @@
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - BUG: scconfig: if libgd is not detected, there's an extra error on disable-gd-gif [report: Erich]
+- BUG: lesstif: preferences(layers): EXPFILL doesn't seem to work
 - BUG: fontsel [report: Igor2]
 	- BUG: can't replace font when editing for a text object - shouldn't depend on conf_core
 	- BUG: replace font id=1 when fontsel runs for board seems to replace font 0
