@@ -12,7 +12,7 @@
 <h2> Action Reference</h2>
 <table border=1>
 <caption>\n <b>
-This is pcb-rnd 2.0.1 (svn r20827) an interactive printed circuit board editor ,  Revision: 21106
+This is pcb-rnd 2.0.1 (svn r20827) an interactive printed circuit board editor ,  Revision: 21383
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -60,7 +60,7 @@ This is pcb-rnd 2.0.1 (svn r20827) an interactive printed circuit board editor ,
 <tr><td>CreateText</td><td>Create a new text object</td><td>CreateText(layer, fontID, X, Y, direction, scale, text)</td><td></td>
 <tr><td><a href="action_details.html#cursor">Cursor</a></td><td>Move the cursor.</td><td>Cursor(Type,DeltaUp,DeltaRight,Units)</td><td></td>
 <tr><td><a href="action_details.html#cycledrag">CycleDrag</a></td><td>Cycle through which object is being dragged</td><td>CycleDrag()</td><td></td>
-<tr><td><a href="action_details.html#drc">DRC</a></td><td>Invoke the DRC check.</td><td>DRC()</td><td></td>
+<tr><td><a href="action_details.html#drc">DRC</a></td><td>Invoke the DRC check. Results are presented as the argument requests.</td><td>DRC([list|simple|print|log|dump])</td><td></td>
 <tr><td>Debug</td><td>Debug action.</td><td>Debug(...)</td><td>oldactions plugin</td>
 <tr><td>DebugXY</td><td>Debug action, with coordinates</td><td>DebugXY(...)</td><td>oldactions plugin</td>
 <tr><td>DelGroup</td><td>Remove a layer group; if the first argument is not specified, the current group is removed</td><td>DelGroup([@group])</td><td></td>
@@ -69,12 +69,14 @@ This is pcb-rnd 2.0.1 (svn r20827) an interactive printed circuit board editor ,
 <tr><td>DisableVendor</td><td>Disables automatic drill size mapping.</td><td>DisableVendor()</td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#disperseelements">DisperseElements</a></td><td>Disperses subcircuits.</td><td>DisperseElements(All|Selected)</td><td></td>
 <tr><td><a href="action_details.html#display">Display</a></td><td>Several display-related actions.</td><td>Display(SubcID, template)<br>Display(Grid|Redraw|Pinout|PinOrPadName)<br>Display(CycleClip|CycleCrosshair|ToggleAllDirections|ToggleStartDirection)<br>Display(ToggleGrid|ToggleRubberBandMode|ToggleUniqueNames)<br>Display(ToggleName|ToggleClearLine|ToggleFullPoly|ToggleSnapPin)<br>Display(ToggleSnapOffGridLine|ToggleHighlightOnPoint|ToggleCheckPlanes)<br>Display(ToggleThindraw|ToggleThindrawPoly|ToggleOrthoMove|ToggleLocalRef)<br>Display(ToggleLiveRoute|ToggleShowDRC|ToggleAutoDRC|LockNames|OnlyNames)</td><td></td>
+<tr><td>DrcDialog</td><td>Execute drc checks and invoke a view list dialog box for presenting the results</td><td>DrcDialog([list|simple])</td><td>dialogs plugin</td>
 <tr><td>DumpActions</td><td>Dump all actions available.</td><td>DumpActions()</td><td></td>
 <tr><td>DumpCsect</td><td>Print the cross-section of the board (layer stack)</td><td>DumpCsect()</td><td>draw_csect</td>
 <tr><td>DumpLibrary</td><td>Display the entire contents of the libraries.</td><td>DumpLibrary()</td><td>oldactions plugin</td>
 <tr><td>DumpObjFlags</td><td>Print a script processable digest of all flags, per object type</td><td>DumpObjFlags()</td><td></td>
 <tr><td>DumpPluginDirs</td><td>Print plugins directories in a format digestable by scripts.</td><td>DumpPluginDirs()</td><td></td>
 <tr><td>DumpPlugins</td><td>Print plugins loaded in a format digestable by scripts.</td><td>DumpPlugins()</td><td></td>
+<tr><td>DumpVersion</td><td>Dump version in script readable format.</td><td>DumpVersion()</td><td></td>
 <tr><td>DupGroup</td><td>Duplicate a layer group; if the first argument is not specified, the current group is duplicated</td><td>DupGroup([@group])</td><td></td>
 <tr><td>EditGroup</td><td>Change a property or attribute of a layer group. If the first argument starts with @, it is taken as the group name to manipulate, else the action uses the current layer's group. Without arguments or if only a layer name is specified, interactive runs editing.</td><td>Editgroup([@group], [name=text|type=+bit|type=-bit])]<br>Editlayer([@layer], attrib, key=value)</td><td></td>
 <tr><td>EditLayer</td><td>Change a property or attribute of a layer. If the first argument starts with @, it is taken as the layer name to manipulate, else the action uses the current layer. Without arguments or if only a layer name is specified, interactive runs editing.</td><td>Editlayer([@layer], [name=text|auto=[0|1]|sub=[0|1])]<br>Editlayer([@layer], attrib, key=value)</td><td></td>
@@ -93,6 +95,7 @@ This is pcb-rnd 2.0.1 (svn r20827) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#flip">Flip</a></td><td>Flip a subcircuit to the opposite side of the board.</td><td>Flip(Object|Selected)</td><td></td>
 <tr><td>FontEdit</td><td>Convert the current font to a PCB for editing.</td><td>FontEdit()</td><td>fontmode plugin</td>
 <tr><td>FontSave</td><td>Convert the current PCB back to a font.</td><td>FontSave()</td><td>fontmode plugin</td>
+<tr><td>Fontsel</td><td>Open the font selection dialog</td><td>Fontsel2()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#freerotatebuffer">FreeRotateBuffer</a></td><td>Rotates the current paste buffer contents by the specified angle.  The<br>angle is given in degrees.  If no angle is given, the user is prompted<br>for one.</td><td>FreeRotateBuffer([Angle])</td><td></td>
 <tr><td>FullScreen</td><td>Hide widgets to get edit area full screen</td><td>FullScreen(on|off|toggle)</td><td></td>
 <tr><td>GetStyle</td><td>Return integer index (>=0) of the currently active style or -1 if no style is selected (== custom style)</td><td>GetStyle()</td><td></td>
@@ -101,6 +104,7 @@ This is pcb-rnd 2.0.1 (svn r20827) an interactive printed circuit board editor ,
 <tr><td>GlobalPuller</td><td>Pull all traces tight.</td><td>pcb_act_GlobalPuller([Found|Selected])</td><td>puller plugin</td>
 <tr><td>Grid</td><td>Set the grid.</td><td>grid(set, [name:]size[@offs][!unit])<br>grid(+|up)<br>grid(-|down)<br>grid(#N)<br>grid(idx, N)</td><td></td>
 <tr><td>GroupPropGui</td><td>Change group flags and properties</td><td>GroupPropGui(groupid)</td><td>dialogs plugin</td>
+<tr><td>IOIncompatList</td><td>Present the format incompatibilities of the last save to file operation.</td><td>IOIncompatList([list|simple])</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#import">Import</a></td><td>Import schematics.</td><td>Import()<br>Import([gnetlist|make[,source,source,...]])<br>Import(setnewpoint[,(mark|center|X,Y)])<br>Import(setdisperse,D,units)</td><td>import_sch plugin</td>
 <tr><td>ImportcpcbFrom</td><td>Loads the auto-routed tracks from the specified c-pcb output.</td><td>ImportcpcbFrom(filename)</td><td>cpcb plugin</td>
 <tr><td>LayerBinding</td><td>Change the layer binding.</td><td>LayerBinding(object)<br>LayerBinding(selected)<br>LayerBinding(buffer)</td><td>dialogs plugin</td>
@@ -126,7 +130,7 @@ This is pcb-rnd 2.0.1 (svn r20827) an interactive printed circuit board editor ,
 <tr><td>LoadTtfGlyphs</td><td>Loads glyphs from an outline ttf in the specified source range, optionally remapping them to dstchars range in the pcb-rnd font</td><td>LoadTtfGlyphs(filename, srcglyps, [dstchars])</td><td>ttf importer</td>
 <tr><td><a href="action_details.html#loadvendorfrom">LoadVendorFrom</a></td><td>Loads the specified vendor lihata file.</td><td>LoadVendorFrom(filename)</td><td>vendor drill mapping</td>
 <tr><td>LoadhypFrom</td><td>Loads the specified Hyperlynx file.</td><td>LoadhypFrom(filename[, "debug"]...)</td><td>hyp importer</td>
-<tr><td>ManagePlugins</td><td>Manage plugins dialog.</td><td>ManagePlugins()</td><td></td>
+<tr><td>ManagePlugins</td><td>Manage plugins dialog.</td><td>ManagePlugins()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#markcrosshair">MarkCrosshair</a></td><td>Set/Reset the pcb_crosshair mark.</td><td>MarkCrosshair()<br>MarkCrosshair(Center)</td><td></td>
 <tr><td><a href="action_details.html#message">Message</a></td><td>Writes a message to the log window.</td><td>message(message)</td><td></td>
 <tr><td><a href="action_details.html#mincleargap">MinClearGap</a></td><td>Ensures that polygons are a minimum distance from objects.</td><td>MinClearGap(delta)<br>MinClearGap(Selected, delta)</td><td></td>

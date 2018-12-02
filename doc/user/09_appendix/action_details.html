@@ -1289,33 +1289,55 @@ Argument:
 <p>
 <table border=0 cellspacing=10 class=actsum>
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-DRC()
+DRC([list|simple|print|log|dump])
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Invoke the DRC check.
+Invoke the DRC check. Results are presented as the argument requests.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
 </table>
 <p>
-Note that the design rule check uses the current board rule settings, not the current style settings. 
-</dd></dl>
+Output styles available: 
+<table>
+  
+<tr>
 
-<h2 id="editlayergroups">editlayergroups</h2>
-<dl><dd>
-<p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+<th>
+ name   
+<th>
+ description  
+<tr>
+
+<td>
+ list   
+<td>
+ display a full list of all violations, with preview of the current item (large dialog)  
+<tr>
+
+<td>
+ simple 
+<td>
+ a small & simple dialog that navigates the user through the violations one by one, sequentially  
+<tr>
+
+<td>
+ print  
+<td>
+ print the list to stdout in human readable form  
+<tr>
+
+<td>
+ log    
+<td>
+ print the list as INFO lines in the log in human readable form  
+<tr>
+
+<td>
+ dump   
+<td>
+ print the list to stdout in script readable form 
 </table>
-<p>
-Displays a dialog that lets the user view and change the layer groupings on a cross-section view. 
-<p>
  
-<b>
-Will be removed
-</b>
- in favor of the 
-<a href="#preferences">preferences</a>
- action. 
+<p>
+ Note that the design rule check uses the current board rule settings, not the current style settings. 
 </dd></dl>
 
 <h2 id="elementlist">ElementList</h2>
