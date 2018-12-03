@@ -558,8 +558,6 @@ struct pcb_hid_expose_ctx_s {
 	pcb_box_t view;
 	unsigned force:1; /* draw even if layer set fails */
 	union {
-		pcb_layer_id_t layer_id;
-		pcb_any_obj_t *obj;
 		void *draw_data;
 	} content;
 
