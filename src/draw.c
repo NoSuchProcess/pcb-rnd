@@ -709,7 +709,7 @@ void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_
 
 	info.pcb = pcb;
 	info.drawn_area = screen;
-	info.xform_exporter = info.xform = NULL;
+	info.xform_exporter = info.xform_caller = info.xform = NULL;
 
 	xform_setup(&info, &tmp, Layer);
 
