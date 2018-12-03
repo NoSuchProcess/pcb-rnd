@@ -1115,8 +1115,6 @@ static void redraw_region(GdkRectangle * rect)
 	ctx.view.Y1 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y1));
 	ctx.view.Y2 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y2));
 
-	ctx.force = 0;
-
 	eleft = Vx(0);
 	eright = Vx(PCB->MaxWidth);
 	etop = Vy(0);

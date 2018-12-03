@@ -556,11 +556,7 @@ typedef void (*pcb_hid_dialog_draw_t)(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_
 
 struct pcb_hid_expose_ctx_s {
 	pcb_box_t view;
-	unsigned force:1; /* draw even if layer set fails */
-
 	void *draw_data;
-
-	/* for PCB_LYT_DIALOG */
 	pcb_hid_dialog_draw_t dialog_draw; /* also use for generic draw */
 };
 

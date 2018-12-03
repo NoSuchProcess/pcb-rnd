@@ -202,7 +202,6 @@ static void draw_virtual_layers(pcb_draw_info_t *info)
 	pcb_hid_expose_ctx_t hid_exp;
 
 	hid_exp.view = *info->drawn_area;
-	hid_exp.force = 0;
 
 	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_TOP_ASSY, 0, &info->xform_exporter)) {
 		pcb_draw_assembly(info, PCB_LYT_TOP);
@@ -992,13 +991,12 @@ void pcb_hid_expose_generic(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 	pcb_output_t save;
 	expose_begin(&save, hid);
 
-	if ((pcb_layer_gui_set_vlayer(PCB, PCB_VLY_DIALOG, 0, NULL)) || (e->force)) {
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, &e->view);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, 1, &e->view);
 		e->dialog_draw(pcb_draw_out.fgGC, e);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, 1, &e->view);
 		pcb_gui->end_layer();
-	}
+
 	expose_end(&save);
 }
 

@@ -75,7 +75,6 @@ typedef enum {
 	PCB_VLY_PLATED_DRILL,
 	PCB_VLY_UNPLATED_DRILL,
 	PCB_VLY_CSECT,
-	PCB_VLY_DIALOG,
 
 	/* for determining the range, do not use */
 	PCB_VLY_end,

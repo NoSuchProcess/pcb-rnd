@@ -467,7 +467,6 @@ TODO(": maybe expose these through the object API so the caller can set it up?")
 
 	update_expose_data(prv);
 
-	prv->expose_data.force = 1;
 	prv->init_drawing_widget(GTK_WIDGET(prv), prv->gport);
 
 	gtk_widget_add_events(GTK_WIDGET(prv), GDK_EXPOSURE_MASK | GDK_SCROLL_MASK
