@@ -88,6 +88,9 @@ print_ternary ?libs/gui/gd/gdImageJpeg/presents {#define HAVE_GDIMAGEJPEG 1} {/*
 print {\n\n/* Define to 1 if you have the `gdImagePng' function. */\n}
 print_ternary ?libs/gui/gd/gdImagePng/presents {#define HAVE_GDIMAGEPNG 1} {/* #undef HAVE_GDIMAGEPNG */}
 
+print {\n\n/* Define to 1 if you have the `gdImageSetResolution' function. */\n}
+print_ternary ?libs/gui/gd/gdImageSetResolution/presents {#define HAVE_GD_RESOLUTION 1} {/* #undef HAVE_GD_RESOLUTION */}
+
 print {\n\n/* Define to 1 if you have the `getpwuid' function. */\n}
 print_ternary ?libs/userpass/getpwuid/presents {#define HAVE_GETPWUID 1} {/* #undef HAVE_GETPWUID */}
 

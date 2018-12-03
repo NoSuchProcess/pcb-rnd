@@ -897,7 +897,9 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 		return;
 	}
 
+#ifdef HAVE_GD_RESOLUTION
 	gdImageSetResolution(im, dpi, dpi);
+#endif
 
 	master_im = im;
 
