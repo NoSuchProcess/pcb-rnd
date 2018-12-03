@@ -41,7 +41,7 @@ void layersel_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb
 
 pcb_bool layersel_mouse_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
 {
-	return pcb_stub_draw_csect_mouse_ev(NULL, NULL, kind, x, y);
+	return pcb_stub_draw_csect_mouse_ev(kind, x, y);
 }
 
 void layersel_free_cb(pcb_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx)
