@@ -268,7 +268,7 @@ static void library_window_preview_refresh(pcb_gtk_library_t * library_window, c
 	if (PCB_PASTEBUFFER->Data != NULL) {
 		if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0) {
 			pcb_subc_t *sc = pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc);
-			g_object_set(library_window->preview, "generic", sc, NULL);
+			g_object_set(library_window->preview, "draw_data", sc, NULL);
 			if (sc != NULL) {
 				pcb_box_t bbox;
 				pcb_data_bbox(&bbox, sc->data, 0);
@@ -276,10 +276,10 @@ static void library_window_preview_refresh(pcb_gtk_library_t * library_window, c
 			}
 		}
 		else
-			g_object_set(library_window->preview, "generic", NULL, NULL);
+			g_object_set(library_window->preview, "draw_data", NULL, NULL);
 	}
 	else
-		g_object_set(library_window->preview, "generic", NULL, NULL);
+		g_object_set(library_window->preview, "draw_data", NULL, NULL);
 
 	/* update the text */
 	pt = g_string_new("Tags:");
@@ -363,7 +363,7 @@ static void library_window_callback_tree_selection_changed(GtkTreeSelection * se
 			   the buffer: we may have a valid parametric footprint output in there
 			   that happened before the cancel */
 			norefresh = 1;
-			g_object_set(library_window->preview, "generic", NULL, NULL);
+			g_object_set(library_window->preview, "draw_data", NULL, NULL);
 			pcb_actionl("PasteBuffer", "clear", NULL);
 		}
 		else
