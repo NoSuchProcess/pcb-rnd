@@ -161,7 +161,7 @@ static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 	pd->attr = attr;
 	memset(&pd->exp_ctx, 0, sizeof(pd->exp_ctx));
 	pd->exp_ctx.draw_data = pd;
-	pd->exp_ctx.dialog_draw = ltf_preview_expose;
+	pd->exp_ctx.expose_cb = ltf_preview_expose;
 
 	pd->hid_ctx = ctx;
 	prv->hid_zoomto_cb = ltf_preview_zoomto;

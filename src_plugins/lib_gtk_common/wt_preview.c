@@ -168,7 +168,7 @@ static void ghid_preview_set_property(GObject *object, guint property_id, const 
 			gdk_window_invalidate_rect(window, NULL, FALSE);
 		break;
 	case PROP_DIALOG_DRAW:
-		preview->expose_data.dialog_draw = (void *) g_value_get_pointer(value);
+		preview->expose_data.expose_cb = (void *) g_value_get_pointer(value);
 		break;
 	case PROP_CONFIG:
 		preview->config_cb = (void *) g_value_get_pointer(value);
@@ -446,7 +446,7 @@ GType pcb_gtk_preview_get_type()
 }
 
 GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget,
-																			pcb_gtk_preview_expose_t expose, pcb_hid_dialog_draw_t dialog_draw, pcb_gtk_preview_config_t config, void *draw_data)
+																			pcb_gtk_preview_expose_t expose, pcb_hid_expose_t dialog_draw, pcb_gtk_preview_config_t config, void *draw_data)
 {
 	pcb_gtk_preview_t *prv = (pcb_gtk_preview_t *)g_object_new(
 		PCB_GTK_TYPE_PREVIEW,
