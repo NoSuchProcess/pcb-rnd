@@ -987,60 +987,6 @@ void pcb_hid_expose_all(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx, pcb_xf
 	}
 }
 
-void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
-{
-	pcb_output_t save;
-	unsigned long lflg = pcb_layer_flags(PCB, e->content.layer_id);
-	int purpi = -1;
-	int fx, fy;
-
-	expose_begin(&save, hid);
-
-	if (lflg & PCB_LYT_LOGICAL) {
-		fx = conf_core.editor.view.flip_x;
-		fy = conf_core.editor.view.flip_y;
-		conf_force_set_bool(conf_core.editor.view.flip_x, 0);
-		conf_force_set_bool(conf_core.editor.view.flip_y, 0);
-	}
-
-	if (lflg & PCB_LYT_VIRTUAL)
-		purpi = pcb_layer_purpose(PCB, e->content.layer_id, NULL);
-
-	if (PCB_LAYER_IS_CSECT(lflg, purpi)) {
-		if ((pcb_layer_gui_set_vlayer(PCB, PCB_VLY_CSECT, 0, NULL)) || (e->force)) {
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, &e->view);
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, 1, &e->view);
-			pcb_stub_draw_csect(pcb_draw_out.fgGC, e);
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, 1, &e->view);
-			pcb_gui->end_layer();
-		}
-	}
-	else if (lflg & PCB_LYT_DIALOG) {
-		if ((pcb_layer_gui_set_vlayer(PCB, PCB_VLY_DIALOG, 0, NULL)) || (e->force)) {
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, &e->view);
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, 1, &e->view);
-			e->dialog_draw(pcb_draw_out.fgGC, e);
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, 1, &e->view);
-			pcb_gui->end_layer();
-		}
-	}
-	else if ((e->content.layer_id >= 0) && (e->content.layer_id < pcb_max_layer)) {
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, &e->view);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, 1, &e->view);
-		pcb_draw_layer_noxform(PCB, &(PCB->Data->Layer[e->content.layer_id]), &e->view);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, 1, &e->view);
-	}
-	else
-		pcb_message(PCB_MSG_ERROR, "Internal error: don't know how to draw layer %ld for preview; please report this bug.\n", e->content.layer_id);
-
-	expose_end(&save);
-
-	if (lflg & PCB_LYT_LOGICAL) {
-		conf_force_set_bool(conf_core.editor.view.flip_x, fx);
-		conf_force_set_bool(conf_core.editor.view.flip_y, fy);
-	}
-}
-
 void pcb_hid_expose_generic(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 {
 	pcb_output_t save;

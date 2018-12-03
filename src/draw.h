@@ -176,9 +176,6 @@ void pcb_draw_delay_label_add(pcb_any_obj_t *obj);
 /* Normal expose: draw all layers with all flags (no .content is used) */
 void pcb_hid_expose_all(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *region, pcb_xform_t *xform_caller);
 
-/* Layer preview expose: draws a single layer; content.layer_id is used */
-void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ly);
-
 /* generic, dialog/callbakc based preview expose */
 void pcb_hid_expose_generic(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e);
 
