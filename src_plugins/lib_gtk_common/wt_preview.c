@@ -163,7 +163,7 @@ static void ghid_preview_set_property(GObject *object, guint property_id, const 
 		preview->expose = (void *) g_value_get_pointer(value);
 		break;
 	case PROP_DRAW_DATA:
-		preview->expose_data.content.draw_data = g_value_get_pointer(value);
+		preview->expose_data.draw_data = g_value_get_pointer(value);
 		if (window != NULL)
 			gdk_window_invalidate_rect(window, NULL, FALSE);
 		break;
@@ -294,7 +294,7 @@ static gboolean button_press(GtkWidget *w, pcb_hid_cfg_mod_t btn)
 	get_ptr(preview, &cx, &cy, &wx, &wy);
 	void *draw_data = NULL;
 
-	draw_data = preview->expose_data.content.draw_data;
+	draw_data = preview->expose_data.draw_data;
 
 	switch (btn) {
 	case PCB_MB_LEFT:
@@ -356,7 +356,7 @@ static gboolean preview_button_release_cb(GtkWidget *w, GdkEventButton *ev, gpoi
 	pcb_coord_t cx, cy;
 	void *draw_data = NULL;
 
-	draw_data = preview->expose_data.content.draw_data;
+	draw_data = preview->expose_data.draw_data;
 
 	get_ptr(preview, &cx, &cy, &wx, &wy);
 
@@ -387,7 +387,7 @@ static gboolean preview_motion_cb(GtkWidget *w, GdkEventMotion *ev, gpointer dat
 	gint wx, wy;
 	void *draw_data = NULL;
 
-	draw_data = preview->expose_data.content.draw_data;
+	draw_data = preview->expose_data.draw_data;
 
 	get_ptr(preview, &cx, &cy, &wx, &wy);
 	if (preview->view.panning) {

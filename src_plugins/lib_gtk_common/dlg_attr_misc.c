@@ -57,7 +57,7 @@ static GtkWidget *ghid_progress_create(attr_dlg_t *ctx, pcb_hid_attribute_t *att
 
 static void ghid_preview_expose(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
-	pcb_hid_preview_t *prv = e->content.draw_data;
+	pcb_hid_preview_t *prv = e->draw_data;
 	prv->user_expose_cb(prv->attrib, prv, gc, e);
 }
 
@@ -89,7 +89,7 @@ static int ghid_preview_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *
 
 void ghid_preview_config(pcb_gtk_preview_t *gp, GtkWidget *widget)
 {
-	pcb_hid_preview_t *prv = gp->expose_data.content.draw_data;
+	pcb_hid_preview_t *prv = gp->expose_data.draw_data;
 	if (prv->initial_view_valid) {
 		pcb_gtk_preview_zoomto(PCB_GTK_PREVIEW(widget), &prv->initial_view);
 		gtk_widget_queue_draw(widget);

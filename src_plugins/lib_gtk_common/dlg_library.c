@@ -793,7 +793,7 @@ static pcb_gtk_common_t *lwcom;
 
 static void pinout_expose(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
-	pcb_subc_t *sc = e->content.draw_data;
+	pcb_subc_t *sc = e->draw_data;
 
 	if (sc != NULL) {
 		int orig_po = pcb_draw_force_termlab;
