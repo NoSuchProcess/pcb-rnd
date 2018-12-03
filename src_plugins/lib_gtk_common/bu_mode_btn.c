@@ -130,14 +130,8 @@ void ghid_mode_buttons_update(void)
 
 void pcb_gtk_pack_mode_buttons(pcb_gtk_mode_btn_t *mb)
 {
-	if (conf_hid_gtk.plugins.hid_gtk.compact_vertical) {
-		gtk_widget_hide(mb->mode_buttons_frame);
-		gtk_widget_show_all(mb->mode_toolbar);
-	}
-	else {
-		gtk_widget_hide(mb->mode_toolbar);
-		gtk_widget_show_all(mb->mode_buttons_frame);
-	}
+	gtk_widget_hide(mb->mode_buttons_frame);
+	gtk_widget_show_all(mb->mode_toolbar);
 }
 
 void pcb_gtk_make_mode_buttons_and_toolbar(pcb_gtk_common_t *com, pcb_gtk_mode_btn_t *mb)

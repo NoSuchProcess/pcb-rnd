@@ -9,8 +9,8 @@ typedef struct {
 			CFT_BOOLEAN listen;                          /* @usage Listen for actions on stdin. */
 			CFT_STRING  bg_image;                        /* @usage File name of an image to put into the background of the GUI canvas. The image is read via GdkPixbuf library. It can be any size, and will be automatically scaled to fit the canvas. */
 
-			CFT_BOOLEAN compact_horizontal;
-			CFT_BOOLEAN compact_vertical;
+			CFT_BOOLEAN compact_horizontal;              /* OBSOLETE: ignored; use central appearance/compact instead */
+			CFT_BOOLEAN compact_vertical;                /* OBSOLETE: ignored; use central appearance/compact instead */
 			CFT_INTEGER history_size;
 			CFT_INTEGER n_mode_button_columns;
 

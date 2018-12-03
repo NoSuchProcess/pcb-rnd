@@ -123,10 +123,10 @@ void ghid_cursor_position_relative_label_set_text(pcb_gtk_cursor_pos_t *cps, gch
 		gtk_label_set_markup(GTK_LABEL(cps->cursor_position_relative_label), text ? text : "");
 }
 
-void ghid_set_cursor_position_labels(pcb_gtk_cursor_pos_t *cps, int compact_vertical)
+void ghid_set_cursor_position_labels(pcb_gtk_cursor_pos_t *cps, int compact)
 {
 	char *text, sep = ' ';
-	if (compact_vertical)
+	if (compact)
 		sep = '\n';
 
 	if (pcb_marked.status) {

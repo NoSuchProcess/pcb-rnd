@@ -35,6 +35,7 @@
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 #include "ui_zoompan.h"
 #include "bu_cursor_pos.h"
+#include "conf_core.h"
 
 void pcb_gtk_crosshair_set(pcb_coord_t x, pcb_coord_t y, int action, int offset_x, int offset_y, pcb_gtk_cursor_pos_t *cps, pcb_gtk_view_t *view)
 {
@@ -45,7 +46,7 @@ void pcb_gtk_crosshair_set(pcb_coord_t x, pcb_coord_t y, int action, int offset_
 	pcb_coord_t pcb_x, pcb_y;
 
 	if (view->crosshair_x != x || view->crosshair_y != y) {
-		ghid_set_cursor_position_labels(cps, conf_hid_gtk.plugins.hid_gtk.compact_vertical);
+		ghid_set_cursor_position_labels(cps, conf_core.appearance.compact);
 		view->crosshair_x = x;
 		view->crosshair_y = y;
 

@@ -1,6 +1,7 @@
 #include "config.h"
 
 #include "crosshair.h"
+#include "conf_core.h"
 
 #include "gui.h"
 #include "common.h"
@@ -43,7 +44,7 @@ void ghid_note_event_location(GdkEventButton *ev)
 	pcb_gtk_coords_event2pcb(&gport->view, event_x, event_y, &gport->view.pcb_x, &gport->view.pcb_y);
 
 	pcb_event_move_crosshair(gport->view.pcb_x, gport->view.pcb_y);
-	ghid_set_cursor_position_labels(&ghidgui->topwin.cps, conf_hid_gtk.plugins.hid_gtk.compact_vertical);
+	ghid_set_cursor_position_labels(&ghidgui->topwin.cps, conf_core.appearance.compact);
 }
 
 static void kbd_input_signals_connect(int idx, void *obj)

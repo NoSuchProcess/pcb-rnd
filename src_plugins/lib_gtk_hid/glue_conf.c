@@ -71,7 +71,7 @@ static void ghid_confchg_grid_unit(conf_native_t *cfg, int arr_idx)
 	ghidgui->common.set_status_line_label();
 }
 
-static void ghid_confchg_compacth(conf_native_t *cfg, int arr_idx)
+static void ghid_confchg_compact(conf_native_t *cfg, int arr_idx)
 {
 	/* test if PCB struct doesn't exist at startup */
 	if ((PCB == NULL) || !ghidgui->hid_active)
@@ -79,16 +79,6 @@ static void ghid_confchg_compacth(conf_native_t *cfg, int arr_idx)
 
 	ghid_command_update_prompt(&ghidgui->topwin.cmd);
 	ghidgui->common.set_status_line_label();
-}
-
-static void ghid_confchg_compactv(conf_native_t *cfg, int arr_idx)
-{
-	/* test if PCB struct doesn't exist at startup */
-	if ((PCB == NULL) || !ghidgui->hid_active)
-		return;
-
-	ghid_command_update_prompt(&ghidgui->topwin.cmd);
-	ghidgui->common.pack_mode_buttons();
 }
 
 static void ghid_confchg_cli(conf_native_t *cfg, int arr_idx)
@@ -134,6 +124,5 @@ TODO("padstack: remove some paths when route style has proto")
 	init_conf_watch(&cbs_cli[0], "rc/cli_prompt", ghid_confchg_cli);
 	init_conf_watch(&cbs_cli[1], "rc/cli_backend", ghid_confchg_cli);
 
-	init_conf_watch(&cbs_compacth, "plugins/hid_gtk/compact_horizontal", ghid_confchg_compacth);
-	init_conf_watch(&cbs_compactv, "plugins/hid_gtk/compact_vertical", ghid_confchg_compactv);
+	init_conf_watch(&cbs_compacth, "appearance/compact", ghid_confchg_compact);
 }

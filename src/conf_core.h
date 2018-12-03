@@ -166,6 +166,7 @@ typedef struct {
 
 /* @path appearance/color */
 	const struct appearance {
+		CFT_BOOLEAN compact;               /* when set: optimize GUI widget arrangement for small screen; may be wasting some screen space on large screen */
 		CFT_COORD rat_thickness;
 		CFT_COORD mark_size;               /* relative marker size */
 		CFT_REAL layer_alpha;              /* alpha value for layer drawing */

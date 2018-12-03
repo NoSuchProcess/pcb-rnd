@@ -29,8 +29,7 @@
 #include "dlg_pref.h"
 
 static pref_confitem_t perf_topwin[] = {
-	{"Alternate window layout to\nallow smaller horizontal size", "plugins/hid_gtk/compact_horizontal", 0, NULL},
-	{"Alternate window layout to\nallow smaller vertical size", "plugins/hid_gtk/compact_vertical", 0, NULL},
+	{"Alternate window layout to\nallow smaller size", "appearance/compact", 0, NULL},
 	{NULL, NULL, 0}
 };
 

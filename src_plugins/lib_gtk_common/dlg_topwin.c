@@ -111,7 +111,7 @@ static gboolean top_window_enter_cb(GtkWidget * widget, GdkEvent * event, pcb_gt
 void ghid_handle_units_changed(pcb_gtk_topwin_t *tw)
 {
 	char *text = pcb_strdup_printf("<b>%s</b>", conf_core.editor.grid_unit->in_suffix);
-	ghid_set_cursor_position_labels(&tw->cps, conf_hid_gtk.plugins.hid_gtk.compact_vertical);
+	ghid_set_cursor_position_labels(&tw->cps, conf_core.appearance.compact);
 	gtk_label_set_markup(GTK_LABEL(tw->cps.grid_units_label), text);
 	free(text);
 	ghid_config_handle_units_changed(tw->com);

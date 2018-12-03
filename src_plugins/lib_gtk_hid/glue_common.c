@@ -7,6 +7,7 @@
 #include "gui.h"
 #include "render.h"
 #include "common.h"
+#include "conf_core.h"
 #include "../src_plugins/lib_gtk_common/bu_status_line.h"
 #include "../src_plugins/lib_gtk_common/dlg_topwin.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
@@ -24,7 +25,7 @@ static void ghid_window_set_name_label(gchar *name)
 static void ghid_set_status_line_label(void)
 {
 	if (!ghidgui->topwin.cmd.command_entry_status_line_active)
-		pcb_gtk_status_line_update(ghidgui->topwin.status_line_label, conf_hid_gtk.plugins.hid_gtk.compact_horizontal);
+		pcb_gtk_status_line_update(ghidgui->topwin.status_line_label, conf_core.appearance.compact);
 }
 
 void ghid_status_line_set_text(const gchar *text)

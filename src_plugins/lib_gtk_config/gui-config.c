@@ -412,20 +412,12 @@ static void config_user_role_section(pcb_gtk_common_t *com, GtkWidget * vbox, vo
 
 	/* -------------- The General config page ----------------
 	 */
-static void config_compact_horizontal_toggle_cb(GtkToggleButton * button, gpointer data)
+static void config_compact_toggle_cb(GtkToggleButton * button, gpointer data)
 {
 	pcb_gtk_common_t *com = data;
 	gboolean active = gtk_toggle_button_get_active(button);
 
-	conf_setf(CFR_DESIGN, "plugins/hid_gtk/compact_horizontal", -1, "%d", active);
-}
-
-static void config_compact_vertical_toggle_cb(GtkToggleButton * button, gpointer data)
-{
-	pcb_gtk_common_t *com = data;
-	gboolean active = gtk_toggle_button_get_active(button);
-
-	conf_setf(CFR_DESIGN, "plugins/hid_gtk/compact_vertical", -1, "%d", active);
+	conf_setf(CFR_DESIGN, "appearance/compact", -1, "%d", active);
 }
 
 static GtkWidget *pref_auto_place_lab;
@@ -472,8 +464,7 @@ static void config_history_spin_button_cb(GtkSpinButton * spin_button, gpointer 
 void config_general_save(GtkButton * widget, save_ctx_t * ctx)
 {
 	const char *paths[] = {
-		"plugins/hid_gtk/compact_horizontal",
-		"plugins/hid_gtk/compact_vertical",
+		"appearance/compact",
 		"plugins/hid_gtk/history_size",
 		"rc/backup_interval",
 		"editor/auto_place",
@@ -494,15 +485,10 @@ static void config_general_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *co
 
 	vbox = ghid_category_vbox(content_vbox, _("Enables"), 4, 2, TRUE, TRUE);
 
-	pcb_gtk_check_button_connected(vbox, NULL, conf_hid_gtk.plugins.hid_gtk.compact_horizontal,
+	pcb_gtk_check_button_connected(vbox, NULL, conf_core.appearance.compact,
 																 TRUE, FALSE, FALSE, 2,
-																 config_compact_horizontal_toggle_cb, com,
-																 _("Alternate window layout to allow smaller horizontal size"));
-
-	pcb_gtk_check_button_connected(vbox, NULL, conf_hid_gtk.plugins.hid_gtk.compact_vertical,
-																 TRUE, FALSE, FALSE, 2,
-																 config_compact_vertical_toggle_cb, com,
-																 _("Alternate window layout to allow smaller vertical size"));
+																 config_compact_toggle_cb, com,
+																 _("Alternate window layout to allow smaller window size"));
 
 	pcb_gtk_check_button_connected(vbox, NULL, conf_core.editor.auto_place,
 																 TRUE, FALSE, FALSE, 2,
