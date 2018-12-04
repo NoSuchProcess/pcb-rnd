@@ -171,11 +171,6 @@ struct pcb_hid_s {
 	   use render in normal mode, gerber renders in inverse mode. */
 	unsigned mask_invert:1;
 
-	/* lesstif allows positive AND negative drawing in HID_MASK_CLEAR.
-	   gtk only allows negative drawing.
-	   using the mask is to get rat transparency */
-	unsigned can_mask_clear_rats:1;
-
 	/* Always draw layers in compositing mode - no base layer */
 	unsigned force_compositing:1;
 

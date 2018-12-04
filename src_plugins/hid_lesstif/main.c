@@ -3679,7 +3679,6 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.name = "lesstif";
 	lesstif_hid.description = "LessTif - a Motif clone for X/Unix";
 	lesstif_hid.gui = 1;
-	lesstif_hid.can_mask_clear_rats = 1;
 	lesstif_hid.heavy_term_layer_ind = 1;
 
 	lesstif_hid.get_export_options = lesstif_get_export_options;
