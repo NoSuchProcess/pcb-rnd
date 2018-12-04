@@ -515,15 +515,16 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			/* change the layout's name */
 		case F_Layout:
-			name = pcb_gui->prompt_for(_("Enter the layout name:"), PCB_EMPTY(PCB->Name));
+			name = pcb_hid_prompt_for("Enter the layout name:", PCB_EMPTY(PCB->Name), "Layout name");
 			/* NB: ChangeLayoutName takes ownership of the passed memory */
 			if (name && pcb_board_change_name(name))
 				pcb_board_set_changed_flag(pcb_true);
+			free(name);
 			break;
 
 			/* change the name of the active layer */
 		case F_Layer:
-			name = pcb_gui->prompt_for(_("Enter the layer name:"), PCB_EMPTY(CURRENT->name));
+			name = pcb_hid_prompt_for("Enter the layer name:", PCB_EMPTY(CURRENT->name), "Layer name");
 			/* NB: pcb_layer_rename_ takes ownership of the passed memory */
 			if (name && (pcb_layer_rename_(CURRENT, name) == 0))
 				pcb_board_set_changed_flag(pcb_true);

@@ -126,7 +126,7 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (argument_name)
 			name = pcb_strdup(argument_name);
 		else
-			name = pcb_gui->prompt_for("Enter the layout name:", "");
+			name = pcb_hid_prompt_for("Enter the layout name:", "", "Layout name");
 
 		if (!name)
 			return 1;

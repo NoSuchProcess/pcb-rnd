@@ -384,7 +384,7 @@ static const char pcb_acth_ReplaceFootprint[] = "Replace the footprint of the se
 
 static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *fpname = NULL;
+	char *fpname = NULL;
 	int found = 0, len;
 	pcb_subc_t *news, *placed;
 
@@ -405,25 +405,29 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 	}
 
 	/* fetch the name of the new footprint */
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, ReplaceFootprint, fpname = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, ReplaceFootprint, fpname = pcb_strdup(argv[1].val.str));
 	if (fpname == NULL) {
-		fpname = pcb_gui->prompt_for("Footprint name", "");
+		fpname = pcb_hid_prompt_for("Footprint name to use for replacement:", "", "Footprint");
 		if (fpname == NULL) {
 			pcb_message(PCB_MSG_ERROR, "No footprint name supplied\n");
 			PCB_ACT_IRES(1);
 			return 0;
 		}
 	}
+	else
+		fpname = pcb_strdup(fpname);
 
 	/* check if the footprint is available */
 	pcb_buffer_load_footprint(&pcb_buffers[PCB_MAX_BUFFER-1], fpname, NULL);
 	len = pcb_subclist_length(&pcb_buffers[PCB_MAX_BUFFER-1].Data->subc);
 	if (len == 0) {
+		free(fpname);
 		pcb_message(PCB_MSG_ERROR, "Footprint %s contains no subcircuits", fpname);
 		PCB_ACT_IRES(1);
 		return 0;
 	}
 	if (len > 1) {
+		free(fpname);
 		pcb_message(PCB_MSG_ERROR, "Footprint %s contains multiple subcircuits", fpname);
 		PCB_ACT_IRES(1);
 		return 0;
@@ -463,6 +467,7 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 	}
 	PCB_END_LOOP;
 
+	free(fpname);
 	PCB_ACT_IRES(0);
 	return 0;
 }

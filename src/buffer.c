@@ -361,24 +361,28 @@ static const char pcb_acth_FreeRotateBuffer[] =
 /* DOC: freerotatebuffer */
 fgw_error_t pcb_act_FreeRotateBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *angle_s = NULL;
+	char *angle_s = NULL;
 	double ang;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, FreeRotateBuffer, angle_s = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, FreeRotateBuffer, angle_s = pcb_strdup(argv[1].val.str));
 	PCB_ACT_IRES(0);
 
 	if (angle_s == NULL)
-		angle_s = pcb_gui->prompt_for("Enter Rotation (degrees, CCW):", "0");
+		angle_s = pcb_hid_prompt_for("Enter Rotation (degrees, CCW):", "0", "Rotation angle");
 
 	if ((angle_s == NULL) || (*angle_s == '\0')) {
+		free(angle_s);
 		PCB_ACT_IRES(-1);
 		return 0;
 	}
 
 	PCB_ACT_IRES(0);
 	ang = strtod(angle_s, 0);
-	if (ang == 0)
+	free(angle_s);
+	if (ang == 0) {
+		PCB_ACT_IRES(-1);
 		return 0;
+	}
 
 	if ((ang < -360000) || (ang > +360000)) {
 		pcb_message(PCB_MSG_ERROR, "Angle too large\n");
@@ -399,24 +403,27 @@ static const char pcb_acth_ScaleBuffer[] =
 	"empty, subcircuits are also scaled\n";
 fgw_error_t pcb_act_ScaleBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *sx = NULL;
+	char *sx = NULL;
 	double x, y, th;
 	int recurse = 0;
 	char *end;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, ScaleBuffer, sx = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, ScaleBuffer, sx = pcb_strdup(argv[1].val.str));
 
 	if (sx == NULL)
-		sx = pcb_gui->prompt_for("Enter scaling factor (unitless multiplier):", "1.0");
+		sx = pcb_hid_prompt_for("Enter scaling factor (unitless multiplier):", "1.0", "scaling factor");
 	if ((sx == NULL) || (*sx == '\0')) {
+		free(sx);
 		PCB_ACT_IRES(-1);
 		return 0;
 	}
 	x = strtod(sx, &end);
 	if (*end != '\0') {
+		free(sx);
 		PCB_ACT_IRES(-1);
 		return 0;
 	}
+	free(sx);
 	y = th = x;
 
 	PCB_ACT_MAY_CONVARG(2, FGW_DOUBLE, ScaleBuffer, y = argv[2].val.nat_double);

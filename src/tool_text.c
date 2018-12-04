@@ -50,7 +50,7 @@ void pcb_tool_text_notify_mode(void)
 {
 	char *string;
 
-	if ((string = pcb_gui->prompt_for(_("Enter text:"), "")) != NULL) {
+	if ((string = pcb_hid_prompt_for("Enter text:", "", "text")) != NULL) {
 		if (strlen(string) > 0) {
 			pcb_text_t *text;
 			int flag = PCB_FLAG_CLEARLINE;

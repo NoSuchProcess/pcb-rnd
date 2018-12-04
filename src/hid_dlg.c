@@ -55,8 +55,8 @@ static fgw_error_t call_dialog(const char *act_name, fgw_arg_t *res, int argc, f
 	return FGW_ERR_NOT_FOUND;
 }
 
-static const char pcb_acts_PromptFor[] = "PromptFor([message[,default]])";
-static const char pcb_acth_PromptFor[] = "Prompt for a response.";
+static const char pcb_acts_PromptFor[] = "PromptFor([message[,default[,title]]])";
+static const char pcb_acth_PromptFor[] = "Prompt for a string. Returns the string (or NULL on cancel)";
 /* DOC: promptfor.html */
 static fgw_error_t pcb_act_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {

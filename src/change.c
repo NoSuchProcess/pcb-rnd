@@ -767,22 +767,23 @@ void *pcb_chg_obj_name_query(pcb_any_obj_t *obj)
 					goto subc_name;
 				}
 			}
-			name = pcb_gui->prompt_for("Enter text:", PCB_EMPTY(((pcb_text_t *)obj)->TextString));
+			name = pcb_hid_prompt_for("Enter text:", PCB_EMPTY(((pcb_text_t *)obj)->TextString), "Change text");
 			break;
 
 		case PCB_OBJ_SUBC:
 			subc_name:;
-			name = pcb_gui->prompt_for("Subcircuit refdes:", PCB_EMPTY(((pcb_subc_t *)obj)->refdes));
+			name = pcb_hid_prompt_for("Subcircuit refdes:", PCB_EMPTY(((pcb_subc_t *)obj)->refdes), "Change refdes");
 			break;
 
 		default:
 			term_name:;
 			if (parent_subc != NULL) {
-				name = pcb_gui->prompt_for("Enter terminal ID:", PCB_EMPTY(obj->term));
+				name = pcb_hid_prompt_for("Enter terminal ID:", PCB_EMPTY(obj->term), "Change terminal ID");
 				if (name != NULL) {
 					pcb_term_undoable_rename(PCB, obj, name);
 					pcb_draw();
 				}
+				free(name);
 				return obj;
 			}
 			break;
@@ -798,6 +799,7 @@ void *pcb_chg_obj_name_query(pcb_any_obj_t *obj)
 			pcb_undo_inc_serial();
 		}
 		pcb_draw();
+		free(name);
 		return obj;
 	}
 	return NULL;
