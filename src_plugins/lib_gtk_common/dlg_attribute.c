@@ -746,8 +746,7 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, pcb_hid_attribute_t *attrs, int n
 	ctx->dialog = gtk_dialog_new_with_buttons(_(title),
 																			 GTK_WINDOW(com->top_window),
 																			 (GtkDialogFlags) ((modal?GTK_DIALOG_MODAL:0)
-																												 | GTK_DIALOG_DESTROY_WITH_PARENT),
-																			 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
+																			 | GTK_DIALOG_DESTROY_WITH_PARENT), NULL);
 	gtk_window_set_role(GTK_WINDOW(ctx->dialog), "PCB_attribute_editor");
 
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(ctx->dialog));

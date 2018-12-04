@@ -133,11 +133,13 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, pc
 	pcb_coord_t mm2 = PCB_MM_TO_COORD(2);
 	pcb_coord_t maxr = PCB_MM_TO_COORD(1000);
 	const char *tabs[] = {"Regular polygon", "Round rectangle", "Filled circle", NULL};
+	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
 	shp->pcb = pcb;
 	shp->data = data;
 	shp->layer = layer;
 
+	PCB_DAD_BEGIN_VBOX(shp->dlg);
 	PCB_DAD_BEGIN_TABBED(shp->dlg, tabs);
 /*		shp->tab = PCB_DAD_CURRENT(shp->dlg);
 		PCB_DAD_CHANGE_CB(shp->dlg, shp_tab);*/
@@ -336,6 +338,8 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, pc
 				PCB_DAD_LABEL(shp->dlg, "y (vertical)");
 			PCB_DAD_END(shp->dlg);
 		PCB_DAD_END(shp->dlg);
+	PCB_DAD_END(shp->dlg);
+	PCB_DAD_BUTTON_CLOSES(shp->dlg, clbtn);
 	PCB_DAD_END(shp->dlg);
 
 	PCB_DAD_NEW(shp->dlg, "dlg_shape", shp, modal, shp_close_cb);

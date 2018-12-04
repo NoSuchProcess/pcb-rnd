@@ -46,12 +46,14 @@ static void about_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 static void pcb_dlg_about(void)
 {
 	const char *tabs[] = { "About pcb-rnd", "Options", "Paths", "License", NULL };
+	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	htsp_entry_t *e;
 	gds_t s;
 
 	if (about_ctx.active)
 		return;
 
+	PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
 	PCB_DAD_BEGIN_TABBED(about_ctx.dlg, tabs);
 		PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
 			PCB_DAD_LABEL(about_ctx.dlg, pcb_get_info_program());
@@ -86,6 +88,8 @@ static void pcb_dlg_about(void)
 			PCB_DAD_LABEL(about_ctx.dlg, pcb_get_info_license());
 		PCB_DAD_END(about_ctx.dlg);
 
+	PCB_DAD_END(about_ctx.dlg);
+	PCB_DAD_BUTTON_CLOSES(about_ctx.dlg, clbtn);
 	PCB_DAD_END(about_ctx.dlg);
 
 	/* set up the context */

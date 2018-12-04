@@ -80,12 +80,14 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char *row2b[] = {"under_two", "ut", "uuut", NULL};
 	char *row3[] = {"three", "baz", "BAZ", NULL};
 	const char *hdr[] = {"num", "data1", "data2", NULL};
+	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
 	pcb_hid_row_t *row;
 	int failed;
 
 	test_t ctx;
 	memset(&ctx, 0, sizeof(ctx));
 
+	PCB_DAD_BEGIN_VBOX(ctx.dlg);
 	PCB_DAD_BEGIN_TABBED(ctx.dlg, tabs);
 		PCB_DAD_CHANGE_CB(ctx.dlg, cb_tab_chg);
 		ctx.wtab = PCB_DAD_CURRENT(ctx.dlg);
@@ -180,6 +182,8 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			PCB_DAD_PREVIEW(ctx.dlg, prv_expose, prv_mouse, NULL, NULL, 200, 200, NULL);
 			PCB_DAD_LABEL(ctx.dlg, "This is a cool preview widget.");
 		PCB_DAD_END(ctx.dlg);
+	PCB_DAD_END(ctx.dlg);
+	PCB_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
 	PCB_DAD_END(ctx.dlg);
 
 	PCB_DAD_AUTORUN(ctx.dlg, "dlg_test", "attribute dialog test", &ctx, failed);

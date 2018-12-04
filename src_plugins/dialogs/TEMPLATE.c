@@ -70,11 +70,13 @@ static void foo_close_cb(void *caller_data, pcb_hid_attr_ev_t ev) <<<- rename th
 
 static void pcb_dlg_foo(whatever args) <<<- edit this
 {
+	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	if (foo_ctx.active)
 		return; /* do not open another */
 
 	PCB_DAD_BEGIN_VBOX(foo_ctx.dlg);
 		PCB_DAD_LABEL(foo_ctx.dlg, "foo");
+		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
 	PCB_DAD_END(foo_ctx.dlg);
 
 	/* set up the context */

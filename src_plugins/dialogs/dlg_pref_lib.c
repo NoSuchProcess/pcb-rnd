@@ -239,9 +239,11 @@ static void lib_cell_edit_update(void *hid_ctx, void *caller_data, pcb_hid_attri
 static int lib_cell_edit(char **cell)
 {
 	cell_edit_ctx_t ctx;
+	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
 
 	memset(&ctx, 0, sizeof(ctx));
 
+	PCB_DAD_BEGIN_VBOX(ctx.dlg);
 	PCB_DAD_BEGIN_TABLE(ctx.dlg, 2);
 		PCB_DAD_LABEL(ctx.dlg, "Path:");
 		PCB_DAD_STRING(ctx.dlg);
@@ -256,6 +258,8 @@ static int lib_cell_edit(char **cell)
 		PCB_DAD_LABEL(ctx.dlg, "");
 		PCB_DAD_BUTTON(ctx.dlg, "Help...");
 			PCB_DAD_CHANGE_CB(ctx.dlg, libhelp_btn);
+	PCB_DAD_END(ctx.dlg);
+	PCB_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
 	PCB_DAD_END(ctx.dlg);
 
 	PCB_DAD_NEW(ctx.dlg, "Edit library path", &ctx, pcb_true, NULL);
@@ -341,6 +345,7 @@ static void pref_libhelp_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 static void pref_libhelp_open(pref_libhelp_ctx_t *ctx)
 {
 	htsp_entry_t *e;
+	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
 	PCB_DAD_LABEL(ctx->dlg, "The following $(variables) can be used in the path:");
 	PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
@@ -355,6 +360,7 @@ static void pref_libhelp_open(pref_libhelp_ctx_t *ctx)
 			PCB_DAD_LABEL(ctx->dlg, tmp);
 			PCB_DAD_LABEL(ctx->dlg, nat->val.string[0]);
 		}
+	PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 	PCB_DAD_END(ctx->dlg);
 
 	ctx->active = 1;

@@ -31,6 +31,7 @@ static fgw_error_t pcb_act_ManagePlugins(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	pup_plugin_t *p;
 	int nump = 0, numb = 0;
 	gds_t str;
+	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	PCB_DAD_DECL(dlg);
 
 	gds_init(&str);
@@ -75,6 +76,7 @@ static fgw_error_t pcb_act_ManagePlugins(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	PCB_DAD_BEGIN_VBOX(dlg);
 		PCB_DAD_COMPFLAG(dlg, PCB_HATF_SCROLL | PCB_HATF_EXPFILL);
 		PCB_DAD_LABEL(dlg, str.array);
+		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
 	PCB_DAD_END(dlg);
 
 	PCB_DAD_NEW(dlg, "Manage plugins", NULL, pcb_true, NULL);

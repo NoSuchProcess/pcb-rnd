@@ -111,6 +111,7 @@ static void pcb_dlg_export(void)
 {
 	pcb_hid_t **hids;
 	int n, i;
+	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
 	if (export_ctx.active)
 		return; /* do not open another */
@@ -144,6 +145,7 @@ static void pcb_dlg_export(void)
 
 	export_ctx.tab_name[i] = NULL;
 
+	PCB_DAD_BEGIN_VBOX(export_ctx.dlg);
 	PCB_DAD_BEGIN_TABBED(export_ctx.dlg, export_ctx.tab_name);
 		PCB_DAD_COMPFLAG(export_ctx.dlg, PCB_HATF_LEFT_TAB);
 		export_ctx.tabs = PCB_DAD_CURRENT(export_ctx.dlg);
@@ -172,6 +174,8 @@ static void pcb_dlg_export(void)
 				PCB_DAD_END(export_ctx.dlg);
 			PCB_DAD_END(export_ctx.dlg);
 		}
+	PCB_DAD_END(export_ctx.dlg);
+	PCB_DAD_BUTTON_CLOSES(export_ctx.dlg, clbtn);
 	PCB_DAD_END(export_ctx.dlg);
 
 	/* set up the context */

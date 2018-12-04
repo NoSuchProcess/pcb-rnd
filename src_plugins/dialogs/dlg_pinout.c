@@ -136,6 +136,7 @@ static pcb_bool pinout_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv
 static void pcb_dlg_pinout(pcb_board_t *pcb, pcb_data_t *data, pcb_subc_t *sc)
 {
 	char title[64];
+	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	pinout_ctx_t *ctx = calloc(sizeof(pinout_ctx_t), 1);
 
 	ctx->pcb = pcb;
@@ -158,6 +159,7 @@ static void pcb_dlg_pinout(pcb_board_t *pcb, pcb_data_t *data, pcb_subc_t *sc)
 			PCB_DAD_LABEL(ctx->dlg, "");
 				ctx->w_lab_net = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
+	PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 	PCB_DAD_END(ctx->dlg);
 
 	if (sc->refdes != NULL)

@@ -511,6 +511,7 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	int n;
 	char tmp[256];
 	const char *copy_from_names[pcb_proto_num_layers+1];
+	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	PCB_DAD_DECL(dlg);
 
 	pse->parent_hid_ctx = hid_ctx;
@@ -567,6 +568,7 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 				PCB_DAD_CHANGE_CB(dlg, pse_shape_grow);
 				PCB_DAD_HELP(dlg, "Make the shape larger by the selected amount");
 		PCB_DAD_END(dlg);
+		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
 	PCB_DAD_END(dlg);
 
 	PCB_DAD_NEW(dlg, "Edit padstack shape", pse, pcb_true, NULL);
@@ -675,11 +677,13 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 {
 	int n;
 	const char *tabs[] = { "this instance", "prototype", "generate common geometry", NULL };
+	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	PCB_DAD_DECL(dlg);
 
 	pse->disable_instance_tab = !!pse->disable_instance_tab;
 	target_tab -= pse->disable_instance_tab;
 
+	PCB_DAD_BEGIN_VBOX(dlg);
 	PCB_DAD_BEGIN_TABBED(dlg, tabs + pse->disable_instance_tab);
 		pse->tab = PCB_DAD_CURRENT(dlg);
 
@@ -848,6 +852,8 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 				PCB_DAD_END(dlg);
 			PCB_DAD_END(dlg);
 		PCB_DAD_END(dlg);
+	PCB_DAD_END(dlg);
+	PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
 	PCB_DAD_END(dlg);
 
 	PCB_DAD_NEW(dlg, "Edit padstack", pse, pcb_true, NULL);

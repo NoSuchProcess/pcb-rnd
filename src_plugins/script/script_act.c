@@ -160,6 +160,7 @@ static void btn_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 	script_dlg_t *ctx = caller_data;
 	int failed;
 	char *tmp, *fn = pcb_gui->fileselect("script to load", "Select a script file to load", NULL, NULL, "script", HID_FILESELECT_READ);
+	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
 	typedef struct {
 		PCB_DAD_DECL_NOINIT(dlg)
 		int wid, wlang;
@@ -192,6 +193,7 @@ static void btn_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 				if (tmp != NULL)
 					idlang.dlg[idlang.wlang].default_val.str_value = pcb_strdup(tmp+1);
 		PCB_DAD_END(idlang.dlg);
+		PCB_DAD_BUTTON_CLOSES(idlang.dlg, clbtn);
 	PCB_DAD_END(idlang.dlg);
 
 
@@ -206,9 +208,11 @@ static void btn_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 static void script_dlg_open(void)
 {
 	static const char *hdr[] = {"ID", "language", "file", NULL};
+	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	if (script_dlg.active)
 		return; /* do not open another */
 
+	PCB_DAD_BEGIN_VBOX(script_dlg.dlg);
 	PCB_DAD_BEGIN_HPANE(script_dlg.dlg);
 		PCB_DAD_COMPFLAG(script_dlg.dlg, PCB_HATF_EXPFILL);
 		/* left side */
@@ -239,6 +243,8 @@ static void script_dlg_open(void)
 				PCB_DAD_COMPFLAG(script_dlg.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
 				script_dlg.walist = PCB_DAD_CURRENT(script_dlg.dlg);
 		PCB_DAD_END(script_dlg.dlg);
+	PCB_DAD_END(script_dlg.dlg);
+	PCB_DAD_BUTTON_CLOSES(script_dlg.dlg, clbtn);
 	PCB_DAD_END(script_dlg.dlg);
 
 	/* set up the context */

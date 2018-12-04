@@ -89,6 +89,7 @@ static extedit_method_t *extedit_interactive(void)
 	char tmp[256];
 	const char *names[NUM_METHODS+1];
 	int n, res;
+	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"Edit!", 0}, {NULL, 0}};
 
 	for(n = 0; n < NUM_METHODS; n++)
 		names[n] = methods[n].name;
@@ -119,6 +120,7 @@ static extedit_method_t *extedit_interactive(void)
 			ee.wcmd = PCB_DAD_CURRENT(ee.dlg);
 			PCB_DAD_CHANGE_CB(ee.dlg, ee_chg_cmd);
 		PCB_DAD_END(ee.dlg);
+		PCB_DAD_BUTTON_CLOSES(ee.dlg, clbtn);
 	PCB_DAD_END(ee.dlg);
 
 	PCB_DAD_NEW(ee.dlg, "External editor", &ee, pcb_true, NULL);

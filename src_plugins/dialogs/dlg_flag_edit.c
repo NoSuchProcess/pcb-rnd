@@ -81,6 +81,7 @@ static fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	fe_ctx_t ctx;
 	pcb_hid_attr_val_t val;
 	int type;
+	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
 	memset(&ctx, 0, sizeof(ctx));
 
@@ -129,6 +130,7 @@ static fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				ctx.len++;
 			}
 		}
+		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
 		PCB_DAD_END(dlg);
 
 		ctx.attrs = dlg;

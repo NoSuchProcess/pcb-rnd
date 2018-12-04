@@ -489,6 +489,7 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	group_t **g;
 	part_t **p;
 	long n, i;
+	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
 	if (asm_ctx.active) {
 		PCB_ACT_IRES(0);
@@ -570,6 +571,7 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				PCB_DAD_HELP(asm_ctx.dlg, "Mark all parts in this group done,\ncontinue with the next group");
 				PCB_DAD_CHANGE_CB(asm_ctx.dlg, asm_done_group);
 		PCB_DAD_END(asm_ctx.dlg);
+	PCB_DAD_BUTTON_CLOSES(asm_ctx.dlg, clbtn);
 	PCB_DAD_END(asm_ctx.dlg);
 
 	asm_ctx.active = 1;

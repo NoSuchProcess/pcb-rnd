@@ -269,7 +269,7 @@ TODO("subc TODO")
 
 	{ /* interactive mode */
 		int n;
-
+		pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 		PCB_DAD_DECL(dlg);
 
 		ctx.pcb = PCB;
@@ -286,6 +286,7 @@ TODO("subc TODO")
 			if (pcb_layergrp_flags(PCB, n) & PCB_LYT_COPPER)
 				num_copper++;
 
+		PCB_DAD_BEGIN_VBOX(dlg);
 		PCB_DAD_BEGIN_TABLE(dlg, 2);
 			PCB_DAD_COMPFLAG(dlg, PCB_HATF_SCROLL);
 		for(n = 0; n < ctx.data->LayerN; n++) {
@@ -340,6 +341,8 @@ TODO("subc TODO")
 				PCB_DAD_END(dlg);
 			PCB_DAD_END(dlg);
 		}
+		PCB_DAD_END(dlg);
+		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
 		PCB_DAD_END(dlg);
 
 		ctx.attrs = dlg;

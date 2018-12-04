@@ -103,6 +103,7 @@ static void btn_remove_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 static void pcb_dlg_foo(pcb_board_t *pcb)
 {
 	pcb_box_t vbox = {0, 0, PCB_MM_TO_COORD(55), PCB_MM_TO_COORD(55)};
+	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	if (fontsel_ctx.active)
 		return; /* do not open another */
 
@@ -123,6 +124,7 @@ static void pcb_dlg_foo(pcb_board_t *pcb)
 			PCB_DAD_CHANGE_CB(fontsel_ctx.dlg, btn_remove_cb);
 			PCB_DAD_HELP(fontsel_ctx.dlg, "Remove currently selected font");
 		PCB_DAD_END(fontsel_ctx.dlg);
+		PCB_DAD_BUTTON_CLOSES(fontsel_ctx.dlg, clbtn);
 	PCB_DAD_END(fontsel_ctx.dlg);
 
 	fontsel_ctx.active = 1;

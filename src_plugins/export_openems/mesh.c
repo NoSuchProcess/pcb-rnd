@@ -722,6 +722,7 @@ pcb_mesh_t *pcb_mesg_get(const char *name)
 int pcb_mesh_interactive(void)
 {
 	int n;
+	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
 	PCB_DAD_BEGIN_VBOX(ia.dlg);
 		PCB_DAD_BEGIN_HBOX(ia.dlg);
@@ -871,7 +872,7 @@ int pcb_mesh_interactive(void)
 					PCB_DAD_CHANGE_CB(ia.dlg, ia_gen_cb);
 			PCB_DAD_END(ia.dlg);
 		PCB_DAD_END(ia.dlg);
-
+		PCB_DAD_BUTTON_CLOSES(ia.dlg, clbtn);
 	PCB_DAD_END(ia.dlg);
 
 	PCB_DAD_NEW(ia.dlg, "mesher", &ia, 0, ia_close_cb);

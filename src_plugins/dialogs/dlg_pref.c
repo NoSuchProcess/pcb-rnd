@@ -219,6 +219,7 @@ static int pref_strcmp(const char *fixed, const char *inp)
 static void pcb_dlg_pref(const char *target_tab_str)
 {
 	const char *tabs[] = { "General", "Board meta", "Sizes & DRC",  "Library", "Layers", "Colors", "Window", "Config tree", NULL };
+	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	int target_tab = -1;
 
 	if ((target_tab_str != NULL) && (*target_tab_str != '\0')) {
@@ -239,6 +240,7 @@ static void pcb_dlg_pref(const char *target_tab_str)
 		return;
 	}
 
+	PCB_DAD_BEGIN_VBOX(pref_ctx.dlg);
 	PCB_DAD_BEGIN_TABBED(pref_ctx.dlg, tabs);
 		pref_ctx.wtab = PCB_DAD_CURRENT(pref_ctx.dlg);
 		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* General */
@@ -273,6 +275,8 @@ static void pcb_dlg_pref(const char *target_tab_str)
 			PCB_DAD_LABEL(pref_ctx.dlg, "TODO");
 		PCB_DAD_END(pref_ctx.dlg);
 
+	PCB_DAD_END(pref_ctx.dlg);
+	PCB_DAD_BUTTON_CLOSES(pref_ctx.dlg, clbtn);
 	PCB_DAD_END(pref_ctx.dlg);
 
 	/* set up the context */

@@ -89,9 +89,11 @@ static void rdialog_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 static void rdialog(const char *name, const char *content)
 {
 	rdialog_ctx_t *ctx = calloc(sizeof(rdialog_ctx_t), 1);
+	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
 		PCB_DAD_LABEL(ctx->dlg, content);
+		PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 	PCB_DAD_END(ctx->dlg);
 
 	PCB_DAD_NEW(ctx->dlg, name, ctx, pcb_false, rdialog_close_cb);

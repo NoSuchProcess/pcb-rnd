@@ -199,9 +199,11 @@ static void set_alldir(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 int constraint_gui(void)
 {
 	const char *tab_names[] = {"line", "move", NULL};
+	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	if (cnstgui_ctx.active)
 		return 0; /* do not open another */
 
+	PCB_DAD_BEGIN_VBOX(cnstgui_ctx.dlg);
 	PCB_DAD_BEGIN_TABBED(cnstgui_ctx.dlg, tab_names);
 
 		/* line */
@@ -314,6 +316,8 @@ int constraint_gui(void)
 			PCB_DAD_END(cnstgui_ctx.dlg);
 		PCB_DAD_END(cnstgui_ctx.dlg);
 
+	PCB_DAD_END(cnstgui_ctx.dlg);
+	PCB_DAD_BUTTON_CLOSES(cnstgui_ctx.dlg, clbtn);
 	PCB_DAD_END(cnstgui_ctx.dlg);
 
 	/* set up the context */

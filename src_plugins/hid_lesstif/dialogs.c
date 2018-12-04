@@ -436,8 +436,11 @@ static Widget create_form_ok_dialog(const char *name, int ok, void (*button_cb)(
 	}
 
 	XtUnmanageChild(XmMessageBoxGetChild(dialog, XmDIALOG_SYMBOL_LABEL));
+	XtUnmanageChild(XmMessageBoxGetChild(dialog, XmDIALOG_SEPARATOR));
 	XtUnmanageChild(XmMessageBoxGetChild(dialog, XmDIALOG_MESSAGE_LABEL));
 	XtUnmanageChild(XmMessageBoxGetChild(dialog, XmDIALOG_HELP_BUTTON));
+	XtUnmanageChild(XmMessageBoxGetChild(dialog, XmDIALOG_CANCEL_BUTTON));
+	XtUnmanageChild(XmMessageBoxGetChild(dialog, XmDIALOG_OK_BUTTON));
 	XtAddCallback(dialog, XmNcancelCallback, (XtCallbackProc) dialog_callback_cancel, cb_ctx);
 	if (ok)
 		XtAddCallback(dialog, XmNokCallback, (XtCallbackProc) dialog_callback_ok, cb_ctx);

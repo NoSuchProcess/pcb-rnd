@@ -455,6 +455,8 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal, c
 	pstk_lib_ctx_t *ctx;
 	int n;
 	char *name;
+	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	pcb_hid_dad_buttons_t clbtn_modal[] = {{"Cancel", -1}, {"Use selected", 0}, {NULL, 0}};
 
 	if (subc_id <= 0)
 		subc_id = -1;
@@ -558,6 +560,7 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal, c
 		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);
 
+	PCB_DAD_BUTTON_CLOSES(ctx->dlg, (modal ? clbtn_modal : clbtn));
 	PCB_DAD_END(ctx->dlg);
 
 	if (subc_id > 0) {

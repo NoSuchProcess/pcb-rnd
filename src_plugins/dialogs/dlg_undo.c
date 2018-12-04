@@ -119,6 +119,8 @@ static void undo_data2dlg(undo_ctx_t *ctx)
 static void pcb_dlg_undo(void)
 {
 	static const char *hdr[] = {"serial", "flg", "operation", NULL};
+	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+
 	if (undo_ctx.active)
 		return; /* do not open another */
 
@@ -136,6 +138,7 @@ static void pcb_dlg_undo(void)
 			PCB_DAD_BUTTON(undo_ctx.dlg, "Clear");
 				PCB_DAD_CHANGE_CB(undo_ctx.dlg, cb_clear);
 		PCB_DAD_END(undo_ctx.dlg);
+		PCB_DAD_BUTTON_CLOSES(undo_ctx.dlg, clbtn);
 	PCB_DAD_END(undo_ctx.dlg);
 
 	/* set up the context */

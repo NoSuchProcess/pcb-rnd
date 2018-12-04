@@ -52,10 +52,12 @@ typedef struct{
 static void pcb_dlg_foo(whatever args) <<<- edit this
 {
 	foo_ctx_t ctx;
+	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
 	PCB_DAD_DECL(dlg);
 
 	PCB_DAD_BEGIN_VBOX(dlg);
 		PCB_DAD_LABEL(dlg, "foo");
+	PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
 	PCB_DAD_END(dlg);
 
 	/* set up the context */
