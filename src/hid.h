@@ -325,11 +325,6 @@ struct pcb_hid_s {
 	/* Use this to stop a file watch; must not be called from within a GUI callback! */
 	void (*unwatch_file) (pcb_hidval_t watch);
 
-	/* Causes func_ to be called in the mainloop prior to blocking */
-	pcb_hidval_t (*add_block_hook)(void (*func)(pcb_hidval_t data), pcb_hidval_t data);
-	/* Use this to stop a mainloop block hook. */
-	void (*stop_block_hook) (pcb_hidval_t block_hook);
-
 	/* Various dialogs */
 
 	/* Logs a message to the log window.  */

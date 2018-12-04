@@ -3412,43 +3412,6 @@ lesstif_watch_file(int fd, unsigned int condition,
 	return ret;
 }
 
-
-typedef struct {
-	XtBlockHookId id;
-	void (*func) (pcb_hidval_t user_data);
-	pcb_hidval_t user_data;
-} BlockHookStruct;
-
-static void lesstif_block_hook_cb(XtPointer user_data);
-
-static void lesstif_block_hook_cb(XtPointer user_data)
-{
-	BlockHookStruct *block_hook = (BlockHookStruct *) user_data;
-	block_hook->func(block_hook->user_data);
-}
-
-static pcb_hidval_t lesstif_add_block_hook(void (*func) (pcb_hidval_t data), pcb_hidval_t user_data)
-{
-	pcb_hidval_t ret;
-	BlockHookStruct *block_hook = (BlockHookStruct *) malloc(sizeof(BlockHookStruct));
-
-	block_hook->func = func;
-	block_hook->user_data = user_data;
-
-	block_hook->id = XtAppAddBlockHook(app_context, lesstif_block_hook_cb, (XtPointer) block_hook);
-
-	ret.ptr = (void *) block_hook;
-	return ret;
-}
-
-static void lesstif_stop_block_hook(pcb_hidval_t mlpoll)
-{
-	BlockHookStruct *block_hook = (BlockHookStruct *) mlpoll.ptr;
-	XtRemoveBlockHook(block_hook->id);
-	free(block_hook);
-}
-
-
 extern void lesstif_logv(enum pcb_message_level level, const char *fmt, va_list ap);
 
 extern int lesstif_confirm_dialog(const char *msg, ...);
@@ -3718,8 +3681,6 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.stop_timer = lesstif_stop_timer;
 	lesstif_hid.watch_file = lesstif_watch_file;
 	lesstif_hid.unwatch_file = lesstif_unwatch_file;
-	lesstif_hid.add_block_hook = lesstif_add_block_hook;
-	lesstif_hid.stop_block_hook = lesstif_stop_block_hook;
 
 	lesstif_hid.log = lesstif_log;
 	lesstif_hid.logv = lesstif_logv;

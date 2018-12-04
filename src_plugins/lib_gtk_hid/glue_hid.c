@@ -23,7 +23,6 @@
 #include "../src_plugins/lib_gtk_common/util_listener.h"
 #include "../src_plugins/lib_gtk_common/util_timer.h"
 #include "../src_plugins/lib_gtk_common/util_watch.h"
-#include "../src_plugins/lib_gtk_common/util_block_hook.h"
 #include "../src_plugins/lib_gtk_common/win_place.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
@@ -521,8 +520,6 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->stop_timer = ghid_stop_timer;
 	dst->watch_file = ghid_watch_file;
 	dst->unwatch_file = pcb_gtk_unwatch_file;
-	dst->add_block_hook = ghid_add_block_hook;
-	dst->stop_block_hook = ghid_stop_block_hook;
 
 	dst->log = ghid_log;
 	dst->logv = ghid_logv;

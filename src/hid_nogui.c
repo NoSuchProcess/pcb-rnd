@@ -226,19 +226,6 @@ static void nogui_unwatch_file(pcb_hidval_t watch)
 	CRASH("unwatch_file");
 }
 
-static pcb_hidval_t nogui_add_block_hook(void (*func) (pcb_hidval_t data), pcb_hidval_t data)
-{
-	pcb_hidval_t rv;
-	CRASH("add_block_hook");
-	rv.ptr = NULL;
-	return rv;
-}
-
-static void nogui_stop_block_hook(pcb_hidval_t block_hook)
-{
-	CRASH("stop_block_hook");
-}
-
 static void nogui_log(const char *fmt, ...)
 {
 	va_list ap;
@@ -535,8 +522,6 @@ void pcb_hid_nogui_init(pcb_hid_t * hid)
 	hid->stop_timer = nogui_stop_timer;
 	hid->watch_file = nogui_watch_file;
 	hid->unwatch_file = nogui_unwatch_file;
-	hid->add_block_hook = nogui_add_block_hook;
-	hid->stop_block_hook = nogui_stop_block_hook;
 	hid->log = nogui_log;
 	hid->logv = nogui_logv;
 	hid->confirm_dialog = nogui_confirm_dialog;

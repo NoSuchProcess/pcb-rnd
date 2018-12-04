@@ -285,17 +285,6 @@ void batch_unwatch_file(pcb_hidval_t data)
 {
 }
 
-static pcb_hidval_t batch_add_block_hook(void (*func) (pcb_hidval_t data), pcb_hidval_t user_data)
-{
-	pcb_hidval_t ret;
-	ret.ptr = NULL;
-	return ret;
-}
-
-static void batch_stop_block_hook(pcb_hidval_t mlpoll)
-{
-}
-
 static int
 batch_attribute_dialog(pcb_hid_attribute_t * attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_, void *caller_data)
 {
@@ -390,8 +379,6 @@ int pplg_init_hid_batch(void)
 	batch_hid.stop_timer = batch_stop_timer;
 	batch_hid.watch_file = batch_watch_file;
 	batch_hid.unwatch_file = batch_unwatch_file;
-	batch_hid.add_block_hook = batch_add_block_hook;
-	batch_hid.stop_block_hook = batch_stop_block_hook;
 	batch_hid.attribute_dialog = batch_attribute_dialog;
 	batch_hid.create_menu = batch_create_menu;
 	batch_hid.usage = batch_usage;
