@@ -416,57 +416,13 @@ char *lesstif_fileselect(const char *title, const char *descr,
 												 const char *default_file, const char *default_ext, const char *history_tag, int flags)
 {
 
-	return lesstif_prompt_for(title, default_file);
+	return pcb_hid_prompt_for(title, default_file, "fileselect");
 }
 
 /* ------------------------------------------------------------ */
 
 static Widget prompt_dialog = 0;
 static Widget prompt_label, prompt_text;
-
-char *lesstif_prompt_for(const char *msg, const char *default_string)
-{
-	char *rv;
-	XmString xs;
-	if (prompt_dialog == 0) {
-		stdarg_n = 0;
-		stdarg(XmNautoUnmanage, False);
-		stdarg(XmNtitle, "pcb-rnd Prompt");
-		prompt_dialog = XmCreateFormDialog(mainwind, XmStrCast("prompt"), stdarg_args, stdarg_n);
-
-		stdarg_n = 0;
-		stdarg(XmNtopAttachment, XmATTACH_FORM);
-		stdarg(XmNleftAttachment, XmATTACH_FORM);
-		stdarg(XmNrightAttachment, XmATTACH_FORM);
-		stdarg(XmNalignment, XmALIGNMENT_BEGINNING);
-		prompt_label = XmCreateLabel(prompt_dialog, XmStrCast("label"), stdarg_args, stdarg_n);
-		XtManageChild(prompt_label);
-
-		stdarg_n = 0;
-		stdarg(XmNtopAttachment, XmATTACH_WIDGET);
-		stdarg(XmNtopWidget, prompt_label);
-		stdarg(XmNbottomAttachment, XmATTACH_WIDGET);
-		stdarg(XmNleftAttachment, XmATTACH_FORM);
-		stdarg(XmNrightAttachment, XmATTACH_FORM);
-		stdarg(XmNeditable, True);
-		prompt_text = XmCreateText(prompt_dialog, XmStrCast("text"), stdarg_args, stdarg_n);
-		XtManageChild(prompt_text);
-		XtAddCallback(prompt_text, XmNactivateCallback, (XtCallbackProc) dialog_callback_ok_value, (XtPointer) 1);
-	}
-	if (!default_string)
-		default_string = "";
-	if (!msg)
-		msg = "Enter text:";
-	stdarg_n = 0;
-	xs = XmStringCreatePCB(msg);
-	stdarg(XmNlabelString, xs);
-	XtSetValues(prompt_label, stdarg_args, stdarg_n);
-	XmTextSetString(prompt_text, (char *) default_string);
-	XmTextSetCursorPosition(prompt_text, strlen(default_string));
-	wait_for_dialog(prompt_dialog);
-	rv = XmTextGetString(prompt_text);
-	return rv;
-}
 
 /* ------------------------------------------------------------ */
 

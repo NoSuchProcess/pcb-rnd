@@ -358,11 +358,6 @@ struct pcb_hid_s {
 #define HID_CLOSE_CONFIRM_CANCEL 0
 #define HID_CLOSE_CONFIRM_OK     1
 
-	/* Prompts the user to enter a string, returns the string.  If
-	   default_string isn't NULL, the form is pre-filled with this
-	   value.  "msg" is like "Enter value:".  Returns NULL on cancel. */
-	char *(*prompt_for)(const char *msg, const char *default_string);
-
 	/* Prompts the user for a filename or directory name.  For GUI
 	   HID's this would mean a file select dialog box.  The 'flags'
 	   argument is the bitwise OR of the following values.  */

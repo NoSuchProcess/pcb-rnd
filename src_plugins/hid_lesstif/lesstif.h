@@ -54,7 +54,6 @@ extern Pixel lesstif_parse_color(const char *value);
 extern void lesstif_styles_update_values();
 extern void lesstif_update_layer_groups();
 extern void lesstif_update_status_line();
-extern char *lesstif_prompt_for(const char *, const char *);
 extern char *lesstif_fileselect(const char *, const char *, const char *, const char *, const char *, int);
 extern void lesstif_log(const char *fmt, ...);
 extern void lesstif_attributes_dialog(const char *, pcb_attribute_list_t *);

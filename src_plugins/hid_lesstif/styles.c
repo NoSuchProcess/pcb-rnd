@@ -216,7 +216,7 @@ static Widget style_value(int i)
 
 static void style_name_cb(Widget w, int i, XmToggleButtonCallbackStruct * cbs)
 {
-	char *newname = lesstif_prompt_for("New name", PCB->RouteStyle.array[i].name);
+	char *newname = pcb_hid_prompt_for("New name", PCB->RouteStyle.array[i].name, "Route style name");
 	strncpy(PCB->RouteStyle.array[i].name, newname, sizeof(PCB->RouteStyle.array[i].name)-1);
 	PCB->RouteStyle.array[i].name[sizeof(PCB->RouteStyle.array[i].name)-1] = '\0';
 	free(newname);

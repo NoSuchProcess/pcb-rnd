@@ -15,7 +15,6 @@
 #include "../src_plugins/lib_gtk_common/bu_dwg_tooltip.h"
 #include "../src_plugins/lib_gtk_common/ui_crosshair.h"
 #include "../src_plugins/lib_gtk_common/dlg_confirm.h"
-#include "../src_plugins/lib_gtk_common/dlg_input.h"
 #include "../src_plugins/lib_gtk_common/dlg_log.h"
 #include "../src_plugins/lib_gtk_common/dlg_file_chooser.h"
 #include "../src_plugins/lib_gtk_common/dlg_progress.h"
@@ -351,21 +350,6 @@ static int ghid_close_confirm_dialog(void)
 	return pcb_gtk_dlg_confirm_close(ghid_port.top_window);
 }
 
-static char *ghid_prompt_for(const char *msg, const char *default_string)
-{
-	char *grv, *rv;
-
-	grv = pcb_gtk_dlg_input(msg, default_string, GTK_WINDOW(ghid_port.top_window));
-
-	if (grv == NULL)
-		return NULL;
-
-	/* can't assume the caller will do g_free() on it */
-	rv = pcb_strdup(grv);
-	g_free(grv);
-	return rv;
-}
-
 static char *ghid_fileselect(const char *title, const char *descr, const char *default_file, const char *default_ext, const char *history_tag, int flags)
 {
 	return pcb_gtk_fileselect(ghid_port.top_window, title, descr, default_file, default_ext, history_tag, flags);
@@ -544,7 +528,6 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->logv = ghid_logv;
 	dst->confirm_dialog = ghid_confirm_dialog;
 	dst->close_confirm_dialog = ghid_close_confirm_dialog;
-	dst->prompt_for = ghid_prompt_for;
 	dst->fileselect = ghid_fileselect;
 	dst->attribute_dialog = ghid_attribute_dialog_;
 	dst->attr_dlg_new = ghid_attr_dlg_new_;
