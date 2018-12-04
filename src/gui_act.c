@@ -1712,25 +1712,6 @@ fgw_error_t pcb_act_PrintCalibrate(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_PromptFor[] = "PromptFor([message[,default]])";
-static const char pcb_acth_PromptFor[] = "Prompt for a response.";
-/* DOC: promptfor.html */
-static fgw_error_t pcb_act_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	const char *a0 = NULL, *a1 = NULL;
-
-	if (pcb_gui == NULL)
-		return FGW_ERR_UNKNOWN;
-
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, PromptFor, a0 = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, PromptFor, a1 = argv[2].val.str);
-
-	res->type = FGW_STR;
-	res->val.str = pcb_gui->prompt_for(a0, a1);
-	return 0;
-}
-
-
 pcb_action_t gui_action_list[] = {
 	{"Display", pcb_act_Display, pcb_acth_Display, pcb_acts_Display},
 	{"CycleDrag", pcb_act_CycleDrag, pcb_acth_CycleDrag, pcb_acts_CycleDrag},
@@ -1757,8 +1738,7 @@ pcb_action_t gui_action_list[] = {
 	{"SetUnits", pcb_act_SetUnits, pcb_acth_setunits, pcb_acts_setunits},
 	{"ChkRst", pcb_act_ChkRst, pcb_acth_chkrst, pcb_acts_chkrst},
 	{"GetXY", pcb_act_GetXY, pcb_acth_GetXY, pcb_acts_GetXY},
-	{"PrintCalibrate", pcb_act_PrintCalibrate, pcb_acth_PrintCalibrate, pcb_acts_PrintCalibrate},
-	{"PromptFor", pcb_act_PromptFor, pcb_acth_PromptFor, pcb_acts_PromptFor}
+	{"PrintCalibrate", pcb_act_PrintCalibrate, pcb_acth_PrintCalibrate, pcb_acts_PrintCalibrate}
 };
 
 PCB_REGISTER_ACTIONS(gui_action_list, NULL)
