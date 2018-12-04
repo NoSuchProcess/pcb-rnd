@@ -421,11 +421,6 @@ char *lesstif_fileselect(const char *title, const char *descr,
 
 /* ------------------------------------------------------------ */
 
-static Widget prompt_dialog = 0;
-static Widget prompt_label, prompt_text;
-
-/* ------------------------------------------------------------ */
-
 static Widget create_form_ok_dialog(const char *name, int ok, void (*button_cb)(void *ctx, pcb_hid_attr_ev_t ev), void *ctx)
 {
 	Widget dialog, topform;
