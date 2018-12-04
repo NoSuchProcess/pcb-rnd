@@ -34,6 +34,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "actions.h"
 #include "hid.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
@@ -45,6 +46,8 @@
    gui-specific things when it shouldn't.  */
 
 #define CRASH(func) fprintf(stderr, "HID error: pcb called GUI function %s without having a GUI available.\n", func); abort()
+
+static const char pcb_acth_cli[] = "Intenal: CLI frontend action. Do not use directly.";
 
 typedef struct hid_gc_s {
 	int nothing_interesting_here;
@@ -336,23 +339,36 @@ static int nogui_close_confirm_dialog()
 	return nogui_confirm_dialog(_("OK to lose data ?"), NULL);
 }
 
-static char *nogui_prompt_for(const char *msg, const char *default_string)
+static fgw_error_t pcb_act_cli_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char *answer;
+	const char *label, *default_str = "", *title = NULL;
+	const char *pcb_acts_cli_PromptFor = pcb_acth_cli;
 
-	if (conf_core.rc.quiet)
-		return pcb_strdup("");
+	PCB_ACT_CONVARG(1, FGW_STR, cli_PromptFor, label = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, cli_PromptFor, default_str = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, cli_PromptFor, title = argv[3].val.str);
 
-	if (default_string)
-		printf("%s [%s] : ", msg, default_string);
+	if (!conf_core.rc.quiet) {
+		if (title != NULL)
+			printf("*** %s ***\n", title);
+		if (default_str)
+			printf("%s [%s] : ", label, default_str);
+		else
+			printf("%s : ", label);
+
+		answer = read_stdin_line();
+		if (answer == NULL)
+			answer = pcb_strdup((default_str != NULL) ? default_str : "");
+		else
+			answer = pcb_strdup(answer);
+	}
 	else
-		printf("%s : ", msg);
+		answer = pcb_strdup("");
 
-	answer = read_stdin_line();
-	if (answer == NULL)
-		return pcb_strdup((default_string != NULL) ? default_string : "");
-	else
-		return pcb_strdup(answer);
+	res->type = FGW_STR | FGW_DYN;
+	res->val.str = answer;
+	return 0;
 }
 
 /* FIXME - this could use some enhancement to actually use the other
@@ -525,7 +541,6 @@ void pcb_hid_nogui_init(pcb_hid_t * hid)
 	hid->logv = nogui_logv;
 	hid->confirm_dialog = nogui_confirm_dialog;
 	hid->close_confirm_dialog = nogui_close_confirm_dialog;
-	hid->prompt_for = nogui_prompt_for;
 	hid->fileselect = nogui_fileselect;
 	hid->attr_dlg_new = nogui_attr_dlg_new;
 	hid->attr_dlg_run = nogui_attr_dlg_run;
@@ -554,3 +569,10 @@ pcb_hid_t *pcb_hid_nogui_get_hid(void)
 
 	return &nogui_hid;
 }
+
+
+static pcb_action_t cli_dlg_action_list[] = {
+	{"cli_PromptFor", pcb_act_cli_PromptFor, pcb_acth_cli, NULL}
+};
+
+PCB_REGISTER_ACTIONS(cli_dlg_action_list, NULL)
