@@ -12,7 +12,7 @@
 <h2> Action Reference</h2>
 <table border=1>
 <caption>\n <b>
-This is pcb-rnd 2.0.1 (svn r20827) an interactive printed circuit board editor ,  Revision: 21383
+This is pcb-rnd 2.1.0 (svn r21403) an interactive printed circuit board editor ,  Revision: 21455
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -171,7 +171,7 @@ This is pcb-rnd 2.0.1 (svn r20827) an interactive printed circuit board editor ,
 <tr><td>PrintPaths</td><td>Print full paths and search paths.</td><td>PrintPaths()</td><td></td>
 <tr><td>PrintUsage</td><td>Print command line arguments of pcb-rnd or a plugin loaded.</td><td>PrintUsage()<br>PrintUsage(plugin)</td><td></td>
 <tr><td>PrintVersion</td><td>Print version.</td><td>PrintVersion()</td><td></td>
-<tr><td><a href="action_details.html#promptfor">PromptFor</a></td><td>Prompt for a response.</td><td>PromptFor([message[,default]])</td><td></td>
+<tr><td><a href="action_details.html#promptfor">PromptFor</a></td><td>Prompt for a string. Returns the string (or NULL on cancel)</td><td>PromptFor([message[,default[,title]]])</td><td></td>
 <tr><td>PstkNew</td><td>Create a padstack. For now data must be "pcb". glob_clearance=0 turns off global clearance. Returns the ID of the new object or 0 on error.</td><td>PstkNew(data, protoID, x, y, glob_clearance, flags)</td><td>act_draw</td>
 <tr><td><a href="action_details.html#puller">Puller</a></td><td>Pull an arc-line junction tight.</td><td>pcb_act_Puller()</td><td>puller plugin</td>
 <tr><td><a href="action_details.html#quit">Quit</a></td><td>Quits the application after confirming.</td><td>Quit()</td><td></td>
@@ -226,6 +226,7 @@ This is pcb-rnd 2.0.1 (svn r20827) an interactive printed circuit board editor ,
 <tr><td>awk</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>cam</td><td>Export jobs for feeding cam processes</td><td>cam(exec, script)<br>cam(call, jobname)</td><td>cam exporter</td>
 <tr><td>circle</td><td>Generate a filled circle (zero length round cap line)</td><td>circle([where,] diameter)</td><td>shape plugin</td>
+<tr><td>cli_PromptFor</td><td>Intenal: CLI frontend action. Do not use directly.</td><td></td><td></td>
 <tr><td>conf</td><td>Perform various operations on the configuration tree.</td><td>conf(set, path, value, [role], [policy]) - change a config setting to an absolute value<br>conf(delta, path, value, [role], [policy]) - change a config setting by a delta value (numerics-only)<br>conf(toggle, path, [role]) - invert boolean value of a flag; if no role given, overwrite the highest prio config<br>conf(reset, role) - reset the in-memory lihata of a role<br>conf(iseq, path, value) - returns whether the value of a conf item matches value (for menu checked's)</td><td></td>
 <tr><td>constraint</td><td>Configure or remove a drawing constraint</td><td>constraint(type, off)<br>constraint(type, value, [value...])</td><td>ddraft plugin</td>
 <tr><td>cpcb</td><td>Executed external autorouter cpcb to route the board or parts of the board</td><td>cpcb(board|selected, [command])</td><td>cpcb plugin</td>
@@ -246,6 +247,7 @@ This is pcb-rnd 2.0.1 (svn r20827) an interactive printed circuit board editor ,
 <tr><td>extedit</td><td>extedit(object|selected, [interactive|method])</td><td>Invoke an external program to edit a specific part of the current board.</td><td>extedit plugin</td>
 <tr><td>forcecolor</td><td>change selected objects' color to #RRGGBB, reset if does not start with '#'</td><td>forcecolor(#RRGGBB)</td><td>diag plugin</td>
 <tr><td>fp_rehash</td><td>Flush the library index; rescan all library search paths and rebuild the library index. Useful if there are changes in the library during a pcb-rnd session.</td><td>fp_rehash()</td><td></td>
+<tr><td>gui_PromptFor</td><td>Intenal: GUI frontend action. Do not use directly.</td><td></td><td>dialogs plugin</td>
 <tr><td>h</td><td>Print a help message for commands.</td><td>h</td><td>shand_cmd plugin</td>
 <tr><td>integrity</td><td>perform integrirty check on the current board and generate errors if needed</td><td>integrity()</td><td>diag plugin</td>
 <tr><td>javascript</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
