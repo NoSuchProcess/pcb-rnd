@@ -845,6 +845,8 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, att
 
 		case PCB_HATT_PICBUTTON:
 			ctx->wl[i] = ltf_picbutton_create(ctx, parent, &ctx->attrs[i]);
+			XtAddCallback(ctx->wl[i], XmNactivateCallback, valchg, ctx->wl[i]);
+			XtSetValues(ctx->wl[i], stdarg_args, stdarg_n);
 			break;
 	
 		case PCB_HATT_LABEL:

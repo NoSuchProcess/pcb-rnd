@@ -121,6 +121,7 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			PCB_DAD_BUTTON(ctx.dlg, "jump to the first tab");
 				PCB_DAD_CHANGE_CB(ctx.dlg, cb_jump);
 			PCB_DAD_PICBUTTON(ctx.dlg, test_xpm);
+				PCB_DAD_CHANGE_CB(ctx.dlg, cb_jump);
 		PCB_DAD_END(ctx.dlg);
 
 		/* tab 2: tree table widget */
