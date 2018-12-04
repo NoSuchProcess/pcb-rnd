@@ -38,22 +38,29 @@
    nothing is available, the effect is equivalent to cancel. */
 
 
+/* Call the gui_ or the cli_ action; act_name must be all lowercase! */
+static fgw_error_t call_dialog(const char *act_name, fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	char tmp[128];
+
+	strcpy(tmp, "gui_");
+	strncpy(tmp+4, act_name, sizeof(tmp)-5);
+	if (fgw_func_lookup(&pcb_fgw, tmp) != NULL)
+		return pcb_actionv_bin(tmp, res, argc, argv);
+
+	tmp[0] = 'c'; tmp[1] = 'l';
+	if (fgw_func_lookup(&pcb_fgw, tmp) != NULL)
+		return pcb_actionv_bin(tmp, res, argc, argv);
+
+	return FGW_ERR_NOT_FOUND;
+}
+
 static const char pcb_acts_PromptFor[] = "PromptFor([message[,default]])";
 static const char pcb_acth_PromptFor[] = "Prompt for a response.";
 /* DOC: promptfor.html */
 static fgw_error_t pcb_act_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *a0 = NULL, *a1 = NULL;
-
-	if (pcb_gui == NULL)
-		return FGW_ERR_UNKNOWN;
-
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, PromptFor, a0 = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, PromptFor, a1 = argv[2].val.str);
-
-	res->type = FGW_STR;
-	res->val.str = pcb_gui->prompt_for(a0, a1);
-	return 0;
+	return call_dialog("promptfor", res, argc, argv);
 }
 
 char *pcb_hid_prompt_for(const char *msg, const char *default_string, const char *title)
