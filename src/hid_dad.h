@@ -193,6 +193,12 @@ do { \
 } while(0)
 
 
+#define PCB_DAD_PICTURE(table, xpm) \
+do { \
+	PCB_DAD_ALLOC(table, PCB_HATT_PICTURE); \
+	table[table ## _len - 1].default_val.str_value = xpm; \
+} while(0)
+
 #define PCB_DAD_BEGIN_HPANE(table) \
 do { \
 	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_HPANE); \
@@ -319,6 +325,7 @@ do { \
 		case PCB_HATT_PATH: \
 		case PCB_HATT_BUTTON: \
 		case PCB_HATT_TREE: \
+		case PCB_HATT_PICTURE: \
 			table[table ## _len - 1].field.str_value = (char *)val; \
 			break; \
 		case PCB_HATT_BEGIN_HBOX: \
@@ -346,6 +353,7 @@ do { \
 		case PCB_HATT_STRING: \
 		case PCB_HATT_PATH: \
 		case PCB_HATT_BUTTON: \
+		case PCB_HATT_PICTURE: \
 			break; \
 		case PCB_HATT_TREE: \
 			pcb_dad_tree_free(&table[field]); \

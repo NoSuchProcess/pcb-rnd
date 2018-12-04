@@ -40,6 +40,7 @@ typedef enum pcb_hids_e {
 	PCB_HATT_TREE,                /* tree/list/table view; number of columns: pcb_hatt_table_cols; data is in field 'enumerations' */
 	PCB_HATT_PROGRESS,            /* progress bar; displays real_value between 0 and 1 */
 	PCB_HATT_PREVIEW,             /* preview/render widget; callbacks in 'enumerations' */
+	PCB_HATT_PICTURE,             /* static picture from xpm - picture data in str_value */
 
 	/* groups (e.g. boxes) */
 	PCB_HATT_BEGIN_HBOX,          /* NOTE: PCB_HATT_IS_COMPOSITE() depends on it */
