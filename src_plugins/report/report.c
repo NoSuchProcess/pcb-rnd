@@ -94,7 +94,7 @@ static void rdialog(const char *name, const char *content)
 		PCB_DAD_LABEL(ctx->dlg, content);
 	PCB_DAD_END(ctx->dlg);
 
-	PCB_DAD_NEW(ctx->dlg, name, "EDIT THIS", ctx, pcb_false, rdialog_close_cb);
+	PCB_DAD_NEW(ctx->dlg, name, ctx, pcb_false, rdialog_close_cb);
 }
 
 

@@ -569,7 +569,7 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 		PCB_DAD_END(dlg);
 	PCB_DAD_END(dlg);
 
-	PCB_DAD_NEW(dlg, "dlg_padstack_edit_shape", "Edit padstack shape", pse, pcb_true, NULL);
+	PCB_DAD_NEW(dlg, "Edit padstack shape", pse, pcb_true, NULL);
 	pse->shape_chg = dlg;
 
 /*	pse_ps2dlg(dlg_hid_ctx, pse);*/
@@ -850,7 +850,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 		PCB_DAD_END(dlg);
 	PCB_DAD_END(dlg);
 
-	PCB_DAD_NEW(dlg, "dlg_padstack_edit", "Edit padstack", pse, pcb_true, NULL);
+	PCB_DAD_NEW(dlg, "Edit padstack", pse, pcb_true, NULL);
 	pse->attrs = dlg;
 	pse_ps2dlg(dlg_hid_ctx, pse);
 	if (target_tab > 0)

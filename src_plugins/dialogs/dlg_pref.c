@@ -278,7 +278,7 @@ static void pcb_dlg_pref(const char *target_tab_str)
 	/* set up the context */
 	pref_ctx.active = 1;
 
-	PCB_DAD_NEW(pref_ctx.dlg, "pcb-rnd preferences", "", &pref_ctx, pcb_false, pref_close_cb);
+	PCB_DAD_NEW(pref_ctx.dlg, "pcb-rnd preferences", &pref_ctx, pcb_false, pref_close_cb);
 
 	pcb_dlg_pref_lib_open(&pref_ctx);
 	if (target_tab >= 0)

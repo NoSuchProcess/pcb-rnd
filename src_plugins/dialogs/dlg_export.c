@@ -177,7 +177,7 @@ static void pcb_dlg_export(void)
 	/* set up the context */
 	export_ctx.active = 1;
 
-	PCB_DAD_NEW(export_ctx.dlg, "Export", "Export in various formats", &export_ctx, pcb_false, export_close_cb);
+	PCB_DAD_NEW(export_ctx.dlg, "Export in various formats", &export_ctx, pcb_false, export_close_cb);
 }
 
 static const char pcb_acts_ExportGUI[] = "ExportGUI()\n";

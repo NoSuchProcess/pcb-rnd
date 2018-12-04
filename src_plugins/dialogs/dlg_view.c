@@ -659,7 +659,7 @@ static void pcb_dlg_view_full(view_ctx_t *ctx, const char *title)
 		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);
 
-	PCB_DAD_NEW(ctx->dlg, title, "", ctx, pcb_false, view_close_cb);
+	PCB_DAD_NEW(ctx->dlg, title, ctx, pcb_false, view_close_cb);
 
 	ctx->active = 1;
 }
@@ -717,7 +717,7 @@ static void pcb_dlg_view_simplified(view_ctx_t *ctx, const char *title)
 
 	PCB_DAD_END(ctx->dlg);
 
-	PCB_DAD_NEW(ctx->dlg, title, "", ctx, pcb_false, view_close_cb);
+	PCB_DAD_NEW(ctx->dlg, title, ctx, pcb_false, view_close_cb);
 
 	ctx->active = 1;
 

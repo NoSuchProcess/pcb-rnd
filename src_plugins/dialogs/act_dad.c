@@ -194,8 +194,8 @@ const char pcb_acts_dad[] =
 	"dad(dlgname, end) - end the last begin\n"
 	"dad(dlgname, flags, flg1, flg2, ...) - change the flags of the last created widget\n"
 	"dad(dlgname, onchange, action) - set the action to be called on widget change\n"
-	"dad(dlgname, run, longname, shortname) - present dlgname as a non-modal dialog\n"
-	"dad(dlgname, run_modal, longname, shortname) - present dlgname as a modal dialog\n"
+	"dad(dlgname, run, title) - present dlgname as a non-modal dialog\n"
+	"dad(dlgname, run_modal, title) - present dlgname as a modal dialog\n"
 	"dad(dlgname, exists) - returns wheter the named dialog exists (0 or 1)\n"
 	"dad(dlgname, set, widgetID, val) - changes the value of a widget in a running dialog \n"
 	"dad(dlgname, get, widgetID, [unit]) - return the current value of a widget\n"
@@ -506,19 +506,16 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		return 0;
 	}	else if ((pcb_strcasecmp(cmd, "run") == 0) || (pcb_strcasecmp(cmd, "run_modal") == 0)) {
-		char *sh;
-
 		if (dad->running) goto cant_chg;
 
 		PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
-		PCB_ACT_CONVARG(4, FGW_STR, dad, sh = argv[4].val.str);
 
 		if (dad->level != 0) {
 			pcb_message(PCB_MSG_ERROR, "Invalid DAD dialog structure: %d levels not closed (missing 'end' calls)\n", dad->level);
 			rv = -1;
 		}
 		else {
-			PCB_DAD_NEW(dad->dlg, txt, sh, dad, (cmd[3] == '_'), dad_close_cb);
+			PCB_DAD_NEW(dad->dlg, txt, dad, (cmd[3] == '_'), dad_close_cb);
 			rv = PCB_DAD_CURRENT(dad->dlg);
 		}
 	}

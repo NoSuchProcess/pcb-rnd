@@ -77,7 +77,7 @@ static fgw_error_t pcb_act_ManagePlugins(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		PCB_DAD_LABEL(dlg, str.array);
 	PCB_DAD_END(dlg);
 
-	PCB_DAD_NEW(dlg, "Manage plugins", "", NULL, pcb_true, NULL);
+	PCB_DAD_NEW(dlg, "Manage plugins", NULL, pcb_true, NULL);
 	PCB_DAD_RUN(dlg);
 	PCB_DAD_FREE(dlg);
 

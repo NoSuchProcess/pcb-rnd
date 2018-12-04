@@ -258,7 +258,7 @@ static int lib_cell_edit(char **cell)
 			PCB_DAD_CHANGE_CB(ctx.dlg, libhelp_btn);
 	PCB_DAD_END(ctx.dlg);
 
-	PCB_DAD_NEW(ctx.dlg, "Edit library path", "", &ctx, pcb_true, NULL);
+	PCB_DAD_NEW(ctx.dlg, "Edit library path", &ctx, pcb_true, NULL);
 	if (PCB_DAD_RUN(ctx.dlg) != 0) {
 		PCB_DAD_FREE(ctx.dlg);
 		return -1;
@@ -358,7 +358,7 @@ static void pref_libhelp_open(pref_libhelp_ctx_t *ctx)
 	PCB_DAD_END(ctx->dlg);
 
 	ctx->active = 1;
-	PCB_DAD_NEW(ctx->dlg, "pcb-rnd preferences: library help", "", ctx, pcb_false, pref_libhelp_close_cb);
+	PCB_DAD_NEW(ctx->dlg, "pcb-rnd preferences: library help", ctx, pcb_false, pref_libhelp_close_cb);
 }
 
 static void libhelp_btn(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)

@@ -719,10 +719,10 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 	return 1;
 }
 
-void *ghid_attr_dlg_new(pcb_gtk_common_t *com, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev))
+void *ghid_attr_dlg_new(pcb_gtk_common_t *com, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev))
 {
 	GtkWidget *content_area;
-	GtkWidget *main_vbox, *vbox;
+	GtkWidget *main_vbox;
 	attr_dlg_t *ctx;
 	resp_ctx_t *resp_ctx = NULL;
 
@@ -757,12 +757,7 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, pcb_hid_attribute_t *attrs, int n
 	gtk_container_set_border_width(GTK_CONTAINER(main_vbox), 6);
 	gtk_container_add_with_properties(GTK_CONTAINER(content_area), main_vbox, "expand", TRUE, "fill", TRUE, NULL);
 
-	if (!PCB_HATT_IS_COMPOSITE(attrs[0].type)) {
-		vbox = ghid_category_vbox(main_vbox, descr != NULL ? descr : "", 4, 2, TRUE, TRUE);
-		ghid_attr_dlg_add(ctx, vbox, NULL, 0, 1);
-	}
-	else
-		ghid_attr_dlg_add(ctx, main_vbox, NULL, 0, (attrs[0].pcb_hatt_flags & PCB_HATF_LABEL));
+	ghid_attr_dlg_add(ctx, main_vbox, NULL, 0, (attrs[0].pcb_hatt_flags & PCB_HATF_LABEL));
 
 	gtk_widget_show_all(ctx->dialog);
 
@@ -816,7 +811,7 @@ int ghid_attribute_dialog(pcb_gtk_common_t *com, pcb_hid_attribute_t * attrs, in
 	void *hid_ctx;
 	int rc;
 
-	hid_ctx = ghid_attr_dlg_new(com, attrs, n_attrs, results, title, descr, caller_data, pcb_true, NULL);
+	hid_ctx = ghid_attr_dlg_new(com, attrs, n_attrs, results, title, caller_data, pcb_true, NULL);
 	rc = ghid_attr_dlg_run(hid_ctx);
 	ghid_attr_dlg_free(hid_ctx);
 
