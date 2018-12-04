@@ -49,9 +49,12 @@
 #include "dlg_undo.c"
 #include "dlg_plugins.c"
 #include "dlg_fontsel.c"
+#include "dlg_comm_m.c"
 
 #include "dlg_view.h"
 #include "act_dad.h"
+
+static const char pcb_acth_gui[] = "Intenal: GUI frontend action. Do not use directly.";
 
 pcb_action_t dialogs_action_list[] = {
 	{"dlg_test", pcb_act_dlg_test, dlg_test_help, dlg_test_syntax},
@@ -70,7 +73,9 @@ pcb_action_t dialogs_action_list[] = {
 	{"dad", pcb_act_dad, pcb_acth_dad, pcb_acts_dad},
 	{"DrcDialog", pcb_act_DrcDialog, pcb_acth_DrcDialog, pcb_acts_DrcDialog},
 	{"IOIncompatList", pcb_act_IOIncompatList, pcb_acth_IOIncompatList, pcb_acts_IOIncompatList},
-	{"Fontsel", pcb_act_Fontsel, pcb_acth_Fontsel, pcb_acts_Fontsel}
+	{"Fontsel", pcb_act_Fontsel, pcb_acth_Fontsel, pcb_acts_Fontsel},
+
+	{"gui_PromptFor", pcb_act_gui_PromptFor, pcb_acth_gui, NULL}
 };
 
 static const char *dialogs_cookie = "dialogs plugin";
