@@ -60,3 +60,30 @@ void pcb_dad_tree_free(pcb_hid_attribute_t *attr)
 	pcb_dad_tree_free_rowlist(attr, &tree->rows);
 	free(tree);
 }
+
+
+/*** these shouldn't be in pcb_dad_tree.c, but they are so short that a new
+     file would be overkill ***/
+
+void pcb_hid_dad_close_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_dad_retovr_t *retovr = (pcb_dad_retovr_t *)attr->enumerations;
+
+	retovr->valid = 1;
+	retovr->value = attr->default_val.int_value;
+	retovr->already_freed = 1;
+	pcb_gui->attr_dlg_free(hid_ctx);
+}
+
+
+int pcb_hid_dad_run(void *hid_ctx, pcb_dad_retovr_t *retovr)
+{
+	int ret;
+
+	retovr->already_freed = 0;
+	retovr->valid = 0;
+	ret = pcb_gui->attr_dlg_run(hid_ctx);
+	if (retovr->valid)
+		return retovr->value;
+	return ret;
+}

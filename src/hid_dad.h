@@ -33,6 +33,7 @@
 #include "hid_attrib.h"
 #include "pcb-printf.h"
 
+
 /*** Helpers for building dynamic attribute dialogs (DAD) ***/
 #define PCB_DAD_DECL(table) \
 	pcb_hid_attribute_t *table = NULL; \
@@ -40,6 +41,7 @@
 	int table ## _len = 0; \
 	int table ## _alloced = 0; \
 	void *table ## _hid_ctx = NULL; \
+	pcb_dad_retovr_t table ## _ret_override = {0, 0, 0};
 
 #define PCB_DAD_DECL_NOINIT(table) \
 	pcb_hid_attribute_t *table; \
@@ -47,12 +49,13 @@
 	int table ## _len; \
 	int table ## _alloced; \
 	void *table ## _hid_ctx; \
+	pcb_dad_retovr_t table ## _ret_override;
 
 /* Free all resources allocated by DAD macros for table */
 #define PCB_DAD_FREE(table) \
 do { \
 	int __n__; \
-	if (table ## _hid_ctx != NULL) \
+	if ((table ## _hid_ctx != NULL) && (!table ## _ret_override.already_freed)) \
 		pcb_gui->attr_dlg_free(table ## _hid_ctx); \
 	for(__n__ = 0; __n__ < table ## _len; __n__++) { \
 		PCB_DAD_FREE_FIELD(table, __n__); \
@@ -73,14 +76,18 @@ do { \
 	table ## _hid_ctx = pcb_gui->attr_dlg_new(table, table ## _len, table ## _result, title, descr, caller_data, modal, ev_cb); \
 } while(0)
 
-#define PCB_DAD_RUN(table) pcb_gui->attr_dlg_run(table ## _hid_ctx)
+#define PCB_DAD_RUN(table) pcb_hid_dad_run(table ## _hid_ctx, &table ## _ret_override)
 
 /* failed is non-zero on cancel */
 #define PCB_DAD_AUTORUN(table, title, descr, caller_data, failed) \
 do { \
 	if (table ## _result == NULL) \
 		PCB_DAD_ALLOC_RESULT(table); \
+	table ## _ret_override.valid = 0; \
+	table ## _ret_override.already_freed = 0; \
 	failed = pcb_attribute_dialog(table, table ## _len, table ## _result, title, descr, caller_data); \
+	if (table ## _ret_override.valid) \
+		failed = table ## _ret_override.value; \
 } while(0)
 
 /* Return the index of the item currenty being edited */
@@ -158,6 +165,30 @@ do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_BUTTON); \
 	table[table ## _len - 1].default_val.str_value = text; \
 } while(0)
+
+#define PCB_DAD_BUTTON_CLOSE(table, text, retval) \
+do { \
+	PCB_DAD_ALLOC(table, PCB_HATT_BUTTON); \
+	table[table ## _len - 1].default_val.str_value = text; \
+	table[table ## _len - 1].default_val.int_value = retval; \
+	table[table ## _len - 1].enumerations = (const char **)(&table ## _ret_override); \
+	PCB_DAD_CHANGE_CB(table, pcb_hid_dad_close_cb); \
+} while(0)
+
+#define PCB_DAD_BUTTON_CLOSES(table, buttons) \
+do { \
+	pcb_hid_dad_buttons_t *__n__; \
+	PCB_DAD_BEGIN_HBOX(table); \
+	PCB_DAD_COMPFLAG(table, PCB_HATF_EXPFILL); \
+	PCB_DAD_BEGIN_HBOX(table); \
+	PCB_DAD_COMPFLAG(table, PCB_HATF_EXPFILL); \
+	PCB_DAD_END(table); \
+	for(__n__ = buttons; __n__->label != NULL; __n__++) { \
+		PCB_DAD_BUTTON_CLOSE(table, __n__->label, __n__->retval); \
+	} \
+	PCB_DAD_END(table); \
+} while(0)
+
 
 #define PCB_DAD_PROGRESS(table) \
 do { \
@@ -394,5 +425,20 @@ do { \
 
 /* Internal: free all rows and caches and the tree itself */
 void pcb_dad_tree_free(pcb_hid_attribute_t *attr);
+
+/* internal: retval override for the auto-close buttons */
+typedef struct {
+	char valid;
+	char already_freed;
+	int value;
+} pcb_dad_retovr_t;
+
+typedef struct {
+	const char *label;
+	int retval;
+} pcb_hid_dad_buttons_t;
+
+void pcb_hid_dad_close_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+int pcb_hid_dad_run(void *hid_ctx, pcb_dad_retovr_t *retovr);
 
 #endif

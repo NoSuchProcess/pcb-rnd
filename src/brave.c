@@ -188,7 +188,7 @@ static int brave_interact(void)
 {
 	desc_t *d;
 	int len;
-
+	pcb_hid_dad_buttons_t btn[] = {{"Close", 0}, {NULL, 0}};
 	PCB_DAD_DECL(dlg);
 
 	PCB_DAD_BEGIN_VBOX(dlg);
@@ -220,13 +220,13 @@ static int brave_interact(void)
 
 	if (len == 0)
 		PCB_DAD_LABEL(dlg, "(There are no brave features at the moment)");
+
+	PCB_DAD_BUTTON_CLOSES(dlg, btn);
 	PCB_DAD_END(dlg);
 
 
 	PCB_DAD_NEW(dlg, "dlg_padstack_edit", "Edit padstack", dlg, pcb_true, NULL);
 	brave2dlg(dlg_hid_ctx);
-	PCB_DAD_RUN(dlg);
-
 	PCB_DAD_FREE(dlg);
 	return 0;
 }
