@@ -227,10 +227,11 @@ ha:{
 				-
 				ha:Displayed subcircuit ID {
 					li:submenu {
-						ha:refdes                 = { a={<key>v; <key>s; <key>r}; checked=ChkSubcID(); action=Display(SubcID); update_on={editor/name_on_pcb} }
+						ha:refdes                 = { a={<key>v; <key>s; <key>r}; checked=ChkSubcID(%a.refdes%); action=Display(SubcID, "%a.refdes%"); update_on={editor/name_on_pcb} }
 						ha:footprint              = { a={<key>v; <key>s; <key>f}; checked=ChkSubcID(%a.footprint%); action=Display(SubcID,"%a.footprint%"); update_on={editor/subc_id} }
 						ha:value                  = { a={<key>v; <key>s; <key>v}; checked=ChkSubcID(%a.value%); action=Display(SubcID,"%a.value%"); update_on={editor/subc_id} }
 						ha:refdes+value           = { a={<key>v; <key>s; <key>s}; checked=ChkSubcID(%a.refdes%\\n%a.value%); action=Display(SubcID,"%a.refdes%\\\\n%a.value%"); update_on={editor/subc_id} }
+						ha:user configured        = { a={<key>v; <key>s; <key>c}; action=Display(SubcID); }
 					}
 				}
 				ha:Zoom and side {
