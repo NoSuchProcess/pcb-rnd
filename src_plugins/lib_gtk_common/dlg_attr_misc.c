@@ -131,7 +131,7 @@ static GtkWidget *ghid_picture_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr
 	GdkPixbuf *pixbuf;
 	bparent = frame_scroll(parent, attr->pcb_hatt_flags);
 
-	pixbuf = gdk_pixbuf_new_from_xpm_data(attr->default_val.str_value);
+	pixbuf = gdk_pixbuf_new_from_xpm_data(attr->enumerations);
 	pic = gtk_image_new_from_pixbuf(pixbuf);
 	gtk_box_pack_start(GTK_BOX(bparent), pic, TRUE, TRUE, 0);
 	gtk_widget_set_tooltip_text(pic, attr->help_text);

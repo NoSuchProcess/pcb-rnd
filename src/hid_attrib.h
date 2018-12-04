@@ -40,7 +40,7 @@ typedef enum pcb_hids_e {
 	PCB_HATT_TREE,                /* tree/list/table view; number of columns: pcb_hatt_table_cols; data is in field 'enumerations' */
 	PCB_HATT_PROGRESS,            /* progress bar; displays real_value between 0 and 1 */
 	PCB_HATT_PREVIEW,             /* preview/render widget; callbacks in 'enumerations' */
-	PCB_HATT_PICTURE,             /* static picture from xpm - picture data in str_value */
+	PCB_HATT_PICTURE,             /* static picture from xpm - picture data in enumerations */
 
 	/* groups (e.g. boxes) */
 	PCB_HATT_BEGIN_HBOX,          /* NOTE: PCB_HATT_IS_COMPOSITE() depends on it */
@@ -136,7 +136,7 @@ struct pcb_hid_attribute_s {
 	pcb_hid_attr_val_t default_val;		/* Also actual value for global attributes.  */
 
 	/* NULL terminated list of values for a PCB_HATT_ENUM;
-	   Also (ab)used as (pcb_hid_tree_t *) for a PCB_HATT_TREE */
+	   Also (ab)used as (pcb_hid_tree_t *) for a PCB_HATT_TREE and for PCB_HATT_PICTURE */
 	const char **enumerations;
 
 	/* If set, this is used for global attributes (i.e. those set

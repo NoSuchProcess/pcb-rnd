@@ -53,7 +53,7 @@ static void cb_pane_set(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 static void prv_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e);
 static pcb_bool prv_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y);
 
-static char * test_xpm[] = {
+static const char * test_xpm[] = {
 "8 8 4 1",
 " 	c None",
 "+	c #550000",

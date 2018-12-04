@@ -196,7 +196,7 @@ do { \
 #define PCB_DAD_PICTURE(table, xpm) \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_PICTURE); \
-	table[table ## _len - 1].default_val.str_value = xpm; \
+	table[table ## _len - 1].enumerations = xpm; \
 } while(0)
 
 #define PCB_DAD_BEGIN_HPANE(table) \
