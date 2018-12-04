@@ -421,38 +421,6 @@ char *lesstif_fileselect(const char *title, const char *descr,
 
 /* ------------------------------------------------------------ */
 
-static Widget create_form_ok_dialog(const char *name, int ok, void (*button_cb)(void *ctx, pcb_hid_attr_ev_t ev), void *ctx)
-{
-	Widget dialog, topform;
-	dialog_cb_ctx_t *cb_ctx = NULL;
-
-	stdarg_n = 0;
-	dialog = XmCreateQuestionDialog(mainwind, XmStrCast(name), stdarg_args, stdarg_n);
-
-	if (button_cb != NULL) {
-		cb_ctx = malloc(sizeof(dialog_cb_ctx_t));
-		cb_ctx->cb = button_cb;
-		cb_ctx->ctx = ctx;
-	}
-
-	XtUnmanageChild(XmMessageBoxGetChild(dialog, XmDIALOG_SYMBOL_LABEL));
-	XtUnmanageChild(XmMessageBoxGetChild(dialog, XmDIALOG_SEPARATOR));
-	XtUnmanageChild(XmMessageBoxGetChild(dialog, XmDIALOG_MESSAGE_LABEL));
-	XtUnmanageChild(XmMessageBoxGetChild(dialog, XmDIALOG_HELP_BUTTON));
-	XtUnmanageChild(XmMessageBoxGetChild(dialog, XmDIALOG_CANCEL_BUTTON));
-	XtUnmanageChild(XmMessageBoxGetChild(dialog, XmDIALOG_OK_BUTTON));
-	XtAddCallback(dialog, XmNcancelCallback, (XtCallbackProc) dialog_callback_cancel, cb_ctx);
-	if (ok)
-		XtAddCallback(dialog, XmNokCallback, (XtCallbackProc) dialog_callback_ok, cb_ctx);
-	else
-		XtUnmanageChild(XmMessageBoxGetChild(dialog, XmDIALOG_OK_BUTTON));
-
-	stdarg_n = 0;
-	topform = XmCreateForm(dialog, XmStrCast("attributes"), stdarg_args, stdarg_n);
-	XtManageChild(topform);
-	return topform;
-}
-
 static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_rows, int want_frame, int want_scroll)
 {
 	Widget cnt;
@@ -1008,7 +976,10 @@ void *lesstif_attr_dlg_new(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr
 	ctx->wl = (Widget *) calloc(n_attrs, sizeof(Widget));
 	ctx->btn = (Widget **) calloc(n_attrs, sizeof(Widget *));
 
-	topform = create_form_ok_dialog(title, 1, button_cb, caller_data);
+	stdarg_n = 0;
+	topform = XmCreateFormDialog(mainwind, XmStrCast(title), stdarg_args, stdarg_n);
+	XtManageChild(topform);
+
 	ctx->dialog = XtParent(topform);
 
 	stdarg_n = 0;
