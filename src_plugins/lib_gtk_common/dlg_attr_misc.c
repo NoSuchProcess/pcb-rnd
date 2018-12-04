@@ -139,3 +139,22 @@ static GtkWidget *ghid_picture_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr
 	return pic;
 }
 
+
+static GtkWidget *ghid_picbutton_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent)
+{
+	GtkWidget *bparent, *button, *img;
+	GdkPixbuf *pixbuf;
+	bparent = frame_scroll(parent, attr->pcb_hatt_flags);
+
+	pixbuf = gdk_pixbuf_new_from_xpm_data(attr->enumerations);
+	img = gtk_image_new_from_pixbuf(pixbuf);
+
+	button = gtk_button_new();
+	gtk_container_add(GTK_CONTAINER(button), img);
+
+	gtk_box_pack_start(GTK_BOX(bparent), button, TRUE, TRUE, 0);
+	gtk_widget_set_tooltip_text(button, attr->help_text);
+
+	return button;
+}
+

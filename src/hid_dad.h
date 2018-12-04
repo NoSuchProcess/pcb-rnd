@@ -199,6 +199,12 @@ do { \
 	table[table ## _len - 1].enumerations = xpm; \
 } while(0)
 
+#define PCB_DAD_PICBUTTON(table, xpm) \
+do { \
+	PCB_DAD_ALLOC(table, PCB_HATT_PICBUTTON); \
+	table[table ## _len - 1].enumerations = xpm; \
+} while(0)
+
 #define PCB_DAD_BEGIN_HPANE(table) \
 do { \
 	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_HPANE); \
@@ -325,7 +331,6 @@ do { \
 		case PCB_HATT_PATH: \
 		case PCB_HATT_BUTTON: \
 		case PCB_HATT_TREE: \
-		case PCB_HATT_PICTURE: \
 			table[table ## _len - 1].field.str_value = (char *)val; \
 			break; \
 		case PCB_HATT_BEGIN_HBOX: \
@@ -333,6 +338,8 @@ do { \
 		case PCB_HATT_BEGIN_TABLE: \
 		case PCB_HATT_END: \
 		case PCB_HATT_PREVIEW: \
+		case PCB_HATT_PICTURE: \
+		case PCB_HATT_PICBUTTON: \
 			assert(0); \
 	} \
 } while(0)
@@ -354,6 +361,7 @@ do { \
 		case PCB_HATT_PATH: \
 		case PCB_HATT_BUTTON: \
 		case PCB_HATT_PICTURE: \
+		case PCB_HATT_PICBUTTON: \
 			break; \
 		case PCB_HATT_TREE: \
 			pcb_dad_tree_free(&table[field]); \

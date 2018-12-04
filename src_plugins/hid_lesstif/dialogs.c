@@ -842,6 +842,10 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, att
 		case PCB_HATT_PICTURE:
 			ctx->wl[i] = ltf_picture_create(ctx, parent, &ctx->attrs[i]);
 			break;
+
+		case PCB_HATT_PICBUTTON:
+			ctx->wl[i] = ltf_picbutton_create(ctx, parent, &ctx->attrs[i]);
+			break;
 	
 		case PCB_HATT_LABEL:
 			stdarg_n = 0;

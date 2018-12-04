@@ -515,6 +515,10 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				ctx->wl[j] = ghid_picture_create(ctx, &ctx->attrs[j], parent);
 				break;
 
+			case PCB_HATT_PICBUTTON:
+				ctx->wl[j] = ghid_picbutton_create(ctx, &ctx->attrs[j], parent);
+				break;
+
 			case PCB_HATT_PROGRESS:
 				ctx->wl[j] = ghid_progress_create(ctx, &ctx->attrs[j], parent);
 				break;

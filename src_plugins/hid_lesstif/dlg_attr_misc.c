@@ -215,3 +215,10 @@ static Widget ltf_picture_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 	return pic;
 }
 
+static Widget ltf_picbutton_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
+{
+	Widget pic = pcb_ltf_xpm_button(display, parent, XmStrCast("dad_picture"), attr->enumerations);
+	XtManageChild(pic);
+	return pic;
+}
+
