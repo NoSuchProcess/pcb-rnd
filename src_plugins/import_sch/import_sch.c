@@ -91,7 +91,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		if (!ds) {
 			const char *as = pcb_attrib_get(PCB, "import::disperse");
-			ds = pcb_gui->prompt_for(_("Enter dispersion:"), as ? as : "0");
+			ds = pcb_hid_prompt_for("Enter dispersion:", as ? as : "0", "Import dispersion");
 			ds_alloced = 1;
 		}
 		if (units) {
