@@ -14,7 +14,7 @@
 	- FEATURE: the property editor should display a stat of number/type of objects selected [report: Igor2]
 	- CLEANUP: pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
 - BUG: search for #gtkzoom in lib_gtk_common; bug reprod: set pcb height to 50 mil, {w l} -> zooms are off because of the clamp [report: Igor2]
-- CLEANUP: dad: make the implicit dialog ok/cancel buttons configurable or do not use them at all; e.g. export dialog is confusing [report: Cyril, ml2409]
++ CLEANUP: dad: make the implicit dialog ok/cancel buttons configurable or do not use them at all; e.g. export dialog is confusing [report: Cyril, ml2409]
 - CLEANUP: library window DAD-ification: remove pcb_act_LibraryShow()
 	- FEATURE: library window: allow long tags and long location text to split
 - FEATURE: route style upgrade to prototypes (depends on tree in lesstif!):
