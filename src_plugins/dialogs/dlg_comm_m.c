@@ -32,7 +32,7 @@ static const char nope[] = "Do not use.";
 static fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *label, *default_str = "", *title = "pcb-rnd user input";
-	const char *pcb_acts_gui_PromptFor =  nope, *pcb_acth_gui_PromptFor = nope;
+	const char *pcb_acts_gui_PromptFor =  nope;
 	int ws;
 	PCB_DAD_DECL(dlg);
 
@@ -50,8 +50,8 @@ static fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	PCB_DAD_NEW(dlg, title, NULL, NULL, pcb_true, NULL);
 	PCB_DAD_RUN(dlg);
 
-	res.type = FGW_STR | FGW_DYN;
-	res.val.str = pcb_strdup(dlg[ws].default_val.str_value);
+	res->type = FGW_STR | FGW_DYN;
+	res->val.str = pcb_strdup(dlg[ws].default_val.str_value);
 	PCB_DAD_FREE(dlg);
 
 	return 0;

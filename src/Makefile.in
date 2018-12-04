@@ -90,6 +90,7 @@ append /local/pcb/OBJS [@
 	hid_cfg_input.o
 	hid_cam.o
 	hid_color.o
+	hid_dlg.o
 	hid_dad_tree.o
 	hid_draw_helpers.o
 	hid_flags.o
@@ -236,7 +237,7 @@ put /local/pcb/OBJS_UTIL [@
 # main: action registrations
 put /local/pcb/ACTION_REG_SRC  {
 	buffer.c brave.c change_act.c conf_act.c file_act.c drc.c
-	gui_act.c main_act.c netlist_act.c font_act.c object_act.c
+	gui_act.c hid_dlg.c main_act.c netlist_act.c font_act.c object_act.c
 	obj_pstk_act.c polygon_act.c plug_footprint_act.c rats_act.c
 	rats_patch.c remove_act.c select_act.c undo_act.c
 }

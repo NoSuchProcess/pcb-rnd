@@ -582,4 +582,14 @@ extern const pcb_action_t *pcb_current_action;
    smaller than a screen pixel.  */
 extern int pcb_pixel_slop;
 
+/*** Glue for GUI/CLI dialogs: wrappers around actions */
+
+	/* Prompts the user to enter a string, returns the string.  If
+	   default_string isn't NULL, the form is pre-filled with this
+	   value. "msg" is printed above the query. The optional title
+	   is the window title.
+	   Returns NULL on cancel. The caller needs to free the returned string */
+char *pcb_hid_prompt_for(const char *msg, const char *default_string, const char *title);
+
+
 #endif

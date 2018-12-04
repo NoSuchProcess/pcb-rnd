@@ -1,6 +1,5 @@
-This is mostly for testing the lesstif HID interface. The parameters
-are passed to the <i>prompt_for()</i> HID function, causing the user
-to be prompted for a response. The respose is simply printed to the
-user's stdout.
+UI-independent way of asking the user for a string. When GUI is available,
+it is a dialog box, else it's console input. Return value, unlike with other
+actions, is a string. The return value is NULL on cancel.
 
 
