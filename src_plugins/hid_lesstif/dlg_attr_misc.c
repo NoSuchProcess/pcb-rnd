@@ -29,6 +29,7 @@
 #define PB_SCALE_UP 10000.0
 
 #include <Xm/PanedW.h>
+#include "wt_xpm.h"
 
 static void ltf_progress_set(lesstif_attr_dlg_t *ctx, int idx, double val)
 {
@@ -204,5 +205,13 @@ static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 
 	XtManageChild(pw);
 	return pw;
+}
+
+
+static Widget ltf_picture_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
+{
+	Widget pic = pcb_ltf_xpm_label(display, parent, XmStrCast("dad_picture"), attr->default_val.str_value);
+	XtManageChild(pic);
+	return pic;
 }
 
