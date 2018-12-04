@@ -31,6 +31,8 @@
 #include <Xm/Label.h>
 #include <Xm/PushB.h>
 
+#include "compat_misc.h"
+
 
 static unsigned long hex_digit(char c)
 {
@@ -108,7 +110,7 @@ Pixmap pcb_ltf_parse_xpm(Display *display, const char **xpm, Pixel bgcolor)
 			if (!XAllocColor(display, colormap, &c))
 				goto error;
 		}
-		else if (strcasecmp(x, "None") == 0) {
+		else if (pcb_strcasecmp(x, "None") == 0) {
 /*			c.red = hex_raw((bgcolor & 0xff0000) >> 16);
 			c.green = hex_raw((bgcolor & 0x00ff00) >> 8);
 			c.blue = hex_raw(bgcolor & 0x0000ff);
