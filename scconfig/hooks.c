@@ -187,7 +187,7 @@ int plugin_dep1(int require, const char *plugin, const char *deps_on)
 			if (strcmp(st_deps_on, sbuildin) != 0) {
 				sprintf(buff, "WARNING: disabling (ex-buildin) %s because the %s is not enabled as a buildin...\n", plugin, deps_on);
 				report_repeat(buff);
-				sprintf(buff, "Disable-%s", plugin);
+				sprintf(buff, "disable-%s", plugin);
 				hook_custom_arg(buff, NULL);
 				dep_chg++;
 			}
@@ -196,7 +196,7 @@ int plugin_dep1(int require, const char *plugin, const char *deps_on)
 			if ((strcmp(st_deps_on, sbuildin) != 0) && (strcmp(st_deps_on, splugin) != 0)) {
 				sprintf(buff, "WARNING: disabling (ex-plugin) %s because the %s is not enabled as a buildin or plugin...\n", plugin, deps_on);
 				report_repeat(buff);
-				sprintf(buff, "Disable-%s", plugin);
+				sprintf(buff, "disable-%s", plugin);
 				hook_custom_arg(buff, NULL);
 				dep_chg++;
 			}
@@ -463,7 +463,7 @@ int hook_detect_target()
 		require("libs/gui/libstroke/presents", 0, 0);
 		if (!istrue(get("libs/gui/libstroke/presents"))) {
 			report_repeat("WARNING: Since there's no libstroke found, disabling the stroke plugin...\n");
-			hook_custom_arg("Disable-stroke", NULL);
+			hook_custom_arg("disable-stroke", NULL);
 		}
 	}
 
@@ -471,7 +471,7 @@ int hook_detect_target()
 		require("libs/sul/freetype2/presents", 0, 0);
 		if (!istrue(get("libs/sul/freetype2/presents"))) {
 			report_repeat("WARNING: Since there's no libfreetype2 found, disabling the import_ttf plugin...\n");
-			hook_custom_arg("Disable-import_ttf", NULL);
+			hook_custom_arg("disable-import_ttf", NULL);
 		}
 	}
 
@@ -479,7 +479,7 @@ int hook_detect_target()
 		require("libs/gui/cairo/presents", 0, 0);
 		if (!istrue(get("libs/gui/cairo/presents"))) {
 			report_repeat("WARNING: Since there's no cairo found, disabling the export_bboard plugin...\n");
-			hook_custom_arg("Disable-export_bboard", NULL);
+			hook_custom_arg("disable-export_bboard", NULL);
 		}
 	}
 
@@ -489,15 +489,15 @@ int hook_detect_target()
 			require("libs/gui/gtk2gl/presents", 0, 0);
 			if (!istrue(get("libs/gui/gtk2gl/presents"))) {
 				report_repeat("WARNING: Since there's no gl support for gtk found, disabling the gl rendering...\n");
-				hook_custom_arg("Disable-hid_gtk2_gl", NULL);
+				hook_custom_arg("disable-hid_gtk2_gl", NULL);
 			}
 			need_gtklibs = 1;
 			has_gtk2 = 1;
 		}
 		else {
 			report_repeat("WARNING: Since there's no libgtk2 found, disabling hid_gtk2*...\n");
-			hook_custom_arg("Disable-hid_gtk2_gdk", NULL);
-			hook_custom_arg("Disable-hid_gtk2_gl", NULL);
+			hook_custom_arg("disable-hid_gtk2_gdk", NULL);
+			hook_custom_arg("disable-hid_gtk2_gl", NULL);
 		}
 	}
 
@@ -506,7 +506,7 @@ int hook_detect_target()
 			require("libs/gui/gtk3/presents", 0, 0);
 			if (!istrue(get("libs/gui/gtk3/presents"))) {
 				report_repeat("WARNING: Since there's no libgtk3 found, disabling hid_gtk3*...\n");
-				hook_custom_arg("Disable-hid_gtk3_cairo", NULL);
+				hook_custom_arg("disable-hid_gtk3_cairo", NULL);
 			}
 			else {
 				need_gtklibs = 1;
@@ -515,7 +515,7 @@ int hook_detect_target()
 		}
 		else {
 			report_repeat("WARNING: not going to try gtk3 because cairo is not found\n");
-			hook_custom_arg("Disable-hid_gtk3_cairo", NULL);
+			hook_custom_arg("disable-hid_gtk3_cairo", NULL);
 		}
 	}
 
@@ -531,16 +531,16 @@ int hook_detect_target()
 	}
 	else {
 		disable_gl:;
-		hook_custom_arg("Disable-lib_hid_gl", NULL);
-		hook_custom_arg("Disable-hid_gtk2_gl", NULL);
-		hook_custom_arg("Disable-hid_gtk3_gl", NULL);
+		hook_custom_arg("disable-lib_hid_gl", NULL);
+		hook_custom_arg("disable-hid_gtk2_gl", NULL);
+		hook_custom_arg("disable-hid_gtk3_gl", NULL);
 	}
 
 	/* gtk2 vs. gtk3 xor logic */
 	if (has_gtk2 && has_gtk3) {
 		report_repeat("Selected both gtk2 and gtk3 HIDs; gtk2 and gtk3 are incompatible, disabling gtk2 in favor of gtk3.\n");
-		hook_custom_arg("Disable-hid_gtk2_gdk", NULL);
-		hook_custom_arg("Disable-hid_gtk2_gl", NULL);
+		hook_custom_arg("disable-hid_gtk2_gdk", NULL);
+		hook_custom_arg("disable-hid_gtk2_gl", NULL);
 		has_gtk2 = 0;
 	}
 
@@ -556,9 +556,9 @@ int hook_detect_target()
 
 	if (!need_gtklibs) {
 		report("No gtk support available, disabling lib_gtk_*...\n");
-		hook_custom_arg("Disable-lib_gtk_common", NULL);
-		hook_custom_arg("Disable-lib_gtk_config", NULL);
-		hook_custom_arg("Disable-lib_gtk_hid", NULL);
+		hook_custom_arg("disable-lib_gtk_common", NULL);
+		hook_custom_arg("disable-lib_gtk_config", NULL);
+		hook_custom_arg("disable-lib_gtk_hid", NULL);
 	}
 
 	if (want_xml2) {
@@ -566,7 +566,7 @@ int hook_detect_target()
 		if (!istrue(get("libs/sul/libxml2/presents"))) {
 			report("libxml2 is not available, disabling io_eagle...\n");
 			report_repeat("WARNING: Since there's no libxml2 found, disabling the Eagle IO plugin...\n");
-			hook_custom_arg("Disable-io_eagle", NULL);
+			hook_custom_arg("disable-io_eagle", NULL);
 		}
 		put("/local/pcb/want_libxml2", strue);
 	}
@@ -582,14 +582,14 @@ int hook_detect_target()
 		}
 		else {
 			report_repeat("WARNING: Since there's no lesstif2 found, disabling the lesstif HID and xinerama and xrender...\n");
-			hook_custom_arg("Disable-xinerama", NULL);
-			hook_custom_arg("Disable-xrender", NULL);
-			hook_custom_arg("Disable-hid_lesstif", NULL);
+			hook_custom_arg("disable-xinerama", NULL);
+			hook_custom_arg("disable-xrender", NULL);
+			hook_custom_arg("disable-hid_lesstif", NULL);
 		}
 	}
 	else {
-		hook_custom_arg("Disable-xinerama", NULL);
-		hook_custom_arg("Disable-xrender", NULL);
+		hook_custom_arg("disable-xinerama", NULL);
+		hook_custom_arg("disable-xrender", NULL);
 	}
 
 
@@ -604,11 +604,11 @@ int hook_detect_target()
 		if (!istrue(get("libs/sul/glib/presents"))) {
 			if (want_gtk) {
 				report_repeat("WARNING: Since GLIB is not found, disabling the GTK HID...\n");
-				hook_custom_arg("Disable-gtk", NULL);
+				hook_custom_arg("disable-gtk", NULL);
 			}
 			if (plug_is_enabled("puller")) {
 				report_repeat("WARNING: Since GLIB is not found, disabling the puller...\n");
-				hook_custom_arg("Disable-puller", NULL);
+				hook_custom_arg("disable-puller", NULL);
 			}
 		}
 	}
@@ -629,12 +629,12 @@ int hook_detect_target()
 		require("libs/gui/gd/presents", 0, 0);
 		if (!istrue(get("libs/gui/gd/presents"))) {
 			report_repeat("WARNING: Since there's no libgd, disabling gd based exports (png, nelma, gcode)...\n");
-			hook_custom_arg("Disable-gd-gif", NULL);
-			hook_custom_arg("Disable-gd-png", NULL);
-			hook_custom_arg("Disable-gd-jpg", NULL);
-			hook_custom_arg("Disable-export_png", NULL);
-			hook_custom_arg("Disable-export_nelma", NULL);
-			hook_custom_arg("Disable-export_gcode", NULL);
+			hook_custom_arg("disable-gd-gif", NULL);
+			hook_custom_arg("disable-gd-png", NULL);
+			hook_custom_arg("disable-gd-jpg", NULL);
+			hook_custom_arg("disable-export_png", NULL);
+			hook_custom_arg("disable-export_nelma", NULL);
+			hook_custom_arg("disable-export_gcode", NULL);
 			want_gd = 0;
 			goto disable_gd_formats;
 		}
