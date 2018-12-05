@@ -182,7 +182,6 @@ do { \
 do { \
 	pcb_hid_dad_buttons_t *__n__; \
 	PCB_DAD_BEGIN_HBOX(table); \
-	PCB_DAD_COMPFLAG(table, PCB_HATF_EXPFILL); \
 	PCB_DAD_BEGIN_HBOX(table); \
 	PCB_DAD_COMPFLAG(table, PCB_HATF_EXPFILL); \
 	PCB_DAD_END(table); \
