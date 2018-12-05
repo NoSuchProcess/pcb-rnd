@@ -122,7 +122,7 @@ static const char pcb_acth_Quit[] = "Quits the application after confirming.";
 /* DOC: q.html */
 static fgw_error_t pcb_act_Quit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	if (!PCB->Changed || pcb_gui->close_confirm_dialog() == HID_CLOSE_CONFIRM_OK)
+	if (!PCB->Changed || (pcb_hid_message_box("warning", "Close: lose data", "OK to lose data?", "cancel", 0, "ok", 1, NULL) == 1))
 		pcb_quit_app();
 	PCB_ACT_IRES(0);
 	return 0;

@@ -272,9 +272,8 @@ static fgw_error_t pcb_act_Quit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if ((force != NULL) && (pcb_strcasecmp(force, "force") == 0))
 		exit(0);
-	if (!PCB->Changed || pcb_gui->close_confirm_dialog() == HID_CLOSE_CONFIRM_OK)
+	if (!PCB->Changed || (pcb_hid_message_box("warning", "Close: lose data", "OK to lose data?", "cancel", 0, "ok", 1, NULL) == 1))
 		pcb_quit_app();
-
 	PCB_ACT_IRES(-1);
 	return 0;
 }
