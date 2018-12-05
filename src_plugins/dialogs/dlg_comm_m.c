@@ -86,7 +86,6 @@ static fgw_error_t pcb_act_gui_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *a
 
 		/* close buttons */
 		PCB_DAD_BEGIN_HBOX(dlg);
-			PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_BEGIN_HBOX(dlg);
 				PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_END(dlg);
