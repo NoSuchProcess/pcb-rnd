@@ -675,16 +675,15 @@ FILE *pcb_check_and_open_file(const char *Filename, pcb_bool Confirm, pcb_bool A
 
 	if (Filename && *Filename) {
 		if (!stat(Filename, &buffer) && Confirm) {
+			const char *all_ok = "all ok";
 			sprintf(message, _("File '%s' exists, use anyway?"), Filename);
 			if (WasAllButton)
 				*WasAllButton = pcb_false;
 			if (WasCancelButton)
 				*WasCancelButton = pcb_false;
-			if (AllButton)
-				response = pcb_gui->confirm_dialog(message, "Cancel", "Ok", AllButton ? "Sequence OK" : 0);
-			else
-				response = pcb_gui->confirm_dialog(message, "Cancel", "Ok", "Sequence OK");
-
+			if (!AllButton)
+				all_ok = NULL;
+			response = pcb_hid_message_box("warning", "Overwrite file", message, "cancel", 0, "ok", 1, all_ok, 2, NULL);
 			switch (response) {
 			case 2:
 				if (WasAllButton)

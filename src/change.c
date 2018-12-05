@@ -762,7 +762,7 @@ void *pcb_chg_obj_name_query(pcb_any_obj_t *obj)
 			if ((parent_subc != NULL) && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, obj) && !PCB_FLAG_TEST(PCB_FLAG_DYNTEXT, obj))
 				goto term_name; /* special case: dyntext floaters are rarely temrinals */
 			if ((parent_subc != NULL) && PCB_FLAG_TEST(PCB_FLAG_DYNTEXT, obj) && (strstr(((pcb_text_t *)obj)->TextString, "%a.parent.refdes%"))) {
-				if (pcb_gui->confirm_dialog("Text object seems to be a refdes text", "edit the text (template)", "edit subcircuit refdes")) {
+				if (pcb_hid_message_box("question", "Text edit: refdes or template?", "Text object seems to be a refdes text", "edit the text (template)", 0, "edit subcircuit refdes", 1, NULL) == 1) {
 					obj = (pcb_any_obj_t *)parent_subc;
 					goto subc_name;
 				}

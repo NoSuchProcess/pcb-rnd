@@ -92,6 +92,40 @@ static fgw_error_t pcb_act_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return call_dialog("messagebox", res, argc, argv);
 }
 
+int pcb_hid_message_box(const char *icon, const char *title, const char *label, ...)
+{
+	fgw_arg_t res, argv[128];
+	int argc;
+	va_list ap;
+
+	argv[1].type = FGW_STR; argv[1].val.cstr = icon;
+	argv[2].type = FGW_STR; argv[2].val.cstr = title;
+	argv[3].type = FGW_STR; argv[3].val.cstr = label;
+	argc = 4;
+
+	va_start(ap, label);
+	for(;argc < 126;) {
+		argv[argc].type = FGW_STR;
+		argv[argc].val.cstr = va_arg(ap, const char *);
+		if (argv[argc].val.cstr == NULL)
+			break;
+		argc++;
+		argv[argc].type = FGW_INT;
+		argv[argc].val.nat_int = va_arg(ap, int);
+		argc++;
+	}
+	va_end(ap);
+
+	if (pcb_actionv_bin("MessageBox", &res, argc, argv) != 0)
+		return -1;
+
+	if (fgw_arg_conv(&pcb_fgw, &res, FGW_INT) == 0)
+		return res.val.nat_int;
+
+	fgw_arg_free(&pcb_fgw, &res);
+	return -1;
+}
+
 static pcb_action_t hid_dlg_action_list[] = {
 	{"PromptFor", pcb_act_PromptFor, pcb_acth_PromptFor, pcb_acts_PromptFor},
 	{"MessageBox", pcb_act_MessageBox, pcb_acth_MessageBox, pcb_acts_MessageBox}

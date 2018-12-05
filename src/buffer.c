@@ -875,7 +875,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 				if ((!force) && ((exist = pcb_fopen(name, "r")))) {
 					fclose(exist);
-					if (pcb_gui->confirm_dialog(_("File exists!  Ok to overwrite?"), 0))
+					if (pcb_hid_message_box("warning", "Buffer: overwrite file", "File exists!  Ok to overwrite?", "cancel", 0, "yes", 1, NULL) == 1)
 						pcb_save_buffer_elements(name, fmt);
 				}
 				else

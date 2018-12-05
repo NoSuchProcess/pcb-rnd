@@ -85,7 +85,7 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 
 		case F_Layout:
-			if (!PCB->Changed || pcb_gui->confirm_dialog("OK to override layout data?", 0))
+			if (!PCB->Changed ||  pcb_hid_message_box("warning", "File overwrite", "OK to override layout data?", "cancel", 0, "ok", 1, NULL))
 				pcb_load_pcb(name, format, pcb_true, 0);
 			break;
 
@@ -103,7 +103,7 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 
 		case F_Revert:
-			if (PCB->Filename && (!PCB->Changed || pcb_gui->confirm_dialog("OK to override changes?", 0)))
+			if (PCB->Filename && (!PCB->Changed || (pcb_hid_message_box("warning", "Revert: lose data", "Really revert all modifications?", "no", 0, "yes", 1, NULL) == 1)))
 				pcb_revert_pcb();
 			break;
 	}
@@ -122,7 +122,7 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, New, argument_name = argv[1].val.str);
 
-	if (!PCB->Changed || pcb_gui->confirm_dialog("OK to clear layout data?", 0)) {
+	if (!PCB->Changed || (pcb_hid_message_box("warning", "New pcb", "OK to clear layout data?", "cancel", 0, "yes", 1, NULL) == 1)) {
 		if (argument_name)
 			name = pcb_strdup(argument_name);
 		else

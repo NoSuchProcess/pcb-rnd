@@ -722,12 +722,14 @@ static void data_clip_all_cb(void *ctx_)
 				ctx->inited = 1;
 			}
 			if (pcb_gui->progress(ctx->at, ctx->total, "Clipping polygons...") != 0) {
-				if (pcb_gui->confirm_dialog("The only way to cancel poly clipping is to quit pcb-rnd.\nAre you sure you want to quit?", "yes, quit", "no, continue", NULL) != 0) {
+				int rv = pcb_hid_message_box("warning", "Stop poly clipping", "The only way to cancel poly clipping is to quit pcb-rnd.\nAre you sure you want to quit?", "yes, quit pcb-rnd", 1, "no, continue clipping", 2, NULL);
+				if (rv == 1) {
+					exit(1);
+				}
+				else {
 					/* Have to recreate the dialog next time, that's the only way to get it out from the cancel state */
 					pcb_gui->progress(0, 0, NULL);
 				}
-				else
-					exit(1);
 			}
 		}
 	}
