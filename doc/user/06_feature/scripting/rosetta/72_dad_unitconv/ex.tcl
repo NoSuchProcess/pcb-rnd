@@ -3,14 +3,17 @@ proc uconv {} {
 
 	if {[dad "uconv" "exists"] == 0} {
 		dad "uconv" "new"
-		dad "uconv" "begin_hbox"
-			set inp [dad "uconv" "coord" 0 "100m"]
-				dad "uconv" "onchange" "uconv_update"
-			dad "uconv" "begin_vbox"
-				set res1 [dad "uconv" "label" "-"]
-				set res2 [dad "uconv" "label" "-"]
-				set res3 [dad "uconv" "label" "-"]
+		dad "uconv" "begin_vbox"
+			dad "uconv" "begin_hbox"
+				set inp [dad "uconv" "coord" 0 "100m"]
+					dad "uconv" "onchange" "uconv_update"
+				dad "uconv" "begin_vbox"
+					set res1 [dad "uconv" "label" "-"]
+					set res2 [dad "uconv" "label" "-"]
+					set res3 [dad "uconv" "label" "-"]
+				dad "uconv" "end"
 			dad "uconv" "end"
+			dad "uconv" "button_closes" "close" 0
 		dad "uconv" "end"
 		dad "uconv" "run" "Unit converter" ""
 	}

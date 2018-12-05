@@ -23,7 +23,9 @@ Create a new action hello() that prints "Hello world!" in vertical layout in a d
 Create a function 
 <i>hello</i>
  that will be registered as an action. 
-<p> When the action is called, build a dad dialog called "heldi", with a vertical box that contains two labels "Hello" and "world!". The vbox is closed by a "end" call to dad(). When the dialog is ran in modal mode, it will be open and block other pcb-rnd windows until the user closes it. 
+<p> When the action is called, build a dad dialog called "heldi", with a vertical box that contains two labels "Hello" and "world!" and standard dialog box 
+<i>close buttons</i>
+. When the cancel button is clicked, the dialog box will return -1; clicking the ok button will return 0. The vbox is closed by a "end" call to dad(). When the dialog is ran in modal mode, it will be open and block other pcb-rnd windows until the user closes it. 
 <p> Tip #1: change "begin_vbox" to "begin_hbox" to get a horizontal layout. 
 <p> Tip #2: boxes can be nested (but each box must have a corresponding "end"). 
 <p> In the "main" section of the script, register the action using fgw_func_reg(). 
