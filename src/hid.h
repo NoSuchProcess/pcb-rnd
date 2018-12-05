@@ -384,18 +384,12 @@ struct pcb_hid_s {
 
 	char *(*fileselect)(const char *title, const char *descr, const char *default_file, const char *default_ext, const char *history_tag, int flags);
 
-	/* A generic dialog to ask for a set of attributes.  If n_attrs_ is
-	   zero, attrs_(.name) must be NULL terminated.  Returns non-zero if
-	   an error occurred (usually, this means the user cancelled the
-	   dialog or something). title_ is the title of the dialog box
-	   descr_ (if not NULL) can be a longer description of what the
-	   attributes are used for.  The HID may choose to ignore it or it
-	   may use it for a tooltip or text in a dialog box, or a help
-	   string.
-	 */
-	int (*attribute_dialog)(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data);
-
-	/* The same API in 3 stages: */
+	/* A generic dialog to ask for a set of attributes. If n_attrs_ is
+	   zero, attrs_(.name) must be NULL terminated. attr_dlg_run returns
+	   non-zero if an error occurred (usually, this means the user cancelled
+	   the dialog or something). title is the title of the dialog box
+	   The HID may choose to ignore it or it may use it for a tooltip or
+	   text in a dialog box, or a help string. */
 	void *(*attr_dlg_new)(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev)); /* returns hid_ctx */
 	int (*attr_dlg_run)(void *hid_ctx);
 	void (*attr_dlg_free)(void *hid_ctx); /* results_ is avalibale after this call */

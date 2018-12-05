@@ -285,12 +285,6 @@ void batch_unwatch_file(pcb_hidval_t data)
 {
 }
 
-static int
-batch_attribute_dialog(pcb_hid_attribute_t * attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, void *caller_data)
-{
-	return 0;
-}
-
 static void batch_create_menu(const char *menu_path, const pcb_menu_prop_t *props)
 {
 }
@@ -379,7 +373,6 @@ int pplg_init_hid_batch(void)
 	batch_hid.stop_timer = batch_stop_timer;
 	batch_hid.watch_file = batch_watch_file;
 	batch_hid.unwatch_file = batch_unwatch_file;
-	batch_hid.attribute_dialog = batch_attribute_dialog;
 	batch_hid.create_menu = batch_create_menu;
 	batch_hid.usage = batch_usage;
 

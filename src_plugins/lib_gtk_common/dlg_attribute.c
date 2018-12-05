@@ -804,20 +804,6 @@ void ghid_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const pcb_hi
 		ctx->property[prop] = *val;
 }
 
-
-int ghid_attribute_dialog(pcb_gtk_common_t *com, pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, void *caller_data)
-{
-	void *hid_ctx;
-	int rc;
-
-	hid_ctx = ghid_attr_dlg_new(com, attrs, n_attrs, results, title, caller_data, pcb_true, NULL);
-	rc = ghid_attr_dlg_run(hid_ctx);
-	ghid_attr_dlg_free(hid_ctx);
-
-	return rc;
-}
-
-
 int ghid_attr_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled)
 {
 	attr_dlg_t *ctx = hid_ctx;

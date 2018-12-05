@@ -354,11 +354,6 @@ static char *ghid_fileselect(const char *title, const char *descr, const char *d
 	return pcb_gtk_fileselect(ghid_port.top_window, title, descr, default_file, default_ext, history_tag, flags);
 }
 
-static int ghid_attribute_dialog_(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, void *caller_data)
-{
-	return ghid_attribute_dialog(&ghidgui->common, attrs, n_attrs, results, title, caller_data);
-}
-
 static void *ghid_attr_dlg_new_(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev))
 {
 	return ghid_attr_dlg_new(&ghidgui->common, attrs, n_attrs, results, title, caller_data, modal, button_cb);
@@ -526,7 +521,6 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->confirm_dialog = ghid_confirm_dialog;
 	dst->close_confirm_dialog = ghid_close_confirm_dialog;
 	dst->fileselect = ghid_fileselect;
-	dst->attribute_dialog = ghid_attribute_dialog_;
 	dst->attr_dlg_new = ghid_attr_dlg_new_;
 	dst->attr_dlg_run = ghid_attr_dlg_run;
 	dst->attr_dlg_free = ghid_attr_dlg_free;

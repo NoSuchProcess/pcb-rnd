@@ -41,31 +41,6 @@ static void dialog_callback_ok_value(Widget w, void *v, void *cbs)
 	ok = (int) (size_t) v;
 }
 
-typedef struct {
-	void (*cb)(void *ctx, pcb_hid_attr_ev_t ev);
-	void *ctx;
-} dialog_cb_ctx_t;
-
-static void dialog_callback_cancel(Widget w, void *v, void *cbs)
-{
-	dialog_cb_ctx_t *ctx = (dialog_cb_ctx_t *)v;
-	if (ctx != NULL) {
-		ctx->cb(ctx->ctx, PCB_HID_ATTR_EV_CANCEL);
-		free(ctx);
-	}
-	ok = 0;
-}
-
-static void dialog_callback_ok(Widget w, void *v, void *cbs)
-{
-	dialog_cb_ctx_t *ctx = (dialog_cb_ctx_t *)v;
-	if (ctx != NULL) {
-		ctx->cb(ctx->ctx, PCB_HID_ATTR_EV_OK);
-		free(ctx);
-	}
-	ok = 1;
-}
-
 static int wait_for_dialog(Widget w)
 {
 	ok = -1;
@@ -1042,18 +1017,6 @@ void lesstif_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const pcb
 		ctx->property[prop] = *val;
 }
 
-int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, void *caller_data)
-{
-	int rv;
-	void *hid_ctx;
-	
-	hid_ctx = lesstif_attr_dlg_new(attrs, n_attrs, results, title, caller_data, pcb_true, NULL);
-	rv = lesstif_attr_dlg_run(hid_ctx);
-	lesstif_attr_dlg_free(hid_ctx);
-
-	return rv ? 0 : 1;
-}
-
 int lesstif_attr_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
@@ -1144,7 +1107,7 @@ static fgw_error_t pcb_act_Print(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	opts = printer->get_export_options(&n);
 	vals = (pcb_hid_attr_val_t *) calloc(n, sizeof(pcb_hid_attr_val_t));
-	if (lesstif_attribute_dialog(opts, n, vals, "Print", NULL)) {
+	if (pcb_attribute_dialog(opts, n, vals, "Print", NULL)) {
 		free(vals);
 		PCB_ACT_IRES(1);
 		return 1;
