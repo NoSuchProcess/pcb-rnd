@@ -75,7 +75,8 @@ pcb_action_t dialogs_action_list[] = {
 	{"IOIncompatList", pcb_act_IOIncompatList, pcb_acth_IOIncompatList, pcb_acts_IOIncompatList},
 	{"Fontsel", pcb_act_Fontsel, pcb_acth_Fontsel, pcb_acts_Fontsel},
 
-	{"gui_PromptFor", pcb_act_gui_PromptFor, pcb_acth_gui, NULL}
+	{"gui_PromptFor", pcb_act_gui_PromptFor, pcb_acth_gui, NULL},
+	{"gui_MessageBox", pcb_act_gui_MessageBox, pcb_acth_gui, NULL}
 };
 
 static const char *dialogs_cookie = "dialogs plugin";
