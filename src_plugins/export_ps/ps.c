@@ -162,11 +162,11 @@ Name of the postscript output file. Can contain a path.
 @ftable @code
 @cindex drill-helper
 @item --drill-helper
-Print a centering target in large drill holes.
+Draw small holes to center drill but in copper
 @end ftable
 %end-doc
 */
-	{"drill-helper", "Print a centering target in large drill holes",
+	{"drill-helper", "Draw small holes to center drill but in copper",
 	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_drillhelper 1
 
