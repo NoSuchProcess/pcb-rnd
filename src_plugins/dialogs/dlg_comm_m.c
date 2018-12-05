@@ -36,7 +36,7 @@ static fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	const char *label, *default_str = "", *title = "pcb-rnd user input";
 	const char *pcb_acts_gui_PromptFor =  nope;
 	int ws;
-	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	pcb_hid_dad_buttons_t clbtn[] = {{"ok", 0}, {NULL, 0}};
 	PCB_DAD_DECL(dlg);
 
 	PCB_ACT_CONVARG(1, FGW_STR, gui_PromptFor, label = argv[1].val.str);
