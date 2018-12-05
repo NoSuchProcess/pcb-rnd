@@ -1101,7 +1101,7 @@ static fgw_error_t pcb_act_Print(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	printer = pcb_hid_find_printer();
 	if (!printer) {
-		lesstif_confirm_dialog("No printer?", "Oh well", 0);
+		pcb_hid_message_box("warning", "No printer", "No printer configured.", "Oh well", 0, NULL);
 		PCB_ACT_IRES(1);
 		return 0;
 	}

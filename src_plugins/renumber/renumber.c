@@ -111,7 +111,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if ((out = pcb_fopen(name, "r"))) {
 		fclose(out);
-		if (!pcb_gui->confirm_dialog(_("File exists!  Ok to overwrite?"), 0)) {
+		if (pcb_hid_message_box("warning", "Renumber: overwrite", "File exists!  Ok to overwrite?", "cancel", 0, "overwrite", 1, NULL) != 1) {
 			if (free_name && name)
 				free((char*)name);
 			PCB_ACT_IRES(1);

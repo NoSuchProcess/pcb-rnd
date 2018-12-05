@@ -77,7 +77,7 @@ static fgw_error_t pcb_act_LoadLayout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_CONVARG(1, FGW_STR, LoadLayout, filename = argv[1].val.str);
 	PCB_ACT_MAY_CONVARG(2, FGW_STR, LoadLayout, format = argv[2].val.str);
 
-	if (!PCB->Changed || pcb_gui->confirm_dialog("OK to override layout data?", 0))
+	if (!PCB->Changed || (pcb_hid_message_box("warning", "Load data lose", "OK to override layout data?", "cancel", 0, "ok", 1, NULL) == 1))
 		pcb_load_pcb(filename, format, pcb_true, 0);
 
 	PCB_ACT_IRES(0);
