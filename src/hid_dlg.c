@@ -84,8 +84,17 @@ char *pcb_hid_prompt_for(const char *msg, const char *default_string, const char
 	return NULL;
 }
 
+static const char pcb_acts_MessageBox[] = "MessageBox(icon, title, label, button_txt, button_retval, ...)";
+static const char pcb_acth_MessageBox[] = "Open a modal message dialog box with title and label. If icon string is not empty, display the named icon on the left. Present one or more window close buttons with different text and return value.";
+/* DOC: messagebox.html */
+static fgw_error_t pcb_act_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	return call_dialog("messagebox", res, argc, argv);
+}
+
 static pcb_action_t hid_dlg_action_list[] = {
-	{"PromptFor", pcb_act_PromptFor, pcb_acth_PromptFor, pcb_acts_PromptFor}
+	{"PromptFor", pcb_act_PromptFor, pcb_acth_PromptFor, pcb_acts_PromptFor},
+	{"MessageBox", pcb_act_MessageBox, pcb_acth_MessageBox, pcb_acts_MessageBox}
 };
 
 PCB_REGISTER_ACTIONS(hid_dlg_action_list, NULL)
