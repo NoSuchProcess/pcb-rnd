@@ -319,6 +319,49 @@ static fgw_error_t pcb_act_cli_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	return 0;
 }
 
+static fgw_error_t pcb_act_cli_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *pcb_acts_cli_MessageBox = pcb_acth_cli;
+	const char *icon, *title, *label, *txt, *answer;
+	char *end;
+	int n, ret;
+
+	res->type = FGW_INT;
+	if (conf_core.rc.quiet) {
+		cancel:;
+		res->val.nat_int = -1;
+		return 0;
+	}
+
+	PCB_ACT_CONVARG(1, FGW_STR, cli_MessageBox, icon = argv[1].val.str);
+	PCB_ACT_CONVARG(2, FGW_STR, cli_MessageBox, title = argv[2].val.str);
+	PCB_ACT_CONVARG(3, FGW_STR, cli_MessageBox, label = argv[3].val.str);
+
+	printf("[%s] *** %s ***\n", icon, title);
+
+	retry:;
+	printf("%s:\n", label);
+	for(n = 4; n < argc; n+=2) {
+		PCB_ACT_CONVARG(n+0, FGW_STR, cli_MessageBox, txt = argv[n+0].val.str);
+		printf(" %d = %s\n", (n - 4)/2+1, txt);
+	}
+	printf("\nChose a number from above: ");
+	fflush(stdout);
+	answer = read_stdin_line();
+	if (answer == NULL)
+		goto retry;
+	if (strcmp(answer, "cancel") == 0)
+		goto cancel;
+	ret = strtol(answer, &end, 10);
+	if (((*end != '\0') && (*end != '\n') && (*end != '\r')) || (ret < 1) || (ret > (argc - 3) / 2)) {
+		printf("\nERROR: please type a number between 1 and %d\n", (argc - 4)/2+1);
+		goto retry;
+	}
+	n = (ret-1)*2+5;
+	PCB_ACT_CONVARG(n, FGW_INT, cli_MessageBox, res->val.nat_int = argv[n].val.nat_int);
+	return 0;
+}
+
 /* FIXME - this could use some enhancement to actually use the other
    args */
 static char *nogui_fileselect(const char *title, const char *descr,
@@ -509,7 +552,8 @@ pcb_hid_t *pcb_hid_nogui_get_hid(void)
 
 
 static pcb_action_t cli_dlg_action_list[] = {
-	{"cli_PromptFor", pcb_act_cli_PromptFor, pcb_acth_cli, NULL}
+	{"cli_PromptFor", pcb_act_cli_PromptFor, pcb_acth_cli, NULL},
+	{"cli_MessageBox", pcb_act_cli_MessageBox, pcb_acth_cli, NULL}
 };
 
 PCB_REGISTER_ACTIONS(cli_dlg_action_list, NULL)
