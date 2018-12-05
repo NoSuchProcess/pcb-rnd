@@ -940,11 +940,13 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 		}
 
 		if (!global.has_outline || global.invert) {
-			pcb_fprintf(global.f,
+			if ((PCB_LAYER_IS_ROUTE(flags, purpi)) || (global.outline)) {
+				pcb_fprintf(global.f,
 									"0 setgray %mi setlinewidth 0 0 moveto 0 "
 									"%mi lineto %mi %mi lineto %mi 0 lineto closepath %s\n",
 									conf_core.design.min_wid,
 									PCB->MaxHeight, PCB->MaxWidth, PCB->MaxHeight, PCB->MaxWidth, global.invert ? "fill" : "stroke");
+			}
 		}
 
 		if (global.align_marks) {
