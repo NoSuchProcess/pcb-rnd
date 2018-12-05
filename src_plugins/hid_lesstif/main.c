@@ -3414,10 +3414,6 @@ lesstif_watch_file(int fd, unsigned int condition,
 
 extern void lesstif_logv(enum pcb_message_level level, const char *fmt, va_list ap);
 
-extern int lesstif_confirm_dialog(const char *msg, ...);
-
-extern int lesstif_close_confirm_dialog();
-
 extern void *lesstif_attr_dlg_new(pcb_hid_attribute_t *attrs_, int n_attrs_, pcb_hid_attr_val_t *results_, const char *title_, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev));
 
 extern int lesstif_attr_dlg_run(void *hid_ctx);
@@ -3683,8 +3679,6 @@ int pplg_init_hid_lesstif(void)
 
 	lesstif_hid.log = lesstif_log;
 	lesstif_hid.logv = lesstif_logv;
-	lesstif_hid.confirm_dialog = lesstif_confirm_dialog;
-	lesstif_hid.close_confirm_dialog = lesstif_close_confirm_dialog;
 	lesstif_hid.fileselect = lesstif_fileselect;
 	lesstif_hid.attr_dlg_new = lesstif_attr_dlg_new;
 	lesstif_hid.attr_dlg_run = lesstif_attr_dlg_run;

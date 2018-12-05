@@ -287,45 +287,6 @@ static char *read_stdin_line(void)
 
 #undef MAX_LINE_LENGTH
 
-static int nogui_confirm_dialog(const char *msg, ...)
-{
-	char *answer;
-	int ret = 0;
-	pcb_bool valid_answer = pcb_false;
-	va_list args;
-
-	if (conf_core.rc.quiet)
-		return 1;
-
-	do {
-		va_start(args, msg);
-		pcb_vfprintf(stdout, msg, args);
-		va_end(args);
-
-		printf(" ? 0=cancel 1 = ok : ");
-
-		answer = read_stdin_line();
-
-		if ((answer == NULL) || (answer[0] == '1' && answer[1] == '\0')) {
-			ret = 1;
-			valid_answer = pcb_true;
-		}
-		else if (answer[0] == '0' && answer[1] == '\0') {
-			ret = 0;
-			valid_answer = pcb_true;
-		}
-
-		free(answer);
-	}
-	while (!valid_answer);
-	return ret;
-}
-
-static int nogui_close_confirm_dialog()
-{
-	return nogui_confirm_dialog(_("OK to lose data ?"), NULL);
-}
-
 static fgw_error_t pcb_act_cli_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char *answer;
@@ -518,8 +479,6 @@ void pcb_hid_nogui_init(pcb_hid_t * hid)
 	hid->unwatch_file = nogui_unwatch_file;
 	hid->log = nogui_log;
 	hid->logv = nogui_logv;
-	hid->confirm_dialog = nogui_confirm_dialog;
-	hid->close_confirm_dialog = nogui_close_confirm_dialog;
 	hid->fileselect = nogui_fileselect;
 	hid->attr_dlg_new = pcb_nogui_attr_dlg_new;
 	hid->attr_dlg_run = nogui_attr_dlg_run;

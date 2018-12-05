@@ -14,7 +14,6 @@
 #include "../src_plugins/lib_gtk_common/in_keyboard.h"
 #include "../src_plugins/lib_gtk_common/bu_dwg_tooltip.h"
 #include "../src_plugins/lib_gtk_common/ui_crosshair.h"
-#include "../src_plugins/lib_gtk_common/dlg_confirm.h"
 #include "../src_plugins/lib_gtk_common/dlg_log.h"
 #include "../src_plugins/lib_gtk_common/dlg_file_chooser.h"
 #include "../src_plugins/lib_gtk_common/dlg_progress.h"
@@ -334,21 +333,6 @@ static void ghid_logv(enum pcb_message_level level, const char *fmt, va_list arg
 	pcb_gtk_logv(ghidgui->hid_active, level, fmt, args);
 }
 
-static int ghid_confirm_dialog(const char *msg, ...)
-{
-	int res;
-	va_list ap;
-	va_start(ap, msg);
-	res = pcb_gtk_dlg_confirm_open(ghid_port.top_window, msg, ap);
-	va_end(ap);
-	return res;
-}
-
-static int ghid_close_confirm_dialog(void)
-{
-	return pcb_gtk_dlg_confirm_close(ghid_port.top_window);
-}
-
 static char *ghid_fileselect(const char *title, const char *descr, const char *default_file, const char *default_ext, const char *history_tag, int flags)
 {
 	return pcb_gtk_fileselect(ghid_port.top_window, title, descr, default_file, default_ext, history_tag, flags);
@@ -518,8 +502,6 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 
 	dst->log = ghid_log;
 	dst->logv = ghid_logv;
-	dst->confirm_dialog = ghid_confirm_dialog;
-	dst->close_confirm_dialog = ghid_close_confirm_dialog;
 	dst->fileselect = ghid_fileselect;
 	dst->attr_dlg_new = ghid_attr_dlg_new_;
 	dst->attr_dlg_run = ghid_attr_dlg_run;

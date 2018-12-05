@@ -331,23 +331,6 @@ struct pcb_hid_s {
 	void (*log)(const char *fmt, ...);
 	void (*logv)(enum pcb_message_level, const char *fmt, va_list args);
 
-	/* A generic yes/no dialog.  Returns zero if the cancel button is
-	   pressed, one for the OK button.  If you specify alternate labels
-	   for ..., they are used instead of the default OK/Cancel ones, and
-	   the return value is the index of the label chosen.  You MUST pass
-	   NULL as the last parameter to this.  */
-	int (*confirm_dialog)(const char *msg, ...);
-
-	/* A close confirmation dialog for unsaved pages, for example, with
-	   options "Close without saving", "Cancel" and "Save". Returns zero
-	   if the close is cancelled, or one if it should proceed. The HID
-	   is responsible for any "Save" action the user may wish before
-	   confirming the close.
-	 */
-	int (*close_confirm_dialog)();
-#define HID_CLOSE_CONFIRM_CANCEL 0
-#define HID_CLOSE_CONFIRM_OK     1
-
 	/* Prompts the user for a filename or directory name.  For GUI
 	   HID's this would mean a file select dialog box.  The 'flags'
 	   argument is the bitwise OR of the following values.  */

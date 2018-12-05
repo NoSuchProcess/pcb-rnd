@@ -301,91 +301,6 @@ void lesstif_log(const char *fmt, ...)
 }
 
 /* ------------------------------------------------------------ */
-
-static Widget confirm_dialog = 0;
-static Widget confirm_cancel, confirm_ok, confirm_label;
-
-int lesstif_confirm_dialog(const char *msg, ...)
-{
-	const char *cancelmsg, *okmsg;
-	va_list ap;
-	XmString xs;
-
-	if (mainwind == 0)
-		return 1;
-
-	if (confirm_dialog == 0) {
-		stdarg_n = 0;
-		stdarg(XmNdefaultButtonType, XmDIALOG_OK_BUTTON);
-		stdarg(XmNtitle, "Confirm");
-		confirm_dialog = XmCreateQuestionDialog(mainwind, XmStrCast("confirm"), stdarg_args, stdarg_n);
-		XtAddCallback(confirm_dialog, XmNcancelCallback, (XtCallbackProc) dialog_callback_ok_value, (XtPointer) 0);
-		XtAddCallback(confirm_dialog, XmNokCallback, (XtCallbackProc) dialog_callback_ok_value, (XtPointer) 1);
-
-		confirm_cancel = XmMessageBoxGetChild(confirm_dialog, XmDIALOG_CANCEL_BUTTON);
-		confirm_ok = XmMessageBoxGetChild(confirm_dialog, XmDIALOG_OK_BUTTON);
-		confirm_label = XmMessageBoxGetChild(confirm_dialog, XmDIALOG_MESSAGE_LABEL);
-		XtUnmanageChild(XmMessageBoxGetChild(confirm_dialog, XmDIALOG_HELP_BUTTON));
-	}
-
-	va_start(ap, msg);
-	cancelmsg = va_arg(ap, const char *);
-	okmsg = va_arg(ap, const char *);
-	va_end(ap);
-
-	if (!cancelmsg) {
-		cancelmsg = "Cancel";
-		okmsg = "Ok";
-	}
-
-	stdarg_n = 0;
-	xs = XmStringCreatePCB(cancelmsg);
-
-	if (okmsg) {
-		stdarg(XmNcancelLabelString, xs);
-		xs = XmStringCreatePCB(okmsg);
-		XtManageChild(confirm_cancel);
-	}
-	else
-		XtUnmanageChild(confirm_cancel);
-
-	stdarg(XmNokLabelString, xs);
-
-	xs = XmStringCreatePCB(msg);
-	stdarg(XmNmessageString, xs);
-	XtSetValues(confirm_dialog, stdarg_args, stdarg_n);
-
-	wait_for_dialog(confirm_dialog);
-
-	stdarg_n = 0;
-	stdarg(XmNdefaultPosition, False);
-	XtSetValues(confirm_dialog, stdarg_args, stdarg_n);
-
-	return ok;
-}
-
-static const char pcb_acts_ConfirmAction[] = "TODO";
-static const char pcb_acth_ConfirmAction[] = "TODO";
-static fgw_error_t pcb_act_ConfirmAction(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	const char *a0 = NULL, *a1 = NULL, *a2 = NULL;
-
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, ConfirmAction, a0 = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, ConfirmAction, a1 = argv[2].val.str);
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, ConfirmAction, a2 = argv[3].val.str);
-
-	PCB_ACT_IRES(lesstif_confirm_dialog(a0, a1, a2, 0));
-	return 0;
-}
-
-/* ------------------------------------------------------------ */
-
-int lesstif_close_confirm_dialog()
-{
-	return lesstif_confirm_dialog("OK to lose data ?", NULL);
-}
-
-/* ------------------------------------------------------------ */
 /* FIXME -- make this a proper file select dialog box */
 char *lesstif_fileselect(const char *title, const char *descr,
 												 const char *default_file, const char *default_ext, const char *history_tag, int flags)
@@ -1662,7 +1577,6 @@ pcb_action_t lesstif_dialog_action_list[] = {
 	{"Load", pcb_act_Load, pcb_acth_Load, pcb_acts_Load},
 	{"Save", pcb_act_Save, pcb_acth_Save, pcb_acts_Save},
 	{"DoWindows", pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows},
-	{"Confirm", pcb_act_ConfirmAction, pcb_acth_ConfirmAction, pcb_acts_ConfirmAction},
 	{"Print", pcb_act_Print, pcb_acth_Print, pcb_acts_Print},
 	{"AdjustSizes", pcb_act_AdjustSizes, pcb_acth_AdjustSizes, pcb_acts_AdjustSizes},
 	{"ImportGUI", pcb_act_ImportGUI, pcb_acth_ImportGUI, pcb_acts_ImportGUI}
