@@ -176,6 +176,7 @@ const char pcb_acts_dad[] =
 	"dad(dlgname, new) - create new dialog\n"
 	"dad(dlgname, label, text) - append a label widget\n"
 	"dad(dlgname, button, text) - append a button widget\n"
+	"dad(dlgname, button_closes, label, retval, ...) - standard close buttons\n"
 	"dad(dlgname, enum, choices) - append an enum (combo box) widget; choices is a tab separated list\n"
 	"dad(dlgname, bool, [label]) - append an checkbox widget (default off)\n"
 	"dad(dlgname, integer|real|coord, min, max, [label]) - append an input field\n"
@@ -239,6 +240,25 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
 		PCB_DAD_BUTTON(dad->dlg, tmp_str_dup(dad, txt));
 		rv = PCB_DAD_CURRENT(dad->dlg);
+	}
+	else if (pcb_strcasecmp(cmd, "button_closes") == 0) {
+		int n, ret;
+
+		if (dad->running) goto cant_chg;
+
+		PCB_DAD_BEGIN_HBOX(dad->dlg);
+		PCB_DAD_COMPFLAG(dad->dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_BEGIN_HBOX(dad->dlg);
+		PCB_DAD_COMPFLAG(dad->dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_END(dad->dlg);
+		for(n = 3; n < argc; n+=2) {
+			PCB_ACT_CONVARG(n+0, FGW_STR, dad, txt = argv[n+0].val.str);
+			PCB_ACT_CONVARG(n+1, FGW_INT, dad, ret = argv[n+1].val.nat_int);
+			
+			PCB_DAD_BUTTON_CLOSE(dad->dlg, tmp_str_dup(dad, txt), ret);
+				rv = PCB_DAD_CURRENT(dad->dlg);
+		}
+		PCB_DAD_END(dad->dlg);
 	}
 	else if (pcb_strcasecmp(cmd, "bool") == 0) {
 		if (dad->running) goto cant_chg;
