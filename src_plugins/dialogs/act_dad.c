@@ -247,7 +247,6 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (dad->running) goto cant_chg;
 
 		PCB_DAD_BEGIN_HBOX(dad->dlg);
-		PCB_DAD_COMPFLAG(dad->dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_BEGIN_HBOX(dad->dlg);
 		PCB_DAD_COMPFLAG(dad->dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_END(dad->dlg);
