@@ -326,9 +326,9 @@ int pcb_hid_attrdlg_num_children(pcb_hid_attribute_t *attrs, int start_from, int
 	return cnt;
 }
 
-int pcb_attribute_dialog(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr, void *caller_data)
+int pcb_attribute_dialog(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data)
 {
 	if ((pcb_gui == NULL) || (pcb_gui->attribute_dialog == NULL))
 		return -1;
-	return pcb_gui->attribute_dialog(attrs, n_attrs, results, title, descr, caller_data);
+	return pcb_gui->attribute_dialog(attrs, n_attrs, results, title, caller_data);
 }

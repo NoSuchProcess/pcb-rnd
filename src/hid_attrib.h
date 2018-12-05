@@ -177,7 +177,7 @@ void pcb_hid_usage_option(const char *name, const char *help);
 int pcb_hid_attrdlg_num_children(pcb_hid_attribute_t *attrs, int start_from, int n_attrs);
 
 /* Invoke a simple modal attribute dialog if GUI is available */
-int pcb_attribute_dialog(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr, void *caller_data);
+int pcb_attribute_dialog(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data);
 
 /* Convert between compflag bit value and name */
 const char *pcb_hid_compflag_bit2name(pcb_hatt_compflags_t bit);

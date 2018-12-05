@@ -805,7 +805,7 @@ void ghid_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const pcb_hi
 }
 
 
-int ghid_attribute_dialog(pcb_gtk_common_t *com, pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr, void *caller_data)
+int ghid_attribute_dialog(pcb_gtk_common_t *com, pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, void *caller_data)
 {
 	void *hid_ctx;
 	int rc;

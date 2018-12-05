@@ -100,7 +100,7 @@ static fgw_error_t pcb_act_gui_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *a
 	PCB_DAD_END(dlg);
 
 	res->type = FGW_INT;
-	PCB_DAD_AUTORUN(dlg, title, "", NULL, res->val.nat_int);
+	PCB_DAD_AUTORUN(dlg, title, NULL, res->val.nat_int);
 	PCB_DAD_FREE(dlg);
 
 	return 0;

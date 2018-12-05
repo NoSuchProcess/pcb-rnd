@@ -79,13 +79,13 @@ do { \
 #define PCB_DAD_RUN(table) pcb_hid_dad_run(table ## _hid_ctx, &table ## _ret_override)
 
 /* failed is non-zero on cancel */
-#define PCB_DAD_AUTORUN(table, title, descr, caller_data, failed) \
+#define PCB_DAD_AUTORUN(table, title, caller_data, failed) \
 do { \
 	if (table ## _result == NULL) \
 		PCB_DAD_ALLOC_RESULT(table); \
 	table ## _ret_override.valid = 0; \
 	table ## _ret_override.already_freed = 0; \
-	failed = pcb_attribute_dialog(table, table ## _len, table ## _result, title, descr, caller_data); \
+	failed = pcb_attribute_dialog(table, table ## _len, table ## _result, title, caller_data); \
 	if (table ## _ret_override.valid) \
 		failed = table ## _ret_override.value; \
 } while(0)

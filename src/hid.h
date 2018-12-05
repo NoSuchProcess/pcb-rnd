@@ -393,7 +393,7 @@ struct pcb_hid_s {
 	   may use it for a tooltip or text in a dialog box, or a help
 	   string.
 	 */
-	int (*attribute_dialog)(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, const char *descr, void *caller_data);
+	int (*attribute_dialog)(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data);
 
 	/* The same API in 3 stages: */
 	void *(*attr_dlg_new)(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev)); /* returns hid_ctx */

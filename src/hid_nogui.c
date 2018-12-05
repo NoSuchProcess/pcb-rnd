@@ -401,7 +401,7 @@ static void nogui_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, cons
 }
 
 
-static int nogui_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr, void *caller_data)
+static int nogui_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, void *caller_data)
 {
 	CRASH("attribute_dialog");
 }

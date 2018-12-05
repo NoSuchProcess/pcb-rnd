@@ -1042,7 +1042,7 @@ void lesstif_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const pcb
 		ctx->property[prop] = *val;
 }
 
-int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr, void *caller_data)
+int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, void *caller_data)
 {
 	int rv;
 	void *hid_ctx;
@@ -1144,7 +1144,7 @@ static fgw_error_t pcb_act_Print(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	opts = printer->get_export_options(&n);
 	vals = (pcb_hid_attr_val_t *) calloc(n, sizeof(pcb_hid_attr_val_t));
-	if (lesstif_attribute_dialog(opts, n, vals, "Print", "", NULL)) {
+	if (lesstif_attribute_dialog(opts, n, vals, "Print", NULL)) {
 		free(vals);
 		PCB_ACT_IRES(1);
 		return 1;

@@ -453,7 +453,7 @@ char *pcb_gtk_library_param_ui(void *com, pcb_gtk_library_t *library_window, pcb
 	if (dirty) /* had to replace the filter text, make it effective */
 		attr_change_cb(NULL, NULL, &attrs[0]);
 
-	if (ghid_attribute_dialog(com, attrs, numattr, res, "Parametric footprint edition", descr, NULL) == 0)
+	if (ghid_attribute_dialog(com, attrs, numattr, res, descr, NULL) == 0)
 		sres = gen_cmd(entry->name, attrs, res, numattr, ctx.first_optional);
 	else
 		sres = NULL; /* cancel */

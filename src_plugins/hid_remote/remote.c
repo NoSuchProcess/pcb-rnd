@@ -369,7 +369,7 @@ static void remote_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, con
 {
 }
 
-static int remote_attribute_dialog(pcb_hid_attribute_t * attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_, void *caller_data)
+static int remote_attribute_dialog(pcb_hid_attribute_t * attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, void *caller_data)
 {
 	return 0;
 }

@@ -286,7 +286,7 @@ void batch_unwatch_file(pcb_hidval_t data)
 }
 
 static int
-batch_attribute_dialog(pcb_hid_attribute_t * attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_, void *caller_data)
+batch_attribute_dialog(pcb_hid_attribute_t * attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, void *caller_data)
 {
 	return 0;
 }
