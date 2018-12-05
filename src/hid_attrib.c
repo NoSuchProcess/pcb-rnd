@@ -326,7 +326,7 @@ int pcb_hid_attrdlg_num_children(pcb_hid_attribute_t *attrs, int start_from, int
 	return cnt;
 }
 
-int pcb_attribute_dialog(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data)
+int pcb_attribute_dialog_(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, int *already_free)
 {
 	int rv;
 	void *hid_ctx;
@@ -336,7 +336,13 @@ int pcb_attribute_dialog(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_v
 
 	hid_ctx = pcb_gui->attr_dlg_new(attrs, n_attrs, results, title, caller_data, pcb_true, NULL);
 	rv = pcb_gui->attr_dlg_run(hid_ctx);
-	pcb_gui->attr_dlg_free(hid_ctx);
+	if ((already_free == NULL) || (*already_free == 0))
+		pcb_gui->attr_dlg_free(hid_ctx);
 
 	return rv ? 0 : 1;
+}
+
+int pcb_attribute_dialog(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data)
+{
+	return pcb_attribute_dialog_(attrs, n_attrs, results, title, caller_data, NULL);
 }

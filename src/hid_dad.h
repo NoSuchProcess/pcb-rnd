@@ -67,12 +67,14 @@ do { \
 	table ## _hid_ctx = NULL; \
 	table ## _len = 0; \
 	table ## _alloced = 0; \
+	table ## _ret_override.already_freed = 1; \
 } while(0)
 
 #define PCB_DAD_NEW(table, title, caller_data, modal, ev_cb) \
 do { \
 	if (table ## _result == NULL) \
 		PCB_DAD_ALLOC_RESULT(table); \
+	table ## _ret_override.already_freed = 0; \
 	table ## _hid_ctx = pcb_gui->attr_dlg_new(table, table ## _len, table ## _result, title, caller_data, modal, ev_cb); \
 } while(0)
 
@@ -85,9 +87,10 @@ do { \
 		PCB_DAD_ALLOC_RESULT(table); \
 	table ## _ret_override.valid = 0; \
 	table ## _ret_override.already_freed = 0; \
-	failed = pcb_attribute_dialog(table, table ## _len, table ## _result, title, caller_data); \
+	failed = pcb_attribute_dialog_(table, table ## _len, table ## _result, title, caller_data, &(table ## _ret_override.already_freed)); \
 	if (table ## _ret_override.valid) \
 		failed = table ## _ret_override.value; \
+	table ## _ret_override.already_freed = 1; \
 } while(0)
 
 /* Return the index of the item currenty being edited */
@@ -428,8 +431,8 @@ void pcb_dad_tree_free(pcb_hid_attribute_t *attr);
 
 /* internal: retval override for the auto-close buttons */
 typedef struct {
-	char valid;
-	char already_freed;
+	int valid;
+	int already_freed;
 	int value;
 } pcb_dad_retovr_t;
 
