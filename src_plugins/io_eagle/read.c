@@ -107,6 +107,8 @@ typedef enum {
 	ON_BOARD
 } eagle_loc_t;
 
+typedef	int eagle_layerid_t;
+
 /* Xml path walk that's much simpler than xpath; the ... is a NULL
    terminated list of node names */
 static trnode_t *eagle_trpath(read_state_t *st, trnode_t *subtree, ...)
