@@ -190,7 +190,9 @@ typedef struct {
 			CFT_COLOR cross;                 /* crosshair, drc outline color */
 			CFT_COLOR selected;              /* generic object selection color */
 			CFT_COLOR via;                   /* non-terminal padstack shape on current layer */
+			CFT_COLOR via_far;               /* non-terminal padstack shape on non-current ('far side') layer */
 			CFT_COLOR pin;                   /* terminal padstack shape on current layer */
+			CFT_COLOR pin_far;               /* terminal padstack shape on non-current ('far side') layer */
 			CFT_COLOR pin_name;              /* on-screen terminal number/name labels */
 			CFT_COLOR subc;                  /* on-screen subcircuit marks */
 			CFT_COLOR subc_nonetlist;        /* on-screen subcircuit marks for subcircuits with the nonetlist flag */

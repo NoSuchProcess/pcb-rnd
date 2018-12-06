@@ -159,7 +159,9 @@ li:pcb-rnd-conf-v1 {
 				cross = {#cdcd00}
 				selected = {#00ffff}
 				via = {#7f7f7f}
+				via_far = {#aaaaaa}
 				pin = {#4d4d4d}
+				pin_far = {#999999}
 				pin_name = {#ff0000}
 				element = {#000000}
 				subc = {#CC0000}

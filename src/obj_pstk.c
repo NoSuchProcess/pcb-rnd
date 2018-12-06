@@ -364,7 +364,7 @@ static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, c
 			else if (is_current)
 				color = conf_core.appearance.color.via;
 			else
-				color = conf_core.appearance.color.invisible_objects;
+				color = conf_core.appearance.color.via_far;
 		}
 	}
 	else {
@@ -391,7 +391,7 @@ static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, c
 			else if (is_current)
 				color = conf_core.appearance.color.pin;
 			else
-				color = conf_core.appearance.color.invisible_objects;
+				color = conf_core.appearance.color.pin_far;
 
 	}
 
