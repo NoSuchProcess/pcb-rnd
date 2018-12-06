@@ -64,6 +64,7 @@ pcb_action_t dialogs_action_list[] = {
 	{"About", pcb_act_About, pcb_acth_About, pcb_acts_About},
 	{"Pinout", pcb_act_Pinout, pcb_acth_Pinout, pcb_acts_Pinout},
 	{"ExportGUI", pcb_act_ExportGUI, pcb_acth_ExportGUI, pcb_acts_ExportGUI},
+	{"PrintGUI", pcb_act_PrintGUI, pcb_acth_PrintGUI, pcb_acts_PrintGUI},
 	{"GroupPropGui", pcb_act_GroupPropGui, pcb_acth_GroupPropGui, pcb_acts_GroupPropGui},
 	{"LayerPropGui", pcb_act_LayerPropGui, pcb_acth_LayerPropGui, pcb_acts_LayerPropGui},
 	{"Preferences", pcb_act_Preferences, pcb_acth_Preferences, pcb_acts_Preferences},

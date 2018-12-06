@@ -107,7 +107,7 @@ static void export_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	memset(ctx, 0, sizeof(export_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
-static void pcb_dlg_export(void)
+static void pcb_dlg_export(const char *title, int exporters, int printers)
 {
 	pcb_hid_t **hids;
 	int n, i;
@@ -118,9 +118,8 @@ static void pcb_dlg_export(void)
 
 	hids = pcb_hid_enumerate();
 	for(n = 0, export_ctx.len = 0; hids[n] != NULL; n++) {
-		if (!hids[n]->exporter)
-			continue;
-		export_ctx.len++;
+		if ((exporters && hids[n]->exporter) || (printers && hids[n]->printer))
+			export_ctx.len++;
 	}
 
 	if (export_ctx.len == 0) {
@@ -136,11 +135,11 @@ static void pcb_dlg_export(void)
 	export_ctx.ea = malloc(sizeof(pcb_hid_attribute_t *) * (export_ctx.len));
 
 	for(i = n = 0; hids[n] != NULL; n++) {
-		if (!hids[n]->exporter)
-			continue;
-		export_ctx.tab_name[i] = hids[n]->name;
-		export_ctx.hid[i] = hids[n];
-		i++;
+		if ((exporters && hids[n]->exporter) || (printers && hids[n]->printer)) {
+			export_ctx.tab_name[i] = hids[n]->name;
+			export_ctx.hid[i] = hids[n];
+			i++;
+		}
 	}
 
 	export_ctx.tab_name[i] = NULL;
@@ -181,13 +180,21 @@ static void pcb_dlg_export(void)
 	/* set up the context */
 	export_ctx.active = 1;
 
-	PCB_DAD_NEW(export_ctx.dlg, "Export in various formats", &export_ctx, pcb_false, export_close_cb);
+	PCB_DAD_NEW(export_ctx.dlg, title, &export_ctx, pcb_false, export_close_cb);
 }
 
 static const char pcb_acts_ExportGUI[] = "ExportGUI()\n";
 static const char pcb_acth_ExportGUI[] = "Open the export dialog.";
 static fgw_error_t pcb_act_ExportGUI(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
-	pcb_dlg_export();
+	pcb_dlg_export("Export to file", 1, 0);
+	return 0;
+}
+
+static const char pcb_acts_PrintGUI[] = "PrintGUI()\n";
+static const char pcb_acth_PrintGUI[] = "Open the print dialog.";
+static fgw_error_t pcb_act_PrintGUI(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+{
+	pcb_dlg_export("Print", 0, 1);
 	return 0;
 }
