@@ -369,8 +369,11 @@ typedef struct {
 	void *caller_data;
 	Widget dialog;
 	pcb_hid_attr_val_t property[PCB_HATP_max];
-	unsigned inhibit_valchg:1;
 	Dimension minw, minh;
+	void (*close_cb)(void *caller_data, pcb_hid_attr_ev_t ev);
+	unsigned close_cb_called:1;
+	unsigned already_closing:1;
+	unsigned inhibit_valchg:1;
 } lesstif_attr_dlg_t;
 
 static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
@@ -840,11 +843,24 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 	return -1;
 }
 
+static void ltf_attr_destroy_cb(Widget w, void *v, void *cbs)
+{
+	lesstif_attr_dlg_t *ctx = v;
+	if ((!ctx->close_cb_called) && (ctx->close_cb != NULL)) {
+		ctx->close_cb(ctx->caller_data, PCB_HID_ATTR_EV_WINCLOSE);
+		ctx->close_cb_called = 1;
+	}
+	XtUnmanageChild(w);
+	XtDestroyWidget(w);
+}
+
 void *lesstif_attr_dlg_new(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev))
 {
 	Widget topform, main_tbl;
 	int i;
 	lesstif_attr_dlg_t *ctx;
+	Atom close_atom;
+
 
 	ctx = calloc(sizeof(lesstif_attr_dlg_t), 1);
 	ctx->attrs = attrs;
@@ -852,6 +868,8 @@ void *lesstif_attr_dlg_new(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr
 	ctx->n_attrs = n_attrs;
 	ctx->caller_data = caller_data;
 	ctx->minw = ctx->minh = 32;
+	ctx->close_cb = button_cb;
+	ctx->close_cb_called = 0;
 
 	for (i = 0; i < n_attrs; i++) {
 		if (attrs[i].help_text != ATTR_UNDOCUMENTED)
@@ -871,6 +889,8 @@ void *lesstif_attr_dlg_new(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr
 	XtManageChild(topform);
 
 	ctx->dialog = XtParent(topform);
+	XtAddCallback(topform, XmNunmapCallback, ltf_attr_destroy_cb, ctx);
+
 
 	stdarg_n = 0;
 	stdarg(XmNfractionBase, ctx->n_attrs);
@@ -915,9 +935,18 @@ void lesstif_attr_dlg_free(void *hid_ctx)
 	lesstif_attr_dlg_t *ctx = hid_ctx;
 	int i;
 
+	if (ctx->already_closing)
+		return;
+
+	ctx->already_closing = 1;
 	for (i = 0; i < ctx->n_attrs; i++) {
 		attribute_dialog_readres(ctx, i);
 		free(ctx->btn[i]);
+	}
+
+	if ((!ctx->close_cb_called) && (ctx->close_cb != NULL)) {
+		ctx->close_cb_called = 1;
+		ctx->close_cb(ctx->caller_data, PCB_HID_ATTR_EV_CODECLOSE);
 	}
 
 	free(ctx->wl);
