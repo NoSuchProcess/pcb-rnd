@@ -31,6 +31,7 @@
 
 #include "actions.h"
 #include "hid.h"
+#include "hid_dad.h"
 #include "hid_nogui.h"
 
 
@@ -125,6 +126,82 @@ int pcb_hid_message_box(const char *icon, const char *title, const char *label, 
 	fgw_arg_free(&pcb_fgw, &res);
 	return -1;
 }
+
+
+static const char *refresh = "progress refresh";
+#define REFRESH_RATE 100
+
+static void progress_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+{
+	pcb_hid_progress(0, 0, NULL);
+}
+
+static void progress_refresh_cb(pcb_hidval_t user_data)
+{
+fprintf(stderr, "refr!\n");
+	pcb_hid_progress(0, 0, refresh);
+}
+
+int pcb_hid_progress(long so_far, long total, const char *message)
+{
+	double now;
+	static pcb_hidval_t timer;
+	static int active = 0;
+	static pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {NULL, 0}};
+	static int wp;
+	static pcb_hid_attr_val_t val;
+	static double last = 0;
+	static struct {
+		PCB_DAD_DECL_NOINIT(dlg)
+	} ctx;
+
+	if (message == refresh) {
+		if (active)
+			last = pcb_dtime();
+		refresh_now:;
+fprintf(stderr, "refr: %d %f\n", active, val.real_value);
+		if (active) {
+			pcb_gui->attr_dlg_set_value(ctx.dlg_hid_ctx, wp, &val);
+			timer = pcb_gui->add_timer(progress_refresh_cb, REFRESH_RATE, timer);
+		}
+		return 0;
+	}
+
+	/* If we are finished, destroy any dialog */
+	if (so_far == 0 && total == 0 && message == NULL) {
+		if (active) {
+			pcb_gui->stop_timer(timer);
+			PCB_DAD_FREE(ctx.dlg);
+			active = 0;
+		}
+		return 1;
+	}
+
+	if (!active) {
+		PCB_DAD_BEGIN_VBOX(ctx.dlg);
+			PCB_DAD_LABEL(ctx.dlg, message);
+			PCB_DAD_PROGRESS(ctx.dlg);
+				wp = PCB_DAD_CURRENT(ctx.dlg);
+		PCB_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
+		PCB_DAD_END(ctx.dlg);
+
+		PCB_DAD_NEW(ctx.dlg, "pcb-rnd progress", &ctx, pcb_false, progress_close_cb);
+		active = 1;
+
+		timer = pcb_gui->add_timer(progress_refresh_cb, REFRESH_RATE, timer);
+	}
+
+	val.real_value = (double)so_far / (double)total;
+
+	now = pcb_dtime();
+fprintf(stderr, "now: %f >= %f\n", now, (last + (REFRESH_RATE / 1000.0)));
+	if (now >= (last + (REFRESH_RATE / 1000.0))) {
+		last = now;
+		goto refresh_now;
+	}
+	return 0;
+}
+
 
 static pcb_action_t hid_dlg_action_list[] = {
 	{"PromptFor", pcb_act_PromptFor, pcb_acth_PromptFor, pcb_acts_PromptFor},

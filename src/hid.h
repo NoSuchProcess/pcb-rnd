@@ -559,5 +559,9 @@ char *pcb_hid_prompt_for(const char *msg, const char *default_string, const char
    NULL. */
 int pcb_hid_message_box(const char *icon, const char *title, const char *label, ...);
 
+/* Show modal progressbar to the user, offering cancel long running processes.
+   Pass all zeros to flush display and remove the dialog.
+   Returns nonzero if the user wishes to cancel the operation.  */
+int pcb_hid_progress(long so_far, long total, const char *message);
 
 #endif
