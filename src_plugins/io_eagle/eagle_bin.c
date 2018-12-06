@@ -167,7 +167,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"side", T_BMB, 2, 0x10},
 			{"visible", T_UBF, 2, BITFIELD(1, 2, 3)},
 			{"active", T_BMB, 2, 0x02},
-			{"number",T_INT, 3, 1},
+			{"number",T_UBF, 3, BITFIELD(1, 0, 7)},
 			{"other",T_INT, 4, 1},
 			{"fill", T_UBF, 5, BITFIELD(1, 0, 3)},
 			{"color",T_UBF, 6, BITFIELD(1, 0, 5)},
