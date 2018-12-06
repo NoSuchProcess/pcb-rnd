@@ -799,7 +799,6 @@ void *pcb_chg_obj_name_query(pcb_any_obj_t *obj)
 			pcb_undo_inc_serial();
 		}
 		pcb_draw();
-		free(name);
 		return obj;
 	}
 	return NULL;
