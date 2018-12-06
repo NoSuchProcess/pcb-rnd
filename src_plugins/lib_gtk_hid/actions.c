@@ -39,7 +39,6 @@
 #include "compat_nls.h"
 #include "compat_misc.h"
 
-#include "../src_plugins/lib_gtk_common/act_print.h"
 #include "../src_plugins/lib_gtk_common/act_fileio.h"
 #include "../src_plugins/lib_gtk_common/wt_layersel.h"
 #include "../src_plugins/lib_gtk_common/dlg_route_style.h"
@@ -72,12 +71,6 @@ static fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	ghid_handle_user_command(&ghidgui->topwin.cmd, TRUE);
 	PCB_ACT_IRES(0);
 	return 0;
-}
-
-/* DOC: print.html */
-fgw_error_t pcb_gtk_act_print_(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	return pcb_gtk_act_print(&ghidgui->common, res, argc, argv);
 }
 
 /* DOC: benchmark.html */
@@ -353,7 +346,6 @@ pcb_action_t ghid_main_action_list[] = {
 	{"NetlistPresent", pcb_act_NetlistPresent, pcb_gtk_acth_netlistpresent, pcb_gtk_acts_netlistpresent},
 	{"Pan", pcb_act_Pan, pcb_acth_pan, pcb_acts_pan},
 	{"Popup", pcb_act_Popup, pcb_acth_Popup, pcb_acts_Popup},
-	{"Print", pcb_gtk_act_print_, pcb_gtk_acth_print, pcb_gtk_acts_print},
 	{"Save", pcb_act_save, pcb_gtk_acth_save, pcb_gtk_acts_save},
 	{"SaveWindowGeometry", pcb_act_SaveWinGeo, pcb_acth_SaveWinGeo, pcb_acts_SaveWinGeo},
 	{"Scroll", pcb_act_Scroll, pcb_acth_scroll, pcb_acts_scroll},

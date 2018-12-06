@@ -1003,36 +1003,6 @@ static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-
-static const char pcb_acts_Print[] = "Print()";
-static const char pcb_acth_Print[] = "Print the layout.";
-/* DOC: print.html */
-static fgw_error_t pcb_act_Print(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	pcb_hid_attribute_t *opts;
-	pcb_hid_t *printer;
-	pcb_hid_attr_val_t *vals;
-	int n;
-
-	printer = pcb_hid_find_printer();
-	if (!printer) {
-		pcb_hid_message_box("warning", "No printer", "No printer configured.", "Oh well", 0, NULL);
-		PCB_ACT_IRES(1);
-		return 0;
-	}
-	opts = printer->get_export_options(&n);
-	vals = (pcb_hid_attr_val_t *) calloc(n, sizeof(pcb_hid_attr_val_t));
-	if (pcb_attribute_dialog(opts, n, vals, "Print", NULL)) {
-		free(vals);
-		PCB_ACT_IRES(1);
-		return 1;
-	}
-	printer->do_export(vals);
-	free(vals);
-	PCB_ACT_IRES(0);
-	return 0;
-}
-
 /* ------------------------------------------------------------ */
 
 static Widget sizes_dialog = 0;
@@ -1577,7 +1547,6 @@ pcb_action_t lesstif_dialog_action_list[] = {
 	{"Load", pcb_act_Load, pcb_acth_Load, pcb_acts_Load},
 	{"Save", pcb_act_Save, pcb_acth_Save, pcb_acts_Save},
 	{"DoWindows", pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows},
-	{"Print", pcb_act_Print, pcb_acth_Print, pcb_acts_Print},
 	{"AdjustSizes", pcb_act_AdjustSizes, pcb_acth_AdjustSizes, pcb_acts_AdjustSizes},
 	{"ImportGUI", pcb_act_ImportGUI, pcb_acth_ImportGUI, pcb_acts_ImportGUI}
 };
