@@ -138,7 +138,6 @@ static void progress_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 
 static void progress_refresh_cb(pcb_hidval_t user_data)
 {
-fprintf(stderr, "refr!\n");
 	pcb_hid_progress(0, 0, refresh);
 }
 
@@ -159,7 +158,6 @@ int pcb_hid_progress(long so_far, long total, const char *message)
 		if (active)
 			last = pcb_dtime();
 		refresh_now:;
-fprintf(stderr, "refr: %d %f\n", active, val.real_value);
 		if (active) {
 			pcb_gui->attr_dlg_set_value(ctx.dlg_hid_ctx, wp, &val);
 			timer = pcb_gui->add_timer(progress_refresh_cb, REFRESH_RATE, timer);
@@ -194,7 +192,6 @@ fprintf(stderr, "refr: %d %f\n", active, val.real_value);
 	val.real_value = (double)so_far / (double)total;
 
 	now = pcb_dtime();
-fprintf(stderr, "now: %f >= %f\n", now, (last + (REFRESH_RATE / 1000.0)));
 	if (now >= (last + (REFRESH_RATE / 1000.0))) {
 		last = now;
 		goto refresh_now;
