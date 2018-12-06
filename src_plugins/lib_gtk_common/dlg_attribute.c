@@ -204,16 +204,8 @@ static void ghid_attr_dlg_response_cb(GtkDialog *dialog, gint response_id, gpoin
 
 	if ((ctx != NULL) && (ctx->cb != NULL)) {
 		switch (response_id) {
-		case GTK_RESPONSE_OK:
-			if (!ctx->attrdlg->close_cb_called)
-				ctx->cb(ctx->ctx, PCB_HID_ATTR_EV_OK);
-			ctx->attrdlg->rc = 0;
-			break;
-		case GTK_RESPONSE_CANCEL:
-			if (!ctx->attrdlg->close_cb_called)
-				ctx->cb(ctx->ctx, PCB_HID_ATTR_EV_CANCEL);
-			ctx->attrdlg->rc = 1;
-			break;
+		case GTK_RESPONSE_OK:     /* no OK button, shouldn't happen, but just in case... */
+		case GTK_RESPONSE_CANCEL: /* no cancel button, shouldn't happen, but just in case... */
 		case GTK_RESPONSE_CLOSE:
 		case GTK_RESPONSE_DELETE_EVENT:
 			if (!ctx->attrdlg->close_cb_called)
