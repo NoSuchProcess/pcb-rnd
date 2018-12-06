@@ -864,8 +864,6 @@ void *lesstif_attr_dlg_new(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr
 	Widget topform, main_tbl;
 	int i;
 	lesstif_attr_dlg_t *ctx;
-	Atom close_atom;
-
 
 	ctx = calloc(sizeof(lesstif_attr_dlg_t), 1);
 	ctx->attrs = attrs;
