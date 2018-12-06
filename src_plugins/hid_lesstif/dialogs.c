@@ -813,11 +813,15 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 		case PCB_HATT_PROGRESS:
 			ltf_progress_set(ctx, idx, val->real_value);
 
+			/* remove inhibit so that button callbacks work again */
+			ctx->attrs[idx].default_val = *val;
+			ctx->inhibit_valchg = save;
+
 			/* give X a chance to handle events and redraw the progress bar */
 			while (XtAppPending(app_context))
 				XtAppProcessEvent(app_context, XtIMAll);
 
-			break;
+			return 0;
 		case PCB_HATT_PREVIEW:
 			ltf_preview_set(ctx, idx, val->real_value);
 			break;
