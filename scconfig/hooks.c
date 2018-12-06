@@ -362,7 +362,7 @@ int hook_detect_target()
 	want_gtk2   = plug_is_enabled("hid_gtk2_gdk") || plug_is_enabled("hid_gtk2_gl");
 	want_gtk3   = plug_is_enabled("hid_gtk3_cairo") || plug_is_enabled("hid_gtk3_gl");
 	want_gtk    = want_gtk2 | want_gtk3;
-	want_gd     = plug_is_enabled("export_png") ||  plug_is_enabled("export_nelma") ||  plug_is_enabled("export_gcode");
+	want_gd     = plug_is_enabled("export_png") || plug_is_enabled("export_gcode");
 	want_stroke = plug_is_enabled("stroke");
 	want_cairo  = plug_is_enabled("export_bboard") | plug_is_enabled("hid_gtk3_cairo");
 	want_xml2   = plug_is_enabled("io_eagle");
@@ -628,12 +628,11 @@ int hook_detect_target()
 	if (want_gd) {
 		require("libs/gui/gd/presents", 0, 0);
 		if (!istrue(get("libs/gui/gd/presents"))) {
-			report_repeat("WARNING: Since there's no libgd, disabling gd based exports (png, nelma, gcode)...\n");
+			report_repeat("WARNING: Since there's no libgd, disabling gd based exports (png, gcode)...\n");
 			hook_custom_arg("disable-gd-gif", NULL);
 			hook_custom_arg("disable-gd-png", NULL);
 			hook_custom_arg("disable-gd-jpg", NULL);
 			hook_custom_arg("disable-export_png", NULL);
-			hook_custom_arg("disable-export_nelma", NULL);
 			hook_custom_arg("disable-export_gcode", NULL);
 			want_gd = 0;
 			goto disable_gd_formats;
@@ -644,7 +643,7 @@ int hook_detect_target()
 			require("libs/gui/gd/gdImageJpeg/presents", 0, 0);
 			require("libs/gui/gd/gdImageSetResolution/presents", 0, 0);
 			if (!istrue(get("libs/gui/gd/gdImagePng/presents"))) {
-				report_repeat("WARNING: libgd is installed, but its png code fails, some exporters will be compiled with reduced functionality; exporters affected: export_nelma, export_gcode\n");
+				report_repeat("WARNING: libgd is installed, but its png code fails, some exporters will be compiled with reduced functionality; exporters affected: export_gcode\n");
 			}
 		}
 	}
