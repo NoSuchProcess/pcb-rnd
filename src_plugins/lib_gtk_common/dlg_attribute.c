@@ -58,8 +58,10 @@ typedef struct {
 	int n_attrs;
 	void *caller_data;
 	GtkWidget *dialog;
-	int rc;
+	int rc, close_cb_called;
 	pcb_hid_attr_val_t property[PCB_HATP_max];
+	void (*close_cb)(void *caller_data, pcb_hid_attr_ev_t ev);
+	void *close_caller_data;
 	unsigned inhibit_valchg:1;
 } attr_dlg_t;
 
@@ -203,19 +205,23 @@ static void ghid_attr_dlg_response_cb(GtkDialog *dialog, gint response_id, gpoin
 	if ((ctx != NULL) && (ctx->cb != NULL)) {
 		switch (response_id) {
 		case GTK_RESPONSE_OK:
-			ctx->cb(ctx->ctx, PCB_HID_ATTR_EV_OK);
+			if (!ctx->attrdlg->close_cb_called)
+				ctx->cb(ctx->ctx, PCB_HID_ATTR_EV_OK);
 			ctx->attrdlg->rc = 0;
 			break;
 		case GTK_RESPONSE_CANCEL:
-			ctx->cb(ctx->ctx, PCB_HID_ATTR_EV_CANCEL);
+			if (!ctx->attrdlg->close_cb_called)
+				ctx->cb(ctx->ctx, PCB_HID_ATTR_EV_CANCEL);
 			ctx->attrdlg->rc = 1;
 			break;
 		case GTK_RESPONSE_CLOSE:
 		case GTK_RESPONSE_DELETE_EVENT:
-			ctx->cb(ctx->ctx, PCB_HID_ATTR_EV_WINCLOSE);
+			if (!ctx->attrdlg->close_cb_called)
+				ctx->cb(ctx->ctx, PCB_HID_ATTR_EV_WINCLOSE);
 			ctx->attrdlg->rc = 1;
 			break;
 		}
+		ctx->attrdlg->close_cb_called = 1;
 	}
 	free(ctx);
 }
@@ -733,6 +739,8 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, pcb_hid_attribute_t *attrs, int n
 		resp_ctx->cb = button_cb;
 		resp_ctx->ctx = caller_data;
 		resp_ctx->attrdlg = ctx;
+		ctx->close_caller_data = caller_data;
+		ctx->close_cb = button_cb;
 	}
 
 	ctx->com = com;
@@ -742,6 +750,7 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, pcb_hid_attribute_t *attrs, int n
 	ctx->wl = calloc(sizeof(GtkWidget *), n_attrs);
 	ctx->caller_data = caller_data;
 	ctx->rc = 1; /* just in case the window is destroyed in an unknown way: take it as cancel */
+	ctx->close_cb_called = 0;
 
 	ctx->dialog = gtk_dialog_new_with_buttons(_(title),
 																			 GTK_WINDOW(com->top_window),
@@ -780,6 +789,11 @@ int ghid_attr_dlg_run(void *hid_ctx)
 void ghid_attr_dlg_free(void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;
+
+	if (!ctx->close_cb_called) {
+		ctx->close_cb(ctx->close_caller_data, PCB_HID_ATTR_EV_CODECLOSE);
+		ctx->close_cb_called = 1;
+	}
 
 	if (ctx->rc == 0) { /* copy over the results */
 		int i;

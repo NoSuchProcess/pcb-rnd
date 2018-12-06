@@ -111,7 +111,8 @@ typedef enum pcb_burst_op_s {
 typedef enum pcb_hid_attr_ev_e {
 	PCB_HID_ATTR_EV_CANCEL = 0,
 	PCB_HID_ATTR_EV_OK = 1,
-	PCB_HID_ATTR_EV_WINCLOSE
+	PCB_HID_ATTR_EV_WINCLOSE,
+	PCB_HID_ATTR_EV_CODECLOSE
 } pcb_hid_attr_ev_t;
 
 /* Optional fields of a menu item; all non-NULL fields are strdup'd in the HID. */
