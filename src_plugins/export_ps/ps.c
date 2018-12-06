@@ -369,10 +369,22 @@ Merge all drawings on a single page
 	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_single_page 18
 
+/* %start-doc options "91 Postscript Export"
+@ftable @code
+@cindex drill-helper-size
+@item --drill-helper-size
+Diameter of the small hole when drill-helper is on
+@end ftable
+%end-doc
+*/
+	{"drill-helper-size", "Diameter of the small hole when drill-helper is on",
+	 PCB_HATT_COORD, 0, 0, {0, 0, 0, PCB_MIN_PINORVIAHOLE}, 0, 0},
+#define HA_drillhelpersize 19
+
 
 	{"cam", "CAM instruction",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_cam 19
+#define HA_cam 20
 
 };
 
@@ -393,6 +405,7 @@ static struct {
 
 	const char *filename;
 	pcb_bool drill_helper;
+	pcb_coord_t drill_helper_size;
 	pcb_bool align_marks;
 	pcb_bool outline;
 	pcb_bool mirror;
@@ -612,6 +625,7 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 
 	global.f = the_file;
 	global.drill_helper = options[HA_drillhelper].int_value;
+	global.drill_helper_size = options[HA_drillhelpersize].coord_value;
 	global.align_marks = options[HA_alignmarks].int_value;
 	global.outline = options[HA_outline].int_value;
 	global.mirror = options[HA_mirror].int_value;
@@ -972,7 +986,7 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 		if (global.drill_helper)
 			pcb_fprintf(global.f,
 									"/dh { gsave %mi setlinewidth 0 gray %mi 0 360 arc stroke grestore} bind def\n",
-									(pcb_coord_t) PCB_MIN_PINORVIAHOLE, (pcb_coord_t) (PCB_MIN_PINORVIAHOLE * 3 / 2));
+									(pcb_coord_t) global.drill_helper_size, (pcb_coord_t) (global.drill_helper_size * 3 / 2));
 	}
 #if 0
 	/* Try to outsmart ps2pdf's heuristics for page rotation, by putting
@@ -1198,8 +1212,8 @@ static void ps_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_
 {
 	use_gc(gc);
 	if (!gc->erase || !global.is_copper || global.drillcopper) {
-		if (gc->erase && global.is_copper && global.drill_helper && radius >= conf_core.design.min_drill / 4)
-			radius = conf_core.design.min_drill / 4;
+		if (gc->erase && global.is_copper && global.drill_helper && radius >= global.drill_helper_size)
+			radius = global.drill_helper_size;
 		pcb_fprintf(global.f, "%mi %mi %mi c\n", cx, cy, radius);
 	}
 }
