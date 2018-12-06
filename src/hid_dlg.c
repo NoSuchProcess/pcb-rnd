@@ -243,10 +243,22 @@ int pcb_hid_progress(long so_far, long total, const char *message)
 	return pcb_nogui_progress(so_far, total, message);
 }
 
+static const char pcb_acts_Print[] = "Print()";
+static const char pcb_acth_Print[] = "Present the print export dialog for printing the layout from the GUI.";
+/* DOC: print.html */
+static fgw_error_t pcb_act_Print(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	if (HAVE_GUI_ATTR_DLG && (fgw_func_lookup(&pcb_fgw, "printgui") != NULL))
+		return pcb_actionv_bin("printgui", res, argc, argv);
+	pcb_message(PCB_MSG_ERROR, "action Print() is available only under a GUI HID. Please use the lpr exporter instead.\n");
+	return FGW_ERR_NOT_FOUND;
+}
+
 
 static pcb_action_t hid_dlg_action_list[] = {
 	{"PromptFor", pcb_act_PromptFor, pcb_acth_PromptFor, pcb_acts_PromptFor},
-	{"MessageBox", pcb_act_MessageBox, pcb_acth_MessageBox, pcb_acts_MessageBox}
+	{"MessageBox", pcb_act_MessageBox, pcb_acth_MessageBox, pcb_acts_MessageBox},
+	{"Print", pcb_act_Print, pcb_acth_Print, pcb_acts_Print}
 };
 
 PCB_REGISTER_ACTIONS(hid_dlg_action_list, NULL)
