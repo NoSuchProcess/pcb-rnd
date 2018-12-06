@@ -503,7 +503,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, att
 static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, attr_dlg_tb_t *tb, int start_from, int add_labels)
 {
 	int len, i, numch, numcol;
-	Widget parent;
+	Widget parent, labbox;
 	static XmString empty = 0;
 
 	if (!empty)
@@ -556,7 +556,12 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, att
 		if ((add_labels) && (ctx->attrs[i].type != PCB_HATT_LABEL)) {
 			stdarg_n = 0;
 			stdarg(XmNalignment, XmALIGNMENT_END);
-			w = XmCreateLabel(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
+
+			labbox = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'h', 0, 0, 0);
+			XtManageChild(labbox);
+			parent = labbox;
+
+			w = XmCreateLabel(labbox, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
 			XtManageChild(w);
 		}
 
