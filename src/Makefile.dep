@@ -3277,30 +3277,6 @@
  board.h vtroutestyle.h library.h rats_patch.h board.h data.h \
  ../src_plugins/lib_gtk_common/dlg_file_chooser.h compat_nls.h plug_io.h \
  ../src_plugins/lib_gtk_common/util_str.h
-../src_plugins/lib_gtk_common/act_print.o: \
- ../src_plugins/lib_gtk_common/act_print.c ../config.h \
- ../src_3rd/libfungw/fungw.h \
- ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h ../src_3rd/genht/htpp.h \
- ../src_plugins/lib_gtk_common/glue.h hid.h ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h error.h \
- global_typedefs.h pcb_bool.h unit.h attrib.h layer.h globalconst.h \
- obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h polyarea.h \
- obj_text_list.h obj_text.h font.h ../src_3rd/genht/htip.h box.h \
- math_helper.h move.h misc_util.h ../src_3rd/genvector/gds_char.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h layer_grp.h conf.h pcb-printf.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
- conf.h ../src_plugins/lib_gtk_common/compat.h board.h vtroutestyle.h \
- library.h rats_patch.h board.h actions.h hid.h hid_init.h hid_attrib.h \
- data.h crosshair.h vtonpoint.h route.h buffer.h obj_rat_list.h obj_rat.h \
- obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h rtree.h \
- ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
- ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h compat_nls.h \
-
 ../src_plugins/lib_gtk_common/bu_box.o: \
  ../src_plugins/lib_gtk_common/bu_box.c ../config.h \
  ../src_plugins/lib_gtk_common/bu_box.h \
@@ -3657,29 +3633,6 @@
  ../src_plugins/lib_gtk_common/bu_box.h \
  ../src_plugins/lib_gtk_common/bu_check_button.h \
  ../src_plugins/lib_gtk_config/hid_gtk_conf.h
-../src_plugins/lib_gtk_common/dlg_print.o: \
- ../src_plugins/lib_gtk_common/dlg_print.c ../config.h conf_core.h conf.h \
- global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
- ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
- ../src_3rd/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h globalconst.h \
- hid.h error.h attrib.h layer.h \
- obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
- ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
- obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
- ../src_3rd/genht/htip.h box.h math_helper.h move.h misc_util.h \
- layer_grp.h ../src_plugins/lib_gtk_common/glue.h conf.h \
- ../src_plugins/lib_gtk_common/compat.h pcb-printf.h hid_attrib.h hid.h \
- hid_init.h misc_util.h compat_misc.h compat_nls.h \
- ../src_plugins/lib_gtk_common/dlg_attribute.h
-../src_plugins/lib_gtk_common/dlg_progress.o: \
- ../src_plugins/lib_gtk_common/dlg_progress.c ../config.h \
- pcb_bool.h compat_nls.h \
- ../src_plugins/lib_gtk_common/compat.h
 ../src_plugins/lib_gtk_common/dlg_propedit.o: \
  ../src_plugins/lib_gtk_common/dlg_propedit.c ../config.h \
  ../src_plugins/lib_gtk_common/dlg_propedit.h \
@@ -6360,7 +6313,8 @@ hid_dlg.o: hid_dlg.c ../config.h actions.h hid.h \
  ../src_3rd/genht/htip.h box.h math_helper.h move.h misc_util.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer_grp.h \
- ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h hid_nogui.h
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h hid_dad.h \
+ compat_misc.h hid_attrib.h pcb-printf.h hid_nogui.h
 hid_draw_helpers.o: hid_draw_helpers.c ../config.h hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
