@@ -129,11 +129,17 @@ int pcb_hid_message_box(const char *icon, const char *title, const char *label, 
 
 
 static const char *refresh = "progress refresh";
+static const char *cancel  = "progress cancel";
 #define REFRESH_RATE 100
 
 static void progress_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	pcb_hid_progress(0, 0, NULL);
+}
+
+static void progress_close_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_hid_progress(0, 0, cancel);
 }
 
 static void progress_refresh_cb(pcb_hidval_t user_data)
@@ -145,8 +151,7 @@ int pcb_hid_progress(long so_far, long total, const char *message)
 {
 	double now;
 	static pcb_hidval_t timer;
-	static int active = 0;
-	static pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {NULL, 0}};
+	static int active = 0, cancelled = 0;
 	static int wp;
 	static pcb_hid_attr_val_t val;
 	static double last = 0;
@@ -165,6 +170,13 @@ int pcb_hid_progress(long so_far, long total, const char *message)
 		return 0;
 	}
 
+
+	if (message == cancel) {
+		cancelled = 1;
+		message = NULL;
+	}
+
+
 	/* If we are finished, destroy any dialog */
 	if (so_far == 0 && total == 0 && message == NULL) {
 		if (active) {
@@ -175,16 +187,30 @@ int pcb_hid_progress(long so_far, long total, const char *message)
 		return 1;
 	}
 
+	if (cancelled) {
+		cancelled = 0;
+		return 1;
+	}
+
 	if (!active) {
 		PCB_DAD_BEGIN_VBOX(ctx.dlg);
 			PCB_DAD_LABEL(ctx.dlg, message);
 			PCB_DAD_PROGRESS(ctx.dlg);
 				wp = PCB_DAD_CURRENT(ctx.dlg);
-		PCB_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
+
+			/* need to have a manual cancel button as it needs to call the close cb before really closing the window */
+			PCB_DAD_BEGIN_HBOX(ctx.dlg);
+				PCB_DAD_BEGIN_HBOX(ctx.dlg);
+					PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_END(ctx.dlg);
+				PCB_DAD_BUTTON(ctx.dlg, "cancel");
+					PCB_DAD_CHANGE_CB(ctx.dlg, progress_close_btn_cb);
+			PCB_DAD_END(ctx.dlg);
 		PCB_DAD_END(ctx.dlg);
 
 		PCB_DAD_NEW(ctx.dlg, "pcb-rnd progress", &ctx, pcb_false, progress_close_cb);
 		active = 1;
+		cancelled = 0;
 
 		timer = pcb_gui->add_timer(progress_refresh_cb, REFRESH_RATE, timer);
 	}
