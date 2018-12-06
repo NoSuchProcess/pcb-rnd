@@ -157,9 +157,10 @@ static int pcb_gui_progress(long so_far, long total, const char *message)
 	double now;
 	static pcb_hidval_t timer;
 	static int active = 0, cancelled = 0;
-	static int wp;
+	static int wp, have_timer = 0;
 	static pcb_hid_attr_val_t val;
 	static double last = 0;
+	static int closing = 0;
 	static struct {
 		PCB_DAD_DECL_NOINIT(dlg)
 	} ctx;
@@ -167,10 +168,14 @@ static int pcb_gui_progress(long so_far, long total, const char *message)
 	if (message == refresh) {
 		if (active)
 			last = pcb_dtime();
+		have_timer = 0;
 		refresh_now:;
 		if (active) {
 			pcb_gui->attr_dlg_set_value(ctx.dlg_hid_ctx, wp, &val);
-			timer = pcb_gui->add_timer(progress_refresh_cb, REFRESH_RATE, timer);
+			if (!have_timer) {
+				timer = pcb_gui->add_timer(progress_refresh_cb, REFRESH_RATE, timer);
+				have_timer = 1;
+			}
 			pcb_hid_iterate(pcb_gui);
 			pcb_gui->iterate(pcb_gui);
 		}
@@ -187,8 +192,14 @@ static int pcb_gui_progress(long so_far, long total, const char *message)
 	/* If we are finished, destroy any dialog */
 	if (so_far == 0 && total == 0 && message == NULL) {
 		if (active) {
-			pcb_gui->stop_timer(timer);
-			PCB_DAD_FREE(ctx.dlg);
+			if (have_timer) {
+				pcb_gui->stop_timer(timer);
+				have_timer = 0;
+			}
+			if (!closing) {
+				closing = 1;
+				PCB_DAD_FREE(ctx.dlg);
+			}
 			active = 0;
 		}
 		return 1;
@@ -220,6 +231,8 @@ static int pcb_gui_progress(long so_far, long total, const char *message)
 		cancelled = 0;
 
 		timer = pcb_gui->add_timer(progress_refresh_cb, REFRESH_RATE, timer);
+		have_timer = 1;
+		closing = 0;
 	}
 
 	val.real_value = (double)so_far / (double)total;
