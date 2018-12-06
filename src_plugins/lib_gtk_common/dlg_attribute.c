@@ -783,7 +783,8 @@ void ghid_attr_dlg_free(void *hid_ctx)
 	attr_dlg_t *ctx = hid_ctx;
 
 	if (!ctx->close_cb_called) {
-		ctx->close_cb(ctx->close_caller_data, PCB_HID_ATTR_EV_CODECLOSE);
+		if (ctx->close_cb != NULL)
+			ctx->close_cb(ctx->close_caller_data, PCB_HID_ATTR_EV_CODECLOSE);
 		ctx->close_cb_called = 1;
 	}
 
