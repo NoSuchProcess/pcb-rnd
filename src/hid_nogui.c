@@ -413,6 +413,9 @@ static void nogui_beep(void)
 int pcb_nogui_progress(long so_far, long total, const char *message)
 {
 	static int on = 0;
+	static double nextt;
+	double now;
+
 	if (conf_core.rc.quiet)
 		return 0;
 	if (message == NULL) {
@@ -421,8 +424,13 @@ int pcb_nogui_progress(long so_far, long total, const char *message)
 		on = 0;
 	}
 	else {
-		if (conf_core.rc.verbose >= PCB_MSG_INFO)
-			fprintf(stderr, "progress: %ld/%ld %s\n", so_far, total, message);
+		if (conf_core.rc.verbose >= PCB_MSG_INFO) {
+			now = pcb_dtime();
+			if (now >= nextt) {
+				fprintf(stderr, "progress: %ld/%ld %s\n", so_far, total, message);
+				nextt = now + 0.2;
+			}
+		}
 		on = 1;
 	}
 	return 0;
