@@ -3431,123 +3431,6 @@ static void lesstif_beep(void)
 	fflush(stdout);
 }
 
-
-static pcb_bool progress_cancelled = pcb_false;
-
-static void progress_cancel_callback(Widget w, void *v, void *cbs)
-{
-	progress_cancelled = pcb_true;
-}
-
-static Widget progress_dialog = 0;
-static Widget progress_cancel, progress_label;
-static Widget progress_scale;
-
-static void lesstif_progress_dialog(int so_far, int total, const char *msg)
-{
-	XmString xs;
-
-	if (mainwind == 0)
-		return;
-
-	if (progress_dialog == 0) {
-		Atom close_atom;
-
-		stdarg_n = 0;
-		stdarg(XmNdefaultButtonType, XmDIALOG_CANCEL_BUTTON);
-		stdarg(XmNtitle, "Progress");
-		stdarg(XmNdialogStyle, XmDIALOG_APPLICATION_MODAL);
-		stdarg(XmNdialogStyle, XmDIALOG_FULL_APPLICATION_MODAL);
-		progress_dialog = XmCreateInformationDialog(mainwind, XmStrCast("progress"), stdarg_args, stdarg_n);
-		XtAddCallback(progress_dialog, XmNcancelCallback, (XtCallbackProc) progress_cancel_callback, NULL);
-
-		progress_cancel = XmMessageBoxGetChild(progress_dialog, XmDIALOG_CANCEL_BUTTON);
-		progress_label = XmMessageBoxGetChild(progress_dialog, XmDIALOG_MESSAGE_LABEL);
-
-		XtUnmanageChild(XmMessageBoxGetChild(progress_dialog, XmDIALOG_OK_BUTTON));
-		XtUnmanageChild(XmMessageBoxGetChild(progress_dialog, XmDIALOG_HELP_BUTTON));
-
-		stdarg(XmNdefaultPosition, False);
-		XtSetValues(progress_dialog, stdarg_args, stdarg_n);
-
-		stdarg_n = 0;
-		stdarg(XmNminimum, 0);
-		stdarg(XmNvalue, 0);
-		stdarg(XmNmaximum, total > 0 ? total : 1);
-		stdarg(XmNorientation, XmHORIZONTAL);
-		stdarg(XmNshowArrows, pcb_false);
-		progress_scale = XmCreateScrollBar(progress_dialog, XmStrCast("scale"), stdarg_args, stdarg_n);
-		XtManageChild(progress_scale);
-
-		close_atom = XmInternAtom(display, XmStrCast("WM_DELETE_WINDOW"), 0);
-		XmAddWMProtocolCallback(XtParent(progress_dialog), close_atom, (XtCallbackProc) progress_cancel_callback, 0);
-	}
-
-	stdarg_n = 0;
-	stdarg(XmNvalue, 0);
-	stdarg(XmNsliderSize, (so_far <= total) ? (so_far < 0) ? 0 : so_far : total);
-	stdarg(XmNmaximum, total > 0 ? total : 1);
-	XtSetValues(progress_scale, stdarg_args, stdarg_n);
-
-	stdarg_n = 0;
-	xs = XmStringCreatePCB(msg);
-	stdarg(XmNmessageString, xs);
-	XtSetValues(progress_dialog, stdarg_args, stdarg_n);
-
-	return;
-}
-
-#define MIN_TIME_SEPARATION 0.1	/* seconds */
-
-static int lesstif_progress(int so_far, int total, const char *message)
-{
-	static pcb_bool started = pcb_false;
-	XEvent e;
-	double time_delta, time_now;
-	static double time_then = 0.0;
-	int retval = 0;
-
-	if (!lesstif_active) {
-		if (message != NULL)
-			fprintf(stderr, "progress: %d/%d %s\n", so_far, total, message);
-		return 0;
-	}
-
-	if (so_far == 0 && total == 0 && message == NULL) {
-		XtUnmanageChild(progress_dialog);
-		started = pcb_false;
-		progress_cancelled = pcb_false;
-		return retval;
-	}
-
-	time_now = pcb_dtime();
-	time_delta = time_now - time_then;
-
-	if (started && time_delta < MIN_TIME_SEPARATION)
-		return retval;
-
-	/* Create or update the progress dialog */
-	lesstif_progress_dialog(so_far, total, message);
-
-	if (!started) {
-		XtManageChild(progress_dialog);
-		started = pcb_true;
-	}
-
-	/* Dispatch pending events */
-	while (XtAppPending(app_context)) {
-		XtAppNextEvent(app_context, &e);
-		XtDispatchEvent(&e);
-	}
-	idle_proc(NULL);
-
-	/* If rendering takes a while, make sure the core has enough time to
-	   do work.  */
-	time_then = pcb_dtime();
-
-	return progress_cancelled;
-}
-
 static void lesstif_get_view_size(pcb_coord_t *width, pcb_coord_t *height)
 {
 	*width = Pz(view_width);
@@ -3688,7 +3571,6 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.attr_dlg_widget_hide = lesstif_attr_dlg_widget_hide;
 	lesstif_hid.attr_dlg_set_value = lesstif_attr_dlg_set_value;
 	lesstif_hid.beep = lesstif_beep;
-	lesstif_hid.progress = lesstif_progress;
 	lesstif_hid.edit_attributes = lesstif_attributes_dialog;
 	lesstif_hid.point_cursor = PointCursor;
 	lesstif_hid.command_entry = lesstif_command_entry;

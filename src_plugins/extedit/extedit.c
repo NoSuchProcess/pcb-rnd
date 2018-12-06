@@ -136,7 +136,7 @@ static void invoke(extedit_method_t *mth, const char *fn)
 			while(ctx.stay) {
 				if (pcb_gui != NULL) {
 					n++;
-					pcb_gui->progress(50+sin((double)n/10.0)*40, 100, "Invoked external editor. Please edit, save and close there to finish this operation");
+					pcb_hid_progress(50+sin((double)n/10.0)*40, 100, "Invoked external editor. Please edit, save and close there to finish this operation");
 				}
 				pcb_ms_sleep(50);
 			}
@@ -148,7 +148,7 @@ static void invoke(extedit_method_t *mth, const char *fn)
 		old_wait:;
 
 		if (pcb_gui != NULL) {
-			pcb_gui->progress(50, 100, "Invoked external editor. Please edit, save and close there to finish this operation");
+			pcb_hid_progress(50, 100, "Invoked external editor. Please edit, save and close there to finish this operation");
 			pcb_ms_sleep(1000); /* ugly hack: give the GUI some time to flush */
 		}
 		while(!(feof(fc))) {
@@ -159,7 +159,7 @@ static void invoke(extedit_method_t *mth, const char *fn)
 	fclose(fc);
 
 	if (pcb_gui != NULL)
-		pcb_gui->progress(0, 0, NULL);
+		pcb_hid_progress(0, 0, NULL);
 	free(cmd);
 }
 

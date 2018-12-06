@@ -395,11 +395,6 @@ struct pcb_hid_s {
 	/* Something to alert the user.  */
 	void (*beep)(void);
 
-	/* Used by optimizers and autorouter to show progress to the user.
-	   Pass all zeros to flush display and remove any dialogs.
-	   Returns nonzero if the user wishes to cancel the operation.  */
-	int (*progress)(int so_far, int total, const char *message);
-
 	void (*edit_attributes)(const char *owner, pcb_attribute_list_t *attrlist);
 
 	/* Notification to the GUI around saving the PCB file.

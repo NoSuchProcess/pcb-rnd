@@ -410,7 +410,7 @@ static void nogui_beep(void)
 	fflush(stdout);
 }
 
-static int nogui_progress(int so_far, int total, const char *message)
+int pcb_nogui_progress(int so_far, int total, const char *message)
 {
 	static int on = 0;
 	if (conf_core.rc.quiet)
@@ -528,7 +528,6 @@ void pcb_hid_nogui_init(pcb_hid_t * hid)
 	hid->attr_dlg_free = nogui_attr_dlg_free;
 	hid->attr_dlg_property = nogui_attr_dlg_property;
 	hid->beep = nogui_beep;
-	hid->progress = nogui_progress;
 	hid->create_menu = nogui_create_menu;
 	hid->clip_set = nogui_clip_set;
 	hid->clip_get = nogui_clip_get;

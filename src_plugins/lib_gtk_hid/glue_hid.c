@@ -16,7 +16,6 @@
 #include "../src_plugins/lib_gtk_common/ui_crosshair.h"
 #include "../src_plugins/lib_gtk_common/dlg_log.h"
 #include "../src_plugins/lib_gtk_common/dlg_file_chooser.h"
-#include "../src_plugins/lib_gtk_common/dlg_progress.h"
 #include "../src_plugins/lib_gtk_common/dlg_attribute.h"
 #include "../src_plugins/lib_gtk_common/dlg_attributes.h"
 #include "../src_plugins/lib_gtk_common/util_listener.h"
@@ -348,11 +347,6 @@ static void ghid_beep()
 	gdk_beep();
 }
 
-static int ghid_progress(int so_far, int total, const char *message)
-{
-	return pcb_gtk_dlg_progress(ghid_port.top_window, so_far, total, message);
-}
-
 static void ghid_attributes(const char *owner, pcb_attribute_list_t * attrs)
 {
 	pcb_gtk_dlg_attributes(ghid_port.top_window, owner, attrs);
@@ -511,7 +505,6 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->attr_dlg_widget_hide = ghid_attr_dlg_widget_hide;
 	dst->attr_dlg_set_value = ghid_attr_dlg_set_value;
 	dst->beep = ghid_beep;
-	dst->progress = ghid_progress;
 	dst->edit_attributes = ghid_attributes;
 	dst->point_cursor = PointCursor;
 

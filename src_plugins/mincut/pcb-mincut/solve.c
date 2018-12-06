@@ -207,7 +207,7 @@ int solve_(gr_t *g_, int *cuts)
 }
 
 #define strempty(s) ((s) == NULL ? "" : (s))
-int *solve(gr_t *g, int (*progress)(int so_far, int total, const char *msg))
+int *solve(gr_t *g, int (*progress)(long so_far, long total, const char *msg))
 {
 	int n, best, res, till, cuts_size, have_progress = 0;
 	double nd;

@@ -279,7 +279,7 @@ static int proc_short(pcb_any_obj_t *term, int ignore)
 #endif
 
 	if (!bad_gr) {
-		solution = solve(g, pcb_gui->progress);
+		solution = solve(g, pcb_hid_progress);
 
 		if (solution != NULL) {
 			debprintf("Would cut:\n");
