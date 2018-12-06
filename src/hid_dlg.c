@@ -147,7 +147,7 @@ static void progress_refresh_cb(pcb_hidval_t user_data)
 	pcb_hid_progress(0, 0, refresh);
 }
 
-int pcb_hid_progress(long so_far, long total, const char *message)
+static int pcb_gui_progress(long so_far, long total, const char *message)
 {
 	double now;
 	static pcb_hidval_t timer;
@@ -223,6 +223,17 @@ int pcb_hid_progress(long so_far, long total, const char *message)
 		goto refresh_now;
 	}
 	return 0;
+}
+
+
+int pcb_hid_progress(long so_far, long total, const char *message)
+{
+	if (pcb_gui == NULL)
+		return 0;
+	if ((pcb_gui->gui) && (HAVE_GUI_ATTR_DLG))
+		return pcb_gui_progress(so_far, total, message);
+
+	return pcb_nogui_progress(so_far, total, message);
 }
 
 
