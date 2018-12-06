@@ -1808,6 +1808,12 @@ static void lesstif_uninit(pcb_hid_t *hid)
 	}
 }
 
+static void lesstif_iterate(pcb_hid_t *hid)
+{
+	while (XtAppPending(app_context))
+		XtAppProcessEvent(app_context, XtIMAll);
+}
+
 typedef union {
 	int i;
 	double f;
@@ -3526,6 +3532,7 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.do_export = lesstif_do_export;
 	lesstif_hid.do_exit = lesstif_do_exit;
 	lesstif_hid.uninit = lesstif_uninit;
+	lesstif_hid.iterate = lesstif_iterate;
 	lesstif_hid.parse_arguments = lesstif_parse_arguments;
 	lesstif_hid.invalidate_lr = lesstif_invalidate_lr;
 	lesstif_hid.invalidate_all = lesstif_invalidate_all;

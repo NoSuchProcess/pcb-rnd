@@ -127,6 +127,11 @@ int pcb_hid_message_box(const char *icon, const char *title, const char *label, 
 	return -1;
 }
 
+void pcb_hid_iterate(pcb_hid_t *hid)
+{
+	if (hid->iterate != NULL)
+		hid->iterate(hid);
+}
 
 static const char *refresh = "progress refresh";
 static const char *cancel  = "progress cancel";
@@ -166,6 +171,8 @@ static int pcb_gui_progress(long so_far, long total, const char *message)
 		if (active) {
 			pcb_gui->attr_dlg_set_value(ctx.dlg_hid_ctx, wp, &val);
 			timer = pcb_gui->add_timer(progress_refresh_cb, REFRESH_RATE, timer);
+			pcb_hid_iterate(pcb_gui);
+			pcb_gui->iterate(pcb_gui);
 		}
 		return 0;
 	}

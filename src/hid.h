@@ -196,6 +196,10 @@ struct pcb_hid_s {
 	/* uninit a GUI hid */
 	void (*do_exit)(pcb_hid_t *hid);
 
+	/* Process pending events, flush output, but never block. Called from busy
+	   loops from time to time. */
+	void (*iterate)(pcb_hid_t *hid);
+
 	/* Parses the command line.  Call this early for whatever HID will be
 	   the primary HID, as it will set all the registered attributes.
 	   The HID should remove all arguments, leaving any possible file

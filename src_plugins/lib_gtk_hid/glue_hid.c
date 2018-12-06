@@ -467,6 +467,12 @@ void ghid_clip_free(pcb_hid_clipfmt_t format, void *data, size_t len)
 	}
 }
 
+static void ghid_iterate(pcb_hid_t *hid)
+{
+	while(gtk_events_pending())
+		gtk_main_iteration_do(0);
+}
+
 void ghid_glue_hid_init(pcb_hid_t *dst)
 {
 	memset(dst, 0, sizeof(pcb_hid_t));
@@ -480,6 +486,7 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 
 	dst->do_export = gtkhid_do_export;
 	dst->do_exit = ghid_do_exit;
+	dst->iterate = ghid_iterate;
 	dst->parse_arguments = gtkhid_parse_arguments;
 
 	dst->calibrate = ghid_calibrate;

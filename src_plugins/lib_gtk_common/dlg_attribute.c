@@ -612,8 +612,6 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 		case PCB_HATT_PROGRESS:
 			ret = ghid_progress_set(ctx, idx, val);
 			ctx->inhibit_valchg = save;
-			while(gtk_events_pending()) /* give gtk a chance to draw it; rationale: progress bar is normally updated in busy loops */
-				gtk_main_iteration_do(0);
 			return ret;
 
 		case PCB_HATT_PREVIEW:
