@@ -26,6 +26,21 @@ dirs="$trunk/src $trunk/src_plugins"
 import=2
 exclude=""
 
+echo "purging old blame files..." >&2
+for d in $dirs
+do
+	b=`find $d -name '*.blm'`
+	for n in $b
+	do
+		nb=${n%%.blm}
+		if test ! -f $nb
+		then
+			echo " stale: $n"
+			rm $n
+		fi
+	done
+done
+
 echo "Updating blame files..." >&2
 for d in $dirs
 do
@@ -58,7 +73,7 @@ do
 	then
 		cat `find $d -name '*.blm'`
 	fi
-done | awk -v import=$import '
+done | awk -v import=$import -v "save=$1" '
 		BEGIN {
 			MASK[6735]++
 			MASK[6720]++
@@ -197,6 +212,19 @@ done | awk -v import=$import '
 			MASK[13910]++
 			MASK[14168]++
 			MASK[14174]++
+			MASK[18570]++
+			MASK[18604]++
+			MASK[18647]++
+			MASK[18650]++
+			MASK[18652]++
+			MASK[18719]++
+			MASK[19685]++
+			MASK[19686]++
+		}
+
+		function do_save()
+		{
+			print $0 > "Old.log"
 		}
 
 		{
@@ -204,21 +232,32 @@ done | awk -v import=$import '
 			if (((rev >= 3871) && (rev <= 3914)) || ((rev >= 4065) && (rev <= 4068)) || (rev == 4023) || (rev == 4033) || (rev == 4095) || (rev == 4096) || (rev == 4122)) {
 # old plugins and export plugin import
 				old++
+				if (save)
+					do_save();
 			}
 			else if ((rev == 4550) || ((rev <= 4548) && (rev >= 4536)) || ((rev <= 4534) && (rev >= 4530)) || ((rev <= 4528) && (rev >= 4524)) || ((rev <= 4522) && (rev >= 4502)) || ((rev <= 4500) && (rev >= 4493)) || ((rev <= 4491) && (rev >= 4486)) || ((rev <= 4633) && (rev >= 4562)) || (rev == 4776) || (rev == 4847) || (rev == 4850) || (rev == 4856) || (rev == 4863) || (rev == 4866) || (rev == 4878) || (rev == 4914) || (rev == 4916) || (rev == 5002) || (rev == 5014) || (rev == 5253) || (rev == 5487) || (rev == 5665)) {
 # unravel
 				old++
+				if (save)
+					do_save();
 			}
 			else if ((rev == 6046) || (rev == 6063) || (rev == 6066) || (rev == 6072) || (rev == 6077) || (rev == 6079) || (rev == 6083) || (rev == 6084) || (rev == 6365) || (rev == 6447) || (rev == 6449) || (rev == 6487) || (rev == 6491) || ((rev >= 6507) && (rev <= 6511))  || (rev == 6548)) {
 # gtk splitup
 				old++
+				if (save)
+					do_save();
 			}
 			else if (rev in MASK) {
 # random maskout
 				old++
+				if (save)
+					do_save();
 			}
-			else if ((rev <= import) || (rev == 1022) || (rev == 3539) || (rev == 4187) || (rev == 6230) || (rev == 6292) || (rev == 6293) || (rev == 6297) || (rev == 6298) || (rev == 6299))
+			else if ((rev <= import) || (rev == 1022) || (rev == 3539) || (rev == 4187) || (rev == 6230) || (rev == 6292) || (rev == 6293) || (rev == 6297) || (rev == 6298) || (rev == 6299)) {
 				old++
+				if (save)
+					do_save();
+			}
 			else
 				new++
 		}
