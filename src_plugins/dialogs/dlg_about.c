@@ -54,6 +54,7 @@ static void pcb_dlg_about(void)
 		return;
 
 	PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
+		PCB_DAD_COMPFLAG(about_ctx.dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_BEGIN_TABBED(about_ctx.dlg, tabs);
 			PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
 				PCB_DAD_LABEL(about_ctx.dlg, pcb_get_info_program());
