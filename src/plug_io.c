@@ -769,7 +769,7 @@ int pcb_save_pcb(const char *file, const char *fmt)
 		long int len = pcb_view_list_length(&pcb_io_incompat_lst);
 		if (len > 0) {
 			pcb_message(PCB_MSG_ERROR, "There were %ld save incompatibility errors.\nData in memory is not affected, but the file created may be slightly broken.\nSee the popup view listing for detauls.\n", len);
-			pcb_actionl("IOincompatList", conf_core.editor.io_incomp_style, NULL);
+			pcb_actionl("IOincompatList", conf_core.editor.io_incomp_style, "auto", NULL);
 		}
 	}
 

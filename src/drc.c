@@ -148,7 +148,19 @@ const char pcb_acth_IOIncompatList[] = "Present the format incompatibilities of 
 fgw_error_t pcb_act_IOIncompatList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *dlg_type = "list";
+	const char *aauto = NULL;
+
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, IOIncompatList, dlg_type = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, IOIncompatList, aauto = argv[2].val.str);
+
+	if ((aauto != NULL) && (strcmp(aauto, "auto") == 0)) {
+		if (conf_core.rc.quiet && !PCB_HAVE_GUI_ATTR_DLG) {
+			/* if not explicitly asked for a listing style and we are on CLI and quiet is set, don't print anything */
+			PCB_ACT_IRES(0);
+			return 0;
+		}
+	}
+
 	return view_dlg(res, argc, argv, dlg_type, "ioincompatlistdialog", &pcb_drc_lst, pcb_drc_all);
 }
 
