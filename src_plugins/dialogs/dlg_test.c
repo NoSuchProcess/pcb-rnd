@@ -88,6 +88,7 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	memset(&ctx, 0, sizeof(ctx));
 
 	PCB_DAD_BEGIN_VBOX(ctx.dlg);
+		PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_BEGIN_TABBED(ctx.dlg, tabs);
 			PCB_DAD_CHANGE_CB(ctx.dlg, cb_tab_chg);
 			ctx.wtab = PCB_DAD_CURRENT(ctx.dlg);
