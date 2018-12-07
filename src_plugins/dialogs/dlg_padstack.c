@@ -684,176 +684,176 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 	target_tab -= pse->disable_instance_tab;
 
 	PCB_DAD_BEGIN_VBOX(dlg);
-	PCB_DAD_BEGIN_TABBED(dlg, tabs + pse->disable_instance_tab);
-		pse->tab = PCB_DAD_CURRENT(dlg);
+		PCB_DAD_BEGIN_TABBED(dlg, tabs + pse->disable_instance_tab);
+			pse->tab = PCB_DAD_CURRENT(dlg);
 
-		if (!pse->disable_instance_tab) {
-			/* Tab 0: this instance */
+			if (!pse->disable_instance_tab) {
+				/* Tab 0: this instance */
+				PCB_DAD_BEGIN_VBOX(dlg);
+					PCB_DAD_BEGIN_VBOX(dlg);
+						PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
+						PCB_DAD_LABEL(dlg, "Settings that affect only this padstack instance");
+						PCB_DAD_BEGIN_HBOX(dlg);
+							PCB_DAD_LABEL(dlg, "prototype");
+							PCB_DAD_BUTTON(dlg, "#5");
+								pse->proto_id = PCB_DAD_CURRENT(dlg);
+								PCB_DAD_CHANGE_CB(dlg, pse_chg_protoid);
+								PCB_DAD_HELP(dlg, "Padstack prototype ID\n(click to use a different prototype)");
+						PCB_DAD_END(dlg);
+						PCB_DAD_BEGIN_TABLE(dlg, 2);
+							PCB_DAD_LABEL(dlg, "Clearance");
+							PCB_DAD_COORD(dlg, "");
+								pse->clearance = PCB_DAD_CURRENT(dlg);
+								PCB_DAD_MINVAL(dlg, 0);
+								PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
+								PCB_DAD_CHANGE_CB(dlg, pse_chg_instance);
+								PCB_DAD_HELP(dlg, "global clearance (affects all layers)");
+							PCB_DAD_LABEL(dlg, "Rotation");
+							PCB_DAD_REAL(dlg, "");
+								pse->rot = PCB_DAD_CURRENT(dlg);
+								PCB_DAD_MINVAL(dlg, 0);
+								PCB_DAD_MAXVAL(dlg, 360);
+								PCB_DAD_CHANGE_CB(dlg, pse_chg_instance);
+							PCB_DAD_LABEL(dlg, "X-mirror");
+							PCB_DAD_BOOL(dlg, "");
+								pse->xmirror = PCB_DAD_CURRENT(dlg);
+								PCB_DAD_CHANGE_CB(dlg, pse_chg_instance);
+							PCB_DAD_LABEL(dlg, "S-mirror");
+							PCB_DAD_BOOL(dlg, "");
+								pse->smirror = PCB_DAD_CURRENT(dlg);
+								PCB_DAD_CHANGE_CB(dlg, pse_chg_instance);
+						PCB_DAD_END(dlg);
+					PCB_DAD_END(dlg);
+				PCB_DAD_END(dlg);
+			}
+
+			/* Tab 1: prototype */
 			PCB_DAD_BEGIN_VBOX(dlg);
 				PCB_DAD_BEGIN_VBOX(dlg);
+					PCB_DAD_LABEL(dlg, "Settings that affect all padstacks with the same prototype");
 					PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
-					PCB_DAD_LABEL(dlg, "Settings that affect only this padstack instance");
-					PCB_DAD_BEGIN_HBOX(dlg);
-						PCB_DAD_LABEL(dlg, "prototype");
-						PCB_DAD_BUTTON(dlg, "#5");
-							pse->proto_id = PCB_DAD_CURRENT(dlg);
-							PCB_DAD_CHANGE_CB(dlg, pse_chg_protoid);
-							PCB_DAD_HELP(dlg, "Padstack prototype ID\n(click to use a different prototype)");
+					PCB_DAD_LABEL(dlg, "Pad geometry per layer type:");
+					PCB_DAD_BEGIN_TABLE(dlg, 5);
+						PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
+						for(n = 0; n < pcb_proto_num_layers; n++) {
+							PCB_DAD_LABEL(dlg, pcb_proto_layers[n].name);
+							PCB_DAD_LABEL(dlg, "-");
+								pse->proto_shape[n] = PCB_DAD_CURRENT(dlg);
+							PCB_DAD_LABEL(dlg, "-");
+								pse->proto_info[n] = PCB_DAD_CURRENT(dlg);
+							PCB_DAD_BUTTON(dlg, "change...");
+								pse->proto_change[n] = PCB_DAD_CURRENT(dlg);
+								PCB_DAD_CHANGE_CB(dlg, pse_chg_shape);
+								PCB_DAD_HELP(dlg, "Change the shape on this layer type");
+							PCB_DAD_COORD(dlg, "");
+								pse->proto_clr[n] = PCB_DAD_CURRENT(dlg);
+								PCB_DAD_MINVAL(dlg, 1);
+								PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
+								PCB_DAD_CHANGE_CB(dlg, pse_chg_proto_clr);
+								PCB_DAD_HELP(dlg, "local, per layer type clearance\n(only when global padstack clearance is 0)");
+						}
 					PCB_DAD_END(dlg);
-					PCB_DAD_BEGIN_TABLE(dlg, 2);
-						PCB_DAD_LABEL(dlg, "Clearance");
+
+					PCB_DAD_BEGIN_HBOX(dlg);
+						PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
+						PCB_DAD_LABEL(dlg, "Prototype name:");
+						PCB_DAD_STRING(dlg);
+							PCB_DAD_CHANGE_CB(dlg, pse_chg_prname);
+							pse->prname = PCB_DAD_CURRENT(dlg);
+					PCB_DAD_END(dlg);
+
+					PCB_DAD_LABEL(dlg, "Hole properties:");
+						pse->hole_header = PCB_DAD_CURRENT(dlg);
+
+					PCB_DAD_BEGIN_TABLE(dlg, 4);
+
+						PCB_DAD_LABEL(dlg, "Diameter:");
 						PCB_DAD_COORD(dlg, "");
-							pse->clearance = PCB_DAD_CURRENT(dlg);
+							pse->hdia = PCB_DAD_CURRENT(dlg);
 							PCB_DAD_MINVAL(dlg, 0);
 							PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
-							PCB_DAD_CHANGE_CB(dlg, pse_chg_instance);
-							PCB_DAD_HELP(dlg, "global clearance (affects all layers)");
-						PCB_DAD_LABEL(dlg, "Rotation");
-						PCB_DAD_REAL(dlg, "");
-							pse->rot = PCB_DAD_CURRENT(dlg);
-							PCB_DAD_MINVAL(dlg, 0);
-							PCB_DAD_MAXVAL(dlg, 360);
-							PCB_DAD_CHANGE_CB(dlg, pse_chg_instance);
-						PCB_DAD_LABEL(dlg, "X-mirror");
+							PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
+						PCB_DAD_LABEL(dlg, ""); /* dummy */
+						PCB_DAD_LABEL(dlg, ""); /* dummy */
+
+						PCB_DAD_LABEL(dlg, "Hole/slot plating:");
 						PCB_DAD_BOOL(dlg, "");
-							pse->xmirror = PCB_DAD_CURRENT(dlg);
-							PCB_DAD_CHANGE_CB(dlg, pse_chg_instance);
-						PCB_DAD_LABEL(dlg, "S-mirror");
-						PCB_DAD_BOOL(dlg, "");
-							pse->smirror = PCB_DAD_CURRENT(dlg);
-							PCB_DAD_CHANGE_CB(dlg, pse_chg_instance);
+							pse->hplated = PCB_DAD_CURRENT(dlg);
+							PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
+							PCB_DAD_HELP(dlg, "A plated hole galvanically connects layers");
+						PCB_DAD_LABEL(dlg, ""); /* dummy */
+						PCB_DAD_LABEL(dlg, ""); /* dummy */
+
+						PCB_DAD_LABEL(dlg, "Hole/slot top:");
+						PCB_DAD_INTEGER(dlg, "");
+							pse->htop_val = PCB_DAD_CURRENT(dlg);
+							PCB_DAD_MINVAL(dlg, -(pse->pcb->LayerGroups.cache.copper_len-1));
+							PCB_DAD_MAXVAL(dlg, pse->pcb->LayerGroups.cache.copper_len-1);
+							PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
+							PCB_DAD_HELP(dlg, "Blind/buried via/slot: top end of the hole");
+						PCB_DAD_LABEL(dlg, "<text>");
+							pse->htop_text = PCB_DAD_CURRENT(dlg);
+						PCB_DAD_LABEL(dlg, "<layer>");
+							pse->htop_layer = PCB_DAD_CURRENT(dlg);
+
+						PCB_DAD_LABEL(dlg, "Hole/slot bottom:");
+						PCB_DAD_INTEGER(dlg, "");
+							pse->hbot_val = PCB_DAD_CURRENT(dlg);
+							PCB_DAD_MINVAL(dlg, -(pse->pcb->LayerGroups.cache.copper_len-1));
+							PCB_DAD_MAXVAL(dlg, pse->pcb->LayerGroups.cache.copper_len-1);
+							PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
+							PCB_DAD_HELP(dlg, "Blind/buried via/slot: bottom end of the hole");
+						PCB_DAD_LABEL(dlg, "<text>");
+							pse->hbot_text = PCB_DAD_CURRENT(dlg);
+						PCB_DAD_LABEL(dlg, "<layer>");
+							pse->hbot_layer = PCB_DAD_CURRENT(dlg);
 					PCB_DAD_END(dlg);
 				PCB_DAD_END(dlg);
 			PCB_DAD_END(dlg);
-		}
 
-		/* Tab 1: prototype */
-		PCB_DAD_BEGIN_VBOX(dlg);
+			/* Tab 2: generate common geometry */
 			PCB_DAD_BEGIN_VBOX(dlg);
-				PCB_DAD_LABEL(dlg, "Settings that affect all padstacks with the same prototype");
-				PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
-				PCB_DAD_LABEL(dlg, "Pad geometry per layer type:");
-				PCB_DAD_BEGIN_TABLE(dlg, 5);
-					PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
-					for(n = 0; n < pcb_proto_num_layers; n++) {
-						PCB_DAD_LABEL(dlg, pcb_proto_layers[n].name);
-						PCB_DAD_LABEL(dlg, "-");
-							pse->proto_shape[n] = PCB_DAD_CURRENT(dlg);
-						PCB_DAD_LABEL(dlg, "-");
-							pse->proto_info[n] = PCB_DAD_CURRENT(dlg);
-						PCB_DAD_BUTTON(dlg, "change...");
-							pse->proto_change[n] = PCB_DAD_CURRENT(dlg);
-							PCB_DAD_CHANGE_CB(dlg, pse_chg_shape);
-							PCB_DAD_HELP(dlg, "Change the shape on this layer type");
+				PCB_DAD_BEGIN_VBOX(dlg);
+					PCB_DAD_LABEL(dlg, "Generate a new prototype using a few numeric input");
+
+					PCB_DAD_BEGIN_TABLE(dlg, 2);
+						PCB_DAD_LABEL(dlg, "Copper shape:");
+						PCB_DAD_ENUM(dlg, shapes);
+							pse->gen_shp = PCB_DAD_CURRENT(dlg);
+
+						PCB_DAD_LABEL(dlg, "Size (cirlce diameter or square side):");
 						PCB_DAD_COORD(dlg, "");
-							pse->proto_clr[n] = PCB_DAD_CURRENT(dlg);
+							pse->gen_size = PCB_DAD_CURRENT(dlg);
 							PCB_DAD_MINVAL(dlg, 1);
 							PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
-							PCB_DAD_CHANGE_CB(dlg, pse_chg_proto_clr);
-							PCB_DAD_HELP(dlg, "local, per layer type clearance\n(only when global padstack clearance is 0)");
-					}
-				PCB_DAD_END(dlg);
 
-				PCB_DAD_BEGIN_HBOX(dlg);
-					PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
-					PCB_DAD_LABEL(dlg, "Prototype name:");
-					PCB_DAD_STRING(dlg);
-						PCB_DAD_CHANGE_CB(dlg, pse_chg_prname);
-						pse->prname = PCB_DAD_CURRENT(dlg);
-				PCB_DAD_END(dlg);
+						PCB_DAD_LABEL(dlg, "Drill diameter (0 means no hole):");
+						PCB_DAD_COORD(dlg, "");
+							pse->gen_drill = PCB_DAD_CURRENT(dlg);
+							PCB_DAD_MINVAL(dlg, 1);
+							PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
 
-				PCB_DAD_LABEL(dlg, "Hole properties:");
-					pse->hole_header = PCB_DAD_CURRENT(dlg);
+						PCB_DAD_LABEL(dlg, "Copper shapes on:");
+						PCB_DAD_ENUM(dlg, sides);
+							pse->gen_sides = PCB_DAD_CURRENT(dlg);
 
-				PCB_DAD_BEGIN_TABLE(dlg, 4);
+						PCB_DAD_LABEL(dlg, "Expose top/bottom copper:");
+						PCB_DAD_BOOL(dlg, "");
+							pse->gen_expose = PCB_DAD_CURRENT(dlg);
 
-					PCB_DAD_LABEL(dlg, "Diameter:");
-					PCB_DAD_COORD(dlg, "");
-						pse->hdia = PCB_DAD_CURRENT(dlg);
-						PCB_DAD_MINVAL(dlg, 0);
-						PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
-						PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
-					PCB_DAD_LABEL(dlg, ""); /* dummy */
-					PCB_DAD_LABEL(dlg, ""); /* dummy */
+						PCB_DAD_LABEL(dlg, "Paste exposed copper:");
+						PCB_DAD_BOOL(dlg, "");
+							pse->gen_paste = PCB_DAD_CURRENT(dlg);
 
-					PCB_DAD_LABEL(dlg, "Hole/slot plating:");
-					PCB_DAD_BOOL(dlg, "");
-						pse->hplated = PCB_DAD_CURRENT(dlg);
-						PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
-						PCB_DAD_HELP(dlg, "A plated hole galvanically connects layers");
-					PCB_DAD_LABEL(dlg, ""); /* dummy */
-					PCB_DAD_LABEL(dlg, ""); /* dummy */
-
-					PCB_DAD_LABEL(dlg, "Hole/slot top:");
-					PCB_DAD_INTEGER(dlg, "");
-						pse->htop_val = PCB_DAD_CURRENT(dlg);
-						PCB_DAD_MINVAL(dlg, -(pse->pcb->LayerGroups.cache.copper_len-1));
-						PCB_DAD_MAXVAL(dlg, pse->pcb->LayerGroups.cache.copper_len-1);
-						PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
-						PCB_DAD_HELP(dlg, "Blind/buried via/slot: top end of the hole");
-					PCB_DAD_LABEL(dlg, "<text>");
-						pse->htop_text = PCB_DAD_CURRENT(dlg);
-					PCB_DAD_LABEL(dlg, "<layer>");
-						pse->htop_layer = PCB_DAD_CURRENT(dlg);
-
-					PCB_DAD_LABEL(dlg, "Hole/slot bottom:");
-					PCB_DAD_INTEGER(dlg, "");
-						pse->hbot_val = PCB_DAD_CURRENT(dlg);
-						PCB_DAD_MINVAL(dlg, -(pse->pcb->LayerGroups.cache.copper_len-1));
-						PCB_DAD_MAXVAL(dlg, pse->pcb->LayerGroups.cache.copper_len-1);
-						PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
-						PCB_DAD_HELP(dlg, "Blind/buried via/slot: bottom end of the hole");
-					PCB_DAD_LABEL(dlg, "<text>");
-						pse->hbot_text = PCB_DAD_CURRENT(dlg);
-					PCB_DAD_LABEL(dlg, "<layer>");
-						pse->hbot_layer = PCB_DAD_CURRENT(dlg);
+						PCB_DAD_LABEL(dlg, "");
+						PCB_DAD_BUTTON(dlg, "Generate!");
+							pse->gen_do = PCB_DAD_CURRENT(dlg);
+							PCB_DAD_CHANGE_CB(dlg, pse_gen);
+					PCB_DAD_END(dlg);
 				PCB_DAD_END(dlg);
 			PCB_DAD_END(dlg);
 		PCB_DAD_END(dlg);
-
-		/* Tab 2: generate common geometry */
-		PCB_DAD_BEGIN_VBOX(dlg);
-			PCB_DAD_BEGIN_VBOX(dlg);
-				PCB_DAD_LABEL(dlg, "Generate a new prototype using a few numeric input");
-
-				PCB_DAD_BEGIN_TABLE(dlg, 2);
-					PCB_DAD_LABEL(dlg, "Copper shape:");
-					PCB_DAD_ENUM(dlg, shapes);
-						pse->gen_shp = PCB_DAD_CURRENT(dlg);
-
-					PCB_DAD_LABEL(dlg, "Size (cirlce diameter or square side):");
-					PCB_DAD_COORD(dlg, "");
-						pse->gen_size = PCB_DAD_CURRENT(dlg);
-						PCB_DAD_MINVAL(dlg, 1);
-						PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
-
-					PCB_DAD_LABEL(dlg, "Drill diameter (0 means no hole):");
-					PCB_DAD_COORD(dlg, "");
-						pse->gen_drill = PCB_DAD_CURRENT(dlg);
-						PCB_DAD_MINVAL(dlg, 1);
-						PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
-
-					PCB_DAD_LABEL(dlg, "Copper shapes on:");
-					PCB_DAD_ENUM(dlg, sides);
-						pse->gen_sides = PCB_DAD_CURRENT(dlg);
-
-					PCB_DAD_LABEL(dlg, "Expose top/bottom copper:");
-					PCB_DAD_BOOL(dlg, "");
-						pse->gen_expose = PCB_DAD_CURRENT(dlg);
-
-					PCB_DAD_LABEL(dlg, "Paste exposed copper:");
-					PCB_DAD_BOOL(dlg, "");
-						pse->gen_paste = PCB_DAD_CURRENT(dlg);
-
-					PCB_DAD_LABEL(dlg, "");
-					PCB_DAD_BUTTON(dlg, "Generate!");
-						pse->gen_do = PCB_DAD_CURRENT(dlg);
-						PCB_DAD_CHANGE_CB(dlg, pse_gen);
-				PCB_DAD_END(dlg);
-			PCB_DAD_END(dlg);
-		PCB_DAD_END(dlg);
-	PCB_DAD_END(dlg);
-	PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
+		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
 	PCB_DAD_END(dlg);
 
 	PCB_DAD_NEW(dlg, "Edit padstack", pse, pcb_true, NULL);
