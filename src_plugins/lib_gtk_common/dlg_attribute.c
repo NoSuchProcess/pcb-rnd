@@ -61,7 +61,6 @@ typedef struct {
 	int rc, close_cb_called;
 	pcb_hid_attr_val_t property[PCB_HATP_max];
 	void (*close_cb)(void *caller_data, pcb_hid_attr_ev_t ev);
-	void *close_caller_data;
 	unsigned inhibit_valchg:1;
 } attr_dlg_t;
 
@@ -200,25 +199,25 @@ typedef struct {
 
 static void ghid_attr_dlg_response_cb(GtkDialog *dialog, gint response_id, gpointer user_data)
 {
-	resp_ctx_t *ctx = (resp_ctx_t *)user_data;
+	attr_dlg_t *ctx = (resp_ctx_t *)user_data;
 
-	if ((ctx != NULL) && (ctx->cb != NULL)) {
+	if (ctx != NULL) {
 		switch (response_id) {
 		case GTK_RESPONSE_OK:     /* no OK button, shouldn't happen, but just in case... */
 		case GTK_RESPONSE_CANCEL: /* no cancel button, shouldn't happen, but just in case... */
 		case GTK_RESPONSE_CLOSE:
 		case GTK_RESPONSE_DELETE_EVENT:
-			if (!ctx->attrdlg->close_cb_called) {
-				ctx->attrdlg->close_cb_called = 1;
-				if (ctx->attrdlg->close_cb != NULL)
-					ctx->cb(ctx->ctx, PCB_HID_ATTR_EV_WINCLOSE);
+			if (!ctx->close_cb_called) {
+				ctx->close_cb_called = 1;
+				if (ctx->close_cb != NULL)
+					ctx->close_cb(ctx->caller_data, PCB_HID_ATTR_EV_WINCLOSE);
 			}
-			ctx->attrdlg->rc = 1;
+			ctx->rc = 1;
 			break;
 		}
-		ctx->attrdlg->close_cb_called = 1;
+		ctx->close_cb_called = 1;
+		free(ctx->wl);
 	}
-	free(ctx);
 }
 
 
@@ -725,18 +724,10 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, pcb_hid_attribute_t *attrs, int n
 	GtkWidget *content_area;
 	GtkWidget *main_vbox;
 	attr_dlg_t *ctx;
-	resp_ctx_t *resp_ctx = NULL;
 
 	ctx = calloc(sizeof(attr_dlg_t), 1);
 
-	if (button_cb != NULL) {
-		resp_ctx = malloc(sizeof(resp_ctx_t));
-		resp_ctx->cb = button_cb;
-		resp_ctx->ctx = caller_data;
-		resp_ctx->attrdlg = ctx;
-		ctx->close_caller_data = caller_data;
-		ctx->close_cb = button_cb;
-	}
+
 
 	ctx->com = com;
 	ctx->attrs = attrs;
@@ -746,6 +737,7 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, pcb_hid_attribute_t *attrs, int n
 	ctx->caller_data = caller_data;
 	ctx->rc = 1; /* just in case the window is destroyed in an unknown way: take it as cancel */
 	ctx->close_cb_called = 0;
+	ctx->close_cb = button_cb;
 
 	ctx->dialog = gtk_dialog_new_with_buttons(_(title),
 																			 GTK_WINDOW(com->top_window),
@@ -754,7 +746,7 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, pcb_hid_attribute_t *attrs, int n
 	gtk_window_set_role(GTK_WINDOW(ctx->dialog), "PCB_attribute_editor");
 
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(ctx->dialog));
-	g_signal_connect(ctx->dialog, "response", G_CALLBACK(ghid_attr_dlg_response_cb), resp_ctx);
+	g_signal_connect(ctx->dialog, "response", G_CALLBACK(ghid_attr_dlg_response_cb), ctx);
 
 	main_vbox = gtkc_vbox_new(FALSE, 6);
 	gtk_container_set_border_width(GTK_CONTAINER(main_vbox), 6);
@@ -788,7 +780,7 @@ void ghid_attr_dlg_free(void *hid_ctx)
 	if (!ctx->close_cb_called) {
 		ctx->close_cb_called = 1;
 		if (ctx->close_cb != NULL)
-			ctx->close_cb(ctx->close_caller_data, PCB_HID_ATTR_EV_CODECLOSE);
+			ctx->close_cb(ctx->caller_data, PCB_HID_ATTR_EV_CODECLOSE);
 	}
 
 	if (ctx->rc == 0) { /* copy over the results */
