@@ -39,9 +39,6 @@
    gui_ prefixed action is executed, else the cli_ prefixed one is used. If
    nothing is available, the effect is equivalent to cancel. */
 
-#define HAVE_GUI_ATTR_DLG \
-	((pcb_gui != NULL) && (pcb_gui->gui) && (pcb_gui->attr_dlg_new != NULL) && (pcb_gui->attr_dlg_new != pcb_nogui_attr_dlg_new))
-
 /* Call the gui_ or the cli_ action; act_name must be all lowercase! */
 static fgw_error_t call_dialog(const char *act_name, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -49,7 +46,7 @@ static fgw_error_t call_dialog(const char *act_name, fgw_arg_t *res, int argc, f
 
 	strcpy(tmp, "gui_");
 	strncpy(tmp+4, act_name, sizeof(tmp)-5);
-	if (HAVE_GUI_ATTR_DLG && (fgw_func_lookup(&pcb_fgw, tmp) != NULL))
+	if (PCB_HAVE_GUI_ATTR_DLG && (fgw_func_lookup(&pcb_fgw, tmp) != NULL))
 		return pcb_actionv_bin(tmp, res, argc, argv);
 
 	tmp[0] = 'c'; tmp[1] = 'l';
@@ -250,7 +247,7 @@ int pcb_hid_progress(long so_far, long total, const char *message)
 {
 	if (pcb_gui == NULL)
 		return 0;
-	if ((pcb_gui->gui) && (HAVE_GUI_ATTR_DLG))
+	if ((pcb_gui->gui) && (PCB_HAVE_GUI_ATTR_DLG))
 		return pcb_gui_progress(so_far, total, message);
 
 	return pcb_nogui_progress(so_far, total, message);
@@ -261,7 +258,7 @@ static const char pcb_acth_Print[] = "Present the print export dialog for printi
 /* DOC: print.html */
 static fgw_error_t pcb_act_Print(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	if (HAVE_GUI_ATTR_DLG && (fgw_func_lookup(&pcb_fgw, "printgui") != NULL))
+	if (PCB_HAVE_GUI_ATTR_DLG && (fgw_func_lookup(&pcb_fgw, "printgui") != NULL))
 		return pcb_actionv_bin("printgui", res, argc, argv);
 	pcb_message(PCB_MSG_ERROR, "action Print() is available only under a GUI HID. Please use the lpr exporter instead.\n");
 	return FGW_ERR_NOT_FOUND;
