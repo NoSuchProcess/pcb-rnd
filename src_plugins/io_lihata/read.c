@@ -843,7 +843,6 @@ static int parse_pcb_text(pcb_layer_t *ly, lht_node_t *obj)
 			text->rot = 0;
 	}
 
-TODO(": get the font")
 	if (ly != NULL)
 		pcb_add_text_on_layer(ly, text, pcb_font(PCB, text->fid, 1));
 
