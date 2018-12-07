@@ -48,39 +48,36 @@ void pcb_drc_set_data(pcb_view_t *violation, const pcb_coord_t *measured_value, 
 }
 
 
-static const char pcb_acts_DRC[] = "DRC([list|simple|print|log|dump])";
-static const char pcb_acth_DRC[] = "Invoke the DRC check. Results are presented as the argument requests.";
-/* DOC: drc.html */
-static fgw_error_t pcb_act_DRC(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const char *dlg_type, const char *dlgact, pcb_view_list_t *lst, void (*refresh)())
 {
-	const char *dlg_type = "list";
 	fgw_arg_t args[2];
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, DRC, dlg_type = argv[1].val.str);
 	args[1].type = FGW_STR;
 
 	if (pcb_strcasecmp(dlg_type, "list") == 0) {
-		if (!PCB_HAVE_GUI_ATTR_DLG)
-			goto print;
-		args[1].val.str = "list";
-		return pcb_actionv_bin("drcdialog", res, 2, args);
+		if (PCB_HAVE_GUI_ATTR_DLG) {
+			args[1].val.str = "list";
+			return pcb_actionv_bin(dlgact, res, 2, args);
+		}
+		dlg_type = "print";
 	}
 
 	if (pcb_strcasecmp(dlg_type, "simple") == 0) {
-		if (!PCB_HAVE_GUI_ATTR_DLG)
-			goto print;
-		args[1].val.str = "simple";
-		return pcb_actionv_bin("drcdialog", res, 2, args);
+		if (PCB_HAVE_GUI_ATTR_DLG) {
+			args[1].val.str = "simple";
+			return pcb_actionv_bin(dlgact, res, 2, args);
+		}
+		dlg_type = "print";
 	}
 
 
 	PCB_ACT_IRES(-1);
-	pcb_drc_all();
+	if (refresh != NULL)
+		refresh();
 
 	if (pcb_strcasecmp(dlg_type, "print") == 0) {
 		pcb_view_t *v;
-		print:;
-		for(v = pcb_view_list_first(&pcb_drc_lst); v != NULL; v = pcb_view_list_next(v)) {
+		for(v = pcb_view_list_first(lst); v != NULL; v = pcb_view_list_next(v)) {
 			printf("%ld: %s: %s\n", v->uid, v->type, v->title);
 			if (v->have_bbox)
 				pcb_printf("%m+within %$m4\n", conf_core.editor.grid_unit->allow, v->bbox.X1, v->bbox.Y1, v->bbox.X2, v->bbox.Y2);
@@ -94,7 +91,7 @@ static fgw_error_t pcb_act_DRC(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (pcb_strcasecmp(dlg_type, "log") == 0) {
 		pcb_view_t *v;
-		for(v = pcb_view_list_first(&pcb_drc_lst); v != NULL; v = pcb_view_list_next(v)) {
+		for(v = pcb_view_list_first(lst); v != NULL; v = pcb_view_list_next(v)) {
 			pcb_message(PCB_MSG_INFO, "%ld: %s: %s\n", v->uid, v->type, v->title);
 			if (v->have_bbox)
 				pcb_message(PCB_MSG_INFO, "%m+within %$m4\n", conf_core.editor.grid_unit->allow, v->bbox.X1, v->bbox.Y1, v->bbox.X2, v->bbox.Y2);
@@ -109,7 +106,7 @@ static fgw_error_t pcb_act_DRC(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (pcb_strcasecmp(dlg_type, "dump") == 0) {
 		pcb_view_t *v;
 		char *s;
-		for(v = pcb_view_list_first(&pcb_drc_lst); v != NULL; v = pcb_view_list_next(v)) {
+		for(v = pcb_view_list_first(lst); v != NULL; v = pcb_view_list_next(v)) {
 			printf("V%ld\n", v->uid);
 			printf("T%s\n", v->type);
 			printf("t%s\n", v->title);
@@ -127,14 +124,25 @@ static fgw_error_t pcb_act_DRC(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 	else if (pcb_strcasecmp(dlg_type, "count") == 0)
-		PCB_ACT_IRES(pcb_view_list_length(&pcb_drc_lst));
+		PCB_ACT_IRES(pcb_view_list_length(lst));
 
 
-	pcb_view_list_free_fields(&pcb_drc_lst);
-
+	if (refresh != NULL)
+		pcb_view_list_free_fields(lst);
 
 	return 0;
 }
+
+static const char pcb_acts_DRC[] = "DRC([list|simple|print|log|dump])";
+static const char pcb_acth_DRC[] = "Invoke the DRC check. Results are presented as the argument requests.";
+/* DOC: drc.html */
+static fgw_error_t pcb_act_DRC(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *dlg_type = "list";
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, DRC, dlg_type = argv[1].val.str);
+	return view_dlg(res, argc, argv, dlg_type, "drcdialog", &pcb_drc_lst, pcb_drc_all);
+}
+
 
 pcb_action_t find_action_list[] = {
 	{"DRC", pcb_act_DRC, pcb_acth_DRC, pcb_acts_DRC}
