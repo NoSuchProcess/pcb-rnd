@@ -145,6 +145,7 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 	export_ctx.tab_name[i] = NULL;
 
 	PCB_DAD_BEGIN_VBOX(export_ctx.dlg);
+	PCB_DAD_COMPFLAG(export_ctx.dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_BEGIN_TABBED(export_ctx.dlg, export_ctx.tab_name);
 			PCB_DAD_COMPFLAG(export_ctx.dlg, PCB_HATF_LEFT_TAB);
 			export_ctx.tabs = PCB_DAD_CURRENT(export_ctx.dlg);
