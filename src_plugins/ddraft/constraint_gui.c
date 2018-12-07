@@ -204,6 +204,7 @@ int constraint_gui(void)
 		return 0; /* do not open another */
 
 	PCB_DAD_BEGIN_VBOX(cnstgui_ctx.dlg);
+		PCB_DAD_COMPFLAG(cnstgui_ctx.dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_BEGIN_TABBED(cnstgui_ctx.dlg, tab_names);
 
 			/* line */
