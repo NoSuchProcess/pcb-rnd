@@ -88,102 +88,102 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	memset(&ctx, 0, sizeof(ctx));
 
 	PCB_DAD_BEGIN_VBOX(ctx.dlg);
-	PCB_DAD_BEGIN_TABBED(ctx.dlg, tabs);
-		PCB_DAD_CHANGE_CB(ctx.dlg, cb_tab_chg);
-		ctx.wtab = PCB_DAD_CURRENT(ctx.dlg);
+		PCB_DAD_BEGIN_TABBED(ctx.dlg, tabs);
+			PCB_DAD_CHANGE_CB(ctx.dlg, cb_tab_chg);
+			ctx.wtab = PCB_DAD_CURRENT(ctx.dlg);
 
-		/* tab 0: "original test" */
-		PCB_DAD_BEGIN_VBOX(ctx.dlg);
-			PCB_DAD_LABEL(ctx.dlg, "text1");
-			PCB_DAD_BEGIN_TABLE(ctx.dlg, 3);
-				PCB_DAD_LABEL(ctx.dlg, "text2a");
-				PCB_DAD_LABEL(ctx.dlg, "text2b");
-				PCB_DAD_LABEL(ctx.dlg, "text2c");
-				PCB_DAD_LABEL(ctx.dlg, "text2d");
-			PCB_DAD_END(ctx.dlg);
-			PCB_DAD_LABEL(ctx.dlg, "text3");
-
-			PCB_DAD_ENUM(ctx.dlg, vals);
-				PCB_DAD_CHANGE_CB(ctx.dlg, pcb_act_attr_chg);
-				attr_idx = PCB_DAD_CURRENT(ctx.dlg);
-			PCB_DAD_INTEGER(ctx.dlg, "text2e");
-				PCB_DAD_MINVAL(ctx.dlg, 1);
-				PCB_DAD_MAXVAL(ctx.dlg, 10);
-				PCB_DAD_DEFAULT(ctx.dlg, 3);
-				PCB_DAD_CHANGE_CB(ctx.dlg, pcb_act_attr_chg);
-				attr_idx2 = PCB_DAD_CURRENT(ctx.dlg);
-			PCB_DAD_BUTTON(ctx.dlg, "update!");
-				PCB_DAD_CHANGE_CB(ctx.dlg, pcb_act_attr_chg);
-		PCB_DAD_END(ctx.dlg);
-
-		/* tab 1: "new test" */
-		PCB_DAD_BEGIN_VBOX(ctx.dlg);
-			PCB_DAD_LABEL(ctx.dlg, "new test.");
-			PCB_DAD_PICTURE(ctx.dlg, test_xpm);
-			PCB_DAD_BUTTON(ctx.dlg, "jump to the first tab");
-				PCB_DAD_CHANGE_CB(ctx.dlg, cb_jump);
-			PCB_DAD_PICBUTTON(ctx.dlg, test_xpm);
-				PCB_DAD_CHANGE_CB(ctx.dlg, cb_jump);
-		PCB_DAD_END(ctx.dlg);
-
-		/* tab 2: tree table widget */
-		PCB_DAD_BEGIN_VBOX(ctx.dlg);
-			PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_EXPFILL);
-			PCB_DAD_TREE(ctx.dlg, 3, 1, hdr);
-				ctx.tt = PCB_DAD_CURRENT(ctx.dlg);
-				PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_SCROLL);
-				PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_select);
-				PCB_DAD_TREE_SET_CB(ctx.dlg, free_cb, cb_ttbl_free_row);
-				PCB_DAD_TREE_SET_CB(ctx.dlg, selected_cb, cb_ttbl_row_selected);
-				PCB_DAD_TREE_APPEND(ctx.dlg, NULL, row1);
-				row = PCB_DAD_TREE_APPEND(ctx.dlg, NULL, row2);
-				PCB_DAD_TREE_APPEND_UNDER(ctx.dlg, row, row2b);
-				PCB_DAD_TREE_APPEND(ctx.dlg, NULL, row3);
-			PCB_DAD_BEGIN_HBOX(ctx.dlg);
-				PCB_DAD_BUTTON(ctx.dlg, "insert row");
-					PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_insert);
-				PCB_DAD_BUTTON(ctx.dlg, "append row");
-					PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_append);
-				PCB_DAD_BUTTON(ctx.dlg, "jump!");
-					PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_jump);
-				PCB_DAD_BOOL(ctx.dlg, "filter");
-					PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_filt);
-			PCB_DAD_END(ctx.dlg);
+			/* tab 0: "original test" */
 			PCB_DAD_BEGIN_VBOX(ctx.dlg);
-				PCB_DAD_PROGRESS(ctx.dlg);
-					ctx.wprog = PCB_DAD_CURRENT(ctx.dlg);
-			PCB_DAD_END(ctx.dlg);
-		PCB_DAD_END(ctx.dlg);
+				PCB_DAD_LABEL(ctx.dlg, "text1");
+				PCB_DAD_BEGIN_TABLE(ctx.dlg, 3);
+					PCB_DAD_LABEL(ctx.dlg, "text2a");
+					PCB_DAD_LABEL(ctx.dlg, "text2b");
+					PCB_DAD_LABEL(ctx.dlg, "text2c");
+					PCB_DAD_LABEL(ctx.dlg, "text2d");
+				PCB_DAD_END(ctx.dlg);
+				PCB_DAD_LABEL(ctx.dlg, "text3");
 
-		/* tab 3: pane */
-		PCB_DAD_BEGIN_HPANE(ctx.dlg);
-			ctx.whpane = PCB_DAD_CURRENT(ctx.dlg);
-			PCB_DAD_BEGIN_VBOX(ctx.dlg);
-				PCB_DAD_LABEL(ctx.dlg, "left1");
-				PCB_DAD_LABEL(ctx.dlg, "left2");
+				PCB_DAD_ENUM(ctx.dlg, vals);
+					PCB_DAD_CHANGE_CB(ctx.dlg, pcb_act_attr_chg);
+					attr_idx = PCB_DAD_CURRENT(ctx.dlg);
+				PCB_DAD_INTEGER(ctx.dlg, "text2e");
+					PCB_DAD_MINVAL(ctx.dlg, 1);
+					PCB_DAD_MAXVAL(ctx.dlg, 10);
+					PCB_DAD_DEFAULT(ctx.dlg, 3);
+					PCB_DAD_CHANGE_CB(ctx.dlg, pcb_act_attr_chg);
+					attr_idx2 = PCB_DAD_CURRENT(ctx.dlg);
+				PCB_DAD_BUTTON(ctx.dlg, "update!");
+					PCB_DAD_CHANGE_CB(ctx.dlg, pcb_act_attr_chg);
 			PCB_DAD_END(ctx.dlg);
-			PCB_DAD_BEGIN_VPANE(ctx.dlg);
-				ctx.wvpane = PCB_DAD_CURRENT(ctx.dlg);
-				PCB_DAD_BEGIN_VBOX(ctx.dlg);
-					PCB_DAD_LABEL(ctx.dlg, "right top1");
-					PCB_DAD_LABEL(ctx.dlg, "right top2");
+
+			/* tab 1: "new test" */
+			PCB_DAD_BEGIN_VBOX(ctx.dlg);
+				PCB_DAD_LABEL(ctx.dlg, "new test.");
+				PCB_DAD_PICTURE(ctx.dlg, test_xpm);
+				PCB_DAD_BUTTON(ctx.dlg, "jump to the first tab");
+					PCB_DAD_CHANGE_CB(ctx.dlg, cb_jump);
+				PCB_DAD_PICBUTTON(ctx.dlg, test_xpm);
+					PCB_DAD_CHANGE_CB(ctx.dlg, cb_jump);
+			PCB_DAD_END(ctx.dlg);
+
+			/* tab 2: tree table widget */
+			PCB_DAD_BEGIN_VBOX(ctx.dlg);
+				PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_TREE(ctx.dlg, 3, 1, hdr);
+					ctx.tt = PCB_DAD_CURRENT(ctx.dlg);
+					PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_SCROLL);
+					PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_select);
+					PCB_DAD_TREE_SET_CB(ctx.dlg, free_cb, cb_ttbl_free_row);
+					PCB_DAD_TREE_SET_CB(ctx.dlg, selected_cb, cb_ttbl_row_selected);
+					PCB_DAD_TREE_APPEND(ctx.dlg, NULL, row1);
+					row = PCB_DAD_TREE_APPEND(ctx.dlg, NULL, row2);
+					PCB_DAD_TREE_APPEND_UNDER(ctx.dlg, row, row2b);
+					PCB_DAD_TREE_APPEND(ctx.dlg, NULL, row3);
+				PCB_DAD_BEGIN_HBOX(ctx.dlg);
+					PCB_DAD_BUTTON(ctx.dlg, "insert row");
+						PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_insert);
+					PCB_DAD_BUTTON(ctx.dlg, "append row");
+						PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_append);
+					PCB_DAD_BUTTON(ctx.dlg, "jump!");
+						PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_jump);
+					PCB_DAD_BOOL(ctx.dlg, "filter");
+						PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_filt);
 				PCB_DAD_END(ctx.dlg);
 				PCB_DAD_BEGIN_VBOX(ctx.dlg);
-					PCB_DAD_LABEL(ctx.dlg, "right bottom1");
-					PCB_DAD_LABEL(ctx.dlg, "right bottom2");
-					PCB_DAD_BUTTON(ctx.dlg, "set all to 30%");
-						PCB_DAD_CHANGE_CB(ctx.dlg, cb_pane_set);
+					PCB_DAD_PROGRESS(ctx.dlg);
+						ctx.wprog = PCB_DAD_CURRENT(ctx.dlg);
 				PCB_DAD_END(ctx.dlg);
 			PCB_DAD_END(ctx.dlg);
-		PCB_DAD_END(ctx.dlg);
 
-		/* tab 3: preview */
-		PCB_DAD_BEGIN_VBOX(ctx.dlg);
-			PCB_DAD_PREVIEW(ctx.dlg, prv_expose, prv_mouse, NULL, NULL, 200, 200, NULL);
-			PCB_DAD_LABEL(ctx.dlg, "This is a cool preview widget.");
+			/* tab 3: pane */
+			PCB_DAD_BEGIN_HPANE(ctx.dlg);
+				ctx.whpane = PCB_DAD_CURRENT(ctx.dlg);
+				PCB_DAD_BEGIN_VBOX(ctx.dlg);
+					PCB_DAD_LABEL(ctx.dlg, "left1");
+					PCB_DAD_LABEL(ctx.dlg, "left2");
+				PCB_DAD_END(ctx.dlg);
+				PCB_DAD_BEGIN_VPANE(ctx.dlg);
+					ctx.wvpane = PCB_DAD_CURRENT(ctx.dlg);
+					PCB_DAD_BEGIN_VBOX(ctx.dlg);
+						PCB_DAD_LABEL(ctx.dlg, "right top1");
+						PCB_DAD_LABEL(ctx.dlg, "right top2");
+					PCB_DAD_END(ctx.dlg);
+					PCB_DAD_BEGIN_VBOX(ctx.dlg);
+						PCB_DAD_LABEL(ctx.dlg, "right bottom1");
+						PCB_DAD_LABEL(ctx.dlg, "right bottom2");
+						PCB_DAD_BUTTON(ctx.dlg, "set all to 30%");
+							PCB_DAD_CHANGE_CB(ctx.dlg, cb_pane_set);
+					PCB_DAD_END(ctx.dlg);
+				PCB_DAD_END(ctx.dlg);
+			PCB_DAD_END(ctx.dlg);
+
+			/* tab 3: preview */
+			PCB_DAD_BEGIN_VBOX(ctx.dlg);
+				PCB_DAD_PREVIEW(ctx.dlg, prv_expose, prv_mouse, NULL, NULL, 200, 200, NULL);
+				PCB_DAD_LABEL(ctx.dlg, "This is a cool preview widget.");
+			PCB_DAD_END(ctx.dlg);
 		PCB_DAD_END(ctx.dlg);
-	PCB_DAD_END(ctx.dlg);
-	PCB_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
+		PCB_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
 	PCB_DAD_END(ctx.dlg);
 
 	PCB_DAD_AUTORUN(ctx.dlg, "attribute dialog test", &ctx, failed);
