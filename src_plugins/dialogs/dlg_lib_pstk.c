@@ -481,86 +481,86 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal, c
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
 
-		if (hint != NULL)
-			PCB_DAD_LABEL(ctx->dlg, hint);
+			if (hint != NULL)
+				PCB_DAD_LABEL(ctx->dlg, hint);
 
-	/* create the dialog box */
-	PCB_DAD_BEGIN_HPANE(ctx->dlg);
-		/* left */
-		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
-			PCB_DAD_TREE(ctx->dlg, 3, 0, hdr);
+		/* create the dialog box */
+		PCB_DAD_BEGIN_HPANE(ctx->dlg);
+			/* left */
+			PCB_DAD_BEGIN_VBOX(ctx->dlg);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
-				PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, pstklib_select);
-				PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
-				ctx->wlist = PCB_DAD_CURRENT(ctx->dlg);
-			PCB_DAD_STRING(ctx->dlg);
-				PCB_DAD_HELP(ctx->dlg, "Filter text:\nlist padstacks with matching name only");
-				PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_filter_cb);
-			PCB_DAD_BEGIN_HBOX(ctx->dlg);
-				PCB_DAD_BUTTON(ctx->dlg, "Edit...");
-					PCB_DAD_HELP(ctx->dlg, "Edit the selected prototype\nusing the padstack editor");
-					PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_proto_edit);
-				PCB_DAD_BUTTON(ctx->dlg, "New...");
-					PCB_DAD_HELP(ctx->dlg, "Create a new prototype and edit it\nusing the padstack editor");
-					PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_proto_new);
-				PCB_DAD_BUTTON(ctx->dlg, "Switch");
-					PCB_DAD_HELP(ctx->dlg, "Find all padstacks using this prototype\nand modify them to use a different prototype\nmaking this prototype unused");
-					PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_proto_switch);
-				PCB_DAD_BUTTON(ctx->dlg, "Select");
-					PCB_DAD_HELP(ctx->dlg, "Select all padstack ref. objects that\nreference (use) this prototype");
-					PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_proto_select);
-			PCB_DAD_END(ctx->dlg);
-			PCB_DAD_BEGIN_HBOX(ctx->dlg);
-				PCB_DAD_BUTTON(ctx->dlg, "Count uses");
-					PCB_DAD_HELP(ctx->dlg, "Count how many times each prototype\nis used and update the \"used\"\ncolumn of the table");
-					PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_count_uses);
-				PCB_DAD_BUTTON(ctx->dlg, "Del unused");
-					PCB_DAD_HELP(ctx->dlg, "Update prototype usage stats and\nremove prototypes that are not\nused by any padstack");
-					PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_del_unused);
-			PCB_DAD_END(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
-
-		/* right */
-		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
-			PCB_DAD_PREVIEW(ctx->dlg, pstklib_expose, NULL, NULL, NULL, 200, 200, ctx);
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
-				ctx->wprev = PCB_DAD_CURRENT(ctx->dlg);
-
-			PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
-				PCB_DAD_LABEL(ctx->dlg, "Grid:");
-				PCB_DAD_COORD(ctx->dlg, "");
-					ctx->wgrid = PCB_DAD_CURRENT(ctx->dlg);
-					PCB_DAD_MINMAX(ctx->dlg, PCB_MM_TO_COORD(0.01), PCB_MM_TO_COORD(10));
-					PCB_DAD_DEFAULT(ctx->dlg, (pcb_coord_t)PCB_MM_TO_COORD(1));
-					PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_update_prv);
-
-				PCB_DAD_LABEL(ctx->dlg, "");
+				PCB_DAD_TREE(ctx->dlg, 3, 0, hdr);
+					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, pstklib_select);
+					PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
+					ctx->wlist = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_STRING(ctx->dlg);
+					PCB_DAD_HELP(ctx->dlg, "Filter text:\nlist padstacks with matching name only");
+					PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_filter_cb);
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_LABEL(ctx->dlg, "Vis");
-						PCB_DAD_HELP(ctx->dlg, "layer is visible");
-					PCB_DAD_LABEL(ctx->dlg, "Curr");
-						PCB_DAD_HELP(ctx->dlg, "layer is set to current/primary\nfor display (color emphasis)");
+					PCB_DAD_BUTTON(ctx->dlg, "Edit...");
+						PCB_DAD_HELP(ctx->dlg, "Edit the selected prototype\nusing the padstack editor");
+						PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_proto_edit);
+					PCB_DAD_BUTTON(ctx->dlg, "New...");
+						PCB_DAD_HELP(ctx->dlg, "Create a new prototype and edit it\nusing the padstack editor");
+						PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_proto_new);
+					PCB_DAD_BUTTON(ctx->dlg, "Switch");
+						PCB_DAD_HELP(ctx->dlg, "Find all padstacks using this prototype\nand modify them to use a different prototype\nmaking this prototype unused");
+						PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_proto_switch);
+					PCB_DAD_BUTTON(ctx->dlg, "Select");
+						PCB_DAD_HELP(ctx->dlg, "Select all padstack ref. objects that\nreference (use) this prototype");
+						PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_proto_select);
 				PCB_DAD_END(ctx->dlg);
-				for(n = 0; n < pcb_proto_num_layers; n++) {
-					PCB_DAD_LABEL(ctx->dlg, pcb_proto_layers[n].name);
+				PCB_DAD_BEGIN_HBOX(ctx->dlg);
+					PCB_DAD_BUTTON(ctx->dlg, "Count uses");
+						PCB_DAD_HELP(ctx->dlg, "Count how many times each prototype\nis used and update the \"used\"\ncolumn of the table");
+						PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_count_uses);
+					PCB_DAD_BUTTON(ctx->dlg, "Del unused");
+						PCB_DAD_HELP(ctx->dlg, "Update prototype usage stats and\nremove prototypes that are not\nused by any padstack");
+						PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_del_unused);
+				PCB_DAD_END(ctx->dlg);
+			PCB_DAD_END(ctx->dlg);
+
+			/* right */
+			PCB_DAD_BEGIN_VBOX(ctx->dlg);
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_PREVIEW(ctx->dlg, pstklib_expose, NULL, NULL, NULL, 200, 200, ctx);
+					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+					ctx->wprev = PCB_DAD_CURRENT(ctx->dlg);
+
+				PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
+					PCB_DAD_LABEL(ctx->dlg, "Grid:");
+					PCB_DAD_COORD(ctx->dlg, "");
+						ctx->wgrid = PCB_DAD_CURRENT(ctx->dlg);
+						PCB_DAD_MINMAX(ctx->dlg, PCB_MM_TO_COORD(0.01), PCB_MM_TO_COORD(10));
+						PCB_DAD_DEFAULT(ctx->dlg, (pcb_coord_t)PCB_MM_TO_COORD(1));
+						PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_update_prv);
+
+					PCB_DAD_LABEL(ctx->dlg, "");
 					PCB_DAD_BEGIN_HBOX(ctx->dlg);
-						PCB_DAD_BOOL(ctx->dlg, "");
-							PCB_DAD_DEFAULT(ctx->dlg, 1);
-							PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_update_prv);
-							ctx->wlayerv[n] = PCB_DAD_CURRENT(ctx->dlg);
-						PCB_DAD_BOOL(ctx->dlg, "");
-							PCB_DAD_DEFAULT(ctx->dlg, (pcb_proto_layers[n].mask == (PCB_LYT_TOP | PCB_LYT_COPPER)));
-							PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_update_layerc);
-							ctx->wlayerc[n] = PCB_DAD_CURRENT(ctx->dlg);
+						PCB_DAD_LABEL(ctx->dlg, "Vis");
+							PCB_DAD_HELP(ctx->dlg, "layer is visible");
+						PCB_DAD_LABEL(ctx->dlg, "Curr");
+							PCB_DAD_HELP(ctx->dlg, "layer is set to current/primary\nfor display (color emphasis)");
 					PCB_DAD_END(ctx->dlg);
-				}
+					for(n = 0; n < pcb_proto_num_layers; n++) {
+						PCB_DAD_LABEL(ctx->dlg, pcb_proto_layers[n].name);
+						PCB_DAD_BEGIN_HBOX(ctx->dlg);
+							PCB_DAD_BOOL(ctx->dlg, "");
+								PCB_DAD_DEFAULT(ctx->dlg, 1);
+								PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_update_prv);
+								ctx->wlayerv[n] = PCB_DAD_CURRENT(ctx->dlg);
+							PCB_DAD_BOOL(ctx->dlg, "");
+								PCB_DAD_DEFAULT(ctx->dlg, (pcb_proto_layers[n].mask == (PCB_LYT_TOP | PCB_LYT_COPPER)));
+								PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_update_layerc);
+								ctx->wlayerc[n] = PCB_DAD_CURRENT(ctx->dlg);
+						PCB_DAD_END(ctx->dlg);
+					}
+				PCB_DAD_END(ctx->dlg);
 			PCB_DAD_END(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
-	PCB_DAD_END(ctx->dlg);
 
-	PCB_DAD_BUTTON_CLOSES(ctx->dlg, (modal ? clbtn_modal : clbtn));
+		PCB_DAD_BUTTON_CLOSES(ctx->dlg, (modal ? clbtn_modal : clbtn));
 	PCB_DAD_END(ctx->dlg);
 
 	if (subc_id > 0) {
