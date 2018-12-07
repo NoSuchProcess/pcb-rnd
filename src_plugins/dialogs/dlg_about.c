@@ -54,42 +54,42 @@ static void pcb_dlg_about(void)
 		return;
 
 	PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
-	PCB_DAD_BEGIN_TABBED(about_ctx.dlg, tabs);
-		PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
-			PCB_DAD_LABEL(about_ctx.dlg, pcb_get_info_program());
-			PCB_DAD_LABEL(about_ctx.dlg, pcb_get_info_copyright());
-			PCB_DAD_LABEL(about_ctx.dlg, pcb_get_info_websites(NULL));
-		PCB_DAD_END(about_ctx.dlg);
+		PCB_DAD_BEGIN_TABBED(about_ctx.dlg, tabs);
+			PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
+				PCB_DAD_LABEL(about_ctx.dlg, pcb_get_info_program());
+				PCB_DAD_LABEL(about_ctx.dlg, pcb_get_info_copyright());
+				PCB_DAD_LABEL(about_ctx.dlg, pcb_get_info_websites(NULL));
+			PCB_DAD_END(about_ctx.dlg);
 
-		PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
-			PCB_DAD_COMPFLAG(about_ctx.dlg, PCB_HATF_SCROLL);
-			PCB_DAD_LABEL(about_ctx.dlg, pcb_get_info_compile_options());
-		PCB_DAD_END(about_ctx.dlg);
+			PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
+				PCB_DAD_COMPFLAG(about_ctx.dlg, PCB_HATF_SCROLL);
+				PCB_DAD_LABEL(about_ctx.dlg, pcb_get_info_compile_options());
+			PCB_DAD_END(about_ctx.dlg);
 
 
-		PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
-			PCB_DAD_COMPFLAG(about_ctx.dlg, PCB_HATF_SCROLL);
-			gds_init(&s);
-			for (e = htsp_first(&pcb_file_loaded); e; e = htsp_next(&pcb_file_loaded, e)) {
-				htsp_entry_t *e2;
-				pcb_file_loaded_t *cat = e->value;
-				PCB_DAD_LABEL(about_ctx.dlg, cat->name);
-				gds_truncate(&s, 0);
-				for (e2 = htsp_first(&cat->data.category.children); e2; e2 = htsp_next(&cat->data.category.children, e2)) {
-					pcb_file_loaded_t *file = e2->value;
-					pcb_append_printf(&s, "  %s\t%s\t%s\n", file->name, file->data.file.path, file->data.file.desc);
+			PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
+				PCB_DAD_COMPFLAG(about_ctx.dlg, PCB_HATF_SCROLL);
+				gds_init(&s);
+				for (e = htsp_first(&pcb_file_loaded); e; e = htsp_next(&pcb_file_loaded, e)) {
+					htsp_entry_t *e2;
+					pcb_file_loaded_t *cat = e->value;
+					PCB_DAD_LABEL(about_ctx.dlg, cat->name);
+					gds_truncate(&s, 0);
+					for (e2 = htsp_first(&cat->data.category.children); e2; e2 = htsp_next(&cat->data.category.children, e2)) {
+						pcb_file_loaded_t *file = e2->value;
+						pcb_append_printf(&s, "  %s\t%s\t%s\n", file->name, file->data.file.path, file->data.file.desc);
+					}
+					PCB_DAD_LABEL(about_ctx.dlg, s.array);
 				}
-				PCB_DAD_LABEL(about_ctx.dlg, s.array);
-			}
-			gds_uninit(&s);
-		PCB_DAD_END(about_ctx.dlg);
+				gds_uninit(&s);
+			PCB_DAD_END(about_ctx.dlg);
 
-		PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
-			PCB_DAD_LABEL(about_ctx.dlg, pcb_get_info_license());
-		PCB_DAD_END(about_ctx.dlg);
+			PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
+				PCB_DAD_LABEL(about_ctx.dlg, pcb_get_info_license());
+			PCB_DAD_END(about_ctx.dlg);
 
-	PCB_DAD_END(about_ctx.dlg);
-	PCB_DAD_BUTTON_CLOSES(about_ctx.dlg, clbtn);
+		PCB_DAD_END(about_ctx.dlg);
+		PCB_DAD_BUTTON_CLOSES(about_ctx.dlg, clbtn);
 	PCB_DAD_END(about_ctx.dlg);
 
 	/* set up the context */
