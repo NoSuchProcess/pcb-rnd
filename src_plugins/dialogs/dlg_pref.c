@@ -241,42 +241,42 @@ static void pcb_dlg_pref(const char *target_tab_str)
 	}
 
 	PCB_DAD_BEGIN_VBOX(pref_ctx.dlg);
-	PCB_DAD_BEGIN_TABBED(pref_ctx.dlg, tabs);
-		pref_ctx.wtab = PCB_DAD_CURRENT(pref_ctx.dlg);
-		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* General */
-			pcb_dlg_pref_general_create(&pref_ctx);
-		PCB_DAD_END(pref_ctx.dlg);
+		PCB_DAD_BEGIN_TABBED(pref_ctx.dlg, tabs);
+			pref_ctx.wtab = PCB_DAD_CURRENT(pref_ctx.dlg);
+			PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* General */
+				pcb_dlg_pref_general_create(&pref_ctx);
+			PCB_DAD_END(pref_ctx.dlg);
 
-		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Board meta */
-			pcb_dlg_pref_board_create(&pref_ctx);
-		PCB_DAD_END(pref_ctx.dlg);
+			PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Board meta */
+				pcb_dlg_pref_board_create(&pref_ctx);
+			PCB_DAD_END(pref_ctx.dlg);
 
-		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Sizes & DRC */
-			pcb_dlg_pref_sizes_create(&pref_ctx);
-		PCB_DAD_END(pref_ctx.dlg);
+			PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Sizes & DRC */
+				pcb_dlg_pref_sizes_create(&pref_ctx);
+			PCB_DAD_END(pref_ctx.dlg);
 
-		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Library */
-			pcb_dlg_pref_lib_create(&pref_ctx);
-		PCB_DAD_END(pref_ctx.dlg);
+			PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Library */
+				pcb_dlg_pref_lib_create(&pref_ctx);
+			PCB_DAD_END(pref_ctx.dlg);
 
-		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Layers */
-			pcb_dlg_pref_layer_create(&pref_ctx);
-		PCB_DAD_END(pref_ctx.dlg);
+			PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Layers */
+				pcb_dlg_pref_layer_create(&pref_ctx);
+			PCB_DAD_END(pref_ctx.dlg);
 
-		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Colors */
-			PCB_DAD_LABEL(pref_ctx.dlg, "TODO");
-		PCB_DAD_END(pref_ctx.dlg);
+			PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Colors */
+				PCB_DAD_LABEL(pref_ctx.dlg, "TODO");
+			PCB_DAD_END(pref_ctx.dlg);
 
-		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Window */
-			PCB_DAD_LABEL(pref_ctx.dlg, "TODO");
-		PCB_DAD_END(pref_ctx.dlg);
+			PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Window */
+				PCB_DAD_LABEL(pref_ctx.dlg, "TODO");
+			PCB_DAD_END(pref_ctx.dlg);
 
-		PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Config tree */
-			PCB_DAD_LABEL(pref_ctx.dlg, "TODO");
-		PCB_DAD_END(pref_ctx.dlg);
+			PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Config tree */
+				PCB_DAD_LABEL(pref_ctx.dlg, "TODO");
+			PCB_DAD_END(pref_ctx.dlg);
 
-	PCB_DAD_END(pref_ctx.dlg);
-	PCB_DAD_BUTTON_CLOSES(pref_ctx.dlg, clbtn);
+		PCB_DAD_END(pref_ctx.dlg);
+		PCB_DAD_BUTTON_CLOSES(pref_ctx.dlg, clbtn);
 	PCB_DAD_END(pref_ctx.dlg);
 
 	/* set up the context */
