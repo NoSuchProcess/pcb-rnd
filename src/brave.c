@@ -192,36 +192,36 @@ static int brave_interact(void)
 	PCB_DAD_DECL(dlg);
 
 	PCB_DAD_BEGIN_VBOX(dlg);
-	PCB_DAD_LABEL(dlg, "Experimental features for the brave");
+		PCB_DAD_LABEL(dlg, "Experimental features for the brave");
 
-	PCB_DAD_BEGIN_TABLE(dlg, 3);
-		for(d = desc, len=0; d->name != NULL; d++,len++) {
-			PCB_DAD_LABEL(dlg, d->name);
-				PCB_DAD_HELP(dlg, d->lng);
-			PCB_DAD_BOOL(dlg, "");
-				d->widget = PCB_DAD_CURRENT(dlg);
-				PCB_DAD_CHANGE_CB(dlg, brave_dialog_chg);
-				PCB_DAD_HELP(dlg, d->lng);
-			PCB_DAD_LABEL(dlg, d->shrt);
-				PCB_DAD_HELP(dlg, d->lng);
-		}
-		if (len != 0) {
-			PCB_DAD_BUTTON(dlg, "all ON");
-				PCB_DAD_HELP(dlg, "Tick in all boxes\nenabling all experimental features\n(Super Brave Mode)");
-				PCB_DAD_CHANGE_CB(dlg, brave_dialog_allon);
-			PCB_DAD_BUTTON(dlg, "all OFF");
-				PCB_DAD_HELP(dlg, "Tick off all boxes\ndisabling all experimental features\n(Safe Mode)");
-				PCB_DAD_CHANGE_CB(dlg, brave_dialog_alloff);
-			PCB_DAD_BUTTON(dlg, "save in user cfg");
-				PCB_DAD_HELP(dlg, "Save current brave state in the \nuser configuration file");
-				PCB_DAD_CHANGE_CB(dlg, brave_dialog_save);
-		}
-	PCB_DAD_END(dlg);
+		PCB_DAD_BEGIN_TABLE(dlg, 3);
+			for(d = desc, len=0; d->name != NULL; d++,len++) {
+				PCB_DAD_LABEL(dlg, d->name);
+					PCB_DAD_HELP(dlg, d->lng);
+				PCB_DAD_BOOL(dlg, "");
+					d->widget = PCB_DAD_CURRENT(dlg);
+					PCB_DAD_CHANGE_CB(dlg, brave_dialog_chg);
+					PCB_DAD_HELP(dlg, d->lng);
+				PCB_DAD_LABEL(dlg, d->shrt);
+					PCB_DAD_HELP(dlg, d->lng);
+			}
+			if (len != 0) {
+				PCB_DAD_BUTTON(dlg, "all ON");
+					PCB_DAD_HELP(dlg, "Tick in all boxes\nenabling all experimental features\n(Super Brave Mode)");
+					PCB_DAD_CHANGE_CB(dlg, brave_dialog_allon);
+				PCB_DAD_BUTTON(dlg, "all OFF");
+					PCB_DAD_HELP(dlg, "Tick off all boxes\ndisabling all experimental features\n(Safe Mode)");
+					PCB_DAD_CHANGE_CB(dlg, brave_dialog_alloff);
+				PCB_DAD_BUTTON(dlg, "save in user cfg");
+					PCB_DAD_HELP(dlg, "Save current brave state in the \nuser configuration file");
+					PCB_DAD_CHANGE_CB(dlg, brave_dialog_save);
+			}
+		PCB_DAD_END(dlg);
 
-	if (len == 0)
-		PCB_DAD_LABEL(dlg, "(There are no brave features at the moment)");
+		if (len == 0)
+			PCB_DAD_LABEL(dlg, "(There are no brave features at the moment)");
 
-	PCB_DAD_BUTTON_CLOSES(dlg, btn);
+		PCB_DAD_BUTTON_CLOSES(dlg, btn);
 	PCB_DAD_END(dlg);
 
 
