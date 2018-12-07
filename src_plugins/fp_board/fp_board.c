@@ -83,7 +83,6 @@ static FILE *fp_board_fopen(pcb_plug_fp_t *ctx, const char *path, const char *na
 	char *fpath, *ids, *end;
 	unsigned long int id, req_id;
 	pcb_buffer_t buff;
-	FILE *f = NULL;
 	pcb_opctx_t op;
 
 	if (dst == NULL)
@@ -130,7 +129,7 @@ static FILE *fp_board_fopen(pcb_plug_fp_t *ctx, const char *path, const char *na
 
 	pcb_buffer_clear(PCB, &buff);
 	free(buff.Data);
-	return f;
+	return NULL;
 
 err:;
 		free(fpath);
@@ -139,8 +138,7 @@ err:;
 
 static void fp_board_fclose(pcb_plug_fp_t *ctx, FILE * f, pcb_fp_fopen_ctx_t *fctx)
 {
-	fclose(f);
-TODO(": remove file")
+	pcb_message(PCB_MSG_ERROR, "Internal error: fp_board_fclose() shouldn't have been called. Please report this bug.\n");
 }
 
 
