@@ -297,7 +297,9 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "layer") == 0) {
 			eagle_layer_t *ly = calloc(sizeof(eagle_layer_t), 1);
-			int id, reuse = 0;
+			int reuse = 0;
+			long tmp_id;
+			eagle_layerid_t id;
 			unsigned long typ;
 			pcb_layergrp_id_t gid;
 			pcb_layergrp_t *grp;
@@ -308,12 +310,13 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 			ly->visible = eagle_get_attrl(st, n, "visible", -1);
 			ly->active  = eagle_get_attrl(st, n, "active", -1);
 			ly->lid     = -1;
-TODO("TODO we are reading uint as signed int when getting layer, and ignoring half of them")
-			id = eagle_get_attrl(st, n, "number", -1);
-			if (id >= 0) {
-				htip_set(&st->layers, id, ly); /* all listed layers get a hash */
-			} else if (id < -1) {
-				htip_set(&st->layers, id, ly);
+			tmp_id = eagle_get_attrl(st, n, "number", -1);
+			if (tmp_id < 1 || tmp_id > 254) {
+				pcb_message(PCB_MSG_ERROR, "\tinvalid layer definition layer number found: '%d', skipping\n", tmp_id);
+				id = -1;
+			} else {
+				htip_set(&st->layers, id, ly); /* all valid layers get a hash */
+				id = tmp_id;
 			}
 			typ = 0;
 			switch(id) {
