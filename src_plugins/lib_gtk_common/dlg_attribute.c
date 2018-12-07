@@ -217,6 +217,7 @@ static void ghid_attr_dlg_response_cb(GtkDialog *dialog, gint response_id, gpoin
 		}
 		ctx->close_cb_called = 1;
 		free(ctx->wl);
+		ctx->wl = NULL;
 	}
 }
 
