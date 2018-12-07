@@ -287,62 +287,62 @@ TODO("subc TODO")
 				num_copper++;
 
 		PCB_DAD_BEGIN_VBOX(dlg);
-		PCB_DAD_BEGIN_TABLE(dlg, 2);
-			PCB_DAD_COMPFLAG(dlg, PCB_HATF_SCROLL);
-		for(n = 0; n < ctx.data->LayerN; n++) {
-			lb_widx_t *w = ctx.widx+n;
-			/* left side */
-			PCB_DAD_BEGIN_VBOX(dlg);
-				if (n == 0)
-					PCB_DAD_LABEL(dlg, "RECIPE");
-				else
-					PCB_DAD_LABEL(dlg, "\n");
-
-				PCB_DAD_BEGIN_HBOX(dlg);
-					PCB_DAD_LABEL(dlg, "Name:");
-					PCB_DAD_STRING(dlg);
-						w->name = PCB_DAD_CURRENT(dlg);
-				PCB_DAD_END(dlg);
-				PCB_DAD_BEGIN_HBOX(dlg);
-					PCB_DAD_ENUM(dlg, lb_comp); /* coposite */
-						w->comp = PCB_DAD_CURRENT(dlg);
-					PCB_DAD_ENUM(dlg, lb_types); /* lyt */
-						w->type = PCB_DAD_CURRENT(dlg);
-				PCB_DAD_END(dlg);
-				PCB_DAD_BEGIN_HBOX(dlg);
-					PCB_DAD_INTEGER(dlg, NULL);
-						PCB_DAD_MINVAL(dlg, 0);
-						PCB_DAD_MAXVAL(dlg, num_copper);
-						w->offs = PCB_DAD_CURRENT(dlg);
-					PCB_DAD_LABEL(dlg, "from");
-						w->from = PCB_DAD_CURRENT(dlg);
-					PCB_DAD_ENUM(dlg, lb_side);
-						w->side = PCB_DAD_CURRENT(dlg);
-				PCB_DAD_END(dlg);
-				PCB_DAD_BEGIN_HBOX(dlg);
-					PCB_DAD_LABEL(dlg, "Purpose:");
-					PCB_DAD_STRING(dlg);
-						w->purpose = PCB_DAD_CURRENT(dlg);
-				PCB_DAD_END(dlg);
-
-			PCB_DAD_END(dlg);
-
-			/* right side */
-			PCB_DAD_BEGIN_HBOX(dlg);
-				PCB_DAD_LABELF(dlg, ("\n\n layer #%d ", n));
+			PCB_DAD_BEGIN_TABLE(dlg, 2);
+				PCB_DAD_COMPFLAG(dlg, PCB_HATF_SCROLL);
+			for(n = 0; n < ctx.data->LayerN; n++) {
+				lb_widx_t *w = ctx.widx+n;
+				/* left side */
 				PCB_DAD_BEGIN_VBOX(dlg);
 					if (n == 0)
-						PCB_DAD_LABEL(dlg, "BOARD LAYER");
+						PCB_DAD_LABEL(dlg, "RECIPE");
 					else
-						PCB_DAD_LABEL(dlg, "\n\n");
-					PCB_DAD_LABEL(dlg, "Automatic");
-					PCB_DAD_ENUM(dlg, ctx.layer_names);
-						w->layer = PCB_DAD_CURRENT(dlg);
+						PCB_DAD_LABEL(dlg, "\n");
+
+					PCB_DAD_BEGIN_HBOX(dlg);
+						PCB_DAD_LABEL(dlg, "Name:");
+						PCB_DAD_STRING(dlg);
+							w->name = PCB_DAD_CURRENT(dlg);
+					PCB_DAD_END(dlg);
+					PCB_DAD_BEGIN_HBOX(dlg);
+						PCB_DAD_ENUM(dlg, lb_comp); /* coposite */
+							w->comp = PCB_DAD_CURRENT(dlg);
+						PCB_DAD_ENUM(dlg, lb_types); /* lyt */
+							w->type = PCB_DAD_CURRENT(dlg);
+					PCB_DAD_END(dlg);
+					PCB_DAD_BEGIN_HBOX(dlg);
+						PCB_DAD_INTEGER(dlg, NULL);
+							PCB_DAD_MINVAL(dlg, 0);
+							PCB_DAD_MAXVAL(dlg, num_copper);
+							w->offs = PCB_DAD_CURRENT(dlg);
+						PCB_DAD_LABEL(dlg, "from");
+							w->from = PCB_DAD_CURRENT(dlg);
+						PCB_DAD_ENUM(dlg, lb_side);
+							w->side = PCB_DAD_CURRENT(dlg);
+					PCB_DAD_END(dlg);
+					PCB_DAD_BEGIN_HBOX(dlg);
+						PCB_DAD_LABEL(dlg, "Purpose:");
+						PCB_DAD_STRING(dlg);
+							w->purpose = PCB_DAD_CURRENT(dlg);
+					PCB_DAD_END(dlg);
+
 				PCB_DAD_END(dlg);
+
+				/* right side */
+				PCB_DAD_BEGIN_HBOX(dlg);
+					PCB_DAD_LABELF(dlg, ("\n\n layer #%d ", n));
+					PCB_DAD_BEGIN_VBOX(dlg);
+						if (n == 0)
+							PCB_DAD_LABEL(dlg, "BOARD LAYER");
+						else
+							PCB_DAD_LABEL(dlg, "\n\n");
+						PCB_DAD_LABEL(dlg, "Automatic");
+						PCB_DAD_ENUM(dlg, ctx.layer_names);
+							w->layer = PCB_DAD_CURRENT(dlg);
+					PCB_DAD_END(dlg);
+				PCB_DAD_END(dlg);
+			}
 			PCB_DAD_END(dlg);
-		}
-		PCB_DAD_END(dlg);
-		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
+			PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
 		PCB_DAD_END(dlg);
 
 		ctx.attrs = dlg;
