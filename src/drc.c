@@ -60,11 +60,15 @@ static fgw_error_t pcb_act_DRC(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	args[1].type = FGW_STR;
 
 	if (pcb_strcasecmp(dlg_type, "list") == 0) {
+		if (!PCB_HAVE_GUI_ATTR_DLG)
+			goto print;
 		args[1].val.str = "list";
 		return pcb_actionv_bin("drcdialog", res, 2, args);
 	}
 
 	if (pcb_strcasecmp(dlg_type, "simple") == 0) {
+		if (!PCB_HAVE_GUI_ATTR_DLG)
+			goto print;
 		args[1].val.str = "simple";
 		return pcb_actionv_bin("drcdialog", res, 2, args);
 	}
@@ -75,6 +79,7 @@ static fgw_error_t pcb_act_DRC(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (pcb_strcasecmp(dlg_type, "print") == 0) {
 		pcb_view_t *v;
+		print:;
 		for(v = pcb_view_list_first(&pcb_drc_lst); v != NULL; v = pcb_view_list_next(v)) {
 			printf("%ld: %s: %s\n", v->uid, v->type, v->title);
 			if (v->have_bbox)
