@@ -143,9 +143,18 @@ static fgw_error_t pcb_act_DRC(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return view_dlg(res, argc, argv, dlg_type, "drcdialog", &pcb_drc_lst, pcb_drc_all);
 }
 
+const char pcb_acts_IOIncompatList[] = "IOIncompatList([list|simple])\n";
+const char pcb_acth_IOIncompatList[] = "Present the format incompatibilities of the last save to file operation.";
+fgw_error_t pcb_act_IOIncompatList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *dlg_type = "list";
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, IOIncompatList, dlg_type = argv[1].val.str);
+	return view_dlg(res, argc, argv, dlg_type, "ioincompatlistdialog", &pcb_drc_lst, pcb_drc_all);
+}
 
 pcb_action_t find_action_list[] = {
-	{"DRC", pcb_act_DRC, pcb_acth_DRC, pcb_acts_DRC}
+	{"DRC", pcb_act_DRC, pcb_acth_DRC, pcb_acts_DRC},
+	{"IOIncompatList", pcb_act_IOIncompatList, pcb_acth_IOIncompatList, pcb_acts_IOIncompatList},
 };
 
 PCB_REGISTER_ACTIONS(find_action_list, NULL)

@@ -73,7 +73,7 @@ pcb_action_t dialogs_action_list[] = {
 	{"ManagePlugins", pcb_act_ManagePlugins, pcb_acth_ManagePlugins, pcb_acts_ManagePlugins},
 	{"dad", pcb_act_dad, pcb_acth_dad, pcb_acts_dad},
 	{"DrcDialog", pcb_act_DrcDialog, pcb_acth_DrcDialog, pcb_acts_DrcDialog},
-	{"IOIncompatList", pcb_act_IOIncompatList, pcb_acth_IOIncompatList, pcb_acts_IOIncompatList},
+	{"IOIncompatListDialog", pcb_act_IOIncompatListDialog, pcb_acth_IOIncompatListDialog, pcb_acts_IOIncompatListDialog},
 	{"Fontsel", pcb_act_Fontsel, pcb_acth_Fontsel, pcb_acts_Fontsel},
 
 	{"gui_PromptFor", pcb_act_gui_PromptFor, pcb_acth_gui, NULL},

@@ -763,9 +763,9 @@ fgw_error_t pcb_act_DrcDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 extern pcb_view_list_t pcb_io_incompat_lst;
 static view_ctx_t io_gui_ctx = {0};
-const char pcb_acts_IOIncompatList[] = "IOIncompatList([list|simple])\n";
-const char pcb_acth_IOIncompatList[] = "Present the format incompatibilities of the last save to file operation.";
-fgw_error_t pcb_act_IOIncompatList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+const char pcb_acts_IOIncompatListDialog[] = "IOIncompatListDialog([list|simple])\n";
+const char pcb_acth_IOIncompatListDialog[] = "Present the format incompatibilities of the last save to file operation in a GUI dialog.";
+fgw_error_t pcb_act_IOIncompatListDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *dlg_type = "list";
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, DrcDialog, dlg_type = argv[1].val.str);
