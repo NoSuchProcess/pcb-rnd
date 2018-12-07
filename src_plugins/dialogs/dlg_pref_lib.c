@@ -244,22 +244,22 @@ static int lib_cell_edit(char **cell)
 	memset(&ctx, 0, sizeof(ctx));
 
 	PCB_DAD_BEGIN_VBOX(ctx.dlg);
-	PCB_DAD_BEGIN_TABLE(ctx.dlg, 2);
-		PCB_DAD_LABEL(ctx.dlg, "Path:");
-		PCB_DAD_STRING(ctx.dlg);
-			ctx.wpath = PCB_DAD_CURRENT(ctx.dlg);
-			ctx.dlg[ctx.wpath].default_val.str_value = pcb_strdup(cell[0]);
-			PCB_DAD_CHANGE_CB(ctx.dlg, lib_cell_edit_update);
+		PCB_DAD_BEGIN_TABLE(ctx.dlg, 2);
+			PCB_DAD_LABEL(ctx.dlg, "Path:");
+			PCB_DAD_STRING(ctx.dlg);
+				ctx.wpath = PCB_DAD_CURRENT(ctx.dlg);
+				ctx.dlg[ctx.wpath].default_val.str_value = pcb_strdup(cell[0]);
+				PCB_DAD_CHANGE_CB(ctx.dlg, lib_cell_edit_update);
 
-		PCB_DAD_LABEL(ctx.dlg, "Expanded\nversion:");
-		PCB_DAD_LABEL(ctx.dlg, pcb_strdup(cell[1]));
-			ctx.wexp = PCB_DAD_CURRENT(ctx.dlg);
+			PCB_DAD_LABEL(ctx.dlg, "Expanded\nversion:");
+			PCB_DAD_LABEL(ctx.dlg, pcb_strdup(cell[1]));
+				ctx.wexp = PCB_DAD_CURRENT(ctx.dlg);
 
-		PCB_DAD_LABEL(ctx.dlg, "");
-		PCB_DAD_BUTTON(ctx.dlg, "Help...");
-			PCB_DAD_CHANGE_CB(ctx.dlg, libhelp_btn);
-	PCB_DAD_END(ctx.dlg);
-	PCB_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
+			PCB_DAD_LABEL(ctx.dlg, "");
+			PCB_DAD_BUTTON(ctx.dlg, "Help...");
+				PCB_DAD_CHANGE_CB(ctx.dlg, libhelp_btn);
+		PCB_DAD_END(ctx.dlg);
+		PCB_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
 	PCB_DAD_END(ctx.dlg);
 
 	PCB_DAD_NEW(ctx.dlg, "Edit library path", &ctx, pcb_true, NULL);
@@ -348,19 +348,19 @@ static void pref_libhelp_open(pref_libhelp_ctx_t *ctx)
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
 	PCB_DAD_LABEL(ctx->dlg, "The following $(variables) can be used in the path:");
-	PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
-		conf_fields_foreach(e) {
-			conf_native_t *nat = e->value;
-			char tmp[256];
+		PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
+			conf_fields_foreach(e) {
+				conf_native_t *nat = e->value;
+				char tmp[256];
 
-			if (strncmp(e->key, "rc/path/", 8) != 0)
-				continue;
+				if (strncmp(e->key, "rc/path/", 8) != 0)
+					continue;
 
-			pcb_snprintf(tmp, sizeof(tmp), "$(rc.path.%s)", e->key + 8);
-			PCB_DAD_LABEL(ctx->dlg, tmp);
-			PCB_DAD_LABEL(ctx->dlg, nat->val.string[0]);
-		}
-	PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
+				pcb_snprintf(tmp, sizeof(tmp), "$(rc.path.%s)", e->key + 8);
+				PCB_DAD_LABEL(ctx->dlg, tmp);
+				PCB_DAD_LABEL(ctx->dlg, nat->val.string[0]);
+			}
+		PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 	PCB_DAD_END(ctx->dlg);
 
 	ctx->active = 1;
