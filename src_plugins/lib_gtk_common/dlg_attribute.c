@@ -208,8 +208,11 @@ static void ghid_attr_dlg_response_cb(GtkDialog *dialog, gint response_id, gpoin
 		case GTK_RESPONSE_CANCEL: /* no cancel button, shouldn't happen, but just in case... */
 		case GTK_RESPONSE_CLOSE:
 		case GTK_RESPONSE_DELETE_EVENT:
-			if (!ctx->attrdlg->close_cb_called)
-				ctx->cb(ctx->ctx, PCB_HID_ATTR_EV_WINCLOSE);
+			if (!ctx->attrdlg->close_cb_called) {
+				ctx->attrdlg->close_cb_called = 1;
+				if (ctx->attrdlg->close_cb != NULL)
+					ctx->cb(ctx->ctx, PCB_HID_ATTR_EV_WINCLOSE);
+			}
 			ctx->attrdlg->rc = 1;
 			break;
 		}
@@ -783,9 +786,9 @@ void ghid_attr_dlg_free(void *hid_ctx)
 	attr_dlg_t *ctx = hid_ctx;
 
 	if (!ctx->close_cb_called) {
+		ctx->close_cb_called = 1;
 		if (ctx->close_cb != NULL)
 			ctx->close_cb(ctx->close_caller_data, PCB_HID_ATTR_EV_CODECLOSE);
-		ctx->close_cb_called = 1;
 	}
 
 	if (ctx->rc == 0) { /* copy over the results */
@@ -801,6 +804,8 @@ void ghid_attr_dlg_free(void *hid_ctx)
 
 	gtk_widget_destroy(ctx->dialog);
 	free(ctx->wl);
+	ctx->wl = NULL;
+	ctx->dialog = NULL;
 }
 
 void ghid_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const pcb_hid_attr_val_t *val)
