@@ -480,7 +480,7 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal, c
 		htip_set(&pstk_libs, subc_id, ctx);
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-
+		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 			if (hint != NULL)
 				PCB_DAD_LABEL(ctx->dlg, hint);
 
