@@ -1993,8 +1993,8 @@ static int parse_fontkit(pcb_fontkit_t *fk, lht_node_t *nd)
 			f = &fk->dflt;
 		}
 
-TODO(": check return val")
-		parse_font(f, n);
+		if (parse_font(f, n) != 0)
+			return -1;
 	}
 
 	return 0;
