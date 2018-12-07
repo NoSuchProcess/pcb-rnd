@@ -159,7 +159,7 @@ static void pcb_dlg_pinout(pcb_board_t *pcb, pcb_data_t *data, pcb_subc_t *sc)
 			PCB_DAD_LABEL(ctx->dlg, "");
 				ctx->w_lab_net = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
-	PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
+		PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 	PCB_DAD_END(ctx->dlg);
 
 	if (sc->refdes != NULL)

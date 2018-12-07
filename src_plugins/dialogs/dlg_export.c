@@ -145,36 +145,36 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 	export_ctx.tab_name[i] = NULL;
 
 	PCB_DAD_BEGIN_VBOX(export_ctx.dlg);
-	PCB_DAD_BEGIN_TABBED(export_ctx.dlg, export_ctx.tab_name);
-		PCB_DAD_COMPFLAG(export_ctx.dlg, PCB_HATF_LEFT_TAB);
-		export_ctx.tabs = PCB_DAD_CURRENT(export_ctx.dlg);
-		for(n = 0; n < export_ctx.len; n++) {
-			int numa;
-			pcb_hid_attribute_t *attrs = export_ctx.hid[n]->get_export_options(&numa);
-			export_ctx.numa[n] = numa;
-			export_ctx.ea[n] = attrs;
-			if (numa < 1) {
-				PCB_DAD_LABEL(export_ctx.dlg, "Exporter unavailable for direct export");
-				continue;
-			}
-			PCB_DAD_BEGIN_VBOX(export_ctx.dlg);
-				PCB_DAD_COMPFLAG(export_ctx.dlg, PCB_HATF_LABEL);
-				for(i = 0; i < numa; i++) {
-					PCB_DAD_DUP_ATTR(export_ctx.dlg, attrs+i);
-					if (i == 0)
-						export_ctx.first_attr[n] = PCB_DAD_CURRENT(export_ctx.dlg);
+		PCB_DAD_BEGIN_TABBED(export_ctx.dlg, export_ctx.tab_name);
+			PCB_DAD_COMPFLAG(export_ctx.dlg, PCB_HATF_LEFT_TAB);
+			export_ctx.tabs = PCB_DAD_CURRENT(export_ctx.dlg);
+			for(n = 0; n < export_ctx.len; n++) {
+				int numa;
+				pcb_hid_attribute_t *attrs = export_ctx.hid[n]->get_export_options(&numa);
+				export_ctx.numa[n] = numa;
+				export_ctx.ea[n] = attrs;
+				if (numa < 1) {
+					PCB_DAD_LABEL(export_ctx.dlg, "Exporter unavailable for direct export");
+					continue;
 				}
-				PCB_DAD_LABEL(export_ctx.dlg, " "); /* ugly way of inserting some vertical spacing */
-				PCB_DAD_BEGIN_HBOX(export_ctx.dlg)
-					PCB_DAD_LABEL(export_ctx.dlg, "Apply attributes and export: ");
-					PCB_DAD_BUTTON(export_ctx.dlg, "Export!");
-						export_ctx.button[n] = PCB_DAD_CURRENT(export_ctx.dlg);
-						PCB_DAD_CHANGE_CB(export_ctx.dlg, export_cb);
+				PCB_DAD_BEGIN_VBOX(export_ctx.dlg);
+					PCB_DAD_COMPFLAG(export_ctx.dlg, PCB_HATF_LABEL);
+					for(i = 0; i < numa; i++) {
+						PCB_DAD_DUP_ATTR(export_ctx.dlg, attrs+i);
+						if (i == 0)
+							export_ctx.first_attr[n] = PCB_DAD_CURRENT(export_ctx.dlg);
+					}
+					PCB_DAD_LABEL(export_ctx.dlg, " "); /* ugly way of inserting some vertical spacing */
+					PCB_DAD_BEGIN_HBOX(export_ctx.dlg)
+						PCB_DAD_LABEL(export_ctx.dlg, "Apply attributes and export: ");
+						PCB_DAD_BUTTON(export_ctx.dlg, "Export!");
+							export_ctx.button[n] = PCB_DAD_CURRENT(export_ctx.dlg);
+							PCB_DAD_CHANGE_CB(export_ctx.dlg, export_cb);
+					PCB_DAD_END(export_ctx.dlg);
 				PCB_DAD_END(export_ctx.dlg);
-			PCB_DAD_END(export_ctx.dlg);
-		}
-	PCB_DAD_END(export_ctx.dlg);
-	PCB_DAD_BUTTON_CLOSES(export_ctx.dlg, clbtn);
+			}
+		PCB_DAD_END(export_ctx.dlg);
+		PCB_DAD_BUTTON_CLOSES(export_ctx.dlg, clbtn);
 	PCB_DAD_END(export_ctx.dlg);
 
 	/* set up the context */
