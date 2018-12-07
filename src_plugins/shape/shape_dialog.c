@@ -140,6 +140,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, pc
 	shp->layer = layer;
 
 	PCB_DAD_BEGIN_VBOX(shp->dlg);
+		PCB_DAD_COMPFLAG(shp->dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_BEGIN_TABBED(shp->dlg, tabs);
 /*			shp->tab = PCB_DAD_CURRENT(shp->dlg);
 			PCB_DAD_CHANGE_CB(shp->dlg, shp_tab);*/
