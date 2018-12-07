@@ -684,6 +684,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 	target_tab -= pse->disable_instance_tab;
 
 	PCB_DAD_BEGIN_VBOX(dlg);
+		PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_BEGIN_TABBED(dlg, tabs + pse->disable_instance_tab);
 			pse->tab = PCB_DAD_CURRENT(dlg);
 
