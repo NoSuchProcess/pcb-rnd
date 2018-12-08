@@ -26,6 +26,7 @@
 
 /* Preferences dialog, sizes tab */
 
+#include "board.h"
 #include "dlg_pref.h"
 #include "conf.h"
 #include "conf_core.h"

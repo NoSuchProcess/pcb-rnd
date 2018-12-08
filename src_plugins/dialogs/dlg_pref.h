@@ -50,4 +50,12 @@ void pcb_pref_conflist_remove(pref_ctx_t *ctx, pref_confitem_t *list);
 
 conf_hid_id_t pref_hid;
 
+/*** pulbic API for the caller ***/
+void pcb_dlg_pref_init(void);
+void pcb_dlg_pref_uninit(void);
+
+extern const char pcb_acts_Preferences[];
+extern const char pcb_acth_Preferences[];
+fgw_error_t pcb_act_Preferences(fgw_arg_t *res, int argc, fgw_arg_t *argv);
+
 #endif

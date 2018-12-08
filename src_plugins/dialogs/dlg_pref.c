@@ -26,14 +26,21 @@
 
 /* The preferences dialog, invoked by the Preferences() action */
 
+#include "config.h"
+
 #include <genvector/gds_char.h>
 #include <limits.h>
+#include "actions.h"
 #include "build_run.h"
 #include "pcb-printf.h"
-#include "dlg_pref.h"
 #include "error.h"
+#include "event.h"
 #include "conf.h"
 #include "conf_hid.h"
+#include "hid_dad.h"
+#include "hid_dad_tree.h"
+
+#include "dlg_pref.h"
 
 #include "dlg_pref_sizes.c"
 #include "dlg_pref_board.c"
@@ -321,7 +328,7 @@ void pref_conf_changed(conf_native_t *cfg, int arr_idx)
 }
 
 static conf_hid_callbacks_t pref_conf_cb;
-static void dlg_pref_init(void)
+void pcb_dlg_pref_init(void)
 {
 	pref_conf_cb.val_change_post = pref_conf_changed;
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, pref_ev_board_changed, &pref_ctx, pref_cookie);
@@ -331,15 +338,15 @@ static void dlg_pref_init(void)
 	pcb_dlg_pref_lib_init(&pref_ctx);
 }
 
-static void dlg_pref_uninit(void)
+void pcb_dlg_pref_uninit(void)
 {
 	pcb_event_unbind_allcookie(pref_cookie);
 	conf_hid_unreg(pref_cookie);
 }
 
-static const char pcb_acts_Preferences[] = "Preferences([tabname])\n";
-static const char pcb_acth_Preferences[] = "Present the preferences dialog, optionally opening the tab requested.";
-static fgw_error_t pcb_act_Preferences(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+const char pcb_acts_Preferences[] = "Preferences([tabname])\n";
+const char pcb_acth_Preferences[] = "Present the preferences dialog, optionally opening the tab requested.";
+fgw_error_t pcb_act_Preferences(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *tab = NULL;
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, Preferences, tab = argv[1].val.str);

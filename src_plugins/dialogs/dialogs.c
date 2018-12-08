@@ -44,7 +44,6 @@
 #include "dlg_about.c"
 #include "dlg_pinout.c"
 #include "dlg_export.c"
-#include "dlg_pref.c"
 #include "dlg_lib_pstk.c"
 #include "dlg_undo.c"
 #include "dlg_plugins.c"
@@ -52,6 +51,7 @@
 #include "dlg_comm_m.c"
 
 #include "dlg_view.h"
+#include "dlg_pref.h"
 #include "act_dad.h"
 
 static const char pcb_acth_gui[] = "Intenal: GUI frontend action. Do not use directly.";
@@ -90,7 +90,7 @@ void pplg_uninit_dialogs(void)
 {
 	pcb_dlg_undo_uninit();
 	dlg_pstklib_uninit();
-	dlg_pref_uninit();
+	pcb_dlg_pref_uninit();
 	pcb_act_dad_uninit();
 	pcb_remove_actions_by_cookie(dialogs_cookie);
 	pcb_view_dlg_uninit();
@@ -102,7 +102,7 @@ int pplg_init_dialogs(void)
 	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(dialogs_action_list, dialogs_cookie)
 	pcb_act_dad_init();
-	dlg_pref_init();
+	pcb_dlg_pref_init();
 	dlg_pstklib_init();
 	pcb_dlg_undo_init();
 	pcb_view_dlg_init();
