@@ -29,6 +29,7 @@
 #include "dlg_pref.h"
 #include "conf.h"
 #include "conf_core.h"
+#include "misc_util.h"
 
 static int conf_tree_cmp(const void *v1, const void *v2)
 {
@@ -130,7 +131,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path)
 {
 	conf_native_t *nat = conf_get_field(path);
 	pcb_hid_attr_val_t hv;
-
+	char *tmp;
 
 	if (nat == NULL) {
 		hv.str_value = "";
@@ -142,8 +143,11 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path)
 	hv.str_value = path;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wname, &hv);
 
-	hv.str_value = nat->description;
+	tmp = pcb_strdup(nat->description);
+	pcb_text_wrap(tmp, 64, '\n', ' ');
+	hv.str_value = tmp;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wdesc, &hv);
+	free(tmp);
 	return;
 }
 
