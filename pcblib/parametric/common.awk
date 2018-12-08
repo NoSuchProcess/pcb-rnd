@@ -368,12 +368,8 @@ function set_arg(OUT, key, value     ,strength)
 	}
 
 	if (key in DEFAULT) {
-		if (DEFAULT[key, "dim"]) {
-			if (value ~ "mm")
-				value = mm(value)
-			else
-				value = mil(value)
-		}
+		if (DEFAULT[key, "dim"])
+			value = parse_dim_(value, 0)
 		set_arg_(DEFAULT, key, value, strength)
 	}
 	else
@@ -426,9 +422,7 @@ function proc_args(OUT, arg_names,   mandatory,  N,A,M,v,n,key,val,pos)
 	}
 }
 
-# Assume h is a dimension; if it has an "mm" suffix, convert it from mm,
-# else convert it from mil.
-function parse_dim(h)
+function parse_dim_(h, fallback_mil)
 {
 	if (h == "")
 		return ""
@@ -469,7 +463,16 @@ function parse_dim(h)
 		sub("cmil", "", h)
 		return mil(h)/100
 	}
-	return mil(h)
+	if (fallback_mil)
+		return mil(h)
+	else
+		return h
+}
+
+# Assume h is a dimension and convert it
+function parse_dim(h)
+{
+	return parse_dim_(h, 1)
 }
 
 # Draw a DIP outline: useful for any rectangular package with a little
