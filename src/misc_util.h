@@ -61,4 +61,9 @@ int pcb_mem_any_set(unsigned char *ptr, int bytes);
 
 char *pcb_strdup_strip_wspace(const char *S);
 
+/* Wrap text so that each segment is at most len characters long. Insert
+   sep character to break the string into segments. If nonsep >= 0, replace
+   original sep chaarcters with nonsep. */
+char *pcb_text_wrap(char *inp, int len, int sep, int nonsep);
+
 #endif

@@ -230,3 +230,21 @@ char *pcb_strdup_strip_wspace(const char *S)
 	else
 		return NULL;
 }
+
+char *pcb_text_wrap(char *inp, int len, int sep, int nonsep)
+{
+	int cnt;
+	char *s, *lastspc = NULL;
+	for(s = inp, cnt = 0; *s != '\0'; s++,cnt++) {
+		if ((*s == sep) && (nonsep >= 0))
+			*s = nonsep;
+		if ((cnt >= len) && (lastspc != NULL)) {
+			cnt = 0;
+			*lastspc = sep;
+			lastspc = NULL;
+		}
+		else if (isspace(*s))
+			lastspc = s;
+	}
+	return inp;
+}

@@ -42,6 +42,7 @@
 #include "hid_dad_tree.h"
 #include "undo.h"
 #include "safe_fs.h"
+#include "misc_util.h"
 
 static const char *dlg_view_cookie = "dlg_drc";
 
@@ -155,30 +156,12 @@ static void view2dlg(view_ctx_t *ctx)
 		view2dlg_pos(ctx);
 }
 
-static char *re_wrap(char *inp, int len)
-{
-	int cnt;
-	char *s, *lastspc = NULL;
-	for(s = inp, cnt = 0; *s != '\0'; s++,cnt++) {
-		if (*s == '\n')
-			*s = ' ';
-		if ((cnt >= len) && (lastspc != NULL)) {
-			cnt = 0;
-			*lastspc = '\n';
-			lastspc = NULL;
-		}
-		else if (isspace(*s))
-			lastspc = s;
-	}
-	return inp;
-}
-
 void view_simple_show(view_ctx_t *ctx)
 {
 	pcb_view_t *v = pcb_view_by_uid(ctx->lst, ctx->selected);
 	if (v != NULL) {
 		pcb_view_goto(v);
-		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdescription, str_value, re_wrap(pcb_strdup(v->description), 32));
+		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdescription, str_value, pcb_text_wrap(pcb_strdup(v->description), 32, '\n', ' '));
 		switch(v->data_type) {
 			case PCB_VIEW_PLAIN:
 				PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup(""));
