@@ -126,6 +126,34 @@ static void setup_intree(pref_ctx_t *ctx)
 	}
 }
 
+static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path)
+{
+	conf_native_t *nat = conf_get_field(path);
+	pcb_hid_attr_val_t hv;
+
+
+	if (nat == NULL) {
+		hv.str_value = "";
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wname, &hv);
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wdesc, &hv);
+		return;
+	}
+
+	hv.str_value = path;
+	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wname, &hv);
+
+	hv.str_value = nat->description;
+	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wdesc, &hv);
+	return;
+}
+
+static void dlg_conf_select_node_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+{
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+
+	dlg_conf_select_node((pref_ctx_t *)tree->user_ctx, row->path);
+}
+
 void pcb_dlg_pref_conf_create(pref_ctx_t *ctx)
 {
 	static const char *hdr_intree[] = {"role", "prio", "policy", "value", NULL};
@@ -138,6 +166,8 @@ void pcb_dlg_pref_conf_create(pref_ctx_t *ctx)
 		PCB_DAD_TREE(ctx->dlg, 1, 1, NULL);
 			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
 			ctx->conf.wtree = PCB_DAD_CURRENT(ctx->dlg);
+			PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, dlg_conf_select_node_cb);
+			PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
 
 		/* right: details */
 		PCB_DAD_BEGIN_VPANE(ctx->dlg);
@@ -146,9 +176,9 @@ void pcb_dlg_pref_conf_create(pref_ctx_t *ctx)
 			/* right/top: conf file */
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
-				PCB_DAD_LABEL(ctx->dlg, "name");
+				PCB_DAD_LABEL(ctx->dlg, "");
 					ctx->conf.wname = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_LABEL(ctx->dlg, "desc");
+				PCB_DAD_LABEL(ctx->dlg, "");
 					ctx->conf.wdesc = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_LABEL(ctx->dlg, "INPUT: configuration node (\"file\" version)");
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
