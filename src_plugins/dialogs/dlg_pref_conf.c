@@ -30,6 +30,18 @@
 #include "conf.h"
 #include "conf_core.h"
 
+static void setup_intree(pref_ctx_t *ctx)
+{
+	conf_role_t n;
+	char *cell[5] = {NULL};
+	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wintree];
+
+	for(n = 0; n < CFR_max_real; n++) {
+		cell[0] = conf_role_name(n);
+		pcb_dad_tree_append(attr, NULL, cell);
+	}
+}
+
 void pcb_dlg_pref_conf_create(pref_ctx_t *ctx)
 {
 	static const char *hdr_intree[] = {"role", "prio", "policy", "value", NULL};
@@ -71,10 +83,12 @@ void pcb_dlg_pref_conf_create(pref_ctx_t *ctx)
 				PCB_DAD_LABEL(ctx->dlg, "NATIVE: in-memory conf node after the merge");
 				PCB_DAD_TREE(ctx->dlg, 4, 0, hdr_intree); /* input state */
 					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
-					ctx->conf.wintree = PCB_DAD_CURRENT(ctx->dlg);
+					ctx->conf.wmemtree = PCB_DAD_CURRENT(ctx->dlg);
 
 			PCB_DAD_END(ctx->dlg);
 
 		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);
+
+	setup_intree(ctx);
 }
