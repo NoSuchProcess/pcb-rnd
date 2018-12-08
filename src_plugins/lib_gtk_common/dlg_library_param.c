@@ -155,7 +155,7 @@ static char *gen_cmd(char *fpname, pcb_hid_attribute_t *attrs, pcb_hid_attr_val_
 				break;
 			case PCB_HATT_COORD:
 				val = buff;
-				pcb_snprintf(buff, sizeof(buff), "%$$mh", res[n].coord_value);
+				pcb_snprintf(buff, sizeof(buff), "%$$mH", res[n].coord_value);
 				break;
 			default:;
 		}
