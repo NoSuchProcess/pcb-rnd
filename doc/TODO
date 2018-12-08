@@ -94,6 +94,7 @@
 	- FEATURE: invent a generic API for both the drill attrib config table
 	- CLEANUP: remove the gerber->drill dep and ask users to use the CAM instead
 	- CLEANUP: unify how output files are accessed/checked: confirmation on overwrite
+- FEATURE: external editor on buffer [report: TwisteR]
 - FEATURE: fontsel: ttf import?
 - FEATURE: DOC: new examples
 	- blinking led with parametric footprints
