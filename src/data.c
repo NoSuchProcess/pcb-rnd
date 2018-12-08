@@ -167,7 +167,7 @@ void pcb_data_uninit(pcb_data_t *data)
 	list_map0(&data->Rat, pcb_rat_t, pcb_rat_free);
 
 	for (layer = data->Layer, i = 0; i < data->LayerN; layer++, i++)
-		pcb_layer_free(layer);
+		pcb_layer_free_fields(layer);
 
 	if (!subc) {
 		if (data->subc_tree)

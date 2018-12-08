@@ -204,7 +204,7 @@ const pcb_menu_layers_t *pcb_menu_layer_find(const char *name_or_abbrev);
 /************ NEW API - new code should use these **************/
 
 /* Free all metadata and objects of a layer; does not free(layer) */
-void pcb_layer_free(pcb_layer_t *layer);
+void pcb_layer_free_fields(pcb_layer_t *layer);
 
 /* Return the layer pointer (or NULL on invalid or virtual layers) for an id */
 pcb_layer_t *pcb_get_layer(pcb_data_t *data, pcb_layer_id_t id);

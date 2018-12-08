@@ -119,7 +119,7 @@ do { \
 
 #define PURP_MATCH(ps, pi) (((purpi == -1) || (purpi == pi)) && ((purpose == NULL) || (strcmp(purpose, ps) == 0)))
 
-void pcb_layer_free(pcb_layer_t *layer)
+void pcb_layer_free_fields(pcb_layer_t *layer)
 {
 	if (!layer->is_bound)
 		pcb_attribute_free(&layer->Attributes);
@@ -713,7 +713,7 @@ int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t ne
 			return -1;
 		}
 
-		pcb_layer_free(&pcb->Data->Layer[old_index]);
+		pcb_layer_free_fields(&pcb->Data->Layer[old_index]);
 
 		remaining = (g->len - grp_idx - 1);
 		if (remaining > 0)
