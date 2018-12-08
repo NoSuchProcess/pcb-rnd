@@ -117,11 +117,11 @@ static void setup_tree(pref_ctx_t *ctx)
 static void setup_intree(pref_ctx_t *ctx)
 {
 	conf_role_t n;
-	const char *cell[5] = {NULL};
+	char *cell[5] = {NULL};
 	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wintree];
 
 	for(n = 0; n < CFR_max_real; n++) {
-		cell[0] = conf_role_name(n);
+		cell[0] = pcb_strdup(conf_role_name(n));
 		pcb_dad_tree_append(attr, NULL, cell);
 	}
 }
