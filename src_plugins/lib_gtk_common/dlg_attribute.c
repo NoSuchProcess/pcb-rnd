@@ -725,6 +725,7 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, pcb_hid_attribute_t *attrs, int n
 	GtkWidget *content_area;
 	GtkWidget *main_vbox;
 	attr_dlg_t *ctx;
+	int force_label;
 
 	ctx = calloc(sizeof(attr_dlg_t), 1);
 
@@ -753,7 +754,9 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, pcb_hid_attribute_t *attrs, int n
 	gtk_container_set_border_width(GTK_CONTAINER(main_vbox), 6);
 	gtk_container_add_with_properties(GTK_CONTAINER(content_area), main_vbox, "expand", TRUE, "fill", TRUE, NULL);
 
-	ghid_attr_dlg_add(ctx, main_vbox, NULL, 0, (attrs[0].pcb_hatt_flags & PCB_HATF_LABEL));
+TODO("Remove force_label once we got rid of non-DAD attribute dialogs - look for direct calls to pcb_attribute_dialog()");
+	force_label = !PCB_HATT_IS_COMPOSITE(attrs[0].type);
+	ghid_attr_dlg_add(ctx, main_vbox, NULL, 0, (attrs[0].pcb_hatt_flags & PCB_HATF_LABEL) || force_label);
 
 	gtk_widget_show_all(ctx->dialog);
 
