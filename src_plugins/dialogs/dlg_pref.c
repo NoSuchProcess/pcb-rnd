@@ -40,6 +40,7 @@
 #include "dlg_pref_general.c"
 #include "dlg_pref_lib.c"
 #include "dlg_pref_layer.c"
+#include "dlg_pref_conf.c"
 
 pref_ctx_t pref_ctx;
 static const char *pref_cookie = "preferences dialog";
@@ -273,7 +274,7 @@ static void pcb_dlg_pref(const char *target_tab_str)
 			PCB_DAD_END(pref_ctx.dlg);
 
 			PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Config tree */
-				PCB_DAD_LABEL(pref_ctx.dlg, "TODO");
+				pcb_dlg_pref_conf_create(&pref_ctx);
 			PCB_DAD_END(pref_ctx.dlg);
 
 		PCB_DAD_END(pref_ctx.dlg);
