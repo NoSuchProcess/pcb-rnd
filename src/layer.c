@@ -705,8 +705,6 @@ int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t ne
 		pcb_layergrp_t *g;
 		int grp_idx, remaining;
 
-TODO("layer TODO remove objects, free fields layer_free(&pcb->Data->Layer[old_index]);")
-
 		/* remove the current lid from its group */
 		g = pcb_get_layergrp(pcb, pcb->Data->Layer[old_index].meta.real.grp);
 		grp_idx = pcb_layergrp_index_in_grp(g, old_index);
@@ -714,6 +712,8 @@ TODO("layer TODO remove objects, free fields layer_free(&pcb->Data->Layer[old_in
 			pcb_message(PCB_MSG_ERROR, "Internal error; layer not in group\n");
 			return -1;
 		}
+
+		pcb_layer_free(&pcb->Data->Layer[old_index]);
 
 		remaining = (g->len - grp_idx - 1);
 		if (remaining > 0)
