@@ -30,6 +30,90 @@
 #include "conf.h"
 #include "conf_core.h"
 
+static int conf_tree_cmp(const void *v1, const void *v2)
+{
+	const htsp_entry_t **e1 = (const htsp_entry_t **) v1, **e2 = (const htsp_entry_t **) v2;
+	return strcmp((*e1)->key, (*e2)->key);
+}
+
+/* Recursively create the directory and all parents in a tree */
+static pcb_hid_row_t *dlg_conf_tree_mkdirp(pref_ctx_t *ctx, pcb_hid_tree_t *tree, char *path)
+{
+	char *cell[2] = {NULL};
+	pcb_hid_row_t *parent;
+	char *last;
+
+	parent = htsp_get(&tree->paths, path);
+	if (parent != NULL)
+		return parent;
+
+	last = strrchr(path, '/');
+
+	if (last == NULL) {
+		/* root dir */
+		parent = htsp_get(&tree->paths, path);
+		if (parent != NULL)
+			return parent;
+		cell[0] = pcb_strdup(path);
+		return pcb_dad_tree_append(tree->attrib, NULL, cell);
+	}
+
+/* non-root-dir: get or create parent */
+	*last = '\0';
+	last++;
+	parent = dlg_conf_tree_mkdirp(ctx, tree, path);
+
+	cell[0] = pcb_strdup(last);
+	return pcb_dad_tree_append_under(tree->attrib, parent, cell);
+}
+
+static void setup_tree(pref_ctx_t *ctx)
+{
+	char *cell[2] = {NULL};
+	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wtree];
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	htsp_entry_t *e;
+	htsp_entry_t **sorted;
+	int num_paths, n;
+	char path[1024];
+
+	/* alpha sort keys for the more consistend UI */
+	for(e = htsp_first(conf_fields), num_paths = 0; e; e = htsp_next(conf_fields, e))
+		num_paths++;
+	sorted = malloc(sizeof(htsp_entry_t *) * num_paths);
+	for(e = htsp_first(conf_fields), n = 0; e; e = htsp_next(conf_fields, e), n++)
+		sorted[n] = e;
+	qsort(sorted, num_paths, sizeof(htsp_entry_t *), conf_tree_cmp);
+
+	for(n = 0; n < num_paths; n++) {
+		char *basename;
+		pcb_hid_row_t *parent;
+
+		e = sorted[n];
+		if (strlen(e->key) > sizeof(path) - 1) {
+			pcb_message(PCB_MSG_WARNING, "Warning: can't create config item for %s: path too long\n", e->key);
+			continue;
+		}
+		strcpy(path, e->key);
+		basename = strrchr(path, '/');
+		if ((basename == NULL) || (basename == path)) {
+			pcb_message(PCB_MSG_WARNING, "Warning: can't create config item for %s: invalid path (node in root)\n", e->key);
+			continue;
+		}
+		*basename = '\0';
+		basename++;
+
+		parent = dlg_conf_tree_mkdirp(ctx, tree, path);
+		if (parent == NULL) {
+			pcb_message(PCB_MSG_WARNING, "Warning: can't create config item for %s: invalid path\n", e->key);
+			continue;
+		}
+		cell[0] = pcb_strdup(basename);
+		pcb_dad_tree_append_under(attr, parent, cell);
+	}
+	free(sorted);
+}
+
 static void setup_intree(pref_ctx_t *ctx)
 {
 	conf_role_t n;
@@ -90,5 +174,6 @@ void pcb_dlg_pref_conf_create(pref_ctx_t *ctx)
 		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);
 
+	setup_tree(ctx);
 	setup_intree(ctx);
 }
