@@ -33,7 +33,7 @@
 static void setup_intree(pref_ctx_t *ctx)
 {
 	conf_role_t n;
-	char *cell[5] = {NULL};
+	const char *cell[5] = {NULL};
 	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wintree];
 
 	for(n = 0; n < CFR_max_real; n++) {
