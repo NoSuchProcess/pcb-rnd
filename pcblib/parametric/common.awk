@@ -463,11 +463,11 @@ function parse_dim(h)
 	}
 	if (h ~ "dmil$") {
 		sub("dmil", "", h)
-		return mil(h)*10
+		return mil(h)/10
 	}
 	if (h ~ "cmil$") {
 		sub("cmil", "", h)
-		return mil(h)*100
+		return mil(h)/100
 	}
 	return mil(h)
 }
