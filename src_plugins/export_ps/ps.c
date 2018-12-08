@@ -695,8 +695,8 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 		global.pagecount = 1;				/* 'pagecount' is modified by pcb_hid_expose_all() call */
 		pcb_hid_expose_all(&ps_hid, &global.exps, NULL);
 	}
-	else
-		global.pagecount = 0;					/* Reset 'pagecount' if single file */
+
+	global.pagecount = 1;					/* Reset 'pagecount' if single file */
 	global.doing_toc = 0;
 	ps_set_layer_group(-1, NULL, -1, -1, 0, -1, NULL); /* reset static vars */
 	pcb_hid_expose_all(&ps_hid, &global.exps, NULL);
