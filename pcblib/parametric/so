@@ -34,7 +34,7 @@
 
 #@@include common.awk
 
-#@@over@ignore:pin_*
+#@@over@ignore::pin_
 
 awk -f `dirname $0`/common.awk -f `dirname $0`/so.awk -v "args=$*" -v gen=`basename $0` -v "genfull=$0"
 
