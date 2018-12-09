@@ -463,6 +463,10 @@ function parse_dim_(h, fallback_mil)
 		sub("cmil", "", h)
 		return mil(h)/100
 	}
+	if (h ~ "mil$") {
+		sub("mil", "", h)
+		return mil(h)
+	}
 	if (fallback_mil)
 		return mil(h)
 	else
