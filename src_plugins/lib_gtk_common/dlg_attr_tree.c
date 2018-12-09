@@ -48,7 +48,10 @@ static GtkTreeIter *ghid_tree_table_add(pcb_hid_attribute_t *attr, GtkTreeStore 
 	for(c = 0; c < attr->pcb_hatt_table_cols; c++) {
 		GValue v = G_VALUE_INIT;
 		g_value_init(&v, G_TYPE_STRING);
-		g_value_set_string(&v, r->cell[c]);
+		if (c < r->cols)
+			g_value_set_string(&v, r->cell[c]);
+		else
+			g_value_set_string(&v, "");
 		gtk_tree_store_set_value(tstore, curr, c, &v);
 	}
 
