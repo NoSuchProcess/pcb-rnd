@@ -564,7 +564,7 @@ function dimension(x1, y1, x2, y2, dist, name,    value,    vx,vy)
 	print "#dimension", coord_x(x1), coord_y(y1), coord_x(x2), coord_y(y2), dist, name, value
 }
 
-function help_extract(SEEN, fn, dirn, OVER,     WANT,tmp,key,val)
+function help_extract(SEEN, fn, dirn, OVER, IGN,     WANT,tmp,key,val,i,skip)
 {
 	if (fn in SEEN)
 		return
@@ -577,6 +577,12 @@ function help_extract(SEEN, fn, dirn, OVER,     WANT,tmp,key,val)
 			tmp = dirn "/" line
 			WANT[tmp]++
 		}
+		else if (line ~ "^#@@over@ignore") {
+			key = line
+			sub("^#@@over@ignore:", "", key)
+			sub(" .*", "", key)
+			IGN[key] = 1
+		}
 		else if (line ~ "^#@@over@") {
 			key = line
 			sub("^#@@over@", "", key)
@@ -588,6 +594,13 @@ function help_extract(SEEN, fn, dirn, OVER,     WANT,tmp,key,val)
 			key = line
 			sub("^#@@", "", key)
 			sub(" .*", "", key)
+			skip = 0
+			for(i in IGN) {
+				if (key ~ i)
+					skip = 1
+			}
+			if (skip)
+				continue
 			if (key in OVER)
 				print OVER[key]
 			else
@@ -596,7 +609,7 @@ function help_extract(SEEN, fn, dirn, OVER,     WANT,tmp,key,val)
 	}
 	close(fn)
 	for(tmp in WANT)
-		help_extract(SEEN, tmp, dirn, OVER)
+		help_extract(SEEN, tmp, dirn, OVER, IGN)
 }
 
 function help_print(   SEEN, dirn)
