@@ -31,6 +31,10 @@
 #include "conf_core.h"
 #include "misc_util.h"
 
+/* how many chars per line in conf node description (determines window width vs.
+   window height */
+#define DESC_WRAP_WIDTH 50
+
 static int conf_tree_cmp(const void *v1, const void *v2)
 {
 	const htsp_entry_t **e1 = (const htsp_entry_t **) v1, **e2 = (const htsp_entry_t **) v2;
@@ -170,7 +174,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path)
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wname, &hv);
 
 	tmp = pcb_strdup(nat->description);
-	pcb_text_wrap(tmp, 64, '\n', ' ');
+	pcb_text_wrap(tmp, DESC_WRAP_WIDTH, '\n', ' ');
 	hv.str_value = tmp;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wdesc, &hv);
 	free(tmp);
@@ -208,25 +212,20 @@ void pcb_dlg_pref_conf_create(pref_ctx_t *ctx)
 			
 			/* right/top: conf file */
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_FRAME);
 				PCB_DAD_LABEL(ctx->dlg, "");
 					ctx->conf.wname = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_LABEL(ctx->dlg, "");
 					ctx->conf.wdesc = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_LABEL(ctx->dlg, "INPUT: configuration node (\"file\" version)");
-				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_TREE(ctx->dlg, 4, 0, hdr_intree); /* input state */
-						ctx->conf.wintree = PCB_DAD_CURRENT(ctx->dlg);
-					PCB_DAD_BEGIN_VBOX(ctx->dlg);
-						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
-						PCB_DAD_LABEL(ctx->dlg, "EDIT input");
-					PCB_DAD_END(ctx->dlg);
-				PCB_DAD_END(ctx->dlg);
+				PCB_DAD_TREE(ctx->dlg, 4, 0, hdr_intree); /* input state */
+					ctx->conf.wintree = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_BUTTON(ctx->dlg, "Edit selected input...");
 			PCB_DAD_END(ctx->dlg);
 
 			/* right/bottom: native file */
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_FRAME);
 				PCB_DAD_LABEL(ctx->dlg, "NATIVE: in-memory conf node after the merge");
 				PCB_DAD_TREE(ctx->dlg, 4, 0, hdr_intree); /* input state */
 					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
