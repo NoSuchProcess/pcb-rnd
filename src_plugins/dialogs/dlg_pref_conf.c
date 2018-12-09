@@ -115,21 +115,46 @@ static void setup_tree(pref_ctx_t *ctx)
 	free(sorted);
 }
 
-static void setup_intree(pref_ctx_t *ctx)
+static void setup_intree(pref_ctx_t *ctx, conf_native_t *nat)
 {
 	conf_role_t n;
-	char *cell[5] = {NULL};
 	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wintree];
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+
+	pcb_dad_tree_clear(tree);
 
 	for(n = 0; n < CFR_max_real; n++) {
+		char *cell[5]= {NULL};
 		cell[0] = pcb_strdup(conf_role_name(n));
+		if (nat != NULL) {
+			lht_node_t *nd;
+			long prio = conf_default_prio[n];
+			conf_policy_t pol = POL_OVERWRITE;
+
+			nd = conf_lht_get_at(n, nat->hash_path, 0);
+			if (nd != NULL) { /* role, prio, policy, value */
+				const char *val;
+				conf_get_policy_prio(nd, &pol, &prio);
+				switch (nd->type) {
+					case LHT_TEXT:         val = nd->data.text.value; break;
+					case LHT_LIST:         val = "<list>"; break;
+					case LHT_HASH:         val = "<hash>"; break;
+					case LHT_TABLE:        val = "<table>"; break;
+					case LHT_SYMLINK:      val = "<symlink>"; break;
+					case LHT_INVALID_TYPE: val = "<invalid>"; break;
+				}
+				cell[1] = pcb_strdup_printf("%ld", prio);
+				cell[2] = pcb_strdup(conf_policy_name(pol));
+				cell[3] = pcb_strdup(val);
+			}
+		}
 		pcb_dad_tree_append(attr, NULL, cell);
 	}
 }
 
 static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path)
 {
-	conf_native_t *nat = conf_get_field(path);
+	conf_native_t *nat = path == NULL ? NULL : conf_get_field(path);
 	pcb_hid_attr_val_t hv;
 	char *tmp;
 
@@ -137,10 +162,11 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path)
 		hv.str_value = "";
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wname, &hv);
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wdesc, &hv);
+		setup_intree(ctx, NULL);
 		return;
 	}
 
-	hv.str_value = path;
+	hv.str_value = path == NULL ? "" : path;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wname, &hv);
 
 	tmp = pcb_strdup(nat->description);
@@ -148,6 +174,8 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path)
 	hv.str_value = tmp;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wdesc, &hv);
 	free(tmp);
+
+	setup_intree(ctx, nat);
 	return;
 }
 
@@ -155,7 +183,7 @@ static void dlg_conf_select_node_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, 
 {
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
 
-	dlg_conf_select_node((pref_ctx_t *)tree->user_ctx, row->path);
+	dlg_conf_select_node((pref_ctx_t *)tree->user_ctx, row == NULL ? NULL : row->path);
 }
 
 void pcb_dlg_pref_conf_create(pref_ctx_t *ctx)
@@ -209,5 +237,5 @@ void pcb_dlg_pref_conf_create(pref_ctx_t *ctx)
 	PCB_DAD_END(ctx->dlg);
 
 	setup_tree(ctx);
-	setup_intree(ctx);
+	setup_intree(ctx, NULL);
 }
