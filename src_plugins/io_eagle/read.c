@@ -366,7 +366,7 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 	return 0;
 }
 
-static pcb_layer_t *eagle_layer_get(read_state_t *st, int id, eagle_loc_t loc, void *obj)
+static pcb_layer_t *eagle_layer_get(read_state_t *st, eagle_layerid_t id, eagle_loc_t loc, void *obj)
 {
 	/* tDocu & bDocu are used for info used when designing, but not necessarily for
 	   exporting to Gerber i.e. package outlines that cross pads, or instructions.
@@ -523,7 +523,7 @@ static int eagle_rot2steps(const char *rot)
 
 static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
-	long ln = eagle_get_attrl(st, subtree, "layer", -1);
+	eagle_layerid_t ln = eagle_get_attrl(st, subtree, "layer", -1);
 	pcb_coord_t X, Y, height;
 	const char *rot, *text_val;
 	unsigned int text_direction = 0, text_scaling = 100;
@@ -601,7 +601,7 @@ static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, int
 {
 	eagle_loc_t loc = type;
 	pcb_arc_t *circ;
-	long ln = eagle_get_attrl(st, subtree, "layer", -1);
+	eagle_layerid_t ln = eagle_get_attrl(st, subtree, "layer", -1);
 	pcb_layer_t *ly;
 
 	ly = eagle_layer_get(st, ln, loc, obj);
@@ -637,7 +637,7 @@ static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int t
 {
 	eagle_loc_t loc = type;
 	pcb_line_t *lin1, *lin2, *lin3, *lin4;
-	long ln = eagle_get_attrl(st, subtree, "layer", -1);
+	eagle_layerid_t ln = eagle_get_attrl(st, subtree, "layer", -1);
 	pcb_layer_t *ly;
 
 	ly = eagle_layer_get(st, ln, loc, obj);
@@ -700,7 +700,7 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 	eagle_loc_t loc = type;
 	pcb_line_t *lin;
 	pcb_layer_t *ly;
-	long ln = eagle_get_attrl(st, subtree, "layer", -1);
+	eagle_layerid_t ln = eagle_get_attrl(st, subtree, "layer", -1);
 	long lt = eagle_get_attrl(st, subtree, "linetype", -1); /* present if bin file */
 	double curve = eagle_get_attrd(st, subtree, "curve", 0); /*present if a wire "arc" */
 
@@ -843,7 +843,7 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 	pcb_pstk_t *ps;
 	pcb_subc_t *subc = obj;
 	const char *name;
-	long ln = eagle_get_attrl(st, subtree, "layer", -1);
+	eagle_layerid_t ln = eagle_get_attrl(st, subtree, "layer", -1);
 	long roundness = 0;
 	pcb_pstk_shape_t sh[4];
 	pcb_coord_t clr;
@@ -985,7 +985,8 @@ static int eagle_read_pkg_txt(read_state_t *st, trnode_t *subtree, void *obj, in
 	trnode_t *n;
 	const char *cont;
 	pcb_coord_t x, y;
-	int dir = 0, scale, layer;
+	int dir = 0, scale;
+	eagle_layerid_t layer;
 	const char *pattern;
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n))
@@ -1207,7 +1208,7 @@ static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int t
 {
 	eagle_loc_t loc = type;
 	pcb_layer_t *ly;
-	long ln = eagle_get_attrl(st, subtree, "layer", -1);
+	eagle_layerid_t ln = eagle_get_attrl(st, subtree, "layer", -1);
 	pcb_poly_t *poly;
 	trnode_t *n;
 
