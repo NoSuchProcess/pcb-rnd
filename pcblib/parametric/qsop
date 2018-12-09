@@ -12,6 +12,13 @@
 #@@include so
 #@@include common.awk
 
+#@@over@default:pad_spacing 25 mil
+#@@over@default:row_spacing 213 mil
+#@@over@default:int_vloat 22 mil
+#@@over@default:ext_bloat 23 mil
+#@@over@default:pad_thickness 16 mil
+
+
 defaults='
 ?pad_spacing=25mil,
 ?row_spacing=213mil,
