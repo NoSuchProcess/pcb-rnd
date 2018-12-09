@@ -601,8 +601,10 @@ function help_extract(SEEN, fn, dirn, OVER, IGN,     WANT,tmp,key,val,i,skip)
 			}
 			if (skip)
 				continue
-			if (key in OVER)
+			if (key in OVER) {
 				print OVER[key]
+				OVER[key "::PRINTED"] = 1
+			}
 			else
 				print line
 		}
@@ -612,12 +614,16 @@ function help_extract(SEEN, fn, dirn, OVER, IGN,     WANT,tmp,key,val,i,skip)
 		help_extract(SEEN, tmp, dirn, OVER, IGN)
 }
 
-function help_print(   SEEN, dirn)
+function help_print(   SEEN, OVER, dirn, k)
 {
 	print "#@@info-generator pcblib common.awk"
 	dirn = genfull
 	sub("/[^/]*$", "", dirn)
-	help_extract(SEEN, genfull, dirn)
+	help_extract(SEEN, genfull, dirn, OVER)
+	for(k in OVER) {
+		if (!(k ~ "::PRINTED$") && !((k "::PRINTED") in OVER))
+			print OVER[k]
+	}
 }
 
 function help_auto()
