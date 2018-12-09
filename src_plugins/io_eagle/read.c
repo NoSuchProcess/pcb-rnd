@@ -314,10 +314,9 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 			if (tmp_id < 1 || tmp_id > 254) {
 				pcb_message(PCB_MSG_ERROR, "invalid layer definition layer number found: '%d', skipping\n", tmp_id);
 				return -1;
-			} else {
-				htip_set(&st->layers, id, ly); /* all valid layers get a hash */
-				id = tmp_id;
 			}
+			id = tmp_id;
+			htip_set(&st->layers, id, ly); /* all valid layers get a hash */
 			typ = 0;
 			switch(id) {
 				case 1: typ = PCB_LYT_COPPER | PCB_LYT_TOP; break;
