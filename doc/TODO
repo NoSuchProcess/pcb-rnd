@@ -234,6 +234,7 @@
 - FEATURE: lihata v7
 	- remove via geometry from route style
 - BUG: gtk: slipping 'tab' issue view drifts when tab is used repeatedly at different zooms around the cardinal edges of a placed part, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
+- BUG: XY exporter: place a 1206 rotated 15 degrees, then export to xy with macrofab -> error message on rotated pad bbox; we need to rotate back the terminal object and calculate hte bbox in neutral position [report: celem]
 
 3. Long term ===============================================================================
 - BUG: draw a large padstack poly (as a subc term); put some vias (padtsacks) on top of it; with gdk and gl, after the 6th via some via rings will disappear [report: James]
