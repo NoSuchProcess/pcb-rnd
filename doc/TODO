@@ -239,8 +239,6 @@
 - BUG: draw a large padstack poly (as a subc term); put some vias (padtsacks) on top of it; with gdk and gl, after the 6th via some via rings will disappear [report: James]
 	-> reason: order of padstack shape rendering is random
 	-> we should probably render large objects first then smaller ones
-- BUG: pcblib parametric footprints:
-	- pin_* parameters for MSOP should not exist [report: Piotr]
 
 Lesstif:
 	- the notebook widget is not portable; detect it from scconfig and provide some hackish alternative if not found [report: rqsall]
