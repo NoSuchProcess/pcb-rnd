@@ -71,13 +71,6 @@ PCB_INLINE void pcb_dad_tree_free_row(pcb_hid_tree_t *tree, pcb_hid_row_t *row)
 	free(row);
 }
 
-PCB_INLINE void pcb_dad_tree_clear(pcb_hid_tree_t *tree)
-{
-	pcb_hid_row_t *r;
-	for(r = gdl_first(&tree->rows); r != NULL; r = gdl_first(&tree->rows))
-		pcb_dad_tree_free_row(tree, r);
-}
-
 
 PCB_INLINE pcb_hid_row_t *pcb_dad_tree_parent_row(pcb_hid_tree_t *tree, pcb_hid_row_t *row)
 {
@@ -209,6 +202,13 @@ PCB_INLINE int pcb_dad_tree_remove(pcb_hid_attribute_t *attr, pcb_hid_row_t *row
 	gdl_remove(lst, row, link);
 	pcb_dad_tree_free_row(tree, row);
 	return res;
+}
+
+PCB_INLINE void pcb_dad_tree_clear(pcb_hid_tree_t *tree)
+{
+	pcb_hid_row_t *r;
+	for(r = gdl_first(&tree->rows); r != NULL; r = gdl_first(&tree->rows))
+		pcb_dad_tree_remove(tree->attrib, r);
 }
 
 PCB_INLINE pcb_hid_row_t *pcb_dad_tree_get_selected(pcb_hid_attribute_t *attr)
