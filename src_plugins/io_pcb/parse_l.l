@@ -82,6 +82,7 @@ pcb_flag_t yy_pcb_flags;
 int *yyFontkitValid;
 int yy_parse_tags;
 pcb_bool yyFontReset;
+int yyElemFixLayers = 0;
 
 static int parse_number (void);
 static void add_tag(char *line);
@@ -329,12 +330,15 @@ int io_pcb_ParseElement(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
 	yyFontReset = pcb_false;
 	yyFontkitValid = NULL;
 	yysubc = NULL;
+	yyElemFixLayers = 1;
 
 
 	if (f == NULL)
 		return -1;
 
 	ret = Parse(f, NULL,NULL,NULL);
+
+	yyElemFixLayers = 0;
 
 	pcb_fp_fclose(f, &st);
 

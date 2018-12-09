@@ -718,6 +718,7 @@ int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, con
 extern pcb_board_t *yyPCB;
 extern pcb_data_t *yyData;
 extern pcb_font_t *yyFont;
+extern int yyElemFixLayers;
 
 void PreLoadElementPCB()
 {
