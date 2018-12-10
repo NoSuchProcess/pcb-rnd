@@ -2,6 +2,7 @@
 #define PCB_BRAVE_H
 typedef enum {
 	PCB_BRAVE_OFF = 0,
+	PCB_BRAVE_NOXOR = 1,
 	PCB_BRACE_max
 } pcb_brave_t;
 

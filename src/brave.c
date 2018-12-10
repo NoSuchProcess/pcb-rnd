@@ -50,6 +50,7 @@ typedef struct {
 } desc_t;
 
 static desc_t desc[] = {
+	{PCB_BRAVE_NOXOR, "no xor", "avoid xor drawing", "use alternative rendering instead of xor draw", 0},
 	{0, NULL, NULL, NULL}
 };
 
