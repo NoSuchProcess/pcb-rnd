@@ -18,6 +18,7 @@
 + CLEANUP: dad: make the implicit dialog ok/cancel buttons configurable or do not use them at all; e.g. export dialog is confusing [report: Cyril, ml2409]
 - CLEANUP: library window DAD-ification: remove pcb_act_LibraryShow()
 	- FEATURE: library window: allow long tags and long location text to split
+	- BUG: double check parametric footprint edit window: bug_files/parametric.txt [report: Piotr]
 - FEATURE: {e t} dialog: pressing enter should close the window [report: Ade]
 - FEATURE: route style upgrade to prototypes (depends on tree in lesstif!):
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
