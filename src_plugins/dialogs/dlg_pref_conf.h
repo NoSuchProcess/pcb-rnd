@@ -1,9 +1,11 @@
 #ifndef PCB_DLG_PREF_CONF_H
 #define PCB_DLG_PREF_CONF_H
 
+#include "conf.h"
+
 typedef struct {
 	int wtree, wintree, wmemtree, wdesc, wname, wmainp;
-	void *selected_nat;
+	conf_native_t *selected_nat;
 } pref_conf_t;
 
 void pcb_dlg_pref_conf_close(pref_ctx_t *ctx);
