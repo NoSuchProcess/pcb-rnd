@@ -35,6 +35,9 @@
    window height */
 #define DESC_WRAP_WIDTH 50
 
+static const char *type_tabs[CFN_max+2] = /* MUST MATCH conf_native_type_t */
+	{"STRING", "BOOLEAN", "INTEGER", "REAL", "COORD", "UNIT", "COLOR", "LIST", "invalid", NULL};
+
 static int conf_tree_cmp(const void *v1, const void *v2)
 {
 	const htsp_entry_t **e1 = (const htsp_entry_t **) v1, **e2 = (const htsp_entry_t **) v2;
@@ -174,6 +177,10 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wname, &hv);
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wdesc, &hv);
 		setup_intree(ctx, NULL);
+
+		hv.int_value = CFN_max;
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wnattype, &hv);
+
 		return;
 	}
 
@@ -185,6 +192,10 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 	hv.str_value = tmp;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wdesc, &hv);
 	free(tmp);
+
+
+	hv.int_value = nat->type;
+	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wnattype, &hv);
 
 	setup_intree(ctx, nat);
 	return;
@@ -203,6 +214,58 @@ void pcb_pref_dlg_conf_changed_cb(pref_ctx_t *ctx, conf_native_t *cfg, int arr_i
 		dlg_conf_select_node(ctx, NULL, cfg);
 }
 
+static void build_natval(pref_ctx_t *ctx)
+{
+	PCB_DAD_BEGIN_TABBED(pref_ctx.dlg, type_tabs);
+		PCB_DAD_COMPFLAG(pref_ctx.dlg, PCB_HATF_HIDE_TABLAB);
+		ctx->conf.wnattype = PCB_DAD_CURRENT(ctx->dlg);
+		PCB_DAD_BEGIN_VBOX(ctx->dlg);
+			PCB_DAD_LABEL(ctx->dlg, "Data type: string");
+			PCB_DAD_LABEL(ctx->dlg, "(data)");
+				ctx->conf.wnatval[0] = PCB_DAD_CURRENT(ctx->dlg);
+		PCB_DAD_END(ctx->dlg);
+		PCB_DAD_BEGIN_VBOX(ctx->dlg);
+			PCB_DAD_LABEL(ctx->dlg, "Data type: boolean");
+			PCB_DAD_LABEL(ctx->dlg, "(data)");
+				ctx->conf.wnatval[1] = PCB_DAD_CURRENT(ctx->dlg);
+		PCB_DAD_END(ctx->dlg);
+		PCB_DAD_BEGIN_VBOX(ctx->dlg);
+			PCB_DAD_LABEL(ctx->dlg, "Data type: integer");
+			PCB_DAD_LABEL(ctx->dlg, "(data)");
+				ctx->conf.wnatval[2] = PCB_DAD_CURRENT(ctx->dlg);
+		PCB_DAD_END(ctx->dlg);
+		PCB_DAD_BEGIN_VBOX(ctx->dlg);
+			PCB_DAD_LABEL(ctx->dlg, "Data type: real");
+			PCB_DAD_LABEL(ctx->dlg, "(data)");
+				ctx->conf.wnatval[3] = PCB_DAD_CURRENT(ctx->dlg);
+		PCB_DAD_END(ctx->dlg);
+		PCB_DAD_BEGIN_VBOX(ctx->dlg);
+			PCB_DAD_LABEL(ctx->dlg, "Data type: coord");
+			PCB_DAD_LABEL(ctx->dlg, "(data)");
+				ctx->conf.wnatval[4] = PCB_DAD_CURRENT(ctx->dlg);
+		PCB_DAD_END(ctx->dlg);
+		PCB_DAD_BEGIN_VBOX(ctx->dlg);
+			PCB_DAD_LABEL(ctx->dlg, "Data type: unit");
+			PCB_DAD_LABEL(ctx->dlg, "(data)");
+				ctx->conf.wnatval[5] = PCB_DAD_CURRENT(ctx->dlg);
+		PCB_DAD_END(ctx->dlg);
+		PCB_DAD_BEGIN_VBOX(ctx->dlg);
+			PCB_DAD_LABEL(ctx->dlg, "Data type: color");
+			PCB_DAD_LABEL(ctx->dlg, "(data)");
+				ctx->conf.wnatval[6] = PCB_DAD_CURRENT(ctx->dlg);
+		PCB_DAD_END(ctx->dlg);
+		PCB_DAD_BEGIN_VBOX(ctx->dlg);
+			PCB_DAD_LABEL(ctx->dlg, "Data type: list of strings");
+			PCB_DAD_TREE(ctx->dlg, 1, 0, NULL); /* input state */
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				ctx->conf.wnatval[7] = PCB_DAD_CURRENT(ctx->dlg);
+		PCB_DAD_END(ctx->dlg);
+		PCB_DAD_BEGIN_VBOX(ctx->dlg);
+			PCB_DAD_LABEL(ctx->dlg, "(no conf node selected)");
+			ctx->conf.wnatval[8] = PCB_DAD_CURRENT(ctx->dlg);
+		PCB_DAD_END(ctx->dlg);
+	PCB_DAD_END(ctx->dlg);
+}
 
 void pcb_dlg_pref_conf_create(pref_ctx_t *ctx)
 {
@@ -241,12 +304,9 @@ void pcb_dlg_pref_conf_create(pref_ctx_t *ctx)
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_FRAME);
 				PCB_DAD_LABEL(ctx->dlg, "NATIVE: in-memory conf node after the merge");
-				PCB_DAD_TREE(ctx->dlg, 4, 0, hdr_intree); /* input state */
-					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
-					ctx->conf.wmemtree = PCB_DAD_CURRENT(ctx->dlg);
+				build_natval(ctx);
 
 			PCB_DAD_END(ctx->dlg);
-
 		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);
 
