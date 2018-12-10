@@ -701,14 +701,14 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 	pcb_line_t *lin;
 	pcb_layer_t *ly;
 	eagle_layerid_t ln = eagle_get_attrl(st, subtree, "layer", -1);
-	long lt = eagle_get_attrl(st, subtree, "linetype", -1); /* present if bin file */
+	long linetype = eagle_get_attrl(st, subtree, "linetype", -1);/* only present if bin file */
 	double curve = eagle_get_attrd(st, subtree, "curve", 0); /*present if a wire "arc" */
 
 TODO(": need to process curve value if present to draw an arc, not a line")
 	if (curve) {
 		pcb_message(PCB_MSG_ERROR, "Curved wire not yet handled in eagle_read_wire()\n");
 	}
-	if (lt > 0) {
+	if (linetype > 0) {
 		/* using circle routine to process post_processed binary wire type > 0 */
 		return eagle_read_circle(st, subtree, obj, type);
 	}
