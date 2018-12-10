@@ -137,7 +137,7 @@ static void setup_tree(pref_ctx_t *ctx)
 	free(sorted);
 }
 
-static void setup_intree(pref_ctx_t *ctx, conf_native_t *nat)
+static void setup_intree(pref_ctx_t *ctx, conf_native_t *nat, int idx)
 {
 	conf_role_t n;
 	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wintree];
@@ -149,7 +149,7 @@ static void setup_intree(pref_ctx_t *ctx, conf_native_t *nat)
 		char *cell[5]= {NULL};
 		cell[0] = pcb_strdup(conf_role_name(n));
 		if (nat != NULL) {
-			lht_node_t *nd;
+			lht_node_t *nd, *ni;
 			long prio = conf_default_prio[n];
 			conf_policy_t pol = POL_OVERWRITE;
 
@@ -159,7 +159,24 @@ static void setup_intree(pref_ctx_t *ctx, conf_native_t *nat)
 				conf_get_policy_prio(nd, &pol, &prio);
 				switch (nd->type) {
 					case LHT_TEXT:         val = nd->data.text.value; break;
-					case LHT_LIST:         val = "<list>"; break;
+					case LHT_LIST:
+						if (nat->array_size > 1) {
+							int idx2 = idx;
+							val = "";
+							for(ni = nd->data.list.first; ni != NULL; ni = ni->next) {
+								if (idx2 == 0) {
+									if (ni->type == LHT_TEXT)
+										val = ni->data.text.value;
+									else
+										val = "<invalid array item type>";
+									break;
+								}
+								idx2--;
+							}
+						}
+						else
+							val = "<list>";
+						break;
 					case LHT_HASH:         val = "<hash>"; break;
 					case LHT_TABLE:        val = "<table>"; break;
 					case LHT_SYMLINK:      val = "<symlink>"; break;
@@ -213,7 +230,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 		hv.str_value = "";
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wname, &hv);
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wdesc, &hv);
-		setup_intree(ctx, NULL);
+		setup_intree(ctx, NULL, 0);
 
 		hv.int_value = CFN_max;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wnattype, &hv);
@@ -231,7 +248,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 	free(tmp);
 
 	/* display lht value */
-	setup_intree(ctx, nat);
+	setup_intree(ctx, nat, idx);
 
 	/* display native value */
 	hv.int_value = nat->type;
@@ -431,8 +448,7 @@ void pcb_dlg_pref_conf_create(pref_ctx_t *ctx)
 	PCB_DAD_END(ctx->dlg);
 
 	setup_tree(ctx);
-	setup_intree(ctx, NULL);
-
+	setup_intree(ctx, NULL, 0);
 }
 
 void pcb_dlg_pref_conf_open(pref_ctx_t *ctx)
