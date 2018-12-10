@@ -639,6 +639,7 @@ static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int t
 	pcb_line_t *lin1, *lin2, *lin3, *lin4;
 	eagle_layerid_t ln = eagle_get_attrl(st, subtree, "layer", -1);
 	pcb_layer_t *ly;
+	pcb_coord_t x1, y1, x2, y2;
 
 	ly = eagle_layer_get(st, ln, loc, obj);
 	if (ly == NULL) {
@@ -646,44 +647,45 @@ static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int t
 		return 0;
 	}
 
-TODO(": rewrite this with only one lin")
+	x1 = eagle_get_attrc(st, subtree, "x1", -1);
+	y1 = eagle_get_attrc(st, subtree, "y1", -1);
+	x2 = eagle_get_attrc(st, subtree, "x2", -1);
+	y2 = eagle_get_attrc(st, subtree, "y2", -1);
+
 	lin1 = pcb_line_alloc(ly);
 	lin2 = pcb_line_alloc(ly);
 	lin3 = pcb_line_alloc(ly);
 	lin4 = pcb_line_alloc(ly);
 
-	lin1->Point1.X = eagle_get_attrc(st, subtree, "x1", -1);
-	lin1->Point1.Y = eagle_get_attrc(st, subtree, "y1", -1);
-	lin1->Point2.X = eagle_get_attrc(st, subtree, "x2", -1);
-	lin1->Point2.Y = lin1->Point1.Y;
+	lin1->Point1.X = x1;
+	lin1->Point1.Y = y1;
+	lin1->Point2.X = x2;
+	lin1->Point2.Y = y1;
 
-	lin2->Point1.X = lin1->Point2.X;
-	lin2->Point1.Y = lin1->Point2.Y;
-	lin2->Point2.X = lin1->Point2.X;
-	lin2->Point2.Y = eagle_get_attrc(st, subtree, "y2", -1);
+	lin2->Point1.X = x2;
+	lin2->Point1.Y = y1;
+	lin2->Point2.X = x2;
+	lin2->Point2.Y = y2;
 
-	lin3->Point1.X = lin2->Point2.X;
-	lin3->Point1.Y = lin2->Point2.Y;
-	lin3->Point2.X = lin1->Point1.X;
-	lin3->Point2.Y = lin2->Point2.Y;
+	lin3->Point1.X = x2;
+	lin3->Point1.Y = y2;
+	lin3->Point2.X = x1;
+	lin3->Point2.Y = y2;
 
-	lin4->Point1.X = lin3->Point2.X;
-	lin4->Point1.Y = lin3->Point2.Y;
-	lin4->Point2.X = lin1->Point1.X;
-	lin4->Point2.Y = lin1->Point1.Y;
+	lin4->Point1.X = x1;
+	lin4->Point1.Y = y2;
+	lin4->Point2.X = x1;
+	lin4->Point2.Y = y1;
 
-	lin1->Thickness = st->ms_width;
-	lin2->Thickness = lin1->Thickness;
-	lin3->Thickness = lin1->Thickness;
-	lin4->Thickness = lin1->Thickness;
+	lin1->Thickness = lin2->Thickness = lin3->Thickness = lin4->Thickness = st->ms_width;
 
 	switch(loc) {
 		case IN_SUBC:
 			break;
 
 		case ON_BOARD:
-			size_bump(st, lin1->Point1.X + lin1->Thickness, lin1->Point1.Y + lin1->Thickness);
-			size_bump(st, lin3->Point1.X + lin3->Thickness, lin3->Point1.Y + lin3->Thickness);
+			size_bump(st, x1 - lin1->Thickness, y1 - lin1->Thickness);
+			size_bump(st, x2 + lin1->Thickness, y2 + lin1->Thickness);
 			pcb_add_line_on_layer(ly, lin1);
 			pcb_add_line_on_layer(ly, lin2);
 			pcb_add_line_on_layer(ly, lin3);
@@ -1015,8 +1017,59 @@ static int eagle_read_pkg_txt(read_state_t *st, trnode_t *subtree, void *obj, in
 	return 0;
 }
 
-TODO(": eliminate this fwd declaration by reorder")
-static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int type);
+static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int type)
+{
+	eagle_loc_t loc = type;
+	pcb_layer_t *ly;
+	eagle_layerid_t ln = eagle_get_attrl(st, subtree, "layer", -1);
+	pcb_poly_t *poly;
+	trnode_t *n;
+
+	ly = eagle_layer_get(st, ln, loc, obj);
+	if (ly == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Failed to allocate polygon layer 'ly' to 'ln:%d' in eagle_read_poly()\n", ln);
+		return 0;
+	}
+
+	poly = pcb_poly_new(ly, 0, pcb_flag_make(PCB_FLAG_CLEARPOLY));
+
+	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
+		if (STRCMP(NODENAME(n), "vertex") == 0) {
+			pcb_coord_t x, y;
+			x = eagle_get_attrc(st, n, "x", 0);
+			y = eagle_get_attrc(st, n, "y", 0);
+			pcb_poly_point_new(poly, x, y);
+			switch (loc) {
+				case IN_SUBC:
+					break;
+				case ON_BOARD:
+					size_bump(st, x, y);
+					break;
+			}
+TODO("TODO can remove the following if dealt with in post processor for binary tree")
+		} else if (STRCMP(NODENAME(n), "wire") == 0) { /* binary format vertices it seems */
+			pcb_coord_t x, y;
+			x = eagle_get_attrc(st, n, "linetype_0_x1", 0);
+			y = eagle_get_attrc(st, n, "linetype_0_y1", 0);
+			pcb_poly_point_new(poly, x, y);
+			x = eagle_get_attrc(st, n, "linetype_0_x2", 0);
+			y = eagle_get_attrc(st, n, "linetype_0_y2", 0);
+			pcb_poly_point_new(poly, x, y);
+			switch (loc) {
+				case IN_SUBC:
+					break;
+				case ON_BOARD:
+					size_bump(st, x, y);
+					break;
+			}
+		}
+	}
+
+	pcb_add_poly_on_layer(ly, poly);
+	pcb_poly_init_clip(st->pcb->Data, ly, poly);
+
+	return 0;
+}
 
 static int eagle_read_pkg(read_state_t *st, trnode_t *subtree, pcb_subc_t *subc)
 {
@@ -1201,62 +1254,6 @@ static int eagle_read_contactref(read_state_t *st, trnode_t *subtree, void *obj,
 	}
 	return 0;
 }
-
-
-static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int type)
-{
-	eagle_loc_t loc = type;
-	pcb_layer_t *ly;
-	eagle_layerid_t ln = eagle_get_attrl(st, subtree, "layer", -1);
-	pcb_poly_t *poly;
-	trnode_t *n;
-
-	ly = eagle_layer_get(st, ln, loc, obj);
-	if (ly == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Failed to allocate polygon layer 'ly' to 'ln:%d' in eagle_read_poly()\n", ln);
-		return 0;
-	}
-
-	poly = pcb_poly_new(ly, 0, pcb_flag_make(PCB_FLAG_CLEARPOLY));
-
-	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
-		if (STRCMP(NODENAME(n), "vertex") == 0) {
-			pcb_coord_t x, y;
-			x = eagle_get_attrc(st, n, "x", 0);
-			y = eagle_get_attrc(st, n, "y", 0);
-			pcb_poly_point_new(poly, x, y);
-			switch (loc) {
-				case IN_SUBC:
-					break;
-				case ON_BOARD:
-					size_bump(st, x, y);
-					break;
-			}
-TODO("TODO can remove the following if dealt with in post processor for binary tree")
-		} else if (STRCMP(NODENAME(n), "wire") == 0) { /* binary format vertices it seems */
-			pcb_coord_t x, y;
-			x = eagle_get_attrc(st, n, "linetype_0_x1", 0);
-			y = eagle_get_attrc(st, n, "linetype_0_y1", 0);
-			pcb_poly_point_new(poly, x, y);
-			x = eagle_get_attrc(st, n, "linetype_0_x2", 0);
-			y = eagle_get_attrc(st, n, "linetype_0_y2", 0);
-			pcb_poly_point_new(poly, x, y);
-			switch (loc) {
-				case IN_SUBC:
-					break;
-				case ON_BOARD:
-					size_bump(st, x, y);
-					break;
-			}
-		}
-	}
-
-	pcb_add_poly_on_layer(ly, poly);
-	pcb_poly_init_clip(st->pcb->Data, ly, poly);
-
-	return 0;
-}
-
 
 static int eagle_read_signals(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
