@@ -162,7 +162,8 @@ static void setup_intree(pref_ctx_t *ctx, conf_native_t *nat)
 static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_t *nat)
 {
 	pcb_hid_attr_val_t hv;
-	char *tmp;
+	char *tmp, buf[128];
+	lht_node_t *src;
 
 	if ((path != NULL) && (nat == NULL))
 		nat = conf_get_field(path);
@@ -193,11 +194,41 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wdesc, &hv);
 	free(tmp);
 
+	/* display lht value */
+	setup_intree(ctx, nat);
 
+	/* display native value */
 	hv.int_value = nat->type;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wnattype, &hv);
 
-	setup_intree(ctx, nat);
+	hv.str_value = buf;
+	*buf = '\0';
+	switch(nat->type) {
+		case CFN_STRING:   if (*nat->val.string != NULL) hv.str_value = *nat->val.string; break;
+		case CFN_BOOLEAN:  strcpy(buf, *nat->val.boolean ? "true" : "false"); break;
+		case CFN_INTEGER:  sprintf(buf, "%ld", *nat->val.integer); break;
+		case CFN_REAL:     sprintf(buf, "%f", *nat->val.real); break;
+		case CFN_COORD:    pcb_snprintf(buf, sizeof(buf), "%mH\n%mm\n%ml", *nat->val.coord, *nat->val.coord, *nat->val.coord); break;
+		case CFN_UNIT:     strcpy(buf, (*nat->val.unit)->suffix); break;
+		case CFN_COLOR:    strcpy(buf, *nat->val.color); break;
+		case CFN_LIST:
+			/* non-default: lists are manually loaded */
+			return;
+		case CFN_max:
+			return;
+	}
+
+	/* default: set the value of the given node from hv loaded above */
+	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wnatval[nat->type], &hv);
+
+	src = nat->prop[0].src;
+	if (src != NULL)
+		hv.str_value = pcb_strdup_printf("prio: %d\nsource: %s:%d.%d", nat->prop[0].prio, src->file_name, src->line, src->col);
+	else
+		hv.str_value = pcb_strdup_printf("prio: %d\nsource: <not saved>", nat->prop[0].prio);
+	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wsrc[nat->type], &hv);
+	free(hv.str_value);
+
 	return;
 }
 
@@ -221,41 +252,57 @@ static void build_natval(pref_ctx_t *ctx)
 		ctx->conf.wnattype = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Data type: string");
+			PCB_DAD_LABEL(ctx->dlg, "role/prio");
+				ctx->conf.wsrc[0] = PCB_DAD_CURRENT(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "(data)");
 				ctx->conf.wnatval[0] = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Data type: boolean");
+			PCB_DAD_LABEL(ctx->dlg, "role/prio");
+				ctx->conf.wsrc[1] = PCB_DAD_CURRENT(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "(data)");
 				ctx->conf.wnatval[1] = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Data type: integer");
+			PCB_DAD_LABEL(ctx->dlg, "role/prio");
+				ctx->conf.wsrc[2] = PCB_DAD_CURRENT(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "(data)");
 				ctx->conf.wnatval[2] = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Data type: real");
+			PCB_DAD_LABEL(ctx->dlg, "role/prio");
+				ctx->conf.wsrc[3] = PCB_DAD_CURRENT(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "(data)");
 				ctx->conf.wnatval[3] = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Data type: coord");
+			PCB_DAD_LABEL(ctx->dlg, "role/prio");
+				ctx->conf.wsrc[4] = PCB_DAD_CURRENT(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "(data)");
 				ctx->conf.wnatval[4] = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Data type: unit");
+			PCB_DAD_LABEL(ctx->dlg, "role/prio");
+				ctx->conf.wsrc[5] = PCB_DAD_CURRENT(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "(data)");
 				ctx->conf.wnatval[5] = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Data type: color");
+			PCB_DAD_LABEL(ctx->dlg, "role/prio");
+				ctx->conf.wsrc[6] = PCB_DAD_CURRENT(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "(data)");
 				ctx->conf.wnatval[6] = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Data type: list of strings");
+			PCB_DAD_LABEL(ctx->dlg, "role/prio");
+				ctx->conf.wsrc[7] = PCB_DAD_CURRENT(ctx->dlg);
 			PCB_DAD_TREE(ctx->dlg, 1, 0, NULL); /* input state */
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 				ctx->conf.wnatval[7] = PCB_DAD_CURRENT(ctx->dlg);

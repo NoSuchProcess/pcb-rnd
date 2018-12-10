@@ -5,7 +5,7 @@
 
 typedef struct {
 	int wtree, wintree, wdesc, wname, wmainp, wnattype;
-	int wnatval[CFN_max+1];
+	int wnatval[CFN_max+1], wsrc[CFN_max+1];
 	conf_native_t *selected_nat;
 } pref_conf_t;
 
