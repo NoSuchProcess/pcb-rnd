@@ -1052,6 +1052,13 @@ TODO("TODO can remove the following if dealt with in post processor for binary t
 			x = eagle_get_attrc(st, n, "linetype_0_x1", 0);
 			y = eagle_get_attrc(st, n, "linetype_0_y1", 0);
 			pcb_poly_point_new(poly, x, y);
+			switch (loc) {
+				case IN_SUBC:
+					break;
+				case ON_BOARD:
+					size_bump(st, x, y);
+					break;
+			}
 			x = eagle_get_attrc(st, n, "linetype_0_x2", 0);
 			y = eagle_get_attrc(st, n, "linetype_0_y2", 0);
 			pcb_poly_point_new(poly, x, y);
