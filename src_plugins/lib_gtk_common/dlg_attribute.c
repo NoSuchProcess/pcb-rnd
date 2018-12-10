@@ -361,10 +361,12 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					ts.type = TB_TABBED;
 					ts.val.tabbed.tablab = ctx->attrs[j].enumerations;
 					ctx->wl[j] = widget = gtk_notebook_new();
+					gtk_notebook_set_show_tabs(GTK_NOTEBOOK(widget), !(ctx->attrs[j].pcb_hatt_flags & PCB_HATF_HIDE_TABLAB));
 					if (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_LEFT_TAB)
 						gtk_notebook_set_tab_pos(GTK_NOTEBOOK(widget), GTK_POS_LEFT);
 					else
 						gtk_notebook_set_tab_pos(GTK_NOTEBOOK(widget), GTK_POS_TOP);
+
 					gtk_box_pack_start(GTK_BOX(parent), widget, TRUE, TRUE, 0);
 					g_signal_connect(G_OBJECT(widget), "switch-page", G_CALLBACK(notebook_changed_cb), &(ctx->attrs[j]));
 					g_object_set_data(G_OBJECT(widget), PCB_OBJ_PROP, ctx);
