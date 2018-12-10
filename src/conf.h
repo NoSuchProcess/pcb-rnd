@@ -71,7 +71,8 @@ typedef enum {
 	CFN_COORD,
 	CFN_UNIT,
 	CFN_COLOR,
-	CFN_LIST
+	CFN_LIST,
+	CFN_max
 } conf_native_type_t;
 
 union confitem_u {
