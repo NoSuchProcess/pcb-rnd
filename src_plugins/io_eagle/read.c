@@ -531,7 +531,7 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 	pcb_layer_t *ly;
 	ly = eagle_layer_get(st, ln, type, obj);
 	if (ly == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Failed to allocate text layer 'ly' in eagle_read_text()\n");
+		pcb_message(PCB_MSG_ERROR, "Failed to allocate text layer 'ly' to 'ln:%d' in eagle_read_text()\n", ln);
 		return 0;
 	}
 TODO("TODO text - need better filtering/exclusion of unsupported text layers +/- correct flags")
@@ -606,7 +606,7 @@ static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, int
 
 	ly = eagle_layer_get(st, ln, loc, obj);
 	if (ly == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Failed to allocate circle layer 'ly' in eagle_read_circle()\n");
+		pcb_message(PCB_MSG_ERROR, "Failed to allocate circle layer 'ly' to 'ln:%d' in eagle_read_circle()\n", ln);
 		return 0;
 	}
 
@@ -642,7 +642,7 @@ static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int t
 
 	ly = eagle_layer_get(st, ln, loc, obj);
 	if (ly == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Failed to allocate rect layer 'ly' in eagle_read_rect()\n");
+		pcb_message(PCB_MSG_ERROR, "Failed to allocate rect layer 'ly' to 'ln:%d' in eagle_read_rect()\n", ln);
 		return 0;
 	}
 
@@ -714,7 +714,7 @@ TODO(": need to process curve value if present to draw an arc, not a line")
 
 	ly = eagle_layer_get(st, ln, loc, obj);
 	if (ly == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Failed to allocate wire layer 'ly' in eagle_read_wire()\n");
+		pcb_message(PCB_MSG_ERROR, "Failed to allocate wire layer 'ly' to ln:%d in eagle_read_wire()\n");
 		return 0;
 	}
 
@@ -1213,7 +1213,7 @@ static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int t
 
 	ly = eagle_layer_get(st, ln, loc, obj);
 	if (ly == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Failed to allocate polygon layer 'ly' in eagle_read_poly()\n");
+		pcb_message(PCB_MSG_ERROR, "Failed to allocate polygon layer 'ly' to 'ln:%d' in eagle_read_poly()\n", ln);
 		return 0;
 	}
 
