@@ -159,10 +159,30 @@ static void setup_intree(pref_ctx_t *ctx, conf_native_t *nat)
 	}
 }
 
+static const char *print_conf_val(conf_native_type_t type, const confitem_t *val, char *buf, int sizebuf)
+{
+	const char *ret = buf;
+
+	*buf = '\0';
+	switch(type) {
+		case CFN_STRING:   if (*val->string != NULL) ret = *val->string; break;
+		case CFN_BOOLEAN:  strcpy(buf, *val->boolean ? "true" : "false"); break;
+		case CFN_INTEGER:  sprintf(buf, "%ld", *val->integer); break;
+		case CFN_REAL:     sprintf(buf, "%f", *val->real); break;
+		case CFN_COORD:    pcb_snprintf(buf, sizebuf, "%mH\n%mm\n%ml", *val->coord, *val->coord, *val->coord); break;
+		case CFN_UNIT:     strcpy(buf, (*val->unit)->suffix); break;
+		case CFN_COLOR:    strcpy(buf, *val->color); break;
+		case CFN_LIST:     strcpy(buf, "<list>"); break;
+		case CFN_max:      strcpy(buf, "<invalid-type>"); break;
+	}
+	return ret;
+}
+
 static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_t *nat)
 {
 	pcb_hid_attr_val_t hv;
 	char *tmp, buf[128];
+	const char *rolename;
 	lht_node_t *src;
 
 	if ((path != NULL) && (nat == NULL))
@@ -201,33 +221,38 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 	hv.int_value = nat->type;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wnattype, &hv);
 
-	hv.str_value = buf;
-	*buf = '\0';
-	switch(nat->type) {
-		case CFN_STRING:   if (*nat->val.string != NULL) hv.str_value = *nat->val.string; break;
-		case CFN_BOOLEAN:  strcpy(buf, *nat->val.boolean ? "true" : "false"); break;
-		case CFN_INTEGER:  sprintf(buf, "%ld", *nat->val.integer); break;
-		case CFN_REAL:     sprintf(buf, "%f", *nat->val.real); break;
-		case CFN_COORD:    pcb_snprintf(buf, sizeof(buf), "%mH\n%mm\n%ml", *nat->val.coord, *nat->val.coord, *nat->val.coord); break;
-		case CFN_UNIT:     strcpy(buf, (*nat->val.unit)->suffix); break;
-		case CFN_COLOR:    strcpy(buf, *nat->val.color); break;
-		case CFN_LIST:
-			/* non-default: lists are manually loaded */
-			return;
-		case CFN_max:
-			return;
+	if (nat->type == CFN_LIST) {
+		/* non-default: lists are manually loaded */
+		pcb_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wnatval[CFN_LIST]];
+		pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+		conf_listitem_t *n;
+		char *cell[4];
+
+		pcb_dad_tree_clear(tree);
+		for (n = conflist_first(nat->val.list); n != NULL; n = conflist_next(n)) {
+			rolename = conf_role_name(conf_lookup_role(n->prop.src));
+			cell[0] = rolename == NULL ? pcb_strdup("") : pcb_strdup(rolename);
+			cell[1] = pcb_strdup_printf("%ld", n->prop.prio);
+			cell[2] = pcb_strdup(print_conf_val(n->type, &n->val, buf, sizeof(buf)));
+			cell[3] = 0;
+			pcb_dad_tree_append(attr, NULL, cell);
+		}
+		return;
 	}
 
 	/* default: set the value of the given node from hv loaded above */
+	hv.str_value = print_conf_val(nat->type, &nat->val, buf, sizeof(buf));
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wnatval[nat->type], &hv);
 
 	src = nat->prop[0].src;
-	if (src != NULL)
-		hv.str_value = pcb_strdup_printf("prio: %d\nsource: %s:%d.%d", nat->prop[0].prio, src->file_name, src->line, src->col);
+	if (src != NULL) {
+		rolename = conf_role_name(conf_lookup_role(nat->prop[0].src));
+		hv.str_value = tmp = pcb_strdup_printf("prio: %d\nsource: %s:%d.%d", nat->prop[0].prio, src->file_name, src->line, src->col);
+	}
 	else
-		hv.str_value = pcb_strdup_printf("prio: %d\nsource: <not saved>", nat->prop[0].prio);
+		hv.str_value = tmp = pcb_strdup_printf("prio: %d\nsource: <not saved>", nat->prop[0].prio);
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wsrc[nat->type], &hv);
-	free(hv.str_value);
+	free(tmp);
 
 	return;
 }
@@ -247,6 +272,8 @@ void pcb_pref_dlg_conf_changed_cb(pref_ctx_t *ctx, conf_native_t *cfg, int arr_i
 
 static void build_natval(pref_ctx_t *ctx)
 {
+	static const char *hdr_nat[] = {"role", "prio", "value", NULL};
+
 	PCB_DAD_BEGIN_TABBED(pref_ctx.dlg, type_tabs);
 		PCB_DAD_COMPFLAG(pref_ctx.dlg, PCB_HATF_HIDE_TABLAB);
 		ctx->conf.wnattype = PCB_DAD_CURRENT(ctx->dlg);
@@ -301,9 +328,8 @@ static void build_natval(pref_ctx_t *ctx)
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Data type: list of strings");
-			PCB_DAD_LABEL(ctx->dlg, "role/prio");
-				ctx->conf.wsrc[7] = PCB_DAD_CURRENT(ctx->dlg);
-			PCB_DAD_TREE(ctx->dlg, 1, 0, NULL); /* input state */
+			ctx->conf.wsrc[7] = -1;
+			PCB_DAD_TREE(ctx->dlg, 3, 0, hdr_nat); /* input state */
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 				ctx->conf.wnatval[7] = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
