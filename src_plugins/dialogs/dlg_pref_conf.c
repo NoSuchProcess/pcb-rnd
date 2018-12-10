@@ -156,11 +156,18 @@ static void setup_intree(pref_ctx_t *ctx, conf_native_t *nat)
 	}
 }
 
-static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path)
+static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_t *nat)
 {
-	conf_native_t *nat = path == NULL ? NULL : conf_get_field(path);
 	pcb_hid_attr_val_t hv;
 	char *tmp;
+
+	if ((path != NULL) && (nat == NULL))
+		nat = conf_get_field(path);
+
+	if ((path == NULL) && (nat != NULL))
+		path = nat->hash_path;
+
+	ctx->conf.selected_nat = nat;
 
 	if (nat == NULL) {
 		hv.str_value = "";
@@ -187,8 +194,15 @@ static void dlg_conf_select_node_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, 
 {
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
 
-	dlg_conf_select_node((pref_ctx_t *)tree->user_ctx, row == NULL ? NULL : row->path);
+	dlg_conf_select_node((pref_ctx_t *)tree->user_ctx, row == NULL ? NULL : row->path, NULL);
 }
+
+void pcb_pref_dlg_conf_changed_cb(pref_ctx_t *ctx, conf_native_t *cfg, int arr_idx)
+{
+	if (ctx->conf.selected_nat == cfg)
+		dlg_conf_select_node(ctx, NULL, cfg);
+}
+
 
 void pcb_dlg_pref_conf_create(pref_ctx_t *ctx)
 {
@@ -247,4 +261,5 @@ void pcb_dlg_pref_conf_open(pref_ctx_t *ctx)
 	hv.real_value = 0.25;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wmainp, &hv);
 }
+
 

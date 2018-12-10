@@ -326,6 +326,8 @@ void pref_conf_changed(conf_native_t *cfg, int arr_idx)
 	for(i = conf_hid_get_data(cfg, pref_hid); i != NULL; i = i->cnext)
 		if (i != pref_ctx.conf_lock)
 			pcb_pref_conf2dlg_item(cfg, i);
+
+	pcb_pref_dlg_conf_changed_cb(&pref_ctx, cfg, arr_idx);
 }
 
 static conf_hid_callbacks_t pref_conf_cb;
