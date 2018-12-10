@@ -421,7 +421,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			/*{"bin_style",  T_BMB, 22, 0x03},*/
 			/*{"bin_cap",  T_BMB, 22, 0x10},*/
 			/*{"bin_clockwise_wire",  T_BMB, 22, 0x20},*/
-			{"linetype",  T_INT, 23, 1},
+			{"linetype", T_UBF, 23, BITFIELD(1, 0, 7)},
 			{"linetype_0_x1",  T_INT, 4, 4},
 			{"linetype_0_y1",  T_INT, 8, 4},
 			{"linetype_0_x2",  T_INT, 12, 4},
@@ -449,7 +449,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"layer",  T_INT, 3, 1},
 			{"half_width",  T_INT, 20, 2},
 			{"clockwise",  T_BMB, 22, 0x20},
-			{"arctype",  T_INT, 23, 1},
+			{"arctype",  T_UBF, 23, BITFIELD(1, 0, 7)},
 			{"arc_negflags", T_BMB, 19, 0x1f},
 			/*{"c_negflag", T_BMB, 19, 0x01},*/
 			{"arc_c1",  T_INT, 7, 1},
@@ -1418,7 +1418,7 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 	int clockwise = 1;
 	c = 0;
 
-	if (linetype == 0x81 || linetype == -127 || arctype == 0) {
+	if (linetype == 129 || arctype == 0) {
 
 		for (e = htss_first(&elem->props); e; e = htss_next(&elem->props, e)) {
 			if (strcmp(e->key, "arc_x1") == 0) {
@@ -1509,7 +1509,7 @@ TODO("TODO need negative flags checked for c, x1, x2, y1, y2 > ~=838mm")
 			egb_node_prop_set(elem, "Delta", itoa_buffer);
 		}
 TODO("TODO still need to fine tune non-trivial non 90 degree arcs start and delta for 0x81, 0x00")
-	} else if ((linetype > 0 && linetype != 0x81) || arctype > 0) {
+	} else if ((linetype > 0 && linetype < 129) || arctype > 0) {
 		int x1_ok, x2_ok, y1_ok, y2_ok, cxy_ok;
 		x1_ok = x2_ok = y1_ok = y2_ok = cxy_ok = 0;
 		for (e = htss_first(&elem->props); e; e = htss_next(&elem->props, e)) {
@@ -1745,32 +1745,25 @@ static int postprocess_wires(void *ctx, egb_node_t *root)
 			}
 	}
 
-	switch(line_type) {
-		case 0:
-				for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
-					if (strcmp(e->key, "linetype_0_x1") == 0) {
-						egb_node_prop_set(root, "x1", e->value);
-					} else if (strcmp(e->key, "linetype_0_y1") == 0) {
-						egb_node_prop_set(root, "y1", e->value);
-					} else if (strcmp(e->key, "linetype_0_x2") == 0) {
-						egb_node_prop_set(root, "x2", e->value);
-					} else if (strcmp(e->key, "linetype_0_y2") == 0) {
-						egb_node_prop_set(root, "y2", e->value);
-					} else if (strcmp(e->key, "half_width") == 0) {
-						half_width = atoi(e->value);
-						sprintf(tmp, "%ld", half_width*2);
-						egb_node_prop_set(root, "width", tmp);
-					} /* <- added width doubling routine here */
-				}
-				break;
-		case 129:
-TODO(": convert this to proper error reporting")
-				pcb_trace("Process linetype 129\n");
-				break;
-	}
-
-	if (line_type > 0 || line_type == -127)
+	if(line_type == 0) {
+		for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
+			if (strcmp(e->key, "linetype_0_x1") == 0) {
+				egb_node_prop_set(root, "x1", e->value);
+			} else if (strcmp(e->key, "linetype_0_y1") == 0) {
+				egb_node_prop_set(root, "y1", e->value);
+			} else if (strcmp(e->key, "linetype_0_x2") == 0) {
+				egb_node_prop_set(root, "x2", e->value);
+			} else if (strcmp(e->key, "linetype_0_y2") == 0) {
+				egb_node_prop_set(root, "y2", e->value);
+			} else if (strcmp(e->key, "half_width") == 0) {
+				half_width = atoi(e->value);
+				sprintf(tmp, "%ld", half_width*2);
+				egb_node_prop_set(root, "width", tmp);
+			} /* <- added width doubling routine here */
+		}
+	} else {
 		arc_decode(ctx, root, -1, line_type);
+	}
 
 	for(n = root->first_child; n != NULL; n = n->next)
 		postprocess_wires(ctx, n);
@@ -1794,44 +1787,40 @@ static int postprocess_arcs(void *ctx, egb_node_t *root)
 			}
 	}
 
-	switch(arc_type) {
-		case 0:
-				for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
-					if (strcmp(e->key, "arctype_0_x1") == 0) {
-						egb_node_prop_set(root, "x1", e->value);
-					} else if (strcmp(e->key, "arctype_0_y1") == 0) {
-						egb_node_prop_set(root, "y1", e->value);
-					} else if (strcmp(e->key, "arctype_0_x2") == 0) {
-						egb_node_prop_set(root, "x2", e->value);
-					} else if (strcmp(e->key, "arctype_0_y2") == 0) {
-						egb_node_prop_set(root, "y2", e->value);
-					} else if (strcmp(e->key, "half_width") == 0) {
-						half_width = atoi(e->value);
-						sprintf(tmp, "%ld", half_width*2);
-						egb_node_prop_set(root, "width", tmp);
-					} /* <- added width doubling routine here */
-				}
-				break;
-/*		case -1:	break;*/
-		default:
-				for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
-					if (strcmp(e->key, "arctype_other_x1") == 0) {
-						egb_node_prop_set(root, "x1", e->value);
-					} else if (strcmp(e->key, "arctype_other_y1") == 0) {
-						egb_node_prop_set(root, "y1", e->value);
-					} else if (strcmp(e->key, "arctype_other_x2") == 0) {
-						egb_node_prop_set(root, "x2", e->value);
-					} else if (strcmp(e->key, "arctype_other_y2") == 0) {
-						egb_node_prop_set(root, "y2", e->value);
-					} else if (strcmp(e->key, "half_width") == 0) {
-						half_width = atoi(e->value);
-						sprintf(tmp, "%ld", half_width*2);
-						egb_node_prop_set(root, "width", tmp);
-					} /* <- added width doubling routine here */
-				}
-	}
-	if (arc_type >= 0)
+	if (arc_type == 0) {
+		for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
+			if (strcmp(e->key, "arctype_0_x1") == 0) {
+				egb_node_prop_set(root, "x1", e->value);
+			} else if (strcmp(e->key, "arctype_0_y1") == 0) {
+				egb_node_prop_set(root, "y1", e->value);
+			} else if (strcmp(e->key, "arctype_0_x2") == 0) {
+				egb_node_prop_set(root, "x2", e->value);
+			} else if (strcmp(e->key, "arctype_0_y2") == 0) {
+				egb_node_prop_set(root, "y2", e->value);
+			} else if (strcmp(e->key, "half_width") == 0) {
+				half_width = atoi(e->value);
+				sprintf(tmp, "%ld", half_width*2);
+				egb_node_prop_set(root, "width", tmp);
+			} /* <- added width doubling routine here */
+		}
+	} else {
+		for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
+			if (strcmp(e->key, "arctype_other_x1") == 0) {
+				egb_node_prop_set(root, "x1", e->value);
+			} else if (strcmp(e->key, "arctype_other_y1") == 0) {
+				egb_node_prop_set(root, "y1", e->value);
+			} else if (strcmp(e->key, "arctype_other_x2") == 0) {
+				egb_node_prop_set(root, "x2", e->value);
+			} else if (strcmp(e->key, "arctype_other_y2") == 0) {
+				egb_node_prop_set(root, "y2", e->value);
+			} else if (strcmp(e->key, "half_width") == 0) {
+				half_width = atoi(e->value);
+				sprintf(tmp, "%ld", half_width*2);
+				egb_node_prop_set(root, "width", tmp);
+			} /* <- added width doubling routine here */
+		}
 		arc_decode(ctx, root, arc_type, -1);
+	}
 
 	for(n = root->first_child; n != NULL; n = n->next)
 		postprocess_arcs(ctx, n);

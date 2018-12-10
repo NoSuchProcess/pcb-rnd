@@ -708,8 +708,8 @@ TODO(": need to process curve value if present to draw an arc, not a line")
 	if (curve) {
 		pcb_message(PCB_MSG_ERROR, "Curved wire not yet handled in eagle_read_wire()\n");
 	}
-	if (lt > 0 || lt == -127) {
-		/* using circle routine to process wire type */
+	if (lt > 0) {
+		/* using circle routine to process post_processed binary wire type > 0 */
 		return eagle_read_circle(st, subtree, obj, type);
 	}
 
