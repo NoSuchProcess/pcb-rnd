@@ -7,6 +7,7 @@ typedef struct {
 	int wtree, wintree, wdesc, wname, wmainp, wnattype;
 	int wnatval[CFN_max+1], wsrc[CFN_max+1];
 	conf_native_t *selected_nat;
+	int selected_idx;
 } pref_conf_t;
 
 void pcb_dlg_pref_conf_close(pref_ctx_t *ctx);

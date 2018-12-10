@@ -94,8 +94,9 @@ static void setup_tree(pref_ctx_t *ctx)
 	qsort(sorted, num_paths, sizeof(htsp_entry_t *), conf_tree_cmp);
 
 	for(n = 0; n < num_paths; n++) {
-		char *basename;
+		char *basename, *bnsep;
 		pcb_hid_row_t *parent;
+		conf_native_t *nat;
 
 		e = sorted[n];
 		if (strlen(e->key) > sizeof(path) - 1) {
@@ -108,6 +109,7 @@ static void setup_tree(pref_ctx_t *ctx)
 			pcb_message(PCB_MSG_WARNING, "Warning: can't create config item for %s: invalid path (node in root)\n", e->key);
 			continue;
 		}
+		bnsep = basename;
 		*basename = '\0';
 		basename++;
 
@@ -116,8 +118,21 @@ static void setup_tree(pref_ctx_t *ctx)
 			pcb_message(PCB_MSG_WARNING, "Warning: can't create config item for %s: invalid path\n", e->key);
 			continue;
 		}
-		cell[0] = pcb_strdup(basename);
-		pcb_dad_tree_append_under(attr, parent, cell);
+		
+		nat = e->value;
+		if (nat->array_size > 1) {
+			int i;
+			*bnsep = '/';
+			parent = dlg_conf_tree_mkdirp(ctx, tree, path);
+			for(i = 0; i < nat->array_size; i++) {
+				cell[0] = pcb_strdup_printf("[%d]", i);
+				pcb_dad_tree_append_under(attr, parent, cell);
+			}
+		}
+		else {
+			cell[0] = pcb_strdup(basename);
+			pcb_dad_tree_append_under(attr, parent, cell);
+		}
 	}
 	free(sorted);
 }
@@ -178,7 +193,7 @@ static const char *print_conf_val(conf_native_type_t type, const confitem_t *val
 	return ret;
 }
 
-static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_t *nat)
+static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_t *nat, int idx)
 {
 	pcb_hid_attr_val_t hv;
 	char *tmp, buf[128];
@@ -192,6 +207,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 		path = nat->hash_path;
 
 	ctx->conf.selected_nat = nat;
+	ctx->conf.selected_idx = idx;
 
 	if (nat == NULL) {
 		hv.str_value = "";
@@ -229,7 +245,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 		char *cell[4];
 
 		pcb_dad_tree_clear(tree);
-		for (n = conflist_first(nat->val.list); n != NULL; n = conflist_next(n)) {
+		for (n = conflist_first(&nat->val.list[idx]); n != NULL; n = conflist_next(n)) {
 			rolename = conf_role_name(conf_lookup_role(n->prop.src));
 			cell[0] = rolename == NULL ? pcb_strdup("") : pcb_strdup(rolename);
 			cell[1] = pcb_strdup_printf("%ld", n->prop.prio);
@@ -244,13 +260,13 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 	hv.str_value = print_conf_val(nat->type, &nat->val, buf, sizeof(buf));
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wnatval[nat->type], &hv);
 
-	src = nat->prop[0].src;
+	src = nat->prop[idx].src;
 	if (src != NULL) {
-		rolename = conf_role_name(conf_lookup_role(nat->prop[0].src));
-		hv.str_value = tmp = pcb_strdup_printf("prio: %d\nsource: %s:%d.%d", nat->prop[0].prio, src->file_name, src->line, src->col);
+		rolename = conf_role_name(conf_lookup_role(nat->prop[idx].src));
+		hv.str_value = tmp = pcb_strdup_printf("prio: %d\nsource: %s:%d.%d", nat->prop[idx].prio, src->file_name, src->line, src->col);
 	}
 	else
-		hv.str_value = tmp = pcb_strdup_printf("prio: %d\nsource: <not saved>", nat->prop[0].prio);
+		hv.str_value = tmp = pcb_strdup_printf("prio: %d\nsource: <not saved>", nat->prop[idx].prio);
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wsrc[nat->type], &hv);
 	free(tmp);
 
@@ -260,14 +276,45 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 static void dlg_conf_select_node_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	char *end, *end2;
+	conf_native_t *nat;
 
-	dlg_conf_select_node((pref_ctx_t *)tree->user_ctx, row == NULL ? NULL : row->path, NULL);
+	if (row == NULL) { /* deselect */
+		dlg_conf_select_node((pref_ctx_t *)tree->user_ctx, NULL, NULL, 0);
+		return;
+	}
+
+	end = strrchr(row->path, '/');
+	if ((end != NULL) && (end[1] == '[')) {
+		int idx = strtol(end+2, &end2, 10);
+		/* if last segment is an [integer], it is an array */
+		if (*end2 == ']') {
+			char tmp[1024];
+			int len = end - row->path;
+			if ((len <= 0) || (len > sizeof(tmp)-1)) {
+				pcb_message(PCB_MSG_WARNING, "Warning: can't show array item %s: path too long\n", row->path);
+				return;
+			}
+			memcpy(tmp, row->path, len);
+			tmp[len] = '\0';
+			dlg_conf_select_node((pref_ctx_t *)tree->user_ctx, tmp, NULL, idx);
+		}
+		return;
+	}
+
+	/* non-array selection */
+	nat = conf_get_field(row->path);
+	if ((nat != NULL) && (nat->array_size > 1)) { /* array head: do not display for now */
+		dlg_conf_select_node((pref_ctx_t *)tree->user_ctx, NULL, NULL, 0);
+		return;
+	}
+	dlg_conf_select_node((pref_ctx_t *)tree->user_ctx, row->path, nat, 0);
 }
 
 void pcb_pref_dlg_conf_changed_cb(pref_ctx_t *ctx, conf_native_t *cfg, int arr_idx)
 {
 	if (ctx->conf.selected_nat == cfg)
-		dlg_conf_select_node(ctx, NULL, cfg);
+		dlg_conf_select_node(ctx, NULL, cfg, ctx->conf.selected_idx);
 }
 
 static void build_natval(pref_ctx_t *ctx)
