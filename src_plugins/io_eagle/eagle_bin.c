@@ -399,7 +399,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"width",  T_INT, 12, 2},
 			{"spacing",  T_INT, 14, 2},
 			{"isolate",  T_INT, 16, 2},
-			{"layer",  T_INT, 18, 1},
+			{"layer",  T_UBF, 18, BITFIELD(1,0,7)},
 			{"pour",  T_BMB, 19, 0x01},
 			{"rank",  T_BMB, 19, BITFIELD(1, 1, 3)},
 			{"thermals",  T_BMB, 19, 0x80},
@@ -415,7 +415,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 		{ /* attributes */
-			{"layer",  T_INT, 3, 1},
+			{"layer",  T_UBF, 3, BITFIELD(1,0,7)},
 			{"half_width",  T_INT, 20, 2},
 			{"stflags",  T_BMB, 22, 0x33},
 			/*{"bin_style",  T_BMB, 22, 0x03},*/
@@ -446,7 +446,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 		{ /* attributes */
-			{"layer",  T_INT, 3, 1},
+			{"layer",  T_UBF, 3, BITFIELD(1,0,7)},
 			{"half_width",  T_INT, 20, 2},
 			{"clockwise",  T_BMB, 22, 0x20},
 			{"arctype",  T_UBF, 23, BITFIELD(1, 0, 7)},
@@ -474,7 +474,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 		{ /* attributes */
-			{"layer", T_INT, 3, 1},
+			{"layer", T_UBF, 3, BITFIELD(1,0,7)},
 			{"x",  T_INT, 4, 4},
 			{"y",  T_INT, 8, 4},
 			{"radius",  T_INT, 12, 4},
@@ -490,7 +490,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 		{ /* attributes */
-			{"layer", T_INT, 3, 1},
+			{"layer", T_UBF, 3, BITFIELD(1,0,7)},
 			{"x1",  T_INT, 4, 4},
 			{"y1",  T_INT, 8, 4},
 			{"x2",  T_INT, 12, 4},
@@ -507,7 +507,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 		{ /* attributes */
-			{"layer", T_INT, 3, 1},
+			{"layer", T_UBF, 3, BITFIELD(1,0,7)},
 			{"x",  T_INT, 4, 4},
 			{"y",  T_INT, 8, 4},
 			{"width_2",  T_INT, 12, 2},
@@ -542,7 +542,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"y",  T_INT, 8, 4},
 			{"half_drill", T_UBF, 12, BITFIELD(2, 0, 15)},
 			{"half_diameter", T_UBF, 14, BITFIELD(2, 0, 15)},
-			{"layers",  T_INT, 16, 1}, /*not 1:1 mapping */
+			{"layers",  T_UBF, 16, BITFIELD(1,0,7)}, /*not 1:1 mapping */
 			{"stop",  T_BMB, 17, 0x01},
 			TERM
 		},
@@ -577,7 +577,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 		},
 		{ /* attributes */
 			{"roundness", T_INT, 2, 1},
-			{"layer", T_INT, 3, 1},
+			{"layer", T_UBF, 3, BITFIELD(1,0,7)},
 			{"x",  T_INT, 4, 4},
 			{"y",  T_INT, 8, 4},
 			{"half_dx",  T_UBF, 12, BITFIELD(2, 0, 15)},
@@ -690,7 +690,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 		{ /* attributes */
-			{"layer", T_INT, 3, 1},
+			{"layer", T_UBF, 3, BITFIELD(1,0,7)},
 			{"x",  T_INT, 4, 4},
 			{"y",  T_INT, 8, 4},
 			{"half_size",  T_INT, 12, 2},
@@ -714,7 +714,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 		{ /* attributes */
-			{"layer", T_INT, 3, 1},
+			{"layer", T_UBF, 3, BITFIELD(1,0,7)},
 			{"x",  T_INT, 4, 4},
 			{"y",  T_INT, 8, 4},
 			{"size",  T_INT, 12, 2},
@@ -738,7 +738,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 		{ /* attributes */
-			{"layer", T_INT, 3, 1},
+			{"layer", T_UBF, 3, BITFIELD(1,0,7)},
 			{"x",  T_INT, 4, 4},
 			{"y",  T_INT, 8, 4},
 			{"size",  T_INT, 12, 2},
@@ -762,7 +762,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 		{ /* attributes */
-			{"layer", T_INT, 3, 1},
+			{"layer", T_UBF, 3, BITFIELD(1,0,7)},
 			{"x",  T_INT, 4, 4},
 			{"y",  T_INT, 8, 4},
 			{"size",  T_INT, 12, 2},
@@ -865,7 +865,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 		{ /* attributes */
-			{"layer", T_INT, 3, 1},
+			{"layer", T_UBF, 3, BITFIELD(1,0,7)},
 			{"x",  T_INT, 4, 4},
 			{"y",  T_INT, 8, 4},
 			{"size",  T_INT, 12, 2},
@@ -889,7 +889,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 		{ /* attributes */
-			{"layer", T_INT, 3, 1},
+			{"layer", T_UBF, 3, BITFIELD(1,0,7)},
 			{"x",  T_INT, 4, 4},
 			{"y",  T_INT, 8, 4},
 			{"size",  T_INT, 12, 2},
@@ -913,7 +913,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 		{ /* attributes */
-			{"layer", T_INT, 3, 1},
+			{"layer", T_UBF, 3, BITFIELD(1,0,7)},
 			{"x",  T_INT, 4, 4},
 			{"y",  T_INT, 8, 4},
 			{"size",  T_INT, 12, 2},
@@ -951,7 +951,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 		{ /* attributes */
-			{"layer",  T_INT, 3, 1},
+			{"layer",  T_UBF, 3, BITFIELD(1,0,7)},
 			{"x1",  T_INT, 4, 4},
 			{"y1",  T_INT, 8, 4},
 			{"x2",  T_INT, 12, 4},
@@ -970,7 +970,7 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			TERM
 		},
 		{ /* attributes */
-			{"layer", T_INT, 3, 1},
+			{"layer", T_UBF, 3, BITFIELD(1,0,7)},
 			{"x",  T_INT, 4, 4},
 			{"y",  T_INT, 8, 4},
 			{"size",  T_INT, 12, 2},
