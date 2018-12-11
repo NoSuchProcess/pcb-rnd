@@ -442,8 +442,8 @@
  ../src_plugins/dialogs/dlg_pref_board.h \
  ../src_plugins/dialogs/dlg_pref_general.h \
  ../src_plugins/dialogs/dlg_pref_lib.h \
- ../src_plugins/dialogs/dlg_pref_conf.h ../src_plugins/dialogs/act_dad.h \
- dolists.h
+ ../src_plugins/dialogs/dlg_pref_conf.h conf.h \
+ ../src_plugins/dialogs/act_dad.h dolists.h
 ../src_plugins/dialogs/dlg_pref.o: ../src_plugins/dialogs/dlg_pref.c \
  ../config.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -472,7 +472,8 @@
  ../src_plugins/dialogs/dlg_pref_general.c \
  ../src_plugins/dialogs/dlg_pref_lib.c ../src_3rd/liblihata/tree.h \
  paths.h ../src_plugins/dialogs/dlg_pref_layer.c stub_draw.h draw.h \
- ../src_plugins/dialogs/dlg_pref_conf.c
+ ../src_plugins/dialogs/dlg_pref_conf.c misc_util.h \
+ ../src_plugins/dialogs/dlg_pref_confedit.c
 ../src_plugins/dialogs/dlg_view.o: ../src_plugins/dialogs/dlg_view.c \
  ../config.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/hash.h actions.h hid.h ../src_3rd/liblihata/dom.h \
@@ -491,7 +492,7 @@
  pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
  list_conf.h view.h idpath.h draw.h drc.h view.h event.h hid_inlines.h \
  hid_dad.h compat_misc.h hid_attrib.h hid_dad_tree.h hid_dad.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h safe_fs.h
+ ../src_3rd/libuundo/uundo.h undo_old.h safe_fs.h misc_util.h
 ../src_plugins/dialogs/xpm.o: ../src_plugins/dialogs/xpm.c ../config.h \
  ../src_plugins/dialogs/xpm/question.xpm \
  ../src_plugins/dialogs/xpm/warning.xpm
