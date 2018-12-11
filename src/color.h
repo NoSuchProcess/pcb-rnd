@@ -51,11 +51,6 @@ int pcb_color_load_str(pcb_color_t *dst, const char *src);
 /* Same as strdup(), but for colros */
 pcb_color_t *pcb_clrdup(const pcb_color_t *src);
 
-/* Note ^1: openGL uses GLfloat which is guaranteed to be at least 32 bits;
-but at the end for each color component it's unreasonable to use more than 8
-bits and it is unlikely to encounter a system that is capable of doing opengl
-but having a float type with less integer bits than 8. */
-
 void pcb_color_init(void);
 
 
@@ -73,5 +68,10 @@ void pcb_color_init(void);
 #define GVT_REALLOC(vect, ptr, size)  realloc(ptr, size)
 #define GVT_FREE(vect, ptr)           free(ptr)
 #include <genvector/genvector_undef.h>
+
+/* Note ^1: openGL uses GLfloat which is guaranteed to be at least 32 bits;
+but at the end for each color component it's unreasonable to use more than 8
+bits and it is unlikely to encounter a system that is capable of doing opengl
+but having a float type with less integer bits than 8. */
 
 #endif
