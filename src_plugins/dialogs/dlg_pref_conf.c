@@ -281,7 +281,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 	src = nat->prop[idx].src;
 	if (src != NULL) {
 		rolename = conf_role_name(conf_lookup_role(nat->prop[idx].src));
-		hv.str_value = tmp = pcb_strdup_printf("prio: %d\nsource: %s:%d.%d", nat->prop[idx].prio, src->file_name, src->line, src->col);
+		hv.str_value = tmp = pcb_strdup_printf("prio: %d role: %s\nsource: %s:%d.%d", nat->prop[idx].prio, rolename, src->file_name, src->line, src->col);
 	}
 	else
 		hv.str_value = tmp = pcb_strdup_printf("prio: %d\nsource: <not saved>", nat->prop[idx].prio);
