@@ -48,6 +48,8 @@ int pcb_color_load_packed(pcb_color_t *dst, unsigned long p);
 int pcb_color_load_float(pcb_color_t *dst, float r, float g, float b, float a);
 int pcb_color_load_str(pcb_color_t *dst, const char *src);
 
+/* Same as strdup(), but for colros */
+pcb_color_t *pcb_clrdup(const pcb_color_t *src);
 
 /* Note ^1: openGL uses GLfloat which is guaranteed to be at least 32 bits;
 but at the end for each color component it's unreasonable to use more than 8

@@ -126,6 +126,13 @@ int pcb_color_load_str(pcb_color_t *dst, const char *src)
 	return 0;
 }
 
+pcb_color_t *pcb_clrdup(const pcb_color_t *src)
+{
+	pcb_color_t *dst = malloc(sizeof(pcb_color_t));
+	memcpy(dst, src, sizeof(pcb_color_t));
+	return dst;
+}
+
 static pcb_color_t pcb_color_cyan_;
 static pcb_color_t pcb_color_red_;
 static pcb_color_t pcb_color_blue_;
