@@ -138,6 +138,34 @@ static void setup_tree(pref_ctx_t *ctx)
 	free(sorted);
 }
 
+static const char *pref_conf_get_val(const lht_node_t *nd, const conf_native_t *nat, int idx)
+{
+	lht_node_t *ni;
+	const char *val;
+
+				switch (nd->type) {
+					case LHT_TEXT: return nd->data.text.value; break;
+					case LHT_LIST:
+						if (nat->array_size > 1) {
+							int idx2 = idx;
+							val = "";
+							for(ni = nd->data.list.first; ni != NULL; ni = ni->next) {
+								if (idx2 == 0) {
+									if (ni->type == LHT_TEXT)
+										return ni->data.text.value;
+									return "<invalid array item type>";
+								}
+								idx2--;
+							}
+						}
+						return "<list>";
+					case LHT_HASH:         return "<hash>"; break;
+					case LHT_TABLE:        return "<table>"; break;
+					case LHT_SYMLINK:      return "<symlink>"; break;
+					case LHT_INVALID_TYPE: return"<invalid>"; break;
+				}
+}
+
 static void setup_intree(pref_ctx_t *ctx, conf_native_t *nat, int idx)
 {
 	conf_role_t n;
@@ -151,42 +179,16 @@ static void setup_intree(pref_ctx_t *ctx, conf_native_t *nat, int idx)
 		char *cell[5]= {NULL};
 		cell[0] = pcb_strdup(conf_role_name(n));
 		if (nat != NULL) {
-			lht_node_t *nd, *ni;
+			lht_node_t *nd;
 			long prio = conf_default_prio[n];
 			conf_policy_t pol = POL_OVERWRITE;
 
 			nd = conf_lht_get_at(n, nat->hash_path, 0);
 			if (nd != NULL) { /* role, prio, policy, value */
-				const char *val;
 				conf_get_policy_prio(nd, &pol, &prio);
-				switch (nd->type) {
-					case LHT_TEXT:         val = nd->data.text.value; break;
-					case LHT_LIST:
-						if (nat->array_size > 1) {
-							int idx2 = idx;
-							val = "";
-							for(ni = nd->data.list.first; ni != NULL; ni = ni->next) {
-								if (idx2 == 0) {
-									if (ni->type == LHT_TEXT)
-										val = ni->data.text.value;
-									else
-										val = "<invalid array item type>";
-									break;
-								}
-								idx2--;
-							}
-						}
-						else
-							val = "<list>";
-						break;
-					case LHT_HASH:         val = "<hash>"; break;
-					case LHT_TABLE:        val = "<table>"; break;
-					case LHT_SYMLINK:      val = "<symlink>"; break;
-					case LHT_INVALID_TYPE: val = "<invalid>"; break;
-				}
 				cell[1] = pcb_strdup_printf("%ld", prio);
 				cell[2] = pcb_strdup(conf_policy_name(pol));
-				cell[3] = pcb_strdup(val);
+				cell[3] = pcb_strdup(pref_conf_get_val(nd, nat, idx));
 			}
 		}
 		r = pcb_dad_tree_append(attr, NULL, cell);
