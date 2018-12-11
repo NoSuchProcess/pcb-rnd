@@ -28,6 +28,7 @@
 #define PCB_COLOR_H
 
 #include "global_typedefs.h"
+#include <stddef.h>
 
 struct pcb_color_s {
 	unsigned char r, g, b, a; /* primary storage; alpha is not really supported at the moment */
