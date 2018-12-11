@@ -42,15 +42,15 @@ static pcb_coord_t grid_local_x = 0, grid_local_y = 0, grid_local_radius = 0;
 /*static int cur_mask = -1;*/
 
 typedef struct render_priv_s {
-	GdkGLConfig *				glconfig;
-	pcb_gtk_color_t			bg_color;
-	pcb_gtk_color_t			offlimits_color;
-	pcb_gtk_color_t			grid_color;
-	pcb_bool 						trans_lines;
-	pcb_bool 						in_context;
-	int 								subcomposite_stencil_bit;
-	char *							current_colorname;
-	double 							current_alpha_mult;
+	GdkGLConfig *glconfig;
+	pcb_gtk_color_t bg_color;
+	pcb_gtk_color_t offlimits_color;
+	pcb_gtk_color_t grid_color;
+	pcb_bool trans_lines;
+	pcb_bool in_context;
+	int subcomposite_stencil_bit;
+	char *current_colorname;
+	double current_alpha_mult;
 } render_priv_t;
 
 
@@ -64,14 +64,14 @@ typedef struct hid_gc_s {
 	gchar xor;
 } hid_gc_s;
 
-static void draw_lead_user(render_priv_t * priv);
+static void draw_lead_user(render_priv_t *priv);
 
 void ghid_gl_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
 {
 	pcb_gui->coord_per_pix = gport->view.coord_per_px;
 }
 
-static const gchar *get_color_name(pcb_gtk_color_t * color)
+static const gchar *get_color_name(pcb_gtk_color_t *color)
 {
 	static char tmp[16];
 
@@ -83,7 +83,7 @@ static const gchar *get_color_name(pcb_gtk_color_t * color)
 }
 
 /* Returns TRUE only if color_string has been allocated to color. */
-static pcb_bool map_color_string(const char *color_string, pcb_gtk_color_t * color)
+static pcb_bool map_color_string(const char *color_string, pcb_gtk_color_t *color)
 {
 	static GdkColormap *colormap = NULL;
 	GHidPort *out = &ghid_port;
@@ -112,12 +112,12 @@ static void start_subcomposite(void)
 	/* Flush out any existing geometry to be rendered */
 	hidgl_flush_triangles();
 
-	glEnable(GL_STENCIL_TEST);		/* Enable Stencil test */
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);	/* Stencil pass => replace stencil value (with 1) */
+	glEnable(GL_STENCIL_TEST); /* Enable Stencil test */
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE); /* Stencil pass => replace stencil value (with 1) */
 
-	stencil_bit = hidgl_assign_clear_stencil_bit();	/* Get a new (clean) bitplane to stencil with */
-	glStencilMask(stencil_bit);		/* Only write to our subcompositing stencil bitplane */
-	glStencilFunc(GL_GREATER, stencil_bit, stencil_bit);	/* Pass stencil test if our assigned bit is clear */
+	stencil_bit = hidgl_assign_clear_stencil_bit(); /* Get a new (clean) bitplane to stencil with */
+	glStencilMask(stencil_bit); /* Only write to our subcompositing stencil bitplane */
+	glStencilFunc(GL_GREATER, stencil_bit, stencil_bit); /* Pass stencil test if our assigned bit is clear */
 
 	priv->subcomposite_stencil_bit = stencil_bit;
 }
@@ -129,11 +129,11 @@ static void end_subcomposite(void)
 	/* Flush out any existing geometry to be rendered */
 	hidgl_flush_triangles();
 
-	hidgl_return_stencil_bit(priv->subcomposite_stencil_bit);	/* Relinquish any bitplane we previously used */
+	hidgl_return_stencil_bit(priv->subcomposite_stencil_bit); /* Relinquish any bitplane we previously used */
 
 	glStencilMask(0);
-	glStencilFunc(GL_ALWAYS, 0, 0);	/* Always pass stencil test */
-	glDisable(GL_STENCIL_TEST);		/* Disable Stencil test */
+	glStencilFunc(GL_ALWAYS, 0, 0); /* Always pass stencil test */
+	glDisable(GL_STENCIL_TEST); /* Disable Stencil test */
 
 	priv->subcomposite_stencil_bit = 0;
 }
@@ -146,7 +146,7 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int pu
 
 	if (idx >= 0 && idx < pcb_max_group(PCB)) {
 		int n = PCB->LayerGroups.grp[group].len;
-		for (idx = 0; idx < n - 1; idx++) {
+		for(idx = 0; idx < n - 1; idx++) {
 			int ni = PCB->LayerGroups.grp[group].lid[idx];
 			if (ni >= 0 && ni < pcb_max_layer && PCB->Data->Layer[ni].meta.real.vis)
 				break;
@@ -157,20 +157,17 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int pu
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glTranslatef(0.0f, 0.0f, -Z_NEAR);
-		
-	glScalef((conf_core.editor.view.flip_x ? -1. : 1.) / gport->view.coord_per_px,
-					 (conf_core.editor.view.flip_y ? -1. : 1.) / gport->view.coord_per_px,
-					 ((conf_core.editor.view.flip_x == conf_core.editor.view.flip_y) ? 1. : -1.) / gport->view.coord_per_px);
-	glTranslatef(conf_core.editor.view.flip_x ? gport->view.x0 - PCB->MaxWidth :
-							 -gport->view.x0, conf_core.editor.view.flip_y ? gport->view.y0 - PCB->MaxHeight : -gport->view.y0, 0);
+
+	glScalef((conf_core.editor.view.flip_x ? -1. : 1.) / gport->view.coord_per_px, (conf_core.editor.view.flip_y ? -1. : 1.) / gport->view.coord_per_px, ((conf_core.editor.view.flip_x == conf_core.editor.view.flip_y) ? 1. : -1.) / gport->view.coord_per_px);
+	glTranslatef(conf_core.editor.view.flip_x ? gport->view.x0 - PCB->MaxWidth : -gport->view.x0, conf_core.editor.view.flip_y ? gport->view.y0 - PCB->MaxHeight : -gport->view.y0, 0);
 
 	/* Put the renderer into a good state so that any drawing is done in standard mode */
-	
+
 	drawgl_flush();
 	drawgl_reset();
-	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glDisable(GL_STENCIL_TEST);
-	
+
 /*
 	end_subcomposite();
 	start_subcomposite();
@@ -194,13 +191,13 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int pu
 		return 0;
 
 	if (PCB_LAYER_IS_CSECT(flags, purpi)) {
-			/* Opaque draw */
-			priv->trans_lines = pcb_false;
-			/* Disable stencil for cross-section drawing; that code
-			 * relies on overdraw doing the right thing and doesn't
-			 * use layers */
-			/*glDisable(GL_STENCIL_TEST);*/
-			return 0;
+		/* Opaque draw */
+		priv->trans_lines = pcb_false;
+		/* Disable stencil for cross-section drawing; that code
+		 * relies on overdraw doing the right thing and doesn't
+		 * use layers */
+		/*glDisable(GL_STENCIL_TEST); */
+		return 0;
 	}
 
 	/* virtual layers */
@@ -209,16 +206,16 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int pu
 			return 1;
 
 		switch (flags & PCB_LYT_ANYTHING) {
-		case PCB_LYT_INVIS:
-			return PCB->InvisibleObjectsOn;
-		case PCB_LYT_SILK:
-			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
-				return pcb_silk_on(PCB);
-			return 0;
-		case PCB_LYT_UI:
-			return 1;
-		case PCB_LYT_RAT:
-			return PCB->RatOn;
+			case PCB_LYT_INVIS:
+				return PCB->InvisibleObjectsOn;
+			case PCB_LYT_SILK:
+				if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
+					return pcb_silk_on(PCB);
+				return 0;
+			case PCB_LYT_UI:
+				return 1;
+			case PCB_LYT_RAT:
+				return PCB->RatOn;
 		}
 	}
 	return 0;
@@ -258,7 +255,7 @@ static void ghid_gl_draw_grid(pcb_box_t *drawn_area)
 {
 	render_priv_t *priv = gport->render_priv;
 
-	if((Vz(PCB->Grid) < PCB_MIN_GRID_DISTANCE) || (!conf_core.editor.draw_grid))
+	if ((Vz(PCB->Grid) < PCB_MIN_GRID_DISTANCE) || (!conf_core.editor.draw_grid))
 		return;
 
 	glEnable(GL_COLOR_LOGIC_OP);
@@ -266,8 +263,8 @@ static void ghid_gl_draw_grid(pcb_box_t *drawn_area)
 
 	glColor3f(priv->grid_color.red / 65535., priv->grid_color.green / 65535., priv->grid_color.blue / 65535.);
 
-	if(conf_hid_gtk.plugins.hid_gtk.local_grid.enable)
-		hidgl_draw_local_grid(grid_local_x,grid_local_y,grid_local_radius);
+	if (conf_hid_gtk.plugins.hid_gtk.local_grid.enable)
+		hidgl_draw_local_grid(grid_local_x, grid_local_y, grid_local_radius);
 	else
 		hidgl_draw_grid(drawn_area);
 
@@ -349,17 +346,17 @@ void ghid_gl_set_special_colors(conf_native_t *cfg)
 {
 	render_priv_t *priv = gport->render_priv;
 
-	if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.background)) {
+	if (((CFT_COLOR *) cfg->val.color == &conf_core.appearance.color.background)) {
 		if (map_color_string(cfg->val.color[0].str, &priv->bg_color)) {
 			config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/background"), -1);
 			set_special_grid_color();
 		}
 	}
-	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.off_limit)) {
+	else if (((CFT_COLOR *) cfg->val.color == &conf_core.appearance.color.off_limit)) {
 		if (map_color_string(cfg->val.color[0].str, &priv->offlimits_color))
-      config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/off_limit"), -1);
+			config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/off_limit"), -1);
 	}
-	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.grid)) {
+	else if (((CFT_COLOR *) cfg->val.color == &conf_core.appearance.color.grid)) {
 		if (map_color_string(cfg->val.color[0].str, &priv->grid_color)) {
 			config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/grid"), -1);
 			set_special_grid_color();
@@ -386,14 +383,12 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 	ColorCache *cc;
 	double r, g, b, a;
 
-	if(gc->pcolor == NULL) {
+	if (gc->pcolor == NULL) {
 		fprintf(stderr, "set_gl_color_for_gc:  gc->colorname = NULL, setting to magenta\n");
 		gc->pcolor = pcb_color_magenta;
 	}
-	
-	if (	priv->current_colorname != NULL &&
-				strcmp(priv->current_colorname, gc->pcolor->str) == 0 && 
-				priv->current_alpha_mult == gc->alpha_mult)
+
+	if (priv->current_colorname != NULL && strcmp(priv->current_colorname, gc->pcolor->str) == 0 && priv->current_alpha_mult == gc->alpha_mult)
 		return;
 
 	free(priv->current_colorname);
@@ -402,7 +397,7 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 
 	if (colormap == NULL)
 		colormap = gtk_widget_get_colormap(gport->top_window);
-TODO("color: Do not depend on manual strcmp here - use pcb_color_is_drill()");
+	TODO("color: Do not depend on manual strcmp here - use pcb_color_is_drill()");
 	if (pcb_color_is_drill(gc->pcolor)) {
 		r = priv->offlimits_color.red / 65535.;
 		g = priv->offlimits_color.green / 65535.;
@@ -474,9 +469,9 @@ TODO("color: Do not depend on manual strcmp here - use pcb_color_is_drill()");
 	 * reverse order. If the new primitives are merged with previous ones then they
 	 * will be drawn in the wrong order.
 	 */
-	drawgl_flush();	
+	drawgl_flush();
 
-	drawgl_set_colour(r,g,b,a);
+	drawgl_set_colour(r, g, b, a);
 }
 
 void ghid_gl_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
@@ -603,10 +598,10 @@ static void ghid_gl_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t *poly, cons
 	/* Disable thindraw poly filling until it is fixed. The poly fill overwrites lines and
 	 * arcs that are drawn underneath.
 	 * 
-	ghid_gl_set_alpha_mult(gc, 0.25);
-	ghid_gl_fill_pcb_polygon(gc, poly, clip_box);
-	ghid_gl_set_alpha_mult(gc, 1.0);
-	*/
+	 ghid_gl_set_alpha_mult(gc, 0.25);
+	 ghid_gl_fill_pcb_polygon(gc, poly, clip_box);
+	 ghid_gl_set_alpha_mult(gc, 1.0);
+	 */
 }
 
 static void ghid_gl_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
@@ -781,9 +776,9 @@ static void ghid_gl_show_crosshair(gboolean paint_new_location)
 
 static void ghid_gl_init_renderer(int *argc, char ***argv, void *vport)
 {
-	GHidPort * port = vport;
+	GHidPort *port = vport;
 	render_priv_t *priv;
-	
+
 	port->render_priv = priv = g_new0(render_priv_t, 1);
 
 	gtk_gl_init(argc, argv);
@@ -792,7 +787,7 @@ static void ghid_gl_init_renderer(int *argc, char ***argv, void *vport)
 	priv->glconfig = gdk_gl_config_new_by_mode(GDK_GL_MODE_RGBA | GDK_GL_MODE_STENCIL | GDK_GL_MODE_DOUBLE);
 	if (!priv->glconfig) {
 		printf("Could not setup GL-context!\n");
-		return;											/* Should we abort? */
+		return; /* Should we abort? */
 	}
 
 	/* Setup HID function pointers specific to the GL renderer */
@@ -845,7 +840,7 @@ static gboolean ghid_gl_start_drawing(GHidPort *port)
 	GtkWidget *widget = port->drawing_area;
 	GdkGLContext *pGlContext = gtk_widget_get_gl_context(widget);
 	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
-	
+
 	/* make GL-context "current" */
 	if (!gdk_gl_drawable_gl_begin(pGlDrawable, pGlContext))
 		return FALSE;
@@ -920,14 +915,14 @@ static void pcb_gl_draw_expose_init(pcb_hid_t *hid, int w, int h, int xr, int yr
 /* alpha component is not part of GdkColor structure. Can't derive it from GTK2 pcb_gtk_color_t */
 static void gtk2gl_color(pcb_gl_color_t *gl_c, pcb_gtk_color_t *gtk_c)
 {
-	gl_c->red   = gtk_c->red   / 65535.;
+	gl_c->red = gtk_c->red / 65535.;
 	gl_c->green = gtk_c->green / 65535.;
-	gl_c->blue  = gtk_c->blue  / 65535.;
+	gl_c->blue = gtk_c->blue / 65535.;
 }
 
 static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose_t *ev, void *vport)
 {
-	GHidPort * port = vport;
+	GHidPort *port = vport;
 	render_priv_t *priv = port->render_priv;
 	GtkAllocation allocation;
 	pcb_hid_expose_ctx_t ctx;
@@ -948,16 +943,12 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 	ctx.view.Y2 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y2));
 
 	gtk2gl_color(&off_c, &priv->offlimits_color);
-	gtk2gl_color(&bg_c,  &priv->bg_color);
+	gtk2gl_color(&bg_c, &priv->bg_color);
 
-	pcb_gl_draw_expose_init(&gtk2_gl_hid, allocation.width, allocation.height,
-				ev->area.x, allocation.height - ev->area.height - ev->area.y, ev->area.width, ev->area.height, &off_c);
+	pcb_gl_draw_expose_init(&gtk2_gl_hid, allocation.width, allocation.height, ev->area.x, allocation.height - ev->area.height - ev->area.y, ev->area.width, ev->area.height, &off_c);
 
-	glScalef((conf_core.editor.view.flip_x ? -1. : 1.) / port->view.coord_per_px,
-					 (conf_core.editor.view.flip_y ? -1. : 1.) / port->view.coord_per_px,
-					 ((conf_core.editor.view.flip_x == conf_core.editor.view.flip_y) ? 1. : -1.) / port->view.coord_per_px);
-	glTranslatef(conf_core.editor.view.flip_x ? port->view.x0 - PCB->MaxWidth :
-							 -port->view.x0, conf_core.editor.view.flip_y ? port->view.y0 - PCB->MaxHeight : -port->view.y0, 0);
+	glScalef((conf_core.editor.view.flip_x ? -1. : 1.) / port->view.coord_per_px, (conf_core.editor.view.flip_y ? -1. : 1.) / port->view.coord_per_px, ((conf_core.editor.view.flip_x == conf_core.editor.view.flip_y) ? 1. : -1.) / port->view.coord_per_px);
+	glTranslatef(conf_core.editor.view.flip_x ? port->view.x0 - PCB->MaxWidth : -port->view.x0, conf_core.editor.view.flip_y ? port->view.y0 - PCB->MaxHeight : -port->view.y0, 0);
 
 	/* Draw PCB background, before PCB primitives */
 	glColor3f(bg_c.red, bg_c.green, bg_c.blue);
@@ -1006,7 +997,7 @@ static void ghid_gl_port_drawing_realize_cb(GtkWidget *widget, gpointer data)
 {
 	GdkGLContext *glcontext = gtk_widget_get_gl_context(widget);
 	GdkGLDrawable *gldrawable = gtk_widget_get_gl_drawable(widget);
-	
+
 	if (!gdk_gl_drawable_gl_begin(gldrawable, glcontext))
 		return;
 
@@ -1014,7 +1005,7 @@ static void ghid_gl_port_drawing_realize_cb(GtkWidget *widget, gpointer data)
 	return;
 }
 
-static gboolean ghid_gl_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev, pcb_hid_expose_t expcall, pcb_hid_expose_ctx_t *ctx)
+static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, pcb_hid_expose_t expcall, pcb_hid_expose_ctx_t *ctx)
 {
 /*	GdkWindow *window = gtk_widget_get_window(widget);*/
 	GdkGLContext *pGlContext = gtk_widget_get_gl_context(widget);
@@ -1038,8 +1029,8 @@ static gboolean ghid_gl_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev,
 	/* Setup zoom factor for drawing routines */
 
 	gtk_widget_get_allocation(widget, &allocation);
-	xz = vw / (double) allocation.width;
-	yz = vh / (double) allocation.height;
+	xz = vw / (double)allocation.width;
+	yz = vh / (double)allocation.height;
 
 	if (xz > yz)
 		gport->view.coord_per_px = xz;
@@ -1104,10 +1095,8 @@ static gboolean ghid_gl_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev,
 	/* call the drawing routine */
 	ghid_gl_invalidate_current_gc();
 	glPushMatrix();
-	glScalef((conf_core.editor.view.flip_x ? -1. : 1.) / gport->view.coord_per_px,
-					 (conf_core.editor.view.flip_y ? -1. : 1.) / gport->view.coord_per_px, 1);
-	glTranslatef(conf_core.editor.view.flip_x ? gport->view.x0 - PCB->MaxWidth :
-							 -gport->view.x0, conf_core.editor.view.flip_y ? gport->view.y0 - PCB->MaxHeight : -gport->view.y0, 0);
+	glScalef((conf_core.editor.view.flip_x ? -1. : 1.) / gport->view.coord_per_px, (conf_core.editor.view.flip_y ? -1. : 1.) / gport->view.coord_per_px, 1);
+	glTranslatef(conf_core.editor.view.flip_x ? gport->view.x0 - PCB->MaxWidth : -gport->view.x0, conf_core.editor.view.flip_y ? gport->view.y0 - PCB->MaxHeight : -gport->view.y0, 0);
 
 	expcall(&gtk2_gl_hid, ctx);
 
@@ -1124,7 +1113,10 @@ static gboolean ghid_gl_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev,
 	gdk_gl_drawable_gl_end(pGlDrawable);
 
 	/* restore the original context and priv */
-	ctx->view.X1 = ox1; ctx->view.X2 = ox2; ctx->view.Y1 = oy1; ctx->view.Y2 = oy2;
+	ctx->view.X1 = ox1;
+	ctx->view.X2 = ox2;
+	ctx->view.Y1 = oy1;
+	ctx->view.Y2 = oy2;
 	gport->view = save_view;
 	gport->view.canvas_width = save_width;
 	gport->view.canvas_height = save_height;
@@ -1132,7 +1124,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev,
 	return FALSE;
 }
 
-static void draw_lead_user(render_priv_t * priv)
+static void draw_lead_user(render_priv_t *priv)
 {
 	int i;
 	pcb_lead_user_t *lead_user = &gport->lead_user;
@@ -1151,7 +1143,7 @@ static void draw_lead_user(render_priv_t * priv)
 
 	/* arcs at the appropriate radii */
 
-	for (i = 0; i < LEAD_USER_ARC_COUNT; i++, radius -= separation) {
+	for(i = 0; i < LEAD_USER_ARC_COUNT; i++, radius -= separation) {
 		if (radius < width)
 			radius += PCB_MM_TO_COORD(LEAD_USER_INITIAL_RADIUS);
 
@@ -1177,44 +1169,43 @@ void ghid_gl_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 {
 
 	if (common != NULL) {
-	common->new_drawing_widget = ghid_gl_new_drawing_widget;
-	common->init_drawing_widget = ghid_gl_init_drawing_widget;
-	common->drawing_realize = ghid_gl_port_drawing_realize_cb;
-	common->drawing_area_expose = ghid_gl_drawing_area_expose_cb;
-	common->preview_expose = ghid_gl_preview_expose;
-	common->invalidate_all = ghid_gl_invalidate_all;
-	common->set_special_colors = ghid_gl_set_special_colors;
-	common->init_renderer = ghid_gl_init_renderer;
-	common->screen_update = ghid_gl_screen_update;
-	common->draw_grid_local = ghid_gl_draw_grid_local;
-	common->drawing_area_configure_hook = ghid_gl_drawing_area_configure_hook;
-	common->shutdown_renderer = ghid_gl_shutdown_renderer;
-	common->get_color_name = get_color_name;
-	common->map_color_string = map_color_string;
+		common->new_drawing_widget = ghid_gl_new_drawing_widget;
+		common->init_drawing_widget = ghid_gl_init_drawing_widget;
+		common->drawing_realize = ghid_gl_port_drawing_realize_cb;
+		common->drawing_area_expose = ghid_gl_drawing_area_expose_cb;
+		common->preview_expose = ghid_gl_preview_expose;
+		common->invalidate_all = ghid_gl_invalidate_all;
+		common->set_special_colors = ghid_gl_set_special_colors;
+		common->init_renderer = ghid_gl_init_renderer;
+		common->screen_update = ghid_gl_screen_update;
+		common->draw_grid_local = ghid_gl_draw_grid_local;
+		common->drawing_area_configure_hook = ghid_gl_drawing_area_configure_hook;
+		common->shutdown_renderer = ghid_gl_shutdown_renderer;
+		common->get_color_name = get_color_name;
+		common->map_color_string = map_color_string;
 	}
 
 	if (hid != NULL) {
-	hid->invalidate_lr = ghid_gl_invalidate_lr;
-	hid->invalidate_all = ghid_gl_invalidate_all;
-	hid->notify_crosshair_change = ghid_gl_notify_crosshair_change;
-	hid->notify_mark_change = ghid_gl_notify_mark_change;
-	hid->set_layer_group = ghid_gl_set_layer_group;
-	hid->make_gc = ghid_gl_make_gc;
-	hid->destroy_gc = ghid_gl_destroy_gc;
-	hid->set_color = ghid_gl_set_color;
-	hid->set_line_cap = ghid_gl_set_line_cap;
-	hid->set_line_width = ghid_gl_set_line_width;
-	hid->set_draw_xor = ghid_gl_set_draw_xor;
-	hid->draw_line = ghid_gl_draw_line;
-	hid->draw_arc = ghid_gl_draw_arc;
-	hid->draw_rect = ghid_gl_draw_rect;
-	hid->fill_circle = ghid_gl_fill_circle;
-	hid->fill_polygon = ghid_gl_fill_polygon;
-	hid->fill_polygon_offs = ghid_gl_fill_polygon_offs;
-	hid->fill_rect = ghid_gl_fill_rect;
+		hid->invalidate_lr = ghid_gl_invalidate_lr;
+		hid->invalidate_all = ghid_gl_invalidate_all;
+		hid->notify_crosshair_change = ghid_gl_notify_crosshair_change;
+		hid->notify_mark_change = ghid_gl_notify_mark_change;
+		hid->set_layer_group = ghid_gl_set_layer_group;
+		hid->make_gc = ghid_gl_make_gc;
+		hid->destroy_gc = ghid_gl_destroy_gc;
+		hid->set_color = ghid_gl_set_color;
+		hid->set_line_cap = ghid_gl_set_line_cap;
+		hid->set_line_width = ghid_gl_set_line_width;
+		hid->set_draw_xor = ghid_gl_set_draw_xor;
+		hid->draw_line = ghid_gl_draw_line;
+		hid->draw_arc = ghid_gl_draw_arc;
+		hid->draw_rect = ghid_gl_draw_rect;
+		hid->fill_circle = ghid_gl_fill_circle;
+		hid->fill_polygon = ghid_gl_fill_polygon;
+		hid->fill_polygon_offs = ghid_gl_fill_polygon_offs;
+		hid->fill_rect = ghid_gl_fill_rect;
 
-	hid->set_drawing_mode = hidgl_set_drawing_mode;
-	hid->render_burst = ghid_gl_render_burst;
+		hid->set_drawing_mode = hidgl_set_drawing_mode;
+		hid->render_burst = ghid_gl_render_burst;
 	}
 }
-
