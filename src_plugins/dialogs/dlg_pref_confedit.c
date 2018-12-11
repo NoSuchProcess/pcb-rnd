@@ -45,35 +45,42 @@ static void pref_conf_edit_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 
 static void confedit_brd2dlg(confedit_ctx_t *ctx)
 {
-#if 0
 	pcb_hid_attr_val_t hv;
-	lht_node_t *nd = conf_lht_get_at(ctx->role, nat->hash_path, 0);
-			if (nd != NULL) { /* role, prio, policy, value */
+	lht_node_t *nd = conf_lht_get_at(ctx->role, ctx->nat->hash_path, 1);
+	const char *val;
+
+	if (ctx->idx >= ctx->nat->array_size)
+		return; /* shouldn't ever happen - we have checked this before creating the dialog! */
+
+	val = pref_conf_get_val(nd, ctx->nat, ctx->idx);
 
 	switch(ctx->nat->type) {
 		case CFN_STRING:
-			hv.str_value = ctx->nat->val.string[ctx->idx];
+			hv.str_value = val;
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			break;
 		case CFN_BOOLEAN:
-			hv.int_value = ctx->nat->val.boolean[ctx->idx];
-			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
-			break;
 		case CFN_INTEGER:
-			hv.int_value = ctx->nat->val.boolean[ctx->idx];
+			hv.int_value = atoi(val);
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			break;
 		case CFN_REAL:
-			hv.real_value = ctx->nat->val.real[ctx->idx];
+			hv.real_value = strtod(val, NULL);
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			break;
 		case CFN_COORD:
-			hv.coord_value = ctx->nat->val.coord[ctx->idx];
+			hv.coord_value = pcb_get_value(val, NULL, NULL, NULL);
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			break;
 		case CFN_UNIT:
-			hv.int_value = ctx->nat->val.unit[ctx->idx] - pcb_units;
-			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
+			{
+				const pcb_unit_t *u = get_unit_struct(val);
+				if (u != NULL)
+					hv.int_value = u - pcb_units;
+				else
+					hv.int_value = -1;
+				pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
+			}
 			break;
 		case CFN_COLOR:
 TODO("needs DAD")
@@ -84,7 +91,6 @@ TODO("needs more code")
 		case CFN_max:
 			PCB_DAD_LABEL(ctx->dlg, "ERROR: invalid conf node type");
 	}
-#endif
 }
 
 static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -107,6 +113,11 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	r = pcb_dad_tree_get_selected(&pctx->dlg[pctx->conf.wintree]);
 	if (r == NULL) {
 		pcb_message(PCB_MSG_ERROR, "You need to select a role (upper right list)\n");
+		return;
+	}
+
+	if (ctx->idx >= pctx->conf.selected_nat->array_size) {
+		pcb_message(PCB_MSG_ERROR, "Internal error: array index out of bounds\n");
 		return;
 	}
 
