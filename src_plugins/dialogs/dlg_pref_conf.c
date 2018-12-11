@@ -30,6 +30,7 @@
 #include "conf.h"
 #include "conf_core.h"
 #include "misc_util.h"
+#include "dlg_pref_confedit.c"
 
 /* how many chars per line in conf node description (determines window width vs.
    window height */
@@ -328,6 +329,7 @@ static void dlg_conf_select_node_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, 
 	dlg_conf_select_node((pref_ctx_t *)tree->user_ctx, row->path, nat, 0);
 }
 
+
 void pcb_pref_dlg_conf_changed_cb(pref_ctx_t *ctx, conf_native_t *cfg, int arr_idx)
 {
 	if (ctx->conf.selected_nat == cfg)
@@ -435,6 +437,7 @@ void pcb_dlg_pref_conf_create(pref_ctx_t *ctx)
 				PCB_DAD_TREE(ctx->dlg, 4, 0, hdr_intree); /* input state */
 					ctx->conf.wintree = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_BUTTON(ctx->dlg, "Edit selected input...");
+					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_edit_cb);
 			PCB_DAD_END(ctx->dlg);
 
 			/* right/bottom: native file */
