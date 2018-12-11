@@ -116,7 +116,7 @@ int pcb_color_load_str(pcb_color_t *dst, const char *src)
 	HEXCONV(dst->g, src, 3);
 	HEXCONV(dst->b, src, 5);
 	if (src[7] != '\0')
-		HEXCONV(dst->a, src, 5);
+		HEXCONV(dst->a, src, 7);
 	else
 		dst->a = 255;
 
