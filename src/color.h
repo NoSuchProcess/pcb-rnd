@@ -36,6 +36,7 @@ struct pcb_color_s {
 	char str[10];             /* cache: "#rrggbb[aa]" \0 terminated string version */
 };
 
+extern const pcb_color_t *pcb_color_black;
 extern const pcb_color_t *pcb_color_cyan;
 extern const pcb_color_t *pcb_color_red;
 extern const pcb_color_t *pcb_color_blue;
