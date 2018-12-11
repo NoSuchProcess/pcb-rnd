@@ -55,7 +55,7 @@ static void pcb_draw_paste(pcb_draw_info_t *info, int side)
 
 	cctx.info = info;
 	cctx.gid = gid;
-	cctx.color = ly != NULL ? ly->meta.real.color : conf_core.appearance.color.paste;
+	cctx.color = ly != NULL ? &ly->meta.real.color : &conf_core.appearance.color.paste;
 	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
 	cctx.invert = 0;
 
@@ -93,7 +93,7 @@ static void pcb_draw_mask(pcb_draw_info_t *info, int side)
 
 	cctx.info = info;
 	cctx.gid = gid;
-	cctx.color = ly != NULL ? ly->meta.real.color : conf_core.appearance.color.mask;
+	cctx.color = ly != NULL ? &ly->meta.real.color : &conf_core.appearance.color.mask;
 	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
 	cctx.invert = pcb_gui->mask_invert;
 
@@ -157,7 +157,7 @@ static void pcb_draw_silk_doc(pcb_draw_info_t *info, pcb_layer_type_t lyt_side, 
 		if (cctx.grp->len == 0)
 			continue;
 		lid = cctx.grp->lid[0];
-		cctx.color = invis ? conf_core.appearance.color.invisible_objects : info->pcb->Data->Layer[lid].meta.real.color;
+		cctx.color = invis ? &conf_core.appearance.color.invisible_objects : &info->pcb->Data->Layer[lid].meta.real.color;
 		cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
 		cctx.invert = 0;
 
@@ -267,7 +267,7 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 
-		pcb_gui->set_color(pcb_draw_out.fgGC, PCB->Data->Layer[goutl->lid[0]].meta.real.color);
+		pcb_gui->set_color(pcb_draw_out.fgGC, &PCB->Data->Layer[goutl->lid[0]].meta.real.color);
 		pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, conf_core.design.min_wid);
 		pcb_gui->draw_rect(pcb_draw_out.fgGC, 0, 0, PCB->MaxWidth, PCB->MaxHeight);

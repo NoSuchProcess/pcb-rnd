@@ -967,37 +967,36 @@ void pcb_arc_draw_(pcb_draw_info_t *info, pcb_arc_t *arc, int allow_term_gfx)
 
 static void pcb_arc_draw(pcb_draw_info_t *info, pcb_arc_t *arc, int allow_term_gfx)
 {
-	const char *color;
-	char buf[sizeof("#XXXXXX")];
+	const pcb_color_t *color;
+	pcb_color_t buf;
 	const pcb_layer_t *layer = info->layer != NULL ? info->layer : pcb_layer_get_real(arc->parent.layer);
 
 	if (layer == NULL) /* if the layer is inbound, e.g. in preview, fall back using the layer recipe */
 		layer = arc->parent.layer;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_WARN, arc))
-		color = conf_core.appearance.color.warn;
+		color = &conf_core.appearance.color.warn;
 	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, arc)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, arc)) {
 			if (layer->is_bound)
 				PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 1);
 			else
-				color = conf_core.appearance.color.selected;
+				color = &conf_core.appearance.color.selected;
 		}
 		else
-			color = conf_core.appearance.color.connected;
+			color = &conf_core.appearance.color.connected;
 	}
 	else if (PCB_HAS_COLOROVERRIDE(arc)) {
-		color = (arc->override_color);
+		color = arc->override_color;
 	}
 	else if (layer->is_bound)
 		PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 0);
 	else
-		color = layer->meta.real.color;
+		color = &layer->meta.real.color;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, arc)) {
-		assert(color != NULL);
-		pcb_lighten_color(color, buf, 1.75);
-		color = buf;
+		pcb_lighten_color(color, &buf, 1.75);
+		color = &buf;
 	}
 	pcb_gui->set_color(pcb_draw_out.fgGC, color);
 	pcb_arc_draw_(info, arc, allow_term_gfx);

@@ -595,15 +595,13 @@ static void gcode_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void gcode_set_color(pcb_hid_gc_t gc, const char *name)
+static void gcode_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 {
 	if (gcode_im == NULL) {
 		return;
 	}
-	if (name == NULL) {
-		name = "#ff0000";
-	}
-	if (!strcmp(name, "drill")) {
+TODO("This is broken - sets color to 0 on everything");
+	if (pcb_color_is_drill(color)) {
 		gc->color = black;
 		gc->erase = 0;
 		return;

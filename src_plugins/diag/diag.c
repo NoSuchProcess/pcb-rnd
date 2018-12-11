@@ -424,12 +424,16 @@ static fgw_error_t pcb_act_forcecolor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	void *ptr1, *ptr2, *ptr3;
 	const char *new_color;
 
+	pcb_message(PCB_MSG_ERROR, "pcb_acth_forcecolor() is temporarily disabled.\n");
+	return -1;
+
 	PCB_ACT_CONVARG(1, FGW_STR, forcecolor, new_color = argv[1].val.str);
 
 	pcb_hid_get_coords("Click on object to change", &x, &y, 0);
 
 	if ((type = pcb_search_screen(x, y, PCB_FORCECOLOR_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID){
-		strncpy(((pcb_any_obj_t *)ptr2)->override_color, new_color, sizeof(((pcb_any_obj_t *)ptr2)->override_color)-1);
+TODO("color: figure where to store this");
+/*		strncpy(((pcb_any_obj_t *)ptr2)->override_color, new_color, sizeof(((pcb_any_obj_t *)ptr2)->override_color)-1);*/
 	}
 
 	PCB_ACT_IRES(0);

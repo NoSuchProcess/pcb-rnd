@@ -99,22 +99,9 @@ void pcb_draw_delay_obj_add(pcb_any_obj_t *obj)
 
 
 TODO("cleanup: this should be cached")
-void pcb_lighten_color(const char *orig, char buf[8], double factor)
+void pcb_lighten_color(const pcb_color_t *orig, pcb_color_t *dst, double factor)
 {
-	unsigned int r, g, b;
-
-	if (orig[0] == '#') {
-		sscanf(&orig[1], "%2x%2x%2x", &r, &g, &b);
-		r = MIN(255, r * factor);
-		g = MIN(255, g * factor);
-		b = MIN(255, b * factor);
-	}
-	else {
-		r = 0xff;
-		g = 0xff;
-		b = 0xff;
-	}
-	pcb_snprintf(buf, sizeof("#XXXXXX"), "#%02x%02x%02x", r, g, b);
+	pcb_color_load_int(dst, MIN(255, orig->r * factor), MIN(255, orig->g * factor), MIN(255, orig->b * factor), 255);
 }
 
 void pcb_draw_dashed_line(pcb_draw_info_t *info, pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, unsigned int segs, pcb_bool_t cheap)
@@ -322,7 +309,7 @@ static void draw_pins_and_pads(pcb_draw_info_t *info, pcb_layergrp_id_t componen
 static void draw_everything(pcb_draw_info_t *info)
 {
 	pcb_layer_t *backsilk;
-	char *old_silk_color;
+	pcb_color_t old_silk_color;
 	int i, ngroups;
 	pcb_layergrp_id_t component, solder, gid, side_copper_grp;
 	/* This is the list of layer groups we will draw.  */
@@ -603,15 +590,14 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 	unsigned int lflg = 0;
 	int may_have_delayed = 0;
 	pcb_xform_t xform;
-	char *orig_color, new_color[8];
+	pcb_color_t orig_color;
 	pcb_layer_t *Layer = (pcb_layer_t *)Layer_; /* ugly hack until layer color is moved into info */
 
 	xform_setup(info, &xform, Layer);
 
 	if ((info->xform != NULL) && (info->xform->layer_faded)) {
 		orig_color = Layer->meta.real.color;
-		pcb_lighten_color(orig_color, new_color, 0.5);
-		Layer->meta.real.color = new_color;
+		pcb_lighten_color(&orig_color, &Layer->meta.real.color, 0.5);
 	}
 
 	lflg = pcb_layer_flags_(Layer);
@@ -937,11 +923,11 @@ static void expose_begin(pcb_output_t *save, pcb_hid_t *hid)
 	else
 		pcb_draw_out.direct = 1;
 
-	hid->set_color(pcb_draw_out.pmGC, "#00FFFF");
-	hid->set_color(pcb_draw_out.drillGC, "drill");
-	hid->set_color(pcb_draw_out.padGC, conf_core.appearance.color.pin);
-	hid->set_color(pcb_draw_out.backpadGC, conf_core.appearance.color.invisible_objects);
-	hid->set_color(pcb_draw_out.padselGC, conf_core.appearance.color.selected);
+	hid->set_color(pcb_draw_out.pmGC, pcb_color_cyan);
+	hid->set_color(pcb_draw_out.drillGC, pcb_color_drill);
+	hid->set_color(pcb_draw_out.padGC, &conf_core.appearance.color.pin);
+	hid->set_color(pcb_draw_out.backpadGC, &conf_core.appearance.color.invisible_objects);
+	hid->set_color(pcb_draw_out.padselGC, &conf_core.appearance.color.selected);
 	pcb_hid_set_line_width(pcb_draw_out.backpadGC, -1);
 	pcb_hid_set_line_cap(pcb_draw_out.backpadGC, pcb_cap_square);
 	pcb_hid_set_line_width(pcb_draw_out.padselGC, -1);
@@ -1047,7 +1033,7 @@ void pcb_term_label_draw(pcb_draw_info_t *info, pcb_coord_t x, pcb_coord_t y, do
 	mirror = (flip_x ^ flip_y);
 	direction = (vert ? 1 : 0) + (flip_x ? 2 : 0);
 
-	pcb_gui->set_color(pcb_draw_out.fgGC, conf_core.appearance.color.pin_name);
+	pcb_gui->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.pin_name);
 
 	if (pcb_gui->gui)
 		pcb_draw_force_termlab++;

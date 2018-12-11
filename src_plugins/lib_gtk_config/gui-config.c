@@ -1165,7 +1165,7 @@ static void config_color_set_cb(GtkWidget * button, cfg_color_idx_t * ci)
 			conf_native_t *nat = conf_get_field(ci->cfg->hash_path);
 			if (nat != NULL)
 				for(n = 0; (n < PCB_MAX_LAYER) && (n < nat->array_size); n++)
-					conf_set(CFR_DESIGN, ci->cfg->hash_path, n,  nat->val.color[n], POL_OVERWRITE);
+					conf_set(CFR_DESIGN, ci->cfg->hash_path, n,  nat->val.color[n].str, POL_OVERWRITE);
 		}
 	}
 
@@ -1195,7 +1195,7 @@ TODO("LEAK: this is never free()d")
 			conf_hid_set_data(cfg, ghid_conf_id, ci);
 	}
 
-	com->map_color_string(cfg->val.color[idx], &(ci->color[idx]));
+	com->map_color_string(cfg->val.color[idx].str, &(ci->color[idx]));
 
 	title = g_strdup_printf(_("pcb-rnd %s Color"), cfg->description);
 	ci->button = gtkc_color_button_new_with_color(&(ci->color[idx]));
@@ -1218,7 +1218,7 @@ void config_color_button_update(pcb_gtk_common_t *com, conf_native_t *cfg, int i
 	else {
 		cfg_color_idx_t *ci = conf_hid_get_data(cfg, ghid_conf_id);
 
-		com->map_color_string(cfg->val.color[idx], &(ci->color[idx]));
+		com->map_color_string(cfg->val.color[idx].str, &(ci->color[idx]));
 		gtkc_color_button_set_color(ci->button, &(ci->color[idx]));
 	}
 }

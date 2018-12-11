@@ -55,7 +55,7 @@ static void gerber_do_export(pcb_hid_attr_val_t * options);
 static int gerber_parse_arguments(int *argc, char ***argv);
 static pcb_hid_gc_t gerber_make_gc(void);
 static void gerber_destroy_gc(pcb_hid_gc_t gc);
-static void gerber_set_color(pcb_hid_gc_t gc, const char *name);
+static void gerber_set_color(pcb_hid_gc_t gc, const pcb_color_t *name);
 static void gerber_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style);
 static void gerber_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width);
 static void gerber_set_draw_xor(pcb_hid_gc_t gc, int _xor);
@@ -979,8 +979,8 @@ emit_outline:
 
 	if (want_outline && !(PCB_LAYER_IS_ROUTE(flags, purpi))) {
 		if (has_outline) {
-			pcb_draw_groups(PCB, PCB_LYT_BOUNDARY, F_proute, NULL, &region, "#000000", PCB_LYT_MECH, 0, 0);
-			pcb_draw_groups(PCB, PCB_LYT_BOUNDARY, F_uroute, NULL, &region, "#000000", PCB_LYT_MECH, 0, 0);
+			pcb_draw_groups(PCB, PCB_LYT_BOUNDARY, F_proute, NULL, &region, pcb_color_black, PCB_LYT_MECH, 0, 0);
+			pcb_draw_groups(PCB, PCB_LYT_BOUNDARY, F_uroute, NULL, &region, pcb_color_black, PCB_LYT_MECH, 0, 0);
 		}
 		else {
 			pcb_hid_gc_t gc = pcb_hid_make_gc();
@@ -1019,9 +1019,9 @@ static void gerber_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, cons
 		fprintf(f, "G04 hid debug composite: %d*\r\n", op);
 }
 
-static void gerber_set_color(pcb_hid_gc_t gc, const char *name)
+static void gerber_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 {
-	if (strcmp(name, "drill") == 0) {
+	if (pcb_color_is_drill(color)) {
 		gc->color = 1;
 		gc->erase = 0;
 		gc->drill = 1;

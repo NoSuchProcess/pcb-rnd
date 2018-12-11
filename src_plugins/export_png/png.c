@@ -1412,41 +1412,43 @@ static void png_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const p
 	}
 }
 
-static void png_set_color(pcb_hid_gc_t gc, const char *name)
+static void png_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 {
 	pcb_hidval_t cval;
 
 	if (im == NULL)
 		return;
 
-	if (name == NULL)
-		name = "#ff0000";
+	if (color == NULL)
+		color = pcb_color_red;
 
-	if (strcmp(name, "drill") == 0) {
+	if (pcb_color_is_drill(color)) {
 		gc->color = white;
 		gc->is_erase = 1;
 		return;
 	}
 	gc->is_erase = 0;
 
-	if (in_mono || (strcmp(name, "#000000") == 0)) {
+	if (in_mono || (strcmp(color->str, "#000000") == 0)) {
 		gc->color = black;
 		return;
 	}
 
-	if (pcb_hid_cache_color(0, name, &cval, &color_cache)) {
+	if (pcb_hid_cache_color(0, color->str, &cval, &color_cache)) {
 		gc->color = (color_struct *) cval.ptr;
 	}
-	else if (name[0] == '#') {
+	else if (color->str[0] == '#') {
 		gc->color = (color_struct *) malloc(sizeof(color_struct));
-		sscanf(name + 1, "%2x%2x%2x", &(gc->color->r), &(gc->color->g), &(gc->color->b));
+		gc->color->r = color->r;
+		gc->color->g = color->g;
+		gc->color->b = color->b;
 		gc->color->c = gdImageColorAllocate(im, gc->color->r, gc->color->g, gc->color->b);
 		if (gc->color->c == BADC) {
 			pcb_message(PCB_MSG_ERROR, "png_set_color():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
 			return;
 		}
 		cval.ptr = gc->color;
-		pcb_hid_cache_color(1, name, &cval, &color_cache);
+		pcb_hid_cache_color(1, color->str, &cval, &color_cache);
 	}
 	else {
 		fprintf(stderr, "WE SHOULD NOT BE HERE!!!\n");

@@ -110,7 +110,7 @@ do { \
 extern int pcb_draw_force_termlab; /* force drawing terminal lables - useful for pinout previews */
 extern pcb_bool pcb_draw_doing_assy;
 
-void pcb_lighten_color(const char *orig, char buf[8], double factor);
+void pcb_lighten_color(const pcb_color_t *orig, pcb_color_t *dst, double factor);
 
 /* Draw a series of short line segments emulating a dashed line. segs is
    the number of on/off segment pairs. It is guaranteed that the line starts
@@ -131,7 +131,7 @@ void pcb_draw_layer_noxform(pcb_board_t *pcb, const pcb_layer_t *ly, const pcb_b
 void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_box_t *screen, pcb_data_t *data);
 
 /* Composite draw all layer groups matching lyt/purpi/purpose */
-void pcb_draw_groups(pcb_board_t *pcb, pcb_layer_type_t lyt, int purpi, char *purpose, const pcb_box_t *screen, const char *default_color, pcb_layer_type_t pstk_lyt_match, int thin_draw, int invert);
+void pcb_draw_groups(pcb_board_t *pcb, pcb_layer_type_t lyt, int purpi, char *purpose, const pcb_box_t *screen, const pcb_color_t *default_color, pcb_layer_type_t pstk_lyt_match, int thin_draw, int invert);
 
 
 void pcb_erase_obj(int, void *, void *);

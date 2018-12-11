@@ -35,7 +35,7 @@ void dummy_draw_text(pcb_draw_info_t *info, pcb_hid_gc_t gc, const char *str)
 {
 	pcb_text_t t;
 
-	pcb_gui->set_color(gc, "#FF0000");
+	pcb_gui->set_color(gc, pcb_color_red);
 
 	memset(&t, 0, sizeof(t));
 	t.TextString = (char *)str;

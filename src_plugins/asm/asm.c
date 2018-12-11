@@ -88,7 +88,7 @@ typedef struct {
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	vtp0_t grps;
-	vtp0_t layer_colors; /* saved before greying out */
+	vtclr_t layer_colors; /* saved before greying out */
 	int wtbl, wskipg, wdoneg, wskipp, wdonep;
 	int active; /* already open - allow only one instance */
 } asm_ctx_t;
@@ -272,19 +272,6 @@ static void asm_sort(vtp0_t *gv)
 }
 
 /*** Gray out all layers to make selection stick out more ***/
-static unsigned int chr2rgb(char s)
-{
-	if ((s >= '0') && (s <= '9')) return s - '0';
-	if ((s >= 'a') && (s <= 'f')) return s - 'a' + 10;
-	if ((s >= 'A') && (s <= 'F')) return s - 'A' + 10;
-	return 0;
-}
-
-static int str2rgb(const char *s)
-{
-	return chr2rgb(s[0]) << 4 | chr2rgb(s[1]);
-}
-
 static int fade(int c, int factor)
 {
 	if (c > 127)
@@ -299,27 +286,25 @@ static void asm_greyout(int grey)
 	pcb_layer_t *ly;
 
 	if (grey) {
-		vtp0_init(&asm_ctx.layer_colors);
-		vtp0_enlarge(&asm_ctx.layer_colors, data->LayerN);
+		vtclr_init(&asm_ctx.layer_colors);
+		vtclr_enlarge(&asm_ctx.layer_colors, data->LayerN);
 		for(n = 0, ly = data->Layer; n < data->LayerN; n++,ly++) {
 			int r, g, b;
 
-			vtp0_set(&asm_ctx.layer_colors, n, ly->meta.real.color);
-			r = str2rgb(ly->meta.real.color+1);
-			g = str2rgb(ly->meta.real.color+3);
-			b = str2rgb(ly->meta.real.color+5);
+			vtclr_set(&asm_ctx.layer_colors, n, ly->meta.real.color);
+			r = ly->meta.real.color.r;
+			g = ly->meta.real.color.g;
+			b = ly->meta.real.color.b;
 			r = fade(r, 4);
 			g = fade(g, 4);
 			b = fade(b, 4);
-			ly->meta.real.color = pcb_strdup_printf("#%02x%02x%02x", r, g, b);
+			pcb_color_load_int(&ly->meta.real.color, r, g, b, 255);
 		}
 	}
 	else {
-		for(n = 0, ly = data->Layer; n < data->LayerN; n++,ly++) {
-			free(ly->meta.real.color);
+		for(n = 0, ly = data->Layer; n < data->LayerN; n++,ly++)
 			ly->meta.real.color = asm_ctx.layer_colors.array[n];
-		}
-		vtp0_uninit(&asm_ctx.layer_colors);
+		vtclr_uninit(&asm_ctx.layer_colors);
 	}
 	pcb_redraw();
 }

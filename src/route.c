@@ -676,7 +676,7 @@ void pcb_route_draw(pcb_route_t *p_route, pcb_hid_gc_t GC)
 
 		pcb_layer_t *layer = pcb_get_layer(PCB->Data, p_obj->layer);
 		if (layer)
-			pcb_gui->set_color(GC, layer->meta.real.color);
+			pcb_gui->set_color(GC, &layer->meta.real.color);
 
 		switch (p_obj->type) {
 			case PCB_OBJ_LINE:
@@ -701,7 +701,7 @@ void pcb_route_draw_drc(pcb_route_t *p_route, pcb_hid_gc_t GC)
 	pcb_coord_t thickness = p_route->thickness + 2 * conf_core.design.bloat;
 	int i;
 
-	pcb_gui->set_color(GC, conf_core.appearance.color.cross);
+	pcb_gui->set_color(GC, &conf_core.appearance.color.cross);
 
 	for(i = 0; i < p_route->size; ++i) {
 		const pcb_route_object_t *p_obj = &p_route->objects[i];

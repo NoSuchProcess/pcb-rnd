@@ -39,7 +39,7 @@
 /* list of all UI layers - each item is a persistent pointer to a layer struct */
 extern vtp0_t pcb_uilayers;
 
-pcb_layer_t *pcb_uilayer_alloc(const char *cookie, const char *name, const char *color);
+pcb_layer_t *pcb_uilayer_alloc(const char *cookie, const char *name, const pcb_color_t *color);
 void pcb_uilayer_free(pcb_layer_t *l);
 void pcb_uilayer_free_all_cookie(const char *cookie);
 void pcb_uilayer_uninit(void);

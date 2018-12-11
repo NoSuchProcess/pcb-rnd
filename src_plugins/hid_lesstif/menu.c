@@ -392,11 +392,11 @@ static void add_res2menu_named(Widget menu, lht_node_t *ins_after, lht_node_t *n
 	stdarg_n = 0;
 	v = pcb_hid_cfg_menu_field_str(node, PCB_MF_FOREGROUND);
 	if (v != NULL)
-		stdarg_do_color(v, XmNforeground);
+		stdarg_do_color_str(v, XmNforeground);
 
 	v = pcb_hid_cfg_menu_field_str(node, PCB_MF_BACKGROUND);
 	if (v != NULL)
-		stdarg_do_color(v, XmNbackground);
+		stdarg_do_color_str(v, XmNbackground);
 
 	v = pcb_hid_cfg_menu_field_str(node, PCB_MF_FONT);
 	if (v != NULL) {

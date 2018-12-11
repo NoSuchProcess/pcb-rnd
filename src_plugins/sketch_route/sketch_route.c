@@ -718,12 +718,12 @@ static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 	pcb_r_search(layer->arc_tree, &bbox, NULL, r_search_cb, &info, NULL);
 
 	pcb_snprintf(name, sizeof(name), "%s: CDT", layer->name);
-	sk->ui_layer_cdt = pcb_uilayer_alloc(pcb_sketch_route_cookie, name, layer->meta.real.color);
+	sk->ui_layer_cdt = pcb_uilayer_alloc(pcb_sketch_route_cookie, name, &layer->meta.real.color);
 	sk->ui_layer_cdt->meta.real.vis = pcb_false;
 	sketch_update_cdt_layer(sk);
 
 	pcb_snprintf(name, sizeof(name), "%s: ERBS", layer->name);
-	sk->ui_layer_erbs = pcb_uilayer_alloc(pcb_sketch_route_cookie, name, layer->meta.real.color);
+	sk->ui_layer_erbs = pcb_uilayer_alloc(pcb_sketch_route_cookie, name, &layer->meta.real.color);
 	sketch_update_erbs_layer(sk);
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 }

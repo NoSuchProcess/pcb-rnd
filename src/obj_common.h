@@ -187,7 +187,7 @@ void pcb_obj_add_attribs(void *obj, const pcb_attribute_list_t *src);
 	void                 *ratconn; \
 	unsigned char        thermal; \
 	unsigned char        intconn, intnoconn; \
-	char                 override_color[sizeof("#XXXXXX")]
+	const pcb_color_t    *override_color
 
 /* Lines, pads, and rats all use this so they can be cross-cast.  */
 #define PCB_ANYLINEFIELDS \
@@ -248,18 +248,18 @@ do { \
 		pcb_layergrp_id_t grp = -1; \
 		if (layer->meta.bound.type & PCB_LYT_SILK) { \
 			if (sel) {\
-				dst = conf_core.appearance.color.selected; \
+				dst = &conf_core.appearance.color.selected; \
 			} \
 			else {\
 				if (layer != NULL) { \
 					pcb_layer_t *ly = pcb_layer_get_real(layer); \
 					if (ly != NULL) \
-						dst = ly->meta.real.color; \
+						dst = &ly->meta.real.color; \
 					else \
-						dst = conf_core.appearance.color.element; \
+						dst = &conf_core.appearance.color.element; \
 				} \
 				else \
-					dst = conf_core.appearance.color.element; \
+					dst = &conf_core.appearance.color.element; \
 			} \
 			break; \
 		} \
@@ -270,25 +270,25 @@ do { \
 			lid = g->lid[0]; \
 		if ((lid >= 0) && (lid <= PCB_MAX_LAYER)) { \
 			if (sel) \
-				dst = conf_core.appearance.color.selected; \
+				dst = &conf_core.appearance.color.selected; \
 			else {\
 				if (layer != NULL) { \
 					pcb_layer_t *ly = pcb_layer_get_real(layer); \
 					if (ly != NULL) \
-						dst = ly->meta.real.color; \
+						dst = &ly->meta.real.color; \
 					else \
-						dst = conf_core.appearance.color.layer[lid]; \
+						dst = &conf_core.appearance.color.layer[lid]; \
 				} \
 				else \
-					dst = conf_core.appearance.color.layer[lid]; \
+					dst = &conf_core.appearance.color.layer[lid]; \
 			} \
 			break; \
 		} \
 	} \
 	if (sel) \
-		dst = conf_core.appearance.color.selected; \
+		dst = &conf_core.appearance.color.selected; \
 	else \
-		dst = conf_core.appearance.color.invisible_objects; \
+		dst = &conf_core.appearance.color.invisible_objects; \
 } while(0)
 
 /* check if an object has clearance to polygon */
@@ -304,10 +304,7 @@ do { \
 		PCB_POLY_HAS_CLEARANCE(obj) : PCB_NONPOLY_HAS_CLEARANCE(obj) \
 	)
 
-#define PCB_HAS_COLOROVERRIDE(obj)		\
-	( \
-		(obj->override_color[0] == '#')	\
-	)
+#define PCB_HAS_COLOROVERRIDE(obj) ((obj)->override_color != NULL)
 
 /* a pointer is created from index addressing because the base pointer
  * may change when new memory is allocated;

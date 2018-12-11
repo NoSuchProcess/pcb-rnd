@@ -401,6 +401,7 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 
 	if (colormap == NULL)
 		colormap = gtk_widget_get_colormap(gport->top_window);
+TODO("color: Do not depend on manual strcmp here - use pcb_color_is_drill()");
 	if (strcmp(gc->colorname, "drill") == 0) {
 		r = priv->offlimits_color.red / 65535.;
 		g = priv->offlimits_color.green / 65535.;
@@ -477,9 +478,9 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 	drawgl_set_colour(r,g,b,a);
 }
 
-void ghid_gl_set_color(pcb_hid_gc_t gc, const char *name)
+void ghid_gl_set_color(pcb_hid_gc_t gc, const color_t *name)
 {
-	
+	const char *name = color->str;
 	if(name == NULL) {
 		fprintf(stderr, "ghid_gl_set_color():  name = NULL, setting to magenta\n");
 		name = "magenta";

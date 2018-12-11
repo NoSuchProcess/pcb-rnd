@@ -184,7 +184,7 @@ static void batch_destroy_gc(pcb_hid_gc_t gc)
 {
 }
 
-static void batch_set_color(pcb_hid_gc_t gc, const char *name)
+static void batch_set_color(pcb_hid_gc_t gc, const pcb_color_t *name)
 {
 }
 

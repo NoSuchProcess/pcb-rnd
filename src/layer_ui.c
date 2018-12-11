@@ -39,7 +39,7 @@
 vtp0_t pcb_uilayers;
 
 
-pcb_layer_t *pcb_uilayer_alloc(const char *cookie, const char *name, const char *color)
+pcb_layer_t *pcb_uilayer_alloc(const char *cookie, const char *name, const pcb_color_t *color)
 {
 	int n;
 	pcb_layer_t *l;
@@ -62,7 +62,7 @@ pcb_layer_t *pcb_uilayer_alloc(const char *cookie, const char *name, const char 
 	*p = l;
 found:;
 	l->meta.real.cookie = cookie;
-	l->meta.real.color = pcb_strdup(color);
+	l->meta.real.color = *color;
 	l->name = pcb_strdup(name);
 	l->meta.real.vis = 1;
 	l->parent_type = PCB_PARENT_UI;

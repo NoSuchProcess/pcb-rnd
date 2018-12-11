@@ -210,7 +210,7 @@ static const char *print_conf_val(conf_native_type_t type, const confitem_t *val
 		case CFN_REAL:     sprintf(buf, "%f", *val->real); break;
 		case CFN_COORD:    pcb_snprintf(buf, sizebuf, "%mH\n%mm\n%ml", *val->coord, *val->coord, *val->coord); break;
 		case CFN_UNIT:     strcpy(buf, (*val->unit)->suffix); break;
-		case CFN_COLOR:    strcpy(buf, *val->color); break;
+		case CFN_COLOR:    strcpy(buf, val->color->str); break;
 		case CFN_LIST:     strcpy(buf, "<list>"); break;
 		case CFN_max:      strcpy(buf, "<invalid-type>"); break;
 	}

@@ -78,7 +78,7 @@ static pcb_layer_t *make_layer(pcb_layergrp_id_t grp, const char *lname)
 	lid = pcb_layer_create(PCB, grp, lname);
 	assert(lid >= 0);
 	PCB->Data->Layer[lid].meta.real.vis = 1;
-	PCB->Data->Layer[lid].meta.real.color = pcb_strdup(pcb_layer_default_color(lid, 0));
+	PCB->Data->Layer[lid].meta.real.color = *pcb_layer_default_color(lid, 0);
 	return &PCB->Data->Layer[lid];
 }
 

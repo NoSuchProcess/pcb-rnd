@@ -52,18 +52,8 @@ extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
 #define set_pixel(dst, r, g, b, a) \
 	do { p[0] = r; p[1] = g; p[2] = b; p[3] = a; } while(0)
 
-static guint hex2bin_(char c)
-{
-	if ((c >= '0') && (c <= '9')) return c - '0';
-	if ((c >= 'a') && (c <= 'z')) return c - 'a' + 10;
-	if ((c >= 'A') && (c <= 'Z')) return c - 'A' + 10;
-	return 0; /* syntax error... */
-}
-
-#define hex2bin(str) ((hex2bin_((str)[0])) << 4 | hex2bin_((str)[1]))
-
 /* draw a visibility box: filled or partially filled with layer color */
-static GtkWidget *layer_vis_box(int filled, const char *rgb, int brd, int hatch)
+static GtkWidget *layer_vis_box(int filled, const pcb_color_t *color, int brd, int hatch)
 {
 	GdkPixbuf *pixbuf;
 	GtkWidget *image;
@@ -77,9 +67,9 @@ static GtkWidget *layer_vis_box(int filled, const char *rgb, int brd, int hatch)
 	pixels = gdk_pixbuf_get_pixels(pixbuf);
 
 	/* Fill the whole rectangle with color */
-	r = hex2bin(rgb+1);
-	g = hex2bin(rgb+3);
-	b = hex2bin(rgb+5);
+	r = color->r;
+	g = color->g;
+	b = color->b;
 
 	while (height--) {
 		w = width;
@@ -397,25 +387,32 @@ static GtkWidget *wrap_bind_click(GtkWidget *w, GCallback cb, void *cb_data)
 }
 
 /*** Row builder ***/
-static const char *lyr_color(pcb_layer_id_t lid)
+static const pcb_color_t *lyr_color(pcb_layer_id_t lid)
 {
-	const char *clr = "#aaaa00";
+	static pcb_color_t clr_invalid;
+	static int clr_invalid_inited = 0;
+	const pcb_color_t *clr = &clr_invalid;
 	pcb_layer_t *ly = pcb_get_layer(PCB->Data, lid);
 
+	if (!clr_invalid_inited) {
+		pcb_color_load_str(&clr_invalid, "#aaaa00");
+		clr_invalid_inited = 1;
+	}
+
 	if (ly != NULL)
-		clr = ly->meta.real.color;
+		clr = &ly->meta.real.color;
 
 	return clr;
 }
 
-static const char * const grp_color(pcb_layergrp_t *g)
+static const pcb_color_t *grp_color(pcb_layergrp_t *g)
 {
 	/* normal mechanism: first layer's color or default by type */
 	return pcb_layer_default_color(g->len > 0 ? g->lid[0] : 0, g->ltype);
 }
 
 /* Create a hbox with on/off visibility boxes packed in, pointers returned in *on, *off */
-static GtkWidget *build_visbox(const char *color, GtkWidget **on, GtkWidget **off, int brd, int hatch)
+static GtkWidget *build_visbox(const pcb_color_t *color, GtkWidget **on, GtkWidget **off, int brd, int hatch)
 {
 	GtkWidget *vis_box = gtkc_hbox_new(0, 0);
 	*on = layer_vis_box(1, color, brd, hatch);
@@ -426,11 +423,11 @@ static GtkWidget *build_visbox(const char *color, GtkWidget **on, GtkWidget **of
 }
 
 /* Create a hbox of a layer within an expanded group */
-static GtkWidget *build_layer(pcb_gtk_ls_grp_t *lsg, pcb_gtk_ls_lyr_t *lsl, const char *name, pcb_layer_id_t lid,  char * const*force_color)
+static GtkWidget *build_layer(pcb_gtk_ls_grp_t *lsg, pcb_gtk_ls_lyr_t *lsl, const char *name, pcb_layer_id_t lid,  const pcb_color_t *force_color)
 {
 	GtkWidget *vis_box, *vis_ebox, *ly_name_bx, *lab;
 	pcb_layer_t *ly;
-	const char *color;
+	const pcb_color_t *color;
 
 	lsl->lsg = lsg;
 	lsl->force_color = force_color;
@@ -439,7 +436,7 @@ static GtkWidget *build_layer(pcb_gtk_ls_grp_t *lsg, pcb_gtk_ls_lyr_t *lsl, cons
 	if (force_color == NULL)
 		color = lyr_color(lid);
 	else
-		color = *force_color;
+		color = force_color;
 
 	ly = pcb_get_layer(PCB->Data, lid);
 
@@ -534,9 +531,9 @@ static GtkWidget *build_group_real(pcb_gtk_layersel_t *ls, pcb_gtk_ls_grp_t *lsg
 
 	/* install layers */
 	if (grp->len == 0) {
-		const char * const clr = grp_color(grp);
+		const pcb_color_t *clr = grp_color(grp);
 		char *name = pcb_strdup_printf("<%s>", lsg->grp->name);
-		GtkWidget *wl = build_layer(lsg, &lsg->layer[0], name, -1, (char *const *)&clr);
+		GtkWidget *wl = build_layer(lsg, &lsg->layer[0], name, -1, clr);
 		gtk_box_pack_start(GTK_BOX(lsg->layers), wl, TRUE, TRUE, 1);
 		lsg->layer[0].lid = -1;
 		lsg->layer[0].ev_selected = ev_lyr_no_select;

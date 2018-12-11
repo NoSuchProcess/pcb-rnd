@@ -684,15 +684,16 @@ static void ghid_cairo_set_special_colors(conf_native_t * cfg)
 	}
 }
 
-static void ghid_cairo_set_color(pcb_hid_gc_t gc, const char *name)
+static void ghid_cairo_set_color(pcb_hid_gc_t gc, const color_t *color)
 {
 	static void *cache = 0;
 	pcb_hidval_t cval;
 	render_priv_t *priv = gport->render_priv;
+	const char *name = color->str;
 
-	if (name == NULL) {
+	if (color == NULL) {
 		fprintf(stderr, "ghid_cairo_set_color():  name = NULL, setting to magenta\n");
-		name = "magenta";
+		color = &pcb_color_cyan;
 	}
 
 	//if (name != gc->colorname) {
@@ -707,7 +708,7 @@ static void ghid_cairo_set_color(pcb_hid_gc_t gc, const char *name)
 	//if (gport->colormap == 0)
 	//  gport->colormap = gtk_widget_get_colormap(gport->top_window);
 
-	if (strcmp(name, "drill") == 0) {
+	if (pcb_color_is_drill(color)) {
 		copy_color(&gc->color, &priv->offlimits_color);
 		//gdk_cairo_set_source_rgba(cr, &priv->offlimits_color);
 		//gdk_gc_set_foreground(gc->gc, &gport->offlimits_color);

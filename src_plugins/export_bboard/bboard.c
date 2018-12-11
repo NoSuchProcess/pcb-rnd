@@ -209,10 +209,9 @@ static void bboard_get_layer_color(pcb_layer_t * layer, int *clr_r, int *clr_g, 
 		}
 	}
 
-	if (layer->meta.real.color && (layer->meta.real.color[0] == '#')) {
-		if (sscanf(&(layer->meta.real.color[1]), "%02x%02x%02x", &r, &g, &b) == 3)
-			goto ok;
-	}
+	r = layer->meta.real.color.r;
+	g = layer->meta.real.color.g;
+	b = layer->meta.real.color.b;
 
 	/* default color */
 	*clr_r = 0xff;

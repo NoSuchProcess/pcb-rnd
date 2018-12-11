@@ -147,7 +147,6 @@ void pcb_layer_free_fields(pcb_layer_t *layer)
 			pcb_r_destroy_tree(&layer->text_tree);
 		if (layer->polygon_tree)
 			pcb_r_destroy_tree(&layer->polygon_tree);
-		free(layer->meta.real.color);
 	}
 	free((char *)layer->name);
 	memset(layer, 0, sizeof(pcb_layer_t));
@@ -523,7 +522,7 @@ pcb_layer_id_t pcb_layer_create(pcb_board_t *pcb, pcb_layergrp_id_t grp, const c
 		pcb->Data->Layer[id].meta.real.vis = pcb->Data->Layer[pcb->LayerGroups.grp[grp].lid[0]].meta.real.vis;
 	}
 	pcb->Data->Layer[id].meta.real.grp = grp;
-	pcb->Data->Layer[id].meta.real.color = pcb_strdup(pcb_layer_default_color(id, (grp < 0) ? 0 : pcb->LayerGroups.grp[grp].ltype));
+	pcb->Data->Layer[id].meta.real.color = *pcb_layer_default_color(id, (grp < 0) ? 0 : pcb->LayerGroups.grp[grp].ltype);
 
 	pcb->Data->Layer[id].parent_type = PCB_PARENT_DATA;
 	pcb->Data->Layer[id].parent.data = pcb->Data;
@@ -548,19 +547,20 @@ int pcb_layer_rename(pcb_data_t *data, pcb_layer_id_t layer, const char *lname)
 	return pcb_layer_rename_(&data->Layer[layer], pcb_strdup(lname));
 }
 
-int pcb_layer_recolor_(pcb_layer_t *Layer, char *color)
+int pcb_layer_recolor_(pcb_layer_t *Layer, const pcb_color_t *color)
 {
 	if (Layer->is_bound)
 		return -1;
-	free(Layer->meta.real.color);
-	Layer->meta.real.color = color;
+	Layer->meta.real.color = *color;
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 	return 0;
 }
 
 int pcb_layer_recolor(pcb_data_t *data, pcb_layer_id_t layer, const char *color)
 {
-	return pcb_layer_rename_(&data->Layer[layer], pcb_strdup(color));
+	pcb_color_t clr;
+	pcb_color_load_str(&clr, color);
+	return pcb_layer_recolor_(&data->Layer[layer], &clr);
 }
 
 #undef APPEND
@@ -604,18 +604,18 @@ void pcb_layer_move_(pcb_layer_t *dst, pcb_layer_t *src)
 		ar->link.parent = &dst->Arc.lst;
 }
 
-const char *pcb_layer_default_color(int idx, pcb_layer_type_t lyt)
+const pcb_color_t *pcb_layer_default_color(int idx, pcb_layer_type_t lyt)
 {
 	const int clrs = sizeof(conf_core.appearance.color.layer) / sizeof(conf_core.appearance.color.layer[0]);
 
 	if (lyt & PCB_LYT_MASK)
-		return conf_core.appearance.color.mask;
+		return &conf_core.appearance.color.mask;
 	if (lyt & PCB_LYT_PASTE)
-		return conf_core.appearance.color.paste;
+		return &conf_core.appearance.color.paste;
 	if (lyt & PCB_LYT_SILK)
-		return conf_core.appearance.color.element;
+		return &conf_core.appearance.color.element;
 
-	return conf_core.appearance.color.layer[idx % clrs];
+	return &conf_core.appearance.color.layer[idx % clrs];
 }
 
 /* Initialize a new layer with safe initial values */
@@ -625,7 +625,7 @@ static void layer_init(pcb_board_t *pcb, pcb_layer_t *lp, pcb_layer_id_t idx, pc
 	lp->meta.real.grp = gid;
 	lp->meta.real.vis = 1;
 	lp->name = pcb_strdup("New Layer");
-	lp->meta.real.color = pcb_strdup(pcb_layer_default_color(idx, (gid >= 0) ? pcb->LayerGroups.grp[gid].ltype : 0));
+	lp->meta.real.color = *pcb_layer_default_color(idx, (gid >= 0) ? pcb->LayerGroups.grp[gid].ltype : 0);
 	if ((gid >= 0) && (pcb->LayerGroups.grp[gid].len == 0)) { /*When adding the first layer in a group, set up comb flags automatically */
 		switch((pcb->LayerGroups.grp[gid].ltype) & PCB_LYT_ANYTHING) {
 			case PCB_LYT_MASK:  lp->comb = PCB_LYC_AUTO | PCB_LYC_SUB; break;

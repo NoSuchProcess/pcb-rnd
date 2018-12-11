@@ -330,30 +330,29 @@ pcb_pstk_t *pcb_pstk_by_id(pcb_data_t *base, long int ID)
 
 static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, const pcb_layer_t *ly1)
 {
-	const char *color, *layer_color = NULL;
-	char buf[sizeof("#XXXXXX")];
+	const pcb_color_t *color, *layer_color = NULL;
+	pcb_color_t buf;
 
 	if ((lyt & PCB_LYT_PASTE) || (lyt & PCB_LYT_MASK) || (lyt & PCB_LYT_SILK)) {
 		if (ly1 == NULL)
 			layer_color = pcb_layer_default_color(0, lyt);
 		else
-			layer_color = ly1->meta.real.color;
+			layer_color = &ly1->meta.real.color;
 	}
 
 	if (ps->term == NULL) {
 		/* normal via, not a terminal */
 		if (!pcb_draw_force_termlab && PCB_FLAG_TEST(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, ps)) {
 			if (PCB_FLAG_TEST(PCB_FLAG_WARN, ps))
-				color = conf_core.appearance.color.warn;
+				color = &conf_core.appearance.color.warn;
 			else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps))
-				color = conf_core.appearance.color.selected;
+				color = &conf_core.appearance.color.selected;
 			else
-				color = conf_core.appearance.color.connected;
+				color = &conf_core.appearance.color.connected;
 
 			if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, ps)) {
-				assert(color != NULL);
-				pcb_lighten_color(color, buf, 1.75);
-				color = buf;
+				pcb_lighten_color(color, &buf, 1.75);
+				color = &buf;
 			}
 		}
 		else {
@@ -362,25 +361,24 @@ static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, c
 			else if (PCB_HAS_COLOROVERRIDE(ps))
 				color = ps->override_color;
 			else if (is_current)
-				color = conf_core.appearance.color.via;
+				color = &conf_core.appearance.color.via;
 			else
-				color = conf_core.appearance.color.via_far;
+				color = &conf_core.appearance.color.via_far;
 		}
 	}
 	else {
 		/* terminal */
 		if (!pcb_draw_force_termlab && PCB_FLAG_TEST(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, ps)) {
 			if (PCB_FLAG_TEST(PCB_FLAG_WARN, ps))
-				color = conf_core.appearance.color.warn;
+				color = &conf_core.appearance.color.warn;
 			else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps))
-				color = conf_core.appearance.color.selected;
+				color = &conf_core.appearance.color.selected;
 			else
-				color = conf_core.appearance.color.connected;
+				color = &conf_core.appearance.color.connected;
 
 			if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, ps)) {
-				assert(color != NULL);
-				pcb_lighten_color(color, buf, 1.75);
-				color = buf;
+				pcb_lighten_color(color, &buf, 1.75);
+				color = &buf;
 			}
 		}
 		else
@@ -389,9 +387,9 @@ static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, c
 			else if (PCB_HAS_COLOROVERRIDE(ps))
 				color = ps->override_color;
 			else if (is_current)
-				color = conf_core.appearance.color.pin;
+				color = &conf_core.appearance.color.pin;
 			else
-				color = conf_core.appearance.color.pin_far;
+				color = &conf_core.appearance.color.pin_far;
 
 	}
 
@@ -401,7 +399,7 @@ static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, c
 static void set_ps_annot_color(pcb_hid_gc_t gc, pcb_pstk_t *ps)
 {
 	pcb_gui->set_color(pcb_draw_out.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ?
-		conf_core.appearance.color.selected : conf_core.appearance.color.padstackmark);
+		&conf_core.appearance.color.selected : &conf_core.appearance.color.padstackmark);
 }
 
 static void pcb_pstk_draw_poly(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_shape_t *shape, int fill, pcb_coord_t dthick)
@@ -651,7 +649,7 @@ pcb_r_dir_t pcb_pstk_draw_hole_callback(const pcb_box_t *b, void *cl)
 	if (!proto->hplated) {
 		pcb_coord_t r = proto->hdia / 2;
 		r -= r/8; /* +12.5% */
-		pcb_gui->set_color(pcb_draw_out.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ? conf_core.appearance.color.selected : conf_core.appearance.color.subc);
+		pcb_gui->set_color(pcb_draw_out.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ? &conf_core.appearance.color.selected : &conf_core.appearance.color.subc);
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
 		pcb_gui->draw_arc(pcb_draw_out.fgGC, ps->x, ps->y, r, r, 20, 290);
 	}

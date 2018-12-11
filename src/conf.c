@@ -541,7 +541,10 @@ int conf_parse_text(confitem_t *dst, int idx, conf_native_type_t type, const cha
 				dst->unit[idx] = u;
 			break;
 		case CFN_COLOR:
-			dst->color[idx] = text; /* let the HID check validity to support flexibility of the format */
+			if (pcb_color_load_str(&dst->color[idx], text) != 0) {
+				pcb_hid_cfg_error(err_node, "Invalid color value: '%s'\n", text);
+				return -1;
+			}
 			break;
 		default:
 			/* unknown field type registered in the fields hash: internal error */
@@ -1972,7 +1975,7 @@ int conf_print_native_field(conf_pfn pfn, void *ctx, int verbose, confitem_t *va
 		case CFN_REAL:    ret += pfn(ctx, "%f", val->real[idx]); break;
 		case CFN_COORD:   ret += pfn(ctx, "%$mS", val->coord[idx]); break;
 		case CFN_UNIT:    print_str_or_null(pfn, ctx, verbose, val->unit[idx], val->unit[idx]->suffix); break;
-		case CFN_COLOR:   print_str_or_null(pfn, ctx, verbose, val->color[idx], val->color[idx]); break;
+		case CFN_COLOR:   print_str_or_null(pfn, ctx, verbose, val->color[idx].str, val->color[idx].str); break;
 		case CFN_LIST:
 			{
 				conf_listitem_t *n;

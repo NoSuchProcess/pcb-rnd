@@ -56,6 +56,9 @@ pcb_color_t *pcb_clrdup(const pcb_color_t *src);
 void pcb_color_init(void);
 
 
+/* temporary hack */
+#define pcb_color_is_drill(clr) (strcmp((clr)->str, "drill") == 0)
+
 /*** color vector ***/
 
 #define GVT(x) vtclr_ ## x

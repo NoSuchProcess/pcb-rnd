@@ -1110,37 +1110,36 @@ void pcb_line_draw_(pcb_draw_info_t *info, pcb_line_t *line, int allow_term_gfx)
 
 static void pcb_line_draw(pcb_draw_info_t *info, pcb_line_t *line, int allow_term_gfx)
 {
-	const char *color;
-	char buf[sizeof("#XXXXXX")];
+	const pcb_color_t *color;
+	pcb_color_t buf;
 	const pcb_layer_t *layer = info->layer != NULL ? info->layer : pcb_layer_get_real(line->parent.layer);
 
 	if (layer == NULL) /* if the layer is inbound, e.g. in preview, fall back using the layer recipe */
 		layer = line->parent.layer;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_WARN, line))
-		color = conf_core.appearance.color.warn;
+		color = &conf_core.appearance.color.warn;
 	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, line)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, line)) {
 			if (layer->is_bound)
 				PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 1);
 			else
-				color = conf_core.appearance.color.selected;
+				color = &conf_core.appearance.color.selected;
 		}
 		else
-			color = conf_core.appearance.color.connected;
+			color = &conf_core.appearance.color.connected;
 	}
 	else if (PCB_HAS_COLOROVERRIDE(line)) {
-		color = (line->override_color);
+		color = line->override_color;
 	}
 	else if (layer->is_bound)
 		PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 0);
 	else
-		color = layer->meta.real.color;
+		color = &layer->meta.real.color;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, line)) {
-		assert(color != NULL);
-		pcb_lighten_color(color, buf, 1.75);
-		color = buf;
+		pcb_lighten_color(color, &buf, 1.75);
+		color = &buf;
 	}
 
 	pcb_gui->set_color(pcb_draw_out.fgGC, color);

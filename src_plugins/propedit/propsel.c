@@ -134,7 +134,7 @@ static int map_layer_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, int ent
 	map_add_prop(ctx, "p/layer/comb/negative", int, !!(layer->comb & PCB_LYC_SUB));
 	map_add_prop(ctx, "p/layer/comb/auto", int, !!(layer->comb & PCB_LYC_AUTO));
 	if (!layer->is_bound)
-		map_add_prop(ctx, "p/layer/color", String, layer->meta.real.color);
+		map_add_prop(ctx, "p/layer/color", String, layer->meta.real.color.str);
 	map_attr(ctx, &layer->Attributes);
 	return 0;
 }
@@ -340,6 +340,13 @@ static void set_board_cb(void *ctx, pcb_board_t *pcb)
 	pcb_message(PCB_MSG_ERROR, "This property can not be changed from the property editor.\n");
 }
 
+static int layer_recolor(pcb_layer_t *layer, const char *clr)
+{
+	pcb_color_t c;
+	if (pcb_color_load_str(&c, clr) != 0)
+		return -1;
+	return pcb_layer_recolor_(layer, &c);
+}
 
 static int set_layer_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, int enter)
 {
@@ -358,7 +365,7 @@ static int set_layer_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, int ent
 	    (pcb_layer_rename_(layer, pcb_strdup(st->value)) == 0)) DONE0;
 
 	if ((strcmp(pn, "color") == 0) &&
-	    (pcb_layer_recolor_(layer, pcb_strdup(st->value)) == 0)) DONE0;
+	    (layer_recolor(layer, st->value) == 0)) DONE0;
 
 	pcb_message(PCB_MSG_ERROR, "This property can not be changed from the property editor.\n");
 	return 0;

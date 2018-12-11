@@ -118,12 +118,18 @@ static void setup_ui_layers(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_lay
 {
 	gdl_iterator_t it;
 	pcb_line_t *line;
+	static pcb_color_t clr1, clr2;
+
+	if (clr1.str[0] != '#')
+		pcb_color_load_str(&clr1, "#EE9922");
+	if (clr2.str[0] != '#')
+		pcb_color_load_str(&clr2, "#886611");
 
 	if (result->res_ply == NULL)
-		result->res_ply = pcb_uilayer_alloc(pcb_millpath_cookie, "mill remove", "#EE9922");
+		result->res_ply = pcb_uilayer_alloc(pcb_millpath_cookie, "mill remove", &clr1);
 
 	if (result->res_path == NULL)
-		result->res_path = pcb_uilayer_alloc(pcb_millpath_cookie, "mill toolpath", "#886611");
+		result->res_path = pcb_uilayer_alloc(pcb_millpath_cookie, "mill toolpath", &clr2);
 
 	if (result->fill != NULL)
 		pcb_polyop_destroy(NULL, result->res_ply, result->fill);

@@ -60,7 +60,7 @@ typedef long          CFT_INTEGER;
 typedef double        CFT_REAL;
 typedef pcb_coord_t   CFT_COORD;
 typedef pcb_unit_t *  CFT_UNIT;
-typedef char *        CFT_COLOR;
+typedef pcb_color_t   CFT_COLOR;
 typedef conflist_t    CFT_LIST;
 
 typedef enum {
@@ -82,7 +82,7 @@ union confitem_u {
 	double *real;
 	pcb_coord_t *coord;
 	const pcb_unit_t **unit;
-	const char **color;
+	pcb_color_t *color;
 	conflist_t *list;
 	void *any;
 };

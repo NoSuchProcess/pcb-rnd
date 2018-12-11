@@ -666,12 +666,17 @@ int mesh_auto(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 
 static void mesh_layer_reset()
 {
+	static pcb_color_t clr;
+
+	if (clr.str[0] != '#')
+		pcb_color_load_str(&clr, "#007733");
+
 	if (mesh.ui_layer_xy != NULL)
 		pcb_uilayer_free(mesh.ui_layer_xy);
 	if (mesh.ui_layer_z != NULL)
 		pcb_uilayer_free(mesh.ui_layer_z);
-	mesh.ui_layer_xy = pcb_uilayer_alloc(mesh_ui_cookie, "mesh xy", "#007733");
-	mesh.ui_layer_z = pcb_uilayer_alloc(mesh_ui_cookie, "mesh z", "#007733");
+	mesh.ui_layer_xy = pcb_uilayer_alloc(mesh_ui_cookie, "mesh xy", &clr);
+	mesh.ui_layer_z = pcb_uilayer_alloc(mesh_ui_cookie, "mesh z", &clr);
 }
 
 static void ia_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)

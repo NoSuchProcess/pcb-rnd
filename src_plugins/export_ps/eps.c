@@ -37,7 +37,7 @@ static int eps_parse_arguments(int *argc, char ***argv);
 static int eps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform);
 static pcb_hid_gc_t eps_make_gc(void);
 static void eps_destroy_gc(pcb_hid_gc_t gc);
-static void eps_set_color(pcb_hid_gc_t gc, const char *name);
+static void eps_set_color(pcb_hid_gc_t gc, const pcb_color_t *name);
 static void eps_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style);
 static void eps_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width);
 static void eps_set_draw_xor(pcb_hid_gc_t gc, int _xor);
@@ -452,7 +452,7 @@ static void eps_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const p
 }
 
 
-static void eps_set_color(pcb_hid_gc_t gc, const char *name)
+static void eps_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 {
 	static void *cache = 0;
 	pcb_hidval_t cval;
@@ -462,22 +462,20 @@ static void eps_set_color(pcb_hid_gc_t gc, const char *name)
 		gc->erase = 1;
 		return;
 	}
-	if (strcmp(name, "drill") == 0) {
+	if (pcb_color_is_drill(color)) {
 		gc->color = 0xffffff;
 		gc->erase = 0;
 		return;
 	}
 	gc->erase = 0;
-	if (pcb_hid_cache_color(0, name, &cval, &cache)) {
+	if (pcb_hid_cache_color(0, color->str, &cval, &cache)) {
 		gc->color = cval.lval;
 	}
 	else if (in_mono) {
 		gc->color = 0;
 	}
-	else if (name[0] == '#') {
-		unsigned int r, g, b;
-		sscanf(name + 1, "%2x%2x%2x", &r, &g, &b);
-		gc->color = (r << 16) + (g << 8) + b;
+	else if (color->str[0] == '#') {
+		gc->color = (color->r << 16) + (color->g << 8) + color->b;
 	}
 	else
 		gc->color = 0;

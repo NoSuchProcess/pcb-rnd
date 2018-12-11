@@ -109,7 +109,7 @@ static void nogui_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
 	/* the HID may decide to ignore this hook */
 }
 
-static void nogui_set_color(pcb_hid_gc_t gc, const char *name)
+static void nogui_set_color(pcb_hid_gc_t gc, const pcb_color_t *name)
 {
 	CRASH("set_color");
 }

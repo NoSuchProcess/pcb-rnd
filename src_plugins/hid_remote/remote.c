@@ -201,13 +201,13 @@ static void remote_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, cons
 		pcb_message(PCB_MSG_ERROR, "Invalid drawing mode %d\n", op);
 }
 
-static void remote_set_color(pcb_hid_gc_t gc, const char *name)
+static void remote_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0) {
-		if (strcmp(gc_cache[idx].color, name) != 0) {
-			proto_send_set_color(idx, name);
-			strcpy(gc_cache[idx].color, name);
+		if (strcmp(gc_cache[idx].color, color->str) != 0) {
+			proto_send_set_color(idx, color->str);
+			strcpy(gc_cache[idx].color, color->str);
 		}
 	}
 }

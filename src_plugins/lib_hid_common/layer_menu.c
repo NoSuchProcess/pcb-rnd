@@ -137,8 +137,8 @@ static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node
 				pcb_layer_t *l = pcb_get_layer(PCB->Data, lid);
 				pcb_layer_type_t lyt = pcb_layer_flags_(l);
 
-				props.background = l->meta.real.color;
-				props.foreground = conf_core.appearance.color.background;
+				props.background = &l->meta.real.color;
+				props.foreground = &conf_core.appearance.color.background;
 				props.checked = chk;
 				if (ctx->view) {
 					sprintf(act, "ToggleView(%ld)", lid+1);

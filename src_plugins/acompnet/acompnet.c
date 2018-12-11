@@ -110,9 +110,15 @@ void pplg_uninit_acompnet(void)
 #include "dolists.h"
 int pplg_init_acompnet(void)
 {
+	static pcb_color_t clr;
+
 	PCB_API_CHK_VER;
+
+	if (clr.str[0] != '#')
+		pcb_color_load_str(&clr, "#c09920");
+
 	PCB_REGISTER_ACTIONS(acompnet_action_list, acompnet_cookie)
-	ly = pcb_uilayer_alloc(acompnet_cookie, "autocomp-net", "#c09920");
+	ly = pcb_uilayer_alloc(acompnet_cookie, "autocomp-net", &clr);
 
 	return 0;
 }

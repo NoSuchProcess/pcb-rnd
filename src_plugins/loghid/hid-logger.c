@@ -101,10 +101,10 @@ static void log_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
 }
 
 
-static void log_set_color(pcb_hid_gc_t gc, const char *name)
+static void log_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 {
-	pcb_fprintf(out_, "set_color(gc, %s)\n", name);
-	delegatee_->set_color(gc, name);
+	pcb_fprintf(out_, "set_color(gc, %s)\n", color->str);
+	delegatee_->set_color(gc, color);
 }
 
 static void log_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)

@@ -325,7 +325,7 @@ static void cb_pane_set(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 
 static void prv_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
-	pcb_gui->set_color(gc, "#FF0000");
+	pcb_gui->set_color(gc, pcb_color_red);
 	pcb_text_draw_string_simple(NULL, "foo", PCB_MM_TO_COORD(1), PCB_MM_TO_COORD(20), 500, 10.0, 0, 0, 0, 0, 0);
 
 	printf("expose in dlg_test!\n");

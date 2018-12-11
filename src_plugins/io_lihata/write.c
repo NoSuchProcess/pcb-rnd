@@ -935,7 +935,7 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, pcb_la
 			lht_dom_hash_put(obj, build_text("visible", layer->meta.real.vis ? "1" : "0"));
 		lht_dom_hash_put(obj, build_textf("group", "%ld", layer_group));
 		if (wrver >= 5)
-			lht_dom_hash_put(obj, build_text("color", layer->meta.real.color));
+			lht_dom_hash_put(obj, build_text("color", layer->meta.real.color.str));
 	}
 	else {
 		if (wrver >= 3) {

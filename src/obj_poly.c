@@ -1202,35 +1202,34 @@ TODO("subc: check if x;y is within the poly, but use a cheaper method than the o
 
 static void pcb_poly_draw(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_term_gfx)
 {
-	static const char *color;
-	char buf[sizeof("#XXXXXX")];
+	static const pcb_color_t *color;
+	pcb_color_t buf;
 	const pcb_layer_t *layer = info->layer != NULL ? info->layer : pcb_layer_get_real(polygon->parent.layer);
 
 	if (layer == NULL) /* if the layer is inbound, e.g. in preview, fall back using the layer recipe */
 		layer = polygon->parent.layer;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_WARN, polygon))
-		color = conf_core.appearance.color.warn;
+		color = &conf_core.appearance.color.warn;
 	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon)) {
 		if (layer->is_bound)
 			PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 1);
 		else
-			color = conf_core.appearance.color.selected;
+			color = &conf_core.appearance.color.selected;
 	}
 	else if (PCB_FLAG_TEST(PCB_FLAG_FOUND, polygon))
-		color = conf_core.appearance.color.connected;
+		color = &conf_core.appearance.color.connected;
 	else if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, polygon)) {
-		assert(color != NULL);
-		pcb_lighten_color(color, buf, 1.75);
-		color = buf;
+		pcb_lighten_color(color, &buf, 1.75);
+		color = &buf;
 	}
 	else if (PCB_HAS_COLOROVERRIDE(polygon)) {
-		color = (polygon->override_color);
+		color = polygon->override_color;
 	}
 	else if (layer->is_bound)
 		PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 0);
 	else
-		color = layer->meta.real.color;
+		color = &layer->meta.real.color;
 	pcb_gui->set_color(pcb_draw_out.fgGC, color);
 
 	pcb_poly_draw_(info, polygon, allow_term_gfx);

@@ -165,7 +165,7 @@ static void pstklib_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 
 	pcb_pstk_draw_preview(PCB, &ps, layers, 0, 0, &e->view);
 
-	pcb_gui->set_color(gc, "#000000");
+	pcb_gui->set_color(gc, pcb_color_black);
 	pcb_hid_set_line_cap(gc, pcb_cap_round);
 	pcb_hid_set_line_width(gc, -1);
 

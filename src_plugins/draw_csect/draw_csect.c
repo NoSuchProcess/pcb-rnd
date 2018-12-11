@@ -43,16 +43,21 @@
 
 extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
 
-static const char *COLOR_ANNOT = "#000000";
-static const char *COLOR_BG = "#f0f0f0";
+static const char *COLOR_ANNOT_ = "#000000";
+static const char *COLOR_BG_ = "#f0f0f0";
 
-static const char *COLOR_COPPER = "#C05020";
-static const char *COLOR_SUBSTRATE = "#E0D090";
-static const char *COLOR_SILK = "#000000";
-static const char *COLOR_MASK = "#30d030";
-static const char *COLOR_PASTE = "#60e0e0";
-static const char *COLOR_MISC = "#e0e000";
-static const char *COLOR_OUTLINE = "#000000";
+static const char *COLOR_COPPER_ = "#C05020";
+static const char *COLOR_SUBSTRATE_ = "#E0D090";
+static const char *COLOR_SILK_ = "#000000";
+static const char *COLOR_MASK_ = "#30d030";
+static const char *COLOR_PASTE_ = "#60e0e0";
+static const char *COLOR_MISC_ = "#e0e000";
+static const char *COLOR_OUTLINE_ = "#000000";
+
+
+static pcb_color_t
+	COLOR_ANNOT, COLOR_BG, COLOR_COPPER, COLOR_SUBSTRATE, COLOR_SILK, COLOR_MASK,
+	COLOR_PASTE, COLOR_MISC, COLOR_OUTLINE;
 
 static pcb_layer_id_t drag_lid = -1;
 static pcb_layergrp_id_t drag_gid = -1, drag_gid_subst = -1;
@@ -96,7 +101,7 @@ static pcb_text_t *dtext_(pcb_coord_t x, pcb_coord_t y, int scale, int dir, cons
 }
 
 /* Draw a text at x;y with a background */
-static pcb_text_t *dtext_bg(pcb_hid_gc_t gc, int x, int y, int scale, int dir, const char *txt, const char *bgcolor, const char *fgcolor)
+static pcb_text_t *dtext_bg(pcb_hid_gc_t gc, int x, int y, int scale, int dir, const char *txt, const pcb_color_t *bgcolor, const pcb_color_t *fgcolor)
 {
 	static pcb_text_t t;
 
@@ -308,7 +313,7 @@ static pcb_layergrp_id_t get_group_coords(pcb_coord_t y, pcb_coord_t *y1, pcb_co
 static pcb_coord_t create_button(pcb_hid_gc_t gc, int x, int y, const char *label, pcb_box_t *box)
 {
 	pcb_text_t *t;
-	t = dtext_bg(gc, x, y, 200, 0, label, COLOR_BG, COLOR_ANNOT);
+	t = dtext_bg(gc, x, y, 200, 0, label, &COLOR_BG, &COLOR_ANNOT);
 	pcb_text_bbox(pcb_font(PCB, 0, 1), t);
 	dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 0.25, 0, 0, 0, OMIT_NONE);
 	box->X1 = t->BoundingBox.X1;
@@ -432,7 +437,7 @@ static void draw_csect(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 	reset_layer_coords();
 	csect_gc = gc;
 
-	pcb_gui->set_color(gc, COLOR_ANNOT);
+	pcb_gui->set_color(gc, &COLOR_ANNOT);
 	dtext(0, 0, 500, 0, "Board cross section");
 
 	/* draw physical layers */
@@ -440,7 +445,7 @@ static void draw_csect(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
 		int i, stepf = 0, stepb = 0, th;
 		pcb_layergrp_t *g = PCB->LayerGroups.grp + gid;
-		const char *color = "#ff0000";
+		const pcb_color_t *color;
 
 		if ((!g->valid) || (gid == drag_gid)  || (gid == drag_gid_subst))
 			continue;
@@ -451,31 +456,31 @@ static void draw_csect(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 			else
 				stepb = -last_copper_step;
 			th = 5;
-			color = COLOR_COPPER;
+			color = &COLOR_COPPER;
 		}
 		else if (g->ltype & PCB_LYT_SUBSTRATE) {
 			stepf = stepb = 7;
 			th = 10;
-			color = COLOR_SUBSTRATE;
+			color = &COLOR_SUBSTRATE;
 		}
 		else if (g->ltype & PCB_LYT_SILK) {
 			th = 5;
-			color = COLOR_SILK;
+			color = &COLOR_SILK;
 			stepb = 3;
 		}
 		else if (g->ltype & PCB_LYT_MASK) {
 			th = 5;
-			color = COLOR_MASK;
+			color = &COLOR_MASK;
 			stepb = 9;
 		}
 		else if (g->ltype & PCB_LYT_PASTE) {
 			th = 5;
-			color = COLOR_PASTE;
+			color = &COLOR_PASTE;
 			stepf = 9;
 		}
 		else if (g->ltype & PCB_LYT_MISC) {
 			th = 5;
-			color = COLOR_MISC;
+			color = &COLOR_MISC;
 			stepf = 3;
 		}
 		else if (g->ltype & PCB_LYT_BOUNDARY) {
@@ -488,7 +493,7 @@ TODO("layer: handle multiple outline layers")
 
 		pcb_gui->set_color(gc, color);
 		dhrect(0, y, GROUP_WIDTH_MM, y+th,  1, 0.5,  stepf, stepb, OMIT_LEFT | OMIT_RIGHT);
-		dtext_bg(gc, 5, y, 200, 0, g->name, COLOR_BG, COLOR_ANNOT);
+		dtext_bg(gc, 5, y, 200, 0, g->name, &COLOR_BG, &COLOR_ANNOT);
 		reg_group_coords(gid, PCB_MM_TO_COORD(y), PCB_MM_TO_COORD(y+th));
 
 
@@ -503,7 +508,7 @@ TODO("layer: handle multiple outline layers")
 
 				if (lid == drag_lid)
 					continue;
-				t = dtext_bg(gc, x, y, 200, 0, l->name, COLOR_BG, l->meta.real.color);
+				t = dtext_bg(gc, x, y, 200, 0, l->name, &COLOR_BG, &l->meta.real.color);
 				pcb_text_bbox(pcb_font(PCB, 0, 1), t);
 				if (l->comb & PCB_LYC_SUB) {
 					dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 1.2, 0, 0, 0, OMIT_NONE);
@@ -511,7 +516,7 @@ TODO("layer: handle multiple outline layers")
 				}
 
 				if (redraw_text)
-					t = dtext_bg(gc, x, y, 200, 0, l->name, COLOR_BG, l->meta.real.color);
+					t = dtext_bg(gc, x, y, 200, 0, l->name, &COLOR_BG, &l->meta.real.color);
 				else
 					dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 0.25, 0, 0, 0, OMIT_NONE);
 
@@ -534,19 +539,19 @@ TODO("layer: handle multiple outline layers")
 		pcb_text_t *t;
 		if (g->len > 0) {
 			pcb_layer_t *l = &PCB->Data->Layer[g->lid[0]];
-			pcb_gui->set_color(gc, l->meta.real.color);
-			t = dtext_bg(gc, 1, y, 200, 0, l->name, COLOR_BG, l->meta.real.color);
+			pcb_gui->set_color(gc, &l->meta.real.color);
+			t = dtext_bg(gc, 1, y, 200, 0, l->name, &COLOR_BG, &l->meta.real.color);
 			pcb_text_bbox(pcb_font(PCB, 0, 1), t);
 			dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 1, 0, 0, 0, OMIT_NONE);
-			dtext_bg(gc, 1, y, 200, 0, l->name, COLOR_BG, l->meta.real.color);
+			dtext_bg(gc, 1, y, 200, 0, l->name, &COLOR_BG, &l->meta.real.color);
 			reg_layer_coords(g->lid[0], t->BoundingBox.X1, PCB_MM_TO_COORD(y), t->BoundingBox.X2+PCB_MM_TO_COORD(1), PCB_MM_TO_COORD(y+4));
 		}
 		else {
-			pcb_gui->set_color(gc, COLOR_OUTLINE);
-			t = dtext_bg(gc, 1, y, 200, 0, "<outline>", COLOR_BG, COLOR_OUTLINE);
+			pcb_gui->set_color(gc, &COLOR_OUTLINE);
+			t = dtext_bg(gc, 1, y, 200, 0, "<outline>", &COLOR_BG, &COLOR_OUTLINE);
 			pcb_text_bbox(pcb_font(PCB, 0, 1), t);
 			dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 1, 0, 0, 0, OMIT_NONE);
-			dtext_bg(gc, 1, y, 200, 0, "<outline>", COLOR_BG, COLOR_OUTLINE);
+			dtext_bg(gc, 1, y, 200, 0, "<outline>", &COLOR_BG, &COLOR_OUTLINE);
 		}
 		dline(0, ystart, 0, y+4, 1);
 		reg_outline_coords(t->BoundingBox.X1, PCB_MM_TO_COORD(y), t->BoundingBox.X2, PCB_MM_TO_COORD(y+4));
@@ -565,7 +570,7 @@ TODO("layer: handle multiple outline layers")
 
 
 	if (DRAGGING) {
-		pcb_gui->set_color(gc, "#000000");
+		pcb_gui->set_color(gc, pcb_color_black);
 
 		/* draw the actual operation */
 		if (drag_addgrp) {
@@ -935,6 +940,16 @@ int pplg_init_draw_csect(void)
 {
 	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(draw_csect_action_list, draw_csect_cookie)
+
+	pcb_color_load_str(&COLOR_ANNOT,     COLOR_ANNOT_);
+	pcb_color_load_str(&COLOR_BG,        COLOR_BG_);
+	pcb_color_load_str(&COLOR_COPPER,    COLOR_COPPER_);
+	pcb_color_load_str(&COLOR_SUBSTRATE, COLOR_SUBSTRATE_);
+	pcb_color_load_str(&COLOR_SILK,      COLOR_SILK_);
+	pcb_color_load_str(&COLOR_MASK,      COLOR_MASK_);
+	pcb_color_load_str(&COLOR_PASTE,     COLOR_PASTE_);
+	pcb_color_load_str(&COLOR_MISC,      COLOR_MISC_);
+	pcb_color_load_str(&COLOR_OUTLINE,   COLOR_OUTLINE_);
 
 	pcb_stub_draw_csect = draw_csect;
 	pcb_stub_draw_csect_mouse_ev = mouse_csect;

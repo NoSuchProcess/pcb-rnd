@@ -170,10 +170,8 @@ void pcb_layer_colors_from_conf(pcb_board_t *ptr, int force)
 
 	/* copy default settings */
 	for (i = 0; i < PCB_MAX_LAYER; i++)
-		if (force || (ptr->Data->Layer[i].meta.real.color == NULL) || (ptr->Data->Layer[i].meta.real.color[0] == '\0')) {
-			free(ptr->Data->Layer[i].meta.real.color);
-			ptr->Data->Layer[i].meta.real.color = pcb_strdup(pcb_layer_default_color(i, pcb_layer_flags(ptr, i)));
-		}
+		if (force || (ptr->Data->Layer[i].meta.real.color.str[0] == '\0'))
+			memcpy(&ptr->Data->Layer[i].meta.real.color, pcb_layer_default_color(i, pcb_layer_flags(ptr, i)), sizeof(pcb_color_t));
 }
 
 typedef struct {

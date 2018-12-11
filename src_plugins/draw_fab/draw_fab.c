@@ -234,7 +234,7 @@ static void DrawFab(pcb_draw_info_t *info, pcb_hid_gc_t gc, const pcb_hid_expose
 			plated_sym = --ds;
 		if (drill->UnplatedCount)
 			unplated_sym = --ds;
-		pcb_gui->set_color(gc, conf_core.appearance.color.pin);
+		pcb_gui->set_color(gc, &conf_core.appearance.color.pin);
 		for (i = 0; i < drill->PinN; i++) {
 			int unplated = 1;
 			pcb_coord_t x, y;
@@ -261,7 +261,7 @@ static void DrawFab(pcb_draw_info_t *info, pcb_hid_gc_t gc, const pcb_hid_expose
 			text_at(info, gc, PCB_MIL_TO_COORD(1400), yoff, PCB_MIL_TO_COORD(2), "NO");
 			text_at(info, gc, PCB_MIL_TO_COORD(980), yoff, PCB_MIL_TO_COORD(2), "%d", drill->UnplatedCount);
 		}
-		pcb_gui->set_color(gc, conf_core.appearance.color.element);
+		pcb_gui->set_color(gc, &conf_core.appearance.color.element);
 		if (conf_core.editor.grid_unit->family == PCB_UNIT_IMPERIAL)
 			text_at(info, gc, PCB_MIL_TO_COORD(450), yoff, PCB_MIL_TO_COORD(2), "%0.3f", PCB_COORD_TO_INCH(drill->DrillSize));
 		else
@@ -277,7 +277,7 @@ static void DrawFab(pcb_draw_info_t *info, pcb_hid_gc_t gc, const pcb_hid_expose
 		total_drills += drill->ViaCount;
 	}
 
-	pcb_gui->set_color(gc, conf_core.appearance.color.element);
+	pcb_gui->set_color(gc, &conf_core.appearance.color.element);
 	text_at(info, gc, 0, yoff, PCB_MIL_TO_COORD(9), "Symbol");
 	if (conf_core.editor.grid_unit->family == PCB_UNIT_IMPERIAL)
 		text_at(info, gc, PCB_MIL_TO_COORD(410), yoff, PCB_MIL_TO_COORD(9), "Diam. (Inch)");

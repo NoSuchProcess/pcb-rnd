@@ -294,7 +294,16 @@ void lesstif_coords_to_pcb(int vx, int vy, pcb_coord_t * px, pcb_coord_t * py)
 	*py = Py(vy);
 }
 
-Pixel lesstif_parse_color(const char *value)
+Pixel lesstif_parse_color(const pcb_color_t *value)
+{
+	XColor color;
+	if (XParseColor(display, lesstif_colormap, value->str, &color))
+		if (XAllocColor(display, lesstif_colormap, &color))
+			return color.pixel;
+	return 0;
+}
+
+Pixel lesstif_parse_color_str(const char *value)
 {
 	XColor color;
 	if (XParseColor(display, lesstif_colormap, value, &color))
@@ -1394,7 +1403,7 @@ void lesstif_show_crosshair(int show)
 	if (!crosshair_in_window || !window)
 		return;
 	if (xor_gc == 0) {
-		crosshair_color = lesstif_parse_color(conf_core.appearance.color.crosshair) ^ bgcolor;
+		crosshair_color = lesstif_parse_color(&conf_core.appearance.color.crosshair) ^ bgcolor;
 		xor_gc = XCreateGC(display, window, 0, 0);
 		XSetFunction(display, xor_gc, GXxor);
 		XSetForeground(display, xor_gc, crosshair_color);
@@ -1504,10 +1513,10 @@ static void work_area_first_expose(Widget work_area, void *me, XmDrawingAreaCall
 	my_gc = XCreateGC(display, window, 0, 0);
 
 	arc1_gc = XCreateGC(display, window, 0, 0);
-	c = lesstif_parse_color("#804000");
+	c = lesstif_parse_color_str("#804000");
 	XSetForeground(display, arc1_gc, c);
 	arc2_gc = XCreateGC(display, window, 0, 0);
-	c = lesstif_parse_color("#004080");
+	c = lesstif_parse_color_str("#004080");
 	XSetForeground(display, arc2_gc, c);
 	XSetLineAttributes(display, arc1_gc, 1, LineOnOffDash, 0, 0);
 	XSetLineAttributes(display, arc2_gc, 1, LineOnOffDash, 0, 0);
@@ -1522,8 +1531,8 @@ static void work_area_first_expose(Widget work_area, void *me, XmDrawingAreaCall
 	view_width = width;
 	view_height = height;
 
-	offlimit_color = lesstif_parse_color(conf_core.appearance.color.off_limit);
-	grid_color = lesstif_parse_color(conf_core.appearance.color.grid);
+	offlimit_color = lesstif_parse_color(&conf_core.appearance.color.off_limit);
+	grid_color = lesstif_parse_color(&conf_core.appearance.color.grid);
 
 	bg_gc = XCreateGC(display, window, 0, 0);
 	XSetForeground(display, bg_gc, bgcolor);
@@ -1679,7 +1688,7 @@ static void lesstif_do_export(pcb_hid_attr_val_t * options)
 	XtManageChild(work_area_frame);
 
 	stdarg_n = 0;
-	stdarg_do_color(conf_core.appearance.color.background, XmNbackground);
+	stdarg_do_color(&conf_core.appearance.color.background, XmNbackground);
 	work_area = XmCreateDrawingArea(work_area_frame, XmStrCast("work_area"), stdarg_args, stdarg_n);
 	XtManageChild(work_area);
 	XtAddCallback(work_area, XmNexposeCallback, (XtCallbackProc) work_area_first_expose, 0);
@@ -2901,11 +2910,12 @@ static void lesstif_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, con
 
 
 
-static void lesstif_set_color(pcb_hid_gc_t gc, const char *name)
+static void lesstif_set_color(pcb_hid_gc_t gc, const pcb_color_t *pcolor)
 {
 	static void *cache = 0;
 	pcb_hidval_t cval;
 	static XColor color, exact_color;
+	const char *name = pcolor->str;
 
 	if (!display)
 		return;
@@ -2918,7 +2928,7 @@ static void lesstif_set_color(pcb_hid_gc_t gc, const char *name)
 		gc->colorname = pcb_strdup(name);
 	}
 
-	if (strcmp(name, "drill") == 0) {
+	if (pcb_color_is_drill(pcolor)) {
 		gc->color = offlimit_color;
 		gc->erase = 0;
 	}

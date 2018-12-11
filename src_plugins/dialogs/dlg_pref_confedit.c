@@ -116,7 +116,7 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		return;
 	}
 
-	if (ctx->idx >= pctx->conf.selected_nat->array_size) {
+	if (pctx->conf.selected_idx >= pctx->conf.selected_nat->array_size) {
 		pcb_message(PCB_MSG_ERROR, "Internal error: array index out of bounds\n");
 		return;
 	}

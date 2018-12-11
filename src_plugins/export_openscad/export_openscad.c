@@ -447,7 +447,7 @@ static void openscad_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, co
 	}
 }
 
-static void openscad_set_color(pcb_hid_gc_t gc, const char *name)
+static void openscad_set_color(pcb_hid_gc_t gc, const pcb_color_t *name)
 {
 }
 

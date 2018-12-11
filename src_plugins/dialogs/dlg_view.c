@@ -201,13 +201,16 @@ static void view_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	view_ctx_t *ctx = prv->user_ctx;
 	pcb_xform_t xform;
 	int old_termlab, g;
-	static const char *offend_color[] = {"#ff0000", "#0000ff"};
+	static const pcb_color_t *offend_color[2];
 	pcb_view_t *v = pcb_view_by_uid(ctx->lst, ctx->selected);
 	size_t n;
 	void **p;
 
 	if (v == NULL)
 		return;
+
+	offend_color[0] = pcb_color_red;
+	offend_color[1] = pcb_color_blue;
 
 	/* NOTE: zoom box was already set on select */
 
@@ -219,13 +222,11 @@ static void view_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 			pcb_any_obj_t *obj = pcb_idpath2obj(ctx->pcb->Data, i);
 			if ((obj != NULL) && (obj->type & PCB_OBJ_CLASS_REAL)) {
 				vtp0_append(&view_color_save, obj);
-				if (obj->override_color != NULL) {
-					char *save = pcb_strdup(obj->override_color);
-					vtp0_append(&view_color_save, save);
-				}
+				if (obj->override_color != NULL)
+					vtp0_append(&view_color_save, obj->override_color);
 				else
 					vtp0_append(&view_color_save, NULL);
-				strcpy(obj->override_color, offend_color[g]);
+				obj->override_color = offend_color[g];
 			}
 		}
 	}
@@ -241,13 +242,8 @@ static void view_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	/* restore object color */
 	for(n = 0, p = view_color_save.array; n < view_color_save.used; n+=2,p+=2) {
 		pcb_any_obj_t *obj = p[0];
-		char *s = p[1];
-		if (s != NULL) {
-			strcpy(obj->override_color, s);
-			free(s);
-		}
-		else
-			*obj->override_color = '\0';
+		pcb_color_t *s = p[1];
+		obj->override_color = s;
 	}
 	vtp0_truncate(&view_color_save, 0);
 }
