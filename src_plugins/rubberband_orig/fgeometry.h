@@ -4,8 +4,7 @@
 
 #include "obj_common.h"
 
-typedef struct pcb_fvector_s
-{
+typedef struct pcb_fvector_s {
 	double x;
 	double y;
 } pcb_fvector_t;
@@ -15,8 +14,7 @@ typedef struct pcb_fvector_s
  * Alternatively, they can be created manually as long as
  * direction is normalized
  */
-typedef struct pcb_fline_s
-{
+typedef struct pcb_fline_s {
 	pcb_fvector_t point;
 	pcb_fvector_t direction;
 } pcb_fline_t;
@@ -38,4 +36,3 @@ int pcb_fline_is_valid(pcb_fline_t l);
 pcb_fvector_t pcb_fline_intersection(pcb_fline_t l1, pcb_fline_t l2);
 
 #endif
-

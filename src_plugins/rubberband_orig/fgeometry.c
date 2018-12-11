@@ -48,18 +48,18 @@
 
 #define MIN_COMPONENT 0.000001
 
-int pcb_fvector_is_null (pcb_fvector_t v)
+int pcb_fvector_is_null(pcb_fvector_t v)
 {
 	return fabs(v.x) < MIN_COMPONENT && fabs(v.y) < MIN_COMPONENT;
 }
 
-double pcb_fvector_dot (pcb_fvector_t v1, pcb_fvector_t v2)
+double pcb_fvector_dot(pcb_fvector_t v1, pcb_fvector_t v2)
 {
 	return v1.x * v2.x + v1.y * v2.y;
 }
 
 
-void pcb_fvector_normalize (pcb_fvector_t *v)
+void pcb_fvector_normalize(pcb_fvector_t *v)
 {
 	double module = sqrt(v->x * v->x + v->y * v->y);
 
@@ -75,14 +75,14 @@ int pcb_fline_is_valid(pcb_fline_t l)
 pcb_fline_t pcb_fline_create(pcb_any_line_t *line)
 {
 	pcb_fline_t ret;
-	
+
 	ret.point.x = line->Point1.X;
 	ret.point.y = line->Point1.Y;
 	ret.direction.x = line->Point2.X - line->Point1.X;
 	ret.direction.y = line->Point2.Y - line->Point1.Y;
 
-	if (!pcb_fvector_is_null (ret.direction))
-		pcb_fvector_normalize( &ret.direction );
+	if (!pcb_fvector_is_null(ret.direction))
+		pcb_fvector_normalize(&ret.direction);
 
 	return ret;
 }
@@ -97,8 +97,8 @@ pcb_fline_t pcb_fline_create_from_points(struct pcb_point_s *base_point, struct 
 	ret.direction.x = other_point->X - base_point->X;
 	ret.direction.y = other_point->Y - base_point->Y;
 
-	if (!pcb_fvector_is_null (ret.direction))
-		pcb_fvector_normalize( &ret.direction );
+	if (!pcb_fvector_is_null(ret.direction))
+		pcb_fvector_normalize(&ret.direction);
 
 	return ret;
 }
@@ -112,9 +112,8 @@ pcb_fvector_t pcb_fline_intersection(pcb_fline_t l1, pcb_fline_t l2)
 	ret.x = 0;
 	ret.y = 0;
 
-	lines_dot = pcb_fvector_dot (l1.direction, l2.direction);
-	if (fabs(lines_dot) > 0.990 )
-	{
+	lines_dot = pcb_fvector_dot(l1.direction, l2.direction);
+	if (fabs(lines_dot) > 0.990) {
 		/* Consider them parallel. Return null point (vector) */
 		return ret;
 	}
@@ -141,7 +140,7 @@ pcb_fvector_t pcb_fline_intersection(pcb_fline_t l1, pcb_fline_t l2)
 		 * and s can be found similarly
 		 * s = (d2y * ( p2x - p1x ) + d2x * ( p1y - p2y )) / ( d2y * d1x - d2x * d1y)
 		 */
-		
+
 		double t;
 		double p1x, p1y, d1x, d1y;
 		double p2x, p2y, d2x, d2y;
@@ -156,12 +155,12 @@ pcb_fvector_t pcb_fline_intersection(pcb_fline_t l1, pcb_fline_t l2)
 		d2x = l2.direction.x;
 		d2y = l2.direction.y;
 
-		t = (d1y * ( p1x - p2x ) + d1x * ( - p1y + p2y )) / ( d1y * d2x - d1x * d2y );
+		t = (d1y * (p1x - p2x) + d1x * (-p1y + p2y)) / (d1y * d2x - d1x * d2y);
 
 #if 0
 /* Can we remove this? */
 		{
-			double s = (d2y * ( p2x - p1x ) + d2x * ( p1y - p2y )) / ( d2y * d1x - d2x * d1y );
+			double s = (d2y * (p2x - p1x) + d2x * (p1y - p2y)) / (d2y * d1x - d2x * d1y);
 			pcb_trace("Intersection t=%f, s=%f\n", t, s);
 
 			ret.x = p1x + s * d1x;
@@ -172,9 +171,7 @@ pcb_fvector_t pcb_fline_intersection(pcb_fline_t l1, pcb_fline_t l2)
 		ret.x = p2x + t * d2x;
 		ret.y = p2y + t * d2y;
 
-		/*pcb_trace("Intersection x=%f, y=%f\n", ret.x, ret.y);*/
+		/*pcb_trace("Intersection x=%f, y=%f\n", ret.x, ret.y); */
 	}
 	return ret;
 }
-
-
