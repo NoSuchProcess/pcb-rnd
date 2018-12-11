@@ -43,6 +43,49 @@ static void pref_conf_edit_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	free(ctx);
 }
 
+static void confedit_brd2dlg(confedit_ctx_t *ctx)
+{
+#if 0
+	pcb_hid_attr_val_t hv;
+	lht_node_t *nd = conf_lht_get_at(ctx->role, nat->hash_path, 0);
+			if (nd != NULL) { /* role, prio, policy, value */
+
+	switch(ctx->nat->type) {
+		case CFN_STRING:
+			hv.str_value = ctx->nat->val.string[ctx->idx];
+			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
+			break;
+		case CFN_BOOLEAN:
+			hv.int_value = ctx->nat->val.boolean[ctx->idx];
+			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
+			break;
+		case CFN_INTEGER:
+			hv.int_value = ctx->nat->val.boolean[ctx->idx];
+			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
+			break;
+		case CFN_REAL:
+			hv.real_value = ctx->nat->val.real[ctx->idx];
+			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
+			break;
+		case CFN_COORD:
+			hv.coord_value = ctx->nat->val.coord[ctx->idx];
+			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
+			break;
+		case CFN_UNIT:
+			hv.int_value = ctx->nat->val.unit[ctx->idx] - pcb_units;
+			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
+			break;
+		case CFN_COLOR:
+TODO("needs DAD")
+			break;
+		case CFN_LIST:
+TODO("needs more code")
+			PCB_DAD_LABEL(ctx->dlg, "ERROR: TODO: list");
+		case CFN_max:
+			PCB_DAD_LABEL(ctx->dlg, "ERROR: invalid conf node type");
+	}
+#endif
+}
 
 static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
@@ -54,7 +97,6 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	pref_ctx_t *pctx = caller_data;
 	confedit_ctx_t *ctx;
-	conf_role_t role;
 
 	if (pctx->conf.selected_nat == NULL) {
 		pcb_message(PCB_MSG_ERROR, "You need to select a conf leaf node to edit\nTry the tree on the left.\n");
@@ -74,6 +116,7 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 			case CFN_STRING:
 				PCB_DAD_STRING(ctx->dlg);
 					ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_BUTTON(ctx->dlg, "apply");
 					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
 				break;
 			case CFN_BOOLEAN:
@@ -84,16 +127,19 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 			case CFN_INTEGER:
 				PCB_DAD_INTEGER(ctx->dlg, "");
 					ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_BUTTON(ctx->dlg, "apply");
 					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
 				break;
 			case CFN_REAL:
 				PCB_DAD_REAL(ctx->dlg, "");
 					ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_BUTTON(ctx->dlg, "apply");
 					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
 				break;
 			case CFN_COORD:
 				PCB_DAD_COORD(ctx->dlg, "");
 					ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_BUTTON(ctx->dlg, "apply");
 					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
 				break;
 			case CFN_UNIT:
@@ -118,4 +164,5 @@ TODO("needs more code")
 
 	PCB_DAD_NEW(ctx->dlg, "pcb-rnd conf item", ctx, pcb_false, pref_conf_edit_close_cb);
 
+	confedit_brd2dlg(ctx);
 }
