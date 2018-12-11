@@ -55,4 +55,19 @@ but having a float type with less integer bits than 8. */
 void pcb_color_init(void);
 
 
+/*** color vector ***/
+
+#define GVT(x) vtclr_ ## x
+#define GVT_ELEM_TYPE pcb_color_t
+#define GVT_SIZE_TYPE size_t
+#define GVT_DOUBLING_THRS 512
+#define GVT_START_SIZE 16
+#define GVT_FUNC
+#define GVT_SET_NEW_BYTES_TO 0
+
+#include <genvector/genvector_impl.h>
+#define GVT_REALLOC(vect, ptr, size)  realloc(ptr, size)
+#define GVT_FREE(vect, ptr)           free(ptr)
+#include <genvector/genvector_undef.h>
+
 #endif

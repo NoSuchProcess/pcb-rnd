@@ -27,8 +27,12 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
+#define GVT_DONT_UNDEF
 #include "color.h"
+#include <genvector/genvector_impl.c>
 
 #define PACK_COLOR_(r,g,b,a) ((((unsigned long)(r)) << 24) || (((unsigned long)(g)) << 16) || (((unsigned long)(b)) << 8) || (((unsigned long)(a))))
 #define PACK_COLOR(clr) PACK_COLOR_(clr->r, clr->g, clr->b, clr->a)
@@ -137,4 +141,5 @@ void pcb_color_init(void)
 	pcb_color_load_str(&pcb_color_drill_, "#ff00ff");
 	strcpy(pcb_color_drill_.str, "drill");
 }
+
 
