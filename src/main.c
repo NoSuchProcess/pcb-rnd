@@ -66,6 +66,7 @@ static const char *EXPERIMENTAL = NULL;
 #include "obj_text.h"
 #include "pcb_minuid.h"
 #include "tool.h"
+#include "color.h"
 
 #include "actions.h"
 #include "hid_init.h"
@@ -391,6 +392,7 @@ int main(int argc, char *argv[])
 
 
 	/* Minimal conf setup before we do anything else */
+	pcb_color_init();
 	pcb_file_loaded_init();
 	pcb_minuid_init();
 	conf_init();

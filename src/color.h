@@ -36,6 +36,10 @@ struct pcb_color_s {
 	char str[10];             /* cache: "#rrggbb[aa]" \0 terminated string version */
 };
 
+extern const pcb_color_t *pcb_color_cyan;
+extern const pcb_color_t *pcb_color_red;
+extern const pcb_color_t *pcb_color_drill;
+
 /* Convert a color from various formats to a pcb color; returns 0 on success */
 int pcb_color_load_int(pcb_color_t *dst, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 int pcb_color_load_packed(pcb_color_t *dst, unsigned long p);
@@ -47,5 +51,8 @@ int pcb_color_load_str(pcb_color_t *dst, const char *src);
 but at the end for each color component it's unreasonable to use more than 8
 bits and it is unlikely to encounter a system that is capable of doing opengl
 but having a float type with less integer bits than 8. */
+
+void pcb_color_init(void);
+
 
 #endif

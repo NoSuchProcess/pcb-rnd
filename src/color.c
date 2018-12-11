@@ -30,7 +30,8 @@
 
 #include "color.h"
 
-#define PACK_COLOR(clr) ((((unsigned long)clr->r) << 24) || (((unsigned long)clr->g) << 16) || (((unsigned long)clr->b) << 8) || (((unsigned long)clr->a)))
+#define PACK_COLOR_(r,g,b,a) ((((unsigned long)(r)) << 24) || (((unsigned long)(g)) << 16) || (((unsigned long)(b)) << 8) || (((unsigned long)(a))))
+#define PACK_COLOR(clr) PACK_COLOR_(clr->r, clr->g, clr->b, clr->a)
 #define COLOR_TO_FLOAT(clr) \
 do { \
 	clr->fr = (float)clr->r / 255.0; \
@@ -121,4 +122,19 @@ int pcb_color_load_str(pcb_color_t *dst, const char *src)
 	return 0;
 }
 
+static pcb_color_t pcb_color_cyan_;
+static pcb_color_t pcb_color_red_;
+static pcb_color_t pcb_color_drill_;
+
+const pcb_color_t *pcb_color_cyan = &pcb_color_cyan_;
+const pcb_color_t *pcb_color_red = &pcb_color_red_;
+const pcb_color_t *pcb_color_drill = &pcb_color_drill_;
+
+void pcb_color_init(void)
+{
+	pcb_color_load_str(&pcb_color_cyan_, "#00ffff");
+	pcb_color_load_str(&pcb_color_red_, "#ff0000");
+	pcb_color_load_str(&pcb_color_drill_, "#ff00ff");
+	strcpy(pcb_color_drill_.str, "drill");
+}
 
