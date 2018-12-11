@@ -46,6 +46,7 @@
 	- reset the idpath on pcb change
 - FEATURE: drc preview: follow board flips (should be a DAD preview flag) [report: Igor2]
 + BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
+- BUG: extedit broke: place 1206, use external edit on it, add line on top copper, save, exit -> line doesn't appear [report: Igor2]
 - BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
 - BUG: bug_files/obsconf.lht: load, get a warning for obsolete config; save into a new file and the broken conf node is not removed [report: keantoken]
 - BUG: create 3 rectangles: top copper, bottom copper, intern copper; convert to padstack; when there's no hole, the intern copper layer is not rendered [report: Igor2]
