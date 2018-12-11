@@ -38,6 +38,8 @@ struct pcb_color_s {
 
 extern const pcb_color_t *pcb_color_cyan;
 extern const pcb_color_t *pcb_color_red;
+extern const pcb_color_t *pcb_color_blue;
+extern const pcb_color_t *pcb_color_grey33;
 extern const pcb_color_t *pcb_color_drill;
 
 /* Convert a color from various formats to a pcb color; returns 0 on success */
