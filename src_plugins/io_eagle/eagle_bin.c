@@ -423,7 +423,9 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			/*{"bin_clockwise_wire",  T_BMB, 22, 0x20},*/
 			{"linetype", T_UBF, 23, BITFIELD(1, 0, 7)},
 			{"linetype_0_x1",  T_INT, 4, 4},
+			{"x",  T_INT, 4, 4}, /* only needed if wore used for polygon vertex coord */
 			{"linetype_0_y1",  T_INT, 8, 4},
+			{"y",  T_INT, 4, 4}, /* only needed if wire used for polygon vertex coord */
 			{"linetype_0_x2",  T_INT, 12, 4},
 			{"linetype_0_y2",  T_INT, 16, 4},
 			{"arc_negflags", T_BMB, 19, 0x1f},
