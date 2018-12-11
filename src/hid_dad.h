@@ -154,6 +154,11 @@ do { \
 	PCB_DAD_SET_ATTR_FIELD(table, name, label); \
 } while(0)
 
+#define PCB_DAD_UNIT(table) \
+do { \
+	PCB_DAD_ALLOC(table, PCB_HATT_UNIT); \
+} while(0)
+
 #define PCB_DAD_COORD(table, label) \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_COORD); \
