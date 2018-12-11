@@ -43,6 +43,12 @@ void pcb_popen_error_message(const char *cmd)
 	pcb_message(PCB_MSG_WARNING, "warning: can't popen %s\n", cmd);
 }
 
+int pcb_color_load_str(pcb_color_t *dst, const char *src)
+{
+	memset(dst, 0, sizeof(pcb_color_t));
+	return 0;
+}
+
 void pcb_message(enum pcb_message_level level, const char *fmt, ...)
 {
 	va_list args;
