@@ -97,15 +97,23 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	pref_ctx_t *pctx = caller_data;
 	confedit_ctx_t *ctx;
+	pcb_hid_row_t *r;
 
 	if (pctx->conf.selected_nat == NULL) {
 		pcb_message(PCB_MSG_ERROR, "You need to select a conf leaf node to edit\nTry the tree on the left.\n");
 		return;
 	}
 
+	r = pcb_dad_tree_get_selected(&pctx->dlg[pctx->conf.wintree]);
+	if (r == NULL) {
+		pcb_message(PCB_MSG_ERROR, "You need to select a role (upper right list)\n");
+		return;
+	}
+
 	ctx = calloc(sizeof(confedit_ctx_t), 1);
 	ctx->nat = pctx->conf.selected_nat;
 	ctx->idx = pctx->conf.selected_idx;
+	ctx->role = r->user_data2.lng;
 
 	PCB_DAD_BEGIN_VBOX(pref_ctx.dlg);
 		PCB_DAD_COMPFLAG(pref_ctx.dlg, PCB_HATF_EXPFILL);

@@ -143,6 +143,7 @@ static void setup_intree(pref_ctx_t *ctx, conf_native_t *nat, int idx)
 	conf_role_t n;
 	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wintree];
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	pcb_hid_row_t *r;
 
 	pcb_dad_tree_clear(tree);
 
@@ -188,7 +189,8 @@ static void setup_intree(pref_ctx_t *ctx, conf_native_t *nat, int idx)
 				cell[3] = pcb_strdup(val);
 			}
 		}
-		pcb_dad_tree_append(attr, NULL, cell);
+		r = pcb_dad_tree_append(attr, NULL, cell);
+		r->user_data2.lng = n;
 	}
 }
 
