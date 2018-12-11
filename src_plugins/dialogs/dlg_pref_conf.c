@@ -162,7 +162,7 @@ static const char *pref_conf_get_val(const lht_node_t *nd, const conf_native_t *
 		case LHT_HASH:         return "<hash>"; break;
 		case LHT_TABLE:        return "<table>"; break;
 		case LHT_SYMLINK:      return "<symlink>"; break;
-		case LHT_INVALID_TYPE: return"<invalid>"; break;
+		case LHT_INVALID_TYPE: return "<invalid>"; break;
 	}
 }
 
