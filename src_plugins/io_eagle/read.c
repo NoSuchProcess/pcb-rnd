@@ -1047,7 +1047,7 @@ static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int t
 	}
 
 	poly = pcb_poly_new(ly, 0, pcb_flag_make(PCB_FLAG_CLEARPOLY));
-
+TODO("TODO need to check XML never defines a polygon outline with arcs or curves")
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "vertex") == 0) {
 			pcb_coord_t x, y;
@@ -1061,6 +1061,7 @@ static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int t
 					size_bump(st, x, y);
 					break;
 			}
+TODO("TODO need to check if binary format is sometimes using arcs or curves for polygn outlines")
 TODO("TODO can remove the following if dealt with in post processor for binary tree")
 		} else if (STRCMP(NODENAME(n), "wire") == 0) { /* binary format vertices it seems */
 			eagle_read_poly_corner(st, n, poly, "linetype_0_x1", "linetype_0_y1", loc);
