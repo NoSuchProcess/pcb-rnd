@@ -57,7 +57,7 @@ typedef struct hid_gc_s {
 	pcb_core_gc_t core_gc;
 	pcb_hid_t *me_pointer;
 
-	const char *colorname;
+	const pcb_color_t *pcolor;
 	double alpha_mult;
 	pcb_coord_t width;
 	gchar xor;
@@ -240,7 +240,7 @@ pcb_hid_gc_t ghid_gl_make_gc(void)
 
 	rv = g_new0(hid_gc_s, 1);
 	rv->me_pointer = &gtk2_gl_hid;
-	rv->colorname = conf_core.appearance.color.background;
+	rv->pcolor = &conf_core.appearance.color.background;
 	rv->alpha_mult = 1.0;
 	return rv;
 }
@@ -349,17 +349,17 @@ void ghid_gl_set_special_colors(conf_native_t *cfg)
 	render_priv_t *priv = gport->render_priv;
 
 	if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.background)) {
-		if (map_color_string(cfg->val.color[0], &priv->bg_color)) {
+		if (map_color_string(cfg->val.color[0].str, &priv->bg_color)) {
 			config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/background"), -1);
 			set_special_grid_color();
 		}
 	}
 	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.off_limit)) {
-		if (map_color_string(cfg->val.color[0], &priv->offlimits_color))
+		if (map_color_string(cfg->val.color[0].str, &priv->offlimits_color))
       config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/off_limit"), -1);
 	}
 	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.grid)) {
-		if (map_color_string(cfg->val.color[0], &priv->grid_color)) {
+		if (map_color_string(cfg->val.color[0].str, &priv->grid_color)) {
 			config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/grid"), -1);
 			set_special_grid_color();
 		}
@@ -385,41 +385,41 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 	ColorCache *cc;
 	double r, g, b, a;
 
-	if(gc->colorname == NULL) {
+	if(gc->pcolor == NULL) {
 		fprintf(stderr, "set_gl_color_for_gc:  gc->colorname = NULL, setting to magenta\n");
-		gc->colorname = "magenta";
+		gc->pcolor = pcb_color_magenta;
 	}
 	
 	if (	priv->current_colorname != NULL &&
-				strcmp(priv->current_colorname, gc->colorname) == 0 && 
+				strcmp(priv->current_colorname, gc->pcolor->str) == 0 && 
 				priv->current_alpha_mult == gc->alpha_mult)
 		return;
 
 	free(priv->current_colorname);
-	priv->current_colorname = pcb_strdup(gc->colorname);
+	priv->current_colorname = pcb_strdup(gc->pcolor->str);
 	priv->current_alpha_mult = gc->alpha_mult;
 
 	if (colormap == NULL)
 		colormap = gtk_widget_get_colormap(gport->top_window);
 TODO("color: Do not depend on manual strcmp here - use pcb_color_is_drill()");
-	if (strcmp(gc->colorname, "drill") == 0) {
+	if (pcb_color_is_drill(gc->pcolor)) {
 		r = priv->offlimits_color.red / 65535.;
 		g = priv->offlimits_color.green / 65535.;
 		b = priv->offlimits_color.blue / 65535.;
 		a = conf_core.appearance.drill_alpha;
 	}
 	else {
-		if (pcb_hid_cache_color(0, gc->colorname, &cval, &cache))
+		if (pcb_hid_cache_color(0, gc->pcolor->str, &cval, &cache))
 			cc = (ColorCache *) cval.ptr;
 		else {
 			cc = (ColorCache *) malloc(sizeof(ColorCache));
 			memset(cc, 0, sizeof(*cc));
 			cval.ptr = cc;
-			pcb_hid_cache_color(1, gc->colorname, &cval, &cache);
+			pcb_hid_cache_color(1, gc->pcolor->str, &cval, &cache);
 		}
 
 		if (!cc->color_set) {
-			if (gdk_color_parse(gc->colorname, &cc->color))
+			if (gdk_color_parse(gc->pcolor->str, &cc->color))
 				gdk_color_alloc(colormap, &cc->color);
 			else
 				gdk_color_white(colormap, &cc->color);
@@ -478,15 +478,14 @@ TODO("color: Do not depend on manual strcmp here - use pcb_color_is_drill()");
 	drawgl_set_colour(r,g,b,a);
 }
 
-void ghid_gl_set_color(pcb_hid_gc_t gc, const color_t *name)
+void ghid_gl_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 {
-	const char *name = color->str;
-	if(name == NULL) {
+	if (color == NULL) {
 		fprintf(stderr, "ghid_gl_set_color():  name = NULL, setting to magenta\n");
-		name = "magenta";
+		color = pcb_color_magenta;
 	}
 
-	gc->colorname = name;
+	gc->pcolor = color;
 	set_gl_color_for_gc(gc);
 }
 
@@ -759,7 +758,7 @@ static void ghid_gl_show_crosshair(gboolean paint_new_location)
 	if (!done_once) {
 		done_once = 1;
 		/* FIXME: when CrossColor changed from config */
-		map_color_string(conf_core.appearance.color.cross, &cross_color);
+		map_color_string(conf_core.appearance.color.cross.str, &cross_color);
 	}
 	x = gport->view.crosshair_x;
 	y = gport->view.crosshair_y;
@@ -826,13 +825,13 @@ static void ghid_gl_drawing_area_configure_hook(void *port)
 	gport->drawing_allowed = pcb_true;
 
 	if (!done_once) {
-		if (!map_color_string(conf_core.appearance.color.background, &priv->bg_color))
+		if (!map_color_string(conf_core.appearance.color.background.str, &priv->bg_color))
 			map_color_string("white", &priv->bg_color);
 
-		if (!map_color_string(conf_core.appearance.color.off_limit, &priv->offlimits_color))
+		if (!map_color_string(conf_core.appearance.color.off_limit.str, &priv->offlimits_color))
 			map_color_string("white", &priv->offlimits_color);
 
-		if (!map_color_string(conf_core.appearance.color.grid, &priv->grid_color))
+		if (!map_color_string(conf_core.appearance.color.grid.str, &priv->grid_color))
 			map_color_string("blue", &priv->grid_color);
 		set_special_grid_color();
 
