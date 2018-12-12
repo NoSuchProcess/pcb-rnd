@@ -83,7 +83,9 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 			}
 			break;
 		case CFN_COLOR:
-TODO("needs DAD")
+			hv.clr_value = ctx->nat->val.color[ctx->idx];
+			pcb_color_load_str(&hv.clr_value, val);
+			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			break;
 		case CFN_LIST:
 TODO("needs more code")
@@ -167,8 +169,9 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
 				break;
 			case CFN_COLOR:
-TODO("needs DAD")
-				PCB_DAD_LABEL(ctx->dlg, "ERROR: TODO: color selector");
+				PCB_DAD_COLOR(ctx->dlg);
+					ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
+					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
 				break;
 			case CFN_LIST:
 TODO("needs more code")
