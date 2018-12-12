@@ -78,6 +78,7 @@
 	- BUG: replace font id=1 when fontsel runs for board seems to replace font 0
 - BUG: assertion with --debug,  open pcb-rnd, place via, open the padstackedit dialog for the via, go to generate common geometry, choose square copper shape, click 'generate' [report: Miloh]
 - BUG: configure without glib installed -> 'unknown arugment disable-gtk' [report: Ade]
+- DOC: DAD widgets: picture, picture button, color
 
 2. For later releases ===============================================================================
 - CLEANUP: remove pcb_rubber_band_alloc() and use genvector
