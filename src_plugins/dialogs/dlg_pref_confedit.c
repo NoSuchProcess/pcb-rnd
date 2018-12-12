@@ -33,7 +33,7 @@ typedef struct {
 	int idx;
 	conf_role_t role;
 	
-	int wnewval;
+	int wnewval, winsa;
 } confedit_ctx_t;
 
 static void pref_conf_edit_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
@@ -145,6 +145,35 @@ TODO("needs more code")
 	pcb_gui->invalidate_all();
 }
 
+static void pref_conf_editval_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *trigger_attr)
+{
+	confedit_ctx_t *ctx = caller_data;
+	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
+	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
+
+	if (r != NULL) {
+		pcb_dad_tree_remove(attr, r);
+		pref_conf_editval_cb(hid_ctx, caller_data, trigger_attr);
+	}
+}
+
+static void pref_conf_editval_ins_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *trigger_attr)
+{
+	confedit_ctx_t *ctx = caller_data;
+	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
+	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
+	char *cols[] = {NULL, NULL};
+
+	cols[0] = pcb_strdup("");
+
+	if (trigger_attr == &ctx->dlg[ctx->winsa])
+		r = pcb_dad_tree_append(attr, r, cols);
+	else
+		r = pcb_dad_tree_insert(attr, r, cols);
+	pref_conf_editval_cb(hid_ctx, caller_data, trigger_attr);
+}
+
+
 static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
@@ -230,8 +259,12 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 					PCB_DAD_BEGIN_HBOX(ctx->dlg);
 						PCB_DAD_BUTTON(ctx->dlg, "Edit...");
 						PCB_DAD_BUTTON(ctx->dlg, "Del");
+							PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_del_cb);
 						PCB_DAD_BUTTON(ctx->dlg, "Insert before");
+							PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_ins_cb);
 						PCB_DAD_BUTTON(ctx->dlg, "Insert after");
+							PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_ins_cb);
+							ctx->winsa = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_END(ctx->dlg);
 				PCB_DAD_END(ctx->dlg);
 				break;
