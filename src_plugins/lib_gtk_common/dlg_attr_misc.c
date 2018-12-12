@@ -158,3 +158,31 @@ static GtkWidget *ghid_picbutton_create(attr_dlg_t *ctx, pcb_hid_attribute_t *at
 	return button;
 }
 
+static GtkWidget *ghid_color_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent)
+{
+	GtkWidget *bparent, *button;
+	pcb_gtk_color_t gclr;
+	bparent = frame_scroll(parent, attr->pcb_hatt_flags);
+
+	ctx->com->map_color_string("#000000", &gclr);
+
+	button = gtkc_color_button_new_with_color(&gclr);
+	gtk_color_button_set_title(GTK_COLOR_BUTTON(button), NULL);
+
+	gtk_box_pack_start(GTK_BOX(bparent), button, TRUE, TRUE, 0);
+	gtk_widget_set_tooltip_text(button, attr->help_text);
+
+	return button;
+}
+
+
+static int ghid_color_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val)
+{
+	pcb_gtk_color_t gclr;
+	GtkWidget *btn = ctx->wl[idx];
+
+	ctx->com->map_color_string(val->clr_value.str, &gclr);
+	gtkc_color_button_set_color(btn, &gclr);
+
+	return 0;
+}

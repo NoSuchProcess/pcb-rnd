@@ -524,6 +524,12 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				g_object_set_data(G_OBJECT(ctx->wl[j]), PCB_OBJ_PROP, ctx);
 				break;
 
+			case PCB_HATT_COLOR:
+				ctx->wl[j] = ghid_color_create(ctx, &ctx->attrs[j], parent);
+				g_signal_connect(G_OBJECT(ctx->wl[j]), "clicked", G_CALLBACK(button_changed_cb), &(ctx->attrs[j]));
+				g_object_set_data(G_OBJECT(ctx->wl[j]), PCB_OBJ_PROP, ctx);
+				break;
+
 			case PCB_HATT_PROGRESS:
 				ctx->wl[j] = ghid_progress_create(ctx, &ctx->attrs[j], parent);
 				break;
@@ -619,6 +625,11 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 
 		case PCB_HATT_PREVIEW:
 			ret = ghid_preview_set(ctx, idx, val);
+			ctx->inhibit_valchg = save;
+			return ret;
+
+		case PCB_HATT_COLOR:
+			ret = ghid_color_set(ctx, idx, val);
 			ctx->inhibit_valchg = save;
 			return ret;
 
