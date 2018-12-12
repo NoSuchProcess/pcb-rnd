@@ -503,6 +503,7 @@ void pcb_dlg_pref_conf_open(pref_ctx_t *ctx, const char *tabarg)
 		hv.str_value = pcb_strdup(tabarg);
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wfilter, &hv);
 		pcb_pref_dlg_conf_filter_cb(ctx->dlg_hid_ctx, ctx, &ctx->dlg[ctx->conf.wfilter]);
+		pcb_dad_tree_expcoll(&ctx->dlg[ctx->conf.wtree], NULL, 1, 1);
 	}
 }
 
