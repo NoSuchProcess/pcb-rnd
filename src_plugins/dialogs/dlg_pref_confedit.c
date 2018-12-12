@@ -46,7 +46,7 @@ static void pref_conf_edit_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 static void confedit_brd2dlg(confedit_ctx_t *ctx)
 {
 	pcb_hid_attr_val_t hv;
-	lht_node_t *nd = conf_lht_get_at(ctx->role, ctx->nat->hash_path, 1);
+	lht_node_t *nl, *nd = conf_lht_get_at(ctx->role, ctx->nat->hash_path, 1);
 	const char *val;
 
 	if (ctx->idx >= ctx->nat->array_size)
@@ -88,8 +88,21 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			break;
 		case CFN_LIST:
-TODO("needs more code")
-			PCB_DAD_LABEL(ctx->dlg, "ERROR: TODO: list");
+			{
+				pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
+				pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+			
+				pcb_dad_tree_clear(tree);
+				if (nd->type != LHT_LIST)
+					return;
+				for(nl = nd->data.list.first; nl != NULL; nl = nl->next) {
+					char *cell[2] = {NULL};
+					if (nl->type == LHT_TEXT)
+						cell[0] = pcb_strdup(nl->data.text.value);
+					pcb_dad_tree_append(attr, NULL, cell);
+				}
+			}
+			break;
 		case CFN_max:
 			PCB_DAD_LABEL(ctx->dlg, "ERROR: invalid conf node type");
 	}
@@ -209,8 +222,18 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
 				break;
 			case CFN_LIST:
-TODO("needs more code")
-				PCB_DAD_LABEL(ctx->dlg, "ERROR: TODO: list");
+				PCB_DAD_BEGIN_VBOX(ctx->dlg);
+					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_TREE(ctx->dlg, 1, 0, NULL);
+						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+						ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
+					PCB_DAD_BEGIN_HBOX(ctx->dlg);
+						PCB_DAD_BUTTON(ctx->dlg, "Edit...");
+						PCB_DAD_BUTTON(ctx->dlg, "Del");
+						PCB_DAD_BUTTON(ctx->dlg, "Insert before");
+						PCB_DAD_BUTTON(ctx->dlg, "Insert after");
+					PCB_DAD_END(ctx->dlg);
+				PCB_DAD_END(ctx->dlg);
 				break;
 			case CFN_max:
 				PCB_DAD_LABEL(ctx->dlg, "ERROR: invalid conf node type");
