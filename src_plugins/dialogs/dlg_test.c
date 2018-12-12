@@ -34,13 +34,15 @@ static const char dlg_test_help[] = "test the attribute dialog";
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	int wtab, tt, wprog, whpane, wvpane;
-	int ttctr;
+	int ttctr, wclr;
 } test_t;
 
 
 static void pcb_act_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_tab_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+static void cb_color_print(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+static void cb_color_reset(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_ttbl_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_ttbl_append(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_ttbl_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
@@ -124,8 +126,12 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				PCB_DAD_BUTTON(ctx.dlg, "jump to the first tab");
 					PCB_DAD_CHANGE_CB(ctx.dlg, cb_jump);
 				PCB_DAD_PICBUTTON(ctx.dlg, test_xpm);
-					PCB_DAD_CHANGE_CB(ctx.dlg, cb_jump);
+					PCB_DAD_CHANGE_CB(ctx.dlg, cb_color_reset);
+				PCB_DAD_COLOR(ctx.dlg);
+					PCB_DAD_CHANGE_CB(ctx.dlg, cb_color_print);
+					ctx.wclr = PCB_DAD_CURRENT(ctx.dlg);
 			PCB_DAD_END(ctx.dlg);
+
 
 			/* tab 2: tree table widget */
 			PCB_DAD_BEGIN_VBOX(ctx.dlg);
@@ -337,3 +343,24 @@ static pcb_bool prv_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, p
 	pcb_printf("Mouse %d %mm %mm\n", kind, x, y);
 	return (kind == PCB_HID_MOUSE_PRESS) || (kind == PCB_HID_MOUSE_RELEASE);
 }
+
+static void cb_color_print(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	test_t *ctx = caller_data;
+
+	printf("currenct color: #%02x%02x%02x\n",
+		ctx->dlg[ctx->wclr].default_val.clr_value.r, ctx->dlg[ctx->wclr].default_val.clr_value.g, ctx->dlg[ctx->wclr].default_val.clr_value.b);
+}
+
+static void cb_color_reset(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	test_t *ctx = caller_data;
+	pcb_hid_attr_val_t val;
+
+printf("SET!\n");
+
+	pcb_color_load_str(&val.clr_value, "#005599");
+	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wclr, &val);
+
+}
+
