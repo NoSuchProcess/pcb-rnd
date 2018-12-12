@@ -73,6 +73,7 @@ conf_hid_id_t conf_hid_reg(const char *cookie, const conf_hid_callbacks_t *cb)
 	h->cb = cb;
 	h->id = conf_hid_id_next++;
 	htpp_set(conf_hid_ids, (void *)cookie, h);
+	fprintf(stderr, "### %s -> %d\n", cookie, h->id);
 	return h->id;
 }
 

@@ -2,6 +2,7 @@
 #define PCB_HID_ATTRIB_H
 
 #include "hid.h"
+#include "color.h"
 
 /* Used for HID attributes (exporting and printing, mostly).
    HA_boolean uses int_value, HA_enum sets int_value to the index and
@@ -12,6 +13,7 @@ struct pcb_hid_attr_val_s {
 	const char *str_value;
 	double real_value;
 	pcb_coord_t coord_value;
+	pcb_color_t clr_value;
 	void (*func)();
 };
 
@@ -42,6 +44,7 @@ typedef enum pcb_hids_e {
 	PCB_HATT_PREVIEW,             /* preview/render widget; callbacks in 'enumerations' */
 	PCB_HATT_PICTURE,             /* static picture from xpm - picture data in enumerations */
 	PCB_HATT_PICBUTTON,           /* button with static picture from xpm - picture data in enumerations */
+	PCB_HATT_COLOR,               /* color pick (user input: select a color) */
 
 	/* groups (e.g. boxes) */
 	PCB_HATT_BEGIN_HBOX,          /* NOTE: PCB_HATT_IS_COMPOSITE() depends on it */

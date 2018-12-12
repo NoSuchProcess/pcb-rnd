@@ -243,6 +243,12 @@ do { \
 	table[table ## _len - 1].enumerations = xpm; \
 } while(0)
 
+
+#define PCB_DAD_COLOR(table) \
+do { \
+	PCB_DAD_ALLOC(table, PCB_HATT_COLOR); \
+} while(0)
+
 #define PCB_DAD_BEGIN_HPANE(table) \
 do { \
 	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_HPANE); \
@@ -371,6 +377,9 @@ do { \
 		case PCB_HATT_TREE: \
 			table[table ## _len - 1].field.str_value = (char *)val; \
 			break; \
+		case PCB_HATT_COLOR: \
+			table[table ## _len - 1].field.clr_value = *(pcb_color_t *)val; \
+			break; \
 		case PCB_HATT_BEGIN_HBOX: \
 		case PCB_HATT_BEGIN_VBOX: \
 		case PCB_HATT_BEGIN_TABLE: \
@@ -400,6 +409,7 @@ do { \
 		case PCB_HATT_BUTTON: \
 		case PCB_HATT_PICTURE: \
 		case PCB_HATT_PICBUTTON: \
+		case PCB_HATT_COLOR: \
 			break; \
 		case PCB_HATT_TREE: \
 			pcb_dad_tree_free(&table[field]); \
