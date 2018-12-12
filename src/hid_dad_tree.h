@@ -292,8 +292,14 @@ PCB_INLINE void pcb_dad_tree_expcoll(pcb_hid_attribute_t *attr, pcb_hid_row_t *r
 
 	assert(attr == tree->attrib);
 
-	if (tree->hid_expcoll_cb != NULL)
-		pcb_dad_tree_expcoll_(tree, row, expanded, recursive);
+	if (tree->hid_expcoll_cb != NULL) {
+		if (row == NULL) {
+			for(row = gdl_first(&tree->rows); row != NULL; row = gdl_next(&tree->rows, row))
+				pcb_dad_tree_expcoll_(tree, row, expanded, recursive);
+		}
+		else
+			pcb_dad_tree_expcoll_(tree, row, expanded, recursive);
+	}
 }
 
 #endif
