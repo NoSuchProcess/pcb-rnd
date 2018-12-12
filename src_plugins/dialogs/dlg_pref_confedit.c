@@ -180,18 +180,21 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 			case CFN_INTEGER:
 				PCB_DAD_INTEGER(ctx->dlg, "");
 					ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
+					PCB_DAD_MINMAX(ctx->dlg, -(1<<30), +(1<<30));
 				PCB_DAD_BUTTON(ctx->dlg, "apply");
 					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
 				break;
 			case CFN_REAL:
 				PCB_DAD_REAL(ctx->dlg, "");
 					ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
+					PCB_DAD_MINMAX(ctx->dlg, -(1<<30), +(1<<30));
 				PCB_DAD_BUTTON(ctx->dlg, "apply");
 					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
 				break;
 			case CFN_COORD:
 				PCB_DAD_COORD(ctx->dlg, "");
 					ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
+					PCB_DAD_MINMAX(ctx->dlg, -PCB_MM_TO_COORD(1000), +PCB_MM_TO_COORD(1000));
 				PCB_DAD_BUTTON(ctx->dlg, "apply");
 					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
 				break;
