@@ -1,7 +1,7 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-+ BUG: ps export 9with default settings) shows only one page; changing show-toc would "fix" it [report: Ade]
++ BUG: ps export (with default settings) shows only one page; changing show-toc would "fix" it [report: Ade]
 - CLEANUP: color:
 	- remove per hid, non-backup-lib custom color structs
 	- COLOR_TO_STR should not use sprintf - remove stdio.h
