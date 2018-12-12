@@ -95,9 +95,41 @@ TODO("needs more code")
 	}
 }
 
-static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *trigger_attr)
 {
+	confedit_ctx_t *ctx = caller_data;
+	pcb_hid_attribute_t *attr;
+	char buf[128];
+	const char *val = buf;
 
+	if (ctx->idx >= ctx->nat->array_size)
+		return; /* shouldn't ever happen - we have checked this before creating the dialog! */
+
+	attr = &ctx->dlg[ctx->wnewval];
+
+	switch(ctx->nat->type) {
+		case CFN_STRING:  val = attr->default_val.str_value; break;
+		case CFN_BOOLEAN:
+		case CFN_INTEGER: sprintf(buf, "%d", attr->default_val.int_value); break;
+		case CFN_REAL:    sprintf(buf, "%f", attr->default_val.real_value); break;
+		case CFN_COORD:   pcb_snprintf(buf, sizeof(buf), "%$mI", attr->default_val.coord_value); break;
+		case CFN_UNIT:
+			if ((attr->default_val.int_value < 0) || (attr->default_val.int_value >= pcb_get_n_units()))
+				return;
+			val = pcb_units[attr->default_val.int_value].suffix;
+			break;
+		case CFN_COLOR:   val = attr->default_val.clr_value.str; break;
+		case CFN_LIST:
+TODO("needs more code")
+			PCB_DAD_LABEL(ctx->dlg, "ERROR: TODO: list");
+		case CFN_max:
+			PCB_DAD_LABEL(ctx->dlg, "ERROR: invalid conf node type");
+			return;
+	}
+
+	pcb_trace("SET: '%s'\n", val);
+	conf_set(ctx->role, ctx->nat->hash_path, ctx->idx,  val, POL_OVERWRITE);
+	pcb_gui->invalidate_all();
 }
 
 static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
