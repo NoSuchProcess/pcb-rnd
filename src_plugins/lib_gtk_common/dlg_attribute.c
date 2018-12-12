@@ -191,6 +191,23 @@ static void button_changed_cb(GtkButton *button, pcb_hid_attribute_t *dst)
 	change_cb(ctx, dst);
 }
 
+static void color_changed_cb(GtkColorButton *button, pcb_hid_attribute_t *dst)
+{
+	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(button), PCB_OBJ_PROP);
+	pcb_gtk_color_t clr;
+	const char *str;
+
+	dst->changed = 1;
+	if (ctx->inhibit_valchg)
+		return;
+
+	gtkc_color_button_get_color(button, &clr);
+	str = ctx->com->get_color_name(&clr);
+	pcb_color_load_str(&dst->default_val.clr_value, str);
+
+	change_cb(ctx, dst);
+}
+
 typedef struct {
 	void (*cb)(void *ctx, pcb_hid_attr_ev_t ev);
 	void *ctx;
@@ -526,7 +543,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 			case PCB_HATT_COLOR:
 				ctx->wl[j] = ghid_color_create(ctx, &ctx->attrs[j], parent);
-				g_signal_connect(G_OBJECT(ctx->wl[j]), "clicked", G_CALLBACK(button_changed_cb), &(ctx->attrs[j]));
+				g_signal_connect(G_OBJECT(ctx->wl[j]), "color_set", G_CALLBACK(color_changed_cb), &(ctx->attrs[j]));
 				g_object_set_data(G_OBJECT(ctx->wl[j]), PCB_OBJ_PROP, ctx);
 				break;
 
