@@ -76,7 +76,8 @@ void pcb_dad_tree_unhide_filter(pcb_hid_tree_t *tree, gdl_list_t *rowlist, int c
 
 	for(r = gdl_first(rowlist); r != NULL; r = gdl_next(rowlist, r)) {
 		if (strstr(r->cell[col], text) != NULL) {
-			for(pr = r; pr != NULL; pr = pcb_dad_tree_parent_row(tree, pr))
+			pcb_dad_tree_hide_all(tree, &r->children, 0); /* if this is a node with children, show all children */
+			for(pr = r; pr != NULL; pr = pcb_dad_tree_parent_row(tree, pr)) /* also show all parents so it is visible */
 				pr->hide = 0;
 		}
 		pcb_dad_tree_unhide_filter(tree, &r->children, col, text);
