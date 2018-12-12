@@ -224,7 +224,7 @@ static int pref_strcmp(const char *fixed, const char *inp)
 	}
 }
 
-static void pcb_dlg_pref(const char *target_tab_str)
+static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 {
 	const char *tabs[] = { "General", "Board meta", "Sizes & DRC",  "Library", "Layers", "Colors", "Window", "Config tree", NULL };
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
@@ -294,7 +294,7 @@ static void pcb_dlg_pref(const char *target_tab_str)
 	PCB_DAD_NEW(pref_ctx.dlg, "pcb-rnd preferences", &pref_ctx, pcb_false, pref_close_cb);
 
 	pcb_dlg_pref_lib_open(&pref_ctx);
-	pcb_dlg_pref_conf_open(&pref_ctx);
+	pcb_dlg_pref_conf_open(&pref_ctx, (target_tab == sizeof(tabs)/sizeof(tabs[0]) - 2) ? tabarg : NULL);
 	if (target_tab >= 0)
 		PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wtab, int_value, target_tab);
 }
@@ -351,9 +351,10 @@ const char pcb_acts_Preferences[] = "Preferences([tabname])\n";
 const char pcb_acth_Preferences[] = "Present the preferences dialog, optionally opening the tab requested.";
 fgw_error_t pcb_act_Preferences(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *tab = NULL;
+	const char *tab = NULL, *tabarg = NULL;
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, Preferences, tab = argv[1].val.str);
-	pcb_dlg_pref(tab);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, Preferences, tabarg = argv[2].val.str);
+	pcb_dlg_pref(tab, tabarg);
 	PCB_ACT_IRES(0);
 	return 0;
 }

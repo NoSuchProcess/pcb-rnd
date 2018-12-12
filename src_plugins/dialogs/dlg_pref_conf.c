@@ -457,6 +457,7 @@ void pcb_dlg_pref_conf_create(pref_ctx_t *ctx)
 			PCB_DAD_STRING(ctx->dlg);
 				PCB_DAD_HELP(ctx->dlg, "Filter text:\nlist conf nodes with\nmatching name only");
 				PCB_DAD_CHANGE_CB(ctx->dlg, pcb_pref_dlg_conf_filter_cb);
+				ctx->conf.wfilter = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 
 		/* right: details */
@@ -491,11 +492,18 @@ void pcb_dlg_pref_conf_create(pref_ctx_t *ctx)
 	setup_intree(ctx, NULL, 0);
 }
 
-void pcb_dlg_pref_conf_open(pref_ctx_t *ctx)
+void pcb_dlg_pref_conf_open(pref_ctx_t *ctx, const char *tabarg)
 {
 	pcb_hid_attr_val_t hv;
 	hv.real_value = 0.25;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wmainp, &hv);
+
+	if (tabarg != NULL) {
+		pcb_hid_attr_val_t hv;
+		hv.str_value = pcb_strdup(tabarg);
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wfilter, &hv);
+		pcb_pref_dlg_conf_filter_cb(ctx->dlg_hid_ctx, ctx, &ctx->dlg[ctx->conf.wfilter]);
+	}
 }
 
 
