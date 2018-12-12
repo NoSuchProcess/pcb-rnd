@@ -157,6 +157,26 @@ static void pref_conf_editval_del_cb(void *hid_ctx, void *caller_data, pcb_hid_a
 	}
 }
 
+static void pref_conf_editval_edit(void *hid_ctx, confedit_ctx_t *ctx, pcb_hid_attribute_t *attr, pcb_hid_row_t *r)
+{
+	char *nv = pcb_hid_prompt_for("list item value:", r->cell[0], "Edit config list item");
+	if (nv == NULL)
+		return;
+
+	if (pcb_dad_tree_modify_cell(attr, r, 0, pcb_strdup(nv)) == 0)
+		pref_conf_editval_cb(hid_ctx, ctx, attr);
+}
+
+static void pref_conf_editval_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *trigger_attr)
+{
+	confedit_ctx_t *ctx = caller_data;
+	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
+	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
+
+	if (r != NULL)
+		pref_conf_editval_edit(hid_ctx, ctx, attr, r);
+}
+
 static void pref_conf_editval_ins_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *trigger_attr)
 {
 	confedit_ctx_t *ctx = caller_data;
@@ -170,7 +190,8 @@ static void pref_conf_editval_ins_cb(void *hid_ctx, void *caller_data, pcb_hid_a
 		r = pcb_dad_tree_append(attr, r, cols);
 	else
 		r = pcb_dad_tree_insert(attr, r, cols);
-	pref_conf_editval_cb(hid_ctx, caller_data, trigger_attr);
+	if (r != NULL)
+		pref_conf_editval_edit(hid_ctx, ctx, attr, r);
 }
 
 
@@ -258,6 +279,7 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 						ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_BEGIN_HBOX(ctx->dlg);
 						PCB_DAD_BUTTON(ctx->dlg, "Edit...");
+							PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_edit_cb);
 						PCB_DAD_BUTTON(ctx->dlg, "Del");
 							PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_del_cb);
 						PCB_DAD_BUTTON(ctx->dlg, "Insert before");
