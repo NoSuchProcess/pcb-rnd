@@ -134,9 +134,7 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 		case CFN_COLOR:   val = attr->default_val.clr_value.str; break;
 		case CFN_LIST:
 TODO("needs more code")
-			PCB_DAD_LABEL(ctx->dlg, "ERROR: TODO: list");
 		case CFN_max:
-			PCB_DAD_LABEL(ctx->dlg, "ERROR: invalid conf node type");
 			return;
 	}
 
