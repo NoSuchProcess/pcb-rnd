@@ -371,7 +371,7 @@ static void build_natval(pref_ctx_t *ctx)
 	static const char *hdr_nat[] = {"role", "prio", "value", NULL};
 
 	PCB_DAD_BEGIN_TABBED(pref_ctx.dlg, type_tabs);
-		PCB_DAD_COMPFLAG(pref_ctx.dlg, PCB_HATF_HIDE_TABLAB);
+		PCB_DAD_COMPFLAG(pref_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_HIDE_TABLAB);
 		ctx->conf.wnattype = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Data type: string");
@@ -423,10 +423,11 @@ static void build_natval(pref_ctx_t *ctx)
 				ctx->conf.wnatval[6] = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
+			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_LABEL(ctx->dlg, "Data type: list of strings");
 			ctx->conf.wsrc[7] = -1;
 			PCB_DAD_TREE(ctx->dlg, 3, 0, hdr_nat); /* input state */
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
 				ctx->conf.wnatval[7] = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
@@ -464,7 +465,7 @@ void pcb_dlg_pref_conf_create(pref_ctx_t *ctx)
 			
 			/* right/top: conf file */
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_FRAME);
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME);
 				PCB_DAD_LABEL(ctx->dlg, "");
 					ctx->conf.wname = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_LABEL(ctx->dlg, "");
