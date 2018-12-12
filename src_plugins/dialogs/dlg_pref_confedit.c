@@ -133,7 +133,35 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 			break;
 		case CFN_COLOR:   val = attr->default_val.clr_value.str; break;
 		case CFN_LIST:
-TODO("needs more code")
+			{
+				pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
+				pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+				pcb_hid_row_t *r;
+				lht_node_t *nd = conf_lht_get_at(ctx->role, ctx->nat->hash_path, 0);
+
+				if (nd == NULL) {
+					pcb_message(PCB_MSG_ERROR, "Internal error: can't copy back to non-existing list!\n");
+					return;
+				}
+
+				if (nd->type != LHT_LIST) {
+					pcb_message(PCB_MSG_ERROR, "Internal error: can't copy back list into non-list!\n");
+					return;
+				}
+
+				/* empty the list so that we insert to an empty list which is overwriting the list */
+				while(nd->data.list.first != NULL)
+					lht_tree_del(nd->data.list.first);
+
+				for(r = gdl_first(&tree->rows); r != NULL; r = gdl_next(&tree->rows, r)) {
+					lht_node_t *n = lht_dom_node_alloc(LHT_TEXT, NULL);
+					lht_dom_list_append(nd, n);
+					n->data.text.value = pcb_strdup(r->cell[0]);
+				}
+				conf_makedirty(ctx->role);
+				conf_update(ctx->nat->hash_path, ctx->idx);
+			}
+			return;
 		case CFN_max:
 			return;
 	}
