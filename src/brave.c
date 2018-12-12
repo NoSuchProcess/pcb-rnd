@@ -106,7 +106,8 @@ static void brave_conf_chg(conf_native_t *cfg, int arr_idx)
 		if (d != NULL)
 			pcb_brave |= d->bit;
 		*next = old;
-		next++;
+		if (*next != '\0')
+			next++;
 		while((*next == ',') || (*next == ' ')) next++;
 	}
 }
