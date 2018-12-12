@@ -342,6 +342,30 @@ void pcb_pref_dlg_conf_changed_cb(pref_ctx_t *ctx, conf_native_t *cfg, int arr_i
 		dlg_conf_select_node(ctx, NULL, cfg, ctx->conf.selected_idx);
 }
 
+
+static void pcb_pref_dlg_conf_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
+{
+	pref_ctx_t *ctx = caller_data;
+	pcb_hid_attribute_t *attr;
+	pcb_hid_tree_t *tree;
+	const char *text;
+	int have_filter_text;
+
+	attr = &ctx->dlg[ctx->conf.wtree];
+	tree = (pcb_hid_tree_t *)attr->enumerations;
+	text = attr_inp->default_val.str_value;
+	have_filter_text = (*text != '\0');
+
+	/* hide or unhide everything */
+	pcb_dad_tree_hide_all(tree, &tree->rows, have_filter_text);
+
+	if (have_filter_text) /* unhide hits and all their parents */
+		pcb_dad_tree_unhide_filter(tree, &tree->rows, 0, text);
+
+	pcb_dad_tree_update_hide(attr);
+}
+
+
 static void build_natval(pref_ctx_t *ctx)
 {
 	static const char *hdr_nat[] = {"role", "prio", "value", NULL};
@@ -422,11 +446,17 @@ void pcb_dlg_pref_conf_create(pref_ctx_t *ctx)
 		ctx->conf.wmainp = PCB_DAD_CURRENT(ctx->dlg);
 
 		/* left: tree */
-		PCB_DAD_TREE(ctx->dlg, 1, 1, NULL);
-			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
-			ctx->conf.wtree = PCB_DAD_CURRENT(ctx->dlg);
-			PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, dlg_conf_select_node_cb);
-			PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
+		PCB_DAD_BEGIN_VBOX(ctx->dlg);
+			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_TREE(ctx->dlg, 1, 1, NULL);
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+				ctx->conf.wtree = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, dlg_conf_select_node_cb);
+				PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
+			PCB_DAD_STRING(ctx->dlg);
+				PCB_DAD_HELP(ctx->dlg, "Filter text:\nlist conf nodes with\nmatching name only");
+				PCB_DAD_CHANGE_CB(ctx->dlg, pcb_pref_dlg_conf_filter_cb);
+		PCB_DAD_END(ctx->dlg);
 
 		/* right: details */
 		PCB_DAD_BEGIN_VPANE(ctx->dlg);
