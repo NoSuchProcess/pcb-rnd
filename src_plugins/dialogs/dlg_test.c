@@ -357,10 +357,7 @@ static void cb_color_reset(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	test_t *ctx = caller_data;
 	pcb_hid_attr_val_t val;
 
-printf("SET!\n");
-
 	pcb_color_load_str(&val.clr_value, "#005599");
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wclr, &val);
-
 }
 
