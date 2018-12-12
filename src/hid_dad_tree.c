@@ -61,6 +61,28 @@ void pcb_dad_tree_free(pcb_hid_attribute_t *attr)
 	free(tree);
 }
 
+void pcb_dad_tree_hide_all(pcb_hid_tree_t *tree, gdl_list_t *rowlist, int val)
+{
+	pcb_hid_row_t *r;
+	for(r = gdl_first(rowlist); r != NULL; r = gdl_next(rowlist, r)) {
+		r->hide = val;
+		pcb_dad_tree_hide_all(tree, &r->children, val);
+	}
+}
+
+void pcb_dad_tree_unhide_filter(pcb_hid_tree_t *tree, gdl_list_t *rowlist, int col, const char *text)
+{
+	pcb_hid_row_t *r, *pr;
+
+	for(r = gdl_first(rowlist); r != NULL; r = gdl_next(rowlist, r)) {
+		if (strstr(r->cell[col], text) != NULL) {
+			for(pr = r; pr != NULL; pr = pcb_dad_tree_parent_row(tree, pr))
+				pr->hide = 0;
+		}
+		pcb_dad_tree_unhide_filter(tree, &r->children, col, text);
+	}
+}
+
 
 /*** these shouldn't be in pcb_dad_tree.c, but they are so short that a new
      file would be overkill ***/

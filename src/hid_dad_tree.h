@@ -36,6 +36,12 @@
 #include <genht/hash.h>
 #include <genht/htsp.h>
 
+/* recursively sets the hide flag on all nodes to val */
+void pcb_dad_tree_hide_all(pcb_hid_tree_t *tree, gdl_list_t *rowlist, int val);
+
+/* recursively unhide items that match text in the given column; parents are unhidden too */
+void pcb_dad_tree_unhide_filter(pcb_hid_tree_t *tree, gdl_list_t *rowlist, int col, const char *text);
+
 /* Internal: Allocate a new row and load the cells (but do not insert it anywhere) */
 PCB_INLINE pcb_hid_row_t *pcb_dad_tree_new_row(char **cols)
 {
