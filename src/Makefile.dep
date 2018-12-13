@@ -350,8 +350,8 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h error.h event.h \
  ../src_plugins/diag/integrity.h hid.h hid_attrib.h hid_dad.h \
  compat_misc.h hid_attrib.h search.h rats.h netlist.h route_style.h \
- macro.h funchash_core.h funchash.h funchash_core_list.h dolists.h \
- ../src_plugins/diag/diag_conf_fields.h
+ macro.h funchash_core.h funchash.h funchash_core_list.h find.h find2.h \
+ dolists.h ../src_plugins/diag/diag_conf_fields.h
 ../src_plugins/diag/diag_conf.o: ../src_plugins/diag/diag_conf.c \
  ../config.h conf.h global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
@@ -7356,7 +7356,7 @@ rats_act.o: rats_act.c ../config.h conf_core.h conf.h global_typedefs.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h find.h find2.h remove.h \
  funchash_core.h funchash.h funchash_core_list.h compat_nls.h actions.h \
- rats.h netlist.h route_style.h draw.h obj_rat_draw.h
+ rats.h netlist.h route_style.h draw.h obj_rat_draw.h brave.h
 rats_patch.o: rats_patch.c rats_patch.h board.h ../config.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
