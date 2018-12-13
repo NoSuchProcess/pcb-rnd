@@ -212,7 +212,7 @@ static pcb_r_dir_t drcPstk_callback(const pcb_box_t *b, void *cl)
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 	struct drc_info *i = (struct drc_info *)cl;
 
-	if (!PCB_FLAG_TEST(PCB_FLAG_FOUND, ps) && pcb_pstk_intersect_line(ps, i->line))
+	if (!PCB_FLAG_TEST(PCB_FLAG_FOUND, ps) && pcb_isc_pstk_line(ps, i->line))
 		longjmp(i->env, 1);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }

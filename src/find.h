@@ -80,7 +80,7 @@ void pcb_restore_find_flag(void);
 pcb_bool pcb_isc_line_poly(pcb_line_t *, pcb_poly_t *);
 pcb_bool pcb_isc_arc_poly(pcb_arc_t *, pcb_poly_t *);
 pcb_bool pcb_intersect_obj_obj(pcb_any_obj_t *a, pcb_any_obj_t *b);
-pcb_bool_t pcb_pstk_intersect_line(pcb_pstk_t *ps, pcb_line_t *line);
+pcb_bool_t pcb_isc_pstk_line(pcb_pstk_t *ps, pcb_line_t *line);
 
 
 pcb_cardinal_t pcb_lookup_conn_by_obj(void *ctx, pcb_any_obj_t *obj, pcb_bool AndDraw, pcb_cardinal_t (*cb)(void *ctx, pcb_any_obj_t *obj));

@@ -272,7 +272,7 @@ static pcb_r_dir_t LOCtoPSline_callback(const pcb_box_t * b, void *cl)
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct ps_info *i = (struct ps_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_pstk_intersect_line(&i->ps, line) && !INOCN(&i->ps, line)) {
+	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_isc_pstk_line(&i->ps, line) && !INOCN(&i->ps, line)) {
 		if (ADD_LINE_TO_LIST(i->layer, line, PCB_OBJ_PSTK, &i->ps, PCB_FCT_COPPER, i->orig_ps))
 			longjmp(i->env, 1);
 	}
@@ -284,7 +284,7 @@ static pcb_r_dir_t LOCtoPSarc_callback(const pcb_box_t * b, void *cl)
 	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct ps_info *i = (struct ps_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, arc) && pcb_pstk_intersect_arc(&i->ps, arc) && !INOCN(&i->ps, arc)) {
+	if (!PCB_FLAG_TEST(TheFlag, arc) && pcb_isc_pstk_arc(&i->ps, arc) && !INOCN(&i->ps, arc)) {
 		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_OBJ_PSTK, &i->ps, PCB_FCT_COPPER, i->orig_ps))
 			longjmp(i->env, 1);
 	}
@@ -296,7 +296,7 @@ static pcb_r_dir_t LOCtoPSrat_callback(const pcb_box_t * b, void *cl)
 	pcb_rat_t *rat = (pcb_rat_t *) b;
 	struct ps_info *i = (struct ps_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, rat) && pcb_pstk_intersect_rat(&i->ps, rat) && ADD_RAT_TO_LIST(rat, PCB_OBJ_PSTK, &i->ps, PCB_FCT_RAT, i->orig_ps))
+	if (!PCB_FLAG_TEST(TheFlag, rat) && pcb_isc_pstk_rat(&i->ps, rat) && ADD_RAT_TO_LIST(rat, PCB_OBJ_PSTK, &i->ps, PCB_FCT_RAT, i->orig_ps))
 		longjmp(i->env, 1);
 	return PCB_R_DIR_NOT_FOUND;
 }
@@ -306,7 +306,7 @@ static pcb_r_dir_t LOCtoPSpoly_callback(const pcb_box_t * b, void *cl)
 	pcb_poly_t *polygon = (pcb_poly_t *) b;
 	struct ps_info *i = (struct ps_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, polygon) && pcb_pstk_intersect_poly(&i->ps, polygon) && !INOCN(&i->ps, polygon)) {
+	if (!PCB_FLAG_TEST(TheFlag, polygon) && pcb_isc_pstk_poly(&i->ps, polygon) && !INOCN(&i->ps, polygon)) {
 		if (ADD_POLYGON_TO_LIST(i->layer, polygon, PCB_OBJ_PSTK, &i->ps, PCB_FCT_COPPER, i->orig_ps))
 			longjmp(i->env, 1);
 	}
@@ -319,7 +319,7 @@ static pcb_r_dir_t PStoPS_callback(const pcb_box_t *b, void *cl)
 	pcb_pstk_t *ps2 = (pcb_pstk_t *)b;
 	struct ps_info *i = (struct ps_info *)cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, ps2) && pcb_pstk_intersect_pstk(&i->ps, ps2) && !INOCN(&i->ps, ps2)) {
+	if (!PCB_FLAG_TEST(TheFlag, ps2) && pcb_isc_pstk_pstk(&i->ps, ps2) && !INOCN(&i->ps, ps2)) {
 		if (ADD_PADSTACK_TO_LIST(ps2, PCB_OBJ_PSTK, &i->ps, PCB_FCT_COPPER, i->orig_ps))
 			longjmp(i->env, 1);
 	}
@@ -473,7 +473,7 @@ static pcb_r_dir_t ps_line_callback(const pcb_box_t * b, void *cl)
 	pcb_pstk_t *ps = (pcb_pstk_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, ps) && pcb_pstk_intersect_line(ps, &i->line) && !INOCN(ps, &i->line)) {
+	if (!PCB_FLAG_TEST(TheFlag, ps) && pcb_isc_pstk_line(ps, &i->line) && !INOCN(ps, &i->line)) {
 		if (ADD_PS_TO_LIST(ps, PCB_OBJ_LINE, &i->line, PCB_FCT_COPPER, i->orig_line))
 			longjmp(i->env, 1);
 	}
@@ -485,7 +485,7 @@ static pcb_r_dir_t ps_arc_callback(const pcb_box_t * b, void *cl)
 	pcb_pstk_t *ps = (pcb_pstk_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, ps) && pcb_pstk_intersect_arc(ps, &i->arc) && !INOCN(ps, &i->arc)) {
+	if (!PCB_FLAG_TEST(TheFlag, ps) && pcb_isc_pstk_arc(ps, &i->arc) && !INOCN(ps, &i->arc)) {
 		if (ADD_PS_TO_LIST(ps, PCB_OBJ_ARC, &i->arc, PCB_FCT_COPPER, i->orig_arc))
 			longjmp(i->env, 1);
 	}
@@ -497,7 +497,7 @@ static pcb_r_dir_t ps_poly_callback(const pcb_box_t * b, void *cl)
 	pcb_pstk_t *ps = (pcb_pstk_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, ps) && pcb_pstk_intersect_poly(ps, &i->polygon) && !INOCN(ps, &i->polygon)) {
+	if (!PCB_FLAG_TEST(TheFlag, ps) && pcb_isc_pstk_poly(ps, &i->polygon) && !INOCN(ps, &i->polygon)) {
 		if (ADD_PS_TO_LIST(ps, PCB_OBJ_POLY, &i->polygon, PCB_FCT_COPPER, i->orig_polygon))
 			longjmp(i->env, 1);
 	}
@@ -511,7 +511,7 @@ static pcb_r_dir_t ps_rat_callback(const pcb_box_t * b, void *cl)
 	struct lo_info *i = (struct lo_info *) cl;
 
 	/* rats can't cause DRC so there is no early exit */
-	if (!PCB_FLAG_TEST(TheFlag, ps) && pcb_pstk_intersect_rat(ps, &i->rat))
+	if (!PCB_FLAG_TEST(TheFlag, ps) && pcb_isc_pstk_rat(ps, &i->rat))
 		ADD_PS_TO_LIST(ps, PCB_OBJ_RAT, &i->rat, PCB_FCT_RAT, i->orig_rat);
 	return PCB_R_DIR_NOT_FOUND;
 }
