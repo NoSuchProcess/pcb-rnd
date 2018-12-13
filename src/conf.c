@@ -1655,6 +1655,7 @@ void conf_usage(const char *prefix, void (*print)(const char *name, const char *
 					case CFN_UNIT:    strcpy(s, " unit"); break;
 					case CFN_COLOR:   strcpy(s, " color"); break;
 					case CFN_LIST:    strcpy(s, " <list>"); break;
+					case CFN_max:     break;
 				}
 				print(name, n->description);
 				free(name);
@@ -1997,6 +1998,7 @@ int conf_print_native_field(conf_pfn pfn, void *ctx, int verbose, confitem_t *va
 				}
 			}
 			break;
+			case CFN_max: break;
 	}
 	if (verbose) {
 		ret += pfn(ctx, " <<prio=%d", prop[idx].prio);
