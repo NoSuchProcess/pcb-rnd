@@ -143,14 +143,12 @@ static void setup_tree(pref_ctx_t *ctx)
 static const char *pref_conf_get_val(const lht_node_t *nd, const conf_native_t *nat, int idx)
 {
 	lht_node_t *ni;
-	const char *val;
 
 	switch (nd->type) {
 		case LHT_TEXT: return nd->data.text.value; break;
 		case LHT_LIST:
 			if (nat->array_size > 1) {
 				int idx2 = idx;
-				val = "";
 				for(ni = nd->data.list.first; ni != NULL; ni = ni->next) {
 					if (idx2 == 0) {
 						if (ni->type == LHT_TEXT)
