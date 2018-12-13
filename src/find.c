@@ -172,3 +172,5 @@ static pcb_bool SetThing(void *group1_obj, void *group2_obj);
 #include "find_print.c"
 
 #include "find_any_isect.c"
+
+#include "find2.c"

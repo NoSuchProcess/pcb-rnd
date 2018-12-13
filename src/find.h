@@ -91,4 +91,6 @@ pcb_bool pcb_clear_flag_on_lines_polys(pcb_bool AndDraw, int flag);
 
 void pcb_lookup_subc_conns(pcb_subc_t *subc, FILE * FP);
 
+#include "find2.h"
+
 #endif
