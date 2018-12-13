@@ -604,7 +604,10 @@ int hook_detect_target()
 		if (!istrue(get("libs/sul/glib/presents"))) {
 			if (want_gtk) {
 				report_repeat("WARNING: Since GLIB is not found, disabling the GTK HID...\n");
-				hook_custom_arg("disable-gtk", NULL);
+				hook_custom_arg("disable-hid_gtk2_gdk", NULL);
+				hook_custom_arg("disable-hid_gtk2_gl", NULL);
+				hook_custom_arg("disable-hid_gtk3_cairo", NULL);
+				hook_custom_arg("disable-hid_gtk3_gl", NULL);
 			}
 			if (plug_is_enabled("puller")) {
 				report_repeat("WARNING: Since GLIB is not found, disabling the puller...\n");
