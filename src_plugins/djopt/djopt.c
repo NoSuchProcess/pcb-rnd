@@ -902,7 +902,7 @@ static int canonicalize_line(line_s * l)
 				int th = djmax(p->BoundingBox.X2 - p->BoundingBox.X1, p->BoundingBox.Y2 - p->BoundingBox.Y1);
 				th /= 2;
 				if (dist(l->s->x, l->s->y, c->x, c->y) > th
-						&& dist(l->e->x, l->e->y, c->x, c->y) > th && pcb_pstk_intersect_line(p, l->line)) {
+						&& dist(l->e->x, l->e->y, c->x, c->y) > th && pcb_isc_pstk_line(p, l->line)) {
 					return split_line(l, c);
 				}
 			}
