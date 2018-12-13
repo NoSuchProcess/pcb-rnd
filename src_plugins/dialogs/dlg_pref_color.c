@@ -77,6 +77,14 @@ static void pref_color_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pcb_gui->invalidate_all();
 }
 
+static void pref_color_layer_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pref_ctx_t *ctx = caller_data;
+	conf_native_t *nat = conf_get_field("appearance/color/layer");
+	int idx = (int *)attr->user_data - ctx->color.wlayer;
+	conf_setf(CFR_DESIGN, "appearance/color/layer", idx, "%s", attr->default_val.clr_value.str);
+}
+
 
 void pcb_dlg_pref_color_create(pref_ctx_t *ctx)
 {
@@ -130,7 +138,9 @@ void pcb_dlg_pref_color_create(pref_ctx_t *ctx)
 				for (n = 0; n < nat->used; n++) {
 					char tmp[32];
 						PCB_DAD_COLOR(ctx->dlg);
-							ctx->color.wlayer[n] = PCB_DAD_CURRENT(ctx->dlg);
+							ctx->color.wlayer[n] = w = PCB_DAD_CURRENT(ctx->dlg);
+							ctx->dlg[w].user_data = &ctx->color.wlayer[n];
+							PCB_DAD_CHANGE_CB(ctx->dlg, pref_color_layer_cb);
 						sprintf(tmp, "Layer %d", n);
 						PCB_DAD_LABEL(ctx->dlg, tmp);
 				}
