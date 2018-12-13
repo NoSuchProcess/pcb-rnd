@@ -45,6 +45,8 @@ typedef struct pcb_find_s {
 	/* private */
 	vtp0_t open;                    /* objects already found but need checking for conns of (pcb_any_obj_t *) */
 	pcb_data_t *data;
+	pcb_board_t *pcb;
+	pcb_layergrp_t *start_layergrp;
 	pcb_dynf_t mark;
 	unsigned long nfound;
 	unsigned in_use:1;

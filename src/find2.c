@@ -89,9 +89,17 @@ void pcb_find_on_layer(pcb_find_t *ctx, pcb_layer_t *l, pcb_any_obj_t *curr, pcb
 
 static unsigned long pcb_find_exec(pcb_find_t *ctx)
 {
-	while(ctx->open.used > 0) {
-		pcb_any_obj_t *curr;
+	pcb_any_obj_t *curr;
 
+	if ((ctx->start_layergrp == NULL) && (ctx->open.used > 0) && (ctx->pcb != NULL)) {
+		curr = ctx->open.array[0];
+		if ((curr != NULL) && (curr->parent_type == PCB_PARENT_LAYER)) {
+			pcb_layergrp_id_t gid = pcb_layer_get_group_(curr->parent.layer);
+			ctx->start_layergrp = pcb_get_layergrp(ctx->pcb, gid);
+		}
+	}
+
+	while(ctx->open.used > 0) {
 		/* pop the last object, without reallocating to smaller, mark it found */
 		ctx->open.used--;
 		curr = ctx->open.array[ctx->open.used];
@@ -101,8 +109,6 @@ static unsigned long pcb_find_exec(pcb_find_t *ctx)
 			pcb_rtree_it_t it;
 			pcb_box_t *n;
 			pcb_rtree_box_t *sb = (pcb_rtree_box_t *)&curr->bbox_naked;
-			int li;
-			pcb_layer_t *l;
 
 			if (PCB->Data->padstack_tree != NULL) {
 				for(n = pcb_rtree_first(&it, PCB->Data->padstack_tree, sb); n != NULL; n = pcb_rtree_next(&it))
@@ -110,8 +116,27 @@ static unsigned long pcb_find_exec(pcb_find_t *ctx)
 				pcb_r_end(&it);
 			}
 
-			if (curr->parent_type == PCB_PARENT_LAYER)
+			if (curr->type == PCB_OBJ_PSTK) {
+				int li;
+				pcb_layer_t *l;
+				if ((!ctx->stay_layergrp) || (ctx->start_layergrp == NULL)) {
+					for(li = 0, l = ctx->data->Layer; li < ctx->data->LayerN; li++,l++)
+						if (pcb_pstk_shape_at_(ctx->pcb, (pcb_pstk_t *)curr, l, 0))
+							pcb_find_on_layer(ctx, l, curr, sb);
+				}
+				else {
+					for(li = 0; li < ctx->start_layergrp->len; li++) {
+						l = pcb_get_layer(ctx->data, ctx->start_layergrp->lid[li]);
+						if (l != NULL)
+							pcb_find_on_layer(ctx, l, curr, sb);
+					}
+				}
+			}
+			else {
+				/* layer objects need to be checked against same layer objects only */
+				assert(curr->parent_type == PCB_PARENT_LAYER);
 				pcb_find_on_layer(ctx, curr->parent.layer, curr, sb);
+			}
 		}
 	}
 	return ctx->nfound;
@@ -125,6 +150,8 @@ static int pcb_find_init_(pcb_find_t *ctx, pcb_data_t *data)
 	ctx->mark = pcb_dynflag_alloc("pcb_find_from_obj");
 	ctx->data = data;
 	ctx->nfound = 0;
+	ctx->start_layergrp = NULL;
+	ctx->pcb = pcb_data_get_top(data);
 
 	if (ctx->list_found)
 		vtp0_init(&ctx->found);
