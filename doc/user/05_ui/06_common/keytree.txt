@@ -249,12 +249,13 @@ up-shift	pcb-menu-default.lht	Cursor(Pan,0,50,view) 	Step +Up
 v;c	pcb-menu-default.lht	Center() 	Center cursor
 v;f	pcb-menu-default.lht	Zoom() 	Zoom Extents
 v;n	pcb-menu-default.lht	Display(PinOrPadName) 	Show padstack numbers in a subc
+v;s;c	pcb-menu-default.lht	Display(SubcID)	user configured
 v;s;f	pcb-menu-default.lht	Display(SubcID,"%a.footprint%")	footprint
-v;s;r	pcb-menu-default.lht	Display(SubcID)	refdes
+v;s;r	pcb-menu-default.lht	Display(SubcID, "%a.refdes%")	refdes
 v;s;s	pcb-menu-default.lht	Display(SubcID,"%a.refdes%\\n%a.value%")	refdes+value
 v;s;v	pcb-menu-default.lht	Display(SubcID,"%a.value%")	value
 w;a	pcb-menu-default.lht	About() 	About...
-w;d	pcb-menu-default.lht	DoWindows(DRC) 	DRC Check
+w;d	pcb-menu-default.lht	DRC() 	DRC Check
 w;f	pcb-menu-default.lht	FontSel() 	Font selector
 w;l	pcb-menu-default.lht	DoWindows(Library) 	Library
 w;m	pcb-menu-default.lht	DoWindows(Log) 	Message Log
