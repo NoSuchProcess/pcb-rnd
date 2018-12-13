@@ -26,6 +26,8 @@
 
 /* Preferences dialog, conf tree tab -> edit conf node (input side) popup */
 
+#define is_read_only(ctx) ((ctx->role == CFR_INTERNAL) || (ctx->role == CFR_SYSTEM) || (ctx->role == CFR_DEFAULTPCB))
+
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 
@@ -232,6 +234,7 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pref_ctx_t *pctx = caller_data;
 	confedit_ctx_t *ctx;
 	pcb_hid_row_t *r;
+	int b[4] = {0};
 
 	if (pctx->conf.selected_nat == NULL) {
 		pcb_message(PCB_MSG_ERROR, "You need to select a conf leaf node to edit\nTry the tree on the left.\n");
@@ -265,6 +268,7 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 					ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_BUTTON(ctx->dlg, "apply");
 					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
+					b[0] = PCB_DAD_CURRENT(ctx->dlg);
 				break;
 			case CFN_BOOLEAN:
 				PCB_DAD_BOOL(ctx->dlg, "");
@@ -277,6 +281,7 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 					PCB_DAD_MINMAX(ctx->dlg, -(1<<30), +(1<<30));
 				PCB_DAD_BUTTON(ctx->dlg, "apply");
 					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
+					b[0] = PCB_DAD_CURRENT(ctx->dlg);
 				break;
 			case CFN_REAL:
 				PCB_DAD_REAL(ctx->dlg, "");
@@ -284,6 +289,7 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 					PCB_DAD_MINMAX(ctx->dlg, -(1<<30), +(1<<30));
 				PCB_DAD_BUTTON(ctx->dlg, "apply");
 					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
+					b[0] = PCB_DAD_CURRENT(ctx->dlg);
 				break;
 			case CFN_COORD:
 				PCB_DAD_COORD(ctx->dlg, "");
@@ -291,6 +297,7 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 					PCB_DAD_MINMAX(ctx->dlg, -PCB_MM_TO_COORD(1000), +PCB_MM_TO_COORD(1000));
 				PCB_DAD_BUTTON(ctx->dlg, "apply");
 					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
+					b[0] = PCB_DAD_CURRENT(ctx->dlg);
 				break;
 			case CFN_UNIT:
 				PCB_DAD_UNIT(ctx->dlg);
@@ -311,13 +318,16 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 					PCB_DAD_BEGIN_HBOX(ctx->dlg);
 						PCB_DAD_BUTTON(ctx->dlg, "Edit...");
 							PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_edit_cb);
+							b[0] = PCB_DAD_CURRENT(ctx->dlg);
 						PCB_DAD_BUTTON(ctx->dlg, "Del");
 							PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_del_cb);
+							b[1] = PCB_DAD_CURRENT(ctx->dlg);
 						PCB_DAD_BUTTON(ctx->dlg, "Insert before");
 							PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_ins_cb);
+							b[2] = PCB_DAD_CURRENT(ctx->dlg);
 						PCB_DAD_BUTTON(ctx->dlg, "Insert after");
 							PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_ins_cb);
-							ctx->winsa = PCB_DAD_CURRENT(ctx->dlg);
+							b[3] = ctx->winsa = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_END(ctx->dlg);
 				PCB_DAD_END(ctx->dlg);
 				break;
@@ -329,6 +339,15 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	PCB_DAD_END(ctx->dlg);
 
 	PCB_DAD_NEW(ctx->dlg, "pcb-rnd conf item", ctx, pcb_false, pref_conf_edit_close_cb);
+
+	if (is_read_only(ctx)) {
+		int n;
+		pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wnewval, 0);
+		for(n = 0; n < sizeof(b) / sizeof(b[0]); n++)
+			if (b[n] != 0)
+				pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, b[n], 0);
+	}
+
 
 	confedit_brd2dlg(ctx);
 }
