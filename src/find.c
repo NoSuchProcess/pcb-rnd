@@ -150,7 +150,7 @@ static pcb_bool LookupLOConnectionsToRatEnd(pcb_point_t *, pcb_cardinal_t);
 static pcb_bool pcb_isc_rat_line(pcb_point_t *, pcb_line_t *);
 static pcb_bool pcb_isc_rat_poly(pcb_point_t *Point, pcb_poly_t *polygon);
 static pcb_bool pcb_isc_rat_arc(pcb_point_t *Point, pcb_arc_t *arc);
-static pcb_bool ArcArcIntersect(pcb_arc_t *, pcb_arc_t *);
+static pcb_bool pcb_isc_arc_arc(pcb_arc_t *, pcb_arc_t *);
 static pcb_bool pcb_print_subc_conns(pcb_subc_t *, FILE *, pcb_bool);
 static pcb_bool ListsEmpty(pcb_bool);
 static pcb_bool DoIt(pcb_bool, pcb_bool);
