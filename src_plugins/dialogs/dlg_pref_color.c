@@ -50,9 +50,6 @@ static void pref_color_brd2dlg(pref_ctx_t *ctx)
 	}
 }
 
-static void pref_color_dlg2brd(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
-{
-}
 
 void pcb_dlg_pref_color_open(pref_ctx_t *ctx)
 {
@@ -71,6 +68,15 @@ void pcb_dlg_pref_color_close(pref_ctx_t *ctx)
 	free(ctx->color.wgen);
 	free(ctx->color.wlayer);
 }
+
+static void pref_color_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	const char *path = attr->user_data;
+	conf_native_t *nat = conf_get_field(path);
+	conf_setf(CFR_DESIGN, path, -1, "%s", attr->default_val.clr_value.str);
+	pcb_gui->invalidate_all();
+}
+
 
 void pcb_dlg_pref_color_create(pref_ctx_t *ctx)
 {
@@ -106,6 +112,7 @@ void pcb_dlg_pref_color_create(pref_ctx_t *ctx)
 							PCB_DAD_COLOR(ctx->dlg);
 								ctx->color.wgen[n] = w = PCB_DAD_CURRENT(ctx->dlg);
 								ctx->dlg[w].user_data = pcb_strdup(e->key);
+								PCB_DAD_CHANGE_CB(ctx->dlg, pref_color_gen_cb);
 						PCB_DAD_END(ctx->dlg);
 						PCB_DAD_LABEL(ctx->dlg, nat->description);
 						n++;
