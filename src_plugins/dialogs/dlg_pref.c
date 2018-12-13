@@ -54,6 +54,9 @@ pref_ctx_t pref_ctx;
 static const char *pref_cookie = "preferences dialog";
 conf_hid_id_t pref_hid;
 
+static const char *role_names[] =  { "user",   "project",   "design",   "cli", NULL };
+static const conf_role_t roles[] = { CFR_USER, CFR_PROJECT, CFR_DESIGN, CFR_CLI, 0 };
+
 void pcb_pref_conf2dlg_item(conf_native_t *cn, pref_confitem_t *item)
 {
 	switch(cn->type) {
@@ -287,7 +290,13 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 			PCB_DAD_END(pref_ctx.dlg);
 
 		PCB_DAD_END(pref_ctx.dlg);
-		PCB_DAD_BUTTON_CLOSES(pref_ctx.dlg, clbtn);
+		PCB_DAD_BEGIN_HBOX(pref_ctx.dlg);
+			PCB_DAD_COMPFLAG(pref_ctx.dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_LABEL(pref_ctx.dlg, "All changes are made to role:");
+			PCB_DAD_ENUM(pref_ctx.dlg, role_names);
+				pref_ctx.wrole = PCB_DAD_CURRENT(pref_ctx.dlg);
+			PCB_DAD_BUTTON_CLOSES_NAKED(pref_ctx.dlg, clbtn);
+		PCB_DAD_END(pref_ctx.dlg);
 	PCB_DAD_END(pref_ctx.dlg);
 
 	/* set up the context */
@@ -295,6 +304,7 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 
 	PCB_DAD_NEW(pref_ctx.dlg, "pcb-rnd preferences", &pref_ctx, pcb_false, pref_close_cb);
 
+	PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wrole, int_value, 2);
 	pcb_dlg_pref_lib_open(&pref_ctx);
 	pcb_dlg_pref_color_open(&pref_ctx);
 	pcb_dlg_pref_conf_open(&pref_ctx, (target_tab == sizeof(tabs)/sizeof(tabs[0]) - 2) ? tabarg : NULL);
