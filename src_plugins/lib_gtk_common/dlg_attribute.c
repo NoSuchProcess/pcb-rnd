@@ -201,7 +201,7 @@ static void color_changed_cb(GtkColorButton *button, pcb_hid_attribute_t *dst)
 	if (ctx->inhibit_valchg)
 		return;
 
-	gtkc_color_button_get_color(button, &clr);
+	gtkc_color_button_get_color(GTK_WIDGET(button), &clr);
 	str = ctx->com->get_color_name(&clr);
 	pcb_color_load_str(&dst->default_val.clr_value, str);
 
@@ -216,7 +216,7 @@ typedef struct {
 
 static void ghid_attr_dlg_response_cb(GtkDialog *dialog, gint response_id, gpointer user_data)
 {
-	attr_dlg_t *ctx = (resp_ctx_t *)user_data;
+	attr_dlg_t *ctx = (attr_dlg_t *)user_data;
 
 	if (ctx != NULL) {
 		switch (response_id) {
