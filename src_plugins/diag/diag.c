@@ -411,6 +411,43 @@ static fgw_error_t pcb_act_d1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+extern void pcb_lookup_conn_by_pin(int type, void *ptr1);
+static const char pcb_acts_FindPerf[] = "findperf()\n";
+static const char pcb_acth_FindPerf[] = "Measure the peformance of find.c";
+static fgw_error_t pcb_act_FindPerf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	double from, now, end, duration = 4.0;
+	long its = 0, pins = 0;
+
+	PCB_SUBC_LOOP(PCB->Data) {
+		PCB_PADSTACK_LOOP(subc->data) {
+			pins++;
+		}
+		PCB_END_LOOP;
+	}
+	PCB_END_LOOP;
+
+	pcb_message(PCB_MSG_INFO, "Measuring find.c peformance for %f seconds starting from %ld pins...\n", duration, pins);
+
+	from = pcb_dtime();
+	end = from + duration;
+	do {
+		PCB_SUBC_LOOP(PCB->Data) {
+			PCB_PADSTACK_LOOP(subc->data) {
+				pcb_reset_conns(0);
+				pcb_lookup_conn_by_pin(padstack->type, padstack);
+			}
+			PCB_END_LOOP;
+		}
+		PCB_END_LOOP;
+		its++;
+		now = pcb_dtime();
+	} while(now < end);
+	pcb_message(PCB_MSG_INFO, "find.c peformance: %f pin find per second\n", (double)its * (double)pins / (now-from));
+	PCB_ACT_IRES(0);
+	return 0;
+}
+
 #define	PCB_FORCECOLOR_TYPES        \
 	(PCB_OBJ_PSTK | PCB_OBJ_TEXT | PCB_OBJ_SUBC | PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_SUBC_PART | PCB_OBJ_SUBC | PCB_OBJ_RAT)
 
@@ -449,6 +486,7 @@ pcb_action_t diag_action_list[] = {
 #endif
 	{"EvalConf", pcb_act_EvalConf, pcb_acth_EvalConf, pcb_acts_EvalConf},
 	{"d1", pcb_act_d1, pcb_acth_d1, pcb_acts_d1},
+	{"findperf", pcb_act_FindPerf, pcb_acth_FindPerf, pcb_acts_FindPerf},
 	{"integrity", pcb_act_integrity, integrity_help, integrity_syntax},
 	{"dumpflags", pcb_act_dumpflags, pcb_acth_dumpflags, pcb_acts_dumpflags},
 	{"forcecolor", pcb_act_forcecolor, pcb_acth_forcecolor, pcb_acts_forcecolor}
