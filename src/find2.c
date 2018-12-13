@@ -170,6 +170,26 @@ unsigned long pcb_find_from_obj(pcb_find_t *ctx, pcb_data_t *data, pcb_any_obj_t
 }
 
 
+unsigned long pcb_find_from_xy(pcb_find_t *ctx, pcb_data_t *data, pcb_coord_t x, pcb_coord_t y)
+{
+	void *ptr1, *ptr2, *ptr3;
+	pcb_any_obj_t *obj;
+	int type;
+
+	type = pcb_search_obj_by_location(PCB_LOOKUP_FIRST, &ptr1, &ptr2, &ptr3, x, y, PCB_SLOP * pcb_pixel_slop);
+	if (type == PCB_OBJ_VOID)
+		type = pcb_search_obj_by_location(PCB_LOOKUP_MORE, &ptr1, &ptr2, &ptr3, x, y, PCB_SLOP * pcb_pixel_slop);
+
+	if (type == PCB_OBJ_VOID)
+		return -1;
+
+	obj = ptr2;
+	if ((obj->parent_type == PCB_PARENT_LAYER) && ((pcb_layer_flags_(obj->parent.layer) & PCB_LYT_COPPER) == 0))
+		return -1; /* non-conductive object */
+
+	return pcb_find_from_obj(ctx, data, obj);
+}
+
 
 void pcb_find_free(pcb_find_t *ctx)
 {

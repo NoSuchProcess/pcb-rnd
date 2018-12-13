@@ -54,6 +54,7 @@ typedef struct pcb_find_s {
 
 
 unsigned long pcb_find_from_obj(pcb_find_t *ctx, pcb_data_t *data, pcb_any_obj_t *from);
+unsigned long pcb_find_from_xy(pcb_find_t *ctx, pcb_data_t *data, pcb_coord_t x, pcb_coord_t y);
 
 void pcb_find_free(pcb_find_t *ctx);
 
