@@ -184,7 +184,7 @@ int pcb_mem_any_set(unsigned char *arr, int arr_len);
 /*** Dynamic flags ***/
 #define PCB_DFLAG_SET(flg, dynf) (flg)->df[(dynf) / sizeof(PCB_DYNFLAG_WORD)] |= (1 << (dynf) % sizeof(PCB_DYNFLAG_WORD))
 #define PCB_DFLAG_CLR(flg, dynf) (flg)->df[(dynf) / sizeof(PCB_DYNFLAG_WORD)] &= ~(1 << (dynf) % sizeof(PCB_DYNFLAG_WORD))
-#define PCB_DFLAG_TEST(flg, dynf, val) (!!((flg)->df[(dynf) / sizeof(PCB_DYNFLAG_WORD)] & (1 << (dynf) % sizeof(PCB_DYNFLAG_WORD))))
+#define PCB_DFLAG_TEST(flg, dynf) (!!((flg)->df[(dynf) / sizeof(PCB_DYNFLAG_WORD)] & (1 << (dynf) % sizeof(PCB_DYNFLAG_WORD))))
 #define PCB_DFLAG_PUT(flg, dynf, val) ((val) ? PCB_DFLAG_SET((flg), (dynf)) : PCB_DFLAG_CLR((flg), (dynf)))
 
 extern const char *pcb_dynflag_cookie[PCB_DYNFLAG_BLEN];
