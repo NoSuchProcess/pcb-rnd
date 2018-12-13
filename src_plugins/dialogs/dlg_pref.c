@@ -296,6 +296,7 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 	PCB_DAD_NEW(pref_ctx.dlg, "pcb-rnd preferences", &pref_ctx, pcb_false, pref_close_cb);
 
 	pcb_dlg_pref_lib_open(&pref_ctx);
+	pcb_dlg_pref_color_open(&pref_ctx);
 	pcb_dlg_pref_conf_open(&pref_ctx, (target_tab == sizeof(tabs)/sizeof(tabs[0]) - 2) ? tabarg : NULL);
 	if (target_tab >= 0)
 		PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wtab, int_value, target_tab);
