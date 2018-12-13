@@ -219,4 +219,7 @@ void pcb_data_flag_change(pcb_data_t *data, pcb_objtype_t mask, int how, unsigne
 /* Clear warning color from pins/pads */
 void pcb_clear_warnings(void);
 
+/* Clear the given dyflag bit from all objects under data */
+void pcb_data_dynflag_clear(pcb_data_t *data, pcb_dynf_t dynf);
+
 #endif
