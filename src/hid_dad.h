@@ -183,16 +183,23 @@ do { \
 	PCB_DAD_CHANGE_CB(table, pcb_hid_dad_close_cb); \
 } while(0)
 
-#define PCB_DAD_BUTTON_CLOSES(table, buttons) \
+/* Draw a set of close buttons without trying to fill a while hbox row */
+#define PCB_DAD_BUTTON_CLOSES_NAKED(table, buttons) \
 do { \
 	pcb_hid_dad_buttons_t *__n__; \
-	PCB_DAD_BEGIN_HBOX(table); \
 	PCB_DAD_BEGIN_HBOX(table); \
 	PCB_DAD_COMPFLAG(table, PCB_HATF_EXPFILL); \
 	PCB_DAD_END(table); \
 	for(__n__ = buttons; __n__->label != NULL; __n__++) { \
 		PCB_DAD_BUTTON_CLOSE(table, __n__->label, __n__->retval); \
 	} \
+} while(0)
+
+/* Draw a set of close buttons, adding a new hbox that tries to fill a whole row */
+#define PCB_DAD_BUTTON_CLOSES(table, buttons) \
+do { \
+	PCB_DAD_BEGIN_HBOX(table); \
+	PCB_DAD_BUTTON_CLOSES_NAKED(table, buttons); \
 	PCB_DAD_END(table); \
 } while(0)
 
