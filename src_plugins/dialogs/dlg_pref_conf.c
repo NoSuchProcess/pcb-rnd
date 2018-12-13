@@ -164,6 +164,7 @@ static const char *pref_conf_get_val(const lht_node_t *nd, const conf_native_t *
 		case LHT_SYMLINK:      return "<symlink>"; break;
 		case LHT_INVALID_TYPE: return "<invalid>"; break;
 	}
+	return "<invalid-type>";
 }
 
 static void setup_intree(pref_ctx_t *ctx, conf_native_t *nat, int idx)
