@@ -117,6 +117,7 @@ static int pcb_find_init_(pcb_find_t *ctx, pcb_data_t *data)
 	ctx->in_use = 1;
 	ctx->mark = pcb_dynflag_alloc("pcb_find_from_obj");
 	ctx->data = data;
+	ctx->nfound = 0;
 
 	if (ctx->list_found)
 		vtp0_init(&ctx->found);
