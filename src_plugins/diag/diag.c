@@ -407,7 +407,6 @@ static const char pcb_acts_d1[] = "d1()\n";
 static const char pcb_acth_d1[] = "debug action for development";
 static fgw_error_t pcb_act_d1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	CURRENT->meta.real.xform.bloat += PCB_MM_TO_COORD(0.1);
 	PCB_ACT_IRES(0);
 	return 0;
 }
