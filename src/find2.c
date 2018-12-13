@@ -51,7 +51,7 @@ static void pcb_find_addobj(pcb_find_t *ctx, pcb_any_obj_t *obj)
 #define PCB_FIND_CHECK(ctx, curr, obj) \
 	do { \
 		pcb_any_obj_t *__obj__ = (pcb_any_obj_t *)obj; \
-		if (!(PCB_DFLAG_TEST(&__obj__->Flags, ctx->mark))) { \
+		if (!(PCB_DFLAG_TEST(&(__obj__->Flags), ctx->mark))) { \
 			if (pcb_intersect_obj_obj(curr, __obj__)) \
 				pcb_find_addobj(ctx, __obj__); \
 		} \
@@ -70,29 +70,40 @@ static unsigned long pcb_find_exec(pcb_find_t *ctx)
 		{ /* search unmkared connections: iterative approach */
 			pcb_rtree_it_t it;
 			pcb_box_t *n;
+			pcb_rtree_box_t *sb = (pcb_rtree_box_t *)&curr->bbox_naked;
 			int li;
 			pcb_layer_t *l;
 
-			for(n = pcb_r_first(PCB->Data->padstack_tree, &it); n != NULL; n = pcb_r_next(&it))
-				PCB_FIND_CHECK(ctx, curr, n);
-			pcb_r_end(&it);
+			if (PCB->Data->padstack_tree != NULL) {
+				for(n = pcb_rtree_first(&it, PCB->Data->padstack_tree, sb); n != NULL; n = pcb_rtree_next(&it))
+					PCB_FIND_CHECK(ctx, curr, n);
+				pcb_r_end(&it);
+			}
 
 			for(li = 0, l = PCB->Data->Layer; li < PCB->Data->LayerN; li++,l++) {
-				for(n = pcb_r_first(l->line_tree, &it); n != NULL; n = pcb_r_next(&it))
-					PCB_FIND_CHECK(ctx, curr, n);
-				pcb_r_end(&it);
+				if (l->line_tree != NULL) {
+					for(n = pcb_rtree_first(&it, l->line_tree, sb); n != NULL; n = pcb_rtree_next(&it))
+						PCB_FIND_CHECK(ctx, curr, n);
+					pcb_r_end(&it);
+				}
 
-				for(n = pcb_r_first(l->arc_tree, &it); n != NULL; n = pcb_r_next(&it))
-					PCB_FIND_CHECK(ctx, curr, n);
-				pcb_r_end(&it);
+				if (l->arc_tree != NULL) {
+					for(n = pcb_rtree_first(&it, l->arc_tree, sb); n != NULL; n = pcb_rtree_next(&it))
+						PCB_FIND_CHECK(ctx, curr, n);
+					pcb_r_end(&it);
+				}
 
-				for(n = pcb_r_first(l->polygon_tree, &it); n != NULL; n = pcb_r_next(&it))
-					PCB_FIND_CHECK(ctx, curr, n);
-				pcb_r_end(&it);
+				if (l->polygon_tree != NULL) {
+					for(n = pcb_rtree_first(&it, l->polygon_tree, sb); n != NULL; n = pcb_rtree_next(&it))
+						PCB_FIND_CHECK(ctx, curr, n);
+					pcb_r_end(&it);
+				}
 
-				for(n = pcb_r_first(l->text_tree, &it); n != NULL; n = pcb_r_next(&it))
-					PCB_FIND_CHECK(ctx, curr, n);
-				pcb_r_end(&it);
+				if (l->text_tree != NULL) {
+					for(n = pcb_rtree_first(&it, l->text_tree, sb); n != NULL; n = pcb_rtree_next(&it))
+						PCB_FIND_CHECK(ctx, curr, n);
+					pcb_r_end(&it);
+				}
 			}
 		}
 	}
