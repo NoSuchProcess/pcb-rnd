@@ -50,7 +50,7 @@ pcb_bool pcb_intersect_obj_obj(pcb_any_obj_t *a, pcb_any_obj_t *b)
 				case PCB_OBJ_VOID: return pcb_false;
 				case PCB_OBJ_LINE: return pcb_isc_line_line((pcb_line_t *)a, (pcb_line_t *)b);
 				case PCB_OBJ_TEXT: return pcb_intersect_text_line((pcb_text_t *)b, (pcb_line_t *)a);
-				case PCB_OBJ_POLY: return pcb_is_line_in_poly((pcb_line_t *)a, (pcb_poly_t *)b);
+				case PCB_OBJ_POLY: return pcb_isc_line_poly((pcb_line_t *)a, (pcb_poly_t *)b);
 				case PCB_OBJ_ARC:  return pcb_isc_line_arc((pcb_line_t *)a, (pcb_arc_t *)b);
 				case PCB_OBJ_PSTK: return pcb_pstk_intersect_line((pcb_pstk_t *)b, (pcb_line_t *)a);
 				default:;
@@ -71,9 +71,9 @@ pcb_bool pcb_intersect_obj_obj(pcb_any_obj_t *a, pcb_any_obj_t *b)
 		case PCB_OBJ_POLY:
 			switch(b->type) {
 				case PCB_OBJ_VOID: return pcb_false;
-				case PCB_OBJ_LINE: return pcb_is_line_in_poly((pcb_line_t *)b, (pcb_poly_t *)a);
+				case PCB_OBJ_LINE: return pcb_isc_line_poly((pcb_line_t *)b, (pcb_poly_t *)a);
 				case PCB_OBJ_TEXT: return pcb_intersect_text_poly((pcb_text_t *)b, (pcb_poly_t *)a);
-				case PCB_OBJ_POLY: return pcb_is_poly_in_poly((pcb_poly_t *)a, (pcb_poly_t *)b);
+				case PCB_OBJ_POLY: return pcb_isc_poly_poly((pcb_poly_t *)a, (pcb_poly_t *)b);
 				case PCB_OBJ_ARC:  return pcb_isc_arc_poly((pcb_arc_t *)b, (pcb_poly_t *)a);
 				case PCB_OBJ_PSTK: return pcb_pstk_intersect_poly((pcb_pstk_t *)b, (pcb_poly_t *)a);
 				default:;

@@ -62,7 +62,7 @@ extern pcb_find_callback_t pcb_find_callback;
 
 pcb_bool pcb_isc_line_line(pcb_line_t *, pcb_line_t *);
 pcb_bool pcb_isc_line_arc(pcb_line_t *, pcb_arc_t *);
-pcb_bool pcb_is_poly_in_poly(pcb_poly_t *, pcb_poly_t *);
+pcb_bool pcb_isc_poly_poly(pcb_poly_t *, pcb_poly_t *);
 void pcb_lookup_conns_to_all_elements(FILE *);
 void pcb_lookup_conn(pcb_coord_t, pcb_coord_t, pcb_bool, pcb_coord_t, int);
 void pcb_lookup_conn_by_pin(int type, void *ptr1);
@@ -77,7 +77,7 @@ void pcb_layout_lookup_uninit(void);
 void pcb_rat_find_hook(pcb_any_obj_t *obj, pcb_bool undo, pcb_bool AndRats);
 void pcb_save_find_flag(int);
 void pcb_restore_find_flag(void);
-pcb_bool pcb_is_line_in_poly(pcb_line_t *, pcb_poly_t *);
+pcb_bool pcb_isc_line_poly(pcb_line_t *, pcb_poly_t *);
 pcb_bool pcb_isc_arc_poly(pcb_arc_t *, pcb_poly_t *);
 pcb_bool pcb_intersect_obj_obj(pcb_any_obj_t *a, pcb_any_obj_t *b);
 pcb_bool_t pcb_pstk_intersect_line(pcb_pstk_t *ps, pcb_line_t *line);

@@ -566,7 +566,7 @@ pcb_bool pcb_isc_arc_polyarea(pcb_arc_t *Arc, pcb_polyarea_t *pa)
  * - check the two end points of the line. If none of them matches
  * - check all segments of the polygon against the line.
  */
-pcb_bool pcb_is_line_in_poly(pcb_line_t *Line, pcb_poly_t *Polygon)
+pcb_bool pcb_isc_line_poly(pcb_line_t *Line, pcb_poly_t *Polygon)
 {
 	pcb_box_t *Box = (pcb_box_t *) Line;
 	pcb_polyarea_t *lp;
@@ -602,7 +602,7 @@ pcb_bool pcb_is_line_in_poly(pcb_line_t *Line, pcb_poly_t *Polygon)
  * First check all points out of P1 against P2 and vice versa.
  * If both fail check all lines of P1 against the ones of P2
  */
-pcb_bool pcb_is_poly_in_poly(pcb_poly_t *P1, pcb_poly_t *P2)
+pcb_bool pcb_isc_poly_poly(pcb_poly_t *P1, pcb_poly_t *P2)
 {
 	int pcp_cnt = 0;
 	pcb_coord_t pcp_gap;
@@ -659,7 +659,7 @@ pcb_bool pcb_is_poly_in_poly(pcb_poly_t *P1, pcb_poly_t *P2)
 					line.Point2.X = v->point[0];
 					line.Point2.Y = v->point[1];
 					pcb_line_bbox(&line);
-					if (pcb_is_line_in_poly(&line, P2))
+					if (pcb_isc_line_poly(&line, P2))
 						return pcb_true;
 					line.Point1.X = line.Point2.X;
 					line.Point1.Y = line.Point2.Y;
@@ -669,15 +669,6 @@ pcb_bool pcb_is_poly_in_poly(pcb_poly_t *P1, pcb_poly_t *P2)
 	}
 
 	return pcb_false;
-}
-
-pcb_bool BoxBoxIntersection(pcb_box_t *b1, pcb_box_t *b2)
-{
-	if (b2->X2 < b1->X1 || b2->X1 > b1->X2)
-		return pcb_false;
-	if (b2->Y2 < b1->Y1 || b2->Y1 > b1->Y2)
-		return pcb_false;
-	return pcb_true;
 }
 
 /* returns whether a round-cap pcb line touches a polygon; assumes bounding
@@ -854,7 +845,7 @@ PCB_INLINE pcb_bool_t pcb_pstk_intersect_poly(pcb_pstk_t *ps, pcb_poly_t *poly)
 			pcb_line_t tmp;
 			shape_line_to_pcb_line(ps, shape->data.line, tmp);
 			pcb_line_bbox(&tmp);
-			return pcb_is_line_in_poly(&tmp, poly);
+			return pcb_isc_line_poly(&tmp, poly);
 		}
 		case PCB_PSSH_CIRC:
 		{
@@ -865,7 +856,7 @@ PCB_INLINE pcb_bool_t pcb_pstk_intersect_poly(pcb_pstk_t *ps, pcb_poly_t *poly)
 			tmp.Thickness = shape->data.circ.dia;
 			tmp.Flags = pcb_no_flags();
 			pcb_line_bbox(&tmp);
-			return pcb_is_line_in_poly(&tmp, poly);
+			return pcb_isc_line_poly(&tmp, poly);
 		}
 		case PCB_PSSH_HSHADOW:
 			return 0; /* non-object won't intersect */

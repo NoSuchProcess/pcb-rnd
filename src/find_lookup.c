@@ -805,7 +805,7 @@ static pcb_bool LookupLOConnectionsToLine(pcb_line_t *Line, pcb_cardinal_t Layer
 			pcb_box_t *b;
 			for(b = pcb_r_first(PCB->Data->Layer[layer].polygon_tree, &it); b != NULL; b = pcb_r_next(&it)) {
 				pcb_poly_t *polygon = (pcb_poly_t *)b;
-				if (!PCB_FLAG_TEST(TheFlag, polygon) && pcb_is_line_in_poly(Line, polygon)
+				if (!PCB_FLAG_TEST(TheFlag, polygon) && pcb_isc_line_poly(Line, polygon)
 						&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_OBJ_LINE, Line, PCB_FCT_COPPER, Line))
 					return pcb_true;
 			}
@@ -896,7 +896,7 @@ static pcb_r_dir_t LOCtoPolyLine_callback(const pcb_box_t * b, void *cl)
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_is_line_in_poly(line, &i->polygon) && !INOCN(line, &i->polygon)) {
+	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_isc_line_poly(line, &i->polygon) && !INOCN(line, &i->polygon)) {
 		if (ADD_LINE_TO_LIST(i->layer, line, PCB_OBJ_POLY, &i->polygon, PCB_FCT_COPPER, i->orig_polygon))
 			longjmp(i->env, 1);
 	}
@@ -965,7 +965,7 @@ static pcb_bool LookupLOConnectionsToPolygon(pcb_poly_t *Polygon, pcb_cardinal_t
 			for(b = pcb_r_first(PCB->Data->Layer[layer].polygon_tree, &it); b != NULL; b = pcb_r_next(&it)) {
 				pcb_poly_t *polygon = (pcb_poly_t *)b;
 				if (!PCB_FLAG_TEST(TheFlag, polygon)
-						&& pcb_is_poly_in_poly(polygon, Polygon)
+						&& pcb_isc_poly_poly(polygon, Polygon)
 						&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_OBJ_POLY, Polygon, PCB_FCT_COPPER, Polygon))
 					return pcb_true;
 			}
