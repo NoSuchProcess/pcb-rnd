@@ -588,6 +588,7 @@ static void conf_insert_arr(conf_native_t *dest, int offs)
 			CASE_PCB_MOVE(CFN_UNIT, unit);
 			CASE_PCB_MOVE(CFN_COLOR, color);
 			CASE_PCB_MOVE(CFN_LIST, list);
+			case CFN_max: break;
 		}
 	}
 #undef CASE_MOVE
@@ -994,6 +995,7 @@ static void conf_field_clear(conf_native_t *f)
 				}
 				clr(list);
 				break;
+			case CFN_max: break;
 		}
 		memset(f->prop, 0, sizeof(confprop_t) * f->used);
 #undef clr

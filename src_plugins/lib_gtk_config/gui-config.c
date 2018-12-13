@@ -1752,6 +1752,7 @@ static void config_auto_src_show(pcb_gtk_common_t *com, lht_node_t *nd)
 	memset(&citem, 0, sizeof(citem));
 
 	switch (nat->type) {
+	case CFN_max: break;
 	case CFN_STRING:
 		gtk_entry_set_text(GTK_ENTRY(auto_tab_widgets.edit_string), nd->data.text.value);
 		gtk_widget_show(auto_tab_widgets.edit_string);
@@ -2024,6 +2025,7 @@ static void config_auto_apply_cb(GtkButton * btn, void *data)
 	int update_clr = 0;
 
 	switch (nat->type) {
+	case CFN_max: break;
 	case CFN_STRING:
 		new_val = gtk_entry_get_text(GTK_ENTRY(auto_tab_widgets.edit_string));
 		break;
