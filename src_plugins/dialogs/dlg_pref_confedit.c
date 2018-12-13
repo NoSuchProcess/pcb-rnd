@@ -167,6 +167,12 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 	}
 
 	conf_set(ctx->role, ctx->nat->hash_path, ctx->idx,  val, POL_OVERWRITE);
+
+	if ((ctx->role == CFR_USER) || (ctx->role == CFR_PROJECT))
+		conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), ctx->role, NULL);
+	else if (ctx->role == CFR_DESIGN)
+		pcb_board_set_changed_flag(1);
+
 	pcb_gui->invalidate_all();
 }
 
