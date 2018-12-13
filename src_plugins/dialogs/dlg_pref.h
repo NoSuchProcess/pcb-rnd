@@ -3,6 +3,7 @@
 
 typedef struct pref_ctx_s pref_ctx_t;
 
+#include "conf.h"
 #include "conf_hid.h"
 #include "dlg_pref_sizes.h"
 #include "dlg_pref_board.h"
@@ -30,6 +31,8 @@ struct pref_ctx_s {
 	pref_lib_t lib;
 	pref_color_t color;
 	pref_conf_t conf;
+
+	conf_role_t role; /* where changes are saved to */
 
 	pref_confitem_t *conf_lock; /* the item being changed - should be ignored in a conf change callback */
 };

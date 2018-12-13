@@ -71,9 +71,10 @@ void pcb_dlg_pref_color_close(pref_ctx_t *ctx)
 
 static void pref_color_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
+	pref_ctx_t *ctx = caller_data;
 	const char *path = attr->user_data;
 	conf_native_t *nat = conf_get_field(path);
-	conf_setf(CFR_DESIGN, path, -1, "%s", attr->default_val.clr_value.str);
+	conf_setf(ctx->role, path, -1, "%s", attr->default_val.clr_value.str);
 	pcb_gui->invalidate_all();
 }
 
@@ -82,7 +83,7 @@ static void pref_color_layer_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 	pref_ctx_t *ctx = caller_data;
 	conf_native_t *nat = conf_get_field("appearance/color/layer");
 	int idx = (int *)attr->user_data - ctx->color.wlayer;
-	conf_setf(CFR_DESIGN, "appearance/color/layer", idx, "%s", attr->default_val.clr_value.str);
+	conf_setf(ctx->role, "appearance/color/layer", idx, "%s", attr->default_val.clr_value.str);
 }
 
 

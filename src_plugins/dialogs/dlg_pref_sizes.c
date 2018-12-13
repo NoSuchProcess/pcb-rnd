@@ -80,7 +80,7 @@ static void pref_isle_dlg2brd(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	double v = ctx->dlg[ctx->sizes.wisle].default_val.real_value * 1000000.0;
 
 	ctx->sizes.lock++;
-	conf_setf(CFR_DESIGN, "design/poly_isle_area", -1, "%f", v);
+	conf_setf(ctx->role, "design/poly_isle_area", -1, "%f", v);
 	ctx->sizes.lock--;
 }
 
