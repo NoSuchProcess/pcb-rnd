@@ -166,7 +166,6 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 			return;
 	}
 
-	pcb_trace("SET: '%s'\n", val);
 	conf_set(ctx->role, ctx->nat->hash_path, ctx->idx,  val, POL_OVERWRITE);
 	pcb_gui->invalidate_all();
 }
