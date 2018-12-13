@@ -222,7 +222,7 @@ static pcb_r_dir_t drcLine_callback(const pcb_box_t * b, void *cl)
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct drc_info *i = (struct drc_info *) cl;
 
-	if (!PCB_FLAG_TEST(PCB_FLAG_FOUND, line) && pcb_intersect_line_line(line, i->line))
+	if (!PCB_FLAG_TEST(PCB_FLAG_FOUND, line) && pcb_isc_line_line(line, i->line))
 		longjmp(i->env, 1);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
@@ -232,7 +232,7 @@ static pcb_r_dir_t drcArc_callback(const pcb_box_t * b, void *cl)
 	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct drc_info *i = (struct drc_info *) cl;
 
-	if (!PCB_FLAG_TEST(PCB_FLAG_FOUND, arc) && pcb_intersect_line_arc(i->line, arc))
+	if (!PCB_FLAG_TEST(PCB_FLAG_FOUND, arc) && pcb_isc_line_arc(i->line, arc))
 		longjmp(i->env, 1);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }

@@ -39,7 +39,7 @@
  *   to X,Y
  *
  * Intersection of line <--> line:
- * - see the description of 'pcb_intersect_line_line()'
+ * - see the description of 'pcb_isc_line_line()'
  */
 
 #include "macro.h"
@@ -110,7 +110,7 @@ static void get_arc_ends(pcb_coord_t * box, pcb_arc_t *arc)
  *
  *
  */
-static pcb_bool ArcArcIntersect(pcb_arc_t *Arc1, pcb_arc_t *Arc2)
+static pcb_bool pcb_isc_arc_arc(pcb_arc_t *Arc1, pcb_arc_t *Arc2)
 {
 	double x, y, dx, dy, r1, r2, a, d, l, t, t1, t2, dl;
 	pcb_coord_t pdx, pdy;
@@ -221,7 +221,7 @@ static pcb_bool ArcArcIntersect(pcb_arc_t *Arc1, pcb_arc_t *Arc2)
 /* ---------------------------------------------------------------------------
  * Tests if point is same as line end point or center point
  */
-static pcb_bool IsRatPointOnLineSpec(pcb_point_t *Point, pcb_line_t *Line)
+static pcb_bool pcb_isc_rat_line(pcb_point_t *Point, pcb_line_t *Line)
 {
 	pcb_coord_t cx, cy;
 
@@ -241,7 +241,7 @@ static pcb_bool IsRatPointOnLineSpec(pcb_point_t *Point, pcb_line_t *Line)
 /* ---------------------------------------------------------------------------
  * Tests if point is same as arc end point or center point
  */
-static pcb_bool IsRatPointOnArcSpec(pcb_point_t *Point, pcb_arc_t *arc)
+static pcb_bool pcb_isc_rat_arc(pcb_point_t *Point, pcb_arc_t *arc)
 {
 	pcb_coord_t cx, cy;
 
@@ -265,7 +265,7 @@ static pcb_bool IsRatPointOnArcSpec(pcb_point_t *Point, pcb_arc_t *arc)
 /* ---------------------------------------------------------------------------
  * Tests if rat line point is connected to a polygon
  */
-static pcb_bool IsRatPointOnPoly(pcb_point_t *Point, pcb_poly_t *polygon)
+static pcb_bool pcb_isc_rat_poly(pcb_point_t *Point, pcb_poly_t *polygon)
 {
 	pcb_coord_t cx, cy;
 
@@ -363,7 +363,7 @@ static void form_slanted_rectangle(pcb_point_t p[4], pcb_line_t *l)
  *  Also note that the denominators of eqn 1 & 2 are identical.
  *
  */
-pcb_bool pcb_intersect_line_line(pcb_line_t *Line1, pcb_line_t *Line2)
+pcb_bool pcb_isc_line_line(pcb_line_t *Line1, pcb_line_t *Line2)
 {
 	double s, r;
 	double line1_dx, line1_dy, line2_dx, line2_dy, point1_dx, point1_dy;
@@ -373,7 +373,7 @@ pcb_bool pcb_intersect_line_line(pcb_line_t *Line1, pcb_line_t *Line2)
 		return pcb_is_line_in_quadrangle(p, Line2);
 	}
 	/* here come only round Line1 because pcb_is_line_in_quadrangle()
-	   calls pcb_intersect_line_line() with first argument rounded */
+	   calls pcb_isc_line_line() with first argument rounded */
 	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Line2)) {
 		pcb_point_t p[4];
 		form_slanted_rectangle(p, Line2);
@@ -460,7 +460,7 @@ pcb_bool pcb_intersect_line_line(pcb_line_t *Line1, pcb_line_t *Line2)
  *
  * The end points are hell so they are checked individually
  */
-pcb_bool pcb_intersect_line_arc(pcb_line_t *Line, pcb_arc_t *Arc)
+pcb_bool pcb_isc_line_arc(pcb_line_t *Line, pcb_arc_t *Arc)
 {
 	double dx, dy, dx1, dy1, l, d, r, r2, Radius;
 	pcb_coord_t ex, ey;
@@ -518,7 +518,7 @@ pcb_bool pcb_intersect_line_arc(pcb_line_t *Line, pcb_arc_t *Arc)
  * - check the two end points of the arc. If none of them matches
  * - check all segments of the polygon against the arc.
  */
-pcb_bool pcb_is_arc_in_poly(pcb_arc_t *Arc, pcb_poly_t *Polygon)
+pcb_bool pcb_isc_arc_poly(pcb_arc_t *Arc, pcb_poly_t *Polygon)
 {
 	pcb_box_t *Box = (pcb_box_t *) Arc;
 
@@ -539,7 +539,7 @@ pcb_bool pcb_is_arc_in_poly(pcb_arc_t *Arc, pcb_poly_t *Polygon)
 	return pcb_false;
 }
 
-pcb_bool pcb_is_arc_in_polyarea(pcb_arc_t *Arc, pcb_polyarea_t *pa)
+pcb_bool pcb_isc_arc_polyarea(pcb_arc_t *Arc, pcb_polyarea_t *pa)
 {
 	pcb_box_t *Box = (pcb_box_t *) Arc;
 	pcb_bool res = pcb_false;
@@ -750,7 +750,7 @@ pcb_bool_t pcb_pstk_intersect_line(pcb_pstk_t *ps, pcb_line_t *line)
 		{
 			pcb_line_t tmp;
 			shape_line_to_pcb_line(ps, shape->data.line, tmp);
-			return pcb_intersect_line_line(line, &tmp);
+			return pcb_isc_line_line(line, &tmp);
 		}
 		case PCB_PSSH_CIRC:
 		{
@@ -791,14 +791,14 @@ PCB_INLINE pcb_bool_t pcb_pstk_intersect_arc(pcb_pstk_t *ps, pcb_arc_t *arc)
 				if (shape->data.poly.pa == NULL)
 					pcb_pstk_shape_update_pa(&shape->data.poly);
 
-				return pcb_is_arc_in_polyarea(&tmp, shape->data.poly.pa);
+				return pcb_isc_arc_polyarea(&tmp, shape->data.poly.pa);
 			}
 
 		case PCB_PSSH_LINE:
 		{
 			pcb_line_t tmp;
 			shape_line_to_pcb_line(ps, shape->data.line, tmp);
-			return pcb_intersect_line_arc(&tmp, arc);
+			return pcb_isc_line_arc(&tmp, arc);
 		}
 		case PCB_PSSH_CIRC:
 			return pcb_is_point_on_arc(shape->data.circ.x + ps->x, shape->data.circ.y + ps->y, shape->data.circ.dia/2, arc);
@@ -930,7 +930,7 @@ PCB_INLINE pcb_bool_t pcb_pstk_shape_intersect(pcb_pstk_t *ps1, pcb_pstk_shape_t
 					pcb_line_t tmp1, tmp2;
 					shape_line_to_pcb_line(ps1, shape1->data.line, tmp1);
 					shape_line_to_pcb_line(ps2, shape2->data.line, tmp2);
-					return pcb_intersect_line_line(&tmp1, &tmp2);
+					return pcb_isc_line_line(&tmp1, &tmp2);
 				}
 				case PCB_PSSH_CIRC:
 					return pstk_shape_int_circ_line(ps1, shape1, ps2, shape2);

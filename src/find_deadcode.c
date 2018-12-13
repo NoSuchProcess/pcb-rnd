@@ -36,7 +36,7 @@ static int LOT_Linecallback(const pcb_box_t * b, void *cl)
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_intersect_line_line(&i->line, line))
+	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_isc_line_line(&i->line, line))
 		longjmp(i->env, 1);
 	return 0;
 }
@@ -48,7 +48,7 @@ static int LOT_Arccallback(const pcb_box_t * b, void *cl)
 
 	if (!arc->Thickness)
 		return 0;
-	if (!PCB_FLAG_TEST(TheFlag, arc) && pcb_intersect_line_arc(&i->line, arc))
+	if (!PCB_FLAG_TEST(TheFlag, arc) && pcb_isc_line_arc(&i->line, arc))
 		longjmp(i->env, 1);
 	return 0;
 }

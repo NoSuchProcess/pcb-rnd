@@ -616,7 +616,7 @@ static pcb_r_dir_t LOCtoArcLine_callback(const pcb_box_t * b, void *cl)
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_intersect_line_arc(line, &i->arc) && !INOCN(line, &i->arc)) {
+	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_isc_line_arc(line, &i->arc) && !INOCN(line, &i->arc)) {
 		if (ADD_LINE_TO_LIST(i->layer, line, PCB_OBJ_ARC, &i->arc, PCB_FCT_COPPER, i->orig_arc))
 			longjmp(i->env, 1);
 	}
@@ -630,7 +630,7 @@ static pcb_r_dir_t LOCtoArcArc_callback(const pcb_box_t * b, void *cl)
 
 	if (!arc->Thickness)
 		return 0;
-	if (!PCB_FLAG_TEST(TheFlag, arc) && ArcArcIntersect(&i->arc, arc) && !INOCN(&i->arc, arc)) {
+	if (!PCB_FLAG_TEST(TheFlag, arc) && pcb_isc_arc_arc(&i->arc, arc) && !INOCN(&i->arc, arc)) {
 		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_OBJ_ARC, &i->arc, PCB_FCT_COPPER, i->orig_arc))
 			longjmp(i->env, 1);
 	}
@@ -644,12 +644,12 @@ static pcb_r_dir_t LOCtoArcRat_callback(const pcb_box_t *b, void *cl)
 
 	if (!PCB_FLAG_TEST(TheFlag, rat)) {
 		if ((rat->group1 == i->layer)
-				&& IsRatPointOnArcSpec(&rat->Point1, &i->arc)) {
+				&& pcb_isc_rat_arc(&rat->Point1, &i->arc)) {
 			if (ADD_RAT_TO_LIST(rat, PCB_OBJ_ARC, &i->arc, PCB_FCT_RAT, i->orig_arc))
 				longjmp(i->env, 1);
 		}
 		else if ((rat->group2 == i->layer)
-						 && IsRatPointOnArcSpec(&rat->Point2, &i->arc)) {
+						 && pcb_isc_rat_arc(&rat->Point2, &i->arc)) {
 			if (ADD_RAT_TO_LIST(rat, PCB_OBJ_ARC, &i->arc, PCB_FCT_RAT, i->orig_arc))
 				longjmp(i->env, 1);
 		}
@@ -705,7 +705,7 @@ static pcb_bool LookupLOConnectionsToArc(pcb_arc_t *Arc, pcb_cardinal_t LayerGro
 			pcb_box_t *b;
 			for(b = pcb_r_first(PCB->Data->Layer[layer].polygon_tree, &it); b != NULL; b = pcb_r_next(&it)) {
 				pcb_poly_t *polygon = (pcb_poly_t *)b;
-				if (!PCB_FLAG_TEST(TheFlag, polygon) && pcb_is_arc_in_poly(Arc, polygon)
+				if (!PCB_FLAG_TEST(TheFlag, polygon) && pcb_isc_arc_poly(Arc, polygon)
 						&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_OBJ_ARC, Arc, PCB_FCT_COPPER, Arc))
 					return pcb_true;
 			}
@@ -721,7 +721,7 @@ static pcb_r_dir_t LOCtoLineLine_callback(const pcb_box_t * b, void *cl)
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_intersect_line_line(&i->line, line) && !INOCN(&i->line, line)) {
+	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_isc_line_line(&i->line, line) && !INOCN(&i->line, line)) {
 		if (ADD_LINE_TO_LIST(i->layer, line, PCB_OBJ_LINE, &i->line, PCB_FCT_COPPER, i->orig_line))
 			longjmp(i->env, 1);
 	}
@@ -735,7 +735,7 @@ static pcb_r_dir_t LOCtoLineArc_callback(const pcb_box_t * b, void *cl)
 
 	if (!arc->Thickness)
 		return 0;
-	if (!PCB_FLAG_TEST(TheFlag, arc) && pcb_intersect_line_arc(&i->line, arc) && !INOCN(&i->line, arc)) {
+	if (!PCB_FLAG_TEST(TheFlag, arc) && pcb_isc_line_arc(&i->line, arc) && !INOCN(&i->line, arc)) {
 		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_OBJ_LINE, &i->line, PCB_FCT_COPPER, i->orig_line))
 			longjmp(i->env, 1);
 	}
@@ -749,12 +749,12 @@ static pcb_r_dir_t LOCtoLineRat_callback(const pcb_box_t * b, void *cl)
 
 	if (!PCB_FLAG_TEST(TheFlag, rat)) {
 		if ((rat->group1 == i->layer)
-				&& IsRatPointOnLineSpec(&rat->Point1, &i->line)) {
+				&& pcb_isc_rat_line(&rat->Point1, &i->line)) {
 			if (ADD_RAT_TO_LIST(rat, PCB_OBJ_LINE, &i->line, PCB_FCT_RAT, i->orig_line))
 				longjmp(i->env, 1);
 		}
 		else if ((rat->group2 == i->layer)
-						 && IsRatPointOnLineSpec(&rat->Point2, &i->line)) {
+						 && pcb_isc_rat_line(&rat->Point2, &i->line)) {
 			if (ADD_RAT_TO_LIST(rat, PCB_OBJ_LINE, &i->line, PCB_FCT_RAT, i->orig_line))
 				longjmp(i->env, 1);
 		}
@@ -828,7 +828,7 @@ static pcb_r_dir_t LOCtoRatLine_callback(const pcb_box_t * b, void *cl)
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct rat_info *i = (struct rat_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, line) && IsRatPointOnLineSpec(i->Point, line)) {
+	if (!PCB_FLAG_TEST(TheFlag, line) && pcb_isc_rat_line(i->Point, line)) {
 		if (ADD_LINE_TO_LIST(i->layer, line, PCB_OBJ_RAT, &i->Point, PCB_FCT_RAT, NULL))
 			longjmp(i->env, 1);
 	}
@@ -840,7 +840,7 @@ static pcb_r_dir_t LOCtoRatArc_callback(const pcb_box_t * b, void *cl)
 	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct rat_info *i = (struct rat_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, arc) && IsRatPointOnArcSpec(i->Point, arc)) {
+	if (!PCB_FLAG_TEST(TheFlag, arc) && pcb_isc_rat_arc(i->Point, arc)) {
 		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_OBJ_RAT, &i->Point, PCB_FCT_RAT, NULL))
 			longjmp(i->env, 1);
 	}
@@ -852,7 +852,7 @@ static pcb_r_dir_t LOCtoRatPoly_callback(const pcb_box_t * b, void *cl)
 	pcb_poly_t *polygon = (pcb_poly_t *) b;
 	struct rat_info *i = (struct rat_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, polygon) && polygon->Clipped && IsRatPointOnPoly(i->Point, polygon)) {
+	if (!PCB_FLAG_TEST(TheFlag, polygon) && polygon->Clipped && pcb_isc_rat_poly(i->Point, polygon)) {
 		if (ADD_POLYGON_TO_LIST(i->layer, polygon, PCB_OBJ_RAT, &i->Point, PCB_FCT_RAT, NULL))
 			longjmp(i->env, 1);
 	}
@@ -910,7 +910,7 @@ static pcb_r_dir_t LOCtoPolyArc_callback(const pcb_box_t * b, void *cl)
 
 	if (!arc->Thickness)
 		return 0;
-	if (!PCB_FLAG_TEST(TheFlag, arc) && pcb_is_arc_in_poly(arc, &i->polygon) && !INOCN(arc, &i->polygon)) {
+	if (!PCB_FLAG_TEST(TheFlag, arc) && pcb_isc_arc_poly(arc, &i->polygon) && !INOCN(arc, &i->polygon)) {
 		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_OBJ_POLY, &i->polygon, PCB_FCT_COPPER, i->orig_polygon))
 			longjmp(i->env, 1);
 	}
@@ -923,8 +923,8 @@ static pcb_r_dir_t LOCtoPolyRat_callback(const pcb_box_t * b, void *cl)
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!PCB_FLAG_TEST(TheFlag, rat)) {
-		if (((rat->group1 == i->layer) && IsRatPointOnPoly(&rat->Point1, &i->polygon))
-			|| ((rat->group2 == i->layer) && IsRatPointOnPoly(&rat->Point2, &i->polygon))) {
+		if (((rat->group1 == i->layer) && pcb_isc_rat_poly(&rat->Point1, &i->polygon))
+			|| ((rat->group2 == i->layer) && pcb_isc_rat_poly(&rat->Point2, &i->polygon))) {
 			if (ADD_RAT_TO_LIST(rat, PCB_OBJ_POLY, &i->polygon, PCB_FCT_RAT, i->orig_polygon))
 				longjmp(i->env, 1);
 		}
