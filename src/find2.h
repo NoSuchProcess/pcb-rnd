@@ -32,13 +32,20 @@
 #include <genvector/vtp0.h>
 #include "flag.h"
 
-typedef struct pcb_find_s {
+typedef struct pcb_find_s pcb_find_t;
+struct pcb_find_s {
 	/* public config - all-zero uses the original method, except for flag set */
 	unsigned stay_layergrp:1;       /* do not leave the layer (no padstack hop) */
 	unsigned allow_noncopper:1;     /* also run on non-copper objects */
 	unsigned list_found:1;          /* allow adding objects in the ->found vector */
 	unsigned flag_set_undoable:1;   /* when set, and flag_set is non-zero, put all found objects on the flag-undo */
 	unsigned long flag_set;         /* when non-zero, set the static flag bits on objects found */
+
+	/* if non-NULL, call after an object is found; if returns non-zero,
+	   set ->aborted and stop the search. When search started from an object,
+	   it is called for the starting object as well. All object data and ctx
+	   fields are updated for obj before the call. */
+	int (*found_cb)(pcb_find_t *ctx, pcb_any_obj_t *obj);
 
 	/* public state/result */
 	vtp0_t found;                   /* objects found, when list_found is 1 - of (pcb_any_obj_t *) */
@@ -52,7 +59,8 @@ typedef struct pcb_find_s {
 	pcb_dynf_t mark;
 	unsigned long nfound;
 	unsigned in_use:1;
-} pcb_find_t;
+	unsigned aborted:1;
+};
 
 
 unsigned long pcb_find_from_obj(pcb_find_t *ctx, pcb_data_t *data, pcb_any_obj_t *from);

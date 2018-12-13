@@ -34,7 +34,7 @@
    it's also cheap on remove! */
 
 /* Do everything that needs to be done for an object found */
-static void pcb_find_found(pcb_find_t *ctx, pcb_any_obj_t *obj)
+static int pcb_find_found(pcb_find_t *ctx, pcb_any_obj_t *obj)
 {
 	if (ctx->list_found)
 		vtp0_append(&ctx->found, obj);
@@ -46,6 +46,13 @@ static void pcb_find_found(pcb_find_t *ctx, pcb_any_obj_t *obj)
 	}
 
 	ctx->nfound++;
+
+	if ((ctx->found_cb != NULL) && (ctx->found_cb(ctx, obj) != 0)) {
+		ctx->aborted = 1;
+		return 1;
+	}
+
+	return 0;
 }
 
 
@@ -110,7 +117,8 @@ static unsigned long pcb_find_exec(pcb_find_t *ctx)
 		/* pop the last object, without reallocating to smaller, mark it found */
 		ctx->open.used--;
 		curr = ctx->open.array[ctx->open.used];
-		pcb_find_found(ctx, curr);
+		if (pcb_find_found(ctx, curr) != 0)
+			break;
 
 		{ /* search unmkared connections: iterative approach */
 			pcb_rtree_it_t it;
@@ -158,6 +166,7 @@ static int pcb_find_init_(pcb_find_t *ctx, pcb_data_t *data)
 	if (ctx->in_use)
 		return -1;
 	ctx->in_use = 1;
+	ctx->aborted = 0;
 	ctx->mark = pcb_dynflag_alloc("pcb_find_from_obj");
 	ctx->data = data;
 	ctx->nfound = 0;
