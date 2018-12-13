@@ -446,6 +446,7 @@
  ../src_plugins/dialogs/dlg_pref_board.h \
  ../src_plugins/dialogs/dlg_pref_general.h \
  ../src_plugins/dialogs/dlg_pref_lib.h \
+ ../src_plugins/dialogs/dlg_pref_color.h \
  ../src_plugins/dialogs/dlg_pref_conf.h conf.h \
  ../src_plugins/dialogs/act_dad.h dolists.h
 ../src_plugins/dialogs/dlg_pref.o: ../src_plugins/dialogs/dlg_pref.c \
@@ -470,12 +471,14 @@
  ../src_plugins/dialogs/dlg_pref_board.h \
  ../src_plugins/dialogs/dlg_pref_general.h \
  ../src_plugins/dialogs/dlg_pref_lib.h \
+ ../src_plugins/dialogs/dlg_pref_color.h \
  ../src_plugins/dialogs/dlg_pref_conf.h \
  ../src_plugins/dialogs/dlg_pref_sizes.c board.h vtroutestyle.h library.h \
  rats_patch.h board.h conf_core.h ../src_plugins/dialogs/dlg_pref_board.c \
  ../src_plugins/dialogs/dlg_pref_general.c \
  ../src_plugins/dialogs/dlg_pref_lib.c ../src_3rd/liblihata/tree.h \
  paths.h ../src_plugins/dialogs/dlg_pref_layer.c stub_draw.h draw.h \
+ ../src_plugins/dialogs/dlg_pref_color.c \
  ../src_plugins/dialogs/dlg_pref_conf.c misc_util.h \
  ../src_plugins/dialogs/dlg_pref_confedit.c
 ../src_plugins/dialogs/dlg_view.o: ../src_plugins/dialogs/dlg_view.c \
