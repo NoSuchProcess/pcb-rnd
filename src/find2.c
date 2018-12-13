@@ -57,6 +57,36 @@ static void pcb_find_addobj(pcb_find_t *ctx, pcb_any_obj_t *obj)
 		} \
 	} while(0)
 
+void pcb_find_on_layer(pcb_find_t *ctx, pcb_layer_t *l, pcb_any_obj_t *curr, pcb_rtree_box_t *sb)
+{
+	pcb_rtree_it_t it;
+	pcb_box_t *n;
+
+	if (l->line_tree != NULL) {
+		for(n = pcb_rtree_first(&it, l->line_tree, sb); n != NULL; n = pcb_rtree_next(&it))
+			PCB_FIND_CHECK(ctx, curr, n);
+		pcb_r_end(&it);
+	}
+
+	if (l->arc_tree != NULL) {
+		for(n = pcb_rtree_first(&it, l->arc_tree, sb); n != NULL; n = pcb_rtree_next(&it))
+			PCB_FIND_CHECK(ctx, curr, n);
+		pcb_r_end(&it);
+	}
+
+	if (l->polygon_tree != NULL) {
+		for(n = pcb_rtree_first(&it, l->polygon_tree, sb); n != NULL; n = pcb_rtree_next(&it))
+			PCB_FIND_CHECK(ctx, curr, n);
+		pcb_r_end(&it);
+	}
+
+	if (l->text_tree != NULL) {
+		for(n = pcb_rtree_first(&it, l->text_tree, sb); n != NULL; n = pcb_rtree_next(&it))
+			PCB_FIND_CHECK(ctx, curr, n);
+		pcb_r_end(&it);
+	}
+}
+
 static unsigned long pcb_find_exec(pcb_find_t *ctx)
 {
 	while(ctx->open.used > 0) {
@@ -80,31 +110,8 @@ static unsigned long pcb_find_exec(pcb_find_t *ctx)
 				pcb_r_end(&it);
 			}
 
-			for(li = 0, l = PCB->Data->Layer; li < PCB->Data->LayerN; li++,l++) {
-				if (l->line_tree != NULL) {
-					for(n = pcb_rtree_first(&it, l->line_tree, sb); n != NULL; n = pcb_rtree_next(&it))
-						PCB_FIND_CHECK(ctx, curr, n);
-					pcb_r_end(&it);
-				}
-
-				if (l->arc_tree != NULL) {
-					for(n = pcb_rtree_first(&it, l->arc_tree, sb); n != NULL; n = pcb_rtree_next(&it))
-						PCB_FIND_CHECK(ctx, curr, n);
-					pcb_r_end(&it);
-				}
-
-				if (l->polygon_tree != NULL) {
-					for(n = pcb_rtree_first(&it, l->polygon_tree, sb); n != NULL; n = pcb_rtree_next(&it))
-						PCB_FIND_CHECK(ctx, curr, n);
-					pcb_r_end(&it);
-				}
-
-				if (l->text_tree != NULL) {
-					for(n = pcb_rtree_first(&it, l->text_tree, sb); n != NULL; n = pcb_rtree_next(&it))
-						PCB_FIND_CHECK(ctx, curr, n);
-					pcb_r_end(&it);
-				}
-			}
+			if (curr->parent_type == PCB_PARENT_LAYER)
+				pcb_find_on_layer(ctx, curr->parent.layer, curr, sb);
 		}
 	}
 	return ctx->nfound;
