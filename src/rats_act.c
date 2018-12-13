@@ -50,6 +50,9 @@
 
 #include "obj_rat_draw.h"
 
+TODO("find.c: remove this")
+#include "brave.h"
+
 static const char pcb_acts_AddRats[] = "AddRats(AllRats|SelectedRats|Close)";
 static const char pcb_acth_AddRats[] = "Add one or more rat lines to the board.";
 /* DOC: addrats.html */
@@ -119,7 +122,16 @@ static fgw_error_t pcb_act_Connection(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			{
 				pcb_coord_t x, y;
 				pcb_hid_get_coords(_("Click on a connection"), &x, &y, 0);
-				pcb_lookup_conn(x, y, pcb_true, 1, PCB_FLAG_FOUND);
+				if (pcb_brave & PCB_BRAVE_NEWFIND) {
+					unsigned long res;
+					pcb_find_t fctx;
+
+					memset(&fctx, 0, sizeof(fctx));
+					res = pcb_find_from_xy(&fctx, PCB->Data, x, y);
+					pcb_message(PCB_MSG_INFO, "found %ld objects\n", res);
+				}
+				else
+					pcb_lookup_conn(x, y, pcb_true, 1, PCB_FLAG_FOUND);
 				break;
 			}
 
