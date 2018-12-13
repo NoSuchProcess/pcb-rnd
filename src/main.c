@@ -52,6 +52,7 @@ static const char *EXPERIMENTAL = NULL;
 #include "polygon.h"
 #include "buildin.h"
 #include "build_run.h"
+#include "flag.h"
 #include "flag_str.h"
 #include "plugins.h"
 #include "plug_footprint.h"
@@ -282,6 +283,7 @@ void pcb_main_uninit(void)
 	pcb_actions_uninit();
 	pcb_uilayer_uninit();
 	pcb_cli_uninit();
+	pcb_dynflag_uninit();
 }
 
 static int arg_match(const char *in, const char *shrt, const char *lng)

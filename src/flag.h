@@ -40,8 +40,13 @@ struct pcb_unknown_flag_s {
 	pcb_unknown_flag_t *next;
 };
 
+#define PCB_DYNFLAG_WORD unsigned long
+#define PCB_DYNFLAG_WLEN ((PCB_DYNFLAG_BLEN-1) / sizeof(PCB_DYNFLAG_WORD)+1)
+typedef PCB_DYNFLAG_WORD pcb_dynflag_t[PCB_DYNFLAG_WLEN];
+
 typedef struct {
-	unsigned long f;                           /* generic flags */
+	unsigned long f;                           /* generic statically assigned flag bits */
+	pcb_dynflag_t df;                          /* dynamically allocated flag bits */
 	unsigned char t[(PCB_MAX_LAYER + 1) / 2];  /* thermals */
 	unsigned char q;                           /* square geometry flag - need to keep only for .pcb compatibility */
 	pcb_unknown_flag_t *unknowns;
@@ -155,6 +160,7 @@ do { \
 	} \
 } while(0)
 
+/* Ignores dynamic flags and thermals */
 int pcb_flag_eq(pcb_flag_t *f1, pcb_flag_t *f2);
 #define PCB_FLAG_EQ(F1,F2)	pcb_flag_eq(&(F1), &(F2))
 
@@ -174,5 +180,20 @@ int pcb_flag_eq(pcb_flag_t *f1, pcb_flag_t *f2);
 /* Returns 1 if any of the bytes in arr is non-zero */
 int pcb_mem_any_set(unsigned char *arr, int arr_len);
 #define PCB_FLAG_THERM_TEST_ANY(P)	pcb_mem_any_set((P)->Flags.t, sizeof((P)->Flags.t))
+
+/*** Dynamic flags ***/
+#define PCB_DFLAG_SET(flg, dynf) (flg)->df[(dynf) / sizeof(PCB_DYNFLAG_WORD)] |= (1 << (dynf) % sizeof(PCB_DYNFLAG_WORD))
+#define PCB_DFLAG_CLR(flg, dynf) (flg)->df[(dynf) / sizeof(PCB_DYNFLAG_WORD)] &= ~(1 << (dynf) % sizeof(PCB_DYNFLAG_WORD))
+#define PCB_DFLAG_TEST(flg, dynf, val) (!!((flg)->df[(dynf) / sizeof(PCB_DYNFLAG_WORD)] & (1 << (dynf) % sizeof(PCB_DYNFLAG_WORD))))
+#define PCB_DFLAG_PUT(flg, dynf, val) ((val) ? PCB_DFLAG_SET((flg), (dynf)) : PCB_DFLAG_CLR((flg), (dynf)))
+
+extern const char *pcb_dynflag_cookie[PCB_DYNFLAG_BLEN];
+
+typedef int pcb_dynf_t;
+#define PCB_DYNF_INVALID (-1)
+pcb_dynf_t pcb_dynflag_alloc(const char *cookie);
+void pcb_dynflag_free(pcb_dynf_t dynf);
+
+void pcb_dynflag_uninit(void);
 
 #endif
