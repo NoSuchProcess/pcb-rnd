@@ -76,7 +76,8 @@
 - BUG: assertion with --debug,  open pcb-rnd, place via, open the padstackedit dialog for the via, go to generate common geometry, choose square copper shape, click 'generate' [report: Miloh]
 - BUG: configure without glib installed -> 'unknown arugment disable-gtk' [report: Ade]
 - DOC: DAD widgets: picture, picture button, color
-
+- BUG: Adding a new route style via the route-style dialog doesn't update the menu (Edit->Route Style). [report: Ade]
+ 
 2. For later releases ===============================================================================
 - CLEANUP: color:
 	- remove per hid, non-backup-lib custom color structs
