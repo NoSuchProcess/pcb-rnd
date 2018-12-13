@@ -33,10 +33,12 @@
 #include "flag.h"
 
 typedef struct pcb_find_s {
-	/* public config - all-zero uses the original method */
+	/* public config - all-zero uses the original method, except for flag set */
 	unsigned stay_layergrp:1;       /* do not leave the layer (no padstack hop) */
 	unsigned allow_noncopper:1;     /* also run on non-copper objects */
 	unsigned list_found:1;          /* allow adding objects in the ->found vector */
+	unsigned flag_set_undoable:1;   /* when set, and flag_set is non-zero, put all found objects on the flag-undo */
+	unsigned long flag_set;         /* when non-zero, set the static flag bits on objects found */
 
 	/* public state/result */
 	vtp0_t found;                   /* objects found, when list_found is 1 - of (pcb_any_obj_t *) */
