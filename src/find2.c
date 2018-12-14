@@ -159,6 +159,28 @@ void pcb_find_on_layer(pcb_find_t *ctx, pcb_layer_t *l, pcb_any_obj_t *curr, pcb
 	}
 }
 
+void pcb_find_on_layergrp(pcb_find_t *ctx, pcb_layergrp_t *g, pcb_any_obj_t *curr, pcb_rtree_box_t *sb)
+{
+	int n;
+	if (g == NULL)
+		return;
+	for(n = 0; n < g->len; n++)
+		pcb_find_on_layer(ctx, &ctx->data->Layer[g->lid[n]], curr, sb);
+}
+
+static void pcb_find_rat(pcb_find_t *ctx, pcb_rat_t *rat)
+{
+	pcb_rtree_box_t sb;
+
+	sb.x1 = rat->Point1.X; sb.x2 = rat->Point1.X+1;
+	sb.y1 = rat->Point1.Y; sb.y2 = rat->Point1.Y+1;
+	pcb_find_on_layergrp(ctx, pcb_get_layergrp(ctx->pcb, rat->group1), (pcb_any_obj_t *)rat, &sb);
+
+	sb.x1 = rat->Point2.X; sb.x2 = rat->Point2.X+1;
+	sb.y1 = rat->Point2.Y; sb.y2 = rat->Point2.Y+1;
+	pcb_find_on_layergrp(ctx, pcb_get_layergrp(ctx->pcb, rat->group2), (pcb_any_obj_t *)rat, &sb);
+}
+
 static unsigned long pcb_find_exec(pcb_find_t *ctx)
 {
 	pcb_any_obj_t *curr;
@@ -223,6 +245,9 @@ static unsigned long pcb_find_exec(pcb_find_t *ctx)
 							pcb_find_on_layer(ctx, l, curr, sb);
 					}
 				}
+			}
+			else if (curr->type == PCB_OBJ_RAT) {
+				pcb_find_rat(ctx, (pcb_rat_t *)curr);
 			}
 			else {
 				/* layer objects need to be checked against same layer objects only */
