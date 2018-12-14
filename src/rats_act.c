@@ -131,6 +131,7 @@ static fgw_error_t pcb_act_Connection(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					fctx.flag_set_undoable = 1;
 					res = pcb_find_from_xy(&fctx, PCB->Data, x, y);
 					pcb_message(PCB_MSG_INFO, "found %ld objects\n", res);
+					pcb_find_free(&fctx);
 				}
 				else
 					pcb_lookup_conn(x, y, pcb_true, 1, PCB_FLAG_FOUND);
