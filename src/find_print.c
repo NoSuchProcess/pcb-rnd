@@ -50,28 +50,6 @@ static void pcb_print_conn_subc_name(FILE *f, pcb_subc_t *subc)
 	fputs("{\n", f);
 }
 
-/* ---------------------------------------------------------------------------
- * prints one {pin,pad,via}/element entry of connection lists
- */
-static void pcb_print_conn_list_entry(char *ObjName, pcb_subc_t *subc, pcb_bool FirstOne, FILE * FP)
-{
-	if (FirstOne) {
-		fputc('\t', FP);
-		pcb_print_quoted_string(FP, ObjName);
-		fprintf(FP, "\n\t{\n");
-	}
-	else {
-		fprintf(FP, "\t\t");
-		pcb_print_quoted_string(FP, ObjName);
-		fputc(' ', FP);
-		if (subc)
-			print_subc_name(FP, subc);
-		else
-			fputs("(__VIA__)\n", FP);
-	}
-}
-
-
 /* copyright: written from 0 */
 static int count_term_cb(pcb_find_t *fctx, pcb_any_obj_t *o)
 {
