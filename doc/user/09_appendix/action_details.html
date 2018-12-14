@@ -1418,6 +1418,63 @@ Lines starting with
  are ignored.  
 </dd></dl>
 
+<h2 id="exportoldconn">ExportOldConn</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+ExportOldConn(AllConnections|AllUnusedPins|ElementConnections,filename)
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Export galvanic connection data in an old, custom file format.
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+export_oldconn HID
+</table>
+<p>
+Arguments: 
+<p>
+ 
+<table border=1 cellspacing=0>
+  
+<tr>
+
+<th>
+ Layout  
+<td>
+ Saves the current layout.   
+<tr>
+
+<th>
+ LayoutAs  
+<td>
+ Saves the current layout, and remembers the filename used.   
+<tr>
+
+<th>
+ AllConnections  
+<td>
+ Save all connections to a file.   
+<tr>
+
+<th>
+ AllUnusedPins  
+<td>
+ List all unused pins to a file.   
+<tr>
+
+<th>
+ ElementConnections  
+<td>
+ Save connections to the subcircuit at the cursor to a file.   
+<tr>
+
+<th>
+ PasteBuffer  
+<td>
+ Save the content of the active Buffer to a file. This is       the graphical way to create a footprint.  
+</table>
+ 
+</dd></dl>
+
 <h2 id="flip">Flip</h2>
 <dl><dd>
 <p>
@@ -2606,16 +2663,20 @@ It should never be called by the user or other code or other actions.
  
 </dd></dl>
 
-<h2 id="print">print</h2>
+<h2 id="print">Print</h2>
 <dl><dd>
 <p>
 <table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>n/a
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+Print()
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Present the print export dialog for printing the layout from the GUI.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
 </table>
 <p>
-This will find the default printing HID, prompt the user for its options, and print the layout.  
+Open an export dialog listing all printing plugins, prompt the user for their options, and print the layout. 
+<p>
+ Available only with GUI HIDs: it's merely a graphical shorthand that in turn calls the export plugin for printing.    
 </dd></dl>
 
 <h2 id="printcalibrate">PrintCalibrate</h2>
@@ -2945,7 +3006,6 @@ This action is a GUI front-end to the core's
 <table border=0 cellspacing=10 class=actsum>
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
 SaveTo(Layout|LayoutAs,filename,[fmt])
-SaveTo(AllConnections|AllUnusedPins|ElementConnections,filename)
 SaveTo(PasteBuffer,filename,[fmt])
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
 Saves data to a file.
@@ -2972,27 +3032,17 @@ Arguments:
 <tr>
 
 <th>
- AllConnections  
-<td>
- Save all connections to a file.   
-<tr>
-
-<th>
- AllUnusedPins  
-<td>
- List all unused pins to a file.   
-<tr>
-
-<th>
- ElementConnections  
-<td>
- Save connections to the subcircuit at the cursor to a file.   
-<tr>
-
-<th>
  PasteBuffer  
 <td>
- Save the content of the active Buffer to a file. This is       the graphical way to create a footprint.  
+ Save the content of the active Buffer to a file. This is       the graphical way to create a footprint.   
+<tr>
+
+<th>
+ AllConnections, AllUnusedPins, ElementConnections  
+<td>
+ obsolete arguments, kept for compatibility; please use       
+<a href="#exportoldconn">exportoldconn</a>
+ instead. 
 </table>
  
 </dd></dl>

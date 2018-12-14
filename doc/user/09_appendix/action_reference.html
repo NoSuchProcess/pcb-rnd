@@ -12,7 +12,7 @@
 <h2> Action Reference</h2>
 <table border=1>
 <caption>\n <b>
-This is pcb-rnd 2.1.0 (svn r21403) an interactive printed circuit board editor ,  Revision: 21468
+This is pcb-rnd 2.1.0 (svn r21403) an interactive printed circuit board editor ,  Revision: 21796
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -89,6 +89,7 @@ This is pcb-rnd 2.1.0 (svn r21403) an interactive printed circuit board editor ,
 <tr><td>ExpFeatTmp</td><td>Experimental Feature Template.</td><td>ExpFeatTmp(...)</td><td>experimental features plugin</td>
 <tr><td>Export</td><td>Export the current layout, e.g. Export(png, --dpi, 600)</td><td>Export(exporter, [exporter-args])</td><td></td>
 <tr><td>ExportGUI</td><td>Open the export dialog.</td><td>ExportGUI()</td><td>dialogs plugin</td>
+<tr><td><a href="action_details.html#exportoldconn">ExportOldConn</a></td><td>Export galvanic connection data in an old, custom file format.</td><td>ExportOldConn(AllConnections|AllUnusedPins|ElementConnections,filename)</td><td>export_oldconn HID</td>
 <tr><td>ExportScadPoly</td><td>exports all selected polygons to an openscad script; only the outmost contour of each poly is exported</td><td>ScadExportPoly(filename)</td><td>openscad HID</td>
 <tr><td>ExportcpcbTo</td><td>Dumps the current board in c-pcb format.</td><td>ExportcpcbTo(filename)</td><td>cpcb plugin</td>
 <tr><td>FlagEdit</td><td>Change the layer binding.</td><td>FlagEdit(object)</td><td>dialogs plugin</td>
@@ -104,7 +105,8 @@ This is pcb-rnd 2.1.0 (svn r21403) an interactive printed circuit board editor ,
 <tr><td>GlobalPuller</td><td>Pull all traces tight.</td><td>pcb_act_GlobalPuller([Found|Selected])</td><td>puller plugin</td>
 <tr><td>Grid</td><td>Set the grid.</td><td>grid(set, [name:]size[@offs][!unit])<br>grid(+|up)<br>grid(-|down)<br>grid(#N)<br>grid(idx, N)</td><td></td>
 <tr><td>GroupPropGui</td><td>Change group flags and properties</td><td>GroupPropGui(groupid)</td><td>dialogs plugin</td>
-<tr><td>IOIncompatList</td><td>Present the format incompatibilities of the last save to file operation.</td><td>IOIncompatList([list|simple])</td><td>dialogs plugin</td>
+<tr><td>IOIncompatList</td><td>Present the format incompatibilities of the last save to file operation.</td><td>IOIncompatList([list|simple])</td><td></td>
+<tr><td>IOIncompatListDialog</td><td>Present the format incompatibilities of the last save to file operation in a GUI dialog.</td><td>IOIncompatListDialog([list|simple])</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#import">Import</a></td><td>Import schematics.</td><td>Import()<br>Import([gnetlist|make[,source,source,...]])<br>Import(setnewpoint[,(mark|center|X,Y)])<br>Import(setdisperse,D,units)</td><td>import_sch plugin</td>
 <tr><td>ImportcpcbFrom</td><td>Loads the auto-routed tracks from the specified c-pcb output.</td><td>ImportcpcbFrom(filename)</td><td>cpcb plugin</td>
 <tr><td>LayerBinding</td><td>Change the layer binding.</td><td>LayerBinding(object)<br>LayerBinding(selected)<br>LayerBinding(buffer)</td><td>dialogs plugin</td>
@@ -133,6 +135,7 @@ This is pcb-rnd 2.1.0 (svn r21403) an interactive printed circuit board editor ,
 <tr><td>ManagePlugins</td><td>Manage plugins dialog.</td><td>ManagePlugins()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#markcrosshair">MarkCrosshair</a></td><td>Set/Reset the pcb_crosshair mark.</td><td>MarkCrosshair()<br>MarkCrosshair(Center)</td><td></td>
 <tr><td><a href="action_details.html#message">Message</a></td><td>Writes a message to the log window.</td><td>message(message)</td><td></td>
+<tr><td>MessageBox</td><td>Open a modal message dialog box with title and label. If icon string is not empty, display the named icon on the left. Present one or more window close buttons with different text and return value.</td><td>MessageBox(icon, title, label, button_txt, button_retval, ...)</td><td></td>
 <tr><td><a href="action_details.html#mincleargap">MinClearGap</a></td><td>Ensures that polygons are a minimum distance from objects.</td><td>MinClearGap(delta)<br>MinClearGap(Selected, delta)</td><td></td>
 <tr><td>MinMaskGap</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#mode">Mode</a></td><td>Change or use the tool mode.</td><td>Mode(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)<br>Mode(Polygon|Rectangle|Remove|Rotate|Text|Thermal|Via)<br>Mode(Notify|Release|Cancel|Stroke)<br>Mode(Save|Restore)</td><td></td>
@@ -164,10 +167,12 @@ This is pcb-rnd 2.1.0 (svn r21403) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#polystitch">PolyStitch</a></td><td></td><td></td><td>polystitch plugin</td>
 <tr><td><a href="action_details.html#polygon">Polygon</a></td><td>Some polygon related stuff.</td><td>Polygon(Close|CloseHole|PreviousPoint)</td><td></td>
 <tr><td>Preferences</td><td>Present the preferences dialog, optionally opening the tab requested.</td><td>Preferences([tabname])</td><td>dialogs plugin</td>
+<tr><td><a href="action_details.html#print">Print</a></td><td>Present the print export dialog for printing the layout from the GUI.</td><td>Print()</td><td></td>
 <tr><td>PrintActions</td><td>Print all actions available.</td><td>PrintActions()</td><td></td>
 <tr><td><a href="action_details.html#printcalibrate">PrintCalibrate</a></td><td>Calibrate the printer.</td><td>PrintCalibrate()</td><td></td>
 <tr><td>PrintCopyright</td><td>Print copyright notice.</td><td>PrintCopyright()</td><td></td>
 <tr><td>PrintFiles</td><td>Print files currently loaded.</td><td>PrintFiles()</td><td></td>
+<tr><td>PrintGUI</td><td>Open the print dialog.</td><td>PrintGUI()</td><td>dialogs plugin</td>
 <tr><td>PrintPaths</td><td>Print full paths and search paths.</td><td>PrintPaths()</td><td></td>
 <tr><td>PrintUsage</td><td>Print command line arguments of pcb-rnd or a plugin loaded.</td><td>PrintUsage()<br>PrintUsage(plugin)</td><td></td>
 <tr><td>PrintVersion</td><td>Print version.</td><td>PrintVersion()</td><td></td>
@@ -192,7 +197,7 @@ This is pcb-rnd 2.1.0 (svn r21403) an interactive printed circuit board editor ,
 <tr><td>SaveFontTo</td><td>Save PCB font to a file</td><td>SaveFontTo([file, id])</td><td></td>
 <tr><td>SavePatch</td><td>Save netlist patch for back annotation.</td><td>SavePatch(filename)</td><td></td>
 <tr><td>SaveTedax</td><td>Saves the specific type of data in a tEDAx file. Type can be: board-footprints</td><td>SaveTedax(board-footprints, filename)</td><td>tEDAx IO</td>
-<tr><td><a href="action_details.html#saveto">SaveTo</a></td><td>Saves data to a file.</td><td>SaveTo(Layout|LayoutAs,filename,[fmt])<br>SaveTo(AllConnections|AllUnusedPins|ElementConnections,filename)<br>SaveTo(PasteBuffer,filename,[fmt])</td><td></td>
+<tr><td><a href="action_details.html#saveto">SaveTo</a></td><td>Saves data to a file.</td><td>SaveTo(Layout|LayoutAs,filename,[fmt])<br>SaveTo(PasteBuffer,filename,[fmt])</td><td></td>
 <tr><td>ScaleBuffer</td><td>Scales the buffer by multiplying all coordinates by a floating point number.<br>If only x is given, it is also used for y and thickness too. If subc is not<br>empty, subcircuits are also scaled</td><td>ScaleBuffer(x [,y [,thickness [,subc]]])</td><td></td>
 <tr><td><a href="action_details.html#scriptcookie">ScriptCookie</a></td><td>Return a cookie specific to the current script instance during script initialization</td><td>ScriptCookie()</td><td>script plugin</td>
 <tr><td><a href="action_details.html#scriptpersistency">ScriptPersistency</a></td><td>Read or remove script persistency data savd on preunload</td><td>ScriptPersistency(read|remove)</td><td>script plugin</td>
@@ -226,6 +231,7 @@ This is pcb-rnd 2.1.0 (svn r21403) an interactive printed circuit board editor ,
 <tr><td>awk</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>cam</td><td>Export jobs for feeding cam processes</td><td>cam(exec, script)<br>cam(call, jobname)</td><td>cam exporter</td>
 <tr><td>circle</td><td>Generate a filled circle (zero length round cap line)</td><td>circle([where,] diameter)</td><td>shape plugin</td>
+<tr><td>cli_MessageBox</td><td>Intenal: CLI frontend action. Do not use directly.</td><td></td><td></td>
 <tr><td>cli_PromptFor</td><td>Intenal: CLI frontend action. Do not use directly.</td><td></td><td></td>
 <tr><td>conf</td><td>Perform various operations on the configuration tree.</td><td>conf(set, path, value, [role], [policy]) - change a config setting to an absolute value<br>conf(delta, path, value, [role], [policy]) - change a config setting by a delta value (numerics-only)<br>conf(toggle, path, [role]) - invert boolean value of a flag; if no role given, overwrite the highest prio config<br>conf(reset, role) - reset the in-memory lihata of a role<br>conf(iseq, path, value) - returns whether the value of a conf item matches value (for menu checked's)</td><td></td>
 <tr><td>constraint</td><td>Configure or remove a drawing constraint</td><td>constraint(type, off)<br>constraint(type, value, [value...])</td><td>ddraft plugin</td>
@@ -245,8 +251,11 @@ This is pcb-rnd 2.1.0 (svn r21403) an interactive printed circuit board editor ,
 <tr><td>dumpundo</td><td>Print info about fonts</td><td>dumpfonts()</td><td>diag plugin</td>
 <tr><td>estutter</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>extedit</td><td>extedit(object|selected, [interactive|method])</td><td>Invoke an external program to edit a specific part of the current board.</td><td>extedit plugin</td>
+<tr><td>find2perf</td><td>Measure the peformance of find2.c</td><td>find2perf()</td><td>diag plugin</td>
+<tr><td>findperf</td><td>Measure the peformance of find.c</td><td>findperf()</td><td>diag plugin</td>
 <tr><td>forcecolor</td><td>change selected objects' color to #RRGGBB, reset if does not start with '#'</td><td>forcecolor(#RRGGBB)</td><td>diag plugin</td>
 <tr><td>fp_rehash</td><td>Flush the library index; rescan all library search paths and rebuild the library index. Useful if there are changes in the library during a pcb-rnd session.</td><td>fp_rehash()</td><td></td>
+<tr><td>gui_MessageBox</td><td>Intenal: GUI frontend action. Do not use directly.</td><td></td><td>dialogs plugin</td>
 <tr><td>gui_PromptFor</td><td>Intenal: GUI frontend action. Do not use directly.</td><td></td><td>dialogs plugin</td>
 <tr><td>h</td><td>Print a help message for commands.</td><td>h</td><td>shand_cmd plugin</td>
 <tr><td>integrity</td><td>perform integrirty check on the current board and generate errors if needed</td><td>integrity()</td><td>diag plugin</td>
