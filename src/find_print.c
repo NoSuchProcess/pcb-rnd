@@ -254,7 +254,7 @@ void pcb_lookup_conns_to_all_elements(FILE * FP)
 		if (pcb_print_subc_conns(subc, FP, pcb_false))
 			break;
 		SEPARATE(FP);
-		if (conf_core.editor.reset_after_element && gdl_it_idx(&__it__) != 1)
+		if (gdl_it_idx(&__it__) != 1)
 			pcb_reset_conns(pcb_false);
 	}
 	PCB_END_LOOP;
