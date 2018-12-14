@@ -45,9 +45,9 @@ static pcb_lib_menu_t *alloc_net(pcb_netmap_t *map)
 	return &dn->net;
 }
 
-static pcb_cardinal_t found(void *ctx, pcb_any_obj_t *obj)
+static int found(pcb_find_t *fctx, pcb_any_obj_t *obj)
 {
-	pcb_netmap_t *map = ctx;
+	pcb_netmap_t *map = fctx->user_data;
 	dyn_obj_t *d, *dl;
 
 	if (map->curr_net == NULL)
@@ -61,11 +61,12 @@ static pcb_cardinal_t found(void *ctx, pcb_any_obj_t *obj)
 	d->next = dl;
 	htpp_set(&map->n2o, map->curr_net, d);
 
-	return 1;
+	return 0;
 }
 
 static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_obj_t *obj)
 {
+	pcb_find_t fctx;
 	pcb_netmap_t *map = ctx;
 	map->curr_net = NULL;
 
@@ -78,7 +79,13 @@ static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_ob
 	if ((layer != NULL) && (pcb_layer_flags_(layer) & PCB_LYT_COPPER) == 0)
 		return;
 
-	pcb_lookup_conn_by_obj(map, obj, 0, found);
+
+	memset(&fctx, 0, sizeof(fctx));
+	fctx.ignore_intconn = 1;
+	fctx.found_cb = found;
+	fctx.user_data = map;
+	pcb_find_from_obj(&fctx, pcb->Data, obj);
+	pcb_find_free(&fctx);
 }
 
 static void list_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
