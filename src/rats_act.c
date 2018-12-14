@@ -139,14 +139,14 @@ static fgw_error_t pcb_act_Connection(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 
 		case F_ResetLinesAndPolygons:
-			if (pcb_reset_found_lines_polys(pcb_true)) {
+			if (pcb_data_clear_obj_flag(PCB->Data, PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_TEXT, PCB_FLAG_FOUND, 1, 1) > 0) {
 				pcb_undo_inc_serial();
 				pcb_draw();
 			}
 			break;
 
 		case F_ResetPinsViasAndPads:
-			if (pcb_reset_found_pins_vias_pads(pcb_true)) {
+			if (pcb_data_clear_obj_flag(PCB->Data, PCB_OBJ_PSTK, PCB_FLAG_FOUND, 1, 1) > 0) {
 				pcb_undo_inc_serial();
 				pcb_draw();
 			}
