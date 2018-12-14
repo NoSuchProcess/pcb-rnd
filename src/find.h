@@ -86,7 +86,7 @@ pcb_bool_t pcb_isc_pstk_line(pcb_pstk_t *ps, pcb_line_t *line);
 pcb_bool pcb_clear_flag_on_pins_vias_pads(pcb_bool AndDraw, int flag);
 pcb_bool pcb_clear_flag_on_lines_polys(pcb_bool AndDraw, int flag);
 
-void pcb_lookup_subc_conns(pcb_subc_t *subc, FILE * FP);
+void pcb_lookup_subc_conns(FILE *f, pcb_subc_t *subc);
 
 #include "find2.h"
 

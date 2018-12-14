@@ -246,7 +246,7 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				if ((pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID) {
 					pcb_subc_t *subc = (pcb_subc_t *) ptrtmp;
 					if ((fp = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
-						pcb_lookup_subc_conns(subc, fp);
+						pcb_lookup_subc_conns(fp, subc);
 						fclose(fp);
 						pcb_board_set_changed_flag(pcb_true);
 					}

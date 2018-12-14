@@ -245,21 +245,12 @@ void pcb_lookup_unused_pins(FILE * FP)
 /* ---------------------------------------------------------------------------
  * find all connections to pins within one element
  */
-void pcb_lookup_subc_conns(pcb_subc_t *subc, FILE * FP)
+/* copyright: rewritten */
+void pcb_lookup_subc_conns(FILE *f, pcb_subc_t *subc)
 {
-	/* reset all currently marked connections */
-	User = pcb_true;
-	TheFlag = PCB_FLAG_FOUND;
-	pcb_reset_conns(pcb_true);
-	pcb_conn_lookup_init();
-	pcb_print_subc_conns(FP, subc);
-	pcb_board_set_changed_flag(pcb_true);
+	pcb_print_subc_conns(f, subc);
 	if (conf_core.editor.beep_when_finished)
 		pcb_gui->beep();
-	pcb_conn_lookup_uninit();
-	pcb_undo_inc_serial();
-	User = pcb_false;
-	pcb_draw();
 }
 
 
