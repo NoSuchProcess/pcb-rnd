@@ -93,9 +93,6 @@ doIsBad:
 	return PCB_R_DIR_NOT_FOUND;
 }
 
-
-unsigned long pcb_obj_type2oldtype(pcb_objtype_t type);
-
 static int drc_text(pcb_view_list_t *lst, pcb_layer_t *layer, pcb_text_t *text, pcb_coord_t min_wid)
 {
 	pcb_view_t *violation;
