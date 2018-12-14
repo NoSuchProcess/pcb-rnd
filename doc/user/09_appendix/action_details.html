@@ -707,21 +707,33 @@ Connections found with this action will be highlighted in the "connected-color" 
 <tr>
 
 <th>
- ResetLinesAndPolygons  
+ ResetLayerObjects  
 <td>
- Any "found" lines and polygons are marked "not found".   
+ Any "found" layer objects (lines, arcs, polygons and texts) are       marked "not found".   
 <tr>
 
 <th>
- ResetPinsAndVias  
+ ResetPadstacks  
 <td>
- Any "found" pins and vias are marked "not found".   
+ Any "found" padstack are marked "not found". WARNING: does not       touch non-padstack heavy terminals!   
 <tr>
 
 <th>
  Reset  
 <td>
- All "found" objects are marked "not found".  
+ All "found" objects are marked "not found".   
+<tr>
+
+<th>
+ ResetLinesAndPolygons  
+<td>
+ Obsolate, misleading name for ResetLayerObjects. Do not use.   
+<tr>
+
+<th>
+ ResetPinsAndVias  
+<td>
+ Obsolate, misleading name for ResetPadstacks. Do not use.  
 </table>
   
 </dd></dl>
@@ -1434,19 +1446,7 @@ Arguments:
 <p>
  
 <table border=1 cellspacing=0>
-  
-<tr>
-
-<th>
- Layout  
-<td>
- Saves the current layout.   
-<tr>
-
-<th>
- LayoutAs  
-<td>
- Saves the current layout, and remembers the filename used.   
+   
 <tr>
 
 <th>
@@ -1458,19 +1458,13 @@ Arguments:
 <th>
  AllUnusedPins  
 <td>
- List all unused pins to a file.   
+ List all unconnected terminals to a file.   
 <tr>
 
 <th>
  ElementConnections  
 <td>
- Save connections to the subcircuit at the cursor to a file.   
-<tr>
-
-<th>
- PasteBuffer  
-<td>
- Save the content of the active Buffer to a file. This is       the graphical way to create a footprint.  
+ Save connections to the subcircuit at the cursor to a file.  
 </table>
  
 </dd></dl>
