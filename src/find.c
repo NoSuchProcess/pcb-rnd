@@ -85,15 +85,6 @@
 
 #undef DEBUG
 
-#define	SEPARATE(FP)							\
-	{											\
-		int	i;									\
-		fputc('#', (FP));						\
-		for (i = conf_core.appearance.messages.char_per_line; i; i--)	\
-			fputc('=', (FP));					\
-		fputc('\n', (FP));						\
-	}
-
 #define	LINELIST_ENTRY(L,I)	\
 	(((pcb_line_t **)LineList[(L)].Data)[(I)])
 
@@ -163,8 +154,6 @@ static pcb_bool SetThing(void *group1_obj, void *group2_obj);
 #include "find_drc.c"
 #include "find_misc.c"
 #include "find_clear.c"
-
-#include "find_print.c"
 
 #include "find_any_isect.c"
 

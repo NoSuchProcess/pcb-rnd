@@ -1,0 +1,9 @@
+$class export
+$short export connection data in an old format
+$long Export subc/terminal connection map in an old, custom file format
+$state works
+$fmt-native no
+$fmt-feature-w export a list of terminal connections in an old, custom file format
+$package export-extra
+default buildin
+autoload 1

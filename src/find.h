@@ -63,10 +63,8 @@ extern pcb_find_callback_t pcb_find_callback;
 pcb_bool pcb_isc_line_line(pcb_line_t *, pcb_line_t *);
 pcb_bool pcb_isc_line_arc(pcb_line_t *, pcb_arc_t *);
 pcb_bool pcb_isc_poly_poly(pcb_poly_t *, pcb_poly_t *);
-void pcb_lookup_conns_to_all_suncs(FILE *);
 void pcb_lookup_conn(pcb_coord_t, pcb_coord_t, pcb_bool, pcb_coord_t, int);
 void pcb_lookup_conn_by_pin(int type, void *ptr1);
-void pcb_lookup_unused_pins(FILE *, int do_select);
 pcb_bool pcb_reset_found_lines_polys(pcb_bool);
 pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool);
 pcb_bool pcb_reset_conns(pcb_bool);
@@ -85,8 +83,6 @@ pcb_bool_t pcb_isc_pstk_line(pcb_pstk_t *ps, pcb_line_t *line);
 /* find_clear.c */
 pcb_bool pcb_clear_flag_on_pins_vias_pads(pcb_bool AndDraw, int flag);
 pcb_bool pcb_clear_flag_on_lines_polys(pcb_bool AndDraw, int flag);
-
-void pcb_lookup_subc_conns(FILE *f, pcb_subc_t *subc);
 
 #include "find2.h"
 

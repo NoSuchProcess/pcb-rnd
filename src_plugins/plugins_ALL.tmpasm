@@ -27,6 +27,7 @@ include {../src_plugins/export_gcode/Plug.tmpasm}
 include {../src_plugins/export_gerber/Plug.tmpasm}
 include {../src_plugins/export_ipcd356/Plug.tmpasm}
 include {../src_plugins/export_lpr/Plug.tmpasm}
+include {../src_plugins/export_oldconn/Plug.tmpasm}
 include {../src_plugins/export_openems/Plug.tmpasm}
 include {../src_plugins/export_openscad/Plug.tmpasm}
 include {../src_plugins/export_png/Plug.tmpasm}

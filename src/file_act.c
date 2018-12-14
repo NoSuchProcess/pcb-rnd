@@ -171,7 +171,7 @@ static fgw_error_t pcb_act_normalize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_SaveTo[] =
 	"SaveTo(Layout|LayoutAs,filename,[fmt])\n"
-	"SaveTo(AllConnections|AllUnusedPins|ElementConnections,filename)\n" "SaveTo(PasteBuffer,filename,[fmt])";
+	"SaveTo(PasteBuffer,filename,[fmt])";
 static const char pcb_acth_SaveTo[] = "Saves data to a file.";
 /* DOC: saveto.html */
 fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -210,53 +210,22 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 			return 0;
 
-		case F_AllConnections:
-			{
-				FILE *fp;
-				pcb_bool result;
-				if ((fp = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
-					pcb_lookup_conns_to_all_subcs(fp);
-					fclose(fp);
-					pcb_board_set_changed_flag(pcb_true);
-				}
-				return 0;
-			}
-
-		case F_AllUnusedPins:
-			{
-				FILE *fp;
-				pcb_bool result;
-				if ((fp = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
-					pcb_lookup_unused_pins(fp, 1);
-					fclose(fp);
-					pcb_board_set_changed_flag(pcb_true);
-				}
-				return 0;
-			}
-
-		case F_ElementConnections:
-		case F_SubcConnections:
-			{
-				void *ptrtmp;
-				FILE *fp;
-				pcb_bool result;
-				pcb_coord_t x, y;
-
-				pcb_hid_get_coords("Click on an element", &x, &y, 0);
-				if ((pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID) {
-					pcb_subc_t *subc = (pcb_subc_t *) ptrtmp;
-					if ((fp = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
-						pcb_lookup_subc_conns(fp, subc);
-						fclose(fp);
-						pcb_board_set_changed_flag(pcb_true);
-					}
-				}
-				return 0;
-			}
 
 		case F_PasteBuffer:
 			PCB_ACT_IRES(pcb_save_buffer_elements(name, fmt));
 			return 0;
+
+		/* shorthand kept only for compatibility reasons - do not use */
+		case F_AllConnections:
+			pcb_message(PCB_MSG_WARNING, "Please use action ExportOldConn() instead of SaveTo() for connections.\n");
+			return pcb_actionl("ExportOldConn", "AllConnections", name, NULL);
+		case F_AllUnusedPins:
+			pcb_message(PCB_MSG_WARNING, "Please use action ExportOldConn() instead of SaveTo() for connections.\n");
+			return pcb_actionl("ExportOldConn", "AllUnusedPins", name, NULL);
+		case F_ElementConnections:
+		case F_SubcConnections:
+			pcb_message(PCB_MSG_WARNING, "Please use action ExportOldConn() instead of SaveTo() for connections.\n");
+			return pcb_actionl("ExportOldConn", "SubcConnections", name, NULL);
 	}
 
 	PCB_ACT_FAIL(SaveTo);

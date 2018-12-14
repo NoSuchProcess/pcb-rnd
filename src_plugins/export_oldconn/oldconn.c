@@ -24,9 +24,39 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#include "data_it.h"
+#include "config.h"
+#include "conf_core.h"
 
-/* Connection export/output functions */
+#include <stdio.h>
+
+#include "actions.h"
+#include "board.h"
+#include "data.h"
+#include "data_it.h"
+#include "draw.h"
+#include "plugins.h"
+#include "plug_io.h"
+#include "find.h"
+#include "macro.h"
+#include "obj_subc_parent.h"
+#include "undo.h"
+#include "funchash_core.h"
+#include "search.h"
+
+#include "hid_init.h"
+#include "hid_attrib.h"
+
+const char *oldconn_cookie = "export_oldconn HID";
+
+#define SEPARATE(fp) \
+	do { \
+		int __i__; \
+		FILE *__f__ = (fp); \
+		fputc('#', __f__); \
+		for (__i__ = conf_core.appearance.messages.char_per_line; __i__ > 0; __i__--) \
+			fputc('=', __f__); \
+		fputc('\n', __f__); \
+	} while(0)
 
 /* writes the several names of a subcircuit to a file */
 static void print_subc_name(FILE *f, pcb_subc_t *subc)
@@ -47,7 +77,6 @@ static void pcb_print_conn_subc_name(FILE *f, pcb_subc_t *subc)
 	fputs("{\n", f);
 }
 
-/* copyright: written from 0 */
 static int count_term_cb(pcb_find_t *fctx, pcb_any_obj_t *o)
 {
 	unsigned long *cnt = fctx->user_data;
@@ -62,7 +91,6 @@ static int count_term_cb(pcb_find_t *fctx, pcb_any_obj_t *o)
 }
 
 /* prints all unused pins of a subcircuit to f */
-/* copyright: rewritten */
 static void print_select_unused_subc_terms(FILE *f, pcb_subc_t *subc, int do_select)
 {
 	unsigned long cnt;
@@ -110,7 +138,7 @@ typedef struct {
 	FILE *f;
 	pcb_any_obj_t *start;
 } term_cb_t;
-/* copyright: function written from 0 */
+
 static int print_term_conn_cb(pcb_find_t *fctx, pcb_any_obj_t *o)
 {
 	term_cb_t *ctx = fctx->user_data;
@@ -131,8 +159,7 @@ static int print_term_conn_cb(pcb_find_t *fctx, pcb_any_obj_t *o)
 }
 
 
-/* Find connected terminals to each terminal of subc and write them to f.
-/* copyright: function got rewritten */
+/* Find connected terminals to each terminal of subc and write them to f. */
 static void pcb_print_subc_conns(FILE *f, pcb_subc_t *subc)
 {
 	pcb_any_obj_t *o;
@@ -167,8 +194,7 @@ static void pcb_print_subc_conns(FILE *f, pcb_subc_t *subc)
 }
 
 /* Find and print (to f) all unused pins of all subcircuits */
-/* copyright: rewritten */
-void pcb_lookup_unused_pins(FILE *f, int do_select)
+static void pcb_lookup_unused_pins(FILE *f, int do_select)
 {
 	PCB_SUBC_LOOP(PCB->Data);
 	{
@@ -186,8 +212,7 @@ void pcb_lookup_unused_pins(FILE *f, int do_select)
 }
 
 /* Find and print (to f) all connections from terminals of subc */
-/* copyright: rewritten */
-void pcb_lookup_subc_conns(FILE *f, pcb_subc_t *subc)
+static void pcb_lookup_subc_conns(FILE *f, pcb_subc_t *subc)
 {
 	pcb_print_subc_conns(f, subc);
 	if (conf_core.editor.beep_when_finished)
@@ -195,8 +220,7 @@ void pcb_lookup_subc_conns(FILE *f, pcb_subc_t *subc)
 }
 
 /* Find all connections from all terminals of all subcircuits and print in f. */
-/* copyright: rewritten */
-void pcb_lookup_conns_to_all_subcs(FILE *f)
+static void pcb_lookup_conns_to_all_subcs(FILE *f)
 {
 	PCB_SUBC_LOOP(PCB->Data);
 	{
@@ -208,4 +232,78 @@ void pcb_lookup_conns_to_all_subcs(FILE *f)
 	if (conf_core.editor.beep_when_finished)
 		pcb_gui->beep();
 	pcb_redraw();
+}
+
+
+static const char pcb_acts_ExportOldConn[] = "ExportOldConn(AllConnections|AllUnusedPins|ElementConnections,filename)\n";
+static const char pcb_acth_ExportOldConn[] = "Export galvanic connection data in an old, custom file format.";
+/* DOC: exportoldconn.html */
+fgw_error_t pcb_act_ExportOldConn(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	int op;
+	const char *name = NULL;
+	FILE *f;
+	pcb_bool result;
+	void *ptrtmp;
+	pcb_coord_t x, y;
+
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, ExportOldConn, op = fgw_keyword(&argv[1]));
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, ExportOldConn, name = argv[2].val.str);
+	PCB_ACT_IRES(0);
+
+	switch(op) {
+		case F_AllConnections:
+			f = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL);
+			if (f != NULL) {
+				pcb_lookup_conns_to_all_subcs(f);
+				fclose(f);
+			}
+			return 0;
+
+		case F_AllUnusedPins:
+			f = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL);
+			if (f != NULL) {
+				pcb_lookup_unused_pins(f, 1);
+				fclose(f);
+				pcb_board_set_changed_flag(pcb_true);
+			}
+			return 0;
+
+		case F_ElementConnections:
+		case F_SubcConnections:
+			pcb_hid_get_coords("Click on a subc", &x, &y, 0);
+			if (pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp) != PCB_OBJ_VOID) {
+				pcb_subc_t *subc = (pcb_subc_t *) ptrtmp;
+				f = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL);
+				if (f != NULL) {
+					pcb_lookup_subc_conns(f, subc);
+					fclose(f);
+				}
+			}
+			return 0;
+	}
+	PCB_ACT_FAIL(ExportOldConn);
+}
+
+static pcb_action_t oldconn_action_list[] = {
+	{"ExportOldConn", pcb_act_ExportOldConn, pcb_acth_ExportOldConn, pcb_acts_ExportOldConn}
+};
+
+PCB_REGISTER_ACTIONS(oldconn_action_list, oldconn_cookie)
+
+int pplg_check_ver_export_oldconn(int ver_needed) { return 0; }
+
+void pplg_uninit_export_oldconn(void)
+{
+}
+
+#include "dolists.h"
+
+int pplg_init_export_oldconn(void)
+{
+	PCB_API_CHK_VER;
+
+	PCB_REGISTER_ACTIONS(oldconn_action_list, oldconn_cookie)
+
+	return 0;
 }
