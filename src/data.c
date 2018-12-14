@@ -799,6 +799,20 @@ void pcb_data_flag_change(pcb_data_t *data, pcb_objtype_t mask, int how, unsigne
 #include "obj_arc_draw.h"
 #include "obj_line_draw.h"
 #include "conf_core.h"
+
+/* Check if object n has flag set and if so, clear it and do all administration */
+#define CHK_CLEAR(n) \
+do { \
+	if (PCB_FLAG_TEST(flag, (pcb_any_obj_t *)n)) { \
+		PCB_FLAG_CLEAR(flag, (pcb_any_obj_t *)n); \
+		if (redraw) \
+			pcb_pstk_invalidate_draw((pcb_pstk_t *)n); \
+		if (undoable) \
+			pcb_undo_add_obj_to_flag((pcb_any_obj_t *)n); \
+		cnt++; \
+	} \
+} while(0)
+
 unsigned long pcb_data_clear_obj_flag(pcb_data_t *data, pcb_objtype_t tmask, unsigned long flag, int redraw, int undoable)
 {
 	pcb_rtree_it_t it;
@@ -810,16 +824,8 @@ unsigned long pcb_data_clear_obj_flag(pcb_data_t *data, pcb_objtype_t tmask, uns
 	conf_core.temp.rat_warn = pcb_false;
 
 	if (tmask & PCB_OBJ_PSTK) {
-		for(n = pcb_r_first(data->padstack_tree, &it); n != NULL; n = pcb_r_next(&it)) {
-			if (PCB_FLAG_TEST(flag, (pcb_any_obj_t *)n)) {
-				PCB_FLAG_CLEAR(flag, (pcb_any_obj_t *)n);
-				if (redraw)
-					pcb_pstk_invalidate_draw((pcb_pstk_t *)n);
-				if (undoable)
-					pcb_undo_add_obj_to_flag((pcb_any_obj_t *)n);
-				cnt++;
-			}
-		}
+		for(n = pcb_r_first(data->padstack_tree, &it); n != NULL; n = pcb_r_next(&it))
+			CHK_CLEAR(n);
 		pcb_r_end(&it);
 	}
 
@@ -830,63 +836,32 @@ unsigned long pcb_data_clear_obj_flag(pcb_data_t *data, pcb_objtype_t tmask, uns
 
 	for(li = 0, l = data->Layer; li < data->LayerN; li++,l++) {
 		if (tmask & PCB_OBJ_LINE) {
-			for(n = pcb_r_first(l->line_tree, &it); n != NULL; n = pcb_r_next(&it)) {
-				if (PCB_FLAG_TEST(flag, (pcb_any_obj_t *)n)) {
-					PCB_FLAG_CLEAR(flag, (pcb_any_obj_t *)n);
-					if (redraw)
-						pcb_line_invalidate_draw(l, (pcb_line_t *)n);
-					if (undoable)
-						pcb_undo_add_obj_to_flag((pcb_any_obj_t *)n);
-					cnt++;
-				}
-			}
+			for(n = pcb_r_first(l->line_tree, &it); n != NULL; n = pcb_r_next(&it))
+				CHK_CLEAR(n);
 			pcb_r_end(&it);
 		}
 
 		if (tmask & PCB_OBJ_ARC) {
-			for(n = pcb_r_first(l->arc_tree, &it); n != NULL; n = pcb_r_next(&it)) {
-				if (PCB_FLAG_TEST(flag, (pcb_any_obj_t *)n)) {
-					PCB_FLAG_CLEAR(flag, (pcb_any_obj_t *)n);
-					if (redraw)
-						pcb_arc_invalidate_draw(l, (pcb_arc_t *)n);
-					if (undoable)
-						pcb_undo_add_obj_to_flag((pcb_any_obj_t *)n);
-					cnt++;
-				}
-			}
+			for(n = pcb_r_first(l->arc_tree, &it); n != NULL; n = pcb_r_next(&it))
+				CHK_CLEAR(n);
 			pcb_r_end(&it);
 		}
 
 		if (tmask & PCB_OBJ_POLY) {
-			for(n = pcb_r_first(l->polygon_tree, &it); n != NULL; n = pcb_r_next(&it)) {
-				if (PCB_FLAG_TEST(flag, (pcb_any_obj_t *)n)) {
-					PCB_FLAG_CLEAR(flag, (pcb_any_obj_t *)n);
-					if (redraw)
-						pcb_poly_invalidate_draw(l, (pcb_poly_t *)n);
-					if (undoable)
-						pcb_undo_add_obj_to_flag((pcb_any_obj_t *)n);
-					cnt++;
-				}
-			}
+			for(n = pcb_r_first(l->polygon_tree, &it); n != NULL; n = pcb_r_next(&it))
+				CHK_CLEAR(n);
 			pcb_r_end(&it);
 		}
 
 		if (tmask & PCB_OBJ_TEXT) {
-			for(n = pcb_r_first(l->text_tree, &it); n != NULL; n = pcb_r_next(&it)) {
-				if (PCB_FLAG_TEST(flag, (pcb_any_obj_t *)n)) {
-					PCB_FLAG_CLEAR(flag, (pcb_any_obj_t *)n);
-					if (redraw)
-						pcb_text_invalidate_draw(l, (pcb_text_t *)n);
-					if (undoable)
-						pcb_undo_add_obj_to_flag((pcb_any_obj_t *)n);
-					cnt++;
-				}
-			}
+			for(n = pcb_r_first(l->text_tree, &it); n != NULL; n = pcb_r_next(&it))
+				CHK_CLEAR(n);
 			pcb_r_end(&it);
 		}
 	}
 	return cnt;
 }
+#undef CHK_CLEAR
 
 unsigned long pcb_data_clear_flag(pcb_data_t *data, unsigned long flag, int redraw, int undoable)
 {
