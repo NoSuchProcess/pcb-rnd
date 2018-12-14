@@ -153,9 +153,6 @@ static pcb_bool pcb_isc_rat_arc(pcb_point_t *Point, pcb_arc_t *arc);
 static pcb_bool pcb_isc_arc_arc(pcb_arc_t *, pcb_arc_t *);
 static pcb_bool ListsEmpty(pcb_bool);
 static pcb_bool DoIt(pcb_bool, pcb_bool);
-static void PrintElementNameList(pcb_subc_t *, FILE *);
-static void pcb_print_conn_subc_name(pcb_subc_t *, FILE *);
-static void pcb_print_conn_list_entry(char *, pcb_subc_t *, pcb_bool, FILE *);
 static void DumpList(void);
 static pcb_bool ListStart(pcb_any_obj_t *obj);
 static pcb_bool SetThing(void *group1_obj, void *group2_obj);
@@ -167,7 +164,6 @@ static pcb_bool SetThing(void *group1_obj, void *group2_obj);
 #include "find_misc.c"
 #include "find_clear.c"
 
-#include "find_debug.c"
 #include "find_print.c"
 
 #include "find_any_isect.c"

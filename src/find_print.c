@@ -31,6 +31,47 @@
 
 /* Connection export/output functions */
 
+/* writes the several names of a subcircuit to a file */
+static void PrintElementNameList(pcb_subc_t *subc, FILE * FP)
+{
+	fputc('(', FP);
+	pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&subc->Attributes, "footprint")));
+	fputc(' ', FP);
+	pcb_print_quoted_string(FP, (char *) PCB_EMPTY(subc->refdes));
+	fputc(' ', FP);
+	pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&subc->Attributes, "value")));
+	fputc(')', FP);
+	fputc('\n', FP);
+}
+static void pcb_print_conn_subc_name(pcb_subc_t *subc, FILE * FP)
+{
+	fputs("Element", FP);
+	PrintElementNameList(subc, FP);
+	fputs("{\n", FP);
+}
+
+/* ---------------------------------------------------------------------------
+ * prints one {pin,pad,via}/element entry of connection lists
+ */
+static void pcb_print_conn_list_entry(char *ObjName, pcb_subc_t *subc, pcb_bool FirstOne, FILE * FP)
+{
+	if (FirstOne) {
+		fputc('\t', FP);
+		pcb_print_quoted_string(FP, ObjName);
+		fprintf(FP, "\n\t{\n");
+	}
+	else {
+		fprintf(FP, "\t\t");
+		pcb_print_quoted_string(FP, ObjName);
+		fputc(' ', FP);
+		if (subc)
+			PrintElementNameList(subc, FP);
+		else
+			fputs("(__VIA__)\n", FP);
+	}
+}
+
+
 /* copyright: written from 0 */
 static int count_term_cb(pcb_find_t *fctx, pcb_any_obj_t *o)
 {
