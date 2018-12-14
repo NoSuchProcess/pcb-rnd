@@ -103,7 +103,7 @@ void *pcb_remove_object(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	return ptr;
 }
 
-void *pcb_destroy_object(pcb_data_t *Target, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+void *pcb_destroy_object(pcb_data_t *Target, pcb_objtype_t Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	void *res;
 	pcb_opctx_t ctx;

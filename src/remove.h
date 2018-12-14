@@ -43,6 +43,6 @@ pcb_bool pcb_remove_selected(pcb_bool locked_too);
 void *pcb_remove_object(int Type, void *Ptr1, void *Ptr2, void *Ptr3);
 
 /* Non-undoable delete (operation wrapper) */
-void *pcb_destroy_object(pcb_data_t *Target, int Type, void *Ptr1, void *Ptr2, void *Ptr3);
+void *pcb_destroy_object(pcb_data_t *Target, pcb_objtype_t Type, void *Ptr1, void *Ptr2, void *Ptr3);
 
 #endif
