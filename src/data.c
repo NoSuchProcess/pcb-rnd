@@ -799,6 +799,7 @@ void pcb_data_flag_change(pcb_data_t *data, pcb_objtype_t mask, int how, unsigne
 #include "obj_arc_draw.h"
 #include "obj_line_draw.h"
 #include "conf_core.h"
+#include "undo.h"
 
 /* Check if object n has flag set and if so, clear it and do all administration */
 #define CHK_CLEAR(n) \
