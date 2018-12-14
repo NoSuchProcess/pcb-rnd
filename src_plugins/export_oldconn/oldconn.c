@@ -173,8 +173,6 @@ static void pcb_print_subc_conns(FILE *f, pcb_subc_t *subc)
 	memset(&fctx, 0, sizeof(fctx));
 
 	for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
-		unsigned long res;
-
 		if (o->term == NULL) /* consider named terminals only */
 			continue;
 
