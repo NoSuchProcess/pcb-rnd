@@ -43,6 +43,7 @@ typedef struct {
 		CFT_BOOLEAN swap_start_direction;  /* change starting direction after each click */
 		CFT_BOOLEAN show_drc;              /* show drc region on crosshair */
 		CFT_BOOLEAN auto_drc;              /* when set, PCB doesn't let you place copper that violates DRC. */
+		CFT_BOOLEAN conn_find_rat;         /* connection find includes rats; when off, only existing galvanic connections are mapped */
 		CFT_BOOLEAN show_number;           /* OBSOLETE: pinout shows number */
 		CFT_BOOLEAN orthogonal_moves;      /* move items orthogonally. */
 		CFT_BOOLEAN reset_after_element;   /* OBSOLETE: reset connections after each element while saving all connections */

@@ -30,6 +30,7 @@ li:pcb-rnd-conf-v1 {
 			swap_start_direction = 0
 			show_drc = 0
 			auto_drc = 0
+			conn_find_rat = 1
 			show_number = 0
 			orthogonal_moves = 0
 			reset_after_element = 1
