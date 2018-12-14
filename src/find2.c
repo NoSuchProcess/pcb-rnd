@@ -123,7 +123,7 @@ TODO("find: remove the undef once the old API is gone")
 		if (!(PCB_DFLAG_TEST(&(__obj__->Flags), ctx->mark))) { \
 			if (!INOCN(curr, obj) && (pcb_intersect_obj_obj(curr, __obj__))) {\
 				pcb_find_addobj(ctx, __obj__); \
-				if ((__obj__->term != NULL) && (__obj__->intconn > 0)) \
+				if ((__obj__->term != NULL) && (!ctx->ignore_intconn) && (__obj__->intconn > 0)) \
 					int_conn(ctx, __obj__); \
 			} \
 		} \
@@ -220,10 +220,6 @@ static unsigned long pcb_find_exec(pcb_find_t *ctx)
 						PCB_FIND_CHECK(ctx, curr, n);
 					pcb_r_end(&it);
 				}
-			}
-
-			if (!ctx->ignore_intconn) {
-				TODO("find.c: implement this");
 			}
 
 			if (curr->type == PCB_OBJ_PSTK) {
