@@ -43,11 +43,11 @@ static void print_subc_name(FILE *f, pcb_subc_t *subc)
 	fputs(")\n", f);
 }
 
-static void pcb_print_conn_subc_name(pcb_subc_t *subc, FILE * FP)
+static void pcb_print_conn_subc_name(FILE *f, pcb_subc_t *subc)
 {
-	fputs("Element", FP);
-	print_subc_name(FP, subc);
-	fputs("{\n", FP);
+	fputs("Element", f);
+	print_subc_name(f, subc);
+	fputs("{\n", f);
 }
 
 /* ---------------------------------------------------------------------------
@@ -110,7 +110,7 @@ static void print_select_unused_subc_terms(FILE *f, pcb_subc_t *subc, int do_sel
 
 		if (cnt <= 1) {
 			if (!subc_announced) {
-				pcb_print_conn_subc_name(subc, f);
+				pcb_print_conn_subc_name(f, subc);
 				subc_announced = 1;
 			}
 
@@ -169,7 +169,7 @@ static void pcb_print_subc_conns(FILE *f, pcb_subc_t *subc)
 	pcb_find_t fctx;
 	term_cb_t cbctx;
 
-	pcb_print_conn_subc_name(subc, f);
+	pcb_print_conn_subc_name(f, subc);
 
 	cbctx.f = f;
 	memset(&fctx, 0, sizeof(fctx));
