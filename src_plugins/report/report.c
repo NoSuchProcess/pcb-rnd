@@ -444,47 +444,42 @@ static int report_found_pins(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* Assumes that we start with a blank connection state,
- * e.g. pcb_reset_conns() has been run.
- * Does not add its own changes to the undo system
- */
-static double xy_to_net_length(pcb_coord_t x, pcb_coord_t y, int *found)
+static int net_length_cb(pcb_find_t *fctx, pcb_any_obj_t *o)
 {
-	double length;
+	double *length = fctx->user_data;
+	double dx, dy;
+	pcb_line_t *line = (pcb_line_t *)o;
+	pcb_arc_t *arc = (pcb_arc_t *)o;
 
-	length = 0;
-	*found = 0;
-
-	/* NB: The third argument here, 'false' ensures LookupConnection
-	 *     does not add its changes to the undo system.
-	 */
-	pcb_lookup_conn(x, y, pcb_false, PCB->Grid, PCB_FLAG_FOUND);
-
-	PCB_LINE_ALL_LOOP(PCB->Data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, line)) {
-			double l;
-			int dx, dy;
+	switch(o->type) {
+		case PCB_OBJ_LINE:
 			dx = line->Point1.X - line->Point2.X;
 			dy = line->Point1.Y - line->Point2.Y;
-			l = sqrt((double) dx * dx + (double) dy * dy);
-			length += l;
-			*found = 1;
-		}
-	}
-	PCB_ENDALL_LOOP;
+			(*length) += sqrt(dx * dx + dy * dy);
+			break;
 
-	PCB_ARC_ALL_LOOP(PCB->Data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, arc)) {
-			double l;
-			/* FIXME: we assume width==height here */
-			l = M_PI * 2 * arc->Width * fabs(arc->Delta) / 360.0;
-			length += l;
-			*found = 1;
-		}
+		case PCB_OBJ_ARC:
+			/* NOTE: this assumes circuilar arc! */
+			(*length) += M_PI * 2 * arc->Width * fabs(arc->Delta) / 360.0;
+			break;
+
+		default:
+			break; /* silently ignore anything else... */
 	}
-	PCB_ENDALL_LOOP;
+	return 0;
+}
+
+static double xy_to_net_length(pcb_coord_t x, pcb_coord_t y, int *found)
+{
+	double length = 0;
+	pcb_find_t fctx;
+
+	memset(&fctx, 0, sizeof(fctx));
+	fctx.consider_rats = 0;
+	fctx.user_data = &length;
+	fctx.found_cb = net_length_cb;
+	*found = pcb_find_from_xy(&fctx, PCB->Data, x, y) > 0;
+	pcb_find_free(&fctx);
 
 	return length;
 }
