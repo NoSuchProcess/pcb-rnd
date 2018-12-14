@@ -805,11 +805,11 @@ void pcb_data_flag_change(pcb_data_t *data, pcb_objtype_t mask, int how, unsigne
 #define CHK_CLEAR(n) \
 do { \
 	if (PCB_FLAG_TEST(flag, (pcb_any_obj_t *)n)) { \
+		if (undoable) \
+			pcb_undo_add_obj_to_flag((pcb_any_obj_t *)n); \
 		PCB_FLAG_CLEAR(flag, (pcb_any_obj_t *)n); \
 		if (redraw) \
 			pcb_pstk_invalidate_draw((pcb_pstk_t *)n); \
-		if (undoable) \
-			pcb_undo_add_obj_to_flag((pcb_any_obj_t *)n); \
 		cnt++; \
 	} \
 } while(0)
