@@ -151,42 +151,68 @@ static void print_term_conns(FILE *FP, pcb_subc_t *subc)
 	vtp0_uninit(&lst);
 }
 
+typedef struct {
+	FILE *f;
+	pcb_any_obj_t *start;
+} term_cb_t;
+/* copyright: function written from 0 */
+static int print_term_conn_cb(pcb_find_t *fctx, pcb_any_obj_t *o)
+{
+	term_cb_t *ctx = fctx->user_data;
+	pcb_subc_t *sc;
+
+	if (ctx->start == o)
+		return 0;
+
+	sc = pcb_obj_parent_subc(o);
+	if (sc == NULL)
+		return 0;
+
+	fputs("\t\t", ctx->f);
+	pcb_print_quoted_string(ctx->f, PCB_EMPTY(o->term));
+	fputs(" ", ctx->f);
+	PrintElementNameList(sc, ctx->f);
+	return 0;
+}
+
 
 /* ---------------------------------------------------------------------------
  * finds all connections to the pins of the passed element.
  * The result is written to file FP
  * Returns pcb_true if operation was aborted
  */
-static pcb_bool pcb_print_subc_conns(pcb_subc_t *subc, FILE * FP, pcb_bool AndDraw)
+/* copyright: function got rewritten */
+static void pcb_print_subc_conns(FILE *f, pcb_subc_t *subc)
 {
 	pcb_any_obj_t *o;
 	pcb_data_it_t it;
+	pcb_find_t fctx;
+	term_cb_t cbctx;
 
-	pcb_print_conn_subc_name(subc, FP);
+	pcb_print_conn_subc_name(subc, f);
+
+	cbctx.f = f;
+	memset(&fctx, 0, sizeof(fctx));
 
 	for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
+		unsigned long res;
+
 		if (o->term == NULL) /* consider named terminals only */
 			continue;
 
-		if (PCB_FLAG_TEST(TheFlag, o)) {
-			fputc('\t', FP);
-			pcb_print_quoted_string(FP, (char *)PCB_EMPTY(o->term));
-			fputs("\n\t{\n\t\t__CHECKED_BEFORE__\n\t}\n", FP);
-			continue;
-		}
+		fputs("\t", f);
+		pcb_print_quoted_string(f, PCB_EMPTY(o->term));
+		fputs("\n\t{\n", f);
 
-		/* reset found objects for the next pin */
-		PrepareNextLoop();
+		cbctx.start = o;
+		fctx.user_data = &cbctx;
+		fctx.found_cb = print_term_conn_cb;
+		pcb_find_from_obj(&fctx, PCB->Data, o);
+		pcb_find_free(&fctx);
 
-		ListStart(o);
-		DoIt(pcb_true, pcb_true);
-
-		/* printout all found connections */
-		print_term_conns(FP, subc);
-		fputs("\t}\n", FP);
+		fputs("\t}\n", f);
 	}
-	fputs("}\n\n", FP);
-	return pcb_false;
+	fputs("}\n\n", f);
 }
 
 /* ---------------------------------------------------------------------------
@@ -226,7 +252,7 @@ void pcb_lookup_subc_conns(pcb_subc_t *subc, FILE * FP)
 	TheFlag = PCB_FLAG_FOUND;
 	pcb_reset_conns(pcb_true);
 	pcb_conn_lookup_init();
-	pcb_print_subc_conns(subc, FP, pcb_true);
+	pcb_print_subc_conns(FP, subc);
 	pcb_board_set_changed_flag(pcb_true);
 	if (conf_core.editor.beep_when_finished)
 		pcb_gui->beep();
@@ -242,26 +268,14 @@ void pcb_lookup_subc_conns(pcb_subc_t *subc, FILE * FP)
  */
 void pcb_lookup_conns_to_all_elements(FILE * FP)
 {
-	/* reset all currently marked connections */
-	User = pcb_false;
-	TheFlag = PCB_FLAG_FOUND;
-	pcb_reset_conns(pcb_false);
-	pcb_conn_lookup_init();
-
 	PCB_SUBC_LOOP(PCB->Data);
 	{
-		/* break if abort dialog returned pcb_true */
-		if (pcb_print_subc_conns(subc, FP, pcb_false))
-			break;
+		pcb_print_subc_conns(FP, subc);
 		SEPARATE(FP);
-		if (gdl_it_idx(&__it__) != 1)
-			pcb_reset_conns(pcb_false);
 	}
 	PCB_END_LOOP;
 
 	if (conf_core.editor.beep_when_finished)
 		pcb_gui->beep();
-	pcb_reset_conns(pcb_false);
-	pcb_conn_lookup_uninit();
 	pcb_redraw();
 }
