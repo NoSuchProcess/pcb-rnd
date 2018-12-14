@@ -227,7 +227,7 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				FILE *fp;
 				pcb_bool result;
 				if ((fp = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
-					pcb_lookup_unused_pins(fp);
+					pcb_lookup_unused_pins(fp, 1);
 					fclose(fp);
 					pcb_board_set_changed_flag(pcb_true);
 				}

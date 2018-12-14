@@ -53,47 +53,63 @@ static void count_terms(vtp0_t *out, pcb_data_t *data, pcb_cardinal_t maxt, pcb_
 	return;
 }
 
-/* prints all unused pins of an element to file FP */
-static pcb_bool print_select_unused_subc_terms(pcb_subc_t *subc, FILE * FP)
+/* copyright: written from 0 */
+static int count_term_cb(pcb_find_t *fctx, pcb_any_obj_t *o)
 {
+	unsigned long *cnt = fctx->user_data;
+
+	if (o->term == NULL)
+		return 0;
+
+	(*cnt)++;
+	if ((*cnt) > 1)
+		return 1; /* stop searching after the second object - no need to know how many terminals are connected, the fact that it's more than 1 is enough */
+	return 0;
+}
+
+/* prints all unused pins of an element to file FP */
+/* copyright: rewritten */
+static void print_select_unused_subc_terms(FILE *f, pcb_subc_t *subc, int do_select)
+{
+	unsigned long cnt;
+	pcb_find_t fctx;
 	pcb_any_obj_t *o;
 	pcb_data_it_t it;
-	pcb_bool first = pcb_true;
+	int subc_announced = 0;
+
+	memset(&fctx, 0, sizeof(fctx));
+	fctx.user_data = &cnt;
+	fctx.found_cb = count_term_cb;
 
 	for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
-		pcb_cardinal_t number = 0;
 		if (o->term == NULL) /* consider named terminals only */
 			continue;
 
-		/* reset found objects for the next pin */
-		PrepareNextLoop();
+		cnt = 0;
+		pcb_find_from_obj(&fctx, PCB->Data, o);
+		pcb_find_free(&fctx);
 
-		ListStart(o);
-		DoIt(pcb_true, pcb_true);
-
-		count_terms(NULL, PCB->Data, 2, &number);
-		if (number <= 1) {
-			/* output of element name if not already done */
-			if (first) {
-				pcb_print_conn_subc_name(subc, FP);
-				first = pcb_false;
+		if (cnt <= 1) {
+			if (!subc_announced) {
+				pcb_print_conn_subc_name(subc, f);
+				subc_announced = 1;
 			}
 
-			/* write name to list */
-			fputc('\t', FP);
-			pcb_print_quoted_string(FP, (char *)PCB_EMPTY(o->term));
-			fputc('\n', FP);
-			PCB_FLAG_SET(PCB_FLAG_SELECTED, o);
-			pcb_draw_obj(o);
+			fputc('\t', f);
+			pcb_print_quoted_string(f, (char *)PCB_EMPTY(o->term));
+			fputc('\n', f);
+			if (do_select) {
+				PCB_FLAG_SET(PCB_FLAG_SELECTED, o);
+				pcb_draw_obj(o);
+			}
 		}
 	}
 
 	/* print separator if element has unused pins or pads */
-	if (!first) {
-		fputs("}\n\n", FP);
-		SEPARATE(FP);
+	if (subc_announced) {
+		fputs("}\n\n", f);
+		SEPARATE(f);
 	}
-	return pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -218,28 +234,22 @@ static void pcb_print_subc_conns(FILE *f, pcb_subc_t *subc)
 /* ---------------------------------------------------------------------------
  * find all unused pins of all element
  */
-void pcb_lookup_unused_pins(FILE * FP)
+/* copyright: rewritten */
+void pcb_lookup_unused_pins(FILE *f, int do_select)
 {
-	/* reset all currently marked connections */
-	User = pcb_true;
-	pcb_reset_conns(pcb_true);
-	pcb_conn_lookup_init();
-
 	PCB_SUBC_LOOP(PCB->Data);
 	{
-		/* break if abort dialog returned pcb_true;
-		 * passing NULL as filedescriptor discards the normal output */
-		if (print_select_unused_subc_terms(subc, FP))
-			break;
+		print_select_unused_subc_terms(f, subc, do_select);
 	}
 	PCB_END_LOOP;
 
 	if (conf_core.editor.beep_when_finished)
 		pcb_gui->beep();
-	pcb_conn_lookup_uninit();
-	pcb_undo_inc_serial();
-	User = pcb_false;
-	pcb_draw();
+
+	if (do_select) {
+		pcb_undo_inc_serial();
+		pcb_draw();
+	}
 }
 
 /* ---------------------------------------------------------------------------
