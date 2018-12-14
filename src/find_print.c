@@ -64,7 +64,7 @@ static int count_term_cb(pcb_find_t *fctx, pcb_any_obj_t *o)
 	return 0;
 }
 
-/* prints all unused pins of an element to file FP */
+/* prints all unused pins of a subcircuit to f */
 /* copyright: rewritten */
 static void print_select_unused_subc_terms(FILE *f, pcb_subc_t *subc, int do_select)
 {
@@ -134,11 +134,7 @@ static int print_term_conn_cb(pcb_find_t *fctx, pcb_any_obj_t *o)
 }
 
 
-/* ---------------------------------------------------------------------------
- * finds all connections to the pins of the passed element.
- * The result is written to file FP
- * Returns pcb_true if operation was aborted
- */
+/* Find connected terminals to each terminal of subc and write them to f.
 /* copyright: function got rewritten */
 static void pcb_print_subc_conns(FILE *f, pcb_subc_t *subc)
 {
@@ -173,9 +169,7 @@ static void pcb_print_subc_conns(FILE *f, pcb_subc_t *subc)
 	fputs("}\n\n", f);
 }
 
-/* ---------------------------------------------------------------------------
- * find all unused pins of all element
- */
+/* Find and print (to f) all unused pins of all subcircuits */
 /* copyright: rewritten */
 void pcb_lookup_unused_pins(FILE *f, int do_select)
 {
@@ -194,9 +188,7 @@ void pcb_lookup_unused_pins(FILE *f, int do_select)
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * find all connections to pins within one element
- */
+/* Find and print (to f) all connections from terminals of subc */
 /* copyright: rewritten */
 void pcb_lookup_subc_conns(FILE *f, pcb_subc_t *subc)
 {
@@ -205,10 +197,7 @@ void pcb_lookup_subc_conns(FILE *f, pcb_subc_t *subc)
 		pcb_gui->beep();
 }
 
-
-/* ---------------------------------------------------------------------------
- * find all connections to pins of all element
- */
+/* Find all connections from all terminals of all subcircuits and print in f. */
 /* copyright: rewritten */
 void pcb_lookup_conns_to_all_subcs(FILE *f)
 {
