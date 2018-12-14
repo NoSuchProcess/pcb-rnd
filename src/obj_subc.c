@@ -338,8 +338,6 @@ pcb_layer_t *pcb_loose_subc_layer(pcb_board_t *pcb, pcb_layer_t *layer)
 	return layer;
 }
 
-extern unsigned long pcb_obj_type2oldtype(pcb_objtype_t type);
-
 static pcb_coord_t read_mask(pcb_any_obj_t *obj)
 {
 	const char *smask = pcb_attribute_get(&obj->Attributes, "elem_smash_pad_mask");
