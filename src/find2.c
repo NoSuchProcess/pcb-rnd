@@ -62,12 +62,70 @@ static void pcb_find_addobj(pcb_find_t *ctx, pcb_any_obj_t *obj)
 	vtp0_append(&ctx->open, obj);
 }
 
+static void int_conn(pcb_find_t *ctx, pcb_any_obj_t *from_)
+{
+	void *from = from_; /* for warningless comparison */
+	pcb_subc_t *s;
+	int ic;
+
+	s = pcb_obj_parent_subc(from_);
+	if (s == NULL)
+		return;
+
+	ic = from_->intconn;
+
+	PCB_PADSTACK_LOOP(s->data);
+	{
+		if ((padstack != from) && (padstack->term != NULL) && (padstack->intconn == ic) && (!(PCB_DFLAG_TEST(&(padstack->Flags), ctx->mark))))
+			pcb_find_addobj(ctx, (pcb_any_obj_t *)padstack);
+	}
+	PCB_END_LOOP;
+
+	PCB_LINE_COPPER_LOOP(s->data);
+	{
+		if ((line != from) && (line->term != NULL) && (line->intconn == ic) && (!(PCB_DFLAG_TEST(&(line->Flags), ctx->mark))))
+			pcb_find_addobj(ctx, (pcb_any_obj_t *)line);
+	}
+	PCB_ENDALL_LOOP;
+
+	PCB_ARC_COPPER_LOOP(s->data);
+	{
+		if ((arc != from) && (arc->term != NULL) && (arc->intconn == ic) && (!(PCB_DFLAG_TEST(&(arc->Flags), ctx->mark))))
+			pcb_find_addobj(ctx, (pcb_any_obj_t *)arc);
+	}
+	PCB_ENDALL_LOOP;
+
+	PCB_POLY_COPPER_LOOP(s->data);
+	{
+		if ((polygon != from) && (polygon->term != NULL) && (polygon->intconn == ic) && (!(PCB_DFLAG_TEST(&(polygon->Flags), ctx->mark))))
+			pcb_find_addobj(ctx, (pcb_any_obj_t *)polygon);
+	}
+	PCB_ENDALL_LOOP;
+
+TODO("find: no find through text yet")
+#if 0
+	PCB_TEXT_COPPER_LOOP(s->data);
+	{
+		if ((text != from) && (text->term != NULL) && (text->intconn == ic) && (!(PCB_DFLAG_TEST(&(text->Flags), ctx->mark))))
+			pcb_find_addobj(ctx, (pcb_any_obj_t *)text);
+	}
+	PCB_ENDALL_LOOP;
+#endif
+}
+
+TODO("find: remove the undef once the old API is gone")
+#undef INOCN
+#define INOCN(a,b) int_noconn((pcb_any_obj_t *)a, (pcb_any_obj_t *)b)
+
 #define PCB_FIND_CHECK(ctx, curr, obj) \
 	do { \
 		pcb_any_obj_t *__obj__ = (pcb_any_obj_t *)obj; \
 		if (!(PCB_DFLAG_TEST(&(__obj__->Flags), ctx->mark))) { \
-			if (pcb_intersect_obj_obj(curr, __obj__)) \
+			if (!INOCN(curr, obj) && (pcb_intersect_obj_obj(curr, __obj__))) {\
 				pcb_find_addobj(ctx, __obj__); \
+				if ((__obj__->term != NULL) && (__obj__->intconn > 0)) \
+					int_conn(ctx, __obj__); \
+			} \
 		} \
 	} while(0)
 
