@@ -102,7 +102,7 @@ pcb_bool pcb_intersect_obj_obj(pcb_any_obj_t *a, pcb_any_obj_t *b)
 				case PCB_OBJ_POLY: return pcb_isc_pstk_poly((pcb_pstk_t *)a, (pcb_poly_t *)b);
 				case PCB_OBJ_ARC:  return pcb_isc_pstk_arc((pcb_pstk_t *)a, (pcb_arc_t *)b);
 				case PCB_OBJ_PSTK: return pcb_isc_pstk_pstk((pcb_pstk_t *)a, (pcb_pstk_t *)b);
-				case PCB_OBJ_RAT:  TODO("find: rat vs. padstack");
+				case PCB_OBJ_RAT:  return pcb_isc_pstk_rat((pcb_pstk_t *)a, (pcb_rat_t *)b);
 				default:;
 			}
 			break;
@@ -113,7 +113,7 @@ pcb_bool pcb_intersect_obj_obj(pcb_any_obj_t *a, pcb_any_obj_t *b)
 				case PCB_OBJ_TEXT: return pcb_false; /* text is invisible to find for now */
 				case PCB_OBJ_POLY: return pcb_isc_rat_poly((pcb_rat_t *)a, (pcb_poly_t *)b);
 				case PCB_OBJ_ARC:  return pcb_isc_rat_arc((pcb_rat_t *)a, (pcb_arc_t *)b);
-				case PCB_OBJ_PSTK: TODO("find: rat vs. padstack");
+				case PCB_OBJ_PSTK: return pcb_isc_pstk_rat((pcb_pstk_t *)b, (pcb_rat_t *)a);
 				case PCB_OBJ_RAT:  return pcb_isc_rat_rat((pcb_rat_t *)a, (pcb_rat_t *)b);
 				default:;
 			}
