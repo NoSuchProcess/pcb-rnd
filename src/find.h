@@ -31,7 +31,6 @@
 #ifndef	PCB_FIND_H
 #define	PCB_FIND_H
 
-#include <stdio.h>							/* needed to define 'FILE *' */
 #include "config.h"
 #include "obj_common.h"
 
