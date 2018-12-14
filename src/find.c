@@ -112,7 +112,7 @@ typedef struct {
 } ListType, *ListTypePtr;
 
 static pcb_coord_t Bloat = 0;
-static int TheFlag = PCB_FLAG_FOUND;
+int TheFlag = PCB_FLAG_FOUND;
 static int OldFlag = PCB_FLAG_FOUND;
 
 /* on DRC hit: the two offending objects */

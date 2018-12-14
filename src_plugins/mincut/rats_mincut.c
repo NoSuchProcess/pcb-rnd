@@ -51,6 +51,10 @@
 #include "rats_mincut_conf.h"
 conf_mincut_t conf_mincut;
 
+TODO("find.c: REMOVE THESE after the switchover")
+#include "board.h"
+extern int TheFlag;
+
 /* define to 1 to enable debug prints */
 #if 0
 #	define debprintf pcb_trace
@@ -311,8 +315,7 @@ static int proc_short(pcb_any_obj_t *term, int ignore)
 	}
 
 
-	pcb_reset_found_lines_polys(pcb_false);
-	pcb_reset_found_pins_vias_pads(pcb_false);
+	pcb_data_clear_flag(PCB->Data, TheFlag, 0, 0); /* this can be removed with the old find.c calls */
 	pcb_restore_find_flag();
 
 	for(i = 0; i < g->n; i++)
