@@ -221,7 +221,7 @@ static pcb_bool pcb_isc_arc_arc(pcb_arc_t *Arc1, pcb_arc_t *Arc2)
 /* ---------------------------------------------------------------------------
  * Tests if point is same as line end point or center point
  */
-static pcb_bool pcb_isc_rat_line(pcb_point_t *Point, pcb_line_t *Line)
+static pcb_bool pcb_isc_ratp_line(pcb_point_t *Point, pcb_line_t *Line)
 {
 	pcb_coord_t cx, cy;
 
@@ -241,7 +241,7 @@ static pcb_bool pcb_isc_rat_line(pcb_point_t *Point, pcb_line_t *Line)
 /* ---------------------------------------------------------------------------
  * Tests if point is same as arc end point or center point
  */
-static pcb_bool pcb_isc_rat_arc(pcb_point_t *Point, pcb_arc_t *arc)
+static pcb_bool pcb_isc_ratp_arc(pcb_point_t *Point, pcb_arc_t *arc)
 {
 	pcb_coord_t cx, cy;
 
@@ -265,7 +265,7 @@ static pcb_bool pcb_isc_rat_arc(pcb_point_t *Point, pcb_arc_t *arc)
 /* ---------------------------------------------------------------------------
  * Tests if rat line point is connected to a polygon
  */
-static pcb_bool pcb_isc_rat_poly(pcb_point_t *Point, pcb_poly_t *polygon)
+static pcb_bool pcb_isc_ratp_poly(pcb_point_t *Point, pcb_poly_t *polygon)
 {
 	pcb_coord_t cx, cy;
 
