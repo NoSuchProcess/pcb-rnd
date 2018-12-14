@@ -192,8 +192,12 @@ static unsigned long pcb_find_exec(pcb_find_t *ctx)
 				pcb_r_end(&it);
 			}
 
-			if (ctx->consider_rats) {
-				TODO("find.c: implement this");
+			if ((ctx->consider_rats) && (PCB->Data->rat_tree != NULL)) {
+				if (PCB->Data->padstack_tree != NULL) {
+					for(n = pcb_rtree_first(&it, PCB->Data->rat_tree, sb); n != NULL; n = pcb_rtree_next(&it))
+						PCB_FIND_CHECK(ctx, curr, n);
+					pcb_r_end(&it);
+				}
 			}
 
 			if (!ctx->ignore_intconn) {
