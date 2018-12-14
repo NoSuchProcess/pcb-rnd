@@ -842,7 +842,7 @@ unsigned long pcb_data_clear_obj_flag(pcb_data_t *data, pcb_objtype_t tmask, uns
 	}
 
 	if ((tmask & (PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_TEXT)) == 0)
-		return; /* do not run the layer loop if no layer object is requested */
+		return cnt; /* do not run the layer loop if no layer object is requested */
 
 	for(li = 0, l = data->Layer; li < data->LayerN; li++,l++) {
 		if (tmask & PCB_OBJ_LINE) {
