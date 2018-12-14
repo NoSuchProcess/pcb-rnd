@@ -1,6 +1,8 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
+- CLANUP find.c:
+	- intconn!
 - CLEANUP: color:
 	- color button DAD implementation in lesstif
 - CLEANUP: boardflip rewrite: use data_mirror
@@ -15,6 +17,8 @@
 	- BUG: adding attribute works on subc parts but deleting attribute stops after deleiting it from a subc; bug_files/subcsel.bug [report: Wojciech]
 	- FEATURE: the property editor should display a stat of number/type of objects selected [report: Igor2]
 	- CLEANUP: pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
+- BUG: portability: don't use export in trunk/doc/user/Makefile [report: Vuokko]
+- FEATURE: scconfig: make man installation path configurable [report: Vuokko]
 - BUG: search for #gtkzoom in lib_gtk_common; bug reprod: set pcb height to 50 mil, {w l} -> zooms are off because of the clamp [report: Igor2]
 + CLEANUP: dad: make the implicit dialog ok/cancel buttons configurable or do not use them at all; e.g. export dialog is confusing [report: Cyril, ml2409]
 - CLEANUP: library window DAD-ification: remove pcb_act_LibraryShow()
