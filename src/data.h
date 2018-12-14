@@ -217,9 +217,11 @@ void pcb_data_clip_all(pcb_data_t *data, pcb_bool enable_progbar);
 void pcb_data_flag_change(pcb_data_t *data, pcb_objtype_t mask, int how, unsigned long flags);
 
 /* Clear specific static flag from all objects, optionally with matching
-   object types only. Returns number of object changed. */
-unsigned long pcb_data_clear_obj_flag(pcb_data_t *data, pcb_objtype_t tmask, unsigned long flag, int redraw);
-unsigned long pcb_data_clear_flag(pcb_data_t *data, unsigned long flag, int redraw);
+   object types only. If redraw is not 0, issue an object redraw on change.
+   If undoable is not 0, add flag changes to the undo list. Returns number
+   of object changed. */
+unsigned long pcb_data_clear_obj_flag(pcb_data_t *data, pcb_objtype_t tmask, unsigned long flag, int redraw, int undoable);
+unsigned long pcb_data_clear_flag(pcb_data_t *data, unsigned long flag, int redraw, int undoable);
 
 /* Clear the given dyflag bit from all objects under data */
 void pcb_data_dynflag_clear(pcb_data_t *data, pcb_dynf_t dynf);

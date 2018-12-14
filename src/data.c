@@ -799,7 +799,7 @@ void pcb_data_flag_change(pcb_data_t *data, pcb_objtype_t mask, int how, unsigne
 #include "obj_arc_draw.h"
 #include "obj_line_draw.h"
 #include "conf_core.h"
-unsigned long pcb_data_clear_obj_flag(pcb_data_t *data, pcb_objtype_t tmask, unsigned long flag, int redraw)
+unsigned long pcb_data_clear_obj_flag(pcb_data_t *data, pcb_objtype_t tmask, unsigned long flag, int redraw, int undoable)
 {
 	pcb_rtree_it_t it;
 	pcb_box_t *n;
@@ -815,6 +815,8 @@ unsigned long pcb_data_clear_obj_flag(pcb_data_t *data, pcb_objtype_t tmask, uns
 				PCB_FLAG_CLEAR(flag, (pcb_any_obj_t *)n);
 				if (redraw)
 					pcb_pstk_invalidate_draw((pcb_pstk_t *)n);
+				if (undoable)
+					pcb_undo_add_obj_to_flag((pcb_any_obj_t *)n);
 				cnt++;
 			}
 		}
@@ -833,6 +835,8 @@ unsigned long pcb_data_clear_obj_flag(pcb_data_t *data, pcb_objtype_t tmask, uns
 					PCB_FLAG_CLEAR(flag, (pcb_any_obj_t *)n);
 					if (redraw)
 						pcb_line_invalidate_draw(l, (pcb_line_t *)n);
+					if (undoable)
+						pcb_undo_add_obj_to_flag((pcb_any_obj_t *)n);
 					cnt++;
 				}
 			}
@@ -845,6 +849,8 @@ unsigned long pcb_data_clear_obj_flag(pcb_data_t *data, pcb_objtype_t tmask, uns
 					PCB_FLAG_CLEAR(flag, (pcb_any_obj_t *)n);
 					if (redraw)
 						pcb_arc_invalidate_draw(l, (pcb_arc_t *)n);
+					if (undoable)
+						pcb_undo_add_obj_to_flag((pcb_any_obj_t *)n);
 					cnt++;
 				}
 			}
@@ -857,6 +863,8 @@ unsigned long pcb_data_clear_obj_flag(pcb_data_t *data, pcb_objtype_t tmask, uns
 					PCB_FLAG_CLEAR(flag, (pcb_any_obj_t *)n);
 					if (redraw)
 						pcb_poly_invalidate_draw(l, (pcb_poly_t *)n);
+					if (undoable)
+						pcb_undo_add_obj_to_flag((pcb_any_obj_t *)n);
 					cnt++;
 				}
 			}
@@ -869,6 +877,8 @@ unsigned long pcb_data_clear_obj_flag(pcb_data_t *data, pcb_objtype_t tmask, uns
 					PCB_FLAG_CLEAR(flag, (pcb_any_obj_t *)n);
 					if (redraw)
 						pcb_text_invalidate_draw(l, (pcb_text_t *)n);
+					if (undoable)
+						pcb_undo_add_obj_to_flag((pcb_any_obj_t *)n);
 					cnt++;
 				}
 			}
@@ -878,9 +888,9 @@ unsigned long pcb_data_clear_obj_flag(pcb_data_t *data, pcb_objtype_t tmask, uns
 	return cnt;
 }
 
-unsigned long pcb_data_clear_flag(pcb_data_t *data, unsigned long flag, int redraw)
+unsigned long pcb_data_clear_flag(pcb_data_t *data, unsigned long flag, int redraw, int undoable)
 {
-	return pcb_data_clear_obj_flag(data, PCB_OBJ_CLASS_REAL, flag, redraw);
+	return pcb_data_clear_obj_flag(data, PCB_OBJ_CLASS_REAL, flag, redraw, undoable);
 }
 
 
