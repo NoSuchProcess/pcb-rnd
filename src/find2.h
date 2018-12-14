@@ -39,6 +39,7 @@ struct pcb_find_s {
 	unsigned allow_noncopper:1;     /* also run on non-copper objects */
 	unsigned list_found:1;          /* allow adding objects in the ->found vector */
 	unsigned ignore_intconn:1;      /* do not jump terminals on subc intconn */
+	unsigned consider_rats:1;       /* don't ignore rat lines, don't consider physical objects only */
 	unsigned flag_set_undoable:1;   /* when set, and flag_set is non-zero, put all found objects on the flag-undo */
 	unsigned long flag_set;         /* when non-zero, set the static flag bits on objects found */
 

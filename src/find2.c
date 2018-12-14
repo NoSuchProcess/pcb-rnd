@@ -131,6 +131,10 @@ static unsigned long pcb_find_exec(pcb_find_t *ctx)
 				pcb_r_end(&it);
 			}
 
+			if (ctx->consider_rats) {
+				TODO("find.c: implement this");
+			}
+
 			if (curr->type == PCB_OBJ_PSTK) {
 				int li;
 				pcb_layer_t *l;
