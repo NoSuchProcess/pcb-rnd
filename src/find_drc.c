@@ -119,7 +119,7 @@ static int drc_text(pcb_view_list_t *lst, pcb_layer_t *layer, pcb_text_t *text, 
 
 /* Check for DRC violations on a single net starting from the pad or pin
    sees if the connectivity changes when everything is bloated, or shrunk */
-static pcb_bool DRCFind(pcb_view_list_t *lst, int What, void *ptr1, void *ptr2, void *ptr3)
+static pcb_bool DRCFind(pcb_view_list_t *lst, pcb_objtype_t What, void *ptr1, void *ptr2, void *ptr3)
 {
 	pcb_view_t *violation;
 
@@ -234,7 +234,7 @@ static void drc_nets_from_subc_term(pcb_view_list_t *lst)
 				if (!(lyt & PCB_LYT_COPPER))
 					continue;
 			}
-			DRCFind(lst, pcb_obj_type2oldtype(o->type), (void *)subc, (void *)o, (void *)o);
+			DRCFind(lst, o->type, (void *)subc, (void *)o, (void *)o);
 		}
 	}
 	PCB_END_LOOP;
