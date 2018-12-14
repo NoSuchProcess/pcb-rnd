@@ -56,10 +56,16 @@ static int pcb_find_found(pcb_find_t *ctx, pcb_any_obj_t *obj)
 }
 
 
-static void pcb_find_addobj(pcb_find_t *ctx, pcb_any_obj_t *obj)
+static int pcb_find_addobj(pcb_find_t *ctx, pcb_any_obj_t *obj)
 {
 	PCB_DFLAG_SET(&obj->Flags, ctx->mark);
 	vtp0_append(&ctx->open, obj);
+
+	if (pcb_find_found(ctx, obj) != 0) {
+		ctx->aborted = 1;
+		return 1;
+	}
+	return 0;
 }
 
 static void int_conn(pcb_find_t *ctx, pcb_any_obj_t *from_)
@@ -77,28 +83,32 @@ static void int_conn(pcb_find_t *ctx, pcb_any_obj_t *from_)
 	PCB_PADSTACK_LOOP(s->data);
 	{
 		if ((padstack != from) && (padstack->term != NULL) && (padstack->intconn == ic) && (!(PCB_DFLAG_TEST(&(padstack->Flags), ctx->mark))))
-			pcb_find_addobj(ctx, (pcb_any_obj_t *)padstack);
+			if (pcb_find_addobj(ctx, (pcb_any_obj_t *)padstack) != 0)
+				return;
 	}
 	PCB_END_LOOP;
 
 	PCB_LINE_COPPER_LOOP(s->data);
 	{
 		if ((line != from) && (line->term != NULL) && (line->intconn == ic) && (!(PCB_DFLAG_TEST(&(line->Flags), ctx->mark))))
-			pcb_find_addobj(ctx, (pcb_any_obj_t *)line);
+			if (pcb_find_addobj(ctx, (pcb_any_obj_t *)line) != 0)
+				return;
 	}
 	PCB_ENDALL_LOOP;
 
 	PCB_ARC_COPPER_LOOP(s->data);
 	{
 		if ((arc != from) && (arc->term != NULL) && (arc->intconn == ic) && (!(PCB_DFLAG_TEST(&(arc->Flags), ctx->mark))))
-			pcb_find_addobj(ctx, (pcb_any_obj_t *)arc);
+			if (pcb_find_addobj(ctx, (pcb_any_obj_t *)arc) != 0)
+				return;
 	}
 	PCB_ENDALL_LOOP;
 
 	PCB_POLY_COPPER_LOOP(s->data);
 	{
 		if ((polygon != from) && (polygon->term != NULL) && (polygon->intconn == ic) && (!(PCB_DFLAG_TEST(&(polygon->Flags), ctx->mark))))
-			pcb_find_addobj(ctx, (pcb_any_obj_t *)polygon);
+			if (pcb_find_addobj(ctx, (pcb_any_obj_t *)polygon) != 0)
+				return;
 	}
 	PCB_ENDALL_LOOP;
 
@@ -107,7 +117,8 @@ TODO("find: no find through text yet")
 	PCB_TEXT_COPPER_LOOP(s->data);
 	{
 		if ((text != from) && (text->term != NULL) && (text->intconn == ic) && (!(PCB_DFLAG_TEST(&(text->Flags), ctx->mark))))
-			pcb_find_addobj(ctx, (pcb_any_obj_t *)text);
+			if (pcb_find_addobj(ctx, (pcb_any_obj_t *)text) != 0)
+				return;
 	}
 	PCB_ENDALL_LOOP;
 #endif
@@ -122,7 +133,7 @@ TODO("find: remove the undef once the old API is gone")
 		pcb_any_obj_t *__obj__ = (pcb_any_obj_t *)obj; \
 		if (!(PCB_DFLAG_TEST(&(__obj__->Flags), ctx->mark))) { \
 			if (!INOCN(curr, obj) && (pcb_intersect_obj_obj(curr, __obj__))) {\
-				pcb_find_addobj(ctx, __obj__); \
+				if (pcb_find_addobj(ctx, __obj__) != 0) return; \
 				if ((__obj__->term != NULL) && (!ctx->ignore_intconn) && (__obj__->intconn > 0)) \
 					int_conn(ctx, __obj__); \
 			} \
@@ -196,12 +207,10 @@ static unsigned long pcb_find_exec(pcb_find_t *ctx)
 		}
 	}
 
-	while(ctx->open.used > 0) {
+	while((ctx->open.used > 0) && (!ctx->aborted)) {
 		/* pop the last object, without reallocating to smaller, mark it found */
 		ctx->open.used--;
 		curr = ctx->open.array[ctx->open.used];
-		if (pcb_find_found(ctx, curr) != 0)
-			break;
 
 		{ /* search unmkared connections: iterative approach */
 			pcb_rtree_it_t it;
