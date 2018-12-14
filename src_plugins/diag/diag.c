@@ -412,6 +412,7 @@ static fgw_error_t pcb_act_d1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 #include "find.h"
+extern void pcb_lookup_conn_by_pin(int type, void *ptr1);
 static const char pcb_acts_FindPerf[] = "findperf()\n";
 static const char pcb_acth_FindPerf[] = "Measure the peformance of find.c";
 static fgw_error_t pcb_act_FindPerf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
