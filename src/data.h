@@ -216,7 +216,9 @@ void pcb_data_clip_all(pcb_data_t *data, pcb_bool enable_progbar);
 /* Recursively change flags of data; how is one of pcb_change_flag_t */
 void pcb_data_flag_change(pcb_data_t *data, pcb_objtype_t mask, int how, unsigned long flags);
 
-/* Clear specific static flag from all objects */
+/* Clear specific static flag from all objects, optionally with matching
+   object types only. */
+void pcb_data_clear_obj_flag(pcb_data_t *data, pcb_objtype_t tmask, unsigned long flag, int redraw);
 void pcb_data_clear_flag(pcb_data_t *data, unsigned long flag, int redraw);
 
 /* Clear the given dyflag bit from all objects under data */
