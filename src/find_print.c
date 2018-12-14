@@ -190,12 +190,13 @@ void pcb_lookup_subc_conns(FILE *f, pcb_subc_t *subc)
 /* ---------------------------------------------------------------------------
  * find all connections to pins of all element
  */
-void pcb_lookup_conns_to_all_elements(FILE * FP)
+/* copyright: rewritten */
+void pcb_lookup_conns_to_all_subcs(FILE *f)
 {
 	PCB_SUBC_LOOP(PCB->Data);
 	{
-		pcb_print_subc_conns(FP, subc);
-		SEPARATE(FP);
+		pcb_print_subc_conns(f, subc);
+		SEPARATE(f);
 	}
 	PCB_END_LOOP;
 
