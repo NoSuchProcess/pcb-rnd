@@ -34,10 +34,6 @@
 #include "find.h"
 
 
-TODO(": remove this once the operations are free of ptrs")
-extern unsigned long pcb_obj_type2oldtype(pcb_objtype_t type);
-
-
 pcb_pstk_t *pcb_pstk_new_hole(pcb_data_t *data, pcb_coord_t x, pcb_coord_t y, pcb_coord_t drill_dia, pcb_bool plated)
 {
 	pcb_pstk_proto_t proto;
@@ -109,7 +105,7 @@ static int vect2pstk_conv_cand(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet,
 				for(i = 0; i < objs->used; i++) {
 					if (objs->array[i] == o) {
 						vtp0_remove(objs, i, 1);
-						pcb_destroy_object(data, pcb_obj_type2oldtype(o->type), o->parent.any, o, o);
+						pcb_destroy_object(data, o->type, o->parent.any, o, o);
 						break;
 					}
 				}
