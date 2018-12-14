@@ -53,6 +53,7 @@ pcb_bool pcb_intersect_obj_obj(pcb_any_obj_t *a, pcb_any_obj_t *b)
 				case PCB_OBJ_POLY: return pcb_isc_line_poly((pcb_line_t *)a, (pcb_poly_t *)b);
 				case PCB_OBJ_ARC:  return pcb_isc_line_arc((pcb_line_t *)a, (pcb_arc_t *)b);
 				case PCB_OBJ_PSTK: return pcb_isc_pstk_line((pcb_pstk_t *)b, (pcb_line_t *)a);
+				case PCB_OBJ_RAT:  return pcb_isc_rat_line((pcb_rat_t *)b, (pcb_line_t *)a);
 				default:;
 			}
 			break;
@@ -64,6 +65,7 @@ pcb_bool pcb_intersect_obj_obj(pcb_any_obj_t *a, pcb_any_obj_t *b)
 				case PCB_OBJ_POLY: return pcb_isc_text_poly((pcb_text_t *)a, (pcb_poly_t *)b);
 				case PCB_OBJ_ARC:  return pcb_isc_text_arc((pcb_text_t *)a, (pcb_arc_t *)b);
 				case PCB_OBJ_PSTK: return pcb_isc_text_pstk((pcb_text_t *)a, (pcb_pstk_t *)b);
+				case PCB_OBJ_RAT:  return pcb_false; /* text is invisible to find for now */
 				default:;
 			}
 			break;
@@ -76,6 +78,7 @@ pcb_bool pcb_intersect_obj_obj(pcb_any_obj_t *a, pcb_any_obj_t *b)
 				case PCB_OBJ_POLY: return pcb_isc_poly_poly((pcb_poly_t *)a, (pcb_poly_t *)b);
 				case PCB_OBJ_ARC:  return pcb_isc_arc_poly((pcb_arc_t *)b, (pcb_poly_t *)a);
 				case PCB_OBJ_PSTK: return pcb_isc_pstk_poly((pcb_pstk_t *)b, (pcb_poly_t *)a);
+				case PCB_OBJ_RAT:  return pcb_isc_rat_poly((pcb_rat_t *)b, (pcb_poly_t *)a);
 				default:;
 			}
 			break;
@@ -87,6 +90,7 @@ pcb_bool pcb_intersect_obj_obj(pcb_any_obj_t *a, pcb_any_obj_t *b)
 				case PCB_OBJ_POLY: return pcb_isc_arc_poly((pcb_arc_t *)a, (pcb_poly_t *)b);
 				case PCB_OBJ_ARC:  return pcb_isc_arc_arc((pcb_arc_t *)a, (pcb_arc_t *)b);
 				case PCB_OBJ_PSTK: return pcb_isc_pstk_arc((pcb_pstk_t *)b, (pcb_arc_t *)a);
+				case PCB_OBJ_RAT:  return pcb_isc_rat_arc((pcb_rat_t *)b, (pcb_arc_t *)a);
 				default:;
 			}
 			break;
@@ -98,6 +102,19 @@ pcb_bool pcb_intersect_obj_obj(pcb_any_obj_t *a, pcb_any_obj_t *b)
 				case PCB_OBJ_POLY: return pcb_isc_pstk_poly((pcb_pstk_t *)a, (pcb_poly_t *)b);
 				case PCB_OBJ_ARC:  return pcb_isc_pstk_arc((pcb_pstk_t *)a, (pcb_arc_t *)b);
 				case PCB_OBJ_PSTK: return pcb_isc_pstk_pstk((pcb_pstk_t *)a, (pcb_pstk_t *)b);
+				case PCB_OBJ_RAT:  TODO("find: rat vs. padstack");
+				default:;
+			}
+			break;
+		case PCB_OBJ_RAT:
+			switch(b->type) {
+				case PCB_OBJ_VOID: return pcb_false;
+				case PCB_OBJ_LINE: return pcb_isc_rat_line((pcb_rat_t *)a, (pcb_line_t *)b);
+				case PCB_OBJ_TEXT: return pcb_false; /* text is invisible to find for now */
+				case PCB_OBJ_POLY: return pcb_isc_rat_poly((pcb_rat_t *)a, (pcb_poly_t *)b);
+				case PCB_OBJ_ARC:  return pcb_isc_rat_arc((pcb_rat_t *)a, (pcb_arc_t *)b);
+				case PCB_OBJ_PSTK: TODO("find: rat vs. padstack");
+				case PCB_OBJ_RAT:  TODO("find: rat vs. rat");
 				default:;
 			}
 			break;

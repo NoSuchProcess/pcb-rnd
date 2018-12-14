@@ -238,6 +238,19 @@ static pcb_bool pcb_isc_ratp_line(pcb_point_t *Point, pcb_line_t *Line)
 	return pcb_false;
 }
 
+/* Tests any end of a rat line is on the line */
+static pcb_bool pcb_isc_rat_line(pcb_rat_t *rat, pcb_line_t *line)
+{
+	pcb_layergrp_id_t gid = pcb_layer_get_group_(line->parent.layer);
+
+	if ((rat->group1 == gid) && pcb_isc_ratp_line(&rat->Point1, line))
+		return pcb_true;
+	if ((rat->group2 == gid) && pcb_isc_ratp_line(&rat->Point2, line))
+		return pcb_true;
+
+	return pcb_false;
+}
+
 /* ---------------------------------------------------------------------------
  * Tests if point is same as arc end point or center point
  */
@@ -262,6 +275,19 @@ static pcb_bool pcb_isc_ratp_arc(pcb_point_t *Point, pcb_arc_t *arc)
 	return pcb_false;
 }
 
+/* Tests any end of a rat line is on the arc */
+static pcb_bool pcb_isc_rat_arc(pcb_rat_t *rat, pcb_arc_t *arc)
+{
+	pcb_layergrp_id_t gid = pcb_layer_get_group_(arc->parent.layer);
+
+	if ((rat->group1 == gid) && pcb_isc_ratp_arc(&rat->Point1, arc))
+		return pcb_true;
+	if ((rat->group2 == gid) && pcb_isc_ratp_arc(&rat->Point2, arc))
+		return pcb_true;
+
+	return pcb_false;
+}
+
 /* ---------------------------------------------------------------------------
  * Tests if rat line point is connected to a polygon
  */
@@ -278,6 +304,19 @@ static pcb_bool pcb_isc_ratp_poly(pcb_point_t *Point, pcb_poly_t *polygon)
 	/* middle point */
 	pcb_obj_center((pcb_any_obj_t *)polygon, &cx, &cy);
 	if ((Point->X == cx) && (Point->Y == cy))
+		return pcb_true;
+
+	return pcb_false;
+}
+
+/* Tests any end of a rat line is on the arc */
+static pcb_bool pcb_isc_rat_poly(pcb_rat_t *rat, pcb_poly_t *poly)
+{
+	pcb_layergrp_id_t gid = pcb_layer_get_group_(poly->parent.layer);
+
+	if ((rat->group1 == gid) && pcb_isc_ratp_poly(&rat->Point1, poly))
+		return pcb_true;
+	if ((rat->group2 == gid) && pcb_isc_ratp_poly(&rat->Point2, poly))
 		return pcb_true;
 
 	return pcb_false;
