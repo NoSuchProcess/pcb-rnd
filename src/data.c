@@ -891,6 +891,14 @@ void pcb_data_dynflag_clear(pcb_data_t *data, pcb_dynf_t dynf)
 		PCB_DFLAG_CLR(&((pcb_any_obj_t *)n)->Flags, dynf);
 	pcb_r_end(&it);
 
+	for(n = pcb_r_first(data->subc_tree, &it); n != NULL; n = pcb_r_next(&it))
+		PCB_DFLAG_CLR(&((pcb_any_obj_t *)n)->Flags, dynf);
+	pcb_r_end(&it);
+
+	for(n = pcb_r_first(data->rat_tree, &it); n != NULL; n = pcb_r_next(&it))
+		PCB_DFLAG_CLR(&((pcb_any_obj_t *)n)->Flags, dynf);
+	pcb_r_end(&it);
+
 	for(li = 0, l = data->Layer; li < data->LayerN; li++,l++) {
 		for(n = pcb_r_first(l->line_tree, &it); n != NULL; n = pcb_r_next(&it))
 			PCB_DFLAG_CLR(&((pcb_any_obj_t *)n)->Flags, dynf);
