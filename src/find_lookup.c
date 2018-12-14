@@ -189,7 +189,7 @@ void pcb_layout_lookup_uninit(void)
 
 /* allocates memory for component related stacks ...
  * initializes index and sorts it by X1 and X2 */
-void pcb_layout_lookup_init(void)
+static void pcb_layout_lookup_init(void)
 {
 	pcb_layer_id_t i;
 

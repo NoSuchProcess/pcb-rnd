@@ -66,7 +66,6 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool);
 pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool);
 pcb_bool pcb_reset_conns(pcb_bool);
 void pcb_conn_lookup_init(void);
-void pcb_layout_lookup_init(void);
 void pcb_conn_lookup_uninit(void);
 void pcb_layout_lookup_uninit(void);
 void pcb_rat_find_hook(pcb_any_obj_t *obj, pcb_bool undo, pcb_bool AndRats);
