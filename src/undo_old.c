@@ -119,7 +119,7 @@ static const uundo_oper_t pcb_undo_old_oper = {
 	pcb_undo_old_print
 };
 
-static UndoListType *GetUndoSlot(int CommandType, int ID, int Kind)
+static UndoListType *GetUndoSlot(int CommandType, long int ID, pcb_objtype_t Kind)
 {
 	UndoListType *slot = pcb_undo_alloc(PCB, &pcb_undo_old_oper, sizeof(UndoListType));
 
@@ -619,7 +619,7 @@ static pcb_bool UndoInsertPoint(UndoListTypePtr Entry)
 	pcb_cardinal_t hole;
 	pcb_bool last_in_contour = pcb_false;
 
-	assert(Entry->Kind == PCB_OBJ_POLY_POINT);
+	assert((long int)Entry->Kind == PCB_OBJ_POLY_POINT);
 	/* lookup entry by it's ID */
 	type = pcb_search_obj_by_id(PCB->Data, (void **) &layer, (void **) &polygon, (void **) &pnt, Entry->ID, Entry->Kind);
 	switch (type) {
@@ -1137,14 +1137,13 @@ void pcb_undo_add_obj_to_create(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 /* ---------------------------------------------------------------------------
  * adds an object to the list of objects with flags changed
  */
-extern unsigned long pcb_obj_type2oldtype(pcb_objtype_t type);
 void pcb_undo_add_obj_to_flag(void *obj_)
 {
 	UndoListTypePtr undo;
 	pcb_any_obj_t *obj = obj_;
 
 	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_FLAG, PCB_OBJECT_ID(obj), pcb_obj_type2oldtype(obj->type));
+		undo = GetUndoSlot(PCB_UNDO_FLAG, PCB_OBJECT_ID(obj), obj->type);
 		undo->Data.Flags = obj->Flags;
 	}
 }

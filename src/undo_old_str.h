@@ -50,10 +50,10 @@ typedef struct {								/* information about netlist lib changes */
 } NetlistChangeType, *NetlistChangeTypePtr;
 
 typedef struct {								/* holds information about an operation */
-	int Serial,										/* serial number of operation */
-	  Type,												/* type of operation */
-	  Kind,												/* type of object with given ID */
-	  ID;													/* object ID */
+	int Serial;										/* serial number of operation */
+	int Type;											/* type of operation */
+	pcb_objtype_t Kind;						/* type of object with given ID */
+	long int ID;									/* object ID */
 	union {												/* some additional information */
 		ChangeNameType ChangeName;
 		MoveType Move;
