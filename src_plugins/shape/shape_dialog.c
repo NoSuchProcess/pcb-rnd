@@ -38,7 +38,7 @@ static void shp_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 static void del_obj(ctx_t *shp)
 {
 	if (shp->obj != NULL) {
-/*		pcb_remove_object(pcb_obj_type2oldtype(shp->obj->type), shp->layer, shp->obj, shp->obj);*/
+/*		pcb_remove_object(shp->obj->type, shp->layer, shp->obj, shp->obj);*/
 		shp->obj = NULL;
 	}
 }
