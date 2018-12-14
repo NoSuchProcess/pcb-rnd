@@ -106,6 +106,6 @@ pcb_bool pcb_chg_selected_radius(int types, int is_start, pcb_angle_t Difference
 void pcb_flag_change(pcb_board_t *pcb, pcb_change_flag_t how, pcb_flag_values_t flg, int Type, void *Ptr1, void *Ptr2, void *Ptr3);
 
 /* Invalidate the term label of an object */
-void *pcb_obj_invalidate_label(int Type, void *Ptr1, void *Ptr2, void *Ptr3);
+void *pcb_obj_invalidate_label(pcb_objtype_t Type, void *Ptr1, void *Ptr2, void *Ptr3);
 
 #endif
