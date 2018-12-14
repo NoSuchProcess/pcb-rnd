@@ -6210,7 +6210,7 @@ find.o: find.c ../config.h math_helper.h conf_core.h conf.h \
  find_geo.c macro.h obj_arc_ui.h obj_pstk_inlines.h board.h rats_patch.h \
  thermal.h find_lookup.c compat_nls.h find_intconn.c find_drc.c drc.h \
  view.h idpath.h data_it.h obj_arc_draw.h obj_rat_draw.h obj_line_draw.h \
- obj_poly_draw.h obj_pstk_draw.h find_misc.c change.h find_clear.c \
+ obj_poly_draw.h obj_pstk_draw.h find_misc.c change.h \
  find_any_isect.c find2.c
 flag.o: flag.c ../config.h flag.h globalconst.h operation.h \
  global_typedefs.h pcb_bool.h unit.h

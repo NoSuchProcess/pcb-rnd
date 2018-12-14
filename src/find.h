@@ -73,10 +73,6 @@ void pcb_rat_find_hook(pcb_any_obj_t *obj, pcb_bool undo, pcb_bool AndRats);
 void pcb_save_find_flag(int);
 void pcb_restore_find_flag(void);
 
-/* find_clear.c */
-pcb_bool pcb_clear_flag_on_pins_vias_pads(pcb_bool AndDraw, int flag);
-pcb_bool pcb_clear_flag_on_lines_polys(pcb_bool AndDraw, int flag);
-
 #include "find2.h"
 
 #endif
