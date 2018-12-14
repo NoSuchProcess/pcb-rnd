@@ -110,6 +110,9 @@ static unsigned long pcb_find_exec(pcb_find_t *ctx)
 		if ((curr != NULL) && (curr->parent_type == PCB_PARENT_LAYER)) {
 			pcb_layergrp_id_t gid = pcb_layer_get_group_(curr->parent.layer);
 			ctx->start_layergrp = pcb_get_layergrp(ctx->pcb, gid);
+			if (!ctx->allow_noncopper) {
+				TODO("find.c: implement this; special case: starting layer object on non-copper can still jump on padstack!");
+			}
 		}
 	}
 
@@ -135,13 +138,21 @@ static unsigned long pcb_find_exec(pcb_find_t *ctx)
 				TODO("find.c: implement this");
 			}
 
+			if (!ctx->ignore_intconn) {
+				TODO("find.c: implement this");
+			}
+
 			if (curr->type == PCB_OBJ_PSTK) {
 				int li;
 				pcb_layer_t *l;
 				if ((!ctx->stay_layergrp) || (ctx->start_layergrp == NULL)) {
-					for(li = 0, l = ctx->data->Layer; li < ctx->data->LayerN; li++,l++)
+					for(li = 0, l = ctx->data->Layer; li < ctx->data->LayerN; li++,l++) {
+						if (!ctx->allow_noncopper) {
+							TODO("find.c: implement this");
+						}
 						if (pcb_pstk_shape_at_(ctx->pcb, (pcb_pstk_t *)curr, l, 0))
 							pcb_find_on_layer(ctx, l, curr, sb);
+					}
 				}
 				else {
 					for(li = 0; li < ctx->start_layergrp->len; li++) {
