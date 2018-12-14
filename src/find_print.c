@@ -31,28 +31,6 @@
 
 /* Connection export/output functions */
 
-static void PrepareNextLoop(void);
-
-/* Count terminals that are found, up to maxt */
-static void count_terms(vtp0_t *out, pcb_data_t *data, pcb_cardinal_t maxt, pcb_cardinal_t *cnt)
-{
-	pcb_any_obj_t *o;
-	pcb_data_it_t it;
-
-	for(o = pcb_data_first(&it, data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
-		if ((o->term != NULL) && PCB_FLAG_TEST(PCB_FLAG_FOUND, o)) {
-			(*cnt)++;
-			if (out != NULL)
-				vtp0_append(out, o);
-		}
-		if (o->type == PCB_OBJ_SUBC)
-			count_terms(out, ((pcb_subc_t *)o)->data, maxt, cnt);
-		if (*cnt >= maxt)
-			return;
-	}
-	return;
-}
-
 /* copyright: written from 0 */
 static int count_term_cb(pcb_find_t *fctx, pcb_any_obj_t *o)
 {
@@ -110,61 +88,6 @@ static void print_select_unused_subc_terms(FILE *f, pcb_subc_t *subc, int do_sel
 		fputs("}\n\n", f);
 		SEPARATE(f);
 	}
-}
-
-/* ---------------------------------------------------------------------------
- * resets some flags for looking up the next pin/pad
- */
-static void PrepareNextLoop(void)
-{
-	pcb_cardinal_t layer;
-
-	/* reset found LOs for the next pin */
-	for (layer = 0; layer < pcb_max_layer; layer++) {
-		LineList[layer].Location = LineList[layer].Number = 0;
-		ArcList[layer].Location = ArcList[layer].Number = 0;
-		PolygonList[layer].Location = PolygonList[layer].Number = 0;
-	}
-
-	/* reset Padstacks */
-	PadstackList.Number = PadstackList.Location = 0;
-	pcb_reset_conns(pcb_false);
-}
-
-/* ---------------------------------------------------------------------------
- * prints all found connections of a pin to file FP
- * the connections are stacked in 'PVList'
- */
-static void print_term_conns(FILE *FP, pcb_subc_t *subc)
-{
-	vtp0_t lst;
-	pcb_cardinal_t cnt = 0, n;
-
-	vtp0_init(&lst);
-	count_terms(&lst, PCB->Data, (1<<15), &cnt);
-
-	if (cnt == 0)
-		return;
-
-	/* find a starting pin, within this subc */
-	for(n = 0; n < vtp0_len(&lst); n++) {
-		pcb_any_obj_t *o = lst.array[n];
-		if (pcb_obj_parent_subc(o) == subc) {
-			fputc('\t', FP);
-			pcb_print_quoted_string(FP, o->term);
-			fprintf(FP, "\n\t{\n");
-			lst.array[n] = NULL;
-			break;
-		}
-	}
-
-	for(n = 0; n < vtp0_len(&lst); n++) {
-		pcb_any_obj_t *o = lst.array[n];
-		if (o != NULL)
-			pcb_print_conn_list_entry((char *)PCB_EMPTY(o->term), pcb_obj_parent_subc(o), pcb_false, FP);
-	}
-
-	vtp0_uninit(&lst);
 }
 
 typedef struct {
