@@ -322,6 +322,20 @@ static pcb_bool pcb_isc_rat_poly(pcb_rat_t *rat, pcb_poly_t *poly)
 	return pcb_false;
 }
 
+/* Tests any end of a rat line is on the other rat */
+static pcb_bool pcb_isc_rat_rat(pcb_rat_t *r1, pcb_rat_t *r2)
+{
+	if ((r1->group1 == r2->group1) && (r1->Point1.X == r2->Point1.X) && (r1->Point1.Y == r2->Point1.Y))
+		return pcb_true;
+	if ((r1->group2 == r2->group2) && (r1->Point2.X == r2->Point2.X) && (r1->Point2.Y == r2->Point2.Y))
+		return pcb_true;
+	if ((r1->group1 == r2->group2) && (r1->Point1.X == r2->Point2.X) && (r1->Point1.Y == r2->Point2.Y))
+		return pcb_true;
+	if ((r1->group2 == r2->group1) && (r1->Point2.X == r2->Point1.X) && (r1->Point2.Y == r2->Point1.Y))
+		return pcb_true;
+	return pcb_false;
+}
+
 static void form_slanted_rectangle(pcb_point_t p[4], pcb_line_t *l)
 /* writes vertices of a squared line */
 {
