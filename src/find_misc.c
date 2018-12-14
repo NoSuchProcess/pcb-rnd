@@ -267,37 +267,6 @@ unsigned long pcb_obj_type2oldtype(pcb_objtype_t type)
 	return 0;
 }
 
-pcb_cardinal_t pcb_lookup_conn_by_obj(void *ctx, pcb_any_obj_t *obj, pcb_bool AndDraw, pcb_cardinal_t (*cb)(void *ctx, pcb_any_obj_t *obj))
-{
-	pcb_cardinal_t i, n, cnt = 0;
-	unsigned long type = pcb_obj_type2oldtype(obj->type);
-
-	if (type == 0)
-		return 0;
-
-	pcb_conn_lookup_init();
-	ListStart(obj);
-	DoIt(pcb_true, AndDraw);
-
-	for (i = 0; i < pcb_max_layer; i++) {
-		for(n = 0; n < LineList[i].Number; n++)
-			cnt += cb(ctx, (pcb_any_obj_t *)LineList[i].Data[n]);
-		for(n = 0; n < ArcList[i].Number; n++)
-			cnt += cb(ctx, (pcb_any_obj_t *)ArcList[i].Data[n]);
-		for(n = 0; n < PolygonList[i].Number; n++)
-			cnt += cb(ctx, (pcb_any_obj_t *)PolygonList[i].Data[n]);
-	}
-
-	for(n = 0; n < PadstackList.Number; n++)
-		cnt += cb(ctx, (pcb_any_obj_t *)PadstackList.Data[n]);
-	for(n = 0; n < RatList.Number; n++)
-		cnt += cb(ctx, (pcb_any_obj_t *)RatList.Data[n]);
-
-	pcb_conn_lookup_uninit();
-	return cnt;
-}
-
-
 /* find connections for rats nesting assumes pcb_conn_lookup_init() has already been done */
 void pcb_rat_find_hook(pcb_any_obj_t *obj, pcb_bool undo, pcb_bool AndRats)
 {
