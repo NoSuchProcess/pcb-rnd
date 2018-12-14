@@ -69,9 +69,8 @@ static void LOC_int_conn_subc(pcb_subc_t *s, int ic, int from_type, void *from_p
 	}
 	PCB_ENDALL_LOOP;
 
-TODO("subc TODO")
+TODO("find: no find through text yet")
 #if 0
-no find through text yet
 	PCB_TEXT_COPPER_LOOP(s->data);
 	{
 		if ((text != from_ptr) && (text->term != NULL) && (text->intconn == ic) && (!PCB_FLAG_TEST(TheFlag, text))) {
