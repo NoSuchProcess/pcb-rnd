@@ -139,6 +139,7 @@ static fgw_error_t pcb_act_Connection(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 
 		case F_ResetLinesAndPolygons:
+		case F_ResetLayerObjects:
 			if (pcb_data_clear_obj_flag(PCB->Data, PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_TEXT, PCB_FLAG_FOUND, 1, 1) > 0) {
 				pcb_undo_inc_serial();
 				pcb_draw();
@@ -146,6 +147,7 @@ static fgw_error_t pcb_act_Connection(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 
 		case F_ResetPinsViasAndPads:
+		case F_ResetPadstacks:
 			if (pcb_data_clear_obj_flag(PCB->Data, PCB_OBJ_PSTK, PCB_FLAG_FOUND, 1, 1) > 0) {
 				pcb_undo_inc_serial();
 				pcb_draw();
