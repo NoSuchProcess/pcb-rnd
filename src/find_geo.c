@@ -309,7 +309,7 @@ static pcb_bool pcb_isc_ratp_poly(pcb_point_t *Point, pcb_poly_t *polygon)
 	return pcb_false;
 }
 
-/* Tests any end of a rat line is on the arc */
+/* Tests any end of a rat line is on the poly */
 static pcb_bool pcb_isc_rat_poly(pcb_rat_t *rat, pcb_poly_t *poly)
 {
 	pcb_layergrp_id_t gid = pcb_layer_get_group_(poly->parent.layer);
