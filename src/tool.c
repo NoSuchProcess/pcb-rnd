@@ -414,7 +414,7 @@ void pcb_notify_mode(void)
 		return;
 
 	if (conf_core.temp.rat_warn)
-		pcb_clear_warnings();
+		pcb_data_clear_flag(PCB->Data, PCB_FLAG_WARN, 1);
 	pcb_tool_notify_mode();
 	pcb_draw();
 }

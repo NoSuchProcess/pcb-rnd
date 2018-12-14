@@ -793,14 +793,13 @@ void pcb_data_flag_change(pcb_data_t *data, pcb_objtype_t mask, int how, unsigne
 	}
 }
 
-TODO("rewrite to be more generic")
 #include "obj_pstk_draw.h"
 #include "obj_text_draw.h"
 #include "obj_poly_draw.h"
 #include "obj_arc_draw.h"
 #include "obj_line_draw.h"
 #include "conf_core.h"
-void pcb_clear_warnings()
+void pcb_data_clear_flag(pcb_data_t *data, unsigned long flag, int redraw)
 {
 	pcb_rtree_it_t it;
 	pcb_box_t *n;
@@ -809,43 +808,48 @@ void pcb_clear_warnings()
 
 	conf_core.temp.rat_warn = pcb_false;
 
-	for(n = pcb_r_first(PCB->Data->padstack_tree, &it); n != NULL; n = pcb_r_next(&it)) {
-		if (PCB_FLAG_TEST(PCB_FLAG_WARN, (pcb_any_obj_t *)n)) {
-			PCB_FLAG_CLEAR(PCB_FLAG_WARN, (pcb_any_obj_t *)n);
-			pcb_pstk_invalidate_draw((pcb_pstk_t *)n);
+	for(n = pcb_r_first(data->padstack_tree, &it); n != NULL; n = pcb_r_next(&it)) {
+		if (PCB_FLAG_TEST(flag, (pcb_any_obj_t *)n)) {
+			PCB_FLAG_CLEAR(flag, (pcb_any_obj_t *)n);
+			if (redraw)
+				pcb_pstk_invalidate_draw((pcb_pstk_t *)n);
 		}
 	}
 	pcb_r_end(&it);
 
-	for(li = 0, l = PCB->Data->Layer; li < PCB->Data->LayerN; li++,l++) {
+	for(li = 0, l = data->Layer; li < data->LayerN; li++,l++) {
 		for(n = pcb_r_first(l->line_tree, &it); n != NULL; n = pcb_r_next(&it)) {
-			if (PCB_FLAG_TEST(PCB_FLAG_WARN, (pcb_any_obj_t *)n)) {
-				PCB_FLAG_CLEAR(PCB_FLAG_WARN, (pcb_any_obj_t *)n);
-				pcb_line_invalidate_draw(l, (pcb_line_t *)n);
+			if (PCB_FLAG_TEST(flag, (pcb_any_obj_t *)n)) {
+				PCB_FLAG_CLEAR(flag, (pcb_any_obj_t *)n);
+				if (redraw)
+					pcb_line_invalidate_draw(l, (pcb_line_t *)n);
 			}
 		}
 		pcb_r_end(&it);
 
 		for(n = pcb_r_first(l->arc_tree, &it); n != NULL; n = pcb_r_next(&it)) {
-			if (PCB_FLAG_TEST(PCB_FLAG_WARN, (pcb_any_obj_t *)n)) {
-				PCB_FLAG_CLEAR(PCB_FLAG_WARN, (pcb_any_obj_t *)n);
-				pcb_arc_invalidate_draw(l, (pcb_arc_t *)n);
+			if (PCB_FLAG_TEST(flag, (pcb_any_obj_t *)n)) {
+				PCB_FLAG_CLEAR(flag, (pcb_any_obj_t *)n);
+				if (redraw)
+					pcb_arc_invalidate_draw(l, (pcb_arc_t *)n);
 			}
 		}
 		pcb_r_end(&it);
 
 		for(n = pcb_r_first(l->polygon_tree, &it); n != NULL; n = pcb_r_next(&it)) {
-			if (PCB_FLAG_TEST(PCB_FLAG_WARN, (pcb_any_obj_t *)n)) {
-				PCB_FLAG_CLEAR(PCB_FLAG_WARN, (pcb_any_obj_t *)n);
-				pcb_poly_invalidate_draw(l, (pcb_poly_t *)n);
+			if (PCB_FLAG_TEST(flag, (pcb_any_obj_t *)n)) {
+				PCB_FLAG_CLEAR(flag, (pcb_any_obj_t *)n);
+				if (redraw)
+					pcb_poly_invalidate_draw(l, (pcb_poly_t *)n);
 			}
 		}
 		pcb_r_end(&it);
 
 		for(n = pcb_r_first(l->text_tree, &it); n != NULL; n = pcb_r_next(&it)) {
-			if (PCB_FLAG_TEST(PCB_FLAG_WARN, (pcb_any_obj_t *)n)) {
-				PCB_FLAG_CLEAR(PCB_FLAG_WARN, (pcb_any_obj_t *)n);
-				pcb_text_invalidate_draw(l, (pcb_text_t *)n);
+			if (PCB_FLAG_TEST(flag, (pcb_any_obj_t *)n)) {
+				PCB_FLAG_CLEAR(flag, (pcb_any_obj_t *)n);
+				if (redraw)
+					pcb_text_invalidate_draw(l, (pcb_text_t *)n);
 			}
 		}
 		pcb_r_end(&it);
@@ -859,11 +863,11 @@ void pcb_data_dynflag_clear(pcb_data_t *data, pcb_dynf_t dynf)
 	int li;
 	pcb_layer_t *l;
 
-	for(n = pcb_r_first(PCB->Data->padstack_tree, &it); n != NULL; n = pcb_r_next(&it))
+	for(n = pcb_r_first(data->padstack_tree, &it); n != NULL; n = pcb_r_next(&it))
 		PCB_DFLAG_CLR(&((pcb_any_obj_t *)n)->Flags, dynf);
 	pcb_r_end(&it);
 
-	for(li = 0, l = PCB->Data->Layer; li < PCB->Data->LayerN; li++,l++) {
+	for(li = 0, l = data->Layer; li < data->LayerN; li++,l++) {
 		for(n = pcb_r_first(l->line_tree, &it); n != NULL; n = pcb_r_next(&it))
 			PCB_DFLAG_CLR(&((pcb_any_obj_t *)n)->Flags, dynf);
 		pcb_r_end(&it);

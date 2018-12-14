@@ -65,7 +65,7 @@ static fgw_error_t pcb_act_AddRats(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_CONVARG(1, FGW_KEYWORD, AddRats, op = fgw_keyword(&argv[1]));
 
 	if (conf_core.temp.rat_warn) {
-		pcb_clear_warnings();
+		pcb_data_clear_flag(PCB->Data, PCB_FLAG_WARN, 1);
 		pcb_draw();
 	}
 	switch (op) {
@@ -178,7 +178,7 @@ static fgw_error_t pcb_act_DeleteRats(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_CONVARG(1, FGW_KEYWORD, DeleteRats, op = fgw_keyword(&argv[1]));
 
 	if (conf_core.temp.rat_warn) {
-		pcb_clear_warnings();
+		pcb_data_clear_flag(PCB->Data, PCB_FLAG_WARN, 1);
 		pcb_draw();
 	}
 	switch(op) {

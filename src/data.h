@@ -216,8 +216,8 @@ void pcb_data_clip_all(pcb_data_t *data, pcb_bool enable_progbar);
 /* Recursively change flags of data; how is one of pcb_change_flag_t */
 void pcb_data_flag_change(pcb_data_t *data, pcb_objtype_t mask, int how, unsigned long flags);
 
-/* Clear warning color from pins/pads */
-void pcb_clear_warnings(void);
+/* Clear specific static flag from all objects */
+void pcb_data_clear_flag(pcb_data_t *data, unsigned long flag, int redraw);
 
 /* Clear the given dyflag bit from all objects under data */
 void pcb_data_dynflag_clear(pcb_data_t *data, pcb_dynf_t dynf);
