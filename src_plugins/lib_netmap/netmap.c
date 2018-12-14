@@ -45,7 +45,7 @@ static pcb_lib_menu_t *alloc_net(pcb_netmap_t *map)
 	return &dn->net;
 }
 
-static int found(pcb_find_t *fctx, pcb_any_obj_t *obj)
+static int found(pcb_find_t *fctx, pcb_any_obj_t *obj, pcb_any_obj_t *arrived_from)
 {
 	pcb_netmap_t *map = fctx->user_data;
 	dyn_obj_t *d, *dl;

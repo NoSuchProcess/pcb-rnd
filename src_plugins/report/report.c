@@ -444,7 +444,7 @@ static int report_found_pins(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static int net_length_cb(pcb_find_t *fctx, pcb_any_obj_t *o)
+static int net_length_cb(pcb_find_t *fctx, pcb_any_obj_t *o, pcb_any_obj_t *arrived_from)
 {
 	double *length = fctx->user_data;
 	double dx, dy;

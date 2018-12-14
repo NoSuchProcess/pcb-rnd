@@ -34,7 +34,7 @@
    it's also cheap on remove! */
 
 /* Do everything that needs to be done for an object found */
-static int pcb_find_found(pcb_find_t *ctx, pcb_any_obj_t *obj)
+static int pcb_find_found(pcb_find_t *ctx, pcb_any_obj_t *obj, pcb_any_obj_t *arrived_from)
 {
 	if (ctx->list_found)
 		vtp0_append(&ctx->found, obj);
@@ -47,7 +47,7 @@ static int pcb_find_found(pcb_find_t *ctx, pcb_any_obj_t *obj)
 
 	ctx->nfound++;
 
-	if ((ctx->found_cb != NULL) && (ctx->found_cb(ctx, obj) != 0)) {
+	if ((ctx->found_cb != NULL) && (ctx->found_cb(ctx, obj, arrived_from) != 0)) {
 		ctx->aborted = 1;
 		return 1;
 	}
@@ -56,12 +56,12 @@ static int pcb_find_found(pcb_find_t *ctx, pcb_any_obj_t *obj)
 }
 
 
-static int pcb_find_addobj(pcb_find_t *ctx, pcb_any_obj_t *obj)
+static int pcb_find_addobj(pcb_find_t *ctx, pcb_any_obj_t *obj, pcb_any_obj_t *arrived_from)
 {
 	PCB_DFLAG_SET(&obj->Flags, ctx->mark);
 	vtp0_append(&ctx->open, obj);
 
-	if (pcb_find_found(ctx, obj) != 0) {
+	if (pcb_find_found(ctx, obj, arrived_from) != 0) {
 		ctx->aborted = 1;
 		return 1;
 	}
@@ -83,7 +83,7 @@ static void int_conn(pcb_find_t *ctx, pcb_any_obj_t *from_)
 	PCB_PADSTACK_LOOP(s->data);
 	{
 		if ((padstack != from) && (padstack->term != NULL) && (padstack->intconn == ic) && (!(PCB_DFLAG_TEST(&(padstack->Flags), ctx->mark))))
-			if (pcb_find_addobj(ctx, (pcb_any_obj_t *)padstack) != 0)
+			if (pcb_find_addobj(ctx, (pcb_any_obj_t *)padstack, from_) != 0)
 				return;
 	}
 	PCB_END_LOOP;
@@ -91,7 +91,7 @@ static void int_conn(pcb_find_t *ctx, pcb_any_obj_t *from_)
 	PCB_LINE_COPPER_LOOP(s->data);
 	{
 		if ((line != from) && (line->term != NULL) && (line->intconn == ic) && (!(PCB_DFLAG_TEST(&(line->Flags), ctx->mark))))
-			if (pcb_find_addobj(ctx, (pcb_any_obj_t *)line) != 0)
+			if (pcb_find_addobj(ctx, (pcb_any_obj_t *)line, from_) != 0)
 				return;
 	}
 	PCB_ENDALL_LOOP;
@@ -99,7 +99,7 @@ static void int_conn(pcb_find_t *ctx, pcb_any_obj_t *from_)
 	PCB_ARC_COPPER_LOOP(s->data);
 	{
 		if ((arc != from) && (arc->term != NULL) && (arc->intconn == ic) && (!(PCB_DFLAG_TEST(&(arc->Flags), ctx->mark))))
-			if (pcb_find_addobj(ctx, (pcb_any_obj_t *)arc) != 0)
+			if (pcb_find_addobj(ctx, (pcb_any_obj_t *)arc, from_) != 0)
 				return;
 	}
 	PCB_ENDALL_LOOP;
@@ -107,7 +107,7 @@ static void int_conn(pcb_find_t *ctx, pcb_any_obj_t *from_)
 	PCB_POLY_COPPER_LOOP(s->data);
 	{
 		if ((polygon != from) && (polygon->term != NULL) && (polygon->intconn == ic) && (!(PCB_DFLAG_TEST(&(polygon->Flags), ctx->mark))))
-			if (pcb_find_addobj(ctx, (pcb_any_obj_t *)polygon) != 0)
+			if (pcb_find_addobj(ctx, (pcb_any_obj_t *)polygon, from_) != 0)
 				return;
 	}
 	PCB_ENDALL_LOOP;
@@ -117,7 +117,7 @@ TODO("find: no find through text yet")
 	PCB_TEXT_COPPER_LOOP(s->data);
 	{
 		if ((text != from) && (text->term != NULL) && (text->intconn == ic) && (!(PCB_DFLAG_TEST(&(text->Flags), ctx->mark))))
-			if (pcb_find_addobj(ctx, (pcb_any_obj_t *)text) != 0)
+			if (pcb_find_addobj(ctx, (pcb_any_obj_t *)text, from_) != 0)
 				return;
 	}
 	PCB_ENDALL_LOOP;
@@ -133,7 +133,7 @@ TODO("find: remove the undef once the old API is gone")
 		pcb_any_obj_t *__obj__ = (pcb_any_obj_t *)obj; \
 		if (!(PCB_DFLAG_TEST(&(__obj__->Flags), ctx->mark))) { \
 			if (!INOCN(curr, obj) && (pcb_intersect_obj_obj(curr, __obj__))) {\
-				if (pcb_find_addobj(ctx, __obj__) != 0) return; \
+				if (pcb_find_addobj(ctx, __obj__, curr) != 0) return; \
 				if ((__obj__->term != NULL) && (!ctx->ignore_intconn) && (__obj__->intconn > 0)) \
 					int_conn(ctx, __obj__); \
 			} \
@@ -292,7 +292,7 @@ unsigned long pcb_find_from_obj(pcb_find_t *ctx, pcb_data_t *data, pcb_any_obj_t
 		return -1;
 
 	pcb_data_dynflag_clear(data, ctx->mark);
-	pcb_find_addobj(ctx, from);
+	pcb_find_addobj(ctx, from, NULL); /* add the starting object with no 'arrived_from' */
 	return pcb_find_exec(ctx);
 }
 

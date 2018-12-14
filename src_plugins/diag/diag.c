@@ -444,7 +444,7 @@ static fgw_error_t pcb_act_FindPerf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		its++;
 		now = pcb_dtime();
 	} while(now < end);
-	pcb_message(PCB_MSG_INFO, "find.c peformance: %f pin find per second\n", (double)its * (double)pins / (now-from));
+	pcb_message(PCB_MSG_INFO, "find.c peformance: %d %f pin find per second\n", its, (double)its * (double)pins / (now-from));
 	PCB_ACT_IRES(0);
 	return 0;
 }
@@ -483,7 +483,7 @@ static fgw_error_t pcb_act_Find2Perf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		its++;
 		now = pcb_dtime();
 	} while(now < end);
-	pcb_message(PCB_MSG_INFO, "find2.c peformance: %f pin find per second\n", (double)its * (double)pins / (now-from));
+	pcb_message(PCB_MSG_INFO, "find2.c peformance: %d %f pin find per second\n", its, (double)its * (double)pins / (now-from));
 	PCB_ACT_IRES(0);
 	return 0;
 }
