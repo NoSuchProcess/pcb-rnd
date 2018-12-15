@@ -155,10 +155,9 @@ static int drc_broken_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t
 
 /* Check for DRC violations on a single net starting from the pad or pin
    sees if the connectivity changes when everything is bloated, or shrunk */
-static pcb_bool DRCFind(pcb_view_list_t *lst, pcb_objtype_t What, void *ptr1, void *ptr2, void *ptr3)
+static pcb_bool DRCFind(pcb_view_list_t *lst, pcb_any_obj_t *from)
 {
 	drc_ctx_t ctx;
-	pcb_any_obj_t *from = ptr2;
 
 	ctx.fast = 1;
 	ctx.data = PCB->Data;
@@ -216,7 +215,7 @@ static void drc_nets_from_subc_term(pcb_view_list_t *lst)
 				if (!(lyt & PCB_LYT_COPPER))
 					continue;
 			}
-			DRCFind(lst, o->type, (void *)subc, (void *)o, (void *)o);
+			DRCFind(lst, o);
 		}
 	}
 	PCB_END_LOOP;
@@ -227,7 +226,7 @@ static void drc_nets_from_pstk(pcb_view_list_t *lst)
 {
 	PCB_PADSTACK_LOOP(PCB->Data);
 	{
-		if ((padstack->term == NULL) && DRCFind(lst, PCB_OBJ_PSTK, (void *)padstack, (void *)padstack, (void *)padstack))
+		if ((padstack->term == NULL) && DRCFind(lst, (pcb_any_obj_t *)padstack))
 			break;
 	}
 	PCB_END_LOOP;
