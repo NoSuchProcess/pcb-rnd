@@ -110,20 +110,41 @@ int pcb_pin_name_to_xy(pcb_lib_entry_t * pin, pcb_coord_t *x, pcb_coord_t *y)
 	return 0;
 }
 
+pcb_any_obj_t *pcb_pin_name_to_obj(pcb_lib_entry_t *pin)
+{
+	pcb_connection_t conn;
+	if (!pcb_rat_seek_pad(pin, &conn, pcb_false))
+		return NULL;
+	return conn.obj;
+}
+
+
+static unsigned long pcb_netlist_setflg(pcb_lib_menu_t *net, pcb_lib_entry_t *pin, pcb_flag_values_t f)
+{
+	pcb_find_t fctx;
+	pcb_any_obj_t *o = pcb_pin_name_to_obj(net->Entry);
+	unsigned long res;
+
+	if (o == NULL)
+		return 0;
+
+	memset(&fctx, 0, sizeof(fctx));
+	fctx.flag_set = f;
+	fctx.flag_set_undoable = 1;
+	fctx.consider_rats = 1;
+	res = pcb_find_from_obj(&fctx, PCB->Data, o);
+	pcb_find_free(&fctx);
+	return res;
+}
+
 void pcb_netlist_find(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
 {
-	pcb_coord_t x, y;
-	if (pcb_pin_name_to_xy(net->Entry, &x, &y))
-		return;
-	pcb_lookup_conn(x, y, 1, 1, PCB_FLAG_FOUND);
+	pcb_netlist_setflg(net, pin, PCB_FLAG_FOUND);
 }
 
 void pcb_netlist_select(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
 {
-	pcb_coord_t x, y;
-	if (pcb_pin_name_to_xy(net->Entry, &x, &y))
-		return;
-	pcb_lookup_conn(x, y, 1, 1, PCB_FLAG_SELECTED);
+	pcb_netlist_setflg(net, pin, PCB_FLAG_SELECTED);
 }
 
 void pcb_netlist_rats(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
