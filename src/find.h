@@ -34,10 +34,6 @@
 #include "config.h"
 #include "obj_common.h"
 
-#define PCB_LOOKUP_FIRST	\
-	(PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART)
-#define PCB_LOOKUP_MORE	\
-	(PCB_OBJ_LINE | PCB_OBJ_RAT | PCB_OBJ_POLY | PCB_OBJ_ARC | PCB_OBJ_SUBC_PART)
 #define PCB_SILK_TYPE	\
 	(PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY)
 
