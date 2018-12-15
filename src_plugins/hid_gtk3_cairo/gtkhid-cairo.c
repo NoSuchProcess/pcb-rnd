@@ -665,20 +665,20 @@ static void ghid_cairo_set_special_colors(conf_native_t * cfg)
 	render_priv_t *priv = gport->render_priv;
 
 	if (((CFT_COLOR *) cfg->val.color == &conf_core.appearance.color.background) /*&& priv->bg_gc */ ) {
-		if (map_color_string(cfg->val.color[0], &priv->bg_color)) {
+		if (map_color_string(cfg->val.color[0].str, &priv->bg_color)) {
 			config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/background"), -1);
 			//gdk_gc_set_foreground(priv->bg_gc, &priv->bg_color);
 			//set_special_grid_color();
 		}
 	}
 	else if (((CFT_COLOR *) cfg->val.color == &conf_core.appearance.color.off_limit) /*&& priv->offlimits_gc */ ) {
-		if (map_color_string(cfg->val.color[0], &priv->offlimits_color)) {
+		if (map_color_string(cfg->val.color[0].str, &priv->offlimits_color)) {
 			config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/off_limit"), -1);
 			//gdk_gc_set_foreground(priv->offlimits_gc, &priv->offlimits_color);
 		}
 	}
 	else if (((CFT_COLOR *) cfg->val.color == &conf_core.appearance.color.grid) /*&& priv->grid_gc */ ) {
-		if (map_color_string(cfg->val.color[0], &priv->grid_color)) {
+		if (map_color_string(cfg->val.color[0].str, &priv->grid_color)) {
 			conf_setf(CFR_DESIGN, "appearance/color/grid", -1, "%s", get_color_name(&priv->grid_color));
 			//set_special_grid_color();
 		}
@@ -1367,7 +1367,7 @@ static void show_crosshair(gboolean paint_new_location)
 		return;
 
 TODO("gtk3: when CrossColor changed from config")
-	map_color_string(conf_core.appearance.color.cross, &priv->crosshair_color);
+	map_color_string(conf_core.appearance.color.cross.str, &priv->crosshair_color);
 	//cr = priv->cr_drawing_area;
 	cr = priv->cr;
 	gdk_cairo_set_source_rgba(cr, &priv->crosshair_color);
@@ -1448,13 +1448,13 @@ static void ghid_cairo_drawing_area_configure_hook(void *vport)
 		//gdk_gc_set_foreground(priv->offlimits_gc, &port->offlimits_color);
 		//gdk_gc_set_clip_origin(priv->offlimits_gc, 0, 0);
 
-		if (!map_color_string(conf_core.appearance.color.background, &priv->bg_color))
+		if (!map_color_string(conf_core.appearance.color.background.str, &priv->bg_color))
 			map_color_string("white", &priv->bg_color);
 
-		if (!map_color_string(conf_core.appearance.color.off_limit, &priv->offlimits_color))
+		if (!map_color_string(conf_core.appearance.color.off_limit.str, &priv->offlimits_color))
 			map_color_string("white", &priv->offlimits_color);
 
-		if (!map_color_string(conf_core.appearance.color.grid, &priv->grid_color))
+		if (!map_color_string(conf_core.appearance.color.grid.str, &priv->grid_color))
 			map_color_string("blue", &priv->grid_color);
 		//set_special_grid_color();
 
