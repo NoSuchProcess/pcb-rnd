@@ -51,7 +51,7 @@ int pcb_color_load_packed(pcb_color_t *dst, unsigned long p);
 int pcb_color_load_float(pcb_color_t *dst, float r, float g, float b, float a);
 int pcb_color_load_str(pcb_color_t *dst, const char *src);
 
-/* Same as strdup(), but for colros */
+/* Same as strdup(), but for colors */
 pcb_color_t *pcb_clrdup(const pcb_color_t *src);
 
 void pcb_color_init(void);
