@@ -46,6 +46,8 @@
 #include "obj_poly_draw.h"
 #include "obj_pstk_draw.h"
 
+#include "obj_subc_list.h"
+
 static const char *drc_orig_cookie = "drc_orig";
 
 TODO("find: get rid of this global state")
@@ -199,14 +201,18 @@ static pcb_bool DRCFind(pcb_view_list_t *lst, pcb_any_obj_t *from)
 	return pcb_false;
 }
 
-/* search short/breaks from subcircuit terminals */
-static void drc_nets_from_subc_term(pcb_view_list_t *lst)
+/* search short/breaks from subcircuit terminals; returns non-zero for cancel */
+static int drc_nets_from_subc_term(pcb_view_list_t *lst)
 {
+	unsigned long sofar = 0, total = pcb_subclist_length(&PCB->Data->subc);
+
 	PCB_SUBC_LOOP(PCB->Data);
 	{
 		pcb_any_obj_t *o;
 		pcb_data_it_t it;
 
+		if (pcb_hid_progress(sofar, total, "drc_orig: Checking nets from subc terminals...") != 0)
+			return 1;
 		for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
 			if (o->term == NULL) /* only terminals can be starting point of DRC net checks */
 				continue;
@@ -217,19 +223,28 @@ static void drc_nets_from_subc_term(pcb_view_list_t *lst)
 			}
 			DRCFind(lst, o);
 		}
+		sofar++;
 	}
 	PCB_END_LOOP;
+	return 0;
 }
 
-/* search short/breaks from non-subc padstacks */
-static void drc_nets_from_pstk(pcb_view_list_t *lst)
+/* search short/breaks from non-subc padstacks; returns non-zero for cancel  */
+static int drc_nets_from_pstk(pcb_view_list_t *lst)
 {
+	unsigned long sofar = 0, total = pcb_subclist_length(&PCB->Data->subc);
+
 	PCB_PADSTACK_LOOP(PCB->Data);
 	{
+		if (pcb_hid_progress(sofar, total, "drc_orig: Checking nets from subc non-terminals...") != 0)
+			return 1;
+
 		if ((padstack->term == NULL) && DRCFind(lst, (pcb_any_obj_t *)padstack))
 			break;
+		sofar++;
 	}
 	PCB_END_LOOP;
+	return 0;
 }
 
 
@@ -395,15 +410,32 @@ static void pcb_drc_orig(void *user_data, int argc, pcb_event_arg_t argv[])
 	pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 
 	/* actual tests */
-	drc_nets_from_subc_term(lst);
-	drc_nets_from_pstk(lst);
+	pcb_hid_progress(0, 0, NULL);
+	if (drc_nets_from_subc_term(lst) != 0) goto out;
+	pcb_hid_progress(0, 0, NULL);
+	if (drc_nets_from_pstk(lst)) goto out;
+
+	pcb_hid_progress(0, 0, NULL);
+	if (pcb_hid_progress(0, 6, "drc_orig: Checking objects: text")) goto out;
 	drc_all_texts(lst);
+	pcb_hid_progress(0, 0, NULL);
+	if (pcb_hid_progress(1, 6, "drc_orig: Checking objects: line")) goto out;
 	drc_copper_lines(lst);
+	pcb_hid_progress(0, 0, NULL);
+	if (pcb_hid_progress(2, 6, "drc_orig: Checking objects: arc")) goto out;
 	drc_copper_arcs(lst);
+	pcb_hid_progress(0, 0, NULL);
+	if (pcb_hid_progress(3, 6, "drc_orig: Checking objects: padstack")) goto out;
 	drc_global_pstks(lst);
+	pcb_hid_progress(0, 0, NULL);
+	if (pcb_hid_progress(4, 6, "drc_orig: Checking objects: extent")) goto out;
 	drc_beyond_extents(lst, PCB->Data);
+	pcb_hid_progress(0, 0, NULL);
+	if (pcb_hid_progress(5, 6, "drc_orig: Checking objects: silk")) goto out;
 	drc_global_silk_lines(lst);
 
+	out:;
+	pcb_hid_progress(0, 0, NULL);
 	pcb_layervis_restore_stack();
 	pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	pcb_gui->invalidate_all();
