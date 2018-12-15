@@ -128,12 +128,12 @@ TODO("find: remove the undef once the old API is gone")
 #undef INOCN
 #define INOCN(a,b) int_noconn((pcb_any_obj_t *)a, (pcb_any_obj_t *)b)
 
-#define PCB_FIND_CHECK(ctx, curr, obj, ctype) \
+#define PCB_FIND_CHECK(ctx, curr, obj, ctype, retstmt) \
 	do { \
 		pcb_any_obj_t *__obj__ = (pcb_any_obj_t *)obj; \
 		if (!(PCB_DFLAG_TEST(&(__obj__->Flags), ctx->mark))) { \
 			if (!INOCN(curr, obj) && (pcb_intersect_obj_obj(curr, __obj__))) {\
-				if (pcb_find_addobj(ctx, __obj__, curr, ctype) != 0) return; \
+				if (pcb_find_addobj(ctx, __obj__, curr, ctype) != 0) { retstmt; } \
 				if ((__obj__->term != NULL) && (!ctx->ignore_intconn) && (__obj__->intconn > 0)) \
 					int_conn(ctx, __obj__); \
 			} \
@@ -147,25 +147,25 @@ void pcb_find_on_layer(pcb_find_t *ctx, pcb_layer_t *l, pcb_any_obj_t *curr, pcb
 
 	if (l->line_tree != NULL) {
 		for(n = pcb_rtree_first(&it, l->line_tree, sb); n != NULL; n = pcb_rtree_next(&it))
-			PCB_FIND_CHECK(ctx, curr, n, ctype);
+			PCB_FIND_CHECK(ctx, curr, n, ctype, return);
 		pcb_r_end(&it);
 	}
 
 	if (l->arc_tree != NULL) {
 		for(n = pcb_rtree_first(&it, l->arc_tree, sb); n != NULL; n = pcb_rtree_next(&it))
-			PCB_FIND_CHECK(ctx, curr, n, ctype);
+			PCB_FIND_CHECK(ctx, curr, n, ctype, return);
 		pcb_r_end(&it);
 	}
 
 	if (l->polygon_tree != NULL) {
 		for(n = pcb_rtree_first(&it, l->polygon_tree, sb); n != NULL; n = pcb_rtree_next(&it))
-			PCB_FIND_CHECK(ctx, curr, n, ctype);
+			PCB_FIND_CHECK(ctx, curr, n, ctype, return);
 		pcb_r_end(&it);
 	}
 
 	if (l->text_tree != NULL) {
 		for(n = pcb_rtree_first(&it, l->text_tree, sb); n != NULL; n = pcb_rtree_next(&it))
-			PCB_FIND_CHECK(ctx, curr, n, ctype);
+			PCB_FIND_CHECK(ctx, curr, n, ctype, return);
 		pcb_r_end(&it);
 	}
 }
@@ -221,14 +221,14 @@ static unsigned long pcb_find_exec(pcb_find_t *ctx)
 
 			if (PCB->Data->padstack_tree != NULL) {
 				for(n = pcb_rtree_first(&it, PCB->Data->padstack_tree, sb); n != NULL; n = pcb_rtree_next(&it))
-					PCB_FIND_CHECK(ctx, curr, n, ctype);
+					PCB_FIND_CHECK(ctx, curr, n, ctype, return ctx->nfound);
 				pcb_r_end(&it);
 			}
 
 			if ((ctx->consider_rats) && (PCB->Data->rat_tree != NULL)) {
 				if (PCB->Data->padstack_tree != NULL) {
 					for(n = pcb_rtree_first(&it, PCB->Data->rat_tree, sb); n != NULL; n = pcb_rtree_next(&it))
-						PCB_FIND_CHECK(ctx, curr, n, PCB_FCT_RAT);
+						PCB_FIND_CHECK(ctx, curr, n, PCB_FCT_RAT, return ctx->nfound);
 					pcb_r_end(&it);
 				}
 			}
