@@ -46,6 +46,8 @@
 #include "obj_poly_draw.h"
 #include "obj_pstk_draw.h"
 
+static const char *drc_orig_cookie = "drc_orig";
+
 TODO("find: get rid of this global state")
 extern pcb_coord_t Bloat;
 
@@ -384,7 +386,7 @@ static void drc_beyond_extents(pcb_view_list_t *lst, pcb_data_t *data)
 	}
 }
 
-void pcb_drc_all()
+static void pcb_drc_orig(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_view_list_t *lst = &pcb_drc_lst;
 	pcb_view_list_free_fields(lst);
@@ -414,12 +416,14 @@ int pplg_check_ver_drc_orig(int ver_needed) { return 0; }
 
 void pplg_uninit_drc_orig(void)
 {
+	pcb_event_unbind_allcookie(drc_orig_cookie);
 }
 
 #include "dolists.h"
 int pplg_init_drc_orig(void)
 {
 	PCB_API_CHK_VER;
+	pcb_event_bind(PCB_EVENT_DRC_RUN, pcb_drc_orig, NULL, drc_orig_cookie);
 	return 0;
 }
 

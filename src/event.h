@@ -70,6 +70,8 @@ typedef enum {
 
 	PCB_EVENT_DRAW_CROSSHAIR_CHATT,   /* called from crosshair code upon attached object recalculation; event handlers can use this hook to enforce various geometric restrictions */
 
+	PCB_EVENT_DRC_RUN,                /* called from core to run all configured DRCs (implemented in plugins) */
+
 	PCB_EVENT_last                    /* not a real event */
 } pcb_event_id_t;
 

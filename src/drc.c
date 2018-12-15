@@ -31,6 +31,7 @@
 #include "drc.h"
 #include "conf_core.h"
 #include "compat_misc.h"
+#include "event.h"
 
 
 pcb_view_list_t pcb_drc_lst;
@@ -131,6 +132,11 @@ static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const cha
 		pcb_view_list_free_fields(lst);
 
 	return 0;
+}
+
+void pcb_drc_all(void)
+{
+	pcb_event(PCB_EVENT_DRC_RUN, NULL);
 }
 
 static const char pcb_acts_DRC[] = "DRC([list|simple|print|log|dump])";

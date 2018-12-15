@@ -38,6 +38,8 @@
 void pcb_drc_set_data(pcb_view_t *violation, const pcb_coord_t *measured_value, pcb_coord_t required_value);
 
 extern pcb_view_list_t pcb_drc_lst;
+
+/* run all configured DRCs */
 void pcb_drc_all(void);
 
 #endif
