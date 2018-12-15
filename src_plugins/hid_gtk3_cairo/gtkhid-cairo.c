@@ -94,6 +94,7 @@ typedef struct hid_gc_s {
 	pcb_hid_t *me_pointer;
 
 	const char *colorname;								/* current color name for this GC.    */
+	pcb_color_t pcolor;
 	GdkRGBA color;												/* current color      for this GC.    */
 
 	pcb_coord_t width;
@@ -280,7 +281,7 @@ static pcb_hid_gc_t ghid_cairo_make_gc(void)
 
 	rv = g_new0(hid_gc_s, 1);
 	rv->me_pointer = &gtk3_cairo_hid;
-	rv->colorname = conf_core.appearance.color.background;
+	rv->pcolor = conf_core.appearance.color.background;
 	return rv;
 }
 
@@ -684,7 +685,7 @@ static void ghid_cairo_set_special_colors(conf_native_t * cfg)
 	}
 }
 
-static void ghid_cairo_set_color(pcb_hid_gc_t gc, const color_t *color)
+static void ghid_cairo_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 {
 	static void *cache = 0;
 	pcb_hidval_t cval;
