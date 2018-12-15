@@ -260,21 +260,29 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		else if (argc > 3) {
 			int l = strlen(a2);
-			for (j = net->EntryN - 1; j >= 0; j--)
+			for (j = net->EntryN - 1; j >= 0; j--) {
 				if (pcb_strcasecmp(net->Entry[j].ListEntry, a2) == 0
 						|| (pcb_strncasecmp(net->Entry[j].ListEntry, a2, l) == 0 && net->Entry[j].ListEntry[l] == '-')) {
 					pin = net->Entry + j;
 					pin_found = 1;
 					func(net, pin);
 				}
+			}
+			if (pcb_gui != NULL)
+				pcb_gui->invalidate_all();
 		}
 		else if (argc > 2) {
 			pin = net->Entry;
 			pin_found = 1;
 			func(net, pin);
+			if (pcb_gui != NULL)
+				pcb_gui->invalidate_all();
 		}
-		else
+		else {
 			func(net, 0);
+			if (pcb_gui != NULL)
+				pcb_gui->invalidate_all();
+		}
 	}
 
 	if (argc > 3 && !pin_found) {
