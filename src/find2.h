@@ -73,6 +73,9 @@ unsigned long pcb_find_from_xy(pcb_find_t *ctx, pcb_data_t *data, pcb_coord_t x,
 
 void pcb_find_free(pcb_find_t *ctx);
 
+/* High level intersection function: returns if a and b intersect (overlap) */
+pcb_bool pcb_intersect_obj_obj(pcb_any_obj_t *a, pcb_any_obj_t *b);
+
 /* Low level intersection functions: */
 pcb_bool pcb_isc_line_line(pcb_line_t *Line1, pcb_line_t *Line2);
 pcb_bool pcb_isc_line_arc(pcb_line_t *Line, pcb_arc_t *Arc);
