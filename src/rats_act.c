@@ -156,7 +156,7 @@ static fgw_error_t pcb_act_Connection(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 
 		case F_Reset:
-			if (pcb_reset_conns(pcb_true)) {
+			if (pcb_data_clear_flag(PCB->Data, PCB_FLAG_FOUND, 1, 1) > 0) {
 				pcb_undo_inc_serial();
 				pcb_draw();
 			}

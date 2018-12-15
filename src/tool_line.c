@@ -70,7 +70,7 @@ void pcb_tool_line_init(void)
 	}
 	else {
 		if (conf_core.editor.auto_drc) {
-			if (pcb_reset_conns(pcb_true)) {
+			if (pcb_data_clear_flag(PCB->Data, PCB_FLAG_FOUND, 1, 1) > 0) {
 				pcb_undo_inc_serial();
 				pcb_draw();
 			}
@@ -107,8 +107,13 @@ TODO("subc: this should work on heavy terminals too!")
 			break;
 		}
 		if (conf_core.editor.auto_drc) {
+			pcb_find_t fctx;
 			type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
-			pcb_lookup_conn(pcb_crosshair.X, pcb_crosshair.Y, pcb_true, 1, PCB_FLAG_FOUND);
+			memset(&fctx, 0, sizeof(fctx));
+			fctx.flag_set = PCB_FLAG_FOUND;
+			fctx.flag_chg_undoable = 1;
+			pcb_find_from_xy(&fctx, PCB->Data, pcb_crosshair.X, pcb_crosshair.Y);
+			pcb_find_free(&fctx);
 		}
 		if (type == PCB_OBJ_PSTK) {
 			pcb_pstk_t *pstk = (pcb_pstk_t *)ptr2;

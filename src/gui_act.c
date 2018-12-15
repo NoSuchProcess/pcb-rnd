@@ -234,12 +234,18 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_notify_crosshair_change(pcb_false);
 			conf_toggle_editor(auto_drc);
 			if (conf_core.editor.auto_drc && conf_core.editor.mode == PCB_MODE_LINE) {
-				if (pcb_reset_conns(pcb_true)) {
+				if (pcb_data_clear_flag(PCB->Data, PCB_FLAG_FOUND, 1, 1) > 0) {
 					pcb_undo_inc_serial();
 					pcb_draw();
 				}
-				if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
-					pcb_lookup_conn(pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, pcb_true, 1, PCB_FLAG_FOUND);
+				if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST) {
+					pcb_find_t fctx;
+					memset(&fctx, 0, sizeof(fctx));
+					fctx.flag_set = PCB_FLAG_FOUND;
+					fctx.flag_chg_undoable = 1;
+					pcb_find_from_xy(&fctx, PCB->Data, pcb_crosshair.X, pcb_crosshair.Y);
+					pcb_find_free(&fctx);
+				}
 			}
 			pcb_notify_crosshair_change(pcb_true);
 			break;
