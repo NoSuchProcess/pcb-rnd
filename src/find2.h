@@ -42,6 +42,7 @@ struct pcb_find_s {
 	unsigned consider_rats:1;       /* don't ignore rat lines, don't consider physical objects only */
 	unsigned flag_set_undoable:1;   /* when set, and flag_set is non-zero, put all found objects on the flag-undo */
 	unsigned long flag_set;         /* when non-zero, set the static flag bits on objects found */
+	unsigned long flag_clr;         /* when non-zero, remove the static flag bits on objects found */
 
 	/* if non-NULL, call after an object is found; if returns non-zero,
 	   set ->aborted and stop the search. When search started from an object,
