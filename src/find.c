@@ -143,11 +143,9 @@ static void DumpList(void);
 static pcb_bool ListStart(pcb_any_obj_t *obj);
 static pcb_bool SetThing(void *group1_obj, void *group2_obj);
 
+#include "find2.c"
 
-#include "find_geo.c"
 #include "find_lookup.c"
 #include "find_misc.c"
 
-#include "find_any_isect.c"
 
-#include "find2.c"

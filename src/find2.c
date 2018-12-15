@@ -29,6 +29,10 @@
 #include "config.h"
 #include "find2.h"
 
+
+#include "find_geo.c"
+#include "find_any_isect.c"
+
 /* trickery: keeping vtp0 is reentrant and is cheaper than keeping lists,
    at least for appending. But as long as only the last item is removed,
    it's also cheap on remove! */
@@ -71,7 +75,7 @@ static int pcb_find_addobj(pcb_find_t *ctx, pcb_any_obj_t *obj, pcb_any_obj_t *a
 	return 0;
 }
 
-static void int_conn(pcb_find_t *ctx, pcb_any_obj_t *from_)
+static void find_int_conn(pcb_find_t *ctx, pcb_any_obj_t *from_)
 {
 	void *from = from_; /* for warningless comparison */
 	pcb_subc_t *s;
@@ -127,18 +131,35 @@ TODO("find: no find through text yet")
 #endif
 }
 
-TODO("find: remove the undef once the old API is gone")
-#undef INOCN
-#define INOCN(a,b) int_noconn((pcb_any_obj_t *)a, (pcb_any_obj_t *)b)
+/* return whether a and b are in the same internal-no-connection group */
+static pcb_bool int_noconn(pcb_any_obj_t *a, pcb_any_obj_t *b)
+{
+	pcb_subc_t *pa, *pb;
+
+	/* cheap test: they need to have valid and matching intnoconn */
+	if ((a->intnoconn == 0) || (a->intnoconn != b->intnoconn))
+		return pcb_false;
+
+	/* expensive tests: they need to be in the same subc */
+	pa = pcb_obj_parent_subc(a);
+	if (pa == NULL)
+		return pcb_false;
+
+	pb = pcb_obj_parent_subc(b);
+
+	return (pa == pb);
+}
+
+#define INOCONN(a,b) int_noconn((pcb_any_obj_t *)a, (pcb_any_obj_t *)b)
 
 #define PCB_FIND_CHECK(ctx, curr, obj, ctype, retstmt) \
 	do { \
 		pcb_any_obj_t *__obj__ = (pcb_any_obj_t *)obj; \
 		if (!(PCB_DFLAG_TEST(&(__obj__->Flags), ctx->mark))) { \
-			if (!INOCN(curr, obj) && (pcb_intersect_obj_obj(curr, __obj__))) {\
+			if (!INOCONN(curr, obj) && (pcb_intersect_obj_obj(curr, __obj__))) {\
 				if (pcb_find_addobj(ctx, __obj__, curr, ctype) != 0) { retstmt; } \
 				if ((__obj__->term != NULL) && (!ctx->ignore_intconn) && (__obj__->intconn > 0)) \
-					int_conn(ctx, __obj__); \
+					find_int_conn(ctx, __obj__); \
 			} \
 		} \
 	} while(0)
