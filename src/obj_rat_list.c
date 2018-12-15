@@ -24,6 +24,9 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include "config.h"
+#include "layer_grp.h"
+
 #define TDL_DONT_UNDEF
 #include "obj_rat_list.h"
 #include <genlist/gentdlist_impl.c>
