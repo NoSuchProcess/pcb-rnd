@@ -446,28 +446,16 @@ static void netlist_disable_all_cb(GtkToggleButton * button, gpointer data)
 /* Select on the layout the current net treeview selection */
 static void netlist_select_cb(GtkWidget * widget, gpointer data)
 {
-	pcb_lib_entry_t *entry;
-	pcb_connection_t conn;
-	gint i;
-	pcb_bool select_flag = GPOINTER_TO_INT(data);
+	char *name = NULL;
 
 	if (!selected_net)
 		return;
-	if (selected_net == node_selected_net)
-		node_selected_net = NULL;
 
-	pcb_conn_lookup_init();
-	pcb_reset_conns(pcb_true);
-
-	for (i = selected_net->EntryN, entry = selected_net->Entry; i; i--, entry++)
-		if (pcb_rat_seek_pad(entry, &conn, pcb_false))
-			pcb_rat_find_hook(conn.obj, pcb_true, pcb_true);
-
-	pcb_select_connection(PCB, select_flag);
-	pcb_reset_conns(pcb_false);
-	pcb_conn_lookup_uninit();
-	pcb_undo_inc_serial();
-	pcb_draw();
+	name = selected_net->Name + 2;
+	if (data == (void *)1)
+		pcb_actionl("netlist", "select", name, NULL);
+	else
+		pcb_actionl("netlist", "unselect", name, NULL);
 }
 
 static void netlist_find_cb(GtkWidget * widget, gpointer data)
@@ -478,7 +466,7 @@ static void netlist_find_cb(GtkWidget * widget, gpointer data)
 		return;
 
 	name = selected_net->Name + 2;
-	pcb_actionl("connection", "reset", NULL);
+	pcb_data_clear_flag(PCB->Data, PCB_FLAG_FOUND, 0, 1);
 	pcb_actionl("netlist", "find", name, NULL);
 }
 
