@@ -105,36 +105,17 @@ static void nbcb_rat_off(pcb_lib_menu_t *net, int pos)
 }
 
 
-/* Select on the layout the current net treeview selection
- */
-static void nbcb_select_common(pcb_lib_menu_t *net, int pos, int select_flag)
-{
-	pcb_lib_entry_t *entry;
-	pcb_connection_t conn;
-	int i;
-
-	pcb_conn_lookup_init();
-	pcb_reset_conns(pcb_true);
-
-	for (i = net->EntryN, entry = net->Entry; i; i--, entry++)
-		if (pcb_rat_seek_pad(entry, &conn, pcb_false))
-			pcb_rat_find_hook(conn.obj, pcb_true, pcb_true);
-
-	pcb_select_connection(PCB, select_flag);
-	pcb_reset_conns(pcb_false);
-	pcb_conn_lookup_uninit();
-	pcb_undo_inc_serial();
-	pcb_draw();
-}
 
 static void nbcb_select(pcb_lib_menu_t *net, int pos)
 {
-	nbcb_select_common(net, pos, 1);
+	char *name = net->Name + 2;
+	pcb_actionl("netlist", "select", name, NULL);
 }
 
 static void nbcb_deselect(pcb_lib_menu_t *net, int pos)
 {
-	nbcb_select_common(net, pos, 0);
+	char *name = net->Name + 2;
+	pcb_actionl("netlist", "unselect", name, NULL);
 }
 
 static void nbcb_find(pcb_lib_menu_t *net, int pos)
