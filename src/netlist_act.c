@@ -268,6 +268,11 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					func(net, pin);
 				}
 		}
+		else if (argc > 2) {
+			pin = net->Entry;
+			pin_found = 1;
+			func(net, pin);
+		}
 		else
 			func(net, 0);
 	}
