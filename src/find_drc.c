@@ -148,7 +148,6 @@ static int drc_broken_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t
    sees if the connectivity changes when everything is bloated, or shrunk */
 static pcb_bool DRCFind(pcb_view_list_t *lst, pcb_objtype_t What, void *ptr1, void *ptr2, void *ptr3)
 {
-	pcb_view_t *violation;
 	drc_ctx_t ctx;
 	pcb_any_obj_t *from = ptr2;
 
