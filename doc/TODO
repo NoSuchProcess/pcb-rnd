@@ -2,7 +2,7 @@
 
 1. For the upcoming release ===============================================================================
 - CLANUP find.c:
-	- {c f} doesn't include rat lines [report: Ade]
+	+ {c f} doesn't include rat lines [report: Ade]
 - CLEANUP: color:
 	- color button DAD implementation in lesstif
 - CLEANUP: boardflip rewrite: use data_mirror
