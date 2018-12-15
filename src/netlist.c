@@ -119,7 +119,7 @@ pcb_any_obj_t *pcb_pin_name_to_obj(pcb_lib_entry_t *pin)
 }
 
 
-static unsigned long pcb_netlist_setflg(pcb_lib_menu_t *net, pcb_lib_entry_t *pin, pcb_flag_values_t f)
+static unsigned long pcb_netlist_setclrflg(pcb_lib_menu_t *net, pcb_lib_entry_t *pin, pcb_flag_values_t setf, pcb_flag_values_t clrf)
 {
 	pcb_find_t fctx;
 	pcb_any_obj_t *o = pcb_pin_name_to_obj(pin);
@@ -129,7 +129,8 @@ static unsigned long pcb_netlist_setflg(pcb_lib_menu_t *net, pcb_lib_entry_t *pi
 		return 0;
 
 	memset(&fctx, 0, sizeof(fctx));
-	fctx.flag_set = f;
+	fctx.flag_set = setf;
+	fctx.flag_clr = clrf;
 	fctx.flag_set_undoable = 1;
 	fctx.consider_rats = 1;
 	res = pcb_find_from_obj(&fctx, PCB->Data, o);
@@ -139,12 +140,17 @@ static unsigned long pcb_netlist_setflg(pcb_lib_menu_t *net, pcb_lib_entry_t *pi
 
 void pcb_netlist_find(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
 {
-	pcb_netlist_setflg(net, pin, PCB_FLAG_FOUND);
+	pcb_netlist_setclrflg(net, pin, PCB_FLAG_FOUND, 0);
 }
 
 void pcb_netlist_select(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
 {
-	pcb_netlist_setflg(net, pin, PCB_FLAG_SELECTED);
+	pcb_netlist_setclrflg(net, pin, PCB_FLAG_SELECTED, 0);
+}
+
+void pcb_netlist_unselect(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
+{
+	pcb_netlist_setclrflg(net, pin, 0, PCB_FLAG_SELECTED);
 }
 
 void pcb_netlist_rats(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)

@@ -184,6 +184,7 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	switch(op) {
 		case F_Find: func = pcb_netlist_find; break;
 		case F_Select: func = pcb_netlist_select; break;
+		case F_Unselect: func = pcb_netlist_unselect; break;
 		case F_Rats: func = pcb_netlist_rats; break;
 		case F_NoRats: func = pcb_netlist_norats; break;
 		case F_Style: func = (NFunc) pcb_netlist_style; break;
