@@ -5,20 +5,8 @@ B 12.5388 11.6949 14.1312 21.7264 mm
 R 0.4826 mm
  
 
-T short
-t Copper areas too close
-B 12.5388 18.8094 14.1312 27.5456 mm
-R 0.3048 mm
- 
-
 T broken
 t Potential for broken trace
 B 12.5388 18.8094 14.1312 27.5456 mm
 R 0.4826 mm
- 
-
-T short
-t Copper areas too close
-B 12.5388 11.6949 14.1312 21.7264 mm
-R 0.3048 mm
  
