@@ -26,8 +26,7 @@
  *
  */
 
-/* generic netlist operations
- */
+/* generic netlist operations */
 
 #include "config.h"
 
@@ -101,7 +100,7 @@ pcb_lib_menu_t *pcb_netname_to_netname(const char *netname)
 	return 0;
 }
 
-int pcb_pin_name_to_xy(pcb_lib_entry_t * pin, pcb_coord_t *x, pcb_coord_t *y)
+int pcb_pin_name_to_xy(pcb_lib_entry_t *pin, pcb_coord_t *x, pcb_coord_t *y)
 {
 	pcb_connection_t conn;
 	if (!pcb_rat_seek_pad(pin, &conn, pcb_false))
@@ -138,29 +137,29 @@ static unsigned long pcb_netlist_setclrflg(pcb_lib_menu_t *net, pcb_lib_entry_t 
 	return res;
 }
 
-void pcb_netlist_find(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
+void pcb_netlist_find(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
 {
 	pcb_netlist_setclrflg(net, pin, PCB_FLAG_FOUND, 0);
 }
 
-void pcb_netlist_select(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
+void pcb_netlist_select(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
 {
 	pcb_netlist_setclrflg(net, pin, PCB_FLAG_SELECTED, 0);
 }
 
-void pcb_netlist_unselect(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
+void pcb_netlist_unselect(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
 {
 	pcb_netlist_setclrflg(net, pin, 0, PCB_FLAG_SELECTED);
 }
 
-void pcb_netlist_rats(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
+void pcb_netlist_rats(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
 {
 	net->Name[0] = ' ';
 	net->flag = 1;
 	pcb_netlist_changed(0);
 }
 
-void pcb_netlist_norats(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
+void pcb_netlist_norats(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
 {
 	net->Name[0] = '*';
 	net->flag = 0;
@@ -170,7 +169,7 @@ void pcb_netlist_norats(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
 /* The primary purpose of this action is to remove the netlist
    completely so that a new one can be loaded, usually via a gsch2pcb
    style script.  */
-void pcb_netlist_clear(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
+void pcb_netlist_clear(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
 {
 	pcb_lib_t *netlist = (pcb_lib_t *) & PCB->NetlistLib;
 	int ni, pi;
@@ -205,7 +204,7 @@ void pcb_netlist_clear(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
 	pcb_netlist_changed(0);
 }
 
-void pcb_netlist_style(pcb_lib_menu_t * net, const char *style)
+void pcb_netlist_style(pcb_lib_menu_t *net, const char *style)
 {
 	free(net->Style);
 	net->Style = pcb_strdup_null((char *) style);
