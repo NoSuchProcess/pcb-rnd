@@ -48,8 +48,9 @@ struct pcb_find_s {
 	   it is called for the starting object as well. All object data and ctx
 	   fields are updated for new_obj before the call. arrived_from is
 	   the previous object (that already triggered a callback) from which
-	   new_obj was first found; can be NULL for the starting object. */
-	int (*found_cb)(pcb_find_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from);
+	   new_obj was first found; can be NULL for the starting object. ctype
+	   describes the relation between arrived_from and new_obj. */
+	int (*found_cb)(pcb_find_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype);
 
 	/* public state/result */
 	vtp0_t found;                   /* objects found, when list_found is 1 - of (pcb_any_obj_t *) */

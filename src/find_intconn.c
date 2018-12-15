@@ -37,7 +37,7 @@ static void LOC_int_conn_subc(pcb_subc_t *s, int ic, int from_type, void *from_p
 	{
 		if ((padstack != from_ptr) && (padstack->term != NULL) && (padstack->intconn == ic) && (!PCB_FLAG_TEST(TheFlag, padstack))) {
 			PCB_FLAG_SET(PCB_FLAG_DRC_INTCONN, padstack);
-			ADD_PADSTACK_TO_LIST(padstack, from_type, from_ptr, PCB_FCT_INTERNAL, NULL);
+			ADD_PADSTACK_TO_LIST(padstack, from_type, from_ptr, PCB_FCT_INTCONN, NULL);
 		}
 	}
 	PCB_END_LOOP;
@@ -46,7 +46,7 @@ static void LOC_int_conn_subc(pcb_subc_t *s, int ic, int from_type, void *from_p
 	{
 		if ((line != from_ptr) && (line->term != NULL) && (line->intconn == ic) && (!PCB_FLAG_TEST(TheFlag, line))) {
 			PCB_FLAG_SET(PCB_FLAG_DRC_INTCONN, line);
-			ADD_LINE_TO_LIST(l, line, from_type, from_ptr, PCB_FCT_INTERNAL, NULL);
+			ADD_LINE_TO_LIST(l, line, from_type, from_ptr, PCB_FCT_INTCONN, NULL);
 		}
 	}
 	PCB_ENDALL_LOOP;
@@ -55,7 +55,7 @@ static void LOC_int_conn_subc(pcb_subc_t *s, int ic, int from_type, void *from_p
 	{
 		if ((arc != from_ptr) && (arc->term != NULL) && (arc->intconn == ic) && (!PCB_FLAG_TEST(TheFlag, arc))) {
 			PCB_FLAG_SET(PCB_FLAG_DRC_INTCONN, arc);
-			ADD_ARC_TO_LIST(l, arc, from_type, from_ptr, PCB_FCT_INTERNAL, NULL);
+			ADD_ARC_TO_LIST(l, arc, from_type, from_ptr, PCB_FCT_INTCONN, NULL);
 		}
 	}
 	PCB_ENDALL_LOOP;
@@ -64,7 +64,7 @@ static void LOC_int_conn_subc(pcb_subc_t *s, int ic, int from_type, void *from_p
 	{
 		if ((polygon != from_ptr) && (polygon->term != NULL) && (polygon->intconn == ic) && (!PCB_FLAG_TEST(TheFlag, polygon))) {
 			PCB_FLAG_SET(PCB_FLAG_DRC_INTCONN, polygon);
-			ADD_POLYGON_TO_LIST(l, polygon, from_type, from_ptr, PCB_FCT_INTERNAL, NULL);
+			ADD_POLYGON_TO_LIST(l, polygon, from_type, from_ptr, PCB_FCT_INTCONN, NULL);
 		}
 	}
 	PCB_ENDALL_LOOP;
@@ -75,7 +75,7 @@ TODO("find: no find through text yet")
 	{
 		if ((text != from_ptr) && (text->term != NULL) && (text->intconn == ic) && (!PCB_FLAG_TEST(TheFlag, text))) {
 			PCB_FLAG_SET(PCB_FLAG_DRC_INTCONN, text);
-			ADD_TEXT_TO_LIST(l, text, from_type, from_ptr, PCB_FCT_INTERNAL, NULL);
+			ADD_TEXT_TO_LIST(l, text, from_type, from_ptr, PCB_FCT_INTCONN, NULL);
 		}
 	}
 	PCB_ENDALL_LOOP;

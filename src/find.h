@@ -36,9 +36,9 @@
 
 typedef enum {
 	PCB_FCT_COPPER   = 1, /* copper connection */
-	PCB_FCT_INTERNAL = 2, /* element-internal connection */
-	PCB_FCT_RAT      = 4, /* connected by a rat line */
-	PCB_FCT_ELEMENT  = 8, /* pin/pad is part of an element whose pins/pads are being listed */
+	PCB_FCT_INTCONN  = 2, /* subc internal connection, using the intconn attrib */
+	PCB_FCT_RAT      = 4, /* connected between a rat line and anything else */
+	PCB_FCT_SUBC     = 8, /* pin/pad is part of an element whose pins/pads are being listed */
 	PCB_FCT_START    = 16 /* starting object of a query */
 } pcb_found_conn_type_t;
 

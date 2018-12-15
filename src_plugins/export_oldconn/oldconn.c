@@ -77,7 +77,7 @@ static void pcb_print_conn_subc_name(FILE *f, pcb_subc_t *subc)
 	fputs("{\n", f);
 }
 
-static int count_term_cb(pcb_find_t *fctx, pcb_any_obj_t *o, pcb_any_obj_t *arrived_from)
+static int count_term_cb(pcb_find_t *fctx, pcb_any_obj_t *o, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
 {
 	unsigned long *cnt = fctx->user_data;
 
@@ -139,7 +139,7 @@ typedef struct {
 	pcb_any_obj_t *start;
 } term_cb_t;
 
-static int print_term_conn_cb(pcb_find_t *fctx, pcb_any_obj_t *o, pcb_any_obj_t *arrived_from)
+static int print_term_conn_cb(pcb_find_t *fctx, pcb_any_obj_t *o, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
 {
 	term_cb_t *ctx = fctx->user_data;
 	pcb_subc_t *sc;
