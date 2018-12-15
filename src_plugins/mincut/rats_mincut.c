@@ -66,7 +66,6 @@ typedef struct short_conn_s short_conn_t;
 struct short_conn_s {
 	int gid;											/* id in the graph */
 	int from_type;
-/*	pcb_any_obj_t *from;*/
 	int from_id;
 	int to_type;
 	int edges;										/* number of edges */
@@ -79,25 +78,20 @@ static short_conn_t *short_conns = NULL;
 static int num_short_conns = 0;
 static int short_conns_maxid = 0;
 
-static void proc_short_cb(int current_type, void *current_obj, int from_type, void *from_obj, pcb_found_conn_type_t type)
+static int proc_short_cb(pcb_find_t *fctx, pcb_any_obj_t *curr, pcb_any_obj_t *from, pcb_found_conn_type_t type)
 {
-	pcb_any_obj_t *curr = current_obj, *from = from_obj;
 	short_conn_t *s;
-
-TODO("find.c: will not be needed after the big rewrite")
-	if (from_type == PCB_OBJ_RAT) /* rat line is often rat point and has no ID */
-		from = NULL;
 
 	s = malloc(sizeof(short_conn_t));
 	if (from != NULL) {
-		s->from_type = from_type;
+		s->from_type = from->type;
 		s->from_id = from->ID;
 	}
 	else {
 		s->from_type = 0;
 		s->from_id = -1;
 	}
-	s->to_type = current_type;
+	s->to_type = curr->type;
 	s->to = curr;
 	s->type = type;
 	s->edges = 0;
@@ -107,13 +101,13 @@ TODO("find.c: will not be needed after the big rewrite")
 		short_conns_maxid = curr->ID;
 	num_short_conns++;
 
-	debprintf(" found %d %d/%p type %d from %d\n", current_type, curr->ID, (void *)current_obj, type, from == NULL ? -1 : from->ID);
+	debprintf(" found %d %d/%p type=%d from %d\n", curr->type, curr->ID, (void *)curr, s->type, from == NULL ? -1 : from->ID);
+	return 0;
 }
 
 /* returns 0 on succes */
 static int proc_short(pcb_any_obj_t *term, int ignore)
 {
-	pcb_find_callback_t old_cb;
 	pcb_coord_t x, y;
 	short_conn_t *n, **lut_by_oid, **lut_by_gid, *next;
 	int gids;
@@ -122,6 +116,7 @@ static int proc_short(pcb_any_obj_t *term, int ignore)
 	int *solution;
 	int i, maxedges, nonterms = 0;
 	int bad_gr = 0;
+	pcb_find_t fctx;
 
 	if (!conf_mincut.plugins.mincut.enable)
 		return bad_gr;
@@ -137,11 +132,12 @@ static int proc_short(pcb_any_obj_t *term, int ignore)
 	num_short_conns = 0;
 	short_conns_maxid = 0;
 
-	/* perform a search using PCB_FLAG_MINCUT, calling back proc_short_cb() with the connections */
-	old_cb = pcb_find_callback;
-	pcb_find_callback = proc_short_cb;
-	pcb_save_find_flag(PCB_FLAG_MINCUT);
-	pcb_lookup_conn(x, y, pcb_false, 1, PCB_FLAG_MINCUT);
+	/* perform a search calling back proc_short_cb() with the connections */
+	memset(&fctx, 0, sizeof(fctx));
+	fctx.found_cb = 	proc_short_cb;
+	pcb_find_from_obj(&fctx, PCB->Data, term);
+	pcb_find_free(&fctx);
+
 
 	debprintf("- alloced for %d\n", (short_conns_maxid + 1));
 	lut_by_oid = calloc(sizeof(short_conn_t *), (short_conns_maxid + 1));
@@ -159,7 +155,7 @@ static int proc_short(pcb_any_obj_t *term, int ignore)
 		pcb_any_obj_t *o = (pcb_any_obj_t *)n->to;
 
 		n->gid = gids;
-		debprintf(" {%d} found %d %d/%p type %d from %d\n", n->gid, n->to_type, n->to->ID, (void *)n->to, n->type, n->from_id);
+		debprintf(" {%d} found %d %d/%p type=%d from %d\n", n->gid, n->to_type, n->to->ID, (void *)n->to, n->type, n->from_id);
 		lut_by_oid[n->to->ID] = n;
 		lut_by_gid[n->gid] = n;
 
@@ -314,16 +310,11 @@ static int proc_short(pcb_any_obj_t *term, int ignore)
 		free(n);
 	}
 
-
-	pcb_data_clear_flag(PCB->Data, TheFlag, 0, 0); /* this can be removed with the old find.c calls */
-	pcb_restore_find_flag();
-
 	for(i = 0; i < g->n; i++)
 		free(g->node2name[i]);
 	free(g->node2name);
 	gr_free(g);
 
-	pcb_find_callback = old_cb;
 	return bad_gr;
 }
 
