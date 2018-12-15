@@ -549,9 +549,9 @@ static pcb_bool gather_subnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool An
 	pcb_cardinal_t m, n;
 
 	for (m = 0; Netl->NetN > 0 && m < Netl->NetN; m++) {
+		pcb_find_t fctx;
 		a = &Netl->Net[m];
 
-		pcb_find_t fctx;
 		memset(&fctx, 0, sizeof(fctx));
 		fctx.flag_set = PCB_FLAG_DRC;
 /*		fctx.consider_rats = AndRats;*/
