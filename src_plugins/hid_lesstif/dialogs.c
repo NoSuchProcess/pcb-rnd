@@ -12,6 +12,7 @@
 
 #include "compat_misc.h"
 #include "data.h"
+#include "event.h"
 #include "build_run.h"
 #include "crosshair.h"
 #include "layer.h"
@@ -920,6 +921,8 @@ void *lesstif_attr_dlg_new(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr
 	stdarg(XmNminWidth, ctx->minw);
 	stdarg(XmNminHeight, ctx->minh);
 	XtSetValues(XtParent(ctx->dialog), stdarg_args, stdarg_n);
+
+	pcb_event(PCB_EVENT_DAD_NEW_DIALOG, "ps", ctx, "TODO");
 
 	if (!modal)
 		XtManageChild(ctx->dialog);
