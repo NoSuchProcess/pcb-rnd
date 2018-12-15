@@ -272,9 +272,9 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_gui->invalidate_all();
 		}
 		else if (argc > 2) {
-			pin = net->Entry;
 			pin_found = 1;
-			func(net, pin);
+			for (j = net->EntryN - 1; j >= 0; j--)
+				func(net, net->Entry + j);
 			if (pcb_gui != NULL)
 				pcb_gui->invalidate_all();
 		}
