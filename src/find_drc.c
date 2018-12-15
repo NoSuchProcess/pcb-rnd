@@ -114,104 +114,89 @@ static int drc_text(pcb_view_list_t *lst, pcb_layer_t *layer, pcb_text_t *text, 
 	return 0;
 }
 
+typedef struct {
+	pcb_find_t fa, fb;
+	pcb_data_t *data;
+	pcb_view_list_t *lst;
+	unsigned fast:1;
+	unsigned shrunk:1;
+} drc_ctx_t;
+
+/* evaluates to true if obj was marked on list (fa or fb) */
+#define IS_FOUND(obj, list) (PCB_DFLAG_TEST(&(obj->Flags), ctx->list.mark))
+
+static int drc_broken_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
+{
+	pcb_view_t *violation;
+	drc_ctx_t *ctx = fctx->user_data;
+
+	if (arrived_from == NULL) /* ingore the starting object - it must be marked as we started from the same object in the first search */
+		return 0;
+
+	/* broken if new object is not marked in the shrunk search (fa) but
+	   the arrived_from object was marked (so we notify direct breaks only) */
+	if (!IS_FOUND(new_obj, fa) && IS_FOUND(arrived_from, fa)) {
+
+		if (ctx->shrunk) {
+			violation = pcb_view_new("broken", "Potential for broken trace", "Insufficient overlap between objects can lead to broken tracks\ndue to registration errors with old wheel style photo-plotters.");
+			pcb_drc_set_data(violation, NULL, conf_core.design.shrink);
+		}
+		else {
+			violation = pcb_view_new("short", "Copper areas too close", "Circuits that are too close may bridge during imaging, etching,\nplating, or soldering processes resulting in a direct short.");
+			pcb_drc_set_data(violation, NULL, conf_core.design.bloat);
+		}
+		pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)new_obj);
+		pcb_view_append_obj(violation, 1, (pcb_any_obj_t *)arrived_from);
+		pcb_view_set_bbox_by_objs(ctx->data, violation);
+		pcb_view_list_append(ctx->lst, violation);
+		return ctx->fast; /* if fast is 1, we are aborting the search, returning the first hit only */
+	}
+	return 0;
+}
+
 /* Check for DRC violations on a single net starting from the pad or pin
    sees if the connectivity changes when everything is bloated, or shrunk */
 static pcb_bool DRCFind(pcb_view_list_t *lst, pcb_objtype_t What, void *ptr1, void *ptr2, void *ptr3)
 {
 	pcb_view_t *violation;
+	drc_ctx_t ctx;
+	pcb_any_obj_t *from = ptr2;
 
+	ctx.fast = 1;
+	ctx.data = PCB->Data;
+	ctx.lst = lst;
+
+	memset(&ctx.fa, 0, sizeof(ctx.fa));
+	memset(&ctx.fb, 0, sizeof(ctx.fb));
+	ctx.fa.user_data = ctx.fb.user_data = &ctx;
+	ctx.fb.found_cb = drc_broken_cb;
+
+	/* Check for minimal overlap: shrink mark all objects on the net in fa;
+	   restart the search without shrink in fb: if anything new is found, it did
+	   not have enough overlap and shrink disconnected it. */
 	if (conf_core.design.shrink != 0) {
+		ctx.shrunk = 1;
 		Bloat = -conf_core.design.shrink;
-		TheFlag = PCB_FLAG_DRC | PCB_FLAG_SELECTED;
-		ListStart(ptr2);
-		DoIt(pcb_true, pcb_false);
-		/* ok now the shrunk net has the PCB_FLAG_SELECTED set */
-		DumpList();
-		TheFlag = PCB_FLAG_FOUND;
-		ListStart(ptr2);
+		pcb_find_from_obj(&ctx.fa, PCB->Data, from);
 		Bloat = 0;
-		drc = pcb_true;									/* abort the search if we find anything not already found */
-		if (DoIt(pcb_true, pcb_false)) {
-			DumpList();
-			/* make the flag changes undoable */
-			TheFlag = PCB_FLAG_FOUND | PCB_FLAG_SELECTED;
-			pcb_reset_conns(pcb_false);
-			User = pcb_true;
-			drc = pcb_false;
-			Bloat = -conf_core.design.shrink;
-			TheFlag = PCB_FLAG_SELECTED;
-			ListStart(ptr2);
-			DoIt(pcb_true, pcb_true);
-			DumpList();
-			ListStart(ptr2);
-			TheFlag = PCB_FLAG_FOUND;
-			Bloat = 0;
-			drc = pcb_true;
-			DoIt(pcb_true, pcb_true);
-			DumpList();
-			User = pcb_false;
-			drc = pcb_false;
-			violation = pcb_view_new("broken", "Potential for broken trace", "Insufficient overlap between objects can lead to broken tracks\ndue to registration errors with old wheel style photo-plotters.");
-			pcb_drc_set_data(violation, NULL, conf_core.design.shrink);
-			pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)pcb_found_obj1);
-			pcb_view_append_obj(violation, 1, (pcb_any_obj_t *)pcb_found_obj2);
-			pcb_view_set_bbox_by_objs(PCB->Data, violation);
-			pcb_view_list_append(lst, violation);
+		pcb_find_from_obj(&ctx.fb, PCB->Data, from);
+		pcb_find_free(&ctx.fa);
+		pcb_find_free(&ctx.fb);
+	}
 
-			pcb_undo_inc_serial();
-			pcb_undo(pcb_true);
-		}
-		DumpList();
-	}
-	/* now check the bloated condition */
-	drc = pcb_false;
-	pcb_reset_conns(pcb_false);
-	TheFlag = PCB_FLAG_FOUND;
-	ListStart(ptr2);
-	Bloat = conf_core.design.bloat;
-	drc = pcb_true;
-	while (DoIt(pcb_true, pcb_false)) {
-		DumpList();
-		/* make the flag changes undoable */
-		TheFlag = PCB_FLAG_FOUND | PCB_FLAG_SELECTED;
-		pcb_reset_conns(pcb_false);
-		User = pcb_true;
-		drc = pcb_false;
+	/* Check for minimal distance: bloat mark all objects on the net in fa;
+	   restart the search without bloat in fb: if anything new is found, it did
+	   not have a connection without the bloat. */
+	if (conf_core.design.bloat != 0) {
+		ctx.shrunk = 0;
 		Bloat = 0;
-		TheFlag = PCB_FLAG_SELECTED;
-		ListStart(ptr2);
-		DoIt(pcb_true, pcb_true);
-		DumpList();
-		TheFlag = PCB_FLAG_FOUND;
-		ListStart(ptr2);
+		pcb_find_from_obj(&ctx.fa, PCB->Data, from);
 		Bloat = conf_core.design.bloat;
-		drc = pcb_true;
-		DoIt(pcb_true, pcb_true);
-		DumpList();
-		violation = pcb_view_new("short", "Copper areas too close", "Circuits that are too close may bridge during imaging, etching,\nplating, or soldering processes resulting in a direct short.");
-		pcb_drc_set_data(violation, NULL, conf_core.design.bloat);
-		pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)pcb_found_obj1);
-		pcb_view_append_obj(violation, 1, (pcb_any_obj_t *)pcb_found_obj2);
-		pcb_view_set_bbox_by_objs(PCB->Data, violation);
-		pcb_view_list_append(lst, violation);
-		User = pcb_false;
-		drc = pcb_false;
-		pcb_undo_inc_serial();
-		pcb_undo(pcb_true);
-		/* highlight the rest of the encroaching net so it's not reported again */
-		TheFlag |= PCB_FLAG_SELECTED;
-		Bloat = 0;
-		ListStart(pcb_found_obj1);
-		DoIt(pcb_true, pcb_true);
-		DumpList();
-		drc = pcb_true;
-		Bloat = conf_core.design.bloat;
-		ListStart(ptr2);
+		pcb_find_from_obj(&ctx.fb, PCB->Data, from);
+		pcb_find_free(&ctx.fa);
+		pcb_find_free(&ctx.fb);
 	}
-	drc = pcb_false;
-	DumpList();
-	TheFlag = PCB_FLAG_FOUND | PCB_FLAG_SELECTED | PCB_FLAG_DRC;
-	pcb_reset_conns(pcb_false);
+
 	return pcb_false;
 }
 
