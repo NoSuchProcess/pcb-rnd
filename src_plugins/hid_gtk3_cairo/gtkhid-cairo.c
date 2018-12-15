@@ -690,7 +690,7 @@ static void ghid_cairo_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 	static void *cache = 0;
 	pcb_hidval_t cval;
 	render_priv_t *priv = gport->render_priv;
-	const char *name = color->str;
+	const char *name;
 
 	if (color == NULL) {
 		fprintf(stderr, "ghid_cairo_set_color():  name = NULL, setting to magenta\n");
@@ -703,6 +703,8 @@ static void ghid_cairo_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 	//	gc->colorname = g_strdup(name);
 	//}
 	gc->colorname = name;
+	gc->pcolor = *color;
+	name = color->str;
 
 	//if (!gc->gc)
 	//  return;
