@@ -248,7 +248,7 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					continue;
 			}
 			else {
-				if (pcb_strcasecmp(net->Name + 2, a1))
+				if (pcb_strcasecmp(net->Name + 2, a1) != 0)
 					continue;
 			}
 		}
