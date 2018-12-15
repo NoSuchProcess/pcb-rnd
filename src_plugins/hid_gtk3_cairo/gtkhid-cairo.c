@@ -93,7 +93,6 @@ typedef struct hid_gc_s {
 	pcb_core_gc_t core_gc;
 	pcb_hid_t *me_pointer;
 
-	const char *colorname;								/* current color name for this GC.    */
 	pcb_color_t pcolor;
 	GdkRGBA color;												/* current color      for this GC.    */
 
@@ -697,12 +696,6 @@ static void ghid_cairo_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 		color = &pcb_color_magenta;
 	}
 
-	//if (name != gc->colorname) {
-	//	if (gc->colorname != NULL)
-	//		g_free(gc->colorname);
-	//	gc->colorname = g_strdup(name);
-	//}
-	gc->colorname = name;
 	gc->pcolor = *color;
 	name = color->str;
 
@@ -799,7 +792,7 @@ static void ghid_cairo_set_draw_xor(pcb_hid_gc_t gc, int xor_mask)
 	//if (!gc->gc)
 	//  return;
 	//gdk_gc_set_function(gc->gc, xor_mask ? GDK_XOR : GDK_COPY);
-	//ghid_cairo_set_color(gc, gc->colorname);
+	//ghid_cairo_set_color(gc, gc->pcolor.str);
 }
 
 static int use_gc(pcb_hid_gc_t gc)
@@ -816,7 +809,7 @@ static int use_gc(pcb_hid_gc_t gc)
 	if (cr == NULL)
 		return 0;
 
-	//ghid_cairo_set_color(gc, gc->colorname);
+	//ghid_cairo_set_color(gc, gc->pcolor.str);
 	gdk_cairo_set_source_rgba(cr, &gc->color);
 
 	/* negative line width means "unit is pixels", so -1 is "1 pixel", -5 is "5 pixels", regardless of the zoom. */
