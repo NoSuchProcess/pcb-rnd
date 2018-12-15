@@ -49,6 +49,7 @@
 #include "dlg_plugins.c"
 #include "dlg_fontsel.c"
 #include "dlg_comm_m.c"
+#include "place.c"
 
 #include "dlg_view.h"
 #include "dlg_pref.h"
@@ -88,6 +89,7 @@ int pplg_check_ver_dialogs(int ver_needed) { return 0; }
 
 void pplg_uninit_dialogs(void)
 {
+	pcb_event_unbind_allcookie(dialogs_cookie);
 	pcb_dlg_undo_uninit();
 	dlg_pstklib_uninit();
 	pcb_dlg_pref_uninit();
@@ -101,6 +103,7 @@ int pplg_init_dialogs(void)
 {
 	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(dialogs_action_list, dialogs_cookie)
+	pcb_event_bind(PCB_EVENT_DAD_NEW_DIALOG, pcb_dialog_place, NULL, dialogs_cookie);
 	pcb_act_dad_init();
 	pcb_dlg_pref_init();
 	dlg_pstklib_init();
