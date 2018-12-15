@@ -348,7 +348,7 @@ TODO("subc TODO")
 
 		ctx.attrs = dlg;
 
-		PCB_DAD_NEW(dlg, "Layer bindings", &ctx, pcb_true, NULL);
+		PCB_DAD_NEW("layer_binding", dlg, "Layer bindings", &ctx, pcb_true, NULL);
 		val.func = lb_attr_chg;
 		pcb_gui->attr_dlg_property(dlg_hid_ctx, PCB_HATP_GLOBAL_CALLBACK, &val);
 		lb_data2dialog(dlg_hid_ctx, &ctx);

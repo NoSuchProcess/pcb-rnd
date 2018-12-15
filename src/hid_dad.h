@@ -70,24 +70,24 @@ do { \
 	table ## _ret_override.already_freed = 1; \
 } while(0)
 
-#define PCB_DAD_NEW(table, title, caller_data, modal, ev_cb) \
+#define PCB_DAD_NEW(id, table, title, caller_data, modal, ev_cb) \
 do { \
 	if (table ## _result == NULL) \
 		PCB_DAD_ALLOC_RESULT(table); \
 	table ## _ret_override.already_freed = 0; \
-	table ## _hid_ctx = pcb_gui->attr_dlg_new(table, table ## _len, table ## _result, title, caller_data, modal, ev_cb); \
+	table ## _hid_ctx = pcb_gui->attr_dlg_new(id, table, table ## _len, table ## _result, title, caller_data, modal, ev_cb); \
 } while(0)
 
 #define PCB_DAD_RUN(table) pcb_hid_dad_run(table ## _hid_ctx, &table ## _ret_override)
 
 /* failed is non-zero on cancel */
-#define PCB_DAD_AUTORUN(table, title, caller_data, failed) \
+#define PCB_DAD_AUTORUN(id, table, title, caller_data, failed) \
 do { \
 	if (table ## _result == NULL) \
 		PCB_DAD_ALLOC_RESULT(table); \
 	table ## _ret_override.valid = 0; \
 	table ## _ret_override.already_freed = 0; \
-	failed = pcb_attribute_dialog_(table, table ## _len, table ## _result, title, caller_data, &(table ## _ret_override.already_freed)); \
+	failed = pcb_attribute_dialog_(id,table, table ## _len, table ## _result, title, caller_data, &(table ## _ret_override.already_freed)); \
 	if (table ## _ret_override.valid) \
 		failed = table ## _ret_override.value; \
 	table ## _ret_override.already_freed = 1; \

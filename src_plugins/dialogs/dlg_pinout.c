@@ -166,7 +166,7 @@ static void pcb_dlg_pinout(pcb_board_t *pcb, pcb_data_t *data, pcb_subc_t *sc)
 		sprintf(title, "Subcircuit #%ld (%s) pinout", sc->ID, sc->refdes);
 	else
 		sprintf(title, "Subcircuit #%ld pinout", sc->ID);
-	PCB_DAD_NEW(ctx->dlg, title, ctx, pcb_false, pinout_close_cb);
+	PCB_DAD_NEW("pinout", ctx->dlg, title, ctx, pcb_false, pinout_close_cb);
 }
 
 static const char pcb_acts_Pinout[] = "Pinout()\n";

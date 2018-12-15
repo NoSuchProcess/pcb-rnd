@@ -123,7 +123,7 @@ static extedit_method_t *extedit_interactive(void)
 		PCB_DAD_BUTTON_CLOSES(ee.dlg, clbtn);
 	PCB_DAD_END(ee.dlg);
 
-	PCB_DAD_NEW(ee.dlg, "External editor", &ee, pcb_true, NULL);
+	PCB_DAD_NEW("extedit", ee.dlg, "External editor", &ee, pcb_true, NULL);
 
 	ee_data2dialog(&ee);
 	res = PCB_DAD_RUN(ee.dlg);

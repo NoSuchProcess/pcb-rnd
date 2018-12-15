@@ -567,7 +567,7 @@ static void view_next_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 }
 
 
-static void pcb_dlg_view_full(view_ctx_t *ctx, const char *title)
+static void pcb_dlg_view_full(const char *id, view_ctx_t *ctx, const char *title)
 {
 	const char *hdr[] = { "ID", "title", NULL };
 
@@ -638,12 +638,12 @@ static void pcb_dlg_view_full(view_ctx_t *ctx, const char *title)
 		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);
 
-	PCB_DAD_NEW(ctx->dlg, title, ctx, pcb_false, view_close_cb);
+	PCB_DAD_NEW(id, ctx->dlg, title, ctx, pcb_false, view_close_cb);
 
 	ctx->active = 1;
 }
 
-static void pcb_dlg_view_simplified(view_ctx_t *ctx, const char *title)
+static void pcb_dlg_view_simplified(const char *id, view_ctx_t *ctx, const char *title)
 {
 	pcb_view_t *v;
 
@@ -696,7 +696,7 @@ static void pcb_dlg_view_simplified(view_ctx_t *ctx, const char *title)
 
 	PCB_DAD_END(ctx->dlg);
 
-	PCB_DAD_NEW(ctx->dlg, title, ctx, pcb_false, view_close_cb);
+	PCB_DAD_NEW(id, ctx->dlg, title, ctx, pcb_false, view_close_cb);
 
 	ctx->active = 1;
 
@@ -730,9 +730,9 @@ fgw_error_t pcb_act_DrcDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		drc_gui_ctx.refresh = drc_refresh;
 		pcb_drc_all();
 		if (pcb_strcasecmp(dlg_type, "simple") == 0)
-			pcb_dlg_view_simplified(&drc_gui_ctx, "DRC violations");
+			pcb_dlg_view_simplified("drc_simple", &drc_gui_ctx, "DRC violations");
 		else
-			pcb_dlg_view_full(&drc_gui_ctx, "DRC violations");
+			pcb_dlg_view_full("drc_full", &drc_gui_ctx, "DRC violations");
 	}
 
 	view2dlg(&drc_gui_ctx);
@@ -754,9 +754,9 @@ fgw_error_t pcb_act_IOIncompatListDialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		io_gui_ctx.lst = &pcb_io_incompat_lst;
 		io_gui_ctx.refresh = NULL;
 		if (pcb_strcasecmp(dlg_type, "simple") == 0)
-			pcb_dlg_view_simplified(&io_gui_ctx, "IO incompatibilities in last save");
+			pcb_dlg_view_simplified("io_incompat_simple", &io_gui_ctx, "IO incompatibilities in last save");
 		else
-			pcb_dlg_view_full(&io_gui_ctx, "IO incompatibilities in last save");
+			pcb_dlg_view_full("io_incompat_full", &io_gui_ctx, "IO incompatibilities in last save");
 	}
 
 	view2dlg(&io_gui_ctx);

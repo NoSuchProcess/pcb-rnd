@@ -181,7 +181,7 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 	/* set up the context */
 	export_ctx.active = 1;
 
-	PCB_DAD_NEW(export_ctx.dlg, title, &export_ctx, pcb_false, export_close_cb);
+	PCB_DAD_NEW("export", export_ctx.dlg, title, &export_ctx, pcb_false, export_close_cb);
 }
 
 static const char pcb_acts_ExportGUI[] = "ExportGUI()\n";

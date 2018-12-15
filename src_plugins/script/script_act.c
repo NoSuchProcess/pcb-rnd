@@ -197,7 +197,7 @@ static void btn_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 	PCB_DAD_END(idlang.dlg);
 
 
-	PCB_DAD_AUTORUN(idlang.dlg, "load script", NULL, failed);
+	PCB_DAD_AUTORUN("script_load", idlang.dlg, "load script", NULL, failed);
 
 	if ((!failed) && (script_load(idlang.dlg_result[idlang.wid].str_value, fn, idlang.dlg_result[idlang.wlang].str_value) == 0))
 		script_dlg_s2d(ctx);
@@ -250,7 +250,7 @@ static void script_dlg_open(void)
 	/* set up the context */
 	script_dlg.active = 1;
 
-	PCB_DAD_NEW(script_dlg.dlg, "pcb-rnd Scripts", &script_dlg, pcb_false, script_dlg_close_cb);
+	PCB_DAD_NEW("scripts", script_dlg.dlg, "pcb-rnd Scripts", &script_dlg, pcb_false, script_dlg_close_cb);
 	script_dlg_s2d(&script_dlg);
 }
 

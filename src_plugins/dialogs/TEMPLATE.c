@@ -83,7 +83,7 @@ static void pcb_dlg_foo(whatever args) <<<- edit this
 	/* set up the context */
 	foo_ctx.active = 1;
 
-	PCB_DAD_NEW(foo_ctx.dlg, "EDIT THIS: title", &foo_ctx, pcb_false, foo_close_cb);
+	PCB_DAD_NEW("EDIT_THIS_ID", foo_ctx.dlg, "EDIT THIS: title", &foo_ctx, pcb_false, foo_close_cb);
 }
 
 static const char pcb_acts_Foo[] = "Foo(object)\n"; <<<- edit this

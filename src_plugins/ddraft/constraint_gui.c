@@ -324,7 +324,7 @@ int constraint_gui(void)
 	/* set up the context */
 	cnstgui_ctx.active = 1;
 
-	PCB_DAD_NEW(cnstgui_ctx.dlg, "Drawing constraints", &cnstgui_ctx, pcb_false, cnstgui_close_cb);
+	PCB_DAD_NEW("constraint", cnstgui_ctx.dlg, "Drawing constraints", &cnstgui_ctx, pcb_false, cnstgui_close_cb);
 
 	cons_changed();
 

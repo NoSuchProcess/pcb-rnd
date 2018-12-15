@@ -21,7 +21,7 @@ static fgw_error_t pcb_act_LayerPropGui(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	attr[1].default_val.int_value = ly->comb & PCB_LYC_SUB;
 	attr[2].default_val.int_value = ly->comb & PCB_LYC_AUTO;
 
-	ar = pcb_attribute_dialog(attr,sizeof(attr)/sizeof(attr[0]), rv, "Edit the properties of a logical layer", NULL);
+	ar = pcb_attribute_dialog("layer_prop", attr,sizeof(attr)/sizeof(attr[0]), rv, "Edit the properties of a logical layer", NULL);
 
 	if (ar == 0) {
 		pcb_layer_combining_t comb = 0;
@@ -92,7 +92,7 @@ static fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	}
 	orig_loc = attr[3].default_val.int_value;
 
-	ar = pcb_attribute_dialog(attr, sizeof(attr)/sizeof(attr[0]) - omit_loc, rv, "Edit the properties of a layer group (physical layer)", NULL);
+	ar = pcb_attribute_dialog("layer_grp_prop", attr, sizeof(attr)/sizeof(attr[0]) - omit_loc, rv, "Edit the properties of a layer group (physical layer)", NULL);
 
 	if (ar == 0) {
 		if (strcmp(g->name, attr[0].default_val.str_value) != 0) {

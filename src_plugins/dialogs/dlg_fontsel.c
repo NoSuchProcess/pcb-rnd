@@ -128,7 +128,7 @@ static void pcb_dlg_foo(pcb_board_t *pcb)
 	PCB_DAD_END(fontsel_ctx.dlg);
 
 	fontsel_ctx.active = 1;
-	PCB_DAD_NEW(fontsel_ctx.dlg, "Font selection", &fontsel_ctx, pcb_true, fontsel_close_cb);
+	PCB_DAD_NEW("fontsel", fontsel_ctx.dlg, "Font selection", &fontsel_ctx, pcb_true, fontsel_close_cb);
 }
 
 static const char pcb_acts_Fontsel[] = "Fontsel2()\n";

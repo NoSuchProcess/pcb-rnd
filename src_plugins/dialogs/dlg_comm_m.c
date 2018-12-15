@@ -51,7 +51,7 @@ static fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
 	PCB_DAD_END(dlg);
 
-	PCB_DAD_NEW(dlg, title, NULL, pcb_true, NULL);
+	PCB_DAD_NEW("prompt_for", dlg, title, NULL, pcb_true, NULL);
 	PCB_DAD_RUN(dlg);
 
 	res->type = FGW_STR | FGW_DYN;
@@ -99,7 +99,7 @@ static fgw_error_t pcb_act_gui_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *a
 	PCB_DAD_END(dlg);
 
 	res->type = FGW_INT;
-	PCB_DAD_AUTORUN(dlg, title, NULL, res->val.nat_int);
+	PCB_DAD_AUTORUN("message", dlg, title, NULL, res->val.nat_int);
 	PCB_DAD_FREE(dlg);
 
 	return 0;

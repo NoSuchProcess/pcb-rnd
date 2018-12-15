@@ -1711,7 +1711,7 @@ fgw_error_t pcb_act_PrintCalibrate(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_hid_t *printer = pcb_hid_find_printer();
 	printer->calibrate(0.0, 0.0);
 
-	if (pcb_attribute_dialog(printer_calibrate_attrs, 3, printer_calibrate_values, "Printer Calibration Values", NULL))
+	if (pcb_attribute_dialog("printer_calibrate", printer_calibrate_attrs, 3, printer_calibrate_values, "Printer Calibration Values", NULL))
 		return 1;
 	printer->calibrate(printer_calibrate_values[1].real_value, printer_calibrate_values[2].real_value);
 	PCB_ACT_IRES(0);

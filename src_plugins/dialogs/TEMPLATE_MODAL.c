@@ -64,7 +64,7 @@ static void pcb_dlg_foo(whatever args) <<<- edit this
 	/* set up the context */
 	ctx.attrs = dlg;
 
-	PCB_DAD_NEW(dlg, "EDIT THIS: title", &ctx, pcb_true, NULL);
+	PCB_DAD_NEW("EDIT_THIS_ID", dlg, "EDIT THIS: title", &ctx, pcb_true, NULL);
 	PCB_DAD_RUN(dlg);
 	PCB_DAD_FREE(dlg);
 }

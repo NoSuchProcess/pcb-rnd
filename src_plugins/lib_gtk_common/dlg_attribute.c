@@ -751,7 +751,7 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 	return 1;
 }
 
-void *ghid_attr_dlg_new(pcb_gtk_common_t *com, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev))
+void *ghid_attr_dlg_new(pcb_gtk_common_t *com, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev))
 {
 	GtkWidget *content_area;
 	GtkWidget *main_vbox;
@@ -789,7 +789,7 @@ TODO("Remove force_label once we got rid of non-DAD attribute dialogs - look for
 	force_label = !PCB_HATT_IS_COMPOSITE(attrs[0].type);
 	ghid_attr_dlg_add(ctx, main_vbox, NULL, 0, (attrs[0].pcb_hatt_flags & PCB_HATF_LABEL) || force_label);
 
-	pcb_event(PCB_EVENT_DAD_NEW_DIALOG, "ps", ctx, "TODO");
+	pcb_event(PCB_EVENT_DAD_NEW_DIALOG, "ps", ctx, id);
 
 	gtk_widget_show_all(ctx->dialog);
 

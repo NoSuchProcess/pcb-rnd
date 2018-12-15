@@ -880,7 +880,7 @@ int pcb_mesh_interactive(void)
 		PCB_DAD_BUTTON_CLOSES(ia.dlg, clbtn);
 	PCB_DAD_END(ia.dlg);
 
-	PCB_DAD_NEW(ia.dlg, "mesher", &ia, 0, ia_close_cb);
+	PCB_DAD_NEW("mesh", ia.dlg, "mesher", &ia, 0, ia_close_cb);
 
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_obj, coord_value, PCB_MM_TO_COORD(0.15));
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_gap, coord_value, PCB_MM_TO_COORD(0.5));

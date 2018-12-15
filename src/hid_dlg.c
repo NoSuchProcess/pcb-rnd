@@ -223,7 +223,7 @@ static int pcb_gui_progress(long so_far, long total, const char *message)
 			PCB_DAD_END(ctx.dlg);
 		PCB_DAD_END(ctx.dlg);
 
-		PCB_DAD_NEW(ctx.dlg, "pcb-rnd progress", &ctx, pcb_false, progress_close_cb);
+		PCB_DAD_NEW("progress", ctx.dlg, "pcb-rnd progress", &ctx, pcb_false, progress_close_cb);
 		active = 1;
 		cancelled = 0;
 

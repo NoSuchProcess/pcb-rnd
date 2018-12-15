@@ -97,7 +97,7 @@ static void pcb_dlg_about(void)
 	about_ctx.active = 1;
 
 	/* this is the modal version - please consider using the non-modal version */
-	PCB_DAD_NEW(about_ctx.dlg, "About pcb-rnd", &about_ctx, pcb_false, about_close_cb);
+	PCB_DAD_NEW("about", about_ctx.dlg, "About pcb-rnd", &about_ctx, pcb_false, about_close_cb);
 }
 
 static const char pcb_acts_About[] = "About()\n";

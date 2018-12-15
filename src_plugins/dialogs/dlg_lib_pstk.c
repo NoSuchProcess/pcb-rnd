@@ -572,7 +572,7 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal, c
 	else
 		name = pcb_strdup("pcb-rnd padstacks - board");
 
-	PCB_DAD_NEW(ctx->dlg, name, ctx, modal, pstklib_close_cb);
+	PCB_DAD_NEW("pstk_lib", ctx->dlg, name, ctx, modal, pstklib_close_cb);
 
 	pstklib_data2dlg(ctx);
 	free(name);

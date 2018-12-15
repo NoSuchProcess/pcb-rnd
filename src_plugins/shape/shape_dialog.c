@@ -343,7 +343,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, pc
 		PCB_DAD_BUTTON_CLOSES(shp->dlg, clbtn);
 	PCB_DAD_END(shp->dlg);
 
-	PCB_DAD_NEW(shp->dlg, "dlg_shape", shp, modal, shp_close_cb);
+	PCB_DAD_NEW("shape", shp->dlg, "dlg_shape", shp, modal, shp_close_cb);
 	PCB_DAD_SET_VALUE(shp->dlg_hid_ctx, shp->dia, coord_value, PCB_MM_TO_COORD(25.4)); /* suppress a runtime warning on invalid dia (zero) */
 	shp_chg_circle(shp->dlg_hid_ctx, shp, NULL);
 	shp_chg_roundrect(shp->dlg_hid_ctx, shp, NULL);

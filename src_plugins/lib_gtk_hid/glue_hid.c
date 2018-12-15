@@ -337,9 +337,9 @@ static char *ghid_fileselect(const char *title, const char *descr, const char *d
 	return pcb_gtk_fileselect(ghid_port.top_window, title, descr, default_file, default_ext, history_tag, flags);
 }
 
-static void *ghid_attr_dlg_new_(pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev))
+static void *ghid_attr_dlg_new_(const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev))
 {
-	return ghid_attr_dlg_new(&ghidgui->common, attrs, n_attrs, results, title, caller_data, modal, button_cb);
+	return ghid_attr_dlg_new(&ghidgui->common, id, attrs, n_attrs, results, title, caller_data, modal, button_cb);
 }
 
 static void ghid_beep()

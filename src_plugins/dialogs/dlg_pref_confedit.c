@@ -338,7 +338,7 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 	PCB_DAD_END(ctx->dlg);
 
-	PCB_DAD_NEW(ctx->dlg, "pcb-rnd conf item", ctx, pcb_false, pref_conf_edit_close_cb);
+	PCB_DAD_NEW("pref_confedit", ctx->dlg, "pcb-rnd conf item", ctx, pcb_false, pref_conf_edit_close_cb);
 
 	if (is_read_only(ctx)) {
 		int n;

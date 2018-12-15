@@ -96,7 +96,7 @@ static void rdialog(const char *name, const char *content)
 		PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 	PCB_DAD_END(ctx->dlg);
 
-	PCB_DAD_NEW(ctx->dlg, name, ctx, pcb_false, rdialog_close_cb);
+	PCB_DAD_NEW("report", ctx->dlg, name, ctx, pcb_false, rdialog_close_cb);
 }
 
 

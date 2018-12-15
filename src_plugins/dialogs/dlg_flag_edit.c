@@ -134,7 +134,7 @@ static fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		ctx.attrs = dlg;
 
-		PCB_DAD_NEW(dlg, "Edit flags", &ctx, pcb_true, NULL);
+		PCB_DAD_NEW("flags", dlg, "Edit flags", &ctx, pcb_true, NULL);
 
 		val.func = fe_attr_chg;
 		pcb_gui->attr_dlg_property(dlg_hid_ctx, PCB_HATP_GLOBAL_CALLBACK, &val);

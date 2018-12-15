@@ -534,7 +534,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			rv = -1;
 		}
 		else {
-			PCB_DAD_NEW(dad->dlg, txt, dad, (cmd[3] == '_'), dad_close_cb);
+			PCB_DAD_NEW(dlgname, dad->dlg, txt, dad, (cmd[3] == '_'), dad_close_cb);
 			rv = PCB_DAD_CURRENT(dad->dlg);
 		}
 	}
