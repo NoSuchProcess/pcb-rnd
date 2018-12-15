@@ -197,6 +197,8 @@ static pcb_bool DRCFind(pcb_view_list_t *lst, pcb_objtype_t What, void *ptr1, vo
 		pcb_find_free(&ctx.fb);
 	}
 
+	Bloat = 0;
+
 	return pcb_false;
 }
 
@@ -412,35 +414,16 @@ void pcb_drc_all()
 	pcb_layervis_save_stack();
 	pcb_layervis_reset_stack();
 	pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
-	pcb_conn_lookup_init();
 
-	TheFlag = PCB_FLAG_FOUND | PCB_FLAG_DRC | PCB_FLAG_SELECTED;
-	if (pcb_reset_conns(pcb_true)) {
-		pcb_undo_inc_serial();
-		pcb_draw();
-	}
-
-	User = pcb_false;
-
+	/* actual tests */
 	drc_nets_from_subc_term(lst);
-	drc_reset();
 	drc_nets_from_pstk(lst);
-	drc_reset();
-
-	TheFlag = PCB_FLAG_SELECTED;
 	drc_all_texts(lst);
 	drc_copper_lines(lst);
 	drc_copper_arcs(lst);
 	drc_global_pstks(lst);
 	drc_beyond_extents(lst, PCB->Data);
-
-	pcb_conn_lookup_uninit();
-	TheFlag = PCB_FLAG_FOUND;
-	Bloat = 0;
-
 	drc_global_silk_lines(lst);
-
-	pcb_undo_inc_serial();
 
 	pcb_layervis_restore_stack();
 	pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
