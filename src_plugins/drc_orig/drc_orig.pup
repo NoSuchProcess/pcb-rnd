@@ -1,0 +1,6 @@
+$class feature
+$short the original DRC code
+$long A few simple, hardwired Design Rule Checks.
+$package (core)
+default buildin
+autoload 1

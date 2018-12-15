@@ -111,7 +111,7 @@ typedef struct {
 	  Size;
 } ListType, *ListTypePtr;
 
-static pcb_coord_t Bloat = 0;
+pcb_coord_t Bloat = 0;
 int TheFlag = PCB_FLAG_FOUND;
 static int OldFlag = PCB_FLAG_FOUND;
 
@@ -151,7 +151,6 @@ static pcb_bool SetThing(void *group1_obj, void *group2_obj);
 
 #include "find_geo.c"
 #include "find_lookup.c"
-#include "find_drc.c"
 #include "find_misc.c"
 
 #include "find_any_isect.c"

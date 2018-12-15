@@ -28,15 +28,26 @@
  *
  */
 
+#include "config.h"
+
 #include "drc.h"
 #include "view.h"
 #include "data_it.h"
+#include "conf_core.h"
+#include "find.h"
+#include "event.h"
+#include "plugins.h"
+#include "layer_vis.h"
 
 #include "obj_arc_draw.h"
 #include "obj_rat_draw.h"
 #include "obj_line_draw.h"
+#include "obj_text_draw.h"
 #include "obj_poly_draw.h"
 #include "obj_pstk_draw.h"
+
+TODO("find: get rid of this global state")
+extern pcb_coord_t Bloat;
 
 /* DRC clearance callback */
 static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t *polygon, int type, void *ptr1, void *ptr2, void *user_data)
@@ -80,8 +91,6 @@ doIsBad:
 	pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)ptr2);
 	pcb_view_set_bbox_by_objs(PCB->Data, violation);
 	pcb_view_list_append(lst, violation);
-	pcb_undo_inc_serial();
-	pcb_undo(pcb_true);
 	return PCB_R_DIR_NOT_FOUND;
 }
 
@@ -98,8 +107,6 @@ static int drc_text(pcb_view_list_t *lst, pcb_layer_t *layer, pcb_text_t *text, 
 		pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)text);
 		pcb_view_set_bbox_by_objs(PCB->Data, violation);
 		pcb_view_list_append(lst, violation);
-		pcb_undo_inc_serial();
-		pcb_undo(pcb_false);
 	}
 	return 0;
 }
@@ -259,8 +266,6 @@ void drc_copper_lines(pcb_view_list_t *lst)
 			pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)line);
 			pcb_view_set_bbox_by_objs(PCB->Data, violation);
 			pcb_view_list_append(lst, violation);
-			pcb_undo_inc_serial();
-			pcb_undo(pcb_false);
 		}
 	}
 	PCB_ENDALL_LOOP;
@@ -281,8 +286,6 @@ void drc_copper_arcs(pcb_view_list_t *lst)
 			pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)arc);
 			pcb_view_set_bbox_by_objs(PCB->Data, violation);
 			pcb_view_list_append(lst, violation);
-			pcb_undo_inc_serial();
-			pcb_undo(pcb_false);
 		}
 	}
 	PCB_ENDALL_LOOP;
@@ -405,4 +408,18 @@ void pcb_drc_all()
 	pcb_gui->invalidate_all();
 }
 
+
+
+int pplg_check_ver_drc_orig(int ver_needed) { return 0; }
+
+void pplg_uninit_drc_orig(void)
+{
+}
+
+#include "dolists.h"
+int pplg_init_drc_orig(void)
+{
+	PCB_API_CHK_VER;
+	return 0;
+}
 

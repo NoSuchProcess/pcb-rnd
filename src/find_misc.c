@@ -29,6 +29,12 @@
 
 #include "change.h"
 
+#include "obj_arc_draw.h"
+#include "obj_rat_draw.h"
+#include "obj_line_draw.h"
+#include "obj_poly_draw.h"
+#include "obj_pstk_draw.h"
+
 static void DrawNewConnections(void);
 
 /* checks if all lists of new objects are handled */

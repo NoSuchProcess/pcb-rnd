@@ -17,6 +17,7 @@ include {../src_plugins/djopt/Plug.tmpasm}
 include {../src_plugins/draw_csect/Plug.tmpasm}
 include {../src_plugins/draw_fab/Plug.tmpasm}
 include {../src_plugins/draw_fontsel/Plug.tmpasm}
+include {../src_plugins/drc_orig/Plug.tmpasm}
 include {../src_plugins/expfeat/Plug.tmpasm}
 include {../src_plugins/export_bboard/Plug.tmpasm}
 include {../src_plugins/export_bom/Plug.tmpasm}

@@ -1,0 +1,8 @@
+put /local/pcb/mod {drc_orig}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/drc_orig/drc_orig.o @]
+
+switch /local/pcb/drc_orig/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end
