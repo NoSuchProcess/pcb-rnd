@@ -694,7 +694,7 @@ static void ghid_cairo_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 
 	if (color == NULL) {
 		fprintf(stderr, "ghid_cairo_set_color():  name = NULL, setting to magenta\n");
-		color = &pcb_color_cyan;
+		color = &pcb_color_magenta;
 	}
 
 	//if (name != gc->colorname) {
