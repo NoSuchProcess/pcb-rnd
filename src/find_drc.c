@@ -51,24 +51,18 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t
 	switch (type) {
 	case PCB_OBJ_LINE:
 		if (line->Clearance < 2 * conf_core.design.bloat) {
-			pcb_undo_add_obj_to_flag(ptr2);
-			PCB_FLAG_SET(TheFlag, line);
 			message = "Line with insufficient clearance inside polygon";
 			goto doIsBad;
 		}
 		break;
 	case PCB_OBJ_ARC:
 		if (arc->Clearance < 2 * conf_core.design.bloat) {
-			pcb_undo_add_obj_to_flag(ptr2);
-			PCB_FLAG_SET(TheFlag, arc);
 			message = "Arc with insufficient clearance inside polygon";
 			goto doIsBad;
 		}
 		break;
 	case PCB_OBJ_PSTK:
 		if (pcb_pstk_drc_check_clearance(ps, polygon, 2 * conf_core.design.bloat) != 0) {
-			pcb_undo_add_obj_to_flag(ptr2);
-			PCB_FLAG_SET(TheFlag, ps);
 			message = "Padstack with insufficient clearance inside polygon";
 			goto doIsBad;
 		}
@@ -79,8 +73,6 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t
 	return PCB_R_DIR_NOT_FOUND;
 
 doIsBad:
-	pcb_undo_add_obj_to_flag(polygon);
-	PCB_FLAG_SET(PCB_FLAG_FOUND, polygon);
 	pcb_poly_invalidate_draw(layer, polygon);
 	pcb_draw_obj((pcb_any_obj_t *)ptr2);
 	violation = pcb_view_new("short", message, "Circuits that are too close may bridge during imaging, etching,\n" "plating, or soldering processes resulting in a direct short.");
@@ -100,8 +92,6 @@ static int drc_text(pcb_view_list_t *lst, pcb_layer_t *layer, pcb_text_t *text, 
 	if (text->thickness == 0)
 		return 0; /* automatic thickness is always valid - ensured by the renderer */
 	if (text->thickness < min_wid) {
-		pcb_undo_add_obj_to_flag(text);
-		PCB_FLAG_SET(TheFlag, text);
 		pcb_text_invalidate_draw(layer, text);
 		violation = pcb_view_new("thin", "Text thickness is too thin", "Process specifications dictate a minimum feature-width\nthat can reliably be reproduced");
 		pcb_drc_set_data(violation, &text->thickness, min_wid);
@@ -229,7 +219,7 @@ static void drc_nets_from_pstk(pcb_view_list_t *lst)
 {
 	PCB_PADSTACK_LOOP(PCB->Data);
 	{
-		if (!PCB_FLAG_TEST(PCB_FLAG_DRC, padstack) && DRCFind(lst, PCB_OBJ_PSTK, (void *)padstack, (void *)padstack, (void *)padstack))
+		if ((padstack->term == NULL) && DRCFind(lst, PCB_OBJ_PSTK, (void *)padstack, (void *)padstack, (void *)padstack))
 			break;
 	}
 	PCB_END_LOOP;
@@ -264,8 +254,6 @@ void drc_copper_lines(pcb_view_list_t *lst)
 		/* check line clearances in polygons */
 		pcb_poly_plows(PCB->Data, PCB_OBJ_LINE, layer, line, drc_callback, lst);
 		if (line->Thickness < conf_core.design.min_wid) {
-			pcb_undo_add_obj_to_flag(line);
-			PCB_FLAG_SET(TheFlag, line);
 			pcb_line_invalidate_draw(layer, line);
 			violation = pcb_view_new("thin", "Line width is too thin", "Process specifications dictate a minimum feature-width\nthat can reliably be reproduced");
 			pcb_drc_set_data(violation, &line->Thickness, conf_core.design.min_wid);
@@ -288,8 +276,6 @@ void drc_copper_arcs(pcb_view_list_t *lst)
 	{
 		pcb_poly_plows(PCB->Data, PCB_OBJ_ARC, layer, arc, drc_callback, lst);
 		if (arc->Thickness < conf_core.design.min_wid) {
-			pcb_undo_add_obj_to_flag(arc);
-			PCB_FLAG_SET(TheFlag, arc);
 			pcb_arc_invalidate_draw(layer, arc);
 			violation = pcb_view_new("thin", "Arc width is too thin", "Process specifications dictate a minimum feature-width\nthat can reliably be reproduced");
 			pcb_drc_set_data(violation, &arc->Thickness, conf_core.design.min_wid);
@@ -314,8 +300,6 @@ void drc_global_pstks(pcb_view_list_t *lst)
 		pcb_poly_plows(PCB->Data, PCB_OBJ_PSTK, padstack, padstack, drc_callback, lst);
 		pcb_pstk_drc_check_and_warn(padstack, &ring, &hole);
 		if ((ring > 0) || (hole > 0)) {
-			pcb_undo_add_obj_to_flag(padstack);
-			PCB_FLAG_SET(TheFlag, padstack);
 			pcb_pstk_invalidate_draw(padstack);
 			if (ring) {
 				violation = pcb_view_new("thin", "padstack annular ring too small", "Annular rings that are too small may erode during etching,\nresulting in a broken connection");
@@ -342,11 +326,9 @@ void drc_global_silk_lines(pcb_view_list_t *lst)
 	pcb_view_t *violation;
 
 TODO("DRC: need to check text and polygons too!")
-	TheFlag = PCB_FLAG_SELECTED;
 	PCB_LINE_SILK_LOOP(PCB->Data);
 	{
 		if (line->Thickness < conf_core.design.min_slk) {
-			PCB_FLAG_SET(TheFlag, line);
 			pcb_line_invalidate_draw(layer, line);
 			violation = pcb_view_new("thin", "Silk line is too thin", "Process specifications dictate a minimum silkscreen feature-width\nthat can reliably be reproduced");
 			pcb_drc_set_data(violation, &line->Thickness, conf_core.design.min_slk);
@@ -398,12 +380,6 @@ static void drc_beyond_extents(pcb_view_list_t *lst, pcb_data_t *data)
 			pcb_view_list_append(lst, violation);
 		}
 	}
-}
-
-static void drc_reset(void)
-{
-	TheFlag = PCB_FLAG_FOUND | PCB_FLAG_DRC | PCB_FLAG_SELECTED;
-	pcb_reset_conns(pcb_false);
 }
 
 void pcb_drc_all()
