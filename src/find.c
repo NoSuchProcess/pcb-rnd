@@ -118,12 +118,7 @@ static int OldFlag = PCB_FLAG_FOUND;
 /* on DRC hit: the two offending objects */
 static void  *pcb_found_obj1, *pcb_found_obj2;
 
-pcb_find_callback_t pcb_find_callback = NULL;
-#define make_callback(current_type, current_ptr, from_type, from_ptr, type) \
-	do { \
-		if (pcb_find_callback != NULL) \
-			pcb_find_callback(current_type, current_ptr, from_type, from_ptr, type); \
-	} while(0)
+#define make_callback(current_type, current_ptr, from_type, from_ptr, type)
 
 static pcb_bool User = pcb_false;				/* user action causing this */
 static pcb_bool drc = pcb_false;				/* whether to stop if finding something not found */

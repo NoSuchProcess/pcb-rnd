@@ -42,16 +42,6 @@ typedef enum {
 	PCB_FCT_START    = 16 /* starting object of a query */
 } pcb_found_conn_type_t;
 
-typedef void (*pcb_find_callback_t)(int current_type, void *current_ptr, int from_type, void *from_ptr,
-																pcb_found_conn_type_t conn_type);
-
-
-/* if not NULL, this function is called whenever something is found
-   (in LookupConnections for example). The caller should save the original
-   value and set that back around the call, if the callback needs to be changed.
-   */
-extern pcb_find_callback_t pcb_find_callback;
-
 #define PCB_LOOKUP_FIRST	\
 	(PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART)
 #define PCB_LOOKUP_MORE	\
