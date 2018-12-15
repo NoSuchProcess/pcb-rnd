@@ -130,7 +130,7 @@ static unsigned long pcb_netlist_setclrflg(pcb_lib_menu_t *net, pcb_lib_entry_t 
 	memset(&fctx, 0, sizeof(fctx));
 	fctx.flag_set = setf;
 	fctx.flag_clr = clrf;
-	fctx.flag_set_undoable = 1;
+	fctx.flag_chg_undoable = 1;
 	fctx.consider_rats = 1;
 	res = pcb_find_from_obj(&fctx, PCB->Data, o);
 	pcb_find_free(&fctx);

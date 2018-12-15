@@ -40,7 +40,7 @@ static int pcb_find_found(pcb_find_t *ctx, pcb_any_obj_t *obj, pcb_any_obj_t *ar
 		vtp0_append(&ctx->found, obj);
 
 	if ((ctx->flag_set != 0) || (ctx->flag_clr != 0)) {
-		if (ctx->flag_set_undoable)
+		if (ctx->flag_chg_undoable)
 			pcb_undo_add_obj_to_flag(obj);
 		if (ctx->flag_set != 0)
 			PCB_FLAG_SET(ctx->flag_set, obj);
@@ -267,7 +267,7 @@ static unsigned long pcb_find_exec(pcb_find_t *ctx)
 		}
 	}
 
-	if (ctx->flag_set_undoable)
+	if (ctx->flag_chg_undoable)
 		pcb_undo_inc_serial();
 
 	return ctx->nfound;
