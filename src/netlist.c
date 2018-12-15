@@ -122,7 +122,7 @@ pcb_any_obj_t *pcb_pin_name_to_obj(pcb_lib_entry_t *pin)
 static unsigned long pcb_netlist_setflg(pcb_lib_menu_t *net, pcb_lib_entry_t *pin, pcb_flag_values_t f)
 {
 	pcb_find_t fctx;
-	pcb_any_obj_t *o = pcb_pin_name_to_obj(net->Entry);
+	pcb_any_obj_t *o = pcb_pin_name_to_obj(pin);
 	unsigned long res;
 
 	if (o == NULL)
