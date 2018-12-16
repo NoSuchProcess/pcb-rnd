@@ -65,7 +65,6 @@
 static pcb_bool ParseConnection(const char *, char *, char *);
 static pcb_bool DrawShortestRats(pcb_netlist_t *,
 														 void (*)(register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *));
-static pcb_bool GatherSubnets(pcb_netlist_t *, pcb_bool, pcb_bool);
 static pcb_bool CheckShorts(pcb_lib_menu_t *);
 static void TransferNet(pcb_netlist_t *, pcb_net_t *, pcb_net_t *);
 
@@ -544,12 +543,6 @@ static pcb_bool gather_subnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool An
 	return Warned;
 }
 
-static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool AndRats)
-{
-	return gather_subnets(Netl, NoWarn, AndRats);
-}
-
-
 /* Draw a rat net (tree) having the shortest lines
  * this also frees the subnet memory as they are consumed.
  * Note that the Netl we are passed is NOT the main netlist - it's the
@@ -745,7 +738,7 @@ pcb_rat_add_all(pcb_bool SelectedOnly,
 			}
 		}
 		PCB_END_LOOP;
-		Warned |= GatherSubnets(Nets, SelectedOnly, pcb_true);
+		Warned |= gather_subnets(Nets, SelectedOnly, pcb_true);
 		if (Nets->NetN > 0)
 			changed |= DrawShortestRats(Nets, funcp);
 	}
@@ -826,7 +819,7 @@ pcb_netlist_list_t pcb_rat_collect_subnets(pcb_bool SelectedOnly)
 		}
 		PCB_END_LOOP;
 		/* Note that AndRats is *pcb_false* here! */
-		GatherSubnets(Nets, SelectedOnly, pcb_false);
+		gather_subnets(Nets, SelectedOnly, pcb_false);
 	}
 	PCB_END_LOOP;
 	return result;
