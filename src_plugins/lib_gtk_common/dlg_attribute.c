@@ -62,6 +62,7 @@ typedef struct {
 	int rc, close_cb_called;
 	pcb_hid_attr_val_t property[PCB_HATP_max];
 	void (*close_cb)(void *caller_data, pcb_hid_attr_ev_t ev);
+	char *id;
 	unsigned inhibit_valchg:1;
 } attr_dlg_t;
 
@@ -751,6 +752,13 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 	return 1;
 }
 
+static gint ghid_attr_dlg_configure_event_cb(GtkWidget *widget, GdkEventConfigure *ev, gpointer data)
+{
+	attr_dlg_t *ctx = (attr_dlg_t *)data;
+	pcb_event(PCB_EVENT_DAD_NEW_GEO, "psiiii", ctx, ctx->id,
+		(int)ev->x, (int)ev->y, (int)ev->width, (int)ev->height);
+}
+
 void *ghid_attr_dlg_new(pcb_gtk_common_t *com, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev))
 {
 	GtkWidget *content_area;
@@ -771,6 +779,7 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, const char *id, pcb_hid_attribute
 	ctx->rc = 1; /* just in case the window is destroyed in an unknown way: take it as cancel */
 	ctx->close_cb_called = 0;
 	ctx->close_cb = button_cb;
+	ctx->id = pcb_strdup(id);
 
 	ctx->dialog = gtk_dialog_new_with_buttons(_(title),
 																			 GTK_WINDOW(com->top_window),
@@ -780,6 +789,7 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, const char *id, pcb_hid_attribute
 
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(ctx->dialog));
 	g_signal_connect(ctx->dialog, "response", G_CALLBACK(ghid_attr_dlg_response_cb), ctx);
+	g_signal_connect(ctx->dialog, "configure_event", G_CALLBACK(ghid_attr_dlg_configure_event_cb), ctx);
 
 	main_vbox = gtkc_vbox_new(FALSE, 6);
 	gtk_container_set_border_width(GTK_CONTAINER(main_vbox), 6);
@@ -789,7 +799,7 @@ TODO("Remove force_label once we got rid of non-DAD attribute dialogs - look for
 	force_label = !PCB_HATT_IS_COMPOSITE(attrs[0].type);
 	ghid_attr_dlg_add(ctx, main_vbox, NULL, 0, (attrs[0].pcb_hatt_flags & PCB_HATF_LABEL) || force_label);
 
-	pcb_event(PCB_EVENT_DAD_NEW_DIALOG, "ps", ctx, id);
+	pcb_event(PCB_EVENT_DAD_NEW_DIALOG, "ps", ctx, ctx->id);
 
 	gtk_widget_show_all(ctx->dialog);
 
@@ -832,7 +842,9 @@ void ghid_attr_dlg_free(void *hid_ctx)
 	}
 
 	gtk_widget_destroy(ctx->dialog);
+	free(ctx->id);
 	free(ctx->wl);
+	ctx->id = NULL;
 	ctx->wl = NULL;
 	ctx->dialog = NULL;
 }
