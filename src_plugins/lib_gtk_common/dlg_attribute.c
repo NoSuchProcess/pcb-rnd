@@ -757,6 +757,7 @@ static gint ghid_attr_dlg_configure_event_cb(GtkWidget *widget, GdkEventConfigur
 	attr_dlg_t *ctx = (attr_dlg_t *)data;
 	pcb_event(PCB_EVENT_DAD_NEW_GEO, "psiiii", ctx, ctx->id,
 		(int)ev->x, (int)ev->y, (int)ev->width, (int)ev->height);
+	return 0;
 }
 
 void *ghid_attr_dlg_new(pcb_gtk_common_t *com, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev))
