@@ -588,22 +588,32 @@ static void xform_setup(pcb_draw_info_t *info, pcb_xform_t *dst, const pcb_layer
 void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 {
 	unsigned int lflg = 0;
-	int may_have_delayed = 0, restore_color = 0;
+	int may_have_delayed = 0, restore_color = 0, current_grp;
 	pcb_xform_t xform;
 	pcb_color_t orig_color;
 	pcb_layer_t *Layer = (pcb_layer_t *)Layer_; /* ugly hack until layer color is moved into info */
 
 	xform_setup(info, &xform, Layer);
 
+	current_grp = (Layer_->meta.real.grp == CURRENT->meta.real.grp);
+
 	if ((info->xform != NULL) && (info->xform->layer_faded)) {
 		orig_color = Layer->meta.real.color;
 		pcb_lighten_color(&orig_color, &Layer->meta.real.color, 0.5);
 		restore_color = 1;
 	}
-	else if ((conf_core.appearance.invis_other_groups) && (Layer_->meta.real.grp != CURRENT->meta.real.grp)) {
+	else if (conf_core.appearance.invis_other_groups && !current_grp) {
 		orig_color = Layer->meta.real.color;
 		Layer->meta.real.color = conf_core.appearance.color.invisible_objects;
 		restore_color = 1;
+	}
+
+	if (conf_core.appearance.black_current_group && current_grp) {
+		if (!restore_color) {
+			orig_color = Layer->meta.real.color;
+			restore_color = 1;
+			Layer->meta.real.color = *pcb_color_black;
+		}
 	}
 
 	lflg = pcb_layer_flags_(Layer);

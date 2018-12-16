@@ -144,6 +144,7 @@ li:pcb-rnd-conf-v1 {
 			term_label_size = 50
 			subc_layer_per_side = 1
 			invis_other_groups = 0
+			black_current_group = 0
 
 			ha:loglevels {
 				debug_tag      = {}
