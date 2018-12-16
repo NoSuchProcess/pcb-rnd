@@ -340,7 +340,13 @@ static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, c
 			layer_color = &ly1->meta.real.color;
 	}
 
-	if (ps->term == NULL) {
+	if (conf_core.appearance.invis_other_groups && !is_current) {
+		color = &conf_core.appearance.color.invisible_objects;
+	}
+	else if (conf_core.appearance.black_current_group && is_current) {
+		color = pcb_color_black;
+	}
+	else if (ps->term == NULL) {
 		/* normal via, not a terminal */
 		if (!pcb_draw_force_termlab && PCB_FLAG_TEST(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, ps)) {
 			if (PCB_FLAG_TEST(PCB_FLAG_WARN, ps))
