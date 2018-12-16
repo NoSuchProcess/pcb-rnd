@@ -104,6 +104,7 @@ int pplg_init_dialogs(void)
 	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(dialogs_action_list, dialogs_cookie)
 	pcb_event_bind(PCB_EVENT_DAD_NEW_DIALOG, pcb_dialog_place, NULL, dialogs_cookie);
+	pcb_event_bind(PCB_EVENT_DAD_NEW_GEO, pcb_dialog_resize, NULL, dialogs_cookie);
 	pcb_act_dad_init();
 	pcb_dlg_pref_init();
 	dlg_pstklib_init();

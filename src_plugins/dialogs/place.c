@@ -36,3 +36,18 @@ static void pcb_dialog_place(void *user_data, int argc, pcb_event_arg_t argv[])
 	id = argv[2].d.s;
 	pcb_trace("dialog place: %p '%s'\n", hid_ctx, id);
 }
+
+static void pcb_dialog_resize(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	void *hid_ctx;
+	const char *id;
+
+	if ((argc < 7) || (argv[1].type != PCB_EVARG_PTR) || (argv[2].type != PCB_EVARG_STR))
+		return;
+
+	hid_ctx = argv[1].d.p;
+	id = argv[2].d.s;
+	pcb_trace("dialog resize: '%s' %d;%d  %d*%d\n", id,
+		argv[3].d.i, argv[4].d.i, argv[5].d.i, argv[6].d.i);
+}
+
