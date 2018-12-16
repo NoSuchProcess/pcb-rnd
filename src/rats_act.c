@@ -50,9 +50,6 @@
 
 #include "obj_rat_draw.h"
 
-TODO("find.c: remove this")
-#include "brave.h"
-
 static const char pcb_acts_AddRats[] = "AddRats(AllRats|SelectedRats|Close)";
 static const char pcb_acth_AddRats[] = "Add one or more rat lines to the board.";
 /* DOC: addrats.html */
@@ -121,21 +118,16 @@ static fgw_error_t pcb_act_Connection(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_Find:
 			{
 				pcb_coord_t x, y;
-				pcb_hid_get_coords(_("Click on a connection"), &x, &y, 0);
-				if (pcb_brave & PCB_BRAVE_NEWFIND) {
 					unsigned long res;
 					pcb_find_t fctx;
-
-					memset(&fctx, 0, sizeof(fctx));
-					fctx.flag_set = PCB_FLAG_FOUND;
-					fctx.flag_chg_undoable = 1;
-					fctx.consider_rats = !!conf_core.editor.conn_find_rat;
-					res = pcb_find_from_xy(&fctx, PCB->Data, x, y);
-					pcb_message(PCB_MSG_INFO, "found %ld objects\n", res);
-					pcb_find_free(&fctx);
-				}
-				else
-					pcb_lookup_conn(x, y, pcb_true, 1, PCB_FLAG_FOUND);
+				pcb_hid_get_coords(_("Click on a connection"), &x, &y, 0);
+				memset(&fctx, 0, sizeof(fctx));
+				fctx.flag_set = PCB_FLAG_FOUND;
+				fctx.flag_chg_undoable = 1;
+				fctx.consider_rats = !!conf_core.editor.conn_find_rat;
+				res = pcb_find_from_xy(&fctx, PCB->Data, x, y);
+				pcb_message(PCB_MSG_INFO, "found %ld objects\n", res);
+				pcb_find_free(&fctx);
 				break;
 			}
 

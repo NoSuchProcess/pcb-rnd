@@ -56,7 +56,6 @@
 #include "obj_term.h"
 #include "obj_subc_parent.h"
 #include "obj_pstk_inlines.h"
-#include "brave.h"
 
 #define STEP_POINT 100
 
@@ -505,40 +504,6 @@ TODO("term: and what about arcs and text?")
 	PCB_END_LOOP;
 }
 
-/* OLD VERSION, uses the old find.c API, scheduled for removal */
-static pcb_bool GatherSubnetsOld(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool AndRats)
-{
-	pcb_net_t *a, *b;
-	pcb_bool Warned = pcb_false;
-	pcb_cardinal_t m, n;
-
-	for (m = 0; Netl->NetN > 0 && m < Netl->NetN; m++) {
-		a = &Netl->Net[m];
-		pcb_reset_conns(pcb_false);
-		pcb_rat_find_hook(a->Connection[0].obj, pcb_false, AndRats);
-
-		/* now anybody connected to the first point has PCB_FLAG_DRC set */
-		/* so move those to this subnet */
-		PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_any_obj_t *)a->Connection[0].obj);
-		for (n = m + 1; n < Netl->NetN; n++) {
-			b = &Netl->Net[n];
-			/* There can be only one connection in net b */
-			if (PCB_FLAG_TEST(PCB_FLAG_DRC, (pcb_any_obj_t *)b->Connection[0].obj)) {
-				PCB_FLAG_CLEAR(PCB_FLAG_DRC, (pcb_any_obj_t *)b->Connection[0].obj);
-				TransferNet(Netl, b, a);
-				/* back up since new subnet is now at old index */
-				n--;
-			}
-		}
-
-		gather_subnet_objs(PCB->Data, Netl, a);
-		if (!NoWarn)
-			Warned |= CheckShorts(a->Connection[0].menu);
-	}
-	pcb_reset_conns(pcb_false);
-	return Warned;
-}
-
 /* Determine existing interconnections of the net and gather into sub-nets.
  * Initially the netlist has each connection in its own individual net
  * afterwards there can be many fewer nets with multiple connections each */
@@ -554,7 +519,6 @@ static pcb_bool gather_subnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool An
 
 		memset(&fctx, 0, sizeof(fctx));
 		fctx.flag_set = PCB_FLAG_DRC;
-/*		fctx.consider_rats = AndRats;*/
 		pcb_data_clear_flag(PCB->Data, PCB_FLAG_DRC, 0, 0);
 		pcb_find_from_obj(&fctx, PCB->Data, a->Connection[0].obj);
 		pcb_find_free(&fctx);
@@ -583,10 +547,7 @@ static pcb_bool gather_subnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool An
 
 static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool AndRats)
 {
-	if (pcb_brave & PCB_BRAVE_NEWFIND)
-		return gather_subnets(Netl, NoWarn, AndRats);
-	else
-		return GatherSubnetsOld(Netl, NoWarn, AndRats);
+	return gather_subnets(Netl, NoWarn, AndRats);
 }
 
 

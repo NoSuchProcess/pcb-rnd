@@ -51,7 +51,6 @@ typedef struct {
 
 static desc_t desc[] = {
 	{PCB_BRAVE_NOXOR, "noxor", "avoid xor drawing", "use alternative rendering instead of xor draw", 0},
-	{PCB_BRAVE_NEWFIND, "newfind", "use new find.c", "use the new implementation of find.c wherever possible", 0},
 	{0, NULL, NULL, NULL}
 };
 
