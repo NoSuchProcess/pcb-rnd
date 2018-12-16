@@ -420,23 +420,23 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"stflags",  T_BMB, 22, 0x33},
 			/*{"bin_style",  T_BMB, 22, 0x03},*/
 			/*{"bin_cap",  T_BMB, 22, 0x10},*/
-			/*{"bin_clockwise_wire",  T_BMB, 22, 0x20},*/
+			{"clockwise",  T_BMB, 22, 0x20},
 			{"linetype", T_UBF, 23, BITFIELD(1, 0, 7)},
 			{"linetype_0_x1",  T_INT, 4, 4},
-			{"x",  T_INT, 4, 4}, /* only needed if wore used for polygon vertex coord */
+			{"x",  T_INT, 4, 4}, /* only needed if wire used for polygon vertex coord */
 			{"linetype_0_y1",  T_INT, 8, 4},
-			{"y",  T_INT, 4, 4}, /* only needed if wire used for polygon vertex coord */
+			{"y",  T_INT, 8, 4}, /* only needed if wire used for polygon vertex coord */
 			{"linetype_0_x2",  T_INT, 12, 4},
 			{"linetype_0_y2",  T_INT, 16, 4},
 			{"arc_negflags", T_BMB, 19, 0x1f},
 			/*{"c_negflag", T_BMB, 19, 0x01},*/
-			{"arc_c1",  T_INT, 7, 1},
-			{"arc_c2",  T_INT, 11, 1},
-			{"arc_c3",  T_INT, 15, 1},
-			{"arc_x1",  T_INT, 4, 3},
-			{"arc_y1",  T_INT, 8, 3},
-			{"arc_x2",  T_INT, 12, 3},
-			{"arc_y2",  T_INT, 16, 3},
+			{"arc_c1",  T_UBF, 7, BITFIELD(1, 0, 7)},
+			{"arc_c2",  T_UBF, 11, BITFIELD(1, 0, 7)},
+			{"arc_c3",  T_UBF, 15, BITFIELD(1, 0, 7)},
+			{"arc_x1",  T_UBF, 4, BITFIELD(3, 0, 23)},
+			{"arc_y1",  T_UBF, 8, BITFIELD(3, 0, 23)},
+			{"arc_x2",  T_UBF, 12, BITFIELD(3, 0, 23)},
+			{"arc_y2",  T_UBF, 16, BITFIELD(3, 0, 23)},
 			TERM
 		},
 	},
@@ -454,13 +454,13 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"arctype",  T_UBF, 23, BITFIELD(1, 0, 7)},
 			{"arc_negflags", T_BMB, 19, 0x1f},
 			/*{"c_negflag", T_BMB, 19, 0x01},*/
-			{"arc_c1",  T_INT, 7, 1},
-			{"arc_c2",  T_INT, 11, 1},
-			{"arc_c3",  T_INT, 15, 1},
-			{"arc_x1",  T_INT, 4, 3},
-			{"arc_y1",  T_INT, 8, 3},
-			{"arc_x2",  T_INT, 12, 3},
-			{"arc_y2",  T_INT, 16, 3},
+			{"arc_c1",  T_UBF, 7, BITFIELD(1, 0, 7)},
+			{"arc_c2",  T_UBF, 11, BITFIELD(1, 0, 7)},
+			{"arc_c3",  T_UBF, 15, BITFIELD(1, 0, 7)},
+			{"arc_x1",  T_UBF, 4, BITFIELD(3, 0, 23)},
+			{"arc_y1",  T_UBF, 8, BITFIELD(3, 0, 23)},
+			{"arc_x2",  T_UBF, 12, BITFIELD(3, 0, 23)},
+			{"arc_y2",  T_UBF, 16, BITFIELD(3, 0, 23)},
 			{"arctype_other_x1",  T_INT, 4, 4},
 			{"arctype_other_y1",  T_INT, 8, 4},
 			{"arctype_other_x2",  T_INT, 12, 4},
@@ -1421,20 +1421,44 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 	c = 0;
 
 	if (linetype == 129 || arctype == 0) {
-
+		arc_flags = atoi(egb_node_prop_get(elem, "arc_negflags"));
 		for (e = htss_first(&elem->props); e; e = htss_next(&elem->props, e)) {
 			if (strcmp(e->key, "arc_x1") == 0) {
-				x1 = atoi(e->value);
-				egb_node_prop_set(elem, "x1", e->value);
+				if (arc_flags && 0x02) {
+					x1 = -atoi(e->value);
+					sprintf(itoa_buffer, "%ld", -x1);
+					egb_node_prop_set(elem, "x1", itoa_buffer);
+				} else {
+					x1 = atoi(e->value);
+					egb_node_prop_set(elem, "x1", e->value);
+				}
 			} else if (strcmp(e->key, "arc_y1") == 0) {
-				y1 = atoi(e->value);
-				egb_node_prop_set(elem, "y1", e->value);
+				if (arc_flags && 0x04) {
+					y1 = -atoi(e->value);
+					sprintf(itoa_buffer, "%ld", -y1);
+					egb_node_prop_set(elem, "y1", itoa_buffer);
+				} else {
+					y1 = atoi(e->value);
+					egb_node_prop_set(elem, "y1", e->value);
+				}
 			} else if (strcmp(e->key, "arc_x2") == 0) {
-				x2 = atoi(e->value);
-				egb_node_prop_set(elem, "x2", e->value);
+				if (arc_flags && 0x08) {
+					x2 = -atoi(e->value);
+					sprintf(itoa_buffer, "%ld", -x2);
+					egb_node_prop_set(elem, "x2", itoa_buffer);
+				} else { 
+					x2 = atoi(e->value);
+					egb_node_prop_set(elem, "x2", e->value);
+				}
 			} else if (strcmp(e->key, "arc_y2") == 0) {
-				y2 = atoi(e->value);
-				egb_node_prop_set(elem, "y2", e->value);
+				if (arc_flags && 0x10) {
+					y2 = -atoi(e->value);
+					sprintf(itoa_buffer, "%ld", -y2);
+					egb_node_prop_set(elem, "y2", itoa_buffer);
+				} else {
+					y2 = atoi(e->value);
+					egb_node_prop_set(elem, "y2", e->value);
+				}
 			} else if (strcmp(e->key, "arc_c1") == 0) {
 				c += atoi(e->value);
 			} else if (strcmp(e->key, "arc_c2") == 0) {
@@ -1447,6 +1471,9 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 				clockwise = atoi(e->value);
 			}
 			/* add width doubling routine here */
+		}
+		if (arc_flags && 0x01) {
+			c = -c;
 		}
 		x3 = (x1+x2)/2;
 		y3 = (y1+y2)/2;
