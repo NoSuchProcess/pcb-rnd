@@ -1037,8 +1037,6 @@ static routedata_t *CreateRouteData()
 	 * this saves on searching the trees to find the nets
 	 */
 	/* use the PCB_FLAG_DRC to mark objects as they are entered */
-	TODO("find: remove this when the old find code is removed - gather_subnets() doesn't need it");
-	pcb_data_clear_flag(PCB->Data, PCB_FLAG_DRC, 0, 0);
 	Nets = pcb_rat_collect_subnets(pcb_false);
 	{
 		routebox_t *last_net = NULL;
