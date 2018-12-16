@@ -915,7 +915,7 @@ void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_att
 
 	ctx->dialog = XtParent(topform);
 	XtAddCallback(topform, XmNunmapCallback, ltf_attr_destroy_cb, ctx);
-	XtAddEventHandler(topform, StructureNotifyMask, False, ltf_attr_config_cb, ctx);
+	XtAddEventHandler(XtParent(topform), StructureNotifyMask, False, ltf_attr_config_cb, ctx);
 
 
 	stdarg_n = 0;
