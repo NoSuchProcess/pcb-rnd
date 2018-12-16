@@ -30,6 +30,7 @@
 #include <stdio.h>
 #include <assert.h>
 
+#include "board.h"
 #include "data.h"
 #include "draw.h"
 #include "error.h"
@@ -50,10 +51,6 @@
 #include "conf.h"
 #include "rats_mincut_conf.h"
 conf_mincut_t conf_mincut;
-
-TODO("find.c: REMOVE THESE after the switchover")
-#include "board.h"
-extern int TheFlag;
 
 /* define to 1 to enable debug prints */
 #if 0
@@ -134,7 +131,7 @@ static int proc_short(pcb_any_obj_t *term, int ignore)
 
 	/* perform a search calling back proc_short_cb() with the connections */
 	memset(&fctx, 0, sizeof(fctx));
-	fctx.found_cb = 	proc_short_cb;
+	fctx.found_cb = proc_short_cb;
 	pcb_find_from_obj(&fctx, PCB->Data, term);
 	pcb_find_free(&fctx);
 
