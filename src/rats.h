@@ -34,7 +34,6 @@
 #include "config.h"
 #include "netlist.h"
 #include "layer.h"
-#include "layer_grp.h"
 
 struct pcb_connection_s {  /* holds a connection (rat) */
 	pcb_coord_t X, Y;        /* coordinate of connection */

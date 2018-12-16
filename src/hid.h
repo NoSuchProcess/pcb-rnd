@@ -9,7 +9,6 @@
 #include "global_typedefs.h"
 #include "attrib.h"
 #include "layer.h"
-#include "layer_grp.h"
 
 /* attribute dialog properties */
 typedef enum pcb_hat_property_e {
