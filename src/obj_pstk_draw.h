@@ -33,7 +33,6 @@
 #ifdef PCB_RTREE_H
 
 #include "board.h"
-#include "layer_grp.h"
 #include "draw.h"
 
 pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl);
