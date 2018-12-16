@@ -412,43 +412,6 @@ static fgw_error_t pcb_act_d1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 #include "find.h"
-extern void pcb_lookup_conn_by_pin(int type, void *ptr1);
-static const char pcb_acts_FindPerf[] = "findperf()\n";
-static const char pcb_acth_FindPerf[] = "Measure the peformance of find.c";
-static fgw_error_t pcb_act_FindPerf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	double from, now, end, duration = 4.0;
-	long its = 0, pins = 0;
-
-	PCB_SUBC_LOOP(PCB->Data) {
-		PCB_PADSTACK_LOOP(subc->data) {
-			pins++;
-		}
-		PCB_END_LOOP;
-	}
-	PCB_END_LOOP;
-
-	pcb_message(PCB_MSG_INFO, "Measuring find.c peformance for %f seconds starting from %ld pins...\n", duration, pins);
-
-	from = pcb_dtime();
-	end = from + duration;
-	do {
-		PCB_SUBC_LOOP(PCB->Data) {
-			PCB_PADSTACK_LOOP(subc->data) {
-				pcb_reset_conns(0);
-				pcb_lookup_conn_by_pin(padstack->type, padstack);
-			}
-			PCB_END_LOOP;
-		}
-		PCB_END_LOOP;
-		its++;
-		now = pcb_dtime();
-	} while(now < end);
-	pcb_message(PCB_MSG_INFO, "find.c peformance: %d %f pin find per second\n", its, (double)its * (double)pins / (now-from));
-	PCB_ACT_IRES(0);
-	return 0;
-}
-
 static const char pcb_acts_Find2Perf[] = "find2perf()\n";
 static const char pcb_acth_Find2Perf[] = "Measure the peformance of find2.c";
 static fgw_error_t pcb_act_Find2Perf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -526,7 +489,6 @@ pcb_action_t diag_action_list[] = {
 #endif
 	{"EvalConf", pcb_act_EvalConf, pcb_acth_EvalConf, pcb_acts_EvalConf},
 	{"d1", pcb_act_d1, pcb_acth_d1, pcb_acts_d1},
-	{"findperf", pcb_act_FindPerf, pcb_acth_FindPerf, pcb_acts_FindPerf},
 	{"find2perf", pcb_act_Find2Perf, pcb_acth_Find2Perf, pcb_acts_Find2Perf},
 	{"integrity", pcb_act_integrity, integrity_help, integrity_syntax},
 	{"dumpflags", pcb_act_dumpflags, pcb_acth_dumpflags, pcb_acts_dumpflags},

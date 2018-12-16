@@ -541,7 +541,6 @@ static pcb_bool gather_subnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool An
 		if (!NoWarn)
 			Warned |= CheckShorts(a->Connection[0].menu);
 	}
-	pcb_reset_conns(pcb_false);
 	return Warned;
 }
 
@@ -697,11 +696,6 @@ DrawShortestRats(pcb_netlist_t *Netl,
 	/* so we throw it away and free the space */
 	pcb_net_free(&Netl->Net[--(Netl->NetN)]);
 	/* Sadly adding a rat line messes up the sorted arrays in connection finder */
-	/* hace: perhaps not necessarily now that they aren't stored in normal layers */
-	if (changed) {
-		pcb_conn_lookup_uninit();
-		pcb_conn_lookup_init();
-	}
 	return changed;
 }
 
@@ -726,8 +720,6 @@ pcb_rat_add_all(pcb_bool SelectedOnly,
 	}
 	changed = pcb_false;
 	/* initialize finding engine */
-	pcb_conn_lookup_init();
-	pcb_save_find_flag(PCB_FLAG_DRC);
 	Nets = (pcb_netlist_t *) calloc(1, sizeof(pcb_netlist_t));
 	/* now we build another netlist (Nets) for each
 	 * net in Wantlist that shows how it actually looks now,
@@ -760,8 +752,6 @@ pcb_rat_add_all(pcb_bool SelectedOnly,
 	PCB_END_LOOP;
 	pcb_netlist_free(Nets);
 	free(Nets);
-	pcb_conn_lookup_uninit();
-	pcb_restore_find_flag();
 	if (funcp)
 		return pcb_true;
 
@@ -810,9 +800,6 @@ pcb_netlist_list_t pcb_rat_collect_subnets(pcb_bool SelectedOnly)
 		pcb_message(PCB_MSG_WARNING, _("Can't add rat lines because no netlist is loaded.\n"));
 		return result;
 	}
-	/* initialize finding engine */
-	pcb_conn_lookup_init();
-	pcb_save_find_flag(PCB_FLAG_DRC);
 	/* now we build another netlist (Nets) for each
 	 * net in Wantlist that shows how it actually looks now,
 	 * then fill in any missing connections with rat lines.
@@ -842,8 +829,6 @@ pcb_netlist_list_t pcb_rat_collect_subnets(pcb_bool SelectedOnly)
 		GatherSubnets(Nets, SelectedOnly, pcb_false);
 	}
 	PCB_END_LOOP;
-	pcb_conn_lookup_uninit();
-	pcb_restore_find_flag();
 	return result;
 }
 

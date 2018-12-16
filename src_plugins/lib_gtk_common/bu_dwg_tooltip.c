@@ -45,6 +45,8 @@
 
 #define TOOLTIP_UPDATE_DELAY 200
 
+#define PCB_SILK_TYPE (PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY)
+
 static char *describe_location(pcb_coord_t X, pcb_coord_t Y)
 {
 	void *ptr1, *ptr2, *ptr3;

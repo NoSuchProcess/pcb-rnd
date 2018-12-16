@@ -45,6 +45,7 @@
 #include "macro.h"
 #include "obj_arc_ui.h"
 #include "obj_pstk_inlines.h"
+#include "search.h"
 
 #define EXPAND_BOUNDS(p) if (Bloat > 0) {\
        (p)->BoundingBox.X1 -= Bloat; \

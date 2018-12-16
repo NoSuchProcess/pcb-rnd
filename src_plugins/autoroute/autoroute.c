@@ -4587,7 +4587,6 @@ pcb_bool AutoRoute(pcb_bool selected)
 	}
 	if (ratlist_length(&PCB->Data->Rat) == 0)
 		return pcb_false;
-	pcb_save_find_flag(PCB_FLAG_DRC);
 	rd = CreateRouteData();
 	if (rd == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Failed to initialize data; might be missing\n" "top or bottom copper layer.\n");
@@ -4745,7 +4744,6 @@ donerouting:
 
 		pcb_redraw();
 	}
-	pcb_restore_find_flag();
 #if defined (ROUTE_DEBUG)
 	aabort = 0;
 #endif
