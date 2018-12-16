@@ -861,6 +861,25 @@ static void ltf_attr_destroy_cb(Widget w, void *v, void *cbs)
 	XtDestroyWidget(w);
 }
 
+static void ltf_attr_config_cb(Widget shell, XtPointer data, XEvent *xevent)
+{
+	lesstif_attr_dlg_t *ctx = data;
+	Window win, rw, cw;
+	Display *dsp;
+	int x, y;
+	XConfigureEvent *cevent = xevent;
+
+	if (cevent->type != ConfigureNotify)
+		return;
+
+	win = XtWindow(shell);
+	dsp = XtDisplay(shell);
+	rw = DefaultRootWindow(dsp);
+	XTranslateCoordinates(dsp, win, rw, 0, 0, &x, &y, &cw);
+	pcb_event(PCB_EVENT_DAD_NEW_GEO, "psiiii", ctx, ctx->id,
+		(int)x, (int)y, (int)cevent->width, (int)cevent->height);
+}
+
 void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev))
 {
 	Widget topform, main_tbl;
@@ -896,6 +915,7 @@ void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_att
 
 	ctx->dialog = XtParent(topform);
 	XtAddCallback(topform, XmNunmapCallback, ltf_attr_destroy_cb, ctx);
+	XtAddEventHandler(topform, StructureNotifyMask, False, ltf_attr_config_cb, ctx);
 
 
 	stdarg_n = 0;
