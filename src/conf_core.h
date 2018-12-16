@@ -176,6 +176,7 @@ typedef struct {
 		CFT_BOOLEAN text_host_bbox;        /* when moving a text object, the outline thin-draw should also include the bounding box */
 		CFT_REAL term_label_size;          /* size of terminal labels, in pcb font scale (100 is for the normal size) */
 		CFT_BOOLEAN subc_layer_per_side;   /* hide top or bottom placed subcircuit annotations if the view is showing the other side */
+		CFT_BOOLEAN invis_other_groups;    /* render non-current group layers with the inivisble color */
 		struct loglevels {
 			CFT_STRING   debug_tag;          /* log style tag of debug messages */
 			CFT_BOOLEAN  debug_popup;        /* whether a debug line should pop up the log window */
