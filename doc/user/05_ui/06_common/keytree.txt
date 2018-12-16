@@ -189,6 +189,8 @@ m;l;a	pcb-menu-default.lht	conf(toggle, editor\057all_direction_lines, design)	'
 m;l;c	pcb-menu-default.lht	conf(toggle, editor\057clear_line, design) 	New lines, arcs clear polygons
 m;l;d	pcb-menu-default.lht	conf(toggle, editor\057auto_drc, design) 	Auto enforce DRC clearance
 m;l;f	pcb-menu-default.lht	Display(CycleClip) 	Cycle line clip\057refraction
+m;o;b	pcb-menu-default.lht	conf(toggle, appearance\057black_current_group, design) 	black current group
+m;o;i	pcb-menu-default.lht	conf(toggle, appearance\057invis_other_groups, design) 	Invisible-color on other groups
 m;p;c	pcb-menu-default.lht	conf(toggle, editor\057clear_polypoly, design) 	New polygons clear polygons
 m;p;f	pcb-menu-default.lht	conf(toggle, editor\057full_poly, design) 	New polygons are full ones
 m;r;m	pcb-menu-default.lht	conf(toggle, editor\057rubber_band_keep_midlinedir, design) 	Rubber band keeps middle line dir
