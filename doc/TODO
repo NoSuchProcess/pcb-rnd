@@ -56,6 +56,8 @@
 	- update bugs:
 		- drc & size: doesn't update on mil/mm change in top win [report: Ade]
 		- new prefs with new layout, change board name in meta and close -- name doesn't get immediately picked up by main window  [report: Miloh]
+	- crash:
+		- filter-select invis_other_groups, create design, set true, close; repeat this on black_current_group -> crash [report: Igor2]
 + BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
 - BUG: extedit broke: place 1206, use external edit on it, add line on top copper, save, exit -> line doesn't appear [report: Igor2]
 - BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
