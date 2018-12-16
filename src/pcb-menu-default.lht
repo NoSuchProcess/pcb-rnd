@@ -333,6 +333,13 @@ ha:{
 						ha:Line Tool size -5 mil            = { a={<key>m; <key>l; <char>-}; action=SetValue(LineSize,-5,mil) }
 						ha:Text Tool scale +10 mil          = { a={<key>m; <key>t; <char>+}; action=SetValue(TextScale,+10,mil) }
 						ha:Text Tool scale -10 mil          = { a={<key>m; <key>t; <char>-}; action=SetValue(TextScale,-10,mil) }
+						-
+						ha:Render color override {
+							li:submenu {
+								ha:Invisible-color on other groups  = { a={<key>m; <key>o; <key>i}; checked=appearance/invis_other_groups; action=conf(toggle, appearance/invis_other_groups, design) }
+								ha:black current group              = { a={<key>m; <key>o; <key>b}; checked=appearance/black_current_group; action=conf(toggle, appearance/black_current_group, design) }
+							}
+						}
 					}
 				}
 				ha:Mincut on shorts                 = { checked=plugins/mincut/enable; action=conf(toggle, plugins/mincut/enable, design) }
