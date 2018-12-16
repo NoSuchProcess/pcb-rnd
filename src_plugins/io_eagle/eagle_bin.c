@@ -1417,9 +1417,8 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 	double theta_1, theta_2, delta_theta;
 	double delta_x, delta_y;
 	int arc_flags = 0;
-	int clockwise = 1;
+	int clockwise = 0;
 	c = 0;
-
 	if (linetype == 129 || arctype == 0) {
 		arc_flags = atoi(egb_node_prop_get(elem, "arc_negflags"));
 		for (e = htss_first(&elem->props); e; e = htss_next(&elem->props, e)) {
@@ -1773,7 +1772,6 @@ static int postprocess_wires(void *ctx, egb_node_t *root)
 				line_type = atoi(e->value);
 			}
 	}
-
 	if(line_type == 0) {
 		for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
 			if (strcmp(e->key, "linetype_0_x1") == 0) {
@@ -1790,7 +1788,14 @@ static int postprocess_wires(void *ctx, egb_node_t *root)
 				egb_node_prop_set(root, "width", tmp);
 			} /* <- added width doubling routine here */
 		}
-	} else {
+	} else if (line_type > 0) { /* avoid parsing non wire and non arc elements */
+		for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
+			if (strcmp(e->key, "half_width") == 0) {
+				half_width = atoi(e->value);
+				sprintf(tmp, "%ld", half_width*2);
+				egb_node_prop_set(root, "width", tmp);
+                        }
+		}
 		arc_decode(ctx, root, -1, line_type);
 	}
 
@@ -1832,7 +1837,7 @@ static int postprocess_arcs(void *ctx, egb_node_t *root)
 				egb_node_prop_set(root, "width", tmp);
 			} /* <- added width doubling routine here */
 		}
-	} else {
+	} else if (arc_type > 0) { /* avoid further parsing of non arc elements */
 		for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
 			if (strcmp(e->key, "arctype_other_x1") == 0) {
 				egb_node_prop_set(root, "x1", e->value);
