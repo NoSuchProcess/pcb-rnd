@@ -372,6 +372,7 @@ typedef struct {
 	pcb_hid_attr_val_t property[PCB_HATP_max];
 	Dimension minw, minh;
 	void (*close_cb)(void *caller_data, pcb_hid_attr_ev_t ev);
+	char *id;
 	unsigned close_cb_called:1;
 	unsigned already_closing:1;
 	unsigned inhibit_valchg:1;
@@ -874,6 +875,7 @@ void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_att
 	ctx->minw = ctx->minh = 32;
 	ctx->close_cb = button_cb;
 	ctx->close_cb_called = 0;
+	ctx->id = pcb_strdup(id);
 
 	for (i = 0; i < n_attrs; i++) {
 		if (attrs[i].help_text != ATTR_UNDOCUMENTED)
@@ -922,7 +924,7 @@ void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_att
 	stdarg(XmNminHeight, ctx->minh);
 	XtSetValues(XtParent(ctx->dialog), stdarg_args, stdarg_n);
 
-	pcb_event(PCB_EVENT_DAD_NEW_DIALOG, "ps", ctx, id);
+	pcb_event(PCB_EVENT_DAD_NEW_DIALOG, "ps", ctx, ctx->id);
 
 	if (!modal)
 		XtManageChild(ctx->dialog);
@@ -957,6 +959,7 @@ void lesstif_attr_dlg_free(void *hid_ctx)
 
 	free(ctx->wl);
 	XtDestroyWidget(ctx->dialog);
+	free(ctx->id);
 	free(ctx);
 }
 
