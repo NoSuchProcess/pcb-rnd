@@ -30,8 +30,6 @@
 #ifndef PCB_LAYER_GRP_H
 #define PCB_LAYER_GRP_H
 
-typedef struct pcb_layergrp_s pcb_layergrp_t;
-
 #include "layer.h"
 
 /* ----------------------------------------------------------------------

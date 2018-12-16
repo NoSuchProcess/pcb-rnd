@@ -33,6 +33,8 @@ typedef struct pcb_board_s pcb_board_t;
 typedef struct pcb_data_s pcb_data_t;
 typedef struct pcb_layer_stack_s pcb_layer_stack_t;
 typedef struct pcb_layer_s pcb_layer_t;
+typedef struct pcb_layergrp_s pcb_layergrp_t;
+typedef struct pcb_polyarea_s pcb_polyarea_t;
 typedef struct pcb_buffer_s pcb_buffer_t;
 typedef struct pcb_net_s pcb_net_t;
 typedef struct pcb_connection_s pcb_connection_t;

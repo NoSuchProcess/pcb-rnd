@@ -101,7 +101,6 @@ void pcb_poly_vertex_exclude(pcb_vnode_t * node);
 
 /**********************************************************************/
 
-typedef struct pcb_polyarea_s pcb_polyarea_t;
 struct pcb_polyarea_s {
 	pcb_polyarea_t *f, *b;
 	pcb_pline_t *contours;
