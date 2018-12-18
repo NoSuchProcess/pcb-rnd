@@ -104,6 +104,90 @@ static const tedax_layer_t layertab[] = {
 	{NULL}
 };
 
+
+static void save_prop(pcb_board_t *pcb, FILE *f, const char *name, const char *key, const char *val)
+{
+	fprintf(f, "  lprop %s material %s %s\n", name, key, val);
+}
+
+
+static void save_user_props(pcb_board_t *pcb, FILE *f, pcb_layergrp_t *grp, const char *name)
+{
+	int n;
+	pcb_attribute_t *a;
+	char *mat = NULL, *thermk = NULL, *thick = NULL, *fab_color = NULL, *dielect = NULL;
+
+	for(n = 0, a = grp->Attributes.List; n < grp->Attributes.Number; n++,a++) {
+		char *key = a->name, *val = a->value;
+
+		if ((strcmp(key, "material") == 0) && (mat == NULL))
+			mat = val;
+		else if (strcmp(key, "tedax::material")== 0)
+			mat = val;
+		else if ((strcmp(key, "thermk") == 0) && (thermk == NULL))
+			thermk = val;
+		else if (strcmp(key, "tedax::thermk")== 0)
+			thermk = val;
+		else if ((strcmp(key, "fab-color") == 0) && (fab_color == NULL))
+			fab_color = val;
+		else if (strcmp(key, "tedax::fab-color")== 0)
+			fab_color = val;
+		else if ((strcmp(key, "thickness") == 0) && (thick == NULL))
+			thick = val;
+		else if (strcmp(key, "tedax::thickness")== 0)
+			thick = val;
+		else if ((strcmp(key, "dielect") == 0) && (dielect == NULL))
+			dielect = val;
+		else if (strcmp(key, "tedax::dielect")== 0)
+			dielect = val;
+	}
+
+
+	if (thermk != NULL)
+		save_prop(pcb, f, name, "thermk", thermk);
+	if (fab_color != NULL) {
+		if (grp->ltype & (PCB_LYT_TOP | PCB_LYT_BOTTOM)) {
+			save_prop(pcb, f, name, "fab-color", fab_color);
+		}
+		else {
+			char *title = pcb_strdup_printf("Unsupported group fab-color: %s", grp->name);
+			pcb_io_incompat_save(pcb->Data, NULL, "stackup", title, "Only outer layer groups should have fab-color.");
+			free(title);
+		}
+	}
+	if (dielect != NULL) {
+		if (grp->ltype & PCB_LYT_SUBSTRATE) {
+			save_prop(pcb, f, name, "dielect", dielect);
+		}
+		else {
+			char *title = pcb_strdup_printf("Unsupported group dielect: %s", grp->name);
+			pcb_io_incompat_save(pcb->Data, NULL, "stackup", title, "Group type should not have dielect constant - only substrate layers should.");
+			free(title);
+		}
+	}
+	if (mat != NULL) {
+		if (grp->ltype & PCB_LYT_SUBSTRATE) {
+			save_prop(pcb, f, name, "material", mat);
+		}
+		else {
+			char *title = pcb_strdup_printf("Unsupported group material: %s", grp->name);
+			pcb_io_incompat_save(pcb->Data, NULL, "stackup", title, "Group type should not have a material - only substrate layers should.");
+			free(title);
+		}
+	}
+
+	if (thick != NULL) {
+		if (grp->ltype & (PCB_LYT_SUBSTRATE | PCB_LYT_COPPER)) {
+			save_prop(pcb, f, name, "thickness", thick);
+		}
+		else {
+			char *title = pcb_strdup_printf("Unsupported group thickness: %s", grp->name);
+			pcb_io_incompat_save(pcb->Data, NULL, "stackup", title, "Group type should not have a thickness - only substrate and copper layers should.");
+			free(title);
+		}
+	}
+}
+
 static const tedax_layer_t *tedax_layer_lookup_by_type(pcb_board_t *pcb, const pcb_layergrp_t *grp, const char **lloc)
 {
 	const tedax_layer_t *t;
@@ -189,6 +273,7 @@ int tedax_stackup_fsave(tedax_stackup_t *ctx, pcb_board_t *pcb, FILE *f)
 			ly = pcb_get_layer(PCB->Data, grp->lid[0]);
 		if (ly != NULL)
 			fprintf(f, "  lprop %s display-color #%02x%02x%02x\n", tn, ly->meta.real.color.r, ly->meta.real.color.g, ly->meta.real.color.b);
+		save_user_props(pcb, f, grp, tn);
 	}
 
 	fprintf(f, "end stackup\n");
