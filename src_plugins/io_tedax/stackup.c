@@ -179,7 +179,18 @@ static void save_user_props(pcb_board_t *pcb, FILE *f, pcb_layergrp_t *grp, cons
 
 	if (thick != NULL) {
 		if (grp->ltype & (PCB_LYT_SUBSTRATE | PCB_LYT_COPPER)) {
-			save_prop(pcb, f, name, "thickness", thick);
+			pcb_bool succ;
+			double th = pcb_get_value(thick, NULL, NULL, &succ);
+			if (succ) {
+				char tmp[64];
+				pcb_sprintf(tmp, "%mu", (pcb_coord_t)th);
+				save_prop(pcb, f, name, "thickness", tmp);
+			}
+			else {
+				char *title = pcb_strdup_printf("Invalid thickness value: %s", grp->name);
+				pcb_io_incompat_save(pcb->Data, NULL, "stackup", title, "Thicnkess value must be a numeric with an unit suffix, e.g. 0.7mm");
+				free(title);
+			}
 		}
 		else {
 			char *title = pcb_strdup_printf("Unsupported group thickness: %s", grp->name);
