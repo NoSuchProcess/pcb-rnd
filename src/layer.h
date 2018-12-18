@@ -269,7 +269,7 @@ int pcb_layer_listp(const pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_
 
 /**** layer creation (for load/import code) ****/
 
-/* Reset layers to the bare minimum (double sided board) */
+/* Reset layers and layer groups to empty */
 void pcb_layers_reset(pcb_board_t *pcb);
 
 /* Create a new layer and put it in an existing group (if grp is not -1). */
