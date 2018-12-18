@@ -214,6 +214,9 @@ pcb_layergrp_t *pcb_get_grp(pcb_layer_stack_t *stack, pcb_layer_type_t loc, pcb_
 pcb_layergrp_t *pcb_get_grp_new_intern(pcb_board_t *pcb, int intern_id);
 pcb_layergrp_t *pcb_get_grp_new_misc(pcb_board_t *pcb);
 
+/* append a layer group without any smart side effects - use only from io loaders */
+pcb_layergrp_t *pcb_get_grp_new_raw(pcb_board_t *pcb);
+
 /* ugly hack: remove the extra substrate we added after the outline layer */
 void pcb_layergrp_fix_old_outline(pcb_board_t *pcb);
 

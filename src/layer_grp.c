@@ -331,7 +331,7 @@ pcb_layergrp_t *pcb_layergrp_insert_after(pcb_board_t *pcb, pcb_layergrp_id_t wh
 	return stack->grp+where+1;
 }
 
-static void pcb_get_grp_new_intern_insert(pcb_board_t *pcb, int room, int bl, int omit_substrate)
+static pcb_layergrp_t *pcb_get_grp_new_intern_insert(pcb_board_t *pcb, int room, int bl, int omit_substrate)
 {
 	pcb_layer_stack_t *stack = &pcb->LayerGroups;
 
@@ -346,6 +346,7 @@ static void pcb_get_grp_new_intern_insert(pcb_board_t *pcb, int room, int bl, in
 	bl++;
 	if (!omit_substrate)
 		make_substrate(pcb, &stack->grp[bl]);
+	return &stack->grp[bl-1];
 }
 
 static pcb_layergrp_t *pcb_get_grp_new_intern_(pcb_board_t *pcb, int omit_substrate, int force_end)
@@ -408,6 +409,17 @@ pcb_layergrp_t *pcb_get_grp_new_misc(pcb_board_t *pcb)
 	NOTIFY(pcb);
 	return g;
 }
+
+pcb_layergrp_t *pcb_get_grp_new_raw(pcb_board_t *pcb)
+{
+	pcb_layergrp_t *g;
+	inhibit_notify++;
+	g = pcb_get_grp_new_intern_insert(pcb, 1, pcb->LayerGroups.len, 1);
+	inhibit_notify--;
+	NOTIFY(pcb);
+	return g;
+}
+
 
 /* Move an inclusive block of groups [from..to] by delta on the stack, assuming
    target is already cleared and the new hole will be cleared by the caller */
