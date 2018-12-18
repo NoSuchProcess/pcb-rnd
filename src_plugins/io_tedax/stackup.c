@@ -38,6 +38,7 @@
 #include "compat_misc.h"
 #include "safe_fs.h"
 #include "error.h"
+#include "plug_io.h"
 
 void tedax_stackup_init(tedax_stackup_t *ctx)
 {
