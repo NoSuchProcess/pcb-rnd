@@ -22,3 +22,6 @@ int tedax_getline(FILE *f, char *buff, int buff_size, char *argv[], int argv_siz
 int tedax_seek_hdr(FILE *f, char *buff, int buff_size, char *argv[], int argv_size);
 int tedax_seek_block(FILE *f, const char *blk_name, const char *blk_ver, int silent, char *buff, int buff_size, char *argv[], int argv_size);
 
+
+/* print val with specil chars escaped */
+void tedax_fprint_escape(FILE *f, const char *val);

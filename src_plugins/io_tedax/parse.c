@@ -121,3 +121,18 @@ int tedax_seek_block(FILE *f, const char *blk_name, const char *blk_ver, int sil
 
 	return argc;
 }
+
+void tedax_fprint_escape(FILE *f, const char *val)
+{
+	for(; *val != '\0'; val++) {
+		switch(*val) {
+			case '\\': fputc('\\', f); fputc('\\', f); break;
+			case '\n': fputc('\\', f); fputc('n', f); break;
+			case '\r': fputc('\\', f); fputc('r', f); break;
+			case '\t': fputc('\\', f); fputc('t', f); break;
+			case ' ': fputc('\\', f); fputc(' ', f); break;
+			default:
+				fputc(*val, f);
+		}
+	}
+}

@@ -105,10 +105,15 @@ static const tedax_layer_t layertab[] = {
 	{NULL}
 };
 
-
 static void save_prop(pcb_board_t *pcb, FILE *f, const char *name, const char *key, const char *val)
 {
-	fprintf(f, "  lprop %s material %s %s\n", name, key, val);
+	if ((strlen(name) + strlen(key) + strlen(val)*2 + 32) >= 512) {
+		pcb_io_incompat_save(pcb->Data, NULL, "stackup", "Propert value string too long", val);
+		return;
+	}
+	fprintf(f, "  lprop %s material %s ", name, key);
+	tedax_fprint_escape(f, val);
+	fputc('\n', f);
 }
 
 
