@@ -91,14 +91,14 @@ static const tedax_layer_t layertab[] = {
 	{"silk",      NULL,        PCB_LYT_SILK,      0, TDX_OUTER},
 	{"paste",     NULL,        PCB_LYT_PASTE,     0, TDX_OUTER},
 	{"mask",      NULL,        PCB_LYT_MASK,      0, TDX_OUTER},
-	{"umech",     "udrill",    PCB_LYT_BOUNDARY,  0, TDX_ALL},
 	{"umech",     "uroute",    PCB_LYT_BOUNDARY,  0, TDX_ALL},
-	{"umech",     "udrill",    PCB_LYT_MECH,      0, TDX_ALL},
+	{"umech",     "udrill",    PCB_LYT_BOUNDARY,  0, TDX_ALL},
 	{"umech",     "uroute",    PCB_LYT_MECH,      0, TDX_ALL},
-	{"pmech",     "pdrill",    PCB_LYT_BOUNDARY,  0, TDX_ALL},
+	{"umech",     "udrill",    PCB_LYT_MECH,      0, TDX_ALL},
 	{"pmech",     "proute",    PCB_LYT_BOUNDARY,  0, TDX_ALL},
-	{"pmech",     "pdrill",    PCB_LYT_MECH,      0, TDX_ALL},
+	{"pmech",     "pdrill",    PCB_LYT_BOUNDARY,  0, TDX_ALL},
 	{"pmech",     "proute",    PCB_LYT_MECH,      0, TDX_ALL},
+	{"pmech",     "pdrill",    PCB_LYT_MECH,      0, TDX_ALL},
 	{"vcut",      "vcut",      PCB_LYT_BOUNDARY,  0, TDX_ALL},
 	{"vcut",      "vcut",      PCB_LYT_MECH,      0, TDX_ALL},
 	{"doc",       ANY_PURP,    PCB_LYT_DOC,       1, TDX_OUTER | TDX_INNER | TDX_ALL},
@@ -246,6 +246,33 @@ static const tedax_layer_t *tedax_layer_lookup_by_type(pcb_board_t *pcb, const p
 	return NULL;
 }
 
+static int tedax_layer_set_by_str(pcb_board_t *pcb, pcb_layergrp_t *grp, const char *lloc, const char *typename)
+{
+	const tedax_layer_t *t;
+
+	grp->ltype = 0;
+	if (strcmp(lloc, "top") == 0) grp->ltype |= PCB_LYT_TOP;
+	else if (strcmp(lloc, "inner") == 0) grp->ltype |= PCB_LYT_INTERN;
+	else if (strcmp(lloc, "bottom") == 0) grp->ltype |= PCB_LYT_BOTTOM;
+	else if (strcmp(lloc, "virtual") == 0) grp->ltype |= PCB_LYT_VIRTUAL;
+	else if (strcmp(lloc, "all") == 0) {}
+	else
+		pcb_message(PCB_MSG_ERROR, "invalid layer location: %s\n", lloc);
+
+	for(t = layertab; t->typename != NULL; t++) {
+		if (strcmp(typename, t->typename) == 0) {
+			grp->ltype |= t->type;
+			grp->purpose = NULL;
+			if (t->purpose != NULL)
+				pcb_layergrp_set_purpose(grp, t->purpose);
+			return 0;
+		}
+	}
+
+	pcb_message(PCB_MSG_ERROR, "invalid layer type: %s\n", typename);
+	return -1;
+}
+
 int tedax_stackup_fsave(tedax_stackup_t *ctx, pcb_board_t *pcb, FILE *f)
 {
 	int prefix = 0;
@@ -316,4 +343,79 @@ int tedax_stackup_save(pcb_board_t *pcb, const char *fn)
 	return res;
 }
 
+static pcb_layergrp_t *get_grp_by_name(tedax_stackup_t *ctx, pcb_board_t *pcb, const char *name)
+{
+	pcb_layergrp_t *grp = htsp_get(&ctx->n2g, name);
 
+	if (grp == NULL) {
+		char *nn;
+
+		grp = pcb_get_grp_new_raw(pcb);
+		grp->name = pcb_strdup(name);
+		nn = pcb_strdup(name);
+		htsp_set(&ctx->n2g, nn, grp);
+		vtp0_set(&ctx->g2n, (grp - pcb->LayerGroups.grp), nn);
+	}
+	return grp;
+}
+
+int tedax_stackup_parse(tedax_stackup_t *ctx, pcb_board_t *pcb, FILE *f, char *buff, int buff_size, char *argv[], int argv_size)
+{
+	int argc, res = -1;
+	pcb_layers_reset(pcb);
+
+	while((argc = tedax_getline(f, buff, buff_size, argv, argv_size)) >= 0) {
+		pcb_layergrp_t *grp;
+		if (strcmp(argv[0], "layer") == 0) {
+			grp = get_grp_by_name(ctx, pcb, argv[1]);
+			tedax_layer_set_by_str(pcb, grp, argv[2], argv[3]);
+			if (!(grp->ltype & PCB_LYT_SUBSTRATE))
+				pcb_layer_create(pcb, grp - pcb->LayerGroups.grp, pcb_strdup(argv[1]));
+
+		}
+		else if (strcmp(argv[0], "lprop") == 0) {
+			grp = get_grp_by_name(ctx, pcb, argv[1]);
+		}
+		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "stackup") == 0)) {
+			res = 0;
+			break;
+		}
+	}
+	return 0;
+}
+
+
+int tedax_stackup_fload(tedax_stackup_t *ctx, pcb_board_t *pcb, FILE *f)
+{
+	char line[520];
+	char *argv[16];
+	int found = 0;
+
+	if (tedax_seek_hdr(f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
+		return -1;
+
+	if (tedax_seek_block(f, "stackup", "v1", 0, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
+		return -1;
+
+	return tedax_stackup_parse(ctx, pcb, f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]));
+}
+
+
+int tedax_stackup_load(pcb_board_t *pcb, const char *fn)
+{
+	int res;
+	FILE *f;
+	tedax_stackup_t ctx;
+
+	f = pcb_fopen(fn, "r");
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "tedax_stackup_load(): can't open %s for reading\n", fn);
+		return -1;
+	}
+	tedax_stackup_init(&ctx);
+	fprintf(f, "tEDAx v1\n");
+	res = tedax_stackup_fload(&ctx, pcb, f);
+	fclose(f);
+	tedax_stackup_uninit(&ctx);
+	return res;
+}
