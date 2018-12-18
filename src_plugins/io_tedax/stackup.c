@@ -171,7 +171,11 @@ int tedax_stackup_fsave(tedax_stackup_t *ctx, pcb_board_t *pcb, FILE *f)
 			gen_layer_name(tname, grp->name, prefix);
 		}
 
-
+		if (grp->len > 1) {
+			char *title = pcb_strdup_printf("Multilayer group: %s", grp->name);
+			pcb_io_incompat_save(pcb->Data, NULL, "stackup", title, "All layers are merged into a single layer");
+			free(title);
+		}
 
 		tn = pcb_strdup(tname);
 		htsp_set(&ctx->n2g, tn, grp);
