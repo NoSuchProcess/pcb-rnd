@@ -156,6 +156,7 @@ int tedax_stackup_fsave(tedax_stackup_t *ctx, pcb_board_t *pcb, FILE *f)
 	for(gid = 0, grp = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,grp++) {
 		char tname[66], *tn;
 		const char *lloc;
+		pcb_layer_t *ly = NULL;
 		const tedax_layer_t *lt = tedax_layer_lookup_by_type(pcb, grp, &lloc);
 
 		if (lt == NULL) {
@@ -177,11 +178,17 @@ int tedax_stackup_fsave(tedax_stackup_t *ctx, pcb_board_t *pcb, FILE *f)
 			free(title);
 		}
 
+
 		tn = pcb_strdup(tname);
 		htsp_set(&ctx->n2g, tn, grp);
 		vtp0_set(&ctx->g2n, gid, tn);
 
 		fprintf(f, "layer %s %s %s\n", tn, lloc, lt->typename);
+
+		if (grp->len > 0)
+			ly = pcb_get_layer(PCB->Data, grp->lid[0]);
+		if (ly != NULL)
+			fprintf(f, "lprop %s display-color #%02x%02x%02x\n", tn, ly->meta.real.color.r, ly->meta.real.color.g, ly->meta.real.color.b);
 	}
 
 	fprintf(f, "end stackup\n");
