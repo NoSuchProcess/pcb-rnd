@@ -3,6 +3,7 @@ put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/io_tedax/io_tedax.o
 	$(PLUGDIR)/io_tedax/netlist.o
 	$(PLUGDIR)/io_tedax/footprint.o
+	$(PLUGDIR)/io_tedax/stackup.o
 	$(PLUGDIR)/io_tedax/parse.o
 @]
 

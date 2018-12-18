@@ -1,0 +1,206 @@
+/*
+ *                            COPYRIGHT
+ *
+ *  pcb-rnd, interactive printed circuit board design
+ *
+ *  tedax IO plugin - stackup import/export
+ *  pcb-rnd Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ *  Contact:
+ *    Project page: http://repo.hu/projects/pcb-rnd
+ *    lead developer: http://repo.hu/projects/pcb-rnd/contact.html
+ *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
+ */
+
+#include "config.h"
+#include <stdio.h>
+#include <math.h>
+#include <genht/htsp.h>
+#include <genht/htip.h>
+#include <genht/hash.h>
+
+#include "stackup.h"
+#include "parse.h"
+#include "compat_misc.h"
+#include "safe_fs.h"
+#include "error.h"
+
+void tedax_stackup_init(tedax_stackup_t *ctx)
+{
+	htsp_init(&ctx->n2g, strhash, strkeyeq);
+	vtp0_init(&ctx->g2n);
+}
+
+void tedax_stackup_uninit(tedax_stackup_t *ctx)
+{
+	htsp_uninit(&ctx->n2g);
+	vtp0_uninit(&ctx->g2n);
+}
+
+
+static void gen_layer_name(char dst[65], const char *name, int prefix)
+{
+	char *d = dst;
+	int rem = 64, l;
+
+	if (prefix != 0) {
+		l = sprintf(dst, "%d_", prefix);
+		rem -= l;
+		d += l;
+	}
+	for(;(*name != '\0') && (rem > 0);rem--,name++) {
+		if (isalnum(*name) || (*name == '-') || (*name == '.') || (*name == '_'))
+			*d = *name;
+		else
+			*d = '_';
+		d++;
+	}
+	*d = '\0';
+}
+
+static const char ANY_PURP[] = "any";
+
+typedef enum { TDX_OUTER=1, TDX_INNER=2, TDX_ALL=4, TDX_VIRTUAL=8 } tedax_loc_t;
+
+typedef struct {
+	const char *typename;
+	const char *purpose;
+	pcb_layer_type_t type;
+	int force_virtual;
+	tedax_loc_t loc;
+} tedax_layer_t;
+
+static const tedax_layer_t layertab[] = {
+	{"copper",    NULL,        PCB_LYT_COPPER,    0, TDX_OUTER | TDX_INNER},
+	{"insulator", NULL,        PCB_LYT_SUBSTRATE, 0, TDX_INNER},
+	{"silk",      NULL,        PCB_LYT_SILK,      0, TDX_OUTER},
+	{"paste",     NULL,        PCB_LYT_PASTE,     0, TDX_OUTER},
+	{"mask",      NULL,        PCB_LYT_MASK,      0, TDX_OUTER},
+	{"umech",     "udrill",    PCB_LYT_BOUNDARY,  0, TDX_ALL},
+	{"umech",     "uroute",    PCB_LYT_BOUNDARY,  0, TDX_ALL},
+	{"umech",     "udrill",    PCB_LYT_MECH,      0, TDX_ALL},
+	{"umech",     "uroute",    PCB_LYT_MECH,      0, TDX_ALL},
+	{"pmech",     "pdrill",    PCB_LYT_BOUNDARY,  0, TDX_ALL},
+	{"pmech",     "proute",    PCB_LYT_BOUNDARY,  0, TDX_ALL},
+	{"pmech",     "pdrill",    PCB_LYT_MECH,      0, TDX_ALL},
+	{"pmech",     "proute",    PCB_LYT_MECH,      0, TDX_ALL},
+	{"vcut",      "vcut",      PCB_LYT_BOUNDARY,  0, TDX_ALL},
+	{"vcut",      "vcut",      PCB_LYT_MECH,      0, TDX_ALL},
+	{"doc",       ANY_PURP,    PCB_LYT_DOC,       1, TDX_OUTER | TDX_INNER | TDX_ALL},
+	{NULL}
+};
+
+static const tedax_layer_t *tedax_layer_lookup_by_type(pcb_board_t *pcb, const pcb_layergrp_t *grp, const char **lloc)
+{
+	const tedax_layer_t *t;
+
+	for(t = layertab; t->typename != NULL; t++) {
+		int loc_accept = 0;
+		if ((grp->ltype & t->type) != t->type)
+			continue;
+		if (t->purpose != NULL)
+			if ((grp->purpose == NULL) || (strcmp(grp->purpose, t->purpose) != 0))
+				continue;
+
+		loc_accept |= ((t->loc & TDX_OUTER) && (grp->ltype & (PCB_LYT_TOP | PCB_LYT_BOTTOM)));
+		loc_accept |= ((t->loc & TDX_INNER) && (grp->ltype & PCB_LYT_INTERN));
+		loc_accept |= ((t->loc & TDX_ALL) && (grp->ltype & PCB_LYT_ANYWHERE) == 0);
+		loc_accept |= ((t->loc & TDX_VIRTUAL) && (grp->ltype & PCB_LYT_VIRTUAL));
+
+		if (!loc_accept)
+			continue;
+
+		/* found a match */
+		if (!t->force_virtual) {
+			if (grp->ltype & PCB_LYT_TOP) *lloc = "top";
+			else if (grp->ltype & PCB_LYT_INTERN) *lloc = "inner";
+			else if (grp->ltype & PCB_LYT_BOTTOM) *lloc = "bottom";
+			else if (grp->ltype & PCB_LYT_VIRTUAL) *lloc = "virtual";
+			else if ((grp->ltype & PCB_LYT_ANYWHERE) == 0) *lloc = "all";
+			else {
+				char *title = pcb_strdup_printf("Unsupported group loc: %s", grp->name);
+				pcb_io_incompat_save(pcb->Data, NULL, "stackup", title, "The group is omitted from the output.");
+				free(title);
+				continue;
+			}
+		}
+		else
+			*lloc = "virtual";
+		return t;
+	}
+	return NULL;
+}
+
+int tedax_stackup_fsave(tedax_stackup_t *ctx, pcb_board_t *pcb, FILE *f)
+{
+	int prefix = 0;
+	pcb_layergrp_id_t gid;
+	pcb_layergrp_t *grp;
+	fprintf(f, "begin stackup v1 pcb-rnd-board\n");
+
+	vtp0_enlarge(&ctx->g2n, pcb->LayerGroups.len+1);
+	for(gid = 0, grp = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,grp++) {
+		char tname[66], *tn;
+		const char *lloc;
+		const tedax_layer_t *lt = tedax_layer_lookup_by_type(pcb, grp, &lloc);
+
+		if (lt == NULL) {
+			char *title = pcb_strdup_printf("Unsupported group: %s", grp->name);
+			pcb_io_incompat_save(pcb->Data, NULL, "stackup", title, "Layer type/purpose/location is not supported by tEDAx, layer will be omitted from the save.");
+			free(title);
+			continue;
+		}
+
+		gen_layer_name(tname, grp->name, 0);
+		if (htsp_has(&ctx->n2g, tname)) {
+			prefix++;
+			gen_layer_name(tname, grp->name, prefix);
+		}
+
+
+
+		tn = pcb_strdup(tname);
+		htsp_set(&ctx->n2g, tn, grp);
+		vtp0_set(&ctx->g2n, gid, tn);
+
+		fprintf(f, "layer %s %s %s\n", tn, lloc, lt->typename);
+	}
+
+	fprintf(f, "end stackup\n");
+	return 0;
+}
+
+int tedax_stackup_save(pcb_board_t *pcb, const char *fn)
+{
+	int res;
+	FILE *f;
+	tedax_stackup_t ctx;
+
+	f = pcb_fopen(fn, "w");
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "tedax_stackup_save(): can't open %s for writing\n", fn);
+		return -1;
+	}
+	tedax_stackup_init(&ctx);
+	fprintf(f, "tEDAx v1\n");
+	res = tedax_stackup_fsave(&ctx, pcb, f);
+	fclose(f);
+	tedax_stackup_uninit(&ctx);
+	return res;
+}
+
+

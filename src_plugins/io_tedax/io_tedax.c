@@ -61,7 +61,7 @@ int io_tedax_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt
 }
 
 
-static const char pcb_acts_Savetedax[] = "SaveTedax(board-footprints, filename)";
+static const char pcb_acts_Savetedax[] = "SaveTedax(board-footprints|stackup, filename)";
 static const char pcb_acth_Savetedax[] = "Saves the specific type of data in a tEDAx file. Type can be: board-footprints";
 static fgw_error_t pcb_act_Savetedax(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -72,6 +72,11 @@ static fgw_error_t pcb_act_Savetedax(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (pcb_strcasecmp(type, "board-footprints") == 0) {
 		PCB_ACT_IRES(tedax_fp_save(PCB->Data, fname));
+		return 0;
+	}
+
+	if (pcb_strcasecmp(type, "stackup") == 0) {
+		PCB_ACT_IRES(tedax_stackup_save(PCB, fname));
 		return 0;
 	}
 
