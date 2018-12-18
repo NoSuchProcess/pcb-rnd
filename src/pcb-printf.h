@@ -44,6 +44,7 @@
  * The new coord/angle specifiers are:
  *   %mI    output a raw internal coordinate without any suffix
  *   %mm    output a measure in mm
+ *   %mu    output a measure in um
  *   %mM    output a measure in scaled (mm/um) metric
  *   %ml    output a measure in mil
  *   %mk    output a measure in decimil (kicad legacy format)
