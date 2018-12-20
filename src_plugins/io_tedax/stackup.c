@@ -375,6 +375,15 @@ int tedax_stackup_parse(tedax_stackup_t *ctx, pcb_board_t *pcb, FILE *f, char *b
 		}
 		else if (strcmp(argv[0], "lprop") == 0) {
 			grp = get_grp_by_name(ctx, pcb, argv[1]);
+			if (strcmp(argv[2], "display-color") == 0) {
+				if (grp->len > 0) {
+					pcb_layer_t *ly = pcb_get_layer(pcb->Data, grp->lid[0]);
+					if (ly != NULL)
+						pcb_color_load_str(&ly->meta.real.color, argv[3]);
+				}
+			}
+			else
+				pcb_attribute_put(&grp->Attributes, argv[2], argv[3]);
 		}
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "stackup") == 0)) {
 			res = 0;
