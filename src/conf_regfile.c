@@ -29,10 +29,6 @@
 
 #include <genht/htsi.h>
 
-static htsi_t conf_files;
-static htsi_t conf_interns;
-static int conf_files_inited = 0;
-
 static void conf_files_init(void)
 {
 	htsi_init(&conf_files, strhash, strkeyeq);
@@ -64,6 +60,11 @@ void conf_reg_file(const char *path, const char *intern)
 		htsi_set(&conf_interns, (char *)intern, 1);
 	else
 		e->value++;
+
+	if (conf_in_production) {
+		if (conf_load_plug_interns(CFR_INTERNAL))
+			conf_merge_all(NULL);
+	}
 }
 
 static void conf_unreg_any(htsi_t *ht, const char *key, int free_key)

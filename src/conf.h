@@ -150,8 +150,15 @@ void conf_init(void);
 void conf_uninit(void);
 
 /* Load all config files from disk into memory-lht and run conf_update to
-   get the binary representation updated */
+   get the binary representation updated. Called only once, from main.c.
+   Switches the conf system into production mode - new plugins registering new
+   internal files will get special treat after this. */
 void conf_load_all(const char *project_fn, const char *pcb_fn);
+
+/* Set to 1 after conf_load_all() to indicate that the in-memory conf
+   system is complete; any new plugin registering new conf will need to
+   trigger a refresh */
+extern int conf_in_production;
 
 /* Load a file or a string as a role */
 int conf_load_as(conf_role_t role, const char *fn, int fn_is_text);

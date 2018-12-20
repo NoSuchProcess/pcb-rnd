@@ -27,6 +27,7 @@
 #include <assert.h>
 #include <string.h>
 #include <ctype.h>
+#include <genht/htsi.h>
 #include <genht/hash.h>
 #include <liblihata/tree.h>
 #include <stdarg.h>
@@ -50,6 +51,13 @@ const char *conf_list_name = "pcb-rnd-conf-v1";
 static const char *conf_user_fn = CONF_USER_DIR "/pcb-conf.lht";
 static const char *flcat = "conf";
 
+/* plugin config files and interns */
+static htsi_t conf_files;
+static htsi_t conf_interns;
+static int conf_files_inited = 0;
+
+
+int conf_in_production = 0;
 
 /* The main conf: monolithic config files affecting all parts of the conf tree;
    By default every operation is done on these trees. */
@@ -233,7 +241,6 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 	return -1;
 }
 
-#include "conf_regfile.c"
 
 static int conf_merge_plug(lht_doc_t *d, conf_role_t role, const char *path)
 {
@@ -1180,6 +1187,8 @@ void conf_load_all(const char *project_fn, const char *pcb_fn)
 	   get saved. */
 	if (conf_main_root[CFR_USER] == NULL)
 		conf_reset(CFR_USER, conf_user_fn);
+
+	conf_in_production = 1;
 }
 
 void conf_load_extra(const char *project_fn, const char *pcb_fn)
@@ -2162,3 +2171,5 @@ int pcb_conf_cmd_is_safe_(const char *path_, const char *value, const char **val
 		*val_out = value;
 	return 1;
 }
+
+#include "conf_regfile.c"
