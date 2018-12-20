@@ -58,6 +58,7 @@ static void help1(void)
 	printf(" --coord=32|64              set coordinate integer type's width in bits\n");
 	printf(" --dot_pcb_pcb=path         .pcb-rnd config path under $HOME/\n");
 	printf(" --workaround-gtk-ctrl      enable GTK control key query workaround\n");
+	printf(" --man1dir=path             change installation path of man1 files (under prefix)\n");
 	printf(" --all=plugin               enable all working plugins for dynamic load\n");
 	printf(" --all=buildin              enable all working plugins for static link\n");
 	printf(" --all=disable              disable all plugins (compile core only)\n");
@@ -139,6 +140,10 @@ int hook_custom_arg(const char *key, const char *value)
 	}
 	if (strcmp(key, "coord") == 0)
 		put("/local/pcb/dot_pcb_rnd", value);
+	if (strcmp(key, "man1dir") == 0) {
+		put("/local/man1dir", value);
+		return 1;
+	}
 	if (strncmp(key, "workaround-", 11) == 0) {
 		const char *what = key+11;
 		if (strcmp(what, "gtk-ctrl") == 0) append("/local/pcb/workaround_defs", "\n#define PCB_WORKAROUND_GTK_CTRL 1");
@@ -262,6 +267,7 @@ int hook_postinit()
 
 	/* DEFAULTS */
 	put("/local/prefix", "/usr/local");
+	put("/local/man1dir", "/share/man/man1");
 
 #undef plugin_def
 #undef plugin_header
