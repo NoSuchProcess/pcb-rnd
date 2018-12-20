@@ -1505,7 +1505,9 @@ void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, pcb_coord_t y_offs, pcb
 	if ((data != NULL) && (data->subc_tree != NULL))
 		pcb_r_delete_entry(data->subc_tree, (pcb_box_t *)subc);
 
+	pcb_undo_freeze_add();
 	pcb_data_mirror(subc->data, y_offs, smirror ? PCB_TXM_SIDE : PCB_TXM_COORD, smirror);
+	pcb_undo_unfreeze_add();
 	pcb_subc_bbox(subc);
 
 	if ((data != NULL) && (data->subc_tree != NULL))
