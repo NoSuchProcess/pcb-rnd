@@ -1,3 +1,4 @@
+21942	configure	io_tedax for new blocks
 21876	configure	moving out the old drc to a plugin
 21580	configure	HID API cleanup, including dialogs rewritten with DAD and new DAD features
 21289	configure	new drc infra and GUI
