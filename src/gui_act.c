@@ -1692,6 +1692,23 @@ static fgw_error_t pcb_act_GetXY(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_boardflip[] = "BoardFlip([sides])";
+static const char pcb_acth_boardflip[] = "Mirror the board over the x axis, optionally mirroring sides as well.";
+/* DOC: boardflip.html */
+static fgw_error_t pcb_act_boardflip(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	int op = -2;
+	pcb_bool smirror;
+
+	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, boardflip, op = fgw_keyword(&argv[1]));
+
+	smirror = (op == F_Sides);
+	pcb_data_mirror(PCB->Data, 0, smirror ? PCB_TXM_SIDE : PCB_TXM_COORD, smirror);
+
+	PCB_ACT_IRES(0);
+	return 0;
+}
+
 static pcb_hid_attribute_t printer_calibrate_attrs[] = {
 	{N_("Enter Values here:"), "",
 	 PCB_HATT_LABEL, 0, 0, {0, 0, 0}, 0, 0},
@@ -1744,6 +1761,7 @@ pcb_action_t gui_action_list[] = {
 	{"SetUnits", pcb_act_SetUnits, pcb_acth_setunits, pcb_acts_setunits},
 	{"ChkRst", pcb_act_ChkRst, pcb_acth_chkrst, pcb_acts_chkrst},
 	{"GetXY", pcb_act_GetXY, pcb_acth_GetXY, pcb_acts_GetXY},
+	{"BoardFlip", pcb_act_boardflip, pcb_acth_boardflip, pcb_acts_boardflip},
 	{"PrintCalibrate", pcb_act_PrintCalibrate, pcb_acth_PrintCalibrate, pcb_acts_PrintCalibrate}
 };
 

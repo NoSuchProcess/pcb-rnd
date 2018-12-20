@@ -253,7 +253,7 @@
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h actions.h \
- compat_misc.h ../src_plugins/boardflip/boardflip.h unit.h \
+ compat_misc.h unit.h \
  funchash_core.h funchash.h funchash_core_list.h dolists.h
 ../src_plugins/cam/cam.o: ../src_plugins/cam/cam.c ../config.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
@@ -2505,7 +2505,7 @@
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_plugins/io_autotrax/read.h layer.h netlist.h route_style.h \
  polygon.h misc_util.h conf_core.h move.h macro.h safe_fs.h rotate.h \
- compat_misc.h ../src_plugins/boardflip/boardflip.h unit.h actions.h \
+ compat_misc.h unit.h actions.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h \
  ../src_plugins/lib_compat_help/pstk_help.h \
  ../src_plugins/lib_compat_help/subc_help.h obj_subc.h
@@ -2648,7 +2648,7 @@
  compat_misc.h ../src_plugins/io_eagle/trparse.h \
  ../src_plugins/io_eagle/trparse_xml.h \
  ../src_plugins/io_eagle/trparse_bin.h obj_subc.h \
- ../src_3rd/libminuid/libminuid.h ../src_plugins/boardflip/boardflip.h \
+ ../src_3rd/libminuid/libminuid.h \
  data.h crosshair.h vtonpoint.h route.h buffer.h obj_rat_list.h obj_rat.h \
  obj_subc_list.h obj_subc.h ht_subc.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h vtpadstack.h \
