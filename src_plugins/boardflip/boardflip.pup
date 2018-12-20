@@ -1,7 +1,0 @@
-$class feature
-$short flip board objects
-$long All objects on the board are up-down flipped.
-$package (core)
-$lstate doesn't update rtrees
-default buildin
-autoload 1

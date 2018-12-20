@@ -6,7 +6,6 @@ include {../src_plugins/asm/Plug.tmpasm}
 include {../src_plugins/autocrop/Plug.tmpasm}
 include {../src_plugins/autoplace/Plug.tmpasm}
 include {../src_plugins/autoroute/Plug.tmpasm}
-include {../src_plugins/boardflip/Plug.tmpasm}
 include {../src_plugins/cam/Plug.tmpasm}
 include {../src_plugins/ddraft/Plug.tmpasm}
 include {../src_plugins/diag/Plug.tmpasm}
