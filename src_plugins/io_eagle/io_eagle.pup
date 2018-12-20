@@ -10,5 +10,4 @@ $fmt-feature-r eagle binary library
 $fmt-feature-r eagle DRU (design rules)
 $package io-alien
 default buildin
-dep boardflip
 autoload 1

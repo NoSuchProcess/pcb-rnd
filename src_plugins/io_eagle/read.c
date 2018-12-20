@@ -32,6 +32,7 @@
 #include <math.h>
 
 #include "board.h"
+#include "data.h"
 #include "read.h"
 #include "conf.h"
 #include "conf_core.h"
@@ -45,7 +46,6 @@
 #include "trparse_bin.h"
 #include "obj_subc.h"
 
-#include "../src_plugins/boardflip/boardflip.h"
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 #include "../src_plugins/lib_compat_help/subc_help.h"
 #include "../src_plugins/lib_compat_help/pstk_help.h"
@@ -1652,8 +1652,11 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	old_leni = pcb_create_being_lenient;
 	pcb_create_being_lenient = 1;
 	res = eagle_foreach_dispatch(&st, st.parser.calls->children(&st.parser, st.parser.root), disp, NULL, 0);
-	if (res == 0)
-		pcb_flip_data(pcb->Data, 0, 1, 0, pcb->MaxHeight, 0);
+	if (res == 0) {
+		pcb_undo_freeze_add();
+		pcb_data_mirror(pcb->Data, 0, PCB_TXM_COORD, 0);
+		pcb_undo_unfreeze_add();
+	}
 	pcb_create_being_lenient = old_leni;
 	pcb_board_normalize(pcb);
 	pcb_layer_colors_from_conf(pcb, 1);
@@ -1704,8 +1707,11 @@ int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	pcb_create_being_lenient = 1;
 	res = eagle_foreach_dispatch(&st, st.parser.calls->children(&st.parser, st.parser.root), disp_1, NULL, 0);
 	res |= eagle_foreach_dispatch(&st, st.parser.calls->children(&st.parser, st.parser.root), disp_2, NULL, 0);
-	if (res == 0)
-		pcb_flip_data(pcb->Data, 0, 1, 0, pcb->MaxHeight, 0);
+	if (res == 0) {
+		pcb_undo_freeze_add();
+		pcb_data_mirror(pcb->Data, 0, PCB_TXM_COORD, 0);
+		pcb_undo_unfreeze_add();
+	}
 	pcb_create_being_lenient = old_leni;
 	pcb_board_normalize(pcb);
 	pcb_layer_colors_from_conf(pcb, 1);
