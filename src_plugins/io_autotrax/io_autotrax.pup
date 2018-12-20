@@ -8,6 +8,5 @@ $fmt-feature-r autotrax PCB, version 5
 $fmt-feature-w autotrax PCB, version 4
 $package io-alien
 default buildin
-dep boardflip
 dep lib_polyhelp
 autoload 1

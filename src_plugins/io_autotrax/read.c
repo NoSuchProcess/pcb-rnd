@@ -48,7 +48,6 @@
 #include "macro.h"
 #include "safe_fs.h"
 #include "rotate.h"
-#include "../src_plugins/boardflip/boardflip.h"
 #include "actions.h"
 
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
@@ -1170,7 +1169,9 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 		pcb_message(PCB_MSG_ERROR, "Can not determine board extents - empty board?\n");
 
 	/* we now flip the board about the X-axis, to invert the Y coords used by autotrax */
-	pcb_flip_data(Ptr->Data, 0, 1, 0, Ptr->MaxHeight, 0);
+	pcb_undo_freeze_add();
+	pcb_data_mirror(Ptr->Data, 0, PCB_TXM_COORD, 0);
+	pcb_undo_unfreeze_add();
 
 	/* still not sure if this is required: */
 	pcb_layer_auto_fixup(Ptr);
