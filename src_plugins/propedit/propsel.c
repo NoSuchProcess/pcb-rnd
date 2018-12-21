@@ -38,10 +38,6 @@
 #include "obj_pstk_inlines.h"
 
 /*********** map ***********/
-typedef struct {
-	htsp_t *props;
-} map_ctx_t;
-
 #define map_chk_skip(ctx, obj) \
 	if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, obj)) return;
 
@@ -59,7 +55,7 @@ typedef struct {
 do { \
 	pcb_propval_t v; \
 	v.type2field_ ## type = (val);  \
-	pcb_props_add(((map_ctx_t *)ctx)->props, name, type2TYPE_ ## type, v); \
+	pcb_props_add(ctx, name, type2TYPE_ ## type, v); \
 } while(0)
 
 static void map_attr(void *ctx, const pcb_attribute_list_t *list)
@@ -249,20 +245,17 @@ static int map_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter)
 	return 0;
 }
 
-void pcb_propsel_map_core(htsp_t *props)
+void pcb_propsel_map_core(pcb_propedit_t *ctx)
 {
-	map_ctx_t ctx;
 	pcb_layergrp_id_t gid;
 
-	ctx.props = props;
-	
-	pcb_loop_all(PCB, &ctx,
+	pcb_loop_all(PCB, ctx,
 		map_layer_cb, map_line_cb, map_arc_cb, map_text_cb, map_poly_cb,
 		map_subc_cb,
 		map_pstk_cb
 	);
 	for(gid = 0; gid < PCB->LayerGroups.len; gid++)
-		map_layergrp_cb(&ctx, PCB, &PCB->LayerGroups.grp[gid]);
+		map_layergrp_cb(ctx, PCB, &PCB->LayerGroups.grp[gid]);
 	map_board_cb(&ctx, PCB);
 }
 
