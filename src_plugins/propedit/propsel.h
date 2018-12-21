@@ -27,5 +27,5 @@
 /* This API builds a prop list by looking at all selected objects on a design. */
 void pcb_propsel_map_core(pcb_propedit_t *ctx);
 
-int pcb_propsel_set(const char *prop, const char *value);
-int pcb_propsel_del(const char *attr_name);
+int pcb_propsel_set(pcb_propedit_t *ctx, const char *prop, const char *value);
+int pcb_propsel_del(pcb_propedit_t *ctx, const char *attr_name);

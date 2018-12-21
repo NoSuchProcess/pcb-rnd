@@ -43,6 +43,7 @@ typedef struct{
 static void propdlgclose_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	propdlg_t *ctx = caller_data;
+	pcb_props_uninit(&ctx->pe);
 	PCB_DAD_FREE(ctx->dlg);
 	free(ctx);
 }

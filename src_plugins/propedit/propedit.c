@@ -121,12 +121,23 @@ static const char pcb_acts_propset[] = "propset(name, value)";
 static const char pcb_acth_propset[] = "Change the named property of all selected objects to/by value";
 fgw_error_t pcb_act_propset(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *name, *val;
+	const char *first, *name, *val;
+	pcb_propedit_t ctx;
 
-	PCB_ACT_CONVARG(1, FGW_STR, propset, name = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_STR, propset, val = argv[2].val.str);
+	pcb_props_init(&ctx, PCB);
 
-	PCB_ACT_IRES(pcb_propsel_set(name, val));
+	PCB_ACT_CONVARG(1, FGW_STR, propset, first = argv[1].val.str);
+	if (prop_scope_add(&ctx, first, 1) == 0) {
+		PCB_ACT_CONVARG(2, FGW_STR, propset, name = argv[2].val.str);
+		PCB_ACT_CONVARG(3, FGW_STR, propset, val = argv[3].val.str);
+	}
+	else {
+		name = first;
+		PCB_ACT_CONVARG(2, FGW_STR, propset, val = argv[2].val.str);
+	}
+
+	PCB_ACT_IRES(pcb_propsel_set(&ctx, name, val));
+	pcb_props_uninit(&ctx);
 	return 0;
 }
 
