@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2018 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@
 #include "config.h"
 #include "props.h"
 #include "propsel.h"
+#include "propdlg.h"
 #include "actions.h"
 #include "pcb-printf.h"
 #include "error.h"
@@ -39,9 +40,9 @@
 
 extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
 
-static const char pcb_acts_propedit[] = "propedit()";
-static const char pcb_acth_propedit[] = "Run the property editor";
-fgw_error_t pcb_act_propedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char pcb_acts_propedit_old[] = "propedit()";
+static const char pcb_acth_propedit_old[] = "Run the property editor";
+fgw_error_t pcb_act_propedit_old(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pe_ctx_t ctx;
 	htsp_entry_t *pe;
@@ -142,7 +143,8 @@ fgw_error_t pcb_act_propset(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static const char *propedit_cookie = "propedit";
 
 pcb_action_t propedit_action_list[] = {
-	{"propedit", pcb_act_propedit, pcb_acth_propedit, pcb_acts_propedit},
+	{"propedit", pcb_act_propedit_old, pcb_acth_propedit_old, pcb_acts_propedit_old},
+	{"propedit2", pcb_act_propedit, pcb_acth_propedit, pcb_acts_propedit},
 	{"propset", pcb_act_propset, pcb_acth_propset, pcb_acts_propset}
 };
 

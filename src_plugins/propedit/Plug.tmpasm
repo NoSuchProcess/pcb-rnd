@@ -1,5 +1,10 @@
 put /local/pcb/mod {propedit}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/propedit/propedit.o $(PLUGDIR)/propedit/props.o $(PLUGDIR)/propedit/propsel.o @]
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/propedit/propedit.o
+	$(PLUGDIR)/propedit/props.o
+	$(PLUGDIR)/propedit/propsel.o
+	$(PLUGDIR)/propedit/propdlg.o
+@]
 
 switch /local/pcb/propedit/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
