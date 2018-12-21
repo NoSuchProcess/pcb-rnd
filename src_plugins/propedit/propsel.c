@@ -27,6 +27,7 @@
 #include <ctype.h>
 #include "config.h"
 #include "data.h"
+#include "data_it.h"
 #include "props.h"
 #include "propsel.h"
 #include "change.h"
@@ -38,9 +39,6 @@
 #include "obj_pstk_inlines.h"
 
 /*********** map ***********/
-#define map_chk_skip(ctx, obj) \
-	if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, obj)) return;
-
 #define type2field_String string
 #define type2field_pcb_coord_t coord
 #define type2field_pcb_angle_t angle
@@ -109,55 +107,46 @@ static void map_common(void *ctx, pcb_any_obj_t *obj)
 	}
 }
 
-static int map_board_cb(void *ctx, pcb_board_t *pcb)
+static void map_board(pcb_propedit_t *ctx, pcb_board_t *pcb)
 {
-	if (!propedit_board)
-		return 0;
-
 	map_add_prop(ctx, "p/board/name",   String, pcb->Name);
 	map_add_prop(ctx, "p/board/width", pcb_coord_t, pcb->MaxWidth);
 	map_add_prop(ctx, "p/board/height", pcb_coord_t, pcb->MaxHeight);
 	map_attr(ctx, &pcb->Attributes);
-	return 0;
 }
 
-static int map_layer_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, int enter)
+static void map_layer(pcb_propedit_t *ctx, pcb_layer_t *layer)
 {
-	if (!layer->propedit)
-		return 0;
-
+	if (layer == NULL)
+		return;
 	map_add_prop(ctx, "p/layer/name", String, layer->name);
 	map_add_prop(ctx, "p/layer/comb/negative", int, !!(layer->comb & PCB_LYC_SUB));
 	map_add_prop(ctx, "p/layer/comb/auto", int, !!(layer->comb & PCB_LYC_AUTO));
 	if (!layer->is_bound)
 		map_add_prop(ctx, "p/layer/color", String, layer->meta.real.color.str);
 	map_attr(ctx, &layer->Attributes);
-	return 0;
 }
 
-static int map_layergrp_cb(void *ctx, pcb_board_t *pcb, pcb_layergrp_t *grp)
+static int map_layergrp(pcb_propedit_t *ctx, pcb_layergrp_t *grp)
 {
-	if (!grp->propedit)
-		return 0;
-
+	if (grp == NULL)
+		return;
 	map_add_prop(ctx, "p/layer_group/name", String, grp->name);
 	map_add_prop(ctx, "p/layer_group/purpose", String, grp->purpose);
 	map_attr(ctx, &grp->Attributes);
 	return 0;
 }
 
-static void map_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
+static void map_line(pcb_propedit_t *ctx, pcb_line_t *line)
 {
-	map_chk_skip(ctx, line);
 	map_add_prop(ctx, "p/trace/thickness", pcb_coord_t, line->Thickness);
 	map_add_prop(ctx, "p/trace/clearance", pcb_coord_t, line->Clearance/2);
 	map_common(ctx, (pcb_any_obj_t *)line);
 	map_attr(ctx, &line->Attributes);
 }
 
-static void map_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_t *arc)
+static void map_arc(pcb_propedit_t *ctx, pcb_arc_t *arc)
 {
-	map_chk_skip(ctx, arc);
 	map_add_prop(ctx, "p/trace/thickness", pcb_coord_t, arc->Thickness);
 	map_add_prop(ctx, "p/trace/clearance", pcb_coord_t, arc->Clearance/2);
 	map_add_prop(ctx, "p/arc/width",       pcb_coord_t, arc->Width);
@@ -168,9 +157,8 @@ static void map_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_
 	map_attr(ctx, &arc->Attributes);
 }
 
-static void map_text_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_text_t *text)
+static void map_text(pcb_propedit_t *ctx, pcb_text_t *text)
 {
-	map_chk_skip(ctx, text);
 	map_add_prop(ctx, "p/text/scale", int, text->Scale);
 	map_add_prop(ctx, "p/text/rotation",  pcb_angle_t, text->rot);
 	map_add_prop(ctx, "p/text/thickness", pcb_coord_t, text->thickness);
@@ -179,18 +167,16 @@ static void map_text_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_tex
 	map_attr(ctx, &text->Attributes);
 }
 
-static void map_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_poly_t *poly)
+static void map_poly(pcb_propedit_t *ctx, pcb_poly_t *poly)
 {
-	map_chk_skip(ctx, poly);
 	map_attr(ctx, &poly->Attributes);
 	map_common(ctx, (pcb_any_obj_t *)poly);
 	map_add_prop(ctx, "p/trace/clearance", pcb_coord_t, poly->Clearance/2);
 }
 
-static void map_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
+static void map_pstk(pcb_propedit_t *ctx, pcb_pstk_t *ps)
 {
 	pcb_pstk_proto_t *proto;
-	map_chk_skip(ctx, ps);
 
 	map_add_prop(ctx, "p/padstack/xmirror", pcb_coord_t, ps->xmirror);
 	map_add_prop(ctx, "p/padstack/smirror", pcb_coord_t, ps->smirror);
@@ -208,55 +194,77 @@ static void map_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 	map_common(ctx, (pcb_any_obj_t *)ps);
 }
 
-static void map_subc_cb_(void *ctx, pcb_board_t *pcb, pcb_subc_t *msubc)
+static void map_subc(pcb_propedit_t *ctx, pcb_subc_t *msubc)
 {
 	PCB_ARC_ALL_LOOP(msubc->data); {
-		if (pcb_subc_part_editable(pcb, arc))
-			map_arc_cb(ctx, pcb, layer, arc);
+		if (pcb_subc_part_editable(ctx->pcb, arc))
+			map_arc(ctx, arc);
 	} PCB_ENDALL_LOOP;
 	PCB_LINE_ALL_LOOP(msubc->data); {
-		if (pcb_subc_part_editable(pcb, line))
-			map_line_cb(ctx, pcb, layer, line);
+		if (pcb_subc_part_editable(ctx->pcb, line))
+			map_line(ctx, line);
 	} PCB_ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(msubc->data); {
-		if (pcb_subc_part_editable(pcb, polygon))
-			map_poly_cb(ctx, pcb, layer, polygon);
+		if (pcb_subc_part_editable(ctx->pcb, polygon))
+			map_poly(ctx, polygon);
 	} PCB_ENDALL_LOOP;
 	PCB_TEXT_ALL_LOOP(msubc->data); {
-		if (pcb_subc_part_editable(pcb, text))
-			map_text_cb(ctx, pcb, layer, text);
+		if (pcb_subc_part_editable(ctx->pcb, text))
+			map_text(ctx, text);
 	} PCB_ENDALL_LOOP;
 	PCB_PADSTACK_LOOP(msubc->data); {
-		if (pcb_subc_part_editable(pcb, padstack))
-			map_pstk_cb(ctx, pcb, padstack);
+		if (pcb_subc_part_editable(ctx->pcb, padstack))
+			map_pstk(ctx, padstack);
 	} PCB_END_LOOP;
 	PCB_SUBC_LOOP(msubc->data); {
-		if (pcb_subc_part_editable(pcb, subc))
-			map_subc_cb_(ctx, pcb, subc);
+		if (pcb_subc_part_editable(ctx->pcb, subc))
+			map_subc(ctx, subc);
 	} PCB_END_LOOP;
-	map_chk_skip(ctx, msubc);
 	map_attr(ctx, &msubc->Attributes);
 	map_common(ctx, (pcb_any_obj_t *)msubc);
 }
 
-static int map_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter)
+static void map_any(pcb_propedit_t *ctx, pcb_any_obj_t *o)
 {
-	map_subc_cb_(ctx, pcb, subc);
-	return 0;
+	if (o == NULL)
+		return;
+	switch(o->type) {
+		case PCB_OBJ_ARC:  map_arc(ctx, (pcb_arc_t *)o); break;
+		case PCB_OBJ_LINE: map_line(ctx, (pcb_line_t *)o); break;
+		case PCB_OBJ_POLY: map_poly(ctx, (pcb_poly_t *)o); break;
+		case PCB_OBJ_TEXT: map_text(ctx, (pcb_text_t *)o); break;
+		case PCB_OBJ_SUBC: map_subc(ctx, (pcb_subc_t *)o); break;
+		case PCB_OBJ_PSTK: map_pstk(ctx, (pcb_pstk_t *)o); break;
+		default: break;
+	}
 }
 
 void pcb_propsel_map_core(pcb_propedit_t *ctx)
 {
 	pcb_layergrp_id_t gid;
+	pcb_idpath_t *idp;
+	size_t n;
 
-	pcb_loop_all(PCB, ctx,
-		map_layer_cb, map_line_cb, map_arc_cb, map_text_cb, map_poly_cb,
-		map_subc_cb,
-		map_pstk_cb
-	);
-	for(gid = 0; gid < PCB->LayerGroups.len; gid++)
-		map_layergrp_cb(ctx, PCB, &PCB->LayerGroups.grp[gid]);
-	map_board_cb(&ctx, PCB);
+	for(n = 0; n < vtl0_len(&ctx->layers); n++)
+		map_layer(ctx, pcb_get_layer(ctx->pcb->Data, ctx->layers.array[n]));
+
+	for(n = 0; n < vtl0_len(&ctx->layergrps); n++)
+		map_layergrp(ctx, pcb_get_layergrp(ctx->pcb, ctx->layergrps.array[n]));
+
+	for(idp = pcb_idpath_list_first(&ctx->objs); idp != NULL; pcb_idpath_list_next(idp))
+		map_any(ctx, pcb_idpath2obj(ctx->pcb->Data, idp));
+
+	if (ctx->selection) {
+		pcb_any_obj_t *o;
+		pcb_data_it_t it;
+		for(o = pcb_data_first(&it, ctx->pcb->Data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it))
+			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, o))
+				map_any(ctx, o);
+	}
+
+	if (ctx->board)
+		map_board(&ctx, ctx->pcb);
+
 }
 
 /*******************/
@@ -668,31 +676,26 @@ static void del_attr(void *ctx, pcb_attribute_list_t *list)
 
 static void del_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
 {
-	map_chk_skip(ctx, line);
 	del_attr(ctx, &line->Attributes);
 }
 
 static void del_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_t *arc)
 {
-	map_chk_skip(ctx, arc);
 	del_attr(ctx, &arc->Attributes);
 }
 
 static void del_text_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_text_t *text)
 {
-	map_chk_skip(ctx, text);
 	del_attr(ctx, &text->Attributes);
 }
 
 static void del_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_poly_t *poly)
 {
-	map_chk_skip(ctx, poly);
 	del_attr(ctx, &poly->Attributes);
 }
 
 static void del_subc_cb_(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc)
 {
-	map_chk_skip(ctx, subc);
 	del_attr(ctx, &subc->Attributes);
 }
 
@@ -704,7 +707,6 @@ static int del_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter)
 
 static void del_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 {
-	map_chk_skip(ctx, ps);
 	del_attr(ctx, &ps->Attributes);
 }
 
