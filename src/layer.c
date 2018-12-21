@@ -794,6 +794,7 @@ pcb_layer_id_t pcb_layer_str2id(pcb_data_t *data, const char *str)
 		if ((*end == '\0') && (id >= 0) && (id < data->LayerN))
 			return id;
 	}
+TODO("layer: do the same that cam does; test with propedit");
 	return -1;
 }
 
