@@ -74,6 +74,7 @@ static propkeyeq_ft propkeyeq[PCB_PROPT_max] = {
 /* Init & uninit */
 void pcb_props_init(pcb_propedit_t *ctx, pcb_board_t *pcb)
 {
+	memset(ctx, 0, sizeof(pcb_propedit_t));
 	htsp_init(&ctx->props, strhash, strkeyeq);
 	ctx->pcb = pcb;
 }
@@ -138,9 +139,8 @@ do { \
 	avgp.field += val.field * cnt; \
 } while(0)
 
-pcb_props_t *pcb_props_stat(pcb_propedit_t *ctx, const char *propname, pcb_propval_t *most_common, pcb_propval_t *min, pcb_propval_t *max, pcb_propval_t *avg)
+int pcb_props_stat(pcb_propedit_t *ctx, pcb_props_t *p, pcb_propval_t *most_common, pcb_propval_t *min, pcb_propval_t *max, pcb_propval_t *avg)
 {
-	pcb_props_t *p;
 	htprop_entry_t *e;
 	pcb_propval_t bestp, minp, maxp, avgp;
 	unsigned long best = 0, num_vals = 0;
@@ -154,12 +154,8 @@ pcb_props_t *pcb_props_stat(pcb_propedit_t *ctx, const char *propname, pcb_propv
 	if (avg != NULL)
 		avg->string = NULL;
 
-	p = htsp_get(&ctx->props, propname);
-	if (p == NULL)
-		return NULL;
-
 	if ((p->type == PCB_PROPT_STRING) && ((min != NULL) || (max != NULL) || (avg != NULL)))
-		return NULL;
+		return -1;
 
 	/* set up internal avg, min, max */
 	memset(&avgp, 0, sizeof(avgp));
@@ -204,8 +200,7 @@ pcb_props_t *pcb_props_stat(pcb_propedit_t *ctx, const char *propname, pcb_propv
 		if (max != NULL) *max = maxp;
 		if (most_common != NULL) *most_common = bestp;
 	}
-
-	return p;
+	return 0;
 }
 
 #undef STAT

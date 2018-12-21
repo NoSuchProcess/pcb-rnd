@@ -105,13 +105,13 @@ pcb_props_t *pcb_props_get(pcb_propedit_t *ctx, const char *propname);
 /* Return the type name of a property type or NULL on error. */
 const char *pcb_props_type_name(pcb_prop_type_t type);
 
-/* Look up property propname and calculate statistics for all values occured so far.
-   Any of most_common, min, max and avg can be NULL. Returns NULL if propname
+/* Look up property p and calculate statistics for all values occured so far.
+   Any of most_common, min, max and avg can be NULL. Returns non-zero if propname
    doesn't exist or stat values that can not be calculated for the given type
    are not NULL. Invalid type/stat combinations:
      type=string   min, max, avg
 */
-pcb_props_t *pcb_props_stat(pcb_propedit_t *ctx, const char *propname, pcb_propval_t *most_common, pcb_propval_t *min, pcb_propval_t *max, pcb_propval_t *avg);
+int pcb_props_stat(pcb_propedit_t *ctx, pcb_props_t *p, pcb_propval_t *most_common, pcb_propval_t *min, pcb_propval_t *max, pcb_propval_t *avg);
 
 /* Whether the board is selected for editing */
 extern int propedit_board;

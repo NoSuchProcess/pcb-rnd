@@ -133,6 +133,7 @@ fgw_error_t pcb_act_propset(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else {
 		name = first;
+		ctx.selection = 1;
 		PCB_ACT_CONVARG(2, FGW_STR, propset, val = argv[2].val.str);
 	}
 
@@ -141,10 +142,61 @@ fgw_error_t pcb_act_propset(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_propprint[] = "PropPrint([scope])";
+static const char pcb_acth_propprint[] = "Print a property map of objects matching the scope";
+fgw_error_t pcb_act_propprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *scope = NULL;
+	pcb_propedit_t ctx;
+	htsp_entry_t *e;
+
+	pcb_props_init(&ctx, PCB);
+
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, propset, scope = argv[1].val.str);
+	if (scope != NULL) {
+		if (prop_scope_add(&ctx, scope, 0) != 0)
+			return FGW_ERR_ARG_CONV;
+	}
+	else
+		ctx.selection = 1;
+
+	pcb_propsel_map_core(&ctx);
+	for(e = htsp_first(&ctx.props); e != NULL; e = htsp_next(&ctx.props, e)) {
+		pcb_props_t *p = e->value;
+		pcb_propval_t com, min, max, avg;
+
+		printf("%s\n", e->key);
+		if (p->type == PCB_PROPT_STRING)
+			pcb_props_stat(&ctx, p, &com, NULL, NULL, NULL);
+		else
+			pcb_props_stat(&ctx, p, &com, &min, &max, &avg);
+		switch(p->type) {
+			case PCB_PROPT_STRING: printf("	common='%s'\n", com.string); break;
+			case PCB_PROPT_COORD:
+				pcb_printf("	common='%$$mm'\n", com.coord);
+				pcb_printf("	min/avg/max=%$$mm/%$$mm/%$$mm\n", min.coord, avg.coord, max.coord);
+				break;
+			case PCB_PROPT_ANGLE:
+				pcb_printf("	common='%f'\n", com.angle);
+				pcb_printf("	min/avg/max=%f/%f/%f\n", min.angle, avg.angle, max.angle);
+				break;
+			case PCB_PROPT_INT:
+				pcb_printf("	common='%d'\n", com.i);
+				pcb_printf("	min/avg/max=%d/%d/%d\n", min.i, avg.i, max.i);
+				break;
+		}
+	}
+
+	pcb_props_uninit(&ctx);
+	PCB_ACT_IRES(0);
+	return 0;
+}
+
 static const char *propedit_cookie = "propedit";
 
 pcb_action_t propedit_action_list[] = {
 	{"propedit", pcb_act_propedit, pcb_acth_propedit, pcb_acts_propedit},
+	{"propprint", pcb_act_propprint, pcb_acth_propprint, pcb_acts_propprint},
 	{"propset", pcb_act_propset, pcb_acth_propset, pcb_acts_propset}
 };
 
