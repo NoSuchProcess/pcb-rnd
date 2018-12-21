@@ -66,12 +66,17 @@ typedef struct {
 	unsigned core:1;  /* 1 if it is a core property */
 } pcb_props_t;
 
+
+typedef struct {
+	htsp_t *props;
+} pcb_propedit_t;
+
 /* A property list (props) is a string->pcb_props_t. Each entry is a named
    property with a value that's a type and a value hash (vhash). vhash's
    key is each value that the property ever took, and vhash's value is an
    integer value of how many times the given property is taken */
-htsp_t *pcb_props_init(void);
-void pcb_props_uninit(htsp_t *props);
+void pcb_props_init(pcb_propedit_t *ctx);
+void pcb_props_uninit(pcb_propedit_t *ctx);
 
 /* Add a value of a named property; if the value is already known, its counter
    is increased. If propname didn't exist, create it. Returns NULL on error.
@@ -79,10 +84,10 @@ void pcb_props_uninit(htsp_t *props);
     - invalid type
     - mismatching type for the property (all values of a given property must be the same)
 */
-pcb_props_t *pcb_props_add(htsp_t *props, const char *propname, pcb_prop_type_t type, pcb_propval_t val);
+pcb_props_t *pcb_props_add(pcb_propedit_t *ctx, const char *propname, pcb_prop_type_t type, pcb_propval_t val);
 
 /* Retrieve values for a prop - returns NULL if propname doesn't exist */
-pcb_props_t *pcb_props_get(htsp_t *props, const char *propname);
+pcb_props_t *pcb_props_get(pcb_propedit_t *ctx, const char *propname);
 
 
 /* Return the type name of a property type or NULL on error. */
@@ -94,7 +99,7 @@ const char *pcb_props_type_name(pcb_prop_type_t type);
    are not NULL. Invalid type/stat combinations:
      type=string   min, max, avg
 */
-pcb_props_t *pcb_props_stat(htsp_t *props, const char *propname, pcb_propval_t *most_common, pcb_propval_t *min, pcb_propval_t *max, pcb_propval_t *avg);
+pcb_props_t *pcb_props_stat(pcb_propedit_t *ctx, const char *propname, pcb_propval_t *most_common, pcb_propval_t *min, pcb_propval_t *max, pcb_propval_t *avg);
 
 /* Whether the board is selected for editing */
 extern int propedit_board;

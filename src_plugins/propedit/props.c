@@ -72,24 +72,24 @@ static propkeyeq_ft propkeyeq[PCB_PROPT_max] = {
 
 
 /* Init & uninit */
-htsp_t *pcb_props_init(void)
+void pcb_props_init(pcb_propedit_t *ctx)
 {
-	return htsp_alloc(strhash, strkeyeq);
+	htsp_init(&ctx->props, strhash, strkeyeq);
 }
 
-void pcb_props_uninit(htsp_t *props)
+void pcb_props_uninit(pcb_propedit_t *ctx)
 {
 TODO("TODO")
 }
 
 /* Retrieve values for a prop */
-pcb_props_t *pcb_props_get(htsp_t *props, const char *propname)
+pcb_props_t *pcb_props_get(pcb_propedit_t *ctx, const char *propname)
 {
-	return htsp_get(props, propname);
+	return htsp_get(ctx->props, propname);
 }
 
 /* Store a new value */
-pcb_props_t *pcb_props_add(htsp_t *props, const char *propname, pcb_prop_type_t type, pcb_propval_t val)
+pcb_props_t *pcb_props_add(pcb_propedit_t *ctx, const char *propname, pcb_prop_type_t type, pcb_propval_t val)
 {
 	pcb_props_t *p;
 	htprop_entry_t *e;
@@ -98,12 +98,12 @@ pcb_props_t *pcb_props_add(htsp_t *props, const char *propname, pcb_prop_type_t 
 		return NULL;
 
 	/* look up or create the value list (p) associated with the property name */
-	p = htsp_get(props, propname);
+	p = htsp_get(ctx->props, propname);
 	if (p == NULL) {
 		p = malloc(sizeof(pcb_props_t));
 		p->type = type;
 		htprop_init(&p->values, prophash[type], propkeyeq[type]);
-		htsp_set(props, pcb_strdup(propname), p);
+		htsp_set(ctx->props, pcb_strdup(propname), p);
 	}
 	else {
 		if (type != p->type)
@@ -136,7 +136,7 @@ do { \
 	avgp.field += val.field * cnt; \
 } while(0)
 
-pcb_props_t *pcb_props_stat(htsp_t *props, const char *propname, pcb_propval_t *most_common, pcb_propval_t *min, pcb_propval_t *max, pcb_propval_t *avg)
+pcb_props_t *pcb_props_stat(pcb_propedit_t *ctx, const char *propname, pcb_propval_t *most_common, pcb_propval_t *min, pcb_propval_t *max, pcb_propval_t *avg)
 {
 	pcb_props_t *p;
 	htprop_entry_t *e;
@@ -152,7 +152,7 @@ pcb_props_t *pcb_props_stat(htsp_t *props, const char *propname, pcb_propval_t *
 	if (avg != NULL)
 		avg->string = NULL;
 
-	p = htsp_get(props, propname);
+	p = htsp_get(ctx->props, propname);
 	if (p == NULL)
 		return NULL;
 
