@@ -156,7 +156,6 @@ struct pcb_layer_s {              /* holds information about one layer */
 	} meta;
 
 	unsigned is_bound:1;
-	unsigned propedit:1; /* temporary: let propedit know this layer is being edited */
 };
 
 /* returns the layer number for the passed copper or silk layer pointer */
