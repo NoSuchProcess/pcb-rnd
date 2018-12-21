@@ -26,6 +26,7 @@
 
 #include <stdlib.h>
 #include "board.h"
+#include "data.h"
 #include "plugins.h"
 #include "config.h"
 #include "props.h"
@@ -34,9 +35,85 @@
 #include "actions.h"
 #include "pcb-printf.h"
 #include "error.h"
+#include "layer.h"
 #include "layer_grp.h"
+#include "search.h"
+#include "crosshair.h"
 
-/* ************************************************************ */
+
+int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
+{
+	pcb_idpath_t *idp;
+	long id;
+
+	if (strncmp(cmd, "object", 6) == 0) {
+		if (cmd[6] == ':') {
+			idp = pcb_str2idpath(cmd+7);
+			if (idp == NULL) {
+				if (!quiet)
+					pcb_message(PCB_MSG_ERROR, "Failed to convert object ID: '%s'\n", cmd+7);
+				return FGW_ERR_ARG_CONV;
+			}
+			pcb_idpath_list_append(&pe->objs, idp);
+		}
+		else {
+			void *o1, *o2, *o3;
+			pcb_objtype_t type;
+			type = pcb_search_obj_by_location(PCB_OBJ_CLASS_REAL, &o1, &o2, &o3, pcb_crosshair.X, pcb_crosshair.Y, PCB_SLOP);
+			if (type == 0) {
+				if (!quiet)
+					pcb_message(PCB_MSG_ERROR, "No object under the cursor\n");
+				return FGW_ERR_ARG_CONV;
+			}
+			idp = pcb_obj2idpath(o2);
+			if (idp == NULL) {
+				if (!quiet)
+					pcb_message(PCB_MSG_ERROR, "Object under the cursor has no idpath\n");
+				return FGW_ERR_ARG_CONV;
+			}
+			pcb_idpath_list_append(&pe->objs, idp);
+		}
+	}
+	else if (strncmp(cmd, "layer", 5) == 0) {
+		if (cmd[5] == ':') {
+			id = pcb_layer_str2id(pe->pcb->Data, cmd+6);
+			if (id < 0) {
+				if (!quiet)
+					pcb_message(PCB_MSG_ERROR, "Invalid layer ID '%s'\n", cmd+6);
+				return FGW_ERR_ARG_CONV;
+			}
+			vtl0_append(&pe->layers, id);
+		}
+		else {
+			vtl0_append(&pe->layers, INDEXOFCURRENT);
+		}
+	}
+	else if (strncmp(cmd, "layergrp", 8) == 0) {
+		if (cmd[8] == ':') {
+			id = pcb_layergrp_str2id(pe->pcb, cmd+9);
+			if (id < 0) {
+				if (!quiet)
+					pcb_message(PCB_MSG_ERROR, "Invalid layergrp ID '%s'\n", cmd+9);
+				return FGW_ERR_ARG_CONV;
+			}
+			vtl0_append(&pe->layergrps, id);
+		}
+		else {
+			vtl0_append(&pe->layergrps, CURRENT->meta.real.grp);
+		}
+	}
+	else if (strcmp(cmd, "pcb") == 0)
+		pe->board = 1;
+	else if (strcmp(cmd, "selection") == 0)
+		pe->selection = 1;
+	else {
+		if (!quiet)
+			pcb_message(PCB_MSG_ERROR, "Invalid scope: %s\n", cmd);
+		return FGW_ERR_ARG_CONV;
+	}
+	return 0;
+}
+
 
 extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
 

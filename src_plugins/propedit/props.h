@@ -79,7 +79,7 @@ typedef struct {
 	pcb_idpath_list_t objs;
 	vtl0_t layers;             /* layer IDs */
 	vtl0_t layergrps;          /* layer group IDs */
-	unsigned selected:1;       /* all selected objects on the current pcb */
+	unsigned selection:1;      /* all selected objects on the current pcb */
 	unsigned board:1;          /* run on the board too */
 } pcb_propedit_t;
 

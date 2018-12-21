@@ -28,12 +28,15 @@
 
 #include <genht/hash.h>
 
+#include "board.h"
 #include "actions.h"
 #include "hid_dad.h"
+
 #include "props.h"
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
+	pcb_propedit_t pe;
 	int wtree, wfilter, wtype;
 } propdlg_t;
 
@@ -82,11 +85,10 @@ static void build_propval(propdlg_t *ctx)
 	PCB_DAD_END(ctx->dlg);
 }
 
-static void pcb_dlg_propdlg(void)
+static void pcb_dlg_propdlg(propdlg_t *ctx)
 {
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
-	propdlg_t *ctx = calloc(sizeof(propdlg_t), 1);
-	pcb_box_t prvbb = {0, 0, PCB_MM_TO_COORD(10), PCB_MM_TO_COORD(10)};
+	static pcb_box_t prvbb = {0, 0, PCB_MM_TO_COORD(10), PCB_MM_TO_COORD(10)};
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
 		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
@@ -124,10 +126,25 @@ static void pcb_dlg_propdlg(void)
 	PCB_DAD_NEW("propedit", ctx->dlg, "Property editor", ctx, pcb_true, propdlgclose_cb);
 }
 
-const char pcb_acts_propedit[] = "propedit(object|selected|#id)\n";
+extern int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet);
+
+const char pcb_acts_propedit[] = "propedit(object[:id]|layer[:id]|layergrp[:id]|pcb|selection|selected)\n";
 const char pcb_acth_propedit[] = "";
 fgw_error_t pcb_act_propedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_dlg_propdlg();
+	propdlg_t *ctx = calloc(sizeof(propdlg_t), 1);
+	int a, r;
+
+	pcb_props_init(&ctx->pe, PCB);
+
+	for(a = 1; a < argc; a++) {
+		const char *cmd;
+		PCB_ACT_CONVARG(a, FGW_STR, propedit, cmd = argv[a].val.str);
+		r = prop_scope_add(&ctx->pe, cmd, 0);
+		if (r != 0)
+			return r;
+	}
+
+	pcb_dlg_propdlg(ctx);
 	return 0;
 }
