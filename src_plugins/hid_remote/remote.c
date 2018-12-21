@@ -373,29 +373,6 @@ static void remote_create_menu(const char *menu, const char *action, const char 
 {
 }
 
-static int remote_propedit_start(void *pe, int num_props, const char *(*query)(void *pe, const char *cmd, const char *key, const char *val, int idx))
-{
-	return 0;
-}
-
-static void remote_propedit_end(void *pe)
-{
-}
-
-static void *remote_propedit_add_prop(void *pe, const char *propname, int is_mutable, int num_vals)
-{
-	return NULL;
-}
-
-static void remote_propedit_add_value(void *pe, const char *propname, void *propctx, const char *value, int repeat_cnt)
-{
-}
-
-static void remote_propedit_add_stat(void *pe, const char *propname, void *propctx, const char *most_common, const char *min, const char *max, const char *avg)
-{
-}
-
-
 #include "dolists.h"
 
 
@@ -458,12 +435,6 @@ int pplg_init_hid_remote(void)
 	remote_hid.attr_dlg_free = remote_attr_dlg_free;
 	remote_hid.attr_dlg_property = remote_attr_dlg_property;
 	remote_hid.create_menu = remote_create_menu;
-
-	remote_hid.propedit_start = remote_propedit_start;
-	remote_hid.propedit_end = remote_propedit_end;
-	remote_hid.propedit_add_prop = remote_propedit_add_prop;
-	remote_hid.propedit_add_value = remote_propedit_add_value;
-	remote_hid.propedit_add_stat = remote_propedit_add_stat;
 
 /*	PCB_REGISTER_ACTIONS(remote_action_list, remote_cookie)*/
 

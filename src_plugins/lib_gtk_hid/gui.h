@@ -38,7 +38,6 @@ extern GhidGui _ghidgui, *ghidgui;
 
 /* needed for a type in GhidGui - DO NOT ADD .h files that are not requred for the structs! */
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
-#include "../src_plugins/lib_gtk_common/dlg_propedit.h"
 #include "../src_plugins/lib_gtk_common/dlg_topwin.h"
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
 #include "../src_plugins/lib_gtk_common/glue.h"
@@ -57,9 +56,6 @@ struct GhidGui_s {
 	conf_hid_id_t conf_id;
 
 	GdkPixbuf *bg_pixbuf; /* -> renderer */
-
-	pcb_gtk_dlg_propedit_t propedit_dlg;
-	GtkWidget *propedit_widget;
 
 	int hid_active; /* 1 if the currently running hid (pcb_gui) is us */
 	int gui_is_up; /*1 if all parts of the gui is up and running */

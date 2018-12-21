@@ -25,7 +25,6 @@ put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/dlg_library_param.o
   $(PLUGDIR)/lib_gtk_common/dlg_log.o
   $(PLUGDIR)/lib_gtk_common/dlg_netlist.o
-  $(PLUGDIR)/lib_gtk_common/dlg_propedit.o
   $(PLUGDIR)/lib_gtk_common/dlg_route_style.o
   $(PLUGDIR)/lib_gtk_common/dlg_search.o
   $(PLUGDIR)/lib_gtk_common/dlg_topwin.o

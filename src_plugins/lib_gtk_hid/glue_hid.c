@@ -370,26 +370,6 @@ static void ghid_notify_filename_changed()
 	pcb_gtk_tw_notify_filename_changed(&ghidgui->topwin);
 }
 
-static int ghid_propedit_start(void *pe, int num_props, const char *(*query) (void *pe, const char *cmd, const char *key, const char *val, int idx))
-{
-	ghidgui->propedit_widget = pcb_gtk_dlg_propedit_create(&ghidgui->propedit_dlg, &ghidgui->common);
-	ghidgui->propedit_dlg.propedit_query = query;
-	ghidgui->propedit_dlg.propedit_pe = pe;
-	return 0;
-}
-
-static void ghid_propedit_end(void *pe)
-{
-	if (gtk_dialog_run(GTK_DIALOG(ghidgui->propedit_widget)) == GTK_RESPONSE_OK) {
-	}
-	gtk_widget_destroy(ghidgui->propedit_widget);
-}
-
-static void ghid_propedit_add_stat(void *pe, const char *propname, void *propctx, const char *most_common, const char *min, const char *max, const char *avg)
-{
-	pcb_gtk_dlg_propedit_prop_add(&ghidgui->propedit_dlg, propname, most_common, min, max, avg);
-}
-
 /* Create a new menu by path */
 static int ghid_remove_menu(const char *menu_path)
 {
@@ -518,11 +498,6 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->notify_save_pcb = ghid_notify_save_pcb;
 	dst->notify_filename_changed = ghid_notify_filename_changed;
 
-	dst->propedit_start = ghid_propedit_start;
-	dst->propedit_end = ghid_propedit_end;
-	dst->propedit_add_stat = ghid_propedit_add_stat;
-/*	dst->propedit_add_prop = ghid_propedit_add_prop;*/
-/*	dst->propedit_add_value = ghid_propedit_add_value;*/
 	dst->command_entry = ghid_command_entry;
 
 	dst->create_menu = ghid_create_menu;
