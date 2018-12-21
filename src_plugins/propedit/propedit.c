@@ -117,8 +117,8 @@ int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 
 extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
 
-static const char pcb_acts_propset[] = "propset(name, value)";
-static const char pcb_acth_propset[] = "Change the named property of all selected objects to/by value";
+static const char pcb_acts_propset[] = "propset([scope], name, value)";
+static const char pcb_acth_propset[] = "Change the named property of all selected objects to/by value. Scope is documented at PropEdit().";
 fgw_error_t pcb_act_propset(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *first, *name, *val;
@@ -143,7 +143,7 @@ fgw_error_t pcb_act_propset(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 static const char pcb_acts_propprint[] = "PropPrint([scope])";
-static const char pcb_acth_propprint[] = "Print a property map of objects matching the scope";
+static const char pcb_acth_propprint[] = "Print a property map of objects matching the scope. Scope is documented at PropEdit().";
 fgw_error_t pcb_act_propprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *scope = NULL;
