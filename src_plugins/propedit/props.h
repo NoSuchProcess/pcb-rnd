@@ -37,6 +37,9 @@
 #include <limits.h>
 #include "global_typedefs.h"
 #include <genht/htsp.h>
+#include <genvector/vtl0.h>
+
+#include "idpath.h"
 
 typedef enum {
 	PCB_PROPT_invalid,
@@ -66,16 +69,25 @@ typedef struct {
 	unsigned core:1;  /* 1 if it is a core property */
 } pcb_props_t;
 
-
 typedef struct {
-	htsp_t *props;
+	htsp_t props;
+
+	/* scope */
+	pcb_board_t *pcb;
+
+	/* target objects */
+	pcb_idpath_list_t objs;
+	vtl0_t layers;             /* layer IDs */
+	vtl0_t layergrps;          /* layer group IDs */
+	unsigned selected:1;       /* all selected objects on the current pcb */
+	unsigned board:1;          /* run on the board too */
 } pcb_propedit_t;
 
 /* A property list (props) is a string->pcb_props_t. Each entry is a named
    property with a value that's a type and a value hash (vhash). vhash's
    key is each value that the property ever took, and vhash's value is an
    integer value of how many times the given property is taken */
-void pcb_props_init(pcb_propedit_t *ctx);
+void pcb_props_init(pcb_propedit_t *ctx, pcb_board_t *pcb);
 void pcb_props_uninit(pcb_propedit_t *ctx);
 
 /* Add a value of a named property; if the value is already known, its counter

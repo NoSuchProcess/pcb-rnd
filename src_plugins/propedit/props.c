@@ -72,20 +72,22 @@ static propkeyeq_ft propkeyeq[PCB_PROPT_max] = {
 
 
 /* Init & uninit */
-void pcb_props_init(pcb_propedit_t *ctx)
+void pcb_props_init(pcb_propedit_t *ctx, pcb_board_t *pcb)
 {
 	htsp_init(&ctx->props, strhash, strkeyeq);
+	ctx->pcb = pcb;
 }
 
 void pcb_props_uninit(pcb_propedit_t *ctx)
 {
-TODO("TODO")
+	TODO("TODO")
+	memset(ctx, 0, sizeof(pcb_propedit_t));
 }
 
 /* Retrieve values for a prop */
 pcb_props_t *pcb_props_get(pcb_propedit_t *ctx, const char *propname)
 {
-	return htsp_get(ctx->props, propname);
+	return htsp_get(&ctx->props, propname);
 }
 
 /* Store a new value */
@@ -98,12 +100,12 @@ pcb_props_t *pcb_props_add(pcb_propedit_t *ctx, const char *propname, pcb_prop_t
 		return NULL;
 
 	/* look up or create the value list (p) associated with the property name */
-	p = htsp_get(ctx->props, propname);
+	p = htsp_get(&ctx->props, propname);
 	if (p == NULL) {
 		p = malloc(sizeof(pcb_props_t));
 		p->type = type;
 		htprop_init(&p->values, prophash[type], propkeyeq[type]);
-		htsp_set(ctx->props, pcb_strdup(propname), p);
+		htsp_set(&ctx->props, pcb_strdup(propname), p);
 	}
 	else {
 		if (type != p->type)
@@ -152,7 +154,7 @@ pcb_props_t *pcb_props_stat(pcb_propedit_t *ctx, const char *propname, pcb_propv
 	if (avg != NULL)
 		avg->string = NULL;
 
-	p = htsp_get(ctx->props, propname);
+	p = htsp_get(&ctx->props, propname);
 	if (p == NULL)
 		return NULL;
 
