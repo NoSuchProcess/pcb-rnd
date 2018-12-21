@@ -26,7 +26,6 @@
 
 #include <stdlib.h>
 #include "board.h"
-#include "data.h"
 #include "plugins.h"
 #include "config.h"
 #include "props.h"
@@ -35,6 +34,7 @@
 #include "actions.h"
 #include "pcb-printf.h"
 #include "error.h"
+#include "layer_grp.h"
 
 /* ************************************************************ */
 
@@ -73,6 +73,17 @@ void pplg_uninit_propedit(void)
 int pplg_init_propedit(void)
 {
 	PCB_API_CHK_VER;
+
+	if (sizeof(long) < sizeof(pcb_layer_id_t)) {
+		pcb_message(PCB_MSG_ERROR, "can't load propedig: layer id type wider than long\n");
+		return -1;
+	}
+
+	if (sizeof(long) < sizeof(pcb_layergrp_id_t)) {
+		pcb_message(PCB_MSG_ERROR, "can't load propedig: layergrp id type wider than long\n");
+		return -1;
+	}
+
 	PCB_REGISTER_ACTIONS(propedit_action_list, propedit_cookie)
 	return 0;
 }
