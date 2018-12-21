@@ -1239,3 +1239,16 @@ void pcb_layergrp_copper_cache_update(pcb_layer_stack_t *st)
 	st->cache.copper_valid = 1;
 }
 
+
+pcb_layergrp_id_t pcb_layergrp_str2id(pcb_board_t *pcb, const char *str)
+{
+	char *end;
+	pcb_layer_id_t id;
+	if (*str == '#') {
+		id = strtol(str+1, &end, 10);
+		if ((*end == '\0') && (id >= 0) && (id < pcb->LayerGroups.len))
+			return id;
+	}
+TODO("layer: do the same that cam does; test with propedit");
+	return -1;
+}
