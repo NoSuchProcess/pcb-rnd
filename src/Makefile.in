@@ -214,6 +214,7 @@ append /local/pcb/OBJS [@
 	../src_3rd/genvector/vtp0.o
 	../src_3rd/genvector/vts0.o
 	../src_3rd/genvector/vti0.o
+	../src_3rd/genvector/vtl0.o
 	../src_3rd/genregex/regex_sei.o
 	../src_3rd/genregex/regex_se.o
 	../src_3rd/genregex/regex.o

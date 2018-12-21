@@ -1,4 +1,4 @@
-21973	configure	new propedit
+21977	configure	new propedit
 21972	configure	boardflip plugin removed (core functionality took over)
 21942	configure	io_tedax for new blocks
 21876	configure	moving out the old drc to a plugin
