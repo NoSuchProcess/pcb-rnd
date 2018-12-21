@@ -96,18 +96,5 @@ const char *pcb_props_type_name(pcb_prop_type_t type);
 */
 pcb_props_t *pcb_props_stat(htsp_t *props, const char *propname, pcb_propval_t *most_common, pcb_propval_t *min, pcb_propval_t *max, pcb_propval_t *avg);
 
-/* Return the value of a property as string - there's a set of static buffers,
-   old values are discarded after 8 calls! */
-const char *propedit_sprint_val(pcb_prop_type_t type, pcb_propval_t val);
-
-/* for internal use */
-typedef struct {
-	htsp_t *core_props;
-
-	/* query */
-	pcb_props_t *qprop;
-	htprop_entry_t *qprope;
-} pe_ctx_t;
-
 /* Whether the board is selected for editing */
 extern int propedit_board;

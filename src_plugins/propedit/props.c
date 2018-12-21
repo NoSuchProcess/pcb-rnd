@@ -207,22 +207,3 @@ pcb_props_t *pcb_props_stat(htsp_t *props, const char *propname, pcb_propval_t *
 }
 
 #undef STAT
-
-static char buff[8][128];
-static int buff_idx = 0;
-const char *propedit_sprint_val(pcb_prop_type_t type, pcb_propval_t val)
-{
-	char *b;
-	buff_idx++;
-	if (buff_idx > 7)
-		buff_idx = 0;
-	b = buff[buff_idx];
-	switch(type) {
-		case PCB_PROPT_STRING: return val.string; break;
-		case PCB_PROPT_COORD:  pcb_snprintf(b, 128, "%.06$mm\n%.06$ml", val.coord, val.coord); break;
-		case PCB_PROPT_ANGLE:  sprintf(b, "%.2f", val.angle); break;
-		case PCB_PROPT_INT:    sprintf(b, "%d", val.i); break;
-		default: strcpy(b, "<unknown type>");
-	}
-	return b;
-}

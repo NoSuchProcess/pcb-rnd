@@ -35,7 +35,6 @@
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	int wtree, wfilter, wtype;
-	pe_ctx_t pe;
 } propdlg_t;
 
 static void propdlgclose_cb(void *caller_data, pcb_hid_attr_ev_t ev)
