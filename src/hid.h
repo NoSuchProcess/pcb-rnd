@@ -448,28 +448,6 @@ struct pcb_hid_s {
 	/* Optional: change cursor to indicate if an object is grabbed (or not) */
 	void (*point_cursor)(pcb_bool grabbed);
 
-	/*** PROPEDIT (optional) ****/
-	/* Optional: start a propedit session: a series of propedit calls will follow
-	   Return 0 on success; non-zero aborts the session.
-	*/
-	int (*propedit_start)(void *pe, int num_props, const char *(*query)(void *pe, const char *cmd, const char *key, const char *val, int idx));
-
-	/* Optional: end a propedit session: all data has been sent, no more; this call
-	   should present and run the user dialog and should return, only when the
-	   propedit section can be closed. */
-	void (*propedit_end)(void *pe);
-
-	/* Optional: registers a new property
-	   Returns a prop context passed with each value
-	*/
-	void *(*propedit_add_prop)(void *pe, const char *propname, int is_mutable, int num_vals);
-
-	/* Optional: registers a new value for a property */
-	void (*propedit_add_value)(void *pe, const char *propname, void *propctx, const char *value, int repeat_cnt);
-
-	/* Optional: registers statistical info for a property */
-	void (*propedit_add_stat)(void *pe, const char *propname, void *propctx, const char *most_common, const char *min, const char *max, const char *avg);
-
 	/* Optional: when non-zero, the core renderer may decide to draw cheaper
 	   (simplified) approximation of some objects that would end up being too
 	   small. For a GUI, this should depend on the zoom level */
