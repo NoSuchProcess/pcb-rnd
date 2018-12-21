@@ -108,6 +108,31 @@ pcb_idpath_t *pcb_obj2idpath(pcb_any_obj_t *obj)
 	return idp;
 }
 
+pcb_idpath_t *pcb_str2idpath(const char *str)
+{
+	const char *s;
+	char *next;
+	int n, len = 1;
+	pcb_idpath_t *idp;
+
+	for(s = str; *s == '/'; s++)
+	for(; *s != '\0'; s++) {
+		if ((s[0] == '/') && (s[1] != '/') && (s[1] != '\0'))
+			len++;
+	}
+
+	idp = pcb_idpath_alloc(len);
+
+	for(s = str, n = 0; *s != '\0'; s++,n++) {
+		while(*s == '/') s++;
+		if (*s == '\0')
+			break;
+		idp->id[n] = strtol(s, &next, 10);
+		s = (const char *)next;
+	}
+	return idp;
+}
+
 static pcb_any_obj_t *idpath2obj(pcb_data_t *data, const pcb_idpath_t *path, int level)
 {
 
