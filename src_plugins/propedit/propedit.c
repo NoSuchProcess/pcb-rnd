@@ -148,7 +148,7 @@ fgw_error_t pcb_act_propprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *scope = NULL;
 	pcb_propedit_t ctx;
-	htsp_entry_t *e;
+	htsp_entry_t *e, *sorted;
 
 	pcb_props_init(&ctx, PCB);
 
@@ -161,7 +161,8 @@ fgw_error_t pcb_act_propprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		ctx.selection = 1;
 
 	pcb_propsel_map_core(&ctx);
-	for(e = htsp_first(&ctx.props); e != NULL; e = htsp_next(&ctx.props, e)) {
+	sorted = pcb_props_sort(&ctx);
+	for(e = sorted; e->key != NULL; e++) {
 		pcb_props_t *p = e->value;
 		pcb_propval_t com, min, max, avg;
 
@@ -186,6 +187,7 @@ fgw_error_t pcb_act_propprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				break;
 		}
 	}
+	free(sorted);
 
 	pcb_props_uninit(&ctx);
 	PCB_ACT_IRES(0);

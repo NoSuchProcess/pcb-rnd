@@ -201,4 +201,25 @@ int pcb_props_stat(pcb_propedit_t *ctx, pcb_props_t *p, pcb_propval_t *most_comm
 	return 0;
 }
 
+int prop_cmp(const void *e1_, const void *e2_)
+{
+	const htsp_entry_t *e1 = e1_, *e2 = e2_;
+	return strcmp(e1->key, e2->key);
+}
+
+htsp_entry_t *pcb_props_sort(pcb_propedit_t *ctx)
+{
+	htsp_entry_t *e, *arr = malloc(sizeof(htsp_entry_t) * (ctx->props.used + 1));
+	int n;
+
+	for(e = htsp_first(&ctx->props), n = 0; e != NULL; e = htsp_next(&ctx->props, e), n++)
+		arr[n] = *e;
+
+	qsort(arr, n, sizeof(htsp_entry_t), prop_cmp);
+
+	arr[ctx->props.used].key = NULL;
+	return arr;
+}
+
+
 #undef STAT

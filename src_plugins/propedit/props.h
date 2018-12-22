@@ -112,3 +112,6 @@ const char *pcb_props_type_name(pcb_prop_type_t type);
      type=string   min, max, avg
 */
 int pcb_props_stat(pcb_propedit_t *ctx, pcb_props_t *p, pcb_propval_t *most_common, pcb_propval_t *min, pcb_propval_t *max, pcb_propval_t *avg);
+
+/* Return a key=NULL terminated array of all entries from the hash, alphabetically sorted */
+htsp_entry_t *pcb_props_sort(pcb_propedit_t *ctx);
