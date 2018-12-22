@@ -31,8 +31,10 @@
 #include "board.h"
 #include "actions.h"
 #include "hid_dad.h"
+#include "hid_dad_tree.h"
 
 #include "props.h"
+#include "propsel.h"
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
@@ -46,6 +48,24 @@ static void propdlgclose_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	pcb_props_uninit(&ctx->pe);
 	PCB_DAD_FREE(ctx->dlg);
 	free(ctx);
+}
+
+static void prop_pcb2dlg(propdlg_t *ctx)
+{
+	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wtree];
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	htsp_entry_t *sorted, *e;
+
+	pcb_dad_tree_clear(tree);
+
+	pcb_propsel_map_core(&ctx->pe);
+	sorted = pcb_props_sort(&ctx->pe);
+	for(e = sorted; e->key != NULL; e++) {
+		char *cell[6] = {NULL};
+		cell[0] = pcb_strdup(e->key);
+		pcb_dad_tree_append(attr, NULL, cell);
+	}
+	free(sorted);
 }
 
 static void prop_prv_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
@@ -88,6 +108,7 @@ static void build_propval(propdlg_t *ctx)
 
 static void pcb_dlg_propdlg(propdlg_t *ctx)
 {
+	const char *hdr[] = {"property", "common", "min", "max", "avg"};
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	static pcb_box_t prvbb = {0, 0, PCB_MM_TO_COORD(10), PCB_MM_TO_COORD(10)};
 
@@ -98,7 +119,7 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 			/* left: property tree and filter */
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
-				PCB_DAD_TREE(ctx->dlg, 1, 1, NULL);
+				PCB_DAD_TREE(ctx->dlg, 5, 1, hdr);
 					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
 					ctx->wtree = PCB_DAD_CURRENT(ctx->dlg);
 /*					PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, dlg_conf_select_node_cb);*/
@@ -123,6 +144,8 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 	PCB_DAD_END(ctx->dlg);
+
+	prop_pcb2dlg(ctx);
 
 	PCB_DAD_NEW("propedit", ctx->dlg, "Property editor", ctx, pcb_true, propdlgclose_cb);
 }
