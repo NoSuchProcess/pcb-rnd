@@ -136,12 +136,38 @@ static void prop_data_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	propdlg_t *ctx = caller_data;
 	pcb_hid_row_t *r = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wtree]);
 	pcb_props_t *p = NULL;
+	pcb_propset_ctx_t sctx;
 
 	if (r == NULL)
 		return;
 	p = pcb_props_get(&ctx->pe, r->user_data);
+	if (p == NULL)
+		return;
 
-	printf("SET: %s %p\n", r->user_data, p);
+	memset(&sctx, 0, sizeof(sctx));
+	switch(p->type) {
+		case PCB_PROPT_invalid:
+		case PCB_PROPT_max:
+			return;
+		case PCB_PROPT_STRING:
+			sctx.s = ctx->dlg[ctx->wedit[p->type]].default_val.str_value;
+			break;
+		case PCB_PROPT_COORD:
+			sctx.c = ctx->dlg[ctx->wedit[p->type]].default_val.coord_value;
+			sctx.c_valid = 1;
+			break;
+		case PCB_PROPT_ANGLE:
+			sctx.d = ctx->dlg[ctx->wedit[p->type]].default_val.real_value;
+			sctx.d_valid = 1;
+			break;
+		case PCB_PROPT_INT:
+			sctx.c = ctx->dlg[ctx->wedit[p->type]].default_val.int_value;
+			sctx.c_valid = 1;
+			break;
+	}
+
+	pcb_propsel_set(&ctx->pe, r->user_data, &sctx);
+	pcb_gui->invalidate_all();
 }
 
 
