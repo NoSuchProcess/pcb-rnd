@@ -193,15 +193,17 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_append_under(pcb_hid_attribute_t *attr, p
 PCB_INLINE int pcb_dad_tree_remove(pcb_hid_attribute_t *attr, pcb_hid_row_t *row)
 {
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
-	pcb_hid_row_t *r, *par = pcb_dad_tree_parent_row(tree, row);
+	pcb_hid_row_t *r, *rn, *par = pcb_dad_tree_parent_row(tree, row);
 	gdl_list_t *lst = (par == NULL) ? &tree->rows : &par->children;
 	int res = 0;
 
 	assert(attr == tree->attrib);
 
 	/* recursively remove all children */
-	for(r = gdl_first(&row->children); r != NULL; r = gdl_next(&row->children, r))
+	for(r = gdl_first(&row->children); r != NULL; r = rn) {
+		rn = gdl_next(&row->children, r);
 		res |= pcb_dad_tree_remove(attr, r);
+	}
 
 	/* remove from gui */
 	if (tree->hid_remove_cb != NULL)
