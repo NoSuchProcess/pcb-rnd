@@ -357,6 +357,8 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 	const char *hdr[] = {"property", "common", "min", "max", "avg"};
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	static pcb_box_t prvbb = {0, 0, PCB_MM_TO_COORD(10), PCB_MM_TO_COORD(10)};
+	int n;
+	pcb_hid_attr_val_t hv;
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
 		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
@@ -406,6 +408,11 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 
 	prop_pcb2dlg(ctx);
 	gdl_append(&propdlgs, ctx, link);
+
+	/* default all abs */
+	hv.int_value = 1;
+	for(n = 0; n < PCB_PROPT_max; n++)
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wabs[n], &hv);
 }
 
 extern int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet);
