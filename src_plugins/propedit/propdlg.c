@@ -259,6 +259,11 @@ static void prop_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 	prop_pcb2dlg(ctx);
 }
 
+static void prop_refresh_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	prop_pcb2dlg((propdlg_t *)caller_data);
+}
+
 
 static void build_propval(propdlg_t *ctx)
 {
@@ -357,6 +362,9 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 					PCB_DAD_BUTTON(ctx->dlg, "del");
 						PCB_DAD_CHANGE_CB(ctx->dlg, prop_del_cb);
 						PCB_DAD_HELP(ctx->dlg, "Remove the selected attribute\n(from the a/ subtree)");
+					PCB_DAD_BUTTON(ctx->dlg, "rfr");
+						PCB_DAD_CHANGE_CB(ctx->dlg, prop_refresh_cb);
+						PCB_DAD_HELP(ctx->dlg, "Refresh: rebuild the tree\nupdating all values from the board");
 				PCB_DAD_END(ctx->dlg);
 			PCB_DAD_END(ctx->dlg);
 
