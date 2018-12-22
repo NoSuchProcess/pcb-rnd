@@ -85,7 +85,7 @@ static void setup_tree(pref_ctx_t *ctx)
 		*basename = '\0';
 		basename++;
 
-		parent = pcb_dad_tree_mkdirp(tree, path);
+		parent = pcb_dad_tree_mkdirp(tree, path, NULL);
 		if (parent == NULL) {
 			pcb_message(PCB_MSG_WARNING, "Warning: can't create config item for %s: invalid path\n", e->key);
 			continue;
@@ -95,7 +95,7 @@ static void setup_tree(pref_ctx_t *ctx)
 		if (nat->array_size > 1) {
 			int i;
 			*bnsep = '/';
-			parent = pcb_dad_tree_mkdirp(tree, path);
+			parent = pcb_dad_tree_mkdirp(tree, path, NULL);
 			for(i = 0; i < nat->array_size; i++) {
 				cell[0] = pcb_strdup_printf("[%d]", i);
 				pcb_dad_tree_append_under(attr, parent, cell);

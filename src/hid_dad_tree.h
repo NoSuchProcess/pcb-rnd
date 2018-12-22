@@ -42,8 +42,10 @@ void pcb_dad_tree_hide_all(pcb_hid_tree_t *tree, gdl_list_t *rowlist, int val);
 /* recursively unhide items that match text in the given column; parents are unhidden too */
 void pcb_dad_tree_unhide_filter(pcb_hid_tree_t *tree, gdl_list_t *rowlist, int col, const char *text);
 
-/* Recursively create the directory and all parents in a tree; temporarily modifies path (but changes it back) */
-pcb_hid_row_t *pcb_dad_tree_mkdirp(pcb_hid_tree_t *tree, char *path);
+/* Recursively create the node and all parents in a tree. If cells is not NULL,
+   the target path row is created with these cells, else only the first col
+   is filled in. Temporarily modifies path (but changes it back) */
+pcb_hid_row_t *pcb_dad_tree_mkdirp(pcb_hid_tree_t *tree, char *path, char **cells);
 
 /* Internal: Allocate a new row and load the cells (but do not insert it anywhere) */
 PCB_INLINE pcb_hid_row_t *pcb_dad_tree_new_row(char **cols)
