@@ -67,7 +67,21 @@ double pcb_get_value(const char *val, const char *units, pcb_bool * absolute, pc
 
 pcb_bool pcb_get_value_unit(const char *val, pcb_bool *absolute, int unit_strict, double *val_out, const pcb_unit_t **unit_out)
 {
-	int ul = strspn(val, "0123456789.");
+	int ul, ulo = 0;
+	const char *start = val;
+
+	if ((*start == '-') || (*start == '+')) {
+		start++;
+		ulo = 1;
+		if (absolute != NULL)
+			*absolute = pcb_false;
+	}
+	else if (absolute != NULL)
+		*absolute = pcb_true;
+
+	ul = strspn(start, "0123456789.");
+	if (ul > 0)
+		ul += ulo;
 	if ((ul > 0) && (val[ul] != '\0')) {
 		const char *unit = val+ul;
 		const pcb_unit_t *u;
