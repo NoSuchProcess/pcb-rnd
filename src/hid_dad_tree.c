@@ -110,3 +110,33 @@ int pcb_hid_dad_run(void *hid_ctx, pcb_dad_retovr_t *retovr)
 		return retovr->value;
 	return ret;
 }
+
+pcb_hid_row_t *pcb_dad_tree_mkdirp(pcb_hid_tree_t *tree, char *path)
+{
+	char *cell[2] = {NULL};
+	pcb_hid_row_t *parent;
+	char *last;
+
+	parent = htsp_get(&tree->paths, path);
+	if (parent != NULL)
+		return parent;
+
+	last = strrchr(path, '/');
+
+	if (last == NULL) {
+		/* root dir */
+		parent = htsp_get(&tree->paths, path);
+		if (parent != NULL)
+			return parent;
+		cell[0] = pcb_strdup(path);
+		return pcb_dad_tree_append(tree->attrib, NULL, cell);
+	}
+
+/* non-root-dir: get or create parent */
+	*last = '\0';
+	last++;
+	parent = pcb_dad_tree_mkdirp(tree, path);
+
+	cell[0] = pcb_strdup(last);
+	return pcb_dad_tree_append_under(tree->attrib, parent, cell);
+}

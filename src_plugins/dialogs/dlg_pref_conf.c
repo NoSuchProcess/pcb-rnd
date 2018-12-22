@@ -47,37 +47,6 @@ static int conf_tree_cmp(const void *v1, const void *v2)
 	return strcmp((*e1)->key, (*e2)->key);
 }
 
-/* Recursively create the directory and all parents in a tree */
-static pcb_hid_row_t *dlg_conf_tree_mkdirp(pcb_hid_tree_t *tree, char *path)
-{
-	char *cell[2] = {NULL};
-	pcb_hid_row_t *parent;
-	char *last;
-
-	parent = htsp_get(&tree->paths, path);
-	if (parent != NULL)
-		return parent;
-
-	last = strrchr(path, '/');
-
-	if (last == NULL) {
-		/* root dir */
-		parent = htsp_get(&tree->paths, path);
-		if (parent != NULL)
-			return parent;
-		cell[0] = pcb_strdup(path);
-		return pcb_dad_tree_append(tree->attrib, NULL, cell);
-	}
-
-/* non-root-dir: get or create parent */
-	*last = '\0';
-	last++;
-	parent = dlg_conf_tree_mkdirp(tree, path);
-
-	cell[0] = pcb_strdup(last);
-	return pcb_dad_tree_append_under(tree->attrib, parent, cell);
-}
-
 static void setup_tree(pref_ctx_t *ctx)
 {
 	char *cell[2] = {NULL};
@@ -116,7 +85,7 @@ static void setup_tree(pref_ctx_t *ctx)
 		*basename = '\0';
 		basename++;
 
-		parent = dlg_conf_tree_mkdirp(tree, path);
+		parent = pcb_dad_tree_mkdirp(tree, path);
 		if (parent == NULL) {
 			pcb_message(PCB_MSG_WARNING, "Warning: can't create config item for %s: invalid path\n", e->key);
 			continue;
@@ -126,7 +95,7 @@ static void setup_tree(pref_ctx_t *ctx)
 		if (nat->array_size > 1) {
 			int i;
 			*bnsep = '/';
-			parent = dlg_conf_tree_mkdirp(tree, path);
+			parent = pcb_dad_tree_mkdirp(tree, path);
 			for(i = 0; i < nat->array_size; i++) {
 				cell[0] = pcb_strdup_printf("[%d]", i);
 				pcb_dad_tree_append_under(attr, parent, cell);
