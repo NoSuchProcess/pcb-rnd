@@ -82,6 +82,16 @@ void pcb_props_reset(pcb_propedit_t *ctx)
 	htsp_entry_t *e;
 	for(e = htsp_first(&ctx->props); e != NULL; e = htsp_next(&ctx->props, e)) {
 		pcb_props_t *p = e->value;
+		htprop_clear(&p->values);
+	}
+}
+
+
+void pcb_props_clear(pcb_propedit_t *ctx)
+{
+	htsp_entry_t *e;
+	for(e = htsp_first(&ctx->props); e != NULL; e = htsp_next(&ctx->props, e)) {
+		pcb_props_t *p = e->value;
 		htprop_uninit(&p->values);
 		free(p);
 		free(e->key);
@@ -92,7 +102,7 @@ void pcb_props_reset(pcb_propedit_t *ctx)
 
 void pcb_props_uninit(pcb_propedit_t *ctx)
 {
-	pcb_props_reset(ctx);
+	pcb_props_clear(ctx);
 	TODO("clear the vectors")
 	memset(ctx, 0, sizeof(pcb_propedit_t));
 }
