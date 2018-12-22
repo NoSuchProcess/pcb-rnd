@@ -268,18 +268,7 @@ void pcb_propsel_map_core(pcb_propedit_t *ctx)
 
 /*******************/
 
-typedef struct set_ctx_s {
-	pcb_board_t *pcb;
-	const char *name;
-	const char *value;
-	pcb_coord_t c;
-	double d;
-	pcb_bool c_absolute, d_absolute, c_valid, d_valid, is_trace, is_attr;
-
-	int set_cnt;
-} set_ctx_t;
-
-static void set_attr(set_ctx_t *st, pcb_attribute_list_t *list)
+static void set_attr(pcb_propset_ctx_t *st, pcb_attribute_list_t *list)
 {
 	const char *key = st->name+2;
 	const char *orig = pcb_attribute_get(list, key);
@@ -295,7 +284,7 @@ static void set_attr(set_ctx_t *st, pcb_attribute_list_t *list)
 #define DONE0 { st->set_cnt++; pcb_undo_restore_serial(); return 0; }
 #define DONE1 { st->set_cnt++; pcb_undo_restore_serial(); return 1; }
 
-static int set_common(set_ctx_t *st, pcb_any_obj_t *obj)
+static int set_common(pcb_propset_ctx_t *st, pcb_any_obj_t *obj)
 {
 	const pcb_flag_bits_t *i = pcb_strflg_name(st->name + 8, obj->type);
 
@@ -313,7 +302,7 @@ static int brd_resize(pcb_coord_t w, pcb_coord_t h)
 	return 1;
 }
 
-static void set_board(set_ctx_t *st, pcb_board_t *pcb)
+static void set_board(pcb_propset_ctx_t *st, pcb_board_t *pcb)
 {
 	const char *pn = st->name + 8;
 
@@ -340,7 +329,7 @@ static int layer_recolor(pcb_layer_t *layer, const char *clr)
 	return pcb_layer_recolor_(layer, &c);
 }
 
-static int set_layer(set_ctx_t *st, pcb_layer_t *layer)
+static int set_layer(pcb_propset_ctx_t *st, pcb_layer_t *layer)
 {
 	const char *pn = st->name + 8;
 
@@ -359,7 +348,7 @@ static int set_layer(set_ctx_t *st, pcb_layer_t *layer)
 }
 
 
-static void set_layergrp(set_ctx_t *st, pcb_layergrp_t *grp)
+static void set_layergrp(pcb_propset_ctx_t *st, pcb_layergrp_t *grp)
 {
 	const char *pn = st->name + 14;
 
@@ -376,7 +365,7 @@ static void set_layergrp(set_ctx_t *st, pcb_layergrp_t *grp)
 }
 
 
-static void set_line(set_ctx_t *st, pcb_line_t *line)
+static void set_line(pcb_propset_ctx_t *st, pcb_line_t *line)
 {
 	const char *pn = st->name + 8;
 
@@ -394,7 +383,7 @@ static void set_line(set_ctx_t *st, pcb_line_t *line)
 	    pcb_chg_obj_clear_size(PCB_OBJ_LINE, line->parent.layer, line, NULL, st->c*2, st->c_absolute)) DONE;
 }
 
-static void set_arc(set_ctx_t *st, pcb_arc_t *arc)
+static void set_arc(pcb_propset_ctx_t *st, pcb_arc_t *arc)
 {
 	const char *pn = st->name + 8;
 
@@ -426,7 +415,7 @@ static void set_arc(set_ctx_t *st, pcb_arc_t *arc)
 	    pcb_chg_obj_angle(PCB_OBJ_ARC, arc->parent.layer, arc, NULL, 1, st->d, st->d_absolute)) DONE;
 }
 
-static void set_text(set_ctx_t *st, pcb_text_t *text)
+static void set_text(pcb_propset_ctx_t *st, pcb_text_t *text)
 {
 	const char *pn = st->name + 7;
 	char *old;
@@ -454,7 +443,7 @@ static void set_text(set_ctx_t *st, pcb_text_t *text)
 		pcb_chg_obj_2nd_size(PCB_OBJ_TEXT, text->parent.layer, text, text, st->c, st->c_absolute, pcb_true)) DONE;
 }
 
-static void set_poly(set_ctx_t *st, pcb_poly_t *poly)
+static void set_poly(pcb_propset_ctx_t *st, pcb_poly_t *poly)
 {
 	const char *pn = st->name + 8;
 
@@ -469,7 +458,7 @@ static void set_poly(set_ctx_t *st, pcb_poly_t *poly)
 	}
 }
 
-static void set_pstk(set_ctx_t *st, pcb_pstk_t *ps)
+static void set_pstk(pcb_propset_ctx_t *st, pcb_pstk_t *ps)
 {
 	const char *pn = st->name + 11;
 	int i;
@@ -513,7 +502,7 @@ static void set_pstk(set_ctx_t *st, pcb_pstk_t *ps)
 	    (pcb_pstk_proto_change_hole(proto, NULL, NULL, NULL, &i) == 0)) DONE;
 }
 
-static void set_subc(set_ctx_t *st, pcb_subc_t *ssubc)
+static void set_subc(pcb_propset_ctx_t *st, pcb_subc_t *ssubc)
 {
 	PCB_ARC_ALL_LOOP(ssubc->data); {
 		if (pcb_subc_part_editable(st->pcb, arc))
@@ -548,7 +537,7 @@ static void set_subc(set_ctx_t *st, pcb_subc_t *ssubc)
 	}
 }
 
-static void set_any(set_ctx_t *ctx, pcb_any_obj_t *o)
+static void set_any(pcb_propset_ctx_t *ctx, pcb_any_obj_t *o)
 {
 	if (o == NULL)
 		return;
@@ -563,13 +552,48 @@ static void set_any(set_ctx_t *ctx, pcb_any_obj_t *o)
 	}
 }
 
-int pcb_propsel_set(pcb_propedit_t *ctx, const char *prop, const char *value)
+int pcb_propsel_set(pcb_propedit_t *ctx, const char *prop, pcb_propset_ctx_t *sctx)
 {
-	set_ctx_t sctx;
+	size_t n;
+	pcb_idpath_t *idp;
+
+	sctx->pcb = ctx->pcb;
+	sctx->is_trace = (strncmp(prop, "p/trace/", 8) == 0);
+	sctx->is_attr = (prop[0] == 'a');
+	sctx->name = prop;
+
+	pcb_undo_save_serial();
+
+	for(n = 0; n < vtl0_len(&ctx->layers); n++)
+		set_layer(sctx, pcb_get_layer(ctx->pcb->Data, ctx->layers.array[n]));
+
+	for(n = 0; n < vtl0_len(&ctx->layergrps); n++)
+		set_layergrp(sctx, pcb_get_layergrp(ctx->pcb, ctx->layergrps.array[n]));
+
+	for(idp = pcb_idpath_list_first(&ctx->objs); idp != NULL; idp = pcb_idpath_list_next(idp))
+		set_any(sctx, pcb_idpath2obj(ctx->pcb->Data, idp));
+
+	if (ctx->selection) {
+		pcb_any_obj_t *o;
+		pcb_data_it_t it;
+		for(o = pcb_data_first(&it, ctx->pcb->Data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it))
+			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, o))
+				set_any(sctx, o);
+	}
+
+	if (ctx->board)
+		set_board(sctx, ctx->pcb);
+
+	pcb_undo_inc_serial();
+	return sctx->set_cnt;
+}
+
+
+int pcb_propsel_set_str(pcb_propedit_t *ctx, const char *prop, const char *value)
+{
+	pcb_propset_ctx_t sctx;
 	char *end;
 	const char *start;
-	pcb_idpath_t *idp;
-	size_t n;
 
 	/* sanity checks for invalid props */
 	if (prop[1] != '/')
@@ -577,10 +601,6 @@ int pcb_propsel_set(pcb_propedit_t *ctx, const char *prop, const char *value)
 	if ((prop[0] != 'a') && (prop[0] != 'p'))
 		return 0;
 
-	sctx.pcb = ctx->pcb;
-	sctx.is_trace = (strncmp(prop, "p/trace/", 8) == 0);
-	sctx.is_attr = (prop[0] == 'a');
-	sctx.name = prop;
 	sctx.value = value;
 	start = value;
 	while(isspace(*start)) start++;
@@ -595,30 +615,7 @@ int pcb_propsel_set(pcb_propedit_t *ctx, const char *prop, const char *value)
 	sctx.d_valid = (*end == '\0');
 	sctx.set_cnt = 0;
 
-	pcb_undo_save_serial();
-
-	for(n = 0; n < vtl0_len(&ctx->layers); n++)
-		set_layer(&sctx, pcb_get_layer(ctx->pcb->Data, ctx->layers.array[n]));
-
-	for(n = 0; n < vtl0_len(&ctx->layergrps); n++)
-		set_layergrp(&sctx, pcb_get_layergrp(ctx->pcb, ctx->layergrps.array[n]));
-
-	for(idp = pcb_idpath_list_first(&ctx->objs); idp != NULL; idp = pcb_idpath_list_next(idp))
-		set_any(&sctx, pcb_idpath2obj(ctx->pcb->Data, idp));
-
-	if (ctx->selection) {
-		pcb_any_obj_t *o;
-		pcb_data_it_t it;
-		for(o = pcb_data_first(&it, ctx->pcb->Data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it))
-			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, o))
-				set_any(&sctx, o);
-	}
-
-	if (ctx->board)
-		set_board(&sctx, ctx->pcb);
-
-	pcb_undo_inc_serial();
-	return sctx.set_cnt;
+	return pcb_propsel_set(ctx, prop, &sctx);
 }
 
 /*******************/

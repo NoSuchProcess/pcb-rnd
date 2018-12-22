@@ -137,7 +137,7 @@ fgw_error_t pcb_act_propset(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_CONVARG(2, FGW_STR, propset, val = argv[2].val.str);
 	}
 
-	PCB_ACT_IRES(pcb_propsel_set(&ctx, name, val));
+	PCB_ACT_IRES(pcb_propsel_set_str(&ctx, name, val));
 	pcb_props_uninit(&ctx);
 	return 0;
 }
