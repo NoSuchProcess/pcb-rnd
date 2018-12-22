@@ -40,6 +40,7 @@ typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	pcb_propedit_t pe;
 	int wtree, wfilter, wtype;
+	int wedit[PCB_PROPT_max];
 } propdlg_t;
 
 static void propdlgclose_cb(void *caller_data, pcb_hid_attr_ev_t ev)
@@ -54,8 +55,8 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 {
 	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wtree];
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
-	htsp_entry_t *sorted, *e;
 	pcb_hid_row_t *r;
+	htsp_entry_t *sorted, *e;
 
 	pcb_dad_tree_clear(tree);
 
@@ -67,10 +68,10 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 		pcb_propval_t com, min, max, avg;
 
 		if (p->type == PCB_PROPT_STRING) {
-			pcb_props_stat(&ctx, p, &com, NULL, NULL, NULL);
+			pcb_props_stat(&ctx->pe, p, &com, NULL, NULL, NULL);
 		}
 		else {
-			pcb_props_stat(&ctx, p, &com, &min, &max, &avg);
+			pcb_props_stat(&ctx->pe, p, &com, &min, &max, &avg);
 			cell[2] = pcb_propsel_printval(p->type, &min);
 			cell[3] = pcb_propsel_printval(p->type, &max);
 			cell[4] = pcb_propsel_printval(p->type, &avg);
@@ -80,6 +81,7 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 		cell[1] = pcb_propsel_printval(p->type, &com);
 
 		r = pcb_dad_tree_mkdirp(tree, cell[0], cell);
+		r->user_data = e->key;
 	}
 	free(sorted);
 }
@@ -96,28 +98,87 @@ static pcb_bool prop_prv_mouse_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t
 }
 
 
+static void prop_select_node_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+{
+	pcb_hid_attr_val_t hv;
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	propdlg_t *ctx = tree->user_ctx;
+	pcb_props_t *p = NULL;
+
+	if (row != NULL)
+		p = pcb_props_get(&ctx->pe, row->user_data);
+
+	if (p == NULL) { /* deselect or not found */
+		hv.int_value = 0;
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtype, &hv);
+		return;
+	}
+
+	hv.int_value = p->type;
+	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtype, &hv);
+
+TODO("set the enum with all exisitng values")
+/*
+	switch(p->type) {
+		case PCB_PROPT_STRING:
+		case PCB_PROPT_COORD:
+		case PCB_PROPT_ANGLE:
+		case PCB_PROPT_INT:
+	}
+*/
+	memset(&hv, 0, sizeof(hv));
+	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wedit[p->type], &hv);
+}
+
+
+static void prop_data_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	propdlg_t *ctx = caller_data;
+	pcb_hid_row_t *r = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wtree]);
+	pcb_props_t *p = NULL;
+
+	if (r == NULL)
+		return;
+	p = pcb_props_get(&ctx->pe, r->user_data);
+
+	printf("SET: %s %p\n", r->user_data, p);
+}
+
+
 static void build_propval(propdlg_t *ctx)
 {
-	static const char *type_tabs[] = {"string", "coord", "angle", "int", NULL};
+	static const char *type_tabs[] = {"none", "string", "coord", "angle", "int", NULL};
 
 	PCB_DAD_BEGIN_TABBED(ctx->dlg, type_tabs);
 		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_HIDE_TABLAB);
 		ctx->wtype = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
+			PCB_DAD_LABEL(ctx->dlg, "(nothing to edit)");
+				ctx->wedit[1] = 0;
+		PCB_DAD_END(ctx->dlg);
+		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Data type: string");
 			PCB_DAD_STRING(ctx->dlg);
+				ctx->wedit[1] = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_cb);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Data type: coord");
 			PCB_DAD_COORD(ctx->dlg, "");
+				ctx->wedit[2] = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_cb);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Data type: angle");
 			PCB_DAD_REAL(ctx->dlg, "");
+				ctx->wedit[3] = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_cb);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Data type: int");
 			PCB_DAD_INTEGER(ctx->dlg, "");
+				ctx->wedit[4] = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_cb);
 		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);
 }
@@ -138,8 +199,8 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 				PCB_DAD_TREE(ctx->dlg, 5, 1, hdr);
 					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
 					ctx->wtree = PCB_DAD_CURRENT(ctx->dlg);
-/*					PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, dlg_conf_select_node_cb);*/
-/*					PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);*/
+					PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, prop_select_node_cb);
+					PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
 					PCB_DAD_STRING(ctx->dlg);
 						PCB_DAD_HELP(ctx->dlg, "Filter text:\nlist properties with\nmatching name only");
@@ -161,9 +222,9 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 		PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 	PCB_DAD_END(ctx->dlg);
 
-	prop_pcb2dlg(ctx);
-
 	PCB_DAD_NEW("propedit", ctx->dlg, "Property editor", ctx, pcb_true, propdlgclose_cb);
+
+	prop_pcb2dlg(ctx);
 }
 
 extern int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet);
