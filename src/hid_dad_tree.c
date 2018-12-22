@@ -115,7 +115,7 @@ pcb_hid_row_t *pcb_dad_tree_mkdirp(pcb_hid_tree_t *tree, char *path, char **cell
 {
 	char *cell[2] = {NULL};
 	pcb_hid_row_t *parent;
-	char *last;
+	char *last, *old;
 
 	parent = htsp_get(&tree->paths, path);
 	if (parent != NULL)
@@ -141,5 +141,9 @@ pcb_hid_row_t *pcb_dad_tree_mkdirp(pcb_hid_tree_t *tree, char *path, char **cell
 		cell[0] = pcb_strdup(last);
 		return pcb_dad_tree_append_under(tree->attrib, parent, cell);
 	}
+
+	old = cell[0];
+	cells[0] = pcb_strdup(last);
+	free(old);
 	return pcb_dad_tree_append_under(tree->attrib, parent, cells);
 }
