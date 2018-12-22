@@ -80,6 +80,12 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
 	pcb_hid_row_t *r;
 	htsp_entry_t *sorted, *e;
+	char *cursor_path = NULL;
+
+	/* remember cursor */
+	r = pcb_dad_tree_get_selected(attr);
+	if (r != NULL)
+		cursor_path = pcb_strdup(r->path);
 
 	pcb_dad_tree_clear(tree);
 
@@ -108,6 +114,15 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 	}
 	free(sorted);
 	prop_filter_cb(ctx->dlg_hid_ctx, ctx, NULL);
+
+printf("Cursor path: %s\n", cursor_path);
+	/* restore cursor */
+	if (cursor_path != NULL) {
+		pcb_hid_attr_val_t hv;
+		hv.str_value = cursor_path;
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtree, &hv);
+		free(cursor_path);
+	}
 }
 
 static void prop_prv_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
