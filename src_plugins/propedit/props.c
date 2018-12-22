@@ -77,9 +77,23 @@ void pcb_props_init(pcb_propedit_t *ctx, pcb_board_t *pcb)
 	ctx->pcb = pcb;
 }
 
+void pcb_props_reset(pcb_propedit_t *ctx)
+{
+	htsp_entry_t *e;
+	for(e = htsp_first(&ctx->props); e != NULL; e = htsp_next(&ctx->props, e)) {
+		pcb_props_t *p = e->value;
+		htprop_uninit(&p->values);
+		free(p);
+		free(e->key);
+	}
+	htsp_clear(&ctx->props);
+}
+
+
 void pcb_props_uninit(pcb_propedit_t *ctx)
 {
-	TODO("TODO")
+	pcb_props_reset(ctx);
+	TODO("clear the vectors")
 	memset(ctx, 0, sizeof(pcb_propedit_t));
 }
 

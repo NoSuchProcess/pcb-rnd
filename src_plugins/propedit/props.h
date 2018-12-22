@@ -90,6 +90,9 @@ typedef struct {
 void pcb_props_init(pcb_propedit_t *ctx, pcb_board_t *pcb);
 void pcb_props_uninit(pcb_propedit_t *ctx);
 
+/* Free and remove all items from the hash (ctx->props) */
+void pcb_props_reset(pcb_propedit_t *ctx);
+
 /* Add a value of a named property; if the value is already known, its counter
    is increased. If propname didn't exist, create it. Returns NULL on error.
    Error conditions:
