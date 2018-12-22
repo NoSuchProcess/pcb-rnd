@@ -395,7 +395,7 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);
 
-	PCB_DAD_NEW("propedit", ctx->dlg, "Property editor", ctx, pcb_true, propdlgclose_cb);
+	PCB_DAD_NEW("propedit", ctx->dlg, "Property editor", ctx, pcb_false, propdlgclose_cb);
 
 	prop_pcb2dlg(ctx);
 }
