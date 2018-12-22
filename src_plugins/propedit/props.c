@@ -86,6 +86,8 @@ void pcb_props_uninit(pcb_propedit_t *ctx)
 /* Retrieve values for a prop */
 pcb_props_t *pcb_props_get(pcb_propedit_t *ctx, const char *propname)
 {
+	if (propname == NULL)
+		return NULL;
 	return htsp_get(&ctx->props, propname);
 }
 
