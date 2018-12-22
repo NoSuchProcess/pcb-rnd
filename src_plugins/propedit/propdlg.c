@@ -174,6 +174,41 @@ static void prop_data_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 }
 
 
+static void prop_add_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	PCB_DAD_DECL(dlg)
+	propdlg_t *ctx = caller_data;
+	int wkey, wval, res;
+	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"OK", 0}, {NULL, 0}};
+
+	PCB_DAD_BEGIN_VBOX(dlg);
+		PCB_DAD_BEGIN_TABLE(dlg, 2);
+			PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_LABEL(dlg, "Attribut key:");
+			PCB_DAD_STRING(dlg);
+				wkey = PCB_DAD_CURRENT(dlg);
+			PCB_DAD_LABEL(dlg, "Attribut value:");
+			PCB_DAD_STRING(dlg);
+				wval = PCB_DAD_CURRENT(dlg);
+		PCB_DAD_END(dlg);
+		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
+	PCB_DAD_END(dlg);
+	PCB_DAD_AUTORUN("propedit_add", dlg, "Propedit: add new attribute", NULL, res);
+
+	if (res == 0) {
+		char *path = pcb_strdup_printf("a/%s", dlg[wkey].default_val.str_value);
+		pcb_propsel_set_str(&ctx->pe, path, dlg[wval].default_val.str_value);
+		free(path);
+		prop_pcb2dlg(ctx);
+	}
+	PCB_DAD_FREE(dlg);
+}
+
+static void prop_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+
+}
+
 static void build_propval(propdlg_t *ctx)
 {
 	static const char *type_tabs[] = {"none", "string", "coord", "angle", "int", NULL};
@@ -266,8 +301,10 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 /*						PCB_DAD_CHANGE_CB(ctx->dlg, pcb_pref_dlg_conf_filter_cb);*/
 						ctx->wfilter = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_BUTTON(ctx->dlg, "add");
+						PCB_DAD_CHANGE_CB(ctx->dlg, prop_add_cb);
 						PCB_DAD_HELP(ctx->dlg, "Create a new attribute\n(in the a/ subtree)");
 					PCB_DAD_BUTTON(ctx->dlg, "del");
+						PCB_DAD_CHANGE_CB(ctx->dlg, prop_del_cb);
 						PCB_DAD_HELP(ctx->dlg, "Remove the selected attribute\n(from the a/ subtree)");
 				PCB_DAD_END(ctx->dlg);
 			PCB_DAD_END(ctx->dlg);
