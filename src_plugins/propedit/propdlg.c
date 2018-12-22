@@ -51,6 +51,29 @@ static void propdlgclose_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	free(ctx);
 }
 
+static void prop_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_ign)
+{
+	propdlg_t *ctx = caller_data;
+	pcb_hid_attribute_t *attr, *attr_inp;
+	pcb_hid_tree_t *tree;
+	const char *text;
+	int have_filter_text;
+
+	attr = &ctx->dlg[ctx->wtree];
+	attr_inp = &ctx->dlg[ctx->wfilter];
+	tree = (pcb_hid_tree_t *)attr->enumerations;
+	text = attr_inp->default_val.str_value;
+	have_filter_text = (text != NULL) && (*text != '\0');
+
+	/* hide or unhide everything */
+	pcb_dad_tree_hide_all(tree, &tree->rows, have_filter_text);
+
+	if (have_filter_text) /* unhide hits and all their parents */
+		pcb_dad_tree_unhide_filter(tree, &tree->rows, 0, text);
+
+	pcb_dad_tree_update_hide(attr);
+}
+
 static void prop_pcb2dlg(propdlg_t *ctx)
 {
 	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wtree];
@@ -84,6 +107,7 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 		r->user_data = e->key;
 	}
 	free(sorted);
+	prop_filter_cb(ctx->dlg_hid_ctx, ctx, NULL);
 }
 
 static void prop_prv_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
@@ -209,6 +233,7 @@ static void prop_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 
 }
 
+
 static void build_propval(propdlg_t *ctx)
 {
 	static const char *type_tabs[] = {"none", "string", "coord", "angle", "int", NULL};
@@ -298,7 +323,7 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
 					PCB_DAD_STRING(ctx->dlg);
 						PCB_DAD_HELP(ctx->dlg, "Filter text:\nlist properties with\nmatching name only");
-/*						PCB_DAD_CHANGE_CB(ctx->dlg, pcb_pref_dlg_conf_filter_cb);*/
+						PCB_DAD_CHANGE_CB(ctx->dlg, prop_filter_cb);
 						ctx->wfilter = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_BUTTON(ctx->dlg, "add");
 						PCB_DAD_CHANGE_CB(ctx->dlg, prop_add_cb);
