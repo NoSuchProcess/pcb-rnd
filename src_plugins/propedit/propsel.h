@@ -29,3 +29,7 @@ void pcb_propsel_map_core(pcb_propedit_t *ctx);
 
 int pcb_propsel_set(pcb_propedit_t *ctx, const char *prop, const char *value);
 int pcb_propsel_del(pcb_propedit_t *ctx, const char *attr_name);
+
+/* Allocate new string and print the value using current unit */
+char *pcb_propsel_printval(pcb_prop_type_t type, const pcb_propval_t *val);
+

@@ -37,6 +37,8 @@
 #include "undo.h"
 #include "rotate.h"
 #include "obj_pstk_inlines.h"
+#include "pcb-printf.h"
+#include "conf_core.h"
 
 /*********** map ***********/
 #define type2field_String string
@@ -683,3 +685,14 @@ int pcb_propsel_del(pcb_propedit_t *ctx, const char *key)
 }
 
 
+char *pcb_propsel_printval(pcb_prop_type_t type, const pcb_propval_t *val)
+{
+	switch(type) {
+		case PCB_PROPT_STRING: return pcb_strdup(val->string);
+		case PCB_PROPT_COORD:  return pcb_strdup_printf("%m+%.02mS", conf_core.editor.grid_unit->allow, val->coord);
+		case PCB_PROPT_ANGLE:  return pcb_strdup_printf("%f", val->angle);
+		case PCB_PROPT_INT:    return pcb_strdup_printf("%d", val->i);
+		default:
+			return pcb_strdup("<error>");
+	}
+}
