@@ -271,7 +271,7 @@ static void build_propval(propdlg_t *ctx)
 	static const char *abshelp = "When unticked each apply is a relative change added to\nthe current value of each object";
 
 	PCB_DAD_BEGIN_TABBED(ctx->dlg, type_tabs);
-		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_HIDE_TABLAB);
+		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_HIDE_TABLAB);
 		ctx->wtype = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "(nothing to edit)");
@@ -370,8 +370,14 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 
 			/* right: preview and per type edit */
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
-				PCB_DAD_PREVIEW(ctx->dlg, prop_prv_expose_cb, prop_prv_mouse_cb, NULL, &prvbb, 200, 200, ctx);
-				build_propval(ctx);
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_BEGIN_VBOX(ctx->dlg);
+					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_PREVIEW(ctx->dlg, prop_prv_expose_cb, prop_prv_mouse_cb, NULL, &prvbb, 200, 200, ctx);
+				PCB_DAD_END(ctx->dlg);
+				PCB_DAD_BEGIN_VBOX(ctx->dlg);
+					build_propval(ctx);
+				PCB_DAD_END(ctx->dlg);
 				PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 			PCB_DAD_END(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
