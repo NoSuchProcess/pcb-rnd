@@ -55,6 +55,7 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wtree];
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
 	htsp_entry_t *sorted, *e;
+	pcb_hid_row_t *r;
 
 	pcb_dad_tree_clear(tree);
 
@@ -62,8 +63,23 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 	sorted = pcb_props_sort(&ctx->pe);
 	for(e = sorted; e->key != NULL; e++) {
 		char *cell[6] = {NULL};
+		pcb_props_t *p = e->value;
+		pcb_propval_t com, min, max, avg;
+
+		if (p->type == PCB_PROPT_STRING) {
+			pcb_props_stat(&ctx, p, &com, NULL, NULL, NULL);
+		}
+		else {
+			pcb_props_stat(&ctx, p, &com, &min, &max, &avg);
+			cell[2] = pcb_propsel_printval(p->type, &min);
+			cell[3] = pcb_propsel_printval(p->type, &max);
+			cell[4] = pcb_propsel_printval(p->type, &avg);
+		}
+
 		cell[0] = pcb_strdup(e->key);
-		pcb_dad_tree_append(attr, NULL, cell);
+		cell[1] = pcb_propsel_printval(p->type, &com);
+
+		r = pcb_dad_tree_mkdirp(tree, cell[0], cell);
 	}
 	free(sorted);
 }
