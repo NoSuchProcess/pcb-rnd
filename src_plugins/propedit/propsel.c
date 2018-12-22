@@ -273,10 +273,10 @@ static void set_attr(pcb_propset_ctx_t *st, pcb_attribute_list_t *list)
 	const char *key = st->name+2;
 	const char *orig = pcb_attribute_get(list, key);
 
-	if ((orig != NULL) && (strcmp(orig, st->value) == 0))
+	if ((orig != NULL) && (strcmp(orig, st->s) == 0))
 		return;
 
-	pcb_attribute_put(list, key, st->value);
+	pcb_attribute_put(list, key, st->s);
 	st->set_cnt++;
 }
 
@@ -312,7 +312,7 @@ static void set_board(pcb_propset_ctx_t *st, pcb_board_t *pcb)
 	}
 
 	if ((strcmp(pn, "name") == 0) &&
-	    (pcb_board_change_name(pcb_strdup(st->value)))) DONE;
+	    (pcb_board_change_name(pcb_strdup(st->s)))) DONE;
 
 	if (st->c_valid && (strcmp(pn, "width") == 0) &&
 	    brd_resize(st->c, PCB->MaxHeight)) DONE;
@@ -339,10 +339,10 @@ static int set_layer(pcb_propset_ctx_t *st, pcb_layer_t *layer)
 	}
 
 	if ((strcmp(pn, "name") == 0) &&
-	    (pcb_layer_rename_(layer, pcb_strdup(st->value)) == 0)) DONE0;
+	    (pcb_layer_rename_(layer, pcb_strdup(st->s)) == 0)) DONE0;
 
 	if ((strcmp(pn, "color") == 0) &&
-	    (layer_recolor(layer, st->value) == 0)) DONE0;
+	    (layer_recolor(layer, st->s) == 0)) DONE0;
 
 	return 0;
 }
@@ -358,10 +358,10 @@ static void set_layergrp(pcb_propset_ctx_t *st, pcb_layergrp_t *grp)
 	}
 
 	if ((strcmp(pn, "name") == 0) &&
-	    (pcb_layergrp_rename_(grp, pcb_strdup(st->value)) == 0)) DONE;
+	    (pcb_layergrp_rename_(grp, pcb_strdup(st->s)) == 0)) DONE;
 
 	if ((strcmp(pn, "purpose") == 0) &&
-	    (pcb_layergrp_set_purpose(grp, st->value) == 0)) DONE;
+	    (pcb_layergrp_set_purpose(grp, st->s) == 0)) DONE;
 }
 
 
@@ -431,7 +431,7 @@ static void set_text(pcb_propset_ctx_t *st, pcb_text_t *text)
 	    pcb_chg_obj_size(PCB_OBJ_TEXT, text->parent.layer, text, text, PCB_MIL_TO_COORD(st->d), st->d_absolute)) DONE;
 
 	if ((strcmp(pn, "string") == 0) &&
-	    (old = pcb_chg_obj_name(PCB_OBJ_TEXT, text->parent.layer, text, NULL, pcb_strdup(st->value)))) {
+	    (old = pcb_chg_obj_name(PCB_OBJ_TEXT, text->parent.layer, text, NULL, pcb_strdup(st->s)))) {
 		free(old);
 		DONE;
 	}
@@ -601,7 +601,7 @@ int pcb_propsel_set_str(pcb_propedit_t *ctx, const char *prop, const char *value
 	if ((prop[0] != 'a') && (prop[0] != 'p'))
 		return 0;
 
-	sctx.value = value;
+	sctx.s = value;
 	start = value;
 	while(isspace(*start)) start++;
 	if (*start == '#') {

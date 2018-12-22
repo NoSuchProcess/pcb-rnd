@@ -28,7 +28,8 @@
 void pcb_propsel_map_core(pcb_propedit_t *ctx);
 
 typedef struct set_ctx_s {
-	pcb_coord_t c;
+	const char *s; /* only for string */
+	pcb_coord_t c; /* also int */
 	double d;
 	pcb_bool c_absolute, d_absolute, c_valid, d_valid;
 
@@ -37,7 +38,6 @@ typedef struct set_ctx_s {
 	unsigned is_attr:1;
 	pcb_board_t *pcb;
 	const char *name;
-	const char *value;
 	int set_cnt;
 } pcb_propset_ctx_t;
 
