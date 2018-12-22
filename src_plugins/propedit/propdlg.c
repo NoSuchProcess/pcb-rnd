@@ -27,6 +27,7 @@
 #include "config.h"
 
 #include <genht/hash.h>
+#include <genlist/gendlist.h>
 
 #include "board.h"
 #include "actions.h"
@@ -42,7 +43,10 @@ typedef struct{
 	pcb_propedit_t pe;
 	int wtree, wfilter, wtype;
 	int wabs[PCB_PROPT_max], wedit[PCB_PROPT_max];
+	gdl_elem_t link;
 } propdlg_t;
+
+gdl_list_t propdlgs;
 
 static void propdlgclose_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
@@ -399,6 +403,7 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 	PCB_DAD_NEW("propedit", ctx->dlg, "Property editor", ctx, pcb_false, propdlgclose_cb);
 
 	prop_pcb2dlg(ctx);
+	gdl_append(&propdlgs, ctx, link);
 }
 
 extern int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet);
@@ -426,6 +431,12 @@ fgw_error_t pcb_act_propedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static void propdlg_unit_change(conf_native_t *cfg, int arr_idx)
 {
+	propdlg_t *ctx;
+	gdl_iterator_t it;
+
+	gdl_foreach(&propdlgs, &it, ctx) {
+		prop_pcb2dlg(ctx);
+	}
 }
 
 static conf_hid_id_t propdlg_conf_id;
