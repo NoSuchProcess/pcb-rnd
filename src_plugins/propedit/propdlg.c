@@ -216,6 +216,7 @@ static void prop_data_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	}
 
 	pcb_propsel_set(&ctx->pe, r->user_data, &sctx);
+	prop_pcb2dlg(ctx);
 	pcb_gui->invalidate_all();
 }
 
