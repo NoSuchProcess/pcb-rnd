@@ -6,14 +6,16 @@
 - FEATURE: color button DAD implementation in lesstif
 - FEATURE: export_xy: pnp origin should be any obj, especially padstacks (fidu) [report: TwisteR]
 - CLEANUP: propedit revamp:
-	- move the property editor out from gtk, using the DAD, into propedit
 	- test under lesstif
-	- remove Attribute()
+	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
 	- CLEANUP: think over how to handle subc selection: selecting all parts automatically is bad for propedit; bug_files/subcsel.bug [report: Wojciech]
-	- CLEANUP: propedit rewrite: new action UI should allow operation on object and object ID instead of selection; bug_files/subcsel.bug [report: Wojciech]
-	- BUG: adding attribute works on subc parts but deleting attribute stops after deleiting it from a subc; bug_files/subcsel.bug [report: Wojciech]
+		- BUG: adding attribute works on subc parts but deleting attribute stops after deleiting it from a subc; bug_files/subcsel.bug [report: Wojciech]
+	+ CLEANUP: propedit rewrite: new action UI should allow operation on object and object ID instead of selection; bug_files/subcsel.bug [report: Wojciech]
 	- FEATURE: the property editor should display a stat of number/type of objects selected [report: Igor2]
-	- CLEANUP: pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
+	- FEATURE: get back the enum with all values
+	- FEATURE: types:
+		- color
+		- boolean
 - BUG: portability: don't use export in trunk/doc/user/Makefile [report: Vuokko]
 + FEATURE: scconfig: make man installation path configurable [report: Vuokko]
 - FEATURE: can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
