@@ -193,18 +193,21 @@ static void build_propval(propdlg_t *ctx)
 			PCB_DAD_COORD(ctx->dlg, "");
 				ctx->wedit[2] = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_cb);
+				PCB_DAD_MINMAX(ctx->dlg, -PCB_MAX_COORD, PCB_MAX_COORD);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Data type: angle");
 			PCB_DAD_REAL(ctx->dlg, "");
 				ctx->wedit[3] = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_cb);
+				PCB_DAD_MINMAX(ctx->dlg, -360.0, +360.0);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Data type: int");
 			PCB_DAD_INTEGER(ctx->dlg, "");
 				ctx->wedit[4] = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_cb);
+				PCB_DAD_MINMAX(ctx->dlg, -(1<<30), 1<<30);
 		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);
 }
