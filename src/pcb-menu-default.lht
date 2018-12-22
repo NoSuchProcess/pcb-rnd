@@ -152,8 +152,8 @@ ha:{
 				ha:Edit properties of {
 					li:submenu {
 						ha:Layout                     = { action=Propedit(board) }
-						ha:Current Layer              = { action={Propedit(layer:current)} }
-						ha:Current Layer Group        = { action={Propedit(layer_group:current)} }
+						ha:Current Layer              = { action={Propedit(layer)} }
+						ha:Current Layer Group        = { action={Propedit(layergrp)} }
 					}
 				}
 				ha:Route Styles {
@@ -173,7 +173,7 @@ ha:{
 					}
 				}
 				ha:Object flags...                = { a={<key>e; <key>f}; action=FlagEdit() }
-				ha:Object Properties...           = { a={<key>e; <key>p}; action=PropEdit() }
+				ha:Object Properties...           = { a={<key>e; <key>p}; action=PropEdit(selection) }
 			}
 		} # Edit
 
@@ -603,7 +603,7 @@ ha:{
 
 		ha:popup-obj-line {
 			li:submenu {
-				ha:Edit properties        { li:action={Unselect(All); Select(object); propedit(); } }
+				ha:Edit properties        { action=propedit(object) }
 				ha:Edit flags...          { action=FlagEdit() }
 				ha:Set Same Style         { action=SetSame() }
 				-
@@ -615,7 +615,7 @@ ha:{
 
 		ha:popup-obj-arc {
 			li:submenu {
-				ha:Edit properties        { li:action={Unselect(All); Select(object); propedit(); } }
+				ha:Edit properties        { action=propedit(object) }
 				ha:Edit flags...          { action=FlagEdit() }
 				ha:Set Same Style         { action=SetSame() }
 				-
@@ -627,7 +627,7 @@ ha:{
 
 		ha:popup-obj-polygon {
 			li:submenu {
-				ha:Edit properties        { li:action={Unselect(All); Select(object); propedit(); } }
+				ha:Edit properties        { action=propedit(object) }
 				ha:Edit flags...          { action=FlagEdit() }
 				-
 				ha:Remove polygon         { li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
@@ -638,7 +638,7 @@ ha:{
 
 		ha:popup-obj-text {
 			li:submenu {
-				ha:Edit properties        { li:action={Unselect(All); Select(object); propedit(); } }
+				ha:Edit properties        { action=propedit(object) }
 				ha:Edit flags...          { action=FlagEdit() }
 				ha:Edit text              { action=ChangeName(Object) }
 				ha:Set Same Style         { action=SetSame() }
@@ -652,7 +652,7 @@ ha:{
 
 		ha:popup-obj-padstack {
 			li:submenu {
-				ha:Edit properties        { li:action={Unselect(All); Select(object); propedit(); } }
+				ha:Edit properties        { action=propedit(object) }
 				ha:Edit geometry/prototype {action=padstackedit }
 				ha:Edit flags...          { action=FlagEdit() }
 				ha:Set Same Style         { action=SetSame() }
@@ -665,7 +665,7 @@ ha:{
 
 		ha:popup-obj-subcircuit {
 			li:submenu {
-				ha:Edit properties        { li:action={Unselect(All); Select(object); propedit(); } }
+				ha:Edit properties        { action=propedit(object) }
 				ha:External editor...     { action=extedit(object) }
 				ha:Edit flags...          { action=FlagEdit() }
 				ha:Edit layer bindings... { action=LayerBinding() }
