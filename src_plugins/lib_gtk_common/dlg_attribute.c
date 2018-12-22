@@ -697,8 +697,11 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 		case PCB_HATT_STRING:
 		case PCB_HATT_PATH:
 			{
-				const char *s = gtk_entry_get_text(GTK_ENTRY(ctx->wl[idx]));
-				if (strcmp(s, val->str_value) == 0)
+				const char *nv, *s = gtk_entry_get_text(GTK_ENTRY(ctx->wl[idx]));
+				nv = val->str_value;
+				if (nv == NULL)
+					nv = "";
+				if (strcmp(s, nv) == 0)
 					goto nochg;
 				gtk_entry_set_text(GTK_ENTRY(ctx->wl[idx]), val->str_value);
 			}
