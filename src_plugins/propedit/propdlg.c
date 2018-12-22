@@ -372,9 +372,9 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
 				PCB_DAD_PREVIEW(ctx->dlg, prop_prv_expose_cb, prop_prv_mouse_cb, NULL, &prvbb, 200, 200, ctx);
 				build_propval(ctx);
+				PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 			PCB_DAD_END(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
-		PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 	PCB_DAD_END(ctx->dlg);
 
 	PCB_DAD_NEW("propedit", ctx->dlg, "Property editor", ctx, pcb_true, propdlgclose_cb);
