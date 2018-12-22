@@ -40,7 +40,7 @@ typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	pcb_propedit_t pe;
 	int wtree, wfilter, wtype;
-	int wedit[PCB_PROPT_max];
+	int wabs[PCB_PROPT_max], wedit[PCB_PROPT_max];
 } propdlg_t;
 
 static void propdlgclose_cb(void *caller_data, pcb_hid_attr_ev_t ev)
@@ -154,14 +154,17 @@ static void prop_data_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 			break;
 		case PCB_PROPT_COORD:
 			sctx.c = ctx->dlg[ctx->wedit[p->type]].default_val.coord_value;
+			sctx.c_absolute = ctx->dlg[ctx->wabs[p->type]].default_val.int_value;
 			sctx.c_valid = 1;
 			break;
 		case PCB_PROPT_ANGLE:
 			sctx.d = ctx->dlg[ctx->wedit[p->type]].default_val.real_value;
+			sctx.d_absolute = ctx->dlg[ctx->wabs[p->type]].default_val.int_value;
 			sctx.d_valid = 1;
 			break;
 		case PCB_PROPT_INT:
 			sctx.c = ctx->dlg[ctx->wedit[p->type]].default_val.int_value;
+			sctx.c_absolute = ctx->dlg[ctx->wabs[p->type]].default_val.int_value;
 			sctx.c_valid = 1;
 			break;
 	}
@@ -174,17 +177,20 @@ static void prop_data_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 static void build_propval(propdlg_t *ctx)
 {
 	static const char *type_tabs[] = {"none", "string", "coord", "angle", "int", NULL};
+	static const char *abshelp = "When unticked each apply is a relative change added to\nthe current value of each object";
 
 	PCB_DAD_BEGIN_TABBED(ctx->dlg, type_tabs);
 		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_HIDE_TABLAB);
 		ctx->wtype = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "(nothing to edit)");
-				ctx->wedit[1] = 0;
+				ctx->wabs[0] = 0;
+				ctx->wedit[0] = 0;
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Data type: string");
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
+				ctx->wabs[1] = 0;
 				PCB_DAD_STRING(ctx->dlg);
 					ctx->wedit[1] = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_BUTTON(ctx->dlg, "apply");
@@ -194,6 +200,10 @@ static void build_propval(propdlg_t *ctx)
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Data type: coord");
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
+				PCB_DAD_LABEL(ctx->dlg, "abs");
+				PCB_DAD_BOOL(ctx->dlg, "");
+					ctx->wabs[2] = PCB_DAD_CURRENT(ctx->dlg);
+					PCB_DAD_HELP(ctx->dlg, abshelp);
 				PCB_DAD_COORD(ctx->dlg, "");
 					ctx->wedit[2] = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_MINMAX(ctx->dlg, -PCB_MAX_COORD, PCB_MAX_COORD);
@@ -204,6 +214,10 @@ static void build_propval(propdlg_t *ctx)
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Data type: angle");
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
+				PCB_DAD_LABEL(ctx->dlg, "abs");
+				PCB_DAD_BOOL(ctx->dlg, "");
+					ctx->wabs[3] = PCB_DAD_CURRENT(ctx->dlg);
+					PCB_DAD_HELP(ctx->dlg, abshelp);
 				PCB_DAD_REAL(ctx->dlg, "");
 					ctx->wedit[3] = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_MINMAX(ctx->dlg, -360.0, +360.0);
@@ -214,6 +228,10 @@ static void build_propval(propdlg_t *ctx)
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Data type: int");
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
+				PCB_DAD_LABEL(ctx->dlg, "abs");
+				PCB_DAD_BOOL(ctx->dlg, "");
+					ctx->wabs[4] = PCB_DAD_CURRENT(ctx->dlg);
+					PCB_DAD_HELP(ctx->dlg, abshelp);
 				PCB_DAD_INTEGER(ctx->dlg, "");
 					ctx->wedit[4] = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_MINMAX(ctx->dlg, -(1<<30), 1<<30);
