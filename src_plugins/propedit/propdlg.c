@@ -115,7 +115,8 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 	free(sorted);
 	prop_filter_cb(ctx->dlg_hid_ctx, ctx, NULL);
 
-printf("Cursor path: %s\n", cursor_path);
+	pcb_dad_tree_expcoll(attr, NULL, 1, 1);
+
 	/* restore cursor */
 	if (cursor_path != NULL) {
 		pcb_hid_attr_val_t hv;
