@@ -208,6 +208,7 @@ int pplg_check_ver_propedit(int ver_needed) { return 0; }
 
 void pplg_uninit_propedit(void)
 {
+	pcb_propdlg_uninit();
 	pcb_remove_actions_by_cookie(propedit_cookie);
 }
 
@@ -227,5 +228,6 @@ int pplg_init_propedit(void)
 	}
 
 	PCB_REGISTER_ACTIONS(propedit_action_list, propedit_cookie)
+	pcb_propdlg_init();
 	return 0;
 }

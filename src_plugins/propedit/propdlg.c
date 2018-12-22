@@ -422,3 +422,13 @@ fgw_error_t pcb_act_propedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_dlg_propdlg(ctx);
 	return 0;
 }
+
+void pcb_propdlg_init(void)
+{
+
+}
+
+void pcb_propdlg_uninit(void)
+{
+
+}
