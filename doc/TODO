@@ -4,6 +4,7 @@
 + BUG: boardflip() action moves the objects and doesn't move the subc outline and origin (repro: place single part, run boardflip) [report:Miloh]
 + BUG: find.c: {c f} doesn't include rat lines [report: Ade]
 - FEATURE: color button DAD implementation in lesstif
+- FEATURE: export_xy: pnp origin should be any obj, especially padstacks (fidu) [report: TwisteR]
 - CLEANUP: propedit revamp:
 	- move the property editor out from gtk, using the DAD, into propedit
 	- test under lesstif
