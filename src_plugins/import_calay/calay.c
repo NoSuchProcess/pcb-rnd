@@ -43,6 +43,9 @@
 #include "plugins.h"
 #include "hid.h"
 
+#define NETEXT ".net"
+#define CMPEXT ".cmp"
+
 static const char *calay_cookie = "calay importer";
 
 /* remove leading whitespace */
@@ -52,7 +55,7 @@ static const char *calay_cookie = "calay importer";
 #define rtrim(s) \
 	do { \
 		char *end; \
-		for(end = s + strlen(s) - 1; (end >= s) && ((*end == '\r') || (*end == '\n')); end--) \
+		for(end = s + strlen(s) - 1; (end >= s) && ((*end == '\r') || (*end == '\n') || (*end == ' ')); end--) \
 			*end = '\0'; \
 	} while(0)
 
@@ -123,27 +126,59 @@ static int calay_parse_net(FILE *fn)
 	return 0;
 }
 
-static int calay_parse_comp(FILE *fn)
+static int calay_parse_comp(FILE *f)
 {
+	char line[512];
+	char val[32], refdes[32], footprint[32];
+	int len;
 	pcb_actionl("ElementList", "start", NULL);
 
-	pcb_actionl("ElementList", "Done", NULL);
 
+	pcb_actionl("Netlist", "Freeze", NULL);
+	pcb_actionl("Netlist", "Clear", NULL);
+
+	while(fgets(line, sizeof(line), f) != NULL) {
+		len = strlen(line);
+		if ((len > 2) && (len < 54)) {
+			pcb_message(PCB_MSG_ERROR, "Calay component syntax error: short line: '%s'\n", line);
+			continue;
+		}
+		memcpy(val, line, 8);
+		val[8] = '\0';
+		rtrim(val);
+
+		memcpy(refdes, line+8, 10);
+		refdes[10] = '\0';
+		rtrim(refdes);
+
+		memcpy(footprint, line+18, 20);
+		footprint[20] = '\0';
+		rtrim(footprint);
+
+		pcb_actionl("ElementList", "Need", refdes, footprint, val, NULL);
+	}
+	pcb_actionl("ElementList", "Done", NULL);
 }
 
 
-static int calay_load(const char *fname_net)
+static int calay_load(const char *fname_net, const char *fname_cmp)
 {
 	FILE *f;
 	int ret = 0;
 
 	f = pcb_fopen(fname_net, "r");
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "can't open file '%s' for read\n", fname_net);
+		pcb_message(PCB_MSG_ERROR, "can't open calay netlist file '%s' for read\n", fname_net);
 		return -1;
 	}
-
 	ret = calay_parse_net(f);
+	fclose(f);
+
+	f = pcb_fopen(fname_cmp, "r");
+	if (f == NULL)
+		pcb_message(PCB_MSG_ERROR, "can't open calay component file '%s' for read\n(non-fatal, but footprints will not be placed)\n", fname_cmp);
+
+	ret = calay_parse_comp(f);
 
 	fclose(f);
 	return ret;
@@ -153,16 +188,18 @@ static const char pcb_acts_LoadCalayFrom[] = "LoadCalayFrom(filename)";
 static const char pcb_acth_LoadCalayFrom[] = "Loads the specified calay netlist/component file pair.";
 fgw_error_t pcb_act_LoadCalayFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *fname = NULL;
+	const char *fname_net = NULL;
+	char *fname_cmp, *end;
 	static char *default_file = NULL;
+	
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadCalayFrom, fname = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadCalayFrom, fname_net = argv[1].val.str);
 
-	if (!fname || !*fname) {
-		fname = pcb_gui->fileselect("Load calay netlist file...",
+	if (!fname_net || !*fname_net) {
+		fname_net = pcb_gui->fileselect("Load calay netlist file...",
 																"Picks a calay netlist file to load.\n",
-																default_file, ".net", "calay", HID_FILESELECT_READ);
-		if (fname == NULL)
+																default_file, NETEXT, "calay", HID_FILESELECT_READ);
+		if (fname_net == NULL)
 			return 1;
 		if (default_file != NULL) {
 			free(default_file);
@@ -170,8 +207,16 @@ fgw_error_t pcb_act_LoadCalayFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	PCB_ACT_IRES(0);
-	return calay_load(fname);
+	fname_cmp = malloc(strlen(fname_net) + strlen(CMPEXT) + 4);
+	strcpy(fname_cmp, fname_net);
+	end = strrchr(fname_cmp, '.');
+	if (end == NULL)
+		end = fname_cmp + strlen(fname_cmp);
+	strcpy(end, CMPEXT);
+
+	PCB_ACT_IRES(calay_load(fname_net, fname_cmp));
+	free(fname_cmp);
+	return 0;
 }
 
 pcb_action_t calay_action_list[] = {
