@@ -51,6 +51,7 @@ gdl_list_t propdlgs;
 static void propdlgclose_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	propdlg_t *ctx = caller_data;
+	gdl_remove(&propdlgs, ctx, link);
 	pcb_props_uninit(&ctx->pe);
 	PCB_DAD_FREE(ctx->dlg);
 	free(ctx);
