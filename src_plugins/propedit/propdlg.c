@@ -144,11 +144,26 @@ static pcb_bool prop_prv_mouse_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t
 	return pcb_false; /* don't redraw */
 }
 
+typedef struct {
+	pcb_propval_t *val;
+	unsigned int cnt;
+} pvsort_t;
+
+static int sort_pv(const void *pv1_, const void *pv2_)
+{
+	const pvsort_t *pv1 = pv1_, *pv2 = pv2_;
+	return pv1->cnt > pv2->cnt ? -1 : +1;
+}
+
 static void prop_vals_update(propdlg_t *ctx, pcb_props_t *p)
 {
 	pcb_hid_attr_val_t hv;
 	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wvals];
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	htprop_entry_t *e;
+	pvsort_t *pvs;
+	char *cell[3] = {NULL, NULL, NULL};
+	int n;
 
 	pcb_dad_tree_clear(tree);
 
@@ -156,6 +171,20 @@ static void prop_vals_update(propdlg_t *ctx, pcb_props_t *p)
 		hv.int_value = 0;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtype, &hv);
 		return;
+	}
+
+	/* get a sorted list of all values, by frequency */
+	pvs = malloc(sizeof(pvsort_t) * p->values.used);
+	for (e = htprop_first(&p->values), n = 0; e; e = htprop_next(&p->values, e), n++) {
+		pvs[n].val = &e->key;
+		pvs[n].cnt = e->value;
+	}
+	qsort(pvs, p->values.used, sizeof(pvsort_t), sort_pv);
+
+	for(n = 0; n < p->values.used; n++) {
+		cell[0] = pcb_strdup_printf("%ld", pvs[n].cnt);
+		cell[1] = pcb_propsel_printval(p->type, pvs[n].val);
+		pcb_dad_tree_append(attr, NULL, cell);
 	}
 
 	hv.int_value = p->type;
@@ -175,6 +204,7 @@ TODO("set the enum with all exisitng values")
 	memset(&hv, 0, sizeof(hv));
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wedit[p->type], &hv);
 
+	free(pvs);
 }
 
 static void prop_select_node_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
@@ -407,7 +437,7 @@ static void build_propval(propdlg_t *ctx)
 static void pcb_dlg_propdlg(propdlg_t *ctx)
 {
 	const char *hdr[] = {"property", "common", "min", "max", "avg"};
-	const char *hdr_val[] = {"existing values"};
+	const char *hdr_val[] = {"use", "values"};
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	static pcb_box_t prvbb = {0, 0, PCB_MM_TO_COORD(10), PCB_MM_TO_COORD(10)};
 	int n;
@@ -450,7 +480,7 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 				PCB_DAD_END(ctx->dlg);
 				PCB_DAD_BEGIN_VBOX(ctx->dlg);
 					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
-					PCB_DAD_TREE(ctx->dlg, 1, 0, hdr_val);
+					PCB_DAD_TREE(ctx->dlg, 2, 0, hdr_val);
 						ctx->wvals = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_END(ctx->dlg);
 				PCB_DAD_BEGIN_VBOX(ctx->dlg);
