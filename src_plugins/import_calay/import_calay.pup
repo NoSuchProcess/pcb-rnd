@@ -1,0 +1,9 @@
+$class import
+$short import calay .net
+$long Import the netlist and footprints from a calay netlist.
+$state works
+$fmt-native no
+$fmt-feature-r import netlist and footprint info from calay netlists
+$package import-net
+default buildin
+autoload 1
