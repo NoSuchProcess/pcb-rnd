@@ -822,7 +822,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 						PCB_DAD_ENUM(dlg, shapes);
 							pse->gen_shp = PCB_DAD_CURRENT(dlg);
 
-						PCB_DAD_LABEL(dlg, "Size (cirlce diameter or square side):");
+						PCB_DAD_LABEL(dlg, "Size (circle diameter or square side):");
 						PCB_DAD_COORD(dlg, "");
 							pse->gen_size = PCB_DAD_CURRENT(dlg);
 							PCB_DAD_MINVAL(dlg, 1);
