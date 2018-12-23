@@ -63,6 +63,7 @@
 	- BUG: attributes are not kept
 	- BUG: warnings/errors in the log
 	- would it keep a floater?
+- BUG: Open an empty pcb, Edit->Board padstack prototypes , Click Edit... -> segf [report: Alain]
 - BUG: gtk2_gdk: Undo(ClearList) asserts on crosshair update [report: Igor2]
 - BUG: preferences() crashes if lesstif GUI is compiled but gtk is not (missing gtk-only conf settings) [report: rqsall]
 - BUG: ML 2479: gtk crosshair re-enter to the last pos doesn't always draw the crossghair [report: pstuge]
