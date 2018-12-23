@@ -45,11 +45,13 @@
 #define type2field_pcb_coord_t coord
 #define type2field_pcb_angle_t angle
 #define type2field_int i
+#define type2field_bool i
 
 #define type2TYPE_String PCB_PROPT_STRING
 #define type2TYPE_pcb_coord_t PCB_PROPT_COORD
 #define type2TYPE_pcb_angle_t PCB_PROPT_ANGLE
 #define type2TYPE_int PCB_PROPT_INT
+#define type2TYPE_bool PCB_PROPT_BOOL
 
 #define map_add_prop(ctx, name, type, val) \
 do { \
@@ -105,7 +107,7 @@ static void map_common(void *ctx, pcb_any_obj_t *obj)
 		if (i == NULL)
 			continue;
 		strcpy(end, i->name);
-		map_add_prop(ctx, name, int, PCB_FLAG_TEST(bit, obj));
+		map_add_prop(ctx, name, bool, PCB_FLAG_TEST(bit, obj));
 	}
 }
 
@@ -689,6 +691,7 @@ char *pcb_propsel_printval(pcb_prop_type_t type, const pcb_propval_t *val)
 		case PCB_PROPT_COORD:  return pcb_strdup_printf("%m+%.02mS", conf_core.editor.grid_unit->allow, val->coord);
 		case PCB_PROPT_ANGLE:  return pcb_strdup_printf("%f", val->angle);
 		case PCB_PROPT_INT:    return pcb_strdup_printf("%d", val->i);
+		case PCB_PROPT_BOOL:   return pcb_strdup(val->i ? "true" : "false");
 		default:
 			return pcb_strdup("<error>");
 	}

@@ -182,6 +182,7 @@ fgw_error_t pcb_act_propprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_printf("	min/avg/max=%f/%f/%f\n", min.angle, avg.angle, max.angle);
 				break;
 			case PCB_PROPT_INT:
+			case PCB_PROPT_BOOL:
 				pcb_printf("	common='%d'\n", com.i);
 				pcb_printf("	min/avg/max=%d/%d/%d\n", min.i, avg.i, max.i);
 				break;

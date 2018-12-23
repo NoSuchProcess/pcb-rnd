@@ -47,6 +47,7 @@ typedef enum {
 	PCB_PROPT_COORD,
 	PCB_PROPT_ANGLE,
 	PCB_PROPT_INT,
+	PCB_PROPT_BOOL,
 	PCB_PROPT_max
 } pcb_prop_type_t;
 
