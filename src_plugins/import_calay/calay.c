@@ -129,7 +129,7 @@ static int calay_parse_net(FILE *fn)
 static int calay_parse_comp(FILE *f)
 {
 	char line[512];
-	char *val, *refdes, *footprint;
+	char *val, *refdes, *footprint, *end;
 	int len;
 	pcb_actionl("ElementList", "start", NULL);
 
@@ -158,6 +158,10 @@ static int calay_parse_comp(FILE *f)
 		*footprint = NULL;
 		footprint++;
 		ltrim(footprint);
+
+		end = strpbrk(refdes, " \t\r\n");
+		if (end != NULL)
+			*end = '\0';
 
 		pcb_actionl("ElementList", "Need", refdes, footprint, val, NULL);
 	}
