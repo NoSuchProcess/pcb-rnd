@@ -129,7 +129,7 @@ static int calay_parse_net(FILE *fn)
 static int calay_parse_comp(FILE *f)
 {
 	char line[512];
-	char val[32], refdes[32], footprint[32];
+	char *val, *refdes, *footprint;
 	int len;
 	pcb_actionl("ElementList", "start", NULL);
 
@@ -143,17 +143,21 @@ static int calay_parse_comp(FILE *f)
 			pcb_message(PCB_MSG_ERROR, "Calay component syntax error: short line: '%s'\n", line);
 			continue;
 		}
-		memcpy(val, line, 8);
-		val[8] = '\0';
-		rtrim(val);
+		val = line;
 
-		memcpy(refdes, line+8, 10);
-		refdes[10] = '\0';
-		rtrim(refdes);
+		refdes = strpbrk(val, " \t\r\n");
+		if (refdes == NULL)
+			continue;
+		*refdes = NULL;
+		refdes++;
+		ltrim(refdes);
 
-		memcpy(footprint, line+18, 20);
-		footprint[20] = '\0';
-		rtrim(footprint);
+		footprint = strpbrk(refdes, " \t\r\n");
+		if (footprint == NULL)
+			continue;
+		*footprint = NULL;
+		footprint++;
+		ltrim(footprint);
 
 		pcb_actionl("ElementList", "Need", refdes, footprint, val, NULL);
 	}
