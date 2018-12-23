@@ -146,6 +146,22 @@ static pcb_bool prop_prv_mouse_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t
 	return pcb_false; /* don't redraw */
 }
 
+static void prop_valedit_update(propdlg_t *ctx, pcb_props_t *p, pcb_propval_t *pv)
+{
+	pcb_hid_attr_val_t hv;
+	memset(&hv, 0, sizeof(hv));
+
+	switch(p->type) {
+		case PCB_PROPT_STRING: hv.str_value = pv->string; break;
+		case PCB_PROPT_COORD:  hv.coord_value = pv->coord; break;
+		case PCB_PROPT_ANGLE:  hv.real_value = pv->angle; break;
+		case PCB_PROPT_BOOL:
+		case PCB_PROPT_INT:    hv.int_value = pv->i; break;
+		case PCB_PROPT_COLOR:  hv.clr_value = pv->clr; break;
+	}
+	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wedit[p->type], &hv);
+}
+
 typedef struct {
 	pcb_propval_t *val;
 	unsigned int cnt;
@@ -184,25 +200,17 @@ static void prop_vals_update(propdlg_t *ctx, pcb_props_t *p)
 	qsort(pvs, p->values.used, sizeof(pvsort_t), sort_pv);
 
 	for(n = 0; n < p->values.used; n++) {
+		pcb_hid_row_t *r;
 		cell[0] = pcb_strdup_printf("%ld", pvs[n].cnt);
 		cell[1] = pcb_propsel_printval(p->type, pvs[n].val);
-		pcb_dad_tree_append(attr, NULL, cell);
+		r = pcb_dad_tree_append(attr, NULL, cell);
+		r->user_data = pvs[n].val;
 	}
 
 	hv.int_value = p->type;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtype, &hv);
 
-
-	memset(&hv, 0, sizeof(hv));
-	switch(p->type) {
-		case PCB_PROPT_STRING: hv.str_value = pvs[0].val->string; break;
-		case PCB_PROPT_COORD:  hv.coord_value = pvs[0].val->coord; break;
-		case PCB_PROPT_ANGLE:  hv.real_value = pvs[0].val->angle; break;
-		case PCB_PROPT_BOOL:
-		case PCB_PROPT_INT:    hv.int_value = pvs[0].val->i; break;
-		case PCB_PROPT_COLOR:  hv.clr_value = pvs[0].val->clr; break;
-	}
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wedit[p->type], &hv);
+	prop_valedit_update(ctx, p, pvs[0].val);
 
 	free(pvs);
 }
@@ -317,6 +325,22 @@ static void prop_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 	}
 	prop_refresh(ctx);
 }
+
+static void prop_preset_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	propdlg_t *ctx = caller_data;
+	pcb_hid_row_t *rv = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wvals]);
+	pcb_hid_row_t *rp = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wtree]);
+	pcb_props_t *p;
+
+	if ((rv == NULL) || (rv->user_data == NULL) || (rp == NULL))
+		return;
+
+	p = pcb_props_get(&ctx->pe, rp->user_data);
+	if (p != NULL)
+		prop_valedit_update(ctx, p, rv->user_data);
+}
+
 
 static void prop_refresh_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
@@ -490,6 +514,7 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
 					PCB_DAD_TREE(ctx->dlg, 2, 0, hdr_val);
 						ctx->wvals = PCB_DAD_CURRENT(ctx->dlg);
+						PCB_DAD_CHANGE_CB(ctx->dlg, prop_preset_cb);
 				PCB_DAD_END(ctx->dlg);
 				PCB_DAD_BEGIN_VBOX(ctx->dlg);
 					build_propval(ctx);
