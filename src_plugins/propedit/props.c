@@ -241,8 +241,8 @@ int prop_cmp(const void *e1_, const void *e2_)
 {
 	const htsp_entry_t *e1 = e1_, *e2 = e2_;
 	if (e1->key[0] != e2->key[0]) /* special exception: list p/ first then a/ */
-		return e1->key[0] < e2->key[0];
-	return strcmp(e1->key, e2->key);
+		return e1->key[0] < e2->key[0] ? 1 : -1;
+	return strcmp(e1->key, e2->key) > 0 ? 1 : -1;
 }
 
 htsp_entry_t *pcb_props_sort(pcb_propedit_t *ctx)
