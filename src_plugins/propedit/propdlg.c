@@ -41,7 +41,7 @@
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	pcb_propedit_t pe;
-	int wtree, wfilter, wtype;
+	int wtree, wfilter, wtype, wvals;
 	int wabs[PCB_PROPT_max], wedit[PCB_PROPT_max];
 	gdl_elem_t link;
 } propdlg_t;
@@ -144,16 +144,13 @@ static pcb_bool prop_prv_mouse_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t
 	return pcb_false; /* don't redraw */
 }
 
-
-static void prop_select_node_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void prop_vals_update(propdlg_t *ctx, pcb_props_t *p)
 {
 	pcb_hid_attr_val_t hv;
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
-	propdlg_t *ctx = tree->user_ctx;
-	pcb_props_t *p = NULL;
+	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wvals];
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
 
-	if (row != NULL)
-		p = pcb_props_get(&ctx->pe, row->user_data);
+	pcb_dad_tree_clear(tree);
 
 	if (p == NULL) { /* deselect or not found */
 		hv.int_value = 0;
@@ -177,6 +174,19 @@ TODO("set the enum with all exisitng values")
 */
 	memset(&hv, 0, sizeof(hv));
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wedit[p->type], &hv);
+
+}
+
+static void prop_select_node_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+{
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	propdlg_t *ctx = tree->user_ctx;
+	pcb_props_t *p = NULL;
+
+	if (row != NULL)
+		p = pcb_props_get(&ctx->pe, row->user_data);
+
+	prop_vals_update(ctx, p);
 }
 
 
@@ -397,6 +407,7 @@ static void build_propval(propdlg_t *ctx)
 static void pcb_dlg_propdlg(propdlg_t *ctx)
 {
 	const char *hdr[] = {"property", "common", "min", "max", "avg"};
+	const char *hdr_val[] = {"existing values"};
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	static pcb_box_t prvbb = {0, 0, PCB_MM_TO_COORD(10), PCB_MM_TO_COORD(10)};
 	int n;
@@ -435,8 +446,12 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 				PCB_DAD_BEGIN_VBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 					PCB_DAD_PREVIEW(ctx->dlg, prop_prv_expose_cb, prop_prv_mouse_cb, NULL, &prvbb, 100, 100, ctx);
+				PCB_DAD_END(ctx->dlg);
+				PCB_DAD_BEGIN_VBOX(ctx->dlg);
+					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_TREE(ctx->dlg, 1, 0, hdr_val);
+						ctx->wvals = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_END(ctx->dlg);
 				PCB_DAD_BEGIN_VBOX(ctx->dlg);
 					build_propval(ctx);
