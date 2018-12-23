@@ -431,8 +431,8 @@ static void set_text(pcb_propset_ctx_t *st, pcb_text_t *text)
 
 	if (set_common(st, (pcb_any_obj_t *)text)) return;
 
-	if (st->d_valid && (strcmp(pn, "scale") == 0) &&
-	    pcb_chg_obj_size(PCB_OBJ_TEXT, text->parent.layer, text, text, PCB_MIL_TO_COORD(st->d), st->d_absolute)) DONE;
+	if (st->c_valid && (strcmp(pn, "scale") == 0) &&
+	    pcb_chg_obj_size(PCB_OBJ_TEXT, text->parent.layer, text, text, PCB_MIL_TO_COORD(st->c), st->c_absolute)) DONE;
 
 	if ((strcmp(pn, "string") == 0) &&
 	    (old = pcb_chg_obj_name(PCB_OBJ_TEXT, text->parent.layer, text, NULL, pcb_strdup(st->s)))) {
