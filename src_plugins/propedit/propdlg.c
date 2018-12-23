@@ -479,7 +479,7 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 					PCB_DAD_PREVIEW(ctx->dlg, prop_prv_expose_cb, prop_prv_mouse_cb, NULL, &prvbb, 100, 100, ctx);
 				PCB_DAD_END(ctx->dlg);
 				PCB_DAD_BEGIN_VBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
 					PCB_DAD_TREE(ctx->dlg, 2, 0, hdr_val);
 						ctx->wvals = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_END(ctx->dlg);
