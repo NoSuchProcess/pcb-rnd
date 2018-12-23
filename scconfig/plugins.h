@@ -65,6 +65,7 @@ plugin_def("fp_fs",            "filesystem footprints",           sbuildin, 1)
 plugin_def("fp_wget",          "web footprints",                  sbuildin, 1)
 
 plugin_header("\nImport plugins:\n")
+plugin_def("import_calay",     "import calay .net",               sbuildin, 1)
 plugin_def("import_dsn",       "specctra .dsn importer",          sbuildin, 1)
 plugin_def("import_edif",      "import edif",                     sbuildin, 1)
 plugin_def("import_fpcb_nl",   "import freepcb netlist",          sbuildin, 1)
