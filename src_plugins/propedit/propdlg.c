@@ -48,6 +48,8 @@ typedef struct{
 
 gdl_list_t propdlgs;
 
+static void prop_refresh(propdlg_t *ctx);
+
 static void propdlgclose_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	propdlg_t *ctx = caller_data;
@@ -268,7 +270,7 @@ static void prop_data_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	}
 
 	pcb_propsel_set(&ctx->pe, r->user_data, &sctx);
-	prop_pcb2dlg(ctx);
+	prop_refresh(ctx);
 	pcb_gui->invalidate_all();
 }
 
@@ -298,7 +300,7 @@ static void prop_add_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 		char *path = pcb_strdup_printf("a/%s", dlg[wkey].default_val.str_value);
 		pcb_propsel_set_str(&ctx->pe, path, dlg[wval].default_val.str_value);
 		free(path);
-		prop_pcb2dlg(ctx);
+		prop_refresh(ctx);
 	}
 	PCB_DAD_FREE(dlg);
 }
@@ -315,12 +317,20 @@ static void prop_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 		pcb_message(PCB_MSG_ERROR, "Failed to remove the attribute from any object.\n");
 		return;
 	}
-	prop_pcb2dlg(ctx);
+	prop_refresh(ctx);
 }
 
 static void prop_refresh_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	prop_pcb2dlg((propdlg_t *)caller_data);
+	prop_refresh((propdlg_t *)caller_data);
+}
+
+
+static void prop_refresh(propdlg_t *ctx)
+{
+	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wtree];
+	prop_pcb2dlg(ctx);
+	prop_select_node_cb(attr, ctx->dlg_hid_ctx, pcb_dad_tree_get_selected(attr));
 }
 
 
@@ -493,7 +503,7 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 
 	PCB_DAD_NEW("propedit", ctx->dlg, "Property editor", ctx, pcb_false, propdlgclose_cb);
 
-	prop_pcb2dlg(ctx);
+	prop_refresh(ctx);
 	gdl_append(&propdlgs, ctx, link);
 
 	/* default all abs */
