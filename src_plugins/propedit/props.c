@@ -43,11 +43,12 @@ static unsigned int prophash_coord(pcb_propval_t key)  { return longhash(key.coo
 static unsigned int prophash_angle(pcb_propval_t key)  { return longhash(key.angle); }
 static unsigned int prophash_int(pcb_propval_t key)    { return longhash(key.i); }
 static unsigned int prophash_bool(pcb_propval_t key)   { return longhash(key.i); }
+static unsigned int prophash_color(pcb_propval_t key)  { return longhash(key.clr.packed); }
 static unsigned int prophash_string(pcb_propval_t key) { return key.string == NULL ? 0 : strhash(key.string); }
 
 typedef unsigned int (*prophash_ft)(pcb_propval_t key);
 static prophash_ft prophash[PCB_PROPT_max] = {
-	NULL, prophash_string, prophash_coord, prophash_angle, prophash_int, prophash_bool
+	NULL, prophash_string, prophash_coord, prophash_angle, prophash_int, prophash_bool, prophash_color
 };
 
 /* A keyeq function for each known type */
@@ -55,6 +56,7 @@ static int propkeyeq_coord(pcb_propval_t a, pcb_propval_t b)  { return a.coord =
 static int propkeyeq_angle(pcb_propval_t a, pcb_propval_t b)  { return a.angle == b.angle; }
 static int propkeyeq_int(pcb_propval_t a, pcb_propval_t b)    { return a.i == b.i; }
 static int propkeyeq_bool(pcb_propval_t a, pcb_propval_t b)   { return a.i == b.i; }
+static int propkeyeq_color(pcb_propval_t a, pcb_propval_t b)  { return a.clr.packed == b.clr.packed; }
 static int propkeyeq_string(pcb_propval_t a, pcb_propval_t b)
 {
 	if ((b.string == NULL) && (a.string == NULL))
@@ -67,7 +69,7 @@ static int propkeyeq_string(pcb_propval_t a, pcb_propval_t b)
 
 typedef int (*propkeyeq_ft)(pcb_propval_t a, pcb_propval_t b);
 static propkeyeq_ft propkeyeq[PCB_PROPT_max] = {
-	NULL, propkeyeq_string, propkeyeq_coord, propkeyeq_angle, propkeyeq_int, propkeyeq_bool
+	NULL, propkeyeq_string, propkeyeq_coord, propkeyeq_angle, propkeyeq_int, propkeyeq_bool, propkeyeq_color
 };
 
 
@@ -193,6 +195,7 @@ int pcb_props_stat(pcb_propedit_t *ctx, pcb_props_t *p, pcb_propval_t *most_comm
 		case PCB_PROPT_ANGLE:  minp.angle = 100000;    maxp.angle = -minp.angle; break;
 		case PCB_PROPT_INT:    minp.i     = INT_MAX;   maxp.i = -minp.i; break;
 		case PCB_PROPT_BOOL:   minp.i     = 1;         maxp.i = 0; break;
+		case PCB_PROPT_COLOR:  break;
 	}
 
 	/* walk through all known values */
@@ -210,6 +213,7 @@ int pcb_props_stat(pcb_propedit_t *ctx, pcb_props_t *p, pcb_propval_t *most_comm
 			case PCB_PROPT_ANGLE:  STAT(e->key, angle, e->value); break;
 			case PCB_PROPT_INT:    STAT(e->key, i,     e->value); break;
 			case PCB_PROPT_BOOL:   STAT(e->key, i,     e->value); break;
+			case PCB_PROPT_COLOR:  break;
 		}
 	}
 
@@ -223,6 +227,7 @@ int pcb_props_stat(pcb_propedit_t *ctx, pcb_props_t *p, pcb_propval_t *most_comm
 			case PCB_PROPT_ANGLE:  avgp.angle = avgp.angle/num_vals;  break;
 			case PCB_PROPT_INT:    avgp.i     = avgp.i/num_vals;  break;
 			case PCB_PROPT_BOOL:   avgp.i     = avgp.i * 100/num_vals;  break;
+			case PCB_PROPT_COLOR:  break;
 		}
 		if (avg != NULL) *avg = avgp;
 		if (min != NULL) *min = minp;

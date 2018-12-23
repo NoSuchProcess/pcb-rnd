@@ -40,6 +40,7 @@
 #include <genvector/vtl0.h>
 
 #include "idpath.h"
+#include "color.h"
 
 typedef enum {
 	PCB_PROPT_invalid,
@@ -48,6 +49,7 @@ typedef enum {
 	PCB_PROPT_ANGLE,
 	PCB_PROPT_INT,
 	PCB_PROPT_BOOL,
+	PCB_PROPT_COLOR,
 	PCB_PROPT_max
 } pcb_prop_type_t;
 
@@ -56,6 +58,7 @@ typedef union {
 	pcb_coord_t coord;
 	pcb_angle_t angle;
 	int i;
+	pcb_color_t clr;
 } pcb_propval_t;
 
 typedef pcb_propval_t htprop_key_t;

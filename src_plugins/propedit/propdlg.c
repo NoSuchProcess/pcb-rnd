@@ -171,6 +171,7 @@ TODO("set the enum with all exisitng values")
 		case PCB_PROPT_ANGLE:
 		case PCB_PROPT_INT:
 		case PCB_PROPT_BOOL:
+		case PCB_PROPT_COLOR:
 	}
 */
 	memset(&hv, 0, sizeof(hv));
@@ -218,6 +219,10 @@ static void prop_data_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 			sctx.c = ctx->dlg[ctx->wedit[p->type]].default_val.int_value;
 			sctx.c_absolute = ctx->dlg[ctx->wabs[p->type]].default_val.int_value;
 			sctx.c_valid = 1;
+			break;
+		case PCB_PROPT_COLOR:
+			sctx.color = ctx->dlg[ctx->wedit[p->type]].default_val.clr_value;
+			sctx.clr_valid = 1;
 			break;
 	}
 
@@ -361,9 +366,22 @@ static void build_propval(propdlg_t *ctx)
 			PCB_DAD_LABEL(ctx->dlg, "Data type: boolean");
 			PCB_DAD_BOOL(ctx->dlg, "");
 				ctx->wedit[5] = PCB_DAD_CURRENT(ctx->dlg);
-			PCB_DAD_MINMAX(ctx->dlg, -(1<<30), 1<<30);
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				ctx->wabs[5] = 0;
+				PCB_DAD_BEGIN_HBOX(ctx->dlg);
+					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_END(ctx->dlg);
+				PCB_DAD_BUTTON(ctx->dlg, "apply");
+					PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_cb);
+			PCB_DAD_END(ctx->dlg);
+		PCB_DAD_END(ctx->dlg);
+
+		PCB_DAD_BEGIN_VBOX(ctx->dlg);
+			PCB_DAD_LABEL(ctx->dlg, "Data type: color");
+			PCB_DAD_COLOR(ctx->dlg);
+				ctx->wedit[6] = PCB_DAD_CURRENT(ctx->dlg);
+			PCB_DAD_BEGIN_HBOX(ctx->dlg);
+				ctx->wabs[6] = 0;
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
 					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 				PCB_DAD_END(ctx->dlg);

@@ -46,12 +46,14 @@
 #define type2field_pcb_angle_t angle
 #define type2field_int i
 #define type2field_bool i
+#define type2field_color clr
 
 #define type2TYPE_String PCB_PROPT_STRING
 #define type2TYPE_pcb_coord_t PCB_PROPT_COORD
 #define type2TYPE_pcb_angle_t PCB_PROPT_ANGLE
 #define type2TYPE_int PCB_PROPT_INT
 #define type2TYPE_bool PCB_PROPT_BOOL
+#define type2TYPE_color PCB_PROPT_COLOR
 
 #define map_add_prop(ctx, name, type, val) \
 do { \
@@ -127,7 +129,7 @@ static void map_layer(pcb_propedit_t *ctx, pcb_layer_t *layer)
 	map_add_prop(ctx, "p/layer/comb/negative", int, !!(layer->comb & PCB_LYC_SUB));
 	map_add_prop(ctx, "p/layer/comb/auto", int, !!(layer->comb & PCB_LYC_AUTO));
 	if (!layer->is_bound)
-		map_add_prop(ctx, "p/layer/color", String, layer->meta.real.color.str);
+		map_add_prop(ctx, "p/layer/color", color, layer->meta.real.color);
 	map_attr(ctx, &layer->Attributes);
 }
 
@@ -344,7 +346,7 @@ static int set_layer(pcb_propset_ctx_t *st, pcb_layer_t *layer)
 	    (pcb_layer_rename_(layer, pcb_strdup(st->s)) == 0)) DONE0;
 
 	if ((strcmp(pn, "color") == 0) &&
-	    (layer_recolor(layer, st->s) == 0)) DONE0;
+	    (layer_recolor(layer, st->color.str) == 0)) DONE0;
 
 	return 0;
 }
@@ -692,6 +694,7 @@ char *pcb_propsel_printval(pcb_prop_type_t type, const pcb_propval_t *val)
 		case PCB_PROPT_ANGLE:  return pcb_strdup_printf("%f", val->angle);
 		case PCB_PROPT_INT:    return pcb_strdup_printf("%d", val->i);
 		case PCB_PROPT_BOOL:   return pcb_strdup(val->i ? "true" : "false");
+		case PCB_PROPT_COLOR:  return pcb_strdup_printf("#%02x%02x%02x", val->clr.r, val->clr.g, val->clr.b);
 		default:
 			return pcb_strdup("<error>");
 	}
