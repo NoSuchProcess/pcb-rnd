@@ -66,7 +66,7 @@ static int calay_parse_net(FILE *fn)
 	pcb_actionl("Netlist", "Clear", NULL);
 
 	while(fgets(line, sizeof(line), fn) != NULL) {
-		char *s, *next;
+		char *s, *next, *num;
 
 		s = line;
 		ltrim(s);
@@ -79,12 +79,41 @@ static int calay_parse_net(FILE *fn)
 			}
 			free(curr);
 			curr = pcb_strdup(s);
-			printf("curr='%s'\n", curr);
 			s = next;
 		}
 
-/*		pcb_actionl("Netlist", "Add",  argv[2], curr, NULL);*/
+		for(;;) {
+			ltrim(s);
+			if (*s == '\0')
+				break;
+			next = strchr(s, ')');
+			if (next != NULL) {
+				*next = '\0';
+				next++;
+			}
+			num = strchr(s, '(');
+			if (num != NULL) {
+				*num = '-';
+				if (curr != NULL)
+					pcb_actionl("Netlist", "Add",  curr, s, NULL);
+				else
+					pcb_message(PCB_MSG_ERROR, "Calay syntax error: %s is after a ;, not in any net\n", s);
+			}
+			else
+				pcb_message(PCB_MSG_ERROR, "Calay syntax error: %s should have been refdes(pin)\n", s);
 
+			if ((next == NULL) || (*next == '\0'))
+				break;
+			switch(*next) {
+				case ' ':
+				case '\t':
+				case ',': next++; break;
+				case ';': next++; free(curr); curr = NULL; next++; break;
+				default:
+					pcb_message(PCB_MSG_ERROR, "Calay syntax error: invalid separator: %s %d (expected , or ;)\n", next, *next);
+			}
+			s = next;
+		}
 	}
 
 	free(curr);
