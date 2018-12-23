@@ -192,18 +192,16 @@ static void prop_vals_update(propdlg_t *ctx, pcb_props_t *p)
 	hv.int_value = p->type;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtype, &hv);
 
-TODO("set the enum with all exisitng values")
-/*
-	switch(p->type) {
-		case PCB_PROPT_STRING:
-		case PCB_PROPT_COORD:
-		case PCB_PROPT_ANGLE:
-		case PCB_PROPT_INT:
-		case PCB_PROPT_BOOL:
-		case PCB_PROPT_COLOR:
-	}
-*/
+
 	memset(&hv, 0, sizeof(hv));
+	switch(p->type) {
+		case PCB_PROPT_STRING: hv.str_value = pvs[0].val->string; break;
+		case PCB_PROPT_COORD:  hv.coord_value = pvs[0].val->coord; break;
+		case PCB_PROPT_ANGLE:  hv.real_value = pvs[0].val->angle; break;
+		case PCB_PROPT_BOOL:
+		case PCB_PROPT_INT:    hv.int_value = pvs[0].val->i; break;
+		case PCB_PROPT_COLOR:  hv.clr_value = pvs[0].val->clr; break;
+	}
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wedit[p->type], &hv);
 
 	free(pvs);
