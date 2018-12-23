@@ -13,9 +13,6 @@
 	+ CLEANUP: propedit rewrite: new action UI should allow operation on object and object ID instead of selection; bug_files/subcsel.bug [report: Wojciech]
 	- FEATURE: the property editor should display a stat of number/type of objects selected [report: Igor2]
 	- FEATURE: get back the enum with all values
-	- FEATURE: types:
-		- color
-		- boolean
 - BUG: portability: don't use export in trunk/doc/user/Makefile [report: Vuokko]
 + FEATURE: scconfig: make man installation path configurable [report: Vuokko]
 - FEATURE: can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
