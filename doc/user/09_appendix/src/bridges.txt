@@ -13,6 +13,7 @@
 |[ipcd]|   |                                                                |   |           |
 |[easy]|   |                                                                |   |           |
 |[xsch]|   |                                                                |   |           |
+|[caly]|   |                                                                |   |           |
 |[hpgl]|   +----------------------------------------------------------------+   +-----------+
 +------+
          *out-----------------------------------------------------------------+
@@ -91,6 +92,9 @@
 
 [xsch]
 	label XSCHEM\n
+
+[caly]
+	label Calay\n
 
 [bbrd]
 	label breadboard
@@ -246,6 +250,9 @@
 	label import\nschematics
 
 -> xsch.e pcbrnd
+	label import\nschematics
+
+-> caly.e pcbrnd
 	label import\nschematics
 
 -> hpgl.e pcbrnd

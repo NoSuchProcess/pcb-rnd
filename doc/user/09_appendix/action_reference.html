@@ -12,7 +12,7 @@
 <h2> Action Reference</h2>
 <table border=1>
 <caption>\n <b>
-This is pcb-rnd 2.1.0 (svn r21403) an interactive printed circuit board editor ,  Revision: 21967
+This is pcb-rnd 2.1.0 (svn r21403) an interactive printed circuit board editor ,  Revision: 22062
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -115,6 +115,7 @@ This is pcb-rnd 2.1.0 (svn r21403) an interactive printed circuit board editor ,
 <tr><td>LineNew</td><td>Create a pcb line segment on a layer. For now data must be "pcb". Returns the ID of the new object or 0 on error.</td><td>LineNew(data, layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags)</td><td>act_draw</td>
 <tr><td>ListRotations</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#listscripts">ListScripts</a></td><td>List fungw scripts, optionally filtered wiht regex pat.</td><td>ListScripts([pat])</td><td>script plugin</td>
+<tr><td>LoadCalayFrom</td><td>Loads the specified calay netlist/component file pair.</td><td>LoadCalayFrom(filename)</td><td>calay importer</td>
 <tr><td>LoadDsnFrom</td><td>Loads the specified routed dsn file.</td><td>LoadDsnFrom(filename)</td><td>dsn importer</td>
 <tr><td>LoadEeschemaFrom</td><td>Loads the specified eeschema .net file - the netlist must be an s-expression.</td><td>LoadEeschemaFrom(filename)</td><td>kicad plugin</td>
 <tr><td>LoadFontFrom</td><td>Load PCB font from a file</td><td>LoadFontFrom([file, id])</td><td></td>
@@ -274,8 +275,9 @@ This is pcb-rnd 2.1.0 (svn r21403) an interactive printed circuit board editor ,
 <tr><td>paral</td><td>Draw a line perpendicular to another line</td><td>perp()</td><td>ddraft plugin</td>
 <tr><td>perl</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>perp</td><td>Draw a line perpendicular to another line</td><td>perp()</td><td>ddraft plugin</td>
-<tr><td>propedit</td><td>Run the property editor</td><td>propedit()</td><td>propedit</td>
-<tr><td>propset</td><td>Change the named property of all selected objects to/by value</td><td>propset(name, value)</td><td>propedit</td>
+<tr><td>propedit</td><td></td><td>propedit(object[:id]|layer[:id]|layergrp[:id]|pcb|selection|selected)</td><td>propedit</td>
+<tr><td>propprint</td><td>Print a property map of objects matching the scope. Scope is documented at PropEdit().</td><td>PropPrint([scope])</td><td>propedit</td>
+<tr><td>propset</td><td>Change the named property of all selected objects to/by value. Scope is documented at PropEdit().</td><td>propset([scope], name, value)</td><td>propedit</td>
 <tr><td>pscalib</td><td></td><td></td><td>ps HID</td>
 <tr><td>pstklib</td><td>Present the padstack library dialog on board padstacks or the padstacks of a subcircuit</td><td>pstklib([board|subcid|object])</td><td>dialogs plugin</td>
 <tr><td>py</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
