@@ -133,10 +133,6 @@ static int calay_parse_comp(FILE *f)
 	int len;
 	pcb_actionl("ElementList", "start", NULL);
 
-
-	pcb_actionl("Netlist", "Freeze", NULL);
-	pcb_actionl("Netlist", "Clear", NULL);
-
 	while(fgets(line, sizeof(line), f) != NULL) {
 		len = strlen(line);
 		if ((len > 2) && (len < 54)) {
@@ -159,7 +155,7 @@ static int calay_parse_comp(FILE *f)
 		footprint++;
 		ltrim(footprint);
 
-		end = strpbrk(refdes, " \t\r\n");
+		end = strpbrk(footprint, " \t\r\n");
 		if (end != NULL)
 			*end = '\0';
 
