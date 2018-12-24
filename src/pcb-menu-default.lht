@@ -56,6 +56,7 @@ ha:{
 						ha:Load routed dsn or ses file       = {                             action=LoadDsnFrom() }
 						ha:Load MUCS pl file                 = {                             action=LoadMucsFrom() }
 						ha:Load TinyCAD .net file            = {                             action=LoadTinyCADFrom() }
+						ha:Load Calay .net+.cmp files        = {                             action=LoadCalayFrom() }
 						ha:Load LTSpice .net and .asc files  = {                             action=LoadLTSpiceFrom() }
 						ha:Load HP-GL plot to paste-buffer   = {                             action=LoadHPGLFrom() }
 						ha:Load Hyperlynx .hyp file          = {                             action=LoadHypFrom() }
