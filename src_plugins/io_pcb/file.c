@@ -463,6 +463,8 @@ TODO("textrot: incompatibility warning")
 		fobj.Flags = sc->Flags;
 		if (trefdes == NULL)
 			fobj.Flags.f |= PCB_FLAG_HIDENAME;
+		if (on_bot)
+			fobj.Flags.f |= PCB_FLAG_ONSOLDER;
 		fprintf(FP, "\nElement[%s ", F2S(&fobj, PCB_OBJ_ELEMENT));
 		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&sc->Attributes, "footprint")));
 		fputc(' ', FP);
@@ -485,7 +487,7 @@ TODO("textrot: incompatibility warning")
 				fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_pstk_compat_pinvia_flag(ps, cshape), PCB_OBJ_PIN, &ic, 1));
 			}
 			else if (pcb_pstk_export_compat_pad(ps, &x1, &y1, &x2, &y2, &thickness, &clearance, &mask, &square, &nopaste)) {
-				unsigned long fl = (square ? PCB_FLAG_SQUARE : 0) | (nopaste ? PCB_FLAG_NOPASTE : 0);
+				unsigned long fl = (square ? PCB_FLAG_SQUARE : 0) | (nopaste ? PCB_FLAG_NOPASTE : 0) | (on_bot ? PCB_FLAG_ONSOLDER : 0);
 				pcb_fprintf(FP, "\tPad[%[0] %[0] %[0] %[0] %[0] %[0] %[0] ",
 					x1 - ox, y1 - oy, x2 - ox, y2 - oy, thickness, clearance, mask);
 					pcb_print_quoted_string(FP, (char *)PCB_EMPTY(pcb_attribute_get(&ps->Attributes, "name")));
