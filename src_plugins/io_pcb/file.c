@@ -513,21 +513,21 @@ TODO("textrot: incompatibility warning")
 						arc->StartAngle, arc->Delta, arc->Thickness);
 				}
 				if (polylist_length(&ly->Polygon) > 0) {
-					char *desc = pcb_strdup_printf("Polygons on layer %s can not be exported in an element\n", ly->name);
-					pcb_io_incompat_save(sc->data, NULL, desc, "element-obj", "only lines and arcs are exported");
+					char *desc = pcb_strdup_printf("Polygons on layer %s can not be exported in an element", ly->name);
+					pcb_io_incompat_save(sc->data, NULL, "element-obj", desc, "only lines and arcs are exported");
 					free(desc);
 				}
 				if (textlist_length(&ly->Text) > 1) {
-					char *desc = pcb_strdup_printf("Text on layer %s can not be exported in an element\n", ly->name);
-					pcb_io_incompat_save(sc->data, NULL, desc, "element-obj", "only lines and arcs are exported");
+					char *desc = pcb_strdup_printf("Text on layer %s can not be exported in an element", ly->name);
+					pcb_io_incompat_save(sc->data, NULL, "element-obj", desc, "only lines and arcs are exported");
 					free(desc);
 				}
 				continue;
 			}
 
 			if (!(ly->meta.bound.type & PCB_LYT_VIRTUAL) && (!pcb_layer_is_pure_empty(ly))) {
-				char *desc = pcb_strdup_printf("Objects on layer %s can not be exported in an element\n", ly->name);
-				pcb_io_incompat_save(sc->data, NULL, desc, "element-layer", "only top silk lines and arcs are exported; heavy terminals are not supported, use padstacks only");
+				char *desc = pcb_strdup_printf("Objects on layer %s can not be exported in an element", ly->name);
+				pcb_io_incompat_save(sc->data, NULL, "element-layer", desc, "only top silk lines and arcs are exported; heavy terminals are not supported, use padstacks only");
 				free(desc);
 			}
 		}
@@ -661,7 +661,7 @@ static void WriteLayers(FILE *FP, pcb_data_t *data)
 		int purpi = pcb_layer_purpose_(ly, NULL);
 		if ((!(lyt & (PCB_LYT_COPPER | PCB_LYT_SILK))) && (!PCB_LAYER_IS_ROUTE(lyt, purpi))) {
 			if (!pcb_layer_is_pure_empty(ly)) {
-				char *desc = pcb_strdup_printf("Layer %s can be exported only as a copper layer\n", ly->name);
+				char *desc = pcb_strdup_printf("Layer %s can be exported only as a copper layer", ly->name);
 				pcb_io_incompat_save(data, NULL, "layer", desc, NULL);
 				free(desc);
 			}
