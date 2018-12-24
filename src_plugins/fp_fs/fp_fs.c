@@ -321,10 +321,12 @@ static char *fp_fs_search(const char *search_path, const char *basename, int par
 	for (p = search_path; *p != '\0'; p = end + 1) {
 		char *fpath;
 		end = strchr(p, ':');
-		if (end == NULL)
-			end = p + strlen(p);
-		memcpy(path, p, end - p);
-		path[end - p] = '\0';
+		if (end != NULL) {
+			memcpy(path, p, end - p);
+			path[end - p] = '\0';
+		}
+		else
+			strcpy(path, p);
 
 		pcb_path_resolve(path, &fpath, 0, pcb_false);
 /*		fprintf(stderr, " in '%s'\n", fpath);*/
