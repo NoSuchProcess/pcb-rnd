@@ -425,13 +425,15 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 
 	subclist_foreach(&Data->subc, &sit, sc) {
 		pcb_coord_t ox, oy, rx = 0, ry = 0;
-		int rdir = 0, rscale = 100;
+		int rdir = 0, rscale = 100, on_bot = 0;
 		pcb_text_t *trefdes;
 		pcb_pstk_t *ps;
 		pcb_any_obj_t fobj;
 
 		pcb_subc_get_origin(sc, &ox, &oy);
 		trefdes = pcb_subc_get_refdes_text(sc);
+		if (pcb_subc_get_side(sc, &on_bot) != 0)
+			pcb_io_incompat_save(sc->parent.data, sc, "element-side", "Can not determine element side", "Missing or botched subc aux layer; can not tell if subc is on top or bottom layer, using top.");
 
 		if (trefdes != NULL) {
 			rx = trefdes->X - ox;
@@ -496,11 +498,14 @@ TODO("textrot: incompatibility warning")
 		}
 
 		for(l = 0; l < sc->data->LayerN; l++) {
+			pcb_layer_type_t my_side;
 			pcb_layer_t *ly = &sc->data->Layer[l];
 			pcb_line_t *line;
 			pcb_arc_t *arc;
 
-			if ((ly->meta.bound.type & PCB_LYT_SILK) && (ly->meta.bound.type & PCB_LYT_TOP)) {
+			my_side = on_bot ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
+
+			if ((ly->meta.bound.type & PCB_LYT_SILK) && (ly->meta.bound.type & my_side)) {
 				linelist_foreach(&ly->Line, &it, line) {
 					pcb_fprintf(FP, "\tElementLine [%[0] %[0] %[0] %[0] %[0]]\n",
 						line->Point1.X - ox, line->Point1.Y - oy,
