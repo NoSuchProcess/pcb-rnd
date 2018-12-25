@@ -48,6 +48,7 @@ include {../src_plugins/hid_gtk3_cairo/Plug.tmpasm}
 include {../src_plugins/hid_gtk3_gl/Plug.tmpasm}
 include {../src_plugins/hid_lesstif/Plug.tmpasm}
 include {../src_plugins/hid_remote/Plug.tmpasm}
+include {../src_plugins/import_calay/Plug.tmpasm}
 include {../src_plugins/import_dsn/Plug.tmpasm}
 include {../src_plugins/import_edif/Plug.tmpasm}
 include {../src_plugins/import_fpcb_nl/Plug.tmpasm}
