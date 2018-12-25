@@ -152,7 +152,7 @@ static void prop_valedit_update(propdlg_t *ctx, pcb_props_t *p, pcb_propval_t *p
 	memset(&hv, 0, sizeof(hv));
 
 	switch(p->type) {
-		case PCB_PROPT_STRING: hv.str_value = pv->string; break;
+		case PCB_PROPT_STRING: hv.str_value = pcb_strdup(pv->string); break;
 		case PCB_PROPT_COORD:  hv.coord_value = pv->coord; break;
 		case PCB_PROPT_ANGLE:  hv.real_value = pv->angle; break;
 		case PCB_PROPT_BOOL:
