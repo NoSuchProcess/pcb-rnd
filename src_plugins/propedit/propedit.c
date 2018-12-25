@@ -74,20 +74,6 @@ int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 			pcb_idpath_list_append(&pe->objs, idp);
 		}
 	}
-	else if (strncmp(cmd, "layer", 5) == 0) {
-		if (cmd[5] == ':') {
-			id = pcb_layer_str2id(pe->pcb->Data, cmd+6);
-			if (id < 0) {
-				if (!quiet)
-					pcb_message(PCB_MSG_ERROR, "Invalid layer ID '%s'\n", cmd+6);
-				return FGW_ERR_ARG_CONV;
-			}
-			vtl0_append(&pe->layers, id);
-		}
-		else {
-			vtl0_append(&pe->layers, INDEXOFCURRENT);
-		}
-	}
 	else if (strncmp(cmd, "layergrp", 8) == 0) {
 		if (cmd[8] == ':') {
 			id = pcb_layergrp_str2id(pe->pcb, cmd+9);
@@ -100,6 +86,20 @@ int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 		}
 		else {
 			vtl0_append(&pe->layergrps, CURRENT->meta.real.grp);
+		}
+	}
+	else if (strncmp(cmd, "layer", 5) == 0) {
+		if (cmd[5] == ':') {
+			id = pcb_layer_str2id(pe->pcb->Data, cmd+6);
+			if (id < 0) {
+				if (!quiet)
+					pcb_message(PCB_MSG_ERROR, "Invalid layer ID '%s'\n", cmd+6);
+				return FGW_ERR_ARG_CONV;
+			}
+			vtl0_append(&pe->layers, id);
+		}
+		else {
+			vtl0_append(&pe->layers, INDEXOFCURRENT);
 		}
 	}
 	else if (strcmp(cmd, "pcb") == 0)
