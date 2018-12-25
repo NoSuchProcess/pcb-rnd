@@ -65,16 +65,12 @@ static const char pcb_acts_GroupPropGui[] = "GroupPropGui(groupid)";
 static const char pcb_acth_GroupPropGui[] = "Change group flags and properties";
 static fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	int n, ar, orig_type, changed = 0, omit_loc = 0, orig_loc = -1;
+	PCB_DAD_DECL(dlg)
+	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", 0}, {"OK", 1}, {NULL, 0}};
+	int wname, wtype, wpurp, wloc;
+	int ok, n, ar = 0, orig_type, changed = 0, omit_loc = 0, orig_loc = -1, def_loc;
 	pcb_layergrp_id_t gid;
 	pcb_layergrp_t *g;
-	pcb_hid_attr_val_t rv[16];
-	pcb_hid_attribute_t attr[] = {
-		{"name",    "group (physical layer) name",         PCB_HATT_STRING, 0, 0, {0}, NULL, NULL, 0, NULL, NULL},
-		{"type",    "type/material of the group",          PCB_HATT_ENUM,   0, 0, {0}, NULL, NULL, 0, NULL, NULL},
-		{"purpose", "purpose or subtype",                  PCB_HATT_STRING, 0, 0, {0}, NULL, NULL, 0, NULL, NULL},
-		{"location","location of the group in the stack",  PCB_HATT_ENUM,   0, 0, {0}, NULL, NULL, 0, NULL, NULL},
-	};
 	static const char *ltypes[] = { "top", "bottom", "any intern", "global", NULL };
 	pcb_layer_type_t ltype_bits[] = { PCB_LYT_TOP, PCB_LYT_BOTTOM, PCB_LYT_INTERN, 0 };
 #define LOC_TYPES (PCB_LYT_DOC)
@@ -85,70 +81,95 @@ static fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	if (g->ltype & LOC_TYPES) {
 		for(n = 0; ltype_bits[n] != 0; n++)
 			if (g->ltype & ltype_bits[n])
-				attr[1].default_val.int_value = n;
+				def_loc = n;
 	}
 	else
 		omit_loc = 1;
 
-	attr[0].default_val.str_value = pcb_strdup(g->name);
-	attr[1].enumerations = lb_types;
-	attr[1].default_val.int_value = orig_type = ly_type2enum(g->ltype);
-	attr[2].default_val.str_value = pcb_strdup(g->purpose == NULL ? "" : g->purpose);
-	attr[3].enumerations = ltypes;
+	PCB_DAD_BEGIN_VBOX(dlg);
+		PCB_DAD_BEGIN_TABLE(dlg, 2);
+			PCB_DAD_LABEL(dlg, "name");
+			PCB_DAD_STRING(dlg);
+				PCB_DAD_HELP(dlg, "group name");
+				wname = PCB_DAD_CURRENT(dlg);
+			PCB_DAD_LABEL(dlg, "type");
+			PCB_DAD_ENUM(dlg, lb_types);
+				PCB_DAD_HELP(dlg, "type/material of the group");
+				wtype = PCB_DAD_CURRENT(dlg);
+			if (!omit_loc) {
+				PCB_DAD_LABEL(dlg, "location");
+				PCB_DAD_ENUM(dlg, ltypes);
+					PCB_DAD_HELP(dlg, "location of the group in the stack");
+					wloc = PCB_DAD_CURRENT(dlg);
+			}
+			PCB_DAD_LABEL(dlg, "purpose");
+			PCB_DAD_STRING(dlg);
+				PCB_DAD_HELP(dlg, "purpose");
+				wpurp = PCB_DAD_CURRENT(dlg);
+				PCB_DAD_HELP(dlg, "subtype of the layer\nmeaning depends on the main type");
+		PCB_DAD_END(dlg);
+		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
+	PCB_DAD_END(dlg);
 
-	{
+
+	dlg[wname].default_val.str_value = pcb_strdup(g->name);
+	dlg[wtype].default_val.int_value = orig_type = ly_type2enum(g->ltype);
+	dlg[wpurp].default_val.str_value = pcb_strdup(g->purpose == NULL ? "" : g->purpose);
+	if (!omit_loc)
+		dlg[wloc].default_val.int_value = def_loc;
+
+	if (!omit_loc) {
 		pcb_layer_type_t loc = g->ltype & PCB_LYT_ANYWHERE;
-		attr[3].default_val.int_value = 3;
+		dlg[wloc].default_val.int_value = 3;
 		if (loc != 0) {
 			for(n = 0; ltypes[n] != NULL; n++) {
 				if ((loc & ltype_bits[n]) == loc) {
-					attr[3].default_val.int_value = n;
+					dlg[wloc].default_val.int_value = n;
 					break;
 				}
 			}
 		}
+		orig_loc = dlg[wloc].default_val.int_value;
 	}
-	orig_loc = attr[3].default_val.int_value;
 
-	ar = pcb_attribute_dialog("layer_grp_prop", attr, sizeof(attr)/sizeof(attr[0]) - omit_loc, rv, "Edit the properties of a layer group (physical layer)", NULL);
-
-	if (ar == 0) {
-		if (strcmp(g->name, attr[0].default_val.str_value) != 0) {
-			ar |= pcb_layergrp_rename_(g, (char *)attr[0].default_val.str_value);
-			attr[0].default_val.str_value = NULL;
+	PCB_DAD_AUTORUN("layer_grp_prop", dlg, "Edit the properties of a layer group (physical layer)", NULL, ok);
+	if (ok) {
+		if (strcmp(g->name, dlg[wname].default_val.str_value) != 0) {
+			ar |= pcb_layergrp_rename_(g, (char *)dlg[wname].default_val.str_value);
+			dlg[wname].default_val.str_value = NULL;
 			pcb_board_set_changed_flag(pcb_true);
 		}
 
-		if (attr[1].default_val.int_value != orig_type) {
+		if (dlg[wtype].default_val.int_value != orig_type) {
 			pcb_layer_type_t lyt = 0;
-			get_ly_type_(attr[1].default_val.int_value, &lyt);
+			get_ly_type_(dlg[wtype].default_val.int_value, &lyt);
 			g->ltype &= ~PCB_LYT_ANYTHING;
 			g->ltype |= lyt;
 			changed = 1;
 		}
 
-		if ((!omit_loc) && (attr[3].default_val.int_value != orig_loc)) {
+		if ((!omit_loc) && (dlg[wloc].default_val.int_value != orig_loc)) {
 			if (PCB_LAYER_SIDED(g->ltype)) {
 				g->ltype &= ~PCB_LYT_ANYWHERE;
-				if (attr[3].default_val.int_value >= 0)
-					g->ltype |= ltype_bits[attr[3].default_val.int_value];
+				if (dlg[wloc].default_val.int_value >= 0)
+					g->ltype |= ltype_bits[dlg[wloc].default_val.int_value];
 				changed = 1;
 			}
 			else
 				pcb_message(PCB_MSG_ERROR, "Ignoring location - for this layer group type it is determined by the stackup\n");
 		}
 
-		if (attr[2].default_val.str_value == NULL) {
+		if (dlg[wpurp].default_val.str_value == NULL) {
 			if (g->purpose != NULL) {
 				pcb_layergrp_set_purpose__(g, NULL);
 				changed = 1;
 			}
 		}
-		else if ((g->purpose == NULL) || (strcmp(g->purpose, attr[2].default_val.str_value) != 0)) {
-			if (*attr[2].default_val.str_value == '\0')
+		else if ((g->purpose == NULL) || (strcmp(g->purpose, dlg[wpurp].default_val.str_value) != 0)) {
+			if (*dlg[wpurp].default_val.str_value == '\0')
 				pcb_layergrp_set_purpose__(g, NULL);
 			else
-				pcb_layergrp_set_purpose__(g, pcb_strdup(attr[2].default_val.str_value));
+				pcb_layergrp_set_purpose__(g, pcb_strdup(dlg[wpurp].default_val.str_value));
 			changed = 1;
 		}
 
@@ -157,8 +178,10 @@ static fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *arg
 			pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 		}
 	}
+	else
+		ar = 1;
 
-	free((char *)attr[0].default_val.str_value);
+	PCB_DAD_FREE(dlg);
 
 	PCB_ACT_IRES(ar);
 	return 0;
