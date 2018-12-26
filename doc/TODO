@@ -34,7 +34,6 @@
 	- FEATURE: generic, non-modal, multi-instance user view list DAD dialog
 	- DOC: document the view lht format
 	- BUG: xor draw stops working after the first preview (drc!)
-- FEATURE: auto calculated alternative action names to convert between CamelCase and underscores [report: igor2]
 - FEATURE: session persistent DAD message log (messages are flushed after dialog is closed?) [report: Miloh]
 - FEATURE: make propset() able to change board properties if first arg is "board" (change baord size) [report: rqsall]
 - FEATURE: lesstif does not allow "save as" in non alien format [report: erich]
