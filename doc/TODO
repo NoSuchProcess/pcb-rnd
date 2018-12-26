@@ -75,7 +75,7 @@
 - BUG: configure without glib installed -> 'unknown arugment disable-gtk' [report: Ade]
 - DOC: DAD widgets: picture, picture button, color
 - BUG: Adding a new route style via the route-style dialog doesn't update the menu (Edit->Route Style). [report: Ade]
- 
+
 2. For later releases ===============================================================================
 - CLEANUP: library window DAD-ification: remove pcb_act_LibraryShow()
 	- FEATURE: library window: allow long tags and long location text to split
