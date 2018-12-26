@@ -37,7 +37,7 @@
 - FEATURE: session persistent DAD message log (messages are flushed after dialog is closed?) [report: Miloh]
 + FEATURE: make propset() able to change board properties if first arg is "board" (change baord size) [report: rqsall]
 - FEATURE: lesstif does not allow "save as" in non alien format [report: erich]
-- FEATURE: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
++ FEATURE: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
 - FEATURE: padstack editor: indicate if a proto layer does not map to current board layer [report: Erich]
 - FEATURE: extedit: dialog shoudl let the user edit the command template [report: Igor2, TwisteR]
 - FEATURE: non-modal fontsel: start a new board while fontsel is open [report: Igor2]
