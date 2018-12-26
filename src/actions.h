@@ -118,6 +118,9 @@ void pcb_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int for
 
 #define PCB_ACTION_MAX_ARGS 16
 
+/* low level action function lookup */
+fgw_func_t *pcb_act_lookup(const char *aname);
+
 char *pcb_make_action_name(char *out, const char *inp, int inp_len);
 PCB_INLINE char *pcb_aname(char *out, const char *inp)
 {

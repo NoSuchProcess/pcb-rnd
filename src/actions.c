@@ -126,13 +126,19 @@ static void pcb_remove_action(fgw_func_t *f)
 	free(ca);
 }
 
+fgw_func_t *pcb_act_lookup(const char *aname)
+{
+	char fn[PCB_ACTION_NAME_MAX];
+	fgw_func_t *f = fgw_func_lookup(&pcb_fgw, pcb_aname(fn, aname));
+	return f;
+}
+
 void pcb_remove_actions(const pcb_action_t *a, int n)
 {
 	int i;
-	char fn[PCB_ACTION_NAME_MAX];
 
 	for (i = 0; i < n; i++) {
-		fgw_func_t *f = fgw_func_lookup(&pcb_fgw, pcb_aname(fn, a[i].name));
+		fgw_func_t *f = pcb_act_lookup(a[i].name);
 		if (f == NULL) {
 			pcb_message(PCB_MSG_WARNING, "Failed to remove action \"%s\" (is it registered?)\n", a[i].name);
 			continue;
@@ -158,12 +164,11 @@ const pcb_action_t *pcb_find_action(const char *name, fgw_func_t **f_out)
 {
 	fgw_func_t *f;
 	hid_cookie_action_t *ca;
-	char fn[PCB_ACTION_NAME_MAX];
 
 	if (name == NULL)
 		return NULL;
 
-	f = fgw_func_lookup(&pcb_fgw, pcb_aname(fn, name));
+	f = pcb_act_lookup(name);
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "unknown action `%s'\n", name);
 		return NULL;
@@ -294,8 +299,7 @@ fgw_error_t pcb_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_
 
 fgw_error_t pcb_actionv_bin(const char *name, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	char fn[PCB_ACTION_NAME_MAX];
-	fgw_func_t *f = fgw_func_lookup(&pcb_fgw, pcb_aname(fn, name));
+	fgw_func_t *f = pcb_act_lookup(name);
 
 	if (f == NULL)
 		return FGW_ERR_NOT_FOUND;
@@ -313,7 +317,6 @@ int pcb_actionv(const char *name, int argc, const char **argsv)
 	fgw_func_t *f;
 	fgw_arg_t res, argv[PCB_ACTION_MAX_ARGS+1];
 	int n;
-	char fn[PCB_ACTION_NAME_MAX];
 
 	if (name == NULL)
 		return 1;
@@ -323,7 +326,7 @@ int pcb_actionv(const char *name, int argc, const char **argsv)
 		return 1;
 	}
 
-	f = fgw_func_lookup(&pcb_fgw, pcb_aname(fn, name));
+	f = pcb_act_lookup(name);
 	if (f == NULL) {
 		int i;
 		pcb_message(PCB_MSG_ERROR, "no action %s(", name);
