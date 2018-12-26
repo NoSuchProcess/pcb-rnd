@@ -1088,6 +1088,29 @@ void pcb_pstk_shape_derive(pcb_pstk_proto_t *proto, int dst_idx, int src_idx, pc
 	pcb_pstk_proto_update(proto);
 }
 
+int pcb_pstk_shape_swap_layer(pcb_pstk_proto_t *proto, int idx1, int idx2)
+{
+	int n;
+	pcb_layer_type_t lm;
+	pcb_layer_combining_t lc;
+
+	if ((idx1 < 0) || (idx1 > proto->tr.array[0].len))
+		return -1;
+	if ((idx2 < 0) || (idx2 > proto->tr.array[0].len))
+		return -1;
+
+	for(n = 0; n < proto->tr.used; n++) {
+		lm = proto->tr.array[n].shape[idx1].layer_mask;
+		lc = proto->tr.array[n].shape[idx1].comb;
+		proto->tr.array[n].shape[idx1].layer_mask = proto->tr.array[n].shape[idx2].layer_mask;
+		proto->tr.array[n].shape[idx1].comb = proto->tr.array[n].shape[idx2].comb;
+		proto->tr.array[n].shape[idx2].layer_mask = lm;
+		proto->tr.array[n].shape[idx2].comb = lc;
+	}
+	return 0;
+}
+
+
 void pcb_pstk_shape_add_hshadow(pcb_pstk_proto_t *proto, pcb_layer_type_t mask, pcb_layer_combining_t comb)
 {
 	int n;

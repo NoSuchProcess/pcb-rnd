@@ -206,6 +206,9 @@ void pcb_pstk_shape_scale(pcb_pstk_shape_t *shp, double sx, double sy);
    for the new shape. If dst_idx is -1, allocate the new shape */
 void pcb_pstk_shape_derive(pcb_pstk_proto_t *proto, int dst_idx, int src_idx, pcb_coord_t bloat, pcb_layer_type_t mask, pcb_layer_combining_t comb);
 
+/* Swap the layer definition of two shapes within a prototype; returns 0 on success */
+int pcb_pstk_shape_swap_layer(pcb_pstk_proto_t *proto, int idx1, int idx2);
+
 /* Create a new hshadow shape (in all transformed shape as well) */
 void pcb_pstk_shape_add_hshadow(pcb_pstk_proto_t *proto, pcb_layer_type_t mask, pcb_layer_combining_t comb);
 
