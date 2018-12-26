@@ -467,6 +467,32 @@ static void pse_shape_copy(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pcb_gui->invalidate_all();
 }
 
+static void pse_shape_swap(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pse_t *pse = caller_data;
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
+	pcb_pstk_tshape_t *ts = &proto->tr.array[0];
+	int from = pse->shape_chg[pse->copy_from].default_val.int_value;
+	int dst_idx = pcb_pstk_get_shape_idx(ts, pcb_proto_layers[pse->editing_shape].mask, pcb_proto_layers[pse->editing_shape].comb);
+	int src_idx = pcb_pstk_get_shape_idx(ts, pcb_proto_layers[from].mask, pcb_proto_layers[from].comb);
+
+	if (src_idx < 0) {
+		pcb_message(PCB_MSG_ERROR, "Can't swap shape: source shape (%s) is empty\n", pcb_proto_layers[from].name);
+		return;
+	}
+
+	if (src_idx == dst_idx) {
+		pcb_message(PCB_MSG_ERROR, "Can't swap shape: source shape and destination shape are the same layer type\n");
+		return;
+	}
+
+	pcb_pstk_shape_swap_layer(proto, dst_idx, src_idx);
+
+	pse_ps2dlg(pse->parent_hid_ctx, pse);
+	pse_change_callback(pse);
+	pcb_gui->invalidate_all();
+}
+
 
 static void pse_shape_bloat(void *hid_ctx, void *caller_data, pcb_coord_t sign)
 {
@@ -553,6 +579,16 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 			PCB_DAD_ENUM(dlg, copy_from_names); /* coposite */
 				pse->copy_from = PCB_DAD_CURRENT(dlg);
 			PCB_DAD_HELP(dlg, "Select the source layer type for manual shape copy");
+		PCB_DAD_END(dlg);
+
+		PCB_DAD_BEGIN_HBOX(dlg);
+			PCB_DAD_BUTTON(dlg, "Swap shape with");
+				pse->copy_do = PCB_DAD_CURRENT(dlg);
+				PCB_DAD_CHANGE_CB(dlg, pse_shape_swap);
+				PCB_DAD_HELP(dlg, "Swap the shape for this layer type\nwith another, existing shapes of this padstack\nfrom the layer type selected");
+			PCB_DAD_ENUM(dlg, copy_from_names); /* coposite */
+				pse->copy_from = PCB_DAD_CURRENT(dlg);
+			PCB_DAD_HELP(dlg, "Select the other layer type for swapping shape");
 		PCB_DAD_END(dlg);
 
 		PCB_DAD_BEGIN_HBOX(dlg);
