@@ -102,7 +102,7 @@ int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 			vtl0_append(&pe->layers, INDEXOFCURRENT);
 		}
 	}
-	else if (strcmp(cmd, "pcb") == 0)
+	else if ((strcmp(cmd, "board") == 0) || (strcmp(cmd, "pcb") == 0))
 		pe->board = 1;
 	else if (strcmp(cmd, "selection") == 0)
 		pe->selection = 1;
