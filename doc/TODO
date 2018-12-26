@@ -16,9 +16,6 @@
 - FEATURE: can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
 - BUG: search for #gtkzoom in lib_gtk_common; bug reprod: set pcb height to 50 mil, {w l} -> zooms are off because of the clamp [report: Igor2]
 + CLEANUP: dad: make the implicit dialog ok/cancel buttons configurable or do not use them at all; e.g. export dialog is confusing [report: Cyril, ml2409]
-- CLEANUP: library window DAD-ification: remove pcb_act_LibraryShow()
-	- FEATURE: library window: allow long tags and long location text to split
-	- BUG: double check parametric footprint edit window: bug_files/parametric.txt [report: Piotr]
 - FEATURE: {e t} dialog: pressing enter should close the window [report: Ade]
 - FEATURE: make default refdes attribute (after footprint conversion) configurable; probably make the set of initial attributes configurable [report: Ade]
 - FEATURE: route style upgrade to prototypes (depends on tree in lesstif!):
@@ -80,6 +77,9 @@
 - BUG: Adding a new route style via the route-style dialog doesn't update the menu (Edit->Route Style). [report: Ade]
  
 2. For later releases ===============================================================================
+- CLEANUP: library window DAD-ification: remove pcb_act_LibraryShow()
+	- FEATURE: library window: allow long tags and long location text to split
+	- BUG: double check parametric footprint edit window: bug_files/parametric.txt [report: Piotr]
 - CLEANUP: think over how to handle subc selection: selecting all parts automatically is bad for propedit; bug_files/subcsel.bug [report: Wojciech]
 	- BUG: adding attribute works on subc parts but deleting attribute stops after deleiting it from a subc; bug_files/subcsel.bug [report: Wojciech]
 - CLEANUP: color:
