@@ -281,6 +281,11 @@ typedef struct pcb_proto_layer_s {
 #define pcb_proto_num_layers 8
 const pcb_proto_layer_t pcb_proto_layers[pcb_proto_num_layers];
 
+
+/* Return the id of a board layer that matches a mask:comb pair or invalid if
+   nothing matched */
+pcb_layer_id_t pcb_proto_board_layer_for(const pcb_data_t *data, pcb_layer_type_t mask, pcb_layer_combining_t comb);
+
 /*** hash ***/
 unsigned int pcb_pstk_proto_hash(const pcb_pstk_proto_t *p);
 int pcb_pstk_proto_eq(const pcb_pstk_proto_t *p1, const pcb_pstk_proto_t *p2);
