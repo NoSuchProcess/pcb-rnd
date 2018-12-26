@@ -773,7 +773,16 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 					PCB_DAD_BEGIN_TABLE(dlg, 5);
 						PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
 						for(n = 0; n < pcb_proto_num_layers; n++) {
-							PCB_DAD_LABEL(dlg, pcb_proto_layers[n].name);
+							char *layname = pcb_proto_layers[n].name, *layname_tmp = NULL;
+							char *help = NULL;
+
+							if (pcb_proto_board_layer_for(PCB->Data, pcb_proto_layers[n].mask, pcb_proto_layers[n].comb) == -1) {
+								layname = layname_tmp = pcb_strdup_printf("(%s)", pcb_proto_layers[n].name);
+								help = "No board layer available for this layer type.\nThis shape will not show on the board\nuntil the corresponding layer in the matching layer group type is created.";
+							}
+							PCB_DAD_LABEL(dlg, layname);
+								if (help != NULL)
+									PCB_DAD_HELP(dlg, help);
 							PCB_DAD_LABEL(dlg, "-");
 								pse->proto_shape[n] = PCB_DAD_CURRENT(dlg);
 							PCB_DAD_LABEL(dlg, "-");
@@ -788,6 +797,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 								PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
 								PCB_DAD_CHANGE_CB(dlg, pse_chg_proto_clr);
 								PCB_DAD_HELP(dlg, "local, per layer type clearance\n(only when global padstack clearance is 0)");
+							free(layname_tmp);
 						}
 					PCB_DAD_END(dlg);
 
