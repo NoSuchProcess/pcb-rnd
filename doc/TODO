@@ -53,6 +53,10 @@
 	- crash:
 		- filter-select invis_other_groups, create design, set true, close; repeat this on black_current_group -> crash [report: Igor2]
 + BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
+- FEATURE: rat line draw: [report: Igor2]
+	- be able to rename nets
+	- save the netlist with the file
+	- be able to convert a 'found' to a net
 - BUG: extedit broke: place 1206, use external edit on it, add line on top copper, save, exit -> line doesn't appear [report: Igor2]
 - BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
 - BUG: bug_files/obsconf.lht: load, get a warning for obsolete config; save into a new file and the broken conf node is not removed [report: keantoken]
