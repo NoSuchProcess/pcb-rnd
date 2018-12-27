@@ -315,20 +315,31 @@ static void pstklib_proto_edit(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	pstklib_proto_edit_common(ctx, data, strtol(row->cell[0], NULL, 10), 1);
 }
 
-static void pstklib_proto_new(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void pstklib_proto_new_(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr, int dup)
 {
 	pstk_lib_ctx_t *ctx = caller_data;
 	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
-	pcb_pstk_proto_t proto;
+	pcb_pstk_proto_t proto_, *proto;
 	pcb_hid_attr_val_t hv;
 	char tmp[64];
+	int tab;
 
 	if (data == NULL)
 		return;
 
-	memset(&proto, 0, sizeof(proto));
-	pcb_pstk_proto_update(&proto);
-	ctx->proto_id = pcb_pstk_proto_insert_dup(data, &proto, 1);
+	if (dup) {
+		pcb_hid_row_t *row = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wlist]);
+		proto = pcb_pstk_get_proto_(data, strtol(row->cell[0], NULL, 10));
+		ctx->proto_id = pcb_pstk_proto_insert_forcedup(data, proto, 0);
+		tab = 1;
+	}
+	else {
+		memset(&proto_, 0, sizeof(proto_));
+		pcb_pstk_proto_update(&proto_);
+		proto = &proto_;
+		ctx->proto_id = pcb_pstk_proto_insert_dup(data, proto, 1);
+		tab = 2;
+	}
 
 	/* make sure the new item appears in the list and is selected */
 	pstklib_data2dlg(ctx);
@@ -336,7 +347,17 @@ static void pstklib_proto_new(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	hv.str_value = tmp;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
 
-	pstklib_proto_edit_common(ctx, data, ctx->proto_id, 2);
+	pstklib_proto_edit_common(ctx, data, ctx->proto_id, tab);
+}
+
+static void pstklib_proto_new(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pstklib_proto_new_(hid_ctx, caller_data, attr, 0);
+}
+
+static void pstklib_proto_dup(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pstklib_proto_new_(hid_ctx, caller_data, attr, 1);
 }
 
 static void pstklib_proto_switch(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
@@ -512,6 +533,9 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal, c
 						PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_proto_select);
 				PCB_DAD_END(ctx->dlg);
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
+					PCB_DAD_BUTTON(ctx->dlg, "Dup...");
+						PCB_DAD_HELP(ctx->dlg, "Create a new prototype by duplicating\nthe currently selected on and\n edit it using the padstack editor");
+						PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_proto_dup);
 					PCB_DAD_BUTTON(ctx->dlg, "Count uses");
 						PCB_DAD_HELP(ctx->dlg, "Count how many times each prototype\nis used and update the \"used\"\ncolumn of the table");
 						PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_count_uses);
