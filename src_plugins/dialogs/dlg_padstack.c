@@ -255,6 +255,24 @@ static void pse_chg_protoid(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	pcb_gui->invalidate_all();
 }
 
+static void pse_chg_protodup(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pse_t *pse = caller_data;
+	pcb_cardinal_t proto_id;
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
+
+	assert(pse->ps->parent_type == PCB_PARENT_DATA);
+	if (proto == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Internal error: can't determine prototype\n");
+		return;
+	}
+	proto_id = pcb_pstk_proto_insert_forcedup(pse->ps->parent.data, proto, 0);
+	pcb_pstk_change_instance(pse->ps, &proto_id, NULL, NULL, NULL, NULL);
+	pse_ps2dlg(hid_ctx, pse);
+	pse_change_callback(pse);
+	pcb_gui->invalidate_all();
+}
+
 static void pse_chg_instance(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pse_t *pse = caller_data;
@@ -736,6 +754,9 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 								pse->proto_id = PCB_DAD_CURRENT(dlg);
 								PCB_DAD_CHANGE_CB(dlg, pse_chg_protoid);
 								PCB_DAD_HELP(dlg, "Padstack prototype ID\n(click to use a different prototype)");
+							PCB_DAD_BUTTON(dlg, "Duplicate");
+								PCB_DAD_HELP(dlg, "Copy padstack prototype to create a new prototype\nfor this padstack instance. Changes to the new\nprototype will not affect other users of the\noriginal prototye.");
+								PCB_DAD_CHANGE_CB(dlg, pse_chg_protodup);
 						PCB_DAD_END(dlg);
 						PCB_DAD_BEGIN_TABLE(dlg, 2);
 							PCB_DAD_LABEL(dlg, "Clearance");
