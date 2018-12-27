@@ -6,6 +6,9 @@
 - CLENAUP: centralized window placement
 - FEATURE: color button DAD implementation in lesstif
 - FEATURE: export_xy: pnp origin should be any obj, especially padstacks (fidu) [report: TwisteR]
+- FEATURE: padstack proto dup:
+	- button in the lib dialog
+	- button in the prototype dialog's first tab
 - CLEANUP: propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
