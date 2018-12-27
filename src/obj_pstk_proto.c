@@ -691,12 +691,12 @@ pcb_cardinal_t pcb_pstk_proto_insert_or_free(pcb_data_t *data, pcb_pstk_proto_t 
 	return n;
 }
 
-pcb_cardinal_t pcb_pstk_proto_insert_dup(pcb_data_t *data, const pcb_pstk_proto_t *proto, int quiet)
+static pcb_cardinal_t pcb_pstk_proto_insert_dup_(pcb_data_t *data, const pcb_pstk_proto_t *proto, int quiet, int forcedup)
 {
-	pcb_cardinal_t n, first_free;
+	pcb_cardinal_t n, first_free = PCB_PADSTACK_INVALID;
 
 	n = pcb_pstk_proto_insert_try(data, proto, &first_free);
-	if (n != PCB_PADSTACK_INVALID)
+	if ((n != PCB_PADSTACK_INVALID) && (!forcedup))
 		return n; /* already in cache */
 
 	/* no match, have to register a new one, which is a dup of the original */
@@ -716,6 +716,17 @@ pcb_cardinal_t pcb_pstk_proto_insert_dup(pcb_data_t *data, const pcb_pstk_proto_
 	}
 	return n;
 }
+
+pcb_cardinal_t pcb_pstk_proto_insert_dup(pcb_data_t *data, const pcb_pstk_proto_t *proto, int quiet)
+{
+	return pcb_pstk_proto_insert_dup_(data, proto, quiet, 0);
+}
+
+pcb_cardinal_t pcb_pstk_proto_insert_forcedup(pcb_data_t *data, const pcb_pstk_proto_t *proto, int quiet)
+{
+	return pcb_pstk_proto_insert_dup_(data, proto, quiet, 1);
+}
+
 
 pcb_cardinal_t pcb_pstk_proto_replace(pcb_data_t *data, pcb_cardinal_t proto_id, const pcb_pstk_proto_t *src)
 {
