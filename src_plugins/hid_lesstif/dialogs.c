@@ -883,7 +883,7 @@ static void ltf_attr_config_cb(Widget shell, XtPointer data, XEvent *xevent)
 void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev))
 {
 	Widget topform, main_tbl;
-	int i;
+	int i, plc[4] = {-1, -1, -1, -1};
 	lesstif_attr_dlg_t *ctx;
 
 	ctx = calloc(sizeof(lesstif_attr_dlg_t), 1);
@@ -944,7 +944,7 @@ void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_att
 	stdarg(XmNminHeight, ctx->minh);
 	XtSetValues(XtParent(ctx->dialog), stdarg_args, stdarg_n);
 
-	pcb_event(PCB_EVENT_DAD_NEW_DIALOG, "ps", ctx, ctx->id);
+	pcb_event(PCB_EVENT_DAD_NEW_DIALOG, "psp", ctx, ctx->id, &plc);
 
 	if (!modal)
 		XtManageChild(ctx->dialog);

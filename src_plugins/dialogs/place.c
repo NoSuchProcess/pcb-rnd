@@ -69,12 +69,15 @@ static void pcb_dialog_place(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	void *hid_ctx;
 	const char *id;
+	int *geo;
 
 	if ((argc < 3) || (argv[1].type != PCB_EVARG_PTR) || (argv[2].type != PCB_EVARG_STR))
 		return;
 
 	hid_ctx = argv[1].d.p;
 	id = argv[2].d.s;
+	geo = argv[3].d.p;
+
 /*	pcb_trace("dialog place: %p '%s'\n", hid_ctx, id);*/
 }
 
