@@ -785,6 +785,7 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, const char *id, pcb_hid_attribute
 	ctx->close_cb = button_cb;
 	ctx->id = pcb_strdup(id);
 
+	pcb_event(PCB_EVENT_DAD_NEW_DIALOG, "psp", ctx, ctx->id, plc);
 	ctx->dialog = gtk_dialog_new_with_buttons(_(title),
 																			 GTK_WINDOW(com->top_window),
 																			 (GtkDialogFlags) ((modal?GTK_DIALOG_MODAL:0)
@@ -803,7 +804,13 @@ TODO("Remove force_label once we got rid of non-DAD attribute dialogs - look for
 	force_label = !PCB_HATT_IS_COMPOSITE(attrs[0].type);
 	ghid_attr_dlg_add(ctx, main_vbox, NULL, 0, (attrs[0].pcb_hatt_flags & PCB_HATF_LABEL) || force_label);
 
-	pcb_event(PCB_EVENT_DAD_NEW_DIALOG, "psp", ctx, ctx->id, plc);
+
+	if (!conf_core.editor.auto_place) {
+		if ((plc[2] > 0) && (plc[3] > 0))
+			gtk_window_resize(GTK_WINDOW(ctx->dialog), plc[2], plc[3]);
+		if ((plc[0] >= 0) && (plc[1] >= 0))
+			gtk_window_move(GTK_WINDOW(ctx->dialog), plc[0], plc[1]);
+	}
 
 	gtk_widget_show_all(ctx->dialog);
 
