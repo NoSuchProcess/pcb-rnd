@@ -41,7 +41,7 @@ typedef wingeo_t htsw_value_t;
 
 static htsw_t wingeo;
 
-static void pcb_dialog_place_set(const char *id, int x, int y, int w, int h)
+static void pcb_dialog_store(const char *id, int x, int y, int w, int h)
 {
 	htsw_entry_t *e;
 	wingeo_t wg;
@@ -84,7 +84,7 @@ static void pcb_dialog_resize(void *user_data, int argc, pcb_event_arg_t argv[])
 		return;
 
 /*	hid_ctx = argv[1].d.p;*/
-	pcb_dialog_place_set(argv[2].d.s, argv[3].d.i, argv[4].d.i, argv[5].d.i, argv[6].d.i);
+	pcb_dialog_store(argv[2].d.s, argv[3].d.i, argv[4].d.i, argv[5].d.i, argv[6].d.i);
 }
 
 static void pcb_dialog_place_init(void)
