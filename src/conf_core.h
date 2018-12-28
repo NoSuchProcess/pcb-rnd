@@ -47,7 +47,7 @@ typedef struct {
 		CFT_BOOLEAN show_number;           /* OBSOLETE: pinout shows number */
 		CFT_BOOLEAN orthogonal_moves;      /* move items orthogonally. */
 		CFT_BOOLEAN reset_after_element;   /* OBSOLETE: reset connections after each element while saving all connections */
-		CFT_BOOLEAN auto_place;            /* flag which says we should force placement of the windows on startup */
+		CFT_BOOLEAN auto_place;            /* force placement of GUI windows (dialogs), trying to override the window manager */
 		CFT_BOOLEAN lock_names;            /* lock down text so they can not be moved or selected */
 		CFT_BOOLEAN only_names;            /* lock down everything else but text so only text objects can be moved or selected */
 		CFT_BOOLEAN thin_draw;             /* if set, objects on the screen are drawn as outlines (lines are drawn as center-lines).  This lets you see line endpoints hidden under pins, for example. */
