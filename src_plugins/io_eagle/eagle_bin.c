@@ -423,20 +423,20 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"clockwise",  T_BMB, 22, 0x20},
 			{"linetype", T_UBF, 23, BITFIELD(1, 0, 7)},
 			{"linetype_0_x1",  T_INT, 4, 4},
-			{"x",  T_INT, 4, 4}, /* only needed if wire used for polygon vertex coord */
+			/*{"x",  T_INT, 4, 4}, /* only needed if wire used for polygon vertex coord */
 			{"linetype_0_y1",  T_INT, 8, 4},
-			{"y",  T_INT, 8, 4}, /* only needed if wire used for polygon vertex coord */
+			/*{"y",  T_INT, 8, 4}, /* only needed if wire used for polygon vertex coord */
 			{"linetype_0_x2",  T_INT, 12, 4},
 			{"linetype_0_y2",  T_INT, 16, 4},
-			{"arc_negflags", T_BMB, 19, 0x1f},
+			{"arc_negflags", T_UBF, 19, BITFIELD(1, 0, 4)},
 			/*{"c_negflag", T_BMB, 19, 0x01},*/
 			{"arc_c1",  T_UBF, 7, BITFIELD(1, 0, 7)},
 			{"arc_c2",  T_UBF, 11, BITFIELD(1, 0, 7)},
 			{"arc_c3",  T_UBF, 15, BITFIELD(1, 0, 7)},
-			{"arc_x1",  T_UBF, 4, BITFIELD(3, 0, 23)},
-			{"arc_y1",  T_UBF, 8, BITFIELD(3, 0, 23)},
-			{"arc_x2",  T_UBF, 12, BITFIELD(3, 0, 23)},
-			{"arc_y2",  T_UBF, 16, BITFIELD(3, 0, 23)},
+			{"arc_x1",  T_INT, 4, 3},
+			{"arc_y1",  T_INT, 8, 3},
+			{"arc_x2",  T_INT, 12, 3},
+			{"arc_y2",  T_INT, 16, 3},
 			TERM
 		},
 	},
@@ -452,15 +452,15 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 			{"half_width",  T_INT, 20, 2},
 			{"clockwise",  T_BMB, 22, 0x20},
 			{"arctype",  T_UBF, 23, BITFIELD(1, 0, 7)},
-			{"arc_negflags", T_BMB, 19, 0x1f},
+			{"arc_negflags", T_UBF, 19, BITFIELD(1, 0, 7)},
 			/*{"c_negflag", T_BMB, 19, 0x01},*/
 			{"arc_c1",  T_UBF, 7, BITFIELD(1, 0, 7)},
 			{"arc_c2",  T_UBF, 11, BITFIELD(1, 0, 7)},
 			{"arc_c3",  T_UBF, 15, BITFIELD(1, 0, 7)},
-			{"arc_x1",  T_UBF, 4, BITFIELD(3, 0, 23)},
-			{"arc_y1",  T_UBF, 8, BITFIELD(3, 0, 23)},
-			{"arc_x2",  T_UBF, 12, BITFIELD(3, 0, 23)},
-			{"arc_y2",  T_UBF, 16, BITFIELD(3, 0, 23)},
+			{"arc_x1",  T_INT, 4, 3},
+			{"arc_y1",  T_INT, 8, 3},
+			{"arc_x2",  T_INT, 12, 3},
+			{"arc_y2",  T_INT, 16, 3},
 			{"arctype_other_x1",  T_INT, 4, 4},
 			{"arctype_other_y1",  T_INT, 8, 4},
 			{"arctype_other_x2",  T_INT, 12, 4},
@@ -1408,6 +1408,13 @@ static egb_node_t *find_node_name(egb_node_t *first, const char *id_name)
 	return NULL;
 }
 
+static long fix_three_byte_read(long num) { /* used to turn three byte T_INT read into 3 byte uint value */
+	if (num < 0) {
+		return (num + 0x800000);
+	} 
+        return num;
+}
+
 static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 {
 	htss_entry_t *e;
@@ -1423,39 +1430,39 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 		arc_flags = atoi(egb_node_prop_get(elem, "arc_negflags"));
 		for (e = htss_first(&elem->props); e; e = htss_next(&elem->props, e)) {
 			if (strcmp(e->key, "arc_x1") == 0) {
-				if (arc_flags && 0x02) {
-					x1 = -atoi(e->value);
-					sprintf(itoa_buffer, "%ld", -x1);
+				x1 = fix_three_byte_read(atoi(e->value));
+				if (arc_flags & 0x02) {
+					x1 = -x1; 
+					sprintf(itoa_buffer, "%ld", x1);
 					egb_node_prop_set(elem, "x1", itoa_buffer);
 				} else {
-					x1 = atoi(e->value);
 					egb_node_prop_set(elem, "x1", e->value);
 				}
 			} else if (strcmp(e->key, "arc_y1") == 0) {
-				if (arc_flags && 0x04) {
-					y1 = -atoi(e->value);
-					sprintf(itoa_buffer, "%ld", -y1);
+				y1 = fix_three_byte_read(atoi(e->value));
+				if (arc_flags & 0x04) {
+					y1 = y1;
+					sprintf(itoa_buffer, "%ld", y1);
 					egb_node_prop_set(elem, "y1", itoa_buffer);
 				} else {
-					y1 = atoi(e->value);
 					egb_node_prop_set(elem, "y1", e->value);
 				}
 			} else if (strcmp(e->key, "arc_x2") == 0) {
-				if (arc_flags && 0x08) {
-					x2 = -atoi(e->value);
-					sprintf(itoa_buffer, "%ld", -x2);
+				x2 = fix_three_byte_read(atoi(e->value));
+				if (arc_flags & 0x08) {
+					x2 = -x2;
+					sprintf(itoa_buffer, "%ld", x2);
 					egb_node_prop_set(elem, "x2", itoa_buffer);
 				} else { 
-					x2 = atoi(e->value);
 					egb_node_prop_set(elem, "x2", e->value);
 				}
 			} else if (strcmp(e->key, "arc_y2") == 0) {
-				if (arc_flags && 0x10) {
-					y2 = -atoi(e->value);
-					sprintf(itoa_buffer, "%ld", -y2);
+				y2 = fix_three_byte_read(atoi(e->value));
+				if (arc_flags & 0x10) {
+					y2 = -y2;
+					sprintf(itoa_buffer, "%ld", y2);
 					egb_node_prop_set(elem, "y2", itoa_buffer);
 				} else {
-					y2 = atoi(e->value);
 					egb_node_prop_set(elem, "y2", e->value);
 				}
 			} else if (strcmp(e->key, "arc_c1") == 0) {
@@ -1464,14 +1471,11 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 				c += 256*atoi(e->value);
 			} else if (strcmp(e->key, "arc_c3") == 0) {
 				c += 256*256*atoi(e->value);
-			} else if (strcmp(e->key, "arc_negflags") == 0) {
-				arc_flags = atoi(e->value);
 			} else if (strcmp(e->key, "clockwise") == 0) {
 				clockwise = atoi(e->value);
 			}
-			/* add width doubling routine here */
 		}
-		if (arc_flags && 0x01) {
+		if (arc_flags & 0x01) {
 			c = -c;
 		}
 		x3 = (x1+x2)/2;
@@ -1487,7 +1491,6 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 		radius = (long)pcb_distance((double)cx, (double)cy, (double)x2, (double)y2);
 		sprintf(itoa_buffer, "%ld", radius);
 		egb_node_prop_set(elem, "radius", itoa_buffer);
-
 		sprintf(itoa_buffer, "%ld", cx);
 		egb_node_prop_set(elem, "x", itoa_buffer);
 		sprintf(itoa_buffer, "%ld", cy);
@@ -1506,7 +1509,6 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 			egb_node_prop_set(elem, "StartAngle", "180");
 			egb_node_prop_set(elem, "Delta", "90");
 		} else {
-TODO("TODO need negative flags checked for c, x1, x2, y1, y2 > ~=838mm")
 			delta_x = (double)(x1 - cx);
 			delta_y = (double)(y1 - cy);
 			theta_1 = PCB_RAD_TO_DEG*atan2(-delta_y, delta_x);
@@ -1524,15 +1526,11 @@ TODO("TODO need negative flags checked for c, x1, x2, y1, y2 > ~=838mm")
 			while (theta_1 > 360) {
 				theta_1 -= 360;
 			}
-			while (delta_theta < -180) { /* this seems to fix pathological cases */
-				delta_theta += 360;
-			}
-			while (delta_theta > 180) {
-				delta_theta -= 360;
+			while (theta_1 < -360) {
+				theta_1 += 360;
 			}
 			sprintf(itoa_buffer, "%ld", (long)(theta_1));
 			egb_node_prop_set(elem, "StartAngle", itoa_buffer);
-
 			sprintf(itoa_buffer, "%ld", (long)(delta_theta));
 			egb_node_prop_set(elem, "Delta", itoa_buffer);
 		}
@@ -1823,13 +1821,13 @@ static int postprocess_arcs(void *ctx, egb_node_t *root)
 
 	if (arc_type == 0) {
 		for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
-			if (strcmp(e->key, "arctype_0_x1") == 0) {
+			if (strcmp(e->key, "arc_x1") == 0) {
 				egb_node_prop_set(root, "x1", e->value);
-			} else if (strcmp(e->key, "arctype_0_y1") == 0) {
+			} else if (strcmp(e->key, "arc_y1") == 0) {
 				egb_node_prop_set(root, "y1", e->value);
-			} else if (strcmp(e->key, "arctype_0_x2") == 0) {
+			} else if (strcmp(e->key, "arc_x2") == 0) {
 				egb_node_prop_set(root, "x2", e->value);
-			} else if (strcmp(e->key, "arctype_0_y2") == 0) {
+			} else if (strcmp(e->key, "arc_y2") == 0) {
 				egb_node_prop_set(root, "y2", e->value);
 			} else if (strcmp(e->key, "half_width") == 0) {
 				half_width = atoi(e->value);
