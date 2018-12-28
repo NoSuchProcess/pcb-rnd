@@ -772,8 +772,6 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, const char *id, pcb_hid_attribute
 
 	ctx = calloc(sizeof(attr_dlg_t), 1);
 
-
-
 	ctx->com = com;
 	ctx->attrs = attrs;
 	ctx->results = results;
@@ -786,31 +784,33 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, const char *id, pcb_hid_attribute
 	ctx->id = pcb_strdup(id);
 
 	pcb_event(PCB_EVENT_DAD_NEW_DIALOG, "psp", ctx, ctx->id, plc);
-	ctx->dialog = gtk_dialog_new_with_buttons(_(title),
-																			 GTK_WINDOW(com->top_window),
-																			 (GtkDialogFlags) ((modal?GTK_DIALOG_MODAL:0)
-																			 | GTK_DIALOG_DESTROY_WITH_PARENT), NULL);
-	gtk_window_set_role(GTK_WINDOW(ctx->dialog), "PCB_attribute_editor");
 
-	content_area = gtk_dialog_get_content_area(GTK_DIALOG(ctx->dialog));
-	g_signal_connect(ctx->dialog, "response", G_CALLBACK(ghid_attr_dlg_response_cb), ctx);
-	g_signal_connect(ctx->dialog, "configure_event", G_CALLBACK(ghid_attr_dlg_configure_event_cb), ctx);
+/*	ctx->dialog = gtk_window_new(GTK_WINDOW_TOPLEVEL);*/
+	ctx->dialog = gtk_dialog_new();
 
-	main_vbox = gtkc_vbox_new(FALSE, 6);
-	gtk_container_set_border_width(GTK_CONTAINER(main_vbox), 6);
-	gtk_container_add_with_properties(GTK_CONTAINER(content_area), main_vbox, "expand", TRUE, "fill", TRUE, NULL);
+	gtk_window_set_title(GTK_WINDOW(ctx->dialog), title);
+	gtk_window_set_role(GTK_WINDOW(ctx->dialog), id);
+	gtk_window_set_modal(GTK_WINDOW(ctx->dialog), modal);
+	if (modal)
+		gtk_window_set_transient_for(GTK_WINDOW(ctx->dialog), com->top_window);
 
-TODO("Remove force_label once we got rid of non-DAD attribute dialogs - look for direct calls to pcb_attribute_dialog()");
-	force_label = !PCB_HATT_IS_COMPOSITE(attrs[0].type);
-	ghid_attr_dlg_add(ctx, main_vbox, NULL, 0, (attrs[0].pcb_hatt_flags & PCB_HATF_LABEL) || force_label);
-
-
-	if (!conf_core.editor.auto_place) {
+	if (conf_core.editor.auto_place) {
 		if ((plc[2] > 0) && (plc[3] > 0))
 			gtk_window_resize(GTK_WINDOW(ctx->dialog), plc[2], plc[3]);
 		if ((plc[0] >= 0) && (plc[1] >= 0))
 			gtk_window_move(GTK_WINDOW(ctx->dialog), plc[0], plc[1]);
 	}
+
+	g_signal_connect(ctx->dialog, "configure_event", G_CALLBACK(ghid_attr_dlg_configure_event_cb), ctx);
+
+	main_vbox = gtkc_vbox_new(FALSE, 6);
+	gtk_container_set_border_width(GTK_CONTAINER(main_vbox), 6);
+	content_area = gtk_dialog_get_content_area(GTK_DIALOG(ctx->dialog));
+	gtk_container_add_with_properties(GTK_CONTAINER(content_area), main_vbox, "expand", TRUE, "fill", TRUE, NULL);
+
+TODO("Remove force_label once we got rid of non-DAD attribute dialogs - look for direct calls to pcb_attribute_dialog()");
+	force_label = !PCB_HATT_IS_COMPOSITE(attrs[0].type);
+	ghid_attr_dlg_add(ctx, main_vbox, NULL, 0, (attrs[0].pcb_hatt_flags & PCB_HATF_LABEL) || force_label);
 
 	gtk_widget_show_all(ctx->dialog);
 
@@ -852,7 +852,8 @@ void ghid_attr_dlg_free(void *hid_ctx)
 		}
 	}
 
-	gtk_widget_destroy(ctx->dialog);
+	if (ctx->dialog != NULL)
+		gtk_widget_destroy(ctx->dialog);
 	free(ctx->id);
 	free(ctx->wl);
 	ctx->id = NULL;
