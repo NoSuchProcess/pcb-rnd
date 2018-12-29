@@ -794,7 +794,8 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 					PCB_DAD_BEGIN_TABLE(dlg, 5);
 						PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
 						for(n = 0; n < pcb_proto_num_layers; n++) {
-							char *layname = pcb_proto_layers[n].name, *layname_tmp = NULL;
+							const char *layname = pcb_proto_layers[n].name;
+							char *layname_tmp = NULL;
 							char *help = NULL;
 
 							if (pcb_proto_board_layer_for(PCB->Data, pcb_proto_layers[n].mask, pcb_proto_layers[n].comb) == -1) {
