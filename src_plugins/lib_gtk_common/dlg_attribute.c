@@ -792,7 +792,7 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, const char *id, pcb_hid_attribute
 	gtk_window_set_role(GTK_WINDOW(ctx->dialog), id);
 	gtk_window_set_modal(GTK_WINDOW(ctx->dialog), modal);
 	if (modal)
-		gtk_window_set_transient_for(GTK_WINDOW(ctx->dialog), com->top_window);
+		gtk_window_set_transient_for(GTK_WINDOW(ctx->dialog), GTK_WINDOW(com->top_window));
 
 	if (conf_core.editor.auto_place) {
 		if ((plc[2] > 0) && (plc[3] > 0))
