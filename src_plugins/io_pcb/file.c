@@ -433,7 +433,7 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 		pcb_subc_get_origin(sc, &ox, &oy);
 		trefdes = pcb_subc_get_refdes_text(sc);
 		if (pcb_subc_get_side(sc, &on_bot) != 0)
-			pcb_io_incompat_save(sc->parent.data, sc, "element-side", "Can not determine element side", "Missing or botched subc aux layer; can not tell if subc is on top or bottom layer, using top.");
+			pcb_io_incompat_save(sc->parent.data, (pcb_any_obj_t *)sc, "element-side", "Can not determine element side", "Missing or botched subc aux layer; can not tell if subc is on top or bottom layer, using top.");
 
 		if (trefdes != NULL) {
 			rx = trefdes->X - ox;
