@@ -216,31 +216,6 @@ typedef struct {
 	attr_dlg_t *attrdlg;
 } resp_ctx_t;
 
-static void ghid_attr_dlg_response_cb(GtkDialog *dialog, gint response_id, gpointer user_data)
-{
-	attr_dlg_t *ctx = (attr_dlg_t *)user_data;
-
-	if (ctx != NULL) {
-		switch (response_id) {
-		case GTK_RESPONSE_OK:     /* no OK button, shouldn't happen, but just in case... */
-		case GTK_RESPONSE_CANCEL: /* no cancel button, shouldn't happen, but just in case... */
-		case GTK_RESPONSE_CLOSE:
-		case GTK_RESPONSE_DELETE_EVENT:
-			if (!ctx->close_cb_called) {
-				ctx->close_cb_called = 1;
-				if (ctx->close_cb != NULL)
-					ctx->close_cb(ctx->caller_data, PCB_HID_ATTR_EV_WINCLOSE);
-			}
-			ctx->rc = 1;
-			break;
-		}
-		ctx->close_cb_called = 1;
-		free(ctx->wl);
-		ctx->wl = NULL;
-	}
-}
-
-
 static GtkWidget *frame_scroll(GtkWidget *parent, pcb_hatt_compflags_t flags)
 {
 	GtkWidget *fr;
