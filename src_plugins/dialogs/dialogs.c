@@ -36,6 +36,8 @@
 #include "funchash_core.h"
 #include "dialogs_conf.h"
 
+const conf_dialogs_t conf_dialogs;
+
 /* include them all for static inlines */
 #include "dlg_test.c"
 #include "dlg_layer_binding.c"
@@ -56,7 +58,6 @@
 #include "dlg_pref.h"
 #include "act_dad.h"
 
-const conf_dialogs_t conf_dialogs;
 
 static const char pcb_acth_gui[] = "Intenal: GUI frontend action. Do not use directly.";
 

@@ -24,6 +24,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+static const char *place_cookie = "dialogs/place";
+
 typedef struct {
 	int x, y, w, h;
 } wingeo_t;
@@ -98,15 +100,76 @@ static void pcb_dialog_resize(void *user_data, int argc, pcb_event_arg_t argv[])
 	pcb_dialog_store(argv[2].d.s, argv[3].d.i, argv[4].d.i, argv[5].d.i, argv[6].d.i);
 }
 
+static void place_conf_set(conf_role_t role, const char *path, int val)
+{
+	static int dummy;
+
+	if (conf_get_field(path) == NULL)
+		conf_reg_field_(&dummy, 1, CFN_INTEGER, path, "", 0);
+	conf_setf(role, path, -1, "%d", val);
+}
+
+#define BASEPATH "plugins/dialogs/window_geometry/"
+static void place_maybe_save(conf_role_t role, int force)
+{
+	htsw_entry_t *e;
+	char path[128 + sizeof(BASEPATH)];
+	char *end, *end2;
+
+	switch(role) {
+		case CFR_USER:    if (!force && !conf_dialogs.plugins.dialogs.auto_save_window_geometry.to_user) return; break;
+		case CFR_DESIGN:  if (!force && !conf_dialogs.plugins.dialogs.auto_save_window_geometry.to_design) return; break;
+		case CFR_PROJECT: if (!force && !conf_dialogs.plugins.dialogs.auto_save_window_geometry.to_project) return; break;
+		default: return;
+	}
+
+	strcpy(path, BASEPATH);
+	end = path + strlen(BASEPATH);
+	for(e = htsw_first(&wingeo); e != NULL; e = htsw_next(&wingeo, e)) {
+		int len = strlen(e->key);
+		if (len > 64)
+			continue;
+		memcpy(end, e->key, len);
+		end[len] = '/';
+		end2 = end + len+1;
+
+		strcpy(end2, "x"); place_conf_set(role, path, e->value.x);
+		strcpy(end2, "y"); place_conf_set(role, path, e->value.y);
+		strcpy(end2, "width"); place_conf_set(role, path, e->value.w);
+		strcpy(end2, "height"); place_conf_set(role, path, e->value.h);
+	}
+
+
+	if (role != CFR_DESIGN) {
+		int r = conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), role, NULL);
+		if (r != 0)
+			pcb_message(PCB_MSG_ERROR, "Failed to save window geometry in %s\n", conf_role_name(role));
+	}
+}
+
+/* event handler that runs before the current pcb is saved to save win geo
+   in the board conf. */
+static void place_save_pre(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	place_maybe_save(CFR_PROJECT, 0);
+	place_maybe_save(CFR_DESIGN, 0);
+}
+
+
 static void pcb_dialog_place_init(void)
 {
 	htsw_init(&wingeo, strhash, strkeyeq);
+	pcb_event_bind(PCB_EVENT_SAVE_PRE, place_save_pre, NULL, place_cookie);
 }
 
 static void pcb_dialog_place_uninit(void)
 {
 	htsw_entry_t *e;
+
+	place_maybe_save(CFR_USER, 0);
+
 	for(e = htsw_first(&wingeo); e != NULL; e = htsw_next(&wingeo, e))
 		free((char *)e->key);
 	htsw_uninit(&wingeo);
+	pcb_event_unbind_allcookie(place_cookie);
 }
