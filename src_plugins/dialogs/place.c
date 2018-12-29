@@ -109,7 +109,75 @@ static void place_conf_set(conf_role_t role, const char *path, int val)
 	conf_setf(role, path, -1, "%d", val);
 }
 
+static void place_conf_load(conf_role_t role, const char *path, int *val)
+{
+	conf_native_t *nat = conf_get_field(path);
+	conf_role_t crole;
+	static int dummy;
+
+	if (conf_get_field(path) == NULL) {
+		conf_reg_field_(&dummy, 1, CFN_INTEGER, path, "", 0);
+		conf_update(path, -1);
+	}
+
+	nat = conf_get_field(path);
+	if ((nat == NULL) || (nat->prop->src == NULL) || (nat->prop->src->type != LHT_TEXT)) {
+		pcb_message(PCB_MSG_ERROR, "Can not load window geometry from invalid node for %s\n", path);
+		return;
+	}
+
+	/* there are priorities which is hanled by conf merging. To make sure
+	   only the final value is loaded, check if the final native's source
+	   role matches the role that's being loaded. Else the currently loading
+	   role is lower prio and didn't contribute to the final values and should
+	   be ignored. */
+	crole = conf_lookup_role(nat->prop->src);
+	if (crole != role)
+		return;
+
+	/* need to atoi() directly from the lihata node because the native value
+	   is dummy and shared among all nodes - cheaper to atoi than to do
+	   a proper allocation for the native value. */
+	*val = atoi(nat->prop->src->data.text.value);
+}
+
 #define BASEPATH "plugins/dialogs/window_geometry/"
+static void place_load(conf_role_t role)
+{
+	char *end, *end2, path[128 + sizeof(BASEPATH)];
+	lht_node_t *nd, *root;
+	lht_dom_iterator_t it;
+	int x, y, w, h;
+
+	strcpy(path, BASEPATH);
+	end = path + strlen(BASEPATH);
+
+	root = conf_lht_get_at(role, path, 0);
+	if (root == NULL)
+		return;
+
+	for(nd = lht_dom_first(&it, root); nd != NULL; nd = lht_dom_next(&it)) {
+		int len;
+		if (nd->type != LHT_HASH)
+			continue;
+		len = strlen(nd->name);
+		if (len > 64)
+			continue;
+		memcpy(end, nd->name, len);
+		end[len] = '/';
+		end2 = end + len+1;
+
+		x = y = -1;
+		w = h = 0;
+		strcpy(end2, "x"); place_conf_load(role, path, &x);
+		strcpy(end2, "y"); place_conf_load(role, path, &y);
+		strcpy(end2, "width"); place_conf_load(role, path, &w);
+		strcpy(end2, "height"); place_conf_load(role, path, &h);
+		pcb_dialog_store(nd->name, x, y, w, h);
+	}
+}
+
+
 static void place_maybe_save(conf_role_t role, int force)
 {
 	htsw_entry_t *e;
@@ -160,6 +228,8 @@ static void pcb_dialog_place_init(void)
 {
 	htsw_init(&wingeo, strhash, strkeyeq);
 	pcb_event_bind(PCB_EVENT_SAVE_PRE, place_save_pre, NULL, place_cookie);
+	place_load(CFR_SYSTEM);
+	place_load(CFR_USER);
 }
 
 static void pcb_dialog_place_uninit(void)
