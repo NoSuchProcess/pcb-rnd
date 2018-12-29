@@ -40,6 +40,7 @@
 #include "polygon.h"
 #include "rtree.h"
 #include "actions.h"
+#include "undo.h"
 #include "compat_misc.h"
 #include "trparse.h"
 #include "trparse_xml.h"
