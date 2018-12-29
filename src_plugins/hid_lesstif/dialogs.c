@@ -880,7 +880,7 @@ static void ltf_attr_config_cb(Widget shell, XtPointer data, XEvent *xevent)
 		(int)x, (int)y, (int)cevent->width, (int)cevent->height);
 }
 
-void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev))
+void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy)
 {
 	Widget topform, main_tbl;
 	int i, plc[4] = {-1, -1, -1, -1};

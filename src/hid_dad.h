@@ -41,6 +41,7 @@
 	int table ## _len = 0; \
 	int table ## _alloced = 0; \
 	void *table ## _hid_ctx = NULL; \
+	int table ## _defx = 0, table ## _defy = 0; \
 	pcb_dad_retovr_t table ## _ret_override = {0, 0, 0};
 
 #define PCB_DAD_DECL_NOINIT(table) \
@@ -49,6 +50,7 @@
 	int table ## _len; \
 	int table ## _alloced; \
 	void *table ## _hid_ctx; \
+	int table ## _defx, table ## _defy; \
 	pcb_dad_retovr_t table ## _ret_override;
 
 /* Free all resources allocated by DAD macros for table */
@@ -75,7 +77,7 @@ do { \
 	if (table ## _result == NULL) \
 		PCB_DAD_ALLOC_RESULT(table); \
 	table ## _ret_override.already_freed = 0; \
-	table ## _hid_ctx = pcb_gui->attr_dlg_new(id, table, table ## _len, table ## _result, title, caller_data, modal, ev_cb); \
+	table ## _hid_ctx = pcb_gui->attr_dlg_new(id, table, table ## _len, table ## _result, title, caller_data, modal, ev_cb, table ## _defx, table ## _defy); \
 } while(0)
 
 #define PCB_DAD_RUN(table) pcb_hid_dad_run(table ## _hid_ctx, &table ## _ret_override)
@@ -87,7 +89,7 @@ do { \
 		PCB_DAD_ALLOC_RESULT(table); \
 	table ## _ret_override.valid = 0; \
 	table ## _ret_override.already_freed = 0; \
-	failed = pcb_attribute_dialog_(id,table, table ## _len, table ## _result, title, caller_data, &(table ## _ret_override.already_freed)); \
+	failed = pcb_attribute_dialog_(id,table, table ## _len, table ## _result, title, caller_data, &(table ## _ret_override.already_freed), table ## _defx, table ## _defy); \
 	if (table ## _ret_override.valid) \
 		failed = table ## _ret_override.value; \
 	table ## _ret_override.already_freed = 1; \
