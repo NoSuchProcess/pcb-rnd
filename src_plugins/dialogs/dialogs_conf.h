@@ -12,10 +12,12 @@ typedef struct {
 				CFT_BOOLEAN to_user;
 			} auto_save_window_geometry;
 			const struct window_geometry {
-				CFT_INTEGER top_x;
-				CFT_INTEGER top_y;
-				CFT_INTEGER top_width;
-				CFT_INTEGER top_height;
+				const struct top {
+					CFT_INTEGER x;
+					CFT_INTEGER y;
+					CFT_INTEGER width;
+					CFT_INTEGER height;
+				} top;
 			} window_geometry;
 		} dialogs;
 	} plugins;
