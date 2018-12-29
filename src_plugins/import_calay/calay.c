@@ -144,14 +144,14 @@ static int calay_parse_comp(FILE *f)
 		refdes = strpbrk(val, " \t\r\n");
 		if (refdes == NULL)
 			continue;
-		*refdes = NULL;
+		*refdes = 0;
 		refdes++;
 		ltrim(refdes);
 
 		footprint = strpbrk(refdes, " \t\r\n");
 		if (footprint == NULL)
 			continue;
-		*footprint = NULL;
+		*footprint = 0;
 		footprint++;
 		ltrim(footprint);
 
