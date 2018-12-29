@@ -158,6 +158,8 @@ static void prop_valedit_update(propdlg_t *ctx, pcb_props_t *p, pcb_propval_t *p
 		case PCB_PROPT_BOOL:
 		case PCB_PROPT_INT:    hv.int_value = pv->i; break;
 		case PCB_PROPT_COLOR:  hv.clr_value = pv->clr; break;
+		case PCB_PROPT_invalid:
+		case PCB_PROPT_max: return;
 	}
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wedit[p->type], &hv);
 }
