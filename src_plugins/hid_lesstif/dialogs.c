@@ -861,7 +861,7 @@ static void ltf_attr_destroy_cb(Widget w, void *v, void *cbs)
 	XtDestroyWidget(w);
 }
 
-static void ltf_attr_config_cb(Widget shell, XtPointer data, XEvent *xevent)
+static void ltf_attr_config_cb(Widget shell, XtPointer data, XEvent *xevent, char *dummy)
 {
 	lesstif_attr_dlg_t *ctx = data;
 	Window win, rw, cw;
