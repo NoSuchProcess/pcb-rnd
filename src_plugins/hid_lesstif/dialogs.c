@@ -886,6 +886,9 @@ void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_att
 	int i, plc[4] = {-1, -1, -1, -1};
 	lesstif_attr_dlg_t *ctx;
 
+	plc[2] = defx;
+	plc[3] = defy;
+
 	ctx = calloc(sizeof(lesstif_attr_dlg_t), 1);
 	ctx->attrs = attrs;
 	ctx->results = results;

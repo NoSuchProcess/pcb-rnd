@@ -745,6 +745,10 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, const char *id, pcb_hid_attribute
 	attr_dlg_t *ctx;
 	int force_label, plc[4] = {-1, -1, -1, -1};
 
+
+	plc[2] = defx;
+	plc[3] = defy;
+
 	ctx = calloc(sizeof(attr_dlg_t), 1);
 
 	ctx->com = com;
