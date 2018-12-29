@@ -49,6 +49,7 @@
 #include "safe_fs.h"
 #include "rotate.h"
 #include "actions.h"
+#include "undo.h"
 
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 #include "../src_plugins/lib_compat_help/pstk_help.h"
