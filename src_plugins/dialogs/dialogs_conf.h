@@ -1,5 +1,5 @@
-#ifndef PCB_DIALOG_CONF_H
-#define PCB_DIALOG_CONF_H
+#ifndef PCB_DIALOGS_CONF_H
+#define PCB_DIALOGS_CONF_H
 
 #include "conf.h"
 
