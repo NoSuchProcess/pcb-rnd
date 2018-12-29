@@ -867,7 +867,7 @@ static void ltf_attr_config_cb(Widget shell, XtPointer data, XEvent *xevent)
 	Window win, rw, cw;
 	Display *dsp;
 	int x, y;
-	XConfigureEvent *cevent = xevent;
+	XConfigureEvent *cevent = (XConfigureEvent *)xevent;
 
 	if (cevent->type != ConfigureNotify)
 		return;
