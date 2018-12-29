@@ -34,6 +34,7 @@
 #include "hid_dad.h"
 #include "plugins.h"
 #include "funchash_core.h"
+#include "dialogs_conf.h"
 
 /* include them all for static inlines */
 #include "dlg_test.c"
@@ -54,6 +55,8 @@
 #include "dlg_view.h"
 #include "dlg_pref.h"
 #include "act_dad.h"
+
+const conf_dialogs_t conf_dialogs;
 
 static const char pcb_acth_gui[] = "Intenal: GUI frontend action. Do not use directly.";
 
@@ -97,9 +100,15 @@ void pplg_uninit_dialogs(void)
 	pcb_remove_actions_by_cookie(dialogs_cookie);
 	pcb_view_dlg_uninit();
 	pcb_dialog_place_uninit();
+	conf_unreg_fields("plugins/dialogs/");
 }
 
 #include "dolists.h"
+
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	conf_reg_field(conf_dialogs, field,isarray,type_name,cpath,cname,desc,flags);
+#include "dialogs_conf_fields.h"
+
 int pplg_init_dialogs(void)
 {
 	PCB_API_CHK_VER;

@@ -6,6 +6,7 @@ put /local/pcb/mod/OBJS [@
  $(PLUGDIR)/dialogs/dlg_pref.o
  $(PLUGDIR)/dialogs/xpm.o
 @]
+put /local/pcb/mod/CONFFILE {dialogs.conf}
 
 switch /local/pcb/dialogs/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
