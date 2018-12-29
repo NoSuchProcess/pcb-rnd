@@ -80,6 +80,14 @@ do { \
 	table ## _hid_ctx = pcb_gui->attr_dlg_new(id, table, table ## _len, table ## _result, title, caller_data, modal, ev_cb, table ## _defx, table ## _defy); \
 } while(0)
 
+/* Sets the default window size (that is only a hint) - NOTE: must be called
+   before PCB_DAD_NEW() */
+#define PCB_DAD_DEFSIZE(table, width, height) \
+do { \
+	table ## _defx = width; \
+	table ## _defy = height; \
+} while(0)
+
 #define PCB_DAD_RUN(table) pcb_hid_dad_run(table ## _hid_ctx, &table ## _ret_override)
 
 /* failed is non-zero on cancel */
