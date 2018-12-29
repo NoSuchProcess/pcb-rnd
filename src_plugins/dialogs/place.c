@@ -215,12 +215,19 @@ static void place_maybe_save(conf_role_t role, int force)
 	}
 }
 
-/* event handler that runs before the current pcb is saved to save win geo
-   in the board conf. */
+/* event handlers that run before the current pcb is saved to save win geo
+   in the board conf and after loading a new board to fetch window placement
+   info. */
 static void place_save_pre(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	place_maybe_save(CFR_PROJECT, 0);
 	place_maybe_save(CFR_DESIGN, 0);
+}
+
+static void place_load_post(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	place_load(CFR_PROJECT);
+	place_load(CFR_DESIGN);
 }
 
 
@@ -228,6 +235,7 @@ static void pcb_dialog_place_init(void)
 {
 	htsw_init(&wingeo, strhash, strkeyeq);
 	pcb_event_bind(PCB_EVENT_SAVE_PRE, place_save_pre, NULL, place_cookie);
+	pcb_event_bind(PCB_EVENT_LOAD_POST, place_load_post, NULL, place_cookie);
 	place_load(CFR_SYSTEM);
 	place_load(CFR_USER);
 }
