@@ -162,6 +162,7 @@ static int calay_parse_comp(FILE *f)
 		pcb_actionl("ElementList", "Need", refdes, footprint, val, NULL);
 	}
 	pcb_actionl("ElementList", "Done", NULL);
+	return 0;
 }
 
 
