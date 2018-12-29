@@ -1439,7 +1439,7 @@ void pcb_pstk_post(pcb_pstk_t *pstk)
 pcb_layer_id_t pcb_proto_board_layer_for(const pcb_data_t *data, pcb_layer_type_t mask, pcb_layer_combining_t comb)
 {
 	pcb_layer_id_t lid;
-	pcb_layer_t *ly;
+	const pcb_layer_t *ly;
 	for(lid = 0, ly = data->Layer; lid < data->LayerN; lid++,ly++) {
 		pcb_layer_type_t typ = pcb_layer_flags_(ly);
 		if ((typ == mask) && (ly->comb == comb))
