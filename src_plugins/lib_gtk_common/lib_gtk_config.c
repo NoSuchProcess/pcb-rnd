@@ -32,6 +32,7 @@
 #include "lib_gtk_config.h"
 #include "hid_gtk_conf.h"
 #include "plugins.h"
+#include "src_plugins/dialogs/place.h"
 
 static const char *lib_gtk_config_cookie = "lib_gtk_config";
 
@@ -93,6 +94,8 @@ void pcb_gtk_conf_init(void)
 	int warned = 0;
 	const char **p;
 	static int dummy_gtk_conf_init;
+	int dirty[CFR_max_real] = {0};
+	conf_role_t r;
 
 	ghid_conf_id = conf_hid_reg(lib_gtk_config_cookie, NULL);
 
@@ -121,6 +124,11 @@ void pcb_gtk_conf_init(void)
 		*end = '\0';
 		if (conf_get_field(p[1]) == NULL)
 			conf_reg_field_(&dummy_gtk_conf_init, 1, CFN_INTEGER, p[1], "", 0);
-		conf_setf(conf_lookup_role(nat->prop->src), p[1], -1, "%d", nat->val.integer[0]);
+		r = conf_lookup_role(nat->prop->src);
+		conf_setf(r, p[1], -1, "%d", nat->val.integer[0]);
+		dirty[r] = 1;
 	}
+	for(r = 0; r < CFR_max_real; r++)
+		if (dirty[r])
+			pcb_wplc_load(r);
 }
