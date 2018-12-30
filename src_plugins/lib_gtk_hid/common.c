@@ -9,7 +9,7 @@
 #include "../src_plugins/lib_gtk_common/wt_layersel.h"
 #include "../src_plugins/lib_gtk_common/dlg_topwin.h"
 #include "../src_plugins/lib_gtk_common/in_keyboard.h"
-#include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
+#include "../src_plugins/lib_gtk_common/hid_gtk_conf.h"
 
 GhidGui _ghidgui, *ghidgui = &_ghidgui;
 GHidPort ghid_port, *gport;

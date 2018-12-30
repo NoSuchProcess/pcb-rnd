@@ -61,7 +61,7 @@
 
 #include "compat.h"
 
-#include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
+#include "hid_gtk_conf.h"
 
 #define NET_HIERARCHY_SEPARATOR "/"
 

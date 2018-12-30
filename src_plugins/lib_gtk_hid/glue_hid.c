@@ -22,8 +22,8 @@
 #include "../src_plugins/lib_gtk_common/util_timer.h"
 #include "../src_plugins/lib_gtk_common/util_watch.h"
 #include "../src_plugins/lib_gtk_common/win_place.h"
-#include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
-#include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
+#include "../src_plugins/lib_gtk_common/hid_gtk_conf.h"
+#include "../src_plugins/lib_gtk_common/lib_gtk_config.h"
 
 void gtkhid_begin(void)
 {

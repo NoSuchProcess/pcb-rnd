@@ -4,4 +4,4 @@ $long hid_gtk* common code (regardless of gtk version or drawing mechanism: for 
 $state works
 $package lib-gtk
 default disable-all
-dep lib_gtk_config
+

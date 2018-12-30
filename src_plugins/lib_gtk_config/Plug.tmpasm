@@ -3,7 +3,6 @@ put /local/pcb/mod/OBJS [@
 @]
 
 put /local/pcb/mod/OBJS_C99 [@
-  $(PLUGDIR)/lib_gtk_config/lib_gtk_config.o
 @]
 
 put /local/pcb/mod/CONF {$(PLUGDIR)/lib_gtk_config/hid_gtk_conf.h}

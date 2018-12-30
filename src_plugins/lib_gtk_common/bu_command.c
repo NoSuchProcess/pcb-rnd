@@ -47,7 +47,7 @@
 #include "bu_text_view.h"
 #include "bu_status_line.h"
 #include "util_str.h"
-#include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
+#include "hid_gtk_conf.h"
 #include "../src_plugins/lib_hid_common/cli_history.h"
 
 

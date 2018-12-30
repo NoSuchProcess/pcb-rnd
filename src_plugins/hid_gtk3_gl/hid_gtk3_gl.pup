@@ -4,7 +4,6 @@ $long GUI: the GTK3 HID, using gl for rendering
 $state WIP
 default disable-all
 dep lib_gtk_common
-dep lib_gtk_config
 dep lib_gtk_hid
 dep lib_hid_gl
 dep draw_csect

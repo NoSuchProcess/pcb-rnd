@@ -48,7 +48,7 @@
 #include "compat.h"
 #include "event.h"
 
-#include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
+#include "hid_gtk_conf.h"
 
 static GtkWidget *log_window, *log_text;
 static pcb_bool log_show_on_append = FALSE;

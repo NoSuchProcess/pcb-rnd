@@ -10,7 +10,7 @@
 #include "conf_core.h"
 #include "../src_plugins/lib_gtk_common/bu_status_line.h"
 #include "../src_plugins/lib_gtk_common/dlg_topwin.h"
-#include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
+#include "../src_plugins/lib_gtk_common/hid_gtk_conf.h"
 
 static void ghid_interface_set_sensitive(gboolean sensitive);
 

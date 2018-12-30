@@ -79,7 +79,7 @@
 #include "tool.h"
 #include "event.h"
 
-#include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
+#include "hid_gtk_conf.h"
 #include "dlg_library_param.h"
 
 /* how often should the parametric footprint redrawn while the parameters are

@@ -12,8 +12,8 @@
 #include "funchash_core.h"
 
 #include "../src_plugins/lib_hid_common/clip.h"
-#include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
-#include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
+#include "../src_plugins/lib_gtk_common/hid_gtk_conf.h"
+#include "../src_plugins/lib_gtk_common/lib_gtk_config.h"
 
 #include "../src_plugins/lib_gtk_hid/gui.h"
 #include "../src_plugins/lib_gtk_hid/coord_conv.h"
@@ -27,7 +27,7 @@
 #include "hid_draw_helpers.h"
 #include "../src_plugins/lib_hid_gl/stencil_gl.h"
 
-#include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
+#include "../src_plugins/lib_gtk_common/hid_gtk_conf.h"
 
 #define Z_NEAR 3.0
 extern pcb_hid_t gtk2_gl_hid;

@@ -57,7 +57,7 @@ int pplg_init_lib_gtk_config(void)
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	conf_reg_field(conf_hid_gtk, field,isarray,type_name,cpath,cname,desc,flags);
-#include "../src_plugins/lib_gtk_config/hid_gtk_conf_fields.h"
+#include "../src_plugins/lib_gtk_common/hid_gtk_conf_fields.h"
 
 	return 0;
 }

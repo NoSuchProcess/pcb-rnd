@@ -11,8 +11,8 @@
 #include "../src_plugins/lib_hid_gl/draw_gl.h"
 
 #include "../src_plugins/lib_gtk_common/glue.h"
-#include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
-#include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
+#include "../src_plugins/lib_gtk_common/lib_gtk_config.h"
+#include "../src_plugins/lib_gtk_common/hid_gtk_conf.h"
 
 #include "../src_plugins/lib_gtk_hid/gui.h"
 #include "../src_plugins/lib_gtk_hid/glue_common.h"

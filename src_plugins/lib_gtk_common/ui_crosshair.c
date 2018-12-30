@@ -32,7 +32,7 @@
 
 #include "ui_crosshair.h"
 
-#include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
+#include "hid_gtk_conf.h"
 #include "ui_zoompan.h"
 #include "bu_cursor_pos.h"
 #include "conf_core.h"

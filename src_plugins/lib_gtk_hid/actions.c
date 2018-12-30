@@ -46,7 +46,7 @@
 #include "../src_plugins/lib_gtk_common/dlg_log.h"
 #include "../src_plugins/lib_gtk_common/dlg_netlist.h"
 #include "../src_plugins/lib_gtk_common/dlg_search.h"
-#include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
+#include "../src_plugins/lib_gtk_common/lib_gtk_config.h"
 
 #include "actions.h"
 
