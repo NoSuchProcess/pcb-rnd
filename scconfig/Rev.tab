@@ -1,4 +1,4 @@
-22163	configure	removal of the old gtk-only preferences dialog code
+22164	configure	removal of the old gtk-only preferences dialog code
 22119	configure	dialogs config for window placement
 21977	configure	new propedit
 21972	configure	boardflip plugin removed (core functionality took over)

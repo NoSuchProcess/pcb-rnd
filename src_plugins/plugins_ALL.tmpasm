@@ -75,7 +75,6 @@ include {../src_plugins/jostle/Plug.tmpasm}
 include {../src_plugins/lib_compat_help/Plug.tmpasm}
 include {../src_plugins/lib_gensexpr/Plug.tmpasm}
 include {../src_plugins/lib_gtk_common/Plug.tmpasm}
-include {../src_plugins/lib_gtk_config/Plug.tmpasm}
 include {../src_plugins/lib_gtk_hid/Plug.tmpasm}
 include {../src_plugins/lib_hid_common/Plug.tmpasm}
 include {../src_plugins/lib_hid_gl/Plug.tmpasm}
