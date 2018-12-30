@@ -3,8 +3,7 @@
 1. For the upcoming release ===============================================================================
 + BUG: boardflip() action moves the objects and doesn't move the subc outline and origin (repro: place single part, run boardflip) [report:Miloh]
 + BUG: find.c: {c f} doesn't include rat lines [report: Ade]
-- CLENAUP: centralized window placement
-	- FEATURE: lesstif window placement
+- FEATURE: lesstif window placement
 - FEATURE: color button DAD implementation in lesstif
 - FEATURE: export_xy: pnp origin should be any obj, especially padstacks (fidu) [report: TwisteR]
 - CLEANUP: propedit revamp:
