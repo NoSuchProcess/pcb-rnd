@@ -28,6 +28,7 @@
 #include "config.h"
 
 #include <stdlib.h>
+#include <assert.h>
 #include "lib_gtk_config.h"
 #include "hid_gtk_conf.h"
 #include "plugins.h"
@@ -91,6 +92,7 @@ void pcb_gtk_conf_init(void)
 {
 	int warned = 0;
 	const char **p;
+	static int dummy_gtk_conf_init;
 
 	ghid_conf_id = conf_hid_reg(lib_gtk_config_cookie, NULL);
 
@@ -101,6 +103,7 @@ void pcb_gtk_conf_init(void)
 	/* check for legacy win geo settings */
 	for(p = legacy_paths; *p != NULL; p+=2) {
 		conf_native_t *nat;
+		char *end, dirname[128];
 		
 		conf_update(p[0], -1);
 		nat = conf_get_field(p[0]);
@@ -111,5 +114,13 @@ void pcb_gtk_conf_init(void)
 			warned = 1;
 		}
 		pcb_message(PCB_MSG_WARNING, "%s from %s:%d\n", nat->hash_path, nat->prop->src->file_name, nat->prop->src->line);
+
+		strcpy(dirname, p[1]);
+		end = strrchr(dirname, '/');
+		assert(end != NULL);
+		*end = '\0';
+		if (conf_get_field(p[1]) == NULL)
+			conf_reg_field_(&dummy_gtk_conf_init, 1, CFN_INTEGER, p[1], "", 0);
+		conf_setf(conf_lookup_role(nat->prop->src), p[1], -1, "%d", nat->val.integer[0]);
 	}
 }
