@@ -34,16 +34,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "plugins.h"
+#include "lib_gtk_config.h"
 
 int pplg_check_ver_lib_gtk_common(int ver_needed) { return 0; }
 
 void pplg_uninit_lib_gtk_common(void)
 {
+	pcb_gtk_conf_uninit();
 }
 
 int pplg_init_lib_gtk_common(void)
 {
 	PCB_API_CHK_VER;
+	pcb_gtk_conf_init();
 	return 0;
 }
 
