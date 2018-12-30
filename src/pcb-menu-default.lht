@@ -82,7 +82,7 @@ ha:{
 					}
 				}
 				-
-				ha:Preferences...       = { a={<key>i;<key>c;<key>p}; action=DoWindows(Preferences)}
+				ha:Preferences...       = { a={<key>i;<key>c;<key>p}; action=preferences}
 				ha:Maintenance {
 					li:submenu {
 						ha:Calibrate Printer...           = { a={<key>i;<key>c;<key>c}; action=PrintCalibrate() }
