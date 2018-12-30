@@ -415,7 +415,7 @@
  undo_old.h ../src_plugins/dialogs/dlg_plugins.c \
  ../src_plugins/dialogs/dlg_fontsel.c stub_draw.h \
  ../src_plugins/dialogs/dlg_comm_m.c ../src_plugins/dialogs/xpm.h \
- ../src_plugins/dialogs/place.c ../src_3rd/genht/ht.c \
+ ../src_plugins/dialogs/place.c safe_fs.h ../src_3rd/genht/ht.c \
  ../src_3rd/genht/ht_inlines.h ../src_plugins/dialogs/dlg_view.h \
  ../src_plugins/dialogs/dlg_pref.h conf_hid.h \
  ../src_plugins/dialogs/dlg_pref_sizes.h \
@@ -459,6 +459,7 @@
  paths.h ../src_plugins/dialogs/dlg_pref_layer.c stub_draw.h draw.h \
  ../src_plugins/dialogs/dlg_pref_color.c \
  ../src_plugins/dialogs/dlg_pref_win.c \
+ ../src_plugins/dialogs/dialogs_conf.h \
  ../src_plugins/dialogs/dlg_pref_conf.c misc_util.h \
  ../src_plugins/dialogs/dlg_pref_confedit.c
 ../src_plugins/dialogs/dlg_view.o: ../src_plugins/dialogs/dlg_view.c \
@@ -3672,7 +3673,7 @@
  ../src_plugins/lib_gtk_common/wt_preview.h layer.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h unit.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h hid_cfg.h \
- ../src_plugins/lib_gtk_common/win_place.h tool.h \
+ ../src_plugins/lib_gtk_common/win_place.h tool.h event.h \
  ../src_plugins/lib_gtk_common/hid_gtk_conf.h \
  ../src_plugins/lib_gtk_common/dlg_library_param.h
 ../src_plugins/lib_gtk_common/dlg_library_param.o: \
@@ -3721,7 +3722,7 @@
  math_helper.h move.h misc_util.h compat_nls.h \
  ../src_plugins/lib_gtk_common/win_place.h \
  ../src_plugins/lib_gtk_common/bu_text_view.h \
- ../src_plugins/lib_gtk_common/compat.h \
+ ../src_plugins/lib_gtk_common/compat.h event.h \
  ../src_plugins/lib_gtk_common/hid_gtk_conf.h conf.h
 ../src_plugins/lib_gtk_common/dlg_netlist.o: \
  ../src_plugins/lib_gtk_common/dlg_netlist.c ../config.h \
@@ -3890,6 +3891,29 @@
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h
+../src_plugins/lib_gtk_common/lib_gtk_config.o: \
+ ../src_plugins/lib_gtk_common/lib_gtk_config.c ../config.h \
+ ../src_plugins/lib_gtk_common/lib_gtk_config.h hid.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h error.h global_typedefs.h pcb_bool.h unit.h \
+ attrib.h layer.h globalconst.h color.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h data_parent.h \
+ obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
+ obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
+ ../src_3rd/genht/htip.h box.h math_helper.h move.h misc_util.h \
+ ../src_3rd/genvector/gds_char.h event.h conf_hid.h conf.h pcb-printf.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
+ ../src_plugins/lib_gtk_common/glue.h conf.h \
+ ../src_plugins/lib_gtk_common/compat.h \
+ ../src_plugins/lib_gtk_common/hid_gtk_conf.h plugins.h \
+ ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h \
+ ../src_plugins/lib_gtk_common/hid_gtk_conf_fields.h
 ../src_plugins/lib_gtk_common/ui_crosshair.o: \
  ../src_plugins/lib_gtk_common/ui_crosshair.c ../config.h \
  ../src_plugins/lib_gtk_common/ui_crosshair.h \
@@ -4018,7 +4042,7 @@
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h globalconst.h color.h
+ ../src_3rd/genlist/gendlist.h globalconst.h color.h event.h
 ../src_plugins/lib_gtk_common/wt_accel_label.o: \
  ../src_plugins/lib_gtk_common/wt_accel_label.c ../config.h \
  ../src_plugins/lib_gtk_common/wt_accel_label.h compat_nls.h \
@@ -4102,85 +4126,6 @@
  ../src_plugins/lib_gtk_common/compat.h pcb-printf.h board.h layer_grp.h \
  library.h rats_patch.h board.h compat_nls.h \
  ../src_plugins/lib_gtk_common/bu_status_line.h
-../src_plugins/lib_gtk_common/gtk_conf_list.o: \
- ../src_plugins/lib_gtk_common/gtk_conf_list.c ../config.h \
- ../src_plugins/lib_gtk_common/gtk_conf_list.h conf.h global_typedefs.h \
- pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
- ../src_3rd/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h conf.h \
- ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h compat_misc.h \
- ../src_plugins/lib_gtk_common/../lib_gtk_common/compat.h
-../src_plugins/lib_gtk_common/gui-config.o: \
- ../src_plugins/lib_gtk_common/gui-config.c ../config.h conf_core.h \
- conf.h global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
- ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
- ../src_3rd/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h globalconst.h color.h \
- ../src_plugins/lib_gtk_common/lib_gtk_config.h hid.h error.h attrib.h \
- layer.h obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
- ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
- obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
- ../src_3rd/genht/htip.h box.h math_helper.h move.h misc_util.h event.h \
- conf_hid.h ../src_plugins/lib_gtk_common/glue.h conf.h \
- ../src_plugins/lib_gtk_common/compat.h ../src_3rd/genht/hash.h actions.h \
- hid.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h board.h \
- vtroutestyle.h layer_grp.h library.h rats_patch.h board.h data.h \
- crosshair.h vtonpoint.h route.h buffer.h obj_rat_list.h obj_rat.h \
- obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h rtree.h \
- ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
- ../src_3rd/genht/ht.h obj_pstk_list.h obj_pstk.h vtpadstack.h \
- obj_pstk_shape.h polygon.h vtpadstack_t.h layer.h change.h plug_io.h \
- error.h draw.h pcb-printf.h hid_attrib.h misc_util.h paths.h \
- plug_footprint.h vtlibrary.h data.h stub_draw.h draw.h compat_misc.h \
- compat_nls.h fptr_cast.h safe_fs.h tool.h funchash_core.h funchash.h \
- funchash_core_list.h ../src_3rd/liblihata/tree.h \
- ../src_plugins/lib_gtk_common/gtk_conf_list.h \
- ../src_plugins/lib_gtk_common/hid_gtk_conf.h \
- ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/util_str.h \
- ../src_plugins/lib_gtk_common/wt_preview.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h unit.h pcb_bool.h \
- ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h hid_cfg.h \
- ../src_plugins/lib_gtk_common/glue.h \
- ../src_plugins/lib_gtk_common/bu_box.h \
- ../src_plugins/lib_gtk_common/bu_entry.h \
- ../src_plugins/lib_gtk_common/wt_coord_entry.h \
- ../src_plugins/lib_gtk_common/bu_text_view.h \
- ../src_plugins/lib_gtk_common/bu_check_button.h \
- ../src_plugins/lib_gtk_common/bu_status_line.h \
- ../src_plugins/lib_gtk_common/win_place.h \
- ../src_plugins/lib_gtk_common/bu_spin_button.h
-../src_plugins/lib_gtk_common/lib_gtk_config.o: \
- ../src_plugins/lib_gtk_common/lib_gtk_config.c ../config.h \
- ../src_plugins/lib_gtk_common/lib_gtk_config.h hid.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
- ../src_3rd/genht/ht.h error.h global_typedefs.h pcb_bool.h unit.h \
- attrib.h layer.h globalconst.h color.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h data_parent.h \
- obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
- obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
- ../src_3rd/genht/htip.h box.h math_helper.h move.h misc_util.h \
- ../src_3rd/genvector/gds_char.h event.h conf_hid.h conf.h pcb-printf.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
- ../src_plugins/lib_gtk_common/glue.h conf.h \
- ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/hid_gtk_conf.h plugins.h \
- ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h \
- ../src_plugins/lib_gtk_common/hid_gtk_conf_fields.h
 ../src_plugins/lib_gtk_hid/actions.o: \
  ../src_plugins/lib_gtk_hid/actions.c ../config.h \
  ../src_plugins/lib_gtk_hid/gui.h hid.h ../src_3rd/liblihata/dom.h \
