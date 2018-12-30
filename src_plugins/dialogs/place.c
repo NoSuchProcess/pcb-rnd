@@ -267,7 +267,7 @@ int pcb_wplc_save_to_file(const char *fn)
 	fprintf(f, " ha:overwrite {\n");
 	fprintf(f, "  ha:plugins {\n");
 	fprintf(f, "   ha:dialogs {\n");
-	fprintf(f, "    ha:auto_save_window_geometry {\n");
+	fprintf(f, "    ha:window_geometry {\n");
 
 
 	for(e = htsw_first(&wingeo); e != NULL; e = htsw_next(&wingeo, e)) {
