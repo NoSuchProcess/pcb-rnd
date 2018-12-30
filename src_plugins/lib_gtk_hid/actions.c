@@ -102,7 +102,7 @@ static fgw_error_t pcb_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_DoWindows[] =
 	"DoWindows(1|2|3|4|5|6|7 [,false])\n"
-	"DoWindows(Layout|Library|Log|Netlist|Preferences|DRC|Search [,false])";
+	"DoWindows(Layout|Library|Log|Netlist|Search [,false])";
 static const char pcb_acth_DoWindows[] = N_("Open various GUI windows. With false, do not raise the window (no focus stealing).");
 /* DOC: dowindows.html */
 static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -132,11 +132,7 @@ static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_gtk_dlg_netlist_show(&ghidgui->common, raise);
 	}
 	else if (strcmp(a, "5") == 0 || pcb_strcasecmp(a, "Preferences") == 0) {
-		pcb_gtk_config_window_show(&ghidgui->common, raise);
-		/* The 3rd argument will be the path (as a text string, not numbers) to select, once dialog is opened */
-		if (c != NULL) {
-			pcb_gtk_config_set_cursor(c);
-		}
+		pcb_message(PCB_MSG_ERROR, "Please use the new drc preferences() action instead\n");
 	}
 	else if (strcmp(a, "6") == 0 || pcb_strcasecmp(a, "DRC") == 0) {
 		pcb_message(PCB_MSG_ERROR, "Please use the new drc action instead\n");
