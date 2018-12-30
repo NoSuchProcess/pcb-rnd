@@ -24,6 +24,9 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include "config.h"
+#include "safe_fs.h"
+
 static const char *place_cookie = "dialogs/place";
 
 typedef struct {
@@ -249,6 +252,40 @@ static void pcb_dialog_place_init(void)
 void pcb_wplc_save_to_role(conf_role_t role)
 {
 	place_maybe_save(role, 1);
+}
+
+int pcb_wplc_save_to_file(const char *fn)
+{
+	htsw_entry_t *e;
+	FILE *f;
+
+	f = pcb_fopen(fn, "w");
+	if (f == NULL)
+		return -1;
+
+	fprintf(f, "li:pcb-rnd-conf-v1 {\n");
+	fprintf(f, " ha:overwrite {\n");
+	fprintf(f, "  ha:plugins {\n");
+	fprintf(f, "   ha:dialogs {\n");
+	fprintf(f, "    ha:auto_save_window_geometry {\n");
+
+
+	for(e = htsw_first(&wingeo); e != NULL; e = htsw_next(&wingeo, e)) {
+		fprintf(f, "     ha:%s {\n", e->key);
+		fprintf(f, "      x=%d\n", e->value.x);
+		fprintf(f, "      y=%d\n", e->value.x);
+		fprintf(f, "      width=%d\n", e->value.w);
+		fprintf(f, "      height=%d\n", e->value.h);
+		fprintf(f, "     }\n");
+	}
+
+	fprintf(f, "    }\n");
+	fprintf(f, "   }\n");
+	fprintf(f, "  }\n");
+	fprintf(f, " }\n");
+	fprintf(f, "}\n");
+	fclose(f);
+	return 0;
 }
 
 static void pcb_dialog_place_uninit(void)

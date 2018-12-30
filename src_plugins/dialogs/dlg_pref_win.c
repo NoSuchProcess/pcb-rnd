@@ -33,6 +33,7 @@
 
 extern const conf_dialogs_t conf_dialogs;
 extern void pcb_wplc_save_to_role(conf_role_t role);
+extern int pcb_wplc_save_to_file(const char *fn);
 
 static void pref_win_brd2dlg(pref_ctx_t *ctx)
 {
@@ -93,6 +94,21 @@ static void pref_win_project_now_cb(void *hid_ctx, void *caller_data, pcb_hid_at
 static void pref_win_user_now_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pcb_wplc_save_to_role(CFR_USER);
+}
+
+static void pref_win_file_now_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	char *fname;
+
+	fname = pcb_gui->fileselect("Save window geometry to...",
+		"Pick a file for saving window geometry to.\n",
+		"win_geo.lht", ".lht", "wingeo", HID_FILESELECT_MAY_NOT_EXIST);
+
+	if (fname == NULL)
+		return;
+
+	if (pcb_wplc_save_to_file(fname) != NULL)
+		pcb_message(PCB_MSG_ERROR, "Error saving window geometry to '%s'\n", fname);
 }
 
 
@@ -165,6 +181,7 @@ void pcb_dlg_pref_win_create(pref_ctx_t *ctx)
 			PCB_DAD_END(ctx->dlg);
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				PCB_DAD_BUTTON(ctx->dlg, "now");
+					PCB_DAD_CHANGE_CB(ctx->dlg, pref_win_file_now_cb);
 			PCB_DAD_END(ctx->dlg);
 
 		PCB_DAD_END(ctx->dlg);
