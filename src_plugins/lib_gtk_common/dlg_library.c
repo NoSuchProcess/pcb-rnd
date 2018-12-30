@@ -77,6 +77,7 @@
 #include "wt_preview.h"
 #include "win_place.h"
 #include "tool.h"
+#include "event.h"
 
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 #include "dlg_library_param.h"
@@ -95,8 +96,9 @@ static GtkWidget *library_window;
 /* GtkWidget "configure_event" signal emitted when the size, position or stacking of the widget's window has changed. */
 static gint library_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, gpointer data)
 {
-	wplc_config_event(widget, ev, &hid_gtk_wgeo.library_x, &hid_gtk_wgeo.library_y, &hid_gtk_wgeo.library_width,
-										&hid_gtk_wgeo.library_height);
+	pcb_event(PCB_EVENT_DAD_NEW_GEO, "psiiii", NULL, "library",
+		(int)ev->x, (int)ev->y, (int)ev->width, (int)ev->height);
+
 	return FALSE;
 }
 
@@ -943,17 +945,14 @@ void pcb_gtk_library_create(pcb_gtk_common_t *com)
 	lwcom = com;
 	library_window = (GtkWidget *) g_object_new(GHID_TYPE_LIBRARY_WINDOW, NULL);
 
+	pcb_gtk_winplace(library_window, "library");
+
 	g_signal_connect(GTK_DIALOG(library_window), "response", G_CALLBACK(library_window_callback_response), NULL);
 	g_signal_connect(library_window, "configure_event", G_CALLBACK(library_window_configure_event_cb), NULL);
-	gtk_window_set_default_size(GTK_WINDOW(library_window), hid_gtk_wgeo.library_width, hid_gtk_wgeo.library_height);
 
 	gtk_window_set_title(GTK_WINDOW(library_window), _("pcb-rnd Library"));
 	gtk_window_set_role(GTK_WINDOW(library_window), "PCB_Library");
 	gtk_window_set_transient_for(GTK_WINDOW(library_window), GTK_WINDOW(com->top_window));
-
-	wplc_place(WPLC_LIBRARY, library_window);
-
-	gtk_widget_realize(library_window);
 
 	gtk_editable_select_region(GTK_EDITABLE(GHID_LIBRARY_WINDOW(library_window)->entry_filter), 0, -1);
 

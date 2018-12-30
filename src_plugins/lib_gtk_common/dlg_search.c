@@ -842,6 +842,7 @@ static void ghid_search_window_create(GtkWidget *top_window)
 																						GTK_DIALOG_DESTROY_WITH_PARENT,
 																						GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE, GTK_STOCK_APPLY, GTK_RESPONSE_APPLY, NULL);
 
+	pcb_gtk_winplace(sdlg.window, "search");
 	g_signal_connect(sdlg.window, "response", G_CALLBACK(dialog_cb), NULL);
 
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(sdlg.window));
@@ -902,7 +903,6 @@ void ghid_search_window_show(GtkWidget *top_window, gboolean raise)
 	if (sdlg.window == NULL)
 		return;
 	gtk_widget_show_all(sdlg.window);
-	wplc_place(WPLC_SEARCH, sdlg.window);
 	if (raise)
 		gtk_window_present(GTK_WINDOW(sdlg.window));
 }

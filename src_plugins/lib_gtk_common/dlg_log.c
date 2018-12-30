@@ -46,6 +46,7 @@
 #include "win_place.h"
 #include "bu_text_view.h"
 #include "compat.h"
+#include "event.h"
 
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
@@ -63,7 +64,8 @@ log_pending_t *log_pending_first = NULL, *log_pending_last = NULL;
 
 static gint log_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, gpointer data)
 {
-	wplc_config_event(widget, ev, &hid_gtk_wgeo.log_x, &hid_gtk_wgeo.log_y, &hid_gtk_wgeo.log_width, &hid_gtk_wgeo.log_height);
+	pcb_event(PCB_EVENT_DAD_NEW_GEO, "psiiii", NULL, "log",
+		(int)ev->x, (int)ev->y, (int)ev->width, (int)ev->height);
 	return FALSE;
 }
 
@@ -93,11 +95,11 @@ static void ghid_log_window_create()
 		return;
 
 	log_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	pcb_gtk_winplace(log_window, "log");
 	g_signal_connect(G_OBJECT(log_window), "destroy", G_CALLBACK(log_destroy_cb), NULL);
 	g_signal_connect(G_OBJECT(log_window), "configure_event", G_CALLBACK(log_window_configure_event_cb), NULL);
 	gtk_window_set_title(GTK_WINDOW(log_window), _("pcb-rnd Log"));
 	gtk_window_set_role(GTK_WINDOW(log_window), "PCB_Log");
-	gtk_window_set_default_size(GTK_WINDOW(log_window), hid_gtk_wgeo.log_width, hid_gtk_wgeo.log_height);
 
 	vbox = gtkc_vbox_new(FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
@@ -113,8 +115,6 @@ static void ghid_log_window_create()
 	gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 0);
 
 	g_signal_connect(G_OBJECT(log_window), "key_release_event", G_CALLBACK(log_key_release_cb), NULL);
-
-	wplc_place(WPLC_LOG, log_window);
 
 	gtk_widget_realize(log_window);
 }

@@ -534,8 +534,8 @@ static pcb_bool node_get_node_from_name_helper(GtkTreeModel * model, GtkTreePath
 /* ---------- Manage the GUI treeview of the data models ----------- */
 static gint netlist_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, gpointer data)
 {
-	wplc_config_event(widget, ev, &hid_gtk_wgeo.netlist_x, &hid_gtk_wgeo.netlist_y, &hid_gtk_wgeo.netlist_width,
-										&hid_gtk_wgeo.netlist_height);
+	pcb_event(PCB_EVENT_DAD_NEW_GEO, "psiiii", NULL, "netlist",
+		(int)ev->x, (int)ev->y, (int)ev->width, (int)ev->height);
 	return FALSE;
 }
 
@@ -575,11 +575,11 @@ static void ghid_netlist_window_create(pcb_gtk_common_t *com)
 		return;
 
 	netlist_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	pcb_gtk_winplace(netlist_window, "netlist");
 	g_signal_connect(G_OBJECT(netlist_window), "destroy", G_CALLBACK(netlist_destroy_cb), NULL);
 	gtk_window_set_title(GTK_WINDOW(netlist_window), _("pcb-rnd Netlist"));
 	gtk_window_set_role(GTK_WINDOW(netlist_window), "PCB_Netlist");
 	g_signal_connect(G_OBJECT(netlist_window), "configure_event", G_CALLBACK(netlist_window_configure_event_cb), NULL);
-	gtk_window_set_default_size(GTK_WINDOW(netlist_window), -1, hid_gtk_wgeo.netlist_height);
 
 	gtk_container_set_border_width(GTK_CONTAINER(netlist_window), 2);
 
@@ -674,8 +674,6 @@ static void ghid_netlist_window_create(pcb_gtk_common_t *com)
 	button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(netlist_close_cb), com);
 	gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 0);
-
-	wplc_place(WPLC_NETLIST, netlist_window);
 
 	gtk_widget_realize(netlist_window);
 }

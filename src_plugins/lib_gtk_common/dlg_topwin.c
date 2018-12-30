@@ -94,7 +94,8 @@ static void v_adjustment_changed_cb(GtkAdjustment *adj, pcb_gtk_topwin_t *tw)
 	 */
 static gint top_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, void *gport)
 {
-	wplc_config_event(widget, ev, &hid_gtk_wgeo.top_x, &hid_gtk_wgeo.top_y, &hid_gtk_wgeo.top_width, &hid_gtk_wgeo.top_height);
+	pcb_event(PCB_EVENT_DAD_NEW_GEO, "psiiii", NULL, "top",
+		(int)ev->x, (int)ev->y, (int)ev->width, (int)ev->height);
 
 	return FALSE;
 }
@@ -114,7 +115,6 @@ void ghid_handle_units_changed(pcb_gtk_topwin_t *tw)
 	ghid_set_cursor_position_labels(&tw->cps, conf_core.appearance.compact);
 	gtk_label_set_markup(GTK_LABEL(tw->cps.grid_units_label), text);
 	free(text);
-	ghid_config_handle_units_changed(tw->com);
 }
 
 gboolean ghid_idle_cb(void *topwin)
