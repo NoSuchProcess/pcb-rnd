@@ -239,16 +239,6 @@ static void place_load_post(void *user_data, int argc, pcb_event_arg_t argv[])
 	place_load(CFR_DESIGN);
 }
 
-
-static void pcb_dialog_place_init(void)
-{
-	htsw_init(&wingeo, strhash, strkeyeq);
-	pcb_event_bind(PCB_EVENT_SAVE_PRE, place_save_pre, NULL, place_cookie);
-	pcb_event_bind(PCB_EVENT_LOAD_POST, place_load_post, NULL, place_cookie);
-	place_load(CFR_SYSTEM);
-	place_load(CFR_USER);
-}
-
 void pcb_wplc_save_to_role(conf_role_t role)
 {
 	place_maybe_save(role, 1);
@@ -302,4 +292,13 @@ static void pcb_dialog_place_uninit(void)
 
 	for(n = 0; n < cleanup_later.used; n++)
 		free(cleanup_later.array[n]);
+}
+
+static void pcb_dialog_place_init(void)
+{
+	htsw_init(&wingeo, strhash, strkeyeq);
+	pcb_event_bind(PCB_EVENT_SAVE_PRE, place_save_pre, NULL, place_cookie);
+	pcb_event_bind(PCB_EVENT_LOAD_POST, place_load_post, NULL, place_cookie);
+	place_load(CFR_SYSTEM);
+	place_load(CFR_USER);
 }
