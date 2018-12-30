@@ -500,8 +500,6 @@ static void set_special_grid_color(void)
 	priv->grid_color.green = (priv->grid_color.green ^ priv->bg_color.green) & 0xFF;
 	priv->grid_color.blue = (priv->grid_color.blue ^ priv->bg_color.blue) & 0xFF;
 
-	config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/grid"), -1);
-
 	if (priv->grid_gc)
 		gdk_gc_set_foreground(priv->grid_gc, &priv->grid_color);
 }
@@ -512,16 +510,13 @@ static void ghid_gdk_set_special_colors(conf_native_t *cfg, int arr_idx)
 
 	if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.background) && priv->bg_gc) {
 		if (map_color_string(cfg->val.color[0].str, &priv->bg_color)) {
-			config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/background"), -1);
 			gdk_gc_set_foreground(priv->bg_gc, &priv->bg_color);
 			set_special_grid_color();
 		}
 	}
 	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.off_limit) && priv->offlimits_gc) {
-		if (map_color_string(cfg->val.color[0].str, &priv->offlimits_color)) {
-			config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/off_limit"), -1);
+		if (map_color_string(cfg->val.color[0].str, &priv->offlimits_color))
 			gdk_gc_set_foreground(priv->offlimits_gc, &priv->offlimits_color);
-		}
 	}
 	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.grid) && priv->grid_gc) {
 		if (map_color_string(cfg->val.color[0].str, &priv->grid_color)) {

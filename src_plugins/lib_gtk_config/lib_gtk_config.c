@@ -35,6 +35,7 @@
 static const char *lib_gtk_config_cookie = "lib_gtk_config";
 
 conf_hid_id_t ghid_conf_id = -1;
+conf_hid_gtk_t conf_hid_gtk;
 
 void pcb_gtk_conf_init(void)
 {

@@ -70,26 +70,6 @@ typedef struct {
 	} plugins;
 } conf_hid_gtk_t;
 
-#define GHID_WGEO1(win, op, arg) \
-	op(win ## _x, arg); \
-	op(win ## _y, arg); \
-	op(win ## _width, arg); \
-	op(win ## _height, arg);
-
-/* Call macro op(field_name, arg) for each window geometry field */
-#define GHID_WGEO_ALL(op, arg) \
-do { \
-	GHID_WGEO1(top, op, arg); \
-	GHID_WGEO1(log, op, arg); \
-	GHID_WGEO1(drc, op, arg); \
-	GHID_WGEO1(library, op, arg); \
-	GHID_WGEO1(keyref, op, arg); \
-	GHID_WGEO1(netlist, op, arg); \
-	GHID_WGEO1(pinout, op, arg); \
-} while(0)
-
-typedef struct window_geometry window_geometry_t;
-extern window_geometry_t hid_gtk_wgeo;
 extern conf_hid_gtk_t conf_hid_gtk;
 
 #endif

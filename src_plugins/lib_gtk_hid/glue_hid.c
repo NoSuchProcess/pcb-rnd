@@ -211,8 +211,6 @@ int gtkhid_parse_arguments(int *argc, char ***argv)
 {
 	GtkWidget *window;
 
-	ghid_config_init();
-
 	/* on windows we need to figure out the installation directory */
 #ifdef WIN32
 	char *tmps;
@@ -271,9 +269,8 @@ int gtkhid_parse_arguments(int *argc, char ***argv)
 	ghidgui->topwin.com = &ghidgui->common;
 	ghidgui->common.top_window = window = gport->top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
+	pcb_gtk_winplace(window, "top");
 	gtk_window_set_title(GTK_WINDOW(window), "pcb-rnd");
-
-	wplc_place(WPLC_TOP, window);
 
 	gtk_widget_show_all(gport->top_window);
 	return 0;

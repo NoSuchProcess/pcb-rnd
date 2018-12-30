@@ -233,7 +233,6 @@ static const char pcb_acth_SaveWinGeo[] = N_("Saves window geometry in the confi
 
 static fgw_error_t pcb_act_SaveWinGeo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	ghid_wgeo_save(1, 0);
 	PCB_ACT_IRES(0);
 	return 0;
 }
