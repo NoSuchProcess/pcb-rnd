@@ -1,8 +1,6 @@
-#include <gtk/gtk.h>
 #include "hid.h"
 #include "event.h"
 #include "conf_hid.h"
-#include "../src_plugins/lib_gtk_common/glue.h"
 
 extern conf_hid_id_t ghid_conf_id;
 
