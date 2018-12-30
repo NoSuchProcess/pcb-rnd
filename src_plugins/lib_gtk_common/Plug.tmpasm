@@ -1,5 +1,5 @@
 put /local/pcb/mod {lib_gtk_common}
-put /local/pcb/mod/CONF {$(PLUGDIR)/lib_gtk_config/hid_gtk_conf.h}
+put /local/pcb/mod/CONF {$(PLUGDIR)/lib_gtk_common/hid_gtk_conf.h}
 
 put /local/pcb/mod/OBJS [@
   $(PLUGDIR)/lib_gtk_common/lib_gtk_common.o
