@@ -29,9 +29,16 @@
 #include "dlg_pref.h"
 #include "conf.h"
 #include "conf_core.h"
+#include "dialogs_conf.h"
+
+extern const conf_dialogs_t conf_dialogs;
 
 static void pref_win_brd2dlg(pref_ctx_t *ctx)
 {
+	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wmaster, int_value, conf_core.editor.auto_place);
+	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wboard, int_value, conf_dialogs.plugins.dialogs.auto_save_window_geometry.to_design);
+	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wproject, int_value, conf_dialogs.plugins.dialogs.auto_save_window_geometry.to_project);
+	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wuser, int_value, conf_dialogs.plugins.dialogs.auto_save_window_geometry.to_user);
 }
 
 void pcb_dlg_pref_win_open(pref_ctx_t *ctx)
@@ -80,6 +87,7 @@ void pcb_dlg_pref_win_create(pref_ctx_t *ctx)
 		PCB_DAD_LABEL(ctx->dlg, "Load window geometry and enable window placement:");
 		PCB_DAD_BOOL(ctx->dlg, "");
 			PCB_DAD_HELP(ctx->dlg, "When enabled, pcb-rnd will load window geometry from config files\nand try to resize and place windows accordingly.\nSizes can be saved once (golden arrangement)\nor at every exit (retrain last setup),\nsee below.");
+			ctx->win.wmaster = PCB_DAD_CURRENT(ctx->dlg);
 			PCB_DAD_CHANGE_CB(ctx->dlg, pref_win_master_cb);
 	PCB_DAD_END(ctx->dlg);
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
@@ -97,6 +105,7 @@ void pcb_dlg_pref_win_create(pref_ctx_t *ctx)
 				PCB_DAD_BUTTON(ctx->dlg, "now");
 				PCB_DAD_LABEL(ctx->dlg, "before close:");
 				PCB_DAD_BOOL(ctx->dlg, "");
+					ctx->win.wboard = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_CHANGE_CB(ctx->dlg, pref_win_board_cb);
 			PCB_DAD_END(ctx->dlg);
 
@@ -110,6 +119,7 @@ void pcb_dlg_pref_win_create(pref_ctx_t *ctx)
 				PCB_DAD_BUTTON(ctx->dlg, "now");
 				PCB_DAD_LABEL(ctx->dlg, "before close:");
 				PCB_DAD_BOOL(ctx->dlg, "");
+					ctx->win.wproject = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_CHANGE_CB(ctx->dlg, pref_win_project_cb);
 			PCB_DAD_END(ctx->dlg);
 
@@ -123,6 +133,7 @@ void pcb_dlg_pref_win_create(pref_ctx_t *ctx)
 				PCB_DAD_BUTTON(ctx->dlg, "now");
 				PCB_DAD_LABEL(ctx->dlg, "before close:");
 				PCB_DAD_BOOL(ctx->dlg, "");
+					ctx->win.wuser = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_CHANGE_CB(ctx->dlg, pref_win_user_cb);
 			PCB_DAD_END(ctx->dlg);
 
