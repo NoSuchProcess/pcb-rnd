@@ -246,6 +246,11 @@ static void pcb_dialog_place_init(void)
 	place_load(CFR_USER);
 }
 
+void pcb_wplc_save_to_role(conf_role_t role)
+{
+	place_maybe_save(role, 1);
+}
+
 static void pcb_dialog_place_uninit(void)
 {
 	htsw_entry_t *e;

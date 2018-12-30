@@ -32,6 +32,7 @@
 #include "dialogs_conf.h"
 
 extern const conf_dialogs_t conf_dialogs;
+extern void pcb_wplc_save_to_role(conf_role_t role);
 
 static void pref_win_brd2dlg(pref_ctx_t *ctx)
 {
@@ -79,6 +80,22 @@ static void pref_win_user_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 }
 
 
+static void pref_win_board_now_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_wplc_save_to_role(CFR_USER);
+}
+
+static void pref_win_project_now_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_wplc_save_to_role(CFR_USER);
+}
+
+static void pref_win_user_now_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_wplc_save_to_role(CFR_USER);
+}
+
+
 void pcb_dlg_pref_win_create(pref_ctx_t *ctx)
 {
 	PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
@@ -103,6 +120,7 @@ void pcb_dlg_pref_win_create(pref_ctx_t *ctx)
 			PCB_DAD_END(ctx->dlg);
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				PCB_DAD_BUTTON(ctx->dlg, "now");
+					PCB_DAD_CHANGE_CB(ctx->dlg, pref_win_board_now_cb);
 				PCB_DAD_LABEL(ctx->dlg, "before close:");
 				PCB_DAD_BOOL(ctx->dlg, "");
 					ctx->win.wboard = PCB_DAD_CURRENT(ctx->dlg);
@@ -117,6 +135,7 @@ void pcb_dlg_pref_win_create(pref_ctx_t *ctx)
 			PCB_DAD_END(ctx->dlg);
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				PCB_DAD_BUTTON(ctx->dlg, "now");
+					PCB_DAD_CHANGE_CB(ctx->dlg, pref_win_project_now_cb);
 				PCB_DAD_LABEL(ctx->dlg, "before close:");
 				PCB_DAD_BOOL(ctx->dlg, "");
 					ctx->win.wproject = PCB_DAD_CURRENT(ctx->dlg);
@@ -131,6 +150,7 @@ void pcb_dlg_pref_win_create(pref_ctx_t *ctx)
 			PCB_DAD_END(ctx->dlg);
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				PCB_DAD_BUTTON(ctx->dlg, "now");
+					PCB_DAD_CHANGE_CB(ctx->dlg, pref_win_user_now_cb);
 				PCB_DAD_LABEL(ctx->dlg, "before close:");
 				PCB_DAD_BOOL(ctx->dlg, "");
 					ctx->win.wuser = PCB_DAD_CURRENT(ctx->dlg);
