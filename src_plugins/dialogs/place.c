@@ -151,7 +151,7 @@ static void place_conf_load(conf_role_t role, const char *path, int *val)
 }
 
 #define BASEPATH "plugins/dialogs/window_geometry/"
-static void place_load(conf_role_t role)
+void pcb_wplc_load(conf_role_t role)
 {
 	char *end, *end2, path[128 + sizeof(BASEPATH)];
 	lht_node_t *nd, *root;
@@ -235,8 +235,8 @@ static void place_save_pre(void *user_data, int argc, pcb_event_arg_t argv[])
 
 static void place_load_post(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	place_load(CFR_PROJECT);
-	place_load(CFR_DESIGN);
+	pcb_wplc_load(CFR_PROJECT);
+	pcb_wplc_load(CFR_DESIGN);
 }
 
 void pcb_wplc_save_to_role(conf_role_t role)
@@ -299,6 +299,6 @@ static void pcb_dialog_place_init(void)
 	htsw_init(&wingeo, strhash, strkeyeq);
 	pcb_event_bind(PCB_EVENT_SAVE_PRE, place_save_pre, NULL, place_cookie);
 	pcb_event_bind(PCB_EVENT_LOAD_POST, place_load_post, NULL, place_cookie);
-	place_load(CFR_SYSTEM);
-	place_load(CFR_USER);
+	pcb_wplc_load(CFR_SYSTEM);
+	pcb_wplc_load(CFR_USER);
 }
