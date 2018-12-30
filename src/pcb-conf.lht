@@ -240,10 +240,6 @@ li:pcb-rnd-conf-v1 {
 				}
 			}
 			ha:hid_gtk {
-				compact_horizontal = 1
-				compact_vertical = 1
-				use_command_window = 0
-				history_size = 16
 				ha:local_grid {
 					enable = 0
 					radius = 16
