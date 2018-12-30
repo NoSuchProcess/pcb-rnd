@@ -48,6 +48,7 @@
 #include "dlg_pref_lib.c"
 #include "dlg_pref_layer.c"
 #include "dlg_pref_color.c"
+#include "dlg_pref_win.c"
 #include "dlg_pref_conf.c"
 
 pref_ctx_t pref_ctx;
@@ -215,6 +216,7 @@ static void pref_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	pcb_dlg_pref_general_close(ctx);
 	pcb_dlg_pref_lib_close(ctx);
 	pcb_dlg_pref_color_close(ctx);
+	pcb_dlg_pref_win_close(ctx);
 
 	PCB_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(pref_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
@@ -287,7 +289,7 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 			PCB_DAD_END(pref_ctx.dlg);
 
 			PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Window */
-				PCB_DAD_LABEL(pref_ctx.dlg, "TODO");
+				pcb_dlg_pref_win_create(&pref_ctx);
 			PCB_DAD_END(pref_ctx.dlg);
 
 			PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Config tree */
@@ -315,6 +317,7 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 
 	pcb_dlg_pref_lib_open(&pref_ctx);
 	pcb_dlg_pref_color_open(&pref_ctx);
+	pcb_dlg_pref_win_open(&pref_ctx);
 	pcb_dlg_pref_conf_open(&pref_ctx, (target_tab == sizeof(tabs)/sizeof(tabs[0]) - 2) ? tabarg : NULL);
 	if (target_tab >= 0)
 		PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wtab, int_value, target_tab);
@@ -329,6 +332,7 @@ static void pref_ev_board_changed(void *user_data, int argc, pcb_event_arg_t arg
 	pref_sizes_brd2dlg(ctx);
 	pref_board_brd2dlg(ctx);
 	pref_color_brd2dlg(ctx);
+	pref_win_brd2dlg(ctx);
 }
 
 static void pref_ev_board_meta_changed(void *user_data, int argc, pcb_event_arg_t argv[])
@@ -340,6 +344,7 @@ static void pref_ev_board_meta_changed(void *user_data, int argc, pcb_event_arg_
 	pref_sizes_brd2dlg(ctx);
 	pref_board_brd2dlg(ctx);
 	pref_color_brd2dlg(ctx);
+	pref_win_brd2dlg(ctx);
 }
 
 void pref_conf_changed(conf_native_t *cfg, int arr_idx)
