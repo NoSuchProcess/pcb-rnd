@@ -98,12 +98,20 @@ static void pcb_dialog_resize(void *user_data, int argc, pcb_event_arg_t argv[])
 	pcb_dialog_store(argv[2].d.s, argv[3].d.i, argv[4].d.i, argv[5].d.i, argv[6].d.i);
 }
 
+static vtp0_t cleanup_later;
+static char *str_cleanup_later(const char *path)
+{
+	char *s = pcb_strdup(path);
+	vtp0_append(&cleanup_later, s);
+	return s;
+}
+
 static void place_conf_set(conf_role_t role, const char *path, int val)
 {
 	static int dummy;
 
 	if (conf_get_field(path) == NULL)
-		conf_reg_field_(&dummy, 1, CFN_INTEGER, path, "", 0);
+		conf_reg_field_(&dummy, 1, CFN_INTEGER, str_cleanup_later(path), "", 0);
 	conf_setf(role, path, -1, "%d", val);
 }
 
@@ -114,7 +122,7 @@ static void place_conf_load(conf_role_t role, const char *path, int *val)
 	static int dummy;
 
 	if (conf_get_field(path) == NULL) {
-		conf_reg_field_(&dummy, 1, CFN_INTEGER, path, "", 0);
+		conf_reg_field_(&dummy, 1, CFN_INTEGER, str_cleanup_later(path), "", 0);
 		conf_update(path, -1);
 	}
 
@@ -241,6 +249,7 @@ static void pcb_dialog_place_init(void)
 static void pcb_dialog_place_uninit(void)
 {
 	htsw_entry_t *e;
+	int n;
 
 	place_maybe_save(CFR_USER, 0);
 
@@ -248,4 +257,7 @@ static void pcb_dialog_place_uninit(void)
 		free((char *)e->key);
 	htsw_uninit(&wingeo);
 	pcb_event_unbind_allcookie(place_cookie);
+
+	for(n = 0; n < cleanup_later.used; n++)
+		free(cleanup_later.array[n]);
 }
