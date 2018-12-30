@@ -11,7 +11,7 @@ typedef struct {
 
 			CFT_BOOLEAN compact_horizontal;              /* OBSOLETE: ignored; use central appearance/compact instead */
 			CFT_BOOLEAN compact_vertical;                /* OBSOLETE: ignored; use central appearance/compact instead */
-			CFT_INTEGER history_size;
+			CFT_INTEGER history_size;                    /* OBSOLETE: ignored; use plugins/lib_hid_common/cli_history/slots instead */
 			CFT_INTEGER n_mode_button_columns;
 
 			const struct local_grid {
@@ -25,46 +25,46 @@ typedef struct {
 			} global_grid;
 
 			const struct auto_save_window_geometry {
-				CFT_BOOLEAN to_design;
-				CFT_BOOLEAN to_project;
-				CFT_BOOLEAN to_user;
+				CFT_BOOLEAN to_design;                    /* OBSOLETE: use plugins/dialogs/auto_save_window_geometry/to_design instead */
+				CFT_BOOLEAN to_project;                   /* OBSOLETE: use plugins/dialogs/auto_save_window_geometry/to_project instead */
+				CFT_BOOLEAN to_user;                      /* OBSOLETE: use plugins/dialogs/auto_save_window_geometry/to_user instead */
 			} auto_save_window_geometry;
 
 			const struct window_geometry {
-				CFT_INTEGER top_x;
-				CFT_INTEGER top_y;
-				CFT_INTEGER top_width;
-				CFT_INTEGER top_height;
+				CFT_INTEGER top_x;                        /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
+				CFT_INTEGER top_y;                        /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
+				CFT_INTEGER top_width;                    /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
+				CFT_INTEGER top_height;                   /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
 
-				CFT_INTEGER log_x;
-				CFT_INTEGER log_y;
-				CFT_INTEGER log_width;
-				CFT_INTEGER log_height;
+				CFT_INTEGER log_x;                        /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
+				CFT_INTEGER log_y;                        /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
+				CFT_INTEGER log_width;                    /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
+				CFT_INTEGER log_height;                   /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
 
-				CFT_INTEGER drc_x;
-				CFT_INTEGER drc_y;
-				CFT_INTEGER drc_width;
-				CFT_INTEGER drc_height;
+				CFT_INTEGER drc_x;                        /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
+				CFT_INTEGER drc_y;                        /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
+				CFT_INTEGER drc_width;                    /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
+				CFT_INTEGER drc_height;                   /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
 
-				CFT_INTEGER library_x;
-				CFT_INTEGER library_y;
-				CFT_INTEGER library_width;
-				CFT_INTEGER library_height;
+				CFT_INTEGER library_x;                    /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
+				CFT_INTEGER library_y;                    /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
+				CFT_INTEGER library_width;                /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
+				CFT_INTEGER library_height;               /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
 
-				CFT_INTEGER keyref_x;
-				CFT_INTEGER keyref_y;
-				CFT_INTEGER keyref_width;
-				CFT_INTEGER keyref_height;
+				CFT_INTEGER keyref_x;                     /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
+				CFT_INTEGER keyref_y;                     /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
+				CFT_INTEGER keyref_width;                 /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
+				CFT_INTEGER keyref_height;                /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
 
-				CFT_INTEGER netlist_x;
-				CFT_INTEGER netlist_y;
-				CFT_INTEGER netlist_height;
-				CFT_INTEGER netlist_width;
+				CFT_INTEGER netlist_x;                    /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
+				CFT_INTEGER netlist_y;                    /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
+				CFT_INTEGER netlist_height;               /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
+				CFT_INTEGER netlist_width;                /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
 
-				CFT_INTEGER pinout_x;
-				CFT_INTEGER pinout_y;
-				CFT_INTEGER pinout_height;
-				CFT_INTEGER pinout_width;
+				CFT_INTEGER pinout_x;                     /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
+				CFT_INTEGER pinout_y;                     /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
+				CFT_INTEGER pinout_height;                /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
+				CFT_INTEGER pinout_width;                 /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
 			} window_geometry;
 		} hid_gtk;
 	} plugins;
