@@ -423,6 +423,7 @@
  ../src_plugins/dialogs/dlg_pref_general.h \
  ../src_plugins/dialogs/dlg_pref_lib.h \
  ../src_plugins/dialogs/dlg_pref_color.h \
+ ../src_plugins/dialogs/dlg_pref_win.h \
  ../src_plugins/dialogs/dlg_pref_conf.h ../src_plugins/dialogs/act_dad.h \
  dolists.h ../src_plugins/dialogs/dialogs_conf_fields.h
 ../src_plugins/dialogs/dlg_pref.o: ../src_plugins/dialogs/dlg_pref.c \
@@ -448,6 +449,7 @@
  ../src_plugins/dialogs/dlg_pref_general.h \
  ../src_plugins/dialogs/dlg_pref_lib.h \
  ../src_plugins/dialogs/dlg_pref_color.h \
+ ../src_plugins/dialogs/dlg_pref_win.h \
  ../src_plugins/dialogs/dlg_pref_conf.h \
  ../src_plugins/dialogs/dlg_pref_sizes.c board.h vtroutestyle.h \
  layer_grp.h library.h rats_patch.h board.h conf_core.h \
@@ -456,6 +458,7 @@
  ../src_plugins/dialogs/dlg_pref_lib.c ../src_3rd/liblihata/tree.h \
  paths.h ../src_plugins/dialogs/dlg_pref_layer.c stub_draw.h draw.h \
  ../src_plugins/dialogs/dlg_pref_color.c \
+ ../src_plugins/dialogs/dlg_pref_win.c \
  ../src_plugins/dialogs/dlg_pref_conf.c misc_util.h \
  ../src_plugins/dialogs/dlg_pref_confedit.c
 ../src_plugins/dialogs/dlg_view.o: ../src_plugins/dialogs/dlg_view.c \
@@ -2496,8 +2499,9 @@
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_plugins/io_autotrax/read.h layer.h netlist.h route_style.h \
  polygon.h misc_util.h conf_core.h move.h macro.h safe_fs.h rotate.h \
- compat_misc.h actions.h ../src_plugins/lib_compat_help/pstk_compat.h \
- obj_pstk.h ../src_plugins/lib_compat_help/pstk_help.h \
+ compat_misc.h actions.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
+ ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h \
+ ../src_plugins/lib_compat_help/pstk_help.h \
  ../src_plugins/lib_compat_help/subc_help.h obj_subc.h
 ../src_plugins/io_autotrax/write.o: ../src_plugins/io_autotrax/write.c \
  ../config.h compat_misc.h board.h global_typedefs.h pcb_bool.h unit.h \
@@ -2638,8 +2642,9 @@
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h ../src_plugins/io_eagle/read.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h list_conf.h conf.h plug_io.h conf_core.h \
- error.h polygon.h rtree.h actions.h compat_misc.h \
- ../src_plugins/io_eagle/trparse.h ../src_plugins/io_eagle/trparse_xml.h \
+ error.h polygon.h rtree.h actions.h undo.h ../src_3rd/libuundo/uundo.h \
+ undo_old.h compat_misc.h ../src_plugins/io_eagle/trparse.h \
+ ../src_plugins/io_eagle/trparse_xml.h \
  ../src_plugins/io_eagle/trparse_bin.h obj_subc.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h \
  ../src_plugins/lib_compat_help/subc_help.h layer.h \
