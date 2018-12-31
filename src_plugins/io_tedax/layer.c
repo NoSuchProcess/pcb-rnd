@@ -28,6 +28,8 @@
 
 #include "config.h"
 #include <stdio.h>
+#include <genht/htsp.h>
+#include <genht/hash.h>
 #include "layer.h"
 #include "safe_fs.h"
 #include "error.h"
@@ -35,6 +37,7 @@
 #include "compat_misc.h"
 #include "obj_line.h"
 #include "obj_arc.h"
+#include "vtc0.h"
 
 
 int tedax_layer_fsave(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *layname, FILE *f)
@@ -137,27 +140,97 @@ int tedax_layer_save(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *laynam
 
 int tedax_layers_fload(pcb_data_t *data, FILE *f)
 {
-	long start;
-	int argc;
+	long start, n;
+	int argc, res = 0;
 	char line[520];
 	char *argv[16];
+	htsp_t plines;
+	htsp_entry_t *e;
+	vtc0_t *coords;
 
 	if (tedax_seek_hdr(f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
 		return -1;
 
 	start = ftell(f);
 
+	htsp_init(&plines, strhash, strkeyeq);
 	while((argc = tedax_seek_block(f, "polyline", "v1", 1, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) > 1) {
-		pcb_trace("polyline %s at %ld!\n", argv[3], ftell(f));
+		char *pname;
+		if (htsp_has(&plines, argv[3])) {
+			pcb_message(PCB_MSG_ERROR, "duplicate polyline: %s\n", argv[3]);
+			res = -1;
+			goto error;
+		}
+		pname = pcb_strdup(argv[3]);
+		coords = malloc(sizeof(vtc0_t));
+		vtc0_init(coords);
+
+		while((argc = tedax_getline(f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {
+
+			if ((argc == 3) && (strcmp(argv[0], "v") == 0)) {
+				pcb_bool s1, s2;
+				vtc0_append(coords, pcb_get_value(argv[1], "mm", NULL, &s1));
+				vtc0_append(coords, pcb_get_value(argv[2], "mm", NULL, &s2));
+				if (!s1 || !s2) {
+					pcb_message(PCB_MSG_ERROR, "invalid coords in polyline %s: %s;%s\n", pname, argv[1], argv[2]);
+					res = -1;
+					free(pname);
+					goto error;
+				}
+			}
+			else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "polyline") == 0)) {
+				break;
+			}
+			else {
+				pcb_message(PCB_MSG_ERROR, "invalid command in polyline %s: %s\n", pname, argv[0]);
+				res = -1;
+				free(pname);
+				goto error;
+			}
+		}
+
+		htsp_insert(&plines, pname, coords);
 	}
 
 	fseek(f, start, SEEK_SET);
 
 	while((argc = tedax_seek_block(f, "layer", "v1", 1, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) > 1) {
 		pcb_trace("layer %s at %ld!\n", argv[3], ftell(f));
+
+		while((argc = tedax_getline(f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {
+			if ((argc == 4) && (strcmp(argv[0], "poly") == 0)) {
+				pcb_bool s1, s2;
+				pcb_coord_t ox, oy;
+				ox = pcb_get_value(argv[2], "mm", NULL, &s1);
+				oy = pcb_get_value(argv[3], "mm", NULL, &s2);
+				if (!s1 || !s2) {
+					pcb_message(PCB_MSG_ERROR, "invalid coords in poly %s;%s\n", argv[2], argv[3]);
+					res = -1;
+					goto error;
+				}
+				coords = htsp_get(&plines, argv[1]);
+				if (coords == NULL) {
+					pcb_message(PCB_MSG_ERROR, "invalid polyline referecnce %s\n", argv[1]);
+					res = -1;
+					goto error;
+				}
+				pcb_trace("POLY: %mm %mm %s\n", ox, oy, argv[1]);
+				for(n = 0; n < coords->used; n+=2)	{
+					pcb_trace("  %mm %mm\n", ox+coords->array[n], oy+coords->array[n+1]);
+				}
+			}
+		}
 	}
 
-	return 0;
+
+	error:;
+	for(e = htsp_first(&plines); e != NULL; e = htsp_next(&plines, e)) {
+		free(e->key);
+		vtc0_uninit(e->value);
+		free(e->value);
+	}
+	htsp_uninit(&plines);
+	return res;
 }
 
 int tedax_layers_load(pcb_data_t *data, const char *fn)
