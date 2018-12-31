@@ -31,6 +31,7 @@
 #include "layer.h"
 #include "safe_fs.h"
 #include "error.h"
+#include "compat_misc.h"
 
 int tedax_layer_fsave(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *layname, FILE *f)
 {
@@ -56,6 +57,15 @@ int tedax_layer_fsave(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *layna
 			pcb_fprintf(f, " line %.06mm %.06mm %.06mm %.06mm %.06mm %.06mm\n",
 				line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y,
 				line->Thickness, PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, line) ? pcb_round(line->Clearance/2) : 0);
+		} PCB_END_LOOP;
+		PCB_ARC_LOOP(ly) {
+			pcb_coord_t sx, sy, ex, ey;
+			pcb_arc_get_end(arc, 0, &sx, &sy);
+			pcb_arc_get_end(arc, 1, &ex, &ey);
+			pcb_fprintf(f, " arc %.06mm %.06mm %.06mm %f %f %.06mm %.06mm %.06mm %.06mm %.06mm %.06mm\n",
+				arc->X, arc->Y, arc->Width, arc->StartAngle, arc->Delta,
+				arc->Thickness, PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, arc) ? pcb_round(arc->Clearance/2) : 0,
+				sx, sy, ex, ey);
 		} PCB_END_LOOP;
 	}
 	fprintf(f, "end layer\n");
