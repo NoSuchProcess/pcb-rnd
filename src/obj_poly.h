@@ -41,8 +41,8 @@ struct pcb_poly_s  {           /* holds information about a polygon */
 	pcb_coord_t Clearance;
 	pcb_cardinal_t PointN;       /* number of points in polygon */
 	pcb_cardinal_t PointMax;     /* max number from malloc() */
-	pcb_polyarea_t *Clipped;           /* the clipped region of this polygon */
-	pcb_pline_t *NoHoles;              /* the polygon broken into hole-less regions */
+	pcb_polyarea_t *Clipped;     /* the clipped region of this polygon */
+	pcb_pline_t *NoHoles;        /* the polygon broken into hole-less regions */
 	int NoHolesValid;            /* Is the NoHoles polygon up to date? */
 	pcb_point_t *Points;         /* data */
 	pcb_cardinal_t *HoleIndex;   /* Index of hole data within the Points array */
