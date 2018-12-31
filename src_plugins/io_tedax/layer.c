@@ -217,7 +217,30 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f)
 			memset(&ly->meta.bound, 0, sizeof(ly->meta.bound));
 
 		while((argc = tedax_getline(f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {
-			if ((argc == 9) && (strcmp(argv[0], "text") == 0)) {
+			if ((argc == 7) && (strcmp(argv[0], "line") == 0)) {
+				pcb_coord_t x1, y1, x2, y2, th, cl;
+				pcb_bool s1, s2, s3, s4;
+				pcb_line_t *line;
+
+				x1 = pcb_get_value(argv[1], "mm", NULL, &s1);
+				y1 = pcb_get_value(argv[2], "mm", NULL, &s2);
+				x2 = pcb_get_value(argv[3], "mm", NULL, &s3);
+				y2 = pcb_get_value(argv[4], "mm", NULL, &s4);
+				if (!s1 || !s2 || !s3 || !s4) {
+					pcb_message(PCB_MSG_ERROR, "invalid line coords in line: %s;%s %s;%s\n", argv[1], argv[2], argv[3], argv[4]);
+					res = -1;
+					goto error;
+				}
+				th = pcb_get_value(argv[5], "mm", NULL, &s1);
+				cl = pcb_get_value(argv[6], "mm", NULL, &s2);
+				if (!s1 || !s2) {
+					pcb_message(PCB_MSG_ERROR, "invalid thickness or clearance in line: %s;%s\n", argv[5], argv[6]);
+					res = -1;
+					goto error;
+				}
+				line = pcb_line_new_merge(ly, x1, y1, x2, y2, th, cl*2, pcb_flag_make(PCB_FLAG_CLEARLINE));
+			}
+			else if ((argc == 9) && (strcmp(argv[0], "text") == 0)) {
 				pcb_coord_t bx1, by1, bx2, by2, rw, rh, aw, ah;
 				pcb_bool s1, s2, s3, s4;
 				double rot, zx, zy, z;
