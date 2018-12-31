@@ -43,6 +43,7 @@
 #include "actions.h"
 #include "compat_misc.h"
 #include "plug_io.h"
+#include "stackup.h"
 
 
 static const char *tedax_cookie = "tEDAx IO";
