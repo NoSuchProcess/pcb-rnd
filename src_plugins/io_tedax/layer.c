@@ -35,6 +35,7 @@
 int tedax_layer_fsave(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *layname, FILE *f)
 {
 	char lntmp[64];
+	int lno;
 	pcb_layergrp_t *g = pcb_get_layergrp(pcb, gid);
 
 	if (g == NULL)
@@ -46,7 +47,17 @@ int tedax_layer_fsave(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *layna
 		layname = lntmp;
 		sprintf(lntmp, "anon_%ld", gid);
 	}
-	fprintf(f, "layer v1 TODO\n");
+	fprintf(f, "layer v1 %s\n", layname);
+	for(lno = 0; lno < g->len; lno++) {
+		pcb_layer_t *ly = pcb_get_layer(pcb->Data, g->lid[lno]);
+		if (ly == NULL)
+			continue;
+		PCB_LINE_LOOP(ly) {
+			pcb_fprintf(f, " line %.06mm %.06mm %.06mm %.06mm %.06mm %.06mm\n",
+				line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y,
+				line->Thickness, PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, line) ? pcb_round(line->Clearance/2) : 0);
+		} PCB_END_LOOP;
+	}
 	fprintf(f, "end layer\n");
 	return -1;
 }
