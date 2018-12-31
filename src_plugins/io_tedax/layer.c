@@ -31,6 +31,7 @@
 #include "layer.h"
 #include "safe_fs.h"
 #include "error.h"
+#include "parse.h"
 #include "compat_misc.h"
 #include "obj_line.h"
 #include "obj_arc.h"
@@ -67,7 +68,7 @@ int tedax_layer_fsave(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *layna
 			for(pl = polygon->NoHoles, plid = 0; pl != NULL; pl = pl->next, plid++) {
 				pcb_vnode_t *v;
 				long i, n;
-				fprintf(f, "polyline v1 pllay_%ld_%ld_%ld\n", gid, polygon->ID, plid);
+				fprintf(f, "begin polyline v1 pllay_%ld_%ld_%ld\n", gid, polygon->ID, plid);
 				n = pl->Count;
 				for(v = &pl->head, i = 0; i < n; v = v->next, i++)
 					pcb_fprintf(f, " v %.06mm %.06mm\n", v->point[0], v->point[1]);
@@ -76,7 +77,7 @@ int tedax_layer_fsave(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *layna
 		} PCB_END_LOOP;
 	}
 
-	fprintf(f, "layer v1 %s\n", layname);
+	fprintf(f, "begin layer v1 %s\n", layname);
 	for(lno = 0; lno < g->len; lno++) {
 		pcb_layer_t *ly = pcb_get_layer(pcb->Data, g->lid[lno]);
 		if (ly == NULL)
@@ -133,3 +134,4 @@ int tedax_layer_save(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *laynam
 	fclose(f);
 	return res;
 }
+
