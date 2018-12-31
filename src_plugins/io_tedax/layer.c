@@ -40,6 +40,8 @@ int tedax_layer_fsave(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *layna
 {
 	char lntmp[64];
 	int lno;
+	pcb_pline_t *pl;
+	long plid;
 	pcb_layergrp_t *g = pcb_get_layergrp(pcb, gid);
 
 	if (g == NULL)
@@ -51,6 +53,29 @@ int tedax_layer_fsave(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *layna
 		layname = lntmp;
 		sprintf(lntmp, "anon_%ld", gid);
 	}
+
+	for(lno = 0; lno < g->len; lno++) {
+		pcb_layer_t *ly = pcb_get_layer(pcb->Data, g->lid[lno]);
+		if (ly == NULL)
+			continue;
+
+		PCB_POLY_LOOP(ly) {
+			pcb_pline_t *pl;
+			if (!polygon->NoHolesValid)
+				pcb_poly_compute_no_holes(polygon);
+
+			for(pl = polygon->NoHoles, plid = 0; pl != NULL; pl = pl->next, plid++) {
+				pcb_vnode_t *v;
+				long i, n;
+				fprintf(f, "polyline v1 pllay_%ld_%ld_%ld\n", gid, polygon->ID, plid);
+				n = pl->Count;
+				for(v = &pl->head, i = 0; i < n; v = v->next, i++)
+					pcb_fprintf(f, " v %.06mm %.06mm\n", v->point[0], v->point[1]);
+				fprintf(f, "end polyline\n");
+			}
+		} PCB_END_LOOP;
+	}
+
 	fprintf(f, "layer v1 %s\n", layname);
 	for(lno = 0; lno < g->len; lno++) {
 		pcb_layer_t *ly = pcb_get_layer(pcb->Data, g->lid[lno]);
@@ -75,6 +100,19 @@ int tedax_layer_fsave(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *layna
 				arc->X, arc->Y, arc->Width, arc->StartAngle, arc->Delta, arc->Thickness, clr);
 			pcb_fprintf(f, "%.06mm %.06mm %.06mm %.06mm\n", sx, sy, ex, ey);
 		} PCB_END_LOOP;
+		PCB_TEXT_LOOP(ly) {
+			pcb_fprintf(f, " text %.06mm %.06mm %.06mm %.06mm %d %f %.06mm ",
+				text->bbox_naked.X1, text->bbox_naked.Y1, text->bbox_naked.X2, text->bbox_naked.Y2,
+				text->Scale, text->rot, PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, text) ? 1 : 0);
+			tedax_fprint_escape(f, text->TextString);
+			fputc('\n', f);
+		} PCB_END_LOOP;
+
+		PCB_POLY_LOOP(ly) {
+			for(pl = polygon->NoHoles, plid = 0; pl != NULL; pl = pl->next, plid++)
+				pcb_fprintf(f, " pllay_%ld_%ld_%ld 0 0\n", gid, polygon->ID, plid);
+		} PCB_END_LOOP;
+
 	}
 	fprintf(f, "end layer\n");
 	return -1;
