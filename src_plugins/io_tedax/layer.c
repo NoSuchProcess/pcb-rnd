@@ -30,6 +30,7 @@
 #include <stdio.h>
 #include <genht/htsp.h>
 #include <genht/hash.h>
+#include "data.h"
 #include "layer.h"
 #include "safe_fs.h"
 #include "error.h"
@@ -37,6 +38,7 @@
 #include "compat_misc.h"
 #include "obj_line.h"
 #include "obj_arc.h"
+#include "obj_poly.h"
 #include "vtc0.h"
 
 
@@ -195,12 +197,31 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f)
 	fseek(f, start, SEEK_SET);
 
 	while((argc = tedax_seek_block(f, "layer", "v1", 1, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) > 1) {
-		pcb_trace("layer %s at %ld!\n", argv[3], ftell(f));
+		pcb_layer_t *ly;
+		if (data->LayerN >= PCB_MAX_LAYER) {
+			pcb_message(PCB_MSG_ERROR, "too many layers\n");
+			res = -1;
+			goto error;
+		}
+		ly = &data->Layer[data->LayerN++];
+		free(ly->name);
+		ly->name = pcb_strdup(argv[3]);
+		ly->is_bound = data->parent_type != PCB_PARENT_BOARD;
+		if (!ly->is_bound) {
+			/* real layer */
+			memset(&ly->meta.real, 0, sizeof(ly->meta.real));
+			ly->meta.real.grp = -1; /* group insertion is to be done by the caller */
+			ly->meta.real.vis = 1;
+		}
+		else
+			memset(&ly->meta.bound, 0, sizeof(ly->meta.bound));
 
 		while((argc = tedax_getline(f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {
 			if ((argc == 4) && (strcmp(argv[0], "poly") == 0)) {
 				pcb_bool s1, s2;
 				pcb_coord_t ox, oy;
+				pcb_poly_t *poly;
+
 				ox = pcb_get_value(argv[2], "mm", NULL, &s1);
 				oy = pcb_get_value(argv[3], "mm", NULL, &s2);
 				if (!s1 || !s2) {
@@ -215,9 +236,10 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f)
 					goto error;
 				}
 				pcb_trace("POLY: %mm %mm %s\n", ox, oy, argv[1]);
-				for(n = 0; n < coords->used; n+=2)	{
-					pcb_trace("  %mm %mm\n", ox+coords->array[n], oy+coords->array[n+1]);
-				}
+				poly = pcb_poly_new(ly, 0, pcb_no_flags());
+				for(n = 0; n < coords->used; n+=2)
+					pcb_poly_point_new(poly, ox+coords->array[n], oy+coords->array[n+1]);
+				pcb_add_poly_on_layer(ly, poly);
 			}
 		}
 	}
