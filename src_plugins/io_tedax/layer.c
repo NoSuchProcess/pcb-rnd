@@ -34,6 +34,18 @@
 
 int tedax_layer_fsave(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *layname, FILE *f)
 {
+	char lntmp[64];
+	pcb_layergrp_t *g = pcb_get_layergrp(pcb, gid);
+
+	if (g == NULL)
+		return -1;
+
+	if (layname == NULL)
+		layname = g->name;
+	if (layname == NULL) {
+		layname = lntmp;
+		sprintf(lntmp, "anon_%ld", gid);
+	}
 	fprintf(f, "layer v1 TODO\n");
 	fprintf(f, "end layer\n");
 	return -1;
