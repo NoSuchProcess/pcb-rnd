@@ -338,6 +338,7 @@ void pcb_data_make_layers_bound(pcb_board_t *pcb4layer_groups, pcb_data_t *data)
 	pcb_layer_id_t n;
 	for(n = 0; n < data->LayerN; n++) {
 		pcb_layer_type_t lyt = pcb_layergrp_flags(pcb4layer_groups, data->Layer[n].meta.real.grp);
+		memset(&data->Layer[n].meta.bound, 0, sizeof(data->Layer[n].meta.bound));
 		pcb_layer_real2bound_offs(&data->Layer[n], pcb4layer_groups, &data->Layer[n]);
 		data->Layer[n].parent.data = data;
 		data->Layer[n].parent_type = PCB_PARENT_DATA;
