@@ -64,6 +64,9 @@ int tedax_layer_fsave(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *layna
 		PCB_ARC_LOOP(ly) {
 			pcb_coord_t sx, sy, ex, ey, clr;
 
+			if (arc->Width != arc->Height)
+				pcb_io_incompat_save(pcb->Data, arc, "arc", "Elliptical arc", "Saving as circular arc instead - geometry will differ");
+
 			pcb_arc_get_end(arc, 0, &sx, &sy);
 			pcb_arc_get_end(arc, 1, &ex, &ey);
 			clr = PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, arc) ? pcb_round(arc->Clearance/2) : 0;
