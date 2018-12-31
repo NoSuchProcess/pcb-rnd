@@ -63,7 +63,7 @@ int io_tedax_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt
 }
 
 
-static const char pcb_acts_Savetedax[] = "SaveTedax(board-footprints|stackup, filename)";
+static const char pcb_acts_Savetedax[] = "SaveTedax(board-footprints|stackup|layer, filename)";
 static const char pcb_acth_Savetedax[] = "Saves the specific type of data in a tEDAx file. Type can be: board-footprints";
 static fgw_error_t pcb_act_Savetedax(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -108,7 +108,7 @@ do { \
 	} \
 } while(0)
 
-static const char pcb_acts_LoadtedaxFrom[] = "LoadTedaxFrom(netlist|footprint|stackup, filename)";
+static const char pcb_acts_LoadtedaxFrom[] = "LoadTedaxFrom(netlist|footprint|stackup|layer, filename)";
 static const char pcb_acth_LoadtedaxFrom[] = "Loads the specified block from a tedax file. Type can be: netlist or footprint.";
 static fgw_error_t pcb_act_LoadtedaxFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
