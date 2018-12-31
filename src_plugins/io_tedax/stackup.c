@@ -419,7 +419,6 @@ int tedax_stackup_load(pcb_board_t *pcb, const char *fn)
 		return -1;
 	}
 	tedax_stackup_init(&ctx);
-	fprintf(f, "tEDAx v1\n");
 	res = tedax_stackup_fload(&ctx, pcb, f);
 	fclose(f);
 	tedax_stackup_uninit(&ctx);
