@@ -145,7 +145,7 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f)
 	long start, n;
 	int argc, res = 0;
 	char line[520];
-	char *argv[16];
+	char *argv[16], *end;
 	htsp_t plines;
 	htsp_entry_t *e;
 	vtc0_t *coords;
@@ -217,7 +217,49 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f)
 			memset(&ly->meta.bound, 0, sizeof(ly->meta.bound));
 
 		while((argc = tedax_getline(f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {
-			if ((argc == 4) && (strcmp(argv[0], "poly") == 0)) {
+			if ((argc == 9) && (strcmp(argv[0], "text") == 0)) {
+				pcb_coord_t bx1, by1, bx2, by2, rw, rh, aw, ah;
+				pcb_bool s1, s2, s3, s4;
+				double rot, zx, zy, z;
+				pcb_text_t *text;
+
+				bx1 = pcb_get_value(argv[1], "mm", NULL, &s1);
+				by1 = pcb_get_value(argv[2], "mm", NULL, &s2);
+				bx2 = pcb_get_value(argv[3], "mm", NULL, &s3);
+				by2 = pcb_get_value(argv[4], "mm", NULL, &s4);
+				if (!s1 || !s2 || !s3 || !s4) {
+					pcb_message(PCB_MSG_ERROR, "invalid bbox coords in text %s;%s %s;%s \n", argv[1], argv[2], argv[3], argv[4]);
+					res = -1;
+					goto error;
+				}
+				rot = strtod(argv[6], &end);
+				if (*end != '\0') {
+					pcb_message(PCB_MSG_ERROR, "invalid text rotation %s \n", argv[6]);
+					res = -1;
+					goto error;
+				}
+				if (rot < 0)
+					rot += 360;
+				text = pcb_text_new(ly, pcb_font(PCB, 0, 1), bx1, by1, rot, 100, 0, argv[8], pcb_flag_make(PCB_FLAG_CLEARLINE));
+				rw = bx2-bx1; rh = by2-by1;
+				pcb_text_pre(text);
+				for(n = 0; n < 8; n++) {
+					pcb_text_bbox(pcb_font(PCB, 0, 1), text);
+					aw = text->bbox_naked.X2 - text->bbox_naked.X1; ah = text->bbox_naked.Y2 - text->bbox_naked.Y1;
+					zx = (double)rw/(double)aw; zy = (double)rh/(double)ah;
+					z = zx < zy ? zx : zy;
+					if ((z > 0.999) && (z < 1.001))
+						break;
+					text->Scale = pcb_round(text->Scale*z);
+				}
+				pcb_text_bbox(pcb_font(PCB, 0, 1), text);
+				aw = text->bbox_naked.X2 - text->bbox_naked.X1; ah = text->bbox_naked.Y2 - text->bbox_naked.Y1;
+				text->X += (double)(rw-aw)/2.0;
+				text->Y += (double)(rh-ah)/2.0;
+				pcb_text_post(text);
+
+			}
+			else if ((argc == 4) && (strcmp(argv[0], "poly") == 0)) {
 				pcb_bool s1, s2;
 				pcb_coord_t ox, oy;
 				pcb_poly_t *poly;
