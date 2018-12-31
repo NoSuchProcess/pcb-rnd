@@ -361,7 +361,7 @@ static pcb_layergrp_t *get_grp_by_name(tedax_stackup_t *ctx, pcb_board_t *pcb, c
 
 int tedax_stackup_parse(tedax_stackup_t *ctx, pcb_board_t *pcb, FILE *f, char *buff, int buff_size, char *argv[], int argv_size)
 {
-	int argc, res = -1;
+	int argc;
 	pcb_layers_reset(pcb);
 
 	while((argc = tedax_getline(f, buff, buff_size, argv, argv_size)) >= 0) {
@@ -385,10 +385,8 @@ int tedax_stackup_parse(tedax_stackup_t *ctx, pcb_board_t *pcb, FILE *f, char *b
 			else
 				pcb_attribute_put(&grp->Attributes, argv[2], argv[3]);
 		}
-		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "stackup") == 0)) {
-			res = 0;
+		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "stackup") == 0))
 			break;
-		}
 	}
 	return 0;
 }
@@ -398,7 +396,6 @@ int tedax_stackup_fload(tedax_stackup_t *ctx, pcb_board_t *pcb, FILE *f)
 {
 	char line[520];
 	char *argv[16];
-	int found = 0;
 
 	if (tedax_seek_hdr(f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
 		return -1;

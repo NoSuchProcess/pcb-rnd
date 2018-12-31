@@ -112,7 +112,6 @@ do { \
 
 int tedax_fp_fsave(pcb_data_t *data, FILE *f)
 {
-	char buff[64];
 	htsp_t terms;
 	htsp_entry_t *e;
 
