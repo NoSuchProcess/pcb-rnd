@@ -44,6 +44,7 @@
 #include "compat_misc.h"
 #include "plug_io.h"
 #include "stackup.h"
+#include "layer.h"
 
 
 static const char *tedax_cookie = "tEDAx IO";
@@ -78,6 +79,11 @@ static fgw_error_t pcb_act_Savetedax(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (pcb_strcasecmp(type, "stackup") == 0) {
 		PCB_ACT_IRES(tedax_stackup_save(PCB, fname));
+		return 0;
+	}
+
+	if (pcb_strcasecmp(type, "layer") == 0) {
+		PCB_ACT_IRES(tedax_layer_save(PCB, pcb_layer_get_group_(CURRENT), NULL, fname));
 		return 0;
 	}
 
