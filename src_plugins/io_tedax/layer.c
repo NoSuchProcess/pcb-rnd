@@ -221,6 +221,7 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f)
 				pcb_coord_t x1, y1, x2, y2, th, cl;
 				pcb_bool s1, s2, s3, s4;
 				pcb_line_t *line;
+				double sa, da;
 
 				x1 = pcb_get_value(argv[1], "mm", NULL, &s1);
 				y1 = pcb_get_value(argv[2], "mm", NULL, &s2);
@@ -239,6 +240,40 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f)
 					goto error;
 				}
 				line = pcb_line_new_merge(ly, x1, y1, x2, y2, th, cl*2, pcb_flag_make(PCB_FLAG_CLEARLINE));
+			}
+			else if ((argc == 12) && (strcmp(argv[0], "arc") == 0)) {
+				pcb_coord_t cx, cy, r, th, cl;
+				double sa, da;
+				pcb_bool s1, s2, s3;
+
+				cx = pcb_get_value(argv[1], "mm", NULL, &s1);
+				cy = pcb_get_value(argv[2], "mm", NULL, &s2);
+				r  = pcb_get_value(argv[3], "mm", NULL, &s3);
+				if (!s1 || !s2 || !s3) {
+					pcb_message(PCB_MSG_ERROR, "invalid arc coords or radius in line: %s;%s %s\n", argv[1], argv[2], argv[3]);
+					res = -1;
+					goto error;
+				}
+				sa = strtod(argv[4], &end);
+				if ((*end != '\0') || (sa < 0) || (sa >= 360.0)) {
+					pcb_message(PCB_MSG_ERROR, "invalid arc start angle %s\n", argv[4]);
+					res = -1;
+					goto error;
+				}
+				da = strtod(argv[5], &end);
+				if ((*end != '\0') || (da < -360.0) || (da > 360.0)) {
+					pcb_message(PCB_MSG_ERROR, "invalid arc delta angle %s\n", argv[5]);
+					res = -1;
+					goto error;
+				}
+				th = pcb_get_value(argv[6], "mm", NULL, &s1);
+				cl = pcb_get_value(argv[7], "mm", NULL, &s2);
+				if (!s1 || !s2) {
+					pcb_message(PCB_MSG_ERROR, "invalid thickness or clearance in arc: %s;%s\n", argv[6], argv[7]);
+					res = -1;
+					goto error;
+				}
+				pcb_arc_new(ly, cx, cy, r, r, sa, da, th, cl*2, pcb_flag_make(PCB_FLAG_CLEARLINE), 1);
 			}
 			else if ((argc == 9) && (strcmp(argv[0], "text") == 0)) {
 				pcb_coord_t bx1, by1, bx2, by2, rw, rh, aw, ah;
@@ -305,6 +340,13 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f)
 				for(n = 0; n < coords->used; n+=2)
 					pcb_poly_point_new(poly, ox+coords->array[n], oy+coords->array[n+1]);
 				pcb_add_poly_on_layer(ly, poly);
+			}
+			else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "layer") == 0))
+				break;
+			else {
+				pcb_message(PCB_MSG_ERROR, "invalid layer object %s\n", argv[0]);
+				res = -1;
+				goto error;
 			}
 		}
 	}
