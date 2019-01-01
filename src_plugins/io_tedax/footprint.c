@@ -111,64 +111,64 @@ do { \
 
 int tedax_pstk_fsave(pcb_pstk_t *padstack, pcb_coord_t ox, pcb_coord_t oy, FILE *f, htsp_t *terms)
 {
-			pcb_pstk_proto_t *proto = pcb_pstk_get_proto(padstack);
-			pcb_pstk_tshape_t *tshp;
-			pcb_pstk_shape_t *shp;
-			int n, i;
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(padstack);
+	pcb_pstk_tshape_t *tshp;
+	pcb_pstk_shape_t *shp;
+	int n, i;
 
-			if (proto == NULL) {
-				pcb_message(PCB_MSG_ERROR, "tEDAx footprint export: omitting subc padstack with invalid prototype\n");
-				return 1;
-			}
-			if (padstack->term != NULL) print_terma(terms, padstack->term, padstack);
-			if (proto->hdia > 0)
-				pcb_fprintf(f, "	hole %s %mm %mm %mm %s\n", TERM_NAME(padstack->term), padstack->x - ox, padstack->y - oy, proto->hdia, proto->hplated ? "-" : "unplated");
+	if (proto == NULL) {
+		pcb_message(PCB_MSG_ERROR, "tEDAx footprint export: omitting subc padstack with invalid prototype\n");
+		return 1;
+	}
+	if (padstack->term != NULL) print_terma(terms, padstack->term, padstack);
+	if (proto->hdia > 0)
+		pcb_fprintf(f, "	hole %s %mm %mm %mm %s\n", TERM_NAME(padstack->term), padstack->x - ox, padstack->y - oy, proto->hdia, proto->hplated ? "-" : "unplated");
 
-			tshp = pcb_pstk_get_tshape(padstack);
-			for(n = 0, shp = tshp->shape; n < tshp->len; n++,shp++) {
-				const char *lloc, *ltyp;
-				pcb_coord_t clr;
-				
-				get_layer_props(shp->layer_mask, lloc, ltyp, continue);
-				clr = padstack->Clearance > 0 ? padstack->Clearance : shp->clearance;
-				switch(shp->shape) {
-					case PCB_PSSH_HSHADOW:
-						break;
-					case PCB_PSSH_CIRC:
-						pcb_fprintf(f, "	fillcircle %s %s %s %mm %mm %mm %mm\n", lloc, ltyp, TERM_NAME(padstack->term),
-							padstack->x + shp->data.circ.x - ox, padstack->y + shp->data.circ.y - oy,
-							shp->data.circ.dia/2, clr);
-						break;
-					case PCB_PSSH_LINE:
-						if (shp->data.line.square) {
-							pcb_any_line_t tmp;
-							tmp.Point1.X = shp->data.line.x1 + padstack->x;
-							tmp.Point1.Y = shp->data.line.y1 + padstack->y;
-							tmp.Point2.X = shp->data.line.x2 + padstack->x;
-							tmp.Point2.Y = shp->data.line.y2 + padstack->y;
-							tmp.Thickness = shp->data.line.thickness;
-							pcb_fprintf(f, "	polygon %s %s %s %mm 4", lloc, ltyp, TERM_NAME(padstack->term), clr);
-							print_sqpad_coords(f, &tmp, ox, oy);
-							pcb_fprintf(f, "\n");
-						}
-						else {
-							pcb_fprintf(f, "	line %s %s %s %mm %mm %mm %mm %mm %mm\n", lloc, ltyp, TERM_NAME(padstack->term),
-								shp->data.line.x1 + padstack->x - ox, shp->data.line.y1 + padstack->y - oy,
-								shp->data.line.x2 + padstack->x - ox, shp->data.line.y2 + padstack->y - oy,
-								shp->data.line.thickness, clr);
-						}
-						break;
-					case PCB_PSSH_POLY:
-						pcb_fprintf(f, "	polygon %s %s %s %.06mm %ld", lloc, ltyp, TERM_NAME(padstack->term),
-							clr, shp->data.poly.len);
-						for(i = 0; i < shp->data.poly.len; i++)
-							pcb_fprintf(f, " %.06mm %.06mm",
-								shp->data.poly.x[i] + padstack->x - ox,
-								shp->data.poly.y[i] + padstack->y - oy);
-						pcb_fprintf(f, "\n");
-						break;
+	tshp = pcb_pstk_get_tshape(padstack);
+	for(n = 0, shp = tshp->shape; n < tshp->len; n++,shp++) {
+		const char *lloc, *ltyp;
+		pcb_coord_t clr;
+		
+		get_layer_props(shp->layer_mask, lloc, ltyp, continue);
+		clr = padstack->Clearance > 0 ? padstack->Clearance : shp->clearance;
+		switch(shp->shape) {
+			case PCB_PSSH_HSHADOW:
+				break;
+			case PCB_PSSH_CIRC:
+				pcb_fprintf(f, "	fillcircle %s %s %s %mm %mm %mm %mm\n", lloc, ltyp, TERM_NAME(padstack->term),
+					padstack->x + shp->data.circ.x - ox, padstack->y + shp->data.circ.y - oy,
+					shp->data.circ.dia/2, clr);
+				break;
+			case PCB_PSSH_LINE:
+				if (shp->data.line.square) {
+					pcb_any_line_t tmp;
+					tmp.Point1.X = shp->data.line.x1 + padstack->x;
+					tmp.Point1.Y = shp->data.line.y1 + padstack->y;
+					tmp.Point2.X = shp->data.line.x2 + padstack->x;
+					tmp.Point2.Y = shp->data.line.y2 + padstack->y;
+					tmp.Thickness = shp->data.line.thickness;
+					pcb_fprintf(f, "	polygon %s %s %s %mm 4", lloc, ltyp, TERM_NAME(padstack->term), clr);
+					print_sqpad_coords(f, &tmp, ox, oy);
+					pcb_fprintf(f, "\n");
 				}
-			}
+				else {
+					pcb_fprintf(f, "	line %s %s %s %mm %mm %mm %mm %mm %mm\n", lloc, ltyp, TERM_NAME(padstack->term),
+						shp->data.line.x1 + padstack->x - ox, shp->data.line.y1 + padstack->y - oy,
+						shp->data.line.x2 + padstack->x - ox, shp->data.line.y2 + padstack->y - oy,
+						shp->data.line.thickness, clr);
+				}
+				break;
+			case PCB_PSSH_POLY:
+				pcb_fprintf(f, "	polygon %s %s %s %.06mm %ld", lloc, ltyp, TERM_NAME(padstack->term),
+					clr, shp->data.poly.len);
+				for(i = 0; i < shp->data.poly.len; i++)
+					pcb_fprintf(f, " %.06mm %.06mm",
+						shp->data.poly.x[i] + padstack->x - ox,
+						shp->data.poly.y[i] + padstack->y - oy);
+				pcb_fprintf(f, "\n");
+				break;
+		}
+	}
 	return 0;
 }
 
