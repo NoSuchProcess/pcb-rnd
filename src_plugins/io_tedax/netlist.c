@@ -140,7 +140,7 @@ int tedax_net_load(const char *fname_net)
 int tedax_net_fsave(pcb_board_t *pcb, const char *netlistid, FILE *f)
 {
 	pcb_cardinal_t n, p;
-	pcb_lib_t *netlist = &pcb->NetlistLib[0];
+	pcb_lib_t *netlist = &pcb->NetlistLib[1];
 
 	fprintf(f, "begin netlist v1 ");
 	tedax_fprint_escape(f, netlistid);
