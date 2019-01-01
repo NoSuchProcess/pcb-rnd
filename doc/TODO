@@ -125,6 +125,7 @@
 	- FEATURE: autocrop doesnt undo (new layout, add some -maskmanaul content, autocrop(), & undo: gui view shifts, board size unchanged [report: Miloh]
 	- BUG: distalign pcb_crosshair option doesn't work as a reference point  [report:Miloh]
 - CLEANUP: move import_sch to import_sch_old and start a new, generic plugin
+- FEATURE: tedax etest save (board save too)
 - FEATURE: padstack bbox:
 	- per layer: keep a bbox per transformed shape per prototype, then getting the bbox of a padstack ref on a specific layer is looking up the shape, then 4 integer additions [report: Wojciech]
 	- when calculating overall padstack bbox, ignore layers that are not present? but then a layer change would require a recalc (but this is true for subcs too!) [report: Wojciech]
