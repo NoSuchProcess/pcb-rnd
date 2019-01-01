@@ -38,6 +38,7 @@
 #include "compat_misc.h"
 #include "actions.h"
 #include "safe_fs.h"
+#include "obj_subc.h"
 
 #include "parse.h"
 
@@ -164,7 +165,43 @@ int tedax_net_fsave(pcb_board_t *pcb, const char *netlistid, FILE *f)
 		}
 	}
 
+	PCB_SUBC_LOOP(pcb->Data) {
+		pcb_attribute_t *a;
+
+		if ((subc->refdes == NULL) || (*subc->refdes == '\0') || PCB_FLAG_TEST(PCB_FLAG_NONETLIST, subc))
+			continue;
+
+		for(n = 0, a = subc->Attributes.List; n < subc->Attributes.Number; n++,a++) {
+			if (strcmp(a->name, "refdes") == 0)
+				continue;
+			if (strcmp(a->name, "footprint") == 0) {
+				fprintf(f, " footprint %s ", subc->refdes);
+				tedax_fprint_escape(f, a->value);
+				fputc('\n', f);
+				continue;
+			}
+			if (strcmp(a->name, "value") == 0) {
+				fprintf(f, " value %s ", subc->refdes);
+				tedax_fprint_escape(f, a->value);
+				fputc('\n', f);
+				continue;
+			}
+			if (strcmp(a->name, "device") == 0) {
+				fprintf(f, " device %s ", subc->refdes);
+				tedax_fprint_escape(f, a->value);
+				fputc('\n', f);
+				continue;
+			}
+			pcb_fprintf(f, " comptag %s ", subc->refdes);
+			tedax_fprint_escape(f, a->name);
+			fputc(' ', f);
+			tedax_fprint_escape(f, a->value);
+			fputc('\n', f);
+		}
+	} PCB_END_LOOP;
+
 	fprintf(f, "end netlist\n");
+	return 0;
 }
 
 
