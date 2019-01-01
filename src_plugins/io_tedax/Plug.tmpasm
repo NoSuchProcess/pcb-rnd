@@ -6,6 +6,7 @@ put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/io_tedax/stackup.o
 	$(PLUGDIR)/io_tedax/tlayer.o
 	$(PLUGDIR)/io_tedax/tboard.o
+	$(PLUGDIR)/io_tedax/tdrc.o
 	$(PLUGDIR)/io_tedax/parse.o
 @]
 

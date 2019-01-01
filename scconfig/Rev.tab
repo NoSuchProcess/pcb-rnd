@@ -1,4 +1,4 @@
-22216	configure	new source files for tEDAx layer save
+22231	configure	new source files for tEDAx layer, board and drc save
 22167	configure	removal of the old gtk-only preferences dialog code
 22119	configure	dialogs config for window placement
 21977	configure	new propedit
