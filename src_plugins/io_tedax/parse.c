@@ -124,6 +124,10 @@ int tedax_seek_block(FILE *f, const char *blk_name, const char *blk_ver, int sil
 
 void tedax_fprint_escape(FILE *f, const char *val)
 {
+	if ((val == NULL) || (*val == '\0')) {
+		fputc('-', f);
+		return;
+	}
 	for(; *val != '\0'; val++) {
 		switch(*val) {
 			case '\\': fputc('\\', f); fputc('\\', f); break;
