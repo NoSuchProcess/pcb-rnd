@@ -56,7 +56,7 @@ static void *htsp_get2(htsp_t *ht, const char *key, size_t size)
 	return res;
 }
 
-static int tedax_parse_net(FILE *fn)
+int tedax_net_fload(FILE *fn)
 {
 	char line[520];
 	char *argv[16];
@@ -131,7 +131,7 @@ int tedax_net_load(const char *fname_net)
 		return -1;
 	}
 
-	ret = tedax_parse_net(fn);
+	ret = tedax_net_fload(fn);
 
 	fclose(fn);
 	return ret;
