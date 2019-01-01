@@ -273,12 +273,15 @@ static int tedax_layer_set_by_str(pcb_board_t *pcb, pcb_layergrp_t *grp, const c
 	return -1;
 }
 
-int tedax_stackup_fsave(tedax_stackup_t *ctx, pcb_board_t *pcb, FILE *f)
+int tedax_stackup_fsave(tedax_stackup_t *ctx, pcb_board_t *pcb, const char *stackid, FILE *f)
 {
 	int prefix = 0;
 	pcb_layergrp_id_t gid;
 	pcb_layergrp_t *grp;
-	fprintf(f, "begin stackup v1 pcb-rnd-board\n");
+
+	fprintf(f, "begin stackup v1 ");
+	tedax_fprint_escape(f, stackid);
+	fputc('\n', f);
 
 	vtp0_enlarge(&ctx->g2n, pcb->LayerGroups.len+1);
 	for(gid = 0, grp = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,grp++) {
@@ -324,7 +327,7 @@ int tedax_stackup_fsave(tedax_stackup_t *ctx, pcb_board_t *pcb, FILE *f)
 	return 0;
 }
 
-int tedax_stackup_save(pcb_board_t *pcb, const char *fn)
+int tedax_stackup_save(pcb_board_t *pcb, const char *stackid, const char *fn)
 {
 	int res;
 	FILE *f;
@@ -337,7 +340,7 @@ int tedax_stackup_save(pcb_board_t *pcb, const char *fn)
 	}
 	tedax_stackup_init(&ctx);
 	fprintf(f, "tEDAx v1\n");
-	res = tedax_stackup_fsave(&ctx, pcb, f);
+	res = tedax_stackup_fsave(&ctx, pcb, stackid, f);
 	fclose(f);
 	tedax_stackup_uninit(&ctx);
 	return res;
