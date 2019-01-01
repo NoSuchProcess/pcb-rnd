@@ -39,18 +39,29 @@
 
 int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 {
+	pcb_layergrp_id_t gid;
 	int n;
 	pcb_attribute_t *a;
 	tedax_stackup_t ctx;
 	static const char *stackupid = "board_stackup";
 
 	tedax_stackup_init(&ctx);
+
+	fputc('\n', f);
 	if (tedax_stackup_fsave(&ctx, pcb, stackupid, f) != 0) {
 		pcb_message(PCB_MSG_ERROR, "internal error: failed to save the stackup\n");
 		goto error;
 	}
 
-	fprintf(f, "begin board v1 ");
+	for(gid = 0; gid < ctx.g2n.used; gid++) {
+		char *name = ctx.g2n.array[gid];
+		if (name != NULL) {
+			fputc('\n', f);
+			tedax_layer_fsave(pcb, gid, name, f);
+		}
+	}
+
+	fprintf(f, "\nbegin board v1 ");
 	tedax_fprint_escape(f, pcb->Name);
 	fputc('\n', f);
 	pcb_fprintf(f, " drawing_area 0 0 %.06mm %.06mm\n", pcb->MaxWidth, pcb->MaxHeight);
