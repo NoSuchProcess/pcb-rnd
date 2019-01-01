@@ -116,7 +116,7 @@ int tedax_layer_fsave(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *layna
 
 		PCB_POLY_LOOP(ly) {
 			for(pl = polygon->NoHoles, plid = 0; pl != NULL; pl = pl->next, plid++)
-				pcb_fprintf(f, " pllay_%ld_%ld_%ld 0 0\n", gid, polygon->ID, plid);
+				pcb_fprintf(f, " poly pllay_%ld_%ld_%ld 0 0\n", gid, polygon->ID, plid);
 		} PCB_END_LOOP;
 
 	}
