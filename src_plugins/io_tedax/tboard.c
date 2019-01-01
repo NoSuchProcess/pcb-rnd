@@ -34,13 +34,24 @@
 #include "tboard.h"
 #include "parse.h"
 #include "error.h"
+#include "safe_fs.h"
 
 int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 {
+	int n;
+	pcb_attribute_t *a;
+
 	fprintf(f, "begin board v1 ");
 	tedax_fprint_escape(f, pcb->Name);
 	fputc('\n', f);
 	pcb_fprintf(f, " drawing_area 0 0 %.06mm %.06mm\n", pcb->MaxWidth, pcb->MaxHeight);
+	for(n = 0, a = pcb->Attributes.List; n < pcb->Attributes.Number; n++,a++) {
+		pcb_fprintf(f, " attr ");
+		tedax_fprint_escape(f, a->name);
+		fputc(' ', f);
+		tedax_fprint_escape(f, a->value);
+		fputc('\n', f);
+	}
 	fprintf(f, "end board\n");
 }
 
