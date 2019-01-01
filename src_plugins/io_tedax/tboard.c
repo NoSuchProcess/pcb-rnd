@@ -36,6 +36,7 @@
 #include "error.h"
 #include "safe_fs.h"
 #include "stackup.h"
+#include "netlist.h"
 
 int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 {
@@ -44,8 +45,12 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 	pcb_attribute_t *a;
 	tedax_stackup_t ctx;
 	static const char *stackupid = "board_stackup";
+	static const char *netlistid = "board_netlist";
 
 	tedax_stackup_init(&ctx);
+
+	fputc('\n', f);
+	tedax_net_fsave(pcb, netlistid, f);
 
 	fputc('\n', f);
 	if (tedax_stackup_fsave(&ctx, pcb, stackupid, f) != 0) {
@@ -73,6 +78,7 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 		fputc('\n', f);
 	}
 	pcb_fprintf(f, " stackup %s\n", stackupid);
+	pcb_fprintf(f, " netlist %s\n", netlistid);
 	fprintf(f, "end board\n");
 	tedax_stackup_uninit(&ctx);
 	return 0;
