@@ -29,6 +29,8 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <genht/htsp.h>
+#include <genht/hash.h>
 
 #include "board.h"
 #include "data.h"
@@ -38,15 +40,40 @@
 #include "safe_fs.h"
 #include "stackup.h"
 #include "netlist.h"
+#include "footprint.h"
 #include "tdrc.h"
 #include "tlayer.h"
 #include "obj_pstk.h"
+#include "compat_misc.h"
+
+#define ps2fpname(fpname, padstack) \
+	pcb_snprintf(fpname, sizeof(fpname), "ps_glob_%ld%s", padstack->protoi, (!!padstack->smirror) != (!!padstack->xmirror) ? "m" : "")
 
 static int tedax_global_pstk_fwrite(pcb_board_t *pcb, FILE *f)
 {
+	htsp_t seen;
+	htsp_entry_t *e;
+
+	htsp_init(&seen, strhash, strkeyeq);
+
 	PCB_PADSTACK_LOOP(pcb->Data) {
+		char fpname[256];
+		ps2fpname(fpname, padstack);
+		if (!htsp_has(&seen, fpname)) {
+			fprintf(f, "\nbegin footprint v1 %s\n", fpname);
+			if (padstack->term != NULL)
+				fprintf(f, "	term %s %s - -\n", padstack->term, padstack->term);
+			tedax_pstk_fsave(padstack, padstack->x, padstack->y, f);
+			htsp_set(&seen, pcb_strdup(fpname), padstack);
+			fprintf(f, "end footprint\n");
+		}
 	}
 	PCB_END_LOOP;
+
+	for(e = htsp_first(&seen); e != NULL; e = htsp_next(&seen, e))
+		free(e->key);
+	htsp_uninit(&seen);
+	return 0;
 }
 
 int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
@@ -99,6 +126,14 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 	pcb_fprintf(f, " stackup %s\n", stackupid);
 	pcb_fprintf(f, " netlist %s\n", netlistid);
 	pcb_fprintf(f, " drc %s\n", drcid);
+
+	PCB_PADSTACK_LOOP(pcb->Data) {
+		char fpname[256];
+		ps2fpname(fpname, padstack);
+		pcb_fprintf(f, " place %ld %s %.06mm %.06mm %f %d via\n", padstack->ID, fpname, padstack->x, padstack->y, padstack->rot, !!padstack->smirror);
+	}
+	PCB_END_LOOP;
+
 	fprintf(f, "end board\n");
 	tedax_stackup_uninit(&ctx);
 	return 0;
