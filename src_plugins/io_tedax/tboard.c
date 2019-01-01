@@ -46,8 +46,12 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 	tedax_stackup_t ctx;
 	static const char *stackupid = "board_stackup";
 	static const char *netlistid = "board_netlist";
+	static const char *drcid     = "board_drc";
 
 	tedax_stackup_init(&ctx);
+
+	fputc('\n', f);
+	tedax_drc_fsave(pcb, drcid, f);
 
 	fputc('\n', f);
 	tedax_net_fsave(pcb, netlistid, f);
@@ -79,6 +83,7 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 	}
 	pcb_fprintf(f, " stackup %s\n", stackupid);
 	pcb_fprintf(f, " netlist %s\n", netlistid);
+	pcb_fprintf(f, " drc %s\n", drcid);
 	fprintf(f, "end board\n");
 	tedax_stackup_uninit(&ctx);
 	return 0;
