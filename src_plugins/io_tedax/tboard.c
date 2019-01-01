@@ -35,11 +35,20 @@
 #include "parse.h"
 #include "error.h"
 #include "safe_fs.h"
+#include "stackup.h"
 
 int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 {
 	int n;
 	pcb_attribute_t *a;
+	tedax_stackup_t ctx;
+	static const char *stackupid = "board_stackup";
+
+	tedax_stackup_init(&ctx);
+	if (tedax_stackup_fsave(&ctx, pcb, stackupid, f) != 0) {
+		pcb_message(PCB_MSG_ERROR, "internal error: failed to save the stackup\n");
+		goto error;
+	}
 
 	fprintf(f, "begin board v1 ");
 	tedax_fprint_escape(f, pcb->Name);
@@ -52,7 +61,14 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 		tedax_fprint_escape(f, a->value);
 		fputc('\n', f);
 	}
+	pcb_fprintf(f, " stackup %s\n", stackupid);
 	fprintf(f, "end board\n");
+	tedax_stackup_uninit(&ctx);
+	return 0;
+	
+	error:
+	tedax_stackup_uninit(&ctx);
+	return -1;
 }
 
 
