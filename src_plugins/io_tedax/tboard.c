@@ -37,6 +37,8 @@
 #include "safe_fs.h"
 #include "stackup.h"
 #include "netlist.h"
+#include "tdrc.h"
+#include "tlayer.h"
 
 int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 {

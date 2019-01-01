@@ -40,7 +40,7 @@
 #include "obj_arc.h"
 #include "obj_poly.h"
 #include "vtc0.h"
-
+#include "plug_io.h"
 
 int tedax_layer_fsave(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *layname, FILE *f)
 {

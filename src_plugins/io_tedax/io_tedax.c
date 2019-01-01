@@ -46,6 +46,7 @@
 #include "stackup.h"
 #include "tlayer.h"
 #include "tboard.h"
+#include "tdrc.h"
 
 
 static const char *tedax_cookie = "tEDAx IO";
