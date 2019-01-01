@@ -84,10 +84,10 @@ do { \
 	} \
 } while(0)
 
-#define print_terma(pnum, obj) \
+#define print_terma(terms, pnum, obj) \
 do { \
-	if (htsp_get(&terms, pnum) == NULL) { \
-		htsp_set(&terms, pcb_strdup(pnum), obj); \
+	if (htsp_get(terms, pnum) == NULL) { \
+		htsp_set(terms, pcb_strdup(pnum), obj); \
 		fprintf(f, "	term %s %s - %s\n", pnum, pnum, pnum); \
 	} \
 } while(0)
@@ -109,104 +109,8 @@ do { \
 	else if (lyt & PCB_LYT_PASTE) ltyp = "paste"; \
 	else { invalid; }
 
-
-int tedax_fp_fsave(pcb_data_t *data, FILE *f)
+int tedax_pstk_fsave(pcb_pstk_t *padstack, pcb_coord_t ox, pcb_coord_t oy, FILE *f, htsp_t *terms)
 {
-	htsp_t terms;
-	htsp_entry_t *e;
-
-	htsp_init(&terms, strhash, strkeyeq);
-
-	fprintf(f, "tEDAx v1\n");
-
-	PCB_SUBC_LOOP(data)
-	{
-		pcb_coord_t ox = 0, oy = 0;
-		const char *fpname = NULL;
-		int l;
-
-		fpname = pcb_attribute_get(&subc->Attributes, "tedax::footprint");
-		if (fpname == NULL)
-			fpname = pcb_attribute_get(&subc->Attributes, "visible_footprint");
-		if (fpname == NULL)
-			fpname = pcb_attribute_get(&subc->Attributes, "footprint");
-		if ((fpname == NULL) && (subc->refdes != NULL))
-			fpname = subc->refdes;
-		if (fpname == NULL)
-			fpname = "-";
-
-		pcb_subc_get_origin(subc, &ox, &oy);
-
-		fprintf(f, "\nbegin footprint v1 %s\n", fpname);
-
-		for(l = 0; l < subc->data->LayerN; l++) {
-			pcb_layer_t *ly = &subc->data->Layer[l];
-			pcb_layer_type_t lyt = pcb_layer_flags_(ly);
-			const char *lloc, *ltyp;
-
-			get_layer_props(lyt, lloc, ltyp, continue);
-
-			PCB_LINE_LOOP(ly)
-			{
-				if (line->term != NULL) print_terma(line->term, line);
-				pcb_fprintf(f, "	line %s %s %s %mm %mm %mm %mm %mm %mm\n", lloc, ltyp, TERM_NAME(line->term),
-					line->Point1.X - ox, line->Point1.Y - oy, line->Point2.X - ox, line->Point2.Y - oy,
-					line->Thickness, line->Clearance);
-			}
-			PCB_END_LOOP;
-
-			PCB_ARC_LOOP(ly)
-			{
-				if (arc->term != NULL) print_terma(arc->term, arc);
-				pcb_fprintf(f, "	arc %s %s %s %mm %mm %mm %f %f %mm %mm\n", lloc, ltyp, TERM_NAME(arc->term),
-					arc->X - ox, arc->Y - oy, (arc->Width + arc->Height)/2, arc->StartAngle, arc->Delta,
-					arc->Thickness, arc->Clearance);
-			}
-			PCB_END_LOOP;
-
-
-			PCB_POLY_LOOP(ly)
-			{
-				int go;
-				long numpt = 0;
-				pcb_coord_t x, y;
-				pcb_poly_it_t it;
-
-				pcb_poly_iterate_polyarea(polygon->Clipped, &it);
-				if (pcb_poly_contour(&it) == NULL) {
-					pcb_message(PCB_MSG_ERROR, "tEDAx footprint export: omitting subc polygon with no clipped contour\n");
-					continue;
-				}
-
-				/* iterate over the vectors of the contour */
-				for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y))
-					numpt++;
-
-				if (pcb_poly_hole_first(&it) != NULL)
-					pcb_message(PCB_MSG_ERROR, "tEDAx footprint export: omitting subc polygon holes\n");
-
-				if (numpt == 0) {
-					pcb_message(PCB_MSG_ERROR, "tEDAx footprint export: omitting subc polygon with no points\n");
-					continue;
-				}
-
-				if (polygon->term != NULL) print_terma(polygon->term, polygon);
-				pcb_fprintf(f, "	polygon %s %s %s %.06mm %ld", lloc, ltyp, TERM_NAME(polygon->term),
-					(PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, polygon) ? 0 : polygon->Clearance),
-					numpt);
-
-				/* rewind the iterator*/
-				pcb_poly_iterate_polyarea(polygon->Clipped, &it);
-				pcb_poly_contour(&it);
-				for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y))
-					pcb_fprintf(f, " %.06mm %.06mm", x - ox, y - oy);
-				pcb_fprintf(f, "\n");
-			}
-			PCB_END_LOOP;
-		}
-
-		PCB_PADSTACK_LOOP(subc->data)
-		{
 			pcb_pstk_proto_t *proto = pcb_pstk_get_proto(padstack);
 			pcb_pstk_tshape_t *tshp;
 			pcb_pstk_shape_t *shp;
@@ -214,9 +118,9 @@ int tedax_fp_fsave(pcb_data_t *data, FILE *f)
 
 			if (proto == NULL) {
 				pcb_message(PCB_MSG_ERROR, "tEDAx footprint export: omitting subc padstack with invalid prototype\n");
-				continue;
+				return 1;
 			}
-			if (padstack->term != NULL) print_terma(padstack->term, padstack);
+			if (padstack->term != NULL) print_terma(terms, padstack->term, padstack);
 			if (proto->hdia > 0)
 				pcb_fprintf(f, "	hole %s %mm %mm %mm %s\n", TERM_NAME(padstack->term), padstack->x - ox, padstack->y - oy, proto->hdia, proto->hplated ? "-" : "unplated");
 
@@ -265,6 +169,107 @@ int tedax_fp_fsave(pcb_data_t *data, FILE *f)
 						break;
 				}
 			}
+	return 0;
+}
+
+int tedax_fp_fsave(pcb_data_t *data, FILE *f)
+{
+	htsp_t terms;
+	htsp_entry_t *e;
+
+	htsp_init(&terms, strhash, strkeyeq);
+
+	fprintf(f, "tEDAx v1\n");
+
+	PCB_SUBC_LOOP(data)
+	{
+		pcb_coord_t ox = 0, oy = 0;
+		const char *fpname = NULL;
+		int l;
+
+		fpname = pcb_attribute_get(&subc->Attributes, "tedax::footprint");
+		if (fpname == NULL)
+			fpname = pcb_attribute_get(&subc->Attributes, "visible_footprint");
+		if (fpname == NULL)
+			fpname = pcb_attribute_get(&subc->Attributes, "footprint");
+		if ((fpname == NULL) && (subc->refdes != NULL))
+			fpname = subc->refdes;
+		if (fpname == NULL)
+			fpname = "-";
+
+		pcb_subc_get_origin(subc, &ox, &oy);
+
+		fprintf(f, "\nbegin footprint v1 %s\n", fpname);
+
+		for(l = 0; l < subc->data->LayerN; l++) {
+			pcb_layer_t *ly = &subc->data->Layer[l];
+			pcb_layer_type_t lyt = pcb_layer_flags_(ly);
+			const char *lloc, *ltyp;
+
+			get_layer_props(lyt, lloc, ltyp, continue);
+
+			PCB_LINE_LOOP(ly)
+			{
+				if (line->term != NULL) print_terma(&terms, line->term, line);
+				pcb_fprintf(f, "	line %s %s %s %mm %mm %mm %mm %mm %mm\n", lloc, ltyp, TERM_NAME(line->term),
+					line->Point1.X - ox, line->Point1.Y - oy, line->Point2.X - ox, line->Point2.Y - oy,
+					line->Thickness, line->Clearance);
+			}
+			PCB_END_LOOP;
+
+			PCB_ARC_LOOP(ly)
+			{
+				if (arc->term != NULL) print_terma(&terms, arc->term, arc);
+				pcb_fprintf(f, "	arc %s %s %s %mm %mm %mm %f %f %mm %mm\n", lloc, ltyp, TERM_NAME(arc->term),
+					arc->X - ox, arc->Y - oy, (arc->Width + arc->Height)/2, arc->StartAngle, arc->Delta,
+					arc->Thickness, arc->Clearance);
+			}
+			PCB_END_LOOP;
+
+
+			PCB_POLY_LOOP(ly)
+			{
+				int go;
+				long numpt = 0;
+				pcb_coord_t x, y;
+				pcb_poly_it_t it;
+
+				pcb_poly_iterate_polyarea(polygon->Clipped, &it);
+				if (pcb_poly_contour(&it) == NULL) {
+					pcb_message(PCB_MSG_ERROR, "tEDAx footprint export: omitting subc polygon with no clipped contour\n");
+					continue;
+				}
+
+				/* iterate over the vectors of the contour */
+				for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y))
+					numpt++;
+
+				if (pcb_poly_hole_first(&it) != NULL)
+					pcb_message(PCB_MSG_ERROR, "tEDAx footprint export: omitting subc polygon holes\n");
+
+				if (numpt == 0) {
+					pcb_message(PCB_MSG_ERROR, "tEDAx footprint export: omitting subc polygon with no points\n");
+					continue;
+				}
+
+				if (polygon->term != NULL) print_terma(&terms, polygon->term, polygon);
+				pcb_fprintf(f, "	polygon %s %s %s %.06mm %ld", lloc, ltyp, TERM_NAME(polygon->term),
+					(PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, polygon) ? 0 : polygon->Clearance),
+					numpt);
+
+				/* rewind the iterator*/
+				pcb_poly_iterate_polyarea(polygon->Clipped, &it);
+				pcb_poly_contour(&it);
+				for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y))
+					pcb_fprintf(f, " %.06mm %.06mm", x - ox, y - oy);
+				pcb_fprintf(f, "\n");
+			}
+			PCB_END_LOOP;
+		}
+
+		PCB_PADSTACK_LOOP(subc->data)
+		{
+			tedax_pstk_fsave(padstack, ox, oy, f, &terms);
 		}
 		PCB_END_LOOP;
 
