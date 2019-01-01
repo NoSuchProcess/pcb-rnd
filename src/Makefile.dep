@@ -3262,9 +3262,9 @@
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h hid.h actions.h \
  compat_misc.h plug_io.h ../src_plugins/io_tedax/stackup.h \
- ../src_plugins/io_tedax/layer.h ../src/layer.h dolists.h
-../src_plugins/io_tedax/layer.o: ../src_plugins/io_tedax/layer.c \
- ../config.h ../src_plugins/io_tedax/layer.h board.h global_typedefs.h \
+ ../src_plugins/io_tedax/tlayer.h ../src/layer.h dolists.h
+../src_plugins/io_tedax/tlayer.o: ../src_plugins/io_tedax/tlayer.c \
+ ../config.h ../src_plugins/io_tedax/tlayer.h board.h global_typedefs.h \
  pcb_bool.h unit.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h color.h \
