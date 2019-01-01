@@ -31,6 +31,7 @@
 #include <stdio.h>
 
 #include "board.h"
+#include "data.h"
 #include "tboard.h"
 #include "parse.h"
 #include "error.h"
@@ -39,6 +40,14 @@
 #include "netlist.h"
 #include "tdrc.h"
 #include "tlayer.h"
+#include "obj_pstk.h"
+
+static int tedax_global_pstk_fwrite(pcb_board_t *pcb, FILE *f)
+{
+	PCB_PADSTACK_LOOP(pcb->Data) {
+	}
+	PCB_END_LOOP;
+}
 
 int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 {
@@ -71,6 +80,10 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 			tedax_layer_fsave(pcb, gid, name, f);
 		}
 	}
+
+	fputc('\n', f);
+	if (tedax_global_pstk_fwrite(pcb, f) != 0)
+		goto error;
 
 	fprintf(f, "\nbegin board v1 ");
 	tedax_fprint_escape(f, pcb->Name);

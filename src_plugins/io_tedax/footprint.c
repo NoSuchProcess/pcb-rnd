@@ -109,7 +109,7 @@ do { \
 	else if (lyt & PCB_LYT_PASTE) ltyp = "paste"; \
 	else { invalid; }
 
-int tedax_pstk_fsave(pcb_pstk_t *padstack, pcb_coord_t ox, pcb_coord_t oy, FILE *f, htsp_t *terms)
+int tedax_pstk_fsave(pcb_pstk_t *padstack, pcb_coord_t ox, pcb_coord_t oy, FILE *f)
 {
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(padstack);
 	pcb_pstk_tshape_t *tshp;
@@ -120,7 +120,6 @@ int tedax_pstk_fsave(pcb_pstk_t *padstack, pcb_coord_t ox, pcb_coord_t oy, FILE 
 		pcb_message(PCB_MSG_ERROR, "tEDAx footprint export: omitting subc padstack with invalid prototype\n");
 		return 1;
 	}
-	if (padstack->term != NULL) print_terma(terms, padstack->term, padstack);
 	if (proto->hdia > 0)
 		pcb_fprintf(f, "	hole %s %mm %mm %mm %s\n", TERM_NAME(padstack->term), padstack->x - ox, padstack->y - oy, proto->hdia, proto->hplated ? "-" : "unplated");
 
@@ -269,7 +268,8 @@ int tedax_fp_fsave(pcb_data_t *data, FILE *f)
 
 		PCB_PADSTACK_LOOP(subc->data)
 		{
-			tedax_pstk_fsave(padstack, ox, oy, f, &terms);
+			if (padstack->term != NULL) print_terma(&terms, padstack->term, padstack);
+			tedax_pstk_fsave(padstack, ox, oy, f);
 		}
 		PCB_END_LOOP;
 
