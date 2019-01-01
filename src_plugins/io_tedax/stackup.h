@@ -8,6 +8,9 @@ typedef struct {
 } tedax_stackup_t;
 
 
+void tedax_stackup_init(tedax_stackup_t *ctx);
+void tedax_stackup_uninit(tedax_stackup_t *ctx);
+
 int tedax_stackup_save(pcb_board_t *pcb, const char *stackid, const char *fn);
 int tedax_stackup_fsave(tedax_stackup_t *ctx, pcb_board_t *pcb, const char *stackid, FILE *f);
 
