@@ -137,3 +137,50 @@ int tedax_net_load(const char *fname_net)
 	return ret;
 }
 
+int tedax_net_fsave(pcb_board_t *pcb, const char *netlistid, FILE *f)
+{
+	pcb_cardinal_t n, p;
+	pcb_lib_t *netlist = &pcb->NetlistLib[0];
+
+	fprintf(f, "begin netlist v1 ");
+	tedax_fprint_escape(f, netlistid);
+	fputc('\n', f);
+
+	for (n = 0; n < netlist->MenuN; n++) {
+		pcb_lib_menu_t *menu = &netlist->Menu[n];
+		const char *netname = &menu->Name[2];
+
+		for (p = 0; p < menu->EntryN; p++) {
+			pcb_lib_entry_t *entry = &menu->Entry[p];
+			const char *s, *pin = entry->ListEntry;
+			fprintf(f, " conn %s ", netname);
+			for(s = pin; *s != '\0'; s++) {
+				if (*s == '-')
+					fputc(' ', f);
+				else
+				fputc(*s, f);
+			}
+			fputc('\n', f);
+		}
+	}
+
+	fprintf(f, "end netlist\n");
+}
+
+
+int tedax_net_save(pcb_board_t *pcb, const char *netlistid, const char *fn)
+{
+	int res;
+	FILE *f;
+
+	f = pcb_fopen(fn, "w");
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "tedax_net_save(): can't open %s for writing\n", fn);
+		return -1;
+	}
+	fprintf(f, "tEDAx v1\n");
+	res = tedax_net_fsave(pcb, netlistid, f);
+	fclose(f);
+	return res;
+}
+
