@@ -27,3 +27,37 @@
  */
 
 #include "config.h"
+
+#include <stdio.h>
+
+#include "board.h"
+#include "tboard.h"
+#include "parse.h"
+#include "error.h"
+
+int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
+{
+	fprintf(f, "begin board v1 ");
+	tedax_fprint_escape(f, pcb->Name);
+	fputc('\n', f);
+	pcb_fprintf(f, " drawing_area 0 0 %.06mm %.06mm\n", pcb->MaxWidth, pcb->MaxHeight);
+	fprintf(f, "end board\n");
+}
+
+
+int tedax_board_save(pcb_board_t *pcb, const char *fn)
+{
+	int res;
+	FILE *f;
+
+	f = pcb_fopen(fn, "w");
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "tedax_board_save(): can't open %s for writing\n", fn);
+		return -1;
+	}
+	fprintf(f, "tEDAx v1\n");
+	res = tedax_board_fsave(pcb, f);
+	fclose(f);
+	return res;
+}
+

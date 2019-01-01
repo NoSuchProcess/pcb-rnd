@@ -45,6 +45,7 @@
 #include "plug_io.h"
 #include "stackup.h"
 #include "tlayer.h"
+#include "tboard.h"
 
 
 static const char *tedax_cookie = "tEDAx IO";
@@ -63,7 +64,7 @@ int io_tedax_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt
 }
 
 
-static const char pcb_acts_Savetedax[] = "SaveTedax(board-footprints|stackup|layer, filename)";
+static const char pcb_acts_Savetedax[] = "SaveTedax(board-footprints|stackup|layer|board, filename)";
 static const char pcb_acth_Savetedax[] = "Saves the specific type of data in a tEDAx file. Type can be: board-footprints";
 static fgw_error_t pcb_act_Savetedax(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -84,6 +85,11 @@ static fgw_error_t pcb_act_Savetedax(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (pcb_strcasecmp(type, "layer") == 0) {
 		PCB_ACT_IRES(tedax_layer_save(PCB, pcb_layer_get_group_(CURRENT), NULL, fname));
+		return 0;
+	}
+
+	if (pcb_strcasecmp(type, "board") == 0) {
+		PCB_ACT_IRES(tedax_board_save(PCB, fname));
 		return 0;
 	}
 
