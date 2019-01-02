@@ -30,7 +30,7 @@
 #define PCB_TTF_LOAD_H
 
 #include <ft2build.h>
-#include <freetype/freetype.h>
+#include <freetype.h>
 
 typedef struct pcb_ttf_s {
 	FT_Library library;

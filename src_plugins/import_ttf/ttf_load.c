@@ -27,10 +27,10 @@
  */
 
 #include <ft2build.h>
-#include <freetype/freetype.h>
-#include <freetype/ftmodapi.h>
-#include <freetype/ftglyph.h>
-#include <freetype/ftoutln.h>
+#include <freetype.h>
+#include <ftmodapi.h>
+#include <ftglyph.h>
+#include <ftoutln.h>
 #include "ttf_load.h"
 
 #	undef __FTERRORS_H__
