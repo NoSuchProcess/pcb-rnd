@@ -43,11 +43,15 @@
 #include "footprint.h"
 #include "tdrc.h"
 #include "tlayer.h"
+#include "ht_subc.h"
 #include "obj_pstk.h"
 #include "compat_misc.h"
 
 #define ps2fpname(fpname, padstack) \
 	pcb_snprintf(fpname, sizeof(fpname), "ps_glob_%ld%s", padstack->protoi, (!!padstack->smirror) != (!!padstack->xmirror) ? "m" : "")
+
+#define subc2fpname(fpname, subc) \
+	pcb_snprintf(fpname, sizeof(fpname), "sc_glob_%ld", subc->ID)
 
 static int tedax_global_pstk_fwrite(pcb_board_t *pcb, FILE *f)
 {
@@ -76,12 +80,28 @@ static int tedax_global_pstk_fwrite(pcb_board_t *pcb, FILE *f)
 	return 0;
 }
 
+static int tedax_global_subc_fwrite(htscp_t *subcs, pcb_board_t *pcb, FILE *f)
+{
+	PCB_SUBC_LOOP(pcb->Data) {
+		if (!htscp_has(subcs, subc)) {
+			char fpname[256];
+			subc2fpname(fpname, subc);
+			fprintf(f, "\nbegin footprint v1 %s\n", fpname);
+			fprintf(f, "end footprint\n");
+			htscp_insert(subcs, subc, subc);
+		}
+	}
+	PCB_END_LOOP;
+}
+
+
 int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 {
 	pcb_layergrp_id_t gid;
 	int n;
 	pcb_attribute_t *a;
 	tedax_stackup_t ctx;
+	htscp_t subcs;
 	static const char *stackupid = "board_stackup";
 	static const char *netlistid = "board_netlist";
 	static const char *drcid     = "board_drc";
@@ -93,6 +113,10 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 
 	fputc('\n', f);
 	tedax_net_fsave(pcb, netlistid, f);
+
+	fputc('\n', f);
+	htscp_init(&subcs, pcb_subc_hash, pcb_subc_eq);
+	tedax_global_subc_fwrite(&subcs, pcb, f);
 
 	fputc('\n', f);
 	if (tedax_stackup_fsave(&ctx, pcb, stackupid, f) != 0) {
@@ -134,12 +158,27 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 	}
 	PCB_END_LOOP;
 
+	PCB_SUBC_LOOP(pcb->Data) {
+		pcb_host_trans_t trsc, trpr;
+		char fpname[256];
+		pcb_subc_t *proto = htscp_get(&subcs, subc);
+		subc2fpname(fpname, proto);
+
+		pcb_subc_get_host_trans(subc,  &trsc);
+		pcb_subc_get_host_trans(proto, &trpr);
+
+		pcb_fprintf(f, " place %ld %s %.06mm %.06mm %f %d comp\n", subc->ID, fpname, trsc.ox, trsc.oy, trpr.rot - trsc.rot, trpr.on_bottom != trsc.on_bottom);
+	}
+	PCB_END_LOOP;
+
 	fprintf(f, "end board\n");
 	tedax_stackup_uninit(&ctx);
+	htscp_uninit(&subcs);
 	return 0;
 	
 	error:
 	tedax_stackup_uninit(&ctx);
+	htscp_uninit(&subcs);
 	return -1;
 }
 
