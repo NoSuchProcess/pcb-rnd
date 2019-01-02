@@ -236,10 +236,20 @@ int pcb_subc_get_origin(pcb_subc_t *sc, pcb_coord_t *x, pcb_coord_t *y)
 
 int pcb_subc_get_rotation(pcb_subc_t *sc, double *rot)
 {
+	double r, rr;
 	if ((pcb_subc_cache_update(sc) != 0) || (sc->aux_cache[PCB_SUBCH_X] == NULL))
 		return -1;
 
-	*rot = -1 * PCB_RAD_TO_DEG * atan2(sc->aux_cache[PCB_SUBCH_X]->Point2.Y - sc->aux_cache[PCB_SUBCH_X]->Point1.Y, sc->aux_cache[PCB_SUBCH_X]->Point2.X - sc->aux_cache[PCB_SUBCH_X]->Point1.X);
+	r = -1 * PCB_RAD_TO_DEG * atan2(sc->aux_cache[PCB_SUBCH_X]->Point2.Y - sc->aux_cache[PCB_SUBCH_X]->Point1.Y, sc->aux_cache[PCB_SUBCH_X]->Point2.X - sc->aux_cache[PCB_SUBCH_X]->Point1.X);
+
+	/* ugly hack to get round angles where possible: if error to a round angle
+	   is less than 1/10000, it was meant to be round, just got ruined by
+	   rounding errors */
+	rr = pcb_round(r*10000.0) / 10000.0;
+	if (rr - r < 0.0001)
+		*rot = rr;
+	else
+		*rot = r;
 	return 0;
 }
 
