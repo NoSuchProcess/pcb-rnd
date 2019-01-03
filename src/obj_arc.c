@@ -306,7 +306,7 @@ int pcb_arc_eq(const pcb_host_trans_t *tr1, const pcb_arc_t *a1, const pcb_host_
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, a1) && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, a2)) {
 		if (pcb_neq_tr_coords(tr1, a1->X, a1->Y, tr2, a2->X, a2->Y)) return 0;
-		if (pcb_normalize_angle(pcb_round(a1->StartAngle * sgn1 + tr1->rot)) != pcb_normalize_angle(pcb_round(a2->StartAngle * sgn2 + tr2->rot))) return 0;
+		if (pcb_normalize_angle(pcb_round(a1->StartAngle * sgn1 + tr1->rot * sgn1)) != pcb_normalize_angle(pcb_round(a2->StartAngle * sgn2 + tr2->rot * sgn2))) return 0;
 		if (pcb_round(a1->Delta * sgn1) != pcb_round(a2->Delta * sgn2)) return 0;
 	}
 
@@ -322,7 +322,7 @@ unsigned int pcb_arc_hash(const pcb_host_trans_t *tr, const pcb_arc_t *a)
 		pcb_coord_t x, y;
 		pcb_hash_tr_coords(tr, &x, &y, a->X, a->Y);
 		crd = pcb_hash_coord(x) ^ pcb_hash_coord(y) ^
-			pcb_hash_coord(pcb_normalize_angle(pcb_round(a->StartAngle*sgn + tr->rot))) ^ pcb_hash_coord(pcb_round(a->Delta * sgn));
+			pcb_hash_coord(pcb_normalize_angle(pcb_round(a->StartAngle*sgn + tr->rot*sgn))) ^ pcb_hash_coord(pcb_round(a->Delta * sgn));
 	}
 
 	return
