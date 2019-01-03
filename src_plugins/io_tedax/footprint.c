@@ -171,31 +171,14 @@ int tedax_pstk_fsave(pcb_pstk_t *padstack, pcb_coord_t ox, pcb_coord_t oy, FILE 
 	return 0;
 }
 
-int tedax_fp_fsave(pcb_data_t *data, FILE *f)
+int tedax_fp_fsave_subc(pcb_subc_t *subc, const char *fpname, FILE *f)
 {
 	htsp_t terms;
 	htsp_entry_t *e;
-
-	htsp_init(&terms, strhash, strkeyeq);
-
-	fprintf(f, "tEDAx v1\n");
-
-	PCB_SUBC_LOOP(data)
-	{
 		pcb_coord_t ox = 0, oy = 0;
-		const char *fpname = NULL;
 		int l;
 
-		fpname = pcb_attribute_get(&subc->Attributes, "tedax::footprint");
-		if (fpname == NULL)
-			fpname = pcb_attribute_get(&subc->Attributes, "visible_footprint");
-		if (fpname == NULL)
-			fpname = pcb_attribute_get(&subc->Attributes, "footprint");
-		if ((fpname == NULL) && (subc->refdes != NULL))
-			fpname = subc->refdes;
-		if (fpname == NULL)
-			fpname = "-";
-
+	htsp_init(&terms, strhash, strkeyeq);
 		pcb_subc_get_origin(subc, &ox, &oy);
 
 		fprintf(f, "\nbegin footprint v1 %s\n", fpname);
@@ -279,13 +262,36 @@ int tedax_fp_fsave(pcb_data_t *data, FILE *f)
 			free(e->key);
 			htsp_delentry(&terms, e);
 		}
+	htsp_uninit(&terms);
+	return 0;
+}
 
+
+int tedax_fp_fsave(pcb_data_t *data, FILE *f)
+{
+	int res = 0;
+
+
+	fprintf(f, "tEDAx v1\n");
+
+	PCB_SUBC_LOOP(data)
+	{
+		const char *fpname = pcb_attribute_get(&subc->Attributes, "tedax::footprint");
+		if (fpname == NULL)
+			fpname = pcb_attribute_get(&subc->Attributes, "visible_footprint");
+		if (fpname == NULL)
+			fpname = pcb_attribute_get(&subc->Attributes, "footprint");
+		if ((fpname == NULL) && (subc->refdes != NULL))
+			fpname = subc->refdes;
+		if (fpname == NULL)
+			fpname = "-";
+
+		res |= tedax_fp_fsave_subc(subc, fpname, f);
 	}
 	PCB_END_LOOP;
 
-	htsp_uninit(&terms);
 
-	return 0;
+	return res;
 }
 
 int tedax_fp_save(pcb_data_t *data, const char *fn)
