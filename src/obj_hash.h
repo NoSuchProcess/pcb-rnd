@@ -52,8 +52,8 @@ PCB_INLINE void pcb_hash_tr_coords(const pcb_host_trans_t *tr, pcb_coord_t *dstx
 {
 	pcb_coord_t px, py;
 
-	px = srcx - tr->ox;
-	py = srcy - tr->oy;
+	px = srcx + tr->ox;
+	py = srcy + tr->oy;
 
 	if ((tr->rot == 0.0) && (!tr->on_bottom)) {
 		*dstx = px;
