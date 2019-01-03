@@ -375,12 +375,15 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 
 int pcb_text_eq(const pcb_host_trans_t *tr1, const pcb_text_t *t1, const pcb_host_trans_t *tr2, const pcb_text_t *t2)
 {
+	double rotdir1 = tr1->on_bottom ? -1.0 : 1.0, rotdir2 = tr2->on_bottom ? -1.0 : 1.0;
+
 	if (pcb_neqs(t1->TextString, t2->TextString)) return 0;
 	if (pcb_neqs(t1->term, t2->term)) return 0;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, t1) && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, t2)) {
 		if (pcb_field_neq(t1, t2, Scale)) return 0;
 		if (pcb_neq_tr_coords(tr1, t1->X, t1->Y, tr2, t2->X, t2->Y)) return 0;
+		if (floor(fmod((t1->rot * rotdir1) + tr1->rot, 360.0)*10000) != floor(fmod((t2->rot * rotdir2) + tr2->rot, 360.0)*10000)) return 0;
 	}
 
 	return 1;
@@ -392,9 +395,10 @@ unsigned int pcb_text_hash(const pcb_host_trans_t *tr, const pcb_text_t *t)
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, t)) {
 		pcb_coord_t x, y;
+		double rotdir = tr->on_bottom ? -1.0 : 1.0;
 
 		pcb_hash_tr_coords(tr, &x, &y, t->X, t->Y);
-		crd = pcb_hash_coord(x) ^ pcb_hash_coord(y) ^ pcb_hash_coord(t->Scale);
+		crd = pcb_hash_coord(x) ^ pcb_hash_coord(y) ^ pcb_hash_coord(t->Scale) ^ pcb_hash_angle(tr, t->rot * rotdir);
 	}
 
 	return pcb_hash_str(t->TextString) ^ pcb_hash_str(t->term) ^ crd;
