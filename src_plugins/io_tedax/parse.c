@@ -27,6 +27,9 @@
  */
 
 #include "config.h"
+
+#include <assert.h>
+
 #include "parse.h"
 #include "error.h"
 #include "compat_misc.h"
@@ -140,3 +143,43 @@ void tedax_fprint_escape(FILE *f, const char *val)
 		}
 	}
 }
+
+#define APPEND(c)  \
+	do { \
+		if (dstlen == 0) { \
+			res = -1; \
+			goto quit; \
+		} \
+		*d = c; \
+		d++; \
+		dstlen--; \
+	} while(0)
+
+int tedax_strncpy_escape(char *dst, int dstlen, const char *val)
+{
+	int res = 0;
+	char *d = dst;
+
+	assert(dstlen > 2);
+	if ((val == NULL) || (*val == '\0')) {
+		dst[0] = '-';
+		dst[1] = '\0';
+		return;
+	}
+	dstlen--; /* one for \0 */
+	for(; *val != '\0'; val++) {
+		switch(*val) {
+			case '\\': APPEND('\\'); APPEND('\\'); break;
+			case '\n': APPEND('\\'); APPEND('n'); break;
+			case '\r': APPEND('\\'); APPEND('r'); break;
+			case '\t': APPEND('\\'); APPEND('t'); break;
+			case ' ': APPEND('\\'); APPEND(' '); break;
+			default:
+				APPEND(*val);
+		}
+	}
+	quit:;
+	*d = '\0';
+	return res;
+}
+

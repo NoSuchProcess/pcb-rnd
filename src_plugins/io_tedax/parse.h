@@ -25,3 +25,5 @@ int tedax_seek_block(FILE *f, const char *blk_name, const char *blk_ver, int sil
 
 /* print val with special chars escaped. Prints a single dash if val is NULL or empty. */
 void tedax_fprint_escape(FILE *f, const char *val);
+int tedax_strncpy_escape(char *dst, int dstlen, const char *val);
+

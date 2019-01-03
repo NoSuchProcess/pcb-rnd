@@ -166,13 +166,25 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 	PCB_SUBC_LOOP(pcb->Data) {
 		pcb_attribute_t *a;
 		pcb_host_trans_t tr;
-		char fpname[256];
+		char fpname[256], refdes[256];
 		pcb_subc_t *proto = htscp_get(&plc.subcs, subc);
 		int n;
 
+		if (subc->refdes != NULL) {
+			if (tedax_strncpy_escape(refdes, sizeof(refdes), subc->refdes) != 0) {
+				pcb_io_incompat_save(pcb->Data, subc, "subc-refdes", "subc refdes too long, using an auto-generated one instead");
+				goto fake_refdes;
+			}
+		}
+		else {
+			fake_refdes:;
+			sprintf(subc->refdes, "ANON%ld", subc->ID);
+		}
+		
+		
 		subc2fpname(fpname, proto);
 		pcb_subc_get_host_trans(subc,  &tr, 0);
-		pcb_fprintf(f, " place %ld %s %.06mm %.06mm %f %d comp\n", subc->ID, fpname, tr.ox, tr.oy, tr.rot, tr.on_bottom);
+		pcb_fprintf(f, " place %s %s %.06mm %.06mm %f %d comp\n", refdes, fpname, tr.ox, tr.oy, tr.rot, tr.on_bottom);
 
 		/* placement text */
 		PCB_TEXT_ALL_LOOP(subc->data) {
@@ -183,7 +195,7 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 					if (lyname != NULL) {
 						gds_t tmp;
 						pcb_fprintf(f, " place_text %s %s %.06mm %.06mm %.06mm %.06mm %d %f ",
-							fpname, *lyname, text->bbox_naked.X1, text->bbox_naked.Y1, text->bbox_naked.X2, text->bbox_naked.Y2,
+							refdes, *lyname, text->bbox_naked.X1, text->bbox_naked.Y1, text->bbox_naked.X2, text->bbox_naked.Y2,
 							text->Scale, text->rot);
 						gds_init(&tmp);
 						pcb_append_dyntext(&tmp, (pcb_any_obj_t *)text, text->TextString);
@@ -199,12 +211,12 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 		/* placement attributes */
 		for(n = 0, a = subc->Attributes.List; n < subc->Attributes.Number; n++,a++) {
 			if ((strcmp(a->name, "footprint") == 0) || (strcmp(a->name, "value") == 0)) {
-				pcb_fprintf(f, " place_fattr %s %s ", fpname, a->name);
+				pcb_fprintf(f, " place_fattr %s %s ", refdes, a->name);
 				tedax_fprint_escape(f, a->value);
 				fputc('\n', f);
 			}
 			else {
-				pcb_fprintf(f, " place_attr %s ", fpname);
+				pcb_fprintf(f, " place_attr %s ", refdes);
 				tedax_fprint_escape(f, a->name);
 				fputc(' ', f);
 				tedax_fprint_escape(f, a->value);
