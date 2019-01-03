@@ -48,19 +48,20 @@ static const drc_rule_t rules[] = {
 	{"design/min_wid",   "copper", "min_size"},
 	{"design/min_slk",   "silk",   "min_size"},
 	{"design/min_drill", "mech",   "min_size"},
-	{NULL, NULL}
 };
 
+#define NUM_RULES (sizeof(rules) / sizeof(rules[0]))
 
 int tedax_drc_fsave(pcb_board_t *pcb, const char *drcid, FILE *f)
 {
 	const drc_rule_t *r;
+	int n;
 
 	fprintf(f, "begin drc v1 ");
 	tedax_fprint_escape(f, drcid);
 	fputc('\n', f);
 
-	for(r = rules; r->conf != NULL; r++) {
+	for(n = 0, r = rules; n < NUM_RULES; r++,n++) {
 		conf_native_t *nat = conf_get_field(r->conf);
 		if ((nat == NULL) || (nat->prop->src == NULL))
 			continue;
