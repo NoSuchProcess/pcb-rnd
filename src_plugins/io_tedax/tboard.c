@@ -30,6 +30,7 @@
 
 #include <stdio.h>
 #include <genht/htsp.h>
+#include <genht/htsi.h>
 #include <genht/hash.h>
 
 #include "../src_plugins/lib_netmap/placement.h"
@@ -102,6 +103,8 @@ static int tedax_global_subc_fwrite(pcb_placement_t *ctx, FILE *f)
 
 int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 {
+	htsi_t urefdes;
+	htsi_entry_t *re;
 	pcb_layergrp_id_t gid;
 	int n;
 	pcb_attribute_t *a;
@@ -111,6 +114,7 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 	static const char *netlistid = "board_netlist";
 	static const char *drcid     = "board_drc";
 
+	htsi_init(&urefdes, strhash, strkeyeq);
 	tedax_stackup_init(&ctx);
 
 	fputc('\n', f);
@@ -175,13 +179,17 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 				pcb_io_incompat_save(pcb->Data, subc, "subc-refdes", "subc refdes too long, using an auto-generated one instead");
 				goto fake_refdes;
 			}
+			if (htsi_has(&urefdes, refdes)) {
+				pcb_io_incompat_save(pcb->Data, subc, "subc-refdes", "duplicate subc refdes; using an auto-generated one instead - netlist is most probably broken");
+				goto fake_refdes;
+			}
 		}
 		else {
 			fake_refdes:;
-			sprintf(subc->refdes, "ANON%ld", subc->ID);
+			sprintf(refdes, "ANON%ld", subc->ID);
 		}
-		
-		
+		htsi_insert(&urefdes, pcb_strdup(refdes), 1);
+
 		subc2fpname(fpname, proto);
 		pcb_subc_get_host_trans(subc,  &tr, 0);
 		pcb_fprintf(f, " place %s %s %.06mm %.06mm %f %d comp\n", refdes, fpname, tr.ox, tr.oy, tr.rot, tr.on_bottom);
@@ -227,11 +235,15 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 	PCB_END_LOOP;
 
 	fprintf(f, "end board\n");
+	for(re = htsi_first(&urefdes); re != NULL; re = htsi_next(&urefdes, re)) free(re->key);
+	htsi_uninit(&urefdes);
 	tedax_stackup_uninit(&ctx);
 	pcb_placement_uninit(&plc);
 	return 0;
 	
 	error:
+	for(re = htsi_first(&urefdes); re != NULL; re = htsi_next(&urefdes, re)) free(re->key);
+	htsi_uninit(&urefdes);
 	tedax_stackup_uninit(&ctx);
 	pcb_placement_uninit(&plc);
 	return -1;
