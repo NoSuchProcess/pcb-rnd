@@ -522,6 +522,12 @@ static int field_polygon(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t 
 		PCB_QRY_RET_INV(res);
 
 	switch(fh1) {
+		case query_fields_clearance:
+			if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, p))
+				PCB_QRY_RET_INT(res, pcb_round((double)p->Clearance/2.0));
+			else
+				PCB_QRY_RET_INV(res);
+			break;
 		case query_fields_points: PCB_QRY_RET_INT(res, p->PointN);
 		case query_fields_area:
 			PCB_QRY_RET_DBL(res, p->Clipped->contours->area);
