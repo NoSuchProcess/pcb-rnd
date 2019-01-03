@@ -102,18 +102,28 @@ static void pcb_placement_uninit(pcb_placement_t *ctx)
 	pcb_data_uninit(&ctx->data);
 }
 
-static int tedax_global_subc_fwrite(pcb_placement_t *ctx, FILE *f)
+static void pcb_placement_build(pcb_placement_t *ctx, pcb_data_t *data)
 {
-	PCB_SUBC_LOOP(ctx->pcb->Data) {
+	PCB_SUBC_LOOP(data) {
 		if (!htscp_has(&ctx->subcs, subc)) {
-			char fpname[256];
-			subc2fpname(fpname, subc);
-			fprintf(f, "\nbegin footprint v1 %s\n", fpname);
-			fprintf(f, "end footprint\n");
 			htscp_insert(&ctx->subcs, subc, subc);
 		}
 	}
 	PCB_END_LOOP;
+}
+
+static int tedax_global_subc_fwrite(pcb_placement_t *ctx, FILE *f)
+{
+	htscp_entry_t *e;
+
+	pcb_placement_build(ctx, ctx->pcb->Data);
+	for(e = htscp_first(&ctx->subcs); e != NULL; e = htscp_next(&ctx->subcs, e)) {
+		pcb_subc_t *subc = e->value;
+		char fpname[256];
+		subc2fpname(fpname, subc);
+		fprintf(f, "\nbegin footprint v1 %s\n", fpname);
+		fprintf(f, "end footprint\n");
+	}
 	return 0;
 }
 
