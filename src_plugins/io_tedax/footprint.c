@@ -171,7 +171,7 @@ int tedax_pstk_fsave(pcb_pstk_t *padstack, pcb_coord_t ox, pcb_coord_t oy, FILE 
 	return 0;
 }
 
-int tedax_fp_fsave_subc(pcb_subc_t *subc, const char *fpname, FILE *f)
+int tedax_fp_fsave_subc(pcb_subc_t *subc, const char *fpname, int lyrecipe, FILE *f)
 {
 	htsp_t terms;
 	htsp_entry_t *e;
@@ -185,8 +185,13 @@ int tedax_fp_fsave_subc(pcb_subc_t *subc, const char *fpname, FILE *f)
 
 		for(l = 0; l < subc->data->LayerN; l++) {
 			pcb_layer_t *ly = &subc->data->Layer[l];
-			pcb_layer_type_t lyt = pcb_layer_flags_(ly);
+			pcb_layer_type_t lyt;
 			const char *lloc, *ltyp;
+
+			if (lyrecipe && ly->is_bound)
+				lyt = ly->meta.bound.type;
+			else
+				lyt = pcb_layer_flags_(ly);
 
 			get_layer_props(lyt, lloc, ltyp, continue);
 
@@ -286,7 +291,7 @@ int tedax_fp_fsave(pcb_data_t *data, FILE *f)
 		if (fpname == NULL)
 			fpname = "-";
 
-		res |= tedax_fp_fsave_subc(subc, fpname, f);
+		res |= tedax_fp_fsave_subc(subc, fpname, 0, f);
 	}
 	PCB_END_LOOP;
 

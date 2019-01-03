@@ -90,8 +90,11 @@ static int tedax_global_subc_fwrite(pcb_placement_t *ctx, FILE *f)
 	for(e = htscp_first(&ctx->subcs); e != NULL; e = htscp_next(&ctx->subcs, e)) {
 		pcb_subc_t *subc = e->value;
 		char fpname[256];
+		int res;
+
 		subc2fpname(fpname, subc);
-		assert(tedax_fp_fsave_subc(subc, fpname, f) == 0);
+		res = tedax_fp_fsave_subc(subc, fpname, 1, f);
+		assert(res == 0);
 	}
 	return 0;
 }
