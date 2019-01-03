@@ -82,6 +82,7 @@
 - BUG: plain old text in subc is not rotated on arbitrary rotate buffer by 15 deg [report: Igor2]
 - DOC: DAD widgets: picture, picture button, color
 - BUG: Adding a new route style via the route-style dialog doesn't update the menu (Edit->Route Style). [report: Ade]
+- BUG: Load a footprint using the library dialog {w l} into the buffer. Flip the board with the tab key and the refdes border in the buffer object flips vertically the wrong way. Only occurs when loading footprint, not when copying. [report: Ade]
 
 2. For later releases ===============================================================================
 - CLEANUP: eliminate PCB_MOVE, remove move.h from box.h
