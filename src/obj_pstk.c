@@ -223,7 +223,7 @@ int pcb_pstk_eq(const pcb_host_trans_t *tr1, const pcb_pstk_t *p1, const pcb_hos
 {
 TODO("padstack: should compare shape by shape: a 180 deg rotated or mirrored rectangle is still just the same rectangle!")
 	if (pcb_field_neq(p1, p2, smirror) || pcb_field_neq(p1, p2, xmirror)) return 0;
-	if (floor((p1->rot + tr1->rot)*10000) != floor((p2->rot + tr2->rot)*10000)) return 0;
+	if (floor(fmod(p1->rot + tr1->rot, 360.0)*10000) != floor(fmod(p2->rot + tr2->rot, 360.0)*10000)) return 0;
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, p1) && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, p2)) {
 		pcb_coord_t x1, y1, x2, y2;
 		
