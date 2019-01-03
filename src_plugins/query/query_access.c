@@ -368,7 +368,7 @@ static int field_line(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 		case query_fields_x2:         PCB_QRY_RET_INT(res, l->Point2.X);
 		case query_fields_y2:         PCB_QRY_RET_INT(res, l->Point2.Y);
 		case query_fields_thickness:  PCB_QRY_RET_INT(res, l->Thickness);
-		case query_fields_clearance:  PCB_QRY_RET_INT(res, l->Clearance);
+		case query_fields_clearance:  PCB_QRY_RET_INT(res, pcb_round((double)l->Clearance/2.0));
 		case query_fields_length:
 			PCB_QRY_RET_INT(res, ((pcb_coord_t)pcb_round(sqrt(pcb_line_len2(l)))));
 			break;
@@ -437,7 +437,7 @@ static int field_arc(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 		case query_fields_cy:
 		case query_fields_y:         PCB_QRY_RET_INT(res, a->Y);
 		case query_fields_thickness: PCB_QRY_RET_INT(res, a->Thickness);
-		case query_fields_clearance: PCB_QRY_RET_INT(res, a->Clearance);
+		case query_fields_clearance: PCB_QRY_RET_INT(res, pcb_round((double)a->Clearance/2.0));
 		case query_fields_length:
 			PCB_QRY_RET_INT(res, ((pcb_coord_t)pcb_round(pcb_arc_len(a))));
 			break;
