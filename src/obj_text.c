@@ -379,6 +379,8 @@ int pcb_text_eq(const pcb_host_trans_t *tr1, const pcb_text_t *t1, const pcb_hos
 
 	if (pcb_neqs(t1->TextString, t2->TextString)) return 0;
 	if (pcb_neqs(t1->term, t2->term)) return 0;
+	if (pcb_field_neq(t1, t2, thickness)) return 0;
+	if (pcb_field_neq(t1, t2, fid)) return 0;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, t1) && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, t2)) {
 		if (pcb_field_neq(t1, t2, Scale)) return 0;
@@ -401,7 +403,8 @@ unsigned int pcb_text_hash(const pcb_host_trans_t *tr, const pcb_text_t *t)
 		crd = pcb_hash_coord(x) ^ pcb_hash_coord(y) ^ pcb_hash_coord(t->Scale) ^ pcb_hash_angle(tr, t->rot * rotdir);
 	}
 
-	return pcb_hash_str(t->TextString) ^ pcb_hash_str(t->term) ^ crd;
+	return pcb_hash_str(t->TextString) ^ pcb_hash_str(t->term) ^
+		pcb_hash_coord(t->thickness) ^ (unsigned)t->fid ^ crd;
 }
 
 
