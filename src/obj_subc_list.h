@@ -69,7 +69,7 @@ switch(1) { \
 			state = htscp_alloc(pcb_subc_hash, pcb_subc_eq); \
 		if (htscp_has(state, loop_elem)) \
 			continue; \
-		htscp_set(state, loop_elem, 1); \
+		htscp_set(state, loop_elem, loop_elem); \
 	} \
 }
 
