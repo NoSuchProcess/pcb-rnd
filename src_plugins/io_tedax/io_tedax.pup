@@ -8,5 +8,6 @@ $fmt-feature-r tEDAx footprint (any version)
 $fmt-feature-w tEDAx footprint (any version)
 $package io-standard
 dep lib_compat_help
+dep lib_netmap
 default buildin
 autoload 1

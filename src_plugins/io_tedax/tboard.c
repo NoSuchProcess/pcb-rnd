@@ -32,6 +32,8 @@
 #include <genht/htsp.h>
 #include <genht/hash.h>
 
+#include "../src_plugins/lib_netmap/placement.h"
+
 #include "board.h"
 #include "data.h"
 #include "tboard.h"
@@ -78,38 +80,6 @@ static int tedax_global_pstk_fwrite(pcb_board_t *pcb, FILE *f)
 		free(e->key);
 	htsp_uninit(&seen);
 	return 0;
-}
-
-typedef struct {
-	htscp_t subcs;
-	pcb_data_t data; /* temp buffer to place prototype subcs in */
-	pcb_board_t *pcb;
-} pcb_placement_t;
-
-
-static void pcb_placement_init(pcb_placement_t *ctx, pcb_board_t *pcb)
-{
-	memset(ctx, 0, sizeof(pcb_placement_t));
-	htscp_init(&ctx->subcs, pcb_subc_hash, pcb_subc_eq);
-	pcb_data_init(&ctx->data);
-	pcb_data_bind_board_layers(pcb, &ctx->data, 0);
-	ctx->pcb = pcb;
-}
-
-static void pcb_placement_uninit(pcb_placement_t *ctx)
-{
-	htscp_uninit(&ctx->subcs);
-	pcb_data_uninit(&ctx->data);
-}
-
-static void pcb_placement_build(pcb_placement_t *ctx, pcb_data_t *data)
-{
-	PCB_SUBC_LOOP(data) {
-		if (!htscp_has(&ctx->subcs, subc)) {
-			htscp_insert(&ctx->subcs, subc, subc);
-		}
-	}
-	PCB_END_LOOP;
 }
 
 static int tedax_global_subc_fwrite(pcb_placement_t *ctx, FILE *f)
