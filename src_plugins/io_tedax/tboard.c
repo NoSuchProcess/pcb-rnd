@@ -172,6 +172,26 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 		pcb_subc_get_host_trans(subc,  &tr, 0);
 
 		pcb_fprintf(f, " place %ld %s %.06mm %.06mm %f %d comp\n", subc->ID, fpname, tr.ox, tr.oy, tr.rot, tr.on_bottom);
+		PCB_TEXT_ALL_LOOP(subc->data) {
+			if (PCB_FLAG_TEST(PCB_FLAG_FLOATER, text)) {
+				pcb_layer_t *rl = pcb_layer_get_real(layer); /* it is slower to resolve the layer here than in an outer per-layer-loop, but we expect only a few floater text objects, code simplicity is more important */
+				if (rl != NULL) {
+					const char **lyname = vtp0_get(&ctx.g2n, rl->meta.real.grp, 0);
+					if (lyname != NULL) {
+						gds_t tmp;
+						pcb_fprintf(f, " place_text %s %s %.06mm %.06mm %.06mm %.06mm %d %f ",
+							fpname, *lyname, text->bbox_naked.X1, text->bbox_naked.Y1, text->bbox_naked.X2, text->bbox_naked.Y2,
+							text->Scale, text->rot);
+						gds_init(&tmp);
+						pcb_append_dyntext(&tmp, text, text->TextString);
+						tedax_fprint_escape(f, tmp.array);
+						gds_uninit(&tmp);
+						fputc('\n', f);
+					}
+				}
+			}
+		}
+		PCB_ENDALL_LOOP;
 	}
 	PCB_END_LOOP;
 
