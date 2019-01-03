@@ -38,32 +38,33 @@
 
 typedef struct {
 	const char *conf;    /* full path in the conf */
-	const char *tedax;   /* "lloc ltype kind" for tEDAx */
-} drc_out_rule_t;
+	const char *ttype;   /* tEDAx layer type */
+	const char *tkind;   /* tEDAx layer kind */
+} drc_rule_t;
 
-static const drc_out_rule_t out_rules[] = {
-	{"design/bloat",     "all copper gap"},
-	{"design/shrink",    "all copper overlap"},
-	{"design/min_wid",   "all copper min_size"},
-	{"design/min_slk",   "all silk min_size"},
-	{"design/min_drill", "all mech min_size"},
+static const drc_rule_t rules[] = {
+	{"design/bloat",     "copper", "gap"},
+	{"design/shrink",    "copper", "overlap"},
+	{"design/min_wid",   "copper", "min_size"},
+	{"design/min_slk",   "silk",   "min_size"},
+	{"design/min_drill", "mech",   "min_size"},
 	{NULL, NULL}
 };
 
 
 int tedax_drc_fsave(pcb_board_t *pcb, const char *drcid, FILE *f)
 {
-	const drc_out_rule_t *r;
+	const drc_rule_t *r;
 
 	fprintf(f, "begin drc v1 ");
 	tedax_fprint_escape(f, drcid);
 	fputc('\n', f);
 
-	for(r = out_rules; r->conf != NULL; r++) {
+	for(r = rules; r->conf != NULL; r++) {
 		conf_native_t *nat = conf_get_field(r->conf);
 		if ((nat == NULL) || (nat->prop->src == NULL))
 			continue;
-		pcb_fprintf(f, " rule %s %.06mm pcb_rnd_old_drc_from_conf\n", r->tedax, nat->val.coord[0]);
+		pcb_fprintf(f, " rule all %s %s %.06mm pcb_rnd_old_drc_from_conf\n", r->ttype, r->tkind, nat->val.coord[0]);
 	}
 
 	fprintf(f, "end drc\n");
