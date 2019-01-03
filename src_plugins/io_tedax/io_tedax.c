@@ -154,6 +154,11 @@ static fgw_error_t pcb_act_LoadtedaxFrom(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		PCB_ACT_IRES(tedax_layers_load(PCB_PASTEBUFFER->Data, fname));
 		return 0;
 	}
+	if (pcb_strcasecmp(type, "drc") == 0) {
+		gen_load(drc, fname);
+		PCB_ACT_IRES(tedax_drc_load(PCB, fname));
+		return 0;
+	}
 	PCB_ACT_FAIL(Savetedax);
 }
 

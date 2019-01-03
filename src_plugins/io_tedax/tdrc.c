@@ -88,4 +88,59 @@ int tedax_drc_save(pcb_board_t *pcb, const char *drcid, const char *fn)
 	return res;
 }
 
+int tedax_drc_fload(pcb_board_t *pcb, FILE *f)
+{
+	const drc_rule_t *r;
+	char line[520], *argv[16];
+	int argc, n;
+	pcb_coord_t val[NUM_RULES] = {0};
+
+	if (tedax_seek_hdr(f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
+		return -1;
+
+	if ((argc = tedax_seek_block(f, "drc", "v1", 1, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) < 1)
+		return -1;
+
+	while((argc = tedax_getline(f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {
+		if (strcmp(argv[0], "rule") == 0) {
+			double d;
+			for(n = 0, r = rules; n < NUM_RULES; r++,n++) {
+				pcb_bool succ;
+				if ((strcmp(argv[2], r->ttype) != 0) || (strcmp(argv[3], r->tkind) != 0))
+					continue;
+				d = pcb_get_value(argv[4], "mm", NULL, &succ);
+				if (succ) {
+					if (d > val[n])
+						val[n] = d;
+				}
+				else
+					pcb_message(PCB_MSG_ERROR, "ignoring invalid numeric value '%s'\n", argv[4]);
+			}
+		}
+		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "drc") == 0))
+			break;
+		else
+			pcb_message(PCB_MSG_ERROR, "ignoring invalid command in drc %s\n", argv[0]);
+	}
+
+	for(n = 0, r = rules; n < NUM_RULES; r++,n++)
+		conf_setf(CFR_DESIGN, r->conf, -1, "%$mm", val[n]);
+	return 0;
+}
+
+int tedax_drc_load(pcb_board_t *pcb, const char *fn)
+{
+	int res;
+	FILE *f;
+
+	f = pcb_fopen(fn, "r");
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "tedax_drc_load(): can't open %s for reading\n", fn);
+		return -1;
+	}
+	res = tedax_drc_fload(pcb, f);
+	fclose(f);
+	return res;
+}
+
 
