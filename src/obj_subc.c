@@ -297,6 +297,7 @@ int pcb_subc_get_host_trans(pcb_subc_t *sc, pcb_host_trans_t *tr, int neg)
 
 	if (neg) {
 		tr->rot = -tr->rot;
+		rr = -rr;
 		tr->ox = -tr->ox;
 		tr->oy = -tr->oy;
 	}
