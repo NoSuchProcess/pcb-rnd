@@ -287,7 +287,7 @@ static void get_args(int argc, char ** argv)
 				exit(0);
 			}
 			else if (!strcmp(opt, "verbose") || !strcmp(opt, "v")) {
-				char tmp[16];
+				char tmp[64];
 				sprintf(tmp, "%ld", conf_g2pr.utils.gsch2pcb_rnd.verbose + 1);
 				conf_set(CFR_CLI, "utils/gsch2pcb_rnd/verbose", -1, tmp, POL_OVERWRITE);
 				continue;
