@@ -162,15 +162,14 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 	PCB_END_LOOP;
 
 	PCB_SUBC_LOOP(pcb->Data) {
-		pcb_host_trans_t trsc, trpr;
+		pcb_host_trans_t tr;
 		char fpname[256];
 		pcb_subc_t *proto = htscp_get(&plc.subcs, subc);
 		subc2fpname(fpname, proto);
 
-		pcb_subc_get_host_trans(subc,  &trsc, 0);
-		pcb_subc_get_host_trans(proto, &trpr, 0);
+		pcb_subc_get_host_trans(subc,  &tr, 0);
 
-		pcb_fprintf(f, " place %ld %s %.06mm %.06mm %f %d comp\n", subc->ID, fpname, trsc.ox, trsc.oy, trpr.rot - trsc.rot, trpr.on_bottom != trsc.on_bottom);
+		pcb_fprintf(f, " place %ld %s %.06mm %.06mm %f %d comp\n", subc->ID, fpname, tr.ox, tr.oy, tr.rot, tr.on_bottom);
 	}
 	PCB_END_LOOP;
 
