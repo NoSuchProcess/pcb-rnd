@@ -273,7 +273,7 @@ int pcb_subc_get_side(pcb_subc_t *sc, int *on_bottom)
 	return 0;
 }
 
-int pcb_subc_get_host_trans(pcb_subc_t *sc, pcb_host_trans_t *tr)
+int pcb_subc_get_host_trans(pcb_subc_t *sc, pcb_host_trans_t *tr, int neg)
 {
 	int res = 0;
 	double rr;
@@ -294,6 +294,13 @@ int pcb_subc_get_host_trans(pcb_subc_t *sc, pcb_host_trans_t *tr)
 	}
 
 	rr = tr->rot / PCB_RAD_TO_DEG;
+
+	if (neg) {
+		tr->rot = -tr->rot;
+		tr->ox = -tr->ox;
+		tr->oy = -tr->oy;
+	}
+
 	tr->cosa = cos(rr);
 	tr->sina = sin(rr);
 

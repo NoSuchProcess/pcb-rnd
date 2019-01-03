@@ -57,8 +57,8 @@ TODO("todo")
 		if (arclist_length(&ly1->Arc) != arclist_length(&ly2->Arc)) return 0;
 	}
 
-	pcb_subc_get_host_trans(sc1, &tr1);
-	pcb_subc_get_host_trans(sc2, &tr2);
+	pcb_subc_get_host_trans(sc1, &tr1, 1);
+	pcb_subc_get_host_trans(sc2, &tr2, 1);
 
 	for(lid = 0; lid < sc1->data->LayerN; lid++) {
 		pcb_line_t *l1, *l2;
@@ -117,7 +117,7 @@ unsigned int pcb_subc_hash(pcb_subc_t *sc)
 	pcb_host_trans_t tr;
 	gdl_iterator_t it;
 
-	pcb_subc_get_host_trans(sc, &tr);
+	pcb_subc_get_host_trans(sc, &tr, 1);
 
 	hash = sc->data->LayerN;
 
