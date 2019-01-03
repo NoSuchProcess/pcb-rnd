@@ -80,18 +80,41 @@ static int tedax_global_pstk_fwrite(pcb_board_t *pcb, FILE *f)
 	return 0;
 }
 
-static int tedax_global_subc_fwrite(htscp_t *subcs, pcb_board_t *pcb, FILE *f)
+typedef struct {
+	htscp_t subcs;
+	pcb_data_t data; /* temp buffer to place prototype subcs in */
+	pcb_board_t *pcb;
+} pcb_placement_t;
+
+
+static void pcb_placement_init(pcb_placement_t *ctx, pcb_board_t *pcb)
 {
-	PCB_SUBC_LOOP(pcb->Data) {
-		if (!htscp_has(subcs, subc)) {
+	memset(ctx, 0, sizeof(pcb_placement_t));
+	htscp_init(&ctx->subcs, pcb_subc_hash, pcb_subc_eq);
+	pcb_data_init(&ctx->data);
+	pcb_data_bind_board_layers(pcb, &ctx->data, 0);
+	ctx->pcb = pcb;
+}
+
+static void pcb_placement_uninit(pcb_placement_t *ctx)
+{
+	htscp_uninit(&ctx->subcs);
+	pcb_data_uninit(&ctx->data);
+}
+
+static int tedax_global_subc_fwrite(pcb_placement_t *ctx, FILE *f)
+{
+	PCB_SUBC_LOOP(ctx->pcb->Data) {
+		if (!htscp_has(&ctx->subcs, subc)) {
 			char fpname[256];
 			subc2fpname(fpname, subc);
 			fprintf(f, "\nbegin footprint v1 %s\n", fpname);
 			fprintf(f, "end footprint\n");
-			htscp_insert(subcs, subc, subc);
+			htscp_insert(&ctx->subcs, subc, subc);
 		}
 	}
 	PCB_END_LOOP;
+	return 0;
 }
 
 
@@ -101,7 +124,7 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 	int n;
 	pcb_attribute_t *a;
 	tedax_stackup_t ctx;
-	htscp_t subcs;
+	pcb_placement_t plc;
 	static const char *stackupid = "board_stackup";
 	static const char *netlistid = "board_netlist";
 	static const char *drcid     = "board_drc";
@@ -115,8 +138,8 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 	tedax_net_fsave(pcb, netlistid, f);
 
 	fputc('\n', f);
-	htscp_init(&subcs, pcb_subc_hash, pcb_subc_eq);
-	tedax_global_subc_fwrite(&subcs, pcb, f);
+	pcb_placement_init(&plc, pcb);
+	tedax_global_subc_fwrite(&plc, f);
 
 	fputc('\n', f);
 	if (tedax_stackup_fsave(&ctx, pcb, stackupid, f) != 0) {
@@ -161,7 +184,7 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 	PCB_SUBC_LOOP(pcb->Data) {
 		pcb_host_trans_t trsc, trpr;
 		char fpname[256];
-		pcb_subc_t *proto = htscp_get(&subcs, subc);
+		pcb_subc_t *proto = htscp_get(&plc.subcs, subc);
 		subc2fpname(fpname, proto);
 
 		pcb_subc_get_host_trans(subc,  &trsc, 0);
@@ -173,12 +196,12 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 
 	fprintf(f, "end board\n");
 	tedax_stackup_uninit(&ctx);
-	htscp_uninit(&subcs);
+	pcb_placement_uninit(&plc);
 	return 0;
 	
 	error:
 	tedax_stackup_uninit(&ctx);
-	htscp_uninit(&subcs);
+	pcb_placement_uninit(&plc);
 	return -1;
 }
 
