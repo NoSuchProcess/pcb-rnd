@@ -164,26 +164,29 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 	PCB_END_LOOP;
 
 	PCB_SUBC_LOOP(pcb->Data) {
+		pcb_attribute_t *a;
 		pcb_host_trans_t tr;
 		char fpname[256];
 		pcb_subc_t *proto = htscp_get(&plc.subcs, subc);
+		int n;
+
 		subc2fpname(fpname, proto);
-
 		pcb_subc_get_host_trans(subc,  &tr, 0);
-
 		pcb_fprintf(f, " place %ld %s %.06mm %.06mm %f %d comp\n", subc->ID, fpname, tr.ox, tr.oy, tr.rot, tr.on_bottom);
+
+		/* placement text */
 		PCB_TEXT_ALL_LOOP(subc->data) {
 			if (PCB_FLAG_TEST(PCB_FLAG_FLOATER, text)) {
 				pcb_layer_t *rl = pcb_layer_get_real(layer); /* it is slower to resolve the layer here than in an outer per-layer-loop, but we expect only a few floater text objects, code simplicity is more important */
 				if (rl != NULL) {
-					const char **lyname = vtp0_get(&ctx.g2n, rl->meta.real.grp, 0);
+					const char **lyname = (const char **)vtp0_get(&ctx.g2n, rl->meta.real.grp, 0);
 					if (lyname != NULL) {
 						gds_t tmp;
 						pcb_fprintf(f, " place_text %s %s %.06mm %.06mm %.06mm %.06mm %d %f ",
 							fpname, *lyname, text->bbox_naked.X1, text->bbox_naked.Y1, text->bbox_naked.X2, text->bbox_naked.Y2,
 							text->Scale, text->rot);
 						gds_init(&tmp);
-						pcb_append_dyntext(&tmp, text, text->TextString);
+						pcb_append_dyntext(&tmp, (pcb_any_obj_t *)text, text->TextString);
 						tedax_fprint_escape(f, tmp.array);
 						gds_uninit(&tmp);
 						fputc('\n', f);
@@ -192,6 +195,22 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 			}
 		}
 		PCB_ENDALL_LOOP;
+
+		/* placement attributes */
+		for(n = 0, a = subc->Attributes.List; n < subc->Attributes.Number; n++,a++) {
+			if ((strcmp(a->name, "footprint") == 0) || (strcmp(a->name, "value") == 0)) {
+				pcb_fprintf(f, " place_fattr %s %s ", fpname, a->name);
+				tedax_fprint_escape(f, a->value);
+				fputc('\n', f);
+			}
+			else {
+				pcb_fprintf(f, " place_attr %s ", fpname);
+				tedax_fprint_escape(f, a->name);
+				fputc(' ', f);
+				tedax_fprint_escape(f, a->value);
+				fputc('\n', f);
+			}
+		}
 	}
 	PCB_END_LOOP;
 
