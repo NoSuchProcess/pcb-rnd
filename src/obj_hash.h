@@ -74,7 +74,7 @@ PCB_INLINE void pcb_hash_tr_coords(const pcb_host_trans_t *tr, pcb_coord_t *dstx
 PCB_INLINE unsigned pcb_hash_angle(const pcb_host_trans_t *tr, pcb_angle_t ang)
 {
 	long l;
-	ang -= tr->rot;
+	ang += tr->rot;
 	ang *= 10000;
 	l = floor(ang);
 	return murmurhash(&l, sizeof(l));
