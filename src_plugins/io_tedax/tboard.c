@@ -91,8 +91,7 @@ static int tedax_global_subc_fwrite(pcb_placement_t *ctx, FILE *f)
 		pcb_subc_t *subc = e->value;
 		char fpname[256];
 		subc2fpname(fpname, subc);
-		fprintf(f, "\nbegin footprint v1 %s\n", fpname);
-		fprintf(f, "end footprint\n");
+		assert(tedax_fp_fsave_subc(subc, fpname, f) == 0);
 	}
 	return 0;
 }
