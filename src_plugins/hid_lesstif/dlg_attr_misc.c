@@ -229,7 +229,7 @@ static void ltf_colorbtn_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_color_t
 	pcb_ltf_color_button_recolor(display, btn, clr);
 }
 
-#define CPACT "FallbackColorPick"
+#define CPACT "gui_FallbackColorPick"
 
 static void ltf_colorbtn_valchg(Widget w, XtPointer dlg_widget_, XtPointer call_data)
 {
