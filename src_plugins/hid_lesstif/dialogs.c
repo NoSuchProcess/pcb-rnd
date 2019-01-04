@@ -51,7 +51,8 @@ static int wait_for_dialog(Widget w)
 		XtAppNextEvent(app_context, &e);
 		XtDispatchEvent(&e);
 	}
-	XtUnmanageChild(w);
+	if (XtIsManaged(w))
+		XtUnmanageChild(w);
 	return ok;
 }
 
