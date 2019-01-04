@@ -30,6 +30,7 @@
 
 #include <Xm/PanedW.h>
 #include "wt_xpm.h"
+#include "wt_colorbtn.h"
 
 static void ltf_progress_set(lesstif_attr_dlg_t *ctx, int idx, double val)
 {
@@ -218,6 +219,13 @@ static Widget ltf_picture_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 static Widget ltf_picbutton_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
 {
 	Widget pic = pcb_ltf_xpm_button(display, parent, XmStrCast("dad_picture"), attr->enumerations);
+	XtManageChild(pic);
+	return pic;
+}
+
+static Widget ltf_colorbtn_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
+{
+	Widget pic = pcb_ltf_color_button(display, parent, XmStrCast("dad_picture"), &attr->default_val.clr_value);
 	XtManageChild(pic);
 	return pic;
 }
