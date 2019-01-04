@@ -223,7 +223,7 @@ static Widget ltf_picbutton_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_h
 	return pic;
 }
 
-static void ltf_colorbtn_set(lesstif_attr_dlg_t *ctx, int idx, pcb_color_t *clr)
+static void ltf_colorbtn_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_color_t *clr)
 {
 	Widget btn = ctx->wl[idx];
 	pcb_ltf_color_button_recolor(display, btn, clr);
