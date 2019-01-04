@@ -697,7 +697,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, att
 			break;
 
 		case PCB_HATT_COLOR:
-			ctx->wl[i] = ltf_colorbtn_create(ctx, parent, &ctx->attrs[i]);
+			ctx->wl[i] = ltf_colorbtn_create(ctx, parent, &ctx->attrs[i], (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_CLR_STATIC));
 			/* callback handled internally */
 			XtSetValues(ctx->wl[i], stdarg_args, stdarg_n);
 			break;

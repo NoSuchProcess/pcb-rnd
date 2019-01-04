@@ -271,10 +271,11 @@ static void ltf_colorbtn_valchg(Widget w, XtPointer dlg_widget_, XtPointer call_
 }
 
 
-static Widget ltf_colorbtn_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
+static Widget ltf_colorbtn_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr, int readonly)
 {
 	Widget pic = pcb_ltf_color_button(display, parent, XmStrCast("dad_picture"), &attr->default_val.clr_value);
-	XtAddCallback(pic, XmNactivateCallback, ltf_colorbtn_valchg, NULL);
+	if (!readonly)
+		XtAddCallback(pic, XmNactivateCallback, ltf_colorbtn_valchg, NULL);
 	XtManageChild(pic);
 	return pic;
 }
