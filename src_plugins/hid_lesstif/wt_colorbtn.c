@@ -124,14 +124,20 @@ static Pixmap gen_color_bar(Display *display, const pcb_color_t *color, int widt
 	Pixmap px;
 	XImage *image;
 	int depth;
+	GC gc;
+	XGCValues gcv;
 
 	depth = DefaultDepth(display, DefaultScreen(display));
 	visual = DefaultVisual(display, DefaultScreen(display));
 	px = XCreatePixmap(display, DefaultRootWindow(display), width, height, depth);
+	gc = XCreateGC(display, px, 0, &gcv);
 	image = XCreateImage(display, visual, depth, ZPixmap, 0, 0, width, height, 8, 0);
 	image->data = malloc(image->bytes_per_line * height + 16);
 
 	fill_bar(display, image, color, width, height);
+
+	XPutImage(display, px, gc, image, 0, 0, 0, 0, width, height);
+	free(image->data);
 
 	return px;
 }
