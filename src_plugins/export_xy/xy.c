@@ -174,34 +174,6 @@ typedef struct {
 } subst_ctx_t;
 
 /* Find the pick and place 0;0 mark, if there is any */
-static void find_origin_bump(subst_ctx_t *ctx, pcb_any_obj_t *obj)
-{
-	char *attr;
-	int score;
-
-	/* first look for the format-specific attribute */
-	attr = pcb_attribute_get(&obj->Attributes, ctx->origin_tmp);
-	if (attr != NULL) {
-		score = 2;
-		goto found;
-	}
-
-	/* then for the generic pnp-specific attribute */
-	attr = pcb_attribute_get(&obj->Attributes, "pnp-origin");
-	if (attr != NULL) {
-		score = 1;
-		goto found;
-	}
-	return;
-
-	found:;
-	if (score > ctx->origin_score) {
-		ctx->origin_score = score;
-		pcb_obj_center(obj, &ctx->ox, &ctx->oy);
-	}
-}
-
-
 static void find_origin(subst_ctx_t *ctx, const char *format_name)
 {
 	char tmp[128];
@@ -213,8 +185,21 @@ static void find_origin(subst_ctx_t *ctx, const char *format_name)
 	ctx->ox = ctx->oy = 0;
 	ctx->origin_tmp = tmp;
 
-	for(obj = pcb_data_first(&it, PCB->Data, PCB_OBJ_CLASS_REAL); obj != NULL; obj = pcb_data_next(&it))
-		find_origin_bump(ctx, obj);
+	for(obj = pcb_data_first(&it, PCB->Data, PCB_OBJ_CLASS_REAL); obj != NULL; obj = pcb_data_next(&it)) {
+		int score;
+
+		if (pcb_attribute_get(&obj->Attributes, ctx->origin_tmp) != NULL)
+			score = 2; /* first look for the format-specific attribute */
+		else if (pcb_attribute_get(&obj->Attributes, "pnp-origin") != NULL)
+			score = 1; /* then for the generic pnp-specific attribute */
+		else
+			continue;
+
+		if (score > ctx->origin_score) {
+			ctx->origin_score = score;
+			pcb_obj_center(obj, &ctx->ox, &ctx->oy);
+		}
+	}
 }
 
 static void calc_pad_bbox_(subst_ctx_t *ctx, pcb_coord_t *pw, pcb_coord_t *ph, pcb_coord_t *pcx, pcb_coord_t *pcy)
