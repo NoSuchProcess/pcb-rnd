@@ -82,7 +82,8 @@ pcb_action_t dialogs_action_list[] = {
 	{"Fontsel", pcb_act_Fontsel, pcb_acth_Fontsel, pcb_acts_Fontsel},
 
 	{"gui_PromptFor", pcb_act_gui_PromptFor, pcb_acth_gui, NULL},
-	{"gui_MessageBox", pcb_act_gui_MessageBox, pcb_acth_gui, NULL}
+	{"gui_MessageBox", pcb_act_gui_MessageBox, pcb_acth_gui, NULL},
+	{"gui_FallbackColorPick", pcb_act_gui_FallbackColorPick, pcb_acth_gui, NULL}
 };
 
 static const char *dialogs_cookie = "dialogs plugin";
