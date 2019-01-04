@@ -29,6 +29,7 @@
 
 #include <X11/Xlib.h>
 #include <Xm/PushB.h>
+#include <Xm/Xm.h>
 
 #include "compat_misc.h"
 #include "color.h"
@@ -176,8 +177,27 @@ int pcb_ltf_color_button_recolor(Display *display, Widget btn, const pcb_color_t
 	XtSetArg(args[n], XmNarmPixmap, &px); n++;
 	XtGetValues(btn, args, n);
 
-	if (set_color_bar(display, px, color, 32, 16) == px)
+	if (set_color_bar(display, px, color, 32, 16) == px) {
+		XExposeEvent Event;
+		Dimension w, h;
+
+		n = 0;
+		XtSetArg(args[n], XmNwidth, &w); n++;
+		XtSetArg(args[n], XmNheight, &h); n++;
+		XtGetValues(btn, args, n);
+
+		Event.type = Expose;
+		Event.display = XtDisplay(btn);
+		Event.send_event = True;
+		Event.window = XtWindow(btn);
+		Event.x = 0;
+		Event.y = 0;
+		Event.width = w;
+		Event.height = h;
+		Event.count = 0;
+		XSendEvent(XtDisplay(btn), XtWindow(btn), False, ExposureMask, &Event);
 		return 0;
+	}
 	return -1;
 }
 
