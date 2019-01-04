@@ -229,9 +229,52 @@ static void ltf_colorbtn_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_color_t
 	pcb_ltf_color_button_recolor(display, btn, clr);
 }
 
+#define CPACT "FallbackColorPick"
+
+static void ltf_colorbtn_valchg(Widget w, XtPointer dlg_widget_, XtPointer call_data)
+{
+	const char *new_color;
+	fgw_error_t rs;
+	fgw_arg_t res, argv[2];
+	lesstif_attr_dlg_t *ctx;
+	const pcb_color_t *clr;
+	pcb_color_t nclr;
+	int r, widx = attr_get_idx(w, &ctx);
+	if (widx < 0)
+		return;
+
+	clr = &ctx->attrs[widx].default_val.clr_value;
+
+	argv[0].type = FGW_VOID;
+	argv[1].type = FGW_STR | FGW_DYN;
+	argv[1].val.str = pcb_strdup_printf("#%02x%02x%02x", clr->r, clr->g, clr->b);
+	rs = pcb_actionv_bin(CPACT, &res, 2, argv);
+	if (rs != 0)
+		return;
+
+	if (!(res.type & FGW_STR)) {
+		pcb_message(PCB_MSG_ERROR, CPACT " returned non-string\n");
+		fgw_arg_free(&pcb_fgw, &res);
+		return;
+	}
+
+	r = pcb_color_load_str(&nclr, res.val.str);
+	fgw_arg_free(&pcb_fgw, &res);
+	if (r != 0) {
+		pcb_message(PCB_MSG_ERROR, CPACT " returned invalid color string\n");
+		return;
+	}
+
+	fgw_arg_free(&pcb_fgw, &res);
+	pcb_ltf_color_button_recolor(display, w, &nclr);
+	valchg(w, dlg_widget_, w);
+}
+
+
 static Widget ltf_colorbtn_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
 {
 	Widget pic = pcb_ltf_color_button(display, parent, XmStrCast("dad_picture"), &attr->default_val.clr_value);
+	XtAddCallback(pic, XmNactivateCallback, ltf_colorbtn_valchg, NULL);
 	XtManageChild(pic);
 	return pic;
 }
