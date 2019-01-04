@@ -22,6 +22,7 @@ typedef enum pcb_hatt_compflags_e {
 	PCB_HATF_LABEL       = 2,  /* direct children print label */
 	PCB_HATF_SCROLL      = 4,  /* box/table is scrollable */
 	PCB_HATF_HIDE_TABLAB = 8,  /* hide tab labes of a TABBED - the tab mechanism works, but tab names are not displayed and are not clickable */
+	PCB_HATF_CLR_STATIC  = 8,  /* color that can not be changed */
 	PCB_HATF_LEFT_TAB    = 16, /* display tab labels of TABBED on the left instead of on top (default) */
 	PCB_HATF_TREE_COL    = 32, /* first column of a PCB_HATT_TREE is a tree */
 	PCB_HATF_EXPFILL     = 64  /* for hbox and vbox: expand and fill */
