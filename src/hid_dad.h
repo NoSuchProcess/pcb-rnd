@@ -473,6 +473,7 @@ typedef struct {
 	int retval;
 } pcb_hid_dad_buttons_t;
 
+void pcb_hid_dad_close(void *hid_ctx, pcb_dad_retovr_t *retovr, int retval);
 void pcb_hid_dad_close_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 int pcb_hid_dad_run(void *hid_ctx, pcb_dad_retovr_t *retovr);
 void pcb_hid_iterate(pcb_hid_t *hid);
