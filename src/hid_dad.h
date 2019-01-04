@@ -321,6 +321,7 @@ do { \
 #define PCB_DAD_DEFAULT(table, val)      PCB_DAD_SET_ATTR_FIELD_VAL(table, default_val, val)
 #define PCB_DAD_MINMAX(table, min, max)  (PCB_DAD_SET_ATTR_FIELD(table, min_val, min),PCB_DAD_SET_ATTR_FIELD(table, max_val, max))
 #define PCB_DAD_CHANGE_CB(table, cb)     PCB_DAD_SET_ATTR_FIELD(table, change_cb, cb)
+#define PCB_DAD_ENTER_CB(table, cb)      PCB_DAD_SET_ATTR_FIELD(table, enter_cb, cb)
 #define PCB_DAD_HELP(table, val)         PCB_DAD_SET_ATTR_FIELD(table, help_text, val)
 
 /* safe way to call gui->attr_dlg_set_value() - resets the unused fields */
