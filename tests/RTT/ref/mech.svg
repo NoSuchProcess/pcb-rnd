@@ -4,28 +4,28 @@
 <!--normal-->
  <polygon points="3.0480,4.0640 4.3180,4.0640 4.3180,5.0800 3.0480,5.0800 " stroke-width="0.010" stroke="#548b54" fill="#548b54"/>
  <polygon points="5.0800,4.0640 6.3500,4.0640 6.3500,5.0800 5.0800,5.0800 " stroke-width="0.010" stroke="#548b54" fill="#548b54"/>
- <polygon points="2.9210,1.0160 3.9370,1.0160 3.9370,1.5240 2.9210,1.5240 " stroke-width="0.010" stroke="#cccccc" fill="#cccccc"/>
- <polygon points="4.9530,1.0160 5.9690,1.0160 5.9690,1.5240 4.9530,1.5240 " stroke-width="0.010" stroke="#cccccc" fill="#cccccc"/>
- <line x1="3.3020" y1="2.5400" x2="3.8100" y2="3.0480" stroke-width="0.5080" stroke="#cccccc" stroke-linecap="round"/>
- <line x1="5.3340" y1="2.5400" x2="5.8420" y2="3.0480" stroke-width="0.5080" stroke="#cccccc" stroke-linecap="round"/>
- <polygon points="3.1750,8.1280 4.1910,8.1280 4.1910,8.6360 3.1750,8.6360 " stroke-width="0.010" stroke="#cccccc" fill="#cccccc"/>
- <polygon points="5.2070,8.1280 6.2230,8.1280 6.2230,8.6360 5.2070,8.6360 " stroke-width="0.010" stroke="#cccccc" fill="#cccccc"/>
+ <polygon points="2.9210,1.0160 3.9370,1.0160 3.9370,1.5240 2.9210,1.5240 " stroke-width="0.010" stroke="#aaaaaa" fill="#aaaaaa"/>
+ <polygon points="4.9530,1.0160 5.9690,1.0160 5.9690,1.5240 4.9530,1.5240 " stroke-width="0.010" stroke="#aaaaaa" fill="#aaaaaa"/>
+ <line x1="3.3020" y1="2.5400" x2="3.8100" y2="3.0480" stroke-width="0.5080" stroke="#aaaaaa" stroke-linecap="round"/>
+ <line x1="5.3340" y1="2.5400" x2="5.8420" y2="3.0480" stroke-width="0.5080" stroke="#aaaaaa" stroke-linecap="round"/>
+ <polygon points="3.1750,8.1280 4.1910,8.1280 4.1910,8.6360 3.1750,8.6360 " stroke-width="0.010" stroke="#aaaaaa" fill="#aaaaaa"/>
+ <polygon points="5.2070,8.1280 6.2230,8.1280 6.2230,8.6360 5.2070,8.6360 " stroke-width="0.010" stroke="#aaaaaa" fill="#aaaaaa"/>
  <circle cx="3.5560" cy="2.7940" r="0.1270" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
- <path d="M 3.48457000 2.70887300 A 0.1111 0.1111 0 1 1 3.4516 2.8320" stroke-width="0.0000" stroke="#CC0000" stroke-linecap="round" fill="none"/>
+ <path d="M 3.48457000 2.70887300 A 0.1111 0.1111 0 1 1 3.4516 2.8320" stroke-width="0.0000" stroke="#cc0000" stroke-linecap="round" fill="none"/>
  <circle cx="5.5880" cy="2.7940" r="0.1270" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
 </g>
 <g id="layer_10_bottom">
 <!--normal-->
  <polygon points="3.0480,4.0640 4.3180,4.0640 4.3180,5.0800 3.0480,5.0800 " stroke-width="0.010" stroke="#3a5fcd" fill="#3a5fcd"/>
  <polygon points="5.0800,4.0640 6.3500,4.0640 6.3500,5.0800 5.0800,5.0800 " stroke-width="0.010" stroke="#3a5fcd" fill="#3a5fcd"/>
- <polygon points="3.1750,0.7620 3.9370,0.7620 3.9370,1.7780 3.1750,1.7780 " stroke-width="0.010" stroke="#cccccc" fill="#cccccc"/>
- <polygon points="5.2070,0.7620 5.9690,0.7620 5.9690,1.7780 5.2070,1.7780 " stroke-width="0.010" stroke="#cccccc" fill="#cccccc"/>
- <line x1="3.5560" y1="3.0480" x2="3.5560" y2="2.5400" stroke-width="0.5080" stroke="#cccccc" stroke-linecap="round"/>
- <line x1="5.5880" y1="3.0480" x2="5.5880" y2="2.5400" stroke-width="0.5080" stroke="#cccccc" stroke-linecap="round"/>
- <polygon points="3.4290,7.8740 4.1910,7.8740 4.1910,8.8900 3.4290,8.8900 " stroke-width="0.010" stroke="#cccccc" fill="#cccccc"/>
- <polygon points="5.4610,7.8740 6.2230,7.8740 6.2230,8.8900 5.4610,8.8900 " stroke-width="0.010" stroke="#cccccc" fill="#cccccc"/>
+ <polygon points="3.1750,0.7620 3.9370,0.7620 3.9370,1.7780 3.1750,1.7780 " stroke-width="0.010" stroke="#aaaaaa" fill="#aaaaaa"/>
+ <polygon points="5.2070,0.7620 5.9690,0.7620 5.9690,1.7780 5.2070,1.7780 " stroke-width="0.010" stroke="#aaaaaa" fill="#aaaaaa"/>
+ <line x1="3.5560" y1="3.0480" x2="3.5560" y2="2.5400" stroke-width="0.5080" stroke="#aaaaaa" stroke-linecap="round"/>
+ <line x1="5.5880" y1="3.0480" x2="5.5880" y2="2.5400" stroke-width="0.5080" stroke="#aaaaaa" stroke-linecap="round"/>
+ <polygon points="3.4290,7.8740 4.1910,7.8740 4.1910,8.8900 3.4290,8.8900 " stroke-width="0.010" stroke="#aaaaaa" fill="#aaaaaa"/>
+ <polygon points="5.4610,7.8740 6.2230,7.8740 6.2230,8.8900 5.4610,8.8900 " stroke-width="0.010" stroke="#aaaaaa" fill="#aaaaaa"/>
  <circle cx="3.5560" cy="2.7940" r="0.1270" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
- <path d="M 3.48457000 2.70887300 A 0.1111 0.1111 0 1 1 3.4516 2.8320" stroke-width="0.0000" stroke="#CC0000" stroke-linecap="round" fill="none"/>
+ <path d="M 3.48457000 2.70887300 A 0.1111 0.1111 0 1 1 3.4516 2.8320" stroke-width="0.0000" stroke="#cc0000" stroke-linecap="round" fill="none"/>
  <circle cx="5.5880" cy="2.7940" r="0.1270" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
 </g>
 <g id="layer_3_top">
@@ -39,7 +39,7 @@
  <polygon points="3.4290,8.1280 4.4450,8.1280 4.4450,8.6360 3.4290,8.6360 " stroke-width="0.010" stroke="#7f7f7f" fill="#7f7f7f"/>
  <polygon points="5.4610,8.1280 6.4770,8.1280 6.4770,8.6360 5.4610,8.6360 " stroke-width="0.010" stroke="#7f7f7f" fill="#7f7f7f"/>
  <circle cx="3.5560" cy="2.7940" r="0.1270" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
- <path d="M 3.48457000 2.70887300 A 0.1111 0.1111 0 1 1 3.4516 2.8320" stroke-width="0.0000" stroke="#CC0000" stroke-linecap="round" fill="none"/>
+ <path d="M 3.48457000 2.70887300 A 0.1111 0.1111 0 1 1 3.4516 2.8320" stroke-width="0.0000" stroke="#cc0000" stroke-linecap="round" fill="none"/>
  <circle cx="5.5880" cy="2.7940" r="0.1270" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
 </g>
 <g id="layer_1_topsilk">
@@ -51,7 +51,7 @@
 <g id="layer_-1_unplated-drill">
 <!--normal-->
  <circle cx="3.5560" cy="2.7940" r="0.1270" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
- <path d="M 3.48457000 2.70887300 A 0.1111 0.1111 0 1 1 3.4516 2.8320" stroke-width="0.0000" stroke="#CC0000" stroke-linecap="round" fill="none"/>
+ <path d="M 3.48457000 2.70887300 A 0.1111 0.1111 0 1 1 3.4516 2.8320" stroke-width="0.0000" stroke="#cc0000" stroke-linecap="round" fill="none"/>
 </g>
 <g id="layer_8_group8">
 <!--normal-->

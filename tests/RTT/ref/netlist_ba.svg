@@ -2,10 +2,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" width="1625.6000" height="1625.6000" viewBox="-2.0000 -2.0000 17.7000 17.7000">
 <g id="layer_7_group7">
 <!--normal-->
- <polygon points="1.5240,3.4290 3.5560,3.4290 3.5560,5.4610 1.5240,5.4610 " stroke-width="0.010" stroke="#cccccc" fill="#cccccc"/>
- <circle cx="10.1600" cy="4.4450" r="1.0160" stroke-width="0.0000" fill="#cccccc" stroke="none"/>
- <circle cx="2.5400" cy="6.9850" r="1.0160" stroke-width="0.0000" fill="#cccccc" stroke="none"/>
- <circle cx="10.1600" cy="6.9850" r="1.0160" stroke-width="0.0000" fill="#cccccc" stroke="none"/>
+ <polygon points="1.5240,3.4290 3.5560,3.4290 3.5560,5.4610 1.5240,5.4610 " stroke-width="0.010" stroke="#999999" fill="#999999"/>
+ <circle cx="10.1600" cy="4.4450" r="1.0160" stroke-width="0.0000" fill="#999999" stroke="none"/>
+ <circle cx="2.5400" cy="6.9850" r="1.0160" stroke-width="0.0000" fill="#999999" stroke="none"/>
+ <circle cx="10.1600" cy="6.9850" r="1.0160" stroke-width="0.0000" fill="#999999" stroke="none"/>
  <circle cx="2.5400" cy="4.4450" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
  <circle cx="10.1600" cy="4.4450" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
  <circle cx="2.5400" cy="6.9850" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
@@ -13,10 +13,10 @@
 </g>
 <g id="layer_5_group5">
 <!--normal-->
- <polygon points="1.5240,3.4290 3.5560,3.4290 3.5560,5.4610 1.5240,5.4610 " stroke-width="0.010" stroke="#cccccc" fill="#cccccc"/>
- <circle cx="10.1600" cy="4.4450" r="1.0160" stroke-width="0.0000" fill="#cccccc" stroke="none"/>
- <circle cx="2.5400" cy="6.9850" r="1.0160" stroke-width="0.0000" fill="#cccccc" stroke="none"/>
- <circle cx="10.1600" cy="6.9850" r="1.0160" stroke-width="0.0000" fill="#cccccc" stroke="none"/>
+ <polygon points="1.5240,3.4290 3.5560,3.4290 3.5560,5.4610 1.5240,5.4610 " stroke-width="0.010" stroke="#999999" fill="#999999"/>
+ <circle cx="10.1600" cy="4.4450" r="1.0160" stroke-width="0.0000" fill="#999999" stroke="none"/>
+ <circle cx="2.5400" cy="6.9850" r="1.0160" stroke-width="0.0000" fill="#999999" stroke="none"/>
+ <circle cx="10.1600" cy="6.9850" r="1.0160" stroke-width="0.0000" fill="#999999" stroke="none"/>
  <circle cx="2.5400" cy="4.4450" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
  <circle cx="10.1600" cy="4.4450" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
  <circle cx="2.5400" cy="6.9850" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
@@ -24,10 +24,10 @@
 </g>
 <g id="layer_10_bottom">
 <!--normal-->
- <polygon points="1.5240,3.4290 3.5560,3.4290 3.5560,5.4610 1.5240,5.4610 " stroke-width="0.010" stroke="#cccccc" fill="#cccccc"/>
- <circle cx="10.1600" cy="4.4450" r="1.0160" stroke-width="0.0000" fill="#cccccc" stroke="none"/>
- <circle cx="2.5400" cy="6.9850" r="1.0160" stroke-width="0.0000" fill="#cccccc" stroke="none"/>
- <circle cx="10.1600" cy="6.9850" r="1.0160" stroke-width="0.0000" fill="#cccccc" stroke="none"/>
+ <polygon points="1.5240,3.4290 3.5560,3.4290 3.5560,5.4610 1.5240,5.4610 " stroke-width="0.010" stroke="#999999" fill="#999999"/>
+ <circle cx="10.1600" cy="4.4450" r="1.0160" stroke-width="0.0000" fill="#999999" stroke="none"/>
+ <circle cx="2.5400" cy="6.9850" r="1.0160" stroke-width="0.0000" fill="#999999" stroke="none"/>
+ <circle cx="10.1600" cy="6.9850" r="1.0160" stroke-width="0.0000" fill="#999999" stroke="none"/>
  <circle cx="2.5400" cy="4.4450" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
  <circle cx="10.1600" cy="4.4450" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
  <circle cx="2.5400" cy="6.9850" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>

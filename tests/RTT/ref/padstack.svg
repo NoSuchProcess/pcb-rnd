@@ -2,27 +2,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" width="1625.6000" height="1625.6000" viewBox="-2.0000 -2.0000 17.7000 17.7000">
 <g id="layer_7_group7">
 <!--normal-->
- <circle cx="1.9050" cy="2.5400" r="1.0000" stroke-width="0.0000" fill="#cccccc" stroke="none"/>
- <circle cx="9.5250" cy="2.5400" r="1.0999" stroke-width="0.0000" fill="#cccccc" stroke="none"/>
- <circle cx="5.7150" cy="8.2550" r="1.2269" stroke-width="0.0000" fill="#cccccc" stroke="none"/>
+ <circle cx="1.9050" cy="2.5400" r="1.0000" stroke-width="0.0000" fill="#aaaaaa" stroke="none"/>
+ <circle cx="9.5250" cy="2.5400" r="1.0999" stroke-width="0.0000" fill="#aaaaaa" stroke="none"/>
+ <circle cx="5.7150" cy="8.2550" r="1.2269" stroke-width="0.0000" fill="#aaaaaa" stroke="none"/>
  <circle cx="1.9050" cy="2.5400" r="0.4001" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
  <circle cx="9.5250" cy="2.5400" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
  <circle cx="5.7150" cy="8.2550" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
 </g>
 <g id="layer_5_group5">
 <!--normal-->
- <circle cx="1.9050" cy="2.5400" r="1.0000" stroke-width="0.0000" fill="#cccccc" stroke="none"/>
- <circle cx="9.5250" cy="2.5400" r="1.0999" stroke-width="0.0000" fill="#cccccc" stroke="none"/>
- <circle cx="1.9050" cy="8.2550" r="1.1634" stroke-width="0.0000" fill="#cccccc" stroke="none"/>
+ <circle cx="1.9050" cy="2.5400" r="1.0000" stroke-width="0.0000" fill="#aaaaaa" stroke="none"/>
+ <circle cx="9.5250" cy="2.5400" r="1.0999" stroke-width="0.0000" fill="#aaaaaa" stroke="none"/>
+ <circle cx="1.9050" cy="8.2550" r="1.1634" stroke-width="0.0000" fill="#aaaaaa" stroke="none"/>
  <circle cx="1.9050" cy="2.5400" r="0.4001" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
  <circle cx="9.5250" cy="2.5400" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
  <circle cx="1.9050" cy="8.2550" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
 </g>
 <g id="layer_10_bottom">
 <!--normal-->
- <line x1="3.8100" y1="2.5400" x2="0.6350" y2="2.5400" stroke-width="0.2540" stroke="#cccccc" stroke-linecap="round"/>
- <circle cx="9.5250" cy="2.5400" r="1.0999" stroke-width="0.2540" fill="#cccccc" stroke="none"/>
- <circle cx="5.7150" cy="8.2550" r="1.2269" stroke-width="0.2540" fill="#cccccc" stroke="none"/>
+ <line x1="3.8100" y1="2.5400" x2="0.6350" y2="2.5400" stroke-width="0.2540" stroke="#aaaaaa" stroke-linecap="round"/>
+ <circle cx="9.5250" cy="2.5400" r="1.0999" stroke-width="0.2540" fill="#aaaaaa" stroke="none"/>
+ <circle cx="5.7150" cy="8.2550" r="1.2269" stroke-width="0.2540" fill="#aaaaaa" stroke="none"/>
  <circle cx="1.9050" cy="2.5400" r="0.4001" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
  <circle cx="9.5250" cy="2.5400" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
  <circle cx="5.7150" cy="8.2550" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
