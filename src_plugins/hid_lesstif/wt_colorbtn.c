@@ -43,9 +43,9 @@ static void fill_bar(Display *display, XImage *image, const pcb_color_t *color, 
 
 	colormap = DefaultColormap(display, DefaultScreen(display));
 
-	cl.red = color->r;
-	cl.green = color->g;
-	cl.blue = color->b;
+	cl.red = color->r << 8;
+	cl.green = color->g << 8;
+	cl.blue = color->b << 8;
 	if (!XAllocColor(display, colormap, &cl))
 		return 0;
 	c = cl.pixel;
