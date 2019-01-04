@@ -33,23 +33,15 @@
 #include "compat_misc.h"
 #include "color.h"
 
-static Pixmap gen_color_bar(Display *display, const pcb_color_t *color, int width, int height)
+static void fill_bar(Display *display, XImage *image, const pcb_color_t *color, int width, int height)
 {
-	Visual *visual;
-	Pixmap px;
-	XImage *image;
-	Colormap colormap;
-	int i, j, depth, bytes_per_pixel;
+	int i, j, bytes_per_pixel;
 	char *q;
 	XColor cl;
 	unsigned long c;
+	Colormap colormap;
 
-	depth = DefaultDepth(display, DefaultScreen(display));
-	visual = DefaultVisual(display, DefaultScreen(display));
 	colormap = DefaultColormap(display, DefaultScreen(display));
-	px = XCreatePixmap(display, DefaultRootWindow(display), width, height, depth);
-	image = XCreateImage(display, visual, depth, ZPixmap, 0, 0, width, height, 8, 0);
-	image->data = malloc(image->bytes_per_line * height + 16);
 
 	cl.red = color->r;
 	cl.green = color->g;
@@ -123,6 +115,24 @@ static Pixmap gen_color_bar(Display *display, const pcb_color_t *color, int widt
 			}
 		}
 	}
+}
+
+
+static Pixmap gen_color_bar(Display *display, const pcb_color_t *color, int width, int height)
+{
+	Visual *visual;
+	Pixmap px;
+	XImage *image;
+	int depth;
+
+	depth = DefaultDepth(display, DefaultScreen(display));
+	visual = DefaultVisual(display, DefaultScreen(display));
+	px = XCreatePixmap(display, DefaultRootWindow(display), width, height, depth);
+	image = XCreateImage(display, visual, depth, ZPixmap, 0, 0, width, height, 8, 0);
+	image->data = malloc(image->bytes_per_line * height + 16);
+
+	fill_bar(display, image, color, width, height);
+
 	return px;
 }
 
