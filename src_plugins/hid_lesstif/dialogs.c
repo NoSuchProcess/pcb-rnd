@@ -424,28 +424,41 @@ static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
 	ctx->attrs[widx].default_val = ctx->results[widx];
 }
 
-static void valchg(Widget w, XtPointer dlg_widget_, XtPointer call_data)
+static int attr_get_idx(XtPointer dlg_widget_, lesstif_attr_dlg_t **ctx_out)
 {
 	lesstif_attr_dlg_t *ctx;
 	Widget dlg_widget = (Widget)dlg_widget_; /* ctx->wl[i] */
 	int widx;
 
 	if (dlg_widget == NULL)
-		return;
+		return -1;
 
 	XtVaGetValues(dlg_widget, XmNuserData, &ctx, NULL);
 
-	if (ctx == NULL)
-		return;
+	if (ctx == NULL) {
+		*ctx_out = NULL;
+		return -1;
+	}
+	*ctx_out = ctx;
 
 	if (ctx->inhibit_valchg)
-		return;
+		return -1;
 
 	for(widx = 0; widx < ctx->n_attrs; widx++)
 		if (ctx->wl[widx] == dlg_widget)
 			break;
 
 	if (widx >= ctx->n_attrs)
+		return -1;
+
+	return widx;
+}
+
+static void valchg(Widget w, XtPointer dlg_widget_, XtPointer call_data)
+{
+	lesstif_attr_dlg_t *ctx;
+	int widx = attr_get_idx(dlg_widget_, &ctx);
+	if (widx < 0)
 		return;
 
 	ctx->attrs[widx].changed = 1;
@@ -463,22 +476,8 @@ static void valchg(Widget w, XtPointer dlg_widget_, XtPointer call_data)
 static void activated(Widget w, XtPointer dlg_widget_, XtPointer call_data)
 {
 	lesstif_attr_dlg_t *ctx;
-	Widget dlg_widget = (Widget)dlg_widget_; /* ctx->wl[i] */
-	int widx;
-
-	if (dlg_widget == NULL)
-		return;
-
-	XtVaGetValues(dlg_widget, XmNuserData, &ctx, NULL);
-
-	if (ctx == NULL)
-		return;
-
-	for(widx = 0; widx < ctx->n_attrs; widx++)
-		if (ctx->wl[widx] == dlg_widget)
-			break;
-
-	if (widx >= ctx->n_attrs)
+	int widx = attr_get_idx(dlg_widget_, &ctx);
+	if (widx < 0)
 		return;
 
 	if (ctx->attrs[widx].enter_cb != NULL)
