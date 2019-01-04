@@ -460,6 +460,31 @@ static void valchg(Widget w, XtPointer dlg_widget_, XtPointer call_data)
 		ctx->attrs[widx].change_cb(ctx, ctx->caller_data, &ctx->attrs[widx]);
 }
 
+static void activated(Widget w, XtPointer dlg_widget_, XtPointer call_data)
+{
+	lesstif_attr_dlg_t *ctx;
+	Widget dlg_widget = (Widget)dlg_widget_; /* ctx->wl[i] */
+	int widx;
+
+	if (dlg_widget == NULL)
+		return;
+
+	XtVaGetValues(dlg_widget, XmNuserData, &ctx, NULL);
+
+	if (ctx == NULL)
+		return;
+
+	for(widx = 0; widx < ctx->n_attrs; widx++)
+		if (ctx->wl[widx] == dlg_widget)
+			break;
+
+	if (widx >= ctx->n_attrs)
+		return;
+
+	if (ctx->attrs[widx].enter_cb != NULL)
+		ctx->attrs[widx].enter_cb(ctx, ctx->caller_data, &ctx->attrs[widx]);
+}
+
 static void pagechg(Widget w, XtPointer client_data, XtPointer call_data)
 {
 	lesstif_attr_dlg_t *ctx;
@@ -688,6 +713,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, att
 			stdarg(XmNvalue, ctx->results[i].str_value);
 			ctx->wl[i] = XmCreateTextField(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
 			XtAddCallback(ctx->wl[i], XmNvalueChangedCallback, valchg, ctx->wl[i]);
+			XtAddCallback(ctx->wl[i], XmNactivateCallback, activated, ctx->wl[i]);
 			break;
 		case PCB_HATT_INTEGER:
 			stdarg(XmNcolumns, 13);
