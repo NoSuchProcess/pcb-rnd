@@ -59,7 +59,10 @@ static fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	PCB_DAD_END(dlg);
 
 	PCB_DAD_NEW("prompt_for", dlg, title, NULL, pcb_true, NULL);
-	PCB_DAD_RUN(dlg);
+	if (PCB_DAD_RUN(dlg) != 0) {
+		PCB_DAD_FREE(dlg);
+		return -1;
+	}
 
 	res->type = FGW_STR | FGW_DYN;
 	res->val.str = pcb_strdup(dlg[ws].default_val.str_value);
