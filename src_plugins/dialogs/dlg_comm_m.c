@@ -31,6 +31,11 @@
 
 static const char nope[] = "Do not use.";
 
+static void prompt_enter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_hid_dad_close(hid_ctx, attr->user_data, 0);
+}
+
 static fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *label, *default_str = "", *title = "pcb-rnd user input";
@@ -48,6 +53,8 @@ static fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		PCB_DAD_STRING(dlg);
 			ws = PCB_DAD_CURRENT(dlg);
 			dlg[ws].default_val.str_value = pcb_strdup(default_str);
+			PCB_DAD_ENTER_CB(dlg, prompt_enter_cb);
+			dlg[ws].user_data = &dlg_ret_override;
 		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
 	PCB_DAD_END(dlg);
 
