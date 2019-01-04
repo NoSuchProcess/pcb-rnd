@@ -61,6 +61,7 @@
 	- BUG: attributes are not kept
 	- BUG: warnings/errors in the log
 	- would it keep a floater?
+- BUG: lesstif: {i c p}, color tab: tabbed doesn't grow [report: Igor2]
 - BUG: new preferences: color tab, change padtsakc color on current layewr -> no effect on the drawing (changing selection color works) [report: Igor2]
 - BUG: Open an empty pcb, Edit->Board padstack prototypes , Click Edit... -> segf [report: Alain]
 - BUG: empty design, {w d}, close, {w d} -> gtk warnings [report: Igor2]
