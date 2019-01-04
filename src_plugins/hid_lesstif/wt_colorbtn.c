@@ -142,27 +142,18 @@ static Pixmap set_color_bar(Display *display, Pixmap px, const pcb_color_t *colo
 	return px;
 }
 
-
-static Pixmap gen_color_bar(Display *display, const pcb_color_t *color, int width, int height)
-{
-	Pixmap px;
-	int depth;
-
-	depth = DefaultDepth(display, DefaultScreen(display));
-	px = XCreatePixmap(display, DefaultRootWindow(display), width, height, depth);
-
-	return set_color_bar(display, px, color, width, height);
-}
-
 Widget pcb_ltf_color_button(Display *display, Widget parent, String name, const pcb_color_t *color)
 {
 	Widget btn;
 	Pixel background;
 	Pixmap px;
 	Arg args[3];
-	int n = 0;
+	int n = 0, depth;
 
-	px = gen_color_bar(display, color, 32, 16);
+	depth = DefaultDepth(display, DefaultScreen(display));
+	px = XCreatePixmap(display, DefaultRootWindow(display), 32, 16, depth);
+	if (px != 0)
+		px = set_color_bar(display, px, color, 32, 16);
 	if (px == 0)
 		return 0;
 
