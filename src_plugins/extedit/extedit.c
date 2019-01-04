@@ -156,7 +156,7 @@ static void invoke(extedit_method_t *mth, const char *fn)
 			fread(tmp, 1, sizeof(tmp), fc);
 		}
 	}
-	fclose(fc);
+	pclose(fc);
 
 	if (pcb_gui != NULL)
 		pcb_hid_progress(0, 0, NULL);
