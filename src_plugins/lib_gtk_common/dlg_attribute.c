@@ -74,6 +74,12 @@ typedef struct {
 			dst->change_cb(ctx, ctx->caller_data, dst); \
 	} while(0) \
 
+#define enter_cb(ctx, dst) \
+	do { \
+		if (dst->enter_cb != NULL) \
+			dst->enter_cb(ctx, ctx->caller_data, dst); \
+	} while(0) \
+
 static void set_flag_cb(GtkToggleButton *button, gpointer user_data)
 {
 	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(button), PCB_OBJ_PROP);
@@ -152,6 +158,12 @@ static void entry_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
 	free((char *)dst->default_val.str_value);
 	dst->default_val.str_value = pcb_strdup(gtk_entry_get_text(entry));
 	change_cb(ctx, dst);
+}
+
+static void entry_activate_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
+{
+	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(entry), PCB_OBJ_PROP);
+	enter_cb(ctx, dst);
 }
 
 static void enum_changed_cb(GtkComboBox *combo_box, pcb_hid_attribute_t *dst)
@@ -456,7 +468,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					gtk_entry_set_text(GTK_ENTRY(entry), ctx->attrs[j].default_val.str_value);
 				gtk_widget_set_tooltip_text(entry, ctx->attrs[j].help_text);
 				g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(entry_changed_cb), &(ctx->attrs[j]));
-
+				g_signal_connect(G_OBJECT(entry), "activate", G_CALLBACK(entry_activate_cb), &(ctx->attrs[j]));
 				if (add_labels) {
 					widget = gtk_label_new(ctx->attrs[j].name);
 					gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
