@@ -226,6 +226,7 @@ static Widget ltf_picbutton_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_h
 static void ltf_colorbtn_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_color_t *clr)
 {
 	Widget btn = ctx->wl[idx];
+	ctx->attrs[idx].default_val.clr_value = *clr;
 	pcb_ltf_color_button_recolor(display, btn, clr);
 }
 
@@ -267,6 +268,7 @@ static void ltf_colorbtn_valchg(Widget w, XtPointer dlg_widget_, XtPointer call_
 
 	fgw_arg_free(&pcb_fgw, &res);
 	pcb_ltf_color_button_recolor(display, w, &nclr);
+	ctx->attrs[widx].default_val.clr_value = nclr;
 	valchg(w, dlg_widget_, w);
 }
 
