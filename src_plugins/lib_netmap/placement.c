@@ -47,8 +47,13 @@ void pcb_placement_build(pcb_placement_t *ctx, pcb_data_t *data)
 	PCB_SUBC_LOOP(data) {
 		if (!htscp_has(&ctx->subcs, subc)) {
 			pcb_host_trans_t tr;
-			pcb_subc_t *proto = pcb_subc_dup_at(ctx->pcb, &ctx->data, subc, 0, 0, 1);
+			pcb_data_t *oldhack;
+			pcb_subc_t *proto = pcb_subc_dup_at(ctx->pcb, &ctx->data, subc, 0, 0, 0); /* do not keep IDs because that fools pstk parent logic */
 			pcb_subc_get_host_trans(subc, &tr, 1);
+
+			oldhack = pcb_pstk_data_hack;
+			pcb_pstk_data_hack = &ctx->data;
+
 			pcb_subc_move(proto, tr.ox, tr.oy, 1);
 			if (tr.rot != 0) {
 				double rr = tr.rot / PCB_RAD_TO_DEG;
@@ -65,6 +70,7 @@ void pcb_placement_build(pcb_placement_t *ctx, pcb_data_t *data)
 			}
 
 			htscp_insert(&ctx->subcs, subc, proto);
+			pcb_pstk_data_hack = oldhack;
 		}
 	}
 	PCB_END_LOOP;
