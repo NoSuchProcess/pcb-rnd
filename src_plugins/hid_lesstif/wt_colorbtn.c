@@ -33,7 +33,7 @@
 #include "compat_misc.h"
 #include "color.h"
 
-static void fill_bar(Display *display, XImage *image, const pcb_color_t *color, int width, int height)
+static int fill_bar(Display *display, XImage *image, const pcb_color_t *color, int width, int height)
 {
 	int i, j, bytes_per_pixel;
 	char *q;
@@ -47,7 +47,7 @@ static void fill_bar(Display *display, XImage *image, const pcb_color_t *color, 
 	cl.green = color->g << 8;
 	cl.blue = color->b << 8;
 	if (!XAllocColor(display, colormap, &cl))
-		return 0;
+		return -1;
 	c = cl.pixel;
 
 	bytes_per_pixel = image->bytes_per_line / width;
@@ -115,31 +115,43 @@ static void fill_bar(Display *display, XImage *image, const pcb_color_t *color, 
 			}
 		}
 	}
+	return 0;
+}
+
+static Pixmap set_color_bar(Display *display, Pixmap px, const pcb_color_t *color, int width, int height)
+{
+	Visual *visual;
+	int depth, res;
+	XImage *image;
+	GC gc;
+	XGCValues gcv;
+
+	gc = XCreateGC(display, px, 0, &gcv);
+
+	depth = DefaultDepth(display, DefaultScreen(display));
+	visual = DefaultVisual(display, DefaultScreen(display));
+	image = XCreateImage(display, visual, depth, ZPixmap, 0, 0, width, height, 8, 0);
+	image->data = malloc(image->bytes_per_line * height + 16);
+
+	res = fill_bar(display, image, color, width, height);
+
+	XPutImage(display, px, gc, image, 0, 0, 0, 0, width, height);
+	free(image->data);
+	if (res < 0)
+		return 0;
+	return px;
 }
 
 
 static Pixmap gen_color_bar(Display *display, const pcb_color_t *color, int width, int height)
 {
-	Visual *visual;
 	Pixmap px;
-	XImage *image;
 	int depth;
-	GC gc;
-	XGCValues gcv;
 
 	depth = DefaultDepth(display, DefaultScreen(display));
-	visual = DefaultVisual(display, DefaultScreen(display));
 	px = XCreatePixmap(display, DefaultRootWindow(display), width, height, depth);
-	gc = XCreateGC(display, px, 0, &gcv);
-	image = XCreateImage(display, visual, depth, ZPixmap, 0, 0, width, height, 8, 0);
-	image->data = malloc(image->bytes_per_line * height + 16);
 
-	fill_bar(display, image, color, width, height);
-
-	XPutImage(display, px, gc, image, 0, 0, 0, 0, width, height);
-	free(image->data);
-
-	return px;
+	return set_color_bar(display, px, color, width, height);
 }
 
 Widget pcb_ltf_color_button(Display *display, Widget parent, String name, const pcb_color_t *color)
