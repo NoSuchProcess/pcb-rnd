@@ -166,3 +166,18 @@ Widget pcb_ltf_color_button(Display *display, Widget parent, String name, const 
 
 	return btn;
 }
+
+int pcb_ltf_color_button_recolor(Display *display, Widget btn, const pcb_color_t *color)
+{
+	Arg args[3];
+	int n = 0;
+	Pixmap px;
+
+	XtSetArg(args[n], XmNarmPixmap, &px); n++;
+	XtGetValues(btn, args, n);
+
+	if (set_color_bar(display, px, color, 32, 16) == px)
+		return 0;
+	return -1;
+}
+
