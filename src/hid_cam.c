@@ -356,7 +356,6 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_h
 			if (parse_layer_type(curr, &lyt, &offs, &has_offs) != 0)
 				goto err;
 
-TODO("extend the syntax for purpose")
 			parse_layer_supplements(spk, spv, spc, &purpose, &xf, &xf_);
 
 			vl = pcb_vlayer_get_first(lyt, purpose, -1);
