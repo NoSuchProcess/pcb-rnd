@@ -556,11 +556,12 @@ static void assign_universal_file_suffix(char *dest, pcb_layergrp_id_t gid, unsi
 
 #undef fmatch
 
-
-static void assign_file_suffix(char *dest, pcb_layergrp_id_t gid, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, int drill)
+static void assign_file_suffix(char *dest, pcb_layergrp_id_t gid, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, int drill, int *merge_same)
 {
 	int fns_style;
 	const char *sext = ".gbr";
+
+	if (merge_same != NULL) *merge_same = 0;
 
 	switch (name_style) {
 	default:
@@ -575,12 +576,15 @@ static void assign_file_suffix(char *dest, pcb_layergrp_id_t gid, pcb_layer_id_t
 		break;
 	case NAME_STYLE_EAGLE:
 		assign_eagle_file_suffix(dest, lid, flags, purpi);
+		if (merge_same != NULL) *merge_same = 1;
 		return;
 	case NAME_STYLE_HACKVANA:
 		assign_hackvana_file_suffix(dest, lid, flags, purpi);
+		if (merge_same != NULL) *merge_same = 1;
 		return;
 	case NAME_STYLE_UNIVERSAL:
 		assign_universal_file_suffix(dest, gid, flags, purpi);
+		if (merge_same != NULL) *merge_same = 1;
 		return;
 	}
 
@@ -673,7 +677,7 @@ static void drill_export_(pcb_layer_type_t mask, const char *purpose, int purpi,
 	f = NULL;
 
 	pagecount++;
-	assign_file_suffix(filesuff, -1, vl->new_id, vl->type, purpose, purpi, 1);
+	assign_file_suffix(filesuff, -1, vl->new_id, vl->type, purpose, purpi, 1, NULL);
 	f = pcb_fopen(filename, "wb"); /* Binary needed to force CR-LF */
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Error:  Could not open %s for writing the excellon file.\n", filename);
@@ -894,6 +898,15 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 		if (aptr_list->count == 0 && !all_layers && !is_drill)
 			return 0;
 
+		/* If two adjacent groups end up with the same file name, they are really one group */
+		if ((!gerber_cam.active && (f != NULL))) {
+			char tmp[256];
+			int merge_same;
+			assign_file_suffix(tmp, group, layer, flags, purpose, purpi, 0, &merge_same);
+			if (merge_same && (strcmp(tmp, filesuff) == 0))
+				return 1;
+		}
+
 		if (!gerber_cam.active) {
 			/* in cam mode we reuse f */
 			maybe_close_f(f);
@@ -901,7 +914,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 		}
 
 		pagecount++;
-		assign_file_suffix(filesuff, group, layer, flags, purpose, purpi, 0);
+		assign_file_suffix(filesuff, group, layer, flags, purpose, purpi, 0, NULL);
 		if (f == NULL) { /* open a new file if we closed the previous (cam mode: only one file) */
 			f = pcb_fopen(gerber_cam.active ? gerber_cam.fn : filename, "wb"); /* Binary needed to force CR-LF */
 			if (f == NULL) {
