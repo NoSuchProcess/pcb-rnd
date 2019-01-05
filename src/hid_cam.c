@@ -270,7 +270,7 @@ static void parse_layer_supplements(char **spk, char **spv, int spc,   char **pu
 		pcb_trace(" [%d] '%s' '%s'\n", n, spk[n], spv[n]);
 		if (strcmp(key, "purpose") == 0)
 			*purpose = val;
-		if (strcmp(key, "bloat") == 0) {
+		else if (strcmp(key, "bloat") == 0) {
 			pcb_bool succ;
 			double v = pcb_get_value(val, NULL, NULL, &succ);
 			if (succ) {
