@@ -4,11 +4,7 @@
 + BUG: boardflip() action moves the objects and doesn't move the subc outline and origin (repro: place single part, run boardflip) [report:Miloh]
 - FEATURE: lesstif window placement
 + FEATURE: export_xy: pnp origin should be any obj, especially padstacks (fidu) [report: TwisteR]
-- CLEANUP: propedit revamp:
-	- test under lesstif
-	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
-	+ CLEANUP: propedit rewrite: new action UI should allow operation on object and object ID instead of selection; bug_files/subcsel.bug [report: Wojciech]
-	- FEATURE: the property editor should display a stat of number/type of objects selected [report: Igor2]
+- FEATURE: the property editor should display a stat of number/type of objects selected [report: Igor2]
 - BUG: portability: don't use export in trunk/doc/user/Makefile [report: Vuokko]
 + FEATURE: scconfig: make man installation path configurable [report: Vuokko]
 - FEATURE: can't undo after boardflip(), (ERROR: Attempt to pcb_undo() with Serial == 0) [report:Miloh]
@@ -16,13 +12,6 @@
 + CLEANUP: dad: make the implicit dialog ok/cancel buttons configurable or do not use them at all; e.g. export dialog is confusing [report: Cyril, ml2409]
 + FEATURE: {e t} dialog: pressing enter should close the window [report: Ade]
 - FEATURE: make default refdes attribute (after footprint conversion) configurable; probably make the set of initial attributes configurable [report: Ade]
-- FEATURE: route style upgrade to prototypes (depends on tree in lesstif!):
-	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
-	- BUG: padstack doesn't show drc xor shape while moving - because the whole drawing is a cheat for old vias [report: igor2]
-	- replace the route style dialog box's via part
-	- proto copy to buffer - a buffer with a single padstack should also serve as a prototype copy vehicle? or just import by a list from the buffer
-	- load/import from buffer and file
-	- CLEANUP: remove PCB_MIN_PINORVIA* PCB_DEFAULT_DRILLINGHOLE macros - nothing should use them anymore
 - FEATURE: view lists
 	- FEATURE: import sch. shouldn't select elements to be removed but put them on a drc list
 	- FEATURE: lesstif clipboard API with XmClipboardCopy
@@ -48,10 +37,6 @@
 	- crash:
 		- filter-select invis_other_groups, create design, set true, close; repeat this on black_current_group -> crash [report: Igor2]
 + BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
-- FEATURE: rat line draw: [report: Igor2]
-	- be able to rename nets
-	- save the netlist with the file
-	- be able to convert a 'found' to a net
 - BUG: extedit broke: place 1206, use external edit on it, add line on top copper, save, exit -> line doesn't appear [report: Igor2]
 - BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
 - BUG: bug_files/obsconf.lht: load, get a warning for obsolete config; save into a new file and the broken conf node is not removed [report: keantoken]
@@ -85,6 +70,17 @@
 - BUG: Load a footprint using the library dialog {w l} into the buffer. Flip the board with the tab key and the refdes border in the buffer object flips vertically the wrong way. Only occurs when loading footprint, not when copying. [report: Ade]
 
 2. For later releases ===============================================================================
+- FEATURE: route style upgrade to prototypes (depends on tree in lesstif!):
+	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
+	- BUG: padstack doesn't show drc xor shape while moving - because the whole drawing is a cheat for old vias [report: igor2]
+	- replace the route style dialog box's via part
+	- proto copy to buffer - a buffer with a single padstack should also serve as a prototype copy vehicle? or just import by a list from the buffer
+	- load/import from buffer and file
+	- CLEANUP: remove PCB_MIN_PINORVIA* PCB_DEFAULT_DRILLINGHOLE macros - nothing should use them anymore
+- CLEANUP: propedit revamp:
+	- test under lesstif
+	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
+	+ CLEANUP: propedit rewrite: new action UI should allow operation on object and object ID instead of selection; bug_files/subcsel.bug [report: Wojciech]
 - CLEANUP: eliminate PCB_MOVE, remove move.h from box.h
 - CLEANUP: library window DAD-ification: remove pcb_act_LibraryShow()
 	- FEATURE: library window: allow long tags and long location text to split
@@ -101,8 +97,6 @@
 - CLEANUP: remove pcb_rubber_band_alloc() and use genvector
 - CLEANUP: find.c rewrite:
 	- CLEANUP: a new "report(NetLength)" should not care about netlists but depend on find.c only
-	- CLEANUP: netlist rewrite
-		- when no netlist is loaded, new rats can't be drawn [report: agaran]
 	- BUG: unplated padtsakcs shall not connect layers; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
 	- BUG: bug_files/rat_shortest.lht: because of "don't add non-manhattan lines" part [report: pstuge]
 - CLEANUP: layre order from data
@@ -120,6 +114,12 @@
 	- FEATURE: invent a generic API for both the drill attrib config table
 	- CLEANUP: remove the gerber->drill dep and ask users to use the CAM instead
 	- CLEANUP: unify how output files are accessed/checked: confirmation on overwrite
+- CLEANUP: rewrite the netlist code
+	- when no netlist is loaded, new rats can't be drawn [report: agaran]
+	- FEATURE: rat line draw: [report: Igor2]
+		- be able to rename nets
+		- save the netlist with the file
+		- be able to convert a 'found' to a net
 - FEATURE: external editor on buffer [report: TwisteR]
 - FEATURE: fontsel: ttf import?
 - FEATURE: DOC: new examples
