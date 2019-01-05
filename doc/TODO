@@ -69,6 +69,14 @@
 - BUG: Load a footprint using the library dialog {w l} into the buffer. Flip the board with the tab key and the refdes border in the buffer object flips vertically the wrong way. Only occurs when loading footprint, not when copying. [report: Ade]
 
 2. For later releases ===============================================================================
+- CAM:
+	- CLEANUP: move the hackish gerber layer suffix functions into CAM configs [report: Ade]
+	- CLEANUP: split gerber and drill file generation (make gerber depend on drill, for backward compatibility)
+	- FEATURE: export_gerber: add a true gerber drill output
+	- FEATURE: make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file
+	- FEATURE: invent a generic API for both the drill attrib config table
+	- CLEANUP: remove the gerber->drill dep and ask users to use the CAM instead
+	- CLEANUP: unify how output files are accessed/checked: confirmation on overwrite
 - FEATURE: route style upgrade to prototypes (depends on tree in lesstif!):
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
 	- BUG: padstack doesn't show drc xor shape while moving - because the whole drawing is a cheat for old vias [report: igor2]
@@ -105,14 +113,6 @@
 - CLEANUP: remove conf_cmd_is_safe: already handled by the conf_board_ignores
 - CLEANUP: move the PrintCalibrate() action out of core - check if DAD rewrite is needed
 - CLEANUP/BUG: high level pcb_mkdir() and pcb_file_size() and is-dir shall be in safe_fs checking permissions; low level could stay in the compat layer with a #define to make sure it is not called directly [report: igor2]
-- CAM:
-	- CLEANUP: move the hackish gerber layer suffix functions into CAM configs
-	- CLEANUP: split gerber and drill file generation (make gerber depend on drill, for backward compatibility)
-	- FEATURE: export_gerber: add a true gerber drill output
-	- FEATURE: make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file
-	- FEATURE: invent a generic API for both the drill attrib config table
-	- CLEANUP: remove the gerber->drill dep and ask users to use the CAM instead
-	- CLEANUP: unify how output files are accessed/checked: confirmation on overwrite
 - CLEANUP: rewrite the netlist code
 	- when no netlist is loaded, new rats can't be drawn [report: agaran]
 	- FEATURE: rat line draw: [report: Igor2]
