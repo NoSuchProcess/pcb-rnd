@@ -63,6 +63,7 @@ li:pcb-rnd-conf-v1 {
 			undo_warning_size = 1024
 			fullscreen = 0
 			move_linepoint_uses_route = 1
+			subc_conv_refdes = U0
 		} # editor
 
 		ha:rc {

@@ -572,14 +572,16 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 	pcb_subc_create_aux(sc, buffer->X, buffer->Y, 0.0, pcb_false);
 
 	/* Add refdes */
-	pcb_attribute_put(&sc->Attributes, "refdes", "U0");
-	if (!has_refdes_text) {
-		if (dst_top_silk == NULL)
-			dst_top_silk = pcb_layer_new_bound(sc->data, PCB_LYT_TOP | PCB_LYT_SILK, "top-silk", NULL);
-		if (dst_top_silk != NULL)
-			pcb_text_new(dst_top_silk, pcb_font(PCB, 0, 0), buffer->X, buffer->Y, 0, 100, 0, "%a.parent.refdes%", pcb_flag_make(PCB_FLAG_DYNTEXT | PCB_FLAG_FLOATER));
-		else
-			pcb_message(PCB_MSG_ERROR, "Error: can't create top silk layer in subc for placing the refdes\n");
+	if ((conf_core.editor.subc_conv_refdes != NULL) && (*conf_core.editor.subc_conv_refdes != '\0')) {
+		pcb_attribute_put(&sc->Attributes, "refdes", conf_core.editor.subc_conv_refdes);
+		if (!has_refdes_text) {
+			if (dst_top_silk == NULL)
+				dst_top_silk = pcb_layer_new_bound(sc->data, PCB_LYT_TOP | PCB_LYT_SILK, "top-silk", NULL);
+			if (dst_top_silk != NULL)
+				pcb_text_new(dst_top_silk, pcb_font(PCB, 0, 0), buffer->X, buffer->Y, 0, 100, 0, "%a.parent.refdes%", pcb_flag_make(PCB_FLAG_DYNTEXT | PCB_FLAG_FLOATER));
+			else
+				pcb_message(PCB_MSG_ERROR, "Error: can't create top silk layer in subc for placing the refdes\n");
+		}
 	}
 
 

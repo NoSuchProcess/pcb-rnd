@@ -90,6 +90,8 @@ typedef struct {
 		CFT_BOOLEAN beep_when_finished;    /* flag if a signal should be produced when searching of  connections is done */
 
 		CFT_INTEGER undo_warning_size;     /* warn the user when undo list exceeds this amount of kilobytes in memory */
+
+		CFT_STRING subc_conv_refdes;       /* automatic refdes value assigned to new subcircuits on conversion from objects - if empty, no refdes text is added */
 	} editor;
 
 	const struct rc {
