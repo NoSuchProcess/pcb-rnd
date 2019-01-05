@@ -14,7 +14,6 @@
 - FEATURE: make default refdes attribute (after footprint conversion) configurable; probably make the set of initial attributes configurable [report: Ade]
 - FEATURE: view lists
 	- FEATURE: import sch. shouldn't select elements to be removed but put them on a drc list
-	- FEATURE: lesstif clipboard API with XmClipboardCopy
 	- FEATURE: generic, non-modal, multi-instance user view list DAD dialog
 	- DOC: document the view lht format
 	- BUG: xor draw stops working after the first preview (drc!)
@@ -262,6 +261,7 @@
 	- remove via geometry from route style
 - BUG: gtk: slipping 'tab' issue view drifts when tab is used repeatedly at different zooms around the cardinal edges of a placed part, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
 - BUG: XY exporter: place a 1206 rotated 15 degrees, then export to xy with macrofab -> error message on rotated pad bbox; we need to rotate back the terminal object and calculate hte bbox in neutral position [report: celem]
+- BUG: lesstif clip_set() doesn't seem to affect the X clipboard
 
 3. Long term ===============================================================================
 - BUG: draw a large padstack poly (as a subc term); put some vias (padtsacks) on top of it; with gdk and gl, after the 6th via some via rings will disappear [report: James]
