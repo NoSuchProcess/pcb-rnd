@@ -520,6 +520,10 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				ctx->wl[j] = ghid_preview_create(ctx, &ctx->attrs[j], parent);
 				break;
 
+			case PCB_HATT_TEXT:
+				ctx->wl[j] = ghid_text_create(ctx, &ctx->attrs[j], parent);
+				break;
+
 			case PCB_HATT_PICTURE:
 				ctx->wl[j] = ghid_picture_create(ctx, &ctx->attrs[j], parent);
 				break;
@@ -631,6 +635,11 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 
 		case PCB_HATT_PREVIEW:
 			ret = ghid_preview_set(ctx, idx, val);
+			ctx->inhibit_valchg = save;
+			return ret;
+
+		case PCB_HATT_TEXT:
+			ret = ghid_text_set(ctx, idx, val);
 			ctx->inhibit_valchg = save;
 			return ret;
 

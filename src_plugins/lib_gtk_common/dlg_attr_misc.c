@@ -186,3 +186,23 @@ static int ghid_color_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *va
 
 	return 0;
 }
+
+static int ghid_text_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val)
+{
+	GtkWidget *txt = ctx->wl[idx];
+	return 0;
+}
+
+static GtkWidget *ghid_text_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent)
+{
+	GtkWidget *bparent, *wtxt;
+	pcb_hid_text_t *txt = (pcb_hid_preview_t *)attr->enumerations;
+
+	txt->hid_ctx = ctx;
+
+	bparent = frame_scroll(parent, attr->pcb_hatt_flags);
+	wtxt = gtk_text_view_new();
+	gtk_box_pack_start(GTK_BOX(bparent), wtxt, TRUE, TRUE, 0);
+	gtk_widget_set_tooltip_text(wtxt, attr->help_text);
+	return wtxt;
+}
