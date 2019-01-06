@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -187,6 +187,17 @@ static int ghid_color_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *va
 	return 0;
 }
 
+
+static void txt_changed_cb(GtkTextView *wtxt, gpointer user_data)
+{
+	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(wtxt), PCB_OBJ_PROP);
+	pcb_hid_attribute_t *dst = user_data;
+	dst->changed = 1;
+	if (ctx->inhibit_valchg)
+		return;
+	change_cb(ctx, dst);
+}
+
 static int ghid_text_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val)
 {
 	GtkWidget *txt = ctx->wl[idx];
@@ -195,8 +206,8 @@ static int ghid_text_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val
 
 static GtkWidget *ghid_text_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent)
 {
-	GtkWidget *bparent, *wtxt;
-	pcb_hid_text_t *txt = (pcb_hid_preview_t *)attr->enumerations;
+	GtkWidget *bparent, *wtxt, *buffer;
+	pcb_hid_text_t *txt = (pcb_hid_text_t *)attr->enumerations;
 
 	txt->hid_ctx = ctx;
 
@@ -204,5 +215,8 @@ static GtkWidget *ghid_text_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, G
 	wtxt = gtk_text_view_new();
 	gtk_box_pack_start(GTK_BOX(bparent), wtxt, TRUE, TRUE, 0);
 	gtk_widget_set_tooltip_text(wtxt, attr->help_text);
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(wtxt));
+	g_signal_connect(G_OBJECT(buffer), "changed", G_CALLBACK(txt_changed_cb), attr);
+	g_object_set_data(G_OBJECT(buffer), PCB_OBJ_PROP, ctx);
 	return wtxt;
 }
