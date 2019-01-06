@@ -68,13 +68,19 @@ typedef enum pcb_hids_e {
 #define pcb_hatt_flags       max_val
 #define pcb_hatt_table_cols  min_val
 
+typedef enum {
+	PCB_HID_TEXT_INSERT,           /* insert at cursor or replace selection */
+	PCB_HID_TEXT_REPLACE,          /* replace the entire text */
+	PCB_HID_TEXT_APPEND            /* append to the end of the text */
+} pcb_hid_text_set_t;
+
 typedef struct {
 	/* cursor manipulation callbacks */
 	void (*hid_get_xy)(pcb_hid_attribute_t *attrib, void *hid_ctx, long *x, long *y);
 	long (*hid_get_offs)(pcb_hid_attribute_t *attrib, void *hid_ctx);
 	void (*hid_set_xy)(pcb_hid_attribute_t *attrib, void *hid_ctx, long x, long y);
 	void (*hid_set_offs)(pcb_hid_attribute_t *attrib, void *hid_ctx, long offs);
-	void (*hid_set_text)(pcb_hid_attribute_t *attrib, void *hid_ctx, const char *txt);
+	void (*hid_set_text)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_text_set_t how, const char *txt);
 	char *(*hid_get_text)(pcb_hid_attribute_t *attrib, void *hid_ctx); /* caller needs to free the result */
 
 	/* optional callbacks the user set after widget creation */
