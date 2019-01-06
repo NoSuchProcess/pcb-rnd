@@ -33,7 +33,7 @@ static const char dlg_test_help[] = "test the attribute dialog";
 
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
-	int wtab, tt, wprog, whpane, wvpane;
+	int wtab, tt, wprog, whpane, wvpane, wtxt, wtxtpos;
 	int ttctr, wclr;
 } test_t;
 
@@ -51,6 +51,12 @@ static void cb_ttbl_select(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 static void cb_ttbl_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
 static void cb_ttbl_free_row(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
 static void cb_pane_set(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+static void cb_text_replace(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+static void cb_text_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+static void cb_text_append(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+static void cb_text_get(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+static void cb_text_edit(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+static void cb_text_offs(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 
 static void prv_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e);
 static pcb_bool prv_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y);
@@ -76,7 +82,7 @@ static int attr_idx, attr_idx2;
 static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *vals[] = { "foo", "bar", "baz", NULL };
-	const char *tabs[] = { "original test", "new test", "tree-table", "pane", "preview", NULL };
+	const char *tabs[] = { "original test", "new test", "tree-table", "pane", "preview", "text", NULL };
 	char *row1[] = {"one", "foo", "FOO", NULL};
 	char *row2[] = {"two", "bar", "BAR", NULL};
 	char *row2b[] = {"under_two", "ut", "uuut", NULL};
@@ -189,6 +195,32 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				PCB_DAD_PREVIEW(ctx.dlg, prv_expose, prv_mouse, NULL, NULL, 200, 200, NULL);
 				PCB_DAD_LABEL(ctx.dlg, "This is a cool preview widget.");
 			PCB_DAD_END(ctx.dlg);
+
+			/* tab 5: text */
+			PCB_DAD_BEGIN_VBOX(ctx.dlg);
+				PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_TEXT(ctx.dlg, NULL);
+					PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_SCROLL | PCB_HATF_EXPFILL);
+					PCB_DAD_CHANGE_CB(ctx.dlg, cb_text_edit);
+					ctx.wtxt = PCB_DAD_CURRENT(ctx.dlg);
+				PCB_DAD_BEGIN_HBOX(ctx.dlg);
+					PCB_DAD_LABEL(ctx.dlg, "<pos>");
+						ctx.wtxtpos = PCB_DAD_CURRENT(ctx.dlg);
+						PCB_DAD_BUTTON(ctx.dlg, "half the offset");
+							PCB_DAD_CHANGE_CB(ctx.dlg, cb_text_offs);
+				PCB_DAD_END(ctx.dlg);
+				PCB_DAD_BEGIN_HBOX(ctx.dlg);
+					PCB_DAD_BUTTON(ctx.dlg, "replace");
+						PCB_DAD_CHANGE_CB(ctx.dlg, cb_text_replace);
+					PCB_DAD_BUTTON(ctx.dlg, "insert");
+						PCB_DAD_CHANGE_CB(ctx.dlg, cb_text_insert);
+					PCB_DAD_BUTTON(ctx.dlg, "append");
+						PCB_DAD_CHANGE_CB(ctx.dlg, cb_text_append);
+					PCB_DAD_BUTTON(ctx.dlg, "get");
+						PCB_DAD_CHANGE_CB(ctx.dlg, cb_text_get);
+				PCB_DAD_END(ctx.dlg);
+			PCB_DAD_END(ctx.dlg);
+
 		PCB_DAD_END(ctx.dlg);
 		PCB_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
 	PCB_DAD_END(ctx.dlg);
@@ -327,6 +359,64 @@ static void cb_pane_set(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 	val.real_value = 0.3;
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->whpane, &val);
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wvpane, &val);
+}
+
+static void cb_text_replace(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	test_t *ctx = caller_data;
+	pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
+	pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+	txt->hid_set_text(atxt, hid_ctx, PCB_HID_TEXT_REPLACE, "Hello\nworld!\n");
+}
+
+static void cb_text_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	test_t *ctx = caller_data;
+	pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
+	pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+	txt->hid_set_text(atxt, hid_ctx, PCB_HID_TEXT_INSERT, "ins");
+}
+
+static void cb_text_append(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	test_t *ctx = caller_data;
+	pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
+	pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+	txt->hid_set_text(atxt, hid_ctx, PCB_HID_TEXT_APPEND, "app\n");
+}
+
+static void cb_text_get(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	test_t *ctx = caller_data;
+	pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
+	pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+	char *s;
+	s = txt->hid_get_text(atxt, hid_ctx);
+	printf("text: '%s'\n", s);
+	free(s);
+}
+
+static void cb_text_edit(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	test_t *ctx = caller_data;
+	pcb_hid_text_t *txt = (pcb_hid_text_t *)attr->enumerations;
+	long x, y, o;
+	char buf[256];
+	pcb_hid_attr_val_t val;
+
+	txt->hid_get_xy(attr, hid_ctx, &x, &y);
+	o = txt->hid_get_offs(attr, hid_ctx);
+	sprintf(buf, "cursor after edit: line %ld col %ld offs %ld", y, x, o);
+	val.str_value = buf;
+	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wtxtpos, &val);
+}
+
+static void cb_text_offs(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	test_t *ctx = caller_data;
+	pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
+	pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+	txt->hid_set_offs(atxt, hid_ctx, txt->hid_get_offs(atxt, hid_ctx) / 2);
 }
 
 static void prv_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
