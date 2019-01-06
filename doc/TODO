@@ -38,6 +38,7 @@
 	- update bugs:
 		- drc & size: doesn't update on mil/mm change in top win [report: Ade]
 		- new prefs with new layout, change board name in meta and close -- name doesn't get immediately picked up by main window  [report: Miloh]
+		- close buttons expand - they should keep their minimal height [report: Alain]
 	- crash:
 		- filter-select invis_other_groups, create design, set true, close; repeat this on black_current_group -> crash [report: Igor2]
 + BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
