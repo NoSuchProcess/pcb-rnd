@@ -264,7 +264,8 @@ static int ghid_text_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val
 
 static GtkWidget *ghid_text_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent)
 {
-	GtkWidget *bparent, *wtxt, *buffer;
+	GtkWidget *bparent, *wtxt;
+	GtkTextBuffer *buffer;
 	pcb_hid_text_t *txt = (pcb_hid_text_t *)attr->enumerations;
 
 	txt->hid_ctx = ctx;
