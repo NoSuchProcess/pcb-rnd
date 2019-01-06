@@ -46,6 +46,7 @@ typedef enum pcb_hids_e {
 	PCB_HATT_PICTURE,             /* static picture from xpm - picture data in enumerations */
 	PCB_HATT_PICBUTTON,           /* button with static picture from xpm - picture data in enumerations */
 	PCB_HATT_COLOR,               /* color pick (user input: select a color) */
+	PCB_HATT_TEXT,                /* plain text editor; data is in 'enumerations' as pcb_hid_text_t */
 
 	/* groups (e.g. boxes) */
 	PCB_HATT_BEGIN_HBOX,          /* NOTE: PCB_HATT_IS_COMPOSITE() depends on it */
@@ -66,6 +67,27 @@ typedef enum pcb_hids_e {
 /* alternative field names in struct pcb_hid_attribute_s */
 #define pcb_hatt_flags       max_val
 #define pcb_hatt_table_cols  min_val
+
+typedef struct {
+	int sx, sy; /* current size in characters */
+
+	/* cursor manipulation callbacks */
+	void (*hid_get_xy)(pcb_hid_attribute_t *attrib, void *hid_ctx, long *x, long *y);
+	long (*hid_get_offs)(pcb_hid_attribute_t *attrib, void *hid_ctx);
+	void (*hid_set_xy)(pcb_hid_attribute_t *attrib, void *hid_ctx, long x, long y);
+	void (*hid_set_offs)(pcb_hid_attribute_t *attrib, void *hid_ctx, long offs);
+	void (*hid_set_text)(pcb_hid_attribute_t *attrib, void *hid_ctx, const char *txt);
+	char *(*hid_get_text)(pcb_hid_attribute_t *attrib, void *hid_ctx); /* caller needs to free the result */
+
+	/* optional callbacks the user set after widget creation */
+	void *user_ctx;
+	void (*user_free_cb)(pcb_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx);
+
+	/* optional callbacks HIDs may set after widget creation */
+	void *hid_ctx;
+	void (*hid_free_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx);
+} pcb_hid_text_t;
+
 
 typedef struct {
 	int cols;        /* number of columns used by this node (allocation size) */

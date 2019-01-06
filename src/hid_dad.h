@@ -178,6 +178,14 @@ do { \
 #define PCB_DAD_STRING(table) \
 	PCB_DAD_ALLOC(table, PCB_HATT_STRING); \
 
+#define PCB_DAD_TEXT(table, user_ctx_, minx, miny) \
+do { \
+	pcb_hid_text_t *txt = calloc(sizeof(pcb_hid_text_t), 1); \
+	txt->user_ctx = user_ctx_; \
+	PCB_DAD_ALLOC(table, PCB_HATT_TEXT); \
+	PCB_DAD_SET_ATTR_FIELD(table, enumerations, (const char **)txt); \
+} while(0)
+
 #define PCB_DAD_BUTTON(table, text) \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_BUTTON); \
@@ -390,6 +398,7 @@ do { \
 			table[table ## _len - 1].field.real_value = (double)val; \
 			break; \
 		case PCB_HATT_STRING: \
+		case PCB_HATT_TEXT: \
 		case PCB_HATT_PATH: \
 		case PCB_HATT_BUTTON: \
 		case PCB_HATT_TREE: \
@@ -439,6 +448,16 @@ do { \
 					prv->user_free_cb(&table[field], prv->user_ctx, prv->hid_ctx); \
 				if (prv->hid_free_cb != NULL) \
 					prv->hid_free_cb(&table[field], prv->hid_ctx); \
+			} \
+			break; \
+		case PCB_HATT_TEXT: \
+			{ \
+				pcb_hid_text_t *txt = (pcb_hid_text_t *)table[field].enumerations; \
+				if (txt->user_free_cb != NULL) \
+					txt->user_free_cb(&table[field], txt->user_ctx, txt->hid_ctx); \
+				if (txt->hid_free_cb != NULL) \
+					txt->hid_free_cb(&table[field], txt->hid_ctx); \
+				free(txt); \
 			} \
 			break; \
 		case PCB_HATT_BEGIN_HBOX: \
