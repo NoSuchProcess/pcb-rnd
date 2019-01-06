@@ -198,6 +198,35 @@ static void txt_changed_cb(GtkTextView *wtxt, gpointer user_data)
 	change_cb(ctx, dst);
 }
 
+static void txt_get_xyo(pcb_hid_attribute_t *attrib, void *hid_ctx, long *x, long *y, long *o)
+{
+	attr_dlg_t *ctx = hid_ctx;
+	int idx = attrib - ctx->attrs;
+	GtkWidget *wtxt = ctx->wl[idx];
+	GtkTextIter it;
+	GtkTextBuffer *b = gtk_text_view_get_buffer(GTK_TEXT_VIEW(wtxt));
+	GtkTextMark *m = gtk_text_buffer_get_insert(b);
+	gtk_text_buffer_get_iter_at_mark(b, &it, m);
+	if (y != NULL)
+		*y = gtk_text_iter_get_line(&it);
+	if (x != NULL)
+		*x = gtk_text_iter_get_line_offset(&it);
+	if (o != NULL)
+		*o = gtk_text_iter_get_offset(&it);
+}
+
+static void txt_get_xy(pcb_hid_attribute_t *attrib, void *hid_ctx, long *x, long *y)
+{
+	txt_get_xyo(attrib, hid_ctx, x, y, NULL);
+}
+
+static long txt_get_offs(pcb_hid_attribute_t *attrib, void *hid_ctx)
+{
+	long o;
+	txt_get_xyo(attrib, hid_ctx, NULL, NULL, &o);
+	return o;
+}
+
 static int ghid_text_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val)
 {
 	GtkWidget *txt = ctx->wl[idx];
@@ -218,5 +247,8 @@ static GtkWidget *ghid_text_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, G
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(wtxt));
 	g_signal_connect(G_OBJECT(buffer), "changed", G_CALLBACK(txt_changed_cb), attr);
 	g_object_set_data(G_OBJECT(buffer), PCB_OBJ_PROP, ctx);
+
+	txt->hid_get_xy = txt_get_xy;
+	txt->hid_get_offs = txt_get_offs;
 	return wtxt;
 }
