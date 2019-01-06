@@ -256,9 +256,35 @@ static void txt_set_offs(pcb_hid_attribute_t *attrib, void *hid_ctx, long offs)
 	txt_set_xyo(attrib, hid_ctx, NULL, NULL, &offs);
 }
 
+void txt_set_text(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_text_set_t how, const char *txt)
+{
+	attr_dlg_t *ctx = hid_ctx;
+	int idx = attrib - ctx->attrs;
+	GtkWidget *wtxt = ctx->wl[idx];
+	GtkTextIter it, it2;
+	GtkTextBuffer *b = gtk_text_view_get_buffer(GTK_TEXT_VIEW(wtxt));
+
+	switch(how) {
+		case PCB_HID_TEXT_INSERT:
+			gtk_text_buffer_insert_at_cursor(b, txt, strlen(txt));
+			break;
+		case PCB_HID_TEXT_REPLACE:
+			gtk_text_buffer_get_start_iter(b, &it);
+			gtk_text_buffer_get_end_iter(b, &it2);
+			gtk_text_buffer_delete(b, &it, &it2);
+			gtk_text_buffer_get_start_iter(b, &it);
+			gtk_text_buffer_insert(b, &it, txt, strlen(txt));
+			break;
+		case PCB_HID_TEXT_APPEND:
+			gtk_text_buffer_get_end_iter(b, &it);
+			gtk_text_buffer_insert(b, &it, txt, strlen(txt));
+			break;
+	}
+}
+
 static int ghid_text_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val)
 {
-	GtkWidget *txt = ctx->wl[idx];
+	txt_set_text(ctx->wl[idx], ctx, PCB_HID_TEXT_REPLACE, val->str_value);
 	return 0;
 }
 
@@ -282,5 +308,6 @@ static GtkWidget *ghid_text_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, G
 	txt->hid_get_offs = txt_get_offs;
 	txt->hid_set_xy = txt_set_xy;
 	txt->hid_set_offs = txt_set_offs;
+	txt->hid_set_text = txt_set_text;
 	return wtxt;
 }
