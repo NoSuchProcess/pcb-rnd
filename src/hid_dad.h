@@ -448,6 +448,7 @@ do { \
 					prv->user_free_cb(&table[field], prv->user_ctx, prv->hid_ctx); \
 				if (prv->hid_free_cb != NULL) \
 					prv->hid_free_cb(&table[field], prv->hid_ctx); \
+				free(prv); \
 			} \
 			break; \
 		case PCB_HATT_TEXT: \
