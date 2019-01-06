@@ -834,7 +834,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			/* break up subcircuit for editing */
 		case F_Restore:
 			if (!pcb_subc_smash_buffer(PCB_PASTEBUFFER))
-				pcb_message(PCB_MSG_ERROR, _("Error!  Buffer doesn't contain a single subcircuit\n"));
+				pcb_message(PCB_MSG_ERROR, "Error breaking up subcircuits - only one can be broken up at a time\n");
 			break;
 
 			/* Mirror buffer */
