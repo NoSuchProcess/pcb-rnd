@@ -328,7 +328,7 @@ void ltf_text_set_text(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_text_
 			XmTextSetString(wtxt, txt);
 			break;
 		case PCB_HID_TEXT_APPEND:
-			pos = 2^30;
+			pos = 1<<30;
 			XmTextInsert(wtxt, pos, txt);
 			break;
 	}
