@@ -282,3 +282,39 @@ static Widget ltf_colorbtn_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hi
 	return pic;
 }
 
+static void ltf_txt_changed_callback(Widget w, XtPointer attr_, XEvent *e, Boolean *ctd)
+{
+	pcb_hid_attribute_t *attr = attr_;
+	pcb_hid_text_t *txt = (pcb_hid_text_t *)attr->enumerations;
+	valchg(w, w, NULL);
+}
+
+static void ltf_text_set(lesstif_attr_dlg_t *ctx, int idx, const char *val)
+{
+
+}
+
+
+static Widget ltf_text_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
+{
+	Widget wtxt;
+	pcb_hid_text_t *txt = (pcb_hid_text_t *)attr->enumerations;
+
+	stdarg_n = 0;
+	stdarg(XmNresizePolicy, XmRESIZE_GROW);
+	stdarg(XmNleftAttachment, XmATTACH_FORM);
+	stdarg(XmNrightAttachment, XmATTACH_FORM);
+	stdarg(XmNtopAttachment, XmATTACH_FORM);
+	stdarg(XmNbottomAttachment, XmATTACH_FORM);
+	stdarg(XmNeditMode, XmMULTI_LINE_EDIT);
+TODO("this should be removed once the EXPFILL bug is fixed");
+	stdarg(XmNrows, 8);
+	stdarg(XmNuserData, ctx);
+	wtxt = XmCreateText(parent, XmStrCast("dad_text"), stdarg_args, stdarg_n);
+	XtManageChild(wtxt);
+
+	XtAddCallback(wtxt, XmNvalueChangedCallback, (XtCallbackProc)ltf_txt_changed_callback, (XtPointer)attr);
+
+	return wtxt;
+}
+

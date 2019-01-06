@@ -686,6 +686,10 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, att
 			ctx->wl[i] = ltf_preview_create(ctx, parent, &ctx->attrs[i]);
 			break;
 
+		case PCB_HATT_TEXT:
+			ctx->wl[i] = ltf_text_create(ctx, parent, &ctx->attrs[i]);
+			break;
+
 		case PCB_HATT_PICTURE:
 			ctx->wl[i] = ltf_picture_create(ctx, parent, &ctx->attrs[i]);
 			break;
@@ -860,6 +864,9 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 			break;
 		case PCB_HATT_PREVIEW:
 			ltf_preview_set(ctx, idx, val->real_value);
+			break;
+		case PCB_HATT_TEXT:
+			ltf_text_set(ctx, idx, val->str_value);
 			break;
 		case PCB_HATT_ENUM:
 			for (n = 0; ctx->attrs[idx].enumerations[n]; n++) {
