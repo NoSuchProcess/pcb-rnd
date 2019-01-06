@@ -65,9 +65,10 @@
 - BUG: configure without glib installed -> 'unknown arugment disable-gtk' [report: Ade]
 - BUG: bug_files/subc_poly.lht: move subc with rotated poly to other side, poly rotation is broken [report: Igor2]
 - BUG: plain old text in subc is not rotated on arbitrary rotate buffer by 15 deg [report: Igor2]
-- DOC: DAD widgets: picture, picture button, color
+- DOC: DAD widgets: picture, picture button, color, text
 - BUG: Adding a new route style via the route-style dialog doesn't update the menu (Edit->Route Style). [report: Ade]
 - BUG: Load a footprint using the library dialog {w l} into the buffer. Flip the board with the tab key and the refdes border in the buffer object flips vertically the wrong way. Only occurs when loading footprint, not when copying. [report: Ade]
+- BUG: gtk coord entry: right click, change units fail [report: Alain]
 
 2. For later releases ===============================================================================
 - CAM:
