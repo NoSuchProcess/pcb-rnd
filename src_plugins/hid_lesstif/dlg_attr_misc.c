@@ -312,12 +312,24 @@ void ltf_text_set_offs(pcb_hid_attribute_t *attrib, void *hid_ctx, long offs)
 
 void ltf_text_set_text(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_text_set_t how, const char *txt)
 {
+	lesstif_attr_dlg_t *ctx = hid_ctx;
+	int idx = attrib - ctx->attrs;
+	Widget *wtxt = ctx->wl[idx];
+	XmTextPosition pos;
+
 	switch(how) {
 		case PCB_HID_TEXT_INSERT:
+			stdarg_n = 0;
+			stdarg(XmNcursorPosition, &pos);
+			XtGetValues(wtxt, stdarg_args, stdarg_n);
+			XmTextInsert(wtxt, pos, txt);
 			break;
 		case PCB_HID_TEXT_REPLACE:
+			XmTextSetString(wtxt, txt);
 			break;
 		case PCB_HID_TEXT_APPEND:
+			pos = 2^30;
+			XmTextInsert(wtxt, pos, txt);
 			break;
 	}
 }
