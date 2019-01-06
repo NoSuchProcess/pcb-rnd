@@ -289,11 +289,114 @@ static void ltf_txt_changed_callback(Widget w, XtPointer attr_, XEvent *e, Boole
 	valchg(w, w, NULL);
 }
 
-static void ltf_text_set(lesstif_attr_dlg_t *ctx, int idx, const char *val)
+static long ltf_text_get_offs(pcb_hid_attribute_t *attrib, void *hid_ctx)
 {
+	lesstif_attr_dlg_t *ctx = hid_ctx;
+	int idx = attrib - ctx->attrs;
+	Widget *wtxt = ctx->wl[idx];
+	XmTextPosition pos;
 
+	stdarg_n = 0;
+	stdarg(XmNcursorPosition, &pos);
+	XtGetValues(wtxt, stdarg_args, stdarg_n);
+	return pos;
 }
 
+void ltf_text_set_offs(pcb_hid_attribute_t *attrib, void *hid_ctx, long offs)
+{
+	lesstif_attr_dlg_t *ctx = hid_ctx;
+	int idx = attrib - ctx->attrs;
+	Widget *wtxt = ctx->wl[idx];
+	XmTextSetInsertionPosition(wtxt, offs);
+}
+
+void ltf_text_set_text(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_text_set_t how, const char *txt)
+{
+	switch(how) {
+		case PCB_HID_TEXT_INSERT:
+			break;
+		case PCB_HID_TEXT_REPLACE:
+			break;
+		case PCB_HID_TEXT_APPEND:
+			break;
+	}
+}
+
+
+static void ltf_text_set(lesstif_attr_dlg_t *ctx, int idx, const char *val)
+{
+	ltf_text_set_text(&ctx->attrs[idx], ctx, PCB_HID_TEXT_REPLACE, val);
+}
+
+
+static char *ltf_text_get_text_(pcb_hid_attribute_t *attrib, void *hid_ctx)
+{
+	lesstif_attr_dlg_t *ctx = hid_ctx;
+	int idx = attrib - ctx->attrs;
+	Widget *wtxt = ctx->wl[idx];
+	return XmTextGetString(wtxt);
+}
+
+char *ltf_text_get_text(pcb_hid_attribute_t *attrib, void *hid_ctx)
+{
+	char *orig = ltf_text_get_text_(attrib, hid_ctx);
+	char *s = pcb_strdup(orig);
+	XtFree(orig);
+	return s;
+}
+
+static void ltf_text_get_xy(pcb_hid_attribute_t *attrib, void *hid_ctx, long *x, long *y)
+{
+	char *orig, *s = ltf_text_get_text_(attrib, hid_ctx);
+	long to, n, lines = 0, cols = 0;
+
+	if (s == NULL) {
+		*x = *y = 0;
+		return;
+	}
+
+	orig = s;
+	to = ltf_text_get_offs(attrib, hid_ctx);
+	for(n = 0; n < to; n++,s++) {
+		if (*s == '\n') {
+			lines++;
+			cols = 0;
+		}
+		else
+			cols++;
+	}
+
+	XtFree(orig);
+	*x = cols;
+	*y = lines;
+}
+
+void ltf_text_set_xy(pcb_hid_attribute_t *attrib, void *hid_ctx, long x, long y)
+{
+	char *orig, *s = ltf_text_get_text_(attrib, hid_ctx);
+	long offs;
+
+	if (s == NULL)
+		return;
+
+	orig = s;
+	for(offs = 0; *s != '\0'; s++,offs++) {
+		if (*s == '\n') {
+			y--;
+			if (y < 0) {
+				offs--;
+				break;
+			}
+		}
+		else if (y == 0) {
+			if (x == 0)
+				break;
+			x--;
+		}
+	}
+	ltf_text_set_offs(attrib, hid_ctx, offs);
+	XtFree(orig);
+}
 
 static Widget ltf_text_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
 {
@@ -312,8 +415,15 @@ TODO("this should be removed once the EXPFILL bug is fixed");
 	stdarg(XmNuserData, ctx);
 	wtxt = XmCreateText(parent, XmStrCast("dad_text"), stdarg_args, stdarg_n);
 	XtManageChild(wtxt);
-
 	XtAddCallback(wtxt, XmNvalueChangedCallback, (XtCallbackProc)ltf_txt_changed_callback, (XtPointer)attr);
+
+
+	txt->hid_get_xy = ltf_text_get_xy;
+	txt->hid_get_offs = ltf_text_get_offs;
+	txt->hid_set_xy = ltf_text_set_xy;
+	txt->hid_set_offs = ltf_text_set_offs;
+	txt->hid_get_text = ltf_text_get_text;
+	txt->hid_set_text = ltf_text_set_text;
 
 	return wtxt;
 }
