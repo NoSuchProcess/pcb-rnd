@@ -178,7 +178,7 @@ do { \
 #define PCB_DAD_STRING(table) \
 	PCB_DAD_ALLOC(table, PCB_HATT_STRING); \
 
-#define PCB_DAD_TEXT(table, user_ctx_, minx, miny) \
+#define PCB_DAD_TEXT(table, user_ctx_) \
 do { \
 	pcb_hid_text_t *txt = calloc(sizeof(pcb_hid_text_t), 1); \
 	txt->user_ctx = user_ctx_; \

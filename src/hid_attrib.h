@@ -69,8 +69,6 @@ typedef enum pcb_hids_e {
 #define pcb_hatt_table_cols  min_val
 
 typedef struct {
-	int sx, sy; /* current size in characters */
-
 	/* cursor manipulation callbacks */
 	void (*hid_get_xy)(pcb_hid_attribute_t *attrib, void *hid_ctx, long *x, long *y);
 	long (*hid_get_offs)(pcb_hid_attribute_t *attrib, void *hid_ctx);
