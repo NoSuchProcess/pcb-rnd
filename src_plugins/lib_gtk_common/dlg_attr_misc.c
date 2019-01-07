@@ -28,6 +28,8 @@
 
 #include "wt_preview.h"
 
+#include "../src_plugins/lib_hid_common/dad_markup.h"
+
 static int ghid_progress_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val)
 {
 	GtkWidget *prg = ctx->wl[idx];
@@ -256,34 +258,44 @@ static void txt_set_offs(pcb_hid_attribute_t *attrib, void *hid_ctx, long offs)
 	txt_set_xyo(attrib, hid_ctx, NULL, NULL, &offs);
 }
 
-void txt_set_text(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_text_set_t how, const char *txt)
+static void txt_set_text_(GtkTextBuffer *b, unsigned how, const char *txt, long len)
 {
-	attr_dlg_t *ctx = hid_ctx;
-	int idx = attrib - ctx->attrs;
-	GtkWidget *wtxt = ctx->wl[idx];
 	GtkTextIter it, it2;
-	GtkTextBuffer *b = gtk_text_view_get_buffer(GTK_TEXT_VIEW(wtxt));
 
-	if (how & PCB_HID_TEXT_MARKUP) {
-TODO("split to segments");
-	}
-
-	switch((unsigned)how & 0x0F) {
+	switch(how & 0x0F) {
 		case PCB_HID_TEXT_INSERT:
-			gtk_text_buffer_insert_at_cursor(b, txt, strlen(txt));
+			gtk_text_buffer_insert_at_cursor(b, txt, len);
 			break;
 		case PCB_HID_TEXT_REPLACE:
 			gtk_text_buffer_get_start_iter(b, &it);
 			gtk_text_buffer_get_end_iter(b, &it2);
 			gtk_text_buffer_delete(b, &it, &it2);
 			gtk_text_buffer_get_start_iter(b, &it);
-			gtk_text_buffer_insert(b, &it, txt, strlen(txt));
+			gtk_text_buffer_insert(b, &it, txt, len);
 			break;
 		case PCB_HID_TEXT_APPEND:
 			gtk_text_buffer_get_end_iter(b, &it);
-			gtk_text_buffer_insert(b, &it, txt, strlen(txt));
+			gtk_text_buffer_insert(b, &it, txt, len);
 			break;
 	}
+}
+
+static void txt_set_text(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_text_set_t how, const char *txt)
+{
+	attr_dlg_t *ctx = hid_ctx;
+	int idx = attrib - ctx->attrs;
+	GtkWidget *wtxt = ctx->wl[idx];
+	GtkTextBuffer *b = gtk_text_view_get_buffer(GTK_TEXT_VIEW(wtxt));
+
+	if (how & PCB_HID_TEXT_MARKUP) {
+		pcb_markup_state_t st = 0;
+		const char *seg;
+		long seglen;
+		while((seg = pcb_markup_next(&st, &txt, &seglen)) != NULL)
+			txt_set_text_(b, how, seg, seglen);
+	}
+	else
+		txt_set_text_(b, how, txt, strlen(txt));
 }
 
 static int ghid_text_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val)

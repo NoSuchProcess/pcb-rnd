@@ -31,6 +31,7 @@
 #include <Xm/PanedW.h>
 #include "wt_xpm.h"
 #include "wt_colorbtn.h"
+#include "../src_plugins/lib_hid_common/dad_markup.h"
 
 static void ltf_progress_set(lesstif_attr_dlg_t *ctx, int idx, double val)
 {
@@ -310,18 +311,11 @@ void ltf_text_set_offs(pcb_hid_attribute_t *attrib, void *hid_ctx, long offs)
 	XmTextSetInsertionPosition(wtxt, offs);
 }
 
-void ltf_text_set_text(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_text_set_t how, const char *txt)
+static void ltf_text_set_text_(Widget *wtxt, unsigned how, const char *txt)
 {
-	lesstif_attr_dlg_t *ctx = hid_ctx;
-	int idx = attrib - ctx->attrs;
-	Widget *wtxt = ctx->wl[idx];
 	XmTextPosition pos;
 
-	if (how & PCB_HID_TEXT_MARKUP) {
-TODO("remove markup");
-	}
-
-	switch((unsigned)how & 0x0F) { /* ignore flags - no markup support */
+	switch(how & 0x0F) { /* ignore flags - no markup support */
 		case PCB_HID_TEXT_INSERT:
 			stdarg_n = 0;
 			stdarg(XmNcursorPosition, &pos);
@@ -336,6 +330,31 @@ TODO("remove markup");
 			XmTextInsert(wtxt, pos, txt);
 			break;
 	}
+}
+
+static void ltf_text_set_text(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_text_set_t how, const char *txt)
+{
+	lesstif_attr_dlg_t *ctx = hid_ctx;
+	int idx = attrib - ctx->attrs;
+	Widget *wtxt = ctx->wl[idx];
+
+	if (how & PCB_HID_TEXT_MARKUP) {
+		char *orig, *tmp = pcb_strdup(txt);
+		pcb_markup_state_t st = 0;
+		char *seg;
+		long seglen;
+
+		orig = tmp;
+		while((seg = (char *)pcb_markup_next(&st, &tmp, &seglen)) != NULL) {
+			char save = seg[seglen];
+			seg[seglen] = '\0';
+			ltf_text_set_text_(wtxt, how, seg);
+			seg[seglen] = save;
+		}
+		free(orig);
+	}
+	else
+		ltf_text_set_text_(wtxt, how, txt);
 }
 
 
