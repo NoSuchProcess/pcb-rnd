@@ -74,6 +74,7 @@
 - BUG: Adding a new route style via the route-style dialog doesn't update the menu (Edit->Route Style). [report: Ade]
 - BUG: Load a footprint using the library dialog {w l} into the buffer. Flip the board with the tab key and the refdes border in the buffer object flips vertically the wrong way. Only occurs when loading footprint, not when copying. [report: Ade]
 - BUG: gtk coord entry: right click, change units fail [report: Alain]
+- BUG: preview zoom doesn't work (e.g. on csect) [report: Alain]
 
 2. For later releases ===============================================================================
 - CAM:
@@ -270,7 +271,6 @@
 - BUG: gtk: slipping 'tab' issue view drifts when tab is used repeatedly at different zooms around the cardinal edges of a placed part, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
 - BUG: XY exporter: place a 1206 rotated 15 degrees, then export to xy with macrofab -> error message on rotated pad bbox; we need to rotate back the terminal object and calculate hte bbox in neutral position [report: celem]
 - BUG: lesstif clip_set() doesn't seem to affect the X clipboard
-- BUG: preview zoom doesn't work (e.g. on csect) [report: Alain]
 
 3. Long term ===============================================================================
 - BUG: draw a large padstack poly (as a subc term); put some vias (padtsacks) on top of it; with gdk and gl, after the 6th via some via rings will disappear [report: James]
