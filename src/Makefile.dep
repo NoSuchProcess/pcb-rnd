@@ -1867,6 +1867,8 @@
  color.h misc_util.h search.h rats.h netlist.h route_style.h change.h \
  ../src_plugins/hid_lesstif/dlg_attr_misc.c \
  ../src_plugins/hid_lesstif/wt_xpm.h \
+ ../src_plugins/hid_lesstif/wt_colorbtn.h \
+ ../src_plugins/lib_hid_common/dad_markup.h \
  ../src_plugins/hid_lesstif/wt_preview.h \
  ../src_plugins/hid_lesstif/dlg_attr_box.c
 ../src_plugins/hid_lesstif/library.o: \
@@ -3308,23 +3310,33 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h list_conf.h \
  error.h plug_io.h
 ../src_plugins/io_tedax/tboard.o: ../src_plugins/io_tedax/tboard.c \
- ../config.h board.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h \
- attrib.h ../src_3rd/genvector/genvector_impl.h \
+ ../config.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
+ ../src_3rd/genht/htsi.h ../src_3rd/genht/hash.h \
+ ../src_plugins/lib_netmap/placement.h board.h global_typedefs.h \
+ pcb_bool.h unit.h vtroutestyle.h attrib.h \
+ ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h color.h \
  obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h polyarea.h \
- obj_text_list.h obj_text.h font.h ../src_3rd/genht/htip.h \
- ../src_3rd/genht/ht.h box.h math_helper.h move.h misc_util.h \
- ../src_3rd/genvector/gds_char.h layer_grp.h library.h rats_patch.h \
- board.h ../src_plugins/io_tedax/tboard.h ../src_plugins/io_tedax/parse.h \
- error.h safe_fs.h conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
- ../src_3rd/genvector/vtp0.h list_conf.h \
+ obj_text_list.h obj_text.h font.h ../src_3rd/genht/htip.h box.h \
+ math_helper.h move.h misc_util.h ../src_3rd/genvector/gds_char.h \
+ layer_grp.h library.h rats_patch.h board.h data.h crosshair.h \
+ vtonpoint.h hid.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h error.h \
+ route.h buffer.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
+ obj_rat_list.h obj_rat.h obj_subc_list.h obj_subc.h \
+ ../src_3rd/libminuid/libminuid.h rtree.h \
+ ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
+ ../src_3rd/genht/ht.h obj_pstk_list.h obj_pstk.h \
+ ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
+ vtpadstack_t.h ht_subc.h ../src_plugins/io_tedax/tboard.h \
+ ../src_plugins/io_tedax/parse.h error.h safe_fs.h conf.h pcb-printf.h \
+ ../src_3rd/liblihata/lihata.h list_conf.h \
  ../src_plugins/io_tedax/stackup.h ../src_plugins/io_tedax/netlist.h \
- ../src_plugins/io_tedax/tdrc.h ../src_plugins/io_tedax/tlayer.h layer.h
+ ../src_plugins/io_tedax/footprint.h ../src_plugins/io_tedax/tdrc.h \
+ ../src_plugins/io_tedax/tlayer.h layer.h obj_pstk.h compat_misc.h
 ../src_plugins/io_tedax/tdrc.o: ../src_plugins/io_tedax/tdrc.c \
  ../config.h board.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h \
  attrib.h ../src_3rd/genvector/genvector_impl.h \
@@ -3669,6 +3681,7 @@
  ../src_plugins/lib_gtk_common/ui_zoompan.h ../src_3rd/libfungw/fungw.h \
  ../src_3rd/genht/htpp.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h hid_cfg.h \
+ ../src_plugins/lib_hid_common/dad_markup.h \
  ../src_plugins/lib_gtk_common/dlg_attr_box.c
 ../src_plugins/lib_gtk_common/dlg_attributes.o: \
  ../src_plugins/lib_gtk_common/dlg_attributes.c ../config.h conf_core.h \
