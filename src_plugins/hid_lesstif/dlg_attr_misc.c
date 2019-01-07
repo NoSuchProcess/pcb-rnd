@@ -410,6 +410,17 @@ void ltf_text_set_xy(pcb_hid_attribute_t *attrib, void *hid_ctx, long x, long y)
 	XtFree(orig);
 }
 
+void ltf_text_set_readonly(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_bool readonly)
+{
+	lesstif_attr_dlg_t *ctx = hid_ctx;
+	int idx = attrib - ctx->attrs;
+	Widget *wtxt = ctx->wl[idx];
+
+	stdarg_n = 0;
+	stdarg(XmNeditable, !readonly);
+	XtSetValues(wtxt, stdarg_args, stdarg_n);
+}
+
 static Widget ltf_text_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
 {
 	Widget wtxt;
@@ -436,6 +447,7 @@ TODO("this should be removed once the EXPFILL bug is fixed");
 	txt->hid_set_offs = ltf_text_set_offs;
 	txt->hid_get_text = ltf_text_get_text;
 	txt->hid_set_text = ltf_text_set_text;
+	txt->hid_set_readonly = ltf_text_set_readonly;
 
 	return wtxt;
 }
