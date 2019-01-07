@@ -82,6 +82,7 @@ typedef struct {
 	void (*hid_set_offs)(pcb_hid_attribute_t *attrib, void *hid_ctx, long offs);
 	void (*hid_set_text)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_text_set_t how, const char *txt);
 	char *(*hid_get_text)(pcb_hid_attribute_t *attrib, void *hid_ctx); /* caller needs to free the result */
+	char *(*hid_set_readonly)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_bool readonly); /* by default text views are not read-only */
 
 	/* optional callbacks the user set after widget creation */
 	void *user_ctx;
