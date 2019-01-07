@@ -301,6 +301,14 @@ static char *txt_get_text(pcb_hid_attribute_t *attrib, void *hid_ctx)
 	return gtk_text_buffer_get_text(b, &it, &it2, 0);
 }
 
+static void txt_set_readonly(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_bool readonly)
+{
+	attr_dlg_t *ctx = hid_ctx;
+	int idx = attrib - ctx->attrs;
+	GtkWidget *wtxt = ctx->wl[idx];
+	gtk_text_view_set_editable(wtxt, !readonly);
+}
+
 
 static GtkWidget *ghid_text_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent)
 {
@@ -324,5 +332,6 @@ static GtkWidget *ghid_text_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, G
 	txt->hid_set_offs = txt_set_offs;
 	txt->hid_set_text = txt_set_text;
 	txt->hid_get_text = txt_get_text;
+	txt->hid_set_readonly = txt_set_readonly;
 	return wtxt;
 }
