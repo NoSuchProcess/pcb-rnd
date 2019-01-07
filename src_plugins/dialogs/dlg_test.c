@@ -33,8 +33,8 @@ static const char dlg_test_help[] = "test the attribute dialog";
 
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
-	int wtab, tt, wprog, whpane, wvpane, wtxt, wtxtpos;
-	int ttctr, wclr;
+	int wtab, tt, wprog, whpane, wvpane, wtxt, wtxtpos, wtxtro;
+	int ttctr, wclr, txtro;
 } test_t;
 
 
@@ -57,6 +57,7 @@ static void cb_text_append(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 static void cb_text_get(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_text_edit(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_text_offs(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+static void cb_text_ro(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 
 static void prv_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e);
 static pcb_bool prv_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y);
@@ -218,6 +219,9 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 						PCB_DAD_CHANGE_CB(ctx.dlg, cb_text_append);
 					PCB_DAD_BUTTON(ctx.dlg, "get");
 						PCB_DAD_CHANGE_CB(ctx.dlg, cb_text_get);
+					PCB_DAD_BUTTON(ctx.dlg, "ro");
+						ctx.txtro = 0;
+						PCB_DAD_CHANGE_CB(ctx.dlg, cb_text_ro);
 				PCB_DAD_END(ctx.dlg);
 			PCB_DAD_END(ctx.dlg);
 
@@ -417,6 +421,15 @@ static void cb_text_offs(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
 	pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
 	txt->hid_set_offs(atxt, hid_ctx, txt->hid_get_offs(atxt, hid_ctx) / 2);
+}
+
+static void cb_text_ro(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	test_t *ctx = caller_data;
+	pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
+	pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+	ctx->txtro = !ctx->txtro;
+	txt->hid_set_readonly(atxt, hid_ctx, ctx->txtro);
 }
 
 static void prv_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
