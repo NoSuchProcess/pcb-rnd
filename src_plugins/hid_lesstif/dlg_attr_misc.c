@@ -317,7 +317,11 @@ void ltf_text_set_text(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_text_
 	Widget *wtxt = ctx->wl[idx];
 	XmTextPosition pos;
 
-	switch(how) {
+	if (how & PCB_HID_TEXT_MARKUP) {
+TODO("remove markup");
+	}
+
+	switch((unsigned)how & 0x0F) { /* ignore flags - no markup support */
 		case PCB_HID_TEXT_INSERT:
 			stdarg_n = 0;
 			stdarg(XmNcursorPosition, &pos);

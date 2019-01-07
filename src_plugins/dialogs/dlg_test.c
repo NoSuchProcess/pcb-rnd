@@ -386,7 +386,7 @@ static void cb_text_append(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	test_t *ctx = caller_data;
 	pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
 	pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
-	txt->hid_set_text(atxt, hid_ctx, PCB_HID_TEXT_APPEND, "app\n");
+	txt->hid_set_text(atxt, hid_ctx, PCB_HID_TEXT_APPEND | PCB_HID_TEXT_MARKUP, "app<R>red</R>\n");
 }
 
 static void cb_text_get(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)

@@ -71,7 +71,10 @@ typedef enum pcb_hids_e {
 typedef enum {
 	PCB_HID_TEXT_INSERT,           /* insert at cursor or replace selection */
 	PCB_HID_TEXT_REPLACE,          /* replace the entire text */
-	PCB_HID_TEXT_APPEND            /* append to the end of the text */
+	PCB_HID_TEXT_APPEND,           /* append to the end of the text */
+
+	/* modifiers (bitfield) */
+	PCB_HID_TEXT_MARKUP = 0x0010   /* interpret minimal html-like markup - some HIDs may ignore these */
 } pcb_hid_text_set_t;
 
 typedef struct {

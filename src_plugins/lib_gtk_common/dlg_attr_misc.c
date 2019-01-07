@@ -264,7 +264,11 @@ void txt_set_text(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_text_set_t
 	GtkTextIter it, it2;
 	GtkTextBuffer *b = gtk_text_view_get_buffer(GTK_TEXT_VIEW(wtxt));
 
-	switch(how) {
+	if (how & PCB_HID_TEXT_MARKUP) {
+TODO("split to segments");
+	}
+
+	switch((unsigned)how & 0x0F) {
 		case PCB_HID_TEXT_INSERT:
 			gtk_text_buffer_insert_at_cursor(b, txt, strlen(txt));
 			break;
