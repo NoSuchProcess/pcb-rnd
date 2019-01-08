@@ -27,6 +27,7 @@
 typedef struct {
 	attr_dlg_t *hid_ctx;
 	int attr_idx;
+	unsigned markup_inited:1;
 } dad_txt_t;
 
 static void txt_free_cb(pcb_hid_attribute_t *attr, void *hid_ctx)
@@ -125,9 +126,11 @@ static void txt_set_text_(GtkTextBuffer *b, unsigned how, const char *txt, long 
 	}
 }
 
-static void txt_set_text(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_text_set_t how, const char *txt)
+static void txt_set_text(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_text_set_t how, const char *str)
 {
 	attr_dlg_t *ctx = hid_ctx;
+	pcb_hid_text_t *txt = (pcb_hid_text_t *)attrib->enumerations;
+	dad_txt_t *tctx = txt->hid_wdata;
 	int idx = attrib - ctx->attrs;
 	GtkWidget *wtxt = ctx->wl[idx];
 	GtkTextBuffer *b = gtk_text_view_get_buffer(GTK_TEXT_VIEW(wtxt));
@@ -136,11 +139,42 @@ static void txt_set_text(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_tex
 		pcb_markup_state_t st = 0;
 		const char *seg;
 		long seglen;
-		while((seg = pcb_markup_next(&st, &txt, &seglen)) != NULL)
+
+		if (!tctx->markup_inited) {
+pcb_trace("TAG INIT\n");
+			gtk_text_buffer_create_tag(b, "italic", "style", PANGO_STYLE_ITALIC, NULL);
+			gtk_text_buffer_create_tag(b, "bold", "weight", PANGO_WEIGHT_BOLD, NULL);
+			gtk_text_buffer_create_tag(b, "red", "foreground", "#aa0000", NULL);
+			gtk_text_buffer_create_tag(b, "green", "foreground", "#00aa00", NULL);
+			gtk_text_buffer_create_tag(b, "blue", "foreground", "#0000aa", NULL);
+			tctx->markup_inited = 1;
+		}
+		while((seg = pcb_markup_next(&st, &str, &seglen)) != NULL) {
+			GtkTextIter it1, it2;
+			GtkTextMark *m;
+			const char *tag;
+			long o1;
+
+			m = gtk_text_buffer_get_insert(b);
+			gtk_text_buffer_get_iter_at_mark(b, &it1, m);
+			o1 = gtk_text_iter_get_offset(&it1);
 			txt_set_text_(b, how, seg, seglen);
+			if (st != 0) {
+				if (st & PCB_MKS_RED) tag = "red";
+				if (st & PCB_MKS_GREEN) tag = "green";
+				if (st & PCB_MKS_BLUE) tag = "blue";
+				if (st & PCB_MKS_BOLD) tag = "bold";
+				if (st & PCB_MKS_ITALIC) tag = "italic";
+				m = gtk_text_buffer_get_insert(b);
+				gtk_text_buffer_get_iter_at_mark(b, &it2, m);
+				gtk_text_buffer_get_iter_at_mark(b, &it1, m);
+				gtk_text_iter_set_offset(&it1, o1);
+				gtk_text_buffer_apply_tag_by_name(b, tag, &it1, &it2);
+			}
+		}
 	}
 	else
-		txt_set_text_(b, how, txt, strlen(txt));
+		txt_set_text_(b, how, str, strlen(str));
 }
 
 static int ghid_text_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val)
@@ -187,6 +221,7 @@ static GtkWidget *ghid_text_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, G
 	tctx = malloc(sizeof(dad_txt_t));
 	tctx->hid_ctx = ctx;
 	tctx->attr_idx = attr - ctx->attrs;
+	tctx->markup_inited = 0;
 	txt->hid_wdata = tctx;
 	g_signal_connect(G_OBJECT(buffer), "changed", G_CALLBACK(txt_changed_cb), tctx);
 
