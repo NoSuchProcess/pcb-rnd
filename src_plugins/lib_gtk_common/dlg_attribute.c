@@ -275,6 +275,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 #include "dlg_attr_tree.c"
 #include "dlg_attr_misc.c"
+#include "dlg_attr_txt.c"
 #include "dlg_attr_box.c"
 
 static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_tb_t *tb_st, int start_from, int add_labels)
