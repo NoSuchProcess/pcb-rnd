@@ -141,7 +141,6 @@ static void txt_set_text(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_tex
 		long seglen;
 
 		if (!tctx->markup_inited) {
-pcb_trace("TAG INIT\n");
 			gtk_text_buffer_create_tag(b, "italic", "style", PANGO_STYLE_ITALIC, NULL);
 			gtk_text_buffer_create_tag(b, "bold", "weight", PANGO_WEIGHT_BOLD, NULL);
 			gtk_text_buffer_create_tag(b, "red", "foreground", "#aa0000", NULL);
