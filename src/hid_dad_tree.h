@@ -74,7 +74,7 @@ PCB_INLINE void pcb_dad_tree_free_row(pcb_hid_tree_t *tree, pcb_hid_row_t *row)
 	}
 
 	if (tree->user_free_cb != NULL)
-		tree->user_free_cb(tree->attrib, tree->hid_ctx, row);
+		tree->user_free_cb(tree->attrib, tree->hid_wdata, row);
 
 	if (do_free_path)
 		free(row->path);
@@ -140,7 +140,7 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_append(pcb_hid_attribute_t *attr, pcb_hid
 	gdl_insert_after(par, aft, nrow, link);
 	pcb_dad_tree_set_hash(attr, nrow);
 	if (tree->hid_insert_cb != NULL)
-		tree->hid_insert_cb(tree->attrib, tree->hid_ctx, nrow);
+		tree->hid_insert_cb(tree->attrib, tree->hid_wdata, nrow);
 	return nrow;
 }
 
@@ -164,7 +164,7 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_insert(pcb_hid_attribute_t *attr, pcb_hid
 	gdl_insert_before(par, bfr, nrow, link);
 	pcb_dad_tree_set_hash(attr, nrow);
 	if (tree->hid_insert_cb != NULL)
-		tree->hid_insert_cb(tree->attrib, tree->hid_ctx, nrow);
+		tree->hid_insert_cb(tree->attrib, tree->hid_wdata, nrow);
 	return nrow;
 }
 
@@ -186,7 +186,7 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_append_under(pcb_hid_attribute_t *attr, p
 	gdl_append(par, nrow, link);
 	pcb_dad_tree_set_hash(attr, nrow);
 	if (tree->hid_insert_cb != NULL)
-		tree->hid_insert_cb(tree->attrib, tree->hid_ctx, nrow);
+		tree->hid_insert_cb(tree->attrib, tree->hid_wdata, nrow);
 	return nrow;
 }
 
@@ -207,7 +207,7 @@ PCB_INLINE int pcb_dad_tree_remove(pcb_hid_attribute_t *attr, pcb_hid_row_t *row
 
 	/* remove from gui */
 	if (tree->hid_remove_cb != NULL)
-		tree->hid_remove_cb(tree->attrib, tree->hid_ctx, row);
+		tree->hid_remove_cb(tree->attrib, tree->hid_wdata, row);
 	else
 		res = -1;
 
@@ -233,7 +233,7 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_get_selected(pcb_hid_attribute_t *attr)
 	if (tree->hid_get_selected_cb == NULL)
 		return NULL;
 
-	return tree->hid_get_selected_cb(tree->attrib, tree->hid_ctx);
+	return tree->hid_get_selected_cb(tree->attrib, tree->hid_wdata);
 }
 
 PCB_INLINE void pcb_dad_tree_update_hide(pcb_hid_attribute_t *attr)
@@ -243,7 +243,7 @@ PCB_INLINE void pcb_dad_tree_update_hide(pcb_hid_attribute_t *attr)
 	assert(attr == tree->attrib);
 
 	if (tree->hid_update_hide_cb != NULL)
-		tree->hid_update_hide_cb(tree->attrib, tree->hid_ctx);
+		tree->hid_update_hide_cb(tree->attrib, tree->hid_wdata);
 }
 
 PCB_INLINE int pcb_dad_tree_modify_cell(pcb_hid_attribute_t *attr, pcb_hid_row_t *row, int col, char *new_val)
@@ -267,7 +267,7 @@ PCB_INLINE int pcb_dad_tree_modify_cell(pcb_hid_attribute_t *attr, pcb_hid_row_t
 		pcb_dad_tree_set_hash(attr, row);
 
 	if (tree->hid_modify_cb != NULL)
-		tree->hid_modify_cb(tree->attrib, tree->hid_ctx, row, col);
+		tree->hid_modify_cb(tree->attrib, tree->hid_wdata, row, col);
 
 	return 0;
 }
@@ -279,7 +279,7 @@ PCB_INLINE void pcb_dad_tree_jumpto(pcb_hid_attribute_t *attr, pcb_hid_row_t *ro
 	assert(attr == tree->attrib);
 
 	if (tree->hid_jumpto_cb != NULL)
-		tree->hid_jumpto_cb(tree->attrib, tree->hid_ctx, row);
+		tree->hid_jumpto_cb(tree->attrib, tree->hid_wdata, row);
 }
 
 PCB_INLINE void pcb_dad_tree_expcoll_(pcb_hid_tree_t *tree, pcb_hid_row_t *row, pcb_bool expanded, pcb_bool recursive)
@@ -290,7 +290,7 @@ PCB_INLINE void pcb_dad_tree_expcoll_(pcb_hid_tree_t *tree, pcb_hid_row_t *row, 
 			pcb_dad_tree_expcoll_(tree, r, expanded, recursive);
 	}
 	if (gdl_first(&row->children) != NULL)
-		tree->hid_expcoll_cb(tree->attrib, tree->hid_ctx, row, expanded);
+		tree->hid_expcoll_cb(tree->attrib, tree->hid_wdata, row, expanded);
 }
 
 PCB_INLINE void pcb_dad_tree_expcoll(pcb_hid_attribute_t *attr, pcb_hid_row_t *row, pcb_bool expanded, pcb_bool recursive)

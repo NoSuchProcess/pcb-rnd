@@ -92,8 +92,8 @@ typedef struct {
 	void (*user_free_cb)(pcb_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx);
 
 	/* optional callbacks HIDs may set after widget creation */
-	void *hid_ctx;
-	void (*hid_free_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx);
+	void *hid_wdata;
+	void (*hid_free_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata);
 } pcb_hid_text_t;
 
 
@@ -129,15 +129,15 @@ typedef struct {
 	const char *(*user_copy_to_clip_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row); /* returns the string to copy to clipboard for the given row (if unset, first column text is used) */
 
 	/* optional callbacks HIDs may set after widget creation */
-	void *hid_ctx;
-	void (*hid_insert_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *new_row);
-	void (*hid_modify_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row, int col); /* if col is negative, all columns have changed */
-	void (*hid_remove_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
-	void (*hid_free_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
-	pcb_hid_row_t *(*hid_get_selected_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx);
-	void (*hid_jumpto_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row); /* row = NULL means deselect all */
-	void (*hid_expcoll_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row, int expanded); /* sets whether a row is expanded or collapsed */
-	void (*hid_update_hide_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx);
+	void *hid_wdata;
+	void (*hid_insert_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *new_row);
+	void (*hid_modify_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int col); /* if col is negative, all columns have changed */
+	void (*hid_remove_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row);
+	void (*hid_free_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row);
+	pcb_hid_row_t *(*hid_get_selected_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata);
+	void (*hid_jumpto_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row); /* row = NULL means deselect all */
+	void (*hid_expcoll_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int expanded); /* sets whether a row is expanded or collapsed */
+	void (*hid_update_hide_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata);
 } pcb_hid_tree_t;
 
 typedef struct pcb_hid_preview_s pcb_hid_preview_t;
@@ -156,9 +156,9 @@ struct pcb_hid_preview_s {
 	pcb_bool (*user_mouse_cb)(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y); /* returns true if redraw is needed */
 
 	/* optional callbacks HIDs may set after widget creation */
-	void *hid_ctx;
-	void (*hid_zoomto_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, const pcb_box_t *view);
-	void (*hid_free_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx);
+	void *hid_wdata;
+	void (*hid_zoomto_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata, const pcb_box_t *view);
+	void (*hid_free_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata);
 };
 
 struct pcb_hid_attribute_s {

@@ -267,7 +267,7 @@ static gboolean ghid_tree_table_key_press_cb(GtkTreeView *tree_view, GdkEventKey
 		g_return_val_if_fail(clipboard != NULL, TRUE);
 
 		if (tree->user_copy_to_clip_cb != NULL)
-			cliptext = tree->user_copy_to_clip_cb(attr, tree->hid_ctx, r);
+			cliptext = tree->user_copy_to_clip_cb(attr, tree->hid_wdata, r);
 		else
 			cliptext = r->cell[0];
 
@@ -302,7 +302,7 @@ static gboolean ghid_tree_table_key_press_cb(GtkTreeView *tree_view, GdkEventKey
 		if (r != NULL) {
 			pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
 			if (tree->user_browse_activate_cb != NULL) { /* let the user callbakc decide */
-				force_activate = tree->user_browse_activate_cb(attr, tree->hid_ctx, r);
+				force_activate = tree->user_browse_activate_cb(attr, tree->hid_wdata, r);
 			}
 			else { /* automatic decision: only leaf nodes activate */
 				if (gdl_first(&r->children) == NULL)
@@ -458,7 +458,7 @@ static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, pcb_hid_attribute_t *a
 	tree->hid_free_cb = ghid_tree_table_free_cb;
 	tree->hid_get_selected_cb = ghid_tree_table_get_selected;
 	tree->hid_update_hide_cb = ghid_tree_table_update_hide;
-	tree->hid_ctx = ctx;
+	tree->hid_wdata = ctx;
 
 	/* create columns */
 	types = malloc(sizeof(GType) * (attr->pcb_hatt_table_cols+1));

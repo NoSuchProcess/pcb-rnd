@@ -31,8 +31,7 @@ typedef struct {
 
 static void txt_free_cb(pcb_hid_attribute_t *attr, void *hid_ctx)
 {
-	pcb_hid_text_t *txt = (pcb_hid_text_t *)attr->enumerations;
-	dad_txt_t *tctx = txt->hid_ctx;
+	dad_txt_t *tctx = hid_ctx;
 	free(tctx);
 }
 
@@ -188,7 +187,7 @@ static GtkWidget *ghid_text_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, G
 	tctx = malloc(sizeof(dad_txt_t));
 	tctx->hid_ctx = ctx;
 	tctx->attr_idx = attr - ctx->attrs;
-	txt->hid_ctx = tctx;
+	txt->hid_wdata = tctx;
 	g_signal_connect(G_OBJECT(buffer), "changed", G_CALLBACK(txt_changed_cb), tctx);
 
 	txt->hid_get_xy = txt_get_xy;

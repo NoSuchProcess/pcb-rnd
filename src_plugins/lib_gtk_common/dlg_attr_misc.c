@@ -105,7 +105,7 @@ static GtkWidget *ghid_preview_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr
 	pcb_gtk_preview_t *p;
 	pcb_hid_preview_t *hp = (pcb_hid_preview_t *)attr->enumerations;
 
-	hp->hid_ctx = ctx;
+	hp->hid_wdata = ctx;
 	hp->hid_zoomto_cb = ghid_preview_zoomto;
 
 	bparent = frame_scroll(parent, attr->pcb_hatt_flags);

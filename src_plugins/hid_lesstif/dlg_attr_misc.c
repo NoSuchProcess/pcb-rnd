@@ -92,7 +92,7 @@ static void ltf_preview_set(lesstif_attr_dlg_t *ctx, int idx, double val)
 static void ltf_preview_zoomto(pcb_hid_attribute_t *attr, void *hid_ctx, const pcb_box_t *view)
 {
 	pcb_hid_preview_t *prv = (pcb_hid_preview_t *)attr->enumerations;
-	pcb_ltf_preview_t *pd = prv->hid_ctx;
+	pcb_ltf_preview_t *pd = prv->hid_wdata;
 
 	pd->x1 = view->X1;
 	pd->y1 = view->Y1;
@@ -159,7 +159,7 @@ static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 	pcb_hid_preview_t *prv = (pcb_hid_preview_t *)attr->enumerations;
 
 	pd = calloc(1, sizeof(pcb_ltf_preview_t));
-	prv->hid_ctx = pd;
+	prv->hid_wdata = pd;
 
 	pd->attr = attr;
 	memset(&pd->exp_ctx, 0, sizeof(pd->exp_ctx));

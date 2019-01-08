@@ -252,7 +252,7 @@ do { \
 do { \
 	pcb_hid_preview_t *prv = (pcb_hid_preview_t *)((attr)->enumerations); \
 	if (prv->hid_zoomto_cb != NULL) \
-		prv->hid_zoomto_cb((attr), prv->hid_ctx, view); \
+		prv->hid_zoomto_cb((attr), prv->hid_wdata, view); \
 } while(0)
 
 
@@ -445,9 +445,9 @@ do { \
 			{ \
 				pcb_hid_preview_t *prv = (pcb_hid_preview_t *)table[field].enumerations; \
 				if (prv->user_free_cb != NULL) \
-					prv->user_free_cb(&table[field], prv->user_ctx, prv->hid_ctx); \
+					prv->user_free_cb(&table[field], prv->user_ctx, prv->hid_wdata); \
 				if (prv->hid_free_cb != NULL) \
-					prv->hid_free_cb(&table[field], prv->hid_ctx); \
+					prv->hid_free_cb(&table[field], prv->hid_wdata); \
 				free(prv); \
 			} \
 			break; \
@@ -455,9 +455,9 @@ do { \
 			{ \
 				pcb_hid_text_t *txt = (pcb_hid_text_t *)table[field].enumerations; \
 				if (txt->user_free_cb != NULL) \
-					txt->user_free_cb(&table[field], txt->user_ctx, txt->hid_ctx); \
+					txt->user_free_cb(&table[field], txt->user_ctx, txt->hid_wdata); \
 				if (txt->hid_free_cb != NULL) \
-					txt->hid_free_cb(&table[field], txt->hid_ctx); \
+					txt->hid_free_cb(&table[field], txt->hid_wdata); \
 				free(txt); \
 			} \
 			break; \
