@@ -200,7 +200,7 @@ static void txt_set_readonly(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_boo
 	attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;
 	GtkWidget *wtxt = ctx->wl[idx];
-	gtk_text_view_set_editable(wtxt, !readonly);
+	gtk_text_view_set_editable(GTK_TEXT_VIEW(wtxt), !readonly);
 }
 
 
