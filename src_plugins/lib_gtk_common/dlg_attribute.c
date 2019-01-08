@@ -621,6 +621,7 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 		case PCB_HATT_BEGIN_VBOX:
 		case PCB_HATT_BEGIN_TABLE:
 		case PCB_HATT_PICBUTTON:
+		case PCB_HATT_PICTURE:
 		case PCB_HATT_END:
 			goto error;
 
