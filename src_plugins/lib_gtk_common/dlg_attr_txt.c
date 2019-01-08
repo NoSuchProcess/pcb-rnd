@@ -198,5 +198,6 @@ static GtkWidget *ghid_text_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, G
 	txt->hid_set_text = txt_set_text;
 	txt->hid_get_text = txt_get_text;
 	txt->hid_set_readonly = txt_set_readonly;
+	txt->hid_free_cb = txt_free_cb;
 	return wtxt;
 }
