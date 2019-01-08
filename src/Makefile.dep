@@ -3682,6 +3682,7 @@
  ../src_3rd/genht/htpp.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h hid_cfg.h \
  ../src_plugins/lib_hid_common/dad_markup.h \
+ ../src_plugins/lib_gtk_common/dlg_attr_txt.c \
  ../src_plugins/lib_gtk_common/dlg_attr_box.c
 ../src_plugins/lib_gtk_common/dlg_attributes.o: \
  ../src_plugins/lib_gtk_common/dlg_attributes.c ../config.h conf_core.h \
