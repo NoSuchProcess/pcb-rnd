@@ -189,13 +189,3 @@ static int ghid_color_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *va
 	return 0;
 }
 
-
-static void txt_changed_cb(GtkTextView *wtxt, gpointer user_data)
-{
-	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(wtxt), PCB_OBJ_PROP);
-	pcb_hid_attribute_t *dst = user_data;
-	dst->changed = 1;
-	if (ctx->inhibit_valchg)
-		return;
-	change_cb(ctx, dst);
-}

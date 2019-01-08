@@ -24,6 +24,27 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+typedef struct {
+	attr_dlg_t *hid_ctx;
+	int attr_idx;
+} dad_txt_t;
+
+static void txt_free_cb(pcb_hid_attribute_t *attr, void *hid_ctx)
+{
+	pcb_hid_text_t *txt = (pcb_hid_text_t *)attr->enumerations;
+	dad_txt_t *tctx = txt->hid_ctx;
+	free(tctx);
+}
+
+static void txt_changed_cb(GtkTextView *wtxt, gpointer user_data)
+{
+	dad_txt_t *tctx = user_data;
+	pcb_hid_attribute_t *attr = &tctx->hid_ctx->attrs[tctx->attr_idx];
+	attr->changed = 1;
+	if (tctx->hid_ctx->inhibit_valchg)
+		return;
+	change_cb(tctx->hid_ctx, attr);
+}
 
 static void txt_get_xyo(pcb_hid_attribute_t *attrib, void *hid_ctx, long *x, long *y, long *o)
 {
@@ -156,16 +177,19 @@ static GtkWidget *ghid_text_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, G
 	GtkWidget *bparent, *wtxt;
 	GtkTextBuffer *buffer;
 	pcb_hid_text_t *txt = (pcb_hid_text_t *)attr->enumerations;
-
-	txt->hid_ctx = ctx;
+	dad_txt_t *tctx;
 
 	bparent = frame_scroll(parent, attr->pcb_hatt_flags);
 	wtxt = gtk_text_view_new();
 	gtk_box_pack_start(GTK_BOX(bparent), wtxt, TRUE, TRUE, 0);
 	gtk_widget_set_tooltip_text(wtxt, attr->help_text);
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(wtxt));
-	g_signal_connect(G_OBJECT(buffer), "changed", G_CALLBACK(txt_changed_cb), attr);
-	g_object_set_data(G_OBJECT(buffer), PCB_OBJ_PROP, ctx);
+
+	tctx = malloc(sizeof(dad_txt_t));
+	tctx->hid_ctx = ctx;
+	tctx->attr_idx = attr - ctx->attrs;
+	txt->hid_ctx = tctx;
+	g_signal_connect(G_OBJECT(buffer), "changed", G_CALLBACK(txt_changed_cb), tctx);
 
 	txt->hid_get_xy = txt_get_xy;
 	txt->hid_get_offs = txt_get_offs;
