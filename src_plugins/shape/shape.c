@@ -94,11 +94,17 @@ static pcb_poly_t *regpoly(pcb_layer_t *layer, int corners, pcb_coord_t rx, pcb_
 	return p;
 }
 
-static void elarc90(pcb_poly_t *p, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t sx, pcb_coord_t sy, pcb_coord_t ex, pcb_coord_t ey, pcb_coord_t rx, pcb_coord_t ry, double sa, int segs, int need_rot, double cosra, double sinra, pcb_coord_t rotcx, pcb_coord_t rotcy)
+static void elarc90(pcb_poly_t *p, pcb_coord_t ccx, pcb_coord_t ccy, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t sx, pcb_coord_t sy, pcb_coord_t ex, pcb_coord_t ey, pcb_coord_t rx, pcb_coord_t ry, double sa, int segs, int need_rot, double cosra, double sinra, pcb_coord_t rotcx, pcb_coord_t rotcy, pcb_shape_corner_t style)
 {
 	pcb_coord_t lx, ly;
 	double da = M_PI/2.0/((double)segs-1);
 	int n;
+
+	if (style == PCB_CORN_SQUARE) {
+		/* add original corner point */
+		pcb_poly_point_new(p, ccx, ccy);
+		return;
+	}
 
 	/* add exact start point */
 	if (need_rot)
@@ -107,6 +113,7 @@ static void elarc90(pcb_poly_t *p, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t s
 	lx = sx;
 	ly = sy;
 
+	if (style == PCB_CORN_ROUND) {
 	/* add approximated ellipse points */
 	segs -= 2;
 	for(n = 0,sa+=da; n < segs; n++,sa+=da) {
@@ -119,6 +126,7 @@ static void elarc90(pcb_poly_t *p, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t s
 			pcb_poly_point_new(p, x, y);
 		lx = x;
 		ly = y;
+	}
 	}
 
 	/* add exact end point */
@@ -134,7 +142,7 @@ static void elarc90(pcb_poly_t *p, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t s
 static pcb_poly_t *roundrect(pcb_layer_t *layer, pcb_coord_t w, pcb_coord_t h, pcb_coord_t rx, pcb_coord_t ry, double rot_deg, pcb_coord_t cx, pcb_coord_t cy, pcb_shape_corner_t corner[4])
 {
 	pcb_poly_t *p;
-	pcb_coord_t maxr = (w < h ? w : h) / 2, x, y, ex, ey, acx, acy;
+	pcb_coord_t maxr = (w < h ? w : h) / 2, x, y, ex, ey, acx, acy, ccx, ccy;
 	int segs, need_rot, flags = PCB_FLAG_CLEARPOLY;
 	double cosra, sinra;
 
@@ -164,25 +172,29 @@ static pcb_poly_t *roundrect(pcb_layer_t *layer, pcb_coord_t w, pcb_coord_t h, p
 	CORNER(  x,   y, +1, -1,  0, +1); /* start */
 	CORNER(acx, acy, +1, -1, -1, +1);  /* center */
 	CORNER( ex,  ey, +1, -1, -1,  0); /* end */
-	elarc90(p, acx, acy, x, y, ex, ey, rx, ry, 0, segs, need_rot, cosra, sinra, cx, cy);
+	CORNER(ccx, ccy, +1, -1,  0,  0); /* corner point */
+	elarc90(p, ccx, ccy, acx, acy, x, y, ex, ey, rx, ry, 0, segs, need_rot, cosra, sinra, cx, cy, corner[1]);
 
 	/* top left */
 	CORNER(  x,   y, -1, -1, +1,  0); /* start */
 	CORNER(acx, acy, -1, -1, +1, +1);  /* center */
 	CORNER( ex,  ey, -1, -1,  0, +1); /* end */
-	elarc90(p, acx, acy, x, y, ex, ey, rx, ry, M_PI/2.0, segs, need_rot, cosra, sinra, cx, cy);
+	CORNER(ccx, ccy, -1, -1,  0,  0); /* corner point */
+	elarc90(p, ccx, ccy, acx, acy, x, y, ex, ey, rx, ry, M_PI/2.0, segs, need_rot, cosra, sinra, cx, cy, corner[0]);
 
 	/* bottom left */
 	CORNER(  x,   y, -1, +1,  0, -1); /* start */
 	CORNER(acx, acy, -1, +1, +1, -1);  /* center */
 	CORNER( ex,  ey, -1, +1, +1,  0); /* end */
-	elarc90(p, acx, acy, x, y, ex, ey, rx, ry, M_PI, segs, need_rot, cosra, sinra, cx, cy);
+	CORNER(ccx, ccy, -1, +1,  0,  0); /* corner point */
+	elarc90(p, ccx, ccy, acx, acy, x, y, ex, ey, rx, ry, M_PI, segs, need_rot, cosra, sinra, cx, cy, corner[2]);
 
-	/* bottom roght*/
+	/* bottom right*/
 	CORNER(  x,   y, +1, +1, -1,  0); /* start */
 	CORNER(acx, acy, +1, +1, -1, -1);  /* center */
 	CORNER( ex,  ey, +1, +1,  0, -1); /* end */
-	elarc90(p, acx, acy, x, y, ex, ey, rx, ry, M_PI*3.0/2.0, segs, need_rot, cosra, sinra, cx, cy);
+	CORNER(ccx, ccy, +1, +1,  0,  0); /* corner point */
+	elarc90(p, ccx, ccy, acx, acy, x, y, ex, ey, rx, ry, M_PI*3.0/2.0, segs, need_rot, cosra, sinra, cx, cy, corner[3]);
 
 	pcb_add_poly_on_layer(layer, p);
 
