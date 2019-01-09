@@ -36,6 +36,13 @@ extern pcb_layer_t *pcb_shape_current_layer;
 
 void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, pcb_bool modal);
 
+typedef enum {
+	PCB_CORN_ROUND,
+	PCB_CORN_CHAMF,
+	PCB_CORN_SQUARE
+} pcb_shape_corner_t;
+extern const char *pcb_shape_corner_name[];
+
 #endif
 
 

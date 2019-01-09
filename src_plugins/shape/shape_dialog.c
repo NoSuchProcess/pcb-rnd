@@ -14,7 +14,7 @@ typedef struct {
 	int prx, pry, corners, pcx, pcy, prot, pell;
 
 	/* roundrect */
-	int w, h, rrect, rcx, rcy, rx, ry, rrot, rell;
+	int w, h, rrect, rcx, rcy, rx, ry, rrot, rell, corner[4];
 
 	/* circle */
 	int dia, ccx, ccy;
@@ -66,6 +66,8 @@ static void shp_chg_regpoly(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 static void shp_chg_roundrect(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	ctx_t *shp = caller_data;
+	pcb_shape_corner_t corner[4];
+	int n;
 
 	/* elliptical logics */
 	if (!shp->dlg[shp->rell].default_val.int_value) {
@@ -83,13 +85,17 @@ static void shp_chg_roundrect(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	else
 		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->h, pcb_true);
 
+	for(n = 0; n < 4; n++)
+		corner[n] = shp->dlg[shp->corner[n]].default_val.int_value;
+
 	del_obj(shp);
 	shp->obj = (pcb_any_obj_t *)roundrect_place(
 		shp->data, shp->layer,
 		shp->dlg[shp->w].default_val.coord_value, shp->dlg[shp->h].default_val.coord_value,
 		shp->dlg[shp->rx].default_val.coord_value, shp->dlg[shp->ry].default_val.coord_value,
 		shp->dlg[shp->rrot].default_val.real_value,
-		shp->dlg[shp->rcx].default_val.coord_value, shp->dlg[shp->rcy].default_val.coord_value);
+		shp->dlg[shp->rcx].default_val.coord_value, shp->dlg[shp->rcy].default_val.coord_value,
+		corner);
 }
 
 static void shp_chg_circle(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -305,6 +311,24 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, pc
 							PCB_DAD_MINMAX(shp->dlg, 0, maxr);
 							PCB_DAD_CHANGE_CB(shp->dlg, shp_chg_roundrect);
 						PCB_DAD_LABEL(shp->dlg, "y (vertical)");
+					PCB_DAD_END(shp->dlg);
+				PCB_DAD_END(shp->dlg);
+
+				PCB_DAD_LABEL(shp->dlg, "Corner style:");
+				PCB_DAD_BEGIN_HBOX(shp->dlg);
+					PCB_DAD_BEGIN_TABLE(shp->dlg, 2);
+						PCB_DAD_ENUM(shp->dlg, pcb_shape_corner_name);
+							shp->corner[0] = PCB_DAD_CURRENT(shp->dlg);
+							PCB_DAD_CHANGE_CB(shp->dlg, shp_chg_regpoly);
+						PCB_DAD_ENUM(shp->dlg, pcb_shape_corner_name);
+							shp->corner[1] = PCB_DAD_CURRENT(shp->dlg);
+							PCB_DAD_CHANGE_CB(shp->dlg, shp_chg_regpoly);
+						PCB_DAD_ENUM(shp->dlg, pcb_shape_corner_name);
+							shp->corner[2] = PCB_DAD_CURRENT(shp->dlg);
+							PCB_DAD_CHANGE_CB(shp->dlg, shp_chg_regpoly);
+						PCB_DAD_ENUM(shp->dlg, pcb_shape_corner_name);
+							shp->corner[3] = PCB_DAD_CURRENT(shp->dlg);
+							PCB_DAD_CHANGE_CB(shp->dlg, shp_chg_regpoly);
 					PCB_DAD_END(shp->dlg);
 				PCB_DAD_END(shp->dlg);
 			PCB_DAD_END(shp->dlg);
