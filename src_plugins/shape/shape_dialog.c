@@ -14,7 +14,7 @@ typedef struct {
 	int prx, pry, corners, pcx, pcy, prot, pell;
 
 	/* roundrect */
-	int w, h, rrect, rcx, rcy, rx, ry, rrot, rell, corner[4];
+	int w, h, rrect, rcx, rcy, rx, ry, rres, rrot, rell, corner[4];
 
 	/* circle */
 	int dia, ccx, ccy;
@@ -95,7 +95,7 @@ static void shp_chg_roundrect(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		shp->dlg[shp->rx].default_val.coord_value, shp->dlg[shp->ry].default_val.coord_value,
 		shp->dlg[shp->rrot].default_val.real_value,
 		shp->dlg[shp->rcx].default_val.coord_value, shp->dlg[shp->rcy].default_val.coord_value,
-		corner);
+		corner, shp->dlg[shp->rres].default_val.real_value);
 }
 
 static void shp_chg_circle(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -283,6 +283,16 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, pc
 							shp->rell = PCB_DAD_CURRENT(shp->dlg);
 							PCB_DAD_CHANGE_CB(shp->dlg, shp_chg_roundrect);
 						PCB_DAD_LABEL(shp->dlg, "elliptical");
+					PCB_DAD_END(shp->dlg);
+
+					PCB_DAD_LABEL(shp->dlg, "Arc resolution factor:");
+					PCB_DAD_BEGIN_HBOX(shp->dlg);
+						PCB_DAD_REAL(shp->dlg, "");
+							shp->rres = PCB_DAD_CURRENT(shp->dlg);
+							PCB_DAD_MINVAL(shp->dlg, 0.1);
+							PCB_DAD_MAXVAL(shp->dlg, 5);
+							PCB_DAD_DEFAULT(shp->dlg, 1);
+							PCB_DAD_CHANGE_CB(shp->dlg, shp_chg_roundrect);
 					PCB_DAD_END(shp->dlg);
 
 					PCB_DAD_LABEL(shp->dlg, "Rotation angle:");

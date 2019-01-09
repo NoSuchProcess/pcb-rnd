@@ -97,7 +97,7 @@ static pcb_poly_t *regpoly(pcb_layer_t *layer, int corners, pcb_coord_t rx, pcb_
 static void elarc90(pcb_poly_t *p, pcb_coord_t ccx, pcb_coord_t ccy, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t sx, pcb_coord_t sy, pcb_coord_t ex, pcb_coord_t ey, pcb_coord_t rx, pcb_coord_t ry, double sa, int segs, int need_rot, double cosra, double sinra, pcb_coord_t rotcx, pcb_coord_t rotcy, pcb_shape_corner_t style)
 {
 	pcb_coord_t lx, ly;
-	double da = M_PI/2.0/((double)segs-1);
+	double da = (M_PI/2.0/((double)segs-1));
 	int n;
 
 	if (style == PCB_CORN_SQUARE) {
@@ -139,7 +139,7 @@ static void elarc90(pcb_poly_t *p, pcb_coord_t ccx, pcb_coord_t ccy, pcb_coord_t
 #define CORNER(outx, outy, rect_signx, rect_signy, rsignx, rsigny) \
 	outx = pcb_round((double)cx + rect_signx * (double)w/2 + rsignx*rx); \
 	outy = pcb_round((double)cy + rect_signy * (double)h/2 + rsigny*ry);
-static pcb_poly_t *roundrect(pcb_layer_t *layer, pcb_coord_t w, pcb_coord_t h, pcb_coord_t rx, pcb_coord_t ry, double rot_deg, pcb_coord_t cx, pcb_coord_t cy, pcb_shape_corner_t corner[4])
+static pcb_poly_t *roundrect(pcb_layer_t *layer, pcb_coord_t w, pcb_coord_t h, pcb_coord_t rx, pcb_coord_t ry, double rot_deg, pcb_coord_t cx, pcb_coord_t cy, pcb_shape_corner_t corner[4], double roundres)
 {
 	pcb_poly_t *p;
 	pcb_coord_t maxr = (w < h ? w : h) / 2, x, y, ex, ey, acx, acy, ccx, ccy;
@@ -163,6 +163,8 @@ static pcb_poly_t *roundrect(pcb_layer_t *layer, pcb_coord_t w, pcb_coord_t h, p
 	segs = sqrt((double)(rx+ry) / (double)PCB_MM_TO_COORD(0.1));
 	if (segs < 3)  segs = 3;
 	if (segs > 15) segs = 15;
+
+	segs = pcb_round((double)segs * roundres);
 
 	p = pcb_poly_new(layer, 2 * conf_core.design.clearance, pcb_flag_make(flags));
 	if (p == NULL)
@@ -232,14 +234,14 @@ static pcb_poly_t *regpoly_place(pcb_data_t *data, pcb_layer_t *layer, int corne
 	return any_poly_place(data, layer, p);
 }
 
-static pcb_poly_t *roundrect_place(pcb_data_t *data, pcb_layer_t *layer, pcb_coord_t w, pcb_coord_t h, pcb_coord_t rx, pcb_coord_t ry, double rot_deg, pcb_coord_t cx, pcb_coord_t cy, pcb_shape_corner_t corner[4])
+static pcb_poly_t *roundrect_place(pcb_data_t *data, pcb_layer_t *layer, pcb_coord_t w, pcb_coord_t h, pcb_coord_t rx, pcb_coord_t ry, double rot_deg, pcb_coord_t cx, pcb_coord_t cy, pcb_shape_corner_t corner[4], double roundres)
 {
 	pcb_poly_t *p;
 
 	if (layer == pcb_shape_current_layer)
 		layer = CURRENT;
 
-	p = roundrect(layer, w, h, rx, ry, rot_deg, cx, cy, corner);
+	p = roundrect(layer, w, h, rx, ry, rot_deg, cx, cy, corner, roundres);
 	return any_poly_place(data, layer, p);
 }
 
@@ -415,7 +417,7 @@ fgw_error_t pcb_act_roundrect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_data_t *data;
 	pcb_bool succ, have_coords = pcb_false;
 	pcb_coord_t x = 0, y = 0, w, h, rx, ry;
-	double rot = 0.0;
+	double rot = 0.0, roundres = 1.0;
 	char *end;
 	pcb_shape_corner_t corner[4] = { PCB_CORN_ROUND, PCB_CORN_ROUND, PCB_CORN_ROUND, PCB_CORN_ROUND};
 
@@ -482,7 +484,7 @@ fgw_error_t pcb_act_roundrect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if ((data == PCB->Data) && (!have_coords))
 		pcb_hid_get_coords("Click on the center of the polygon", &x, &y, 0);
 
-	if (roundrect_place(data, CURRENT, w, h, rx, ry, rot, x, y, corner) == NULL)
+	if (roundrect_place(data, CURRENT, w, h, rx, ry, rot, x, y, corner, roundres) == NULL)
 		pcb_message(PCB_MSG_ERROR, "roundrect(): failed to create the polygon\n");
 
 	PCB_ACT_IRES(0);
