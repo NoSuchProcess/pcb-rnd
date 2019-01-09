@@ -19,7 +19,6 @@
 	- FEATURE: generic, non-modal, multi-instance user view list DAD dialog
 	- DOC: document the view lht format
 	- BUG: xor draw stops working after the first preview (drc!)
-- FEATURE: session persistent DAD message log (messages are flushed after dialog is closed?) [report: Miloh]
 + FEATURE: make propset() able to change board properties if first arg is "board" (change baord size) [report: rqsall]
 - FEATURE: lesstif does not allow "save as" in non alien format [report: erich]
 + FEATURE: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
@@ -89,6 +88,7 @@
 	- proto copy to buffer - a buffer with a single padstack should also serve as a prototype copy vehicle? or just import by a list from the buffer
 	- load/import from buffer and file
 	- CLEANUP: remove PCB_MIN_PINORVIA* PCB_DEFAULT_DRILLINGHOLE macros - nothing should use them anymore
+- CLEANUP/FEATURE: session persistent DAD message log (messages are flushed after dialog is closed?) [report: Miloh]
 - CLEANUP: propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
