@@ -408,7 +408,7 @@ fgw_error_t pcb_act_regpoly(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-static const char pcb_acts_roundrect[] = "roundrect([where,] width[;height] [,rx[;ry] [,rotation]])";
+static const char pcb_acts_roundrect[] = "roundrect([where,] width[;height] [,rx[;ry] [,rotation [,cornstyle [,roundness]]]])";
 static const char pcb_acth_roundrect[] = "Generate a rectangle with round corners";
 fgw_error_t pcb_act_roundrect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -426,7 +426,7 @@ fgw_error_t pcb_act_roundrect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_IRES(-1);
 		return 0;
 	}
-	if (argc > 6) {
+	if (argc > 8) {
 		pcb_message(PCB_MSG_ERROR, "roundrect(): too many arguments\n");
 		PCB_ACT_IRES(-1);
 		return 0;
@@ -479,6 +479,38 @@ fgw_error_t pcb_act_roundrect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			PCB_ACT_IRES(-1);
 			return 0;
 		}
+		a++;
+	}
+
+	if (a < argc-1) {
+		const char *s;
+		int n;
+		for(n = 0, s = args[a]; (n < 4) && (*s != '\0'); s++,n++) {
+			switch(*s) {
+				case 'r': case 'R': corner[n] = PCB_CORN_ROUND; break;
+				case 'q': case 'Q': corner[n] = PCB_CORN_SQUARE; break;
+				case 'c': case 'C': corner[n] = PCB_CORN_CHAMF; break;
+				default:
+					pcb_message(PCB_MSG_ERROR, "roundrect(): invalid corner style character '%c' - has to eb r for round, q for square or c for chamfed", *s);
+					PCB_ACT_IRES(-1);
+					return 0;
+			}
+		}
+		a++;
+	}
+
+	if (a < argc-1) {
+		roundres = strtod(args[a], &end);
+		if (*end != '\0') {
+			pcb_message(PCB_MSG_ERROR, "roundrect(): roundness '%s'\n", args[a]);
+			PCB_ACT_IRES(-1);
+			return 0;
+		}
+		if (roundres < 0.1)
+			roundres = 0.1;
+		if (roundres > 5)
+			roundres = 5;
+		a++;
 	}
 
 	if ((data == PCB->Data) && (!have_coords))
