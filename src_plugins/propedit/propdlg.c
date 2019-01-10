@@ -160,7 +160,7 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 				inv++;
 		}
 		if (inv > 0)
-			pcb_append_printf(&scope, "%d invalid layers, ");
+			pcb_append_printf(&scope, "%d invalid layers, ", inv);
 		inv = 0;
 		for(n = 0, l = ctx->pe.layergrps.array; n < vtl0_len(&ctx->pe.layergrps); n++, l++) {
 			const char *name = pcb_layergrp_name(ctx->pe.pcb, *l);
@@ -173,7 +173,7 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 				inv++;
 		}
 		if (inv > 0)
-			pcb_append_printf(&scope, "%d invalid layer groups, ");
+			pcb_append_printf(&scope, "%d invalid layer groups, ", inv);
 
 		inv = 0;
 		for(idp = pcb_idpath_list_first(&ctx->pe.objs); idp != NULL; idp = pcb_idpath_list_next(idp)) {
@@ -184,7 +184,7 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 				inv++;
 		}
 		if (inv > 0)
-			pcb_append_printf(&scope, "%d invalid objects, ");
+			pcb_append_printf(&scope, "%d invalid objects, ", inv);
 
 		gds_truncate(&scope, gds_len(&scope)-2);
 
