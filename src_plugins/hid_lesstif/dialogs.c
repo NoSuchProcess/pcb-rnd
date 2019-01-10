@@ -307,6 +307,8 @@ void lesstif_logv(enum pcb_message_level level, const char *fmt, va_list ap)
 		XtManageChild(log_text);
 
 		XtManageChild(log_form);
+		pcb_ltf_winplace(display, XtWindow(XtParent(log_form)), "log", 300, 300);
+		XtAddEventHandler(XtParent(log_form), StructureNotifyMask, False, pcb_ltf_wplc_config_cb, "log");
 	}
 	if (pending_newline) {
 		XmTextInsert(log_text, log_size++, XmStrCast("\n"));
