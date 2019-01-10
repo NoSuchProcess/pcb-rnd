@@ -28,6 +28,7 @@
 
 #include <genht/hash.h>
 #include <genlist/gendlist.h>
+#include <genvector/gds_char.h>
 
 #include "board.h"
 #include "actions.h"
@@ -41,7 +42,7 @@
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	pcb_propedit_t pe;
-	int wtree, wfilter, wtype, wvals;
+	int wtree, wfilter, wtype, wvals, wscope;
 	int wabs[PCB_PROPT_max], wedit[PCB_PROPT_max];
 	gdl_elem_t link;
 } propdlg_t;
@@ -132,6 +133,62 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 		hv.str_value = cursor_path;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtree, &hv);
 		free(cursor_path);
+	}
+
+	/* set scope */
+	{
+		pcb_hid_attr_val_t hv;
+		gds_t scope;
+		int n, inv;
+		long *l;
+		pcb_idpath_t *idp;
+
+		gds_init(&scope);
+		if (ctx->pe.board)
+			gds_append_str(&scope, "board, ");
+		if (ctx->pe.selection)
+			gds_append_str(&scope, "selected objects, ");
+		inv = 0;
+		for(n = 0, l = ctx->pe.layers.array; n < vtl0_len(&ctx->pe.layers); n++, l++) {
+			const char *name = pcb_layer_name(ctx->pe.pcb->Data, *l);
+			if (name != 0) {
+				gds_append_str(&scope, "layer: ");
+				gds_append_str(&scope, name);
+				gds_append_str(&scope, ", ");
+			}
+			else
+				inv++;
+		}
+		if (inv > 0)
+			pcb_append_printf(&scope, "%d invalid layers, ");
+		inv = 0;
+		for(n = 0, l = ctx->pe.layergrps.array; n < vtl0_len(&ctx->pe.layergrps); n++, l++) {
+			const char *name = pcb_layergrp_name(ctx->pe.pcb, *l);
+			if (name != 0) {
+				gds_append_str(&scope, "layergrp: ");
+				gds_append_str(&scope, name);
+				gds_append_str(&scope, ", ");
+			}
+			else
+				inv++;
+		}
+		if (inv > 0)
+			pcb_append_printf(&scope, "%d invalid layer groups, ");
+
+		inv = 0;
+		for(idp = pcb_idpath_list_first(&ctx->pe.objs); idp != NULL; idp = pcb_idpath_list_next(idp)) {
+			pcb_any_obj_t *o = pcb_idpath2obj(ctx->pe.pcb->Data, idp);
+			if (o == NULL)
+				inv++;
+			pcb_append_printf(&scope, "%s #%ld, ", pcb_obj_type_name(o->type), o->ID);
+		}
+		if (inv > 0)
+			pcb_append_printf(&scope, "%d invalid objects, ");
+
+		gds_truncate(&scope, gds_len(&scope)-2);
+
+		hv.str_value = scope.array;
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wscope, &hv);
 	}
 }
 
@@ -512,6 +569,9 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 				PCB_DAD_BEGIN_VBOX(ctx->dlg);
 					PCB_DAD_PREVIEW(ctx->dlg, prop_prv_expose_cb, prop_prv_mouse_cb, NULL, &prvbb, 100, 100, ctx);
 				PCB_DAD_END(ctx->dlg);
+				PCB_DAD_LABEL(ctx->dlg, "<scope>");
+					ctx->wscope = PCB_DAD_CURRENT(ctx->dlg);
+					PCB_DAD_HELP(ctx->dlg, "Scope: list of objects affected");
 				PCB_DAD_BEGIN_VBOX(ctx->dlg);
 					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
 					PCB_DAD_TREE(ctx->dlg, 2, 0, hdr_val);
