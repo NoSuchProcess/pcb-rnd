@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 + BUG: boardflip() action moves the objects and doesn't move the subc outline and origin (repro: place single part, run boardflip) [report:Miloh]
-- FEATURE: lesstif window placement
 + FEATURE: export_xy: pnp origin should be any obj, especially padstacks (fidu) [report: TwisteR]
 - FEATURE: the property editor should display a stat of number/type of objects selected [report: Igor2]
 - BUG: portability: don't use export in trunk/doc/user/Makefile [report: Vuokko]
