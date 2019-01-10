@@ -1784,6 +1784,7 @@ static void lesstif_do_export(pcb_hid_attr_val_t * options)
 
 	XtRealizeWidget(appwidget);
 	pcb_ltf_winplace(display, XtWindow(appwidget), "top", 640, 480);
+	XtAddEventHandler(appwidget, StructureNotifyMask, False, pcb_ltf_wplc_config_cb, "top");
 
 	while (!window) {
 		XEvent e;
@@ -1888,7 +1889,6 @@ static void lesstif_err_msg(String name, String type, String class, String dflt,
 	fprintf(stderr, "\n");
 	longjmp(lesstif_err_jmp, 1);
 }
-
 
 static int lesstif_parse_arguments(int *argc, char ***argv)
 {

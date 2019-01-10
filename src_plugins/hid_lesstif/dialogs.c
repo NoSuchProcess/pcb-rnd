@@ -58,6 +58,25 @@ void pcb_ltf_winplace(Display *dsp, Window w, const char *id, int defx, int defy
 	}
 }
 
+void pcb_ltf_wplc_config_cb(Widget shell, XtPointer data, XEvent *xevent, char *dummy)
+{
+	char *id = data;
+	Window win, rw, cw;
+	Display *dsp;
+	int x, y;
+	XConfigureEvent *cevent = (XConfigureEvent *)xevent;
+
+	if (cevent->type != ConfigureNotify)
+		return;
+
+	win = XtWindow(shell);
+	dsp = XtDisplay(shell);
+	rw = DefaultRootWindow(dsp);
+	XTranslateCoordinates(dsp, win, rw, 0, 0, &x, &y, &cw);
+	pcb_event(PCB_EVENT_DAD_NEW_GEO, "psiiii", NULL, id,
+		(int)x, (int)y, (int)cevent->width, (int)cevent->height);
+}
+
 
 /* ------------------------------------------------------------ */
 
