@@ -412,6 +412,8 @@ void lesstif_show_netlist()
 {
 	build_netlist_dialog();
 	XtManageChild(netlist_dialog);
+	pcb_ltf_winplace(display, XtWindow(XtParent(netlist_dialog)), "netlist", 300, 300);
+	XtAddEventHandler(XtParent(netlist_dialog), StructureNotifyMask, False, pcb_ltf_wplc_config_cb, "netlist");
 }
 
 pcb_action_t lesstif_netlist_action_list[] = {
