@@ -84,3 +84,6 @@ static XmString XmStringCreatePCB(const char *x)
 }
 
 extern const char *lesstif_cookie;
+
+void pcb_ltf_winplace(Display *dsp, Window w, const char *id, int defx, int defy);
+

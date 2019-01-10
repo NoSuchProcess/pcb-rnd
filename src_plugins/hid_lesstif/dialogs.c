@@ -29,11 +29,35 @@
 #include "compat_misc.h"
 #include "search.h"
 #include "change.h"
+#include "conf_core.h"
 
 static int ok;
 
 #define COMPONENT_SIDE_NAME "(top)"
 #define SOLDER_SIDE_NAME "(bottom)"
+
+void pcb_ltf_winplace(Display *dsp, Window w, const char *id, int defx, int defy)
+{
+	int plc[4] = {-1, -1, -1, -1};
+
+	plc[2] = defx;
+	plc[3] = defy;
+
+	pcb_event(PCB_EVENT_DAD_NEW_DIALOG, "psp", NULL, id, plc);
+
+	if (conf_core.editor.auto_place) {
+		if ((plc[2] > 0) && (plc[3] > 0) && (plc[0] >= 0) && (plc[1] >= 0)) {
+			XMoveResizeWindow(dsp, w, plc[0], plc[1], plc[2], plc[3]);
+		}
+		else {
+			if ((plc[2] > 0) && (plc[3] > 0))
+				XResizeWindow(dsp, w, plc[2], plc[3]);
+			if ((plc[0] >= 0) && (plc[1] >= 0))
+				XMoveWindow(dsp, w, plc[0], plc[1]);
+		}
+	}
+}
+
 
 /* ------------------------------------------------------------ */
 
@@ -925,11 +949,8 @@ static void ltf_attr_config_cb(Widget shell, XtPointer data, XEvent *xevent, cha
 void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy)
 {
 	Widget topform, main_tbl;
-	int i, plc[4] = {-1, -1, -1, -1};
+	int i;
 	lesstif_attr_dlg_t *ctx;
-
-	plc[2] = defx;
-	plc[3] = defy;
 
 	ctx = calloc(sizeof(lesstif_attr_dlg_t), 1);
 	ctx->attrs = attrs;
@@ -957,6 +978,8 @@ void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_att
 	stdarg_n = 0;
 	topform = XmCreateFormDialog(mainwind, XmStrCast(title), stdarg_args, stdarg_n);
 	XtManageChild(topform);
+
+	pcb_ltf_winplace(XtDisplay(topform), XtWindow(XtParent(topform)), id, defx, defy);
 
 	ctx->dialog = XtParent(topform);
 	XtAddCallback(topform, XmNunmapCallback, ltf_attr_destroy_cb, ctx);
@@ -989,7 +1012,6 @@ void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_att
 	stdarg(XmNminHeight, ctx->minh);
 	XtSetValues(XtParent(ctx->dialog), stdarg_args, stdarg_n);
 
-	pcb_event(PCB_EVENT_DAD_NEW_DIALOG, "psp", ctx, ctx->id, &plc);
 
 	if (!modal)
 		XtManageChild(ctx->dialog);
