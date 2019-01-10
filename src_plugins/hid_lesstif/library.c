@@ -173,6 +173,9 @@ void lesstif_show_library()
 		if (!library_dialog)
 			LesstifLibraryChanged(0, 0, 0);
 		XtManageChild(library_dialog);
+		XtRealizeWidget(library_dialog);
+		pcb_ltf_winplace(display, XtWindow(XtParent(library_dialog)), "library", 300, 300);
+		XtAddEventHandler(XtParent(library_dialog), StructureNotifyMask, False, pcb_ltf_wplc_config_cb, "library");
 	}
 }
 
