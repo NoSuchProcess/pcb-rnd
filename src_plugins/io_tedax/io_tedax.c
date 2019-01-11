@@ -132,8 +132,8 @@ static fgw_error_t pcb_act_LoadtedaxFrom(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	const char *fname = NULL, *type, *id = NULL, *silents = NULL;
 	int silent;
 
-	PCB_ACT_CONVARG(1, FGW_STR, Savetedax, type = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, Savetedax, fname = argv[2].val.str);
+	PCB_ACT_CONVARG(1, FGW_STR, LoadtedaxFrom, type = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, LoadtedaxFrom, fname = argv[2].val.str);
 	PCB_ACT_MAY_CONVARG(3, FGW_STR, LoadtedaxFrom, id = argv[3].val.str);
 	PCB_ACT_MAY_CONVARG(4, FGW_STR, LoadtedaxFrom, silents = argv[4].val.str);
 
