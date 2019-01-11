@@ -323,7 +323,7 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 
 	if (netlist != NULL) {
 		rewind(f);
-		res |= tedax_net_fload(f, netlist, silent);
+		res |= tedax_net_fload(f, 0, netlist, silent);
 	}
 
 	if (drc != NULL) {

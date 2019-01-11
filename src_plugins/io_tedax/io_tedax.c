@@ -141,7 +141,7 @@ static fgw_error_t pcb_act_LoadtedaxFrom(fgw_arg_t *res, int argc, fgw_arg_t *ar
 
 	if (pcb_strcasecmp(type, "netlist") == 0) {
 		gen_load(netlist, fname);
-		PCB_ACT_IRES(tedax_net_load(fname, id, silent));
+		PCB_ACT_IRES(tedax_net_load(fname, 1, id, silent));
 		return 0;
 	}
 	if (pcb_strcasecmp(type, "board") == 0) {

@@ -57,7 +57,7 @@ static void *htsp_get2(htsp_t *ht, const char *key, size_t size)
 	return res;
 }
 
-int tedax_net_fload(FILE *fn, const char *blk_id, int silent)
+int tedax_net_fload(FILE *fn, int import_fp, const char *blk_id, int silent)
 {
 	char line[520];
 	char *argv[16];
@@ -97,23 +97,24 @@ int tedax_net_fload(FILE *fn, const char *blk_id, int silent)
 	pcb_actionl("Netlist", "Sort", NULL);
 	pcb_actionl("Netlist", "Thaw", NULL);
 
-	pcb_actionl("ElementList", "start", NULL);
-	for (e = htsp_first(&fps); e; e = htsp_next(&fps, e)) {
-		fp_t *fp = e->value;
+	if (import_fp) {
+		pcb_actionl("ElementList", "start", NULL);
+		for (e = htsp_first(&fps); e; e = htsp_next(&fps, e)) {
+			fp_t *fp = e->value;
 
-/*		pcb_trace("tedax fp: refdes=%s val=%s fp=%s\n", e->key, fp->value, fp->footprint);*/
-		if (fp->footprint == NULL)
-			pcb_message(PCB_MSG_ERROR, "tedax: not importing refdes=%s: no footprint specified\n", e->key);
-		else
-			pcb_actionl("ElementList", "Need", null_empty(e->key), null_empty(fp->footprint), null_empty(fp->value), NULL);
+/*			pcb_trace("tedax fp: refdes=%s val=%s fp=%s\n", e->key, fp->value, fp->footprint);*/
+			if (fp->footprint == NULL)
+				pcb_message(PCB_MSG_ERROR, "tedax: not importing refdes=%s: no footprint specified\n", e->key);
+			else
+				pcb_actionl("ElementList", "Need", null_empty(e->key), null_empty(fp->footprint), null_empty(fp->value), NULL);
 
-		free(e->key);
-		free(fp->value);
-		free(fp->footprint);
-		free(fp);
+			free(e->key);
+			free(fp->value);
+			free(fp->footprint);
+			free(fp);
+		}
+		pcb_actionl("ElementList", "Done", NULL);
 	}
-
-	pcb_actionl("ElementList", "Done", NULL);
 
 	htsp_uninit(&fps);
 
@@ -121,7 +122,7 @@ int tedax_net_fload(FILE *fn, const char *blk_id, int silent)
 }
 
 
-int tedax_net_load(const char *fname_net, const char *blk_id, int silent)
+int tedax_net_load(const char *fname_net, int import_fp, const char *blk_id, int silent)
 {
 	FILE *fn;
 	int ret = 0;
@@ -132,7 +133,7 @@ int tedax_net_load(const char *fname_net, const char *blk_id, int silent)
 		return -1;
 	}
 
-	ret = tedax_net_fload(fn, blk_id, silent);
+	ret = tedax_net_fload(fn, import_fp, blk_id, silent);
 
 	fclose(fn);
 	return ret;
