@@ -1870,7 +1870,9 @@
  ../src_plugins/hid_lesstif/wt_colorbtn.h \
  ../src_plugins/lib_hid_common/dad_markup.h \
  ../src_plugins/hid_lesstif/wt_preview.h \
- ../src_plugins/hid_lesstif/dlg_attr_box.c
+ ../src_plugins/hid_lesstif/dlg_attr_box.c \
+ ../src_plugins/hid_lesstif/dlg_attr_tree.c \
+ ../src_plugins/hid_lesstif/xm_tree_table_widget.h
 ../src_plugins/hid_lesstif/library.o: \
  ../src_plugins/hid_lesstif/library.c \
  ../src_plugins/hid_lesstif/xincludes.h ../config.h conf_core.h conf.h \
@@ -2014,8 +2016,30 @@
  hid_cfg.h compat_nls.h board.h vtroutestyle.h library.h rats_patch.h \
  board.h hid_flags.h ../src_plugins/hid_lesstif/stdarg.h color.h \
  misc_util.h event.h
+../src_plugins/hid_lesstif/wt_colorbtn.o: \
+ ../src_plugins/hid_lesstif/wt_colorbtn.c compat_misc.h ../config.h \
+ color.h global_typedefs.h pcb_bool.h unit.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h
 ../src_plugins/hid_lesstif/wt_xpm.o: ../src_plugins/hid_lesstif/wt_xpm.c \
  compat_misc.h ../config.h
+../src_plugins/hid_lesstif/xm_tree_table_pixmaps.o: \
+ ../src_plugins/hid_lesstif/xm_tree_table_pixmaps.c \
+ ../src_plugins/hid_lesstif/xm_tree_table_priv.h \
+ ../src_plugins/hid_lesstif/xm_tree_table_widget.h \
+ ../src_3rd/genlist/gendlist.h
+../src_plugins/hid_lesstif/xm_tree_table_priv.o: \
+ ../src_plugins/hid_lesstif/xm_tree_table_priv.c \
+ ../src_3rd/genvector/vtp0.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h \
+ ../src_plugins/hid_lesstif/xm_tree_table_priv.h \
+ ../src_plugins/hid_lesstif/xm_tree_table_widget.h \
+ ../src_3rd/genlist/gendlist.h
+../src_plugins/hid_lesstif/xm_tree_table_widget.o: \
+ ../src_plugins/hid_lesstif/xm_tree_table_widget.c \
+ ../src_plugins/hid_lesstif/xm_tree_table_priv.h \
+ ../src_plugins/hid_lesstif/xm_tree_table_widget.h \
+ ../src_3rd/genlist/gendlist.h
 ../src_plugins/hid_remote/base64.o: ../src_plugins/hid_remote/base64.c \
  ../src_plugins/hid_remote/base64.h
 ../src_plugins/hid_remote/proto.o: ../src_plugins/hid_remote/proto.c \
@@ -4688,6 +4712,28 @@
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h
+../src_plugins/lib_netmap/placement.o: \
+ ../src_plugins/lib_netmap/placement.c ../config.h \
+ ../src_plugins/lib_netmap/placement.h board.h global_typedefs.h \
+ pcb_bool.h unit.h vtroutestyle.h attrib.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h color.h \
+ obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h polyarea.h \
+ obj_text_list.h obj_text.h font.h ../src_3rd/genht/htip.h \
+ ../src_3rd/genht/ht.h box.h math_helper.h move.h misc_util.h \
+ ../src_3rd/genvector/gds_char.h layer_grp.h library.h rats_patch.h \
+ board.h data.h crosshair.h vtonpoint.h hid.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/genht/htsp.h error.h route.h buffer.h \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h obj_rat_list.h \
+ obj_rat.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
+ rtree.h ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
+ ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
+ vtpadstack_t.h ht_subc.h
 ../src_plugins/lib_polyhelp/polyhelp.o: \
  ../src_plugins/lib_polyhelp/polyhelp.c ../config.h \
  ../src_plugins/lib_polyhelp/polyhelp.h obj_poly.h \
@@ -4961,24 +5007,23 @@
  obj_poly_draw.h draw.h dolists.h
 ../src_plugins/propedit/propdlg.o: ../src_plugins/propedit/propdlg.c \
  ../config.h ../src_3rd/genht/hash.h ../src_3rd/genlist/gendlist.h \
- board.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h color.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h board.h global_typedefs.h \
+ pcb_bool.h unit.h vtroutestyle.h attrib.h layer.h globalconst.h color.h \
  obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h ../src_3rd/genht/ht.h box.h math_helper.h move.h \
- misc_util.h ../src_3rd/genvector/gds_char.h layer_grp.h library.h \
- rats_patch.h board.h actions.h hid.h ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- ../src_3rd/genht/htsp.h error.h ../src_3rd/libfungw/fungw.h \
- ../src_3rd/genht/htpp.h hid_dad.h compat_misc.h hid_attrib.h \
- pcb-printf.h hid_dad_tree.h hid_dad.h conf_hid.h conf.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
- ../src_plugins/propedit/props.h global_typedefs.h \
- ../src_3rd/genvector/vtl0.h idpath.h color.h ../src_3rd/genht/ht.h \
- ../src_plugins/propedit/propsel.h
+ misc_util.h layer_grp.h library.h rats_patch.h board.h actions.h hid.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h error.h \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h hid_dad.h \
+ compat_misc.h hid_attrib.h pcb-printf.h hid_dad_tree.h hid_dad.h \
+ conf_hid.h conf.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/genvector/vtp0.h list_conf.h ../src_plugins/propedit/props.h \
+ global_typedefs.h ../src_3rd/genvector/vtl0.h idpath.h color.h \
+ ../src_3rd/genht/ht.h ../src_plugins/propedit/propsel.h
 ../src_plugins/propedit/propedit.o: ../src_plugins/propedit/propedit.c \
  board.h ../config.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h \
  attrib.h ../src_3rd/genvector/genvector_impl.h \
