@@ -271,18 +271,21 @@ int tedax_board_save(pcb_board_t *pcb, const char *fn)
 #define remember(what) \
 do { \
 	if (what != NULL) { \
-		pcb_message(PCB_MSG_ERROR, "tEDAx board load: multiple instances of " #what " reference\n"); \
+		if (!silent) \
+			pcb_message(PCB_MSG_ERROR, "tEDAx board load: multiple instances of " #what " reference\n"); \
 		res = -1; \
 		goto error; \
 	} \
 	what = pcb_strdup(argv[1]); \
 } while(0)
 
-static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_size, char *argv[], int argv_size)
+static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_size, char *argv[], int argv_size, int silent)
 {
 	char *stackup = NULL, *netlist = NULL, *drc = NULL;
 	int res = 0, argc;
+	tedax_stackup_t ctx;
 
+	tedax_stackup_init(&ctx);
 	while((argc = tedax_getline(f, buff, buff_size, argv, argv_size)) >= 0) {
 		if (strcmp(argv[0], "drawing_area") == 0) {
 		}
@@ -307,10 +310,26 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 			break;
 	}
 
+	if (stackup != NULL) {
+		rewind(f);
+		res |= tedax_stackup_fload(&ctx, pcb, f, stackup, silent);
+	}
+
+	if (netlist != NULL) {
+		rewind(f);
+		res |= tedax_net_fload(f, netlist, silent);
+	}
+
+	if (drc != NULL) {
+		rewind(f);
+		res |= tedax_drc_fload(pcb, f, drc, silent);
+	}
+
 	error:;
 	free(stackup);
 	free(netlist);
 	free(drc);
+	tedax_stackup_uninit(&ctx);
 	return res;
 }
 
@@ -326,7 +345,7 @@ int tedax_board_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, int silent)
 	if (tedax_seek_block(f, "board", "v1", blk_id, silent, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
 		return -1;
 
-	return tedax_board_parse(pcb, f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]));
+	return tedax_board_parse(pcb, f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]), silent);
 }
 
 
