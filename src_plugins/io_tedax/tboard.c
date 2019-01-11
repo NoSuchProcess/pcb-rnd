@@ -360,6 +360,7 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 	tdx_plc_t *p;
 	htsp_t plc;
 	pcb_bool succ;
+	pcb_data_t *scdata = NULL;
 
 	htsp_init(&plc, strhash, strkeyeq);
 	tedax_stackup_init(&ctx);
@@ -485,6 +486,22 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 		res |= tedax_drc_fload(pcb, f, drc, silent);
 	}
 
+	/* if there's placement, read all footprint data in cache */
+	if (plc.used > 0) {
+		scdata = pcb_data_new(pcb);
+		rewind(f);
+		tedax_seek_hdr(f, buff, buff_size, argv, argv_size);
+		for(;;) {
+			pcb_subc_t *sc;
+
+			if (tedax_seek_block(f, "footprint", "v1", NULL, silent, buff, buff_size, argv, argv_size) < 0)
+				break;
+
+			if (tedax_parse_1fp(scdata, f, buff, buff_size, argv, argv_size) < 0)
+				errexit("Failed to parse footprint\n");
+		}
+	}
+
 	{ /* placement */
 		htsp_entry_t *e;
 		for(e = htsp_first(&plc); e != NULL; e = htsp_next(&plc, e)) {
@@ -499,6 +516,8 @@ pcb_trace("placing '%s'\n", e->key);
 	tedax_stackup_uninit(&ctx);
 	free_plc(&plc);
 	htsp_uninit(&plc);
+	if (scdata != NULL)
+		pcb_data_free(scdata);
 	return res;
 }
 
