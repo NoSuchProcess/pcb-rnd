@@ -177,9 +177,10 @@ typedef struct {
 static void find_origin(subst_ctx_t *ctx, const char *format_name)
 {
 	char tmp[128];
-	pcb_snprintf(tmp, sizeof(tmp), "pnp-origin-%s", format_name);
 	pcb_data_it_t it;
 	pcb_any_obj_t *obj;
+
+	pcb_snprintf(tmp, sizeof(tmp), "pnp-origin-%s", format_name);
 
 	ctx->origin_score = 0;
 	ctx->ox = ctx->oy = 0;
