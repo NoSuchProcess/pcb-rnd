@@ -369,15 +369,15 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 
 			reqarg("drawing_area", 5);
 			x1 = pcb_get_value(argv[1], "mm", NULL, &succ);
-			if (!succ) errexit("Invalid x1 coord in drawing_area");
+			if (!succ) errexit("Invalid x1 coord in drawing_area\n");
 			y1 = pcb_get_value(argv[2], "mm", NULL, &succ);
-			if (!succ) errexit("Invalid y1 coord in drawing_area");
+			if (!succ) errexit("Invalid y1 coord in drawing_area\n");
 			x2 = pcb_get_value(argv[3], "mm", NULL, &succ);
-			if (!succ) errexit("Invalid x2 coord in drawing_area");
+			if (!succ) errexit("Invalid x2 coord in drawing_area\n");
 			y2 = pcb_get_value(argv[4], "mm", NULL, &succ);
-			if (!succ) errexit("Invalid y2 coord in drawing_area");
-			if ((x1 >= x2) || (y1 >= y2)) errexit("Invalid (unordered, negative box) drawing area");
-			if ((x1 < 0) || (y1 < 0)) pcb_message(PCB_MSG_WARNING, "drawing_area starts at negative coords; some objects may not display;\nyou may want to run autocrop()");
+			if (!succ) errexit("Invalid y2 coord in drawing_area\n");
+			if ((x1 >= x2) || (y1 >= y2)) errexit("Invalid (unordered, negative box) drawing area\n");
+			if ((x1 < 0) || (y1 < 0)) pcb_message(PCB_MSG_WARNING, "drawing_area starts at negative coords; some objects may not display;\nyou may want to run autocrop()\n");
 			PCB->MaxWidth = x2 - x1;
 			PCB->MaxHeight = y2 - y1;
 		}
@@ -403,17 +403,17 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 			reqarg("place", 8);
 
 			ox = pcb_get_value(argv[3], "mm", NULL, &succ);
-			if (!succ) errexit("Invalid ox coord in place");
+			if (!succ) errexit("Invalid ox coord in place\n");
 			oy = pcb_get_value(argv[4], "mm", NULL, &succ);
-			if (!succ) errexit("Invalid ox coord in place");
+			if (!succ) errexit("Invalid ox coord in place\n");
 			rot = strtod(argv[5], &end);
-			if (*end != '\0') errexit("Invalid rotation value in place");
+			if (*end != '\0') errexit("Invalid rotation value in place\n");
 			swapside = atoi(argv[6]);
-			if ((swapside < 0) || (swapside > 1)) errexit("Invalid swap side value in place");
+			if ((swapside < 0) || (swapside > 1)) errexit("Invalid swap side value in place\n");
 			if (strcmp(argv[7], "via") == 0) role = 'v';
 			else if (strcmp(argv[7], "comp") == 0) role = 'c';
 			else if (strcmp(argv[7], "misc") == 0) role = 'm';
-			else errexit("Invalid role value in place");
+			else errexit("Invalid role value in place\n");
 
 			p = get_place(&plc, argv[1]);
 			p->block = pcb_strdup(argv[2]);
@@ -464,7 +464,6 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 			t->next = p->text;
 			p->text = t;
 		}
-
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "board") == 0))
 			break;
 	}
