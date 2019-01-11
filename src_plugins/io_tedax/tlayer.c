@@ -220,8 +220,6 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f)
 			if ((argc == 7) && (strcmp(argv[0], "line") == 0)) {
 				pcb_coord_t x1, y1, x2, y2, th, cl;
 				pcb_bool s1, s2, s3, s4;
-				pcb_line_t *line;
-				double sa, da;
 
 				x1 = pcb_get_value(argv[1], "mm", NULL, &s1);
 				y1 = pcb_get_value(argv[2], "mm", NULL, &s2);
@@ -239,7 +237,7 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f)
 					res = -1;
 					goto error;
 				}
-				line = pcb_line_new_merge(ly, x1, y1, x2, y2, th, cl*2, pcb_flag_make(PCB_FLAG_CLEARLINE));
+				pcb_line_new_merge(ly, x1, y1, x2, y2, th, cl*2, pcb_flag_make(PCB_FLAG_CLEARLINE));
 			}
 			else if ((argc == 12) && (strcmp(argv[0], "arc") == 0)) {
 				pcb_coord_t cx, cy, r, th, cl;
