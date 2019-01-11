@@ -136,27 +136,27 @@ static fgw_error_t pcb_act_LoadtedaxFrom(fgw_arg_t *res, int argc, fgw_arg_t *ar
 
 	if (pcb_strcasecmp(type, "netlist") == 0) {
 		gen_load(netlist, fname);
-		PCB_ACT_IRES(tedax_net_load(fname));
+		PCB_ACT_IRES(tedax_net_load(fname, NULL, 0));
 		return 0;
 	}
 	if (pcb_strcasecmp(type, "footprint") == 0) {
 		gen_load(footprint, fname);
-		PCB_ACT_IRES(tedax_fp_load(PCB_PASTEBUFFER->Data, fname, 0));
+		PCB_ACT_IRES(tedax_fp_load(PCB_PASTEBUFFER->Data, fname, 0, NULL, 0));
 		return 0;
 	}
 	if (pcb_strcasecmp(type, "stackup") == 0) {
 		gen_load(stackup, fname);
-		PCB_ACT_IRES(tedax_stackup_load(PCB, fname));
+		PCB_ACT_IRES(tedax_stackup_load(PCB, fname, NULL, 0));
 		return 0;
 	}
 	if (pcb_strcasecmp(type, "layer") == 0) {
 		gen_load(layer, fname);
-		PCB_ACT_IRES(tedax_layers_load(PCB_PASTEBUFFER->Data, fname));
+		PCB_ACT_IRES(tedax_layers_load(PCB_PASTEBUFFER->Data, fname, NULL, 0));
 		return 0;
 	}
 	if (pcb_strcasecmp(type, "drc") == 0) {
 		gen_load(drc, fname);
-		PCB_ACT_IRES(tedax_drc_load(PCB, fname));
+		PCB_ACT_IRES(tedax_drc_load(PCB, fname, NULL, 0));
 		return 0;
 	}
 	PCB_ACT_FAIL(Savetedax);
@@ -171,7 +171,7 @@ PCB_REGISTER_ACTIONS(tedax_action_list, tedax_cookie)
 
 static int io_tedax_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
 {
-	return tedax_fp_load(Ptr, name, 0);
+	return tedax_fp_load(Ptr, name, 0, NULL, 0);
 }
 
 static int io_tedax_write_element(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *dt)
@@ -211,7 +211,7 @@ int io_tedax_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filenam
 
 	Ptr->is_footprint = 1;
 
-	res = tedax_fp_load(Ptr->Data, Filename, 0);
+	res = tedax_fp_load(Ptr->Data, Filename, 0, NULL, 0);
 	if (res == 0) {
 		pcb_subc_t *sc = Ptr->Data->subc.lst.first;
 

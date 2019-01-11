@@ -128,7 +128,7 @@ int tedax_drc_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, int silent)
 	return 0;
 }
 
-int tedax_drc_load(pcb_board_t *pcb, const char *fn)
+int tedax_drc_load(pcb_board_t *pcb, const char *fn, const char *blk_id, int silent)
 {
 	int res;
 	FILE *f;
@@ -138,7 +138,7 @@ int tedax_drc_load(pcb_board_t *pcb, const char *fn)
 		pcb_message(PCB_MSG_ERROR, "tedax_drc_load(): can't open %s for reading\n", fn);
 		return -1;
 	}
-	res = tedax_drc_fload(pcb, f, NULL, 0);
+	res = tedax_drc_fload(pcb, f, blk_id, silent);
 	fclose(f);
 	return res;
 }

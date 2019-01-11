@@ -410,7 +410,7 @@ int tedax_stackup_fload(tedax_stackup_t *ctx, pcb_board_t *pcb, FILE *f, const c
 }
 
 
-int tedax_stackup_load(pcb_board_t *pcb, const char *fn)
+int tedax_stackup_load(pcb_board_t *pcb, const char *fn, const char *blk_id, int silent)
 {
 	int res;
 	FILE *f;
@@ -422,7 +422,7 @@ int tedax_stackup_load(pcb_board_t *pcb, const char *fn)
 		return -1;
 	}
 	tedax_stackup_init(&ctx);
-	res = tedax_stackup_fload(&ctx, pcb, f, NULL, 0);
+	res = tedax_stackup_fload(&ctx, pcb, f, blk_id, silent);
 	fclose(f);
 	tedax_stackup_uninit(&ctx);
 	return res;

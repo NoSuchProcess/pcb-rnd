@@ -360,7 +360,7 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f, const char *blk_id, int silent
 	return res;
 }
 
-int tedax_layers_load(pcb_data_t *data, const char *fn)
+int tedax_layers_load(pcb_data_t *data, const char *fn, const char *blk_id, int silent)
 {
 	int res;
 	FILE *f;
@@ -370,7 +370,7 @@ int tedax_layers_load(pcb_data_t *data, const char *fn)
 		pcb_message(PCB_MSG_ERROR, "tedax_layers_load(): can't open %s for reading\n", fn);
 		return -1;
 	}
-	res = tedax_layers_fload(data, f, NULL, 0);
+	res = tedax_layers_fload(data, f, blk_id, silent);
 	fclose(f);
 	return res;
 }

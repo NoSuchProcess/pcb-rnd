@@ -628,7 +628,7 @@ static int tedax_parse_fp(pcb_data_t *data, FILE *fn, int multi, const char *blk
 	return 0;
 }
 
-int tedax_fp_load(pcb_data_t *data, const char *fn, int multi)
+int tedax_fp_load(pcb_data_t *data, const char *fn, int multi, const char *blk_id, int silent)
 {
 	FILE *f;
 	int ret = 0;
@@ -639,7 +639,7 @@ int tedax_fp_load(pcb_data_t *data, const char *fn, int multi)
 		return -1;
 	}
 
-	ret = tedax_parse_fp(data, f, multi, NULL, 0);
+	ret = tedax_parse_fp(data, f, multi, blk_id, silent);
 
 	fclose(f);
 	return ret;

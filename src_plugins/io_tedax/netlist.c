@@ -121,7 +121,7 @@ int tedax_net_fload(FILE *fn, const char *blk_id, int silent)
 }
 
 
-int tedax_net_load(const char *fname_net)
+int tedax_net_load(const char *fname_net, const char *blk_id, int silent)
 {
 	FILE *fn;
 	int ret = 0;
@@ -132,7 +132,7 @@ int tedax_net_load(const char *fname_net)
 		return -1;
 	}
 
-	ret = tedax_net_fload(fn, NULL, 0);
+	ret = tedax_net_fload(fn, blk_id, silent);
 
 	fclose(fn);
 	return ret;

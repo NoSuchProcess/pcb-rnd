@@ -14,5 +14,5 @@ void tedax_stackup_uninit(tedax_stackup_t *ctx);
 int tedax_stackup_save(pcb_board_t *pcb, const char *stackid, const char *fn);
 int tedax_stackup_fsave(tedax_stackup_t *ctx, pcb_board_t *pcb, const char *stackid, FILE *f);
 
-int tedax_stackup_load(pcb_board_t *pcb, const char *fn);
+int tedax_stackup_load(pcb_board_t *pcb, const char *fn, const char *blk_id, int silent);
 int tedax_stackup_fload(tedax_stackup_t *ctx, pcb_board_t *pcb, FILE *f, const char *blk_id, int silent);
