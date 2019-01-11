@@ -424,9 +424,14 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 			p->role = role;
 		}
 		else if ((strcmp(argv[0], "place_attr") == 0) || (strcmp(argv[0], "place_fattr") == 0)) {
+			tdx_attr_t *a;
 			reqarg(argv[0], 4);
 			p = get_place(&plc, argv[1]);
-			
+			a = malloc(sizeof(tdx_attr_t));
+			a->key = pcb_strdup(argv[2]);
+			a->val = pcb_strdup(argv[3]);
+			a->next = p->attr;
+			p->attr = a;
 		}
 		else if (strcmp(argv[0], "place_text") == 0) {
 			tdx_text_t *text;
