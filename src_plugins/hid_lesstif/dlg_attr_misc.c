@@ -235,7 +235,6 @@ static void ltf_colorbtn_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_color_t
 
 static void ltf_colorbtn_valchg(Widget w, XtPointer dlg_widget_, XtPointer call_data)
 {
-	const char *new_color;
 	fgw_error_t rs;
 	fgw_arg_t res, argv[2];
 	lesstif_attr_dlg_t *ctx;
@@ -285,8 +284,6 @@ static Widget ltf_colorbtn_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hi
 
 static void ltf_txt_changed_callback(Widget w, XtPointer attr_, XEvent *e, Boolean *ctd)
 {
-	pcb_hid_attribute_t *attr = attr_;
-	pcb_hid_text_t *txt = (pcb_hid_text_t *)attr->enumerations;
 	valchg(w, w, NULL);
 }
 
