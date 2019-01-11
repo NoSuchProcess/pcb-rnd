@@ -593,7 +593,7 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 	return res;
 }
 
-static int tedax_parse_1fp(pcb_data_t *data, FILE *fn, char *buff, int buff_size, char *argv[], int argv_size)
+int tedax_parse_1fp(pcb_data_t *data, FILE *fn, char *buff, int buff_size, char *argv[], int argv_size)
 {
 	pcb_subc_t *sc = pcb_subc_alloc();
 	pcb_subc_reg(data, sc);
