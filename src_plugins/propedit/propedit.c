@@ -187,6 +187,9 @@ fgw_error_t pcb_act_propprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_printf("	min/avg/max=%d/%d/%d\n", min.i, avg.i, max.i);
 				break;
 			case PCB_PROPT_COLOR: printf("	common=#%02d%02d%02d\n", com.clr.r, com.clr.g, com.clr.b); break;
+			case PCB_PROPT_invalid:
+			case PCB_PROPT_max:
+				break;
 		}
 	}
 	free(sorted);
