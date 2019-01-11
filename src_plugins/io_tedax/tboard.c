@@ -289,12 +289,76 @@ do { \
 	what = pcb_strdup(argv[1]); \
 } while(0)
 
+typedef struct tdx_plc_s tdx_plc_t;
+typedef struct tdx_attr_s tdx_attr_t;
+typedef struct tdx_text_s tdx_text_t;
+
+struct tdx_attr_s {
+	char *key;
+	char *val;
+	tdx_attr_t *next;
+};
+
+struct tdx_text_s {
+	char *layer;
+	pcb_box_t bbox;
+	double rot;
+	char *val;
+	tdx_text_t *next;
+};
+
+struct tdx_plc_s {
+	pcb_coord_t ox, oy;
+	double rot;
+	char swapside;
+	char role; /* 'v' for via, 'c' for comp or 'm' for misc */
+	tdx_attr_t *attr;
+	tdx_text_t *text;
+};
+
+static void free_plc(htsp_t *plc)
+{
+	htsp_entry_t *e;
+	tdx_attr_t *a, *an;
+	tdx_text_t *t, *tn;
+
+	for(e = htsp_first(plc); e != NULL; e = htsp_next(plc, e)) {
+		tdx_plc_t *p = e->value;
+		free(e->key);
+		for(a = p->attr; a != NULL; a = an) {
+			an = a->next;
+			free(a->key);
+			free(a->val);
+			free(a);
+		}
+		for(t = p->text; t != NULL; t = tn) {
+			tn = t->next;
+			free(t->layer);
+			free(t->val);
+			free(t);
+		}
+	}
+}
+
+static tdx_plc_t *get_place(htsp_t *plc, const char *id)
+{
+	tdx_plc_t *p = htsp_get(plc, id);
+	if (p != NULL)
+		return p;
+	p = calloc(sizeof(tdx_plc_t), 1);
+	htsp_set(plc, pcb_strdup(id), p);
+	return p;
+}
+
 static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_size, char *argv[], int argv_size, int silent)
 {
 	char *stackup = NULL, *netlist = NULL, *drc = NULL;
 	int res = 0, argc;
 	tedax_stackup_t ctx;
+	tdx_plc_t *p;
+	htsp_t plc;
 
+	htsp_init(&plc, strhash, strkeyeq);
 	tedax_stackup_init(&ctx);
 	while((argc = tedax_getline(f, buff, buff_size, argv, argv_size)) >= 0) {
 		if (strcmp(argv[0], "drawing_area") == 0) {
@@ -330,12 +394,15 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 		}
 		else if (strcmp(argv[0], "place") == 0) {
 			reqarg("attr", 8);
+			p = get_place(&plc, argv[1]);
 		}
 		else if (strcmp(argv[0], "place_attr") == 0) {
 			reqarg("attr", 4);
+			p = get_place(&plc, argv[1]);
 		}
 		else if (strcmp(argv[0], "place_fattr") == 0) {
 			reqarg("attr", 4);
+			p = get_place(&plc, argv[1]);
 		}
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "board") == 0))
 			break;
@@ -356,11 +423,20 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 		res |= tedax_drc_fload(pcb, f, drc, silent);
 	}
 
+	{ /* placement */
+		htsp_entry_t *e;
+		for(e = htsp_first(&plc); e != NULL; e = htsp_next(&plc, e)) {
+pcb_trace("placing '%s'\n", e->key);
+		}
+	}
+
 	error:;
 	free(stackup);
 	free(netlist);
 	free(drc);
 	tedax_stackup_uninit(&ctx);
+	free_plc(&plc);
+	htsp_uninit(&plc);
 	return res;
 }
 
