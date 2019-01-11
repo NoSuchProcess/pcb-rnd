@@ -88,7 +88,7 @@ int tedax_drc_save(pcb_board_t *pcb, const char *drcid, const char *fn)
 	return res;
 }
 
-int tedax_drc_fload(pcb_board_t *pcb, FILE *f)
+int tedax_drc_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, int silent)
 {
 	const drc_rule_t *r;
 	char line[520], *argv[16];
@@ -98,7 +98,7 @@ int tedax_drc_fload(pcb_board_t *pcb, FILE *f)
 	if (tedax_seek_hdr(f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
 		return -1;
 
-	if ((argc = tedax_seek_block(f, "drc", "v1", NULL, 1, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) < 1)
+	if ((argc = tedax_seek_block(f, "drc", "v1", blk_id, silent, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) < 1)
 		return -1;
 
 	while((argc = tedax_getline(f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {
@@ -138,7 +138,7 @@ int tedax_drc_load(pcb_board_t *pcb, const char *fn)
 		pcb_message(PCB_MSG_ERROR, "tedax_drc_load(): can't open %s for reading\n", fn);
 		return -1;
 	}
-	res = tedax_drc_fload(pcb, f);
+	res = tedax_drc_fload(pcb, f, NULL, 0);
 	fclose(f);
 	return res;
 }

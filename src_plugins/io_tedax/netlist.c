@@ -57,7 +57,7 @@ static void *htsp_get2(htsp_t *ht, const char *key, size_t size)
 	return res;
 }
 
-int tedax_net_fload(FILE *fn)
+int tedax_net_fload(FILE *fn, const char *blk_id, int silent)
 {
 	char line[520];
 	char *argv[16];
@@ -68,7 +68,7 @@ int tedax_net_fload(FILE *fn)
 	if (tedax_seek_hdr(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
 		return -1;
 
-	if (tedax_seek_block(fn, "netlist", "v1", NULL, 0, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
+	if (tedax_seek_block(fn, "netlist", "v1", blk_id, silent, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
 		return -1;
 
 	htsp_init(&fps, strhash, strkeyeq);
@@ -132,7 +132,7 @@ int tedax_net_load(const char *fname_net)
 		return -1;
 	}
 
-	ret = tedax_net_fload(fn);
+	ret = tedax_net_fload(fn, NULL, 0);
 
 	fclose(fn);
 	return ret;

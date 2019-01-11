@@ -140,7 +140,7 @@ int tedax_layer_save(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *laynam
 	return res;
 }
 
-int tedax_layers_fload(pcb_data_t *data, FILE *f)
+int tedax_layers_fload(pcb_data_t *data, FILE *f, const char *blk_id, int silent)
 {
 	long start, n;
 	int argc, res = 0;
@@ -196,7 +196,7 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f)
 
 	fseek(f, start, SEEK_SET);
 
-	while((argc = tedax_seek_block(f, "layer", "v1", NULL, 1, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) > 1) {
+	while((argc = tedax_seek_block(f, "layer", "v1", blk_id, silent, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) > 1) {
 		pcb_layer_t *ly;
 		if (data->LayerN >= PCB_MAX_LAYER) {
 			pcb_message(PCB_MSG_ERROR, "too many layers\n");
@@ -370,7 +370,7 @@ int tedax_layers_load(pcb_data_t *data, const char *fn)
 		pcb_message(PCB_MSG_ERROR, "tedax_layers_load(): can't open %s for reading\n", fn);
 		return -1;
 	}
-	res = tedax_layers_fload(data, f);
+	res = tedax_layers_fload(data, f, NULL, 0);
 	fclose(f);
 	return res;
 }

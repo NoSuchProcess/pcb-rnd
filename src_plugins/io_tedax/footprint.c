@@ -608,7 +608,7 @@ static int tedax_parse_1fp(pcb_data_t *data, FILE *fn, char *buff, int buff_size
 
 
 /* parse one or more footprint blocks */
-static int tedax_parse_fp(pcb_data_t *data, FILE *fn, int multi)
+static int tedax_parse_fp(pcb_data_t *data, FILE *fn, int multi, const char *blk_id, int silent)
 {
 	char line[520];
 	char *argv[16];
@@ -618,7 +618,7 @@ static int tedax_parse_fp(pcb_data_t *data, FILE *fn, int multi)
 		return -1;
 
 	do {
-		if (tedax_seek_block(fn, "footprint", "v1", NULL, (found > 0), line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
+		if (tedax_seek_block(fn, "footprint", "v1", blk_id, silent || (found > 0), line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
 			break;
 
 		if (tedax_parse_1fp(data, fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
@@ -639,7 +639,7 @@ int tedax_fp_load(pcb_data_t *data, const char *fn, int multi)
 		return -1;
 	}
 
-	ret = tedax_parse_fp(data, f, multi);
+	ret = tedax_parse_fp(data, f, multi, NULL, 0);
 
 	fclose(f);
 	return ret;

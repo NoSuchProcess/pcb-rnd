@@ -395,7 +395,7 @@ int tedax_stackup_parse(tedax_stackup_t *ctx, pcb_board_t *pcb, FILE *f, char *b
 }
 
 
-int tedax_stackup_fload(tedax_stackup_t *ctx, pcb_board_t *pcb, FILE *f)
+int tedax_stackup_fload(tedax_stackup_t *ctx, pcb_board_t *pcb, FILE *f, const char *blk_id, int silent)
 {
 	char line[520];
 	char *argv[16];
@@ -403,7 +403,7 @@ int tedax_stackup_fload(tedax_stackup_t *ctx, pcb_board_t *pcb, FILE *f)
 	if (tedax_seek_hdr(f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
 		return -1;
 
-	if (tedax_seek_block(f, "stackup", "v1", NULL, 0, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
+	if (tedax_seek_block(f, "stackup", "v1", blk_id, silent, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
 		return -1;
 
 	return tedax_stackup_parse(ctx, pcb, f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]));
@@ -422,7 +422,7 @@ int tedax_stackup_load(pcb_board_t *pcb, const char *fn)
 		return -1;
 	}
 	tedax_stackup_init(&ctx);
-	res = tedax_stackup_fload(&ctx, pcb, f);
+	res = tedax_stackup_fload(&ctx, pcb, f, NULL, 0);
 	fclose(f);
 	tedax_stackup_uninit(&ctx);
 	return res;
