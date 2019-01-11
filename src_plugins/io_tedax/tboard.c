@@ -267,25 +267,24 @@ int tedax_board_save(pcb_board_t *pcb, const char *fn)
 	return res;
 }
 
+#define errexit(msg) \
+do { \
+	if (!silent) \
+		pcb_message(PCB_MSG_ERROR, msg); \
+	res = -1; \
+	goto error; \
+} while(0)
 
 #define reqarg(what, reqargc) \
 do { \
-	if (argc != reqargc) {\
-		if (!silent) \
-			pcb_message(PCB_MSG_ERROR, "tEDAx board load: too few or too many arguments for " #what " reference\n"); \
-		res = -1; \
-		goto error; \
-	} \
+	if (argc != reqargc) \
+		errexit("tEDAx board load: too few or too many arguments for " #what " reference\n"); \
 } while(0)
 
 #define remember(what) \
 do { \
-	if (what != NULL) { \
-		if (!silent) \
-			pcb_message(PCB_MSG_ERROR, "tEDAx board load: multiple instances of " #what " reference\n"); \
-		res = -1; \
-		goto error; \
-	} \
+	if (what != NULL) \
+		errexit("tEDAx board load: multiple instances of " #what " reference\n"); \
 	reqarg(what, 2); \
 	what = pcb_strdup(argv[1]); \
 } while(0)
@@ -299,7 +298,22 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 	tedax_stackup_init(&ctx);
 	while((argc = tedax_getline(f, buff, buff_size, argv, argv_size)) >= 0) {
 		if (strcmp(argv[0], "drawing_area") == 0) {
+			pcb_coord_t x1, y1, x2, y2;
+			pcb_bool succ;
+
 			reqarg("drawing_area", 5);
+			x1 = pcb_get_value(argv[1], "mm", NULL, &succ);
+			if (!succ) errexit("Invalid x1 coord in drawing_area");
+			y1 = pcb_get_value(argv[2], "mm", NULL, &succ);
+			if (!succ) errexit("Invalid y1 coord in drawing_area");
+			x2 = pcb_get_value(argv[3], "mm", NULL, &succ);
+			if (!succ) errexit("Invalid x2 coord in drawing_area");
+			y2 = pcb_get_value(argv[4], "mm", NULL, &succ);
+			if (!succ) errexit("Invalid y2 coord in drawing_area");
+			if ((x1 >= x2) || (y1 >= y2)) errexit("Invalid (unordered, negative box) drawing area");
+			if ((x1 < 0) || (y1 < 0)) pcb_message(PCB_MSG_WARNING, "drawing_area starts at negative coords; some objects may not display;\nyou may want to run autocrop()");
+			PCB->MaxWidth = x2 - x1;
+			PCB->MaxHeight = y2 - y1;
 		}
 		else if (strcmp(argv[0], "attr") == 0) {
 			reqarg("attr", 3);
