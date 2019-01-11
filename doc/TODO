@@ -1,6 +1,8 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
+- BUG: io_tedax:
+	- footprint save should quote footprint name
 + BUG: boardflip() action moves the objects and doesn't move the subc outline and origin (repro: place single part, run boardflip) [report:Miloh]
 + FEATURE: export_xy: pnp origin should be any obj, especially padstacks (fidu) [report: TwisteR]
 - BUG: portability: don't use export in trunk/doc/user/Makefile [report: Vuokko]
@@ -166,6 +168,7 @@
 - FEATURE: HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
 - FEATURE: undo on new layer from right-click menu in gtk layersel doesn't work
 - FEATUER: gtk layersel: consider to provide a config setting for making open-group-name horizontal [report: istankovic]
+- FEATURE: optional display of as-drawn contours of polygons for editing [report: Ade]
 - GTK Preferences->User PoV->Layers : Hit 'v' to "zoom fit" the preview [report: Alain]
 		- CLEANUP: allow GTK to handle keys in preview
 		- CLEANUP: use the zoompan engine for the zooming. Modifiy API if necessary
