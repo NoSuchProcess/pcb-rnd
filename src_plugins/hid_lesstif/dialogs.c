@@ -570,6 +570,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, att
 
 #include "dlg_attr_misc.c"
 #include "dlg_attr_box.c"
+#include "dlg_attr_tree.c"
 
 /* returns the index of HATT_END where the loop had to stop */
 static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, attr_dlg_tb_t *tb, int start_from, int add_labels)
@@ -733,6 +734,10 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, att
 
 		case PCB_HATT_TEXT:
 			ctx->wl[i] = ltf_text_create(ctx, parent, &ctx->attrs[i]);
+			break;
+
+		case PCB_HATT_TREE:
+			ctx->wl[i] = ltf_tree_create(ctx, parent, &ctx->attrs[i]);
 			break;
 
 		case PCB_HATT_PICTURE:
@@ -912,6 +917,9 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 			break;
 		case PCB_HATT_TEXT:
 			ltf_text_set(ctx, idx, val->str_value);
+			break;
+		case PCB_HATT_TREE:
+			ltf_tree_set(ctx, idx, val->str_value);
 			break;
 		case PCB_HATT_ENUM:
 			for (n = 0; ctx->attrs[idx].enumerations[n]; n++) {
