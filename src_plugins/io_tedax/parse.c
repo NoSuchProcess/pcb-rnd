@@ -164,7 +164,7 @@ int tedax_strncpy_escape(char *dst, int dstlen, const char *val)
 	if ((val == NULL) || (*val == '\0')) {
 		dst[0] = '-';
 		dst[1] = '\0';
-		return;
+		return 0;
 	}
 	dstlen--; /* one for \0 */
 	for(; *val != '\0'; val++) {
