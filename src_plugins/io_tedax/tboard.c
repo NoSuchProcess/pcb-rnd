@@ -308,6 +308,7 @@ struct tdx_text_s {
 };
 
 struct tdx_plc_s {
+	char *block;
 	pcb_coord_t ox, oy;
 	double rot;
 	char swapside;
@@ -325,6 +326,7 @@ static void free_plc(htsp_t *plc)
 	for(e = htsp_first(plc); e != NULL; e = htsp_next(plc, e)) {
 		tdx_plc_t *p = e->value;
 		free(e->key);
+		free(p->block);
 		for(a = p->attr; a != NULL; a = an) {
 			an = a->next;
 			free(a->key);
@@ -357,13 +359,13 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 	tedax_stackup_t ctx;
 	tdx_plc_t *p;
 	htsp_t plc;
+	pcb_bool succ;
 
 	htsp_init(&plc, strhash, strkeyeq);
 	tedax_stackup_init(&ctx);
 	while((argc = tedax_getline(f, buff, buff_size, argv, argv_size)) >= 0) {
 		if (strcmp(argv[0], "drawing_area") == 0) {
 			pcb_coord_t x1, y1, x2, y2;
-			pcb_bool succ;
 
 			reqarg("drawing_area", 5);
 			x1 = pcb_get_value(argv[1], "mm", NULL, &succ);
@@ -393,8 +395,33 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 			remember(drc);
 		}
 		else if (strcmp(argv[0], "place") == 0) {
+			pcb_coord_t ox, oy;
+			double rot;
+			char *end;
+			char swapside, role;
+
 			reqarg("place", 8);
+
+			ox = pcb_get_value(argv[3], "mm", NULL, &succ);
+			if (!succ) errexit("Invalid ox coord in place");
+			oy = pcb_get_value(argv[4], "mm", NULL, &succ);
+			if (!succ) errexit("Invalid ox coord in place");
+			rot = strtod(argv[5], &end);
+			if (*end != '\0') errexit("Invalid rotation value in place");
+			swapside = atoi(argv[6]);
+			if ((swapside < 0) || (swapside > 1)) errexit("Invalid swap side value in place");
+			if (strcmp(argv[7], "via") == 0) role = 'v';
+			else if (strcmp(argv[7], "comp") == 0) role = 'c';
+			else if (strcmp(argv[7], "misc") == 0) role = 'm';
+			else errexit("Invalid role value in place");
+
 			p = get_place(&plc, argv[1]);
+			p->block = pcb_strdup(argv[2]);
+			p->ox = ox;
+			p->oy = oy;
+			p->rot = rot;
+			p->swapside = swapside;
+			p->role = role;
 		}
 		else if (strcmp(argv[0], "place_attr") == 0) {
 			reqarg("place_attr", 4);
