@@ -317,6 +317,7 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 		}
 		else if (strcmp(argv[0], "attr") == 0) {
 			reqarg("attr", 3);
+			pcb_attribute_put(&PCB->Attributes, argv[1], argv[2]);
 		}
 		else if (strcmp(argv[0], "stackup") == 0) {
 			remember(stackup);
