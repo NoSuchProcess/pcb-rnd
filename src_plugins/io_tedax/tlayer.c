@@ -204,7 +204,7 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f)
 			goto error;
 		}
 		ly = &data->Layer[data->LayerN++];
-		free(ly->name);
+		free((char *)ly->name);
 		ly->name = pcb_strdup(argv[3]);
 		ly->is_bound = data->parent_type != PCB_PARENT_BOARD;
 		if (!ly->is_bound) {
