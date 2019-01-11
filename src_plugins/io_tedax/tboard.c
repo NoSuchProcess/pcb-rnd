@@ -268,6 +268,16 @@ int tedax_board_save(pcb_board_t *pcb, const char *fn)
 }
 
 
+#define reqarg(what, reqargc) \
+do { \
+	if (argc != reqargc) {\
+		if (!silent) \
+			pcb_message(PCB_MSG_ERROR, "tEDAx board load: too few or too many arguments for " #what " reference\n"); \
+		res = -1; \
+		goto error; \
+	} \
+} while(0)
+
 #define remember(what) \
 do { \
 	if (what != NULL) { \
@@ -276,12 +286,7 @@ do { \
 		res = -1; \
 		goto error; \
 	} \
-	if (argc != 2) {\
-		if (!silent) \
-			pcb_message(PCB_MSG_ERROR, "tEDAx board load: too few or too many arguments for " #what " reference\n"); \
-		res = -1; \
-		goto error; \
-	} \
+	reqarg(what, 2); \
 	what = pcb_strdup(argv[1]); \
 } while(0)
 
@@ -294,8 +299,10 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 	tedax_stackup_init(&ctx);
 	while((argc = tedax_getline(f, buff, buff_size, argv, argv_size)) >= 0) {
 		if (strcmp(argv[0], "drawing_area") == 0) {
+			reqarg("drawing_area", 5);
 		}
 		else if (strcmp(argv[0], "attr") == 0) {
+			reqarg("attr", 3);
 		}
 		else if (strcmp(argv[0], "stackup") == 0) {
 			remember(stackup);
@@ -307,12 +314,15 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 			remember(drc);
 		}
 		else if (strcmp(argv[0], "place") == 0) {
+			reqarg("attr", 8);
 		}
 		else if (strcmp(argv[0], "place_attr") == 0) {
+			reqarg("attr", 4);
 		}
 		else if (strcmp(argv[0], "place_fattr") == 0) {
+			reqarg("attr", 4);
 		}
-		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "stackup") == 0))
+		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "board") == 0))
 			break;
 	}
 
