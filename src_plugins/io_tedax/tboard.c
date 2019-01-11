@@ -434,9 +434,35 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 			p->attr = a;
 		}
 		else if (strcmp(argv[0], "place_text") == 0) {
-			tdx_text_t *text;
+			pcb_coord_t x1, y1, x2, y2;
+			tdx_text_t *t;
+			char *end;
+			double rot;
+
 			reqarg("place_text", 10);
+
+			x1 = pcb_get_value(argv[3], "mm", NULL, &succ);
+			if (!succ) errexit("Invalid x1 coord in place_text\n");
+			y1 = pcb_get_value(argv[4], "mm", NULL, &succ);
+			if (!succ) errexit("Invalid y1 coord in place_text\n");
+			x2 = pcb_get_value(argv[5], "mm", NULL, &succ);
+			if (!succ) errexit("Invalid x2 coord in place_text\n");
+			y2 = pcb_get_value(argv[6], "mm", NULL, &succ);
+			if (!succ) errexit("Invalid y2 coord in place_text\n");
+			rot = strtod(argv[8], &end);
+			if (*end != '\0') errexit("Invalid rotation value in place_text\n");
+
 			p = get_place(&plc, argv[1]);
+			t = malloc(sizeof(tdx_text_t));
+			t->layer = pcb_strdup(argv[2]);
+			t->val = pcb_strdup(argv[9]);
+			t->bbox.X1 = x1;
+			t->bbox.Y1 = y1;
+			t->bbox.X2 = x2;
+			t->bbox.Y2 = y2;
+			t->rot = rot;
+			t->next = p->text;
+			p->text = t;
 		}
 
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "board") == 0))
