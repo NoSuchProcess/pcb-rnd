@@ -618,7 +618,7 @@ static int tedax_parse_fp(pcb_data_t *data, FILE *fn, int multi)
 		return -1;
 
 	do {
-		if (tedax_seek_block(fn, "footprint", "v1", (found > 0), line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
+		if (tedax_seek_block(fn, "footprint", "v1", NULL, (found > 0), line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
 			break;
 
 		if (tedax_parse_1fp(data, fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)

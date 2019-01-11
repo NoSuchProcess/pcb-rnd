@@ -68,7 +68,7 @@ int tedax_net_fload(FILE *fn)
 	if (tedax_seek_hdr(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
 		return -1;
 
-	if (tedax_seek_block(fn, "netlist", "v1", 0, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
+	if (tedax_seek_block(fn, "netlist", "v1", NULL, 0, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
 		return -1;
 
 	htsp_init(&fps, strhash, strkeyeq);

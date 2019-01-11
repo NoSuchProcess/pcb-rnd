@@ -403,7 +403,7 @@ int tedax_stackup_fload(tedax_stackup_t *ctx, pcb_board_t *pcb, FILE *f)
 	if (tedax_seek_hdr(f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
 		return -1;
 
-	if (tedax_seek_block(f, "stackup", "v1", 0, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
+	if (tedax_seek_block(f, "stackup", "v1", NULL, 0, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
 		return -1;
 
 	return tedax_stackup_parse(ctx, pcb, f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]));

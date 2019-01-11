@@ -98,7 +98,7 @@ int tedax_drc_fload(pcb_board_t *pcb, FILE *f)
 	if (tedax_seek_hdr(f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
 		return -1;
 
-	if ((argc = tedax_seek_block(f, "drc", "v1", 1, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) < 1)
+	if ((argc = tedax_seek_block(f, "drc", "v1", NULL, 1, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) < 1)
 		return -1;
 
 	while((argc = tedax_getline(f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {

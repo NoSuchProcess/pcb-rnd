@@ -156,7 +156,7 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f)
 	start = ftell(f);
 
 	htsp_init(&plines, strhash, strkeyeq);
-	while((argc = tedax_seek_block(f, "polyline", "v1", 1, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) > 1) {
+	while((argc = tedax_seek_block(f, "polyline", "v1", NULL, 1, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) > 1) {
 		char *pname;
 		if (htsp_has(&plines, argv[3])) {
 			pcb_message(PCB_MSG_ERROR, "duplicate polyline: %s\n", argv[3]);
@@ -196,7 +196,7 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f)
 
 	fseek(f, start, SEEK_SET);
 
-	while((argc = tedax_seek_block(f, "layer", "v1", 1, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) > 1) {
+	while((argc = tedax_seek_block(f, "layer", "v1", NULL, 1, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) > 1) {
 		pcb_layer_t *ly;
 		if (data->LayerN >= PCB_MAX_LAYER) {
 			pcb_message(PCB_MSG_ERROR, "too many layers\n");

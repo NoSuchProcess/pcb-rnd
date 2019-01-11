@@ -107,13 +107,13 @@ int tedax_seek_hdr(FILE *f, char *buff, int buff_size, char *argv[], int argv_si
 }
 
 
-int tedax_seek_block(FILE *f, const char *blk_name, const char *blk_ver, int silent, char *buff, int buff_size, char *argv[], int argv_size)
+int tedax_seek_block(FILE *f, const char *blk_name, const char *blk_ver, const char *blk_id, int silent, char *buff, int buff_size, char *argv[], int argv_size)
 {
 	int argc;
 
 	/* seek block begin */
 	while((argc = tedax_getline(f, buff, buff_size, argv, argv_size)) >= 0)
-		if ((argc > 2) && (strcmp(argv[0], "begin") == 0) && (strcmp(argv[1], blk_name) == 0) && (strcmp(argv[2], blk_ver) == 0))
+		if ((argc > 2) && (strcmp(argv[0], "begin") == 0) && (strcmp(argv[1], blk_name) == 0) && (strcmp(argv[2], blk_ver) == 0) && ((blk_id == NULL) || (strcmp(argv[3], blk_id) == 0)))
 			break;
 
 	if (argc < 2) {
