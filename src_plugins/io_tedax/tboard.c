@@ -267,3 +267,80 @@ int tedax_board_save(pcb_board_t *pcb, const char *fn)
 	return res;
 }
 
+
+#define remember(what) \
+do { \
+	if (what != NULL) { \
+		pcb_message(PCB_MSG_ERROR, "tEDAx board load: multiple instances of " #what " reference\n"); \
+		res = -1; \
+		goto error; \
+	} \
+	what = pcb_strdup(argv[1]); \
+} while(0)
+
+static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_size, char *argv[], int argv_size)
+{
+	char *stackup = NULL, *netlist = NULL, *drc = NULL;
+	int res = 0, argc;
+
+	while((argc = tedax_getline(f, buff, buff_size, argv, argv_size)) >= 0) {
+		if (strcmp(argv[0], "drawing_area") == 0) {
+		}
+		else if (strcmp(argv[0], "attr") == 0) {
+		}
+		else if (strcmp(argv[0], "stackup") == 0) {
+			remember(stackup);
+		}
+		else if (strcmp(argv[0], "netlist") == 0) {
+			remember(netlist);
+		}
+		else if (strcmp(argv[0], "drc") == 0) {
+			remember(drc);
+		}
+		else if (strcmp(argv[0], "place") == 0) {
+		}
+		else if (strcmp(argv[0], "place_attr") == 0) {
+		}
+		else if (strcmp(argv[0], "place_fattr") == 0) {
+		}
+		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "stackup") == 0))
+			break;
+	}
+
+	error:;
+	free(stackup);
+	free(netlist);
+	free(drc);
+	return res;
+}
+
+
+int tedax_board_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, int silent)
+{
+	char line[520];
+	char *argv[16];
+
+	if (tedax_seek_hdr(f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
+		return -1;
+
+	if (tedax_seek_block(f, "board", "v1", blk_id, silent, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
+		return -1;
+
+	return tedax_board_parse(pcb, f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]));
+}
+
+
+int tedax_board_load(pcb_board_t *pcb, const char *fn, const char *blk_id, int silent)
+{
+	int res;
+	FILE *f;
+
+	f = pcb_fopen(fn, "r");
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "tedax_board_load(): can't open %s for reading\n", fn);
+		return -1;
+	}
+	res = tedax_board_fload(pcb, f, blk_id, silent);
+	fclose(f);
+	return res;
+}

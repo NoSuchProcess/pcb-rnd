@@ -125,7 +125,7 @@ do { \
 	} \
 } while(0)
 
-static const char pcb_acts_LoadtedaxFrom[] = "LoadTedaxFrom(netlist|footprint|stackup|layer, filename, [block_id, [silent]])";
+static const char pcb_acts_LoadtedaxFrom[] = "LoadTedaxFrom(netlist|board|footprint|stackup|layer, filename, [block_id, [silent]])";
 static const char pcb_acth_LoadtedaxFrom[] = "Loads the specified block from a tedax file.";
 static fgw_error_t pcb_act_LoadtedaxFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -142,6 +142,11 @@ static fgw_error_t pcb_act_LoadtedaxFrom(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	if (pcb_strcasecmp(type, "netlist") == 0) {
 		gen_load(netlist, fname);
 		PCB_ACT_IRES(tedax_net_load(fname, id, silent));
+		return 0;
+	}
+	if (pcb_strcasecmp(type, "board") == 0) {
+		gen_load(board, fname);
+		PCB_ACT_IRES(tedax_board_load(PCB, fname, id, silent));
 		return 0;
 	}
 	if (pcb_strcasecmp(type, "footprint") == 0) {
