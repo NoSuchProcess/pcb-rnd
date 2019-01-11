@@ -49,6 +49,7 @@
 #include "ht_subc.h"
 #include "obj_pstk.h"
 #include "compat_misc.h"
+#include "plug_io.h"
 
 #define ps2fpname(fpname, padstack) \
 	pcb_snprintf(fpname, sizeof(fpname), "ps_glob_%ld%s", padstack->protoi, (!!padstack->smirror) != (!!padstack->xmirror) ? "m" : "")
@@ -176,11 +177,11 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 
 		if (subc->refdes != NULL) {
 			if (tedax_strncpy_escape(refdes, sizeof(refdes), subc->refdes) != 0) {
-				pcb_io_incompat_save(pcb->Data, subc, "subc-refdes", "subc refdes too long, using an auto-generated one instead");
+				pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)subc, "subc-refdes", "too long", "subc refdes too long, using an auto-generated one instead");
 				goto fake_refdes;
 			}
 			if (htsi_has(&urefdes, refdes)) {
-				pcb_io_incompat_save(pcb->Data, subc, "subc-refdes", "duplicate subc refdes; using an auto-generated one instead - netlist is most probably broken");
+				pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)subc, "subc-refdes", "duplucate", "duplicate subc refdes; using an auto-generated one instead - netlist is most probably broken");
 				goto fake_refdes;
 			}
 		}
