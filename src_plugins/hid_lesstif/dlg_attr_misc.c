@@ -291,7 +291,7 @@ static long ltf_text_get_offs(pcb_hid_attribute_t *attrib, void *hid_ctx)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;
-	Widget *wtxt = ctx->wl[idx];
+	Widget wtxt = ctx->wl[idx];
 	XmTextPosition pos;
 
 	stdarg_n = 0;
@@ -304,11 +304,11 @@ void ltf_text_set_offs(pcb_hid_attribute_t *attrib, void *hid_ctx, long offs)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;
-	Widget *wtxt = ctx->wl[idx];
+	Widget wtxt = ctx->wl[idx];
 	XmTextSetInsertionPosition(wtxt, offs);
 }
 
-static void ltf_text_set_text_(Widget *wtxt, unsigned how, const char *txt)
+static void ltf_text_set_text_(Widget wtxt, unsigned how, const char *txt)
 {
 	XmTextPosition pos;
 
@@ -317,14 +317,14 @@ static void ltf_text_set_text_(Widget *wtxt, unsigned how, const char *txt)
 			stdarg_n = 0;
 			stdarg(XmNcursorPosition, &pos);
 			XtGetValues(wtxt, stdarg_args, stdarg_n);
-			XmTextInsert(wtxt, pos, txt);
+			XmTextInsert(wtxt, pos, XmStrCast(txt));
 			break;
 		case PCB_HID_TEXT_REPLACE:
-			XmTextSetString(wtxt, txt);
+			XmTextSetString(wtxt, XmStrCast(txt));
 			break;
 		case PCB_HID_TEXT_APPEND:
 			pos = 1<<30;
-			XmTextInsert(wtxt, pos, txt);
+			XmTextInsert(wtxt, pos, XmStrCast(txt));
 			break;
 	}
 }
@@ -333,7 +333,7 @@ static void ltf_text_set_text(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hi
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;
-	Widget *wtxt = ctx->wl[idx];
+	Widget wtxt = ctx->wl[idx];
 
 	if (how & PCB_HID_TEXT_MARKUP) {
 		char *orig, *tmp = pcb_strdup(txt);
@@ -342,7 +342,7 @@ static void ltf_text_set_text(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hi
 		long seglen;
 
 		orig = tmp;
-		while((seg = (char *)pcb_markup_next(&st, &tmp, &seglen)) != NULL) {
+		while((seg = (char *)pcb_markup_next(&st, (const char **)&tmp, &seglen)) != NULL) {
 			char save = seg[seglen];
 			seg[seglen] = '\0';
 			ltf_text_set_text_(wtxt, how, seg);
@@ -365,7 +365,7 @@ static char *ltf_text_get_text_(pcb_hid_attribute_t *attrib, void *hid_ctx)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;
-	Widget *wtxt = ctx->wl[idx];
+	Widget wtxt = ctx->wl[idx];
 	return XmTextGetString(wtxt);
 }
 
@@ -434,7 +434,7 @@ void ltf_text_set_readonly(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_bool 
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;
-	Widget *wtxt = ctx->wl[idx];
+	Widget wtxt = ctx->wl[idx];
 
 	stdarg_n = 0;
 	stdarg(XmNeditable, !readonly);
