@@ -593,17 +593,17 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 	return res;
 }
 
-int tedax_parse_1fp(pcb_data_t *data, FILE *fn, char *buff, int buff_size, char *argv[], int argv_size)
+pcb_subc_t *tedax_parse_1fp(pcb_data_t *data, FILE *fn, char *buff, int buff_size, char *argv[], int argv_size)
 {
 	pcb_subc_t *sc = pcb_subc_alloc();
 	pcb_subc_reg(data, sc);
 
 	if (tedax_parse_1fp_(sc, fn, buff, buff_size, argv, argv_size) != 0) {
 		pcb_subc_free(sc);
-		return -1;
+		return NULL;
 	}
 
-	return 0;
+	return sc;
 }
 
 
@@ -621,7 +621,7 @@ static int tedax_parse_fp(pcb_data_t *data, FILE *fn, int multi, const char *blk
 		if (tedax_seek_block(fn, "footprint", "v1", blk_id, silent || (found > 0), line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
 			break;
 
-		if (tedax_parse_1fp(data, fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
+		if (tedax_parse_1fp(data, fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) == NULL)
 			return -1;
 		found++;
 	} while(multi);

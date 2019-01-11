@@ -497,7 +497,8 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 			if (tedax_seek_block(f, "footprint", "v1", NULL, silent, buff, buff_size, argv, argv_size) < 0)
 				break;
 
-			if (tedax_parse_1fp(scdata, f, buff, buff_size, argv, argv_size) < 0)
+			sc = tedax_parse_1fp(scdata, f, buff, buff_size, argv, argv_size);
+			if (sc == NULL)
 				errexit("Failed to parse footprint\n");
 		}
 	}
