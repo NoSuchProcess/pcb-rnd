@@ -393,15 +393,15 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 			remember(drc);
 		}
 		else if (strcmp(argv[0], "place") == 0) {
-			reqarg("attr", 8);
+			reqarg("place", 8);
 			p = get_place(&plc, argv[1]);
 		}
 		else if (strcmp(argv[0], "place_attr") == 0) {
-			reqarg("attr", 4);
+			reqarg("place_attr", 4);
 			p = get_place(&plc, argv[1]);
 		}
 		else if (strcmp(argv[0], "place_fattr") == 0) {
-			reqarg("attr", 4);
+			reqarg("place_fattr", 4);
 			p = get_place(&plc, argv[1]);
 		}
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "board") == 0))
