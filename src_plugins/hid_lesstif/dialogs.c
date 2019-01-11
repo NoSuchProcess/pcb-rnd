@@ -26,7 +26,6 @@
 #include "stdarg.h"
 #include "misc_util.h"
 #include "compat_nls.h"
-#include "compat_misc.h"
 #include "search.h"
 #include "change.h"
 #include "conf_core.h"
