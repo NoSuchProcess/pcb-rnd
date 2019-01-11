@@ -3532,7 +3532,7 @@ static int ltf_clip_set(pcb_hid_clipfmt_t format, const void *data, size_t len)
 
 static int ltf_clip_get(pcb_hid_clipfmt_t *format, void **data, size_t *len)
 {
-	int rlen, res;
+	int res;
 	gds_t tmp;
 	char buff[65536];
 	long unsigned bl = 0;
