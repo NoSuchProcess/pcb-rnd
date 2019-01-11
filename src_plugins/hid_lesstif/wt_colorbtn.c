@@ -195,7 +195,7 @@ int pcb_ltf_color_button_recolor(Display *display, Widget btn, const pcb_color_t
 		Event.width = w;
 		Event.height = h;
 		Event.count = 0;
-		XSendEvent(XtDisplay(btn), XtWindow(btn), False, ExposureMask, &Event);
+		XSendEvent(XtDisplay(btn), XtWindow(btn), False, ExposureMask, (XEvent *)&Event);
 		return 0;
 	}
 	return -1;
