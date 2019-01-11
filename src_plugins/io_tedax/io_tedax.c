@@ -125,38 +125,43 @@ do { \
 	} \
 } while(0)
 
-static const char pcb_acts_LoadtedaxFrom[] = "LoadTedaxFrom(netlist|footprint|stackup|layer, filename)";
+static const char pcb_acts_LoadtedaxFrom[] = "LoadTedaxFrom(netlist|footprint|stackup|layer, filename, [block_id, [silent]])";
 static const char pcb_acth_LoadtedaxFrom[] = "Loads the specified block from a tedax file.";
 static fgw_error_t pcb_act_LoadtedaxFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *fname = NULL, *type;
+	const char *fname = NULL, *type, *id = NULL, *silents = NULL;
+	int silent;
 
 	PCB_ACT_CONVARG(1, FGW_STR, Savetedax, type = argv[1].val.str);
 	PCB_ACT_MAY_CONVARG(2, FGW_STR, Savetedax, fname = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, LoadtedaxFrom, id = argv[3].val.str);
+	PCB_ACT_MAY_CONVARG(4, FGW_STR, LoadtedaxFrom, silents = argv[4].val.str);
+
+	silent = (silents != NULL) && (pcb_strcasecmp(silents, "silent") == 0);
 
 	if (pcb_strcasecmp(type, "netlist") == 0) {
 		gen_load(netlist, fname);
-		PCB_ACT_IRES(tedax_net_load(fname, NULL, 0));
+		PCB_ACT_IRES(tedax_net_load(fname, id, silent));
 		return 0;
 	}
 	if (pcb_strcasecmp(type, "footprint") == 0) {
 		gen_load(footprint, fname);
-		PCB_ACT_IRES(tedax_fp_load(PCB_PASTEBUFFER->Data, fname, 0, NULL, 0));
+		PCB_ACT_IRES(tedax_fp_load(PCB_PASTEBUFFER->Data, fname, 0, id, silent));
 		return 0;
 	}
 	if (pcb_strcasecmp(type, "stackup") == 0) {
 		gen_load(stackup, fname);
-		PCB_ACT_IRES(tedax_stackup_load(PCB, fname, NULL, 0));
+		PCB_ACT_IRES(tedax_stackup_load(PCB, fname, id, silent));
 		return 0;
 	}
 	if (pcb_strcasecmp(type, "layer") == 0) {
 		gen_load(layer, fname);
-		PCB_ACT_IRES(tedax_layers_load(PCB_PASTEBUFFER->Data, fname, NULL, 0));
+		PCB_ACT_IRES(tedax_layers_load(PCB_PASTEBUFFER->Data, fname, id, silent));
 		return 0;
 	}
 	if (pcb_strcasecmp(type, "drc") == 0) {
 		gen_load(drc, fname);
-		PCB_ACT_IRES(tedax_drc_load(PCB, fname, NULL, 0));
+		PCB_ACT_IRES(tedax_drc_load(PCB, fname, id, silent));
 		return 0;
 	}
 	PCB_ACT_FAIL(Savetedax);
