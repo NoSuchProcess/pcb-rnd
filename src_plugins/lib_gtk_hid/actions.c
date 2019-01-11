@@ -107,12 +107,11 @@ static const char pcb_acth_DoWindows[] = N_("Open various GUI windows. With fals
 /* DOC: dowindows.html */
 static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *a = "", *b = NULL, *c = NULL;
+	const char *a = "", *b = NULL;
 	gboolean raise = TRUE;
 
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, DoWindows, a = argv[1].val.str);
 	PCB_ACT_MAY_CONVARG(2, FGW_STR, DoWindows, b = argv[2].val.str);
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, DoWindows, c = argv[3].val.str);
 
 	if (b != NULL) {
 		char c = tolower(b[0]);
