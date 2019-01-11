@@ -16,7 +16,7 @@ static void ltf_tree_set(lesstif_attr_dlg_t *ctx, int idx, const char *val)
 
 static Widget ltf_tree_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
 {
-#if 0
+#if 1
 	ltf_tree_t *lt = calloc(sizeof(ltf_tree_t), 1);
 	Widget table = xm_create_tree_table_widget_cb(parent, &lt->model, ltf_ttbl_xevent_cb, NULL, NULL);
 

@@ -175,6 +175,8 @@ void xm_render_ttwidget_contents(Widget aw, enum e_what_changed what)
 	XRectangle clip = s->geom;
 	int y_shift = 0;
 	tt_entry_t *begin_entry = NULL;
+	if (!tt->table)
+		return;
 
 	if (tt->table_access_padlock) {
 		tt->table_access_padlock->lock(tt->table, tt->table_access_padlock->p_user_data);
@@ -193,7 +195,7 @@ void xm_render_ttwidget_contents(Widget aw, enum e_what_changed what)
 	s->vertical_stride = TTBL_MAX(w->tree_table.n_max_pixmap_height, GET_FONT_HEIGHT(tt->font));
 
 	begin_entry = (tt_entry_t *)gdl_first(tt->table);
-	{
+	if (begin_entry) {
 		long occupied_height = 0;
 		tt_entry_t *et = begin_entry;
 		long diff = tt->w_vert_sbar.cur - tt->w_vert_sbar.lo;
@@ -205,6 +207,9 @@ void xm_render_ttwidget_contents(Widget aw, enum e_what_changed what)
 			occupied_height += showing * TTBL_MAX(1, et->n_text_lines) * s->vertical_stride;
 			begin_entry = et;
 		}
+	}
+	else {
+		goto LB_UNLOCK_DATA;
 	}
 
 	{
@@ -270,7 +275,7 @@ void xm_render_ttwidget_contents(Widget aw, enum e_what_changed what)
 			ddata->visible_last = entry->row_index;
 		}
 	}
-
+LB_UNLOCK_DATA:
 	if (tt->table_access_padlock) {
 		tt->table_access_padlock->unlock(tt->table, tt->table_access_padlock->p_user_data);
 	}
@@ -382,7 +387,7 @@ void xm_init_scrollbars(XmTreeTableWidget w)
 	char *cb_strings[6] = { XmNdecrementCallback, XmNdragCallback, XmNincrementCallback,
 		XmNpageDecrementCallback, XmNpageIncrementCallback, XmNvalueChangedCallback
 	};
-	strncpy(name_buf, widget_name, name_len);
+	strcpy(name_buf, widget_name);
 	strcpy(name_buf + name_len, "_v_scroll");
 
 	vbar = XtVaCreateManagedWidget(name_buf, xmScrollBarWidgetClass, w_scrolled, XmNorientation, XmVERTICAL, NULL);
