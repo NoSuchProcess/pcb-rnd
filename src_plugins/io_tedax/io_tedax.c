@@ -164,7 +164,7 @@ static fgw_error_t pcb_act_LoadtedaxFrom(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		PCB_ACT_IRES(tedax_drc_load(PCB, fname, id, silent));
 		return 0;
 	}
-	PCB_ACT_FAIL(LoadTedaxFrom);
+	PCB_ACT_FAIL(LoadtedaxFrom);
 }
 
 pcb_action_t tedax_action_list[] = {
