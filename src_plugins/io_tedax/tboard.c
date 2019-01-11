@@ -276,6 +276,12 @@ do { \
 		res = -1; \
 		goto error; \
 	} \
+	if (argc != 2) {\
+		if (!silent) \
+			pcb_message(PCB_MSG_ERROR, "tEDAx board load: too few or too many arguments for " #what " reference\n"); \
+		res = -1; \
+		goto error; \
+	} \
 	what = pcb_strdup(argv[1]); \
 } while(0)
 
