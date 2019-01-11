@@ -466,6 +466,8 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 		}
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "board") == 0))
 			break;
+		else
+			errexit("Invalid command in board\n");
 	}
 
 	if (stackup != NULL) {
