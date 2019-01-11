@@ -23,7 +23,7 @@ static Widget ltf_tree_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_at
 	XtManageChild(table);
 	return table;
 #else
-	Widget *w;
+	Widget w;
 	stdarg_n = 0;
 	stdarg(XmNalignment, XmALIGNMENT_BEGINNING);
 	stdarg(XmNlabelString, XmStringCreatePCB("todo: tree table"));
