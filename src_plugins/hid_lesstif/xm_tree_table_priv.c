@@ -85,7 +85,8 @@ static void draw_row_cells(GC gc, int cur_x, int cur_y, tt_entry_t *entry, XmTre
 	x_start = s->column_dimensions_vector[0] + pixmap_shift + cur_x;
 
 	/* render the rest, they take into account the width of previous column. */
-	for(col = 1; col < entry->n_cells; ++col, x_start += s->column_dimensions_vector[col]) {
+	for(col = 1; col < entry->n_cells; x_start += s->column_dimensions_vector[col], ++col)
+	{
 		/* column shift */
 		str = tt_get_cell(entry, col)[0];
 		if (!str) {
