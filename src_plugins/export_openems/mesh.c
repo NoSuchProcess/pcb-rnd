@@ -654,9 +654,12 @@ int mesh_auto(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	vtr0_truncate(&mesh->line[dir].dens, 0);
 	vtc0_truncate(&mesh->line[dir].result, 0);
 
-	mesh_gen_obj(mesh, dir);
-	mesh_sort(mesh, dir);
-	mesh_auto_build(mesh, dir);
+	if (mesh_gen_obj(mesh, dir) != 0)
+		return -1;
+	if (mesh_sort(mesh, dir) != 0)
+		return -1;
+	if (mesh_auto_build(mesh, dir) != 0)
+		return -1;
 
 	if (mesh->ui_layer_xy != NULL)
 		mesh_vis_xy(mesh, dir);
