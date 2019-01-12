@@ -64,9 +64,13 @@ TODO("padstack: remove this when via is removed and the padstack is created from
 void pcb_line_reg(pcb_layer_t *layer, pcb_line_t *line)
 {
 	linelist_append(&layer->Line, line);
+	PCB_SET_PARENT(line, layer, layer);
+
+	if (layer->parent_type == PCB_PARENT_UI)
+		return;
+
 	assert(layer->parent_type == PCB_PARENT_DATA);
 	pcb_obj_id_reg(layer->parent.data, line);
-	PCB_SET_PARENT(line, layer, layer);
 }
 
 void pcb_line_unreg(pcb_line_t *line)

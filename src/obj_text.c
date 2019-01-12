@@ -63,9 +63,13 @@
 void pcb_text_reg(pcb_layer_t *layer, pcb_text_t *text)
 {
 	textlist_append(&layer->Text, text);
+	PCB_SET_PARENT(text, layer, layer);
+
+	if (layer->parent_type == PCB_PARENT_UI)
+		return;
+
 	assert(layer->parent_type == PCB_PARENT_DATA);
 	pcb_obj_id_reg(layer->parent.data, text);
-	PCB_SET_PARENT(text, layer, layer);
 }
 
 void pcb_text_unreg(pcb_text_t *text)

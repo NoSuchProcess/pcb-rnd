@@ -62,9 +62,13 @@
 void pcb_poly_reg(pcb_layer_t *layer, pcb_poly_t *poly)
 {
 	polylist_append(&layer->Polygon, poly);
+	PCB_SET_PARENT(poly, layer, layer);
+
+	if (layer->parent_type == PCB_PARENT_UI)
+		return;
+
 	assert(layer->parent_type == PCB_PARENT_DATA);
 	pcb_obj_id_reg(layer->parent.data, poly);
-	PCB_SET_PARENT(poly, layer, layer);
 }
 
 void pcb_poly_unreg(pcb_poly_t *poly)

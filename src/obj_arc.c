@@ -59,9 +59,13 @@ int *pcb_arc_start_ptr = NULL, *pcb_arc_end_ptr = &pcb_arc_end_addr;
 void pcb_arc_reg(pcb_layer_t *layer, pcb_arc_t *arc)
 {
 	arclist_append(&layer->Arc, arc);
+	PCB_SET_PARENT(arc, layer, layer);
+
+	if (layer->parent_type == PCB_PARENT_UI)
+		return;
+
 	assert(layer->parent_type == PCB_PARENT_DATA);
 	pcb_obj_id_reg(layer->parent.data, arc);
-	PCB_SET_PARENT(arc, layer, layer);
 }
 
 void pcb_arc_unreg(pcb_arc_t *arc)
