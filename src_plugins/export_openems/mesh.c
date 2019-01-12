@@ -138,7 +138,7 @@ static int mesh_gen_obj(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 		}
 	}
 
-TODO(": text and padstacks")
+TODO("mesh: text")
 
 	polylist_foreach(&mesh->layer->Polygon, &it, poly) {
 		pcb_poly_it_t it;
