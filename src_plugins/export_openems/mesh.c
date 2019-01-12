@@ -195,6 +195,26 @@ TODO("mesh: text")
 	return 0;
 }
 
+/* run mesh_gen_obj on all subc layers that match current board mesh layer */
+static int mesh_gen_obj_subc(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
+{
+	pcb_data_t *data = mesh->layer->parent.data;
+	pcb_subc_t *sc;
+	gdl_iterator_t it;
+
+	subclist_foreach(&data->subc, &it, sc) {
+		int n;
+		pcb_layer_t *ly;
+		for(n = 0, ly = sc->data->Layer; n < sc->data->LayerN; n++,ly++) {
+			if (pcb_layer_get_real(ly) == mesh->layer) {
+				if (mesh_gen_obj(mesh, ly, dir) != 0)
+					return -1;
+			}
+		}
+	}
+	return 0;
+}
+
 static int cmp_coord(const void *v1, const void *v2)
 {
 	const pcb_coord_t *c1 = v1, *c2 = v2;
@@ -655,6 +675,8 @@ int mesh_auto(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	vtc0_truncate(&mesh->line[dir].result, 0);
 
 	if (mesh_gen_obj(mesh, mesh->layer, dir) != 0)
+		return -1;
+	if (mesh_gen_obj_subc(mesh, dir) != 0)
 		return -1;
 	if (mesh_sort(mesh, dir) != 0)
 		return -1;
