@@ -90,9 +90,9 @@ static void mesh_add_obj(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t c1, p
 }
 
 /* generate edges and ranges looking at objects on the given layer */
-static int mesh_gen_obj(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
+static int mesh_gen_obj(pcb_mesh_t *mesh, pcb_layer_t *layer, pcb_mesh_dir_t dir)
 {
-	pcb_data_t *data = mesh->layer->parent.data;
+	pcb_data_t *data = layer->parent.data;
 	pcb_line_t *line;
 	pcb_line_t *arc;
 	pcb_poly_t *poly;
@@ -108,7 +108,7 @@ static int mesh_gen_obj(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 		}
 	}
 
-	linelist_foreach(&mesh->layer->Line, &it, line) {
+	linelist_foreach(&layer->Line, &it, line) {
 		pcb_coord_t x1 = line->Point1.X, y1 = line->Point1.Y, x2 = line->Point2.X, y2 = line->Point2.Y;
 		int aligned = (x1 == x2) || (y1 == y2);
 
@@ -129,7 +129,7 @@ static int mesh_gen_obj(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 		}
 	}
 
-	arclist_foreach(&mesh->layer->Arc, &it, arc) {
+	arclist_foreach(&layer->Arc, &it, arc) {
 		/* no point in encorcinf 1/3 2/3 rule, just set the range */
 		switch(dir) {
 			case PCB_MESH_HORIZONTAL: mesh_add_range(mesh, dir, arc->BoundingBox.Y1 + arc->Clearance/2, arc->BoundingBox.Y2 - arc->Clearance/2, mesh->dens_obj); break;
@@ -140,7 +140,7 @@ static int mesh_gen_obj(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 
 TODO("mesh: text")
 
-	polylist_foreach(&mesh->layer->Polygon, &it, poly) {
+	polylist_foreach(&layer->Polygon, &it, poly) {
 		pcb_poly_it_t it;
 		pcb_polyarea_t *pa;
 
@@ -654,7 +654,7 @@ int mesh_auto(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	vtr0_truncate(&mesh->line[dir].dens, 0);
 	vtc0_truncate(&mesh->line[dir].result, 0);
 
-	if (mesh_gen_obj(mesh, dir) != 0)
+	if (mesh_gen_obj(mesh, mesh->layer, dir) != 0)
 		return -1;
 	if (mesh_sort(mesh, dir) != 0)
 		return -1;
