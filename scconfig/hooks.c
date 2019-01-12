@@ -563,7 +563,6 @@ int hook_detect_target()
 	if (!need_gtklibs) {
 		report("No gtk support available, disabling lib_gtk_*...\n");
 		hook_custom_arg("disable-lib_gtk_common", NULL);
-		hook_custom_arg("disable-lib_gtk_config", NULL);
 		hook_custom_arg("disable-lib_gtk_hid", NULL);
 	}
 
