@@ -240,13 +240,24 @@ static void Initialize(Widget request, Widget tnew, ArgList args, Cardinal * num
 {
 	XmTreeTableWidget w = (XmTreeTableWidget) tnew;
 	XmTreeTablePart* tt = &(w->tree_table);
+	Display* dsp = XtDisplay(tnew);
 	tt->table = NULL;
 	memset(&(tt->render_attr), 0x00, sizeof(tt->render_attr));
 	tt->table_access_padlock = NULL;
 
 	xm_init_render_target(&(w->tree_table.render_attr));
+	{
+		int n_count = 0;
+		char ** fonts_names = XListFonts(dsp, "*x11*", 10, &n_count);
+		if (0 >= n_count)
+		{
+			/*pick first available font then*/
+			fonts_names = XListFonts(dsp, "*", 1, &n_count);
+		}
+		tt->font = XLoadQueryFont(dsp, fonts_names[n_count - 1]);
+		free(fonts_names);
+	}
 
-	tt->font = XLoadQueryFont(XtDisplay(tnew), "-bitstream-courier 10 pitch-medium-r-*-*-*-*-*-*-*-*-*-1");
 	/* init Xt GC structures for drawing routines. */
 	xt_gc_init(w);
 	/* allocate pixmaps with branch/leaf depicted. */
