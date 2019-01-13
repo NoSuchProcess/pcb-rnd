@@ -1,0 +1,15 @@
+Temporary doc draft for openems usage.
+
+For ports, place padstacks with either top or bottom copper shape and _no_
+hole. Then set the attribute openems::vport on the padstack. The value
+should be the name of the port as to be seen in openems.
+
+List of openems-related attributes:
+
+openems::vport          - mandatory: port name
+openems::resistance     - optional: overrides default port resistance
+openems::active         - optional: either true or false; default=true
+openems::vport-reverse  - optional: when present, swap start/end
+
+
+
