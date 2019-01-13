@@ -78,8 +78,10 @@ void pcb_line_unreg(pcb_line_t *line)
 	pcb_layer_t *layer = line->parent.layer;
 	assert(line->parent_type == PCB_PARENT_LAYER);
 	linelist_remove(line);
-	assert(layer->parent_type == PCB_PARENT_DATA);
-	pcb_obj_id_del(layer->parent.data, line);
+	if (layer->parent_type != PCB_PARENT_UI) {
+		assert(layer->parent_type == PCB_PARENT_DATA);
+		pcb_obj_id_del(layer->parent.data, line);
+	}
 	PCB_CLEAR_PARENT(line);
 }
 

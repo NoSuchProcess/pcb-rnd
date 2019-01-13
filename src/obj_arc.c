@@ -73,8 +73,10 @@ void pcb_arc_unreg(pcb_arc_t *arc)
 	pcb_layer_t *layer = arc->parent.layer;
 	assert(arc->parent_type == PCB_PARENT_LAYER);
 	arclist_remove(arc);
-	assert(layer->parent_type == PCB_PARENT_DATA);
-	pcb_obj_id_del(layer->parent.data, arc);
+	if (layer->parent_type != PCB_PARENT_UI) {
+		assert(layer->parent_type == PCB_PARENT_DATA);
+		pcb_obj_id_del(layer->parent.data, arc);
+	}
 	PCB_CLEAR_PARENT(arc);
 }
 

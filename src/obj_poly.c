@@ -76,8 +76,10 @@ void pcb_poly_unreg(pcb_poly_t *poly)
 	pcb_layer_t *layer = poly->parent.layer;
 	assert(poly->parent_type == PCB_PARENT_LAYER);
 	polylist_remove(poly);
-	assert(layer->parent_type == PCB_PARENT_DATA);
-	pcb_obj_id_del(layer->parent.data, poly);
+	if (layer->parent_type != PCB_PARENT_UI) {
+		assert(layer->parent_type == PCB_PARENT_DATA);
+		pcb_obj_id_del(layer->parent.data, poly);
+	}
 	PCB_SET_PARENT(poly, layer, NULL);
 }
 
