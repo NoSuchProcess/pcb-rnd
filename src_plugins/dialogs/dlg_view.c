@@ -753,7 +753,7 @@ const char pcb_acth_IOIncompatListDialog[] = "Present the format incompatibiliti
 fgw_error_t pcb_act_IOIncompatListDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *dlg_type = "list";
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, DrcDialog, dlg_type = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, IOIncompatListDialog, dlg_type = argv[1].val.str);
 
 	if (!io_gui_ctx.active) {
 		io_gui_ctx.pcb = PCB;
