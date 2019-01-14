@@ -60,6 +60,8 @@ struct view_ctx_s {
 
 	int wpos, wlist, wcount, wprev, wdescription, wmeasure;
 	int wbtn_cut;
+
+	unsigned list_alloced:1;
 };
 
 view_ctx_t view_ctx;
@@ -69,6 +71,10 @@ static void view_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	view_ctx_t *ctx = caller_data;
 
 	PCB_DAD_FREE(ctx->dlg);
+	if (ctx->list_alloced) {
+		pcb_view_free(ctx->lst);
+		ctx->lst = NULL;
+	}
 	if (ctx->alloced)
 		free(ctx);
 	else
@@ -761,6 +767,23 @@ fgw_error_t pcb_act_IOIncompatListDialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 
 	view2dlg(&io_gui_ctx);
 
+	return 0;
+}
+
+const char pcb_acts_ViewList[] = "viewlist([name, [winid]])\n";
+const char pcb_acth_ViewList[] = "Present a new empty view list";
+fgw_error_t pcb_act_ViewList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	view_ctx_t *ctx = calloc(sizeof(view_ctx_t), 1);
+	const char *name = "view list", *winid = "viewlist";
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, ViewList, name = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, ViewList, winid = argv[2].val.str);
+
+	ctx->pcb = PCB;
+	ctx->lst = calloc(sizeof(pcb_view_list_t), 1);
+	ctx->refresh = NULL;
+	pcb_dlg_view_full(winid, ctx, name);
+	view2dlg(ctx);
 	return 0;
 }
 
