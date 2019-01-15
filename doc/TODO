@@ -72,6 +72,7 @@
 - BUG: preview zoom doesn't work (e.g. on csect) [report: Alain]
 - BUG: lesstif: {i c p} -> crash, only on IRIX system [report: Ian]
 - BUG: #define TODO(x) doesn't compile on IRIX system with --debug option ON [report: Ian]
+- BUG: Repeadtedly open preferences and select editor->mode. Eventually it may segfault. Sometimes the value changes without changing mode [report: Ade]
 
 2. For later releases ===============================================================================
 - CAM:
