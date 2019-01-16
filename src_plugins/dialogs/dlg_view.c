@@ -631,8 +631,10 @@ static void pcb_dlg_view_full(const char *id, view_ctx_t *ctx, const char *title
 				PCB_DAD_CHANGE_CB(ctx->dlg, view_save_btn_cb);
 			PCB_DAD_BUTTON(ctx->dlg, "Load all");
 				PCB_DAD_CHANGE_CB(ctx->dlg, view_load_btn_cb);
-			PCB_DAD_BUTTON(ctx->dlg, "Refresh");
-				PCB_DAD_CHANGE_CB(ctx->dlg, view_refresh_btn_cb);
+			if (ctx->refresh != NULL) {
+				PCB_DAD_BUTTON(ctx->dlg, "Refresh");
+					PCB_DAD_CHANGE_CB(ctx->dlg, view_refresh_btn_cb);
+			}
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_END(ctx->dlg);
