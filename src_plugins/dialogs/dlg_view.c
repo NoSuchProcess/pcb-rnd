@@ -386,22 +386,19 @@ static void view_paste_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pcb_hid_clipfmt_t cformat;
 	void *cdata, *load_ctx;
 	size_t clen;
-	pcb_view_t *v, *vt;
+	pcb_view_t *v, *vt = NULL;
 	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
 	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
 
-	if (r == NULL)
-		return;
-
-	/* if cursor is a category */
-	if (r->user_data2.lng == 0) {
-		r = gdl_first(&r->children);
-		if (r == NULL)
-			return;
+	if (r != NULL) {
+		/* if cursor is a category */
+		if (r->user_data2.lng == 0) {
+			r = gdl_first(&r->children);
+			if (r == NULL)
+				return;
+		}
+		vt = pcb_view_by_uid(ctx->lst, r->user_data2.lng);
 	}
-	vt = pcb_view_by_uid(ctx->lst, r->user_data2.lng);
-	if (vt == NULL)
-		return;
 
 	if (pcb_gui->clip_get(&cformat, &cdata, &clen) != 0)
 		return;
