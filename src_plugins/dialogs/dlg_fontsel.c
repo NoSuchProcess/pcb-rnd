@@ -100,7 +100,7 @@ static void btn_remove_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 }
 
 
-static void pcb_dlg_foo(pcb_board_t *pcb)
+static void pcb_dlg_fontsel(pcb_board_t *pcb)
 {
 	pcb_box_t vbox = {0, 0, PCB_MM_TO_COORD(55), PCB_MM_TO_COORD(55)};
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
@@ -156,6 +156,6 @@ static fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else
 			PCB_ACT_FAIL(Fontsel);
 	}
-	pcb_dlg_foo(PCB);
+	pcb_dlg_fontsel(PCB);
 	return 0;
 }
