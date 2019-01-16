@@ -131,7 +131,7 @@ static void pcb_dlg_foo(pcb_board_t *pcb)
 	PCB_DAD_NEW("fontsel", fontsel_ctx.dlg, "Font selection", &fontsel_ctx, pcb_true, fontsel_close_cb);
 }
 
-static const char pcb_acts_Fontsel[] = "Fontsel2()\n";
+static const char pcb_acts_Fontsel[] = "Fontsel()\n";
 static const char pcb_acth_Fontsel[] = "Open the font selection dialog";
 static fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
