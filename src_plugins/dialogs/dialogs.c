@@ -103,6 +103,7 @@ void pplg_uninit_dialogs(void)
 	pcb_remove_actions_by_cookie(dialogs_cookie);
 	pcb_view_dlg_uninit();
 	pcb_dialog_place_uninit();
+	pcb_dlg_fontsel_uninit();
 	conf_unreg_fields("plugins/dialogs/");
 }
 
@@ -125,5 +126,6 @@ int pplg_init_dialogs(void)
 	dlg_pstklib_init();
 	pcb_dlg_undo_init();
 	pcb_view_dlg_init();
+	pcb_dlg_fontsel_init();
 	return 0;
 }

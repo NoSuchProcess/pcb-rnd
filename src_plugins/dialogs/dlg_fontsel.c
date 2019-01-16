@@ -37,6 +37,7 @@ typedef struct{
 } fontsel_ctx_t;
 
 fontsel_ctx_t fontsel_ctx;
+static const char *fontsel_cookie = "dlg_fontsel";
 
 static void fontsel_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
@@ -128,7 +129,7 @@ static void pcb_dlg_fontsel(pcb_board_t *pcb)
 	PCB_DAD_END(fontsel_ctx.dlg);
 
 	fontsel_ctx.active = 1;
-	PCB_DAD_NEW("fontsel", fontsel_ctx.dlg, "Font selection", &fontsel_ctx, pcb_true, fontsel_close_cb);
+	PCB_DAD_NEW("fontsel", fontsel_ctx.dlg, "Font selection", &fontsel_ctx, pcb_false, fontsel_close_cb);
 }
 
 static const char pcb_acts_Fontsel[] = "Fontsel()\n";
@@ -159,3 +160,22 @@ static fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_dlg_fontsel(PCB);
 	return 0;
 }
+
+static void fontsel_changed_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	if (fontsel_ctx.active)
+		fontsel_preview_update(&fontsel_ctx);
+}
+
+
+void pcb_dlg_fontsel_uninit(void)
+{
+	pcb_event_unbind_allcookie(fontsel_cookie);
+}
+
+void pcb_dlg_fontsel_init(void)
+{
+	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, fontsel_changed_ev, &fontsel_ctx, fontsel_cookie);
+	pcb_event_bind(PCB_EVENT_BOARD_META_CHANGED, fontsel_changed_ev, &fontsel_ctx, fontsel_cookie);
+}
+
