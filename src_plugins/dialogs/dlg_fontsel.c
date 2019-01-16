@@ -101,7 +101,7 @@ static void btn_remove_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 }
 
 
-static void pcb_dlg_fontsel(pcb_board_t *pcb)
+static void pcb_dlg_fontsel(pcb_board_t *pcb, int modal)
 {
 	pcb_box_t vbox = {0, 0, PCB_MM_TO_COORD(55), PCB_MM_TO_COORD(55)};
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
@@ -129,7 +129,7 @@ static void pcb_dlg_fontsel(pcb_board_t *pcb)
 	PCB_DAD_END(fontsel_ctx.dlg);
 
 	fontsel_ctx.active = 1;
-	PCB_DAD_NEW("fontsel", fontsel_ctx.dlg, "Font selection", &fontsel_ctx, pcb_false, fontsel_close_cb);
+	PCB_DAD_NEW("fontsel", fontsel_ctx.dlg, "Font selection", &fontsel_ctx, modal, fontsel_close_cb);
 }
 
 static const char pcb_acts_Fontsel[] = "Fontsel()\n";
@@ -137,6 +137,7 @@ static const char pcb_acth_Fontsel[] = "Open the font selection dialog";
 static fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *op = NULL;
+	int modal = 0;
 	if (argc > 2)
 		PCB_ACT_FAIL(Fontsel);
 
@@ -151,13 +152,15 @@ static fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			int type;
 			void *ptr1, *ptr2, *ptr3;
 			pcb_hid_get_coords("Select an Object", &x, &y, 0);
-			if ((type = pcb_search_screen(x, y, PCB_CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID)
+			if ((type = pcb_search_screen(x, y, PCB_CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 				*pcb_stub_draw_fontsel_text_obj = ptr2;
+				modal = 1;
+			}
 		}
 		else
 			PCB_ACT_FAIL(Fontsel);
 	}
-	pcb_dlg_fontsel(PCB);
+	pcb_dlg_fontsel(PCB, modal);
 	return 0;
 }
 
