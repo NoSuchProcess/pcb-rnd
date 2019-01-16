@@ -21,9 +21,6 @@
 + FEATURE: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
 + FEATURE: padstack editor: indicate if a proto layer does not map to current board layer [report: Erich]
 + FEATURE: extedit: dialog shoudl let the user edit the command template [report: Igor2, TwisteR]
-- FEATURE: non-modal fontsel: start a new board while fontsel is open [report: Igor2]
-	- should not remember object by pointer but by idpath
-	- reset the idpath on pcb change
 - FEATURE: drc preview: follow board flips (should be a DAD preview flag) [report: Igor2]
 - BUG: new preferences
 	- update bugs:
@@ -118,6 +115,10 @@
 - CLEANUP: move the PrintCalibrate() action out of core - check if DAD rewrite is needed
 - CLEANUP/BUG: high level pcb_mkdir() and pcb_file_size() and is-dir shall be in safe_fs checking permissions; low level could stay in the compat layer with a #define to make sure it is not called directly [report: igor2]
 - CLEANUP/feature: pcb_subc_smash_buffer() should really copy data so it can smash multiple subcs and subc objects end up on the layer they were bound to [report: keantoken]
+- CLEANUP: non-modal fontsel: start a new board while fontsel is open for an object [report: Igor2]
+	- should not remember object by pointer but by idpath; remove pcb_stub_draw_fontsel_text_obj
+	- reset the idpath on pcb change
+	- allow multiple fontsel dialogs, collect them on a list and update them all on board change
 - CLEANUP: rewrite the netlist code
 	- when no netlist is loaded, new rats can't be drawn [report: agaran]
 	- FEATURE: rat line draw: [report: Igor2]
