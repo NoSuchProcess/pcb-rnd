@@ -14,7 +14,6 @@
 	-> editor.subc_conv_refdes
 - FEATURE: view lists
 	- FEATURE: import sch. shouldn't select elements to be removed but put them on a drc list
-	- FEATURE: generic, non-modal, multi-instance user view list DAD dialog
 	- DOC: document the view lht format
 	- BUG: xor draw stops working after the first preview (drc!)
 + FEATURE: make propset() able to change board properties if first arg is "board" (change baord size) [report: rqsall]
