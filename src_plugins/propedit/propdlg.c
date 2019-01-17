@@ -98,7 +98,7 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 
 	pcb_dad_tree_clear(tree);
 
-	pcb_props_reset(&ctx->pe);
+	pcb_props_clear(&ctx->pe);
 	pcb_propsel_map_core(&ctx->pe);
 	sorted = pcb_props_sort(&ctx->pe);
 	for(e = sorted; e->key != NULL; e++) {
