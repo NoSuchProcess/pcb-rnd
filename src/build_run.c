@@ -5,7 +5,7 @@
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996,2006 Thomas Nau
  *  pcb-rnd Copyright (C) 2017,2018 Alain Vigne
- *  pcb-rnd Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  pcb-rnd Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -83,7 +83,7 @@ char *pcb_get_info_copyright(void)
 		gds_init(&info);
 
 		gds_append_str(&info, "Recent pcb-rnd copyright:\n");
-		gds_append_str(&info, "Copyright (C) Tibor Palinkas 2013..2018 (pcb-rnd)\n");
+		gds_append_str(&info, "Copyright (C) Tibor Palinkas 2013..2019 (pcb-rnd)\n");
 		gds_append_str(&info, "For a more complete list of pcb-rnd authors and\ncontributors, see http://repo.hu/cgi-bin/pcb-rnd-people.cgi\n\n");
 
 		gds_append_str(&info, "Historical copyright:\n");
