@@ -67,6 +67,7 @@
 - BUG: lesstif: {i c p} -> crash, only on IRIX system [report: Ian]
 - BUG: #define TODO(x) doesn't compile on IRIX system with --debug option ON [report: Ian]
 - BUG: Repeadtedly open preferences and select editor->mode. Eventually it may segfault. Sometimes the value changes without changing mode [report: Ade]
+- BUG: find.c: bug_files/find_slotcop.lht: plated slot should connect to any copper layer object it is going thru ml2571 [report: Igor2]
 
 2. For later releases ===============================================================================
 - CAM:
