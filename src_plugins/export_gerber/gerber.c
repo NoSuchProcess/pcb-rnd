@@ -617,6 +617,7 @@ static int drill_sort(const void *va, const void *vb)
 	return b->y - b->y;
 }
 
+static pcb_coord_t excellon_last_tool_dia;
 static void drill_print_objs(aperture_list_t *apl, pending_drill_t *pd, pcb_cardinal_t npd, int force_g85, int slots)
 {
 	pcb_cardinal_t i;
@@ -625,9 +626,10 @@ static void drill_print_objs(aperture_list_t *apl, pending_drill_t *pd, pcb_card
 	for (i = 0; i < npd; i++) {
 		if (slots != (!!pd[i].is_slot))
 			continue;
-		if (i == 0 || pd[i].diam != pd[i - 1].diam) {
+		if (i == 0 || pd[i].diam != excellon_last_tool_dia) {
 			aperture_t *ap = find_aperture(apl, pd[i].diam, ROUND);
 			fprintf(f, "T%02d\r\n", ap->dCode);
+			excellon_last_tool_dia = pd[i].diam;
 		}
 		if (pd[i].is_slot) {
 			if (first) {
@@ -764,6 +766,7 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	lastcap = -1;
 	lastgroup = -1;
 	lastcolor = -1;
+	excellon_last_tool_dia = 0;
 
 	ctx.view.X1 = 0;
 	ctx.view.Y1 = 0;
