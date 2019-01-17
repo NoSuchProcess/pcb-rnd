@@ -267,7 +267,10 @@ static unsigned long pcb_find_exec(pcb_find_t *ctx)
 				if ((!ctx->stay_layergrp) || (ctx->start_layergrp == NULL)) {
 					for(li = 0, l = ctx->data->Layer; li < ctx->data->LayerN; li++,l++) {
 						if (!ctx->allow_noncopper) {
-							TODO("find.c: implement this");
+							/* skip anything that's not on a copper layer */
+							pcb_layer_type_t lyt = pcb_layer_flags_(l);
+							if (!(lyt & PCB_LYT_COPPER))
+								continue;
 						}
 						if (pcb_pstk_shape_at_(ctx->pcb, (pcb_pstk_t *)curr, l, 0))
 							pcb_find_on_layer(ctx, l, curr, sb, ctype);
