@@ -1,0 +1,4 @@
+Tests:
+	- non-pstk paste object over mask or silk
+	- non-pstk paste object over hole?
+	- polygon hair, polygon too thin - Gabriel's example: mask being too thin between smd pads
