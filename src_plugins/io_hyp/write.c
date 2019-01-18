@@ -519,6 +519,7 @@ static int write_nets(hyp_wr_t * wr)
 				break;
 			case PCB_OBJ_PSTK:
 				write_pstk(wr, (pcb_pstk_t *) o->obj);
+				break;
 
 			case PCB_OBJ_POLY:
 				write_poly(wr, (pcb_poly_t *) o->obj);
