@@ -13,7 +13,6 @@
 - DOC: view list: document the view lht format
 - BUG: view list: xor draw stops working after the first preview (drc!)
 + FEATURE: make propset() able to change board properties if first arg is "board" (change baord size) [report: rqsall]
-+ FEATURE: lesstif does not allow "save as" in non alien format [report: erich] -> a limited version for now
 + FEATURE: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
 + FEATURE: padstack editor: indicate if a proto layer does not map to current board layer [report: Erich]
 + FEATURE: extedit: dialog shoudl let the user edit the command template [report: Igor2, TwisteR]
