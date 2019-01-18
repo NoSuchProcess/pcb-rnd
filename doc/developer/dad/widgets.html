@@ -24,6 +24,7 @@ input widgets are:
 <tr><td>PCB_DAD_PREVIEW  <td> <img src="wpreview.png">  <td> drawing area
 <tr><td>PCB_DAD_PICTURE  <td> <img src="wpicture.png">  <td> static bitmap image
 <tr><td>PCB_DAD_PICBUTTON<td> <img src="wpicbtn.png">   <td> static bitmap button
+<tr><td>PCB_DAD_COLOR    <td> <img src="wcolor.png">    <td> color button and selector
 </table>
 
 
@@ -148,6 +149,13 @@ is displayed in a widget without any other decoration.
 The pointer to a static xpm image is stored in the enumerations field. The image
 is displayed in a button tat behaves exaclty as a normal BUTTON in all other
 regards.
+
+<h3>PCB_DAD_COLOR(table)</h3>
+<p>
+A button that has a solid region of the color specified in value. Unless
+read-only (PCB_HATF_CLR_STATIC), when the user clicks the button a
+HID-specific color selector dialog is popped up where the user can
+specify a new color.
 
 <h2> Layout widgets </h2>
 
