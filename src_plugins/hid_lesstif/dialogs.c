@@ -196,7 +196,7 @@ static fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *function = "Layout";
 	char *name;
 	XmString xmname, pattern;
-	Widget vbox;
+	Widget vbox, combo;
 	pcb_io_formats_t fmts;
 
 
@@ -231,7 +231,7 @@ static fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		int n, num_fmts = pcb_io_list(&fmts, PCB_IOT_PCB, 1, 1, PCB_IOL_EXT_BOARD);
 		static XmString empty = 0;
 		XmString label;
-		Widget submenu, default_button = 0, btn, combo;
+		Widget submenu, default_button = 0, btn;
 
 		if (empty == 0)
 			empty = XmStringCreatePCB("");
@@ -245,10 +245,10 @@ static fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		combo = XmCreateOptionMenu(vbox, XmStrCast("format"), stdarg_args, stdarg_n);
 
 		for (n = 0; n < num_fmts; n++) {
-			pcb_trace("--> fmt: %d '%s'\n", n, fmts.digest[n]);
 			stdarg_n = 0;
 			label = XmStringCreatePCB(fmts.digest[n]);
 			stdarg(XmNlabelString, label);
+			stdarg(XmNuserData, fmts.plug[n]->default_fmt);
 			btn = XmCreatePushButton(submenu, XmStrCast("menubutton"), stdarg_args, stdarg_n);
 			XtManageChild(btn);
 			XmStringFree(label);
@@ -278,6 +278,17 @@ static fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (pcb_strcasecmp(function, "PasteBuffer") == 0)
 		pcb_actionl("PasteBuffer", "Save", name, NULL);
 	else {
+		char *fmt;
+		const char **uptr;
+		Widget btn;
+
+		stdarg_n = 0;
+		stdarg(XmNmenuHistory, &btn);
+		XtGetValues(combo, stdarg_args, stdarg_n);
+		stdarg_n = 0;
+		stdarg(XmNuserData, &fmt);
+		XtGetValues(btn, stdarg_args, stdarg_n);
+
 		/*
 		 * if we got this far and the function is Layout, then
 		 * we really needed it to be a LayoutAs.  Otherwise
@@ -285,9 +296,11 @@ static fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		 * just obtained.
 		 */
 		if (pcb_strcasecmp(function, "Layout") == 0)
-			pcb_actionl("SaveTo", "LayoutAs", name, NULL);
+			pcb_actionl("SaveTo", "LayoutAs", name, fmt, NULL);
 		else
-			pcb_actionl("SaveTo", function, name, NULL);
+			pcb_actionl("SaveTo", function, name, fmt, NULL);
+
+		pcb_io_list_free(&fmts);
 	}
 	XtFree(name);
 
