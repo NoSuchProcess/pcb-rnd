@@ -1865,7 +1865,7 @@
  compat_nls.h board.h vtroutestyle.h library.h rats_patch.h board.h \
  hid_attrib.h actions.h hid_init.h ../src_plugins/hid_lesstif/stdarg.h \
  color.h misc_util.h search.h rats.h netlist.h route_style.h change.h \
- ../src_plugins/hid_lesstif/dlg_attr_misc.c \
+ plug_io.h ../src_plugins/hid_lesstif/dlg_attr_misc.c \
  ../src_plugins/hid_lesstif/wt_xpm.h \
  ../src_plugins/hid_lesstif/wt_colorbtn.h \
  ../src_plugins/lib_hid_common/dad_markup.h \
@@ -3360,7 +3360,8 @@
  ../src_3rd/liblihata/lihata.h list_conf.h \
  ../src_plugins/io_tedax/stackup.h ../src_plugins/io_tedax/netlist.h \
  ../src_plugins/io_tedax/footprint.h ../src_plugins/io_tedax/tdrc.h \
- ../src_plugins/io_tedax/tlayer.h layer.h obj_pstk.h compat_misc.h
+ ../src_plugins/io_tedax/tlayer.h layer.h obj_pstk.h compat_misc.h \
+ plug_io.h
 ../src_plugins/io_tedax/tdrc.o: ../src_plugins/io_tedax/tdrc.c \
  ../config.h board.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h \
  attrib.h ../src_3rd/genvector/genvector_impl.h \
