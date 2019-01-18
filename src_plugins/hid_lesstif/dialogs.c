@@ -263,7 +263,7 @@ static fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				btn = XmCreatePushButton(submenu, XmStrCast("menubutton"), stdarg_args, stdarg_n);
 				XtManageChild(btn);
 				XmStringFree(label);
-				if (n == 0)
+				if ((n == 0) || (fmts.plug[n] == PCB->Data->loader))
 					default_button = btn;
 			}
 			stdarg_n = 0;
