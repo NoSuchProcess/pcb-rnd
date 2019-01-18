@@ -683,6 +683,7 @@ int pcb_propsel_del(pcb_propedit_t *ctx, const char *key)
 	if (ctx->board)
 		del_cnt += del_board(&ctx, ctx->pcb, key);
 
+	pcb_board_set_changed_flag(pcb_true);
 	return del_cnt;
 }
 
