@@ -30,6 +30,8 @@
 #include "change.h"
 #include "conf_core.h"
 
+#include "plug_io.h"
+
 static int ok;
 
 #define COMPONENT_SIDE_NAME "(top)"
@@ -194,6 +196,9 @@ static fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *function = "Layout";
 	char *name;
 	XmString xmname, pattern;
+	Widget vbox;
+	pcb_io_formats_t fmts;
+
 
 	if (argc > 2)
 		return PCB_ACT_CALL_C(pcb_act_SaveTo, res, argc, argv);
@@ -204,7 +209,7 @@ static fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (PCB->Filename)
 			return pcb_actionl("SaveTo", "Layout", NULL);
 
-	setup_fsb_dialog(NULL);
+	setup_fsb_dialog(&vbox);
 
 	pattern = xms_pcb;
 
@@ -219,6 +224,45 @@ static fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	stdarg(XmNmustMatch, False);
 	stdarg(XmNselectionLabelString, xms_save);
 	XtSetValues(fsb, stdarg_args, stdarg_n);
+
+
+	/* formats */
+	if (pcb_strcasecmp(function, "PasteBuffer") != 0) {
+		int n, num_fmts = pcb_io_list(&fmts, PCB_IOT_PCB, 1, 1, PCB_IOL_EXT_BOARD);
+		static XmString empty = 0;
+		XmString label;
+		Widget submenu, default_button = 0, btn, combo;
+
+		if (empty == 0)
+			empty = XmStringCreatePCB("");
+
+		stdarg_n = 0;
+		submenu = XmCreatePulldownMenu(vbox, XmStrCast("formats"), stdarg_args, stdarg_n);
+
+		stdarg_n = 0;
+		stdarg(XmNlabelString, empty);
+		stdarg(XmNsubMenuId, submenu);
+		combo = XmCreateOptionMenu(vbox, XmStrCast("format"), stdarg_args, stdarg_n);
+
+		for (n = 0; n < num_fmts; n++) {
+			pcb_trace("--> fmt: %d '%s'\n", n, fmts.digest[n]);
+			stdarg_n = 0;
+			label = XmStringCreatePCB(fmts.digest[n]);
+			stdarg(XmNlabelString, label);
+			btn = XmCreatePushButton(submenu, XmStrCast("menubutton"), stdarg_args, stdarg_n);
+			XtManageChild(btn);
+			XmStringFree(label);
+			if (n == 0)
+				default_button = btn;
+		}
+
+		stdarg_n = 0;
+		stdarg(XmNmenuHistory, default_button);
+		XtSetValues(combo, stdarg_args, stdarg_n);
+		XtManageChild(combo);
+	}
+	XtManageChild(vbox);
+
 
 	if (!wait_for_dialog(fsb)) {
 		PCB_ACT_IRES(1);
