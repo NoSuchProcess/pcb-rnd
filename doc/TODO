@@ -120,6 +120,7 @@
 	- should not remember object by pointer but by idpath; remove pcb_stub_draw_fontsel_text_obj
 	- reset the idpath on pcb change
 	- allow multiple fontsel dialogs, collect them on a list and update them all on board change
+- CLEANUP: make the file selector a DAD widget, reimplement all the logics centrally in dialogs [report: Igor2]
 - CLEANUP: rewrite the netlist code
 	- when no netlist is loaded, new rats can't be drawn [report: agaran]
 	- shorts are reported twice, in pair, e.g. sort between A-B and then between B-A; Gabriel's idea: use strcmp() and report only if first > second ml2583 [reprot: Gabriel]
