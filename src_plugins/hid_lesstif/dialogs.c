@@ -103,7 +103,7 @@ static int wait_for_dialog(Widget w)
 static Widget fsb = 0;
 static XmString xms_pcb, xms_net, xms_vend, xms_all, xms_load, xms_loadv, xms_save, xms_fp;
 
-static void setup_fsb_dialog()
+static void setup_fsb_dialog(Widget *extra_vbox)
 {
 	if (fsb)
 		return;
@@ -122,6 +122,14 @@ static void setup_fsb_dialog()
 
 	XtAddCallback(fsb, XmNokCallback, (XtCallbackProc) dialog_callback_ok_value, (XtPointer) 1);
 	XtAddCallback(fsb, XmNcancelCallback, (XtCallbackProc) dialog_callback_ok_value, (XtPointer) 0);
+
+	if (extra_vbox != NULL) {
+		stdarg_n = 0;
+		stdarg(XmNorientation, XmVERTICAL);
+		stdarg(XmNpacking, XmPACK_COLUMN);
+		*extra_vbox = XmCreateRowColumn(fsb, "extra", stdarg_args, stdarg_n);
+		XtManageChild(*extra_vbox);
+	}
 }
 
 static const char pcb_acts_Load[] = "Load()\n" "Load(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert)";
@@ -139,7 +147,7 @@ static fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, Load, function = argv[1].val.str);
 
-	setup_fsb_dialog();
+	setup_fsb_dialog(NULL);
 
 	if (pcb_strcasecmp(function, "Netlist") == 0)
 		pattern = xms_net;
@@ -196,7 +204,7 @@ static fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (PCB->Filename)
 			return pcb_actionl("SaveTo", "Layout", NULL);
 
-	setup_fsb_dialog();
+	setup_fsb_dialog(NULL);
 
 	pattern = xms_pcb;
 
@@ -1640,7 +1648,7 @@ static fgw_error_t pcb_act_ImportGUI(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (xms_import == 0)
 		xms_import = XmStringCreatePCB("Import from");
 
-	setup_fsb_dialog();
+	setup_fsb_dialog(NULL);
 
 	stdarg_n = 0;
 	stdarg(XmNtitle, "Import From");
