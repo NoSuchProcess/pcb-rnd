@@ -122,6 +122,7 @@
 	- allow multiple fontsel dialogs, collect them on a list and update them all on board change
 - CLEANUP: rewrite the netlist code
 	- when no netlist is loaded, new rats can't be drawn [report: agaran]
+	- shorts are reported twice, in pair, e.g. sort between A-B and then between B-A; Gabriel's idea: use strcmp() and report only if first > second ml2583 [reprot: Gabriel]
 	- FEATURE: rat line draw: [report: Igor2]
 		- be able to rename nets
 		- save the netlist with the file
