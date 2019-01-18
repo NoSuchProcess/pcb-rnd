@@ -72,7 +72,7 @@ static void view_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 
 	PCB_DAD_FREE(ctx->dlg);
 	if (ctx->list_alloced) {
-		pcb_view_free(ctx->lst);
+		pcb_view_list_free(ctx->lst);
 		ctx->lst = NULL;
 	}
 	if (ctx->alloced)
