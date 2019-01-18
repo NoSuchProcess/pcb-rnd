@@ -18,7 +18,6 @@
 + FEATURE: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
 + FEATURE: padstack editor: indicate if a proto layer does not map to current board layer [report: Erich]
 + FEATURE: extedit: dialog shoudl let the user edit the command template [report: Igor2, TwisteR]
-- FEATURE: drc preview: follow board flips (should be a DAD preview flag) [report: Igor2]
 - BUG: new preferences
 	- update bugs:
 		- drc & size: doesn't update on mil/mm change in top win [report: Ade]
@@ -128,6 +127,7 @@
 - FEATURE: view list: import sch. shouldn't select elements to be removed but put them on a drc list
 - FEATURE: external editor on buffer [report: TwisteR]
 - FEATURE: fontsel: ttf import?
+- FEATURE: drc preview: follow board flips (should be a DAD preview flag) [report: Igor2]
 - FEATURE: DOC: new examples
 	- blinking led with parametric footprints
 	- example of nonetlist: 1206 jumpers and logos
