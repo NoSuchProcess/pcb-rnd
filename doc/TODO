@@ -55,7 +55,6 @@
 - BUG: configure without glib installed -> 'unknown arugment disable-gtk' [report: Ade]
 - BUG: bug_files/subc_poly.lht: move subc with rotated poly to other side, poly rotation is broken [report: Igor2]
 - BUG: plain old text in subc is not rotated on arbitrary rotate buffer by 15 deg [report: Igor2]
-- DOC: DAD widgets: picture, picture button, color, text
 - BUG: Adding a new route style via the route-style dialog doesn't update the menu (Edit->Route Style). [report: Ade]
 - BUG: Load a footprint using the library dialog {w l} into the buffer. Flip the board with the tab key and the refdes border in the buffer object flips vertically the wrong way. Only occurs when loading footprint, not when copying. [report: Ade]
 - BUG: gtk coord entry: right click, change units fail [report: Alain]
@@ -82,6 +81,7 @@
 	- load/import from buffer and file
 	- CLEANUP: remove PCB_MIN_PINORVIA* PCB_DEFAULT_DRILLINGHOLE macros - nothing should use them anymore
 - CLEANUP/FEATURE: session persistent DAD message log (messages are flushed after dialog is closed?) [report: Miloh]
+	- DOC: document the DAD text widget
 - CLEANUP: propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
