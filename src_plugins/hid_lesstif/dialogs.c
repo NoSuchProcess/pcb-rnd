@@ -102,36 +102,44 @@ static int wait_for_dialog(Widget w)
 
 /* ------------------------------------------------------------ */
 
-static Widget fsb = 0;
 static XmString xms_pcb, xms_net, xms_vend, xms_all, xms_load, xms_loadv, xms_save, xms_fp;
 
-static void setup_fsb_dialog(Widget *extra_vbox)
+/* Set up a file selection dialog in fsb, optionally with an extra vbox
+   for extension. Return 1 if a new dialog had to be created, 0 if existing
+   widget reused */
+static int setup_fsb_dialog(Widget *fsb, Widget *extra_vbox)
 {
-	if (fsb)
-		return;
+	static int xms_inited = 0;
 
-	xms_pcb = XmStringCreatePCB("*.pcb");
-	xms_fp = XmStringCreatePCB("*.fp");
-	xms_net = XmStringCreatePCB("*.net");
-	xms_vend = XmStringCreatePCB("*.vend");
-	xms_all = XmStringCreatePCB("*");
-	xms_load = XmStringCreatePCB("Load From");
-	xms_loadv = XmStringCreatePCB("Load Vendor");
-	xms_save = XmStringCreatePCB("Save As");
+	if (!xms_inited) {
+		xms_pcb = XmStringCreatePCB("*.pcb");
+		xms_fp = XmStringCreatePCB("*.fp");
+		xms_net = XmStringCreatePCB("*.net");
+		xms_vend = XmStringCreatePCB("*.vend");
+		xms_all = XmStringCreatePCB("*");
+		xms_load = XmStringCreatePCB("Load From");
+		xms_loadv = XmStringCreatePCB("Load Vendor");
+		xms_save = XmStringCreatePCB("Save As");
+		xms_inited = 1;
+	}
+
+	if (*fsb != 0)
+		return 0;
 
 	stdarg_n = 0;
-	fsb = XmCreateFileSelectionDialog(mainwind, XmStrCast("file"), stdarg_args, stdarg_n);
+	*fsb = XmCreateFileSelectionDialog(mainwind, XmStrCast("file"), stdarg_args, stdarg_n);
 
-	XtAddCallback(fsb, XmNokCallback, (XtCallbackProc) dialog_callback_ok_value, (XtPointer) 1);
-	XtAddCallback(fsb, XmNcancelCallback, (XtCallbackProc) dialog_callback_ok_value, (XtPointer) 0);
+	XtAddCallback(*fsb, XmNokCallback, (XtCallbackProc) dialog_callback_ok_value, (XtPointer) 1);
+	XtAddCallback(*fsb, XmNcancelCallback, (XtCallbackProc) dialog_callback_ok_value, (XtPointer) 0);
 
 	if (extra_vbox != NULL) {
 		stdarg_n = 0;
 		stdarg(XmNorientation, XmVERTICAL);
 		stdarg(XmNpacking, XmPACK_COLUMN);
-		*extra_vbox = XmCreateRowColumn(fsb, "extra", stdarg_args, stdarg_n);
+		*extra_vbox = XmCreateRowColumn(*fsb, "extra", stdarg_args, stdarg_n);
 		XtManageChild(*extra_vbox);
 	}
+	return 1;
 }
 
 static const char pcb_acts_Load[] = "Load()\n" "Load(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert)";
@@ -143,13 +151,14 @@ static fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *function = "Layout";
 	char *name;
 	XmString xmname, pattern;
+	static Widget fsb = 0;
 
 	if (argc > 2)
 		return PCB_ACT_CALL_C(pcb_act_LoadFrom, res, argc, argv);
 
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, Load, function = argv[1].val.str);
 
-	setup_fsb_dialog(NULL);
+	setup_fsb_dialog(&fsb, NULL);
 
 	if (pcb_strcasecmp(function, "Netlist") == 0)
 		pattern = xms_net;
@@ -196,8 +205,9 @@ static fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *function = "Layout";
 	char *name;
 	XmString xmname, pattern;
-	Widget vbox, combo;
-	pcb_io_formats_t fmts;
+	static Widget vbox, combo, fsb;
+	static pcb_io_formats_t fmts;
+	int new_dlg;
 
 
 	if (argc > 2)
@@ -209,7 +219,7 @@ static fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (PCB->Filename)
 			return pcb_actionl("SaveTo", "Layout", NULL);
 
-	setup_fsb_dialog(&vbox);
+	new_dlg = setup_fsb_dialog(&fsb, &vbox);
 
 	pattern = xms_pcb;
 
@@ -236,29 +246,30 @@ static fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (empty == 0)
 			empty = XmStringCreatePCB("");
 
-		stdarg_n = 0;
-		submenu = XmCreatePulldownMenu(vbox, XmStrCast("formats"), stdarg_args, stdarg_n);
-
-		stdarg_n = 0;
-		stdarg(XmNlabelString, empty);
-		stdarg(XmNsubMenuId, submenu);
-		combo = XmCreateOptionMenu(vbox, XmStrCast("format"), stdarg_args, stdarg_n);
-
-		for (n = 0; n < num_fmts; n++) {
+		if (new_dlg) {
 			stdarg_n = 0;
-			label = XmStringCreatePCB(fmts.digest[n]);
-			stdarg(XmNlabelString, label);
-			stdarg(XmNuserData, fmts.plug[n]->default_fmt);
-			btn = XmCreatePushButton(submenu, XmStrCast("menubutton"), stdarg_args, stdarg_n);
-			XtManageChild(btn);
-			XmStringFree(label);
-			if (n == 0)
-				default_button = btn;
-		}
+			submenu = XmCreatePulldownMenu(vbox, XmStrCast("formats"), stdarg_args, stdarg_n);
 
-		stdarg_n = 0;
-		stdarg(XmNmenuHistory, default_button);
-		XtSetValues(combo, stdarg_args, stdarg_n);
+			stdarg_n = 0;
+			stdarg(XmNlabelString, empty);
+			stdarg(XmNsubMenuId, submenu);
+			combo = XmCreateOptionMenu(vbox, XmStrCast("format"), stdarg_args, stdarg_n);
+
+			for (n = 0; n < num_fmts; n++) {
+				stdarg_n = 0;
+				label = XmStringCreatePCB(fmts.digest[n]);
+				stdarg(XmNlabelString, label);
+				stdarg(XmNuserData, fmts.plug[n]->default_fmt);
+				btn = XmCreatePushButton(submenu, XmStrCast("menubutton"), stdarg_args, stdarg_n);
+				XtManageChild(btn);
+				XmStringFree(label);
+				if (n == 0)
+					default_button = btn;
+			}
+			stdarg_n = 0;
+			stdarg(XmNmenuHistory, default_button);
+			XtSetValues(combo, stdarg_args, stdarg_n);
+		}
 		XtManageChild(combo);
 	}
 	XtManageChild(vbox);
@@ -300,7 +311,8 @@ static fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else
 			pcb_actionl("SaveTo", function, name, fmt, NULL);
 
-		pcb_io_list_free(&fmts);
+TODO("memory leak; should be DADified");
+/*		pcb_io_list_free(&fmts);*/
 	}
 	XtFree(name);
 
@@ -1696,6 +1708,7 @@ static fgw_error_t pcb_act_ImportGUI(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	XmString xmname;
 	char *name, *bname;
 	char *original_dir, *target_dir, *last_slash;
+	static Widget fsb;
 
 	if (I_am_recursing)
 		return 1;
@@ -1705,7 +1718,7 @@ static fgw_error_t pcb_act_ImportGUI(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (xms_import == 0)
 		xms_import = XmStringCreatePCB("Import from");
 
-	setup_fsb_dialog(NULL);
+	setup_fsb_dialog(&fsb, NULL);
 
 	stdarg_n = 0;
 	stdarg(XmNtitle, "Import From");
