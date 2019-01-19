@@ -38,7 +38,8 @@ static int ghid_progress_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 	if (pos < 0.0) pos = 0.0;
 	else if (pos > 1.0) pos = 1.0;
 
-	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(prg), pos);
+	if ((pos >= 0.0) && (pos <= 1.0)) /* extra case for NaN */
+		gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(prg), pos);
 	return 0;
 }
 

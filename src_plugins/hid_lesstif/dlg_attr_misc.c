@@ -40,9 +40,11 @@ static void ltf_progress_set(lesstif_attr_dlg_t *ctx, int idx, double val)
 	if (val < 0.0) val = 0.0;
 	else if (val > 1.0) val = 1.0;
 	
-	stdarg_n = 0;
-	stdarg(XmNsliderSize, (val * PB_SCALE_UP)+1);
-	XtSetValues(bar, stdarg_args, stdarg_n);
+	if ((val >= 0.0) && (val <= 1.0)) { /* extra case for NaN */
+		stdarg_n = 0;
+		stdarg(XmNsliderSize, (val * PB_SCALE_UP)+1);
+		XtSetValues(bar, stdarg_args, stdarg_n);
+	}
 }
 
 static Widget ltf_progress_create(lesstif_attr_dlg_t *ctx, Widget parent)
