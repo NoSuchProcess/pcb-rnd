@@ -26,6 +26,18 @@
 <!--content-->
 <h1> pcb-rnd FAQ </h1>
 
+<h2 id="slots"> padstacks </h2>
+
+<h3> Intern copper layer shape not rendering </h3>
+<p>
+Does the padstack has a hole? Does the hole drill through any internal
+copper layer (in non-thru-hole case)?
+<p>
+Internal copper layers are special: there are multiple of them. The padstack
+will place the intern shape on any internal copper layer that the padstack's
+hole reaches. If the padstack has no hole, no internal layer shape is
+rendered, even if it is specified.
+
 
 <h2 id="slots"> slots (oval holes) </h2>
 
