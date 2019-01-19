@@ -37,7 +37,6 @@
 	- would it keep a floater?
 - BUG: lesstif: {i c p}, color tab: tabbed doesn't grow [report: Igor2]
 + BUG: Open an empty pcb, Edit->Board padstack prototypes , Click Edit... -> segf [report: Alain]
-- BUG: empty design, {w d}, close, {w d} -> gtk warnings [report: Igor2]
 - BUG: gtk2_gdk: Undo(ClearList) asserts on crosshair update [report: Igor2]
 - BUG: ML 2479: gtk crosshair re-enter to the last pos doesn't always draw the crossghair [report: pstuge]
 - BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
