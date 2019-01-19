@@ -42,7 +42,7 @@
 - BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
-- BUG: scconfig: if libgd is not detected, there's an extra error on disable-gd-gif [report: Erich]
+? BUG: scconfig: if libgd is not detected, there's an extra error on disable-gd-gif [report: Erich]
 + BUG: assertion with --debug,  open pcb-rnd, place via, open the padstackedit dialog for the via, go to generate common geometry, choose square copper shape, click 'generate' [report: Miloh]
 ? BUG: configure without glib installed -> 'unknown arugment disable-gtk' [report: Ade]
 - BUG: bug_files/subc_poly.lht: move subc with rotated poly to other side, poly rotation is broken [report: Igor2]
