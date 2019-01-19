@@ -102,6 +102,7 @@ fgw_error_t pcb_act_Undo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_board_set_changed_flag(pcb_true);
 	}
 	else if (function) {
+		pcb_notify_crosshair_change(pcb_false);
 		if (pcb_strcasecmp(function, "ClearList") == 0)
 			pcb_undo_clear_list(pcb_false);
 	}
