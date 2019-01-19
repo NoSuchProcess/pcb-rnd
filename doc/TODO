@@ -23,6 +23,10 @@
 		- close buttons expand - they should keep their minimal height [report: Alain]
 	- crash:
 		- filter-select invis_other_groups, create design, set true, close; repeat this on black_current_group -> crash [report: Igor2]
+		- BUG: preferences() crashes if lesstif GUI is compiled but gtk is not (missing gtk-only conf settings) [report: rqsall]
+		- BUG: Repeadtedly open preferences and select editor->mode. Eventually it may segfault. Sometimes the value changes without changing mode [report: Ade]
+	- BUG: new preferences: color tab, change padtsakc color on current layewr -> no effect on the drawing (changing selection color works) [report: Igor2]
+	- BUG: lesstif: preferences(layers): EXPFILL doesn't seem to work
 + BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
 - BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
 - BUG: bug_files/obsconf.lht: load, get a warning for obsolete config; save into a new file and the broken conf node is not removed [report: keantoken]
@@ -34,17 +38,14 @@
 	- BUG: warnings/errors in the log
 	- would it keep a floater?
 - BUG: lesstif: {i c p}, color tab: tabbed doesn't grow [report: Igor2]
-- BUG: new preferences: color tab, change padtsakc color on current layewr -> no effect on the drawing (changing selection color works) [report: Igor2]
 - BUG: Open an empty pcb, Edit->Board padstack prototypes , Click Edit... -> segf [report: Alain]
 - BUG: empty design, {w d}, close, {w d} -> gtk warnings [report: Igor2]
 - BUG: gtk2_gdk: Undo(ClearList) asserts on crosshair update [report: Igor2]
-- BUG: preferences() crashes if lesstif GUI is compiled but gtk is not (missing gtk-only conf settings) [report: rqsall]
 - BUG: ML 2479: gtk crosshair re-enter to the last pos doesn't always draw the crossghair [report: pstuge]
 - BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - BUG: scconfig: if libgd is not detected, there's an extra error on disable-gd-gif [report: Erich]
-- BUG: lesstif: preferences(layers): EXPFILL doesn't seem to work
 - BUG: fontsel [report: Igor2]
 	- BUG: can't replace font when editing for a text object - shouldn't depend on conf_core
 	- BUG: replace font id=1 when fontsel runs for board seems to replace font 0
@@ -58,7 +59,6 @@
 - BUG: preview zoom doesn't work (e.g. on csect) [report: Alain]
 - BUG: lesstif: {i c p} -> crash, only on IRIX system [report: Ian]
 - BUG: #define TODO(x) doesn't compile on IRIX system with --debug option ON [report: Ian]
-- BUG: Repeadtedly open preferences and select editor->mode. Eventually it may segfault. Sometimes the value changes without changing mode [report: Ade]
 - BUG: find.c: bug_files/find_slotcop.lht: plated slot should connect to any copper layer object it is going thru ml2571 [report: Igor2]
 
 2. For later releases ===============================================================================
