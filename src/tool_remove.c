@@ -75,6 +75,7 @@ void pcb_tool_remove_notify_mode(void)
 
 		pcb_remove_object(type, ptr1, ptr2, ptr3);
 		pcb_undo_inc_serial();
+		pcb_subc_as_board_update(PCB);
 		pcb_board_set_changed_flag(pcb_true);
 	}
 }
