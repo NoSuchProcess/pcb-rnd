@@ -309,7 +309,7 @@ static void pstklib_proto_edit(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wlist]);
 
-	if ((row == NULL) && (data == NULL))
+	if ((row == NULL) || (data == NULL))
 		return;
 
 	pstklib_proto_edit_common(ctx, data, strtol(row->cell[0], NULL, 10), 1);
