@@ -318,6 +318,9 @@ static void view_del_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 		pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
 		pcb_hid_row_t *rc, *r = pcb_dad_tree_get_selected(attr);
 
+		if (r == NULL)
+			return;
+
 		if (r->user_data2.lng == 0) {
 			/* remove a whole category - assume a single level */
 			for(rc = gdl_first(&r->children); rc != NULL; rc = gdl_next(&r->children, rc)) {
@@ -347,6 +350,9 @@ static void view_copy_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	pcb_hid_row_t *rc, *r = pcb_dad_tree_get_selected(attr);
 	int btn_idx = attr_btn - ctx->dlg;
 	int cut = (ctx->wbtn_cut == btn_idx);
+
+	if (r == NULL)
+		return;
 
 	/* only full dialog, go by the list */
 
@@ -521,6 +527,9 @@ static void view_select_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	view_ctx_t *ctx = caller_data;
 	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
 	pcb_hid_row_t *rc, *r = pcb_dad_tree_get_selected(attr);
+
+	if (r == NULL)
+		return;
 
 	if (r->user_data2.lng == 0) {
 		/* select a whole category - assume a single level */
