@@ -24,7 +24,6 @@
 	- crash:
 		- filter-select invis_other_groups, create design, set true, close; repeat this on black_current_group -> crash [report: Igor2]
 + BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
-- BUG: fp edit: edit 1206 in lihata v6 subc, add line on top copper, save -> line doesn't appear in the file because it didn't become part of the subc [report: Igor2]
 - BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
 - BUG: bug_files/obsconf.lht: load, get a warning for obsolete config; save into a new file and the broken conf node is not removed [report: keantoken]
 - BUG: create 3 rectangles: top copper, bottom copper, intern copper; convert to padstack; when there's no hole, the intern copper layer is not rendered [report: Igor2]
