@@ -430,9 +430,12 @@ int hook_detect_target()
 	if (!istrue(get("libs/script/fungw/presents")))
 		fungw_hook_detect_target();
 
-	if (require("libs/time/usleep/*",  0, 0) && require("libs/time/Sleep/*",  0, 0)) {
-		report_repeat("\nERROR: can not find usleep() or Sleep() - no idea how to sleep ms.\n\n");
-		return 1;
+	{
+		int miss_select = require("libs/socket/select/*",  0, 0);
+		if (require("libs/time/usleep/*",  0, 0) && require("libs/time/Sleep/*",  0, 0) && miss_select) {
+			report_repeat("\nERROR: can not find usleep() or Sleep() or select() - no idea how to sleep ms.\n\n");
+			return 1;
+		}
 	}
 
 	require("libs/time/gettimeofday/*",  0, 1);

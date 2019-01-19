@@ -208,7 +208,17 @@ void pcb_ms_sleep(long ms)
 #	ifdef PCB_HAVE_WSLEEP
 		Sleep(ms);
 #	else
-#		error pcb_ms_sleep(): no milisecond sleep on this host.
+#		ifdef PCB_HAVE_SELECT
+			fd_set s;
+			struct timeval tv;
+
+			FD_ZERO(&s);
+			tv.tv_sec  = 0;
+			tv.tv_usec = ms*1000;
+			select(0, &s, &s, &s, &tv);
+#		else
+#			error pcb_ms_sleep(): no milisecond sleep on this host.
+#		endif
 #	endif
 #endif
 }

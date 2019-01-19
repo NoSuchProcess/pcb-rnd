@@ -61,6 +61,9 @@ print_ternary ?libs/time/usleep/presents {#define PCB_HAVE_USLEEP 1} {/* #undef 
 print {\n\n/* Wether win32 Sleep() works */\n}
 print_ternary ?libs/time/Sleep/presents {#define PCB_HAVE_WSLEEP 1} {/* #undef PCB_HAVE_WSLEEP */}
 
+print {\n\n/* Wether select() works */\n}
+print_ternary ?libs/socket/select/presents {#define PCB_HAVE_SELECT 1} {/* #undef PCB_HAVE_SELECT */}
+
 print {\n\n/* Define to 1 if you have the `snprintf' function. */\n}
 print_ternary ?libs/snprintf {#define HAVE_SNPRINTF 1} {/* #undef HAVE_SNPRINTF */}
 

@@ -1,3 +1,4 @@
+22617	distclean	enable the socket plugin in scconfig for detecting select() as an alternative to usleep()
 22462	configure	lesstif tree table widget code, low level
 22305	configure	new source files for lesstif color button
 22264	configure	new source files for tEDAx layer, board and drc save
