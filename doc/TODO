@@ -44,7 +44,6 @@
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - BUG: scconfig: if libgd is not detected, there's an extra error on disable-gd-gif [report: Erich]
 - BUG: fontsel [report: Igor2]
-	- BUG: can't replace font when editing for a text object - shouldn't depend on conf_core
 	- BUG: replace font id=1 when fontsel runs for board seems to replace font 0
 - BUG: assertion with --debug,  open pcb-rnd, place via, open the padstackedit dialog for the via, go to generate common geometry, choose square copper shape, click 'generate' [report: Miloh]
 - BUG: configure without glib installed -> 'unknown arugment disable-gtk' [report: Ade]
