@@ -62,6 +62,7 @@ void pcb_tool_text_notify_mode(void)
 				pcb_undo_add_obj_to_create(PCB_OBJ_TEXT, CURRENT, text, text);
 				pcb_undo_inc_serial();
 				pcb_text_invalidate_draw(CURRENT, text);
+				pcb_subc_as_board_update(PCB);
 				pcb_draw();
 			}
 		}

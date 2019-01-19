@@ -703,6 +703,7 @@ TODO("subc: fix this after the element removal")
 	}
 
 	if (changed) {
+		pcb_subc_as_board_update(PCB);
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}

@@ -87,6 +87,7 @@ void pcb_tool_rectangle_notify_mode(void)
 
 		/* reset state to 'first corner' */
 		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
+		pcb_subc_as_board_update(PCB);
 	}
 }
 

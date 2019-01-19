@@ -119,6 +119,7 @@ void pcb_tool_arc_notify_mode(void)
 				pcb_undo_inc_serial();
 				pcb_added_lines++;
 				pcb_arc_invalidate_draw(CURRENT, arc);
+				pcb_subc_as_board_update(PCB);
 				pcb_draw();
 				pcb_crosshair.AttachedBox.State = PCB_CH_STATE_THIRD;
 			}

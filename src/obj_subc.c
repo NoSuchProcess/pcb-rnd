@@ -365,6 +365,19 @@ pcb_layer_t *pcb_loose_subc_layer(pcb_board_t *pcb, pcb_layer_t *layer, pcb_bool
 	return layer;
 }
 
+void pcb_subc_as_board_update(pcb_board_t *pcb)
+{
+	pcb_subc_t *sc;
+
+	if (!pcb->is_footprint)
+		return;
+	sc = pcb_subclist_first(&pcb->Data->subc);
+	if (sc == NULL)
+		return;
+
+	pcb_subc_bbox(sc);
+}
+
 static pcb_coord_t read_mask(pcb_any_obj_t *obj)
 {
 	const char *smask = pcb_attribute_get(&obj->Attributes, "elem_smash_pad_mask");

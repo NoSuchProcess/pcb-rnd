@@ -290,6 +290,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 			pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y;
 			pcb_undo_inc_serial();
 			last_layer = CURRENT;
+			pcb_subc_as_board_update(PCB);
 		}
 		if (conf_core.editor.line_refraction && (pcb_tool_note.X != pcb_crosshair.AttachedLine.Point2.X || pcb_tool_note.Y != pcb_crosshair.AttachedLine.Point2.Y)
 				&& (line =
@@ -316,6 +317,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 			if (conf_core.editor.swap_start_direction) {
 				conf_setf(CFR_DESIGN,"editor/line_refraction", -1, "%d",conf_core.editor.line_refraction ^ 3);
 			}
+			pcb_subc_as_board_update(PCB);
 		}
 		if (conf_core.editor.orthogonal_moves) {
 			/* set the mark to the new starting point so ortho works as expected and we can draw a perpendicular line from here */

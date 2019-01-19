@@ -510,6 +510,9 @@ int pcb_route_apply_to_line(const pcb_route_t *p_route, pcb_layer_t *apply_to_li
 	if (apply_to_line != NULL)
 		pcb_line_destroy(apply_to_line_layer, apply_to_line);
 
+	if (applied)
+		pcb_subc_as_board_update(PCB);
+
 	return applied;
 }
 
@@ -629,6 +632,9 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 	/* (This can happen if the route does not contain any arcs.)             */
 	if (apply_to_arc != NULL)
 		pcb_arc_destroy(apply_to_arc_layer, apply_to_arc);
+
+	if (applied)
+		pcb_subc_as_board_update(PCB);
 
 	return applied;
 }
