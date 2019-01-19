@@ -1,8 +1,8 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- BUG: portability on vanilla old IRIX
-	- scconfig: detect a select() based alternative for usleep()
++ BUG: portability on vanilla old IRIX
+	+ scconfig: detect a select() based alternative for usleep() [report: Igor2]
 - BUG: io_tedax:
 	- footprint save should quote footprint name
 + BUG: boardflip() action moves the objects and doesn't move the subc outline and origin (repro: place single part, run boardflip) [report:Miloh]
