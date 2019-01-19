@@ -297,13 +297,15 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 			PCB_DAD_END(pref_ctx.dlg);
 
 		PCB_DAD_END(pref_ctx.dlg);
-		PCB_DAD_BEGIN_HBOX(pref_ctx.dlg);
-			PCB_DAD_COMPFLAG(pref_ctx.dlg, PCB_HATF_EXPFILL);
-			PCB_DAD_LABEL(pref_ctx.dlg, "All changes are made to role:");
-			PCB_DAD_ENUM(pref_ctx.dlg, role_names);
-				pref_ctx.wrole = PCB_DAD_CURRENT(pref_ctx.dlg);
-				PCB_DAD_CHANGE_CB(pref_ctx.dlg, pref_role_cb);
-			PCB_DAD_BUTTON_CLOSES_NAKED(pref_ctx.dlg, clbtn);
+			PCB_DAD_BEGIN_VBOX(pref_ctx.dlg);
+			PCB_DAD_BEGIN_HBOX(pref_ctx.dlg);
+				PCB_DAD_COMPFLAG(pref_ctx.dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_LABEL(pref_ctx.dlg, "All changes are made to role:");
+				PCB_DAD_ENUM(pref_ctx.dlg, role_names);
+					pref_ctx.wrole = PCB_DAD_CURRENT(pref_ctx.dlg);
+					PCB_DAD_CHANGE_CB(pref_ctx.dlg, pref_role_cb);
+				PCB_DAD_BUTTON_CLOSES_NAKED(pref_ctx.dlg, clbtn);
+			PCB_DAD_END(pref_ctx.dlg);
 		PCB_DAD_END(pref_ctx.dlg);
 	PCB_DAD_END(pref_ctx.dlg);
 
