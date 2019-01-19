@@ -181,7 +181,9 @@ int tedax_fp_fsave_subc(pcb_subc_t *subc, const char *fpname, int lyrecipe, FILE
 	htsp_init(&terms, strhash, strkeyeq);
 		pcb_subc_get_origin(subc, &ox, &oy);
 
-		fprintf(f, "\nbegin footprint v1 %s\n", fpname);
+		fprintf(f, "\nbegin footprint v1 ");
+		tedax_fprint_escape(f, fpname);
+		fprintf(f, "\n");
 
 		for(l = 0; l < subc->data->LayerN; l++) {
 			pcb_layer_t *ly = &subc->data->Layer[l];
