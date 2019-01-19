@@ -169,13 +169,8 @@
 - FEATURE: undo on new layer from right-click menu in gtk layersel doesn't work
 - FEATUER: gtk layersel: consider to provide a config setting for making open-group-name horizontal [report: istankovic]
 - FEATURE: optional display of as-drawn contours of polygons for editing [report: Ade]
-- GTK Preferences->User PoV->Layers : Hit 'v' to "zoom fit" the preview [report: Alain]
-		- CLEANUP: allow GTK to handle keys in preview
-		- CLEANUP: use the zoompan engine for the zooming. Modifiy API if necessary
-- CLEANUP: resources/conf:
-	- FEATURE: preferences dialog, config pov: change prio
-	- CLEANUP: fp_fs_search: kill anything that gets ':' separated string as path list, get a config list instead
-	- switch the lesstif HID over from attribs to conf
+- FEATURE: pewview widget: allow to handle keys both in gtk and lesstif
+- CLEANUP: fp_fs_search: kill anything that gets ':' separated string as path list, get a config list instead
 - CLEANUP: Mark
 	- see pool node mark_cleanup
 	- mark bug - ortho shouldn't use it, it should use last point (crosshair.X2); make sure nothing else abuses it [James]
@@ -293,7 +288,7 @@ FEATURES
 - BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> rewrite search.c to be a 'script' config) bug_files/farsilk.lht [report: Ade]
 - BUG: RTT/arc_sizes.lht - unable to move arcs which have different width and height [report: Ade] - rewrite pcb_is_point_on_arc() elliptical case at the bottom
 - FEATURE: padstack label smarter print: in case of full overlap of a bottom and top "pad", arrange other-side labels to avoid overlaps [report: al3x]
-- FEATURE: advanced grid settings: make it possible to edit the lists in preferences
+- FEATURE: preferences: grid list edit on the sizes tab
 - improve locking:
 	- FEATURE: consider a move-only lock?
 	- BUG: when thermal and some other operations are applied on a locked element, indicate it
