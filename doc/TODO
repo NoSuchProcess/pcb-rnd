@@ -27,7 +27,7 @@
 - BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
 - BUG: bug_files/obsconf.lht: load, get a warning for obsolete config; save into a new file and the broken conf node is not removed [report: keantoken]
 - BUG: create 3 rectangles: top copper, bottom copper, intern copper; convert to padstack; when there's no hole, the intern copper layer is not rendered [report: Igor2]
-- BUG: "Edit padstack shape" with work/bug_files/pstk_hole_break/polygon.lht: Edit padstack->prototype Change button on mask layer to copy shape from top copper is not OK and prints "Can't copy shape: source shape (top paste) is empty" [report: Alain]
++ BUG: "Edit padstack shape" with work/bug_files/pstk_hole_break/polygon.lht: Edit padstack->prototype Change button on mask layer to copy shape from top copper is not OK and prints "Can't copy shape: source shape (top paste) is empty" [report: Alain]
 - BUG: footprint replace (backann): bug_files/replfp.lht, {a b f}, type 1206 [report: Igor2]
 	- BUG: pads are not rotated
 	- BUG: attributes are not kept
