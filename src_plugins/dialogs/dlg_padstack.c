@@ -639,6 +639,11 @@ static void pse_gen_shape(pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, int shape
 {
 	int idx = ts->len;
 
+	if (size <= 0) {
+		pcb_message(PCB_MSG_ERROR, "Invalid size - has to be larger than 0\n");
+		return;
+	}
+
 	ts->len++;
 	ts->shape = realloc(ts->shape, ts->len * sizeof(pcb_pstk_shape_t));
 
