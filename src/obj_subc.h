@@ -135,10 +135,6 @@ void *pcb_subc_remove(pcb_subc_t *sc);
    the subc (if alloc is true) or return the brd_layer. */
 pcb_layer_t *pcb_loose_subc_layer(pcb_board_t *pcb, pcb_layer_t *brd_layer, pcb_bool alloc);
 
-/* Update the bounding box of the subc being edited as board; if the
-   board is not a subc, this call is a NOP */
-void pcb_subc_as_board_update(pcb_board_t *pcb);
-
 /* Returns whether there's no object in the subc */
 pcb_bool pcb_subc_is_empty(pcb_subc_t *subc);
 

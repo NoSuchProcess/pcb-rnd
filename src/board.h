@@ -179,4 +179,8 @@ void pcb_board_changed(int reverted);
 const char *pcb_board_get_filename(void);
 const char *pcb_board_get_name(void);
 
+/* Update the bounding box of the subc being edited as board; if the
+   board is not a subc, this call is a NOP; implemented in obj_subc.c */
+void pcb_subc_as_board_update(pcb_board_t *pcb);
+
 #endif
