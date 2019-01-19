@@ -590,23 +590,20 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 			PCB_DAD_CHANGE_CB(dlg, pse_shape_auto);
 			PCB_DAD_HELP(dlg, "Derive the shape for this layer type\nfrom other, existing shapes of this padstack\n(automatic)");
 		PCB_DAD_BEGIN_HBOX(dlg);
-			PCB_DAD_BUTTON(dlg, "Copy shape from");
-				pse->copy_do = PCB_DAD_CURRENT(dlg);
-				PCB_DAD_CHANGE_CB(dlg, pse_shape_copy);
-				PCB_DAD_HELP(dlg, "Copy the shape for this layer type\nfrom other, existing shapes of this padstack\nfrom the layer type selected");
+			PCB_DAD_BEGIN_VBOX(dlg);
+				PCB_DAD_BUTTON(dlg, "Copy shape from");
+					pse->copy_do = PCB_DAD_CURRENT(dlg);
+					PCB_DAD_CHANGE_CB(dlg, pse_shape_copy);
+					PCB_DAD_HELP(dlg, "Copy the shape for this layer type\nfrom other, existing shapes of this padstack\nfrom the layer type selected");
+				PCB_DAD_BUTTON(dlg, "Swap shape with");
+					pse->copy_do = PCB_DAD_CURRENT(dlg);
+					PCB_DAD_CHANGE_CB(dlg, pse_shape_swap);
+					PCB_DAD_HELP(dlg, "Swap the shape for this layer type\nwith another, existing shapes of this padstack\nfrom the layer type selected");
+					PCB_DAD_HELP(dlg, "Select the other layer type for swapping shape");
+			PCB_DAD_END(dlg);
 			PCB_DAD_ENUM(dlg, copy_from_names); /* coposite */
 				pse->copy_from = PCB_DAD_CURRENT(dlg);
-			PCB_DAD_HELP(dlg, "Select the source layer type for manual shape copy");
-		PCB_DAD_END(dlg);
-
-		PCB_DAD_BEGIN_HBOX(dlg);
-			PCB_DAD_BUTTON(dlg, "Swap shape with");
-				pse->copy_do = PCB_DAD_CURRENT(dlg);
-				PCB_DAD_CHANGE_CB(dlg, pse_shape_swap);
-				PCB_DAD_HELP(dlg, "Swap the shape for this layer type\nwith another, existing shapes of this padstack\nfrom the layer type selected");
-			PCB_DAD_ENUM(dlg, copy_from_names); /* coposite */
-				pse->copy_from = PCB_DAD_CURRENT(dlg);
-			PCB_DAD_HELP(dlg, "Select the other layer type for swapping shape");
+				PCB_DAD_HELP(dlg, "Select the source layer type for\nmanual shape copy or shape swap");
 		PCB_DAD_END(dlg);
 
 		PCB_DAD_BEGIN_HBOX(dlg);
