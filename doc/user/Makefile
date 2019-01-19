@@ -2,17 +2,13 @@ ROOT=../..
 BUILD=$(ROOT)/util/build_ps.sh
 USERDIR=$(DOCDIR)/user
 
-export HTML2PS_OPTS=-f default.css
-export HTML2PS_SED="s^<[hH]1>.*</[hH]1>^^g"
-
-
 INSTD = 02_model 03_data 04_invoc 05_ui 06_feature 07_io \
         08_util 09_appendix
 
 all: user.pdf
 
 user.ps: ps.lst $(BUILD) default.css Makefile
-	$(BUILD) `cat ps.lst` > user.ps
+	HTML2PS_OPTS="-f default.css" HTML2PS_SED="s^<[hH]1>.*</[hH]1>^^g" $(BUILD) `cat ps.lst` > user.ps
 
 user.pdf: user.ps
 	ps2pdf user.ps
