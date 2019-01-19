@@ -1,4 +1,5 @@
 0. old, still waiting for ack
++ CLEANUP: propedit rewrite: new action UI should allow operation on object and object ID instead of selection; bug_files/subcsel.bug [report: Wojciech]
 
 1. For the upcoming release ===============================================================================
 + BUG: portability on vanilla old IRIX
@@ -83,7 +84,6 @@
 - CLEANUP: propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
-	+ CLEANUP: propedit rewrite: new action UI should allow operation on object and object ID instead of selection; bug_files/subcsel.bug [report: Wojciech]
 - CLEANUP: eliminate PCB_MOVE, remove move.h from box.h
 - CLEANUP: library window DAD-ification: remove pcb_act_LibraryShow()
 	- FEATURE: library window: allow long tags and long location text to split
