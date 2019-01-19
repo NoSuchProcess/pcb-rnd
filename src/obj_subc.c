@@ -334,7 +334,7 @@ static pcb_poly_t *sqline2term(pcb_layer_t *dst, pcb_line_t *line)
 	return poly;
 }
 
-pcb_layer_t *pcb_loose_subc_layer(pcb_board_t *pcb, pcb_layer_t *layer)
+pcb_layer_t *pcb_loose_subc_layer(pcb_board_t *pcb, pcb_layer_t *layer, pcb_bool alloc)
 {
 	pcb_subc_t *sc;
 	int n;
@@ -353,6 +353,15 @@ pcb_layer_t *pcb_loose_subc_layer(pcb_board_t *pcb, pcb_layer_t *layer)
 		if (l->meta.bound.real == layer)
 			return l;
 	}
+
+	/* the subc does not have that layer */
+	if (alloc) {
+		pcb_layer_t *nlayer = &sc->data->Layer[sc->data->LayerN];
+		sc->data->LayerN++;
+		pcb_layer_real2bound(nlayer, layer, 1);
+		return nlayer;
+	}
+
 	return layer;
 }
 

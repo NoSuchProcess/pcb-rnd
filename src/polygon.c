@@ -1519,7 +1519,7 @@ static void poly_copy_data(pcb_poly_t *dst, pcb_poly_t *src)
  */
 void pcb_polygon_copy_attached_to_layer(void)
 {
-	pcb_layer_t *layer = pcb_loose_subc_layer(PCB, CURRENT);
+	pcb_layer_t *layer = pcb_loose_subc_layer(PCB, CURRENT, pcb_true);
 	pcb_poly_t *polygon;
 	int saveID;
 

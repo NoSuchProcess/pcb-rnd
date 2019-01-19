@@ -64,7 +64,7 @@ void pcb_tool_rectangle_notify_mode(void)
 			pcb_crosshair.AttachedBox.Point1.X != pcb_crosshair.AttachedBox.Point2.X &&
 			pcb_crosshair.AttachedBox.Point1.Y != pcb_crosshair.AttachedBox.Point2.Y) {
 		pcb_poly_t *polygon;
-		pcb_layer_t *layer = pcb_loose_subc_layer(PCB, CURRENT);
+		pcb_layer_t *layer = pcb_loose_subc_layer(PCB, CURRENT, pcb_true);
 
 		int flags = PCB_FLAG_CLEARPOLY;
 		if (conf_core.editor.full_poly)

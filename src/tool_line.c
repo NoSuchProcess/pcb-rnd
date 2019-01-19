@@ -248,7 +248,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 		if ((pcb_crosshair.AttachedLine.Point1.X !=
 				 pcb_crosshair.AttachedLine.Point2.X || pcb_crosshair.AttachedLine.Point1.Y != pcb_crosshair.AttachedLine.Point2.Y)
 				&& (line =
-						pcb_line_new_merge(pcb_loose_subc_layer(PCB, CURRENT),
+						pcb_line_new_merge(pcb_loose_subc_layer(PCB, CURRENT, pcb_true),
 																	 pcb_crosshair.AttachedLine.Point1.X,
 																	 pcb_crosshair.AttachedLine.Point1.Y,
 																	 pcb_crosshair.AttachedLine.Point2.X,
@@ -293,7 +293,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 		}
 		if (conf_core.editor.line_refraction && (pcb_tool_note.X != pcb_crosshair.AttachedLine.Point2.X || pcb_tool_note.Y != pcb_crosshair.AttachedLine.Point2.Y)
 				&& (line =
-						pcb_line_new_merge(pcb_loose_subc_layer(PCB, CURRENT),
+						pcb_line_new_merge(pcb_loose_subc_layer(PCB, CURRENT, pcb_true),
 																	 pcb_crosshair.AttachedLine.Point2.X,
 																	 pcb_crosshair.AttachedLine.Point2.Y,
 																	 pcb_tool_note.X, pcb_tool_note.Y,

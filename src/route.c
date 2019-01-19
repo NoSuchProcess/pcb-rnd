@@ -422,7 +422,7 @@ int pcb_route_apply_to_line(const pcb_route_t *p_route, pcb_layer_t *apply_to_li
 
 	for(i = 0; i < p_route->size; i++) {
 		pcb_route_object_t const *p_obj = &p_route->objects[i];
-		pcb_layer_t *layer = pcb_loose_subc_layer(PCB, pcb_get_layer(PCB->Data, p_obj->layer));
+		pcb_layer_t *layer = pcb_loose_subc_layer(PCB, pcb_get_layer(PCB->Data, p_obj->layer), pcb_true);
 
 		switch (p_obj->type) {
 			case PCB_OBJ_LINE:
@@ -520,7 +520,7 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 
 	for(i = 0; i < p_route->size; i++) {
 		pcb_route_object_t const *p_obj = &p_route->objects[i];
-		pcb_layer_t *layer = pcb_loose_subc_layer(PCB, pcb_get_layer(PCB->Data, p_obj->layer));
+		pcb_layer_t *layer = pcb_loose_subc_layer(PCB, pcb_get_layer(PCB->Data, p_obj->layer), pcb_true);
 
 		switch (p_obj->type) {
 			case PCB_OBJ_ARC:
