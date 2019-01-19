@@ -211,19 +211,6 @@ automatically scaled to fit the canvas.
 	{"bg-image", "Background Image",
 		PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, &background_image_file},
 #define HA_bg_image 2
-
-/* %start-doc options "22 lesstif GUI Options"
-@ftable @code
-@item --pcb-menu <string>
-Location of the @file{pcb-menu.res} file which defines the menu for the lesstif GUI.
-@end ftable
-%end-doc
-*/
-/*
-	{"pcb-menu", "Location of pcb-menu.res file",
-		PCB_HATT_STRING, 0, 0, {0, PCBSHAREDIR "/pcb-menu.res", 0}, 0, &lesstif_pcbmenu_path}
-#define HA_pcbmenu 3
-*/
 };
 
 TODO("menu: pcb-menu should be generic and not depend on the HID")
