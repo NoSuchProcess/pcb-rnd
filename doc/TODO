@@ -18,7 +18,6 @@
 + FEATURE: extedit: dialog shoudl let the user edit the command template [report: Igor2, TwisteR]
 - BUG: new preferences
 	- update bugs:
-		- drc & size: doesn't update on mil/mm change in top win [report: Ade]
 		- new prefs with new layout, change board name in meta and close -- name doesn't get immediately picked up by main window  [report: Miloh]
 		+ close buttons expand - they should keep their minimal height [report: Alain]
 	- crash:
@@ -79,6 +78,8 @@
 	- CLEANUP: remove PCB_MIN_PINORVIA* PCB_DEFAULT_DRILLINGHOLE macros - nothing should use them anymore
 - CLEANUP/FEATURE: session persistent DAD message log (messages are flushed after dialog is closed?) [report: Miloh]
 	- DOC: document the DAD text widget
+- CLEANUP: DAD: centralize the coordinate input spinbox into the dialog plugin
+	- drc & size: doesn't update on mil/mm change in top win [report: Ade]
 - CLEANUP: propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
