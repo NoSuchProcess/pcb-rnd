@@ -49,7 +49,7 @@
 - BUG: plain old text in subc is not rotated on arbitrary rotate buffer by 15 deg [report: Igor2]
 - BUG: Adding a new route style via the route-style dialog doesn't update the menu (Edit->Route Style). [report: Ade]
 - BUG: Load a footprint using the library dialog {w l} into the buffer. Flip the board with the tab key and the refdes border in the buffer object flips vertically the wrong way. Only occurs when loading footprint, not when copying. [report: Ade]
-- BUG: gtk coord entry: right click, change units fail [report: Alain]
++ BUG: gtk coord entry: right click, change units fail [report: Alain] -> submenu removed, we will have this feature back after the DAD rewrite
 - BUG: preview zoom doesn't work (e.g. on csect) [report: Alain]
 - BUG: lesstif: {i c p} -> crash, only on IRIX system [report: Ian]
 - BUG: #define TODO(x) doesn't compile on IRIX system with --debug option ON [report: Ian]
