@@ -83,6 +83,9 @@ void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_confitem_t *item, pcb_hid_attr
 	pref_confitem_t *old = ctx->conf_lock;
 	conf_native_t *cn = conf_get_field(item->confpath);
 
+	if (cn == NULL)
+		return;
+
 	ctx->conf_lock = item;
 	switch(cn->type) {
 		case CFN_COORD:
@@ -197,7 +200,8 @@ void pcb_pref_conflist_remove(pref_ctx_t *ctx, pref_confitem_t *list)
 	for(c = list; c->confpath != NULL; c++) {
 		conf_native_t *cn = conf_get_field(c->confpath);
 		c->cnext = NULL;
-		conf_hid_set_data(cn, pref_hid, NULL);
+		if (cn != NULL)
+			conf_hid_set_data(cn, pref_hid, NULL);
 	}
 }
 
