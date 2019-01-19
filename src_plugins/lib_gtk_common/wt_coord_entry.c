@@ -82,6 +82,8 @@ static void menu_item_activate_cb(GtkMenuItem * item, pcb_gtk_coord_entry_t * ce
 /* Callback for context menu creation */
 static void ghid_coord_entry_popup_cb(pcb_gtk_coord_entry_t * ce, GtkMenu * menu, gpointer data)
 {
+#if 0
+/* this should work again in the DAD rewrite, but not from popup */
 	int i, n;
 	const pcb_unit_t *unit_list;
 	GtkWidget *menu_item, *submenu;
@@ -107,6 +109,7 @@ static void ghid_coord_entry_popup_cb(pcb_gtk_coord_entry_t * ce, GtkMenu * menu
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_item), submenu);
 	gtk_menu_shell_prepend(GTK_MENU_SHELL(menu), menu_item);
 	gtk_widget_show(menu_item);
+#endif
 }
 
 /* Callback for user output */
