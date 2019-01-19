@@ -22,7 +22,6 @@
 		+ new prefs with new layout, change board name in meta and close -- name doesn't get immediately picked up by main window  [report: Miloh]
 		+ close buttons expand - they should keep their minimal height [report: Alain]
 	- crash:
-		- filter-select invis_other_groups, create design, set true, close; repeat this on black_current_group -> crash [report: Igor2]
 		- BUG: preferences() crashes if lesstif GUI is compiled but gtk is not (missing gtk-only conf settings) [report: rqsall]
 		- BUG: Repeadtedly open preferences and select editor->mode. Eventually it may segfault. Sometimes the value changes without changing mode [report: Ade]
 	- BUG: new preferences: color tab, change padtsakc color on current layewr -> no effect on the drawing (changing selection color works) [report: Igor2]
