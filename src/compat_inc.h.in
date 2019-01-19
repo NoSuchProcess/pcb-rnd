@@ -20,6 +20,7 @@ put /local/pcb/compat_inc [@
 @?/target/libs/time/Sleep/includes@
 @?/target/libs/time/usleep/includes@
 @?/target/libs/time/gettimeofday/includes@
+@?/target/libs/socket/select/includes@
 @]
 
 put /tmpasm/IFS {\n}
