@@ -758,6 +758,10 @@ void *pcb_textop_rotate(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 		Text->rot += 360.0;
 
 	pcb_rotate(&Text->X, &Text->Y, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.cosa, ctx->rotate.sina);
+	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text))
+		Text->rot -= ctx->rotate.angle;
+	else
+		Text->rot += ctx->rotate.angle;
 	pcb_text_bbox(NULL, Text);
 
 	if (Layer->text_tree != NULL)
