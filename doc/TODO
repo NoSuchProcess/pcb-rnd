@@ -24,7 +24,7 @@
 	- crash:
 		+ BUG: preferences() crashes if lesstif GUI is compiled but gtk is not (missing gtk-only conf settings) [report: rqsall]
 		- BUG: Repeadtedly open preferences and select editor->mode. Eventually it may segfault. Sometimes the value changes without changing mode [report: Ade]
-	- BUG: new preferences: color tab, change padtsakc color on current layewr -> no effect on the drawing (changing selection color works) [report: Igor2]
+	- BUG: new preferences: color tab, change padtsack color on current layer -> no effect on the drawing (changing selection color works) [report: Igor2]
 	- BUG: lesstif: preferences(layers): EXPFILL doesn't seem to work
 + BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
 - BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
