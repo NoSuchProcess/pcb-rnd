@@ -62,8 +62,10 @@ static void pref_board_dlg2brd(void *hid_ctx, void *caller_data, pcb_hid_attribu
 		changed = 1;
 	}
 
-	if (changed)
-		pcb_board_set_changed_flag(1);
+	if (changed) {
+		PCB->Changed = 1;
+		pcb_event(PCB_EVENT_BOARD_META_CHANGED, NULL); /* always generate the event to make sure visible changes are flushed */
+	}
 }
 
 static void pref_board_edit_attr(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
