@@ -18,8 +18,8 @@
 + FEATURE: padstack editor: indicate if a proto layer does not map to current board layer [report: Erich]
 + FEATURE: extedit: dialog shoudl let the user edit the command template [report: Igor2, TwisteR]
 - BUG: new preferences
-	- update bugs:
-		- new prefs with new layout, change board name in meta and close -- name doesn't get immediately picked up by main window  [report: Miloh]
+	+ update bugs:
+		+ new prefs with new layout, change board name in meta and close -- name doesn't get immediately picked up by main window  [report: Miloh]
 		+ close buttons expand - they should keep their minimal height [report: Alain]
 	- crash:
 		- filter-select invis_other_groups, create design, set true, close; repeat this on black_current_group -> crash [report: Igor2]
