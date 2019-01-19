@@ -581,7 +581,7 @@ TODO(": need to convert")
 			text_direction = 3;
 		}
 	}
-
+TODO("read_text	requires size_bump(st, X, Y)")
 TODO("textrot: check if we can just use the angle")
 	pcb_text_new(ly, pcb_font(st->pcb, 0, 1), X, Y, 90.0*text_direction, text_scaling, 0, text_val, text_flags);
 	return 0;
