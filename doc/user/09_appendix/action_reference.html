@@ -12,7 +12,7 @@
 <h2> Action Reference</h2>
 <table border=1>
 <caption>\n <b>
-This is pcb-rnd 2.1.0 (svn r21403) an interactive printed circuit board editor ,  Revision: 22062
+This is pcb-rnd 2.1.0 (svn r22577) an interactive printed circuit board editor ,  Revision: 22699
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -96,7 +96,7 @@ This is pcb-rnd 2.1.0 (svn r21403) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#flip">Flip</a></td><td>Flip a subcircuit to the opposite side of the board.</td><td>Flip(Object|Selected)</td><td></td>
 <tr><td>FontEdit</td><td>Convert the current font to a PCB for editing.</td><td>FontEdit()</td><td>fontmode plugin</td>
 <tr><td>FontSave</td><td>Convert the current PCB back to a font.</td><td>FontSave()</td><td>fontmode plugin</td>
-<tr><td>Fontsel</td><td>Open the font selection dialog</td><td>Fontsel2()</td><td>dialogs plugin</td>
+<tr><td>Fontsel</td><td>Open the font selection dialog</td><td>Fontsel()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#freerotatebuffer">FreeRotateBuffer</a></td><td>Rotates the current paste buffer contents by the specified angle.  The<br>angle is given in degrees.  If no angle is given, the user is prompted<br>for one.</td><td>FreeRotateBuffer([Angle])</td><td></td>
 <tr><td>FullScreen</td><td>Hide widgets to get edit area full screen</td><td>FullScreen(on|off|toggle)</td><td></td>
 <tr><td>GetStyle</td><td>Return integer index (>=0) of the currently active style or -1 if no style is selected (== custom style)</td><td>GetStyle()</td><td></td>
@@ -128,7 +128,7 @@ This is pcb-rnd 2.1.0 (svn r21403) an interactive printed circuit board editor ,
 <tr><td>LoadMentorFrom</td><td>Loads the specified Mentor Graphics Design Capture schematics flat .edf file.</td><td>LoadMentorFrom(filename)</td><td>mentor_sch importer</td>
 <tr><td>LoadMucsFrom</td><td>Loads the specified mucs routing file.</td><td>LoadMucsFrom(filename)</td><td>mucs importer</td>
 <tr><td><a href="action_details.html#loadscript">LoadScript</a></td><td>Load a fungw script</td><td>LoadScript(id, filename, [language])</td><td>script plugin</td>
-<tr><td>LoadTedaxFrom</td><td>Loads the specified block from a tedax file. Type can be: netlist or footprint.</td><td>LoadTedaxFrom(netlist|footprint|stackup, filename)</td><td>tEDAx IO</td>
+<tr><td>LoadTedaxFrom</td><td>Loads the specified block from a tedax file.</td><td>LoadTedaxFrom(netlist|board|footprint|stackup|layer, filename, [block_id, [silent]])</td><td>tEDAx IO</td>
 <tr><td>LoadTinycadFrom</td><td>Loads the specified tinycad .net file - the netlist must be tinycad netlist output.</td><td>LoadTinycadFrom(filename)</td><td>tinycad importer</td>
 <tr><td>LoadTtfGlyphs</td><td>Loads glyphs from an outline ttf in the specified source range, optionally remapping them to dstchars range in the pcb-rnd font</td><td>LoadTtfGlyphs(filename, srcglyps, [dstchars])</td><td>ttf importer</td>
 <tr><td><a href="action_details.html#loadvendorfrom">LoadVendorFrom</a></td><td>Loads the specified vendor lihata file.</td><td>LoadVendorFrom(filename)</td><td>vendor drill mapping</td>
@@ -188,7 +188,7 @@ This is pcb-rnd 2.1.0 (svn r21403) an interactive printed circuit board editor ,
 <tr><td>Renumber</td><td>Renumber all subcircuits.  The changes will be recorded to filename<br>for use in backannotating these changes to the schematic.</td><td>Renumber()<br>Renumber(filename)</td><td>renumber plugin</td>
 <tr><td><a href="action_details.html#renumberblock">RenumberBlock</a></td><td>TODO</td><td>RenumberBlock(old_base,new_base)</td><td>renumber plugin</td>
 <tr><td><a href="action_details.html#renumberbuffer">RenumberBuffer</a></td><td>TODO</td><td>RenumberBlock(old_base,new_base)</td><td>renumber plugin</td>
-<tr><td>ReplaceFootprint</td><td>Replace the footprint of the selected components with the footprint specified.</td><td>ReplaceFootprint()</td><td></td>
+<tr><td><a href="action_details.html#replacefootprint">ReplaceFootprint</a></td><td>Replace the footprint of the selected components with the footprint specified.</td><td>ReplaceFootprint([Selected|Object], [footprint], [dumb])</td><td></td>
 <tr><td><a href="action_details.html#report">Report</a></td><td>Produce various report.</td><td>Report(Object|DrillReport|FoundPins|NetLength|NetLengthTo|AllNetLengths|[,name])</td><td>report plugin</td>
 <tr><td>ReportObject</td><td>Report on the object under the crosshair</td><td>ReportObject()</td><td>report plugin</td>
 <tr><td><a href="action_details.html#ripup">RipUp</a></td><td>Ripup auto-routed tracks</td><td>RipUp(All|Selected|Element)</td><td></td>
@@ -197,7 +197,7 @@ This is pcb-rnd 2.1.0 (svn r21403) an interactive printed circuit board editor ,
 <tr><td>RouteStylesChanged</td><td>Tells the GUI that the routing styles have changed.</td><td>RouteStylesChanged()</td><td>oldactions plugin</td>
 <tr><td>SaveFontTo</td><td>Save PCB font to a file</td><td>SaveFontTo([file, id])</td><td></td>
 <tr><td>SavePatch</td><td>Save netlist patch for back annotation.</td><td>SavePatch(filename)</td><td></td>
-<tr><td>SaveTedax</td><td>Saves the specific type of data in a tEDAx file. Type can be: board-footprints</td><td>SaveTedax(board-footprints|stackup, filename)</td><td>tEDAx IO</td>
+<tr><td>SaveTedax</td><td>Saves the specific type of data in a tEDAx file.</td><td>SaveTedax(netlist|board-footprints|stackup|layer|board|drc, filename)</td><td>tEDAx IO</td>
 <tr><td><a href="action_details.html#saveto">SaveTo</a></td><td>Saves data to a file.</td><td>SaveTo(Layout|LayoutAs,filename,[fmt])<br>SaveTo(PasteBuffer,filename,[fmt])</td><td></td>
 <tr><td>ScaleBuffer</td><td>Scales the buffer by multiplying all coordinates by a floating point number.<br>If only x is given, it is also used for y and thickness too. If subc is not<br>empty, subcircuits are also scaled</td><td>ScaleBuffer(x [,y [,thickness [,subc]]])</td><td></td>
 <tr><td><a href="action_details.html#scriptcookie">ScriptCookie</a></td><td>Return a cookie specific to the current script instance during script initialization</td><td>ScriptCookie()</td><td>script plugin</td>
@@ -224,6 +224,7 @@ This is pcb-rnd 2.1.0 (svn r21403) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#unloadscript">UnloadScript</a></td><td>Unload a fungw script</td><td>UnloadScript(id)</td><td>script plugin</td>
 <tr><td>UnloadVendor</td><td>Unloads the current vendor drill mapping table.</td><td>UnloadVendor()</td><td>vendor drill mapping</td>
 <tr><td><a href="action_details.html#unselect">Unselect</a></td><td>Unselects the object at the pointer location or the specified objects.</td><td>Unselect(All|Block|Connection)</td><td></td>
+<tr><td>ViewList</td><td>Present a new empty view list</td><td>viewlist([name, [winid]])</td><td>dialogs plugin</td>
 <tr><td>acompnet</td><td>Attempt to auto-complete the current network</td><td>acompnet()</td><td>acompnet plugin</td>
 <tr><td><a href="action_details.html#align">align</a></td><td>Align subcircuits</td><td>Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distalign plugin</td>
 <tr><td><a href="action_details.html#aligntext">aligntext</a></td><td>Align Text Elements</td><td>AlignText(X/Y, [Lefts/Rights/Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distaligntext plugin</td>
@@ -248,6 +249,7 @@ This is pcb-rnd 2.1.0 (svn r21403) an interactive printed circuit board editor ,
 <tr><td>dumpdata</td><td>Dump an aspect of the data</td><td>dumpdata()</td><td>diag plugin</td>
 <tr><td>dumpflags</td><td>dump flags, optionally using the format string provided by the user</td><td>dumpflags([fmt])</td><td>diag plugin</td>
 <tr><td>dumpfonts</td><td>Print info about fonts</td><td>dumpfonts()</td><td>diag plugin</td>
+<tr><td>dumpids</td><td>Dump the ID hash</td><td>DumpIDs()</td><td>diag plugin</td>
 <tr><td>dumplayers</td><td>Print info about each layer</td><td>dumplayers([all])</td><td>diag plugin</td>
 <tr><td>dumpundo</td><td>Print info about fonts</td><td>dumpfonts()</td><td>diag plugin</td>
 <tr><td>estutter</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
@@ -255,6 +257,7 @@ This is pcb-rnd 2.1.0 (svn r21403) an interactive printed circuit board editor ,
 <tr><td>find2perf</td><td>Measure the peformance of find2.c</td><td>find2perf()</td><td>diag plugin</td>
 <tr><td>forcecolor</td><td>change selected objects' color to #RRGGBB, reset if does not start with '#'</td><td>forcecolor(#RRGGBB)</td><td>diag plugin</td>
 <tr><td>fp_rehash</td><td>Flush the library index; rescan all library search paths and rebuild the library index. Useful if there are changes in the library during a pcb-rnd session.</td><td>fp_rehash()</td><td></td>
+<tr><td>gui_FallbackColorPick</td><td>Intenal: GUI frontend action. Do not use directly.</td><td></td><td>dialogs plugin</td>
 <tr><td>gui_MessageBox</td><td>Intenal: GUI frontend action. Do not use directly.</td><td></td><td>dialogs plugin</td>
 <tr><td>gui_PromptFor</td><td>Intenal: GUI frontend action. Do not use directly.</td><td></td><td>dialogs plugin</td>
 <tr><td>h</td><td>Print a help message for commands.</td><td>h</td><td>shand_cmd plugin</td>
@@ -287,7 +290,7 @@ This is pcb-rnd 2.1.0 (svn r21403) an interactive printed circuit board editor ,
 <tr><td>query</td><td>Perform various queries on PCB data.</td><td>query(dump, expr) - dry run: compile and dump an expression</td><td></td>
 <tr><td>regpoly</td><td>Generate regular polygon. Where is x;y and radius is either r or rx;ry. Rotation is in degrees.</td><td>regpoly([where,] corners, radius [,rotation])</td><td>shape plugin</td>
 <tr><td><a href="action_details.html#rn">rn</a></td><td>Reads netlist.</td><td>rn [name]</td><td>shand_cmd plugin</td>
-<tr><td>roundrect</td><td>Generate a rectangle with round corners</td><td>roundrect([where,] width[;height] [,rx[;ry] [,rotation]])</td><td>shape plugin</td>
+<tr><td>roundrect</td><td>Generate a rectangle with round corners</td><td>roundrect([where,] width[;height] [,rx[;ry] [,rotation [,cornstyle [,roundness]]]])</td><td>shape plugin</td>
 <tr><td>ruby</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td><a href="action_details.html#s">s</a></td><td>Saves layout data.</td><td>s [name]<br>w [name]</td><td>shand_cmd plugin</td>
 <tr><td>shape</td><td>Interactive shape generator.</td><td>shape()</td><td>shape plugin</td>

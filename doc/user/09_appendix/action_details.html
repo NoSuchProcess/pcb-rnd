@@ -405,8 +405,7 @@ This action is used to speed-test the GUI rendering.  It redraws the current scr
 BoardFlip([sides])
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
 Mirror the board over the x axis, optionally mirroring sides as well.
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
-boardflip plugin
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
 </table>
 <p>
 All objects on the board are up-down flipped (mirrored over the x axis). 
@@ -2832,6 +2831,42 @@ Example: RenumberBuffer(oldnum,newnum) <br>
  Same as 
 <a href="#renumberblock">renumberblock</a>
 , but the paste buffer is renumbered. 
+</dd></dl>
+
+<h2 id="replacefootprint">ReplaceFootprint</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+ReplaceFootprint([Selected|Object], [footprint], [dumb])
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Replace the footprint of the selected components with the footprint specified.
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+</table>
+<p>
+Replace footprint(s) from the library or buffer, in-place (preserving the original subcircuit's location, rotation and metadata). 
+<p>
+ If first argument is 
+<i>
+selected
+</i>
+, replace all selected subcircuits with the new footprint; if it is 
+<i>
+object
+</i>
+, replace only one subcircuit, under the cursor. 
+<p>
+ If the second argument is a footprint name, load it from the library. If it is 
+<i>
+@buffer
+</i>
+, use the subcircuit in the current buffer (there must be exactly 1 subcircuit in the buffer). If it is empty or not specified, the user is asked for a footprint. 
+<p>
+ If the third argument is 
+<i>
+dumb
+</i>
+ the location and rotation of the original subcircuit is not preserved (but all metadata and board side are preserved). 
 </dd></dl>
 
 <h2 id="report">Report</h2>
