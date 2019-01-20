@@ -398,7 +398,7 @@ static void openems_vport_write(wctx_t *ctx, pcb_any_obj_t *o, pcb_coord_t x, pc
 		if (!isalnum(*s))
 			*s = '_';
 
-	pcb_fprintf(ctx->f, "\n%s_point(1, 1) = %mm; %s_point(2, 1) = %mm;\n", safe_name, x, safe_name, y);
+	pcb_fprintf(ctx->f, "\n%s_point(1, 1) = %mm; %s_point(2, 1) = %mm;\n", safe_name, x, safe_name, -y);
 	fprintf(ctx->f, "start_layer = %d;\n", ctx->lg_pcb2ems[gid1]);
 	fprintf(ctx->f, "stop_layer = %d;\n", ctx->lg_pcb2ems[gid2]);
 	pcb_fprintf(ctx->f, "\n%s_layers(1, 1) = start_layer; %s_layers(2, 1) = stop_layer;\n", safe_name, safe_name);
