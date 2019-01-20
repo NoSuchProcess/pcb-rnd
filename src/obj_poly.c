@@ -168,12 +168,16 @@ void pcb_poly_free_fields(pcb_poly_t * polygon)
 /* rotates a polygon in 90 degree steps */
 void pcb_poly_rotate90(pcb_poly_t *Polygon, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
 {
+	pcb_layer_t *layer = Polygon->parent.layer;
+	assert(Polygon->parent_type = PCB_PARENT_LAYER);
 	PCB_POLY_POINT_LOOP(Polygon);
 	{
 		PCB_COORD_ROTATE90(point->X, point->Y, X, Y, Number);
 	}
 	PCB_END_LOOP;
 
+	if (layer->parent_type == PCB_PARENT_DATA)
+		pcb_poly_init_clip(layer->parent.data, layer, Polygon);
 	/* simply rotating the bounding box here won't work, because the box is 'closed' (increased by 1) */
 	pcb_poly_bbox(Polygon);
 }
@@ -187,6 +191,8 @@ void pcb_poly_rotate(pcb_layer_t *layer, pcb_poly_t *polygon, pcb_coord_t X, pcb
 		pcb_rotate(&point->X, &point->Y, X, Y, cosa, sina);
 	}
 	PCB_END_LOOP;
+	if (layer->parent_type == PCB_PARENT_DATA)
+		pcb_poly_init_clip(layer->parent.data, layer, polygon);
 	pcb_poly_bbox(polygon);
 	if (layer->polygon_tree != NULL)
 		pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon);
@@ -202,6 +208,8 @@ void pcb_poly_mirror(pcb_layer_t *layer, pcb_poly_t *polygon, pcb_coord_t y_offs
 		point->Y = PCB_SWAP_Y(point->Y) + y_offs;
 	}
 	PCB_END_LOOP;
+	if (layer->parent_type == PCB_PARENT_DATA)
+		pcb_poly_init_clip(layer->parent.data, layer, polygon);
 	pcb_poly_bbox(polygon);
 	if (layer->polygon_tree != NULL)
 		pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *)polygon);
@@ -216,6 +224,8 @@ void pcb_poly_flip_side(pcb_layer_t *layer, pcb_poly_t *polygon)
 		point->Y = PCB_SWAP_Y(point->Y);
 	}
 	PCB_END_LOOP;
+	if (layer->parent_type == PCB_PARENT_DATA)
+		pcb_poly_init_clip(layer->parent.data, layer, polygon);
 	pcb_poly_bbox(polygon);
 	pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon);
 	/* hmmm, how to handle clip */
