@@ -1877,6 +1877,7 @@ const char *pcb_subc_name(pcb_subc_t *subc, const char *local_name)
 	return val;
 }
 
+
 pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src, pcb_bool add_undo, pcb_bool dumb)
 {
 	pcb_data_t *data = dst->parent.data;
@@ -1885,6 +1886,9 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 	double rot = 0;
 	long int target_id;
 	int dst_on_bottom = 0, src_on_bottom = 0;
+	static const pcb_flag_values_t fmask = PCB_FLAG_SELECTED | \
+		PCB_FLAG_ONSOLDER | PCB_FLAG_AUTO | PCB_FLAG_NONETLIST;
+	pcb_flag_values_t flags;
 
 	assert(dst->parent_type == PCB_PARENT_DATA);
 	assert(src != NULL);
@@ -1913,12 +1917,17 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 			if (strcmp(asrc->List[n].name, "footprint") != 0)
 				pcb_attribute_put(adst, asrc->List[n].name, asrc->List[n].value);
 	}
+
+	flags = dst->Flags.f & fmask;
+
 	target_id = dst->ID;
 	pcb_subc_remove(dst);
 
 	pcb_obj_id_del(data, placed);
 	placed->ID = target_id;
 	pcb_obj_id_reg(data, placed);
+	placed->Flags.f &= ~fmask;
+	placed->Flags.f |= flags;
 
 	if (rot != 0) {
 		if (dst_on_bottom != src_on_bottom)
@@ -1928,6 +1937,10 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 
 	if (dst_on_bottom != src_on_bottom)
 		pcb_subc_change_side(placed, 2 * oy - PCB->MaxHeight);
+
+	pcb_undo_freeze_add();
+	pcb_subc_select(pcb, placed, (flags & PCB_FLAG_SELECTED) ? PCB_CHGFLG_SET : PCB_CHGFLG_CLEAR, 0);
+	pcb_undo_unfreeze_add();
 
 	if (add_undo)
 		pcb_undo_add_obj_to_create(PCB_OBJ_SUBC, placed, placed, placed);
