@@ -439,6 +439,7 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 	{
 		pcb_coord_t ox, oy;
 		double rot = 0;
+		long int target_id;
 
 		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc) || (subc->refdes == NULL))
 			continue;
@@ -451,7 +452,6 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 
 
 		placed = pcb_subc_dup_at(PCB, PCB->Data, news, ox, oy, 0);
-		placed->ID = subc->ID;
 
 		pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_ATTRIB, subc->refdes, "footprint", fpname);
 		{ /* copy attributes */
@@ -461,7 +461,13 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 				if (strcmp(src->List[n].name, "footprint") != 0)
 					pcb_attribute_put(dst, src->List[n].name, src->List[n].value);
 		}
+		target_id = subc->ID;
 		pcb_subc_remove(subc);
+
+		pcb_obj_id_del(PCB->Data, placed);
+		placed->ID = target_id;
+		pcb_obj_id_reg(PCB->Data, placed);
+
 		if (rot != 0)
 			pcb_subc_rotate(placed, ox, oy, cos(rot / PCB_RAD_TO_DEG), sin(rot / PCB_RAD_TO_DEG), rot);
 		changed = 1;
