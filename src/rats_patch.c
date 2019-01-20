@@ -385,7 +385,7 @@ static const char pcb_acth_ReplaceFootprint[] = "Replace the footprint of the se
 static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char *fpname = NULL;
-	int found = 0, len;
+	int found = 0, len, changed = 0;
 	pcb_subc_t *news, *placed;
 
 	/* check if we have elements selected and quit if not */
@@ -452,8 +452,6 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 
 		placed = pcb_subc_dup_at(PCB, PCB->Data, news, ox, oy, 0);
 		placed->ID = subc->ID;
-		if (rot != 0)
-			pcb_subc_rotate(placed, ox, oy, cos(rot / PCB_RAD_TO_DEG), sin(rot / PCB_RAD_TO_DEG), rot);
 
 		pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_ATTRIB, subc->refdes, "footprint", fpname);
 		{ /* copy attributes */
@@ -464,9 +462,14 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 					pcb_attribute_put(dst, src->List[n].name, src->List[n].value);
 		}
 		pcb_subc_remove(subc);
+		if (rot != 0)
+			pcb_subc_rotate(placed, ox, oy, cos(rot / PCB_RAD_TO_DEG), sin(rot / PCB_RAD_TO_DEG), rot);
+		changed = 1;
 	}
 	PCB_END_LOOP;
 
+	if (changed)
+		pcb_gui->invalidate_all();
 	free(fpname);
 	PCB_ACT_IRES(0);
 	return 0;
