@@ -2844,7 +2844,7 @@ Replace the footprint of the selected components with the footprint specified.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
 </table>
 <p>
-Replace footprint(s) from the library or buffer, in-place (preserving the original subcircuit's location, rotation and metadata). 
+Replace footprint(s) from the library or buffer, in-place (preserving the original subcircuit's location, rotation and metadata) and append the replacement to the back annotation changeset. 
 <p>
  If first argument is 
 <i>
@@ -2866,7 +2866,7 @@ object
 <i>
 dumb
 </i>
- the location and rotation of the original subcircuit is not preserved (but all metadata and board side are preserved). 
+ the location and rotation of the original subcircuit is not preserved (but all metadata and board side are preserved). A dumb replacement also omits creating back annotation. 
 </dd></dl>
 
 <h2 id="report">Report</h2>

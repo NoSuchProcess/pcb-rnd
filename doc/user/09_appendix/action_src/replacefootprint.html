@@ -1,5 +1,6 @@
 Replace footprint(s) from the library or buffer, in-place (preserving
-the original subcircuit's location, rotation and metadata).
+the original subcircuit's location, rotation and metadata) and append
+the replacement to the back annotation changeset.
 <p>
 If first argument is <i>selected</i>, replace all selected subcircuits
 with the new footprint; if it is <i>object</i>, replace only one
@@ -12,4 +13,4 @@ the user is asked for a footprint.
 <p>
 If the third argument is <i>dumb</i> the location and rotation of the
 original subcircuit is not preserved (but all metadata and board side are
-preserved).
+preserved). A dumb replacement also omits creating back annotation.
