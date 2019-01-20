@@ -383,14 +383,9 @@ int pcb_ratspatch_fexport(pcb_board_t *pcb, FILE *f, int fmt_pcb)
 static const char pcb_acts_ReplaceFootprint[] = "ReplaceFootprint([Selected|Object], [footprint])\n";
 static const char pcb_acth_ReplaceFootprint[] = "Replace the footprint of the selected components with the footprint specified.";
 
-static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static int act_replace_footprint_dst(int op, pcb_subc_t **olds)
 {
-	char *fpname = NULL;
-	int found = 0, len, changed = 0;
-	pcb_subc_t *olds = NULL, *news, *placed;
-	int op = F_Selected;
-
-	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, ReplaceFootprint, op = fgw_keyword(&argv[1]));
+	int found = 0;
 
 	switch(op) {
 		case F_Selected:
@@ -406,8 +401,7 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 
 			if (!(found)) {
 				pcb_message(PCB_MSG_ERROR, "ReplaceFootprint(Selected) called with no selection\n");
-				PCB_ACT_IRES(1);
-				return 0;
+				return 1;
 			}
 			break;
 		case F_Object:
@@ -416,17 +410,34 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 				pcb_objtype_t type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_SUBC, &ptr1, &ptr2, &ptr3);
 				if ((type != PCB_OBJ_SUBC) || (ptr1 == NULL)) {
 					pcb_message(PCB_MSG_ERROR, "ReplaceFootprint(Object): no subc under cursor\n");
-					PCB_ACT_IRES(1);
-					return 0;
+					return 1;
 				}
-				olds = ptr1;
+				*olds = ptr1;
 			}
 			break;
 
 		default:
 			pcb_message(PCB_MSG_ERROR, "ReplaceFootprint(): invalid first argument\n");
-			PCB_ACT_IRES(1);
-			return 0;
+			return 1;
+	}
+	return 0;
+}
+
+
+
+static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	char *fpname = NULL;
+	int len, changed = 0;
+	pcb_subc_t *olds = NULL, *news, *placed;
+	int op = F_Selected;
+
+	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, ReplaceFootprint, op = fgw_keyword(&argv[1]));
+
+
+	if (act_replace_footprint_dst(op, &olds) != 0) {
+		PCB_ACT_IRES(1);
+		return 0;
 	}
 
 	/* fetch the name of the new footprint */
