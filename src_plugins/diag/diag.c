@@ -411,6 +411,25 @@ static fgw_error_t pcb_act_d1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_DumpIDs[] = "DumpIDs()\n";
+static const char pcb_acth_DumpIDs[] = "Dump the ID hash";
+static fgw_error_t pcb_act_DumpIDs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_data_t *data = PCB->Data;
+	htip_entry_t *e;
+
+	for(e = htip_first(&data->id2obj); e; e = htip_next(&data->id2obj, e)) {
+		pcb_any_obj_t *o = e->value;
+		if (o == NULL)
+			printf("%ld: NULL\n", e->key);
+		else
+			printf("%ld: %p %ld %s%s\n", e->key, o, o->ID, pcb_obj_type_name(o->type), (o->ID == e->key) ? "" : " BROKEN");
+	}
+
+	PCB_ACT_IRES(0);
+	return 0;
+}
+
 #include "find.h"
 static const char pcb_acts_Find2Perf[] = "find2perf()\n";
 static const char pcb_acth_Find2Perf[] = "Measure the peformance of find2.c";
@@ -492,6 +511,7 @@ pcb_action_t diag_action_list[] = {
 	{"find2perf", pcb_act_Find2Perf, pcb_acth_Find2Perf, pcb_acts_Find2Perf},
 	{"integrity", pcb_act_integrity, integrity_help, integrity_syntax},
 	{"dumpflags", pcb_act_dumpflags, pcb_acth_dumpflags, pcb_acts_dumpflags},
+	{"dumpids", pcb_act_DumpIDs, pcb_acth_DumpIDs, pcb_acts_DumpIDs},
 	{"forcecolor", pcb_act_forcecolor, pcb_acth_forcecolor, pcb_acts_forcecolor}
 };
 
