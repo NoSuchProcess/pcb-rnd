@@ -39,6 +39,7 @@
 #include "funchash_core.h"
 #include "search.h"
 #include "undo.h"
+#include "conf_core.h"
 
 static void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t * n, int do_free);
 
@@ -426,7 +427,8 @@ static int act_replace_footprint_dst(int op, pcb_subc_t **olds)
 
 static int act_replace_footprint_src(char *fpname, pcb_subc_t **news)
 {
-	int len;
+	int len, bidx;
+	const char *what, *what2;
 
 	if (fpname == NULL) {
 		fpname = pcb_hid_prompt_for("Footprint name to use for replacement:", "", "Footprint");
@@ -438,20 +440,30 @@ static int act_replace_footprint_src(char *fpname, pcb_subc_t **news)
 	else
 		fpname = pcb_strdup(fpname);
 
-	/* check if the footprint is available */
-	pcb_buffer_load_footprint(&pcb_buffers[PCB_MAX_BUFFER-1], fpname, NULL);
-	len = pcb_subclist_length(&pcb_buffers[PCB_MAX_BUFFER-1].Data->subc);
+	if (strcmp(fpname, "@buffer") != 0) {
+		/* check if the footprint is available */
+		bidx = PCB_MAX_BUFFER-1;
+		pcb_buffer_load_footprint(&pcb_buffers[bidx], fpname, NULL);
+		what = "Footprint file ";
+		what2 = fpname;
+	}
+	else {
+		what = "Buffer";
+		what2 = "";
+		bidx = conf_core.editor.buffer_number;
+	}
+
+	len = pcb_subclist_length(&pcb_buffers[bidx].Data->subc);
 	if (len == 0) {
-		free(fpname);
-		pcb_message(PCB_MSG_ERROR, "Footprint %s contains no subcircuits", fpname);
+		pcb_message(PCB_MSG_ERROR, "%s%s contains no subcircuits\n", what, what2);
 		return 1;
 	}
+
 	if (len > 1) {
-		free(fpname);
-		pcb_message(PCB_MSG_ERROR, "Footprint %s contains multiple subcircuits", fpname);
+		pcb_message(PCB_MSG_ERROR, "%s%s contains multiple subcircuits\n", what, what2);
 		return 1;
 	}
-	*news = pcb_subclist_first(&pcb_buffers[PCB_MAX_BUFFER-1].Data->subc);
+	*news = pcb_subclist_first(&pcb_buffers[bidx].Data->subc);
 	return 0;
 }
 
