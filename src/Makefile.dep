@@ -7530,7 +7530,9 @@ rats_patch.o: rats_patch.c rats_patch.h board.h ../config.h \
  ../src_3rd/genht/ht.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h copy.h compat_misc.h compat_nls.h safe_fs.h conf.h \
- pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h
+ pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h funchash_core.h \
+ funchash.h funchash_core_list.h search.h rats.h netlist.h route_style.h \
+ undo.h ../src_3rd/libuundo/uundo.h undo_old.h
 remove.o: remove.c ../config.h conf_core.h conf.h global_typedefs.h \
  pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -8019,8 +8021,9 @@ tool_rotate.o: tool_rotate.c ../config.h conf_core.h conf.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h \
  obj_line.h obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h \
  obj_text.h font.h ../src_3rd/genht/htip.h box.h math_helper.h move.h \
- misc_util.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h rotate.h \
- compat_misc.h tool.h
+ misc_util.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h board.h \
+ vtroutestyle.h layer_grp.h library.h rats_patch.h rotate.h compat_misc.h \
+ tool.h
 tool_text.o: tool_text.c ../config.h conf_core.h conf.h global_typedefs.h \
  pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
