@@ -29,7 +29,6 @@
 + BUG: "Edit padstack shape" with work/bug_files/pstk_hole_break/polygon.lht: Edit padstack->prototype Change button on mask layer to copy shape from top copper is not OK and prints "Can't copy shape: source shape (top paste) is empty" [report: Alain]
 - BUG: footprint replace (backann): bug_files/replfp.lht, {a b f}, type 1206; action: ReplaceFootprint [report: Igor2]
 	- BUG: undo broken
-	- BUG: warnings/errors in the log
 	- BUG: shift+click replace from buffer works differently: pcb_tool_buffer_notify_mode() orig_subc
 	- would it keep a floater?
 - BUG: lesstif: {i c p}, color tab: tabbed doesn't grow [report: Igor2]
