@@ -37,6 +37,7 @@
 #include "compat_nls.h"
 #include "safe_fs.h"
 #include "funchash_core.h"
+#include "search.h"
 
 static void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t * n, int do_free);
 
@@ -386,7 +387,7 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 {
 	char *fpname = NULL;
 	int found = 0, len, changed = 0;
-	pcb_subc_t *news;
+	pcb_subc_t *olds = NULL, *news, *placed;
 	int op = F_Selected;
 
 	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, ReplaceFootprint, op = fgw_keyword(&argv[1]));
@@ -404,11 +405,24 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 			PCB_END_LOOP;
 
 			if (!(found)) {
-				pcb_message(PCB_MSG_ERROR, "ReplaceFootprint(Selected) called on\n");
+				pcb_message(PCB_MSG_ERROR, "ReplaceFootprint(Selected) called with no selection\n");
 				PCB_ACT_IRES(1);
 				return 0;
 			}
 			break;
+		case F_Object:
+			{
+				void *ptr1, *ptr2, *ptr3;
+				pcb_objtype_t type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_SUBC, &ptr1, &ptr2, &ptr3);
+				if ((type != PCB_OBJ_SUBC) || (ptr1 == NULL)) {
+					pcb_message(PCB_MSG_ERROR, "ReplaceFootprint(Object): no subc under cursor\n");
+					PCB_ACT_IRES(1);
+					return 0;
+				}
+				olds = ptr1;
+			}
+			break;
+
 		default:
 			pcb_message(PCB_MSG_ERROR, "ReplaceFootprint(): invalid first argument\n");
 			PCB_ACT_IRES(1);
@@ -450,7 +464,7 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 			/* action: replace selected elements */
 			PCB_SUBC_LOOP(PCB->Data);
 			{
-				pcb_subc_t *placed;
+
 				if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc) || (subc->refdes == NULL))
 					continue;
 				placed = pcb_subc_replace(PCB, subc, news);
@@ -460,6 +474,13 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 				}
 			}
 			PCB_END_LOOP;
+			break;
+		case F_Object:
+			placed = pcb_subc_replace(PCB, olds, news);
+			if (placed != NULL) {
+				pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_ATTRIB, placed->refdes, "footprint", fpname);
+				changed = 1;
+			}
 			break;
 	}
 
