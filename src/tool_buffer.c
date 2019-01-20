@@ -57,36 +57,15 @@ void pcb_tool_buffer_uninit(void)
 
 void pcb_tool_buffer_notify_mode(void)
 {
-	void *ptr1, *ptr2, *ptr3;
-	pcb_subc_t *orig_subc = NULL;
-	int need_redraw = 0;
-
 	if (pcb_gui->shift_is_pressed()) {
-		int type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_OBJ_SUBC, &ptr1, &ptr2, &ptr3);
-		if (type == PCB_OBJ_SUBC) {
-			orig_subc = (pcb_subc_t *) ptr1;
-			pcb_subc_remove(orig_subc);
-			need_redraw = 1;
-		}
+		pcb_actionl("ReplaceFootprint", "object", "@buffer", "dumb", NULL);
+		return;
 	}
+
 	if (pcb_buffer_copy_to_layout(PCB, pcb_crosshair.AttachedObject.tx, pcb_crosshair.AttachedObject.ty)) {
 		pcb_board_set_changed_flag(pcb_true);
-		need_redraw = 1;
-	}
-
-	if (orig_subc != NULL) {
-		int type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_OBJ_SUBC, &ptr1, &ptr2, &ptr3);
-		if (type == PCB_OBJ_SUBC && (ptr1 != NULL)) {
-			int n;
-			pcb_attribute_list_t *dst = &(((pcb_subc_t *)ptr1)->Attributes), *src = &orig_subc->Attributes;
-			for (n = 0; n < src->Number; n++)
-				if (strcmp(src->List[n].name, "footprint") != 0)
-					pcb_attribute_put(dst, src->List[n].name, src->List[n].value);
-		}
-	}
-
-	if (need_redraw)
 		pcb_gui->invalidate_all();
+	}
 }
 
 void pcb_tool_buffer_release_mode(void)
