@@ -1877,7 +1877,7 @@ const char *pcb_subc_name(pcb_subc_t *subc, const char *local_name)
 	return val;
 }
 
-pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src, pcb_bool add_undo)
+pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src, pcb_bool add_undo, pcb_bool dumb)
 {
 	pcb_data_t *data = dst->parent.data;
 	pcb_subc_t *placed;
@@ -1888,11 +1888,19 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 	assert(dst->parent_type == PCB_PARENT_DATA);
 	assert(src != NULL);
 
-	if (pcb_subc_get_origin(dst, &ox, &oy) != 0) {
-		ox = (dst->BoundingBox.X1 + dst->BoundingBox.X2) / 2;
-		oy = (dst->BoundingBox.Y1 + dst->BoundingBox.Y2) / 2;
+	if (dumb) {
+		ox = pcb_crosshair.X;
+		oy = pcb_crosshair.Y;
+		rot = 0;
 	}
-	pcb_subc_get_rotation(dst, &rot);
+	else {
+		if (pcb_subc_get_origin(dst, &ox, &oy) != 0) {
+			ox = (dst->BoundingBox.X1 + dst->BoundingBox.X2) / 2;
+			oy = (dst->BoundingBox.Y1 + dst->BoundingBox.Y2) / 2;
+		}
+		pcb_subc_get_rotation(dst, &rot);
+	}
+	
 
 	placed = pcb_subc_dup_at(pcb, data, src, ox, oy, 0);
 

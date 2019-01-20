@@ -382,7 +382,7 @@ int pcb_ratspatch_fexport(pcb_board_t *pcb, FILE *f, int fmt_pcb)
 	return pcb_rats_patch_export(pcb, pcb->NetlistPatches, !fmt_pcb, fexport_cb, &ctx);
 }
 
-static const char pcb_acts_ReplaceFootprint[] = "ReplaceFootprint([Selected|Object], [footprint])\n";
+static const char pcb_acts_ReplaceFootprint[] = "ReplaceFootprint([Selected|Object], [footprint], [dumb])\n";
 static const char pcb_acth_ReplaceFootprint[] = "Replace the footprint of the selected components with the footprint specified.";
 
 static int act_replace_footprint_dst(int op, pcb_subc_t **olds)
@@ -468,7 +468,7 @@ static int act_replace_footprint_src(char *fpname, pcb_subc_t **news)
 }
 
 
-static int act_replace_footprint(int op, pcb_subc_t *olds, pcb_subc_t *news, char *fpname)
+static int act_replace_footprint(int op, pcb_subc_t *olds, pcb_subc_t *news, char *fpname, int dumb)
 {
 	int changed = 0;
 	pcb_subc_t *placed;
@@ -481,18 +481,20 @@ static int act_replace_footprint(int op, pcb_subc_t *olds, pcb_subc_t *news, cha
 
 				if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc) || (subc->refdes == NULL))
 					continue;
-				placed = pcb_subc_replace(PCB, subc, news, pcb_true);
+				placed = pcb_subc_replace(PCB, subc, news, pcb_true, dumb);
 				if (placed != NULL) {
-					pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_ATTRIB, placed->refdes, "footprint", fpname);
+					if (!dumb)
+						pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_ATTRIB, placed->refdes, "footprint", fpname);
 					changed = 1;
 				}
 			}
 			PCB_END_LOOP;
 			break;
 		case F_Object:
-			placed = pcb_subc_replace(PCB, olds, news, pcb_true);
+			placed = pcb_subc_replace(PCB, olds, news, pcb_true, dumb);
 			if (placed != NULL) {
-				pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_ATTRIB, placed->refdes, "footprint", fpname);
+				if (!dumb)
+					pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_ATTRIB, placed->refdes, "footprint", fpname);
 				changed = 1;
 			}
 			break;
@@ -511,12 +513,11 @@ static int act_replace_footprint(int op, pcb_subc_t *olds, pcb_subc_t *news, cha
 
 static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	char *fpname = NULL;
+	char *fpname = NULL, *dumbs = NULL;
 	pcb_subc_t *olds = NULL, *news;
-	int op = F_Selected;
+	int dumb = 0, op = F_Selected;
 
 	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, ReplaceFootprint, op = fgw_keyword(&argv[1]));
-
 
 	if (act_replace_footprint_dst(op, &olds) != 0) {
 		PCB_ACT_IRES(1);
@@ -530,7 +531,12 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 		return 0;
 	}
 
-	PCB_ACT_IRES(act_replace_footprint(op, olds, news, fpname));
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, ReplaceFootprint, dumbs = argv[3].val.str);
+	if ((dumbs != NULL) && (strcmp(dumbs, "dumb") == 0))
+		dumb = 1;
+
+
+	PCB_ACT_IRES(act_replace_footprint(op, olds, news, fpname, dumb));
 	free(fpname);
 	return 0;
 }
