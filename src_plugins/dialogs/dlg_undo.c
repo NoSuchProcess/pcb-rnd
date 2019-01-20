@@ -144,6 +144,7 @@ static void pcb_dlg_undo(void)
 	/* set up the context */
 	undo_ctx.active = 1;
 
+	PCB_DAD_DEFSIZE(undo_ctx.dlg, 300, 400);
 	PCB_DAD_NEW("undo", undo_ctx.dlg, "pcb-rnd undo list", &undo_ctx, pcb_false, undo_close_cb);
 	undo_data2dlg(&undo_ctx);
 }
