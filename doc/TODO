@@ -30,7 +30,6 @@
 - BUG: footprint replace (backann): bug_files/replfp.lht, {a b f}, type 1206; action: ReplaceFootprint [report: Igor2]
 	- BUG: undo broken
 	- BUG: shift+click replace from buffer works differently: pcb_tool_buffer_notify_mode() orig_subc
-	- would it keep a floater?
 - BUG: lesstif: {i c p}, color tab: tabbed doesn't grow [report: Igor2]
 + BUG: Open an empty pcb, Edit->Board padstack prototypes , Click Edit... -> segf [report: Alain]
 - BUG: ML 2479: gtk crosshair re-enter to the last pos doesn't always draw the crossghair [report: pstuge]
