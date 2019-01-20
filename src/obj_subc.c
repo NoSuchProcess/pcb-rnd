@@ -1884,6 +1884,7 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 	pcb_coord_t ox, oy;
 	double rot = 0;
 	long int target_id;
+	int dst_on_bottom = 0, src_on_bottom = 0;
 
 	assert(dst->parent_type == PCB_PARENT_DATA);
 	assert(src != NULL);
@@ -1891,7 +1892,6 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 	if (dumb) {
 		ox = pcb_crosshair.X;
 		oy = pcb_crosshair.Y;
-		rot = 0;
 	}
 	else {
 		if (pcb_subc_get_origin(dst, &ox, &oy) != 0) {
@@ -1899,10 +1899,12 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 			oy = (dst->BoundingBox.Y1 + dst->BoundingBox.Y2) / 2;
 		}
 		pcb_subc_get_rotation(dst, &rot);
+		pcb_subc_get_side(dst, &dst_on_bottom);
 	}
 	
 
 	placed = pcb_subc_dup_at(pcb, data, src, ox, oy, 0);
+	pcb_subc_get_side(placed, &src_on_bottom);
 
 	{ /* copy attributes */
 		int n;
@@ -1918,8 +1920,14 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 	placed->ID = target_id;
 	pcb_obj_id_reg(data, placed);
 
-	if (rot != 0)
+	if (rot != 0) {
+		if (dst_on_bottom != src_on_bottom)
+			rot = -rot;
 		pcb_subc_rotate(placed, ox, oy, cos(rot / PCB_RAD_TO_DEG), sin(rot / PCB_RAD_TO_DEG), rot);
+	}
+
+	if (dst_on_bottom != src_on_bottom)
+		pcb_subc_change_side(placed, 2 * oy - PCB->MaxHeight);
 
 	if (add_undo)
 		pcb_undo_add_obj_to_create(PCB_OBJ_SUBC, placed, placed, placed);
