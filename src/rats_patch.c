@@ -456,7 +456,7 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 		pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_ATTRIB, subc->refdes, "footprint", fpname);
 		{ /* copy attributes */
 			int n;
-			pcb_attribute_list_t *dst = &news->Attributes, *src = &subc->Attributes;
+			pcb_attribute_list_t *dst = &placed->Attributes, *src = &subc->Attributes;
 			for (n = 0; n < src->Number; n++)
 				if (strcmp(src->List[n].name, "footprint") != 0)
 					pcb_attribute_put(dst, src->List[n].name, src->List[n].value);
