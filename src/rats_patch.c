@@ -384,6 +384,7 @@ int pcb_ratspatch_fexport(pcb_board_t *pcb, FILE *f, int fmt_pcb)
 
 static const char pcb_acts_ReplaceFootprint[] = "ReplaceFootprint([Selected|Object], [footprint], [dumb])\n";
 static const char pcb_acth_ReplaceFootprint[] = "Replace the footprint of the selected components with the footprint specified.";
+/* DOC: replacefootprint.html */
 
 static int act_replace_footprint_dst(int op, pcb_subc_t **olds)
 {
