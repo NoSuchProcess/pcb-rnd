@@ -38,6 +38,7 @@
 #include "safe_fs.h"
 #include "funchash_core.h"
 #include "search.h"
+#include "undo.h"
 
 static void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t * n, int do_free);
 
