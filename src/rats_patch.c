@@ -459,9 +459,10 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 	}
 	news = pcb_subclist_first(&pcb_buffers[PCB_MAX_BUFFER-1].Data->subc);
 
+	/* action: replace selected elements */
+	pcb_undo_save_serial();
 	switch(op) {
 		case F_Selected:
-			/* action: replace selected elements */
 			PCB_SUBC_LOOP(PCB->Data);
 			{
 
@@ -484,8 +485,13 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 			break;
 	}
 
-	if (changed)
+
+	pcb_undo_restore_serial();
+	if (changed) {
+		pcb_undo_inc_serial();
 		pcb_gui->invalidate_all();
+	}
+
 	free(fpname);
 	PCB_ACT_IRES(0);
 	return 0;
