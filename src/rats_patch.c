@@ -423,12 +423,43 @@ static int act_replace_footprint_dst(int op, pcb_subc_t **olds)
 	return 0;
 }
 
+static int act_replace_footprint_src(char *fpname, pcb_subc_t **news)
+{
+	int len;
+
+	if (fpname == NULL) {
+		fpname = pcb_hid_prompt_for("Footprint name to use for replacement:", "", "Footprint");
+		if (fpname == NULL) {
+			pcb_message(PCB_MSG_ERROR, "No footprint name supplied\n");
+			return 1;
+		}
+	}
+	else
+		fpname = pcb_strdup(fpname);
+
+	/* check if the footprint is available */
+	pcb_buffer_load_footprint(&pcb_buffers[PCB_MAX_BUFFER-1], fpname, NULL);
+	len = pcb_subclist_length(&pcb_buffers[PCB_MAX_BUFFER-1].Data->subc);
+	if (len == 0) {
+		free(fpname);
+		pcb_message(PCB_MSG_ERROR, "Footprint %s contains no subcircuits", fpname);
+		return 1;
+	}
+	if (len > 1) {
+		free(fpname);
+		pcb_message(PCB_MSG_ERROR, "Footprint %s contains multiple subcircuits", fpname);
+		return 1;
+	}
+	*news = pcb_subclist_first(&pcb_buffers[PCB_MAX_BUFFER-1].Data->subc);
+	return 0;
+}
+
 
 
 static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char *fpname = NULL;
-	int len, changed = 0;
+	int changed = 0;
 	pcb_subc_t *olds = NULL, *news, *placed;
 	int op = F_Selected;
 
@@ -442,33 +473,10 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 
 	/* fetch the name of the new footprint */
 	PCB_ACT_MAY_CONVARG(2, FGW_STR, ReplaceFootprint, fpname = pcb_strdup(argv[2].val.str));
-	if (fpname == NULL) {
-		fpname = pcb_hid_prompt_for("Footprint name to use for replacement:", "", "Footprint");
-		if (fpname == NULL) {
-			pcb_message(PCB_MSG_ERROR, "No footprint name supplied\n");
-			PCB_ACT_IRES(1);
-			return 0;
-		}
-	}
-	else
-		fpname = pcb_strdup(fpname);
-
-	/* check if the footprint is available */
-	pcb_buffer_load_footprint(&pcb_buffers[PCB_MAX_BUFFER-1], fpname, NULL);
-	len = pcb_subclist_length(&pcb_buffers[PCB_MAX_BUFFER-1].Data->subc);
-	if (len == 0) {
-		free(fpname);
-		pcb_message(PCB_MSG_ERROR, "Footprint %s contains no subcircuits", fpname);
+	if (act_replace_footprint_src(fpname, &news) != 0) {
 		PCB_ACT_IRES(1);
 		return 0;
 	}
-	if (len > 1) {
-		free(fpname);
-		pcb_message(PCB_MSG_ERROR, "Footprint %s contains multiple subcircuits", fpname);
-		PCB_ACT_IRES(1);
-		return 0;
-	}
-	news = pcb_subclist_first(&pcb_buffers[PCB_MAX_BUFFER-1].Data->subc);
 
 	/* action: replace selected elements */
 	pcb_undo_save_serial();
