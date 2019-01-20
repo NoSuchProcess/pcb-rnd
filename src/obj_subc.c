@@ -1877,7 +1877,7 @@ const char *pcb_subc_name(pcb_subc_t *subc, const char *local_name)
 	return val;
 }
 
-pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src)
+pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src, pcb_bool add_undo)
 {
 	pcb_data_t *data = dst->parent.data;
 	pcb_subc_t *placed;
@@ -1912,6 +1912,10 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src)
 
 	if (rot != 0)
 		pcb_subc_rotate(placed, ox, oy, cos(rot / PCB_RAD_TO_DEG), sin(rot / PCB_RAD_TO_DEG), rot);
+
+	if (add_undo)
+		pcb_undo_add_obj_to_create(PCB_OBJ_SUBC, placed, placed, placed);
+
 
 	return placed;
 }

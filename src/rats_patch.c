@@ -468,7 +468,7 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 
 				if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc) || (subc->refdes == NULL))
 					continue;
-				placed = pcb_subc_replace(PCB, subc, news);
+				placed = pcb_subc_replace(PCB, subc, news, pcb_true);
 				if (placed != NULL) {
 					pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_ATTRIB, placed->refdes, "footprint", fpname);
 					changed = 1;
@@ -477,7 +477,7 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 			PCB_END_LOOP;
 			break;
 		case F_Object:
-			placed = pcb_subc_replace(PCB, olds, news);
+			placed = pcb_subc_replace(PCB, olds, news, pcb_true);
 			if (placed != NULL) {
 				pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_ATTRIB, placed->refdes, "footprint", fpname);
 				changed = 1;
