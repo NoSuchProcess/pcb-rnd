@@ -36,6 +36,7 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "safe_fs.h"
+#include "funchash_core.h"
 
 static void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t * n, int do_free);
 
@@ -378,7 +379,7 @@ int pcb_ratspatch_fexport(pcb_board_t *pcb, FILE *f, int fmt_pcb)
 	return pcb_rats_patch_export(pcb, pcb->NetlistPatches, !fmt_pcb, fexport_cb, &ctx);
 }
 
-static const char pcb_acts_ReplaceFootprint[] = "ReplaceFootprint()\n";
+static const char pcb_acts_ReplaceFootprint[] = "ReplaceFootprint([Selected|Object], [footprint])\n";
 static const char pcb_acth_ReplaceFootprint[] = "Replace the footprint of the selected components with the footprint specified.";
 
 static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -386,25 +387,36 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 	char *fpname = NULL;
 	int found = 0, len, changed = 0;
 	pcb_subc_t *news;
+	int op = F_Selected;
 
-	/* check if we have elements selected and quit if not */
-	PCB_SUBC_LOOP(PCB->Data);
-	{
-		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc) && (subc->refdes != NULL)) {
-			found = 1;
+	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, ReplaceFootprint, op = fgw_keyword(&argv[1]));
+
+	switch(op) {
+		case F_Selected:
+			/* check if we have elements selected and quit if not */
+			PCB_SUBC_LOOP(PCB->Data);
+			{
+				if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc) && (subc->refdes != NULL)) {
+					found = 1;
+					break;
+				}
+			}
+			PCB_END_LOOP;
+
+			if (!(found)) {
+				pcb_message(PCB_MSG_ERROR, "ReplaceFootprint(Selected) called on\n");
+				PCB_ACT_IRES(1);
+				return 0;
+			}
 			break;
-		}
-	}
-	PCB_END_LOOP;
-
-	if (!(found)) {
-		pcb_message(PCB_MSG_ERROR, "ReplaceFootprint works on selected subcircuits with refdes, please select subcircuits first!\n");
-		PCB_ACT_IRES(1);
-		return 0;
+		default:
+			pcb_message(PCB_MSG_ERROR, "ReplaceFootprint(): invalid first argument\n");
+			PCB_ACT_IRES(1);
+			return 0;
 	}
 
 	/* fetch the name of the new footprint */
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, ReplaceFootprint, fpname = pcb_strdup(argv[1].val.str));
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, ReplaceFootprint, fpname = pcb_strdup(argv[2].val.str));
 	if (fpname == NULL) {
 		fpname = pcb_hid_prompt_for("Footprint name to use for replacement:", "", "Footprint");
 		if (fpname == NULL) {
@@ -433,19 +445,23 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 	}
 	news = pcb_subclist_first(&pcb_buffers[PCB_MAX_BUFFER-1].Data->subc);
 
-	/* action: replace selected elements */
-	PCB_SUBC_LOOP(PCB->Data);
-	{
-		pcb_subc_t *placed;
-		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc) || (subc->refdes == NULL))
-			continue;
-		placed = pcb_subc_replace(PCB, subc, news);
-		if (placed != NULL) {
-			pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_ATTRIB, placed->refdes, "footprint", fpname);
-			changed = 1;
-		}
+	switch(op) {
+		case F_Selected:
+			/* action: replace selected elements */
+			PCB_SUBC_LOOP(PCB->Data);
+			{
+				pcb_subc_t *placed;
+				if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc) || (subc->refdes == NULL))
+					continue;
+				placed = pcb_subc_replace(PCB, subc, news);
+				if (placed != NULL) {
+					pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_ATTRIB, placed->refdes, "footprint", fpname);
+					changed = 1;
+				}
+			}
+			PCB_END_LOOP;
+			break;
 	}
-	PCB_END_LOOP;
 
 	if (changed)
 		pcb_gui->invalidate_all();
