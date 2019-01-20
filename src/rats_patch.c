@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2015 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2015..2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -378,7 +378,6 @@ int pcb_ratspatch_fexport(pcb_board_t *pcb, FILE *f, int fmt_pcb)
 	return pcb_rats_patch_export(pcb, pcb->NetlistPatches, !fmt_pcb, fexport_cb, &ctx);
 }
 
-
 static const char pcb_acts_ReplaceFootprint[] = "ReplaceFootprint()\n";
 static const char pcb_acth_ReplaceFootprint[] = "Replace the footprint of the selected components with the footprint specified.";
 
@@ -386,7 +385,7 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 {
 	char *fpname = NULL;
 	int found = 0, len, changed = 0;
-	pcb_subc_t *news, *placed;
+	pcb_subc_t *news;
 
 	/* check if we have elements selected and quit if not */
 	PCB_SUBC_LOOP(PCB->Data);
@@ -437,40 +436,14 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 	/* action: replace selected elements */
 	PCB_SUBC_LOOP(PCB->Data);
 	{
-		pcb_coord_t ox, oy;
-		double rot = 0;
-		long int target_id;
-
+		pcb_subc_t *placed;
 		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc) || (subc->refdes == NULL))
 			continue;
-
-		if (pcb_subc_get_origin(subc, &ox, &oy) != 0) {
-			ox = (subc->BoundingBox.X1 + subc->BoundingBox.X2) / 2;
-			oy = (subc->BoundingBox.Y1 + subc->BoundingBox.Y2) / 2;
+		placed = pcb_subc_replace(PCB, subc, news);
+		if (placed != NULL) {
+			pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_ATTRIB, placed->refdes, "footprint", fpname);
+			changed = 1;
 		}
-		pcb_subc_get_rotation(subc, &rot);
-
-
-		placed = pcb_subc_dup_at(PCB, PCB->Data, news, ox, oy, 0);
-
-		pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_ATTRIB, subc->refdes, "footprint", fpname);
-		{ /* copy attributes */
-			int n;
-			pcb_attribute_list_t *dst = &placed->Attributes, *src = &subc->Attributes;
-			for (n = 0; n < src->Number; n++)
-				if (strcmp(src->List[n].name, "footprint") != 0)
-					pcb_attribute_put(dst, src->List[n].name, src->List[n].value);
-		}
-		target_id = subc->ID;
-		pcb_subc_remove(subc);
-
-		pcb_obj_id_del(PCB->Data, placed);
-		placed->ID = target_id;
-		pcb_obj_id_reg(PCB->Data, placed);
-
-		if (rot != 0)
-			pcb_subc_rotate(placed, ox, oy, cos(rot / PCB_RAD_TO_DEG), sin(rot / PCB_RAD_TO_DEG), rot);
-		changed = 1;
 	}
 	PCB_END_LOOP;
 
