@@ -1,0 +1,15 @@
+Replace footprint(s) from the library or buffer, in-place (preserving
+the original subcircuit's location, rotation and metadata).
+<p>
+If first argument is <i>selected</i>, replace all selected subcircuits
+with the new footprint; if it is <i>object</i>, replace only one
+subcircuit, under the cursor.
+<p>
+If the second argument is a footprint name, load it from the library.
+If it is <i>@buffer</i>, use the subcircuit in the current buffer (there
+must be exactly 1 subcircuit in the buffer). If it is empty or not specified,
+the user is asked for a footprint.
+<p>
+If the third argument is <i>dumb</i> the location and rotation of the
+original subcircuit is not preserved (but all metadata and board side are
+preserved).
