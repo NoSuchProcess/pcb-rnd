@@ -1877,35 +1877,34 @@ const char *pcb_subc_name(pcb_subc_t *subc, const char *local_name)
 	return val;
 }
 
-pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *subc, pcb_subc_t *news)
+pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src)
 {
-	pcb_data_t *data = subc->parent.data;
-
+	pcb_data_t *data = dst->parent.data;
 	pcb_subc_t *placed;
 	pcb_coord_t ox, oy;
 	double rot = 0;
 	long int target_id;
 
-	assert(subc->parent_type == PCB_PARENT_DATA);
-	assert(news != NULL);
+	assert(dst->parent_type == PCB_PARENT_DATA);
+	assert(src != NULL);
 
-	if (pcb_subc_get_origin(subc, &ox, &oy) != 0) {
-		ox = (subc->BoundingBox.X1 + subc->BoundingBox.X2) / 2;
-		oy = (subc->BoundingBox.Y1 + subc->BoundingBox.Y2) / 2;
+	if (pcb_subc_get_origin(dst, &ox, &oy) != 0) {
+		ox = (dst->BoundingBox.X1 + dst->BoundingBox.X2) / 2;
+		oy = (dst->BoundingBox.Y1 + dst->BoundingBox.Y2) / 2;
 	}
-	pcb_subc_get_rotation(subc, &rot);
+	pcb_subc_get_rotation(dst, &rot);
 
-	placed = pcb_subc_dup_at(pcb, data, news, ox, oy, 0);
+	placed = pcb_subc_dup_at(pcb, data, src, ox, oy, 0);
 
 	{ /* copy attributes */
 		int n;
-		pcb_attribute_list_t *dst = &placed->Attributes, *src = &subc->Attributes;
-		for (n = 0; n < src->Number; n++)
-			if (strcmp(src->List[n].name, "footprint") != 0)
-				pcb_attribute_put(dst, src->List[n].name, src->List[n].value);
+		pcb_attribute_list_t *adst = &placed->Attributes, *asrc = &dst->Attributes;
+		for (n = 0; n < asrc->Number; n++)
+			if (strcmp(asrc->List[n].name, "footprint") != 0)
+				pcb_attribute_put(adst, asrc->List[n].name, asrc->List[n].value);
 	}
-	target_id = subc->ID;
-	pcb_subc_remove(subc);
+	target_id = dst->ID;
+	pcb_subc_remove(dst);
 
 	pcb_obj_id_del(data, placed);
 	placed->ID = target_id;
