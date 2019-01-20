@@ -456,30 +456,11 @@ static int act_replace_footprint_src(char *fpname, pcb_subc_t **news)
 }
 
 
-
-static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static int act_replace_footprint(int op, pcb_subc_t *olds, pcb_subc_t *news, char *fpname)
 {
-	char *fpname = NULL;
 	int changed = 0;
-	pcb_subc_t *olds = NULL, *news, *placed;
-	int op = F_Selected;
+	pcb_subc_t *placed;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, ReplaceFootprint, op = fgw_keyword(&argv[1]));
-
-
-	if (act_replace_footprint_dst(op, &olds) != 0) {
-		PCB_ACT_IRES(1);
-		return 0;
-	}
-
-	/* fetch the name of the new footprint */
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, ReplaceFootprint, fpname = pcb_strdup(argv[2].val.str));
-	if (act_replace_footprint_src(fpname, &news) != 0) {
-		PCB_ACT_IRES(1);
-		return 0;
-	}
-
-	/* action: replace selected elements */
 	pcb_undo_save_serial();
 	switch(op) {
 		case F_Selected:
@@ -511,9 +492,34 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 		pcb_undo_inc_serial();
 		pcb_gui->invalidate_all();
 	}
+	return 0;
+}
 
+
+
+static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	char *fpname = NULL;
+	pcb_subc_t *olds = NULL, *news;
+	int op = F_Selected;
+
+	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, ReplaceFootprint, op = fgw_keyword(&argv[1]));
+
+
+	if (act_replace_footprint_dst(op, &olds) != 0) {
+		PCB_ACT_IRES(1);
+		return 0;
+	}
+
+	/* fetch the name of the new footprint */
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, ReplaceFootprint, fpname = pcb_strdup(argv[2].val.str));
+	if (act_replace_footprint_src(fpname, &news) != 0) {
+		PCB_ACT_IRES(1);
+		return 0;
+	}
+
+	PCB_ACT_IRES(act_replace_footprint(op, olds, news, fpname));
 	free(fpname);
-	PCB_ACT_IRES(0);
 	return 0;
 }
 
