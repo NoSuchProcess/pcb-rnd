@@ -63,6 +63,10 @@ typedef struct {
 	pcb_coord_t width;
 	pcb_coord_t height;
 
+	unsigned use_max_pcb:1; /* when 1, use PCB->Max*; when 0, use the following two: */
+	pcb_coord_t max_width;
+	pcb_coord_t max_height;
+
 	gint canvas_width, canvas_height;
 
 	gboolean has_entered;

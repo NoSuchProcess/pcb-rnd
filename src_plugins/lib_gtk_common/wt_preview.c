@@ -82,6 +82,11 @@ void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const pcb_box_t *data_vi
 	preview->view.width = data_view->X2 - data_view->X1;
 	preview->view.height = data_view->Y2 - data_view->Y1;
 
+	if (preview->view.width > preview->view.max_width)
+		preview->view.max_width = preview->view.width;
+	if (preview->view.height > preview->view.max_height)
+		preview->view.max_height = preview->view.height;
+
 	pcb_gtk_zoom_view_win(&preview->view, data_view->X1, data_view->Y1, data_view->X2, data_view->Y2);
 	pcb_gtk_preview_update_x0y0(preview);
 	preview->com->pan_common = orig;
@@ -462,6 +467,9 @@ TODO(": maybe expose these through the object API so the caller can set it up?")
 	memset(&prv->view, 0, sizeof(prv->view));
 	prv->view.width = PCB_MM_TO_COORD(110);
 	prv->view.height = PCB_MM_TO_COORD(110);
+	prv->view.use_max_pcb = 0;
+	prv->view.max_width = PCB_MM_TO_COORD(110);
+	prv->view.max_height = PCB_MM_TO_COORD(110);
 	prv->view.coord_per_px = PCB_MM_TO_COORD(0.25);
 	prv->view.com = com;
 
@@ -496,6 +504,8 @@ void pcb_gtk_preview_board_zoomto(pcb_gtk_preview_t *p, pcb_coord_t x1, pcb_coor
 	/* just in case the size has changed meanwhile */
 	p->view.height = PCB->MaxHeight;
 	p->view.width = PCB->MaxWidth;
+	p->view.max_height = PCB->MaxHeight;
+	p->view.max_width = PCB->MaxWidth;
 	p->view.canvas_width = canvas_width;
 	p->view.canvas_height = canvas_height;
 

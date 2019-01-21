@@ -253,6 +253,7 @@ int gtkhid_parse_arguments(int *argc, char ***argv)
 
 
 	gport = &ghid_port;
+	gport->view.use_max_pcb = 1;
 	gport->view.coord_per_px = 300.0;
 	pcb_pixel_slop = 300;
 

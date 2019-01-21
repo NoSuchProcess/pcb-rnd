@@ -74,9 +74,17 @@ static void pcb_gtk_pan_common(pcb_gtk_view_t *v)
 	/* Don't pan so far the board is completely off the screen */
 	v->x0 = MAX(-v->width, v->x0);
 	v->y0 = MAX(-v->height, v->y0);
-TODO(": #gtkzoom: do not use PCB sizes here, as we may be in a preview")
-	v->x0 = MIN(v->x0, PCB->MaxWidth);
-	v->y0 = MIN(v->y0, PCB->MaxHeight);
+
+	if (v->use_max_pcb) {
+		v->x0 = MIN(v->x0, PCB->MaxWidth);
+		v->y0 = MIN(v->y0, PCB->MaxHeight);
+	}
+	else {
+		assert(v->max_width > 0);
+		assert(v->max_height > 0);
+		v->x0 = MIN(v->x0, v->max_width);
+		v->y0 = MIN(v->y0, v->max_height);
+	}
 
 	/* Fix up noted event coordinates to match where we clamped. Alternatively
 	 * we could call ghid_note_event_location (NULL); to get a new pointer
