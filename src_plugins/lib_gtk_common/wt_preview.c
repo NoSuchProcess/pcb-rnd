@@ -95,9 +95,15 @@ void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const pcb_box_t *data_vi
 
 void pcb_gtk_preview_zoom_cursor(pcb_gtk_preview_t *preview, pcb_coord_t cx, pcb_coord_t cy, int wx, int wy, double coord_per_px)
 {
-	void (*orig)(void) = preview->com->pan_common;
-	preview->com->pan_common = NULL; /* avoid pan logic for the main window */
+	void (*orig)(void);
 
+	coord_per_px = pcb_gtk_clamp_zoom(&preview->view, coord_per_px);
+
+	if (coord_per_px == preview->view.coord_per_px)
+		return;
+
+	orig = preview->com->pan_common;
+	preview->com->pan_common = NULL; /* avoid pan logic for the main window */
 	preview->view.coord_per_px = coord_per_px;
 
 	preview->view.width = preview->view.canvas_width * preview->view.coord_per_px;
