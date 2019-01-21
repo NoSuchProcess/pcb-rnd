@@ -36,7 +36,7 @@
 ? BUG: scconfig: if libgd is not detected, there's an extra error on disable-gd-gif [report: Erich]
 + BUG: assertion with --debug,  open pcb-rnd, place via, open the padstackedit dialog for the via, go to generate common geometry, choose square copper shape, click 'generate' [report: Miloh]
 ? BUG: configure without glib installed -> 'unknown arugment disable-gtk' [report: Ade]
-- BUG: Adding a new route style via the route-style dialog doesn't update the menu (Edit->Route Style). [report: Ade]
++ BUG: Adding a new route style via the route-style dialog doesn't update the menu (Edit->Route Style). [report: Ade]
 + BUG: Load a footprint using the library dialog {w l} into the buffer. Flip the board with the tab key and the refdes border in the buffer object flips vertically the wrong way. Only occurs when loading footprint, not when copying. [report: Ade]
 + BUG: gtk coord entry: right click, change units fail [report: Alain] -> submenu removed, we will have this feature back after the DAD rewrite
 ? BUG: #define TODO(x) doesn't compile on IRIX system with --debug option ON [report: Ian]
