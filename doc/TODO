@@ -5,7 +5,6 @@
 + BUG: boardflip() action moves the objects and doesn't move the subc outline and origin (repro: place single part, run boardflip) [report:Miloh]
 + FEATURE: export_xy: pnp origin should be any obj, especially padstacks (fidu) [report: TwisteR]
 + BUG: portability: don't use export in trunk/doc/user/Makefile [report: Vuokko]
-- BUG: search for #gtkzoom in lib_gtk_common; bug reprod: set pcb height to 50 mil, {w l} -> zooms are off because of the clamp [report: Igor2]
 - BUG: preview zoom doesn't work (e.g. on csect) [report: Alain]
 + CLEANUP: dad: make the implicit dialog ok/cancel buttons configurable or do not use them at all; e.g. export dialog is confusing [report: Cyril, ml2409]
 + FEATURE: make default refdes attribute (after footprint conversion) configurable; probably make the set of initial attributes configurable [report: Ade]
