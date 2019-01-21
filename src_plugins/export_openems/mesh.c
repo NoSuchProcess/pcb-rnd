@@ -47,6 +47,7 @@ typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	int dens_obj, dens_gap, min_space, smooth, hor, ver, noimpl;
 	int bnd[6], subslines, air_top, air_bot, dens_air, smoothz, max_air, def_subs_thick, def_copper_thick;
+	unsigned active:1;
 } mesh_dlg_t;
 static mesh_dlg_t ia;
 
@@ -755,6 +756,9 @@ int pcb_mesh_interactive(void)
 	int n;
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
+	if (ia.active)
+		return;
+
 	PCB_DAD_BEGIN_VBOX(ia.dlg);
 		PCB_DAD_BEGIN_HBOX(ia.dlg);
 			PCB_DAD_BEGIN_VBOX(ia.dlg);
@@ -907,6 +911,7 @@ int pcb_mesh_interactive(void)
 	PCB_DAD_END(ia.dlg);
 
 	PCB_DAD_NEW("mesh", ia.dlg, "mesher", &ia, 0, ia_close_cb);
+	ia.active = 1;
 
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_obj, coord_value, PCB_MM_TO_COORD(0.15));
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_gap, coord_value, PCB_MM_TO_COORD(0.5));
