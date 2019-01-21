@@ -42,6 +42,7 @@
 #include "board.h"
 #include "conf_core.h"
 #include "error.h"
+#include "event.h"
 
 #include "dlg_route_style.h"
 #include "wt_coord_entry.h"
@@ -455,6 +456,9 @@ void pcb_gtk_route_style_edit_dialog(pcb_gtk_common_t *com, pcb_gtk_route_style_
 			pcb_board_set_changed_flag(pcb_true);
 			com->window_set_name_label(PCB->Name);
 		}
+
+		if (changed || need_rebuild)
+			pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 	}
 	else {
 	cancel:;
