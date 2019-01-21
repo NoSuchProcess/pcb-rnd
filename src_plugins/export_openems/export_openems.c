@@ -610,7 +610,7 @@ void openems_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options)
 	fprintf(wctx.f, "%%%%%% Copper objects\n");
 	pcb_hid_expose_all(&openems_hid, &ctx, NULL);
 
-	fprintf(wctx.f, "%%%%%% Testpoints on terminals\n");
+	fprintf(wctx.f, "%%%%%% Port(s) on terminals\n");
 	openems_write_testpoints(&wctx, wctx.pcb->Data);
 
 	conf_update(NULL, -1); /* restore forced sets */
