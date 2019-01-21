@@ -74,6 +74,9 @@ static void ghid_gui_sync(void *user_data, int argc, pcb_event_arg_t argv[])
 	ghid_invalidate_all();
 	ghidgui->common.window_set_name_label(PCB->Name);
 	ghidgui->common.set_status_line_label();
+
+	/* Sync menu checkboxes */
+	ghid_update_toggle_flags(&ghidgui->topwin, NULL);
 }
 
 static void ghid_gui_sync_status(void *user_data, int argc, pcb_event_arg_t argv[])
