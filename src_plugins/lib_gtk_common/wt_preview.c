@@ -92,7 +92,8 @@ void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const pcb_box_t *data_vi
 	preview->com->pan_common = orig;
 }
 
-
+/* modify the zoom level to coord_per_px (clamped), keeping window cursor
+   position wx;wy at perview pcb_coord_t position cx;cy */
 void pcb_gtk_preview_zoom_cursor(pcb_gtk_preview_t *preview, pcb_coord_t cx, pcb_coord_t cy, int wx, int wy, double coord_per_px)
 {
 	void (*orig)(void);
