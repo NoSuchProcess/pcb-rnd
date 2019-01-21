@@ -6,6 +6,7 @@
 + FEATURE: export_xy: pnp origin should be any obj, especially padstacks (fidu) [report: TwisteR]
 + BUG: portability: don't use export in trunk/doc/user/Makefile [report: Vuokko]
 - BUG: search for #gtkzoom in lib_gtk_common; bug reprod: set pcb height to 50 mil, {w l} -> zooms are off because of the clamp [report: Igor2]
+- BUG: preview zoom doesn't work (e.g. on csect) [report: Alain]
 + CLEANUP: dad: make the implicit dialog ok/cancel buttons configurable or do not use them at all; e.g. export dialog is confusing [report: Cyril, ml2409]
 + FEATURE: make default refdes attribute (after footprint conversion) configurable; probably make the set of initial attributes configurable [report: Ade]
 	-> editor.subc_conv_refdes
@@ -23,11 +24,12 @@
 		+ BUG: preferences() crashes if lesstif GUI is compiled but gtk is not (missing gtk-only conf settings) [report: rqsall]
 		- BUG: Repeadtedly open preferences and select editor->mode. Eventually it may segfault. Sometimes the value changes without changing mode [report: Ade]
 	- BUG: lesstif: preferences(layers): EXPFILL doesn't seem to work
+- BUG: lesstif: {i c p}, color tab: tabbed doesn't grow [report: Igor2]
+- BUG: lesstif: {i c p} -> crash, only on IRIX system [report: Ian]
 + BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
 - BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
 - BUG: bug_files/obsconf.lht: load, get a warning for obsolete config; save into a new file and the broken conf node is not removed [report: keantoken]
 + BUG: "Edit padstack shape" with work/bug_files/pstk_hole_break/polygon.lht: Edit padstack->prototype Change button on mask layer to copy shape from top copper is not OK and prints "Can't copy shape: source shape (top paste) is empty" [report: Alain]
-- BUG: lesstif: {i c p}, color tab: tabbed doesn't grow [report: Igor2]
 + BUG: Open an empty pcb, Edit->Board padstack prototypes , Click Edit... -> segf [report: Alain]
 - BUG: ML 2479: gtk crosshair re-enter to the last pos doesn't always draw the crossghair [report: pstuge]
 - BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
@@ -39,8 +41,6 @@
 - BUG: Adding a new route style via the route-style dialog doesn't update the menu (Edit->Route Style). [report: Ade]
 + BUG: Load a footprint using the library dialog {w l} into the buffer. Flip the board with the tab key and the refdes border in the buffer object flips vertically the wrong way. Only occurs when loading footprint, not when copying. [report: Ade]
 + BUG: gtk coord entry: right click, change units fail [report: Alain] -> submenu removed, we will have this feature back after the DAD rewrite
-- BUG: preview zoom doesn't work (e.g. on csect) [report: Alain]
-- BUG: lesstif: {i c p} -> crash, only on IRIX system [report: Ian]
 ? BUG: #define TODO(x) doesn't compile on IRIX system with --debug option ON [report: Ian]
 - BUG: find.c: bug_files/find_slotcop.lht: plated slot should connect to any copper layer object it is going thru ml2571 [report: Igor2]
 
