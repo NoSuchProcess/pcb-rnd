@@ -250,6 +250,7 @@ TODO(": some of these should be in core")
 	dialog->inhibit_style_change = 0;
 	pcb_gtk_route_style_select_style(dialog->rss, &pcb_custom_route_style);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(dialog->select_box), 0);
+	pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 }
 
 static void _table_attach_(GtkWidget *table, gint row, const gchar *label, GtkWidget *entry)
