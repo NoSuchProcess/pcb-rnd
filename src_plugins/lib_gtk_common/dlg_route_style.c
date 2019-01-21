@@ -458,8 +458,10 @@ void pcb_gtk_route_style_edit_dialog(pcb_gtk_common_t *com, pcb_gtk_route_style_
 			com->window_set_name_label(PCB->Name);
 		}
 
-		if (changed || need_rebuild)
+		if (changed || need_rebuild) {
 			pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
+			pcb_event(PCB_EVENT_GUI_SYNC, NULL); /* get the menu checkbox updated */
+		}
 	}
 	else {
 	cancel:;
