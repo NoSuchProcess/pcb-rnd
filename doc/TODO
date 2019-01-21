@@ -10,7 +10,6 @@
 + FEATURE: make default refdes attribute (after footprint conversion) configurable; probably make the set of initial attributes configurable [report: Ade]
 	-> editor.subc_conv_refdes
 - DOC: view list: document the view lht format
-- BUG: view list: xor draw stops working after the first preview (drc!)
 + FEATURE: make propset() able to change board properties if first arg is "board" (change baord size) [report: rqsall]
 + FEATURE: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
 + FEATURE: padstack editor: indicate if a proto layer does not map to current board layer [report: Erich]
