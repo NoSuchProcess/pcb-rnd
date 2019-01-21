@@ -4,8 +4,8 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
- *  pcb-rnd Copyright (C) 2017,2018 Tibor 'Igor2' Palinkas
  *  pcb-rnd Copyright (C) 2017 Alain Vigne
+ *  pcb-rnd Copyright (C) 2017..2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -92,6 +92,33 @@ void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const pcb_box_t *data_vi
 	preview->com->pan_common = orig;
 }
 
+
+void pcb_gtk_preview_zoom_cursor(pcb_gtk_preview_t *preview, pcb_coord_t cx, pcb_coord_t cy, int wx, int wy, double coord_per_px)
+{
+	void (*orig)(void) = preview->com->pan_common;
+	preview->com->pan_common = NULL; /* avoid pan logic for the main window */
+
+	preview->view.coord_per_px = coord_per_px;
+
+	preview->view.width = preview->view.canvas_width * preview->view.coord_per_px;
+	preview->view.height = preview->view.canvas_height * preview->view.coord_per_px;
+
+	if (preview->view.width > preview->view.max_width)
+		preview->view.max_width = preview->view.width;
+	if (preview->view.height > preview->view.max_height)
+		preview->view.max_height = preview->view.height;
+
+	preview->view.x0 = cx - wx * preview->view.coord_per_px;
+	preview->view.y0 = cy - wy * preview->view.coord_per_px;
+
+	pcb_gtk_preview_update_x0y0(preview);
+	preview->com->pan_common = orig;
+}
+
+void pcb_gtk_preview_zoom_cursor_rel(pcb_gtk_preview_t *preview, pcb_coord_t cx, pcb_coord_t cy, int wx, int wy, double factor)
+{
+	pcb_gtk_preview_zoom_cursor(preview, cx, cy, wx, wy, preview->view.coord_per_px * factor);
+}
 
 static void preview_set_view(pcb_gtk_preview_t *preview)
 {
@@ -317,10 +344,10 @@ static gboolean button_press(GtkWidget *w, pcb_hid_cfg_mod_t btn)
 		preview->grabmot = 0;
 		break;
 	case PCB_MB_SCROLL_UP:
-		pcb_gtk_zoom_view_rel(&preview->view, 0, 0, 0.8);
+		pcb_gtk_preview_zoom_cursor_rel(preview, cx, cy, wx, wy, 0.8);
 		goto do_zoom;
 	case PCB_MB_SCROLL_DOWN:
-		pcb_gtk_zoom_view_rel(&preview->view, 0, 0, 1.25);
+		pcb_gtk_preview_zoom_cursor_rel(preview, cx, cy, wx, wy, 1.25);
 		goto do_zoom;
 	default:
 		return FALSE;
@@ -328,9 +355,6 @@ static gboolean button_press(GtkWidget *w, pcb_hid_cfg_mod_t btn)
 	return FALSE;
 
 do_zoom:;
-	preview->view.x0 = cx - (preview->view.canvas_width / 2) * preview->view.coord_per_px;
-	preview->view.y0 = cy - (preview->view.canvas_height / 2) * preview->view.coord_per_px;
-	pcb_gtk_preview_update_x0y0(preview);
 	update_expose_data(preview);
 	gtk_widget_queue_draw(w);
 
