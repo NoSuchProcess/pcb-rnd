@@ -134,7 +134,25 @@ do { \
 	} \
 } while(0)
 
-#define LOAD_COORD(name)
+#define LOAD_COORD(name) \
+do { \
+	lht_node_t *n = lht_dom_hash_get(root, #name); \
+	if (n != NULL) { \
+		double v; \
+		pcb_bool succ; \
+		if (n->type != LHT_TEXT) { \
+			pcb_message(PCB_MSG_ERROR, "Invalid mesh item: " #name " should be text\n"); \
+			return -1; \
+		} \
+		v = pcb_get_value(n->data.text.value, NULL, NULL, &succ); \
+		if (!succ) { \
+			pcb_message(PCB_MSG_ERROR, "Invalid mesh coord: " #name "\n"); \
+			return -1; \
+		} \
+		PCB_DAD_SET_VALUE(me->dlg_hid_ctx, me->name, coord_value, (pcb_coord_t)v); \
+	} \
+} while(0)
+
 static int mesh_load_subtree(mesh_dlg_t *me, lht_node_t *root)
 {
 	if ((root->type != LHT_HASH) || (strcmp(root->name, "pcb-rnd-mesh-v1") != 0)) {
