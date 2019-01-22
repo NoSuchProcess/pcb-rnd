@@ -340,7 +340,7 @@ TODO("mesh: text")
 					switch(dir) {
 						case PCB_MESH_HORIZONTAL:
 							if (y == ly) {
-								int sign = (x < lx) ? +1 : -1;
+								int sign = (x > lx) ? +1 : -1;
 								mesh_add_edge(mesh, dir, y - sign * mesh->dens_obj * 2 / 3);
 								mesh_add_edge(mesh, dir, y + sign * mesh->dens_obj * 1 / 3);
 							}
