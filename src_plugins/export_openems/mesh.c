@@ -115,6 +115,31 @@ void pcb_mesh_save(const mesh_dlg_t *me, gds_t *dst, const char *prefix)
 #undef SAVE_INT
 #undef SAVE_COORD
 
+int mesh_load_doc(lht_doc_t *doc)
+{
+	return -1;
+}
+
+int mesh_load_file(FILE *f)
+{
+	int c, res;
+	lht_doc_t *doc;
+
+	doc = lht_dom_init();
+
+	while((c = fgetc(f)) != EOF) {
+		lht_err_t err = lht_dom_parser_char(doc, c);
+		if ((err != LHTE_SUCCESS) && (err != LHTE_STOP)) {
+			lht_dom_uninit(doc);
+			return -1;
+		}
+	}
+	res = mesh_load_doc(doc);
+	lht_dom_uninit(doc);
+	return res;
+}
+
+
 static void mesh_add_edge(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t crd)
 {
 	vtc0_append(&mesh->line[dir].edge, crd);
@@ -765,13 +790,12 @@ static void ia_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	memset(&ia, 0, sizeof(ia));
 }
 
+static char *default_file = NULL;
 static void ia_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	char *fname = NULL;
-	static char *default_file = NULL;
 	FILE *f;
 	gds_t tmp;
-
 
 	fname = pcb_gui->fileselect("Save mesh settings...",
 															"Picks file for saving mesh settings.\n",
@@ -795,6 +819,33 @@ static void ia_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 	fprintf(f, "%s", tmp.array);
 	gds_uninit(&tmp);
 	free(fname);
+	fclose(f);
+}
+
+static void ia_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	char *fname = NULL;
+	FILE *f;
+	gds_t tmp;
+
+
+	fname = pcb_gui->fileselect("Load mesh settings...",
+															"Picks file for loading mesh settings from.\n",
+															default_file, ".lht", "mesh", HID_FILESELECT_READ);
+	if (fname == NULL)
+		return; /* cancel */
+
+	if (default_file != NULL) {
+		free(default_file);
+		default_file = pcb_strdup(fname);
+	}
+
+	f = pcb_fopen(fname, "r");
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Can not open '%s' for read\n", fname);
+		return;
+	}
+
 	fclose(f);
 }
 
@@ -992,6 +1043,8 @@ int pcb_mesh_interactive(void)
 			PCB_DAD_BEGIN_VBOX(ia.dlg);
 				PCB_DAD_BUTTON(ia.dlg, "Save to file");
 					PCB_DAD_CHANGE_CB(ia.dlg, ia_save_cb);
+				PCB_DAD_BUTTON(ia.dlg, "Load from file");
+					PCB_DAD_CHANGE_CB(ia.dlg, ia_load_cb);
 				PCB_DAD_BUTTON(ia.dlg, "Generate mesh!");
 					PCB_DAD_CHANGE_CB(ia.dlg, ia_gen_cb);
 			PCB_DAD_END(ia.dlg);
