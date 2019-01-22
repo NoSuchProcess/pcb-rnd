@@ -842,6 +842,8 @@ static int mesh_auto_build(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 			mesh_auto_add_smooth(&mesh->line[dir].result, c1, c2, d1, d, d2);
 		else
 			mesh_auto_add_even(&mesh->line[dir].result, c1, c2, d);
+
+		vtc0_append(&mesh->line[dir].result, c2); /* ranges are open from the end, need to manually place the last */
 	}
 
 	mesh_trace("\n");
