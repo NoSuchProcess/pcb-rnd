@@ -776,7 +776,7 @@ static void mesh_auto_add_smooth(vtc0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_
 		if (lines > 0) {
 			glen = lines * d;
 			if (glen < len/4)
-				end = mesh_auto_add_interp(v, c2, d2, d, -(d-d2)/lines);
+				end = mesh_auto_add_interp(v, c2, d2, d, -(d-d2)/lines) - d/2;
 		}
 		else
 			end = c2;
