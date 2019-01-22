@@ -115,12 +115,21 @@ void pcb_mesh_save(const mesh_dlg_t *me, gds_t *dst, const char *prefix)
 #undef SAVE_INT
 #undef SAVE_COORD
 
-int mesh_load_doc(lht_doc_t *doc)
+#define LOAD_INT(name)
+#define LOAD_COORD(name)
+static int mesh_load_subtree(mesh_dlg_t *me, lht_node_t *root)
 {
+	if ((root->type != LHT_HASH) || (strcmp(root->name, "pcb-rnd-mesh-v1") != 0)) {
+		pcb_message(PCB_MSG_ERROR, "Input is not a valid mesh save - should be a ha:pcb-rnd-mesh subtree\n");
+		return -1;
+	}
+
 	return -1;
 }
+#undef LOAD_INT
+#undef LOAD_COORD
 
-int mesh_load_file(FILE *f)
+int mesh_load_file(mesh_dlg_t *me, FILE *f)
 {
 	int c, res;
 	lht_doc_t *doc;
@@ -134,7 +143,7 @@ int mesh_load_file(FILE *f)
 			return -1;
 		}
 	}
-	res = mesh_load_doc(doc);
+	res = mesh_load_subtree(me, doc->root);
 	lht_dom_uninit(doc);
 	return res;
 }
@@ -845,7 +854,8 @@ static void ia_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 		pcb_message(PCB_MSG_ERROR, "Can not open '%s' for read\n", fname);
 		return;
 	}
-
+	if (mesh_load_file(&ia, f) != 0)
+		pcb_message(PCB_MSG_ERROR, "Loading mesh settings from '%s' failed.\n", fname);
 	fclose(f);
 }
 
