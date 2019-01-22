@@ -72,7 +72,7 @@ void pcb_mesh_save(const mesh_dlg_t *me, gds_t *dst, const char *prefix)
 	if (prefix == NULL)
 		prefix = "";
 
-	pcb_append_printf(dst, "%sha:pcb-rnd-mesh.v1 {\n", prefix);
+	pcb_append_printf(dst, "%sha:pcb-rnd-mesh-v1 {\n", prefix);
 	SAVE_COORD(dens_obj);
 	SAVE_COORD(dens_gap);
 	SAVE_COORD(min_space);
