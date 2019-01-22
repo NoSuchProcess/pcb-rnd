@@ -221,7 +221,7 @@ void pcb_view_save_list_begin(gds_t *dst, const char *prefix)
 {
 	if (prefix != NULL)
 		gds_append_str(dst, prefix);
-	gds_append_str(dst, "li:view_list.v1 {\n");
+	gds_append_str(dst, "li:view-list-v1 {\n");
 }
 
 void pcb_view_save_list_end(gds_t *dst, const char *prefix)
@@ -296,7 +296,7 @@ static void *view_load_post(load_ctx_t *ctx)
 		goto error;
 
 	if (ctx->doc->root->type == LHT_LIST) {
-		if (strcmp(ctx->doc->root->name, "view_list.v1") != 0)
+		if (strcmp(ctx->doc->root->name, "view-list-v1") != 0)
 			goto error;
 		ctx->next = ctx->doc->root->data.list.first;
 		return ctx;
