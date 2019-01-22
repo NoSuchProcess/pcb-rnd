@@ -153,8 +153,34 @@ do { \
 	} \
 } while(0)
 
+#define LOAD_ENUM_VAL(dst, name, node, arr) \
+do { \
+	if (node != NULL) { \
+		int __found__ = 0, __n__; \
+		const char **__a__; \
+		if (node->type != LHT_TEXT) { \
+			pcb_message(PCB_MSG_ERROR, "Invalid mesh value: " #name " should be text\n"); \
+			return -1; \
+		} \
+		if (strcmp(node->data.text.value, "invalid") == 0) break; \
+		for(__n__ = 0, __a__ = arr; *__a__ != NULL; __a__++,__n__++) { \
+			if (strcmp(node->data.text.value, *__a__) == 0) { \
+				__found__ = 1; \
+				break; \
+			} \
+		} \
+		if (!__found__) { \
+			pcb_message(PCB_MSG_ERROR, "Invalid mesh value '%s' for " #name "\n", node->data.text.value); \
+			return -1; \
+		} \
+		PCB_DAD_SET_VALUE(me->dlg_hid_ctx, dst, int_value, __n__); \
+	} \
+} while(0)
+
 static int mesh_load_subtree(mesh_dlg_t *me, lht_node_t *root)
 {
+	lht_node_t *lst, *nd;
+
 	if ((root->type != LHT_HASH) || (strcmp(root->name, "pcb-rnd-mesh-v1") != 0)) {
 		pcb_message(PCB_MSG_ERROR, "Input is not a valid mesh save - should be a ha:pcb-rnd-mesh subtree\n");
 		return -1;
@@ -174,6 +200,18 @@ static int mesh_load_subtree(mesh_dlg_t *me, lht_node_t *root)
 	LOAD_COORD(max_air);
 	LOAD_COORD(def_subs_thick);
 	LOAD_COORD(def_copper_thick);
+	LOAD_ENUM_VAL(me->subslines, subslines, lht_dom_hash_get(root, "subslines"), subslines);
+
+	lst = lht_dom_hash_get(root, "boundary");
+	if (lst != NULL) {
+		int n;
+		if (lst->type != LHT_LIST) {
+			pcb_message(PCB_MSG_ERROR, "Boundary shall be a list\n");
+			return -1;
+		}
+		for(n = 0, nd = lst->data.list.first; (n < 6) && (nd != NULL); n++,nd = nd->next)
+			LOAD_ENUM_VAL(me->bnd[n], boundary, nd, bnds);
+	}
 
 	return 0;
 }
