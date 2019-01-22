@@ -729,17 +729,19 @@ static void mesh_auto_add_even(vtc0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_co
 		return;
 
 	d = (c2 - c1)/(num+1);
-	if (d > 0)
-		for(c1 += d; c1 < c2; c1 += d)
+	if (d > 0) {
+		c2 -= d/4; /* open on the right, minus rounding errors */
+		for(; c1 < c2; c1 += d)
 			vtc0_append(v, c1);
+	}
 }
 
 static pcb_coord_t mesh_auto_add_interp(vtc0_t *v, pcb_coord_t c, pcb_coord_t d1, pcb_coord_t d2, pcb_coord_t dd)
 {
 	if (dd > 0) {
 		for(; d1 <= d2; d1 += dd) {
-			c += d1;
 			vtc0_append(v, c);
+			c += d1;
 		}
 		return c;
 	}
@@ -776,7 +778,7 @@ static void mesh_auto_add_smooth(vtc0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_
 		if (lines > 0) {
 			glen = lines * d;
 			if (glen < len/4)
-				end = mesh_auto_add_interp(v, c2, d2, d, -(d-d2)/lines) - d/2;
+				end = mesh_auto_add_interp(v, c2, d2, d, -(d-d2)/lines);
 		}
 		else
 			end = c2;
