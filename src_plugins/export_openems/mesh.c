@@ -115,7 +115,25 @@ void pcb_mesh_save(const mesh_dlg_t *me, gds_t *dst, const char *prefix)
 #undef SAVE_INT
 #undef SAVE_COORD
 
-#define LOAD_INT(name)
+#define LOAD_INT(name) \
+do { \
+	lht_node_t *n = lht_dom_hash_get(root, #name); \
+	if (n != NULL) { \
+		int v; \
+		char *end; \
+		if (n->type != LHT_TEXT) { \
+			pcb_message(PCB_MSG_ERROR, "Invalid mesh item: " #name " should be text\n"); \
+			return -1; \
+		} \
+		v = strtol(n->data.text.value, &end, 10); \
+		if (*end != '\0') { \
+			pcb_message(PCB_MSG_ERROR, "Invalid mesh integer: " #name "\n"); \
+			return -1; \
+		} \
+		PCB_DAD_SET_VALUE(me->dlg_hid_ctx, me->name, int_value, v); \
+	} \
+} while(0)
+
 #define LOAD_COORD(name)
 static int mesh_load_subtree(mesh_dlg_t *me, lht_node_t *root)
 {
@@ -124,7 +142,22 @@ static int mesh_load_subtree(mesh_dlg_t *me, lht_node_t *root)
 		return -1;
 	}
 
-	return -1;
+	LOAD_COORD(dens_obj);
+	LOAD_COORD(dens_gap);
+	LOAD_COORD(min_space);
+	LOAD_INT(smooth);
+	LOAD_INT(hor);
+	LOAD_INT(ver);
+	LOAD_INT(noimpl);
+	LOAD_INT(air_top);
+	LOAD_INT(air_bot);
+	LOAD_COORD(dens_air);
+	LOAD_INT(smoothz);
+	LOAD_COORD(max_air);
+	LOAD_COORD(def_subs_thick);
+	LOAD_COORD(def_copper_thick);
+
+	return 0;
 }
 #undef LOAD_INT
 #undef LOAD_COORD
