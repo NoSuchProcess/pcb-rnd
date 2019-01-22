@@ -34,6 +34,7 @@
 #include "data.h"
 #include "hid_dad.h"
 #include "event.h"
+#include "safe_fs.h"
 
 static pcb_mesh_t mesh;
 static const char *mesh_ui_cookie = "mesh ui layer cookie";
@@ -51,7 +52,6 @@ typedef struct {
 } mesh_dlg_t;
 static mesh_dlg_t ia;
 
-
 #if 1
 	static void mesh_trace(const char *fmt, ...) { }
 #else
@@ -60,6 +60,60 @@ static mesh_dlg_t ia;
 
 TODO("reorder to avoid fwd decl")
 static void mesh_auto_add_smooth(vtc0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_coord_t d1, pcb_coord_t d, pcb_coord_t d2);
+
+#define SAVE_INT(name) \
+	pcb_append_printf(dst, "%s  " #name" = %d\n", prefix, (int)me->dlg[me->name].default_val.int_value);
+#define SAVE_COORD(name) \
+	pcb_append_printf(dst, "%s  " #name" = %.08$$mm\n", prefix, (pcb_coord_t)me->dlg[me->name].default_val.coord_value);
+void pcb_mesh_save(const mesh_dlg_t *me, gds_t *dst, const char *prefix)
+{
+	int n;
+
+	if (prefix == NULL)
+		prefix = "";
+
+	pcb_append_printf(dst, "%sha:pcb-rnd-mesh-v1 {\n", prefix);
+	SAVE_COORD(dens_obj);
+	SAVE_COORD(dens_gap);
+	SAVE_COORD(min_space);
+	SAVE_INT(smooth);
+	SAVE_INT(hor);
+	SAVE_INT(ver);
+	SAVE_INT(noimpl);
+	SAVE_INT(air_top);
+	SAVE_INT(air_bot);
+	SAVE_COORD(dens_air);
+	SAVE_INT(smoothz);
+	SAVE_COORD(max_air);
+	SAVE_COORD(def_subs_thick);
+	SAVE_COORD(def_copper_thick);
+	pcb_append_printf(dst, "%s  li:boundary = {", prefix);
+	for(n = 0; n < 6; n++) {
+		int bidx = me->dlg[me->bnd[n]].default_val.int_value;
+		const char *bs;
+		if ((bidx < 0) || (bidx >= sizeof(bnds) / sizeof(bnds[0])))
+			bs = "invalid";
+		else
+			bs = bnds[bidx];
+		gds_append_str(dst, bs);
+		gds_append(dst, ';');
+	}
+	gds_append_str(dst, "}\n");
+
+	{
+		int sidx = me->dlg[me->subslines].default_val.int_value;
+		const char *bs;
+		if ((sidx < 0) || (sidx >= sizeof(subslines) / sizeof(subslines[0])))
+			bs = "invalid";
+		else
+			bs = subslines[sidx];
+		pcb_append_printf(dst, "%s  subslines = %s\n", prefix, bs);
+	}
+
+	pcb_append_printf(dst, "%s}\n", prefix);
+}
+#undef SAVE_INT
+#undef SAVE_COORD
 
 static void mesh_add_edge(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t crd)
 {
@@ -711,6 +765,39 @@ static void ia_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	memset(&ia, 0, sizeof(ia));
 }
 
+static void ia_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	char *fname = NULL;
+	static char *default_file = NULL;
+	FILE *f;
+	gds_t tmp;
+
+
+	fname = pcb_gui->fileselect("Save mesh settings...",
+															"Picks file for saving mesh settings.\n",
+															default_file, ".lht", "mesh", HID_FILESELECT_MAY_NOT_EXIST);
+	if (fname == NULL)
+		return; /* cancel */
+
+	if (default_file != NULL) {
+		free(default_file);
+		default_file = pcb_strdup(fname);
+	}
+
+	f = pcb_fopen(fname, "w");
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Can not open '%s' for write\n", fname);
+		return;
+	}
+
+	gds_init(&tmp);
+	pcb_mesh_save(&ia, &tmp, NULL);
+	fprintf(f, "%s", tmp.array);
+	gds_uninit(&tmp);
+	free(fname);
+	fclose(f);
+}
+
 static void ia_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	int n;
@@ -903,6 +990,8 @@ int pcb_mesh_interactive(void)
 			PCB_DAD_END(ia.dlg);
 
 			PCB_DAD_BEGIN_VBOX(ia.dlg);
+				PCB_DAD_BUTTON(ia.dlg, "Save to file");
+					PCB_DAD_CHANGE_CB(ia.dlg, ia_save_cb);
 				PCB_DAD_BUTTON(ia.dlg, "Generate mesh!");
 					PCB_DAD_CHANGE_CB(ia.dlg, ia_gen_cb);
 			PCB_DAD_END(ia.dlg);
