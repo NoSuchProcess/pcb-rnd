@@ -30,8 +30,6 @@
 + BUG: "Edit padstack shape" with work/bug_files/pstk_hole_break/polygon.lht: Edit padstack->prototype Change button on mask layer to copy shape from top copper is not OK and prints "Can't copy shape: source shape (top paste) is empty" [report: Alain]
 + BUG: Open an empty pcb, Edit->Board padstack prototypes , Click Edit... -> segf [report: Alain]
 - BUG: ML 2479: gtk crosshair re-enter to the last pos doesn't always draw the crossghair [report: pstuge]
-- BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
-	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 ? BUG: scconfig: if libgd is not detected, there's an extra error on disable-gd-gif [report: Erich]
 + BUG: assertion with --debug,  open pcb-rnd, place via, open the padstackedit dialog for the via, go to generate common geometry, choose square copper shape, click 'generate' [report: Miloh]
@@ -103,6 +101,8 @@
 		- be able to rename nets
 		- save the netlist with the file
 		- be able to convert a 'found' to a net
+- CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
+	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - FEATURE: view list: import sch. shouldn't select elements to be removed but put them on a drc list
 - FEATURE: external editor on buffer [report: TwisteR]
 - FEATURE: fontsel: ttf import?
