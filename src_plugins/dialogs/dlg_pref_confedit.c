@@ -257,8 +257,8 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	ctx->idx = pctx->conf.selected_idx;
 	ctx->role = r->user_data2.lng;
 
-	PCB_DAD_BEGIN_VBOX(pref_ctx.dlg);
-		PCB_DAD_COMPFLAG(pref_ctx.dlg, PCB_HATF_EXPFILL);
+	PCB_DAD_BEGIN_VBOX(ctx->dlg);
+		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 
 		PCB_DAD_LABEL(ctx->dlg, ctx->nat->hash_path);
 
