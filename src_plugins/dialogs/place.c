@@ -283,6 +283,8 @@ static void pcb_dialog_place_uninit(void)
 	htsw_entry_t *e;
 	int n;
 
+	conf_unreg_fields(BASEPATH);
+
 	place_maybe_save(CFR_USER, 0);
 
 	for(e = htsw_first(&wingeo); e != NULL; e = htsw_next(&wingeo, e))
