@@ -38,6 +38,7 @@
 #define PCB_DAD_DECL(table) \
 	pcb_hid_attribute_t *table = NULL; \
 	pcb_hid_attr_val_t *table ## _result = NULL; \
+	int table ## _append_lock = 0; \
 	int table ## _len = 0; \
 	int table ## _alloced = 0; \
 	void *table ## _hid_ctx = NULL; \
@@ -47,6 +48,7 @@
 #define PCB_DAD_DECL_NOINIT(table) \
 	pcb_hid_attribute_t *table; \
 	pcb_hid_attr_val_t *table ## _result; \
+	int table ## _append_lock; \
 	int table ## _len; \
 	int table ## _alloced; \
 	void *table ## _hid_ctx; \
@@ -70,6 +72,7 @@ do { \
 	table ## _len = 0; \
 	table ## _alloced = 0; \
 	table ## _ret_override.already_freed = 1; \
+	table ## _append_lock = 0; \
 } while(0)
 
 #define PCB_DAD_NEW(id, table, title, caller_data, modal, ev_cb) \
@@ -77,6 +80,7 @@ do { \
 	if (table ## _result == NULL) \
 		PCB_DAD_ALLOC_RESULT(table); \
 	table ## _ret_override.already_freed = 0; \
+	table ## _append_lock = 1; \
 	table ## _hid_ctx = pcb_gui->attr_dlg_new(id, table, table ## _len, table ## _result, title, caller_data, modal, ev_cb, table ## _defx, table ## _defy); \
 } while(0)
 
@@ -347,6 +351,7 @@ do { \
    address of the table may have changed. */
 #define PCB_DAD_ALLOC(table, item_type) \
 	do { \
+		assert(table ## _append_lock == 0); \
 		if (table ## _len >= table ## _alloced) { \
 			pcb_hid_preview_t *__prv__; \
 			pcb_hid_tree_t *__tree__; \
