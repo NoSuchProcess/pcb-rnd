@@ -294,6 +294,7 @@ static void pcb_dialog_place_uninit(void)
 
 	for(n = 0; n < cleanup_later.used; n++)
 		free(cleanup_later.array[n]);
+	vtp0_uninit(&cleanup_later);
 }
 
 static void pcb_dialog_place_init(void)
