@@ -64,6 +64,7 @@ static inline void mode_reset(pcb_bool direct, const pcb_box_t *screen)
 	drawgl_reset();
 	glColorMask(0, 0, 0, 0); /* Disable colour drawing */
 	stencilgl_reset_stencil_usage();
+	glDisable(GL_COLOR_LOGIC_OP);
 	comp_stencil_bit = 0;
 }
 
@@ -75,13 +76,24 @@ static inline void mode_positive(pcb_bool direct, const pcb_box_t *screen)
 		drawgl_flush();
 
 	glEnable(GL_STENCIL_TEST);
+	glDisable(GL_COLOR_LOGIC_OP);
 	stencilgl_mode_write_set(comp_stencil_bit);
+}
+
+static inline void mode_positive_xor(pcb_bool direct, const pcb_box_t *screen)
+{
+	drawgl_flush();
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	glDisable(GL_STENCIL_TEST);
+	glEnable(GL_COLOR_LOGIC_OP);
+	glLogicOp(GL_EQUIV);
 }
 
 static inline void mode_negative(pcb_bool direct, const pcb_box_t *screen)
 {
 	glEnable(GL_STENCIL_TEST);
-
+	glDisable(GL_COLOR_LOGIC_OP);
+	
 	if (comp_stencil_bit == 0) {
 		/* The stencil isn't valid yet which means that this is the first pos/neg mode
 		 * set since the reset. The compositing stencil bit will be allocated. Because 
@@ -115,22 +127,14 @@ static inline void mode_flush(pcb_bool direct, pcb_bool xor_mode, const pcb_box_
 		glStencilMask(comp_stencil_bit);
 		glStencilFunc(GL_EQUAL, comp_stencil_bit, comp_stencil_bit);
 
-		if (xor_mode) {
-			glEnable(GL_COLOR_LOGIC_OP);
-			glLogicOp(GL_EQUIV);
-		}
-
 		/* Draw all primtives through the stencil to the colour buffer. */
 		drawgl_draw_all(comp_stencil_bit);
-
-		glDisable(GL_COLOR_LOGIC_OP);
 	}
 
 	glDisable(GL_STENCIL_TEST);
 	stencilgl_reset_stencil_usage();
 	comp_stencil_bit = 0;
 }
-
 
 void hidgl_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
 {
@@ -155,6 +159,8 @@ void hidgl_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_bo
 			mode_reset(direct, screen);
 			break;
 		case PCB_HID_COMP_POSITIVE_XOR:
+			mode_positive_xor(direct, screen);
+			break;
 		case PCB_HID_COMP_POSITIVE:
 			mode_positive(direct, screen);
 			break;
