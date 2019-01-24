@@ -114,7 +114,7 @@ static void place_conf_set(conf_role_t role, const char *path, int val)
 	static int dummy;
 
 	if (conf_get_field(path) == NULL)
-		conf_reg_field_(&dummy, 1, CFN_INTEGER, pcb_strdup(path), "", 0);
+		conf_reg_field_(&dummy, 1, CFN_INTEGER, str_cleanup_later(path), "", 0);
 	conf_setf(role, path, -1, "%d", val);
 }
 
@@ -125,7 +125,7 @@ static void place_conf_load(conf_role_t role, const char *path, int *val)
 	static int dummy;
 
 	if (conf_get_field(path) == NULL) {
-		conf_reg_field_(&dummy, 1, CFN_INTEGER, pcb_strdup(path), "", 0);
+		conf_reg_field_(&dummy, 1, CFN_INTEGER, str_cleanup_later(path), "", 0);
 		conf_update(path, -1);
 	}
 
