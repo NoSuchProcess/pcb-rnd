@@ -2,7 +2,6 @@
 + CLEANUP: propedit rewrite: new action UI should allow operation on object and object ID instead of selection; bug_files/subcsel.bug [report: Wojciech]
 
 1. For the upcoming release ===============================================================================
-- BUG: hid dad's _DUP doesn't update preview and table ->attrib
 - BUG: preferences dialog: can not create new empty value for subc_conv_* [report: Ade]
 + BUG: boardflip() action moves the objects and doesn't move the subc outline and origin (repro: place single part, run boardflip) [report:Miloh]
 + FEATURE: export_xy: pnp origin should be any obj, especially padstacks (fidu) [report: TwisteR]
