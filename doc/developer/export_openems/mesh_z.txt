@@ -1,0 +1,16 @@
+The bottom of the board by default always lands at z=0. The top is the
+thicknesses of all the substrate layers added together. It is only the
+substrate layers because right now the copper is just a change in
+attribute on the surface of the substrate (2D) not a 3D object.
+
+So for the hairpinfilter example which is just 1 substrate layer of
+1.5mm. It would be z=0mm for the bottom, and z=1.5mm for the top.
+
+That adjustment we have for z-mesh "num in substrate" is meant to
+select how many lines fit inbetween those two lines.
+
+Technically my pcb2csx library can do both full 3D where all objects
+have real thickness and the thing we do now but it eats a lot of
+processing power for marginal benifit in most cases. In other words
+it's not worth supporting at this point.
+
