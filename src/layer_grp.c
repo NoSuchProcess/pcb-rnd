@@ -1022,6 +1022,22 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 			}
 		}
 	}
+
+
+	/* create doc and mech layers */
+	for(n = 0; n < num_layer; n++) {
+		pcb_layer_t *ly = layer + n;
+		pcb_layer_t *dst = pcb_layer_resolve_binding(pcb, ly);
+		if ((ly->meta.bound.type & PCB_LYT_DOC) || (ly->meta.bound.type & PCB_LYT_MECH)) {
+			pcb_layergrp_t *grp = pcb_get_grp_new_misc(pcb);
+			if (grp != NULL) {
+				grp->ltype = ly->meta.bound.type;
+				grp->name = pcb_strdup(ly->name);
+				pcb_layer_create(pcb, pcb_layergrp_id(pcb, grp), ly->name);
+				pcb_layer_resolve_binding(pcb, ly);
+			}
+		}
+	}
 	return 0;
 }
 
