@@ -41,7 +41,7 @@
 + BUG: gtk coord entry: right click, change units fail [report: Alain] -> submenu removed, we will have this feature back after the DAD rewrite
 ? BUG: #define TODO(x) doesn't compile on IRIX system with --debug option ON [report: Ian]
 - BUG: find.c: bug_files/find_slotcop.lht: plated slot should connect to any copper layer object it is going thru ml2571 [report: Igor2]
-- BUG: footprint edit: create all subc layers on the "board" after loading the subc as board for edit bug_files/subc_misclay.lht mail: dec11 [report: Ade]
++ BUG: footprint edit: create all subc layers on the "board" after loading the subc as board for edit bug_files/subc_misclay.lht mail: dec11 [report: Ade]
 
 2. For later releases ===============================================================================
 - CAM:
