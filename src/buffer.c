@@ -454,6 +454,7 @@ void pcb_uninit_buffers(pcb_board_t *pcb)
 
 	for (i = 0; i < PCB_MAX_BUFFER; i++) {
 		pcb_buffer_clear_(pcb, pcb_buffers+i, pcb_false);
+		pcb_data_uninit(pcb_buffers[i].Data);
 		free(pcb_buffers[i].Data);
 	}
 }
