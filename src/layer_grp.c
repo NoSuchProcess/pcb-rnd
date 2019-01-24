@@ -243,6 +243,9 @@ pcb_bool pcb_layergrp_is_pure_empty(pcb_board_t *pcb, pcb_layergrp_id_t num)
 static void pcb_layergrp_free_fields(pcb_layergrp_t *g)
 {
 	free(g->name);
+	free(g->purpose);
+	g->name = g->purpose = NULL;
+	g->purpi = -1;
 }
 
 
