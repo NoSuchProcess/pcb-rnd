@@ -324,6 +324,7 @@ do { \
 do { \
 	PCB_DAD_ALLOC(table, 0); \
 	memcpy(&table[table ## _len-1], (attr), sizeof(pcb_hid_attribute_t)); \
+	PCB_DAD_UPDATE_INTERNAL(table, table ## _len-1); \
 } while(0)
 
 
@@ -346,6 +347,25 @@ do { \
 	} while(0)
 
 /*** DAD internals (do not use directly) ***/
+
+/* Update widget internals after a potential attr pointer change */
+#define PCB_DAD_UPDATE_INTERNAL(table, widx) \
+	do { \
+		pcb_hid_preview_t *__prv__; \
+		pcb_hid_tree_t *__tree__; \
+		switch(table[(widx)].type) { \
+			case PCB_HATT_PREVIEW: \
+				__prv__ = (pcb_hid_preview_t *)table[(widx)].enumerations; \
+				__prv__->attrib = &table[(widx)]; \
+				break; \
+			case PCB_HATT_TREE: \
+				__tree__ = (pcb_hid_tree_t *)table[(widx)].enumerations; \
+				__tree__->attrib = &table[(widx)]; \
+				break; \
+			default: break; \
+		} \
+	} while(0)
+
 /* Allocate a new item at the end of the attribute table; updates stored
    attribute pointers of existing items (e.g. previews, trees) as the base
    address of the table may have changed. */
@@ -353,23 +373,11 @@ do { \
 	do { \
 		assert(table ## _append_lock == 0); \
 		if (table ## _len >= table ## _alloced) { \
-			pcb_hid_preview_t *__prv__; \
-			pcb_hid_tree_t *__tree__; \
 			int __n__; \
 			table ## _alloced += 16; \
 			table = realloc(table, sizeof(table[0]) * table ## _alloced); \
 			for(__n__ = 0; __n__ < table ## _len; __n__++) { \
-				switch(table[__n__].type) { \
-					case PCB_HATT_PREVIEW: \
-						__prv__ = (pcb_hid_preview_t *)table[__n__].enumerations; \
-						__prv__->attrib = &table[__n__]; \
-						break; \
-					case PCB_HATT_TREE: \
-						__tree__ = (pcb_hid_tree_t *)table[__n__].enumerations; \
-						__tree__->attrib = &table[__n__]; \
-						break; \
-					default: break; \
-				} \
+				PCB_DAD_UPDATE_INTERNAL(table, __n__); \
 			} \
 		} \
 		memset(&table[table ## _len], 0, sizeof(table[0])); \
