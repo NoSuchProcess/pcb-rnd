@@ -168,6 +168,8 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 			return;
 	}
 
+	if (val == NULL)
+		val = "";
 	conf_set(ctx->role, ctx->nat->hash_path, ctx->idx,  val, POL_OVERWRITE);
 
 	if ((ctx->role == CFR_USER) || (ctx->role == CFR_PROJECT))
