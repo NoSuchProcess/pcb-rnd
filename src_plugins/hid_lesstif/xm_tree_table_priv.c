@@ -290,7 +290,10 @@ void xm_render_ttwidget(Widget w)
 
 	if (0 == ((XtGeometryYes | XtGeometryDone) & geom_result))
 		return;
-
+	if (s->geom.width != geom.width || s->geom.height != geom.height
+			|| s->geom.x != geom.x || s->geom.y != geom.y) {
+		xm_extent_prediction((XmTreeTableWidget)w);
+	}
 	s->geom.x = geom.x;
 	s->geom.y = geom.y;
 	s->geom.width = geom.width;
@@ -544,6 +547,13 @@ void xm_extent_prediction(XmTreeTableWidget w)
 	struct render_target_s *s = &tt->render_attr;
 	long row_index = -1;
 	unsigned col = 0;
+	{
+		/* a stub for uninitialized window geometry, it'll be recomputed later. */
+		if (0 == s->geom.width)
+			s->geom.width = 100;
+		if (0 == s->geom.height)
+			s->geom.height = 100;
+	}
 	tt->virtual_canvas_size.x = s->geom.x;
 	tt->virtual_canvas_size.y = s->geom.y;
 
@@ -560,7 +570,6 @@ void xm_extent_prediction(XmTreeTableWidget w)
 
 	if (s->column_dimensions_vector) {
 		memset(s->column_dimensions_vector, 0x00, s->column_vector_len * sizeof(long));
-		s->column_dimensions_vector = NULL;
 	}
 
 	tt->virtual_canvas_size.height = tt->p_header ? s->vertical_stride : 0;
@@ -572,6 +581,12 @@ void xm_extent_prediction(XmTreeTableWidget w)
 			xm_extent_prediction_item(entry, w, s);
 		}
 	}
+	/* the data list could be empty, but we need this vector to have at least one 0-filled entry. */
+	if (!s->column_dimensions_vector) {
+		s->column_dimensions_vector = (long*)malloc(sizeof(long));
+		s->column_vector_len = 1;
+	}
+
 	tt->virtual_canvas_size.width = 0;
 	for(col = 0; col < s->column_vector_len; ++col) {
 		s->column_dimensions_vector[col] += tt->n_grid_x_gap_pixels;
