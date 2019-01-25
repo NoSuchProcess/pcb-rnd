@@ -17,9 +17,17 @@ static void ltf_tree_set(lesstif_attr_dlg_t *ctx, int idx, const char *val)
 
 void ltf_tree_insert_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *new_row)
 {
-/*	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
-	ltf_tree_t *lt = ht->hid_wdata;*/
+	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
+	ltf_tree_t *lt = ht->hid_wdata;
+	tt_entry_t *e;
+	int n;
 
+	e = tt_entry_alloc(new_row->cols);
+	gdl_append(&lt->model, e, gdl_linkfield);
+
+	new_row->user_data = e;
+	for(n = 0; n < new_row->cols; n++)
+		tt_get_cell(e, n)[0] = new_row->cell[n];
 }
 
 void ltf_tree_modify_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int col)
