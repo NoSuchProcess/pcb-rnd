@@ -87,7 +87,7 @@ void delete_tt_entry(gdl_list_t *list, tt_entry_t *item);
 object - non-NULL, must be obtained from new_tt_entry()
 
 returns NULL, if the cells hasn't been allocated or the index is wrong. */
-char **tt_get_cell(tt_entry_t *object, unsigned index);
+const char **tt_get_cell(tt_entry_t *object, unsigned index);
 
 /*** widget part ***/
 
@@ -239,7 +239,7 @@ strings - array of (char*) strings. Caller cares, the exist while the widget is 
 pass NULL to remove the header, but WHEN: one can do this any tt_table_draw_handler() is invoked,
 that signal the user that the widget has finished the rendering iteration;
 */
-void xm_attach_tree_table_header(Widget w, unsigned n_strings, char **strings);
+void xm_attach_tree_table_header(Widget w, unsigned n_strings, const char **strings);
 
 /* mode == 1 enables(default) tree-like rendering of the first column of the data structure.
 mode == 0 disables it. Can be called any time.

@@ -72,7 +72,7 @@ static void draw_row_cells(GC gc, int cur_x, int cur_y, tt_entry_t *entry, XmTre
 	int i_ret[3] = { 0 };
 
 	/* render 1-st column */
-	char *str = tt_get_cell(entry, 0)[0];
+	const char *str = tt_get_cell(entry, 0)[0];
 	int slen = str ? strlen(str) : 0;
 	int pixmap_shift = tt->n_grid_x_gap_pixels + tt->n_max_pixmap_height;
 	/* column by index 0 (can bee tree-like) */
@@ -232,7 +232,7 @@ void xm_render_ttwidget_contents(Widget aw, enum e_what_changed what)
 		unsigned x;
 		clip.height = s->vertical_stride;
 		for(x = 0; x < tt->p_header->n_cells; ++x) {
-			char *str = tt_get_cell(tt->p_header, x)[0];
+			const char *str = tt_get_cell(tt->p_header, x)[0];
 			if (str) {
 				XTextExtents(tt->font, str, strlen(str), i_ret, i_ret + 1, i_ret + 2, &chrs);
 				clip.height = TTBL_MAX(s->vertical_stride, TTBL_MAX(chrs.ascent - chrs.descent, clip.height));
@@ -486,7 +486,7 @@ static void xm_extent_prediction_item(tt_entry_t *entry, XmTreeTableWidget w, st
 	int i_ret[3] = { 0 };
 	unsigned col = 0;
 	long len_diff = 0;
-	char *str = NULL;
+	const char *str = NULL;
 	if (!(entry) || (entry->flags.is_hidden) || !entry->n_cells)
 		return;
 
@@ -525,7 +525,7 @@ static void xm_extent_prediction_item(tt_entry_t *entry, XmTreeTableWidget w, st
 
 	{
 		for(col = 1; col < entry->n_cells; ++col) {
-			char *str = tt_get_cell(entry, (unsigned)col)[0];
+			const char *str = tt_get_cell(entry, (unsigned)col)[0];
 			if (!str) {
 				s->column_dimensions_vector[col] = TTBL_MAX(s->column_dimensions_vector[col], tt->n_minimum_cell_width);
 			}

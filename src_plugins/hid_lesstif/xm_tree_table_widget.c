@@ -38,10 +38,10 @@
 /*** model ***/
 typedef char *payload_item_t;
 
-char **tt_get_cell(tt_entry_t *object, unsigned index)
+const char **tt_get_cell(tt_entry_t *object, unsigned index)
 {
 	assert(object);
-	return index < object->n_cells ? (char **)(&(object->payload) + sizeof(payload_item_t) * index) : NULL;
+	return index < object->n_cells ? (const char **)(&(object->payload) + sizeof(payload_item_t) * index) : NULL;
 }
 
 tt_entry_t *tt_entry_alloc(unsigned n_cells)
@@ -506,7 +506,7 @@ int xm_tt_set_x11_font_attr(Widget xm_tree_table, const char* attributes)
 	return 0;
 }
 
-void xm_attach_tree_table_header(Widget w, unsigned n_strings, char** strings)
+void xm_attach_tree_table_header(Widget w, unsigned n_strings, const char** strings)
 {
 	XM_TT_LOCKED_CODE(w, tw, tp,
 		unsigned x;
