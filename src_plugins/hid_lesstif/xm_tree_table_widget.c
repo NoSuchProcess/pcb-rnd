@@ -362,22 +362,41 @@ static void on_mouse_action(ett_x11_event_t ett_event,
 		tp->p_mouse_kbd_handler(&tp->event_data);
 }
 
+#define XM_TT_LOCKED_CODE(WIDGET_PARAM, XMTTWIDGET_NAME, XMTTPART_NAME, CODE) \
+{\
+{\
+	XmTreeTableWidget (XMTTWIDGET_NAME) = (XmTreeTableWidget)(WIDGET_PARAM);\
+	XmTreeTablePart* (XMTTPART_NAME) = &((XMTTWIDGET_NAME)->tree_table); \
+	tt_table_access_cb_t* plock__ = (XMTTPART_NAME)->table_access_padlock;\
+	if (plock__)\
+		{ plock__->lock((XMTTPART_NAME)->table, plock__->p_user_data); }\
+\
+	do {CODE} while (0);\
+\
+	if (plock__)\
+		{ plock__->unlock((XMTTPART_NAME)->table, plock__->p_user_data); }\
+}\
+}
+
 static void lmb_drag(Widget aw, XEvent *event, String *params, Cardinal *num_params)
 {
-	event->xbutton.button = Button1;
-	on_mouse_action(ett_mouse_btn_drag, aw, event, params, num_params);
+	XM_TT_LOCKED_CODE(aw, tw, tp,
+		event->xbutton.button = Button1;
+		on_mouse_action(ett_mouse_btn_drag, aw, event, params, num_params);)
 }
 
 static void mmb_drag(Widget aw, XEvent *event, String *params, Cardinal *num_params)
 {
-	event->xbutton.button = Button2;
-	on_mouse_action(ett_mouse_btn_drag, aw, event, params, num_params);
+	XM_TT_LOCKED_CODE(aw, tw, tp,
+		event->xbutton.button = Button2;
+		on_mouse_action(ett_mouse_btn_drag, aw, event, params, num_params);)
 }
 
 static void rmb_drag(Widget aw, XEvent *event, String *params, Cardinal *num_params)
 {
-	event->xbutton.button = Button3;
-	on_mouse_action(ett_mouse_btn_drag, aw, event, params, num_params);
+	XM_TT_LOCKED_CODE(aw, tw, tp,
+		event->xbutton.button = Button3;
+		on_mouse_action(ett_mouse_btn_drag, aw, event, params, num_params);)
 }
 
 /* ARGSUSED */
@@ -452,22 +471,6 @@ void xm_draw_tree_table_widget(Widget w)
 		tp->p_draw_handler(&tp->draw_event_data);
 }
 
-#define XM_TT_LOCKED_CODE(WIDGET_PARAM, XMTTWIDGET_NAME, XMTTPART_NAME, CODE) \
-{\
-{\
-	XmTreeTableWidget (XMTTWIDGET_NAME) = (XmTreeTableWidget)(WIDGET_PARAM);\
-	XmTreeTablePart* (XMTTPART_NAME) = &((XMTTWIDGET_NAME)->tree_table); \
-	tt_table_access_cb_t* plock__ = (XMTTPART_NAME)->table_access_padlock;\
-	if (plock__)\
-		{ plock__->lock((XMTTPART_NAME)->table, plock__->p_user_data); }\
-\
-	{CODE}\
-\
-	if (plock__)\
-		{ plock__->unlock((XMTTPART_NAME)->table, plock__->p_user_data); }\
-}\
-}
-
 void xm_set_tree_table_pointer(Widget w, gdl_list_t* new_table_root, tt_table_access_cb_t* access_padlock)
 {
 	XmTreeTableWidget tw = (XmTreeTableWidget)w;
@@ -531,6 +534,23 @@ void xm_tree_table_pixel_gaps(Widget w, unsigned char x, unsigned char y)
 		tp->n_grid_x_gap_pixels = x;
 		tp->n_grid_y_gap_pixels = y;
 		xm_extent_prediction(tw); )
+}
+
+int xm_tree_table_focus_row(Widget w, int row_index)
+{
+	int ret = -1;
+	int rows_to_scroll = 0;
+	XM_TT_LOCKED_CODE(w, tw, tp,
+		struct render_target_s* s = & tp->render_attr;
+		int row_at_half_screen = xm_find_row_pointed_by_mouse(w, s->geom.y + s->geom.height / 2);
+		if (row_at_half_screen < 0)
+			break;
+		{
+			rows_to_scroll = row_at_half_screen - row_index;
+		}
+	)
+	(void)rows_to_scroll;
+	return ret;
 }
 
 xm_tt_scrollbar xm_tree_table_scrollbar_vertical_get(Widget table_widget)

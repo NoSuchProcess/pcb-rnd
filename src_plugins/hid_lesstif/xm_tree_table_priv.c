@@ -314,8 +314,6 @@ int xm_find_row_pointed_by_mouse(Widget w, int y)
 		if (y <= s->vertical_stride)
 			return -1;
 	}
-	if (tt->table_access_padlock)
-		tt->table_access_padlock->lock(tt->table, tt->table_access_padlock->p_user_data);
 
 	if (!s->visible_items_vector || !s->visible_items_vector[0].item)
 		goto lb_row_fond;
@@ -328,8 +326,6 @@ int xm_find_row_pointed_by_mouse(Widget w, int y)
 	}
 
 lb_row_fond:
-	if (tt->table_access_padlock)
-		tt->table_access_padlock->unlock(tt->table, tt->table_access_padlock->p_user_data);
 	return found ? (unsigned)(found->item->row_index) : -1;
 }
 

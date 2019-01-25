@@ -254,6 +254,16 @@ WHEN to call it? - any time, if the locking pointer tt_table_access_cb_t* was no
 */
 void xm_tree_table_pixel_gaps(Widget w, unsigned char x, unsigned char y);
 
+/* Scroll down to specific row index of the list.
+ WHEN to call this? - any time, if the locking pointer tt_table_access_cb_t* was non-NULL
+(it'll lock/unlock), or otherwise only on (ett_render_finished) event of tt_table_draw_handler().
+
+Function does NOT re-draw, use xm_draw_tree_table_widget() for that.
+
+return 0 on success, -1 on inaccessible row index.
+*/
+int xm_tree_table_focus_row(Widget w, int row_index);
+
 typedef struct {
 	int lo, hi; /* min, max values */
 	int incr; /* increment - a minimal unit of scrollbar state change per minimal 1 pixel GUI step. */
