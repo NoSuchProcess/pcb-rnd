@@ -88,9 +88,14 @@ static void ltf_tree_remove_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb
 
 static void ltf_tree_free_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
 {
-/*	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
-	ltf_tree_t *lt = ht->hid_wdata;*/
+	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
+	ltf_tree_t *lt = ht->hid_wdata;
+	tt_entry_t *i;
 
+	for(i = gdl_first(&lt->model); i != NULL; i = gdl_first(&lt->model))
+		delete_tt_entry(&lt->model, i);
+
+	free(lt);
 }
 
 static pcb_hid_row_t *ltf_tree_get_selected_cb(pcb_hid_attribute_t *attrib, void *hid_wdata)
