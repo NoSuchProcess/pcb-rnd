@@ -78,9 +78,12 @@ static void ltf_tree_modify_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb
 
 static void ltf_tree_remove_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
 {
-/*	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
-	ltf_tree_t *lt = ht->hid_wdata;*/
+	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
+	ltf_tree_t *lt = ht->hid_wdata;
+	tt_entry_t *e = row->user_data;
 
+/*	gdl_remove(&lt->model, e, gdl_linkfield);*/
+	delete_tt_entry(&lt->model, e);
 }
 
 static void ltf_tree_free_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
