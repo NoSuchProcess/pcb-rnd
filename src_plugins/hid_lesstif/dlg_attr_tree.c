@@ -1,7 +1,10 @@
 #include "xm_tree_table_widget.h"
+#include "hid_dad_tree.h"
+
 typedef struct {
 	gdl_list_t model;
 	Widget *w;
+	pcb_hid_tree_t *ht;
 } ltf_tree_t;
 
 static void ltf_ttbl_xevent_cb(const tt_table_event_data_t *data)
@@ -18,11 +21,29 @@ static void ltf_tree_set(lesstif_attr_dlg_t *ctx, int idx, const char *val)
 
 static void ltf_tt_insert_row(ltf_tree_t *lt, pcb_hid_row_t *new_row)
 {
-	tt_entry_t *e;
+	tt_entry_t *e, *after = NULL;
+	pcb_hid_row_t *rafter, *lvl = NULL;
 	int n;
 
 	e = tt_entry_alloc(new_row->cols);
-	gdl_append(&lt->model, e, gdl_linkfield);
+	e->level = 0;
+
+	rafter = pcb_dad_tree_parent_row(lt->ht, new_row);
+	if (rafter != NULL) {
+		e->level = 1;
+		for(lvl = rafter; lvl != NULL; lvl = pcb_dad_tree_parent_row(lt->ht, lvl))
+			e->level++;
+	}
+	else
+		rafter = pcb_dad_tree_prev_row(lt->ht, new_row);
+
+	if (rafter != NULL)
+		after = rafter->user_data;
+
+	if (after != NULL)
+		gdl_insert_after(&lt->model, after, e, gdl_linkfield);
+	else
+		gdl_append(&lt->model, e, gdl_linkfield);
 
 	new_row->user_data = e;
 	for(n = 0; n < new_row->cols; n++)
@@ -104,6 +125,7 @@ static Widget ltf_tree_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_at
 	Widget table = xm_create_tree_table_widget_cb(parent, &lt->model, ltf_ttbl_xevent_cb, NULL, NULL);
 
 	lt->w = table;
+	lt->ht = ht;
 	ht->hid_wdata = lt;
 
 	ht->hid_insert_cb = ltf_tree_insert_cb;
