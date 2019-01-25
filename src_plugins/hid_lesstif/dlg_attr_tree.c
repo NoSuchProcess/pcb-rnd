@@ -3,7 +3,7 @@
 
 typedef struct {
 	gdl_list_t model;
-	Widget *w;
+	Widget w;
 	pcb_hid_tree_t *ht;
 	tt_entry_t *cursor;
 } ltf_tree_t;
@@ -122,10 +122,9 @@ static void ltf_tree_jumpto_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb
 	ltf_tree_t *lt = ht->hid_wdata;
 
 	if (lt->cursor != NULL)
-		lt->cursor->flags.selected = 1;
+		lt->cursor->flags.is_selected = 1;
 	lt->cursor = row->hid_data;
-	lt->cursor->flags.selected = 1;
-	xm_draw_tree_table_widget(lt->w);
+	lt->cursor->flags.is_selected = 1;
 TODO("jump/scroll there");
 	REDRAW();
 }
