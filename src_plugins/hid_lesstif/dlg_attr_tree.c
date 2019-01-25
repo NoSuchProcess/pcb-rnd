@@ -21,27 +21,36 @@ static void ltf_tree_set(lesstif_attr_dlg_t *ctx, int idx, const char *val)
 
 static void ltf_tt_insert_row(ltf_tree_t *lt, pcb_hid_row_t *new_row)
 {
-	tt_entry_t *e, *after = NULL;
+	tt_entry_t *e, *before, *after = NULL;
 	pcb_hid_row_t *rafter, *lvl = NULL;
-	int n;
+	int n, base;
 
 	e = tt_entry_alloc(new_row->cols);
 	e->level = 0;
 
-	rafter = pcb_dad_tree_parent_row(lt->ht, new_row);
-	if (rafter != NULL) {
-		e->level = 1;
-		for(lvl = rafter; lvl != NULL; lvl = pcb_dad_tree_parent_row(lt->ht, lvl))
-			e->level++;
+	/* insert after an existing sibling or if this is the first node under a
+	   new level, directly under the parent */
+	rafter = pcb_dad_tree_prev_row(lt->ht, new_row);
+	if (rafter == NULL) {
+		rafter = pcb_dad_tree_parent_row(lt->ht, new_row);
+		if (rafter != NULL) {
+			e->level = 1;
+			for(lvl = rafter; lvl != NULL; lvl = pcb_dad_tree_parent_row(lt->ht, lvl))
+				e->level++;
+		}
 	}
-	else
-		rafter = pcb_dad_tree_prev_row(lt->ht, new_row);
 
-	if (rafter != NULL)
-		after = rafter->user_data;
-
-	if (after != NULL)
-		gdl_insert_after(&lt->model, after, e, gdl_linkfield);
+	if (rafter != NULL) {
+		/* find the first node that is at least on the same level as rafter;
+		   this effectively skips all children of rafter */
+		before = rafter->user_data;
+		base = before->level;
+		for(;(before != NULL) && (before->level > base); before = gdl_next(&lt->model, before)) ;
+		if (before != NULL)
+			gdl_insert_after(&lt->model, after, e, gdl_linkfield);
+		else
+			gdl_append(&lt->model, e, gdl_linkfield);
+	}
 	else
 		gdl_append(&lt->model, e, gdl_linkfield);
 
