@@ -37,28 +37,28 @@ static void ltf_tree_insert_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb
 	ltf_tt_insert_row(lt, new_row);
 }
 
-void ltf_tree_modify_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int col)
+static void ltf_tree_modify_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int col)
 {
 /*	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
 	ltf_tree_t *lt = ht->hid_wdata;*/
 
 }
 
-void ltf_tree_remove_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
+static void ltf_tree_remove_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
 {
 /*	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
 	ltf_tree_t *lt = ht->hid_wdata;*/
 
 }
 
-void ltf_tree_free_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
+static void ltf_tree_free_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
 {
 /*	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
 	ltf_tree_t *lt = ht->hid_wdata;*/
 
 }
 
-pcb_hid_row_t *ltf_tree_get_selected_cb(pcb_hid_attribute_t *attrib, void *hid_wdata)
+static pcb_hid_row_t *ltf_tree_get_selected_cb(pcb_hid_attribute_t *attrib, void *hid_wdata)
 {
 /*	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
 	ltf_tree_t *lt = ht->hid_wdata;*/
@@ -66,21 +66,21 @@ pcb_hid_row_t *ltf_tree_get_selected_cb(pcb_hid_attribute_t *attrib, void *hid_w
 	return NULL;
 }
 
-void ltf_tree_jumpto_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
+static void ltf_tree_jumpto_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
 {
 /*	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
 	ltf_tree_t *lt = ht->hid_wdata;*/
 
 }
 
-void ltf_tree_expcoll_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int expanded)
+static void ltf_tree_expcoll_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int expanded)
 {
 /*	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
 	ltf_tree_t *lt = ht->hid_wdata;*/
 
 }
 
-void ltf_tree_update_hide_cb(pcb_hid_attribute_t *attrib, void *hid_wdata)
+static void ltf_tree_update_hide_cb(pcb_hid_attribute_t *attrib, void *hid_wdata)
 {
 /*	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
 	ltf_tree_t *lt = ht->hid_wdata;*/
