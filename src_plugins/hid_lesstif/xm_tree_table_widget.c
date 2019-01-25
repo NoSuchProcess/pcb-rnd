@@ -29,6 +29,7 @@
 #include <assert.h>
 #include <X11/IntrinsicP.h>
 #include <Xm/ScrolledW.h>
+#include <Xm/XmP.h>
 
 #define TTBL_MIN(a,b) ((a) < (b)? (a) : (b))
 #define TTBL_MAX(a,b) ((a) > (b)? (a) : (b))
@@ -240,21 +241,17 @@ static void Initialize(Widget request, Widget tnew, ArgList args, Cardinal * num
 {
 	XmTreeTableWidget w = (XmTreeTableWidget) tnew;
 	XmTreeTablePart* tt = &(w->tree_table);
-	Display* dsp = XtDisplay(tnew);
 	tt->table = NULL;
 	memset(&(tt->render_attr), 0x00, sizeof(tt->render_attr));
 	tt->table_access_padlock = NULL;
 
 	xm_init_render_target(&(w->tree_table.render_attr));
+	tt->font = NULL;
 	{
-		int n_count = 0;
-		char **fonts_names = XListFonts(dsp, "*x11*", 10, &n_count);
-		if (n_count <= 0) {
-			/*pick first available font then*/
-			fonts_names = XListFonts(dsp, "*", 1, &n_count);
-		}
-		tt->font = XLoadQueryFont(dsp, fonts_names[n_count - 1]);
-		free(fonts_names);
+		static XmFontList flist = NULL;
+		if (!flist)
+			flist = XmeGetDefaultRenderTable(tnew, XmTEXT_RENDER_TABLE);
+		XmeRenderTableGetDefaultFont(flist, & tt->font);
 	}
 
 	/* init Xt GC structures for drawing routines. */
