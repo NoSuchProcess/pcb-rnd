@@ -5,7 +5,10 @@ typedef struct {
 	gdl_list_t model;
 	Widget *w;
 	pcb_hid_tree_t *ht;
+	tt_entry_t *cursor;
 } ltf_tree_t;
+
+#define REDRAW() xm_draw_tree_table_widget(lt->w);
 
 static void ltf_ttbl_xevent_cb(const tt_table_event_data_t *data)
 {
@@ -55,6 +58,7 @@ static void ltf_tt_insert_row(ltf_tree_t *lt, pcb_hid_row_t *new_row)
 		gdl_append(&lt->model, e, gdl_linkfield);
 
 	new_row->hid_data = e;
+	e->user_data = new_row;
 	for(n = 0; n < new_row->cols; n++)
 		tt_get_cell(e, n)[0] = new_row->cell[n];
 }
@@ -73,7 +77,8 @@ static void ltf_tree_modify_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb
 	ltf_tree_t *lt = ht->hid_wdata;
 
 	/* the caller modifies data strings directly, no need to do anything just flush */
-	xm_draw_tree_table_widget(lt->w);
+	REDRAW();
+	
 }
 
 static void ltf_tree_remove_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
@@ -81,6 +86,9 @@ static void ltf_tree_remove_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb
 	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
 	ltf_tree_t *lt = ht->hid_wdata;
 	tt_entry_t *e = row->hid_data;
+
+	if (lt->cursor == e)
+		lt->cursor = NULL;
 
 /*	gdl_remove(&lt->model, e, gdl_linkfield);*/
 	delete_tt_entry(&lt->model, e);
@@ -100,17 +108,26 @@ static void ltf_tree_free_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_h
 
 static pcb_hid_row_t *ltf_tree_get_selected_cb(pcb_hid_attribute_t *attrib, void *hid_wdata)
 {
-/*	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
-	ltf_tree_t *lt = ht->hid_wdata;*/
+	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
+	ltf_tree_t *lt = ht->hid_wdata;
 
-	return NULL;
+	if (lt->cursor == NULL)
+		return NULL;
+	return lt->cursor->user_data;
 }
 
 static void ltf_tree_jumpto_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
 {
-/*	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
-	ltf_tree_t *lt = ht->hid_wdata;*/
+	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
+	ltf_tree_t *lt = ht->hid_wdata;
 
+	if (lt->cursor != NULL)
+		lt->cursor->flags.selected = 1;
+	lt->cursor = row->hid_data;
+	lt->cursor->flags.selected = 1;
+	xm_draw_tree_table_widget(lt->w);
+TODO("jump/scroll there");
+	REDRAW();
 }
 
 static void ltf_tree_expcoll_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int expanded)
