@@ -43,7 +43,7 @@ static void ltf_tt_insert_row(ltf_tree_t *lt, pcb_hid_row_t *new_row)
 	if (rafter != NULL) {
 		/* find the first node that is at least on the same level as rafter;
 		   this effectively skips all children of rafter */
-		before = rafter->user_data;
+		before = rafter->hid_data;
 		base = before->level;
 		for(;(before != NULL) && (before->level > base); before = gdl_next(&lt->model, before)) ;
 		if (before != NULL)
@@ -54,7 +54,7 @@ static void ltf_tt_insert_row(ltf_tree_t *lt, pcb_hid_row_t *new_row)
 	else
 		gdl_append(&lt->model, e, gdl_linkfield);
 
-	new_row->user_data = e;
+	new_row->hid_data = e;
 	for(n = 0; n < new_row->cols; n++)
 		tt_get_cell(e, n)[0] = new_row->cell[n];
 }
@@ -80,7 +80,7 @@ static void ltf_tree_remove_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb
 {
 	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
 	ltf_tree_t *lt = ht->hid_wdata;
-	tt_entry_t *e = row->user_data;
+	tt_entry_t *e = row->hid_data;
 
 /*	gdl_remove(&lt->model, e, gdl_linkfield);*/
 	delete_tt_entry(&lt->model, e);
