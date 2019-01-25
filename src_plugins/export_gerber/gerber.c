@@ -638,10 +638,9 @@ static void drill_print_objs(aperture_list_t *apl, pending_drill_t *pd, pcb_card
 			}
 			if (force_g85)
 				pcb_fprintf(f, "X%06.0mkY%06.0mkG85X%06.0mkY%06.0mk\r\n", gerberDrX(PCB, pd[i].x), gerberDrY(PCB, pd[i].y), gerberDrX(PCB, pd[i].x2), gerberDrY(PCB, pd[i].y2));
-			else {
+			else
 				pcb_fprintf(f, "X%06.0mkY%06.0mk\r\nM15\r\nG01X%06.0mkY%06.0mk\r\nM17\r\n", gerberDrX(PCB, pd[i].x), gerberDrY(PCB, pd[i].y), gerberDrX(PCB, pd[i].x2), gerberDrY(PCB, pd[i].y2));
-				first = 1; /* each new slot will need a G00 for some fabs that ignore M17 and M15 */
-			}
+			first = 1; /* each new slot will need a G00 for some fabs that ignore M17 and M15 */
 		}
 		else {
 			if (first) {
