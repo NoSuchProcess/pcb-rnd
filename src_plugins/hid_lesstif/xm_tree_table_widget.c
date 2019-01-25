@@ -248,9 +248,8 @@ static void Initialize(Widget request, Widget tnew, ArgList args, Cardinal * num
 	xm_init_render_target(&(w->tree_table.render_attr));
 	{
 		int n_count = 0;
-		char ** fonts_names = XListFonts(dsp, "*x11*", 10, &n_count);
-		if (0 >= n_count)
-		{
+		char **fonts_names = XListFonts(dsp, "*x11*", 10, &n_count);
+		if (n_count <= 0) {
 			/*pick first available font then*/
 			fonts_names = XListFonts(dsp, "*", 1, &n_count);
 		}
