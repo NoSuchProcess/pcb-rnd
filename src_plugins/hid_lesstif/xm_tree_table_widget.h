@@ -57,7 +57,7 @@ typedef struct tt_entry_s {
 	unsigned n_text_lines;
 
 	/* custom stuff: user needs, user cares. */
-	void *p_custom_data;
+	void *user_data;
 
 	/* private. */
 	gdl_elem_t gdl_linkfield;
