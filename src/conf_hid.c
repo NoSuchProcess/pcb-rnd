@@ -45,7 +45,7 @@ static void conf_pcb_hid_init(void)
 void conf_pcb_hid_uninit(void)
 {
 #ifndef NDEBUG
-	{
+	if (conf_hid_ids != NULL) {
 		htpp_entry_t *e;
 		for(e = htpp_first(conf_hid_ids); e != NULL; e = htpp_next(conf_hid_ids, e))
 			fprintf(stderr, "ERROR: conf_hid id left registered: '%s'\n", (char *)e->key);
