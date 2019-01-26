@@ -79,24 +79,23 @@ void delete_tt_entry(gdl_list_t *list, tt_entry_t *item)
 
 typedef struct xm_tree_table_rendering_s
 {
-	void* dummy;
+	void *dummy;
 } xm_tree_table_rendering_t;
 
 /* widget methods - CamelCase naming used for Xm-related callbacks & structures.*/
-static void Initialize(Widget request, Widget tnew, ArgList args, Cardinal * num);
+static void Initialize(Widget request, Widget tnew, ArgList args, Cardinal *num);
 static void Destroy(XmTreeTableWidget w);
-static void Redisplay(Widget aw, XExposeEvent * event, Region region);
+static void Redisplay(Widget aw, XExposeEvent *event, Region region);
 static void Resize(XmTreeTableWidget w);
 static Boolean SetValues(Widget current, Widget request, Widget reply,
-                         ArgList args, Cardinal * nargs);
-static void Realize(Widget aw, XtValueMask * value_mask, XSetWindowAttributes * attributes);
-static XtGeometryResult
-QueryGeometry(XmTreeTableWidget w, XtWidgetGeometry *proposed, XtWidgetGeometry *answer);
+                         ArgList args, Cardinal *nargs);
+static void Realize(Widget aw, XtValueMask *value_mask, XSetWindowAttributes *attributes);
+static XtGeometryResult QueryGeometry(XmTreeTableWidget w, XtWidgetGeometry *proposed, XtWidgetGeometry *answer);
 
 /*helper methods: return 0 on success.*/
 int init_pixmaps(XmTreeTableWidget w);
-int make_pixmap_data(XmTreeTableWidget w, Pixinfo * pix);
-int free_pixmap_data(XmTreeTableWidget w, Pixinfo * pix);
+int make_pixmap_data(XmTreeTableWidget w, Pixinfo *pix);
+int free_pixmap_data(XmTreeTableWidget w, Pixinfo *pix);
 
 /*actions*/
 static void lmb_drag(Widget aw, XEvent *event, String *params, Cardinal *num_params);
@@ -152,7 +151,7 @@ XmTreeTableClassRec xmTreeTableClassRec =
 {
   {
     /* core_class fields     */
-    /* MOTIF superclass      */ (WidgetClass) & xmPrimitiveClassRec,
+    /* MOTIF superclass      */ (WidgetClass) &xmPrimitiveClassRec,
     /* class_name            */ "xmTreeTable",
     /* widget_size           */ sizeof(XmTreeTableRec),
     /* class_initialize      */ NULL,
@@ -200,7 +199,7 @@ XmTreeTableClassRec xmTreeTableClassRec =
   }
 };
 
-WidgetClass xmTreeTableWidgetClass = (WidgetClass) & xmTreeTableClassRec;
+WidgetClass xmTreeTableWidgetClass = (WidgetClass) &xmTreeTableClassRec;
 
 static void xt_gc_init(XmTreeTableWidget w)
 {
@@ -229,7 +228,7 @@ static void xt_gc_init(XmTreeTableWidget w)
 
 static void init_xm_view_variables(XmTreeTableWidget w)
 {
-  	if (XtHeight(w) < 10)
+	if (XtHeight(w) < 10)
 	{
 		XtWidth(w) = 240;
 		XtHeight(w) = 240;
@@ -237,10 +236,10 @@ static void init_xm_view_variables(XmTreeTableWidget w)
 }
 
 
-static void Initialize(Widget request, Widget tnew, ArgList args, Cardinal * num)
+static void Initialize(Widget request, Widget tnew, ArgList args, Cardinal *num)
 {
 	XmTreeTableWidget w = (XmTreeTableWidget) tnew;
-	XmTreeTablePart* tt = &(w->tree_table);
+	XmTreeTablePart *tt = &(w->tree_table);
 	tt->table = NULL;
 	memset(&(tt->render_attr), 0x00, sizeof(tt->render_attr));
 	tt->table_access_padlock = NULL;
@@ -251,7 +250,7 @@ static void Initialize(Widget request, Widget tnew, ArgList args, Cardinal * num
 		static XmFontList flist = NULL;
 		if (!flist)
 			flist = XmeGetDefaultRenderTable(tnew, XmTEXT_RENDER_TABLE);
-		XmeRenderTableGetDefaultFont(flist, & tt->font);
+		XmeRenderTableGetDefaultFont(flist, &tt->font);
 	}
 
 	/* init Xt GC structures for drawing routines. */
@@ -265,7 +264,7 @@ static void Initialize(Widget request, Widget tnew, ArgList args, Cardinal * num
 	tt->n_grid_x_gap_pixels = 5;
 	tt->n_grid_y_gap_pixels = 0;
 	tt->b_show_tree = 1;
-	memset(& tt->event_data, 0x00, sizeof(tt_table_event_data_t));
+	memset(&tt->event_data, 0x00, sizeof(tt_table_event_data_t));
 	tt->p_mouse_kbd_handler = NULL;
 	/* ---- public API-related vars */
 	tt->b_table_grid_visible = True;
@@ -277,7 +276,7 @@ static void Initialize(Widget request, Widget tnew, ArgList args, Cardinal * num
 /*--end of initialize-related------------------------------------------------*/
 static void Destroy(XmTreeTableWidget w)
 {
-	XmTreeTablePart* tt = &(w->tree_table);
+	XmTreeTablePart *tt = &(w->tree_table);
 	xm_clear_render_target(&(tt->render_attr));
 	if (tt->p_header)
 		free(tt->p_header);
@@ -294,7 +293,7 @@ static void Destroy(XmTreeTableWidget w)
 	XFreeFont(XtDisplay((Widget)w), tt->font);
 }
 /*---------------------------------------------------------------------------*/
-static void Redisplay(Widget aw, XExposeEvent * event, Region region)
+static void Redisplay(Widget aw, XExposeEvent *event, Region region)
 {
 	XmTreeTableWidget w = (XmTreeTableWidget)aw;
 	if (!XtIsRealized((Widget) aw))
@@ -310,12 +309,11 @@ static void Resize(XmTreeTableWidget w)
 {
 	Redisplay((Widget)w, NULL, NULL);
 }
-static Boolean SetValues(Widget current, Widget request, Widget reply,
-                         ArgList args, Cardinal * nargs)
+static Boolean SetValues(Widget current, Widget request, Widget reply, ArgList args, Cardinal *nargs)
 {
 	return False;
 }
-static void Realize(Widget aw, XtValueMask * value_mask, XSetWindowAttributes * attributes)
+static void Realize(Widget aw, XtValueMask *value_mask, XSetWindowAttributes *attributes)
 {
 #define	superclass	(&xmPrimitiveClassRec)
   (*superclass->core_class.realize) (aw, value_mask, attributes);
@@ -323,13 +321,12 @@ static void Realize(Widget aw, XtValueMask * value_mask, XSetWindowAttributes * 
 	Redisplay((Widget)aw, NULL, NULL);
 }
 
-static XtGeometryResult
-	QueryGeometry(XmTreeTableWidget w, XtWidgetGeometry *proposed, XtWidgetGeometry *answer)
+static XtGeometryResult QueryGeometry(XmTreeTableWidget w, XtWidgetGeometry *proposed, XtWidgetGeometry *answer)
 {
 	return XtGeometryNo;
 }
 
-static void reset_event_data_row_ptr(XmTreeTablePart* tp)
+static void reset_event_data_row_ptr(XmTreeTablePart *tp)
 {
 	tp->event_data.root_entry = tp->table;
 	tp->event_data.current_row = 0;
@@ -337,11 +334,10 @@ static void reset_event_data_row_ptr(XmTreeTablePart* tp)
 	tp->event_data.event = ett_none;
 }
 
-static void on_mouse_action(ett_x11_event_t ett_event,
-	Widget aw, XEvent *event, String *params, Cardinal *num_params)
+static void on_mouse_action(ett_x11_event_t ett_event, Widget aw, XEvent *event, String *params, Cardinal *num_params)
 {
 	XmTreeTableWidget tw = (XmTreeTableWidget)aw;
-	XmTreeTablePart* tp = &(tw->tree_table);
+	XmTreeTablePart *tp = &(tw->tree_table);
 
 	tp->event_data.type = ett_event;
 	tp->event_data.current_widget = aw;
@@ -366,8 +362,8 @@ static void on_mouse_action(ett_x11_event_t ett_event,
 {\
 {\
 	XmTreeTableWidget (XMTTWIDGET_NAME) = (XmTreeTableWidget)(WIDGET_PARAM);\
-	XmTreeTablePart* (XMTTPART_NAME) = &((XMTTWIDGET_NAME)->tree_table); \
-	tt_table_access_cb_t* plock__ = (XMTTPART_NAME)->table_access_padlock;\
+	XmTreeTablePart *(XMTTPART_NAME) = &((XMTTWIDGET_NAME)->tree_table); \
+	tt_table_access_cb_t *plock__ = (XMTTPART_NAME)->table_access_padlock;\
 	if (plock__)\
 		{ plock__->lock((XMTTPART_NAME)->table, plock__->p_user_data); }\
 \
@@ -400,10 +396,10 @@ static void rmb_drag(Widget aw, XEvent *event, String *params, Cardinal *num_par
 }
 
 /* ARGSUSED */
-static void keypress(Widget aw, XEvent *event, String * strings, Cardinal *number)
+static void keypress(Widget aw, XEvent *event, String *strings, Cardinal *number)
 {
 	XmTreeTableWidget tw = (XmTreeTableWidget)aw;
-	XmTreeTablePart* tp = &(tw->tree_table);
+	XmTreeTablePart *tp = &(tw->tree_table);
 	reset_event_data_row_ptr(tp);
 
 	tp->event_data.current_widget = aw;
@@ -427,20 +423,20 @@ static void keypress(Widget aw, XEvent *event, String * strings, Cardinal *numbe
 		tp->p_mouse_kbd_handler(&tp->event_data);
 }
 
-Widget xm_create_tree_table_widget(Widget parent, gdl_list_t* table_root,
+Widget xm_create_tree_table_widget(Widget parent, gdl_list_t *table_root,
 	tt_table_mouse_kbd_handler mouse_kbd_handler, tt_table_draw_handler draw_status_handler)
 {
 	return xm_create_tree_table_widget_cb(parent, table_root, mouse_kbd_handler, draw_status_handler, NULL);
 }
 
-Widget xm_create_tree_table_widget_cb(Widget parent, gdl_list_t* table_root,
+Widget xm_create_tree_table_widget_cb(Widget parent, gdl_list_t *table_root,
 	tt_table_mouse_kbd_handler mouse_kbd_handler, tt_table_draw_handler draw_status_handler,
-	tt_table_access_cb_t* access_padlock)
+	tt_table_access_cb_t *access_padlock)
 {
 	Widget scroll_w = NULL;
 	Widget table_widget = NULL;
 	Arg args[4];
-	const char* widget_name = "tree_table_widget";
+	const char *widget_name = "tree_table_widget";
 
 	XtSetArg(args[0], XmNscrollingPolicy, XmAPPLICATION_DEFINED);
 	XtSetArg(args[1], XmNvisualPolicy, XmVARIABLE);
@@ -451,7 +447,7 @@ Widget xm_create_tree_table_widget_cb(Widget parent, gdl_list_t* table_root,
 
 	table_widget = XtCreateWidget(widget_name, xmTreeTableWidgetClass, scroll_w, NULL, 0);
 	{
-		XmTreeTablePart* tp = &((XmTreeTableWidget)table_widget)->tree_table; 
+		XmTreeTablePart *tp = &((XmTreeTableWidget)table_widget)->tree_table;
 		tp->table = table_root;
 		tp->table_access_padlock = access_padlock;
 		tp->p_mouse_kbd_handler = mouse_kbd_handler;
@@ -465,18 +461,18 @@ Widget xm_create_tree_table_widget_cb(Widget parent, gdl_list_t* table_root,
 void xm_draw_tree_table_widget(Widget w)
 {
 	XmTreeTableWidget tw = (XmTreeTableWidget)w;
-	XmTreeTablePart* tp = &(tw->tree_table);
+	XmTreeTablePart *tp = &(tw->tree_table);
 	xm_render_ttwidget_contents(w, e_what_window);
 	if (tp->p_draw_handler)
 		tp->p_draw_handler(&tp->draw_event_data);
 }
 
-void xm_set_tree_table_pointer(Widget w, gdl_list_t* new_table_root, tt_table_access_cb_t* access_padlock)
+void xm_set_tree_table_pointer(Widget w, gdl_list_t *new_table_root, tt_table_access_cb_t *access_padlock)
 {
 	XmTreeTableWidget tw = (XmTreeTableWidget)w;
-	XmTreeTablePart* tp = &(tw->tree_table);
-	gdl_list_t* old_ptr = tp->table;
-	tt_table_access_cb_t* old_plock = tp->table_access_padlock;
+	XmTreeTablePart *tp = &(tw->tree_table);
+	gdl_list_t *old_ptr = tp->table;
+	tt_table_access_cb_t *old_plock = tp->table_access_padlock;
 	if (old_plock && old_ptr)
 	{
 		old_plock->lock(old_ptr, old_plock->p_user_data);
@@ -494,9 +490,9 @@ void xm_set_tree_table_pointer(Widget w, gdl_list_t* new_table_root, tt_table_ac
 	}
 }
 
-int xm_tt_set_x11_font_attr(Widget xm_tree_table, const char* attributes)
+int xm_tt_set_x11_font_attr(Widget xm_tree_table, const char *attributes)
 {
-	XFontStruct* new_font = XLoadQueryFont(XtDisplay(xm_tree_table), attributes);
+	XFontStruct *new_font = XLoadQueryFont(XtDisplay(xm_tree_table), attributes);
 	if (!new_font)
 		return -1;
 	XM_TT_LOCKED_CODE(xm_tree_table, tw, tp,
@@ -509,7 +505,7 @@ int xm_tt_set_x11_font_attr(Widget xm_tree_table, const char* attributes)
 	return 0;
 }
 
-void xm_attach_tree_table_header(Widget w, unsigned n_strings, const char** strings)
+void xm_attach_tree_table_header(Widget w, unsigned n_strings, const char **strings)
 {
 	XM_TT_LOCKED_CODE(w, tw, tp,
 		unsigned x;
@@ -524,7 +520,7 @@ void xm_attach_tree_table_header(Widget w, unsigned n_strings, const char** stri
 void xm_tree_table_tree_mode(Widget w, unsigned char mode)
 {
 	XmTreeTableWidget tw = (XmTreeTableWidget)w;
-	XmTreeTablePart* tp = &(tw->tree_table);
+	XmTreeTablePart *tp = &(tw->tree_table);
 	tp->b_show_tree = mode;
 }
 
@@ -541,7 +537,7 @@ int xm_tree_table_focus_row(Widget w, int row_index)
 	int ret = -1;
 	int rows_to_scroll = 0;
 	XM_TT_LOCKED_CODE(w, tw, tp,
-		struct render_target_s* s = & tp->render_attr;
+		struct render_target_s *s = &tp->render_attr;
 		int row_at_half_screen = xm_find_row_pointed_by_mouse(w, s->geom.y + s->geom.height / 2);
 		if (row_at_half_screen < 0)
 			break;
@@ -570,7 +566,7 @@ xm_tt_scrollbar xm_tree_table_scrollbar_horizontal_get(Widget table_widget)
 void xm_tree_table_scrollbar_vertical_set(Widget table_widget, int current_value)
 {
 	XM_TT_LOCKED_CODE(table_widget, tw, tp,
-		xm_tt_scrollbar *bar = & tp->w_vert_sbar;
+		xm_tt_scrollbar *bar = &tp->w_vert_sbar;
 		bar->prev = bar->cur;
 		bar->cur = TTBL_CLAMP(current_value, bar->lo, bar->hi - bar->size);)
 }
@@ -578,7 +574,7 @@ void xm_tree_table_scrollbar_vertical_set(Widget table_widget, int current_value
 void xm_tree_table_scrollbar_horizontal_set(Widget table_widget, int current_value)
 {
 	XM_TT_LOCKED_CODE(table_widget, tw, tp,
-		xm_tt_scrollbar *bar = & tp->w_horiz_sbar;
+		xm_tt_scrollbar *bar = &tp->w_horiz_sbar;
 		bar->prev = bar->cur;
 		bar->cur = TTBL_CLAMP(current_value, bar->lo, bar->hi - bar->size);)
 }
