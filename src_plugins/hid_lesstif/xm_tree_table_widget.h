@@ -52,26 +52,19 @@ typedef struct tt_entry_s {
 	char payload[1];          /* the payload - columns' text. Use tt_get_cell() to get an element. */
 } tt_entry_t;
 
-/* create an item -> returns new object capable storing (n_cells) strings.
-
-disposal: if the entry hasn't been added to the list, just free() it later,
-otherwise call delete_tt_entry(lest, item).
-*/
+/* create an item with n_cells preallocated. Disposal: remove from the list, free() */
 tt_entry_t *tt_entry_alloc(unsigned n_cells);
 
-/* put a non-NULL entry into the list.*/
+/* OBSOLETE: put a non-NULL entry into the list.*/
 void tt_entry_link(gdl_list_t *list, tt_entry_t *entry);
 
-/* create an item -> returns new object capable storing (n_cells) strings, the object is added to the list. */
+/* OBSOLETE: create an item -> returns new object capable storing (n_cells) strings, the object is added to the list. */
 tt_entry_t *new_tt_entry(gdl_list_t *list, unsigned n_cells);
 
 /* Remove item from parent's list and free it's memory. */
 void delete_tt_entry(gdl_list_t *list, tt_entry_t *item);
 
-/* On an object created by new_tt_entry():
-object - non-NULL, must be obtained from new_tt_entry()
-
-returns NULL, if the cells hasn't been allocated or the index is wrong. */
+/* Returns the address of the indexth cell or NULL if out of bounds */
 const char **tt_get_cell(tt_entry_t *object, unsigned index);
 
 /*** widget part ***/
