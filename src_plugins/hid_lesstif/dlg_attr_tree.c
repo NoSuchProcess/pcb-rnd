@@ -120,12 +120,13 @@ static void ltf_tree_jumpto_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb
 {
 	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
 	ltf_tree_t *lt = ht->hid_wdata;
+	tt_entry_t *e = row->hid_data;
 
 	if (lt->cursor != NULL)
 		lt->cursor->flags.is_selected = 1;
-	lt->cursor = row->hid_data;
+	lt->cursor = e;
 	lt->cursor->flags.is_selected = 1;
-TODO("jump/scroll there");
+	xm_tree_table_focus_row(lt->w, e->row_index);
 	REDRAW();
 }
 
