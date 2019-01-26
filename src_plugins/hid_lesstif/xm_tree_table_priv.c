@@ -262,6 +262,7 @@ void xm_render_ttwidget_contents(Widget aw, enum e_what_changed what)
 		tt_entry_t *entry = s->visible_items_vector[0].item;
 		unsigned position_idx = 0;
 		tt_cb_draw_t *ddata = &(((XmTreeTableWidget)w)->tree_table.draw_event_data);
+		ddata->user_data = tt->user_data;
 		ddata->visible_first = entry ? entry->row_index : -1;
 		ddata->visible_last = -1;
 
@@ -351,6 +352,7 @@ void xm_horizontal_scroll_cb(Widget scroll_widget, XtPointer client_data, XtPoin
 	tt_bar->cur = cbs->value;
 	xm_render_ttwidget_contents((Widget)tw, e_what_horizontal_scroll);
 
+	tp->draw_event_data.user_data = tp->user_data;
 	tp->draw_event_data.type = ett_scroll_horizontal;
 	if (tp->p_draw_handler)
 		tp->p_draw_handler(&tp->draw_event_data);
@@ -370,6 +372,7 @@ void xm_vertical_scroll_cb(Widget scroll_widget, XtPointer client_data, XtPointe
 	tt_bar->cur = cbs->value;
 	xm_render_ttwidget_contents((Widget)tw, e_what_vertical_scroll);
 
+	tp->draw_event_data.user_data = tp->user_data;
 	tp->draw_event_data.type = ett_scroll_vertical;
 	if (tp->p_draw_handler)
 		tp->p_draw_handler(&tp->draw_event_data);
@@ -552,7 +555,7 @@ void xm_extent_prediction(XmTreeTableWidget w)
 	}
 	tt->virtual_canvas_size.x = s->geom.x;
 	tt->virtual_canvas_size.y = s->geom.y;
-
+	tt->draw_event_data.user_data = tt->user_data;
 	tt->draw_event_data.tree_table_widget = (Widget)w;
 	tt->draw_event_data.widget_geometry = s->geom;
 	tt->draw_event_data.root = tt->table;

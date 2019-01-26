@@ -113,6 +113,9 @@ typedef struct tt_table_event_data {
 	String *strings;
 	Cardinal *strings_number;
 
+	/* The pointer passed from construction function xm_create_tree_table_widget().*/
+	void *user_data;
+
 } tt_table_event_data_t;
 
 typedef void (*tt_table_mouse_kbd_handler) (const tt_table_event_data_t *data);
@@ -129,6 +132,9 @@ typedef struct tt_table_draw_event_data {
 	/* at the list in (root) it's the index of the rows that are currently visible in the widget.
 	   value == -1 means invalid/unavailable position. */
 	int visible_first, visible_last;
+
+	/* The pointer passed from construction function xm_create_tree_table_widget().*/
+	void *user_data;
 
 } tt_cb_draw_t;
 
@@ -149,7 +155,10 @@ access_padlock - can be NULL, if set, it'll be invoked on each model data access
 begin(lock), end(unlock).
 
  */
-Widget xm_create_tree_table_widget(Widget parent, gdl_list_t *table_root, tt_table_mouse_kbd_handler mouse_kbd_handler, tt_table_draw_handler draw_status_handler);
+Widget xm_create_tree_table_widget(Widget parent, gdl_list_t *table_root,
+	void *user_data,
+	tt_table_mouse_kbd_handler mouse_kbd_handler,
+	tt_table_draw_handler draw_status_handler);
 
 /* Re-render widget's content on demand. Should be invoked only inside the rendering loop.
 In the end it will invoke tt_table_draw_handler() with (ett_render_finished) event type.
@@ -191,7 +200,11 @@ access_padlock - can be NULL, if set, it'll be invoked on each model data access
 begin(lock), end(unlock).
 
  */
-Widget xm_create_tree_table_widget_cb(Widget parent, gdl_list_t *table_root, tt_table_mouse_kbd_handler mouse_kbd_handler, tt_table_draw_handler draw_status_handler, tt_table_access_cb_t *access_padlock);
+Widget xm_create_tree_table_widget_cb(Widget parent, gdl_list_t *table_root,
+	void *user_data,
+	tt_table_mouse_kbd_handler mouse_kbd_handler,
+	tt_table_draw_handler draw_status_handler,
+	tt_table_access_cb_t *access_padlock);
 
 /* Set new table pointer or re-parse the same list again on items addition/removal.
 WHEN to call it? - any time, if the locking pointer tt_table_access_cb_t* was non-NULL,

@@ -319,6 +319,7 @@ static XtGeometryResult QueryGeometry(XmTreeTableWidget w, XtWidgetGeometry *pro
 static void reset_event_data_row_ptr(XmTreeTablePart *tp)
 {
 	tp->event_data.root_entry = tp->table;
+	tp->event_data.user_data = tp->user_data;
 	tp->event_data.current_row = 0;
 	tp->event_data.current_cell = 0;
 	tp->event_data.event = ett_none;
@@ -330,6 +331,7 @@ static void on_mouse_action(ett_x11_event_t ett_event, Widget aw, XEvent *event,
 	XmTreeTablePart *tp = &(tw->tree_table);
 
 	tp->event_data.type = ett_event;
+	tp->event_data.user_data = tp->user_data;
 	tp->event_data.current_widget = aw;
 	tp->event_data.event = event;
 	tp->event_data.strings = params;
@@ -391,7 +393,7 @@ static void keypress(Widget aw, XEvent *event, String *strings, Cardinal *number
 	XmTreeTableWidget tw = (XmTreeTableWidget)aw;
 	XmTreeTablePart *tp = &(tw->tree_table);
 	reset_event_data_row_ptr(tp);
-
+	tp->event_data.user_data = tp->user_data;
 	tp->event_data.current_widget = aw;
 	tp->event_data.event = event;
 	while (Button1 == event->xbutton.button || Button2 == event->xbutton.button || Button3 == event->xbutton.button)
@@ -414,13 +416,18 @@ static void keypress(Widget aw, XEvent *event, String *strings, Cardinal *number
 }
 
 Widget xm_create_tree_table_widget(Widget parent, gdl_list_t *table_root,
-	tt_table_mouse_kbd_handler mouse_kbd_handler, tt_table_draw_handler draw_status_handler)
+	void *user_data,
+	tt_table_mouse_kbd_handler mouse_kbd_handler,
+	tt_table_draw_handler draw_status_handler)
 {
-	return xm_create_tree_table_widget_cb(parent, table_root, mouse_kbd_handler, draw_status_handler, NULL);
+	return xm_create_tree_table_widget_cb(parent, table_root,
+		user_data, mouse_kbd_handler, draw_status_handler, NULL);
 }
 
 Widget xm_create_tree_table_widget_cb(Widget parent, gdl_list_t *table_root,
-	tt_table_mouse_kbd_handler mouse_kbd_handler, tt_table_draw_handler draw_status_handler,
+	void *user_data,
+	tt_table_mouse_kbd_handler mouse_kbd_handler,
+	tt_table_draw_handler draw_status_handler,
 	tt_table_access_cb_t *access_padlock)
 {
 	Widget scroll_w = NULL;
@@ -438,8 +445,10 @@ Widget xm_create_tree_table_widget_cb(Widget parent, gdl_list_t *table_root,
 	table_widget = XtCreateWidget(widget_name, xmTreeTableWidgetClass, scroll_w, NULL, 0);
 	{
 		XmTreeTablePart *tp = &((XmTreeTableWidget)table_widget)->tree_table;
+		tp->user_data = user_data;
 		tp->table = table_root;
 		tp->table_access_padlock = access_padlock;
+		tp->event_data.user_data = user_data;
 		tp->p_mouse_kbd_handler = mouse_kbd_handler;
 		tp->p_draw_handler = draw_status_handler;
 	}

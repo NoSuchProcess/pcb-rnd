@@ -174,6 +174,7 @@ typedef struct {
 
 	/* ==== public API-related variables ==== */
 	Bool b_table_grid_visible;
+	void *user_data;
 } XmTreeTablePart;
 
 typedef struct _XmTreeTableRec {

@@ -188,7 +188,8 @@ static Widget ltf_tree_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_at
 {
 	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attr->enumerations;
 	ltf_tree_t *lt = calloc(sizeof(ltf_tree_t), 1);
-	Widget table = xm_create_tree_table_widget_cb(parent, &lt->model, ltf_tt_xevent_cb, NULL, NULL);
+	Widget table = xm_create_tree_table_widget_cb(parent, &lt->model,
+		(void*)ht, ltf_tt_xevent_cb, NULL, NULL);
 
 	lt->w = table;
 	lt->ht = ht;
