@@ -10,9 +10,32 @@ typedef struct {
 
 #define REDRAW() xm_draw_tree_table_widget(lt->w);
 
+static tt_entry_t *ltf_tt_lookup_row(const tt_table_event_data_t *data, unsigned row_index)
+{
+	tt_entry_t *e;
+	for(e = gdl_first(data->root_entry); e != NULL; e = gdl_next(data->root_entry, e)) {
+		if (e->row_index == row_index)
+			return e;
+	}
+	return NULL;
+}
+
 static void ltf_ttbl_xevent_cb(const tt_table_event_data_t *data)
 {
-	pcb_trace("ttbl x event\n");
+	tt_entry_t *e;
+
+	switch(data->type) {
+		case ett_none:
+		case ett_mouse_btn_up:
+		case ett_mouse_btn_drag:
+			break;
+		case ett_mouse_btn_down:
+			e = ltf_tt_lookup_row(data, data->current_row);
+pcb_trace("cursor: %p\n", e);
+			break;
+		case ett_key:
+			break;
+	}
 }
 
 
