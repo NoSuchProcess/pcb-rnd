@@ -122,18 +122,22 @@ static pcb_hid_row_t *ltf_tree_get_selected_cb(pcb_hid_attribute_t *attrib, void
 	return lt->cursor->user_data;
 }
 
-static void ltf_tree_jumpto_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
+static void ltf_tt_jumpto(ltf_tree_t *lt, tt_entry_t *e)
 {
-	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
-	ltf_tree_t *lt = ht->hid_wdata;
-	tt_entry_t *e = row->hid_data;
-
 	if (lt->cursor != NULL)
 		lt->cursor->flags.is_selected = 1;
 	lt->cursor = e;
 	lt->cursor->flags.is_selected = 1;
 	xm_tree_table_focus_row(lt->w, e->row_index);
 	REDRAW();
+}
+
+static void ltf_tree_jumpto_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
+{
+	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
+	ltf_tree_t *lt = ht->hid_wdata;
+	tt_entry_t *e = row->hid_data;
+	ltf_tt_jumpto(lt, e);
 }
 
 static void ltf_tree_expcoll_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int expanded)
@@ -163,6 +167,7 @@ static void ltf_tt_import(ltf_tree_t *lt, gdl_list_t *lst)
 static void ltf_tt_xevent_cb(const tt_table_event_data_t *data)
 {
 	tt_entry_t *e;
+/*	ltf_tree_t *lt = data->user_data;*/
 
 	switch(data->type) {
 		case ett_none:
@@ -171,6 +176,7 @@ static void ltf_tt_xevent_cb(const tt_table_event_data_t *data)
 			break;
 		case ett_mouse_btn_down:
 			e = ltf_tt_lookup_row(data, data->current_row);
+/*			ltf_tt_jumpto(lt, e);*/
 pcb_trace("cursor: %p\n", e);
 			break;
 		case ett_key:
