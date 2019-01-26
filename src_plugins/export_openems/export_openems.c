@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -556,6 +556,8 @@ static void openems_write_mesh2(wctx_t *ctx)
 	}
 	fprintf(ctx->f, "%%%%%% Board mesh, part 2\n");
 
+	pcb_fprintf(ctx->f, "z_bottom_copper=%mm\n", mesh->z_bottom_copper);
+
 	fprintf(ctx->f, "mesh.y=[");
 	openems_write_mesh_lines(ctx, &mesh->line[PCB_MESH_HORIZONTAL]);
 	fprintf(ctx->f, "];\n");
@@ -570,7 +572,7 @@ static void openems_write_mesh2(wctx_t *ctx)
 
 	fprintf(ctx->f, "mesh.x = mesh.x .+ offset.x;\n");
 	fprintf(ctx->f, "mesh.y = offset.y .- mesh.y;\n");
-	fprintf(ctx->f, "mesh.z = mesh.z .+ offset.z;\n");
+	fprintf(ctx->f, "mesh.z = z_bottom_copper .- mesh.z .+ offset.z;\n");
 	fprintf(ctx->f, "CSX = DefineRectGrid(CSX, unit, mesh);\n");
 	fprintf(ctx->f, "\n");
 }

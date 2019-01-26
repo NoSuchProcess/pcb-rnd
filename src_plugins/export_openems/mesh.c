@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -616,6 +616,7 @@ static int mesh_auto_z(pcb_mesh_t *mesh)
 		}
 	}
 
+	mesh->z_bottom_copper = ybottom;
 
 	return 0;
 }
