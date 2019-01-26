@@ -572,7 +572,6 @@ static int mesh_auto_z(pcb_mesh_t *mesh)
 						if (first) {
 							ytop = y;
 							top_dens = pcb_round(dens);
-							mesh_add_result(mesh, PCB_MESH_Z, y);
 							first = 0;
 						}
 						else
