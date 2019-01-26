@@ -31,9 +31,7 @@
 
 #include <genlist/gendlist.h>
 
-/* The structure gets linked into gdl_list_t, the payload consists of (n_calles) char* pointers,
-the user will have to provide them.
-*/
+/* Member of a gdl_list_t, the payload consists of (n_cells) of user managed text */
 typedef struct tt_entry_s {
 	/* tree indent/level count. */
 	unsigned short level;
@@ -47,7 +45,7 @@ typedef struct tt_entry_s {
 		unsigned is_being_rendered:1; /* 0 by default, updated by the view whenever the item fits on the screen. */
 	} flags;
 
-	/* -1 stands for unmanaged/detached item. */
+	/* filled in by the widget; -1 stands for unmanaged/detached item. */
 	long row_index;
 
 	/* N  cells of data */
@@ -56,13 +54,12 @@ typedef struct tt_entry_s {
 	/* to be set after first list traversal */
 	unsigned n_text_lines;
 
-	/* custom stuff: user needs, user cares. */
+	/* custom, opaque user data */
 	void *user_data;
 
-	/* private. */
 	gdl_elem_t gdl_linkfield;
 
-	/* the payload - columns' text. NOTICE! use tt_get_cell(tt_entry_t*, unsigned) to get an element. */
+	/* the payload - columns' text. Use tt_get_cell() to get an element. */
 	char payload[1];
 
 } tt_entry_t;
