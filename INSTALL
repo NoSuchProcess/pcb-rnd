@@ -60,8 +60,9 @@ For users:
  - C compiler
  - make
  - optional: glib and gtk if you are using the gtk frontend
- - motif or lesstif if you are using the lesstif frontend
- - gdlib if you are using the png HID
+ - optional: gtkglext if you need opengl rendering
+ - optional: motif or lesstif if you are using the lesstif frontend
+ - optional: gdlib if you are using the png HID
 
 For developers:
  - flex
