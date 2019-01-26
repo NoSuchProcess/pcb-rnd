@@ -33,35 +33,23 @@
 
 /* Member of a gdl_list_t, the payload consists of (n_cells) of user managed text */
 typedef struct tt_entry_s {
-	/* tree indent/level count. */
-	unsigned short level;
+	
+	unsigned short level;  /* tree indent/level count. */
 
 	struct {
-		/* user selects. */
-		unsigned is_hidden:1; /* 0 by default */
-		unsigned is_unfolded:1; /* 1 by default, just specifies the type of pixmap, if it's leaf. */
-		unsigned is_branch:1; /* 0 by default, just specifies the type of pixmap to be rendered: branch or leaf. */
-		unsigned is_selected:1; /* 0 by default */
+		unsigned is_hidden:1;         /* 0 by default */
+		unsigned is_unfolded:1;       /* 1 by default, just specifies the type of pixmap, if it's leaf. */
+		unsigned is_branch:1;         /* 0 by default, just specifies the type of pixmap to be rendered: branch or leaf. */
+		unsigned is_selected:1;       /* 0 by default */
 		unsigned is_being_rendered:1; /* 0 by default, updated by the view whenever the item fits on the screen. */
 	} flags;
 
-	/* filled in by the widget; -1 stands for unmanaged/detached item. */
-	long row_index;
-
-	/* N  cells of data */
-	unsigned n_cells;
-
-	/* to be set after first list traversal */
-	unsigned n_text_lines;
-
-	/* custom, opaque user data */
-	void *user_data;
-
+	long row_index;           /* filled in by the widget; -1 stands for unmanaged/detached item. */
+	unsigned n_cells;         /* number of cells of data */
+	unsigned n_text_lines;    /* to be set after first list traversal */
+	void *user_data;          /* custom, opaque user data */
 	gdl_elem_t gdl_linkfield;
-
-	/* the payload - columns' text. Use tt_get_cell() to get an element. */
-	char payload[1];
-
+	char payload[1];          /* the payload - columns' text. Use tt_get_cell() to get an element. */
 } tt_entry_t;
 
 /* create an item -> returns new object capable storing (n_cells) strings.
