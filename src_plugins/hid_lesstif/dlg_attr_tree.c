@@ -2,6 +2,7 @@
 #include "hid_dad_tree.h"
 
 typedef struct {
+	lesstif_attr_dlg_t *ctx;
 	gdl_list_t model;
 	Widget w;
 	pcb_hid_tree_t *ht;
@@ -175,12 +176,14 @@ static void ltf_tt_xevent_cb(const tt_table_event_data_t *data)
 		case ett_mouse_btn_drag:
 			break;
 		case ett_mouse_btn_down:
+			XtSetKeyboardFocus(lt->ctx->dialog, lt->w);
 			e = ltf_tt_lookup_row(data, data->current_row);
 			if (e == NULL)
 				return;
 			ltf_tt_jumpto(lt, e);
 			break;
 		case ett_key:
+pcb_trace("tree key\n");
 			break;
 	}
 }
@@ -194,6 +197,7 @@ static Widget ltf_tree_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_at
 	lt->w = table;
 	lt->ht = ht;
 	ht->hid_wdata = lt;
+	lt->ctx = ctx;
 
 	ht->hid_insert_cb = ltf_tree_insert_cb;
 	ht->hid_modify_cb = ltf_tree_modify_cb;
