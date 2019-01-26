@@ -20,23 +20,6 @@ static tt_entry_t *ltf_tt_lookup_row(const tt_table_event_data_t *data, unsigned
 	return NULL;
 }
 
-static void ltf_ttbl_xevent_cb(const tt_table_event_data_t *data)
-{
-	tt_entry_t *e;
-
-	switch(data->type) {
-		case ett_none:
-		case ett_mouse_btn_up:
-		case ett_mouse_btn_drag:
-			break;
-		case ett_mouse_btn_down:
-			e = ltf_tt_lookup_row(data, data->current_row);
-pcb_trace("cursor: %p\n", e);
-			break;
-		case ett_key:
-			break;
-	}
-}
 
 
 static void ltf_tree_set(lesstif_attr_dlg_t *ctx, int idx, const char *val)
@@ -177,11 +160,29 @@ static void ltf_tt_import(ltf_tree_t *lt, gdl_list_t *lst)
 	}
 }
 
+static void ltf_tt_xevent_cb(const tt_table_event_data_t *data)
+{
+	tt_entry_t *e;
+
+	switch(data->type) {
+		case ett_none:
+		case ett_mouse_btn_up:
+		case ett_mouse_btn_drag:
+			break;
+		case ett_mouse_btn_down:
+			e = ltf_tt_lookup_row(data, data->current_row);
+pcb_trace("cursor: %p\n", e);
+			break;
+		case ett_key:
+			break;
+	}
+}
+
 static Widget ltf_tree_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
 {
 	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attr->enumerations;
 	ltf_tree_t *lt = calloc(sizeof(ltf_tree_t), 1);
-	Widget table = xm_create_tree_table_widget_cb(parent, &lt->model, ltf_ttbl_xevent_cb, NULL, NULL);
+	Widget table = xm_create_tree_table_widget_cb(parent, &lt->model, ltf_tt_xevent_cb, NULL, NULL);
 
 	lt->w = table;
 	lt->ht = ht;
