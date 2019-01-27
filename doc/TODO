@@ -30,7 +30,6 @@
 + BUG: assertion with --debug,  open pcb-rnd, place via, open the padstackedit dialog for the via, go to generate common geometry, choose square copper shape, click 'generate' [report: Miloh]
 ? BUG: configure without glib installed -> 'unknown arugment disable-gtk' [report: Ade]
 + BUG: Load a footprint using the library dialog {w l} into the buffer. Flip the board with the tab key and the refdes border in the buffer object flips vertically the wrong way. Only occurs when loading footprint, not when copying. [report: Ade]
-+ BUG: gtk coord entry: right click, change units fail [report: Alain] -> submenu removed, we will have this feature back after the DAD rewrite
 ? BUG: #define TODO(x) doesn't compile on IRIX system with --debug option ON [report: Ian]
 - BUG: find.c: bug_files/find_slotcop.lht: plated slot should connect to any copper layer object it is going thru ml2571 [report: Igor2]
 + BUG: footprint edit: create all subc layers on the "board" after loading the subc as board for edit bug_files/subc_misclay.lht mail: dec11 [report: Ade]
