@@ -104,13 +104,27 @@ static void rmb_drag(Widget aw, XEvent *event, String *params, Cardinal *num_par
 static void keypress(Widget aw, XEvent *event, String *, Cardinal *);
 
 static char defaultTranslations[] = "\
-<Btn1Motion>:     lmb_drag()\n\
-<Btn2Motion>:     mmb_drag()\n\
-<Btn3Motion>:     rmb_drag()\n\
-<Btn1Down>:       keypress()\n\
-<Btn2Down>:       keypress()\n\
-<Btn3Down>:       keypress()\n\
-<Key>:            keypress()\n\
+<Btn1Motion>:lmb_drag()\n\
+<Btn2Motion>:mmb_drag()\n\
+<Btn3Motion>:rmb_drag()\n\
+<Btn1Down>:keypress()\n\
+<Btn2Down>:keypress()\n\
+<Btn3Down>:keypress()\n\
+<Key>:keypress()\n\
+<Key>Escape:keypress()\n\
+<Key>Return:keypress()\n\
+<Key>space:keypress()\n\
+<KeyUp>:keypress()\n\
+<KeyDown>:keypress()\n\
+<KeyLeft>:keypress()\n\
+<KeyRight>:keypress()\n\
+<KeyTab>:keypress()\n\
+<Key>osfBeginLine:keypress()\n\
+<Key>osfEndLine:keypress()\n\
+<Key>osfInsert:keypress()\n\
+<Key>osfDelete:keypress()\n\
+<Key>osfPageUp:keypress()\n\
+<Key>osfPageDown:keypress()\n\
 ";
 
 static XtActionsRec actions[] =
@@ -396,6 +410,7 @@ static void keypress(Widget aw, XEvent *event, String *strings, Cardinal *number
 	tp->event_data.user_data = tp->user_data;
 	tp->event_data.current_widget = aw;
 	tp->event_data.event = event;
+	tp->event_data.type = ett_none;
 	while (Button1 == event->xbutton.button || Button2 == event->xbutton.button || Button3 == event->xbutton.button)
 	{
 		ett_x11_event_t te = ett_none;
@@ -407,8 +422,9 @@ static void keypress(Widget aw, XEvent *event, String *strings, Cardinal *number
 		{
 			break;
 		}
+		tp->event_data.type = te;
 		on_mouse_action(te, aw, event, strings, number);
-		break;
+		return;
 	}
 	tp->event_data.type = ett_key;
 	if (tp->p_mouse_kbd_handler)
