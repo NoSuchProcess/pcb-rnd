@@ -1291,12 +1291,20 @@ void *pcb_subcop_move_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	int n;
 	pcb_board_t *dst_top = pcb_data_get_top(ctx->buffer.dst);
 	int dst_is_pcb = ((dst_top != NULL) && (dst_top->Data == ctx->buffer.dst));
+	pcb_opctx_t clip;
 
 	EraseSubc(sc);
 
 	/* move the subc */
-	if ((ctx->buffer.pcb != NULL) && (ctx->buffer.pcb->Data->subc_tree != NULL))
+	if ((ctx->buffer.pcb != NULL) && (ctx->buffer.pcb->Data->subc_tree != NULL)) {
+		if (!dst_is_pcb) {
+			/* restore all pins/pads at once, at the old location */
+			clip.clip.restore = 1; clip.clip.clear = 0;
+			clip.clip.pcb = ctx->buffer.pcb;
+			pcb_subc_op(ctx->buffer.pcb->Data, sc, &ClipFunctions, &clip, PCB_SUBCOP_UNDO_SUBC);
+		}
 		pcb_r_delete_entry(ctx->buffer.pcb->Data->subc_tree, (pcb_box_t *)sc);
+	}
 
 	pcb_subc_unreg(sc);
 	pcb_subc_reg(ctx->buffer.dst, sc);
@@ -1338,6 +1346,12 @@ void *pcb_subcop_move_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	}
 
 	subc_relocate_globals(ctx->buffer.dst, sc->data, sc, dst_is_pcb);
+
+	if (dst_is_pcb) {
+		/* clear all pins/pads at once, at the new location */
+		clip.clip.restore = 0; clip.clip.clear = 1;
+		pcb_subc_op(ctx->buffer.dst, sc, &ClipFunctions, &clip, PCB_SUBCOP_UNDO_SUBC);
+	}
 
 	PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, sc);
 	return sc;
