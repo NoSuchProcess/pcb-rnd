@@ -38,7 +38,7 @@
 ? BUG: #define TODO(x) doesn't compile on IRIX system with --debug option ON [report: Ian]
 - BUG: find.c: bug_files/find_slotcop.lht: plated slot should connect to any copper layer object it is going thru ml2571 [report: Igor2]
 + BUG: footprint edit: create all subc layers on the "board" after loading the subc as board for edit bug_files/subc_misclay.lht mail: dec11 [report: Ade]
-- BUG: Unable to delete roles in the preferences dialog since empty values are now valid. [report: Ade]
++ BUG: Unable to delete roles in the preferences dialog since empty values are now valid. [report: Ade]
 - BUG: poly clipping bug: bug_files/reclip.lht - remove the subc (with del) -> no poly reclip happens ml=2610 [report: Gabriel]
 
 2. For later releases ===============================================================================
