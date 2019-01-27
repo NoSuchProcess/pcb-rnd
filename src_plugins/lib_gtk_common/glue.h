@@ -63,7 +63,7 @@ typedef struct pcb_gtk_common_s {
 	const gchar *(*get_color_name)(pcb_gtk_color_t * color);
 
 	/* only for config: */
-	void (*set_special_colors)(conf_native_t *cfg);
+	void (*set_special_colors)(conf_native_t *cfg, int idx);
 	void (*layer_buttons_update)(void);
 
 	int (*command_entry_is_active)(void);
