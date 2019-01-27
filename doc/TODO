@@ -9,7 +9,6 @@
 - DOC: view list: document the view lht format
 + FEATURE: make propset() able to change board properties if first arg is "board" (change baord size) [report: rqsall]
 + FEATURE: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
-+ FEATURE: padstack editor: indicate if a proto layer does not map to current board layer [report: Erich]
 + FEATURE: extedit: dialog shoudl let the user edit the command template [report: TwisteR]
 - BUG: new preferences
 	+ update bugs:
