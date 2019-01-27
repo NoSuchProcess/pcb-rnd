@@ -303,8 +303,8 @@ void pcb_route_start(pcb_board_t *PCB, pcb_route_t *route, pcb_point_t *point, p
 
 void pcb_route_calculate_to(pcb_route_t *route, pcb_point_t *point, int mod1, int mod2)
 {
-	/* TODO: If an external route calculator has been selected then use it instead of this default one. */
-	/* TODO: Add DRC Checking */
+	TODO("If an external route calculator has been selected then use it instead of this default one.")
+	TODO("Add DRC Checking")
 
 	pcb_point_t *point1 = &route->end_point;
 	pcb_point_t *point2 = point;
@@ -393,7 +393,7 @@ void pcb_route_calculate_to(pcb_route_t *route, pcb_point_t *point, int mod1, in
 
 }
 
-/* TODO: Pass in other required information such as object flags */
+TODO("Pass in other required information such as object flags")
 void pcb_route_calculate(pcb_board_t *PCB, pcb_route_t *route, pcb_point_t *point1, pcb_point_t *point2, pcb_layer_id_t layer_id, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags, int mod1, int mod2)
 {
 	/* Set radius to 0 for standard 45/90 operation */
