@@ -42,6 +42,7 @@ static inline void ghid_screen_update(void) { ghidgui->common.screen_update(); }
 static gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev, void * out_)
 {
 	GHidPort *out = out_;
+	int force_update = 0;
 
 	/* printf("enter: mode: %d detail: %d\n", ev->mode, ev->detail); */
 
@@ -53,6 +54,7 @@ static gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev,
 
 	if (!ghidgui->topwin.cmd.command_entry_status_line_active) {
 		out->view.has_entered = TRUE;
+		force_update = 1; /* force a redraw for the crosshair */
 		/* Make sure drawing area has keyboard focus when we are in it.
 		 */
 		gtk_widget_grab_focus(out->drawing_area);
@@ -63,7 +65,7 @@ static gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev,
 	 * move the mouse to the viewport and click on it. This closes the menu
 	 * and moves the pointer to the viewport without the pointer going over
 	 * the edge of the viewport */
-	if (ev->mode == GDK_CROSSING_UNGRAB && ev->detail == GDK_NOTIFY_NONLINEAR) {
+	if (force_update || (ev->mode == GDK_CROSSING_UNGRAB && ev->detail == GDK_NOTIFY_NONLINEAR)) {
 		ghid_screen_update();
 	}
 	return FALSE;
