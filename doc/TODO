@@ -28,7 +28,7 @@
 	+> this is not a bug: we try to preserve thins in the file that we don't fully understand. This is intentional. Think the other way around: you open a file with an older pcb-rnd version that doesn't know about a config node, you do not want it to remove the unknown node because you then may want to open the file again with the new version. It prints an error message with the line number in the file, so you can go and delete the offending lines if you want them removed.
 + BUG: "Edit padstack shape" with work/bug_files/pstk_hole_break/polygon.lht: Edit padstack->prototype Change button on mask layer to copy shape from top copper is not OK and prints "Can't copy shape: source shape (top paste) is empty" [report: Alain]
 + BUG: Open an empty pcb, Edit->Board padstack prototypes , Click Edit... -> segf [report: Alain]
-- BUG: ML 2479: gtk crosshair re-enter to the last pos doesn't always draw the crossghair [report: pstuge]
++ BUG: ML 2479: gtk crosshair re-enter to the last pos doesn't always draw the crossghair [report: pstuge]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 ? BUG: scconfig: if libgd is not detected, there's an extra error on disable-gd-gif [report: Erich]
 + BUG: assertion with --debug,  open pcb-rnd, place via, open the padstackedit dialog for the via, go to generate common geometry, choose square copper shape, click 'generate' [report: Miloh]
