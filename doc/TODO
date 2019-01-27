@@ -14,7 +14,6 @@
 - BUG: new preferences
 	+ update bugs:
 		+ new prefs with new layout, change board name in meta and close -- name doesn't get immediately picked up by main window  [report: Miloh]
-		+ close buttons expand - they should keep their minimal height [report: Alain]
 	+ crash:
 		+ BUG: preferences() crashes if lesstif GUI is compiled but gtk is not (missing gtk-only conf settings) [report: rqsall]
 		+ BUG: Repeadtedly open preferences and select editor->mode. Eventually it may segfault. Sometimes the value changes without changing mode [report: Ade]
