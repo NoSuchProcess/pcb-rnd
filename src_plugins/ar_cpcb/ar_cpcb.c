@@ -212,6 +212,8 @@ static void cpcb_print_pads(pcb_board_t *pcb, FILE *f, pcb_any_obj_t *o, cpcb_la
 					continue;
 				switch(shp->shape) {
 					case PCB_PSSH_LINE:
+					case PCB_PSSH_HSHADOW:
+						TODO("generate a poly");
 						break;
 					case PCB_PSSH_POLY:
 						pcb_fprintf(f, "(0 %mm (%mm %mm %d) (", conf_core.design.clearance, ps->x, ps->y, lidx);
