@@ -1356,8 +1356,10 @@ static void show_crosshair(gboolean paint_new_location)
 	//static GdkColor cross_color;
 	cairo_t *cr;
 
-	if (gport->view.crosshair_x < 0 || !ghidgui->topwin.active || !gport->view.has_entered)
+	if (gport->view.crosshair_x < 0 || !ghidgui->topwin.active || !gport->view.has_entered) {
+		x_prev = y_prev = -1; /* if leaving the drawing area, invalidate last known coord to make sure we redraw on reenter, even on the same coords */
 		return;
+	}
 
 TODO("gtk3: when CrossColor changed from config")
 	map_color_string(conf_core.appearance.color.cross.str, &priv->crosshair_color);

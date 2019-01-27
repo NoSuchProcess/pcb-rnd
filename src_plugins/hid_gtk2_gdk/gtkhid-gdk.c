@@ -1366,8 +1366,10 @@ static void show_crosshair(gboolean paint_new_location)
 	static GdkGC *xor_gc;
 	static GdkColor cross_color;
 
-	if (gport->view.crosshair_x < 0 || !ghidgui->topwin.active || !gport->view.has_entered)
+	if (gport->view.crosshair_x < 0 || !ghidgui->topwin.active || !gport->view.has_entered) {
+		x_prev = y_prev = -1; /* if leaving the drawing area, invalidate last known coord to make sure we redraw on reenter, even on the same coords */
 		return;
+	}
 
 	if (!xor_gc) {
 		xor_gc = gdk_gc_new(window);
