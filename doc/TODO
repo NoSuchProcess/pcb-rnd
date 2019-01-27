@@ -5,7 +5,6 @@
 + BUG: boardflip() action moves the objects and doesn't move the subc outline and origin (repro: place single part, run boardflip) [report:Miloh]
 + FEATURE: export_xy: pnp origin should be any obj, especially padstacks (fidu) [report: TwisteR]
 + BUG: portability: don't use export in trunk/doc/user/Makefile [report: Vuokko]
-+ BUG: preview zoom doesn't work (e.g. on csect) [report: Alain]
 + CLEANUP: dad: make the implicit dialog ok/cancel buttons configurable or do not use them at all; e.g. export dialog is confusing [report: Cyril, ml2409]
 - DOC: view list: document the view lht format
 + FEATURE: make propset() able to change board properties if first arg is "board" (change baord size) [report: rqsall]
