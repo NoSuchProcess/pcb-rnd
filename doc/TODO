@@ -23,7 +23,7 @@
 - BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
 + BUG: bug_files/obsconf.lht: load, get a warning for obsolete config; save into a new file and the broken conf node is not removed [report: keantoken]
 	+> this is not a bug: we try to preserve thins in the file that we don't fully understand. This is intentional. Think the other way around: you open a file with an older pcb-rnd version that doesn't know about a config node, you do not want it to remove the unknown node because you then may want to open the file again with the new version. It prints an error message with the line number in the file, so you can go and delete the offending lines if you want them removed.
-+ BUG: Open an empty pcb, Edit->Board padstack prototypes , Click Edit... -> segf [report: Alain]
+- BUG: Open an empty pcb, Edit->Board padstack prototypes , Click Dump... -> segf [report: Alain]
 + BUG: ML 2479: gtk crosshair re-enter to the last pos doesn't always draw the crossghair [report: pstuge]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 ? BUG: scconfig: if libgd is not detected, there's an extra error on disable-gd-gif [report: Erich]
