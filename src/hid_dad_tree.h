@@ -99,6 +99,11 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_prev_row(pcb_hid_tree_t *tree, pcb_hid_ro
 	return row->link.prev;
 }
 
+PCB_INLINE pcb_hid_row_t *pcb_dad_tree_next_row(pcb_hid_tree_t *tree, pcb_hid_row_t *row)
+{
+	return row->link.next;
+}
+
 /* recursively build a full path of a tree node in path */
 PCB_INLINE void pcb_dad_tree_build_path(pcb_hid_tree_t *tree, gds_t *path, pcb_hid_row_t *row)
 {
