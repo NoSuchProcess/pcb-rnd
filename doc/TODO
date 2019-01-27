@@ -2,7 +2,6 @@
 + CLEANUP: propedit rewrite: new action UI should allow operation on object and object ID instead of selection; bug_files/subcsel.bug [report: Wojciech]
 
 1. For the upcoming release ===============================================================================
-+ BUG: boardflip() action moves the objects and doesn't move the subc outline and origin (repro: place single part, run boardflip) [report:Miloh]
 + FEATURE: export_xy: pnp origin should be any obj, especially padstacks (fidu) [report: TwisteR]
 + BUG: portability: don't use export in trunk/doc/user/Makefile [report: Vuokko]
 + CLEANUP: dad: make the implicit dialog ok/cancel buttons configurable or do not use them at all; e.g. export dialog is confusing [report: Cyril, ml2409]
