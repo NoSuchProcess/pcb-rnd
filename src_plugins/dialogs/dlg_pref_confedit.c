@@ -26,7 +26,8 @@
 
 /* Preferences dialog, conf tree tab -> edit conf node (input side) popup */
 
-#define is_read_only(ctx) ((ctx->role == CFR_INTERNAL) || (ctx->role == CFR_SYSTEM) || (ctx->role == CFR_DEFAULTPCB))
+#define is_read_only_(role) ((role == CFR_INTERNAL) || (role == CFR_SYSTEM) || (role == CFR_DEFAULTPCB))
+#define is_read_only(ctx)   is_read_only_(ctx->role)
 
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
@@ -352,4 +353,33 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 
 
 	confedit_brd2dlg(ctx);
+}
+
+static void pref_conf_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pref_ctx_t *pctx = caller_data;
+	pcb_hid_row_t *r;
+
+	if (pctx->conf.selected_nat == NULL) {
+		pcb_message(PCB_MSG_ERROR, "You need to select a conf leaf node to remove\nTry the tree on the left.\n");
+		return;
+	}
+
+	r = pcb_dad_tree_get_selected(&pctx->dlg[pctx->conf.wintree]);
+	if (r == NULL) {
+		pcb_message(PCB_MSG_ERROR, "You need to select a role (upper right list)\n");
+		return;
+	}
+
+	if (pctx->conf.selected_idx >= pctx->conf.selected_nat->array_size) {
+		pcb_message(PCB_MSG_ERROR, "Internal error: array index out of bounds\n");
+		return;
+	}
+
+	if (is_read_only_(r->user_data2.lng)) {
+		pcb_message(PCB_MSG_ERROR, "Role is read-only, can not remove item\n");
+		return;
+	}
+
+	conf_del(r->user_data2.lng, pctx->conf.selected_nat->hash_path, pctx->conf.selected_idx);
 }

@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -442,8 +442,12 @@ void pcb_dlg_pref_conf_create(pref_ctx_t *ctx)
 				PCB_DAD_LABEL(ctx->dlg, "INPUT: configuration node (\"file\" version)");
 				PCB_DAD_TREE(ctx->dlg, 4, 0, hdr_intree); /* input state */
 					ctx->conf.wintree = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_BUTTON(ctx->dlg, "Edit selected input...");
-					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_edit_cb);
+				PCB_DAD_BEGIN_HBOX(ctx->dlg);
+					PCB_DAD_BUTTON(ctx->dlg, "Edit selected...");
+						PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_edit_cb);
+					PCB_DAD_BUTTON(ctx->dlg, "Remove selected");
+						PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_del_cb);
+				PCB_DAD_END(ctx->dlg);
 			PCB_DAD_END(ctx->dlg);
 
 			/* right/bottom: native file */
