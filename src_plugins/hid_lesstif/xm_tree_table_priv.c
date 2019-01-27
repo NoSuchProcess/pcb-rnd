@@ -178,9 +178,6 @@ void xm_render_ttwidget_contents(Widget aw, enum e_what_changed what)
 	if (!tt->table)
 		return;
 
-	if (tt->table_access_padlock) {
-		tt->table_access_padlock->lock(tt->table, tt->table_access_padlock->p_user_data);
-	}
 	if (s->visible_items_vector)
 		begin_entry = s->visible_items_vector[0].item;
 
@@ -209,7 +206,7 @@ void xm_render_ttwidget_contents(Widget aw, enum e_what_changed what)
 		}
 	}
 	else {
-		goto LB_UNLOCK_DATA;
+		return;
 	}
 
 	{
@@ -276,10 +273,6 @@ void xm_render_ttwidget_contents(Widget aw, enum e_what_changed what)
 			ddata->visible_last = entry->row_index;
 		}
 	}
-LB_UNLOCK_DATA:
-	if (tt->table_access_padlock) {
-		tt->table_access_padlock->unlock(tt->table, tt->table_access_padlock->p_user_data);
-	}
 }
 
 void xm_render_ttwidget(Widget w)
@@ -291,6 +284,10 @@ void xm_render_ttwidget(Widget w)
 
 	if (0 == ((XtGeometryYes | XtGeometryDone) & geom_result))
 		return;
+	if (tp->table_access_padlock) {
+		tp->table_access_padlock->lock(tp->table, tp->table_access_padlock->p_user_data);
+	}
+
 	if (s->geom.width != geom.width || s->geom.height != geom.height
 			|| s->geom.x != geom.x || s->geom.y != geom.y) {
 		xm_extent_prediction((XmTreeTableWidget)w);
@@ -301,6 +298,11 @@ void xm_render_ttwidget(Widget w)
 	s->geom.height = geom.height;
 
 	xm_render_ttwidget_contents(w, e_what_window);
+
+	if (tp->table_access_padlock) {
+		tp->table_access_padlock->unlock(tp->table, tp->table_access_padlock->p_user_data);
+	}
+
 	if (tp->p_draw_handler)
 		tp->p_draw_handler(&tp->draw_event_data);
 }
@@ -347,10 +349,17 @@ void xm_horizontal_scroll_cb(Widget scroll_widget, XtPointer client_data, XtPoin
 
 	XmScrollBarCallbackStruct *cbs = (XmScrollBarCallbackStruct *)call_data;
 	(void)scroll_widget;
+	if (tp->table_access_padlock) {
+		tp->table_access_padlock->lock(tp->table, tp->table_access_padlock->p_user_data);
+	}
 
 	tt_bar->prev = tt_bar->cur;
 	tt_bar->cur = cbs->value;
 	xm_render_ttwidget_contents((Widget)tw, e_what_horizontal_scroll);
+
+	if (tp->table_access_padlock) {
+		tp->table_access_padlock->unlock(tp->table, tp->table_access_padlock->p_user_data);
+	}
 
 	tp->draw_event_data.user_data = tp->user_data;
 	tp->draw_event_data.type = ett_scroll_horizontal;
@@ -368,9 +377,17 @@ void xm_vertical_scroll_cb(Widget scroll_widget, XtPointer client_data, XtPointe
 	XmScrollBarCallbackStruct *cbs = (XmScrollBarCallbackStruct *)call_data;
 	(void)scroll_widget;
 
+	if (tp->table_access_padlock) {
+		tp->table_access_padlock->lock(tp->table, tp->table_access_padlock->p_user_data);
+	}
+
 	tt_bar->prev = tt_bar->cur;
 	tt_bar->cur = cbs->value;
 	xm_render_ttwidget_contents((Widget)tw, e_what_vertical_scroll);
+
+	if (tp->table_access_padlock) {
+		tp->table_access_padlock->unlock(tp->table, tp->table_access_padlock->p_user_data);
+	}
 
 	tp->draw_event_data.user_data = tp->user_data;
 	tp->draw_event_data.type = ett_scroll_vertical;

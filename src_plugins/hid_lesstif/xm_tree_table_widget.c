@@ -116,9 +116,9 @@ static char defaultTranslations[] = "\
 <Key>space:keypress()\n\
 <KeyUp>:keypress()\n\
 <KeyDown>:keypress()\n\
-<KeyLeft>:keypress()\n\
-<KeyRight>:keypress()\n\
-<KeyTab>:keypress()\n\
+<Key>osfLeft:keypress()\n\
+<Key>osfRight:keypress()\n\
+<Key>Tab:keypress()\n\
 <Key>osfBeginLine:keypress()\n\
 <Key>osfEndLine:keypress()\n\
 <Key>osfInsert:keypress()\n\
@@ -357,7 +357,15 @@ static void on_mouse_action(ett_x11_event_t ett_event, Widget aw, XEvent *event,
 	tp->event_data.position.mouse.height = tp->render_attr.geom.height;
 
 	tp->event_data.root_entry = tp->table;
+	if (tp->table_access_padlock) {
+		tp->table_access_padlock->lock(tp->table, tp->table_access_padlock->p_user_data);
+	}
+
 	tp->event_data.current_row = xm_find_row_pointed_by_mouse(aw, tp->event_data.position.mouse.y);
+
+	if (tp->table_access_padlock) {
+		tp->table_access_padlock->unlock(tp->table, tp->table_access_padlock->p_user_data);
+	}
 	/*TODO: compute current column as well.*/
 	tp->event_data.current_cell = 0;
 	if (tp->p_mouse_kbd_handler)
@@ -382,23 +390,20 @@ static void on_mouse_action(ett_x11_event_t ett_event, Widget aw, XEvent *event,
 
 static void lmb_drag(Widget aw, XEvent *event, String *params, Cardinal *num_params)
 {
-	XM_TT_LOCKED_CODE(aw, tw, tp,
-		event->xbutton.button = Button1;
-		on_mouse_action(ett_mouse_btn_drag, aw, event, params, num_params);)
+	event->xbutton.button = Button1;
+	on_mouse_action(ett_mouse_btn_drag, aw, event, params, num_params);
 }
 
 static void mmb_drag(Widget aw, XEvent *event, String *params, Cardinal *num_params)
 {
-	XM_TT_LOCKED_CODE(aw, tw, tp,
-		event->xbutton.button = Button2;
-		on_mouse_action(ett_mouse_btn_drag, aw, event, params, num_params);)
+	event->xbutton.button = Button2;
+	on_mouse_action(ett_mouse_btn_drag, aw, event, params, num_params);
 }
 
 static void rmb_drag(Widget aw, XEvent *event, String *params, Cardinal *num_params)
 {
-	XM_TT_LOCKED_CODE(aw, tw, tp,
-		event->xbutton.button = Button3;
-		on_mouse_action(ett_mouse_btn_drag, aw, event, params, num_params);)
+	event->xbutton.button = Button3;
+	on_mouse_action(ett_mouse_btn_drag, aw, event, params, num_params);
 }
 
 /* ARGSUSED */
@@ -475,11 +480,10 @@ Widget xm_create_tree_table_widget_cb(Widget parent, gdl_list_t *table_root,
 
 void xm_draw_tree_table_widget(Widget w)
 {
-	XmTreeTableWidget tw = (XmTreeTableWidget)w;
-	XmTreeTablePart *tp = &(tw->tree_table);
-	xm_render_ttwidget_contents(w, e_what_window);
-	if (tp->p_draw_handler)
-		tp->p_draw_handler(&tp->draw_event_data);
+	XmTreeTablePart *tpart = &(((XmTreeTableWidget)w)->tree_table);
+	XM_TT_LOCKED_CODE(w, tw, tp, xm_render_ttwidget_contents(w, e_what_window);)
+	if (tpart->p_draw_handler)
+		tpart->p_draw_handler(&tpart->draw_event_data);
 }
 
 void xm_set_tree_table_pointer(Widget w, gdl_list_t *new_table_root, tt_table_access_cb_t *access_padlock)
