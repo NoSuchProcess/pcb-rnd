@@ -14,8 +14,6 @@
 	+ crash:
 		+ BUG: preferences() crashes if lesstif GUI is compiled but gtk is not (missing gtk-only conf settings) [report: rqsall]
 		+ BUG: Repeadtedly open preferences and select editor->mode. Eventually it may segfault. Sometimes the value changes without changing mode [report: Ade]
-	- BUG: lesstif: preferences(layers): EXPFILL doesn't seem to work
-	- BUG: lesstif: {i c p}, color tab: tabbed doesn't grow [report: Igor2]
 	- BUG: lesstif: {i c p} -> crash, only on IRIX system [report: Ian]
 + BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
 - BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
@@ -34,6 +32,8 @@
 + BUG: poly clipping bug: bug_files/reclip.lht - remove the subc (with del) -> no poly reclip happens ml=2610 [report: Gabriel]
 
 2. For later releases ===============================================================================
+- CLEANUP/BUG: lesstif: preferences(layers): EXPFILL doesn't seem to work; need to replace box code with work/lkesstif/formbox [report: Igor2]
+	- BUG: lesstif: {i c p}, color tab: tabbed doesn't grow [report: Igor2]
 - CAM:
 	- CLEANUP: move the hackish gerber layer suffix functions into CAM configs [report: Ade]
 	- CLEANUP: split gerber and drill file generation (make gerber depend on drill, for backward compatibility)
