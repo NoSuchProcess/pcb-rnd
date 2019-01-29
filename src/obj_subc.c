@@ -31,6 +31,7 @@
 #include "buffer.h"
 #include "board.h"
 #include "crosshair.h"
+#include "brave.h"
 #include "data.h"
 #include "error.h"
 #include "obj_subc.h"
@@ -947,6 +948,9 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 {
 	int n;
 
+	if ((pcb_brave & PCB_BRAVE_CLIPBATCH) && (Data != NULL))
+		pcb_data_clip_inhibit_inc(Data);
+
 	switch(batch_undo) {
 		case PCB_SUBCOP_UNDO_SUBC:
 			pcb_undo_freeze_serial();
@@ -1045,6 +1049,9 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 		case PCB_SUBCOP_UNDO_BATCH: pcb_undo_unfreeze_serial(); break;
 		case PCB_SUBCOP_UNDO_NORMAL: break;
 	}
+
+	if ((pcb_brave & PCB_BRAVE_CLIPBATCH) && (Data != NULL))
+		pcb_data_clip_inhibit_dec(Data, 0);
 
 	return sc;
 }

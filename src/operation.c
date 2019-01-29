@@ -34,6 +34,7 @@
 #include "conf_core.h"
 #include "undo.h"
 #include "rats.h"
+#include "brave.h"
 
 /* ----------------------------------------------------------------------
  * performs several operations on the passed object
@@ -103,6 +104,9 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
 pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, int type, pcb_bool on_locked_too)
 {
 	pcb_bool changed = pcb_false;
+
+	if ((pcb_brave & PCB_BRAVE_CLIPBATCH) && (data != NULL))
+		pcb_data_clip_inhibit_inc(data);
 
 	/* check lines */
 	if (type & PCB_OBJ_LINE && F->Line) {
@@ -235,6 +239,9 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 
 	if (Reset && changed)
 		pcb_undo_inc_serial();
+
+	if ((pcb_brave & PCB_BRAVE_CLIPBATCH) && (data != NULL))
+		pcb_data_clip_inhibit_dec(data, 0);
 
 	return changed;
 }
