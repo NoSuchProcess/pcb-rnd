@@ -427,9 +427,17 @@ static void pse_shape_auto(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pse_t *pse = caller_data;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
 	pcb_pstk_tshape_t *ts = &proto->tr.array[0];
-	int dst_idx = pcb_pstk_get_shape_idx(ts, pcb_proto_layers[pse->editing_shape].mask, pcb_proto_layers[pse->editing_shape].comb);
+	int dst_idx;
 	char src_shape_names[128];
 	char *end = src_shape_names;
+
+
+	if (ts == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Can't derive shape: no shapes (empty padstack)\n");
+		return;
+	}
+
+	dst_idx = pcb_pstk_get_shape_idx(ts, pcb_proto_layers[pse->editing_shape].mask, pcb_proto_layers[pse->editing_shape].comb);
 
 	for(n = 0; n < 2; n++) {
 		int from = pcb_proto_layers[pse->editing_shape].auto_from[n];
@@ -465,8 +473,16 @@ static void pse_shape_copy(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
 	pcb_pstk_tshape_t *ts = &proto->tr.array[0];
 	int from = pse->shape_chg[pse->copy_from].default_val.int_value;
-	int dst_idx = pcb_pstk_get_shape_idx(ts, pcb_proto_layers[pse->editing_shape].mask, pcb_proto_layers[pse->editing_shape].comb);
-	int src_idx = pcb_pstk_get_shape_idx(ts, pcb_proto_layers[from].mask, pcb_proto_layers[from].comb);
+	int dst_idx;
+	int src_idx;
+
+	if (ts == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Can't copy shape: no such source shape (empty padstack)\n");
+		return;
+	}
+
+	dst_idx = pcb_pstk_get_shape_idx(ts, pcb_proto_layers[pse->editing_shape].mask, pcb_proto_layers[pse->editing_shape].comb);
+	src_idx = pcb_pstk_get_shape_idx(ts, pcb_proto_layers[from].mask, pcb_proto_layers[from].comb);
 
 	if (src_idx < 0) {
 		pcb_message(PCB_MSG_ERROR, "Can't copy shape: source shape (%s) is empty\n", pcb_proto_layers[from].name);
@@ -491,8 +507,16 @@ static void pse_shape_swap(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
 	pcb_pstk_tshape_t *ts = &proto->tr.array[0];
 	int from = pse->shape_chg[pse->copy_from].default_val.int_value;
-	int dst_idx = pcb_pstk_get_shape_idx(ts, pcb_proto_layers[pse->editing_shape].mask, pcb_proto_layers[pse->editing_shape].comb);
-	int src_idx = pcb_pstk_get_shape_idx(ts, pcb_proto_layers[from].mask, pcb_proto_layers[from].comb);
+	int dst_idx;
+	int src_idx;
+
+	if (ts == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Can't swap shape: no such shapes (empty padstack)\n");
+		return;
+	}
+
+	dst_idx = pcb_pstk_get_shape_idx(ts, pcb_proto_layers[pse->editing_shape].mask, pcb_proto_layers[pse->editing_shape].comb);
+	src_idx = pcb_pstk_get_shape_idx(ts, pcb_proto_layers[from].mask, pcb_proto_layers[from].comb);
 
 	if (src_idx < 0) {
 		pcb_message(PCB_MSG_ERROR, "Can't swap shape: source shape (%s) is empty\n", pcb_proto_layers[from].name);
