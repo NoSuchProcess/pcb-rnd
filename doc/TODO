@@ -27,6 +27,11 @@
 ? BUG: #define TODO(x) doesn't compile on IRIX system with --debug option ON [report: Ian]
 - BUG: find.c: bug_files/find_slotcop.lht: plated slot should connect to any copper layer object it is going thru ml2571 [report: Igor2]
 + BUG: Unable to delete roles in the preferences dialog since empty values are now valid. [report: Ade]
+- pre-release tasks:
+	- look at the compiler warnings (gtk preview handling)
+	- look at the compiler warnings on x86_64
+	- update the packager's doc
+	- write the packaker's changelog
 
 2. For later releases ===============================================================================
 - CLEANUP/BUG: lesstif: preferences(layers): EXPFILL doesn't seem to work; need to replace box code with work/lkesstif/formbox [report: Igor2]
