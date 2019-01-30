@@ -192,6 +192,15 @@ cmp_fmt()
 	esac
 }
 
+# Remove known, expected error messages
+stderr_filter()
+{
+	case "$fmt" in
+		gerber) grep -v "Can't export polygon as G85 slot\|please use lines for slotting" ;;
+		*) cat;;
+	esac
+}
+
 run_test()
 {
 	local ffn fn="$1" valgr res res2
@@ -220,7 +229,7 @@ run_test()
 	fi
 
 	# print error messages to the log
-	sed "s/^/[pcb-rnd:stderr]  /" < $res2 >&2
+	sed "s/^/[pcb-rnd:stderr]  /" < $res2 | stderr_filter >&2
 	rm $res2
 
 	base=${fn%%.pcb}
