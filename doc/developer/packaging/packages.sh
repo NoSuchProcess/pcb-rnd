@@ -73,7 +73,10 @@ done
 		fn=$4
 		sub("[{][ \t]*", "", fn)
 		sub("[ \t]*[}]", "", fn)
-		CONFFILE[PLUGIN[pkg]] = "$C/" fn
+		if (CONFFILE[PLUGIN[pkg]] == "")
+			CONFFILE[PLUGIN[pkg]] = "$C/" fn
+		else
+			CONFFILE[PLUGIN[pkg]] = CONFFILE[PLUGIN[pkg]] " $C/" fn
 	}
 
 	function add_dep(pkg, depson,    ds)
