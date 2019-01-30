@@ -27,6 +27,7 @@
 ? BUG: #define TODO(x) doesn't compile on IRIX system with --debug option ON [report: Ian]
 - BUG: find.c: bug_files/find_slotcop.lht: plated slot should connect to any copper layer object it is going thru ml2571 [report: Igor2]
 + BUG: Unable to delete roles in the preferences dialog since empty values are now valid. [report: Ade]
+- BUG: padstack drc error (check CUCP)
 - pre-release tasks:
 	- look at the compiler warnings (gtk preview handling)
 	- look at the compiler warnings on x86_64
