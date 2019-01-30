@@ -329,6 +329,8 @@ static void pstklib_proto_new_(void *hid_ctx, void *caller_data, pcb_hid_attribu
 
 	if (dup) {
 		pcb_hid_row_t *row = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wlist]);
+		if (row == NULL)
+			return;
 		proto = pcb_pstk_get_proto_(data, strtol(row->cell[0], NULL, 10));
 		ctx->proto_id = pcb_pstk_proto_insert_forcedup(data, proto, 0);
 		tab = 1;
