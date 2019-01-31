@@ -27,6 +27,8 @@
 ? BUG: #define TODO(x) doesn't compile on IRIX system with --debug option ON [report: Ian]
 - BUG: find.c: bug_files/find_slotcop.lht: plated slot should connect to any copper layer object it is going thru ml2571 [report: Igor2]
 - BUG: padstack drc error (check CUCP)
+- BUG: changing the onsolder flag of text object in propedit doesn't recalc the bbox
+- BUG: onsolder flags for text object jumps back after change in the flag editor
 - pre-release tasks:
 	- look at the compiler warnings (gtk preview handling)
 	- look at the compiler warnings on x86_64
