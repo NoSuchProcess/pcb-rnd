@@ -174,7 +174,6 @@ static int pcb_gui_progress(long so_far, long total, const char *message)
 				have_timer = 1;
 			}
 			pcb_hid_iterate(pcb_gui);
-			pcb_gui->iterate(pcb_gui);
 		}
 		return 0;
 	}
