@@ -67,6 +67,8 @@
 #include "obj_poly_draw.h"
 #include "obj_subc_parent.h"
 
+#include "brave.h"
+
 #define STEP_REMOVELIST 500
 #define STEP_UNDOLIST   500
 
@@ -523,6 +525,9 @@ static pcb_bool UndoRemove(UndoListTypePtr Entry)
 	Removed *r = &Entry->Data.Removed;
 	pcb_data_t *data = PCB->Data;
 
+	if (pcb_brave & PCB_BRAVE_CLIPBATCH)
+		pcb_data_clip_inhibit_inc(PCB->Data);
+
 	/* lookup entry by it's ID */
 	type = pcb_search_obj_by_id(pcb_removelist, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_OBJ_VOID) {
@@ -540,8 +545,16 @@ static pcb_bool UndoRemove(UndoListTypePtr Entry)
 		if (pcb_undo_and_draw)
 			DrawRecoveredObject((pcb_any_obj_t *)ptr2);
 		Entry->Type = PCB_UNDO_CREATE;
+
+		if (pcb_brave & PCB_BRAVE_CLIPBATCH)
+			pcb_data_clip_inhibit_dec(PCB->Data, 1);
+
 		return pcb_true;
 	}
+
+	if (pcb_brave & PCB_BRAVE_CLIPBATCH)
+		pcb_data_clip_inhibit_dec(PCB->Data, 1);
+
 	return pcb_false;
 }
 
