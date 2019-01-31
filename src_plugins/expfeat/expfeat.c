@@ -47,9 +47,55 @@ static fgw_error_t pcb_act_ExpFeatTmp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_ClipInhibit[] = "ClipInhibit([on|off|check])";
+static const char pcb_acth_ClipInhibit[] = "ClipInhibit Feature Template.";
+static fgw_error_t pcb_act_ClipInhibit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	static int is_on = 0;
+	int target;
+	const char *op;
+
+	PCB_ACT_CONVARG(1, FGW_STR, ClipInhibit, op = argv[1].val.str);
+
+	if (strcmp(op, "check") == 0) {
+		PCB_ACT_IRES(is_on);
+		return 0;
+	}
+
+
+	if (strcmp(op, "toggle") == 0) {
+		target = !is_on;
+	}
+	else {
+		if (op[0] != 'o')
+			PCB_ACT_FAIL(ClipInhibit);
+
+		switch(op[1]) {
+			case 'n': target = 1; break;
+			case 'f': target = 0; break;
+			default: PCB_ACT_FAIL(ClipInhibit);
+		}
+	}
+
+	if (is_on == target) {
+		PCB_ACT_IRES(0);
+		return 0;
+	}
+
+	is_on = target;
+	if (is_on)
+		pcb_data_clip_inhibit_inc(PCB->Data);
+	else
+		pcb_data_clip_inhibit_dec(PCB->Data, 1);
+
+	PCB_ACT_IRES(0);
+	return 0;
+}
+
 
 static const pcb_action_t expfeat_action_list[] = {
-	{"ExpFeatTmp", pcb_act_ExpFeatTmp, pcb_acth_ExpFeatTmp, pcb_acts_ExpFeatTmp}
+	{"ExpFeatTmp", pcb_act_ExpFeatTmp, pcb_acth_ExpFeatTmp, pcb_acts_ExpFeatTmp},
+	{"ClipInhibit", pcb_act_ClipInhibit, pcb_acth_ClipInhibit, pcb_acts_ClipInhibit}
 };
 
 static const char *expfeat_cookie = "experimental features plugin";
