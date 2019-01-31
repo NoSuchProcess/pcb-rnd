@@ -1360,6 +1360,7 @@ void *pcb_subcop_move_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	if (dst_is_pcb) {
 		/* clear all pins/pads at once, at the new location */
 		clip.clip.restore = 0; clip.clip.clear = 1;
+		clip.clip.pcb = ctx->buffer.pcb;
 		pcb_subc_op(ctx->buffer.dst, sc, &ClipFunctions, &clip, PCB_SUBCOP_UNDO_SUBC);
 	}
 
