@@ -28,8 +28,6 @@
 - BUG: changing the onsolder flag of text object in propedit doesn't recalc the bbox
 - BUG: onsolder flags for text object jumps back after change in the flag editor
 - pre-release tasks:
-	- look at the compiler warnings (gtk preview handling)
-	- look at the compiler warnings on x86_64
 	- update the packager's doc
 	- write the packaker's changelog
 	- pcb-rnd-aux web interface
