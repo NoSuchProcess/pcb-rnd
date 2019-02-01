@@ -998,7 +998,7 @@ int pcb_mesh_interactive(void)
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
 	if (ia.active)
-		return;
+		return 0;
 
 	PCB_DAD_BEGIN_VBOX(ia.dlg);
 		PCB_DAD_BEGIN_HBOX(ia.dlg);
