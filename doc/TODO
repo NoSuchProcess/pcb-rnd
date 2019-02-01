@@ -14,15 +14,12 @@
 		+ BUG: preferences() crashes if lesstif GUI is compiled but gtk is not (missing gtk-only conf settings) [report: rqsall]
 	+ BUG: lesstif: {i c p} -> crash, only on IRIX system [report: Ian] -> probably fixed, please test
 + BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
-- BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
 + BUG: bug_files/obsconf.lht: load, get a warning for obsolete config; save into a new file and the broken conf node is not removed [report: keantoken]
 	+> this is not a bug: we try to preserve thins in the file that we don't fully understand. This is intentional. Think the other way around: you open a file with an older pcb-rnd version that doesn't know about a config node, you do not want it to remove the unknown node because you then may want to open the file again with the new version. It prints an error message with the line number in the file, so you can go and delete the offending lines if you want them removed.
 + BUG: ML 2479: gtk crosshair re-enter to the last pos doesn't always draw the crossghair [report: pstuge]
-- BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 ? BUG: scconfig: if libgd is not detected, there's an extra error on disable-gd-gif [report: Erich]
 ? BUG: configure without glib installed -> 'unknown arugment disable-gtk' [report: Ade]
 ? BUG: #define TODO(x) doesn't compile on IRIX system with --debug option ON [report: Ian]
-- BUG: find.c: bug_files/find_slotcop.lht: plated slot should connect to any copper layer object it is going thru ml2571 [report: Igor2]
 - BUG: padstack drc error (check CUCP)
 - BUG: changing the onsolder flag of text object in propedit doesn't recalc the bbox
 - BUG: onsolder flags for text object jumps back after change in the flag editor
@@ -242,6 +239,9 @@
 - BUG: gtk: slipping 'tab' issue view drifts when tab is used repeatedly at different zooms around the cardinal edges of a placed part, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
 - BUG: XY exporter: place a 1206 rotated 15 degrees, then export to xy with macrofab -> error message on rotated pad bbox; we need to rotate back the terminal object and calculate hte bbox in neutral position [report: celem]
 - BUG: lesstif clip_set() doesn't seem to affect the X clipboard
+- BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
+- BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
+- BUG: find.c: bug_files/find_slotcop.lht: plated slot should connect to any copper layer object it is going thru ml2571 [report: Igor2]
 
 3. Long term ===============================================================================
 - BUG: draw a large padstack poly (as a subc term); put some vias (padtsacks) on top of it; with gdk and gl, after the 6th via some via rings will disappear [report: James]
