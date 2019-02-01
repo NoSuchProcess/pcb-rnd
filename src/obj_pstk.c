@@ -1126,6 +1126,8 @@ void pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps, pcb_coord_t *err_minring, pcb_c
 		pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape_(ps->parent.data, ps->proto, 0);
 
 		for(n = 0; n < ts->len; n++) {
+			if (!(ts->shape[n].layer_mask & PCB_LYT_COPPER))
+				continue; /* only copper shapes can break */
 			if (pcb_pstk_shape_hole_break(&ts->shape[n], proto->hdia, conf_core.design.min_ring)) {
 				(*err_minring)++;
 				break;
