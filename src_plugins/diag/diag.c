@@ -423,7 +423,7 @@ static fgw_error_t pcb_act_DumpIDs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (o == NULL)
 			printf("%ld: NULL\n", e->key);
 		else
-			printf("%ld: %p %ld %s%s\n", e->key, o, o->ID, pcb_obj_type_name(o->type), (o->ID == e->key) ? "" : " BROKEN");
+			printf("%ld: %p %ld %s%s\n", e->key, (void *)o, o->ID, pcb_obj_type_name(o->type), (o->ID == e->key) ? "" : " BROKEN");
 	}
 
 	PCB_ACT_IRES(0);
@@ -456,7 +456,7 @@ static fgw_error_t pcb_act_Find2Perf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	do {
 		PCB_SUBC_LOOP(PCB->Data) {
 			PCB_PADSTACK_LOOP(subc->data) {
-				pcb_find_from_obj(&fctx, PCB->Data, padstack);
+				pcb_find_from_obj(&fctx, PCB->Data, (pcb_any_obj_t *)padstack);
 				pcb_find_free(&fctx);
 			}
 			PCB_END_LOOP;
