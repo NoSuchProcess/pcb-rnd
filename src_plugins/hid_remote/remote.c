@@ -369,7 +369,7 @@ static void remote_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, con
 {
 }
 
-static void remote_create_menu(const char *menu, const char *action, const char *dummy, const char *accel, const char *tip, const char *cookie)
+static void remote_create_menu(const char *menu_path, const pcb_menu_prop_t *props)
 {
 }
 
