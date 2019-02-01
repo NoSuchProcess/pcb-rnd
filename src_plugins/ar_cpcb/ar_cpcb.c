@@ -234,6 +234,18 @@ static void cpcb_print_pads(pcb_board_t *pcb, FILE *f, pcb_any_obj_t *o, cpcb_la
 		case PCB_OBJ_TEXT:
 		case PCB_OBJ_ARC:
 			break;
+
+TODO("subc-in-subc: subc as terminal")
+		case PCB_OBJ_SUBC:
+			break;
+
+		/* these can not ever be terminals */
+		case PCB_OBJ_VOID:
+		case PCB_OBJ_RAT:
+		case PCB_OBJ_NET:
+		case PCB_OBJ_LAYER:
+		case PCB_OBJ_LAYERGRP:
+			break;
 	}
 }
 
