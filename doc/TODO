@@ -12,7 +12,6 @@
 	+ update bugs:
 	+ crash:
 		+ BUG: preferences() crashes if lesstif GUI is compiled but gtk is not (missing gtk-only conf settings) [report: rqsall]
-		+ BUG: Repeadtedly open preferences and select editor->mode. Eventually it may segfault. Sometimes the value changes without changing mode [report: Ade]
 	+ BUG: lesstif: {i c p} -> crash, only on IRIX system [report: Ian] -> probably fixed, please test
 + BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
 - BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
