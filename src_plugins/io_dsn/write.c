@@ -82,6 +82,8 @@ static int dsn_write_structure(dsn_write_t *wctx)
 		fprintf(wctx->f, "    (layer \"%s\" (type signal))\n", gname);
 	}
 	fprintf(wctx->f, "  )\n");
+
+	return 0;
 }
 
 static int dsn_write_wiring(dsn_write_t *wctx)
