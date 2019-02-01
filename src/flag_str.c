@@ -72,7 +72,7 @@ pcb_flag_bits_t pcb_object_flagbits[] = {
 	{FN(PCB_FLAG_CLEARLINE),     N("clearline"),     PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_TEXT | PCB_OBJ_PSTK, "For lines and arcs, the line/arc will clear polygons instead of connecting to them.", 0, 0 },
 	{FN(PCB_FLAG_SELECTED),      N("selected"),      PCB_OBJ_ANY, "Set when the object is selected.", 0, 0},
 	{FN(PCB_FLAG_ONSOLDER),      N("onsolder"),      PCB_OBJ_TEXT, "For text, indicates that it is on the solder side.", PCB_OBJ_SUBC | PCB_OBJ_PSTK, 0},
-	{FN(PCB_FLAG_AUTO),          N("auto"),          PCB_OBJ_ANY, "For lines and vias, indicates that these were created by the autorouter.", 0, 0},
+	{FN(PCB_FLAG_AUTO),          N("auto"),          PCB_OBJ_LINE|PCB_OBJ_ARC|PCB_OBJ_PSTK, "For lines and vias, indicates that these were created by the autorouter.", 0, 0},
 	{FN(PCB_FLAG_SQUARE),        N("square"),        0, "For pins and pads, indicates a square (vs round) pin/pad.", PCB_OBJ_PSTK, 0},
 	{FN(PCB_FLAG_RUBBEREND),     N("rubberend"),     PCB_OBJ_LINE | PCB_OBJ_ARC, "For lines, used internally for rubber band moves: indicates one end already rubber banding.", 0, 0},
 	{FN(PCB_FLAG_WARN),          N("warn"),          PCB_OBJ_CLASS_PIN, "For pins, vias, and pads, set to indicate a warning.", 0, 0},
