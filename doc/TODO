@@ -27,10 +27,10 @@
 - BUG: padstack drc error (check CUCP)
 - BUG: changing the onsolder flag of text object in propedit doesn't recalc the bbox
 - BUG: onsolder flags for text object jumps back after change in the flag editor
+- BUG: export_stat should use data bbox for board width/height [report: Ade]
 - pre-release tasks:
 	- update the packager's doc
 	- write the packaker's changelog
-	- pcb-rnd-aux web interface
 
 2. For later releases ===============================================================================
 - CLEANUP/BUG: lesstif: preferences(layers): EXPFILL doesn't seem to work; need to replace box code with work/lkesstif/formbox [report: Igor2]
