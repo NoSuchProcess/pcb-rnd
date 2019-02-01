@@ -1089,7 +1089,7 @@ static pcb_bool pcb_pstk_shape_hole_break(pcb_pstk_shape_t *shp, pcb_coord_t hdi
 
 			/* cheapest test: if any corner is closer to the hole than min, we are doomed */
 			for(n = 0; n < shp->data.poly.len; n++) {
-				dist2 = shp->data.poly.x[n] * shp->data.poly.x[n] + shp->data.poly.y[n] * shp->data.poly.y[n];
+				dist2 = (double)shp->data.poly.x[n] * (double)shp->data.poly.x[n] + (double)shp->data.poly.y[n] * (double)shp->data.poly.y[n];
 				if (dist2 < mindist2)
 					return 1;
 			}
@@ -1103,7 +1103,7 @@ static pcb_bool pcb_pstk_shape_hole_break(pcb_pstk_shape_t *shp, pcb_coord_t hdi
 				line.Point2.X = shp->data.poly.x[n];
 				line.Point2.Y = shp->data.poly.y[n];
 
-				dist2 = sqrt(pcb_point_line_dist2(0, 0, &line));
+				dist2 = pcb_point_line_dist2(0, 0, &line);
 				if (dist2 < mindist2)
 					return 1;
 
@@ -1126,7 +1126,7 @@ void pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps, pcb_coord_t *err_minring, pcb_c
 		pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape_(ps->parent.data, ps->proto, 0);
 
 		for(n = 0; n < ts->len; n++) {
-			if (pcb_pstk_shape_hole_break(&ts->shape[n], proto->hdia, 2 * conf_core.design.min_ring)) {
+			if (pcb_pstk_shape_hole_break(&ts->shape[n], proto->hdia, conf_core.design.min_ring)) {
 				(*err_minring)++;
 				break;
 			}
