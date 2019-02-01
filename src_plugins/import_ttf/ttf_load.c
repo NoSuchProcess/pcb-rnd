@@ -63,6 +63,7 @@ int pcb_ttf_unload(pcb_ttf_t *ctx)
 	FT_Done_Face(ctx->face);
 	FT_Done_Library(ctx->library);
 	memset(&ctx, 0, sizeof(pcb_ttf_t));
+	return 0;
 }
 
 
