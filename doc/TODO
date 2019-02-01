@@ -90,6 +90,7 @@
 	- should not remember object by pointer but by idpath; remove pcb_stub_draw_fontsel_text_obj
 	- reset the idpath on pcb change
 	- allow multiple fontsel dialogs, collect them on a list and update them all on board change
+- CLEANUP: dad _DEFAULT() on x86_64: int cast to pointer in non-running code; probably need to split it to DEFAULT_DATA and DEFAULT_PTR (together with the field set macro?) [report: Erich]
 - CLEANUP: make the file selector a DAD widget, reimplement all the logics centrally in dialogs [report: Igor2]
 - CLEANUP: rewrite the netlist code
 	- when no netlist is loaded, new rats can't be drawn [report: agaran]
