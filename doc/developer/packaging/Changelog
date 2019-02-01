@@ -1,12 +1,46 @@
-Packaging changes between 2.0.1 and 2.1.0
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 How to get a release candidate tarball in /tmp:
 
-  ver=2.1.0
+  ver=2.1.1
   cd /tmp
   svn export svn://repo.hu/pcb-rnd/trunk pcb-rnd-$ver
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
+
+
+Packaging changes between 2.1.0 and 2.1.1
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A. changes that probably don't need action
+
+1. new plugins in already existing packages (new files in existing packages, ./configure line change):
+	- import_calay plugin in pcb-rnd-import-net
+	- drc_orig plugin in pcb-rnd-core (old DRC code moved from core code to plugin code)
+	- export_oldconn plugin in pcb-rnd-export-extra (old connection export moved out from core to plugin)
+
+2. plugins removed (but parent packages are kept, ./configure line change):
+	- boardflip plugin (was in pcb-rnd-core)
+	- lib_gtk_config (was in pcb-rnd-lib-gtk) - old gtk-only preferences dialog removed in favor of the new
+
+3. bugs that got fixed in packages.html
+	- cam.conf was not listed as installed file for pcb-rnd-export
+
+B. changes that probably DO need action
+
+1. minor changes in package deps:
+	- pcb-rnd-hid-gtk2-gl doesn't directly depend on pcb-rnd-lib-gui
+	- pcb-rnd-hid-gtk2-gdk doesn't directly depend on pcb-rnd-lib-gui
+	- pcb-rnd-io-standard started to depend on pcb-rnd-lib-io
+
+2. new files introduced by already existing plugins
+	- $C/dialogs.conf in pcb-rnd-lib-gui
+
+3. please update your ./configure line because it has changed for
+   plugin removals and new plugins. You can obtain a diff by looking
+   at the bottom of:   svn diff -c 22941 packages.html
+
+
+
+Packaging changes between 2.0.1 and 2.1.0
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A. changes that probably don't need action
 
