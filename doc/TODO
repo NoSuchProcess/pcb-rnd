@@ -20,7 +20,6 @@
 ? BUG: scconfig: if libgd is not detected, there's an extra error on disable-gd-gif [report: Erich]
 ? BUG: configure without glib installed -> 'unknown arugment disable-gtk' [report: Ade]
 ? BUG: #define TODO(x) doesn't compile on IRIX system with --debug option ON [report: Ian]
-- BUG: changing the onsolder flag of text object in propedit doesn't recalc the bbox
 - BUG: export_stat should use data bbox for board width/height [report: Ade]
 
 2. For later releases ===============================================================================
