@@ -166,7 +166,7 @@ int hook_custom_arg(const char *key, const char *value)
 	}
 
 	if (arg_auto_set(key, value, disable_libs) == 0) {
-		fprintf(stderr, "Error: unknown argumnet %s\n", key);
+		fprintf(stderr, "Error: unknown argument %s\n", key);
 		exit(1);
 	}
 	return 0;
