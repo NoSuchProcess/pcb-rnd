@@ -871,6 +871,7 @@ void pcb_text_update(pcb_layer_t *layer, pcb_text_t *text)
 
 void *pcb_textop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
+	pcb_layer_t *orig_layer = NULL;
 	static pcb_flag_values_t pcb_text_flags = 0;
 	if (pcb_text_flags == 0)
 		pcb_text_flags = pcb_obj_valid_flags(PCB_OBJ_TEXT);
@@ -881,12 +882,20 @@ void *pcb_textop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 		return NULL;
 	pcb_undo_add_obj_to_flag(Text);
 
-	if (ctx->chgflag.flag & PCB_FLAG_CLEARLINE)
+	if ((ctx->chgflag.flag & PCB_FLAG_CLEARLINE) || (ctx->chgflag.flag & PCB_FLAG_ONSOLDER))
 		pcb_poly_restore_to_poly(ctx->chgflag.pcb->Data, PCB_OBJ_TEXT, Text->parent.layer, Text);
+	if (ctx->chgflag.flag & PCB_FLAG_ONSOLDER) { /* bbox will also change, need to do rtree administration */
+		orig_layer = Text->parent.layer;
+		pcb_r_delete_entry(orig_layer->text_tree, (pcb_box_t *)Text);
+	}
 
 	PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, Text);
 
-	if (ctx->chgflag.flag & PCB_FLAG_CLEARLINE)
+	if (orig_layer != NULL) {
+		pcb_text_bbox(pcb_font(PCB, Text->fid, 1), Text);
+		pcb_r_insert_entry(orig_layer->text_tree, (pcb_box_t *)Text);
+	}
+	if ((ctx->chgflag.flag & PCB_FLAG_CLEARLINE) || (orig_layer != NULL))
 		pcb_poly_clear_from_poly(ctx->chgflag.pcb->Data, PCB_OBJ_TEXT, Text->parent.layer, Text);
 
 	return Text;
