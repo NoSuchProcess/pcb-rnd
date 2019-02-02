@@ -175,11 +175,35 @@ static const char pcb_acth_acompnet[] = "Attempt to auto-complete the current ne
 static fgw_error_t pcb_act_acompnet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_meshgraph_t gr;
+	long int is, ie;
+
 	pcb_msgr_init(&gr);
 	acompnet_mesh(&gr, CURRENT);
-	
-	pcb_msgr_astar(&gr, 1, 8);
-	
+
+	{ /* temporary hack for testing: fixed, off-mesh start/end */
+		pcb_box_t bbox;
+		bbox.X1 = PCB_MM_TO_COORD(6.35); bbox.X2 = bbox.X1+1;
+		bbox.Y1 = PCB_MM_TO_COORD(21.5); bbox.Y2 = bbox.Y1+1;
+		is = pcb_msgr_add_node(&gr, &bbox, 0);
+		bbox.X1 = PCB_MM_TO_COORD(12); bbox.X2 = bbox.X1+1;
+		bbox.Y1 = PCB_MM_TO_COORD(3.8); bbox.Y2 = bbox.Y1+1;
+		ie = pcb_msgr_add_node(&gr, &bbox, 0);
+	}
+
+	pcb_msgr_astar(&gr, is, ie);
+
+	{ /* temporary visualisation code */
+		long int id = ie;
+		for(;;) {
+			pcb_meshnode_t *curr, *prev;
+			curr = htip_get(&gr.id2node, id);
+			id = curr->came_from;
+			if (id == 0)
+				break;
+			prev = htip_get(&gr.id2node, id);
+			pcb_line_new(ly, curr->bbox.X1, curr->bbox.Y1, prev->bbox.X1, prev->bbox.Y1, conf_core.design.line_thickness/2, conf_core.design.bloat/2, flg_mesh_pt);
+		}
+	}
 	PCB_ACT_IRES(0);
 	return 0;
 }
