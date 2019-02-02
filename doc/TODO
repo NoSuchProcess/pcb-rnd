@@ -23,6 +23,7 @@
 - BUG: export_stat should use data bbox for board width/height [report: Ade]
 
 2. For later releases ===============================================================================
+- CLEANUP: search for TODO pcb_has_explicit_outline() [report: Igor2]
 - CLEANUP/BUG: lesstif: preferences(layers): EXPFILL doesn't seem to work; need to replace box code with work/lkesstif/formbox [report: Igor2]
 	- BUG: lesstif: {i c p}, color tab: tabbed doesn't grow [report: Igor2]
 - CAM:
