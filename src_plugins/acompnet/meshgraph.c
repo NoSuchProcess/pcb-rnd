@@ -40,7 +40,7 @@ void pcb_msgr_init(pcb_meshgraph_t *gr)
 	gr->next_id = 1;
 }
 
-long int pcb_msgr_add_node(pcb_meshgraph_t *gr, pcb_box_t *bbox)
+long int pcb_msgr_add_node(pcb_meshgraph_t *gr, pcb_box_t *bbox, int score)
 {
 	pcb_meshnode_t *nd = malloc(sizeof(pcb_meshnode_t));
 	nd->bbox = *bbox;
@@ -48,6 +48,7 @@ long int pcb_msgr_add_node(pcb_meshgraph_t *gr, pcb_box_t *bbox)
 	nd->came_from = 0;
 	nd->gscore = INF_SCORE;
 	nd->fscore = INF_SCORE;
+	nd->iscore = score;
 
 	pcb_rtree_insert(&gr->ntree, nd, (pcb_rtree_box_t *)nd);
 	htip_set(&gr->id2node, nd->id, nd);
@@ -57,7 +58,7 @@ long int pcb_msgr_add_node(pcb_meshgraph_t *gr, pcb_box_t *bbox)
 
 static double msgr_connect(pcb_meshnode_t *curr, pcb_meshnode_t *next)
 {
-	return curr->gscore + pcb_distance(curr->bbox.X1, curr->bbox.Y1, next->bbox.X1, next->bbox.Y1);
+	return curr->gscore + pcb_distance(curr->bbox.X1, curr->bbox.Y1, next->bbox.X1, next->bbox.Y1) * (next->iscore + 1.0);
 }
 
 static double msgr_heurist(pcb_meshnode_t *curr, pcb_meshnode_t *end)

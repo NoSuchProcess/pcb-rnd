@@ -123,7 +123,7 @@ static void acompnet_mesh_addpt(pcb_meshgraph_t *gr, pcb_layer_t *layer, double 
 		bbox.X2 = x+1;
 		bbox.Y1 = y;
 		bbox.Y2 = y+1;
-		pcb_msgr_add_node(gr, &bbox);
+		pcb_msgr_add_node(gr, &bbox, score);
 		pcb_line_new(ly, x, y, x, y, conf_core.design.line_thickness, conf_core.design.bloat, flg_mesh_pt);
 	}
 }
