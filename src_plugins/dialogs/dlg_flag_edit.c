@@ -113,6 +113,8 @@ static fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		ctx.pcb = PCB;
 		ctx.len = 0;
 
+		pcb_undo_save_serial();
+
 		PCB_DAD_BEGIN_VBOX(dlg);
 			PCB_DAD_COMPFLAG(dlg, PCB_HATF_LABEL | PCB_HATF_EXPFILL);
 			sprintf(tmp, "Object flags of %s #%ld\n", pcb_obj_type_name(ctx.obj_type), ctx.obj->ID);
@@ -142,6 +144,8 @@ static fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_DAD_RUN(dlg);
 
 		PCB_DAD_FREE(dlg);
+		pcb_undo_restore_serial();
+		pcb_undo_inc_serial();
 	}
 
 	PCB_ACT_IRES(0);
