@@ -38,6 +38,7 @@
 #include "conf_core.h"
 #include "compat_misc.h"
 #include "error.h"
+#include "meshgraph.h"
 
 static pcb_layer_t *ly;
 
@@ -101,7 +102,7 @@ TODO("padstack too");
 
 
 pcb_flag_t flg_mesh_pt;
-static void acompnet_mesh_addpt(pcb_layer_t *layer, double x, double y, int score, double sep)
+static void acompnet_mesh_addpt(pcb_meshgraph_t *gr, pcb_layer_t *layer, double x, double y, int score, double sep)
 {
 	overlap_t ovl;
 	pcb_box_t bbox;
@@ -117,11 +118,17 @@ static void acompnet_mesh_addpt(pcb_layer_t *layer, double x, double y, int scor
 	bbox.Y1 = y - ovl.r;
 	bbox.Y2 = y + ovl.r;
 
-	if (pcb_search_on_layer(layer, &bbox, overlap, &ovl) == PCB_R_DIR_NOT_FOUND)
+	if (pcb_search_on_layer(layer, &bbox, overlap, &ovl) == PCB_R_DIR_NOT_FOUND) {
+		bbox.X1 = x;
+		bbox.X2 = x+1;
+		bbox.Y1 = y;
+		bbox.Y2 = y+1;
+		pcb_msgr_add_node(gr, &bbox);
 		pcb_line_new(ly, x, y, x, y, conf_core.design.line_thickness, conf_core.design.bloat, flg_mesh_pt);
+	}
 }
 
-static void acompnet_mesh(pcb_layer_t *layer)
+static void acompnet_mesh(pcb_meshgraph_t *gr, pcb_layer_t *layer)
 {
 	double sep = conf_core.design.line_thickness + conf_core.design.bloat;
 	int n;
@@ -141,16 +148,16 @@ static void acompnet_mesh(pcb_layer_t *layer)
 		ny = -vx;
 
 		/* straight line extension points */
-		acompnet_mesh_addpt(layer, x1 - vx*sep, y1 - vy*sep, 0, sep);
-		acompnet_mesh_addpt(layer, x2 + vx*sep, y2 + vy*sep, 0, sep);
+		acompnet_mesh_addpt(gr, layer, x1 - vx*sep, y1 - vy*sep, 0, sep);
+		acompnet_mesh_addpt(gr, layer, x2 + vx*sep, y2 + vy*sep, 0, sep);
 
 		/* side and extended points; n is in-line offset from endpoint */
 		for(n = 0; n <= 1; n++) {
-			acompnet_mesh_addpt(layer, x1 - n*vx*sep + nx*sep, y1 - n*vy*sep + ny*sep, 1, sep);
-			acompnet_mesh_addpt(layer, x1 - n*vx*sep - nx*sep, y1 - n*vy*sep - ny*sep, 1, sep);
+			acompnet_mesh_addpt(gr, layer, x1 - n*vx*sep + nx*sep, y1 - n*vy*sep + ny*sep, 1, sep);
+			acompnet_mesh_addpt(gr, layer, x1 - n*vx*sep - nx*sep, y1 - n*vy*sep - ny*sep, 1, sep);
 
-			acompnet_mesh_addpt(layer, x2 + n*vx*sep + nx*sep, y2 + n*vy*sep + ny*sep, 1, sep);
-			acompnet_mesh_addpt(layer, x2 + n*vx*sep - nx*sep, y2 + n*vy*sep - ny*sep, 1, sep);
+			acompnet_mesh_addpt(gr, layer, x2 + n*vx*sep + nx*sep, y2 + n*vy*sep + ny*sep, 1, sep);
+			acompnet_mesh_addpt(gr, layer, x2 + n*vx*sep - nx*sep, y2 + n*vy*sep - ny*sep, 1, sep);
 		}
 	}
 	PCB_END_LOOP;
@@ -162,7 +169,9 @@ static const char pcb_acth_acompnet[] = "Attempt to auto-complete the current ne
 
 static fgw_error_t pcb_act_acompnet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	acompnet_mesh(CURRENT);
+	pcb_meshgraph_t gr;
+	pcb_msgr_init(&gr);
+	acompnet_mesh(&gr, CURRENT);
 	PCB_ACT_IRES(0);
 	return 0;
 }
