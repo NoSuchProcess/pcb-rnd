@@ -141,16 +141,16 @@ static void acompnet_mesh(pcb_layer_t *layer)
 		ny = -vx;
 
 		/* straight line extension points */
-		acompnet_mesh_addpt(layer, x1 - vx*sep, y1 - vy*sep, n-1, sep);
-		acompnet_mesh_addpt(layer, x2 + vx*sep, y2 + vy*sep, n-1, sep);
+		acompnet_mesh_addpt(layer, x1 - vx*sep, y1 - vy*sep, 0, sep);
+		acompnet_mesh_addpt(layer, x2 + vx*sep, y2 + vy*sep, 0, sep);
 
 		/* side and extended points; n is in-line offset from endpoint */
 		for(n = 0; n <= 1; n++) {
-			acompnet_mesh_addpt(layer, x1 - n*vx*sep + nx*sep, y1 - n*vy*sep + ny*sep, n, sep);
-			acompnet_mesh_addpt(layer, x1 - n*vx*sep - nx*sep, y1 - n*vy*sep - ny*sep, n, sep);
+			acompnet_mesh_addpt(layer, x1 - n*vx*sep + nx*sep, y1 - n*vy*sep + ny*sep, 1, sep);
+			acompnet_mesh_addpt(layer, x1 - n*vx*sep - nx*sep, y1 - n*vy*sep - ny*sep, 1, sep);
 
-			acompnet_mesh_addpt(layer, x2 + n*vx*sep + nx*sep, y2 + n*vy*sep + ny*sep, n, sep);
-			acompnet_mesh_addpt(layer, x2 + n*vx*sep - nx*sep, y2 + n*vy*sep - ny*sep, n, sep);
+			acompnet_mesh_addpt(layer, x2 + n*vx*sep + nx*sep, y2 + n*vy*sep + ny*sep, 1, sep);
+			acompnet_mesh_addpt(layer, x2 + n*vx*sep - nx*sep, y2 + n*vy*sep - ny*sep, 1, sep);
 		}
 	}
 	PCB_END_LOOP;
