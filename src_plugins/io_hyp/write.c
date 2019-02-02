@@ -367,6 +367,7 @@ static int write_board(hyp_wr_t * wr)
 
 	fprintf(wr->f, "{BOARD\n");
 
+TODO("use pcb_has_explicit_outline() instead")
 	has_outline = 0;
 	for(i = 0, g = PCB->LayerGroups.grp; i < PCB->LayerGroups.len; i++,g++) {
 		if (pcb_layergrp_is_pure_empty(PCB, i))

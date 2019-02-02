@@ -662,6 +662,7 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 		global.scale_factor *= MIN(zx, zy);
 	}
 
+TODO("use pcb_has_explicit_outline() instead")
 	global.has_outline = 0;
 	for(i = 0, g = PCB->LayerGroups.grp; i < PCB->LayerGroups.len; i++,g++) {
 		if (PCB_LAYER_IS_OUTLINE(g->ltype, g->purpi) && !pcb_layergrp_is_pure_empty(PCB, i)) {

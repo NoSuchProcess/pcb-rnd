@@ -340,6 +340,7 @@ static void openems_write_outline(wctx_t *ctx)
 
 	fprintf(ctx->f, "%%%%%% Board outline\n");
 
+TODO("use pcb_has_explicit_outline() instead")
 	out1 = pcb_topoly_find_1st_outline(ctx->pcb);
 	if (out1 != NULL) {
 		long n;
