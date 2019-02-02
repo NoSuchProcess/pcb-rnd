@@ -22,9 +22,17 @@
  vtpadstack_t.h layer.h layer_ui.h actions.h plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h conf.h pcb-printf.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h search.h rats.h \
+ netlist.h route_style.h polygon.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h list_conf.h conf.h conf_core.h \
- compat_misc.h error.h dolists.h
+ compat_misc.h error.h ../src_plugins/acompnet/meshgraph.h rtree.h box.h \
+ dolists.h
+../src_plugins/acompnet/meshgraph.o: ../src_plugins/acompnet/meshgraph.c \
+ ../config.h ../src_3rd/genht/hash.h ../src_plugins/acompnet/meshgraph.h \
+ rtree.h global_typedefs.h pcb_bool.h unit.h \
+ ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h box.h math_helper.h \
+ move.h obj_common.h flag.h globalconst.h attrib.h data_parent.h \
+ misc_util.h ../src_3rd/genht/htip.h ../src_3rd/genht/ht.h error.h
 ../src_plugins/act_draw/act_draw.o: ../src_plugins/act_draw/act_draw.c \
  ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h unit.h \
  pcb-printf.h ../src_3rd/genvector/gds_char.h \
@@ -402,7 +410,8 @@
  obj_pstk_shape.h polygon.h vtpadstack_t.h conf_core.h compat_misc.h \
  obj_subc.h search.h rats.h netlist.h route_style.h \
  ../src_plugins/dialogs/dlg_layer_flags.c event.h \
- ../src_plugins/dialogs/dlg_flag_edit.c flag.h flag_str.h change.h \
+ ../src_plugins/dialogs/dlg_flag_edit.c flag.h flag_str.h change.h undo.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h \
  ../src_plugins/dialogs/dlg_padstack.c obj_pstk.h obj_pstk_op.h \
  operation.h obj_pstk_inlines.h data.h thermal.h obj_subc_parent.h \
  operation.h ../src_plugins/dialogs/dlg_lib_pstk.h \
@@ -411,8 +420,7 @@
  ../src_plugins/dialogs/dlg_export.c hid_init.h \
  ../src_plugins/dialogs/dlg_lib_pstk.c vtpadstack.h hid_inlines.h \
  obj_text_draw.h draw.h obj_pstk_draw.h undo_old.h select.h \
- ../src_plugins/dialogs/dlg_undo.c ../src_3rd/libuundo/uundo.h undo.h \
- undo_old.h ../src_plugins/dialogs/dlg_plugins.c \
+ ../src_plugins/dialogs/dlg_undo.c ../src_plugins/dialogs/dlg_plugins.c \
  ../src_plugins/dialogs/dlg_fontsel.c stub_draw.h \
  ../src_plugins/dialogs/dlg_comm_m.c ../src_plugins/dialogs/xpm.h \
  ../src_plugins/dialogs/place.c safe_fs.h ../src_3rd/genht/ht.c \
@@ -8161,7 +8169,7 @@ undo_old.o: undo_old.c ../config.h ../src_3rd/libuundo/uundo.h board.h \
  vtpadstack_t.h draw.h insert.h remove.h rotate.h compat_misc.h search.h \
  rats.h netlist.h route_style.h undo.h undo_old.h flag_str.h conf_core.h \
  conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h \
- compat_nls.h obj_poly_draw.h obj_subc_parent.h undo_old_str.h
+ compat_nls.h obj_poly_draw.h obj_subc_parent.h brave.h undo_old_str.h
 unit.o: unit.c ../config.h compat_misc.h compat_nls.h unit.h
 view.o: view.c ../config.h idpath.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
