@@ -32,6 +32,8 @@
 /*#include "acompnet_conf.h"*/
 #include "actions.h"
 #include "plugins.h"
+#include "search.h"
+#include "polygon.h"
 #include "conf.h"
 #include "conf_core.h"
 #include "compat_misc.h"
@@ -39,16 +41,87 @@
 
 static pcb_layer_t *ly;
 
-pcb_flag_t flg_mesh_pt;
-static void acompnet_mesh_addpt(double x, double y, int score)
+typedef struct {
+	pcb_coord_t x, y;
+	pcb_coord_t r;
+} overlap_t;
+
+static pcb_r_dir_t overlap(const pcb_box_t *box, void *closure)
 {
-	x = pcb_round(x);
-	y = pcb_round(y);
-	
-	pcb_line_new(ly, x, y, x, y, conf_core.design.line_thickness, conf_core.design.bloat, flg_mesh_pt);
+	pcb_any_obj_t *obj = (pcb_any_obj_t *)box;
+	overlap_t *ovl = (overlap_t *)closure;
+	switch(obj->type) {
+		case PCB_OBJ_LINE:
+			if (pcb_is_point_in_line(ovl->x, ovl->y, ovl->r, (pcb_any_line_t *)obj))
+				return PCB_R_DIR_CANCEL;
+			break;
+		case PCB_OBJ_ARC:
+			if (pcb_is_point_on_arc(ovl->x, ovl->y, ovl->r, (pcb_arc_t *)obj))
+				return PCB_R_DIR_CANCEL;
+			break;
+		case PCB_OBJ_TEXT:
+			if (pcb_is_point_in_box(ovl->x, ovl->y, &obj->bbox_naked, ovl->r))
+				return PCB_R_DIR_CANCEL;
+			break;
+		case PCB_OBJ_POLY:
+			if (pcb_poly_is_point_in_p(ovl->x, ovl->y, ovl->r, (pcb_poly_t *)obj))
+				return PCB_R_DIR_CANCEL;
+			break;
+		default: break;
+	}
+	return PCB_R_DIR_NOT_FOUND;
 }
 
-static void acompnet_mesh()
+TODO("move this to search.[ch]")
+/* Search for object(s) on a specific layer */
+static pcb_r_dir_t pcb_search_on_layer(pcb_layer_t *layer, const pcb_box_t *bbox, pcb_r_dir_t (*cb)(const pcb_box_t *box, void *closure), void *closure)
+{
+	pcb_r_dir_t res, fin = 0;
+
+	if ((res = pcb_r_search(layer->line_tree, bbox, NULL, cb, closure, NULL)) == PCB_R_DIR_CANCEL)
+		return res;
+	fin |= res;
+
+	if ((res = pcb_r_search(layer->arc_tree, bbox, NULL, cb, closure, NULL)) == PCB_R_DIR_CANCEL)
+		return res;
+	fin |= res;
+
+	if ((res = pcb_r_search(layer->polygon_tree, bbox, NULL, cb, closure, NULL)) == PCB_R_DIR_CANCEL)
+		return res;
+	fin |= res;
+
+	if ((res = pcb_r_search(layer->text_tree, bbox, NULL, cb, closure, NULL)) == PCB_R_DIR_CANCEL)
+		return res;
+	fin |= res;
+
+TODO("padstack too");
+
+	return res;
+}
+
+
+pcb_flag_t flg_mesh_pt;
+static void acompnet_mesh_addpt(pcb_layer_t *layer, double x, double y, int score, double sep)
+{
+	overlap_t ovl;
+	pcb_box_t bbox;
+
+	x = pcb_round(x);
+	y = pcb_round(y);
+
+	ovl.x = x;
+	ovl.y = y;
+	ovl.r = pcb_round(sep/2-1);
+	bbox.X1 = x - ovl.r;
+	bbox.X2 = x + ovl.r;
+	bbox.Y1 = y - ovl.r;
+	bbox.Y2 = y + ovl.r;
+
+	if (pcb_search_on_layer(layer, &bbox, overlap, &ovl) == PCB_R_DIR_NOT_FOUND)
+		pcb_line_new(ly, x, y, x, y, conf_core.design.line_thickness, conf_core.design.bloat, flg_mesh_pt);
+}
+
+static void acompnet_mesh(pcb_layer_t *layer)
 {
 	double sep = conf_core.design.line_thickness + conf_core.design.bloat;
 	int n;
@@ -68,16 +141,16 @@ static void acompnet_mesh()
 		ny = -vx;
 
 		/* straight line extension points */
-		acompnet_mesh_addpt(x1 - vx*sep, y1 - vy*sep, n-1);
-		acompnet_mesh_addpt(x2 + vx*sep, y2 + vy*sep, n-1);
+		acompnet_mesh_addpt(layer, x1 - vx*sep, y1 - vy*sep, n-1, sep);
+		acompnet_mesh_addpt(layer, x2 + vx*sep, y2 + vy*sep, n-1, sep);
 
 		/* side and extended points; n is in-line offset from endpoint */
 		for(n = 0; n <= 1; n++) {
-			acompnet_mesh_addpt(x1 - n*vx*sep + nx*sep, y1 - n*vy*sep + ny*sep, n);
-			acompnet_mesh_addpt(x1 - n*vx*sep - nx*sep, y1 - n*vy*sep - ny*sep, n);
+			acompnet_mesh_addpt(layer, x1 - n*vx*sep + nx*sep, y1 - n*vy*sep + ny*sep, n, sep);
+			acompnet_mesh_addpt(layer, x1 - n*vx*sep - nx*sep, y1 - n*vy*sep - ny*sep, n, sep);
 
-			acompnet_mesh_addpt(x2 + n*vx*sep + nx*sep, y2 + n*vy*sep + ny*sep, n);
-			acompnet_mesh_addpt(x2 + n*vx*sep - nx*sep, y2 + n*vy*sep - ny*sep, n);
+			acompnet_mesh_addpt(layer, x2 + n*vx*sep + nx*sep, y2 + n*vy*sep + ny*sep, n, sep);
+			acompnet_mesh_addpt(layer, x2 + n*vx*sep - nx*sep, y2 + n*vy*sep - ny*sep, n, sep);
 		}
 	}
 	PCB_END_LOOP;
@@ -89,7 +162,7 @@ static const char pcb_acth_acompnet[] = "Attempt to auto-complete the current ne
 
 static fgw_error_t pcb_act_acompnet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	acompnet_mesh();
+	acompnet_mesh(CURRENT);
 	PCB_ACT_IRES(0);
 	return 0;
 }
