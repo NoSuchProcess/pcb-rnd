@@ -137,6 +137,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	layer_stat_t ls, *lgs, lgss[PCB_MAX_LAYERGRP];
 	int nl, phg, hp, hup, group_not_empty[PCB_MAX_LAYERGRP];
 	pcb_cardinal_t num_etop = 0, num_ebottom = 0, num_esmd = 0, num_epads = 0, num_epins = 0, num_terms = 0, num_slots = 0;
+	pcb_coord_t width, height;
 
 	memset(lgss, 0, sizeof(lgss));
 	memset(group_not_empty, 0, sizeof(group_not_empty));
@@ -324,13 +325,23 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	}
 	PCB_END_LOOP;
 
+	if (pcb_has_explicit_outline(PCB)) {
+		pcb_box_t bb;
+		pcb_data_bbox_naked(&bb, PCB->Data, pcb_true);
+		width = bb.X2 - bb.X1;
+		height = bb.X2 - bb.X1;
+	}
+	else {
+		width = PCB->MaxWidth;
+		height = PCB->MaxHeight;
+	}
 
 	fprintf(f, "	ha:board {\n");
 	fprintf(f, "		id={%s}\n", options[HA_board_id].str_value);
 	fprintf(f, "		license={%s}\n", options[HA_license].str_value);
 	fprintf(f, "		format={%s}\n", PCB->Data->loader == NULL ? "unknown" : PCB->Data->loader->description);
-	pcb_fprintf(f, "		width=%$mm\n", PCB->MaxWidth);
-	pcb_fprintf(f, "		height=%$mm\n", PCB->MaxHeight);
+	pcb_fprintf(f, "		width=%$mm\n", width);
+	pcb_fprintf(f, "		height=%$mm\n", height);
 	fprintf(f, "		gross_area={%.4f mm^2}\n", (double)PCB_COORD_TO_MM(PCB->MaxWidth) * (double)PCB_COORD_TO_MM(PCB->MaxWidth));
 	fprintf(f, "		holes_plated=%d\n", hp);
 	fprintf(f, "		holes_unplated=%d\n", hup);
