@@ -20,7 +20,7 @@
 ? BUG: scconfig: if libgd is not detected, there's an extra error on disable-gd-gif [report: Erich]
 ? BUG: configure without glib installed -> 'unknown arugment disable-gtk' [report: Ade]
 ? BUG: #define TODO(x) doesn't compile on IRIX system with --debug option ON [report: Ian]
-- BUG: export_stat should use data bbox for board width/height [report: Ade]
++ BUG: export_stat should use data bbox for board width/height [report: Ade]
 
 2. For later releases ===============================================================================
 - CLEANUP: search for TODO pcb_has_explicit_outline() [report: Igor2]
