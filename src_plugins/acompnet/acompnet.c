@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -67,12 +67,15 @@ static void acompnet_mesh()
 		nx = vy;
 		ny = -vx;
 
-		for(n = 1; n <= 2; n++) {
-			acompnet_mesh_addpt(x1 - n*vx*sep, y1 - n*vy*sep, n-1);
+		/* straight line extension points */
+		acompnet_mesh_addpt(x1 - vx*sep, y1 - vy*sep, n-1);
+		acompnet_mesh_addpt(x2 + vx*sep, y2 + vy*sep, n-1);
+
+		/* side and extended points; n is in-line offset from endpoint */
+		for(n = 0; n <= 1; n++) {
 			acompnet_mesh_addpt(x1 - n*vx*sep + nx*sep, y1 - n*vy*sep + ny*sep, n);
 			acompnet_mesh_addpt(x1 - n*vx*sep - nx*sep, y1 - n*vy*sep - ny*sep, n);
 
-			acompnet_mesh_addpt(x2 + n*vx*sep, y2 + n*vy*sep, n-1);
 			acompnet_mesh_addpt(x2 + n*vx*sep + nx*sep, y2 + n*vy*sep + ny*sep, n);
 			acompnet_mesh_addpt(x2 + n*vx*sep - nx*sep, y2 + n*vy*sep - ny*sep, n);
 		}
