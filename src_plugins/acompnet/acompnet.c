@@ -134,7 +134,7 @@ static void acompnet_mesh(pcb_meshgraph_t *gr, pcb_layer_t *layer)
 	int n;
 
 	PCB_LINE_LOOP(CURRENT) {
-		double len, vx, vy, x1, y1, x2, y2, nx, ny;
+		double i, len, vx, vy, x1, y1, x2, y2, nx, ny;
 		x1 = line->Point1.X;
 		x2 = line->Point2.X;
 		y1 = line->Point1.Y;
@@ -158,6 +158,11 @@ static void acompnet_mesh(pcb_meshgraph_t *gr, pcb_layer_t *layer)
 
 			acompnet_mesh_addpt(gr, layer, x2 + n*vx*sep + nx*sep, y2 + n*vy*sep + ny*sep, 1, sep);
 			acompnet_mesh_addpt(gr, layer, x2 + n*vx*sep - nx*sep, y2 + n*vy*sep - ny*sep, 1, sep);
+		}
+
+		for(i = 2*sep; i <= len - 2*sep; i += sep*3) {
+			acompnet_mesh_addpt(gr, layer, x1 + i*vx + nx*sep, y1 + i*vy + ny*sep, 2, sep);
+			acompnet_mesh_addpt(gr, layer, x1 + i*vx - nx*sep, y1 + i*vy - ny*sep, 2, sep);
 		}
 	}
 	PCB_END_LOOP;
