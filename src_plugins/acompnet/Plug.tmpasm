@@ -1,5 +1,8 @@
 put /local/pcb/mod {acompnet}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/acompnet/acompnet.o @]
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/acompnet/acompnet.o
+	$(PLUGDIR)/acompnet/meshgraph.o
+@]
 
 switch /local/pcb/acompnet/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
