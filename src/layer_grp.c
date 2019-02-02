@@ -1271,3 +1271,13 @@ pcb_layergrp_id_t pcb_layergrp_str2id(pcb_board_t *pcb, const char *str)
 TODO("layer: do the same that cam does; test with propedit");
 	return -1;
 }
+
+pcb_bool pcb_has_explicit_outline(pcb_board_t *pcb)
+{
+	int i;
+	pcb_layergrp_t *g;
+	for(i = 0, g = pcb->LayerGroups.grp; i < pcb->LayerGroups.len; i++,g++)
+		if (PCB_LAYER_IS_OUTLINE(g->ltype, g->purpi) && !pcb_layergrp_is_pure_empty(pcb, i))
+			return 1;
+	return 0;
+}
