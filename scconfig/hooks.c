@@ -169,6 +169,7 @@ int hook_custom_arg(const char *key, const char *value)
 		fprintf(stderr, "Error: unknown argumnet %s\n", key);
 		exit(1);
 	}
+	return 0;
 }
 
 /* execute plugin dependency statements, depending on "require":
