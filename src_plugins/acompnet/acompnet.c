@@ -172,6 +172,9 @@ static fgw_error_t pcb_act_acompnet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_meshgraph_t gr;
 	pcb_msgr_init(&gr);
 	acompnet_mesh(&gr, CURRENT);
+	
+	pcb_msgr_astar(&gr, 1, 8);
+	
 	PCB_ACT_IRES(0);
 	return 0;
 }
