@@ -20,6 +20,6 @@ typedef struct {
 
 void pcb_msgr_init(pcb_meshgraph_t *gr);
 long int pcb_msgr_add_node(pcb_meshgraph_t *gr, pcb_box_t *bbox);
-void pcb_msgr_astar(pcb_meshgraph_t *gr, long int startid, long int endid);
+int pcb_msgr_astar(pcb_meshgraph_t *gr, long int startid, long int endid);
 
 #endif
