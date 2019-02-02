@@ -407,7 +407,7 @@ static pcb_bool UndoChangeRot(UndoListTypePtr Entry)
  */
 static pcb_bool UndoFlag(UndoListTypePtr Entry)
 {
-	void *ptr1, *ptr1e, *ptr2, *ptr3;
+	void *ptr1, *ptr1e, *ptr2, *ptr3, *txt_save;
 	int type;
 	pcb_flag_t swap;
 	int must_redraw;
@@ -431,9 +431,14 @@ static pcb_bool UndoFlag(UndoListTypePtr Entry)
 		if (pcb_undo_and_draw && must_redraw && (ptr1e != NULL))
 			pcb_erase_obj(type, ptr1e, ptr2);
 
-		obj->Flags = Entry->Data.Flags;
+		if (obj->type == PCB_OBJ_TEXT)
+			pcb_text_flagchg_pre((pcb_text_t *)obj, Entry->Data.Flags.f, &txt_save);
 
+		obj->Flags = Entry->Data.Flags;
 		Entry->Data.Flags = swap;
+
+		if (obj->type == PCB_OBJ_TEXT)
+			pcb_text_flagchg_post((pcb_text_t *)obj, Entry->Data.Flags.f, &txt_save);
 
 		if (pcb_undo_and_draw && must_redraw)
 			pcb_draw_obj((pcb_any_obj_t *)ptr2);
