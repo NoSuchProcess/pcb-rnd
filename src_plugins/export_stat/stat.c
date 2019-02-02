@@ -386,6 +386,7 @@ void pplg_uninit_export_stat(void)
 	free((char *)stat_attribute_list[HA_license].default_val.str_value);
 	stat_attribute_list[HA_first_ver].default_val.str_value = NULL;
 	stat_attribute_list[HA_license].default_val.str_value = NULL;
+	pcb_hid_remove_attributes_by_cookie(stat_cookie);
 }
 
 int pplg_init_export_stat(void)
