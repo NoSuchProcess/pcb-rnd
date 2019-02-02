@@ -88,17 +88,25 @@ int pcb_msgr_astar(pcb_meshgraph_t *gr, long int startid, long int endid)
 		pcb_rtree_box_t sb;
 		pcb_box_t *b;
 		pcb_rtree_it_t it;
-		double tentative_g;
+		double tentative_g, best;
 
-TODO("should pick the one with the lowest fscore")
+TODO("should use a faster way for picking lowest fscore")
 		/* get the best looking item from the open list */
-		e = htip_first(&open);
-		if (e == NULL) {
+		curr = NULL;
+		best = INF_SCORE;
+		for(e = htip_first(&open); e != NULL; e = htip_next(&open, e)) {
+			next = e->value;
+			if (next->fscore <= best) {
+				best = next->fscore;
+				curr = next;
+			}
+		}
+
+		if (curr == NULL) {
 pcb_trace("NO PATH\n");
 			return 0;
 		}
-		curr = e->value;
-		htip_delentry(&open, e);
+		htip_pop(&open, curr->id);
 		if (curr->id == endid) {
 pcb_trace("found path\n");
 			return 1;
