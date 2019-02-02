@@ -138,8 +138,10 @@ int hook_custom_arg(const char *key, const char *value)
 		report("Error: unknown --all argument: %s\n", value);
 		exit(1);
 	}
-	if (strcmp(key, "coord") == 0)
+	if (strcmp(key, "coord") == 0) {
 		put("/local/pcb/dot_pcb_rnd", value);
+		return 1;
+	}
 	if (strcmp(key, "man1dir") == 0) {
 		put("/local/man1dir", value);
 		return 1;
@@ -169,7 +171,7 @@ int hook_custom_arg(const char *key, const char *value)
 		fprintf(stderr, "Error: unknown argument %s\n", key);
 		exit(1);
 	}
-	return 0;
+	return 1; /* handled by arg_auto_set() */
 }
 
 /* execute plugin dependency statements, depending on "require":
