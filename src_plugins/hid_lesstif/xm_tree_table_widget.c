@@ -574,12 +574,13 @@ int xm_tree_table_focus_row(Widget w, int row_index)
 			for(; et && et->row_index < row_index; et = (tt_entry_t *)gdl_next(tt->table, (void *)et)) {
 				tt->w_vert_sbar.cur += !et->flags.is_hidden;
 			}
-			/* rewind half of the screen back. */
+			/* rewind screen.height/2 back. */
 			for(; et && occupied_height < s->geom.height / 2; et = (tt_entry_t *)gdl_prev(tt->table, (void *)et)) {
 				occupied_height += (!et->flags.is_hidden) *
 				    (et->n_text_lines * s->vertical_stride + tt->n_grid_y_gap_pixels);
 				tt->w_vert_sbar.cur -= !et->flags.is_hidden;
 			}
+			ret = et ? 0 : -1;
 		}
 	)
 	return ret;
