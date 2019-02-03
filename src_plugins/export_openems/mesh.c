@@ -47,7 +47,7 @@ static const int num_subslines[] = { 0,    1,   3,   5 };
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	int dens_obj, dens_gap, min_space, smooth, hor, ver, noimpl;
-	int bnd[6], subslines, air_top, air_bot, dens_air, smoothz, max_air, def_subs_thick, def_copper_thick;
+	int bnd[6], pml, subslines, air_top, air_bot, dens_air, smoothz, max_air, def_subs_thick, def_copper_thick;
 	unsigned active:1;
 } mesh_dlg_t;
 static mesh_dlg_t ia;
@@ -959,6 +959,7 @@ static void ia_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 
 	mesh.layer = CURRENT;
 
+	mesh.pml = ia.dlg[ia.pml].default_val.int_value;
 	mesh.dens_obj = ia.dlg[ia.dens_obj].default_val.coord_value;
 	mesh.dens_gap = ia.dlg[ia.dens_gap].default_val.coord_value;
 	mesh.min_space = ia.dlg[ia.min_space].default_val.coord_value;
@@ -1141,6 +1142,13 @@ int pcb_mesh_interactive(void)
 							ia.bnd[n+1] = PCB_DAD_CURRENT(ia.dlg);
 					PCB_DAD_END(ia.dlg);
 				}
+
+				PCB_DAD_BEGIN_HBOX(ia.dlg);
+					PCB_DAD_LABEL(ia.dlg, "PML cells:");
+					PCB_DAD_INTEGER(ia.dlg, "");
+						ia.pml = PCB_DAD_CURRENT(ia.dlg);
+						PCB_DAD_MINMAX(ia.dlg, 0, 32);
+				PCB_DAD_END(ia.dlg);
 			PCB_DAD_END(ia.dlg);
 
 			PCB_DAD_BEGIN_VBOX(ia.dlg);
