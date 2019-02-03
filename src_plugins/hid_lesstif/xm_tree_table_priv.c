@@ -119,13 +119,6 @@ static void draw_row(tt_entry_t *entry, int x, int y, GC gc, XmTreeTableWidget w
 		XCopyArea(XtDisplay(w), pxinfo.pix, XtWindow(w), gc, 0, 0, pxinfo.width, pxinfo.height, px, y - pxinfo.height);
 	}
 }
-/*
-Translate a position (POS) of a row/column on the virtual canvas of dimension (FILED_DIMENSION)
-according to a scrollbar position (SCROLL_POS) that is provided in a range [SC_MIN, SC_MAX],
-so that on increase of SCROLL_POS, the returned position decreases (V-scroll goes down, the "canvas" goes up).
-*/
-#define SCROLL_TR(POS, FIELD_DIMENSION, SCROLL_POS, SC_MIN, SC_MAX) \
-	(POS - ((FIELD_DIMENSION) * (SCROLL_POS - SC_MIN)/(SC_MAX - SC_MIN)))
 
 static void draw_ttwidget_header(Widget aw)
 {
@@ -166,7 +159,7 @@ void xm_render_ttwidget_contents(Widget aw, enum e_what_changed what)
 
 	struct render_target_s *s = &(w->tree_table.render_attr);
 	XRectangle clip = s->geom;
-	tt_entry_t *begin_entry = NULL;
+	tt_entry_t *entry = NULL;
 	unsigned char b_with_header = 0;
 	if (!tt->table)
 		return;
@@ -190,8 +183,8 @@ void xm_render_ttwidget_contents(Widget aw, enum e_what_changed what)
 	xm_clip_rectangle((Widget)w, clip);
 	XFillRectangle(dsp, XtWindow(w), w->tree_table.gc_highlight, clip.x, clip.y, clip.width, clip.height);
 
-	begin_entry = (tt_entry_t *)gdl_first(tt->table);
-	if (!begin_entry)
+	entry = (tt_entry_t *)gdl_first(tt->table);
+	if (!entry)
 		return;
 	if (s->visible_items_vector && s->visible_items_capacity > 0)
 		memset(s->visible_items_vector, 0x00, sizeof(item_desc_t) * s->visible_items_capacity);
@@ -201,7 +194,6 @@ void xm_render_ttwidget_contents(Widget aw, enum e_what_changed what)
 		int y = 0;
 		long hidden_shift = 0;
 		long occupied_height = 0;
-		tt_entry_t *entry = begin_entry;
 		item_desc_t* desc = NULL;
 		tt_cb_draw_t *ddata = &(((XmTreeTableWidget)w)->tree_table.draw_event_data);
 		ddata->user_data = tt->user_data;
@@ -427,9 +419,7 @@ void xm_fit_scrollbars_to_geometry(XmTreeTableWidget w, struct render_target_s *
 		vsb->lo = 0;
 		vsb->size = TTBL_MAX(1, s->geom.height * s->geom.height / tt->virtual_canvas_size.height);
 		vsb->hi = s->geom.height + vsb->size;
-		vsb->incr = s->vertical_stride;
-		if (vsb->incr * s->geom.height < tt->virtual_canvas_size.height)
-			vsb->incr = TTBL_MIN(s->geom.height, tt->virtual_canvas_size.height / s->geom.height);
+		vsb->incr = 1;
 		vsb->cur = TTBL_CLAMP(vsb->cur, vsb->lo, vsb->hi - vsb->size);
 		vsb->prev = TTBL_CLAMP(vsb->prev, vsb->lo, vsb->hi - vsb->size);
 		XtVaSetValues(vsb->sbar, XmNvalue, vsb->cur, XmNsliderSize, vsb->size, XmNpageIncrement, 1, XmNminimum, vsb->lo, XmNmaximum, vsb->hi, NULL);
@@ -440,11 +430,7 @@ void xm_fit_scrollbars_to_geometry(XmTreeTableWidget w, struct render_target_s *
 		hsb->lo = 0;
 		hsb->size = TTBL_MAX(1, s->geom.width * s->geom.width / tt->virtual_canvas_size.width);
 		hsb->hi = s->geom.width + hsb->size;
-
-		hsb->incr = tt->n_max_pixmap_height;
-		if (hsb->incr * s->geom.width < tt->virtual_canvas_size.width)
-			hsb->incr = TTBL_MIN(s->geom.width, tt->virtual_canvas_size.width / s->geom.width);
-
+		hsb->incr = 1;
 		hsb->cur = TTBL_CLAMP(hsb->cur, hsb->lo, hsb->hi - hsb->size);
 		hsb->prev = TTBL_CLAMP(hsb->prev, hsb->lo, hsb->hi - hsb->hi);
 		XtVaSetValues(hsb->sbar, XmNvalue, hsb->cur, XmNsliderSize, hsb->size, XmNpageIncrement, 1, XmNminimum, hsb->lo, XmNmaximum, hsb->hi, NULL);

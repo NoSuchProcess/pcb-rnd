@@ -550,17 +550,38 @@ void xm_tree_table_pixel_gaps(Widget w, unsigned char x, unsigned char y)
 int xm_tree_table_focus_row(Widget w, int row_index)
 {
 	int ret = -1;
-	int rows_to_scroll = 0;
-	XM_TT_LOCKED_CODE(w, tw, tp,
-		struct render_target_s *s = &tp->render_attr;
-		int row_at_half_screen = xm_find_row_pointed_by_mouse(w, s->geom.y + s->geom.height / 2);
-		if (row_at_half_screen < 0)
+	XM_TT_LOCKED_CODE(w, tw, tt,
+	    struct render_target_s *s = &tt->render_attr;
+	    int idx = 0;
+	    if (row_index < 0 || !tt->table)
 			break;
+		/* check if it's already visible*/
+		for(; idx < (int)s->len; ++idx)
 		{
-			rows_to_scroll = row_at_half_screen - row_index;
+			item_desc_t* ds = s->visible_items_vector + idx;
+			if (ds->item && ds->item->row_index == row_index)
+				break;
+		}
+		if (idx == row_index) {
+			ret = 0;
+			break;/* it's already visible*/
+		}
+		else {
+			long occupied_height = 0;
+			tt_entry_t* et = (tt_entry_t *)gdl_first(tt->table);
+			tt->w_vert_sbar.cur = tt->w_vert_sbar.lo;
+			/* find the position */
+			for(; et && et->row_index < row_index; et = (tt_entry_t *)gdl_next(tt->table, (void *)et)) {
+				tt->w_vert_sbar.cur += !et->flags.is_hidden;
+			}
+			/* rewind half of the screen back. */
+			for(; et && occupied_height < s->geom.height / 2; et = (tt_entry_t *)gdl_prev(tt->table, (void *)et)) {
+				occupied_height += (!et->flags.is_hidden) *
+				    (et->n_text_lines * s->vertical_stride + tt->n_grid_y_gap_pixels);
+				tt->w_vert_sbar.cur -= !et->flags.is_hidden;
+			}
 		}
 	)
-	(void)rows_to_scroll;
 	return ret;
 }
 

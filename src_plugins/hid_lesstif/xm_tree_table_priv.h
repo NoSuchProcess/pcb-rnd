@@ -198,4 +198,13 @@ typedef struct _XmTreeTableRec {
 #define XtNleafPixmap "leafPixmap"
 #define XtNleafOpenPixmap "leafOpenPixmap"
 
+/*
+Translate a position (POS) of a row/column on the virtual canvas of dimension (FILED_DIMENSION)
+according to a scrollbar position (SCROLL_POS) that is provided in a range [SC_MIN, SC_MAX],
+so that on increase of SCROLL_POS, the returned position decreases (V-scroll goes down, the "canvas" goes up).
+*/
+#define SCROLL_TR(POS, FIELD_DIMENSION, SCROLL_POS, SC_MIN, SC_MAX) \
+	(POS - ((FIELD_DIMENSION) * (SCROLL_POS - SC_MIN)/(SC_MAX - SC_MIN)))
+
+
 #endif /* XM_TREE_TABLE_DRAW_ROUTINES_H */
