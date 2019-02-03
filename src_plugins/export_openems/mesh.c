@@ -1148,6 +1148,7 @@ int pcb_mesh_interactive(void)
 					PCB_DAD_INTEGER(ia.dlg, "");
 						ia.pml = PCB_DAD_CURRENT(ia.dlg);
 						PCB_DAD_MINMAX(ia.dlg, 0, 32);
+						PCB_DAD_DEFAULT(ia.dlg, 8);
 				PCB_DAD_END(ia.dlg);
 			PCB_DAD_END(ia.dlg);
 
