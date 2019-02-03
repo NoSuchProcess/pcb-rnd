@@ -143,17 +143,13 @@ pcb_hid_attribute_t openems_attribute_list[] = {
 	 PCB_HATT_INTEGER, 0, 10, {0, 0, 0}, 0, 0},
 #define HA_base_prio 12
 
-	{"f_max", "maximum frequency",
-	 PCB_HATT_STRING, 0, 0, {0, "7e9", 0}, 0, 0},
-#define HA_f_max 13
-
 	{"excite", "Excite directive",
-	 PCB_HATT_STRING, 0, 0, {0, "SetGaussExcite(FDTD, f_max/2, f_max/2)", 0}, 0, 0},
-#define HA_excite 14
+	 PCB_HATT_STRING, 0, 0, {0, "SetGaussExcite(FDTD, f0, fc)", 0}, 0, 0},
+#define HA_excite 13
 
 	{"port-resistance", "default port resistance",
 	 PCB_HATT_REAL, 0, 1000, {0, 0, 50}, 0, 0}
-#define HA_def_port_res 15
+#define HA_def_port_res 14
 
 };
 
@@ -177,7 +173,6 @@ static pcb_hid_attribute_t *openems_get_export_options(int *n)
 	}
 
 TODO(": when export dialogs change into DAD, this hack to convert the strings to allocated ones will not be needed anymore")
-	openems_attribute_list[HA_f_max].default_val.str_value = pcb_strdup(openems_attribute_list[HA_f_max].default_val.str_value);
 	openems_attribute_list[HA_excite].default_val.str_value = pcb_strdup(openems_attribute_list[HA_excite].default_val.str_value);
 	openems_attribute_list[HA_def_copper_cond].default_val.str_value = pcb_strdup(openems_attribute_list[HA_def_copper_cond].default_val.str_value);
 	openems_attribute_list[HA_def_subst_epsilon].default_val.str_value = pcb_strdup(openems_attribute_list[HA_def_subst_epsilon].default_val.str_value);
@@ -528,7 +523,8 @@ static void openems_write_mesh1(wctx_t *ctx)
 
 	fprintf(ctx->f, "%%%%%% Board mesh, part 1\n");
 	fprintf(ctx->f, "unit = 1.0e-3;\n");
-	fprintf(ctx->f, "f_max = %s;\n", ctx->options[HA_f_max].str_value);
+	fprintf(ctx->f, "f0 = 1.1e9; %% pulse center frequency\n");
+	fprintf(ctx->f, "fc = 0.9e9; %% \"20dB cutoff frequency --> bandwidth is 2*fc\n");
 	fprintf(ctx->f, "FDTD = InitFDTD();\n");
 	fprintf(ctx->f, "FDTD = %s;\n", ctx->options[HA_excite].str_value);
 
