@@ -54,7 +54,7 @@ struct render_target_s {
 
 	item_desc_t *visible_items_vector;
 	unsigned visible_items_capacity;
-	unsigned visible_items_count;
+	unsigned len;
 };
 void xm_init_render_target(struct render_target_s *target);
 void xm_clear_render_target(struct render_target_s *target);

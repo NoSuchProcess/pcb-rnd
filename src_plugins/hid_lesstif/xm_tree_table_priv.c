@@ -53,15 +53,6 @@ void xm_clear_render_target(struct render_target_s *target)
 	memset(target, 0x00, sizeof(struct render_target_s));
 }
 
-static int translate_scroll_horizontal(XmTreeTableWidget w)
-{
-	XmTreeTablePart *tt = &(w->tree_table);
-	xm_tt_scrollbar *hsb = &(tt->w_horiz_sbar);
-	float pos = tt->virtual_canvas_size.width * (hsb->cur - hsb->lo);
-	pos /= (float)(hsb->hi - hsb->lo);
-	return (int)pos;
-}
-
 /* renders only table cells for the current row(entry).*/
 static void draw_row_cells(GC gc, int cur_x, int cur_y, tt_entry_t *entry, XmTreeTableWidget w, struct render_target_s *s)
 {
@@ -128,42 +119,13 @@ static void draw_row(tt_entry_t *entry, int x, int y, GC gc, XmTreeTableWidget w
 		XCopyArea(XtDisplay(w), pxinfo.pix, XtWindow(w), gc, 0, 0, pxinfo.width, pxinfo.height, px, y - pxinfo.height);
 	}
 }
-
-static void load_visible_items(XmTreeTablePart *tt, const item_desc_t *start)
-{
-	struct render_target_s *s = &(tt->render_attr);
-	tt_entry_t *et = start->item ? start->item : (tt_entry_t *)gdl_first(tt->table);
-	unsigned showing_cnt = 0;
-	long virtual_shift = start->virtual_region.y + start->virtual_region.height;
-	long display_shift = tt->p_header ? s->vertical_stride : 0;
-	if (s->visible_items_vector && s->visible_items_capacity > 0)
-		memset(s->visible_items_vector, 0x00, sizeof(item_desc_t) * s->visible_items_capacity);
-
-	for(; et && display_shift < (s->geom.height + s->vertical_stride); et = (tt_entry_t *)gdl_next(tt->table, (void *)et)) {
-		if (!et->flags.is_hidden) {
-			item_desc_t *desc;
-			if (s->visible_items_capacity <= showing_cnt) {
-				s->visible_items_capacity = 2 * (showing_cnt + 16);
-				s->visible_items_vector = (item_desc_t *)realloc(s->visible_items_vector, sizeof(item_desc_t) * s->visible_items_capacity);
-				memset(s->visible_items_vector + showing_cnt, 0x00, sizeof(item_desc_t) * (s->visible_items_capacity - showing_cnt));
-			}
-			desc = s->visible_items_vector + showing_cnt;
-			memset(desc, 0x00, sizeof(item_desc_t));
-			desc->item = et;
-			desc->virtual_region.height = s->vertical_stride * TTBL_MIN(1, et->n_text_lines);
-			desc->virtual_region.y = virtual_shift;
-
-			desc->display_region.y += display_shift;
-			desc->display_region.height = desc->virtual_region.height;
-
-			et->flags.is_being_rendered = 1;
-			virtual_shift += desc->virtual_region.height;
-			display_shift += desc->virtual_region.height;
-			++showing_cnt;
-		}
-	}
-	s->visible_items_count = showing_cnt;
-}
+/*
+Translate a position (POS) of a row/column on the virtual canvas of dimension (FILED_DIMENSION)
+according to a scrollbar position (SCROLL_POS) that is provided in a range [SC_MIN, SC_MAX],
+so that on increase of SCROLL_POS, the returned position decreases (V-scroll goes down, the "canvas" goes up).
+*/
+#define SCROLL_TR(POS, FIELD_DIMENSION, SCROLL_POS, SC_MIN, SC_MAX) \
+	(POS - ((FIELD_DIMENSION) * (SCROLL_POS - SC_MIN)/(SC_MAX - SC_MIN)))
 
 static void draw_ttwidget_header(Widget aw)
 {
@@ -190,8 +152,11 @@ static void draw_ttwidget_header(Widget aw)
 
 	XFillRectangle(dsp, XtWindow(w), w->tree_table.gc_inverted_color, clip.x, clip.y, clip.width, clip.height);
 
-	draw_row_cells(w->tree_table.gc_highlight, s->geom.x - translate_scroll_horizontal(w), s->geom.y + s->vertical_stride, tt->p_header, w, s);
+	draw_row_cells(w->tree_table.gc_highlight,
+	    /* x, scrolled */SCROLL_TR(s->geom.x, tt->virtual_canvas_size.width, tt->w_horiz_sbar.cur, tt->w_horiz_sbar.lo, tt->w_horiz_sbar.hi),
+	    /* y, fixed    */s->geom.y + s->vertical_stride, tt->p_header, w, s);
 }
+
 
 void xm_render_ttwidget_contents(Widget aw, enum e_what_changed what)
 {
@@ -201,60 +166,23 @@ void xm_render_ttwidget_contents(Widget aw, enum e_what_changed what)
 
 	struct render_target_s *s = &(w->tree_table.render_attr);
 	XRectangle clip = s->geom;
-	int y_shift = 0;
 	tt_entry_t *begin_entry = NULL;
+	unsigned char b_with_header = 0;
 	if (!tt->table)
 		return;
 
-	if (s->visible_items_vector)
-		begin_entry = s->visible_items_vector[0].item;
-
-	{
-		unsigned cnt = 0;
-		for(; cnt < s->visible_items_count; ++cnt)
-			if (s->visible_items_vector[cnt].item)
-				s->visible_items_vector[cnt].item->flags.is_being_rendered = 0;
-	}
 	/* TODO: reserve some space for tree's leafs' labels. */
 	s->horizontal_stride = TTBL_MAX(w->tree_table.n_max_pixmap_height, s->horizontal_stride);
 	s->vertical_stride = TTBL_MAX(w->tree_table.n_max_pixmap_height, GET_FONT_HEIGHT(tt->font));
 
-	begin_entry = (tt_entry_t *)gdl_first(tt->table);
-	if (begin_entry) {
-		long occupied_height = 0;
-		tt_entry_t *et = begin_entry;
-		long diff = tt->w_vert_sbar.cur - tt->w_vert_sbar.lo;
-		long ratio = tt->virtual_canvas_size.height / s->geom.height;
-		diff *= ratio;
-
-		for(; et && occupied_height < diff; et = (tt_entry_t *)gdl_next(tt->table, (void *)et)) {
-			unsigned char showing = !et->flags.is_hidden;
-			occupied_height += showing * TTBL_MAX(1, et->n_text_lines) * s->vertical_stride;
-			begin_entry = et;
-		}
-	}
-	else {
-		return;
-	}
-
-	{
-		item_desc_t desc;
-		memset(&desc, 0x00, sizeof(item_desc_t));
-		desc.item = begin_entry;
-		desc.display_region.width = s->geom.width;
-		desc.display_region.height = desc.item->n_text_lines * s->vertical_stride;
-		desc.virtual_region.height = desc.display_region.height;
-		load_visible_items(tt, &desc);
-	}
-
 	xm_fit_scrollbars_to_geometry(w, s);
 
 	if (tt->p_header) {
+		b_with_header = 1;
 		clip.height = s->vertical_stride;
 		xm_clip_rectangle((Widget)w, clip);
 		/* render the header, if provided. */
 		draw_ttwidget_header(aw);
-		y_shift = clip.height;
 		clip.y += clip.height;
 		clip.height = s->geom.height;
 	}
@@ -262,23 +190,53 @@ void xm_render_ttwidget_contents(Widget aw, enum e_what_changed what)
 	xm_clip_rectangle((Widget)w, clip);
 	XFillRectangle(dsp, XtWindow(w), w->tree_table.gc_highlight, clip.x, clip.y, clip.width, clip.height);
 
-	if (s->visible_items_vector && s->visible_items_capacity > 0) {
-		int cur_x = -translate_scroll_horizontal(w);
-		tt_entry_t *entry = s->visible_items_vector[0].item;
-		unsigned position_idx = 0;
+	begin_entry = (tt_entry_t *)gdl_first(tt->table);
+	if (!begin_entry)
+		return;
+	if (s->visible_items_vector && s->visible_items_capacity > 0)
+		memset(s->visible_items_vector, 0x00, sizeof(item_desc_t) * s->visible_items_capacity);
+
+	{
+		long x = SCROLL_TR(0, tt->virtual_canvas_size.width, tt->w_horiz_sbar.cur, tt->w_horiz_sbar.lo, tt->w_horiz_sbar.hi);
+		int y = 0;
+		long hidden_shift = 0;
+		long occupied_height = 0;
+		tt_entry_t *entry = begin_entry;
+		item_desc_t* desc = NULL;
 		tt_cb_draw_t *ddata = &(((XmTreeTableWidget)w)->tree_table.draw_event_data);
 		ddata->user_data = tt->user_data;
 		ddata->visible_first = entry ? entry->row_index : -1;
 		ddata->visible_last = -1;
 
-		for(; entry && position_idx < s->visible_items_capacity; entry = s->visible_items_vector[++position_idx].item) {
+		s->len = 0;
+		for(; entry && occupied_height <= tt->virtual_canvas_size.height; entry = (tt_entry_t *)gdl_next(tt->table, (void *)entry)) {
+			hidden_shift += entry->flags.is_hidden;
 			/* A tree shift added to the Y-position after scrollbar/whole extent relation computation. */
-			int cur_y = position_idx * s->vertical_stride + y_shift;
+			y = SCROLL_TR((entry->row_index - hidden_shift + b_with_header)* s->vertical_stride/*pos*/,
+			    tt->virtual_canvas_size.height/*field dimension*/,
+			    tt->w_vert_sbar.cur, tt->w_vert_sbar.lo, tt->w_vert_sbar.hi);
 
-			if (entry->flags.is_hidden)
+			entry->flags.is_being_rendered = 0;
+			if (y < s->geom.y || (s->geom.y + s->geom.height) < y || entry->flags.is_hidden)
 				continue;
-			draw_row(entry, cur_x, cur_y, tt->gc_draw, w, s);
+
+			if (s->visible_items_capacity <= s->len) {
+				s->visible_items_capacity = 2 * (s->len + 16);
+				s->visible_items_vector = (item_desc_t *)realloc(s->visible_items_vector, sizeof(item_desc_t) * s->visible_items_capacity);
+				memset(s->visible_items_vector + s->len, 0x00, sizeof(item_desc_t) * (s->visible_items_capacity - s->len));
+			}
+
+			entry->flags.is_being_rendered = !entry->flags.is_hidden;
+
+			desc = s->visible_items_vector + s->len;
+			desc->item = entry;
+			desc->display_region.y = y;
+			desc->display_region.height = s->vertical_stride * entry->n_text_lines;
+
+			occupied_height += desc->display_region.height * (!entry->flags.is_hidden);
+			draw_row(entry, x, clip.y + y, tt->gc_draw, w, s);
 			ddata->visible_last = entry->row_index;
+			s->len += entry->flags.is_being_rendered;
 		}
 	}
 }
@@ -329,7 +287,7 @@ int xm_find_row_pointed_by_mouse(Widget w, int y)
 	if (!s->visible_items_vector || !s->visible_items_vector[0].item)
 		goto lb_row_fond;
 
-	for(et = s->visible_items_vector + idx; et && idx < s->visible_items_count; et = s->visible_items_vector + (++idx)) {
+	for(et = s->visible_items_vector + idx; et && idx < s->len; et = s->visible_items_vector + (++idx)) {
 		if (et->display_region.y <= y && y < (et->display_region.y + et->display_region.height)) {
 			found = et;
 			break;
