@@ -165,6 +165,34 @@ static void load_visible_items(XmTreeTablePart *tt, const item_desc_t *start)
 	s->visible_items_count = showing_cnt;
 }
 
+static void draw_ttwidget_header(Widget aw)
+{
+	Display *dsp = XtDisplay(aw);
+	XmTreeTableWidget w = (XmTreeTableWidget)aw;
+	XmTreeTablePart *tt = &(w->tree_table);
+	struct render_target_s *s = &(w->tree_table.render_attr);
+
+	/* render the header, if provided. */
+	XCharStruct chrs = { 0 };
+	int i_ret[3] = { 0 };
+	unsigned x;
+	XRectangle clip = s->geom;
+	clip.height = s->vertical_stride;
+	for(x = 0; x < tt->p_header->n_cells; ++x) {
+		const char *str = tt_get_cell(tt->p_header, x)[0];
+		if (str) {
+			XTextExtents(tt->font, str, strlen(str), i_ret, i_ret + 1, i_ret + 2, &chrs);
+			clip.height = TTBL_MAX(s->vertical_stride, TTBL_MAX(chrs.ascent - chrs.descent, clip.height));
+		}
+	}
+	s->vertical_stride = TTBL_MAX(clip.height, s->vertical_stride);
+	XFillRectangle(dsp, XtWindow(w), w->tree_table.gc_highlight, clip.x, clip.y, clip.width, clip.height);
+
+	XFillRectangle(dsp, XtWindow(w), w->tree_table.gc_inverted_color, clip.x, clip.y, clip.width, clip.height);
+
+	draw_row_cells(w->tree_table.gc_highlight, s->geom.x - translate_scroll_horizontal(w), s->geom.y + s->vertical_stride, tt->p_header, w, s);
+}
+
 void xm_render_ttwidget_contents(Widget aw, enum e_what_changed what)
 {
 	Display *dsp = XtDisplay(aw);
@@ -220,36 +248,16 @@ void xm_render_ttwidget_contents(Widget aw, enum e_what_changed what)
 	}
 
 	xm_fit_scrollbars_to_geometry(w, s);
-	xm_clip_rectangle((Widget)w, clip);
 
 	if (tt->p_header) {
-		/* render the header, if provided. */
-		XCharStruct chrs = { 0 };
-		int i_ret[3] = { 0 };
-		unsigned x;
 		clip.height = s->vertical_stride;
-		for(x = 0; x < tt->p_header->n_cells; ++x) {
-			const char *str = tt_get_cell(tt->p_header, x)[0];
-			if (str) {
-				XTextExtents(tt->font, str, strlen(str), i_ret, i_ret + 1, i_ret + 2, &chrs);
-				clip.height = TTBL_MAX(s->vertical_stride, TTBL_MAX(chrs.ascent - chrs.descent, clip.height));
-			}
-		}
-		s->vertical_stride = TTBL_MAX(clip.height, s->vertical_stride);
-		y_shift = 2 * s->vertical_stride;
-		clip.y = s->geom.y;
 		xm_clip_rectangle((Widget)w, clip);
-		XFillRectangle(dsp, XtWindow(w), w->tree_table.gc_highlight, clip.x, clip.y, clip.width, clip.height);
-
-		XFillRectangle(dsp, XtWindow(w), w->tree_table.gc_inverted_color, clip.x, clip.y, clip.width, clip.height);
-
-		draw_row_cells(w->tree_table.gc_highlight, s->geom.x - translate_scroll_horizontal(w), s->geom.y + s->vertical_stride, tt->p_header, w, s);
+		/* render the header, if provided. */
+		draw_ttwidget_header(aw);
+		y_shift = clip.height;
 		clip.y += clip.height;
+		clip.height = s->geom.height;
 	}
-
-	clip.x = s->geom.x;
-	clip.width = s->geom.width;
-	clip.height = s->geom.height;
 
 	xm_clip_rectangle((Widget)w, clip);
 	XFillRectangle(dsp, XtWindow(w), w->tree_table.gc_highlight, clip.x, clip.y, clip.width, clip.height);
