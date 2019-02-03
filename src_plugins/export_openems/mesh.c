@@ -76,6 +76,7 @@ void pcb_mesh_save(const mesh_dlg_t *me, gds_t *dst, const char *prefix)
 	SAVE_COORD(dens_obj);
 	SAVE_COORD(dens_gap);
 	SAVE_COORD(min_space);
+	SAVE_INT(pml);
 	SAVE_INT(smooth);
 	SAVE_INT(hor);
 	SAVE_INT(ver);
@@ -189,6 +190,7 @@ static int mesh_load_subtree(mesh_dlg_t *me, lht_node_t *root)
 	LOAD_COORD(dens_obj);
 	LOAD_COORD(dens_gap);
 	LOAD_COORD(min_space);
+	LOAD_INT(pml);
 	LOAD_INT(smooth);
 	LOAD_INT(hor);
 	LOAD_INT(ver);
