@@ -509,19 +509,15 @@ void xm_set_tree_table_pointer(Widget w, gdl_list_t *new_table_root, tt_table_ac
 	}
 }
 
-int xm_tt_set_x11_font_attr(Widget xm_tree_table, const char *attributes)
+void xm_tt_set_x11_font(Widget xm_tree_table, XFontStruct *new_font)
 {
-	XFontStruct *new_font = XLoadQueryFont(XtDisplay(xm_tree_table), attributes);
 	if (!new_font)
-		return -1;
+		return;
 	XM_TT_LOCKED_CODE(xm_tree_table, tw, tp,
-		if (tp->font)
-			XFreeFont(XtDisplay(xm_tree_table), tp->font);
 		tp->font = new_font;
-		xm_extent_prediction(tw);
-		tp->render_attr.vertical_stride = TTBL_MAX(tp->n_max_pixmap_height, GET_FONT_HEIGHT(tp->font));
+	    tp->render_attr.vertical_stride = TTBL_MAX(tp->n_max_pixmap_height, GET_FONT_HEIGHT(tp->font));
+	    xm_extent_prediction(tw);
 	)
-	return 0;
 }
 
 void xm_attach_tree_table_header(Widget w, unsigned n_strings, const char **strings)

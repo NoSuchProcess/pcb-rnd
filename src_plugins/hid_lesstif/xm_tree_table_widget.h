@@ -166,13 +166,9 @@ In the end it will invoke tt_table_draw_handler() with (ett_render_finished) eve
 w - must be an instance returned by xm_create_tree_table_widget(). */
 void xm_draw_tree_table_widget(Widget w);
 
-/* Set font attributes like "-bitstream-courier 10 pitch-medium-r-*-*-*-*-*-*-*-*-*-1".
-Affects whole widget (header, table cells), takes effect on next re-draw event:
-when resized of manual invocation of xm_draw_tree_table_widget().
-Function does NOT re-draw, use xm_draw_tree_table_widget() for that.
-
-Returns 0 on success, -1 otherwise. */
-int xm_tt_set_x11_font_attr(Widget xm_tree_table, const char *attributes);
+/* Set font struct, caller is responsible for freeing it, after the widget has been destroyed.
+The default used is from XmeRenderTableGetDefaultFont(). */
+void xm_tt_set_x11_font(Widget xm_tree_table, XFontStruct *new_font);
 
 /* can be optionally used to lock the access on rendering refresh*/
 typedef struct tt_table_access_cb_s {
