@@ -54,6 +54,7 @@ static mesh_dlg_t ia;
 
 static void mesh2dlg(void)
 {
+	int n;
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_obj, coord_value, PCB_MM_TO_COORD(0.15));
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_gap, coord_value, PCB_MM_TO_COORD(0.5));
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.min_space, coord_value, PCB_MM_TO_COORD(0.1));
@@ -68,6 +69,14 @@ static void mesh2dlg(void)
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_air, coord_value, PCB_MM_TO_COORD(0.7));
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.smoothz, int_value, 1);
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.max_air, coord_value, PCB_MM_TO_COORD(4));
+	for(n = 0; n < 6; n++) {
+		const char **a;
+		int i;
+		if (mesh.bnd[n] != NULL)
+			for(i = 0, a = bnds; *a != NULL; a++,i++)
+				if (strcmp(*a, mesh.bnd[n]) == 0)
+					PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.bnd[n], int_value, i);
+	}
 }
 
 static void dlg2mesh(void)
@@ -991,10 +1000,9 @@ static void ia_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 {
 	int n;
 	mesh_layer_reset();
-
 	mesh.layer = CURRENT;
-	dlg2mesh();
 
+	dlg2mesh();
 
 	if (ia.dlg[ia.hor].default_val.int_value)
 		mesh_auto(&mesh, PCB_MESH_HORIZONTAL);
