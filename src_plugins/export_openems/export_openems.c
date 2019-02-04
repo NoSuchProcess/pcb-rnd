@@ -69,7 +69,7 @@ typedef struct hid_gc_s {
 
 typedef struct {
 	/* input/output */
-	FILE *f, *frun;
+	FILE *f, *fsim;
 	pcb_board_t *pcb;
 	pcb_hid_attr_val_t *options;
 
@@ -523,26 +523,26 @@ static void openems_write_mesh1(wctx_t *ctx)
 	pcb_mesh_t *mesh = pcb_mesg_get(MESH_NAME);
 	int n;
 
-	fprintf(ctx->frun, "%%%%%% Board mesh, part 1\n");
-	fprintf(ctx->frun, "unit = 1.0e-3;\n");
-	fprintf(ctx->frun, "f0 = 1.1e9; %% pulse center frequency\n");
-	fprintf(ctx->frun, "fc = 0.9e9; %% \"20dB cutoff frequency --> bandwidth is 2*fc\n");
-	fprintf(ctx->frun, "FDTD = InitFDTD();\n");
-	fprintf(ctx->frun, "FDTD = %s;\n", ctx->options[HA_excite].str_value);
+	fprintf(ctx->fsim, "%%%%%% Board mesh, part 1\n");
+	fprintf(ctx->fsim, "unit = 1.0e-3;\n");
+	fprintf(ctx->fsim, "f0 = 1.1e9; %% pulse center frequency\n");
+	fprintf(ctx->fsim, "fc = 0.9e9; %% \"20dB cutoff frequency --> bandwidth is 2*fc\n");
+	fprintf(ctx->fsim, "FDTD = InitFDTD();\n");
+	fprintf(ctx->fsim, "FDTD = %s;\n", ctx->options[HA_excite].str_value);
 
 	if (mesh != NULL) {
 
-		fprintf(ctx->frun, "BC = {");
+		fprintf(ctx->fsim, "BC = {");
 
 		for(n = 0; n < 6; n++)
-			fprintf(ctx->frun, "%s'%s'", (n == 0 ? "" : " "), mesh->bnd[n]);
-		fprintf(ctx->frun, "};\n");
+			fprintf(ctx->fsim, "%s'%s'", (n == 0 ? "" : " "), mesh->bnd[n]);
+		fprintf(ctx->fsim, "};\n");
 
-		fprintf(ctx->frun, "FDTD = SetBoundaryCond(FDTD, BC);\n");
+		fprintf(ctx->fsim, "FDTD = SetBoundaryCond(FDTD, BC);\n");
 	}
-	fprintf(ctx->frun, "physical_constants;\n");
-	fprintf(ctx->frun, "CSX = InitCSX();\n");
-	fprintf(ctx->frun, "\n");
+	fprintf(ctx->fsim, "physical_constants;\n");
+	fprintf(ctx->fsim, "CSX = InitCSX();\n");
+	fprintf(ctx->fsim, "\n");
 }
 
 static void openems_write_mesh2(wctx_t *ctx)
@@ -578,19 +578,19 @@ static void openems_write_mesh2(wctx_t *ctx)
 	fprintf(ctx->f, "\n");
 }
 
-static void openems_write_run(wctx_t *wctx)
+static void openems_write_sim(wctx_t *wctx)
 {
 	openems_write_mesh1(wctx);
 
-	fprintf(wctx->frun, "run %s\n\n", wctx->filename);
+	fprintf(wctx->fsim, "run %s\n\n", wctx->filename);
 
-	fprintf(wctx->frun, "Sim_Path = '.'; %% a path is required. to use the current directory just leave this field null\n");
-	fprintf(wctx->frun, "Sim_CSX = 'csxcad.xml'; %% the file name is mandatory, sadly the other files it will dump out are not under our control\n");
-	fprintf(wctx->frun, "WriteOpenEMS( [Sim_Path '/' Sim_CSX], FDTD, CSX );\n");
+	fprintf(wctx->fsim, "Sim_Path = '.'; %% a path is required. to use the current directory just leave this field null\n");
+	fprintf(wctx->fsim, "Sim_CSX = 'csxcad.xml'; %% the file name is mandatory, sadly the other files it will dump out are not under our control\n");
+	fprintf(wctx->fsim, "WriteOpenEMS( [Sim_Path '/' Sim_CSX], FDTD, CSX );\n");
 }
 
 
-void openems_hid_export_to_file(const char *filename, FILE *the_file, FILE *frun, pcb_hid_attr_val_t *options)
+void openems_hid_export_to_file(const char *filename, FILE *the_file, FILE *fsim, pcb_hid_attr_val_t *options)
 {
 	pcb_hid_expose_ctx_t ctx;
 	wctx_t wctx;
@@ -598,7 +598,7 @@ void openems_hid_export_to_file(const char *filename, FILE *the_file, FILE *frun
 	memset(&wctx, 0, sizeof(wctx));
 	wctx.filename = filename;
 	wctx.f = the_file;
-	wctx.frun = frun;
+	wctx.fsim = fsim;
 	wctx.pcb = PCB;
 	wctx.options = options;
 	ems_ctx = &wctx;
@@ -616,7 +616,7 @@ void openems_hid_export_to_file(const char *filename, FILE *the_file, FILE *frun
 	conf_force_set_bool(conf_core.editor.show_solder_side, 0);
 
 	find_origin(&wctx);
-	openems_write_run(&wctx);
+	openems_write_sim(&wctx);
 	openems_write_tunables(&wctx);
 	openems_write_mesh2(&wctx);
 	openems_write_layers(&wctx);
@@ -637,7 +637,7 @@ static void openems_do_export(pcb_hid_attr_val_t * options)
 	const char *filename, *runfn, *end;
 	int save_ons[PCB_MAX_LAYER + 2];
 	int i, len;
-	FILE *frun;
+	FILE *fsim;
 
 	if (!options) {
 		openems_get_export_options(0);
@@ -663,21 +663,21 @@ static void openems_do_export(pcb_hid_attr_val_t * options)
 	end = runfn + len - 2;
 	if (strcmp(end, ".m") != 0)
 		end = runfn + len;
-	strcpy(end, ".run.m");
-	frun = pcb_fopen(runfn, "wb");
-	if (frun == NULL) {
+	strcpy(end, ".sim.m");
+	fsim = pcb_fopen(runfn, "wb");
+	if (fsim == NULL) {
 		perror(runfn);
 		return;
 	}
 
 	pcb_hid_save_and_show_layer_ons(save_ons);
 
-	openems_hid_export_to_file(filename, f, frun, options);
+	openems_hid_export_to_file(filename, f, fsim, options);
 
 	pcb_hid_restore_layer_ons(save_ons);
 
 	fclose(f);
-	fclose(frun);
+	fclose(fsim);
 	f = NULL;
 	free(runfn);
 }
