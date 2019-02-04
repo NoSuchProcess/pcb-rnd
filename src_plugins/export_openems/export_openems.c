@@ -571,7 +571,7 @@ static void openems_write_mesh2(wctx_t *ctx)
 	fprintf(ctx->f, "mesh.y = offset.y .- mesh.y;\n");
 	fprintf(ctx->f, "mesh.z = z_bottom_copper .- mesh.z .+ offset.z;\n");
 	if (mesh->pml > 0)
-		fprintf(ctx->f, "mesh = AddPML(mesh, %d); %% add %d cells around the exterior of the existing mesh of \"perfectly matched\" impedance. 8 is just an example\n", mesh->pml, mesh->pml);
+		fprintf(ctx->f, "mesh = AddPML(mesh, %d);\n", mesh->pml);
 	fprintf(ctx->f, "CSX = DefineRectGrid(CSX, unit, mesh);\n");
 	fprintf(ctx->f, "\n");
 }
