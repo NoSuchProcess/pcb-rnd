@@ -69,7 +69,7 @@ typedef struct hid_gc_s {
 
 typedef struct {
 	/* input/output */
-	FILE *f;
+	FILE *f, *frun;
 	pcb_board_t *pcb;
 	pcb_hid_attr_val_t *options;
 
@@ -577,13 +577,14 @@ static void openems_write_mesh2(wctx_t *ctx)
 }
 
 
-void openems_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options)
+void openems_hid_export_to_file(FILE *the_file, FILE *frun, pcb_hid_attr_val_t *options)
 {
 	pcb_hid_expose_ctx_t ctx;
 	wctx_t wctx;
 
 	memset(&wctx, 0, sizeof(wctx));
 	wctx.f = the_file;
+	wctx.frun = frun;
 	wctx.pcb = PCB;
 	wctx.options = options;
 	ems_ctx = &wctx;
@@ -619,9 +620,10 @@ void openems_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options)
 
 static void openems_do_export(pcb_hid_attr_val_t * options)
 {
-	const char *filename;
+	const char *filename, *runfn, *end;
 	int save_ons[PCB_MAX_LAYER + 2];
-	int i;
+	int i, len;
+	FILE *frun;
 
 	if (!options) {
 		openems_get_export_options(0);
@@ -640,14 +642,30 @@ static void openems_do_export(pcb_hid_attr_val_t * options)
 		return;
 	}
 
+	/* create the run.m file */
+	len = strlen(filename);
+	runfn = malloc(len+16);
+	memcpy(runfn, filename, len+1);
+	end = runfn + len - 2;
+	if (strcmp(end, ".m") != 0)
+		end = runfn + len;
+	strcpy(end, ".run.m");
+	frun = pcb_fopen(runfn, "wb");
+	if (frun == NULL) {
+		perror(runfn);
+		return;
+	}
+
 	pcb_hid_save_and_show_layer_ons(save_ons);
 
-	openems_hid_export_to_file(f, options);
+	openems_hid_export_to_file(f, frun, options);
 
 	pcb_hid_restore_layer_ons(save_ons);
 
 	fclose(f);
+	fclose(frun);
 	f = NULL;
+	free(runfn);
 }
 
 static int openems_parse_arguments(int *argc, char ***argv)
