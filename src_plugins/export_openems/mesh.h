@@ -30,7 +30,15 @@ typedef struct {
 	const char *bnd[6];                    /* temporary: boundary conditions */
 	pcb_coord_t z_bottom_copper;           /* z coordinate of the bottom copper layer, along the z-mesh (0 is the top copper) */
 	int pml;                               /* add pml cells around the exterior of the existing mesh of "perfectly matched" impedance */
-	unsigned smooth:1;                     /* if set, avoid jumps in the meshing by gradually changing meshing distance */
+	int subslines;                         /* number of mesh lines in substrate (z) */
+	pcb_coord_t dens_air;                  /* mesh line density (spacing) in air */
+	pcb_coord_t max_air;                   /* how far out to mesh in air */
+	unsigned hor:1;                        /* enable adding horizontal mesh lines */
+	unsigned ver:1;                        /* enable adding vertical mesh lines */
+	unsigned smooth:1;                     /* if set, avoid jumps in the meshing by gradually changing meshing distance: x and y direction */
+	unsigned smoothz:1;                    /* if set, avoid jumps in the meshing by gradually changing meshing distance: z direction */
+	unsigned air_top:1;                    /* add mesh lines in air above the top of the board */
+	unsigned air_bot:1;                    /* add mesh lines in air below the top of the board */
 	unsigned noimpl:1;                     /* when set, do not add extra implicit mesh lines, keep the explicit ones only */
 } pcb_mesh_t;
 
