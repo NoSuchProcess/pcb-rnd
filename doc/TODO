@@ -44,7 +44,10 @@
 - CLEANUP/FEATURE: session persistent DAD message log (messages are flushed after dialog is closed?) [report: Miloh]
 	- DOC: document the DAD text widget
 - CLEANUP: DAD: centralize the coordinate input spinbox into the dialog plugin
-	- drc & size: doesn't update on mil/mm change in top win [report: Ade]
+	- drc & size: doesn't update on mil/mm change in top win -> need a list of spinboxes to update on conf change [report: Ade]
+	- make the central unit infra more flexible so plugins can register new units
+	- add an event for unit change so all spinboxes can be updated
+	- make sure we don't crash when grid or config references non-existing unit or unit that has no conversion field set up yet
 - CLEANUP: propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
