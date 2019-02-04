@@ -52,6 +52,39 @@ typedef struct {
 } mesh_dlg_t;
 static mesh_dlg_t ia;
 
+static void mesh2dlg(void)
+{
+	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_obj, coord_value, PCB_MM_TO_COORD(0.15));
+	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_gap, coord_value, PCB_MM_TO_COORD(0.5));
+	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.min_space, coord_value, PCB_MM_TO_COORD(0.1));
+	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.smooth, int_value, 1);
+	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.hor, int_value, 1);
+	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.ver, int_value, 1);
+	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.noimpl, int_value, 0);
+	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.subslines, int_value, 3);
+	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.def_subs_thick, coord_value, PCB_MM_TO_COORD(1.5));
+	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.air_top, int_value, 1);
+	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.air_bot, int_value, 1);
+	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_air, coord_value, PCB_MM_TO_COORD(0.7));
+	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.smoothz, int_value, 1);
+	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.max_air, coord_value, PCB_MM_TO_COORD(4));
+}
+
+static void dlg2mesh(void)
+{
+	int n;
+	mesh.pml = ia.dlg[ia.pml].default_val.int_value;
+	mesh.dens_obj = ia.dlg[ia.dens_obj].default_val.coord_value;
+	mesh.dens_gap = ia.dlg[ia.dens_gap].default_val.coord_value;
+	mesh.min_space = ia.dlg[ia.min_space].default_val.coord_value;
+	mesh.smooth = ia.dlg[ia.smooth].default_val.int_value;
+	mesh.noimpl = ia.dlg[ia.noimpl].default_val.int_value;;
+	mesh.def_subs_thick = ia.dlg[ia.def_subs_thick].default_val.coord_value;
+	mesh.def_copper_thick = ia.dlg[ia.def_copper_thick].default_val.coord_value;
+	for(n = 0; n < 6; n++)
+		mesh.bnd[n] = bnds[ia.dlg[ia.bnd[n]].default_val.int_value];
+}
+
 #if 1
 	static void mesh_trace(const char *fmt, ...) { }
 #else
@@ -960,17 +993,8 @@ static void ia_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 	mesh_layer_reset();
 
 	mesh.layer = CURRENT;
+	dlg2mesh();
 
-	mesh.pml = ia.dlg[ia.pml].default_val.int_value;
-	mesh.dens_obj = ia.dlg[ia.dens_obj].default_val.coord_value;
-	mesh.dens_gap = ia.dlg[ia.dens_gap].default_val.coord_value;
-	mesh.min_space = ia.dlg[ia.min_space].default_val.coord_value;
-	mesh.smooth = ia.dlg[ia.smooth].default_val.int_value;
-	mesh.noimpl = ia.dlg[ia.noimpl].default_val.int_value;;
-	mesh.def_subs_thick = ia.dlg[ia.def_subs_thick].default_val.coord_value;
-	mesh.def_copper_thick = ia.dlg[ia.def_copper_thick].default_val.coord_value;
-	for(n = 0; n < 6; n++)
-		mesh.bnd[n] = bnds[ia.dlg[ia.bnd[n]].default_val.int_value];
 
 	if (ia.dlg[ia.hor].default_val.int_value)
 		mesh_auto(&mesh, PCB_MESH_HORIZONTAL);
@@ -1169,20 +1193,7 @@ int pcb_mesh_interactive(void)
 	PCB_DAD_NEW("mesh", ia.dlg, "mesher", &ia, 0, ia_close_cb);
 	ia.active = 1;
 
-	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_obj, coord_value, PCB_MM_TO_COORD(0.15));
-	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_gap, coord_value, PCB_MM_TO_COORD(0.5));
-	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.min_space, coord_value, PCB_MM_TO_COORD(0.1));
-	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.smooth, int_value, 1);
-	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.hor, int_value, 1);
-	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.ver, int_value, 1);
-	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.noimpl, int_value, 0);
-	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.subslines, int_value, 3);
-	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.def_subs_thick, coord_value, PCB_MM_TO_COORD(1.5));
-	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.air_top, int_value, 1);
-	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.air_bot, int_value, 1);
-	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_air, coord_value, PCB_MM_TO_COORD(0.7));
-	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.smoothz, int_value, 1);
-	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.max_air, coord_value, PCB_MM_TO_COORD(4));
+	mesh2dlg();
 	return 0;
 }
 
