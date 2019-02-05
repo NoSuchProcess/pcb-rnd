@@ -584,8 +584,8 @@ static void openems_write_sim(wctx_t *wctx)
 
 	fprintf(wctx->fsim, "run %s\n\n", wctx->filename);
 
-	fprintf(wctx->fsim, "Sim_Path = '.'; %% a path is required. to use the current directory just leave this field null\n");
-	fprintf(wctx->fsim, "Sim_CSX = 'csxcad.xml'; %% the file name is mandatory, sadly the other files it will dump out are not under our control\n");
+	fprintf(wctx->fsim, "Sim_Path = '.';\n");
+	fprintf(wctx->fsim, "Sim_CSX = 'csxcad.xml';\n");
 	fprintf(wctx->fsim, "WriteOpenEMS( [Sim_Path '/' Sim_CSX], FDTD, CSX );\n");
 }
 
