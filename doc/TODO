@@ -24,6 +24,7 @@
 - BUG: open export dialogue. Export a PNG of the layout. Hit escape instead of "close". Export dialog cannot be opened again unless pcb-rnd is restarted [report: Erich]. 
 - BUG: export dialogue, when used to export PNG of top copper, by only making top copper layers visible prior to export, will export top and bottom copper layers in a monochrome png if the monochrome check box is checked. If the monochrome checkbox is not checked, only the visible layers export, as expected [report: Erich]
 - BUG: pre-release: make lesstif tree-table a 'brave' function
+- BUG: lesstif: WM close on the export dialog (on empty board) causes core dump [report: Igor2]
 
 2. For later releases ===============================================================================
 - CLEANUP: search for TODO pcb_has_explicit_outline() [report: Igor2]
