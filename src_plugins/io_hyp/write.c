@@ -86,7 +86,7 @@ static const char *hyp_grp_name(hyp_wr_t *wr, pcb_layergrp_t *grp, const char *s
 			name = grp->name;
 		for(n = 0; n < wr->pcb->LayerGroups.len; n++) {
 			pcb_layergrp_t *g = &wr->pcb->LayerGroups.grp[n];
-			if ((g != grp) && (strcmp(g->name, name) == 0)) {
+			if ((g != grp) && (g->name != NULL) && (strcmp(g->name, name) == 0)) {
 				dup = 1;
 				break;
 			}
