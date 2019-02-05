@@ -22,6 +22,8 @@
 ? BUG: #define TODO(x) doesn't compile on IRIX system with --debug option ON [report: Ian]
 + BUG: export_stat should use data bbox for board width/height [report: Ade]
 
+BUG: open export dialogue. Export a PNG of the layout. Hit escape instead of "close". Export dialog cannot be opened again unless pcb-rnd is restarted [report: Erich]. 
+
 2. For later releases ===============================================================================
 - CLEANUP: search for TODO pcb_has_explicit_outline() [report: Igor2]
 - CLEANUP/BUG: lesstif: preferences(layers): EXPFILL doesn't seem to work; need to replace box code with work/lkesstif/formbox [report: Igor2]
