@@ -63,7 +63,9 @@ typedef struct {
 	pcb_hid_attr_val_t property[PCB_HATP_max];
 	void (*close_cb)(void *caller_data, pcb_hid_attr_ev_t ev);
 	char *id;
+	gulong destroy_handler;
 	unsigned inhibit_valchg:1;
+	unsigned freeing:1;
 } attr_dlg_t;
 
 #define change_cb(ctx, dst) \
@@ -761,6 +763,12 @@ static gint ghid_attr_dlg_configure_event_cb(GtkWidget *widget, GdkEventConfigur
 	return 0;
 }
 
+static gint ghid_attr_dlg_destroy_event_cb(GtkWidget *widget, gpointer data)
+{
+	ghid_attr_dlg_free(data);
+	return 0;
+}
+
 void *ghid_attr_dlg_new(pcb_gtk_common_t *com, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy)
 {
 	GtkWidget *content_area;
@@ -804,6 +812,7 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, const char *id, pcb_hid_attribute
 	}
 
 	g_signal_connect(ctx->dialog, "configure_event", G_CALLBACK(ghid_attr_dlg_configure_event_cb), ctx);
+	ctx->destroy_handler = g_signal_connect(ctx->dialog, "destroy", G_CALLBACK(ghid_attr_dlg_destroy_event_cb), ctx);
 
 	main_vbox = gtkc_vbox_new(FALSE, 6);
 	gtk_container_set_border_width(GTK_CONTAINER(main_vbox), 6);
@@ -836,6 +845,14 @@ int ghid_attr_dlg_run(void *hid_ctx)
 void ghid_attr_dlg_free(void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;
+
+	/* make sure there are no nested ghid_attr_dlg_free() calls */
+	if (ctx->freeing)
+		return;
+	ctx->freeing = 1;
+
+	/* make sure we are not called again from the destroy signal */
+	g_signal_handler_disconnect(ctx->dialog, ctx->destroy_handler);
 
 	if (!ctx->close_cb_called) {
 		ctx->close_cb_called = 1;
