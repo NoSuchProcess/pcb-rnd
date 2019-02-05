@@ -713,6 +713,7 @@ static pcb_cardinal_t pcb_pstk_proto_insert_dup_(pcb_data_t *data, const pcb_pst
 		data->ps_protos.array[first_free].in_use = 1;
 		data->ps_protos.array[first_free].parent = data;
 		pcb_pstk_proto_update(data->ps_protos.array+first_free);
+		return first_free;
 	}
 	return n;
 }
