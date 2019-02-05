@@ -192,6 +192,11 @@ static void pstklib_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 
 static void pstklib_force_redraw(pstk_lib_ctx_t *ctx, pcb_pstk_t *ps)
 {
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+
+	if (proto == NULL)
+		return;
+
 	pcb_pstk_bbox(ps);
 	ps->BoundingBox.X1 -= PCB_MM_TO_COORD(0.5);
 	ps->BoundingBox.Y1 -= PCB_MM_TO_COORD(0.5);
