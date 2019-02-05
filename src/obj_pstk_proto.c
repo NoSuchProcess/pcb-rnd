@@ -686,6 +686,7 @@ pcb_cardinal_t pcb_pstk_proto_insert_or_free(pcb_data_t *data, pcb_pstk_proto_t 
 		data->ps_protos.array[first_free].in_use = 1;
 		data->ps_protos.array[first_free].parent = data;
 		pcb_pstk_proto_update(data->ps_protos.array+first_free);
+		n = first_free;
 	}
 	memset(proto, 0, sizeof(pcb_pstk_proto_t)); /* make sure a subsequent free() won't do any harm */
 	return n;
