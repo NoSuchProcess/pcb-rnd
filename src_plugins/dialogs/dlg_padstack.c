@@ -740,11 +740,15 @@ static void pse_gen(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 
 	pcb_pstk_proto_update(&proto);
 	if (pse->gen_shape_in_place) {
-		pcb_pstk_proto_replace(pse->data, pse->ps->proto, &proto);
+		if (pcb_pstk_proto_replace(pse->data, pse->ps->proto, &proto) == PCB_PADSTACK_INVALID)
+			pcb_message(PCB_MSG_ERROR, "Internal error: pse_gen() failed to raplace padstack prototype\n");
 	}
 	else {
 		pid = pcb_pstk_proto_insert_dup(pse->data, &proto, 1);
-		pcb_pstk_change_instance(pse->ps, &pid, NULL, NULL, NULL, NULL);
+		if (pid == PCB_PADSTACK_INVALID)
+			pcb_message(PCB_MSG_ERROR, "Internal error: pse_gen() failed to insert padstack prototype\n");
+		else
+			pcb_pstk_change_instance(pse->ps, &pid, NULL, NULL, NULL, NULL);
 	}
 
 	pse_ps2dlg(hid_ctx, pse);
