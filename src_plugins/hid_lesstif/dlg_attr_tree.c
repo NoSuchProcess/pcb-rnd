@@ -1,3 +1,4 @@
+#include "brave.h"
 #include "xm_tree_table_widget.h"
 #include "hid_dad_tree.h"
 
@@ -188,7 +189,7 @@ pcb_trace("tree key\n");
 	}
 }
 
-static Widget ltf_tree_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
+static Widget ltf_tree_create_(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
 {
 	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attr->enumerations;
 	ltf_tree_t *lt = calloc(sizeof(ltf_tree_t), 1);
@@ -223,3 +224,17 @@ static Widget ltf_tree_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_at
 	return table;
 }
 
+static Widget ltf_tree_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
+{
+	Widget *w;
+
+	if (pcb_brave & PCB_BRAVE_LESSTIF_TREETABLE)
+		return ltf_tree_create_(ctx, parent, attr);
+
+	stdarg_n = 0;
+	stdarg(XmNalignment, XmALIGNMENT_BEGINNING);
+	stdarg(XmNlabelString, XmStringCreatePCB("TODO: tree table"));
+	w = XmCreateLabel(parent, XmStrCast("TODO"), stdarg_args, stdarg_n);
+
+	return w;
+}

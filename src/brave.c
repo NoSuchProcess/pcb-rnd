@@ -52,6 +52,7 @@ typedef struct {
 static desc_t desc[] = {
 	{PCB_BRAVE_NOXOR, "noxor", "avoid xor drawing", "use alternative rendering instead of xor draw", 0},
 	{PCB_BRAVE_CLIPBATCH, "clipbatch", "batch poly clipping", "batch polygon clipping in some expensive user operations", 0},
+	{PCB_BRAVE_LESSTIF_TREETABLE, "lesstifttbl", "lesstif tree table", "enable experimental lesstif tree table support", 0},
 	{0, NULL, NULL, NULL}
 };
 
