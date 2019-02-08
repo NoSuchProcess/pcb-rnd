@@ -43,6 +43,7 @@
 	- proto copy to buffer - a buffer with a single padstack should also serve as a prototype copy vehicle? or just import by a list from the buffer
 	- load/import from buffer and file
 	- CLEANUP: remove PCB_MIN_PINORVIA* PCB_DEFAULT_DRILLINGHOLE macros - nothing should use them anymore
+	- add text font, update the pool node text_edit [report: Igor2]
 - CLEANUP/FEATURE: session persistent DAD message log (messages are flushed after dialog is closed?) [report: Miloh]
 	- DOC: document the DAD text widget
 - CLEANUP: DAD: centralize the coordinate input spinbox into the dialog plugin
