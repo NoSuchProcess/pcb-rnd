@@ -207,6 +207,20 @@
 <tr id="/lht_tree_doc/comm/flags_subcircuit/children/floater"><td> &nbsp;&nbsp;&nbsp;floater <td> <a href="#valtype:flag">flag</a> <td> &nbsp; <td> subc part can be moved after subc placing
 <tr id="/lht_tree_doc/roots/pcb-rnd-subcircuit-v*/children/subc.ID/children/data"><td> &nbsp;&nbsp;ha:data <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/comm/data"> Layers and global objects of the board  -&gt; </a>
 </table>
+<h3 id="/lht_tree_doc/roots/view-list-v1">li:view-list-v1</h3>
+<p>
+<table border=0 cellspacing=0>
+<tr><th align=left> type:name <th align=left> value <th align=left> <a href="#ver">ver</a> <th align=left> description
+<tr id="/lht_tree_doc/roots/view-list-v1"><td> li:view-list-v1 <td> &nbsp; <td> &nbsp; <td> a list of view items (locations and objects to highlight on the board, e.g. for DRC violations)
+<tr id="/lht_tree_doc/roots/view-list-v1/children/view.ID"><td> &nbsp;ha:view.ID <td> &nbsp; <td> &nbsp; <td> a view item; ID is a 32 bit signed integer, unique within the view list
+<tr id="/lht_tree_doc/roots/view-list-v1/children/view.ID/children/type"><td> &nbsp;&nbsp;type <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> free form short text for type of the entry; the GUI may group items by type
+<tr id="/lht_tree_doc/roots/view-list-v1/children/view.ID/children/title"><td> &nbsp;&nbsp;title <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> free form short text for the title of the entry; the GUI typically uses this in brief listings
+<tr id="/lht_tree_doc/roots/view-list-v1/children/view.ID/children/description"><td> &nbsp;&nbsp;description <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> free form long text for the detailed description of the entry 
+<tr id="/lht_tree_doc/roots/view-list-v1/children/view.ID/children/bbox"><td> &nbsp;&nbsp;li:bbox <td> <a href="#valtype:coord">coord</a> <td> &nbsp; <td> optional: 4 coordinates in x1;y1;x2;y2 order that describes the bounding box of the view in board space coordinates; when available, the preview or go-to will use this for view box
+<tr id="/lht_tree_doc/roots/view-list-v1/children/view.ID/children/xy"><td> &nbsp;&nbsp;li:xy <td> <a href="#valtype:coord">coord</a> <td> &nbsp; <td> optional: 2 coordinates in x;y order that describes a specific board location
+<tr id="/lht_tree_doc/roots/view-list-v1/children/view.ID/children/objs.ID"><td> &nbsp;&nbsp;li:objs.ID <td> &nbsp; <td> &nbsp; <td> a group of related objects; there should be at most two groups with ID 0 and 1. These objects are often highlighted in red and blue.
+<tr id="/lht_tree_doc/roots/view-list-v1/children/view.ID/children/objs.ID/children/id"><td> &nbsp;&nbsp;&nbsp;li:id <td> &nbsp; <td> &nbsp; <td> objects are specified as a list of object IDs (32 bit integers)
+</table>
 <h2> Common subtrees </h2>
 <p>Each table below describes a subtree that usually does not specify a whole tree (thus they are usually not a valid file on their own). These subtrees are described in a separate table because they are used from multiple other trees.
 <h3 id="/lht_tree_doc/comm/data">ha:data</h3>

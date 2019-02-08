@@ -1,0 +1,31 @@
+ha:lht_tree_doc { ha:roots {
+
+	ha:view-list-v1 {
+		type=li
+		desc={a list of view items (locations and objects to highlight on the board, e.g. for DRC violations)}
+		li:children {
+			ha:view.ID {
+				type=ha
+				desc={a view item; ID is a 32 bit signed integer, unique within the view list}
+				li:children {
+					ha:type         { valtype=string; desc={free form short text for type of the entry; the GUI may group items by type} }
+					ha:title        { valtype=string; desc={free form short text for the title of the entry; the GUI typically uses this in brief listings} }
+					ha:description  { valtype=string; desc={free form long text for the detailed description of the entry } }
+					ha:bbox         { type=li; valtype=coord; desc={optional: 4 coordinates in x1;y1;x2;y2 order that describes the bounding box of the view in board space coordinates; when available, the preview or go-to will use this for view box} }
+					ha:xy           { type=li; valtype=coord; desc={optional: 2 coordinates in x;y order that describes a specific board location} }
+					ha:objs.ID      {
+						type=li
+						desc={a group of related objects; there should be at most two groups with ID 0 and 1. These objects are often highlighted in red and blue.}
+						li:children {
+							ha:id {
+								type=li
+								desc={objects are specified as a list of object IDs (32 bit integers)}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+}}

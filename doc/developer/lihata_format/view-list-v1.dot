@@ -1,0 +1,19 @@
+digraph "li:view-list-v1" {
+	"/lht_tree_doc/roots/view-list-v1"	[label="li:view-list-v1\n\n" URL="tree.html#/lht_tree_doc/roots/view-list-v1" tooltip="a list of view items (locations and objects to highlight on the board, e.g. for DRC violations)"]
+	"/lht_tree_doc/roots/view-list-v1/children/view.ID"	[label="ha:view.ID\n\n" URL="tree.html#/lht_tree_doc/roots/view-list-v1/children/view.ID" tooltip="a view item; ID is a 32 bit signed integer, unique within the view list"]
+	"/lht_tree_doc/roots/view-list-v1"	->	"/lht_tree_doc/roots/view-list-v1/children/view.ID"
+	"/lht_tree_doc/roots/view-list-v1/children/view.ID/children/type"	[label="type\nstring\n" URL="tree.html#/lht_tree_doc/roots/view-list-v1/children/view.ID/children/type" tooltip="free form short text for type of the entry; the GUI may group items by type"]
+	"/lht_tree_doc/roots/view-list-v1/children/view.ID"	->	"/lht_tree_doc/roots/view-list-v1/children/view.ID/children/type"
+	"/lht_tree_doc/roots/view-list-v1/children/view.ID/children/title"	[label="title\nstring\n" URL="tree.html#/lht_tree_doc/roots/view-list-v1/children/view.ID/children/title" tooltip="free form short text for the title of the entry; the GUI typically uses this in brief listings"]
+	"/lht_tree_doc/roots/view-list-v1/children/view.ID"	->	"/lht_tree_doc/roots/view-list-v1/children/view.ID/children/title"
+	"/lht_tree_doc/roots/view-list-v1/children/view.ID/children/description"	[label="description\nstring\n" URL="tree.html#/lht_tree_doc/roots/view-list-v1/children/view.ID/children/description" tooltip="free form long text for the detailed description of the entry "]
+	"/lht_tree_doc/roots/view-list-v1/children/view.ID"	->	"/lht_tree_doc/roots/view-list-v1/children/view.ID/children/description"
+	"/lht_tree_doc/roots/view-list-v1/children/view.ID/children/bbox"	[label="li:bbox\ncoord\n" URL="tree.html#/lht_tree_doc/roots/view-list-v1/children/view.ID/children/bbox" tooltip="optional: 4 coordinates in x1;y1;x2;y2 order that describes the bounding box of the view in board space coordinates; when available, the preview or go-to will use this for view box"]
+	"/lht_tree_doc/roots/view-list-v1/children/view.ID"	->	"/lht_tree_doc/roots/view-list-v1/children/view.ID/children/bbox"
+	"/lht_tree_doc/roots/view-list-v1/children/view.ID/children/xy"	[label="li:xy\ncoord\n" URL="tree.html#/lht_tree_doc/roots/view-list-v1/children/view.ID/children/xy" tooltip="optional: 2 coordinates in x;y order that describes a specific board location"]
+	"/lht_tree_doc/roots/view-list-v1/children/view.ID"	->	"/lht_tree_doc/roots/view-list-v1/children/view.ID/children/xy"
+	"/lht_tree_doc/roots/view-list-v1/children/view.ID/children/objs.ID"	[label="li:objs.ID\n\n" URL="tree.html#/lht_tree_doc/roots/view-list-v1/children/view.ID/children/objs.ID" tooltip="a group of related objects; there should be at most two groups with ID 0 and 1. These objects are often highlighted in red and blue."]
+	"/lht_tree_doc/roots/view-list-v1/children/view.ID"	->	"/lht_tree_doc/roots/view-list-v1/children/view.ID/children/objs.ID"
+	"/lht_tree_doc/roots/view-list-v1/children/view.ID/children/objs.ID/children/id"	[label="li:id\n\n" URL="tree.html#/lht_tree_doc/roots/view-list-v1/children/view.ID/children/objs.ID/children/id" tooltip="objects are specified as a list of object IDs (32 bit integers)"]
+	"/lht_tree_doc/roots/view-list-v1/children/view.ID/children/objs.ID"	->	"/lht_tree_doc/roots/view-list-v1/children/view.ID/children/objs.ID/children/id"
+}
