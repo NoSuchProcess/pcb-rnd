@@ -197,10 +197,10 @@ li:pcb-rnd-subcircuit-v*            footprint file containing a single subcircui
    floater               flag       subc part can be moved after subc placing
   ha:data                           Layers and global objects of the board ->
 
-li:view-list-v1
+li:view-list-v*
 
 type:name       value  ver description
-li:view-list-v1            a list of view items (locations and objects to highlight on the board, e.g. for DRC violations)
+li:view-list-v*            a list of view items (locations and objects to highlight on the board, e.g. for DRC violations)
  ha:view.ID                a view item; ID is a 32 bit signed integer, unique within the view list
   type          string     free form short text for type of the entry; the GUI may group items by type
   title         string     free form short text for the title of the entry; the GUI typically uses this in brief listings
