@@ -190,7 +190,6 @@ li:pcb-rnd-subcircuit-v*            footprint file containing a single subcircui
   ha:flags                          flag bits of a subcircuit
    found                 flag       If set, this object has been found by FindConnection()
    selected              flag       Set when the object is selected.
-   auto                  flag       For lines and vias, indicates that these were created by the autorouter.
    drc                   flag       Set for objects that fail DRC: flag like FOUND flag for DRC checking.
    lock                  flag       Set for locked objects.
    nonetlist             flag       subcircuit is not on the netlist and should not interfere with the netlist
@@ -348,7 +347,6 @@ ha:data                              Layers and global objects of the board
       clearpoly         flag         For polygons, this flag means that pins and vias will normally clear these polygons (thus, thermals are required for electrical connection). When clear, polygons will solidly connect to pins and vias.
       fullpoly          flag         For polygons, the full polygon is drawn (i.e. all parts instead of only the biggest one).
       selected          flag         Set when the object is selected.
-      auto              flag         For lines and vias, indicates that these were created by the autorouter.
       drc               flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
       lock              flag         Set for locked objects.
       termname          flag         when set the names of pins are shown.
@@ -380,7 +378,6 @@ ha:data                              Layers and global objects of the board
       clearline         flag         For lines and arcs, the line/arc will clear polygons instead of connecting to them.
       selected          flag         Set when the object is selected.
       onsolder          flag         For text, indicates that it is on the solder side.
-      auto              flag         For lines and vias, indicates that these were created by the autorouter.
       drc               flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
       lock              flag         Set for locked objects.
       termname          flag         when set the names of pins are shown.
@@ -432,7 +429,6 @@ ha:data                              Layers and global objects of the board
   ha:flags                           flag bits of a subcircuit
    found                flag         If set, this object has been found by FindConnection()
    selected             flag         Set when the object is selected.
-   auto                 flag         For lines and vias, indicates that these were created by the autorouter.
    drc                  flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
    lock                 flag         Set for locked objects.
    nonetlist            flag         subcircuit is not on the netlist and should not interfere with the netlist

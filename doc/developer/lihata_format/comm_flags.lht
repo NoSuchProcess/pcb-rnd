@@ -46,7 +46,6 @@ ha:lht_tree_doc { ha:comm {
 			ha:clearpoly { valtype=flag; desc={For polygons, this flag means that pins and vias will normally clear these polygons (thus, thermals are required for electrical connection).  When clear, polygons will solidly connect to pins and vias. }}
 			ha:fullpoly { valtype=flag; desc={For polygons, the full polygon is drawn (i.e. all parts instead of only the biggest one).}}
 			ha:selected { valtype=flag; desc={Set when the object is selected.}}
-			ha:auto { valtype=flag; desc={For lines and vias, indicates that these were created by the autorouter.}}
 			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
 			ha:lock { valtype=flag; desc={Set for locked objects.}}
 			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
@@ -65,7 +64,6 @@ ha:lht_tree_doc { ha:comm {
 			ha:clearline { valtype=flag; desc={For lines and arcs, the line/arc will clear polygons instead of connecting to them.}}
 			ha:selected { valtype=flag; desc={Set when the object is selected.}}
 			ha:onsolder { valtype=flag; desc={For text, indicates that it is on the solder side.}}
-			ha:auto { valtype=flag; desc={For lines and vias, indicates that these were created by the autorouter.}}
 			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
 			ha:lock { valtype=flag; desc={Set for locked objects.}}
 			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
@@ -82,7 +80,6 @@ ha:lht_tree_doc { ha:comm {
 		li:children {
 			ha:found { valtype=flag; desc={If set, this object has been found by FindConnection()}}
 			ha:selected { valtype=flag; desc={Set when the object is selected.}}
-			ha:auto { valtype=flag; desc={For lines and vias, indicates that these were created by the autorouter.}}
 			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
 			ha:lock { valtype=flag; desc={Set for locked objects.}}
 			ha:nonetlist { valtype=flag; desc={subcircuit is not on the netlist and should not interfere with the netlist }}
@@ -119,7 +116,6 @@ ha:lht_tree_doc { ha:comm {
 			ha:found { valtype=flag; desc={If set, this object has been found by FindConnection()}}
 			ha:rat { valtype=flag; desc={If set for a line, indicates that this line is a rat line instead of a copper trace.}}
 			ha:selected { valtype=flag; desc={Set when the object is selected.}}
-			ha:auto { valtype=flag; desc={For lines and vias, indicates that these were created by the autorouter.}}
 			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
 			ha:lock { valtype=flag; desc={Set for locked objects.}}
 			ha:floater { valtype=flag; desc={subc part can be moved after subc placing}}
