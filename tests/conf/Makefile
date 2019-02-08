@@ -4,6 +4,7 @@ LDLIBS = -lm
 LIB_PCB_OBJS= \
 	../../src/hid_cfg.o \
 	../../src/misc_util.o \
+	../../src/color.o \
 	../../src/unit.o \
 	../../src/list_conf.o \
 	../../src/paths.o \
