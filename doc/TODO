@@ -25,6 +25,7 @@
        > can't reproduce this; if you want layer visibility to considered, check the 'as shown' option. But best if you forget layer visibility totally and just use the cam syntax.
 
 2. For later releases ===============================================================================
+- CLEANUP: rename the project file header from geda- to coral- (but keep accepting the old one); update the format docs [report: Igor2]
 - CLEANUP: search for TODO pcb_has_explicit_outline() [report: Igor2]
 - CLEANUP/BUG: lesstif: preferences(layers): EXPFILL doesn't seem to work; need to replace box code with work/lkesstif/formbox [report: Igor2]
 	- BUG: lesstif: {i c p}, color tab: tabbed doesn't grow [report: Igor2]
