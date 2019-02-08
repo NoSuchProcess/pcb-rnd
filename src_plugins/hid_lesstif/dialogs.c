@@ -1024,10 +1024,8 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 static void ltf_attr_destroy_cb(Widget w, void *v, void *cbs)
 {
 	lesstif_attr_dlg_t *ctx = v;
-	if ((!ctx->close_cb_called) && (ctx->close_cb != NULL)) {
+	if ((!ctx->close_cb_called) && (ctx->close_cb != NULL))
 		ctx->close_cb(ctx->caller_data, PCB_HID_ATTR_EV_WINCLOSE);
-		ctx->close_cb_called = 1;
-	}
 	XtUnmanageChild(w);
 	XtDestroyWidget(w);
 }
