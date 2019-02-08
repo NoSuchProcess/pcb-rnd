@@ -4,7 +4,6 @@
 1. For the upcoming release ===============================================================================
 + FEATURE: export_xy: pnp origin should be any obj, especially padstacks (fidu) [report: TwisteR]
 + CLEANUP: dad: make the implicit dialog ok/cancel buttons configurable or do not use them at all; e.g. export dialog is confusing [report: Cyril, ml2409]
-- DOC: view list: document the view lht format
 + FEATURE: make propset() able to change board properties if first arg is "board" (change baord size) [report: rqsall]
 + FEATURE: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
 + FEATURE: extedit: dialog shoudl let the user edit the command template [report: TwisteR]
