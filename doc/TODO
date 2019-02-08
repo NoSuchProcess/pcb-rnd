@@ -50,6 +50,7 @@
 	- make the central unit infra more flexible so plugins can register new units
 	- add an event for unit change so all spinboxes can be updated
 	- make sure we don't crash when grid or config references non-existing unit or unit that has no conversion field set up yet
+	- propedit: relative modifications +x mils, #degrees broke [report: Igor2]
 - CLEANUP: propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
