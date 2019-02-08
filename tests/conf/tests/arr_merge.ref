@@ -2,30 +2,30 @@
  I appearance/color/layer[] = <empty>
 === import 3 levels ===
 Result: 0
- I appearance/color/layer[0] = sys1 <<prio=200 from=embedded:4>> conf_rev=1
- I appearance/color/layer[1] = sys2 <<prio=200 from=embedded:5>> conf_rev=1
+ I appearance/color/layer[0] = #000001 <<prio=200 from=embedded:4>> conf_rev=1
+ I appearance/color/layer[1] = #000002 <<prio=200 from=embedded:4>> conf_rev=1
 Result: 0
- I appearance/color/layer[0] = user1 <<prio=400 from=embedded:4>> conf_rev=2
- I appearance/color/layer[1] = user2 <<prio=400 from=embedded:5>> conf_rev=2
+ I appearance/color/layer[0] = #000101 <<prio=400 from=embedded:4>> conf_rev=2
+ I appearance/color/layer[1] = #000102 <<prio=400 from=embedded:4>> conf_rev=2
 Result: 0
- I appearance/color/layer[0] = design1 <<prio=700 from=embedded:4>> conf_rev=3
- I appearance/color/layer[1] = design2 <<prio=700 from=embedded:5>> conf_rev=3
-=== change policy: design->prepend (design, user) ===
- I appearance/color/layer[0] = design1 <<prio=700 from=embedded:4>> conf_rev=4
- I appearance/color/layer[1] = design2 <<prio=700 from=embedded:5>> conf_rev=4
- I appearance/color/layer[2] = user1 <<prio=400 from=embedded:4>> conf_rev=4
- I appearance/color/layer[3] = user2 <<prio=400 from=embedded:5>> conf_rev=4
-=== change policy: user->append (design, sys, user) ===
- I appearance/color/layer[0] = design1 <<prio=700 from=embedded:4>> conf_rev=5
- I appearance/color/layer[1] = design2 <<prio=700 from=embedded:5>> conf_rev=5
- I appearance/color/layer[2] = sys1 <<prio=200 from=embedded:4>> conf_rev=5
- I appearance/color/layer[3] = sys2 <<prio=200 from=embedded:5>> conf_rev=5
- I appearance/color/layer[4] = user1 <<prio=400 from=embedded:4>> conf_rev=5
- I appearance/color/layer[5] = user2 <<prio=400 from=embedded:5>> conf_rev=5
-=== change policy: design->append (sys, user, design) ===
- I appearance/color/layer[0] = sys1 <<prio=200 from=embedded:4>> conf_rev=6
- I appearance/color/layer[1] = sys2 <<prio=200 from=embedded:5>> conf_rev=6
- I appearance/color/layer[2] = user1 <<prio=400 from=embedded:4>> conf_rev=6
- I appearance/color/layer[3] = user2 <<prio=400 from=embedded:5>> conf_rev=6
- I appearance/color/layer[4] = design1 <<prio=700 from=embedded:4>> conf_rev=6
- I appearance/color/layer[5] = design2 <<prio=700 from=embedded:5>> conf_rev=6
+ I appearance/color/layer[0] = #000201 <<prio=700 from=embedded:4>> conf_rev=3
+ I appearance/color/layer[1] = #000201 <<prio=700 from=embedded:4>> conf_rev=3
+=== change policy: design->prepend (2, 1) ===
+ I appearance/color/layer[0] = #000201 <<prio=700 from=embedded:4>> conf_rev=4
+ I appearance/color/layer[1] = #000201 <<prio=700 from=embedded:4>> conf_rev=4
+ I appearance/color/layer[2] = #000101 <<prio=400 from=embedded:4>> conf_rev=4
+ I appearance/color/layer[3] = #000102 <<prio=400 from=embedded:4>> conf_rev=4
+=== change policy: user->append (2, 0, 1) ===
+ I appearance/color/layer[0] = #000201 <<prio=700 from=embedded:4>> conf_rev=5
+ I appearance/color/layer[1] = #000201 <<prio=700 from=embedded:4>> conf_rev=5
+ I appearance/color/layer[2] = #000001 <<prio=200 from=embedded:4>> conf_rev=5
+ I appearance/color/layer[3] = #000002 <<prio=200 from=embedded:4>> conf_rev=5
+ I appearance/color/layer[4] = #000101 <<prio=400 from=embedded:4>> conf_rev=5
+ I appearance/color/layer[5] = #000102 <<prio=400 from=embedded:4>> conf_rev=5
+=== change policy: design->append (0, 1, 2) ===
+ I appearance/color/layer[0] = #000001 <<prio=200 from=embedded:4>> conf_rev=6
+ I appearance/color/layer[1] = #000002 <<prio=200 from=embedded:4>> conf_rev=6
+ I appearance/color/layer[2] = #000101 <<prio=400 from=embedded:4>> conf_rev=6
+ I appearance/color/layer[3] = #000102 <<prio=400 from=embedded:4>> conf_rev=6
+ I appearance/color/layer[4] = #000201 <<prio=700 from=embedded:4>> conf_rev=6
+ I appearance/color/layer[5] = #000201 <<prio=700 from=embedded:4>> conf_rev=6

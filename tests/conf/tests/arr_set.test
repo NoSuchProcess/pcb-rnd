@@ -7,32 +7,32 @@ dump native appearance/color/layer
 echo === append two items ===
 policy append
 
-set appearance/color/layer foo
+set appearance/color/layer #000001
 dump native appearance/color/layer
 
-set appearance/color/layer bar
+set appearance/color/layer #000002
 dump native appearance/color/layer
 
 echo === prepend two items ===
 policy prepend
 
-set appearance/color/layer pre1
+set appearance/color/layer #000003
 dump native appearance/color/layer
 
-set appearance/color/layer pre2
+set appearance/color/layer #000004
 dump native appearance/color/layer
 
 echo === overwrite item ===
 policy overwrite
 chprio 710
 
-set appearance/color/layer[1] NEW1
+set appearance/color/layer[1] #000005
 dump native appearance/color/layer
 
-set appearance/color/layer[4] NEW2
+set appearance/color/layer[4] #000006
 dump native appearance/color/layer
 
-set appearance/color/layer[7] NEW3
+set appearance/color/layer[7] #000007
 dump native appearance/color/layer
 
 
@@ -40,5 +40,5 @@ echo === overwrite array ===
 policy overwrite
 chprio 720
 
-set appearance/color/layer new
+set appearance/color/layer #000008
 dump native appearance/color/layer

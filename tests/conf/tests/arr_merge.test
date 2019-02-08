@@ -8,7 +8,7 @@ paste system \
 		ha:overwrite { \
 			ha:appearance { \
 				ha:color { \
-					li:layer = { sys1; sys2 } \
+					li:layer = {{#000001}; {#000002};} \
 				} \
 			} \
 		} \
@@ -20,7 +20,7 @@ paste user \
 		ha:overwrite { \
 			ha:appearance { \
 				ha:color { \
-					li:layer = { user1; user2 } \
+					li:layer = {{#000101}; {#000102};} \
 				} \
 			} \
 		} \
@@ -32,24 +32,24 @@ paste design \
 		ha:overwrite { \
 			ha:appearance { \
 				ha:color { \
-					li:layer = { design1; design2 } \
+					li:layer = {{#000201}; {#000201};} \
 				} \
 			} \
 		} \
 	}
 dump native appearance/color/layer
 
-echo === change policy: design->prepend (design, user) ===
+echo === change policy: design->prepend (2, 1) ===
 role design
 chpolicy prepend
 dump native appearance/color/layer
 
-echo === change policy: user->append (design, sys, user) ===
+echo === change policy: user->append (2, 0, 1) ===
 role user
 chpolicy append
 dump native appearance/color/layer
 
-echo === change policy: design->append (sys, user, design) ===
+echo === change policy: design->append (0, 1, 2) ===
 role design
 chpolicy append
 dump native appearance/color/layer

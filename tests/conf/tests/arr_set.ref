@@ -1,37 +1,37 @@
 === initial state: empty ===
  I appearance/color/layer[] = <empty>
 === append two items ===
- I appearance/color/layer[0] = foo <<prio=700 from=<cmd_reset *>:0>> conf_rev=1
- I appearance/color/layer[0] = foo <<prio=700 from=<cmd_reset *>:0>> conf_rev=2
- I appearance/color/layer[1] = bar <<prio=700 from=<cmd_reset *>:0>> conf_rev=2
+ I appearance/color/layer[0] = #000001 <<prio=700 from=<cmd_reset *>:0>> conf_rev=1
+ I appearance/color/layer[0] = #000001 <<prio=700 from=<cmd_reset *>:0>> conf_rev=2
+ I appearance/color/layer[1] = #000002 <<prio=700 from=<cmd_reset *>:0>> conf_rev=2
 === prepend two items ===
- I appearance/color/layer[0] = pre1 <<prio=700 from=<cmd_reset *>:0>> conf_rev=3
- I appearance/color/layer[1] = foo <<prio=700 from=<cmd_reset *>:0>> conf_rev=3
- I appearance/color/layer[2] = bar <<prio=700 from=<cmd_reset *>:0>> conf_rev=3
- I appearance/color/layer[0] = pre2 <<prio=700 from=<cmd_reset *>:0>> conf_rev=4
- I appearance/color/layer[1] = pre1 <<prio=700 from=<cmd_reset *>:0>> conf_rev=4
- I appearance/color/layer[2] = foo <<prio=700 from=<cmd_reset *>:0>> conf_rev=4
- I appearance/color/layer[3] = bar <<prio=700 from=<cmd_reset *>:0>> conf_rev=4
+ I appearance/color/layer[0] = #000003 <<prio=700 from=<cmd_reset *>:0>> conf_rev=3
+ I appearance/color/layer[1] = #000001 <<prio=700 from=<cmd_reset *>:0>> conf_rev=3
+ I appearance/color/layer[2] = #000002 <<prio=700 from=<cmd_reset *>:0>> conf_rev=3
+ I appearance/color/layer[0] = #000004 <<prio=700 from=<cmd_reset *>:0>> conf_rev=4
+ I appearance/color/layer[1] = #000003 <<prio=700 from=<cmd_reset *>:0>> conf_rev=4
+ I appearance/color/layer[2] = #000001 <<prio=700 from=<cmd_reset *>:0>> conf_rev=4
+ I appearance/color/layer[3] = #000002 <<prio=700 from=<cmd_reset *>:0>> conf_rev=4
 === overwrite item ===
- I appearance/color/layer[0] = pre2 <<prio=700 from=<cmd_reset *>:0>> conf_rev=6
- I appearance/color/layer[1] = NEW1 <<prio=700 from=<cmd_reset *>:0>> conf_rev=6
- I appearance/color/layer[2] = foo <<prio=700 from=<cmd_reset *>:0>> conf_rev=6
- I appearance/color/layer[3] = bar <<prio=700 from=<cmd_reset *>:0>> conf_rev=6
- I appearance/color/layer[0] = pre2 <<prio=700 from=<cmd_reset *>:0>> conf_rev=7
- I appearance/color/layer[1] = NEW1 <<prio=700 from=<cmd_reset *>:0>> conf_rev=7
- I appearance/color/layer[2] = foo <<prio=700 from=<cmd_reset *>:0>> conf_rev=7
- I appearance/color/layer[3] = bar <<prio=700 from=<cmd_reset *>:0>> conf_rev=7
- I appearance/color/layer[4] = NEW2 <<prio=700 from=<cmd_reset *>:0>> conf_rev=7
- I appearance/color/layer[0] = pre2 <<prio=700 from=<cmd_reset *>:0>> conf_rev=8
- I appearance/color/layer[1] = NEW1 <<prio=700 from=<cmd_reset *>:0>> conf_rev=8
- I appearance/color/layer[2] = foo <<prio=700 from=<cmd_reset *>:0>> conf_rev=8
- I appearance/color/layer[3] = bar <<prio=700 from=<cmd_reset *>:0>> conf_rev=8
- I appearance/color/layer[4] = NEW2 <<prio=700 from=<cmd_reset *>:0>> conf_rev=8
- I appearance/color/layer[5] = <NULL> <<prio=0>> conf_rev=8
- I appearance/color/layer[6] = <NULL> <<prio=0>> conf_rev=8
- I appearance/color/layer[7] = NEW3 <<prio=700 from=<cmd_reset *>:0>> conf_rev=8
+ I appearance/color/layer[0] = #000004 <<prio=700 from=<cmd_reset *>:0>> conf_rev=6
+ I appearance/color/layer[1] = #000005 <<prio=700 from=<cmd_reset *>:0>> conf_rev=6
+ I appearance/color/layer[2] = #000001 <<prio=700 from=<cmd_reset *>:0>> conf_rev=6
+ I appearance/color/layer[3] = #000002 <<prio=700 from=<cmd_reset *>:0>> conf_rev=6
+ I appearance/color/layer[0] = #000004 <<prio=700 from=<cmd_reset *>:0>> conf_rev=7
+ I appearance/color/layer[1] = #000005 <<prio=700 from=<cmd_reset *>:0>> conf_rev=7
+ I appearance/color/layer[2] = #000001 <<prio=700 from=<cmd_reset *>:0>> conf_rev=7
+ I appearance/color/layer[3] = #000002 <<prio=700 from=<cmd_reset *>:0>> conf_rev=7
+ I appearance/color/layer[4] = #000006 <<prio=700 from=<cmd_reset *>:0>> conf_rev=7
+ I appearance/color/layer[0] = #000004 <<prio=700 from=<cmd_reset *>:0>> conf_rev=8
+ I appearance/color/layer[1] = #000005 <<prio=700 from=<cmd_reset *>:0>> conf_rev=8
+ I appearance/color/layer[2] = #000001 <<prio=700 from=<cmd_reset *>:0>> conf_rev=8
+ I appearance/color/layer[3] = #000002 <<prio=700 from=<cmd_reset *>:0>> conf_rev=8
+ I appearance/color/layer[4] = #000006 <<prio=700 from=<cmd_reset *>:0>> conf_rev=8
+ I appearance/color/layer[5] =  <<prio=0>> conf_rev=8
+ I appearance/color/layer[6] =  <<prio=0>> conf_rev=8
+ I appearance/color/layer[7] = #000007 <<prio=700 from=<cmd_reset *>:0>> conf_rev=8
 === overwrite array ===
- I appearance/color/layer[0] = new <<prio=700 from=<cmd_reset *>:0>> conf_rev=10
- I appearance/color/layer[1] = pre1 <<prio=700 from=<cmd_reset *>:0>> conf_rev=10
- I appearance/color/layer[2] = foo <<prio=700 from=<cmd_reset *>:0>> conf_rev=10
- I appearance/color/layer[3] = bar <<prio=700 from=<cmd_reset *>:0>> conf_rev=10
+ I appearance/color/layer[0] = #000008 <<prio=700 from=<cmd_reset *>:0>> conf_rev=10
+ I appearance/color/layer[1] = #000003 <<prio=700 from=<cmd_reset *>:0>> conf_rev=10
+ I appearance/color/layer[2] = #000001 <<prio=700 from=<cmd_reset *>:0>> conf_rev=10
+ I appearance/color/layer[3] = #000002 <<prio=700 from=<cmd_reset *>:0>> conf_rev=10
