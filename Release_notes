@@ -1,2 +1,45 @@
 pcb-rnd 2.1.1
 ~~~~~~~~~~~~~
+
+This release is mainly a cleanup release: rewrite of some essential
+infrastructure (find, drc) and extend the GUI APIs to provide better
+user interface (around DRC and the preferences dialog).
+
+Major changes:
+
+1. find.c rewrite: smaller, slightly more efficient code with a simpler,
+more versatile API. Does not mess with global/static object flags.
+
+2. DRC API rewrite: the algorithm is decoupled from how violations is stored
+and from the GUI. There is a generic DRC infra and a generic GUI for
+displaying the results, that can be driven by multiple different DRC algorithms.
+The old DRC algorithm has been moved out to a plugin.
+
+3. DRC GUI rewrite: violations are presented as a tree, grouped by topic, so
+it is easier to skip or focus on similar errors. The window layout follows
+the library layout, with preview and filter. DRC preview colors offending
+objects: thre is a red and a blue group which makes it much easier to see
+what exactly went wrong. Lesstif's interactive 'skip-through' DRC indication
+is available as an option on GTK.
+
+4. View lists: under the DRC GUI there is a generic "view list" mechanism.
+It remembers a list of board location (with zoom) and highlight objects. The
+user can remove, add, copy, paste elements of the list. Lists can be saved to
+file and loaded later. The same list display is now used to indicate
+incompatibilities when saving in alien format.
+
+5. DAD upgrades: gtk-only dialogs are being rewritten with DAD, more and
+more dialogs accessible in all HIDs (including lesstif). Introduced new
+DAD widgets for this effort.
+
+6. The GTK-only preferences window got removed in favor of the new,
+HID-agnostic preferences window.
+
+7. Major HID API cleanup: DAD allows a cleaner separation of feature code
+into self contained plugins; the HID API should be as small as possible,
+with generic features only. This makes it easier to write new HIDs.
+
+
+Plans for the next release:
+
+Going on with the cleanups and similar minor features.
