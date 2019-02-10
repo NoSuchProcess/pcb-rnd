@@ -10,6 +10,7 @@ Requirements for GUI:  x11 and gtk+
      * brew install dependencies (gtk+ and libgd) with the following commands
        brew install libgd
        brew install gtk+
+       brew install pkg-config
      * if you want to use gEDA with PCB-RND you may want to install it as well
        via brew
        brew install homebrew/science/geda-gaf
