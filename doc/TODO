@@ -112,6 +112,7 @@
 	- BUG: distalign pcb_crosshair option doesn't work as a reference point  [report:Miloh]
 - CLEANUP: move import_sch to import_sch_old and start a new, generic plugin
 - CLEANUP/FEATURE: boardflip doesn't function properly with undo -- repro: open pcb-rnd, place 1206, boardflip(), { u u } removes placed part instead of boardflip   [report: Miloh]
+- FEATURE: invert selection in the menu
 - FEATURE: tedax etest save (board save too)
 - FEATURE: padstack bbox:
 	- per layer: keep a bbox per transformed shape per prototype, then getting the bbox of a padstack ref on a specific layer is looking up the shape, then 4 integer additions [report: Wojciech]
