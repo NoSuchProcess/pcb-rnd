@@ -1,5 +1,271 @@
-pcb-rnd 2.1.1 (r22xxx)
+pcb-rnd 2.1.1 (r23068)
 ~~~~~~~~~~~~~~~~~~~~~~
+	[portability]
+		-Change: #warnings translated to TODO() for portability
+
+	[boardflip]
+		-Del: remove the plugin - mirror functionality already implemented in core, wrapper action moved to core
+
+	[calay]
+		-Add: plugin for importing calay netlists
+		-Add: import menu item for calay netlist
+
+	[cam]
+		-Cleanup: remove excess memory allocation on default output file name derivation
+		-Cleanup: default file name derivation does not need to remember the last set file name, this should be handled centrally later on
+		-Fix: missing else blocked purpose supplement to be interpreted
+
+	[color]
+		-Add: centralize color parsing and handling
+
+	[core]
+		-Fix: draw: expose_begin() and expose_end() needs to save all gc's as well else nested calls will result in NULL gcs after the first end()
+		-Fix: do not block-select invisible padstacks - a padstack is considered visible only if either the padstack virtual layer or the hole virtual layer is on
+		-Fix: mem handling error: do not free the memory passed to object change name, it would result in invalid name saved with the object
+		-Fix: freeze undo for mirroring subc data and buffer data as they should not be on undo list on per object basis
+		-Fix: arc hash and eq start angles for side-mirror
+		-Fix: properly combine transformation rotation angle and transofrmation side mirror for arc start angle hash and eq
+		-Del: old CreateMenu() syntax with 6+ arguments
+		-Del: do not use hid->show_item, call the pinout() action from Display(pinout)
+		-Cleanup: remove alignment_distance conf node - nothing uses it
+		-Add: Select(invert) - invert selection (common function in vector graphic tools)
+		-Add: --dump-version and DumpVersion() - script parsable version query
+		-Add: idpath API to remember object IDs recursively through subcircuits
+		-Add: optional, caller specified transformations in expose-all
+		-Add: API for drawing layers with color fade
+		-Add: pcb-printf %mN takes the unit set by %m+ and uses it without any modification or override
+		-Add: config node to change layer group rendering: any other-group layers are rendered with the invisible objects color
+		-Add: config node and rendering mod for black_current_group option (high contrast rendering)
+		-Add: text: hash and eq rot degree, font ID and thickness
+
+	[dad]
+		-Change: DAD dialogs need to use explicit close buttons - implicit per hid buttons are all removed
+		-Add: new widgets: picture, picture button, color picker, text edit
+		-Add: API: default/starting window size hint (optional)
+
+	[dialogs]
+		-Fix: the new export dialog copies back the current attribute values from the dialog to exporter data after the dialog is closed - preserves users settings, but also fixes the memory handling error after export file name modification
+		-Fix: export dialog and flag dialog content can grow and fill available screen space
+		-Fix: PromptFor(): escape or WM close won't return the new string but an error so cancel is not confused with ok
+		-Change: new layer property dialog and layer group property dialog with DAD and add close buttons
+		-Move: plugins dialog from core to the dialogs plugin
+		-Add: PrintGUI - generalize the export dialog so it can list printers
+		-Add: GUI support for shape swap in the padstack editor dialog
+		-Add: padstack proto edit dialog inidicates with parenthesis and tooltip text if a layer is not available
+		-Add: padstack editor: button for duplicating the prototype (to detach)
+		-Add: dup proto button in pstk lib dialog
+		-Add: local config for window placement
+		-Add: default window size for layer binding dialogs
+		-Add: pressing enter on the PromptFor() entry closes the dialog
+		-Add: fallback color pick implementation
+		-Add: generic viewlist
+		-Add: new, HID-agnostic pinout dialog with extra pin ID features
+		-Add: preferences dialog: config tree view tab
+		-Add: preferences dialog: color tab content
+
+	[doc]
+		-Del: all references to GPMI
+		-Del: gtk3: preferences dialog - not gtk-specific anymore
+		-Fix: plugin dev: conf inclusion needs one more tmpasm line
+		-Change: rewrite the action doc for Print() - we can now have multiple printer plugins
+		-Add: motivation: log slots and mech/doc layers
+		-Add: link the conf system from the doc index
+
+	[drc]
+		-Cleanup: don't use global var to pass object to append in violation
+		-Del: remove the old, gtk-only drc dialog
+		-Split: old DRC algo: monolithic logics into shorter functions
+		-Add: new, view list based DRC dialog
+		-Add: extend the poly plow callbakc with a void * user data so that callbacks can have a context
+		-Add: remember 2 groups of offending objects per drc violation (red and blue groups)
+		-Add: introduce generic drc API/infra, decouple the old DRC algo from the GUI
+		-Add: DRC check: object-beyond-drawing-area
+		-Add: progress bar while running the old DRC algo
+
+	[export_png]
+		-Add: set DPI on bitmap export
+
+	[export_ps]
+		-Del: ps_bloat - use CAM layer transformations instead
+		-Fix: don't print implicit outline layer on all layers unless it is explicitly requested by the user
+		-Fix: wrong help text for drill helper
+		-Add: --drill-helper-size to force a specific diameter for all drilled hole when--drill-helper is set
+
+	[export_xy]
+		-Fix: use %mN to make sure decimil and centimil are not converted
+		-Add: rewrite the pnp-origin find code so that it works with any object type
+
+	[extedit]
+		-Fix: allow editing the external editor command
+		-Fix: use pclose() for popen()
+
+	[find]
+		-Fix: netlist find/select should work by net name
+		-Fix: use the event system to run the drc, don't use direct function call as the drc is implemented in (potentially multiple) plugin(s)
+		-Cleanup: simplify internal DRCFind() API: no need to pass legacy type/ptr1/ptr2/ptr3
+		-Change: rewrite the search algorithm and APIs
+		-Move: split/move export code for the old connection format from core into a new plugin: export_oldconn
+		-Add: use dynamically allocated flags for internal marking (instead of abusing global/static flags)
+
+	[flag]
+		-Add: dynamic object flags for algoritmic uses
+
+	[fp_fs]
+		-Fix: invalid memory handling (read beyond end of the string) on search path append
+
+	[fungw]
+		-Fix: simplified action call wrapper returns -1 if result can not be converted to int
+		-Add: action name but binary args call shortcut
+
+	[gpmi]
+		-Del: please use fungw instead
+
+	[gsch2pcb-rnd]
+		-Fix: potential buffer overrun
+
+	[gtk]
+		-Fix: print coords for parametric footprints only in sane untis
+		-Del: get rid of the EditLayerGroups action (centralized)
+		-Del: get rid of wt preview kinds - there is only one kind, the generic one
+		-Del: get rid of local vertical and horizontal compactness config node, use the new, central node: appearance/compact
+		-Del: old, gtk-only preferences dialog
+		-Cleanup: netlist dialog: code dup on select/find button - rather use the action
+		-Update: DoWindow(preferneces) throws a warning instead of invoking the old preferences
+		-Change: switch over from old, gtk-only window placement code to new, centralized code from the dialogs plugin
+		-Change: the old library dialog uses generic preview instead of pinout-specific preview
+		-Add: implement the clipboard API
+
+	[hid]
+		-Del: report_dialog API - use DAD instead
+		-Del: remove unused API "can_mask_clear_rats" - got irrelevant with composite rendering
+		-Del: block hook API - nothing used it, there is no provisions of ever using it
+		-Del: remove lesstif-only ConfirmAction (there's a generic action for this now: MessageBox)
+		-Del: old, per hid print action - already reimplemented using DAD as PrintGUI() in dialogs
+		-Cleanup: API CHANGE: remove confirm dialog and close confirm dialog API - reimplemented with DAD, no need for each HID to duplicate that code
+		-Add: clipboard API
+		-Add: rewrite the fontsel dialog using DAD
+		-Add: generic, DAD based user input dialog box to replace the per hid implementation
+		-Add: new, generic message box to replace the per HID implementation
+		-Add: DAD based progress bar dialog to replace the per HID implementation
+		-Add: make hid iteration API explicit instead of burried in the progress bar widget update
+		-Add: central Print() action that wraps the GUI action or throws a warning on CLI
+		-Add: cenatrilize and unify window placement infra
+
+	[hid_gtk2_gl]
+		-Fix: pcb_color_t mishandling
+
+	[import_ttf]
+		-Update: #includes for latest scconfig and devuan's setup where there's no freetype2/freetype/*.h only freetype2/*.h
+
+	[io]
+		-Add: "type" parameter in save incompatibility call to make the API compatible with pcb_view_t
+		-Add: when enabled and available, display io incompatibility in a view list instead of dumping logs
+		-Add: make io incompatibility view list dialog style (list vs. simple) configurable
+		-Add: do not automatically print the incompatibility list in quiet mode on CLI
+
+	[io_eagle]
+		-Fix: read unsigned bitfield, not integer, from binary layer block
+		-Fix: fix PCB_MESSAGE format followed by hard fail on invalid layer number
+		-Fix: make eagle binary derived linetype attribute clearer and more explicit
+		-Fix: refined errors messages relating to failure to retrieve layer numbers
+		-Fix: bump bbox for all vertices of binary polygons, not every second vertex
+		-Fix: read binary arc bytes as bitfields, extract clockwise flags, and apply sign flags as required
+		-Fix: signed 3 byte coordinate reads from binary arc and wire blocks defining arcs now read properly
+		-Fix: negative flags now being properly applied to calculated arc centre, and arc stop-start coords
+
+	[io_lihata]
+		-Fix: reading a board without silk layers is not an error above v1
+		-Fix: do not write v1 board if top or bottom silk is missing
+		-Fix: break parsing and return error on broken embedded font
+		-Optimization: calculate the silk ordering on write only for lihata v1 - new versions of the format don't need this hack and ignored the result
+
+	[io_pcb]
+		-Fix: when creating two initial layers for an element load, set them up properly (making them bound, silk and parent pointing to data)
+		-Fix: do not mess with the board layers when element is loaded as pcb - the layers are already set up properly
+		-Fix: incompat warning desc param mixup and unnecessary newline
+		-Fix: don't throw top silk layer warning for bottom silk if the subc is on the bottom side
+		-Fix: save elements and pads with the onsolder flag if they are on the bottom side
+		-Change: allow padstacks to have the onsolder flag in compatibility mode
+
+	[io_tedax]
+		-Fix: plugin classification: it's a full IO plugin, not an import plugin
+		-Add: code for saving and loading: stackup, layer, netlist, drc and board
+
+	[layer]
+		-Fix: search.c won't assume existing silk layers anymore
+		-Fix: make sure layer bound fields are empty when creating layer binding from real layers to avoid segfaults on uninitialized fields later
+		-Del: do not assert on existing top/bottom silk, they are not mandatory anymore
+		-Del: protection mechanism that wouldn't let users to remove top/bottom silk - they are safe to remove now
+		-Cleanup: memory leak on layer del: free fields
+		-Cleanup: rename layer free to layer free fields as it does not free the layer pointer
+
+	[lesstif]
+		-Fix: don't use strcasecmp() because of portability
+		-Fix: process events in progress bar busy loop (for cancel)
+		-Fix: use a label box (hbox) for better alignment of old style attribute dialogs - fixes export dialog too large
+		-Fix: invalid memory write after WM close of DAD dialogs in lesstif
+		-Del: get rid of EditLayerGroups and the local csect preview
+		-Del: custom preview code for csect - we need only the generic preview for DAD now
+		-Del: local net find/select algo in the netlist window, in favor of the central algo
+		-Cleanup: use a much simpler call to create attribute dialogs: no need for implicit buttons anyway
+		-Add: window placement for the library, netlist and log window
+
+	[pcblib]
+		-Fix: parametric footprint: wrong conversion of cmil and dmil to mil
+		-Fix: parametric footprint: convert default parameter dims even if they are not mm or mil but some other unit
+		-Fix: help text override for the local defautls in *sop()
+		-Fix: so() and its derivatives should list pin_* params in the help - they have no pins at all
+		-Fix: do convert explicit mil value coord properly even if there's no mil fallback
+		-Add: help text extraction: default value override
+
+	[propedit]
+		-Fix: propedit menu actions: do not mess with selection, use the new scope syntax
+		-Add: new, non-modal, HID-agnostic DAD dialog for propedit
+		-Add: use a tree for properties instead of a flat list
+		-Add: scoping: specific objects (by ID), all selected objects, layer, layer group, board
+
+	[pstk]
+		-Fix: corner case: hole is always thru-hole if there's no top or bottom copper layer, because we'd count from those
+		-Fix: repsect override color on rendering
+		-Fix: hash eq/compare bugs on rot angle and mirror
+		-Add: new color config nodes for non-current layer padstack color, one for terminals and one for non-terminals ("vias") - these are used instead of the inivisible color
+
+	[query]
+		-Fix: duplicated clearance value for line and arc query access
+		-Add: return polygon clearance if poly-clears-poly flag is set
+
+	[report]
+		-Del: use DAD instead of the report_dialog API of HID
+		-Add: Report(netlength) uses the new find API
+
+	[menu]
+		-Fix: make refdes-only subc ID display more explicit and add an user defined fallback menu item
+		-Update: layer group edit brings up the new preferences window instead of the old
+		-Add: change font in text object context menu
+		-Add: menu items for rendering overrides: black current group and inivis other groups
+
+	[scconfig]
+		-Fix: loud error for unknown --buildin
+		-Fix: "recursive" dep resolver so that hid -> dialogs -> fontsel dep chain does the right thing
+		-Add: detect _Pragma(message) and prepare for replacing #warnings
+		-Add: need to detect gdImageSetResoltuion() as some versions of gd doesn't have it
+		-Fix: use --disable instead of --Disable for internal feature disabling - it is case sensitive
+		-Del: references to retired plugin nelma
+		-Fix: when glib is not available, disable gtk using the right flags
+		-Add: ./configure --man1dir can change manual page path to non-FHS
+		-Fix: do not disable lib_gtk_config - it's long gone
+
+	[shape]
+		-Add: per corner control of round rect generation
+		-Add: resolution factor for rounding arc to make round corner arc emulation use less or more segments
+
+	[subc]
+		-Fix: rounding trick so that rotation angles that are supposed to be round are got back as round
+		-Fix: negating host trans should negate the sin/cos calc too
+		-Fix: coord hasher assumes negated host trans
+		-Fix: angle hasher assumes negative transformation
+		-Add: extend subc host transformation readout with an option t return the negative transformation
+		-Add: make automatic refdes text on subc conversion configurable (and optional)
 
 pcb-rnd 2.1.0 (r21060)
 ~~~~~~~~~~~~~~~~~~~~~~
