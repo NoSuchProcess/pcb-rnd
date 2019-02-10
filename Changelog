@@ -24,7 +24,7 @@ pcb-rnd 2.1.1 (r23068)
 		-Fix: mem handling error: do not free the memory passed to object change name, it would result in invalid name saved with the object
 		-Fix: freeze undo for mirroring subc data and buffer data as they should not be on undo list on per object basis
 		-Fix: arc hash and eq start angles for side-mirror
-		-Fix: properly combine transformation rotation angle and transofrmation side mirror for arc start angle hash and eq
+		-Fix: properly combine transformation rotation angle and transformation side mirror for arc start angle hash and eq
 		-Del: old CreateMenu() syntax with 6+ arguments
 		-Del: do not use hid->show_item, call the pinout() action from Display(pinout)
 		-Cleanup: remove alignment_distance conf node - nothing uses it
@@ -76,7 +76,7 @@ pcb-rnd 2.1.1 (r23068)
 		-Del: remove the old, gtk-only drc dialog
 		-Split: old DRC algo: monolithic logics into shorter functions
 		-Add: new, view list based DRC dialog
-		-Add: extend the poly plow callbakc with a void * user data so that callbacks can have a context
+		-Add: extend the poly plow callback with a void * user data so that callbacks can have a context
 		-Add: remember 2 groups of offending objects per drc violation (red and blue groups)
 		-Add: introduce generic drc API/infra, decouple the old DRC algo from the GUI
 		-Add: DRC check: object-beyond-drawing-area
@@ -124,13 +124,13 @@ pcb-rnd 2.1.1 (r23068)
 		-Fix: potential buffer overrun
 
 	[gtk]
-		-Fix: print coords for parametric footprints only in sane untis
+		-Fix: print coords for parametric footprints only in sane units
 		-Del: get rid of the EditLayerGroups action (centralized)
 		-Del: get rid of wt preview kinds - there is only one kind, the generic one
 		-Del: get rid of local vertical and horizontal compactness config node, use the new, central node: appearance/compact
 		-Del: old, gtk-only preferences dialog
 		-Cleanup: netlist dialog: code dup on select/find button - rather use the action
-		-Update: DoWindow(preferneces) throws a warning instead of invoking the old preferences
+		-Update: DoWindow(preferences) throws a warning instead of invoking the old preferences
 		-Change: switch over from old, gtk-only window placement code to new, centralized code from the dialogs plugin
 		-Change: the old library dialog uses generic preview instead of pinout-specific preview
 		-Add: implement the clipboard API
@@ -138,7 +138,7 @@ pcb-rnd 2.1.1 (r23068)
 	[hid]
 		-Del: report_dialog API - use DAD instead
 		-Del: remove unused API "can_mask_clear_rats" - got irrelevant with composite rendering
-		-Del: block hook API - nothing used it, there is no provisions of ever using it
+		-Del: block hook API - nothing used it, there is no provision of ever using it
 		-Del: remove lesstif-only ConfirmAction (there's a generic action for this now: MessageBox)
 		-Del: old, per hid print action - already reimplemented using DAD as PrintGUI() in dialogs
 		-Cleanup: API CHANGE: remove confirm dialog and close confirm dialog API - reimplemented with DAD, no need for each HID to duplicate that code
@@ -149,7 +149,7 @@ pcb-rnd 2.1.1 (r23068)
 		-Add: DAD based progress bar dialog to replace the per HID implementation
 		-Add: make hid iteration API explicit instead of burried in the progress bar widget update
 		-Add: central Print() action that wraps the GUI action or throws a warning on CLI
-		-Add: cenatrilize and unify window placement infra
+		-Add: centralize and unify window placement infra
 
 	[hid_gtk2_gl]
 		-Fix: pcb_color_t mishandling
@@ -226,9 +226,9 @@ pcb-rnd 2.1.1 (r23068)
 
 	[pstk]
 		-Fix: corner case: hole is always thru-hole if there's no top or bottom copper layer, because we'd count from those
-		-Fix: repsect override color on rendering
+		-Fix: respect override color on rendering
 		-Fix: hash eq/compare bugs on rot angle and mirror
-		-Add: new color config nodes for non-current layer padstack color, one for terminals and one for non-terminals ("vias") - these are used instead of the inivisible color
+		-Add: new color config nodes for non-current layer padstack color, one for terminals and one for non-terminals ("vias") - these are used instead of the invisible color
 
 	[query]
 		-Fix: duplicated clearance value for line and arc query access

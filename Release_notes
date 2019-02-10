@@ -18,7 +18,7 @@ The old DRC algorithm has been moved out to a plugin.
 3. DRC GUI rewrite: violations are presented as a tree, grouped by topic, so
 it is easier to skip or focus on similar errors. The window layout follows
 the library layout, with preview and filter. DRC preview colors offending
-objects: thre is a red and a blue group which makes it much easier to see
+objects: there is a red and a blue group which makes it much easier to see
 what exactly went wrong. Lesstif's interactive 'skip-through' DRC indication
 is available as an option on GTK.
 
