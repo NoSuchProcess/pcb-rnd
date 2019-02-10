@@ -133,6 +133,7 @@
 	- padstack
 	- clearing polygon
 	- text
+- BUG: wandering gtk window (window placement bug): using icewm, open the property editor, close, open, close, open: it's displaced by decoration; also check with lesstif [report: Igor2]
 - BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
 - SUBC: element removal:
 	- FEATURE: "thermal recipe" so a padstack thermal can be put in a subc and it is change with the layer binding [report: jg]
