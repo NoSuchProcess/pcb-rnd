@@ -21,3 +21,10 @@ Known issues:
   - slow rendering and error messages about invalid numerics on the console
 
 Considerations listed in ../INSTALL apply.
+
+pcb-rnd is reported to work at least on the following versions:
+
+macOS               xquartz
+----------------------------
+10.14.3 majove      2.7.11
+
