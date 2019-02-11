@@ -242,7 +242,7 @@ pcb-rnd 2.1.1 (r23068)
 		-Fix: make refdes-only subc ID display more explicit and add an user defined fallback menu item
 		-Update: layer group edit brings up the new preferences window instead of the old
 		-Add: change font in text object context menu
-		-Add: menu items for rendering overrides: black current group and inivis other groups
+		-Add: menu items for rendering overrides: black current group and invis other groups
 
 	[scconfig]
 		-Fix: loud error for unknown --buildin
