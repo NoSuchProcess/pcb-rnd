@@ -342,7 +342,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	fprintf(f, "		format={%s}\n", PCB->Data->loader == NULL ? "unknown" : PCB->Data->loader->description);
 	pcb_fprintf(f, "		width=%$mm\n", width);
 	pcb_fprintf(f, "		height=%$mm\n", height);
-	fprintf(f, "		gross_area={%.4f mm^2}\n", (double)PCB_COORD_TO_MM(PCB->MaxWidth) * (double)PCB_COORD_TO_MM(PCB->MaxWidth));
+	fprintf(f, "		gross_area={%.4f mm^2}\n", (double)PCB_COORD_TO_MM(width) * (double)PCB_COORD_TO_MM(height));
 	fprintf(f, "		holes_plated=%d\n", hp);
 	fprintf(f, "		holes_unplated=%d\n", hup);
 	fprintf(f, "		physical_copper_layers=%d\n", phg);
