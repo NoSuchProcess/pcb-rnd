@@ -191,7 +191,7 @@ void pcb_tool_arrow_release_mode(void)
 		pcb_tool_note.Hit = 0;
 		pcb_tool_note.Moving = 0;
 	}
-	else {
+	else if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_SECOND) {
 		box.X1 = pcb_crosshair.AttachedBox.Point1.X;
 		box.Y1 = pcb_crosshair.AttachedBox.Point1.Y;
 		box.X2 = pcb_crosshair.AttachedBox.Point2.X;
