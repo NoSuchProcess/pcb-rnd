@@ -337,7 +337,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	}
 
 	fprintf(f, "	ha:board {\n");
-	fprintf(f, "		id={%s}\n", options[HA_board_id].str_value);
+	fprintf(f, "		id={%s}\n", options[HA_board_id].str_value == NULL ? "" : options[HA_board_id].str_value);
 	fprintf(f, "		license={%s}\n", options[HA_license].str_value);
 	fprintf(f, "		format={%s}\n", PCB->Data->loader == NULL ? "unknown" : PCB->Data->loader->description);
 	pcb_fprintf(f, "		width=%$mm\n", width);
