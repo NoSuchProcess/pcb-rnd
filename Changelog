@@ -1,4 +1,4 @@
-pcb-rnd 2.1.1 (r23068)
+pcb-rnd 2.1.1 (r23079)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[portability]
 		-Change: #warnings translated to TODO() for portability
@@ -25,6 +25,7 @@ pcb-rnd 2.1.1 (r23068)
 		-Fix: freeze undo for mirroring subc data and buffer data as they should not be on undo list on per object basis
 		-Fix: arc hash and eq start angles for side-mirror
 		-Fix: properly combine transformation rotation angle and transformation side mirror for arc start angle hash and eq
+		-Fix: box selection should be triggered only if there is a valid box (box is in the second state); fixes: random right click selections
 		-Del: old CreateMenu() syntax with 6+ arguments
 		-Del: do not use hid->show_item, call the pinout() action from Display(pinout)
 		-Cleanup: remove alignment_distance conf node - nothing uses it
@@ -90,6 +91,10 @@ pcb-rnd 2.1.1 (r23068)
 		-Fix: don't print implicit outline layer on all layers unless it is explicitly requested by the user
 		-Fix: wrong help text for drill helper
 		-Add: --drill-helper-size to force a specific diameter for all drilled hole when--drill-helper is set
+
+	[export_stat]
+		-Fix: board size and area are calculated from the data width/height, not the drawing area's, when there's an explicit outline
+		-Fix: don't export empty board id as (null) but as empty string
 
 	[export_xy]
 		-Fix: use %mN to make sure decimil and centimil are not converted
