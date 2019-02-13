@@ -100,8 +100,8 @@ void pcb_line_enforce_drc(void);
 	do { \
 		pcb_coord_t __dx__ = (dx), __dy__ = (dy); \
 		pcb_line_t *__l__ = (l); \
-		PCB_MOVE_POINT((__l__)->Point1.X,(__l__)->Point1.Y,(__dx__),(__dy__)) \
-		PCB_MOVE_POINT((__l__)->Point2.X,(__l__)->Point2.Y,(__dx__),(__dy__)) \
+		PCB_MOVE_POINT((__l__)->Point1.X,(__l__)->Point1.Y,(__dx__),(__dy__)); \
+		PCB_MOVE_POINT((__l__)->Point2.X,(__l__)->Point2.Y,(__dx__),(__dy__)); \
 		pcb_line_bbox(__l__); \
 	} while(0)
 
