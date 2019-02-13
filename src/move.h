@@ -26,16 +26,16 @@
  *
  */
 
-#ifndef	PCB_MOVE_H
-#define	PCB_MOVE_H
+#ifndef PCB_MOVE_H
+#define PCB_MOVE_H
 
 #include "config.h"
 
 /*** Transformation macros and constants ***/
-#define	PCB_MOVE_TYPES	\
+#define	PCB_MOVE_TYPES \
 	(PCB_OBJ_PSTK | PCB_OBJ_LINE | PCB_OBJ_TEXT | PCB_OBJ_SUBC | \
 	PCB_OBJ_POLY | PCB_OBJ_POLY_POINT | PCB_OBJ_LINE_POINT | PCB_OBJ_ARC | PCB_OBJ_ARC_POINT)
-#define	PCB_MOVETOLAYER_TYPES	\
+#define	PCB_MOVETOLAYER_TYPES \
 	(PCB_OBJ_LINE | PCB_OBJ_TEXT | PCB_OBJ_POLY | PCB_OBJ_RAT | PCB_OBJ_ARC)
 
 
