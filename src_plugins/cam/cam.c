@@ -39,7 +39,7 @@
 #include "actions.h"
 #include "cam_conf.h"
 #include "compat_misc.h"
-#include "compat_fs.h"
+#include "safe_fs.h"
 #include "../src_plugins/cam/conf_internal.c"
 
 

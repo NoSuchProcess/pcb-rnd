@@ -39,6 +39,7 @@ int pcb_pclose(FILE *f);
 int pcb_system(const char *cmd);
 int pcb_remove(const char *path);
 int pcb_rename(const char *old_path, const char *new_path);
+int pcb_mkdir(const char *path, int mode);
 
 /* Check if path could be open with mode; if yes, return the substituted/expanded
    file name, if no, return NULL */

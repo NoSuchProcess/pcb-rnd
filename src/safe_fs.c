@@ -290,3 +290,13 @@ FILE *pcb_fopen_first(const conflist_t *paths, const char *fn, const char *mode,
 	return NULL;
 }
 
+extern int pcb_mkdir_(const char *path, int mode);
+int pcb_mkdir(const char *path, int mode)
+{
+	CHECK("mkdir", "access", path, NULL, return -1);
+	CHECK("mkdir", "mkdir", path, NULL, return -1);
+
+	return pcb_mkdir_(path, mode);
+}
+
+

@@ -2,8 +2,6 @@
    the current working directory is copied to the array pointed to by 'path' */
 char *pcb_get_wd(char *path);
 
-int pcb_mkdir(const char *path, int mode);
-
 /* alternative to system() for proper argument passing */
 int pcb_spawnvp(const char **argv);
 

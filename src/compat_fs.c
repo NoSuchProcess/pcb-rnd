@@ -29,6 +29,7 @@
 
 /* misc functions used by several modules */
 
+#define PCB_SAFE_FS
 #include "config.h"
 
 #include "compat_inc.h"
@@ -74,7 +75,7 @@ char *pcb_get_wd(char *path)
 #else
 #	error no mkdir() available
 #endif
-int pcb_mkdir(const char *path, int mode)
+int pcb_mkdir_(const char *path, int mode)
 {
 #if MKDIR_NUM_ARGS == 1
 	return MKDIR(path);
