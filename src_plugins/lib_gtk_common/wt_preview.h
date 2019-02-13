@@ -37,7 +37,6 @@
 
 #include <gtk/gtk.h>
 #include "hid.h"
-#include "layer.h"
 #include "ui_zoompan.h"
 #include "glue.h"
 #include "compat.h"

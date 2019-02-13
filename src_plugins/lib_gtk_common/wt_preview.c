@@ -40,13 +40,10 @@
 #include "compat.h"
 #include "wt_preview.h"
 
-#include "copy.h"
 #include "board.h"
 #include "data.h"
 #include "draw.h"
-#include "move.h"
-#include "rotate.h"
-#include "macro.h"
+#include "compat_misc.h"
 
 static void get_ptr(pcb_gtk_preview_t *preview, pcb_coord_t *cx, pcb_coord_t *cy, gint *xp, gint *yp);
 
