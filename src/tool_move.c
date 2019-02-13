@@ -37,6 +37,7 @@
 #include "board.h"
 #include "compat_nls.h"
 #include "copy.h"
+#include "move.h"
 #include "crosshair.h"
 #include "search.h"
 #include "tool.h"

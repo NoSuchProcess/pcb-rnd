@@ -41,6 +41,7 @@
 #include "data.h"
 #include "actions.h"
 #include "remove.h"
+#include "move.h"
 #include "search.h"
 #include "select.h"
 #include "tool.h"

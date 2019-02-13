@@ -34,6 +34,7 @@
 #include "undo.h"
 #include "board.h"
 #include "data.h"
+#include "move.h"
 #include "search.h"
 #include "polygon.h"
 #include "conf_core.h"

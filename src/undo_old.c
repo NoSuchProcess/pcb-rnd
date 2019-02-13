@@ -51,6 +51,7 @@
 #include "change.h"
 #include "data.h"
 #include "draw.h"
+#include "move.h"
 #include "error.h"
 #include "insert.h"
 #include "polygon.h"
