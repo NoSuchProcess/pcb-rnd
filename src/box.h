@@ -105,6 +105,12 @@ typedef enum {
 #define PCB_BOX_CENTER_X(b) ((b).X1 + ((b).X2 - (b).X1)/2)
 #define PCB_BOX_CENTER_Y(b) ((b).Y1 + ((b).Y2 - (b).Y1)/2)
 
+#define	PCB_MOVE_POINT(xs,ys,deltax,deltay) \
+	{ \
+		((xs) += (deltax)); \
+		((ys) += (deltay)); \
+	}
+
 #define	PCB_BOX_MOVE_LOWLEVEL(b,dx,dy)		\
 	{									\
 		PCB_MOVE_POINT((b)->X1,(b)->Y1,(dx),(dy))	\

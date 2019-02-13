@@ -32,12 +32,6 @@
 #include "config.h"
 
 /*** Transformation macros and constants ***/
-#define	PCB_MOVE_POINT(xs,ys,deltax,deltay)							\
-	{														\
-		((xs) += (deltax));									\
-		((ys) += (deltay));									\
-	}
-
 #define	PCB_MOVE_TYPES	\
 	(PCB_OBJ_PSTK | PCB_OBJ_LINE | PCB_OBJ_TEXT | PCB_OBJ_SUBC | \
 	PCB_OBJ_POLY | PCB_OBJ_POLY_POINT | PCB_OBJ_LINE_POINT | PCB_OBJ_ARC | PCB_OBJ_ARC_POINT)
