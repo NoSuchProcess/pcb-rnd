@@ -21,8 +21,3 @@ int pcb_is_dir(const char *path);
 
 /* Return non-zero if fn is an absolute path */
 int pcb_is_path_abs(const char *fn);
-
-/* Return the size of non-large files; on error or for large files
-   (size larger than the value long can hold) return -1 */
-long pcb_file_size(const char *path);
-

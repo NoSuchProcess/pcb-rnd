@@ -300,3 +300,10 @@ int pcb_mkdir(const char *path, int mode)
 }
 
 
+extern long pcb_file_size_(const char *path);
+long pcb_file_size(const char *path)
+{
+	CHECK("file_size", "access", path, NULL, return -1);
+	CHECK("file_size", "stat", path, NULL, return -1);
+	return pcb_file_size_(path);
+}

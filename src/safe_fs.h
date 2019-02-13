@@ -41,6 +41,11 @@ int pcb_remove(const char *path);
 int pcb_rename(const char *old_path, const char *new_path);
 int pcb_mkdir(const char *path, int mode);
 
+/* Return the size of non-large files; on error or for large files
+   (size larger than the value long can hold) return -1 */
+long pcb_file_size(const char *path);
+
+
 /* Check if path could be open with mode; if yes, return the substituted/expanded
    file name, if no, return NULL */
 char *pcb_fopen_check(const char *path, const char *mode);
