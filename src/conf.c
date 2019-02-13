@@ -196,7 +196,7 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 
 	if (d->root == NULL) {
 		lht_node_t *prjroot, *confroot;
-		prjroot = lht_dom_node_alloc(LHT_HASH, "geda-project-v1");
+		prjroot = lht_dom_node_alloc(LHT_HASH, "coraleda-project-v1");
 		confroot = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-conf-v1");
 		lht_dom_hash_put(prjroot, confroot);
 		prjroot->doc = d;
@@ -215,7 +215,7 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 		return 0;
 	}
 
-	if ((d->root->type == LHT_HASH) && (strcmp(d->root->name, "geda-project-v1") == 0)) {
+	if ((d->root->type == LHT_HASH) && ((strcmp(d->root->name, "geda-project-v1") == 0) || (strcmp(d->root->name, "coraleda-project-v1") == 0))) {
 		lht_node_t *confroot;
 		confroot = lht_tree_path_(d, d->root, "pcb-rnd-conf-v1", 1, 0, NULL);
 
@@ -234,7 +234,7 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 		return 0;
 	}
 
-	pcb_hid_cfg_error(d->root, "Root node must be either li:pcb-rnd-conf-v1 or ha:geda-project-v1\n");
+	pcb_hid_cfg_error(d->root, "Root node must be one of li:pcb-rnd-conf-v1, ha:coraleda-project-v1 or ha:geda-project-v1\n");
 
 	if (d != NULL)
 		lht_dom_uninit(d);
