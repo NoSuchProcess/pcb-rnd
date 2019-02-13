@@ -307,3 +307,11 @@ long pcb_file_size(const char *path)
 	CHECK("file_size", "stat", path, NULL, return -1);
 	return pcb_file_size_(path);
 }
+
+extern int pcb_is_dir_(const char *path);
+int pcb_is_dir(const char *path)
+{
+	CHECK("is_dir", "access", path, NULL, return -1);
+	CHECK("is_dir", "stat", path, NULL, return -1);
+	return pcb_is_dir(path);
+}

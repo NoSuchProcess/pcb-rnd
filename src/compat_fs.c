@@ -297,7 +297,7 @@ int pcb_tempfile_unlink(char *name)
 	return 0;
 }
 
-int pcb_is_dir(const char *path)
+int pcb_is_dir_(const char *path)
 {
 	struct stat st;
 	if (stat(path, &st) != 0)

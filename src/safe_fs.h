@@ -45,6 +45,8 @@ int pcb_mkdir(const char *path, int mode);
    (size larger than the value long can hold) return -1 */
 long pcb_file_size(const char *path);
 
+/* Return non-zero if path is a directory */
+int pcb_is_dir(const char *path);
 
 /* Check if path could be open with mode; if yes, return the substituted/expanded
    file name, if no, return NULL */
