@@ -74,7 +74,6 @@
 + CLEANUP: replace or remove the menu for name change ml=2612 [report: Gabriel]
 - CLEANUP: When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Move this in core. Make rat lines remember their terminal object by ID, iterate over rats to find the ones to deal with [report: Ade]
 - CLEANUP: remove conf_cmd_is_safe: already handled by the conf_board_ignores
-- CLEANUP: move the PrintCalibrate() action out of core - check if DAD rewrite is needed
 - CLEANUP/BUG: high level pcb_mkdir() and pcb_file_size() and is-dir shall be in safe_fs checking permissions; low level could stay in the compat layer with a #define to make sure it is not called directly [report: igor2]
 - CLEANUP/feature: pcb_subc_smash_buffer() should really copy data so it can smash multiple subcs and subc objects end up on the layer they were bound to [report: keantoken]
 - CLEANUP: non-modal fontsel: start a new board while fontsel is open for an object [report: Igor2]
