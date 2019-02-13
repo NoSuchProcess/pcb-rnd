@@ -1,6 +1,6 @@
 ha:lht_tree_doc { ha:roots {
 
-	ha:geda-project-v1 {
+	ha:coraleda-project-v1 {
 		type=ha
 		desc={Project file root. Except for "common", each software package should create a single subtree under the root; the subtree shall be named after the software package }
 		li:children {

@@ -156,28 +156,28 @@ ha:                            Menu file
    m                string     mnemonic: single character that should be underlined and used as a hot key in the menu name
    li:submenu                  ordered list of menu items for a submenu ->
 
-ha:geda-project-v1
+ha:coraleda-project-v1
 
-type:name           value  ver description
-ha:geda-project-v1             Project file root. Except for "common", each software package should create a single subtree under the root; the subtree shall be named after the software package
- ha:common                     project settings that should be common to all software packages
-  name              string     long name of the project
-  desc              string     description of the project
-  url               string     homepage of the project
-  vcs               string     main vcs url for the project
-  contact           string     author/maintainer contact info
-  li:files                     ordered list of source files being used by the project
-   ha:NAME                     a project member file
-    path            string     path to the file, relative to the project file
-    desc            string     description of the file
-    type            string     optional: type of the file; one of: "pcb", "schematic", "doc"
-  li:libs                      ordered list of libraries the project depends on
-   ha:NAME                     a library
-    path            string     path to the library, relative to the project file; all files and subdirectories under the root, recursively, are considered part of the library (must not be used together with url)
-    url             string     url to the library (must not be used together with path)
-    desc            string     description of the library
-    type            string     optional: type of the library; one of: "footprint" (for pcb design), "symbol" (for schematic), "sim" (models and subcircuits for e.g. spice simulation)
- li:pcb-rnd-conf-v1            complete pcb-rnd configuration tree ->
+type:name              value  ver description
+ha:coraleda-project-v1            Project file root. Except for "common", each software package should create a single subtree under the root; the subtree shall be named after the software package
+ ha:common                        project settings that should be common to all software packages
+  name                 string     long name of the project
+  desc                 string     description of the project
+  url                  string     homepage of the project
+  vcs                  string     main vcs url for the project
+  contact              string     author/maintainer contact info
+  li:files                        ordered list of source files being used by the project
+   ha:NAME                        a project member file
+    path               string     path to the file, relative to the project file
+    desc               string     description of the file
+    type               string     optional: type of the file; one of: "pcb", "schematic", "doc"
+  li:libs                         ordered list of libraries the project depends on
+   ha:NAME                        a library
+    path               string     path to the library, relative to the project file; all files and subdirectories under the root, recursively, are considered part of the library (must not be used together with url)
+    url                string     url to the library (must not be used together with path)
+    desc               string     description of the library
+    type               string     optional: type of the library; one of: "footprint" (for pcb design), "symbol" (for schematic), "sim" (models and subcircuits for e.g. spice simulation)
+ li:pcb-rnd-conf-v1               complete pcb-rnd configuration tree ->
 
 li:pcb-rnd-subcircuit-v*
 
