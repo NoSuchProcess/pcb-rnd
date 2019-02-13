@@ -602,7 +602,7 @@ void *pcb_lineop_move_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Li
 			pcb_line_invalidate_erase(Line);
 		pcb_poly_restore_to_poly(ctx->move.pcb->Data, PCB_OBJ_LINE, Layer, Line);
 		pcb_r_delete_entry(Layer->line_tree, &Line->BoundingBox);
-		PCB_MOVE(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
+		PCB_MOVE_POINT(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
 		pcb_line_bbox(Line);
 		pcb_r_insert_entry(Layer->line_tree, &Line->BoundingBox);
 		pcb_poly_clear_from_poly(ctx->move.pcb->Data, PCB_OBJ_LINE, Layer, Line);
@@ -615,7 +615,7 @@ void *pcb_lineop_move_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Li
 		if (ctx->move.pcb->RatOn)
 			pcb_rat_invalidate_erase((pcb_rat_t *) Line);
 		pcb_r_delete_entry(ctx->move.pcb->Data->rat_tree, &Line->BoundingBox);
-		PCB_MOVE(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
+		PCB_MOVE_POINT(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
 		pcb_line_bbox(Line);
 		pcb_r_insert_entry(ctx->move.pcb->Data->rat_tree, &Line->BoundingBox);
 		if (ctx->move.pcb->RatOn)

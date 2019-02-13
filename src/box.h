@@ -107,8 +107,8 @@ typedef enum {
 
 #define	PCB_BOX_MOVE_LOWLEVEL(b,dx,dy)		\
 	{									\
-		PCB_MOVE((b)->X1,(b)->Y1,(dx),(dy))	\
-		PCB_MOVE((b)->X2,(b)->Y2,(dx),(dy))	\
+		PCB_MOVE_POINT((b)->X1,(b)->Y1,(dx),(dy))	\
+		PCB_MOVE_POINT((b)->X2,(b)->Y2,(dx),(dy))	\
 	}
 
 

@@ -32,7 +32,7 @@
 #include "config.h"
 
 /*** Transformation macros and constants ***/
-#define	PCB_MOVE(xs,ys,deltax,deltay)							\
+#define	PCB_MOVE_POINT(xs,ys,deltax,deltay)							\
 	{														\
 		((xs) += (deltax));									\
 		((ys) += (deltay));									\
