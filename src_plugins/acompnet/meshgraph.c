@@ -27,8 +27,14 @@
 #include "config.h"
 #include <stdlib.h>
 #include <genht/hash.h>
+#include "board.h"
+#include "conf_core.h"
+#include "data.h"
 #include "meshgraph.h"
 #include "error.h"
+#include "hid.h"
+#include "layer.h"
+#include "route.h"
 
 #define INF_SCORE 9000000000.0
 #define SEARCHR PCB_MM_TO_COORD(5)
@@ -58,6 +64,18 @@ long int pcb_msgr_add_node(pcb_meshgraph_t *gr, pcb_box_t *bbox, int score)
 
 static double msgr_connect(pcb_meshnode_t *curr, pcb_meshnode_t *next)
 {
+	pcb_point_t np, cp;
+	pcb_route_t route;
+	pcb_route_init(&route);
+
+	np.X = next->bbox.X1;
+	np.Y = next->bbox.Y1;
+	cp.X = curr->bbox.X1;
+	cp.Y = curr->bbox.Y1;
+	pcb_route_calculate(PCB, &route, &np, &cp, INDEXOFCURRENT, conf_core.design.line_thickness, conf_core.design.bloat, pcb_flag_make(PCB_FLAG_CLEARLINE), 0, 0);
+
+	pcb_trace("size=%d\n", route.size);
+
 	return curr->gscore + pcb_distance(curr->bbox.X1, curr->bbox.Y1, next->bbox.X1, next->bbox.Y1) * (next->iscore + 1.0);
 }
 
