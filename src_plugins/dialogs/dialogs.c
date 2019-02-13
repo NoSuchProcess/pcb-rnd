@@ -52,6 +52,7 @@ const conf_dialogs_t conf_dialogs;
 #include "dlg_plugins.c"
 #include "dlg_fontsel.c"
 #include "dlg_comm_m.c"
+#include "dlg_printcalib.c"
 #include "place.c"
 
 #include "dlg_view.h"
@@ -81,6 +82,7 @@ pcb_action_t dialogs_action_list[] = {
 	{"IOIncompatListDialog", pcb_act_IOIncompatListDialog, pcb_acth_IOIncompatListDialog, pcb_acts_IOIncompatListDialog},
 	{"ViewList", pcb_act_ViewList, pcb_acth_ViewList, pcb_acts_ViewList},
 	{"Fontsel", pcb_act_Fontsel, pcb_acth_Fontsel, pcb_acts_Fontsel},
+	{"PrintCalibrate", pcb_act_PrintCalibrate, pcb_acth_PrintCalibrate, pcb_acts_PrintCalibrate},
 
 	{"gui_PromptFor", pcb_act_gui_PromptFor, pcb_acth_gui, NULL},
 	{"gui_MessageBox", pcb_act_gui_MessageBox, pcb_acth_gui, NULL},
