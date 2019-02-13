@@ -1465,6 +1465,9 @@ void ps_calibrate_1(double xval, double yval, int use_command)
 	if (pcb_attribute_dialog("ps_calibrate", ps_calib_attribute_list, 1, vals, _("Print Calibration Page"), NULL))
 		return;
 
+	if (vals[0].str_value == NULL)
+		return;
+
 	if (use_command || strchr(vals[0].str_value, '|')) {
 		const char *cmd = vals[0].str_value;
 		while (*cmd == ' ' || *cmd == '|')
