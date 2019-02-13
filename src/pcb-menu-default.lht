@@ -141,15 +141,6 @@ ha:{
 					}
 				}
 				-
-				ha:Edit name of {
-					ha:Change font on layout        = { li:a={{<key>e;<key>o};}   action=FontSel(Object) }
-					li:submenu {
-						ha:text or name               = { li:a={{<key>e;<key>t};};  action=ChangeName(Object) }
-						ha:subcircuit refdes          = { li:a={{<key>e;<key>r};};  action=ChangeName(Refdes) }
-						ha:layout                     = {                           action=ChangeName(Layout) }
-						ha:active layer               = {                           action=ChangeName(Layer) }
-					}
-				}
 				ha:Edit properties of {
 					li:submenu {
 						ha:Layout                     = { action=Propedit(board) }
@@ -641,9 +632,9 @@ ha:{
 			li:submenu {
 				ha:Edit properties        { action=propedit(object) }
 				ha:Edit flags...          { action=FlagEdit() }
-				ha:Edit text              { action=ChangeName(Object) }
+				ha:Edit text...           { li:a={{<key>e;<key>t};};  action=ChangeName(Object) }
 				ha:Set Same Style         { action=SetSame() }
-				ha:Change font...         { action=Fontsel(Object) }
+				ha:Change font...         { li:a={{<key>e;<key>o};}   action=FontSel(Object) }
 				-
 				ha:Remove text            { li:action={Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)} }
 				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Mode(PasteBuffer) } }
@@ -670,7 +661,7 @@ ha:{
 				ha:External editor...     { action=extedit(object) }
 				ha:Edit flags...          { action=FlagEdit() }
 				ha:Edit layer bindings... { action=LayerBinding() }
-				ha:Change refdes          { action=ChangeName(Refdes) }
+				ha:Change refdes          { li:a={{<key>e;<key>r};};  action=ChangeName(Refdes) }
 				ha:Edit padstack prototypes... = { action=pstklib(object) }
 
 #TODO: replace from lib
