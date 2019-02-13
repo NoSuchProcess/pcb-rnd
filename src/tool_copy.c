@@ -35,7 +35,7 @@
 #include "config.h"
 
 #include "board.h"
-#include "copy.h"
+#include "move.h"
 #include "crosshair.h"
 #include "search.h"
 #include "tool.h"

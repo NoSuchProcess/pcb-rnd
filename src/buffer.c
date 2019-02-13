@@ -33,7 +33,7 @@
 
 #include "buffer.h"
 #include "board.h"
-#include "copy.h"
+#include "move.h"
 #include "data.h"
 #include "plug_io.h"
 #include "polygon.h"

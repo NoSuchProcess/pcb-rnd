@@ -32,7 +32,7 @@
 #include "actions.h"
 #include "data.h"
 #include "error.h"
-#include "copy.h"
+#include "move.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "safe_fs.h"

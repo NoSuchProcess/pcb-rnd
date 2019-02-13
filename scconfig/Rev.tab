@@ -1,3 +1,4 @@
+23099	configure	merge copy.[ch] into move.[ch] for compactness
 22617	distclean	enable the socket plugin in scconfig for detecting select() as an alternative to usleep()
 22462	configure	lesstif tree table widget code, low level
 22305	configure	new source files for lesstif color button

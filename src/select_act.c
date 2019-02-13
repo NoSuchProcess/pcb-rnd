@@ -44,7 +44,7 @@
 #include "select.h"
 #include "draw.h"
 #include "remove.h"
-#include "copy.h"
+#include "move.h"
 #include "grid.h"
 #include "hid_attrib.h"
 #include "compat_misc.h"

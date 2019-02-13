@@ -67,7 +67,6 @@ append /local/pcb/OBJS [@
 	compat_fs.o
 	compat_lrealpath.o
 	compat_misc.o
-	copy.o
 	crosshair.o
 	data.o
 	draw.o

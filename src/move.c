@@ -101,6 +101,20 @@ static pcb_opfunc_t MoveToLayerFunctions = {
 	NULL  /* padstack */
 };
 
+static pcb_opfunc_t CopyFunctions = {
+	pcb_lineop_copy,
+	pcb_textop_copy,
+	pcb_polyop_copy,
+	NULL,
+	NULL,
+	pcb_arcop_copy,
+	NULL,
+	NULL,
+	pcb_subcop_copy,
+	pcb_pstkop_copy
+};
+
+
 void *pcb_move_obj(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, pcb_coord_t DY)
 {
 	void *result;
@@ -249,4 +263,20 @@ pcb_bool pcb_move_selected_objs_to_layer(pcb_layer_t *Target)
 	changed = pcb_selected_operation(PCB, PCB->Data, &MoveToLayerFunctions, &ctx, pcb_true, PCB_OBJ_ANY, pcb_false);
 	/* passing pcb_true to above operation causes Undoserial to auto-increment */
 	return changed;
+}
+
+void *pcb_copy_obj(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, pcb_coord_t DY)
+{
+	void *ptr;
+	pcb_opctx_t ctx;
+
+	ctx.copy.pcb = PCB;
+	ctx.copy.DeltaX = DX;
+	ctx.copy.DeltaY = DY;
+	ctx.copy.from_outside = 0;
+
+	/* the subroutines add the objects to the undo-list */
+	ptr = pcb_object_operation(&CopyFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
+	pcb_undo_inc_serial();
+	return ptr;
 }

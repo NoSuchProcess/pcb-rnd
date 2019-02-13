@@ -45,7 +45,6 @@
 
 #include "search.h"
 #include "draw.h"
-#include "copy.h"
 #include "move.h"
 #include "remove.h"
 #include "compat_misc.h"

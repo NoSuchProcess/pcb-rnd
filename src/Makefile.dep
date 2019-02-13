@@ -4205,7 +4205,7 @@
  hid.h conf.h ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/wt_preview.h layer.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h ../src_3rd/libfungw/fungw.h \
- unit.h pcb_bool.h copy.h board.h vtroutestyle.h layer_grp.h library.h \
+ unit.h pcb_bool.h board.h vtroutestyle.h layer_grp.h library.h \
  rats_patch.h board.h data.h crosshair.h vtonpoint.h route.h buffer.h \
  obj_rat_list.h obj_rat.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h rtree.h \
@@ -5979,7 +5979,7 @@ buffer.o: buffer.c ../config.h conf_core.h conf.h global_typedefs.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h layer_grp.h \
- library.h rats_patch.h copy.h data.h crosshair.h vtonpoint.h hid.h \
+ library.h rats_patch.h data.h crosshair.h vtonpoint.h hid.h \
  error.h route.h obj_rat_list.h obj_rat.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h rtree.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
@@ -7252,7 +7252,7 @@ object_act.o: object_act.c ../config.h conf_core.h conf.h \
  vtroutestyle.h library.h rats_patch.h tool.h change.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h event.h funchash_core.h \
  funchash.h funchash_core_list.h search.h rats.h netlist.h route_style.h \
- draw.h copy.h move.h remove.h compat_misc.h compat_nls.h layer_vis.h \
+ draw.h move.h remove.h compat_misc.h compat_nls.h layer_vis.h \
  operation.h macro.h rotate.h actions.h
 operation.o: operation.c ../config.h operation.h global_typedefs.h \
  pcb_bool.h unit.h board.h vtroutestyle.h attrib.h \
@@ -7514,7 +7514,7 @@ rats_patch.o: rats_patch.c rats_patch.h board.h ../config.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h copy.h compat_misc.h compat_nls.h safe_fs.h conf.h \
+ vtpadstack_t.h compat_misc.h compat_nls.h safe_fs.h conf.h \
  pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h funchash_core.h \
  funchash.h funchash_core_list.h search.h rats.h netlist.h route_style.h \
  undo.h ../src_3rd/libuundo/uundo.h undo_old.h conf_core.h
@@ -7701,7 +7701,7 @@ select_act.o: select_act.c ../config.h conf_core.h conf.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h funchash_core.h funchash.h \
- funchash_core_list.h tool.h select.h operation.h draw.h remove.h copy.h \
+ funchash_core_list.h tool.h select.h operation.h draw.h remove.h \
  grid.h hid_attrib.h compat_misc.h compat_nls.h actions.h
 stub_draw.o: stub_draw.c ../config.h stub_draw.h hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
@@ -7843,7 +7843,7 @@ tool_copy.o: tool_copy.c ../config.h board.h global_typedefs.h pcb_bool.h \
  obj_text_list.h obj_text.h font.h ../src_3rd/genht/htip.h \
  ../src_3rd/genht/ht.h box.h math_helper.h misc_util.h \
  ../src_3rd/genvector/gds_char.h layer_grp.h library.h rats_patch.h \
- copy.h crosshair.h vtonpoint.h hid.h ../src_3rd/liblihata/dom.h \
+ crosshair.h vtonpoint.h hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genht/htsp.h error.h route.h search.h rats.h netlist.h \
  route_style.h tool.h ../src_3rd/genvector/vtp0.h
@@ -7917,7 +7917,7 @@ tool_move.o: tool_move.c ../config.h board.h global_typedefs.h pcb_bool.h \
  obj_text_list.h obj_text.h font.h ../src_3rd/genht/htip.h \
  ../src_3rd/genht/ht.h box.h math_helper.h misc_util.h \
  ../src_3rd/genvector/gds_char.h layer_grp.h library.h rats_patch.h \
- compat_nls.h copy.h move.h crosshair.h vtonpoint.h hid.h \
+ compat_nls.h move.h crosshair.h vtonpoint.h hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h error.h route.h \
  search.h rats.h netlist.h route_style.h tool.h \

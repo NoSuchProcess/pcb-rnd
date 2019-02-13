@@ -31,7 +31,7 @@
 
 #include "config.h"
 
-/*** Transformation macros and constants ***/
+/*** move ***/
 #define	PCB_MOVE_TYPES \
 	(PCB_OBJ_PSTK | PCB_OBJ_LINE | PCB_OBJ_TEXT | PCB_OBJ_SUBC | \
 	PCB_OBJ_POLY | PCB_OBJ_POLY_POINT | PCB_OBJ_LINE_POINT | PCB_OBJ_ARC | PCB_OBJ_ARC_POINT)
@@ -49,5 +49,15 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
    the undo serial. Operation wrapper. */
 void *pcb_move_obj_to_layer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_layer_t *Target, pcb_bool enmasse);
 pcb_bool pcb_move_selected_objs_to_layer(pcb_layer_t *Target);
+
+
+/*** copy ***/
+#define	PCB_COPY_TYPES              \
+	(PCB_OBJ_PSTK | PCB_OBJ_LINE | PCB_OBJ_TEXT | \
+	PCB_OBJ_SUBC | PCB_OBJ_POLY | PCB_OBJ_ARC)
+
+/* Undoably copies (duplicates) an object; the new objects is moved by DX,DY
+   (operation wrapper) */
+void *pcb_copy_obj(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, pcb_coord_t DY);
 
 #endif
