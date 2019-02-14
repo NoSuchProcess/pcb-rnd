@@ -35,7 +35,7 @@ convention, is often indicated by code indentation as well. For example:
 	PCB_DAD_INTEGER(dlg, "foo");
 		PCB_DAD_MINVAL(dlg, 1);
 		PCB_DAD_MAXVAL(dlg, 10);
-		PCB_DAD_DEFAULT(dlg, 3);
+		PCB_DAD_DEFAULT_VAL(dlg, 3);
 		widget_id_foo = PCB_DAD_CURRENT(dlg);
 	PCB_DAD_BUTTON(dlg, "update!");
 		PCB_DAD_CHANGE_CB(dlg, pcb_act_attr_chg);
