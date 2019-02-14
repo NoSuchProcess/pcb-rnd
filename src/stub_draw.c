@@ -88,6 +88,6 @@ static void dummy_draw_fontsel(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 
 static pcb_text_t *dummy_fontsel_text = NULL;
 
-void (*pcb_stub_draw_fontsel)(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e) = dummy_draw_fontsel;
-pcb_bool (*pcb_stub_draw_fontsel_mouse_ev)(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y) = dummy_mouse;
-pcb_text_t **pcb_stub_draw_fontsel_text_obj = &dummy_fontsel_text;
+void (*pcb_stub_draw_fontsel)(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e, pcb_text_t *txt) = dummy_draw_fontsel;
+pcb_bool (*pcb_stub_draw_fontsel_mouse_ev)(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y, pcb_text_t *txt) = dummy_mouse;
+

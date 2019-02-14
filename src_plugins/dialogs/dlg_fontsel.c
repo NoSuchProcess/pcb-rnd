@@ -33,7 +33,7 @@ typedef struct{
 	int wprev;
 	int active;
 
-	pcb_text_t *old_txt;
+	pcb_text_t *txt_obj;
 } fontsel_ctx_t;
 
 fontsel_ctx_t fontsel_ctx;
@@ -43,20 +43,20 @@ static void fontsel_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	fontsel_ctx_t *ctx = caller_data;
 
-	*pcb_stub_draw_fontsel_text_obj = ctx->old_txt;
-
 	PCB_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(fontsel_ctx_t));
 }
 
 void fontsel_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
-	pcb_stub_draw_fontsel(gc, e);
+	fontsel_ctx_t *ctx = prv->user_ctx;
+	pcb_stub_draw_fontsel(gc, e, ctx->txt_obj);
 }
 
 pcb_bool fontsel_mouse_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
 {
-	return pcb_stub_draw_fontsel_mouse_ev(kind, x, y);
+	fontsel_ctx_t *ctx = prv->user_ctx;
+	return pcb_stub_draw_fontsel_mouse_ev(kind, x, y, ctx->txt_obj);
 }
 
 void fontsel_free_cb(pcb_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx)
@@ -101,7 +101,7 @@ static void btn_remove_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 }
 
 
-static void pcb_dlg_fontsel(pcb_board_t *pcb, int modal)
+static void pcb_dlg_fontsel(pcb_board_t *pcb, int modal, pcb_text_t *txt_obj)
 {
 	pcb_box_t vbox = {0, 0, PCB_MM_TO_COORD(55), PCB_MM_TO_COORD(55)};
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
@@ -109,6 +109,7 @@ static void pcb_dlg_fontsel(pcb_board_t *pcb, int modal)
 		return; /* do not open another */
 
 	fontsel_ctx.pcb = pcb;
+	fontsel_ctx.txt_obj = txt_obj;
 	PCB_DAD_BEGIN_VBOX(fontsel_ctx.dlg);
 		PCB_DAD_COMPFLAG(fontsel_ctx.dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_PREVIEW(fontsel_ctx.dlg, fontsel_expose_cb, fontsel_mouse_cb, fontsel_free_cb, &vbox, 200, 200, &fontsel_ctx);
@@ -138,13 +139,12 @@ static fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *op = NULL;
 	int modal = 0;
+	pcb_text_t *txt_obj = NULL;
+
 	if (argc > 2)
 		PCB_ACT_FAIL(Fontsel);
 
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, Fontsel, op = argv[1].val.str);
-
-	fontsel_ctx.old_txt = *pcb_stub_draw_fontsel_text_obj;
-	*pcb_stub_draw_fontsel_text_obj = NULL;
 
 	if (op != NULL) {
 		if (pcb_strcasecmp(op, "Object") == 0) {
@@ -153,14 +153,14 @@ static fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			void *ptr1, *ptr2, *ptr3;
 			pcb_hid_get_coords("Select an Object", &x, &y, 0);
 			if ((type = pcb_search_screen(x, y, PCB_CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
-				*pcb_stub_draw_fontsel_text_obj = ptr2;
+				txt_obj = ptr2;
 				modal = 1;
 			}
 		}
 		else
 			PCB_ACT_FAIL(Fontsel);
 	}
-	pcb_dlg_fontsel(PCB, modal);
+	pcb_dlg_fontsel(PCB, modal, txt_obj);
 	return 0;
 }
 

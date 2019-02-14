@@ -99,23 +99,21 @@ typedef struct {
 font_coord_t font_coord[MAX_FONT];
 int font_coords;
 
-pcb_text_t *fontsel_txt = NULL;
-
-static void pcb_draw_font(pcb_hid_gc_t gc, pcb_font_t *f, int x, int *y)
+static void pcb_draw_font(pcb_hid_gc_t gc, pcb_font_t *f, int x, int *y, pcb_text_t *txt)
 {
-	char txt[256];
+	char buf[256];
 	pcb_text_t *t;
 	const char *nm;
 	int y_old = *y;
-	pcb_font_id_t target_fid = (fontsel_txt == NULL) ? conf_core.design.text_font_id : fontsel_txt->fid;
+	pcb_font_id_t target_fid = (txt == NULL) ? conf_core.design.text_font_id : txt->fid;
 
 	nm = (f->name == NULL) ? "<anonymous>" : f->name;
-	pcb_snprintf(txt, sizeof(txt), "#%d [abc ABC 123] %s", f->id, nm);
+	pcb_snprintf(buf, sizeof(buf), "#%d [abc ABC 123] %s", f->id, nm);
 
 	dchkbox(gc, x-4, *y, (f->id == target_fid));
 
 	pcb_gui->set_color(gc, pcb_color_black);
-	t = dtext(x, *y, 200, f->id, txt);
+	t = dtext(x, *y, 200, f->id, buf);
 	pcb_text_bbox(pcb_font(PCB, f->id, 1), t);
 
 	*y += pcb_round(PCB_COORD_TO_MM(t->BoundingBox.Y2 - t->BoundingBox.Y1) + 0.5);
@@ -129,17 +127,17 @@ static void pcb_draw_font(pcb_hid_gc_t gc, pcb_font_t *f, int x, int *y)
 }
 
 
-static void pcb_draw_fontsel(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
+static void pcb_draw_fontsel(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e, pcb_text_t *txt)
 {
 	int y = 0;
 
 	font_coords = 0;
-	pcb_draw_font(gc, &PCB->fontkit.dflt, 0, &y);
+	pcb_draw_font(gc, &PCB->fontkit.dflt, 0, &y, txt);
 
 	if (PCB->fontkit.hash_inited) {
 		htip_entry_t *e;
 		for (e = htip_first(&PCB->fontkit.fonts); e; e = htip_next(&PCB->fontkit.fonts, e))
-			pcb_draw_font(gc, e->value, 0, &y);
+			pcb_draw_font(gc, e->value, 0, &y, txt);
 	}
 }
 
@@ -153,7 +151,7 @@ static pcb_font_id_t lookup_fid_for_coord(int ymm)
 	return -1;
 }
 
-static pcb_bool pcb_mouse_fontsel(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
+static pcb_bool pcb_mouse_fontsel(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y, pcb_text_t *txt)
 {
 	pcb_font_id_t fid;
 	int ymm;
@@ -163,15 +161,15 @@ static pcb_bool pcb_mouse_fontsel(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_co
 			ymm = PCB_COORD_TO_MM(y);
 			fid = lookup_fid_for_coord(ymm);
 			if (fid >= 0) {
-				if (fontsel_txt == NULL) {
+				if (txt == NULL) {
 					char sval[128];
 					sprintf(sval, "%ld", fid);
 					conf_set(CFR_DESIGN, "design/text_font_id", 0, sval, POL_OVERWRITE);
 				}
 				else {
-					switch(fontsel_txt->type) {
+					switch(txt->type) {
 						case PCB_OBJ_TEXT:
-							pcb_text_set_font(fontsel_txt, fid);
+							pcb_text_set_font(txt, fid);
 							break;
 						default:
 							break;
@@ -197,6 +195,5 @@ int pplg_init_draw_fontsel(void)
 	PCB_API_CHK_VER;
 	pcb_stub_draw_fontsel = pcb_draw_fontsel;
 	pcb_stub_draw_fontsel_mouse_ev = pcb_mouse_fontsel;
-	pcb_stub_draw_fontsel_text_obj = &fontsel_txt;
 	return 0;
 }
