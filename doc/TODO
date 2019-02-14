@@ -76,7 +76,6 @@
 - CLEANUP: remove conf_cmd_is_safe: already handled by the conf_board_ignores
 - CLEANUP/feature: pcb_subc_smash_buffer() should really copy data so it can smash multiple subcs and subc objects end up on the layer they were bound to [report: keantoken]
 - CLEANUP: non-modal fontsel: start a new board while fontsel is open for an object [report: Igor2]
-	- should not remember object by pointer but by idpath; remove pcb_stub_draw_fontsel_text_obj
 	- reset the idpath on pcb change
 	- allow multiple fontsel dialogs, collect them on a list and update them all on board change
 - CLEANUP: make the file selector a DAD widget, reimplement all the logics centrally in dialogs [report: Igor2]
