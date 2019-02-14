@@ -156,7 +156,7 @@ static void pcb_dlg_fontsel(pcb_board_t *pcb, int modal, int global, pcb_text_t 
 
 	ctx->pcb = pcb;
 	if (txt_obj != NULL)
-		ctx->txt_id = pcb_obj2idpath(txt_obj);
+		ctx->txt_id = pcb_obj2idpath((pcb_any_obj_t *)txt_obj);
 	else
 		ctx->txt_id = NULL;
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
