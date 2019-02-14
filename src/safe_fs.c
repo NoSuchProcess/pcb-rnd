@@ -313,5 +313,5 @@ int pcb_is_dir(const char *path)
 {
 	CHECK("is_dir", "access", path, NULL, return -1);
 	CHECK("is_dir", "stat", path, NULL, return -1);
-	return pcb_is_dir(path);
+	return pcb_is_dir_(path);
 }
