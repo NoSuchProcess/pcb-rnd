@@ -214,10 +214,25 @@ static fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static void fontsel_changed_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+static void fontsel_mchanged_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (fontsel_brd.active)
 		fontsel_preview_update(&fontsel_brd);
+}
+
+static void fontsel_bchanged_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	fontsel_ctx_t *c, *next;
+	pcb_dad_retovr_t retovr;
+
+	if (fontsel_brd.active)
+		fontsel_preview_update(&fontsel_brd);
+
+	for(c = gdl_first(&fontsels); c != NULL; c = next) {
+		next = gdl_next(&fontsels, c);
+		pcb_hid_dad_close(c->dlg_hid_ctx, &retovr, 0);
+	}
+
 }
 
 
@@ -228,7 +243,7 @@ void pcb_dlg_fontsel_uninit(void)
 
 void pcb_dlg_fontsel_init(void)
 {
-	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, fontsel_changed_ev, NULL, fontsel_cookie);
-	pcb_event_bind(PCB_EVENT_BOARD_META_CHANGED, fontsel_changed_ev, NULL, fontsel_cookie);
+	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, fontsel_bchanged_ev, NULL, fontsel_cookie);
+	pcb_event_bind(PCB_EVENT_BOARD_META_CHANGED, fontsel_mchanged_ev, NULL, fontsel_cookie);
 }
 
