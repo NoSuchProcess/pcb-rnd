@@ -128,7 +128,7 @@ static fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					ctx.wid[ctx.len] = PCB_DAD_CURRENT(dlg);
 					ctx.flag_bit[ctx.len] = pcb_object_flagbits[n].mask;
 					if (PCB_FLAG_TEST(ctx.flag_bit[ctx.len], ctx.obj))
-						PCB_DAD_DEFAULT(dlg, 1);
+						PCB_DAD_DEFAULT_VAL(dlg, 1);
 					ctx.len++;
 				}
 			}

@@ -143,14 +143,14 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*ch
 			PCB_DAD_COORD(ctx->dlg, "");
 				item->wid = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_MINMAX(ctx->dlg, 0, PCB_MAX_COORD);
-				PCB_DAD_DEFAULT(ctx->dlg, cn->val.coord[0]);
+				PCB_DAD_DEFAULT_VAL(ctx->dlg, cn->val.coord[0]);
 				PCB_DAD_HELP(ctx->dlg, cn->description);
 				PCB_DAD_CHANGE_CB(ctx->dlg, change_cb);
 			break;
 		case CFN_BOOLEAN:
 			PCB_DAD_BOOL(ctx->dlg, "");
 				item->wid = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_DEFAULT(ctx->dlg, cn->val.integer[0]);
+				PCB_DAD_DEFAULT_VAL(ctx->dlg, cn->val.integer[0]);
 				PCB_DAD_HELP(ctx->dlg, cn->description);
 				PCB_DAD_CHANGE_CB(ctx->dlg, change_cb);
 			break;
@@ -158,7 +158,7 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*ch
 			PCB_DAD_INTEGER(ctx->dlg, "");
 				item->wid = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_MINMAX(ctx->dlg, 0, INT_MAX);
-				PCB_DAD_DEFAULT(ctx->dlg, cn->val.integer[0]);
+				PCB_DAD_DEFAULT_VAL(ctx->dlg, cn->val.integer[0]);
 				PCB_DAD_HELP(ctx->dlg, cn->description);
 				PCB_DAD_CHANGE_CB(ctx->dlg, change_cb);
 			break;

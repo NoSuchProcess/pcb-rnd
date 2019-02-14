@@ -119,7 +119,7 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				PCB_DAD_INTEGER(ctx.dlg, "text2e");
 					PCB_DAD_MINVAL(ctx.dlg, 1);
 					PCB_DAD_MAXVAL(ctx.dlg, 10);
-					PCB_DAD_DEFAULT(ctx.dlg, 3);
+					PCB_DAD_DEFAULT_VAL(ctx.dlg, 3);
 					PCB_DAD_CHANGE_CB(ctx.dlg, pcb_act_attr_chg);
 					attr_idx2 = PCB_DAD_CURRENT(ctx.dlg);
 				PCB_DAD_BUTTON(ctx.dlg, "update!");

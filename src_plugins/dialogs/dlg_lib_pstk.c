@@ -564,7 +564,7 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal, c
 					PCB_DAD_COORD(ctx->dlg, "");
 						ctx->wgrid = PCB_DAD_CURRENT(ctx->dlg);
 						PCB_DAD_MINMAX(ctx->dlg, PCB_MM_TO_COORD(0.01), PCB_MM_TO_COORD(10));
-						PCB_DAD_DEFAULT(ctx->dlg, (pcb_coord_t)PCB_MM_TO_COORD(1));
+						PCB_DAD_DEFAULT_VAL(ctx->dlg, (pcb_coord_t)PCB_MM_TO_COORD(1));
 						PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_update_prv);
 
 					PCB_DAD_LABEL(ctx->dlg, "");
@@ -578,11 +578,11 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal, c
 						PCB_DAD_LABEL(ctx->dlg, pcb_proto_layers[n].name);
 						PCB_DAD_BEGIN_HBOX(ctx->dlg);
 							PCB_DAD_BOOL(ctx->dlg, "");
-								PCB_DAD_DEFAULT(ctx->dlg, 1);
+								PCB_DAD_DEFAULT_VAL(ctx->dlg, 1);
 								PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_update_prv);
 								ctx->wlayerv[n] = PCB_DAD_CURRENT(ctx->dlg);
 							PCB_DAD_BOOL(ctx->dlg, "");
-								PCB_DAD_DEFAULT(ctx->dlg, (pcb_proto_layers[n].mask == (PCB_LYT_TOP | PCB_LYT_COPPER)));
+								PCB_DAD_DEFAULT_VAL(ctx->dlg, (pcb_proto_layers[n].mask == (PCB_LYT_TOP | PCB_LYT_COPPER)));
 								PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_update_layerc);
 								ctx->wlayerc[n] = PCB_DAD_CURRENT(ctx->dlg);
 						PCB_DAD_END(ctx->dlg);
