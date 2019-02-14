@@ -240,6 +240,7 @@
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - BUG: find.c: bug_files/find_slotcop.lht: plated slot should connect to any copper layer object it is going thru ml2571 [report: Igor2]
 - BUG: route.h is not self-contained, missing includes [report: Igor2]
+- BUG: pref: set role to user, add new library path -> it is saved in board! [report: aron]
 
 3. Long term ===============================================================================
 - BUG: draw a large padstack poly (as a subc term); put some vias (padtsacks) on top of it; with gdk and gl, after the 6th via some via rings will disappear [report: James]
