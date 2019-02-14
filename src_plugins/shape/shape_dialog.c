@@ -161,7 +161,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, pc
 							shp->corners = PCB_DAD_CURRENT(shp->dlg);
 							PCB_DAD_MINVAL(shp->dlg, 3);
 							PCB_DAD_MAXVAL(shp->dlg, 64);
-							PCB_DAD_DEFAULT_VAL(shp->dlg, 8);
+							PCB_DAD_DEFAULT_NUM(shp->dlg, 8);
 							PCB_DAD_CHANGE_CB(shp->dlg, shp_chg_regpoly);
 					PCB_DAD_END(shp->dlg);
 
@@ -170,7 +170,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, pc
 						PCB_DAD_COORD(shp->dlg, "");
 							shp->prx = PCB_DAD_CURRENT(shp->dlg);
 							PCB_DAD_MINMAX(shp->dlg, 0, maxr);
-							PCB_DAD_DEFAULT_VAL(shp->dlg, mm2);
+							PCB_DAD_DEFAULT_NUM(shp->dlg, mm2);
 							PCB_DAD_CHANGE_CB(shp->dlg, shp_chg_regpoly);
 						PCB_DAD_LABEL(shp->dlg, "x (horizontal)");
 					PCB_DAD_END(shp->dlg);
@@ -180,7 +180,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, pc
 						PCB_DAD_COORD(shp->dlg, "");
 							shp->pry = PCB_DAD_CURRENT(shp->dlg);
 							PCB_DAD_MINMAX(shp->dlg, 0, maxr);
-							PCB_DAD_DEFAULT_VAL(shp->dlg, mm2);
+							PCB_DAD_DEFAULT_NUM(shp->dlg, mm2);
 							PCB_DAD_CHANGE_CB(shp->dlg, shp_chg_regpoly);
 						PCB_DAD_LABEL(shp->dlg, "y (vertical)");
 					PCB_DAD_END(shp->dlg);
@@ -234,7 +234,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, pc
 						PCB_DAD_COORD(shp->dlg, "");
 							shp->w = PCB_DAD_CURRENT(shp->dlg);
 							PCB_DAD_MINMAX(shp->dlg, 0, maxr);
-							PCB_DAD_DEFAULT_VAL(shp->dlg, mm2);
+							PCB_DAD_DEFAULT_NUM(shp->dlg, mm2);
 							PCB_DAD_CHANGE_CB(shp->dlg, shp_chg_roundrect);
 						PCB_DAD_LABEL(shp->dlg, "width (horizontal)");
 					PCB_DAD_END(shp->dlg);
@@ -244,7 +244,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, pc
 						PCB_DAD_COORD(shp->dlg, "");
 							shp->h = PCB_DAD_CURRENT(shp->dlg);
 							PCB_DAD_MINMAX(shp->dlg, 0, maxr);
-							PCB_DAD_DEFAULT_VAL(shp->dlg, mm2);
+							PCB_DAD_DEFAULT_NUM(shp->dlg, mm2);
 							PCB_DAD_CHANGE_CB(shp->dlg, shp_chg_roundrect);
 						PCB_DAD_LABEL(shp->dlg, "height (vertical)");
 					PCB_DAD_END(shp->dlg);
@@ -262,7 +262,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, pc
 						PCB_DAD_COORD(shp->dlg, "");
 							shp->rx = PCB_DAD_CURRENT(shp->dlg);
 							PCB_DAD_MINMAX(shp->dlg, 0, maxr);
-							PCB_DAD_DEFAULT_VAL(shp->dlg, mm2);
+							PCB_DAD_DEFAULT_NUM(shp->dlg, mm2);
 							PCB_DAD_CHANGE_CB(shp->dlg, shp_chg_roundrect);
 						PCB_DAD_LABEL(shp->dlg, "x (horizontal)");
 					PCB_DAD_END(shp->dlg);
@@ -272,7 +272,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, pc
 						PCB_DAD_COORD(shp->dlg, "");
 							shp->ry = PCB_DAD_CURRENT(shp->dlg);
 							PCB_DAD_MINMAX(shp->dlg, 0, maxr);
-							PCB_DAD_DEFAULT_VAL(shp->dlg, mm2);
+							PCB_DAD_DEFAULT_NUM(shp->dlg, mm2);
 							PCB_DAD_CHANGE_CB(shp->dlg, shp_chg_roundrect);
 						PCB_DAD_LABEL(shp->dlg, "y (vertical)");
 					PCB_DAD_END(shp->dlg);
@@ -291,7 +291,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, pc
 							shp->rres = PCB_DAD_CURRENT(shp->dlg);
 							PCB_DAD_MINVAL(shp->dlg, 0.1);
 							PCB_DAD_MAXVAL(shp->dlg, 5);
-							PCB_DAD_DEFAULT_VAL(shp->dlg, 1);
+							PCB_DAD_DEFAULT_NUM(shp->dlg, 1);
 							PCB_DAD_CHANGE_CB(shp->dlg, shp_chg_roundrect);
 					PCB_DAD_END(shp->dlg);
 
@@ -351,7 +351,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, pc
 					PCB_DAD_COORD(shp->dlg, "");
 						shp->dia = PCB_DAD_CURRENT(shp->dlg);
 						PCB_DAD_MINMAX(shp->dlg, 0, maxr);
-						PCB_DAD_DEFAULT_VAL(shp->dlg, mm2);
+						PCB_DAD_DEFAULT_NUM(shp->dlg, mm2);
 						PCB_DAD_CHANGE_CB(shp->dlg, shp_chg_circle);
 				PCB_DAD_END(shp->dlg);
 
