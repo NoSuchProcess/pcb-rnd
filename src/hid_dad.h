@@ -332,6 +332,8 @@ do { \
 #define PCB_DAD_MINVAL(table, val)       PCB_DAD_SET_ATTR_FIELD(table, min_val, val)
 #define PCB_DAD_MAXVAL(table, val)       PCB_DAD_SET_ATTR_FIELD(table, max_val, val)
 #define PCB_DAD_DEFAULT(table, val)      PCB_DAD_SET_ATTR_FIELD_VAL(table, default_val, val)
+#define PCB_DAD_DEFAULT_PTR(table, val)  PCB_DAD_SET_ATTR_FIELD_PTR(table, default_val, val)
+#define PCB_DAD_DEFAULT_VAL(table, val)  PCB_DAD_SET_ATTR_FIELD_VAL(table, default_val, val)
 #define PCB_DAD_MINMAX(table, min, max)  (PCB_DAD_SET_ATTR_FIELD(table, min_val, min),PCB_DAD_SET_ATTR_FIELD(table, max_val, max))
 #define PCB_DAD_CHANGE_CB(table, cb)     PCB_DAD_SET_ATTR_FIELD(table, change_cb, cb)
 #define PCB_DAD_ENTER_CB(table, cb)      PCB_DAD_SET_ATTR_FIELD(table, enter_cb, cb)
@@ -419,6 +421,86 @@ do { \
 			break; \
 		case PCB_HATT_COLOR: \
 			table[table ## _len - 1].field.clr_value = *(pcb_color_t *)val; \
+			break; \
+		case PCB_HATT_BEGIN_HBOX: \
+		case PCB_HATT_BEGIN_VBOX: \
+		case PCB_HATT_BEGIN_TABLE: \
+		case PCB_HATT_END: \
+		case PCB_HATT_PREVIEW: \
+		case PCB_HATT_PICTURE: \
+		case PCB_HATT_PICBUTTON: \
+			assert(0); \
+	} \
+} while(0)
+
+#define PCB_DAD_SET_ATTR_FIELD_NUM(table, field, val) \
+do { \
+	switch(table[table ## _len - 1].type) { \
+		case PCB_HATT_LABEL: \
+			assert(0); \
+			break; \
+		case PCB_HATT_INTEGER: \
+		case PCB_HATT_BOOL: \
+		case PCB_HATT_ENUM: \
+		case PCB_HATT_UNIT: \
+		case PCB_HATT_BEGIN_TABBED: \
+			table[table ## _len - 1].field.int_value = (int)val; \
+			break; \
+		case PCB_HATT_COORD: \
+			table[table ## _len - 1].field.coord_value = (pcb_coord_t)val; \
+			break; \
+		case PCB_HATT_REAL: \
+		case PCB_HATT_PROGRESS: \
+		case PCB_HATT_BEGIN_HPANE: \
+		case PCB_HATT_BEGIN_VPANE: \
+			table[table ## _len - 1].field.real_value = (double)val; \
+			break; \
+		case PCB_HATT_STRING: \
+		case PCB_HATT_TEXT: \
+		case PCB_HATT_PATH: \
+		case PCB_HATT_BUTTON: \
+		case PCB_HATT_TREE: \
+		case PCB_HATT_COLOR: \
+			assert(!"please use the _PTR() variant instead of the _NUM() variant"); \
+			break; \
+		case PCB_HATT_BEGIN_HBOX: \
+		case PCB_HATT_BEGIN_VBOX: \
+		case PCB_HATT_BEGIN_TABLE: \
+		case PCB_HATT_END: \
+		case PCB_HATT_PREVIEW: \
+		case PCB_HATT_PICTURE: \
+		case PCB_HATT_PICBUTTON: \
+			assert(0); \
+	} \
+} while(0)
+
+#define PCB_DAD_SET_ATTR_FIELD_PTR(table, field, val) \
+do { \
+	switch(table[table ## _len - 1].type) { \
+		case PCB_HATT_LABEL: \
+			assert(0); \
+			break; \
+		case PCB_HATT_INTEGER: \
+		case PCB_HATT_BOOL: \
+		case PCB_HATT_ENUM: \
+		case PCB_HATT_UNIT: \
+		case PCB_HATT_BEGIN_TABBED: \
+		case PCB_HATT_COORD: \
+		case PCB_HATT_REAL: \
+		case PCB_HATT_PROGRESS: \
+		case PCB_HATT_BEGIN_HPANE: \
+		case PCB_HATT_BEGIN_VPANE: \
+			assert(!"please use the _PTR() variant instead of the _NUM() variant"); \
+			break; \
+		case PCB_HATT_STRING: \
+		case PCB_HATT_TEXT: \
+		case PCB_HATT_PATH: \
+		case PCB_HATT_BUTTON: \
+		case PCB_HATT_TREE: \
+			table[table ## _len - 1].field.str_value = (char *)val; \
+			break; \
+		case PCB_HATT_COLOR: \
+			table[table ## _len - 1].field.clr_value = *((pcb_color_t *)val); \
 			break; \
 		case PCB_HATT_BEGIN_HBOX: \
 		case PCB_HATT_BEGIN_VBOX: \
