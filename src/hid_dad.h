@@ -331,7 +331,6 @@ do { \
 /* Set properties of the current item */
 #define PCB_DAD_MINVAL(table, val)       PCB_DAD_SET_ATTR_FIELD(table, min_val, val)
 #define PCB_DAD_MAXVAL(table, val)       PCB_DAD_SET_ATTR_FIELD(table, max_val, val)
-#define PCB_DAD_DEFAULT(table, val)      PCB_DAD_SET_ATTR_FIELD_VAL(table, default_val, val)
 #define PCB_DAD_DEFAULT_PTR(table, val)  PCB_DAD_SET_ATTR_FIELD_PTR(table, default_val, val)
 #define PCB_DAD_DEFAULT_VAL(table, val)  PCB_DAD_SET_ATTR_FIELD_VAL(table, default_val, val)
 #define PCB_DAD_MINMAX(table, min, max)  (PCB_DAD_SET_ATTR_FIELD(table, min_val, min),PCB_DAD_SET_ATTR_FIELD(table, max_val, max))
