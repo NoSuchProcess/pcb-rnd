@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 
 #include "board.h"
 #include "stub_draw.h"
+#include "idpath.h"
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
@@ -33,7 +34,7 @@ typedef struct{
 	int wprev;
 	int active;
 
-	pcb_text_t *txt_obj;
+	pcb_idpath_t *txt_id;
 } fontsel_ctx_t;
 
 fontsel_ctx_t fontsel_ctx;
@@ -43,6 +44,9 @@ static void fontsel_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	fontsel_ctx_t *ctx = caller_data;
 
+	if (ctx->txt_id != NULL)
+		pcb_idpath_destroy(ctx->txt_id);
+
 	PCB_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(fontsel_ctx_t));
 }
@@ -50,13 +54,27 @@ static void fontsel_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 void fontsel_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
 	fontsel_ctx_t *ctx = prv->user_ctx;
-	pcb_stub_draw_fontsel(gc, e, ctx->txt_obj);
+
+	if (ctx->txt_id != NULL) {
+		pcb_text_t *txt = (pcb_text_t *)pcb_idpath2obj(ctx->pcb->Data, ctx->txt_id);
+		if (txt != NULL)
+			pcb_stub_draw_fontsel(gc, e, txt);
+	}
+	else
+		pcb_stub_draw_fontsel(gc, e, NULL);
 }
 
 pcb_bool fontsel_mouse_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
 {
 	fontsel_ctx_t *ctx = prv->user_ctx;
-	return pcb_stub_draw_fontsel_mouse_ev(kind, x, y, ctx->txt_obj);
+
+	if (ctx->txt_id != NULL) {
+		pcb_text_t *txt = (pcb_text_t *)pcb_idpath2obj(ctx->pcb->Data, ctx->txt_id);
+		if (txt == NULL)
+			return 0;
+		return pcb_stub_draw_fontsel_mouse_ev(kind, x, y, txt);
+	}
+	return pcb_stub_draw_fontsel_mouse_ev(kind, x, y, NULL);
 }
 
 void fontsel_free_cb(pcb_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx)
@@ -109,7 +127,10 @@ static void pcb_dlg_fontsel(pcb_board_t *pcb, int modal, pcb_text_t *txt_obj)
 		return; /* do not open another */
 
 	fontsel_ctx.pcb = pcb;
-	fontsel_ctx.txt_obj = txt_obj;
+	if (txt_obj != NULL)
+		fontsel_ctx.txt_id = pcb_obj2idpath(txt_obj);
+	else
+		fontsel_ctx.txt_id = NULL;
 	PCB_DAD_BEGIN_VBOX(fontsel_ctx.dlg);
 		PCB_DAD_COMPFLAG(fontsel_ctx.dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_PREVIEW(fontsel_ctx.dlg, fontsel_expose_cb, fontsel_mouse_cb, fontsel_free_cb, &vbox, 200, 200, &fontsel_ctx);
