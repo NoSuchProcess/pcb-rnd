@@ -51,6 +51,7 @@ enum {
 #include "layer.h"
 #include "layer_grp.h"
 #include "library.h"
+#include "netlist2.h"
 #include "attrib.h"
 #include "rats_patch.h"
 #include "font.h"
@@ -85,6 +86,8 @@ struct pcb_board_s {
 	pcb_layer_stack_t LayerGroups;
 	vtroutestyle_t RouteStyle;
 	pcb_lib_t NetlistLib[PCB_NUM_NETLISTS];
+	pcb_netlist_t netlist[PCB_NUM_NETLISTS];
+	/* htsp_t netlist_subc[PCB_NUM_NETLISTS]; hierarchic netlists */
 	pcb_ratspatch_line_t *NetlistPatches, *NetlistPatchLast;
 	pcb_attribute_list_t Attributes;
 

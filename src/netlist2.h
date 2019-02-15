@@ -24,14 +24,14 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#ifndef PCB_NETLIST2_H
+#define PCB_NETLIST2_H
+
 #include <genht/htsp.h>
 #include <genlist/gendlist.h>
 #include "obj_common.h"
 
 typedef htsp_t pcb_netlist_t;
-
-typedef struct pcb_net_term_s pcb_net_term_t;
-
 
 struct pcb_net_term_s {
 	PCB_ANY_OBJ_FIELDS;
@@ -133,3 +133,5 @@ void pcb_net_free_fields(pcb_net_t *net);
 void pcb_net_free(pcb_net_t *net);
 void pcb_net_term_free_fields(pcb_net_term_t *term);
 void pcb_net_term_free(pcb_net_term_t *term);
+
+#endif
