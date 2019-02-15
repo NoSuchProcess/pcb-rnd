@@ -54,7 +54,7 @@ pcb_net_term_t *pcb_net_term_get(pcb_net_t *net, const char *refdes, const char 
 
 	/* for allocation this is slow, O(N^2) algorithm, but other than a few
 	   biggish networks like GND, there won't be too many connections anyway) */
-	for(t = pcb_termlist_first(&net->conns); t != NULL; ) {
+	for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
 		if ((strcmp(t->refdes, refdes) == 0) && (strcmp(t->term, term) == 0))
 			return t;
 	}
@@ -69,6 +69,26 @@ pcb_net_term_t *pcb_net_term_get(pcb_net_t *net, const char *refdes, const char 
 	}
 
 	return NULL;
+}
+
+
+int pcb_net_term_del(pcb_net_t *net, pcb_net_term_t *term)
+{
+	pcb_termlist_remove(term);
+	pcb_net_term_free(term);
+	return 0;
+}
+
+
+int pcb_net_term_del_by_name(pcb_net_t *net, const char *refdes, const char *term)
+{
+	pcb_net_term_t *t;
+
+	for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t))
+		if ((strcmp(t->refdes, refdes) == 0) && (strcmp(t->term, term) == 0))
+			return pcb_net_term_del(net, t);
+
+	return -1;
 }
 
 pcb_bool pcb_net_name_valid(const char *netname)

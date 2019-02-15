@@ -78,6 +78,10 @@ int pcb_net_del(pcb_netlist_t *nl, const char *netname);
 /* Look up (or allocate) a terminal within a net. Returns NULL on error */
 pcb_net_term_t *pcb_net_term_get(pcb_net_t *net, const char *refdes, const char *term, pcb_bool alloc);
 
+/* Remove term from its net and free all fields and term itself */
+int pcb_net_term_del(pcb_net_t *net, pcb_net_term_t *term);
+int pcb_net_term_del_by_name(pcb_net_t *net, const char *refdes, const char *term);
+
 
 pcb_bool pcb_net_name_valid(const char *netname);
 
@@ -85,3 +89,5 @@ pcb_bool pcb_net_name_valid(const char *netname);
 /*** Internal ***/
 void pcb_net_free_fields(pcb_net_t *net);
 void pcb_net_free(pcb_net_t *net);
+void pcb_net_term_free_fields(pcb_net_term_t *term);
+void pcb_net_term_free(pcb_net_term_t *term);
