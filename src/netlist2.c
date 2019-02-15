@@ -28,7 +28,10 @@
 #include <genht/htsp.h>
 #include <genht/hash.h>
 #include <ctype.h>
+#include "board.h"
 #include "compat_misc.h"
+#include "find.h"
+#include "obj_term.h"
 
 #define TDL_DONT_UNDEF
 #include "netlist2.h"
@@ -162,6 +165,39 @@ int pcb_net_del(pcb_netlist_t *nl, const char *netname)
 
 	htsp_delentry(nl, e);
 	return 0;
+}
+
+static pcb_cardinal_t pcb_net_term_crawl_flag(pcb_board_t *pcb, pcb_net_term_t *term, pcb_find_t *fctx)
+{
+	pcb_any_obj_t *o;
+	unsigned long res;
+
+/* there can be multiple terminals with the same ID, but it is enough to run find from the first: find.c will consider them all */
+	o = pcb_term_find_name(pcb, pcb->Data, PCB_LYT_COPPER, term->refdes, term->term, 0, NULL, NULL);
+	if (o == NULL)
+		return 0;
+
+	res = pcb_find_from_obj(fctx, PCB->Data, o);
+	return res;
+}
+
+pcb_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned long setf, unsigned long clrf)
+{
+	pcb_find_t fctx;
+	pcb_net_term_t *t;
+	pcb_cardinal_t res = 0;
+
+	memset(&fctx, 0, sizeof(fctx));
+	fctx.flag_set = setf;
+	fctx.flag_clr = clrf;
+	fctx.flag_chg_undoable = 1;
+	fctx.consider_rats = 0;
+
+	for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t))
+		res += pcb_net_term_crawl_flag(pcb, t, &fctx);
+
+	pcb_find_free(&fctx);
+	return res;
 }
 
 void pcb_netlist_init(pcb_netlist_t *nl)

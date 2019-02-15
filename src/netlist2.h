@@ -83,6 +83,10 @@ int pcb_net_term_del(pcb_net_t *net, pcb_net_term_t *term);
 int pcb_net_term_del_by_name(pcb_net_t *net, const char *refdes, const char *term);
 
 
+/* Crawl a net and clear&set flags on each object belonging to the net
+   and. Return the number of objects found */
+pcb_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned long setf, unsigned long clrf);
+
 pcb_bool pcb_net_name_valid(const char *netname);
 
 
