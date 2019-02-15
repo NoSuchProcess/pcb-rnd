@@ -63,5 +63,14 @@ struct pcb_net_s {
 };
 
 
+/* Look up (or allocate) a net by name within a netlist. Returns NULL on error */
 pcb_net_t *pcb_net_get(pcb_netlist_t *nl, const char *netname, pcb_bool alloc);
 
+/* Remove a net from a netlist by namel returns 0 on removal, -1 on error */
+int pcb_net_del(pcb_netlist_t *nl, const char *netname);
+
+
+
+/*** Internal ***/
+void pcb_net_free_fields(pcb_net_t *net);
+void pcb_net_free(pcb_net_t *net);

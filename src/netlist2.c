@@ -40,6 +40,8 @@ pcb_net_t *pcb_net_get(pcb_netlist_t *nl, const char *netname, pcb_bool alloc)
 	if (nl == NULL)
 		return NULL;
 
+	TODO("Validate net name");
+
 	net = htsp_get(nl, netname);
 	if (net != NULL)
 		return net;
@@ -52,5 +54,34 @@ pcb_net_t *pcb_net_get(pcb_netlist_t *nl, const char *netname, pcb_bool alloc)
 		return net;
 	}
 	return NULL;
+}
+
+void pcb_net_free_fields(pcb_net_t *net)
+{
+	free(net->name);
+TODO("netlist: free connections");
+}
+
+void pcb_net_free(pcb_net_t *net)
+{
+	pcb_net_free_fields(net);
+	free(net);
+}
+
+int pcb_net_del(pcb_netlist_t *nl, const char *netname)
+{
+	htsp_entry_t *e;
+
+	if (nl == NULL)
+		return -1;
+
+	e = htsp_getentry(nl, netname);
+	if (e == NULL)
+		return -1;
+
+	pcb_net_free(e->value);
+
+	htsp_delentry(nl, e);
+	return 0;
 }
 
