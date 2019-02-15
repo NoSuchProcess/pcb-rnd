@@ -34,6 +34,7 @@
 #include <string.h>
 
 #include "board.h"
+#include "brave.h"
 #include "error.h"
 #include "plug_io.h"
 #include "find.h"
@@ -43,6 +44,7 @@
 #include "netlist.h"
 #include "event.h"
 #include "data.h"
+#include "netlist2.h"
 
 #define STEP_POINT 100
 
@@ -130,21 +132,32 @@ static unsigned long pcb_netlist_setclrflg(pcb_lib_menu_t *net, pcb_lib_entry_t 
 
 void pcb_netlist_find(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
 {
-	pcb_netlist_setclrflg(net, pin, PCB_FLAG_FOUND, 0);
+	if (pcb_brave & PCB_BRAVE_NETLIST2)
+		pcb_net_crawl_flag(PCB, pcb_net_get(PCB, &PCB->netlist[0], net->Name+2, 0), PCB_FLAG_FOUND, 0);
+	else
+		pcb_netlist_setclrflg(net, pin, PCB_FLAG_FOUND, 0);
 }
 
 void pcb_netlist_select(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
 {
-	pcb_netlist_setclrflg(net, pin, PCB_FLAG_SELECTED, 0);
+	if (pcb_brave & PCB_BRAVE_NETLIST2)
+		pcb_net_crawl_flag(PCB, pcb_net_get(PCB, &PCB->netlist[0], net->Name+2, 0), PCB_FLAG_SELECTED, 0);
+	else
+		pcb_netlist_setclrflg(net, pin, PCB_FLAG_SELECTED, 0);
 }
 
 void pcb_netlist_unselect(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
 {
+	if (pcb_brave & PCB_BRAVE_NETLIST2)
+		pcb_net_crawl_flag(PCB, pcb_net_get(PCB, &PCB->netlist[0], net->Name+2, 0), 0, PCB_FLAG_SELECTED);
+	else
 	pcb_netlist_setclrflg(net, pin, 0, PCB_FLAG_SELECTED);
 }
 
 void pcb_netlist_rats(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
 {
+	if (pcb_brave & PCB_BRAVE_NETLIST2)
+		pcb_net_get(PCB, &PCB->netlist[0], net->Name+2, 0)->inhibit_rats = 0;
 	net->Name[0] = ' ';
 	net->flag = 1;
 	pcb_netlist_changed(0);
@@ -152,6 +165,8 @@ void pcb_netlist_rats(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
 
 void pcb_netlist_norats(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
 {
+	if (pcb_brave & PCB_BRAVE_NETLIST2)
+		pcb_net_get(PCB, &PCB->netlist[0], net->Name+2, 0)->inhibit_rats = 1;
 	net->Name[0] = '*';
 	net->flag = 0;
 	pcb_netlist_changed(0);
