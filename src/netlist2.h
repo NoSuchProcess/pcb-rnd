@@ -77,9 +77,11 @@ pcb_net_t *pcb_net_get(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname,
 /* Remove a net from a netlist by namel returns 0 on removal, -1 on error */
 int pcb_net_del(pcb_netlist_t *nl, const char *netname);
 
-/* Look up (or allocate) a terminal within a net. Returns NULL on error */
+/* Look up (or allocate) a terminal within a net. Pinname is "refdes-termid".
+   Returns NULL on error */
 pcb_net_term_t *pcb_net_term_get(pcb_net_t *net, const char *refdes, const char *term, pcb_bool alloc);
 pcb_net_term_t *pcb_net_term_get_by_obj(pcb_net_t *net, const pcb_any_obj_t *obj);
+pcb_net_term_t *pcb_net_term_get_by_pinname(pcb_net_t *net, const char *pinname, pcb_bool alloc);
 
 /* Remove term from its net and free all fields and term itself */
 int pcb_net_term_del(pcb_net_t *net, pcb_net_term_t *term);

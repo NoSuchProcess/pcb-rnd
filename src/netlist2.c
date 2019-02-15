@@ -102,6 +102,35 @@ pcb_net_term_t *pcb_net_term_get_by_obj(pcb_net_t *net, const pcb_any_obj_t *obj
 	return pcb_net_term_get(net, sc->refdes, obj->term, pcb_false);
 }
 
+pcb_net_term_t *pcb_net_term_get_by_pinname(pcb_net_t *net, const char *pinname, pcb_bool alloc)
+{
+	char tmp[256];
+	char *pn, *refdes, *term;
+	int len = strlen(pinname)+1;
+	pcb_net_term_t *t = NULL;
+
+	if (len <= sizeof(tmp)) {
+		pn = tmp;
+		memcpy(pn, pinname, len);
+	}
+	else
+		pn = pcb_strdup(pinname);
+	
+
+	refdes = pn;
+	term = strchr(refdes, '-');
+	if (term != NULL) {
+		*term = '\0';
+		term++;
+		t = pcb_net_term_get(net, refdes, term, alloc);
+	}
+
+	if (pn != tmp)
+		free(pn);
+	return t;
+
+}
+
 
 int pcb_net_term_del(pcb_net_t *net, pcb_net_term_t *term)
 {
