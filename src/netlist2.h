@@ -59,6 +59,7 @@ struct pcb_net_term_s {
 struct pcb_net_s {
 	PCB_ANY_OBJ_FIELDS;
 	char *name;
+	pcb_cardinal_t export_tmp; /* filled in and used by export code; valid only until the end of exporting */
 	unsigned inhibit_rats:1;
 	pcb_termlist_t conns;
 };
