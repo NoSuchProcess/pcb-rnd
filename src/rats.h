@@ -59,7 +59,7 @@ pcb_bool pcb_rat_seek_pad(pcb_lib_entry_t * entry, pcb_connection_t * conn, pcb_
 
 
 /* Read the library-netlist and build a pcb_true Netlist structure */
-pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu);
+pcb_oldnetlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu);
 
 pcb_netlist_list_t pcb_rat_collect_subnets(pcb_bool SelectedOnly);
 

@@ -78,7 +78,7 @@
 }
 #define EXPANDRECT(r1, r2) EXPANDRECTXY(r1, r2->X1, r2->Y1, r2->X2, r2->Y2)
 
-static double ComputeCost(pcb_netlist_t *Nets, double T0, double T);
+static double ComputeCost(pcb_oldnetlist_t *Nets, double T0, double T);
 
 const struct {
 	double via_cost;
@@ -162,7 +162,7 @@ static void pcb_box_free(pcb_box_list_t *Boxlist)
  * Update the X, Y and group position information stored in the NetList after
  * subcircuits have possibly been moved, rotated, flipped, etc.
  */
-static void UpdateXY(pcb_netlist_t *Nets)
+static void UpdateXY(pcb_oldnetlist_t *Nets)
 {
 	pcb_layergrp_id_t SLayer = -1, CLayer = -1;
 	pcb_cardinal_t i, j;
@@ -333,7 +333,7 @@ static int pstk_ispad(pcb_pstk_t *ps)
  *  "Placement and Routing of Electronic Modules" edited by Michael Pecht
  *  Marcel Dekker, Inc. 1993.  ISBN: 0-8247-8916-4 TK7868.P7.P57 1993
  */
-static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
+static double ComputeCost(pcb_oldnetlist_t *Nets, double T0, double T)
 {
 	double W = 0;									/* wire cost */
 	double delta1 = 0;						/* wire congestion penalty function */
@@ -737,7 +737,7 @@ void doPerturb(vtp0_t *selected, PerturbationType *pt, pcb_bool undo)
  */
 pcb_bool AutoPlaceSelected(void)
 {
-	pcb_netlist_t *Nets;
+	pcb_oldnetlist_t *Nets;
 	vtp0_t Selected;
 	PerturbationType pt;
 	double C00, C0, T0;

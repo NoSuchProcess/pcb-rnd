@@ -263,7 +263,7 @@ pcb_cardinal_t pcb_netlist_net_idx(pcb_board_t *pcb, pcb_lib_menu_t *net)
 /* ---------------------------------------------------------------------------
  * get next slot for a subnet, allocates memory if necessary
  */
-pcb_oldnet_t *pcb_net_new(pcb_board_t *pcb, pcb_netlist_t *Netlist)
+pcb_oldnet_t *pcb_net_new(pcb_board_t *pcb, pcb_oldnetlist_t *Netlist)
 {
 	pcb_oldnet_t *net = Netlist->Net;
 
@@ -284,16 +284,16 @@ pcb_oldnet_t *pcb_net_new(pcb_board_t *pcb, pcb_netlist_t *Netlist)
 /* ---------------------------------------------------------------------------
  * get next slot for a net list, allocates memory if necessary
  */
-pcb_netlist_t *pcb_netlist_new(pcb_netlist_list_t *Netlistlist)
+pcb_oldnetlist_t *pcb_netlist_new(pcb_netlist_list_t *Netlistlist)
 {
-	pcb_netlist_t *netlist = Netlistlist->NetList;
+	pcb_oldnetlist_t *netlist = Netlistlist->NetList;
 
 	/* realloc new memory if necessary and clear it */
 	if (Netlistlist->NetListN >= Netlistlist->NetListMax) {
 		Netlistlist->NetListMax += STEP_POINT;
-		netlist = (pcb_netlist_t *) realloc(netlist, Netlistlist->NetListMax * sizeof(pcb_netlist_t));
+		netlist = (pcb_oldnetlist_t *) realloc(netlist, Netlistlist->NetListMax * sizeof(pcb_oldnetlist_t));
 		Netlistlist->NetList = netlist;
-		memset(netlist + Netlistlist->NetListN, 0, STEP_POINT * sizeof(pcb_netlist_t));
+		memset(netlist + Netlistlist->NetListN, 0, STEP_POINT * sizeof(pcb_oldnetlist_t));
 	}
 	return (netlist + Netlistlist->NetListN++);
 }
@@ -301,7 +301,7 @@ pcb_netlist_t *pcb_netlist_new(pcb_netlist_list_t *Netlistlist)
 /* ---------------------------------------------------------------------------
  * frees memory used by a net
  */
-void pcb_netlist_free(pcb_netlist_t *Netlist)
+void pcb_netlist_free(pcb_oldnetlist_t *Netlist)
 {
 	if (Netlist) {
 		PCB_NET_LOOP(Netlist);
@@ -310,7 +310,7 @@ void pcb_netlist_free(pcb_netlist_t *Netlist)
 		}
 		PCB_END_LOOP;
 		free(Netlist->Net);
-		memset(Netlist, 0, sizeof(pcb_netlist_t));
+		memset(Netlist, 0, sizeof(pcb_oldnetlist_t));
 	}
 }
 

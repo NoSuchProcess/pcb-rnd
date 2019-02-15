@@ -113,7 +113,7 @@ static const char pcb_acth_smartdisperse[] = "Disperse subcircuits into clusters
 static fgw_error_t pcb_act_smartdisperse(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op = -2;
-	pcb_netlist_t *Nets;
+	pcb_oldnetlist_t *Nets;
 	htpi_t visited;
 	int all;
 

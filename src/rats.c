@@ -63,10 +63,10 @@
 #define BESTFOUND 0x2
 
 static pcb_bool ParseConnection(const char *, char *, char *);
-static pcb_bool DrawShortestRats(pcb_netlist_t *,
+static pcb_bool DrawShortestRats(pcb_oldnetlist_t *,
 														 void (*)(register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *));
 static pcb_bool CheckShorts(pcb_lib_menu_t *);
-static void TransferNet(pcb_netlist_t *, pcb_oldnet_t *, pcb_oldnet_t *);
+static void TransferNet(pcb_oldnetlist_t *, pcb_oldnet_t *, pcb_oldnet_t *);
 
 static pcb_bool badnet = pcb_false;
 static pcb_layergrp_id_t Sgrp = -1, Cgrp = -1; /* layer group holding solder/component side */
@@ -210,12 +210,12 @@ static void clear_drc_flag(int clear_ratconn)
 	}
 }
 
-pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
+pcb_oldnetlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 {
 	pcb_connection_t *connection;
 	pcb_connection_t LastPoint;
 	pcb_oldnet_t *net;
-	static pcb_netlist_t *Wantlist = NULL;
+	static pcb_oldnetlist_t *Wantlist = NULL;
 
 	if (!net_menu->MenuN)
 		return NULL;
@@ -228,7 +228,7 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &Sgrp, 1);
 	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &Cgrp, 1);
 
-	Wantlist = (pcb_netlist_t *) calloc(1, sizeof(pcb_netlist_t));
+	Wantlist = (pcb_oldnetlist_t *) calloc(1, sizeof(pcb_oldnetlist_t));
 	if (Wantlist) {
 		clear_drc_flag(1);
 		PCB_MENU_LOOP(net_menu);
@@ -287,7 +287,7 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 }
 
 /* copy all connections from one net into another and then remove the first net from its netlist */
-static void TransferNet(pcb_netlist_t *Netl, pcb_oldnet_t *SourceNet, pcb_oldnet_t *DestNet)
+static void TransferNet(pcb_oldnetlist_t *Netl, pcb_oldnet_t *SourceNet, pcb_oldnet_t *DestNet)
 {
 	pcb_connection_t *conn;
 
@@ -429,7 +429,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 	return warn;
 }
 
-static void gather_subnet_objs(pcb_data_t *data, pcb_netlist_t *Netl, pcb_oldnet_t *a)
+static void gather_subnet_objs(pcb_data_t *data, pcb_oldnetlist_t *Netl, pcb_oldnet_t *a)
 {
 	pcb_connection_t *conn;
 
@@ -504,7 +504,7 @@ TODO("term: and what about arcs and text?")
 /* Determine existing interconnections of the net and gather into sub-nets.
  * Initially the netlist has each connection in its own individual net
  * afterwards there can be many fewer nets with multiple connections each */
-static pcb_bool gather_subnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool AndRats)
+static pcb_bool gather_subnets(pcb_oldnetlist_t *Netl, pcb_bool NoWarn, pcb_bool AndRats)
 {
 	pcb_oldnet_t *a, *b;
 	pcb_bool Warned = pcb_false;
@@ -548,7 +548,7 @@ static pcb_bool gather_subnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool An
  * state for the net, with each Netl->Net[N] representing one
  * copper-connected subset of the net. */
 static pcb_bool
-DrawShortestRats(pcb_netlist_t *Netl,
+DrawShortestRats(pcb_oldnetlist_t *Netl,
 								 void (*funcp) (register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *))
 {
 	pcb_rat_t *line;
@@ -694,7 +694,7 @@ pcb_bool
 pcb_rat_add_all(pcb_bool SelectedOnly,
 					 void (*funcp) (register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *))
 {
-	pcb_netlist_t *Nets, *Wantlist;
+	pcb_oldnetlist_t *Nets, *Wantlist;
 	pcb_oldnet_t *lonesome;
 	pcb_connection_t *onepin;
 	pcb_bool changed, Warned = pcb_false;
@@ -711,7 +711,7 @@ pcb_rat_add_all(pcb_bool SelectedOnly,
 	}
 	changed = pcb_false;
 	/* initialize finding engine */
-	Nets = (pcb_netlist_t *) calloc(1, sizeof(pcb_netlist_t));
+	Nets = (pcb_oldnetlist_t *) calloc(1, sizeof(pcb_oldnetlist_t));
 	/* now we build another netlist (Nets) for each
 	 * net in Wantlist that shows how it actually looks now,
 	 * then fill in any missing connections with rat lines.
@@ -777,7 +777,7 @@ pcb_rat_add_all(pcb_bool SelectedOnly,
 pcb_netlist_list_t pcb_rat_collect_subnets(pcb_bool SelectedOnly)
 {
 	pcb_netlist_list_t result = { 0, 0, NULL };
-	pcb_netlist_t *Nets, *Wantlist;
+	pcb_oldnetlist_t *Nets, *Wantlist;
 	pcb_oldnet_t *lonesome;
 	pcb_connection_t *onepin;
 
