@@ -25,13 +25,32 @@
  */
 
 #include "config.h"
-
 #include <genht/htsp.h>
-
+#include "compat_misc.h"
 
 #define TDL_DONT_UNDEF
 #include "netlist2.h"
 
 #include <genlist/gentdlist_impl.c>
 
+pcb_net_t *pcb_net_get(pcb_netlist_t *nl, const char *netname, pcb_bool alloc)
+{
+	pcb_net_t *net;
+
+	if (nl == NULL)
+		return NULL;
+
+	net = htsp_get(nl, netname);
+	if (net != NULL)
+		return net;
+
+	if (alloc) {
+		net = calloc(sizeof(pcb_net_t *), 1);
+		net->name = pcb_strdup(netname);
+		net->type = PCB_OBJ_NET;
+		htsp_set(nl, net->name, net);
+		return net;
+	}
+	return NULL;
+}
 

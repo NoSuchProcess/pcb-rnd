@@ -61,3 +61,7 @@ struct pcb_net_s {
 	char *name;
 	pcb_termlist_t conns;
 };
+
+
+pcb_net_t *pcb_net_get(pcb_netlist_t *nl, const char *netname, pcb_bool alloc);
+
