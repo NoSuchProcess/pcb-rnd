@@ -99,6 +99,29 @@ pcb_net_term_t *pcb_net_find_by_refdes_term(pcb_netlist_t *nl, const char *refde
 
 pcb_bool pcb_net_name_valid(const char *netname);
 
+/*** looping ***/
+
+typedef struct pcb_net_it_s {
+	pcb_netlist_t *nl;
+	htsp_entry_t *next;
+} pcb_net_it_t;
+
+PCB_INLINE pcb_net_t *pcb_net_next(pcb_net_it_t *it)
+{
+	pcb_net_t *res;
+	if (it->next == NULL)
+		return NULL;
+	res = it->next->value;
+	it->next = htsp_next(it->nl, it->next);
+	return res;
+}
+
+PCB_INLINE pcb_net_t *pcb_net_first(pcb_net_it_t *it, pcb_netlist_t *nl)
+{
+	it->nl = nl;
+	it->next = htsp_first(nl);
+	return pcb_net_next(it);
+}
 
 /*** Internal ***/
 void pcb_net_free_fields(pcb_net_t *net);
