@@ -87,6 +87,7 @@ pcb_net_t *pcb_net_get(pcb_netlist_t *nl, const char *netname, pcb_bool alloc)
 
 void pcb_net_free_fields(pcb_net_t *net)
 {
+	pcb_attribute_free(&net->Attributes);
 	free(net->name);
 	for(;;) {
 		pcb_net_term_t *term = pcb_termlist_first(&net->conns);
