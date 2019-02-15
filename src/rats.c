@@ -66,7 +66,7 @@ static pcb_bool ParseConnection(const char *, char *, char *);
 static pcb_bool DrawShortestRats(pcb_netlist_t *,
 														 void (*)(register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *));
 static pcb_bool CheckShorts(pcb_lib_menu_t *);
-static void TransferNet(pcb_netlist_t *, pcb_net_t *, pcb_net_t *);
+static void TransferNet(pcb_netlist_t *, pcb_oldnet_t *, pcb_oldnet_t *);
 
 static pcb_bool badnet = pcb_false;
 static pcb_layergrp_id_t Sgrp = -1, Cgrp = -1; /* layer group holding solder/component side */
@@ -216,7 +216,7 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 {
 	pcb_connection_t *connection;
 	pcb_connection_t LastPoint;
-	pcb_net_t *net;
+	pcb_oldnet_t *net;
 	static pcb_netlist_t *Wantlist = NULL;
 
 	if (!net_menu->MenuN)
@@ -289,7 +289,7 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 }
 
 /* copy all connections from one net into another and then remove the first net from its netlist */
-static void TransferNet(pcb_netlist_t *Netl, pcb_net_t *SourceNet, pcb_net_t *DestNet)
+static void TransferNet(pcb_netlist_t *Netl, pcb_oldnet_t *SourceNet, pcb_oldnet_t *DestNet)
 {
 	pcb_connection_t *conn;
 
@@ -306,7 +306,7 @@ static void TransferNet(pcb_netlist_t *Netl, pcb_net_t *SourceNet, pcb_net_t *De
 	/* remove SourceNet from its netlist */
 	*SourceNet = Netl->Net[--(Netl->NetN)];
 	/* zero out old garbage */
-	memset(&Netl->Net[Netl->NetN], 0, sizeof(pcb_net_t));
+	memset(&Netl->Net[Netl->NetN], 0, sizeof(pcb_oldnet_t));
 }
 
 static void **found_short(pcb_any_obj_t *parent, pcb_any_obj_t *term, vtp0_t *generic, pcb_lib_menu_t *theNet, void **menu)
@@ -431,7 +431,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 	return warn;
 }
 
-static void gather_subnet_objs(pcb_data_t *data, pcb_netlist_t *Netl, pcb_net_t *a)
+static void gather_subnet_objs(pcb_data_t *data, pcb_netlist_t *Netl, pcb_oldnet_t *a)
 {
 	pcb_connection_t *conn;
 
@@ -508,7 +508,7 @@ TODO("term: and what about arcs and text?")
  * afterwards there can be many fewer nets with multiple connections each */
 static pcb_bool gather_subnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool AndRats)
 {
-	pcb_net_t *a, *b;
+	pcb_oldnet_t *a, *b;
 	pcb_bool Warned = pcb_false;
 	pcb_cardinal_t m, n;
 
@@ -560,7 +560,7 @@ DrawShortestRats(pcb_netlist_t *Netl,
 	pcb_bool changed = pcb_false;
 	pcb_bool havepoints;
 	pcb_cardinal_t n, m, j;
-	pcb_net_t *next, *subnet, *theSubnet = NULL;
+	pcb_oldnet_t *next, *subnet, *theSubnet = NULL;
 
 	/* This is just a sanity check, to make sure we're passed
 	 * *something*.
@@ -697,7 +697,7 @@ pcb_rat_add_all(pcb_bool SelectedOnly,
 					 void (*funcp) (register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *))
 {
 	pcb_netlist_t *Nets, *Wantlist;
-	pcb_net_t *lonesome;
+	pcb_oldnet_t *lonesome;
 	pcb_connection_t *onepin;
 	pcb_bool changed, Warned = pcb_false;
 
@@ -780,7 +780,7 @@ pcb_netlist_list_t pcb_rat_collect_subnets(pcb_bool SelectedOnly)
 {
 	pcb_netlist_list_t result = { 0, 0, NULL };
 	pcb_netlist_t *Nets, *Wantlist;
-	pcb_net_t *lonesome;
+	pcb_oldnet_t *lonesome;
 	pcb_connection_t *onepin;
 
 	/* the netlist library has the text form
@@ -963,7 +963,7 @@ char *pcb_connection_name(pcb_any_obj_t *obj)
 }
 
 /* get next slot for a connection, allocates memory if necessary */
-pcb_connection_t *pcb_rat_connection_alloc(pcb_net_t *Net)
+pcb_connection_t *pcb_rat_connection_alloc(pcb_oldnet_t *Net)
 {
 	pcb_connection_t *con = Net->Connection;
 

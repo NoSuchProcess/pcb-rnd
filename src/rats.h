@@ -63,7 +63,7 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu);
 
 pcb_netlist_list_t pcb_rat_collect_subnets(pcb_bool SelectedOnly);
 
-pcb_connection_t *pcb_rat_connection_alloc(pcb_net_t *Net);
+pcb_connection_t *pcb_rat_connection_alloc(pcb_oldnet_t *Net);
 
 #define PCB_CONNECTION_LOOP(net) do {                         \
         long n;                                               \

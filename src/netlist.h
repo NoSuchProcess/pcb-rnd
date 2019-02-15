@@ -35,7 +35,7 @@
 #include "route_style.h"
 #include "obj_common.h"
 
-struct pcb_net_s {								/* holds a net of connections */
+struct pcb_oldnet_s {								/* holds a net of connections */
 	PCB_ANY_OBJ_FIELDS;
 	pcb_cardinal_t ConnectionN,					/* the number of connections contained */
 	  ConnectionMax;							/* max connections from malloc */
@@ -46,7 +46,7 @@ struct pcb_net_s {								/* holds a net of connections */
 typedef struct {								/* holds a list of nets */
 	pcb_cardinal_t NetN,								/* the number of subnets contained */
 	  NetMax;											/* max subnets from malloc */
-	pcb_net_t *Net;
+	pcb_oldnet_t *Net;
 } pcb_netlist_t;
 
 typedef struct {								/* holds a list of net lists */
@@ -97,11 +97,11 @@ pcb_cardinal_t pcb_netlist_net_idx(pcb_board_t *pcb, pcb_lib_menu_t *net);
 
 #define PCB_NETLIST_INVALID_INDEX ((pcb_cardinal_t)(-1))
 
-pcb_net_t *pcb_net_new(pcb_board_t *pcb, pcb_netlist_t *);
+pcb_oldnet_t *pcb_net_new(pcb_board_t *pcb, pcb_netlist_t *);
 pcb_netlist_t *pcb_netlist_new(pcb_netlist_list_t *);
 void pcb_netlist_list_free(pcb_netlist_list_t *);
 void pcb_netlist_free(pcb_netlist_t *);
-void pcb_net_free(pcb_net_t *);
+void pcb_net_free(pcb_oldnet_t *);
 
 #define PCB_NETLIST_LOOP(top) do   {                            \
         pcb_cardinal_t        n;                                \
@@ -112,7 +112,7 @@ void pcb_net_free(pcb_net_t *);
 
 #define PCB_NET_LOOP(top) do   {                                \
         pcb_cardinal_t        n;                                \
-        pcb_net_t *  net;                                       \
+        pcb_oldnet_t *  net;                                       \
         for (n = (top)->NetN-1; n != -1; n--)                   \
         {                                                       \
                 net = &(top)->Net[n]
