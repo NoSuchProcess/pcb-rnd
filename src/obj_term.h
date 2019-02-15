@@ -39,6 +39,7 @@
 #include <genht/htsp.h>
 #include <genvector/vtp0.h>
 #include "obj_common.h"
+#include "layer.h"
 
 typedef enum pcb_term_err_e {
 	PCB_TERM_ERR_SUCCESS = 0,
