@@ -52,6 +52,8 @@
 #include "layer_vis.h"
 #include "safe_fs.h"
 #include "tool.h"
+#include "netlist2.h"
+
 
 static const char pcb_acts_LoadFrom[] = "LoadFrom(Layout|LayoutToBuffer|SubcToBuffer|Netlist|Revert,filename[,format])";
 static const char pcb_acth_LoadFrom[] = "Load layout data from a file.";

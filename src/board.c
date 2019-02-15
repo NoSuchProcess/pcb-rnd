@@ -40,7 +40,7 @@
 #include "safe_fs.h"
 #include "tool.h"
 #include "layer.h"
-
+#include "netlist2.h"
 
 pcb_board_t *PCB;
 

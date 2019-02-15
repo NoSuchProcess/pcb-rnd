@@ -29,17 +29,15 @@
 #include <genht/hash.h>
 #include <ctype.h>
 
-#define TDL_DONT_UNDEF
-#include "netlist2.h"
-#include <genlist/gentdlist_impl.c>
-#undef TDL_DONT_UNDEF
-#include <genlist/gentdlist_undef.h>
-
 #include "board.h"
 #include "data.h"
 #include "compat_misc.h"
 #include "find.h"
 #include "obj_term.h"
+
+#define TDL_DONT_UNDEF
+#include "netlist2.h"
+#include <genlist/gentdlist_impl.c>
 
 void pcb_net_term_free_fields(pcb_net_term_t *term)
 {

@@ -29,9 +29,8 @@
 
 #include <genht/htsp.h>
 #include <genlist/gendlist.h>
+#include "board.h"
 #include "obj_common.h"
-
-typedef htsp_t pcb_netlist_t;
 
 struct pcb_net_term_s {
 	PCB_ANY_OBJ_FIELDS;

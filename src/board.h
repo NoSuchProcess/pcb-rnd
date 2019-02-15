@@ -45,16 +45,18 @@ enum {
 #include <stdarg.h>
 #include <math.h>
 #include <ctype.h>
+#include <genht/htsp.h>
 
 #include "global_typedefs.h"
 #include "vtroutestyle.h"
 #include "layer.h"
 #include "layer_grp.h"
 #include "library.h"
-#include "netlist2.h"
 #include "attrib.h"
 #include "rats_patch.h"
 #include "font.h"
+
+typedef htsp_t pcb_netlist_t;
 
 	/* The pcb_board_t struct holds information about board layout most of which is
 	   |  saved with the layout.  A new PCB layout struct is first initialized
