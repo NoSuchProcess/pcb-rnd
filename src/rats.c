@@ -233,7 +233,7 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 		clear_drc_flag(1);
 		PCB_MENU_LOOP(net_menu);
 		{
-			if (menu->Name[0] == '*' || menu->flag == 0) {
+			if (pcb_netlist_is_bad(menu) || menu->flag == 0) {
 				badnet = pcb_true;
 				continue;
 			}
