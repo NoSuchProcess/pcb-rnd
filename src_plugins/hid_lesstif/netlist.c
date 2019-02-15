@@ -59,6 +59,7 @@ static void netlist_select(Widget w, void *v, XmListCallbackStruct * cbs)
 	int pos = cbs->item_position;
 	pcb_lib_menu_t *net = &(PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[pos - 1]);
 	char *name = net->Name;
+TODO("netlist: do not change net name");
 	if (name[0] == ' ') {
 		name[0] = '*';
 		net->flag = 0;
@@ -97,6 +98,7 @@ static void nbcb_rat_off(pcb_lib_menu_t *net, int pos)
 {
 	XmString str;
 	char *name = net->Name;
+TODO("netlist: do not change net name");
 	name[0] = '*';
 	net->flag = 0;
 	str = XmStringCreatePCB(name);
