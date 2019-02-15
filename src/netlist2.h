@@ -72,11 +72,13 @@ void pcb_netlist_uninit(pcb_netlist_t *nl);
 /* Look up (or allocate) a net by name within a netlist. Returns NULL on error */
 pcb_net_t *pcb_net_get(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname, pcb_bool alloc);
 
+
 /* Remove a net from a netlist by namel returns 0 on removal, -1 on error */
 int pcb_net_del(pcb_netlist_t *nl, const char *netname);
 
 /* Look up (or allocate) a terminal within a net. Returns NULL on error */
 pcb_net_term_t *pcb_net_term_get(pcb_net_t *net, const char *refdes, const char *term, pcb_bool alloc);
+pcb_net_term_t *pcb_net_term_get_by_obj(pcb_net_t *net, const pcb_any_obj_t *obj);
 
 /* Remove term from its net and free all fields and term itself */
 int pcb_net_term_del(pcb_net_t *net, pcb_net_term_t *term);

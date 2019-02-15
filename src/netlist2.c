@@ -29,6 +29,7 @@
 #include <genht/hash.h>
 #include <ctype.h>
 #include "board.h"
+#include "data.h"
 #include "compat_misc.h"
 #include "find.h"
 #include "obj_term.h"
@@ -74,6 +75,31 @@ pcb_net_term_t *pcb_net_term_get(pcb_net_t *net, const char *refdes, const char 
 	}
 
 	return NULL;
+}
+
+pcb_net_term_t *pcb_net_term_get_by_obj(pcb_net_t *net, const pcb_any_obj_t *obj)
+{
+	pcb_data_t *data;
+	pcb_subc_t *sc;
+
+	if (obj->term == NULL)
+		return NULL;
+
+	if (obj->parent_type == PCB_PARENT_LAYER)
+		data = obj->parent.layer->parent.data;
+	else if (obj->parent_type == PCB_PARENT_DATA)
+		data = obj->parent.data;
+	else
+		return NULL;
+
+	if (data->parent_type != PCB_PARENT_SUBC)
+		return NULL;
+
+	sc = data->parent.subc;
+	if (sc->refdes == NULL)
+		return NULL;
+
+	return pcb_net_term_get(net, sc->refdes, obj->term, pcb_false);
 }
 
 
