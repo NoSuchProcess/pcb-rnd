@@ -75,6 +75,8 @@ pcb_net_t *pcb_net_get(pcb_netlist_t *nl, const char *netname, pcb_bool alloc);
 /* Remove a net from a netlist by namel returns 0 on removal, -1 on error */
 int pcb_net_del(pcb_netlist_t *nl, const char *netname);
 
+pcb_bool pcb_net_name_valid(const char *netname);
+
 
 /*** Internal ***/
 void pcb_net_free_fields(pcb_net_t *net);
