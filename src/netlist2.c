@@ -191,6 +191,7 @@ pcb_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned lon
 	fctx.flag_set = setf;
 	fctx.flag_clr = clrf;
 	fctx.flag_chg_undoable = 1;
+TODO("netlist: need a new flag for marking rats but not jumping over them");
 	fctx.consider_rats = 0;
 
 	for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t))
@@ -199,6 +200,46 @@ pcb_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned lon
 	pcb_find_free(&fctx);
 	return res;
 }
+
+pcb_net_term_t *pcb_net_find_by_refdes_term(pcb_netlist_t *nl, const char *refdes, const char *term)
+{
+	htsp_entry_t *e;
+
+	for(e = htsp_first(nl); e != NULL; e = htsp_next(nl, e)) {
+		pcb_net_t *net = (pcb_net_t *)e->value;
+		pcb_net_term_t *t;
+
+		for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t))
+			if ((strcmp(t->refdes, refdes) == 0) && (strcmp(t->refdes, term) == 0))
+				return t;
+	}
+
+	return NULL;
+}
+
+pcb_net_term_t *pcb_net_find_by_pinname(pcb_netlist_t *nl, const char *pinname)
+{
+	char tmp[256];
+	char *pn, *refdes, *term;
+	int len = strlen(pinname)+1;
+	pcb_net_term_t *t = NULL;
+
+	if (len > sizeof(tmp))
+		pn = pcb_strdup(pinname);
+
+	refdes = pn;
+	term = strchr(refdes, '-');
+	if (term != NULL) {
+		*term = '\0';
+		term++;
+		t = pcb_net_find_by_refdes_term(nl, refdes, term);
+	}
+
+	if (pn != tmp)
+		free(pn);
+	return t;
+}
+
 
 void pcb_netlist_init(pcb_netlist_t *nl)
 {

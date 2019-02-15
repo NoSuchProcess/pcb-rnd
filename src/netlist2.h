@@ -87,6 +87,12 @@ int pcb_net_term_del_by_name(pcb_net_t *net, const char *refdes, const char *ter
    and. Return the number of objects found */
 pcb_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned long setf, unsigned long clrf);
 
+
+/* Slow, linear search for a terminal, by pinname ("refdes-pinnumber") or
+   separate refdes and terminal ID. */
+pcb_net_term_t *pcb_net_find_by_pinname(pcb_netlist_t *nl, const char *pinname);
+pcb_net_term_t *pcb_net_find_by_refdes_term(pcb_netlist_t *nl, const char *refdes, const char *term);
+
 pcb_bool pcb_net_name_valid(const char *netname);
 
 
