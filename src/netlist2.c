@@ -270,6 +270,28 @@ pcb_net_term_t *pcb_net_find_by_pinname(pcb_netlist_t *nl, const char *pinname)
 	return t;
 }
 
+static int netname_sort(const void *va, const void *vb)
+{
+	const pcb_net_t **a = (const pcb_net_t **)va;
+	const pcb_net_t **b = (const pcb_net_t **)vb;
+	return strcmp((*a)->name, (*b)->name);
+}
+
+pcb_net_t **pcb_netlist_sort(pcb_netlist_t *nl)
+{
+	pcb_net_t **arr;
+	htsp_entry_t *e;
+	long n;
+
+	if (nl->used == 0)
+		return NULL;
+	arr = malloc(nl->used * sizeof(pcb_net_t));
+
+	for(e = htsp_first(nl), n = 0; e != NULL; e = htsp_next(nl, e), n++)
+		arr[n] = e->value;
+	qsort(arr, nl->used, sizeof(pcb_net_t *), netname_sort);
+	return arr;
+}
 
 void pcb_netlist_init(pcb_netlist_t *nl)
 {
