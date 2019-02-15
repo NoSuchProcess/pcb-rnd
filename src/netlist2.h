@@ -75,6 +75,10 @@ pcb_net_t *pcb_net_get(pcb_netlist_t *nl, const char *netname, pcb_bool alloc);
 /* Remove a net from a netlist by namel returns 0 on removal, -1 on error */
 int pcb_net_del(pcb_netlist_t *nl, const char *netname);
 
+/* Look up (or allocate) a terminal within a net. Returns NULL on error */
+pcb_net_term_t *pcb_net_term_get(pcb_net_t *net, const char *refdes, const char *term, pcb_bool alloc);
+
+
 pcb_bool pcb_net_name_valid(const char *netname);
 
 

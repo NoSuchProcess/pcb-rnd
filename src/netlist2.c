@@ -47,6 +47,29 @@ void pcb_net_term_free(pcb_net_term_t *term)
 	free(term);
 }
 
+pcb_net_term_t *pcb_net_term_get(pcb_net_t *net, const char *refdes, const char *term, pcb_bool alloc)
+{
+	pcb_net_term_t *t;
+
+	/* for allocation this is slow, O(N^2) algorithm, but other than a few
+	   biggish networks like GND, there won't be too many connections anyway) */
+	for(t = pcb_termlist_first(&net->conns); t != NULL; ) {
+		if ((strcmp(t->refdes, refdes) == 0) && (strcmp(t->term, term) == 0))
+			return t;
+	}
+
+	if (alloc) {
+		t = calloc(sizeof(pcb_net_term_t), 1);
+		t->type = PCB_OBJ_NET_TERM;
+		t->refdes = pcb_strdup(refdes);
+		t->term = pcb_strdup(term);
+		pcb_termlist_append(&net->conns, t);
+		return t;
+	}
+
+	return NULL;
+}
+
 pcb_bool pcb_net_name_valid(const char *netname)
 {
 	for(;*netname != '\0'; netname++) {

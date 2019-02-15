@@ -51,8 +51,9 @@ typedef enum pcb_objtype_e {
 
 	/* more abstract objects */
 	PCB_OBJ_NET        = 0x0001000,
-	PCB_OBJ_LAYER      = 0x0002000,
-	PCB_OBJ_LAYERGRP   = 0x0004000
+	PCB_OBJ_NET_TERM   = 0x0002000,
+	PCB_OBJ_LAYER      = 0x0004000,
+	PCB_OBJ_LAYERGRP   = 0x0008000
 } pcb_objtype_t;
 
 /* Virtual objects for configuring searches; can be used as a bitfield with the above */
