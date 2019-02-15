@@ -34,6 +34,19 @@
 
 #include <genlist/gentdlist_impl.c>
 
+void pcb_net_term_free_fields(pcb_net_term_t *term)
+{
+	pcb_attribute_free(&term->Attributes);
+	free(term->refdes);
+	free(term->term);
+}
+
+void pcb_net_term_free(pcb_net_term_t *term)
+{
+	pcb_net_term_free_fields(term);
+	free(term);
+}
+
 pcb_bool pcb_net_name_valid(const char *netname)
 {
 	for(;*netname != '\0'; netname++) {
@@ -75,7 +88,13 @@ pcb_net_t *pcb_net_get(pcb_netlist_t *nl, const char *netname, pcb_bool alloc)
 void pcb_net_free_fields(pcb_net_t *net)
 {
 	free(net->name);
-TODO("netlist: free connections");
+	for(;;) {
+		pcb_net_term_t *term = pcb_termlist_first(&net->conns);
+		if (term == NULL)
+			break;
+		pcb_termlist_remove(term);
+		pcb_net_term_free(term);
+	}
 }
 
 void pcb_net_free(pcb_net_t *net)
