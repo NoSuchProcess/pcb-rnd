@@ -243,6 +243,7 @@ TODO("subc-in-subc: subc as terminal")
 		case PCB_OBJ_VOID:
 		case PCB_OBJ_RAT:
 		case PCB_OBJ_NET:
+		case PCB_OBJ_NET_TERM:
 		case PCB_OBJ_LAYER:
 		case PCB_OBJ_LAYERGRP:
 			break;

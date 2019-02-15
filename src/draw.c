@@ -887,6 +887,7 @@ void pcb_draw_obj(pcb_any_obj_t *obj)
 	case PCB_OBJ_LAYER:
 	case PCB_OBJ_LAYERGRP:
 	case PCB_OBJ_VOID:
+	case PCB_OBJ_NET_TERM:
 		break;
 	}
 }

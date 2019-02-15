@@ -532,6 +532,7 @@ static int write_nets(hyp_wr_t * wr)
 			case PCB_OBJ_TEXT:
 			case PCB_OBJ_SUBC:
 			case PCB_OBJ_NET:
+			case PCB_OBJ_NET_TERM:
 			case PCB_OBJ_LAYER:
 			case PCB_OBJ_LAYERGRP:
 			case PCB_OBJ_VOID:

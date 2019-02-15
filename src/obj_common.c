@@ -49,6 +49,7 @@ const char *pcb_obj_type_name(pcb_objtype_t type)
 		case PCB_OBJ_PSTK:        return "padstack";
 		case PCB_OBJ_SUBC:        return "subcircuit";
 		case PCB_OBJ_NET:         return "net";
+		case PCB_OBJ_NET_TERM:    return "net_term";
 		case PCB_OBJ_LAYER:       return "layer";
 		case PCB_OBJ_LAYERGRP:    return "layer_group";
 	}
