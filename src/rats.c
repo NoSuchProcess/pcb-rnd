@@ -302,7 +302,7 @@ static void TransferNet(pcb_netlist_t *Netl, pcb_oldnet_t *SourceNet, pcb_oldnet
 	PCB_END_LOOP;
 	DestNet->Style = SourceNet->Style;
 	/* free the connection memory */
-	pcb_net_free(SourceNet);
+	pcb_oldnet_free(SourceNet);
 	/* remove SourceNet from its netlist */
 	*SourceNet = Netl->Net[--(Netl->NetN)];
 	/* zero out old garbage */
@@ -687,7 +687,7 @@ DrawShortestRats(pcb_netlist_t *Netl,
 
 	/* presently nothing to do with the new subnet */
 	/* so we throw it away and free the space */
-	pcb_net_free(&Netl->Net[--(Netl->NetN)]);
+	pcb_oldnet_free(&Netl->Net[--(Netl->NetN)]);
 	/* Sadly adding a rat line messes up the sorted arrays in connection finder */
 	return changed;
 }

@@ -101,7 +101,7 @@ pcb_oldnet_t *pcb_net_new(pcb_board_t *pcb, pcb_netlist_t *);
 pcb_netlist_t *pcb_netlist_new(pcb_netlist_list_t *);
 void pcb_netlist_list_free(pcb_netlist_list_t *);
 void pcb_netlist_free(pcb_netlist_t *);
-void pcb_net_free(pcb_oldnet_t *);
+void pcb_oldnet_free(pcb_oldnet_t *);
 
 #define PCB_NETLIST_LOOP(top) do   {                            \
         pcb_cardinal_t        n;                                \

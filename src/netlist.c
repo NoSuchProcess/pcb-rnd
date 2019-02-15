@@ -315,7 +315,7 @@ void pcb_netlist_free(pcb_netlist_t *Netlist)
 	if (Netlist) {
 		PCB_NET_LOOP(Netlist);
 		{
-			pcb_net_free(net);
+			pcb_oldnet_free(net);
 		}
 		PCB_END_LOOP;
 		free(Netlist->Net);
@@ -342,7 +342,7 @@ void pcb_netlist_list_free(pcb_netlist_list_t *Netlistlist)
 /* ---------------------------------------------------------------------------
  * frees memory used by a subnet
  */
-void pcb_net_free(pcb_oldnet_t *Net)
+void pcb_oldnet_free(pcb_oldnet_t *Net)
 {
 	if (Net) {
 		free(Net->Connection);
