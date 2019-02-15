@@ -59,8 +59,10 @@ void pcb_board_free(pcb_board_t * pcb)
 
 	/* release font symbols */
 	pcb_fontkit_free(&pcb->fontkit);
-	for (i = 0; i < PCB_NUM_NETLISTS; i++)
+	for (i = 0; i < PCB_NUM_NETLISTS; i++) {
 		pcb_lib_free(&(pcb->NetlistLib[i]));
+		pcb_netlist_uninit(&(pcb->netlist[i]));
+	}
 	vtroutestyle_uninit(&pcb->RouteStyle);
 	pcb_attribute_free(&pcb->Attributes);
 
@@ -74,10 +76,14 @@ void pcb_board_free(pcb_board_t * pcb)
 pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 {
 	pcb_board_t *ptr;
+	int i;
 
 	/* allocate memory, switch all layers on and copy resources */
 	ptr = calloc(1, sizeof(pcb_board_t));
 	ptr->Data = pcb_buffer_new(ptr);
+
+	for(i = 0; i < PCB_NUM_NETLISTS; i++)
+		pcb_netlist_init(&(ptr->netlist[i]));
 
 	conf_set(CFR_INTERNAL, "design/poly_isle_area", -1, "200000000", POL_OVERWRITE);
 

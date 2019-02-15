@@ -95,8 +95,10 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			PCB->Netlistname = pcb_strdup_strip_wspace(name);
 			{
 				int i;
-				for (i = 0; i < PCB_NUM_NETLISTS; i++)
+				for (i = 0; i < PCB_NUM_NETLISTS; i++) {
 					pcb_lib_free(&(PCB->NetlistLib[i]));
+					pcb_netlist_uninit(&(PCB->netlist[i]));
+				}
 			}
 			if (!pcb_import_netlist(PCB->Netlistname))
 				pcb_netlist_changed(1);
