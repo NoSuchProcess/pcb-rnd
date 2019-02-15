@@ -59,6 +59,7 @@ struct pcb_net_term_s {
 struct pcb_net_s {
 	PCB_ANY_OBJ_FIELDS;
 	char *name;
+	unsigned inhibit_rats:1;
 	pcb_termlist_t conns;
 };
 
