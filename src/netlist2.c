@@ -97,7 +97,6 @@ pcb_bool pcb_net_name_valid(const char *netname)
 		if (isalnum(*netname)) continue;
 		switch(*netname) {
 			case '_':
-			case '.':
 				break;
 			return pcb_false;
 		}
