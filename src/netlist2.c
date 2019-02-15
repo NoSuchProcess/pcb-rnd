@@ -27,6 +27,7 @@
 #include "config.h"
 #include <genht/htsp.h>
 #include <genht/hash.h>
+#include <ctype.h>
 #include "compat_misc.h"
 
 #define TDL_DONT_UNDEF
