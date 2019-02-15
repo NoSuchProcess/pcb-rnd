@@ -93,6 +93,7 @@ PCB_INLINE pcb_bool_t pcb_obj_is_under(pcb_any_obj_t *obj, pcb_data_t *data)
 			case PCB_PARENT_LAYER:   if (obj->parent.layer->parent.data == data) return pcb_true; break;
 			case PCB_PARENT_SUBC:    if (obj->parent.subc->data == data) return pcb_true; break;
 			case PCB_PARENT_DATA:    if (obj->parent.data == data) return pcb_true; break;
+			case PCB_PARENT_NET:     if (obj->parent.data == data) return pcb_true; break;
 		}
 		obj = (pcb_any_obj_t *)pcb_obj_parent_subc(obj);
 		if (obj == NULL)

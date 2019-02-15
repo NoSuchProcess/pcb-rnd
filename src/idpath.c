@@ -57,6 +57,7 @@ static int idpath_map(pcb_idpath_t *idp, pcb_any_obj_t *obj, int level, int *num
 		case PCB_PARENT_UI:
 		case PCB_PARENT_SUBC:
 		case PCB_PARENT_BOARD:
+		case PCB_PARENT_NET:
 			return -1;
 		case PCB_PARENT_LAYER:
 			assert(obj->parent.layer->parent_type = PCB_PARENT_DATA);
@@ -71,6 +72,7 @@ static int idpath_map(pcb_idpath_t *idp, pcb_any_obj_t *obj, int level, int *num
 				case PCB_PARENT_UI:
 				case PCB_PARENT_LAYER:
 				case PCB_PARENT_DATA:
+				case PCB_PARENT_NET:
 					return -1;
 				case PCB_PARENT_BOARD:
 					return 0;
