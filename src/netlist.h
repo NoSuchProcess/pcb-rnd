@@ -66,7 +66,6 @@ pcb_lib_menu_t *pcb_netlist_lookup(int patch, const char *netname, pcb_bool allo
 pcb_lib_menu_t *pcb_netnode_to_netname(const char *nodename);
 pcb_lib_menu_t *pcb_netname_to_netname(const char *netname);
 
-int pcb_pin_name_to_xy(pcb_lib_entry_t *pin, pcb_coord_t *x, pcb_coord_t *y);
 void pcb_netlist_find(pcb_lib_menu_t *net, pcb_lib_entry_t *pin);
 void pcb_netlist_select(pcb_lib_menu_t *net, pcb_lib_entry_t *pin);
 void pcb_netlist_unselect(pcb_lib_menu_t * net, pcb_lib_entry_t * pin);

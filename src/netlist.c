@@ -100,15 +100,6 @@ pcb_lib_menu_t *pcb_netname_to_netname(const char *netname)
 	return 0;
 }
 
-int pcb_pin_name_to_xy(pcb_lib_entry_t *pin, pcb_coord_t *x, pcb_coord_t *y)
-{
-	pcb_connection_t conn;
-	if (!pcb_rat_seek_pad(pin, &conn, pcb_false))
-		return 1;
-	pcb_obj_center(conn.obj, x, y);
-	return 0;
-}
-
 pcb_any_obj_t *pcb_pin_name_to_obj(pcb_lib_entry_t *pin)
 {
 	pcb_connection_t conn;
