@@ -65,6 +65,8 @@ pcb_net_term_t *pcb_net_term_get(pcb_net_t *net, const char *refdes, const char 
 	if (alloc) {
 		t = calloc(sizeof(pcb_net_term_t), 1);
 		t->type = PCB_OBJ_NET_TERM;
+		t->parent_type = PCB_PARENT_NET;
+		t->parent.net = net;
 		t->refdes = pcb_strdup(refdes);
 		t->term = pcb_strdup(term);
 		pcb_termlist_append(&net->conns, t);
@@ -107,7 +109,7 @@ pcb_bool pcb_net_name_valid(const char *netname)
 	return pcb_true;
 }
 
-pcb_net_t *pcb_net_get(pcb_netlist_t *nl, const char *netname, pcb_bool alloc)
+pcb_net_t *pcb_net_get(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname, pcb_bool alloc)
 {
 	pcb_net_t *net;
 
@@ -123,8 +125,10 @@ pcb_net_t *pcb_net_get(pcb_netlist_t *nl, const char *netname, pcb_bool alloc)
 
 	if (alloc) {
 		net = calloc(sizeof(pcb_net_t *), 1);
-		net->name = pcb_strdup(netname);
 		net->type = PCB_OBJ_NET;
+		net->parent_type = PCB_PARENT_BOARD;
+		net->parent.board = pcb;
+		net->name = pcb_strdup(netname);
 		htsp_set(nl, net->name, net);
 		return net;
 	}

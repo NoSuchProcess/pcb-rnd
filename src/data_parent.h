@@ -49,6 +49,7 @@ union pcb_parent_s {
 	pcb_data_t     *data;
 	pcb_subc_t     *subc;
 	pcb_board_t    *board;
+	pcb_net_t      *net;
 };
 
 #define PCB_PARENT_TYPENAME_layer    PCB_PARENT_LAYER
