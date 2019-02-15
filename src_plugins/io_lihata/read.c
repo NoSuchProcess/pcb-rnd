@@ -56,6 +56,7 @@
 #include "plug_footprint.h"
 #include "vtpadstack.h"
 #include "obj_pstk_inlines.h"
+#include "netlist2.h"
 
 #include "../src_plugins/lib_compat_help/subc_help.h"
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
@@ -2088,7 +2089,7 @@ static int parse_styles(pcb_data_t *dt, vtroutestyle_t *styles, lht_node_t *nd)
 	return 0;
 }
 
-static int parse_netlist_input(pcb_lib_t *lib, lht_node_t *netlist)
+static int parse_netlist_input(pcb_board_t *pcb, pcb_netlist_t *nl, pcb_lib_t *lib, lht_node_t *netlist)
 {
 	lht_node_t *nnet;
 	if (netlist->type != LHT_LIST)
@@ -2096,7 +2097,8 @@ static int parse_netlist_input(pcb_lib_t *lib, lht_node_t *netlist)
 
 	for(nnet = netlist->data.list.first; nnet != NULL; nnet = nnet->next) {
 		lht_node_t *nconn, *nstyle, *nt, *nattr;
-		pcb_lib_menu_t *net;
+		pcb_lib_menu_t *oldnet;
+		pcb_net_t *net;
 		const char *style = NULL;
 
 		if (nnet->type != LHT_HASH)
@@ -2114,21 +2116,28 @@ static int parse_netlist_input(pcb_lib_t *lib, lht_node_t *netlist)
 			style = nstyle->data.text.value;
 		}
 
-		net = pcb_lib_net_new(lib, nnet->name, style);
+		oldnet = pcb_lib_net_new(lib, nnet->name, style);
+		net = pcb_net_get(pcb, nl, nnet->name, 1);
+		if (net == NULL)
+			return iolht_error(nnet, "failed to add network\n");
 		if (nconn != NULL) {
 			for(nt = nconn->data.list.first; nt != NULL; nt = nt->next) {
 				if ((nt->type != LHT_TEXT) || (*nt->data.text.value == '\0'))
 					return iolht_error(nt, "terminal id must be a non-empty text\n");
-				pcb_lib_conn_new(net, nt->data.text.value);
+				pcb_lib_conn_new(oldnet, nt->data.text.value);
+				if (pcb_net_term_get_by_pinname(net, nt->data.text.value, 1) == NULL)
+					return iolht_error(nt, "failed to add terminal id to network\n");
 			}
 		}
 
 		if (nattr != NULL) {
 			if (rdver < 5)
 				iolht_warn(nattr, 4, "Netlist could not have attributes before lihata v5 - still loading these attributes,\nbut they will be ignored by older versions of pcb-rnd.\n");
-			if (parse_attributes(&net->Attributes, nattr) < 0)
+			if (parse_attributes(&oldnet->Attributes, nattr) < 0)
 				return iolht_error(nattr, "failed to load attributes\n");
 		}
+		if (style != NULL)
+			pcb_attribute_put(&net->Attributes, "style", style);
 	}
 	return 0;
 }
@@ -2181,7 +2190,7 @@ static int parse_netlists(pcb_board_t *pcb, lht_node_t *netlists)
 		return iolht_error(netlists, "netlists must be a hash\n");
 
 	sub = lht_dom_hash_get(netlists, "input");
-	if ((sub != NULL) && (parse_netlist_input(pcb->NetlistLib+PCB_NETLIST_INPUT, sub) != 0))
+	if ((sub != NULL) && (parse_netlist_input(pcb, pcb->netlist+PCB_NETLIST_INPUT, pcb->NetlistLib+PCB_NETLIST_INPUT, sub) != 0))
 		return iolht_error(sub, "failed to parse the input netlist\n");
 
 	sub = lht_dom_hash_get(netlists, "netlist_patch");
