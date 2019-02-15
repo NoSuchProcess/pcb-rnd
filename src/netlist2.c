@@ -283,7 +283,11 @@ pcb_net_term_t *pcb_net_find_by_pinname(pcb_netlist_t *nl, const char *pinname)
 	int len = strlen(pinname)+1;
 	pcb_net_term_t *t = NULL;
 
-	if (len > sizeof(tmp))
+	if (len <= sizeof(tmp)) {
+		pn = tmp;
+		memcpy(pn, pinname, len);
+	}
+	else
 		pn = pcb_strdup(pinname);
 
 	refdes = pn;
