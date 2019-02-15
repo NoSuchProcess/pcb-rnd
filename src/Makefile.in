@@ -110,6 +110,7 @@ append /local/pcb/OBJS [@
 	misc_util.o
 	move.o
 	netlist.o
+	netlist2.o
 	netlist_act.o
 	object_act.o
 	obj_common.o
