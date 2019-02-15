@@ -119,8 +119,6 @@ static pcb_bool pcb_term_find_name_term(const char *refdes, const char *termid, 
 {
 	pcb_any_obj_t *obj;
 
-	/* first check for subcircuits; this is the only one thing we'll need to do
-	   once elements are removed */
 	obj = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, refdes, termid, Same, (pcb_subc_t **)&conn->ptr1, &conn->group);
 	if (obj != NULL) {
 		conn->obj = obj;
