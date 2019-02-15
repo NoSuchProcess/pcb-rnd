@@ -26,6 +26,7 @@
 
 #include "config.h"
 #include <genht/htsp.h>
+#include <genht/hash.h>
 #include "compat_misc.h"
 
 #define TDL_DONT_UNDEF
@@ -83,5 +84,21 @@ int pcb_net_del(pcb_netlist_t *nl, const char *netname)
 
 	htsp_delentry(nl, e);
 	return 0;
+}
+
+void pcb_netlist_init(pcb_netlist_t *nl)
+{
+	htsp_init(nl, strhash, strkeyeq);
+}
+
+
+void pcb_netlist_uninit(pcb_netlist_t *nl)
+{
+	htsp_entry_t *e;
+
+	for(e = htsp_first(nl); e != NULL; e = htsp_next(nl, e))
+		pcb_net_free(e->value);
+
+	htsp_uninit(nl);
 }
 
