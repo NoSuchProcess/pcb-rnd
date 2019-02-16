@@ -63,8 +63,7 @@
 #define BESTFOUND 0x2
 
 static pcb_bool ParseConnection(const char *, char *, char *);
-static pcb_bool DrawShortestRats(pcb_oldnetlist_t *,
-														 void (*)(register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *));
+static pcb_bool DrawShortestRats(pcb_oldnetlist_t *);
 static pcb_bool CheckShorts(pcb_lib_menu_t *);
 static void TransferNet(pcb_oldnetlist_t *, pcb_oldnet_t *, pcb_oldnet_t *);
 
@@ -548,8 +547,7 @@ static pcb_bool gather_subnets(pcb_oldnetlist_t *Netl, pcb_bool NoWarn, pcb_bool
  * state for the net, with each Netl->Net[N] representing one
  * copper-connected subset of the net. */
 static pcb_bool
-DrawShortestRats(pcb_oldnetlist_t *Netl,
-								 void (*funcp) (register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *))
+DrawShortestRats(pcb_oldnetlist_t *Netl)
 {
 	pcb_rat_t *line;
 	register float distance, temp;
@@ -661,10 +659,6 @@ DrawShortestRats(pcb_oldnetlist_t *Netl,
 		 * separate blobs of the net, and need to connect them together.
 		 */
 		if (havepoints) {
-			if (funcp) {
-				(*funcp) (firstpoint, secondpoint, subnet->Style);
-			}
-			else {
 				/* found the shortest distance subnet, draw the rat */
 				if ((line = pcb_rat_new(PCB->Data, -1,
 																 firstpoint->X, firstpoint->Y,
@@ -676,7 +670,6 @@ DrawShortestRats(pcb_oldnetlist_t *Netl,
 					pcb_rat_invalidate_draw(line);
 					changed = pcb_true;
 				}
-			}
 
 			/* copy theSubnet into the current subnet */
 			TransferNet(Netl, theSubnet, subnet);
@@ -737,7 +730,7 @@ pcb_rat_add_all(pcb_bool SelectedOnly)
 		PCB_END_LOOP;
 		Warned |= gather_subnets(Nets, SelectedOnly, pcb_true);
 		if (Nets->NetN > 0)
-			changed |= DrawShortestRats(Nets, NULL);
+			changed |= DrawShortestRats(Nets);
 	}
 	PCB_END_LOOP;
 	pcb_netlist_free(Nets);
