@@ -179,7 +179,7 @@ pcb_net_t *pcb_net_get(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname,
 		return net;
 
 	if (alloc) {
-		net = calloc(sizeof(pcb_net_t *), 1);
+		net = calloc(sizeof(pcb_net_t), 1);
 		net->type = PCB_OBJ_NET;
 		net->parent_type = PCB_PARENT_BOARD;
 		net->parent.board = pcb;
