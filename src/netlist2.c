@@ -226,7 +226,7 @@ int pcb_net_del(pcb_netlist_t *nl, const char *netname)
 	return 0;
 }
 
-static pcb_cardinal_t pcb_net_term_crawl_flag(pcb_board_t *pcb, pcb_net_term_t *term, pcb_find_t *fctx)
+static pcb_cardinal_t pcb_net_term_crawl_flag(pcb_board_t *pcb, pcb_net_term_t *term, pcb_find_t *fctx, int first)
 {
 	pcb_any_obj_t *o;
 	unsigned long res;
@@ -236,28 +236,26 @@ static pcb_cardinal_t pcb_net_term_crawl_flag(pcb_board_t *pcb, pcb_net_term_t *
 	if (o == NULL)
 		return 0;
 
-	res = pcb_find_from_obj(fctx, PCB->Data, o);
-	return res;
+	if (first)
+		return pcb_find_from_obj(fctx, PCB->Data, o);
+
+	return pcb_find_from_obj_next(fctx, PCB->Data, o);
 }
 
 pcb_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned long setf, unsigned long clrf)
 {
 	pcb_find_t fctx;
 	pcb_net_term_t *t;
-	pcb_cardinal_t res = 0;
+	pcb_cardinal_t res = 0, n;
 
 	memset(&fctx, 0, sizeof(fctx));
+	fctx.flag_set = setf;
+	fctx.flag_clr = clrf;
+	fctx.flag_chg_undoable = 1;
+	fctx.only_mark_rats = 1; /* do not trust rats, but do mark them */
 
-	for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
-
-		fctx.flag_set = setf;
-		fctx.flag_clr = clrf;
-		fctx.flag_chg_undoable = 1;
-		fctx.only_mark_rats = 1; /* do not trust rats, but do mark them */
-
-		res += pcb_net_term_crawl_flag(pcb, t, &fctx);
-		
-		pcb_find_free(&fctx);
+	for(t = pcb_termlist_first(&net->conns), n = 0; t != NULL; t = pcb_termlist_next(t), n++) {
+		res += pcb_net_term_crawl_flag(pcb, t, &fctx, (n == 0));
 	}
 
 	pcb_find_free(&fctx);
