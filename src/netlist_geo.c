@@ -278,7 +278,9 @@ static pcb_subnet_dist_t pcb_dist_pstk_poly(pcb_pstk_t *o1, pcb_poly_t *o2, pcb_
 
 static pcb_subnet_dist_t pcb_dist_pstk_pstk(pcb_pstk_t *o1, pcb_pstk_t *o2, pcb_rat_accuracy_t acc)
 {
-	return sdist_invalid;
+	pcb_subnet_dist_t curr;
+	dist_(o1, o1->x, o1->y, o2, o2->x, o2->y);
+	return curr;
 }
 
 
