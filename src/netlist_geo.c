@@ -24,6 +24,9 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include <assert.h>
+#include "obj_pstk_inlines.h"
+
 typedef struct {
 	pcb_any_obj_t *o1, *o2;
 	pcb_coord_t o1x, o1y, o2x, o2y;
@@ -341,7 +344,34 @@ static pcb_subnet_dist_t pcb_obj_obj_distance(pcb_any_obj_t *o1, pcb_any_obj_t *
 	return sdist_invalid;
 }
 
-static pcb_subnet_dist_t pcb_subnet_dist(vtp0_t *objs1, vtp0_t *objs2, pcb_rat_accuracy_t acc)
+static pcb_layergrp_id_t get_obj_grp(const pcb_board_t *pcb, pcb_any_obj_t *obj)
+{
+	switch(obj->type) {
+		case PCB_OBJ_ARC:
+		case PCB_OBJ_LINE:
+		case PCB_OBJ_POLY:
+			return pcb_layer_get_group_(obj->parent.layer);
+
+		case PCB_OBJ_PSTK: /* return the first copper layer's group */
+			{
+				int n;
+				pcb_layergrp_id_t res;
+				pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape((pcb_pstk_t *)obj);
+				for(n = 0; n < ts->len; n++)
+					if (ts->shape[n].layer_mask & PCB_LYT_COPPER)
+						if (pcb_layergrp_list(pcb, ts->shape[n].layer_mask, &res, 1) == 1)
+							return res;
+			}
+			return -1;
+
+		case PCB_OBJ_RAT: case PCB_OBJ_TEXT: case PCB_OBJ_SUBC:
+		case PCB_OBJ_VOID: case PCB_OBJ_NET: case PCB_OBJ_NET_TERM: case PCB_OBJ_LAYER: case PCB_OBJ_LAYERGRP:
+			break;
+	}
+	return -1;
+}
+
+static pcb_subnet_dist_t pcb_subnet_dist(const pcb_board_t *pcb, vtp0_t *objs1, vtp0_t *objs2, pcb_rat_accuracy_t acc)
 {
 	int i1, i2;
 	pcb_subnet_dist_t best, curr;
@@ -379,6 +409,7 @@ static pcb_subnet_dist_t pcb_subnet_dist(vtp0_t *objs1, vtp0_t *objs2, pcb_rat_a
 		}
 	}
 
-TODO("Set groups");
+	best.o1g = get_obj_grp(pcb, best.o1);
+	best.o2g = get_obj_grp(pcb, best.o2);
 	return best;
 }

@@ -371,7 +371,7 @@ pcb_cardinal_t pcb_net_add_rats(pcb_board_t *pcb, pcb_net_t *net, pcb_rat_accura
 	connmx = calloc(sizeof(pcb_subnet_dist_t), vtp0_len(&subnets) * vtp0_len(&subnets));
 	for(s1 = 0; s1 < vtp0_len(&subnets); s1++) {
 		for(s2 = s1+1; s2 < vtp0_len(&subnets); s2++) {
-			connmx[s2 * vtp0_len(&subnets) + s1] = connmx[s1 * vtp0_len(&subnets) + s2] = pcb_subnet_dist(subnets.array[s1], subnets.array[s2], acc);
+			connmx[s2 * vtp0_len(&subnets) + s1] = connmx[s1 * vtp0_len(&subnets) + s2] = pcb_subnet_dist(pcb, subnets.array[s1], subnets.array[s2], acc);
 		}
 	}
 
