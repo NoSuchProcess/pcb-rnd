@@ -230,7 +230,7 @@ int pcb_net_del(pcb_netlist_t *nl, const char *netname)
 	return 0;
 }
 
-static pcb_cardinal_t pcb_net_term_crawl_flag(pcb_board_t *pcb, pcb_net_term_t *term, pcb_find_t *fctx, int first)
+static pcb_cardinal_t pcb_net_term_crawl_flag(const pcb_board_t *pcb, pcb_net_term_t *term, pcb_find_t *fctx, int first)
 {
 	pcb_any_obj_t *o;
 	unsigned long res;
@@ -337,7 +337,7 @@ pcb_net_t **pcb_netlist_sort(pcb_netlist_t *nl)
 
 #include "netlist_geo.c"
 
-pcb_cardinal_t pcb_net_add_rats(pcb_board_t *pcb, pcb_net_t *net, pcb_rat_accuracy_t acc)
+pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_accuracy_t acc)
 {
 	pcb_find_t fctx;
 	pcb_net_term_t *t;

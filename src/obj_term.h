@@ -86,6 +86,6 @@ pcb_term_err_t pcb_term_undoable_rename(pcb_board_t *pcb, pcb_any_obj_t *obj, co
 /* Look up subc_name/term_name on layers matching lyt. Returns the object
    or NULL if not found. If the *out parameters are non-NULL, load them.
    Ignores subcircuits marked as nonetlist even if explicitly named. */
-pcb_any_obj_t *pcb_term_find_name(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_type_t lyt, const char *subc_name, const char *term_name, pcb_bool same, pcb_subc_t **parent_out, pcb_layergrp_id_t *gid_out);
+pcb_any_obj_t *pcb_term_find_name(const pcb_board_t *pcb, pcb_data_t *data, pcb_layer_type_t lyt, const char *subc_name, const char *term_name, pcb_bool same, pcb_subc_t **parent_out, pcb_layergrp_id_t *gid_out);
 
 #endif
