@@ -257,9 +257,15 @@ static pcb_subnet_dist_t pcb_dist_pstk_arc(pcb_pstk_t *o1, pcb_arc_t *o2, pcb_ra
 
 static pcb_subnet_dist_t pcb_dist_pstk_line(pcb_pstk_t *o1, pcb_line_t *o2, pcb_rat_accuracy_t acc)
 {
+	pcb_subnet_dist_t best, curr;
+
 	if ((acc & PCB_RATACC_ONLY_MANHATTAN) &&(!is_line_manhattan(o2)))
 		return sdist_invalid;
-	return sdist_invalid;
+
+	dist1(o1, o1->x, o1->y, o2, o2->Point1.X, o2->Point1.Y);
+	dist2(o1, o1->x, o1->y, o2, o2->Point2.X, o2->Point2.Y);
+
+	return best;
 }
 
 static pcb_subnet_dist_t pcb_dist_pstk_poly(pcb_pstk_t *o1, pcb_poly_t *o2, pcb_rat_accuracy_t acc)
@@ -267,7 +273,7 @@ static pcb_subnet_dist_t pcb_dist_pstk_poly(pcb_pstk_t *o1, pcb_poly_t *o2, pcb_
 	if (acc & PCB_RATACC_ONLY_MANHATTAN)
 		return sdist_invalid;
 
-	return sdist_invalid;
+	return dist_poly(o2, (pcb_any_obj_t *)o1, o1->x, o1->y);
 }
 
 static pcb_subnet_dist_t pcb_dist_pstk_pstk(pcb_pstk_t *o1, pcb_pstk_t *o2, pcb_rat_accuracy_t acc)
