@@ -99,6 +99,9 @@ pcb_bool pcb_isc_line_poly(pcb_line_t *Line, pcb_poly_t *Polygon);
 pcb_bool pcb_isc_poly_poly(pcb_poly_t *P1, pcb_poly_t *P2);
 pcb_bool_t pcb_isc_pstk_line(pcb_pstk_t *ps, pcb_line_t *line);
 
+/* Return whether obj is marked as already visited by the current search context */
+#define PCB_FIND_IS_MARKED(ctx, obj) PCB_DFLAG_TEST(&((obj)->Flags), (ctx)->mark)
+
 #define PCB_LOOKUP_FIRST	\
 	(PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART)
 #define PCB_LOOKUP_MORE	\
