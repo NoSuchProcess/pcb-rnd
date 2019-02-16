@@ -247,14 +247,19 @@ pcb_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned lon
 	pcb_cardinal_t res = 0;
 
 	memset(&fctx, 0, sizeof(fctx));
-	fctx.flag_set = setf;
-	fctx.flag_clr = clrf;
-	fctx.flag_chg_undoable = 1;
-TODO("netlist: need a new flag for marking rats but not jumping over them");
-	fctx.consider_rats = 0;
 
-	for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t))
+	for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
+
+		fctx.flag_set = setf;
+		fctx.flag_clr = clrf;
+		fctx.flag_chg_undoable = 1;
+TODO("netlist: need a new flag for marking rats but not jumping over them");
+		fctx.consider_rats = 0;
+
 		res += pcb_net_term_crawl_flag(pcb, t, &fctx);
+		
+		pcb_find_free(&fctx);
+	}
 
 	pcb_find_free(&fctx);
 	return res;
