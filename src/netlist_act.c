@@ -46,6 +46,7 @@
 #include "compat_misc.h"
 #include "netlist.h"
 #include "data_it.h"
+#include "brave.h"
 
 static int pcb_netlist_swap()
 {
@@ -274,8 +275,13 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		else if (argc > 2) {
 			pin_found = 1;
-			for (j = net->EntryN - 1; j >= 0; j--)
-				func(net, net->Entry + j);
+			if (pcb_brave & PCB_BRAVE_NETLIST2) {
+				func(net, net->Entry);
+			}
+			else {
+				for (j = net->EntryN - 1; j >= 0; j--)
+					func(net, net->Entry + j);
+			}
 			if (pcb_gui != NULL)
 				pcb_gui->invalidate_all();
 		}
