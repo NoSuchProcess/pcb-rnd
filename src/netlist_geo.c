@@ -183,10 +183,17 @@ static pcb_subnet_dist_t pcb_dist_poly_arc(pcb_poly_t *o1, pcb_arc_t *o2, pcb_ra
 
 static pcb_subnet_dist_t pcb_dist_poly_line(pcb_poly_t *o1, pcb_line_t *o2, pcb_rat_accuracy_t acc)
 {
+	pcb_subnet_dist_t best, curr;
+
 	if (acc & PCB_RATACC_ONLY_MANHATTAN)
 		return sdist_invalid;
 
-	return sdist_invalid;
+	best = dist_poly(o1, (pcb_any_obj_t *)o2, o2->Point1.X, o2->Point1.Y);
+	curr = dist_poly(o1, (pcb_any_obj_t *)o2, o2->Point2.X, o2->Point2.Y);
+	if (curr.dist2 < best.dist2)
+		return curr;
+
+	return best;
 }
 
 static pcb_subnet_dist_t pcb_dist_poly_poly(pcb_poly_t *o1, pcb_poly_t *o2, pcb_rat_accuracy_t acc)
