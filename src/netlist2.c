@@ -253,8 +253,7 @@ pcb_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned lon
 		fctx.flag_set = setf;
 		fctx.flag_clr = clrf;
 		fctx.flag_chg_undoable = 1;
-TODO("netlist: need a new flag for marking rats but not jumping over them");
-		fctx.consider_rats = 0;
+		fctx.only_mark_rats = 1; /* do not trust rats, but do mark them */
 
 		res += pcb_net_term_crawl_flag(pcb, t, &fctx);
 		

@@ -67,10 +67,11 @@ static int pcb_find_found(pcb_find_t *ctx, pcb_any_obj_t *obj, pcb_any_obj_t *ar
 }
 
 
-static int pcb_find_addobj(pcb_find_t *ctx, pcb_any_obj_t *obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
+static int pcb_find_addobj(pcb_find_t *ctx, pcb_any_obj_t *obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype, int jump)
 {
 	PCB_DFLAG_SET(&obj->Flags, ctx->mark);
-	vtp0_append(&ctx->open, obj);
+	if (jump)
+		vtp0_append(&ctx->open, obj);
 
 	if (pcb_find_found(ctx, obj, arrived_from, ctype) != 0) {
 		ctx->aborted = 1;
@@ -94,7 +95,7 @@ static void find_int_conn(pcb_find_t *ctx, pcb_any_obj_t *from_)
 	PCB_PADSTACK_LOOP(s->data);
 	{
 		if ((padstack != from) && (padstack->term != NULL) && (padstack->intconn == ic) && (!(PCB_DFLAG_TEST(&(padstack->Flags), ctx->mark))))
-			if (pcb_find_addobj(ctx, (pcb_any_obj_t *)padstack, from_, PCB_FCT_INTCONN) != 0)
+			if (pcb_find_addobj(ctx, (pcb_any_obj_t *)padstack, from_, PCB_FCT_INTCONN, 1) != 0)
 				return;
 	}
 	PCB_END_LOOP;
@@ -102,7 +103,7 @@ static void find_int_conn(pcb_find_t *ctx, pcb_any_obj_t *from_)
 	PCB_LINE_COPPER_LOOP(s->data);
 	{
 		if ((line != from) && (line->term != NULL) && (line->intconn == ic) && (!(PCB_DFLAG_TEST(&(line->Flags), ctx->mark))))
-			if (pcb_find_addobj(ctx, (pcb_any_obj_t *)line, from_, PCB_FCT_INTCONN) != 0)
+			if (pcb_find_addobj(ctx, (pcb_any_obj_t *)line, from_, PCB_FCT_INTCONN, 1) != 0)
 				return;
 	}
 	PCB_ENDALL_LOOP;
@@ -110,7 +111,7 @@ static void find_int_conn(pcb_find_t *ctx, pcb_any_obj_t *from_)
 	PCB_ARC_COPPER_LOOP(s->data);
 	{
 		if ((arc != from) && (arc->term != NULL) && (arc->intconn == ic) && (!(PCB_DFLAG_TEST(&(arc->Flags), ctx->mark))))
-			if (pcb_find_addobj(ctx, (pcb_any_obj_t *)arc, from_, PCB_FCT_INTCONN) != 0)
+			if (pcb_find_addobj(ctx, (pcb_any_obj_t *)arc, from_, PCB_FCT_INTCONN, 1) != 0)
 				return;
 	}
 	PCB_ENDALL_LOOP;
@@ -118,7 +119,7 @@ static void find_int_conn(pcb_find_t *ctx, pcb_any_obj_t *from_)
 	PCB_POLY_COPPER_LOOP(s->data);
 	{
 		if ((polygon != from) && (polygon->term != NULL) && (polygon->intconn == ic) && (!(PCB_DFLAG_TEST(&(polygon->Flags), ctx->mark))))
-			if (pcb_find_addobj(ctx, (pcb_any_obj_t *)polygon, from_, PCB_FCT_INTCONN) != 0)
+			if (pcb_find_addobj(ctx, (pcb_any_obj_t *)polygon, from_, PCB_FCT_INTCONN, 1) != 0)
 				return;
 	}
 	PCB_ENDALL_LOOP;
@@ -128,7 +129,7 @@ TODO("find: no find through text yet")
 	PCB_TEXT_COPPER_LOOP(s->data);
 	{
 		if ((text != from) && (text->term != NULL) && (text->intconn == ic) && (!(PCB_DFLAG_TEST(&(text->Flags), ctx->mark))))
-			if (pcb_find_addobj(ctx, (pcb_any_obj_t *)text, from_, PCB_FCT_INTCONN) != 0)
+			if (pcb_find_addobj(ctx, (pcb_any_obj_t *)text, from_, PCB_FCT_INTCONN, 1) != 0)
 				return;
 	}
 	PCB_ENDALL_LOOP;
@@ -161,7 +162,19 @@ static pcb_bool int_noconn(pcb_any_obj_t *a, pcb_any_obj_t *b)
 		pcb_any_obj_t *__obj__ = (pcb_any_obj_t *)obj; \
 		if (!(PCB_DFLAG_TEST(&(__obj__->Flags), ctx->mark))) { \
 			if (!INOCONN(curr, obj) && (pcb_intersect_obj_obj(curr, __obj__))) {\
-				if (pcb_find_addobj(ctx, __obj__, curr, ctype) != 0) { retstmt; } \
+				if (pcb_find_addobj(ctx, __obj__, curr, ctype, 1) != 0) { retstmt; } \
+				if ((__obj__->term != NULL) && (!ctx->ignore_intconn) && (__obj__->intconn > 0)) \
+					find_int_conn(ctx, __obj__); \
+			} \
+		} \
+	} while(0)
+
+#define PCB_FIND_CHECK_RAT(ctx, curr, obj, ctype, retstmt) \
+	do { \
+		pcb_any_obj_t *__obj__ = (pcb_any_obj_t *)obj; \
+		if (!(PCB_DFLAG_TEST(&(__obj__->Flags), ctx->mark))) { \
+			if (!INOCONN(curr, obj) && (pcb_intersect_obj_obj(curr, __obj__))) {\
+				if (pcb_find_addobj(ctx, __obj__, curr, ctype, ctx->consider_rats) != 0) { retstmt; } \
 				if ((__obj__->term != NULL) && (!ctx->ignore_intconn) && (__obj__->intconn > 0)) \
 					find_int_conn(ctx, __obj__); \
 			} \
@@ -253,10 +266,10 @@ static unsigned long pcb_find_exec(pcb_find_t *ctx)
 				pcb_r_end(&it);
 			}
 
-			if ((ctx->consider_rats) && (PCB->Data->rat_tree != NULL)) {
+			if ((ctx->consider_rats || ctx->only_mark_rats) && (PCB->Data->rat_tree != NULL)) {
 				if (PCB->Data->padstack_tree != NULL) {
 					for(n = pcb_rtree_first(&it, PCB->Data->rat_tree, sb); n != NULL; n = pcb_rtree_next(&it))
-						PCB_FIND_CHECK(ctx, curr, n, PCB_FCT_RAT, return ctx->nfound);
+						PCB_FIND_CHECK_RAT(ctx, curr, n, PCB_FCT_RAT, return ctx->nfound);
 					pcb_r_end(&it);
 				}
 			}
@@ -325,7 +338,7 @@ unsigned long pcb_find_from_obj(pcb_find_t *ctx, pcb_data_t *data, pcb_any_obj_t
 		return -1;
 
 	pcb_data_dynflag_clear(data, ctx->mark);
-	pcb_find_addobj(ctx, from, NULL, PCB_FCT_START); /* add the starting object with no 'arrived_from' */
+	pcb_find_addobj(ctx, from, NULL, PCB_FCT_START, 1); /* add the starting object with no 'arrived_from' */
 	return pcb_find_exec(ctx);
 }
 
