@@ -335,25 +335,7 @@ pcb_net_t **pcb_netlist_sort(pcb_netlist_t *nl)
 	return arr;
 }
 
-typedef struct {
-	pcb_any_obj_t *o1, *o2;
-	pcb_coord_t o1x, o1y, o2x, o2y;
-	pcb_layergrp_id_t o1g, o2g;
-	double dist2;
-} pcb_subnet_dist_t;
-
-pcb_subnet_dist_t pcb_subnet_dist(vtp0_t *objs1, vtp0_t *objs2)
-{
-	int i1, i2;
-	pcb_subnet_dist_t res;
-	memset(&res, 0, sizeof(res));
-	for(i1 = 0; i1 < vtp0_len(objs1); i1++) {
-		for(i2 = 0; i2 < vtp0_len(objs1); i2++) {
-TODO("calculate object distance");
-		}
-	}
-	return res;
-}
+#include "netlist_geo.c"
 
 pcb_cardinal_t pcb_net_add_rats(pcb_board_t *pcb, pcb_net_t *net)
 {
