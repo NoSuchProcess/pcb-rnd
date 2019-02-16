@@ -33,49 +33,75 @@ typedef struct {
 
 static pcb_subnet_dist_t sdist_invalid = { NULL, NULL, 0, 0, 0, 0, -1, -1, HUGE_VAL };
 
+#define is_line_manhattan(l) (((l)->Point1.X == (l)->Point2.X) || ((l)->Point1.Y == (l)->Point2.Y))
+
 static pcb_subnet_dist_t pcb_dist_arc_arc(pcb_arc_t *o1, pcb_arc_t *o2, pcb_rat_accuracy_t acc)
 {
+	if (acc & PCB_RATACC_ONLY_MANHATTAN)
+		return sdist_invalid;
 	return sdist_invalid;
 }
 
 static pcb_subnet_dist_t pcb_dist_line_line(pcb_line_t *o1, pcb_line_t *o2, pcb_rat_accuracy_t acc)
 {
+	if ((acc & PCB_RATACC_ONLY_MANHATTAN) && ((!is_line_manhattan(o1) || !is_line_manhattan(o2))))
+		return sdist_invalid;
 	return sdist_invalid;
 }
 
 static pcb_subnet_dist_t pcb_dist_line_arc(pcb_line_t *o1, pcb_arc_t *o2, pcb_rat_accuracy_t acc)
 {
+	if (acc & PCB_RATACC_ONLY_MANHATTAN)
+		return sdist_invalid;
+	if ((acc & PCB_RATACC_ONLY_MANHATTAN) && (!is_line_manhattan(o1)))
+		return sdist_invalid;
 	return sdist_invalid;
 }
 
 static pcb_subnet_dist_t pcb_dist_poly_arc(pcb_poly_t *o1, pcb_arc_t *o2, pcb_rat_accuracy_t acc)
 {
+	if (acc & PCB_RATACC_ONLY_MANHATTAN)
+		return sdist_invalid;
 	return sdist_invalid;
 }
 
 static pcb_subnet_dist_t pcb_dist_poly_line(pcb_poly_t *o1, pcb_line_t *o2, pcb_rat_accuracy_t acc)
 {
+	if (acc & PCB_RATACC_ONLY_MANHATTAN)
+		return sdist_invalid;
+
 	return sdist_invalid;
 }
 
 static pcb_subnet_dist_t pcb_dist_poly_poly(pcb_poly_t *o1, pcb_poly_t *o2, pcb_rat_accuracy_t acc)
 {
+	if (acc & PCB_RATACC_ONLY_MANHATTAN)
+		return sdist_invalid;
+
 	return sdist_invalid;
 }
 
 
 static pcb_subnet_dist_t pcb_dist_pstk_arc(pcb_pstk_t *o1, pcb_arc_t *o2, pcb_rat_accuracy_t acc)
 {
+	if (acc & PCB_RATACC_ONLY_MANHATTAN)
+		return sdist_invalid;
+
 	return sdist_invalid;
 }
 
 static pcb_subnet_dist_t pcb_dist_pstk_line(pcb_pstk_t *o1, pcb_line_t *o2, pcb_rat_accuracy_t acc)
 {
+	if ((acc & PCB_RATACC_ONLY_MANHATTAN) &&(!is_line_manhattan(o2)))
+		return sdist_invalid;
 	return sdist_invalid;
 }
 
 static pcb_subnet_dist_t pcb_dist_pstk_poly(pcb_pstk_t *o1, pcb_poly_t *o2, pcb_rat_accuracy_t acc)
 {
+	if (acc & PCB_RATACC_ONLY_MANHATTAN)
+		return sdist_invalid;
+
 	return sdist_invalid;
 }
 
