@@ -108,6 +108,11 @@ pcb_net_term_t *pcb_net_find_by_refdes_term(pcb_netlist_t *nl, const char *refde
    array are the same as in the has table, should not be free'd. */
 pcb_net_t **pcb_netlist_sort(pcb_netlist_t *nl);
 
+/* Create missing rat lines */
+pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_accuracy_t acc);
+pcb_cardinal_t pcb_net_add_all_rats(const pcb_board_t *pcb, pcb_rat_accuracy_t acc);
+
+
 pcb_bool pcb_net_name_valid(const char *netname);
 
 /*** looping ***/

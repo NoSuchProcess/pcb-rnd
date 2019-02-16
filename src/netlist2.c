@@ -422,6 +422,16 @@ pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_
 }
 
 
+pcb_cardinal_t pcb_net_add_all_rats(const pcb_board_t *pcb, pcb_rat_accuracy_t acc)
+{
+	htsp_entry_t *e;
+	pcb_cardinal_t drawn  =0;
+
+	for(e = htsp_first(&pcb->netlist[PCB_NETLIST_INPUT]); e != NULL; e = htsp_next(&pcb->netlist[PCB_NETLIST_INPUT], e))
+		drawn += pcb_net_add_rats(pcb, (pcb_net_t *)e->value, acc);
+
+	return drawn;
+}
 
 void pcb_netlist_init(pcb_netlist_t *nl)
 {
