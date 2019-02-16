@@ -120,11 +120,65 @@ static pcb_subnet_dist_t pcb_dist_line_arc(pcb_line_t *o1, pcb_arc_t *o2, pcb_ra
 	return best;
 }
 
+#define poly_dist_chk(x, y) \
+do { \
+	double dx = o2x - x, dy = o2y - y, dist2 = dx*dx + dy*dy; \
+	if (dist2 < best.dist2) { \
+		best.dist2 = dist2; \
+		best.o1x = x; \
+		best.o1y = y; \
+	} \
+} while(0)
+
+static pcb_subnet_dist_t dist_poly(pcb_poly_t *o1, pcb_any_obj_t *o2, pcb_coord_t o2x, pcb_coord_t o2y)
+{
+	pcb_subnet_dist_t best;
+	pcb_poly_it_t it;
+	pcb_polyarea_t *pa;
+
+	best.dist2 = HUGE_VAL;
+	best.o1 = (pcb_any_obj_t *)o1;
+	best.o2 = o2;
+	best.o2x = o2x;
+	best.o2y = o2y;
+
+	for(pa = pcb_poly_island_first(o1, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
+		pcb_coord_t x, y;
+		pcb_pline_t *pl;
+		int go;
+
+		pl = pcb_poly_contour(&it);
+		if (pl != NULL) {
+			/* contour of the island */
+			for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y))
+				poly_dist_chk(x, y);
+			
+			/* iterate over all holes within this island */
+			for(pl = pcb_poly_hole_first(&it); pl != NULL; pl = pcb_poly_hole_next(&it))
+				for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y))
+					poly_dist_chk(x, y);
+		}
+	}
+	return best;
+}
+
 static pcb_subnet_dist_t pcb_dist_poly_arc(pcb_poly_t *o1, pcb_arc_t *o2, pcb_rat_accuracy_t acc)
 {
+	pcb_subnet_dist_t best, curr;
+	pcb_coord_t o2x1, o2y1, o2x2, o2y2;
+
 	if (acc & PCB_RATACC_ONLY_MANHATTAN)
 		return sdist_invalid;
-	return sdist_invalid;
+
+	pcb_arc_get_end(o2, 0, &o2x1, &o2y1);
+	pcb_arc_get_end(o2, 1, &o2x2, &o2y2);
+
+	best = dist_poly(o1, (pcb_any_obj_t *)o2, o2x1, o2y1);
+	curr = dist_poly(o1, (pcb_any_obj_t *)o2, o2x2, o2y2);
+	if (curr.dist2 < best.dist2)
+		return curr;
+
+	return best;
 }
 
 static pcb_subnet_dist_t pcb_dist_poly_line(pcb_poly_t *o1, pcb_line_t *o2, pcb_rat_accuracy_t acc)
