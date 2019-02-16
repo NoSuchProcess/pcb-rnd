@@ -81,6 +81,10 @@ struct pcb_find_s {
 unsigned long pcb_find_from_obj(pcb_find_t *ctx, pcb_data_t *data, pcb_any_obj_t *from);
 unsigned long pcb_find_from_xy(pcb_find_t *ctx, pcb_data_t *data, pcb_coord_t x, pcb_coord_t y);
 
+/* Same as pcb_find_from_obj but assumes ctx already seen a pcb_find_from_obj()
+   and continues from that state */
+unsigned long pcb_find_from_obj_next(pcb_find_t *ctx, pcb_data_t *data, pcb_any_obj_t *from);
+
 void pcb_find_free(pcb_find_t *ctx);
 
 /* High level intersection function: returns if a and b intersect (overlap) */
