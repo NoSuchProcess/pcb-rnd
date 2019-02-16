@@ -387,7 +387,7 @@ static pcb_subnet_dist_t pcb_subnet_dist(const pcb_board_t *pcb, vtp0_t *objs1, 
 
 			{
 				pcb_any_obj_t *o_in_poly = NULL, *poly;
-				pcb_coord_t x, y;
+				pcb_coord_t x, y, farx, fary;
 
 				/* if object needs to connect to sorrunding polygon, use a special rat
 				   to indicate "in-place" connection */
@@ -396,15 +396,18 @@ static pcb_subnet_dist_t pcb_subnet_dist(const pcb_board_t *pcb, vtp0_t *objs1, 
 					poly = curr.o1;
 					x = curr.o2x;
 					y = curr.o2y;
+					farx = curr.o1x;
+					fary = curr.o1y;
 				}
 				else if ((curr.o2->type == PCB_OBJ_POLY) && (curr.o1->type != PCB_OBJ_POLY)) {
 					o_in_poly = curr.o1;
 					poly = curr.o2;
 					x = curr.o1x;
 					y = curr.o1y;
+					farx = curr.o2x;
+					fary = curr.o2y;
 				}
-				if (o_in_poly && pcb_poly_is_point_in_p_ignore_holes(x, y, poly)) {
-					pcb_printf("Can do better than %mm.\n", curr.dist2);
+				if (o_in_poly && pcb_point_in_box(&o_in_poly->BoundingBox, farx, fary) && pcb_poly_is_point_in_p_ignore_holes(x, y, poly)) {
 					curr.o1x = curr.o2x = x;
 					curr.o1y = curr.o2y = y;
 					curr.dist2 = 0;
