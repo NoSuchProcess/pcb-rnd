@@ -39,6 +39,11 @@ struct pcb_net_term_s {
 	gdl_elem_t link; /* a net is mainly an ordered list of terminals */
 };
 
+typedef enum { /* bitfield */
+	PCB_RATACC_PRECISE = 1,            /* find the shortest rats, precisely (expensive); if unset, use a simplified algo e.g. considering only endpoints of lines */
+	PCB_RATACC_ONLY_MANHATTAN = 2      /* the old autorouter doesn't like non-manhattan lines and arcs */
+} pcb_rat_accuracy_t;
+
 /* List of refdes-terminals */
 #define TDL(x)      pcb_termlist_ ## x
 #define TDL_LIST_T  pcb_termlist_t

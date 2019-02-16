@@ -337,7 +337,7 @@ pcb_net_t **pcb_netlist_sort(pcb_netlist_t *nl)
 
 #include "netlist_geo.c"
 
-pcb_cardinal_t pcb_net_add_rats(pcb_board_t *pcb, pcb_net_t *net)
+pcb_cardinal_t pcb_net_add_rats(pcb_board_t *pcb, pcb_net_t *net, pcb_rat_accuracy_t acc)
 {
 	pcb_find_t fctx;
 	pcb_net_term_t *t;
@@ -371,7 +371,7 @@ pcb_cardinal_t pcb_net_add_rats(pcb_board_t *pcb, pcb_net_t *net)
 	connmx = calloc(sizeof(pcb_subnet_dist_t), vtp0_len(&subnets) * vtp0_len(&subnets));
 	for(s1 = 0; s1 < vtp0_len(&subnets); s1++) {
 		for(s2 = s1+1; s2 < vtp0_len(&subnets); s2++) {
-			connmx[s2 * vtp0_len(&subnets) + s1] = connmx[s1 * vtp0_len(&subnets) + s2] = pcb_subnet_dist(subnets.array[s1], subnets.array[s2]);
+			connmx[s2 * vtp0_len(&subnets) + s1] = connmx[s1 * vtp0_len(&subnets) + s2] = pcb_subnet_dist(subnets.array[s1], subnets.array[s2], acc);
 		}
 	}
 

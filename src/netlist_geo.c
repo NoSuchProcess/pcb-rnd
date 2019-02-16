@@ -33,67 +33,67 @@ typedef struct {
 
 static pcb_subnet_dist_t sdist_invalid = { NULL, NULL, 0, 0, 0, 0, -1, -1, HUGE_VAL };
 
-static pcb_subnet_dist_t pcb_dist_arc_arc(pcb_arc_t *o1, pcb_arc_t *o2)
+static pcb_subnet_dist_t pcb_dist_arc_arc(pcb_arc_t *o1, pcb_arc_t *o2, pcb_rat_accuracy_t acc)
 {
 	return sdist_invalid;
 }
 
-static pcb_subnet_dist_t pcb_dist_line_line(pcb_line_t *o1, pcb_line_t *o2)
+static pcb_subnet_dist_t pcb_dist_line_line(pcb_line_t *o1, pcb_line_t *o2, pcb_rat_accuracy_t acc)
 {
 	return sdist_invalid;
 }
 
-static pcb_subnet_dist_t pcb_dist_line_arc(pcb_line_t *o1, pcb_arc_t *o2)
+static pcb_subnet_dist_t pcb_dist_line_arc(pcb_line_t *o1, pcb_arc_t *o2, pcb_rat_accuracy_t acc)
 {
 	return sdist_invalid;
 }
 
-static pcb_subnet_dist_t pcb_dist_poly_arc(pcb_poly_t *o1, pcb_arc_t *o2)
+static pcb_subnet_dist_t pcb_dist_poly_arc(pcb_poly_t *o1, pcb_arc_t *o2, pcb_rat_accuracy_t acc)
 {
 	return sdist_invalid;
 }
 
-static pcb_subnet_dist_t pcb_dist_poly_line(pcb_poly_t *o1, pcb_line_t *o2)
+static pcb_subnet_dist_t pcb_dist_poly_line(pcb_poly_t *o1, pcb_line_t *o2, pcb_rat_accuracy_t acc)
 {
 	return sdist_invalid;
 }
 
-static pcb_subnet_dist_t pcb_dist_poly_poly(pcb_poly_t *o1, pcb_poly_t *o2)
-{
-	return sdist_invalid;
-}
-
-
-static pcb_subnet_dist_t pcb_dist_pstk_arc(pcb_pstk_t *o1, pcb_arc_t *o2)
-{
-	return sdist_invalid;
-}
-
-static pcb_subnet_dist_t pcb_dist_pstk_line(pcb_pstk_t *o1, pcb_line_t *o2)
-{
-	return sdist_invalid;
-}
-
-static pcb_subnet_dist_t pcb_dist_pstk_poly(pcb_pstk_t *o1, pcb_poly_t *o2)
-{
-	return sdist_invalid;
-}
-
-static pcb_subnet_dist_t pcb_dist_pstk_pstk(pcb_pstk_t *o1, pcb_pstk_t *o2)
+static pcb_subnet_dist_t pcb_dist_poly_poly(pcb_poly_t *o1, pcb_poly_t *o2, pcb_rat_accuracy_t acc)
 {
 	return sdist_invalid;
 }
 
 
-static pcb_subnet_dist_t pcb_obj_obj_distance(pcb_any_obj_t *o1, pcb_any_obj_t *o2)
+static pcb_subnet_dist_t pcb_dist_pstk_arc(pcb_pstk_t *o1, pcb_arc_t *o2, pcb_rat_accuracy_t acc)
+{
+	return sdist_invalid;
+}
+
+static pcb_subnet_dist_t pcb_dist_pstk_line(pcb_pstk_t *o1, pcb_line_t *o2, pcb_rat_accuracy_t acc)
+{
+	return sdist_invalid;
+}
+
+static pcb_subnet_dist_t pcb_dist_pstk_poly(pcb_pstk_t *o1, pcb_poly_t *o2, pcb_rat_accuracy_t acc)
+{
+	return sdist_invalid;
+}
+
+static pcb_subnet_dist_t pcb_dist_pstk_pstk(pcb_pstk_t *o1, pcb_pstk_t *o2, pcb_rat_accuracy_t acc)
+{
+	return sdist_invalid;
+}
+
+
+static pcb_subnet_dist_t pcb_obj_obj_distance(pcb_any_obj_t *o1, pcb_any_obj_t *o2, pcb_rat_accuracy_t acc)
 {
 	switch(o1->type) {
 		case PCB_OBJ_ARC:
 			switch(o2->type) {
-				case PCB_OBJ_ARC:  return pcb_dist_arc_arc((pcb_arc_t *)o2, (pcb_arc_t *)o1);
-				case PCB_OBJ_LINE: return pcb_dist_line_arc((pcb_line_t *)o2, (pcb_arc_t *)o1);
-				case PCB_OBJ_POLY: return pcb_dist_poly_arc((pcb_poly_t *)o2, (pcb_arc_t *)o1);
-				case PCB_OBJ_PSTK: return pcb_dist_pstk_arc((pcb_pstk_t *)o2, (pcb_arc_t *)o1);
+				case PCB_OBJ_ARC:  return pcb_dist_arc_arc((pcb_arc_t *)o2, (pcb_arc_t *)o1, acc);
+				case PCB_OBJ_LINE: return pcb_dist_line_arc((pcb_line_t *)o2, (pcb_arc_t *)o1, acc);
+				case PCB_OBJ_POLY: return pcb_dist_poly_arc((pcb_poly_t *)o2, (pcb_arc_t *)o1, acc);
+				case PCB_OBJ_PSTK: return pcb_dist_pstk_arc((pcb_pstk_t *)o2, (pcb_arc_t *)o1, acc);
 
 				case PCB_OBJ_RAT: case PCB_OBJ_TEXT: case PCB_OBJ_SUBC:
 				case PCB_OBJ_VOID: case PCB_OBJ_NET: case PCB_OBJ_NET_TERM: case PCB_OBJ_LAYER: case PCB_OBJ_LAYERGRP: goto wrongtype;
@@ -101,10 +101,10 @@ static pcb_subnet_dist_t pcb_obj_obj_distance(pcb_any_obj_t *o1, pcb_any_obj_t *
 			break;
 		case PCB_OBJ_LINE:
 			switch(o2->type) {
-				case PCB_OBJ_ARC:  return pcb_dist_line_arc((pcb_line_t *)o1, (pcb_arc_t *)o2);
-				case PCB_OBJ_LINE: return pcb_dist_line_line((pcb_line_t *)o1, (pcb_line_t *)o2);
-				case PCB_OBJ_POLY: return pcb_dist_poly_line((pcb_poly_t *)o2, (pcb_line_t *)o1);
-				case PCB_OBJ_PSTK: return pcb_dist_pstk_arc((pcb_pstk_t *)o2, (pcb_arc_t *)o1);
+				case PCB_OBJ_ARC:  return pcb_dist_line_arc((pcb_line_t *)o1, (pcb_arc_t *)o2, acc);
+				case PCB_OBJ_LINE: return pcb_dist_line_line((pcb_line_t *)o1, (pcb_line_t *)o2, acc);
+				case PCB_OBJ_POLY: return pcb_dist_poly_line((pcb_poly_t *)o2, (pcb_line_t *)o1, acc);
+				case PCB_OBJ_PSTK: return pcb_dist_pstk_arc((pcb_pstk_t *)o2, (pcb_arc_t *)o1, acc);
 
 				case PCB_OBJ_RAT: case PCB_OBJ_TEXT: case PCB_OBJ_SUBC:
 				case PCB_OBJ_VOID: case PCB_OBJ_NET: case PCB_OBJ_NET_TERM: case PCB_OBJ_LAYER: case PCB_OBJ_LAYERGRP: goto wrongtype;
@@ -112,10 +112,10 @@ static pcb_subnet_dist_t pcb_obj_obj_distance(pcb_any_obj_t *o1, pcb_any_obj_t *
 			break;
 		case PCB_OBJ_POLY:
 			switch(o2->type) {
-				case PCB_OBJ_ARC:  return pcb_dist_poly_arc((pcb_poly_t *)o1, (pcb_arc_t *)o2);
-				case PCB_OBJ_LINE: return pcb_dist_poly_line((pcb_poly_t *)o1, (pcb_line_t *)o2);
-				case PCB_OBJ_POLY: return pcb_dist_poly_poly((pcb_poly_t *)o1, (pcb_poly_t *)o2);
-				case PCB_OBJ_PSTK: return pcb_dist_pstk_poly((pcb_pstk_t *)o2, (pcb_poly_t *)o1);
+				case PCB_OBJ_ARC:  return pcb_dist_poly_arc((pcb_poly_t *)o1, (pcb_arc_t *)o2, acc);
+				case PCB_OBJ_LINE: return pcb_dist_poly_line((pcb_poly_t *)o1, (pcb_line_t *)o2, acc);
+				case PCB_OBJ_POLY: return pcb_dist_poly_poly((pcb_poly_t *)o1, (pcb_poly_t *)o2, acc);
+				case PCB_OBJ_PSTK: return pcb_dist_pstk_poly((pcb_pstk_t *)o2, (pcb_poly_t *)o1, acc);
 
 				case PCB_OBJ_RAT: case PCB_OBJ_TEXT: case PCB_OBJ_SUBC:
 				case PCB_OBJ_VOID: case PCB_OBJ_NET: case PCB_OBJ_NET_TERM: case PCB_OBJ_LAYER: case PCB_OBJ_LAYERGRP: goto wrongtype;
@@ -124,10 +124,10 @@ static pcb_subnet_dist_t pcb_obj_obj_distance(pcb_any_obj_t *o1, pcb_any_obj_t *
 
 		case PCB_OBJ_PSTK:
 			switch(o2->type) {
-				case PCB_OBJ_ARC:  return pcb_dist_pstk_arc((pcb_pstk_t *)o1, (pcb_arc_t *)o2);
-				case PCB_OBJ_LINE: return pcb_dist_pstk_line((pcb_pstk_t *)o1, (pcb_line_t *)o2);
-				case PCB_OBJ_POLY: return pcb_dist_pstk_poly((pcb_pstk_t *)o1, (pcb_poly_t *)o2);
-				case PCB_OBJ_PSTK: return pcb_dist_pstk_pstk((pcb_pstk_t *)o1, (pcb_pstk_t *)o2);
+				case PCB_OBJ_ARC:  return pcb_dist_pstk_arc((pcb_pstk_t *)o1, (pcb_arc_t *)o2, acc);
+				case PCB_OBJ_LINE: return pcb_dist_pstk_line((pcb_pstk_t *)o1, (pcb_line_t *)o2, acc);
+				case PCB_OBJ_POLY: return pcb_dist_pstk_poly((pcb_pstk_t *)o1, (pcb_poly_t *)o2, acc);
+				case PCB_OBJ_PSTK: return pcb_dist_pstk_pstk((pcb_pstk_t *)o1, (pcb_pstk_t *)o2, acc);
 
 				case PCB_OBJ_RAT: case PCB_OBJ_TEXT: case PCB_OBJ_SUBC:
 				case PCB_OBJ_VOID: case PCB_OBJ_NET: case PCB_OBJ_NET_TERM: case PCB_OBJ_LAYER: case PCB_OBJ_LAYERGRP: goto wrongtype;
@@ -142,7 +142,7 @@ static pcb_subnet_dist_t pcb_obj_obj_distance(pcb_any_obj_t *o1, pcb_any_obj_t *
 	return sdist_invalid;
 }
 
-static pcb_subnet_dist_t pcb_subnet_dist(vtp0_t *objs1, vtp0_t *objs2)
+static pcb_subnet_dist_t pcb_subnet_dist(vtp0_t *objs1, vtp0_t *objs2, pcb_rat_accuracy_t acc)
 {
 	int i1, i2;
 	pcb_subnet_dist_t best, curr;
@@ -154,7 +154,7 @@ static pcb_subnet_dist_t pcb_subnet_dist(vtp0_t *objs1, vtp0_t *objs2)
 		for(i2 = 0; i2 < vtp0_len(objs2); i2++) {
 			pcb_any_obj_t *o1 = objs1->array[i1], *o2 = objs2->array[i2];
 
-			curr = pcb_obj_obj_distance(o1, o2);
+			curr = pcb_obj_obj_distance(o1, o2, acc);
 
 #if 0
 			pcb_any_obj_t *o_in_poly = NULL, *poly
