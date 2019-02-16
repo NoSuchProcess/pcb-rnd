@@ -86,9 +86,17 @@ static pcb_subnet_dist_t pcb_dist_arc_arc(pcb_arc_t *o1, pcb_arc_t *o2, pcb_rat_
 
 static pcb_subnet_dist_t pcb_dist_line_line(pcb_line_t *o1, pcb_line_t *o2, pcb_rat_accuracy_t acc)
 {
+	pcb_subnet_dist_t best, curr;
+
 	if ((acc & PCB_RATACC_ONLY_MANHATTAN) && ((!is_line_manhattan(o1) || !is_line_manhattan(o2))))
 		return sdist_invalid;
-	return sdist_invalid;
+
+	dist1(o1, o1->Point1.X, o1->Point1.Y, o2, o2->Point1.X, o2->Point1.Y);
+	dist2(o1, o1->Point1.X, o1->Point1.Y, o2, o2->Point2.X, o2->Point2.Y);
+	dist2(o1, o1->Point2.X, o1->Point2.Y, o2, o2->Point1.X, o2->Point1.Y);
+	dist2(o1, o1->Point2.X, o1->Point2.Y, o2, o2->Point2.X, o2->Point2.Y);
+
+	return best;
 }
 
 static pcb_subnet_dist_t pcb_dist_line_arc(pcb_line_t *o1, pcb_arc_t *o2, pcb_rat_accuracy_t acc)
