@@ -385,27 +385,35 @@ static pcb_subnet_dist_t pcb_subnet_dist(const pcb_board_t *pcb, vtp0_t *objs1, 
 
 			curr = pcb_obj_obj_distance(o1, o2, acc);
 
-#if 0
-			pcb_any_obj_t *o_in_poly = NULL, *poly
-			if (curr.dist2 == 0.0) {
+			{
+				pcb_any_obj_t *o_in_poly = NULL, *poly;
+				pcb_coord_t x, y;
+
 				/* if object needs to connect to sorrunding polygon, use a special rat
 				   to indicate "in-place" connection */
-				if ((o1->type == PCB_OBJ_POLY) && (o2->type != PCB_OBJ_POLY) {
-					o_in_poly = o2;
-					poly = o1;
+				if ((curr.o1->type == PCB_OBJ_POLY) && (curr.o2->type != PCB_OBJ_POLY)) {
+					o_in_poly = curr.o2;
+					poly = curr.o1;
+					x = curr.o2x;
+					y = curr.o2y;
 				}
-				else if ((o2->type == PCB_OBJ_POLY) && (o1->type != PCB_OBJ_POLY)) {
-					o_in_poly = o1;
-					poly = o2;
+				else if ((curr.o2->type == PCB_OBJ_POLY) && (curr.o1->type != PCB_OBJ_POLY)) {
+					o_in_poly = curr.o1;
+					poly = curr.o2;
+					x = curr.o1x;
+					y = curr.o1y;
 				}
-				if (o_in_poly && pcb_poly_is_point_in_p_ignore_holes(cirr->o1x, curr->o1y, poly)
-					goto check_if_better;
+				if (o_in_poly && pcb_poly_is_point_in_p_ignore_holes(x, y, poly)) {
+					pcb_printf("Can do better than %mm.\n", curr.dist2);
+					curr.o1x = curr.o2x = x;
+					curr.o1y = curr.o2y = y;
+					curr.dist2 = 0;
+				}
+
 			}
-#endif
 
 			if (curr.dist2 < best.dist2)
 				best = curr;
-/*			check_if_better:;*/
 		}
 	}
 
