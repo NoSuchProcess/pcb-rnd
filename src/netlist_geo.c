@@ -196,12 +196,45 @@ static pcb_subnet_dist_t pcb_dist_poly_line(pcb_poly_t *o1, pcb_line_t *o2, pcb_
 	return best;
 }
 
+#define poly_pt_chk(x, y) \
+do { \
+	pcb_subnet_dist_t curr = dist_poly(o1, (pcb_any_obj_t *)o2, x, y); \
+	if (curr.dist2 < best.dist2) \
+		best = curr; \
+} while(0)
+
 static pcb_subnet_dist_t pcb_dist_poly_poly(pcb_poly_t *o1, pcb_poly_t *o2, pcb_rat_accuracy_t acc)
 {
+	pcb_subnet_dist_t best;
+	pcb_poly_it_t it;
+	pcb_polyarea_t *pa;
+
 	if (acc & PCB_RATACC_ONLY_MANHATTAN)
 		return sdist_invalid;
 
-	return sdist_invalid;
+	if (!(acc & PCB_RATACC_PRECISE)) /* this is a slow, O(n^2) algo */
+		return sdist_invalid;
+
+	best.dist2 = HUGE_VAL;
+
+	for(pa = pcb_poly_island_first(o2, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
+		pcb_coord_t x, y;
+		pcb_pline_t *pl;
+		int go;
+
+		pl = pcb_poly_contour(&it);
+		if (pl != NULL) {
+			/* contour of the island */
+			for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y))
+				poly_pt_chk(x, y);
+			
+			/* iterate over all holes within this island */
+			for(pl = pcb_poly_hole_first(&it); pl != NULL; pl = pcb_poly_hole_next(&it))
+				for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y))
+					poly_pt_chk(x, y);
+		}
+	}
+	return best;
 }
 
 
