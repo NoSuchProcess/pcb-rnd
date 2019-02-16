@@ -331,9 +331,6 @@ ha:pcb-rnd-board-v6 {
      }
       uid = EwibItjsh9q72bL63V0AAAAB
      }
-     ha:rat.139 {
-      x1=100.0mil; y1=325.0mil; lgrp1=3; x2=725.0mil; y2=325.0mil; lgrp2=3;
-     }
    }
    li:layers {
 
