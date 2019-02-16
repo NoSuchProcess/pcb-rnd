@@ -35,11 +35,53 @@ static pcb_subnet_dist_t sdist_invalid = { NULL, NULL, 0, 0, 0, 0, -1, -1, HUGE_
 
 #define is_line_manhattan(l) (((l)->Point1.X == (l)->Point2.X) || ((l)->Point1.Y == (l)->Point2.Y))
 
+#define dist_(o1_, o1x_, o1y_, o2_, o2x_, o2y_) \
+do { \
+	double __dx__, __dy__; \
+	curr.o1 = (pcb_any_obj_t *)o1_; \
+	curr.o1x= o1x_; \
+	curr.o1y= o1y_; \
+	curr.o2 = (pcb_any_obj_t *)o2_; \
+	curr.o2x= o2x_; \
+	curr.o2y= o2y_; \
+	__dx__ = o1x_ - o2x_; \
+	__dy__ = o1y_ - o2y_; \
+	curr.dist2 = __dx__ * __dx__ + __dy__ * __dy__; \
+} while(0)
+
+
+#define dist2(o1, o1x, o1y, o2, o2x, o2y) \
+do { \
+	dist_(o1, o1x, o1y, o2, o2x, o2y); \
+	if (curr.dist2 < best.dist2) \
+		best = curr; \
+} while(0)
+
+#define dist1(o1, o1x, o1y, o2, o2x, o2y) \
+do { \
+	dist_(o1, o1x, o1y, o2, o2x, o2y); \
+	best = curr; \
+} while(0)
+
 static pcb_subnet_dist_t pcb_dist_arc_arc(pcb_arc_t *o1, pcb_arc_t *o2, pcb_rat_accuracy_t acc)
 {
+	pcb_subnet_dist_t best, curr;
+	pcb_coord_t o1x1, o1y1, o1x2, o1y2, o2x1, o2y1, o2x2, o2y2;
+
 	if (acc & PCB_RATACC_ONLY_MANHATTAN)
 		return sdist_invalid;
-	return sdist_invalid;
+
+	pcb_arc_get_end(o1, 0, &o1x1, &o1y1);
+	pcb_arc_get_end(o1, 1, &o1x2, &o1y2);
+	pcb_arc_get_end(o2, 0, &o2x1, &o2y1);
+	pcb_arc_get_end(o2, 1, &o2x2, &o2y2);
+
+	dist1(o1, o1x1, o1y1, o2, o2x1, o2y1);
+	dist2(o1, o1x1, o1y1, o2, o2x2, o2y2);
+	dist2(o1, o1x2, o1y2, o2, o2x1, o2y1);
+	dist2(o1, o1x2, o1y2, o2, o2x2, o2y2);
+
+	return best;
 }
 
 static pcb_subnet_dist_t pcb_dist_line_line(pcb_line_t *o1, pcb_line_t *o2, pcb_rat_accuracy_t acc)
@@ -205,5 +247,7 @@ static pcb_subnet_dist_t pcb_subnet_dist(vtp0_t *objs1, vtp0_t *objs2, pcb_rat_a
 /*			check_if_better:;*/
 		}
 	}
+
+TODO("Set groups");
 	return best;
 }
