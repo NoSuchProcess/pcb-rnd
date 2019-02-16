@@ -691,8 +691,7 @@ DrawShortestRats(pcb_oldnetlist_t *Netl,
 }
 
 pcb_bool
-pcb_rat_add_all(pcb_bool SelectedOnly,
-					 void (*funcp) (register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *))
+pcb_rat_add_all(pcb_bool SelectedOnly)
 {
 	pcb_oldnetlist_t *Nets, *Wantlist;
 	pcb_oldnet_t *lonesome;
@@ -738,13 +737,11 @@ pcb_rat_add_all(pcb_bool SelectedOnly,
 		PCB_END_LOOP;
 		Warned |= gather_subnets(Nets, SelectedOnly, pcb_true);
 		if (Nets->NetN > 0)
-			changed |= DrawShortestRats(Nets, funcp);
+			changed |= DrawShortestRats(Nets, NULL);
 	}
 	PCB_END_LOOP;
 	pcb_netlist_free(Nets);
 	free(Nets);
-	if (funcp)
-		return pcb_true;
 
 	if (Warned || changed) {
 		pcb_stub_rat_proc_shorts();

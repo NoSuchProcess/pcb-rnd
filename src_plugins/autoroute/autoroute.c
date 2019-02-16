@@ -4736,7 +4736,7 @@ donerouting:
 		/* optimize rats, we've changed connectivity a lot. */
 		pcb_rats_destroy(pcb_false /*all rats */ );
 		pcb_undo_restore_serial();
-		pcb_rat_add_all(pcb_false /*all rats */ , NULL);
+		pcb_rat_add_all(pcb_false /*all rats */);
 		pcb_undo_restore_serial();
 
 		pcb_undo_inc_serial();

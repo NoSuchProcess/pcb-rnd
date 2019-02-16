@@ -828,7 +828,7 @@ done:
 	pcb_hid_progress(0, 0, NULL);
 	if (changed) {
 		pcb_rats_destroy(pcb_false);
-		pcb_rat_add_all(pcb_false, NULL);
+		pcb_rat_add_all(pcb_false);
 		pcb_redraw();
 	}
 	vtp0_uninit(&Selected);

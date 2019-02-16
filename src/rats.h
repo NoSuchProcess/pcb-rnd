@@ -48,7 +48,7 @@ pcb_rat_t *pcb_rat_add_net(void);
 
 /* Put the rats nest into the layout from the loaded netlist; if SelectedOnly
    is pcb_true, it will only draw rats to selected pins and pads */
-pcb_bool pcb_rat_add_all(pcb_bool SelectedOnly, void (*funcp) (register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *));
+pcb_bool pcb_rat_add_all(pcb_bool SelectedOnly);
 
 char *pcb_connection_name(pcb_any_obj_t *obj);
 
