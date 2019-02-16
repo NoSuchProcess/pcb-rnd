@@ -390,7 +390,7 @@ pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_
 			if (done[su]) continue;
 			for(sd = 0; sd < vtp0_len(&subnets); sd++) {
 				curr = &connmx[su * vtp0_len(&subnets) + sd];
-				if ((done[su]) && (curr->dist2 < best_dist)) {
+				if ((done[sd]) && (curr->dist2 < best_dist)) {
 					bestu = su;
 					best_dist = curr->dist2;
 					best = curr;
