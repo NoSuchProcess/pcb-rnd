@@ -32,8 +32,12 @@
 #include "board.h"
 #include "data.h"
 #include "compat_misc.h"
+#include "layer_grp.h"
 #include "find.h"
 #include "obj_term.h"
+#include "conf_core.h"
+#include "undo.h"
+#include "obj_rat_draw.h"
 
 #define TDL_DONT_UNDEF
 #include "netlist2.h"
@@ -330,6 +334,112 @@ pcb_net_t **pcb_netlist_sort(pcb_netlist_t *nl)
 	qsort(arr, nl->used, sizeof(pcb_net_t *), netname_sort);
 	return arr;
 }
+
+typedef struct {
+	pcb_any_obj_t *o1, *o2;
+	pcb_coord_t o1x, o1y, o2x, o2y;
+	pcb_layergrp_id_t o1g, o2g;
+	double dist2;
+} pcb_subnet_dist_t;
+
+pcb_subnet_dist_t pcb_subnet_dist(vtp0_t *objs1, vtp0_t *objs2)
+{
+	int i1, i2;
+	pcb_subnet_dist_t res;
+	memset(&res, 0, sizeof(res));
+	for(i1 = 0; i1 < vtp0_len(objs1); i1++) {
+		for(i2 = 0; i2 < vtp0_len(objs1); i2++) {
+TODO("calculate object distance");
+		}
+	}
+	return res;
+}
+
+pcb_cardinal_t pcb_net_add_rats(pcb_board_t *pcb, pcb_net_t *net)
+{
+	pcb_find_t fctx;
+	pcb_net_term_t *t;
+	pcb_cardinal_t drawn = 0, r, n, s1, s2, su, sd;
+	vtp0_t subnets;
+	pcb_subnet_dist_t *connmx;
+	char *done;
+	int left;
+	pcb_rat_t *line;
+
+	memset(&fctx, 0, sizeof(fctx));
+	fctx.consider_rats = 1; /* keep existing rats and their connections */
+	fctx.list_found = 1;
+	vtp0_init(&subnets);
+
+	/* each component of a desired network is called a submnet; already connected
+	   objects of each subnet is collected on a vtp0_t; object-lists per submnet
+	   is saved in variable "subnets" */
+	for(t = pcb_termlist_first(&net->conns), n = 0; t != NULL; t = pcb_termlist_next(t), n++) {
+		r = pcb_net_term_crawl_flag(pcb, t, &fctx, (n == 0));
+		if (r > 0) {
+			vtp0_t *objs = malloc(sizeof(vtp0_t));
+			memcpy(objs, &fctx.found, sizeof(vtp0_t));
+			vtp0_append(&subnets, objs);
+			memset(&fctx.found, 0, sizeof(vtp0_t));
+		}
+	}
+
+	/* find the shortest connection between any two subnets and save the info
+	   in connmx */
+	connmx = calloc(sizeof(pcb_subnet_dist_t), vtp0_len(&subnets) * vtp0_len(&subnets));
+	for(s1 = 0; s1 < vtp0_len(&subnets); s1++) {
+		for(s2 = s1+1; s2 < vtp0_len(&subnets); s2++) {
+			connmx[s2 * vtp0_len(&subnets) + s1] = connmx[s1 * vtp0_len(&subnets) + s2] = pcb_subnet_dist(subnets.array[s1], subnets.array[s2]);
+		}
+	}
+
+	/* Start collecting subnets into one bug snowball of newly connected
+	   subnets. done[subnet] is 1 if a subnet is already in the snowball.
+	   Use a greedy algorithm: mark the first subnet as dine, then always
+	   add the shortest from any 'undone' subnet to any 'done' */
+	done = calloc(vtp0_len(&subnets), 1);
+	done[0] = 1;
+	for(left = vtp0_len(&subnets)-1; left > 0; left--) {
+		double best_dist = HUGE_VAL;
+		int bestu;
+		pcb_subnet_dist_t *best, *curr;
+		
+		for(su = 1; su < vtp0_len(&subnets); su++) {
+			if (done[su]) continue;
+			for(sd = 0; sd < vtp0_len(&subnets); sd++) {
+				curr = &connmx[su * vtp0_len(&subnets) + sd];
+				if ((done[su]) && (curr->dist2 < best_dist)) {
+					bestu = su;
+					best_dist = curr->dist2;
+					best = curr;
+				}
+			}
+		}
+
+		/* best connection is 'best' between from 'undone' network bestu; draw the rat */
+		line = pcb_rat_new(pcb->Data, -1,
+			best->o1x, best->o1y, best->o2x, best->o2y, best->o1g, best->o2g,
+			conf_core.appearance.rat_thickness, pcb_no_flags());
+		if (line  != NULL) {
+			if (best->dist2 == 0)
+				PCB_FLAG_SET(PCB_FLAG_VIA, line);
+			pcb_undo_add_obj_to_create(PCB_OBJ_RAT, line, line, line);
+			pcb_rat_invalidate_draw(line);
+			drawn++;
+		}
+		done[bestu] = 1;
+	}
+
+	/* cleanup */
+	for(n = 0; n < vtp0_len(&subnets); n++)
+		vtp0_uninit(subnets.array[n]);
+	free(connmx);
+	free(done);
+	pcb_find_free(&fctx);
+	return drawn;
+}
+
+
 
 void pcb_netlist_init(pcb_netlist_t *nl)
 {
