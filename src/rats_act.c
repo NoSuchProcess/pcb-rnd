@@ -44,11 +44,14 @@
 #include "compat_nls.h"
 #include "obj_rat.h"
 #include "actions.h"
+#include "netlist2.h"
 
 #include "rats.h"
 #include "draw.h"
 
 #include "obj_rat_draw.h"
+
+#include "brave.h"
 
 static const char pcb_acts_AddRats[] = "AddRats(AllRats|SelectedRats|Close)";
 static const char pcb_acth_AddRats[] = "Add one or more rat lines to the board.";
@@ -67,8 +70,14 @@ static fgw_error_t pcb_act_AddRats(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	switch (op) {
 		case F_AllRats:
-			if (pcb_rat_add_all(pcb_false))
-				pcb_board_set_changed_flag(pcb_true);
+			if (pcb_brave & PCB_BRAVE_NETLIST2) {
+				if (pcb_net_add_all_rats(PCB, PCB_RATACC_PRECISE) > 0)
+					pcb_board_set_changed_flag(pcb_true);
+			}
+			else {
+				if (pcb_rat_add_all(pcb_false))
+					pcb_board_set_changed_flag(pcb_true);
+			}
 			break;
 		case F_SelectedRats:
 		case F_Selected:
