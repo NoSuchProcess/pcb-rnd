@@ -384,8 +384,8 @@ pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_
 	for(left = vtp0_len(&subnets)-1; left > 0; left--) {
 		double best_dist = HUGE_VAL;
 		int bestu;
-		pcb_subnet_dist_t *best, *curr;
-		
+		pcb_subnet_dist_t *best = NULL, *curr;
+
 		for(su = 1; su < vtp0_len(&subnets); su++) {
 			if (done[su]) continue;
 			for(sd = 0; sd < vtp0_len(&subnets); sd++) {
@@ -397,6 +397,9 @@ pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_
 				}
 			}
 		}
+
+TODO("nestlist: this is true only if we are not doing manhattan; for manhattan take extra care about terminals");
+		assert(best != NULL); /* we msut have a best connection: worst case a subnet has at least terminals */
 
 		/* best connection is 'best' between from 'undone' network bestu; draw the rat */
 		line = pcb_rat_new(pcb->Data, -1,
