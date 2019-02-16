@@ -306,7 +306,7 @@ static pcb_subnet_dist_t pcb_obj_obj_distance(pcb_any_obj_t *o1, pcb_any_obj_t *
 				case PCB_OBJ_ARC:  return pcb_dist_line_arc((pcb_line_t *)o1, (pcb_arc_t *)o2, acc);
 				case PCB_OBJ_LINE: return pcb_dist_line_line((pcb_line_t *)o1, (pcb_line_t *)o2, acc);
 				case PCB_OBJ_POLY: return pcb_dist_poly_line((pcb_poly_t *)o2, (pcb_line_t *)o1, acc);
-				case PCB_OBJ_PSTK: return pcb_dist_pstk_arc((pcb_pstk_t *)o2, (pcb_arc_t *)o1, acc);
+				case PCB_OBJ_PSTK: return pcb_dist_pstk_line((pcb_pstk_t *)o2, (pcb_line_t *)o1, acc);
 
 				case PCB_OBJ_RAT: case PCB_OBJ_TEXT: case PCB_OBJ_SUBC:
 				case PCB_OBJ_VOID: case PCB_OBJ_NET: case PCB_OBJ_NET_TERM: case PCB_OBJ_LAYER: case PCB_OBJ_LAYERGRP: goto wrongtype;
