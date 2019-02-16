@@ -240,10 +240,19 @@ static pcb_subnet_dist_t pcb_dist_poly_poly(pcb_poly_t *o1, pcb_poly_t *o2, pcb_
 
 static pcb_subnet_dist_t pcb_dist_pstk_arc(pcb_pstk_t *o1, pcb_arc_t *o2, pcb_rat_accuracy_t acc)
 {
+	pcb_subnet_dist_t best, curr;
+	pcb_coord_t o2x1, o2y1, o2x2, o2y2;
+
 	if (acc & PCB_RATACC_ONLY_MANHATTAN)
 		return sdist_invalid;
 
-	return sdist_invalid;
+	pcb_arc_get_end(o2, 0, &o2x1, &o2y1);
+	pcb_arc_get_end(o2, 1, &o2x2, &o2y2);
+
+	dist1(o1, o1->x, o1->y, o2, o2x1, o2y1);
+	dist2(o1, o1->x, o1->y, o2, o2x2, o2y2);
+
+	return best;
 }
 
 static pcb_subnet_dist_t pcb_dist_pstk_line(pcb_pstk_t *o1, pcb_line_t *o2, pcb_rat_accuracy_t acc)
