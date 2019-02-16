@@ -239,6 +239,9 @@ static pcb_cardinal_t pcb_net_term_crawl_flag(pcb_board_t *pcb, pcb_net_term_t *
 	if (first)
 		return pcb_find_from_obj(fctx, PCB->Data, o);
 
+	if (PCB_FIND_IS_MARKED(fctx, o))
+		return 0; /* already visited, no need to run 'find' again */
+
 	return pcb_find_from_obj_next(fctx, PCB->Data, o);
 }
 
