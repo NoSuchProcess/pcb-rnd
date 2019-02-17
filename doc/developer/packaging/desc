@@ -81,7 +81,7 @@
 	gschem and tinycad.
 
 @pcb-rnd-io-alien
-	File format compatibility with other PCB board designers.
+	File format compatibility with other PCB layout designers.
 
 	Load and/or save boards in file formats supported by other
 	EDA tools, such as KiCAD, Eagle, protel/autotrax, etc.
