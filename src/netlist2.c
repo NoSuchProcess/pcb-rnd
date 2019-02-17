@@ -583,6 +583,18 @@ pcb_cardinal_t pcb_net_add_all_rats(const pcb_board_t *pcb, pcb_rat_accuracy_t a
 	return drawn;
 }
 
+void pcb_netlist_changed(int force_unfreeze)
+{
+	if (force_unfreeze)
+		PCB->netlist_frozen = 0;
+	if (PCB->netlist_frozen)
+		PCB->netlist_needs_update = 1;
+	else {
+		PCB->netlist_needs_update = 0;
+		pcb_event(PCB_EVENT_NETLIST_CHANGED, NULL);
+	}
+}
+
 void pcb_netlist_init(pcb_netlist_t *nl)
 {
 	htsp_init(nl, strhash, strkeyeq);

@@ -55,10 +55,6 @@ typedef struct {								/* holds a list of net lists */
 	pcb_oldnetlist_t *NetList;
 } pcb_netlist_list_t;
 
-
-void pcb_netlist_changed(int force_unfreeze);
-
-
 /* Look up a net by name; if not found and alloc is true, create it, else
    return NULL */
 pcb_lib_menu_t *pcb_netlist_lookup(int patch, const char *netname, pcb_bool alloc);

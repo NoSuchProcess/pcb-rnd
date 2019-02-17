@@ -49,6 +49,7 @@
 #include "route_style.h"
 #include "compat_misc.h"
 #include "netlist.h"
+#include "netlist2.h"
 #include "compat_nls.h"
 #include "macro.h"
 #include <genvector/vtp0.h>

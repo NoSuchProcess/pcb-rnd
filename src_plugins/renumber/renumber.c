@@ -43,7 +43,7 @@
 #include "conf_core.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
-#include "netlist.h"
+#include "netlist2.h"
 #include "safe_fs.h"
 #include "macro.h"
 

@@ -59,18 +59,6 @@
   char * PCB->NetlistLib[n].Menu[i].Entry[j].ListEntry
 */
 
-void pcb_netlist_changed(int force_unfreeze)
-{
-	if (force_unfreeze)
-		PCB->netlist_frozen = 0;
-	if (PCB->netlist_frozen)
-		PCB->netlist_needs_update = 1;
-	else {
-		PCB->netlist_needs_update = 0;
-		pcb_event(PCB_EVENT_NETLIST_CHANGED, NULL);
-	}
-}
-
 pcb_lib_menu_t *pcb_netnode_to_netname(const char *nodename)
 {
 	int i, j;
