@@ -52,4 +52,9 @@ void pcb_rat_unreg(pcb_rat_t *rat);
 pcb_rat_t *pcb_rat_new(pcb_data_t *Data, long int id, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_layergrp_id_t group1, pcb_layergrp_id_t group2, pcb_coord_t Thickness, pcb_flag_t Flags);
 pcb_bool pcb_rats_destroy(pcb_bool selected);
 
+#define PCB_RAT_LOOP(top) do {                                          \
+  pcb_rat_t *line;                                                    \
+  gdl_iterator_t __it__;                                            \
+  ratlist_foreach(&(top)->Rat, &__it__, line) {
+
 #endif

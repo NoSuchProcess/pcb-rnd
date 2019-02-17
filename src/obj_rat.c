@@ -46,9 +46,6 @@
 #include "draw.h"
 #include "obj_rat_draw.h"
 
-/* TODO: merge rats.[ch] too */
-#include "rats.h"
-
 /*** allocation ***/
 
 void pcb_rat_reg(pcb_data_t *data, pcb_rat_t *rat)

@@ -43,7 +43,6 @@
 #include "find.h"
 #include "obj_line.h"
 #include "obj_subc.h"
-#include "rats.h"
 #include "search.h"
 #include "tool.h"
 #include "undo.h"

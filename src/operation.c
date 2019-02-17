@@ -33,7 +33,6 @@
 #include "data.h"
 #include "conf_core.h"
 #include "undo.h"
-#include "rats.h"
 #include "brave.h"
 
 /* ----------------------------------------------------------------------

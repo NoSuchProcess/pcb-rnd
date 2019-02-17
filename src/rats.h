@@ -73,10 +73,4 @@ pcb_connection_t *pcb_rat_connection_alloc(pcb_oldnet_t *Net);
         {                                                     \
                 connection = & (net)->Connection[n]
 
-#define PCB_RAT_LOOP(top) do {                                          \
-  pcb_rat_t *line;                                                    \
-  gdl_iterator_t __it__;                                            \
-  ratlist_foreach(&(top)->Rat, &__it__, line) {
-
-
 #endif
