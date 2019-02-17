@@ -254,6 +254,17 @@ typedef struct {
 	pcb_net_t *current_net;
 } short_ctx_t;
 
+static void short_ctx_init(short_ctx_t *sctx, const pcb_board_t *pcb, pcb_net_t *net)
+{
+	sctx->pcb = pcb;
+	sctx->current_net = net;
+}
+
+static void short_ctx_uninit(short_ctx_t *sctx)
+{
+}
+
+
 /* Short circuit found between net and an offender object that should not
    be part of the net but is connected to the net */
 static void net_found_short(short_ctx_t *sctx, pcb_any_obj_t *offender)
@@ -300,8 +311,7 @@ pcb_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned lon
 	pcb_cardinal_t res = 0, n;
 	short_ctx_t sctx;
 
-	sctx.pcb = pcb;
-	sctx.current_net = net;
+	short_ctx_init(&sctx, pcb, net);
 
 	memset(&fctx, 0, sizeof(fctx));
 	fctx.flag_set = setf;
@@ -316,6 +326,7 @@ pcb_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned lon
 	}
 
 	pcb_find_free(&fctx);
+	short_ctx_uninit(&sctx);
 	return res;
 }
 
@@ -399,8 +410,7 @@ pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_
 	int left;
 	pcb_rat_t *line;
 
-	sctx.pcb = pcb;
-	sctx.current_net = net;
+	short_ctx_init(&sctx, pcb, net);
 
 	memset(&fctx, 0, sizeof(fctx));
 	fctx.consider_rats = 1; /* keep existing rats and their connections */
@@ -485,6 +495,7 @@ pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_
 	free(connmx);
 	free(done);
 	pcb_find_free(&fctx);
+	short_ctx_uninit(&sctx);
 	return drawn;
 }
 
