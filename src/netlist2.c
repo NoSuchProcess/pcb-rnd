@@ -62,14 +62,14 @@ static pcb_net_term_t *pcb_net_term_alloc(pcb_net_t *net, const char *refdes, co
 {
 	pcb_net_term_t *t;
 
-		t = calloc(sizeof(pcb_net_term_t), 1);
-		t->type = PCB_OBJ_NET_TERM;
-		t->parent_type = PCB_PARENT_NET;
-		t->parent.net = net;
-		t->refdes = pcb_strdup(refdes);
-		t->term = pcb_strdup(term);
-		pcb_termlist_append(&net->conns, t);
-		return t;
+	t = calloc(sizeof(pcb_net_term_t), 1);
+	t->type = PCB_OBJ_NET_TERM;
+	t->parent_type = PCB_PARENT_NET;
+	t->parent.net = net;
+	t->refdes = pcb_strdup(refdes);
+	t->term = pcb_strdup(term);
+	pcb_termlist_append(&net->conns, t);
+	return t;
 }
 
 pcb_net_term_t *pcb_net_term_get(pcb_net_t *net, const char *refdes, const char *term, pcb_bool alloc)
@@ -179,13 +179,13 @@ static pcb_net_t *pcb_net_alloc(pcb_board_t *pcb, pcb_netlist_t *nl, const char 
 {
 	pcb_net_t *net;
 
-		net = calloc(sizeof(pcb_net_t), 1);
-		net->type = PCB_OBJ_NET;
-		net->parent_type = PCB_PARENT_BOARD;
-		net->parent.board = pcb;
-		net->name = pcb_strdup(netname);
-		htsp_set(nl, net->name, net);
-		return net;
+	net = calloc(sizeof(pcb_net_t), 1);
+	net->type = PCB_OBJ_NET;
+	net->parent_type = PCB_PARENT_BOARD;
+	net->parent.board = pcb;
+	net->name = pcb_strdup(netname);
+	htsp_set(nl, net->name, net);
+	return net;
 }
 
 pcb_net_t *pcb_net_get(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname, pcb_bool alloc)
