@@ -74,6 +74,8 @@ typedef enum {
 	PCB_EVENT_DAD_NEW_DIALOG,         /* called by the GUI after a new DAD dialog is open; args are pointer hid_ctx,  string dialog id and a pointer to int[4] for getting back preferre {x,y,w,h} (-1 means unknown) */
 	PCB_EVENT_DAD_NEW_GEO,            /* called by the GUI after the window geometry got reconfigured; args are: void *hid_ctx, const char *dialog id, int x1, int y1, int width, int height */
 
+	PCB_EVENT_NET_INDICATE_SHORT,     /* called by core to get a shortcircuit indicated (e.g. by mincut). Args: (pcb_net_t *net, pcb_any_obj_t *offending_term, pcb_net_t *offending_net, int *handled) - if *handled is non-zero, the short is already indicated */
+
 	PCB_EVENT_last                    /* not a real event */
 } pcb_event_id_t;
 
