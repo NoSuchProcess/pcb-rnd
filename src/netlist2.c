@@ -230,7 +230,7 @@ int pcb_net_del(pcb_netlist_t *nl, const char *netname)
 	return 0;
 }
 
-static pcb_cardinal_t pcb_net_term_crawl_flag(const pcb_board_t *pcb, pcb_net_term_t *term, pcb_find_t *fctx, int first)
+static pcb_cardinal_t pcb_net_term_crawl(const pcb_board_t *pcb, pcb_net_term_t *term, pcb_find_t *fctx, int first)
 {
 	pcb_any_obj_t *o;
 	unsigned long res;
@@ -262,7 +262,7 @@ pcb_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned lon
 	fctx.only_mark_rats = 1; /* do not trust rats, but do mark them */
 
 	for(t = pcb_termlist_first(&net->conns), n = 0; t != NULL; t = pcb_termlist_next(t), n++) {
-		res += pcb_net_term_crawl_flag(pcb, t, &fctx, (n == 0));
+		res += pcb_net_term_crawl(pcb, t, &fctx, (n == 0));
 	}
 
 	pcb_find_free(&fctx);
@@ -357,7 +357,7 @@ pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_
 	   objects of each subnet is collected on a vtp0_t; object-lists per submnet
 	   is saved in variable "subnets" */
 	for(t = pcb_termlist_first(&net->conns), n = 0; t != NULL; t = pcb_termlist_next(t), n++) {
-		r = pcb_net_term_crawl_flag(pcb, t, &fctx, (n == 0));
+		r = pcb_net_term_crawl(pcb, t, &fctx, (n == 0));
 		if (r > 0) {
 			vtp0_t *objs = malloc(sizeof(vtp0_t));
 			memcpy(objs, &fctx.found, sizeof(vtp0_t));
