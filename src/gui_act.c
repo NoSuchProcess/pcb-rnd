@@ -61,6 +61,7 @@
 #include "operation.h"
 #include "obj_subc_op.h"
 #include "tool.h"
+#include "route_style.h"
 
 #define CLONE_TYPES PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY
 

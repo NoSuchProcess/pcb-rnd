@@ -55,6 +55,7 @@
 #include "data_it.h"
 #include "macro.h"
 #include "grid.h"
+#include "route_style.h"
 
 static void ChangeFlag(const char *, const char *, int, const char *);
 static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv);

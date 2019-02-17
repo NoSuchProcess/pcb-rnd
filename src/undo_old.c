@@ -64,6 +64,7 @@
 #include "conf_core.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
+#include "netlist2.h"
 
 #include "obj_poly_draw.h"
 #include "obj_subc_parent.h"

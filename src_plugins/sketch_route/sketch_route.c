@@ -48,6 +48,7 @@
 #include "search.h"
 #include "tool.h"
 #include "layer_ui.h"
+#include "netlist.h"
 
 #include "sktypedefs.h"
 #include "wire.h"

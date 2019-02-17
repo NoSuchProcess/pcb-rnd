@@ -112,6 +112,7 @@ pcb_net_t **pcb_netlist_sort(pcb_netlist_t *nl);
 pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_accuracy_t acc);
 pcb_cardinal_t pcb_net_add_all_rats(const pcb_board_t *pcb, pcb_rat_accuracy_t acc);
 
+void pcb_netlist_changed(int force_unfreeze);
 
 pcb_bool pcb_net_name_valid(const char *netname);
 

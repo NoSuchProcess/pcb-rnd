@@ -32,6 +32,7 @@
 #include "obj_term.h"
 #include "rtree.h"
 #include "search_r.h"
+#include "netlist.h"
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)

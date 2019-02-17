@@ -46,6 +46,7 @@
 #include "search.h"
 #include "tool.h"
 #include "undo.h"
+#include "rats.h"
 
 #include "obj_line_draw.h"
 #include "obj_pstk_draw.h"

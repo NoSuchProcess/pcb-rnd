@@ -32,7 +32,6 @@
 #define	PCB_SEARCH_H
 
 #include "global_typedefs.h"
-#include "rats.h"
 #include "misc_util.h"
 #include "layer.h"
 
