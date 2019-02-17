@@ -38,6 +38,7 @@
 #include "conf_core.h"
 #include "undo.h"
 #include "obj_rat_draw.h"
+#include "obj_subc_parent.h"
 
 #define TDL_DONT_UNDEF
 #include "netlist2.h"
@@ -248,6 +249,36 @@ static pcb_cardinal_t pcb_net_term_crawl(const pcb_board_t *pcb, pcb_net_term_t 
 	return pcb_find_from_obj_next(fctx, PCB->Data, o);
 }
 
+/* Short circuit found between net and an offender object that should not
+   be part of the net but is connected to the net */
+static void net_found_short(pcb_net_t *net, pcb_any_obj_t *offender)
+{
+	pcb_subc_t *sc = pcb_obj_parent_subc(offender);
+
+	pcb_trace("short: net=%s offender=%s-%s\n", net->name, sc->refdes, offender->term);
+}
+
+static int net_short_check(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
+{
+	if (new_obj->term != NULL) {
+		pcb_net_term_t *t;
+		pcb_net_t *net = fctx->user_data;
+		pcb_subc_t *sc = pcb_obj_parent_subc(new_obj);
+		if (sc == NULL)
+			return 0;
+
+		/* if new_obj is a terminal on our net, return */
+		for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t))
+			if ((strcmp(t->refdes, sc->refdes) == 0) && (strcmp(t->term, new_obj->term) == 0))
+				return 0;
+
+		/* new_obj is not on our net but has a refdes-term -> must be a short */
+		net_found_short(net, new_obj);
+	}
+
+	return 0;
+}
+
 pcb_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned long setf, unsigned long clrf)
 {
 	pcb_find_t fctx;
@@ -259,6 +290,8 @@ pcb_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned lon
 	fctx.flag_clr = clrf;
 	fctx.flag_chg_undoable = 1;
 	fctx.only_mark_rats = 1; /* do not trust rats, but do mark them */
+	fctx.user_data = net;
+	fctx.found_cb = net_short_check;
 
 	for(t = pcb_termlist_first(&net->conns), n = 0; t != NULL; t = pcb_termlist_next(t), n++) {
 		res += pcb_net_term_crawl(pcb, t, &fctx, (n == 0));
@@ -350,6 +383,8 @@ pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_
 	memset(&fctx, 0, sizeof(fctx));
 	fctx.consider_rats = 1; /* keep existing rats and their connections */
 	fctx.list_found = 1;
+	fctx.user_data = net;
+	fctx.found_cb = net_short_check;
 	vtp0_init(&subnets);
 
 	/* each component of a desired network is called a submnet; already connected
