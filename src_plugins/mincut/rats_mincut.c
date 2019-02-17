@@ -34,6 +34,7 @@
 #include "data.h"
 #include "draw.h"
 #include "error.h"
+#include "event.h"
 #include "plug_io.h"
 #include "find.h"
 #include "polygon.h"
@@ -51,6 +52,8 @@
 #include "conf.h"
 #include "rats_mincut_conf.h"
 conf_mincut_t conf_mincut;
+
+static const char *pcb_mincut_cookie = "mincut";
 
 /* define to 1 to enable debug prints */
 #if 0
@@ -115,6 +118,7 @@ static int proc_short(pcb_any_obj_t *term, int ignore)
 	int bad_gr = 0;
 	pcb_find_t fctx;
 
+TODO("remove this check from here, handled at the caller");
 	if (!conf_mincut.plugins.mincut.enable)
 		return bad_gr;
 
@@ -370,11 +374,38 @@ void rat_proc_shorts(void)
 	shorts = NULL;
 }
 
+static void pcb_mincut_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	int *handled;
+	pcb_any_obj_t *term;
+
+	if (!conf_mincut.plugins.mincut.enable)
+		return;
+
+	if (argc < 5)
+		return;
+
+	if (argv[4].type != PCB_EVARG_PTR)
+		return;
+	handled = (int *)argv[4].d.p;
+	if (*handled)
+		return;
+
+	if (argv[2].type != PCB_EVARG_PTR)
+		return;
+	term = (int *)argv[2].d.p;
+
+	if (proc_short(term, 0) == 0)
+		*handled = 1;
+}
+
+
 int pplg_check_ver_mincut(int ver_needed) { return 0; }
 
 void pplg_uninit_mincut(void)
 {
 	conf_unreg_fields("plugins/mincut/");
+	pcb_event_unbind_allcookie(pcb_mincut_cookie);
 }
 
 #include "stub_mincut.h"
@@ -383,6 +414,9 @@ int pplg_init_mincut(void)
 	PCB_API_CHK_VER;
 	pcb_stub_rat_found_short = rat_found_short;
 	pcb_stub_rat_proc_shorts = rat_proc_shorts;
+
+	pcb_event_bind(PCB_EVENT_NET_INDICATE_SHORT, pcb_mincut_ev, NULL, pcb_mincut_cookie);
+
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	conf_reg_field(conf_mincut, field,isarray,type_name,cpath,cname,desc,flags);
 #include "rats_mincut_conf_fields.h"
