@@ -233,7 +233,6 @@ int pcb_net_del(pcb_netlist_t *nl, const char *netname)
 static pcb_cardinal_t pcb_net_term_crawl(const pcb_board_t *pcb, pcb_net_term_t *term, pcb_find_t *fctx, int first)
 {
 	pcb_any_obj_t *o;
-	unsigned long res;
 
 /* there can be multiple terminals with the same ID, but it is enough to run find from the first: find.c will consider them all */
 	o = pcb_term_find_name(pcb, pcb->Data, PCB_LYT_COPPER, term->refdes, term->term, 0, NULL, NULL);
