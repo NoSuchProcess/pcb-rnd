@@ -385,7 +385,7 @@ static pcb_subnet_dist_t pcb_subnet_dist(const pcb_board_t *pcb, vtp0_t *objs1, 
 
 			curr = pcb_obj_obj_distance(o1, o2, acc);
 
-			{
+			if (curr.dist2 < HUGE_VAL) {
 				pcb_any_obj_t *o_in_poly = NULL, *poly;
 				pcb_coord_t x, y, farx, fary;
 
