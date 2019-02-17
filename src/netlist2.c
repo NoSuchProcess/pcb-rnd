@@ -251,11 +251,20 @@ static pcb_cardinal_t pcb_net_term_crawl(const pcb_board_t *pcb, pcb_net_term_t 
 
 /* Short circuit found between net and an offender object that should not
    be part of the net but is connected to the net */
-static void net_found_short(pcb_net_t *net, pcb_any_obj_t *offender)
+static void net_found_short(pcb_board_t *pcb, pcb_net_t *net, pcb_any_obj_t *offender)
 {
 	pcb_subc_t *sc = pcb_obj_parent_subc(offender);
+TODO("This should be PCB_NETLIST_EDITED - revise the rest too")
+	pcb_net_term_t *offt = pcb_net_find_by_refdes_term(&pcb->netlist[PCB_NETLIST_INPUT], sc->refdes, offender->term);
+	pcb_net_t *offn;
+	const char *offnn = "<unknown>";
+	
+	if (offt != NULL) {
+		offn = offt->parent.net;
+		offnn = offn->name;
+	}
 
-	pcb_trace("short: net=%s offender=%s-%s\n", net->name, sc->refdes, offender->term);
+	pcb_trace("short: net=%s offender=%s-%s (of net %s)\n", net->name, sc->refdes, offender->term, offnn);
 }
 
 static int net_short_check(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
@@ -273,7 +282,7 @@ static int net_short_check(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj
 				return 0;
 
 		/* new_obj is not on our net but has a refdes-term -> must be a short */
-		net_found_short(net, new_obj);
+		net_found_short(PCB, net, new_obj);
 	}
 
 	return 0;
