@@ -75,7 +75,7 @@ struct short_conn_s {
 	short_conn_t *next;
 };
 
-TODO("netlist: remove this, use the find context");
+TODO("netlist: remove this, use the find context")
 static short_conn_t *short_conns = NULL;
 static int num_short_conns = 0;
 static int short_conns_maxid = 0;
