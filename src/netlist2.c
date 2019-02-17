@@ -271,8 +271,10 @@ static void short_ctx_uninit(short_ctx_t *sctx)
 	for(e = htsp_first(&sctx->found); e != NULL; e = htsp_next(&sctx->found, e))
 		free(e->key);
 	htsp_uninit(&sctx->found);
-	if (sctx->changed)
+	if (sctx->changed) {
 		pcb_gui->invalidate_all();
+		conf_core.temp.rat_warn = pcb_true;
+	}
 }
 
 /* Return 1 if net1-net2 (or net2-net1) is already seen as a short, return 0
