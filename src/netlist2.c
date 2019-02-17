@@ -319,7 +319,7 @@ pcb_net_term_t *pcb_net_find_by_refdes_term(pcb_netlist_t *nl, const char *refde
 		pcb_net_term_t *t;
 
 		for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t))
-			if ((strcmp(t->refdes, refdes) == 0) && (strcmp(t->refdes, term) == 0))
+			if ((strcmp(t->refdes, refdes) == 0) && (strcmp(t->term, term) == 0))
 				return t;
 	}
 
