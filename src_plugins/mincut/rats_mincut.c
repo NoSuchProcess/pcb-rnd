@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2013..2015 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2013..2015,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@
 #include "search.h"
 #include "undo.h"
 #include "plugins.h"
+#include "netlist2.h"
 #include "compat_misc.h"
 #include "obj_common.h"
 #include "obj_subc_parent.h"
@@ -74,6 +75,7 @@ struct short_conn_s {
 	short_conn_t *next;
 };
 
+TODO("netlist: remove this, use the find context");
 static short_conn_t *short_conns = NULL;
 static int num_short_conns = 0;
 static int short_conns_maxid = 0;
@@ -106,7 +108,7 @@ static int proc_short_cb(pcb_find_t *fctx, pcb_any_obj_t *curr, pcb_any_obj_t *f
 }
 
 /* returns 0 on succes */
-static int proc_short(pcb_any_obj_t *term, int ignore)
+static int proc_short(pcb_any_obj_t *term, int ignore, pcb_net_t *Snet, pcb_net_t *Tnet)
 {
 	pcb_coord_t x, y;
 	short_conn_t *n, **lut_by_oid, **lut_by_gid, *next;
@@ -219,13 +221,38 @@ TODO("remove this check from here, handled at the caller");
 		}
 	}
 
-
 	S = NULL;
 	T = NULL;
-	for (n = short_conns; n != NULL; n = n->next) {
-		void *spare = ((pcb_any_obj_t *) n->to)->ratconn;
 
-		if (spare != NULL) {
+	if (Snet != NULL) {
+		S = pcb_netlist_lookup(1, Snet->name, 0);
+		assert(S != NULL);
+	}
+	if (Tnet != NULL) {
+		T = pcb_netlist_lookup(1, Tnet->name, 0);
+		assert(T != NULL);
+	}
+
+	for (n = short_conns; n != NULL; n = n->next) {
+		if (Snet != NULL) {
+			pcb_any_obj_t *o = (pcb_any_obj_t *)n->to;
+			if (o->term != NULL) {
+				TODO("netlist: should be PCB_NETLIST_EDITED")
+				pcb_subc_t *sc = pcb_obj_parent_subc(o);
+				if (sc != NULL) {
+					pcb_net_term_t *t = pcb_net_find_by_refdes_term(&PCB->netlist[PCB_NETLIST_INPUT], sc->refdes, o->term);
+					if (t != NULL) {
+						if (t->parent.net == Snet)
+							gr_add_(g, n->gid, 0, 100000);
+						else if (t->parent.net == Tnet)
+							gr_add_(g, n->gid, 1, 100000);
+					}
+				}
+			}
+		}
+		else {
+		void *spare = ((pcb_any_obj_t *) n->to)->ratconn;
+		if (spare != NULL) { /* REMOVE THIS when the old netlist is removed */
 			void *net = &(((pcb_lib_menu_t *) spare)->Name[2]);
 			debprintf(" net=%s\n", net);
 			if (S == NULL) {
@@ -236,12 +263,13 @@ TODO("remove this check from here, handled at the caller");
 				debprintf(" -> became T\n");
 				T = net;
 			}
-
 			if (net == S)
 				gr_add_(g, n->gid, 0, 100000);
 			else if (net == T)
 				gr_add_(g, n->gid, 1, 100000);
 		}
+		}
+
 		/* if we have a from object, look it up and make a connection between the two gids */
 		if (n->from_id >= 0) {
 			int weight;
@@ -349,7 +377,7 @@ void rat_proc_shorts(void)
 		PCB_FLAG_SET(PCB_FLAG_WARN, n->term);
 
 		/* run only if net is not ignored */
-		if ((!bad_gr) && (proc_short(n->term, n->ignore) != 0)) {
+		if ((!bad_gr) && (proc_short(n->term, n->ignore, NULL, NULL) != 0)) {
 			fprintf(stderr, "Can't run mincut :(\n");
 			bad_gr = 1;
 		}
@@ -378,6 +406,7 @@ static void pcb_mincut_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	int *handled;
 	pcb_any_obj_t *term;
+	pcb_net_t *Snet, *Tnet;
 
 	if (!conf_mincut.plugins.mincut.enable)
 		return;
@@ -393,9 +422,17 @@ static void pcb_mincut_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 
 	if (argv[2].type != PCB_EVARG_PTR)
 		return;
-	term = (int *)argv[2].d.p;
+	term = (pcb_any_obj_t *)argv[2].d.p;
 
-	if (proc_short(term, 0) == 0)
+	if (argv[1].type != PCB_EVARG_PTR)
+		return;
+	Snet = (pcb_net_t *)argv[1].d.p;
+
+	if (argv[3].type != PCB_EVARG_PTR)
+		return;
+	Tnet = (pcb_net_t *)argv[3].d.p;
+
+	if (proc_short(term, 0, Snet, Tnet) == 0)
 		*handled = 1;
 }
 
