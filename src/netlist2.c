@@ -432,10 +432,9 @@ pcb_net_t **pcb_netlist_sort(pcb_netlist_t *nl)
 
 #include "netlist_geo.c"
 
-pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_accuracy_t acc)
+static pcb_cardinal_t pcb_net_add_rats_(short_ctx_t *sctx, pcb_rat_accuracy_t acc)
 {
 	pcb_find_t fctx;
-	short_ctx_t sctx;
 	pcb_net_term_t *t;
 	pcb_cardinal_t drawn = 0, r, n, s1, s2, su, sd;
 	vtp0_t subnets;
@@ -444,20 +443,19 @@ pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_
 	int left;
 	pcb_rat_t *line;
 
-	short_ctx_init(&sctx, pcb, net);
 
 	memset(&fctx, 0, sizeof(fctx));
 	fctx.consider_rats = 1; /* keep existing rats and their connections */
 	fctx.list_found = 1;
-	fctx.user_data = &sctx;
+	fctx.user_data = sctx;
 	fctx.found_cb = net_short_check;
 	vtp0_init(&subnets);
 
 	/* each component of a desired network is called a submnet; already connected
 	   objects of each subnet is collected on a vtp0_t; object-lists per submnet
 	   is saved in variable "subnets" */
-	for(t = pcb_termlist_first(&net->conns), n = 0; t != NULL; t = pcb_termlist_next(t), n++) {
-		r = pcb_net_term_crawl(pcb, t, &fctx, (n == 0));
+	for(t = pcb_termlist_first(&sctx->current_net->conns), n = 0; t != NULL; t = pcb_termlist_next(t), n++) {
+		r = pcb_net_term_crawl(sctx->pcb, t, &fctx, (n == 0));
 		if (r > 0) {
 			vtp0_t *objs = malloc(sizeof(vtp0_t));
 			memcpy(objs, &fctx.found, sizeof(vtp0_t));
@@ -471,7 +469,7 @@ pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_
 	connmx = calloc(sizeof(pcb_subnet_dist_t), vtp0_len(&subnets) * vtp0_len(&subnets));
 	for(s1 = 0; s1 < vtp0_len(&subnets); s1++) {
 		for(s2 = s1+1; s2 < vtp0_len(&subnets); s2++) {
-			connmx[s2 * vtp0_len(&subnets) + s1] = connmx[s1 * vtp0_len(&subnets) + s2] = pcb_subnet_dist(pcb, subnets.array[s1], subnets.array[s2], acc);
+			connmx[s2 * vtp0_len(&subnets) + s1] = connmx[s1 * vtp0_len(&subnets) + s2] = pcb_subnet_dist(sctx->pcb, subnets.array[s1], subnets.array[s2], acc);
 		}
 	}
 
@@ -510,7 +508,7 @@ pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_
 		}
 
 		/* best connection is 'best' between from 'undone' network bestu; draw the rat */
-		line = pcb_rat_new(pcb->Data, -1,
+		line = pcb_rat_new(sctx->pcb->Data, -1,
 			best->o1x, best->o1y, best->o2x, best->o2y, best->o1g, best->o2g,
 			conf_core.appearance.rat_thickness, pcb_no_flags());
 		if (line  != NULL) {
@@ -529,19 +527,35 @@ pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_
 	free(connmx);
 	free(done);
 	pcb_find_free(&fctx);
-	short_ctx_uninit(&sctx);
 	return drawn;
+}
+
+pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_accuracy_t acc)
+{
+	pcb_cardinal_t res;
+	short_ctx_t sctx;
+
+	short_ctx_init(&sctx, pcb, net);
+	res = pcb_net_add_rats_(&sctx, acc);
+	short_ctx_uninit(&sctx);
+	return res;
 }
 
 
 pcb_cardinal_t pcb_net_add_all_rats(const pcb_board_t *pcb, pcb_rat_accuracy_t acc)
 {
 	htsp_entry_t *e;
-	pcb_cardinal_t drawn  =0;
+	pcb_cardinal_t drawn = 0;
+	short_ctx_t sctx;
 
-	for(e = htsp_first(&pcb->netlist[PCB_NETLIST_INPUT]); e != NULL; e = htsp_next(&pcb->netlist[PCB_NETLIST_INPUT], e))
-		drawn += pcb_net_add_rats(pcb, (pcb_net_t *)e->value, acc);
+	short_ctx_init(&sctx, pcb, NULL);
 
+	for(e = htsp_first(&pcb->netlist[PCB_NETLIST_INPUT]); e != NULL; e = htsp_next(&pcb->netlist[PCB_NETLIST_INPUT], e)) {
+		sctx.current_net = (pcb_net_t *)e->value;
+		drawn += pcb_net_add_rats_(&sctx, acc);
+	}
+
+	short_ctx_uninit(&sctx);
 	return drawn;
 }
 
