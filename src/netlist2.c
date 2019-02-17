@@ -252,18 +252,50 @@ static pcb_cardinal_t pcb_net_term_crawl(const pcb_board_t *pcb, pcb_net_term_t 
 typedef struct {
 	const pcb_board_t *pcb;
 	pcb_net_t *current_net;
+	htsp_t found;
 } short_ctx_t;
 
 static void short_ctx_init(short_ctx_t *sctx, const pcb_board_t *pcb, pcb_net_t *net)
 {
 	sctx->pcb = pcb;
 	sctx->current_net = net;
+	htsp_init(&sctx->found, strhash, strkeyeq);
 }
 
 static void short_ctx_uninit(short_ctx_t *sctx)
 {
+	htsp_entry_t *e;
+	for(e = htsp_first(&sctx->found); e != NULL; e = htsp_next(&sctx->found, e))
+		free(e->key);
+	htsp_uninit(&sctx->found);
 }
 
+/* Return 1 if net1-net2 (or net2-net1) is already seen as a short, return 0
+   else. Save net1-net2 as seen. */
+static int short_ctx_is_dup(short_ctx_t *sctx, pcb_net_t *net1, pcb_net_t *net2)
+{
+	char *key;
+	int order;
+
+	order = strcmp(net1->name, net2->name);
+
+	if (order == 0) {
+		pcb_message(PCB_MSG_ERROR, "netlist internal error: short_ctx_is_dup() net %s shorted with itself?!\n", net1->name);
+		return 1;
+	}
+	if (order > 0)
+		key = pcb_concat(net1->name, "-", net2->name, NULL);
+	else
+		key = pcb_concat(net2->name, "-", net1->name, NULL);
+
+	if (htsp_has(&sctx->found, key)) {
+		free(key);
+		return 1;
+	}
+
+	htsp_set(&sctx->found, key, net1);
+	return 0;
+}
 
 /* Short circuit found between net and an offender object that should not
    be part of the net but is connected to the net */
@@ -278,6 +310,8 @@ TODO("This should be PCB_NETLIST_EDITED - revise the rest too")
 	if (offt != NULL) {
 		offn = offt->parent.net;
 		offnn = offn->name;
+		if (short_ctx_is_dup(sctx, sctx->current_net, offn))
+			return;
 	}
 
 	pcb_trace("short: net=%s offender=%s-%s (of net %s)\n", sctx->current_net->name, sc->refdes, offender->term, offnn);
