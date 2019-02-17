@@ -319,7 +319,7 @@ pcb_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned lon
 	return res;
 }
 
-pcb_net_term_t *pcb_net_find_by_refdes_term(pcb_netlist_t *nl, const char *refdes, const char *term)
+pcb_net_term_t *pcb_net_find_by_refdes_term(const pcb_netlist_t *nl, const char *refdes, const char *term)
 {
 	htsp_entry_t *e;
 
@@ -335,7 +335,7 @@ pcb_net_term_t *pcb_net_find_by_refdes_term(pcb_netlist_t *nl, const char *refde
 	return NULL;
 }
 
-pcb_net_term_t *pcb_net_find_by_pinname(pcb_netlist_t *nl, const char *pinname)
+pcb_net_term_t *pcb_net_find_by_pinname(const pcb_netlist_t *nl, const char *pinname)
 {
 	char tmp[256];
 	char *pn, *refdes, *term;
