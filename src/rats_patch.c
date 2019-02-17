@@ -40,6 +40,7 @@
 #include "search.h"
 #include "undo.h"
 #include "conf_core.h"
+#include "netlist2.h"
 
 static void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t * n, int do_free);
 
@@ -175,6 +176,7 @@ static void netlist_free(pcb_lib_t *dst)
 	dst->Menu = NULL;
 }
 
+TODO("netlist: remove this with the old netlist code")
 static void netlist_copy(pcb_lib_t *dst, pcb_lib_t *src)
 {
 	int n, p;
@@ -267,8 +269,14 @@ void pcb_ratspatch_make_edited(pcb_board_t *pcb)
 {
 	pcb_ratspatch_line_t *n;
 
+TODO("netlist: remove these with the old netlist");
 	netlist_free(&(pcb->NetlistLib[PCB_NETLIST_EDITED]));
 	netlist_copy(&(pcb->NetlistLib[PCB_NETLIST_EDITED]), &(pcb->NetlistLib[PCB_NETLIST_INPUT]));
+
+	pcb_netlist_uninit(&(pcb->netlist[PCB_NETLIST_EDITED]));
+	pcb_netlist_init(&(pcb->netlist[PCB_NETLIST_EDITED]));
+	pcb_netlist_copy(pcb, &(pcb->netlist[PCB_NETLIST_EDITED]), &(pcb->netlist[PCB_NETLIST_INPUT]));
+
 	for (n = pcb->NetlistPatches; n != NULL; n = n->next)
 		pcb_ratspatch_apply(pcb, n);
 }
