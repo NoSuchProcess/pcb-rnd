@@ -156,108 +156,15 @@ static void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t * n, int do
 	}
 }
 
-static void netlist_free(pcb_lib_t *dst)
-{
-	int n, p;
-
-	if (dst->Menu == NULL)
-		return;
-
-	for (n = 0; n < dst->MenuN; n++) {
-		pcb_lib_menu_t *dmenu = &dst->Menu[n];
-		free(dmenu->Name);
-		for (p = 0; p < dmenu->EntryN; p++) {
-			pcb_lib_entry_t *dentry = &dmenu->Entry[p];
-			free((char*)dentry->ListEntry);
-		}
-		free(dmenu->Entry);
-	}
-	free(dst->Menu);
-	dst->Menu = NULL;
-}
-
-TODO("netlist: remove this with the old netlist code")
-static void netlist_copy(pcb_lib_t *dst, pcb_lib_t *src)
-{
-	int n, p;
-	dst->MenuMax = dst->MenuN = src->MenuN;
-	if (src->MenuN != 0) {
-		dst->Menu = calloc(sizeof(pcb_lib_menu_t), dst->MenuN);
-		for (n = 0; n < src->MenuN; n++) {
-			pcb_lib_menu_t *smenu = &src->Menu[n];
-			pcb_lib_menu_t *dmenu = &dst->Menu[n];
-/*		fprintf(stderr, "Net %d name='%s': ", n, smenu->Name+2);*/
-			dmenu->Name = pcb_strdup(smenu->Name);
-			dmenu->EntryMax = dmenu->EntryN = smenu->EntryN;
-			dmenu->Entry = calloc(sizeof(pcb_lib_entry_t), dmenu->EntryN);
-			dmenu->flag = smenu->flag;
-			dmenu->internal = smenu->internal;
-			for (p = 0; p < smenu->EntryN; p++) {
-			pcb_lib_entry_t *sentry = &smenu->Entry[p];
-				pcb_lib_entry_t *dentry = &dmenu->Entry[p];
-				dentry->ListEntry = pcb_strdup(sentry->ListEntry);
-				dentry->ListEntry_dontfree = 0;
-/*			fprintf (stderr, " '%s'/%p", dentry->ListEntry, dentry->ListEntry);*/
-			}
-/*		fprintf(stderr, "\n");*/
-		}
-	}
-	else
-		dst->Menu = NULL;
-}
-
-
-int rats_patch_apply_conn(pcb_board_t *pcb, pcb_ratspatch_line_t * patch, int del)
-{
-	int n;
-
-	for (n = 0; n < pcb->NetlistLib[PCB_NETLIST_EDITED].MenuN; n++) {
-		pcb_lib_menu_t *menu = &pcb->NetlistLib[PCB_NETLIST_EDITED].Menu[n];
-		if (strcmp(menu->Name + 2, patch->arg1.net_name) == 0) {
-			int p;
-			for (p = 0; p < menu->EntryN; p++) {
-				pcb_lib_entry_t *entry = &menu->Entry[p];
-/*				fprintf (stderr, "C'%s'/%p '%s'/%p\n", entry->ListEntry, entry->ListEntry, patch->id, patch->id);*/
-				if (strcmp(entry->ListEntry, patch->id) == 0) {
-					if (del) {
-						/* want to delete and it's on the list */
-						memmove(&menu->Entry[p], &menu->Entry[p + 1], (menu->EntryN - p - 1) * sizeof(pcb_lib_entry_t));
-						menu->EntryN--;
-						return 0;
-					}
-					/* want to add, and pin is on the list -> already added */
-					return 1;
-				}
-			}
-			/* If we got here, pin is not on the list */
-			if (del)
-				return 1;
-
-			/* Wanted to add, let's add it */
-			pcb_lib_conn_new(menu, (char *) patch->id);
-			return 0;
-		}
-	}
-
-	/* couldn't find the net: create it */
-	{
-		pcb_lib_menu_t *net = NULL;
-		net = pcb_lib_net_new(&pcb->NetlistLib[PCB_NETLIST_EDITED], patch->arg1.net_name, NULL);
-		if (net == NULL)
-			return 1;
-		pcb_lib_conn_new(net, (char *) patch->id);
-	}
-	return 0;
-}
-
+#include "rats_patch_old.c"
 
 int pcb_ratspatch_apply(pcb_board_t *pcb, pcb_ratspatch_line_t * patch)
 {
 	switch (patch->op) {
 	case RATP_ADD_CONN:
-		return rats_patch_apply_conn(pcb, patch, 0);
+		return rats_patch_apply_conn_old(pcb, patch, 0);
 	case RATP_DEL_CONN:
-		return rats_patch_apply_conn(pcb, patch, 1);
+		return rats_patch_apply_conn_old(pcb, patch, 1);
 	case RATP_CHANGE_ATTRIB:
 TODO("just check wheter it is still valid")
 		break;
@@ -270,8 +177,8 @@ void pcb_ratspatch_make_edited(pcb_board_t *pcb)
 	pcb_ratspatch_line_t *n;
 
 TODO("netlist: remove these with the old netlist");
-	netlist_free(&(pcb->NetlistLib[PCB_NETLIST_EDITED]));
-	netlist_copy(&(pcb->NetlistLib[PCB_NETLIST_EDITED]), &(pcb->NetlistLib[PCB_NETLIST_INPUT]));
+	netlist_free_old(&(pcb->NetlistLib[PCB_NETLIST_EDITED]));
+	netlist_copy_old(&(pcb->NetlistLib[PCB_NETLIST_EDITED]), &(pcb->NetlistLib[PCB_NETLIST_INPUT]));
 
 	pcb_netlist_uninit(&(pcb->netlist[PCB_NETLIST_EDITED]));
 	pcb_netlist_init(&(pcb->netlist[PCB_NETLIST_EDITED]));
@@ -279,18 +186,6 @@ TODO("netlist: remove these with the old netlist");
 
 	for (n = pcb->NetlistPatches; n != NULL; n = n->next)
 		pcb_ratspatch_apply(pcb, n);
-}
-
-static pcb_lib_menu_t *rats_patch_find_net(pcb_board_t *pcb, const char *netname, int listidx)
-{
-	int n;
-
-	for (n = 0; n < pcb->NetlistLib[listidx].MenuN; n++) {
-		pcb_lib_menu_t *menu = &pcb->NetlistLib[listidx].Menu[n];
-		if (strcmp(menu->Name + 2, netname) == 0)
-			return menu;
-	}
-	return NULL;
 }
 
 int pcb_rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, pcb_bool need_info_lines, void (*cb)(void *ctx, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val), void *ctx)
@@ -310,7 +205,7 @@ int pcb_rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, pcb_bool 
 					pcb_lib_menu_t *net;
 					int p;
 
-					net = rats_patch_find_net(pcb, n->arg1.net_name, PCB_NETLIST_INPUT);
+					net = rats_patch_find_net_old(pcb, n->arg1.net_name, PCB_NETLIST_INPUT);
 /*					printf("net: '%s' %p\n", n->arg1.net_name, (void *)net);*/
 					if (net != NULL) {
 						htsp_set(seen, n->arg1.net_name, net);
