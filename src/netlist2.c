@@ -326,7 +326,7 @@ TODO("This should be PCB_NETLIST_EDITED - revise the rest too")
 	else
 		pcb_message(PCB_MSG_WARNING, "SHORT: net \"%s\" is shorted to terminal %s-%s\n", sctx->current_net->name, sc->refdes, offender->term);
 
-	pcb_event(PCB_EVENT_NET_INDICATE_SHORT, "pppp", sctx->current_net, offender, offnn, &handled);
+	pcb_event(PCB_EVENT_NET_INDICATE_SHORT, "pppp", sctx->current_net, offender, offn, &handled);
 	if (!handled) {
 		pcb_net_term_t *orig_t = pcb_termlist_first(&sctx->current_net->conns);
 		pcb_any_obj_t *orig_o = pcb_term_find_name(sctx->pcb, sctx->pcb->Data, PCB_LYT_COPPER, orig_t->refdes, orig_t->term, 0, NULL, NULL);
