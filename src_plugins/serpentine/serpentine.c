@@ -36,7 +36,6 @@
 #include "error.h"
 #include "search.h"
 #include "tool.h"
-#include "rats.h"
 #include "rtree.h"
 #include "flag_str.h"
 #include "macro.h"
