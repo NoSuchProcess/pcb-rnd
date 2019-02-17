@@ -249,13 +249,18 @@ static pcb_cardinal_t pcb_net_term_crawl(const pcb_board_t *pcb, pcb_net_term_t 
 	return pcb_find_from_obj_next(fctx, PCB->Data, o);
 }
 
+typedef struct {
+	const pcb_board_t *pcb;
+	pcb_net_t *current_net;
+} short_ctx_t;
+
 /* Short circuit found between net and an offender object that should not
    be part of the net but is connected to the net */
-static void net_found_short(pcb_board_t *pcb, pcb_net_t *net, pcb_any_obj_t *offender)
+static void net_found_short(short_ctx_t *sctx, pcb_any_obj_t *offender)
 {
 	pcb_subc_t *sc = pcb_obj_parent_subc(offender);
 TODO("This should be PCB_NETLIST_EDITED - revise the rest too")
-	pcb_net_term_t *offt = pcb_net_find_by_refdes_term(&pcb->netlist[PCB_NETLIST_INPUT], sc->refdes, offender->term);
+	pcb_net_term_t *offt = pcb_net_find_by_refdes_term(&sctx->pcb->netlist[PCB_NETLIST_INPUT], sc->refdes, offender->term);
 	pcb_net_t *offn;
 	const char *offnn = "<unknown>";
 	
@@ -264,25 +269,25 @@ TODO("This should be PCB_NETLIST_EDITED - revise the rest too")
 		offnn = offn->name;
 	}
 
-	pcb_trace("short: net=%s offender=%s-%s (of net %s)\n", net->name, sc->refdes, offender->term, offnn);
+	pcb_trace("short: net=%s offender=%s-%s (of net %s)\n", sctx->current_net->name, sc->refdes, offender->term, offnn);
 }
 
 static int net_short_check(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
 {
 	if (new_obj->term != NULL) {
 		pcb_net_term_t *t;
-		pcb_net_t *net = fctx->user_data;
+		short_ctx_t *sctx = fctx->user_data;
 		pcb_subc_t *sc = pcb_obj_parent_subc(new_obj);
 		if (sc == NULL)
 			return 0;
 
 		/* if new_obj is a terminal on our net, return */
-		for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t))
+		for(t = pcb_termlist_first(&sctx->current_net->conns); t != NULL; t = pcb_termlist_next(t))
 			if ((strcmp(t->refdes, sc->refdes) == 0) && (strcmp(t->term, new_obj->term) == 0))
 				return 0;
 
 		/* new_obj is not on our net but has a refdes-term -> must be a short */
-		net_found_short(PCB, net, new_obj);
+		net_found_short(fctx->user_data, new_obj);
 	}
 
 	return 0;
@@ -293,13 +298,17 @@ pcb_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned lon
 	pcb_find_t fctx;
 	pcb_net_term_t *t;
 	pcb_cardinal_t res = 0, n;
+	short_ctx_t sctx;
+
+	sctx.pcb = pcb;
+	sctx.current_net = net;
 
 	memset(&fctx, 0, sizeof(fctx));
 	fctx.flag_set = setf;
 	fctx.flag_clr = clrf;
 	fctx.flag_chg_undoable = 1;
 	fctx.only_mark_rats = 1; /* do not trust rats, but do mark them */
-	fctx.user_data = net;
+	fctx.user_data = &sctx;
 	fctx.found_cb = net_short_check;
 
 	for(t = pcb_termlist_first(&net->conns), n = 0; t != NULL; t = pcb_termlist_next(t), n++) {
@@ -381,6 +390,7 @@ pcb_net_t **pcb_netlist_sort(pcb_netlist_t *nl)
 pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_accuracy_t acc)
 {
 	pcb_find_t fctx;
+	short_ctx_t sctx;
 	pcb_net_term_t *t;
 	pcb_cardinal_t drawn = 0, r, n, s1, s2, su, sd;
 	vtp0_t subnets;
@@ -389,10 +399,13 @@ pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_
 	int left;
 	pcb_rat_t *line;
 
+	sctx.pcb = pcb;
+	sctx.current_net = net;
+
 	memset(&fctx, 0, sizeof(fctx));
 	fctx.consider_rats = 1; /* keep existing rats and their connections */
 	fctx.list_found = 1;
-	fctx.user_data = net;
+	fctx.user_data = &sctx;
 	fctx.found_cb = net_short_check;
 	vtp0_init(&subnets);
 
