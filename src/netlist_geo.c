@@ -407,7 +407,7 @@ static pcb_subnet_dist_t pcb_subnet_dist(const pcb_board_t *pcb, vtp0_t *objs1, 
 					farx = curr.o2x;
 					fary = curr.o2y;
 				}
-				if (o_in_poly && pcb_point_in_box(&o_in_poly->BoundingBox, farx, fary) && pcb_poly_is_point_in_p_ignore_holes(x, y, poly)) {
+				if (o_in_poly && pcb_point_in_box(&o_in_poly->BoundingBox, farx, fary) && pcb_poly_is_point_in_p_ignore_holes(x, y, (pcb_poly_t *)poly)) {
 					curr.o1x = curr.o2x = x;
 					curr.o1y = curr.o2y = y;
 					curr.dist2 = 0;
