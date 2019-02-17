@@ -31,6 +31,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "event.h"
 #include "compat_misc.h"
 #include "layer_grp.h"
 #include "find.h"
@@ -253,12 +254,14 @@ typedef struct {
 	const pcb_board_t *pcb;
 	pcb_net_t *current_net;
 	htsp_t found;
+	pcb_cardinal_t changed;
 } short_ctx_t;
 
 static void short_ctx_init(short_ctx_t *sctx, const pcb_board_t *pcb, pcb_net_t *net)
 {
 	sctx->pcb = pcb;
 	sctx->current_net = net;
+	sctx->changed = 0;
 	htsp_init(&sctx->found, strhash, strkeyeq);
 }
 
@@ -268,6 +271,8 @@ static void short_ctx_uninit(short_ctx_t *sctx)
 	for(e = htsp_first(&sctx->found); e != NULL; e = htsp_next(&sctx->found, e))
 		free(e->key);
 	htsp_uninit(&sctx->found);
+	if (sctx->changed)
+		pcb_gui->invalidate_all();
 }
 
 /* Return 1 if net1-net2 (or net2-net1) is already seen as a short, return 0
@@ -302,6 +307,8 @@ static int short_ctx_is_dup(short_ctx_t *sctx, pcb_net_t *net1, pcb_net_t *net2)
 static void net_found_short(short_ctx_t *sctx, pcb_any_obj_t *offender)
 {
 	pcb_subc_t *sc = pcb_obj_parent_subc(offender);
+	int handled = 0;
+
 TODO("This should be PCB_NETLIST_EDITED - revise the rest too")
 	pcb_net_term_t *offt = pcb_net_find_by_refdes_term(&sctx->pcb->netlist[PCB_NETLIST_INPUT], sc->refdes, offender->term);
 	pcb_net_t *offn;
@@ -314,7 +321,22 @@ TODO("This should be PCB_NETLIST_EDITED - revise the rest too")
 			return;
 	}
 
-	pcb_trace("short: net=%s offender=%s-%s (of net %s)\n", sctx->current_net->name, sc->refdes, offender->term, offnn);
+	if (offnn != NULL)
+		pcb_message(PCB_MSG_WARNING, "SHORT: net \"%s\" is shorted to \"%s\" at terminal %s-%s\n", sctx->current_net->name, offnn, sc->refdes, offender->term);
+	else
+		pcb_message(PCB_MSG_WARNING, "SHORT: net \"%s\" is shorted to terminal %s-%s\n", sctx->current_net->name, sc->refdes, offender->term);
+
+	pcb_event(PCB_EVENT_NET_INDICATE_SHORT, "pppp", sctx->current_net->name, sc->refdes, offender->term, offnn, &handled);
+	if (!handled) {
+		pcb_net_term_t *orig_t = pcb_termlist_first(&sctx->current_net->conns);
+		pcb_any_obj_t *orig_o = pcb_term_find_name(sctx->pcb, sctx->pcb->Data, PCB_LYT_COPPER, orig_t->refdes, orig_t->term, 0, NULL, NULL);
+
+		/* dummy fallback: warning-highlight the two terminals */
+		PCB_FLAG_SET(PCB_FLAG_WARN, offender);
+		if (orig_o != NULL)
+			PCB_FLAG_SET(PCB_FLAG_WARN, orig_o);
+	}
+	sctx->changed++;
 }
 
 static int net_short_check(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
