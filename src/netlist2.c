@@ -58,6 +58,20 @@ void pcb_net_term_free(pcb_net_term_t *term)
 	free(term);
 }
 
+static pcb_net_term_t *pcb_net_term_alloc(pcb_net_t *net, const char *refdes, const char *term)
+{
+	pcb_net_term_t *t;
+
+		t = calloc(sizeof(pcb_net_term_t), 1);
+		t->type = PCB_OBJ_NET_TERM;
+		t->parent_type = PCB_PARENT_NET;
+		t->parent.net = net;
+		t->refdes = pcb_strdup(refdes);
+		t->term = pcb_strdup(term);
+		pcb_termlist_append(&net->conns, t);
+		return t;
+}
+
 pcb_net_term_t *pcb_net_term_get(pcb_net_t *net, const char *refdes, const char *term, pcb_bool alloc)
 {
 	pcb_net_term_t *t;
@@ -69,17 +83,8 @@ pcb_net_term_t *pcb_net_term_get(pcb_net_t *net, const char *refdes, const char 
 			return t;
 	}
 
-	if (alloc) {
-		t = calloc(sizeof(pcb_net_term_t), 1);
-		t->type = PCB_OBJ_NET_TERM;
-		t->parent_type = PCB_PARENT_NET;
-		t->parent.net = net;
-		t->refdes = pcb_strdup(refdes);
-		t->term = pcb_strdup(term);
-		pcb_termlist_append(&net->conns, t);
-		return t;
-	}
-
+	if (alloc)
+		return pcb_net_term_alloc(net, refdes, term);
 	return NULL;
 }
 
@@ -170,6 +175,19 @@ pcb_bool pcb_net_name_valid(const char *netname)
 	return pcb_true;
 }
 
+static pcb_net_t *pcb_net_alloc(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname)
+{
+	pcb_net_t *net;
+
+		net = calloc(sizeof(pcb_net_t), 1);
+		net->type = PCB_OBJ_NET;
+		net->parent_type = PCB_PARENT_BOARD;
+		net->parent.board = pcb;
+		net->name = pcb_strdup(netname);
+		htsp_set(nl, net->name, net);
+		return net;
+}
+
 pcb_net_t *pcb_net_get(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname, pcb_bool alloc)
 {
 	pcb_net_t *net;
@@ -184,15 +202,9 @@ pcb_net_t *pcb_net_get(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname,
 	if (net != NULL)
 		return net;
 
-	if (alloc) {
-		net = calloc(sizeof(pcb_net_t), 1);
-		net->type = PCB_OBJ_NET;
-		net->parent_type = PCB_PARENT_BOARD;
-		net->parent.board = pcb;
-		net->name = pcb_strdup(netname);
-		htsp_set(nl, net->name, net);
-		return net;
-	}
+	if (alloc)
+		return pcb_net_alloc(pcb, nl, netname);
+
 	return NULL;
 }
 
@@ -611,3 +623,24 @@ void pcb_netlist_uninit(pcb_netlist_t *nl)
 	htsp_uninit(nl);
 }
 
+void pcb_netlist_copy(pcb_board_t *pcb, pcb_netlist_t *dst, pcb_netlist_t *src)
+{
+	htsp_entry_t *e;
+
+	assert(dst->used == 0);
+	for(e = htsp_first(src); e != NULL; e = htsp_next(src, e)) {
+		pcb_net_t *src_net, *dst_net;
+		pcb_net_term_t *src_term, *dst_term;
+
+		src_net = e->value;
+		dst_net = pcb_net_alloc(pcb, dst, src_net->name);
+		dst_net->export_tmp = src_net->export_tmp;
+		dst_net->inhibit_rats = src_net->inhibit_rats;
+		pcb_attribute_copy_all(&dst_net->Attributes, &src_net->Attributes);
+
+		for(src_term = pcb_termlist_first(&src_net->conns); src_term != NULL; src_term = pcb_termlist_next(src_term)) {
+			dst_term = pcb_net_term_alloc(dst_net, src_term->refdes, src_term->term);
+			pcb_attribute_copy_all(&dst_term->Attributes, &src_term->Attributes);
+		}
+	}
+}

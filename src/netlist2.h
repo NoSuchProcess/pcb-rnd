@@ -75,6 +75,9 @@ void pcb_netlist_init(pcb_netlist_t *nl);
 /* Free all memory (including nets and terminals) of a netlist */
 void pcb_netlist_uninit(pcb_netlist_t *nl);
 
+/* Copy all fields from src to dst, assuming dst is empty */
+void pcb_netlist_copy(pcb_board_t *pcb, pcb_netlist_t *dst, pcb_netlist_t *src);
+
 /* Look up (or allocate) a net by name within a netlist. Returns NULL on error */
 pcb_net_t *pcb_net_get(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname, pcb_bool alloc);
 
