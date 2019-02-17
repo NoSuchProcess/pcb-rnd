@@ -1,7 +1,7 @@
 #!/bin/sh
 proot=../../../src_plugins
 
-meta_deps="core io-standard io-alien hid-gtk2-dl hid-gtk2-gdk export export-sim export-extra auto extra cloud doc"
+meta_deps="core io-standard io-alien hid-gtk2-gl hid-gtk2-gdk export export-sim export-extra auto extra cloud doc"
 
 (echo '
 <html>
