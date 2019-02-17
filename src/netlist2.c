@@ -432,8 +432,16 @@ pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_
 			}
 		}
 
-TODO("nestlist: this is true only if we are not doing manhattan; for manhattan take extra care about terminals");
-		assert(best != NULL); /* we msut have a best connection: worst case a subnet has at least terminals */
+		if (best == NULL) {
+			/* Unlikely: if there are enough restrictions on the search, e.g.
+			   PCB_RATACC_ONLY_MANHATTAN for the old autorouter is on and some
+			   subnets have only heavy terminals made of non-manhattan-lines,
+			   we will not find a connection. When best is NULL, that means
+			   no connection found between any undone subnet to any done subnet
+			   found, so some subnets will remain disconnected (there is no point
+			   in looping more, this won't improve) */
+			break;
+		}
 
 		/* best connection is 'best' between from 'undone' network bestu; draw the rat */
 		line = pcb_rat_new(pcb->Data, -1,
