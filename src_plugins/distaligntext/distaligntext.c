@@ -26,7 +26,6 @@
 #include "hid.h"
 #include "rtree.h"
 #include "undo.h"
-#include "rats.h"
 #include "error.h"
 #include "move.h"
 #include "draw.h"
