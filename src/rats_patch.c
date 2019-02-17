@@ -158,13 +158,55 @@ static void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t * n, int do
 
 #include "rats_patch_old.c"
 
+static int rats_patch_apply_conn(pcb_board_t *pcb, pcb_ratspatch_line_t *patch, int del)
+{
+	pcb_net_t *net;
+	pcb_net_term_t *term;
+	char *sep, *termid;
+	int refdeslen;
+
+
+	sep = strchr(patch->id, '-');
+	if (sep == NULL)
+		return 1; /* invalid id */
+	termid = sep+1;
+	refdeslen = sep - patch->id;
+	if (refdeslen < 1)
+		return 1; /* invalid id */
+
+	net = pcb_net_get(pcb, &pcb->netlist[PCB_NETLIST_EDITED], patch->arg1.net_name, 1);
+	for(term = pcb_termlist_first(&net->conns); term != NULL; term = pcb_termlist_next(term)) {
+		if ((strncmp(patch->id, term->refdes, refdeslen) == 0) && (strcmp(termid, term->term) == 0)) {
+			if (del) {
+				/* want to delete and it's on the list */
+				pcb_net_term_del(net, term);
+				return 0;
+			}
+			/* want to add, and pin is on the list -> already added */
+			return 1;
+		}
+	}
+
+	/* If we got here, pin is not on the list */
+	if (del)
+		return 1;
+
+	/* Wanted to add, let's add it */
+	*sep = '\0';
+	term = pcb_net_term_get(net, patch->id, termid, 1);
+	*sep = '-';
+	if (term != NULL)
+		return 0;
+	return 1;
+}
+
 int pcb_ratspatch_apply(pcb_board_t *pcb, pcb_ratspatch_line_t * patch)
 {
 	switch (patch->op) {
 	case RATP_ADD_CONN:
-		return rats_patch_apply_conn_old(pcb, patch, 0);
+		return rats_patch_apply_conn_old(pcb, patch, 0) | rats_patch_apply_conn(pcb, patch, 0);
 	case RATP_DEL_CONN:
-		return rats_patch_apply_conn_old(pcb, patch, 1);
+		return rats_patch_apply_conn_old(pcb, patch, 1) | rats_patch_apply_conn(pcb, patch, 1);
 	case RATP_CHANGE_ATTRIB:
 TODO("just check wheter it is still valid")
 		break;
