@@ -237,10 +237,9 @@ TODO("remove this check from here, handled at the caller");
 		if (Snet != NULL) {
 			pcb_any_obj_t *o = (pcb_any_obj_t *)n->to;
 			if (o->term != NULL) {
-				TODO("netlist: should be PCB_NETLIST_EDITED")
 				pcb_subc_t *sc = pcb_obj_parent_subc(o);
 				if (sc != NULL) {
-					pcb_net_term_t *t = pcb_net_find_by_refdes_term(&PCB->netlist[PCB_NETLIST_INPUT], sc->refdes, o->term);
+					pcb_net_term_t *t = pcb_net_find_by_refdes_term(&PCB->netlist[PCB_NETLIST_EDITED], sc->refdes, o->term);
 					if (t != NULL) {
 						if (t->parent.net == Snet)
 							gr_add_(g, n->gid, 0, 100000);

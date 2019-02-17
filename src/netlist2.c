@@ -323,8 +323,7 @@ static void net_found_short(short_ctx_t *sctx, pcb_any_obj_t *offender)
 	pcb_subc_t *sc = pcb_obj_parent_subc(offender);
 	int handled = 0;
 
-TODO("This should be PCB_NETLIST_EDITED - revise the rest too")
-	pcb_net_term_t *offt = pcb_net_find_by_refdes_term(&sctx->pcb->netlist[PCB_NETLIST_INPUT], sc->refdes, offender->term);
+	pcb_net_term_t *offt = pcb_net_find_by_refdes_term(&sctx->pcb->netlist[PCB_NETLIST_EDITED], sc->refdes, offender->term);
 	pcb_net_t *offn;
 	const char *offnn = "<unknown>";
 	
@@ -586,7 +585,7 @@ pcb_cardinal_t pcb_net_add_all_rats(const pcb_board_t *pcb, pcb_rat_accuracy_t a
 
 	short_ctx_init(&sctx, pcb, NULL);
 
-	for(e = htsp_first(&pcb->netlist[PCB_NETLIST_INPUT]); e != NULL; e = htsp_next(&pcb->netlist[PCB_NETLIST_INPUT], e)) {
+	for(e = htsp_first(&pcb->netlist[PCB_NETLIST_EDITED]); e != NULL; e = htsp_next(&pcb->netlist[PCB_NETLIST_EDITED], e)) {
 		sctx.current_net = (pcb_net_t *)e->value;
 		drawn += pcb_net_add_rats_(&sctx, acc);
 	}
