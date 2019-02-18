@@ -429,7 +429,8 @@
  netlist.h route_style.h ../src_plugins/dialogs/dlg_export.c hid_init.h \
  ../src_plugins/dialogs/dlg_lib_pstk.c vtpadstack.h hid_inlines.h \
  obj_text_draw.h draw.h obj_pstk_draw.h undo_old.h select.h \
- ../src_plugins/dialogs/dlg_undo.c ../src_plugins/dialogs/dlg_plugins.c \
+ ../src_plugins/dialogs/dlg_undo.c ../src_plugins/dialogs/dlg_netlist.c \
+ netlist2.h ../src_plugins/dialogs/dlg_plugins.c \
  ../src_plugins/dialogs/dlg_fontsel.c stub_draw.h idpath.h \
  ../src_plugins/dialogs/dlg_comm_m.c ../src_plugins/dialogs/xpm.h \
  ../src_plugins/dialogs/dlg_printcalib.c ../src_plugins/dialogs/place.c \
@@ -522,11 +523,10 @@
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h hid.h rtree.h undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h rats.h netlist.h route_style.h error.h move.h draw.h \
- plugins.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h macro.h actions.h \
- compat_misc.h dolists.h
+ undo_old.h error.h move.h draw.h plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h macro.h actions.h compat_misc.h dolists.h
 ../src_plugins/distaligntext/distaligntext.o: \
  ../src_plugins/distaligntext/distaligntext.c ../config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h global_typedefs.h \
@@ -548,12 +548,12 @@
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h hid.h rtree.h undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h rats.h netlist.h route_style.h error.h move.h draw.h \
- plugins.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h actions.h conf_core.h \
- conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h box.h \
- macro.h compat_misc.h dolists.h
+ undo_old.h error.h move.h draw.h plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h actions.h conf_core.h conf.h pcb-printf.h \
+ ../src_3rd/liblihata/lihata.h list_conf.h box.h macro.h compat_misc.h \
+ dolists.h
 ../src_plugins/djopt/djopt.o: ../src_plugins/djopt/djopt.c ../config.h \
  conf_core.h conf.h global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
@@ -5451,12 +5451,12 @@
  rtree.h ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h data_it.h data.h \
- error.h search.h tool.h rats.h netlist.h route_style.h rtree.h \
- flag_str.h macro.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h find.h \
- draw.h draw_wireframe.h pcb-printf.h plugins.h \
- ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h actions.h \
+ error.h search.h tool.h rtree.h flag_str.h macro.h undo.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h find.h draw.h draw_wireframe.h \
+ pcb-printf.h plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h actions.h \
  ../src_plugins/serpentine/serpentine_conf.h conf.h compat_nls.h layer.h \
  route.h dolists.h ../src_plugins/serpentine/serpentine_conf_fields.h
 ../src_plugins/shand_cmd/command.o: ../src_plugins/shand_cmd/command.c \
@@ -6830,7 +6830,7 @@ netlist2.o: netlist2.c ../config.h ../src_3rd/genht/htsp.h \
  vtpadstack_t.h event.h compat_misc.h find.h obj_term.h conf_core.h \
  conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h obj_rat_draw.h obj_subc_parent.h \
- netlist2.h ../src_3rd/genlist/gentdlist_impl.c netlist_geo.c \
+ search.h netlist2.h ../src_3rd/genlist/gentdlist_impl.c netlist_geo.c \
  obj_pstk_inlines.h thermal.h
 netlist_act.o: netlist_act.c ../config.h ../src_3rd/genregex/regex_sei.h \
  ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h \
@@ -7512,7 +7512,8 @@ rats_patch.o: rats_patch.c rats_patch.h board.h ../config.h \
  vtpadstack_t.h move.h compat_misc.h compat_nls.h safe_fs.h conf.h \
  pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h funchash_core.h \
  funchash.h funchash_core_list.h search.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h conf_core.h
+ ../src_3rd/libuundo/uundo.h undo_old.h conf_core.h netlist2.h brave.h \
+ rats_patch_old.c
 remove.o: remove.c ../config.h conf_core.h conf.h global_typedefs.h \
  pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -7875,8 +7876,8 @@ tool_line.o: tool_line.c ../config.h conf_core.h conf.h global_typedefs.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h \
  draw_wireframe.h find.h search.h tool.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h rats.h netlist.h route_style.h \
- obj_line_draw.h obj_pstk_draw.h obj_rat_draw.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h netlist2.h rats.h netlist.h \
+ route_style.h brave.h obj_line_draw.h obj_pstk_draw.h obj_rat_draw.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h
 tool_lock.o: tool_lock.c ../config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h \
