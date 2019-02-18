@@ -40,6 +40,7 @@
 #include "undo.h"
 #include "obj_rat_draw.h"
 #include "obj_subc_parent.h"
+#include "search.h"
 
 #define TDL_DONT_UNDEF
 #include "netlist2.h"
@@ -642,4 +643,147 @@ void pcb_netlist_copy(pcb_board_t *pcb, pcb_netlist_t *dst, pcb_netlist_t *src)
 			pcb_attribute_copy_all(&dst_term->Attributes, &src_term->Attributes);
 		}
 	}
+}
+
+/* Return the (most natural) copper group the obj is in */
+static pcb_layergrp_id_t get_side_group(pcb_board_t *pcb, pcb_any_obj_t *obj)
+{
+	switch(obj->type) {
+		case PCB_OBJ_ARC:
+		case PCB_OBJ_LINE:
+		case PCB_OBJ_POLY:
+		case PCB_OBJ_TEXT:
+			return pcb_layer_get_group_(obj->parent.layer);
+		case PCB_OBJ_PSTK:
+			if (pcb_pstk_shape((pcb_pstk_t *)obj, PCB_LYT_COPPER | PCB_LYT_TOP, 0) != NULL)
+				return pcb_layergrp_get_top_copper();
+			if (pcb_pstk_shape((pcb_pstk_t *)obj, PCB_LYT_COPPER | PCB_LYT_BOTTOM, 0) != NULL)
+				return pcb_layergrp_get_bottom_copper();
+		default: return -1;
+	}
+}
+
+static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_any_obj_t *o1, pcb_any_obj_t *o2, pcb_bool interactive)
+{
+	pcb_subc_t *sc1, *sc2, *sctmp;
+	pcb_net_t *net1 = NULL, *net2 = NULL, *ntmp, *target_net = NULL;
+	pcb_layergrp_id_t group1, group2;
+	pcb_rat_t *res;
+	static long netname_cnt = 0;
+	char ratname_[32], *ratname, *id;
+
+	if ((o1 == o2) || (o1 == NULL) || (o2 == NULL)) {
+		pcb_message(PCB_MSG_ERROR, "Missing start or end terminal\n");
+		return NULL;
+	}
+
+	{ /* make sure at least one of the terminals is not on a net */
+		pcb_net_term_t *term1, *term2;
+
+		sc1 = pcb_obj_parent_subc(o1);
+		sc2 = pcb_obj_parent_subc(o2);
+		if ((sc1 == NULL) || (sc2 == NULL) || (sc1->refdes == NULL) || (sc2->refdes == NULL)) {
+			pcb_message(PCB_MSG_ERROR, "Both start or end terminal must be in a subcircuit with refdes\n");
+			return NULL;
+		}
+
+		term1 = pcb_net_find_by_refdes_term(&pcb->netlist[PCB_NETLIST_EDITED], sc1->refdes, o1->term);
+		term2 = pcb_net_find_by_refdes_term(&pcb->netlist[PCB_NETLIST_EDITED], sc2->refdes, o2->term);
+		if (term1 != NULL) net1 = term1->parent.net;
+		if (term2 != NULL) net1 = term2->parent.net;
+
+		if (net1 == net2) {
+			pcb_message(PCB_MSG_ERROR, "Those terminals are already on the same net (%s)\n", net1->name);
+			return NULL;
+		}
+		if ((net1 != NULL) && (net2 != NULL)) {
+			pcb_message(PCB_MSG_ERROR, "Can not connect two existing nets with a rat (%s and %s)\n", net1->name, net2->name);
+			return NULL;
+		}
+	}
+
+	/* swap vars so it's always o1 is off-net (and o2 may be in a net) */
+	if (net1 != NULL) {
+		pcb_any_obj_t *otmp;
+		otmp = o1; o1 = o2; o2 = otmp;
+		sctmp = sc1; sc1 = sc2; sc2 = sctmp;
+		ntmp = net1; net1 = net2; net2 = ntmp;
+	}
+
+	group1 = get_side_group(pcb, o1);
+	group2 = get_side_group(pcb, o2);
+	if ((group1 == -1) && (group2 == -1)) {
+		pcb_message(PCB_MSG_ERROR, "Can not determine copper layer group of that terminal\n");
+		return NULL;
+	}
+
+	/* passed all sanity checks, o1 is off-net; figure the target_net (create it if needed) */
+	if ((net1 == NULL) && (net2 == NULL)) {
+		do {
+			sprintf(ratname_, "pcbrnd%ld", ++netname_cnt);
+		} while(htsp_has(&pcb->netlist[PCB_NETLIST_EDITED], ratname_));
+		if (interactive) {
+			ratname = pcb_hid_prompt_for("Name of the new net", ratname_, "rat net name");
+			if (ratname == NULL) /* cancel */
+				return NULL;
+		}
+		else
+			ratname = ratname_;
+		target_net = pcb_net_get(pcb, &pcb->netlist[PCB_NETLIST_EDITED], ratname_, 1);
+		assert(target_net != NULL);
+		if (ratname != ratname_)
+			free(ratname);
+	}
+	else
+		target_net = net2;
+
+	/* create the rat and add terminals in the target_net */
+	res = pcb_rat_new(pcb->Data, -1, x1, y1, x2, y2, group1, group2, conf_core.appearance.rat_thickness, pcb_no_flags());
+
+	pcb_net_term_get(target_net, sc1->refdes, o1->term, 1);
+	pcb_net_term_get(target_net, sc2->refdes, o2->term, 1);
+
+	id = pcb_concat(sc1->refdes, "-", o1->term, NULL);
+	pcb_ratspatch_append(pcb, RATP_ADD_CONN, id, target_net->name, NULL);
+	free(id);
+	id = pcb_concat(sc2->refdes, "-", o2->term, NULL);
+	pcb_ratspatch_append(pcb, RATP_ADD_CONN, id, target_net->name, NULL);
+	free(id);
+
+	pcb_netlist_changed(0);
+	return res;
+}
+
+static pcb_any_obj_t *find_rat_end(pcb_board_t *pcb, pcb_coord_t x, pcb_coord_t y, const char *loc)
+{
+	void *ptr1, *ptr2, *ptr3;
+	pcb_any_obj_t *o;
+	pcb_objtype_t type = pcb_search_obj_by_location(PCB_OBJ_CLASS_TERM | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3, x, y, 5);
+	pcb_subc_t *sc;
+
+	o = ptr2;
+	if ((type == PCB_OBJ_VOID) || (o->term == NULL)) {
+		pcb_message(PCB_MSG_ERROR, "Can't find a terminal at %s\n", loc);
+		return NULL;
+	}
+
+	sc = pcb_obj_parent_subc(o);
+	if ((sc == NULL) || (sc->refdes == NULL)) {
+		pcb_message(PCB_MSG_ERROR, "The terminal terminal found at %s is not part of a subc with refdes\n", loc);
+		return NULL;
+	}
+
+	return o;
+}
+
+pcb_rat_t *pcb_net_create_by_rat_coords(pcb_board_t *pcb, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_bool interactive)
+{
+	pcb_any_obj_t *os, *oe;
+	if ((x1 == x2) && (y1 == y2))
+		return NULL;
+
+	os = find_rat_end(pcb, x1, y1, "rat line start");
+	oe = find_rat_end(pcb, x2, y2, "rat line end");
+
+	return pcb_net_create_by_rat_(pcb, x1, y1, x2, y2, os, oe, interactive);
 }
