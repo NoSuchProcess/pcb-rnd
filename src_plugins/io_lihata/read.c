@@ -2161,13 +2161,13 @@ static int parse_netlist_patch(pcb_board_t *pcb, lht_node_t *patches)
 			nval = lht_dom_hash_get(np, "term");
 			if ((nval == NULL) || (nval->type != LHT_TEXT) || (*nval->data.text.value == '\0'))
 				return iolht_error(nval, "netlist patch terminal ID must be a non-empty string (del_conn)\n");
-			pcb_ratspatch_append(pcb, RATP_ADD_CONN, nval->data.text.value, nnet->data.text.value, NULL);
+			pcb_ratspatch_append(pcb, RATP_DEL_CONN, nval->data.text.value, nnet->data.text.value, NULL);
 		}
 		else if (strcmp(np->name, "add_conn") == 0) {
 			nval = lht_dom_hash_get(np, "term");
 			if ((nval == NULL) || (nval->type != LHT_TEXT) || (*nval->data.text.value == '\0'))
 				return iolht_error(nval, "netlist patch terminal ID must be a non-empty string (add_conn)\n");
-			pcb_ratspatch_append(pcb, RATP_DEL_CONN, nval->data.text.value, nnet->data.text.value, NULL);
+			pcb_ratspatch_append(pcb, RATP_ADD_CONN, nval->data.text.value, nnet->data.text.value, NULL);
 		}
 		else if (strcmp(np->name, "change_attrib") == 0) {
 			nkey = lht_dom_hash_get(np, "key");
