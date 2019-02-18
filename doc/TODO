@@ -21,6 +21,7 @@
        > can't reproduce this; if you want layer visibility to considered, check the 'as shown' option. But best if you forget layer visibility totally and just use the cam syntax.
 
 1. For the upcoming release ===============================================================================
+- BUG: scconfig: core gets glib dependency even if everything is in plugins (only plugins depend on glib) [report: Vuokko]
 - BUG: font bbox xor draw appears on wrong coords (on top) [report: Igor2]
 - CLEANUP: search for TODO pcb_has_explicit_outline() [report: Igor2]
 - CLEANUP/BUG: lesstif: preferences(layers): EXPFILL doesn't seem to work; need to replace box code with work/lkesstif/formbox [report: Igor2]
@@ -78,11 +79,10 @@
 - CLEANUP: non-modal fontsel: refresh on text font change from other source [report: Igor2]
 - CLEANUP: make the file selector a DAD widget, reimplement all the logics centrally in dialogs [report: Igor2]
 - CLEANUP: rewrite the netlist code
-	- when no netlist is loaded, new rats can't be drawn [report: agaran]
-	- shorts are reported twice, in pair, e.g. sort between A-B and then between B-A; Gabriel's idea: use strcmp() and report only if first > second ml2583 [reprot: Gabriel]
+	+ when no netlist is loaded, new rats can't be drawn [report: agaran]
+	+ shorts are reported twice, in pair, e.g. sort between A-B and then between B-A; Gabriel's idea: use strcmp() and report only if first > second ml2583 [reprot: Gabriel]
 	- FEATURE: rat line draw: [report: Igor2]
 		- be able to rename nets
-		- save the netlist with the file
 		- be able to convert a 'found' to a net
 	- CLEANUP: remove stub_mincut
 	- CLEANUP: remove 'ignore' from mincut proc_short()
