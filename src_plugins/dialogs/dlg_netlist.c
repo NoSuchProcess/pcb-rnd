@@ -118,6 +118,7 @@ static void pcb_dlg_netlist(void)
 	static const char *hdr[] = {"network", "FR", NULL};
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	pcb_box_t bb_prv;
+	int wvpan;
 
 	if (netlist_ctx.active)
 		return; /* do not open another */
@@ -168,6 +169,7 @@ static void pcb_dlg_netlist(void)
 			PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_BEGIN_VPANE(netlist_ctx.dlg);
 				PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL);
+				wvpan = PCB_DAD_CURRENT(netlist_ctx.dlg);
 				PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* right-top */
 					PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL);
 					PCB_DAD_PREVIEW(netlist_ctx.dlg, netlist_expose, netlist_mouse, NULL, &bb_prv, 100, 100, &netlist_ctx);
@@ -189,6 +191,13 @@ static void pcb_dlg_netlist(void)
 
 	PCB_DAD_DEFSIZE(netlist_ctx.dlg, 300, 400);
 	PCB_DAD_NEW("netlist", netlist_ctx.dlg, "pcb-rnd netlist", &netlist_ctx, pcb_false, netlist_close_cb);
+
+	{
+		pcb_hid_attr_val_t hv;
+		hv.real_value = 0.1;
+		pcb_gui->attr_dlg_set_value(netlist_ctx.dlg_hid_ctx, wvpan, &hv);
+	}
+
 	netlist_data2dlg(&netlist_ctx);
 }
 
