@@ -458,11 +458,12 @@ pcb_net_t **pcb_netlist_sort(pcb_netlist_t *nl)
 
 	if (nl->used == 0)
 		return NULL;
-	arr = malloc(nl->used * sizeof(pcb_net_t));
+	arr = malloc((nl->used+1) * sizeof(pcb_net_t));
 
 	for(e = htsp_first(nl), n = 0; e != NULL; e = htsp_next(nl, e), n++)
 		arr[n] = e->value;
 	qsort(arr, nl->used, sizeof(pcb_net_t *), netname_sort);
+	arr[nl->used] = NULL;
 	return arr;
 }
 
