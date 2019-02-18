@@ -671,6 +671,7 @@ static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, pcb_coord_t x1, pcb_c
 	pcb_rat_t *res;
 	static long netname_cnt = 0;
 	char ratname_[32], *ratname, *id;
+	long old_len, new_len;
 
 	if ((o1 == o2) || (o1 == NULL) || (o2 == NULL)) {
 		pcb_message(PCB_MSG_ERROR, "Missing start or end terminal\n");
@@ -740,15 +741,23 @@ static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, pcb_coord_t x1, pcb_c
 	/* create the rat and add terminals in the target_net */
 	res = pcb_rat_new(pcb->Data, -1, x1, y1, x2, y2, group1, group2, conf_core.appearance.rat_thickness, pcb_no_flags());
 
+	old_len = pcb_termlist_length(&target_net->conns);
 	pcb_net_term_get(target_net, sc1->refdes, o1->term, 1);
-	pcb_net_term_get(target_net, sc2->refdes, o2->term, 1);
+	new_len = pcb_termlist_length(&target_net->conns);
+	if (new_len != old_len) {
+		id = pcb_concat(sc1->refdes, "-", o1->term, NULL);
+		pcb_ratspatch_append(pcb, RATP_ADD_CONN, id, target_net->name, NULL);
+		free(id);
+	}
 
-	id = pcb_concat(sc1->refdes, "-", o1->term, NULL);
-	pcb_ratspatch_append(pcb, RATP_ADD_CONN, id, target_net->name, NULL);
-	free(id);
-	id = pcb_concat(sc2->refdes, "-", o2->term, NULL);
-	pcb_ratspatch_append(pcb, RATP_ADD_CONN, id, target_net->name, NULL);
-	free(id);
+	old_len = new_len;
+	pcb_net_term_get(target_net, sc2->refdes, o2->term, 1);
+	new_len = pcb_termlist_length(&target_net->conns);
+	if (new_len != old_len) {
+		id = pcb_concat(sc2->refdes, "-", o2->term, NULL);
+		pcb_ratspatch_append(pcb, RATP_ADD_CONN, id, target_net->name, NULL);
+		free(id);
+	}
 
 	pcb_netlist_changed(0);
 	return res;
