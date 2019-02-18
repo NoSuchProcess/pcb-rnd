@@ -692,7 +692,7 @@ static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, pcb_coord_t x1, pcb_c
 		if (term1 != NULL) net1 = term1->parent.net;
 		if (term2 != NULL) net1 = term2->parent.net;
 
-		if (net1 == net2) {
+		if ((net1 == net2) && (net1 != NULL)) {
 			pcb_message(PCB_MSG_ERROR, "Those terminals are already on the same net (%s)\n", net1->name);
 			return NULL;
 		}
