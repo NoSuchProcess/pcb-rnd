@@ -50,6 +50,7 @@ static void netlist_data2dlg(netlist_ctx_t *ctx)
 	pcb_hid_tree_t *tree;
 	pcb_hid_row_t *r;
 	char *cell[4], *cursor_path = NULL;
+	pcb_net_t **n, **nets;
 
 	attr = &ctx->dlg[ctx->wnetlist];
 	tree = (pcb_hid_tree_t *)attr->enumerations;
@@ -63,15 +64,15 @@ static void netlist_data2dlg(netlist_ctx_t *ctx)
 	for(r = gdl_first(&tree->rows); r != NULL; r = gdl_first(&tree->rows))
 		pcb_dad_tree_remove(attr, r);
 
-#if 0
+
+	nets = pcb_netlist_sort(&PCB->netlist[1]);
 	cell[2] = NULL;
-	for(i = ; i != NULL; ) {
-		payload = "<unknown>";
-		cell[0] = pcb_strdup(c1);
-		cell[1] = pcb_strdup(c2);
+	for(n = nets; *n != NULL; n++) {
+		cell[0] = pcb_strdup((*n)->name);
+		cell[1] = pcb_strdup((*n)->inhibit_rats ? "*" : "");
 		pcb_dad_tree_append(attr, NULL, cell);
 	}
-#endif
+	free(nets);
 
 	/* restore cursor */
 	if (cursor_path != NULL) {
