@@ -672,6 +672,8 @@ static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, pcb_coord_t x1, pcb_c
 	static long netname_cnt = 0;
 	char ratname_[32], *ratname, *id;
 	long old_len, new_len;
+	pcb_lib_menu_t *menu;
+	pcb_lib_entry_t *entry;
 
 	if ((o1 == o2) || (o1 == NULL) || (o2 == NULL)) {
 		pcb_message(PCB_MSG_ERROR, "Missing start or end terminal\n");
@@ -730,13 +732,30 @@ static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, pcb_coord_t x1, pcb_c
 		}
 		else
 			ratname = ratname_;
+		old_len = pcb->netlist[PCB_NETLIST_EDITED].used;
 		target_net = pcb_net_get(pcb, &pcb->netlist[PCB_NETLIST_EDITED], ratname, 1);
+
+		TODO("netlist: remove this with the old netlist code, plus the old_len= line 2 lines above");
+		if (old_len != pcb->netlist[PCB_NETLIST_EDITED].used) {
+			menu = pcb_lib_menu_new(&(PCB->NetlistLib[PCB_NETLIST_EDITED]), NULL);
+			menu->Name = pcb_strdup(ratname);
+		}
+		else {
+			menu = pcb_netname_to_netname(ratname);
+			assert(menu != NULL);
+		}
+
 		assert(target_net != NULL);
 		if (ratname != ratname_)
 			free(ratname);
 	}
-	else
+	else {
 		target_net = net2;
+
+		TODO("netlist: remove this with the old netlist code");
+		menu = pcb_netname_to_netname(net2->name);
+		assert(menu != NULL);
+	}
 
 	/* create the rat and add terminals in the target_net */
 	res = pcb_rat_new(pcb->Data, -1, x1, y1, x2, y2, group1, group2, conf_core.appearance.rat_thickness, pcb_no_flags());
@@ -746,6 +765,10 @@ static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, pcb_coord_t x1, pcb_c
 	new_len = pcb_termlist_length(&target_net->conns);
 	if (new_len != old_len) {
 		id = pcb_concat(sc1->refdes, "-", o1->term, NULL);
+		entry = pcb_lib_entry_new(menu);
+		entry->ListEntry = pcb_strdup(id);
+		entry->ListEntry_dontfree = 0;
+		menu->flag = 1;
 		pcb_ratspatch_append(pcb, RATP_ADD_CONN, id, target_net->name, NULL);
 		free(id);
 	}
@@ -755,6 +778,10 @@ static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, pcb_coord_t x1, pcb_c
 	new_len = pcb_termlist_length(&target_net->conns);
 	if (new_len != old_len) {
 		id = pcb_concat(sc2->refdes, "-", o2->term, NULL);
+		entry = pcb_lib_entry_new(menu);
+		entry->ListEntry = pcb_strdup(id);
+		entry->ListEntry_dontfree = 0;
+		menu->flag = 1;
 		pcb_ratspatch_append(pcb, RATP_ADD_CONN, id, target_net->name, NULL);
 		free(id);
 	}
