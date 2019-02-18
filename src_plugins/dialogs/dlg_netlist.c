@@ -150,9 +150,9 @@ static void pcb_dlg_netlist(void)
 						PCB_DAD_CHANGE_CB(netlist_ctx.dlg, cb_netlist_flagchg);
 				PCB_DAD_END(netlist_ctx.dlg);
 				PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg);
-					PCB_DAD_BUTTON(netlist_ctx.dlg, "rat frz");
+					PCB_DAD_BUTTON(netlist_ctx.dlg, "rats frz");
 						PCB_DAD_CHANGE_CB(netlist_ctx.dlg, cb_netlist_frchg);
-					PCB_DAD_BUTTON(netlist_ctx.dlg, "rat unfrz");
+					PCB_DAD_BUTTON(netlist_ctx.dlg, "rats unfrz");
 						PCB_DAD_CHANGE_CB(netlist_ctx.dlg, cb_netlist_frchg);
 				PCB_DAD_END(netlist_ctx.dlg);
 				PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg);
