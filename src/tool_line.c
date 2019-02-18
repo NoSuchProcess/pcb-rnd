@@ -157,7 +157,8 @@ void pcb_tool_line_notify_mode(void)
 
 	if (PCB->RatDraw) {
 		pcb_rat_t *line;
-		if ((line = pcb_rat_add_net())) {
+		line = pcb_rat_add_net_old();
+		if (line != NULL) {
 			pcb_added_lines++;
 			pcb_undo_add_obj_to_create(PCB_OBJ_RAT, line, line, line);
 			pcb_undo_inc_serial();

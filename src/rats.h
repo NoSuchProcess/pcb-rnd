@@ -44,7 +44,7 @@ struct pcb_connection_s {  /* holds a connection (rat) */
 };
 
 
-pcb_rat_t *pcb_rat_add_net(void);
+pcb_rat_t *pcb_rat_add_net_old(void);
 
 /* Put the rats nest into the layout from the loaded netlist; if SelectedOnly
    is pcb_true, it will only draw rats to selected pins and pads */

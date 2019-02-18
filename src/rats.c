@@ -830,7 +830,7 @@ static int rat_used(char *name)
 	return 0;
 }
 
-pcb_rat_t *pcb_rat_add_net(void)
+pcb_rat_t *pcb_rat_add_net_old(void)
 {
 	static int ratDrawn = 0;
 	char name1[256], *name2;
