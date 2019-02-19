@@ -32,7 +32,7 @@ const char *dlg_netlist_cookie = "netlist dialog";
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	int wnetlist, wprev, wtermlist;
-	int wsel, wunsel, wfind, wunfind;
+	int wsel, wunsel, wfind, wunfind, wrats, wnorats;
 	int active; /* already open - allow only one instance */
 } netlist_ctx_t;
 
@@ -108,16 +108,15 @@ static void cb_netlist_flagchg(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	}
 	else if (w == ctx->wunfind)
 		pcb_actionl("connection", "reset", NULL);
+	if (w == ctx->wrats)
+		pcb_actionl("netlist", "rats", name, NULL);
+	else if (w == ctx->wnorats)
+		pcb_actionl("netlist", "norats", name, NULL);
 	else {
 		pcb_message(PCB_MSG_ERROR, "Internal error: cb_netlist_flagchg() called from an invalid widget\n");
 		return;
 	}
 	pcb_gui->invalidate_all();
-}
-
-static void cb_netlist_frchg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
-{
-
 }
 
 static void cb_netlist_add_rats(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -209,10 +208,12 @@ static void pcb_dlg_netlist(void)
 					netlist_ctx.wunfind = PCB_DAD_CURRENT(netlist_ctx.dlg);
 			PCB_DAD_END(netlist_ctx.dlg);
 			PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg);
-				PCB_DAD_BUTTON(netlist_ctx.dlg, "rats frz  ");
-					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, cb_netlist_frchg);
-				PCB_DAD_BUTTON(netlist_ctx.dlg, "rats unfrz");
-					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, cb_netlist_frchg);
+				PCB_DAD_BUTTON(netlist_ctx.dlg, "rat disable");
+					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, cb_netlist_flagchg);
+					netlist_ctx.wnorats = PCB_DAD_CURRENT(netlist_ctx.dlg);
+				PCB_DAD_BUTTON(netlist_ctx.dlg, "rat enable");
+					netlist_ctx.wrats = PCB_DAD_CURRENT(netlist_ctx.dlg);
+					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, cb_netlist_flagchg);
 			PCB_DAD_END(netlist_ctx.dlg);
 			PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg);
 				PCB_DAD_BUTTON(netlist_ctx.dlg, "add rats");
