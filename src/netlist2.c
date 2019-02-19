@@ -43,6 +43,7 @@
 #include "obj_subc_parent.h"
 #include "search.h"
 #include "remove.h"
+#include "draw.h"
 
 #include "netlist.h"
 
@@ -845,6 +846,7 @@ pcb_cardinal_t pcb_net_ripup(pcb_board_t *pcb, pcb_net_t *net)
 		pcb_net_term_crawl(pcb, t, &fctx, (n == 0));
 
 	pcb_undo_save_serial();
+	pcb_draw_inhibit_inc();
 
 	/* always remove the (n-1)th object; removing the current iterator object
 	   confuses the iteration */
@@ -866,6 +868,7 @@ pcb_cardinal_t pcb_net_ripup(pcb_board_t *pcb, pcb_net_t *net)
 	if (res > 0)
 		pcb_undo_inc_serial();
 
+	pcb_draw_inhibit_dec();
 	pcb_find_free(&fctx);
 	return res;
 }
