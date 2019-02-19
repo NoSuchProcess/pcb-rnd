@@ -844,6 +844,7 @@ pcb_cardinal_t pcb_net_ripup(pcb_board_t *pcb, pcb_net_t *net)
 	for(t = pcb_termlist_first(&net->conns), n = 0; t != NULL; t = pcb_termlist_next(t), n++)
 		pcb_net_term_crawl(pcb, t, &fctx, (n == 0));
 
+	pcb_undo_save_serial();
 
 	/* always remove the (n-1)th object; removing the current iterator object
 	   confuses the iteration */
@@ -860,6 +861,10 @@ pcb_cardinal_t pcb_net_ripup(pcb_board_t *pcb, pcb_net_t *net)
 			break;
 		o = pcb_data_next(&it);
 	}
+
+	pcb_undo_restore_serial();
+	if (res > 0)
+		pcb_undo_inc_serial();
 
 	pcb_find_free(&fctx);
 	return res;
