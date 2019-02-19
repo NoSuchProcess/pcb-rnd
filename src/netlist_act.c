@@ -44,10 +44,14 @@
 #include "actions.h"
 #include "compat_nls.h"
 #include "compat_misc.h"
-#include "netlist.h"
 #include "netlist2.h"
 #include "data_it.h"
+#include "find.h"
+
+TODO("netlist: remove these all with the old netlist removal")
 #include "brave.h"
+#include "netlist.h"
+#include "rats.h"
 
 static int pcb_netlist_swap()
 {
@@ -154,6 +158,122 @@ static int pcb_netlist_add(int patch, const char *netname, const char *pinname)
 	pcb_netlist_changed(0);
 	return 0;
 }
+
+TODO("netlist: remove with the old netlist code:")
+static pcb_any_obj_t *pcb_pin_name_to_obj(pcb_lib_entry_t *pin)
+{
+	pcb_connection_t conn;
+	if (!pcb_rat_seek_pad(pin, &conn, pcb_false))
+		return NULL;
+	return conn.obj;
+}
+
+static unsigned long pcb_netlist_setclrflg(pcb_lib_menu_t *net, pcb_lib_entry_t *pin, pcb_flag_values_t setf, pcb_flag_values_t clrf)
+{
+	pcb_find_t fctx;
+	pcb_any_obj_t *o;
+	unsigned long res;
+
+	o = pcb_pin_name_to_obj(pin);
+	if (o == NULL)
+		return 0;
+
+	memset(&fctx, 0, sizeof(fctx));
+	fctx.flag_set = setf;
+	fctx.flag_clr = clrf;
+	fctx.flag_chg_undoable = 1;
+	fctx.consider_rats = 1;
+	res = pcb_find_from_obj(&fctx, PCB->Data, o);
+	pcb_find_free(&fctx);
+	return res;
+}
+
+static void pcb_netlist_find(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
+{
+	if (pcb_brave & PCB_BRAVE_NETLIST2)
+		pcb_net_crawl_flag(PCB, pcb_net_get(PCB, &PCB->netlist[0], net->Name+2, 0), PCB_FLAG_FOUND, 0);
+	else
+		pcb_netlist_setclrflg(net, pin, PCB_FLAG_FOUND, 0);
+}
+
+static void pcb_netlist_select(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
+{
+	if (pcb_brave & PCB_BRAVE_NETLIST2)
+		pcb_net_crawl_flag(PCB, pcb_net_get(PCB, &PCB->netlist[0], net->Name+2, 0), PCB_FLAG_SELECTED, 0);
+	else
+		pcb_netlist_setclrflg(net, pin, PCB_FLAG_SELECTED, 0);
+}
+
+static void pcb_netlist_unselect(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
+{
+	if (pcb_brave & PCB_BRAVE_NETLIST2)
+		pcb_net_crawl_flag(PCB, pcb_net_get(PCB, &PCB->netlist[0], net->Name+2, 0), 0, PCB_FLAG_SELECTED);
+	else
+	pcb_netlist_setclrflg(net, pin, 0, PCB_FLAG_SELECTED);
+}
+
+static void pcb_netlist_rats(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
+{
+	if (pcb_brave & PCB_BRAVE_NETLIST2)
+		pcb_net_get(PCB, &PCB->netlist[0], net->Name+2, 0)->inhibit_rats = 0;
+	net->Name[0] = ' ';
+	net->flag = 1;
+	pcb_netlist_changed(0);
+}
+
+static void pcb_netlist_norats(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
+{
+	if (pcb_brave & PCB_BRAVE_NETLIST2)
+		pcb_net_get(PCB, &PCB->netlist[0], net->Name+2, 0)->inhibit_rats = 1;
+	net->Name[0] = '*';
+	net->flag = 0;
+	pcb_netlist_changed(0);
+}
+
+/* The primary purpose of this action is to remove the netlist
+   completely so that a new one can be loaded, usually via a gsch2pcb
+   style script.  */
+static void pcb_netlist_clear(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
+{
+	pcb_lib_t *netlist = (pcb_lib_t *) & PCB->NetlistLib;
+	int ni, pi;
+
+	if (net == 0) {
+		/* Clear the entire netlist. */
+		for (ni = 0; ni < PCB_NUM_NETLISTS; ni++)
+			pcb_lib_free(&(PCB->NetlistLib[ni]));
+	}
+	else if (pin == 0) {
+		/* Remove a net from the netlist. */
+		ni = net - netlist->Menu;
+		if (ni >= 0 && ni < netlist->MenuN) {
+			/* if there is exactly one item, MenuN is 1 and ni is 0 */
+			if (netlist->MenuN - ni > 1)
+				memmove(net, net + 1, (netlist->MenuN - ni - 1) * sizeof(*net));
+			netlist->MenuN--;
+		}
+	}
+	else {
+		/* Remove a pin from the given net.  Note that this may leave an
+		   empty net, which is different than removing the net
+		   (above).  */
+		pi = pin - net->Entry;
+		if (pi >= 0 && pi < net->EntryN) {
+			/* if there is exactly one item, MenuN is 1 and ni is 0 */
+			if (net->EntryN - pi > 1)
+				memmove(pin, pin + 1, (net->EntryN - pi - 1) * sizeof(*pin));
+			net->EntryN--;
+		}
+	}
+	pcb_netlist_changed(0);
+}
+
+static void pcb_netlist_style(pcb_lib_menu_t *net, const char *style)
+{
+	free(net->Style);
+	net->Style = pcb_strdup_null((char *) style);
+}
+
 
 static const char pcb_acts_Netlist[] =
 	"Net(find|select|rats|norats|clear[,net[,pin]])\n" "Net(freeze|thaw|forcethaw)\n" "Net(swap)\n" "Net(add,net,pin)";

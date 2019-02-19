@@ -62,14 +62,6 @@ pcb_lib_menu_t *pcb_netlist_lookup(int patch, const char *netname, pcb_bool allo
 pcb_lib_menu_t *pcb_netnode_to_netname(const char *nodename);
 pcb_lib_menu_t *pcb_netname_to_netname(const char *netname);
 
-void pcb_netlist_find(pcb_lib_menu_t *net, pcb_lib_entry_t *pin);
-void pcb_netlist_select(pcb_lib_menu_t *net, pcb_lib_entry_t *pin);
-void pcb_netlist_unselect(pcb_lib_menu_t * net, pcb_lib_entry_t * pin);
-void pcb_netlist_rats(pcb_lib_menu_t *net, pcb_lib_entry_t *pin);
-void pcb_netlist_norats(pcb_lib_menu_t *net, pcb_lib_entry_t *pin);
-void pcb_netlist_clear(pcb_lib_menu_t *net, pcb_lib_entry_t *pin);
-void pcb_netlist_style(pcb_lib_menu_t *net, const char *style);
-
 /* Return the net entry for a pin name (slow search). The pin name is
    like "U101-5", so element's refdes, dash, pin number */
 pcb_lib_menu_t *pcb_netlist_find_net4pinname(pcb_board_t *pcb, const char *pinname);
