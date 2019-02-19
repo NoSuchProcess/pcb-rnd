@@ -31,6 +31,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "data_it.h"
 #include "event.h"
 #include "compat_misc.h"
 #include "layer_grp.h"
@@ -41,6 +42,7 @@
 #include "obj_rat_draw.h"
 #include "obj_subc_parent.h"
 #include "search.h"
+#include "remove.h"
 
 #include "netlist.h"
 
@@ -825,4 +827,40 @@ pcb_rat_t *pcb_net_create_by_rat_coords(pcb_board_t *pcb, pcb_coord_t x1, pcb_co
 	oe = find_rat_end(pcb, x2, y2, "rat line end");
 
 	return pcb_net_create_by_rat_(pcb, x1, y1, x2, y2, os, oe, interactive);
+}
+
+
+pcb_cardinal_t pcb_net_ripup(pcb_board_t *pcb, pcb_net_t *net)
+{
+	pcb_find_t fctx;
+	pcb_net_term_t *t;
+	pcb_cardinal_t res, n;
+	pcb_any_obj_t *o, *lasto;
+	pcb_data_it_t it;
+
+	memset(&fctx, 0, sizeof(fctx));
+	fctx.only_mark_rats = 1; /* do not trust rats, but do mark them */
+
+	for(t = pcb_termlist_first(&net->conns), n = 0; t != NULL; t = pcb_termlist_next(t), n++)
+		pcb_net_term_crawl(pcb, t, &fctx, (n == 0));
+
+
+	/* always remove the (n-1)th object; removing the current iterator object
+	   confuses the iteration */
+	res = 0;
+	lasto = NULL;
+	o = pcb_data_first(&it, pcb->Data, PCB_OBJ_CLASS_REAL & (~PCB_OBJ_SUBC));
+	for(;;) {
+		if ((lasto != NULL) && (PCB_DFLAG_TEST(&lasto->Flags, fctx.mark))) {
+			pcb_remove_object(lasto->type, lasto->parent.any, lasto, lasto);
+			res++;
+		}
+		lasto = o;
+		if (lasto == NULL)
+			break;
+		o = pcb_data_next(&it);
+	}
+
+	pcb_find_free(&fctx);
+	return res;
 }
