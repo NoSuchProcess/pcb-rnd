@@ -45,7 +45,8 @@ static void netlist_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	memset(ctx, 0, sizeof(netlist_ctx_t));
 }
 
-static void netlist_data2dlg(netlist_ctx_t *ctx)
+/* returns allocated net name for the currently selected net */
+static char *netlist_data2dlg_netlist(netlist_ctx_t *ctx)
 {
 	pcb_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
@@ -80,9 +81,73 @@ static void netlist_data2dlg(netlist_ctx_t *ctx)
 		pcb_hid_attr_val_t hv;
 		hv.str_value = cursor_path;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnetlist, &hv);
+	}
+	return cursor_path;
+}
+
+static void netlist_data2dlg_connlist(netlist_ctx_t *ctx, pcb_net_t *net)
+{
+	pcb_hid_attribute_t *attr;
+	pcb_hid_tree_t *tree;
+	pcb_hid_row_t *r;
+	char *cell[2], *cursor_path = NULL;
+	pcb_net_term_t *t;
+
+	attr = &ctx->dlg[ctx->wtermlist];
+	tree = (pcb_hid_tree_t *)attr->enumerations;
+
+	/* remember cursor */
+	if (net != NULL) {
+		r = pcb_dad_tree_get_selected(attr);
+		if (r != NULL)
+			cursor_path = pcb_strdup(r->cell[0]);
+	}
+
+	/* remove existing items */
+	for(r = gdl_first(&tree->rows); r != NULL; r = gdl_first(&tree->rows))
+		pcb_dad_tree_remove(attr, r);
+
+	if (net == NULL)
+		return;
+
+	cell[1] = NULL;
+	for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
+		cell[0] = pcb_concat(t->refdes, "-", t->term, NULL);
+		pcb_dad_tree_append(attr, NULL, cell);
+	}
+
+	/* restore cursor */
+	if (cursor_path != NULL) {
+		pcb_hid_attr_val_t hv;
+		hv.str_value = cursor_path;
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtermlist, &hv);
 		free(cursor_path);
 	}
 }
+
+
+static void netlist_data2dlg(netlist_ctx_t *ctx)
+{
+	pcb_net_t *curnet = NULL;
+	char *curnetname = netlist_data2dlg_netlist(ctx);
+
+	if (curnetname != NULL)
+		curnet = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], curnetname, 0);
+	free(curnetname);
+	netlist_data2dlg_connlist(ctx, curnet);
+}
+
+static void netlist_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+{
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	netlist_ctx_t *ctx= tree->user_ctx;
+	const char *netname = NULL;
+
+	if (row != NULL)
+		netname = row->cell[0];
+	netlist_data2dlg_connlist(ctx, pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], netname, 0));
+}
+
 
 static void cb_netlist_flagchg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
@@ -167,6 +232,8 @@ static void pcb_dlg_netlist(void)
 				PCB_DAD_TREE(netlist_ctx.dlg, 2, 0, hdr);
 					PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
 					netlist_ctx.wnetlist = PCB_DAD_CURRENT(netlist_ctx.dlg);
+					PCB_DAD_TREE_SET_CB(netlist_ctx.dlg, selected_cb, netlist_row_selected);
+					PCB_DAD_TREE_SET_CB(netlist_ctx.dlg, ctx, &netlist_ctx);
 			PCB_DAD_END(netlist_ctx.dlg);
 
 			PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* right */
