@@ -32,7 +32,7 @@ const char *dlg_netlist_cookie = "netlist dialog";
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	int wnetlist, wprev, wtermlist;
-	int wsel, wunsel, wfind, wunfind, wrats, wnorats;
+	int wsel, wunsel, wfind, wunfind, wrats, wnorats, wripup;
 	int active; /* already open - allow only one instance */
 } netlist_ctx_t;
 
@@ -177,6 +177,8 @@ static void cb_netlist_flagchg(void *hid_ctx, void *caller_data, pcb_hid_attribu
 		pcb_actionl("netlist", "rats", name, NULL);
 	else if (w == ctx->wnorats)
 		pcb_actionl("netlist", "norats", name, NULL);
+	else if (w == ctx->wripup)
+		pcb_actionl("netlist", "ripup", name, NULL);
 	else {
 		pcb_message(PCB_MSG_ERROR, "Internal error: cb_netlist_flagchg() called from an invalid widget\n");
 		return;
@@ -188,12 +190,6 @@ static void cb_netlist_add_rats(void *hid_ctx, void *caller_data, pcb_hid_attrib
 {
 
 }
-
-static void cb_netlist_ripup(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
-{
-
-}
-
 
 static void netlist_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
@@ -286,7 +282,8 @@ static void pcb_dlg_netlist(void)
 				PCB_DAD_BUTTON(netlist_ctx.dlg, "add rats");
 					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, cb_netlist_add_rats);
 				PCB_DAD_BUTTON(netlist_ctx.dlg, "rip up  ");
-					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, cb_netlist_ripup);
+					netlist_ctx.wripup = PCB_DAD_CURRENT(netlist_ctx.dlg);
+					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, cb_netlist_flagchg);
 			PCB_DAD_END(netlist_ctx.dlg);
 			PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* fill between buttons and close */
 				PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL);
