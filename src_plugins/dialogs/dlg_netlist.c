@@ -32,6 +32,7 @@ const char *dlg_netlist_cookie = "netlist dialog";
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	int wnetlist, wprev, wtermlist;
+	int wsel, wunsel, wfind, wunfind;
 	int active; /* already open - allow only one instance */
 } netlist_ctx_t;
 
@@ -85,7 +86,33 @@ static void netlist_data2dlg(netlist_ctx_t *ctx)
 
 static void cb_netlist_flagchg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
+	netlist_ctx_t *ctx = caller_data;
+	pcb_hid_attribute_t *atree;
+	int w = attr - ctx->dlg;
+	pcb_hid_row_t *r;
+	const char *name;
 
+	atree = &ctx->dlg[ctx->wnetlist];
+	r = pcb_dad_tree_get_selected(atree);
+	if (r == NULL)
+		return;
+	name = pcb_strdup(r->cell[0]);
+
+	if (w == ctx->wsel)
+		pcb_actionl("netlist", "select", name, NULL);
+	else if (w == ctx->wunsel)
+		pcb_actionl("netlist", "unselect", name, NULL);
+	else if (w == ctx->wfind) {
+		pcb_actionl("connection", "reset", NULL);
+		pcb_actionl("netlist", "find", name, NULL);
+	}
+	else if (w == ctx->wunfind)
+		pcb_actionl("connection", "reset", NULL);
+	else {
+		pcb_message(PCB_MSG_ERROR, "Internal error: cb_netlist_flagchg() called from an invalid widget\n");
+		return;
+	}
+	pcb_gui->invalidate_all();
 }
 
 static void cb_netlist_frchg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -168,14 +195,18 @@ static void pcb_dlg_netlist(void)
 			PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg);
 				PCB_DAD_BUTTON(netlist_ctx.dlg, "select");
 					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, cb_netlist_flagchg);
+					netlist_ctx.wsel = PCB_DAD_CURRENT(netlist_ctx.dlg);
 				PCB_DAD_BUTTON(netlist_ctx.dlg, "unsel.");
 					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, cb_netlist_flagchg);
+					netlist_ctx.wunsel = PCB_DAD_CURRENT(netlist_ctx.dlg);
 			PCB_DAD_END(netlist_ctx.dlg);
 			PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg);
 				PCB_DAD_BUTTON(netlist_ctx.dlg, "find ");
 					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, cb_netlist_flagchg);
+					netlist_ctx.wfind = PCB_DAD_CURRENT(netlist_ctx.dlg);
 				PCB_DAD_BUTTON(netlist_ctx.dlg, "clear");
 					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, cb_netlist_flagchg);
+					netlist_ctx.wunfind = PCB_DAD_CURRENT(netlist_ctx.dlg);
 			PCB_DAD_END(netlist_ctx.dlg);
 			PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg);
 				PCB_DAD_BUTTON(netlist_ctx.dlg, "rats frz  ");
