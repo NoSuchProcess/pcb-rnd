@@ -42,6 +42,8 @@
 #include "obj_subc_parent.h"
 #include "search.h"
 
+#include "netlist.h"
+
 #define TDL_DONT_UNDEF
 #include "netlist2.h"
 #include <genlist/gentdlist_impl.c>
