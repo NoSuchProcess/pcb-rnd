@@ -287,9 +287,16 @@ static void pcb_netlist_ripup(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
 	pcb_net_ripup(PCB, n);
 }
 
+static void pcb_netlist_addrats(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
+{
+	pcb_net_t *n = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], net->Name+2, 0);
+	assert(n != NULL);
+	pcb_net_add_rats(PCB, n, PCB_RATACC_PRECISE);
+}
+
 
 static const char pcb_acts_Netlist[] =
-	"Net(find|select|rats|norats|clear|ripup[,net[,pin]])\n" "Net(freeze|thaw|forcethaw)\n" "Net(swap)\n" "Net(add,net,pin)";
+	"Net(find|select|rats|norats||ripup|addrats|clear[,net[,pin]])\n" "Net(freeze|thaw|forcethaw)\n" "Net(swap)\n" "Net(add,net,pin)";
 
 static const char pcb_acth_Netlist[] = "Perform various actions on netlists.";
 
@@ -322,6 +329,7 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_Unselect: func = pcb_netlist_unselect; break;
 		case F_Rats: func = pcb_netlist_rats; break;
 		case F_NoRats: func = pcb_netlist_norats; break;
+		case F_AddRats: func = pcb_netlist_addrats; break;
 		case F_Style: func = (NFunc) pcb_netlist_style; break;
 		case F_Ripup: func = pcb_netlist_ripup; break;
 		case F_Swap: return pcb_netlist_swap(); break;

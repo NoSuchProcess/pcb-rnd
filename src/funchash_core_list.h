@@ -17,6 +17,7 @@ action_entry(uroute)
 /* Keywords for actions */
 action_entry(Add)
 action_entry(AddSelected)
+action_entry(AddRats)
 action_entry(All)
 action_entry(AllConnections)
 action_entry(AllRats)
