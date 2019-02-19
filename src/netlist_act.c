@@ -214,8 +214,11 @@ static void pcb_netlist_unselect(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
 
 static void pcb_netlist_rats(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
 {
-	if (pcb_brave & PCB_BRAVE_NETLIST2)
-		pcb_net_get(PCB, &PCB->netlist[0], net->Name+2, 0)->inhibit_rats = 0;
+	if (pcb_brave & PCB_BRAVE_NETLIST2) {
+		pcb_net_t *n = pcb_net_get(PCB, &PCB->netlist[0], net->Name+2, 0);
+		if (n != NULL)
+			n->inhibit_rats = 0;
+	}
 	net->Name[0] = ' ';
 	net->flag = 1;
 	pcb_netlist_changed(0);
@@ -223,8 +226,11 @@ static void pcb_netlist_rats(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
 
 static void pcb_netlist_norats(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
 {
-	if (pcb_brave & PCB_BRAVE_NETLIST2)
-		pcb_net_get(PCB, &PCB->netlist[0], net->Name+2, 0)->inhibit_rats = 1;
+	if (pcb_brave & PCB_BRAVE_NETLIST2) {
+		pcb_net_t *n = pcb_net_get(PCB, &PCB->netlist[0], net->Name+2, 0);
+		if (n != NULL)
+			n->inhibit_rats = 1;
+	}
 	net->Name[0] = '*';
 	net->flag = 0;
 	pcb_netlist_changed(0);
