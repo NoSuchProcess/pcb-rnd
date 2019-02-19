@@ -149,7 +149,7 @@ static void netlist_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb
 }
 
 
-static void cb_netlist_flagchg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void netlist_button_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	netlist_ctx_t *ctx = caller_data;
 	pcb_hid_attribute_t *atree;
@@ -182,7 +182,7 @@ static void cb_netlist_flagchg(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	else if (w == ctx->waddrats)
 		pcb_actionl("netlist", "AddRats", name, NULL);
 	else {
-		pcb_message(PCB_MSG_ERROR, "Internal error: cb_netlist_flagchg() called from an invalid widget\n");
+		pcb_message(PCB_MSG_ERROR, "Internal error: netlist_button_cb() called from an invalid widget\n");
 		return;
 	}
 	pcb_gui->invalidate_all();
@@ -253,35 +253,35 @@ static void pcb_dlg_netlist(void)
 		PCB_DAD_BEGIN_HBOX(netlist_ctx.dlg); /* bottom button row */
 			PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg);
 				PCB_DAD_BUTTON(netlist_ctx.dlg, "select");
-					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, cb_netlist_flagchg);
+					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
 					netlist_ctx.wsel = PCB_DAD_CURRENT(netlist_ctx.dlg);
 				PCB_DAD_BUTTON(netlist_ctx.dlg, "unsel.");
-					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, cb_netlist_flagchg);
+					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
 					netlist_ctx.wunsel = PCB_DAD_CURRENT(netlist_ctx.dlg);
 			PCB_DAD_END(netlist_ctx.dlg);
 			PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg);
 				PCB_DAD_BUTTON(netlist_ctx.dlg, "find ");
-					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, cb_netlist_flagchg);
+					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
 					netlist_ctx.wfind = PCB_DAD_CURRENT(netlist_ctx.dlg);
 				PCB_DAD_BUTTON(netlist_ctx.dlg, "clear");
-					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, cb_netlist_flagchg);
+					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
 					netlist_ctx.wunfind = PCB_DAD_CURRENT(netlist_ctx.dlg);
 			PCB_DAD_END(netlist_ctx.dlg);
 			PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg);
 				PCB_DAD_BUTTON(netlist_ctx.dlg, "rat disable");
-					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, cb_netlist_flagchg);
+					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
 					netlist_ctx.wnorats = PCB_DAD_CURRENT(netlist_ctx.dlg);
 				PCB_DAD_BUTTON(netlist_ctx.dlg, "rat enable");
 					netlist_ctx.wrats = PCB_DAD_CURRENT(netlist_ctx.dlg);
-					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, cb_netlist_flagchg);
+					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
 			PCB_DAD_END(netlist_ctx.dlg);
 			PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg);
 				PCB_DAD_BUTTON(netlist_ctx.dlg, "add rats");
 					netlist_ctx.waddrats = PCB_DAD_CURRENT(netlist_ctx.dlg);
-					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, cb_netlist_flagchg);
+					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
 				PCB_DAD_BUTTON(netlist_ctx.dlg, "rip up  ");
 					netlist_ctx.wripup = PCB_DAD_CURRENT(netlist_ctx.dlg);
-					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, cb_netlist_flagchg);
+					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
 			PCB_DAD_END(netlist_ctx.dlg);
 			PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* fill between buttons and close */
 				PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL);
