@@ -139,6 +139,7 @@ static pcb_color_t pcb_color_red_;
 static pcb_color_t pcb_color_blue_;
 static pcb_color_t pcb_color_drill_;
 static pcb_color_t pcb_color_magenta_;
+static pcb_color_t pcb_color_golden_;
 static pcb_color_t pcb_color_grey33_;
 
 const pcb_color_t *pcb_color_black = &pcb_color_black_;
@@ -148,6 +149,7 @@ const pcb_color_t *pcb_color_blue = &pcb_color_blue_;
 const pcb_color_t *pcb_color_drill = &pcb_color_drill_;
 const pcb_color_t *pcb_color_grey33 = &pcb_color_grey33_;
 const pcb_color_t *pcb_color_magenta = &pcb_color_magenta_;
+const pcb_color_t *pcb_color_golden = &pcb_color_golden_;
 
 void pcb_color_init(void)
 {
@@ -157,6 +159,7 @@ void pcb_color_init(void)
 	pcb_color_load_str(&pcb_color_blue_, "#0000ff");
 	pcb_color_load_str(&pcb_color_grey33_, "#333333");
 	pcb_color_load_str(&pcb_color_magenta_, "#ff00ff");
+	pcb_color_load_str(&pcb_color_golden_, "#dddd22");
 	pcb_color_load_str(&pcb_color_drill_, "#ff00ff");
 	strcpy(pcb_color_drill_.str, "drill");
 }
