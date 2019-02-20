@@ -81,12 +81,16 @@
 - CLEANUP: rewrite the netlist code
 	+ when no netlist is loaded, new rats can't be drawn [report: agaran]
 	+ shorts are reported twice, in pair, e.g. sort between A-B and then between B-A; Gabriel's idea: use strcmp() and report only if first > second ml2583 [reprot: Gabriel]
+	- FEATURE: new dialog:
+		- preview
+		- find the pin when a pin is clicked
 	- FEATURE: rat line draw: [report: Igor2]
 		- be able to rename nets
 		- be able to convert a 'found' to a net
 	- CLEANUP: remove stub_mincut
 	- CLEANUP: remove 'ignore' from mincut proc_short()
 	- CLEANUP: remove rats_patch_old.c
+	- CLEANUP: remove the old gtk netlist dialog
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 
