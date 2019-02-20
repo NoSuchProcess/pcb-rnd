@@ -26,6 +26,7 @@
 
 #include "event.h"
 #include "netlist2.h"
+#include <genvector/vtp0.h>
 
 const char *dlg_netlist_cookie = "netlist dialog";
 
@@ -215,9 +216,53 @@ static void netlist_button_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pcb_gui->invalidate_all();
 }
 
+static vtp0_t netlist_color_save;
+
 static void netlist_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
+	netlist_ctx_t *ctx = prv->user_ctx;
+	pcb_xform_t xform;
+	size_t n;
+	void **p;
+	pcb_hid_attribute_t *attr;
+	pcb_hid_row_t *r;
+	pcb_net_t *net = NULL;
 
+	attr = &ctx->dlg[ctx->wnetlist];
+	r = pcb_dad_tree_get_selected(attr);
+	if (r != NULL)
+		net = pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_EDITED], r->cell[0], 0);
+
+	if (net != NULL) { /* save term object colors */
+		pcb_net_term_t *t;
+		vtp0_truncate(&netlist_color_save, 0);
+		for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
+			pcb_any_obj_t *obj = pcb_term_find_name(ctx->pcb, ctx->pcb->Data, PCB_LYT_COPPER, t->refdes, t->term, 0, NULL, NULL);
+			if (obj == NULL)
+				continue;
+
+			vtp0_append(&netlist_color_save, obj);
+			if (obj->override_color != NULL)
+				vtp0_append(&netlist_color_save, (char *)obj->override_color);
+			else
+				vtp0_append(&netlist_color_save, NULL);
+			obj->override_color = pcb_color_magenta;
+		}
+	}
+
+	/* draw the board */
+	memset(&xform, 0, sizeof(xform));
+	xform.layer_faded = 1;
+	pcb_hid_expose_all(pcb_gui, e, &xform);
+
+	if (net != NULL) {/* restore object color */
+		for(n = 0, p = netlist_color_save.array; n < netlist_color_save.used; n+=2,p+=2) {
+			pcb_any_obj_t *obj = p[0];
+			pcb_color_t *s = p[1];
+			obj->override_color = s;
+		}
+		vtp0_truncate(&netlist_color_save, 0);
+	}
 }
 
 static pcb_bool netlist_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
@@ -360,4 +405,5 @@ static void pcb_dlg_netlist_init(void)
 static void pcb_dlg_netlist_uninit(void)
 {
 	pcb_event_unbind_allcookie(dlg_netlist_cookie);
+	vtp0_uninit(&netlist_color_save);
 }
