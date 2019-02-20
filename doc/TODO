@@ -79,6 +79,7 @@
 - CLEANUP: non-modal fontsel: refresh on text font change from other source [report: Igor2]
 - CLEANUP: make the file selector a DAD widget, reimplement all the logics centrally in dialogs [report: Igor2]
 - CLEANUP: rewrite the netlist code
+	- BUG: the new netlist code doesn't announce the number of rats remaining [report: Gabriel]
 	+ when no netlist is loaded, new rats can't be drawn [report: agaran]
 	+ shorts are reported twice, in pair, e.g. sort between A-B and then between B-A; Gabriel's idea: use strcmp() and report only if first > second ml2583 [reprot: Gabriel]
 	- FEATURE: rat line draw: [report: Igor2]
