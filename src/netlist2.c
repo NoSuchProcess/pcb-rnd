@@ -250,7 +250,9 @@ int pcb_net_del(pcb_netlist_t *nl, const char *netname)
 	return 0;
 }
 
-static pcb_cardinal_t pcb_net_term_crawl(const pcb_board_t *pcb, pcb_net_term_t *term, pcb_find_t *fctx, int first)
+/* crawl from a single terminal; "first" sould be a pointer to an int
+   initialized to 0. Returns number of objects found. */
+static pcb_cardinal_t pcb_net_term_crawl(const pcb_board_t *pcb, pcb_net_term_t *term, pcb_find_t *fctx, int *first)
 {
 	pcb_any_obj_t *o;
 
@@ -259,8 +261,10 @@ static pcb_cardinal_t pcb_net_term_crawl(const pcb_board_t *pcb, pcb_net_term_t 
 	if (o == NULL)
 		return 0;
 
-	if (first)
+	if ((*first) == 0) {
+		*first = 1;
 		return pcb_find_from_obj(fctx, PCB->Data, o);
+	}
 
 	if (PCB_FIND_IS_MARKED(fctx, o))
 		return 0; /* already visited, no need to run 'find' again */
@@ -385,6 +389,7 @@ pcb_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned lon
 	pcb_net_term_t *t;
 	pcb_cardinal_t res = 0, n;
 	short_ctx_t sctx;
+	int first = 0;
 
 	short_ctx_init(&sctx, pcb, net);
 
@@ -397,7 +402,7 @@ pcb_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned lon
 	fctx.found_cb = net_short_check;
 
 	for(t = pcb_termlist_first(&net->conns), n = 0; t != NULL; t = pcb_termlist_next(t), n++) {
-		res += pcb_net_term_crawl(pcb, t, &fctx, (n == 0));
+		res += pcb_net_term_crawl(pcb, t, &fctx, &first);
 	}
 
 	pcb_find_free(&fctx);
@@ -482,7 +487,7 @@ static pcb_cardinal_t pcb_net_add_rats_(short_ctx_t *sctx, pcb_rat_accuracy_t ac
 	vtp0_t subnets;
 	pcb_subnet_dist_t *connmx;
 	char *done;
-	int left;
+	int left, first = 0;
 	pcb_rat_t *line;
 
 
@@ -497,7 +502,7 @@ static pcb_cardinal_t pcb_net_add_rats_(short_ctx_t *sctx, pcb_rat_accuracy_t ac
 	   objects of each subnet is collected on a vtp0_t; object-lists per submnet
 	   is saved in variable "subnets" */
 	for(t = pcb_termlist_first(&sctx->current_net->conns), n = 0; t != NULL; t = pcb_termlist_next(t), n++) {
-		r = pcb_net_term_crawl(sctx->pcb, t, &fctx, (n == 0));
+		r = pcb_net_term_crawl(sctx->pcb, t, &fctx, &first);
 		if (r > 0) {
 			vtp0_t *objs = malloc(sizeof(vtp0_t));
 			memcpy(objs, &fctx.found, sizeof(vtp0_t));
@@ -838,12 +843,13 @@ pcb_cardinal_t pcb_net_ripup(pcb_board_t *pcb, pcb_net_t *net)
 	pcb_cardinal_t res, n;
 	pcb_any_obj_t *o, *lasto;
 	pcb_data_it_t it;
+	int first = 0;
 
 	memset(&fctx, 0, sizeof(fctx));
 	fctx.only_mark_rats = 1; /* do not trust rats, but do mark them */
 
 	for(t = pcb_termlist_first(&net->conns), n = 0; t != NULL; t = pcb_termlist_next(t), n++)
-		pcb_net_term_crawl(pcb, t, &fctx, (n == 0));
+		pcb_net_term_crawl(pcb, t, &fctx, &first);
 
 	pcb_undo_save_serial();
 	pcb_draw_inhibit_inc();
