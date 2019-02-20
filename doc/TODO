@@ -78,6 +78,7 @@
 - CLEANUP/feature: pcb_subc_smash_buffer() should really copy data so it can smash multiple subcs and subc objects end up on the layer they were bound to [report: keantoken]
 - CLEANUP: non-modal fontsel: refresh on text font change from other source [report: Igor2]
 - CLEANUP: make the file selector a DAD widget, reimplement all the logics centrally in dialogs [report: Igor2]
+- CLEANUP: move ClipInhibit() from expfeatto core, make a conf item and a checkbox menu item [report: Gabriel]
 - CLEANUP: rewrite the netlist code
 	- BUG: the new netlist code doesn't announce the number of rats remaining [report: Gabriel]
 	+ when no netlist is loaded, new rats can't be drawn [report: agaran]
