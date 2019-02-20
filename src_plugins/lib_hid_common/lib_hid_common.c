@@ -35,6 +35,7 @@
 #include "routest_menu.h"
 #include "cli_history.h"
 #include "util.c"
+#include "lead_user.h"
 
 #include "lib_hid_common.h"
 #include "lib_hid_common_conf.h"
@@ -45,6 +46,7 @@ conf_lib_hid_common_t lib_hid_common_conf;
 static const char *grid_cookie = "lib_hid_common/grid";
 static const char *layer_cookie = "lib_hid_common/layer";
 static const char *rst_cookie = "lib_hid_common/route_style";
+static const char *lead_cookie = "lib_hid_common/user_lead";
 
 int pplg_check_ver_lib_hid_common(int ver_needed) { return 0; }
 
@@ -57,6 +59,7 @@ void pplg_uninit_lib_hid_common(void)
 	pcb_event_unbind_allcookie(grid_cookie);
 	pcb_event_unbind_allcookie(layer_cookie);
 	pcb_event_unbind_allcookie(rst_cookie);
+	pcb_event_unbind_allcookie(lead_cookie);
 	conf_hid_unreg(grid_cookie);
 	conf_hid_unreg(rst_cookie);
 	conf_unreg_fields("plugins/lib_hid_common/");
@@ -82,6 +85,8 @@ TODO("padstack: remove some paths when route style has proto")
 	pcb_event_bind(PCB_EVENT_ROUTE_STYLES_CHANGED, pcb_rst_update_ev, NULL, rst_cookie);
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, pcb_rst_update_ev, NULL, rst_cookie);
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_rst_update_ev, NULL, rst_cookie);
+	pcb_event_bind(PCB_EVENT_GUI_LEAD_USER, pcb_lead_user_ev, NULL, lead_cookie);
+	pcb_event_bind(PCB_EVENT_GUI_DRAW_OVERLAY_XOR, pcb_lead_user_draw_ev, NULL, lead_cookie);
 
 	conf_id = conf_hid_reg(grid_cookie, NULL);
 	memset(&ccb, 0, sizeof(ccb));

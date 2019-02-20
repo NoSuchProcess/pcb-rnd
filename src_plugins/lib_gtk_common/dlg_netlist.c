@@ -210,7 +210,7 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 		 */
 		if (node_net == node_selected_net) {
 			toggle_pin_selected(node);
-			com->cancel_lead_user();
+			pcb_event(PCB_EVENT_GUI_LEAD_USER, "cci", 0, 0, 0);
 		}
 		g_free(node_name);
 		node_name = NULL;
@@ -243,7 +243,7 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 	
 	if (x >= 0) {
 		pcb_gui->set_crosshair(x, y, 0);
-		com->lead_user_to_location(x, y);
+		pcb_event(PCB_EVENT_GUI_LEAD_USER, "cci", x, y, 1);
 	}
 }
 
@@ -547,8 +547,7 @@ static void netlist_close_cb(GtkWidget * widget, gpointer data)
 	selected_net = NULL;
 	netlist_window = NULL;
 
-	/* For now, we are the only consumer of this API, so we can just do this */
-	com->cancel_lead_user();
+	pcb_event(PCB_EVENT_GUI_LEAD_USER, "cci", 0, 0, 0);
 }
 
 static void netlist_destroy_cb(GtkWidget * widget, void *data)
