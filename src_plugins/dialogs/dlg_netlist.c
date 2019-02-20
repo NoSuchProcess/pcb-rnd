@@ -69,7 +69,7 @@ static char *netlist_data2dlg_netlist(netlist_ctx_t *ctx)
 		pcb_dad_tree_remove(attr, r);
 
 
-	nets = pcb_netlist_sort(&PCB->netlist[1]);
+	nets = pcb_netlist_sort(&ctx->pcb->netlist[1]);
 	cell[2] = NULL;
 	for(n = nets; *n != NULL; n++) {
 		cell[0] = pcb_strdup((*n)->name);
@@ -134,7 +134,7 @@ static void netlist_data2dlg(netlist_ctx_t *ctx)
 	char *curnetname = netlist_data2dlg_netlist(ctx);
 
 	if (curnetname != NULL)
-		curnet = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], curnetname, 0);
+		curnet = pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_EDITED], curnetname, 0);
 	free(curnetname);
 	netlist_data2dlg_connlist(ctx, curnet);
 }
@@ -147,7 +147,7 @@ static void netlist_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb
 
 	if (row != NULL)
 		netname = row->cell[0];
-	netlist_data2dlg_connlist(ctx, pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], netname, 0));
+	netlist_data2dlg_connlist(ctx, pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_EDITED], netname, 0));
 	pcb_event(PCB_EVENT_GUI_LEAD_USER, "cci", 0, 0, 0);
 }
 
@@ -238,8 +238,8 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 
 	bb_prv.X1 = 0;
 	bb_prv.Y1 = 0;
-	bb_prv.X2 = PCB->MaxWidth;
-	bb_prv.Y2 = PCB->MaxHeight;
+	bb_prv.X2 = pcb->MaxWidth;
+	bb_prv.Y2 = pcb->MaxHeight;
 	netlist_ctx.pcb = pcb;
 
 	PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* layout */
