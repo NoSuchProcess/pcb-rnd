@@ -59,6 +59,7 @@ static void pcb_lead_user_to_location(pcb_coord_t x, pcb_coord_t y, pcb_bool ena
 
 	if (lead) {
 		pcb_gui->stop_timer(lead_timer);
+		lead = enabled;
 		pcb_gui->invalidate_all();
 	}
 
