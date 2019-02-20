@@ -50,6 +50,8 @@
 
 #include "actions.h"
 
+#include "brave.h"
+
 static const char *ghid_act_cookie = "gtk HID actions";
 
 static const char pcb_acts_AdjustStyle[] = "AdjustStyle()\n";
@@ -128,7 +130,10 @@ static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_gtk_dlg_log_show(raise);
 	}
 	else if (strcmp(a, "4") == 0 || pcb_strcasecmp(a, "Netlist") == 0) {
-		pcb_gtk_dlg_netlist_show(&ghidgui->common, raise);
+		if (pcb_brave & PCB_BRAVE_NETLIST2)
+			pcb_actionl("NetlistDialog", NULL);
+		else
+			pcb_gtk_dlg_netlist_show(&ghidgui->common, raise);
 	}
 	else if (strcmp(a, "5") == 0 || pcb_strcasecmp(a, "Preferences") == 0) {
 		pcb_message(PCB_MSG_ERROR, "Please use the new drc preferences() action instead\n");
