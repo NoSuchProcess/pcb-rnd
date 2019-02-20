@@ -24,6 +24,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include "config.h"
+
 #include <stdlib.h>
 #include "plugins.h"
 #include "conf_hid.h"
