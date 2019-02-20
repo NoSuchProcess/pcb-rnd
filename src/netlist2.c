@@ -252,14 +252,17 @@ int pcb_net_del(pcb_netlist_t *nl, const char *netname)
 
 /* crawl from a single terminal; "first" sould be a pointer to an int
    initialized to 0. Returns number of objects found. */
-static pcb_cardinal_t pcb_net_term_crawl(const pcb_board_t *pcb, pcb_net_term_t *term, pcb_find_t *fctx, int *first)
+static pcb_cardinal_t pcb_net_term_crawl(const pcb_board_t *pcb, pcb_net_term_t *term, pcb_find_t *fctx, int *first, pcb_cardinal_t *missing)
 {
 	pcb_any_obj_t *o;
 
 /* there can be multiple terminals with the same ID, but it is enough to run find from the first: find.c will consider them all */
 	o = pcb_term_find_name(pcb, pcb->Data, PCB_LYT_COPPER, term->refdes, term->term, 0, NULL, NULL);
-	if (o == NULL)
+	if (o == NULL) {
+		if (missing != NULL)
+			(*missing)++;
 		return 0;
+	}
 
 	if ((*first) == 0) {
 		*first = 1;
@@ -276,7 +279,7 @@ typedef struct {
 	const pcb_board_t *pcb;
 	pcb_net_t *current_net;
 	htsp_t found;
-	pcb_cardinal_t changed;
+	pcb_cardinal_t changed, missing;
 } short_ctx_t;
 
 static void short_ctx_init(short_ctx_t *sctx, const pcb_board_t *pcb, pcb_net_t *net)
@@ -284,6 +287,7 @@ static void short_ctx_init(short_ctx_t *sctx, const pcb_board_t *pcb, pcb_net_t 
 	sctx->pcb = pcb;
 	sctx->current_net = net;
 	sctx->changed = 0;
+	sctx->missing = 0;
 	htsp_init(&sctx->found, strhash, strkeyeq);
 }
 
@@ -402,7 +406,7 @@ pcb_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned lon
 	fctx.found_cb = net_short_check;
 
 	for(t = pcb_termlist_first(&net->conns), n = 0; t != NULL; t = pcb_termlist_next(t), n++) {
-		res += pcb_net_term_crawl(pcb, t, &fctx, &first);
+		res += pcb_net_term_crawl(pcb, t, &fctx, &first, NULL);
 	}
 
 	pcb_find_free(&fctx);
@@ -502,7 +506,7 @@ static pcb_cardinal_t pcb_net_add_rats_(short_ctx_t *sctx, pcb_rat_accuracy_t ac
 	   objects of each subnet is collected on a vtp0_t; object-lists per submnet
 	   is saved in variable "subnets" */
 	for(t = pcb_termlist_first(&sctx->current_net->conns), n = 0; t != NULL; t = pcb_termlist_next(t), n++) {
-		r = pcb_net_term_crawl(sctx->pcb, t, &fctx, &first);
+		r = pcb_net_term_crawl(sctx->pcb, t, &fctx, &first, &sctx->missing);
 		if (r > 0) {
 			vtp0_t *objs = malloc(sizeof(vtp0_t));
 			memcpy(objs, &fctx.found, sizeof(vtp0_t));
@@ -551,6 +555,7 @@ static pcb_cardinal_t pcb_net_add_rats_(short_ctx_t *sctx, pcb_rat_accuracy_t ac
 			   no connection found between any undone subnet to any done subnet
 			   found, so some subnets will remain disconnected (there is no point
 			   in looping more, this won't improve) */
+			sctx->missing++;
 			break;
 		}
 
@@ -558,13 +563,15 @@ static pcb_cardinal_t pcb_net_add_rats_(short_ctx_t *sctx, pcb_rat_accuracy_t ac
 		line = pcb_rat_new(sctx->pcb->Data, -1,
 			best->o1x, best->o1y, best->o2x, best->o2y, best->o1g, best->o2g,
 			conf_core.appearance.rat_thickness, pcb_no_flags());
-		if (line  != NULL) {
+		if (line != NULL) {
 			if (best->dist2 == 0)
 				PCB_FLAG_SET(PCB_FLAG_VIA, line);
 			pcb_undo_add_obj_to_create(PCB_OBJ_RAT, line, line, line);
 			pcb_rat_invalidate_draw(line);
 			drawn++;
 		}
+		else
+			sctx->missing++;
 		done[bestu] = 1;
 	}
 
@@ -600,6 +607,16 @@ pcb_cardinal_t pcb_net_add_all_rats(const pcb_board_t *pcb, pcb_rat_accuracy_t a
 	for(e = htsp_first(&pcb->netlist[PCB_NETLIST_EDITED]); e != NULL; e = htsp_next(&pcb->netlist[PCB_NETLIST_EDITED], e)) {
 		sctx.current_net = (pcb_net_t *)e->value;
 		drawn += pcb_net_add_rats_(&sctx, acc);
+	}
+
+	if (acc & PCB_RATACC_INFO) {
+		long rem = ratlist_length(&pcb->Data->Rat);
+		if (rem > 0)
+			pcb_message(PCB_MSG_INFO, "%d rat line%s remaining\n", rem, rem > 1 ? "s" : "");
+		else if (sctx.missing > 0)
+			pcb_message(PCB_MSG_WARNING, "Nothing more to add, but there are\neither rat-lines in the layout, disabled nets\nin the net-list, or missing components\n");
+		else
+			pcb_message(PCB_MSG_INFO, "Congratulations!!\n" "The layout is complete and has no shorted nets.\n");
 	}
 
 	short_ctx_uninit(&sctx);
@@ -849,7 +866,7 @@ pcb_cardinal_t pcb_net_ripup(pcb_board_t *pcb, pcb_net_t *net)
 	fctx.only_mark_rats = 1; /* do not trust rats, but do mark them */
 
 	for(t = pcb_termlist_first(&net->conns), n = 0; t != NULL; t = pcb_termlist_next(t), n++)
-		pcb_net_term_crawl(pcb, t, &fctx, &first);
+		pcb_net_term_crawl(pcb, t, &fctx, &first, NULL);
 
 	pcb_undo_save_serial();
 	pcb_draw_inhibit_inc();
