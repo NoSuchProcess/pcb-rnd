@@ -31,6 +31,7 @@ const char *dlg_netlist_cookie = "netlist dialog";
 
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
+	pcb_board_t *pcb;
 	int wnetlist, wprev, wtermlist;
 	int wsel, wunsel, wfind, wunfind, wrats, wnorats, wripup, waddrats;
 	int active; /* already open - allow only one instance */
@@ -43,6 +44,7 @@ static void netlist_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	netlist_ctx_t *ctx = caller_data;
 	PCB_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(netlist_ctx_t));
+	pcb_event(PCB_EVENT_GUI_LEAD_USER, "cci", 0, 0, 0);
 }
 
 /* returns allocated net name for the currently selected net */
@@ -146,8 +148,33 @@ static void netlist_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb
 	if (row != NULL)
 		netname = row->cell[0];
 	netlist_data2dlg_connlist(ctx, pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], netname, 0));
+	pcb_event(PCB_EVENT_GUI_LEAD_USER, "cci", 0, 0, 0);
 }
 
+static void termlist_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+{
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	netlist_ctx_t *ctx= tree->user_ctx;
+	char *refdes, *term;
+	pcb_any_obj_t *obj;
+
+	pcb_event(PCB_EVENT_GUI_LEAD_USER, "cci", 0, 0, 0);
+	if (row == NULL)
+		return;
+	refdes = pcb_strdup(row->cell[0]);
+	term = strchr(refdes, '-');
+	if (term != NULL) {
+		*term = '\0';
+		term++;
+		obj = pcb_term_find_name(ctx->pcb, ctx->pcb->Data, PCB_LYT_COPPER, refdes, term, 0, NULL, NULL);
+		if (obj != NULL) {
+			pcb_coord_t x, y;
+			pcb_obj_center(obj, &x, &y);
+			pcb_event(PCB_EVENT_GUI_LEAD_USER, "cci", x, y, 1);
+		}
+	}
+	free(refdes);
+}
 
 static void netlist_button_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
@@ -198,7 +225,7 @@ static pcb_bool netlist_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *pr
 	return pcb_false;
 }
 
-static void pcb_dlg_netlist(void)
+static void pcb_dlg_netlist(pcb_board_t *pcb)
 {
 	static const char *hdr[] = {"network", "FR", NULL};
 	static const char *hdr2[] = {"terminals", NULL};
@@ -213,6 +240,7 @@ static void pcb_dlg_netlist(void)
 	bb_prv.Y1 = 0;
 	bb_prv.X2 = PCB->MaxWidth;
 	bb_prv.Y2 = PCB->MaxHeight;
+	netlist_ctx.pcb = pcb;
 
 	PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* layout */
 		PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL);
@@ -245,6 +273,8 @@ static void pcb_dlg_netlist(void)
 						PCB_DAD_TREE(netlist_ctx.dlg, 1, 0, hdr2);
 							PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL);
 							netlist_ctx.wtermlist = PCB_DAD_CURRENT(netlist_ctx.dlg);
+							PCB_DAD_TREE_SET_CB(netlist_ctx.dlg, selected_cb, termlist_row_selected);
+							PCB_DAD_TREE_SET_CB(netlist_ctx.dlg, ctx, &netlist_ctx);
 					PCB_DAD_END(netlist_ctx.dlg);
 				PCB_DAD_END(netlist_ctx.dlg);
 			PCB_DAD_END(netlist_ctx.dlg);
@@ -309,7 +339,7 @@ static const char pcb_acts_NetlistDialog[] = "NetlistDialog()\n";
 static const char pcb_acth_NetlistDialog[] = "Open the netlist dialog.";
 static fgw_error_t pcb_act_NetlistDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_dlg_netlist();
+	pcb_dlg_netlist(PCB);
 	PCB_ACT_IRES(0);
 	return 0;
 }
