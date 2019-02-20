@@ -68,8 +68,6 @@ typedef struct hid_gc_s {
 	gint sketch_seq;
 } hid_gc_s;
 
-static void draw_lead_user(render_priv_t *priv_);
-
 static const gchar *get_color_name(pcb_gtk_color_t * color)
 {
 	static char tmp[16];
@@ -1152,8 +1150,6 @@ static void redraw_region(GdkRectangle * rect)
 	if (priv->mark_invalidate_depth == 0)
 		pcb_draw_mark(0);
 
-	draw_lead_user(priv);
-
 	priv->clip_rect_valid = pcb_false;
 
 	/* Rest the clip for bg_gc, as it is used outside this function */
@@ -1535,53 +1531,6 @@ static gboolean ghid_gdk_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev
 	gport->view.canvas_height = save_height;
 
 	return FALSE;
-}
-
-static void draw_lead_user(render_priv_t *priv)
-{
-	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
-	GtkStyle *style = gtk_widget_get_style(gport->drawing_area);
-	int i;
-	pcb_lead_user_t *lead_user = &gport->lead_user;
-	pcb_coord_t radius = lead_user->radius;
-	pcb_coord_t width = PCB_MM_TO_COORD(LEAD_USER_WIDTH);
-	pcb_coord_t separation = PCB_MM_TO_COORD(LEAD_USER_ARC_SEPARATION);
-	static GdkGC *lead_gc = NULL;
-	static GdkColormap *colormap = NULL;
-	GdkColor lead_color;
-
-	if (!lead_user->lead_user)
-		return;
-
-	if (colormap == NULL)
-		colormap = gtk_widget_get_colormap(gport->top_window);
-
-	if (lead_gc == NULL) {
-		lead_gc = gdk_gc_new(window);
-		gdk_gc_copy(lead_gc, style->white_gc);
-		gdk_gc_set_function(lead_gc, GDK_XOR);
-		gdk_gc_set_clip_origin(lead_gc, 0, 0);
-		lead_color.pixel = 0;
-		lead_color.red = (int) (65535. * LEAD_USER_COLOR_R);
-		lead_color.green = (int) (65535. * LEAD_USER_COLOR_G);
-		lead_color.blue = (int) (65535. * LEAD_USER_COLOR_B);
-		gdk_color_alloc(colormap, &lead_color);
-		gdk_gc_set_foreground(lead_gc, &lead_color);
-	}
-
-	set_clip(priv, lead_gc);
-	gdk_gc_set_line_attributes(lead_gc, Vz(width), GDK_LINE_SOLID, GDK_CAP_BUTT, GDK_JOIN_MITER);
-
-	/* arcs at the approrpriate radii */
-
-	for (i = 0; i < LEAD_USER_ARC_COUNT; i++, radius -= separation) {
-		if (radius < width)
-			radius += PCB_MM_TO_COORD(LEAD_USER_INITIAL_RADIUS);
-
-		/* Draw an arc at radius */
-		gdk_draw_arc(gport->render_priv->out_pixel, lead_gc, FALSE,
-								 Vx(lead_user->x - radius), Vy(lead_user->y - radius), Vz(2. * radius), Vz(2. * radius), 0, 360 * 64);
-	}
 }
 
 static GtkWidget *ghid_gdk_new_drawing_widget(pcb_gtk_common_t *common)

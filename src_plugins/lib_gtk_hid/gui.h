@@ -75,8 +75,6 @@ struct GHidPort_s {
 	pcb_gtk_mouse_t mouse;
 
 	pcb_gtk_view_t view;
-
-	pcb_lead_user_t lead_user;
 };
 
 extern GHidPort ghid_port, *gport;

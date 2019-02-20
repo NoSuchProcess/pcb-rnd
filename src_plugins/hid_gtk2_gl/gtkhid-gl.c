@@ -64,8 +64,6 @@ typedef struct hid_gc_s {
 	gchar xor;
 } hid_gc_s;
 
-static void draw_lead_user(render_priv_t *priv);
-
 void ghid_gl_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
 {
 	pcb_gui->coord_per_pix = gport->view.coord_per_px;
@@ -973,8 +971,6 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 
 	drawgl_flush();
 
-	draw_lead_user(priv);
-
 	ghid_gl_end_drawing(port);
 
 	return FALSE;
@@ -1114,37 +1110,6 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	gport->view.canvas_height = save_height;
 
 	return FALSE;
-}
-
-static void draw_lead_user(render_priv_t *priv)
-{
-	int i;
-	pcb_lead_user_t *lead_user = &gport->lead_user;
-	double radius = lead_user->radius;
-	double width = PCB_MM_TO_COORD(LEAD_USER_WIDTH);
-	double separation = PCB_MM_TO_COORD(LEAD_USER_ARC_SEPARATION);
-
-	if (!lead_user->lead_user)
-		return;
-
-	glPushAttrib(GL_CURRENT_BIT | GL_COLOR_BUFFER_BIT);
-	glEnable(GL_COLOR_LOGIC_OP);
-	glLogicOp(GL_XOR);
-	glColor3f(LEAD_USER_COLOR_R, LEAD_USER_COLOR_G, LEAD_USER_COLOR_B);
-
-
-	/* arcs at the appropriate radii */
-
-	for(i = 0; i < LEAD_USER_ARC_COUNT; i++, radius -= separation) {
-		if (radius < width)
-			radius += PCB_MM_TO_COORD(LEAD_USER_INITIAL_RADIUS);
-
-		/* Draw an arc at radius */
-		hidgl_draw_arc(width, lead_user->x, lead_user->y, radius, radius, 0, 360, gport->view.coord_per_px);
-	}
-
-	drawgl_flush();
-	glPopAttrib();
 }
 
 static GtkWidget *ghid_gl_new_drawing_widget(pcb_gtk_common_t *common)
