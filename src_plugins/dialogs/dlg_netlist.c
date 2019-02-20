@@ -33,6 +33,7 @@ const char *dlg_netlist_cookie = "netlist dialog";
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	pcb_board_t *pcb;
+	pcb_box_t bb_prv;
 	int wnetlist, wprev, wtermlist;
 	int wsel, wunsel, wfind, wunfind, wrats, wnorats, wripup, waddrats;
 	int active; /* already open - allow only one instance */
@@ -140,6 +141,12 @@ static void netlist_data2dlg(netlist_ctx_t *ctx)
 	netlist_data2dlg_connlist(ctx, curnet);
 }
 
+static void netlist_force_redraw(netlist_ctx_t *ctx)
+{
+	pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &ctx->bb_prv);
+}
+
+
 static void netlist_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
@@ -150,6 +157,7 @@ static void netlist_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb
 		netname = row->cell[0];
 	netlist_data2dlg_connlist(ctx, pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_EDITED], netname, 0));
 	pcb_event(PCB_EVENT_GUI_LEAD_USER, "cci", 0, 0, 0);
+	netlist_force_redraw(ctx);
 }
 
 static void termlist_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
@@ -275,16 +283,16 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 	static const char *hdr[] = {"network", "FR", NULL};
 	static const char *hdr2[] = {"terminals", NULL};
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
-	pcb_box_t bb_prv;
+
 	int wvpan;
 
 	if (netlist_ctx.active)
 		return; /* do not open another */
 
-	bb_prv.X1 = 0;
-	bb_prv.Y1 = 0;
-	bb_prv.X2 = pcb->MaxWidth;
-	bb_prv.Y2 = pcb->MaxHeight;
+	netlist_ctx.bb_prv.X1 = 0;
+	netlist_ctx.bb_prv.Y1 = 0;
+	netlist_ctx.bb_prv.X2 = pcb->MaxWidth;
+	netlist_ctx.bb_prv.Y2 = pcb->MaxHeight;
 	netlist_ctx.pcb = pcb;
 
 	PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* layout */
@@ -309,7 +317,7 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 					wvpan = PCB_DAD_CURRENT(netlist_ctx.dlg);
 					PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* right-top */
 						PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL);
-						PCB_DAD_PREVIEW(netlist_ctx.dlg, netlist_expose, netlist_mouse, NULL, &bb_prv, 100, 100, &netlist_ctx);
+						PCB_DAD_PREVIEW(netlist_ctx.dlg, netlist_expose, netlist_mouse, NULL, &netlist_ctx.bb_prv, 100, 100, &netlist_ctx);
 							PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL);
 							netlist_ctx.wprev = PCB_DAD_CURRENT(netlist_ctx.dlg);
 					PCB_DAD_END(netlist_ctx.dlg);
