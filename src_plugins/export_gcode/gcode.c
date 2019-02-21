@@ -53,7 +53,6 @@
 #include "error.h"
 #include "data.h"
 #include "draw.h"
-#include "rats.h"
 #include "hid_cam.h"
 #include "layer.h"
 #include "compat_misc.h"
