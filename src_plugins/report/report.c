@@ -44,7 +44,6 @@
 #include "drill.h"
 #include "error.h"
 #include "search.h"
-#include "rats.h"
 #include "rtree.h"
 #include "flag_str.h"
 #include "macro.h"
@@ -64,6 +63,9 @@
 #include "obj_pstk_inlines.h"
 #include "obj_subc_parent.h"
 #include "hid_dad.h"
+#include "netlist2.h"
+
+#include "rats.h"
 
 #include <genregex/regex_sei.h>
 
@@ -652,37 +654,28 @@ static int report_net_length(fgw_arg_t *res, int argc, fgw_arg_t *argv, int spli
 	}
 }
 
-
-static int report_net_length_by_name(const char *tofind)
+TODO("netlist: remove this with the old netlist code")
+static const char *old_find_net(const char *tofind, pcb_coord_t *x, pcb_coord_t *y)
 {
-	char *netname = 0;
-	pcb_coord_t length = 0;
-	int found = 0, i;
+	const char *netname = NULL;
+	re_sei_t *regex;
+	int use_re = 1;
+	int i;
 	pcb_lib_menu_t *net;
 	pcb_connection_t conn;
-	int net_found = 0;
-	int use_re = 0;
-	re_sei_t *regex;
-	pcb_coord_t x, y;
 
-	if (!PCB)
-		return 1;
-
-	if (!tofind)
-		return 1;
-
-	use_re = 1;
 	for (i = 0; i < PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN; i++) {
 		net = PCB->NetlistLib[PCB_NETLIST_EDITED].Menu + i;
 		if (pcb_strcasecmp(tofind, net->Name + 2) == 0)
 			use_re = 0;
 	}
+
 	if (use_re) {
 		regex = re_sei_comp(tofind);
 		if (re_sei_errno(regex) != 0) {
 			pcb_message(PCB_MSG_ERROR, _("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
 			re_sei_free(regex);
-			return 1;
+			return NULL;
 		}
 	}
 
@@ -699,28 +692,43 @@ static int report_net_length_by_name(const char *tofind)
 		}
 
 		if (pcb_rat_seek_pad(net->Entry, &conn, pcb_false)) {
-			pcb_obj_center(conn.obj, &x, &y);
+			pcb_obj_center(conn.obj, x, y);
 			if (conn.obj->term != NULL) {
-				net_found = 1;
+				netname = net->Name + 2;
 				break;
 			}
 		}
 	}
 
-	if (!net_found) {
+	if (use_re)
+		re_sei_free(regex);
+
+	return netname;
+}
+
+static int report_net_length_by_name(const char *tofind)
+{
+	const char *netname;
+	pcb_coord_t length = 0;
+	int found = 0;
+	pcb_coord_t x, y;
+
+	if (!PCB)
+		return 1;
+
+	if (!tofind)
+		return 1;
+
+	netname = old_find_net(tofind, &x, &y);
+	if (netname == NULL) {
 		pcb_message(PCB_MSG_ERROR, "No net named %s\n", tofind);
 		return 1;
 	}
 
-	if (use_re)
-		re_sei_free(regex);
-
 	length = xy_to_net_length(x, y, &found);
-	netname = net->Name + 2;
-
 
 	if (!found) {
-		if (net_found)
+		if (netname != NULL)
 			pcb_message(PCB_MSG_INFO, "Net found, but no lines or arcs were flagged.\n");
 		else
 			pcb_message(PCB_MSG_ERROR, "Net not found.\n");
