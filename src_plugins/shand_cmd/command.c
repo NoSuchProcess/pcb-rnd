@@ -40,7 +40,6 @@
 #include "data.h"
 #include "error.h"
 #include "plug_io.h"
-#include "rats.h"
 #include "plugins.h"
 #include "actions.h"
 #include "compat_misc.h"
