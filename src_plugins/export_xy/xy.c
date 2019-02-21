@@ -19,7 +19,7 @@
 #include "compat_misc.h"
 #include "obj_pstk_inlines.h"
 #include "layer.h"
-#include "netlist.h"
+#include "netlist2.h"
 #include "safe_fs.h"
 #include "macro.h"
 #include "xy_conf.h"
@@ -34,6 +34,9 @@
 #include "../src_plugins/export_xy/conf_internal.c"
 
 #define CONF_FN "export_xy.conf"
+
+#include "brave.h"
+#include "netlist.h"
 
 conf_xy_t conf_xy;
 
@@ -686,11 +689,19 @@ TODO("padstack: do not depend on this, just use the normal bbox and rotate that 
 
 		for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
 			if (o->term != NULL) {
-				pcb_lib_menu_t *m = pcb_netlist_find_net4term(PCB, o);
-				if (m != NULL)
-					ctx.pad_netname = m->Name;
-				else
-					ctx.pad_netname = NULL;
+				ctx.pad_netname = NULL;
+				if (pcb_brave & PCB_BRAVE_NETLIST2) {
+					pcb_net_term_t *t = pcb_net_find_by_obj(&PCB->netlist[PCB_NETLIST_EDITED], o);
+					if (t != NULL)
+						ctx.pad_netname = t->parent.net->name;
+				}
+				else {
+					pcb_lib_menu_t *m = pcb_netlist_find_net4term(PCB, o);
+					if ((m != NULL) && (m->Name != NULL))
+						ctx.pad_netname = m->Name+2;
+				}
+				if (ctx.pad_netname == NULL)
+					ctx.pad_netname = "";
 				fprintf_templ(fp, &ctx, templ->term);
 			}
 		}
