@@ -6,7 +6,7 @@
  *
  *  Specctra .dsn export HID
  *  Copyright (C) 2008, 2011 Josh Jordan, Dan McMahill, and Jared Casper
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -46,7 +46,6 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 #include "board.h"
 #include "data.h"
 #include "error.h"
-#include "rats.h"
 #include "buffer.h"
 #include "change.h"
 #include "draw.h"
