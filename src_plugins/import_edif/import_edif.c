@@ -32,7 +32,6 @@
 #include "data.h"
 #include "plugins.h"
 #include "plug_import.h"
-#include "netlist.h"
 #include "rats_patch.h"
 
 /* for pcb_sort_library only */

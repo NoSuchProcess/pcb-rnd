@@ -29,7 +29,6 @@
 #include "math_helper.h"
 #include "board.h"
 #include "data.h"
-#include "library.h"
 #include "error.h"
 #include "plugins.h"
 #include "compat_misc.h"
