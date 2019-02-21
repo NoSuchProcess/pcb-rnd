@@ -39,7 +39,6 @@
 #include "actions.h"
 
 #include "board.h"
-#include "netlist.h"
 #include "conf_core.h"
 #include "buffer.h"
 #include "hid.h"

@@ -40,7 +40,6 @@
 #include "data.h"
 #include "read.h"
 #include "layer.h"
-#include "netlist.h"
 #include "polygon.h"
 #include "misc_util.h" /* for distance calculations */
 #include "conf_core.h"
