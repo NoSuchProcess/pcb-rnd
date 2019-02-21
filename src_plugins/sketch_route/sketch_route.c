@@ -48,7 +48,7 @@
 #include "search.h"
 #include "tool.h"
 #include "layer_ui.h"
-#include "netlist.h"
+#include "netlist2.h"
 
 #include "sktypedefs.h"
 #include "wire.h"
@@ -792,7 +792,7 @@ static void tool_skline_adjust_attached_objects(void);
 
 struct {
 	pcb_any_obj_t *start_term;
-	pcb_lib_menu_t *net;
+	pcb_net_t *net;
 	vtp0_t lines;
 	point_t *start_p;
 	edgelist_node_t *visited_edges;
@@ -820,10 +820,13 @@ static void attached_path_next_line()
 static pcb_bool attached_path_init(pcb_layer_t *layer, pcb_any_obj_t *start_term)
 {
 	pcb_attached_line_t *start_l;
+	pcb_net_term_t *term;
+
+	term = pcb_net_find_by_obj(&PCB->netlist[PCB_NETLIST_EDITED], start_term);
 
 	attached_path.sketch = sketches_get_sketch_at_layer(layer);
 	attached_path.start_term = start_term;
-	attached_path.net = pcb_netlist_find_net4term(PCB, start_term);
+	attached_path.net = term != NULL ? term->parent.net : NULL;
 	if (check_net && attached_path.net == NULL)
 		return pcb_false;
 
@@ -967,18 +970,12 @@ next_triangle:
 
 static pcb_bool attached_path_finish(pcb_any_obj_t *end_term)
 {
-	pcb_subc_t *subc = pcb_obj_parent_subc(end_term);
 	pcb_bool net_valid = pcb_false;
-	int i;
 
 	if (check_net) {
-		if(end_term != attached_path.start_term && subc != NULL) {
-			char termname[128];
-			pcb_snprintf(termname, sizeof(termname), "%s-%s", subc->refdes, end_term->term);
-			for (i = 0; i < attached_path.net->EntryN; i++) {
-				if (strcmp(attached_path.net->Entry[i].ListEntry, termname) == 0)
-					net_valid = pcb_true;
-			}
+		if(end_term != attached_path.start_term) {
+			if (pcb_net_term_get_by_obj(attached_path.net, end_term) != NULL)
+				net_valid = pcb_true;
 		}
 	}
 	else
