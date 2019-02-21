@@ -32,7 +32,7 @@
 #include "layer.h"
 
 /* Returns the subc a global (on-data) object is part of (or NULL if not part of any subc) */
-PCB_INLINE pcb_subc_t *pcb_gobj_parent_subc(pcb_parenttype_t pt, pcb_parent_t *p)
+PCB_INLINE pcb_subc_t *pcb_gobj_parent_subc(pcb_parenttype_t pt, const pcb_parent_t *p)
 {
 	if (pt != PCB_PARENT_DATA)
 		return NULL;
@@ -46,7 +46,7 @@ PCB_INLINE pcb_subc_t *pcb_gobj_parent_subc(pcb_parenttype_t pt, pcb_parent_t *p
 }
 
 /* Returns the subc a layer object is part of (or NULL if not part of any subc) */
-PCB_INLINE pcb_subc_t *pcb_lobj_parent_subc(pcb_parenttype_t pt, pcb_parent_t *p)
+PCB_INLINE pcb_subc_t *pcb_lobj_parent_subc(pcb_parenttype_t pt, const pcb_parent_t *p)
 {
 	if (pt != PCB_PARENT_LAYER)
 		return NULL;
@@ -63,7 +63,7 @@ PCB_INLINE pcb_subc_t *pcb_lobj_parent_subc(pcb_parenttype_t pt, pcb_parent_t *p
 }
 
 /* Returns the subc an object is part of (or NULL if not part of any subc) */
-PCB_INLINE pcb_subc_t *pcb_obj_parent_subc(pcb_any_obj_t *obj)
+PCB_INLINE pcb_subc_t *pcb_obj_parent_subc(const pcb_any_obj_t *obj)
 {
 	switch(obj->type) {
 		case PCB_OBJ_PSTK:
