@@ -38,7 +38,6 @@
 #include "data.h"
 #include "read.h"
 #include "layer.h"
-#include "netlist.h"
 #include "polygon.h"
 #include "plug_footprint.h"
 #include "misc_util.h" /* for distance calculations */
@@ -1251,6 +1250,7 @@ static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree)
 	else {
 		return kicad_error(subtree, "missing net label in net descriptors.");
 	}
+TODO("we are not building the netlist in memory?")
 	return 0;
 }
 
