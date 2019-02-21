@@ -24,7 +24,6 @@
 #include "hid.h"
 #include "rtree.h"
 #include "undo.h"
-#include "rats.h"
 #include "polygon.h"
 #include "remove.h"
 #include "error.h"
