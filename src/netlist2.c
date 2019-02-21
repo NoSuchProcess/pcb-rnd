@@ -457,6 +457,22 @@ pcb_net_term_t *pcb_net_find_by_pinname(const pcb_netlist_t *nl, const char *pin
 	return t;
 }
 
+pcb_net_term_t *pcb_net_find_by_obj(const pcb_netlist_t *nl, const pcb_any_obj_t *obj)
+{
+	const pcb_subc_t *sc;
+
+	if (obj->term == NULL)
+		return NULL;
+
+	sc = pcb_obj_parent_subc(obj);
+	if (sc == NULL)
+		return NULL;
+
+	return pcb_net_find_by_refdes_term(nl, sc->refdes, obj->term);
+}
+
+
+
 static int netname_sort(const void *va, const void *vb)
 {
 	const pcb_net_t **a = (const pcb_net_t **)va;

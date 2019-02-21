@@ -106,6 +106,7 @@ pcb_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned lon
    separate refdes and terminal ID. */
 pcb_net_term_t *pcb_net_find_by_pinname(const pcb_netlist_t *nl, const char *pinname);
 pcb_net_term_t *pcb_net_find_by_refdes_term(const pcb_netlist_t *nl, const char *refdes, const char *term);
+pcb_net_term_t *pcb_net_find_by_obj(const pcb_netlist_t *nl, const pcb_any_obj_t *obj);
 
 /* Create an alphabetic sorted, NULL terminated array from the nets;
    the return value is valid until any change to nl and should be free'd
