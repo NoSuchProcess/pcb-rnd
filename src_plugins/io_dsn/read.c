@@ -44,10 +44,12 @@
 #include "conf_core.h"
 #include "math_helper.h"
 #include "actions.h"
-#include "netlist.h"
+#include "netlist2.h"
 #include "polygon_offs.h"
 
 #include "read.h"
+
+#include "netlist.h"
 
 typedef struct {
 	gsxl_dom_t dom;
@@ -1622,14 +1624,19 @@ static int dsn_parse_placement(dsn_read_t *ctx, gsxl_node_t *plr)
 static int dsn_parse_net(dsn_read_t *ctx, gsxl_node_t *nwr)
 {
 	char *s, *netname = nwr->children->str;
-	pcb_lib_menu_t *net;
+	pcb_net_t *net;
 
 	for(s = netname; *s != '\0'; s++)
 		if (!isalnum(*s) && (*s != '+') && (*s != '-'))
 			*s = '_';
 
-	net = pcb_netlist_lookup(0, netname, pcb_true);
-
+	TODO("netlist: remove with the old netlist code");
+	pcb_netlist_lookup(0, netname, pcb_true);
+	net = pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_INPUT], netname, 1);
+	if (net == NULL) {
+		pcb_message(PCB_MSG_ERROR, "can not create net: '%s' (at %ld:%ld) - subcircuits may be misplaced - please send the dsn file as a bugreport\n", netname, (long)nwr->children->line, (long)nwr->children->col);
+		return -1;
+	}
 	for(nwr = nwr->children->next; nwr != NULL; nwr = nwr->next) {
 		if (nwr->str == NULL)
 			continue;
