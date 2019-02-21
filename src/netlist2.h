@@ -81,6 +81,7 @@ void pcb_netlist_copy(pcb_board_t *pcb, pcb_netlist_t *dst, pcb_netlist_t *src);
 
 /* Look up (or allocate) a net by name within a netlist. Returns NULL on error */
 pcb_net_t *pcb_net_get(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname, pcb_bool alloc);
+pcb_net_t *pcb_net_get_regex(pcb_board_t *pcb, pcb_netlist_t *nl, const char *regex);
 
 
 /* Remove a net from a netlist by namel returns 0 on removal, -1 on error */

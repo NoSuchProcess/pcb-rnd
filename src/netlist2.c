@@ -27,6 +27,7 @@
 #include "config.h"
 #include <genht/htsp.h>
 #include <genht/hash.h>
+#include <genregex/regex_sei.h>
 #include <ctype.h>
 
 #include "board.h"
@@ -213,6 +214,28 @@ pcb_net_t *pcb_net_get(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname,
 
 	return NULL;
 }
+
+pcb_net_t *pcb_net_get_regex(pcb_board_t *pcb, pcb_netlist_t *nl, const char *rx)
+{
+	htsp_entry_t *e;
+	re_sei_t *regex;
+
+	regex = re_sei_comp(rx);
+	if (re_sei_errno(regex) != 0)
+		return NULL;
+
+	for(e = htsp_first(nl); e != NULL; e = htsp_next(nl, e)) {
+		pcb_net_t *net = e->value;
+		if (re_sei_exec(regex, net->name))
+			break;
+	}
+	re_sei_free(regex);
+
+	if (e == NULL)
+		return NULL;
+	return e->value;
+}
+
 
 void pcb_net_free_fields(pcb_net_t *net)
 {
