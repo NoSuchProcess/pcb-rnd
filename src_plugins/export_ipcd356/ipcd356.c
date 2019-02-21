@@ -35,7 +35,7 @@
 #include "safe_fs.h"
 #include "conf_core.h"
 #include "compat_misc.h"
-#include "netlist.h"
+#include "netlist2.h"
 #include "math_helper.h"
 #include "layer.h"
 #include "obj_arc.h"
@@ -51,6 +51,10 @@
 #include "hid_attrib.h"
 #include "hid_init.h"
 #include "plugins.h"
+
+
+#include "brave.h"
+#include "netlist.h"
 
 static const char *ipcd356_cookie = "ipcd356 exporter";
 
@@ -262,7 +266,6 @@ static void ipcd356_write_pstk(write_ctx_t *ctx, pcb_subc_t *subc, pcb_pstk_t *p
 	pcb_pstk_proto_t *proto;
 	pcb_pstk_shape_t *st, *sb;
 	pcb_pstk_tshape_t *tshp;
-	pcb_lib_menu_t *mn;
 
 	if (pstk->term == NULL)
 		return;
@@ -271,10 +274,16 @@ static void ipcd356_write_pstk(write_ctx_t *ctx, pcb_subc_t *subc, pcb_pstk_t *p
 	if (proto == NULL)
 		return;
 
-	mn = pcb_netlist_find_net4term(ctx->pcb, (pcb_any_obj_t *)pstk);
+	if (pcb_brave & PCB_BRAVE_NETLIST2) {
+		pcb_net_term_t *term = pcb_net_find_by_obj(&ctx->pcb->netlist[PCB_NETLIST_EDITED], (pcb_any_obj_t *)pstk);
+		t.netname = (term == NULL) ? "N/C" : term->parent.net->name;
+	}
+	else {
+		pcb_lib_menu_t *mn = pcb_netlist_find_net4term(ctx->pcb, (pcb_any_obj_t *)pstk);
+		t.netname = (mn == NULL) ? "N/C" : pcb_netlist_name(mn);
+	}
 
 	t.o = (pcb_any_obj_t *)pstk;
-	t.netname = (mn == NULL) ? "N/C" : pcb_netlist_name(mn);
 	t.refdes = subc->refdes;
 	t.term = pstk->term;
 	t.is_plated = proto->hplated;
@@ -301,7 +310,6 @@ static void ipcd356_write_pstk(write_ctx_t *ctx, pcb_subc_t *subc, pcb_pstk_t *p
 static int ipcd356_heavy(write_ctx_t *ctx, test_feature_t *t, pcb_subc_t *subc, pcb_layer_t *layer, pcb_any_obj_t *o)
 {
 	pcb_layer_type_t flg;
-	pcb_lib_menu_t *mn;
 
 	if (o->term == NULL)
 		return -1;
@@ -309,11 +317,18 @@ static int ipcd356_heavy(write_ctx_t *ctx, test_feature_t *t, pcb_subc_t *subc, 
 	if (!(flg & PCB_LYT_COPPER))
 		return -1;
 
-	mn = pcb_netlist_find_net4term(ctx->pcb, o);
-
 	memset(&t, 0, sizeof(t));
+
+	if (pcb_brave & PCB_BRAVE_NETLIST2) {
+		pcb_net_term_t *term = pcb_net_find_by_obj(&ctx->pcb->netlist[PCB_NETLIST_EDITED], (pcb_any_obj_t *)o);
+		t->netname = (term == NULL) ? "N/C" : term->parent.net->name;
+	}
+	else {
+		pcb_lib_menu_t *mn = pcb_netlist_find_net4term(ctx->pcb, (pcb_any_obj_t *)o);
+		t->netname = (mn == NULL) ? "N/C" : pcb_netlist_name(mn);
+	}
+
 	t->o = o;
-	t->netname = (mn == NULL) ? "N/C" : pcb_netlist_name(mn);
 	t->refdes = subc->refdes;
 	t->term = o->term;
 	t->access_top = (flg & PCB_LYT_TOP);
