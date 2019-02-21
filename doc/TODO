@@ -248,6 +248,7 @@
 - BUG: route.h is not self-contained, missing includes [report: Igor2]
 - BUG: pref: set role to user, add new library path -> it is saved in board! [report: aron]
 - BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
+- BUG: report: net length by xy_to_net_length() works from a single x,y startpoint, but what it a network is broken into multiple unconnected submnets? at least warn the user [report: Igor2]
 
 3. Long term ===============================================================================
 - BUG: draw a large padstack poly (as a subc term); put some vias (padtsacks) on top of it; with gdk and gl, after the 6th via some via rings will disappear [report: James]
