@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996,1997,1998,1999 Thomas Nau
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
  *
  *  This module, report.c, was written and is Copyright (C) 1997 harry eaton
  *
@@ -65,6 +65,7 @@
 #include "hid_dad.h"
 #include "netlist2.h"
 
+#include "brave.h"
 #include "rats.h"
 
 #include <genregex/regex_sei.h>
@@ -708,7 +709,8 @@ static const char *old_find_net(const char *tofind, pcb_coord_t *x, pcb_coord_t 
 
 static int report_net_length_by_name(const char *tofind)
 {
-	const char *netname;
+	const char *netname = NULL;
+	pcb_net_t *net;
 	pcb_coord_t length = 0;
 	int found = 0;
 	pcb_coord_t x, y;
@@ -719,7 +721,32 @@ static int report_net_length_by_name(const char *tofind)
 	if (!tofind)
 		return 1;
 
-	netname = old_find_net(tofind, &x, &y);
+	if (pcb_brave & PCB_BRAVE_NETLIST2) {
+		net = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], tofind, 0);
+		if (net == NULL)
+			net = pcb_net_get_regex(PCB, &PCB->netlist[PCB_NETLIST_EDITED], tofind);
+		if (net != NULL) {
+			pcb_net_term_t *term;
+			pcb_any_obj_t *obj = NULL;
+
+			netname = net->name;
+			term = pcb_termlist_first(&net->conns);
+			if (term == NULL) {
+				pcb_message(PCB_MSG_INFO, "Net found, but it has not terminals.\n");
+				return 1;
+			}
+
+			obj = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, term->refdes, term->term, 0, NULL, NULL);
+			if (obj == NULL) {
+				pcb_message(PCB_MSG_INFO, "Net found, but its terminal %s-%s is not on the board.\n", term->refdes, term->term);
+				return 1;
+			}
+			pcb_obj_center(obj, &x, &y);
+		}
+	}
+	else
+		netname = old_find_net(tofind, &x, &y);
+
 	if (netname == NULL) {
 		pcb_message(PCB_MSG_ERROR, "No net named %s\n", tofind);
 		return 1;
