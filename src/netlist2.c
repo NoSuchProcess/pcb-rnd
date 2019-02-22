@@ -298,13 +298,6 @@ static pcb_cardinal_t pcb_net_term_crawl(const pcb_board_t *pcb, pcb_net_term_t 
 	return pcb_find_from_obj_next(fctx, PCB->Data, o);
 }
 
-typedef struct {
-	const pcb_board_t *pcb;
-	pcb_net_t *current_net;
-	htsp_t found;
-	pcb_cardinal_t changed, missing;
-} short_ctx_t;
-
 static void short_ctx_init(short_ctx_t *sctx, const pcb_board_t *pcb, pcb_net_t *net)
 {
 	sctx->pcb = pcb;
@@ -522,12 +515,11 @@ pcb_net_t **pcb_netlist_sort(pcb_netlist_t *nl)
 
 #include "netlist_geo.c"
 
-static pcb_cardinal_t pcb_net_add_rats_(short_ctx_t *sctx, pcb_rat_accuracy_t acc)
+pcb_cardinal_t pcb_net_map_subnets(short_ctx_t *sctx, pcb_rat_accuracy_t acc, vtp0_t *subnets)
 {
 	pcb_find_t fctx;
 	pcb_net_term_t *t;
 	pcb_cardinal_t drawn = 0, r, n, s1, s2, su, sd;
-	vtp0_t subnets;
 	pcb_subnet_dist_t *connmx;
 	char *done;
 	int left, first = 0;
@@ -539,7 +531,6 @@ static pcb_cardinal_t pcb_net_add_rats_(short_ctx_t *sctx, pcb_rat_accuracy_t ac
 	fctx.list_found = 1;
 	fctx.user_data = sctx;
 	fctx.found_cb = net_short_check;
-	vtp0_init(&subnets);
 
 	/* each component of a desired network is called a submnet; already connected
 	   objects of each subnet is collected on a vtp0_t; object-lists per submnet
@@ -549,17 +540,17 @@ static pcb_cardinal_t pcb_net_add_rats_(short_ctx_t *sctx, pcb_rat_accuracy_t ac
 		if (r > 0) {
 			vtp0_t *objs = malloc(sizeof(vtp0_t));
 			memcpy(objs, &fctx.found, sizeof(vtp0_t));
-			vtp0_append(&subnets, objs);
+			vtp0_append(subnets, objs);
 			memset(&fctx.found, 0, sizeof(vtp0_t));
 		}
 	}
 
 	/* find the shortest connection between any two subnets and save the info
 	   in connmx */
-	connmx = calloc(sizeof(pcb_subnet_dist_t), vtp0_len(&subnets) * vtp0_len(&subnets));
-	for(s1 = 0; s1 < vtp0_len(&subnets); s1++) {
-		for(s2 = s1+1; s2 < vtp0_len(&subnets); s2++) {
-			connmx[s2 * vtp0_len(&subnets) + s1] = connmx[s1 * vtp0_len(&subnets) + s2] = pcb_subnet_dist(sctx->pcb, subnets.array[s1], subnets.array[s2], acc);
+	connmx = calloc(sizeof(pcb_subnet_dist_t), vtp0_len(subnets) * vtp0_len(subnets));
+	for(s1 = 0; s1 < vtp0_len(subnets); s1++) {
+		for(s2 = s1+1; s2 < vtp0_len(subnets); s2++) {
+			connmx[s2 * vtp0_len(subnets) + s1] = connmx[s1 * vtp0_len(subnets) + s2] = pcb_subnet_dist(sctx->pcb, subnets->array[s1], subnets->array[s2], acc);
 		}
 	}
 
@@ -567,17 +558,17 @@ static pcb_cardinal_t pcb_net_add_rats_(short_ctx_t *sctx, pcb_rat_accuracy_t ac
 	   subnets. done[subnet] is 1 if a subnet is already in the snowball.
 	   Use a greedy algorithm: mark the first subnet as dine, then always
 	   add the shortest from any 'undone' subnet to any 'done' */
-	done = calloc(vtp0_len(&subnets), 1);
+	done = calloc(vtp0_len(subnets), 1);
 	done[0] = 1;
-	for(left = vtp0_len(&subnets)-1; left > 0; left--) {
+	for(left = vtp0_len(subnets)-1; left > 0; left--) {
 		double best_dist = HUGE_VAL;
 		int bestu;
 		pcb_subnet_dist_t *best = NULL, *curr;
 
-		for(su = 1; su < vtp0_len(&subnets); su++) {
+		for(su = 1; su < vtp0_len(subnets); su++) {
 			if (done[su]) continue;
-			for(sd = 0; sd < vtp0_len(&subnets); sd++) {
-				curr = &connmx[su * vtp0_len(&subnets) + sd];
+			for(sd = 0; sd < vtp0_len(subnets); sd++) {
+				curr = &connmx[su * vtp0_len(subnets) + sd];
 				if ((done[sd]) && (curr->dist2 < best_dist)) {
 					bestu = su;
 					best_dist = curr->dist2;
@@ -615,22 +606,38 @@ static pcb_cardinal_t pcb_net_add_rats_(short_ctx_t *sctx, pcb_rat_accuracy_t ac
 	}
 
 	/* cleanup */
-	for(n = 0; n < vtp0_len(&subnets); n++)
-		vtp0_uninit(subnets.array[n]);
 	free(connmx);
 	free(done);
 	pcb_find_free(&fctx);
 	return drawn;
 }
 
+void pcb_net_reset_subnets(vtp0_t *subnets)
+{
+	pcb_cardinal_t n;
+	for(n = 0; n < vtp0_len(subnets); n++)
+		vtp0_uninit(subnets->array[n]);
+	subnets->used = 0;
+}
+
+void pcb_net_free_subnets(vtp0_t *subnets)
+{
+	pcb_net_reset_subnets(subnets);
+	vtp0_uninit(subnets);
+}
+
+
 pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_accuracy_t acc)
 {
 	pcb_cardinal_t res;
 	short_ctx_t sctx;
+	vtp0_t subnets;
 
+	vtp0_init(&subnets);
 	short_ctx_init(&sctx, pcb, net);
-	res = pcb_net_add_rats_(&sctx, acc);
+	res = pcb_net_map_subnets(&sctx, acc, &subnets);
 	short_ctx_uninit(&sctx);
+	pcb_net_free_subnets(&subnets);
 	return res;
 }
 
@@ -640,12 +647,16 @@ pcb_cardinal_t pcb_net_add_all_rats(const pcb_board_t *pcb, pcb_rat_accuracy_t a
 	htsp_entry_t *e;
 	pcb_cardinal_t drawn = 0;
 	short_ctx_t sctx;
+	vtp0_t subnets;
+
+	vtp0_init(&subnets);
 
 	short_ctx_init(&sctx, pcb, NULL);
 
 	for(e = htsp_first(&pcb->netlist[PCB_NETLIST_EDITED]); e != NULL; e = htsp_next(&pcb->netlist[PCB_NETLIST_EDITED], e)) {
 		sctx.current_net = (pcb_net_t *)e->value;
-		drawn += pcb_net_add_rats_(&sctx, acc);
+		drawn += pcb_net_map_subnets(&sctx, acc, &subnets);
+		pcb_net_reset_subnets(&subnets);
 	}
 
 	if (acc & PCB_RATACC_INFO) {
@@ -658,6 +669,7 @@ pcb_cardinal_t pcb_net_add_all_rats(const pcb_board_t *pcb, pcb_rat_accuracy_t a
 			pcb_message(PCB_MSG_INFO, "Congratulations!!\n" "The layout is complete and has no shorted nets.\n");
 	}
 
+	vtp0_uninit(&subnets);
 	short_ctx_uninit(&sctx);
 	return drawn;
 }

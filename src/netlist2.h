@@ -126,10 +126,28 @@ pcb_rat_t *pcb_net_create_by_rat_coords(pcb_board_t *pcb, pcb_coord_t x1, pcb_co
    Return the number of removals. */
 pcb_cardinal_t pcb_net_ripup(pcb_board_t *pcb, pcb_net_t *net);
 
-
 void pcb_netlist_changed(int force_unfreeze);
 
 pcb_bool pcb_net_name_valid(const char *netname);
+
+/*** subnet mapping ***/
+
+typedef struct {
+	const pcb_board_t *pcb;
+	pcb_net_t *current_net;
+	htsp_t found;
+	pcb_cardinal_t changed, missing;
+} short_ctx_t;
+
+/* Search and collect all subnets of a net, adding rat lines in between them.
+   Caller provided subnets is a vector of vtp0_t items that each contain
+   (pcb_any_obj_t *) pointers to subnet objects */
+pcb_cardinal_t pcb_net_map_subnets(short_ctx_t *sctx, pcb_rat_accuracy_t acc, vtp0_t *subnets);
+
+void pcb_net_reset_subnets(vtp0_t *subnets); /* clear the subnet list to zero items, but don't free the array ("malloc cache") */
+void pcb_net_free_subnets(vtp0_t *subnets);  /* same as reset but also free the array */
+
+
 
 /*** looping ***/
 
