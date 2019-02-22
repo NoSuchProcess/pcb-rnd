@@ -950,39 +950,36 @@ static void CreateRouteData_subc(routedata_t *rd, vtp0_t layergroupboxes[], pcb_
 static routebox_t *crd_add_line(routedata_t *rd, vtp0_t *layergroupboxes, pcb_layergrp_id_t group, pcb_any_obj_t *obj, int j, routebox_t **last_in_net, routebox_t **last_in_subnet)
 {
 	routebox_t *rb = NULL;
-						pcb_line_t *line = (pcb_line_t *) obj;
+	pcb_line_t *line = (pcb_line_t *) obj;
 
-
-						/* dice up non-straight lines into many tiny obstacles */
-						if (line->Point1.X != line->Point2.X && line->Point1.Y != line->Point2.Y) {
-							pcb_line_t fake_line = *line;
-							pcb_coord_t dx = (line->Point2.X - line->Point1.X);
-							pcb_coord_t dy = (line->Point2.Y - line->Point1.Y);
-							int segs = MAX(PCB_ABS(dx),
-														 PCB_ABS(dy)) / (4 * BLOAT(rd->styles[j]) + 1);
-							int qq;
-							segs = PCB_CLAMP(segs, 1, 32);	/* don't go too crazy */
-							dx /= segs;
-							dy /= segs;
-							for (qq = 0; qq < segs - 1; qq++) {
-								fake_line.Point2.X = fake_line.Point1.X + dx;
-								fake_line.Point2.Y = fake_line.Point1.Y + dy;
-								if (fake_line.Point2.X == line->Point2.X && fake_line.Point2.Y == line->Point2.Y)
-									break;
-								rb = AddLine(layergroupboxes, group, &fake_line, line, rd->styles[j]);
-								if (*last_in_subnet && rb != *last_in_subnet)
-									MergeNets(*last_in_subnet, rb, ORIGINAL);
-								if (*last_in_net && rb != *last_in_net)
-									MergeNets(*last_in_net, rb, NET);
-								*last_in_subnet = *last_in_net = rb;
-								fake_line.Point1 = fake_line.Point2;
-							}
-							fake_line.Point2 = line->Point2;
-							rb = AddLine(layergroupboxes, group, &fake_line, line, rd->styles[j]);
-						}
-						else {
-							rb = AddLine(layergroupboxes, group, line, line, rd->styles[j]);
-						}
+	/* dice up non-straight lines into many tiny obstacles */
+	if (line->Point1.X != line->Point2.X && line->Point1.Y != line->Point2.Y) {
+		pcb_line_t fake_line = *line;
+		pcb_coord_t dx = (line->Point2.X - line->Point1.X);
+		pcb_coord_t dy = (line->Point2.Y - line->Point1.Y);
+		int segs = MAX(PCB_ABS(dx), PCB_ABS(dy)) / (4 * BLOAT(rd->styles[j]) + 1);
+		int qq;
+		segs = PCB_CLAMP(segs, 1, 32); /* don't go too crazy */
+		dx /= segs;
+		dy /= segs;
+		for (qq = 0; qq < segs - 1; qq++) {
+			fake_line.Point2.X = fake_line.Point1.X + dx;
+			fake_line.Point2.Y = fake_line.Point1.Y + dy;
+			if (fake_line.Point2.X == line->Point2.X && fake_line.Point2.Y == line->Point2.Y)
+				break;
+			rb = AddLine(layergroupboxes, group, &fake_line, line, rd->styles[j]);
+			if (*last_in_subnet && rb != *last_in_subnet)
+				MergeNets(*last_in_subnet, rb, ORIGINAL);
+			if (*last_in_net && rb != *last_in_net)
+				MergeNets(*last_in_net, rb, NET);
+			*last_in_subnet = *last_in_net = rb;
+			fake_line.Point1 = fake_line.Point2;
+		}
+		fake_line.Point2 = line->Point2;
+		rb = AddLine(layergroupboxes, group, &fake_line, line, rd->styles[j]);
+	}
+	else
+		rb = AddLine(layergroupboxes, group, line, line, rd->styles[j]);
 
 	return rb;
 }
@@ -991,36 +988,36 @@ static routebox_t *crd_add_misc(routedata_t *rd, vtp0_t *layergroupboxes, pcb_an
 {
 	routebox_t *rb = NULL;
 
-						switch (obj->type) {
-						case PCB_OBJ_VOID: break;
-						case PCB_OBJ_PSTK:
-							rb = AddPstk(layergroupboxes, (pcb_pstk_t *)obj, rd->styles[j]);
-							break;
-						case PCB_OBJ_POLY:
-							{
-								pcb_poly_t *poly = (pcb_poly_t *)obj;
-								pcb_layer_t *layer = obj->parent.layer;
-								if (poly->term != NULL)
-									rb = AddTerm(layergroupboxes, obj, rd->styles[j]);
-								else
-									rb = AddPolygon(layergroupboxes, pcb_layer_id(PCB->Data, layer), poly, rd->styles[j]);
-							}
-							break;
-						case PCB_OBJ_LINE:
-						case PCB_OBJ_TEXT:
-						case PCB_OBJ_ARC:
-							if (obj->term != NULL)
-								rb = AddTerm(layergroupboxes, obj, rd->styles[j]);
-							break;
+	switch (obj->type) {
+	case PCB_OBJ_VOID: break;
+	case PCB_OBJ_PSTK:
+		rb = AddPstk(layergroupboxes, (pcb_pstk_t *)obj, rd->styles[j]);
+		break;
+	case PCB_OBJ_POLY:
+		{
+			pcb_poly_t *poly = (pcb_poly_t *)obj;
+			pcb_layer_t *layer = obj->parent.layer;
+			if (poly->term != NULL)
+				rb = AddTerm(layergroupboxes, obj, rd->styles[j]);
+			else
+				rb = AddPolygon(layergroupboxes, pcb_layer_id(PCB->Data, layer), poly, rd->styles[j]);
+		}
+		break;
+	case PCB_OBJ_LINE:
+	case PCB_OBJ_TEXT:
+	case PCB_OBJ_ARC:
+		if (obj->term != NULL)
+			rb = AddTerm(layergroupboxes, obj, rd->styles[j]);
+		break;
 
-						case PCB_OBJ_RAT:
-						case PCB_OBJ_SUBC:
-						case PCB_OBJ_NET:
-						case PCB_OBJ_NET_TERM:
-						case PCB_OBJ_LAYER:
-						case PCB_OBJ_LAYERGRP:
-							break; /* don't care about these */
-						}
+	case PCB_OBJ_RAT:
+	case PCB_OBJ_SUBC:
+	case PCB_OBJ_NET:
+	case PCB_OBJ_NET_TERM:
+	case PCB_OBJ_LAYER:
+	case PCB_OBJ_LAYERGRP:
+		break; /* don't care about these */
+	}
 	return rb;
 }
 
@@ -1051,7 +1048,7 @@ static void CreateRouteData_nets(routedata_t *rd, vtp0_t *layergroupboxes)
 				PCB_CONNECTION_LOOP(net);
 				{
 					routebox_t *rb = NULL;
-					PCB_FLAG_SET(PCB_FLAG_DRC, (pcb_pstk_t *) connection->obj);
+					PCB_FLAG_SET(PCB_FLAG_DRC, (pcb_pstk_t *)connection->obj);
 
 					if ((connection->obj->type == PCB_OBJ_LINE) && (connection->obj->term != NULL))
 						rb = AddTerm(layergroupboxes, connection->obj, rd->styles[j]);
