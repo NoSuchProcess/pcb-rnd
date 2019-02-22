@@ -139,6 +139,9 @@ typedef struct {
 	pcb_cardinal_t changed, missing;
 } pcb_short_ctx_t;
 
+void pcb_net_short_ctx_init(pcb_short_ctx_t *sctx, const pcb_board_t *pcb, pcb_net_t *net);
+
+
 /* Search and collect all subnets of a net, adding rat lines in between them.
    Caller provided subnets is a vector of vtp0_t items that each contain
    (pcb_any_obj_t *) pointers to subnet objects */

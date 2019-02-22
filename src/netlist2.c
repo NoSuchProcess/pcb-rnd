@@ -298,7 +298,7 @@ static pcb_cardinal_t pcb_net_term_crawl(const pcb_board_t *pcb, pcb_net_term_t 
 	return pcb_find_from_obj_next(fctx, PCB->Data, o);
 }
 
-static void short_ctx_init(pcb_short_ctx_t *sctx, const pcb_board_t *pcb, pcb_net_t *net)
+void pcb_net_short_ctx_init(pcb_short_ctx_t *sctx, const pcb_board_t *pcb, pcb_net_t *net)
 {
 	sctx->pcb = pcb;
 	sctx->current_net = net;
@@ -411,7 +411,7 @@ pcb_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned lon
 	pcb_short_ctx_t sctx;
 	int first = 0;
 
-	short_ctx_init(&sctx, pcb, net);
+	pcb_net_short_ctx_init(&sctx, pcb, net);
 
 	memset(&fctx, 0, sizeof(fctx));
 	fctx.flag_set = setf;
@@ -634,7 +634,7 @@ pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_
 	vtp0_t subnets;
 
 	vtp0_init(&subnets);
-	short_ctx_init(&sctx, pcb, net);
+	pcb_net_short_ctx_init(&sctx, pcb, net);
 	res = pcb_net_map_subnets(&sctx, acc, &subnets);
 	short_ctx_uninit(&sctx);
 	pcb_net_free_subnets(&subnets);
@@ -651,7 +651,7 @@ pcb_cardinal_t pcb_net_add_all_rats(const pcb_board_t *pcb, pcb_rat_accuracy_t a
 
 	vtp0_init(&subnets);
 
-	short_ctx_init(&sctx, pcb, NULL);
+	pcb_net_short_ctx_init(&sctx, pcb, NULL);
 
 	for(e = htsp_first(&pcb->netlist[PCB_NETLIST_EDITED]); e != NULL; e = htsp_next(&pcb->netlist[PCB_NETLIST_EDITED], e)) {
 		sctx.current_net = (pcb_net_t *)e->value;
