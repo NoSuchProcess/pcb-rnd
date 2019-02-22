@@ -812,11 +812,10 @@ int pcb_revert_pcb(void)
 /* ---------------------------------------------------------------------------
  * writes the quoted string created by another subroutine
  */
-void pcb_print_quoted_string(FILE * FP, const char *S)
+void pcb_print_quoted_string_(FILE * FP, const char *S)
 {
 	const char *start;
 
-	fputc('"', FP);
 	for(start = S; *S != '\0'; S++) {
 		if (*S == '"' || *S == '\\') {
 			if (start != S)
@@ -829,7 +828,12 @@ void pcb_print_quoted_string(FILE * FP, const char *S)
 
 	if (start != S)
 		fwrite(start, S-start, 1, FP);
+}
 
+void pcb_print_quoted_string(FILE *FP, const char *S)
+{
+	fputc('"', FP);
+	pcb_print_quoted_string_(FP, S);
 	fputc('"', FP);
 }
 
