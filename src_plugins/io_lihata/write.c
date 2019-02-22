@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016, 2017, 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016..2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -53,6 +53,9 @@
 #include "safe_fs.h"
 #include "thermal.h"
 #include "funchash_core.h"
+#include "netlist2.h"
+
+#include "brave.h"
 
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 
@@ -1252,44 +1255,80 @@ static lht_node_t *build_styles(vtroutestyle_t *styles)
 }
 
 /* Build a plain old netlist */
-static lht_node_t *build_netlist(pcb_lib_t *netlist, const char *name, int *nonempty)
+static lht_node_t *build_netlist(pcb_netlist_t *netlist, pcb_lib_t *old_netlist, const char *name, int *nonempty)
 {
 	lht_node_t *nl, *pl, *pn, *nnet;
 	pcb_cardinal_t n, p;
 
-	if (netlist->MenuN < 0)
+	if (netlist->used < 1)
+		return dummy_node(name);
+
+	if (old_netlist->MenuN < 0)
 		return dummy_node(name);
 
 	(*nonempty)++;
 
 	nl = lht_dom_node_alloc(LHT_LIST, name);
-	for (n = 0; n < netlist->MenuN; n++) {
-		pcb_lib_menu_t *menu = &netlist->Menu[n];
-		const char *netname = &menu->Name[2];
-		const char *style = menu->Style;
 
-		/* create the net hash */
-		nnet = lht_dom_node_alloc(LHT_HASH, netname);
+	if (pcb_brave & PCB_BRAVE_NETLIST2) {
+		htsp_entry_t *e;
+		for(e = htsp_first(netlist); e != NULL; e = htsp_next(netlist, e)) {
+			pcb_net_t *net = e->value;
+			pcb_net_term_t *t;
+			const char *netname = net->name;
+			const char *style = pcb_attribute_get(&net->Attributes, "style");
 
-		if (wrver >= 5)
-			lht_dom_hash_put(nnet, build_attributes(&menu->Attributes));
-		else if (menu->Attributes.Number > 0)
-			pcb_io_incompat_save(NULL, (pcb_any_obj_t *)menu, "net-attr", "Can not save netlist attributes in lihata formats below version 5.", "Either save in lihata v5 - or accept that attributes are not saved");
+			/* create the net hash */
+			nnet = lht_dom_node_alloc(LHT_HASH, netname);
 
-		pl = lht_dom_node_alloc(LHT_LIST, "conn");
-		lht_dom_hash_put(nnet, pl);
-		if ((style != NULL) && (*style == '\0')) style = NULL;
-		lht_dom_hash_put(nnet, build_text("style", style));
+			if (wrver >= 5)
+				lht_dom_hash_put(nnet, build_attributes(&net->Attributes));
+			else if (net->Attributes.Number > 0)
+				pcb_io_incompat_save(NULL, (pcb_any_obj_t *)net, "net-attr", "Can not save netlist attributes in lihata formats below version 5.", "Either save in lihata v5 - or accept that attributes are not saved");
 
-		/* grow the connection list */
-		for (p = 0; p < menu->EntryN; p++) {
-			pcb_lib_entry_t *entry = &menu->Entry[p];
-			const char *pin = entry->ListEntry;
-			pn = lht_dom_node_alloc(LHT_TEXT, "");
-			pn->data.text.value = pcb_strdup(pin);
-			lht_dom_list_append(pl, pn);
+			pl = lht_dom_node_alloc(LHT_LIST, "conn");
+			lht_dom_hash_put(nnet, pl);
+			if ((style != NULL) && (*style == '\0')) style = NULL;
+			lht_dom_hash_put(nnet, build_text("style", style));
+
+			/* grow the connection list */
+			for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
+				pn = lht_dom_node_alloc(LHT_TEXT, "");
+				pn->data.text.value = pcb_strdup_printf("%s-%s", t->refdes, t->term);
+				lht_dom_list_append(pl, pn);
+			}
+			lht_dom_list_append(nl, nnet);
 		}
-		lht_dom_list_append(nl, nnet);
+	}
+	else {
+		for (n = 0; n < old_netlist->MenuN; n++) {
+			pcb_lib_menu_t *menu = &old_netlist->Menu[n];
+			const char *netname = &menu->Name[2];
+			const char *style = menu->Style;
+
+			/* create the net hash */
+			nnet = lht_dom_node_alloc(LHT_HASH, netname);
+
+			if (wrver >= 5)
+				lht_dom_hash_put(nnet, build_attributes(&menu->Attributes));
+			else if (menu->Attributes.Number > 0)
+				pcb_io_incompat_save(NULL, (pcb_any_obj_t *)menu, "net-attr", "Can not save netlist attributes in lihata formats below version 5.", "Either save in lihata v5 - or accept that attributes are not saved");
+
+			pl = lht_dom_node_alloc(LHT_LIST, "conn");
+			lht_dom_hash_put(nnet, pl);
+			if ((style != NULL) && (*style == '\0')) style = NULL;
+			lht_dom_hash_put(nnet, build_text("style", style));
+
+			/* grow the connection list */
+			for (p = 0; p < menu->EntryN; p++) {
+				pcb_lib_entry_t *entry = &menu->Entry[p];
+				const char *pin = entry->ListEntry;
+				pn = lht_dom_node_alloc(LHT_TEXT, "");
+				pn->data.text.value = pcb_strdup(pin);
+				lht_dom_list_append(pl, pn);
+			}
+			lht_dom_list_append(nl, nnet);
+		}
 	}
 	return nl;
 }
@@ -1357,7 +1396,7 @@ static lht_node_t *build_net_patch(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, 
 }
 
 
-static lht_node_t *build_netlists(pcb_board_t *pcb, pcb_lib_t *netlists, pcb_ratspatch_line_t *pat, int num_netlists)
+static lht_node_t *build_netlists(pcb_board_t *pcb, pcb_netlist_t *netlists, pcb_lib_t *old_netlists, pcb_ratspatch_line_t *pat, int num_netlists)
 {
 	lht_node_t *nls;
 	int n, nonempty = 0;
@@ -1372,7 +1411,7 @@ static lht_node_t *build_netlists(pcb_board_t *pcb, pcb_lib_t *netlists, pcb_rat
 		if (n == PCB_NETLIST_EDITED)
 			nl = build_net_patch(pcb, pat, &nonempty);
 		else
-			nl = build_netlist(netlists+n, pcb_netlist_names[n], &nonempty);
+			nl = build_netlist(netlists+n, old_netlists+n, pcb_netlist_names[n], &nonempty);
 		lht_dom_hash_put(nls, nl);
 	}
 
@@ -1430,7 +1469,7 @@ static lht_doc_t *build_board(pcb_board_t *pcb)
 	lht_dom_hash_put(brd->root, build_attributes(&pcb->Attributes));
 	lht_dom_hash_put(brd->root, build_fontkit(&pcb->fontkit));
 	lht_dom_hash_put(brd->root, build_styles(&pcb->RouteStyle));
-	lht_dom_hash_put(brd->root, build_netlists(pcb, pcb->NetlistLib, pcb->NetlistPatches, PCB_NUM_NETLISTS));
+	lht_dom_hash_put(brd->root, build_netlists(pcb, pcb->netlist, pcb->NetlistLib, pcb->NetlistPatches, PCB_NUM_NETLISTS));
 	lht_dom_hash_put(brd->root, build_conf());
 	return brd;
 
