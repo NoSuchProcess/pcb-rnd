@@ -74,6 +74,7 @@
 #include "find.h"
 #include "heap.h"
 #include "rtree.h"
+#include "netlist2.h"
 #include "mtspace.h"
 #include "polygon.h"
 #include "remove.h"
@@ -1021,7 +1022,7 @@ static routebox_t *crd_add_misc(routedata_t *rd, vtp0_t *layergroupboxes, pcb_an
 	return rb;
 }
 
-static void CreateRouteData_nets(routedata_t *rd, vtp0_t *layergroupboxes)
+static void CreateRouteData_nets_old(routedata_t *rd, vtp0_t *layergroupboxes)
 {
 	pcb_netlist_list_t Nets;
 
@@ -1084,6 +1085,91 @@ static void CreateRouteData_nets(routedata_t *rd, vtp0_t *layergroupboxes)
 		rd->first_net = last_net;
 	}
 	pcb_netlist_list_free(&Nets);
+
+	/* reset all nets to "original" connectivity (which we just set) */
+	{
+		routebox_t *net;
+		LIST_LOOP(rd->first_net, different_net, net);
+		ResetSubnet(net);
+		PCB_END_LOOP;
+	}
+}
+
+static void CreateRouteData_subnet(routedata_t *rd, vtp0_t *layergroupboxes, vtp0_t *objs, routebox_t **last_in_net, int j)
+{
+	routebox_t *last_in_subnet = NULL;
+	size_t oi;
+
+	for(oi = 0; oi < vtp0_len(objs); oi++) {
+		routebox_t *rb = NULL;
+		pcb_any_obj_t *obj = objs->array[oi];
+
+		if (obj->type == PCB_OBJ_RAT)
+			continue;
+
+		PCB_FLAG_SET(PCB_FLAG_DRC, obj);
+
+		if ((obj->type == PCB_OBJ_LINE) && (obj->term != NULL))
+			rb = AddTerm(layergroupboxes, obj, rd->styles[j]);
+		else if (obj->type == PCB_OBJ_LINE) {
+			pcb_layer_t *layer = pcb_layer_get_real(obj->parent.layer);
+			pcb_layergrp_id_t group = layer->meta.real.grp;
+			rb = crd_add_line(rd, layergroupboxes, group, obj, j, last_in_net, &last_in_subnet);
+		}
+		else
+			rb = crd_add_misc(rd, layergroupboxes, obj, j);
+
+		assert(rb);
+
+		/* update circular connectivity lists */
+		if (last_in_subnet && rb != last_in_subnet)
+			MergeNets(last_in_subnet, rb, ORIGINAL);
+		if (*last_in_net && rb != *last_in_net)
+			MergeNets(*last_in_net, rb, NET);
+		last_in_subnet = *last_in_net = rb;
+		rd->max_bloat = MAX(rd->max_bloat, BLOAT(rb->style));
+		rd->max_keep = MAX(rd->max_keep, rb->style->Clearance);
+	}
+}
+
+static void CreateRouteData_nets(routedata_t *rd, vtp0_t *layergroupboxes)
+{
+	htsp_entry_t *e;
+	pcb_short_ctx_t sctx;
+	vtp0_t subnets;
+	routebox_t *last_net = NULL;
+
+	vtp0_init(&subnets);
+	pcb_net_short_ctx_init(&sctx, PCB, NULL);
+
+	for(e = htsp_first(&PCB->netlist[PCB_NETLIST_EDITED]); e != NULL; e = htsp_next(&PCB->netlist[PCB_NETLIST_EDITED], e)) {
+		size_t sni;
+		routebox_t *last_in_net = NULL;
+		pcb_net_t *net = e->value;
+		const char *style = pcb_attribute_get(&net->Attributes, "style");
+		int j;
+
+		if (style == NULL)
+			style = "";
+
+		for (j = 0; j < rd->max_styles; j++)
+			if (strcmp(style, rd->styles[j]->name) == 0)
+				break;
+
+		sctx.current_net = (pcb_net_t *)e->value;
+		pcb_net_map_subnets(&sctx, PCB_RATACC_ONLY_MANHATTAN, &subnets);
+		for(sni = 0; sni < vtp0_len(&subnets); sni++)
+			CreateRouteData_subnet(rd, layergroupboxes, subnets.array[sni], &last_in_net, j);
+		pcb_net_reset_subnets(&subnets);
+
+		if (last_net && last_in_net)
+			MergeNets(last_net, last_in_net, DIFFERENT_NET);
+		last_net = last_in_net;
+	}
+	rd->first_net = last_net;
+
+	vtp0_uninit(&subnets);
+	pcb_net_short_ctx_uninit(&sctx);
 
 	/* reset all nets to "original" connectivity (which we just set) */
 	{
@@ -1179,7 +1265,10 @@ static routedata_t *CreateRouteData()
 	usedGroup[front] = pcb_true;
 	usedGroup[back] = pcb_true;
 
-	CreateRouteData_nets(rd, layergroupboxes);
+	if (pcb_brave & PCB_BRAVE_NETLIST2)
+		CreateRouteData_nets(rd, layergroupboxes);
+	else
+		CreateRouteData_nets_old(rd, layergroupboxes);
 
 	/* subc-recursively add all obstacles */
 	CreateRouteData_subc(rd, layergroupboxes, PCB->Data);
