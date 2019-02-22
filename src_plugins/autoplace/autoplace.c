@@ -159,12 +159,39 @@ static void pcb_box_free(pcb_box_list_t *Boxlist)
 	}
 }
 
+/* Return a terminal's preferred layer group ID or -1 on error */
+static pcb_layergrp_id_t obj_layergrp(const pcb_any_obj_t *obj)
+{
+	pcb_layergrp_id_t SLayer = -1;
+	pcb_layer_t *layer;
+
+	switch (obj->type) {
+		case PCB_OBJ_PSTK:
+			pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &SLayer, 1);
+			return SLayer;  /* any layer will do */
+			break;
+
+		/* terminals on layer */
+		case PCB_OBJ_LINE:
+		case PCB_OBJ_ARC:
+		case PCB_OBJ_TEXT:
+		case PCB_OBJ_POLY:
+			layer = pcb_layer_get_real(obj->parent.layer);
+			if (layer != NULL)
+				return layer->meta.real.grp;
+			return SLayer;  /* any layer will do */
+		default:
+			pcb_message(PCB_MSG_ERROR, "Odd terminal type encountered in obj_layergrp()\n");
+	}
+	return -1;
+}
 
 /* ---------------------------------------------------------------------------
  * Update the X, Y and group position information stored in the NetList after
  * subcircuits have possibly been moved, rotated, flipped, etc.
  */
-static void UpdateXY(pcb_oldnetlist_t *Nets)
+TODO("netlist: remove this with the old netlist code")
+static void UpdateXY_old(pcb_oldnetlist_t *Nets)
 {
 	pcb_layergrp_id_t SLayer = -1, CLayer = -1;
 	pcb_cardinal_t i, j;
@@ -350,35 +377,75 @@ static double ComputeCost(pcb_oldnetlist_t *Nets, double T0, double T)
 	pcb_box_list_t bounds = { 0, 0, NULL };	/* save bounding rectangles here */
 	pcb_box_list_t solderside = { 0, 0, NULL };	/* solder side component bounds */
 	pcb_box_list_t componentside = { 0, 0, NULL };	/* component side bounds */
-	/* make sure the NetList have the proper updated X and Y coords */
-	UpdateXY(Nets);
-	/* wire length term.  approximated by half-perimeter of minimum
-	 * rectangle enclosing the net.  Note that we penalize vias in
-	 * all-SMD nets by making the rectangle a cube and weighting
-	 * the "layer height" of the net. */
-	for (i = 0; i < Nets->NetN; i++) {
-		pcb_oldnet_t *n = &Nets->Net[i];
-		if (n->ConnectionN < 2)
-			continue;									/* no cost to go nowhere */
-		minx = maxx = n->Connection[0].X;
-		miny = maxy = n->Connection[0].Y;
-		thegroup = n->Connection[0].group;
-		allpads = pstk_ispad((pcb_pstk_t *)n->Connection[0].obj);
-		allsameside = pcb_true;
-		for (j = 1; j < n->ConnectionN; j++) {
-			pcb_connection_t *c = &(n->Connection[j]);
-			PCB_MAKE_MIN(minx, c->X);
-			PCB_MAKE_MAX(maxx, c->X);
-			PCB_MAKE_MIN(miny, c->Y);
-			PCB_MAKE_MAX(maxy, c->Y);
-			if (!pstk_ispad((pcb_pstk_t *)c->obj))
-				allpads = pcb_false;
-			if (c->group != thegroup)
-				allsameside = pcb_false;
+
+
+	if (pcb_brave & PCB_BRAVE_NETLIST2) {
+		htsp_entry_t *e;
+		for(e = htsp_first(&PCB->netlist[PCB_NETLIST_EDITED]); e != NULL; e = htsp_next(&PCB->netlist[PCB_NETLIST_EDITED], e)) {
+			pcb_net_t *net = e->value;
+			pcb_net_term_t *t;
+			pcb_any_obj_t *obj;
+			if (pcb_termlist_length(&net->conns) < 2)
+				continue; /* no cost to go nowhere */
+
+			t = pcb_termlist_first(&net->conns);
+			obj = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, t->refdes, t->term, 0, NULL, NULL);
+			pcb_obj_center(obj, &maxx, &maxy);
+			minx = maxx;
+			miny = maxy;
+			thegroup = obj_layergrp(obj);
+			allpads = pstk_ispad((pcb_pstk_t *)obj);
+			allsameside = pcb_true;
+
+			for(t = pcb_termlist_next(t); t != NULL; t = pcb_termlist_next(t)) {
+				pcb_coord_t X, Y;
+				obj = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, t->refdes, t->term, 0, NULL, NULL);
+				pcb_obj_center(obj, &X, &Y);
+				PCB_MAKE_MIN(minx, X);
+				PCB_MAKE_MAX(maxx, X);
+				PCB_MAKE_MIN(miny, Y);
+				PCB_MAKE_MAX(maxy, Y);
+				if (!pstk_ispad((pcb_pstk_t *)obj))
+					allpads = pcb_false;
+				if (obj_layergrp(obj) != thegroup)
+					allsameside = pcb_false;
+			}
+			/* okay, add half-perimeter to cost! */
+			W += PCB_COORD_TO_MIL(maxx - minx) + PCB_COORD_TO_MIL(maxy - miny) + ((allpads && !allsameside) ? CostParameter.via_cost : 0);
 		}
-		/* okay, add half-perimeter to cost! */
-		W += PCB_COORD_TO_MIL(maxx - minx) + PCB_COORD_TO_MIL(maxy - miny) + ((allpads && !allsameside) ? CostParameter.via_cost : 0);
 	}
+	else {
+		/* make sure the NetList have the proper updated X and Y coords */
+		UpdateXY_old(Nets);
+		/* wire length term.  approximated by half-perimeter of minimum
+		 * rectangle enclosing the net.  Note that we penalize vias in
+		 * all-SMD nets by making the rectangle a cube and weighting
+		 * the "layer height" of the net. */
+		for (i = 0; i < Nets->NetN; i++) {
+			pcb_oldnet_t *n = &Nets->Net[i];
+			if (n->ConnectionN < 2)
+				continue;									/* no cost to go nowhere */
+			minx = maxx = n->Connection[0].X;
+			miny = maxy = n->Connection[0].Y;
+			thegroup = n->Connection[0].group;
+			allpads = pstk_ispad((pcb_pstk_t *)n->Connection[0].obj);
+			allsameside = pcb_true;
+			for (j = 1; j < n->ConnectionN; j++) {
+				pcb_connection_t *c = &(n->Connection[j]);
+				PCB_MAKE_MIN(minx, c->X);
+				PCB_MAKE_MAX(maxx, c->X);
+				PCB_MAKE_MIN(miny, c->Y);
+				PCB_MAKE_MAX(maxy, c->Y);
+				if (!pstk_ispad((pcb_pstk_t *)c->obj))
+					allpads = pcb_false;
+				if (c->group != thegroup)
+					allsameside = pcb_false;
+			}
+			/* okay, add half-perimeter to cost! */
+			W += PCB_COORD_TO_MIL(maxx - minx) + PCB_COORD_TO_MIL(maxy - miny) + ((allpads && !allsameside) ? CostParameter.via_cost : 0);
+		}
+	}
+
 	/* now compute penalty function Wc which is proportional to
 	 * amount of overlap and congestion. */
 	/* delta1 is congestion penalty function */
