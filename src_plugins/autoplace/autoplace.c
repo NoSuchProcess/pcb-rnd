@@ -61,7 +61,7 @@
 #include "rtree.h"
 #include "macro.h"
 #include "move.h"
-#include "rats.h"
+#include "netlist2.h"
 #include "remove.h"
 #include "rotate.h"
 #include "obj_rat.h"
@@ -71,6 +71,8 @@
 #include "data_it.h"
 #include <genvector/vtp0.h>
 
+#include "brave.h"
+#include "rats.h"
 
 #define EXPANDRECTXY(r1, x1, y1, x2, y2) { \
   r1->X1=MIN(r1->X1, x1); r1->Y1=MIN(r1->Y1, y1); \
@@ -373,14 +375,6 @@ static double ComputeCost(pcb_oldnetlist_t *Nets, double T0, double T)
 				allpads = pcb_false;
 			if (c->group != thegroup)
 				allsameside = pcb_false;
-		}
-		/* save bounding rectangle */
-		{
-			pcb_box_t *box = pcb_box_new(&bounds);
-			box->X1 = minx;
-			box->Y1 = miny;
-			box->X2 = maxx;
-			box->Y2 = maxy;
 		}
 		/* okay, add half-perimeter to cost! */
 		W += PCB_COORD_TO_MIL(maxx - minx) + PCB_COORD_TO_MIL(maxy - miny) + ((allpads && !allsameside) ? CostParameter.via_cost : 0);
