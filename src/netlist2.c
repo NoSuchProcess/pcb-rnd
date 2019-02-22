@@ -298,7 +298,7 @@ static pcb_cardinal_t pcb_net_term_crawl(const pcb_board_t *pcb, pcb_net_term_t 
 	return pcb_find_from_obj_next(fctx, PCB->Data, o);
 }
 
-static void short_ctx_init(short_ctx_t *sctx, const pcb_board_t *pcb, pcb_net_t *net)
+static void short_ctx_init(pcb_short_ctx_t *sctx, const pcb_board_t *pcb, pcb_net_t *net)
 {
 	sctx->pcb = pcb;
 	sctx->current_net = net;
@@ -307,7 +307,7 @@ static void short_ctx_init(short_ctx_t *sctx, const pcb_board_t *pcb, pcb_net_t 
 	htsp_init(&sctx->found, strhash, strkeyeq);
 }
 
-static void short_ctx_uninit(short_ctx_t *sctx)
+static void short_ctx_uninit(pcb_short_ctx_t *sctx)
 {
 	htsp_entry_t *e;
 	for(e = htsp_first(&sctx->found); e != NULL; e = htsp_next(&sctx->found, e))
@@ -321,7 +321,7 @@ static void short_ctx_uninit(short_ctx_t *sctx)
 
 /* Return 1 if net1-net2 (or net2-net1) is already seen as a short, return 0
    else. Save net1-net2 as seen. */
-static int short_ctx_is_dup(short_ctx_t *sctx, pcb_net_t *net1, pcb_net_t *net2)
+static int short_ctx_is_dup(pcb_short_ctx_t *sctx, pcb_net_t *net1, pcb_net_t *net2)
 {
 	char *key;
 	int order;
@@ -348,7 +348,7 @@ static int short_ctx_is_dup(short_ctx_t *sctx, pcb_net_t *net1, pcb_net_t *net2)
 
 /* Short circuit found between net and an offender object that should not
    be part of the net but is connected to the net */
-static void net_found_short(short_ctx_t *sctx, pcb_any_obj_t *offender)
+static void net_found_short(pcb_short_ctx_t *sctx, pcb_any_obj_t *offender)
 {
 	pcb_subc_t *sc = pcb_obj_parent_subc(offender);
 	int handled = 0;
@@ -386,7 +386,7 @@ static int net_short_check(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj
 {
 	if (new_obj->term != NULL) {
 		pcb_net_term_t *t;
-		short_ctx_t *sctx = fctx->user_data;
+		pcb_short_ctx_t *sctx = fctx->user_data;
 		pcb_subc_t *sc = pcb_obj_parent_subc(new_obj);
 		if (sc == NULL)
 			return 0;
@@ -408,7 +408,7 @@ pcb_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned lon
 	pcb_find_t fctx;
 	pcb_net_term_t *t;
 	pcb_cardinal_t res = 0, n;
-	short_ctx_t sctx;
+	pcb_short_ctx_t sctx;
 	int first = 0;
 
 	short_ctx_init(&sctx, pcb, net);
@@ -515,7 +515,7 @@ pcb_net_t **pcb_netlist_sort(pcb_netlist_t *nl)
 
 #include "netlist_geo.c"
 
-pcb_cardinal_t pcb_net_map_subnets(short_ctx_t *sctx, pcb_rat_accuracy_t acc, vtp0_t *subnets)
+pcb_cardinal_t pcb_net_map_subnets(pcb_short_ctx_t *sctx, pcb_rat_accuracy_t acc, vtp0_t *subnets)
 {
 	pcb_find_t fctx;
 	pcb_net_term_t *t;
@@ -630,7 +630,7 @@ void pcb_net_free_subnets(vtp0_t *subnets)
 pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_accuracy_t acc)
 {
 	pcb_cardinal_t res;
-	short_ctx_t sctx;
+	pcb_short_ctx_t sctx;
 	vtp0_t subnets;
 
 	vtp0_init(&subnets);
@@ -646,7 +646,7 @@ pcb_cardinal_t pcb_net_add_all_rats(const pcb_board_t *pcb, pcb_rat_accuracy_t a
 {
 	htsp_entry_t *e;
 	pcb_cardinal_t drawn = 0;
-	short_ctx_t sctx;
+	pcb_short_ctx_t sctx;
 	vtp0_t subnets;
 
 	vtp0_init(&subnets);

@@ -137,12 +137,12 @@ typedef struct {
 	pcb_net_t *current_net;
 	htsp_t found;
 	pcb_cardinal_t changed, missing;
-} short_ctx_t;
+} pcb_short_ctx_t;
 
 /* Search and collect all subnets of a net, adding rat lines in between them.
    Caller provided subnets is a vector of vtp0_t items that each contain
    (pcb_any_obj_t *) pointers to subnet objects */
-pcb_cardinal_t pcb_net_map_subnets(short_ctx_t *sctx, pcb_rat_accuracy_t acc, vtp0_t *subnets);
+pcb_cardinal_t pcb_net_map_subnets(pcb_short_ctx_t *sctx, pcb_rat_accuracy_t acc, vtp0_t *subnets);
 
 void pcb_net_reset_subnets(vtp0_t *subnets); /* clear the subnet list to zero items, but don't free the array ("malloc cache") */
 void pcb_net_free_subnets(vtp0_t *subnets);  /* same as reset but also free the array */
