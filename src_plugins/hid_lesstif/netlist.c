@@ -380,15 +380,15 @@ static fgw_error_t pcb_act_LesstifNetlistShow(fgw_arg_t *res, int argc, fgw_arg_
 		PCB_ACT_CONVARG(1, FGW_STR, LesstifNetlistShow, nn = argv[1].val.str);
 
 	if (argc == 2) {
-		pcb_lib_menu_t *net;
+		pcb_net_term_t *term;
 
-		net = pcb_netnode_to_netname(nn);
-		if (net) {
+		term = pcb_net_find_by_pinname(&PCB->netlist[PCB_NETLIST_EDITED], nn);
+		if (term != NULL) {
 			XmString item;
 			int vis = 0;
 
 			/* Select net first, 'True' causes pick_net() to be invoked */
-			item = XmStringCreatePCB(net->Name+2);
+			item = XmStringCreatePCB(term->parent.net->name);
 			XmListSelectItem(netlist_list, item, True);
 			XmListSetItem(netlist_list, item);
 			XmStringFree(item);
@@ -413,11 +413,11 @@ static fgw_error_t pcb_act_LesstifNetlistShow(fgw_arg_t *res, int argc, fgw_arg_
 		}
 		else {
 			/* Try the argument as a netname */
-			net = pcb_netname_to_netname(nn);
-			if (net) {
+			pcb_net_t *net = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], nn, 0);
+			if (net != NULL) {
 				XmString item;
 
-				item = XmStringCreatePCB(net->Name+2);
+				item = XmStringCreatePCB(net->name);
 				XmListSetItem(netlist_list, item);
 				XmListSelectItem(netlist_list, item, True);
 				XmStringFree(item);
