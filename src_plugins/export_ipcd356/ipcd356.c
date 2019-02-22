@@ -317,7 +317,7 @@ static int ipcd356_heavy(write_ctx_t *ctx, test_feature_t *t, pcb_subc_t *subc, 
 	if (!(flg & PCB_LYT_COPPER))
 		return -1;
 
-	memset(t, 0, sizeof(t));
+	memset(t, 0, sizeof(test_feature_t));
 
 	if (pcb_brave & PCB_BRAVE_NETLIST2) {
 		pcb_net_term_t *term = pcb_net_find_by_obj(&ctx->pcb->netlist[PCB_NETLIST_EDITED], (pcb_any_obj_t *)o);
