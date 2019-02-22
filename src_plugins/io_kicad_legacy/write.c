@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016,2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2018,2019 Tibor 'Igor2' Palinkas
  *  Copyright (C) 2016 Erich S. Heinzle
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -34,12 +34,15 @@
 #include "data.h"
 #include "write.h"
 #include "layer.h"
-#include "netlist.h"
+#include "netlist2.h"
 #include "macro.h"
 #include "obj_pstk_inlines.h"
 
 #include "../io_kicad/uniq_name.h"
 #include "src_plugins/lib_compat_help/pstk_compat.h"
+
+#include "brave.h"
+#include "netlist.h"
 
 
 /* layer "0" is first copper layer = "0. Back - Solder"
@@ -318,7 +321,7 @@ TODO("textrot: use the angle, not n*90 deg")
 }
 
 
-static int write_kicad_legacy_equipotential_netlists(FILE *FP, pcb_board_t *Layout)
+static int write_kicad_legacy_equipotential_netlists_old(FILE *FP, pcb_board_t *Layout)
 {
 	int n; /* code mostly lifted from netlist.c */
 	int netNumber;
@@ -345,7 +348,7 @@ static int write_kicad_legacy_equipotential_netlists(FILE *FP, pcb_board_t *Layo
 	return 0;
 }
 
-static void print_pstk_net(FILE *FP, pcb_board_t *Layout, pcb_pstk_t *ps)
+static void print_pstk_net_old(FILE *FP, pcb_board_t *Layout, pcb_pstk_t *ps)
 {
 	pcb_lib_menu_t *current_pin_menu = NULL;
 
@@ -353,6 +356,51 @@ static void print_pstk_net(FILE *FP, pcb_board_t *Layout, pcb_pstk_t *ps)
 		current_pin_menu = pcb_netlist_find_net4term(Layout, (pcb_any_obj_t *)ps);
 	if ((current_pin_menu != NULL) && (pcb_netlist_net_idx(Layout, current_pin_menu) != PCB_NETLIST_INVALID_INDEX))
 		fprintf(FP, "Ne %d \"%s\"\n", (1 + pcb_netlist_net_idx(Layout, current_pin_menu)), pcb_netlist_name(current_pin_menu)); /* library parts have empty net descriptors, in a .brd they don't */
+	else
+		fprintf(FP, "Ne 0 \"\"\n"); /* unconnected pads have zero for net */
+}
+
+static int write_kicad_legacy_equipotential_netlists(FILE *FP, pcb_board_t *Layout)
+{
+	htsp_entry_t *e;
+	pcb_cardinal_t netNumber = 0;
+
+	/* first we write a default netlist for the 0 net, which is for unconnected pads in pcbnew */
+	fputs("$EQUIPOT\n", FP);
+	fputs("Na 0 \"\"\n", FP);
+	fputs("St ~\n", FP);
+	fputs("$EndEQUIPOT\n", FP);
+
+	/* now we step through any available netlists and generate descriptors */
+	for(e = htsp_first(&Layout->netlist[PCB_NETLIST_EDITED]); e != NULL; e = htsp_next(&Layout->netlist[PCB_NETLIST_EDITED], e)) {
+		pcb_net_t *net = e->value;
+		pcb_net_term_t *t = pcb_termlist_first(&net->conns);
+		if (t != NULL) {
+			netNumber++;
+			fputs("$EQUIPOT\n", FP);
+			fprintf(FP, "Na %d \"%s\"\n", netNumber, net->name); /* netlist 0 was used for unconnected pads  */
+			fputs("St ~\n", FP);
+			fputs("$EndEQUIPOT\n", FP);
+			net->export_tmp = netNumber;
+		}
+		else
+			net->export_tmp = 0;
+	}
+	return 0;
+}
+
+static void print_pstk_net(FILE *FP, pcb_board_t *Layout, pcb_pstk_t *ps)
+{
+	pcb_net_term_t *term;
+	pcb_net_t *net = NULL;
+
+	if (Layout != NULL) {
+		term = pcb_net_find_by_obj(&Layout->netlist[PCB_NETLIST_EDITED], (const pcb_any_obj_t *)ps);
+		if (term != NULL)
+			net = term->parent.net;
+	}
+	if ((net != NULL) && (net->export_tmp != 0))
+		fprintf(FP, "Ne %d \"%s\"\n", net->export_tmp, net->name); /* library parts have empty net descriptors, in a .brd they don't */
 	else
 		fprintf(FP, "Ne 0 \"\"\n"); /* unconnected pads have zero for net */
 }
@@ -439,7 +487,10 @@ TODO(": figure how to turn off displaying these")
 
 			fputs("At STD N 00E0FFFF\n", FP); /* through hole STD pin, all copper layers */
 
-			print_pstk_net(FP, pcb, ps);
+			if (pcb_brave & PCB_BRAVE_NETLIST2)
+				print_pstk_net(FP, pcb, ps);
+			else
+				print_pstk_net_old(FP, pcb, ps);
 			fputs("$EndPAD\n", FP);
 		}
 		else if (pcb_pstk_export_compat_pad(ps, &x1, &y1, &x2, &y2, &thickness, &clearance, &mask, &square, &nopaste)) {
@@ -528,7 +579,10 @@ TODO("hshadow TODO")
 			else
 				fputs("At SMD N 00888000\n", FP);
 
-			print_pstk_net(FP, pcb, ps);
+			if (pcb_brave & PCB_BRAVE_NETLIST2)
+				print_pstk_net(FP, pcb, ps);
+			else
+				print_pstk_net_old(FP, pcb, ps);
 			fputs("$EndPAD\n", FP);
 		}
 		else
@@ -791,7 +845,11 @@ TODO(": se this from io_kicad, do not duplicate the code here")
 
 	fputs("$EndSETUP\n", FP);
 
-	write_kicad_legacy_equipotential_netlists(FP, PCB);
+	if (pcb_brave & PCB_BRAVE_NETLIST2)
+		write_kicad_legacy_equipotential_netlists(FP, PCB);
+	else
+		write_kicad_legacy_equipotential_netlists_old(FP, PCB);
+
 	write_kicad_legacy_layout_subcs(FP, PCB, PCB->Data, LayoutXOffset, LayoutYOffset);
 
 	/* we now need to map pcb's layer groups onto the kicad layer numbers */
