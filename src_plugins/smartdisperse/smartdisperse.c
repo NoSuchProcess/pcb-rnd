@@ -10,6 +10,7 @@
  *
  * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
  * Upgraded to subc by Tibor 'Igor2' Palinkas in 2017.
+ * Upgraded to the new netlist API by Tibor 'Igor2' Palinkas in 2019.
  *
  */
 
@@ -24,7 +25,7 @@
 #include "hid.h"
 #include "rtree.h"
 #include "undo.h"
-#include "rats.h"
+#include "netlist2.h"
 #include "error.h"
 #include "move.h"
 #include "draw.h"
@@ -33,7 +34,11 @@
 #include "compat_nls.h"
 #include "obj_subc.h"
 #include "obj_subc_parent.h"
+#include "obj_term.h"
 #include "funchash_core.h"
+
+#include "brave.h"
+#include "rats.h"
 
 #define GAP 10000
 static pcb_coord_t minx;
@@ -80,6 +85,18 @@ static void place_subc(pcb_subc_t *sc)
 		maxy = sc->BoundingBox.Y2;
 }
 
+
+/* Return true if term1,term2 would be the best order, else term2,term1, based on pad loc. */
+static int padorder(pcb_subc_t *parent1, pcb_any_obj_t *term1, pcb_subc_t *parent2, pcb_any_obj_t *term2)
+{
+	pcb_coord_t x1, x2;
+
+	x1 = term1->BoundingBox.X1 - (parent1->BoundingBox.X1 + parent1->BoundingBox.X2) / 2;
+	x2 = term2->BoundingBox.X1 - (parent2->BoundingBox.X1 + parent2->BoundingBox.X2) / 2;
+
+	return (x1 > 0) && (x2 < 0);
+}
+
 /* Return the X location of a connection's terminal within its subcircuit. */
 static pcb_coord_t padDX(pcb_connection_t * conn)
 {
@@ -90,7 +107,7 @@ static pcb_coord_t padDX(pcb_connection_t * conn)
 }
 
 /* Return true if ea,eb would be the best order, else eb,ea, based on pad loc. */
-static int padorder(pcb_connection_t * conna, pcb_connection_t * connb)
+static int padorder_old(pcb_connection_t * conna, pcb_connection_t * connb)
 {
 	pcb_coord_t dxa, dxb;
 
@@ -110,7 +127,130 @@ static int padorder(pcb_connection_t * conna, pcb_connection_t * connb)
 static const char pcb_acts_smartdisperse[] = "SmartDisperse([All|Selected])";
 static const char pcb_acth_smartdisperse[] = "Disperse subcircuits into clusters, by netlist connections";
 /* DOC: smartdisperse.html */
-static fgw_error_t pcb_act_smartdisperse(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t pcb_act_smartdisperse_new(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	int op = -2;
+	pcb_netlist_t *nl = &PCB->netlist[PCB_NETLIST_EDITED];
+	htpi_t visited;
+	int all;
+	htsp_entry_t *e;
+
+	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, smartdisperse, op = fgw_keyword(&argv[1]));
+
+	switch(op) {
+		case -2:
+		case F_All: all = 1; break;
+		case F_Selected: all = 0; break;
+		default:
+			PCB_ACT_FAIL(smartdisperse);
+	}
+
+	if (nl->used == 0) {
+		pcb_message(PCB_MSG_ERROR, "Can't use SmartDisperse because no netlist is loaded.\n");
+		PCB_ACT_IRES(1);
+		return 0;
+	}
+
+	/* remember which subcircuits we finish with */
+	htpi_init(&visited, ptrhash, ptrkeyeq);
+
+	PCB_SUBC_LOOP(PCB->Data);
+	{
+		if (!(all || PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc)))
+			set_visited(subc);
+	}
+	PCB_END_LOOP;
+
+	/* initialize variables for place() */
+	minx = GAP;
+	miny = GAP;
+	maxx = GAP;
+	maxy = GAP;
+
+	/* Pick nets with two connections.  This is the start of a more
+	 * elaborate algorithm to walk serial nets, but the datastructures
+	 * are too gross so I'm going with the 80% solution. */
+	for(e = htsp_first(nl); e != NULL; e = htsp_next(nl, e)) {
+		pcb_net_t *net = e->value;
+		pcb_net_term_t *t1, *t2;
+		pcb_any_obj_t *to1, *to2;
+		pcb_subc_t *ea, *eb;
+
+		if (pcb_termlist_length(&net->conns) != 2)
+			continue;
+
+		t1 = pcb_termlist_first(&net->conns);
+		t2 = pcb_termlist_next(t2);
+		to1 = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, t1->refdes, t1->term, 0, NULL, NULL);
+		to2 = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, t2->refdes, t2->term, 0, NULL, NULL);
+
+		if ((to1 == NULL) || (to2 == NULL))
+			continue;
+
+		ea = pcb_obj_parent_subc(to1);
+		eb = pcb_obj_parent_subc(to2);
+
+		/* place this pair if possible */
+		if (is_visited(ea) || is_visited(eb))
+			continue;
+		set_visited(ea);
+		set_visited(eb);
+
+		/* a weak attempt to get the linked pads side-by-side */
+		if (padorder(ea, to1, eb, to2)) {
+			place_subc(ea);
+			place_subc(eb);
+		}
+		else {
+			place_subc(eb);
+			place_subc(ea);
+		}
+	}
+
+	/* Place larger nets, still grouping by net */
+	for(e = htsp_first(nl); e != NULL; e = htsp_next(nl, e)) {
+		pcb_net_term_t *t;
+		pcb_net_t *net = e->value;
+
+		for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
+			pcb_subc_t *parent;
+			pcb_any_obj_t *to;
+
+			to = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, t->refdes, t->term, 0, NULL, NULL);
+			if (to == NULL)
+				continue;
+
+			parent = pcb_obj_parent_subc(to);
+			if (parent == NULL)
+				continue;
+
+			/* place this one if needed */
+			if (is_visited(parent))
+				continue;
+			set_visited(parent);
+			place_subc(parent);
+		}
+	}
+
+	/* Place up anything else */
+	PCB_SUBC_LOOP(PCB->Data);
+	{
+		if (!is_visited(subc))
+			place_subc(subc);
+	}
+	PCB_END_LOOP;
+
+	htpi_uninit(&visited);
+
+	pcb_undo_inc_serial();
+	pcb_redraw();
+	pcb_board_set_changed_flag(1);
+
+	PCB_ACT_IRES(0);
+	return 0;
+}
+
+static fgw_error_t pcb_act_smartdisperse_old(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op = -2;
 	pcb_oldnetlist_t *Nets;
@@ -176,7 +316,7 @@ static fgw_error_t pcb_act_smartdisperse(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		set_visited(eb);
 
 		/* a weak attempt to get the linked pads side-by-side */
-		if (padorder(conna, connb)) {
+		if (padorder_old(conna, connb)) {
 			place_subc(ea);
 			place_subc(eb);
 		}
@@ -226,6 +366,14 @@ static fgw_error_t pcb_act_smartdisperse(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	PCB_ACT_IRES(0);
 	return 0;
 }
+
+static fgw_error_t pcb_act_smartdisperse(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	if (pcb_brave & PCB_BRAVE_NETLIST2)
+		return pcb_act_smartdisperse_new(res, argc, argv);
+	return pcb_act_smartdisperse_old(res, argc, argv);
+}
+
 
 static pcb_action_t smartdisperse_action_list[] = {
 	{"smartdisperse", pcb_act_smartdisperse, pcb_acth_smartdisperse, pcb_acts_smartdisperse}
