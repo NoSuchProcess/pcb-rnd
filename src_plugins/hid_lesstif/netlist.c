@@ -11,7 +11,7 @@
 #include "data.h"
 
 #include "find.h"
-#include "rats.h"
+#include "netlist2.h"
 #include "select.h"
 #include "undo.h"
 #include "remove.h"
@@ -30,26 +30,47 @@ static Widget netlist_list, netnode_list;
 static XmString *netlist_strings = 0;
 static XmString *netnode_strings = 0;
 static int n_netnode_strings;
-static int last_pick = -1;
+static char *last_pick;
 
-static void pick_net(int pick)
+static void pick_net(XmString *name, int pick)
 {
-	pcb_lib_menu_t *menu = PCB->NetlistLib[PCB_NETLIST_EDITED].Menu + pick;
+	char *net_name = NULL;
+	pcb_net_t *net = NULL;
+	pcb_net_term_t *t;
 	int i;
 
-	if (pick == last_pick)
+	if (name != NULL) {
+		XmStringGetLtoR(name[0], XmFONTLIST_DEFAULT_TAG, &net_name);
+		net = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], net_name, 0);
+	}
+
+	if ((net_name != NULL) && (last_pick != NULL) && (strcmp(net_name, last_pick) == 0))
 		return;
-	last_pick = pick;
+	free(last_pick);
+	if (net_name == NULL)
+		last_pick = NULL;
+	else
+		last_pick = pcb_strdup(net_name);
 
 	if (netnode_strings)
 		free(netnode_strings);			/* XXX leaked all XmStrings??? */
-	n_netnode_strings = menu->EntryN;
-	netnode_strings = (XmString *) malloc(menu->EntryN * sizeof(XmString));
-	for (i = 0; i < menu->EntryN; i++)
-		netnode_strings[i] = XmStringCreatePCB(menu->Entry[i].ListEntry);
+
+	if (net == NULL)
+		return;
+
+	n_netnode_strings = pcb_termlist_length(&net->conns);
+	if (n_netnode_strings == 0)
+		return;
+
+	netnode_strings = (XmString *) malloc(n_netnode_strings * sizeof(XmString));
+	for(t = pcb_termlist_first(&net->conns), i = 0; t != NULL; t = pcb_termlist_next(t), i++) {
+		char *tmp = pcb_concat(t->refdes, "-", t->term, NULL);
+		netnode_strings[i] = XmStringCreatePCB(tmp);
+	}
+
 	stdarg_n = 0;
 	stdarg(XmNitems, netnode_strings);
-	stdarg(XmNitemCount, menu->EntryN);
+	stdarg(XmNitemCount, n_netnode_strings);
 	XtSetValues(netnode_list, stdarg_args, stdarg_n);
 }
 
@@ -69,7 +90,7 @@ TODO("netlist: do not change net name");
 		net->flag = 1;
 	}
 
-	str = XmStringCreatePCB(name);
+	str = XmStringCreatePCB(name+2);
 	XmListReplaceItemsPos(netlist_list, &str, 1, pos);
 	XmStringFree(str);
 	XmListSelectPos(netlist_list, pos, False);
@@ -78,7 +99,7 @@ TODO("netlist: do not change net name");
 static void netlist_extend(Widget w, void *v, XmListCallbackStruct * cbs)
 {
 	if (cbs->selected_item_count == 1)
-		pick_net(cbs->item_position - 1);
+		pick_net(cbs->selected_items, cbs->item_position - 1);
 }
 
 typedef void (*Std_Nbcb_Func) (pcb_lib_menu_t *, int);
@@ -89,7 +110,7 @@ static void nbcb_rat_on(pcb_lib_menu_t *net, int pos)
 	char *name = net->Name;
 	name[0] = ' ';
 	net->flag = 1;
-	str = XmStringCreatePCB(name);
+	str = XmStringCreatePCB(name+2);
 	XmListReplaceItemsPos(netlist_list, &str, 1, pos);
 	XmStringFree(str);
 }
@@ -101,7 +122,7 @@ static void nbcb_rat_off(pcb_lib_menu_t *net, int pos)
 TODO("netlist: do not change net name");
 	name[0] = '*';
 	net->flag = 0;
-	str = XmStringCreatePCB(name);
+	str = XmStringCreatePCB(name+3);
 	XmListReplaceItemsPos(netlist_list, &str, 1, pos);
 	XmStringFree(str);
 }
@@ -179,6 +200,9 @@ static void nbcb_ripup(Widget w, Std_Nbcb_Func v, XmPushButtonCallbackStruct * c
 
 static void netnode_browse(Widget w, XtPointer v, XmListCallbackStruct * cbs)
 {
+TODO("subc TODO")
+#if 0
+	pcb_net_t *net;
 	pcb_lib_menu_t *menu = PCB->NetlistLib[PCB_NETLIST_EDITED].Menu + last_pick;
 	const char *name = menu->Entry[cbs->item_position - 1].ListEntry;
 	char *ename, *pname;
@@ -191,8 +215,6 @@ static void netnode_browse(Widget w, XtPointer v, XmListCallbackStruct * cbs)
 	}
 	*pname++ = 0;
 
-TODO("subc TODO")
-#if 0
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		char *es = element->Name[PCB_ELEMNAME_IDX_REFDES].TextString;
@@ -220,8 +242,8 @@ TODO("subc TODO")
 		}
 	}
 	PCB_END_LOOP;
-#endif
 	free(ename);
+#endif
 }
 
 #define NLB_FORM ((Widget)(~0))
@@ -334,17 +356,18 @@ void LesstifNetlistChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 		return;
 	if (build_netlist_dialog())
 		return;
-	last_pick = -1;
+	free(last_pick);
+	last_pick = NULL;
 	if (netlist_strings)
 		free(netlist_strings);
 	netlist_strings = (XmString *) malloc(PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN * sizeof(XmString));
 	for (i = 0; i < PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN; i++)
-		netlist_strings[i] = XmStringCreatePCB(PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[i].Name);
+		netlist_strings[i] = XmStringCreatePCB(PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[i].Name+2);
 	stdarg_n = 0;
 	stdarg(XmNitems, netlist_strings);
 	stdarg(XmNitemCount, PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN);
 	XtSetValues(netlist_list, stdarg_args, stdarg_n);
-	pick_net(0);
+	pick_net(NULL, 0);
 	return;
 }
 
@@ -370,7 +393,7 @@ static fgw_error_t pcb_act_LesstifNetlistShow(fgw_arg_t *res, int argc, fgw_arg_
 			int vis = 0;
 
 			/* Select net first, 'True' causes pick_net() to be invoked */
-			item = XmStringCreatePCB(net->Name);
+			item = XmStringCreatePCB(net->Name+2);
 			XmListSelectItem(netlist_list, item, True);
 			XmListSetItem(netlist_list, item);
 			XmStringFree(item);
@@ -399,7 +422,7 @@ static fgw_error_t pcb_act_LesstifNetlistShow(fgw_arg_t *res, int argc, fgw_arg_
 			if (net) {
 				XmString item;
 
-				item = XmStringCreatePCB(net->Name);
+				item = XmStringCreatePCB(net->Name+2);
 				XmListSetItem(netlist_list, item);
 				XmListSelectItem(netlist_list, item, True);
 				XmStringFree(item);
