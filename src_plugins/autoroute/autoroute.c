@@ -1107,6 +1107,9 @@ static void CreateRouteData_subnet(routedata_t *rd, vtp0_t *layergroupboxes, vtp
 		if (obj->type == PCB_OBJ_RAT)
 			continue;
 
+		if (obj->term != NULL)
+			last_in_subnet = NULL;
+
 		PCB_FLAG_SET(PCB_FLAG_DRC, obj);
 
 		if ((obj->type == PCB_OBJ_LINE) && (obj->term != NULL))
