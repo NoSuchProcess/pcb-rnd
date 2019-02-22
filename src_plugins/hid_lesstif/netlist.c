@@ -264,7 +264,7 @@ netlist_button(Widget parent, const char *name, const char *string,
 
 static int build_netlist_dialog()
 {
-	Widget b_sel, b_unsel, b_find, /*b_ripup,*/ b_rat_on, /*b_rat_off,*/ l_ops;
+	Widget b_sel, b_unsel, b_find, /*b_ripup,*/ b_rat_on, b_rat_off, l_ops;
 	XmString ops_str;
 
 	if (!mainwind)
@@ -281,10 +281,12 @@ static int build_netlist_dialog()
 	stdarg_n = 0;
 	b_rat_on = netlist_button(netlist_dialog, "rat_on", "Enable for rats",
 														0, NLB_FORM, NLB_FORM, 0, (XtCallbackProc) nbcb_std_callback, (void *) nbcb_rat_on);
+	XtSetSensitive(b_rat_on, 0);
 
 	stdarg_n = 0;
-	/*b_rat_off =*/ netlist_button(netlist_dialog, "rat_off", "Disable for rats",
+	b_rat_off = netlist_button(netlist_dialog, "rat_off", "Disable for rats",
 														 0, NLB_FORM, b_rat_on, 0, (XtCallbackProc) nbcb_std_callback, (void *) nbcb_rat_off);
+	XtSetSensitive(b_rat_off, 0);
 
 	stdarg_n = 0;
 	b_sel = netlist_button(netlist_dialog, "select", "Select",
