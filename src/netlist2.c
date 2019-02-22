@@ -307,7 +307,7 @@ void pcb_net_short_ctx_init(pcb_short_ctx_t *sctx, const pcb_board_t *pcb, pcb_n
 	htsp_init(&sctx->found, strhash, strkeyeq);
 }
 
-static void short_ctx_uninit(pcb_short_ctx_t *sctx)
+void pcb_net_short_ctx_uninit(pcb_short_ctx_t *sctx)
 {
 	htsp_entry_t *e;
 	for(e = htsp_first(&sctx->found); e != NULL; e = htsp_next(&sctx->found, e))
@@ -426,7 +426,7 @@ pcb_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned lon
 	}
 
 	pcb_find_free(&fctx);
-	short_ctx_uninit(&sctx);
+	pcb_net_short_ctx_uninit(&sctx);
 	return res;
 }
 
@@ -636,7 +636,7 @@ pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_
 	vtp0_init(&subnets);
 	pcb_net_short_ctx_init(&sctx, pcb, net);
 	res = pcb_net_map_subnets(&sctx, acc, &subnets);
-	short_ctx_uninit(&sctx);
+	pcb_net_short_ctx_uninit(&sctx);
 	pcb_net_free_subnets(&subnets);
 	return res;
 }
@@ -670,7 +670,7 @@ pcb_cardinal_t pcb_net_add_all_rats(const pcb_board_t *pcb, pcb_rat_accuracy_t a
 	}
 
 	vtp0_uninit(&subnets);
-	short_ctx_uninit(&sctx);
+	pcb_net_short_ctx_uninit(&sctx);
 	return drawn;
 }
 
