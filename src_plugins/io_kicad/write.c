@@ -2,7 +2,7 @@
  *														COPYRIGHT
  *
  *	pcb-rnd, interactive printed circuit board design
- *	Copyright (C) 2016,2018 Tibor 'Igor2' Palinkas
+ *	Copyright (C) 2016,2018,2019 Tibor 'Igor2' Palinkas
  *	Copyright (C) 2016 Erich S. Heinzle
  *
  *	This program is free software; you can redistribute it and/or modify
@@ -35,9 +35,12 @@
 #include "data.h"
 #include "write.h"
 #include "layer.h"
-#include "netlist.h"
+#include "netlist2.h"
 #include "obj_pstk_inlines.h"
 #include "funchash_core.h"
+
+#include "brave.h"
+#include "netlist.h"
 
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 
@@ -800,7 +803,7 @@ TODO(": make this initialization a common function with write_kicad_layout()")
 }
 
 /* writes netlist data in kicad legacy format for use in a layout .brd file */
-int write_kicad_equipotential_netlists(FILE *FP, pcb_board_t *Layout, pcb_cardinal_t indentation)
+static int write_kicad_equipotential_netlists_old(FILE *FP, pcb_board_t *Layout, pcb_cardinal_t indentation)
 {
 	int n; /* code mostly lifted from netlist.c */
 	int netNumber;
@@ -818,6 +821,27 @@ int write_kicad_equipotential_netlists(FILE *FP, pcb_board_t *Layout, pcb_cardin
 			fprintf(FP, "%*s(net %d ", indentation, "", netNumber); /* netlist 0 was used for unconnected pads  */
 			pcb_fprintf(FP, "%[4])\n", pcb_netlist_name(menu));
 		}
+	}
+	return 0;
+}
+
+TODO("terminals written later do not seem to use the net number")
+static int write_kicad_equipotential_netlists(FILE *FP, pcb_board_t *Layout, pcb_cardinal_t indentation)
+{
+	pcb_cardinal_t netNumber = 0;
+	htsp_entry_t *e;
+
+	/* first we write a default netlist for the 0 net, which is for unconnected pads in pcbnew */
+	fprintf(FP, "\n%*s(net 0 \"\")\n", indentation, "");
+
+	/* now we step through any available netlists and generate descriptors */
+	for(e = htsp_first(&Layout->netlist[PCB_NETLIST_EDITED]); e != NULL; e = htsp_next(&Layout->netlist[PCB_NETLIST_EDITED], e)) {
+		pcb_net_t *net = e->value;
+
+		netNumber++;
+		fprintf(FP, "%*s(net %d ", indentation, "", netNumber); /* netlist 0 was used for unconnected pads  */
+		pcb_fprintf(FP, "%[4])\n", net->name);
+		net->export_tmp = netNumber;
 	}
 	return 0;
 }
@@ -961,7 +985,10 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, c
 
 	/* now come the netlist "equipotential" descriptors */
 
-	write_kicad_equipotential_netlists(FP, PCB, baseSExprIndent);
+	if (pcb_brave & PCB_BRAVE_NETLIST2)
+		write_kicad_equipotential_netlists(FP, PCB, baseSExprIndent);
+	else
+		write_kicad_equipotential_netlists_old(FP, PCB, baseSExprIndent);
 
 	/* module descriptions come next */
 	fputs("\n", FP);
