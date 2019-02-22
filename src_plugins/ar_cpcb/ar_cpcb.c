@@ -53,7 +53,7 @@ typedef struct {
 	pcb_netmap_t netmap;
 
 	/* int -> net conversion */
-	pcb_lib_menu_t **i2n;
+	pcb_net_t **i2n;
 	int maxnets;
 
 	/* net->int conversion */
@@ -89,12 +89,12 @@ static int cpcb_map_nets(pcb_board_t *pcb, cpcb_netmap_t *dst)
 	if (dst->maxnets == 0)
 		return -1;
 
-	dst->i2n = malloc(sizeof(pcb_lib_menu_t *) * dst->maxnets);
+	dst->i2n = malloc(sizeof(pcb_net_t *) * dst->maxnets);
 	htpi_init(&dst->n2i, ptrhash, ptrkeyeq);
 
 	id = 0;
 	for(e = htpp_first(&dst->netmap.n2o); e != NULL; e = htpp_next(&dst->netmap.n2o, e)) {
-		dst->i2n[id] = (pcb_lib_menu_t *)e->key;
+		dst->i2n[id] = (pcb_net_t *)e->key;
 		htpi_set(&dst->n2i, e->key, id);
 		id++;
 	}
@@ -259,7 +259,7 @@ static int cpcb_save(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netma
 
 	/* print tracks */
 	for(e = htpp_first(&nmap->netmap.n2o); e != NULL; e = htpp_next(&nmap->netmap.n2o, e)) {
-		pcb_lib_menu_t *net = e->key;
+		pcb_net_t *net = e->key;
 		dyn_obj_t *o, *olist = e->value;
 		long id = htpi_get(&nmap->n2i, net);
 

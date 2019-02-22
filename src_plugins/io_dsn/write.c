@@ -96,7 +96,7 @@ static int dsn_write_wiring(dsn_write_t *wctx)
 		char gname[GNAME_MAX];
 		pcb_layergrp_id_t gid = pcb_layer_get_group_(ly);
 		pcb_layergrp_t *lg = pcb_get_layergrp(wctx->pcb, gid);
-		pcb_lib_menu_t *net;
+		pcb_net_t *net;
 
 		if ((lg == NULL) || !(lg->ltype & PCB_LYT_COPPER))
 			continue;
@@ -110,7 +110,7 @@ static int dsn_write_wiring(dsn_write_t *wctx)
 				COORDX(line->Point1.X), COORDY(line->Point1.Y),
 				COORDX(line->Point2.X), COORDY(line->Point2.Y));
 			if (net != NULL)
-				fprintf(wctx->f, "(net \"%s\")", net->Name+2);
+				fprintf(wctx->f, "(net \"%s\")", net->name);
 			fprintf(wctx->f, "(type protect))\n");
 		}
 		PCB_END_LOOP;
