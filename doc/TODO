@@ -85,7 +85,7 @@
 	- FEATURE: rat line draw: [report: Igor2]
 		- be able to rename nets
 		- be able to convert a 'found' to a net
-	- BUG: autorouter broke on polygons: bug_files/ara.lht, {a r a}, bisect [report: Igor2]
+	- BUG: autorouter broke on polygons: bug_files/ara.lht, {a r a}, bisect; broke in r14572 [report: Igor2]
 	- CLEANUP: remove stub_mincut
 	- CLEANUP: remove 'ignore' from mincut proc_short()
 	- CLEANUP: remove rats_patch_old.c
