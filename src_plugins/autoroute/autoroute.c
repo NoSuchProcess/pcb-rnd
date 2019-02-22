@@ -987,6 +987,43 @@ static routebox_t *crd_add_line(routedata_t *rd, vtp0_t *layergroupboxes, pcb_la
 	return rb;
 }
 
+static routebox_t *crd_add_misc(routedata_t *rd, vtp0_t *layergroupboxes, pcb_any_obj_t *obj, int j)
+{
+	routebox_t *rb = NULL;
+
+						switch (obj->type) {
+						case PCB_OBJ_VOID: break;
+						case PCB_OBJ_PSTK:
+							rb = AddPstk(layergroupboxes, (pcb_pstk_t *)obj, rd->styles[j]);
+							break;
+						case PCB_OBJ_POLY:
+							{
+								pcb_poly_t *poly = (pcb_poly_t *)obj;
+								pcb_layer_t *layer = obj->parent.layer;
+								if (poly->term != NULL)
+									rb = AddTerm(layergroupboxes, obj, rd->styles[j]);
+								else
+									rb = AddPolygon(layergroupboxes, pcb_layer_id(PCB->Data, layer), poly, rd->styles[j]);
+							}
+							break;
+						case PCB_OBJ_LINE:
+						case PCB_OBJ_TEXT:
+						case PCB_OBJ_ARC:
+							if (obj->term != NULL)
+								rb = AddTerm(layergroupboxes, obj, rd->styles[j]);
+							break;
+
+						case PCB_OBJ_RAT:
+						case PCB_OBJ_SUBC:
+						case PCB_OBJ_NET:
+						case PCB_OBJ_NET_TERM:
+						case PCB_OBJ_LAYER:
+						case PCB_OBJ_LAYERGRP:
+							break; /* don't care about these */
+						}
+	return rb;
+}
+
 static void CreateRouteData_nets(routedata_t *rd, vtp0_t *layergroupboxes)
 {
 	pcb_netlist_list_t Nets;
@@ -1026,37 +1063,10 @@ static void CreateRouteData_nets(routedata_t *rd, vtp0_t *layergroupboxes)
 						rb = crd_add_line(rd, layergroupboxes, connection->group, connection->obj, j, &last_in_net, &last_in_subnet);
 					}
 					else
-						switch (connection->obj->type) {
-						case PCB_OBJ_VOID: break;
-						case PCB_OBJ_PSTK:
-							rb = AddPstk(layergroupboxes, (pcb_pstk_t *)connection->obj, rd->styles[j]);
-							break;
-						case PCB_OBJ_POLY:
-							{
-								pcb_poly_t *poly = (pcb_poly_t *)connection->obj;
-								pcb_layer_t *layer = (pcb_layer_t *)connection->ptr1;
-								if (poly->term != NULL)
-									rb = AddTerm(layergroupboxes, connection->obj, rd->styles[j]);
-								else
-									rb = AddPolygon(layergroupboxes, pcb_layer_id(PCB->Data, layer), poly, rd->styles[j]);
-							}
-							break;
-						case PCB_OBJ_LINE:
-						case PCB_OBJ_TEXT:
-						case PCB_OBJ_ARC:
-							if (connection->obj->term != NULL)
-								rb = AddTerm(layergroupboxes, connection->obj, rd->styles[j]);
-							break;
+						rb = crd_add_misc(rd, layergroupboxes, connection->obj, j);
 
-						case PCB_OBJ_RAT:
-						case PCB_OBJ_SUBC:
-						case PCB_OBJ_NET:
-						case PCB_OBJ_NET_TERM:
-						case PCB_OBJ_LAYER:
-						case PCB_OBJ_LAYERGRP:
-							break; /* don't care about these */
-						}
 					assert(rb);
+
 					/* update circular connectivity lists */
 					if (last_in_subnet && rb != last_in_subnet)
 						MergeNets(last_in_subnet, rb, ORIGINAL);
