@@ -11,8 +11,8 @@
  *  Copyright (c) 2006 harry eaton
  *  Copyright (c) 2009 harry eaton
  *
- *  Updated for pcb-rnd for subcircuits and padstacks
- *  Copyright (c) 2018 Tibor 'Igor2' Palinkas
+ *  Updated for pcb-rnd for subcircuits, padstacks and netlist
+ *  Copyright (c) 2018,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -76,7 +76,6 @@
 #include "rtree.h"
 #include "mtspace.h"
 #include "polygon.h"
-#include "rats.h"
 #include "remove.h"
 #include "obj_pinvia_therm.h"
 #include "undo.h"
@@ -93,6 +92,9 @@
 
 TODO("padstack: when style contains proto, remove this")
 #include "src_plugins/lib_compat_help/pstk_compat.h"
+
+#include "brave.h"
+#include "rats.h"
 
 #define autoroute_therm_style 4
 
@@ -858,7 +860,7 @@ static void DumpRouteBox(routebox_t * rb)
 #endif
 
 /* Add obstacles extracting them from data (subc-recursive) */
-static void CreateRouteData_(routedata_t *rd, vtp0_t layergroupboxes[], pcb_data_t *data)
+static void CreateRouteData_subc(routedata_t *rd, vtp0_t layergroupboxes[], pcb_data_t *data)
 {
 	int i;
 
@@ -939,98 +941,16 @@ static void CreateRouteData_(routedata_t *rd, vtp0_t layergroupboxes[], pcb_data
 	/* subc recursion - re-add terms */
 	PCB_SUBC_LOOP(data);
 	{
-		CreateRouteData_(rd, layergroupboxes, subc->data);
+		CreateRouteData_subc(rd, layergroupboxes, subc->data);
 	}
 	PCB_END_LOOP;
 
 }
 
-
-static routedata_t *CreateRouteData()
+static void CreateRouteData_nets(routedata_t *rd, vtp0_t *layergroupboxes)
 {
 	pcb_netlist_list_t Nets;
-	vtp0_t layergroupboxes[PCB_MAX_LAYERGRP];
-	pcb_box_t bbox;
-	routedata_t *rd;
-	int group, i;
 
-	/* check which layers are active first */
-	routing_layers = 0;
-	for (group = 0; group < pcb_max_group(PCB); group++) {
-		for (i = 0; i < PCB->LayerGroups.grp[group].len; i++) {
-			pcb_layer_id_t lid = PCB->LayerGroups.grp[group].lid[i];
-			/* layer must be 1) copper and 2) on */
-			if ((pcb_layer_flags(PCB, lid) & PCB_LYT_COPPER) && PCB->Data->Layer[lid].meta.real.vis) {
-				routing_layers++;
-				is_layer_group_active[group] = pcb_true;
-				break;
-			}
-			else
-				is_layer_group_active[group] = pcb_false;
-		}
-	}
-	/* if via visibility is turned off, don't use them */
-	AutoRouteParameters.use_vias = routing_layers > 1 && PCB->pstk_on;
-
-	back = front = -1;
-	if (pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &back, 1) <= 0)
-		return NULL;
-	if (pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &front, 1) <= 0)
-		return NULL;
-
-	/* determine preferred routing direction on each group */
-	for (i = 0; i < pcb_max_group(PCB); i++) {
-		if (i != back && i != front) {
-			x_cost[i] = (i & 1) ? 2 : 1;
-			y_cost[i] = (i & 1) ? 1 : 2;
-		}
-		else if (i == back) {
-			x_cost[i] = 4;
-			y_cost[i] = 2;
-		}
-		else {
-			x_cost[i] = 2;
-			y_cost[i] = 2;
-		}
-	}
-	/* create routedata */
-	rd = (routedata_t *) malloc(sizeof(*rd));
-	memset((void *) rd, 0, sizeof(*rd));
-
-	rd->max_styles = vtroutestyle_len(&PCB->RouteStyle);
-/*	rd->layergrouptree = calloc(sizeof(rd->layergrouptree[0]), rd->max_layers);*/
-	rd->styles = calloc(sizeof(rd->styles[0]), rd->max_styles+1);
-
-	/* create default style */
-	rd->defaultstyle.Thick = conf_core.design.line_thickness;
-	rd->defaultstyle.Diameter = conf_core.design.via_thickness;
-	rd->defaultstyle.Hole = conf_core.design.via_drilling_hole;
-	rd->defaultstyle.Clearance = conf_core.design.clearance;
-	rd->max_bloat = BLOAT(&rd->defaultstyle);
-	rd->max_keep = conf_core.design.clearance;
-	/* create styles structures */
-	bbox.X1 = bbox.Y1 = 0;
-	bbox.X2 = PCB->MaxWidth;
-	bbox.Y2 = PCB->MaxHeight;
-	for (i = 0; i < rd->max_styles + 1; i++) {
-		pcb_route_style_t *style = (i < rd->max_styles) ? &PCB->RouteStyle.array[i] : &rd->defaultstyle;
-		rd->styles[i] = style;
-	}
-
-	/* initialize pointer vectors */
-	for (i = 0; i < pcb_max_group(PCB); i++) {
-		vtp0_init(&layergroupboxes[i]);
-		PCB_COPPER_GROUP_LOOP(PCB->Data, i);
-		{
-			if (!PCB_RTREE_EMPTY(layer->line_tree) || !PCB_RTREE_EMPTY(layer->arc_tree))
-				usedGroup[i] = pcb_true;
-			else
-				usedGroup[i] = pcb_false;
-		}
-		PCB_END_LOOP;
-	}
-	usedGroup[front] = pcb_true;
-	usedGroup[back] = pcb_true;
 	/* add the objects in the netlist first.
 	 * then go and add all other objects that weren't already added
 	 *
@@ -1158,10 +1078,97 @@ static routedata_t *CreateRouteData()
 		ResetSubnet(net);
 		PCB_END_LOOP;
 	}
+}
 
+static routedata_t *CreateRouteData()
+{
+	vtp0_t layergroupboxes[PCB_MAX_LAYERGRP];
+	pcb_box_t bbox;
+	routedata_t *rd;
+	int group, i;
+
+	/* check which layers are active first */
+	routing_layers = 0;
+	for (group = 0; group < pcb_max_group(PCB); group++) {
+		for (i = 0; i < PCB->LayerGroups.grp[group].len; i++) {
+			pcb_layer_id_t lid = PCB->LayerGroups.grp[group].lid[i];
+			/* layer must be 1) copper and 2) on */
+			if ((pcb_layer_flags(PCB, lid) & PCB_LYT_COPPER) && PCB->Data->Layer[lid].meta.real.vis) {
+				routing_layers++;
+				is_layer_group_active[group] = pcb_true;
+				break;
+			}
+			else
+				is_layer_group_active[group] = pcb_false;
+		}
+	}
+	/* if via visibility is turned off, don't use them */
+	AutoRouteParameters.use_vias = routing_layers > 1 && PCB->pstk_on;
+
+	back = front = -1;
+	if (pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &back, 1) <= 0)
+		return NULL;
+	if (pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &front, 1) <= 0)
+		return NULL;
+
+	/* determine preferred routing direction on each group */
+	for (i = 0; i < pcb_max_group(PCB); i++) {
+		if (i != back && i != front) {
+			x_cost[i] = (i & 1) ? 2 : 1;
+			y_cost[i] = (i & 1) ? 1 : 2;
+		}
+		else if (i == back) {
+			x_cost[i] = 4;
+			y_cost[i] = 2;
+		}
+		else {
+			x_cost[i] = 2;
+			y_cost[i] = 2;
+		}
+	}
+	/* create routedata */
+	rd = (routedata_t *) malloc(sizeof(*rd));
+	memset((void *) rd, 0, sizeof(*rd));
+
+	rd->max_styles = vtroutestyle_len(&PCB->RouteStyle);
+/*	rd->layergrouptree = calloc(sizeof(rd->layergrouptree[0]), rd->max_layers);*/
+	rd->styles = calloc(sizeof(rd->styles[0]), rd->max_styles+1);
+
+	/* create default style */
+	rd->defaultstyle.Thick = conf_core.design.line_thickness;
+	rd->defaultstyle.Diameter = conf_core.design.via_thickness;
+	rd->defaultstyle.Hole = conf_core.design.via_drilling_hole;
+	rd->defaultstyle.Clearance = conf_core.design.clearance;
+	rd->max_bloat = BLOAT(&rd->defaultstyle);
+	rd->max_keep = conf_core.design.clearance;
+	/* create styles structures */
+	bbox.X1 = bbox.Y1 = 0;
+	bbox.X2 = PCB->MaxWidth;
+	bbox.Y2 = PCB->MaxHeight;
+	for (i = 0; i < rd->max_styles + 1; i++) {
+		pcb_route_style_t *style = (i < rd->max_styles) ? &PCB->RouteStyle.array[i] : &rd->defaultstyle;
+		rd->styles[i] = style;
+	}
+
+	/* initialize pointer vectors */
+	for (i = 0; i < pcb_max_group(PCB); i++) {
+		vtp0_init(&layergroupboxes[i]);
+		PCB_COPPER_GROUP_LOOP(PCB->Data, i);
+		{
+			if (!PCB_RTREE_EMPTY(layer->line_tree) || !PCB_RTREE_EMPTY(layer->arc_tree))
+				usedGroup[i] = pcb_true;
+			else
+				usedGroup[i] = pcb_false;
+		}
+		PCB_END_LOOP;
+	}
+	usedGroup[front] = pcb_true;
+	usedGroup[back] = pcb_true;
+
+	CreateRouteData_nets(rd, layergroupboxes);
 
 	/* subc-recursively add all obstacles */
-	CreateRouteData_(rd, layergroupboxes, PCB->Data);
+	CreateRouteData_subc(rd, layergroupboxes, PCB->Data);
 
 	/* create r-trees from pointer lists */
 	for (i = 0; i < pcb_max_group(PCB); i++) {
