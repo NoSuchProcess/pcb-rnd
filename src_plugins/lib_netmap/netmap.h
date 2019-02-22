@@ -26,13 +26,13 @@
 
 #include <genht/htpp.h>
 #include "board.h"
-#include "library.h"
+#include "netlist2.h"
 
 typedef struct dyn_net_s dyn_net_t;
 typedef struct dyn_obj_s dyn_obj_t;
 
 struct dyn_net_s {
-	pcb_lib_menu_t net;
+	pcb_net_t net;
 	dyn_net_t *next;
 };
 
@@ -46,7 +46,7 @@ typedef struct pcb_netmap_s {
 	htpp_t n2o;   /* of (dyn_obj_t *); tells the object list for a net */
 	pcb_cardinal_t anon_cnt;
 	pcb_board_t *pcb;
-	pcb_lib_menu_t *curr_net;
+	pcb_net_t *curr_net;
 	dyn_net_t *dyn_nets;
 } pcb_netmap_t;
 

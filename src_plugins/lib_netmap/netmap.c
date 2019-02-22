@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,16 +32,16 @@
 #include "netmap.h"
 #include "data.h"
 #include "find.h"
-#include "netlist.h"
+#include "netlist2.h"
 #include "pcb-printf.h"
 #include "plugins.h"
 
-static pcb_lib_menu_t *alloc_net(pcb_netmap_t *map)
+static pcb_net_t *alloc_net(pcb_netmap_t *map)
 {
 	dyn_net_t *dn = calloc(sizeof(dyn_net_t), 1);
 	dn->next = map->dyn_nets;
 	map->dyn_nets = dn;
-	dn->net.Name = pcb_strdup_printf("  netmap_anon_%d", map->anon_cnt++);
+	dn->net.name = pcb_strdup_printf("netmap_anon_%d", map->anon_cnt++);
 	return &dn->net;
 }
 
@@ -70,8 +70,11 @@ static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_ob
 	pcb_netmap_t *map = ctx;
 	map->curr_net = NULL;
 
-	if (obj->term != NULL)
-		map->curr_net = pcb_netlist_find_net4term(pcb, obj);
+	if (obj->term != NULL) {
+		pcb_net_term_t *t = pcb_net_find_by_obj(&pcb->netlist[PCB_NETLIST_EDITED], obj);
+		if (t != NULL)
+			map->curr_net = t->parent.net;
+	}
 
 	if (htpp_get(&map->o2n, obj) != NULL)
 		return;
@@ -168,7 +171,7 @@ int pcb_netmap_uninit(pcb_netmap_t *map)
 		dyn_net_t *dn, *next;
 		for(dn = map->dyn_nets; dn != NULL; dn = next) {
 			next = dn->next;
-			free(dn->net.Name);
+			free(dn->net.name);
 			free(dn);
 		}
 	}
