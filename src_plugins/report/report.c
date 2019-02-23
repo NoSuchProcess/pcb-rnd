@@ -722,9 +722,7 @@ static int report_net_length_by_name(const char *tofind)
 		return 1;
 
 	if (pcb_brave & PCB_BRAVE_NETLIST2) {
-		net = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], tofind, 0);
-		if (net == NULL)
-			net = pcb_net_get_regex(PCB, &PCB->netlist[PCB_NETLIST_EDITED], tofind);
+		net = pcb_net_get_user(PCB, &PCB->netlist[PCB_NETLIST_EDITED], tofind);
 		if (net != NULL) {
 			pcb_net_term_t *term;
 			pcb_any_obj_t *obj = NULL;
