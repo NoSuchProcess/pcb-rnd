@@ -4713,15 +4713,15 @@
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h polyarea.h \
  obj_text_list.h obj_text.h font.h ../src_3rd/genht/htip.h box.h \
  math_helper.h misc_util.h ../src_3rd/genvector/gds_char.h layer_grp.h \
- library.h rats_patch.h board.h netlist2.h data.h crosshair.h vtonpoint.h \
- hid.h ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h error.h route.h buffer.h \
- ../src_3rd/libfungw/fungw.h obj_rat_list.h obj_rat.h obj_subc_list.h \
- obj_subc.h ../src_3rd/libminuid/libminuid.h rtree.h \
+ library.h rats_patch.h board.h netlist2.h ../src_3rd/genvector/vtp0.h \
+ data.h crosshair.h vtonpoint.h hid.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h error.h \
+ route.h buffer.h ../src_3rd/libfungw/fungw.h obj_rat_list.h obj_rat.h \
+ obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h rtree.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
- ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h find.h pcb-printf.h plugins.h ../src_3rd/puplug/puplug.h \
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h find.h \
+ pcb-printf.h plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h
@@ -6872,8 +6872,8 @@ netlist_act.o: netlist_act.c ../config.h ../src_3rd/genregex/regex_sei.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h board.h vtroutestyle.h library.h rats_patch.h plug_io.h \
  conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h actions.h \
- compat_nls.h compat_misc.h netlist2.h data_it.h find.h brave.h netlist.h \
- route_style.h rats.h
+ compat_nls.h compat_misc.h netlist2.h data_it.h find.h obj_term.h \
+ brave.h netlist.h route_style.h rats.h
 obj_arc.o: obj_arc.c ../config.h compat_nls.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h global_typedefs.h \
  pcb_bool.h unit.h vtroutestyle.h attrib.h \
