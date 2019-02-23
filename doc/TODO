@@ -90,6 +90,7 @@
 	- CLEANUP: remove 'ignore' from mincut proc_short()
 	- CLEANUP: remove rats_patch_old.c
 	- CLEANUP: remove the old gtk netlist dialog
+	- CLEANUP: pcb_term_find_name() do we really need the 'same' arg?
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
