@@ -215,6 +215,21 @@ pcb_net_t *pcb_net_get(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname,
 	return NULL;
 }
 
+pcb_net_t *pcb_net_get_icase(pcb_board_t *pcb, pcb_netlist_t *nl, const char *name)
+{
+	htsp_entry_t *e;
+
+	for(e = htsp_first(nl); e != NULL; e = htsp_next(nl, e)) {
+		pcb_net_t *net = e->value;
+		if (pcb_strcasecmp(name, net->name) == 0)
+			break;
+	}
+
+	if (e == NULL)
+		return NULL;
+	return e->value;
+}
+
 pcb_net_t *pcb_net_get_regex(pcb_board_t *pcb, pcb_netlist_t *nl, const char *rx)
 {
 	htsp_entry_t *e;
@@ -236,6 +251,15 @@ pcb_net_t *pcb_net_get_regex(pcb_board_t *pcb, pcb_netlist_t *nl, const char *rx
 	return e->value;
 }
 
+pcb_net_t *pcb_net_get_user(pcb_board_t *pcb, pcb_netlist_t *nl, const char *name_or_rx)
+{
+	pcb_net_t *net = pcb_net_get(pcb, nl, name_or_rx, 0);
+	if (net == NULL)
+		net = pcb_net_get_icase(pcb, nl, name_or_rx);
+	if (net == NULL)
+		net = pcb_net_get_regex(pcb, nl, name_or_rx);
+	return net;
+}
 
 void pcb_net_free_fields(pcb_net_t *net)
 {
