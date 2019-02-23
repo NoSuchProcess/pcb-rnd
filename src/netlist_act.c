@@ -47,6 +47,7 @@
 #include "netlist2.h"
 #include "data_it.h"
 #include "find.h"
+#include "obj_term.h"
 
 TODO("netlist: remove these all with the old netlist removal")
 #include "brave.h"
@@ -168,13 +169,16 @@ static pcb_any_obj_t *pcb_pin_name_to_obj(pcb_lib_entry_t *pin)
 	return conn.obj;
 }
 
-static unsigned long pcb_netlist_setclrflg(pcb_lib_menu_t *net, pcb_lib_entry_t *pin, pcb_flag_values_t setf, pcb_flag_values_t clrf)
+static unsigned long pcb_netlist_setclrflg(pcb_net_term_t *new_pin, pcb_lib_entry_t *old_pin, pcb_flag_values_t setf, pcb_flag_values_t clrf)
 {
 	pcb_find_t fctx;
-	pcb_any_obj_t *o;
+	pcb_any_obj_t *o = NULL;
 	unsigned long res;
 
-	o = pcb_pin_name_to_obj(pin);
+	if (old_pin != NULL)
+		o = pcb_pin_name_to_obj(old_pin);
+	if (new_pin != NULL)
+		o = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, new_pin->refdes, new_pin->term, 0, NULL, NULL);
 	if (o == NULL)
 		return 0;
 
@@ -188,74 +192,71 @@ static unsigned long pcb_netlist_setclrflg(pcb_lib_menu_t *net, pcb_lib_entry_t 
 	return res;
 }
 
-static void pcb_netlist_find(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
+static void pcb_netlist_find(pcb_net_t *new_net, pcb_net_term_t *term, pcb_lib_menu_t *old_net, pcb_lib_entry_t *old_pin)
 {
 	if (pcb_brave & PCB_BRAVE_NETLIST2)
-		pcb_net_crawl_flag(PCB, pcb_net_get(PCB, &PCB->netlist[0], net->Name+2, 0), PCB_FLAG_FOUND, 0);
+		pcb_net_crawl_flag(PCB, pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], new_net->name, 0), PCB_FLAG_FOUND, 0);
 	else
-		pcb_netlist_setclrflg(net, pin, PCB_FLAG_FOUND, 0);
+		pcb_netlist_setclrflg(term, old_pin, PCB_FLAG_FOUND, 0);
 }
 
-static void pcb_netlist_select(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
+static void pcb_netlist_select(pcb_net_t *new_net, pcb_net_term_t *term, pcb_lib_menu_t *old_net, pcb_lib_entry_t *old_pin)
 {
 	if (pcb_brave & PCB_BRAVE_NETLIST2)
-		pcb_net_crawl_flag(PCB, pcb_net_get(PCB, &PCB->netlist[0], net->Name+2, 0), PCB_FLAG_SELECTED, 0);
+		pcb_net_crawl_flag(PCB, pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], new_net->name, 0), PCB_FLAG_SELECTED, 0);
 	else
-		pcb_netlist_setclrflg(net, pin, PCB_FLAG_SELECTED, 0);
+		pcb_netlist_setclrflg(term, old_pin, PCB_FLAG_SELECTED, 0);
 }
 
-static void pcb_netlist_unselect(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
+static void pcb_netlist_unselect(pcb_net_t *new_net, pcb_net_term_t *term, pcb_lib_menu_t *old_net, pcb_lib_entry_t *old_pin)
 {
 	if (pcb_brave & PCB_BRAVE_NETLIST2)
-		pcb_net_crawl_flag(PCB, pcb_net_get(PCB, &PCB->netlist[0], net->Name+2, 0), 0, PCB_FLAG_SELECTED);
+		pcb_net_crawl_flag(PCB, pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], new_net->name, 0), 0, PCB_FLAG_SELECTED);
 	else
-	pcb_netlist_setclrflg(net, pin, 0, PCB_FLAG_SELECTED);
+	pcb_netlist_setclrflg(term, old_pin, 0, PCB_FLAG_SELECTED);
 }
 
-static void pcb_netlist_rats(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
+static void pcb_netlist_rats(pcb_net_t *new_net, pcb_net_term_t *term, pcb_lib_menu_t *old_net, pcb_lib_entry_t *old_pin)
 {
 	if (pcb_brave & PCB_BRAVE_NETLIST2) {
-		pcb_net_t *n = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], net->Name+2, 0);
+		pcb_net_t *n = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], new_net->name, 0);
 		if (n != NULL)
 			n->inhibit_rats = 0;
 	}
-	net->Name[0] = ' ';
-	net->flag = 1;
+	old_net->Name[0] = ' ';
+	old_net->flag = 1;
 	pcb_netlist_changed(0);
 }
 
-static void pcb_netlist_norats(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
+static void pcb_netlist_norats(pcb_net_t *new_net, pcb_net_term_t *term, pcb_lib_menu_t *old_net, pcb_lib_entry_t *old_pin)
 {
 	if (pcb_brave & PCB_BRAVE_NETLIST2) {
-		pcb_net_t *n = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], net->Name+2, 0);
+		pcb_net_t *n = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], new_net->name, 0);
 		if (n != NULL)
 			n->inhibit_rats = 1;
 	}
-	net->Name[0] = '*';
-	net->flag = 0;
+	old_net->Name[0] = '*';
+	old_net->flag = 0;
 	pcb_netlist_changed(0);
 }
 
-/* The primary purpose of this action is to remove the netlist
-   completely so that a new one can be loaded, usually via a gsch2pcb
-   style script.  */
-static void pcb_netlist_clear(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
+static void pcb_netlist_clear_old(pcb_lib_menu_t *old_net, pcb_lib_entry_t *old_pin)
 {
 	pcb_lib_t *netlist = (pcb_lib_t *) & PCB->NetlistLib;
 	int ni, pi;
 
-	if (net == 0) {
+	if (old_net == 0) {
 		/* Clear the entire netlist. */
 		for (ni = 0; ni < PCB_NUM_NETLISTS; ni++)
 			pcb_lib_free(&(PCB->NetlistLib[ni]));
 	}
-	else if (pin == 0) {
+	else if (old_pin == 0) {
 		/* Remove a net from the netlist. */
-		ni = net - netlist->Menu;
+		ni = old_net - netlist->Menu;
 		if (ni >= 0 && ni < netlist->MenuN) {
 			/* if there is exactly one item, MenuN is 1 and ni is 0 */
 			if (netlist->MenuN - ni > 1)
-				memmove(net, net + 1, (netlist->MenuN - ni - 1) * sizeof(*net));
+				memmove(old_net, old_net + 1, (netlist->MenuN - ni - 1) * sizeof(*old_net));
 			netlist->MenuN--;
 		}
 	}
@@ -263,35 +264,67 @@ static void pcb_netlist_clear(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
 		/* Remove a pin from the given net.  Note that this may leave an
 		   empty net, which is different than removing the net
 		   (above).  */
-		pi = pin - net->Entry;
-		if (pi >= 0 && pi < net->EntryN) {
+		pi = old_pin - old_net->Entry;
+		if (pi >= 0 && pi < old_net->EntryN) {
 			/* if there is exactly one item, MenuN is 1 and ni is 0 */
-			if (net->EntryN - pi > 1)
-				memmove(pin, pin + 1, (net->EntryN - pi - 1) * sizeof(*pin));
-			net->EntryN--;
+			if (old_net->EntryN - pi > 1)
+				memmove(old_pin, old_pin + 1, (old_net->EntryN - pi - 1) * sizeof(*old_pin));
+			old_net->EntryN--;
 		}
 	}
 	pcb_netlist_changed(0);
 }
 
-static void pcb_netlist_style(pcb_lib_menu_t *net, const char *style)
+/* The primary purpose of this action is to remove the netlist
+   completely so that a new one can be loaded, usually via a gsch2pcb
+   style script.  */
+static void pcb_netlist_clear_new(pcb_net_t *net, pcb_net_term_t *term)
 {
-	free(net->Style);
-	net->Style = pcb_strdup_null((char *) style);
+	int ni;
+
+	if (net == 0) {
+		/* Clear the entire netlist. */
+		for (ni = 0; ni < PCB_NUM_NETLISTS; ni++) {
+			pcb_netlist_uninit(&PCB->netlist[ni]);
+			pcb_netlist_init(&PCB->netlist[ni]);
+		}
+	}
+	else if (term == NULL) {
+		/* Remove a net from the netlist. */
+		pcb_net_del(&PCB->netlist[PCB_NETLIST_EDITED], net->name);
+	}
+	else {
+		/* Remove a pin from the given net.  Note that this may leave an
+		   empty net, which is different than removing the net
+		   (above).  */
+		pcb_net_term_del(net, term);
+	}
+	pcb_netlist_changed(0);
 }
 
-static void pcb_netlist_ripup(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
+static void pcb_netlist_clear(pcb_net_t *new_net, pcb_net_term_t *term, pcb_lib_menu_t *old_net, pcb_lib_entry_t *old_pin)
 {
-	pcb_net_t *n = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], net->Name+2, 0);
-	assert(n != NULL);
-	pcb_net_ripup(PCB, n);
+	if (pcb_brave & PCB_BRAVE_NETLIST2)
+		pcb_netlist_clear_new(new_net, term);
+	else
+		pcb_netlist_clear_old(old_net, old_pin);
 }
 
-static void pcb_netlist_addrats(pcb_lib_menu_t *net, pcb_lib_entry_t *pin)
+static void pcb_netlist_style(pcb_net_t *new_net, pcb_lib_menu_t *old_net, const char *style)
 {
-	pcb_net_t *n = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], net->Name+2, 0);
-	assert(n != NULL);
-	pcb_net_add_rats(PCB, n, PCB_RATACC_PRECISE);
+	free(old_net->Style);
+	old_net->Style = pcb_strdup_null((char *)style);
+	pcb_attribute_put(&new_net->Attributes, "style", style);
+}
+
+static void pcb_netlist_ripup(pcb_net_t *new_net, pcb_net_term_t *term, pcb_lib_menu_t *old_net, pcb_lib_entry_t *old_pin)
+{
+	pcb_net_ripup(PCB, new_net);
+}
+
+static void pcb_netlist_addrats(pcb_net_t *new_net, pcb_net_term_t *term, pcb_lib_menu_t *old_net, pcb_lib_entry_t *old_pin)
+{
+	pcb_net_add_rats(PCB, new_net, PCB_RATACC_PRECISE);
 }
 
 
@@ -303,25 +336,59 @@ static const char pcb_acth_Netlist[] = "Perform various actions on netlists.";
 /* DOC: netlist.html */
 static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv);
 
-typedef void (*NFunc) (pcb_lib_menu_t *, pcb_lib_entry_t *);
+typedef void (*NFunc) (pcb_net_t *, pcb_net_term_t *, pcb_lib_menu_t *, pcb_lib_entry_t *);
 
-static int netlist_act_do(pcb_net_t *net, pcb_lib_menu_t *old_net, int argc, const char *a1, const char *a2, NFunc func)
+static unsigned netlist_act_do(pcb_net_t *net, pcb_lib_menu_t *old_net, int argc, const char *a1, const char *a2, NFunc func)
 {
 	pcb_lib_entry_t *old_pin;
+	pcb_net_term_t *term;
 	int pin_found = 0, j;
 
-	old_pin = 0;
-	if (func == (NFunc) pcb_netlist_style) {
-		pcb_netlist_style(old_net, a2);
+	if (old_net == NULL) {
+		for (j = 0; j < PCB->NetlistLib[PCB_NETLIST_INPUT].MenuN; j++) {
+			old_net = PCB->NetlistLib[PCB_NETLIST_INPUT].Menu + j;
+			if (strcmp(net->name, old_net->Name + 2) == 0)
+				break;
+			old_net = NULL;
+		}
 	}
-	else if (argc > 3) {
-		int l = strlen(a2);
-		for (j = old_net->EntryN - 1; j >= 0; j--) {
-			if (pcb_strcasecmp(old_net->Entry[j].ListEntry, a2) == 0
-					|| (pcb_strncasecmp(old_net->Entry[j].ListEntry, a2, l) == 0 && old_net->Entry[j].ListEntry[l] == '-')) {
-				old_pin = old_net->Entry + j;
-				pin_found = 1;
-				func(old_net, old_pin);
+
+	old_pin = NULL;
+	term = NULL;
+	if (func == (NFunc) pcb_netlist_style) {
+		pcb_netlist_style(net, old_net, a2);
+		return 1;
+	}
+
+	if (argc > 3) {
+		if (pcb_brave & PCB_BRAVE_NETLIST2) {
+			char *refdes, *termid;
+			refdes = pcb_strdup(a2);
+			termid = strchr(refdes, '-');
+			if (termid != NULL) {
+				*termid = '\0';
+				termid++;
+			}
+			else
+				termid = "";
+			for(term = pcb_termlist_first(&net->conns); term != NULL; term = pcb_termlist_next(term)) {
+				if ((pcb_strcasecmp(refdes, term->refdes) == 0) && (pcb_strcasecmp(termid, term->term) == 0)) {
+					pin_found = 1;
+					func(net, term, old_net, NULL);
+				}
+			}
+			
+			free(refdes);
+		}
+		else {
+			int l = strlen(a2);
+			for (j = old_net->EntryN - 1; j >= 0; j--) {
+				if (pcb_strcasecmp(old_net->Entry[j].ListEntry, a2) == 0
+						|| (pcb_strncasecmp(old_net->Entry[j].ListEntry, a2, l) == 0 && old_net->Entry[j].ListEntry[l] == '-')) {
+					old_pin = old_net->Entry + j;
+					pin_found = 1;
+					func(net, term, old_net, old_pin);
+				}
 			}
 		}
 		if (pcb_gui != NULL)
@@ -330,17 +397,18 @@ static int netlist_act_do(pcb_net_t *net, pcb_lib_menu_t *old_net, int argc, con
 	else if (argc > 2) {
 		pin_found = 1;
 		if (pcb_brave & PCB_BRAVE_NETLIST2) {
-			func(old_net, old_net->Entry);
+			for(term = pcb_termlist_first(&net->conns); term != NULL; term = pcb_termlist_next(term))
+				func(net, term, old_net, NULL);
 		}
 		else {
 			for (j = old_net->EntryN - 1; j >= 0; j--)
-				func(old_net, old_net->Entry + j);
+				func(net, term, old_net, old_net->Entry + j);
 		}
 		if (pcb_gui != NULL)
 			pcb_gui->invalidate_all();
 	}
 	else {
-		func(old_net, 0);
+		func(net, NULL, old_net, 0);
 		if (pcb_gui != NULL)
 			pcb_gui->invalidate_all();
 	}
@@ -353,10 +421,10 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	NFunc func;
 	const char *a1 = NULL, *a2 = NULL;
 	int op, i;
-	pcb_net_t *net;
-	pcb_lib_menu_t *old_net;
-	int net_found = 0;
-	int pin_found = 0;
+	pcb_net_t *net = NULL;
+	pcb_lib_menu_t *old_net = NULL;
+	unsigned net_found = 0;
+	unsigned pin_found = 0;
 	int use_re = 0;
 	re_sei_t *regex;
 	PCB_ACT_CONVARG(1, FGW_KEYWORD, Netlist, op = fgw_keyword(&argv[1]));
@@ -380,7 +448,7 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_Clear:
 			func = pcb_netlist_clear;
 			if (argc == 2) {
-				pcb_netlist_clear(NULL, NULL);
+				pcb_netlist_clear(NULL, NULL, NULL, NULL);
 				return 0;
 			}
 			break;
@@ -410,8 +478,29 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			PCB_ACT_FAIL(Netlist);
 	}
 
-	if /*(pcb_brave & PCB_BRAVE_NETLIST2)*/ (0) {
-	
+	if (pcb_brave & PCB_BRAVE_NETLIST2) {
+		pcb_netlist_t *nl = &PCB->netlist[PCB_NETLIST_EDITED];
+		net = pcb_net_get(PCB, nl, a1, 0);
+		if (net == NULL)
+			net = pcb_net_get_icase(PCB, nl, a1);
+		if (net == NULL) {  /* no direct match - have to go for the multi-net regex approach */
+			re_sei_t *regex = re_sei_comp(a1);
+			if (re_sei_errno(regex) == 0) {
+				htsp_entry_t *e;
+				for(e = htsp_first(nl); e != NULL; e = htsp_next(nl, e)) {
+					pcb_net_t *net = e->value;
+					if (re_sei_exec(regex, net->name)) {
+						net_found = 1;
+						pin_found |= netlist_act_do(net, old_net, argc, a1, a2, func);
+					}
+				}
+			}
+			re_sei_free(regex);
+		}
+		else {
+			net_found = 1;
+			pin_found |= netlist_act_do(net, old_net, argc, a1, a2, func);
+		}
 	}
 	else {
 		if (argc > 2) {
@@ -447,8 +536,12 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 			net_found = 1;
 
+			net = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], old_net->Name+2, 0);
 			pin_found |= netlist_act_do(net, old_net, argc, a1, a2, func);
 		}
+
+		if (use_re)
+			re_sei_free(regex);
 	}
 
 	if (argc > 3 && !pin_found) {
@@ -459,8 +552,6 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_gui->log("No net named %s\n", a1);
 	}
 
-	if (use_re)
-		re_sei_free(regex);
 
 	return 0;
 }
