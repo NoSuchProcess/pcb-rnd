@@ -72,19 +72,21 @@ static char *netlist_data2dlg_netlist(netlist_ctx_t *ctx)
 
 
 	nets = pcb_netlist_sort(&ctx->pcb->netlist[1]);
-	cell[2] = NULL;
-	for(n = nets; *n != NULL; n++) {
-		cell[0] = pcb_strdup((*n)->name);
-		cell[1] = pcb_strdup((*n)->inhibit_rats ? "*" : "");
-		pcb_dad_tree_append(attr, NULL, cell);
-	}
-	free(nets);
+	if (nets != NULL) {
+		cell[2] = NULL;
+		for(n = nets; *n != NULL; n++) {
+			cell[0] = pcb_strdup((*n)->name);
+			cell[1] = pcb_strdup((*n)->inhibit_rats ? "*" : "");
+			pcb_dad_tree_append(attr, NULL, cell);
+		}
+		free(nets);
 
-	/* restore cursor */
-	if (cursor_path != NULL) {
-		pcb_hid_attr_val_t hv;
-		hv.str_value = cursor_path;
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnetlist, &hv);
+		/* restore cursor */
+		if (cursor_path != NULL) {
+			pcb_hid_attr_val_t hv;
+			hv.str_value = cursor_path;
+			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnetlist, &hv);
+		}
 	}
 	return cursor_path;
 }
