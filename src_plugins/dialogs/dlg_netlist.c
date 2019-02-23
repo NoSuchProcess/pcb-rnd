@@ -209,7 +209,7 @@ static void netlist_button_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	}
 	else if (w == ctx->wunfind)
 		pcb_actionl("connection", "reset", NULL);
-	if (w == ctx->wrats)
+	else if (w == ctx->wrats)
 		pcb_actionl("netlist", "rats", name, NULL);
 	else if (w == ctx->wnorats)
 		pcb_actionl("netlist", "norats", name, NULL);
