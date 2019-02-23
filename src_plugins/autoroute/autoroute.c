@@ -1268,7 +1268,7 @@ static routedata_t *CreateRouteData()
 	usedGroup[front] = pcb_true;
 	usedGroup[back] = pcb_true;
 
-	if (pcb_brave & PCB_BRAVE_NETLIST2)
+	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
 		CreateRouteData_nets(rd, layergroupboxes);
 	else
 		CreateRouteData_nets_old(rd, layergroupboxes);

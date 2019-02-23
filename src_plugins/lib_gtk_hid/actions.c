@@ -130,7 +130,7 @@ static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_gtk_dlg_log_show(raise);
 	}
 	else if (strcmp(a, "4") == 0 || pcb_strcasecmp(a, "Netlist") == 0) {
-		if (pcb_brave & PCB_BRAVE_NETLIST2)
+		if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
 			pcb_actionl("NetlistDialog", NULL);
 		else
 			pcb_gtk_dlg_netlist_show(&ghidgui->common, raise);

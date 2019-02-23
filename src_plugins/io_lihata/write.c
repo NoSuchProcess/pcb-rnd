@@ -1270,7 +1270,7 @@ static lht_node_t *build_netlist(pcb_netlist_t *netlist, pcb_lib_t *old_netlist,
 
 	nl = lht_dom_node_alloc(LHT_LIST, name);
 
-	if (pcb_brave & PCB_BRAVE_NETLIST2) {
+	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST)) {
 		htsp_entry_t *e;
 		for(e = htsp_first(netlist); e != NULL; e = htsp_next(netlist, e)) {
 			pcb_net_t *net = e->value;

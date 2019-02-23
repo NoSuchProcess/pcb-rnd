@@ -985,7 +985,7 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, c
 
 	/* now come the netlist "equipotential" descriptors */
 
-	if (pcb_brave & PCB_BRAVE_NETLIST2)
+	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
 		write_kicad_equipotential_netlists(FP, PCB, baseSExprIndent);
 	else
 		write_kicad_equipotential_netlists_old(FP, PCB, baseSExprIndent);

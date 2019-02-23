@@ -161,7 +161,7 @@ void pcb_tool_line_notify_mode(void)
 	if (PCB->RatDraw) {
 		pcb_rat_t *line;
 
-		if (pcb_brave & PCB_BRAVE_NETLIST2)
+		if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
 			line = pcb_net_create_by_rat_coords(PCB, pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y, 1);
 		else
 			line = pcb_rat_add_net_old();

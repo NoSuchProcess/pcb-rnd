@@ -690,7 +690,7 @@ TODO("padstack: do not depend on this, just use the normal bbox and rotate that 
 		for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
 			if (o->term != NULL) {
 				ctx.pad_netname = NULL;
-				if (pcb_brave & PCB_BRAVE_NETLIST2) {
+				if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST)) {
 					pcb_net_term_t *t = pcb_net_find_by_obj(&PCB->netlist[PCB_NETLIST_EDITED], o);
 					if (t != NULL)
 						ctx.pad_netname = t->parent.net->name;

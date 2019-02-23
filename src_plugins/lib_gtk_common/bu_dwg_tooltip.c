@@ -164,7 +164,7 @@ gboolean pcb_gtk_dwg_tooltip_check_object(GtkWidget *drawing_area, pcb_coord_t c
 	tooltip_update_timeout_id = 0;
 
 	/* check if there are any pins or pads at that position */
-	if (pcb_brave & PCB_BRAVE_NETLIST2)
+	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
 		description = describe_location(crosshairx, crosshairy);
 	else
 		description = describe_location_old(crosshairx, crosshairy);
@@ -173,7 +173,7 @@ gboolean pcb_gtk_dwg_tooltip_check_object(GtkWidget *drawing_area, pcb_coord_t c
 		return FALSE;
 
 	gtk_widget_set_tooltip_text(drawing_area, description);
-	if (pcb_brave & PCB_BRAVE_NETLIST2)
+	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
 		free(description);
 	else
 		g_free(description);

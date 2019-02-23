@@ -749,7 +749,7 @@ int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, con
 	io_pcb_WriteSubcData(ctx, FP, PCB->Data);
 	WritePCBRatData(FP);
 	WriteLayers(FP, PCB->Data);
-	if (pcb_brave & PCB_BRAVE_NETLIST2)
+	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
 		WritePCBNetlistData(FP);
 	else
 		WritePCBNetlistData_old(FP);

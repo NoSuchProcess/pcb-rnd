@@ -95,7 +95,7 @@ static pcb_r_dir_t pinout_mouse_search_cb(void *closure, pcb_any_obj_t *obj, voi
 		if (val.str_value != NULL)
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_name, &val);
 		if (ctx->pcb != NULL) {
-			if (pcb_brave & PCB_BRAVE_NETLIST2) {
+			if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST)) {
 				pcb_net_term_t *term = pcb_net_find_by_obj(&ctx->pcb->netlist[PCB_NETLIST_EDITED], obj);
 				if (term != NULL) {
 					val.str_value = term->parent.net->name;

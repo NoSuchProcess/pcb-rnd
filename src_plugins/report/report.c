@@ -721,7 +721,7 @@ static int report_net_length_by_name(const char *tofind)
 	if (!tofind)
 		return 1;
 
-	if (pcb_brave & PCB_BRAVE_NETLIST2) {
+	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST)) {
 		net = pcb_net_get_user(PCB, &PCB->netlist[PCB_NETLIST_EDITED], tofind);
 		if (net != NULL) {
 			pcb_net_term_t *term;

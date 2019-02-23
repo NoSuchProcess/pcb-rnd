@@ -379,7 +379,7 @@ static double ComputeCost(pcb_oldnetlist_t *Nets, double T0, double T)
 	pcb_box_list_t componentside = { 0, 0, NULL };	/* component side bounds */
 
 
-	if (pcb_brave & PCB_BRAVE_NETLIST2) {
+	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST)) {
 		htsp_entry_t *e;
 		for(e = htsp_first(&PCB->netlist[PCB_NETLIST_EDITED]); e != NULL; e = htsp_next(&PCB->netlist[PCB_NETLIST_EDITED], e)) {
 			pcb_net_t *net = e->value;

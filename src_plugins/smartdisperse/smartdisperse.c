@@ -369,7 +369,7 @@ static fgw_error_t pcb_act_smartdisperse_old(fgw_arg_t *res, int argc, fgw_arg_t
 
 static fgw_error_t pcb_act_smartdisperse(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	if (pcb_brave & PCB_BRAVE_NETLIST2)
+	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
 		return pcb_act_smartdisperse_new(res, argc, argv);
 	return pcb_act_smartdisperse_old(res, argc, argv);
 }

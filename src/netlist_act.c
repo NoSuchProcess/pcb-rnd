@@ -194,7 +194,7 @@ static unsigned long pcb_netlist_setclrflg(pcb_net_term_t *new_pin, pcb_lib_entr
 
 static void pcb_netlist_find(pcb_net_t *new_net, pcb_net_term_t *term, pcb_lib_menu_t *old_net, pcb_lib_entry_t *old_pin)
 {
-	if (pcb_brave & PCB_BRAVE_NETLIST2)
+	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
 		pcb_net_crawl_flag(PCB, pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], new_net->name, 0), PCB_FLAG_FOUND, 0);
 	else
 		pcb_netlist_setclrflg(term, old_pin, PCB_FLAG_FOUND, 0);
@@ -202,7 +202,7 @@ static void pcb_netlist_find(pcb_net_t *new_net, pcb_net_term_t *term, pcb_lib_m
 
 static void pcb_netlist_select(pcb_net_t *new_net, pcb_net_term_t *term, pcb_lib_menu_t *old_net, pcb_lib_entry_t *old_pin)
 {
-	if (pcb_brave & PCB_BRAVE_NETLIST2)
+	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
 		pcb_net_crawl_flag(PCB, pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], new_net->name, 0), PCB_FLAG_SELECTED, 0);
 	else
 		pcb_netlist_setclrflg(term, old_pin, PCB_FLAG_SELECTED, 0);
@@ -210,7 +210,7 @@ static void pcb_netlist_select(pcb_net_t *new_net, pcb_net_term_t *term, pcb_lib
 
 static void pcb_netlist_unselect(pcb_net_t *new_net, pcb_net_term_t *term, pcb_lib_menu_t *old_net, pcb_lib_entry_t *old_pin)
 {
-	if (pcb_brave & PCB_BRAVE_NETLIST2)
+	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
 		pcb_net_crawl_flag(PCB, pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], new_net->name, 0), 0, PCB_FLAG_SELECTED);
 	else
 	pcb_netlist_setclrflg(term, old_pin, 0, PCB_FLAG_SELECTED);
@@ -218,7 +218,7 @@ static void pcb_netlist_unselect(pcb_net_t *new_net, pcb_net_term_t *term, pcb_l
 
 static void pcb_netlist_rats(pcb_net_t *new_net, pcb_net_term_t *term, pcb_lib_menu_t *old_net, pcb_lib_entry_t *old_pin)
 {
-	if (pcb_brave & PCB_BRAVE_NETLIST2) {
+	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST)) {
 		pcb_net_t *n = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], new_net->name, 0);
 		if (n != NULL)
 			n->inhibit_rats = 0;
@@ -230,7 +230,7 @@ static void pcb_netlist_rats(pcb_net_t *new_net, pcb_net_term_t *term, pcb_lib_m
 
 static void pcb_netlist_norats(pcb_net_t *new_net, pcb_net_term_t *term, pcb_lib_menu_t *old_net, pcb_lib_entry_t *old_pin)
 {
-	if (pcb_brave & PCB_BRAVE_NETLIST2) {
+	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST)) {
 		pcb_net_t *n = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], new_net->name, 0);
 		if (n != NULL)
 			n->inhibit_rats = 1;
@@ -304,7 +304,7 @@ static void pcb_netlist_clear_new(pcb_net_t *net, pcb_net_term_t *term)
 
 static void pcb_netlist_clear(pcb_net_t *new_net, pcb_net_term_t *term, pcb_lib_menu_t *old_net, pcb_lib_entry_t *old_pin)
 {
-	if (pcb_brave & PCB_BRAVE_NETLIST2)
+	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
 		pcb_netlist_clear_new(new_net, term);
 	else
 		pcb_netlist_clear_old(old_net, old_pin);
@@ -361,7 +361,7 @@ static unsigned netlist_act_do(pcb_net_t *net, pcb_lib_menu_t *old_net, int argc
 	}
 
 	if (argc > 3) {
-		if (pcb_brave & PCB_BRAVE_NETLIST2) {
+		if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST)) {
 			char *refdes, *termid;
 			refdes = pcb_strdup(a2);
 			termid = strchr(refdes, '-');
@@ -396,7 +396,7 @@ static unsigned netlist_act_do(pcb_net_t *net, pcb_lib_menu_t *old_net, int argc
 	}
 	else if (argc > 2) {
 		pin_found = 1;
-		if (pcb_brave & PCB_BRAVE_NETLIST2) {
+		if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST)) {
 			for(term = pcb_termlist_first(&net->conns); term != NULL; term = pcb_termlist_next(term))
 				func(net, term, old_net, NULL);
 		}
@@ -478,7 +478,7 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			PCB_ACT_FAIL(Netlist);
 	}
 
-	if (pcb_brave & PCB_BRAVE_NETLIST2) {
+	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST)) {
 		pcb_netlist_t *nl = &PCB->netlist[PCB_NETLIST_EDITED];
 		net = pcb_net_get(PCB, nl, a1, 0);
 		if (net == NULL)

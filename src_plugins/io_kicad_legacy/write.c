@@ -487,7 +487,7 @@ TODO(": figure how to turn off displaying these")
 
 			fputs("At STD N 00E0FFFF\n", FP); /* through hole STD pin, all copper layers */
 
-			if (pcb_brave & PCB_BRAVE_NETLIST2)
+			if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
 				print_pstk_net(FP, pcb, ps);
 			else
 				print_pstk_net_old(FP, pcb, ps);
@@ -579,7 +579,7 @@ TODO("hshadow TODO")
 			else
 				fputs("At SMD N 00888000\n", FP);
 
-			if (pcb_brave & PCB_BRAVE_NETLIST2)
+			if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
 				print_pstk_net(FP, pcb, ps);
 			else
 				print_pstk_net_old(FP, pcb, ps);
@@ -845,7 +845,7 @@ TODO(": se this from io_kicad, do not duplicate the code here")
 
 	fputs("$EndSETUP\n", FP);
 
-	if (pcb_brave & PCB_BRAVE_NETLIST2)
+	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
 		write_kicad_legacy_equipotential_netlists(FP, PCB);
 	else
 		write_kicad_legacy_equipotential_netlists_old(FP, PCB);

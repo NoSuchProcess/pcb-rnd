@@ -246,7 +246,7 @@ int pcb_rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, pcb_bool 
 			case RATP_ADD_CONN:
 			case RATP_DEL_CONN:
 				if (htsp_get(seen, n->arg1.net_name) == NULL) {
-					if (pcb_brave & PCB_BRAVE_NETLIST2) {
+					if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST)) {
 						/* document the original (input) state */
 						pcb_net_t *net = pcb_net_get(pcb, &pcb->netlist[PCB_NETLIST_INPUT], n->arg1.net_name, 0);
 						if (net != NULL) {

@@ -274,7 +274,7 @@ static void ipcd356_write_pstk(write_ctx_t *ctx, pcb_subc_t *subc, pcb_pstk_t *p
 	if (proto == NULL)
 		return;
 
-	if (pcb_brave & PCB_BRAVE_NETLIST2) {
+	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST)) {
 		pcb_net_term_t *term = pcb_net_find_by_obj(&ctx->pcb->netlist[PCB_NETLIST_EDITED], (pcb_any_obj_t *)pstk);
 		t.netname = (term == NULL) ? "N/C" : term->parent.net->name;
 	}
@@ -319,7 +319,7 @@ static int ipcd356_heavy(write_ctx_t *ctx, test_feature_t *t, pcb_subc_t *subc, 
 
 	memset(t, 0, sizeof(test_feature_t));
 
-	if (pcb_brave & PCB_BRAVE_NETLIST2) {
+	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST)) {
 		pcb_net_term_t *term = pcb_net_find_by_obj(&ctx->pcb->netlist[PCB_NETLIST_EDITED], (pcb_any_obj_t *)o);
 		t->netname = (term == NULL) ? "N/C" : term->parent.net->name;
 	}
