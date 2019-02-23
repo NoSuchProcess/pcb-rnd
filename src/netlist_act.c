@@ -123,9 +123,9 @@ quit:;
    script, in conjunction with the clear action above.  */
 static int pcb_netlist_add(int patch, const char *netname, const char *pinname)
 {
-	int pi;
+	pcb_net_t *n;
+	pcb_net_term_t *t;
 	pcb_lib_menu_t *net = NULL;
-	pcb_lib_entry_t *pin = NULL;
 
 	if ((netname == NULL) || (pinname == NULL))
 		return -1;
@@ -133,26 +133,28 @@ static int pcb_netlist_add(int patch, const char *netname, const char *pinname)
 	if ((*netname == '\0') || (*pinname == '\0'))
 		return -1;
 
+	n = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_INPUT+(!!patch)], netname, 1);
+	t = pcb_net_term_get_by_pinname(n, pinname, 0);
+
+	/* OLD CODE: can be removed with the old netlist removal */
 	net = pcb_netlist_lookup(patch, netname, pcb_true);
 
-	for (pi = 0; pi < net->EntryN; pi++) {
-		if (strcmp(net->Entry[pi].ListEntry, pinname) == 0) {
-			pin = &(net->Entry[pi]);
-			break;
-		}
-	}
-
-
-	if (pin == NULL) {
+	if (t == NULL) {
 		if (!patch) {
-			pcb_lib_entry_t *entry = pcb_lib_entry_new(net);
-			entry->ListEntry = pcb_strdup_printf("%s", pinname);
-			entry->ListEntry_dontfree = 0;
+			t = pcb_net_term_get_by_pinname(n, pinname, 1);
 			PCB->netlist_needs_update=1;
+
+			/* OLD CODE: can be removed with the old netlist removal */
+			{
+				pcb_lib_entry_t *entry = pcb_lib_entry_new(net);
+				entry->ListEntry = pcb_strdup_printf("%s", pinname);
+				entry->ListEntry_dontfree = 0;
+			}
 		}
 		else {
-			pin = pcb_lib_conn_new(net, (char *) pinname);
-			pcb_ratspatch_append_optimize(PCB, RATP_ADD_CONN, pin->ListEntry, net->Name + 2, NULL);
+			pcb_lib_conn_new(net, (char *)pinname);
+			t = pcb_net_term_get_by_pinname(n, pinname, 1);
+			pcb_ratspatch_append_optimize(PCB, RATP_ADD_CONN, pinname, netname, NULL);
 		}
 	}
 
