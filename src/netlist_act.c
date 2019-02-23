@@ -309,8 +309,8 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	NFunc func;
 	const char *a1 = NULL, *a2 = NULL;
 	int op, i, j;
-	pcb_lib_menu_t *net;
-	pcb_lib_entry_t *pin;
+	pcb_lib_menu_t *old_net;
+	pcb_lib_entry_t *old_pin;
 	int net_found = 0;
 	int pin_found = 0;
 	int use_re = 0;
@@ -369,8 +369,8 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (argc > 2) {
 		use_re = 1;
 		for (i = 0; i < PCB->NetlistLib[PCB_NETLIST_INPUT].MenuN; i++) {
-			net = PCB->NetlistLib[PCB_NETLIST_INPUT].Menu + i;
-			if (pcb_strcasecmp(a1, net->Name + 2) == 0)
+			old_net = PCB->NetlistLib[PCB_NETLIST_INPUT].Menu + i;
+			if (pcb_strcasecmp(a1, old_net->Name + 2) == 0)
 				use_re = 0;
 		}
 		if (use_re) {
@@ -385,32 +385,32 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 /* This code is for changing the netlist style */
 	for (i = PCB->NetlistLib[PCB_NETLIST_INPUT].MenuN - 1; i >= 0; i--) {
-		net = PCB->NetlistLib[PCB_NETLIST_INPUT].Menu + i;
+		old_net = PCB->NetlistLib[PCB_NETLIST_INPUT].Menu + i;
 
 		if (argc > 1) {
 			if (use_re) {
-				if (re_sei_exec(regex, net->Name + 2) == 0)
+				if (re_sei_exec(regex, old_net->Name + 2) == 0)
 					continue;
 			}
 			else {
-				if (pcb_strcasecmp(net->Name + 2, a1) != 0)
+				if (pcb_strcasecmp(old_net->Name + 2, a1) != 0)
 					continue;
 			}
 		}
 		net_found = 1;
 
-		pin = 0;
+		old_pin = 0;
 		if (func == (NFunc) pcb_netlist_style) {
-			pcb_netlist_style(net, a2);
+			pcb_netlist_style(old_net, a2);
 		}
 		else if (argc > 3) {
 			int l = strlen(a2);
-			for (j = net->EntryN - 1; j >= 0; j--) {
-				if (pcb_strcasecmp(net->Entry[j].ListEntry, a2) == 0
-						|| (pcb_strncasecmp(net->Entry[j].ListEntry, a2, l) == 0 && net->Entry[j].ListEntry[l] == '-')) {
-					pin = net->Entry + j;
+			for (j = old_net->EntryN - 1; j >= 0; j--) {
+				if (pcb_strcasecmp(old_net->Entry[j].ListEntry, a2) == 0
+						|| (pcb_strncasecmp(old_net->Entry[j].ListEntry, a2, l) == 0 && old_net->Entry[j].ListEntry[l] == '-')) {
+					old_pin = old_net->Entry + j;
 					pin_found = 1;
-					func(net, pin);
+					func(old_net, old_pin);
 				}
 			}
 			if (pcb_gui != NULL)
@@ -419,17 +419,17 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else if (argc > 2) {
 			pin_found = 1;
 			if (pcb_brave & PCB_BRAVE_NETLIST2) {
-				func(net, net->Entry);
+				func(old_net, old_net->Entry);
 			}
 			else {
-				for (j = net->EntryN - 1; j >= 0; j--)
-					func(net, net->Entry + j);
+				for (j = old_net->EntryN - 1; j >= 0; j--)
+					func(old_net, old_net->Entry + j);
 			}
 			if (pcb_gui != NULL)
 				pcb_gui->invalidate_all();
 		}
 		else {
-			func(net, 0);
+			func(old_net, 0);
 			if (pcb_gui != NULL)
 				pcb_gui->invalidate_all();
 		}
