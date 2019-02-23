@@ -301,16 +301,60 @@ static const char pcb_acts_Netlist[] =
 static const char pcb_acth_Netlist[] = "Perform various actions on netlists.";
 
 /* DOC: netlist.html */
+static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv);
 
 typedef void (*NFunc) (pcb_lib_menu_t *, pcb_lib_entry_t *);
+
+static int netlist_act_do(pcb_net_t *net, pcb_lib_menu_t *old_net, int argc, const char *a1, const char *a2, NFunc func)
+{
+	pcb_lib_entry_t *old_pin;
+	int pin_found = 0, j;
+
+		old_pin = 0;
+		if (func == (NFunc) pcb_netlist_style) {
+			pcb_netlist_style(old_net, a2);
+		}
+		else if (argc > 3) {
+			int l = strlen(a2);
+			for (j = old_net->EntryN - 1; j >= 0; j--) {
+				if (pcb_strcasecmp(old_net->Entry[j].ListEntry, a2) == 0
+						|| (pcb_strncasecmp(old_net->Entry[j].ListEntry, a2, l) == 0 && old_net->Entry[j].ListEntry[l] == '-')) {
+					old_pin = old_net->Entry + j;
+					pin_found = 1;
+					func(old_net, old_pin);
+				}
+			}
+			if (pcb_gui != NULL)
+				pcb_gui->invalidate_all();
+		}
+		else if (argc > 2) {
+			pin_found = 1;
+			if (pcb_brave & PCB_BRAVE_NETLIST2) {
+				func(old_net, old_net->Entry);
+			}
+			else {
+				for (j = old_net->EntryN - 1; j >= 0; j--)
+					func(old_net, old_net->Entry + j);
+			}
+			if (pcb_gui != NULL)
+				pcb_gui->invalidate_all();
+		}
+		else {
+			func(old_net, 0);
+			if (pcb_gui != NULL)
+				pcb_gui->invalidate_all();
+		}
+
+	return pin_found;
+}
 
 static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	NFunc func;
 	const char *a1 = NULL, *a2 = NULL;
-	int op, i, j;
+	int op, i;
+	pcb_net_t *net;
 	pcb_lib_menu_t *old_net;
-	pcb_lib_entry_t *old_pin;
 	int net_found = 0;
 	int pin_found = 0;
 	int use_re = 0;
@@ -399,40 +443,7 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		net_found = 1;
 
-		old_pin = 0;
-		if (func == (NFunc) pcb_netlist_style) {
-			pcb_netlist_style(old_net, a2);
-		}
-		else if (argc > 3) {
-			int l = strlen(a2);
-			for (j = old_net->EntryN - 1; j >= 0; j--) {
-				if (pcb_strcasecmp(old_net->Entry[j].ListEntry, a2) == 0
-						|| (pcb_strncasecmp(old_net->Entry[j].ListEntry, a2, l) == 0 && old_net->Entry[j].ListEntry[l] == '-')) {
-					old_pin = old_net->Entry + j;
-					pin_found = 1;
-					func(old_net, old_pin);
-				}
-			}
-			if (pcb_gui != NULL)
-				pcb_gui->invalidate_all();
-		}
-		else if (argc > 2) {
-			pin_found = 1;
-			if (pcb_brave & PCB_BRAVE_NETLIST2) {
-				func(old_net, old_net->Entry);
-			}
-			else {
-				for (j = old_net->EntryN - 1; j >= 0; j--)
-					func(old_net, old_net->Entry + j);
-			}
-			if (pcb_gui != NULL)
-				pcb_gui->invalidate_all();
-		}
-		else {
-			func(old_net, 0);
-			if (pcb_gui != NULL)
-				pcb_gui->invalidate_all();
-		}
+		pin_found |= netlist_act_do(net, old_net, argc, a1, a2, func);
 	}
 
 	if (argc > 3 && !pin_found) {
