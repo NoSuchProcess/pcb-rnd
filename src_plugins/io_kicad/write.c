@@ -939,11 +939,8 @@ static void kicad_fixup_outline(wctx_t *ctx, int ind)
 	fixed_layer_t *l;
 	pcb_layergrp_t *g;
 
-TODO("use pcb_has_explicit_outline() instead")
-	/* if any outline layer is non-empty, don't draw the implicit outline */
-	for(i = 0, g = ctx->pcb->LayerGroups.grp; i < ctx->pcb->LayerGroups.len; i++,g++)
-		if ((PCB_LAYER_IS_OUTLINE(g->ltype, g->purpi)) && (!pcb_layergrp_is_pure_empty(ctx->pcb, i)))
-			return;
+	if (pcb_has_explicit_outline(ctx->pcb))
+		return;
 
 	/* find the first kicad outline layer */
 	for(l = fixed_layers; l->name != NULL; l++) {

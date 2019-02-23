@@ -744,14 +744,7 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 
 	want_cross_sect = options[HA_cross_sect].int_value;
 
-TODO("use pcb_has_explicit_outline() instead")
-	has_outline = 0;
-	for(i = 0, g = PCB->LayerGroups.grp; i < PCB->LayerGroups.len; i++,g++) {
-		if (PCB_LAYER_IS_OUTLINE(g->ltype, g->purpi)) {
-			has_outline = 1;
-			break;
-		}
-	}
+	has_outline = pcb_has_explicit_outline(PCB);
 
 	i = strlen(fnbase);
 	filename = (char *) realloc(filename, i + SUFF_LEN);
