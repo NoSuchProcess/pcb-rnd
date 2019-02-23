@@ -679,6 +679,8 @@ pcb_cardinal_t pcb_net_add_all_rats(const pcb_board_t *pcb, pcb_rat_accuracy_t a
 
 	for(e = htsp_first(&pcb->netlist[PCB_NETLIST_EDITED]); e != NULL; e = htsp_next(&pcb->netlist[PCB_NETLIST_EDITED], e)) {
 		sctx.current_net = (pcb_net_t *)e->value;
+		if (sctx.current_net->inhibit_rats)
+			continue;
 		drawn += pcb_net_map_subnets(&sctx, acc, &subnets);
 		pcb_net_reset_subnets(&subnets);
 	}
