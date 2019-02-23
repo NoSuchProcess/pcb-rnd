@@ -29,6 +29,7 @@
 
 #include <genht/htsp.h>
 #include <genlist/gendlist.h>
+#include <genvector/vtp0.h>
 #include "board.h"
 #include "obj_common.h"
 
