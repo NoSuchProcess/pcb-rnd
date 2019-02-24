@@ -718,6 +718,8 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, att
 		/* Add content */
 		stdarg_n = 0;
 		stdarg(XmNalignment, XmALIGNMENT_END);
+		if (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_EXPFILL)
+			stdarg(PxmNfillBoxFill, 1);
 		stdarg(XmNuserData, ctx);
 
 		switch(ctx->attrs[i].type) {
@@ -779,7 +781,6 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, att
 			stdarg(XmNbackPageNumber, 1);
 			stdarg(XmNbackPageSize, 1);
 			stdarg(XmNbindingType, XmNONE);
-
 
 			stdarg(XmNleftAttachment, XmATTACH_FORM);
 			stdarg(XmNtopAttachment, XmATTACH_FORM);
@@ -1101,8 +1102,16 @@ void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_att
 		XtManageChild(main_tbl);
 		attribute_dialog_add(ctx, main_tbl, NULL, 0, 1);
 	}
-	else
-		attribute_dialog_add(ctx, topform, NULL, 0, (ctx->attrs[0].pcb_hatt_flags & PCB_HATF_LABEL));
+	else {
+		stdarg_n = 0;
+		stdarg(XmNtopAttachment, XmATTACH_FORM);
+		stdarg(XmNbottomAttachment, XmATTACH_FORM);
+		stdarg(XmNleftAttachment, XmATTACH_FORM);
+		stdarg(XmNrightAttachment, XmATTACH_FORM);
+		main_tbl = pcb_motif_box(topform, XmStrCast("layout"), 'v', 0, 0, 0);
+		XtManageChild(main_tbl);
+		attribute_dialog_add(ctx, main_tbl, NULL, 0, (ctx->attrs[0].pcb_hatt_flags & PCB_HATF_LABEL));
+	}
 
 	/* don't expect screens larger than 800x600 */
 	if (ctx->minw > 750)
