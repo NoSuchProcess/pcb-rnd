@@ -23,8 +23,7 @@
 1. For the upcoming release ===============================================================================
 - BUG: scconfig: core gets glib dependency even if everything is in plugins (only plugins depend on glib) [report: Vuokko]
 - BUG: font bbox xor draw appears on wrong coords (on top) [report: Igor2]
-- CLEANUP/BUG: lesstif: preferences(layers): EXPFILL doesn't seem to work; need to replace box code with work/lkesstif/formbox [report: Igor2]
-	- BUG: lesstif: {i c p}, color tab: tabbed doesn't grow [report: Igor2]
+- BUG: lesstif: {i c p}, color tab: tabbed doesn't grow [report: Igor2]
 - CAM:
 	- CLEANUP: move the hackish gerber layer suffix functions into CAM configs [report: Ade]
 	- CLEANUP: split gerber and drill file generation (make gerber depend on drill, for backward compatibility)
