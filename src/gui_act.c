@@ -1710,6 +1710,51 @@ static fgw_error_t pcb_act_boardflip(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_ClipInhibit[] = "ClipInhibit([on|off|check])";
+static const char pcb_acth_ClipInhibit[] = "ClipInhibit Feature Template.";
+static fgw_error_t pcb_act_ClipInhibit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	static int is_on = 0;
+	int target;
+	const char *op;
+
+	PCB_ACT_CONVARG(1, FGW_STR, ClipInhibit, op = argv[1].val.str);
+
+	if (strcmp(op, "check") == 0) {
+		PCB_ACT_IRES(is_on);
+		return 0;
+	}
+
+
+	if (strcmp(op, "toggle") == 0) {
+		target = !is_on;
+	}
+	else {
+		if (op[0] != 'o')
+			PCB_ACT_FAIL(ClipInhibit);
+
+		switch(op[1]) {
+			case 'n': target = 1; break;
+			case 'f': target = 0; break;
+			default: PCB_ACT_FAIL(ClipInhibit);
+		}
+	}
+
+	if (is_on == target) {
+		PCB_ACT_IRES(0);
+		return 0;
+	}
+
+	is_on = target;
+	if (is_on)
+		pcb_data_clip_inhibit_inc(PCB->Data);
+	else
+		pcb_data_clip_inhibit_dec(PCB->Data, 1);
+
+	PCB_ACT_IRES(0);
+	return 0;
+}
+
 pcb_action_t gui_action_list[] = {
 	{"Display", pcb_act_Display, pcb_acth_Display, pcb_acts_Display},
 	{"CycleDrag", pcb_act_CycleDrag, pcb_acth_CycleDrag, pcb_acts_CycleDrag},
@@ -1736,7 +1781,8 @@ pcb_action_t gui_action_list[] = {
 	{"SetUnits", pcb_act_SetUnits, pcb_acth_setunits, pcb_acts_setunits},
 	{"ChkRst", pcb_act_ChkRst, pcb_acth_chkrst, pcb_acts_chkrst},
 	{"GetXY", pcb_act_GetXY, pcb_acth_GetXY, pcb_acts_GetXY},
-	{"BoardFlip", pcb_act_boardflip, pcb_acth_boardflip, pcb_acts_boardflip}
+	{"BoardFlip", pcb_act_boardflip, pcb_acth_boardflip, pcb_acts_boardflip},
+	{"ClipInhibit", pcb_act_ClipInhibit, pcb_acth_ClipInhibit, pcb_acts_ClipInhibit}
 };
 
 PCB_REGISTER_ACTIONS(gui_action_list, NULL)
