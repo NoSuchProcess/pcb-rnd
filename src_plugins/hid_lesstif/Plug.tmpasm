@@ -12,6 +12,7 @@ put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/hid_lesstif/xm_tree_table_pixmaps.o
 	$(PLUGDIR)/hid_lesstif/xm_tree_table_priv.o
 	$(PLUGDIR)/hid_lesstif/xm_tree_table_widget.o
+	$(PLUGDIR)/hid_lesstif/FillBox.o
 @]
 
 switch /local/pcb/hid_lesstif/controls

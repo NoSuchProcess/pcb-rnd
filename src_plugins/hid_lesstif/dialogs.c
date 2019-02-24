@@ -9,6 +9,7 @@
 #include <string.h>
 
 #include <Xm/Notebook.h>
+#include "FillBox.h"
 
 #include "compat_misc.h"
 #include "data.h"
@@ -462,12 +463,12 @@ static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_
 
 	switch(type) {
 		case 'h': /* "hbox" */
-			stdarg(XmNorientation, XmHORIZONTAL);
-			stdarg(XmNpacking, XmPACK_TIGHT);
+			stdarg(PxmNfillBoxVertical, 0);
+			cnt = PxmCreateFillBox(parent, name, stdarg_args, stdarg_n);
 			break;
 		case 'v': /* "vbox" */
-			stdarg(XmNorientation, XmVERTICAL);
-			stdarg(XmNpacking, XmPACK_TIGHT);
+			stdarg(PxmNfillBoxVertical, 1);
+			cnt = PxmCreateFillBox(parent, name, stdarg_args, stdarg_n);
 			break;
 		case 't': /* "table" */
 			stdarg(XmNorientation, XmHORIZONTAL);
@@ -475,11 +476,11 @@ static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_
 			stdarg(XmNnumColumns, num_table_rows);
 			stdarg(XmNisAligned, True);
 			stdarg(XmNentryAlignment, XmALIGNMENT_END);
+			cnt = XmCreateRowColumn(parent, name, stdarg_args, stdarg_n);
 			break;
 		default:
 			abort();
 	}
-	cnt = XmCreateRowColumn(parent, name, stdarg_args, stdarg_n);
 	return cnt;
 }
 
