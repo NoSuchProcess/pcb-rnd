@@ -498,7 +498,9 @@ typedef struct {
 	char *id;
 	unsigned close_cb_called:1;
 	unsigned already_closing:1;
+	unsigned already_destroying:1;
 	unsigned inhibit_valchg:1;
+	unsigned widget_destroyed:1;
 } lesstif_attr_dlg_t;
 
 static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
@@ -1023,10 +1025,19 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 static void ltf_attr_destroy_cb(Widget w, void *v, void *cbs)
 {
 	lesstif_attr_dlg_t *ctx = v;
-	if ((!ctx->close_cb_called) && (ctx->close_cb != NULL))
+	if ((!ctx->close_cb_called) && (ctx->close_cb != NULL)) {
+		ctx->close_cb_called = 1;
+		ctx->already_destroying = 1;
 		ctx->close_cb(ctx->caller_data, PCB_HID_ATTR_EV_WINCLOSE);
-	XtUnmanageChild(w);
-	XtDestroyWidget(w);
+	}
+	if (!ctx->widget_destroyed) {
+		ctx->widget_destroyed = 1;
+		XtUnmanageChild(w);
+		XtDestroyWidget(w);
+		free(ctx->wl);
+		free(ctx->id);
+		free(ctx);
+	}
 }
 
 static void ltf_attr_config_cb(Widget shell, XtPointer data, XEvent *xevent, char *dummy)
@@ -1062,6 +1073,7 @@ void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_att
 	ctx->minw = ctx->minh = 32;
 	ctx->close_cb = button_cb;
 	ctx->close_cb_called = 0;
+	ctx->widget_destroyed = 0;
 	ctx->id = pcb_strdup(id);
 
 	for (i = 0; i < n_attrs; i++) {
@@ -1154,10 +1166,15 @@ void lesstif_attr_dlg_free(void *hid_ctx)
 		ctx->close_cb(ctx->caller_data, PCB_HID_ATTR_EV_CODECLOSE);
 	}
 
-	free(ctx->wl);
-	XtDestroyWidget(ctx->dialog);
-	free(ctx->id);
-	free(ctx);
+	if (!ctx->already_destroying) {
+		if (!ctx->widget_destroyed) {
+			ctx->widget_destroyed = 1;
+			XtDestroyWidget(ctx->dialog);
+		}
+		free(ctx->wl);
+		free(ctx->id);
+		free(ctx);
+	}
 }
 
 void lesstif_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const pcb_hid_attr_val_t *val)
