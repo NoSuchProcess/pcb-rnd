@@ -298,6 +298,7 @@ ha:{
 						ha:New lines, arcs clear polygons   = { a={<key>m; <key>l; <key>c}; checked=editor/clear_line; action=conf(toggle, editor/clear_line, design) }
 						ha:New polygons are full ones       = { a={<key>m; <key>p; <key>f}; checked=editor/full_poly; action=conf(toggle, editor/full_poly, design) }
 						ha:New polygons clear polygons      = { a={<key>m; <key>p; <key>c}; checked=editor/clear_polypoly; action=conf(toggle, editor/clear_polypoly, design) }
+						ha:Polygon clip inhibit (toggle)    = { a={<key>m; <key>p; <key>i}; checked=ClipInhibit(check); action=ClipInhibit(toggle); update_on={temp/clip_inhibit_chg} }
 					}
 				}
 				ha:Cursor/snap {

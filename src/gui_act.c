@@ -1717,6 +1717,7 @@ static fgw_error_t pcb_act_ClipInhibit(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	static int is_on = 0;
 	int target;
 	const char *op;
+	char tmp[2];
 
 	PCB_ACT_CONVARG(1, FGW_STR, ClipInhibit, op = argv[1].val.str);
 
@@ -1750,6 +1751,11 @@ static fgw_error_t pcb_act_ClipInhibit(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		pcb_data_clip_inhibit_inc(PCB->Data);
 	else
 		pcb_data_clip_inhibit_dec(PCB->Data, 1);
+
+	tmp[0] = '0' + !conf_core.temp.clip_inhibit_chg;
+	tmp[1] = '\0';
+	conf_set(CFR_CLI, "temp/clip_inhibit_chg", 0, tmp, POL_OVERWRITE);
+
 
 	PCB_ACT_IRES(0);
 	return 0;

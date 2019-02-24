@@ -14,6 +14,7 @@ typedef struct {
 
 	struct temp {
 		CFT_BOOLEAN rat_warn;              /* rats nest has set warnings */
+		CFT_BOOLEAN clip_inhibit_chg;      /* dummy node to inform the menu about clip inhibit change */
 	} temp;
 
 	const struct editor {
