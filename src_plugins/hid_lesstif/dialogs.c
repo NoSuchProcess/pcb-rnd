@@ -782,11 +782,8 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, att
 			stdarg(XmNbackPageSize, 1);
 			stdarg(XmNbindingType, XmNONE);
 
-			stdarg(XmNleftAttachment, XmATTACH_FORM);
-			stdarg(XmNtopAttachment, XmATTACH_FORM);
-			stdarg(XmNrightAttachment, XmATTACH_FORM);
-			stdarg(XmNbottomAttachment, XmATTACH_FORM);
 			stdarg(XmNuserData, ctx);
+			stdarg(PxmNfillBoxFill, 1);
 			ctx->wl[i] = w = XmCreateNotebook(parent, "notebook", stdarg_args, stdarg_n);
 
 			/* remove the page scroller widget that got automatically created by XmCreateNotebook() */
