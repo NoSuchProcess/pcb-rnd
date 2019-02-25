@@ -147,8 +147,8 @@ static char *describe_location(pcb_coord_t X, pcb_coord_t Y)
 	term = pcb_net_find_by_refdes_term(&PCB->netlist[PCB_NETLIST_EDITED], subc->refdes, obj->term);
 
 	gds_init(&desc);
-	gds_append_str(&desc, "Subcircuit:\t"); gds_append_str(&desc, subc->refdes);
-	gds_append_str(&desc, "\nTerminal:  \t"); gds_append_str(&desc, obj->term);
+	gds_append_str(&desc, "Subcircuit:\t"); gds_append_str(&desc, subc->refdes == NULL ? "--" : subc->refdes);
+	gds_append_str(&desc, "\nTerminal:  \t"); gds_append_str(&desc, obj->term == NULL ? "--" : obj->term);
 	gds_append_str(&desc, "\nNetlist:     \t"); gds_append_str(&desc, term == NULL ? "--" : term->parent.net->name);
 
 	return desc.array;
