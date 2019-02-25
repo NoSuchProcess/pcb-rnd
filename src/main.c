@@ -68,6 +68,7 @@ static const char *EXPERIMENTAL = NULL;
 #include "pcb_minuid.h"
 #include "tool.h"
 #include "color.h"
+#include "netlist2.h"
 
 #include "actions.h"
 #include "hid_init.h"
@@ -394,6 +395,7 @@ int main(int argc, char *argv[])
 
 
 	/* Minimal conf setup before we do anything else */
+	pcb_netlist_geo_init();
 	pcb_color_init();
 	pcb_file_loaded_init();
 	pcb_minuid_init();

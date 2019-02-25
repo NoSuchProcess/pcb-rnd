@@ -34,7 +34,7 @@ typedef struct {
 	double dist2;
 } pcb_subnet_dist_t;
 
-static pcb_subnet_dist_t sdist_invalid = { NULL, NULL, 0, 0, 0, 0, -1, -1, HUGE_VAL };
+static pcb_subnet_dist_t sdist_invalid = { NULL, NULL, 0, 0, 0, 0, -1, -1, 0 };
 
 #define is_line_manhattan(l) (((l)->Point1.X == (l)->Point2.X) || ((l)->Point1.Y == (l)->Point2.Y))
 
@@ -423,4 +423,9 @@ static pcb_subnet_dist_t pcb_subnet_dist(const pcb_board_t *pcb, vtp0_t *objs1, 
 	best.o1g = get_obj_grp(pcb, best.o1);
 	best.o2g = get_obj_grp(pcb, best.o2);
 	return best;
+}
+
+void pcb_netlist_geo_init(void)
+{
+	sdist_invalid.dist2 = HUGE_VAL; /* on some systems this is not constant and can be used as an initializer */
 }

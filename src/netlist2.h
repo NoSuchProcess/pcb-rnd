@@ -185,4 +185,6 @@ void pcb_net_free(pcb_net_t *net);
 void pcb_net_term_free_fields(pcb_net_term_t *term);
 void pcb_net_term_free(pcb_net_term_t *term);
 
+void pcb_netlist_geo_init(void);
+
 #endif
