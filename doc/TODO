@@ -91,7 +91,7 @@
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
-- BUG: bug_files/proto1.* padstack prototype selection bug [report: Alain]
+- BUG: bug_files/proto1.* padstack prototype selection bug priv mail 20 Feb [report: Alain]
 
 2. For later releases ===============================================================================
 - FEATURE/BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
