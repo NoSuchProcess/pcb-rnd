@@ -5,9 +5,7 @@
 + FEATURE: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
 + FEATURE: extedit: dialog shoudl let the user edit the command template [report: TwisteR]
 + BUG: new preferences
-	+ update bugs:
-	+ crash:
-		+ BUG: preferences() crashes if lesstif GUI is compiled but gtk is not (missing gtk-only conf settings) [report: rqsall]
+	+ BUG: preferences() crashes if lesstif GUI is compiled but gtk is not (missing gtk-only conf settings) [report: rqsall]
 	+ BUG: lesstif: {i c p} -> crash, only on IRIX system [report: Ian] -> probably fixed, please test
 + BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
 + BUG: bug_files/obsconf.lht: load, get a warning for obsolete config; save into a new file and the broken conf node is not removed [report: keantoken]
