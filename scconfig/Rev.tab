@@ -1,4 +1,4 @@
-23461	configure	splitting up the dialog plugin code linking into multiple objects for compilation speed
+23462	configure	splitting up the dialog plugin code linking into multiple objects for compilation speed
 23292	configure	rewriting user lead, moving the code from gtk to common
 23140	configure	netlist rewrite
 23099	configure	merge copy.[ch] into move.[ch] for compactness

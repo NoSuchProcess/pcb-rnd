@@ -31,6 +31,7 @@
 #include "draw.h"
 #include "obj_term.h"
 #include "rtree.h"
+#include "search.h"
 #include "search_r.h"
 #include "netlist2.h"
 

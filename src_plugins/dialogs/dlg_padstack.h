@@ -1,3 +1,5 @@
+#include "obj_pstk.h"
+
 typedef struct pse_s pse_t;
 struct pse_s {
 	/* caller conf */
@@ -38,3 +40,7 @@ struct pse_s {
 };
 
 void pcb_pstkedit_dialog(pse_t *pse, int target_tab);
+
+extern const char pcb_acts_PadstackEdit[];
+extern const char pcb_acth_PadstackEdit[];
+fgw_error_t pcb_act_PadstackEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv);

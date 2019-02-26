@@ -24,6 +24,10 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include "config.h"
+#include "actions.h"
+#include "hid_dad.h"
+#include "funchash_core.h"
 #include "obj_pstk.h"
 #include "obj_pstk_op.h"
 #include "obj_pstk_inlines.h"
@@ -930,9 +934,9 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 	PCB_DAD_FREE(dlg);
 }
 
-static const char pcb_acts_PadstackEdit[] = "PadstackEdit(object, [tab])\n";
-static const char pcb_acth_PadstackEdit[] = "interactive pad stack editor";
-static fgw_error_t pcb_act_PadstackEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+const char pcb_acts_PadstackEdit[] = "PadstackEdit(object, [tab])\n";
+const char pcb_acth_PadstackEdit[] = "interactive pad stack editor";
+fgw_error_t pcb_act_PadstackEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op = F_Object, target_tab = -1;
 	pse_t pse;
