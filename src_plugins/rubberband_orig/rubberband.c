@@ -67,16 +67,16 @@ typedef struct { /* rubberband lines for element moves */
 	pcb_layer_t *Layer; /* layer that holds the line */
 	pcb_line_t *Line; /* the line itself */
 	int delta_index[2]; /* The index into the delta array for the two line points */
-} pcb_rubberband_t;
+} pcb_rb_line_t;
 
 typedef struct {
 	pcb_layer_t *Layer; /* Layer that holds the arc */
 	pcb_arc_t *Arc; /* The arc itself */
 	int delta_index[2]; /* The index into the delta array for each arc end. -1 = end not attached */
-} pcb_rubberband_arc_t;
+} pcb_rb_arc_t;
 
 #define GVT(x) vtrbli_ ## x
-#define GVT_ELEM_TYPE pcb_rubberband_t
+#define GVT_ELEM_TYPE pcb_rb_line_t
 #define GVT_SIZE_TYPE size_t
 #define GVT_DOUBLING_THRS 4096
 #define GVT_START_SIZE 32
@@ -89,7 +89,7 @@ typedef struct {
 #include <genvector/genvector_undef.h>
 
 #define GVT(x) vtrbar_ ## x
-#define GVT_ELEM_TYPE pcb_rubberband_arc_t
+#define GVT_ELEM_TYPE pcb_rb_arc_t
 #define GVT_SIZE_TYPE size_t
 #define GVT_DOUBLING_THRS 4096
 #define GVT_START_SIZE 32
@@ -122,8 +122,8 @@ struct rubber_info {
 };
 
 
-static pcb_rubberband_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, int point_number, int delta_index);
-static pcb_rubberband_arc_t *pcb_rubber_band_create_arc(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_arc_t *Line, int end, int delta_index);
+static pcb_rb_line_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, int point_number, int delta_index);
+static pcb_rb_arc_t *pcb_rubber_band_create_arc(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_arc_t *Line, int end, int delta_index);
 static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_line_t *, pcb_point_t *, int delta_index);
 static void CheckArcPointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_arc_t *, int *, pcb_bool);
 static void CheckArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_arc_t *, pcb_bool);
@@ -131,7 +131,7 @@ static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t 
 static void CheckLinePointForRat(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_point_t *);
 static void CheckLineForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_line_t *);
 
-static void calculate_route_rubber_arc_point_move(pcb_rubberband_arc_t *arcptr, int end, pcb_coord_t dx, pcb_coord_t dy, pcb_route_t *route);
+static void calculate_route_rubber_arc_point_move(pcb_rb_arc_t *arcptr, int end, pcb_coord_t dx, pcb_coord_t dy, pcb_route_t *route);
 
 static void CheckLinePointForRubberbandArcConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_line_t *, pcb_point_t *, pcb_bool);
 
@@ -141,7 +141,7 @@ static pcb_r_dir_t rubber_callback_arc(const pcb_box_t *b, void *cl);
 static pcb_r_dir_t rubber_callback(const pcb_box_t *b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
-	pcb_rubberband_t *have_line = NULL;
+	pcb_rb_line_t *have_line = NULL;
 	struct rubber_info *i = (struct rubber_info *)cl;
 	rubber_ctx_t *rbnd = i->rbnd;
 	double x, y, rad, dist1, dist2;
@@ -612,7 +612,7 @@ static void CheckEntireArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
 				/* the following code just stupidly compares the endpoints of the lines */
 				PCB_LINE_LOOP(layer);
 				{
-					pcb_rubberband_t *have_line = NULL;
+					pcb_rb_line_t *have_line = NULL;
 					pcb_bool touches1 = pcb_false;
 					pcb_bool touches2 = pcb_false;
 					int l;
@@ -679,7 +679,7 @@ static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t 
 				 */
 				PCB_LINE_LOOP(layer);
 				{
-					pcb_rubberband_t *have_line = NULL;
+					pcb_rb_line_t *have_line = NULL;
 					int touches1 = 0, touches2 = 0;
 					int l;
 
@@ -744,7 +744,7 @@ static void CheckLineForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *La
 				/* the following code just stupidly compares the endpoints of the lines */
 				PCB_LINE_LOOP(layer);
 				{
-					pcb_rubberband_t *have_line = NULL;
+					pcb_rb_line_t *have_line = NULL;
 					pcb_bool touches1 = pcb_false;
 					pcb_bool touches2 = pcb_false;
 					int l;
@@ -803,7 +803,7 @@ static void CheckPadStackForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pstk_t 
 					/* the following code just stupidly compares the endpoints of the lines */
 					PCB_LINE_LOOP(layer);
 					{
-						pcb_rubberband_t *have_line = NULL;
+						pcb_rb_line_t *have_line = NULL;
 						pcb_bool touches1 = pcb_false;
 						pcb_bool touches2 = pcb_false;
 						int l;
@@ -960,9 +960,9 @@ static void pcb_rubber_band_lookup_rat_lines(rubber_ctx_t *rbnd, int Type, void 
 
 /* adds a new line to the rubberband list of 'pcb_crosshair.AttachedObject'
  * if Layer == 0  it is a rat line */
-static pcb_rubberband_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, int point_number, int delta_index)
+static pcb_rb_line_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, int point_number, int delta_index)
 {
-	pcb_rubberband_t *ptr;
+	pcb_rb_line_t *ptr;
 	int n;
 
 	/* do not add any object twice; slow linear search but we expect to have only
@@ -984,9 +984,9 @@ static pcb_rubberband_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t 
 	return ptr;
 }
 
-static pcb_rubberband_arc_t *pcb_rubber_band_create_arc(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_arc_t *Arc, int end, int delta_index)
+static pcb_rb_arc_t *pcb_rubber_band_create_arc(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_arc_t *Arc, int end, int delta_index)
 {
-	pcb_rubberband_arc_t *ptr = NULL;
+	pcb_rb_arc_t *ptr = NULL;
 	int n;
 
 	for(n = 0; (n < rbnd->arcs.used) && (ptr == NULL); n++)
@@ -1017,7 +1017,7 @@ static void rbe_reset(void *user_data, int argc, pcb_event_arg_t argv[])
 static void rbe_remove_subc(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
-	pcb_rubberband_t *ptr;
+	pcb_rb_line_t *ptr;
 	void *ptr1 = argv[1].d.p, *ptr2 = argv[2].d.p, *ptr3 = argv[3].d.p;
 	int i, type = PCB_OBJ_SUBC;
 
@@ -1036,7 +1036,7 @@ static void rbe_remove_subc(void *user_data, int argc, pcb_event_arg_t argv[])
 static void rbe_move(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
-	pcb_rubberband_t *ptr = rbnd->lines.array;
+	pcb_rb_line_t *ptr = rbnd->lines.array;
 	int direct = argv[1].d.i;
 
 
@@ -1100,7 +1100,7 @@ static void rbe_move(void *user_data, int argc, pcb_event_arg_t argv[])
 
 	/* TODO: Move rubberband arcs. */
 	if (conf_rbo.plugins.rubberband_orig.enable_rubberband_arcs != 0) {
-		pcb_rubberband_arc_t *arcptr = rbnd->arcs.array;
+		pcb_rb_arc_t *arcptr = rbnd->arcs.array;
 		int i = rbnd->arcs.used;
 
 		while(i) {
@@ -1138,7 +1138,7 @@ static void rbe_move(void *user_data, int argc, pcb_event_arg_t argv[])
 static void rbe_draw(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
-	pcb_rubberband_t *ptr;
+	pcb_rb_line_t *ptr;
 	pcb_cardinal_t i;
 	int direct = argv[1].d.i;
 
@@ -1212,7 +1212,7 @@ static void rbe_draw(void *user_data, int argc, pcb_event_arg_t argv[])
 
 	/* draw the attached rubberband arcs */
 	if (conf_rbo.plugins.rubberband_orig.enable_rubberband_arcs != 0) {
-		pcb_rubberband_arc_t *arcptr = rbnd->arcs.array;
+		pcb_rb_arc_t *arcptr = rbnd->arcs.array;
 		i = rbnd->arcs.used;
 
 		while(i) {
@@ -1250,7 +1250,7 @@ static void rbe_draw(void *user_data, int argc, pcb_event_arg_t argv[])
 static void rbe_rotate90(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
-	pcb_rubberband_t *ptr;
+	pcb_rb_line_t *ptr;
 	pcb_coord_t cx = argv[5].d.c, cy = argv[6].d.c;
 	int steps = argv[7].d.i;
 	int *changed = argv[8].d.p;
@@ -1313,7 +1313,7 @@ TODO(": rewrite this for subc - also move it out from rubberband, it has nothing
 /*	int pinnum = argv[5].d.i;*/
 
 	if (type == PCB_OBJ_ELEMENT) {
-		pcb_rubberband_t *ptr;
+		pcb_rb_line_t *ptr;
 		int i;
 
 		pcb_undo_restore_serial();
@@ -1420,7 +1420,7 @@ static void rbe_constrain_main_line(void *user_data, int argc, pcb_event_arg_t a
 	}
 }
 
-static void calculate_route_rubber_arc_point_move(pcb_rubberband_arc_t *arcptr, int end, pcb_coord_t dx, pcb_coord_t dy, pcb_route_t *route)
+static void calculate_route_rubber_arc_point_move(pcb_rb_arc_t *arcptr, int end, pcb_coord_t dx, pcb_coord_t dy, pcb_route_t *route)
 {
 	/* This basic implementation simply connects the arc to the moving
 	   point with a new route so that they remain connected. */
