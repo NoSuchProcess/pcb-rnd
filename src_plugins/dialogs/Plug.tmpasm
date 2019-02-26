@@ -4,6 +4,7 @@ put /local/pcb/mod/OBJS [@
  $(PLUGDIR)/dialogs/act_dad.o
  $(PLUGDIR)/dialogs/dlg_about.o
  $(PLUGDIR)/dialogs/dlg_comm_m.o
+ $(PLUGDIR)/dialogs/dlg_export.o
  $(PLUGDIR)/dialogs/dlg_pref.o
  $(PLUGDIR)/dialogs/dlg_view.o
  $(PLUGDIR)/dialogs/xpm.o

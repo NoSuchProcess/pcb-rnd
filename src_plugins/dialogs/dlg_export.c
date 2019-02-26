@@ -24,7 +24,10 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include "config.h"
+#include "actions.h"
 #include "hid.h"
+#include "hid_dad.h"
 #include "hid_init.h"
 
 typedef struct{
@@ -184,17 +187,17 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 	PCB_DAD_NEW("export", export_ctx.dlg, title, &export_ctx, pcb_false, export_close_cb);
 }
 
-static const char pcb_acts_ExportGUI[] = "ExportGUI()\n";
-static const char pcb_acth_ExportGUI[] = "Open the export dialog.";
-static fgw_error_t pcb_act_ExportGUI(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+const char pcb_acts_ExportGUI[] = "ExportGUI()\n";
+const char pcb_acth_ExportGUI[] = "Open the export dialog.";
+fgw_error_t pcb_act_ExportGUI(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	pcb_dlg_export("Export to file", 1, 0);
 	return 0;
 }
 
-static const char pcb_acts_PrintGUI[] = "PrintGUI()\n";
-static const char pcb_acth_PrintGUI[] = "Open the print dialog.";
-static fgw_error_t pcb_act_PrintGUI(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+const char pcb_acts_PrintGUI[] = "PrintGUI()\n";
+const char pcb_acth_PrintGUI[] = "Open the print dialog.";
+fgw_error_t pcb_act_PrintGUI(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
 	pcb_dlg_export("Print", 0, 1);
 	return 0;
