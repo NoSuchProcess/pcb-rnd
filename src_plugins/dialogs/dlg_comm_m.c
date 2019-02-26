@@ -31,6 +31,7 @@
 #include "actions.h"
 #include "hid_dad.h"
 #include "xpm.h"
+#include "dlg_comm_m.h"
 
 static const char nope[] = "Do not use.";
 

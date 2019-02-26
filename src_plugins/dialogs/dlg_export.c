@@ -29,6 +29,7 @@
 #include "hid.h"
 #include "hid_dad.h"
 #include "hid_init.h"
+#include "dlg_export.h"
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)

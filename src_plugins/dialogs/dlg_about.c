@@ -31,6 +31,7 @@
 #include "build_run.h"
 #include "hid_dad.h"
 #include "pcb-printf.h"
+#include "dlg_about.h"
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
