@@ -27,6 +27,9 @@
 /* Common dialogs: simple, modal dialogs for all parts of the code, not just
    the GUI HIDs. Even the core will run some of these, through a dispatcher. */
 
+#include "config.h"
+#include "actions.h"
+#include "hid_dad.h"
 #include "xpm.h"
 
 static const char nope[] = "Do not use.";
@@ -36,7 +39,7 @@ static void prompt_enter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	pcb_hid_dad_close(hid_ctx, attr->user_data, 0);
 }
 
-static fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *label, *default_str = "", *title = "pcb-rnd user input";
 	const char *pcb_acts_gui_PromptFor =  nope;
@@ -72,7 +75,7 @@ static fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *ar
 }
 
 
-static fgw_error_t pcb_act_gui_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+fgw_error_t pcb_act_gui_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *icon, *title, *label, *txt;
 	const char *pcb_acts_gui_MessageBox = nope;
@@ -140,7 +143,7 @@ static void color_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wclr, &val);
 }
 
-static fgw_error_t pcb_act_gui_FallbackColorPick(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+fgw_error_t pcb_act_gui_FallbackColorPick(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *sclr;
 	const char *pcb_acts_gui_PromptFor =  nope;

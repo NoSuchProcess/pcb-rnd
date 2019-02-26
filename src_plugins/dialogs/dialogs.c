@@ -45,6 +45,7 @@ const conf_dialogs_t conf_dialogs;
 #include "dlg_flag_edit.c"
 #include "dlg_padstack.c"
 #include "dlg_about.h"
+#include "dlg_comm_m.h"
 #include "dlg_pinout.c"
 #include "dlg_export.c"
 #include "dlg_lib_pstk.c"
@@ -52,7 +53,6 @@ const conf_dialogs_t conf_dialogs;
 #include "dlg_netlist.c"
 #include "dlg_plugins.c"
 #include "dlg_fontsel.c"
-#include "dlg_comm_m.c"
 #include "dlg_printcalib.c"
 #include "place.c"
 
