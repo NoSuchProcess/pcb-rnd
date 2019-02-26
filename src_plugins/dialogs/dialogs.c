@@ -40,7 +40,6 @@ const conf_dialogs_t conf_dialogs;
 
 /* include them all for static inlines */
 #include "dlg_test.c"
-#include "dlg_layer_flags.c"
 #include "dlg_padstack.c"
 #include "dlg_about.h"
 #include "dlg_comm_m.h"
@@ -48,6 +47,7 @@ const conf_dialogs_t conf_dialogs;
 #include "dlg_flag_edit.h"
 #include "dlg_fontsel.h"
 #include "dlg_layer_binding.h"
+#include "dlg_layer_flags.h"
 #include "dlg_pinout.c"
 #include "dlg_lib_pstk.c"
 #include "dlg_undo.c"

@@ -24,13 +24,17 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include "config.h"
+#include "board.h"
+#include "actions.h"
 #include "event.h"
 #include "hid_dad.h"
 #include "dlg_layer_binding.h"
+#include "dlg_layer_flags.h"
 
-static const char pcb_acts_LayerPropGui[] = "LayerPropGui(layerid)";
-static const char pcb_acth_LayerPropGui[] = "Change layer flags and properties";
-static fgw_error_t pcb_act_LayerPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+const char pcb_acts_LayerPropGui[] = "LayerPropGui(layerid)";
+const char pcb_acth_LayerPropGui[] = "Change layer flags and properties";
+fgw_error_t pcb_act_LayerPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	PCB_DAD_DECL(dlg)
 	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", 0}, {"OK", 1}, {NULL, 0}};
@@ -88,9 +92,9 @@ static fgw_error_t pcb_act_LayerPropGui(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	return 0;
 }
 
-static const char pcb_acts_GroupPropGui[] = "GroupPropGui(groupid)";
-static const char pcb_acth_GroupPropGui[] = "Change group flags and properties";
-static fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+const char pcb_acts_GroupPropGui[] = "GroupPropGui(groupid)";
+const char pcb_acth_GroupPropGui[] = "Change group flags and properties";
+fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	PCB_DAD_DECL(dlg)
 	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", 0}, {"OK", 1}, {NULL, 0}};

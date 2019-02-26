@@ -8,6 +8,7 @@ put /local/pcb/mod/OBJS [@
  $(PLUGDIR)/dialogs/dlg_flag_edit.o
  $(PLUGDIR)/dialogs/dlg_fontsel.o
  $(PLUGDIR)/dialogs/dlg_layer_binding.o
+ $(PLUGDIR)/dialogs/dlg_layer_flags.o
  $(PLUGDIR)/dialogs/dlg_pref.o
  $(PLUGDIR)/dialogs/dlg_view.o
  $(PLUGDIR)/dialogs/xpm.o
