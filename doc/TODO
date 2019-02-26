@@ -63,7 +63,6 @@
 	- rewrite gtk conv so it wouldn't use the string version anymore
 	- remove src/hid_color.[ch] and src/color_cache.[ch]
 	- remove pcb_color_t ->str, convert only when really needed
-- CLEANUP: remove pcb_rubber_band_alloc() and use genvector
 - CLEANUP: find.c rewrite:
 	- CLEANUP: a new "report(NetLength)" should not care about netlists but depend on find.c only
 	- BUG: unplated padtsakcs shall not connect layers; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
