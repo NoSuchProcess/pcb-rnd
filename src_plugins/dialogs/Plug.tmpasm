@@ -2,8 +2,9 @@ put /local/pcb/mod {dialogs}
 put /local/pcb/mod/OBJS [@
  $(PLUGDIR)/dialogs/dialogs.o
  $(PLUGDIR)/dialogs/act_dad.o
- $(PLUGDIR)/dialogs/dlg_view.o
+ $(PLUGDIR)/dialogs/dlg_about.o
  $(PLUGDIR)/dialogs/dlg_pref.o
+ $(PLUGDIR)/dialogs/dlg_view.o
  $(PLUGDIR)/dialogs/xpm.o
 @]
 put /local/pcb/mod/CONFFILE {dialogs.conf}

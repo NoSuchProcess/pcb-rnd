@@ -24,8 +24,12 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include "config.h"
+
 #include <genvector/gds_char.h>
+#include "actions.h"
 #include "build_run.h"
+#include "hid_dad.h"
 #include "pcb-printf.h"
 
 typedef struct{
@@ -56,6 +60,7 @@ static void pcb_dlg_about(void)
 	PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
 		PCB_DAD_COMPFLAG(about_ctx.dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_BEGIN_TABBED(about_ctx.dlg, tabs);
+			PCB_DAD_COMPFLAG(about_ctx.dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
 				PCB_DAD_LABEL(about_ctx.dlg, pcb_get_info_program());
 				PCB_DAD_LABEL(about_ctx.dlg, pcb_get_info_copyright());
@@ -63,8 +68,9 @@ static void pcb_dlg_about(void)
 			PCB_DAD_END(about_ctx.dlg);
 
 			PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
-				PCB_DAD_COMPFLAG(about_ctx.dlg, PCB_HATF_SCROLL);
+				PCB_DAD_COMPFLAG(about_ctx.dlg, /*PCB_HATF_SCROLL |*/ /*PCB_HATF_FRAME |*/ PCB_HATF_EXPFILL);
 				PCB_DAD_LABEL(about_ctx.dlg, pcb_get_info_compile_options());
+					PCB_DAD_COMPFLAG(about_ctx.dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_END(about_ctx.dlg);
 
 
@@ -100,9 +106,9 @@ static void pcb_dlg_about(void)
 	PCB_DAD_NEW("about", about_ctx.dlg, "About pcb-rnd", &about_ctx, pcb_false, about_close_cb);
 }
 
-static const char pcb_acts_About[] = "About()\n";
-static const char pcb_acth_About[] = "Present the about box";
-static fgw_error_t pcb_act_About(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+const char pcb_acts_About[] = "About()\n";
+const char pcb_acth_About[] = "Present the about box";
+fgw_error_t pcb_act_About(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_dlg_about();
 	PCB_ACT_IRES(0);

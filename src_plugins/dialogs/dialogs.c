@@ -44,7 +44,7 @@ const conf_dialogs_t conf_dialogs;
 #include "dlg_layer_flags.c"
 #include "dlg_flag_edit.c"
 #include "dlg_padstack.c"
-#include "dlg_about.c"
+#include "dlg_about.h"
 #include "dlg_pinout.c"
 #include "dlg_export.c"
 #include "dlg_lib_pstk.c"
