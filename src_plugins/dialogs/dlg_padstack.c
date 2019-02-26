@@ -28,6 +28,7 @@
 #include "obj_pstk_op.h"
 #include "obj_pstk_inlines.h"
 #include "obj_subc_parent.h"
+#include "search.h"
 #include "operation.h"
 #include "dlg_lib_pstk.h"
 

@@ -24,17 +24,22 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include "config.h"
+#include "actions.h"
 #include "board.h"
 #include "data.h"
 #include "event.h"
 #include "conf_core.h"
 #include "compat_misc.h"
+#include "hid_dad.h"
+#include "funchash_core.h"
 #include "obj_subc.h"
 #include "search.h"
+#include "dlg_layer_binding.h"
 
-static const char *lb_comp[] = { "+manual", "-manual", "+auto", "-auto", NULL };
-static const char *lb_types[] = { "UNKNOWN", "paste", "mask", "silk", "copper", "boundary", "mech", "doc", "virtual", NULL };
-static const char *lb_side[] = { "top", "bottom", NULL };
+const char *pcb_lb_comp[] = { "+manual", "-manual", "+auto", "-auto", NULL };
+const char *pcb_lb_types[] = { "UNKNOWN", "paste", "mask", "silk", "copper", "boundary", "mech", "doc", "virtual", NULL };
+const char *pcb_lb_side[] = { "top", "bottom", NULL };
 
 typedef struct {
 	int name, comp, type, offs, from, side, purpose, layer; /* widet indices */
@@ -50,7 +55,7 @@ typedef struct {
 	pcb_hid_attribute_t *attrs;
 } lb_ctx_t;
 
-static int ly_type2enum(pcb_layer_type_t type)
+int pcb_ly_type2enum(pcb_layer_type_t type)
 {
 	if (type & PCB_LYT_PASTE)        return 1;
 	else if (type & PCB_LYT_MASK)    return 2;
@@ -65,10 +70,10 @@ static int ly_type2enum(pcb_layer_type_t type)
 
 static void set_ly_type(void *hid_ctx, int wid, pcb_layer_type_t type)
 {
-	PCB_DAD_SET_VALUE(hid_ctx, wid, int_value, ly_type2enum(type));
+	PCB_DAD_SET_VALUE(hid_ctx, wid, int_value, pcb_ly_type2enum(type));
 }
 
-static void get_ly_type_(int combo_type, pcb_layer_type_t *type)
+void pcb_get_ly_type_(int combo_type, pcb_layer_type_t *type)
 {
 	/* clear relevant flags */
 	*type &= ~(PCB_LYT_ANYTHING | PCB_LYT_ANYWHERE | PCB_LYT_VIRTUAL);
@@ -89,7 +94,7 @@ static void get_ly_type_(int combo_type, pcb_layer_type_t *type)
 
 static void get_ly_type(int combo_type, int combo_side, int dlg_offs, pcb_layer_type_t *type, int *offs)
 {
-	get_ly_type_(combo_type, type);
+	pcb_get_ly_type_(combo_type, type);
 
 	if (PCB_LAYER_SIDED(*type)) {
 		/* set side and offset */
@@ -232,9 +237,9 @@ static void lb_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 	lb_data2dialog(hid_ctx, ctx); /* update disables */
 }
 
-static const char pcb_acts_LayerBinding[] = "LayerBinding(object)\nLayerBinding(selected)\nLayerBinding(buffer)\n";
-static const char pcb_acth_LayerBinding[] = "Change the layer binding.";
-static fgw_error_t pcb_act_LayerBinding(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+const char pcb_acts_LayerBinding[] = "LayerBinding(object)\nLayerBinding(selected)\nLayerBinding(buffer)\n";
+const char pcb_acth_LayerBinding[] = "Change the layer binding.";
+fgw_error_t pcb_act_LayerBinding(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op = F_Object;
 	lb_ctx_t ctx;
@@ -306,9 +311,9 @@ TODO("subc TODO")
 							w->name = PCB_DAD_CURRENT(dlg);
 					PCB_DAD_END(dlg);
 					PCB_DAD_BEGIN_HBOX(dlg);
-						PCB_DAD_ENUM(dlg, lb_comp); /* coposite */
+						PCB_DAD_ENUM(dlg, pcb_lb_comp); /* coposite */
 							w->comp = PCB_DAD_CURRENT(dlg);
-						PCB_DAD_ENUM(dlg, lb_types); /* lyt */
+						PCB_DAD_ENUM(dlg, pcb_lb_types); /* lyt */
 							w->type = PCB_DAD_CURRENT(dlg);
 					PCB_DAD_END(dlg);
 					PCB_DAD_BEGIN_HBOX(dlg);
@@ -318,7 +323,7 @@ TODO("subc TODO")
 							w->offs = PCB_DAD_CURRENT(dlg);
 						PCB_DAD_LABEL(dlg, "from");
 							w->from = PCB_DAD_CURRENT(dlg);
-						PCB_DAD_ENUM(dlg, lb_side);
+						PCB_DAD_ENUM(dlg, pcb_lb_side);
 							w->side = PCB_DAD_CURRENT(dlg);
 					PCB_DAD_END(dlg);
 					PCB_DAD_BEGIN_HBOX(dlg);

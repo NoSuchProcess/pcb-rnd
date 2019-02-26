@@ -1,5 +1,6 @@
 #include "event.h"
 #include "hid_dad.h"
+#include "dlg_layer_binding.h"
 
 static const char pcb_acts_LayerPropGui[] = "LayerPropGui(layerid)";
 static const char pcb_acth_LayerPropGui[] = "Change layer flags and properties";
@@ -93,7 +94,7 @@ static fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *arg
 				PCB_DAD_HELP(dlg, "group name");
 				wname = PCB_DAD_CURRENT(dlg);
 			PCB_DAD_LABEL(dlg, "type");
-			PCB_DAD_ENUM(dlg, lb_types);
+			PCB_DAD_ENUM(dlg, pcb_lb_types);
 				PCB_DAD_HELP(dlg, "type/material of the group");
 				wtype = PCB_DAD_CURRENT(dlg);
 			if (!omit_loc) {
@@ -113,7 +114,7 @@ static fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *arg
 
 
 	dlg[wname].default_val.str_value = pcb_strdup(g->name);
-	dlg[wtype].default_val.int_value = orig_type = ly_type2enum(g->ltype);
+	dlg[wtype].default_val.int_value = orig_type = pcb_ly_type2enum(g->ltype);
 	dlg[wpurp].default_val.str_value = pcb_strdup(g->purpose == NULL ? "" : g->purpose);
 	if (!omit_loc)
 		dlg[wloc].default_val.int_value = def_loc;
@@ -142,7 +143,7 @@ static fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *arg
 
 		if (dlg[wtype].default_val.int_value != orig_type) {
 			pcb_layer_type_t lyt = 0;
-			get_ly_type_(dlg[wtype].default_val.int_value, &lyt);
+			pcb_get_ly_type_(dlg[wtype].default_val.int_value, &lyt);
 			g->ltype &= ~PCB_LYT_ANYTHING;
 			g->ltype |= lyt;
 			changed = 1;
