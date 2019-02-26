@@ -450,10 +450,6 @@ static Widget ltf_text_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_at
 
 	stdarg_n = 0;
 	stdarg(XmNresizePolicy, XmRESIZE_GROW);
-	stdarg(XmNleftAttachment, XmATTACH_FORM);
-	stdarg(XmNrightAttachment, XmATTACH_FORM);
-	stdarg(XmNtopAttachment, XmATTACH_FORM);
-	stdarg(XmNbottomAttachment, XmATTACH_FORM);
 	stdarg(XmNeditMode, XmMULTI_LINE_EDIT);
 TODO("this should be removed once the EXPFILL bug is fixed");
 	stdarg(XmNrows, 8);
