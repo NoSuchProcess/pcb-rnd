@@ -26,6 +26,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "event.h"
 #include "conf_core.h"
 #include "compat_misc.h"
 #include "obj_subc.h"

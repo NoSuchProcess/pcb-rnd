@@ -47,12 +47,12 @@ const conf_dialogs_t conf_dialogs;
 #include "dlg_comm_m.h"
 #include "dlg_export.h"
 #include "dlg_flag_edit.h"
+#include "dlg_fontsel.h"
 #include "dlg_pinout.c"
 #include "dlg_lib_pstk.c"
 #include "dlg_undo.c"
 #include "dlg_netlist.c"
 #include "dlg_plugins.c"
-#include "dlg_fontsel.c"
 #include "dlg_printcalib.c"
 #include "place.c"
 

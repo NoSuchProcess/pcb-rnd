@@ -24,10 +24,17 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include "config.h"
+#include "actions.h"
 #include "board.h"
 #include "change.h"
+#include "conf_core.h"
+#include "event.h"
+#include "hid_dad.h"
 #include "stub_draw.h"
 #include "idpath.h"
+#include "search.h"
+#include "dlg_fontsel.h"
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
@@ -183,9 +190,9 @@ static void pcb_dlg_fontsel(pcb_board_t *pcb, int modal, int global, pcb_text_t 
 	PCB_DAD_NEW("fontsel", ctx->dlg, "Font selection", ctx, modal, fontsel_close_cb);
 }
 
-static const char pcb_acts_Fontsel[] = "Fontsel()\n";
-static const char pcb_acth_Fontsel[] = "Open the font selection dialog";
-static fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+const char pcb_acts_Fontsel[] = "Fontsel()\n";
+const char pcb_acth_Fontsel[] = "Open the font selection dialog";
+fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *op = NULL;
 	int modal = 0, global = 1;
