@@ -68,7 +68,6 @@
 - CLEANUP: layre order from data
 	- central code for building a list of layer groups ordered by draw from front to back (omit disabled/invisible layers)
 	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
-- CLEANUP: When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Move this in core. Make rat lines remember their terminal object by ID, iterate over rats to find the ones to deal with [report: Ade]
 - CLEANUP: remove conf_cmd_is_safe: already handled by the conf_board_ignores
 - CLEANUP/feature: pcb_subc_smash_buffer() should really copy data so it can smash multiple subcs and subc objects end up on the layer they were bound to [report: keantoken]
 - CLEANUP: non-modal fontsel: refresh on text font change from other source [report: Igor2]
@@ -85,6 +84,8 @@
 	- CLEANUP: remove rats_patch_old.c
 	- CLEANUP: remove the old gtk netlist dialog
 	- CLEANUP: pcb_term_find_name() do we really need the 'same' arg?
+	- CLEANUP: rat object rewrite: make rat lines remember their anchor object by ID instead of group1/group2
+		- CLEANUP: When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Move this in core., iterate over rats to find the ones to deal with [report: Ade]
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
