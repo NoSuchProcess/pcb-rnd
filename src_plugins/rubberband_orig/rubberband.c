@@ -5,6 +5,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
+ *  Copyright (C) 2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -83,14 +84,37 @@ typedef struct {
 	int delta_index[2]; /* The index into the delta array for each arc end. -1 = end not attached */
 } pcb_rubberband_arc_t;
 
+#define GVT(x) vtrbli_ ## x
+#define GVT_ELEM_TYPE pcb_rubberband_t
+#define GVT_SIZE_TYPE size_t
+#define GVT_DOUBLING_THRS 4096
+#define GVT_START_SIZE 32
+#define GVT_FUNC
+#define GVT_SET_NEW_BYTES_TO 0
+#include <genvector/genvector_impl.h>
+#define GVT_REALLOC(vect, ptr, size)  realloc(ptr, size)
+#define GVT_FREE(vect, ptr)           free(ptr)
+#include <genvector/genvector_impl.c>
+#include <genvector/genvector_undef.h>
+
+#define GVT(x) vtrbar_ ## x
+#define GVT_ELEM_TYPE pcb_rubberband_arc_t
+#define GVT_SIZE_TYPE size_t
+#define GVT_DOUBLING_THRS 4096
+#define GVT_START_SIZE 32
+#define GVT_FUNC
+#define GVT_SET_NEW_BYTES_TO 0
+#include <genvector/genvector_impl.h>
+#define GVT_REALLOC(vect, ptr, size)  realloc(ptr, size)
+#define GVT_FREE(vect, ptr)           free(ptr)
+#include <genvector/genvector_impl.c>
+#include <genvector/genvector_undef.h>
+
+
 
 typedef struct {
-	pcb_cardinal_t RubberbandN; /* number of lines in array */
-	pcb_cardinal_t RubberbandMax;
-	pcb_rubberband_t *Rubberband;
-	pcb_cardinal_t RubberbandArcN; /* number of lines in array */
-	pcb_cardinal_t RubberbandArcMax;
-	pcb_rubberband_arc_t *RubberbandArcs;
+	vtrbli_t lines;
+	vtrbar_t arcs;
 } rubber_ctx_t;
 
 static rubber_ctx_t rubber_band_state;
@@ -107,8 +131,6 @@ struct rubber_info {
 };
 
 
-static pcb_rubberband_t *pcb_rubber_band_alloc(rubber_ctx_t *rbnd);
-static pcb_rubberband_arc_t *pcb_rubber_band_arc_alloc(rubber_ctx_t *rbnd);
 static pcb_rubberband_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, int point_number, int delta_index);
 static pcb_rubberband_arc_t *pcb_rubber_band_create_arc(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_arc_t *Line, int end, int delta_index);
 static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_line_t *, pcb_point_t *, int delta_index);
@@ -140,12 +162,12 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t *b, void *cl)
 	t = line->Thickness / 2;
 
 	/* Don't add the line if both ends of it are already in the list. */
-	for(n = 0; (n < rbnd->RubberbandN) && (have_line == NULL); n++)
-		if (rbnd->Rubberband[n].Line == line) {
-			have_line = &rbnd->Rubberband[n];
-			if (rbnd->Rubberband[n].delta_index[0] >= 0)
+	for(n = 0; (n < rbnd->lines.used) && (have_line == NULL); n++)
+		if (rbnd->lines.array[n].Line == line) {
+			have_line = &rbnd->lines.array[n];
+			if (rbnd->lines.array[n].delta_index[0] >= 0)
 				have_point1 = 1;
-			if (rbnd->Rubberband[n].delta_index[1] >= 0)
+			if (rbnd->lines.array[n].delta_index[1] >= 0)
 				have_point2 = 1;
 		}
 
@@ -283,10 +305,10 @@ static pcb_r_dir_t rubber_callback_arc(const pcb_box_t *b, void *cl)
 		return PCB_R_DIR_NOT_FOUND;
 
 	/* Don't add the arc if both ends of it are already in the list. */
-	for(n = 0; n < rbnd->RubberbandArcN; n++)
-		if (rbnd->RubberbandArcs[n].Arc == arc) {
-			have_point1 = !(rbnd->RubberbandArcs[n].delta_index[0] < 0);
-			have_point2 = !(rbnd->RubberbandArcs[n].delta_index[1] < 0);
+	for(n = 0; n < rbnd->arcs.used; n++)
+		if (rbnd->arcs.array[n].Arc == arc) {
+			have_point1 = !(rbnd->arcs.array[n].delta_index[0] < 0);
+			have_point2 = !(rbnd->arcs.array[n].delta_index[1] < 0);
 		}
 
 	if (have_point1 && have_point2)
@@ -618,9 +640,9 @@ static void CheckEntireArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
 						continue;
 
 					/* Check whether the line is already in the rubberband list. */
-					for(l = 0; (l < rbnd->RubberbandN) && (have_line == NULL); l++)
-						if (rbnd->Rubberband[l].Line == line)
-							have_line = &rbnd->Rubberband[l];
+					for(l = 0; (l < rbnd->lines.used) && (have_line == NULL); l++)
+						if (rbnd->lines.array[l].Line == line)
+							have_line = &rbnd->lines.array[l];
 
 					/* Check whether any of the scanned line points touch the passed line */
 					thick = (line->Thickness + 1) / 2;
@@ -688,9 +710,9 @@ static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t 
 						continue;
 
 					/* Check whether the line is already in the rubberband list. */
-					for(l = 0; (l < rbnd->RubberbandN) && (have_line == NULL); l++)
-						if (rbnd->Rubberband[l].Line == line)
-							have_line = &rbnd->Rubberband[l];
+					for(l = 0; (l < rbnd->lines.used) && (have_line == NULL); l++)
+						if (rbnd->lines.array[l].Line == line)
+							have_line = &rbnd->lines.array[l];
 
 					/* Check whether any of the line points touch the polygon */
 					thick = (line->Thickness + 1) / 2;
@@ -754,9 +776,9 @@ static void CheckLineForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *La
 						continue;
 
 					/* Check whether the line is already in the rubberband list. */
-					for(l = 0; (l < rbnd->RubberbandN) && (have_line == NULL); l++)
-						if (rbnd->Rubberband[l].Line == line)
-							have_line = &rbnd->Rubberband[l];
+					for(l = 0; (l < rbnd->lines.used) && (have_line == NULL); l++)
+						if (rbnd->lines.array[l].Line == line)
+							have_line = &rbnd->lines.array[l];
 
 					/* Check whether any of the scanned line points touch the passed line */
 					thick = (line->Thickness + 1) / 2;
@@ -815,9 +837,9 @@ static void CheckPadStackForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pstk_t 
 							continue;
 
 						/* Check whether the line is already in the rubberband list. */
-						for(l = 0; (l < rbnd->RubberbandN) && (have_line == NULL); l++)
-							if (rbnd->Rubberband[l].Line == line)
-								have_line = &rbnd->Rubberband[l];
+						for(l = 0; (l < rbnd->lines.used) && (have_line == NULL); l++)
+							if (rbnd->lines.array[l].Line == line)
+								have_line = &rbnd->lines.array[l];
 
 						/* Check whether any of the scanned line points touch the passed padstack */
 						thick = (line->Thickness + 1) / 2;
@@ -964,37 +986,6 @@ static void pcb_rubber_band_lookup_rat_lines(rubber_ctx_t *rbnd, int Type, void 
 }
 
 /* ---------------------------------------------------------------------------
- * get next slot for a rubberband connection, allocates memory if necessary
- */
-static pcb_rubberband_t *pcb_rubber_band_alloc(rubber_ctx_t *rbnd)
-{
-	pcb_rubberband_t *ptr = rbnd->Rubberband;
-
-	/* realloc new memory if necessary and clear it */
-	if (rbnd->RubberbandN >= rbnd->RubberbandMax) {
-		rbnd->RubberbandMax += STEP_RUBBERBAND;
-		ptr = (pcb_rubberband_t *) realloc(ptr, rbnd->RubberbandMax * sizeof(pcb_rubberband_t));
-		rbnd->Rubberband = ptr;
-		memset(ptr + rbnd->RubberbandN, 0, STEP_RUBBERBAND * sizeof(pcb_rubberband_t));
-	}
-	return (ptr + rbnd->RubberbandN++);
-}
-
-static pcb_rubberband_arc_t *pcb_rubber_band_arc_alloc(rubber_ctx_t *rbnd)
-{
-	pcb_rubberband_arc_t *ptr = rbnd->RubberbandArcs;
-
-	/* realloc new memory if necessary and clear it */
-	if (rbnd->RubberbandArcN >= rbnd->RubberbandArcMax) {
-		rbnd->RubberbandArcMax += STEP_RUBBERBAND;
-		ptr = (pcb_rubberband_arc_t *) realloc(ptr, rbnd->RubberbandArcMax * sizeof(pcb_rubberband_arc_t));
-		rbnd->RubberbandArcs = ptr;
-		memset(ptr + rbnd->RubberbandArcN, 0, STEP_RUBBERBAND * sizeof(pcb_rubberband_arc_t));
-	}
-	return (ptr + rbnd->RubberbandArcN++);
-}
-
-/* ---------------------------------------------------------------------------
  * adds a new line to the rubberband list of 'pcb_crosshair.AttachedObject'
  * if Layer == 0  it is a rat line
  */
@@ -1008,11 +999,11 @@ static pcb_rubberband_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t 
 	   the very same coord, the same rat endpoint found and added multiple times
 	   so the move operation is executed on it multiple times causing the move
 	   to end up with multiplied delta */
-	for(n = 0; n < rbnd->RubberbandN; n++)
-		if (rbnd->Rubberband[n].Line == Line)
-			return &rbnd->Rubberband[n];
+	for(n = 0; n < rbnd->lines.used; n++)
+		if (rbnd->lines.array[n].Line == Line)
+			return &rbnd->lines.array[n];
 
-	ptr = pcb_rubber_band_alloc(rbnd);
+	ptr = vtrbli_alloc_append(&rbnd->lines, 1);
 	point_number &= 1;
 	ptr->Layer = Layer;
 	ptr->Line = Line;
@@ -1027,12 +1018,12 @@ static pcb_rubberband_arc_t *pcb_rubber_band_create_arc(rubber_ctx_t *rbnd, pcb_
 	pcb_rubberband_arc_t *ptr = NULL;
 	int n;
 
-	for(n = 0; (n < rbnd->RubberbandArcN) && (ptr == NULL); n++)
-		if (rbnd->RubberbandArcs[n].Arc == Arc)
-			ptr = &rbnd->RubberbandArcs[n];
+	for(n = 0; (n < rbnd->arcs.used) && (ptr == NULL); n++)
+		if (rbnd->arcs.array[n].Arc == Arc)
+			ptr = &rbnd->arcs.array[n];
 
 	if (ptr == NULL) {
-		ptr = pcb_rubber_band_arc_alloc(rbnd);
+		ptr = vtrbar_alloc_append(&rbnd->arcs, 1);
 		ptr->Layer = Layer;
 		ptr->Arc = Arc;
 		ptr->delta_index[0] = -1;
@@ -1048,8 +1039,8 @@ static pcb_rubberband_arc_t *pcb_rubber_band_create_arc(rubber_ctx_t *rbnd, pcb_
 static void rbe_reset(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
-	rbnd->RubberbandN = 0;
-	rbnd->RubberbandArcN = 0;
+	rbnd->lines.used = 0;
+	rbnd->arcs.used = 0;
 }
 
 static void rbe_remove_subc(void *user_data, int argc, pcb_event_arg_t argv[])
@@ -1059,10 +1050,10 @@ static void rbe_remove_subc(void *user_data, int argc, pcb_event_arg_t argv[])
 	void *ptr1 = argv[1].d.p, *ptr2 = argv[2].d.p, *ptr3 = argv[3].d.p;
 	int i, type = PCB_OBJ_SUBC;
 
-	rbnd->RubberbandN = 0;
+	rbnd->lines.used = 0;
 	pcb_rubber_band_lookup_rat_lines(rbnd, type, ptr1, ptr2, ptr3);
-	ptr = rbnd->Rubberband;
-	for(i = 0; i < rbnd->RubberbandN; i++) {
+	ptr = rbnd->lines.array;
+	for(i = 0; i < rbnd->lines.used; i++) {
 		if (PCB->RatOn)
 			pcb_rat_invalidate_erase((pcb_rat_t *) ptr->Line);
 
@@ -1074,11 +1065,11 @@ static void rbe_remove_subc(void *user_data, int argc, pcb_event_arg_t argv[])
 static void rbe_move(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
-	pcb_rubberband_t *ptr = rbnd->Rubberband;
+	pcb_rubberband_t *ptr = rbnd->lines.array;
 	int direct = argv[1].d.i;
 
 
-	while(rbnd->RubberbandN) {
+	while(rbnd->lines.used) {
 		const int dindex1 = ptr->delta_index[0];
 		const int dindex2 = ptr->delta_index[1];
 
@@ -1132,14 +1123,14 @@ static void rbe_move(void *user_data, int argc, pcb_event_arg_t argv[])
 			}
 		}
 
-		rbnd->RubberbandN--;
+		rbnd->lines.used--;
 		ptr++;
 	}
 
 	/* TODO: Move rubberband arcs. */
 	if (conf_rbo.plugins.rubberband_orig.enable_rubberband_arcs != 0) {
-		pcb_rubberband_arc_t *arcptr = rbnd->RubberbandArcs;
-		int i = rbnd->RubberbandArcN;
+		pcb_rubberband_arc_t *arcptr = rbnd->arcs.array;
+		int i = rbnd->arcs.used;
 
 		while(i) {
 			int connections = (arcptr->delta_index[0] >= 0 ? 1 : 0) | (arcptr->delta_index[1] >= 0 ? 2 : 0);
@@ -1181,8 +1172,8 @@ static void rbe_draw(void *user_data, int argc, pcb_event_arg_t argv[])
 	int direct = argv[1].d.i;
 
 	/* draw the attached rubberband lines too */
-	i = rbnd->RubberbandN;
-	ptr = rbnd->Rubberband;
+	i = rbnd->lines.used;
+	ptr = rbnd->lines.array;
 	while(i) {
 
 		if (PCB_FLAG_TEST(PCB_FLAG_VIA, ptr->Line)) {
@@ -1250,8 +1241,8 @@ static void rbe_draw(void *user_data, int argc, pcb_event_arg_t argv[])
 
 	/* draw the attached rubberband arcs */
 	if (conf_rbo.plugins.rubberband_orig.enable_rubberband_arcs != 0) {
-		pcb_rubberband_arc_t *arcptr = rbnd->RubberbandArcs;
-		i = rbnd->RubberbandArcN;
+		pcb_rubberband_arc_t *arcptr = rbnd->arcs.array;
+		i = rbnd->arcs.used;
 
 		while(i) {
 			int connections = (arcptr->delta_index[0] >= 0 ? 1 : 0) | (arcptr->delta_index[1] >= 0 ? 2 : 0);
@@ -1294,8 +1285,8 @@ static void rbe_rotate90(void *user_data, int argc, pcb_event_arg_t argv[])
 	int *changed = argv[8].d.p;
 
 	/* move all the rubberband lines... and reset the counter */
-	ptr = rbnd->Rubberband;
-	while(rbnd->RubberbandN) {
+	ptr = rbnd->lines.array;
+	while(rbnd->lines.used) {
 		const int dindex1 = ptr->delta_index[0];
 		const int dindex2 = ptr->delta_index[1];
 
@@ -1331,7 +1322,7 @@ static void rbe_rotate90(void *user_data, int argc, pcb_event_arg_t argv[])
 			pcb_rat_invalidate_draw((pcb_rat_t *) ptr->Line);
 		}
 
-		rbnd->RubberbandN--;
+		rbnd->lines.used--;
 		ptr++;
 	}
 }
@@ -1355,10 +1346,10 @@ TODO(": rewrite this for subc - also move it out from rubberband, it has nothing
 		int i;
 
 		pcb_undo_restore_serial();
-		rbnd->RubberbandN = 0;
+		rbnd->lines.used = 0;
 		pcb_rubber_band_lookup_rat_lines(rbnd, type, ptr1, ptr2, ptr3);
 		ptr = rbnd->Rubberband;
-		for(i = 0; i < rbnd->RubberbandN; i++, ptr++) {
+		for(i = 0; i < rbnd->lines.used; i++, ptr++) {
 			if (PCB->RatOn)
 				pcb_rat_invalidate_erase((pcb_rat_t *) ptr->Line);
 			pcb_undo_move_obj_to_remove(PCB_OBJ_RAT, ptr->Line, ptr->Line, ptr->Line);
@@ -1403,13 +1394,13 @@ static void rbe_constrain_main_line(void *user_data, int argc, pcb_event_arg_t a
 
 	*constrained = 0;
 
-	if (rbnd->RubberbandN != 2)
+	if (rbnd->lines.used != 2)
 		return;
 
-	rub1 = rbnd->Rubberband[0].Line;
-	rub2 = rbnd->Rubberband[1].Line;
-	rub1end = rbnd->Rubberband[0].delta_index[0] >= 0 ? 1 : 2;
-	rub2end = rbnd->Rubberband[1].delta_index[0] >= 0 ? 1 : 2;
+	rub1 = rbnd->lines.array[0].Line;
+	rub2 = rbnd->lines.array[1].Line;
+	rub1end = rbnd->lines.array[0].delta_index[0] >= 0 ? 1 : 2;
+	rub2end = rbnd->lines.array[1].delta_index[0] >= 0 ? 1 : 2;
 
 	/* Create float point-vector representations of the lines */
 	fmain = pcb_fline_create_from_points(&line->Point1, &line->Point2);
