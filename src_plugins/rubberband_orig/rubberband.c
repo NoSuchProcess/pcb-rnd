@@ -27,9 +27,6 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  *
  */
-/* functions used by 'rubberband moves' */
-
-#define	STEP_RUBBERBAND		100
 
 #include "config.h"
 
@@ -69,12 +66,6 @@ conf_rubberband_orig_t conf_rbo;
 typedef struct { /* rubberband lines for element moves */
 	pcb_layer_t *Layer; /* layer that holds the line */
 	pcb_line_t *Line; /* the line itself */
-	/*	pcb_point_t *MovedPoint;	*//* and finally the point */
-/*
-	pcb_coord_t DX;
-	pcb_coord_t DY;
-	int delta_is_valid; */
-
 	int delta_index[2]; /* The index into the delta array for the two line points */
 } pcb_rubberband_t;
 
@@ -415,11 +406,9 @@ static void CheckLinePointForRat(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_poi
 	pcb_r_search(PCB->Data->rat_tree, (pcb_box_t *) Point, NULL, rat_callback, &info, NULL);
 }
 
-/* ---------------------------------------------------------------------------
- * checks all visible lines which belong to the same group as the passed line.
+/* checks all visible lines which belong to the same group as the passed line.
  * If one of the endpoints of the line is connected to an endpoint of the 
- * passed line, the scanned line is added to the 'rubberband' list
- */
+ * passed line, the scanned line is added to the 'rubberband' list */
 static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *LinePoint, int delta_index)
 {
 	const pcb_layergrp_id_t group = pcb_layer_get_group_(Layer);
@@ -458,11 +447,9 @@ static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * checks all visible arcs which belong to the same group as the passed line.
+/* checks all visible arcs which belong to the same group as the passed line.
  * If one of the endpoints of the arc lays * inside the passed line,
- * the scanned arc is added to the 'rubberband' list
- */
+ * the scanned arc is added to the 'rubberband' list */
 static void CheckLinePointForRubberbandArcConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *LinePoint, pcb_bool Exact)
 {
 	const pcb_layergrp_id_t group = pcb_layer_get_group_(Layer);
@@ -501,11 +488,9 @@ static void CheckLinePointForRubberbandArcConnection(rubber_ctx_t *rbnd, pcb_lay
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * checks all visible lines which belong to the same group as the passed arc.
+/* checks all visible lines which belong to the same group as the passed arc.
  * If one of the endpoints of the line is on the selected arc end,
- * the scanned line is added to the 'rubberband' list
- */
+ * the scanned line is added to the 'rubberband' list */
 static void CheckArcPointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_arc_t *Arc, int *end_pt, pcb_bool Exact)
 {
 	const pcb_layergrp_id_t group = pcb_layer_get_group_(Layer);
@@ -550,11 +535,9 @@ static void CheckArcPointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * checks all visible lines which belong to the same group as the passed arc.
+/* checks all visible lines which belong to the same group as the passed arc.
  * If one of the endpoints of the line is on either of the selected arcs ends,
- * the scanned line is added to the 'rubberband' list.
- */
+ * the scanned line is added to the 'rubberband' list. */
 static void CheckArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_arc_t *Arc, pcb_bool Exact)
 {
 	struct rubber_info info;
@@ -600,11 +583,9 @@ static void CheckArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Lay
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * checks all visible lines which belong to the same group as the passed Arc.
+/* checks all visible lines which belong to the same group as the passed Arc.
  * If either of the endpoints of the line lays anywhere inside the passed Arc,
- * the scanned line is added to the 'rubberband' list
- */
+ * the scanned line is added to the 'rubberband' list */
 static void CheckEntireArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	pcb_board_t *board = pcb_data_get_top(PCB->Data);
@@ -669,11 +650,9 @@ static void CheckEntireArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * checks all visible lines which belong to the same group as the passed polygon.
+/* checks all visible lines which belong to the same group as the passed polygon.
  * If one of the endpoints of the line lays inside the passed polygon,
- * the scanned line is added to the 'rubberband' list
- */
+ * the scanned line is added to the 'rubberband' list */
 static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
 	const pcb_bool clearpoly = PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, Polygon);
@@ -739,11 +718,9 @@ static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t 
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * checks all visible lines which belong to the same group as the passed Line.
+/* checks all visible lines which belong to the same group as the passed Line.
  * If either of the endpoints of the line lays anywhere inside the passed line,
- * the scanned line is added to the 'rubberband' list
- */
+ * the scanned line is added to the 'rubberband' list */
 static void CheckLineForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	pcb_layergrp_id_t group = pcb_layer_get_group_(Layer);
@@ -805,11 +782,9 @@ static void CheckLineForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *La
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * checks all visible lines.  If either of the endpoints of the line lays 
+/* checks all visible lines.  If either of the endpoints of the line lays 
  * anywhere inside the passed padstack, the scanned line is added to the 
- * 'rubberband' list.
- */
+ * 'rubberband' list. */
 static void CheckPadStackForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pstk_t *pstk)
 {
 	pcb_layergrp_id_t top;
@@ -868,11 +843,9 @@ static void CheckPadStackForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pstk_t 
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * lookup all lines that are connected to an object and save the
+/* lookup all lines that are connected to an object and save the
  * data to 'pcb_crosshair.AttachedObject.Rubberband'
- * lookup is only done for visible layers
- */
+ * lookup is only done for visible layers */
 static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 
@@ -985,10 +958,8 @@ static void pcb_rubber_band_lookup_rat_lines(rubber_ctx_t *rbnd, int Type, void 
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * adds a new line to the rubberband list of 'pcb_crosshair.AttachedObject'
- * if Layer == 0  it is a rat line
- */
+/* adds a new line to the rubberband list of 'pcb_crosshair.AttachedObject'
+ * if Layer == 0  it is a rat line */
 static pcb_rubberband_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, int point_number, int delta_index)
 {
 	pcb_rubberband_t *ptr;
