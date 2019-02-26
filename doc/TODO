@@ -11,7 +11,6 @@
 + BUG: bug_files/obsconf.lht: load, get a warning for obsolete config; save into a new file and the broken conf node is not removed [report: keantoken]
 	+> this is not a bug: we try to preserve thins in the file that we don't fully understand. This is intentional. Think the other way around: you open a file with an older pcb-rnd version that doesn't know about a config node, you do not want it to remove the unknown node because you then may want to open the file again with the new version. It prints an error message with the line number in the file, so you can go and delete the offending lines if you want them removed.
 + BUG: ML 2479: gtk crosshair re-enter to the last pos doesn't always draw the crossghair [report: pstuge]
-? BUG: scconfig: if libgd is not detected, there's an extra error on disable-gd-gif [report: Erich]
 ? BUG: configure without glib installed -> 'unknown arugment disable-gtk' [report: Ade]
 ? BUG: #define TODO(x) doesn't compile on IRIX system with --debug option ON [report: Ian]
 + BUG: open export dialogue. Export a PNG of the layout. Hit escape instead of "close". Export dialog cannot be opened again unless pcb-rnd is restarted [report: Erich]. 
