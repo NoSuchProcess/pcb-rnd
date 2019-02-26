@@ -48,8 +48,8 @@ const conf_dialogs_t conf_dialogs;
 #include "dlg_fontsel.h"
 #include "dlg_layer_binding.h"
 #include "dlg_layer_flags.h"
+#include "dlg_lib_pstk.h"
 #include "dlg_pinout.c"
-#include "dlg_lib_pstk.c"
 #include "dlg_undo.c"
 #include "dlg_netlist.c"
 #include "dlg_plugins.c"
@@ -102,7 +102,7 @@ void pplg_uninit_dialogs(void)
 	pcb_event_unbind_allcookie(dialogs_cookie);
 	pcb_dlg_netlist_uninit();
 	pcb_dlg_undo_uninit();
-	dlg_pstklib_uninit();
+	pcb_dlg_pstklib_uninit();
 	pcb_dlg_pref_uninit();
 	pcb_act_dad_uninit();
 	pcb_remove_actions_by_cookie(dialogs_cookie);
@@ -128,7 +128,7 @@ int pplg_init_dialogs(void)
 	pcb_event_bind(PCB_EVENT_DAD_NEW_GEO, pcb_dialog_resize, NULL, dialogs_cookie);
 	pcb_act_dad_init();
 	pcb_dlg_pref_init();
-	dlg_pstklib_init();
+	pcb_dlg_pstklib_init();
 	pcb_dlg_undo_init();
 	pcb_dlg_netlist_init();
 	pcb_view_dlg_init();

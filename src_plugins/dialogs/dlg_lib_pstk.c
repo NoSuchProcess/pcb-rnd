@@ -27,13 +27,22 @@
 /* Padstack library dialog */
 
 #include "config.h"
+#include "actions.h"
+#include "data.h"
 #include "obj_subc.h"
 #include "vtpadstack.h"
 #include "hid_inlines.h"
+#include "hid_dad.h"
+#include "hid_dad_tree.h"
+#include "obj_pstk.h"
+#include "obj_pstk_inlines.h"
 #include "obj_text_draw.h"
 #include "obj_pstk_draw.h"
 #include "undo_old.h"
 #include "select.h"
+#include "search.h"
+#include "dlg_padstack.h"
+#include "dlg_lib_pstk.h"
 
 htip_t pstk_libs; /* id -> pstk_lib_ctx_t */
 
@@ -617,9 +626,9 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal, c
 	return 0;
 }
 
-static const char pcb_acts_pstklib[] = "pstklib([board|subcid|object])\n";
-static const char pcb_acth_pstklib[] = "Present the padstack library dialog on board padstacks or the padstacks of a subcircuit";
-static fgw_error_t pcb_act_pstklib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+const char pcb_acts_pstklib[] = "pstklib([board|subcid|object])\n";
+const char pcb_acth_pstklib[] = "Present the padstack library dialog on board padstacks or the padstacks of a subcircuit";
+fgw_error_t pcb_act_pstklib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	long id = -1;
 	const char *cmd = NULL;
@@ -647,12 +656,12 @@ static fgw_error_t pcb_act_pstklib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static void dlg_pstklib_init(void)
+void pcb_dlg_pstklib_init(void)
 {
 	htip_init(&pstk_libs, longhash, longkeyeq);
 }
 
-static void dlg_pstklib_uninit(void)
+void pcb_dlg_pstklib_uninit(void)
 {
 	htip_entry_t *e;
 	for(e = htip_first(&pstk_libs); e != NULL; e = htip_next(&pstk_libs, e))
