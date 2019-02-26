@@ -24,10 +24,16 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include "config.h"
+#include "actions.h"
+#include "hid_dad.h"
 #include "flag.h"
 #include "flag_str.h"
 #include "change.h"
 #include "undo.h"
+#include "search.h"
+#include "funchash_core.h"
+#include "dlg_flag_edit.h"
 
 typedef struct{
 	unsigned long flag_bit[64];
@@ -74,9 +80,9 @@ static void fe_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 
 
 
-static const char pcb_acts_FlagEdit[] = "FlagEdit(object)\n";
-static const char pcb_acth_FlagEdit[] = "Change the layer binding.";
-static fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+const char pcb_acts_FlagEdit[] = "FlagEdit(object)\n";
+const char pcb_acth_FlagEdit[] = "Change the layer binding.";
+fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op = F_Object;
 	fe_ctx_t ctx;

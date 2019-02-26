@@ -25,6 +25,7 @@
  */
 
 #include "board.h"
+#include "change.h"
 #include "stub_draw.h"
 #include "idpath.h"
 
