@@ -61,18 +61,3 @@ aperture_t *find_aperture(aperture_list_t *list, pcb_coord_t width, aperture_sha
 	return add_aperture(list, width, shape);
 }
 
-void fprint_aperture(FILE *f, aperture_t *aptr)
-{
-	switch (aptr->shape) {
-	case ROUND:
-		pcb_fprintf(f, "%%ADD%dC,%.4mi*%%\r\n", aptr->dCode, aptr->width);
-		break;
-	case SQUARE:
-		pcb_fprintf(f, "%%ADD%dR,%.4miX%.4mi*%%\r\n", aptr->dCode, aptr->width, aptr->width);
-		break;
-	case OCTAGON:
-		pcb_fprintf(f, "%%AMOCT%d*5,0,8,0,0,%.4mi,22.5*%%\r\n"
-								"%%ADD%dOCT%d*%%\r\n", aptr->dCode, (pcb_coord_t) ((double) aptr->width / PCB_COS_22_5_DEGREE), aptr->dCode, aptr->dCode);
-		break;
-	}
-}
