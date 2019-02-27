@@ -36,6 +36,9 @@
 #include "hid_inlines.h"
 #include "conf_core.h"
 
+#include "aperture.h"
+#include "drill.h"
+
 const char *gerber_cookie = "gerber HID";
 
 conf_gerber_t conf_gerber;
@@ -79,14 +82,6 @@ static void gerber_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, 
 #define gerberXOffset(pcb, x) ((pcb_coord_t) (x))
 #define gerberYOffset(pcb, y) ((pcb_coord_t) (-(y)))
 
-/* Note: these are for drills (printed as mils but are really 1/10th mil) so print them with %mk  */
-#define gerberDrX(pcb, x) ((pcb_coord_t) (x))
-#define gerberDrY(pcb, y) ((pcb_coord_t) ((pcb)->MaxHeight - (y)))
-
-/*----------------------------------------------------------------------------*/
-/* Private data structures                                                    */
-/*----------------------------------------------------------------------------*/
-
 static int verbose;
 static int all_layers;
 static int is_mask, was_drill;
@@ -99,79 +94,13 @@ static int want_cross_sect;
 static int has_outline;
 static int gerber_debug;
 
-enum aperture_shape_e {
-	ROUND,												/* Shaped like a circle */
-	OCTAGON,											/* octagonal shape */
-	SQUARE												/* Shaped like a square */
-};
-typedef enum aperture_shape_e aperture_shape_t;
-
-/* This is added to the global aperture array indexes to get gerber
-   dcode and macro numbers.  */
-#define DCODE_BASE 11
-
-typedef struct aperture {
-	int dCode;										/* The RS-274X D code */
-	pcb_coord_t width;									/* Size in pcb units */
-	aperture_shape_t shape;					/* ROUND/SQUARE etc */
-	struct aperture *next;
-} aperture_t;
-
-typedef struct {
-	aperture_t *data;
-	int count;
-} aperture_list_t;
 
 static aperture_list_t *layer_aptr_list;
 static aperture_list_t *curr_aptr_list;
 static int layer_list_max;
 static int layer_list_idx;
 
-typedef struct {
-	pcb_coord_t diam;
-	pcb_coord_t x;
-	pcb_coord_t y;
-
-	/* for slots */
-	int is_slot;
-	pcb_coord_t x2;
-	pcb_coord_t y2;
-} pending_drill_t;
-pending_drill_t *pending_udrills, *pending_pdrills = NULL;
-pcb_cardinal_t n_pending_udrills = 0, max_pending_udrills = 0;
-pcb_cardinal_t n_pending_pdrills = 0, max_pending_pdrills = 0;
-aperture_list_t apru, aprp;
-#define DRILL_APR (is_plated ? &aprp : &apru)
-
-/*----------------------------------------------------------------------------*/
-/* Defined Constants                                                          */
-/*----------------------------------------------------------------------------*/
-#define AUTO_OUTLINE_WIDTH PCB_MIL_TO_COORD(8)	/* Auto-geneated outline width of 8 mils */
-
-/*----------------------------------------------------------------------------*/
-/* Aperture Routines                                                          */
-/*----------------------------------------------------------------------------*/
-
-/* Initialize aperture list */
-static void init_aperture_list(aperture_list_t * list)
-{
-	list->data = NULL;
-	list->count = 0;
-}
-
-static void uninit_aperture_list(aperture_list_t * list)
-{
-	aperture_t *search = list->data;
-	aperture_t *next;
-	while (search) {
-		next = search->next;
-		free(search);
-		search = next;
-	}
-	init_aperture_list(list);
-}
-
-static void reset_apertures()
+void reset_apertures(void)
 {
 	int i;
 	for (i = 0; i < layer_list_max; ++i)
@@ -183,61 +112,7 @@ static void reset_apertures()
 	layer_list_idx = 0;
 }
 
-/* Create and add a new aperture to the list */
-static aperture_t *add_aperture(aperture_list_t * list, pcb_coord_t width, aperture_shape_t shape)
-{
-	static int aperture_count;
-
-	aperture_t *app = (aperture_t *) malloc(sizeof *app);
-	if (app == NULL)
-		return NULL;
-
-	app->width = width;
-	app->shape = shape;
-	app->dCode = DCODE_BASE + aperture_count++;
-	app->next = list->data;
-
-	list->data = app;
-	++list->count;
-
-	return app;
-}
-
-/* Fetch an aperture from the list with the specified
- *  width/shape, creating a new one if none exists */
-static aperture_t *find_aperture(aperture_list_t * list, pcb_coord_t width, aperture_shape_t shape)
-{
-	aperture_t *search;
-
-	/* we never draw zero-width lines */
-	if (width == 0)
-		return NULL;
-
-	/* Search for an appropriate aperture. */
-	for (search = list->data; search; search = search->next)
-		if (search->width == width && search->shape == shape)
-			return search;
-
-	/* Failing that, create a new one */
-	return add_aperture(list, width, shape);
-}
-
-/* Output aperture data to the file */
-static void fprint_aperture(FILE * f, aperture_t * aptr)
-{
-	switch (aptr->shape) {
-	case ROUND:
-		pcb_fprintf(f, "%%ADD%dC,%.4mi*%%\r\n", aptr->dCode, aptr->width);
-		break;
-	case SQUARE:
-		pcb_fprintf(f, "%%ADD%dR,%.4miX%.4mi*%%\r\n", aptr->dCode, aptr->width, aptr->width);
-		break;
-	case OCTAGON:
-		pcb_fprintf(f, "%%AMOCT%d*5,0,8,0,0,%.4mi,22.5*%%\r\n"
-								"%%ADD%dOCT%d*%%\r\n", aptr->dCode, (pcb_coord_t) ((double) aptr->width / PCB_COS_22_5_DEGREE), aptr->dCode, aptr->dCode);
-		break;
-	}
-}
+#define AUTO_OUTLINE_WIDTH PCB_MIL_TO_COORD(8)	/* Auto-geneated outline width of 8 mils */
 
 /* Set the aperture list for the current layer,
  * expanding the list buffer if needed  */
@@ -594,118 +469,6 @@ static void assign_file_suffix(char *dest, pcb_layergrp_id_t gid, pcb_layer_id_t
 	strcat(dest, sext);
 }
 
-static void drill_init()
-{
-	init_aperture_list(&apru);
-	init_aperture_list(&aprp);
-}
-
-static void drill_uninit()
-{
-	uninit_aperture_list(&apru);
-	uninit_aperture_list(&aprp);
-}
-
-static int drill_sort(const void *va, const void *vb)
-{
-	pending_drill_t *a = (pending_drill_t *) va;
-	pending_drill_t *b = (pending_drill_t *) vb;
-	if (a->diam != b->diam)
-		return a->diam - b->diam;
-	if (a->x != b->x)
-		return a->x - a->x;
-	return b->y - b->y;
-}
-
-static pcb_coord_t excellon_last_tool_dia;
-static void drill_print_objs(aperture_list_t *apl, pending_drill_t *pd, pcb_cardinal_t npd, int force_g85, int slots)
-{
-	pcb_cardinal_t i;
-	int first = 1;
-
-	for (i = 0; i < npd; i++) {
-		if (slots != (!!pd[i].is_slot))
-			continue;
-		if (i == 0 || pd[i].diam != excellon_last_tool_dia) {
-			aperture_t *ap = find_aperture(apl, pd[i].diam, ROUND);
-			fprintf(f, "T%02d\r\n", ap->dCode);
-			excellon_last_tool_dia = pd[i].diam;
-		}
-		if (pd[i].is_slot) {
-			if (first) {
-				pcb_fprintf(f, "G00");
-				first = 0;
-			}
-			if (force_g85)
-				pcb_fprintf(f, "X%06.0mkY%06.0mkG85X%06.0mkY%06.0mk\r\n", gerberDrX(PCB, pd[i].x), gerberDrY(PCB, pd[i].y), gerberDrX(PCB, pd[i].x2), gerberDrY(PCB, pd[i].y2));
-			else
-				pcb_fprintf(f, "X%06.0mkY%06.0mk\r\nM15\r\nG01X%06.0mkY%06.0mk\r\nM17\r\n", gerberDrX(PCB, pd[i].x), gerberDrY(PCB, pd[i].y), gerberDrX(PCB, pd[i].x2), gerberDrY(PCB, pd[i].y2));
-			first = 1; /* each new slot will need a G00 for some fabs that ignore M17 and M15 */
-		}
-		else {
-			if (first) {
-				pcb_fprintf(f, "G05\r\n");
-				first = 0;
-			}
-			pcb_fprintf(f, "X%06.0mkY%06.0mk\r\n", gerberDrX(PCB, pd[i].x), gerberDrY(PCB, pd[i].y));
-		}
-	}
-
-}
-
-static void drill_print_holes(aperture_list_t *apl, pending_drill_t *pd, pcb_cardinal_t npd, int force_g85)
-{
-	aperture_t *search;
-
-	/* We omit the ,TZ here because we are not omitting trailing zeros.  Our format is
-	   always six-digit 0.1 mil resolution (i.e. 001100 = 0.11") */
-	fprintf(f, "M48\r\n" "INCH\r\n");
-	for (search = apl->data; search; search = search->next)
-		pcb_fprintf(f, "T%02dC%.3mi\r\n", search->dCode, search->width);
-	fprintf(f, "%%\r\n");
-
-	/* dump pending drills in sequence */
-	qsort(pd, npd, sizeof(pd[0]), drill_sort);
-	drill_print_objs(apl, pd, npd, force_g85, 0);
-	drill_print_objs(apl, pd, npd, force_g85, 1);
-}
-
-static void drill_export_(pcb_layer_type_t mask, const char *purpose, int purpi, pending_drill_t **pd, pcb_cardinal_t *npd, pcb_cardinal_t *mpd, aperture_list_t *apl, int force_g85)
-{
-	const pcb_virt_layer_t *vl = pcb_vlayer_get_first(mask, purpose, purpi);
-
-	assert(vl != NULL);
-
-	maybe_close_f(f);
-	f = NULL;
-
-	pagecount++;
-	assign_file_suffix(filesuff, -1, vl->new_id, vl->type, purpose, purpi, 1, NULL);
-	f = pcb_fopen(filename, "wb"); /* Binary needed to force CR-LF */
-	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Error:  Could not open %s for writing the excellon file.\n", filename);
-		return;
-	}
-
-	if (*npd) {
-		drill_print_holes(apl, *pd, *npd, force_g85);
-		free(*pd); *pd = NULL;
-		*npd = *mpd = 0;
-	}
-}
-
-static void drill_export(void)
-{
-	int wd = was_drill;
-	was_drill = 1;
-	drill_export_(PCB_LYT_VIRTUAL, NULL, F_pdrill, &pending_pdrills, &n_pending_pdrills, &max_pending_pdrills, &aprp, conf_gerber.plugins.export_gerber.plated_g85_slot);
-	drill_export_(PCB_LYT_VIRTUAL, NULL, F_udrill, &pending_udrills, &n_pending_udrills, &max_pending_udrills, &apru, conf_gerber.plugins.export_gerber.unplated_g85_slot);
-	maybe_close_f(f); /* make sure M30 is written */
-	f = NULL;
-	was_drill = wd;
-}
-
-
 static void gerber_do_export(pcb_hid_attr_val_t * options)
 {
 	const char *fnbase;
@@ -792,8 +555,31 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	if (pcb_cam_end(&gerber_cam) == 0)
 		pcb_message(PCB_MSG_ERROR, "gerber cam export for '%s' failed to produce any content\n", options[HA_cam].str_value);
 
-	if (!gerber_cam.active)
-		drill_export();
+	if (!gerber_cam.active) {
+		int wd = was_drill, purpi;
+		const pcb_virt_layer_t *vl;
+		const char *purpose = NULL;
+
+		maybe_close_f(f);
+		f = NULL;
+		was_drill = 1;
+
+		pagecount++;
+		purpi = F_pdrill;
+		vl = pcb_vlayer_get_first(PCB_LYT_VIRTUAL, purpose, purpi);
+		assert(vl != NULL);
+		assign_file_suffix(filesuff, -1, vl->new_id, vl->type, purpose, purpi, 1, NULL);
+		drill_export(PCB, f, &pending_pdrills, &n_pending_pdrills, &max_pending_pdrills, &aprp, conf_gerber.plugins.export_gerber.plated_g85_slot, filename);
+
+		pagecount++;
+		purpi = F_udrill;
+		vl = pcb_vlayer_get_first(PCB_LYT_VIRTUAL, purpose, purpi);
+		assert(vl != NULL);
+		assign_file_suffix(filesuff, -1, vl->new_id, vl->type, purpose, purpi, 1, NULL);
+		drill_export(PCB, f, &pending_udrills, &n_pending_udrills, &max_pending_udrills, &apru, conf_gerber.plugins.export_gerber.unplated_g85_slot, filename);
+
+		was_drill = wd;
+	}
 
 	drill_uninit();
 
@@ -1139,25 +925,6 @@ static void gerber_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 	gerber_draw_line(gc, x2, y1, x2, y2);
 }
 
-static pending_drill_t *new_pending_drill(void)
-{
-	if (is_plated) {
-		if (n_pending_pdrills >= max_pending_pdrills) {
-			max_pending_pdrills += 100;
-			pending_pdrills = (pending_drill_t *)realloc(pending_pdrills, max_pending_pdrills * sizeof(pending_pdrills[0]));
-		}
-		return &pending_pdrills[n_pending_pdrills++];
-	}
-	else {
-		if (n_pending_udrills >= max_pending_udrills) {
-			max_pending_udrills += 100;
-			pending_udrills = (pending_drill_t *)realloc(pending_udrills, max_pending_udrills * sizeof(pending_udrills[0]));
-		}
-		return &pending_udrills[n_pending_udrills++];
-	}
-}
-
-
 static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	pcb_bool m = pcb_false;
@@ -1168,7 +935,7 @@ static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 		find_aperture(curr_aptr_list, dia*2, ROUND); /* for a real gerber export of the BOUNDARY group: place aperture on the per layer aperture list */
 
 		if (!finding_apertures) {
-			pending_drill_t *pd = new_pending_drill();
+			pending_drill_t *pd = new_pending_drill(is_plated);
 			pd->x = x1;
 			pd->y = y1;
 			pd->x2 = x2;
@@ -1349,7 +1116,7 @@ static void gerber_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, 
 	if (!f)
 		return;
 	if (is_drill) {
-		pending_drill_t *pd = new_pending_drill();
+		pending_drill_t *pd = new_pending_drill(is_plated);
 		find_aperture(DRILL_APR, radius*2, ROUND);
 		pd->x = cx;
 		pd->y = cy;

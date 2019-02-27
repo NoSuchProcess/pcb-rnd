@@ -1,5 +1,9 @@
 put /local/pcb/mod {export_gerber}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/export_gerber/gerber.o @]
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/export_gerber/gerber.o
+	$(PLUGDIR)/export_gerber/aperture.o
+	$(PLUGDIR)/export_gerber/drill.o
+@]
 put /local/pcb/mod/CONF {$(PLUGDIR)/export_gerber/gerber_conf.h}
 
 
