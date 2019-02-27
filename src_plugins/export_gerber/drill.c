@@ -28,6 +28,20 @@ void pcb_drill_uninit(pcb_drill_ctx_t *ctx)
 	uninit_aperture_list(&ctx->apr);
 }
 
+pcb_pending_drill_t *pcb_drill_new_pending(pcb_drill_ctx_t *ctx, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t diam)
+{
+	pcb_pending_drill_t *pd = vtpdr_alloc_append(&ctx->obj, 1);
+
+	pd->x = x1;
+	pd->y = y1;
+	pd->x2 = x2;
+	pd->y2 = y2;
+	pd->diam = diam;
+	pd->is_slot = (x1 != x2) || (y1 != y2);
+	find_aperture(&ctx->apr, diam, ROUND);
+	return pd;
+}
+
 static int drill_sort(const void *va, const void *vb)
 {
 	pcb_pending_drill_t *a = (pcb_pending_drill_t *)va;
@@ -110,19 +124,5 @@ void pcb_drill_export_excellon(pcb_board_t *pcb, pcb_drill_ctx_t *ctx, int force
 
 	fprintf(f, "M30\r\n");
 	fclose(f);
-}
-
-pcb_pending_drill_t *pcb_drill_new_pending(pcb_drill_ctx_t *ctx, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t diam)
-{
-	pcb_pending_drill_t *pd = vtpdr_alloc_append(&ctx->obj, 1);
-
-	pd->x = x1;
-	pd->y = y1;
-	pd->x2 = x2;
-	pd->y2 = y2;
-	pd->diam = diam;
-	pd->is_slot = (x1 != x2) || (y1 != y2);
-	find_aperture(&ctx->apr, diam, ROUND);
-	return pd;
 }
 
