@@ -102,7 +102,7 @@ static int layer_list_idx;
 
 pcb_drill_ctx_t pdrills, udrills;
 
-void reset_apertures(void)
+static void reset_apertures(void)
 {
 	int i;
 	for (i = 0; i < layer_list_max; ++i)
@@ -114,7 +114,7 @@ void reset_apertures(void)
 	layer_list_idx = 0;
 }
 
-void fprint_aperture(FILE *f, aperture_t *aptr)
+static void fprint_aperture(FILE *f, aperture_t *aptr)
 {
 	switch (aptr->shape) {
 	case ROUND:
