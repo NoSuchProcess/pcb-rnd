@@ -27,18 +27,14 @@ typedef struct {
 #define GVT_FREE(vect, ptr)           free(ptr)
 #include <genvector/genvector_undef.h>
 
+typedef struct pcb_drill_ctx_s {
+	vtpdr_t obj;
+	aperture_list_t apr;
+} pcb_drill_ctx_t;
 
-#define DRILL_APR (is_plated ? &aprp : &apru)
-
-void drill_init(void);
-void drill_uninit(void);
-int drill_sort(const void *va, const void *vb);
-void drill_export(pcb_board_t *pcb, FILE *f, pending_drill_t **pd, pcb_cardinal_t *npd, pcb_cardinal_t *mpd, aperture_list_t *apl, int force_g85, const char *fn);
-pending_drill_t *new_pending_drill(int is_plated);
-
-extern aperture_list_t apru, aprp;
-extern pending_drill_t *pending_udrills, *pending_pdrills;
-extern pcb_cardinal_t n_pending_udrills, max_pending_udrills;
-extern pcb_cardinal_t n_pending_pdrills, max_pending_pdrills;
+void drill_init(pcb_drill_ctx_t *ctx);
+void drill_uninit(pcb_drill_ctx_t *ctx);
+void drill_export(pcb_board_t *pcb, const pcb_drill_ctx_t *ctx, int force_g85, const char *fn);
+pending_drill_t *new_pending_drill(pcb_drill_ctx_t *ctx);
 
 #endif
