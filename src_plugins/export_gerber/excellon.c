@@ -6,7 +6,7 @@
 #include "safe_fs.h"
 #include "error.h"
 
-#include "drill.h"
+#include "excellon.h"
 
 #define gerberDrX(pcb, x) ((pcb_coord_t) (x))
 #define gerberDrY(pcb, y) ((pcb_coord_t) ((pcb)->MaxHeight - (y)))

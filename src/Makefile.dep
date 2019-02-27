@@ -1114,7 +1114,7 @@
  conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genvector/vtp0.h list_conf.h \
- error.h ../src_plugins/export_gerber/drill.h \
+ error.h ../src_plugins/export_gerber/excellon.h \
  ../src_plugins/export_gerber/aperture.h \
  ../src_3rd/genvector/genvector_impl.c
 ../src_plugins/export_gerber/gerber.o: \
@@ -1148,7 +1148,7 @@
  ../src_plugins/export_gerber/gerber_conf.h conf.h hid.h hid_nogui.h \
  hid_draw_helpers.h hid_init.h hid_attrib.h hid_flags.h hid_inlines.h \
  conf_core.h ../src_plugins/export_gerber/aperture.h \
- ../src_plugins/export_gerber/drill.h \
+ ../src_plugins/export_gerber/excellon.h \
  ../src_plugins/export_gerber/gerber_conf_fields.h
 ../src_plugins/export_ipcd356/ipcd356.o: \
  ../src_plugins/export_ipcd356/ipcd356.c ../config.h board.h \

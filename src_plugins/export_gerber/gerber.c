@@ -37,7 +37,7 @@
 #include "conf_core.h"
 
 #include "aperture.h"
-#include "drill.h"
+#include "excellon.h"
 
 const char *gerber_cookie = "gerber HID";
 
