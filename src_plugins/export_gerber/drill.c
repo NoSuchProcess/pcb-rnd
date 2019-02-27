@@ -8,7 +8,10 @@
 #include "safe_fs.h"
 #include "error.h"
 
+#define GVT_DONT_UNDEF
 #include "drill.h"
+#include <genvector/genvector_impl.c>
+
 
 #define gerberDrX(pcb, x) ((pcb_coord_t) (x))
 #define gerberDrY(pcb, y) ((pcb_coord_t) ((pcb)->MaxHeight - (y)))

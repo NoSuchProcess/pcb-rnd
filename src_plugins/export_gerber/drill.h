@@ -14,6 +14,20 @@ typedef struct {
 	pcb_coord_t y2;
 } pending_drill_t;
 
+#define GVT(x) vtpdr_ ## x
+#define GVT_ELEM_TYPE pending_drill_t
+#define GVT_SIZE_TYPE size_t
+#define GVT_DOUBLING_THRS 2048
+#define GVT_START_SIZE 32
+#define GVT_FUNC
+/*#define GVT_SET_NEW_BYTES_TO 0*/
+
+#include <genvector/genvector_impl.h>
+#define GVT_REALLOC(vect, ptr, size)  realloc(ptr, size)
+#define GVT_FREE(vect, ptr)           free(ptr)
+#include <genvector/genvector_undef.h>
+
+
 #define DRILL_APR (is_plated ? &aprp : &apru)
 
 void drill_init(void);
