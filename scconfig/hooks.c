@@ -669,6 +669,11 @@ int hook_detect_target()
 		put("libs/gui/gd/gdImageJpeg/presents", sfalse);
 	}
 
+	if ((!istrue(get("libs/script/fungw/presents"))) && plug_is_enabled("script")) {
+		report_repeat("WARNING: Since there's no system-installed fungw, disabling the script plugin...\n");
+		hook_custom_arg("disable-script", NULL);
+	}
+
 	/* generic utils for Makefiles */
 	require("sys/ext_exe", 0, 1);
 	require("sys/sysid", 0, 1);
