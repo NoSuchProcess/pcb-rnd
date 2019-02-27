@@ -112,26 +112,6 @@ void pcb_drill_export(pcb_board_t *pcb, pcb_drill_ctx_t *ctx, int force_g85, con
 	fclose(f);
 }
 
-#if 0
-pending_drill_t *new_pending_drill(int is_plated)
-{
-	if (is_plated) {
-		if (n_pending_pdrills >= max_pending_pdrills) {
-			max_pending_pdrills += 100;
-			pending_pdrills = (pending_drill_t *)realloc(pending_pdrills, max_pending_pdrills * sizeof(pending_pdrills[0]));
-		}
-		return &pending_pdrills[n_pending_pdrills++];
-	}
-	else {
-		if (n_pending_udrills >= max_pending_udrills) {
-			max_pending_udrills += 100;
-			pending_udrills = (pending_drill_t *)realloc(pending_udrills, max_pending_udrills * sizeof(pending_udrills[0]));
-		}
-		return &pending_udrills[n_pending_udrills++];
-	}
-}
-#endif
-
 pcb_pending_drill_t *pcb_drill_new_pending(pcb_drill_ctx_t *ctx, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t diam)
 {
 	pcb_pending_drill_t *pd = vtpdr_alloc_append(&ctx->obj, 1);
