@@ -1,62 +1,15 @@
 #include "config.h"
 
-#include <stdlib.h>
-
 #include "board.h"
 #include "global_typedefs.h"
 #include "pcb-printf.h"
 #include "safe_fs.h"
 #include "error.h"
 
-#define GVT_DONT_UNDEF
 #include "drill.h"
-#include <genvector/genvector_impl.c>
-
 
 #define gerberDrX(pcb, x) ((pcb_coord_t) (x))
 #define gerberDrY(pcb, y) ((pcb_coord_t) ((pcb)->MaxHeight - (y)))
-
-void pcb_drill_init(pcb_drill_ctx_t *ctx)
-{
-	vtpdr_init(&ctx->obj);
-	init_aperture_list(&ctx->apr);
-}
-
-void pcb_drill_uninit(pcb_drill_ctx_t *ctx)
-{
-	vtpdr_uninit(&ctx->obj);
-	uninit_aperture_list(&ctx->apr);
-}
-
-pcb_pending_drill_t *pcb_drill_new_pending(pcb_drill_ctx_t *ctx, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t diam)
-{
-	pcb_pending_drill_t *pd = vtpdr_alloc_append(&ctx->obj, 1);
-
-	pd->x = x1;
-	pd->y = y1;
-	pd->x2 = x2;
-	pd->y2 = y2;
-	pd->diam = diam;
-	pd->is_slot = (x1 != x2) || (y1 != y2);
-	find_aperture(&ctx->apr, diam, ROUND);
-	return pd;
-}
-
-static int drill_sort_cb(const void *va, const void *vb)
-{
-	pcb_pending_drill_t *a = (pcb_pending_drill_t *)va;
-	pcb_pending_drill_t *b = (pcb_pending_drill_t *)vb;
-	if (a->diam != b->diam)
-		return a->diam - b->diam;
-	if (a->x != b->x)
-		return a->x - a->x;
-	return b->y - b->y;
-}
-
-void pcb_drill_sort(pcb_drill_ctx_t *ctx)
-{
-	qsort(ctx->obj.array, ctx->obj.used, sizeof(ctx->obj.array[0]), drill_sort_cb);
-}
 
 static pcb_cardinal_t drill_print_objs(pcb_board_t *pcb, FILE *f, pcb_drill_ctx_t *ctx, int force_g85, int slots, pcb_coord_t *excellon_last_tool_dia)
 {
