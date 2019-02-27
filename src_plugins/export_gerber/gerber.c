@@ -558,13 +558,12 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 		pcb_message(PCB_MSG_ERROR, "gerber cam export for '%s' failed to produce any content\n", options[HA_cam].str_value);
 
 	if (!gerber_cam.active) {
-		int wd = was_drill, purpi;
+		int purpi;
 		const pcb_virt_layer_t *vl;
 		const char *purpose = NULL;
 
 		maybe_close_f(f);
 		f = NULL;
-		was_drill = 1;
 
 		pagecount++;
 		purpi = F_pdrill;
@@ -579,8 +578,6 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 		assert(vl != NULL);
 		assign_file_suffix(filesuff, -1, vl->new_id, vl->type, purpose, purpi, 1, NULL);
 		pcb_drill_export(PCB, &udrills, conf_gerber.plugins.export_gerber.unplated_g85_slot, filename);
-
-		was_drill = wd;
 	}
 
 	pcb_drill_uninit(&pdrills);
