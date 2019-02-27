@@ -524,7 +524,6 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	lastcap = -1;
 	lastgroup = -1;
 	lastcolor = -1;
-	excellon_last_tool_dia = 0;
 
 	ctx.view.X1 = 0;
 	ctx.view.Y1 = 0;

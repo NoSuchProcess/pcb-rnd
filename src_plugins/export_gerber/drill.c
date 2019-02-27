@@ -17,10 +17,12 @@ pending_drill_t *pending_udrills, *pending_pdrills = NULL;
 pcb_cardinal_t n_pending_udrills = 0, max_pending_udrills = 0;
 pcb_cardinal_t n_pending_pdrills = 0, max_pending_pdrills = 0;
 aperture_list_t apru, aprp;
-pcb_coord_t excellon_last_tool_dia;
+
+static pcb_coord_t excellon_last_tool_dia;
 
 void drill_init()
 {
+	excellon_last_tool_dia = 0;
 	init_aperture_list(&apru);
 	init_aperture_list(&aprp);
 }
