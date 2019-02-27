@@ -42,7 +42,7 @@ pcb_pending_drill_t *pcb_drill_new_pending(pcb_drill_ctx_t *ctx, pcb_coord_t x1,
 	return pd;
 }
 
-static int drill_sort(const void *va, const void *vb)
+static int drill_sort_cb(const void *va, const void *vb)
 {
 	pcb_pending_drill_t *a = (pcb_pending_drill_t *)va;
 	pcb_pending_drill_t *b = (pcb_pending_drill_t *)vb;
@@ -53,6 +53,10 @@ static int drill_sort(const void *va, const void *vb)
 	return b->y - b->y;
 }
 
+void pcb_drill_sort(pcb_drill_ctx_t *ctx)
+{
+	qsort(ctx->obj.array, ctx->obj.used, sizeof(ctx->obj.array[0]), drill_sort_cb);
+}
 
 static pcb_cardinal_t drill_print_objs(pcb_board_t *pcb, FILE *f, pcb_drill_ctx_t *ctx, int force_g85, int slots, pcb_coord_t *excellon_last_tool_dia)
 {
@@ -105,7 +109,7 @@ static pcb_cardinal_t drill_print_holes(pcb_board_t *pcb, FILE *f, pcb_drill_ctx
 	fprintf(f, "%%\r\n");
 
 	/* dump pending drills in sequence */
-	qsort(ctx->obj.array, ctx->obj.used, sizeof(ctx->obj.array[0]), drill_sort);
+	pcb_drill_sort(ctx);
 	cnt += drill_print_objs(pcb, f, ctx, force_g85, 0, &excellon_last_tool_dia);
 	cnt += drill_print_objs(pcb, f, ctx, force_g85, 1, &excellon_last_tool_dia);
 	return cnt;
