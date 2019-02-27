@@ -478,7 +478,6 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	int i;
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	int save_ons[PCB_MAX_LAYER + 2];
-	pcb_layergrp_t *g;
 	pcb_hid_expose_ctx_t ctx;
 
 	conf_force_set_bool(conf_core.editor.thin_draw, 0);
