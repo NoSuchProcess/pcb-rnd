@@ -569,14 +569,14 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 		vl = pcb_vlayer_get_first(PCB_LYT_VIRTUAL, purpose, purpi);
 		assert(vl != NULL);
 		assign_file_suffix(filesuff, -1, vl->new_id, vl->type, purpose, purpi, 1, NULL);
-		pcb_drill_export(PCB, &pdrills, conf_gerber.plugins.export_gerber.plated_g85_slot, filename);
+		pcb_drill_export_excellon(PCB, &pdrills, conf_gerber.plugins.export_gerber.plated_g85_slot, filename);
 
 		pagecount++;
 		purpi = F_udrill;
 		vl = pcb_vlayer_get_first(PCB_LYT_VIRTUAL, purpose, purpi);
 		assert(vl != NULL);
 		assign_file_suffix(filesuff, -1, vl->new_id, vl->type, purpose, purpi, 1, NULL);
-		pcb_drill_export(PCB, &udrills, conf_gerber.plugins.export_gerber.unplated_g85_slot, filename);
+		pcb_drill_export_excellon(PCB, &udrills, conf_gerber.plugins.export_gerber.unplated_g85_slot, filename);
 	}
 
 	pcb_drill_uninit(&pdrills);

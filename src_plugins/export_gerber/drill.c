@@ -97,7 +97,7 @@ static pcb_cardinal_t drill_print_holes(pcb_board_t *pcb, FILE *f, pcb_drill_ctx
 	return cnt;
 }
 
-void pcb_drill_export(pcb_board_t *pcb, pcb_drill_ctx_t *ctx, int force_g85, const char *fn)
+void pcb_drill_export_excellon(pcb_board_t *pcb, pcb_drill_ctx_t *ctx, int force_g85, const char *fn)
 {
 	FILE *f = pcb_fopen(fn, "wb"); /* Binary needed to force CR-LF */
 	if (f == NULL) {
