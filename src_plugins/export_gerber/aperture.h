@@ -34,7 +34,7 @@ aperture_t *add_aperture(aperture_list_t *list, pcb_coord_t width, aperture_shap
 
 /* Fetch an aperture from the list with the specified
  *  width/shape, creating a new one if none exists */
-aperture_t *find_aperture(const aperture_list_t *list, pcb_coord_t width, aperture_shape_t shape);
+aperture_t *find_aperture(aperture_list_t *list, pcb_coord_t width, aperture_shape_t shape);
 
 /* Output aperture data to the file */
 void fprint_aperture(FILE * f, aperture_t *aptr);

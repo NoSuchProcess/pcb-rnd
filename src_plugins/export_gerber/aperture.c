@@ -44,7 +44,7 @@ aperture_t *add_aperture(aperture_list_t *list, pcb_coord_t width, aperture_shap
 	return app;
 }
 
-aperture_t *find_aperture(const aperture_list_t *list, pcb_coord_t width, aperture_shape_t shape)
+aperture_t *find_aperture(aperture_list_t *list, pcb_coord_t width, aperture_shape_t shape)
 {
 	aperture_t *search;
 

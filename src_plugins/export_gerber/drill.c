@@ -40,7 +40,7 @@ static int drill_sort(const void *va, const void *vb)
 }
 
 
-static pcb_cardinal_t drill_print_objs(pcb_board_t *pcb, FILE *f, const pcb_drill_ctx_t *ctx, int force_g85, int slots, pcb_coord_t *excellon_last_tool_dia)
+static pcb_cardinal_t drill_print_objs(pcb_board_t *pcb, FILE *f, pcb_drill_ctx_t *ctx, int force_g85, int slots, pcb_coord_t *excellon_last_tool_dia)
 {
 	pcb_cardinal_t i, cnt = 0;
 	int first = 1;
@@ -77,7 +77,7 @@ static pcb_cardinal_t drill_print_objs(pcb_board_t *pcb, FILE *f, const pcb_dril
 	return cnt;
 }
 
-static pcb_cardinal_t drill_print_holes(pcb_board_t *pcb, FILE *f, const pcb_drill_ctx_t *ctx, int force_g85)
+static pcb_cardinal_t drill_print_holes(pcb_board_t *pcb, FILE *f, pcb_drill_ctx_t *ctx, int force_g85)
 {
 	aperture_t *search;
 	pcb_cardinal_t cnt = 0;
@@ -97,7 +97,7 @@ static pcb_cardinal_t drill_print_holes(pcb_board_t *pcb, FILE *f, const pcb_dri
 	return cnt;
 }
 
-void pcb_drill_export(pcb_board_t *pcb, const pcb_drill_ctx_t *ctx, int force_g85, const char *fn)
+void pcb_drill_export(pcb_board_t *pcb, pcb_drill_ctx_t *ctx, int force_g85, const char *fn)
 {
 	FILE *f = pcb_fopen(fn, "wb"); /* Binary needed to force CR-LF */
 	if (f == NULL) {

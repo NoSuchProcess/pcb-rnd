@@ -34,7 +34,7 @@ typedef struct pcb_drill_ctx_s {
 
 void pcb_drill_init(pcb_drill_ctx_t *ctx);
 void pcb_drill_uninit(pcb_drill_ctx_t *ctx);
-void pcb_drill_export(pcb_board_t *pcb, const pcb_drill_ctx_t *ctx, int force_g85, const char *fn);
+void pcb_drill_export(pcb_board_t *pcb, pcb_drill_ctx_t *ctx, int force_g85, const char *fn);
 pcb_pending_drill_t *pcb_drill_new_pending(pcb_drill_ctx_t *ctx);
 
 #endif
