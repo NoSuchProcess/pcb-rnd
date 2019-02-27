@@ -227,6 +227,12 @@ static int parse_angle(pcb_angle_t *res, lht_node_t *nd)
 	return 0;
 }
 
+static int valid_int_tail(const char *end)
+{
+	while(isspace(*end)) end++;
+	return *end == '\0';
+}
+
 /* Load the integer value of a text node into res. Return 0 on success */
 static int parse_int(int *res, lht_node_t *nd)
 {
@@ -246,7 +252,7 @@ static int parse_int(int *res, lht_node_t *nd)
 	if ((nd->data.text.value[0] == '0') && (nd->data.text.value[1] == 'x'))
 		base = 16;
 	tmp = strtol(nd->data.text.value, &end, base);
-	if (*end != '\0')
+	if (!valid_int_tail(end))
 		return iolht_error(nd, "Invalid integer value (not an integer number): '%s'\n", nd->data.text.value);
 
 	*res = tmp;
@@ -273,7 +279,7 @@ static int parse_ulong(unsigned long *res, lht_node_t *nd)
 	if ((nd->data.text.value[0] == '0') && (nd->data.text.value[1] == 'x'))
 		base = 16;
 	tmp = strtoul(nd->data.text.value, &end, base);
-	if (*end != '\0')
+	if (!valid_int_tail(end))
 		return iolht_error(nd, "Invalid integer value (not an unsigned long integer): '%s'\n", nd->data.text.value);
 
 	*res = tmp;
