@@ -16,13 +16,13 @@
 #define gerberDrX(pcb, x) ((pcb_coord_t) (x))
 #define gerberDrY(pcb, y) ((pcb_coord_t) ((pcb)->MaxHeight - (y)))
 
-void drill_init(pcb_drill_ctx_t *ctx)
+void pcb_drill_init(pcb_drill_ctx_t *ctx)
 {
 	vtpdr_init(&ctx->obj);
 	init_aperture_list(&ctx->apr);
 }
 
-void drill_uninit(pcb_drill_ctx_t *ctx)
+void pcb_drill_uninit(pcb_drill_ctx_t *ctx)
 {
 	vtpdr_uninit(&ctx->obj);
 	uninit_aperture_list(&ctx->apr);
@@ -30,8 +30,8 @@ void drill_uninit(pcb_drill_ctx_t *ctx)
 
 static int drill_sort(const void *va, const void *vb)
 {
-	pending_drill_t *a = (pending_drill_t *) va;
-	pending_drill_t *b = (pending_drill_t *) vb;
+	pcb_pending_drill_t *a = (pcb_pending_drill_t *)va;
+	pcb_pending_drill_t *b = (pcb_pending_drill_t *)vb;
 	if (a->diam != b->diam)
 		return a->diam - b->diam;
 	if (a->x != b->x)
@@ -46,7 +46,7 @@ static pcb_cardinal_t drill_print_objs(pcb_board_t *pcb, FILE *f, const pcb_dril
 	int first = 1;
 
 	for (i = 0; i < ctx->obj.used; i++) {
-		pending_drill_t *pd = &ctx->obj.array[i];
+		pcb_pending_drill_t *pd = &ctx->obj.array[i];
 		if (slots != (!!pd->is_slot))
 			continue;
 		if (i == 0 || pd->diam != *excellon_last_tool_dia) {
@@ -97,7 +97,7 @@ static pcb_cardinal_t drill_print_holes(pcb_board_t *pcb, FILE *f, const pcb_dri
 	return cnt;
 }
 
-void drill_export(pcb_board_t *pcb, const pcb_drill_ctx_t *ctx, int force_g85, const char *fn)
+void pcb_drill_export(pcb_board_t *pcb, const pcb_drill_ctx_t *ctx, int force_g85, const char *fn)
 {
 	FILE *f = pcb_fopen(fn, "wb"); /* Binary needed to force CR-LF */
 	if (f == NULL) {
@@ -132,7 +132,7 @@ pending_drill_t *new_pending_drill(int is_plated)
 }
 #endif
 
-pending_drill_t *new_pending_drill(pcb_drill_ctx_t *ctx)
+pcb_pending_drill_t *pcb_drill_new_pending(pcb_drill_ctx_t *ctx)
 {
 	return vtpdr_alloc_append(&ctx->obj, 1);
 }

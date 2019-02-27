@@ -12,10 +12,10 @@ typedef struct {
 	int is_slot;
 	pcb_coord_t x2;
 	pcb_coord_t y2;
-} pending_drill_t;
+} pcb_pending_drill_t;
 
 #define GVT(x) vtpdr_ ## x
-#define GVT_ELEM_TYPE pending_drill_t
+#define GVT_ELEM_TYPE pcb_pending_drill_t
 #define GVT_SIZE_TYPE size_t
 #define GVT_DOUBLING_THRS 2048
 #define GVT_START_SIZE 32
@@ -32,9 +32,9 @@ typedef struct pcb_drill_ctx_s {
 	aperture_list_t apr;
 } pcb_drill_ctx_t;
 
-void drill_init(pcb_drill_ctx_t *ctx);
-void drill_uninit(pcb_drill_ctx_t *ctx);
-void drill_export(pcb_board_t *pcb, const pcb_drill_ctx_t *ctx, int force_g85, const char *fn);
-pending_drill_t *new_pending_drill(pcb_drill_ctx_t *ctx);
+void pcb_drill_init(pcb_drill_ctx_t *ctx);
+void pcb_drill_uninit(pcb_drill_ctx_t *ctx);
+void pcb_drill_export(pcb_board_t *pcb, const pcb_drill_ctx_t *ctx, int force_g85, const char *fn);
+pcb_pending_drill_t *pcb_drill_new_pending(pcb_drill_ctx_t *ctx);
 
 #endif

@@ -485,8 +485,8 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
 	conf_force_set_bool(conf_core.editor.check_planes, 0);
 
-	drill_init(&pdrills);
-	drill_init(&udrills);
+	pcb_drill_init(&pdrills);
+	pcb_drill_init(&udrills);
 
 	drawing_mode_issued = PCB_HID_COMP_POSITIVE;
 
@@ -572,20 +572,20 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 		vl = pcb_vlayer_get_first(PCB_LYT_VIRTUAL, purpose, purpi);
 		assert(vl != NULL);
 		assign_file_suffix(filesuff, -1, vl->new_id, vl->type, purpose, purpi, 1, NULL);
-		drill_export(PCB, &pdrills, conf_gerber.plugins.export_gerber.plated_g85_slot, filename);
+		pcb_drill_export(PCB, &pdrills, conf_gerber.plugins.export_gerber.plated_g85_slot, filename);
 
 		pagecount++;
 		purpi = F_udrill;
 		vl = pcb_vlayer_get_first(PCB_LYT_VIRTUAL, purpose, purpi);
 		assert(vl != NULL);
 		assign_file_suffix(filesuff, -1, vl->new_id, vl->type, purpose, purpi, 1, NULL);
-		drill_export(PCB, &udrills, conf_gerber.plugins.export_gerber.unplated_g85_slot, filename);
+		pcb_drill_export(PCB, &udrills, conf_gerber.plugins.export_gerber.unplated_g85_slot, filename);
 
 		was_drill = wd;
 	}
 
-	drill_uninit(&pdrills);
-	drill_uninit(&udrills);
+	pcb_drill_uninit(&pdrills);
+	pcb_drill_uninit(&udrills);
 
 	/* in cam mode we have f still open */
 	maybe_close_f(f);
@@ -938,7 +938,7 @@ static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 		find_aperture(curr_aptr_list, dia*2, ROUND); /* for a real gerber export of the BOUNDARY group: place aperture on the per layer aperture list */
 
 		if (!finding_apertures) {
-			pending_drill_t *pd = new_pending_drill(is_plated ? &pdrills : &udrills);
+			pcb_pending_drill_t *pd = pcb_drill_new_pending(is_plated ? &pdrills : &udrills);
 			pd->x = x1;
 			pd->y = y1;
 			pd->x2 = x2;
@@ -1119,7 +1119,7 @@ static void gerber_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, 
 	if (!f)
 		return;
 	if (is_drill) {
-		pending_drill_t *pd = new_pending_drill(is_plated ? &pdrills : &udrills);
+		pcb_pending_drill_t *pd = pcb_drill_new_pending(is_plated ? &pdrills : &udrills);
 		find_aperture(DRILL_APR, radius*2, ROUND);
 		pd->x = cx;
 		pd->y = cy;
