@@ -1094,12 +1094,13 @@
  ../src_plugins/export_gcode/lists.h ../src_plugins/export_gcode/trace.h \
  compat_cc.h
 ../src_plugins/export_gerber/aperture.o: \
- ../src_plugins/export_gerber/aperture.c ../config.h pcb-printf.h \
- ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h unit.h math_helper.h \
- ../src_plugins/export_gerber/aperture.h
-../src_plugins/export_gerber/drill.o: \
- ../src_plugins/export_gerber/drill.c ../config.h board.h \
+ ../src_plugins/export_gerber/aperture.c ../config.h global_typedefs.h \
+ pcb_bool.h unit.h ../src_plugins/export_gerber/aperture.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h \
+ ../src_3rd/genvector/genvector_impl.c
+../src_plugins/export_gerber/excellon.o: \
+ ../src_plugins/export_gerber/excellon.c ../config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h global_typedefs.h \
  pcb_bool.h unit.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -1115,8 +1116,7 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genvector/vtp0.h list_conf.h \
  error.h ../src_plugins/export_gerber/excellon.h \
- ../src_plugins/export_gerber/aperture.h \
- ../src_3rd/genvector/genvector_impl.c
+ ../src_plugins/export_gerber/aperture.h
 ../src_plugins/export_gerber/gerber.o: \
  ../src_plugins/export_gerber/gerber.c ../config.h math_helper.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h global_typedefs.h \
