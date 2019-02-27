@@ -101,7 +101,6 @@ static int layer_list_max;
 static int layer_list_idx;
 
 pcb_drill_ctx_t pdrills, udrills;
-#define DRILL_APR (is_plated ? &pdrills.apr : &udrills.apr)
 
 void reset_apertures(void)
 {
@@ -930,18 +929,11 @@ static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 
 	if (line_slots) {
 		pcb_coord_t dia = gc->width/2;
-		find_aperture(DRILL_APR, dia*2, ROUND);
+		find_aperture((is_plated ? &pdrills.apr : &udrills.apr), dia*2, ROUND);
 		find_aperture(curr_aptr_list, dia*2, ROUND); /* for a real gerber export of the BOUNDARY group: place aperture on the per layer aperture list */
 
-		if (!finding_apertures) {
-			pcb_pending_drill_t *pd = pcb_drill_new_pending(is_plated ? &pdrills : &udrills);
-			pd->x = x1;
-			pd->y = y1;
-			pd->x2 = x2;
-			pd->y2 = y2;
-			pd->diam = dia*2;
-			pd->is_slot = (x1 != x2) || (y1 != y2);
-		}
+		if (!finding_apertures)
+			pcb_drill_new_pending(is_plated ? &pdrills : &udrills, x1, y1, x2, y2, dia*2);
 		return;
 	}
 
@@ -1115,12 +1107,7 @@ static void gerber_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, 
 	if (!f)
 		return;
 	if (is_drill) {
-		pcb_pending_drill_t *pd = pcb_drill_new_pending(is_plated ? &pdrills : &udrills);
-		find_aperture(DRILL_APR, radius*2, ROUND);
-		pd->x = cx;
-		pd->y = cy;
-		pd->diam = radius * 2;
-		pd->is_slot = 0;
+		pcb_drill_new_pending(is_plated ? &pdrills : &udrills, cx, cy, cx, cy, radius * 2);
 		return;
 	}
 	else if (gc->drill && !flash_drills)

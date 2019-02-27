@@ -132,8 +132,17 @@ pending_drill_t *new_pending_drill(int is_plated)
 }
 #endif
 
-pcb_pending_drill_t *pcb_drill_new_pending(pcb_drill_ctx_t *ctx)
+pcb_pending_drill_t *pcb_drill_new_pending(pcb_drill_ctx_t *ctx, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t diam)
 {
-	return vtpdr_alloc_append(&ctx->obj, 1);
+	pcb_pending_drill_t *pd = vtpdr_alloc_append(&ctx->obj, 1);
+
+	pd->x = x1;
+	pd->y = y1;
+	pd->x2 = x2;
+	pd->y2 = y2;
+	pd->diam = diam;
+	pd->is_slot = (x1 != x2) || (y1 != y2);
+	find_aperture(&ctx->apr, diam, ROUND);
+	return pd;
 }
 
