@@ -37,9 +37,6 @@
 #include "obj_term.h"
 #include "funchash_core.h"
 
-#include "brave.h"
-#include "rats.h"
-
 #define GAP 10000
 static pcb_coord_t minx;
 static pcb_coord_t miny;
