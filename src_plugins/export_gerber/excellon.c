@@ -111,9 +111,16 @@ static pcb_drill_ctx_t pdrills, udrills;
 static pcb_cam_t excellon_cam;
 static pcb_coord_t lastwidth;
 static char *filename = NULL;
+static struct {
+	unsigned nonround:1;
+	unsigned arc:1;
+	unsigned poly:1;
+	unsigned comp:1;
+} warn;
 
 typedef struct hid_gc_s {
 	pcb_core_gc_t core_gc;
+	pcb_cap_style_t style;
 	pcb_coord_t width;
 } hid_gc_s;
 
@@ -163,6 +170,7 @@ static void excellon_do_export(pcb_hid_attr_val_t * options)
 
 	pcb_drill_init(&pdrills);
 	pcb_drill_init(&udrills);
+	memset(&warn, 0, sizeof(warn));
 
 	if (!options) {
 		excellon_get_export_options(NULL);
@@ -252,7 +260,19 @@ static void excellon_destroy_gc(pcb_hid_gc_t gc)
 
 static void excellon_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *drw_screen)
 {
-TODO("warn for negative");
+	switch(op) {
+		case PCB_HID_COMP_RESET:
+		case PCB_HID_COMP_POSITIVE:
+		case PCB_HID_COMP_FLUSH:
+			break;
+
+		case PCB_HID_COMP_POSITIVE_XOR:
+		case PCB_HID_COMP_NEGATIVE:
+			if (!warn.comp) {
+				warn.comp = 1;
+				pcb_message(PCB_MSG_ERROR, "Excellon: can not draw composite layers (some features may be missing from the export)\n");
+			}
+	}
 }
 
 static void excellon_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
@@ -261,7 +281,7 @@ static void excellon_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 
 static void excellon_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 {
-	TODO("warn for non-round");
+	gc->style = style;
 }
 
 static void excellon_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
@@ -275,6 +295,11 @@ static void excellon_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 
 static void use_gc(pcb_hid_gc_t gc, pcb_coord_t radius)
 {
+	if ((gc->style != pcb_cap_round) && (!warn.nonround)) {
+		warn.nonround = 1;
+		pcb_message(PCB_MSG_ERROR, "Excellon: can not set non-round aperture (some features may be missing from the export)\n");
+	}
+
 	if (radius == 0)
 		radius = gc->width;
 	else
@@ -309,7 +334,10 @@ static void excellon_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 
 static void excellon_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
-	TODO("decide about arcs");
+	if (!warn.arc) {
+		warn.arc = 1;
+		pcb_message(PCB_MSG_ERROR, "Excellon: can not export arcs (some features may be missing from the export)\n");
+	}
 }
 
 static void excellon_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
@@ -325,7 +353,10 @@ static void excellon_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy
 
 static void excellon_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
 {
-	TODO("can't");
+	if (!warn.poly) {
+		warn.poly = 1;
+		pcb_message(PCB_MSG_ERROR, "Excellon: can not export polygons (some features may be missing from the export)\n");
+	}
 }
 
 static void excellon_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
@@ -336,17 +367,7 @@ static void excellon_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x,
 
 static void excellon_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
-	pcb_coord_t x[5];
-	pcb_coord_t y[5];
-	x[0] = x[4] = x1;
-	y[0] = y[4] = y1;
-	x[1] = x1;
-	y[1] = y2;
-	x[2] = x2;
-	y[2] = y2;
-	x[3] = x2;
-	y[3] = y1;
-	excellon_fill_polygon(gc, 5, x, y);
+	excellon_fill_polygon(gc, 0, NULL, NULL);
 }
 
 static void excellon_calibrate(double xval, double yval)
