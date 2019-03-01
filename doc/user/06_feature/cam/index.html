@@ -25,7 +25,12 @@ outfile=layergrp[,layergrp,...]
 <p>
 where:
 <ul>
-	<li> outfile is the output file name (unlatered by the code)
+	<li> outfile is the output file name template that substitutes %%:
+		<ul>
+			<li> %name% is substituted with the layer group name
+			<li> %top_offs% is substituted with the layer group offset from the top (top layer group being 0); only layer groups with the same material considered
+			<li> %bot_offs% is substituted with the layer group offset from the bottom (bottom layer group being 0); only layer groups with the same material considered
+		</ul>
 	<li> layergrp: one or more layer group definitions separated by comma (see below)
 	<li> optionally a list of exporter options in the same format as on direct command line (e.g. --verbose); when there's overlap on any state/definition between opts and CAM operation, the effect of the opt is ignored
 </ul>
@@ -70,6 +75,21 @@ Examples:
 	     <td> export plated drilled holes (padstack side effects, but no slots)
 	<tr> <td> unplated_drills.cnc=virtual(purpose=udrill)
 	     <td> export unplated drilled holes (padstack side effects, but no slots)
+</table>
+<p>
+If multiple layer groups match a layergrp specification, all matching
+layer groups are exported. If the file name is a static string, they are
+all merged. If the file name is templated, it is possible to export the
+layer groups in multiple files. For example:
+<table border=1 cellspacing=0>
+	<tr> <th> directive
+	     <th> explanation
+	<tr> <td> copper.gbr=copper
+	     <td> export all copper layers to copper.gbr
+	<tr> <td> copper-%top_offs%.gbr=copper
+	     <td> export all copper layers to numbered copper-<i>N</i>.gbr files where <i>N</i> is the offset from the top side, starting from 0 (for top copper)
+	<tr> <td> copper-%name%.gbr=copper
+	     <td> export all copper layers to numbered copper-<i>N</i>.gbr files where <i>N</i> is the full name of the group being exported
 </table>
 
 <h3> CAM plugin </h3>
