@@ -22,7 +22,7 @@
 - BUG: lesstif: {i c p}, color tab: tabbed doesn't grow [report: Igor2]
 - CAM:
 	- CLEANUP: move the hackish gerber layer suffix functions into CAM configs [report: Ade]
-	- CLEANUP: split gerber and drill file generation (make gerber depend on drill, for backward compatibility)
+	- CLEANUP: make gerber depend on excellon (for backward compatibility) instead of reinventing it
 	- FEATURE: export_gerber: add a true gerber drill output
 	- FEATURE: make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file
 	- FEATURE: invent a generic API for both the drill attrib config table
