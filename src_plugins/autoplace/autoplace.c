@@ -71,16 +71,11 @@
 #include "data_it.h"
 #include <genvector/vtp0.h>
 
-#include "brave.h"
-#include "rats.h"
-
 #define EXPANDRECTXY(r1, x1, y1, x2, y2) { \
   r1->X1=MIN(r1->X1, x1); r1->Y1=MIN(r1->Y1, y1); \
   r1->X2=MAX(r1->X2, x2); r1->Y2=MAX(r1->Y2, y2); \
 }
 #define EXPANDRECT(r1, r2) EXPANDRECTXY(r1, r2->X1, r2->Y1, r2->X2, r2->Y2)
-
-static double ComputeCost(pcb_oldnetlist_t *Nets, double T0, double T);
 
 const struct {
 	double via_cost;
@@ -184,53 +179,6 @@ static pcb_layergrp_id_t obj_layergrp(const pcb_any_obj_t *obj)
 			pcb_message(PCB_MSG_ERROR, "Odd terminal type encountered in obj_layergrp()\n");
 	}
 	return -1;
-}
-
-/* ---------------------------------------------------------------------------
- * Update the X, Y and group position information stored in the NetList after
- * subcircuits have possibly been moved, rotated, flipped, etc.
- */
-TODO("netlist: remove this with the old netlist code")
-static void UpdateXY_old(pcb_oldnetlist_t *Nets)
-{
-	pcb_layergrp_id_t SLayer = -1, CLayer = -1;
-	pcb_cardinal_t i, j;
-	/* find layer groups of the component side and solder side */
-
-	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &SLayer, 1);
-	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &CLayer, 1);
-
-	/* update all nets */
-	for (i = 0; i < Nets->NetN; i++) {
-		for (j = 0; j < Nets->Net[i].ConnectionN; j++) {
-			pcb_connection_t *c = &(Nets->Net[i].Connection[j]);
-			switch (c->obj->type) {
-			case PCB_OBJ_PSTK:
-				c->group = SLayer;  /* any layer will do */
-				c->X = ((pcb_pstk_t *) c->obj)->x;
-				c->Y = ((pcb_pstk_t *) c->obj)->y;
-				break;
-			/* terminals on layer */
-			case PCB_OBJ_LINE:
-			case PCB_OBJ_ARC:
-			case PCB_OBJ_TEXT:
-			case PCB_OBJ_POLY:
-				{
-					pcb_layer_t *layer = pcb_layer_get_real(c->obj->parent.layer);
-					if (layer != NULL)
-						c->group = layer->meta.real.grp;
-					else
-						c->group = SLayer;  /* any layer will do */
-					c->X = (c->obj->BoundingBox.X1 + c->obj->BoundingBox.X2) / 2;
-					c->Y = (c->obj->BoundingBox.Y1 + c->obj->BoundingBox.Y2) / 2;
-				}
-				break;
-			default:
-				pcb_message(PCB_MSG_ERROR, "Odd connection type encountered in " "UpdateXY");
-				break;
-			}
-		}
-	}
 }
 
 /* ---------------------------------------------------------------------------
@@ -362,7 +310,7 @@ static int pstk_ispad(pcb_pstk_t *ps)
  *  "Placement and Routing of Electronic Modules" edited by Michael Pecht
  *  Marcel Dekker, Inc. 1993.  ISBN: 0-8247-8916-4 TK7868.P7.P57 1993
  */
-static double ComputeCost(pcb_oldnetlist_t *Nets, double T0, double T)
+static double ComputeCost(double T0, double T)
 {
 	double W = 0;									/* wire cost */
 	double delta1 = 0;						/* wire congestion penalty function */
@@ -370,7 +318,7 @@ static double ComputeCost(pcb_oldnetlist_t *Nets, double T0, double T)
 	double delta3 = 0;						/* out of bounds penalty */
 	double delta4 = 0;						/* alignment bonus */
 	double delta5 = 0;						/* total area penalty */
-	pcb_cardinal_t i, j;
+	pcb_cardinal_t i;
 	pcb_coord_t minx, maxx, miny, maxy;
 	pcb_bool allpads, allsameside;
 	pcb_cardinal_t thegroup;
@@ -379,8 +327,14 @@ static double ComputeCost(pcb_oldnetlist_t *Nets, double T0, double T)
 	pcb_box_list_t componentside = { 0, 0, NULL };	/* component side bounds */
 
 
-	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST)) {
+	{
 		htsp_entry_t *e;
+
+		/* wire length term.  approximated by half-perimeter of minimum
+		 * rectangle enclosing the net.  Note that we penalize vias in
+		 * all-SMD nets by making the rectangle a cube and weighting
+		 * the "layer height" of the net. */
+
 		for(e = htsp_first(&PCB->netlist[PCB_NETLIST_EDITED]); e != NULL; e = htsp_next(&PCB->netlist[PCB_NETLIST_EDITED], e)) {
 			pcb_net_t *net = e->value;
 			pcb_net_term_t *t;
@@ -408,37 +362,6 @@ static double ComputeCost(pcb_oldnetlist_t *Nets, double T0, double T)
 				if (!pstk_ispad((pcb_pstk_t *)obj))
 					allpads = pcb_false;
 				if (obj_layergrp(obj) != thegroup)
-					allsameside = pcb_false;
-			}
-			/* okay, add half-perimeter to cost! */
-			W += PCB_COORD_TO_MIL(maxx - minx) + PCB_COORD_TO_MIL(maxy - miny) + ((allpads && !allsameside) ? CostParameter.via_cost : 0);
-		}
-	}
-	else {
-		/* make sure the NetList have the proper updated X and Y coords */
-		UpdateXY_old(Nets);
-		/* wire length term.  approximated by half-perimeter of minimum
-		 * rectangle enclosing the net.  Note that we penalize vias in
-		 * all-SMD nets by making the rectangle a cube and weighting
-		 * the "layer height" of the net. */
-		for (i = 0; i < Nets->NetN; i++) {
-			pcb_oldnet_t *n = &Nets->Net[i];
-			if (n->ConnectionN < 2)
-				continue;									/* no cost to go nowhere */
-			minx = maxx = n->Connection[0].X;
-			miny = maxy = n->Connection[0].Y;
-			thegroup = n->Connection[0].group;
-			allpads = pstk_ispad((pcb_pstk_t *)n->Connection[0].obj);
-			allsameside = pcb_true;
-			for (j = 1; j < n->ConnectionN; j++) {
-				pcb_connection_t *c = &(n->Connection[j]);
-				PCB_MAKE_MIN(minx, c->X);
-				PCB_MAKE_MAX(maxx, c->X);
-				PCB_MAKE_MIN(miny, c->Y);
-				PCB_MAKE_MAX(maxy, c->Y);
-				if (!pstk_ispad((pcb_pstk_t *)c->obj))
-					allpads = pcb_false;
-				if (c->group != thegroup)
 					allsameside = pcb_false;
 			}
 			/* okay, add half-perimeter to cost! */
@@ -798,25 +721,12 @@ void doPerturb(vtp0_t *selected, PerturbationType *pt, pcb_bool undo)
  */
 pcb_bool AutoPlaceSelected(void)
 {
-	pcb_oldnetlist_t *Nets;
 	vtp0_t Selected;
 	PerturbationType pt;
 	double C00, C0, T0;
 	pcb_bool changed = pcb_false;
 
 	vtp0_init(&Selected);
-
-	/* (initial netlist processing copied from AddAllRats) */
-	/* the netlist library has the text form
-	 * ProcNetlist fills in the Netlist
-	 * structure the way the final routing
-	 * is supposed to look
-	 */
-	Nets = pcb_rat_proc_netlist(&(PCB->NetlistLib[PCB_NETLIST_EDITED]));
-	if (!Nets) {
-		pcb_message(PCB_MSG_ERROR, _("Can't add rat lines because no netlist is loaded.\n"));
-		goto done;
-	}
 
 	Selected = collectSelectedSubcircuits();
 	if (vtp0_len(&Selected) == 0) {
@@ -830,11 +740,11 @@ pcb_bool AutoPlaceSelected(void)
 		const double Tx = PCB_MIL_TO_COORD(300), P = 0.95;
 		double Cs = 0.0;
 		int i;
-		C00 = C0 = ComputeCost(Nets, Tx, Tx);
+		C00 = C0 = ComputeCost(Tx, Tx);
 		for (i = 0; i < TRIALS; i++) {
 			pt = createPerturbation(&Selected, PCB_INCH_TO_COORD(1));
 			doPerturb(&Selected, &pt, pcb_false);
-			Cs += fabs(ComputeCost(Nets, Tx, Tx) - C0);
+			Cs += fabs(ComputeCost(Tx, Tx) - C0);
 			doPerturb(&Selected, &pt, pcb_true);
 		}
 		T0 = -(Cs / TRIALS) / log(P);
@@ -847,13 +757,13 @@ pcb_bool AutoPlaceSelected(void)
 		int good_moves = 0, moves = 0;
 		const int good_move_cutoff = CostParameter.m * vtp0_len(&Selected);
 		const int move_cutoff = 2 * good_move_cutoff;
-		printf("Starting cost is %.0f\n", ComputeCost(Nets, T0, 5));
-		C0 = ComputeCost(Nets, T0, T);
+		printf("Starting cost is %.0f\n", ComputeCost(T0, 5));
+		C0 = ComputeCost(T0, T);
 		while (1) {
 			double Cprime;
 			pt = createPerturbation(&Selected, T);
 			doPerturb(&Selected, &pt, pcb_false);
-			Cprime = ComputeCost(Nets, T0, T);
+			Cprime = ComputeCost(T0, T);
 			if (Cprime < C0) {				/* good move! */
 				C0 = Cprime;
 				good_moves++;
@@ -880,7 +790,7 @@ pcb_bool AutoPlaceSelected(void)
 				moves = good_moves = 0;
 				T *= CostParameter.gamma;
 				/* cost is T dependent, so recompute */
-				C0 = ComputeCost(Nets, T0, T);
+				C0 = ComputeCost(T0, T);
 			}
 		}
 		changed = (steps > 0);
@@ -889,7 +799,7 @@ done:
 	pcb_hid_progress(0, 0, NULL);
 	if (changed) {
 		pcb_rats_destroy(pcb_false);
-		pcb_rat_add_all(pcb_false);
+		pcb_net_add_all_rats(PCB, PCB_RATACC_PRECISE);
 		pcb_redraw();
 	}
 	vtp0_uninit(&Selected);
