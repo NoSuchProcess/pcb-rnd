@@ -290,10 +290,11 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_h
 {
 	char *curr, *next, *purpose;
 
+	memset(dst, 0, sizeof(pcb_cam_t));
+
 	if ((src == NULL) || (*src == '\0'))
 		return 0;
 
-	memset(dst, 0, sizeof(pcb_cam_t));
 	dst->pcb = pcb;
 	dst->inst = pcb_strdup(src);
 	layervis_save_and_reset(dst);
