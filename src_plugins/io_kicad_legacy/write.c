@@ -41,10 +41,6 @@
 #include "../io_kicad/uniq_name.h"
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 
-#include "brave.h"
-#include "netlist.h"
-
-
 /* layer "0" is first copper layer = "0. Back - Solder"
  * and layer "15" is "15. Front - Component"
  * and layer "20" SilkScreen Back
@@ -320,46 +316,6 @@ TODO("textrot: use the angle, not n*90 deg")
 	}
 }
 
-
-static int write_kicad_legacy_equipotential_netlists_old(FILE *FP, pcb_board_t *Layout)
-{
-	int n; /* code mostly lifted from netlist.c */
-	int netNumber;
-	pcb_lib_menu_t *menu;
-	pcb_lib_entry_t *netlist;
-
-	/* first we write a default netlist for the 0 net, which is for unconnected pads in pcbnew */
-	fputs("$EQUIPOT\n", FP);
-	fputs("Na 0 \"\"\n", FP);
-	fputs("St ~\n", FP);
-	fputs("$EndEQUIPOT\n", FP);
-
-	/* now we step through any available netlists and generate descriptors */
-	for(n = 0, netNumber = 1; n < Layout->NetlistLib[PCB_NETLIST_EDITED].MenuN; n++, netNumber++) {
-		menu = &Layout->NetlistLib[PCB_NETLIST_EDITED].Menu[n];
-		netlist = &menu->Entry[0];
-		if (netlist != NULL) {
-			fputs("$EQUIPOT\n", FP);
-			fprintf(FP, "Na %d \"%s\"\n", netNumber, pcb_netlist_name(menu)); /* netlist 0 was used for unconnected pads  */
-			fputs("St ~\n", FP);
-			fputs("$EndEQUIPOT\n", FP);
-		}
-	}
-	return 0;
-}
-
-static void print_pstk_net_old(FILE *FP, pcb_board_t *Layout, pcb_pstk_t *ps)
-{
-	pcb_lib_menu_t *current_pin_menu = NULL;
-
-	if (Layout != NULL)
-		current_pin_menu = pcb_netlist_find_net4term(Layout, (pcb_any_obj_t *)ps);
-	if ((current_pin_menu != NULL) && (pcb_netlist_net_idx(Layout, current_pin_menu) != PCB_NETLIST_INVALID_INDEX))
-		fprintf(FP, "Ne %d \"%s\"\n", (1 + pcb_netlist_net_idx(Layout, current_pin_menu)), pcb_netlist_name(current_pin_menu)); /* library parts have empty net descriptors, in a .brd they don't */
-	else
-		fprintf(FP, "Ne 0 \"\"\n"); /* unconnected pads have zero for net */
-}
-
 static int write_kicad_legacy_equipotential_netlists(FILE *FP, pcb_board_t *Layout)
 {
 	htsp_entry_t *e;
@@ -487,10 +443,7 @@ TODO(": figure how to turn off displaying these")
 
 			fputs("At STD N 00E0FFFF\n", FP); /* through hole STD pin, all copper layers */
 
-			if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
-				print_pstk_net(FP, pcb, ps);
-			else
-				print_pstk_net_old(FP, pcb, ps);
+			print_pstk_net(FP, pcb, ps);
 			fputs("$EndPAD\n", FP);
 		}
 		else if (pcb_pstk_export_compat_pad(ps, &x1, &y1, &x2, &y2, &thickness, &clearance, &mask, &square, &nopaste)) {
@@ -579,10 +532,7 @@ TODO("hshadow TODO")
 			else
 				fputs("At SMD N 00888000\n", FP);
 
-			if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
-				print_pstk_net(FP, pcb, ps);
-			else
-				print_pstk_net_old(FP, pcb, ps);
+			print_pstk_net(FP, pcb, ps);
 			fputs("$EndPAD\n", FP);
 		}
 		else
@@ -845,11 +795,7 @@ TODO(": se this from io_kicad, do not duplicate the code here")
 
 	fputs("$EndSETUP\n", FP);
 
-	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
-		write_kicad_legacy_equipotential_netlists(FP, PCB);
-	else
-		write_kicad_legacy_equipotential_netlists_old(FP, PCB);
-
+	write_kicad_legacy_equipotential_netlists(FP, PCB);
 	write_kicad_legacy_layout_subcs(FP, PCB, PCB->Data, LayoutXOffset, LayoutYOffset);
 
 	/* we now need to map pcb's layer groups onto the kicad layer numbers */
