@@ -5,6 +5,7 @@
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  Copyright (C) 2004 harry eaton
+ *  Copyright (C) 2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -332,6 +333,20 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_h
 			pcb_layergrp_id_t gid;
 			curr++;
 			gid = pcb_layergrp_by_name(pcb, curr);
+			if (gid < 0) {
+				const pcb_virt_layer_t *v;
+				int n, vid = -1;
+				for(n = 0, v = pcb_virt_layers; v->name != NULL; n++,v++) {
+					if (strcmp(v->name, curr) == 0) {
+						vid = n;
+						break;
+					}
+				}
+				if (vid != -1) {
+					dst->vgrp_vis[vid] = 1;
+					continue;
+				}
+			}
 			if (gid < 0) {
 				pcb_message(PCB_MSG_ERROR, "CAM rule: no such layer group '%s'\n", curr);
 				goto err;
