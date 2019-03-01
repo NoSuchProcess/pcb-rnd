@@ -4,6 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
+ *  Copyright (C) 2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -49,8 +50,6 @@
 #include "../src_plugins/lib_gtk_common/lib_gtk_config.h"
 
 #include "actions.h"
-
-#include "brave.h"
 
 static const char *ghid_act_cookie = "gtk HID actions";
 
@@ -130,10 +129,7 @@ static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_gtk_dlg_log_show(raise);
 	}
 	else if (strcmp(a, "4") == 0 || pcb_strcasecmp(a, "Netlist") == 0) {
-		if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
-			pcb_actionl("NetlistDialog", NULL);
-		else
-			pcb_gtk_dlg_netlist_show(&ghidgui->common, raise);
+		pcb_actionl("NetlistDialog", NULL);
 	}
 	else if (strcmp(a, "5") == 0 || pcb_strcasecmp(a, "Preferences") == 0) {
 		pcb_message(PCB_MSG_ERROR, "Please use the new drc preferences() action instead\n");
