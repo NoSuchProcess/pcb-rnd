@@ -43,7 +43,8 @@ struct pcb_net_term_s {
 typedef enum { /* bitfield */
 	PCB_RATACC_PRECISE = 1,            /* find the shortest rats, precisely (expensive); if unset, use a simplified algo e.g. considering only endpoints of lines */
 	PCB_RATACC_ONLY_MANHATTAN = 2,     /* the old autorouter doesn't like non-manhattan lines and arcs */
-	PCB_RATACC_INFO = 4                /* print INFO messages in the log about how many rats are to go */
+	PCB_RATACC_ONLY_SELECTED = 4,
+	PCB_RATACC_INFO = 8                /* print INFO messages in the log about how many rats are to go */
 } pcb_rat_accuracy_t;
 
 /* List of refdes-terminals */

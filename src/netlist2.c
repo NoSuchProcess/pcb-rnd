@@ -678,7 +678,22 @@ pcb_cardinal_t pcb_net_add_all_rats(const pcb_board_t *pcb, pcb_rat_accuracy_t a
 	pcb_net_short_ctx_init(&sctx, pcb, NULL);
 
 	for(e = htsp_first(&pcb->netlist[PCB_NETLIST_EDITED]); e != NULL; e = htsp_next(&pcb->netlist[PCB_NETLIST_EDITED], e)) {
-		sctx.current_net = (pcb_net_t *)e->value;
+		pcb_net_t *net = e->value;
+		if (acc & PCB_RATACC_ONLY_SELECTED) {
+			pcb_net_term_t *t;
+			int has_selection = 0;
+			for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
+				pcb_any_obj_t *o = pcb_term_find_name(pcb, pcb->Data, PCB_LYT_COPPER, t->refdes, t->term, 0, NULL, NULL);
+				if ((o != NULL) && (PCB_FLAG_TEST(PCB_FLAG_SELECTED, o))) {
+					has_selection = 1;
+					break;
+				}
+			}
+			if (!has_selection)
+				continue;
+		}
+
+		sctx.current_net = net;
 		if (sctx.current_net->inhibit_rats)
 			continue;
 		drawn += pcb_net_map_subnets(&sctx, acc, &subnets);
@@ -689,6 +704,8 @@ pcb_cardinal_t pcb_net_add_all_rats(const pcb_board_t *pcb, pcb_rat_accuracy_t a
 		long rem = ratlist_length(&pcb->Data->Rat);
 		if (rem > 0)
 			pcb_message(PCB_MSG_INFO, "%d rat line%s remaining\n", rem, rem > 1 ? "s" : "");
+		else if (acc & PCB_RATACC_ONLY_SELECTED)
+			pcb_message(PCB_MSG_WARNING, "No rat for any network that has selected terminal\n");
 		else if (sctx.missing > 0)
 			pcb_message(PCB_MSG_WARNING, "Nothing more to add, but there are\neither rat-lines in the layout, disabled nets\nin the net-list, or missing components\n");
 		else
