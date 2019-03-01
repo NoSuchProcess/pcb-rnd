@@ -7,7 +7,7 @@
 /*** CAM API ***/
 typedef struct pcb_cam_s {
 	/* public */
-	const char *fn;
+	char *fn;
 	pcb_bool active;
 	int grp_vis[PCB_MAX_LAYERGRP]; /* whether a real layer group should be rendered */
 	int vgrp_vis[PCB_VLY_end];     /* whether a virtual layer group should be rendered */
@@ -18,6 +18,7 @@ typedef struct pcb_cam_s {
 	pcb_xform_t vxform_[PCB_VLY_end];
 
 	/* private/internal/cache */
+	const char *fn_template;
 	char *inst;
 	pcb_board_t *pcb;
 	int orig_vis[PCB_MAX_LAYER]; /* backup of the original layer visibility */

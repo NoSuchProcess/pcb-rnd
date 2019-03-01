@@ -310,6 +310,11 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_h
 	next++;
 	dst->fn = strip(dst->inst);
 
+	if (strchr(dst->fn, '%') != NULL) {
+		dst->fn_template = dst->fn;
+		dst->fn = NULL;
+	}
+
 	while(isspace(*next))
 		next++;
 
@@ -438,6 +443,41 @@ int pcb_cam_end(pcb_cam_t *dst)
 }
 
 
+typedef struct  {
+	pcb_cam_t *cam;
+	const pcb_layergrp_t *grp;
+	const pcb_virt_layer_t *vl;
+} cam_name_ctx_t;
+
+static int cam_update_name_cb(void *ctx_, gds_t *s, const char **input)
+{
+	cam_name_ctx_t *ctx = ctx_;
+	if (strncmp(*input, "name%", 5) == 0) {
+		(*input) += 5;
+		if (ctx->grp != NULL) {
+			if (ctx->grp->name != NULL)
+				gds_append_str(s, ctx->grp->name);
+		}
+		else if (ctx->vl != NULL)
+			gds_append_str(s, ctx->vl->name);
+	}
+	return 0;
+}
+
+static int cam_update_name(pcb_cam_t *cam, pcb_layergrp_id_t gid, const pcb_virt_layer_t *vl)
+{
+	cam_name_ctx_t ctx;
+	if (cam->fn_template == NULL)
+		return 1; /* not templated */
+
+	free(cam->fn);
+	ctx.cam = cam;
+	ctx.grp = pcb_get_layergrp(cam->pcb, gid);
+	ctx.vl = vl;
+	cam->fn = pcb_strdup_subst(cam->fn_template, cam_update_name_cb, &ctx, PCB_SUBST_HOME | PCB_SUBST_PERCENT | PCB_SUBST_CONF);
+	return 1;
+}
+
 int pcb_cam_set_layer_group_(pcb_cam_t *cam, pcb_layergrp_id_t group, const char *purpose, int purpi, unsigned int flags, pcb_xform_t **xform)
 {
 	const pcb_virt_layer_t *vl;
@@ -448,10 +488,10 @@ int pcb_cam_set_layer_group_(pcb_cam_t *cam, pcb_layergrp_id_t group, const char
 	vl = pcb_vlayer_get_first(flags, purpose, purpi);
 	if (vl == NULL) {
 		if (group == -1)
-			return 1;
+			return cam_update_name(cam, group, NULL);
 
 		if (!cam->grp_vis[group])
-			return 1;
+			return cam_update_name(cam, group, NULL);
 
 		if (cam->xform[group] != NULL)
 			*xform = cam->xform[group];
@@ -459,7 +499,7 @@ int pcb_cam_set_layer_group_(pcb_cam_t *cam, pcb_layergrp_id_t group, const char
 	else {
 		int vid = vl->new_id - PCB_LYT_VIRTUAL - 1;
 		if (!cam->vgrp_vis[vid])
-			return 1;
+			return cam_update_name(cam, group, vl);
 
 		if (cam->vxform[vid] != NULL)
 			*xform = cam->xform[vid];
