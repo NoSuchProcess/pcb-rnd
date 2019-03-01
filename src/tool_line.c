@@ -48,9 +48,6 @@
 #include "undo.h"
 #include "netlist2.h"
 
-#include "rats.h"
-#include "brave.h"
-
 #include "obj_line_draw.h"
 #include "obj_pstk_draw.h"
 #include "obj_rat_draw.h"
@@ -159,12 +156,7 @@ void pcb_tool_line_notify_mode(void)
 	}
 
 	if (PCB->RatDraw) {
-		pcb_rat_t *line;
-
-		if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
-			line = pcb_net_create_by_rat_coords(PCB, pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y, 1);
-		else
-			line = pcb_rat_add_net_old();
+		pcb_rat_t *line = pcb_net_create_by_rat_coords(PCB, pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y, 1);
 
 		if (line != NULL) {
 			pcb_added_lines++;
