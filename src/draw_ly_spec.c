@@ -286,7 +286,7 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 		if (pcb_layer_gui_set_glayer(PCB, uslot->meta.real.grp, unplated > 0, &info->xform)) {
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
-			pcb_draw_pstk_slots(info, CURRENT->meta.real.grp, PCB_PHOLE_UNPLATED | PCB_PHOLE_BB);
+			pcb_draw_pstk_slots(info, uslot->meta.real.grp, PCB_PHOLE_UNPLATED | PCB_PHOLE_BB);
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 			pcb_gui->end_layer();
 		}
@@ -295,7 +295,7 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 		if (pcb_layer_gui_set_glayer(PCB, pslot->meta.real.grp, plated > 0, &info->xform)) {
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
-			pcb_draw_pstk_slots(info, CURRENT->meta.real.grp, PCB_PHOLE_PLATED | PCB_PHOLE_BB);
+			pcb_draw_pstk_slots(info, pslot->meta.real.grp, PCB_PHOLE_PLATED | PCB_PHOLE_BB);
 			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 			pcb_gui->end_layer();
 		}
