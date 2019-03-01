@@ -593,7 +593,6 @@ static FILE *psopen(const char *base, const char *which)
 	FILE *ps_open_file;
 	char *buf, *suff, *buf2;
 
-printf("ps open: %d cam=%d '%s'\n", global.multi_file, global.multi_file_cam, base);
 	if (base == NULL) /* cam, file name template case */
 		return NULL;
 
