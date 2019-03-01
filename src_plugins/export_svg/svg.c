@@ -281,33 +281,9 @@ static void group_close()
 	fprintf(f, "</g>\n");
 }
 
-static void svg_do_export(pcb_hid_attr_val_t * options)
+static void svg_header(void)
 {
-	const char *filename;
-	int save_ons[PCB_MAX_LAYER + 2];
-	int i;
 	pcb_coord_t w, h, x1, y1, x2, y2;
-
-	comp_cnt = 0;
-
-	if (!options) {
-		svg_get_export_options(0);
-		for (i = 0; i < NUM_OPTIONS; i++)
-			svg_values[i] = svg_attribute_list[i].default_val;
-		options = svg_values;
-	}
-
-	pcb_cam_begin(PCB, &svg_cam, options[HA_cam].str_value, svg_attribute_list, NUM_OPTIONS, options);
-
-	filename = options[HA_svgfile].str_value;
-	if (!filename)
-		filename = "pcb.svg";
-
-	f = pcb_fopen(svg_cam.active ? svg_cam.fn : filename, "wb");
-	if (!f) {
-		perror(filename);
-		return;
-	}
 
 	fprintf(f, "<?xml version=\"1.0\"?>\n");
 	w = PCB->MaxWidth;
@@ -324,6 +300,49 @@ static void svg_do_export(pcb_hid_attr_val_t * options)
 	x2 += PCB_MM_TO_COORD(5);
 	y2 += PCB_MM_TO_COORD(5);
 	pcb_fprintf(f, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%mm\" height=\"%mm\" viewBox=\"-%mm -%mm %mm %mm\">\n", w, h, x1, y1, x2, y2);
+}
+
+static void svg_footer(void)
+{
+	while(group_open) {
+		group_close();
+		group_open--;
+	}
+
+	fprintf(f, "</svg>\n");
+}
+
+static void svg_do_export(pcb_hid_attr_val_t * options)
+{
+	const char *filename;
+	int save_ons[PCB_MAX_LAYER + 2];
+	int i;
+
+	comp_cnt = 0;
+
+	if (!options) {
+		svg_get_export_options(0);
+		for (i = 0; i < NUM_OPTIONS; i++)
+			svg_values[i] = svg_attribute_list[i].default_val;
+		options = svg_values;
+	}
+
+	pcb_cam_begin(PCB, &svg_cam, options[HA_cam].str_value, svg_attribute_list, NUM_OPTIONS, options);
+
+	if (svg_cam.fn_template == NULL) {
+		filename = options[HA_svgfile].str_value;
+		if (!filename)
+			filename = "pcb.svg";
+
+		f = pcb_fopen(svg_cam.active ? svg_cam.fn : filename, "wb");
+		if (!f) {
+			perror(filename);
+			return;
+		}
+		svg_header();
+	}
+	else
+		f = NULL;
 
 	if (!svg_cam.active)
 		pcb_hid_save_and_show_layer_ons(save_ons);
@@ -333,12 +352,7 @@ static void svg_do_export(pcb_hid_attr_val_t * options)
 	if (!svg_cam.active)
 		pcb_hid_restore_layer_ons(save_ons);
 
-	while(group_open) {
-		group_close();
-		group_open--;
-	}
-
-	fprintf(f, "</svg>\n");
+	svg_footer();
 	fclose(f);
 	f = NULL;
 
@@ -363,6 +377,20 @@ static int svg_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int
 		return 0;
 
 	pcb_cam_set_layer_group(&svg_cam, group, purpose, purpi, flags, xform);
+
+	if (svg_cam.fn_changed) {
+		if (f != NULL) {
+			svg_footer();
+			fclose(f);
+		}
+
+		f = pcb_fopen(svg_cam.fn, "wb");
+		if (f == NULL) {
+			perror(svg_cam.fn);
+			return 0;
+		}
+		svg_header();
+	}
 
 	if (!svg_cam.active) {
 		if (flags & PCB_LYT_INVIS)
