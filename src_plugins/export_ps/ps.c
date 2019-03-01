@@ -401,6 +401,7 @@ static struct {
 	pcb_coord_t linewidth;
 	double fade_ratio;
 	pcb_bool multi_file;
+	pcb_bool multi_file_cam;
 	pcb_coord_t media_width, media_height, ps_width, ps_height;
 
 	const char *filename;
@@ -592,6 +593,10 @@ static FILE *psopen(const char *base, const char *which)
 	FILE *ps_open_file;
 	char *buf, *suff, *buf2;
 
+printf("ps open: %d cam=%d '%s'\n", global.multi_file, global.multi_file_cam, base);
+	if (base == NULL) /* cam, file name template case */
+		return NULL;
+
 	if (!global.multi_file)
 		return pcb_fopen(base, "w");
 
@@ -606,7 +611,6 @@ static FILE *psopen(const char *base, const char *which)
 	else {
 		sprintf(buf, "%s.%s.ps", base, which);
 	}
-	printf("PS: open %s\n", buf);
 	ps_open_file = pcb_fopen(buf, "w");
 	free(buf);
 	return ps_open_file;
@@ -676,7 +680,7 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	global.exps.view.X2 = PCB->MaxWidth;
 	global.exps.view.Y2 = PCB->MaxHeight;
 
-	if ((!global.multi_file) && (options[HA_toc].int_value)) {
+	if ((!global.multi_file && !global.multi_file_cam) && (options[HA_toc].int_value)) {
 		/* %%Page DSC requires both a label and an ordinal */
 		fprintf(the_file, "%%%%Page: TableOfContents 1\n");
 		fprintf(the_file, "/Times-Roman findfont 24 scalefont setfont\n");
@@ -721,17 +725,22 @@ static void ps_do_export(pcb_hid_attr_val_t * options)
 		global.filename = "pcb-out.ps";
 
 	/* cam mode shall result in a single file, no matter what other attributes say */
-	if (ps_cam.active)
-		global.multi_file = 0;
-	else
+	if (ps_cam.active) {
 		global.multi_file = options[HA_multifile].int_value;
-
-	if (global.multi_file)
-		fh = 0;
+		global.multi_file_cam = (ps_cam.fn_template != NULL); /* template means multiple files potentially */
+	}
 	else {
-		fh = psopen(ps_cam.active ? ps_cam.fn : global.filename, "toc");
+		global.multi_file = options[HA_multifile].int_value;
+		global.multi_file_cam = 0;
+	}
+
+	if (global.multi_file || global.multi_file_cam)
+			fh = 0;
+	else {
+		const char *fn = ps_cam.active ? ps_cam.fn : global.filename;
+		fh = psopen(fn, "toc");
 		if (!fh) {
-			perror(global.filename);
+			perror(fn);
 			return;
 		}
 	}
@@ -850,7 +859,10 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 		return 0;
 	}
 
-	newpage = (group < 0 || group != lastgroup);
+	if (ps_cam.active)
+		newpage = ps_cam.fn_changed;
+	else
+		newpage = (group < 0 || group != lastgroup);
 	if ((global.pagecount > 1) && global.single_page)
 		newpage = 0;
 	if (newpage) {
@@ -862,12 +874,13 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 			pcb_fprintf(global.f, "showpage\n");
 		}
 		global.pagecount++;
-		if (global.multi_file) {
+		if ((!ps_cam.active && global.multi_file) || (ps_cam.active && ps_cam.fn_changed)) {
+			const char *fn = ps_cam.active ? ps_cam.fn : pcb_layer_to_file_name(tmp_fn, layer, flags, purpose, purpi, PCB_FNS_fixed);
 			if (global.f) {
 				ps_end_file(global.f);
 				fclose(global.f);
 			}
-			global.f = psopen(global.filename, pcb_layer_to_file_name(tmp_fn, layer, flags, purpose, purpi, PCB_FNS_fixed));
+			global.f = psopen(ps_cam.active ? fn : global.filename, fn);
 			if (!global.f) {
 				perror(global.filename);
 				return 0;
