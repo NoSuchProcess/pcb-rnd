@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,9 +34,6 @@
 #include "search.h"
 #include "search_r.h"
 #include "netlist2.h"
-
-#include "netlist.h"
-#include "brave.h"
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
@@ -96,17 +93,10 @@ static pcb_r_dir_t pinout_mouse_search_cb(void *closure, pcb_any_obj_t *obj, voi
 		if (val.str_value != NULL)
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_name, &val);
 		if (ctx->pcb != NULL) {
-			if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST)) {
+			{
 				pcb_net_term_t *term = pcb_net_find_by_obj(&ctx->pcb->netlist[PCB_NETLIST_EDITED], obj);
 				if (term != NULL) {
 					val.str_value = term->parent.net->name;
-					pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_net, &val);
-				}
-			}
-			else {
-				pcb_lib_menu_t *net = pcb_netlist_find_net4term(ctx->pcb, obj);
-				if (net != NULL) {
-					val.str_value = net->Name;
 					pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_net, &val);
 				}
 			}
