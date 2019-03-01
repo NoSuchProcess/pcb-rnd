@@ -55,8 +55,6 @@
 #include "funchash_core.h"
 #include "netlist2.h"
 
-#include "brave.h"
-
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 
 /*#define CFMT "%[9]"*/
@@ -1258,7 +1256,6 @@ static lht_node_t *build_styles(vtroutestyle_t *styles)
 static lht_node_t *build_netlist(pcb_netlist_t *netlist, pcb_lib_t *old_netlist, const char *name, int *nonempty)
 {
 	lht_node_t *nl, *pl, *pn, *nnet;
-	pcb_cardinal_t n, p;
 
 	if (netlist->used < 1)
 		return dummy_node(name);
@@ -1270,7 +1267,7 @@ static lht_node_t *build_netlist(pcb_netlist_t *netlist, pcb_lib_t *old_netlist,
 
 	nl = lht_dom_node_alloc(LHT_LIST, name);
 
-	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST)) {
+	{
 		htsp_entry_t *e;
 		for(e = htsp_first(netlist); e != NULL; e = htsp_next(netlist, e)) {
 			pcb_net_t *net = e->value;
@@ -1300,36 +1297,7 @@ static lht_node_t *build_netlist(pcb_netlist_t *netlist, pcb_lib_t *old_netlist,
 			lht_dom_list_append(nl, nnet);
 		}
 	}
-	else {
-		for (n = 0; n < old_netlist->MenuN; n++) {
-			pcb_lib_menu_t *menu = &old_netlist->Menu[n];
-			const char *netname = &menu->Name[2];
-			const char *style = menu->Style;
 
-			/* create the net hash */
-			nnet = lht_dom_node_alloc(LHT_HASH, netname);
-
-			if (wrver >= 5)
-				lht_dom_hash_put(nnet, build_attributes(&menu->Attributes));
-			else if (menu->Attributes.Number > 0)
-				pcb_io_incompat_save(NULL, (pcb_any_obj_t *)menu, "net-attr", "Can not save netlist attributes in lihata formats below version 5.", "Either save in lihata v5 - or accept that attributes are not saved");
-
-			pl = lht_dom_node_alloc(LHT_LIST, "conn");
-			lht_dom_hash_put(nnet, pl);
-			if ((style != NULL) && (*style == '\0')) style = NULL;
-			lht_dom_hash_put(nnet, build_text("style", style));
-
-			/* grow the connection list */
-			for (p = 0; p < menu->EntryN; p++) {
-				pcb_lib_entry_t *entry = &menu->Entry[p];
-				const char *pin = entry->ListEntry;
-				pn = lht_dom_node_alloc(LHT_TEXT, "");
-				pn->data.text.value = pcb_strdup(pin);
-				lht_dom_list_append(pl, pn);
-			}
-			lht_dom_list_append(nl, nnet);
-		}
-	}
 	return nl;
 }
 
