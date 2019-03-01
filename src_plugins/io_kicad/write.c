@@ -39,9 +39,6 @@
 #include "obj_pstk_inlines.h"
 #include "funchash_core.h"
 
-#include "brave.h"
-#include "netlist.h"
-
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 
 /* When non-zero, introduce an offset to move the whole board to the center of the page */
@@ -802,29 +799,6 @@ TODO(": make this initialization a common function with write_kicad_layout()")
 	return kicad_print_subcs(&wctx, Data, 0, 0, 0);
 }
 
-/* writes netlist data in kicad legacy format for use in a layout .brd file */
-static int write_kicad_equipotential_netlists_old(FILE *FP, pcb_board_t *Layout, pcb_cardinal_t indentation)
-{
-	int n; /* code mostly lifted from netlist.c */
-	int netNumber;
-	pcb_lib_menu_t *menu;
-	pcb_lib_entry_t *netlist;
-
-	/* first we write a default netlist for the 0 net, which is for unconnected pads in pcbnew */
-	fprintf(FP, "\n%*s(net 0 \"\")\n", indentation, "");
-
-	/* now we step through any available netlists and generate descriptors */
-	for(n = 0, netNumber = 1; n < Layout->NetlistLib[PCB_NETLIST_EDITED].MenuN; n++, netNumber++) {
-		menu = &Layout->NetlistLib[PCB_NETLIST_EDITED].Menu[n];
-		netlist = &menu->Entry[0];
-		if (netlist != NULL) {
-			fprintf(FP, "%*s(net %d ", indentation, "", netNumber); /* netlist 0 was used for unconnected pads  */
-			pcb_fprintf(FP, "%[4])\n", pcb_netlist_name(menu));
-		}
-	}
-	return 0;
-}
-
 TODO("terminals written later do not seem to use the net number")
 static int write_kicad_equipotential_netlists(FILE *FP, pcb_board_t *Layout, pcb_cardinal_t indentation)
 {
@@ -982,10 +956,7 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, c
 
 	/* now come the netlist "equipotential" descriptors */
 
-	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
-		write_kicad_equipotential_netlists(FP, PCB, baseSExprIndent);
-	else
-		write_kicad_equipotential_netlists_old(FP, PCB, baseSExprIndent);
+	write_kicad_equipotential_netlists(FP, PCB, baseSExprIndent);
 
 	/* module descriptions come next */
 	fputs("\n", FP);
