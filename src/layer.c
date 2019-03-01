@@ -117,7 +117,7 @@ do { \
 	} \
 } while(0)
 
-#define PURP_MATCH(ps, pi) (((purpi == -1) || (purpi == pi)) && ((purpose == NULL) || (strcmp(purpose, ps) == 0)))
+#define PURP_MATCH(ps, pi) (((purpi == -1) || (purpi == pi)) && ((purpose == NULL) || ((ps != NULL) && (strcmp(purpose, ps) == 0))))
 
 void pcb_layer_free_fields(pcb_layer_t *layer)
 {
