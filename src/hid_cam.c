@@ -434,6 +434,10 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_h
 int pcb_cam_end(pcb_cam_t *dst)
 {
 	free(dst->inst);
+	if (dst->fn_template != NULL) {
+		free(dst->fn);
+		free(dst->fn_last);
+	}
 	dst->inst = NULL;
 	if (!dst->active)
 		return -1;
@@ -475,6 +479,13 @@ static int cam_update_name(pcb_cam_t *cam, pcb_layergrp_id_t gid, const pcb_virt
 	ctx.grp = pcb_get_layergrp(cam->pcb, gid);
 	ctx.vl = vl;
 	cam->fn = pcb_strdup_subst(cam->fn_template, cam_update_name_cb, &ctx, PCB_SUBST_HOME | PCB_SUBST_PERCENT | PCB_SUBST_CONF);
+	if ((cam->fn_last == NULL) || (strcmp(cam->fn, cam->fn_last) != 0)) {
+		cam->fn_changed = 1;
+		free(cam->fn_last);
+		cam->fn_last = pcb_strdup(cam->fn);
+	}
+	else
+		cam->fn_changed = 0;
 	return 1;
 }
 
