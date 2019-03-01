@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996,1997,1998,1999 Thomas Nau
- *  pcb-rnd Copyright (C) 2017 Tibor 'Igor2' Palinkas
+ *  pcb-rnd Copyright (C) 2017,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -44,79 +44,9 @@
 #include "rats.h"
 #include "netlist2.h"
 
-#include "brave.h"
-#include "library.h"
-
 #define TOOLTIP_UPDATE_DELAY 200
 
 #define PCB_SILK_TYPE (PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY)
-
-TODO("netlist: remove this with the old netlist code");
-static char *describe_location_old(pcb_coord_t X, pcb_coord_t Y)
-{
-	void *ptr1, *ptr2, *ptr3;
-	int type;
-	int Range = 0;
-	const char *elename = "";
-	char *pinname;
-	char *netname = NULL;
-	char *description;
-
-	/* check if there are any pins or pads at that position */
-
-	type = pcb_search_obj_by_location(PCB_OBJ_CLASS_TERM, &ptr1, &ptr2, &ptr3, X, Y, Range);
-	if (type == PCB_OBJ_VOID)
-		return NULL;
-
-	/* don't mess with silk objects! */
-	if ((type & PCB_SILK_TYPE) && (pcb_layer_flags_((pcb_layer_t *)ptr1) & PCB_LYT_SILK))
-		return NULL;
-
-	if (((pcb_any_obj_t *)ptr2)->term != NULL) {
-		pcb_subc_t *subc = pcb_obj_parent_subc(ptr2);
-		if (subc != NULL)
-			elename = subc->refdes;
-	}
-
-	pinname = pcb_connection_name(ptr2);
-
-	if (pinname == NULL)
-		return NULL;
-
-	/* Find netlist entry */
-	PCB_MENU_LOOP(&PCB->NetlistLib[PCB_NETLIST_EDITED]);
-	{
-		if (!menu->Name)
-			continue;
-
-		PCB_ENTRY_LOOP(menu);
-		{
-			if (!entry->ListEntry)
-				continue;
-
-			if (strcmp(entry->ListEntry, pinname) == 0) {
-				netname = g_strdup(menu->Name);
-				/* For some reason, the netname has spaces in front of it, strip them */
-				g_strstrip(netname);
-				break;
-			}
-		}
-		PCB_END_LOOP;
-
-		if (netname != NULL)
-			break;
-	}
-	PCB_END_LOOP;
-
-	description = g_strdup_printf("Element name: %s\n"
-																"Pinname : %s\n"
-																"Netname : %s",
-																elename, (pinname != NULL) ? pinname : "--", (netname != NULL) ? netname : "--");
-
-	g_free(netname);
-
-	return description;
-}
 
 static char *describe_location(pcb_coord_t X, pcb_coord_t Y)
 {
@@ -164,19 +94,13 @@ gboolean pcb_gtk_dwg_tooltip_check_object(GtkWidget *drawing_area, pcb_coord_t c
 	tooltip_update_timeout_id = 0;
 
 	/* check if there are any pins or pads at that position */
-	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
-		description = describe_location(crosshairx, crosshairy);
-	else
-		description = describe_location_old(crosshairx, crosshairy);
-
+	description = describe_location(crosshairx, crosshairy);
 	if (description == NULL)
 		return FALSE;
 
 	gtk_widget_set_tooltip_text(drawing_area, description);
-	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
-		free(description);
-	else
-		g_free(description);
+
+	free(description);
 
 	return FALSE;
 }

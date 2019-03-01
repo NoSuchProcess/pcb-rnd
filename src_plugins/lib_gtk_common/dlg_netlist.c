@@ -63,8 +63,6 @@
 
 #include "hid_gtk_conf.h"
 
-#include "brave.h"
-
 #define NET_HIERARCHY_SEPARATOR "/"
 
 static GtkWidget *netlist_window;
@@ -889,10 +887,7 @@ const char pcb_gtk_acts_netlistpresent[] = "NetlistPresent()";
 const char pcb_gtk_acth_netlistpresent[] = "Presents the netlist window.";
 fgw_error_t pcb_gtk_act_netlistpresent(pcb_gtk_common_t *com, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
-		pcb_actionl("NetlistDialog", NULL);
-	else
-		pcb_gtk_dlg_netlist_show(com, TRUE);
+	pcb_actionl("NetlistDialog", NULL);
 	PCB_ACT_IRES(0);
 	return 0;
 }
