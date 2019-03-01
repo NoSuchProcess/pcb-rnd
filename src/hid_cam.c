@@ -486,7 +486,7 @@ static int cam_update_name(pcb_cam_t *cam, pcb_layergrp_id_t gid, const pcb_virt
 	}
 	else
 		cam->fn_changed = 0;
-	return 1;
+	return 0;
 }
 
 int pcb_cam_set_layer_group_(pcb_cam_t *cam, pcb_layergrp_id_t group, const char *purpose, int purpi, unsigned int flags, pcb_xform_t **xform)
@@ -499,10 +499,10 @@ int pcb_cam_set_layer_group_(pcb_cam_t *cam, pcb_layergrp_id_t group, const char
 	vl = pcb_vlayer_get_first(flags, purpose, purpi);
 	if (vl == NULL) {
 		if (group == -1)
-			return cam_update_name(cam, group, NULL);
+			return 1;
 
 		if (!cam->grp_vis[group])
-			return cam_update_name(cam, group, NULL);
+			return 1;
 
 		if (cam->xform[group] != NULL)
 			*xform = cam->xform[group];
@@ -510,13 +510,13 @@ int pcb_cam_set_layer_group_(pcb_cam_t *cam, pcb_layergrp_id_t group, const char
 	else {
 		int vid = vl->new_id - PCB_LYT_VIRTUAL - 1;
 		if (!cam->vgrp_vis[vid])
-			return cam_update_name(cam, group, vl);
+			return 1;
 
 		if (cam->vxform[vid] != NULL)
 			*xform = cam->xform[vid];
 	}
 
 	cam->exported_grps++;
-	return 0;
+	return cam_update_name(cam, group, NULL);;
 }
 
