@@ -190,13 +190,65 @@ static const char *filename;
 static pcb_box_t *bounds;
 static int in_mono, as_shown;
 
-void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
+static pcb_hid_attr_val_t *options_;
+static void eps_print_header(FILE *f, const char *outfn)
+{
+	linewidth = -1;
+	lastcap = -1;
+	lastcolor = -1;
+
+	fprintf(f, "%%!PS-Adobe-3.0 EPSF-3.0\n");
+
+#define pcb2em(x) 1 + PCB_COORD_TO_INCH (x) * 72.0 * options_[HA_scale].real_value
+	fprintf(f, "%%%%BoundingBox: 0 0 %f %f\n", pcb2em(bounds->X2 - bounds->X1), pcb2em(bounds->Y2 - bounds->Y1));
+#undef pcb2em
+	fprintf(f, "%%%%Pages: 1\n");
+	fprintf(f, "save countdictstack mark newpath /showpage {} def /setpagedevice {pop} def\n");
+	fprintf(f, "%%%%EndProlog\n");
+	fprintf(f, "%%%%Page: 1 1\n");
+
+	fprintf(f, "%%%%BeginDocument: %s\n\n", outfn);
+
+	fprintf(f, "72 72 scale\n");
+	fprintf(f, "1 dup neg scale\n");
+	fprintf(f, "%g dup scale\n", options_[HA_scale].real_value);
+	pcb_fprintf(f, "%mi %mi translate\n", -bounds->X1, -bounds->Y2);
+	if (options_[HA_as_shown].int_value && conf_core.editor.show_solder_side)
+		pcb_fprintf(f, "-1 1 scale %mi 0 translate\n", bounds->X1 - bounds->X2);
+
+#define Q (pcb_coord_t) PCB_MIL_TO_COORD(10)
+	pcb_fprintf(f,
+							"/nclip { %mi %mi moveto %mi %mi lineto %mi %mi lineto %mi %mi lineto %mi %mi lineto eoclip newpath } def\n",
+							bounds->X1 - Q, bounds->Y1 - Q, bounds->X1 - Q, bounds->Y2 + Q,
+							bounds->X2 + Q, bounds->Y2 + Q, bounds->X2 + Q, bounds->Y1 - Q, bounds->X1 - Q, bounds->Y1 - Q);
+#undef Q
+	fprintf(f, "/t { moveto lineto stroke } bind def\n");
+	fprintf(f, "/tc { moveto lineto strokepath nclip } bind def\n");
+	fprintf(f, "/r { /y2 exch def /x2 exch def /y1 exch def /x1 exch def\n");
+	fprintf(f, "     x1 y1 moveto x1 y2 lineto x2 y2 lineto x2 y1 lineto closepath fill } bind def\n");
+	fprintf(f, "/c { 0 360 arc fill } bind def\n");
+	fprintf(f, "/cc { 0 360 arc nclip } bind def\n");
+	fprintf(f, "/a { gsave setlinewidth translate scale 0 0 1 5 3 roll arc stroke grestore} bind def\n");
+}
+
+static void eps_print_footer(FILE *f)
+{
+	fprintf(f, "showpage\n");
+
+	fprintf(f, "%%%%EndDocument\n");
+	fprintf(f, "%%%%Trailer\n");
+	fprintf(f, "cleartomark countdictstack exch sub { end } repeat restore\n");
+	fprintf(f, "%%%%EOF\n");
+}
+
+void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t *options)
 {
 	int i;
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	pcb_box_t tmp, region;
 	pcb_hid_expose_ctx_t ctx;
-	const char *outfn;
+
+	options_ = options;
 
 	conf_force_set_bool(conf_core.editor.thin_draw, 0);
 	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
@@ -262,60 +314,23 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	if (!options[HA_as_shown].int_value) {
 		qsort(pcb_layer_stack, pcb_max_layer, sizeof(pcb_layer_stack[0]), layer_sort);
 	}
-	fprintf(f, "%%!PS-Adobe-3.0 EPSF-3.0\n");
 	linewidth = -1;
 	lastcap = -1;
 	lastcolor = -1;
 
 	in_mono = options[HA_mono].int_value;
 
-#define pcb2em(x) 1 + PCB_COORD_TO_INCH (x) * 72.0 * options[HA_scale].real_value
-	fprintf(f, "%%%%BoundingBox: 0 0 %f %f\n", pcb2em(bounds->X2 - bounds->X1), pcb2em(bounds->Y2 - bounds->Y1));
-#undef pcb2em
-	fprintf(f, "%%%%Pages: 1\n");
-	fprintf(f, "save countdictstack mark newpath /showpage {} def /setpagedevice {pop} def\n");
-	fprintf(f, "%%%%EndProlog\n");
-	fprintf(f, "%%%%Page: 1 1\n");
-
-	outfn = pcb_hid_export_fn(filename);
-
-	fprintf(f, "%%%%BeginDocument: %s\n\n", outfn);
-
-	fprintf(f, "72 72 scale\n");
-	fprintf(f, "1 dup neg scale\n");
-	fprintf(f, "%g dup scale\n", options[HA_scale].real_value);
-	pcb_fprintf(f, "%mi %mi translate\n", -bounds->X1, -bounds->Y2);
-	if (options[HA_as_shown].int_value && conf_core.editor.show_solder_side)
-		pcb_fprintf(f, "-1 1 scale %mi 0 translate\n", bounds->X1 - bounds->X2);
-	linewidth = -1;
-	lastcap = -1;
-	lastcolor = -1;
-#define Q (pcb_coord_t) PCB_MIL_TO_COORD(10)
-	pcb_fprintf(f,
-							"/nclip { %mi %mi moveto %mi %mi lineto %mi %mi lineto %mi %mi lineto %mi %mi lineto eoclip newpath } def\n",
-							bounds->X1 - Q, bounds->Y1 - Q, bounds->X1 - Q, bounds->Y2 + Q,
-							bounds->X2 + Q, bounds->Y2 + Q, bounds->X2 + Q, bounds->Y1 - Q, bounds->X1 - Q, bounds->Y1 - Q);
-#undef Q
-	fprintf(f, "/t { moveto lineto stroke } bind def\n");
-	fprintf(f, "/tc { moveto lineto strokepath nclip } bind def\n");
-	fprintf(f, "/r { /y2 exch def /x2 exch def /y1 exch def /x1 exch def\n");
-	fprintf(f, "     x1 y1 moveto x1 y2 lineto x2 y2 lineto x2 y1 lineto closepath fill } bind def\n");
-	fprintf(f, "/c { 0 360 arc fill } bind def\n");
-	fprintf(f, "/cc { 0 360 arc nclip } bind def\n");
-	fprintf(f, "/a { gsave setlinewidth translate scale 0 0 1 5 3 roll arc stroke grestore} bind def\n");
+	if (f != NULL)
+		eps_print_header(f, pcb_hid_export_fn(filename));
 
 	ctx.view = *bounds;
 	pcb_hid_expose_all(&eps_hid, &ctx, NULL);
 
-	fprintf(f, "showpage\n");
-
-	fprintf(f, "%%%%EndDocument\n");
-	fprintf(f, "%%%%Trailer\n");
-	fprintf(f, "cleartomark countdictstack exch sub { end } repeat restore\n");
-	fprintf(f, "%%%%EOF\n");
+	eps_print_footer(f);
 
 	memcpy(pcb_layer_stack, saved_layer_stack, sizeof(pcb_layer_stack));
 	conf_update(NULL, -1); /* restore forced sets */
+	options_ = NULL;
 }
 
 static void eps_do_export(pcb_hid_attr_val_t * options)
@@ -336,11 +351,15 @@ static void eps_do_export(pcb_hid_attr_val_t * options)
 	if (!filename)
 		filename = "pcb-out.eps";
 
-	f = pcb_fopen(eps_cam.active ? eps_cam.fn : filename, "w");
-	if (!f) {
-		perror(filename);
-		return;
+	if (eps_cam.fn_template == NULL) {
+		f = pcb_fopen(eps_cam.active ? eps_cam.fn : filename, "w");
+		if (!f) {
+			perror(filename);
+			return;
+		}
 	}
+	else
+		f = NULL;
 
 	if ((!eps_cam.active) && (!options[HA_as_shown].int_value))
 		pcb_hid_save_and_show_layer_ons(save_ons);
@@ -373,6 +392,15 @@ static int eps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int
 		return 0;
 
 	pcb_cam_set_layer_group(&eps_cam, group, purpose, purpi, flags, xform);
+
+	if (eps_cam.fn_changed) {
+		if (f != NULL) {
+			eps_print_footer(f);
+			fclose(f);
+		}
+		f = pcb_fopen(eps_cam.fn, "w");
+		eps_print_header(f, eps_cam.fn);
+	}
 
 	if (!eps_cam.active) {
 		if (flags & PCB_LYT_NOEXPORT)
