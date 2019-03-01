@@ -71,8 +71,6 @@
 #include "funchash_core.h"
 #include "netlist2.h"
 
-#include "brave.h"
-
 #include "src_plugins/lib_compat_help/layer_compat.h"
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 #include "src_plugins/lib_compat_help/subc_help.h"
@@ -412,32 +410,6 @@ static void WritePCBNetlistData(FILE *FP)
 	fprintf(FP, ")\n");
 }
 
-static void WritePCBNetlistData_old(FILE * FP)
-{
-	/* write out the netlist if it exists */
-	if (PCB->NetlistLib[PCB_NETLIST_INPUT].MenuN) {
-		int n, p;
-		fprintf(FP, "NetList()\n(\n");
-
-		for (n = 0; n < PCB->NetlistLib[PCB_NETLIST_INPUT].MenuN; n++) {
-			pcb_lib_menu_t *menu = &PCB->NetlistLib[PCB_NETLIST_INPUT].Menu[n];
-			fprintf(FP, "\tNet(");
-			pcb_print_quoted_string(FP, &menu->Name[2]);
-			fprintf(FP, " ");
-			pcb_print_quoted_string(FP, (char *) PCB_UNKNOWN(menu->Style));
-			fprintf(FP, ")\n\t(\n");
-			for (p = 0; p < menu->EntryN; p++) {
-				pcb_lib_entry_t *entry = &menu->Entry[p];
-				fprintf(FP, "\t\tConnect(");
-				pcb_print_quoted_string(FP, entry->ListEntry);
-				fprintf(FP, ")\n");
-			}
-			fprintf(FP, "\t)\n");
-		}
-		fprintf(FP, ")\n");
-	}
-}
-
 static void WritePCBNetlistPatchData(FILE * FP)
 {
 	if (PCB->NetlistPatches != NULL) {
@@ -749,10 +721,7 @@ int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, con
 	io_pcb_WriteSubcData(ctx, FP, PCB->Data);
 	WritePCBRatData(FP);
 	WriteLayers(FP, PCB->Data);
-	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
-		WritePCBNetlistData(FP);
-	else
-		WritePCBNetlistData_old(FP);
+	WritePCBNetlistData(FP);
 	WritePCBNetlistPatchData(FP);
 
 	return 0;
