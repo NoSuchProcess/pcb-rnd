@@ -65,9 +65,6 @@
 #include "hid_dad.h"
 #include "netlist2.h"
 
-#include "brave.h"
-#include "rats.h"
-
 #include <genregex/regex_sei.h>
 
 conf_report_t conf_report;
@@ -655,58 +652,6 @@ static int report_net_length(fgw_arg_t *res, int argc, fgw_arg_t *argv, int spli
 	}
 }
 
-TODO("netlist: remove this with the old netlist code")
-static const char *old_find_net(const char *tofind, pcb_coord_t *x, pcb_coord_t *y)
-{
-	const char *netname = NULL;
-	re_sei_t *regex;
-	int use_re = 1;
-	int i;
-	pcb_lib_menu_t *net;
-	pcb_connection_t conn;
-
-	for (i = 0; i < PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN; i++) {
-		net = PCB->NetlistLib[PCB_NETLIST_EDITED].Menu + i;
-		if (pcb_strcasecmp(tofind, net->Name + 2) == 0)
-			use_re = 0;
-	}
-
-	if (use_re) {
-		regex = re_sei_comp(tofind);
-		if (re_sei_errno(regex) != 0) {
-			pcb_message(PCB_MSG_ERROR, _("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
-			re_sei_free(regex);
-			return NULL;
-		}
-	}
-
-	for (i = 0; i < PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN; i++) {
-		net = PCB->NetlistLib[PCB_NETLIST_EDITED].Menu + i;
-
-		if (use_re) {
-			if (re_sei_exec(regex, net->Name + 2) == 0)
-				continue;
-		}
-		else {
-			if (pcb_strcasecmp(net->Name + 2, tofind))
-				continue;
-		}
-
-		if (pcb_rat_seek_pad(net->Entry, &conn, pcb_false)) {
-			pcb_obj_center(conn.obj, x, y);
-			if (conn.obj->term != NULL) {
-				netname = net->Name + 2;
-				break;
-			}
-		}
-	}
-
-	if (use_re)
-		re_sei_free(regex);
-
-	return netname;
-}
-
 static int report_net_length_by_name(const char *tofind)
 {
 	const char *netname = NULL;
@@ -721,7 +666,7 @@ static int report_net_length_by_name(const char *tofind)
 	if (!tofind)
 		return 1;
 
-	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST)) {
+	{
 		net = pcb_net_get_user(PCB, &PCB->netlist[PCB_NETLIST_EDITED], tofind);
 		if (net != NULL) {
 			pcb_net_term_t *term;
@@ -742,8 +687,6 @@ static int report_net_length_by_name(const char *tofind)
 			pcb_obj_center(obj, &x, &y);
 		}
 	}
-	else
-		netname = old_find_net(tofind, &x, &y);
 
 	if (netname == NULL) {
 		pcb_message(PCB_MSG_ERROR, "No net named %s\n", tofind);
