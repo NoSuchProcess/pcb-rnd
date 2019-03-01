@@ -21,6 +21,7 @@
 - BUG: font bbox xor draw appears on wrong coords (on top) [report: Igor2]
 - BUG: lesstif: {i c p}, color tab: tabbed doesn't grow [report: Igor2]
 - CAM:
+	- FEATURE: file name template for %top_offs% and %bot_offs%
 	- CLEANUP: move the hackish gerber layer suffix functions into CAM configs [report: Ade]
 	- CLEANUP: make gerber depend on excellon (for backward compatibility) instead of reinventing it
 	- FEATURE: export_gerber: add a true gerber drill output
@@ -125,6 +126,7 @@
 	- padstack
 	- clearing polygon
 	- text
+- BUG: dxf export does not export internal copper layers, not even with cam [report: Igor2]
 - BUG: wandering gtk window (window placement bug): using icewm, open the property editor, close, open, close, open: it's displaced by decoration; also check with lesstif [report: Igor2]
 - BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
 - SUBC: element removal:
