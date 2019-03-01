@@ -556,7 +556,7 @@ pcb_cardinal_t pcb_net_map_subnets(pcb_short_ctx_t *sctx, pcb_rat_accuracy_t acc
 	fctx.user_data = sctx;
 	fctx.found_cb = net_short_check;
 
-	/* each component of a desired network is called a submnet; already connected
+	/* each component of a desired network is called a subnet; already connected
 	   objects of each subnet is collected on a vtp0_t; object-lists per submnet
 	   is saved in variable "subnets" */
 	for(t = pcb_termlist_first(&sctx->current_net->conns), n = 0; t != NULL; t = pcb_termlist_next(t), n++) {
