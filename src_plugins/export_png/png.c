@@ -550,150 +550,6 @@ static void parse_bloat(const char *str)
 	bloat = pcb_get_value_ex(str, NULL, NULL, extra_units, "", NULL);
 }
 
-void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
-{
-	static int saved_layer_stack[PCB_MAX_LAYER];
-	pcb_box_t tmp, region;
-	pcb_hid_expose_ctx_t ctx;
-
-	f = the_file;
-
-	region.X1 = 0;
-	region.Y1 = 0;
-	region.X2 = PCB->MaxWidth;
-	region.Y2 = PCB->MaxHeight;
-
-	if (options[HA_only_visible].int_value)
-		bounds = pcb_data_bbox(&tmp, PCB->Data, pcb_false);
-	else
-		bounds = &region;
-
-	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
-
-	as_shown = options[HA_as_shown].int_value;
-	if (!options[HA_as_shown].int_value) {
-		conf_force_set_bool(conf_core.editor.thin_draw, 0);
-		conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
-/*		conf_force_set_bool(conf_core.editor.check_planes, 0);*/
-		conf_force_set_bool(conf_core.editor.show_solder_side, 0);
-
-		qsort(pcb_layer_stack, pcb_max_layer, sizeof(pcb_layer_stack[0]), layer_sort);
-
-		if (photo_mode) {
-			int i, n = 0;
-			pcb_layergrp_id_t solder_layer = -1, comp_layer = -1;
-	
-			pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder_layer, 1);
-			pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &comp_layer, 1);
-			assert(solder_layer >= 0);
-			assert(comp_layer >= 0);
-
-			photo_has_inners = 0;
-			if (comp_layer < solder_layer)
-				for (i = comp_layer; i <= solder_layer; i++) {
-					photo_groups[n++] = i;
-					if (i != comp_layer && i != solder_layer && !pcb_layergrp_is_empty(PCB, i))
-						photo_has_inners = 1;
-				}
-			else
-				for (i = comp_layer; i >= solder_layer; i--) {
-					photo_groups[n++] = i;
-					if (i != comp_layer && i != solder_layer && !pcb_layergrp_is_empty(PCB, i))
-						photo_has_inners = 1;
-				}
-			if (!photo_has_inners) {
-				photo_groups[1] = photo_groups[n - 1];
-				n = 2;
-			}
-			photo_ngroups = n;
-
-			if (photo_flip) {
-				for (i = 0, n = photo_ngroups - 1; i < n; i++, n--) {
-					int tmp = photo_groups[i];
-					photo_groups[i] = photo_groups[n];
-					photo_groups[n] = tmp;
-				}
-			}
-		}
-	}
-	linewidth = -1;
-	lastbrush = (gdImagePtr) ((void *) -1);
-	lastcap = -1;
-	lastgroup = -1;
-	photo_last_grp = -1;
-	show_solder_side = conf_core.editor.show_solder_side;
-	last_color_r = last_color_g = last_color_b = last_cap = -1;
-
-	in_mono = options[HA_mono].int_value;
-
-	if (!photo_mode && conf_core.editor.show_solder_side) {
-		int i, j;
-		for (i = 0, j = pcb_max_layer - 1; i < j; i++, j--) {
-			int k = pcb_layer_stack[i];
-			pcb_layer_stack[i] = pcb_layer_stack[j];
-			pcb_layer_stack[j] = k;
-		}
-	}
-
-	ctx.view = *bounds;
-	pcb_hid_expose_all(&png_hid, &ctx, NULL);
-
-	memcpy(pcb_layer_stack, saved_layer_stack, sizeof(pcb_layer_stack));
-	conf_update(NULL, -1); /* restore forced sets */
-}
-
-static void clip(color_struct * dest, color_struct * source)
-{
-#define CLIP(var) \
-  dest->var = source->var;	\
-  if (dest->var > 255) dest->var = 255;	\
-  if (dest->var < 0)   dest->var = 0;
-
-	CLIP(r);
-	CLIP(g);
-	CLIP(b);
-#undef CLIP
-}
-
-static void blend(color_struct * dest, float a_amount, color_struct * a, color_struct * b)
-{
-	dest->r = a->r * a_amount + b->r * (1 - a_amount);
-	dest->g = a->g * a_amount + b->g * (1 - a_amount);
-	dest->b = a->b * a_amount + b->b * (1 - a_amount);
-}
-
-static void multiply(color_struct * dest, color_struct * a, color_struct * b)
-{
-	dest->r = (a->r * b->r) / 255;
-	dest->g = (a->g * b->g) / 255;
-	dest->b = (a->b * b->b) / 255;
-}
-
-static void add(color_struct * dest, double a_amount, const color_struct * a, double b_amount, const color_struct * b)
-{
-	dest->r = a->r * a_amount + b->r * b_amount;
-	dest->g = a->g * a_amount + b->g * b_amount;
-	dest->b = a->b * a_amount + b->b * b_amount;
-
-	clip(dest, dest);
-}
-
-static void subtract(color_struct * dest, double a_amount, const color_struct * a, double b_amount, const color_struct * b)
-{
-	dest->r = a->r * a_amount - b->r * b_amount;
-	dest->g = a->g * a_amount - b->g * b_amount;
-	dest->b = a->b * a_amount - b->b * b_amount;
-
-	clip(dest, dest);
-}
-
-static void rgb(color_struct * dest, int r, int g, int b)
-{
-	dest->r = r;
-	dest->g = g;
-	dest->b = b;
-}
-
 static int smshadows[3][3] = {
 	{1, 0, -1},
 	{0, 0, -1},
@@ -750,6 +606,367 @@ static void ts_bs_sm(gdImagePtr im)
 		}
 }
 
+static void clip(color_struct * dest, color_struct * source)
+{
+#define CLIP(var) \
+  dest->var = source->var;	\
+  if (dest->var > 255) dest->var = 255;	\
+  if (dest->var < 0)   dest->var = 0;
+
+	CLIP(r);
+	CLIP(g);
+	CLIP(b);
+#undef CLIP
+}
+
+static void blend(color_struct * dest, float a_amount, color_struct * a, color_struct * b)
+{
+	dest->r = a->r * a_amount + b->r * (1 - a_amount);
+	dest->g = a->g * a_amount + b->g * (1 - a_amount);
+	dest->b = a->b * a_amount + b->b * (1 - a_amount);
+}
+
+static void multiply(color_struct * dest, color_struct * a, color_struct * b)
+{
+	dest->r = (a->r * b->r) / 255;
+	dest->g = (a->g * b->g) / 255;
+	dest->b = (a->b * b->b) / 255;
+}
+
+static void add(color_struct * dest, double a_amount, const color_struct * a, double b_amount, const color_struct * b)
+{
+	dest->r = a->r * a_amount + b->r * b_amount;
+	dest->g = a->g * a_amount + b->g * b_amount;
+	dest->b = a->b * a_amount + b->b * b_amount;
+
+	clip(dest, dest);
+}
+
+static void subtract(color_struct * dest, double a_amount, const color_struct * a, double b_amount, const color_struct * b)
+{
+	dest->r = a->r * a_amount - b->r * b_amount;
+	dest->g = a->g * a_amount - b->g * b_amount;
+	dest->b = a->b * a_amount - b->b * b_amount;
+
+	clip(dest, dest);
+}
+
+static void rgb(color_struct * dest, int r, int g, int b)
+{
+	dest->r = r;
+	dest->g = g;
+	dest->b = b;
+}
+
+static pcb_hid_attr_val_t *png_options;
+
+static void png_head(void)
+{
+	linewidth = -1;
+	lastbrush = (gdImagePtr) ((void *) -1);
+	lastcap = -1;
+	lastgroup = -1;
+	photo_last_grp = -1;
+	show_solder_side = conf_core.editor.show_solder_side;
+	last_color_r = last_color_g = last_color_b = last_cap = -1;
+
+	gdImageFilledRectangle(im, 0, 0, gdImageSX(im), gdImageSY(im), white->c);
+}
+
+static void png_foot(void)
+{
+	const char *fmt;
+	pcb_bool format_error = pcb_false;
+
+	if (photo_mode) {
+		int x, y, darken, lg;
+		color_struct white, black, fr4;
+
+		rgb(&white, 255, 255, 255);
+		rgb(&black, 0, 0, 0);
+		rgb(&fr4, 70, 70, 70);
+
+		im = master_im;
+
+		ts_bs(photo_copper[photo_groups[0]]);
+		if (photo_silk != NULL)
+			ts_bs(photo_silk);
+		if (photo_mask != NULL)
+			ts_bs_sm(photo_mask);
+
+		if (photo_outline && have_outline) {
+			int black = gdImageColorResolve(photo_outline, 0x00, 0x00, 0x00);
+
+			/* go all the way around the image, trying to fill the outline */
+			for (x = 0; x < gdImageSX(im); x++) {
+				gdImageFillToBorder(photo_outline, x, 0, black, black);
+				gdImageFillToBorder(photo_outline, x, gdImageSY(im) - 1, black, black);
+			}
+			for (y = 1; y < gdImageSY(im) - 1; y++) {
+				gdImageFillToBorder(photo_outline, 0, y, black, black);
+				gdImageFillToBorder(photo_outline, gdImageSX(im) - 1, y, black, black);
+
+			}
+		}
+
+
+		for (x = 0; x < gdImageSX(im); x++) {
+			for (y = 0; y < gdImageSY(im); y++) {
+				color_struct p, cop;
+				color_struct mask_colour, silk_colour;
+				int cc, mask, silk;
+				int transparent;
+
+				if (photo_outline && have_outline) {
+					transparent = gdImageGetPixel(photo_outline, x, y);
+				}
+				else {
+					transparent = 0;
+				}
+
+				mask = photo_mask ? gdImageGetPixel(photo_mask, x, y) : 0;
+				silk = photo_silk ? gdImageGetPixel(photo_silk, x, y) : 0;
+
+				darken = 0;
+				for(lg = 1; lg < photo_ngroups; lg++) {
+					if (photo_copper[photo_groups[lg]] && gdImageGetPixel(photo_copper[photo_groups[lg]], x, y)) {
+						darken = 1;
+						break;
+					}
+				}
+
+				if (darken)
+					rgb(&cop, 40, 40, 40);
+				else
+					rgb(&cop, 100, 100, 110);
+
+				blend(&cop, 0.3, &cop, &fr4);
+
+				cc = gdImageGetPixel(photo_copper[photo_groups[0]], x, y);
+				if (cc) {
+					int r;
+
+					if (mask)
+						rgb(&cop, 220, 145, 230);
+					else {
+
+						if (png_options[HA_photo_plating].int_value == PLATING_GOLD) {
+							/* ENIG */
+							rgb(&cop, 185, 146, 52);
+
+							/* increase top shadow to increase shininess */
+							if (cc == TOP_SHADOW)
+								blend(&cop, 0.7, &cop, &white);
+						}
+						else if (png_options[HA_photo_plating].int_value == PLATING_TIN) {
+							/* tinned */
+							rgb(&cop, 140, 150, 160);
+
+							/* add some variation to make it look more matte */
+							r = (rand() % 5 - 2) * 2;
+							cop.r += r;
+							cop.g += r;
+							cop.b += r;
+						}
+						else if (png_options[HA_photo_plating].int_value == PLATING_SILVER) {
+							/* silver */
+							rgb(&cop, 192, 192, 185);
+
+							/* increase top shadow to increase shininess */
+							if (cc == TOP_SHADOW)
+								blend(&cop, 0.7, &cop, &white);
+						}
+						else if (png_options[HA_photo_plating].int_value == PLATING_COPPER) {
+							/* copper */
+							rgb(&cop, 184, 115, 51);
+
+							/* increase top shadow to increase shininess */
+							if (cc == TOP_SHADOW)
+								blend(&cop, 0.7, &cop, &white);
+						}
+						/*FIXME: old code...can be removed after validation.   rgb(&cop, 140, 150, 160);
+						   r = (pcb_rand() % 5 - 2) * 2;
+						   cop.r += r;
+						   cop.g += r;
+						   cop.b += r; */
+					}
+
+					if (cc == TOP_SHADOW) {
+						cop.r = 255 - (255 - cop.r) * 0.7;
+						cop.g = 255 - (255 - cop.g) * 0.7;
+						cop.b = 255 - (255 - cop.b) * 0.7;
+					}
+					if (cc == BOTTOM_SHADOW) {
+						cop.r *= 0.7;
+						cop.g *= 0.7;
+						cop.b *= 0.7;
+					}
+				}
+
+				if (photo_drill && !gdImageGetPixel(photo_drill, x, y)) {
+					rgb(&p, 0, 0, 0);
+					transparent = 1;
+				}
+				else if (silk) {
+					silk_colour = silk_colours[png_options[HA_photo_silk_colour].int_value];
+					blend(&p, 1.0, &silk_colour, &silk_colour);
+
+					if (silk == TOP_SHADOW)
+						add(&p, 1.0, &p, 1.0, &silk_top_shadow);
+					else if (silk == BOTTOM_SHADOW)
+						subtract(&p, 1.0, &p, 1.0, &silk_bottom_shadow);
+				}
+				else if (mask) {
+					p = cop;
+					mask_colour = mask_colours[png_options[HA_photo_mask_colour].int_value];
+					multiply(&p, &p, &mask_colour);
+					add(&p, 1, &p, 0.2, &mask_colour);
+					if (mask == TOP_SHADOW)
+						blend(&p, 0.7, &p, &white);
+					if (mask == BOTTOM_SHADOW)
+						blend(&p, 0.7, &p, &black);
+				}
+				else
+					p = cop;
+
+				if (png_options[HA_use_alpha].int_value) {
+
+					cc = (transparent) ? gdImageColorResolveAlpha(im, 0, 0, 0, 127) : gdImageColorResolveAlpha(im, p.r, p.g, p.b, 0);
+
+				}
+				else {
+					cc = (transparent) ? gdImageColorResolve(im, 0, 0, 0) : gdImageColorResolve(im, p.r, p.g, p.b);
+				}
+
+				if (photo_flip == PHOTO_FLIP_X)
+					gdImageSetPixel(im, gdImageSX(im) - x - 1, y, cc);
+				else if (photo_flip == PHOTO_FLIP_Y)
+					gdImageSetPixel(im, x, gdImageSY(im) - y - 1, cc);
+				else
+					gdImageSetPixel(im, x, y, cc);
+			}
+		}
+	}
+
+	/* actually write out the image */
+	fmt = filetypes[png_options[HA_filetype].int_value];
+
+	if (fmt == NULL)
+		format_error = pcb_true;
+	else if (strcmp(fmt, FMT_gif) == 0)
+#ifdef HAVE_GDIMAGEGIF
+		gdImageGif(im, f);
+#else
+		format_error = pcb_true;
+#endif
+	else if (strcmp(fmt, FMT_jpg) == 0)
+#ifdef HAVE_GDIMAGEJPEG
+		gdImageJpeg(im, f, -1);
+#else
+		format_error = pcb_true;
+#endif
+	else if (strcmp(fmt, FMT_png) == 0)
+#ifdef HAVE_GDIMAGEPNG
+		gdImagePng(im, f);
+#else
+		format_error = pcb_true;
+#endif
+	else
+		format_error = pcb_true;
+
+	if (format_error)
+		fprintf(stderr, "Error:  Invalid graphic file format." "  This is a bug.  Please report it.\n");
+}
+
+void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
+{
+	static int saved_layer_stack[PCB_MAX_LAYER];
+	pcb_box_t tmp, region;
+	pcb_hid_expose_ctx_t ctx;
+
+	f = the_file;
+
+	region.X1 = 0;
+	region.Y1 = 0;
+	region.X2 = PCB->MaxWidth;
+	region.Y2 = PCB->MaxHeight;
+
+	png_options = options;
+	if (options[HA_only_visible].int_value)
+		bounds = pcb_data_bbox(&tmp, PCB->Data, pcb_false);
+	else
+		bounds = &region;
+
+	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
+
+	as_shown = options[HA_as_shown].int_value;
+	if (!options[HA_as_shown].int_value) {
+		conf_force_set_bool(conf_core.editor.thin_draw, 0);
+		conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
+/*		conf_force_set_bool(conf_core.editor.check_planes, 0);*/
+		conf_force_set_bool(conf_core.editor.show_solder_side, 0);
+
+		qsort(pcb_layer_stack, pcb_max_layer, sizeof(pcb_layer_stack[0]), layer_sort);
+
+		if (photo_mode) {
+			int i, n = 0;
+			pcb_layergrp_id_t solder_layer = -1, comp_layer = -1;
+	
+			pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder_layer, 1);
+			pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &comp_layer, 1);
+			assert(solder_layer >= 0);
+			assert(comp_layer >= 0);
+
+			photo_has_inners = 0;
+			if (comp_layer < solder_layer)
+				for (i = comp_layer; i <= solder_layer; i++) {
+					photo_groups[n++] = i;
+					if (i != comp_layer && i != solder_layer && !pcb_layergrp_is_empty(PCB, i))
+						photo_has_inners = 1;
+				}
+			else
+				for (i = comp_layer; i >= solder_layer; i--) {
+					photo_groups[n++] = i;
+					if (i != comp_layer && i != solder_layer && !pcb_layergrp_is_empty(PCB, i))
+						photo_has_inners = 1;
+				}
+			if (!photo_has_inners) {
+				photo_groups[1] = photo_groups[n - 1];
+				n = 2;
+			}
+			photo_ngroups = n;
+
+			if (photo_flip) {
+				for (i = 0, n = photo_ngroups - 1; i < n; i++, n--) {
+					int tmp = photo_groups[i];
+					photo_groups[i] = photo_groups[n];
+					photo_groups[n] = tmp;
+				}
+			}
+		}
+	}
+
+	in_mono = options[HA_mono].int_value;
+	png_head();
+
+	if (!photo_mode && conf_core.editor.show_solder_side) {
+		int i, j;
+		for (i = 0, j = pcb_max_layer - 1; i < j; i++, j--) {
+			int k = pcb_layer_stack[i];
+			pcb_layer_stack[i] = pcb_layer_stack[j];
+			pcb_layer_stack[j] = k;
+		}
+	}
+
+	ctx.view = *bounds;
+	pcb_hid_expose_all(&png_hid, &ctx, NULL);
+
+	memcpy(pcb_layer_stack, saved_layer_stack, sizeof(pcb_layer_stack));
+	conf_update(NULL, -1); /* restore forced sets */
+}
+
+
+
 static void png_brush_free(void **vcache, const char *name, pcb_hidval_t *val)
 {
 	gdImage *brush = (gdImage *)val->ptr;
@@ -778,8 +995,6 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 	pcb_box_t tmp, *bbox;
 	int w, h;
 	int xmax, ymax, dpi;
-	const char *fmt;
-	pcb_bool format_error = pcb_false;
 
 	png_free_cache();
 
@@ -922,7 +1137,6 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 		return;
 	}
 
-	gdImageFilledRectangle(im, 0, 0, gdImageSX(im), gdImageSY(im), white->c);
 
 	black = (color_struct *) malloc(sizeof(color_struct));
 	black->r = black->g = black->b = black->a = 0;
@@ -932,11 +1146,15 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 		return;
 	}
 
-	f = pcb_fopen(png_cam.active ? png_cam.fn : filename, "wb");
-	if (!f) {
-		perror(filename);
-		return;
+	if (!png_cam.fn_template) {
+		f = pcb_fopen(png_cam.active ? png_cam.fn : filename, "wb");
+		if (!f) {
+			perror(filename);
+			return;
+		}
 	}
+	else
+		f = NULL;
 
 	png_hid.force_compositing = !!photo_mode;
 
@@ -948,205 +1166,7 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 	if ((!png_cam.active) && (!options[HA_as_shown].int_value))
 		pcb_hid_restore_layer_ons(save_ons);
 
-	if (photo_mode) {
-		int x, y, darken, lg;
-		color_struct white, black, fr4;
-
-		rgb(&white, 255, 255, 255);
-		rgb(&black, 0, 0, 0);
-		rgb(&fr4, 70, 70, 70);
-
-		im = master_im;
-
-		ts_bs(photo_copper[photo_groups[0]]);
-		if (photo_silk != NULL)
-			ts_bs(photo_silk);
-		if (photo_mask != NULL)
-			ts_bs_sm(photo_mask);
-
-		if (photo_outline && have_outline) {
-			int black = gdImageColorResolve(photo_outline, 0x00, 0x00, 0x00);
-
-			/* go all the way around the image, trying to fill the outline */
-			for (x = 0; x < gdImageSX(im); x++) {
-				gdImageFillToBorder(photo_outline, x, 0, black, black);
-				gdImageFillToBorder(photo_outline, x, gdImageSY(im) - 1, black, black);
-			}
-			for (y = 1; y < gdImageSY(im) - 1; y++) {
-				gdImageFillToBorder(photo_outline, 0, y, black, black);
-				gdImageFillToBorder(photo_outline, gdImageSX(im) - 1, y, black, black);
-
-			}
-		}
-
-
-		for (x = 0; x < gdImageSX(im); x++) {
-			for (y = 0; y < gdImageSY(im); y++) {
-				color_struct p, cop;
-				color_struct mask_colour, silk_colour;
-				int cc, mask, silk;
-				int transparent;
-
-				if (photo_outline && have_outline) {
-					transparent = gdImageGetPixel(photo_outline, x, y);
-				}
-				else {
-					transparent = 0;
-				}
-
-				mask = photo_mask ? gdImageGetPixel(photo_mask, x, y) : 0;
-				silk = photo_silk ? gdImageGetPixel(photo_silk, x, y) : 0;
-
-				darken = 0;
-				for(lg = 1; lg < photo_ngroups; lg++) {
-					if (photo_copper[photo_groups[lg]] && gdImageGetPixel(photo_copper[photo_groups[lg]], x, y)) {
-						darken = 1;
-						break;
-					}
-				}
-
-				if (darken)
-					rgb(&cop, 40, 40, 40);
-				else
-					rgb(&cop, 100, 100, 110);
-
-				blend(&cop, 0.3, &cop, &fr4);
-
-				cc = gdImageGetPixel(photo_copper[photo_groups[0]], x, y);
-				if (cc) {
-					int r;
-
-					if (mask)
-						rgb(&cop, 220, 145, 230);
-					else {
-
-						if (options[HA_photo_plating].int_value == PLATING_GOLD) {
-							/* ENIG */
-							rgb(&cop, 185, 146, 52);
-
-							/* increase top shadow to increase shininess */
-							if (cc == TOP_SHADOW)
-								blend(&cop, 0.7, &cop, &white);
-						}
-						else if (options[HA_photo_plating].int_value == PLATING_TIN) {
-							/* tinned */
-							rgb(&cop, 140, 150, 160);
-
-							/* add some variation to make it look more matte */
-							r = (rand() % 5 - 2) * 2;
-							cop.r += r;
-							cop.g += r;
-							cop.b += r;
-						}
-						else if (options[HA_photo_plating].int_value == PLATING_SILVER) {
-							/* silver */
-							rgb(&cop, 192, 192, 185);
-
-							/* increase top shadow to increase shininess */
-							if (cc == TOP_SHADOW)
-								blend(&cop, 0.7, &cop, &white);
-						}
-						else if (options[HA_photo_plating].int_value == PLATING_COPPER) {
-							/* copper */
-							rgb(&cop, 184, 115, 51);
-
-							/* increase top shadow to increase shininess */
-							if (cc == TOP_SHADOW)
-								blend(&cop, 0.7, &cop, &white);
-						}
-						/*FIXME: old code...can be removed after validation.   rgb(&cop, 140, 150, 160);
-						   r = (pcb_rand() % 5 - 2) * 2;
-						   cop.r += r;
-						   cop.g += r;
-						   cop.b += r; */
-					}
-
-					if (cc == TOP_SHADOW) {
-						cop.r = 255 - (255 - cop.r) * 0.7;
-						cop.g = 255 - (255 - cop.g) * 0.7;
-						cop.b = 255 - (255 - cop.b) * 0.7;
-					}
-					if (cc == BOTTOM_SHADOW) {
-						cop.r *= 0.7;
-						cop.g *= 0.7;
-						cop.b *= 0.7;
-					}
-				}
-
-				if (photo_drill && !gdImageGetPixel(photo_drill, x, y)) {
-					rgb(&p, 0, 0, 0);
-					transparent = 1;
-				}
-				else if (silk) {
-					silk_colour = silk_colours[options[HA_photo_silk_colour].int_value];
-					blend(&p, 1.0, &silk_colour, &silk_colour);
-
-					if (silk == TOP_SHADOW)
-						add(&p, 1.0, &p, 1.0, &silk_top_shadow);
-					else if (silk == BOTTOM_SHADOW)
-						subtract(&p, 1.0, &p, 1.0, &silk_bottom_shadow);
-				}
-				else if (mask) {
-					p = cop;
-					mask_colour = mask_colours[options[HA_photo_mask_colour].int_value];
-					multiply(&p, &p, &mask_colour);
-					add(&p, 1, &p, 0.2, &mask_colour);
-					if (mask == TOP_SHADOW)
-						blend(&p, 0.7, &p, &white);
-					if (mask == BOTTOM_SHADOW)
-						blend(&p, 0.7, &p, &black);
-				}
-				else
-					p = cop;
-
-				if (options[HA_use_alpha].int_value) {
-
-					cc = (transparent) ? gdImageColorResolveAlpha(im, 0, 0, 0, 127) : gdImageColorResolveAlpha(im, p.r, p.g, p.b, 0);
-
-				}
-				else {
-					cc = (transparent) ? gdImageColorResolve(im, 0, 0, 0) : gdImageColorResolve(im, p.r, p.g, p.b);
-				}
-
-				if (photo_flip == PHOTO_FLIP_X)
-					gdImageSetPixel(im, gdImageSX(im) - x - 1, y, cc);
-				else if (photo_flip == PHOTO_FLIP_Y)
-					gdImageSetPixel(im, x, gdImageSY(im) - y - 1, cc);
-				else
-					gdImageSetPixel(im, x, y, cc);
-			}
-		}
-	}
-
-	/* actually write out the image */
-	fmt = filetypes[options[HA_filetype].int_value];
-
-	if (fmt == NULL)
-		format_error = pcb_true;
-	else if (strcmp(fmt, FMT_gif) == 0)
-#ifdef HAVE_GDIMAGEGIF
-		gdImageGif(im, f);
-#else
-		format_error = pcb_true;
-#endif
-	else if (strcmp(fmt, FMT_jpg) == 0)
-#ifdef HAVE_GDIMAGEJPEG
-		gdImageJpeg(im, f, -1);
-#else
-		format_error = pcb_true;
-#endif
-	else if (strcmp(fmt, FMT_png) == 0)
-#ifdef HAVE_GDIMAGEPNG
-		gdImagePng(im, f);
-#else
-		format_error = pcb_true;
-#endif
-	else
-		format_error = pcb_true;
-
-	if (format_error)
-		fprintf(stderr, "Error:  Invalid graphic file format." "  This is a bug.  Please report it.\n");
-
+	png_foot();
 	fclose(f);
 
 	if (master_im != NULL) {
@@ -1289,7 +1309,18 @@ static int png_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int
 		return 0;
 
 	pcb_cam_set_layer_group(&png_cam, group, purpose, purpi, flags, xform);
-
+	if (png_cam.fn_changed) {
+		if (f != NULL) {
+			png_foot();
+			fclose(f);
+		}
+		f = pcb_fopen(png_cam.fn, "wb");
+		if (!f) {
+			perror(filename);
+			return 0;
+		}
+		png_head();
+	}
 
 	if (!png_cam.active) {
 		if (flags & PCB_LYT_NOEXPORT)
