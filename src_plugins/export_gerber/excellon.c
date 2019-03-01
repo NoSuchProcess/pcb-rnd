@@ -133,13 +133,21 @@ excellon output file prefix. Can include a path.
 @end ftable
 %end-doc
 */
-	{"excellonfile", "excellon output file base",
+	{"filename", "excellon output file base - used to generate default plated and/or unplated file name in case they are not specified",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_excellonfile 0
 
+	{"filename-plated", "excellon output file name for plated features",
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_excellonfile_plated 1
+
+	{"filename-unplated", "excellon output file name for unplated features",
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_excellonfile_unplated 2
+
 	{"cam", "CAM instruction",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_cam 1
+#define HA_cam 3
 };
 
 #define NUM_OPTIONS (sizeof(excellon_options)/sizeof(excellon_options[0]))
@@ -158,7 +166,7 @@ static pcb_hid_attribute_t *excellon_get_export_options(int *n)
 
 static void excellon_do_export(pcb_hid_attr_val_t * options)
 {
-	const char *fnbase;
+	const char *fnbase, *fn;
 	char *filesuff;
 	int i;
 	int save_ons[PCB_MAX_LAYER + 2];
@@ -207,13 +215,31 @@ static void excellon_do_export(pcb_hid_attr_val_t * options)
 	pcb_hid_expose_all(&excellon_hid, &ctx, NULL);
 	conf_update(NULL, -1); /* resotre forced sets */
 
+
+	if (excellon_cam.active) {
+		fn = excellon_cam.fn;
+		pcb_drill_export_excellon(PCB, &pdrills, conf_gerber.plugins.export_gerber.plated_g85_slot, fn);
+	}
+	else {
+		if (options[HA_excellonfile_plated].str_value == NULL) {
+			strcpy(filesuff, ".plated.cnc");
+			fn = filename;
+		}
+		else
+			fn = options[HA_excellonfile_plated].str_value;
+		pcb_drill_export_excellon(PCB, &pdrills, conf_gerber.plugins.export_gerber.plated_g85_slot, fn);
+
+		if (options[HA_excellonfile_unplated].str_value == NULL) {
+			strcpy(filesuff, ".unplated.cnc");
+			fn = filename;
+		}
+		else
+			fn = options[HA_excellonfile_unplated].str_value;
+		pcb_drill_export_excellon(PCB, &udrills, conf_gerber.plugins.export_gerber.unplated_g85_slot, fn);
+	}
+
 	if (pcb_cam_end(&excellon_cam) == 0)
 		pcb_message(PCB_MSG_ERROR, "excellon cam export for '%s' failed to produce any content\n", options[HA_cam].str_value);
-
-	strcpy(filesuff, ".plated.cnc");
-	pcb_drill_export_excellon(PCB, &pdrills, conf_gerber.plugins.export_gerber.plated_g85_slot, filename);
-	strcpy(filesuff, ".unplated.cnc");
-	pcb_drill_export_excellon(PCB, &udrills, conf_gerber.plugins.export_gerber.unplated_g85_slot, filename);
 
 	pcb_drill_uninit(&pdrills);
 	pcb_drill_uninit(&udrills);
@@ -293,6 +319,14 @@ static void excellon_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 {
 }
 
+pcb_drill_ctx_t *get_drill_ctx(void)
+{
+	if (excellon_cam.active)
+		return &pdrills;
+
+	return (is_plated ? &pdrills : &udrills);
+}
+
 static void use_gc(pcb_hid_gc_t gc, pcb_coord_t radius)
 {
 	if ((gc->style != pcb_cap_round) && (!warn.nonround)) {
@@ -306,7 +340,7 @@ static void use_gc(pcb_hid_gc_t gc, pcb_coord_t radius)
 		radius *= 2;
 
 	if (radius != lastwidth) {
-		aperture_t *aptr = find_aperture((is_plated ? &pdrills.apr : &udrills.apr), radius, ROUND);
+		aperture_t *aptr = find_aperture(&(get_drill_ctx()->apr), radius, ROUND);
 		if (aptr == NULL)
 			pcb_fprintf(stderr, "error: aperture for radius %$mS type ROUND is null\n", radius);
 		lastwidth = radius;
@@ -318,10 +352,10 @@ static void excellon_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 {
 	pcb_coord_t dia = gc->width/2;
 
-	find_aperture((is_plated ? &pdrills.apr : &udrills.apr), dia*2, ROUND);
+	find_aperture(&(get_drill_ctx()->apr), dia*2, ROUND);
 
 	if (!finding_apertures)
-		pcb_drill_new_pending(is_plated ? &pdrills : &udrills, x1, y1, x2, y2, dia*2);
+		pcb_drill_new_pending(get_drill_ctx(), x1, y1, x2, y2, dia*2);
 }
 
 static void excellon_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
@@ -348,7 +382,7 @@ static void excellon_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy
 	radius = 50 * pcb_round(radius / 50.0);
 	use_gc(gc, radius);
 	if (!finding_apertures)
-		pcb_drill_new_pending(is_plated ? &pdrills : &udrills, cx, cy, cx, cy, radius * 2);
+		pcb_drill_new_pending(get_drill_ctx(), cx, cy, cx, cy, radius * 2);
 }
 
 static void excellon_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
@@ -394,6 +428,7 @@ int pplg_check_ver_export_excellon(int ver_needed) { return 0; }
 void pplg_uninit_export_excellon(void)
 {
 	pcb_hid_remove_attributes_by_cookie(excellon_cookie);
+	free(filename);
 }
 
 int pplg_init_export_excellon(void)
