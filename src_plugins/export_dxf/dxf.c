@@ -289,11 +289,15 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 	if (!filename)
 		filename = "pcb.dxf";
 
-	dxf_ctx.f = pcb_fopen(dxf_cam.active ? dxf_cam.fn : filename, "wb");
-	if (!dxf_ctx.f) {
-		perror(filename);
-		return;
+	if (dxf_cam.fn_template == NULL) {
+		dxf_ctx.f = pcb_fopen(dxf_cam.active ? dxf_cam.fn : filename, "wb");
+		if (!dxf_ctx.f) {
+			perror(filename);
+			return;
+		}
 	}
+	else
+		dxf_ctx.f = NULL;
 
 	fn = options[HA_template].str_value;
 	if (fn == NULL) {
@@ -316,8 +320,10 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 	}
 
 	dxf_ctx.handle = 100;
-	if (lht_temp_exec(dxf_ctx.f, "", dxf_ctx.temp, "header", insert_hdr, &err) != 0)
-		pcb_message(PCB_MSG_ERROR, "Can't render dxf template header\n");
+	if (dxf_ctx.f != NULL) {
+		if (lht_temp_exec(dxf_ctx.f, "", dxf_ctx.temp, "header", insert_hdr, &err) != 0)
+			pcb_message(PCB_MSG_ERROR, "Can't render dxf template header\n");
+	}
 
 	if (!dxf_cam.active)
 		pcb_hid_save_and_show_layer_ons(save_ons);
@@ -329,7 +335,6 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 
 	if (lht_temp_exec(dxf_ctx.f, "", dxf_ctx.temp, "footer", insert_ftr, &err) != 0)
 		pcb_message(PCB_MSG_ERROR, "Can't render dxf template header\n");
-
 	fclose(dxf_ctx.f);
 
 	if (pcb_cam_end(&dxf_cam) == 0)
@@ -348,6 +353,24 @@ static int dxf_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int
 		return 0;
 
 	pcb_cam_set_layer_group(&dxf_cam, group, purpose, purpi, flags, xform);
+
+	if (dxf_cam.fn_changed) {
+		lht_err_t err;
+
+		if (dxf_ctx.f != NULL) {
+			if (lht_temp_exec(dxf_ctx.f, "", dxf_ctx.temp, "footer", insert_ftr, &err) != 0)
+				pcb_message(PCB_MSG_ERROR, "Can't render dxf template header\n");
+			fclose(dxf_ctx.f);
+		}
+
+		dxf_ctx.f = pcb_fopen(dxf_cam.fn, "wb");
+		if (!dxf_ctx.f) {
+			perror(dxf_cam.fn);
+			return 0;
+		}
+		if (lht_temp_exec(dxf_ctx.f, "", dxf_ctx.temp, "header", insert_hdr, &err) != 0)
+			pcb_message(PCB_MSG_ERROR, "Can't render dxf template header\n");
+	}
 
 	if (!dxf_cam.active) {
 		if (flags & PCB_LYT_INVIS)
