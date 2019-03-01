@@ -94,9 +94,6 @@
 TODO("padstack: when style contains proto, remove this")
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 
-#include "brave.h"
-#include "rats.h"
-
 #define autoroute_therm_style 4
 
 /* #defines to enable some debugging output */
@@ -1022,79 +1019,6 @@ static routebox_t *crd_add_misc(routedata_t *rd, vtp0_t *layergroupboxes, pcb_an
 	return rb;
 }
 
-static void CreateRouteData_nets_old(routedata_t *rd, vtp0_t *layergroupboxes)
-{
-	pcb_netlist_list_t Nets;
-
-	/* add the objects in the netlist first.
-	 * then go and add all other objects that weren't already added
-	 *
-	 * this saves on searching the trees to find the nets
-	 */
-	/* use the PCB_FLAG_DRC to mark objects as they are entered */
-	Nets = pcb_rat_collect_subnets(pcb_false);
-	{
-		routebox_t *last_net = NULL;
-		PCB_NETLIST_LOOP(&Nets);
-		{
-			routebox_t *last_in_net = NULL;
-			PCB_NET_LOOP(netlist);
-			{
-				routebox_t *last_in_subnet = NULL;
-				int j;
-
-				for (j = 0; j < rd->max_styles; j++)
-					if (net->Style == rd->styles[j])
-						break;
-				PCB_CONNECTION_LOOP(net);
-				{
-					routebox_t *rb = NULL;
-					PCB_FLAG_SET(PCB_FLAG_DRC, (pcb_pstk_t *)connection->obj);
-
-					if ((connection->obj->type == PCB_OBJ_LINE) && (connection->obj->term != NULL))
-						rb = AddTerm(layergroupboxes, connection->obj, rd->styles[j]);
-					else if (connection->obj->type == PCB_OBJ_LINE) {
-						/* lines are listed at each end, so skip one */
-						/* this should probably by a macro named "BUMP_LOOP" */
-						if (connection->obj->term == NULL)
-							n--;
-						rb = crd_add_line(rd, layergroupboxes, connection->group, connection->obj, j, &last_in_net, &last_in_subnet);
-					}
-					else
-						rb = crd_add_misc(rd, layergroupboxes, connection->obj, j);
-
-					assert(rb);
-
-					/* update circular connectivity lists */
-					if (last_in_subnet && rb != last_in_subnet)
-						MergeNets(last_in_subnet, rb, ORIGINAL);
-					if (last_in_net && rb != last_in_net)
-						MergeNets(last_in_net, rb, NET);
-					last_in_subnet = last_in_net = rb;
-					rd->max_bloat = MAX(rd->max_bloat, BLOAT(rb->style));
-					rd->max_keep = MAX(rd->max_keep, rb->style->Clearance);
-				}
-				PCB_END_LOOP;
-			}
-			PCB_END_LOOP;
-			if (last_net && last_in_net)
-				MergeNets(last_net, last_in_net, DIFFERENT_NET);
-			last_net = last_in_net;
-		}
-		PCB_END_LOOP;
-		rd->first_net = last_net;
-	}
-	pcb_netlist_list_free(&Nets);
-
-	/* reset all nets to "original" connectivity (which we just set) */
-	{
-		routebox_t *net;
-		LIST_LOOP(rd->first_net, different_net, net);
-		ResetSubnet(net);
-		PCB_END_LOOP;
-	}
-}
-
 static void CreateRouteData_subnet(routedata_t *rd, vtp0_t *layergroupboxes, vtp0_t *objs, routebox_t **last_in_net, int j)
 {
 	routebox_t *last_in_subnet = NULL;
@@ -1268,10 +1192,7 @@ static routedata_t *CreateRouteData()
 	usedGroup[front] = pcb_true;
 	usedGroup[back] = pcb_true;
 
-	if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST))
-		CreateRouteData_nets(rd, layergroupboxes);
-	else
-		CreateRouteData_nets_old(rd, layergroupboxes);
+	CreateRouteData_nets(rd, layergroupboxes);
 
 	/* subc-recursively add all obstacles */
 	CreateRouteData_subc(rd, layergroupboxes, PCB->Data);
@@ -4849,7 +4770,7 @@ donerouting:
 		/* optimize rats, we've changed connectivity a lot. */
 		pcb_rats_destroy(pcb_false /*all rats */ );
 		pcb_undo_restore_serial();
-		pcb_rat_add_all(pcb_false /*all rats */);
+		pcb_net_add_all_rats(PCB, PCB_RATACC_PRECISE);
 		pcb_undo_restore_serial();
 
 		pcb_undo_inc_serial();
