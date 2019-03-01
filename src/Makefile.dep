@@ -7742,8 +7742,7 @@ rats_patch.o: rats_patch.c rats_patch.h board.h ../config.h \
  vtpadstack_t.h move.h compat_misc.h compat_nls.h safe_fs.h conf.h \
  pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h funchash_core.h \
  funchash.h funchash_core_list.h search.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h conf_core.h netlist2.h brave.h \
- rats_patch_old.c
+ ../src_3rd/libuundo/uundo.h undo_old.h conf_core.h netlist2.h brave.h
 remove.o: remove.c ../config.h conf_core.h conf.h global_typedefs.h \
  pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \

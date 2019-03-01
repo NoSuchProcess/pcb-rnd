@@ -42,8 +42,6 @@
 #include "conf_core.h"
 #include "netlist2.h"
 
-#include "brave.h"
-
 static void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t * n, int do_free);
 
 const char *pcb_netlist_names[PCB_NUM_NETLISTS] = {
@@ -158,8 +156,6 @@ static void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t * n, int do
 	}
 }
 
-#include "rats_patch_old.c"
-
 static int rats_patch_apply_conn(pcb_board_t *pcb, pcb_ratspatch_line_t *patch, int del)
 {
 	pcb_net_t *net;
@@ -206,9 +202,9 @@ int pcb_ratspatch_apply(pcb_board_t *pcb, pcb_ratspatch_line_t * patch)
 {
 	switch (patch->op) {
 	case RATP_ADD_CONN:
-		return rats_patch_apply_conn_old(pcb, patch, 0) | rats_patch_apply_conn(pcb, patch, 0);
+		return rats_patch_apply_conn(pcb, patch, 0);
 	case RATP_DEL_CONN:
-		return rats_patch_apply_conn_old(pcb, patch, 1) | rats_patch_apply_conn(pcb, patch, 1);
+		return rats_patch_apply_conn(pcb, patch, 1);
 	case RATP_CHANGE_ATTRIB:
 TODO("just check wheter it is still valid")
 		break;
@@ -219,10 +215,6 @@ TODO("just check wheter it is still valid")
 void pcb_ratspatch_make_edited(pcb_board_t *pcb)
 {
 	pcb_ratspatch_line_t *n;
-
-TODO("netlist: remove these with the old netlist");
-	netlist_free_old(&(pcb->NetlistLib[PCB_NETLIST_EDITED]));
-	netlist_copy_old(&(pcb->NetlistLib[PCB_NETLIST_EDITED]), &(pcb->NetlistLib[PCB_NETLIST_INPUT]));
 
 	pcb_netlist_uninit(&(pcb->netlist[PCB_NETLIST_EDITED]));
 	pcb_netlist_init(&(pcb->netlist[PCB_NETLIST_EDITED]));
@@ -246,7 +238,7 @@ int pcb_rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, pcb_bool 
 			case RATP_ADD_CONN:
 			case RATP_DEL_CONN:
 				if (htsp_get(seen, n->arg1.net_name) == NULL) {
-					if (!(pcb_brave & PCB_BRAVE_OLD_NETLIST)) {
+					{
 						/* document the original (input) state */
 						pcb_net_t *net = pcb_net_get(pcb, &pcb->netlist[PCB_NETLIST_INPUT], n->arg1.net_name, 0);
 						if (net != NULL) {
@@ -257,23 +249,6 @@ int pcb_rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, pcb_bool 
 								char *tmp = pcb_concat(term->refdes, "-", term->term, NULL);
 								cb(ctx, PCB_RPE_INFO_TERMINAL, n->arg1.net_name, NULL, tmp);
 								free(tmp);
-							}
-							cb(ctx, PCB_RPE_INFO_END, n->arg1.net_name, NULL, NULL);
-						}
-					}
-					else {
-						pcb_lib_menu_t *net;
-						int p;
-
-						TODO("Netlist: remove this branch with the old netlist")
-						net = rats_patch_find_net_old(pcb, n->arg1.net_name, PCB_NETLIST_INPUT);
-/*						printf("net: '%s' %p\n", n->arg1.net_name, (void *)net);*/
-						if (net != NULL) {
-							htsp_set(seen, n->arg1.net_name, net);
-							cb(ctx, PCB_RPE_INFO_BEGIN, n->arg1.net_name, NULL, NULL);
-							for (p = 0; p < net->EntryN; p++) {
-								pcb_lib_entry_t *entry = &net->Entry[p];
-								cb(ctx, PCB_RPE_INFO_TERMINAL, n->arg1.net_name, NULL, entry->ListEntry);
 							}
 							cb(ctx, PCB_RPE_INFO_END, n->arg1.net_name, NULL, NULL);
 						}
