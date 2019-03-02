@@ -39,6 +39,7 @@
 #include "actions.h"
 #include "safe_fs.h"
 #include "obj_subc.h"
+#include "netlist2.h"
 
 #include "parse.h"
 
@@ -141,29 +142,21 @@ int tedax_net_load(const char *fname_net, int import_fp, const char *blk_id, int
 
 int tedax_net_fsave(pcb_board_t *pcb, const char *netlistid, FILE *f)
 {
-	pcb_cardinal_t n, p;
-	pcb_lib_t *netlist = &pcb->NetlistLib[1];
+	pcb_cardinal_t n;
+	htsp_entry_t *e;
+	pcb_netlist_t *nl = &pcb->netlist[PCB_NETLIST_EDITED];
 
 	fprintf(f, "begin netlist v1 ");
 	tedax_fprint_escape(f, netlistid);
 	fputc('\n', f);
 
-	for (n = 0; n < netlist->MenuN; n++) {
-		pcb_lib_menu_t *menu = &netlist->Menu[n];
-		const char *netname = &menu->Name[2];
 
-		for (p = 0; p < menu->EntryN; p++) {
-			pcb_lib_entry_t *entry = &menu->Entry[p];
-			const char *s, *pin = entry->ListEntry;
-			fprintf(f, " conn %s ", netname);
-			for(s = pin; *s != '\0'; s++) {
-				if (*s == '-')
-					fputc(' ', f);
-				else
-				fputc(*s, f);
-			}
-			fputc('\n', f);
-		}
+	for(e = htsp_first(nl); e != NULL; e = htsp_next(nl, e)) {
+		pcb_net_term_t *t;
+		pcb_net_t *net = e->value;
+
+		for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t))
+			fprintf(f, " conn %s %s %s\n", net->name, t->refdes, t->term);
 	}
 
 	PCB_SUBC_LOOP(pcb->Data) {
