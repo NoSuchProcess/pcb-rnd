@@ -1,4 +1,0 @@
-#ifndef PCB_GTK_DLG_NETLIST_H
-#define PCB_GTK_DLG_NETLIST_H
-
-#endif /* PCB_GTK_DLG_NETLIST_H */
