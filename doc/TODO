@@ -23,12 +23,6 @@
 - CAM:
 	- FEATURE: file name template for %top_offs% and %bot_offs%
 	- CLEANUP: move the hackish gerber layer suffix functions into CAM configs [report: Ade]
-	- CLEANUP: make gerber depend on excellon (for backward compatibility) instead of reinventing it
-	- FEATURE: export_gerber: add a true gerber drill output
-	- FEATURE: make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file
-	- FEATURE: invent a generic API for both the drill attrib config table
-	- CLEANUP: remove the gerber->drill dep and ask users to use the CAM instead
-	- CLEANUP: unify how output files are accessed/checked: confirmation on overwrite
 - FEATURE: route style upgrade to prototypes (depends on tree in lesstif!):
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
 	- BUG: padstack doesn't show drc xor shape while moving - because the whole drawing is a cheat for old vias [report: igor2]
@@ -84,6 +78,14 @@
 - BUG: bug_files/proto1.* padstack prototype selection bug priv mail 20 Feb [report: Alain]
 
 2. For later releases ===============================================================================
+- CAM:
+	- CLEANUP: make gerber depend on excellon (for backward compatibility) instead of reinventing it
+	- FEATURE: export_gerber: add a true gerber drill output
+	- FEATURE: make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file
+	- FEATURE: invent a generic API for both the drill attrib config table
+	- CLEANUP: remove the gerber->drill dep and ask users to use the CAM instead
+	- CLEANUP: unify how output files are accessed/checked: confirmation on overwrite
+	- CLEANUP: remove the hackish gerber layer suffix in favor of CAM [report: Ade]
 - BUG: autorouter broke on polygons: bug_files/ara.lht, {a r a}, bisect; broke before r14572 [report: Igor2]
 - FEATURE/BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
 - FEATURE: Ade's new subc construction with convert: need a config setting that results in creating the refdes text but not adding the refdes attribute as empty [report: Ade]
