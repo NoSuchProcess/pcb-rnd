@@ -267,7 +267,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	fprintf(f, "	li:netlist {\n");
 	for(nl = 0; nl < PCB_NUM_NETLISTS; nl++) {
 		htsp_entry_t *e;
-		pcb_cardinal_t m, terms = 0, best_terms = 0;
+		pcb_cardinal_t terms = 0, best_terms = 0;
 		fprintf(f, "		ha:%s {\n", pcb_netlist_names[nl]);
 
 		for(e = htsp_first(&PCB->netlist[nl]); e != NULL; e = htsp_next(&PCB->netlist[nl], e)) {
