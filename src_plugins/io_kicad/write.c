@@ -909,9 +909,7 @@ static void kicad_print_implicit_outline(wctx_t *ctx, const char *lynam, pcb_coo
 
 static void kicad_fixup_outline(wctx_t *ctx, int ind)
 {
-	int i;
 	fixed_layer_t *l;
-	pcb_layergrp_t *g;
 
 	if (pcb_has_explicit_outline(ctx->pcb))
 		return;
