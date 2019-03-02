@@ -103,13 +103,11 @@ append /local/pcb/OBJS [@
 	layer_grp.o
 	layer_ui.o
 	layer_vis.o
-	library.o
 	list_conf.o
 	main.o
 	main_act.o
 	misc_util.o
 	move.o
-	netlist.o
 	netlist2.o
 	netlist_act.o
 	object_act.o
@@ -149,7 +147,6 @@ append /local/pcb/OBJS [@
 	polygon.o
 	polygon1.o
 	polygon_act.o
-	rats.o
 	rats_act.o
 	rats_patch.o
 	remove.o

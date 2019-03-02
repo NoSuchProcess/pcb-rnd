@@ -1,3 +1,4 @@
+23579	configure	removing old netlist
 23486	configure	gerber/excellon splitup
 23462	configure	splitting up the dialog plugin code linking into multiple objects for compilation speed
 23292	configure	rewriting user lead, moving the code from gtk to common
