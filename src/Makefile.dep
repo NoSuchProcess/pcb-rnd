@@ -3500,7 +3500,7 @@
  ../src_plugins/io_tedax/tlayer.h layer.h \
  ../src_plugins/io_tedax/tboard.h ../src_plugins/io_tedax/tdrc.h \
  dolists.h
-../src_plugins/io_tedax/netlist.o: ../src_plugins/io_tedax/netlist.c \
+../src_plugins/io_tedax/tnetlist.o: ../src_plugins/io_tedax/tnetlist.c \
  ../config.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/hash.h board.h global_typedefs.h pcb_bool.h unit.h \
  vtroutestyle.h attrib.h ../src_3rd/genvector/genvector_impl.h \

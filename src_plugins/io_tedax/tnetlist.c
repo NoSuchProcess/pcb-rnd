@@ -41,6 +41,7 @@
 #include "obj_subc.h"
 #include "netlist2.h"
 
+#include "tnetlist.h"
 #include "parse.h"
 
 typedef struct {

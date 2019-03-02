@@ -46,7 +46,7 @@
 #include "tlayer.h"
 #include "tboard.h"
 #include "tdrc.h"
-
+#include "tnetlist.h"
 
 static const char *tedax_cookie = "tEDAx IO";
 static pcb_plug_io_t io_tedax;
