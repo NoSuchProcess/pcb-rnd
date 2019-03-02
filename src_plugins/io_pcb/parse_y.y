@@ -60,7 +60,6 @@ static	pcb_layer_t *Layer;
 static	pcb_poly_t *Polygon;
 static	pcb_symbol_t *Symbol;
 static	int		pin_num;
-static	pcb_lib_menu_t *Menu;
 static pcb_net_t *currnet;
 static	pcb_bool			LayerFlag[PCB_MAX_LAYER + 2];
 static	int	old_fmt; /* 1 if we are reading a PCB(), 0 if PCB[] */
@@ -1240,7 +1239,6 @@ net
 			/* name style pin pin ... */
 		: T_NET '(' STRING STRING ')' '('
 			{
-				Menu = pcb_lib_net_new((pcb_lib_t *)&yyPCB->NetlistLib, $3, $4);
 				currnet = pcb_net_get(yyPCB, &yyPCB->netlist[PCB_NETLIST_INPUT], $3, 1);
 				if (($4 != NULL) && (*$4 != '\0'))
 					pcb_attribute_put(&currnet->Attributes, "style", $4);
@@ -1263,7 +1261,6 @@ conndefs
 conn
 		: T_CONN '(' STRING ')'
 			{
-				pcb_lib_conn_new(Menu, $3);
 				pcb_net_term_get_by_pinname(currnet, $3, 1);
 				free ($3);
 			}
