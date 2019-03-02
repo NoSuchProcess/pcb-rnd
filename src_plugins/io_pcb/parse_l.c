@@ -2529,6 +2529,7 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 	io_pcb_preproc_board(PCB);
 
 	pcb_data_clip_inhibit_inc(PCB->Data);
+	fcmd = conf_core.rc.file_command;
 	retval = Parse(NULL, fcmd, conf_core.rc.file_path, Filename);
 
 	if ((settings_dest != CFR_invalid) && (retval == 0)) {
@@ -2627,6 +2628,7 @@ int io_pcb_ParseFont(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename)
 	yyFontReset = pcb_false;
 
 	yy_settings_dest = CFR_invalid;
+	fcmd = conf_core.rc.font_command;
 	r = Parse(NULL, fcmd, NULL, Filename);
 	if (r == 0) {
 #ifdef DEBUG
