@@ -494,7 +494,7 @@ static int cam_update_name(pcb_cam_t *cam, pcb_layergrp_id_t gid, const pcb_virt
 {
 	cam_name_ctx_t ctx;
 	if (cam->fn_template == NULL)
-		return 1; /* not templated */
+		return 0; /* not templated */
 
 	free(cam->fn);
 	ctx.cam = cam;
