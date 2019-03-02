@@ -46,7 +46,6 @@
 #include "obj_common.h"
 #include "obj_subc_parent.h"
 
-#include "rats.h"
 #include "pcb-mincut/graph.h"
 #include "pcb-mincut/solve.h"
 
@@ -225,48 +224,27 @@ TODO("remove this check from here, handled at the caller");
 	T = NULL;
 
 	if (Snet != NULL) {
-		S = pcb_netlist_lookup(1, Snet->name, 0);
+		S = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], Snet->name, 0);
 		assert(S != NULL);
 	}
 	if (Tnet != NULL) {
-		T = pcb_netlist_lookup(1, Tnet->name, 0);
+		T = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], Tnet->name, 0);
 		assert(T != NULL);
 	}
 
 	for (n = short_conns; n != NULL; n = n->next) {
-		if (Snet != NULL) {
-			pcb_any_obj_t *o = (pcb_any_obj_t *)n->to;
-			if (o->term != NULL) {
-				pcb_subc_t *sc = pcb_obj_parent_subc(o);
-				if (sc != NULL) {
-					pcb_net_term_t *t = pcb_net_find_by_refdes_term(&PCB->netlist[PCB_NETLIST_EDITED], sc->refdes, o->term);
-					if (t != NULL) {
-						if (t->parent.net == Snet)
-							gr_add_(g, n->gid, 0, 100000);
-						else if (t->parent.net == Tnet)
-							gr_add_(g, n->gid, 1, 100000);
-					}
+		pcb_any_obj_t *o = (pcb_any_obj_t *)n->to;
+		if (o->term != NULL) {
+			pcb_subc_t *sc = pcb_obj_parent_subc(o);
+			if (sc != NULL) {
+				pcb_net_term_t *t = pcb_net_find_by_refdes_term(&PCB->netlist[PCB_NETLIST_EDITED], sc->refdes, o->term);
+				if (t != NULL) {
+					if (t->parent.net == Snet)
+						gr_add_(g, n->gid, 0, 100000);
+					else if (t->parent.net == Tnet)
+						gr_add_(g, n->gid, 1, 100000);
 				}
 			}
-		}
-		else {
-		void *spare = ((pcb_any_obj_t *) n->to)->ratconn;
-		if (spare != NULL) { /* REMOVE THIS when the old netlist is removed */
-			void *net = &(((pcb_lib_menu_t *) spare)->Name[2]);
-			debprintf(" net=%s\n", net);
-			if (S == NULL) {
-				debprintf(" -> became S\n");
-				S = net;
-			}
-			else if ((T == NULL) && (net != S)) {
-				debprintf(" -> became T\n");
-				T = net;
-			}
-			if (net == S)
-				gr_add_(g, n->gid, 0, 100000);
-			else if (net == T)
-				gr_add_(g, n->gid, 1, 100000);
-		}
 		}
 
 		/* if we have a from object, look it up and make a connection between the two gids */
@@ -382,6 +360,8 @@ void rat_proc_shorts(void)
 		}
 
 		if (!bad_gr) {
+TODO("netlist: rewrite this TODO62")
+#if 0
 			/* check if the rest of the shorts affect the same nets - ignore them if so */
 			for (i = n->next; i != NULL; i = i->next) {
 				pcb_lib_menu_t *spn, *spi;
@@ -395,6 +375,7 @@ void rat_proc_shorts(void)
 				if ((&spn->Name[2] == i->with_net) || (&spi->Name[2] == n->with_net))
 					i->ignore = 1;
 			}
+#endif
 		}
 		free(n);
 	}
