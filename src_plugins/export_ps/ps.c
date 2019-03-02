@@ -619,8 +619,7 @@ static FILE *psopen(const char *base, const char *which)
    or eps.  */
 void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 {
-	static int saved_layer_stack[PCB_MAX_LAYER], i;
-	pcb_layergrp_t *g;
+	static int saved_layer_stack[PCB_MAX_LAYER];
 
 	conf_force_set_bool(conf_core.editor.thin_draw, 0);
 	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
