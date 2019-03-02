@@ -5096,7 +5096,7 @@
  ../src_plugins/mincut/pcb-mincut/../../../config.h \
  ../src_plugins/mincut/pcb-mincut/solve.h \
  ../src_plugins/mincut/pcb-mincut/graph.h conf.h \
- ../src_plugins/mincut/rats_mincut_conf.h stub_mincut.h \
+ ../src_plugins/mincut/rats_mincut_conf.h \
  ../src_plugins/mincut/rats_mincut_conf_fields.h
 ../src_plugins/oldactions/oldactions.o: \
  ../src_plugins/oldactions/oldactions.c ../config.h conf.h \
@@ -7833,7 +7833,7 @@ stub_draw.o: stub_draw.c ../config.h stub_draw.h hid.h \
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
  ../src_3rd/genvector/gds_char.h draw.h obj_text_draw.h
-stub_mincut.o: stub_mincut.c ../config.h stub_mincut.h global_typedefs.h \
+stub_mincut.o: stub_mincut.c ../config.h global_typedefs.h \
  pcb_bool.h unit.h obj_common.h flag.h globalconst.h attrib.h \
  data_parent.h
 stub_stroke.o: stub_stroke.c error.h ../config.h pcb_bool.h
