@@ -1630,8 +1630,6 @@ static int dsn_parse_net(dsn_read_t *ctx, gsxl_node_t *nwr)
 		if (!isalnum(*s) && (*s != '+') && (*s != '-'))
 			*s = '_';
 
-	TODO("netlist: remove with the old netlist code");
-	pcb_netlist_lookup(0, netname, pcb_true);
 	net = pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_INPUT], netname, 1);
 	if (net == NULL) {
 		pcb_message(PCB_MSG_ERROR, "can not create net: '%s' (at %ld:%ld) - subcircuits may be misplaced - please send the dsn file as a bugreport\n", netname, (long)nwr->children->line, (long)nwr->children->col);
