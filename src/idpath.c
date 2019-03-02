@@ -176,3 +176,11 @@ void pcb_idpath_list_clear(pcb_idpath_list_t *lst)
 	}
 }
 
+pcb_idpath_t *pcb_idpath_dup(const pcb_idpath_t *path)
+{
+	pcb_idpath_t *res = pcb_idpath_alloc(path->len);
+	memcpy(res->id, path->id, (sizeof(long int) * path->len));
+	return res;
+}
+
+
