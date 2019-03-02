@@ -65,7 +65,7 @@ void pcb_layergrp_notify(pcb_board_t *pcb)
 	NOTIFY(pcb);
 }
 
-pcb_layergrp_id_t pcb_layergrp_id(pcb_board_t *pcb, pcb_layergrp_t *grp)
+pcb_layergrp_id_t pcb_layergrp_id(const pcb_board_t *pcb, const pcb_layergrp_t *grp)
 {
 	if ((grp >= &pcb->LayerGroups.grp[0]) && (grp < &pcb->LayerGroups.grp[pcb->LayerGroups.len]))
 		return grp - &pcb->LayerGroups.grp[0];

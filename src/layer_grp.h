@@ -74,7 +74,7 @@ void pcb_layergroup_free_stack(pcb_layer_stack_t *st);
 pcb_layergrp_t *pcb_get_layergrp(pcb_board_t *pcb, pcb_layergrp_id_t gid);
 
 /* Return the gid if grp is in the stackup of pcb (else return -1) */
-pcb_layergrp_id_t pcb_layergrp_id(pcb_board_t *pcb, pcb_layergrp_t *grp);
+pcb_layergrp_id_t pcb_layergrp_id(const pcb_board_t *pcb, const pcb_layergrp_t *grp);
 
 /* Free a layer group (don't free the layers but detach them) */
 int pcb_layergrp_free(pcb_board_t *pcb, pcb_layergrp_id_t id);
