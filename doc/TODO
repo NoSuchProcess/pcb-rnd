@@ -70,8 +70,7 @@
 	- FEATURE: rat line draw: [report: Igor2]
 		- be able to rename nets
 		- be able to convert a 'found' to a net
-	- CLEANUP: rat object rewrite: make rat lines remember their anchor object by ID instead of group1/group2
-		- CLEANUP: When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Move this in core., iterate over rats to find the ones to deal with [report: Ade]
+	- CLEANUP: When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Move this in core., iterate over rats to find the ones to deal with [report: Ade]
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
@@ -232,6 +231,7 @@
 - FEATURE: lihata v7
 	- remove via geometry from route style
 	- remove netlist net ->style, should be a plain attribute (but keep the dedicated field in old versions)
+	- save and load rat anchor object idpath
 - BUG: gtk: slipping 'tab' issue view drifts when tab is used repeatedly at different zooms around the cardinal edges of a placed part, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
 - BUG: XY exporter: place a 1206 rotated 15 degrees, then export to xy with macrofab -> error message on rotated pad bbox; we need to rotate back the terminal object and calculate hte bbox in neutral position [report: celem]
 - BUG: lesstif clip_set() doesn't seem to affect the X clipboard
