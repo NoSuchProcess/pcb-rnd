@@ -63,7 +63,7 @@ void pcb_hid_init()
 	/* Setup a "nogui" default HID */
 	pcb_gui = pcb_hid_nogui_get_hid();
 
-TODO("make this configurable - use pcb_conf_cmd_is_safe() to avoid plugin injection")
+TODO("make this configurable - add to conf_board_ignores avoid plugin injection")
 	tmp = pcb_concat(conf_core.rc.path.exec_prefix, PCB_DIR_SEPARATOR_S, "lib", PCB_DIR_SEPARATOR_S, "pcb-rnd", PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL);
 	pcb_plugin_add_dir(tmp);
 	free(tmp);
