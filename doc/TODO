@@ -21,7 +21,6 @@
 - BUG: font bbox xor draw appears on wrong coords (on top) [report: Igor2]
 - BUG: lesstif: {i c p}, color tab: tabbed doesn't grow [report: Igor2]
 - CAM:
-	- FEATURE: file name template for %top_offs% and %bot_offs%
 	- CLEANUP: move the hackish gerber layer suffix functions into CAM configs [report: Ade]
 - FEATURE: route style upgrade to prototypes (depends on tree in lesstif!):
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
