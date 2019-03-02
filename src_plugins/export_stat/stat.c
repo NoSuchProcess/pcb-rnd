@@ -41,12 +41,14 @@
 #include <math.h>
 #include <time.h>
 #include <genht/htsi.h>
+#include <genht/htsp.h>
 #include <genht/hash.h>
 
 #include "math_helper.h"
 #include "board.h"
 #include "data.h"
 #include "data_it.h"
+#include "netlist2.h"
 #include "plugins.h"
 #include "pcb-printf.h"
 #include "compat_misc.h"
@@ -264,15 +266,19 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 
 	fprintf(f, "	li:netlist {\n");
 	for(nl = 0; nl < PCB_NUM_NETLISTS; nl++) {
+		htsp_entry_t *e;
 		pcb_cardinal_t m, terms = 0, best_terms = 0;
 		fprintf(f, "		ha:%s {\n", pcb_netlist_names[nl]);
-		for(m = 0; m < PCB->NetlistLib[nl].MenuN; m++) {
-			pcb_lib_menu_t *menu = &PCB->NetlistLib[nl].Menu[m];
-			terms += menu->EntryN;
-			if (menu->EntryN > best_terms)
-				best_terms = menu->EntryN;
+
+		for(e = htsp_first(&PCB->netlist[nl]); e != NULL; e = htsp_next(&PCB->netlist[nl], e)) {
+			pcb_net_t *net = e->value;
+			long numt = pcb_termlist_length(&net->conns);
+
+			terms += numt;
+			if (numt > best_terms)
+				best_terms = numt;
 		}
-		fprintf(f, "			nets=%ld\n", (long int)PCB->NetlistLib[nl].MenuN);
+		fprintf(f, "			nets=%ld\n", (long int)PCB->netlist[nl].used);
 		fprintf(f, "			terminals=%ld\n", (long int)terms);
 		fprintf(f, "			max_term_per_net=%ld\n", (long int)best_terms);
 		fprintf(f, "		}\n");
