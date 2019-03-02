@@ -40,10 +40,6 @@
 #include "obj_rat_list.h"
 #include "obj_rat_op.h"
 
-
-
-TODO("consider moving the code from draw.c here and remove draw.h include")
-#include "draw.h"
 #include "obj_rat_draw.h"
 
 /*** allocation ***/
