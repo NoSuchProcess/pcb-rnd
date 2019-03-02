@@ -49,8 +49,6 @@
 
 #include "read.h"
 
-#include "netlist.h"
-
 typedef struct {
 	gsxl_dom_t dom;
 	pcb_board_t *pcb;

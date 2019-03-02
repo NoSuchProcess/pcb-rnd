@@ -35,7 +35,6 @@
 #include "footprint.h"
 
 #include "board.h"
-#include "netlist.h"
 #include "conf_core.h"
 #include "buffer.h"
 #include "plugins.h"

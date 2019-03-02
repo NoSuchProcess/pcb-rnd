@@ -52,7 +52,6 @@
 #include "parse_common.h"
 #include "pcb-printf.h"
 #include "polygon.h"
-#include "rats.h"
 #include "remove.h"
 #include "flag_str.h"
 #include "compat_fs.h"

@@ -41,7 +41,6 @@
 #include "board.h"
 #include "obj_subc.h"
 #include "obj_subc_parent.h"
-#include "rats.h"
 #include "netlist2.h"
 
 #define TOOLTIP_UPDATE_DELAY 200

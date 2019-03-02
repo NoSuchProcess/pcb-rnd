@@ -42,7 +42,6 @@
 #include "error.h"
 #include "safe_fs.h"
 #include "stackup.h"
-#include "netlist.h"
 #include "footprint.h"
 #include "tdrc.h"
 #include "tlayer.h"
