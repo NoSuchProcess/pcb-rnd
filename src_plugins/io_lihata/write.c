@@ -1253,14 +1253,11 @@ static lht_node_t *build_styles(vtroutestyle_t *styles)
 }
 
 /* Build a plain old netlist */
-static lht_node_t *build_netlist(pcb_netlist_t *netlist, pcb_lib_t *old_netlist, const char *name, int *nonempty)
+static lht_node_t *build_netlist(pcb_netlist_t *netlist, const char *name, int *nonempty)
 {
 	lht_node_t *nl, *pl, *pn, *nnet;
 
 	if (netlist->used < 1)
-		return dummy_node(name);
-
-	if (old_netlist->MenuN < 0)
 		return dummy_node(name);
 
 	(*nonempty)++;
@@ -1364,7 +1361,7 @@ static lht_node_t *build_net_patch(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, 
 }
 
 
-static lht_node_t *build_netlists(pcb_board_t *pcb, pcb_netlist_t *netlists, pcb_lib_t *old_netlists, pcb_ratspatch_line_t *pat, int num_netlists)
+static lht_node_t *build_netlists(pcb_board_t *pcb, pcb_netlist_t *netlists, pcb_ratspatch_line_t *pat, int num_netlists)
 {
 	lht_node_t *nls;
 	int n, nonempty = 0;
@@ -1379,7 +1376,7 @@ static lht_node_t *build_netlists(pcb_board_t *pcb, pcb_netlist_t *netlists, pcb
 		if (n == PCB_NETLIST_EDITED)
 			nl = build_net_patch(pcb, pat, &nonempty);
 		else
-			nl = build_netlist(netlists+n, old_netlists+n, pcb_netlist_names[n], &nonempty);
+			nl = build_netlist(netlists+n, pcb_netlist_names[n], &nonempty);
 		lht_dom_hash_put(nls, nl);
 	}
 
@@ -1437,7 +1434,7 @@ static lht_doc_t *build_board(pcb_board_t *pcb)
 	lht_dom_hash_put(brd->root, build_attributes(&pcb->Attributes));
 	lht_dom_hash_put(brd->root, build_fontkit(&pcb->fontkit));
 	lht_dom_hash_put(brd->root, build_styles(&pcb->RouteStyle));
-	lht_dom_hash_put(brd->root, build_netlists(pcb, pcb->netlist, pcb->NetlistLib, pcb->NetlistPatches, PCB_NUM_NETLISTS));
+	lht_dom_hash_put(brd->root, build_netlists(pcb, pcb->netlist, pcb->NetlistPatches, PCB_NUM_NETLISTS));
 	lht_dom_hash_put(brd->root, build_conf());
 	return brd;
 
