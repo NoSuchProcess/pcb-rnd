@@ -510,6 +510,7 @@ static FILE *fp_fs_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name,
 		if (fctx->field[F_IS_PARAMETRIC].i) {
 			char *cmd;
 			const char *sep = " ";
+			libshell = conf_core.rc.library_shell;
 			if (libshell == NULL) {
 				libshell = "";
 				sep = "";
