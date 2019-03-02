@@ -854,18 +854,7 @@ static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, pcb_coord_t x1, pcb_c
 		}
 		else
 			ratname = ratname_;
-		old_len = pcb->netlist[PCB_NETLIST_EDITED].used;
 		target_net = pcb_net_get(pcb, &pcb->netlist[PCB_NETLIST_EDITED], ratname, 1);
-
-		TODO("netlist: remove this with the old netlist code, plus the old_len= line 2 lines above");
-		if (old_len != pcb->netlist[PCB_NETLIST_EDITED].used) {
-			menu = pcb_lib_menu_new(&(PCB->NetlistLib[PCB_NETLIST_EDITED]), NULL);
-			menu->Name = pcb_strdup(ratname);
-		}
-		else {
-			menu = pcb_netname_to_netname(ratname);
-			assert(menu != NULL);
-		}
 
 		assert(target_net != NULL);
 		if (ratname != ratname_)
