@@ -45,8 +45,8 @@ typedef struct {
 } AngleChangeType;
 
 typedef struct {								/* information about netlist lib changes */
-	pcb_lib_t *old;
-	pcb_lib_t *lib;
+	pcb_net_t *old;
+	pcb_net_t *lib;
 } NetlistChangeType, *NetlistChangeTypePtr;
 
 typedef struct {								/* holds information about an operation */
