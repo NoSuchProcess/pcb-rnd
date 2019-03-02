@@ -345,7 +345,7 @@ void LesstifNetlistChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	htsp_entry_t *e;
 	int i;
-	if (!PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN)
+	if (PCB->netlist[PCB_NETLIST_EDITED].used < 1)
 		return;
 	if (build_netlist_dialog())
 		return;
@@ -353,14 +353,14 @@ void LesstifNetlistChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 	last_pick = NULL;
 	if (netlist_strings)
 		free(netlist_strings);
-	netlist_strings = (XmString *) malloc(PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN * sizeof(XmString));
+	netlist_strings = (XmString *) malloc(PCB->netlist[PCB_NETLIST_EDITED].used * sizeof(XmString));
 	for(e = htsp_first(&PCB->netlist[PCB_NETLIST_EDITED]), i = 0; e != NULL; e = htsp_next(&PCB->netlist[PCB_NETLIST_EDITED], e), i++) {
 		pcb_net_t *net = e->value;
 		netlist_strings[i] = XmStringCreatePCB(net->name);
 	}
 	stdarg_n = 0;
 	stdarg(XmNitems, netlist_strings);
-	stdarg(XmNitemCount, PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN);
+	stdarg(XmNitemCount, PCB->netlist[PCB_NETLIST_EDITED].used);
 	XtSetValues(netlist_list, stdarg_args, stdarg_n);
 	pick_net(NULL, 0);
 	return;
