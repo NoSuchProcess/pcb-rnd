@@ -305,9 +305,6 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (changed) {
 
-		/* update the netlist */
-		pcb_undo_add_netlist_lib(PCB->NetlistLib);
-
 		/* iterate over each net */
 		for (i = 0; i < PCB->NetlistLib[WTF].MenuN; i++) {
 
