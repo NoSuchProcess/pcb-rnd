@@ -103,15 +103,11 @@
 #include "board.h"
 #include "data.h"
 #include "error.h"
+#include "netlist2.h"
 #include "plugins.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "safe_fs.h"
-
-/* from mymem.h, not include because of the malloc junk */
-pcb_lib_menu_t *pcb_lib_menu_new(pcb_lib_t *, int *idx);
-pcb_lib_entry_t *pcb_lib_entry_new(pcb_lib_menu_t *);
-
 
 /*
  *	Local definitions.
@@ -179,8 +175,7 @@ pcb_lib_entry_t *pcb_lib_entry_new(pcb_lib_menu_t *);
      str_pair* node;
      char* buf;
      char* p;
-     pcb_lib_entry_t *entry;
-     pcb_lib_menu_t *menu = pcb_lib_menu_new(&PCB->NetlistLib[PCB_NETLIST_INPUT], NULL);
+     pcb_net_t *net;
 
      if ( !name->str1 )
      {
@@ -191,7 +186,7 @@ pcb_lib_entry_t *pcb_lib_entry_new(pcb_lib_menu_t *);
 	 pair_list_free(nodes);
 	 return;
      }
-     menu->Name = pcb_strdup (name->str1);
+     net = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_INPUT], name->str1, 1);
      free(name->str1);
      /* if renamed str2 also exists and must be freed */
      if ( name->str2 )  free(name->str2);
@@ -254,8 +249,9 @@ pcb_lib_entry_t *pcb_lib_entry_new(pcb_lib_menu_t *);
 	 /* free the strings */
 	 free(node->str1);
 	 free(node->str2);
-	 entry = pcb_lib_entry_new(menu);
-	 entry->ListEntry = pcb_strdup(buf);
+
+	 pcb_net_term_get_by_pinname(net, buf, 1);
+
 	 done_node = node;
 	 node = node->next;
 	 free(done_node);
@@ -268,7 +264,7 @@ pcb_lib_entry_t *pcb_lib_entry_new(pcb_lib_menu_t *);
  static void yyerror(const char *);
  static void PopC(void);
 
-#line 272 "edif.c" /* yacc.c:339  */
+#line 268 "edif.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -603,13 +599,13 @@ extern int edifdebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 201 "edif.y" /* yacc.c:355  */
+#line 197 "edif.y" /* yacc.c:355  */
 
     char* s;
     pair_list* pl;
     str_pair* ps;
 
-#line 613 "edif.c" /* yacc.c:355  */
+#line 609 "edif.c" /* yacc.c:355  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
@@ -624,7 +620,7 @@ int edifparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 628 "edif.c" /* yacc.c:358  */
+#line 624 "edif.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -950,119 +946,119 @@ static const yytype_uint16 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   513,   513,   516,   519,   520,   521,   522,   523,   524,
-     525,   528,   531,   534,   538,   541,   542,   545,   548,   549,
-     550,   551,   552,   553,   556,   559,   560,   563,   566,   567,
-     568,   569,   570,   573,   576,   579,   580,   583,   586,   589,
-     590,   591,   592,   593,   596,   599,   602,   605,   608,   611,
-     614,   615,   616,   619,   622,   623,   626,   627,   630,   633,
-     634,   635,   636,   639,   642,   643,   646,   649,   650,   653,
-     656,   659,   662,   665,   666,   667,   668,   669,   670,   671,
-     674,   677,   680,   681,   684,   687,   690,   691,   692,   695,
-     698,   699,   700,   703,   704,   705,   708,   711,   712,   715,
-     718,   721,   722,   725,   728,   729,   730,   731,   732,   733,
-     734,   735,   738,   741,   744,   745,   746,   747,   748,   749,
-     750,   751,   752,   753,   754,   755,   756,   757,   758,   759,
-     760,   761,   764,   767,   768,   771,   774,   775,   776,   779,
-     782,   783,   786,   789,   792,   793,   794,   797,   800,   801,
-     804,   807,   808,   811,   814,   815,   818,   821,   822,   825,
-     828,   829,   832,   835,   836,   839,   842,   843,   846,   849,
-     850,   853,   856,   857,   858,   861,   864,   865,   866,   867,
-     868,   871,   874,   875,   878,   881,   884,   885,   886,   887,
-     888,   889,   890,   891,   892,   893,   894,   895,   896,   897,
-     898,   901,   904,   905,   906,   907,   910,   913,   914,   915,
-     918,   921,   922,   925,   926,   929,   930,   933,   934,   937,
-     940,   941,   944,   947,   948,   951,   954,   958,   959,   960,
-     961,   964,   967,   968,   969,   972,   976,   977,   978,   981,
-     982,   983,   984,   987,   988,   989,   992,   995,   996,   997,
-     998,   999,  1000,  1001,  1004,  1007,  1010,  1011,  1012,  1013,
-    1014,  1017,  1020,  1023,  1026,  1027,  1028,  1029,  1030,  1031,
-    1032,  1033,  1034,  1035,  1036,  1037,  1038,  1039,  1042,  1045,
-    1048,  1051,  1052,  1053,  1056,  1059,  1060,  1061,  1062,  1063,
-    1064,  1065,  1066,  1067,  1068,  1069,  1070,  1071,  1074,  1077,
-    1078,  1081,  1084,  1085,  1086,  1087,  1088,  1089,  1090,  1091,
-    1092,  1093,  1094,  1097,  1100,  1101,  1102,  1103,  1106,  1107,
-    1108,  1109,  1110,  1113,  1116,  1117,  1118,  1119,  1122,  1125,
-    1126,  1127,  1128,  1131,  1134,  1137,  1138,  1141,  1142,  1143,
-    1144,  1147,  1150,  1151,  1154,  1157,  1158,  1159,  1160,  1161,
-    1164,  1167,  1170,  1173,  1176,  1179,  1180,  1183,  1186,  1189,
-    1190,  1191,  1192,  1193,  1194,  1195,  1196,  1197,  1198,  1201,
-    1204,  1205,  1206,  1209,  1212,  1213,  1214,  1215,  1216,  1219,
-    1222,  1223,  1226,  1229,  1230,  1231,  1232,  1233,  1236,  1237,
-    1240,  1241,  1244,  1247,  1248,  1251,  1254,  1255,  1256,  1257,
-    1260,  1263,  1264,  1265,  1266,  1267,  1268,  1269,  1270,  1271,
-    1272,  1273,  1274,  1275,  1276,  1277,  1278,  1279,  1282,  1286,
-    1287,  1288,  1289,  1292,  1295,  1296,  1297,  1298,  1301,  1304,
-    1305,  1306,  1307,  1310,  1313,  1314,  1317,  1320,  1323,  1324,
-    1325,  1326,  1329,  1332,  1333,  1334,  1335,  1336,  1337,  1338,
-    1339,  1340,  1343,  1346,  1347,  1350,  1353,  1356,  1357,  1360,
-    1363,  1366,  1369,  1372,  1375,  1378,  1379,  1380,  1381,  1382,
-    1385,  1388,  1391,  1392,  1395,  1398,  1399,  1400,  1403,  1406,
-    1407,  1410,  1413,  1414,  1417,  1418,  1419,  1422,  1423,  1424,
-    1427,  1430,  1431,  1432,  1433,  1436,  1439,  1440,  1441,  1442,
-    1445,  1448,  1449,  1452,  1455,  1456,  1459,  1462,  1465,  1468,
-    1469,  1470,  1473,  1476,  1477,  1478,  1479,  1482,  1485,  1486,
-    1487,  1488,  1491,  1494,  1495,  1498,  1501,  1502,  1503,  1504,
-    1505,  1506,  1507,  1508,  1509,  1510,  1511,  1512,  1513,  1514,
-    1515,  1518,  1521,  1522,  1523,  1524,  1525,  1528,  1531,  1532,
-    1535,  1536,  1537,  1540,  1543,  1544,  1545,  1548,  1549,  1550,
-    1553,  1556,  1557,  1560,  1563,  1564,  1565,  1566,  1569,  1572,
-    1573,  1576,  1577,  1580,  1583,  1584,  1585,  1588,  1591,  1592,
-    1595,  1598,  1599,  1600,  1601,  1602,  1605,  1608,  1609,  1612,
-    1613,  1614,  1617,  1618,  1621,  1624,  1625,  1626,  1627,  1628,
-    1629,  1630,  1631,  1632,  1633,  1636,  1639,  1640,  1641,  1642,
-    1643,  1646,  1649,  1650,  1651,  1652,  1653,  1654,  1657,  1660,
-    1661,  1662,  1665,  1668,  1669,  1670,  1673,  1676,  1677,  1678,
-    1679,  1680,  1683,  1684,  1688,  1689,  1692,  1695,  1696,  1697,
-    1698,  1701,  1704,  1707,  1708,  1709,  1712,  1715,  1716,  1717,
-    1720,  1723,  1724,  1725,  1726,  1729,  1732,  1733,  1734,  1735,
-    1738,  1741,  1742,  1745,  1748,  1749,  1750,  1751,  1754,  1757,
-    1758,  1759,  1760,  1761,  1764,  1767,  1770,  1771,  1774,  1777,
-    1778,  1779,  1780,  1781,  1782,  1783,  1784,  1787,  1790,  1794,
-    1795,  1796,  1797,  1800,  1804,  1805,  1806,  1807,  1810,  1813,
-    1814,  1817,  1820,  1823,  1824,  1825,  1826,  1827,  1828,  1829,
-    1830,  1831,  1832,  1835,  1838,  1841,  1842,  1845,  1848,  1849,
-    1852,  1855,  1858,  1859,  1862,  1865,  1866,  1869,  1872,  1875,
-    1876,  1877,  1878,  1881,  1884,  1885,  1888,  1891,  1892,  1893,
-    1894,  1897,  1900,  1901,  1904,  1907,  1908,  1911,  1914,  1917,
-    1918,  1921,  1924,  1925,  1926,  1927,  1928,  1929,  1930,  1931,
-    1932,  1933,  1934,  1935,  1936,  1939,  1942,  1943,  1944,  1945,
-    1946,  1947,  1948,  1949,  1950,  1951,  1954,  1957,  1958,  1959,
-    1960,  1963,  1966,  1967,  1968,  1969,  1972,  1975,  1976,  1977,
-    1980,  1983,  1984,  1985,  1986,  1987,  1988,  1989,  1990,  1991,
-    1992,  1993,  1996,  1999,  2000,  2001,  2002,  2003,  2004,  2005,
-    2006,  2007,  2008,  2009,  2010,  2011,  2014,  2017,  2018,  2019,
-    2022,  2025,  2028,  2029,  2030,  2031,  2032,  2035,  2036,  2039,
-    2040,  2043,  2058,  2059,  2060,  2061,  2064,  2067,  2068,  2071,
-    2074,  2075,  2078,  2081,  2082,  2083,  2084,  2085,  2088,  2091,
-    2094,  2097,  2098,  2099,  2100,  2101,  2102,  2103,  2104,  2105,
-    2106,  2107,  2108,  2111,  2112,  2113,  2114,  2115,  2116,  2119,
-    2122,  2123,  2124,  2127,  2130,  2131,  2134,  2137,  2138,  2139,
-    2140,  2143,  2147,  2148,  2151,  2152,  2155,  2158,  2159,  2162,
-    2165,  2168,  2169,  2172,  2175,  2178,  2181,  2182,  2183,  2184,
-    2187,  2190,  2191,  2194,  2197,  2200,  2201,  2202,  2203,  2204,
-    2205,  2208,  2211,  2212,  2213,  2214,  2217,  2220,  2221,  2224,
-    2227,  2228,  2231,  2234,  2235,  2238,  2241,  2242,  2245,  2248,
-    2249,  2250,  2251,  2254,  2257,  2258,  2259,  2262,  2263,  2264,
-    2267,  2270,  2273,  2274,  2275,  2276,  2279,  2280,  2283,  2286,
-    2289,  2290,  2291,  2292,  2293,  2294,  2295,  2296,  2297,  2298,
-    2299,  2300,  2301,  2302,  2305,  2308,  2309,  2312,  2315,  2316,
-    2317,  2320,  2323,  2324,  2325,  2326,  2329,  2330,  2331,  2334,
-    2337,  2338,  2339,  2340,  2341,  2342,  2343,  2346,  2349,  2352,
-    2353,  2356,  2357,  2358,  2361,  2365,  2368,  2369,  2370,  2371,
-    2372,  2375,  2379,  2380,  2383,  2384,  2387,  2388,  2391,  2392,
-    2395,  2396,  2399,  2402,  2403,  2404,  2407,  2410,  2411,  2412,
-    2413,  2416,  2419,  2420,  2421,  2422,  2423,  2424,  2427,  2430,
-    2433,  2436,  2437,  2438,  2439,  2442,  2445,  2446,  2447,  2448,
-    2449,  2450,  2451,  2452,  2453,  2454,  2455,  2456,  2457,  2458,
-    2459,  2460,  2463,  2466,  2469,  2470,  2471,  2472,  2473,  2476,
-    2477,  2480,  2481,  2484,  2487,  2490,  2491,  2492,  2493,  2494,
-    2495,  2498,  2501,  2502,  2503,  2506,  2509,  2510,  2511,  2512,
-    2513,  2514,  2515,  2516,  2517,  2520,  2523,  2526,  2529,  2530,
-    2533,  2536,  2537,  2538,  2539,  2540,  2541,  2542,  2543,  2544,
-    2545,  2548,  2551,  2554,  2557,  2560,  2563,  2564,  2565,  2566,
-    2569,  2572,  2573,  2574,  2575,  2576,  2577,  2578,  2581,  2584,
-    2585,  2586,  2587,  2588,  2589,  2590,  2593,  2596,  2599,  2602
+       0,   509,   509,   512,   515,   516,   517,   518,   519,   520,
+     521,   524,   527,   530,   534,   537,   538,   541,   544,   545,
+     546,   547,   548,   549,   552,   555,   556,   559,   562,   563,
+     564,   565,   566,   569,   572,   575,   576,   579,   582,   585,
+     586,   587,   588,   589,   592,   595,   598,   601,   604,   607,
+     610,   611,   612,   615,   618,   619,   622,   623,   626,   629,
+     630,   631,   632,   635,   638,   639,   642,   645,   646,   649,
+     652,   655,   658,   661,   662,   663,   664,   665,   666,   667,
+     670,   673,   676,   677,   680,   683,   686,   687,   688,   691,
+     694,   695,   696,   699,   700,   701,   704,   707,   708,   711,
+     714,   717,   718,   721,   724,   725,   726,   727,   728,   729,
+     730,   731,   734,   737,   740,   741,   742,   743,   744,   745,
+     746,   747,   748,   749,   750,   751,   752,   753,   754,   755,
+     756,   757,   760,   763,   764,   767,   770,   771,   772,   775,
+     778,   779,   782,   785,   788,   789,   790,   793,   796,   797,
+     800,   803,   804,   807,   810,   811,   814,   817,   818,   821,
+     824,   825,   828,   831,   832,   835,   838,   839,   842,   845,
+     846,   849,   852,   853,   854,   857,   860,   861,   862,   863,
+     864,   867,   870,   871,   874,   877,   880,   881,   882,   883,
+     884,   885,   886,   887,   888,   889,   890,   891,   892,   893,
+     894,   897,   900,   901,   902,   903,   906,   909,   910,   911,
+     914,   917,   918,   921,   922,   925,   926,   929,   930,   933,
+     936,   937,   940,   943,   944,   947,   950,   954,   955,   956,
+     957,   960,   963,   964,   965,   968,   972,   973,   974,   977,
+     978,   979,   980,   983,   984,   985,   988,   991,   992,   993,
+     994,   995,   996,   997,  1000,  1003,  1006,  1007,  1008,  1009,
+    1010,  1013,  1016,  1019,  1022,  1023,  1024,  1025,  1026,  1027,
+    1028,  1029,  1030,  1031,  1032,  1033,  1034,  1035,  1038,  1041,
+    1044,  1047,  1048,  1049,  1052,  1055,  1056,  1057,  1058,  1059,
+    1060,  1061,  1062,  1063,  1064,  1065,  1066,  1067,  1070,  1073,
+    1074,  1077,  1080,  1081,  1082,  1083,  1084,  1085,  1086,  1087,
+    1088,  1089,  1090,  1093,  1096,  1097,  1098,  1099,  1102,  1103,
+    1104,  1105,  1106,  1109,  1112,  1113,  1114,  1115,  1118,  1121,
+    1122,  1123,  1124,  1127,  1130,  1133,  1134,  1137,  1138,  1139,
+    1140,  1143,  1146,  1147,  1150,  1153,  1154,  1155,  1156,  1157,
+    1160,  1163,  1166,  1169,  1172,  1175,  1176,  1179,  1182,  1185,
+    1186,  1187,  1188,  1189,  1190,  1191,  1192,  1193,  1194,  1197,
+    1200,  1201,  1202,  1205,  1208,  1209,  1210,  1211,  1212,  1215,
+    1218,  1219,  1222,  1225,  1226,  1227,  1228,  1229,  1232,  1233,
+    1236,  1237,  1240,  1243,  1244,  1247,  1250,  1251,  1252,  1253,
+    1256,  1259,  1260,  1261,  1262,  1263,  1264,  1265,  1266,  1267,
+    1268,  1269,  1270,  1271,  1272,  1273,  1274,  1275,  1278,  1282,
+    1283,  1284,  1285,  1288,  1291,  1292,  1293,  1294,  1297,  1300,
+    1301,  1302,  1303,  1306,  1309,  1310,  1313,  1316,  1319,  1320,
+    1321,  1322,  1325,  1328,  1329,  1330,  1331,  1332,  1333,  1334,
+    1335,  1336,  1339,  1342,  1343,  1346,  1349,  1352,  1353,  1356,
+    1359,  1362,  1365,  1368,  1371,  1374,  1375,  1376,  1377,  1378,
+    1381,  1384,  1387,  1388,  1391,  1394,  1395,  1396,  1399,  1402,
+    1403,  1406,  1409,  1410,  1413,  1414,  1415,  1418,  1419,  1420,
+    1423,  1426,  1427,  1428,  1429,  1432,  1435,  1436,  1437,  1438,
+    1441,  1444,  1445,  1448,  1451,  1452,  1455,  1458,  1461,  1464,
+    1465,  1466,  1469,  1472,  1473,  1474,  1475,  1478,  1481,  1482,
+    1483,  1484,  1487,  1490,  1491,  1494,  1497,  1498,  1499,  1500,
+    1501,  1502,  1503,  1504,  1505,  1506,  1507,  1508,  1509,  1510,
+    1511,  1514,  1517,  1518,  1519,  1520,  1521,  1524,  1527,  1528,
+    1531,  1532,  1533,  1536,  1539,  1540,  1541,  1544,  1545,  1546,
+    1549,  1552,  1553,  1556,  1559,  1560,  1561,  1562,  1565,  1568,
+    1569,  1572,  1573,  1576,  1579,  1580,  1581,  1584,  1587,  1588,
+    1591,  1594,  1595,  1596,  1597,  1598,  1601,  1604,  1605,  1608,
+    1609,  1610,  1613,  1614,  1617,  1620,  1621,  1622,  1623,  1624,
+    1625,  1626,  1627,  1628,  1629,  1632,  1635,  1636,  1637,  1638,
+    1639,  1642,  1645,  1646,  1647,  1648,  1649,  1650,  1653,  1656,
+    1657,  1658,  1661,  1664,  1665,  1666,  1669,  1672,  1673,  1674,
+    1675,  1676,  1679,  1680,  1684,  1685,  1688,  1691,  1692,  1693,
+    1694,  1697,  1700,  1703,  1704,  1705,  1708,  1711,  1712,  1713,
+    1716,  1719,  1720,  1721,  1722,  1725,  1728,  1729,  1730,  1731,
+    1734,  1737,  1738,  1741,  1744,  1745,  1746,  1747,  1750,  1753,
+    1754,  1755,  1756,  1757,  1760,  1763,  1766,  1767,  1770,  1773,
+    1774,  1775,  1776,  1777,  1778,  1779,  1780,  1783,  1786,  1790,
+    1791,  1792,  1793,  1796,  1800,  1801,  1802,  1803,  1806,  1809,
+    1810,  1813,  1816,  1819,  1820,  1821,  1822,  1823,  1824,  1825,
+    1826,  1827,  1828,  1831,  1834,  1837,  1838,  1841,  1844,  1845,
+    1848,  1851,  1854,  1855,  1858,  1861,  1862,  1865,  1868,  1871,
+    1872,  1873,  1874,  1877,  1880,  1881,  1884,  1887,  1888,  1889,
+    1890,  1893,  1896,  1897,  1900,  1903,  1904,  1907,  1910,  1913,
+    1914,  1917,  1920,  1921,  1922,  1923,  1924,  1925,  1926,  1927,
+    1928,  1929,  1930,  1931,  1932,  1935,  1938,  1939,  1940,  1941,
+    1942,  1943,  1944,  1945,  1946,  1947,  1950,  1953,  1954,  1955,
+    1956,  1959,  1962,  1963,  1964,  1965,  1968,  1971,  1972,  1973,
+    1976,  1979,  1980,  1981,  1982,  1983,  1984,  1985,  1986,  1987,
+    1988,  1989,  1992,  1995,  1996,  1997,  1998,  1999,  2000,  2001,
+    2002,  2003,  2004,  2005,  2006,  2007,  2010,  2013,  2014,  2015,
+    2018,  2021,  2024,  2025,  2026,  2027,  2028,  2031,  2032,  2035,
+    2036,  2039,  2054,  2055,  2056,  2057,  2060,  2063,  2064,  2067,
+    2070,  2071,  2074,  2077,  2078,  2079,  2080,  2081,  2084,  2087,
+    2090,  2093,  2094,  2095,  2096,  2097,  2098,  2099,  2100,  2101,
+    2102,  2103,  2104,  2107,  2108,  2109,  2110,  2111,  2112,  2115,
+    2118,  2119,  2120,  2123,  2126,  2127,  2130,  2133,  2134,  2135,
+    2136,  2139,  2143,  2144,  2147,  2148,  2151,  2154,  2155,  2158,
+    2161,  2164,  2165,  2168,  2171,  2174,  2177,  2178,  2179,  2180,
+    2183,  2186,  2187,  2190,  2193,  2196,  2197,  2198,  2199,  2200,
+    2201,  2204,  2207,  2208,  2209,  2210,  2213,  2216,  2217,  2220,
+    2223,  2224,  2227,  2230,  2231,  2234,  2237,  2238,  2241,  2244,
+    2245,  2246,  2247,  2250,  2253,  2254,  2255,  2258,  2259,  2260,
+    2263,  2266,  2269,  2270,  2271,  2272,  2275,  2276,  2279,  2282,
+    2285,  2286,  2287,  2288,  2289,  2290,  2291,  2292,  2293,  2294,
+    2295,  2296,  2297,  2298,  2301,  2304,  2305,  2308,  2311,  2312,
+    2313,  2316,  2319,  2320,  2321,  2322,  2325,  2326,  2327,  2330,
+    2333,  2334,  2335,  2336,  2337,  2338,  2339,  2342,  2345,  2348,
+    2349,  2352,  2353,  2354,  2357,  2361,  2364,  2365,  2366,  2367,
+    2368,  2371,  2375,  2376,  2379,  2380,  2383,  2384,  2387,  2388,
+    2391,  2392,  2395,  2398,  2399,  2400,  2403,  2406,  2407,  2408,
+    2409,  2412,  2415,  2416,  2417,  2418,  2419,  2420,  2423,  2426,
+    2429,  2432,  2433,  2434,  2435,  2438,  2441,  2442,  2443,  2444,
+    2445,  2446,  2447,  2448,  2449,  2450,  2451,  2452,  2453,  2454,
+    2455,  2456,  2459,  2462,  2465,  2466,  2467,  2468,  2469,  2472,
+    2473,  2476,  2477,  2480,  2483,  2486,  2487,  2488,  2489,  2490,
+    2491,  2494,  2497,  2498,  2499,  2502,  2505,  2506,  2507,  2508,
+    2509,  2510,  2511,  2512,  2513,  2516,  2519,  2522,  2525,  2526,
+    2529,  2532,  2533,  2534,  2535,  2536,  2537,  2538,  2539,  2540,
+    2541,  2544,  2547,  2550,  2553,  2556,  2559,  2560,  2561,  2562,
+    2565,  2568,  2569,  2570,  2571,  2572,  2573,  2574,  2577,  2580,
+    2581,  2582,  2583,  2584,  2585,  2586,  2589,  2592,  2595,  2598
 };
 #endif
 
@@ -3370,541 +3366,541 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 513 "edif.y" /* yacc.c:1646  */
+#line 509 "edif.y" /* yacc.c:1646  */
     { PopC(); }
-#line 3376 "edif.c" /* yacc.c:1646  */
+#line 3372 "edif.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 528 "edif.y" /* yacc.c:1646  */
+#line 524 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3382 "edif.c" /* yacc.c:1646  */
+#line 3378 "edif.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 531 "edif.y" /* yacc.c:1646  */
+#line 527 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-1].s)); }
-#line 3388 "edif.c" /* yacc.c:1646  */
+#line 3384 "edif.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 535 "edif.y" /* yacc.c:1646  */
+#line 531 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-3].s)); free((yyvsp[-2].s)); free((yyvsp[-1].s)); }
-#line 3394 "edif.c" /* yacc.c:1646  */
+#line 3390 "edif.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 559 "edif.y" /* yacc.c:1646  */
+#line 555 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3400 "edif.c" /* yacc.c:1646  */
+#line 3396 "edif.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 576 "edif.y" /* yacc.c:1646  */
+#line 572 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[-3].ps)); free((yyvsp[-2].s)); }
-#line 3406 "edif.c" /* yacc.c:1646  */
+#line 3402 "edif.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 580 "edif.y" /* yacc.c:1646  */
+#line 576 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3412 "edif.c" /* yacc.c:1646  */
+#line 3408 "edif.c" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 605 "edif.y" /* yacc.c:1646  */
+#line 601 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-1].s)); }
-#line 3418 "edif.c" /* yacc.c:1646  */
+#line 3414 "edif.c" /* yacc.c:1646  */
     break;
 
   case 69:
-#line 653 "edif.y" /* yacc.c:1646  */
+#line 649 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-3].s)); free((yyvsp[-2].s)); }
-#line 3424 "edif.c" /* yacc.c:1646  */
+#line 3420 "edif.c" /* yacc.c:1646  */
     break;
 
   case 70:
-#line 656 "edif.y" /* yacc.c:1646  */
+#line 652 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-1].s)); }
-#line 3430 "edif.c" /* yacc.c:1646  */
+#line 3426 "edif.c" /* yacc.c:1646  */
     break;
 
   case 80:
-#line 674 "edif.y" /* yacc.c:1646  */
+#line 670 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3436 "edif.c" /* yacc.c:1646  */
+#line 3432 "edif.c" /* yacc.c:1646  */
     break;
 
   case 84:
-#line 684 "edif.y" /* yacc.c:1646  */
+#line 680 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3442 "edif.c" /* yacc.c:1646  */
+#line 3438 "edif.c" /* yacc.c:1646  */
     break;
 
   case 91:
-#line 699 "edif.y" /* yacc.c:1646  */
+#line 695 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3448 "edif.c" /* yacc.c:1646  */
+#line 3444 "edif.c" /* yacc.c:1646  */
     break;
 
   case 102:
-#line 722 "edif.y" /* yacc.c:1646  */
+#line 718 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3454 "edif.c" /* yacc.c:1646  */
+#line 3450 "edif.c" /* yacc.c:1646  */
     break;
 
   case 140:
-#line 782 "edif.y" /* yacc.c:1646  */
+#line 778 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3460 "edif.c" /* yacc.c:1646  */
+#line 3456 "edif.c" /* yacc.c:1646  */
     break;
 
   case 147:
-#line 797 "edif.y" /* yacc.c:1646  */
+#line 793 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-2].s)); }
-#line 3466 "edif.c" /* yacc.c:1646  */
+#line 3462 "edif.c" /* yacc.c:1646  */
     break;
 
   case 150:
-#line 804 "edif.y" /* yacc.c:1646  */
+#line 800 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-2].s)); }
-#line 3472 "edif.c" /* yacc.c:1646  */
+#line 3468 "edif.c" /* yacc.c:1646  */
     break;
 
   case 182:
-#line 874 "edif.y" /* yacc.c:1646  */
+#line 870 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3478 "edif.c" /* yacc.c:1646  */
+#line 3474 "edif.c" /* yacc.c:1646  */
     break;
 
   case 184:
-#line 878 "edif.y" /* yacc.c:1646  */
+#line 874 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3484 "edif.c" /* yacc.c:1646  */
+#line 3480 "edif.c" /* yacc.c:1646  */
     break;
 
   case 240:
-#line 982 "edif.y" /* yacc.c:1646  */
+#line 978 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3490 "edif.c" /* yacc.c:1646  */
+#line 3486 "edif.c" /* yacc.c:1646  */
     break;
 
   case 247:
-#line 995 "edif.y" /* yacc.c:1646  */
+#line 991 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3496 "edif.c" /* yacc.c:1646  */
+#line 3492 "edif.c" /* yacc.c:1646  */
     break;
 
   case 278:
-#line 1042 "edif.y" /* yacc.c:1646  */
+#line 1038 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3502 "edif.c" /* yacc.c:1646  */
+#line 3498 "edif.c" /* yacc.c:1646  */
     break;
 
   case 279:
-#line 1045 "edif.y" /* yacc.c:1646  */
+#line 1041 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3508 "edif.c" /* yacc.c:1646  */
+#line 3504 "edif.c" /* yacc.c:1646  */
     break;
 
   case 333:
-#line 1131 "edif.y" /* yacc.c:1646  */
+#line 1127 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-3].s)); free((yyvsp[-2].s)); }
-#line 3514 "edif.c" /* yacc.c:1646  */
+#line 3510 "edif.c" /* yacc.c:1646  */
     break;
 
   case 336:
-#line 1138 "edif.y" /* yacc.c:1646  */
+#line 1134 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3520 "edif.c" /* yacc.c:1646  */
+#line 3516 "edif.c" /* yacc.c:1646  */
     break;
 
   case 337:
-#line 1141 "edif.y" /* yacc.c:1646  */
+#line 1137 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3526 "edif.c" /* yacc.c:1646  */
+#line 3522 "edif.c" /* yacc.c:1646  */
     break;
 
   case 344:
-#line 1154 "edif.y" /* yacc.c:1646  */
+#line 1150 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-2].s)); }
-#line 3532 "edif.c" /* yacc.c:1646  */
+#line 3528 "edif.c" /* yacc.c:1646  */
     break;
 
   case 346:
-#line 1158 "edif.y" /* yacc.c:1646  */
+#line 1154 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3538 "edif.c" /* yacc.c:1646  */
+#line 3534 "edif.c" /* yacc.c:1646  */
     break;
 
   case 347:
-#line 1159 "edif.y" /* yacc.c:1646  */
+#line 1155 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3544 "edif.c" /* yacc.c:1646  */
+#line 3540 "edif.c" /* yacc.c:1646  */
     break;
 
   case 348:
-#line 1160 "edif.y" /* yacc.c:1646  */
+#line 1156 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3550 "edif.c" /* yacc.c:1646  */
+#line 3546 "edif.c" /* yacc.c:1646  */
     break;
 
   case 369:
-#line 1201 "edif.y" /* yacc.c:1646  */
+#line 1197 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[-2].s); }
-#line 3556 "edif.c" /* yacc.c:1646  */
+#line 3552 "edif.c" /* yacc.c:1646  */
     break;
 
   case 371:
-#line 1205 "edif.y" /* yacc.c:1646  */
+#line 1201 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3562 "edif.c" /* yacc.c:1646  */
+#line 3558 "edif.c" /* yacc.c:1646  */
     break;
 
   case 374:
-#line 1212 "edif.y" /* yacc.c:1646  */
+#line 1208 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3568 "edif.c" /* yacc.c:1646  */
+#line 3564 "edif.c" /* yacc.c:1646  */
     break;
 
   case 381:
-#line 1223 "edif.y" /* yacc.c:1646  */
+#line 1219 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3574 "edif.c" /* yacc.c:1646  */
+#line 3570 "edif.c" /* yacc.c:1646  */
     break;
 
   case 384:
-#line 1230 "edif.y" /* yacc.c:1646  */
+#line 1226 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3580 "edif.c" /* yacc.c:1646  */
+#line 3576 "edif.c" /* yacc.c:1646  */
     break;
 
   case 388:
-#line 1236 "edif.y" /* yacc.c:1646  */
+#line 1232 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3586 "edif.c" /* yacc.c:1646  */
+#line 3582 "edif.c" /* yacc.c:1646  */
     break;
 
   case 390:
-#line 1240 "edif.y" /* yacc.c:1646  */
+#line 1236 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3592 "edif.c" /* yacc.c:1646  */
+#line 3588 "edif.c" /* yacc.c:1646  */
     break;
 
   case 393:
-#line 1247 "edif.y" /* yacc.c:1646  */
+#line 1243 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3598 "edif.c" /* yacc.c:1646  */
+#line 3594 "edif.c" /* yacc.c:1646  */
     break;
 
   case 397:
-#line 1255 "edif.y" /* yacc.c:1646  */
+#line 1251 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3604 "edif.c" /* yacc.c:1646  */
+#line 3600 "edif.c" /* yacc.c:1646  */
     break;
 
   case 408:
-#line 1270 "edif.y" /* yacc.c:1646  */
+#line 1266 "edif.y" /* yacc.c:1646  */
     { pair_list_free((yyvsp[0].pl)); }
-#line 3610 "edif.c" /* yacc.c:1646  */
+#line 3606 "edif.c" /* yacc.c:1646  */
     break;
 
   case 437:
-#line 1320 "edif.y" /* yacc.c:1646  */
+#line 1316 "edif.y" /* yacc.c:1646  */
     { (yyval.pl) = new_pair_list((yyvsp[-1].ps)); }
-#line 3616 "edif.c" /* yacc.c:1646  */
+#line 3612 "edif.c" /* yacc.c:1646  */
     break;
 
   case 438:
-#line 1323 "edif.y" /* yacc.c:1646  */
+#line 1319 "edif.y" /* yacc.c:1646  */
     { (yyval.ps)=NULL; }
-#line 3622 "edif.c" /* yacc.c:1646  */
+#line 3618 "edif.c" /* yacc.c:1646  */
     break;
 
   case 439:
-#line 1324 "edif.y" /* yacc.c:1646  */
+#line 1320 "edif.y" /* yacc.c:1646  */
     { (yyvsp[0].ps)->next = (yyvsp[-1].ps); (yyval.ps) = (yyvsp[0].ps); }
-#line 3628 "edif.c" /* yacc.c:1646  */
+#line 3624 "edif.c" /* yacc.c:1646  */
     break;
 
   case 455:
-#line 1350 "edif.y" /* yacc.c:1646  */
+#line 1346 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-1].s)); }
-#line 3634 "edif.c" /* yacc.c:1646  */
+#line 3630 "edif.c" /* yacc.c:1646  */
     break;
 
   case 459:
-#line 1360 "edif.y" /* yacc.c:1646  */
+#line 1356 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3640 "edif.c" /* yacc.c:1646  */
+#line 3636 "edif.c" /* yacc.c:1646  */
     break;
 
   case 460:
-#line 1363 "edif.y" /* yacc.c:1646  */
+#line 1359 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3646 "edif.c" /* yacc.c:1646  */
+#line 3642 "edif.c" /* yacc.c:1646  */
     break;
 
   case 462:
-#line 1369 "edif.y" /* yacc.c:1646  */
+#line 1365 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3652 "edif.c" /* yacc.c:1646  */
+#line 3648 "edif.c" /* yacc.c:1646  */
     break;
 
   case 463:
-#line 1372 "edif.y" /* yacc.c:1646  */
+#line 1368 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3658 "edif.c" /* yacc.c:1646  */
+#line 3654 "edif.c" /* yacc.c:1646  */
     break;
 
   case 483:
-#line 1414 "edif.y" /* yacc.c:1646  */
+#line 1410 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3664 "edif.c" /* yacc.c:1646  */
+#line 3660 "edif.c" /* yacc.c:1646  */
     break;
 
   case 484:
-#line 1417 "edif.y" /* yacc.c:1646  */
+#line 1413 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3670 "edif.c" /* yacc.c:1646  */
+#line 3666 "edif.c" /* yacc.c:1646  */
     break;
 
   case 492:
-#line 1431 "edif.y" /* yacc.c:1646  */
+#line 1427 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3676 "edif.c" /* yacc.c:1646  */
+#line 3672 "edif.c" /* yacc.c:1646  */
     break;
 
   case 506:
-#line 1459 "edif.y" /* yacc.c:1646  */
+#line 1455 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3682 "edif.c" /* yacc.c:1646  */
+#line 3678 "edif.c" /* yacc.c:1646  */
     break;
 
   case 507:
-#line 1462 "edif.y" /* yacc.c:1646  */
+#line 1458 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3688 "edif.c" /* yacc.c:1646  */
+#line 3684 "edif.c" /* yacc.c:1646  */
     break;
 
   case 514:
-#line 1477 "edif.y" /* yacc.c:1646  */
+#line 1473 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3694 "edif.c" /* yacc.c:1646  */
+#line 3690 "edif.c" /* yacc.c:1646  */
     break;
 
   case 549:
-#line 1532 "edif.y" /* yacc.c:1646  */
+#line 1528 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3700 "edif.c" /* yacc.c:1646  */
+#line 3696 "edif.c" /* yacc.c:1646  */
     break;
 
   case 555:
-#line 1544 "edif.y" /* yacc.c:1646  */
+#line 1540 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3706 "edif.c" /* yacc.c:1646  */
+#line 3702 "edif.c" /* yacc.c:1646  */
     break;
 
   case 560:
-#line 1553 "edif.y" /* yacc.c:1646  */
+#line 1549 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-2].s)); }
-#line 3712 "edif.c" /* yacc.c:1646  */
+#line 3708 "edif.c" /* yacc.c:1646  */
     break;
 
   case 561:
-#line 1556 "edif.y" /* yacc.c:1646  */
+#line 1552 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3718 "edif.c" /* yacc.c:1646  */
+#line 3714 "edif.c" /* yacc.c:1646  */
     break;
 
   case 562:
-#line 1557 "edif.y" /* yacc.c:1646  */
+#line 1553 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3724 "edif.c" /* yacc.c:1646  */
+#line 3720 "edif.c" /* yacc.c:1646  */
     break;
 
   case 582:
-#line 1599 "edif.y" /* yacc.c:1646  */
+#line 1595 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3730 "edif.c" /* yacc.c:1646  */
+#line 3726 "edif.c" /* yacc.c:1646  */
     break;
 
   case 585:
-#line 1602 "edif.y" /* yacc.c:1646  */
+#line 1598 "edif.y" /* yacc.c:1646  */
     { pair_list_free((yyvsp[0].pl)); }
-#line 3736 "edif.c" /* yacc.c:1646  */
+#line 3732 "edif.c" /* yacc.c:1646  */
     break;
 
   case 586:
-#line 1605 "edif.y" /* yacc.c:1646  */
+#line 1601 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[-1].s); }
-#line 3742 "edif.c" /* yacc.c:1646  */
+#line 3738 "edif.c" /* yacc.c:1646  */
     break;
 
   case 587:
-#line 1608 "edif.y" /* yacc.c:1646  */
+#line 1604 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3748 "edif.c" /* yacc.c:1646  */
+#line 3744 "edif.c" /* yacc.c:1646  */
     break;
 
   case 589:
-#line 1612 "edif.y" /* yacc.c:1646  */
+#line 1608 "edif.y" /* yacc.c:1646  */
     { (yyval.ps) = new_str_pair((yyvsp[0].s),NULL); }
-#line 3754 "edif.c" /* yacc.c:1646  */
+#line 3750 "edif.c" /* yacc.c:1646  */
     break;
 
   case 590:
-#line 1613 "edif.y" /* yacc.c:1646  */
+#line 1609 "edif.y" /* yacc.c:1646  */
     { (yyval.ps) = new_str_pair((yyvsp[0].s),NULL); }
-#line 3760 "edif.c" /* yacc.c:1646  */
+#line 3756 "edif.c" /* yacc.c:1646  */
     break;
 
   case 591:
-#line 1614 "edif.y" /* yacc.c:1646  */
+#line 1610 "edif.y" /* yacc.c:1646  */
     { (yyval.ps)=(yyvsp[0].ps); }
-#line 3766 "edif.c" /* yacc.c:1646  */
+#line 3762 "edif.c" /* yacc.c:1646  */
     break;
 
   case 592:
-#line 1617 "edif.y" /* yacc.c:1646  */
+#line 1613 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3772 "edif.c" /* yacc.c:1646  */
+#line 3768 "edif.c" /* yacc.c:1646  */
     break;
 
   case 593:
-#line 1618 "edif.y" /* yacc.c:1646  */
+#line 1614 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3778 "edif.c" /* yacc.c:1646  */
+#line 3774 "edif.c" /* yacc.c:1646  */
     break;
 
   case 594:
-#line 1621 "edif.y" /* yacc.c:1646  */
+#line 1617 "edif.y" /* yacc.c:1646  */
     { define_pcb_net((yyvsp[-2].ps), (yyvsp[-1].pl)); }
-#line 3784 "edif.c" /* yacc.c:1646  */
+#line 3780 "edif.c" /* yacc.c:1646  */
     break;
 
   case 595:
-#line 1624 "edif.y" /* yacc.c:1646  */
+#line 1620 "edif.y" /* yacc.c:1646  */
     { (yyval.pl)=(yyvsp[0].pl); }
-#line 3790 "edif.c" /* yacc.c:1646  */
+#line 3786 "edif.c" /* yacc.c:1646  */
     break;
 
   case 611:
-#line 1646 "edif.y" /* yacc.c:1646  */
+#line 1642 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[-2].ps)); }
-#line 3796 "edif.c" /* yacc.c:1646  */
+#line 3792 "edif.c" /* yacc.c:1646  */
     break;
 
   case 632:
-#line 1683 "edif.y" /* yacc.c:1646  */
+#line 1679 "edif.y" /* yacc.c:1646  */
     { (yyval.ps)=(yyvsp[0].ps); }
-#line 3802 "edif.c" /* yacc.c:1646  */
+#line 3798 "edif.c" /* yacc.c:1646  */
     break;
 
   case 633:
-#line 1684 "edif.y" /* yacc.c:1646  */
+#line 1680 "edif.y" /* yacc.c:1646  */
     { (yyval.ps)=NULL; }
-#line 3808 "edif.c" /* yacc.c:1646  */
+#line 3804 "edif.c" /* yacc.c:1646  */
     break;
 
   case 634:
-#line 1688 "edif.y" /* yacc.c:1646  */
+#line 1684 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3814 "edif.c" /* yacc.c:1646  */
+#line 3810 "edif.c" /* yacc.c:1646  */
     break;
 
   case 639:
-#line 1697 "edif.y" /* yacc.c:1646  */
+#line 1693 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3820 "edif.c" /* yacc.c:1646  */
+#line 3816 "edif.c" /* yacc.c:1646  */
     break;
 
   case 644:
-#line 1708 "edif.y" /* yacc.c:1646  */
+#line 1704 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3826 "edif.c" /* yacc.c:1646  */
+#line 3822 "edif.c" /* yacc.c:1646  */
     break;
 
   case 698:
-#line 1810 "edif.y" /* yacc.c:1646  */
+#line 1806 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-3].s)); }
-#line 3832 "edif.c" /* yacc.c:1646  */
+#line 3828 "edif.c" /* yacc.c:1646  */
     break;
 
   case 701:
-#line 1817 "edif.y" /* yacc.c:1646  */
+#line 1813 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-1].s)); }
-#line 3838 "edif.c" /* yacc.c:1646  */
+#line 3834 "edif.c" /* yacc.c:1646  */
     break;
 
   case 727:
-#line 1869 "edif.y" /* yacc.c:1646  */
+#line 1865 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-1].s)); }
-#line 3844 "edif.c" /* yacc.c:1646  */
+#line 3840 "edif.c" /* yacc.c:1646  */
     break;
 
   case 730:
-#line 1876 "edif.y" /* yacc.c:1646  */
+#line 1872 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3850 "edif.c" /* yacc.c:1646  */
+#line 3846 "edif.c" /* yacc.c:1646  */
     break;
 
   case 747:
-#line 1911 "edif.y" /* yacc.c:1646  */
+#line 1907 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-2].s)); free((yyvsp[-1].s)); }
-#line 3856 "edif.c" /* yacc.c:1646  */
+#line 3852 "edif.c" /* yacc.c:1646  */
     break;
 
   case 766:
-#line 1942 "edif.y" /* yacc.c:1646  */
+#line 1938 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3862 "edif.c" /* yacc.c:1646  */
+#line 3858 "edif.c" /* yacc.c:1646  */
     break;
 
   case 789:
-#line 1977 "edif.y" /* yacc.c:1646  */
+#line 1973 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3868 "edif.c" /* yacc.c:1646  */
+#line 3864 "edif.c" /* yacc.c:1646  */
     break;
 
   case 791:
-#line 1983 "edif.y" /* yacc.c:1646  */
+#line 1979 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3874 "edif.c" /* yacc.c:1646  */
+#line 3870 "edif.c" /* yacc.c:1646  */
     break;
 
   case 803:
-#line 1999 "edif.y" /* yacc.c:1646  */
+#line 1995 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3880 "edif.c" /* yacc.c:1646  */
+#line 3876 "edif.c" /* yacc.c:1646  */
     break;
 
   case 818:
-#line 2018 "edif.y" /* yacc.c:1646  */
+#line 2014 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3886 "edif.c" /* yacc.c:1646  */
+#line 3882 "edif.c" /* yacc.c:1646  */
     break;
 
   case 823:
-#line 2029 "edif.y" /* yacc.c:1646  */
+#line 2025 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3892 "edif.c" /* yacc.c:1646  */
+#line 3888 "edif.c" /* yacc.c:1646  */
     break;
 
   case 827:
-#line 2035 "edif.y" /* yacc.c:1646  */
+#line 2031 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3898 "edif.c" /* yacc.c:1646  */
+#line 3894 "edif.c" /* yacc.c:1646  */
     break;
 
   case 829:
-#line 2039 "edif.y" /* yacc.c:1646  */
+#line 2035 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3904 "edif.c" /* yacc.c:1646  */
+#line 3900 "edif.c" /* yacc.c:1646  */
     break;
 
   case 831:
-#line 2044 "edif.y" /* yacc.c:1646  */
+#line 2040 "edif.y" /* yacc.c:1646  */
     {
     if ((yyvsp[-1].ps))
     {
@@ -3917,251 +3913,251 @@ yyreduce:
 	(yyval.ps) = new_str_pair(NULL,(yyvsp[-2].s));
     }
 }
-#line 3921 "edif.c" /* yacc.c:1646  */
+#line 3917 "edif.c" /* yacc.c:1646  */
     break;
 
   case 832:
-#line 2058 "edif.y" /* yacc.c:1646  */
+#line 2054 "edif.y" /* yacc.c:1646  */
     { (yyval.ps)=NULL; }
-#line 3927 "edif.c" /* yacc.c:1646  */
+#line 3923 "edif.c" /* yacc.c:1646  */
     break;
 
   case 833:
-#line 2059 "edif.y" /* yacc.c:1646  */
+#line 2055 "edif.y" /* yacc.c:1646  */
     { (yyval.ps)=(yyvsp[0].ps); }
-#line 3933 "edif.c" /* yacc.c:1646  */
+#line 3929 "edif.c" /* yacc.c:1646  */
     break;
 
   case 834:
-#line 2060 "edif.y" /* yacc.c:1646  */
+#line 2056 "edif.y" /* yacc.c:1646  */
     { (yyval.ps) = new_str_pair((yyvsp[0].s),NULL); }
-#line 3939 "edif.c" /* yacc.c:1646  */
+#line 3935 "edif.c" /* yacc.c:1646  */
     break;
 
   case 835:
-#line 2061 "edif.y" /* yacc.c:1646  */
+#line 2057 "edif.y" /* yacc.c:1646  */
     { (yyval.ps)=NULL; }
-#line 3945 "edif.c" /* yacc.c:1646  */
+#line 3941 "edif.c" /* yacc.c:1646  */
     break;
 
   case 848:
-#line 2088 "edif.y" /* yacc.c:1646  */
+#line 2084 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3951 "edif.c" /* yacc.c:1646  */
+#line 3947 "edif.c" /* yacc.c:1646  */
     break;
 
   case 849:
-#line 2091 "edif.y" /* yacc.c:1646  */
+#line 2087 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3957 "edif.c" /* yacc.c:1646  */
+#line 3953 "edif.c" /* yacc.c:1646  */
     break;
 
   case 881:
-#line 2144 "edif.y" /* yacc.c:1646  */
+#line 2140 "edif.y" /* yacc.c:1646  */
     { (yyval.ps) = new_str_pair((yyvsp[-2].s),(yyvsp[-1].s)); }
-#line 3963 "edif.c" /* yacc.c:1646  */
+#line 3959 "edif.c" /* yacc.c:1646  */
     break;
 
   case 882:
-#line 2147 "edif.y" /* yacc.c:1646  */
+#line 2143 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3969 "edif.c" /* yacc.c:1646  */
+#line 3965 "edif.c" /* yacc.c:1646  */
     break;
 
   case 883:
-#line 2148 "edif.y" /* yacc.c:1646  */
+#line 2144 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3975 "edif.c" /* yacc.c:1646  */
+#line 3971 "edif.c" /* yacc.c:1646  */
     break;
 
   case 884:
-#line 2151 "edif.y" /* yacc.c:1646  */
+#line 2147 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3981 "edif.c" /* yacc.c:1646  */
+#line 3977 "edif.c" /* yacc.c:1646  */
     break;
 
   case 885:
-#line 2152 "edif.y" /* yacc.c:1646  */
+#line 2148 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=NULL; }
-#line 3987 "edif.c" /* yacc.c:1646  */
+#line 3983 "edif.c" /* yacc.c:1646  */
     break;
 
   case 889:
-#line 2162 "edif.y" /* yacc.c:1646  */
+#line 2158 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3993 "edif.c" /* yacc.c:1646  */
+#line 3989 "edif.c" /* yacc.c:1646  */
     break;
 
   case 891:
-#line 2168 "edif.y" /* yacc.c:1646  */
+#line 2164 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 3999 "edif.c" /* yacc.c:1646  */
+#line 3995 "edif.c" /* yacc.c:1646  */
     break;
 
   case 892:
-#line 2169 "edif.y" /* yacc.c:1646  */
+#line 2165 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-2].s)); free((yyvsp[-1].s)); }
-#line 4005 "edif.c" /* yacc.c:1646  */
+#line 4001 "edif.c" /* yacc.c:1646  */
     break;
 
   case 893:
-#line 2172 "edif.y" /* yacc.c:1646  */
+#line 2168 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-2].s)); free((yyvsp[-1].s)); }
-#line 4011 "edif.c" /* yacc.c:1646  */
+#line 4007 "edif.c" /* yacc.c:1646  */
     break;
 
   case 894:
-#line 2175 "edif.y" /* yacc.c:1646  */
+#line 2171 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-2].s)); free((yyvsp[-1].s)); }
-#line 4017 "edif.c" /* yacc.c:1646  */
+#line 4013 "edif.c" /* yacc.c:1646  */
     break;
 
   case 896:
-#line 2181 "edif.y" /* yacc.c:1646  */
+#line 2177 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4023 "edif.c" /* yacc.c:1646  */
+#line 4019 "edif.c" /* yacc.c:1646  */
     break;
 
   case 898:
-#line 2183 "edif.y" /* yacc.c:1646  */
+#line 2179 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4029 "edif.c" /* yacc.c:1646  */
+#line 4025 "edif.c" /* yacc.c:1646  */
     break;
 
   case 903:
-#line 2194 "edif.y" /* yacc.c:1646  */
+#line 2190 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 4035 "edif.c" /* yacc.c:1646  */
+#line 4031 "edif.c" /* yacc.c:1646  */
     break;
 
   case 935:
-#line 2258 "edif.y" /* yacc.c:1646  */
+#line 2254 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 4041 "edif.c" /* yacc.c:1646  */
+#line 4037 "edif.c" /* yacc.c:1646  */
     break;
 
   case 943:
-#line 2274 "edif.y" /* yacc.c:1646  */
+#line 2270 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4047 "edif.c" /* yacc.c:1646  */
+#line 4043 "edif.c" /* yacc.c:1646  */
     break;
 
   case 946:
-#line 2279 "edif.y" /* yacc.c:1646  */
+#line 2275 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4053 "edif.c" /* yacc.c:1646  */
+#line 4049 "edif.c" /* yacc.c:1646  */
     break;
 
   case 973:
-#line 2324 "edif.y" /* yacc.c:1646  */
+#line 2320 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 4059 "edif.c" /* yacc.c:1646  */
+#line 4055 "edif.c" /* yacc.c:1646  */
     break;
 
   case 987:
-#line 2346 "edif.y" /* yacc.c:1646  */
+#line 2342 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-1].s)); }
-#line 4065 "edif.c" /* yacc.c:1646  */
+#line 4061 "edif.c" /* yacc.c:1646  */
     break;
 
   case 994:
-#line 2362 "edif.y" /* yacc.c:1646  */
+#line 2358 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-6].s)); free((yyvsp[-5].s)); free((yyvsp[-4].s)); free((yyvsp[-3].s)); free((yyvsp[-2].s)); free((yyvsp[-1].s)); }
-#line 4071 "edif.c" /* yacc.c:1646  */
+#line 4067 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1054:
-#line 2469 "edif.y" /* yacc.c:1646  */
+#line 2465 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4077 "edif.c" /* yacc.c:1646  */
+#line 4073 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1055:
-#line 2470 "edif.y" /* yacc.c:1646  */
+#line 2466 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4083 "edif.c" /* yacc.c:1646  */
+#line 4079 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1056:
-#line 2471 "edif.y" /* yacc.c:1646  */
+#line 2467 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4089 "edif.c" /* yacc.c:1646  */
+#line 4085 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1057:
-#line 2472 "edif.y" /* yacc.c:1646  */
+#line 2468 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4095 "edif.c" /* yacc.c:1646  */
+#line 4091 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1059:
-#line 2476 "edif.y" /* yacc.c:1646  */
+#line 2472 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 4101 "edif.c" /* yacc.c:1646  */
+#line 4097 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1061:
-#line 2480 "edif.y" /* yacc.c:1646  */
+#line 2476 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4107 "edif.c" /* yacc.c:1646  */
+#line 4103 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1063:
-#line 2484 "edif.y" /* yacc.c:1646  */
+#line 2480 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[-1].s)); }
-#line 4113 "edif.c" /* yacc.c:1646  */
+#line 4109 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1085:
-#line 2520 "edif.y" /* yacc.c:1646  */
+#line 2516 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 4119 "edif.c" /* yacc.c:1646  */
+#line 4115 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1086:
-#line 2523 "edif.y" /* yacc.c:1646  */
+#line 2519 "edif.y" /* yacc.c:1646  */
     { free((yyvsp[0].s)); }
-#line 4125 "edif.c" /* yacc.c:1646  */
+#line 4121 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1107:
-#line 2564 "edif.y" /* yacc.c:1646  */
+#line 2560 "edif.y" /* yacc.c:1646  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 4131 "edif.c" /* yacc.c:1646  */
+#line 4127 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1109:
-#line 2566 "edif.y" /* yacc.c:1646  */
+#line 2562 "edif.y" /* yacc.c:1646  */
     { pair_list_free((yyvsp[0].pl)); }
-#line 4137 "edif.c" /* yacc.c:1646  */
+#line 4133 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1126:
-#line 2593 "edif.y" /* yacc.c:1646  */
+#line 2589 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 4143 "edif.c" /* yacc.c:1646  */
+#line 4139 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1127:
-#line 2596 "edif.y" /* yacc.c:1646  */
+#line 2592 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 4149 "edif.c" /* yacc.c:1646  */
+#line 4145 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1128:
-#line 2599 "edif.y" /* yacc.c:1646  */
+#line 2595 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 4155 "edif.c" /* yacc.c:1646  */
+#line 4151 "edif.c" /* yacc.c:1646  */
     break;
 
   case 1129:
-#line 2602 "edif.y" /* yacc.c:1646  */
+#line 2598 "edif.y" /* yacc.c:1646  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 4161 "edif.c" /* yacc.c:1646  */
+#line 4157 "edif.c" /* yacc.c:1646  */
     break;
 
 
-#line 4165 "edif.c" /* yacc.c:1646  */
+#line 4161 "edif.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -4389,7 +4385,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 2605 "edif.y" /* yacc.c:1906  */
+#line 2601 "edif.y" /* yacc.c:1906  */
 
 /*
  *	xmalloc:

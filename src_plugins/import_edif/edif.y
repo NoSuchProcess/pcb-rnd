@@ -30,15 +30,11 @@
 #include "board.h"
 #include "data.h"
 #include "error.h"
+#include "netlist2.h"
 #include "plugins.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "safe_fs.h"
-
-/* from mymem.h, not include because of the malloc junk */
-pcb_lib_menu_t *pcb_lib_menu_new(pcb_lib_t *, int *idx);
-pcb_lib_entry_t *pcb_lib_entry_new(pcb_lib_menu_t *);
-
 
 /*
  *	Local definitions.
@@ -106,8 +102,7 @@ pcb_lib_entry_t *pcb_lib_entry_new(pcb_lib_menu_t *);
      str_pair* node;
      char* buf;
      char* p;
-     pcb_lib_entry_t *entry;
-     pcb_lib_menu_t *menu = pcb_lib_menu_new(&PCB->NetlistLib[PCB_NETLIST_INPUT], NULL);
+     pcb_net_t *net;
 
      if ( !name->str1 )
      {
@@ -118,7 +113,7 @@ pcb_lib_entry_t *pcb_lib_entry_new(pcb_lib_menu_t *);
 	 pair_list_free(nodes);
 	 return;
      }
-     menu->Name = pcb_strdup (name->str1);
+     net = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_INPUT], name->str1, 1);
      free(name->str1);
      /* if renamed str2 also exists and must be freed */
      if ( name->str2 )  free(name->str2);
@@ -181,8 +176,9 @@ pcb_lib_entry_t *pcb_lib_entry_new(pcb_lib_menu_t *);
 	 /* free the strings */
 	 free(node->str1);
 	 free(node->str2);
-	 entry = pcb_lib_entry_new(menu);
-	 entry->ListEntry = pcb_strdup(buf);
+
+	 pcb_net_term_get_by_pinname(net, buf, 1);
+
 	 done_node = node;
 	 node = node->next;
 	 free(done_node);
