@@ -122,10 +122,6 @@ static int proc_short(pcb_any_obj_t *term, pcb_net_t *Snet, pcb_net_t *Tnet)
 	pcb_find_t fctx;
 	shctx_t shctx;
 
-TODO("remove this check from here, handled at the caller");
-	if (!conf_mincut.plugins.mincut.enable)
-		return bad_gr;
-
 	pcb_obj_center(term, &x, &y);
 	debprintf("short on terminal\n");
 
