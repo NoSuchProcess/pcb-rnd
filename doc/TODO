@@ -77,8 +77,6 @@
 	- FEATURE: rat line draw: [report: Igor2]
 		- be able to rename nets
 		- be able to convert a 'found' to a net
-	- BUG: autorouter broke on polygons: bug_files/ara.lht, {a r a}, bisect; broke before r14572 [report: Igor2]
-	- CLEANUP: pcb_term_find_name() do we really need the 'same' arg?
 	- CLEANUP: rat object rewrite: make rat lines remember their anchor object by ID instead of group1/group2
 		- CLEANUP: When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Move this in core., iterate over rats to find the ones to deal with [report: Ade]
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
@@ -87,6 +85,7 @@
 - BUG: bug_files/proto1.* padstack prototype selection bug priv mail 20 Feb [report: Alain]
 
 2. For later releases ===============================================================================
+- BUG: autorouter broke on polygons: bug_files/ara.lht, {a r a}, bisect; broke before r14572 [report: Igor2]
 - FEATURE/BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
 - FEATURE: Ade's new subc construction with convert: need a config setting that results in creating the refdes text but not adding the refdes attribute as empty [report: Ade]
 - FEATURE: view list: import sch. shouldn't select elements to be removed but put them on a drc list
