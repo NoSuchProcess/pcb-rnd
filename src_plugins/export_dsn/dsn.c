@@ -29,7 +29,7 @@
  */
 
 /*
-This program exports specctra .dsn files from geda .pcb files.
+This program exports specctra .dsn files.
 By Josh Jordan and Dan McMahill, modified from bom.c
   -- Updated to use Coord and other fixes by Jared Casper 16 Sep 2011
 */
@@ -463,8 +463,7 @@ static void print_network(FILE * fp)
 		fprintf(fp, "    )\n");
 	}
 
-TODO("rename this from geda to pcb_rnd");
-	fprintf(fp, "    (class geda_default");
+	fprintf(fp, "    (class pcb_rnd_default");
 	for(e = htsp_first(&PCB->netlist[PCB_NETLIST_EDITED]); e != NULL; e = htsp_next(&PCB->netlist[PCB_NETLIST_EDITED], e)) {
 		pcb_net_t *net = e->value;
 		fprintf(fp, " \"%s\"", net->name);
