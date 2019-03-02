@@ -33,6 +33,7 @@
 #include "hid_inlines.h"
 #include "undo.h"
 #include "rtree.h"
+#include "search.h"
 
 #include "obj_line_draw.h"
 
@@ -148,15 +149,186 @@ pcb_bool pcb_rats_destroy(pcb_bool selected)
 
 /*** utility ***/
 
+static pcb_bool rat_meets_line(pcb_line_t *line, pcb_coord_t x, pcb_coord_t y, pcb_layergrp_id_t gid)
+{
+	if (gid >= 0) {
+		pcb_layer_t *ly = pcb_layer_get_real(line->parent.layer);
+		if ((ly == NULL) || (ly->meta.real.grp != gid))
+			return 0;
+	}
+	if ((line->Point1.X == x) && (line->Point1.Y == y)) return pcb_true;
+	if ((line->Point2.X == x) && (line->Point2.Y == y)) return pcb_true;
+	return pcb_is_point_on_line(x, y, 1, line);
+}
+
+
+static pcb_bool rat_meets_arc(pcb_arc_t *arc, pcb_coord_t x, pcb_coord_t y, pcb_layergrp_id_t gid)
+{
+	if (gid >= 0) {
+		pcb_layer_t *ly = pcb_layer_get_real(arc->parent.layer);
+		if ((ly == NULL) || (ly->meta.real.grp != gid))
+			return 0;
+	}
+	return pcb_is_point_on_arc(x, y, 1, arc);
+}
+
+
+static pcb_bool rat_meets_poly(pcb_poly_t *poly, pcb_coord_t x, pcb_coord_t y, pcb_layergrp_id_t gid)
+{
+	if (gid >= 0) {
+		pcb_layer_t *ly = pcb_layer_get_real(poly->parent.layer);
+		if ((ly == NULL) || (ly->meta.real.grp != gid))
+			return 0;
+	}
+	return pcb_poly_is_point_in_p(x, y, 1, poly);
+}
+
+static pcb_bool rat_meets_pstk(pcb_data_t *data, pcb_pstk_t *pstk, pcb_coord_t x, pcb_coord_t y, pcb_layergrp_id_t gid)
+{
+	pcb_layergrp_t *g = pcb_get_layergrp(PCB, gid);
+	pcb_layer_t *ly;
+	if (g == NULL)
+		return pcb_false;
+
+	ly = pcb_get_layer(data, g->lid[0]);
+	if (ly != NULL)
+		ly = pcb_layer_get_real(ly);
+	if (ly == NULL)
+		return pcb_false;
+
+	if ((pstk->x == x) && (pstk->y == y))
+		return pcb_true;
+
+	return pcb_is_point_in_pstk(x, y, 1, pstk, ly);
+}
+
+
+/* return the first object (the type that is most likely an endpoint of a rat)
+   on a point on a layer */
+static pcb_any_obj_t *find_obj_on_layer(pcb_coord_t x, pcb_coord_t y, pcb_layer_t *l)
+{
+	pcb_rtree_it_t it;
+	pcb_box_t *n;
+	pcb_rtree_box_t sb;
+
+	sb.x1 = x; sb.x2 = x+1;
+	sb.y1 = y; sb.y2 = y+1;
+
+	if (l->line_tree != NULL) {
+		for(n = pcb_rtree_first(&it, l->line_tree, &sb); n != NULL; n = pcb_rtree_next(&it)) {
+			if (rat_meets_line((pcb_line_t *)n, x, y, -1)) {
+				pcb_r_end(&it);
+				return (pcb_any_obj_t *)n;
+			}
+		}
+		pcb_r_end(&it);
+	}
+
+	if (l->arc_tree != NULL) {
+		for(n = pcb_rtree_first(&it, l->arc_tree, &sb); n != NULL; n = pcb_rtree_next(&it)) {
+			if (rat_meets_arc((pcb_arc_t *)n, x, y, -1)) {
+				pcb_r_end(&it);
+				return (pcb_any_obj_t *)n;
+			}
+		}
+		pcb_r_end(&it);
+	}
+
+	if (l->polygon_tree != NULL) {
+		for(n = pcb_rtree_first(&it, l->polygon_tree, &sb); n != NULL; n = pcb_rtree_next(&it)) {
+			if (rat_meets_poly((pcb_poly_t *)n, x, y, -1)) {
+				pcb_r_end(&it);
+				return (pcb_any_obj_t *)n;
+			}
+		}
+		pcb_r_end(&it);
+	}
+
+TODO("find through text");
+#if 0
+	if (l->text_tree != NULL) {
+		for(n = pcb_rtree_first(&it, l->text_tree, &sb); n != NULL; n = pcb_rtree_next(&it)) {
+			if (rat_meets_text((pcb_text_t *)n, x, y, -1)) {
+				pcb_r_end(&it);
+				return (pcb_any_obj_t *)n;
+			}
+		}
+
+		pcb_r_end(&it);
+	}
+#endif
+	return NULL;
+}
+
+/* return the first object (the type that is most likely an endpoint of a rat)
+   on a point on a layer group */
+static pcb_any_obj_t *find_obj_on_grp(pcb_data_t *data, pcb_coord_t x, pcb_coord_t y, pcb_layergrp_id_t gid)
+{
+	int i;
+	pcb_rtree_box_t sb;
+	pcb_rtree_it_t it;
+	pcb_box_t *n;
+	pcb_layergrp_t *g = pcb_get_layergrp(PCB, gid);
+
+	if (g == NULL)
+		return NULL;
+
+	sb.x1 = x; sb.x2 = x+1;
+	sb.y1 = y; sb.y2 = y+1;
+
+	if (PCB->Data->padstack_tree != NULL) {
+		for(n = pcb_rtree_first(&it, data->padstack_tree, &sb); n != NULL; n = pcb_rtree_next(&it)) {
+			if (rat_meets_pstk(data, (pcb_pstk_t *)n, x, y, gid)) {
+				pcb_r_end(&it);
+				return (pcb_any_obj_t *)n;
+			}
+		}
+		pcb_r_end(&it);
+	}
+
+	for(i = 0; i < g->len; i++) {
+		pcb_any_obj_t *o = find_obj_on_layer(x, y, &data->Layer[g->lid[i]]);
+		if (o != NULL)
+			return o;
+	}
+	return NULL;
+}
+
 pcb_any_obj_t *pcb_rat_anchor_guess(pcb_rat_t *rat, int end, pcb_bool update)
 {
+	pcb_data_t *data = rat->parent.data;
 	pcb_idpath_t **path = &rat->anchor[!!end];
+	pcb_coord_t x = (end == 0) ? rat->Point1.X : rat->Point2.X;
+	pcb_coord_t y = (end == 0) ? rat->Point1.Y : rat->Point2.Y;
+	pcb_layergrp_id_t gid = (end == 0) ? rat->group1 : rat->group2;
 	pcb_any_obj_t *ao;
 
-	TODO("check if anchor is where the rat line ends");
-	TODO("if not, check what's at the end and update");
+	/* (relatively) cheap thest if existing anchor is valid */
+	if (*path != NULL) {
+		ao = pcb_idpath2obj(data, *path);
+		switch(ao->type) {
+			case PCB_OBJ_LINE: if (rat_meets_line((pcb_line_t *)ao, x, y, gid)) return ao; break;
+			case PCB_OBJ_ARC:  if (rat_meets_arc((pcb_arc_t *)ao, x, y, gid)) return ao; break;
+			case PCB_OBJ_POLY: if (rat_meets_poly((pcb_poly_t *)ao, x, y, gid)) return ao; break;
+			case PCB_OBJ_PSTK: if (rat_meets_pstk(data, (pcb_pstk_t *)ao, x, y, gid)) return ao; break;
+			TODO("find through text")
+			default: break;
+		}
+	}
 
-	return NULL;
+	/* if we got here, there was no anchor object set or it was outdated - find
+	   the currently valid object by endpoint */
+	ao = find_obj_on_grp(data, x, y, gid);
+	if (update) {
+		if (*path != NULL)
+			pcb_idpath_destroy(*path);
+		if (ao == NULL)
+			*path = NULL;
+		else
+			*path = pcb_obj2idpath(ao);
+	}
+
+	return ao;
 }
 
 void pcb_rat_all_anchor_guess(pcb_data_t *data)
