@@ -486,25 +486,21 @@ static double xy_to_net_length(pcb_coord_t x, pcb_coord_t y, int *found)
 
 static int report_all_net_lengths(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	int ni, found;
+	int found;
+	htsp_entry_t *e;
 
-	for (ni = 0; ni < PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN; ni++) {
-		const char *netname = PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].Name + 2;
-		const char *list_entry = PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].Entry[0].ListEntry;
-		char *ename;
-		char *pname;
+	for(e = htsp_first(&PCB->netlist[PCB_NETLIST_EDITED]); e != NULL; e = htsp_next(&PCB->netlist[PCB_NETLIST_EDITED], e)) {
+		pcb_net_t *net = e->value;
+		pcb_net_term_t *t;
 		pcb_any_obj_t *term;
 
-		ename = pcb_strdup(list_entry);
-		pname = strchr(ename, '-');
-		if (!pname) {
-			free(ename);
-			continue;
+		/* find the first terminal object referenced from the net that actually exist */
+		for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
+			term = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, t->refdes, t->term, 0, NULL, NULL);
+			if (term != NULL)
+				break;
 		}
-		*pname++ = 0;
 
-		term = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, ename, pname, 0, NULL, NULL);
-		free(ename);
 		if (term != NULL) {
 			char buf[50];
 			const char *units_name;
@@ -521,7 +517,7 @@ static int report_all_net_lengths(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			length = xy_to_net_length(x, y, &found);
 
 			pcb_snprintf(buf, sizeof(buf), "%$m*", units_name, length);
-			pcb_message(PCB_MSG_INFO, "Net %s length %s\n", netname, buf);
+			pcb_message(PCB_MSG_INFO, "Net %s length %s\n", net->name, buf);
 		}
 	}
 
@@ -540,25 +536,21 @@ static const char *net_name_found(pcb_board_t *pcb)
 			continue;
 
 		for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
-			char *netn;
-			int ni, nei;
+			htsp_entry_t *e;
 
 			if (o->term == NULL)
 				continue;
 			if (!PCB_FLAG_TEST(PCB_FLAG_FOUND, o))
 				continue;
 
-			netn = pcb_concat(subc->refdes, "-", o->term, NULL);
-
-			for (ni = 0; ni < PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN; ni++) {
-				for (nei = 0; nei < PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].EntryN; nei++) {
-					if (strcmp(PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].Entry[nei].ListEntry, netn) == 0) {
-						free(netn);
-						return PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].Name + 2;
-					}
-				}
+TODO("netlist: core probably has a _get() function for this");
+			for(e = htsp_first(&PCB->netlist[PCB_NETLIST_EDITED]); e != NULL; e = htsp_next(&PCB->netlist[PCB_NETLIST_EDITED], e)) {
+				pcb_net_term_t *t;
+				pcb_net_t *net = e->value;
+				for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t))
+					if ((strcmp(subc->refdes, t->refdes) == 0) && (strcmp(o->term, t->term) == 0))
+						return net->name;
 			}
-			free(netn);
 		}
 	}
 	PCB_END_LOOP;
