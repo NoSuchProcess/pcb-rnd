@@ -40,6 +40,7 @@
 #include "paths.h"
 #include "safe_fs.h"
 #include "macro.h"
+#include "netlist2.h"
 
 static pcb_plug_import_t import_netlist;
 
@@ -56,8 +57,7 @@ static int ReadNetlist(const char *filename)
 	char inputline[PCB_MAX_NETLIST_LINE_LENGTH + 1];
 	char temp[PCB_MAX_NETLIST_LINE_LENGTH + 1];
 	FILE *fp;
-	pcb_lib_menu_t *menu = NULL;
-	pcb_lib_entry_t *entry;
+	pcb_net_t *net = NULL;
 	int i, j, lines, kind;
 	pcb_bool continued;
 	int used_popen = 0;
@@ -130,20 +130,16 @@ static int ReadNetlist(const char *filename)
 			while (inputline[i] != '\0' && BLANK(inputline[i]))
 				i++;
 			if (kind == 0) {
-				menu = pcb_lib_menu_new(&PCB->NetlistLib[PCB_NETLIST_INPUT], NULL);
-				menu->Name = pcb_strdup(temp);
-				menu->flag = 1;
+				net = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_INPUT], temp, 1);
 				kind++;
 			}
 			else {
 				if (kind == 1 && strchr(temp, '-') == NULL) {
 					kind++;
-					menu->Style = pcb_strdup(temp);
+					pcb_attribute_put(&net->Attributes, "style", temp);
 				}
 				else {
-					entry = pcb_lib_entry_new(menu);
-					entry->ListEntry = pcb_strdup(temp);
-					entry->ListEntry_dontfree = 0;
+					pcb_net_term_get_by_pinname(net, temp, 1);
 				}
 			}
 		}
