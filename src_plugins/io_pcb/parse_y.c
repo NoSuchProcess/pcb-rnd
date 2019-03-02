@@ -2234,7 +2234,7 @@ yyreduce:
 #line 576 "parse_y.y" /* yacc.c:1646  */
     {
 				pcb_rat_new(yyData, -1, NU ((yyvsp[-7].measure)), NU ((yyvsp[-6].measure)), NU ((yyvsp[-4].measure)), NU ((yyvsp[-3].measure)), (yyvsp[-5].integer), (yyvsp[-2].integer),
-					conf_core.appearance.rat_thickness, (yyvsp[-1].flagtype));
+					conf_core.appearance.rat_thickness, (yyvsp[-1].flagtype), NULL, NULL);
 			}
 #line 2240 "parse_y.c" /* yacc.c:1646  */
     break;
@@ -2243,7 +2243,7 @@ yyreduce:
 #line 581 "parse_y.y" /* yacc.c:1646  */
     {
 				pcb_rat_new(yyData, -1, OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), (yyvsp[-5].integer), (yyvsp[-2].integer),
-					conf_core.appearance.rat_thickness, pcb_flag_old((yyvsp[-1].integer)));
+					conf_core.appearance.rat_thickness, pcb_flag_old((yyvsp[-1].integer)), NULL, NULL);
 			}
 #line 2249 "parse_y.c" /* yacc.c:1646  */
     break;

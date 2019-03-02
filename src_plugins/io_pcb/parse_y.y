@@ -575,12 +575,12 @@ rats
 		: T_RAT '[' measure measure INTEGER measure measure INTEGER flags ']'
 			{
 				pcb_rat_new(yyData, -1, NU ($3), NU ($4), NU ($6), NU ($7), $5, $8,
-					conf_core.appearance.rat_thickness, $9);
+					conf_core.appearance.rat_thickness, $9, NULL, NULL);
 			}
 		| T_RAT '(' measure measure INTEGER measure measure INTEGER INTEGER ')'
 			{
 				pcb_rat_new(yyData, -1, OU ($3), OU ($4), OU ($6), OU ($7), $5, $8,
-					conf_core.appearance.rat_thickness, pcb_flag_old($9));
+					conf_core.appearance.rat_thickness, pcb_flag_old($9), NULL, NULL);
 			}
 		;
 

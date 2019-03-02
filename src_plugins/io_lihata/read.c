@@ -651,7 +651,7 @@ static int parse_rat(pcb_data_t *dt, lht_node_t *obj)
 
 
 	new_rat = pcb_rat_new(dt, rat.ID, rat.Point1.X, rat.Point1.Y, rat.Point2.X, rat.Point2.Y, rat.group1, rat.group2,
-		conf_core.appearance.rat_thickness, rat.Flags);
+		conf_core.appearance.rat_thickness, rat.Flags, NULL, NULL);
 
 	parse_attributes(&new_rat->Attributes, lht_dom_hash_get(obj, "attributes"));
 
@@ -2235,6 +2235,8 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	vtp0_init(&post_ids);
 	vtp0_init(&post_thermal_old);
 	vtp0_init(&post_thermal_heavy);
+
+	pcb_rat_all_anchor_guess(pcb->Data);
 
 	memset(&pcb->LayerGroups, 0, sizeof(pcb->LayerGroups));
 

@@ -614,7 +614,8 @@ pcb_cardinal_t pcb_net_map_subnets(pcb_short_ctx_t *sctx, pcb_rat_accuracy_t acc
 		/* best connection is 'best' between from 'undone' network bestu; draw the rat */
 		line = pcb_rat_new(sctx->pcb->Data, -1,
 			best->o1x, best->o1y, best->o2x, best->o2y, best->o1g, best->o2g,
-			conf_core.appearance.rat_thickness, pcb_no_flags());
+			conf_core.appearance.rat_thickness, pcb_no_flags(),
+			best->o1, best->o2);
 		if (line != NULL) {
 			if (best->dist2 == 0)
 				PCB_FLAG_SET(PCB_FLAG_VIA, line);
@@ -860,7 +861,7 @@ static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, pcb_coord_t x1, pcb_c
 		target_net = net2;
 
 	/* create the rat and add terminals in the target_net */
-	res = pcb_rat_new(pcb->Data, -1, x1, y1, x2, y2, group1, group2, conf_core.appearance.rat_thickness, pcb_no_flags());
+	res = pcb_rat_new(pcb->Data, -1, x1, y1, x2, y2, group1, group2, conf_core.appearance.rat_thickness, pcb_no_flags(), o1, o2);
 
 	old_len = pcb_termlist_length(&target_net->conns);
 	pcb_net_term_get(target_net, sc1->refdes, o1->term, 1);

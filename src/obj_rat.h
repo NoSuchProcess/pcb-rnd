@@ -34,11 +34,13 @@
 #include <genlist/gendlist.h>
 #include "obj_common.h"
 #include "layer_grp.h"
+#include "idpath.h"
 
 struct pcb_rat_line_s {          /* a rat-line */
 	PCB_ANYLINEFIELDS;
 	pcb_layergrp_id_t group1, group2; /* the layer group each point is on */
-	gdl_elem_t link;               /* an arc is in a list on a design */
+	pcb_idpath_t *anchor[2];       /* endpoint object that were originally connected */
+	gdl_elem_t link;               /* a rat line is in a list on a design */
 };
 
 
@@ -49,8 +51,16 @@ void pcb_rat_reg(pcb_data_t *data, pcb_rat_t *rat);
 void pcb_rat_unreg(pcb_rat_t *rat);
 
 /* if id is <= 0, allocate a new id */
-pcb_rat_t *pcb_rat_new(pcb_data_t *Data, long int id, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_layergrp_id_t group1, pcb_layergrp_id_t group2, pcb_coord_t Thickness, pcb_flag_t Flags);
+pcb_rat_t *pcb_rat_new(pcb_data_t *Data, long int id, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_layergrp_id_t group1, pcb_layergrp_id_t group2, pcb_coord_t Thickness, pcb_flag_t Flags, pcb_any_obj_t *anchor1, pcb_any_obj_t *anchor2);
 pcb_bool pcb_rats_destroy(pcb_bool selected);
+
+/* Look up the anchor object (object the rat is connected to) for end 0 or
+   end 1. If update is true, also update rat's field */
+pcb_any_obj_t *pcb_rat_anchor_guess(pcb_rat_t *rat, int end, pcb_bool update);
+
+/* Call pcb_rat_anchor_guess() on all rats of data, with update=true */
+void pcb_rat_all_anchor_guess(pcb_data_t *data);
+
 
 #define PCB_RAT_LOOP(top) do {                                          \
   pcb_rat_t *line;                                                    \

@@ -45,6 +45,7 @@
 #include "parser.h"
 #include "board.h"
 #include "write.h"
+#include "obj_rat.h"
 
 static const char *hyp_cookie = "hyp importer";
 
@@ -148,6 +149,7 @@ int io_hyp_read_pcb(pcb_plug_io_t * ctx, pcb_board_t * pcb, const char *Filename
 	int res = hyp_parse(pcb->Data, Filename, 0);
 	pcb_layer_auto_fixup(pcb);
 	pcb_layer_colors_from_conf(pcb, 1);
+	pcb_rat_all_anchor_guess(pcb->Data);
 	return res;
 }
 

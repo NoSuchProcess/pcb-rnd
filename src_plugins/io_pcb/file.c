@@ -1157,4 +1157,5 @@ void io_pcb_postproc_board(pcb_board_t *pcb)
 		pcb_subc_rebind(pcb, sc);
 
 	pcb_layer_colors_from_conf(pcb, 1);
+	pcb_rat_all_anchor_guess(pcb->Data);
 }

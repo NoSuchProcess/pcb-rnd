@@ -85,12 +85,14 @@ pcb_rat_t *pcb_rat_alloc(pcb_data_t *data)
 void pcb_rat_free(pcb_rat_t *rat)
 {
 	pcb_rat_unreg(rat);
+	free(rat->anchor[0]);
+	free(rat->anchor[1]);
 	free(rat);
 }
 
 /*** utility ***/
 /* creates a new rat-line */
-pcb_rat_t *pcb_rat_new(pcb_data_t *Data, long int id, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_layergrp_id_t group1, pcb_layergrp_id_t group2, pcb_coord_t Thickness, pcb_flag_t Flags)
+pcb_rat_t *pcb_rat_new(pcb_data_t *Data, long int id, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_layergrp_id_t group1, pcb_layergrp_id_t group2, pcb_coord_t Thickness, pcb_flag_t Flags, pcb_any_obj_t *anchor1, pcb_any_obj_t *anchor2)
 {
 	pcb_rat_t *Line;
 
@@ -116,6 +118,12 @@ pcb_rat_t *pcb_rat_new(pcb_data_t *Data, long int id, pcb_coord_t X1, pcb_coord_
 	if (!Data->rat_tree)
 		Data->rat_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(Data->rat_tree, &Line->BoundingBox);
+
+	if (anchor1 != NULL)
+		Line->anchor[0] = pcb_obj2idpath(anchor1);
+	if (anchor2 != NULL)
+		Line->anchor[1] = pcb_obj2idpath(anchor2);
+
 	return Line;
 }
 
@@ -142,14 +150,42 @@ pcb_bool pcb_rats_destroy(pcb_bool selected)
 	return changed;
 }
 
+/*** utility ***/
+
+pcb_any_obj_t *pcb_rat_anchor_guess(pcb_rat_t *rat, int end, pcb_bool update)
+{
+	pcb_idpath_t **path = &rat->anchor[!!end];
+	pcb_any_obj_t *ao;
+
+	TODO("check if anchor is where the rat line ends");
+	TODO("if not, check what's at the end and update");
+
+	return NULL;
+}
+
+void pcb_rat_all_anchor_guess(pcb_data_t *data)
+{
+	pcb_rat_t *rat;
+	gdl_iterator_t it;
+	ratlist_foreach(&data->Rat, &it, rat) {
+		pcb_rat_anchor_guess(rat, 0, pcb_true);
+		pcb_rat_anchor_guess(rat, 1, pcb_true);
+	}
+}
+
 
 /*** ops ***/
 /* copies a rat-line to paste buffer */
 void *pcb_ratop_add_to_buffer(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 {
-	return (pcb_rat_new(ctx->buffer.dst, -1, Rat->Point1.X, Rat->Point1.Y,
+	pcb_rat_t *res = pcb_rat_new(ctx->buffer.dst, -1, Rat->Point1.X, Rat->Point1.Y,
 		Rat->Point2.X, Rat->Point2.Y, Rat->group1, Rat->group2, Rat->Thickness,
-		pcb_flag_mask(Rat->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg)));
+		pcb_flag_mask(Rat->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg),
+		NULL, NULL);
+
+	res->anchor[0] = pcb_idpath_dup(Rat->anchor[0]);
+	res->anchor[1] = pcb_idpath_dup(Rat->anchor[1]);
+	return res;
 }
 
 /* moves a rat-line between board and buffer */

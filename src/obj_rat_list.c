@@ -25,7 +25,9 @@
  */
 
 #include "config.h"
+
 #include "layer_grp.h"
+#include "obj_rat.h"
 
 #define TDL_DONT_UNDEF
 #include "obj_rat_list.h"
