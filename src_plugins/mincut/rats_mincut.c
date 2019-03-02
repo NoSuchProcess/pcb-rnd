@@ -324,64 +324,6 @@ TODO("remove this check from here, handled at the caller");
 	return bad_gr;
 }
 
-typedef struct pinpad_s pinpad_t;
-struct pinpad_s {
-	int ignore;										/* if 1, changed our mind, do not check */
-	pcb_any_obj_t *term;
-	const char *with_net;					/* the name of the net this pin/pad is in short with */
-	pinpad_t *next;
-};
-
-static pinpad_t *shorts = NULL;
-
-void rat_found_short(pcb_any_obj_t *term, const char *with_net)
-{
-	pinpad_t *pp;
-	pp = calloc(sizeof(pinpad_t), 1);
-	pp->term = term;
-	pp->with_net = with_net;
-	pp->next = shorts;
-	shorts = pp;
-}
-
-void rat_proc_shorts(void)
-{
-	pinpad_t *n, *i, *next;
-	int bad_gr = 0;
-	for (n = shorts; n != NULL; n = next) {
-		next = n->next;
-
-		PCB_FLAG_SET(PCB_FLAG_WARN, n->term);
-
-		/* run only if net is not ignored */
-		if ((!bad_gr) && (proc_short(n->term, n->ignore, NULL, NULL) != 0)) {
-			fprintf(stderr, "Can't run mincut :(\n");
-			bad_gr = 1;
-		}
-
-		if (!bad_gr) {
-TODO("netlist: rewrite this TODO62")
-#if 0
-			/* check if the rest of the shorts affect the same nets - ignore them if so */
-			for (i = n->next; i != NULL; i = i->next) {
-				pcb_lib_menu_t *spn, *spi;
-				spn = n->term->ratconn;
-				spi = i->term->ratconn;
-
-				if ((spn == NULL) || (spi == NULL))
-					continue;
-
-				/* can compare by pointer - names are never pcb_strdup()'d */
-				if ((&spn->Name[2] == i->with_net) || (&spi->Name[2] == n->with_net))
-					i->ignore = 1;
-			}
-#endif
-		}
-		free(n);
-	}
-	shorts = NULL;
-}
-
 static void pcb_mincut_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	int *handled;
@@ -425,12 +367,9 @@ void pplg_uninit_mincut(void)
 	pcb_event_unbind_allcookie(pcb_mincut_cookie);
 }
 
-#include "stub_mincut.h"
 int pplg_init_mincut(void)
 {
 	PCB_API_CHK_VER;
-	pcb_stub_rat_found_short = rat_found_short;
-	pcb_stub_rat_proc_shorts = rat_proc_shorts;
 
 	pcb_event_bind(PCB_EVENT_NET_INDICATE_SHORT, pcb_mincut_ev, NULL, pcb_mincut_cookie);
 
