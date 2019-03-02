@@ -55,6 +55,7 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 #include "compat_misc.h"
 #include "layer.h"
 #include "safe_fs.h"
+#include "netlist2.h"
 
 #include "hid.h"
 #include "hid_draw_helpers.h"
@@ -123,20 +124,19 @@ static void print_structure(FILE * fp)
 
 	fprintf(fp, "  (structure\n");
 	for (group = 0; group < pcb_max_group(PCB); group++) {
-		int ni;
+		htsp_entry_t *e;
 		pcb_layergrp_t *g = &PCB->LayerGroups.grp[group];
 		char *layeropts = pcb_strdup("(type signal)");
 		
 		if (!(g->ltype & PCB_LYT_COPPER))
 			continue;
 
-TODO(": revise this; use attributes instead")
+TODO("revise this; use attributes instead")
 		/* see if group has same name as a net and make it a power layer */
 		/* loop thru all nets */
-		for(ni = 0; ni < PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN; ni++) {
-			char *nname;
-			nname = PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].Name + 2;
-			if (!strcmp(g->name, nname)) {
+		for(e = htsp_first(&PCB->netlist[PCB_NETLIST_EDITED]); e != NULL; e = htsp_next(&PCB->netlist[PCB_NETLIST_EDITED], e)) {
+			pcb_net_t *net = e->value;
+			if (!strcmp(g->name, net->name)) {
 				free(layeropts);
 				layeropts = pcb_strdup_printf("(type power) (use_net \"%s\")", g->name);
 			}
@@ -439,39 +439,35 @@ static void print_library(FILE * fp)
 	gds_uninit(&term_shapes);
 }
 
-static void print_quoted_pin(FILE * fp, const char *s)
+static void print_quoted_pin(FILE *fp, const pcb_net_term_t *t)
 {
-	char *hyphen_pos = strchr(s, '-');
-	if (!hyphen_pos) {
-		fprintf(fp, " %s", s);
-	}
-	else {
-		char refdes_name[1024];
-		int copy_len = hyphen_pos - s;
-		if (copy_len >= sizeof(refdes_name))
-			copy_len = sizeof(refdes_name) - 1;
-		strncpy(refdes_name, s, copy_len);
-		refdes_name[copy_len] = 0;
-		fprintf(fp, " \"%s\"-\"%s\"", refdes_name, hyphen_pos + 1);
-	}
+	fprintf(fp, " \"%s\"-\"%s\"", t->refdes, t->term);
 }
 
 static void print_network(FILE * fp)
 {
-	int ni, nei;
+	htsp_entry_t *e;
+
 	fprintf(fp, "  (network\n");
-	for (ni = 0; ni < PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN; ni++) {
-		fprintf(fp, "    (net \"%s\"\n", PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].Name + 2);
+
+	for(e = htsp_first(&PCB->netlist[PCB_NETLIST_EDITED]); e != NULL; e = htsp_next(&PCB->netlist[PCB_NETLIST_EDITED], e)) {
+		pcb_net_term_t *t;
+		pcb_net_t *net = e->value;
+
+		fprintf(fp, "    (net \"%s\"\n", net->name);
 		fprintf(fp, "      (pins");
-		for (nei = 0; nei < PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].EntryN; nei++)
-			print_quoted_pin(fp, PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].Entry[nei].ListEntry);
+
+		for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t))
+			print_quoted_pin(fp, t);
 		fprintf(fp, ")\n");
 		fprintf(fp, "    )\n");
 	}
 
+TODO("rename this from geda to pcb_rnd");
 	fprintf(fp, "    (class geda_default");
-	for (ni = 0; ni < PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN; ni++) {
-		fprintf(fp, " \"%s\"", PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].Name + 2);
+	for(e = htsp_first(&PCB->netlist[PCB_NETLIST_EDITED]); e != NULL; e = htsp_next(&PCB->netlist[PCB_NETLIST_EDITED], e)) {
+		pcb_net_t *net = e->value;
+		fprintf(fp, " \"%s\"", net->name);
 	}
 	pcb_fprintf(fp, "\n");
 	pcb_fprintf(fp, "      (circuit\n");
