@@ -31,6 +31,7 @@
 #include "board.h"
 #include "plug_io.h"
 #include "error.h"
+#include "netlist2.h"
 #include "data.h"
 #include "write.h"
 #include "layer.h"
@@ -352,19 +353,19 @@ static int wrax_equipotential_netlists(wctx_t *ctx)
 	   1 show rats nest */
 	/* now we step through any available netlists and generate descriptors */
 
-	if (PCB->NetlistLib[PCB_NETLIST_INPUT].MenuN) {
-		int n, p;
+	if (PCB->netlist[PCB_NETLIST_EDITED].used > 0) {
+		htsp_entry_t *e;
 
-		for(n = 0; n < PCB->NetlistLib[PCB_NETLIST_INPUT].MenuN; n++) {
-			pcb_lib_menu_t *menu = &PCB->NetlistLib[PCB_NETLIST_INPUT].Menu[n];
+		for(e = htsp_first(&PCB->netlist[PCB_NETLIST_EDITED]); e != NULL; e = htsp_next(&PCB->netlist[PCB_NETLIST_EDITED], e)) {
+			pcb_net_term_t *t;
+			pcb_net_t *net = e->value;
+
 			fprintf(ctx->f, "NETDEF\r\n");
-			pcb_fprintf(ctx->f, "%s\r\n", &menu->Name[2]);
+			pcb_fprintf(ctx->f, "%s\r\n", net->name);
 			pcb_fprintf(ctx->f, "%d\r\n", show_status);
 			fprintf(ctx->f, "(\r\n");
-			for(p = 0; p < menu->EntryN; p++) {
-				pcb_lib_entry_t *entry = &menu->Entry[p];
-				pcb_fprintf(ctx->f, "%s\r\n", entry->ListEntry);
-			}
+			for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t))
+				pcb_fprintf(ctx->f, "%s-%s\r\n", t->refdes, t->term);
 			fprintf(ctx->f, ")\r\n");
 		}
 	}
