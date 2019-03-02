@@ -74,14 +74,16 @@ struct short_conn_s {
 	short_conn_t *next;
 };
 
-TODO("netlist: remove these global vars, put them in the find context")
-static short_conn_t *short_conns = NULL;
-static int num_short_conns = 0;
-static int short_conns_maxid = 0;
+typedef struct {
+	short_conn_t *short_conns;
+	int num_short_conns;
+	int short_conns_maxid;
+} shctx_t;
 
 static int proc_short_cb(pcb_find_t *fctx, pcb_any_obj_t *curr, pcb_any_obj_t *from, pcb_found_conn_type_t type)
 {
 	short_conn_t *s;
+	shctx_t *shctx = fctx->user_data;
 
 	s = malloc(sizeof(short_conn_t));
 	if (from != NULL) {
@@ -96,11 +98,11 @@ static int proc_short_cb(pcb_find_t *fctx, pcb_any_obj_t *curr, pcb_any_obj_t *f
 	s->to = curr;
 	s->type = type;
 	s->edges = 0;
-	s->next = short_conns;
-	short_conns = s;
-	if (curr->ID > short_conns_maxid)
-		short_conns_maxid = curr->ID;
-	num_short_conns++;
+	s->next = shctx->short_conns;
+	shctx->short_conns = s;
+	if (curr->ID > shctx->short_conns_maxid)
+		shctx->short_conns_maxid = curr->ID;
+	shctx->num_short_conns++;
 
 	debprintf(" found %d %d/%p type=%d from %d\n", curr->type, curr->ID, (void *)curr, s->type, from == NULL ? -1 : from->ID);
 	return 0;
@@ -118,6 +120,7 @@ static int proc_short(pcb_any_obj_t *term, pcb_net_t *Snet, pcb_net_t *Tnet)
 	int i, maxedges, nonterms = 0;
 	int bad_gr = 0;
 	pcb_find_t fctx;
+	shctx_t shctx;
 
 TODO("remove this check from here, handled at the caller");
 	if (!conf_mincut.plugins.mincut.enable)
@@ -126,27 +129,25 @@ TODO("remove this check from here, handled at the caller");
 	pcb_obj_center(term, &x, &y);
 	debprintf("short on terminal\n");
 
-	short_conns = NULL;
-	num_short_conns = 0;
-	short_conns_maxid = 0;
-
 	/* perform a search calling back proc_short_cb() with the connections */
+	memset(&shctx, 0, sizeof(shctx));
 	memset(&fctx, 0, sizeof(fctx));
 	fctx.found_cb = proc_short_cb;
+	fctx.user_data = &shctx;
 	pcb_find_from_obj(&fctx, PCB->Data, term);
 	pcb_find_free(&fctx);
 
 
-	debprintf("- alloced for %d\n", (short_conns_maxid + 1));
-	lut_by_oid = calloc(sizeof(short_conn_t *), (short_conns_maxid + 1));
-	lut_by_gid = calloc(sizeof(short_conn_t *), (num_short_conns + 3));
+	debprintf("- alloced for %d\n", (shctx.short_conns_maxid + 1));
+	lut_by_oid = calloc(sizeof(short_conn_t *), (shctx.short_conns_maxid + 1));
+	lut_by_gid = calloc(sizeof(short_conn_t *), (shctx.num_short_conns + 3));
 
-	g = gr_alloc(num_short_conns + 2);
+	g = gr_alloc(shctx.num_short_conns + 2);
 
-	g->node2name = calloc(sizeof(char *), (num_short_conns + 2));
+	g->node2name = calloc(sizeof(char *), (shctx.num_short_conns + 2));
 
 	/* conn 0 is S and conn 1 is T and set up lookup arrays */
-	for (n = short_conns, gids = 2; n != NULL; n = n->next, gids++) {
+	for (n = shctx.short_conns, gids = 2; n != NULL; n = n->next, gids++) {
 		char *s;
 		const char *typ;
 		pcb_subc_t *parent;
@@ -193,7 +194,7 @@ TODO("remove this check from here, handled at the caller");
 
 	/* calculate how many edges each node has and the max edge count */
 	maxedges = 0;
-	for (n = short_conns; n != NULL; n = n->next) {
+	for (n = shctx.short_conns; n != NULL; n = n->next) {
 		short_conn_t *from;
 
 		n->edges++;
@@ -228,7 +229,7 @@ TODO("remove this check from here, handled at the caller");
 		assert(T != NULL);
 	}
 
-	for (n = short_conns; n != NULL; n = n->next) {
+	for (n = shctx.short_conns; n != NULL; n = n->next) {
 		pcb_any_obj_t *o = (pcb_any_obj_t *)n->to;
 		if (o->term != NULL) {
 			pcb_subc_t *sc = pcb_obj_parent_subc(o);
@@ -307,7 +308,7 @@ TODO("remove this check from here, handled at the caller");
 	free(lut_by_oid);
 	free(lut_by_gid);
 
-	for (n = short_conns; n != NULL; n = next) {
+	for (n = shctx.short_conns; n != NULL; n = next) {
 		next = n->next;
 		free(n);
 	}
