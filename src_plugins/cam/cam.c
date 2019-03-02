@@ -139,7 +139,7 @@ static int cam_exec_inst(void *ctx_, char *cmd, char *arg)
 			return -1;
 		}
 		free(ctx->args);
-		curr = ctx->args = pcb_strdup(curr);
+		curr = ctx->args = pcb_strdup(curr == NULL ? "" : curr);
 		ctx->argc = 2; /* [0] and [1] are reserved for the --cam argument */
 		for(; curr != NULL; curr = next) {
 			if (ctx->argc >= (sizeof(ctx->argv) / sizeof(ctx->argv[0]))) {
