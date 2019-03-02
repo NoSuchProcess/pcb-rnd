@@ -69,10 +69,8 @@ extern int ReadEdifNetlist(char *filename);
 static int edif_import(pcb_plug_import_t *ctx, unsigned int aspects, const char *fn)
 {
 	int ret = ReadEdifNetlist((char *)fn);
-	if (ret == 0) {
-		pcb_sort_netlist();
+	if (ret == 0)
 		pcb_ratspatch_make_edited(PCB);
-	}
 	return ret;
 }
 

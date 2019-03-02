@@ -155,7 +155,6 @@ static int ReadNetlist(const char *filename)
 		pcb_pclose(fp);
 	else
 		fclose(fp);
-	pcb_sort_netlist();
 	pcb_ratspatch_make_edited(PCB);
 	return 0;
 }
