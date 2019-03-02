@@ -756,6 +756,7 @@ static conf_ignore_t conf_ignores[] = {
 
 /* for security reasons ignore these nodes when coming from a board or project file */
 static conf_ignore_t conf_board_ignores[] = {
+	{"rc/action_string", 16, 0},
 	{"rc/library_shell", 16, 0},
 	{"rc/file_command", 15, 0},
 	{"rc/font_command", 15, 0},
