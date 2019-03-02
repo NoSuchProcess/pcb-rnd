@@ -617,11 +617,10 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 	char *cp;
 	const char *group_name;
 
-	/* before cam lets this happen... */
-	if (PCB_LAYER_IS_ASSY(flags, purpi))
-		return 0;
-
 	pcb_cam_set_layer_group(&gerber_cam, group, purpose, purpi, flags, xform);
+
+	if ((!gerber_cam.active) && (PCB_LAYER_IS_ASSY(flags, purpi)))
+		return 0;
 
 	if (flags & PCB_LYT_UI)
 		return 0;
@@ -650,7 +649,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 		}
 	}
 
-	if ((flags & PCB_LYT_INVIS) || PCB_LAYER_IS_ASSY(flags, purpi)) {
+	if (flags & PCB_LYT_INVIS) {
 /*		printf("  nope: invis %d or assy %d\n", (flags & PCB_LYT_INVIS), (flags & PCB_LYT_ASSY));*/
 		return 0;
 	}
