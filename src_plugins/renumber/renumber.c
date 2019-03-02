@@ -5,7 +5,7 @@
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  Copyright (C) 1997, 1998, 1999, 2000, 2001 Harry Eaton
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -54,8 +54,6 @@ static const char pcb_acth_Renumber[] =
 	"Renumber all subcircuits.  The changes will be recorded to filename\n"
 	"for use in backannotating these changes to the schematic.";
 
-#define WTF 0
-
 static const char *or_empty(const char *s)
 {
 	if (s == NULL) return "";
@@ -80,7 +78,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		char *name;
 		unsigned int cnt;
 	} *cnt_list;
-	char **was, **is, *pin;
+	char **was, **is;
 	unsigned int c_cnt = 0, numsubc;
 	int ok;
 	pcb_bool free_name = pcb_false;
@@ -304,18 +302,15 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	conf_update(NULL, -1);
 
 	if (changed) {
+		htsp_entry_t *e;
 
 		/* iterate over each net */
-		for (i = 0; i < PCB->NetlistLib[WTF].MenuN; i++) {
+		for(e = htsp_first(&PCB->netlist[PCB_NETLIST_EDITED]); e != NULL; e = htsp_next(&PCB->netlist[PCB_NETLIST_EDITED], e)) {
+			pcb_net_term_t *t;
+			pcb_net_t *net = e->value;
 
 			/* iterate over each pin on the net */
-			for (j = 0; j < PCB->NetlistLib[WTF].Menu[i].EntryN; j++) {
-
-				/* figure out the pin number part from strings like U3-21 */
-				tmps = pcb_strdup(PCB->NetlistLib[WTF].Menu[i].Entry[j].ListEntry);
-				for (k = 0; tmps[k] && tmps[k] != '-'; k++);
-				tmps[k] = '\0';
-				pin = tmps + k + 1;
+			for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
 
 				/* iterate over the list of changed reference designators */
 				for (k = 0; k < c_cnt; k++) {
@@ -323,17 +318,12 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					 * if the pin needs to change, change it and quit
 					 * searching in the list.
 					 */
-					if (strcmp(tmps, was[k]) == 0) {
-						char *buffer;
-						free((char*)PCB->NetlistLib[WTF].Menu[i].Entry[j].ListEntry);
-						buffer = (char *) malloc((strlen(is[k]) + 1 + strlen(pin) + 1) * sizeof(char));
-						sprintf(buffer, "%s-%s", is[k], pin);
-						PCB->NetlistLib[WTF].Menu[i].Entry[j].ListEntry = buffer;
+					if (strcmp(t->refdes, was[k]) == 0) {
+						free(t->refdes);
+						t->refdes = pcb_strdup(is[k]);
 						k = c_cnt;
 					}
-
 				}
-				free(tmps);
 			}
 		}
 		for (k = 0; k < c_cnt; k++) {
