@@ -77,8 +77,10 @@ static int cam_exec_inst(void *ctx_, char *cmd, char *arg)
 	char *curr, *next;
 	char **argv = ctx->argv;
 
-
-	if (strcmp(cmd, "prefix") == 0) {
+	if (*cmd == '#') {
+		/* ignore comments */
+	}
+	else if (strcmp(cmd, "prefix") == 0) {
 		char *end;
 
 		free(ctx->prefix);
