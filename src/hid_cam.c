@@ -454,6 +454,22 @@ typedef struct  {
 	const pcb_virt_layer_t *vl;
 } cam_name_ctx_t;
 
+/* convert string to integer, step input beyond the terminating % */
+static int get_tune(const char **input)
+{
+	char *end;
+	int res;
+
+	if (**input == '%') {
+		(*input)++;
+		return 0;
+	}
+	res = atoi(*input);
+	end = strchr(*input, '%');
+	*input = end+1;
+	return res;
+}
+
 static int cam_update_name_cb(void *ctx_, gds_t *s, const char **input)
 {
 	cam_name_ctx_t *ctx = ctx_;
@@ -466,25 +482,27 @@ static int cam_update_name_cb(void *ctx_, gds_t *s, const char **input)
 		else if (ctx->vl != NULL)
 			gds_append_str(s, ctx->vl->name);
 	}
-	else if (strncmp(*input, "top_offs%", 9) == 0) {
-		int from_top = -1;
+	else if (strncmp(*input, "top_offs", 8) == 0) {
+		int tune, from_top = -1;
 		pcb_layergrp_t *tcop = pcb_get_grp(&PCB->LayerGroups, PCB_LYT_TOP, PCB_LYT_COPPER);
 		pcb_layergrp_id_t tcop_id = pcb_layergrp_id(PCB, tcop);
 
-		(*input) += 9;
+		(*input) += 8;
+		tune = get_tune(input);
 
 		pcb_layergrp_dist(PCB, pcb_layergrp_id(PCB, ctx->grp), tcop_id, PCB_LYT_COPPER, &from_top);
-		pcb_append_printf(s, "%d", from_top);
+		pcb_append_printf(s, "%d", from_top+tune);
 	}
-	else if (strncmp(*input, "bot_offs%", 9) == 0) {
-		int from_bot = -1;
+	else if (strncmp(*input, "bot_offs", 8) == 0) {
+		int tune, from_bot = -1;
 		pcb_layergrp_t *bcop = pcb_get_grp(&PCB->LayerGroups, PCB_LYT_BOTTOM, PCB_LYT_COPPER);
 		pcb_layergrp_id_t bcop_id = pcb_layergrp_id(PCB, bcop);
 
-		(*input) += 9;
+		(*input) += 8;
+		tune = get_tune(input);
 
 		pcb_layergrp_dist(PCB, pcb_layergrp_id(PCB, ctx->grp), bcop_id, PCB_LYT_COPPER, &from_bot);
-		pcb_append_printf(s, "%d", from_bot);
+		pcb_append_printf(s, "%d", from_bot+tune);
 	}
 
 	return 0;
