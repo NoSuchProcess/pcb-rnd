@@ -343,7 +343,7 @@ static double ComputeCost(double T0, double T)
 				continue; /* no cost to go nowhere */
 
 			t = pcb_termlist_first(&net->conns);
-			obj = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, t->refdes, t->term, 0, NULL, NULL);
+			obj = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, t->refdes, t->term, NULL, NULL);
 			pcb_obj_center(obj, &maxx, &maxy);
 			minx = maxx;
 			miny = maxy;
@@ -353,7 +353,7 @@ static double ComputeCost(double T0, double T)
 
 			for(t = pcb_termlist_next(t); t != NULL; t = pcb_termlist_next(t)) {
 				pcb_coord_t X, Y;
-				obj = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, t->refdes, t->term, 0, NULL, NULL);
+				obj = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, t->refdes, t->term, NULL, NULL);
 				pcb_obj_center(obj, &X, &Y);
 				PCB_MAKE_MIN(minx, X);
 				PCB_MAKE_MAX(maxx, X);

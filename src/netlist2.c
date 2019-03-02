@@ -302,7 +302,7 @@ static pcb_cardinal_t pcb_net_term_crawl(const pcb_board_t *pcb, pcb_net_term_t 
 	pcb_any_obj_t *o;
 
 /* there can be multiple terminals with the same ID, but it is enough to run find from the first: find.c will consider them all */
-	o = pcb_term_find_name(pcb, pcb->Data, PCB_LYT_COPPER, term->refdes, term->term, 0, NULL, NULL);
+	o = pcb_term_find_name(pcb, pcb->Data, PCB_LYT_COPPER, term->refdes, term->term, NULL, NULL);
 	if (o == NULL) {
 		if (missing != NULL)
 			(*missing)++;
@@ -394,7 +394,7 @@ static void net_found_short(pcb_short_ctx_t *sctx, pcb_any_obj_t *offender)
 	pcb_event(PCB_EVENT_NET_INDICATE_SHORT, "pppp", sctx->current_net, offender, offn, &handled);
 	if (!handled) {
 		pcb_net_term_t *orig_t = pcb_termlist_first(&sctx->current_net->conns);
-		pcb_any_obj_t *orig_o = pcb_term_find_name(sctx->pcb, sctx->pcb->Data, PCB_LYT_COPPER, orig_t->refdes, orig_t->term, 0, NULL, NULL);
+		pcb_any_obj_t *orig_o = pcb_term_find_name(sctx->pcb, sctx->pcb->Data, PCB_LYT_COPPER, orig_t->refdes, orig_t->term, NULL, NULL);
 
 		/* dummy fallback: warning-highlight the two terminals */
 		PCB_FLAG_SET(PCB_FLAG_WARN, offender);
@@ -681,7 +681,7 @@ pcb_cardinal_t pcb_net_add_all_rats(const pcb_board_t *pcb, pcb_rat_accuracy_t a
 			pcb_net_term_t *t;
 			int has_selection = 0;
 			for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
-				pcb_any_obj_t *o = pcb_term_find_name(pcb, pcb->Data, PCB_LYT_COPPER, t->refdes, t->term, 0, NULL, NULL);
+				pcb_any_obj_t *o = pcb_term_find_name(pcb, pcb->Data, PCB_LYT_COPPER, t->refdes, t->term, NULL, NULL);
 				if ((o != NULL) && (PCB_FLAG_TEST(PCB_FLAG_SELECTED, o))) {
 					has_selection = 1;
 					break;

@@ -496,7 +496,7 @@ static int report_all_net_lengths(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		/* find the first terminal object referenced from the net that actually exist */
 		for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
-			term = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, t->refdes, t->term, 0, NULL, NULL);
+			term = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, t->refdes, t->term, NULL, NULL);
 			if (term != NULL)
 				break;
 		}
@@ -671,7 +671,7 @@ static int report_net_length_by_name(const char *tofind)
 				return 1;
 			}
 
-			obj = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, term->refdes, term->term, 0, NULL, NULL);
+			obj = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, term->refdes, term->term, NULL, NULL);
 			if (obj == NULL) {
 				pcb_message(PCB_MSG_INFO, "Net found, but its terminal %s-%s is not on the board.\n", term->refdes, term->term);
 				return 1;

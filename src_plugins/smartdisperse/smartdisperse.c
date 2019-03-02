@@ -156,8 +156,8 @@ static fgw_error_t pcb_act_smartdisperse(fgw_arg_t *res, int argc, fgw_arg_t *ar
 
 		t1 = pcb_termlist_first(&net->conns);
 		t2 = pcb_termlist_next(t2);
-		to1 = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, t1->refdes, t1->term, 0, NULL, NULL);
-		to2 = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, t2->refdes, t2->term, 0, NULL, NULL);
+		to1 = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, t1->refdes, t1->term, NULL, NULL);
+		to2 = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, t2->refdes, t2->term, NULL, NULL);
 
 		if ((to1 == NULL) || (to2 == NULL))
 			continue;
@@ -191,7 +191,7 @@ static fgw_error_t pcb_act_smartdisperse(fgw_arg_t *res, int argc, fgw_arg_t *ar
 			pcb_subc_t *parent;
 			pcb_any_obj_t *to;
 
-			to = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, t->refdes, t->term, 0, NULL, NULL);
+			to = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, t->refdes, t->term, NULL, NULL);
 			if (to == NULL)
 				continue;
 

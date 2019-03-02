@@ -280,7 +280,7 @@ pcb_term_err_t pcb_term_undoable_rename(pcb_board_t *pcb, pcb_any_obj_t *obj, co
 
 #define CHECK_TERM_LY(ob) \
 	do { \
-		if (PCB_NSTRCMP(term_name, ob->term) == 0 && (!same || !PCB_FLAG_TEST(PCB_FLAG_DRC, ob))) { \
+		if (PCB_NSTRCMP(term_name, ob->term) == 0) { \
 			if (parent_out != NULL) *parent_out = subc; \
 			if (gid_out != NULL) *gid_out = pcb_layer_get_group_(layer); \
 			return (pcb_any_obj_t *)ob; \
@@ -289,7 +289,7 @@ pcb_term_err_t pcb_term_undoable_rename(pcb_board_t *pcb, pcb_any_obj_t *obj, co
 
 #define CHECK_TERM_GL(ob) \
 	do { \
-		if (PCB_NSTRCMP(term_name, ob->term) == 0 && (!same || !PCB_FLAG_TEST(PCB_FLAG_DRC, ob))) { \
+		if (PCB_NSTRCMP(term_name, ob->term) == 0) { \
 			if (parent_out != NULL) *parent_out = subc; \
 			if (gid_out != NULL) { \
 				*gid_out = -1; \
@@ -299,7 +299,7 @@ pcb_term_err_t pcb_term_undoable_rename(pcb_board_t *pcb, pcb_any_obj_t *obj, co
 		} \
 	} while(0)
 
-pcb_any_obj_t *pcb_term_find_name(const pcb_board_t *pcb, pcb_data_t *data, pcb_layer_type_t lyt, const char *subc_name, const char *term_name, pcb_bool same, pcb_subc_t **parent_out, pcb_layergrp_id_t *gid_out)
+pcb_any_obj_t *pcb_term_find_name(const pcb_board_t *pcb, pcb_data_t *data, pcb_layer_type_t lyt, const char *subc_name, const char *term_name, pcb_subc_t **parent_out, pcb_layergrp_id_t *gid_out)
 {
 	pcb_subc_t *subc;
 	pcb_layer_t *layer;

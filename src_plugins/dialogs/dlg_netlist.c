@@ -177,7 +177,7 @@ static void termlist_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pc
 	if (term != NULL) {
 		*term = '\0';
 		term++;
-		obj = pcb_term_find_name(ctx->pcb, ctx->pcb->Data, PCB_LYT_COPPER, refdes, term, 0, NULL, NULL);
+		obj = pcb_term_find_name(ctx->pcb, ctx->pcb->Data, PCB_LYT_COPPER, refdes, term, NULL, NULL);
 		if (obj != NULL) {
 			pcb_coord_t x, y;
 			pcb_obj_center(obj, &x, &y);
@@ -247,7 +247,7 @@ static void netlist_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 		pcb_net_term_t *t;
 		vtp0_truncate(&netlist_color_save, 0);
 		for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
-			pcb_any_obj_t *obj = pcb_term_find_name(ctx->pcb, ctx->pcb->Data, PCB_LYT_COPPER, t->refdes, t->term, 0, NULL, NULL);
+			pcb_any_obj_t *obj = pcb_term_find_name(ctx->pcb, ctx->pcb->Data, PCB_LYT_COPPER, t->refdes, t->term, NULL, NULL);
 			if (obj == NULL)
 				continue;
 
