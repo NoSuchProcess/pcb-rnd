@@ -493,8 +493,6 @@ static FILE *fp_fs_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name,
 	FILE *fp, *f = NULL;
 	const char *libshell;
 
-	pcb_conf_cmd_is_safe(rc.library_shell, &libshell, 1);
-
 	fctx->field[F_TMPNAME].p = NULL;
 	fctx->field[F_IS_PARAMETRIC].i = pcb_fp_dupname(name, &basename, &params);
 	if (basename == NULL)

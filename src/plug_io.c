@@ -963,9 +963,7 @@ int pcb_write_pipe(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_b
 	if (PCB_EMPTY_STRING_P(conf_core.rc.save_command))
 		return pcb_write_pcb_file(Filename, thePcb, fmt, pcb_false, elem_only);
 
-	if (!pcb_conf_cmd_is_safe(rc.save_command, &save_cmd, 1))
-		return -1;
-
+	save_cmd = conf_core.rc.save_command;
 	/* setup commandline */
 	gds_truncate(&command,0);
 	for (p = save_cmd; *p; p++) {

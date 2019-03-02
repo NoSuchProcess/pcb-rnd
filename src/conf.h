@@ -379,12 +379,6 @@ const char *conf_get_user_conf_name();
 /* Determine the file name of the project file - project_fn and pcb_fn can be NULL */
 const char *conf_get_project_conf_name(const char *project_fn, const char *pcb_fn, const char **out_project_fn);
 
-/* Return 1 if the config node named in path is considered safe enough
-   to specify a command to execute - e.g. an attacker shouldn't be able to
-   inject commands in design files sent */
-int pcb_conf_cmd_is_safe_(const char *path, const char *value, const char **val_out, int msg);
-#define pcb_conf_cmd_is_safe(path, val_out, msg) pcb_conf_cmd_is_safe_(#path, conf_core.path, val_out, msg)
-
 /* Get the first subtree that matches pol within target; allocate new
    subtree if needed */
 lht_node_t *conf_lht_get_first_pol(conf_role_t target, conf_policy_t pol, int create);

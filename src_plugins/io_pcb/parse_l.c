@@ -2523,9 +2523,6 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 	yysubc = NULL;
 	yy_settings_dest = settings_dest;
 
-	if (!pcb_conf_cmd_is_safe(rc.file_command, &fcmd, 1))
-		return -1;
-
 	if (settings_dest != CFR_invalid)
 		conf_reset(settings_dest, Filename);
 
@@ -2628,9 +2625,6 @@ int io_pcb_ParseFont(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename)
 	yyFontkitValid = &valid;
 	yysubc = NULL;
 	yyFontReset = pcb_false;
-
-	if (!pcb_conf_cmd_is_safe(rc.font_command, &fcmd, 1))
-		return -1;
 
 	yy_settings_dest = CFR_invalid;
 	r = Parse(NULL, fcmd, NULL, Filename);

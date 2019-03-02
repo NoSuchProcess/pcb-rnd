@@ -68,8 +68,6 @@ static int ReadNetlist(const char *filename)
 
 	pcb_message(PCB_MSG_INFO, _("Importing PCB netlist %s\n"), filename);
 
-	pcb_conf_cmd_is_safe(rc.rat_command, &ratcmd, 1);
-
 	if (PCB_EMPTY_STRING_P(ratcmd)) {
 		fp = pcb_fopen(filename, "r");
 		if (!fp) {
