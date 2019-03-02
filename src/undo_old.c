@@ -764,44 +764,6 @@ static pcb_bool UndoLayerMove(UndoListTypePtr Entry)
 		return pcb_true;
 }
 
-/* ---------------------------------------------------------------------------
- * undo a netlist change
- * returns pcb_true on success
- */
-static pcb_bool UndoNetlistChange(UndoListTypePtr Entry)
-{
-	NetlistChangeTypePtr l = &Entry->Data.NetlistChange;
-	unsigned int i, j;
-	pcb_lib_t *lib, *saved;
-
-	lib = l->lib;
-	saved = l->old;
-
-	/* iterate over each net */
-	for (i = 0; i < lib->MenuN; i++) {
-		free(lib->Menu[i].Name);
-		free(lib->Menu[i].directory);
-		free(lib->Menu[i].Style);
-
-		/* iterate over each pin on the net */
-		for (j = 0; j < lib->Menu[i].EntryN; j++) {
-			if (!lib->Menu[i].Entry[j].ListEntry_dontfree)
-				free((char*)lib->Menu[i].Entry[j].ListEntry);
-
-			free((char*)lib->Menu[i].Entry[j].Package);
-			free((char*)lib->Menu[i].Entry[j].Value);
-			free((char*)lib->Menu[i].Entry[j].Description);
-		}
-	}
-
-	free(lib->Menu);
-
-	*lib = *saved;
-
-	pcb_netlist_changed(0);
-	return pcb_true;
-}
-
 static int pcb_undo_old_undo(void *ptr_)
 {
 	UndoListTypePtr ptr = ptr_;
@@ -903,11 +865,6 @@ static int pcb_undo_old_undo(void *ptr_)
 
 	case PCB_UNDO_LAYERMOVE:
 		if (UndoLayerMove(ptr))
-			return 0;
-		break;
-
-	case PCB_UNDO_NETLISTCHANGE:
-		if (UndoNetlistChange(ptr))
 			return 0;
 		break;
 
@@ -1296,69 +1253,6 @@ void pcb_undo_add_layer_move(int old_index, int new_index, int at)
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * adds a netlist change to the undo list
- */
-void pcb_undo_add_netlist_lib(pcb_lib_t *lib)
-{
-	UndoListTypePtr undo;
-	unsigned int i, j;
-	pcb_lib_t *old;
-
-	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_NETLISTCHANGE, 0, 0);
-		/* keep track of where the data needs to go */
-		undo->Data.NetlistChange.lib = lib;
-
-		/* and what the old data is that we'll need to restore */
-		undo->Data.NetlistChange.old = (pcb_lib_t *) malloc(sizeof(pcb_lib_t *));
-		old = undo->Data.NetlistChange.old;
-		old->MenuN = lib->MenuN;
-		old->MenuMax = lib->MenuMax;
-		old->Menu = (pcb_lib_menu_t *) malloc(old->MenuMax * sizeof(pcb_lib_menu_t));
-		if (old->Menu == NULL) {
-			fprintf(stderr, "malloc() failed in AddNetlistLibToUndoList\n");
-			exit(1);
-		}
-
-		/* iterate over each net */
-		for (i = 0; i < lib->MenuN; i++) {
-			old->Menu[i].EntryN = lib->Menu[i].EntryN;
-			old->Menu[i].EntryMax = lib->Menu[i].EntryMax;
-
-			old->Menu[i].Name = lib->Menu[i].Name ? pcb_strdup(lib->Menu[i].Name) : NULL;
-
-			old->Menu[i].directory = lib->Menu[i].directory ? pcb_strdup(lib->Menu[i].directory) : NULL;
-
-			old->Menu[i].Style = lib->Menu[i].Style ? pcb_strdup(lib->Menu[i].Style) : NULL;
-
-
-			old->Menu[i].Entry = (pcb_lib_entry_t *) malloc(old->Menu[i].EntryMax * sizeof(pcb_lib_entry_t));
-			if (old->Menu[i].Entry == NULL) {
-				fprintf(stderr, "malloc() failed in AddNetlistLibToUndoList\n");
-				exit(1);
-			}
-
-			/* iterate over each pin on the net */
-			for (j = 0; j < lib->Menu[i].EntryN; j++) {
-
-				old->Menu[i].Entry[j].ListEntry = lib->Menu[i].Entry[j].ListEntry ? pcb_strdup(lib->Menu[i].Entry[j].ListEntry) : NULL;
-				old->Menu[i].Entry[j].ListEntry_dontfree = 0;
-
-				old->Menu[i].Entry[j].Package = lib->Menu[i].Entry[j].Package ? pcb_strdup(lib->Menu[i].Entry[j].Package) : NULL;
-
-				old->Menu[i].Entry[j].Value = lib->Menu[i].Entry[j].Value ? pcb_strdup(lib->Menu[i].Entry[j].Value) : NULL;
-
-				old->Menu[i].Entry[j].Description =
-					lib->Menu[i].Entry[j].Description ? pcb_strdup(lib->Menu[i].Entry[j].Description) : NULL;
-
-
-			}
-		}
-
-	}
-}
-
 #ifndef NDEBUG
 const char *undo_type2str(int type)
 {
@@ -1384,7 +1278,6 @@ const char *undo_type2str(int type)
 		case PCB_UNDO_CHANGERADII: return "changeradii";
 		case PCB_UNDO_LAYERMOVE: return "layermove";
 		case PCB_UNDO_CLEAR: return "clear";
-		case PCB_UNDO_NETLISTCHANGE: return "netlistchange";
 	}
 	sprintf(buff, "Unknown %d", type);
 	return buff;

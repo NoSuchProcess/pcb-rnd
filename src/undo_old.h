@@ -31,7 +31,7 @@
 #ifndef	PCB_UNDO_OLD_H
 #define	PCB_UNDO_OLD_H
 
-#include "library.h"
+#include "global_typedefs.h"
 
 #define DRAW_FLAGS	(PCB_FLAG_RAT | PCB_FLAG_SELECTED \
 			| PCB_FLAG_HIDENAME | PCB_FLAG_HOLE | PCB_FLAG_OCTAGON | PCB_FLAG_FOUND | PCB_FLAG_CLEARLINE)
@@ -60,7 +60,6 @@ void pcb_undo_add_obj_to_change_angles(int, void *, void *, void *);
 void pcb_undo_add_obj_to_change_radii(int, void *, void *, void *);
 void pcb_undo_add_obj_to_clear_poly(int, void *, void *, void *, pcb_bool);
 void pcb_undo_add_layer_move(int, int, int);
-void pcb_undo_add_netlist_lib(pcb_lib_t *);
 
 /* ---------------------------------------------------------------------------
  * define supported types of undo operations
@@ -83,7 +82,6 @@ typedef enum {
 	PCB_UNDO_CHANGEANGLES      = 0x010000, /* change arc angles */
 	PCB_UNDO_LAYERMOVE         = 0x020000, /* layer new/delete/move */
 	PCB_UNDO_CLEAR             = 0x040000, /* clear/restore to polygons */
-	PCB_UNDO_NETLISTCHANGE     = 0x080000, /* netlist change */
 	PCB_UNDO_CHANGERADII       = 0x200000, /* change arc radii */
 	PCB_UNDO_OTHERSIDE         = 0x400000, /* change side of board (subcircuit) */
 	PCB_UNDO_ROTATE            = 0x800000, /* rotations at arbitrary angle */
