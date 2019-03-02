@@ -30,7 +30,6 @@
 #ifndef PCB_PLUG_IO_H
 #define PCB_PLUG_IO_H
 
-#include "library.h"
 #include "global_typedefs.h"
 #include "conf.h"
 
@@ -127,10 +126,8 @@ void pcb_emergency_save(void);
 void pcb_disable_emergency_save(void);
 int pcb_revert_pcb(void);
 int pcb_save_buffer_elements(const char *, const char *fmt);
-void pcb_sort_netlist(void);
 void pcb_print_quoted_string_(FILE *, const char *); /* without wrapping in "" */
 void pcb_print_quoted_string(FILE *, const char *); /* with wrapping in "" */
-void pcb_library_sort(pcb_lib_t *lib);
 void pcb_set_some_route_style();
 int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool emergency, pcb_bool elem_only);
 int pcb_write_pipe(const char *, pcb_bool, const char *fmt, pcb_bool elem_only);

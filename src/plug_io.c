@@ -544,7 +544,6 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		}
 		pcb_attrib_put(PCB, "PCB::grid::unit", conf_core.editor.grid_unit->suffix);
 
-		pcb_sort_netlist();
 		pcb_ratspatch_make_edited(PCB);
 
 /* set route style to the first one, if the current one doesn't
@@ -597,72 +596,6 @@ static char *TMPFilename = NULL;
  */
 
 #define F2S(OBJ, TYPE) pcb_strflg_f2s((OBJ)->Flags, TYPE)
-
-/* --------------------------------------------------------------------------- */
-
-static int string_cmp(const char *a, const char *b)
-{
-	while (*a && *b) {
-		if (isdigit((int) *a) && isdigit((int) *b)) {
-			int ia = atoi(a);
-			int ib = atoi(b);
-			if (ia != ib)
-				return ia - ib;
-			while (isdigit((int) *a) && *(a + 1))
-				a++;
-			while (isdigit((int) *b) && *(b + 1))
-				b++;
-		}
-		else if (tolower((int) *a) != tolower((int) *b))
-			return tolower((int) *a) - tolower((int) *b);
-		a++;
-		b++;
-	}
-	if (*a)
-		return 1;
-	if (*b)
-		return -1;
-	return 0;
-}
-
-static int netlist_sort_offset = 0;
-
-static int netlist_sort(const void *va, const void *vb)
-{
-	const pcb_lib_menu_t *am = (const pcb_lib_menu_t *) va;
-	const pcb_lib_menu_t *bm = (const pcb_lib_menu_t *) vb;
-	const char *a = am->Name;
-	const char *b = bm->Name;
-	if (*a == '~')
-		a++;
-	if (*b == '~')
-		b++;
-	return string_cmp(a, b);
-}
-
-static int netnode_sort(const void *va, const void *vb)
-{
-	const pcb_lib_entry_t *am = (const pcb_lib_entry_t *) va;
-	const pcb_lib_entry_t *bm = (const pcb_lib_entry_t *) vb;
-	const char *a = am->ListEntry;
-	const char *b = bm->ListEntry;
-	return string_cmp(a, b);
-}
-
-void pcb_library_sort(pcb_lib_t *lib)
-{
-	int i;
-	qsort(lib->Menu, lib->MenuN, sizeof(lib->Menu[0]), netlist_sort);
-	for (i = 0; i < lib->MenuN; i++)
-		qsort(lib->Menu[i].Entry, lib->Menu[i].EntryN, sizeof(lib->Menu[i].Entry[0]), netnode_sort);
-}
-
-void pcb_sort_netlist()
-{
-	netlist_sort_offset = 2;
-	pcb_library_sort(&(PCB->NetlistLib[PCB_NETLIST_INPUT]));
-	netlist_sort_offset = 0;
-}
 
 /* ---------------------------------------------------------------------------
  * opens a file and check if it exists
