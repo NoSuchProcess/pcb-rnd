@@ -466,6 +466,27 @@ static int cam_update_name_cb(void *ctx_, gds_t *s, const char **input)
 		else if (ctx->vl != NULL)
 			gds_append_str(s, ctx->vl->name);
 	}
+	else if (strncmp(*input, "top_offs%", 9) == 0) {
+		int from_top = -1;
+		pcb_layergrp_t *tcop = pcb_get_grp(&PCB->LayerGroups, PCB_LYT_TOP, PCB_LYT_COPPER);
+		pcb_layergrp_id_t tcop_id = pcb_layergrp_id(PCB, tcop);
+
+		(*input) += 9;
+
+		pcb_layergrp_dist(PCB, pcb_layergrp_id(PCB, ctx->grp), tcop_id, PCB_LYT_COPPER, &from_top);
+		pcb_append_printf(s, "%d", from_top);
+	}
+	else if (strncmp(*input, "bot_offs%", 9) == 0) {
+		int from_bot = -1;
+		pcb_layergrp_t *bcop = pcb_get_grp(&PCB->LayerGroups, PCB_LYT_BOTTOM, PCB_LYT_COPPER);
+		pcb_layergrp_id_t bcop_id = pcb_layergrp_id(PCB, bcop);
+
+		(*input) += 9;
+
+		pcb_layergrp_dist(PCB, pcb_layergrp_id(PCB, ctx->grp), bcop_id, PCB_LYT_COPPER, &from_bot);
+		pcb_append_printf(s, "%d", from_bot);
+	}
+
 	return 0;
 }
 
