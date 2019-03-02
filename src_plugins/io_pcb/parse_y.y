@@ -271,8 +271,6 @@ parsefont
 		:
 			{
 					/* mark all symbols invalid */
-				int	i;
-
 				if (!yyFont)
 				{
 					pcb_message(PCB_MSG_ERROR, "illegal fileformat\n");
