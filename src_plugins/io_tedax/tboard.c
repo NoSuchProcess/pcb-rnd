@@ -49,6 +49,7 @@
 #include "obj_pstk.h"
 #include "compat_misc.h"
 #include "plug_io.h"
+#include "tnetlist.h"
 
 #define ps2fpname(fpname, padstack) \
 	pcb_snprintf(fpname, sizeof(fpname), "ps_glob_%ld%s", padstack->protoi, (!!padstack->smirror) != (!!padstack->xmirror) ? "m" : "")
