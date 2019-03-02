@@ -107,7 +107,7 @@ static int proc_short_cb(pcb_find_t *fctx, pcb_any_obj_t *curr, pcb_any_obj_t *f
 }
 
 /* returns 0 on succes */
-static int proc_short(pcb_any_obj_t *term, int ignore, pcb_net_t *Snet, pcb_net_t *Tnet)
+static int proc_short(pcb_any_obj_t *term, pcb_net_t *Snet, pcb_net_t *Tnet)
 {
 	pcb_coord_t x, y;
 	short_conn_t *n, **lut_by_oid, **lut_by_gid, *next;
@@ -125,10 +125,6 @@ TODO("remove this check from here, handled at the caller");
 
 	pcb_obj_center(term, &x, &y);
 	debprintf("short on terminal\n");
-
-	/* run only if net is not ignored */
-	if (ignore)
-		return 0;
 
 	short_conns = NULL;
 	num_short_conns = 0;
@@ -354,7 +350,7 @@ static void pcb_mincut_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 		return;
 	Tnet = (pcb_net_t *)argv[3].d.p;
 
-	if (proc_short(term, 0, Snet, Tnet) == 0)
+	if (proc_short(term, Snet, Tnet) == 0)
 		*handled = 1;
 }
 
