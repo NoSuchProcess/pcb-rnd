@@ -321,7 +321,6 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			/* Add is different, because the net/pin won't already exist.  */
 			return pcb_netlist_add(0, a1, a2);
 		case F_Sort:
-			pcb_sort_netlist();
 			pcb_ratspatch_make_edited(PCB);
 			return 0;
 		case F_Freeze:
