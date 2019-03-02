@@ -55,15 +55,6 @@ static void ev_pcb_meta_changed(void *user_data, int argc, pcb_event_arg_t argv[
 		ghidgui->common.window_set_name_label(PCB->Name);
 }
 
-
-static void GhidNetlistChanged(void *user_data, int argc, pcb_event_arg_t argv[])
-{
-	if (!ghidgui->hid_active)
-		return;
-
-	pcb_gtk_netlist_changed(&ghidgui->common, user_data, argc, argv);
-}
-
 static void ghid_gui_sync(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	/* Sync gui widgets with pcb state */
@@ -95,7 +86,6 @@ void glue_event_init(const char *cookie)
 {
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, cookie);
 	pcb_event_bind(PCB_EVENT_BOARD_META_CHANGED, ev_pcb_meta_changed, NULL, cookie);
-	pcb_event_bind(PCB_EVENT_NETLIST_CHANGED, GhidNetlistChanged, NULL, cookie);
 	pcb_event_bind(PCB_EVENT_ROUTE_STYLES_CHANGED, RouteStylesChanged, NULL, cookie);
 	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, ghid_LayersChanged, NULL, cookie);
 	pcb_event_bind(PCB_EVENT_LAYERVIS_CHANGED, ghid_LayervisChanged, NULL, cookie);

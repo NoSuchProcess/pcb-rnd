@@ -45,7 +45,6 @@
 #include "../src_plugins/lib_gtk_common/dlg_route_style.h"
 #include "../src_plugins/lib_gtk_common/dlg_library.h"
 #include "../src_plugins/lib_gtk_common/dlg_log.h"
-#include "../src_plugins/lib_gtk_common/dlg_netlist.h"
 #include "../src_plugins/lib_gtk_common/dlg_search.h"
 #include "../src_plugins/lib_gtk_common/lib_gtk_config.h"
 
@@ -103,7 +102,7 @@ static fgw_error_t pcb_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_DoWindows[] =
 	"DoWindows(1|2|3|4|5|6|7 [,false])\n"
-	"DoWindows(Layout|Library|Log|Netlist|Search [,false])";
+	"DoWindows(Layout|Library|Log|Search [,false])";
 static const char pcb_acth_DoWindows[] = N_("Open various GUI windows. With false, do not raise the window (no focus stealing).");
 /* DOC: dowindows.html */
 static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -291,17 +290,6 @@ static fgw_error_t pcb_act_Pan(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return pcb_gtk_act_pan(&gport->view, res, argc, argv);
 }
 
-static fgw_error_t pcb_act_NetlistShow(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	return pcb_gtk_act_netlistshow(&ghidgui->common, res, argc, argv);
-}
-
-static fgw_error_t pcb_act_NetlistPresent(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	return pcb_gtk_act_netlistpresent(&ghidgui->common, res, argc, argv);
-}
-
-
 static fgw_error_t pcb_act_load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	return pcb_gtk_act_load(ghid_port.top_window, res, argc, argv);
@@ -337,8 +325,6 @@ pcb_action_t ghid_main_action_list[] = {
 	{"ImportGUI", pcb_act_importgui, pcb_gtk_acth_importgui, pcb_gtk_acts_importgui},
 	{"Load", pcb_act_load },
 	{"LogShowOnAppend", pcb_gtk_act_logshowonappend, pcb_gtk_acth_logshowonappend, pcb_gtk_acts_logshowonappend},
-	{"NetlistShow", pcb_act_NetlistShow, pcb_gtk_acth_netlistshow, pcb_gtk_acts_netlistshow},
-	{"NetlistPresent", pcb_act_NetlistPresent, pcb_gtk_acth_netlistpresent, pcb_gtk_acts_netlistpresent},
 	{"Pan", pcb_act_Pan, pcb_acth_pan, pcb_acts_pan},
 	{"Popup", pcb_act_Popup, pcb_acth_Popup, pcb_acts_Popup},
 	{"Save", pcb_act_save, pcb_gtk_acth_save, pcb_gtk_acts_save},
