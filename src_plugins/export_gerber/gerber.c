@@ -622,7 +622,6 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 		return 0;
 
 	pcb_cam_set_layer_group(&gerber_cam, group, purpose, purpi, flags, xform);
-printf("CAM: %d '%s'\n", gerber_cam.fn_changed, gerber_cam.fn);
 
 	if (flags & PCB_LYT_UI)
 		return 0;
