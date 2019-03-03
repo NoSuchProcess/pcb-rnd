@@ -57,7 +57,7 @@
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
 - BUG: bug_files/proto1.* padstack prototype selection bug priv mail 20 Feb [report: Alain]
-- FEATURE: template print terminal id so attributes (like term name) can be displayed [report: Peter] (report on the mailing list)
+- FEATURE: template print terminal id so attributes (like term name) can be displayed; gtk dwg tooltip  should use the same template to print the term [report: Peter] (report on the mailing list)
 
 2. For later releases ===============================================================================
 - CAM:
