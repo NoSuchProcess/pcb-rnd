@@ -41,9 +41,35 @@ typedef struct file_history_s {
 	char *fn[MAX_HIST];
 } file_history_t;
 
+/* Move any items between from,to one slot down; [to] is the item that
+   is overwritten (lost). [from] will be an empty slot (set to NULL)
+   after the operation */
+static void shift_history(file_history_t *hi, int from, int to)
+{
+	int n;
+
+	free(hi->fn[to]);
+	for(n = to; n > from; n--)
+		hi->fn[n] = hi->fn[n]-1;
+	hi->fn[from] = NULL;
+}
+
 static void update_history(file_history_t *hi, const char *path)
 {
+	int n;
 
+	/* if already on the list, move to top */
+	for(n = 0; (n < MAX_HIST) && (hi->fn[n] != NULL); n++) {
+		if (strcmp(hi->fn[n], path) == 0) {
+			shift_history(hi, 0, n);
+			hi->fn[0] = pcb_strdup(path);
+			return;
+		}
+	}
+
+	/* else move everything down and insert in front */
+	shift_history(hi, 0, MAX_HIST);
+	hi->fn[0] = pcb_strdup(path);
 }
 
 char *pcb_gtk_fileselect2(GtkWidget *top_window, const char *title, const char *descr, const char *default_file, const char *default_ext, const char *history_tag, pcb_hid_fsd_flags_t flags, pcb_hid_dad_subdialog_t *sub)
