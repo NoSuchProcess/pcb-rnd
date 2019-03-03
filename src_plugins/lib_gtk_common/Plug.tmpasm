@@ -24,6 +24,7 @@ put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/dlg_attributes.o
   $(PLUGDIR)/lib_gtk_common/bu_command.o
   $(PLUGDIR)/lib_gtk_common/dlg_file_chooser.o
+  $(PLUGDIR)/lib_gtk_common/dlg_fileselect.o
   $(PLUGDIR)/lib_gtk_common/dlg_library.o
   $(PLUGDIR)/lib_gtk_common/dlg_library_param.o
   $(PLUGDIR)/lib_gtk_common/dlg_log.o

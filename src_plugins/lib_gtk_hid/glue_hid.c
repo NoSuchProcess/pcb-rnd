@@ -16,6 +16,7 @@
 #include "../src_plugins/lib_gtk_common/ui_crosshair.h"
 #include "../src_plugins/lib_gtk_common/dlg_log.h"
 #include "../src_plugins/lib_gtk_common/dlg_file_chooser.h"
+#include "../src_plugins/lib_gtk_common/dlg_fileselect.h"
 #include "../src_plugins/lib_gtk_common/dlg_attribute.h"
 #include "../src_plugins/lib_gtk_common/dlg_attributes.h"
 #include "../src_plugins/lib_gtk_common/util_listener.h"
@@ -337,6 +338,11 @@ static char *ghid_fileselect(const char *title, const char *descr, const char *d
 	return pcb_gtk_fileselect(ghid_port.top_window, title, descr, default_file, default_ext, history_tag, flags);
 }
 
+static char *ghid_fileselect2(const char *title, const char *descr, const char *default_file, const char *default_ext, const char *history_tag, pcb_hid_fsd_flags_t flags, pcb_hid_dad_subdialog_t *sub)
+{
+	return pcb_gtk_fileselect2(ghid_port.top_window, title, descr, default_file, default_ext, history_tag, flags, sub);
+}
+
 static void *ghid_attr_dlg_new_(const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy)
 {
 	return ghid_attr_dlg_new(&ghidgui->common, id, attrs, n_attrs, results, title, caller_data, modal, button_cb, defx, defy);
@@ -484,6 +490,7 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->log = ghid_log;
 	dst->logv = ghid_logv;
 	dst->fileselect = ghid_fileselect;
+	dst->fileselect2 = ghid_fileselect2;
 	dst->attr_dlg_new = ghid_attr_dlg_new_;
 	dst->attr_dlg_run = ghid_attr_dlg_run;
 	dst->attr_dlg_free = ghid_attr_dlg_free;
