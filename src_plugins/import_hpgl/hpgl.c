@@ -158,7 +158,7 @@ fgw_error_t pcb_act_LoadHpglFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (!fname || !*fname) {
 		fname = pcb_gui->fileselect("Load HP-GL file...",
 																"Picks a HP-GL plot file to load.\n",
-																default_file, ".hpgl", "hpgl", HID_FILESELECT_READ);
+																default_file, ".hpgl", "hpgl", PCB_HID_FSD_READ);
 		if (fname == NULL)
 			return 0; /* cancel */
 		if (default_file != NULL) {

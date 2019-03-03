@@ -368,7 +368,7 @@ fgw_error_t pcb_act_LoadIpc356From(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if ((fname == NULL) || (*fname == '\0')) {
 		fname = pcb_gui->fileselect("Load IPC-D-356 netlist...",
 			"Pick an IPC-D-356 netlist file.\n",
-			default_file, ".net", "ipcd356", HID_FILESELECT_READ);
+			default_file, ".net", "ipcd356", PCB_HID_FSD_READ);
 		if (fname == NULL) {
 			PCB_ACT_IRES(1);
 			return 0;

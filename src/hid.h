@@ -116,20 +116,20 @@ typedef enum pcb_hid_fsd_flags_e {
 	/* Prompts the user for a filename or directory name.  For GUI
 	   HID's this would mean a file select dialog box.  The 'flags'
 	   argument is the bitwise OR of the following values.  */
-	HID_FILESELECT_READ = 1,
+	PCB_HID_FSD_READ = 1,
 
 	/* The function calling hid->fileselect will deal with the case
 	   where the selected file already exists.  If not given, then the
 	   GUI will prompt with an "overwrite?" prompt.  Only used when
 	   writing.
 	 */
-	HID_FILESELECT_MAY_NOT_EXIST = 2,
+	PCB_HID_FSD_MAY_NOT_EXIST = 2,
 
 	/* The call is supposed to return a file template (for gerber
 	   output for example) instead of an actual file.  Only used when
 	   writing.
 	 */
-	HID_FILESELECT_IS_TEMPLATE = 4
+	PCB_HID_FSD_IS_TEMPLATE = 4
 } pcb_hid_fsd_flags_t;
 
 /* Optional fields of a menu item; all non-NULL fields are strdup'd in the HID. */

@@ -364,7 +364,7 @@ gchar *pcb_gtk_fileselect(GtkWidget *top_window, const char *title, const char *
 
 	dialog = gtk_file_chooser_dialog_new(title,
 																			 GTK_WINDOW(top_window),
-																			 (flags & HID_FILESELECT_READ) ?
+																			 (flags & PCB_HID_FSD_READ) ?
 																			 GTK_FILE_CHOOSER_ACTION_OPEN :
 																			 GTK_FILE_CHOOSER_ACTION_SAVE,
 																			 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
@@ -378,7 +378,7 @@ gchar *pcb_gtk_fileselect(GtkWidget *top_window, const char *title, const char *
 
 	if (base && *base) {
 		/* default file is only supposed to be for writing, not reading */
-		if (!(flags & HID_FILESELECT_READ)) {
+		if (!(flags & PCB_HID_FSD_READ)) {
 			gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), base);
 		}
 		g_free(base);

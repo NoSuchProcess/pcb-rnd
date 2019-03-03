@@ -468,7 +468,7 @@ static void view_load_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	FILE *f;
 	void *load_ctx;
 
-	fn = pcb_gui->fileselect("Load view list", "Load all views from the list", "view.lht", "lht", "view", HID_FILESELECT_READ);
+	fn = pcb_gui->fileselect("Load view list", "Load all views from the list", "view.lht", "lht", "view", PCB_HID_FSD_READ);
 	if (fn == NULL)
 		return;
 
