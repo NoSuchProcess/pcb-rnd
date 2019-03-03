@@ -1,20 +1,4 @@
 0. old, still waiting for ack
-+ FEATURE: export_xy: pnp origin should be any obj, especially padstacks (fidu) [report: TwisteR]
-+ CLEANUP: dad: make the implicit dialog ok/cancel buttons configurable or do not use them at all; e.g. export dialog is confusing [report: Cyril, ml2409]
-+ FEATURE: make propset() able to change board properties if first arg is "board" (change baord size) [report: rqsall]
-+ FEATURE: padstack edit swap shapes - low level for a "solder mask defined pad" [report: ehennes]
-+ FEATURE: extedit: dialog shoudl let the user edit the command template [report: TwisteR]
-+ BUG: new preferences
-	+ BUG: preferences() crashes if lesstif GUI is compiled but gtk is not (missing gtk-only conf settings) [report: rqsall]
-	+ BUG: lesstif: {i c p} -> crash, only on IRIX system [report: Ian] -> probably fixed, please test
-+ BUG: (prio) bug_files/png_export_fix_dpi.patch ,  ML #2474 [report: Cyril]
-+ BUG: bug_files/obsconf.lht: load, get a warning for obsolete config; save into a new file and the broken conf node is not removed [report: keantoken]
-	+> this is not a bug: we try to preserve thins in the file that we don't fully understand. This is intentional. Think the other way around: you open a file with an older pcb-rnd version that doesn't know about a config node, you do not want it to remove the unknown node because you then may want to open the file again with the new version. It prints an error message with the line number in the file, so you can go and delete the offending lines if you want them removed.
-+ BUG: ML 2479: gtk crosshair re-enter to the last pos doesn't always draw the crossghair [report: pstuge]
-? BUG: configure without glib installed -> 'unknown arugment disable-gtk' [report: Ade]
-? BUG: #define TODO(x) doesn't compile on IRIX system with --debug option ON [report: Ian]
-? BUG: export dialogue, when used to export PNG of top copper, by only making top copper layers visible prior to export, will export top and bottom copper layers in a monochrome png if the monochrome check box is checked. If the monochrome checkbox is not checked, only the visible layers export, as expected [report: Erich]
-       > can't reproduce this; if you want layer visibility to considered, check the 'as shown' option. But best if you forget layer visibility totally and just use the cam syntax.
 
 1. For the upcoming release ===============================================================================
 - BUG: scconfig: core gets glib dependency even if everything is in plugins (only plugins depend on glib) [report: Vuokko]
