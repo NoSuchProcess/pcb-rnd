@@ -592,4 +592,9 @@ void pcb_hid_dad_close_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 int pcb_hid_dad_run(void *hid_ctx, pcb_dad_retovr_t *retovr);
 void pcb_hid_iterate(pcb_hid_t *hid);
 
+/* sub-dialogs e.g. for the file selector dialog */
+struct pcb_hid_dad_subdialog_s {
+	PCB_DAD_DECL_NOINIT(dlg)
+};
+
 #endif
