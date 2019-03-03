@@ -583,11 +583,19 @@ pcb_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, pcb_coord_t *x1, pcb_coord_t
 	if (tshp->shape[0].shape == PCB_PSSH_POLY) {
 		for(n = 0; n < tshp->len; n++) {
 			pcb_coord_t w, h, x1, x2, y1, y2;
+			double stepd, step2;
+			int step;
 
 			if (tshp->shape[n].shape != PCB_PSSH_POLY)
 				continue;
 
 			if (tshp->shape[n].data.poly.len != 4)
+				return pcb_false;
+
+			stepd = ps->rot / 90.0;
+			step = stepd;
+			step2 = (double)step * 90.0;
+			if (fabs(ps->rot - step2) > 0.01)
 				return pcb_false;
 
 			x1 = tshp->shape[n].data.poly.x[0];
@@ -602,8 +610,14 @@ pcb_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, pcb_coord_t *x1, pcb_coord_t
 				y2 = tshp->shape[n].data.poly.y[0];
 				y1 = tshp->shape[n].data.poly.y[2];
 			}
-			w = x1 - x2;
-			h = y1 - y2;
+			if ((step % 2) == 1) {
+				h = x1 - x2;
+				w = y1 - y2;
+			}
+			else {
+				w = x1 - x2;
+				h = y1 - y2;
+			}
 			lt[n] = (w < h) ? w : h;
 			lx1[n] = x2 + lt[n] / 2;
 			ly1[n] = y2 + lt[n] / 2;
