@@ -118,11 +118,6 @@ static int ReadNetlist(const char *filename)
 			/* skip leading blanks */
 			while (inputline[i] != '\0' && BLANK(inputline[i]))
 				i++;
-			if (kind == 0) {
-				/* add two spaces for included/unincluded */
-				temp[j++] = ' ';
-				temp[j++] = ' ';
-			}
 			while (!BLANK(inputline[i]))
 				temp[j++] = inputline[i++];
 			temp[j] = '\0';
