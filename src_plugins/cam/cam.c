@@ -90,15 +90,20 @@ static void cam_uninit_inst(cam_ctx_t *ctx)
 }
 
 /* mkdir -p on arg - changes the string in arg */
-static void prefix_mkdir(char *arg)
+static void prefix_mkdir(char *arg, char **filename)
 {
 	char *curr, *next, *end;
 
 		/* mkdir -p if there's a path sep in the prefix */
 		end = strrchr(arg, PCB_DIR_SEPARATOR_C);
-		if (end == NULL)
+		if (end == NULL) {
+			if (filename != NULL)
+				*filename = arg;
 			return;
+		}
 		*end = '\0';
+		if (filename != NULL)
+			*filename = end+1;
 
 		for(curr = arg; curr != NULL; curr = next) {
 			next = strrchr(curr, PCB_DIR_SEPARATOR_C);
@@ -124,7 +129,7 @@ static int cam_exec_inst(void *ctx_, char *cmd, char *arg)
 	else if (strcmp(cmd, "prefix") == 0) {
 		free(ctx->prefix);
 		ctx->prefix = pcb_strdup(arg);
-		prefix_mkdir(arg);
+		prefix_mkdir(arg, NULL);
 	}
 	else if (strcmp(cmd, "desc") == 0) {
 		/* ignore */
