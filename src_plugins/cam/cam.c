@@ -89,25 +89,15 @@ static void cam_uninit_inst(cam_ctx_t *ctx)
 	gds_uninit(&ctx->tmp);
 }
 
-static int cam_exec_inst(void *ctx_, char *cmd, char *arg)
+/* mkdir -p on arg - changes the string in arg */
+static void prefix_mkdir(char *arg)
 {
-	cam_ctx_t *ctx = ctx_;
-	char *curr, *next;
-	char **argv = ctx->argv;
-
-	if (*cmd == '#') {
-		/* ignore comments */
-	}
-	else if (strcmp(cmd, "prefix") == 0) {
-		char *end;
-
-		free(ctx->prefix);
-		ctx->prefix = pcb_strdup(arg);
+	char *curr, *next, *end;
 
 		/* mkdir -p if there's a path sep in the prefix */
 		end = strrchr(arg, PCB_DIR_SEPARATOR_C);
 		if (end == NULL)
-			return 0;
+			return;
 		*end = '\0';
 
 		for(curr = arg; curr != NULL; curr = next) {
@@ -120,7 +110,21 @@ static int cam_exec_inst(void *ctx_, char *cmd, char *arg)
 				next++;
 			}
 		}
+}
 
+static int cam_exec_inst(void *ctx_, char *cmd, char *arg)
+{
+	cam_ctx_t *ctx = ctx_;
+	char *curr, *next;
+	char **argv = ctx->argv;
+
+	if (*cmd == '#') {
+		/* ignore comments */
+	}
+	else if (strcmp(cmd, "prefix") == 0) {
+		free(ctx->prefix);
+		ctx->prefix = pcb_strdup(arg);
+		prefix_mkdir(arg);
 	}
 	else if (strcmp(cmd, "desc") == 0) {
 		/* ignore */
