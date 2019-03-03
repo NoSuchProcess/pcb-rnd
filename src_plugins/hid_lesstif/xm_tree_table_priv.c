@@ -460,13 +460,8 @@ static void xm_extent_prediction_item(tt_entry_t *entry, XmTreeTableWidget w, st
 
 	len_diff = (long)entry->n_cells - (long)s->column_vector_len;
 	if (0 <= len_diff) {
-		if (!s->column_dimensions_vector) {
-			s->column_dimensions_vector = (long *)calloc(entry->n_cells, sizeof(long));
-		}
-		else {
-			s->column_dimensions_vector = (long *)realloc(s->column_dimensions_vector, sizeof(long) * entry->n_cells);
-			memset(s->column_dimensions_vector + s->column_vector_len, 0x00, sizeof(int) * (entry->n_cells - s->column_vector_len));
-		}
+		s->column_dimensions_vector = (long *)realloc(s->column_dimensions_vector, sizeof(long) * entry->n_cells);
+		memset(s->column_dimensions_vector + s->column_vector_len, 0x00, sizeof(long) * (entry->n_cells - s->column_vector_len));
 		s->column_vector_len = entry->n_cells;
 	}
 
