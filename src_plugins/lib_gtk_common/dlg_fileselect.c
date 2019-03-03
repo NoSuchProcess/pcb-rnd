@@ -50,7 +50,7 @@ static void shift_history(file_history_t *hi, int from, int to)
 
 	free(hi->fn[to]);
 	for(n = to; n > from; n--)
-		hi->fn[n] = hi->fn[n]-1;
+		hi->fn[n] = hi->fn[n-1];
 	hi->fn[from] = NULL;
 }
 
