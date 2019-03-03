@@ -27,6 +27,8 @@ typedef struct pcb_cam_s {
 	int exported_grps;
 } pcb_cam_t;
 
+extern char *pcb_cam_base; /* substitute %base% with this */
+
 int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_hid_attribute_t *attr_tbl, int numa, pcb_hid_attr_val_t *options);
 
 /* Finish cam export, free all memory, mark cam export inactive and report

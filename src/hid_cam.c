@@ -37,6 +37,8 @@
 #include "layer_vis.h"
 #include "plug_io.h"
 
+char *pcb_cam_base = NULL;
+
 char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, pcb_file_name_style_t style)
 {
 	const pcb_virt_layer_t *v;
@@ -481,6 +483,10 @@ static int cam_update_name_cb(void *ctx_, gds_t *s, const char **input)
 		}
 		else if (ctx->vl != NULL)
 			gds_append_str(s, ctx->vl->name);
+	}
+	if (strncmp(*input, "base%", 5) == 0) {
+		(*input) += 5;
+		gds_append_str(s, pcb_cam_base == NULL ? "unspecifiedbase" : pcb_cam_base);
 	}
 	else if (strncmp(*input, "top_offs", 8) == 0) {
 		int tune, from_top = -1;
