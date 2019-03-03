@@ -32,6 +32,7 @@
 #include <ctype.h>
 #include <genvector/gds_char.h>
 
+#include "board.h"
 #include "hid_cam.h"
 #include "hid_attrib.h"
 #include "hid_init.h"
@@ -56,16 +57,33 @@ typedef struct {
 	char *argv[128];         /* [0] and [1] are for --cam; the rest point into args */
 	int argc;
 
+	char *old_base;
+
 	gds_t tmp;
 } cam_ctx_t;
 
 static void cam_init_inst(cam_ctx_t *ctx)
 {
+
+
 	memset(ctx, 0, sizeof(cam_ctx_t));
+	ctx->old_base = pcb_cam_base;
+
+	if (PCB->Filename != NULL) {
+		char *end = strchr(PCB->Filename, PCB_DIR_SEPARATOR_C);
+		if (end != NULL)
+			pcb_cam_base = pcb_strdup(end+1);
+		else
+			pcb_cam_base = pcb_strdup(PCB->Filename);
+	}
+	else
+		pcb_cam_base = NULL;
 }
 
 static void cam_uninit_inst(cam_ctx_t *ctx)
 {
+	free(pcb_cam_base);
+	pcb_cam_base = ctx->old_base;
 	free(ctx->prefix);
 	free(ctx->args);
 	gds_uninit(&ctx->tmp);
@@ -210,46 +228,55 @@ static const char *cam_find_job(const char *job)
 }
 
 /* execute the instructions of a job specified by name */
-static int cam_call(const char *job)
+static int cam_call(const char *job, cam_ctx_t *ctx)
 {
 	const char *script = cam_find_job(job);
 
-	if (script != NULL) {
-		int res;
-		cam_ctx_t ctx;
-
-
-		cam_init_inst(&ctx);
-		res = cam_exec(script, cam_exec_inst, &ctx);
-		cam_uninit_inst(&ctx);
-		return res;
-	}
+	if (script != NULL)
+		return cam_exec(script, cam_exec_inst, ctx);
 
 	pcb_message(PCB_MSG_ERROR, "cam: can not find job configuration '%s'\n", job);
 	return -1;
 }
 
+static int cam_parse_opt(cam_ctx_t *ctx, const char *opt)
+{
+	if (strncmp(opt, "base=", 5) == 0) {
+		free(pcb_cam_base);
+		pcb_cam_base = pcb_strdup(opt+5);
+		return 0;
+	}
+	return 1;
+}
 
-static const char pcb_acts_cam[] = "cam(exec, script)\ncam(call, jobname)";
+static const char pcb_acts_cam[] = "cam(exec, script, [options])\ncam(call, jobname, [options])";
 static const char pcb_acth_cam[] = "Export jobs for feeding cam processes";
 static fgw_error_t pcb_act_cam(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *cmd, *arg;
-	int rs = -1;
+	cam_ctx_t ctx;
+	const char *cmd, *arg, *opt;
+	int n, rs = -1;
 
 	PCB_ACT_CONVARG(1, FGW_STR, cam, cmd = argv[1].val.str);
 	PCB_ACT_CONVARG(2, FGW_STR, cam, arg = argv[2].val.str);
 
-	if (pcb_strcasecmp(cmd, "exec") == 0) {
-		cam_ctx_t ctx;
-
-		cam_init_inst(&ctx);
-		rs = cam_exec(arg, cam_exec_inst, &ctx);
-		cam_uninit_inst(&ctx);
+	cam_init_inst(&ctx);
+	for(n = 3; n < argc; n++) {
+		PCB_ACT_CONVARG(n, FGW_STR, cam, opt = argv[n].val.str);
+		if (cam_parse_opt(&ctx, opt) != 0) {
+			pcb_message(PCB_MSG_ERROR, "cam: invalid action option '%s'\n", opt);
+			cam_uninit_inst(&ctx);
+			PCB_ACT_IRES(1);
+			return 0;
+		}
 	}
-	else if (pcb_strcasecmp(cmd, "call") == 0)
-		rs = cam_call(arg);
 
+	if (pcb_strcasecmp(cmd, "exec") == 0)
+		rs = cam_exec(arg, cam_exec_inst, &ctx);
+	else if (pcb_strcasecmp(cmd, "call") == 0)
+		rs = cam_call(arg, &ctx);
+
+	cam_uninit_inst(&ctx);
 	PCB_ACT_IRES(rs);
 	return 0;
 }
