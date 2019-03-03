@@ -289,8 +289,6 @@ static void Destroy(XmTreeTableWidget w)
 	free_pixmap_data(w, &tt->pix_leaf);
 	free_pixmap_data(w, &tt->pix_leaf_open);
 
-	XtUnmanageChild(tt->w_horiz_sbar.sbar);
-	XtUnmanageChild(tt->w_vert_sbar.sbar);
 	XtReleaseGC((Widget)w, tt->gc_draw);
 	XtReleaseGC((Widget)w, tt->gc_highlight);
 	XtReleaseGC((Widget)w, tt->gc_inverted_color);
