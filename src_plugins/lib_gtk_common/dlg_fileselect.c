@@ -41,9 +41,18 @@ typedef struct file_history_s {
 	char *fn[MAX_HIST];
 } file_history_t;
 
+static void update_history(file_history_t *hi, const char *path)
+{
+
+}
+
 char *pcb_gtk_fileselect2(GtkWidget *top_window, const char *title, const char *descr, const char *default_file, const char *default_ext, const char *history_tag, pcb_hid_fsd_flags_t flags, pcb_hid_dad_subdialog_t *sub)
 {
+	GtkWidget *dialog;
+	gchar *path = NULL, *base = NULL, *res = NULL;
+	char *result;
 	file_history_t *hi;
+	int n;
 
 	if (!inited) {
 		htsp_init(&history, strhash, strkeyeq);
@@ -58,5 +67,50 @@ char *pcb_gtk_fileselect2(GtkWidget *top_window, const char *title, const char *
 		}
 	}
 
-	return NULL;
+	if ((default_file != NULL) && (*default_file != '\0')) {
+		path = g_path_get_dirname(default_file);
+		base = g_path_get_basename(default_file);
+	}
+
+	dialog = gtk_file_chooser_dialog_new(
+		title, GTK_WINDOW(top_window),
+		(flags & PCB_HID_FSD_READ) ? GTK_FILE_CHOOSER_ACTION_OPEN : GTK_FILE_CHOOSER_ACTION_SAVE,
+		 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
+
+	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
+
+	if ((path != NULL) && (*path != '\0')) {
+		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), path);
+		g_free(path);
+	}
+
+	if ((base != NULL) && (*base != '\0')) {
+		/* default_file is useful only for write */
+		if (!(flags & PCB_HID_FSD_READ))
+			gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), base);
+		g_free(base);
+	}
+
+	for(n = 0; (n < MAX_HIST) && (hi->fn[n] != NULL); n++)
+		gtk_file_chooser_add_shortcut_folder(GTK_FILE_CHOOSER(dialog), hi->fn[n], NULL);
+
+	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_OK) {
+		res = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+		if (res != NULL)
+			path = g_path_get_dirname(res);
+		else
+			path = NULL;
+
+		update_history(hi, path);
+	}
+	gtk_widget_destroy(dialog);
+
+
+	if (res == NULL)
+		return NULL;
+
+	/* can't return something that needs g_free, have to copy */
+	result = pcb_strdup(res);
+	g_free(res);
+	return result;
 }
