@@ -427,7 +427,7 @@ void lesstif_log(const char *fmt, ...)
 /* ------------------------------------------------------------ */
 /* FIXME -- make this a proper file select dialog box */
 char *lesstif_fileselect(const char *title, const char *descr,
-												 const char *default_file, const char *default_ext, const char *history_tag, int flags)
+												 const char *default_file, const char *default_ext, const char *history_tag, pcb_hid_fsd_flags_t flags)
 {
 
 	return pcb_hid_prompt_for(title, default_file, "fileselect");

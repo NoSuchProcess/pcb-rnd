@@ -112,6 +112,26 @@ typedef enum pcb_hid_attr_ev_e {
 	PCB_HID_ATTR_EV_CODECLOSE     /* closed by the code, including standard close buttons */
 } pcb_hid_attr_ev_t;
 
+typedef enum pcb_hid_fsd_flags_e {
+	/* Prompts the user for a filename or directory name.  For GUI
+	   HID's this would mean a file select dialog box.  The 'flags'
+	   argument is the bitwise OR of the following values.  */
+	HID_FILESELECT_READ = 1,
+
+	/* The function calling hid->fileselect will deal with the case
+	   where the selected file already exists.  If not given, then the
+	   GUI will prompt with an "overwrite?" prompt.  Only used when
+	   writing.
+	 */
+	HID_FILESELECT_MAY_NOT_EXIST = 2,
+
+	/* The call is supposed to return a file template (for gerber
+	   output for example) instead of an actual file.  Only used when
+	   writing.
+	 */
+	HID_FILESELECT_IS_TEMPLATE = 4
+} pcb_hid_fsd_flags_t;
+
 /* Optional fields of a menu item; all non-NULL fields are strdup'd in the HID. */
 typedef struct pcb_menu_prop_s {
 	const char *action;
@@ -333,23 +353,6 @@ struct pcb_hid_s {
 	void (*log)(const char *fmt, ...);
 	void (*logv)(enum pcb_message_level, const char *fmt, va_list args);
 
-	/* Prompts the user for a filename or directory name.  For GUI
-	   HID's this would mean a file select dialog box.  The 'flags'
-	   argument is the bitwise OR of the following values.  */
-#define HID_FILESELECT_READ  0x01
-
-	/* The function calling hid->fileselect will deal with the case
-	   where the selected file already exists.  If not given, then the
-	   GUI will prompt with an "overwrite?" prompt.  Only used when
-	   writing.
-	 */
-#define HID_FILESELECT_MAY_NOT_EXIST 0x02
-
-	/* The call is supposed to return a file template (for gerber
-	   output for example) instead of an actual file.  Only used when
-	   writing.
-	 */
-#define HID_FILESELECT_IS_TEMPLATE 0x04
 
 	/* title_ may be used as a dialog box title.  Ignored if NULL.
 	 *
@@ -364,10 +367,10 @@ struct pcb_hid_s {
 	 * history.  Examples would be "board", "vendor", "renumber",
 	 * etc.  If NULL, no specific history is kept.
 	 *
-	 * flags_ are the bitwise OR of the HID_FILESELECT defines above
+	 * flags_ are the bitwise OR
 	 */
 
-	char *(*fileselect)(const char *title, const char *descr, const char *default_file, const char *default_ext, const char *history_tag, int flags);
+	char *(*fileselect)(const char *title, const char *descr, const char *default_file, const char *default_ext, const char *history_tag, pcb_hid_fsd_flags_t flags);
 
 	/* A generic dialog to ask for a set of attributes. If n_attrs_ is
 	   zero, attrs_(.name) must be NULL terminated. attr_dlg_run returns
