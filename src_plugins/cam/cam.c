@@ -90,18 +90,21 @@ static void cam_uninit_inst(cam_ctx_t *ctx)
 }
 
 /* mkdir -p on arg - changes the string in arg */
-static void prefix_mkdir(char *arg, char **filename)
+static int prefix_mkdir(char *arg, char **filename)
 {
 	char *curr, *next, *end;
+	int res;
 
 		/* mkdir -p if there's a path sep in the prefix */
 		end = strrchr(arg, PCB_DIR_SEPARATOR_C);
 		if (end == NULL) {
 			if (filename != NULL)
 				*filename = arg;
-			return;
+			return 0;
 		}
+
 		*end = '\0';
+		res = end - arg;
 		if (filename != NULL)
 			*filename = end+1;
 
@@ -115,6 +118,7 @@ static void prefix_mkdir(char *arg, char **filename)
 				next++;
 			}
 		}
+	return res;
 }
 
 static int cam_exec_inst(void *ctx_, char *cmd, char *arg)
@@ -253,6 +257,24 @@ static int cam_parse_opt(cam_ctx_t *ctx, const char *opt)
 	if (strncmp(opt, "base=", 5) == 0) {
 		free(pcb_cam_base);
 		pcb_cam_base = pcb_strdup(opt+5);
+		return 0;
+	}
+	else if (strncmp(opt, "outfile=", 8) == 0) {
+		char *fn, *tmp = pcb_strdup(opt+8);
+		int dirlen = prefix_mkdir(tmp, &fn);
+
+		free(ctx->prefix);
+		if (dirlen > 0) {
+			ctx->prefix = malloc(dirlen+2);
+			memcpy(ctx->prefix, opt+8, dirlen);
+			ctx->prefix[dirlen] = PCB_DIR_SEPARATOR_C;
+			ctx->prefix[dirlen+1] = '\0';
+		}
+		else
+			ctx->prefix = NULL;
+		free(pcb_cam_base);
+		pcb_cam_base = pcb_strdup(fn);
+		free(tmp);
 		return 0;
 	}
 	return 1;
