@@ -332,7 +332,7 @@ static int parse_keydesc(pcb_hid_cfg_keys_t *km, const char *keydesc, pcb_hid_cf
 		if ((key_raws[slen] == 0) && (key_trs[slen] == 0)) {
 			char *s;
 			s = malloc(len+1);
-			memcpy(s, desc1, k-desc1);
+			memcpy(s, k, len);
 			s[len] = '\0';
 			pcb_message(PCB_MSG_ERROR, "Unrecognised key symbol in key description: %s\n", s);
 			free(s);
