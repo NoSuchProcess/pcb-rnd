@@ -1649,6 +1649,7 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 		goto err;
 	}
 
+	pcb_data_clip_inhibit_inc(pcb->Data);
 	eagle_read_design_rules(&st);
 	old_leni = pcb_create_being_lenient;
 	pcb_create_being_lenient = 1;
@@ -1663,6 +1664,7 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	pcb_layer_colors_from_conf(pcb, 1);
 
 	pp_res = post_process_thermals(&st);
+	pcb_data_clip_inhibit_dec(pcb->Data, 1);
 	st_uninit(&st);
 	return pp_res;
 
