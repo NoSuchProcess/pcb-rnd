@@ -44,14 +44,13 @@ static void ltf_tt_insert_row(ltf_tree_t *lt, pcb_hid_row_t *new_row)
 	rafter = pcb_dad_tree_prev_row(lt->ht, new_row);
 	if (rafter == NULL) {
 		rafter = pcb_dad_tree_parent_row(lt->ht, new_row);
-		if (rafter != NULL) {
-			e->level = 1;
-			for(lvl = rafter; lvl != NULL; lvl = pcb_dad_tree_parent_row(lt->ht, lvl))
-				e->level++;
-		}
+		e->level = 1;
 	}
 
 	if (rafter != NULL) {
+		for(lvl = rafter; lvl != NULL; lvl = pcb_dad_tree_parent_row(lt->ht, lvl))
+			e->level++;
+
 		/* find the first node that is at least on the same level as rafter;
 		   this effectively skips all children of rafter */
 		before = rafter->hid_data;
