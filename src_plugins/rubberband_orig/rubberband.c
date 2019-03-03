@@ -1284,34 +1284,6 @@ static void rbe_rotate(void *user_data, int argc, pcb_event_arg_t argv[])
 TODO("TODO")
 }
 
-static void rbe_rename(void *user_data, int argc, pcb_event_arg_t argv[])
-{
-TODO(": rewrite this for subc - also move it out from rubberband, it has nothing to do with the feature - should be some generic rat line invalidation mechanism")
-#if 0
-	rubber_ctx_t *rbnd = user_data;
-	int type = argv[1].d.i;
-	void *ptr1 = argv[2].d.p, *ptr2 = argv[3].d.p, *ptr3 = argv[4].d.p;
-/*	int pinnum = argv[5].d.i;*/
-
-	if (type == PCB_OBJ_ELEMENT) {
-		pcb_rb_line_t *ptr;
-		int i;
-
-		pcb_undo_restore_serial();
-		rbnd->lines.used = 0;
-		pcb_rubber_band_lookup_rat_lines(rbnd, type, ptr1, ptr2, ptr3);
-		ptr = rbnd->Rubberband;
-		for(i = 0; i < rbnd->lines.used; i++, ptr++) {
-			if (PCB->RatOn)
-				pcb_rat_invalidate_erase((pcb_rat_t *) ptr->Line);
-			pcb_undo_move_obj_to_remove(PCB_OBJ_RAT, ptr->Line, ptr->Line, ptr->Line);
-		}
-		pcb_undo_inc_serial();
-		pcb_draw();
-	}
-#endif
-}
-
 static void rbe_lookup_lines(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
@@ -1461,7 +1433,6 @@ int pplg_init_rubberband_orig(void)
 	pcb_event_bind(PCB_EVENT_RUBBER_MOVE_DRAW, rbe_draw, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_ROTATE90, rbe_rotate90, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_ROTATE, rbe_rotate, ctx, rubber_cookie);
-	pcb_event_bind(PCB_EVENT_RUBBER_RENAME, rbe_rename, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_LOOKUP_LINES, rbe_lookup_lines, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_LOOKUP_RATS, rbe_lookup_rats, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_CONSTRAIN_MAIN_LINE, rbe_constrain_main_line, ctx, rubber_cookie);

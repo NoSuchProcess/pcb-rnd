@@ -58,7 +58,6 @@ typedef enum {
 	PCB_EVENT_RUBBER_MOVE_DRAW,       /* rubber band: draw crosshair-attached rubber band objects after a move or copy */
 	PCB_EVENT_RUBBER_ROTATE90,        /* rubber band: crosshair object rotated by 90 degrees */
 	PCB_EVENT_RUBBER_ROTATE,          /* rubber band: crosshair object rotated by arbitrary angle */
-	PCB_EVENT_RUBBER_RENAME,          /* rubber band: element pin/pad got renamed */
 	PCB_EVENT_RUBBER_LOOKUP_LINES,    /* rubber band: attach rubber banded line objects to crosshair */
 	PCB_EVENT_RUBBER_LOOKUP_RATS,     /* rubber band: attach rubber banded rat lines objects to crosshair */
 	PCB_EVENT_RUBBER_CONSTRAIN_MAIN_LINE, /* rubber band: adapt main line to keep rubberband lines direction */

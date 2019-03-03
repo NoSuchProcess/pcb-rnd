@@ -57,7 +57,6 @@ static const char *pcb_fgw_evnames[] = {
 	"pcbev_rubber_move_draw",
 	"pcbev_rubber_rotate90",
 	"pcbev_rubber_rotate",
-	"pcbev_rubber_rename",
 	"pcbev_rubber_lookup_lines",
 	"pcbev_rubber_lookup_rats",
 	"pcbev_rubber_constrain_main_line",

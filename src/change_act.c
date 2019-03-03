@@ -479,7 +479,6 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
 	char *name;
-	int pinnum;
 	pcb_objtype_t type;
 
 	PCB_ACT_CONVARG(1, FGW_KEYWORD, ChangeName, op = fgw_keyword(&argv[1]));
@@ -504,11 +503,10 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				do_chg_name:;
 				if ((type = pcb_search_screen(x, y, type, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 					pcb_undo_save_serial();
-					pinnum = 0;
 					if (pcb_chg_obj_name_query(ptr2)) {
 						pcb_redraw();
 						pcb_board_set_changed_flag(pcb_true);
-						pcb_event(PCB_EVENT_RUBBER_RENAME, "ipppi", type, ptr1, ptr2, ptr3, pinnum);
+						pcb_actionl("DeleteRats", "AllRats", NULL);
 					}
 				}
 				break;
