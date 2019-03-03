@@ -1014,25 +1014,6 @@ static void rbe_reset(void *user_data, int argc, pcb_event_arg_t argv[])
 	rbnd->arcs.used = 0;
 }
 
-static void rbe_remove_subc(void *user_data, int argc, pcb_event_arg_t argv[])
-{
-	rubber_ctx_t *rbnd = user_data;
-	pcb_rb_line_t *ptr;
-	void *ptr1 = argv[1].d.p, *ptr2 = argv[2].d.p, *ptr3 = argv[3].d.p;
-	int i, type = PCB_OBJ_SUBC;
-
-	rbnd->lines.used = 0;
-	pcb_rubber_band_lookup_rat_lines(rbnd, type, ptr1, ptr2, ptr3);
-	ptr = rbnd->lines.array;
-	for(i = 0; i < rbnd->lines.used; i++) {
-		if (PCB->RatOn)
-			pcb_rat_invalidate_erase((pcb_rat_t *) ptr->Line);
-
-		pcb_undo_move_obj_to_remove(PCB_OBJ_RAT, ptr->Line, ptr->Line, ptr->Line);
-		ptr++;
-	}
-}
-
 static void rbe_move(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
@@ -1476,7 +1457,6 @@ int pplg_init_rubberband_orig(void)
 	void *ctx = &rubber_band_state;
 	PCB_API_CHK_VER;
 	pcb_event_bind(PCB_EVENT_RUBBER_RESET, rbe_reset, ctx, rubber_cookie);
-	pcb_event_bind(PCB_EVENT_RUBBER_REMOVE_SUBC, rbe_remove_subc, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_MOVE, rbe_move, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_MOVE_DRAW, rbe_draw, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_ROTATE90, rbe_rotate90, ctx, rubber_cookie);

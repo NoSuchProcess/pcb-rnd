@@ -29,6 +29,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "data_it.h"
 #include "conf_core.h"
 #include "hid_inlines.h"
 #include "undo.h"
@@ -504,3 +505,31 @@ void pcb_rat_invalidate_draw(pcb_rat_t *Rat)
 	else
 		pcb_line_invalidate_draw(NULL, (pcb_line_t *) Rat);
 }
+
+void pcb_rat_update_obj_removed(pcb_board_t *pcb, pcb_any_obj_t *obj)
+{
+	pcb_rat_t *rat;
+	gdl_iterator_t it;
+
+	if (obj->type == PCB_OBJ_SUBC) { 
+		pcb_subc_t *subc = (pcb_subc_t *)obj;
+		pcb_any_obj_t *o;
+		pcb_data_it_t it2;
+
+		/* subcircuit means checking against each part object;
+		   this is O(R*P), where R is the number of rat lines and P is the
+		   number of subc parts - maybe an rtree based approach would be better */
+		for(o = pcb_data_first(&it2, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it2))
+			pcb_rat_update_obj_removed(pcb, o);
+		return;
+	}
+
+	ratlist_foreach(&pcb->Data->Rat, &it, rat) {
+		if ((pcb_rat_anchor_guess(rat, 0, 1) == obj) || (pcb_rat_anchor_guess(rat, 1, 1) == obj)) {
+			if (PCB->RatOn)
+				pcb_rat_invalidate_erase(rat);
+			pcb_undo_move_obj_to_remove(PCB_OBJ_RAT, rat, rat, rat);
+		}
+	}
+}
+

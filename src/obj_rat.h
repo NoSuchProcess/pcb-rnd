@@ -61,6 +61,9 @@ pcb_any_obj_t *pcb_rat_anchor_guess(pcb_rat_t *rat, int end, pcb_bool update);
 /* Call pcb_rat_anchor_guess() on all rats of data, with update=true */
 void pcb_rat_all_anchor_guess(pcb_data_t *data);
 
+/* Minimal update rats after object removal: remove connected rats */
+void pcb_rat_update_obj_removed(pcb_board_t *pcb, pcb_any_obj_t *obj);
+
 
 #define PCB_RAT_LOOP(top) do {                                          \
   pcb_rat_t *line;                                                    \

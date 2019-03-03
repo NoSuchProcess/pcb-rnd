@@ -61,13 +61,14 @@ void pcb_tool_remove_notify_mode(void)
 				pcb_message(PCB_MSG_WARNING, "Can not remove the subcircuit being edited in the footprint edit mode\n");
 				return;
 			}
-			pcb_event(PCB_EVENT_RUBBER_REMOVE_SUBC, "ppp", ptr1, ptr2, ptr3);
 		}
+
+		obj = ptr2;
+		pcb_rat_update_obj_removed(PCB, obj);
 
 		/* preserve original parent over the board layer pcb_search_screen operated on -
 		   this is essential for undo: it needs to put back the object to the original
 		   layer (e.g. inside a subc) instead of on the board layer */
-		obj = ptr2;
 		if (obj->parent_type == PCB_PARENT_LAYER)
 			ptr1 = obj->parent.layer;
 		else if (obj->parent_type == PCB_PARENT_DATA)
