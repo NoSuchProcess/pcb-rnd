@@ -31,7 +31,10 @@
 #include <genht/hash.h>
 
 #include "hid.h"
+#include "hid_dad.h"
 #include "compat_misc.h"
+#include "compat.h"
+#include "event.h"
 
 static htsp_t history;
 static int inited = 0;
@@ -72,13 +75,39 @@ static void update_history(file_history_t *hi, const char *path)
 	hi->fn[0] = pcb_strdup(path);
 }
 
+typedef struct {
+	GtkWidget *dialog;
+	int active;
+} pcb_gtk_fsd_t;
+
+static int pcb_gtk_fsd_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, pcb_event_arg_t *res, int argc, pcb_event_arg_t *argv[])
+{
+	pcb_gtk_fsd_t *pctx = sub->parent_ctx;
+
+	if (strcmp(cmd, "close") == 0) {
+		if (pctx->active) {
+			gtk_widget_destroy(pctx->dialog);
+			pctx->active = 0;
+		}
+		return 0;
+	}
+	if (strcmp(cmd, "get_path") == 0) {
+		gchar *gp = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(pctx->dialog));
+		res->type = PCB_EVARG_STR;
+		res->d.s = pcb_strdup(gp);
+		g_free(gp);
+		return 0;
+	}
+	return -1;
+}
+
 char *pcb_gtk_fileselect2(GtkWidget *top_window, const char *title, const char *descr, const char *default_file, const char *default_ext, const char *history_tag, pcb_hid_fsd_flags_t flags, pcb_hid_dad_subdialog_t *sub)
 {
-	GtkWidget *dialog;
 	gchar *path = NULL, *base = NULL, *res = NULL;
 	char *result;
 	file_history_t *hi;
 	int n;
+	pcb_gtk_fsd_t pctx;
 
 	if (!inited) {
 		htsp_init(&history, strhash, strkeyeq);
@@ -98,30 +127,42 @@ char *pcb_gtk_fileselect2(GtkWidget *top_window, const char *title, const char *
 		base = g_path_get_basename(default_file);
 	}
 
-	dialog = gtk_file_chooser_dialog_new(
+	pctx.dialog = gtk_file_chooser_dialog_new(
 		title, GTK_WINDOW(top_window),
 		(flags & PCB_HID_FSD_READ) ? GTK_FILE_CHOOSER_ACTION_OPEN : GTK_FILE_CHOOSER_ACTION_SAVE,
 		 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
 
-	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
+	gtk_dialog_set_default_response(GTK_DIALOG(pctx.dialog), GTK_RESPONSE_OK);
+
+	if (sub != NULL) {
+		GtkWidget *subbox;
+		subbox = gtkc_vbox_new(FALSE, 0);
+
+		sub->parent_ctx = &pctx;
+		sub->parent_poke = pcb_gtk_fsd_poke;
+
+		gtk_widget_show_all(subbox);
+		gtk_file_chooser_set_extra_widget(GTK_FILE_CHOOSER(pctx.dialog), subbox);
+	}
 
 	if ((path != NULL) && (*path != '\0')) {
-		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), path);
+		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(pctx.dialog), path);
 		g_free(path);
 	}
 
 	if ((base != NULL) && (*base != '\0')) {
 		/* default_file is useful only for write */
 		if (!(flags & PCB_HID_FSD_READ))
-			gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), base);
+			gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(pctx.dialog), base);
 		g_free(base);
 	}
 
 	for(n = 0; (n < MAX_HIST) && (hi->fn[n] != NULL); n++)
-		gtk_file_chooser_add_shortcut_folder(GTK_FILE_CHOOSER(dialog), hi->fn[n], NULL);
+		gtk_file_chooser_add_shortcut_folder(GTK_FILE_CHOOSER(pctx.dialog), hi->fn[n], NULL);
 
-	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_OK) {
-		res = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+	pctx.active = 1;
+	if (gtk_dialog_run(GTK_DIALOG(pctx.dialog)) == GTK_RESPONSE_OK) {
+		res = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(pctx.dialog));
 		if (res != NULL)
 			path = g_path_get_dirname(res);
 		else
@@ -129,7 +170,11 @@ char *pcb_gtk_fileselect2(GtkWidget *top_window, const char *title, const char *
 
 		update_history(hi, path);
 	}
-	gtk_widget_destroy(dialog);
+	
+	if (pctx.active) {
+		gtk_widget_destroy(pctx.dialog);
+		pctx.active = 0;
+	}
 
 
 	if (res == NULL)
