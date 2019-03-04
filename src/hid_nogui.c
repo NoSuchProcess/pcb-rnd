@@ -262,6 +262,7 @@ static void nogui_logv(enum pcb_message_level level, const char *fmt, va_list ap
  * Returns NULL if the user simply presses enter, or otherwise gives no input.
  */
 #define MAX_LINE_LENGTH 1024
+static const char *CANCEL = "CANCEL";
 static char *read_stdin_line(void)
 {
 	static char buf[MAX_LINE_LENGTH];
@@ -271,7 +272,7 @@ static char *read_stdin_line(void)
 	s = fgets(buf, MAX_LINE_LENGTH, stdin);
 	if (s == NULL) {
 		printf("\n");
-		return NULL;
+		return CANCEL;
 	}
 
 	/* Strip any trailing newline characters */
@@ -348,10 +349,10 @@ static fgw_error_t pcb_act_cli_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *a
 	printf("\nChose a number from above: ");
 	fflush(stdout);
 	answer = read_stdin_line();
+	if ((answer == CANCEL) || (strcmp(answer, "cancel") == 0))
+		goto cancel;
 	if (answer == NULL)
 		goto retry;
-	if (strcmp(answer, "cancel") == 0)
-		goto cancel;
 	ret = strtol(answer, &end, 10);
 	if (((*end != '\0') && (*end != '\n') && (*end != '\r')) || (ret < 1) || (ret > (argc - 3) / 2)) {
 		printf("\nERROR: please type a number between 1 and %d\n", (argc - 4)/2+1);
