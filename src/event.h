@@ -28,6 +28,7 @@
 #define PCB_EVENT_H
 #include "config.h"
 #include "unit.h"
+#include "global_typedefs.h"
 
 typedef enum {
 	PCB_EVENT_GUI_INIT,               /* finished initializing the GUI called right before the main loop of the GUI; args: (void) */
@@ -92,9 +93,8 @@ typedef enum {
 	PCB_EVARG_ANGLE											/* format char: a */
 } pcb_event_argtype_t;
 
-
 /* An argument is its type and value */
-typedef struct {
+struct pcb_event_arg_s {
 	pcb_event_argtype_t type;
 	union {
 		int i;
@@ -104,7 +104,7 @@ typedef struct {
 		pcb_coord_t c;
 		pcb_angle_t a;
 	} d;
-} pcb_event_arg_t;
+};
 
 /* Initialize the event system */
 void pcb_events_init(void);

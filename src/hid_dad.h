@@ -32,6 +32,7 @@
 #include "compat_misc.h"
 #include "hid_attrib.h"
 #include "pcb-printf.h"
+#include "global_typedefs.h"
 
 
 /*** Helpers for building dynamic attribute dialogs (DAD) ***/
@@ -594,7 +595,18 @@ void pcb_hid_iterate(pcb_hid_t *hid);
 
 /* sub-dialogs e.g. for the file selector dialog */
 struct pcb_hid_dad_subdialog_s {
+	/* filled in by the sub-dialog's creator */
 	PCB_DAD_DECL_NOINIT(dlg)
+
+	/* filled in by the parent dialog's code, the subdialog's code should
+	   call this to query/change properties of the parent dialog. cmd and
+	   argc/argv are all specific to the given dialog. Returns 0 on success,
+	   return payload may be placed in res (if it is not NULL). Parent poke:
+	     close()                   - cancel/close the dialog */
+	int (*parent_poke)(pcb_hid_dad_subdialog_t *sub, const char *cmd, pcb_event_arg_t *res, int argc, pcb_event_arg_t *argv[]);
+
+	void *parent_ctx; /* used by the parent dialog code */
+	void *sub_ctx;    /* used by the sub-dialog's creator */
 };
 
 #endif
