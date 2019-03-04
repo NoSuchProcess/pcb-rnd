@@ -13,3 +13,5 @@ int ghid_attr_dlg_widget_hide(void *hid_ctx, int idx, pcb_bool hide);
 int ghid_attr_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
 
 
+/* Create an interacgive DAD subdialog under parent_vbox */
+void *ghid_attr_sub_new(pcb_gtk_common_t *com, GtkWidget *parent_box, pcb_hid_attribute_t *attrs, int n_attrs, void *caller_data);

@@ -828,6 +828,24 @@ TODO("Remove force_label once we got rid of non-DAD attribute dialogs - look for
 	return ctx;
 }
 
+void *ghid_attr_sub_new(pcb_gtk_common_t *com, GtkWidget *parent_box, pcb_hid_attribute_t *attrs, int n_attrs, void *caller_data)
+{
+	attr_dlg_t *ctx;
+
+	ctx = calloc(sizeof(attr_dlg_t), 1);
+
+	ctx->com = com;
+	ctx->attrs = attrs;
+	ctx->n_attrs = n_attrs;
+	ctx->wl = calloc(sizeof(GtkWidget *), n_attrs);
+	ctx->caller_data = caller_data;
+	ctx->rc = 1; /* just in case the window is destroyed in an unknown way: take it as cancel */
+
+	ghid_attr_dlg_add(ctx, parent_box, NULL, 0, (attrs[0].pcb_hatt_flags & PCB_HATF_LABEL));
+
+	return ctx;
+}
+
 int ghid_attr_dlg_run(void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;
