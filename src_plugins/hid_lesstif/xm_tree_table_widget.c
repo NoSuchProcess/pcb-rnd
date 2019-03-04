@@ -292,7 +292,6 @@ static void Destroy(XmTreeTableWidget w)
 	XtReleaseGC((Widget)w, tt->gc_draw);
 	XtReleaseGC((Widget)w, tt->gc_highlight);
 	XtReleaseGC((Widget)w, tt->gc_inverted_color);
-	XFreeFont(XtDisplay((Widget)w), tt->font);
 }
 /*---------------------------------------------------------------------------*/
 static void Redisplay(Widget aw, XExposeEvent *event, Region region)
