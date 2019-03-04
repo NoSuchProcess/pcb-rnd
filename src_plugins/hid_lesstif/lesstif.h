@@ -58,6 +58,7 @@ extern void lesstif_update_status_line();
 extern char *lesstif_fileselect(const char *, const char *, const char *, const char *, const char *, pcb_hid_fsd_flags_t);
 extern void lesstif_log(const char *fmt, ...);
 extern void lesstif_attributes_dialog(const char *, pcb_attribute_list_t *);
+void *lesstif_attr_sub_new(Widget parent_box, pcb_hid_attribute_t *attrs, int n_attrs, void *caller_data);
 
 
 #ifndef XtRPCBCoord

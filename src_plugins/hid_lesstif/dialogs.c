@@ -507,7 +507,7 @@ static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
 {
 	char *cp;
 
-	if (ctx->attrs[widx].help_text == ATTR_UNDOCUMENTED)
+	if ((ctx->attrs[widx].help_text == ATTR_UNDOCUMENTED) || (ctx->results == NULL))
 		return;
 
 	switch(ctx->attrs[widx].type) {
@@ -1137,6 +1137,29 @@ void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_att
 
 	if (!modal)
 		XtManageChild(ctx->dialog);
+
+	return ctx;
+}
+
+void *lesstif_attr_sub_new(Widget parent_box, pcb_hid_attribute_t *attrs, int n_attrs, void *caller_data)
+{
+	int i;
+	lesstif_attr_dlg_t *ctx;
+
+	ctx = calloc(sizeof(lesstif_attr_dlg_t), 1);
+	ctx->attrs = attrs;
+	ctx->n_attrs = n_attrs;
+	ctx->caller_data = caller_data;
+
+	for (i = 0; i < n_attrs; i++) {
+		if (attrs[i].help_text != ATTR_UNDOCUMENTED)
+			ctx->actual_nattrs++;
+	}
+
+	ctx->wl = (Widget *) calloc(n_attrs, sizeof(Widget));
+	ctx->btn = (Widget **) calloc(n_attrs, sizeof(Widget *));
+
+	attribute_dialog_add(ctx, parent_box, NULL, 0, (ctx->attrs[0].pcb_hatt_flags & PCB_HATF_LABEL));
 
 	return ctx;
 }
