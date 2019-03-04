@@ -26,12 +26,138 @@
 
 #include "config.h"
 
+#include "xincludes.h"
+#include "lesstif.h"
+#include "stdarg.h"
+
 #include "hid.h"
+#include "hid_dad.h"
+#include "event.h"
 
 #include "dlg_fileselect.h"
 
+static XmString xms_pcb;
+
+typedef struct {
+	Widget dialog;
+	int active;
+	void *hid_ctx; /* DAD subdialog context */
+} pcb_ltf_fsd_t;
+
+static int ok;
+
+static void fsb_ok_value(Widget w, void *v, void *cbs)
+{
+	ok = (int)(size_t)v;
+}
+
+static int wait_for_dialog(Widget w)
+{
+	ok = -1;
+	XtManageChild(w);
+	while (ok == -1 && XtIsManaged(w)) {
+		XEvent e;
+		XtAppNextEvent(app_context, &e);
+		XtDispatchEvent(&e);
+	}
+	if (XtIsManaged(w))
+		XtUnmanageChild(w);
+	return ok;
+}
+
+static char *pcb_ltf_get_path(pcb_ltf_fsd_t *pctx)
+{
+	char *res, *name;
+	XmString xmname;
+
+	stdarg_n = 0;
+	stdarg(XmNdirSpec, &xmname);
+	XtGetValues(pctx->dialog, stdarg_args, stdarg_n);
+
+	XmStringGetLtoR(xmname, XmFONTLIST_DEFAULT_TAG, &name);
+	res = pcb_strdup(name);
+	XtFree(name);
+	return res;
+}
+
+static int pcb_ltf_fsd_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, pcb_event_arg_t *res, int argc, pcb_event_arg_t *argv)
+{
+	pcb_ltf_fsd_t *pctx = sub->parent_ctx;
+
+	if (strcmp(cmd, "close") == 0) {
+		if (pctx->active) {
+			pctx->active = 0;
+			XtDestroyWidget(pctx->dialog);
+		}
+		return 0;
+	}
+
+	if (strcmp(cmd, "get_path") == 0) {
+		res->type = PCB_EVARG_STR;
+		res->d.s = pcb_ltf_get_path(pctx);
+		return 0;
+	}
+
+	if ((strcmp(cmd, "set_file_name") == 0) && (argc == 1) && (argv[0].type == PCB_EVARG_STR)) {
+TODO("check how to do this");
+		return 0;
+	}
+
+	return -1;
+}
+
 char *pcb_ltf_fileselect2(const char *title, const char *descr, const char *default_file, const char *default_ext, const char *history_tag, pcb_hid_fsd_flags_t flags, pcb_hid_dad_subdialog_t *sub)
 {
-	return NULL;
+	XmString xms_ext = NULL, xms_load = NULL;
+	pcb_ltf_fsd_t pctx;
+	char *res;
+
+	stdarg_n = 0;
+	pctx.dialog = XmCreateFileSelectionDialog(mainwind, XmStrCast("file"), stdarg_args, stdarg_n);
+
+	XtAddCallback(pctx.dialog, XmNokCallback, (XtCallbackProc)fsb_ok_value, (XtPointer)1);
+	XtAddCallback(pctx.dialog, XmNcancelCallback, (XtCallbackProc)fsb_ok_value, (XtPointer)0);
+
+	if (sub != NULL) {
+		Widget subbox;
+		stdarg_n = 0;
+		stdarg(XmNorientation, XmVERTICAL);
+		stdarg(XmNpacking, XmPACK_COLUMN);
+		subbox = XmCreateRowColumn(pctx.dialog, "extra", stdarg_args, stdarg_n);
+
+		sub->parent_ctx = &pctx;
+		sub->parent_poke = pcb_ltf_fsd_poke;
+
+		pctx.hid_ctx = lesstif_attr_sub_new(subbox, sub->dlg, sub->dlg_len, sub);
+		XtManageChild(subbox);
+	}
+
+
+	stdarg_n = 0;
+	stdarg(XmNtitle, title);
+	XtSetValues(XtParent(pctx.dialog), stdarg_args, stdarg_n);
+
+	if (flags & PCB_HID_FSD_READ) {
+		xms_load = XmStringCreatePCB("Load From");
+		stdarg_n = 0;
+		stdarg(XmNselectionLabelString, xms_load);
+		XtSetValues(pctx.dialog, stdarg_args, stdarg_n);
+	}
+
+	if (default_ext != NULL) {
+		xms_ext = XmStringCreatePCB(default_ext);
+		stdarg_n = 0;
+		stdarg(XmNpattern, xms_ext);
+		stdarg(XmNmustMatch, True);
+		XtSetValues(pctx.dialog, stdarg_args, stdarg_n);
+	}
+
+	if (!wait_for_dialog(pctx.dialog))
+		return NULL;
+
+	res = pcb_ltf_get_path(&pctx);
+	if (xms_load != NULL) XmStringFree(xms_load);
+	if (xms_ext != NULL) XmStringFree(xms_ext);
+	return res;
 }
 
