@@ -445,7 +445,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			}
 		}
 		PCB_END_LOOP;
-		if (number_of_footprints_not_found > 0) {
+		if ((number_of_footprints_not_found > 0) && (!conf_core.rc.quiet)) {
 			pcb_hid_message_box("warning", "Footprint import", "Not all requested footprints were found.\nSee the message log for details", "ok", 0, NULL);
 		}
 		return 0;
