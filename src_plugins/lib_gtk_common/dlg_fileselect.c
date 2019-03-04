@@ -36,6 +36,8 @@
 #include "compat.h"
 #include "event.h"
 
+#include "dlg_attribute.h"
+
 static htsp_t history;
 static int inited = 0;
 
@@ -78,6 +80,7 @@ static void update_history(file_history_t *hi, const char *path)
 typedef struct {
 	GtkWidget *dialog;
 	int active;
+	void *hid_ctx; /* DAD subdialog context */
 } pcb_gtk_fsd_t;
 
 static int pcb_gtk_fsd_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, pcb_event_arg_t *res, int argc, pcb_event_arg_t *argv[])
@@ -101,8 +104,9 @@ static int pcb_gtk_fsd_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, pcb_e
 	return -1;
 }
 
-char *pcb_gtk_fileselect2(GtkWidget *top_window, const char *title, const char *descr, const char *default_file, const char *default_ext, const char *history_tag, pcb_hid_fsd_flags_t flags, pcb_hid_dad_subdialog_t *sub)
+char *pcb_gtk_fileselect2(pcb_gtk_common_t *com, const char *title, const char *descr, const char *default_file, const char *default_ext, const char *history_tag, pcb_hid_fsd_flags_t flags, pcb_hid_dad_subdialog_t *sub)
 {
+	GtkWidget *top_window = com->top_window;
 	gchar *path = NULL, *base = NULL, *res = NULL;
 	char *result;
 	file_history_t *hi;
@@ -136,10 +140,12 @@ char *pcb_gtk_fileselect2(GtkWidget *top_window, const char *title, const char *
 
 	if (sub != NULL) {
 		GtkWidget *subbox;
-		subbox = gtkc_vbox_new(FALSE, 0);
+		subbox = gtkc_hbox_new(FALSE, 0);
 
 		sub->parent_ctx = &pctx;
 		sub->parent_poke = pcb_gtk_fsd_poke;
+
+		pctx.hid_ctx = ghid_attr_sub_new(com, subbox, sub->dlg, sub->dlg_len, sub);
 
 		gtk_widget_show_all(subbox);
 		gtk_file_chooser_set_extra_widget(GTK_FILE_CHOOSER(pctx.dialog), subbox);
