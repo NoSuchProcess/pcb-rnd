@@ -354,16 +354,16 @@ struct pcb_hid_s {
 	void (*logv)(enum pcb_message_level, const char *fmt, va_list args);
 
 
-	/* title_ may be used as a dialog box title.  Ignored if NULL.
+	/* title may be used as a dialog box title.  Ignored if NULL.
 	 *
-	 * descr_ is a longer help string.  Ignored if NULL.
+	 * descr is a longer help string.  Ignored if NULL.
 	 *
-	 * default_file_ is the default file name.  Ignored if NULL.
+	 * default_file is the default file name.  Ignored if NULL.
 	 *
-	 * default_ext_ is the default file extension, like ".pdf".
+	 * default_ext is the default file extension, like ".pdf".
 	 * Ignored if NULL.
 	 *
-	 * history_tag_ may be used by the GUI to keep track of file
+	 * history_tag may be used by the GUI to keep track of file
 	 * history.  Examples would be "board", "vendor", "renumber",
 	 * etc.  If NULL, no specific history is kept.
 	 *
