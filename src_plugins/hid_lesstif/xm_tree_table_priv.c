@@ -132,11 +132,20 @@ static void draw_ttwidget_header(Widget aw)
 	int i_ret[3] = { 0 };
 	unsigned x;
 	XRectangle clip = s->geom;
+	long len_diff = (long)tt->p_header->n_cells - (long)s->column_vector_len;
 	clip.height = s->vertical_stride;
+
+	if (0 < len_diff) {
+		s->column_dimensions_vector = (long *)realloc(s->column_dimensions_vector, sizeof(long) * tt->p_header->n_cells);
+		memset(s->column_dimensions_vector + s->column_vector_len, 0x00, sizeof(long) * len_diff);
+		s->column_vector_len = tt->p_header->n_cells;
+
+	}
 	for(x = 0; x < tt->p_header->n_cells; ++x) {
 		const char *str = tt_get_cell(tt->p_header, x)[0];
 		if (str) {
 			XTextExtents(tt->font, str, strlen(str), i_ret, i_ret + 1, i_ret + 2, &chrs);
+			s->column_dimensions_vector[x] = TTBL_MAX(s->column_dimensions_vector[x], chrs.width);
 			clip.height = TTBL_MAX(s->vertical_stride, TTBL_MAX(chrs.ascent - chrs.descent, clip.height));
 		}
 	}
@@ -459,9 +468,9 @@ static void xm_extent_prediction_item(tt_entry_t *entry, XmTreeTableWidget w, st
 		return;
 
 	len_diff = (long)entry->n_cells - (long)s->column_vector_len;
-	if (0 <= len_diff) {
+	if (0 < len_diff) {
 		s->column_dimensions_vector = (long *)realloc(s->column_dimensions_vector, sizeof(long) * entry->n_cells);
-		memset(s->column_dimensions_vector + s->column_vector_len, 0x00, sizeof(long) * (entry->n_cells - s->column_vector_len));
+		memset(s->column_dimensions_vector + s->column_vector_len, 0x00, sizeof(long) * len_diff);
 		s->column_vector_len = entry->n_cells;
 	}
 
@@ -547,6 +556,7 @@ void xm_extent_prediction(XmTreeTableWidget w)
 	/* the data list could be empty, but we need this vector to have at least one 0-filled entry. */
 	if (!s->column_dimensions_vector) {
 		s->column_dimensions_vector = (long*)malloc(sizeof(long));
+		s->column_dimensions_vector[0] = 0;
 		s->column_vector_len = 1;
 	}
 
