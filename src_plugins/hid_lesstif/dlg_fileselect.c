@@ -176,10 +176,11 @@ char *pcb_ltf_fileselect2(const char *title, const char *descr, const char *defa
 	if (default_file != 0)
 		pcb_ltf_set_fn(&pctx, 1, default_file);
 
-	if (!pcb_ltf_wait_for_dialog(pctx.dialog))
-		return NULL;
+	if (pcb_ltf_wait_for_dialog(pctx.dialog))
+		res = pcb_ltf_get_path(&pctx);
+	else
+		res = NULL;
 
-	res = pcb_ltf_get_path(&pctx);
 	if (xms_load != NULL) XmStringFree(xms_load);
 	if (xms_ext != NULL) XmStringFree(xms_ext);
 	return res;
