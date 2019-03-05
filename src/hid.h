@@ -368,6 +368,11 @@ struct pcb_hid_s {
 	 * etc.  If NULL, no specific history is kept.
 	 *
 	 * flags_ are the bitwise OR
+	 *
+	 * sub is an optional DAD sub-dialog, can be NULL; its parent_poke commands:
+	 *  close          close the dialog
+	 *  get_path       returns the current full paht in res as string
+	 *  set_file_name  replaces the file name portion of the current path from arg[0].d.s
 	 */
 	char *(*fileselect)(const char *title, const char *descr, const char *default_file, const char *default_ext, const char *history_tag, pcb_hid_fsd_flags_t flags);
 	char *(*fileselect2)(const char *title, const char *descr, const char *default_file, const char *default_ext, const char *history_tag, pcb_hid_fsd_flags_t flags, pcb_hid_dad_subdialog_t *sub);
