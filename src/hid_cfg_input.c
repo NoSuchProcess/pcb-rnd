@@ -281,7 +281,7 @@ static unsigned short int translate_key(pcb_hid_cfg_keys_t *km, const char *desc
 
 static int parse_keydesc(pcb_hid_cfg_keys_t *km, const char *keydesc, pcb_hid_cfg_mod_t *mods, unsigned short int *key_raws, unsigned short int *key_trs, int arr_len, const lht_node_t *loc)
 {
-	const char *curr, *next, *last, *k, *desc1;
+	const char *curr, *next, *last, *k;
 	int slen, len;
 
 	slen = 0;
@@ -308,7 +308,6 @@ static int parse_keydesc(pcb_hid_cfg_keys_t *km, const char *keydesc, pcb_hid_cf
 			return -1;
 		}
 		len -= k-last;
-		desc1 = k;
 		k++; len--;
 		if (pcb_strncasecmp(k, "key>", 4) == 0) {
 			k+=4; len-=4;
