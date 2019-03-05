@@ -80,6 +80,32 @@ static char *pcb_ltf_get_path(pcb_ltf_fsd_t *pctx)
 	return res;
 }
 
+static void pcb_ltf_set_fn(pcb_ltf_fsd_t *pctx, int append, const char *fn)
+{
+	XmString xms_path;
+
+	if (append) {
+		char *path, *dir = pcb_ltf_get_path(pctx);
+		path = pcb_concat(dir, "/", fn, NULL);
+
+		xms_path = XmStringCreatePCB(path);
+		stdarg_n = 0;
+		stdarg(XmNdirSpec, xms_path);
+		XtSetValues(pctx->dialog, stdarg_args, stdarg_n);
+
+		XmStringFree(xms_path);
+		free(path);
+		free(dir);
+		return;
+	}
+
+	xms_path = XmStringCreatePCB(fn);
+	stdarg_n = 0;
+	stdarg(XmNdirSpec, xms_path);
+	XtSetValues(pctx->dialog, stdarg_args, stdarg_n);
+	XmStringFree(xms_path);
+}
+
 static int pcb_ltf_fsd_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, pcb_event_arg_t *res, int argc, pcb_event_arg_t *argv)
 {
 	pcb_ltf_fsd_t *pctx = sub->parent_ctx;
@@ -99,7 +125,7 @@ static int pcb_ltf_fsd_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, pcb_e
 	}
 
 	if ((strcmp(cmd, "set_file_name") == 0) && (argc == 1) && (argv[0].type == PCB_EVARG_STR)) {
-TODO("check how to do this");
+		pcb_ltf_set_fn(pctx, 1, argv[0].d.s);
 		return 0;
 	}
 
