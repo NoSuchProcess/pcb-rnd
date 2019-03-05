@@ -494,12 +494,12 @@ static void library_window_callback_refresh_library(GtkButton * button, gpointer
 		}
 
 		if (entry->type != LIB_DIR) {
-			pcb_message(PCB_MSG_ERROR, "Library path is not a directory\n");
+			pcb_message(PCB_MSG_ERROR, "Library path is not a top level directory - please select a top level dir first\n");
 			return;
 		}
 
 		if (entry->data.dir.backend == NULL) {
-			pcb_message(PCB_MSG_ERROR, "Library path is not a top level directory of a fp_ plugin\n");
+			pcb_message(PCB_MSG_ERROR, "Library path is not a top level directory of a fp_ plugin - please select a top level dir first\n");
 			return;
 		}
 	}
