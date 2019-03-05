@@ -191,6 +191,9 @@ char *pcb_ltf_fileselect2(const char *title, const char *descr, const char *defa
 		XtSetValues(pctx.dialog, stdarg_args, stdarg_n);
 	}
 
+	if (default_file != 0)
+		pcb_ltf_set_fn(&pctx, 1, default_file);
+
 	if (!wait_for_dialog(pctx.dialog))
 		return NULL;
 
