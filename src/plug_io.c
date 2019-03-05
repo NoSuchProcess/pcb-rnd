@@ -523,7 +523,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		/* enable default font if necessary */
 		if (!PCB->fontkit.valid) {
 			if ((require_font) && (!PCB->is_footprint))
-				pcb_message(PCB_MSG_WARNING, _("File '%s' has no font information, using default font\n"), new_filename);
+				pcb_message(PCB_MSG_WARNING, "File '%s' has no font information, using default font\n", new_filename);
 			PCB->fontkit.valid = pcb_true;
 		}
 
@@ -610,7 +610,7 @@ FILE *pcb_check_and_open_file(const char *Filename, pcb_bool Confirm, pcb_bool A
 	if (Filename && *Filename) {
 		if (!stat(Filename, &buffer) && Confirm) {
 			const char *all_ok = "all ok";
-			sprintf(message, _("File '%s' exists, use anyway?"), Filename);
+			sprintf(message, "File '%s' exists, use anyway?", Filename);
 			if (WasAllButton)
 				*WasAllButton = pcb_false;
 			if (WasCancelButton)
@@ -645,8 +645,8 @@ FILE *pcb_open_connection_file(void)
 	pcb_bool result;									/* not used */
 
 	/* CheckAndOpenFile deals with the case where fname already exists */
-	fname = pcb_gui->fileselect(_("Save Connection Data As ..."),
-													_("Choose a file to save all connection data to."), default_file, ".net", "connection_data", 0, NULL);
+	fname = pcb_gui->fileselect("Save Connection Data As ...",
+													"Choose a file to save all connection data to.", default_file, ".net", "connection_data", 0, NULL);
 	if (fname == NULL)
 		return NULL;
 
@@ -783,7 +783,7 @@ void pcb_save_in_tmp(void)
 	if (PCB && PCB->Changed && (conf_core.rc.emergency_name != NULL) && (*conf_core.rc.emergency_name != '\0')) {
 		const char *fmt = conf_core.rc.emergency_format == NULL ? DEFAULT_EMERGENCY_FMT : conf_core.rc.emergency_format;
 		sprintf(filename, conf_core.rc.emergency_name, (long int)pcb_getpid());
-		pcb_message(PCB_MSG_INFO, _("Trying to save your layout in '%s'\n"), filename);
+		pcb_message(PCB_MSG_INFO, "Trying to save your layout in '%s'\n", filename);
 		pcb_write_pcb_file(filename, pcb_true, fmt, pcb_true, pcb_false);
 	}
 }

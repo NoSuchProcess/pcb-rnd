@@ -628,11 +628,11 @@ int main(int argc, char *argv[])
 		pcb_event(PCB_EVENT_LIBRARY_CHANGED, NULL);
 
 	if (conf_core.rc.script_filename) {
-		pcb_message(PCB_MSG_INFO, _("Executing startup script file %s\n"), conf_core.rc.script_filename);
+		pcb_message(PCB_MSG_INFO, "Executing startup script file %s\n", conf_core.rc.script_filename);
 		pcb_actionl("ExecuteFile", conf_core.rc.script_filename, NULL);
 	}
 	if (conf_core.rc.action_string) {
-		pcb_message(PCB_MSG_INFO, _("Executing startup action %s\n"), conf_core.rc.action_string);
+		pcb_message(PCB_MSG_INFO, "Executing startup action %s\n", conf_core.rc.action_string);
 		pcb_parse_actions(conf_core.rc.action_string);
 	}
 

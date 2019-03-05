@@ -87,18 +87,18 @@ int pcb_undo(pcb_bool draw)
 	pcb_undo_and_draw = draw;
 
 	if (pcb_uundo.num_undo == 0) {
-		pcb_message(PCB_MSG_INFO, _("Nothing to undo - buffer is empty\n"));
+		pcb_message(PCB_MSG_INFO, "Nothing to undo - buffer is empty\n");
 		return -1;
 	}
 
 	if (pcb_uundo.serial == 0) {
-		pcb_message(PCB_MSG_ERROR, _("ERROR: Attempt to pcb_undo() with Serial == 0\n" "       Please save your work and report this bug.\n"));
+		pcb_message(PCB_MSG_ERROR, "ERROR: Attempt to pcb_undo() with Serial == 0\n       Please save your work and report this bug.\n");
 		return -1;
 	}
 
 	if ((pcb_uundo.tail != NULL) && (pcb_uundo.tail->serial > pcb_uundo.serial)) {
-		pcb_message(PCB_MSG_ERROR, _("ERROR: Bad undo serial number %d in undo stack - expecting %d or lower\n"
-							"       Please save your work and report this bug.\n"), pcb_uundo.tail->serial, pcb_uundo.serial);
+		pcb_message(PCB_MSG_ERROR, "ERROR: Bad undo serial number %d in undo stack - expecting %d or lower\n"
+							"       Please save your work and report this bug.\n", pcb_uundo.tail->serial, pcb_uundo.serial);
 
 	/* It is likely that the serial number got corrupted through some bad
 		 * use of the pcb_undo_save_serial() / pcb_undo_restore_serial() APIs.

@@ -90,7 +90,7 @@ void pcb_register_actions(const pcb_action_t *a, int n, const char *cookie)
 		int len;
 
 		if (check_action_name(a[i].name)) {
-			pcb_message(PCB_MSG_ERROR, _("ERROR! Invalid action name, " "action \"%s\" not registered.\n"), a[i].name);
+			pcb_message(PCB_MSG_ERROR, "ERROR! Invalid action name, " "action \"%s\" not registered.\n", a[i].name);
 			continue;
 		}
 		len = strlen(a[i].name);
@@ -418,8 +418,8 @@ another:
 		sp++;
 	}
 	else if (require_parens) {
-		pcb_message(PCB_MSG_ERROR, _("Syntax error: %s\n"), rstr);
-		pcb_message(PCB_MSG_ERROR, _("    expected: Action(arg1, arg2)"));
+		pcb_message(PCB_MSG_ERROR, "Syntax error: %s\n", rstr);
+		pcb_message(PCB_MSG_ERROR, "    expected: Action(arg1, arg2)");
 		retcode = 1;
 		goto cleanup;
 	}
