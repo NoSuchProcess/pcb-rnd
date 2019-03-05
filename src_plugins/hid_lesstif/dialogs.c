@@ -94,11 +94,12 @@ int pcb_ltf_wait_for_dialog(Widget w)
 	pcb_ltf_ok = -1;
 	XtManageChild(w);
 	for(;;) {
+		XEvent e;
+
 		if (pcb_ltf_ok != -1)
 			break;
 		if (!XtIsManaged(w))
 			break;
-		XEvent e;
 		XtAppNextEvent(app_context, &e);
 		XtDispatchEvent(&e);
 	}
