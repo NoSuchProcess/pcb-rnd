@@ -36,8 +36,6 @@
 
 #include "dlg_fileselect.h"
 
-static XmString xms_pcb;
-
 typedef struct {
 	Widget dialog;
 	int active;
