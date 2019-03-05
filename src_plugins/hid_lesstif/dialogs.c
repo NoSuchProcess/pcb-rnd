@@ -87,16 +87,22 @@ static void dialog_callback_ok_value(Widget w, void *v, void *cbs)
 	ok = (int) (size_t) v;
 }
 
+#define DAD_CLOSED 4242
+
 static int wait_for_dialog(Widget w)
 {
 	ok = -1;
 	XtManageChild(w);
-	while (ok == -1 && XtIsManaged(w)) {
+	for(;;) {
+		if (ok != -1)
+			break;
+		if (!XtIsManaged(w))
+			break;
 		XEvent e;
 		XtAppNextEvent(app_context, &e);
 		XtDispatchEvent(&e);
 	}
-	if (XtIsManaged(w))
+	if ((ok != DAD_CLOSED) && (XtIsManaged(w)))
 		XtUnmanageChild(w);
 	return ok;
 }
@@ -501,6 +507,7 @@ typedef struct {
 	unsigned already_destroying:1;
 	unsigned inhibit_valchg:1;
 	unsigned widget_destroyed:1;
+	unsigned set_ok:1;
 } lesstif_attr_dlg_t;
 
 static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
@@ -1025,6 +1032,10 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 static void ltf_attr_destroy_cb(Widget w, void *v, void *cbs)
 {
 	lesstif_attr_dlg_t *ctx = v;
+
+	if (ctx->set_ok)
+		ok = DAD_CLOSED;
+
 	if ((!ctx->close_cb_called) && (ctx->close_cb != NULL)) {
 		ctx->close_cb_called = 1;
 		ctx->already_destroying = 1;
@@ -1167,6 +1178,7 @@ void *lesstif_attr_sub_new(Widget parent_box, pcb_hid_attribute_t *attrs, int n_
 int lesstif_attr_dlg_run(void *hid_ctx)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
+	ctx->set_ok = 1;
 	return wait_for_dialog(ctx->dialog);
 }
 
@@ -1174,6 +1186,9 @@ void lesstif_attr_dlg_free(void *hid_ctx)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
 	int i;
+
+	if (ctx->set_ok)
+		ok = DAD_CLOSED;
 
 	if (ctx->already_closing)
 		return;
