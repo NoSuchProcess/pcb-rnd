@@ -107,10 +107,14 @@ static void ltf_tree_free_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_h
 	ltf_tree_t *lt = ht->hid_wdata;
 	tt_entry_t *i;
 
+	if (lt == NULL)
+		return;
+
 	for(i = gdl_first(&lt->model); i != NULL; i = gdl_first(&lt->model))
 		delete_tt_entry(&lt->model, i);
 
 	free(lt);
+	ht->hid_wdata = NULL;
 }
 
 static pcb_hid_row_t *ltf_tree_get_selected_cb(pcb_hid_attribute_t *attrib, void *hid_wdata)
