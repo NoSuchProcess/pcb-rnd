@@ -60,6 +60,9 @@ extern void lesstif_log(const char *fmt, ...);
 extern void lesstif_attributes_dialog(const char *, pcb_attribute_list_t *);
 void *lesstif_attr_sub_new(Widget parent_box, pcb_hid_attribute_t *attrs, int n_attrs, void *caller_data);
 
+extern int pcb_ltf_ok;
+int pcb_ltf_wait_for_dialog(Widget w);
+
 
 #ifndef XtRPCBCoord
 #define XtRPCBCoord	"PCBCoord"

@@ -33,7 +33,7 @@
 
 #include "plug_io.h"
 
-static int ok;
+int pcb_ltf_ok;
 
 #define COMPONENT_SIDE_NAME "(top)"
 #define SOLDER_SIDE_NAME "(bottom)"
@@ -84,17 +84,17 @@ void pcb_ltf_wplc_config_cb(Widget shell, XtPointer data, XEvent *xevent, char *
 
 static void dialog_callback_ok_value(Widget w, void *v, void *cbs)
 {
-	ok = (int) (size_t) v;
+	pcb_ltf_ok = (int) (size_t) v;
 }
 
 #define DAD_CLOSED 4242
 
-static int wait_for_dialog(Widget w)
+int pcb_ltf_wait_for_dialog(Widget w)
 {
-	ok = -1;
+	pcb_ltf_ok = -1;
 	XtManageChild(w);
 	for(;;) {
-		if (ok != -1)
+		if (pcb_ltf_ok != -1)
 			break;
 		if (!XtIsManaged(w))
 			break;
@@ -102,9 +102,9 @@ static int wait_for_dialog(Widget w)
 		XtAppNextEvent(app_context, &e);
 		XtDispatchEvent(&e);
 	}
-	if ((ok != DAD_CLOSED) && (XtIsManaged(w)))
+	if ((pcb_ltf_ok != DAD_CLOSED) && (XtIsManaged(w)))
 		XtUnmanageChild(w);
-	return ok;
+	return pcb_ltf_ok;
 }
 
 /* ------------------------------------------------------------ */
@@ -184,7 +184,7 @@ static fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	stdarg(XmNselectionLabelString, xms_load);
 	XtSetValues(fsb, stdarg_args, stdarg_n);
 
-	if (!wait_for_dialog(fsb)) {
+	if (!pcb_ltf_wait_for_dialog(fsb)) {
 		PCB_ACT_IRES(1);
 		return 0;
 	}
@@ -282,7 +282,7 @@ static fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	XtManageChild(vbox);
 
 
-	if (!wait_for_dialog(fsb)) {
+	if (!pcb_ltf_wait_for_dialog(fsb)) {
 		PCB_ACT_IRES(1);
 		return 0;
 	}
@@ -1034,7 +1034,7 @@ static void ltf_attr_destroy_cb(Widget w, void *v, void *cbs)
 	lesstif_attr_dlg_t *ctx = v;
 
 	if (ctx->set_ok)
-		ok = DAD_CLOSED;
+		pcb_ltf_ok = DAD_CLOSED;
 
 	if ((!ctx->close_cb_called) && (ctx->close_cb != NULL)) {
 		ctx->close_cb_called = 1;
@@ -1179,7 +1179,7 @@ int lesstif_attr_dlg_run(void *hid_ctx)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
 	ctx->set_ok = 1;
-	return wait_for_dialog(ctx->dialog);
+	return pcb_ltf_wait_for_dialog(ctx->dialog);
 }
 
 void lesstif_attr_dlg_free(void *hid_ctx)
@@ -1188,7 +1188,7 @@ void lesstif_attr_dlg_free(void *hid_ctx)
 	int i;
 
 	if (ctx->set_ok)
-		ok = DAD_CLOSED;
+		pcb_ltf_ok = DAD_CLOSED;
 
 	if (ctx->already_closing)
 		return;
@@ -1745,7 +1745,7 @@ void lesstif_attributes_dialog(const char *owner, pcb_attribute_list_t * attrs_l
 
 	fiddle_with_bb_layout();
 
-	if (wait_for_dialog(attr_dialog) == 0) {
+	if (pcb_ltf_wait_for_dialog(attr_dialog) == 0) {
 		int i;
 		/* Copy the values back */
 		pcb_attribute_copyback_begin(attributes_list);
@@ -1795,7 +1795,7 @@ static fgw_error_t pcb_act_ImportGUI(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	XtGetValues(fsb, stdarg_args, stdarg_n);
 	XmStringGetLtoR(xmname, XmFONTLIST_DEFAULT_TAG, &original_dir);
 
-	if (!wait_for_dialog(fsb))
+	if (!pcb_ltf_wait_for_dialog(fsb))
 		return 1;
 
 	stdarg_n = 0;

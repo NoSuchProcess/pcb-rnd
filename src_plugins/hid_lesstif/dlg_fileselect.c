@@ -42,25 +42,9 @@ typedef struct {
 	void *hid_ctx; /* DAD subdialog context */
 } pcb_ltf_fsd_t;
 
-static int ok;
-
 static void fsb_ok_value(Widget w, void *v, void *cbs)
 {
-	ok = (int)(size_t)v;
-}
-
-static int wait_for_dialog(Widget w)
-{
-	ok = -1;
-	XtManageChild(w);
-	while (ok == -1 && XtIsManaged(w)) {
-		XEvent e;
-		XtAppNextEvent(app_context, &e);
-		XtDispatchEvent(&e);
-	}
-	if (XtIsManaged(w))
-		XtUnmanageChild(w);
-	return ok;
+	pcb_ltf_ok = (int)(size_t)v;
 }
 
 static char *pcb_ltf_get_path(pcb_ltf_fsd_t *pctx)
@@ -192,7 +176,7 @@ char *pcb_ltf_fileselect2(const char *title, const char *descr, const char *defa
 	if (default_file != 0)
 		pcb_ltf_set_fn(&pctx, 1, default_file);
 
-	if (!wait_for_dialog(pctx.dialog))
+	if (!pcb_ltf_wait_for_dialog(pctx.dialog))
 		return NULL;
 
 	res = pcb_ltf_get_path(&pctx);
