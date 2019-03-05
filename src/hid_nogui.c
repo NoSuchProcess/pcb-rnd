@@ -272,7 +272,7 @@ static char *read_stdin_line(void)
 	s = fgets(buf, MAX_LINE_LENGTH, stdin);
 	if (s == NULL) {
 		printf("\n");
-		return CANCEL;
+		return pcb_strdup(CANCEL);
 	}
 
 	/* Strip any trailing newline characters */
@@ -299,6 +299,7 @@ static fgw_error_t pcb_act_cli_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	PCB_ACT_MAY_CONVARG(3, FGW_STR, cli_PromptFor, title = argv[3].val.str);
 
 	if (!conf_core.rc.quiet) {
+		char *tmp;
 		if (title != NULL)
 			printf("*** %s ***\n", title);
 		if (default_str)
@@ -306,11 +307,11 @@ static fgw_error_t pcb_act_cli_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		else
 			printf("%s : ", label);
 
-		answer = read_stdin_line();
-		if (answer == NULL)
+		tmp = read_stdin_line();
+		if (tmp == NULL)
 			answer = pcb_strdup((default_str != NULL) ? default_str : "");
 		else
-			answer = pcb_strdup(answer);
+			answer = tmp; /* always allocated */
 	}
 	else
 		answer = pcb_strdup("");
