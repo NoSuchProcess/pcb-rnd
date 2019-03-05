@@ -79,7 +79,7 @@ fgw_error_t pcb_act_LoadhypFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if ((fname == NULL) || (*fname == '\0')) {
 		fname = pcb_gui->fileselect(_("Load .hyp file..."),
-																_("Picks a hyperlynx file to load.\n"), "default.hyp", ".hyp", "hyp", PCB_HID_FSD_READ);
+																_("Picks a hyperlynx file to load.\n"), "default.hyp", ".hyp", "hyp", PCB_HID_FSD_READ, NULL);
 	}
 
 	if (fname == NULL) {

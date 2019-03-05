@@ -646,7 +646,7 @@ FILE *pcb_open_connection_file(void)
 
 	/* CheckAndOpenFile deals with the case where fname already exists */
 	fname = pcb_gui->fileselect(_("Save Connection Data As ..."),
-													_("Choose a file to save all connection data to."), default_file, ".net", "connection_data", 0);
+													_("Choose a file to save all connection data to."), default_file, ".net", "connection_data", 0, NULL);
 	if (fname == NULL)
 		return NULL;
 

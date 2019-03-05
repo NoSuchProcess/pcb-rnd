@@ -859,7 +859,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			if (argc <= 1) {
 				name = pcb_gui->fileselect(_("Save Paste Buffer As ..."),
 															 _("Choose a file to save the contents of the\n"
-																 "paste buffer to.\n"), default_file, ".fp", "footprint", 0);
+																 "paste buffer to.\n"), default_file, ".fp", "footprint", 0, NULL);
 
 				if (default_file) {
 					free(default_file);

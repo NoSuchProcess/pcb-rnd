@@ -66,7 +66,7 @@ fgw_error_t pcb_act_load_font_from(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (!fname || !*fname) {
 		fname = pcb_gui->fileselect("Load PCB font file...",
 																"Picks a PCB font file to load.\n",
-																default_file, ".font", "pcbfont", PCB_HID_FSD_READ);
+																default_file, ".font", "pcbfont", PCB_HID_FSD_READ, NULL);
 		if (fname == NULL)
 			return 0; /* cancel */
 		if (default_file != NULL) {
@@ -138,7 +138,7 @@ fgw_error_t pcb_act_save_font_to(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (!fname || !*fname) {
 		fname = pcb_gui->fileselect("Save PCB font file...",
 																"Picks a PCB font file to save.\n",
-																default_file, ".font", "pcbfont", PCB_HID_FSD_MAY_NOT_EXIST);
+																default_file, ".font", "pcbfont", PCB_HID_FSD_MAY_NOT_EXIST, NULL);
 		if (fname == NULL)
 			PCB_ACT_FAIL(save_font_to);
 		if (default_file != NULL) {

@@ -150,7 +150,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 														_("Picks a vendor resource file to load.\n"
 															"This file can contain drc settings for a\n"
 															"particular vendor as well as a list of\n"
-															"predefined drills which are allowed."), default_file, ".res", "vendor", PCB_HID_FSD_READ);
+															"predefined drills which are allowed."), default_file, ".res", "vendor", PCB_HID_FSD_READ, NULL);
 		if (fname == NULL) {
 			PCB_ACT_IRES(1);
 			return 0;

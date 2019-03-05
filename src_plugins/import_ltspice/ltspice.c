@@ -277,7 +277,7 @@ fgw_error_t pcb_act_LoadLtspiceFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (!fname || !*fname) {
 		fname = pcb_gui->fileselect("Load ltspice net+asc file pair...",
 																"Picks a ltspice mentor net or asc file to load.\n",
-																default_file, ".asc", "ltspice", PCB_HID_FSD_READ);
+																default_file, ".asc", "ltspice", PCB_HID_FSD_READ, NULL);
 		if (fname == NULL)
 			return 1;
 		if (default_file != NULL) {

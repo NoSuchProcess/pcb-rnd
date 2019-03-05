@@ -366,7 +366,7 @@ static fgw_error_t pcb_act_cli_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *a
 /* FIXME - this could use some enhancement to actually use the other
    args */
 static char *nogui_fileselect(const char *title, const char *descr,
-															const char *default_file, const char *default_ext, const char *history_tag, pcb_hid_fsd_flags_t flags)
+															const char *default_file, const char *default_ext, const char *history_tag, pcb_hid_fsd_flags_t flags, pcb_hid_dad_subdialog_t *sub)
 {
 	char *answer;
 
@@ -383,12 +383,6 @@ static char *nogui_fileselect(const char *title, const char *descr,
 		return (default_file != NULL) ? pcb_strdup(default_file) : NULL;
 	else
 		return pcb_strdup(answer);
-}
-
-static char *nogui_fileselect2(const char *title, const char *descr,
-															const char *default_file, const char *default_ext, const char *history_tag, pcb_hid_fsd_flags_t flags, pcb_hid_dad_subdialog_t *sub)
-{
-	return nogui_fileselect(title, descr, default_file, default_ext, history_tag, flags);
 }
 
 void *pcb_nogui_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy)
@@ -538,7 +532,6 @@ void pcb_hid_nogui_init(pcb_hid_t * hid)
 	hid->log = nogui_log;
 	hid->logv = nogui_logv;
 	hid->fileselect = nogui_fileselect;
-	hid->fileselect2 = nogui_fileselect2;
 	hid->attr_dlg_new = pcb_nogui_attr_dlg_new;
 	hid->attr_dlg_run = nogui_attr_dlg_run;
 	hid->attr_dlg_free = nogui_attr_dlg_free;

@@ -203,7 +203,7 @@ fgw_error_t pcb_act_LoadCalayFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (!fname_net || !*fname_net) {
 		fname_net = pcb_gui->fileselect("Load calay netlist file...",
 																"Picks a calay netlist file to load.\n",
-																default_file, NETEXT, "calay", PCB_HID_FSD_READ);
+																default_file, NETEXT, "calay", PCB_HID_FSD_READ, NULL);
 		if (fname_net == NULL)
 			return 1;
 		if (default_file != NULL) {

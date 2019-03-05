@@ -223,7 +223,7 @@ fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			"Load a routed dsn or ses file...",
 			"Select dsn or ses file to load.\nThe file could be generated using the tool downloaded from freeroute.net\n",
 			NULL, /* default file name */
-			".dsn", "dsn", PCB_HID_FSD_READ);
+			".dsn", "dsn", PCB_HID_FSD_READ, NULL);
 		if (fname == NULL)
 			return 1;
 	}
