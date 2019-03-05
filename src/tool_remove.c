@@ -52,7 +52,7 @@ void pcb_tool_remove_notify_mode(void)
 	
 	if ((type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_REMOVE_TYPES | PCB_LOOSE_SUBC, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_line_t *) ptr2)) {
-			pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
+			pcb_message(PCB_MSG_WARNING, "Sorry, the object is locked\n");
 			return;
 		}
 

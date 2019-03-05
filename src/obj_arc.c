@@ -657,7 +657,7 @@ void *pcb_arcop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_arc_t *
 	pcb_arc_t *newone;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc)) {
-		pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
+		pcb_message(PCB_MSG_WARNING, "Sorry, the object is locked\n");
 		return NULL;
 	}
 	if (ctx->move.dst_layer == Layer && Layer->meta.real.vis)

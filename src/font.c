@@ -108,7 +108,7 @@ void pcb_font_create_default(pcb_board_t *pcb)
 		const char *s;
 		gds_t buff;
 		s = conf_concat_strlist(&conf_core.rc.default_font_file, &buff, NULL, ':');
-		pcb_message(PCB_MSG_WARNING, _("Can't find font-symbol-file. Searched: '%s'; falling back to the embedded default font\n"), s);
+		pcb_message(PCB_MSG_WARNING, "Can't find font-symbol-file. Searched: '%s'; falling back to the embedded default font\n", s);
 		pcb_font_load_internal(&pcb->fontkit.dflt);
 		pcb_file_loaded_set_at("font", "default", "<internal>", "original default font");
 		gds_uninit(&buff);

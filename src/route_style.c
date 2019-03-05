@@ -214,7 +214,7 @@ int pcb_get_style_size(int funcid, pcb_coord_t * out, int type, int size_id)
 		case PCB_OBJ_ARC:
 			return pcb_get_style_size(F_SelectedArcs, out, 0, size_id);
 		}
-		pcb_message(PCB_MSG_ERROR, _("Sorry, can't fetch the style of that object type (%x)\n"), type);
+		pcb_message(PCB_MSG_ERROR, "Sorry, can't fetch the style of that object type (%x)\n", type);
 		return -1;
 	case F_SelectedPads:
 		if (size_id != 2)						/* don't mess with pad size */
@@ -240,7 +240,7 @@ int pcb_get_style_size(int funcid, pcb_coord_t * out, int type, int size_id)
 		return 0;
 	case F_SelectedTexts:
 	case F_SelectedNames:
-		pcb_message(PCB_MSG_ERROR, _("Sorry, can't change style of every selected object\n"));
+		pcb_message(PCB_MSG_ERROR, "Sorry, can't change style of every selected object\n");
 		return -1;
 	}
 	return 0;

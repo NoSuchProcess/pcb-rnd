@@ -470,7 +470,7 @@ void pcb_buffer_mirror(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 	for (i = 0; i < num_layers; i++) {
 		pcb_layer_t *layer = Buffer->Data->Layer + i;
 		if (textlist_length(&layer->Text)) {
-			pcb_message(PCB_MSG_ERROR, _("You can't mirror a buffer that has text!\n"));
+			pcb_message(PCB_MSG_ERROR, "You can't mirror a buffer that has text!\n");
 			return;
 		}
 	}
@@ -857,9 +857,9 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		case F_Save:
 			free_name = pcb_false;
 			if (argc <= 1) {
-				name = pcb_gui->fileselect(_("Save Paste Buffer As ..."),
-															 _("Choose a file to save the contents of the\n"
-																 "paste buffer to.\n"), default_file, ".fp", "footprint", 0, NULL);
+				name = pcb_gui->fileselect("Save Paste Buffer As ...",
+															 "Choose a file to save the contents of the\n"
+																 "paste buffer to.\n", default_file, ".fp", "footprint", 0, NULL);
 
 				if (default_file) {
 					free(default_file);

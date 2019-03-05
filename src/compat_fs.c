@@ -111,7 +111,7 @@ int pcb_spawnvp(const char **argv)
 	pid = fork();
 	if (pid < 0) {
 		/* error */
-		pcb_message(PCB_MSG_ERROR, _("Cannot fork!"));
+		pcb_message(PCB_MSG_ERROR, "Cannot fork!");
 		return 1;
 	}
 	else if (pid == 0) {
@@ -265,7 +265,7 @@ int pcb_tempfile_unlink(char *name)
 
 	}
 	else {
-		fprintf(stderr, _("pcb_tempfile_unlink():  Unable to determine temp directory name from the temp file\n"));
+		fprintf(stderr, "pcb_tempfile_unlink():  Unable to determine temp directory name from the temp file\n");
 		fprintf(stderr, "pcb_tempfile_unlink():  \"%s\"\n", name);
 		rc2 = -1;
 	}
@@ -286,7 +286,7 @@ int pcb_tempfile_unlink(char *name)
 	int rc = unlink(name);
 
 	if (rc != 0) {
-		fprintf(stderr, _("Failed to unlink \"%s\"\n"), name);
+		fprintf(stderr, "Failed to unlink \"%s\"\n", name);
 		free(name);
 		return rc;
 	}

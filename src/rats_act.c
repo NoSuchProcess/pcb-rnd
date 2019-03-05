@@ -120,7 +120,7 @@ static fgw_error_t pcb_act_Connection(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_coord_t x, y;
 					unsigned long res;
 					pcb_find_t fctx;
-				pcb_hid_get_coords(_("Click on a connection"), &x, &y, 0);
+				pcb_hid_get_coords("Click on a connection", &x, &y, 0);
 				memset(&fctx, 0, sizeof(fctx));
 				fctx.flag_set = PCB_FLAG_FOUND;
 				fctx.flag_chg_undoable = 1;

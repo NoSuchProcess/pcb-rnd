@@ -116,7 +116,7 @@ int pcb_undo(pcb_bool draw)
 	pcb_undo_unlock();
 
 	if (res != 0)
-		pcb_message(PCB_MSG_ERROR, _("ERROR: Failed to undo some operations\n"));
+		pcb_message(PCB_MSG_ERROR, "ERROR: Failed to undo some operations\n");
 	else if (pcb_undo_and_draw)
 		pcb_draw();
 
@@ -132,14 +132,14 @@ int pcb_redo(pcb_bool draw)
 	pcb_undo_and_draw = draw;
 
 	if (pcb_uundo.num_redo == 0) {
-		pcb_message(PCB_MSG_INFO, _("Nothing to redo. Perhaps changes have been made since last undo\n"));
+		pcb_message(PCB_MSG_INFO, "Nothing to redo. Perhaps changes have been made since last undo\n");
 		return 0;
 	}
 
 	if ((pcb_uundo.tail != NULL) && (pcb_uundo.tail->next != NULL) && (pcb_uundo.tail->next->serial > pcb_uundo.serial)) {
 
-		pcb_message(PCB_MSG_ERROR, _("ERROR: Bad undo serial number %d in redo stack - expecting %d or higher\n"
-							"       Please save your work and report this bug.\n"), pcb_uundo.tail->next->serial, pcb_uundo.serial);
+		pcb_message(PCB_MSG_ERROR, "ERROR: Bad undo serial number %d in redo stack - expecting %d or higher\n"
+							"       Please save your work and report this bug.\n", pcb_uundo.tail->next->serial, pcb_uundo.serial);
 
 		/* It is likely that the serial number got corrupted through some bad
 		 * use of the pcb_undo_save_serial() / pcb_undo_restore_serial() APIs.
@@ -160,7 +160,7 @@ int pcb_redo(pcb_bool draw)
 	pcb_undo_unlock();
 
 	if (res != 0)
-		pcb_message(PCB_MSG_ERROR, _("ERROR: Failed to redo some operations\n"));
+		pcb_message(PCB_MSG_ERROR, "ERROR: Failed to redo some operations\n");
 	else if (pcb_undo_and_draw)
 		pcb_draw();
 
@@ -175,7 +175,7 @@ int pcb_redo(pcb_bool draw)
 void pcb_undo_restore_serial(void)
 {
 	if (added_undo_between_increment_and_restore)
-		pcb_message(PCB_MSG_ERROR, _("ERROR: Operations were added to the Undo stack with an incorrect serial number\n"));
+		pcb_message(PCB_MSG_ERROR, "ERROR: Operations were added to the Undo stack with an incorrect serial number\n");
 	between_increment_and_restore = pcb_false;
 	added_undo_between_increment_and_restore = pcb_false;
 	uundo_restore_serial(&pcb_uundo);

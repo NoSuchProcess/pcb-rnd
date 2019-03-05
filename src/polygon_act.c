@@ -65,7 +65,7 @@ static fgw_error_t pcb_act_MorphPolygon(fgw_arg_t *res, int argc, fgw_arg_t *arg
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 
-				pcb_hid_get_coords(_("Select an Object"), &x, &y, 0);
+				pcb_hid_get_coords("Select an Object", &x, &y, 0);
 				if ((type = pcb_search_screen(x, y, PCB_OBJ_POLY, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 					pcb_poly_morph((pcb_layer_t *) ptr1, (pcb_poly_t *) ptr3);
 					pcb_draw();

@@ -1491,7 +1491,7 @@ void pcb_polygon_close_poly(void)
 			dx = coord_abs(pcb_crosshair.AttachedPolygon.Points[n - 1].X - pcb_crosshair.AttachedPolygon.Points[0].X);
 			dy = coord_abs(pcb_crosshair.AttachedPolygon.Points[n - 1].Y - pcb_crosshair.AttachedPolygon.Points[0].Y);
 			if (!(dx == 0 || dy == 0 || dx == dy)) {
-				pcb_message(PCB_MSG_ERROR, _("Cannot close polygon because 45 degree lines are requested.\n"));
+				pcb_message(PCB_MSG_ERROR, "Cannot close polygon because 45 degree lines are requested.\n");
 				return;
 			}
 		}
@@ -1499,7 +1499,7 @@ void pcb_polygon_close_poly(void)
 		pcb_draw();
 	}
 	else
-		pcb_message(PCB_MSG_ERROR, _("A polygon has to have at least 3 points\n"));
+		pcb_message(PCB_MSG_ERROR, "A polygon has to have at least 3 points\n");
 }
 
 static void poly_copy_data(pcb_poly_t *dst, pcb_poly_t *src)
@@ -1569,7 +1569,7 @@ void pcb_polygon_close_hole(void)
 			dx = coord_abs(pcb_crosshair.AttachedPolygon.Points[n - 1].X - pcb_crosshair.AttachedPolygon.Points[0].X);
 			dy = coord_abs(pcb_crosshair.AttachedPolygon.Points[n - 1].Y - pcb_crosshair.AttachedPolygon.Points[0].Y);
 			if (!(dx == 0 || dy == 0 || dx == dy)) {
-				pcb_message(PCB_MSG_ERROR, _("Cannot close polygon hole because 45 degree lines are requested.\n"));
+				pcb_message(PCB_MSG_ERROR, "Cannot close polygon hole because 45 degree lines are requested.\n");
 				return;
 			}
 		}
@@ -1577,7 +1577,7 @@ void pcb_polygon_close_hole(void)
 		pcb_draw();
 	}
 	else
-		pcb_message(PCB_MSG_ERROR, _("A polygon hole has to have at least 3 points\n"));
+		pcb_message(PCB_MSG_ERROR, "A polygon hole has to have at least 3 points\n");
 }
 
 /* ---------------------------------------------------------------------------

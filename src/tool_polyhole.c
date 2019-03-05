@@ -68,7 +68,7 @@ void pcb_tool_polyhole_notify_mode(void)
 
 		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_poly_t *)
 									pcb_crosshair.AttachedObject.Ptr2)) {
-			pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
+			pcb_message(PCB_MSG_WARNING, "Sorry, the object is locked\n");
 			pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 			break;
 		}

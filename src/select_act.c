@@ -134,7 +134,7 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_tool_note.Buffer = conf_core.editor.buffer_number;
 				pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
 				pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
-				pcb_hid_get_coords(_("Select the Subcircuit's Origin (mark) Location"), &x, &y, 0);
+				pcb_hid_get_coords("Select the Subcircuit's Origin (mark) Location", &x, &y, 0);
 				x = pcb_grid_fit(x, PCB->Grid, PCB->GridOffsetX);
 				y = pcb_grid_fit(y, PCB->Grid, PCB->GridOffsetY);
 				pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, x, y, pcb_true);

@@ -377,7 +377,7 @@ fgw_error_t pcb_act_ExecuteFile(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_CONVARG(1, FGW_STR, ExecuteFile, fname = argv[1].val.str);
 
 	if ((fp = pcb_fopen(fname, "r")) == NULL) {
-		fprintf(stderr, _("Could not open actions file \"%s\".\n"), fname);
+		fprintf(stderr, "Could not open actions file \"%s\".\n", fname);
 		return 1;
 	}
 

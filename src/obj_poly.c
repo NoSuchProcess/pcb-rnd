@@ -575,9 +575,9 @@ void *pcb_polyop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_pol
 
 	/* poly does not clear other polys */
 	pcb_message(PCB_MSG_WARNING,
-		_("To change the clearance of objects in a polygon, change \nthe objects, not the polygon.\n"
+		"To change the clearance of objects in a polygon, change \nthe objects, not the polygon.\n"
 		"Alternatively, set the clearpolypoly flag on the polygon to \nallow it to clear other polygons.\n"
-		"Hint: To set a minimum clearance for a group of objects, \nselect them all then :MinClearGap(Selected,=10,mil)\n"),
+		"Hint: To set a minimum clearance for a group of objects, \nselect them all then :MinClearGap(Selected,=10,mil)\n",
 		"Ok", NULL);
 
 	return NULL;
@@ -753,7 +753,7 @@ void *pcb_polyop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_poly_t
 	pcb_poly_t *newone;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Polygon)) {
-		pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
+		pcb_message(PCB_MSG_WARNING, "Sorry, the object is locked\n");
 		return NULL;
 	}
 	if (Layer == ctx->move.dst_layer)

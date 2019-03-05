@@ -141,7 +141,7 @@ void pcb_screen_obj_rotate90(pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
 	void *ptr1, *ptr2, *ptr3;
 	if ((type = pcb_search_screen(X, Y, PCB_ROTATE_TYPES | PCB_LOOSE_SUBC, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_arc_t *) ptr2)) {
-			pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
+			pcb_message(PCB_MSG_WARNING, "Sorry, the object is locked\n");
 			return;
 		}
 		pcb_event(PCB_EVENT_RUBBER_RESET, NULL);
@@ -160,7 +160,7 @@ void pcb_screen_obj_rotate(pcb_coord_t X, pcb_coord_t Y, pcb_angle_t angle)
 	void *ptr1, *ptr2, *ptr3;
 	if ((type = pcb_search_screen(X, Y, PCB_ROTATE_TYPES | PCB_LOOSE_SUBC, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_arc_t *) ptr2)) {
-			pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
+			pcb_message(PCB_MSG_WARNING, "Sorry, the object is locked\n");
 			return;
 		}
 		pcb_event(PCB_EVENT_RUBBER_RESET, NULL);
