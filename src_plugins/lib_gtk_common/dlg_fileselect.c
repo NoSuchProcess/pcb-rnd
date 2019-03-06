@@ -118,8 +118,9 @@ char *pcb_gtk_fileselect(pcb_gtk_common_t *com, const char *title, const char *d
 	gchar *path = NULL, *base = NULL, *res = NULL;
 	char *result;
 	file_history_t *hi;
-	int n;
+	int n, free_flt = 0;
 	pcb_gtk_fsd_t pctx;
+	pcb_hid_fsd_filter_t flt_local[3];
 
 	if (!inited) {
 		htsp_init(&history, strhash, strkeyeq);
@@ -145,12 +146,41 @@ char *pcb_gtk_fileselect(pcb_gtk_common_t *com, const char *title, const char *d
 		}
 	}
 
+	if ((default_ext != NULL) && (flt == NULL)) {
+		memset(&flt_local, 0, sizeof(flt_local));
+		flt_local[0].name = default_ext;
+		flt_local[0].pat = malloc(sizeof(char *) * 2);
+		flt_local[0].pat[0] = pcb_concat("*", default_ext, NULL);
+		flt_local[0].pat[1] = NULL;
+		flt_local[1] = pcb_hid_fsd_filter_any[0];
+		flt = flt_local;
+		free_flt = 1;
+	}
+
+
 	pctx.dialog = gtk_file_chooser_dialog_new(
 		title, GTK_WINDOW(top_window),
 		(flags & PCB_HID_FSD_READ) ? GTK_FILE_CHOOSER_ACTION_OPEN : GTK_FILE_CHOOSER_ACTION_SAVE,
 		 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
 
 	gtk_dialog_set_default_response(GTK_DIALOG(pctx.dialog), GTK_RESPONSE_OK);
+
+	if (flt != NULL) {
+		const pcb_hid_fsd_filter_t *f;
+		for(f = flt; f->name != NULL; f++) {
+			GtkFileFilter *gf;
+			gf = gtk_file_filter_new();
+			gtk_file_filter_set_name(gf, f->name);
+			if (f->mime != NULL)
+				gtk_file_filter_add_mime_type(gf, f->mime);
+			if (f->pat != NULL) {
+				const char **s;
+				for(s = f->pat; *s != NULL; s++)
+					gtk_file_filter_add_pattern(gf, *s);
+			}
+			gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(pctx.dialog), gf);
+		}
+	}
 
 	if (sub != NULL) {
 		GtkWidget *subbox;
@@ -196,6 +226,11 @@ char *pcb_gtk_fileselect(pcb_gtk_common_t *com, const char *title, const char *d
 		pctx.active = 0;
 	}
 
+
+	if (free_flt) {
+		free((char *)flt_local[0].pat[0]);
+		free(flt_local[0].pat);
+	}
 
 	if (res == NULL)
 		return NULL;
