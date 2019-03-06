@@ -35,6 +35,7 @@
 #include "compat_misc.h"
 #include "compat.h"
 #include "event.h"
+#include "safe_fs.h"
 
 #include "dlg_attribute.h"
 
@@ -134,8 +135,14 @@ char *pcb_gtk_fileselect(pcb_gtk_common_t *com, const char *title, const char *d
 	}
 
 	if ((default_file != NULL) && (*default_file != '\0')) {
-		path = g_path_get_dirname(default_file);
-		base = g_path_get_basename(default_file);
+		if (pcb_is_dir(default_file)) {
+			path = g_strdup(default_file);
+			base = NULL;
+		}
+		else {
+			path = g_path_get_dirname(default_file);
+			base = g_path_get_basename(default_file);
+		}
 	}
 
 	pctx.dialog = gtk_file_chooser_dialog_new(
