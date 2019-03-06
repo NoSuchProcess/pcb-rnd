@@ -64,11 +64,11 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (pcb_strcasecmp(function, "Netlist") == 0)
 		name = pcb_gui->fileselect("Load netlist file", "Import netlist from file", last_netlist, ".net", NULL, "netlist", PCB_HID_FSD_READ, NULL);
 	else if ((pcb_strcasecmp(function, "FootprintToBuffer") == 0) || (pcb_strcasecmp(function, "ElementToBuffer") == 0))
-		name = pcb_gui->fileselect("Load footprint to buffer", "Import footprint from file", last_footprint, "footprint", NULL, NULL, PCB_HID_FSD_READ, NULL);
+		name = pcb_gui->fileselect("Load footprint to buffer", "Import footprint from file", last_footprint, NULL, NULL, "footprint", PCB_HID_FSD_READ, NULL);
 	else if (pcb_strcasecmp(function, "LayoutToBuffer") == 0)
-		name = pcb_gui->fileselect("Load layout to buffer", "load layout (board) to buffer", last_layout, "board", NULL, NULL, PCB_HID_FSD_READ, NULL);
+		name = pcb_gui->fileselect("Load layout to buffer", "load layout (board) to buffer", last_layout, NULL, NULL, "board", PCB_HID_FSD_READ, NULL);
 	else if (pcb_strcasecmp(function, "Layout") == 0)
-		name = pcb_gui->fileselect("Load layout file", "load layout (board) as board to edit", last_layout, "board", NULL, NULL, PCB_HID_FSD_READ, NULL);
+		name = pcb_gui->fileselect("Load layout file", "load layout (board) as board to edit", last_layout, NULL, NULL, "board", PCB_HID_FSD_READ, NULL);
 	else {
 		pcb_message(PCB_MSG_ERROR, "Invalid subcommand for Load(): '%s'\n", function);
 		PCB_ACT_IRES(1);
