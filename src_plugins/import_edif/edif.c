@@ -106,7 +106,6 @@
 #include "netlist2.h"
 #include "plugins.h"
 #include "compat_misc.h"
-#include "compat_nls.h"
 #include "safe_fs.h"
 
 /*
@@ -6235,7 +6234,7 @@ static int yylex()
 
 int ReadEdifNetlist(char *filename)
 {
-	pcb_message(PCB_MSG_INFO, _("Importing edif netlist %s\n"), filename);
+	pcb_message(PCB_MSG_INFO, "Importing edif netlist %s\n", filename);
 	ParseEDIF(filename, NULL);
 
 	return 0;

@@ -48,7 +48,6 @@
 #include "actions.h"
 #include "import_sch_conf.h"
 #include "misc_util.h"
-#include "compat_nls.h"
 #include "compat_misc.h"
 #include "obj_rat.h"
 
@@ -115,7 +114,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_MAY_CONVARG(4, FGW_STR, Import, units = argv[4].val.str);
 
 		if (!xs) {
-			pcb_hid_get_coords(_("Click on a location"), &x, &y, 0);
+			pcb_hid_get_coords("Click on a location", &x, &y, 0);
 		}
 		else if (pcb_strcasecmp(xs, "center") == 0) {
 			pcb_attrib_remove(PCB, "import::newX");
@@ -134,7 +133,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			y = pcb_get_value(ys, units, NULL, NULL);
 		}
 		else {
-			pcb_message(PCB_MSG_ERROR, _("Bad syntax for Import(setnewpoint)"));
+			pcb_message(PCB_MSG_ERROR, "Bad syntax for Import(setnewpoint)");
 			PCB_ACT_IRES(1);
 			return 0;
 		}
@@ -233,13 +232,13 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		int i;
 
 		if (tmpfile == NULL) {
-			pcb_message(PCB_MSG_ERROR, _("Could not create temp file"));
+			pcb_message(PCB_MSG_ERROR, "Could not create temp file");
 			PCB_ACT_IRES(1);
 			return 0;
 		}
 
 		if ((conf_import_sch.plugins.import_sch.gnetlist_program == NULL) || (*conf_import_sch.plugins.import_sch.gnetlist_program == '\0')) {
-			pcb_message(PCB_MSG_ERROR, _("No gnetlist program configured, can not import. Please fill in configuration setting plugins/import_sch/gnetlist_program\n"));
+			pcb_message(PCB_MSG_ERROR, "No gnetlist program configured, can not import. Please fill in configuration setting plugins/import_sch/gnetlist_program\n");
 			PCB_ACT_IRES(1);
 			return 0;
 		}
@@ -301,7 +300,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			user_target = user_outfile;
 
 		if ((conf_import_sch.plugins.import_sch.make_program == NULL) || (*conf_import_sch.plugins.import_sch.make_program == '\0')) {
-			pcb_message(PCB_MSG_ERROR, _("No make program configured, can not import. Please fill in configuration setting plugins/import_sch/make_program\n"));
+			pcb_message(PCB_MSG_ERROR, "No make program configured, can not import. Please fill in configuration setting plugins/import_sch/make_program\n");
 			PCB_ACT_IRES(1);
 			return 0;
 		}
@@ -311,7 +310,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else {
 			tmpfile = pcb_tempfile_name_new("gnetlist_output");
 			if (tmpfile == NULL) {
-				pcb_message(PCB_MSG_ERROR, _("Could not create temp file"));
+				pcb_message(PCB_MSG_ERROR, "Could not create temp file");
 				PCB_ACT_IRES(1);
 				return 0;
 			}
@@ -361,7 +360,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_tempfile_unlink(tmpfile);
 	}
 	else {
-		pcb_message(PCB_MSG_ERROR, _("Unknown import mode: %s\n"), mode);
+		pcb_message(PCB_MSG_ERROR, "Unknown import mode: %s\n", mode);
 		PCB_ACT_IRES(1);
 		return 0;
 	}

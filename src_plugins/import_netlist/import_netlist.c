@@ -36,7 +36,6 @@
 #include "data.h"
 #include "rats_patch.h"
 #include "compat_misc.h"
-#include "compat_nls.h"
 #include "paths.h"
 #include "safe_fs.h"
 #include "macro.h"
@@ -66,7 +65,7 @@ static int ReadNetlist(const char *filename)
 	if (!filename)
 		return 1;									/* nothing to do */
 
-	pcb_message(PCB_MSG_INFO, _("Importing PCB netlist %s\n"), filename);
+	pcb_message(PCB_MSG_INFO, "Importing PCB netlist %s\n", filename);
 
 	ratcmd = conf_core.rc.rat_command;
 	if (PCB_EMPTY_STRING_P(ratcmd)) {
@@ -103,8 +102,8 @@ static int ReadNetlist(const char *filename)
 		/* check for maximum length line */
 		if (len) {
 			if (inputline[--len] != '\n')
-				pcb_message(PCB_MSG_ERROR, _("Line length (%i) exceeded in netlist file.\n"
-									"additional characters will be ignored.\n"), PCB_MAX_NETLIST_LINE_LENGTH);
+				pcb_message(PCB_MSG_ERROR, "Line length (%i) exceeded in netlist file.\n"
+									"additional characters will be ignored.\n", PCB_MAX_NETLIST_LINE_LENGTH);
 			else
 				inputline[len] = '\0';
 		}
@@ -141,7 +140,7 @@ static int ReadNetlist(const char *filename)
 			kind = 0;
 	}
 	if (!lines) {
-		pcb_message(PCB_MSG_ERROR, _("Empty netlist file!\n"));
+		pcb_message(PCB_MSG_ERROR, "Empty netlist file!\n");
 		pcb_pclose(fp);
 		return 1;
 	}
