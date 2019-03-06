@@ -93,7 +93,7 @@ static fgw_error_t pcb_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	while (end - start < 10);
 
-	printf(_("%g redraws per second\n"), i / 10.0);
+	printf("%g redraws per second\n", i / 10.0);
 
 	PCB_ACT_DRES(i/10.0);
 	return 0;
@@ -102,7 +102,7 @@ static fgw_error_t pcb_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static const char pcb_acts_DoWindows[] =
 	"DoWindows(1|2|3|4|5|6|7 [,false])\n"
 	"DoWindows(Layout|Library|Log|Search [,false])";
-static const char pcb_acth_DoWindows[] = N_("Open various GUI windows. With false, do not raise the window (no focus stealing).");
+static const char pcb_acth_DoWindows[] = "Open various GUI windows. With false, do not raise the window (no focus stealing).";
 /* DOC: dowindows.html */
 static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -150,8 +150,8 @@ static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static const char pcb_acts_Popup[] = "Popup(MenuName, [Button])";
 
 static const char pcb_acth_Popup[] =
-N_("Bring up the popup menu specified by @code{MenuName}.\n"
-	 "If called by a mouse event then the mouse button number\n" "must be specified as the optional second argument.");
+	"Bring up the popup menu specified by @code{MenuName}.\n"
+	"If called by a mouse event then the mouse button number\n" "must be specified as the optional second argument.";
 /* DOC: popup.html */
 static fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -211,7 +211,7 @@ static fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (!GTK_IS_MENU(menu)) {
-		pcb_message(PCB_MSG_ERROR, _("The specified popup menu \"%s\" (context: '%s') has not been defined.\n"), a0, (tn == NULL ? "" : tn));
+		pcb_message(PCB_MSG_ERROR, "The specified popup menu \"%s\" (context: '%s') has not been defined.\n", a0, (tn == NULL ? "" : tn));
 		PCB_ACT_IRES(1);
 		return 0;
 	}
@@ -227,7 +227,7 @@ static fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 /* ------------------------------------------------------------ */
 static const char pcb_acts_SaveWinGeo[] = "SaveWindowGeometry()";
-static const char pcb_acth_SaveWinGeo[] = N_("Saves window geometry in the config.\n");
+static const char pcb_acth_SaveWinGeo[] = "Saves window geometry in the config.\n";
 
 static fgw_error_t pcb_act_SaveWinGeo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
