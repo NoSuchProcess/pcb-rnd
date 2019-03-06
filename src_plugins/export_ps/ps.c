@@ -29,7 +29,6 @@
 #include "actions.h"
 #include "conf_core.h"
 #include "compat_misc.h"
-#include "compat_nls.h"
 #include "stub_draw.h"
 
 const char *ps_cookie = "ps HID";
@@ -1465,7 +1464,7 @@ void ps_calibrate_1(double xval, double yval, int use_command)
 		ps_calib_attribute_list[0].default_val.str_value = pcb_strdup("lpr");
 	}
 
-	if (pcb_attribute_dialog("ps_calibrate", ps_calib_attribute_list, 1, vals, _("Print Calibration Page"), NULL))
+	if (pcb_attribute_dialog("ps_calibrate", ps_calib_attribute_list, 1, vals, "Print Calibration Page", NULL))
 		return;
 
 	if (vals[0].str_value == NULL)
