@@ -28,13 +28,17 @@
 
 #include <genvector/gds_char.h>
 #include "actions.h"
+#include "board.h"
+#include "data.h"
 #include "hid_dad.h"
 #include "compat_fs.h"
 #include "conf_core.h"
+#include "plug_io.h"
 
 #include "dlg_loadsave.h"
 
 extern fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv);
+extern fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv);
 
 static char *dup_cwd(void)
 {
@@ -86,10 +90,167 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+typedef struct {
+	pcb_hid_dad_subdialog_t *fmtsub;
+	pcb_io_formats_t *avail;
+} save_t;
+
+static void setup_fmt_sub(save_t *save)
+{
+	PCB_DAD_BEGIN_VBOX(save->fmtsub->dlg);
+		PCB_DAD_BEGIN_HBOX(save->fmtsub->dlg);
+			PCB_DAD_LABEL(save->fmtsub->dlg, "File format:");
+			PCB_DAD_ENUM(save->fmtsub->dlg, (const char **)save->avail->digest);
+		PCB_DAD_END(save->fmtsub->dlg);
+	PCB_DAD_END(save->fmtsub->dlg);
+}
+
 const char pcb_acts_Save[] = "Save()\n" "Save(Layout|LayoutAs)\n" "Save(AllConnections|AllUnusedPins|ElementConnections)\n" "Save(PasteBuffer)";
 const char pcb_acth_Save[] = "Save layout data to a user-selected file.";
 /* DOC: save.html */
 fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	return -1;
+	const char *function = "Layout";
+	static char *cwd = NULL;
+	pcb_hid_dad_subdialog_t *fmtsub = NULL, fmtsub_local;
+	char *final_name, *name_in = NULL;
+	const char *prompt;
+	pcb_io_formats_t avail;
+	const char **extensions_param = NULL;
+	int fmt, *fmt_param = NULL;
+	save_t save;
+
+	if (cwd == NULL) cwd = dup_cwd();
+
+	if (argc > 2)
+		return PCB_ACT_CALL_C(pcb_act_SaveTo, res, argc, argv);
+
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, Save, function = argv[1].val.str);
+
+	if (pcb_strcasecmp(function, "Layout") == 0)
+		if (PCB->Filename)
+			return pcb_actionl("SaveTo", "Layout", NULL);
+
+	if (pcb_strcasecmp(function, "PasteBuffer") == 0) {
+		int num_fmts, n;
+		prompt = "Save element as";
+		num_fmts = pcb_io_list(&avail, PCB_IOT_BUFFER, 1, 1, PCB_IOL_EXT_FP);
+		if (num_fmts > 0) {
+			const char *default_pattern = conf_core.rc.save_fp_fmt;
+			extensions_param = (const char **)avail.extension;
+			fmt_param = &fmt;
+			fmt = -1;
+
+			if (default_pattern != NULL) {
+				/* look for exact match, case sensitive */
+				for (n = 0; n < num_fmts; n++)
+					if (strcmp(avail.plug[n]->description, default_pattern) == 0)
+						fmt = n;
+
+				/* look for exact match, case insensitive */
+				if (fmt < 0)
+					for (n = 0; n < num_fmts; n++)
+						if (pcb_strcasecmp(avail.plug[n]->description, default_pattern) == 0)
+							fmt = n;
+
+				/* look for partial match */
+				if (fmt < 0) {
+					for (n = 0; n < num_fmts; n++) {
+						if (strstr(avail.plug[n]->description, default_pattern) != NULL) {
+							fmt = n;
+							break; /* pick the first one, that has the highest prio */
+						}
+					}
+				}
+
+				if (fmt < 0) {
+					static int warned = 0;
+					if (!warned)
+						pcb_message(PCB_MSG_WARNING, "Could not find an io_ plugin for the preferred footprint save format (configured in rc/save_fp_fmt): '%s'\n", default_pattern);
+					warned = 1;
+				}
+			}
+
+			if (fmt < 0) /* fallback: choose the frist format */
+				fmt = 0;
+
+			name_in = pcb_concat("unnamed", avail.plug[fmt]->fp_extension, NULL);
+		}
+		else {
+			pcb_message(PCB_MSG_ERROR, "Error: no IO plugin avaialble for saving a buffer.");
+			PCB_ACT_IRES(-1);
+			return 0;
+		}
+	}
+	else {
+		int num_fmts, n;
+		prompt = "Save layout as";
+		num_fmts = pcb_io_list(&avail, PCB_IOT_PCB, 1, 1, PCB_IOL_EXT_BOARD);
+		if (num_fmts > 0) {
+			extensions_param = (const char **)avail.extension;
+			fmt_param = &fmt;
+			fmt = 0;
+			if (PCB->Data->loader != NULL) {
+				for (n = 0; n < num_fmts; n++) {
+					if (avail.plug[n] == PCB->Data->loader) {
+						fmt = n;
+						break;
+					}
+				}
+			}
+			fmtsub = &fmtsub_local;
+			memset(&fmtsub_local, 0, sizeof(fmtsub_local));
+			save.avail = &avail;
+			save.fmtsub = fmtsub;
+			setup_fmt_sub(&save);
+		}
+		else {
+			pcb_message(PCB_MSG_ERROR, "Error: no IO plugin avaialble for saving a buffer.");
+			PCB_ACT_IRES(-1);
+			return 0;
+		}
+	}
+
+	/* construct the input file name and run a file selection dialog to get the final file name */
+	if (name_in == NULL) {
+		if (PCB->Filename == NULL)
+			name_in = pcb_concat("unnamed", extensions_param[fmt], NULL);
+		else
+			name_in = pcb_strdup(PCB->Filename);
+	}
+	final_name = pcb_gui->fileselect(prompt, NULL, name_in, NULL, NULL, "board", PCB_HID_FSD_MAY_NOT_EXIST, fmtsub);
+	free(name_in);
+
+	if (final_name == NULL) { /* cancel */
+		pcb_io_list_free(&avail);
+		PCB_ACT_IRES(1);
+		return 0;
+	}
+
+	if (conf_core.rc.verbose)
+		fprintf(stderr, "Save:  Calling SaveTo(%s, %s)\n", function, final_name);
+
+	if (pcb_strcasecmp(function, "PasteBuffer") == 0) {
+		pcb_actionl("PasteBuffer", "Save", final_name, avail.plug[fmt]->description, "1", NULL);
+	}
+	else {
+		const char *sfmt = NULL;
+		/*
+		 * if we got this far and the function is Layout, then
+		 * we really needed it to be a LayoutAs.  Otherwise
+		 * ActionSaveTo() will ignore the new file name we
+		 * just obtained.
+		 */
+		if (fmt_param != NULL)
+			sfmt = avail.plug[fmt]->description;
+		if (pcb_strcasecmp(function, "Layout") == 0)
+			pcb_actionl("SaveTo", "LayoutAs", final_name, sfmt, NULL);
+		else
+			pcb_actionl("SaveTo", function, final_name, sfmt, NULL);
+	}
+
+	free(final_name);
+	pcb_io_list_free(&avail);
+	PCB_ACT_IRES(0);
+	return 0;
 }
