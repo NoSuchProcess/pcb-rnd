@@ -178,7 +178,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, Save, function = argv[1].val.str);
 
 	if (pcb_strcasecmp(function, "Layout") == 0)
-		if (PCB->Filename)
+		if (PCB->Filename != NULL)
 			return pcb_actionl("SaveTo", "Layout", NULL);
 
 	if (pcb_strcasecmp(function, "PasteBuffer") == 0) {
