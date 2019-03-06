@@ -52,7 +52,6 @@
 #include "autoplace.h"
 #include "box.h"
 #include "compat_misc.h"
-#include "compat_nls.h"
 #include "data.h"
 #include "draw.h"
 #include "error.h"
@@ -730,7 +729,7 @@ pcb_bool AutoPlaceSelected(void)
 
 	Selected = collectSelectedSubcircuits();
 	if (vtp0_len(&Selected) == 0) {
-		pcb_message(PCB_MSG_ERROR, _("No subcircuits selected to autoplace.\n"));
+		pcb_message(PCB_MSG_ERROR, "No subcircuits selected to autoplace.\n");
 		goto done;
 	}
 

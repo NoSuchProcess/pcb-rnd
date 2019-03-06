@@ -56,7 +56,6 @@
 #include "misc_util.h"
 #include "report_conf.h"
 #include "compat_misc.h"
-#include "compat_nls.h"
 #include "layer.h"
 #include "obj_term.h"
 #include "obj_pstk.h"
@@ -398,7 +397,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	}
 
 	if ((report == NULL) || (*report == '\0')) {
-		pcb_message(PCB_MSG_INFO, _("Nothing found to report on\n"));
+		pcb_message(PCB_MSG_INFO, "Nothing found to report on\n");
 		PCB_ACT_IRES(1);
 		return 0;
 	}

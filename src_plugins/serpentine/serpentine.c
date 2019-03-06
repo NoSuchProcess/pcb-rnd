@@ -47,7 +47,6 @@
 #include "plugins.h"
 #include "actions.h"
 #include "serpentine_conf.h"
-#include "compat_nls.h"
 #include "layer.h"
 #include "route.h"
 
@@ -322,7 +321,7 @@ static void tool_serpentine_notify_mode(void)
 				pcb_crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
 		}
 		else
-			pcb_message(PCB_MSG_WARNING, _("Serpentines can be only drawn onto a line\n"));
+			pcb_message(PCB_MSG_WARNING, "Serpentines can be only drawn onto a line\n");
 		break;
 
 	case PCB_CH_STATE_SECOND:

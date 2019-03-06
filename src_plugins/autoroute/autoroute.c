@@ -83,7 +83,6 @@
 #include "vector.h"
 #include "pcb-printf.h"
 #include "layer.h"
-#include "compat_nls.h"
 #include <genvector/vtp0.h>
 #include "layer.h"
 
@@ -4376,7 +4375,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 					 * to route a net from a particular starting point, but perfectly
 					 * able to route it from some other. */
 					percent = calculate_progress(this_heap_item, this_heap_size, &ras);
-					request_cancel = pcb_hid_progress(percent * 100., 100, _("Autorouting tracks"));
+					request_cancel = pcb_hid_progress(percent * 100., 100, "Autorouting tracks");
 					if (request_cancel) {
 						ras.total_nets_routed = 0;
 						ras.conflict_subnets = 0;

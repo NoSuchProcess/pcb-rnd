@@ -37,7 +37,6 @@
 #include "change.h"
 #include "hid_attrib.h"
 #include "../src/actions.h"
-#include "compat_nls.h"
 #include "compat_misc.h"
 
 #include "../src_plugins/lib_gtk_common/act_fileio.h"

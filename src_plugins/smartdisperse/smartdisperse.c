@@ -31,7 +31,6 @@
 #include "draw.h"
 #include "plugins.h"
 #include "actions.h"
-#include "compat_nls.h"
 #include "obj_subc.h"
 #include "obj_subc_parent.h"
 #include "obj_term.h"

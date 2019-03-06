@@ -35,7 +35,6 @@
 #include "plugins.h"
 #include "actions.h"
 #include "board.h"
-#include "compat_nls.h"
 #include "conf_core.h"
 #include "data.h"
 #include "event.h"
@@ -1038,7 +1037,7 @@ static void tool_skline_notify_mode(void)
 				pcb_crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
 			}
 			else
-				pcb_message(PCB_MSG_WARNING, _("Sketch lines can be only drawn from a terminal\n"));
+				pcb_message(PCB_MSG_WARNING, "Sketch lines can be only drawn from a terminal\n");
 		}
 		break;
 
@@ -1055,14 +1054,14 @@ static void tool_skline_notify_mode(void)
 					pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 					pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 				} else {
-					pcb_message(PCB_MSG_WARNING, _("Cannot finish placing wire at this terminal\n"));
-					pcb_message(PCB_MSG_WARNING, _("(the terminal does not belong to the routed net or is the starting terminal)\n"));
+					pcb_message(PCB_MSG_WARNING, "Cannot finish placing wire at this terminal\n");
+					pcb_message(PCB_MSG_WARNING, "(the terminal does not belong to the routed net or is the starting terminal)\n");
 				}
 				break;
 			}
 		}
 		if (attached_path_next_point(NULL) == pcb_false)
-			pcb_message(PCB_MSG_WARNING, _("Cannot route the wire this way\n"));
+			pcb_message(PCB_MSG_WARNING, "Cannot route the wire this way\n");
 
 		break;
 	}

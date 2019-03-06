@@ -42,7 +42,6 @@
 #include "actions.h"
 #include "conf_core.h"
 #include "compat_misc.h"
-#include "compat_nls.h"
 #include "netlist2.h"
 #include "safe_fs.h"
 #include "macro.h"
@@ -90,10 +89,10 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		 * We deal with the case where name already exists in this
 		 * function so the GUI doesn't need to deal with it
 		 */
-		name = pcb_gui->fileselect(_("Save Renumber Annotation File As ..."),
-													 _("Choose a file to record the renumbering to.\n"
+		name = pcb_gui->fileselect("Save Renumber Annotation File As ...",
+													 "Choose a file to record the renumbering to.\n"
 														 "This file may be used to back annotate the\n"
-														 "change to the schematics.\n"), default_file, ".eco", "eco", 0, NULL);
+														 "change to the schematics.\n", default_file, ".eco", "eco", 0, NULL);
 
 		free_name = pcb_true;
 	}
@@ -118,7 +117,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if ((out = pcb_fopen(name, "w")) == NULL) {
-		pcb_message(PCB_MSG_ERROR, _("Could not open %s\n"), name);
+		pcb_message(PCB_MSG_ERROR, "Could not open %s\n", name);
 		if (free_name && name)
 			free((char*)name);
 		PCB_ACT_IRES(1);

@@ -36,7 +36,6 @@
 #include "autoplace.h"
 #include "plugins.h"
 #include "actions.h"
-#include "compat_nls.h"
 #include "board.h"
 #include "event.h"
 

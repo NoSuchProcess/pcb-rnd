@@ -44,7 +44,6 @@
 #include "error.h"
 #include "conf.h"
 #include "conf_core.h"
-#include "compat_nls.h"
 #include "macro.h"
 #include "safe_fs.h"
 
@@ -122,7 +121,7 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 	/* Cache old dir, then cd into subdir because stat is given relative file names. */
 	memset(olddir, 0, sizeof olddir);
 	if (pcb_get_wd(olddir) == NULL) {
-		pcb_message(PCB_MSG_ERROR, _("fp_fs_list(): Could not determine initial working directory\n"));
+		pcb_message(PCB_MSG_ERROR, "fp_fs_list(): Could not determine initial working directory\n");
 		return 0;
 	}
 
@@ -138,7 +137,7 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 
 	/* Determine subdir's abs path */
 	if (pcb_get_wd(new_subdir) == NULL) {
-		pcb_message(PCB_MSG_ERROR, _("fp_fs_list(): Could not determine new working directory\n"));
+		pcb_message(PCB_MSG_ERROR, "fp_fs_list(): Could not determine new working directory\n");
 		if (chdir(olddir))
 			pcb_chdir_error_message(olddir);
 		return 0;
