@@ -41,7 +41,6 @@
 #include <math.h>
 #include "config.h"
 #include "pcb-printf.h"
-#include "compat_nls.h"
 
 const char *pcb_printf_slot[PCB_PRINTF_SLOT_max] =
 {

@@ -35,7 +35,6 @@
 #include "config.h"
 
 #include "board.h"
-#include "compat_nls.h"
 #include "crosshair.h"
 #include "insert.h"
 #include "polygon.h"

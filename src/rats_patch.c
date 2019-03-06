@@ -34,7 +34,6 @@
 #include "error.h"
 #include "move.h"
 #include "compat_misc.h"
-#include "compat_nls.h"
 #include "safe_fs.h"
 #include "funchash_core.h"
 #include "search.h"

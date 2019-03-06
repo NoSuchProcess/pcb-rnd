@@ -36,7 +36,6 @@
 #include "conf_core.h"
 
 #include "board.h"
-#include "compat_nls.h"
 #include "data.h"
 #include "draw.h"
 #include "actions.h"

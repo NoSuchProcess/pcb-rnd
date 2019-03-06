@@ -50,7 +50,6 @@
 #include "undo.h"
 #include "event.h"
 #include "compat_misc.h"
-#include "compat_nls.h"
 #include "obj_rat_draw.h"
 #include "data_it.h"
 #include "macro.h"

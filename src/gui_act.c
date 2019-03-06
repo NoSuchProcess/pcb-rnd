@@ -49,7 +49,6 @@
 #include "stub_stroke.h"
 #include "actions.h"
 #include "hid_init.h"
-#include "compat_nls.h"
 #include "compat_misc.h"
 #include "event.h"
 #include "layer.h"

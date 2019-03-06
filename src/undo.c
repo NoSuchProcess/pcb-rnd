@@ -63,7 +63,6 @@
 #include "flag_str.h"
 #include "conf_core.h"
 #include "compat_misc.h"
-#include "compat_nls.h"
 
 #include "obj_poly_draw.h"
 

@@ -37,7 +37,6 @@
 
 #include "board.h"
 #include "change.h"
-#include "compat_nls.h"
 #include "hid_inlines.h"
 #include "data.h"
 #include "draw.h"

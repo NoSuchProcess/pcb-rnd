@@ -30,7 +30,6 @@
 
 
 #include "config.h"
-#include "compat_nls.h"
 #include "board.h"
 #include "data.h"
 #include "polygon.h"

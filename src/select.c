@@ -44,7 +44,6 @@
 #include "undo.h"
 #include "find.h"
 #include "compat_misc.h"
-#include "compat_nls.h"
 
 #include "obj_arc_draw.h"
 #include "obj_line_draw.h"

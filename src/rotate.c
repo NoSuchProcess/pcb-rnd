@@ -40,7 +40,6 @@
 #include "undo.h"
 #include "event.h"
 #include "conf_core.h"
-#include "compat_nls.h"
 #include "obj_arc_op.h"
 #include "obj_line_op.h"
 #include "obj_poly_op.h"

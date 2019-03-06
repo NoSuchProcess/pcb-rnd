@@ -35,7 +35,6 @@
 #include "board.h"
 #include "data.h"
 #include "compat_misc.h"
-#include "compat_nls.h"
 #include "hid_inlines.h"
 #include "undo.h"
 #include "polygon.h"

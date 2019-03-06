@@ -31,7 +31,6 @@
 #include "board.h"
 #include "conf_core.h"
 #include "crosshair.h"
-#include "compat_nls.h"
 #include "data.h"
 #include "draw.h"
 #include "error.h"

@@ -48,7 +48,6 @@
 #include "move.h"
 #include "remove.h"
 #include "compat_misc.h"
-#include "compat_nls.h"
 #include "layer_vis.h"
 #include "operation.h"
 #include "obj_pstk.h"

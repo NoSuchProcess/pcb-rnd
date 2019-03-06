@@ -62,7 +62,6 @@
 #include "compat_misc.h"
 #include "route_style.h"
 #include "compat_fs.h"
-#include "compat_nls.h"
 #include "compat_lrealpath.h"
 #include "layer_vis.h"
 #include "safe_fs.h"

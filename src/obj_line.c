@@ -38,7 +38,6 @@
 #include "search.h"
 #include "polygon.h"
 #include "conf_core.h"
-#include "compat_nls.h"
 #include "compat_misc.h"
 #include "rotate.h"
 #include "hid_inlines.h"

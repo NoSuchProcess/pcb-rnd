@@ -37,7 +37,6 @@
 #include "actions.h"
 #include "hid.h"
 #include "compat_misc.h"
-#include "compat_nls.h"
 #include "conf_core.h"
 
 /* This is the "gui" that is installed at startup, and is used when

@@ -44,7 +44,6 @@
 #include "undo.h"
 #include "funchash_core.h"
 #include "compat_misc.h"
-#include "compat_nls.h"
 #include "obj_arc_op.h"
 #include "obj_line_op.h"
 #include "obj_text_op.h"

@@ -33,7 +33,6 @@
 
 #include "board.h"
 #include "data.h"
-#include "compat_nls.h"
 #include "undo.h"
 #include "polygon.h"
 #include "polygon_offs.h"

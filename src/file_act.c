@@ -47,7 +47,6 @@
 #include "search.h"
 #include "actions.h"
 #include "compat_misc.h"
-#include "compat_nls.h"
 #include "hid_init.h"
 #include "layer_vis.h"
 #include "safe_fs.h"

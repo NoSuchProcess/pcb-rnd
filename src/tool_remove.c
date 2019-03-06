@@ -35,7 +35,6 @@
 #include "config.h"
 
 #include "board.h"
-#include "compat_nls.h"
 #include "event.h"
 #include "actions.h"
 #include "undo.h"

@@ -73,7 +73,6 @@ static const char *EXPERIMENTAL = NULL;
 #include "actions.h"
 #include "hid_init.h"
 #include "compat_misc.h"
-#include "compat_nls.h"
 
 /* ----------------------------------------------------------------------
  * initialize signal and error handlers

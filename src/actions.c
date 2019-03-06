@@ -42,7 +42,6 @@
 #include "event.h"
 #include "actions.h"
 #include "compat_misc.h"
-#include "compat_nls.h"
 #include "funchash.h"
 #include "layer.h"
 

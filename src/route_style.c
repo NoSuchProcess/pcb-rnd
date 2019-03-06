@@ -37,7 +37,6 @@
 #include "board.h"
 #include "funchash_core.h"
 #include "conf_core.h"
-#include "compat_nls.h"
 
 pcb_route_style_t pcb_custom_route_style;
 

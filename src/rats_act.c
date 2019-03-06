@@ -41,7 +41,6 @@
 #include "find.h"
 #include "remove.h"
 #include "funchash_core.h"
-#include "compat_nls.h"
 #include "obj_rat.h"
 #include "actions.h"
 #include "netlist2.h"

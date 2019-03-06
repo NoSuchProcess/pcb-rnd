@@ -36,7 +36,6 @@
 #include <string.h>
 #include <ctype.h>
 #include "compat_misc.h"
-#include "compat_nls.h"
 #include "unit.h"
 
 /* Helper macros for tables */
@@ -94,7 +93,7 @@ void pcb_units_init(void)
 	int i;
 	for (i = 0; i < N_UNITS; ++i) {
 		pcb_units[i].index = i;
-		pcb_units[i].in_suffix = _(pcb_units[i].suffix);
+		pcb_units[i].in_suffix = pcb_units[i].suffix;
 	}
 }
 

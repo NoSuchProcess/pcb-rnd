@@ -40,7 +40,6 @@
 #include "actions.h"
 #include "hid_inlines.h"
 #include "compat_misc.h"
-#include "compat_nls.h"
 #include "vtonpoint.h"
 #include "find.h"
 #include "undo.h"

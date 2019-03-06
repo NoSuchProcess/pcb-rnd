@@ -40,7 +40,6 @@
 #include "config.h"
 
 #include "undo.h"
-#include "compat_nls.h"
 #include "change.h"
 #include "board.h"
 #include "data.h"

@@ -42,7 +42,6 @@
 #include "error.h"
 #include "plug_io.h"
 #include "actions.h"
-#include "compat_nls.h"
 #include "compat_misc.h"
 #include "netlist2.h"
 #include "data_it.h"

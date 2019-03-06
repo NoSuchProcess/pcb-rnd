@@ -48,7 +48,6 @@
 #include "thermal.h"
 #include "undo.h"
 #include "layer.h"
-#include "compat_nls.h"
 #include "obj_poly_draw.h"
 #include "polygon_selfi.h"
 #include "event.h"

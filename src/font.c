@@ -40,7 +40,6 @@
 #include "error.h"
 #include "plug_io.h"
 #include "paths.h"
-#include "compat_nls.h"
 #include "compat_misc.h"
 #include "event.h"
 #include "build_run.h"
