@@ -54,7 +54,6 @@
 #include "plug_footprint.h"
 #include "attribs.h"
 #include "compat_misc.h"
-#include "compat_nls.h"
 #include "compat_cc.h"
 #include "obj_common.h"
 #include "paths.h"

@@ -32,7 +32,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "compat_nls.h"
 #include "hid.h"
 #include "hid_draw_helpers.h"
 #include "hid_nogui.h"
@@ -78,8 +77,8 @@ fgw_error_t pcb_act_LoadhypFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadhypFrom, fname = argv[1].val.str);
 
 	if ((fname == NULL) || (*fname == '\0')) {
-		fname = pcb_gui->fileselect(_("Load .hyp file..."),
-																_("Picks a hyperlynx file to load.\n"), "default.hyp", ".hyp", "hyp", PCB_HID_FSD_READ, NULL);
+		fname = pcb_gui->fileselect("Load .hyp file...",
+																"Picks a hyperlynx file to load.\n", "default.hyp", ".hyp", "hyp", PCB_HID_FSD_READ, NULL);
 	}
 
 	if (fname == NULL) {
@@ -102,7 +101,7 @@ TODO(": rewrite this - this is very unpcb-rnd")
 #endif
 
 	if (debug > 0)
-		pcb_message(PCB_MSG_INFO, _("Importing Hyperlynx file '%s', debug level %d\n"), fname, debug);
+		pcb_message(PCB_MSG_INFO, "Importing Hyperlynx file '%s', debug level %d\n", fname, debug);
 
 	pcb_event(PCB_EVENT_BUSY, NULL);
 
