@@ -66,7 +66,7 @@ static void pcb_ltf_set_fn(pcb_ltf_fsd_t *pctx, int append, const char *fn)
 {
 	XmString xms_path;
 
-	if (append) {
+	if ((*fn != PCB_DIR_SEPARATOR_C) && (append)) {
 		char *end, *path, *dir = pcb_ltf_get_path(pctx);
 
 		end = strrchr(dir, PCB_DIR_SEPARATOR_C);
