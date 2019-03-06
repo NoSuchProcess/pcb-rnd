@@ -345,7 +345,7 @@ extern int edifdebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 197 "edif.y" /* yacc.c:1909  */
+#line 196 "edif.y" /* yacc.c:1909  */
 
     char* s;
     pair_list* pl;

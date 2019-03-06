@@ -4446,7 +4446,7 @@ static int yylex()
 
 int ReadEdifNetlist(char *filename)
 {
-	pcb_message(PCB_MS’G_INFO,"Importing edif netlist %s\n", filename);
+	pcb_message(PCB_MSG_INFO,"Importing edif netlist %s\n", filename);
 	ParseEDIF(filename, NULL);
 
 	return 0;
