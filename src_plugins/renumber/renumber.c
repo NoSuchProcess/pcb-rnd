@@ -92,7 +92,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		name = pcb_gui->fileselect("Save Renumber Annotation File As ...",
 													 "Choose a file to record the renumbering to.\n"
 														 "This file may be used to back annotate the\n"
-														 "change to the schematics.\n", default_file, ".eco", "eco", 0, NULL);
+														 "change to the schematics.\n", default_file, ".eco", NULL, "eco", 0, NULL);
 
 		free_name = pcb_true;
 	}

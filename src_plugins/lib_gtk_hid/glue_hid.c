@@ -333,9 +333,9 @@ static void ghid_logv(enum pcb_message_level level, const char *fmt, va_list arg
 	pcb_gtk_logv(ghidgui->hid_active, level, fmt, args);
 }
 
-static char *ghid_fileselect(const char *title, const char *descr, const char *default_file, const char *default_ext, const char *history_tag, pcb_hid_fsd_flags_t flags, pcb_hid_dad_subdialog_t *sub)
+static char *ghid_fileselect(const char *title, const char *descr, const char *default_file, const char *default_ext, const pcb_hid_fsd_filter_t *flt, const char *history_tag, pcb_hid_fsd_flags_t flags, pcb_hid_dad_subdialog_t *sub)
 {
-	return pcb_gtk_fileselect(&ghidgui->common, title, descr, default_file, default_ext, history_tag, flags, sub);
+	return pcb_gtk_fileselect(&ghidgui->common, title, descr, default_file, default_ext, flt, history_tag, flags, sub);
 }
 
 static void *ghid_attr_dlg_new_(const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy)

@@ -114,7 +114,7 @@ do { \
 	if ((fname == NULL) || (*fname == '\0')) { \
 		fname = pcb_gui->fileselect("Load tedax " #type " file...", \
 																"Picks a tedax " #type " file to load.\n", \
-																default_file, ".tdx", "tedax-" #type, PCB_HID_FSD_READ, NULL); \
+																default_file, ".tdx", NULL, "tedax-" #type, PCB_HID_FSD_READ, NULL); \
 		if (fname == NULL) \
 			return 1; \
 		if (default_file != NULL) { \

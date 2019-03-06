@@ -77,8 +77,9 @@ fgw_error_t pcb_act_LoadhypFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadhypFrom, fname = argv[1].val.str);
 
 	if ((fname == NULL) || (*fname == '\0')) {
-		fname = pcb_gui->fileselect("Load .hyp file...",
-																"Picks a hyperlynx file to load.\n", "default.hyp", ".hyp", "hyp", PCB_HID_FSD_READ, NULL);
+		fname = pcb_gui->fileselect(
+			"Load .hyp file...", "Picks a hyperlynx file to load.\n", "default.hyp",
+			".hyp", NULL, "hyp", PCB_HID_FSD_READ, NULL);
 	}
 
 	if (fname == NULL) {

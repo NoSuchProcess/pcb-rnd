@@ -132,6 +132,14 @@ typedef enum pcb_hid_fsd_flags_e {
 	PCB_HID_FSD_IS_TEMPLATE = 4
 } pcb_hid_fsd_flags_t;
 
+typedef struct {
+	const char *name;
+	const char *mime;
+	const char **pat; /* NULL terminated array of file name patterns */
+} pcb_hid_fsd_filter_t;
+
+extern const pcb_hid_fsd_filter_t *pcb_hid_fsd_filter_any;
+
 /* Optional fields of a menu item; all non-NULL fields are strdup'd in the HID. */
 typedef struct pcb_menu_prop_s {
 	const char *action;
@@ -363,6 +371,10 @@ struct pcb_hid_s {
 	 * default_ext is the default file extension, like ".pdf".
 	 * Ignored if NULL.
 	 *
+	 * flt is a NULL terminated array of file filters; HID support is optional.
+	 * Ignored if NULL. If NULL and default_ext is not NULL, the HID may make
+	 * up a minimalistic filter from the default_ext also allowing *.*.
+	 *
 	 * history_tag may be used by the GUI to keep track of file
 	 * history.  Examples would be "board", "vendor", "renumber",
 	 * etc.  If NULL, no specific history is kept.
@@ -374,7 +386,7 @@ struct pcb_hid_s {
 	 *  get_path       returns the current full paht in res as string
 	 *  set_file_name  replaces the file name portion of the current path from arg[0].d.s
 	 */
-	char *(*fileselect)(const char *title, const char *descr, const char *default_file, const char *default_ext, const char *history_tag, pcb_hid_fsd_flags_t flags, pcb_hid_dad_subdialog_t *sub);
+	char *(*fileselect)(const char *title, const char *descr, const char *default_file, const char *default_ext, const pcb_hid_fsd_filter_t *flt, const char *history_tag, pcb_hid_fsd_flags_t flags, pcb_hid_dad_subdialog_t *sub);
 
 	/* A generic dialog to ask for a set of attributes. If n_attrs_ is
 	   zero, attrs_(.name) must be NULL terminated. attr_dlg_run returns
