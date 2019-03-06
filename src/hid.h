@@ -138,7 +138,7 @@ typedef struct {
 	const char **pat; /* NULL terminated array of file name patterns */
 } pcb_hid_fsd_filter_t;
 
-extern const pcb_hid_fsd_filter_t *pcb_hid_fsd_filter_any;
+extern const pcb_hid_fsd_filter_t pcb_hid_fsd_filter_any[];
 
 /* Optional fields of a menu item; all non-NULL fields are strdup'd in the HID. */
 typedef struct pcb_menu_prop_s {
@@ -371,7 +371,7 @@ struct pcb_hid_s {
 	 * default_ext is the default file extension, like ".pdf".
 	 * Ignored if NULL.
 	 *
-	 * flt is a NULL terminated array of file filters; HID support is optional.
+	 * flt is a {NULL} terminated array of file filters; HID support is optional.
 	 * Ignored if NULL. If NULL and default_ext is not NULL, the HID may make
 	 * up a minimalistic filter from the default_ext also allowing *.*.
 	 *

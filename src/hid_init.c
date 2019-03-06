@@ -45,6 +45,13 @@
 #include "compat_misc.h"
 #include "compat_inc.h"
 
+static const char *flt_any[] = {"*", "*.*", NULL};
+
+const pcb_hid_fsd_filter_t pcb_hid_fsd_filter_any[] = {
+	{ "all", NULL, flt_any },
+	{ NULL, NULL, NULL }
+};
+
 pcb_hid_t **pcb_hid_list = 0;
 int pcb_hid_num_hids = 0;
 
