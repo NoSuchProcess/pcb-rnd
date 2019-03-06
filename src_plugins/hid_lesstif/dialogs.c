@@ -506,23 +506,28 @@ static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
 {
 	char *cp;
 
-	if ((ctx->attrs[widx].help_text == ATTR_UNDOCUMENTED) || (ctx->results == NULL))
+	if (ctx->attrs[widx].help_text == ATTR_UNDOCUMENTED)
 		return;
 
 	switch(ctx->attrs[widx].type) {
 		case PCB_HATT_BOOL:
-			ctx->attrs[widx].default_val.int_value = ctx->results[widx].int_value = XmToggleButtonGetState(ctx->wl[widx]);
+			ctx->attrs[widx].default_val.int_value = XmToggleButtonGetState(ctx->wl[widx]);
 			break;
 		case PCB_HATT_STRING:
-			ctx->results[widx].str_value = pcb_strdup(XmTextGetString(ctx->wl[widx]));
-			break;
+			free(ctx->attrs[widx].default_val.str_value);
+			ctx->attrs[widx].default_val.str_value = pcb_strdup(XmTextGetString(ctx->wl[widx]));
+			if (ctx->results != NULL) {
+				free(ctx->results[widx].str_value);
+				ctx->results[widx].str_value = ctx->attrs[widx].default_val.str_value;
+			}
+			return; /* can't rely on central copy because of the allocation */
 		case PCB_HATT_INTEGER:
 			cp = XmTextGetString(ctx->wl[widx]);
-			sscanf(cp, "%d", &ctx->results[widx].int_value);
+			sscanf(cp, "%d", &ctx->attrs[widx].default_val.int_value);
 			break;
 		case PCB_HATT_COORD:
 			cp = XmTextGetString(ctx->wl[widx]);
-			ctx->results[widx].coord_value = pcb_get_value(cp, NULL, NULL, NULL);
+			ctx->attrs[widx].default_val.coord_value = pcb_get_value(cp, NULL, NULL, NULL);
 			break;
 		case PCB_HATT_REAL:
 			cp = XmTextGetString(ctx->wl[widx]);
@@ -539,13 +544,15 @@ static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
 				stdarg_n = 0;
 				stdarg(XmNuserData, &uptr);
 				XtGetValues(btn, stdarg_args, stdarg_n);
-				ctx->results[widx].int_value = uptr - ctx->attrs[widx].enumerations;
+				ctx->attrs[widx].default_val.int_value = uptr - ctx->attrs[widx].enumerations;
 			}
 			break;
 		default:
 			break;
 	}
-	ctx->attrs[widx].default_val = ctx->results[widx];
+
+	if (ctx->results != NULL)
+		ctx->results[widx] = ctx->attrs[widx].default_val;
 }
 
 static int attr_get_idx(XtPointer dlg_widget_, lesstif_attr_dlg_t **ctx_out)
