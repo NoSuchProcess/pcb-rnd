@@ -30,6 +30,7 @@
 #include "actions.h"
 #include "board.h"
 #include "data.h"
+#include "event.h"
 #include "hid_dad.h"
 #include "compat_fs.h"
 #include "conf_core.h"
@@ -90,10 +91,58 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+/*** Save ***/
+
 typedef struct {
 	pcb_hid_dad_subdialog_t *fmtsub;
 	pcb_io_formats_t *avail;
 } save_t;
+
+static void fmt_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_hid_dad_subdialog_t *fmtsub = caller_data;
+	save_t *save = fmtsub->sub_ctx;
+	char *bn, *fn, *s;
+	const char *ext;
+	pcb_event_arg_t res, argv[4];
+	int selection = attr->default_val.int_value;;
+
+	if ((save->avail == NULL) || (save->avail->extension == NULL))
+		return;
+
+	if (fmtsub->parent_poke(fmtsub, "get_path", &res, 0, NULL) != 0)
+		return;
+	fn = (char *)res.d.s;
+
+	/* find and truncate extension */
+	for (s = fn + strlen(fn) - 1; *s != '.'; s--) {
+		if ((s <= fn) || (*s == PCB_DIR_SEPARATOR_C)) {
+			free(fn);
+			return;
+		}
+	}
+	*s = '\0';
+
+	/* calculate basename in bn */
+	bn = strrchr(fn, PCB_DIR_SEPARATOR_C);
+	if (bn == NULL)
+		bn = fn;
+	else
+		bn++;
+
+	/* fetch the desired extension */
+	ext = save->avail->extension[selection];
+	if (ext == NULL)
+		ext = ".";
+
+	/* build a new file name with the right extension */
+
+	argv[0].type = PCB_EVARG_STR;
+	argv[0].d.s = pcb_concat(bn, ext, NULL);;
+	fmtsub->parent_poke(fmtsub, "set_file_name", &res, 1, argv);
+	free(fn);
+}
+
 
 static void setup_fmt_sub(save_t *save)
 {
@@ -101,6 +150,7 @@ static void setup_fmt_sub(save_t *save)
 		PCB_DAD_BEGIN_HBOX(save->fmtsub->dlg);
 			PCB_DAD_LABEL(save->fmtsub->dlg, "File format:");
 			PCB_DAD_ENUM(save->fmtsub->dlg, (const char **)save->avail->digest);
+				PCB_DAD_CHANGE_CB(save->fmtsub->dlg, fmt_chg);
 		PCB_DAD_END(save->fmtsub->dlg);
 	PCB_DAD_END(save->fmtsub->dlg);
 }
@@ -202,6 +252,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			memset(&fmtsub_local, 0, sizeof(fmtsub_local));
 			save.avail = &avail;
 			save.fmtsub = fmtsub;
+			fmtsub->sub_ctx = &save;
 			setup_fmt_sub(&save);
 		}
 		else {
