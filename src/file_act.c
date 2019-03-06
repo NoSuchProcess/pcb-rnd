@@ -110,6 +110,11 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (PCB->Filename && (!PCB->Changed || (pcb_hid_message_box("warning", "Revert: lose data", "Really revert all modifications?", "no", 0, "yes", 1, NULL) == 1)))
 				pcb_revert_pcb();
 			break;
+
+		default:
+			pcb_message(PCB_MSG_ERROR, "LoadFrom(): invalid command (first arg)\n");
+			PCB_ACT_IRES(1);
+			return 0;
 	}
 
 	PCB_ACT_IRES(0);
