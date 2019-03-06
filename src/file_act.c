@@ -68,6 +68,7 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	switch(op) {
 		case F_ElementToBuffer:
+		case F_FootprintToBuffer:
 		case F_Element:
 		case F_SubcToBuffer:
 		case F_Subcircuit:
