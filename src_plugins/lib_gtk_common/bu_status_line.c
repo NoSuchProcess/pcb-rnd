@@ -62,7 +62,7 @@ static inline void gen_status_long(char *text, size_t text_size, int compat_hori
 	else
 		pcb_hid_cfg_keys_seq(&ghid_keymap, kbd, sizeof(kbd));
 
-	pcb_snprintf(text, text_size, _(
+	pcb_snprintf(text, text_size,
 		"%m+<b>view</b>=%s  "
 		"<b>grid</b>=%$mS  "
 		"<b>line</b>=%mS (%s%s) "
@@ -71,7 +71,7 @@ static inline void gen_status_long(char *text, size_t text_size, int compat_hori
 		"<b>via</b>=%mS (%mS)  "
 		"<b>clr</b>=%mS  "
 		"<b>text</b>=%i%% %$mS "
-		"<b>buff</b>=#%i"),
+		"<b>buff</b>=#%i",
 		unit->allow, conf_core.editor.show_solder_side ? "bottom" : "top",
 		PCB->Grid,
 		conf_core.design.line_thickness, flag, conf_core.editor.rubber_band_mode ? ",R" : "",
@@ -86,12 +86,12 @@ static inline void gen_status_long(char *text, size_t text_size, int compat_hori
 
 static inline void gen_status_short(char *text, size_t text_size, int compat_horiz, const pcb_unit_t *unit)
 {
-	pcb_snprintf(text, text_size, _(
+	pcb_snprintf(text, text_size,
 		"%m+"
 		"grid=%$mS  "
 		"line=%mS "
 		"via=%mS (%mS) "
-		"clearance=%mS"),
+		"clearance=%mS",
 		unit->allow,
 		PCB->Grid,
 		conf_core.design.line_thickness,
