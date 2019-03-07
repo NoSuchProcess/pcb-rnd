@@ -289,11 +289,6 @@ static fgw_error_t pcb_act_Pan(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return pcb_gtk_act_pan(&gport->view, res, argc, argv);
 }
 
-static fgw_error_t pcb_act_importgui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	return pcb_gtk_act_importgui(ghid_port.top_window, res, argc, argv);
-}
-
 /* ------------------------------------------------------------
  *
  * Actions specific to the GTK HID follow from here
@@ -311,7 +306,6 @@ pcb_action_t ghid_main_action_list[] = {
 	{"Center", pcb_act_Center, pcb_acth_center, pcb_acts_center},
 	{"Command", pcb_act_Command},
 	{"DoWindows", pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows},
-	{"ImportGUI", pcb_act_importgui, pcb_gtk_acth_importgui, pcb_gtk_acts_importgui},
 	{"LogShowOnAppend", pcb_gtk_act_logshowonappend, pcb_gtk_acth_logshowonappend, pcb_gtk_acts_logshowonappend},
 	{"Pan", pcb_act_Pan, pcb_acth_pan, pcb_acts_pan},
 	{"Popup", pcb_act_Popup, pcb_acth_Popup, pcb_acts_Popup},

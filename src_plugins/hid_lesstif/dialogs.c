@@ -109,48 +109,6 @@ int pcb_ltf_wait_for_dialog(Widget w)
 
 /* ------------------------------------------------------------ */
 
-static XmString xms_pcb, xms_net, xms_vend, xms_all, xms_load, xms_loadv, xms_save, xms_fp;
-
-/* Set up a file selection dialog in fsb, optionally with an extra vbox
-   for extension. Return 1 if a new dialog had to be created, 0 if existing
-   widget reused */
-static int setup_fsb_dialog(Widget *fsb, Widget *extra_vbox)
-{
-	static int xms_inited = 0;
-
-	if (!xms_inited) {
-		xms_pcb = XmStringCreatePCB("*.pcb");
-		xms_fp = XmStringCreatePCB("*.fp");
-		xms_net = XmStringCreatePCB("*.net");
-		xms_vend = XmStringCreatePCB("*.vend");
-		xms_all = XmStringCreatePCB("*");
-		xms_load = XmStringCreatePCB("Load From");
-		xms_loadv = XmStringCreatePCB("Load Vendor");
-		xms_save = XmStringCreatePCB("Save As");
-		xms_inited = 1;
-	}
-
-	if (*fsb != 0)
-		return 0;
-
-	stdarg_n = 0;
-	*fsb = XmCreateFileSelectionDialog(mainwind, XmStrCast("file"), stdarg_args, stdarg_n);
-
-	XtAddCallback(*fsb, XmNokCallback, (XtCallbackProc) dialog_callback_ok_value, (XtPointer) 1);
-	XtAddCallback(*fsb, XmNcancelCallback, (XtCallbackProc) dialog_callback_ok_value, (XtPointer) 0);
-
-	if (extra_vbox != NULL) {
-		stdarg_n = 0;
-		stdarg(XmNorientation, XmVERTICAL);
-		stdarg(XmNpacking, XmPACK_COLUMN);
-		*extra_vbox = XmCreateRowColumn(*fsb, "extra", stdarg_args, stdarg_n);
-		XtManageChild(*extra_vbox);
-	}
-	return 1;
-}
-
-/* ------------------------------------------------------------ */
-
 static Widget log_form, log_text;
 static int log_size = 0;
 static int pending_newline = 0;
@@ -1577,87 +1535,11 @@ void lesstif_attributes_dialog(const char *owner, pcb_attribute_list_t * attrs_l
 	return;
 }
 
-static const char pcb_acts_ImportGUI[] = "ImportGUI()";
-static const char pcb_acth_ImportGUI[] = "Lets the user choose the schematics to import from";
-/* DOC: importgui.html */
-static fgw_error_t pcb_act_ImportGUI(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	static int I_am_recursing = 0;
-	static XmString xms_sch = 0, xms_import = 0;
-	int rv;
-	XmString xmname;
-	char *name, *bname;
-	char *original_dir, *target_dir, *last_slash;
-	static Widget fsb;
-
-	if (I_am_recursing)
-		return 1;
-
-	if (xms_sch == 0)
-		xms_sch = XmStringCreatePCB("*.sch");
-	if (xms_import == 0)
-		xms_import = XmStringCreatePCB("Import from");
-
-	setup_fsb_dialog(&fsb, NULL);
-
-	stdarg_n = 0;
-	stdarg(XmNtitle, "Import From");
-	XtSetValues(XtParent(fsb), stdarg_args, stdarg_n);
-
-	stdarg_n = 0;
-	stdarg(XmNpattern, xms_sch);
-	stdarg(XmNmustMatch, True);
-	stdarg(XmNselectionLabelString, xms_import);
-	XtSetValues(fsb, stdarg_args, stdarg_n);
-
-	stdarg_n = 0;
-	stdarg(XmNdirectory, &xmname);
-	XtGetValues(fsb, stdarg_args, stdarg_n);
-	XmStringGetLtoR(xmname, XmFONTLIST_DEFAULT_TAG, &original_dir);
-
-	if (!pcb_ltf_wait_for_dialog(fsb))
-		return 1;
-
-	stdarg_n = 0;
-	stdarg(XmNdirectory, &xmname);
-	XtGetValues(fsb, stdarg_args, stdarg_n);
-	XmStringGetLtoR(xmname, XmFONTLIST_DEFAULT_TAG, &target_dir);
-
-	stdarg_n = 0;
-	stdarg(XmNdirSpec, &xmname);
-	XtGetValues(fsb, stdarg_args, stdarg_n);
-
-	XmStringGetLtoR(xmname, XmFONTLIST_DEFAULT_TAG, &name);
-
-	/* If the user didn't change directories, use just the base name.
-	   This is the common case and means we don't have to get clever
-	   about converting absolute paths into relative paths.  */
-	bname = name;
-	if (strcmp(original_dir, target_dir) == 0) {
-		last_slash = strrchr(name, '/');
-		if (last_slash)
-			bname = last_slash + 1;
-	}
-
-	pcb_attrib_put(PCB, "import::src0", bname);
-
-	XtFree(name);
-
-
-	I_am_recursing = 1;
-	rv = pcb_action("Import");
-	I_am_recursing = 0;
-
-	PCB_ACT_IRES(rv);
-	return 0;
-}
-
 /* ------------------------------------------------------------ */
 
 pcb_action_t lesstif_dialog_action_list[] = {
 	{"DoWindows", pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows},
-	{"AdjustSizes", pcb_act_AdjustSizes, pcb_acth_AdjustSizes, pcb_acts_AdjustSizes},
-	{"ImportGUI", pcb_act_ImportGUI, pcb_acth_ImportGUI, pcb_acts_ImportGUI}
+	{"AdjustSizes", pcb_act_AdjustSizes, pcb_acth_AdjustSizes, pcb_acts_AdjustSizes}
 };
 
 PCB_REGISTER_ACTIONS(lesstif_dialog_action_list, lesstif_cookie)

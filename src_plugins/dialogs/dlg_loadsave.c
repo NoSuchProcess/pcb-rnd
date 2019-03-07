@@ -305,3 +305,33 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_IRES(0);
 	return 0;
 }
+
+const char pcb_acts_ImportGUI[] = "ImportGUI()";
+const char pcb_acth_ImportGUI[] = "Asks user which schematics to import into PCB.\n";
+/* DOC: importgui.html */
+fgw_error_t pcb_act_ImportGUI(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	char *name;
+	static char *cwd = NULL;
+	static int lock = 0;
+	int rv = 0;
+
+	if (cwd == NULL)
+		cwd = dup_cwd();
+
+	if (lock)
+		return 1;
+
+	name = pcb_gui->fileselect("Load schematics", "Import netlist and footprints from schematics", cwd, NULL, NULL, "schematics", PCB_HID_FSD_MAY_NOT_EXIST, NULL);
+	if (name != NULL) {
+		pcb_attrib_put(PCB, "import::src0", name);
+		free(name);
+
+		lock = 1;
+		rv = pcb_action("Import");
+		lock = 0;
+	}
+
+	PCB_ACT_IRES(rv);
+	return 0;
+}
