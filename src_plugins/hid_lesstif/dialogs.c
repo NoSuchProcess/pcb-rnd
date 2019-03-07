@@ -513,10 +513,10 @@ static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
 			ctx->attrs[widx].default_val.int_value = XmToggleButtonGetState(ctx->wl[widx]);
 			break;
 		case PCB_HATT_STRING:
-			free(ctx->attrs[widx].default_val.str_value);
+			free((char *)ctx->attrs[widx].default_val.str_value);
 			ctx->attrs[widx].default_val.str_value = pcb_strdup(XmTextGetString(ctx->wl[widx]));
 			if (ctx->results != NULL) {
-				free(ctx->results[widx].str_value);
+				free((char *)ctx->results[widx].str_value);
 				ctx->results[widx].str_value = ctx->attrs[widx].default_val.str_value;
 			}
 			return; /* can't rely on central copy because of the allocation */
