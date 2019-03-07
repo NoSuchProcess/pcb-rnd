@@ -24,6 +24,21 @@
 - CLEANUP: propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
+- CLEANUP: non-modal fontsel: refresh on text font change from other source [report: Igor2]
+- CLEANUP: rewrite the netlist code
+	+ when no netlist is loaded, new rats can't be drawn [report: agaran]
+	+ shorts are reported twice, in pair, e.g. sort between A-B and then between B-A; Gabriel's idea: use strcmp() and report only if first > second ml2583 [report: Gabriel]
+	- FEATURE: rat line draw: [report: Igor2]
+		- be able to rename nets
+		- be able to convert a 'found' to a net
+	+ CLEANUP: When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Move this in core., iterate over rats to find the ones to deal with [report: Ade]
+- FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
+- BUG: bug_files/proto1.* padstack prototype selection bug priv mail 20 Feb [report: Alain]
+- FEATURE: template print terminal id so attributes (like term name) can be displayed; gtk dwg tooltip  should use the same template to print the term [report: Peter] (report on the mailing list)
+- BUG: undo: clear rats, optimize rats, delete 1 rat then undo - it should undo the rat deletion but it undoes optimization
+- CLEANUP: object_act.c, "(number_of_footprints_not_found > 0)": print an error to the log instead of a popup (less intrusive)
+
+2. For later releases ===============================================================================
 - CLEANUP: library window DAD-ification: remove pcb_act_LibraryShow()
 	- FEATURE: library window: allow long tags and long location text to split
 	- BUG: double check parametric footprint edit window: bug_files/parametric.txt [report: Piotr]
@@ -44,23 +59,8 @@
 	- central code for building a list of layer groups ordered by draw from front to back (omit disabled/invisible layers)
 	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
 - CLEANUP/feature: pcb_subc_smash_buffer() should really copy data so it can smash multiple subcs and subc objects end up on the layer they were bound to [report: keantoken]
-- CLEANUP: non-modal fontsel: refresh on text font change from other source [report: Igor2]
-- CLEANUP: rewrite the netlist code
-	+ when no netlist is loaded, new rats can't be drawn [report: agaran]
-	+ shorts are reported twice, in pair, e.g. sort between A-B and then between B-A; Gabriel's idea: use strcmp() and report only if first > second ml2583 [report: Gabriel]
-	- FEATURE: rat line draw: [report: Igor2]
-		- be able to rename nets
-		- be able to convert a 'found' to a net
-	+ CLEANUP: When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Move this in core., iterate over rats to find the ones to deal with [report: Ade]
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
-- FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
-- BUG: bug_files/proto1.* padstack prototype selection bug priv mail 20 Feb [report: Alain]
-- FEATURE: template print terminal id so attributes (like term name) can be displayed; gtk dwg tooltip  should use the same template to print the term [report: Peter] (report on the mailing list)
-- BUG: undo: clear rats, optimize rats, delete 1 rat then undo - it should undo the rat deletion but it undoes optimization
-- CLEANUP: object_act.c, "(number_of_footprints_not_found > 0)": print an error to the log instead of a popup (less intrusive)
-
-2. For later releases ===============================================================================
 - CAM:
 	- CLEANUP: make gerber depend on excellon (for backward compatibility) instead of reinventing it
 	- FEATURE: export_gerber: add a true gerber drill output
