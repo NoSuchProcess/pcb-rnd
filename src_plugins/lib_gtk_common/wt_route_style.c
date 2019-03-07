@@ -37,7 +37,6 @@
 
 #include "pcb-printf.h"
 #include "board.h"
-#include "compat_nls.h"
 
 #include "bu_status_line.h"
 
@@ -159,7 +158,7 @@ GtkWidget *pcb_gtk_route_style_new(pcb_gtk_common_t *com)
 	rss->action_group = gtk_action_group_new("RouteStyleSelector");
 
 	/* Create edit button */
-	rss->edit_button = gtk_button_new_with_label(_("Route Styles"));
+	rss->edit_button = gtk_button_new_with_label("Route Styles");
 	g_signal_connect(G_OBJECT(rss->edit_button), "clicked", G_CALLBACK(edit_button_cb), rss);
 	gtk_box_pack_start(GTK_BOX(rss), rss->edit_button, FALSE, FALSE, 0);
 

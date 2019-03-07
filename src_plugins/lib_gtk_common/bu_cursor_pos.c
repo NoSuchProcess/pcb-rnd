@@ -32,7 +32,6 @@
 #include "actions.h"
 #include "crosshair.h"
 #include "misc_util.h"
-#include "compat_nls.h"
 #include "math_helper.h"
 
 static void grid_units_button_cb(GtkWidget * widget, gpointer data)
@@ -136,13 +135,13 @@ void ghid_set_cursor_position_labels(pcb_gtk_cursor_pos_t *cps, int compact)
 		double a = atan2(dy, dx) * PCB_RAD_TO_DEG;
 
 
-		text = pcb_strdup_printf(_("%m+r %-mS;%cphi %-.1f;%c%-mS %-mS"), conf_core.editor.grid_unit->allow, r, sep, a, sep, dx, dy);
+		text = pcb_strdup_printf("%m+r %-mS;%cphi %-.1f;%c%-mS %-mS", conf_core.editor.grid_unit->allow, r, sep, a, sep, dx, dy);
 		ghid_cursor_position_relative_label_set_text(cps, text);
 		free(text);
 	}
 	else {
 		char text[64];
-		sprintf(text, _("r __.__;%cphi __._;%c__.__ __.__"), sep, sep);
+		sprintf(text, "r __.__;%cphi __._;%c__.__ __.__", sep, sep);
 		ghid_cursor_position_relative_label_set_text(cps, text);
 	}
 

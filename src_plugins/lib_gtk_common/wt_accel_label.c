@@ -32,7 +32,6 @@
 #include <gtk/gtk.h>
 #include "config.h"
 #include "wt_accel_label.h"
-#include "compat_nls.h"
 #include "compat.h"
 
 static GtkWidget *gtk_menu_or_checkmenu_item_new(int check, const char *label, const char *accel_label)

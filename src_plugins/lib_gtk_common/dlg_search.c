@@ -36,7 +36,6 @@
 #include <genvector/gds_char.h>
 #include "compat_misc.h"
 #include "actions.h"
-#include "compat_nls.h"
 #include "misc_util.h"
 #include "pcb-printf.h"
 #include "conf_core.h"
@@ -837,7 +836,7 @@ static void ghid_search_window_create(GtkWidget *top_window)
 	memset(&sdlg.wizard, 0, sizeof(sdlg.wizard));
 
 	sdlg.window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	sdlg.window = gtk_dialog_new_with_buttons(_("Advanced search"),
+	sdlg.window = gtk_dialog_new_with_buttons("Advanced search",
 																						GTK_WINDOW(top_window),
 																						GTK_DIALOG_DESTROY_WITH_PARENT,
 																						GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE, GTK_STOCK_APPLY, GTK_RESPONSE_APPLY, NULL);

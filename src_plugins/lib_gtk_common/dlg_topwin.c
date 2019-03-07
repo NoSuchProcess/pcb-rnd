@@ -48,7 +48,6 @@
 #include "crosshair.h"
 #include "pcb-printf.h"
 #include "actions.h"
-#include "compat_nls.h"
 #include "compat_misc.h"
 
 #include "compat.h"
@@ -208,10 +207,10 @@ TODO(": use some gds here to speed things up")
 
 	pcb_gtk_g_strdup(&(tw->name_label_string), name);
 	if (!tw->name_label_string || !*tw->name_label_string)
-		tw->name_label_string = g_strdup(_("Unnamed"));
+		tw->name_label_string = g_strdup("Unnamed");
 
 	if (!PCB->Filename || !*PCB->Filename)
-		filename = g_strdup(_("<board with no file name or format>"));
+		filename = g_strdup("<board with no file name or format>");
 	else
 		filename = g_strdup(PCB->Filename);
 

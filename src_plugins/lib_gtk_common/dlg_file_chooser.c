@@ -66,7 +66,7 @@ gchar *ghid_dialog_file_select_open(GtkWidget *top_window, const gchar *title, g
 
 
 	/* in case we have a dialog for loading a footprint file */
-	if (strcmp(title, _("Load element to buffer")) == 0) {
+	if (strcmp(title, "Load element to buffer") == 0) {
 		/* add a filter for footprint files */
 		GtkFileFilter *fp_filter;
 		fp_filter = gtk_file_filter_new();
@@ -78,8 +78,8 @@ gchar *ghid_dialog_file_select_open(GtkWidget *top_window, const gchar *title, g
 	}
 
 	/* in case we have a dialog for loading a layout file */
-	if ((strcmp(title, _("Load layout file")) == 0)
-			|| (strcmp(title, _("Load layout file to buffer")) == 0)) {
+	if ((strcmp(title, "Load layout file") == 0)
+			|| (strcmp(title, "Load layout file to buffer") == 0)) {
 		/* add a filter for layout files */
 		pcb_io_formats_t fmts;
 		int n, num_fmts = pcb_io_list(&fmts, PCB_IOT_PCB, 0, 0, PCB_IOL_EXT_BOARD);
@@ -117,7 +117,7 @@ gchar *ghid_dialog_file_select_open(GtkWidget *top_window, const gchar *title, g
 	}
 
 	/* in case we have a dialog for loading a netlist file */
-	if (strcmp(title, _("Load netlist file")) == 0) {
+	if (strcmp(title, "Load netlist file") == 0) {
 		/* add a filter for netlist files */
 		GtkFileFilter *net_filter;
 		net_filter = gtk_file_filter_new();

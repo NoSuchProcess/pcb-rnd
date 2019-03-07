@@ -38,7 +38,6 @@
 #include "hid_init.h"
 #include "misc_util.h"
 #include "compat_misc.h"
-#include "compat_nls.h"
 
 #include "compat.h"
 #include "wt_coord_entry.h"

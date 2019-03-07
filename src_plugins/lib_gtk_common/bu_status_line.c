@@ -31,7 +31,6 @@
 #include "in_keyboard.h"
 #include "conf_core.h"
 #include "compat_misc.h"
-#include "compat_nls.h"
 #include "board.h"
 
 GtkWidget *pcb_gtk_status_line_label_new(void)
@@ -73,7 +72,7 @@ static inline void gen_status_long(char *text, size_t text_size, int compat_hori
 		"<b>clr</b>=%mS  "
 		"<b>text</b>=%i%% %$mS "
 		"<b>buff</b>=#%i"),
-		unit->allow, conf_core.editor.show_solder_side ? _("bottom") : _("top"),
+		unit->allow, conf_core.editor.show_solder_side ? "bottom" : "top",
 		PCB->Grid,
 		conf_core.design.line_thickness, flag, conf_core.editor.rubber_band_mode ? ",R" : "",
 		kbd,

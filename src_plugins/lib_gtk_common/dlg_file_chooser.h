@@ -1,6 +1,5 @@
 #include <gtk/gtk.h>
 
-#include "compat_nls.h"
 #include "plug_io.h"
 
 #include "util_str.h"

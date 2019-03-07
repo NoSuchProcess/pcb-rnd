@@ -34,7 +34,6 @@
 
 #include "board.h"
 #include "plug_io.h"
-#include "compat_nls.h"
 
 static void info_bar_response_cb(GtkInfoBar * info_bar, gint response_id, pcb_gtk_info_bar_t *ibar)
 {
@@ -67,7 +66,7 @@ void pcb_gtk_info_bar_file_extmod_prompt(pcb_gtk_info_bar_t *ibar, GtkWidget *vb
 
 	ibar->info_bar = gtk_info_bar_new();
 
-	button = gtk_info_bar_add_button(GTK_INFO_BAR(ibar->info_bar), _("Reload"), GTK_RESPONSE_ACCEPT);
+	button = gtk_info_bar_add_button(GTK_INFO_BAR(ibar->info_bar), "Reload", GTK_RESPONSE_ACCEPT);
 	button_image = gtk_image_new_from_stock(GTK_STOCK_REFRESH, GTK_ICON_SIZE_BUTTON);
 	gtk_button_set_image(GTK_BUTTON(button), button_image);
 
@@ -83,7 +82,7 @@ void pcb_gtk_info_bar_file_extmod_prompt(pcb_gtk_info_bar_t *ibar, GtkWidget *vb
 
 	secondary_text = PCB->Changed ? "Do you want to drop your changes and reload the file?" : "Do you want to reload the file?";
 
-	markup = g_markup_printf_escaped(_("<b>The file %s has changed on disk</b>\n\n%s"), file_path_utf8, secondary_text);
+	markup = g_markup_printf_escaped("<b>The file %s has changed on disk</b>\n\n%s", file_path_utf8, secondary_text);
 	g_free(file_path_utf8);
 
 	content_area = gtk_info_bar_get_content_area(GTK_INFO_BAR(ibar->info_bar));

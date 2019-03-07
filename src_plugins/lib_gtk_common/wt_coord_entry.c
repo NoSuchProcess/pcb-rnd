@@ -40,8 +40,6 @@
 #include "wt_coord_entry.h"
 
 #include "pcb-printf.h"
-#include "compat_nls.h"
-
 
 enum {
 	UNIT_CHANGE_SIGNAL,
@@ -105,7 +103,7 @@ static void ghid_coord_entry_popup_cb(pcb_gtk_coord_entry_t * ce, GtkMenu * menu
 	gtk_menu_shell_prepend(GTK_MENU_SHELL(menu), menu_item);
 	gtk_widget_show(menu_item);
 
-	menu_item = gtk_menu_item_new_with_label(_("Change Units"));
+	menu_item = gtk_menu_item_new_with_label("Change Units");
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_item), submenu);
 	gtk_menu_shell_prepend(GTK_MENU_SHELL(menu), menu_item);
 	gtk_widget_show(menu_item);

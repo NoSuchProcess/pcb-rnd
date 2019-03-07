@@ -41,7 +41,6 @@
 
 #include "pcb-printf.h"
 #include "actions.h"
-#include "compat_nls.h"
 
 #include "win_place.h"
 #include "bu_text_view.h"
@@ -98,7 +97,7 @@ static void ghid_log_window_create()
 	pcb_gtk_winplace(log_window, "log");
 	g_signal_connect(G_OBJECT(log_window), "destroy", G_CALLBACK(log_destroy_cb), NULL);
 	g_signal_connect(G_OBJECT(log_window), "configure_event", G_CALLBACK(log_window_configure_event_cb), NULL);
-	gtk_window_set_title(GTK_WINDOW(log_window), _("pcb-rnd Log"));
+	gtk_window_set_title(GTK_WINDOW(log_window), "pcb-rnd Log");
 	gtk_window_set_role(GTK_WINDOW(log_window), "PCB_Log");
 
 	vbox = gtkc_vbox_new(FALSE, 0);

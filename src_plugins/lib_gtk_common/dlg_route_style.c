@@ -34,7 +34,6 @@
 #include "config.h"
 
 #include "compat_misc.h"
-#include "compat_nls.h"
 #include "polygon.h"
 
 #include "bu_box.h"
@@ -112,7 +111,7 @@ static void dialog_style_changed_cb(GtkComboBox *combo, pcb_gtk_dlg_route_style_
 	gtk_tree_model_get(tree_model, &iter, STYLE_DATA_COL, &style, -1);
 
 	if (style == NULL) {
-		gtk_entry_set_text(GTK_ENTRY(dialog->name_entry), _("New Style"));
+		gtk_entry_set_text(GTK_ENTRY(dialog->name_entry), "New Style");
 		rss->selected = -1;
 		return;
 	}
@@ -225,7 +224,7 @@ static void add_new_iter(pcb_gtk_route_style_t *rss)
 {
 	/* Add "new style" option to list */
 	gtk_list_store_append(rss->model, &rss->new_iter);
-	gtk_list_store_set(rss->model, &rss->new_iter, STYLE_TEXT_COL, _("<New>"), STYLE_DATA_COL, NULL, -1);
+	gtk_list_store_set(rss->model, &rss->new_iter, STYLE_TEXT_COL, "<New>", STYLE_DATA_COL, NULL, -1);
 }
 
 /*  Callback for Delete route style button */
@@ -290,12 +289,12 @@ void pcb_gtk_route_style_edit_dialog(pcb_gtk_common_t *com, pcb_gtk_route_style_
 	memset(&dialog_data, 0, sizeof(dialog_data));  /* make sure all flags are cleared */
 
 	/* Build dialog */
-	dialog = gtk_dialog_new_with_buttons(_("Edit Route Styles"),
+	dialog = gtk_dialog_new_with_buttons("Edit Route Styles",
 																			 GTK_WINDOW(window),
 																			 GTK_DIALOG_DESTROY_WITH_PARENT,
 																			 GTK_STOCK_CANCEL, GTK_RESPONSE_NONE, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
 
-	label = gtk_label_new(_("Edit Style:"));
+	label = gtk_label_new("Edit Style:");
 	gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
 
 	select_box = gtk_combo_box_new_with_model(GTK_TREE_MODEL(rss->model));
@@ -314,23 +313,23 @@ void pcb_gtk_route_style_edit_dialog(pcb_gtk_common_t *com, pcb_gtk_route_style_
 	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), select_box, TRUE, TRUE, 0);
 
-	sub_vbox = ghid_category_vbox(vbox, _("Route Style Data"), 4, 2, TRUE, TRUE);
+	sub_vbox = ghid_category_vbox(vbox, "Route Style Data", 4, 2, TRUE, TRUE);
 	table = gtk_table_new(5, 2, FALSE);
 	gtk_box_pack_start(GTK_BOX(sub_vbox), table, TRUE, TRUE, 4);
-	label = gtk_label_new(_("Name:"));
+	label = gtk_label_new("Name:");
 	gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
 	dialog_data.name_entry = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 2, 2);
 	gtk_table_attach(GTK_TABLE(table), dialog_data.name_entry, 1, 2, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 2, 2);
 
-	_table_attach(table, 1, _("Line width:"), &dialog_data.line_entry, PCB_MIN_LINESIZE, PCB_MAX_LINESIZE);
-	_table_attach_spin(table, 2, _("Text scale:"), &dialog_data.texts_entry, 0, 10000);
-	_table_attach(table, 3, _("Text thickness:"), &dialog_data.textt_entry, 0, PCB_MAX_LINESIZE);
-	_table_attach(table, 4, _("Via hole size:"),
+	_table_attach(table, 1, "Line width:", &dialog_data.line_entry, PCB_MIN_LINESIZE, PCB_MAX_LINESIZE);
+	_table_attach_spin(table, 2, "Text scale:", &dialog_data.texts_entry, 0, 10000);
+	_table_attach(table, 3, "Text thickness:", &dialog_data.textt_entry, 0, PCB_MAX_LINESIZE);
+	_table_attach(table, 4, "Via hole size:",
 								&dialog_data.via_hole_entry, PCB_MIN_PINORVIAHOLE, PCB_MAX_PINORVIASIZE - PCB_MIN_PINORVIACOPPER);
-	_table_attach(table, 5, _("Via ring size:"),
+	_table_attach(table, 5, "Via ring size:",
 								&dialog_data.via_size_entry, PCB_MIN_PINORVIAHOLE + PCB_MIN_PINORVIACOPPER, PCB_MAX_PINORVIASIZE);
-	_table_attach(table, 6, _("Clearance:"), &dialog_data.clearance_entry, 0, PCB_MAX_LINESIZE);
+	_table_attach(table, 6, "Clearance:", &dialog_data.clearance_entry, 0, PCB_MAX_LINESIZE);
 
 	_table_attach_(table, 7, "", gtk_label_new(""));
 
@@ -366,11 +365,11 @@ void pcb_gtk_route_style_edit_dialog(pcb_gtk_common_t *com, pcb_gtk_route_style_
 		g_signal_connect(G_OBJECT(dialog_data.attr_table), "key-release-event", G_CALLBACK(attr_key_release_cb), &dialog_data);
 
 	}
-	_table_attach_(table, 8, _("Attributes:"), dialog_data.attr_table);
+	_table_attach_(table, 8, "Attributes:", dialog_data.attr_table);
 
 
 	/* create delete button */
-	button = gtk_button_new_with_label(_("Delete Style"));
+	button = gtk_button_new_with_label("Delete Style");
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(delete_button_cb), &dialog_data);
 	gtk_box_pack_start(GTK_BOX(vbox), button, TRUE, FALSE, 0);
 

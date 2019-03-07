@@ -65,7 +65,6 @@
 #include "buffer.h"
 #include "data.h"
 #include "plug_footprint.h"
-#include "compat_nls.h"
 #include "compat_misc.h"
 #include "actions.h"
 #include "draw.h"
@@ -700,7 +699,7 @@ static GtkWidget *create_lib_treeview(pcb_gtk_library_t * library_window)
 																						"editable", FALSE, NULL));
 	column = GTK_TREE_VIEW_COLUMN(g_object_new(GTK_TYPE_TREE_VIEW_COLUMN,
 																						 /* GtkTreeViewColumn */
-																						 "title", _("Components"), NULL));
+																						 "title", "Components", NULL));
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_attributes(column, renderer, "text", MENU_NAME_COLUMN, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(libtreeview), column);
@@ -722,7 +721,7 @@ static GtkWidget *create_lib_treeview(pcb_gtk_library_t * library_window)
 																	/* GtkMisc */
 																	"xalign", 0.0,
 																	/* GtkLabel */
-																	"label", _("Filter:"), NULL));
+																	"label", "Filter:", NULL));
 	/* add the search label to the filter area */
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 
@@ -826,7 +825,7 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 	g_object_set(object,
 							 /* GtkWindow */
 							 "type", GTK_WINDOW_TOPLEVEL,
-							 "title", _("Select Footprint..."),
+							 "title", "Select Footprint...",
 							 "default-height", 300, "default-width", 400, "modal", FALSE, "window-position", GTK_WIN_POS_NONE,
 							 /* GtkDialog */
 							 NULL);
@@ -842,7 +841,7 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 	lib_window->viewtabs = GTK_NOTEBOOK(notebook);
 
 	libview = create_lib_treeview(lib_window);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), libview, gtk_label_new(_("Libraries")));
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), libview, gtk_label_new("Libraries"));
 
 	/* include the vertical box in horizontal box */
 	gtk_paned_pack1(GTK_PANED(hpaned), notebook, TRUE, FALSE);
@@ -851,7 +850,7 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 	/* -- preview area -- */
 	frame = GTK_WIDGET(g_object_new(GTK_TYPE_FRAME,
 																	/* GtkFrame */
-																	"label", _("Preview"), NULL));
+																	"label", "Preview", NULL));
 
 	preview = pcb_gtk_preview_new(lwcom, lwcom->init_drawing_widget, lwcom->preview_expose, pinout_expose, NULL, NULL);
 	gtk_widget_set_size_request(preview, 150, 150);
@@ -950,7 +949,7 @@ void pcb_gtk_library_create(pcb_gtk_common_t *com)
 	g_signal_connect(GTK_DIALOG(library_window), "response", G_CALLBACK(library_window_callback_response), NULL);
 	g_signal_connect(library_window, "configure_event", G_CALLBACK(library_window_configure_event_cb), NULL);
 
-	gtk_window_set_title(GTK_WINDOW(library_window), _("pcb-rnd Library"));
+	gtk_window_set_title(GTK_WINDOW(library_window), "pcb-rnd Library");
 	gtk_window_set_role(GTK_WINDOW(library_window), "PCB_Library");
 	gtk_window_set_transient_for(GTK_WINDOW(library_window), GTK_WINDOW(com->top_window));
 

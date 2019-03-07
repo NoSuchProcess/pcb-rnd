@@ -282,7 +282,7 @@ int gtkhid_parse_arguments(int *argc, char ***argv)
 
 static void ghid_calibrate(double xval, double yval)
 {
-	printf(_("ghid_calibrate() -- not implemented\n"));
+	printf("ghid_calibrate() -- not implemented\n");
 }
 
 static void ghid_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)

@@ -42,7 +42,6 @@
 #include "board.h"
 #include "crosshair.h"
 #include "actions.h"
-#include "compat_nls.h"
 
 #include "bu_text_view.h"
 #include "bu_status_line.h"
