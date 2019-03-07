@@ -1,4 +1,4 @@
-23695	configure	new fileselect dialog API and new, centralized load/save actions
+23737	configure	new fileselect dialog API and new, centralized load/save actions
 23602	configure	io_tedax namespace cleanup
 23589	configure	removing the old netlist dialog leftover from gtk
 23585	configure	removing the mincut stub (switched over to the event API)

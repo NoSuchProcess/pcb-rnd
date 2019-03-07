@@ -3763,7 +3763,7 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h
 ../src_plugins/lib_gtk_common/act_fileio.o: \
  ../src_plugins/lib_gtk_common/act_fileio.c ../config.h \
- ../src_plugins/lib_gtk_common/act_fileio.h ../src_3rd/libfungw/fungw.h \
+  ../src_3rd/libfungw/fungw.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h ../src_3rd/genht/htpp.h \
  unit.h actions.h hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h error.h \
@@ -3784,7 +3784,7 @@
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h compat_misc.h \
  board.h vtroutestyle.h rats_patch.h board.h data.h \
- ../src_plugins/lib_gtk_common/dlg_file_chooser.h plug_io.h \
+  plug_io.h \
  ../src_plugins/lib_gtk_common/util_str.h
 ../src_plugins/lib_gtk_common/bu_box.o: \
  ../src_plugins/lib_gtk_common/bu_box.c ../config.h \
@@ -4028,7 +4028,7 @@
  math_helper.h misc_util.h ../src_3rd/genvector/gds_char.h layer_grp.h \
  rats_patch.h board.h hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h error.h \
- compat_misc.h ../src_plugins/lib_gtk_common/dlg_file_chooser.h plug_io.h \
+ compat_misc.h  plug_io.h \
  conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_plugins/lib_gtk_common/util_str.h \
@@ -4547,7 +4547,7 @@
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h search.h change.h \
  hid_attrib.h ../src/actions.h ../src/hid.h compat_misc.h \
- ../src_plugins/lib_gtk_common/act_fileio.h \
+  \
  ../src_plugins/lib_gtk_common/wt_layersel.h \
  ../src_plugins/lib_gtk_common/dlg_route_style.h \
  ../src_plugins/lib_gtk_common/dlg_library.h \
@@ -4737,7 +4737,7 @@
  ../src_plugins/lib_gtk_common/bu_dwg_tooltip.h \
  ../src_plugins/lib_gtk_common/ui_crosshair.h \
  ../src_plugins/lib_gtk_common/dlg_log.h error.h \
- ../src_plugins/lib_gtk_common/dlg_file_chooser.h plug_io.h \
+  plug_io.h \
  ../src_plugins/lib_gtk_common/util_str.h \
  ../src_plugins/lib_gtk_common/dlg_fileselect.h global_typedefs.h \
  ../src_plugins/lib_gtk_common/dlg_attribute.h \

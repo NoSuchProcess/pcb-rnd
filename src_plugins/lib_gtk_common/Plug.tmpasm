@@ -7,7 +7,6 @@ put /local/pcb/mod/OBJS [@
 @]
 
 put /local/pcb/mod/OBJS_C99 [@
-  $(PLUGDIR)/lib_gtk_common/act_fileio.o
   $(PLUGDIR)/lib_gtk_common/bu_box.o
   $(PLUGDIR)/lib_gtk_common/bu_check_button.o
   $(PLUGDIR)/lib_gtk_common/bu_cursor_pos.o
@@ -23,7 +22,6 @@ put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/dlg_attribute.o
   $(PLUGDIR)/lib_gtk_common/dlg_attributes.o
   $(PLUGDIR)/lib_gtk_common/bu_command.o
-  $(PLUGDIR)/lib_gtk_common/dlg_file_chooser.o
   $(PLUGDIR)/lib_gtk_common/dlg_fileselect.o
   $(PLUGDIR)/lib_gtk_common/dlg_library.o
   $(PLUGDIR)/lib_gtk_common/dlg_library_param.o
