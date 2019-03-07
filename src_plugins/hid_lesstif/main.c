@@ -42,7 +42,6 @@
 #include "grid.h"
 #include "misc_util.h"
 #include "compat_misc.h"
-#include "compat_nls.h"
 #include "layer_vis.h"
 #include "tool.h"
 

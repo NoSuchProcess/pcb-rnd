@@ -1,5 +1,4 @@
 #include "hid_cfg_input.h"
-#include "compat_nls.h"
 #include "board.h"
 
 #define app_context lesstif_app_context

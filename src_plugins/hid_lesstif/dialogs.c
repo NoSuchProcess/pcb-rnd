@@ -26,7 +26,6 @@
 #include "hid_init.h"
 #include "stdarg.h"
 #include "misc_util.h"
-#include "compat_nls.h"
 #include "search.h"
 #include "change.h"
 #include "conf_core.h"
@@ -1343,7 +1342,7 @@ void lesstif_sizes_reset()
 	sz_val2str(sz_pcb_h, PCB->MaxHeight, 1);
 	sz_val2str(sz_text, conf_core.design.text_scale, 0);
 
-	ls = pcb_strdup_printf(_("Units are %s."), conf_core.editor.grid_unit->in_suffix);
+	ls = pcb_strdup_printf("Units are %s.", conf_core.editor.grid_unit->in_suffix);
 	stdarg_n = 0;
 	stdarg(XmNlabelString, XmStringCreatePCB(ls));
 	XtSetValues(sz_units, stdarg_args, stdarg_n);
