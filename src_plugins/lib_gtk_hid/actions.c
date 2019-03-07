@@ -289,16 +289,6 @@ static fgw_error_t pcb_act_Pan(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return pcb_gtk_act_pan(&gport->view, res, argc, argv);
 }
 
-static fgw_error_t pcb_act_load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	return pcb_gtk_act_load(ghid_port.top_window, res, argc, argv);
-}
-
-static fgw_error_t pcb_act_save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	return pcb_gtk_act_save(ghid_port.top_window, res, argc, argv);
-}
-
 static fgw_error_t pcb_act_importgui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	return pcb_gtk_act_importgui(ghid_port.top_window, res, argc, argv);
@@ -322,11 +312,9 @@ pcb_action_t ghid_main_action_list[] = {
 	{"Command", pcb_act_Command},
 	{"DoWindows", pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows},
 	{"ImportGUI", pcb_act_importgui, pcb_gtk_acth_importgui, pcb_gtk_acts_importgui},
-	{"Load", pcb_act_load },
 	{"LogShowOnAppend", pcb_gtk_act_logshowonappend, pcb_gtk_acth_logshowonappend, pcb_gtk_acts_logshowonappend},
 	{"Pan", pcb_act_Pan, pcb_acth_pan, pcb_acts_pan},
 	{"Popup", pcb_act_Popup, pcb_acth_Popup, pcb_acts_Popup},
-	{"Save", pcb_act_save, pcb_gtk_acth_save, pcb_gtk_acts_save},
 	{"SaveWindowGeometry", pcb_act_SaveWinGeo, pcb_acth_SaveWinGeo, pcb_acts_SaveWinGeo},
 	{"Scroll", pcb_act_Scroll, pcb_acth_scroll, pcb_acts_scroll},
 	{"SwapSides", pcb_act_SwapSides, pcb_acth_swapsides, pcb_acts_swapsides},

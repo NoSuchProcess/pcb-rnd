@@ -86,8 +86,8 @@ pcb_action_t dialogs_action_list[] = {
 	{"ViewList", pcb_act_ViewList, pcb_acth_ViewList, pcb_acts_ViewList},
 	{"Fontsel", pcb_act_Fontsel, pcb_acth_Fontsel, pcb_acts_Fontsel},
 	{"PrintCalibrate", pcb_act_PrintCalibrate, pcb_acth_PrintCalibrate, pcb_acts_PrintCalibrate},
-	{"Load2", pcb_act_Load, pcb_acth_Load, pcb_acts_Load},
-	{"Save2", pcb_act_Save, pcb_acth_Save, pcb_acts_Save},
+	{"Load", pcb_act_Load, pcb_acth_Load, pcb_acts_Load},
+	{"Save", pcb_act_Save, pcb_acth_Save, pcb_acts_Save},
 
 	{"gui_PromptFor", pcb_act_gui_PromptFor, pcb_acth_gui, NULL},
 	{"gui_MessageBox", pcb_act_gui_MessageBox, pcb_acth_gui, NULL},
