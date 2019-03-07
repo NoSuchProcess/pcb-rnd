@@ -612,8 +612,7 @@ int main(int argc, char *argv[])
 
 	if (command_line_pcb) {
 		/* keep filename even if initial load command failed;
-		 * file might not exist
-		 */
+		 * file might not exist */
 		if (pcb_load_pcb(command_line_pcb, NULL, pcb_true, 0))
 			PCB->Filename = pcb_strdup(command_line_pcb);
 	}
@@ -621,8 +620,7 @@ int main(int argc, char *argv[])
 	if (conf_core.design.initial_layer_stack && conf_core.design.initial_layer_stack[0])
 		pcb_message(PCB_MSG_ERROR, "Config setting desgin/initial_layer_stack is set but is deprecated and ignored. Please edit your config files to remove it.\n");
 
-	/* read the library file and display it if it's not empty
-	 */
+	/* read the library file and display it if it's not empty */
 	if (!pcb_fp_read_lib_all() && pcb_library.data.dir.children.used)
 		pcb_event(PCB_EVENT_LIBRARY_CHANGED, NULL);
 
