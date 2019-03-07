@@ -484,7 +484,7 @@ int main(int argc, char *argv[])
 	pcb_fp_init();
 
 
-	srand(time(NULL));						/* Set seed for rand() */
+	srand(time(NULL));  /* Set seed for rand() */
 
 	pcb_funchash_init();
 	pcb_units_init();
@@ -494,8 +494,7 @@ int main(int argc, char *argv[])
 	 * This makes sure that data is saved even if LEX/YACC routines
 	 * abort the program.
 	 * If the OS doesn't have at least one of them,
-	 * the critical sections will be handled by parse_l.l
-	 */
+	 * the critical sections will be handled by parse_l.l */
 	atexit(pcb_emergency_save);
 
 	pcb_events_init();
