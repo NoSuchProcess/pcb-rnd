@@ -81,8 +81,6 @@ int pcb_ltf_wait_for_dialog(Widget w);
 
 static XmString XmStringCreatePCB(const char *x)
 {
-	if (x && x[0])
-		x = gettext(x);
 	return XmStringCreateLtoR(XmStrCast(x), XmFONTLIST_DEFAULT_TAG);
 }
 
