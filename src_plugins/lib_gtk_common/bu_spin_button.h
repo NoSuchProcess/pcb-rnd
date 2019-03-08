@@ -5,10 +5,3 @@ ghid_spin_button(GtkWidget * box, GtkWidget ** spin_button, gfloat value,
 								 gfloat low, gfloat high, gfloat step0, gfloat step1,
 								 gint digits, gint width,
 								 void (*cb_func) (GtkSpinButton *, gpointer), gpointer data, gboolean right_align, const gchar * string);
-
-void
-ghid_table_spin_button(GtkWidget * table, gint row, gint column,
-											 GtkWidget ** spin_button, gfloat value,
-											 gfloat low, gfloat high, gfloat step0, gfloat step1,
-											 gint digits, gint width,
-											 void (*cb_func) (GtkSpinButton *, gpointer), gpointer data, gboolean right_align, const gchar * string);
