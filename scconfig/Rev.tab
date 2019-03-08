@@ -1,3 +1,4 @@
+23773	configure	cleanup: remove dead code from gtk
 23737	configure	new fileselect dialog API and new, centralized load/save actions
 23602	configure	io_tedax namespace cleanup
 23589	configure	removing the old netlist dialog leftover from gtk

@@ -3765,9 +3765,6 @@
  ../src_plugins/lib_gtk_common/bu_box.c ../config.h \
  ../src_plugins/lib_gtk_common/bu_box.h \
  ../src_plugins/lib_gtk_common/compat.h
-../src_plugins/lib_gtk_common/bu_check_button.o: \
- ../src_plugins/lib_gtk_common/bu_check_button.c ../config.h \
- ../src_plugins/lib_gtk_common/bu_check_button.h
 ../src_plugins/lib_gtk_common/bu_command.o: \
  ../src_plugins/lib_gtk_common/bu_command.c ../config.h \
  ../src_plugins/lib_gtk_common/bu_command.h pcb_bool.h \
@@ -3959,7 +3956,6 @@
  hid_dad_tree.h hid_attrib.h hid_dad.h compat_misc.h \
  ../src_3rd/genht/hash.h hid_init.h misc_util.h compat_misc.h event.h \
  ../src_plugins/lib_gtk_common/bu_box.h \
- ../src_plugins/lib_gtk_common/bu_check_button.h \
  ../src_plugins/lib_gtk_common/bu_spin_button.h \
  ../src_plugins/lib_gtk_common/wt_coord_entry.h unit.h \
  ../src_plugins/lib_gtk_common/dlg_attr_tree.c \

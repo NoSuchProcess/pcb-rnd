@@ -44,7 +44,6 @@
 
 #include "compat.h"
 #include "bu_box.h"
-#include "bu_check_button.h"
 #include "bu_spin_button.h"
 #include "wt_coord_entry.h"
 
@@ -221,6 +220,20 @@ static void color_changed_cb(GtkColorButton *button, pcb_hid_attribute_t *dst)
 	pcb_color_load_str(&dst->default_val.clr_value, str);
 
 	change_cb(ctx, dst);
+}
+
+static GtkWidget *chk_btn_new(GtkWidget *box, gboolean active, void (*cb_func)(GtkToggleButton *, gpointer), gpointer data, const gchar *string)
+{
+	GtkWidget *b;
+
+	if (string != NULL)
+		b = gtk_check_button_new_with_label(string);
+	else
+		b = gtk_check_button_new();
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(b), active);
+	gtk_box_pack_start(GTK_BOX(box), b, FALSE, FALSE, 0);
+	g_signal_connect(b, "clicked", G_CALLBACK(cb_func), data);
+	return b;
 }
 
 typedef struct {
@@ -479,9 +492,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 			case PCB_HATT_BOOL:
 				/* put this in a check button */
-				pcb_gtk_check_button_connected(parent, &widget,
-                                       ctx->attrs[j].default_val.int_value,
-                                       TRUE, FALSE, FALSE, 0, set_flag_cb, &(ctx->attrs[j]), (add_labels ? ctx->attrs[j].name : NULL));
+				widget = chk_btn_new(parent, ctx->attrs[j].default_val.int_value, set_flag_cb, &(ctx->attrs[j]), (add_labels ? ctx->attrs[j].name : NULL));
 				gtk_widget_set_tooltip_text(widget, ctx->attrs[j].help_text);
 				g_object_set_data(G_OBJECT(widget), PCB_OBJ_PROP, ctx);
 				ctx->wl[j] = widget;
