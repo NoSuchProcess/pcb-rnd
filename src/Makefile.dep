@@ -3786,7 +3786,6 @@
  hid.h route.h actions.h ../src_3rd/libfungw/fungw.h \
  ../src_3rd/genht/htpp.h ../src_plugins/lib_gtk_common/bu_text_view.h \
  ../src_plugins/lib_gtk_common/bu_status_line.h \
- ../src_plugins/lib_gtk_common/util_str.h \
  ../src_plugins/lib_gtk_common/hid_gtk_conf.h \
  ../src_plugins/lib_hid_common/cli_history.h
 ../src_plugins/lib_gtk_common/bu_cursor_pos.o: \
@@ -4159,7 +4158,6 @@
  ../src_plugins/lib_gtk_common/bu_status_line.h \
  ../src_plugins/lib_gtk_common/bu_icons.h \
  ../src_plugins/lib_gtk_common/dlg_route_style.h \
- ../src_plugins/lib_gtk_common/util_str.h \
  ../src_plugins/lib_gtk_common/util_listener.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/in_keyboard.h \
@@ -4327,9 +4325,6 @@
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
  ../src_3rd/genvector/gds_char.h actions.h hid.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h compat_misc.h
-../src_plugins/lib_gtk_common/util_str.o: \
- ../src_plugins/lib_gtk_common/util_str.c ../config.h \
- ../src_plugins/lib_gtk_common/util_str.h
 ../src_plugins/lib_gtk_common/util_timer.o: \
  ../src_plugins/lib_gtk_common/util_timer.c ../config.h \
  ../src_plugins/lib_gtk_common/util_timer.h hid.h \

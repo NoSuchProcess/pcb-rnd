@@ -45,7 +45,6 @@
 
 #include "bu_text_view.h"
 #include "bu_status_line.h"
-#include "util_str.h"
 #include "hid_gtk_conf.h"
 #include "../src_plugins/lib_hid_common/cli_history.h"
 
@@ -85,8 +84,13 @@ static void command_entry_activate_cb(GtkWidget * widget, gpointer data)
 {
 	pcb_gtk_command_t *ctx = data;
 	gchar *command;
+	const gchar *cmd = gtk_entry_get_text(GTK_ENTRY(ctx->command_entry));
 
-	command = g_strdup(pcb_str_strip_left(gtk_entry_get_text(GTK_ENTRY(ctx->command_entry))));
+	if (cmd != NULL) {
+		while ((*cmd == ' ') || (*cmd == '\t'))
+			cmd++;
+		command = g_strdup(cmd);
+	}
 	gtk_entry_set_text(ctx->command_entry, "");
 
 	if (*command)
