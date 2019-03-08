@@ -38,7 +38,7 @@ static void ltf_tree_set(lesstif_attr_dlg_t *ctx, int idx, const char *val)
 static void ltf_tt_insert_row(ltf_tree_t *lt, pcb_hid_row_t *new_row)
 {
 	tt_entry_t *e, *before, *after = NULL;
-	pcb_hid_row_t *rafter, *lvl = NULL;
+	pcb_hid_row_t *rafter, *lvl = NULL, *parent_row;
 	int n, base;
 
 	e = tt_entry_alloc(new_row->cols);
@@ -71,8 +71,16 @@ static void ltf_tt_insert_row(ltf_tree_t *lt, pcb_hid_row_t *new_row)
 
 	new_row->hid_data = e;
 	e->user_data = new_row;
+	e->flags.is_branch = gdl_length(&new_row->children) > 0;
 	for(n = 0; n < new_row->cols; n++)
 		tt_get_cell(e, n)[0] = new_row->cell[n];
+
+	/* update parent's branch flag */
+	parent_row = pcb_dad_tree_parent_row(lt->ht, new_row);
+	if (parent_row != NULL) {
+		e = parent_row->hid_data;
+		e->flags.is_branch = 1;
+	}
 }
 
 static void ltf_tree_insert_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *new_row)
@@ -201,12 +209,17 @@ static void ltf_hide_rows(ltf_tree_t *lt, tt_entry_t *root, int val, int user, i
 	}
 }
 
+static void ltf_tree_expcoll(ltf_tree_t *lt, tt_entry_t *e, int expanded)
+{
+	ltf_hide_rows(lt, e, !expanded, 0, 0, 1);
+	e->flags.is_unfolded = expanded;
+}
 
 static void ltf_tree_expcoll_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int expanded)
 {
 	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
 	ltf_tree_t *lt = ht->hid_wdata;
-	ltf_hide_rows(lt, row->hid_data, !expanded, 0, 0, 1);
+	ltf_tree_expcoll(lt, row->hid_data, expanded);
 	REDRAW();
 }
 
