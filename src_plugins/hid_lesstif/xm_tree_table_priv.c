@@ -24,6 +24,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include "config.h"
+
 #include <genvector/vtp0.h>
 #include <X11/Xlib.h>
 #include <string.h>
@@ -178,7 +180,7 @@ void xm_render_ttwidget_contents(Widget aw, enum e_what_changed what)
 	if (!tt->table)
 		return;
 
-	/* TODO: reserve some space for tree's leafs' labels. */
+	TODO("reserve some space for tree's leafs' labels");
 	s->horizontal_stride = TTBL_MAX(w->tree_table.n_max_pixmap_height, s->horizontal_stride);
 	s->vertical_stride = TTBL_MAX(w->tree_table.n_max_pixmap_height, GET_FONT_HEIGHT(tt->font));
 

@@ -24,6 +24,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include "config.h"
+
 #include "xm_tree_table_priv.h"
 #include <string.h>
 #include <assert.h>
@@ -363,7 +365,7 @@ static void on_mouse_action(ett_x11_event_t ett_event, Widget aw, XEvent *event,
 	if (tp->table_access_padlock) {
 		tp->table_access_padlock->unlock(tp->table, tp->table_access_padlock->p_user_data);
 	}
-	/*TODO: compute current column as well.*/
+	TODO("compute current column as well.");
 	tp->event_data.current_cell = 0;
 	if (tp->p_mouse_kbd_handler)
 		tp->p_mouse_kbd_handler(&tp->event_data);
