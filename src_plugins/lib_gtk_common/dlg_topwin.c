@@ -196,28 +196,24 @@ void ghid_remove_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw)
  */
 void pcb_gtk_tw_window_set_name_label(pcb_gtk_topwin_t *tw, gchar *name)
 {
-	gchar *str;
-	gchar *filename;
+	const char *filename;
+	char tmp[512];
 
 	/* This happens if we're calling an exporter from the command line */
 	if (!tw->active)
 		return;
-
-TODO(": use some gds here to speed things up")
 
 	pcb_gtk_g_strdup(&(tw->name_label_string), name);
 	if (!tw->name_label_string || !*tw->name_label_string)
 		tw->name_label_string = g_strdup("Unnamed");
 
 	if (!PCB->Filename || !*PCB->Filename)
-		filename = g_strdup("<board with no file name or format>");
+		filename = "<board with no file name or format>";
 	else
-		filename = g_strdup(PCB->Filename);
+		filename = PCB->Filename;
 
-	str = g_strdup_printf("%s%s (%s) - %s - pcb-rnd", PCB->Changed ? "*" : "", tw->name_label_string, filename, PCB->is_footprint ? "footprint" : "board");
-	gtk_window_set_title(GTK_WINDOW(tw->com->top_window), str);
-	g_free(str);
-	g_free(filename);
+	pcb_snprintf(tmp, sizeof(tmp), "%s%s (%s) - %s - pcb-rnd", PCB->Changed ? "*" : "", tw->name_label_string, filename, PCB->is_footprint ? "footprint" : "board");
+	gtk_window_set_title(GTK_WINDOW(tw->com->top_window), tmp);
 }
 
 void pcb_gtk_tw_layer_buttons_update(pcb_gtk_topwin_t *tw)
