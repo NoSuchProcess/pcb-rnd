@@ -722,10 +722,7 @@ static fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_Benchmark[] = "Benchmark()";
-static const char pcb_acth_Benchmark[] = "Benchmark the GUI speed.";
-/* DOC: benchmark.html */
-static fgw_error_t pcb_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static double ltf_benchmark(void)
 {
 	int i = 0;
 	time_t start, end;
@@ -753,11 +750,8 @@ static fgw_error_t pcb_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	while (end - start < 10);
 
-	printf("%g redraws per second\n", i / 10.0);
-
 	main_pixmap = save_main;
-	PCB_ACT_DRES(i/10.0);
-	return 0;
+	return i/10.0;
 }
 
 /* DOC: center.html */
@@ -783,7 +777,6 @@ pcb_action_t lesstif_main_action_list[] = {
 	{"Pan", pcb_act_Pan, pcb_acth_Pan, pcb_acts_Pan},
 	{"SwapSides", pcb_act_SwapSides, pcb_acth_SwapSides, pcb_acts_SwapSides},
 	{"Command", pcb_act_Command, pcb_acth_Command, pcb_acts_Command},
-	{"Benchmark", pcb_act_Benchmark, pcb_acth_Benchmark, pcb_acts_Benchmark},
 	{"Center", pcb_act_Center}
 };
 
@@ -3624,6 +3617,7 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.stop_timer = lesstif_stop_timer;
 	lesstif_hid.watch_file = lesstif_watch_file;
 	lesstif_hid.unwatch_file = lesstif_unwatch_file;
+	lesstif_hid.benchmark = ltf_benchmark;
 
 	lesstif_hid.log = lesstif_log;
 	lesstif_hid.logv = lesstif_logv;

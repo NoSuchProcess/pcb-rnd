@@ -71,33 +71,6 @@ static fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* DOC: benchmark.html */
-static fgw_error_t pcb_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	int i = 0;
-	time_t start, end;
-	GdkDisplay *display;
-	GdkWindow *window;
-
-	window = gtk_widget_get_window(gport->drawing_area);
-	display = gtk_widget_get_display(gport->drawing_area);
-
-	gdk_display_sync(display);
-	time(&start);
-	do {
-		ghid_invalidate_all();
-		gdk_window_process_updates(window, FALSE);
-		time(&end);
-		i++;
-	}
-	while (end - start < 10);
-
-	printf("%g redraws per second\n", i / 10.0);
-
-	PCB_ACT_DRES(i/10.0);
-	return 0;
-}
-
 static const char pcb_acts_DoWindows[] =
 	"DoWindows(1|2|3|4|5|6|7 [,false])\n"
 	"DoWindows(Layout|Library|Log|Search [,false])";
@@ -301,7 +274,6 @@ pcb_action_t ghid_menu_action_list[] = {
 PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_act_cookie)
 
 pcb_action_t ghid_main_action_list[] = {
-	{"Benchmark", pcb_act_Benchmark},
 	{"Center", pcb_act_Center, pcb_acth_center, pcb_acts_center},
 	{"Command", pcb_act_Command},
 	{"DoWindows", pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows},

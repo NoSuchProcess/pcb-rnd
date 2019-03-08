@@ -453,6 +453,29 @@ static void ghid_iterate(pcb_hid_t *hid)
 		gtk_main_iteration_do(0);
 }
 
+static double ghid_benchmark(void)
+{
+	int i = 0;
+	time_t start, end;
+	GdkDisplay *display;
+	GdkWindow *window;
+
+	window = gtk_widget_get_window(gport->drawing_area);
+	display = gtk_widget_get_display(gport->drawing_area);
+
+	gdk_display_sync(display);
+	time(&start);
+	do {
+		ghid_invalidate_all();
+		gdk_window_process_updates(window, FALSE);
+		time(&end);
+		i++;
+	}
+	while (end - start < 10);
+
+	return i/10.0;
+}
+
 void ghid_glue_hid_init(pcb_hid_t *dst)
 {
 	memset(dst, 0, sizeof(pcb_hid_t));
@@ -494,6 +517,7 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->beep = ghid_beep;
 	dst->edit_attributes = ghid_attributes;
 	dst->point_cursor = PointCursor;
+	dst->benchmark = ghid_benchmark;
 
 	dst->notify_save_pcb = ghid_notify_save_pcb;
 	dst->notify_filename_changed = ghid_notify_filename_changed;

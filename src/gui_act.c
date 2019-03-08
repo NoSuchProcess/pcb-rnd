@@ -1760,6 +1760,24 @@ static fgw_error_t pcb_act_ClipInhibit(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	return 0;
 }
 
+static const char pcb_acts_Benchmark[] = "Benchmark()";
+static const char pcb_acth_Benchmark[] = "Benchmark the GUI speed.";
+/* DOC: benchmark.html */
+static fgw_error_t pcb_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	double fps = 0;
+
+	if ((pcb_gui != NULL) && (pcb_gui->benchmark != NULL)) {
+		fps = pcb_gui->benchmark();
+		pcb_message(PCB_MSG_INFO, "%f redraws per second\n", fps);
+	}
+	else
+		pcb_message(PCB_MSG_ERROR, "benchmark is not available in the current HID\n");
+
+	PCB_ACT_DRES(fps);
+	return 0;
+}
+
 pcb_action_t gui_action_list[] = {
 	{"Display", pcb_act_Display, pcb_acth_Display, pcb_acts_Display},
 	{"CycleDrag", pcb_act_CycleDrag, pcb_acth_CycleDrag, pcb_acts_CycleDrag},
@@ -1787,7 +1805,8 @@ pcb_action_t gui_action_list[] = {
 	{"ChkRst", pcb_act_ChkRst, pcb_acth_chkrst, pcb_acts_chkrst},
 	{"GetXY", pcb_act_GetXY, pcb_acth_GetXY, pcb_acts_GetXY},
 	{"BoardFlip", pcb_act_boardflip, pcb_acth_boardflip, pcb_acts_boardflip},
-	{"ClipInhibit", pcb_act_ClipInhibit, pcb_acth_ClipInhibit, pcb_acts_ClipInhibit}
+	{"ClipInhibit", pcb_act_ClipInhibit, pcb_acth_ClipInhibit, pcb_acts_ClipInhibit},
+	{"Benchmark", pcb_act_Benchmark, pcb_acth_Benchmark, pcb_acts_Benchmark}
 };
 
 PCB_REGISTER_ACTIONS(gui_action_list, NULL)
