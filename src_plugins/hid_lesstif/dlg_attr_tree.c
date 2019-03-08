@@ -137,6 +137,28 @@ static void ltf_tt_jumpto(ltf_tree_t *lt, tt_entry_t *e)
 	REDRAW();
 }
 
+static void ltf_tt_jumprel(ltf_tree_t *lt, int dir)
+{
+	tt_entry_t *e;
+	if (lt->cursor != NULL)
+		lt->cursor->flags.is_selected = 0;
+
+	e = lt->cursor;
+	for(;;) {
+		if (e == NULL)
+			break;
+		e = (dir > 0 ? gdl_next(&lt->model, e) : gdl_prev(&lt->model, e));
+		if ((e == NULL) || (!e->flags.is_hidden))
+			break;
+	}
+
+	if (e != NULL)
+		lt->cursor = e;
+	lt->cursor->flags.is_selected = 1;
+	xm_tree_table_focus_row(lt->w, lt->cursor->row_index+dir);
+	REDRAW();
+}
+
 static void ltf_tree_jumpto_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
 {
 	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
@@ -173,6 +195,8 @@ static void ltf_tt_xevent_cb(const tt_table_event_data_t *data)
 {
 	tt_entry_t *e;
 	ltf_tree_t *lt = data->user_data;
+	char text[64];
+	KeySym key;
 
 	switch(data->type) {
 		case ett_none:
@@ -187,7 +211,16 @@ static void ltf_tt_xevent_cb(const tt_table_event_data_t *data)
 			ltf_tt_jumpto(lt, e);
 			break;
 		case ett_key:
-pcb_trace("tree key\n");
+			XLookupString(&(data->event->xkey), text, sizeof(text), &key, 0);
+			switch(key) {
+				case XK_Up: ltf_tt_jumprel(lt, -1); break;
+				case XK_Down: ltf_tt_jumprel(lt, +1); break;
+				case XK_Return:
+				case XK_KP_Enter:
+					pcb_trace("tree key {enter}\n");
+					break;
+				default: pcb_trace("tree key %s\n", text);
+			}
 			break;
 	}
 }
