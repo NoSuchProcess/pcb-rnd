@@ -37,7 +37,8 @@ typedef struct tt_entry_s {
 	unsigned short level;  /* tree indent/level count. */
 
 	struct {
-		unsigned is_hidden:1;         /* 0 by default */
+		unsigned is_thidden:1;        /* 0 by default, hide because subtree is closed */
+		unsigned is_uhidden:1;        /* 0 by default, hide because of user request (e.g. filter) */
 		unsigned is_unfolded:1;       /* 1 by default, just specifies the type of pixmap, if it's leaf. */
 		unsigned is_branch:1;         /* 0 by default, just specifies the type of pixmap to be rendered: branch or leaf. */
 		unsigned is_selected:1;       /* 0 by default */

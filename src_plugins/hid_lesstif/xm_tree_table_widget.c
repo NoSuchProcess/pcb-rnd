@@ -544,6 +544,11 @@ void xm_tree_table_pixel_gaps(Widget w, unsigned char x, unsigned char y)
 		xm_extent_prediction(tw); )
 }
 
+static int is_hidden(tt_entry_t *et)
+{
+	return et->flags.is_thidden || et->flags.is_uhidden;
+}
+
 int xm_tree_table_focus_row(Widget w, int row_index)
 {
 	int ret = -1;
@@ -569,13 +574,13 @@ int xm_tree_table_focus_row(Widget w, int row_index)
 			tt->w_vert_sbar.cur = tt->w_vert_sbar.lo;
 			/* find the position */
 			for(; et && et->row_index < row_index; et = (tt_entry_t *)gdl_next(tt->table, (void *)et)) {
-				tt->w_vert_sbar.cur += !et->flags.is_hidden;
+				tt->w_vert_sbar.cur += !is_hidden(et);
 			}
 			/* rewind screen.height/2 back. */
 			for(; et && occupied_height < s->geom.height / 2; et = (tt_entry_t *)gdl_prev(tt->table, (void *)et)) {
-				occupied_height += (!et->flags.is_hidden) *
+				occupied_height += (!is_hidden(et)) *
 				    (et->n_text_lines * s->vertical_stride + tt->n_grid_y_gap_pixels);
-				tt->w_vert_sbar.cur -= !et->flags.is_hidden;
+				tt->w_vert_sbar.cur -= !is_hidden(et);
 			}
 			ret = et ? 0 : -1;
 		}

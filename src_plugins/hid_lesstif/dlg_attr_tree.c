@@ -12,6 +12,11 @@ typedef struct {
 
 #define REDRAW() xm_draw_tree_table_widget(lt->w);
 
+static int is_hidden(tt_entry_t *et)
+{
+	return et->flags.is_thidden || et->flags.is_uhidden;
+}
+
 static tt_entry_t *ltf_tt_lookup_row(const tt_table_event_data_t *data, unsigned row_index)
 {
 	tt_entry_t *e;
@@ -148,7 +153,7 @@ static void ltf_tt_jumprel(ltf_tree_t *lt, int dir)
 		if (e == NULL)
 			break;
 		e = (dir > 0 ? gdl_next(&lt->model, e) : gdl_prev(&lt->model, e));
-		if ((e == NULL) || (!e->flags.is_hidden))
+		if ((e == NULL) || (!is_hidden(e)))
 			break;
 	}
 

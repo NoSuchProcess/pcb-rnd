@@ -38,6 +38,11 @@
 #define TTBL_MAX(a,b) ((a) > (b)? (a) : (b))
 #define TTBL_CLAMP(value, lower, higher) TTBL_MIN(TTBL_MAX((value), (lower)), (higher))
 
+static int is_hidden(tt_entry_t *et)
+{
+	return et->flags.is_thidden || et->flags.is_uhidden;
+}
+
 void xm_init_render_target(struct render_target_s *target)
 {
 	memset(target, 0x00, sizeof(struct render_target_s));
@@ -211,14 +216,14 @@ void xm_render_ttwidget_contents(Widget aw, enum e_what_changed what)
 
 		s->len = 0;
 		for(; entry && occupied_height <= tt->virtual_canvas_size.height; entry = (tt_entry_t *)gdl_next(tt->table, (void *)entry)) {
-			hidden_shift += entry->flags.is_hidden;
+			hidden_shift += is_hidden(entry);
 			/* A tree shift added to the Y-position after scrollbar/whole extent relation computation. */
 			y = SCROLL_TR((entry->row_index - hidden_shift + b_with_header)* s->vertical_stride/*pos*/,
 			    tt->virtual_canvas_size.height/*field dimension*/,
 			    tt->w_vert_sbar.cur, tt->w_vert_sbar.lo, tt->w_vert_sbar.hi);
 
 			entry->flags.is_being_rendered = 0;
-			if (y < s->geom.y || (s->geom.y + s->geom.height) < y || entry->flags.is_hidden)
+			if (y < s->geom.y || (s->geom.y + s->geom.height) < y || is_hidden(entry))
 				continue;
 
 			if (s->visible_items_capacity <= s->len) {
@@ -227,14 +232,14 @@ void xm_render_ttwidget_contents(Widget aw, enum e_what_changed what)
 				memset(s->visible_items_vector + s->len, 0x00, sizeof(item_desc_t) * (s->visible_items_capacity - s->len));
 			}
 
-			entry->flags.is_being_rendered = !entry->flags.is_hidden;
+			entry->flags.is_being_rendered = !is_hidden(entry);
 
 			desc = s->visible_items_vector + s->len;
 			desc->item = entry;
 			desc->display_region.y = y;
 			desc->display_region.height = s->vertical_stride * entry->n_text_lines;
 
-			occupied_height += desc->display_region.height * (!entry->flags.is_hidden);
+			occupied_height += desc->display_region.height * (!is_hidden(entry));
 			draw_row(entry, x, clip.y + y, tt->gc_draw, w, s);
 			ddata->visible_last = entry->row_index;
 			s->len += entry->flags.is_being_rendered;
@@ -464,7 +469,7 @@ static void xm_extent_prediction_item(tt_entry_t *entry, XmTreeTableWidget w, st
 	unsigned col = 0;
 	long len_diff = 0;
 	const char *str = NULL;
-	if (!(entry) || (entry->flags.is_hidden) || !entry->n_cells)
+	if (!(entry) || is_hidden(entry) || !entry->n_cells)
 		return;
 
 	len_diff = (long)entry->n_cells - (long)s->column_vector_len;
