@@ -27,14 +27,6 @@ static tt_entry_t *ltf_tt_lookup_row(const tt_table_event_data_t *data, unsigned
 	return NULL;
 }
 
-
-
-static void ltf_tree_set(lesstif_attr_dlg_t *ctx, int idx, const char *val)
-{
-
-}
-
-
 static void ltf_tt_insert_row(ltf_tree_t *lt, pcb_hid_row_t *new_row)
 {
 	tt_entry_t *e, *before, *after = NULL;
@@ -213,6 +205,33 @@ static void ltf_tree_expcoll(ltf_tree_t *lt, tt_entry_t *e, int expanded)
 {
 	ltf_hide_rows(lt, e, !expanded, 0, 0, 1);
 	e->flags.is_unfolded = expanded;
+}
+
+static void ltf_tree_set(lesstif_attr_dlg_t *ctx, int idx, const char *val)
+{
+	pcb_hid_attribute_t *attr = &ctx->attrs[idx];
+	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attr->enumerations;
+	ltf_tree_t *lt = ht->hid_wdata;
+	pcb_hid_row_t *r, *row = htsp_get(&lt->ht->paths, val);
+	tt_entry_t *e;
+
+	if (row == NULL)
+		return;
+
+	e = row->hid_data;
+	e->flags.is_uhidden = 0;
+	e->flags.is_thidden = 0;
+
+	/* make sure the path is visible: expand all parent, but not all
+	   children of those parents */
+	for(r = pcb_dad_tree_parent_row(lt->ht, row); r != NULL; r = pcb_dad_tree_parent_row(lt->ht, r)) {
+		e = r->hid_data;
+		e->flags.is_thidden = 0;
+		e->flags.is_uhidden = 0;
+		e->flags.is_unfolded = 1;
+	}
+
+	ltf_tt_jumpto(lt, row->hid_data); /* implies a REDRAW() */
 }
 
 static void ltf_tree_expcoll_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int expanded)
