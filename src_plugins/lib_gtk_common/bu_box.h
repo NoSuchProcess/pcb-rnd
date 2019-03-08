@@ -13,8 +13,3 @@ GtkWidget *ghid_framed_vbox_end(GtkWidget * box, gchar * label, gint frame_borde
 
 GtkWidget *ghid_category_vbox(GtkWidget * box, const gchar * category_header,
 															gint header_pad, gint box_pad, gboolean pack_start, gboolean bottom_pad);
-
-GtkTreeSelection *ghid_scrolled_selection(GtkTreeView * treeview, GtkWidget * box,
-																					GtkSelectionMode s_mode,
-																					GtkPolicyType h_policy, GtkPolicyType v_policy,
-																					void (*func_cb) (GtkTreeSelection *, gpointer), gpointer data);
