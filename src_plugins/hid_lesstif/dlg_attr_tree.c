@@ -149,6 +149,12 @@ static void ltf_tt_jumprel(ltf_tree_t *lt, int dir)
 		lt->cursor->flags.is_selected = 0;
 
 	e = lt->cursor;
+	if (e == NULL) { /* pick first if there is no cursor */
+		lt->cursor = e = gdl_first(&lt->model);
+		if (is_hidden(e)) /* if first is hidden, step downward until the first visible */
+			dir = 1;
+	}
+
 	for(;;) {
 		if (e == NULL)
 			break;
@@ -159,8 +165,10 @@ static void ltf_tt_jumprel(ltf_tree_t *lt, int dir)
 
 	if (e != NULL)
 		lt->cursor = e;
-	lt->cursor->flags.is_selected = 1;
-	xm_tree_table_focus_row(lt->w, lt->cursor->row_index+dir);
+	if (lt->cursor != NULL) {
+		lt->cursor->flags.is_selected = 1;
+		xm_tree_table_focus_row(lt->w, lt->cursor->row_index);
+	}
 	REDRAW();
 }
 
