@@ -30,37 +30,54 @@ static tt_entry_t *ltf_tt_lookup_row(const tt_table_event_data_t *data, unsigned
 
 static void ltf_tt_insert_row(ltf_tree_t *lt, pcb_hid_row_t *new_row)
 {
-	tt_entry_t *e, *before, *after = NULL;
-	pcb_hid_row_t *rafter, *lvl = NULL, *parent_row;
-	int n, base;
+	tt_entry_t *e, *at;
+	pcb_hid_row_t *prev, *next, *parent;
+	gdl_list_t *parlist;
+	int n;
 
 	e = tt_entry_alloc(new_row->cols);
-	e->level = 0;
 
-	/* insert after an existing sibling or if this is the first node under a
-	   new level, directly under the parent */
-	rafter = pcb_dad_tree_prev_row(lt->ht, new_row);
-	if (rafter == NULL) {
-		rafter = pcb_dad_tree_parent_row(lt->ht, new_row);
-		e->level = 1;
+	parent = pcb_dad_tree_parent_row(lt->ht, new_row);
+	if (parent != NULL) {
+		parlist = &parent->children;
+		at = parent->hid_data;
+		e->level = at->level+1;
+	}
+	else {
+		parlist = &lt->ht->rows;
+		e->level = 1; /* the tree-table widget doesn't like level 0 */
 	}
 
-	if (rafter != NULL) {
-		for(lvl = rafter; lvl != NULL; lvl = pcb_dad_tree_parent_row(lt->ht, lvl))
-			e->level++;
+	prev = gdl_prev(parlist, new_row);
+	next = gdl_next(parlist, new_row);
 
-		/* find the first node that is at least on the same level as rafter;
-		   this effectively skips all children of rafter */
-		before = rafter->hid_data;
-		base = before->level;
-		for(;(before != NULL) && (before->level > base); before = gdl_next(&lt->model, before)) ;
-		if (before != NULL)
-			gdl_insert_after(&lt->model, after, e, gdl_linkfield);
+	/* insert in the model at the right place (in the flat sense) */
+	if (next != NULL) {
+		/* there is a known node after the new one, insert before that */
+		gdl_insert_before(&lt->model, next->hid_data, e, gdl_linkfield);
+	}
+	else if (prev != NULL) {
+		tt_entry_t *pe, *ne;
+
+		/* there is a known node before the new one; seek the last children
+		   in its subtree */
+		pe = prev->hid_data;
+		for(ne = gdl_next(&lt->model, pe); (ne != NULL) && (ne->level > pe->level); ne = gdl_next(&lt->model, ne)) ;
+
+		if (ne != NULL)
+			gdl_insert_before(&lt->model, ne, e, gdl_linkfield);
 		else
 			gdl_append(&lt->model, e, gdl_linkfield);
 	}
-	else
+	else if (parent != NULL) {
+		/* no siblings, first node under the parent, insert right after the parent */
+		gdl_insert_after(&lt->model, parent->hid_data, e, gdl_linkfield);
+	}
+	else {
+		/* no siblings, no parent: first node in the tree */
 		gdl_append(&lt->model, e, gdl_linkfield);
+	}
+
 
 	new_row->hid_data = e;
 	e->user_data = new_row;
@@ -69,12 +86,12 @@ static void ltf_tt_insert_row(ltf_tree_t *lt, pcb_hid_row_t *new_row)
 		tt_get_cell(e, n)[0] = new_row->cell[n];
 
 	/* update parent's branch flag */
-	parent_row = pcb_dad_tree_parent_row(lt->ht, new_row);
-	if (parent_row != NULL) {
-		e = parent_row->hid_data;
+	if (parent != NULL) {
+		e = parent->hid_data;
 		e->flags.is_branch = 1;
 	}
 }
+
 
 static void ltf_tree_insert_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *new_row)
 {
@@ -292,13 +309,30 @@ static void ltf_tree_update_hide_cb(pcb_hid_attribute_t *attrib, void *hid_wdata
 	REDRAW();
 }
 
-static void ltf_tt_import(ltf_tree_t *lt, gdl_list_t *lst)
+static void ltf_tt_append_row(ltf_tree_t *lt, pcb_hid_row_t *new_row, int level)
+{
+	tt_entry_t *e;
+	int n;
+
+	e = tt_entry_alloc(new_row->cols);
+	new_row->hid_data = e;
+	e->user_data = new_row;
+	e->flags.is_branch = gdl_length(&new_row->children) > 0;
+	e->level = level;
+	for(n = 0; n < new_row->cols; n++)
+		tt_get_cell(e, n)[0] = new_row->cell[n];
+
+	gdl_append(&lt->model, e, gdl_linkfield);
+}
+
+
+static void ltf_tt_import(ltf_tree_t *lt, gdl_list_t *lst, int level)
 {
 	pcb_hid_row_t *r;
 
 	for(r = gdl_first(lst); r != NULL; r = gdl_next(lst, r)) {
-		ltf_tt_insert_row(lt, r);
-		ltf_tt_import(lt, &r->children);
+		ltf_tt_append_row(lt, r, level);
+		ltf_tt_import(lt, &r->children, level+1);
 	}
 }
 
@@ -375,7 +409,7 @@ static Widget ltf_tree_create_(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_a
 		xm_attach_tree_table_header(lt->w, n, ht->hdr);
 	}
 
-	ltf_tt_import(lt, &ht->rows);
+	ltf_tt_import(lt, &ht->rows, 1);
 
 	XtManageChild(table);
 	return table;
