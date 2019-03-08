@@ -4,6 +4,7 @@
 
 typedef struct {
 	lesstif_attr_dlg_t *ctx;
+	pcb_hid_attribute_t *attr;
 	gdl_list_t model;
 	Widget w;
 	pcb_hid_tree_t *ht;
@@ -95,17 +96,38 @@ static void ltf_tree_modify_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb
 	
 }
 
+static void cursor_changed(ltf_tree_t *lt)
+{
+	pcb_hid_tree_t *ht = lt->ht;
+	pcb_hid_row_t *c_row = NULL;
+
+	if (lt->cursor != NULL)
+		c_row = lt->cursor->user_data;
+
+	valchg(lt->w, lt->w, lt->w);
+	if (ht->user_selected_cb != NULL)
+		ht->user_selected_cb(lt->attr, lt->ctx, c_row);
+}
+
 static void ltf_tree_remove_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
 {
 	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
 	ltf_tree_t *lt = ht->hid_wdata;
 	tt_entry_t *e = row->hid_data;
+	int changed = 0;
 
-	if (lt->cursor == e)
+	if (lt->cursor == e) {
 		lt->cursor = NULL;
+		changed = 1;
+	}
 
 /*	gdl_remove(&lt->model, e, gdl_linkfield);*/
 	delete_tt_entry(&lt->model, e);
+	xm_extent_prediction(lt->w);
+	REDRAW();
+
+	if (changed)
+		cursor_changed(lt);
 }
 
 static void ltf_tree_free_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
@@ -134,24 +156,33 @@ static pcb_hid_row_t *ltf_tree_get_selected_cb(pcb_hid_attribute_t *attrib, void
 	return lt->cursor->user_data;
 }
 
-static void ltf_tt_jumpto(ltf_tree_t *lt, tt_entry_t *e)
+static void ltf_tt_jumpto(ltf_tree_t *lt, tt_entry_t *e, int inhibit_cb)
 {
+	int changed = 0;
+
 	if (lt->cursor != NULL)
 		lt->cursor->flags.is_selected = 0;
+	changed = (lt->cursor != e);
 	lt->cursor = e;
 	lt->cursor->flags.is_selected = 1;
 	xm_tree_table_focus_row(lt->w, e->row_index);
 	REDRAW();
+
+	if ((changed) && (!inhibit_cb))
+		cursor_changed(lt);
 }
 
 static void ltf_tt_jumprel(ltf_tree_t *lt, int dir)
 {
 	tt_entry_t *e;
+	int changed = 0;
+
 	if (lt->cursor != NULL)
 		lt->cursor->flags.is_selected = 0;
 
 	e = lt->cursor;
 	if (e == NULL) { /* pick first if there is no cursor */
+		changed = 1;
 		lt->cursor = e = gdl_first(&lt->model);
 		if (is_hidden(e)) /* if first is hidden, step downward until the first visible */
 			dir = 1;
@@ -165,13 +196,18 @@ static void ltf_tt_jumprel(ltf_tree_t *lt, int dir)
 			break;
 	}
 
-	if (e != NULL)
+	if (e != NULL) {
+		if (lt->cursor != e)
+			changed = 1;
 		lt->cursor = e;
+	}
 	if (lt->cursor != NULL) {
 		lt->cursor->flags.is_selected = 1;
 		xm_tree_table_focus_row(lt->w, lt->cursor->row_index);
 	}
 	REDRAW();
+	if (changed)
+		cursor_changed(lt);
 }
 
 static void ltf_tree_jumpto_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
@@ -179,7 +215,7 @@ static void ltf_tree_jumpto_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb
 	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
 	ltf_tree_t *lt = ht->hid_wdata;
 	tt_entry_t *e = row->hid_data;
-	ltf_tt_jumpto(lt, e);
+	ltf_tt_jumpto(lt, e, 1);
 }
 
 static void ltf_hide_rows(ltf_tree_t *lt, tt_entry_t *root, int val, int user, int parent, int children)
@@ -233,7 +269,7 @@ static void ltf_tree_set(lesstif_attr_dlg_t *ctx, int idx, const char *val)
 		e->flags.is_unfolded = 1;
 	}
 
-	ltf_tt_jumpto(lt, row->hid_data); /* implies a REDRAW() */
+	ltf_tt_jumpto(lt, row->hid_data, 1); /* implies a REDRAW() */
 }
 
 static void ltf_tree_expcoll_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int expanded)
@@ -288,7 +324,7 @@ static void ltf_tt_xevent_cb(const tt_table_event_data_t *data)
 				REDRAW();
 			}
 			else
-				ltf_tt_jumpto(lt, e);
+				ltf_tt_jumpto(lt, e, 0);
 			break;
 		case ett_key:
 			XLookupString(&(data->event->xkey), text, sizeof(text), &key, 0);
@@ -319,6 +355,7 @@ static Widget ltf_tree_create_(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_a
 	lt->ht = ht;
 	ht->hid_wdata = lt;
 	lt->ctx = ctx;
+	lt->attr = attr;
 
 	ht->hid_insert_cb = ltf_tree_insert_cb;
 	ht->hid_modify_cb = ltf_tree_modify_cb;
