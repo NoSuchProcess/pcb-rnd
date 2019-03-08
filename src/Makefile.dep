@@ -2316,14 +2316,14 @@
  ../src_plugins/hid_lesstif/xm_tree_table_widget.h \
  ../src_3rd/genlist/gendlist.h
 ../src_plugins/hid_lesstif/xm_tree_table_priv.o: \
- ../src_plugins/hid_lesstif/xm_tree_table_priv.c \
+ ../src_plugins/hid_lesstif/xm_tree_table_priv.c ../config.h \
  ../src_3rd/genvector/vtp0.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
  ../src_plugins/hid_lesstif/xm_tree_table_priv.h \
  ../src_plugins/hid_lesstif/xm_tree_table_widget.h \
  ../src_3rd/genlist/gendlist.h
 ../src_plugins/hid_lesstif/xm_tree_table_widget.o: \
- ../src_plugins/hid_lesstif/xm_tree_table_widget.c \
+ ../src_plugins/hid_lesstif/xm_tree_table_widget.c ../config.h \
  ../src_plugins/hid_lesstif/xm_tree_table_priv.h \
  ../src_plugins/hid_lesstif/xm_tree_table_widget.h \
  ../src_3rd/genlist/gendlist.h
