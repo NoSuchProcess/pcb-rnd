@@ -383,7 +383,7 @@ static Widget ltf_tree_create_(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_a
 
 static Widget ltf_tree_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
 {
-	Widget *w;
+	Widget w;
 
 	if (pcb_brave & PCB_BRAVE_LESSTIF_TREETABLE)
 		return ltf_tree_create_(ctx, parent, attr);
