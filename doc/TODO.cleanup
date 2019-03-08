@@ -1,4 +1,3 @@
 - rename:
 	- conf_*
-- move the GetXY action to central
 - remove menu_toggle_update_cb()
