@@ -37,19 +37,6 @@
 #include <string.h>
 #include "util_str.h"
 
-gboolean pcb_gtk_g_strdup(gchar ** dst, const gchar * src)
-{
-	if ((dst == NULL) || ((*dst == NULL) && (src == NULL)))
-		return FALSE;
-	if (*dst) {
-		if (src && !strcmp(*dst, src))
-			return FALSE;
-		g_free(*dst);
-	}
-	*dst = g_strdup(src);
-	return TRUE;
-}
-
 const gchar *pcb_str_strip_left(const gchar * s)
 {
 	if (s != NULL) {

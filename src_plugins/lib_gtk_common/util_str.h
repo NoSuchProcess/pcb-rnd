@@ -38,8 +38,6 @@
 
 #include <glib.h>
 
-gboolean pcb_gtk_g_strdup(gchar ** dst, const gchar * src);
-
 /* Returns a pointer to the first non-space character in s */
 const gchar *pcb_str_strip_left(const gchar * s);
 #endif
