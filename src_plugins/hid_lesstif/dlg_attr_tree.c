@@ -180,18 +180,46 @@ static void ltf_tree_jumpto_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb
 	ltf_tt_jumpto(lt, e);
 }
 
+static void ltf_hide_rows(ltf_tree_t *lt, tt_entry_t *root, int val, int user, int parent, int children)
+{
+	if (parent) {
+		if (user)
+			root->flags.is_uhidden = val;
+		else
+			root->flags.is_thidden = val;
+	}
+	if (children) {
+		tt_entry_t *e;
+		for(e = gdl_next(&lt->model, root); e != NULL; e = gdl_next(&lt->model, e)) {
+			if (e->level <= root->level)
+				break;
+			if (user)
+				e->flags.is_uhidden = val;
+			else
+				e->flags.is_thidden = val;
+		}
+	}
+}
+
+
 static void ltf_tree_expcoll_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int expanded)
 {
-/*	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
-	ltf_tree_t *lt = ht->hid_wdata;*/
-
+	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
+	ltf_tree_t *lt = ht->hid_wdata;
+	ltf_hide_rows(lt, row->hid_data, !expanded, 0, 0, 1);
+	REDRAW();
 }
 
 static void ltf_tree_update_hide_cb(pcb_hid_attribute_t *attrib, void *hid_wdata)
 {
-/*	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
-	ltf_tree_t *lt = ht->hid_wdata;*/
-
+	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
+	ltf_tree_t *lt = ht->hid_wdata;
+	tt_entry_t *e;
+	for(e = gdl_first(&lt->model); e != NULL; e = gdl_next(&lt->model, e)) {
+		pcb_hid_row_t *row = e->user_data;
+		e->flags.is_uhidden = row->hide;
+	}
+	REDRAW();
 }
 
 static void ltf_tt_import(ltf_tree_t *lt, gdl_list_t *lst)
