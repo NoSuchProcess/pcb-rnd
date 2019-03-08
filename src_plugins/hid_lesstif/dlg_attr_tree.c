@@ -262,7 +262,12 @@ static void ltf_tt_xevent_cb(const tt_table_event_data_t *data)
 			e = ltf_tt_lookup_row(data, data->current_row);
 			if (e == NULL)
 				return;
-			ltf_tt_jumpto(lt, e);
+			if (e == lt->cursor) { /* second click */
+				ltf_tree_expcoll(lt, lt->cursor, !lt->cursor->flags.is_unfolded);
+				REDRAW();
+			}
+			else
+				ltf_tt_jumpto(lt, e);
 			break;
 		case ett_key:
 			XLookupString(&(data->event->xkey), text, sizeof(text), &key, 0);
@@ -271,6 +276,10 @@ static void ltf_tt_xevent_cb(const tt_table_event_data_t *data)
 				case XK_Down: ltf_tt_jumprel(lt, +1); break;
 				case XK_Return:
 				case XK_KP_Enter:
+					if (lt->cursor != NULL) {
+						ltf_tree_expcoll(lt, lt->cursor, !lt->cursor->flags.is_unfolded);
+						REDRAW();
+					}
 					pcb_trace("tree key {enter}\n");
 					break;
 				default: pcb_trace("tree key %s\n", text);
