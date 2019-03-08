@@ -267,9 +267,18 @@ static void ltf_tree_set(lesstif_attr_dlg_t *ctx, int idx, const char *val)
 	pcb_hid_attribute_t *attr = &ctx->attrs[idx];
 	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attr->enumerations;
 	ltf_tree_t *lt = ht->hid_wdata;
-	pcb_hid_row_t *r, *row = htsp_get(&lt->ht->paths, val);
+	pcb_hid_row_t *r, *row;
 	tt_entry_t *e;
 
+	if (val == NULL) {
+		/* remove the cursor */
+		if (lt->cursor != NULL)
+			lt->cursor->flags.is_selected = 0;
+		REDRAW();
+		return;
+	}
+
+	row = htsp_get(&lt->ht->paths, val);
 	if (row == NULL)
 		return;
 
