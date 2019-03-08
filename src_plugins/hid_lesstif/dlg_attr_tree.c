@@ -81,6 +81,8 @@ static void ltf_tree_insert_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb
 	ltf_tree_t *lt = ht->hid_wdata;
 
 	ltf_tt_insert_row(lt, new_row);
+	xm_extent_prediction(lt->w);
+	REDRAW();
 }
 
 static void ltf_tree_modify_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int col)
