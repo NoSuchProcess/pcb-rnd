@@ -40,7 +40,6 @@ typedef struct {
 	GObject *h_adjustment, *v_adjustment;
 
 	/* own internal states */
-	gchar *name_label_string;
 	gboolean adjustment_changed_holdoff, in_popup;
 	gboolean small_label_markup;
 	int active; /* 0 before init finishes */
@@ -61,7 +60,7 @@ void pcb_gtk_tw_route_styles_edited_cb(pcb_gtk_topwin_t *tw);
 void pcb_gtk_tw_notify_save_pcb(pcb_gtk_topwin_t *tw, const char *filename, pcb_bool done);
 void pcb_gtk_tw_notify_filename_changed(pcb_gtk_topwin_t *tw);
 void pcb_gtk_tw_interface_set_sensitive(pcb_gtk_topwin_t *tw, gboolean sensitive);
-void pcb_gtk_tw_window_set_name_label(pcb_gtk_topwin_t *tw, gchar *name);
+void pcb_gtk_tw_window_set_name_label(pcb_gtk_topwin_t *tw, const char *name);
 
 gboolean ghid_idle_cb(void *topwin);
 gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, pcb_gtk_topwin_t *tw);

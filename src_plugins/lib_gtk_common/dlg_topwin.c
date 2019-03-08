@@ -194,7 +194,7 @@ void ghid_remove_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw)
 /* Refreshes the window title bar and sets the PCB name to the
  * window title bar or to a seperate label
  */
-void pcb_gtk_tw_window_set_name_label(pcb_gtk_topwin_t *tw, gchar *name)
+void pcb_gtk_tw_window_set_name_label(pcb_gtk_topwin_t *tw, const char *name)
 {
 	const char *filename;
 	char tmp[512];
@@ -203,16 +203,15 @@ void pcb_gtk_tw_window_set_name_label(pcb_gtk_topwin_t *tw, gchar *name)
 	if (!tw->active)
 		return;
 
-	pcb_gtk_g_strdup(&(tw->name_label_string), name);
-	if (!tw->name_label_string || !*tw->name_label_string)
-		tw->name_label_string = g_strdup("Unnamed");
+	if ((name == NULL) || (*name == '\0'))
+		name = "Unnamed";
 
 	if (!PCB->Filename || !*PCB->Filename)
 		filename = "<board with no file name or format>";
 	else
 		filename = PCB->Filename;
 
-	pcb_snprintf(tmp, sizeof(tmp), "%s%s (%s) - %s - pcb-rnd", PCB->Changed ? "*" : "", tw->name_label_string, filename, PCB->is_footprint ? "footprint" : "board");
+	pcb_snprintf(tmp, sizeof(tmp), "%s%s (%s) - %s - pcb-rnd", PCB->Changed ? "*" : "", name, filename, PCB->is_footprint ? "footprint" : "board");
 	gtk_window_set_title(GTK_WINDOW(tw->com->top_window), tmp);
 }
 
