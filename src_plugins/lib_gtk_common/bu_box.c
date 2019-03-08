@@ -105,20 +105,6 @@ GtkWidget *ghid_category_vbox(GtkWidget * box, const gchar * category_header,
 	return vbox1;
 }
 
-GtkWidget *ghid_scrolled_vbox(GtkWidget * box, GtkWidget ** scr, GtkPolicyType h_policy, GtkPolicyType v_policy)
-{
-	GtkWidget *scrolled, *vbox;
-
-	scrolled = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), h_policy, v_policy);
-	gtk_box_pack_start(GTK_BOX(box), scrolled, TRUE, TRUE, 0);
-	vbox = gtkc_vbox_new(FALSE, 0);
-	gtkc_scrolled_window_add_with_viewport(scrolled, vbox);
-	if (scr)
-		*scr = scrolled;
-	return vbox;
-}
-
 GtkTreeSelection *ghid_scrolled_selection(GtkTreeView * treeview, GtkWidget * box,
 																					GtkSelectionMode s_mode,
 																					GtkPolicyType h_policy, GtkPolicyType v_policy,
