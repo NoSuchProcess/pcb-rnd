@@ -31,6 +31,8 @@
  *
 ******************************************************************************/
 
+#include "config.h"
+
 /* Include appropriate header files. */
 #include "FillBoxP.h" /* private header file for the PxmFillBox widget */
 #include <Xm/GadgetP.h> /* for gadget management functions */

@@ -31,6 +31,8 @@
  *           needs to set that up.
 ******************************************************************************/
 
+#include "config.h"
+
 /* Include appropriate header files. */
 #include "PagesP.h" /* private header file for the PxmPages widget */
 #include <Xm/GadgetP.h> /* for gadget management functions */

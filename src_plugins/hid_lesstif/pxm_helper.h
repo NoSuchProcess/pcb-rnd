@@ -34,7 +34,7 @@
 #define _XmWidgetToAppContext(w) \
         XtAppContext app = XtWidgetToApplicationContext(w)
 
-void PxmConfigureObject(Widget wid,
+PCB_INLINE void PxmConfigureObject(Widget wid,
 #if NeedWidePrototypes
 												int x, int y, int width, int height, int border_width)
 #else
@@ -70,7 +70,7 @@ void PxmConfigureObject(Widget wid,
  *	are intersected by the region.
  *
  ************************************************************************/
-void PxmRedisplayGadgets(Widget w, register XEvent *event, Region region)
+PCB_INLINE void PxmRedisplayGadgets(Widget w, register XEvent *event, Region region)
 {
 	CompositeWidget mw = (CompositeWidget) w;
 	register int i;
@@ -124,7 +124,7 @@ void PxmRedisplayGadgets(Widget w, register XEvent *event, Region region)
  * this one that will deal with the Xt reply value cuisine.
  *
  ****************/
-XtGeometryResult PxmReplyToQueryGeometry(Widget widget, XtWidgetGeometry *intended, XtWidgetGeometry *desired)
+PCB_INLINE XtGeometryResult PxmReplyToQueryGeometry(Widget widget, XtWidgetGeometry *intended, XtWidgetGeometry *desired)
 {
 	_XmWidgetToAppContext(widget);
 	/* the caller should have set desired width and height */
