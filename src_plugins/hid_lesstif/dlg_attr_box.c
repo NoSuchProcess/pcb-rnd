@@ -132,13 +132,50 @@ static int ltf_tabbed_create_old(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 	return i;
 }
 
+typedef struct ltf_tab_s ltf_tab_t;
+
+typedef struct {
+	Widget w;
+	ltf_tab_t *tctx;
+} ltf_tabbtn_t;
+
+struct ltf_tab_s {
+	Widget wpages;
+	int len;
+	ltf_tabbtn_t btn[1];
+};
+
+static void tabsw_cb(Widget w, XtPointer client_data, XtPointer call_data)
+{
+	ltf_tabbtn_t *bctx = client_data;
+	int tidx = bctx - bctx->tctx->btn;
+	if ((tidx < 0) || (tidx >= bctx->tctx->len))
+		return;
+	XtVaSetValues(bctx->tctx->wpages, PxmNpagesAt, tidx, NULL);
+}
+
+static int tabbed_destroy_cb(Widget tabbed, void *v, void *cbs)
+{
+	ltf_tab_t *tctx;
+	XtVaGetValues(tabbed, XmNuserData, &tctx, NULL);
+	free(tctx);
+	XtVaSetValues(tabbed, XmNuserData, NULL, NULL);
+}
+
 static int ltf_tabbed_create_new(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr, int i)
 {
-	Widget wpages, wtop, wtab, wframe, t;
-	int add_top = 0;
+	Widget wtop, wtab, wframe, t;
+	int res, add_top = 0, numtabs;
+	ltf_tab_t *tctx;
+	const char **l;
+
+
+	for(l = ctx->attrs[i].enumerations, numtabs = 0; *l != NULL; l++, numtabs++) ;
+	tctx = calloc(1, sizeof(ltf_tab_t) + sizeof(ltf_tabbtn_t) * numtabs-1);
+	tctx->len = numtabs;
 
 	if (!(ctx->attrs[i].pcb_hatt_flags & PCB_HATF_HIDE_TABLAB)) {
-		const char **l;
+		int n;
 
 		/* create the boxing for the labels */
 		if (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LEFT_TAB) {
@@ -151,9 +188,12 @@ static int ltf_tabbed_create_new(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 		}
 
 		/* create the label buttons */
-		for(l = ctx->attrs[i].enumerations; *l != NULL; l++) {
+		for(n = 0, l = ctx->attrs[i].enumerations; *l != NULL; l++,n++) {
 			stdarg_n = 0;
 			t = XmCreatePushButton(wtab, (char *)*l, stdarg_args, stdarg_n);
+			tctx->btn[n].w = t;
+			tctx->btn[n].tctx = tctx;
+			XtAddCallback(t, XmNactivateCallback, tabsw_cb, (XtPointer)&tctx->btn[n]);
 			XtManageChild(t);
 		}
 
@@ -175,15 +215,20 @@ static int ltf_tabbed_create_new(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 	XtManageChild(wframe);
 
 	stdarg_n = 0;
-	wpages = PxmCreatePages(wframe, "pages", stdarg_args, stdarg_n);
-	XtManageChild(wpages);
+	stdarg(XmNuserData, tctx);
+	tctx->wpages = PxmCreatePages(wframe, "pages", stdarg_args, stdarg_n);
+	XtAddCallback(tctx->wpages, XmNunmapCallback, tabbed_destroy_cb, ctx);
+	XtManageChild(tctx->wpages);
 
 	if (add_top)
 		ctx->wl[i] = wtop;
 	else
 		ctx->wl[i] = wframe;
 
-	return attribute_dialog_add(ctx, wpages, NULL, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
+	res = attribute_dialog_add(ctx, tctx->wpages, NULL, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
+
+	XtVaSetValues(tctx->wpages, PxmNpagesAt, ctx->attrs[i].default_val.int_value, NULL);
+	return res;
 }
 
 static int ltf_tabbed_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr, int i)
@@ -193,4 +238,5 @@ static int ltf_tabbed_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_att
 	else
 		return ltf_tabbed_create_old(ctx, parent, attr, i);
 }
+
 

@@ -76,6 +76,7 @@ typedef struct {
 	XtCallbackList map_callback;
 	XtCallbackList unmap_callback;
 	Cardinal at; /* current page shown */
+	Boolean layout_lock;
 #ifdef HAVE_XM_TRAIT
 	XmRenderTable button_render_table;
 	XmRenderTable label_render_table;
