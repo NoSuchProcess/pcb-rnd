@@ -374,6 +374,11 @@ static Boolean SetValues(Widget old_w, Widget request_w, Widget new_w, ArgList a
 	Boolean need_relayout;
 	PxmPagesWidgetClass gwc = (PxmPagesWidgetClass) XtClass(new_w);
 
+	if (cw->pages.at != nw->pages.at) {
+		Layout(new_w, NULL);
+		return 0;
+	}
+
 	/* See if any class or subclass resources have changed. */
 	if (gwc->pages_class.need_relayout)
 		need_relayout = (*(gwc->pages_class.need_relayout)) (old_w, new_w);
@@ -599,39 +604,6 @@ static XtGeometryResult GeometryManager(Widget w, /* instigator */
  *************************************************************************/
 static void ChangeManaged(Widget w)
 {
-	Dimension pagesWidth, pagesHeight;
-	PxmPagesWidgetClass gwc = (PxmPagesWidgetClass) XtClass(w);
-
-	/* If you get an initial (C) size from the user or application, keep it.  
-	   Otherwise, just force width and height to 0 so that CalcSize will
-	   overwrite the appropriate fields. */
-	if (!XtIsRealized(w)) {
-		/* The first time, only attempts to change non specified sizes */
-		pagesWidth = XtWidth(w); /* might be 0 */
-		pagesHeight = XtHeight(w); /* might be 0 */
-	}
-	else {
-		pagesWidth = 0;
-		pagesHeight = 0;
-	}
-
-	/* Determine the ideal size of Pages. */
-	if (gwc->pages_class.calc_size)
-		(*(gwc->pages_class.calc_size)) (w, NULL, &pagesWidth, &pagesHeight);
-	else
-		CalcSize(w, NULL, &pagesWidth, &pagesHeight);
-
-	/* Ask parent of Pages if Pages's new size is acceptable.  Keep asking until
-	   parent returns either XtGeometryYes or XtGeometryNo. */
-	while(XtMakeResizeRequest(w, pagesWidth, pagesHeight, &pagesWidth, &pagesHeight) == XtGeometryAlmost);
-
-	/* Now that we have a size for the Pages, we can layout the children
-	   of the pages. */
-	if (gwc->pages_class.layout)
-		(*(gwc->pages_class.layout)) (w, NULL);
-	else
-		Layout(w, NULL);
-
 #ifdef HAVE_XME
 	/* Update keyboard traversal */
 	XmeNavigChangeManaged(w);
@@ -681,19 +653,29 @@ static void Layout(Widget wid, Widget instigator)
 	Dimension mh = gw->pages.margin_height;
 	Cardinal i;
 
+	if (gw->pages.layout_lock)
+		return;
+
+	gw->pages.layout_lock = 1;
 	/* show only one page */
 	for(i = 0; i < gw->composite.num_children; i++) {
 		Widget ic = gw->composite.children[i];
-		if (i == gw->pages.at)
-			XtManageChild(ic);
-		else
-			XtUnmanageChild(ic);
 
 		ic->core.x = mw;
 		ic->core.y = mh;
 		ic->core.width = gw->core.width - 2*mw;
 		ic->core.height = gw->core.height - 2*mh;
+
+		if (i == gw->pages.at) {
+			XtManageChild(ic);
+			XtRealizeWidget(ic);
+		}
+		else {
+			XtUnrealizeWidget(ic);
+			XtUnmanageChild(ic);
+		}
 	}
+	gw->pages.layout_lock = 0;
 }
 
 
