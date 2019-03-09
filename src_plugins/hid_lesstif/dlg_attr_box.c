@@ -39,3 +39,52 @@ static int ltf_pane_create(lesstif_attr_dlg_t *ctx, int j, Widget parent, int is
 
 	return attribute_dialog_add(ctx, pane, NULL, j+1, add_labels);
 }
+
+static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_rows, int want_frame, int want_scroll)
+{
+	Widget cnt;
+
+	if (want_frame) {
+		/* create and insert frame around the content table */
+		stdarg(XmNalignment, XmALIGNMENT_END);
+		parent = XmCreateFrame(parent, XmStrCast("box-frame"), stdarg_args, stdarg_n);
+		XtManageChild(parent);
+		stdarg_n = 0;
+	}
+
+	if (want_scroll) {
+		stdarg(XmNscrollingPolicy, XmAUTOMATIC);
+		stdarg(XmNvisualPolicy, XmVARIABLE);
+
+		stdarg(XmNleftAttachment, XmATTACH_FORM);
+		stdarg(XmNtopAttachment, XmATTACH_FORM);
+		stdarg(XmNrightAttachment, XmATTACH_FORM);
+		stdarg(XmNbottomAttachment, XmATTACH_FORM);
+
+		parent = XmCreateScrolledWindow(parent, "scrolled_box", stdarg_args, stdarg_n);
+		XtManageChild(parent);
+		stdarg_n = 0;
+	}
+
+	switch(type) {
+		case 'h': /* "hbox" */
+			stdarg(PxmNfillBoxVertical, 0);
+			cnt = PxmCreateFillBox(parent, name, stdarg_args, stdarg_n);
+			break;
+		case 'v': /* "vbox" */
+			stdarg(PxmNfillBoxVertical, 1);
+			cnt = PxmCreateFillBox(parent, name, stdarg_args, stdarg_n);
+			break;
+		case 't': /* "table" */
+			stdarg(XmNorientation, XmHORIZONTAL);
+			stdarg(XmNpacking, XmPACK_COLUMN);
+			stdarg(XmNnumColumns, num_table_rows);
+			stdarg(XmNisAligned, True);
+			stdarg(XmNentryAlignment, XmALIGNMENT_END);
+			cnt = XmCreateRowColumn(parent, name, stdarg_args, stdarg_n);
+			break;
+		default:
+			abort();
+	}
+	return cnt;
+}
