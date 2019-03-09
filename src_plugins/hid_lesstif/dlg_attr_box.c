@@ -156,6 +156,9 @@ static int ltf_tabbed_create_new(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 			t = XmCreatePushButton(wtab, (char *)*l, stdarg_args, stdarg_n);
 			XtManageChild(t);
 		}
+
+		XtVaSetValues(wtop, PxmNfillBoxFill, 1, NULL);
+		XtVaSetValues(wtab, XmNmarginWidth, 0, XmNmarginHeight, 0, NULL);
 		XtManageChild(wtop);
 		XtManageChild(wtab);
 		add_top = 1;
@@ -167,6 +170,7 @@ static int ltf_tabbed_create_new(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 
 	/* create and insert frame around the content table */
 	stdarg_n = 0;
+	stdarg(PxmNfillBoxFill, 1);
 	wframe = XmCreateFrame(wtop, XmStrCast("pages-frame"), stdarg_args, stdarg_n);
 	XtManageChild(wframe);
 
