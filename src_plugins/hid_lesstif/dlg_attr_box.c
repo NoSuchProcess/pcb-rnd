@@ -27,6 +27,8 @@
 /* Boxes and group widgets */
 
 #include <Xm/PanedW.h>
+#include "Pages.h"
+#include "brave.h"
 
 static int ltf_pane_create(lesstif_attr_dlg_t *ctx, int j, Widget parent, int ishor, int add_labels)
 {
@@ -89,7 +91,7 @@ static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_
 	return cnt;
 }
 
-static int ltf_tabbed_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr, int i)
+static int ltf_tabbed_create_old(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr, int i)
 {
 	Widget w, scroller;
 	attr_dlg_tb_t tb;
@@ -129,3 +131,62 @@ static int ltf_tabbed_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_att
 
 	return i;
 }
+
+static int ltf_tabbed_create_new(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr, int i)
+{
+	Widget wpages, wtop, wtab, wframe, t;
+	int add_top = 0;
+
+	if (!(ctx->attrs[i].pcb_hatt_flags & PCB_HATF_HIDE_TABLAB)) {
+		const char **l;
+
+		/* create the boxing for the labels */
+		if (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LEFT_TAB) {
+			wtop = pcb_motif_box(parent, "tabbed_top", 'h', 0, 0, 0);
+			wtab = pcb_motif_box(wtop, "tabbed_tabs", 'v', 0, 0, 0);
+		}
+		else {
+			wtop = pcb_motif_box(parent, "tabbed_top", 'v', 0, 0, 0);
+			wtab = pcb_motif_box(wtop, "tabbed_tabs", 'h', 0, 0, 0);
+		}
+
+		/* create the label buttons */
+		for(l = ctx->attrs[i].enumerations; *l != NULL; l++) {
+			stdarg_n = 0;
+			t = XmCreatePushButton(wtab, (char *)*l, stdarg_args, stdarg_n);
+			XtManageChild(t);
+		}
+		XtManageChild(wtop);
+		XtManageChild(wtab);
+		add_top = 1;
+	}
+	else
+		wtop = parent;
+
+	stdarg_n = 0;
+
+	/* create and insert frame around the content table */
+	stdarg_n = 0;
+	wframe = XmCreateFrame(wtop, XmStrCast("pages-frame"), stdarg_args, stdarg_n);
+	XtManageChild(wframe);
+
+	stdarg_n = 0;
+	wpages = PxmCreatePages(wframe, "pages", stdarg_args, stdarg_n);
+	XtManageChild(wpages);
+
+	if (add_top)
+		ctx->wl[i] = wtop;
+	else
+		ctx->wl[i] = wframe;
+
+	return attribute_dialog_add(ctx, wpages, NULL, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
+}
+
+static int ltf_tabbed_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr, int i)
+{
+	if (pcb_brave & PCB_BRAVE_LESSTIF_NEWTABBED)
+		return ltf_tabbed_create_new(ctx, parent, attr, i);
+	else
+		return ltf_tabbed_create_old(ctx, parent, attr, i);
+}
+
