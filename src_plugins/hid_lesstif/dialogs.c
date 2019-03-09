@@ -503,43 +503,8 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget real_parent, att
 			break;
 
 		case PCB_HATT_BEGIN_TABBED:
-		{
-			Widget scroller;
-			attr_dlg_tb_t tb;
-
-			stdarg_n = 0;
-			if (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LEFT_TAB) {
-				stdarg(XmNbackPagePlacement, XmBOTTOM_LEFT);
-				stdarg(XmNorientation, XmHORIZONTAL);
-			}
-			else {
-				stdarg(XmNbackPagePlacement, XmTOP_RIGHT);
-				stdarg(XmNorientation, XmVERTICAL);
-			}
-			stdarg(XmNbackPageNumber, 1);
-			stdarg(XmNbackPageSize, 1);
-			stdarg(XmNbindingType, XmNONE);
-
-			stdarg(XmNuserData, ctx);
-			stdarg(PxmNfillBoxFill, 1);
-			ctx->wl[i] = w = XmCreateNotebook(parent, "notebook", stdarg_args, stdarg_n);
-
-			/* remove the page scroller widget that got automatically created by XmCreateNotebook() */
-			scroller = XtNameToWidget(w, "PageScroller");
-			XtUnmanageChild (scroller);
-
-			XtAddCallback(w, XmNpageChangedCallback, (XtCallbackProc)pagechg, (XtPointer)&ctx->attrs[i]);
-
-			tb.notebook = w;
-			tb.tablab = ctx->attrs[i].enumerations;
-			tb.minw = 0;
-			tb.tabs = 0;
-
-			i = attribute_dialog_add(ctx, w, &tb, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
-
-			XtManageChild(w);
+			i = ltf_tabbed_create(ctx, parent, &ctx->attrs[i], i);
 			break;
-		}
 
 		case PCB_HATT_PREVIEW:
 			ctx->wl[i] = ltf_preview_create(ctx, parent, &ctx->attrs[i]);

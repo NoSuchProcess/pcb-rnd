@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -87,4 +87,45 @@ static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_
 			abort();
 	}
 	return cnt;
+}
+
+static int ltf_tabbed_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr, int i)
+{
+	Widget w, scroller;
+	attr_dlg_tb_t tb;
+
+	stdarg_n = 0;
+	if (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LEFT_TAB) {
+		stdarg(XmNbackPagePlacement, XmBOTTOM_LEFT);
+		stdarg(XmNorientation, XmHORIZONTAL);
+	}
+	else {
+		stdarg(XmNbackPagePlacement, XmTOP_RIGHT);
+		stdarg(XmNorientation, XmVERTICAL);
+	}
+	stdarg(XmNbackPageNumber, 1);
+	stdarg(XmNbackPageSize, 1);
+	stdarg(XmNbindingType, XmNONE);
+
+	stdarg(XmNuserData, ctx);
+	stdarg(PxmNfillBoxFill, 1);
+	ctx->wl[i] = w = XmCreateNotebook(parent, "notebook", stdarg_args, stdarg_n);
+
+	/* remove the page scroller widget that got automatically created by XmCreateNotebook() */
+	scroller = XtNameToWidget(w, "PageScroller");
+	XtUnmanageChild (scroller);
+
+	XtAddCallback(w, XmNpageChangedCallback, (XtCallbackProc)pagechg, (XtPointer)&ctx->attrs[i]);
+
+	tb.notebook = w;
+	tb.tablab = ctx->attrs[i].enumerations;
+	tb.minw = 0;
+	tb.tabs = 0;
+
+	ctx->wl[i] = w;
+	i = attribute_dialog_add(ctx, w, &tb, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
+
+	XtManageChild(w);
+
+	return i;
 }
