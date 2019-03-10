@@ -49,6 +49,8 @@ static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_
 	if (want_frame) {
 		/* create and insert frame around the content table */
 		stdarg(XmNalignment, XmALIGNMENT_END);
+		stdarg(XmNmarginWidth, 0);
+		stdarg(XmNmarginHeight, 0);
 		parent = XmCreateFrame(parent, XmStrCast("box-frame"), stdarg_args, stdarg_n);
 		XtManageChild(parent);
 		stdarg_n = 0;
@@ -71,10 +73,14 @@ static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_
 	switch(type) {
 		case 'h': /* "hbox" */
 			stdarg(PxmNfillBoxVertical, 0);
+			stdarg(XmNmarginWidth, 0);
+			stdarg(XmNmarginHeight, 0);
 			cnt = PxmCreateFillBox(parent, name, stdarg_args, stdarg_n);
 			break;
 		case 'v': /* "vbox" */
 			stdarg(PxmNfillBoxVertical, 1);
+			stdarg(XmNmarginWidth, 0);
+			stdarg(XmNmarginHeight, 0);
 			cnt = PxmCreateFillBox(parent, name, stdarg_args, stdarg_n);
 			break;
 		case 't': /* "table" */
