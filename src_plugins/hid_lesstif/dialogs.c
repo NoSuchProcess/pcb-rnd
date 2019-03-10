@@ -315,10 +315,11 @@ static void valchg(Widget w, XtPointer dlg_widget_, XtPointer call_data)
 
 	ctx->attrs[widx].changed = 1;
 
+	attribute_dialog_readres(ctx, widx);
+
 	if ((ctx->attrs[widx].change_cb == NULL) && (ctx->property[PCB_HATP_GLOBAL_CALLBACK].func == NULL))
 		return;
 
-	attribute_dialog_readres(ctx, widx);
 	if (ctx->property[PCB_HATP_GLOBAL_CALLBACK].func != NULL)
 		ctx->property[PCB_HATP_GLOBAL_CALLBACK].func(ctx, ctx->caller_data, &ctx->attrs[widx]);
 	if (ctx->attrs[widx].change_cb != NULL)
