@@ -29,12 +29,20 @@
 #ifndef PCB_ERROR_H
 #define PCB_ERROR_H
 
+#include <time.h>
+
+/* pcb_printf()-like call to print temporary trace messages to stderr;
+   disabled in non-debug compilation */
+void pcb_trace(const char *Format, ...);
+
 typedef enum pcb_message_level {
 	PCB_MSG_DEBUG = 0,   /* Debug message. Should probably not be shown in regular operation. */
 	PCB_MSG_INFO,        /* Info message. FYI for the user, no action needed. */
 	PCB_MSG_WARNING,     /* Something the user should probably take note */
 	PCB_MSG_ERROR        /* Couldn't finish an action, needs user attention. */
 } pcb_message_level_t;
+
+/*** central log write API ***/
 
 /* printf-like logger to the log dialog and stderr */
 void pcb_message(enum pcb_message_level level, const char *Format, ...);
@@ -47,8 +55,32 @@ void pcb_message(enum pcb_message_level level, const char *Format, ...);
 #define pcb_opendir_error_message(filename)  pcb_FS_error_message(filename, "opendir")
 #define pcb_chdir_error_message(filename)    pcb_FS_error_message(filename, "chdir")
 
-/* pcb_printf()-like call to print temporary trace messages to stderr;
-   disabled in non-debug compilation */
-void pcb_trace(const char *Format, ...);
+/*** central log storage and read API ***/
+
+typedef struct pcb_logline_s pcb_logline_t;
+
+struct pcb_logline_s {
+	time_t stamp;
+	unsigned long ID;
+	pcb_message_level_t level;
+	pcb_logline_t *prev, *next;
+	size_t len;
+	char str[1];
+};
+
+extern unsigned long pcb_log_next_ID;
+
+/* Return the first log line that has at least the specified value in its ID. */
+pcb_logline_t *pcb_log_find_min(unsigned long ID);
+pcb_logline_t *pcb_log_find_min_(pcb_logline_t *from, unsigned long ID);
+
+/* Remove log lines between ID from and to, inclusive; -1 in these fields
+   mean begin or end of the list. */
+void pcb_log_del_range(unsigned long from, unsigned long to);
+
+/* Free all memory and reset the log system */
+void pcb_log_uninit(void);
+
+extern pcb_logline_t *pcb_log_first, *pcb_log_last;
 
 #endif

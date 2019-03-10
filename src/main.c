@@ -284,6 +284,7 @@ void pcb_main_uninit(void)
 	pcb_uilayer_uninit();
 	pcb_cli_uninit();
 	pcb_dynflag_uninit();
+	pcb_log_uninit();
 }
 
 static int arg_match(const char *in, const char *shrt, const char *lng)
