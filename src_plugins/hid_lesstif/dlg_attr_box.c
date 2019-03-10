@@ -39,7 +39,7 @@ static int ltf_pane_create(lesstif_attr_dlg_t *ctx, int j, Widget parent, int is
 	ctx->wl[j] = pane = XmCreatePanedWindow(parent, "pane", stdarg_args, stdarg_n);
 	XtManageChild(pane);
 
-	return attribute_dialog_add(ctx, pane, NULL, j+1, add_labels);
+	return attribute_dialog_add(ctx, pane, j+1, add_labels);
 }
 
 static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_rows, int want_frame, int want_scroll)
@@ -91,47 +91,6 @@ static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_
 	return cnt;
 }
 
-static int ltf_tabbed_create_old(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr, int i)
-{
-	Widget w, scroller;
-	attr_dlg_tb_t tb;
-
-	stdarg_n = 0;
-	if (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LEFT_TAB) {
-		stdarg(XmNbackPagePlacement, XmBOTTOM_LEFT);
-		stdarg(XmNorientation, XmHORIZONTAL);
-	}
-	else {
-		stdarg(XmNbackPagePlacement, XmTOP_RIGHT);
-		stdarg(XmNorientation, XmVERTICAL);
-	}
-	stdarg(XmNbackPageNumber, 1);
-	stdarg(XmNbackPageSize, 1);
-	stdarg(XmNbindingType, XmNONE);
-
-	stdarg(XmNuserData, ctx);
-	stdarg(PxmNfillBoxFill, 1);
-	ctx->wl[i] = w = XmCreateNotebook(parent, "notebook", stdarg_args, stdarg_n);
-
-	/* remove the page scroller widget that got automatically created by XmCreateNotebook() */
-	scroller = XtNameToWidget(w, "PageScroller");
-	XtUnmanageChild (scroller);
-
-	XtAddCallback(w, XmNpageChangedCallback, (XtCallbackProc)pagechg, (XtPointer)&ctx->attrs[i]);
-
-	tb.notebook = w;
-	tb.tablab = ctx->attrs[i].enumerations;
-	tb.minw = 0;
-	tb.tabs = 0;
-
-	ctx->wl[i] = w;
-	i = attribute_dialog_add(ctx, w, &tb, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
-
-	XtManageChild(w);
-
-	return i;
-}
-
 typedef struct ltf_tab_s ltf_tab_t;
 
 typedef struct {
@@ -160,15 +119,9 @@ static int ltf_tabbed_set_(ltf_tab_t *tctx, int page)
 
 static int ltf_tabbed_set(Widget tabbed, int page)
 {
-	if (pcb_brave & PCB_BRAVE_LESSTIF_NEWTABBED) {
-		ltf_tab_t *tctx;
-		XtVaGetValues(tabbed, XmNuserData, &tctx, NULL);
-		return ltf_tabbed_set_(tctx, page);
-	}
-	else {
-		XtVaSetValues(tabbed, XmNcurrentPageNumber, page+1, NULL);
-	}
-	return 0;
+	ltf_tab_t *tctx;
+	XtVaGetValues(tabbed, XmNuserData, &tctx, NULL);
+	return ltf_tabbed_set_(tctx, page);
 }
 
 static void tabsw_cb(Widget w, XtPointer client_data, XtPointer call_data)
@@ -185,7 +138,7 @@ static void tabbed_destroy_cb(Widget tabbed, void *v, void *cbs)
 	XtVaSetValues(tabbed, XmNuserData, NULL, NULL);
 }
 
-static int ltf_tabbed_create_new(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr, int i)
+static int ltf_tabbed_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr, int i)
 {
 	Widget wtop, wtab, wframe, t;
 	int res, add_top = 0, numtabs;
@@ -249,18 +202,9 @@ static int ltf_tabbed_create_new(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 	else
 		ctx->wl[i] = wframe;
 
-	res = attribute_dialog_add(ctx, tctx->wpages, NULL, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
+	res = attribute_dialog_add(ctx, tctx->wpages, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
 
 	ltf_tabbed_set_(tctx, ctx->attrs[i].default_val.int_value);
 	return res;
 }
-
-static int ltf_tabbed_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr, int i)
-{
-	if (pcb_brave & PCB_BRAVE_LESSTIF_NEWTABBED)
-		return ltf_tabbed_create_new(ctx, parent, attr, i);
-	else
-		return ltf_tabbed_create_old(ctx, parent, attr, i);
-}
-
 
