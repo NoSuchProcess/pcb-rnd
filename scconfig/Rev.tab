@@ -1,3 +1,4 @@
+23819	configure	new, centralized log dialog
 23788	configure	lesstif tabbed widget reimplementation for portability
 23780	configure	cleanup: remove dead code from gtk
 23737	configure	new fileselect dialog API and new, centralized load/save actions

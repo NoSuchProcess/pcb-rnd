@@ -49,6 +49,7 @@ const conf_dialogs_t conf_dialogs;
 #include "dlg_layer_flags.h"
 #include "dlg_lib_pstk.h"
 #include "dlg_loadsave.h"
+#include "dlg_log.h"
 #include "dlg_padstack.h"
 #include "dlg_pinout.c"
 #include "dlg_undo.c"
@@ -89,6 +90,7 @@ pcb_action_t dialogs_action_list[] = {
 	{"Load", pcb_act_Load, pcb_acth_Load, pcb_acts_Load},
 	{"Save", pcb_act_Save, pcb_acth_Save, pcb_acts_Save},
 	{"ImportGUI", pcb_act_ImportGUI, pcb_acth_ImportGUI, pcb_acts_ImportGUI},
+	{"LogDialog", pcb_act_LogDialog, pcb_acth_LogDialog, pcb_acts_LogDialog},
 
 	{"gui_PromptFor", pcb_act_gui_PromptFor, pcb_acth_gui, NULL},
 	{"gui_MessageBox", pcb_act_gui_MessageBox, pcb_acth_gui, NULL},
