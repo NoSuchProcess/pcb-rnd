@@ -367,11 +367,11 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (argc > 3 && !pin_found) {
-		pcb_gui->log("Net %s has no pin %s\n", a1, a2);
+		pcb_message(PCB_MSG_ERROR, "Net %s has no pin %s\n", a1, a2);
 		return 1;
 	}
 	else if (!net_found) {
-		pcb_gui->log("No net named %s\n", a1);
+		pcb_message(PCB_MSG_ERROR, "No net named %s\n", a1);
 	}
 
 
