@@ -123,19 +123,22 @@ fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_undo_save_serial();
 
 		PCB_DAD_BEGIN_VBOX(dlg);
-			PCB_DAD_COMPFLAG(dlg, PCB_HATF_LABEL | PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
 			sprintf(tmp, "Object flags of %s #%ld\n", pcb_obj_type_name(ctx.obj_type), ctx.obj->ID);
 			PCB_DAD_LABEL(dlg, tmp);
 
 			for(n = 0; n < pcb_object_flagbits_len; n++) {
 				if (pcb_object_flagbits[n].object_types & ctx.obj_type) {
-					PCB_DAD_BOOL(dlg, pcb_object_flagbits[n].name);
-					PCB_DAD_HELP(dlg, pcb_object_flagbits[n].help);
-					ctx.wid[ctx.len] = PCB_DAD_CURRENT(dlg);
-					ctx.flag_bit[ctx.len] = pcb_object_flagbits[n].mask;
-					if (PCB_FLAG_TEST(ctx.flag_bit[ctx.len], ctx.obj))
-						PCB_DAD_DEFAULT_NUM(dlg, 1);
-					ctx.len++;
+					PCB_DAD_BEGIN_HBOX(dlg);
+						PCB_DAD_BOOL(dlg, "");
+							PCB_DAD_HELP(dlg, pcb_object_flagbits[n].help);
+						ctx.wid[ctx.len] = PCB_DAD_CURRENT(dlg);
+						ctx.flag_bit[ctx.len] = pcb_object_flagbits[n].mask;
+						if (PCB_FLAG_TEST(ctx.flag_bit[ctx.len], ctx.obj))
+							PCB_DAD_DEFAULT_NUM(dlg, 1);
+						PCB_DAD_LABEL(dlg, pcb_object_flagbits[n].name);
+						ctx.len++;
+					PCB_DAD_END(dlg);
 				}
 			}
 			PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
