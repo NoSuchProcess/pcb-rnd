@@ -211,6 +211,11 @@ static int brave_interact(void)
 				PCB_DAD_LABEL(dlg, d->shrt);
 					PCB_DAD_HELP(dlg, d->lng);
 			}
+		PCB_DAD_END(dlg);
+		PCB_DAD_BEGIN_VBOX(dlg);
+			PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_END(dlg);
+		PCB_DAD_BEGIN_HBOX(dlg);
 			if (len != 0) {
 				PCB_DAD_BUTTON(dlg, "all ON");
 					PCB_DAD_HELP(dlg, "Tick in all boxes\nenabling all experimental features\n(Super Brave Mode)");
