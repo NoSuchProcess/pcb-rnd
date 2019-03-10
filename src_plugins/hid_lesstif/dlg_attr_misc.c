@@ -448,11 +448,8 @@ static Widget ltf_text_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_at
 	Widget wtxt;
 	pcb_hid_text_t *txt = (pcb_hid_text_t *)attr->enumerations;
 
-	stdarg_n = 0;
 	stdarg(XmNresizePolicy, XmRESIZE_GROW);
 	stdarg(XmNeditMode, XmMULTI_LINE_EDIT);
-TODO("this should be removed once the EXPFILL bug is fixed");
-	stdarg(XmNrows, 8);
 	stdarg(XmNuserData, ctx);
 	wtxt = XmCreateText(parent, XmStrCast("dad_text"), stdarg_args, stdarg_n);
 	XtManageChild(wtxt);
