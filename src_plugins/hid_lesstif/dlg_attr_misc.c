@@ -443,6 +443,30 @@ void ltf_text_set_readonly(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_bool 
 	XtSetValues(wtxt, stdarg_args, stdarg_n);
 }
 
+static void ltf_text_scroll_to_bottom(pcb_hid_attribute_t *attrib, void *hid_ctx)
+{
+	lesstif_attr_dlg_t *ctx = hid_ctx;
+	int idx = attrib - ctx->attrs;
+	Widget wtxt = ctx->wl[idx];
+	char *buf;
+	int offs, len;
+
+	buf = XmTextGetString(wtxt);
+	len = strlen(buf);
+
+	if (len < 3)
+		return;
+
+	for(offs = len-2; offs > 0; offs--) {
+		if (buf[offs] == '\n') {
+			offs++;
+			break;
+		}
+	}
+	XmTextSetCursorPosition(wtxt, offs);
+	free(buf);
+}
+
 static Widget ltf_text_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
 {
 	Widget wtxt;
@@ -460,6 +484,7 @@ static Widget ltf_text_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_at
 	txt->hid_get_offs = ltf_text_get_offs;
 	txt->hid_set_xy = ltf_text_set_xy;
 	txt->hid_set_offs = ltf_text_set_offs;
+	txt->hid_scroll_to_bottom = ltf_text_scroll_to_bottom;
 	txt->hid_get_text = ltf_text_get_text;
 	txt->hid_set_text = ltf_text_set_text;
 	txt->hid_set_readonly = ltf_text_set_readonly;
