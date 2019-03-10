@@ -233,7 +233,6 @@
 	-> we should probably render large objects first then smaller ones
 
 Lesstif:
-	- the notebook widget is not portable; detect it from scconfig and provide some hackish alternative if not found [report: rqsall]
 	- implement/enable local grid in lesstif (menu option is disabled)
 
 GTK2:
