@@ -26,7 +26,7 @@
  *
  */
 
-/* Messages, error reporting and debug functions */
+/* Messages, error reporting, debug and logging */
 
 #ifndef	PCB_ERROR_H
 #define	PCB_ERROR_H
