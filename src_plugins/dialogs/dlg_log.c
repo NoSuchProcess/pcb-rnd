@@ -37,7 +37,7 @@ typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	unsigned long last_added;
 	int active;
-	int wtxt;
+	int wtxt, wscroll;
 } log_ctx_t;
 
 static log_ctx_t log_ctx;
@@ -69,6 +69,7 @@ static void log_import(log_ctx_t *ctx)
 static void log_window_create(void)
 {
 	log_ctx_t *ctx = &log_ctx;
+	pcb_hid_attr_val_t hv;
 
 	if (ctx->active)
 		return;
@@ -83,6 +84,12 @@ static void log_window_create(void)
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
 			PCB_DAD_BUTTON(ctx->dlg, "clear");
 			PCB_DAD_BUTTON(ctx->dlg, "save");
+			PCB_DAD_BEGIN_HBOX(ctx->dlg);
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME);
+				PCB_DAD_BOOL(ctx->dlg, "");
+					ctx->wscroll = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_LABEL(ctx->dlg, "scroll");
+			PCB_DAD_END(ctx->dlg);
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_END(ctx->dlg);
@@ -99,6 +106,8 @@ static void log_window_create(void)
 		pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
 		txt->hid_set_readonly(atxt, ctx->dlg_hid_ctx, 1);
 	}
+	hv.int_value = 1;
+	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wscroll, &hv);
 	log_import(ctx);
 }
 
