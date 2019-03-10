@@ -116,6 +116,7 @@ void pplg_uninit_dialogs(void)
 	pcb_dialog_place_uninit();
 	pcb_dlg_fontsel_uninit();
 	conf_unreg_fields("plugins/dialogs/");
+	pcb_dlg_log_uninit();
 }
 
 #include "dolists.h"
@@ -128,6 +129,7 @@ int pplg_init_dialogs(void)
 	conf_reg_field(conf_dialogs, field,isarray,type_name,cpath,cname,desc,flags);
 #include "dialogs_conf_fields.h"
 
+	pcb_dlg_log_init();
 	pcb_dialog_place_init();
 	PCB_REGISTER_ACTIONS(dialogs_action_list, dialogs_cookie)
 	pcb_event_bind(PCB_EVENT_DAD_NEW_DIALOG, pcb_dialog_place, NULL, dialogs_cookie);
@@ -139,5 +141,6 @@ int pplg_init_dialogs(void)
 	pcb_dlg_netlist_init();
 	pcb_view_dlg_init();
 	pcb_dlg_fontsel_init();
+
 	return 0;
 }
