@@ -53,6 +53,7 @@ typedef enum {
 	PCB_EVENT_NEW_PSTK,               /* called when a new padstack is created */
 
 	PCB_EVENT_BUSY,                   /* called before CPU-intensive task begins */
+	PCB_EVENT_LOG_APPEND,             /* called when a new log line is appended */
 
 	PCB_EVENT_RUBBER_RESET,           /* rubber band: reset attached */
 	PCB_EVENT_RUBBER_MOVE,            /* rubber band: object moved */

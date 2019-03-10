@@ -31,6 +31,7 @@
 
 #include "data.h"
 #include "error.h"
+#include "event.h"
 #include "conf_core.h"
 #include "genvector/gds_char.h"
 
@@ -80,6 +81,8 @@ void pcb_message(enum pcb_message_level level, const char *Format, ...)
 		pcb_log_last->next = line;
 	pcb_log_last = line;
 	line->len = tmp.used - offsetof(pcb_logline_t, str);
+
+	pcb_event(PCB_EVENT_LOG_APPEND, NULL, NULL);
 }
 
 pcb_logline_t *pcb_log_find_min_(pcb_logline_t *from, unsigned long ID)

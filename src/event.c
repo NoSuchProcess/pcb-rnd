@@ -52,6 +52,7 @@ static const char *pcb_fgw_evnames[] = {
 	"pcbev_undo_post",
 	"pcbev_new_pstk",
 	"pcbev_busy",
+	"pcbev_log_append",
 	"pcbev_rubber_reset",
 	"pcbev_rubber_move",
 	"pcbev_rubber_move_draw",
