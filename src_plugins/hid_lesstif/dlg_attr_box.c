@@ -158,6 +158,17 @@ static int ltf_tabbed_set_(ltf_tab_t *tctx, int page)
 	return 0;
 }
 
+static int ltf_tabbed_set(Widget tabbed, int page)
+{
+	if (pcb_brave & PCB_BRAVE_LESSTIF_NEWTABBED) {
+		ltf_tab_t *tctx;
+		XtVaGetValues(tabbed, XmNuserData, &tctx, NULL);
+		return ltf_tabbed_set_(tctx, page);
+	}
+	else {
+		XtVaSetValues(tabbed, XmNcurrentPageNumber, page+1, NULL);
+	}
+}
 
 static void tabsw_cb(Widget w, XtPointer client_data, XtPointer call_data)
 {
@@ -209,7 +220,7 @@ static int ltf_tabbed_create_new(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 			XtManageChild(t);
 		}
 
-		XtVaSetValues(wtop, PxmNfillBoxFill, 1, NULL);
+		XtVaSetValues(wtop, PxmNfillBoxFill, 1, XmNuserData, tctx, NULL);
 		XtVaSetValues(wtab, XmNmarginWidth, 0, XmNmarginHeight, 0, NULL);
 		XtManageChild(wtop);
 		XtManageChild(wtab);
