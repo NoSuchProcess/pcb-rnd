@@ -83,6 +83,7 @@ typedef struct {
 	long (*hid_get_offs)(pcb_hid_attribute_t *attrib, void *hid_ctx);
 	void (*hid_set_xy)(pcb_hid_attribute_t *attrib, void *hid_ctx, long x, long y); /* can be very slow */
 	void (*hid_set_offs)(pcb_hid_attribute_t *attrib, void *hid_ctx, long offs);
+	void (*hid_scroll_to_bottom)(pcb_hid_attribute_t *attrib, void *hid_ctx);
 	void (*hid_set_text)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_text_set_t how, const char *txt);
 	char *(*hid_get_text)(pcb_hid_attribute_t *attrib, void *hid_ctx); /* caller needs to free the result */
 	void (*hid_set_readonly)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_bool readonly); /* by default text views are not read-only */
