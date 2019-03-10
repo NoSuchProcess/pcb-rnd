@@ -109,7 +109,11 @@ static int ltf_tabbed_set_(ltf_tab_t *tctx, int page)
 	if ((page < 0) || (page >= tctx->len))
 		return -1;
 
-	XtVaSetValues(tctx->btn[tctx->at].w, XmNshadowThickness, 1, NULL);
+	if (page == tctx->at)
+		return 0;
+
+	if (tctx->at > 0)
+		XtVaSetValues(tctx->btn[tctx->at].w, XmNshadowThickness, 1, NULL);
 	tctx->at = page;
 	XtVaSetValues(tctx->btn[tctx->at].w, XmNshadowThickness, 3, NULL);
 	XtVaSetValues(tctx->wpages, PxmNpagesAt, page, NULL);
@@ -204,7 +208,13 @@ static int ltf_tabbed_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_att
 
 	res = attribute_dialog_add(ctx, tctx->wpages, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
 
-	ltf_tabbed_set_(tctx, ctx->attrs[i].default_val.int_value);
+	/* make sure no page is taken as shown */
+	tctx->at = -1;
+
+	/* make sure one of the pages is shown */
+	if (ltf_tabbed_set_(tctx, ctx->attrs[i].default_val.int_value) != 0)
+		ltf_tabbed_set_(tctx, 0);
+
 	return res;
 }
 
