@@ -42,7 +42,6 @@ typedef struct {
 
 static comflag_name_t compflag_names[] = {
 	{PCB_HATF_FRAME,         "frame"},
-	{PCB_HATF_LABEL,         "label"},
 	{PCB_HATF_SCROLL,        "scroll"},
 	{PCB_HATF_HIDE_TABLAB,   "hide_tablab"},
 	{PCB_HATF_LEFT_TAB,      "left_tab"},
