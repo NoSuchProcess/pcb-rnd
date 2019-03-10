@@ -76,6 +76,6 @@ static int ghid_pane_create(attr_dlg_t *ctx, int j, GtkWidget *parent, int ishor
 	bparent = frame_scroll(parent, ctx->attrs[j].pcb_hatt_flags);
 	gtk_box_pack_start(GTK_BOX(bparent), widget, TRUE, TRUE, 0);
 	g_object_set_data(G_OBJECT(widget), PCB_OBJ_PROP, ctx);
-	j = ghid_attr_dlg_add(ctx, widget, &ts, j+1, 0);
+	j = ghid_attr_dlg_add(ctx, widget, &ts, j+1);
 	return j;
 }

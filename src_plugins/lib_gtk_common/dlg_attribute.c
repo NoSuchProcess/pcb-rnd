@@ -285,14 +285,14 @@ typedef struct {
 	} val;
 } ghid_attr_tb_t;
 
-static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_tb_t *tb_st, int start_from, int add_labels);
+static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_tb_t *tb_st, int start_from);
 
 #include "dlg_attr_tree.c"
 #include "dlg_attr_misc.c"
 #include "dlg_attr_txt.c"
 #include "dlg_attr_box.c"
 
-static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_tb_t *tb_st, int start_from, int add_labels)
+static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_tb_t *tb_st, int start_from)
 {
 	int j, i, n, expfill;
 	GtkWidget *combo, *widget, *entry, *vbox1, *hbox, *bparent, *parent, *tbl;
@@ -343,7 +343,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				expfill = (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_EXPFILL);
 				gtk_box_pack_start(GTK_BOX(bparent), hbox, expfill, expfill, 0);
 				ctx->wl[j] = hbox;
-				j = ghid_attr_dlg_add(ctx, hbox, NULL, j+1, (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_LABEL));
+				j = ghid_attr_dlg_add(ctx, hbox, NULL, j+1);
 				break;
 
 			case PCB_HATT_BEGIN_VBOX:
@@ -352,7 +352,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				expfill = (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_EXPFILL);
 				gtk_box_pack_start(GTK_BOX(bparent), vbox1, expfill, expfill, 0);
 				ctx->wl[j] = vbox1;
-				j = ghid_attr_dlg_add(ctx, vbox1, NULL, j+1, (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_LABEL));
+				j = ghid_attr_dlg_add(ctx, vbox1, NULL, j+1);
 				break;
 
 			case PCB_HATT_BEGIN_HPANE:
@@ -372,7 +372,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					tbl = gtkc_table_static(ts.val.table.rows, ts.val.table.cols, 1);
 					gtk_box_pack_start(GTK_BOX(bparent), tbl, FALSE, FALSE, 0);
 					ctx->wl[j] = tbl;
-					j = ghid_attr_dlg_add(ctx, tbl, &ts, j+1, (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_LABEL));
+					j = ghid_attr_dlg_add(ctx, tbl, &ts, j+1);
 				}
 				break;
 
@@ -391,7 +391,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					gtk_box_pack_start(GTK_BOX(parent), widget, TRUE, TRUE, 0);
 					g_signal_connect(G_OBJECT(widget), "switch-page", G_CALLBACK(notebook_changed_cb), &(ctx->attrs[j]));
 					g_object_set_data(G_OBJECT(widget), PCB_OBJ_PROP, ctx);
-					j = ghid_attr_dlg_add(ctx, widget, &ts, j+1, 0);
+					j = ghid_attr_dlg_add(ctx, widget, &ts, j+1);
 				}
 				break;
 
@@ -419,11 +419,6 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				gtk_widget_set_tooltip_text(widget, ctx->attrs[j].help_text);
 				g_object_set_data(G_OBJECT(widget), PCB_OBJ_PROP, ctx);
 				ctx->wl[j] = widget;
-
-				if (add_labels) {
-					widget = gtk_label_new(ctx->attrs[j].name);
-					gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
-				}
 				break;
 
 			case PCB_HATT_COORD:
@@ -440,11 +435,6 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					gtk_entry_set_text(GTK_ENTRY(entry), ctx->attrs[j].default_val.str_value);
 				gtk_widget_set_tooltip_text(entry, ctx->attrs[j].help_text);
 				g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(coordentry_changed_cb), &(ctx->attrs[j]));
-
-				if (add_labels) {
-					widget = gtk_label_new(ctx->attrs[j].name);
-					gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
-				}
 				break;
 
 			case PCB_HATT_REAL:
@@ -463,11 +453,6 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				gtk_widget_set_tooltip_text(widget, ctx->attrs[j].help_text);
 				g_object_set_data(G_OBJECT(widget), PCB_OBJ_PROP, ctx);
 				ctx->wl[j] = widget;
-
-				if (add_labels) {
-					widget = gtk_label_new(ctx->attrs[j].name);
-					gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
-				}
 				break;
 
 			case PCB_HATT_STRING:
@@ -484,15 +469,11 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				gtk_widget_set_tooltip_text(entry, ctx->attrs[j].help_text);
 				g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(entry_changed_cb), &(ctx->attrs[j]));
 				g_signal_connect(G_OBJECT(entry), "activate", G_CALLBACK(entry_activate_cb), &(ctx->attrs[j]));
-				if (add_labels) {
-					widget = gtk_label_new(ctx->attrs[j].name);
-					gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
-				}
 				break;
 
 			case PCB_HATT_BOOL:
 				/* put this in a check button */
-				widget = chk_btn_new(parent, ctx->attrs[j].default_val.int_value, set_flag_cb, &(ctx->attrs[j]), (add_labels ? ctx->attrs[j].name : NULL));
+				widget = chk_btn_new(parent, ctx->attrs[j].default_val.int_value, set_flag_cb, &(ctx->attrs[j]), NULL);
 				gtk_widget_set_tooltip_text(widget, ctx->attrs[j].help_text);
 				g_object_set_data(G_OBJECT(widget), PCB_OBJ_PROP, ctx);
 				ctx->wl[j] = widget;
@@ -518,10 +499,6 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					i++;
 				}
 				gtk_combo_box_set_active(GTK_COMBO_BOX(combo), ctx->attrs[j].default_val.int_value);
-				if (add_labels) {
-					widget = gtk_label_new(ctx->attrs[j].name);
-					gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
-				}
 				g_signal_connect(G_OBJECT(combo), "changed", G_CALLBACK(enum_changed_cb), &(ctx->attrs[j]));
 				break;
 
@@ -558,7 +535,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				break;
 
 			case PCB_HATT_PATH:
-				vbox1 = ghid_category_vbox(parent, (add_labels ? ctx->attrs[j].name : NULL), 4, 2, TRUE, TRUE);
+				vbox1 = ghid_category_vbox(parent, NULL, 4, 2, TRUE, TRUE);
 				entry = gtk_entry_new();
 				g_object_set_data(G_OBJECT(entry), PCB_OBJ_PROP, ctx);
 				ctx->wl[j] = entry;
@@ -591,10 +568,6 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				for (i = 0; i < n; ++i)
 					gtkc_combo_box_text_append_text(combo, unit_list[i].in_suffix);
 				gtk_combo_box_set_active(GTK_COMBO_BOX(combo), ctx->attrs[j].default_val.int_value);
-				if (add_labels) {
-					widget = gtk_label_new(ctx->attrs[j].name);
-					gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
-				}
 				break;
 			case PCB_HATT_BUTTON:
 				hbox = gtkc_hbox_new(FALSE, 4);
@@ -606,11 +579,6 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				gtk_widget_set_tooltip_text(ctx->wl[j], ctx->attrs[j].help_text);
 				g_signal_connect(G_OBJECT(ctx->wl[j]), "clicked", G_CALLBACK(button_changed_cb), &(ctx->attrs[j]));
 				g_object_set_data(G_OBJECT(ctx->wl[j]), PCB_OBJ_PROP, ctx);
-
-				if (add_labels) {
-					widget = gtk_label_new(ctx->attrs[j].name);
-					gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 0);
-				}
 				break;
 
 			default:
@@ -784,7 +752,7 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, const char *id, pcb_hid_attribute
 	GtkWidget *content_area;
 	GtkWidget *main_vbox;
 	attr_dlg_t *ctx;
-	int force_label, plc[4] = {-1, -1, -1, -1};
+	int plc[4] = {-1, -1, -1, -1};
 
 
 	plc[2] = defx;
@@ -829,9 +797,7 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, const char *id, pcb_hid_attribute
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(ctx->dialog));
 	gtk_container_add_with_properties(GTK_CONTAINER(content_area), main_vbox, "expand", TRUE, "fill", TRUE, NULL);
 
-TODO("Remove force_label once we got rid of non-DAD attribute dialogs - look for direct calls to pcb_attribute_dialog()");
-	force_label = !PCB_HATT_IS_COMPOSITE(attrs[0].type);
-	ghid_attr_dlg_add(ctx, main_vbox, NULL, 0, (attrs[0].pcb_hatt_flags & PCB_HATF_LABEL) || force_label);
+	ghid_attr_dlg_add(ctx, main_vbox, NULL, 0);
 
 	gtk_widget_show_all(ctx->dialog);
 
@@ -851,7 +817,7 @@ void *ghid_attr_sub_new(pcb_gtk_common_t *com, GtkWidget *parent_box, pcb_hid_at
 	ctx->caller_data = caller_data;
 	ctx->rc = 1; /* just in case the window is destroyed in an unknown way: take it as cancel */
 
-	ghid_attr_dlg_add(ctx, parent_box, NULL, 0, (attrs[0].pcb_hatt_flags & PCB_HATF_LABEL));
+	ghid_attr_dlg_add(ctx, parent_box, NULL, 0);
 
 	return ctx;
 }
