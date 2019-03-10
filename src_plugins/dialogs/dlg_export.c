@@ -163,6 +163,8 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 					continue;
 				}
 				PCB_DAD_BEGIN_VBOX(export_ctx.dlg);
+					if (numa > 12)
+						PCB_DAD_COMPFLAG(export_ctx.dlg, PCB_HATF_SCROLL);
 					for(i = 0; i < numa; i++) {
 						PCB_DAD_BEGIN_HBOX(export_ctx.dlg)
 							PCB_DAD_DUP_ATTR(export_ctx.dlg, attrs+i);
