@@ -653,29 +653,38 @@ static void Layout(Widget wid, Widget instigator)
 	Dimension mh = gw->pages.margin_height;
 	Cardinal i;
 
-	if (gw->pages.layout_lock)
-		return;
-
-	gw->pages.layout_lock = 1;
 	/* show only one page */
 	for(i = 0; i < gw->composite.num_children; i++) {
+		Dimension x0, y0, xs, ys, cb = 0;
 		Widget ic = gw->composite.children[i];
 
-		ic->core.x = mw;
-		ic->core.y = mh;
-		ic->core.width = gw->core.width - 2*mw;
-		ic->core.height = gw->core.height - 2*mh;
+		xs = gw->core.width - 2*mw;
+		ys = gw->core.height - 2*mh;
 
-		if (i == gw->pages.at) {
-			XtManageChild(ic);
-			XtRealizeWidget(ic);
+		if (i == gw->pages.at) { /* show */
+			x0 = mw;
+			y0 = mh;
+		}
+		else { /* hide */
+			x0 = -(ic->core.width + 100);
+			y0 = -(ic->core.height + 100);
+		}
+
+		/* If layout is instigated by the GeometryManager don't 
+		   configure the requesting child, just set its geometry and 
+		   let Xt configure it.   */
+		if (ic != instigator) {
+			PxmConfigureObject(ic, x0, y0, xs, ys, cb);
 		}
 		else {
-			XtUnrealizeWidget(ic);
-			XtUnmanageChild(ic);
+			ic->core.x = x0;
+			ic->core.y = y0;
+			ic->core.width = xs;
+			ic->core.height = ys;
+			ic->core.border_width = cb;
 		}
+
 	}
-	gw->pages.layout_lock = 0;
 }
 
 
