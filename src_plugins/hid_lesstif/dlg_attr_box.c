@@ -141,17 +141,28 @@ typedef struct {
 
 struct ltf_tab_s {
 	Widget wpages;
-	int len;
+	int len, at;
 	ltf_tabbtn_t btn[1];
 };
+
+static int ltf_tabbed_set_(ltf_tab_t *tctx, int page)
+{
+	if ((page < 0) || (page >= tctx->len))
+		return -1;
+
+	XtVaSetValues(tctx->btn[tctx->at].w, XmNshadowThickness, 1, NULL);
+	tctx->at = page;
+	XtVaSetValues(tctx->btn[tctx->at].w, XmNshadowThickness, 3, NULL);
+	XtVaSetValues(tctx->wpages, PxmNpagesAt, page, NULL);
+
+	return 0;
+}
+
 
 static void tabsw_cb(Widget w, XtPointer client_data, XtPointer call_data)
 {
 	ltf_tabbtn_t *bctx = client_data;
-	int tidx = bctx - bctx->tctx->btn;
-	if ((tidx < 0) || (tidx >= bctx->tctx->len))
-		return;
-	XtVaSetValues(bctx->tctx->wpages, PxmNpagesAt, tidx, NULL);
+	ltf_tabbed_set_(bctx->tctx, bctx - bctx->tctx->btn);
 }
 
 static int tabbed_destroy_cb(Widget tabbed, void *v, void *cbs)
@@ -190,6 +201,7 @@ static int ltf_tabbed_create_new(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 		/* create the label buttons */
 		for(n = 0, l = ctx->attrs[i].enumerations; *l != NULL; l++,n++) {
 			stdarg_n = 0;
+			stdarg(XmNshadowThickness, 1);
 			t = XmCreatePushButton(wtab, (char *)*l, stdarg_args, stdarg_n);
 			tctx->btn[n].w = t;
 			tctx->btn[n].tctx = tctx;
@@ -227,7 +239,7 @@ static int ltf_tabbed_create_new(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 
 	res = attribute_dialog_add(ctx, tctx->wpages, NULL, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
 
-	XtVaSetValues(tctx->wpages, PxmNpagesAt, ctx->attrs[i].default_val.int_value, NULL);
+	ltf_tabbed_set_(tctx, ctx->attrs[i].default_val.int_value);
 	return res;
 }
 
