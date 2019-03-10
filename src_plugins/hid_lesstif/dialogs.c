@@ -337,14 +337,14 @@ static void activated(Widget w, XtPointer dlg_widget_, XtPointer call_data)
 		ctx->attrs[widx].enter_cb(ctx, ctx->caller_data, &ctx->attrs[widx]);
 }
 
-static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int start_from, int add_labels);
+static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int start_from);
 
 #include "dlg_attr_misc.c"
 #include "dlg_attr_box.c"
 #include "dlg_attr_tree.c"
 
 /* returns the index of HATT_END where the loop had to stop */
-static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int start_from, int add_labels)
+static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int start_from)
 {
 	int len, i, numch, numcol;
 	Widget labbox;
@@ -363,19 +363,6 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 		if (ctx->attrs[i].help_text == ATTR_UNDOCUMENTED)
 			continue;
 
-		/* Add label */
-		if ((add_labels) && (ctx->attrs[i].type != PCB_HATT_LABEL)) {
-			stdarg_n = 0;
-			stdarg(XmNalignment, XmALIGNMENT_END);
-
-			labbox = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'h', 0, 0, 0);
-			XtManageChild(labbox);
-			parent = labbox;
-
-			w = XmCreateLabel(labbox, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
-			XtManageChild(w);
-		}
-
 		/* Add content */
 		stdarg_n = 0;
 		stdarg(XmNalignment, XmALIGNMENT_END);
@@ -388,19 +375,19 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'h', 0, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_FRAME), (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_SCROLL));
 			XtManageChild(w);
 			ctx->wl[i] = w;
-			i = attribute_dialog_add(ctx, w, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
+			i = attribute_dialog_add(ctx, w, i+1);
 			break;
 
 		case PCB_HATT_BEGIN_VBOX:
 			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'v', 0, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_FRAME), (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_SCROLL));
 			XtManageChild(w);
 			ctx->wl[i] = w;
-			i = attribute_dialog_add(ctx, w, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
+			i = attribute_dialog_add(ctx, w, i+1);
 			break;
 
 		case PCB_HATT_BEGIN_HPANE:
 		case PCB_HATT_BEGIN_VPANE:
-			i = ltf_pane_create(ctx, i, parent, (ctx->attrs[i].type == PCB_HATT_BEGIN_HPANE), add_labels);
+			i = ltf_pane_create(ctx, i, parent, (ctx->attrs[i].type == PCB_HATT_BEGIN_HPANE));
 			break;
 
 		case PCB_HATT_BEGIN_TABLE:
@@ -412,7 +399,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 
 			ctx->wl[i] = w;
 
-			i = attribute_dialog_add(ctx, w, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
+			i = attribute_dialog_add(ctx, w, i+1);
 			while((len % numcol) != 0) {
 				Widget pad;
 
@@ -732,7 +719,7 @@ void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_att
 		stdarg_n = 0;
 		main_tbl = pcb_motif_box(topform, XmStrCast("layout"), 't', pcb_hid_attrdlg_num_children(ctx->attrs, 0, ctx->n_attrs), 0, 0);
 		XtManageChild(main_tbl);
-		attribute_dialog_add(ctx, main_tbl, 0, 1);
+		attribute_dialog_add(ctx, main_tbl, 0);
 	}
 	else {
 		stdarg_n = 0;
@@ -742,7 +729,7 @@ void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_att
 		stdarg(XmNrightAttachment, XmATTACH_FORM);
 		main_tbl = pcb_motif_box(topform, XmStrCast("layout"), 'v', 0, 0, 0);
 		XtManageChild(main_tbl);
-		attribute_dialog_add(ctx, main_tbl, 0, (ctx->attrs[0].pcb_hatt_flags & PCB_HATF_LABEL));
+		attribute_dialog_add(ctx, main_tbl, 0);
 	}
 
 	/* don't expect screens larger than 800x600 */
@@ -782,7 +769,7 @@ void *lesstif_attr_sub_new(Widget parent_box, pcb_hid_attribute_t *attrs, int n_
 	ctx->wl = (Widget *) calloc(n_attrs, sizeof(Widget));
 	ctx->btn = (Widget **) calloc(n_attrs, sizeof(Widget *));
 
-	attribute_dialog_add(ctx, parent_box, 0, (ctx->attrs[0].pcb_hatt_flags & PCB_HATF_LABEL));
+	attribute_dialog_add(ctx, parent_box, 0);
 
 	return ctx;
 }

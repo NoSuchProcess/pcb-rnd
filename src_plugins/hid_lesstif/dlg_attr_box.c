@@ -30,7 +30,7 @@
 #include "Pages.h"
 #include "brave.h"
 
-static int ltf_pane_create(lesstif_attr_dlg_t *ctx, int j, Widget parent, int ishor, int add_labels)
+static int ltf_pane_create(lesstif_attr_dlg_t *ctx, int j, Widget parent, int ishor)
 {
 	Widget pane;
 
@@ -39,7 +39,7 @@ static int ltf_pane_create(lesstif_attr_dlg_t *ctx, int j, Widget parent, int is
 	ctx->wl[j] = pane = XmCreatePanedWindow(parent, "pane", stdarg_args, stdarg_n);
 	XtManageChild(pane);
 
-	return attribute_dialog_add(ctx, pane, j+1, add_labels);
+	return attribute_dialog_add(ctx, pane, j+1);
 }
 
 static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_rows, int want_frame, int want_scroll)
@@ -212,7 +212,7 @@ static int ltf_tabbed_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_att
 	else
 		ctx->wl[i] = wframe;
 
-	res = attribute_dialog_add(ctx, tctx->wpages, i+1, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LABEL));
+	res = attribute_dialog_add(ctx, tctx->wpages, i+1);
 
 	/* make sure no page is taken as shown */
 	tctx->at = -1;
