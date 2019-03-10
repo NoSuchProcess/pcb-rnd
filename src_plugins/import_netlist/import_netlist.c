@@ -27,6 +27,9 @@
  */
 
 #include "config.h"
+
+#include <errno.h>
+
 #include "board.h"
 #include "plugins.h"
 #include "plug_io.h"

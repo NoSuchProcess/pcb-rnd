@@ -35,6 +35,7 @@
 #include <genvector/gds_char.h>
 #include <stdio.h>
 #include "config.h"
+#include <errno.h>
 #include "data.h"
 #include "change.h"
 #include "error.h"

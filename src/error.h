@@ -42,10 +42,12 @@ typedef enum pcb_message_level {
 void pcb_message(enum pcb_message_level level, const char *Format, ...);
 
 /* shorthands for indicating common errors using pcb_message() */
-void pcb_open_error_message(const char *filename);
-void pcb_popen_error_message(const char *filename);
-void pcb_opendir_error_message(const char *dirname);
-void pcb_chdir_error_message(const char *dirname);
+#define pcb_FS_error_message(filename, func) pcb_message(PCB_MSG_ERROR, "Can't open file\n   '%s'\n" func "() returned: '%s'\n", filename, strerror(errno))
+
+#define pcb_open_error_message(filename)     pcb_FS_error_message(filename, "open")
+#define pcb_popen_error_message(filename)    pcb_FS_error_message(filename, "popen")
+#define pcb_opendir_error_message(filename)  pcb_FS_error_message(filename, "opendir")
+#define pcb_chdir_error_message(filename)    pcb_FS_error_message(filename, "chdir")
 
 /* pcb_printf()-like call to print temporary trace messages to stderr;
    disabled in non-debug compilation */
