@@ -347,7 +347,6 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int start_from)
 {
 	int len, i, numch, numcol;
-	Widget labbox;
 	static XmString empty = 0;
 
 	if (!empty)
