@@ -201,14 +201,6 @@ void lesstif_logv(enum pcb_message_level level, const char *fmt, va_list ap)
 	free(buf);
 }
 
-void lesstif_log(const char *fmt, ...)
-{
-	va_list ap;
-	va_start(ap, fmt);
-	lesstif_logv(PCB_MSG_INFO, fmt, ap);
-	va_end(ap);
-}
-
 /* ------------------------------------------------------------ */
 
 typedef struct {
@@ -897,7 +889,7 @@ static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (strcmp(a, "3") == 0 || pcb_strcasecmp(a, "Log") == 0) {
 		if (log_form == 0)
-			lesstif_log("");
+			pcb_message(PCB_MSG_INFO, "log window activate\n"); /* temporary */
 		XtManageChild(log_form);
 	}
 	else if (strcmp(a, "4") == 0 || pcb_strcasecmp(a, "Netlist") == 0) {

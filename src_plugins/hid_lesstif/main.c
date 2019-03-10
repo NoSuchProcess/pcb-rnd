@@ -3619,7 +3619,6 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.unwatch_file = lesstif_unwatch_file;
 	lesstif_hid.benchmark = ltf_benchmark;
 
-	lesstif_hid.log = lesstif_log;
 	lesstif_hid.logv = lesstif_logv;
 	lesstif_hid.fileselect = pcb_ltf_fileselect;
 	lesstif_hid.attr_dlg_new = lesstif_attr_dlg_new;

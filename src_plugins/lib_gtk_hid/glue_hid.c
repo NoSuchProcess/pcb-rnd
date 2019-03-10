@@ -319,14 +319,6 @@ static pcb_hidval_t ghid_watch_file(int fd, unsigned int condition,
 	return pcb_gtk_watch_file(&ghidgui->common, fd, condition, func, user_data);
 }
 
-static void ghid_log(const char *fmt, ...)
-{
-	va_list ap;
-	va_start(ap, fmt);
-	pcb_gtk_logv(ghidgui->hid_active, PCB_MSG_INFO, fmt, ap);
-	va_end(ap);
-}
-
 static void ghid_logv(enum pcb_message_level level, const char *fmt, va_list args)
 {
 	pcb_gtk_logv(ghidgui->hid_active, level, fmt, args);
@@ -504,7 +496,6 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->watch_file = ghid_watch_file;
 	dst->unwatch_file = pcb_gtk_unwatch_file;
 
-	dst->log = ghid_log;
 	dst->logv = ghid_logv;
 	dst->fileselect = ghid_fileselect;
 	dst->attr_dlg_new = ghid_attr_dlg_new_;

@@ -225,14 +225,6 @@ static void nogui_unwatch_file(pcb_hidval_t watch)
 	CRASH("unwatch_file");
 }
 
-static void nogui_log(const char *fmt, ...)
-{
-	va_list ap;
-	va_start(ap, fmt);
-	pcb_vfprintf(stdout, fmt, ap);
-	va_end(ap);
-}
-
 static void nogui_logv(enum pcb_message_level level, const char *fmt, va_list ap)
 {
 	if ((conf_core.rc.quiet) && (level < PCB_MSG_ERROR))
@@ -529,7 +521,6 @@ void pcb_hid_nogui_init(pcb_hid_t * hid)
 	hid->stop_timer = nogui_stop_timer;
 	hid->watch_file = nogui_watch_file;
 	hid->unwatch_file = nogui_unwatch_file;
-	hid->log = nogui_log;
 	hid->logv = nogui_logv;
 	hid->fileselect = nogui_fileselect;
 	hid->attr_dlg_new = pcb_nogui_attr_dlg_new;
