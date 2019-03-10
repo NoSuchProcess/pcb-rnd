@@ -82,7 +82,7 @@ void pcb_message(enum pcb_message_level level, const char *Format, ...)
 	pcb_log_last = line;
 	line->len = tmp.used - offsetof(pcb_logline_t, str);
 
-	pcb_event(PCB_EVENT_LOG_APPEND, NULL, NULL);
+	pcb_event(PCB_EVENT_LOG_APPEND, "p", line);
 }
 
 pcb_logline_t *pcb_log_find_min_(pcb_logline_t *from, unsigned long ID)
