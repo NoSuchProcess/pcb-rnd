@@ -163,9 +163,12 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 					continue;
 				}
 				PCB_DAD_BEGIN_VBOX(export_ctx.dlg);
-					PCB_DAD_COMPFLAG(export_ctx.dlg, PCB_HATF_LABEL);
 					for(i = 0; i < numa; i++) {
-						PCB_DAD_DUP_ATTR(export_ctx.dlg, attrs+i);
+						PCB_DAD_BEGIN_HBOX(export_ctx.dlg)
+							PCB_DAD_DUP_ATTR(export_ctx.dlg, attrs+i);
+							if (attrs[i].name != NULL)
+								PCB_DAD_LABEL(export_ctx.dlg, attrs[i].name);
+						PCB_DAD_END(export_ctx.dlg);
 						if (i == 0)
 							export_ctx.first_attr[n] = PCB_DAD_CURRENT(export_ctx.dlg);
 					}
