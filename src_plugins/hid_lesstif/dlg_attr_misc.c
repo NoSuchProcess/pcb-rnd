@@ -475,7 +475,10 @@ static Widget ltf_text_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_at
 	stdarg(XmNresizePolicy, XmRESIZE_GROW);
 	stdarg(XmNeditMode, XmMULTI_LINE_EDIT);
 	stdarg(XmNuserData, ctx);
-	wtxt = XmCreateText(parent, XmStrCast("dad_text"), stdarg_args, stdarg_n);
+	if (attr->pcb_hatt_flags & PCB_HATF_SCROLL)
+		wtxt = XmCreateScrolledText(parent, XmStrCast("dad_text"), stdarg_args, stdarg_n);
+	else
+		wtxt = XmCreateText(parent, XmStrCast("dad_text"), stdarg_args, stdarg_n);
 	XtManageChild(wtxt);
 	XtAddCallback(wtxt, XmNvalueChangedCallback, (XtCallbackProc)ltf_txt_changed_callback, (XtPointer)attr);
 
