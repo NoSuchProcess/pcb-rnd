@@ -633,7 +633,7 @@ static int PrintXY(const template_t *templ, const char *format_name)
 
 	fp = pcb_fopen(xy_filename, "w");
 	if (!fp) {
-		pcb_gui->log("Cannot open file %s for writing\n", xy_filename);
+		pcb_message(PCB_MSG_ERROR, "Cannot open file %s for writing\n", xy_filename);
 		return 1;
 	}
 
