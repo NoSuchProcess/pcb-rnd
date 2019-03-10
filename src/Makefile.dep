@@ -425,7 +425,7 @@
  ../src_plugins/dialogs/dlg_layer_binding.h \
  ../src_plugins/dialogs/dlg_layer_flags.h \
  ../src_plugins/dialogs/dlg_lib_pstk.h \
- ../src_plugins/dialogs/dlg_loadsave.h \
+ ../src_plugins/dialogs/dlg_loadsave.h ../src_plugins/dialogs/dlg_log.h \
  ../src_plugins/dialogs/dlg_padstack.h obj_pstk.h obj_pstk_shape.h \
  polygon.h rtree.h ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h \
  vtpadstack_t.h ../src_plugins/dialogs/dlg_pinout.c build_run.h \
@@ -627,6 +627,21 @@
  vtpadstack_t.h event.h hid_dad.h compat_misc.h hid_attrib.h pcb-printf.h \
  compat_fs.h conf_core.h conf.h ../src_3rd/liblihata/lihata.h list_conf.h \
  plug_io.h ../src_plugins/dialogs/dlg_loadsave.h
+../src_plugins/dialogs/dlg_log.o: ../src_plugins/dialogs/dlg_log.c \
+ ../config.h actions.h hid.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h error.h global_typedefs.h \
+ pcb_bool.h unit.h attrib.h layer.h globalconst.h color.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h data_parent.h \
+ obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
+ obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
+ ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/libfungw/fungw.h \
+ ../src_3rd/genht/htpp.h hid_dad.h compat_misc.h hid_attrib.h \
+ pcb-printf.h event.h error.h ../src_plugins/dialogs/dlg_log.h
 ../src_plugins/dialogs/dlg_padstack.o: \
  ../src_plugins/dialogs/dlg_padstack.c ../config.h actions.h hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
@@ -2106,9 +2121,13 @@
  ../src_plugins/lib_gtk_hid/glue_win32.h \
  ../src_plugins/lib_gtk_hid/common.h ../src_plugins/lib_gtk_hid/render.h
 ../src_plugins/hid_lesstif/FillBox.o: \
- ../src_plugins/hid_lesstif/FillBox.c \
+ ../src_plugins/hid_lesstif/FillBox.c ../config.h \
  ../src_plugins/hid_lesstif/FillBoxP.h \
  ../src_plugins/hid_lesstif/FillBox.h \
+ ../src_plugins/hid_lesstif/pxm_helper.h
+../src_plugins/hid_lesstif/Pages.o: ../src_plugins/hid_lesstif/Pages.c \
+ ../config.h ../src_plugins/hid_lesstif/PagesP.h \
+ ../src_plugins/hid_lesstif/Pages.h \
  ../src_plugins/hid_lesstif/pxm_helper.h
 ../src_plugins/hid_lesstif/dialogs.o: \
  ../src_plugins/hid_lesstif/dialogs.c \
@@ -2142,7 +2161,8 @@
  ../src_plugins/lib_hid_common/dad_markup.h \
  ../src_plugins/hid_lesstif/wt_preview.h \
  ../src_plugins/hid_lesstif/dlg_attr_box.c \
- ../src_plugins/hid_lesstif/dlg_attr_tree.c brave.h \
+ ../src_plugins/hid_lesstif/Pages.h brave.h \
+ ../src_plugins/hid_lesstif/dlg_attr_tree.c \
  ../src_plugins/hid_lesstif/xm_tree_table_widget.h hid_dad_tree.h \
  hid_attrib.h hid_dad.h compat_misc.h
 ../src_plugins/hid_lesstif/dlg_fileselect.o: \
@@ -6466,8 +6486,8 @@ error.o: error.c ../config.h data.h globalconst.h global_typedefs.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h plug_io.h conf.h pcb-printf.h \
- ../src_3rd/liblihata/lihata.h list_conf.h compat_misc.h conf_core.h
+ vtpadstack_t.h event.h conf_core.h conf.h pcb-printf.h \
+ ../src_3rd/liblihata/lihata.h list_conf.h
 event.o: event.c ../config.h event.h unit.h global_typedefs.h pcb_bool.h \
  error.h actions.h hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
