@@ -556,7 +556,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 #ifdef DEBUG
 		end = clock();
 		elapsed = ((double) (end - start)) / CLOCKS_PER_SEC;
-		pcb_gui->log("Loading file %s took %f seconds of CPU time\n", new_filename, elapsed);
+		pcb_message(PCB_MSG_INFO, "Loading file %s took %f seconds of CPU time\n", new_filename, elapsed);
 #endif
 
 		return 0;
