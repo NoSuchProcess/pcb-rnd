@@ -168,6 +168,7 @@ static int ltf_tabbed_set(Widget tabbed, int page)
 	else {
 		XtVaSetValues(tabbed, XmNcurrentPageNumber, page+1, NULL);
 	}
+	return 0;
 }
 
 static void tabsw_cb(Widget w, XtPointer client_data, XtPointer call_data)
@@ -176,7 +177,7 @@ static void tabsw_cb(Widget w, XtPointer client_data, XtPointer call_data)
 	ltf_tabbed_set_(bctx->tctx, bctx - bctx->tctx->btn);
 }
 
-static int tabbed_destroy_cb(Widget tabbed, void *v, void *cbs)
+static void tabbed_destroy_cb(Widget tabbed, void *v, void *cbs)
 {
 	ltf_tab_t *tctx;
 	XtVaGetValues(tabbed, XmNuserData, &tctx, NULL);
