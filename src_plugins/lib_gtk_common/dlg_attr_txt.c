@@ -203,17 +203,43 @@ static void txt_set_readonly(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_boo
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(wtxt), !readonly);
 }
 
+static void txt_scroll_to_bottom(pcb_hid_attribute_t *attrib, void *hid_ctx)
+{
+	attr_dlg_t *ctx = hid_ctx;
+	int idx = attrib - ctx->attrs;
+	GtkWidget *wtxt = ctx->wl[idx];
+	GtkTextIter iter;
+	GtkTextBuffer *buffer;
+	GtkTextMark *mark;
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(wtxt));
+	gtk_text_buffer_get_end_iter(buffer, &iter);
+
+	mark = gtk_text_buffer_create_mark(buffer, NULL, &iter, FALSE);
+	gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(wtxt), mark, 0, TRUE, 0.0, 1.0);
+	gtk_text_buffer_delete_mark(buffer, mark);
+}
 
 static GtkWidget *ghid_text_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent)
 {
-	GtkWidget *bparent, *wtxt;
+	GtkWidget *wtxt;
 	GtkTextBuffer *buffer;
 	pcb_hid_text_t *txt = (pcb_hid_text_t *)attr->enumerations;
 	dad_txt_t *tctx;
 
-	bparent = frame_scroll(parent, attr->pcb_hatt_flags);
-	wtxt = gtk_text_view_new();
-	gtk_box_pack_start(GTK_BOX(bparent), wtxt, TRUE, TRUE, 0);
+
+	if (attr->pcb_hatt_flags & PCB_HATF_SCROLL) {
+		GtkWidget *scrolled = gtk_scrolled_window_new(NULL, NULL);
+		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+		gtk_box_pack_start(GTK_BOX(parent), scrolled, TRUE, TRUE, 0);
+		wtxt = gtk_text_view_new();
+		gtk_container_add(GTK_CONTAINER(scrolled), wtxt);
+	}
+	else {
+		wtxt = gtk_text_view_new();
+		gtk_box_pack_start(GTK_BOX(parent), wtxt, TRUE, TRUE, 0);
+	}
+
 	gtk_widget_set_tooltip_text(wtxt, attr->help_text);
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(wtxt));
 
@@ -228,6 +254,7 @@ static GtkWidget *ghid_text_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, G
 	txt->hid_get_offs = txt_get_offs;
 	txt->hid_set_xy = txt_set_xy;
 	txt->hid_set_offs = txt_set_offs;
+	txt->hid_scroll_to_bottom = txt_scroll_to_bottom;
 	txt->hid_set_text = txt_set_text;
 	txt->hid_get_text = txt_get_text;
 	txt->hid_set_readonly = txt_set_readonly;
