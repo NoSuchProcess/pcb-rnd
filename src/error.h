@@ -24,11 +24,10 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-
 /* Messages, error reporting, debug and logging */
 
-#ifndef	PCB_ERROR_H
-#define	PCB_ERROR_H
+#ifndef PCB_ERROR_H
+#define PCB_ERROR_H
 
 typedef enum pcb_message_level {
 	PCB_MSG_DEBUG = 0,   /* Debug message. Should probably not be shown in regular operation. */
