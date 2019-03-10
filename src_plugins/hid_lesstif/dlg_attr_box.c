@@ -118,7 +118,7 @@ static int ltf_tabbed_set_(ltf_tab_t *tctx, int page)
 	if (page == tctx->at)
 		return 0;
 
-	if (tctx->at > 0)
+	if (tctx->at >= 0)
 		XtVaSetValues(tctx->btn[tctx->at].w, XmNshadowThickness, 1, NULL);
 	tctx->at = page;
 	XtVaSetValues(tctx->btn[tctx->at].w, XmNshadowThickness, 3, NULL);
