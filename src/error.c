@@ -178,7 +178,7 @@ int pcb_log_export(const char *fn, int fmt_lihata)
 
 	for(n = pcb_log_first; n != NULL; n = n->next) {
 		if (fmt_lihata) {
-			fprintf(f, "  %lu {", n->ID);
+			fprintf(f, "  ha:%lu {", n->ID);
 			fprintf(f, "stamp=%ld; level=%d; seen=%d; ", (long int)n->stamp, n->level, n->seen);
 			fprintf(f, "str={%s}}\n", n->str);
 		}
