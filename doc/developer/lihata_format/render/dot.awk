@@ -2,7 +2,7 @@ BEGIN {
 	nl = "\\n"
 }
 
-function tbl_entry(node, level, parent     ,nm,vt,dsc,ty,vr, url, tip,duppar,grp,grp_parent)
+function tbl_entry(node, level, nparent     ,nm,vt,dsc,ty,vr, url, tip,duppar,grp,grp_parent)
 {
 	ty = DATA[node "/type"]
 	nm = get_name(node, ty, 0)
@@ -19,21 +19,21 @@ function tbl_entry(node, level, parent     ,nm,vt,dsc,ty,vr, url, tip,duppar,grp
 		node = dupd_prefix node
 		DUPD[node] ++
 
-		if (parent != "") {
-			duppar = dupd_prefix parent
+		if (nparent != "") {
+			duppar = dupd_prefix nparent
 			if (duppar in DUPD)
-				parent = duppar
+				nparent = duppar
 		}
 	}
 
 	print "	" q node q "	[label=" q nm nl vt nl vr q url tip "]" >fn
-	if (parent != "")
-		print "	" q parent q "	->	" q node q > fn
+	if (nparent != "")
+		print "	" q nparent q "	->	" q node q > fn
 	if (grp != "") {
-		if (LAST_GRP_SIBL[parent] != "") {
-			print "		" q LAST_GRP_SIBL[parent] q "	->	" q node q  "[style=invis]" > fn
+		if (LAST_GRP_SIBL[nparent] != "") {
+			print "		" q LAST_GRP_SIBL[nparent] q "	->	" q node q  "[style=invis]" > fn
 		}
-		LAST_GRP_SIBL[parent] = node
+		LAST_GRP_SIBL[nparent] = node
 	}
 }
 

@@ -113,6 +113,17 @@ li:pcb-rnd-font-v1                font description
       adelta          angle       delta angle
      li:simplepoly.ID             round cap arc, simplified; contains a flat list of coords; each coord pair is an x;y corner of the outline of the polygon (odd indices are x coords, even indices are y coords)
 
+ha:pcb-rnd-log-v*
+
+type:name          value   ver description
+ha:pcb-rnd-log-v*              pcb-rnd message log dump
+ li:entries                    list of message log entries
+  ha:ID                        each entry is identified by an unique unsigned long int ID
+   stamp           string      UNIX time stamp of entry creation
+   level           integer     log level enum value (see error.h)
+   seen            integer     1 if the message got displayed
+   str             string      log message
+
 ha:menu
 
 type:name           value  ver description

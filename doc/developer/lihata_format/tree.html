@@ -120,6 +120,18 @@
 <tr id="/lht_tree_doc/roots/pcb-rnd-font-v1/children/FONT-ID/children/symbols/children/CHARACTER/children/objects/children/simplearc.ID/children/adelta"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adelta <td> <a href="#valtype:angle">angle</a> <td> &nbsp; <td>  delta angle
 <tr id="/lht_tree_doc/roots/pcb-rnd-font-v1/children/FONT-ID/children/symbols/children/CHARACTER/children/objects/children/simplepoly.ID"><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;li:simplepoly.ID <td> &nbsp; <td> &nbsp; <td> round cap arc, simplified; contains a flat list of coords; each coord pair is an x;y corner of the outline of the polygon (odd indices are x coords, even indices are y coords) 
 </table>
+<h3 id="/lht_tree_doc/roots/pcb-rnd-log-v*">ha:pcb-rnd-log-v*</h3>
+<p>
+<table border=0 cellspacing=0>
+<tr><th align=left> type:name <th align=left> value <th align=left> <a href="#ver">ver</a> <th align=left> description
+<tr id="/lht_tree_doc/roots/pcb-rnd-log-v*"><td> ha:pcb-rnd-log-v* <td> &nbsp; <td> &nbsp; <td> pcb-rnd message log dump
+<tr id="/lht_tree_doc/roots/pcb-rnd-log-v*/children/entries"><td> &nbsp;li:entries <td> &nbsp; <td> &nbsp; <td> list of message log entries
+<tr id="/lht_tree_doc/roots/pcb-rnd-log-v*/children/entries/children/ID"><td> &nbsp;&nbsp;ha:ID <td> &nbsp; <td> &nbsp; <td> each entry is identified by an unique unsigned long int ID
+<tr id="/lht_tree_doc/roots/pcb-rnd-log-v*/children/entries/children/ID/children/stamp"><td> &nbsp;&nbsp;&nbsp;stamp <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> UNIX time stamp of entry creation
+<tr id="/lht_tree_doc/roots/pcb-rnd-log-v*/children/entries/children/ID/children/level"><td> &nbsp;&nbsp;&nbsp;level <td> <a href="#valtype:integer">integer</a> <td> &nbsp; <td> log level enum value (see error.h)
+<tr id="/lht_tree_doc/roots/pcb-rnd-log-v*/children/entries/children/ID/children/seen"><td> &nbsp;&nbsp;&nbsp;seen <td> <a href="#valtype:integer">integer</a> <td> &nbsp; <td> 1 if the message got displayed
+<tr id="/lht_tree_doc/roots/pcb-rnd-log-v*/children/entries/children/ID/children/str"><td> &nbsp;&nbsp;&nbsp;str <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> log message
+</table>
 <h3 id="/lht_tree_doc/roots/menu">ha:menu</h3>
 <p>
 <table border=0 cellspacing=0>
