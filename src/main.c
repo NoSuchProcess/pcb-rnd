@@ -245,14 +245,16 @@ void pcb_set_hid_name(const char *new_hid_name)
 
 static char **hid_argv_orig;
 
-static void log_print_uninit_errs(void)
+static void log_print_uninit_errs(const char *title)
 {
 	pcb_logline_t *n, *from = pcb_log_find_first_unseen();
 
 	if (from == NULL)
 		return;
+	fprintf(stderr, "***%s:\n", title);
 	for(n = from; n != NULL; n = n->next)
-		fprintf(stderr, "%s", n->str);
+		if ((n->level >= PCB_MSG_INFO) || conf_core.rc.verbose)
+			fprintf(stderr, "%s", n->str);
 	fprintf(stderr, "\n\n");
 }
 
@@ -298,8 +300,8 @@ void pcb_main_uninit(void)
 	pcb_uilayer_uninit();
 	pcb_cli_uninit();
 	pcb_dynflag_uninit();
-	fprintf(stderr, "*** Log produced during uninitialization:\n");
-	log_print_uninit_errs();
+
+	log_print_uninit_errs("Log produced during uninitialization");
 	pcb_log_uninit();
 }
 
@@ -652,7 +654,7 @@ int main(int argc, char *argv[])
 	if (pcb_gui->printer || pcb_gui->exporter) {
 		if (pcb_data_is_empty(PCB->Data)) {
 			pcb_message(PCB_MSG_ERROR, "Can't export empty board - the board needs to contain at least one object.\n");
-			log_print_uninit_errs();
+			log_print_uninit_errs("Log produced after failed export");
 			exit(1);
 		}
 		else
