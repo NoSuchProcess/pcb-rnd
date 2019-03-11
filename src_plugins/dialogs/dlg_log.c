@@ -140,6 +140,7 @@ static void log_window_create(void)
 
 	ctx->active = 1;
 	ctx->last_added = -1;
+	PCB_DAD_DEFSIZE(ctx->dlg, 200, 300);
 	PCB_DAD_NEW("log", ctx->dlg, "pcb-rnd message log", ctx, pcb_false, log_close_cb);
 
 	{
