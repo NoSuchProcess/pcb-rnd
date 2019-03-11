@@ -29,9 +29,11 @@
 #include <errno.h>
 #include <stdarg.h>
 
+#include "actions.h"
 #include "data.h"
 #include "error.h"
 #include "event.h"
+#include "funchash_core.h"
 #include "conf_core.h"
 #include "genvector/gds_char.h"
 
@@ -162,3 +164,40 @@ void pcb_trace(const char *Format, ...)
 #endif
 }
 
+
+static const char pcb_acts_Log[] =
+	"Log(clear, [fromID, [toID])\n"
+	"Log(export, [filename, [text|lihata])\n";
+static const char pcb_acth_Log[] = "Manages the central, in-memory log.";
+static fgw_error_t pcb_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	int ret, op = -1;
+
+	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, Log, op = fgw_keyword(&argv[1]));
+
+	switch(op) {
+		case F_Clear:
+			{
+				unsigned long from = -1, to = -1;
+				PCB_ACT_MAY_CONVARG(2, FGW_ULONG, Log, from = fgw_keyword(&argv[2]));
+				PCB_ACT_MAY_CONVARG(3, FGW_ULONG, Log, from = fgw_keyword(&argv[3]));
+				pcb_log_del_range(from, to);
+				pcb_event(PCB_EVENT_LOG_CLEAR, "pp", &from, &to);
+				ret = 0;
+			}
+			break;
+		case F_Export:
+		default:
+			PCB_ACT_FAIL(Log);
+			ret = -1;
+	}
+
+	PCB_ACT_IRES(ret);
+	return 0;
+}
+
+pcb_action_t log_action_list[] = {
+	{"Log", pcb_act_Log, pcb_acth_Log, pcb_acts_Log}
+};
+
+PCB_REGISTER_ACTIONS(log_action_list, NULL)
