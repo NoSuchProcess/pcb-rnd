@@ -195,9 +195,10 @@ cmp_fmt()
 # Remove known, expected error messages
 stderr_filter()
 {
+	local common="Couldn't find default.pcb\|No preferred unit format info available for\|has no font information, using default font\|Can't export empty board\|Log produced after failed export"
 	case "$fmt" in
-		gerber) grep -v "Can't export polygon as G85 slot\|please use lines for slotting" ;;
-		*) cat;;
+		gerber) grep -v "Can't export polygon as G85 slot\|please use lines for slotting\|$common" ;;
+		*) grep -v "$common";;
 	esac
 }
 
@@ -285,7 +286,13 @@ if test "$all" -gt 0
 then
 	for n in `ls *.lht *.pcb 2>/dev/null`
 	do
-		run_test "$n" || bad="$bad $n"
+		case $n in
+			*Proto.lht) continue;;
+			*Proto.pcb) continue;;
+			*default.lht) continue;;
+			*default.pcb) continue;;
+			*) run_test "$n" || bad="$bad $n" ;;
+		esac
 	done
 else
 	run_test "$fn" || bad="$bad $n"
