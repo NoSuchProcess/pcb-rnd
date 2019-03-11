@@ -91,6 +91,8 @@ static void log_append(log_ctx_t *ctx, pcb_hid_attribute_t *atxt, const pcb_logl
 		}
 		txt->hid_set_text(atxt, ctx->dlg_hid_ctx, PCB_HID_TEXT_APPEND | PCB_HID_TEXT_MARKUP, line->str);
 	}
+	if (popup && (pcb_gui->attr_dlg_raise != NULL))
+		pcb_gui->attr_dlg_raise(ctx->dlg_hid_ctx);
 	if (line->ID > ctx->last_added)
 		ctx->last_added = line->ID;
 }
