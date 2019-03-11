@@ -107,6 +107,16 @@ static void log_import(log_ctx_t *ctx)
 		log_append(ctx, atxt, n);
 }
 
+static void btn_clear_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_actionl("log", "clear", NULL);
+}
+
+static void btn_export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_actionl("log", "export", NULL);
+}
+
 static void log_window_create(void)
 {
 	log_ctx_t *ctx = &log_ctx;
@@ -124,7 +134,9 @@ static void log_window_create(void)
 			ctx->wtxt = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
 			PCB_DAD_BUTTON(ctx->dlg, "clear");
-			PCB_DAD_BUTTON(ctx->dlg, "save");
+				PCB_DAD_CHANGE_CB(ctx->dlg, btn_clear_cb);
+			PCB_DAD_BUTTON(ctx->dlg, "export");
+				PCB_DAD_CHANGE_CB(ctx->dlg, btn_export_cb);
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME);
 				PCB_DAD_BOOL(ctx->dlg, "");
