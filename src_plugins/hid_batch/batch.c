@@ -80,13 +80,8 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 		prompt = pcb_strdup("no-board");
 }
 
-static void ev_log_append(void *user_data, int argc, pcb_event_arg_t argv[])
+static void log_append(pcb_logline_t *line)
 {
-	pcb_logline_t *line = argv[1].d.p;
-
-	if (!batch_active)
-		return;
-
 	if ((line->prev == NULL) || (line->prev->str[line->prev->len-1] == '\n')) {
 		switch(line->level) {
 			case PCB_MSG_DEBUG:   printf("D: "); break;
@@ -97,6 +92,21 @@ static void ev_log_append(void *user_data, int argc, pcb_event_arg_t argv[])
 	}
 	printf("%s", line->str);
 	line->seen = 1;
+}
+
+static void ev_log_append(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	if (!batch_active)
+		return;
+
+	log_append((pcb_logline_t *)argv[1].d.p);
+}
+
+static void log_import(void)
+{
+	pcb_logline_t *n;
+	for(n = pcb_log_first; n != NULL; n = n->next)
+		log_append(n);
 }
 
 static fgw_error_t pcb_act_help(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -148,6 +158,8 @@ static void batch_do_export(pcb_hid_attr_val_t * options)
 		interactive = 1;
 	else
 		interactive = 0;
+
+	log_import();
 
 	if ((interactive) && (!conf_core.rc.quiet)) {
 		printf("Entering %s version %s batch mode.\n", PCB_PACKAGE, PCB_VERSION);
