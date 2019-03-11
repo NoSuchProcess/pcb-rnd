@@ -233,7 +233,7 @@ put /local/pcb/OBJS_UTIL [@
 
 # main: action registrations
 put /local/pcb/ACTION_REG_SRC  {
-	buffer.c brave.c change_act.c conf_act.c file_act.c drc.c
+	buffer.c brave.c change_act.c conf_act.c file_act.c drc.c error.c
 	gui_act.c hid_dlg.c hid_nogui.c main_act.c netlist_act.c font_act.c
 	object_act.c obj_pstk_act.c polygon_act.c plug_footprint_act.c rats_act.c
 	rats_patch.c remove_act.c select_act.c undo_act.c
