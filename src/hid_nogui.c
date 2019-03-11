@@ -225,30 +225,6 @@ static void nogui_unwatch_file(pcb_hidval_t watch)
 	CRASH("unwatch_file");
 }
 
-static void nogui_logv(enum pcb_message_level level, const char *fmt, va_list ap)
-{
-	if ((conf_core.rc.quiet) && (level < PCB_MSG_ERROR))
-		return;
-	if ((!conf_core.rc.verbose) && (level < PCB_MSG_INFO))
-		return;
-
-	switch (level) {
-	case PCB_MSG_DEBUG:
-		printf("D:");
-		break;
-	case PCB_MSG_INFO:
-		printf("I:");
-		break;
-	case PCB_MSG_WARNING:
-		printf("W:");
-		break;
-	case PCB_MSG_ERROR:
-		printf("E:");
-		break;
-	}
-	pcb_vfprintf(stdout, fmt, ap);
-}
-
 /* Return a line of user input text, stripped of any newline characters.
  * Returns NULL if the user simply presses enter, or otherwise gives no input.
  */
@@ -521,7 +497,6 @@ void pcb_hid_nogui_init(pcb_hid_t * hid)
 	hid->stop_timer = nogui_stop_timer;
 	hid->watch_file = nogui_watch_file;
 	hid->unwatch_file = nogui_unwatch_file;
-	hid->logv = nogui_logv;
 	hid->fileselect = nogui_fileselect;
 	hid->attr_dlg_new = pcb_nogui_attr_dlg_new;
 	hid->attr_dlg_run = nogui_attr_dlg_run;

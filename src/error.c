@@ -45,12 +45,6 @@ void pcb_message(enum pcb_message_level level, const char *Format, ...)
 	gds_t tmp;
 	pcb_logline_t *line;
 
-	if (pcb_gui != NULL) {
-		va_start(args, Format);
-		pcb_gui->logv(level, Format, args);
-		va_end(args);
-	}
-
 	if (pcb_gui == NULL) {
 		if (conf_core.rc.quiet)
 			min_level = PCB_MSG_ERROR;

@@ -358,13 +358,6 @@ struct pcb_hid_s {
 	/* Use this to stop a file watch; must not be called from within a GUI callback! */
 	void (*unwatch_file) (pcb_hidval_t watch);
 
-	/* Various dialogs */
-
-	/* Logs a message to the log window.  */
-	void (*log)(const char *fmt, ...);
-	void (*logv)(enum pcb_message_level, const char *fmt, va_list args);
-
-
 	/* title may be used as a dialog box title.  Ignored if NULL.
 	 *
 	 * descr is a longer help string.  Ignored if NULL.

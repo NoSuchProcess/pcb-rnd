@@ -108,101 +108,6 @@ int pcb_ltf_wait_for_dialog(Widget w)
 
 /* ------------------------------------------------------------ */
 
-static Widget log_form, log_text;
-static int log_size = 0;
-static int pending_newline = 0;
-
-static void log_clear(Widget w, void *up, void *cbp)
-{
-	XmTextSetString(log_text, XmStrCast(""));
-	log_size = 0;
-	pending_newline = 0;
-}
-
-static void log_dismiss(Widget w, void *up, void *cbp)
-{
-	XtUnmanageChild(log_form);
-}
-
-void lesstif_logv(enum pcb_message_level level, const char *fmt, va_list ap)
-{
-	char *buf, *scan;
-	if (!mainwind) {
-		vprintf(fmt, ap);
-		return;
-	}
-	if (!log_form) {
-		Widget clear_button, dismiss_button;
-
-		stdarg_n = 0;
-		stdarg(XmNautoUnmanage, False);
-		stdarg(XmNwidth, 600);
-		stdarg(XmNheight, 200);
-		stdarg(XmNtitle, "pcb-rnd Log");
-		log_form = XmCreateFormDialog(mainwind, XmStrCast("log"), stdarg_args, stdarg_n);
-
-		stdarg_n = 0;
-		stdarg(XmNrightAttachment, XmATTACH_FORM);
-		stdarg(XmNbottomAttachment, XmATTACH_FORM);
-		clear_button = XmCreatePushButton(log_form, XmStrCast("clear"), stdarg_args, stdarg_n);
-		XtManageChild(clear_button);
-		XtAddCallback(clear_button, XmNactivateCallback, (XtCallbackProc) log_clear, 0);
-
-		stdarg_n = 0;
-		stdarg(XmNrightAttachment, XmATTACH_WIDGET);
-		stdarg(XmNrightWidget, clear_button);
-		stdarg(XmNbottomAttachment, XmATTACH_FORM);
-		dismiss_button = XmCreatePushButton(log_form, XmStrCast("dismiss"), stdarg_args, stdarg_n);
-		XtManageChild(dismiss_button);
-		XtAddCallback(dismiss_button, XmNactivateCallback, (XtCallbackProc) log_dismiss, 0);
-
-		stdarg_n = 0;
-		stdarg(XmNeditable, False);
-		stdarg(XmNeditMode, XmMULTI_LINE_EDIT);
-		stdarg(XmNcursorPositionVisible, True);
-		stdarg(XmNtopAttachment, XmATTACH_FORM);
-		stdarg(XmNleftAttachment, XmATTACH_FORM);
-		stdarg(XmNrightAttachment, XmATTACH_FORM);
-		stdarg(XmNbottomAttachment, XmATTACH_WIDGET);
-		stdarg(XmNbottomWidget, clear_button);
-		log_text = XmCreateScrolledText(log_form, XmStrCast("text"), stdarg_args, stdarg_n);
-		XtManageChild(log_text);
-
-		XtManageChild(log_form);
-		pcb_ltf_winplace(display, XtWindow(XtParent(log_form)), "log", 300, 300);
-		XtAddEventHandler(XtParent(log_form), StructureNotifyMask, False, pcb_ltf_wplc_config_cb, "log");
-	}
-	if (pending_newline) {
-		XmTextInsert(log_text, log_size++, XmStrCast("\n"));
-		pending_newline = 0;
-	}
-	buf = pcb_strdup_vprintf(fmt, ap);
-	scan = &buf[strlen(buf) - 1];
-	while (scan >= buf && *scan == '\n') {
-		pending_newline++;
-		*scan-- = 0;
-	}
-	switch(level) {
-		case PCB_MSG_ERROR:   XmTextInsert(log_text, log_size, "Err: "); break;
-		case PCB_MSG_WARNING: XmTextInsert(log_text, log_size, "Wrn: "); break;
-		case PCB_MSG_INFO:    XmTextInsert(log_text, log_size, "Inf: "); break;
-		case PCB_MSG_DEBUG:   XmTextInsert(log_text, log_size, "Dbg: "); break;
-	}
-	log_size += 5;
-	XmTextInsert(log_text, log_size, buf);
-	log_size += strlen(buf);
-
-	scan = strrchr(buf, '\n');
-	if (scan)
-		scan++;
-	else
-		scan = buf;
-	XmTextSetCursorPosition(log_text, log_size - strlen(scan));
-	free(buf);
-}
-
-/* ------------------------------------------------------------ */
-
 typedef struct {
 	pcb_hid_attribute_t *attrs;
 	int n_attrs, actual_nattrs;
@@ -881,9 +786,7 @@ static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		lesstif_show_library();
 	}
 	else if (strcmp(a, "3") == 0 || pcb_strcasecmp(a, "Log") == 0) {
-		if (log_form == 0)
-			pcb_message(PCB_MSG_INFO, "log window activate\n"); /* temporary */
-		XtManageChild(log_form);
+		pcb_actionl("LogDialog", NULL);
 	}
 	else if (strcmp(a, "4") == 0 || pcb_strcasecmp(a, "Netlist") == 0) {
 		lesstif_show_netlist();

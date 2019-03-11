@@ -96,7 +96,7 @@ static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_gtk_library_show(&ghidgui->common, raise);
 	}
 	else if (strcmp(a, "3") == 0 || pcb_strcasecmp(a, "Log") == 0) {
-		pcb_gtk_dlg_log_show(raise);
+		pcb_actionl("LogDialog", NULL);
 	}
 	else if (strcmp(a, "4") == 0 || pcb_strcasecmp(a, "Netlist") == 0) {
 		pcb_actionl("NetlistDialog", NULL);
