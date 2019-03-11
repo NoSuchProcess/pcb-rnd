@@ -37,6 +37,16 @@
 #include "conf_core.h"
 #include "genvector/gds_char.h"
 
+void pcb_trace(const char *Format, ...)
+{
+#ifndef NDEBUG
+	va_list args;
+	va_start(args, Format);
+	pcb_vfprintf(stderr, Format, args);
+	va_end(args);
+#endif
+}
+
 unsigned long pcb_log_next_ID = 0;
 pcb_logline_t *pcb_log_first, *pcb_log_last;
 
@@ -151,17 +161,6 @@ void pcb_log_del_range(unsigned long from, unsigned long to)
 void pcb_log_uninit(void)
 {
 	pcb_log_del_range(-1, -1);
-}
-
-
-void pcb_trace(const char *Format, ...)
-{
-#ifndef NDEBUG
-	va_list args;
-	va_start(args, Format);
-	pcb_vfprintf(stderr, Format, args);
-	va_end(args);
-#endif
 }
 
 
