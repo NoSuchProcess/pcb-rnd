@@ -84,6 +84,7 @@ void pcb_message(enum pcb_message_level level, const char *Format, ...)
 	line->stamp = time(NULL);
 	line->ID = pcb_log_next_ID++;
 	line->level = level;
+	line->seen = 0;
 	line->next = NULL;
 	line->prev = pcb_log_last;
 	if (pcb_log_first == NULL)
