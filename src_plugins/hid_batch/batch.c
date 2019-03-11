@@ -82,6 +82,9 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 
 static void log_append(pcb_logline_t *line)
 {
+	if ((line->level < PCB_MSG_INFO) && !conf_core.rc.verbose)
+		return;
+
 	if ((line->prev == NULL) || (line->prev->str[line->prev->len-1] == '\n')) {
 		switch(line->level) {
 			case PCB_MSG_DEBUG:   printf("D: "); break;
