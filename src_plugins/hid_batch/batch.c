@@ -82,7 +82,7 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 
 static void ev_log_append(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	const pcb_logline_t *line = argv[1].d.p;
+	pcb_logline_t *line = argv[1].d.p;
 
 	if (!batch_active)
 		return;
@@ -96,6 +96,7 @@ static void ev_log_append(void *user_data, int argc, pcb_event_arg_t argv[])
 		}
 	}
 	printf("%s", line->str);
+	line->seen = 1;
 }
 
 static fgw_error_t pcb_act_help(fgw_arg_t *res, int argc, fgw_arg_t *argv)

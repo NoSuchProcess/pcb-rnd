@@ -63,6 +63,7 @@ struct pcb_logline_s {
 	time_t stamp;
 	unsigned long ID;
 	pcb_message_level_t level;
+	unsigned seen:1; /* message ever shown to the user - set by the code that presented the message */
 	pcb_logline_t *prev, *next;
 	size_t len;
 	char str[1];

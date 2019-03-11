@@ -51,7 +51,7 @@ static void log_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	ctx->active = 0;
 }
 
-static void log_append(log_ctx_t *ctx, pcb_hid_attribute_t *atxt, const pcb_logline_t *line)
+static void log_append(log_ctx_t *ctx, pcb_hid_attribute_t *atxt, pcb_logline_t *line)
 {
 	pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
 	const char *prefix = NULL;
@@ -95,11 +95,12 @@ static void log_append(log_ctx_t *ctx, pcb_hid_attribute_t *atxt, const pcb_logl
 		pcb_gui->attr_dlg_raise(ctx->dlg_hid_ctx);
 	if (line->ID > ctx->last_added)
 		ctx->last_added = line->ID;
+	line->seen = 1;
 }
 
 static void log_import(log_ctx_t *ctx)
 {
-	const pcb_logline_t *n;
+	pcb_logline_t *n;
 	pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
 
 	for(n = pcb_log_find_min(ctx->last_added); n != NULL; n = n->next)
@@ -163,7 +164,7 @@ fgw_error_t pcb_act_LogDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static void log_append_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	const pcb_logline_t *line = argv[1].d.p;
+	pcb_logline_t *line = argv[1].d.p;
 
 	if (log_ctx.active) {
 		pcb_hid_attribute_t *atxt = &log_ctx.dlg[log_ctx.wtxt];
