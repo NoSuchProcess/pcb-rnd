@@ -33,6 +33,8 @@
 #include "data.h"
 #include "error.h"
 #include "event.h"
+#include "hid_dad.h"
+#include "safe_fs.h"
 #include "funchash_core.h"
 #include "conf_core.h"
 #include "genvector/gds_char.h"
@@ -158,6 +160,39 @@ void pcb_log_del_range(unsigned long from, unsigned long to)
 		pcb_log_last = start_prev;
 }
 
+
+
+int pcb_log_export(const char *fn, int fmt_lihata)
+{
+	FILE *f;
+	pcb_logline_t *n;
+
+	f = pcb_fopen(fn, "w");
+	if (f == NULL)
+		return -1;
+
+	if (fmt_lihata) {
+		fprintf(f, "ha:pcb-rnd-log-v1 {\n");
+		fprintf(f, " li:entries {\n");
+	}
+
+	for(n = pcb_log_first; n != NULL; n = n->next) {
+		if (fmt_lihata) {
+			fprintf(f, "  %lu {", n->ID);
+			fprintf(f, "stamp=%ld; level=%d; seen=%d; ", (long int)n->stamp, n->level, n->seen);
+			fprintf(f, "str={%s}}\n", n->str);
+		}
+		else
+			fprintf(f, "%s", n->str);
+	}
+
+	if (fmt_lihata)
+		fprintf(f, " }\n}\n");
+
+	fclose(f);
+	return 0;
+}
+
 void pcb_log_uninit(void)
 {
 	pcb_log_del_range(-1, -1);
@@ -186,6 +221,26 @@ static fgw_error_t pcb_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 			break;
 		case F_Export:
+			{
+				const char *fmts[] = { "text", "lihata", NULL };
+				pcb_hid_dad_subdialog_t fmtsub;
+				char *fn;
+				int wfmt;
+
+				memset(&fmtsub, 0, sizeof(fmtsub));
+				PCB_DAD_ENUM(fmtsub.dlg, fmts);
+					wfmt = PCB_DAD_CURRENT(fmtsub.dlg);
+				fn = pcb_gui->fileselect("Export log", NULL, "log.txt", NULL, NULL, "log", PCB_HID_FSD_MAY_NOT_EXIST, &fmtsub);
+				if (fn != NULL) {
+					ret = pcb_log_export(fn, (fmtsub.dlg[wfmt].default_val.int_value == 1));
+					if (ret != 0)
+						pcb_message(PCB_MSG_ERROR, "Failed to export log to '%s'\n", fn);
+					free(fn);
+				}
+				else
+					ret = 0;
+			}
+			break;
 		default:
 			PCB_ACT_FAIL(Log);
 			ret = -1;

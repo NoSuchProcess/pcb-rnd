@@ -83,6 +83,9 @@ pcb_logline_t *pcb_log_find_first_unseen(void);
    mean begin or end of the list. */
 void pcb_log_del_range(unsigned long from, unsigned long to);
 
+/* Export the whole log list to a file, in lihata or plain text */
+int pcb_log_export(const char *fn, int fmt_lihata);
+
 /* Free all memory and reset the log system */
 void pcb_log_uninit(void);
 
