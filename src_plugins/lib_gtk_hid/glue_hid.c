@@ -14,7 +14,6 @@
 #include "../src_plugins/lib_gtk_common/in_keyboard.h"
 #include "../src_plugins/lib_gtk_common/bu_dwg_tooltip.h"
 #include "../src_plugins/lib_gtk_common/ui_crosshair.h"
-#include "../src_plugins/lib_gtk_common/dlg_log.h"
 #include "../src_plugins/lib_gtk_common/dlg_fileselect.h"
 #include "../src_plugins/lib_gtk_common/dlg_attribute.h"
 #include "../src_plugins/lib_gtk_common/dlg_attributes.h"

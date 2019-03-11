@@ -49,23 +49,3 @@
 
 #include "hid_gtk_conf.h"
 
-const char pcb_gtk_acts_logshowonappend[] = "LogShowOnAppend(true|false)";
-const char pcb_gtk_acth_logshowonappend[] = "If true, the log window will be shown whenever something is appended to it. If false, the log will still be updated, but the window won't be shown.";
-fgw_error_t pcb_gtk_act_logshowonappend(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-#if 0
-	const char *a = "";
-	const char *pcb_acts_logshowonappend = pcb_gtk_acts_logshowonappend;
-
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, logshowonappend, a = argv[1].val.str);
-
-	if (tolower(*a) == 't')
-		log_show_on_append = TRUE;
-	else if (tolower(*a) == 'f')
-		log_show_on_append = FALSE;
-#endif
-	PCB_ACT_IRES(0);
-	return 0;
-}
-
-
