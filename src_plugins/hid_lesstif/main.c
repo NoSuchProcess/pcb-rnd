@@ -3628,6 +3628,8 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.attr_dlg_widget_state = lesstif_attr_dlg_widget_state;
 	lesstif_hid.attr_dlg_widget_hide = lesstif_attr_dlg_widget_hide;
 	lesstif_hid.attr_dlg_set_value = lesstif_attr_dlg_set_value;
+	lesstif_hid.supports_dad_text_markup = 0;
+
 	lesstif_hid.beep = lesstif_beep;
 	lesstif_hid.edit_attributes = lesstif_attributes_dialog;
 	lesstif_hid.point_cursor = PointCursor;

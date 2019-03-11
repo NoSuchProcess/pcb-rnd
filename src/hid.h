@@ -203,6 +203,9 @@ struct pcb_hid_s {
 	/* When enabled, indicate layer of heavy terminals graphically */
 	unsigned heavy_term_layer_ind:1;
 
+	/* When 1, HID supports markup (e.g. color) in DAD text widgets  */
+	unsigned supports_dad_text_markup:1;
+
 	/* Returns a set of resources describing options the export or print
 	   HID supports.  In GUI mode, the print/export dialogs use this to
 	   set up the selectable options.  In command line mode, these are
