@@ -185,6 +185,16 @@ static void log_append_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 	}
 }
 
+static void log_clear_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	if (log_ctx.active) {
+		pcb_hid_attribute_t *atxt = &log_ctx.dlg[log_ctx.wtxt];
+		pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+
+		txt->hid_set_text(atxt, log_ctx.dlg_hid_ctx, PCB_HID_TEXT_REPLACE, "");
+		log_import(&log_ctx);
+	}
+}
 
 void pcb_dlg_log_uninit(void)
 {
@@ -194,4 +204,5 @@ void pcb_dlg_log_uninit(void)
 void pcb_dlg_log_init(void)
 {
 	pcb_event_bind(PCB_EVENT_LOG_APPEND, log_append_ev, NULL, log_cookie);
+	pcb_event_bind(PCB_EVENT_LOG_CLEAR, log_clear_ev, NULL, log_cookie);
 }
