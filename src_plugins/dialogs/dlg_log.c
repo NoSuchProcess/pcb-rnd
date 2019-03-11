@@ -25,10 +25,13 @@
  */
 
 #include "config.h"
+
 #include "actions.h"
+#include "conf_hid.h"
 #include "hid_dad.h"
 #include "event.h"
 #include "error.h"
+
 #include "dlg_log.h"
 
 static const char *log_cookie = "dlg_log";
@@ -51,8 +54,43 @@ static void log_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 static void log_append(log_ctx_t *ctx, pcb_hid_attribute_t *atxt, const pcb_logline_t *line)
 {
 	pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+	const char *prefix = NULL;
+	int popup;
 
-	txt->hid_set_text(atxt, ctx->dlg_hid_ctx, PCB_HID_TEXT_APPEND | PCB_HID_TEXT_MARKUP, line->str);
+	conf_loglevel_props(line->level, &prefix, &popup);
+
+	if (pcb_gui->supports_dad_text_markup) {
+		if (prefix != NULL) {
+			gds_t tmp;
+			gds_init(&tmp);
+			gds_enlarge(&tmp, line->len+32);
+			tmp.used = 0;
+			gds_append_str(&tmp, prefix);
+			gds_append_len(&tmp, line->str, line->len);
+			if (*prefix == '<') {
+				gds_append(&tmp, '<');
+				gds_append(&tmp, '/');
+				gds_append_str(&tmp, prefix+1);
+			}
+			txt->hid_set_text(atxt, ctx->dlg_hid_ctx, PCB_HID_TEXT_APPEND | PCB_HID_TEXT_MARKUP, tmp.array);
+			gds_uninit(&tmp);
+		}
+		else
+			txt->hid_set_text(atxt, ctx->dlg_hid_ctx, PCB_HID_TEXT_APPEND, line->str);
+	}
+	else {
+		if ((line->prev == NULL) || (line->prev->str[line->prev->len-1] == '\n')) {
+			switch(line->level) {
+				case PCB_MSG_DEBUG:   prefix = "D: "; break;
+				case PCB_MSG_INFO:    prefix = "I: "; break;
+				case PCB_MSG_WARNING: prefix = "W: "; break;
+				case PCB_MSG_ERROR:   prefix = "E: "; break;
+			}
+			if (prefix != NULL)
+				txt->hid_set_text(atxt, ctx->dlg_hid_ctx, PCB_HID_TEXT_APPEND | PCB_HID_TEXT_MARKUP, prefix);
+		}
+		txt->hid_set_text(atxt, ctx->dlg_hid_ctx, PCB_HID_TEXT_APPEND | PCB_HID_TEXT_MARKUP, line->str);
+	}
 	if (line->ID > ctx->last_added)
 		ctx->last_added = line->ID;
 }
