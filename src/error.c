@@ -45,7 +45,7 @@ void pcb_message(enum pcb_message_level level, const char *Format, ...)
 	gds_t tmp;
 	pcb_logline_t *line;
 
-	if (pcb_gui == NULL) {
+	if ((pcb_gui == NULL) || (conf_core.rc.dup_log_to_stderr)) {
 		if (conf_core.rc.quiet)
 			min_level = PCB_MSG_ERROR;
 

@@ -98,6 +98,7 @@ typedef struct {
 	const struct rc {
 		CFT_INTEGER verbose;
 		CFT_INTEGER quiet;                 /* print only errors on stderr */
+		CFT_BOOLEAN dup_log_to_stderr;     /* copy log messages to stderr even if there is a HID that can show them */
 		CFT_INTEGER backup_interval;       /* time between two backups in seconds; 0 means disabled (no backups) */
 		CFT_BOOLEAN hid_fallback;          /* if there is no explicitly specified HID (--gui) and the preferred GUI fails, automatically fall back on other HIDs, eventually running in batch mode */
 		CFT_STRING brave;                  /* brave mode flags: when non-empty, enable various experimental (unstable) features - useful for testers */
