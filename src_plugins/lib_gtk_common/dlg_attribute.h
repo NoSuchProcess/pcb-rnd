@@ -4,6 +4,7 @@
 
 void *ghid_attr_dlg_new(pcb_gtk_common_t *com, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy);
 int ghid_attr_dlg_run(void *hid_ctx);
+void ghid_attr_dlg_raise(void *hid_ctx);
 void ghid_attr_dlg_free(void *hid_ctx);
 void ghid_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const pcb_hid_attr_val_t *val);
 

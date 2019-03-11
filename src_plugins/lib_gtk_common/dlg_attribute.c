@@ -836,6 +836,12 @@ int ghid_attr_dlg_run(void *hid_ctx)
 	return ctx->rc;
 }
 
+void ghid_attr_dlg_raise(void *hid_ctx)
+{
+	attr_dlg_t *ctx = hid_ctx;
+	gtk_window_present(GTK_WINDOW(ctx->dialog));
+}
+
 void ghid_attr_dlg_free(void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;

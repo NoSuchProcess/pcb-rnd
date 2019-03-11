@@ -3415,6 +3415,7 @@ extern void lesstif_logv(enum pcb_message_level level, const char *fmt, va_list 
 extern void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs_, int n_attrs_, pcb_hid_attr_val_t *results_, const char *title_, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy);
 
 extern int lesstif_attr_dlg_run(void *hid_ctx);
+extern void lesstif_attr_dlg_raise(void *hid_ctx);
 extern void lesstif_attr_dlg_free(void *hid_ctx);
 extern void lesstif_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const pcb_hid_attr_val_t *val);
 extern int lesstif_attr_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled);
@@ -3623,6 +3624,7 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.fileselect = pcb_ltf_fileselect;
 	lesstif_hid.attr_dlg_new = lesstif_attr_dlg_new;
 	lesstif_hid.attr_dlg_run = lesstif_attr_dlg_run;
+	lesstif_hid.attr_dlg_raise = lesstif_attr_dlg_raise;
 	lesstif_hid.attr_dlg_free = lesstif_attr_dlg_free;
 	lesstif_hid.attr_dlg_property = lesstif_attr_dlg_property;
 	lesstif_hid.attr_dlg_widget_state = lesstif_attr_dlg_widget_state;

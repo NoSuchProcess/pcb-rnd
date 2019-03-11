@@ -780,6 +780,12 @@ int lesstif_attr_dlg_run(void *hid_ctx)
 	return pcb_ltf_wait_for_dialog(ctx->dialog);
 }
 
+void lesstif_attr_dlg_raise(void *hid_ctx)
+{
+	lesstif_attr_dlg_t *ctx = hid_ctx;
+	XRaiseWindow(XtDisplay(ctx->dialog), XtWindow(ctx->dialog));
+}
+
 void lesstif_attr_dlg_free(void *hid_ctx)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;

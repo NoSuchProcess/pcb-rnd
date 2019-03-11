@@ -402,6 +402,7 @@ struct pcb_hid_s {
 	   by window placement. Returns opaque hid_ctx. */
 	void *(*attr_dlg_new)(const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy);
 	int (*attr_dlg_run)(void *hid_ctx);
+	void (*attr_dlg_raise)(void *hid_ctx); /* raise the window to top */
 	void (*attr_dlg_free)(void *hid_ctx); /* results_ is avalibale after this call */
 
 	/* Set a property of an attribute dialog (typical call is between
