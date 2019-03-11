@@ -163,14 +163,23 @@ fgw_error_t pcb_act_LogDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static void log_append_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 {
+	const pcb_logline_t *line = argv[1].d.p;
+
 	if (log_ctx.active) {
-		const pcb_logline_t *line = argv[1].d.p;
 		pcb_hid_attribute_t *atxt = &log_ctx.dlg[log_ctx.wtxt];
 		pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
 
 		log_append(&log_ctx, atxt, line);
 		if ((log_ctx.dlg[log_ctx.wscroll].default_val.int_value) && (txt->hid_scroll_to_bottom != NULL))
 			txt->hid_scroll_to_bottom(atxt, log_ctx.dlg_hid_ctx);
+	}
+	else {
+		const char *prefix;
+		int popup;
+
+		conf_loglevel_props(line->level, &prefix, &popup);
+		if (popup)
+			log_window_create();
 	}
 }
 
