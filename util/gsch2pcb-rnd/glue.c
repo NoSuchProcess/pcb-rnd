@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <errno.h>
 #include "../src/error.h"
 #include "../src/event.h"
 #include "../src/plugins.h"
@@ -27,21 +28,6 @@
 /* glue for pcb-rnd core */
 
 pcb_hid_t *pcb_gui = NULL;
-
-void pcb_chdir_error_message(const char *DirName)
-{
-	pcb_message(PCB_MSG_WARNING, "warning: can't cd to %s\n", DirName);
-}
-
-void pcb_opendir_error_message(const char *DirName)
-{
-	pcb_message(PCB_MSG_WARNING, "warning: can't opendir %s\n", DirName);
-}
-
-void pcb_popen_error_message(const char *cmd)
-{
-	pcb_message(PCB_MSG_WARNING, "warning: can't popen %s\n", cmd);
-}
 
 int pcb_color_load_str(pcb_color_t *dst, const char *src)
 {
