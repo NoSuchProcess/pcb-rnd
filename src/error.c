@@ -61,7 +61,9 @@ void pcb_message(enum pcb_message_level level, const char *Format, ...)
 	gds_init(&tmp);
 	gds_enlarge(&tmp, sizeof(pcb_logline_t));
 	tmp.used = offsetof(pcb_logline_t, str);
+	va_start(args, Format);
 	pcb_append_vprintf(&tmp, Format, args);
+	va_end(args);
 
 	/* add the header and link in */
 	line = (pcb_logline_t *)tmp.array;
