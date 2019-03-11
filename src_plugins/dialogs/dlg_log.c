@@ -174,7 +174,7 @@ static void log_append_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 		if ((log_ctx.dlg[log_ctx.wscroll].default_val.int_value) && (txt->hid_scroll_to_bottom != NULL))
 			txt->hid_scroll_to_bottom(atxt, log_ctx.dlg_hid_ctx);
 	}
-	else {
+	else if (PCB_HAVE_GUI_ATTR_DLG) {
 		const char *prefix;
 		int popup;
 
