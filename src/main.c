@@ -245,8 +245,24 @@ void pcb_set_hid_name(const char *new_hid_name)
 
 static char **hid_argv_orig;
 
+static void log_print_uninit_errs(void)
+{
+	pcb_logline_t *n, *from = pcb_log_find_first_unseen();
+
+	if (from == NULL)
+		return;
+
+	fprintf(stderr, "*** Log produced during uninitialization:\n");
+	for(n = from; n != NULL; n = n->next)
+		fprintf(stderr, "%s", n->str);
+	fprintf(stderr, "\n\n");
+}
+
 void pcb_main_uninit(void)
 {
+	if (pcb_log_last != NULL)
+		pcb_log_last->seen = 1; /* ignore anything unseen before the uninit */
+
 	pcb_brave_uninit();
 	pcb_polygon_uninit();
 
@@ -284,6 +300,7 @@ void pcb_main_uninit(void)
 	pcb_uilayer_uninit();
 	pcb_cli_uninit();
 	pcb_dynflag_uninit();
+	log_print_uninit_errs();
 	pcb_log_uninit();
 }
 

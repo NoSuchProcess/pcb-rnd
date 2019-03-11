@@ -75,6 +75,10 @@ extern unsigned long pcb_log_next_ID;
 pcb_logline_t *pcb_log_find_min(unsigned long ID);
 pcb_logline_t *pcb_log_find_min_(pcb_logline_t *from, unsigned long ID);
 
+/* Search back from the bottom of the log and return the oldest unseen entry
+   (or NULL if all entries have been shown) */
+pcb_logline_t *pcb_log_find_first_unseen(void);
+
 /* Remove log lines between ID from and to, inclusive; -1 in these fields
    mean begin or end of the list. */
 void pcb_log_del_range(unsigned long from, unsigned long to);

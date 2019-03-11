@@ -98,6 +98,15 @@ pcb_logline_t *pcb_log_find_min(unsigned long ID)
 	return pcb_log_find_min_(pcb_log_first, ID);
 }
 
+pcb_logline_t *pcb_log_find_first_unseen(void)
+{
+	pcb_logline_t *n;
+	for(n = pcb_log_last; n != NULL; n = n->prev)
+		if (n->seen)
+			return n->next;
+	return pcb_log_first;
+}
+
 void pcb_log_del_range(unsigned long from, unsigned long to)
 {
 	pcb_logline_t *start = pcb_log_find_min(from), *end = NULL;
