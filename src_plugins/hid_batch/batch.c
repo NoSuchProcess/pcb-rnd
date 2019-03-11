@@ -23,6 +23,7 @@
 
 static const char *batch_cookie = "batch HID";
 
+static int batch_active = 0;
 static void batch_begin(void);
 static void batch_end(void);
 
@@ -77,6 +78,24 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 	}
 	else
 		prompt = pcb_strdup("no-board");
+}
+
+static void ev_log_append(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	const pcb_logline_t *line = argv[1].d.p;
+
+	if (!batch_active)
+		return;
+
+	if ((line->prev == NULL) || (line->prev->str[line->prev->len-1] == '\n')) {
+		switch(line->level) {
+			case PCB_MSG_DEBUG:   printf("D: "); break;
+			case PCB_MSG_INFO:    printf("I: "); break;
+			case PCB_MSG_WARNING: printf("W: "); break;
+			case PCB_MSG_ERROR:   printf("E: "); break;
+		}
+	}
+	printf("%s", line->str);
 }
 
 static fgw_error_t pcb_act_help(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -349,6 +368,7 @@ int pplg_init_hid_batch(void)
 	batch_hid.usage = batch_usage;
 
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, batch_cookie);
+	pcb_event_bind(PCB_EVENT_LOG_APPEND, ev_log_append, NULL, batch_cookie);
 
 	pcb_hid_register_hid(&batch_hid);
 	return 0;
@@ -358,10 +378,12 @@ int pplg_init_hid_batch(void)
 static void batch_begin(void)
 {
 	PCB_REGISTER_ACTIONS(batch_action_list, batch_cookie)
+	batch_active = 1;
 }
 
 static void batch_end(void)
 {
 	pcb_remove_actions_by_cookie(batch_cookie);
+	batch_active = 0;
 }
 
