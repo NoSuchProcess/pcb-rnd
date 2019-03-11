@@ -13,7 +13,7 @@
 	- load/import from buffer and file
 	- CLEANUP: remove PCB_MIN_PINORVIA* PCB_DEFAULT_DRILLINGHOLE macros - nothing should use them anymore
 	- add text font, update the pool node text_edit [report: Igor2]
-- CLEANUP/FEATURE: session persistent DAD message log (messages are flushed after dialog is closed?) [report: Miloh]
++ CLEANUP/FEATURE: session persistent DAD message log (messages are flushed after dialog is closed?) [report: Miloh]
 	- DOC: document the DAD text widget
 - CLEANUP: DAD: centralize the coordinate input spinbox into the dialog plugin
 	- drc & size: doesn't update on mil/mm change in top win -> need a list of spinboxes to update on conf change [report: Ade]
