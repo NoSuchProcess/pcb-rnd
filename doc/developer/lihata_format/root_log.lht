@@ -1,0 +1,26 @@
+ha:lht_tree_doc { ha:roots {
+
+	ha:pcb-rnd-log-v* {
+		type=ha
+		desc={pcb-rnd message log dump}
+		li:children {
+			ha:entries {
+				type=li
+				desc={list of message log entries}
+				li:children {
+					ha:ID {
+						type=ha
+						desc={each entry is identified by an unique unsigned long int ID}
+						li:children {
+							ha:stamp        { valtype=string; desc={UNIX time stamp of entry creation} }
+							ha:level        { valtype=integer; desc={log level enum value (see error.h)} }
+							ha:seen         { valtype=integer; desc={1 if the message got displayed} }
+							ha:str          { valtype=string; desc={log message} }
+						}
+					}
+				}
+			}
+		}
+	}
+
+}}
