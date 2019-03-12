@@ -2294,7 +2294,7 @@
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h find.h netlist2.h board.h vtroutestyle.h rats_patch.h \
  select.h operation.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
- remove.h crosshair.h draw.h event.h hid.h actions.h \
+ remove.h crosshair.h draw.h event.h fptr_cast.h hid.h actions.h \
  ../src_plugins/hid_lesstif/lesstif.h hid_cfg_input.h hid_cfg.h board.h \
  ../src_plugins/hid_lesstif/stdarg.h color.h
 ../src_plugins/hid_lesstif/stdarg.o: ../src_plugins/hid_lesstif/stdarg.c \
