@@ -620,34 +620,6 @@ FILE *pcb_check_and_open_file(const char *Filename, pcb_bool Confirm, pcb_bool A
 	return fp;
 }
 
-/* opens a file for saving connection data */
-FILE *pcb_open_connection_file(void)
-{
-	char *fname;
-	FILE *fp;
-	static char *default_file = NULL;
-	pcb_bool result;									/* not used */
-
-	/* CheckAndOpenFile deals with the case where fname already exists */
-	fname = pcb_gui->fileselect("Save Connection Data As ...",
-													"Choose a file to save all connection data to.", default_file, ".net", NULL, "connection_data", 0, NULL);
-	if (fname == NULL)
-		return NULL;
-
-	if (default_file != NULL) {
-		free(default_file);
-		default_file = NULL;
-	}
-
-	if (fname && *fname)
-		default_file = pcb_strdup(fname);
-
-	fp = pcb_check_and_open_file(fname, pcb_true, pcb_false, &result, NULL);
-	free(fname);
-
-	return fp;
-}
-
 int pcb_save_buffer_elements(const char *Filename, const char *fmt)
 {
 	int result;

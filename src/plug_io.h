@@ -115,7 +115,6 @@ int pcb_write_font(pcb_font_t *Ptr, const char *Filename, const char *fmt);
 
 /********** common function used to be part of file.[ch] and friends **********/
 FILE *pcb_check_and_open_file(const char *, pcb_bool, pcb_bool, pcb_bool *, pcb_bool *);
-FILE *pcb_open_connection_file(void);
 int pcb_save_pcb(const char *, const char *fmt);
 #define PCB_INHIBIT_BOARD_CHANGED 0x20
 int pcb_load_pcb(const char *name, const char *fmt, pcb_bool, int how); /* how: 0=normal pcb; 1=default.pcb, 2=misc (do not load settings) | 0x10: ignore missing file, | PCB_INHIBIT_BOARD_CHANGED: do not send a board changed event */
