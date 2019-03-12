@@ -369,7 +369,6 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 
 	LesstifNetlistChanged(NULL, 0, NULL);
 	LesstifRouteStylesChanged(NULL, 0, NULL);
-	lesstif_sizes_reset();
 	lesstif_update_layer_groups();
 	if (PCB->Filename) {
 		char *cp = strrchr(PCB->Filename, '/');
@@ -3465,7 +3464,6 @@ void lesstif_confchg_grid_unit(conf_native_t *cfg, int arr_idx)
 	if ((PCB == NULL) || (!lesstif_active))
 		return;
 
-	lesstif_sizes_reset();
 	lesstif_styles_update_values();
 }
 
