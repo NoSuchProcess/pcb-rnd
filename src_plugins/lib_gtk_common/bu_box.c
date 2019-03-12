@@ -37,8 +37,7 @@
 #include "bu_box.h"
 #include "compat.h"
 
-/*TODO: The 2 following functions could be merged if an additional 
- *  gboolean pack_start   parameter is added */
+/* REMOVE: dlg_search */
 GtkWidget *ghid_framed_vbox(GtkWidget * box, gchar * label, gint frame_border_width,
 														gboolean frame_expand, gint vbox_pad, gint vbox_border_width)
 {
@@ -54,21 +53,7 @@ GtkWidget *ghid_framed_vbox(GtkWidget * box, gchar * label, gint frame_border_wi
 	return vbox;
 }
 
-GtkWidget *ghid_framed_vbox_end(GtkWidget * box, gchar * label, gint frame_border_width,
-																gboolean frame_expand, gint vbox_pad, gint vbox_border_width)
-{
-	GtkWidget *frame;
-	GtkWidget *vbox;
-
-	frame = gtk_frame_new(label);
-	gtk_container_set_border_width(GTK_CONTAINER(frame), frame_border_width);
-	gtk_box_pack_end(GTK_BOX(box), frame, frame_expand, frame_expand, 0);
-	vbox = gtkc_vbox_new(FALSE, vbox_pad);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox), vbox_border_width);
-	gtk_container_add(GTK_CONTAINER(frame), vbox);
-	return vbox;
-}
-
+/* MOVE: dlg_attribute, when routestyle removed  */
 GtkWidget *ghid_category_vbox(GtkWidget * box, const gchar * category_header,
 															gint header_pad, gint box_pad, gboolean pack_start, gboolean bottom_pad)
 {
