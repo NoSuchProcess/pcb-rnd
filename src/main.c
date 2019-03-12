@@ -661,13 +661,10 @@ int main(int argc, char *argv[])
 	}
 
 	if (pcb_gui->printer || pcb_gui->exporter) {
-		if (pcb_data_is_empty(PCB->Data)) {
-			pcb_message(PCB_MSG_ERROR, "Can't export empty board - the board needs to contain at least one object.\n");
-			exit(1);
-		}
-		else
-			pcb_gui->do_export(0);
-		log_print_uninit_errs("Log produced during the export");
+		if (pcb_data_is_empty(PCB->Data))
+			pcb_message(PCB_MSG_WARNING, "Exporting empty board (nothing loaded or drawn).\n");
+		pcb_gui->do_export(0);
+		log_print_uninit_errs("Exporting");
 		pcb_main_uninit();
 		exit(0);
 	}
