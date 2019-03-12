@@ -465,14 +465,9 @@ static int pcb_write_pcb(FILE *f, const char *old_filename, const char *new_file
 	return res;
 }
 
-/* ---------------------------------------------------------------------------
- * load PCB
- * parse the file with enabled 'PCB mode' (see parser)
- * if successful, update some other stuff
- *
- * If revert is pcb_true, we pass "revert" as a parameter
- * to the pcb changed event.
- */
+/* load PCB: parse the file with enabled 'PCB mode' (see parser); if
+   successful, update some other stuff. If revert is pcb_true, we pass
+   "revert" as a parameter to the pcb changed event. */
 static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert, pcb_bool require_font, int how)
 {
 	const char *unit_suffix;
@@ -585,21 +580,12 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 
 
 #if !defined(HAS_ATEXIT)
-/* ---------------------------------------------------------------------------
- * some local identifiers for OS without an atexit() call
- */
 static char *TMPFilename = NULL;
 #endif
 
-/* ---------------------------------------------------------------------------
- * Flag helper functions
- */
-
 #define F2S(OBJ, TYPE) pcb_strflg_f2s((OBJ)->Flags, TYPE)
 
-/* ---------------------------------------------------------------------------
- * opens a file and check if it exists
- */
+/* opens a file and check if it exists */
 FILE *pcb_check_and_open_file(const char *Filename, pcb_bool Confirm, pcb_bool AllButton, pcb_bool * WasAllButton, pcb_bool * WasCancelButton)
 {
 	FILE *fp = NULL;
@@ -634,9 +620,7 @@ FILE *pcb_check_and_open_file(const char *Filename, pcb_bool Confirm, pcb_bool A
 	return fp;
 }
 
-/* ---------------------------------------------------------------------------
- * opens a file for saving connection data
- */
+/* opens a file for saving connection data */
 FILE *pcb_open_connection_file(void)
 {
 	char *fname;
@@ -664,9 +648,6 @@ FILE *pcb_open_connection_file(void)
 	return fp;
 }
 
-/* ---------------------------------------------------------------------------
- * save elements in the current buffer
- */
 int pcb_save_buffer_elements(const char *Filename, const char *fmt)
 {
 	int result;
@@ -679,9 +660,6 @@ int pcb_save_buffer_elements(const char *Filename, const char *fmt)
 	return result;
 }
 
-/* ---------------------------------------------------------------------------
- * save PCB
- */
 int pcb_save_pcb(const char *file, const char *fmt)
 {
 	int retcode;
@@ -710,10 +688,6 @@ int pcb_save_pcb(const char *file, const char *fmt)
 	return retcode;
 }
 
-
-/* ---------------------------------------------------------------------------
- * Load PCB
- */
 int pcb_load_pcb(const char *file, const char *fmt, pcb_bool require_font, int how)
 {
 	int res = real_load_pcb(file, fmt, pcb_false, require_font, how);
@@ -734,17 +708,11 @@ int pcb_load_pcb(const char *file, const char *fmt, pcb_bool require_font, int h
 	return res;
 }
 
-/* ---------------------------------------------------------------------------
- * Revert PCB
- */
 int pcb_revert_pcb(void)
 {
 	return real_load_pcb(PCB->Filename, NULL, pcb_true, pcb_true, 1);
 }
 
-/* ---------------------------------------------------------------------------
- * writes the quoted string created by another subroutine
- */
 void pcb_print_quoted_string_(FILE * FP, const char *S)
 {
 	const char *start;
@@ -770,11 +738,8 @@ void pcb_print_quoted_string(FILE *FP, const char *S)
 	fputc('"', FP);
 }
 
-/* ---------------------------------------------------------------------------
- * saves the layout in a temporary file
- * this is used for fatal errors and does not call the program specified
- * in 'saveCommand' for safety reasons
- */
+/* this is used for fatal errors and does not call the program specified in
+   'saveCommand' for safety reasons */
 void pcb_save_in_tmp(void)
 {
 	char filename[256];
@@ -788,10 +753,7 @@ void pcb_save_in_tmp(void)
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * front-end for 'pcb_save_in_tmp()'
- * just makes sure that the routine is only called once
- */
+/* front-end for pcb_save_in_tmp() to makes sure it is only called once */
 static pcb_bool dont_save_any_more = pcb_false;
 void pcb_emergency_save(void)
 {
@@ -807,9 +769,7 @@ void pcb_disable_emergency_save(void)
 	dont_save_any_more = pcb_true;
 }
 
-/* ----------------------------------------------------------------------
- * Callback for the autosave
- */
+/*** Autosave ***/
 
 static pcb_hidval_t backup_timer;
 
@@ -867,12 +827,10 @@ void pcb_backup(void)
 }
 
 #if !defined(HAS_ATEXIT)
-/* ---------------------------------------------------------------------------
- * makes a temporary copy of the data. This is useful for systems which
+/* makes a temporary copy of the data. This is useful for systems which
  * doesn't support calling functions on exit. We use this to save the data
  * before LEX and YACC functions are called because they are able to abort
- * the program.
- */
+ * the program.*/
 void pcb_tmp_data_save(void)
 {
 	char *fn = pcb_build_fn(conf_core.rc.emergency_name);
@@ -882,9 +840,6 @@ void pcb_tmp_data_save(void)
 	TMPFilename = fn;
 }
 
-/* ---------------------------------------------------------------------------
- * removes the temporary copy of the data file
- */
 void pcb_tmp_data_remove(void)
 {
 	if (TMPFilename != NULL)
@@ -903,9 +858,6 @@ static int pcb_write_file(FILE *fp, pcb_bool thePcb, const char *old_path, const
 	return pcb_write_buffer(fp, PCB_PASTEBUFFER, fmt, elem_only);
 }
 
-/* ---------------------------------------------------------------------------
- * writes PCB to file
- */
 int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool emergency, pcb_bool elem_only)
 {
 	FILE *fp;
@@ -948,10 +900,8 @@ int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, p
 }
 
 
-/* ---------------------------------------------------------------------------
- * writes to pipe using the command defined by conf_core.rc.save_command
- * %f are replaced by the passed filename
- */
+/* writes to pipe using the command defined by conf_core.rc.save_command
+ * %f are replaced by the passed filename */
 int pcb_write_pipe(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool elem_only)
 {
 	FILE *fp;
