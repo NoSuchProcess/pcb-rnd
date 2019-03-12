@@ -3337,9 +3337,8 @@ void lesstif_unwatch_file(pcb_hidval_t data)
 	free(watch);
 }
 
-	/* We need a wrapper around the hid file watch because to pass the correct flags
-	 */
-static void lesstif_watch_cb(XtPointer client_data, int *fid, XtInputId * id)
+/* We need a wrapper around the hid file watch because to pass the correct flags */
+static void lesstif_watch_cb(XtPointer client_data, int *fid, XtInputId *id)
 {
 	unsigned int pcb_condition = 0;
 	struct pollfd fds;
@@ -3368,11 +3367,9 @@ static void lesstif_watch_cb(XtPointer client_data, int *fid, XtInputId * id)
 	return;
 }
 
-pcb_hidval_t
-lesstif_watch_file(int fd, unsigned int condition,
-									 pcb_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data)
+pcb_hidval_t lesstif_watch_file(int fd, unsigned int condition, pcb_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data)
 {
-	WatchStruct *watch = (WatchStruct *) malloc(sizeof(WatchStruct));
+	WatchStruct *watch = (WatchStruct *)malloc(sizeof(WatchStruct));
 	pcb_hidval_t ret;
 	unsigned int xt_condition = 0;
 
