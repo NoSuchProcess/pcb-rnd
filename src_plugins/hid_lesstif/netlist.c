@@ -18,6 +18,7 @@
 #include "crosshair.h"
 #include "draw.h"
 #include "event.h"
+#include "fptr_cast.h"
 
 #include "hid.h"
 #include "actions.h"
@@ -239,7 +240,7 @@ TODO("subc TODO")
 #define NLB_FORM ((Widget)(~0))
 static Widget
 netlist_button(Widget parent, const char *name, const char *string,
-							 Widget top, Widget bottom, Widget left, Widget right, XtCallbackProc callback, void *user_data)
+							 Widget top, Widget bottom, Widget left, Widget right, XtCallbackProc callback, Std_Nbcb_Func user_func)
 {
 	Widget rv;
 	XmString str;
@@ -257,7 +258,7 @@ netlist_button(Widget parent, const char *name, const char *string,
 	rv = XmCreatePushButton(parent, XmStrCast(name), stdarg_args, stdarg_n);
 	XtManageChild(rv);
 	if (callback)
-		XtAddCallback(rv, XmNactivateCallback, callback, (XtPointer) user_data);
+		XtAddCallback(rv, XmNactivateCallback, callback, (XtPointer)pcb_cast_f2d(user_func));
 	XmStringFree(str);
 	return rv;
 }
@@ -280,29 +281,29 @@ static int build_netlist_dialog()
 
 	stdarg_n = 0;
 	b_rat_on = netlist_button(netlist_dialog, "rat_on", "Enable for rats",
-														0, NLB_FORM, NLB_FORM, 0, (XtCallbackProc) nbcb_std_callback, (void *) nbcb_rat_on);
+														0, NLB_FORM, NLB_FORM, 0, (XtCallbackProc)nbcb_std_callback, nbcb_rat_on);
 	XtSetSensitive(b_rat_on, 0);
 
 	stdarg_n = 0;
 	b_rat_off = netlist_button(netlist_dialog, "rat_off", "Disable for rats",
-														 0, NLB_FORM, b_rat_on, 0, (XtCallbackProc) nbcb_std_callback, (void *) nbcb_rat_off);
+														 0, NLB_FORM, b_rat_on, 0, (XtCallbackProc)nbcb_std_callback, nbcb_rat_off);
 	XtSetSensitive(b_rat_off, 0);
 
 	stdarg_n = 0;
 	b_sel = netlist_button(netlist_dialog, "select", "Select",
-												 0, b_rat_on, NLB_FORM, 0, (XtCallbackProc) nbcb_std_callback, (void *) nbcb_select);
+												 0, b_rat_on, NLB_FORM, 0, (XtCallbackProc)nbcb_std_callback, nbcb_select);
 
 	stdarg_n = 0;
 	b_unsel = netlist_button(netlist_dialog, "deselect", "Deselect",
-													 0, b_rat_on, b_sel, 0, (XtCallbackProc) nbcb_std_callback, (void *) nbcb_deselect);
+													 0, b_rat_on, b_sel, 0, (XtCallbackProc)nbcb_std_callback, nbcb_deselect);
 
 	stdarg_n = 0;
 	b_find = netlist_button(netlist_dialog, "find", "Find",
-													0, b_rat_on, b_unsel, 0, (XtCallbackProc) nbcb_std_callback, (void *) nbcb_find);
+													0, b_rat_on, b_unsel, 0, (XtCallbackProc)nbcb_std_callback, nbcb_find);
 
 
 	stdarg_n = 0;
-	/*b_ripup =*/ netlist_button(netlist_dialog, "ripup", "Rip Up", 0, b_rat_on, b_find, 0, (XtCallbackProc) nbcb_ripup, 0);
+	/*b_ripup =*/ netlist_button(netlist_dialog, "ripup", "Rip Up", 0, b_rat_on, b_find, 0, (XtCallbackProc)nbcb_ripup, 0);
 
 	stdarg_n = 0;
 	stdarg(XmNbottomAttachment, XmATTACH_WIDGET);
