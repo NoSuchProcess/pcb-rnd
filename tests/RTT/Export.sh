@@ -198,6 +198,7 @@ stderr_filter()
 	local common="Couldn't find default.pcb\|No preferred unit format info available for\|has no font information, using default font\|Log produced after failed export\|Exporting empty board\|[*][*][*] Exporting:\|^.pcb-rnd:stderr.[ \t]*$"
 	case "$fmt" in
 		gerber) grep -v "Can't export polygon as G85 slot\|please use lines for slotting\|$common" ;;
+		svg) grep -v "Can't draw elliptical arc on svg\|$common";;
 		*) grep -v "$common";;
 	esac
 }
