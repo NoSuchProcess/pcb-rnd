@@ -30,10 +30,9 @@
 #include <stdio.h>
 #include <errno.h>
 
-#include <sys/stat.h>
-
 #include "actions.h"
 #include "board.h"
+#include "compat_fs.h"
 #include "data.h"
 #include "data_it.h"
 #include "draw.h"
@@ -239,12 +238,11 @@ static void pcb_lookup_conns_to_all_subcs(FILE *f)
 static FILE *pcb_check_and_open_file(const char *Filename, pcb_bool Confirm, pcb_bool AllButton, pcb_bool *WasAllButton, pcb_bool *WasCancelButton)
 {
 	FILE *fp = NULL;
-	struct stat buffer;
 	char message[PCB_PATH_MAX + 80];
 	int response;
 
 	if (Filename && *Filename) {
-		if (!stat(Filename, &buffer) && Confirm) {
+		if (pcb_file_readable(Filename) && Confirm) {
 			const char *all_ok = "all ok";
 			sprintf(message, "File '%s' exists, use anyway?", Filename);
 			if (WasAllButton)
