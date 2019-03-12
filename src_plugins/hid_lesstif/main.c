@@ -785,17 +785,16 @@ PCB_REGISTER_ACTIONS(lesstif_main_action_list, lesstif_cookie)
 /* ----------------------------------------------------------------------
  * redraws the background image
  */
-		 static int bg_w, bg_h, bgi_w, bgi_h;
-		 static Pixel **bg = 0;
-		 static XImage *bgi = 0;
-		 static enum {
-			 PT_unknown,
-			 PT_RGB565,
-			 PT_RGB888
-		 } pixel_type = PT_unknown;
+static int bg_w, bg_h, bgi_w, bgi_h;
+static Pixel **bg = 0;
+static XImage *bgi = 0;
+static enum {
+	 PT_unknown,
+	 PT_RGB565,
+	 PT_RGB888
+} pixel_type = PT_unknown;
 
-		 static void
-		   LoadBackgroundFile(FILE * f, char *filename)
+static void LoadBackgroundFile(FILE *f, char *filename)
 {
 	XVisualInfo vinfot, *vinfo;
 	Visual *vis;
