@@ -3851,7 +3851,6 @@
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h netlist2.h
 ../src_plugins/lib_gtk_common/bu_entry.o: \
  ../src_plugins/lib_gtk_common/bu_entry.c ../config.h \
- ../src_plugins/lib_gtk_common/bu_entry.h \
  ../src_plugins/lib_gtk_common/wt_coord_entry.h unit.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \

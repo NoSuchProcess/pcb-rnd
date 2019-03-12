@@ -10,7 +10,6 @@ put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/bu_box.o
   $(PLUGDIR)/lib_gtk_common/bu_cursor_pos.o
   $(PLUGDIR)/lib_gtk_common/bu_dwg_tooltip.o
-  $(PLUGDIR)/lib_gtk_common/bu_entry.o
   $(PLUGDIR)/lib_gtk_common/bu_info_bar.o
   $(PLUGDIR)/lib_gtk_common/bu_icons.o
   $(PLUGDIR)/lib_gtk_common/bu_menu.o
