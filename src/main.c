@@ -389,6 +389,7 @@ int gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[])
 	return 0;
 }
 
+#define we_are_exporting (pcb_gui->printer || pcb_gui->exporter)
 
 int main(int argc, char *argv[])
 {
@@ -640,7 +641,7 @@ int main(int argc, char *argv[])
 
 	if (command_line_pcb) {
 		if (pcb_load_pcb(command_line_pcb, NULL, pcb_true, 0) != 0) {
-			if (pcb_gui->printer || pcb_gui->exporter) {
+			if (we_are_exporting) {
 				pcb_message(PCB_MSG_ERROR, "Can not load file '%s' (specified on command line) for exporting or printing\n", command_line_pcb);
 				log_print_uninit_errs("Export load error");
 				exit(1);
@@ -666,7 +667,7 @@ int main(int argc, char *argv[])
 		pcb_parse_actions(conf_core.rc.action_string);
 	}
 
-	if (pcb_gui->printer || pcb_gui->exporter) {
+	if (we_are_exporting) {
 		if (pcb_data_is_empty(PCB->Data))
 			pcb_message(PCB_MSG_WARNING, "Exporting empty board (nothing loaded or drawn).\n");
 		pcb_gui->do_export(0);
