@@ -60,12 +60,10 @@ typedef struct pcb_gtk_common_s {
 	pcb_bool (*map_color_string)(const char *color_string, pcb_gtk_color_t * color);
 	const gchar *(*get_color_name)(pcb_gtk_color_t * color);
 
-	/* only for config: */
 	void (*set_special_colors)(conf_native_t *cfg);
 	void (*layer_buttons_update)(void);
 
 	int (*command_entry_is_active)(void);
-
 } pcb_gtk_common_t;
 
 #endif
