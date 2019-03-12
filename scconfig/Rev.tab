@@ -1,4 +1,4 @@
-23901	configure	cleanup: remove dead code from gtk
+23902	configure	cleanup: remove dead code from gtk
 23857	configure	new, centralized log dialog
 23788	configure	lesstif tabbed widget reimplementation for portability
 23737	configure	new fileselect dialog API and new, centralized load/save actions

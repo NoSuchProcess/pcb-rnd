@@ -3806,7 +3806,7 @@
  conf.h ../src_plugins/lib_gtk_common/compat.h conf_core.h board.h \
  vtroutestyle.h layer_grp.h rats_patch.h board.h crosshair.h vtonpoint.h \
  hid.h route.h actions.h ../src_3rd/libfungw/fungw.h \
- ../src_3rd/genht/htpp.h ../src_plugins/lib_gtk_common/bu_text_view.h \
+ ../src_3rd/genht/htpp.h   \
  ../src_plugins/lib_gtk_common/bu_status_line.h \
  ../src_plugins/lib_gtk_common/hid_gtk_conf.h \
  ../src_plugins/lib_hid_common/cli_history.h
@@ -3954,8 +3954,7 @@
  conf.h ../src_plugins/lib_gtk_common/compat.h conf_core.h compat_misc.h \
  board.h vtroutestyle.h layer_grp.h rats_patch.h board.h
 ../src_plugins/lib_gtk_common/bu_text_view.o: \
- ../src_plugins/lib_gtk_common/bu_text_view.c ../config.h \
- ../src_plugins/lib_gtk_common/bu_text_view.h
+ ../src_plugins/lib_gtk_common/bu_text_view.c ../config.h
 ../src_plugins/lib_gtk_common/dlg_attribute.o: \
  ../src_plugins/lib_gtk_common/dlg_attribute.c ../config.h conf_core.h \
  conf.h global_typedefs.h pcb_bool.h unit.h pcb-printf.h \

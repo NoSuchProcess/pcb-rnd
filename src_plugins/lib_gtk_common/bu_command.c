@@ -43,7 +43,6 @@
 #include "crosshair.h"
 #include "actions.h"
 
-#include "bu_text_view.h"
 #include "bu_status_line.h"
 #include "hid_gtk_conf.h"
 #include "../src_plugins/lib_hid_common/cli_history.h"
