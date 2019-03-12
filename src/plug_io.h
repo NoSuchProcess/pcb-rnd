@@ -130,11 +130,6 @@ int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, p
 int pcb_write_pipe(const char *, pcb_bool, const char *fmt, pcb_bool elem_only);
 void pcb_set_design_dir(const char *fn);
 
-#ifndef HAS_ATEXIT
-void pcb_tmp_data_save(void);
-void pcb_tmp_data_remove(void);
-#endif
-
 /********** helpers **********/
 
 /* wish we had more than 32 IO plugins... */

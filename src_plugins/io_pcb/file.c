@@ -1159,3 +1159,25 @@ void io_pcb_postproc_board(pcb_board_t *pcb)
 	pcb_layer_colors_from_conf(pcb, 1);
 	pcb_rat_all_anchor_guess(pcb->Data);
 }
+
+#if !defined(HAS_ATEXIT)
+/* makes a temporary copy of the data. This is useful for systems which
+ * doesn't support calling functions on exit. We use this to save the data
+ * before LEX and YACC functions are called because they are able to abort
+ * the program.*/
+void pcb_tmp_data_save(void)
+{
+	char *fn = pcb_build_fn(conf_core.rc.emergency_name);
+	pcb_write_pcb_file(fn, pcb_true, NULL, pcb_true, pcb_false);
+	if (TMPFilename != NULL)
+		free(TMPFilename);
+	TMPFilename = fn;
+}
+
+void pcb_tmp_data_remove(void)
+{
+	if (TMPFilename != NULL)
+		unlink(TMPFilename);
+}
+#endif
+
