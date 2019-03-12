@@ -41,6 +41,7 @@ typedef struct{
 	unsigned long last_added;
 	int active;
 	int wtxt, wscroll;
+	int gui_inited;
 } log_ctx_t;
 
 static log_ctx_t log_ctx;
@@ -187,7 +188,7 @@ static void log_append_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 		if ((log_ctx.dlg[log_ctx.wscroll].default_val.int_value) && (txt->hid_scroll_to_bottom != NULL))
 			txt->hid_scroll_to_bottom(atxt, log_ctx.dlg_hid_ctx);
 	}
-	else if (PCB_HAVE_GUI_ATTR_DLG) {
+	else if ((PCB_HAVE_GUI_ATTR_DLG) && (log_ctx.gui_inited)) {
 		const char *prefix;
 		int popup;
 
@@ -208,6 +209,26 @@ static void log_clear_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 	}
 }
 
+static void log_gui_init_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	pcb_logline_t *n;
+
+	log_ctx.gui_inited = 1;
+
+	/* if there's pending popup-message in the queue, pop up the dialog */
+	for(n = pcb_log_first; n != NULL; n = n->next) {
+		const char *prefix;
+		int popup;
+
+		conf_loglevel_props(n->level, &prefix, &popup);
+		if (popup) {
+			log_window_create();
+			return;
+		}
+	}
+}
+
+
 void pcb_dlg_log_uninit(void)
 {
 	pcb_event_unbind_allcookie(log_cookie);
@@ -217,4 +238,5 @@ void pcb_dlg_log_init(void)
 {
 	pcb_event_bind(PCB_EVENT_LOG_APPEND, log_append_ev, NULL, log_cookie);
 	pcb_event_bind(PCB_EVENT_LOG_CLEAR, log_clear_ev, NULL, log_cookie);
+	pcb_event_bind(PCB_EVENT_GUI_INIT, log_gui_init_ev, NULL, log_cookie);
 }
