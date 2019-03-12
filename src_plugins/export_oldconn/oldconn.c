@@ -235,32 +235,19 @@ static void pcb_lookup_conns_to_all_subcs(FILE *f)
 	pcb_redraw();
 }
 
-static FILE *pcb_check_and_open_file(const char *Filename, pcb_bool Confirm, pcb_bool AllButton, pcb_bool *WasAllButton, pcb_bool *WasCancelButton)
+static FILE *pcb_check_and_open_file(const char *Filename)
 {
 	FILE *fp = NULL;
-	char message[PCB_PATH_MAX + 80];
-	int response;
 
-	if (Filename && *Filename) {
-		if (pcb_file_readable(Filename) && Confirm) {
-			const char *all_ok = "all ok";
+	if ((Filename != NULL) && (*Filename != '\0')) {
+		char message[PCB_PATH_MAX + 80];
+		int response;
+
+		if (pcb_file_readable(Filename)) {
 			sprintf(message, "File '%s' exists, use anyway?", Filename);
-			if (WasAllButton)
-				*WasAllButton = pcb_false;
-			if (WasCancelButton)
-				*WasCancelButton = pcb_false;
-			if (!AllButton)
-				all_ok = NULL;
-			response = pcb_hid_message_box("warning", "Overwrite file", message, "cancel", 0, "ok", 1, all_ok, 2, NULL);
-			switch (response) {
-			case 2:
-				if (WasAllButton)
-					*WasAllButton = pcb_true;
-				break;
-			case 0:
-				if (WasCancelButton)
-					*WasCancelButton = pcb_true;
-			}
+			response = pcb_hid_message_box("warning", "Overwrite file", message, "cancel", 0, "ok", 1, NULL);
+			if (response != 1)
+				return NULL;
 		}
 		if ((fp = pcb_fopen(Filename, "w")) == NULL)
 			pcb_open_error_message(Filename);
@@ -276,7 +263,6 @@ fgw_error_t pcb_act_ExportOldConn(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int op;
 	const char *name = NULL;
 	FILE *f;
-	pcb_bool result;
 	void *ptrtmp;
 	pcb_coord_t x, y;
 
@@ -286,7 +272,7 @@ fgw_error_t pcb_act_ExportOldConn(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	switch(op) {
 		case F_AllConnections:
-			f = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL);
+			f = pcb_check_and_open_file(name);
 			if (f != NULL) {
 				pcb_lookup_conns_to_all_subcs(f);
 				fclose(f);
@@ -294,7 +280,7 @@ fgw_error_t pcb_act_ExportOldConn(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return 0;
 
 		case F_AllUnusedPins:
-			f = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL);
+			f = pcb_check_and_open_file(name);
 			if (f != NULL) {
 				pcb_lookup_unused_pins(f, 1);
 				fclose(f);
@@ -307,7 +293,7 @@ fgw_error_t pcb_act_ExportOldConn(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_hid_get_coords("Click on a subc", &x, &y, 0);
 			if (pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp) != PCB_OBJ_VOID) {
 				pcb_subc_t *subc = (pcb_subc_t *) ptrtmp;
-				f = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL);
+				f = pcb_check_and_open_file(name);
 				if (f != NULL) {
 					pcb_lookup_subc_conns(f, subc);
 					fclose(f);
