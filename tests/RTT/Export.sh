@@ -195,7 +195,7 @@ cmp_fmt()
 # Remove known, expected error messages
 stderr_filter()
 {
-	local common="Couldn't find default.pcb\|No preferred unit format info available for\|has no font information, using default font\|Can't export empty board\|Log produced after failed export"
+	local common="Couldn't find default.pcb\|No preferred unit format info available for\|has no font information, using default font\|Log produced after failed export\|Exporting empty board\|[*][*][*] Exporting:\|^.pcb-rnd:stderr.[ \t]*$"
 	case "$fmt" in
 		gerber) grep -v "Can't export polygon as G85 slot\|please use lines for slotting\|$common" ;;
 		*) grep -v "$common";;
