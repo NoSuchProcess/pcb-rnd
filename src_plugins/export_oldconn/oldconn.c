@@ -28,6 +28,9 @@
 #include "conf_core.h"
 
 #include <stdio.h>
+#include <errno.h>
+
+#include <sys/stat.h>
 
 #include "actions.h"
 #include "board.h"
@@ -36,6 +39,7 @@
 #include "draw.h"
 #include "plugins.h"
 #include "plug_io.h"
+#include "safe_fs.h"
 #include "find.h"
 #include "macro.h"
 #include "obj_subc_parent.h"
@@ -232,6 +236,39 @@ static void pcb_lookup_conns_to_all_subcs(FILE *f)
 	pcb_redraw();
 }
 
+static FILE *pcb_check_and_open_file(const char *Filename, pcb_bool Confirm, pcb_bool AllButton, pcb_bool *WasAllButton, pcb_bool *WasCancelButton)
+{
+	FILE *fp = NULL;
+	struct stat buffer;
+	char message[PCB_PATH_MAX + 80];
+	int response;
+
+	if (Filename && *Filename) {
+		if (!stat(Filename, &buffer) && Confirm) {
+			const char *all_ok = "all ok";
+			sprintf(message, "File '%s' exists, use anyway?", Filename);
+			if (WasAllButton)
+				*WasAllButton = pcb_false;
+			if (WasCancelButton)
+				*WasCancelButton = pcb_false;
+			if (!AllButton)
+				all_ok = NULL;
+			response = pcb_hid_message_box("warning", "Overwrite file", message, "cancel", 0, "ok", 1, all_ok, 2, NULL);
+			switch (response) {
+			case 2:
+				if (WasAllButton)
+					*WasAllButton = pcb_true;
+				break;
+			case 0:
+				if (WasCancelButton)
+					*WasCancelButton = pcb_true;
+			}
+		}
+		if ((fp = pcb_fopen(Filename, "w")) == NULL)
+			pcb_open_error_message(Filename);
+	}
+	return fp;
+}
 
 static const char pcb_acts_ExportOldConn[] = "ExportOldConn(AllConnections|AllUnusedPins|ElementConnections,filename)\n";
 static const char pcb_acth_ExportOldConn[] = "Export galvanic connection data in an old, custom file format.";
