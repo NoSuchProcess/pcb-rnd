@@ -1918,17 +1918,10 @@ static int lesstif_parse_arguments(int *argc, char ***argv)
 #endif
 	acount = 0;
 
-#if 0
-	rmax = rcount + XtNumber(lesstif_resources);
-#else
 	rmax = rcount;
-#endif
 
 	new_resources = (XtResource *) malloc((rmax + 1) * sizeof(XtResource));
 	new_values = (val_union *) malloc((rmax + 1) * sizeof(val_union));
-#if 0
-	memcpy(new_resources + acount, lesstif_resources, sizeof(lesstif_resources));
-#endif
 	rcount = 0;
 
 	for (ha = hid_attr_nodes; ha; ha = ha->next)
@@ -2012,13 +2005,6 @@ static int lesstif_parse_arguments(int *argc, char ***argv)
 				break;
 			}
 		}
-#if 0
-	for (i = 0; i < XtNumber(lesstif_resources); i++) {
-		XtResource *r = new_resources + rcount;
-		r->resource_offset = sizeof(val_union) * rcount;
-		rcount++;
-	}
-#endif
 
 	stdarg_n = 0;
 	stdarg(XmNdeleteResponse, XmDO_NOTHING);
