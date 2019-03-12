@@ -251,7 +251,7 @@ static void log_print_uninit_errs(const char *title)
 
 	if (from == NULL)
 		return;
-	fprintf(stderr, "***%s:\n", title);
+	fprintf(stderr, " ***%s:\n", title);
 	for(n = from; n != NULL; n = n->next)
 		if ((n->level >= PCB_MSG_INFO) || conf_core.rc.verbose)
 			fprintf(stderr, "%s", n->str);
@@ -629,10 +629,15 @@ int main(int argc, char *argv[])
 	pcb_tool_select_by_id(PCB_MODE_ARROW);
 
 	if (command_line_pcb) {
-		/* keep filename even if initial load command failed;
-		 * file might not exist */
-		if (pcb_load_pcb(command_line_pcb, NULL, pcb_true, 0))
+		if (pcb_load_pcb(command_line_pcb, NULL, pcb_true, 0) != 0) {
+			if (pcb_gui->printer || pcb_gui->exporter) {
+				pcb_message(PCB_MSG_ERROR, "Can not load file '%s' (specified on command line) for exporting or printing\n", command_line_pcb);
+				log_print_uninit_errs("Export load error");
+				exit(1);
+			}
+			/* keep filename if load failed: file might not exist, save it by that name */
 			PCB->Filename = pcb_strdup(command_line_pcb);
+		}
 	}
 
 	if (conf_core.design.initial_layer_stack && conf_core.design.initial_layer_stack[0])
@@ -654,11 +659,11 @@ int main(int argc, char *argv[])
 	if (pcb_gui->printer || pcb_gui->exporter) {
 		if (pcb_data_is_empty(PCB->Data)) {
 			pcb_message(PCB_MSG_ERROR, "Can't export empty board - the board needs to contain at least one object.\n");
-			log_print_uninit_errs("Log produced after failed export");
 			exit(1);
 		}
 		else
 			pcb_gui->do_export(0);
+		log_print_uninit_errs("Log produced during the export");
 		pcb_main_uninit();
 		exit(0);
 	}
