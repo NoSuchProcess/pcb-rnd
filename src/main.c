@@ -248,14 +248,18 @@ static char **hid_argv_orig;
 static void log_print_uninit_errs(const char *title)
 {
 	pcb_logline_t *n, *from = pcb_log_find_first_unseen();
+	int printed = 0;
 
-	if (from == NULL)
-		return;
-	fprintf(stderr, " ***%s:\n", title);
-	for(n = from; n != NULL; n = n->next)
-		if ((n->level >= PCB_MSG_INFO) || conf_core.rc.verbose)
+	for(n = from; n != NULL; n = n->next) {
+		if ((n->level >= PCB_MSG_INFO) || conf_core.rc.verbose) {
+			if (!printed)
+				fprintf(stderr, " *** %s:\n", title);
 			fprintf(stderr, "%s", n->str);
-	fprintf(stderr, "\n\n");
+			printed = 1;
+		}
+	}
+	if (printed)
+		fprintf(stderr, "\n\n");
 }
 
 void pcb_main_uninit(void)
