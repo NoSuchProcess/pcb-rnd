@@ -273,13 +273,15 @@ void pcb_main_uninit(void)
 	if (conf_isdirty(CFR_USER))
 		conf_save_file(NULL, NULL, CFR_USER, NULL);
 
-	pcb_uninit_buffers(PCB);
+	if (PCB != NULL) {
+		pcb_uninit_buffers(PCB);
 
-	/* Free up memory allocated to the PCB. Why bother when we're about to exit ?
-	 * Because it removes some false positives from heap bug detectors such as
-	 * valgrind. */
-	pcb_board_free(PCB);
-	free(PCB);
+		/* Free up memory allocated to the PCB. Why bother when we're about to exit ?
+		 * Because it removes some false positives from heap bug detectors such as
+		 * valgrind. */
+		pcb_board_free(PCB);
+		free(PCB);
+	}
 	PCB = NULL;
 
 	pcb_hid_uninit();
@@ -604,17 +606,21 @@ int main(int argc, char *argv[])
 		int res = pcb_parse_command(main_action, pcb_true);
 		if ((res != 0) && (main_action_hint != NULL))
 			fprintf(stderr, "\nHint: %s\n", main_action_hint);
+		pcb_main_uninit();
 		exit(res);
 	}
 
-	if (gui_parse_arguments(autopick_gui, &hid_argc, &hid_argv) != 0)
+	if (gui_parse_arguments(autopick_gui, &hid_argc, &hid_argv) != 0) {
+		pcb_main_uninit();
 		exit(1);
+	}
 
 	/* Create a new PCB object in memory */
 	PCB = pcb_board_new(0);
 
 	if (PCB == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can't create an empty layout, exiting\n");
+		log_print_uninit_errs("Initialization");
 		exit(1);
 	}
 
