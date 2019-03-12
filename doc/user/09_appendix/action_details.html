@@ -102,28 +102,6 @@ Note:
  There can be any number of timers in parallel. 
 </dd></dl>
 
-<h2 id="adjustsizes">adjustsizes</h2>
-<dl><dd>
-<p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
-</table>
-<p>
-Displays a dialog box that lets the user change the board size, DRC parameters, and text scale. 
-<p>
- The units are determined by the default display units. 
-<p>
- Available only in the lesstif HID. 
-<b>
-Will be removed
-</b>
- in favor of the 
-<a href="#preferences">preferences</a>
- action. 
-</dd></dl>
-
 <h2 id="adjuststyle">adjuststyle</h2>
 <dl><dd>
 <p>
@@ -385,12 +363,14 @@ Before autorouting, it's important to set up a few things.  First, make sure any
  
 </dd></dl>
 
-<h2 id="benchmark">benchmark</h2>
+<h2 id="benchmark">Benchmark</h2>
 <dl><dd>
 <p>
 <table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>n/a
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+Benchmark()
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Benchmark the GUI speed.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
 </table>
 <p>
@@ -1718,13 +1698,16 @@ import::disperse
  attribute. 
 </dd></dl>
 
-<h2 id="importgui">importgui</h2>
+<h2 id="importgui">ImportGUI</h2>
 <dl><dd>
 <p>
 <table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+ImportGUI()
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Asks user which schematics to import into PCB.
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+dialogs plugin
 </table>
 <p>
 Displays a dialog that lets the user select the schematic(s) to import from, then saves that information in the layout's attributes for future imports. 
@@ -1781,13 +1764,17 @@ Print one line in the log for each currently loaded script. If
  as a case sensitive regex on script ID, file name and language (list only scripts that match with any of these fields).  
 </dd></dl>
 
-<h2 id="load">load</h2>
+<h2 id="load">Load</h2>
 <dl><dd>
 <p>
 <table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+Load()
+Load(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert)
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Load layout data from a user-selected file.
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+dialogs plugin
 </table>
 <p>
 This action is a GUI front-end to the core's 
@@ -2231,7 +2218,7 @@ Note that moving an subcircuit from a component layer to a solder layer, or from
 <p>
 <table border=0 cellspacing=10 class=actsum>
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-Net(find|select|rats|norats|clear[,net[,pin]])
+Net(find|select|rats|norats||ripup|addrats|clear[,net[,pin]])
 Net(freeze|thaw|forcethaw)
 Net(swap)
 Net(add,net,pin)
@@ -2330,9 +2317,21 @@ connected-color
 <tr>
 
 <th>
+ ripup  
+<td>
+ Remove all non-subcircuit-part copper object that is connected to a net.   
+<tr>
+
+<th>
  add  
 <td>
  Add the given pin to the given netlist, creating either if needed.   
+<tr>
+
+<th>
+ AddRats  
+<td>
+ Calculate and add all rats required for finishing the named network.   
 <tr>
 
 <th>
@@ -2686,7 +2685,8 @@ Open an export dialog listing all printing plugins, prompt the user for their op
 PrintCalibrate()
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
 Calibrate the printer.
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+dialogs plugin
 </table>
 <p>
 This will print a calibration page, which you would measure and type the measurements in, so that future printouts will be more precise. 
@@ -3017,13 +3017,19 @@ shand_cmd plugin
 If no filename is entered, either the last one is used again or, if it is not available, a file select box will pop up. 
 </dd></dl>
 
-<h2 id="save">save</h2>
+<h2 id="save">Save</h2>
 <dl><dd>
 <p>
 <table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+Save()
+Save(Layout|LayoutAs)
+Save(AllConnections|AllUnusedPins|ElementConnections)
+Save(PasteBuffer)
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Save layout data to a user-selected file.
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+dialogs plugin
 </table>
 <p>
 This action is a GUI front-end to the core's 

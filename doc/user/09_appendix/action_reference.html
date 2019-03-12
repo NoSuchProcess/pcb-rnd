@@ -12,7 +12,7 @@
 <h2> Action Reference</h2>
 <table border=1>
 <caption>\n <b>
-This is pcb-rnd 2.1.0 (svn r22577) an interactive printed circuit board editor ,  Revision: 22702
+This is pcb-rnd 2.1.1 (svn r23108) an interactive printed circuit board editor ,  Revision: 23904
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -26,6 +26,7 @@ This is pcb-rnd 2.1.0 (svn r22577) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#autoroute">AutoRoute</a></td><td>Auto-route some or all rat lines.</td><td>AutoRoute(AllRats|SelectedRats)</td><td>autoroute plugin</td>
 <tr><td>Backup</td><td>Backup the current layout - save using the same method that the timed backup function uses</td><td>Backup()</td><td></td>
 <tr><td>Bell</td><td>Attempt to produce audible notification (e.g. beep the speaker).</td><td>Bell()</td><td>oldactions plugin</td>
+<tr><td><a href="action_details.html#benchmark">Benchmark</a></td><td>Benchmark the GUI speed.</td><td>Benchmark()</td><td></td>
 <tr><td><a href="action_details.html#boardflip">BoardFlip</a></td><td>Mirror the board over the x axis, optionally mirroring sides as well.</td><td>BoardFlip([sides])</td><td></td>
 <tr><td>Brave</td><td>Changes brave settings.</td><td>Brave()<br>Brave(setting, on|off)</td><td></td>
 <tr><td>BrowseScripts</td><td>Present a dialog box for browsing scripts</td><td>BrowseScripts()</td><td>script plugin</td>
@@ -54,6 +55,7 @@ This is pcb-rnd 2.1.0 (svn r22577) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#chkview">ChkView</a></td><td>Return 1 if layerid is visible.</td><td>ChkView(layerid)</td><td></td>
 <tr><td>ClearOctagon</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td>ClearSquare</td><td></td><td></td><td>oldactions plugin</td>
+<tr><td>ClipInhibit</td><td>ClipInhibit Feature Template.</td><td>ClipInhibit([on|off|check])</td><td></td>
 <tr><td><a href="action_details.html#clrflag">ClrFlag</a></td><td>Clears flags on objects.</td><td>ClrFlag(Object|Selected|SelectedObjects, flag)<br>ClrFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>ClrFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>ClrFlag(SelectedElements, flag)<br>flag = thermal | join</td><td></td>
 <tr><td><a href="action_details.html#connection">Connection</a></td><td>Searches connections of the object at the cursor position.</td><td>Connection(Find|ResetLinesAndPolygons|ResetPinsAndVias|Reset)</td><td></td>
 <tr><td>CreateMenu</td><td>Creates a new menu, popup (only path specified) or submenu (at least path and action are specified)</td><td>CreateMenu(path)<br>CreateMenu(path, action, tooltip, cookie)</td><td></td>
@@ -108,6 +110,7 @@ This is pcb-rnd 2.1.0 (svn r22577) an interactive printed circuit board editor ,
 <tr><td>IOIncompatList</td><td>Present the format incompatibilities of the last save to file operation.</td><td>IOIncompatList([list|simple])</td><td></td>
 <tr><td>IOIncompatListDialog</td><td>Present the format incompatibilities of the last save to file operation in a GUI dialog.</td><td>IOIncompatListDialog([list|simple])</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#import">Import</a></td><td>Import schematics.</td><td>Import()<br>Import([gnetlist|make[,source,source,...]])<br>Import(setnewpoint[,(mark|center|X,Y)])<br>Import(setdisperse,D,units)</td><td>import_sch plugin</td>
+<tr><td><a href="action_details.html#importgui">ImportGUI</a></td><td>Asks user which schematics to import into PCB.</td><td>ImportGUI()</td><td>dialogs plugin</td>
 <tr><td>ImportcpcbFrom</td><td>Loads the auto-routed tracks from the specified c-pcb output.</td><td>ImportcpcbFrom(filename)</td><td>cpcb plugin</td>
 <tr><td>LayerBinding</td><td>Change the layer binding.</td><td>LayerBinding(object)<br>LayerBinding(selected)<br>LayerBinding(buffer)</td><td>dialogs plugin</td>
 <tr><td>LayerPropGui</td><td>Change layer flags and properties</td><td>LayerPropGui(layerid)</td><td>dialogs plugin</td>
@@ -115,6 +118,7 @@ This is pcb-rnd 2.1.0 (svn r22577) an interactive printed circuit board editor ,
 <tr><td>LineNew</td><td>Create a pcb line segment on a layer. For now data must be "pcb". Returns the ID of the new object or 0 on error.</td><td>LineNew(data, layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags)</td><td>act_draw</td>
 <tr><td>ListRotations</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#listscripts">ListScripts</a></td><td>List fungw scripts, optionally filtered wiht regex pat.</td><td>ListScripts([pat])</td><td>script plugin</td>
+<tr><td><a href="action_details.html#load">Load</a></td><td>Load layout data from a user-selected file.</td><td>Load()<br>Load(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert)</td><td>dialogs plugin</td>
 <tr><td>LoadCalayFrom</td><td>Loads the specified calay netlist/component file pair.</td><td>LoadCalayFrom(filename)</td><td>calay importer</td>
 <tr><td>LoadDsnFrom</td><td>Loads the specified routed dsn file.</td><td>LoadDsnFrom(filename)</td><td>dsn importer</td>
 <tr><td>LoadEeschemaFrom</td><td>Loads the specified eeschema .net file - the netlist must be an s-expression.</td><td>LoadEeschemaFrom(filename)</td><td>kicad plugin</td>
@@ -133,6 +137,8 @@ This is pcb-rnd 2.1.0 (svn r22577) an interactive printed circuit board editor ,
 <tr><td>LoadTtfGlyphs</td><td>Loads glyphs from an outline ttf in the specified source range, optionally remapping them to dstchars range in the pcb-rnd font</td><td>LoadTtfGlyphs(filename, srcglyps, [dstchars])</td><td>ttf importer</td>
 <tr><td><a href="action_details.html#loadvendorfrom">LoadVendorFrom</a></td><td>Loads the specified vendor lihata file.</td><td>LoadVendorFrom(filename)</td><td>vendor drill mapping</td>
 <tr><td>LoadhypFrom</td><td>Loads the specified Hyperlynx file.</td><td>LoadhypFrom(filename[, "debug"]...)</td><td>hyp importer</td>
+<tr><td>Log</td><td>Manages the central, in-memory log.</td><td>Log(clear, [fromID, [toID])<br>Log(export, [filename, [text|lihata])</td><td></td>
+<tr><td>LogDialog</td><td>Open the log dialog.</td><td>LogDialog()</td><td>dialogs plugin</td>
 <tr><td>ManagePlugins</td><td>Manage plugins dialog.</td><td>ManagePlugins()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#markcrosshair">MarkCrosshair</a></td><td>Set/Reset the pcb_crosshair mark.</td><td>MarkCrosshair()<br>MarkCrosshair(Center)</td><td></td>
 <tr><td><a href="action_details.html#message">Message</a></td><td>Writes a message to the log window.</td><td>message(message)</td><td></td>
@@ -145,6 +151,7 @@ This is pcb-rnd 2.1.0 (svn r22577) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#moveobject">MoveObject</a></td><td>Moves the object under the crosshair.</td><td>pcb_move_obj(X,Y,[units])</td><td></td>
 <tr><td><a href="action_details.html#movetocurrentlayer">MoveToCurrentLayer</a></td><td>Moves objects to the current layer.</td><td>MoveToCurrentLayer(Object|SelectedObjects)</td><td></td>
 <tr><td>NetlistChanged</td><td>Tells the GUI that the netlist has changed.</td><td>NetlistChanged()</td><td>oldactions plugin</td>
+<tr><td>NetlistDialog</td><td>Open the netlist dialog.</td><td>NetlistDialog()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#new">New</a></td><td>Starts a new layout.</td><td>New([name])</td><td></td>
 <tr><td>NewGroup</td><td>Create a new layer group with a single, positive drawn layer in it</td><td>NewGroup(type [,location [, purpose[, auto|sub]]])</td><td></td>
 <tr><td>Normalize</td><td>Move all objects within the drawing area, align the drawing to 0;0</td><td>Normalize()</td><td></td>
@@ -170,7 +177,7 @@ This is pcb-rnd 2.1.0 (svn r22577) an interactive printed circuit board editor ,
 <tr><td>Preferences</td><td>Present the preferences dialog, optionally opening the tab requested.</td><td>Preferences([tabname])</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#print">Print</a></td><td>Present the print export dialog for printing the layout from the GUI.</td><td>Print()</td><td></td>
 <tr><td>PrintActions</td><td>Print all actions available.</td><td>PrintActions()</td><td></td>
-<tr><td><a href="action_details.html#printcalibrate">PrintCalibrate</a></td><td>Calibrate the printer.</td><td>PrintCalibrate()</td><td></td>
+<tr><td><a href="action_details.html#printcalibrate">PrintCalibrate</a></td><td>Calibrate the printer.</td><td>PrintCalibrate()</td><td>dialogs plugin</td>
 <tr><td>PrintCopyright</td><td>Print copyright notice.</td><td>PrintCopyright()</td><td></td>
 <tr><td>PrintFiles</td><td>Print files currently loaded.</td><td>PrintFiles()</td><td></td>
 <tr><td>PrintGUI</td><td>Open the print dialog.</td><td>PrintGUI()</td><td>dialogs plugin</td>
@@ -195,6 +202,7 @@ This is pcb-rnd 2.1.0 (svn r22577) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#rotate90">Rotate90</a></td><td>Rotates the object under the crosshair by 90 degree steps.</td><td>pcb_move_obj(steps)</td><td></td>
 <tr><td>RouteStyle</td><td>Copies the indicated routing style into the current pen.</td><td>RouteStyle(style_id|style_name)</td><td></td>
 <tr><td>RouteStylesChanged</td><td>Tells the GUI that the routing styles have changed.</td><td>RouteStylesChanged()</td><td>oldactions plugin</td>
+<tr><td><a href="action_details.html#save">Save</a></td><td>Save layout data to a user-selected file.</td><td>Save()<br>Save(Layout|LayoutAs)<br>Save(AllConnections|AllUnusedPins|ElementConnections)<br>Save(PasteBuffer)</td><td>dialogs plugin</td>
 <tr><td>SaveFontTo</td><td>Save PCB font to a file</td><td>SaveFontTo([file, id])</td><td></td>
 <tr><td>SavePatch</td><td>Save netlist patch for back annotation.</td><td>SavePatch(filename)</td><td></td>
 <tr><td>SaveTedax</td><td>Saves the specific type of data in a tEDAx file.</td><td>SaveTedax(netlist|board-footprints|stackup|layer|board|drc, filename)</td><td>tEDAx IO</td>
@@ -231,7 +239,7 @@ This is pcb-rnd 2.1.0 (svn r22577) an interactive printed circuit board editor ,
 <tr><td>asm</td><td>Interactive assembly assistant</td><td>asm()</td><td>asm plugin</td>
 <tr><td>autocrop</td><td>Autocrops the board dimensions to (extants + a margin of 1 grid), keeping the move and board size grid aligned</td><td>autocrop()</td><td>autocrop plugin</td>
 <tr><td>awk</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
-<tr><td>cam</td><td>Export jobs for feeding cam processes</td><td>cam(exec, script)<br>cam(call, jobname)</td><td>cam exporter</td>
+<tr><td>cam</td><td>Export jobs for feeding cam processes</td><td>cam(exec, script, [options])<br>cam(call, jobname, [options])</td><td>cam exporter</td>
 <tr><td>circle</td><td>Generate a filled circle (zero length round cap line)</td><td>circle([where,] diameter)</td><td>shape plugin</td>
 <tr><td>cli_MessageBox</td><td>Intenal: CLI frontend action. Do not use directly.</td><td></td><td></td>
 <tr><td>cli_PromptFor</td><td>Intenal: CLI frontend action. Do not use directly.</td><td></td><td></td>
@@ -273,8 +281,8 @@ This is pcb-rnd 2.1.0 (svn r22577) an interactive printed circuit board editor ,
 <tr><td>mesh</td><td>generate a mesh for simulation</td><td>mesh()</td><td>openems HID</td>
 <tr><td>mill</td><td>Calculate toolpath for milling away copper</td><td>mill()</td><td>millpath plugin</td>
 <tr><td>mruby</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
-<tr><td>net</td><td>Perform various actions on netlists.</td><td>Net(find|select|rats|norats|clear[,net[,pin]])<br>Net(freeze|thaw|forcethaw)<br>Net(swap)<br>Net(add,net,pin)</td><td></td>
-<tr><td><a href="action_details.html#netlist">netlist</a></td><td>Perform various actions on netlists.</td><td>Net(find|select|rats|norats|clear[,net[,pin]])<br>Net(freeze|thaw|forcethaw)<br>Net(swap)<br>Net(add,net,pin)</td><td></td>
+<tr><td>net</td><td>Perform various actions on netlists.</td><td>Net(find|select|rats|norats||ripup|addrats|clear[,net[,pin]])<br>Net(freeze|thaw|forcethaw)<br>Net(swap)<br>Net(add,net,pin)</td><td></td>
+<tr><td><a href="action_details.html#netlist">netlist</a></td><td>Perform various actions on netlists.</td><td>Net(find|select|rats|norats||ripup|addrats|clear[,net[,pin]])<br>Net(freeze|thaw|forcethaw)<br>Net(swap)<br>Net(add,net,pin)</td><td></td>
 <tr><td>paral</td><td>Draw a line perpendicular to another line</td><td>perp()</td><td>ddraft plugin</td>
 <tr><td>perl</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>perp</td><td>Draw a line perpendicular to another line</td><td>perp()</td><td>ddraft plugin</td>
