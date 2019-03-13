@@ -54,6 +54,7 @@ typedef enum pcb_hids_e {
 	PCB_HATT_BEGIN_VPANE,         /* vertical split and offer two vboxes; the split ratio is real_value between 0 and 1, that describes the left side's size */
 	PCB_HATT_BEGIN_TABLE,         /* min_val is the number of columns */
 	PCB_HATT_BEGIN_TABBED,        /* tabbed view (e.g. notebook); ->enumerations stores the tab names and a NULL; default_val's integer value is the index of the current tab */
+	PCB_HATT_BEGIN_COMPOUND,      /* subtree emulating a single widget; (pcb_hid_compound_t *) stored in END's enumerations */
 	PCB_HATT_END          /* close one level of PCB_HATT_* */
 } pcb_hids_t;
 
@@ -160,6 +161,17 @@ struct pcb_hid_preview_s {
 	void (*hid_zoomto_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata, const pcb_box_t *view);
 	void (*hid_free_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata);
 };
+
+typedef struct {
+	int wbegin; /* widget index to the correspoding PCB_HATT_BEGIN_COMPOUND */
+
+	/* compound implementation callbacks */
+	int (*widget_state)(void *hid_ctx, int idx, pcb_bool enabled);
+	int (*widget_hide)(void *hid_ctx, int idx, pcb_bool hide);
+	int (*set_value)(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
+} pcb_hid_compound_t;
+
+
 
 struct pcb_hid_attribute_s {
 	const char *name;

@@ -320,6 +320,10 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 			i = ltf_tabbed_create(ctx, parent, &ctx->attrs[i], i);
 			break;
 
+		case PCB_HATT_BEGIN_COMPOUND:
+			i = attribute_dialog_add(ctx, parent, i+1);
+			break;
+
 		case PCB_HATT_PREVIEW:
 			ctx->wl[i] = ltf_preview_create(ctx, parent, &ctx->attrs[i]);
 			break;
