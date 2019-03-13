@@ -206,6 +206,10 @@ struct pcb_hid_s {
 	/* When 1, HID supports markup (e.g. color) in DAD text widgets  */
 	unsigned supports_dad_text_markup:1;
 
+	/* it is possible to create DAD dialogs before the GUI_INIT event is emitted
+	   (e.g. draw progress bar while loading a command line file) */
+	unsigned allow_dad_before_init:1;
+
 	/* Returns a set of resources describing options the export or print
 	   HID supports.  In GUI mode, the print/export dialogs use this to
 	   set up the selectable options.  In command line mode, these are

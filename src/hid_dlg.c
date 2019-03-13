@@ -30,10 +30,12 @@
 #include "config.h"
 
 #include "actions.h"
+#include "event.h"
 #include "hid.h"
 #include "hid_dad.h"
 #include "hid_nogui.h"
 
+static int hid_dlg_gui_inited = 0;
 
 /* Action and wrapper implementation for dialogs. If GUI is available, the
    gui_ prefixed action is executed, else the cli_ prefixed one is used. If
@@ -246,7 +248,7 @@ int pcb_hid_progress(long so_far, long total, const char *message)
 {
 	if (pcb_gui == NULL)
 		return 0;
-	if ((pcb_gui->gui) && (PCB_HAVE_GUI_ATTR_DLG))
+	if ((pcb_gui->gui) && (PCB_HAVE_GUI_ATTR_DLG) && (hid_dlg_gui_inited || pcb_gui->allow_dad_before_init))
 		return pcb_gui_progress(so_far, total, message);
 
 	return pcb_nogui_progress(so_far, total, message);
@@ -271,3 +273,22 @@ static pcb_action_t hid_dlg_action_list[] = {
 };
 
 PCB_REGISTER_ACTIONS(hid_dlg_action_list, NULL)
+
+
+static const char *event_dlg_cookie = "hid_dlg";
+
+static void hid_dlg_log_gui_init_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	hid_dlg_gui_inited = 1;
+}
+
+void pcb_hid_dlg_uninit(void)
+{
+	pcb_event_unbind_allcookie(event_dlg_cookie);
+}
+
+void pcb_hid_dlg_init(void)
+{
+	pcb_event_bind(PCB_EVENT_GUI_INIT, hid_dlg_log_gui_init_ev, NULL, event_dlg_cookie);
+}
+

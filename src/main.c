@@ -74,6 +74,9 @@ static const char *EXPERIMENTAL = NULL;
 #include "hid_init.h"
 #include "compat_misc.h"
 
+void pcb_hid_dlg_uninit(void);
+void pcb_hid_dlg_init(void);
+
 /* ----------------------------------------------------------------------
  * initialize signal and error handlers
  */
@@ -267,6 +270,7 @@ void pcb_main_uninit(void)
 	if (pcb_log_last != NULL)
 		pcb_log_last->seen = 1; /* ignore anything unseen before the uninit */
 
+	pcb_hid_dlg_uninit();
 	pcb_brave_uninit();
 	pcb_polygon_uninit();
 
@@ -421,6 +425,7 @@ int main(int argc, char *argv[])
 
 	/* Minimal conf setup before we do anything else */
 	pcb_netlist_geo_init();
+	pcb_hid_dlg_init();
 	pcb_color_init();
 	pcb_file_loaded_init();
 	pcb_minuid_init();

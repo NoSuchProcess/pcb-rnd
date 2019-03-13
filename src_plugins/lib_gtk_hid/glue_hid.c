@@ -472,6 +472,7 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->struct_size = sizeof(pcb_hid_t);
 	dst->gui = 1;
 	dst->heavy_term_layer_ind = 1;
+	dst->allow_dad_before_init = 1;
 
 	dst->do_export = gtkhid_do_export;
 	dst->do_exit = ghid_do_exit;
