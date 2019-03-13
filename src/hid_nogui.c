@@ -48,6 +48,8 @@
 
 static const char pcb_acth_cli[] = "Intenal: CLI frontend action. Do not use directly.";
 
+static pcb_hid_t nogui_hid;
+
 typedef struct hid_gc_s {
 	int nothing_interesting_here;
 } hid_gc_s;
@@ -393,7 +395,7 @@ int pcb_nogui_progress(long so_far, long total, const char *message)
 		on = 0;
 	}
 	else {
-		if (conf_core.rc.verbose >= PCB_MSG_INFO) {
+		if ((conf_core.rc.verbose >= PCB_MSG_INFO) || (pcb_gui != &nogui_hid)) {
 			now = pcb_dtime();
 			if (now >= nextt) {
 				fprintf(stderr, "progress: %ld/%ld %s\n", so_far, total, message);
@@ -509,7 +511,6 @@ void pcb_hid_nogui_init(pcb_hid_t * hid)
 	hid->clip_free = nogui_clip_free;
 }
 
-static pcb_hid_t nogui_hid;
 
 pcb_hid_t *pcb_hid_nogui_get_hid(void)
 {
