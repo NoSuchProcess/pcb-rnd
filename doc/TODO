@@ -1,6 +1,7 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
+- BUG: gtk: nothing calls ->set_special_colors - should be config bindings
 - BUG: scconfig: core gets glib dependency even if everything is in plugins (only plugins depend on glib) [report: Vuokko]
 - BUG: font bbox xor draw appears on wrong coords (on top) [report: Igor2]
 - BUG: lesstif: {i c p}, color tab: tabbed doesn't grow [report: Igor2]
