@@ -163,12 +163,13 @@ struct pcb_hid_preview_s {
 };
 
 typedef struct {
-	int wbegin; /* widget index to the correspoding PCB_HATT_BEGIN_COMPOUND */
+	int wbegin, wend; /* widget index to the correspoding PCB_HATT_BEGIN_COMPOUND and PCB_HATT_END */
 
 	/* compound implementation callbacks */
 	int (*widget_state)(void *hid_ctx, int idx, pcb_bool enabled);
 	int (*widget_hide)(void *hid_ctx, int idx, pcb_bool hide);
 	int (*set_value)(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
+	void (*free)(pcb_hid_attribute_t *attrib); /* called by DAD on free'ing the PCB_HATT_BEGIN_COMPOUND and PCB_HATT_END_COMPOUND widget */
 } pcb_hid_compound_t;
 
 

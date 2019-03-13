@@ -27,6 +27,7 @@
 #include "board.h"
 #include "obj_text.h"
 #include "hid_dad_tree.h"
+#include "hid_dad_spin.h"
 
 static const char dlg_test_syntax[] = "dlg_test()\n";
 static const char dlg_test_help[] = "test the attribute dialog";
@@ -112,6 +113,7 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					PCB_DAD_LABEL(ctx.dlg, "text2d");
 				PCB_DAD_END(ctx.dlg);
 				PCB_DAD_LABEL(ctx.dlg, "text3");
+				PCB_DAD_SPIN_INT(ctx.dlg);
 
 				PCB_DAD_ENUM(ctx.dlg, vals);
 					PCB_DAD_CHANGE_CB(ctx.dlg, pcb_act_attr_chg);

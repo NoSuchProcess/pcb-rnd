@@ -425,6 +425,7 @@ do { \
 		case PCB_HATT_BEGIN_HBOX: \
 		case PCB_HATT_BEGIN_VBOX: \
 		case PCB_HATT_BEGIN_TABLE: \
+		case PCB_HATT_BEGIN_COMPOUND: \
 		case PCB_HATT_END: \
 		case PCB_HATT_PREVIEW: \
 		case PCB_HATT_PICTURE: \
@@ -466,6 +467,7 @@ do { \
 		case PCB_HATT_BEGIN_HBOX: \
 		case PCB_HATT_BEGIN_VBOX: \
 		case PCB_HATT_BEGIN_TABLE: \
+		case PCB_HATT_BEGIN_COMPOUND: \
 		case PCB_HATT_END: \
 		case PCB_HATT_PREVIEW: \
 		case PCB_HATT_PICTURE: \
@@ -505,6 +507,7 @@ do { \
 		case PCB_HATT_BEGIN_HBOX: \
 		case PCB_HATT_BEGIN_VBOX: \
 		case PCB_HATT_BEGIN_TABLE: \
+		case PCB_HATT_BEGIN_COMPOUND: \
 		case PCB_HATT_END: \
 		case PCB_HATT_PREVIEW: \
 		case PCB_HATT_PICTURE: \
@@ -556,13 +559,19 @@ do { \
 				free(txt); \
 			} \
 			break; \
+		case PCB_HATT_BEGIN_COMPOUND: \
+		case PCB_HATT_END: \
+			{ \
+				pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)table[field].enumerations; \
+				if ((cmp != NULL) && (cmp->free != NULL)) \
+					cmp->free(&table[field]); \
+			} \
 		case PCB_HATT_BEGIN_HBOX: \
 		case PCB_HATT_BEGIN_VBOX: \
 		case PCB_HATT_BEGIN_HPANE: \
 		case PCB_HATT_BEGIN_VPANE: \
 		case PCB_HATT_BEGIN_TABLE: \
 		case PCB_HATT_BEGIN_TABBED: \
-		case PCB_HATT_END: \
 			break; \
 	} \
 } while(0)

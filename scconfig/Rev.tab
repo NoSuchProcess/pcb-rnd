@@ -1,3 +1,4 @@
+23917	configure	compound DAD widgets, for DAD based spinboxes
 23902	configure	cleanup: remove dead code from gtk
 23857	configure	new, centralized log dialog
 23788	configure	lesstif tabbed widget reimplementation for portability
