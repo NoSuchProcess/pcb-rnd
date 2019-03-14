@@ -417,7 +417,7 @@
  conf.h ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
  list_conf.h conf.h ../src_plugins/dialogs/dlg_test.c board.h \
  vtroutestyle.h layer_grp.h rats_patch.h board.h obj_text.h \
- hid_dad_tree.h hid_dad.h ../src_3rd/genht/hash.h \
+ hid_dad_tree.h hid_dad.h ../src_3rd/genht/hash.h hid_dad_spin.h \
  ../src_plugins/dialogs/dlg_about.h ../src_plugins/dialogs/dlg_comm_m.h \
  ../src_plugins/dialogs/dlg_export.h \
  ../src_plugins/dialogs/dlg_flag_edit.h \
@@ -6682,6 +6682,19 @@ hid_color.o: hid_color.c ../config.h hid_color.h hid.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genht/hash.h compat_misc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/ht.c \
  ../src_3rd/genht/ht_inlines.h
+hid_dad_spin.o: hid_dad_spin.c ../config.h hid_attrib.h hid.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h error.h global_typedefs.h pcb_bool.h unit.h \
+ attrib.h layer.h globalconst.h color.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h data_parent.h \
+ obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
+ obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
+ ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
+ ../src_3rd/genvector/gds_char.h hid_dad_spin.h
 hid_dad_tree.o: hid_dad_tree.c ../config.h hid_dad_tree.h hid_attrib.h \
  hid.h ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
@@ -6709,7 +6722,7 @@ hid_dlg.o: hid_dlg.c ../config.h actions.h hid.h \
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/libfungw/fungw.h \
- ../src_3rd/genht/htpp.h hid_dad.h compat_misc.h hid_attrib.h \
+ ../src_3rd/genht/htpp.h event.h hid_dad.h compat_misc.h hid_attrib.h \
  pcb-printf.h hid_nogui.h
 hid_draw_helpers.o: hid_draw_helpers.c ../config.h hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
