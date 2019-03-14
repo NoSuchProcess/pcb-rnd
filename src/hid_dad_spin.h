@@ -30,6 +30,9 @@ typedef struct {
 	pcb_hid_compound_t cmp;
 	double step; /* how much an up/down step modifies; 0 means automatic */
 	int wstr;
+	enum {
+		PCB_DAD_SPIN_INT
+	} type;
 } pcb_hid_dad_spin_t;
 
 #define PCB_DAD_SPIN_INT(table) \
@@ -58,6 +61,8 @@ do { \
 		spin->cmp.wend = PCB_DAD_CURRENT(table); \
 	\
 	spin->cmp.free = pcb_dad_spin_free; \
+	spin->cmp.set_val_num = pcb_dad_spin_set_num; \
+	spin->type = PCB_DAD_SPIN_INT; \
 } while(0)
 
 /*** implementation ***/
@@ -69,3 +74,5 @@ extern const char *pcb_hid_dad_spin_unit[];
 void pcb_dad_spin_up_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 void pcb_dad_spin_down_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 void pcb_dad_spin_free(pcb_hid_attribute_t *attrib);
+void pcb_dad_spin_set_num(pcb_hid_attribute_t *attr, long l, double d, pcb_coord_t c);
+

@@ -169,7 +169,11 @@ typedef struct {
 	/* compound implementation callbacks */
 	int (*widget_state)(void *hid_ctx, int idx, pcb_bool enabled);
 	int (*widget_hide)(void *hid_ctx, int idx, pcb_bool hide);
-	int (*set_value)(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
+	int (*set_value)(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val); /* set value runtime */
+	void (*set_val_num)(pcb_hid_attribute_t *attr, long l, double d, pcb_coord_t c); /* set value during creation; attr is the END */
+	void (*set_val_ptr)(pcb_hid_attribute_t *attr, void *ptr); /* set value during creation; attr is the END */
+	void (*set_field_num)(pcb_hid_attribute_t *attr, const char *fieldname, long l, double d, pcb_coord_t c); /* set value during creation; attr is the END */
+	void (*set_field_ptr)(pcb_hid_attribute_t *attr, const char *fieldname, void *ptr); /* set value during creation; attr is the END */
 	void (*free)(pcb_hid_attribute_t *attrib); /* called by DAD on free'ing the PCB_HATT_BEGIN_COMPOUND and PCB_HATT_END_COMPOUND widget */
 } pcb_hid_compound_t;
 

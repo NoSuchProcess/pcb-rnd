@@ -332,12 +332,46 @@ do { \
 /* Set properties of the current item */
 #define PCB_DAD_MINVAL(table, val)       PCB_DAD_SET_ATTR_FIELD(table, min_val, val)
 #define PCB_DAD_MAXVAL(table, val)       PCB_DAD_SET_ATTR_FIELD(table, max_val, val)
-#define PCB_DAD_DEFAULT_PTR(table, val)  PCB_DAD_SET_ATTR_FIELD_PTR(table, default_val, val)
-#define PCB_DAD_DEFAULT_NUM(table, val)  PCB_DAD_SET_ATTR_FIELD_NUM(table, default_val, val)
 #define PCB_DAD_MINMAX(table, min, max)  (PCB_DAD_SET_ATTR_FIELD(table, min_val, min),PCB_DAD_SET_ATTR_FIELD(table, max_val, max))
 #define PCB_DAD_CHANGE_CB(table, cb)     PCB_DAD_SET_ATTR_FIELD(table, change_cb, cb)
 #define PCB_DAD_ENTER_CB(table, cb)      PCB_DAD_SET_ATTR_FIELD(table, enter_cb, cb)
 #define PCB_DAD_HELP(table, val)         PCB_DAD_SET_ATTR_FIELD(table, help_text, val)
+
+#define PCB_DAD_DEFAULT_PTR(table, val) \
+	do {\
+		switch(table[table ## _len - 1].type) { \
+			case PCB_HATT_BEGIN_COMPOUND: \
+			case PCB_HATT_END: \
+				{ \
+					pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)table[table ## _len - 1].enumerations; \
+					if ((cmp != NULL) && (cmp->set_val_ptr != NULL)) \
+						cmp->set_val_ptr(&table[table ## _len - 1], (void *)(val)); \
+					else \
+						assert(0); \
+				} \
+				break; \
+			default: \
+				PCB_DAD_SET_ATTR_FIELD_PTR(table, default_val, val); \
+		} \
+	} while(0)
+
+#define PCB_DAD_DEFAULT_NUM(table, val) \
+	do {\
+		switch(table[table ## _len - 1].type) { \
+			case PCB_HATT_BEGIN_COMPOUND: \
+			case PCB_HATT_END: \
+				{ \
+					pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)table[table ## _len - 1].enumerations; \
+					if ((cmp != NULL) && (cmp->set_val_num != NULL)) \
+						cmp->set_val_num(&table[table ## _len - 1], (long)(val), (double)(val), (pcb_coord_t)(val)); \
+					else \
+						assert(0); \
+				} \
+				break; \
+			default: \
+				PCB_DAD_SET_ATTR_FIELD_NUM(table, default_val, val); \
+		} \
+	} while(0);
 
 /* safe way to call gui->attr_dlg_set_value() - resets the unused fields */
 #define PCB_DAD_SET_VALUE(hid_ctx, wid, field, val) \
@@ -467,12 +501,20 @@ do { \
 		case PCB_HATT_BEGIN_HBOX: \
 		case PCB_HATT_BEGIN_VBOX: \
 		case PCB_HATT_BEGIN_TABLE: \
-		case PCB_HATT_BEGIN_COMPOUND: \
-		case PCB_HATT_END: \
 		case PCB_HATT_PREVIEW: \
 		case PCB_HATT_PICTURE: \
 		case PCB_HATT_PICBUTTON: \
 			assert(0); \
+		case PCB_HATT_BEGIN_COMPOUND: \
+		case PCB_HATT_END: \
+			{ \
+				pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)table[table ## _len - 1].enumerations; \
+				if ((cmp != NULL) && (cmp->set_field_num != NULL)) \
+					cmp->set_field_num(&table[table ## _len - 1], #field, (long)(val), (double)(val), (pcb_coord_t)(val)); \
+				else \
+					assert(0); \
+			} \
+			break; \
 	} \
 } while(0)
 
@@ -507,12 +549,20 @@ do { \
 		case PCB_HATT_BEGIN_HBOX: \
 		case PCB_HATT_BEGIN_VBOX: \
 		case PCB_HATT_BEGIN_TABLE: \
-		case PCB_HATT_BEGIN_COMPOUND: \
-		case PCB_HATT_END: \
 		case PCB_HATT_PREVIEW: \
 		case PCB_HATT_PICTURE: \
 		case PCB_HATT_PICBUTTON: \
 			assert(0); \
+		case PCB_HATT_BEGIN_COMPOUND: \
+		case PCB_HATT_END: \
+			{ \
+				pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)table[table ## _len - 1].enumerations; \
+				if ((cmp != NULL) && (cmp->set_field_ptr != NULL)) \
+					cmp->set_field_ptr(&table[table ## _len - 1], #field, (void *)(val)); \
+				else \
+					assert(0); \
+			} \
+			break; \
 	} \
 } while(0)
 

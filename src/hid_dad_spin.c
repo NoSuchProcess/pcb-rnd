@@ -68,6 +68,16 @@ void pcb_dad_spin_down_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)attr->user_data;
 }
 
+void pcb_dad_spin_set_num(pcb_hid_attribute_t *attr, long l, double d, pcb_coord_t c)
+{
+	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)attr->enumerations;
+	switch(spin->type) {
+		case PCB_DAD_SPIN_INT: pcb_trace("spin set: %ld\n", l); break;
+		default: pcb_trace("INTERNAL ERROR: spin_set_num\n");
+	}
+}
+
+
 void pcb_dad_spin_free(pcb_hid_attribute_t *attr)
 {
 	if (attr->type == PCB_HATT_END) {
