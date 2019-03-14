@@ -113,7 +113,16 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					PCB_DAD_LABEL(ctx.dlg, "text2d");
 				PCB_DAD_END(ctx.dlg);
 				PCB_DAD_LABEL(ctx.dlg, "text3");
-				PCB_DAD_SPIN_INT(ctx.dlg);
+
+				PCB_DAD_BEGIN_VBOX(ctx.dlg);
+					PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_FRAME);
+					PCB_DAD_LABEL(ctx.dlg, "spin test");
+					PCB_DAD_BEGIN_HBOX(ctx.dlg);
+						PCB_DAD_LABEL(ctx.dlg, "INT:");
+						PCB_DAD_SPIN_INT(ctx.dlg);
+							PCB_DAD_DEFAULT_NUM(ctx.dlg, 42);
+					PCB_DAD_END(ctx.dlg);
+				PCB_DAD_END(ctx.dlg);
 
 				PCB_DAD_ENUM(ctx.dlg, vals);
 					PCB_DAD_CHANGE_CB(ctx.dlg, pcb_act_attr_chg);
