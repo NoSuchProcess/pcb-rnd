@@ -60,12 +60,12 @@ const char *pcb_hid_dad_spin_unit[] = {
 
 void pcb_dad_spin_up_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)attr->enumerations;
+	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)attr->user_data;
 }
 
 void pcb_dad_spin_down_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)attr->enumerations;
+	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)attr->user_data;
 }
 
 void pcb_dad_spin_free(pcb_hid_attribute_t *attr)

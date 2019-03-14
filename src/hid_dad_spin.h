@@ -45,10 +45,10 @@ do { \
 			PCB_DAD_BEGIN_VBOX(table); \
 				PCB_DAD_PICBUTTON(table, pcb_hid_dad_spin_up); \
 					PCB_DAD_CHANGE_CB(ctx.dlg, pcb_dad_spin_up_cb); \
-					PCB_DAD_SET_ATTR_FIELD(table, enumerations, (const char **)spin); \
+					PCB_DAD_SET_ATTR_FIELD(table, user_data, (const char **)spin); \
 				PCB_DAD_PICBUTTON(table, pcb_hid_dad_spin_down); \
 					PCB_DAD_CHANGE_CB(ctx.dlg, pcb_dad_spin_down_cb); \
-					PCB_DAD_SET_ATTR_FIELD(table, enumerations, (const char **)spin); \
+					PCB_DAD_SET_ATTR_FIELD(table, user_data, (const char **)spin); \
 			PCB_DAD_END(table); \
 		PCB_DAD_END(table); \
 	PCB_DAD_END(table); \
