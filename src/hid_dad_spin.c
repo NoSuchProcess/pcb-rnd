@@ -70,6 +70,8 @@ void pcb_dad_spin_down_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 
 void pcb_dad_spin_free(pcb_hid_attribute_t *attr)
 {
-	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)attr->enumerations;
-	free(spin);
+	if (attr->type == PCB_HATT_END) {
+		pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)attr->enumerations;
+		free(spin);
+	}
 }
