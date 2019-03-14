@@ -271,6 +271,8 @@ int hook_postinit()
 	/* DEFAULTS */
 	put("/local/prefix", "/usr/local");
 	put("/local/man1dir", "/share/man/man1");
+	put("/local/man1dir", "/share/man/man1");
+	put("/local/pcb/hid_gtk3_cairo/controls", sfalse); /* enable gtk3 only when explicitly requested */
 
 #undef plugin_def
 #undef plugin_header
@@ -369,7 +371,7 @@ int hook_detect_target()
 	const char *host_ansi, *host_ped, *target_ansi, *target_ped, *target_pg, *target_no_pie;
 
 	want_gtk2   = plug_is_enabled("hid_gtk2_gdk") || plug_is_enabled("hid_gtk2_gl");
-	want_gtk3   = plug_is_enabled("hid_gtk3_cairo") || plug_is_enabled("hid_gtk3_gl");
+	want_gtk3   = plug_is_enabled("hid_gtk3_cairo");
 	want_gtk    = want_gtk2 | want_gtk3;
 	want_gd     = plug_is_enabled("export_png") || plug_is_enabled("export_gcode");
 	want_stroke = plug_is_enabled("stroke");
@@ -531,7 +533,7 @@ int hook_detect_target()
 		}
 	}
 
-	want_gl = plug_is_enabled("hid_gtk2_gl") || plug_is_enabled("hid_gtk3_gl");
+	want_gl = plug_is_enabled("hid_gtk2_gl");
 	if (want_gl) {
 		require("libs/gui/glu/presents", 0, 0);
 		if (!istrue(get("libs/gui/glu/presents"))) {
@@ -545,7 +547,6 @@ int hook_detect_target()
 		disable_gl:;
 		hook_custom_arg("disable-lib_hid_gl", NULL);
 		hook_custom_arg("disable-hid_gtk2_gl", NULL);
-		hook_custom_arg("disable-hid_gtk3_gl", NULL);
 	}
 
 	/* gtk2 vs. gtk3 xor logic */
@@ -618,7 +619,6 @@ int hook_detect_target()
 				hook_custom_arg("disable-hid_gtk2_gdk", NULL);
 				hook_custom_arg("disable-hid_gtk2_gl", NULL);
 				hook_custom_arg("disable-hid_gtk3_cairo", NULL);
-				hook_custom_arg("disable-hid_gtk3_gl", NULL);
 			}
 			if (plug_is_enabled("puller")) {
 				report_repeat("WARNING: Since GLIB is not found, disabling the puller...\n");
