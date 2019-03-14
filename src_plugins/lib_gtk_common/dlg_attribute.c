@@ -339,7 +339,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 		switch (ctx->attrs[j].type) {
 			case PCB_HATT_BEGIN_HBOX:
 				bparent = frame_scroll(parent, ctx->attrs[j].pcb_hatt_flags);
-				hbox = gtkc_hbox_new(FALSE, 4);
+				hbox = gtkc_hbox_new(FALSE, ((ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TIGHT) ? 0 : 4));
 				expfill = (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_EXPFILL);
 				gtk_box_pack_start(GTK_BOX(bparent), hbox, expfill, expfill, 0);
 				ctx->wl[j] = hbox;
@@ -348,7 +348,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 			case PCB_HATT_BEGIN_VBOX:
 				bparent = frame_scroll(parent, ctx->attrs[j].pcb_hatt_flags);
-				vbox1 = gtkc_vbox_new(FALSE, 4);
+				vbox1 = gtkc_vbox_new(FALSE, ((ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TIGHT) ? 0 : 4));
 				expfill = (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_EXPFILL);
 				gtk_box_pack_start(GTK_BOX(bparent), vbox1, expfill, expfill, 0);
 				ctx->wl[j] = vbox1;
@@ -370,7 +370,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					ts.val.table.col = 0;
 					ts.val.table.row = 0;
 					tbl = gtkc_table_static(ts.val.table.rows, ts.val.table.cols, 1);
-					gtk_box_pack_start(GTK_BOX(bparent), tbl, FALSE, FALSE, 0);
+					gtk_box_pack_start(GTK_BOX(bparent), tbl, FALSE, FALSE, ((ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TIGHT) ? 0 : 4));
 					ctx->wl[j] = tbl;
 					j = ghid_attr_dlg_add(ctx, tbl, &ts, j+1);
 				}

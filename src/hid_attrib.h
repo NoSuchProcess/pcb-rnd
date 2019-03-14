@@ -19,6 +19,7 @@ struct pcb_hid_attr_val_s {
 
 typedef enum pcb_hatt_compflags_e {
 	PCB_HATF_FRAME       = 1,  /* box/table has a visible frame around it */
+	PCB_HATF_TIGHT       = 2,  /* box/table/button has minimal padding and spacing */
 	PCB_HATF_SCROLL      = 4,  /* box/table is scrollable */
 	PCB_HATF_HIDE_TABLAB = 8,  /* hide tab labes of a TABBED - the tab mechanism works, but tab names are not displayed and are not clickable */
 	PCB_HATF_CLR_STATIC  = 8,  /* color that can not be changed */

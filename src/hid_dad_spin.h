@@ -39,10 +39,12 @@ do { \
 		spin->cmp.wbegin = PCB_DAD_CURRENT(table); \
 		PCB_DAD_SET_ATTR_FIELD(table, enumerations, (const char **)spin); \
 		PCB_DAD_BEGIN_HBOX(table); \
+			PCB_DAD_COMPFLAG(table, PCB_HATF_TIGHT); \
 			PCB_DAD_STRING(table); \
 				PCB_DAD_SET_ATTR_FIELD(table, enumerations, (const char **)spin); \
 				spin->wstr = PCB_DAD_CURRENT(table); \
 			PCB_DAD_BEGIN_VBOX(table); \
+				PCB_DAD_COMPFLAG(table, PCB_HATF_TIGHT); \
 				PCB_DAD_PICBUTTON(table, pcb_hid_dad_spin_up); \
 					PCB_DAD_CHANGE_CB(ctx.dlg, pcb_dad_spin_up_cb); \
 					PCB_DAD_SET_ATTR_FIELD(table, user_data, (const char **)spin); \
