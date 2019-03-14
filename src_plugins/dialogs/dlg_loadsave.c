@@ -96,6 +96,7 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 typedef struct {
 	pcb_hid_dad_subdialog_t *fmtsub;
 	pcb_io_formats_t *avail;
+	int pick;
 } save_t;
 
 static void fmt_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -141,6 +142,9 @@ static void fmt_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	argv[0].d.s = pcb_concat(bn, ext, NULL);;
 	fmtsub->parent_poke(fmtsub, "set_file_name", &res, 1, argv);
 	free(fn);
+
+	/* remember the selection for the save action */
+	save->pick = selection;
 }
 
 
@@ -293,7 +297,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		 * just obtained.
 		 */
 		if (fmt_param != NULL)
-			sfmt = avail.plug[fmt]->description;
+			sfmt = avail.plug[save.pick]->description;
 		if (pcb_strcasecmp(function, "Layout") == 0)
 			pcb_actionl("SaveTo", "LayoutAs", final_name, sfmt, NULL);
 		else
