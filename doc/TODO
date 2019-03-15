@@ -16,10 +16,11 @@
 	- add text font, update the pool node text_edit [report: Igor2]
 + CLEANUP/FEATURE: session persistent DAD message log (messages are flushed after dialog is closed?) [report: Miloh]
 	- DOC: document the DAD text widget
-- CLEANUP: DAD: centralize the coordinate input spinbox into the dialog plugin
-	- drc & size: doesn't update on mil/mm change in top win -> need a list of spinboxes to update on conf change [report: Ade]
+- CLEANUP: DAD: centralize the coordinate input spinbox: hid_dad_spin
+	- remove per hid implementation, get DAD macros to build spinboxes (maybe in brave mode first)
+	- hid_dad_spin.[ch]: bind conf change on conf_core.editor.grid_unit, call pcb_dad_spin_widget_state() to get them updated:
+		- drc & size: doesn't update on mil/mm change in top win -> need a list of spinboxes to update on conf change [report: Ade]
 	- make the central unit infra more flexible so plugins can register new units
-	- add an event for unit change so all spinboxes can be updated
 	- make sure we don't crash when grid or config references non-existing unit or unit that has no conversion field set up yet
 	- propedit: relative modifications +x mils, #degrees broke [report: Igor2]
 - CLEANUP: (TT) propedit revamp:
