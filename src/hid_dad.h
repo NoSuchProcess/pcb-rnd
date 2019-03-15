@@ -102,7 +102,7 @@ do { \
 		PCB_DAD_ALLOC_RESULT(table); \
 	table ## _ret_override.valid = 0; \
 	table ## _ret_override.already_freed = 0; \
-	failed = pcb_attribute_dialog_(id,table, table ## _len, table ## _result, title, caller_data, &(table ## _ret_override.already_freed), table ## _defx, table ## _defy); \
+	failed = pcb_attribute_dialog_(id,table, table ## _len, table ## _result, title, caller_data, &(table ## _ret_override.already_freed), table ## _defx, table ## _defy, &table ## _hid_ctx); \
 	if (table ## _ret_override.valid) \
 		failed = table ## _ret_override.value; \
 	table ## _ret_override.already_freed = 1; \
