@@ -84,7 +84,8 @@ static void spin_changed(void *hid_ctx, void *caller_data, pcb_hid_dad_spin_t *s
 static void spin_warn(void *hid_ctx, pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end, const char *msg)
 {
 	pcb_gui->attr_dlg_widget_hide(hid_ctx, spin->wwarn, (msg == NULL));
-	pcb_gui->attr_dlg_set_help(hid_ctx, spin->wwarn, msg);
+	if (pcb_gui->attr_dlg_set_help != NULL)
+		pcb_gui->attr_dlg_set_help(hid_ctx, spin->wwarn, msg);
 }
 
 static double get_step(pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end)
