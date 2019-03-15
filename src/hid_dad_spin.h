@@ -39,8 +39,8 @@ typedef struct {
 	} type;
 } pcb_hid_dad_spin_t;
 
-#define PCB_DAD_SPIN_INT(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_INT, 1)
-#define PCB_DAD_SPIN_DOUBLE(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_DOUBLE, 1)
+#define PCB_DAD_SPIN_INT(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_INT, 0)
+#define PCB_DAD_SPIN_DOUBLE(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_DOUBLE, 0)
 
 /*** implementation ***/
 
