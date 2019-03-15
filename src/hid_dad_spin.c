@@ -277,7 +277,9 @@ static void do_step(void *hid_ctx, pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t
 
 	spin_warn(hid_ctx, spin, end, warn);
 	hv.str_value = pcb_strdup(buf);
+	spin->set_writeback_lock++;
 	pcb_gui->attr_dlg_set_value(hid_ctx, spin->wstr, &hv);
+	spin->set_writeback_lock--;
 }
 
 void pcb_dad_spin_up_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -310,6 +312,9 @@ void pcb_dad_spin_txt_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	double d;
 	pcb_bool succ, absolute;
 	const pcb_unit_t *unit;
+
+	if (spin->set_writeback_lock)
+		return;
 
 	switch(spin->type) {
 		case PCB_DAD_SPIN_INT:

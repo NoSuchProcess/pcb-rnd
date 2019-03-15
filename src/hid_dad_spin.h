@@ -39,6 +39,7 @@ typedef struct {
 	const pcb_unit_t *unit; /* for PCB_DAD_SPIN_COORD only: current unit */
 	pcb_hid_attribute_t **attrs;
 	void **hid_ctx;
+	int set_writeback_lock;
 	enum {
 		PCB_DAD_SPIN_INT,
 		PCB_DAD_SPIN_DOUBLE,
