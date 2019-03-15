@@ -131,7 +131,6 @@ static void do_step(void *hid_ctx, pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t
 	}
 
 	spin_warn(hid_ctx, spin, end, warn);
-printf("warn=%s\n", warn);
 	hv.str_value = pcb_strdup(buf);
 	pcb_gui->attr_dlg_set_value(hid_ctx, spin->wstr, &hv);
 }
@@ -161,18 +160,21 @@ void pcb_dad_spin_txt_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)attr->user_data;
 	pcb_hid_attribute_t *str = attr;
 	pcb_hid_attribute_t *end = attr - spin->wstr + spin->cmp.wend;
-	char *ends;
+	char *ends, *warn = NULL;
 	long l;
 
 	switch(spin->type) {
 		case PCB_DAD_SPIN_INT:
 			l = strtol(str->default_val.str_value, &ends, 10);
-TODO("handle conv error using *ends");
+			SPIN_CLAMP(l);
+			if (*ends != '\0')
+				warn = "Invalid integer - result is truncated";
 			end->default_val.int_value = l;
 			break;
 		default: pcb_trace("INTERNAL ERROR: spin_set_num\n");
 	}
 
+	spin_warn(hid_ctx, spin, end, warn);
 	spin_changed(hid_ctx, caller_data, spin, end);
 }
 
