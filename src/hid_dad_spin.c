@@ -380,17 +380,17 @@ void pcb_dad_spin_free(pcb_hid_attribute_t *attr)
 	}
 }
 
-int pcb_dad_spin_widget_state(void *hid_ctx, int idx, pcb_bool enabled)
+int pcb_dad_spin_widget_state(pcb_hid_attribute_t *end, void *hid_ctx, int idx, pcb_bool enabled)
 {
 	return -1;
 }
 
-int pcb_dad_spin_widget_hide(void *hid_ctx, int idx, pcb_bool hide)
+int pcb_dad_spin_widget_hide(pcb_hid_attribute_t *end, void *hid_ctx, int idx, pcb_bool hide)
 {
 	return -1;
 }
 
-int pcb_dad_spin_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val)
+int pcb_dad_spin_set_value(pcb_hid_attribute_t *end, void *hid_ctx, int idx, const pcb_hid_attr_val_t *val)
 {
 	return -1;
 }

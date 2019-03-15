@@ -616,14 +616,14 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 		case PCB_HATT_BEGIN_TABLE:
 		case PCB_HATT_PICBUTTON:
 		case PCB_HATT_PICTURE:
+		case PCB_HATT_BEGIN_COMPOUND:
 			goto error;
 
-		case PCB_HATT_BEGIN_COMPOUND:
 		case PCB_HATT_END:
 			{
 				pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)ctx->attrs[idx].enumerations;
 				if ((cmp != NULL) && (cmp->set_value != NULL))
-					cmp->set_value(ctx, idx, val);
+					cmp->set_value(&ctx->attrs[idx], ctx, idx, val);
 				else
 					goto error;
 			}
@@ -933,10 +933,13 @@ int ghid_attr_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled)
 	if ((idx < 0) || (idx >= ctx->n_attrs) || (ctx->wl[idx] == NULL))
 		return -1;
 
-	if ((ctx->attrs[idx].type == PCB_HATT_BEGIN_COMPOUND) || (ctx->attrs[idx].type == PCB_HATT_END)) {
+	if (ctx->attrs[idx].type == PCB_HATT_BEGIN_COMPOUND)
+		return -1;
+
+	if (ctx->attrs[idx].type == PCB_HATT_END) {
 		pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)ctx->attrs[idx].enumerations;
 		if ((cmp != NULL) && (cmp->widget_state != NULL))
-			cmp->widget_state(ctx, idx, enabled);
+			cmp->widget_state(&ctx->attrs[idx], ctx, idx, enabled);
 		else
 			return -1;
 	}
@@ -952,10 +955,13 @@ int ghid_attr_dlg_widget_hide(void *hid_ctx, int idx, pcb_bool hide)
 	if ((idx < 0) || (idx >= ctx->n_attrs) || (ctx->wl[idx] == NULL))
 		return -1;
 
-	if ((ctx->attrs[idx].type == PCB_HATT_BEGIN_COMPOUND) || (ctx->attrs[idx].type == PCB_HATT_END)) {
+	if (ctx->attrs[idx].type == PCB_HATT_BEGIN_COMPOUND)
+		return -1;
+
+	if (ctx->attrs[idx].type == PCB_HATT_END) {
 		pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)ctx->attrs[idx].enumerations;
 		if ((cmp != NULL) && (cmp->widget_hide != NULL))
-			cmp->widget_hide(ctx, idx, hide);
+			cmp->widget_hide(&ctx->attrs[idx], ctx, idx, hide);
 		else
 			return -1;
 	}

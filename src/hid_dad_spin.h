@@ -111,6 +111,6 @@ void pcb_dad_spin_unit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 
 void pcb_dad_spin_free(pcb_hid_attribute_t *attrib);
 void pcb_dad_spin_set_num(pcb_hid_attribute_t *attr, long l, double d, pcb_coord_t c);
-int pcb_dad_spin_widget_state(void *hid_ctx, int idx, pcb_bool enabled);
-int pcb_dad_spin_widget_hide(void *hid_ctx, int idx, pcb_bool hide);
-int pcb_dad_spin_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
+int pcb_dad_spin_widget_state(pcb_hid_attribute_t *end, void *hid_ctx, int idx, pcb_bool enabled);
+int pcb_dad_spin_widget_hide(pcb_hid_attribute_t *end, void *hid_ctx, int idx, pcb_bool hide);
+int pcb_dad_spin_set_value(pcb_hid_attribute_t *end, void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
