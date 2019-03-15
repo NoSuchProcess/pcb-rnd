@@ -386,7 +386,8 @@ void pcb_dad_spin_free(pcb_hid_attribute_t *attr)
 {
 	if (attr->type == PCB_HATT_END) {
 		pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)attr->enumerations;
-		gdl_remove(&pcb_dad_coord_spins, spin, link);
+		if (spin->type == PCB_DAD_SPIN_COORD)
+			gdl_remove(&pcb_dad_coord_spins, spin, link);
 		free(spin);
 	}
 }
