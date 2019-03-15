@@ -954,9 +954,9 @@ int ghid_attr_dlg_widget_hide(void *hid_ctx, int idx, pcb_bool hide)
 	}
 
 	if (hide)
-		gtk_widget_hide(ctx->wl[idx]);
+		gtk_widget_hide(ctx->wltop[idx]);
 	else
-		gtk_widget_show(ctx->wl[idx]);
+		gtk_widget_show(ctx->wltop[idx]);
 
 	return 0;
 }

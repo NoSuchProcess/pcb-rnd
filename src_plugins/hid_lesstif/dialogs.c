@@ -797,9 +797,9 @@ int lesstif_attr_dlg_widget_hide(void *hid_ctx, int idx, pcb_bool hide)
 	}
 
 	if (hide)
-		XtUnmanageChild(ctx->wl[idx]);
+		XtUnmanageChild(ctx->wltop[idx]);
 	else
-		XtManageChild(ctx->wl[idx]);
+		XtManageChild(ctx->wltop[idx]);
 
 	return 0;
 }
