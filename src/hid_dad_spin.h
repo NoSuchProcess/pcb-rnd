@@ -26,6 +26,8 @@
 
 /* Compound DAD widget for numeric value entry, creating a spinbox */
 
+#include <genlist/gendlist.h>
+
 typedef struct {
 	pcb_hid_compound_t cmp;
 	double step; /* how much an up/down step modifies; 0 means automatic */
@@ -41,6 +43,7 @@ typedef struct {
 		PCB_DAD_SPIN_DOUBLE,
 		PCB_DAD_SPIN_COORD
 	} type;
+	gdl_elem_t link;
 } pcb_hid_dad_spin_t;
 
 #define PCB_DAD_SPIN_INT(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_INT, 0)
@@ -98,6 +101,9 @@ do { \
 	spin->cmp.set_value = pcb_dad_spin_set_value; \
 	spin->type = typ; \
 	spin->attrs = &table; \
+	\
+	if (typ == PCB_DAD_SPIN_COORD) \
+		gdl_append(&pcb_dad_coord_spins, spin, link); \
 } while(0)
 
 extern const char *pcb_hid_dad_spin_up[];
@@ -116,3 +122,5 @@ void pcb_dad_spin_set_num(pcb_hid_attribute_t *attr, long l, double d, pcb_coord
 int pcb_dad_spin_widget_state(pcb_hid_attribute_t *end, void *hid_ctx, int idx, pcb_bool enabled);
 int pcb_dad_spin_widget_hide(pcb_hid_attribute_t *end, void *hid_ctx, int idx, pcb_bool hide);
 int pcb_dad_spin_set_value(pcb_hid_attribute_t *end, void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
+
+extern gdl_list_t pcb_dad_coord_spins; /* list of all active coord spinboxes */
