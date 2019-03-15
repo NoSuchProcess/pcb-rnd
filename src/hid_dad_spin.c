@@ -59,6 +59,11 @@ const char *pcb_hid_dad_spin_unit[] = {
 " ++ ",
 };
 
+static void spin_changed(void *hid_ctx, void *caller_data, pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end)
+{
+	if (end->change_cb != NULL)
+		end->change_cb(hid_ctx, caller_data, end);
+}
 
 static double get_step(pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end)
 {
@@ -100,6 +105,7 @@ void pcb_dad_spin_up_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 	pcb_hid_attribute_t *end = attr - spin->wup + spin->cmp.wend;
 
 	do_step(hid_ctx, spin, str, end, get_step(spin, end));
+	spin_changed(hid_ctx, caller_data, spin, end);
 }
 
 void pcb_dad_spin_down_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -109,6 +115,7 @@ void pcb_dad_spin_down_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	pcb_hid_attribute_t *end = attr - spin->wdown + spin->cmp.wend;
 
 	do_step(hid_ctx, spin, str, end, -get_step(spin, end));
+	spin_changed(hid_ctx, caller_data, spin, end);
 }
 
 void pcb_dad_spin_txt_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -127,6 +134,8 @@ TODO("handle conv error using *ends");
 			break;
 		default: pcb_trace("INTERNAL ERROR: spin_set_num\n");
 	}
+
+	spin_changed(hid_ctx, caller_data, spin, end);
 }
 
 void pcb_dad_spin_set_num(pcb_hid_attribute_t *attr, long l, double d, pcb_coord_t c)
