@@ -32,7 +32,9 @@ typedef struct {
 	double vmin, vmax;
 	unsigned vmin_valid:1;
 	unsigned vmax_valid:1;
+	unsigned no_unit_chg:1;
 	int wstr, wup, wdown, wunit, wwarn;
+	const pcb_unit_t *unit; /* for PCB_DAD_SPIN_COORD only: current unit */
 	enum {
 		PCB_DAD_SPIN_INT,
 		PCB_DAD_SPIN_DOUBLE,

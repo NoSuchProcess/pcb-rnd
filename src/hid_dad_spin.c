@@ -31,6 +31,7 @@
 #include "hid_dad_spin.h"
 #include "pcb-printf.h"
 #include "compat_misc.h"
+#include "conf_core.h"
 
 const char *pcb_hid_dad_spin_up[] = {
 "5 3 2 1",
@@ -88,9 +89,24 @@ static void spin_warn(void *hid_ctx, pcb_hid_dad_spin_t *spin, pcb_hid_attribute
 		pcb_gui->attr_dlg_set_help(hid_ctx, spin->wwarn, msg);
 }
 
-static double get_step(pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end)
+static char *gen_str_coord(pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *str, pcb_coord_t c, char *buf, int buflen)
 {
-	double step;
+	const pcb_unit_t *unit;
+	if (spin->unit != NULL)
+		unit = spin->unit;
+	else
+		unit = conf_core.editor.grid_unit;
+	if (buf != NULL) {
+		pcb_snprintf(buf, buflen, "%$m*", unit->suffix, c);
+		return buf;
+	}
+	return pcb_strdup_printf("%$m*", unit->suffix, c);
+}
+
+static double get_step(pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end, pcb_hid_attribute_t *str)
+{
+	double v, step;
+	const pcb_unit_t *unit;
 
 	if (spin->step > 0)
 		return spin->step;
@@ -105,8 +121,18 @@ static double get_step(pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end)
 			step = pow(10, floor(log10(fabs(end->default_val.real_value)) - 1.0));
 			break;
 		case PCB_DAD_SPIN_COORD:
-TODO("consider unit");
-			step = pow(10, floor(log10(fabs(end->default_val.coord_value)) - 1.0));
+			if (spin->unit == NULL) {
+				pcb_bool succ = pcb_get_value_unit(str->default_val.str_value, NULL, 0, &v, &unit);
+				if (!succ) {
+					v = end->default_val.coord_value;
+					unit = conf_core.editor.grid_unit;
+				}
+			}
+			else
+				unit = spin->unit;
+			v = pcb_coord_to_unit(unit, end->default_val.coord_value);
+			step = pow(10, floor(log10(fabs(v)) - 1.0));
+			step = pcb_unit_to_coord(unit, step);
 			break;
 	}
 	return step;
@@ -144,8 +170,7 @@ static void do_step(void *hid_ctx, pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t
 		case PCB_DAD_SPIN_COORD:
 			end->default_val.coord_value += step;
 			SPIN_CLAMP(end->default_val.coord_value);
-TODO("consider unit");
-			pcb_snprintf(buf, sizeof(buf), "%mm", end->default_val.coord_value);
+			gen_str_coord(spin, str, end->default_val.coord_value, buf, sizeof(buf));
 			break;
 	}
 
@@ -160,7 +185,7 @@ void pcb_dad_spin_up_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 	pcb_hid_attribute_t *str = attr - spin->wup + spin->wstr;
 	pcb_hid_attribute_t *end = attr - spin->wup + spin->cmp.wend;
 
-	do_step(hid_ctx, spin, str, end, get_step(spin, end));
+	do_step(hid_ctx, spin, str, end, get_step(spin, end, str));
 	spin_changed(hid_ctx, caller_data, spin, end);
 }
 
@@ -170,7 +195,7 @@ void pcb_dad_spin_down_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	pcb_hid_attribute_t *str = attr - spin->wdown + spin->wstr;
 	pcb_hid_attribute_t *end = attr - spin->wdown + spin->cmp.wend;
 
-	do_step(hid_ctx, spin, str, end, -get_step(spin, end));
+	do_step(hid_ctx, spin, str, end, -get_step(spin, end, str));
 	spin_changed(hid_ctx, caller_data, spin, end);
 }
 
@@ -206,7 +231,8 @@ void pcb_dad_spin_txt_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 				SPIN_CLAMP(d);
 			else
 				warn = "Invalid coord value or unit - result is truncated";
-TODO("switch unit if permitted")
+			if (!spin->no_unit_chg)
+				spin->unit = unit;
 			end->default_val.coord_value = d;
 			break;
 		default: pcb_trace("INTERNAL ERROR: spin_set_num\n");
@@ -241,9 +267,9 @@ void pcb_dad_spin_set_num(pcb_hid_attribute_t *attr, long l, double d, pcb_coord
 			break;
 		case PCB_DAD_SPIN_COORD:
 			attr->default_val.coord_value = c;
+			spin->unit = NULL;
 			free((char *)str->default_val.str_value);
-TODO("use the unit requested");
-			str->default_val.str_value = pcb_strdup_printf("%mm", c);
+			str->default_val.str_value = gen_str_coord(spin, str, c, NULL, 0);
 			break;
 		default: pcb_trace("INTERNAL ERROR: spin_set_num\n");
 	}
