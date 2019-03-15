@@ -382,15 +382,38 @@ void pcb_dad_spin_free(pcb_hid_attribute_t *attr)
 
 int pcb_dad_spin_widget_state(pcb_hid_attribute_t *end, void *hid_ctx, int idx, pcb_bool enabled)
 {
-	return -1;
+	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)end->user_data;
+	return pcb_gui->attr_dlg_widget_state(hid_ctx, spin->wall, enabled);
 }
 
 int pcb_dad_spin_widget_hide(pcb_hid_attribute_t *end, void *hid_ctx, int idx, pcb_bool hide)
 {
-	return -1;
+	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)end->user_data;
+	return pcb_gui->attr_dlg_widget_hide(hid_ctx, spin->wall, hide);
 }
 
 int pcb_dad_spin_set_value(pcb_hid_attribute_t *end, void *hid_ctx, int idx, const pcb_hid_attr_val_t *val)
 {
-	return -1;
+	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)end->user_data;
+
+	/* do not modify the text field if the value is the same */
+	switch(spin->type) {
+		case PCB_DAD_SPIN_INT:
+			if (val->int_value == end->default_val.int_value)
+				return 0;
+			pcb_dad_spin_set_num(end, val->int_value, 0, 0);
+			break;
+		case PCB_DAD_SPIN_DOUBLE:
+			if (val->real_value == end->default_val.real_value)
+				return 0;
+			pcb_dad_spin_set_num(end, 0, val->real_value, 0);
+			break;
+		case PCB_DAD_SPIN_COORD:
+			if (val->coord_value == end->default_val.coord_value)
+				return 0;
+			pcb_dad_spin_set_num(end, 0, 0, val->coord_value);
+			break;
+	}
+
+	return 0;
 }
