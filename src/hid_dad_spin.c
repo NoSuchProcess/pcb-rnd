@@ -104,6 +104,10 @@ static double get_step(pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end)
 		case PCB_DAD_SPIN_DOUBLE:
 			step = pow(10, floor(log10(fabs(end->default_val.real_value)) - 1.0));
 			break;
+		case PCB_DAD_SPIN_COORD:
+TODO("consider unit");
+			step = pow(10, floor(log10(fabs(end->default_val.coord_value)) - 1.0));
+			break;
 	}
 	return step;
 }
@@ -136,6 +140,12 @@ static void do_step(void *hid_ctx, pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t
 			end->default_val.real_value += step;
 			SPIN_CLAMP(end->default_val.real_value);
 			sprintf(buf, "%f", end->default_val.real_value);
+			break;
+		case PCB_DAD_SPIN_COORD:
+			end->default_val.coord_value += step;
+			SPIN_CLAMP(end->default_val.coord_value);
+TODO("consider unit");
+			pcb_snprintf(buf, sizeof(buf), "%mm", end->default_val.coord_value);
 			break;
 	}
 
@@ -172,6 +182,8 @@ void pcb_dad_spin_txt_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	char *ends, *warn = NULL;
 	long l;
 	double d;
+	pcb_bool succ, absolute;
+	const pcb_unit_t *unit;
 
 	switch(spin->type) {
 		case PCB_DAD_SPIN_INT:
@@ -187,6 +199,15 @@ void pcb_dad_spin_txt_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 			if (*ends != '\0')
 				warn = "Invalid numeric - result is truncated";
 			end->default_val.real_value = d;
+			break;
+		case PCB_DAD_SPIN_COORD:
+			succ = pcb_get_value_unit(str->default_val.str_value, &absolute, 0, &d, &unit);
+			if (succ)
+				SPIN_CLAMP(d);
+			else
+				warn = "Invalid coord value or unit - result is truncated";
+TODO("switch unit if permitted")
+			end->default_val.coord_value = d;
 			break;
 		default: pcb_trace("INTERNAL ERROR: spin_set_num\n");
 	}
@@ -217,6 +238,12 @@ void pcb_dad_spin_set_num(pcb_hid_attribute_t *attr, long l, double d, pcb_coord
 			attr->default_val.real_value = d;
 			free((char *)str->default_val.str_value);
 			str->default_val.str_value = pcb_strdup_printf("%f", d);
+			break;
+		case PCB_DAD_SPIN_COORD:
+			attr->default_val.coord_value = c;
+			free((char *)str->default_val.str_value);
+TODO("use the unit requested");
+			str->default_val.str_value = pcb_strdup_printf("%mm", c);
 			break;
 		default: pcb_trace("INTERNAL ERROR: spin_set_num\n");
 	}

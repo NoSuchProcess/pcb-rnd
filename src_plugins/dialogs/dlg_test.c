@@ -36,7 +36,7 @@ typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	int wtab, tt, wprog, whpane, wvpane, wtxt, wtxtpos, wtxtro;
 	int ttctr, wclr, txtro;
-	int wspin_int, wspout_int, wspin_double, wspout_double;
+	int wspin_int, wspout_int, wspin_double, wspout_double, wspin_coord, wspout_coord;
 } test_t;
 
 
@@ -140,6 +140,17 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 						PCB_DAD_LABEL(ctx.dlg, "->");
 						PCB_DAD_LABEL(ctx.dlg, "n/a");
 							ctx.wspout_double = PCB_DAD_CURRENT(ctx.dlg);
+					PCB_DAD_END(ctx.dlg);
+
+					PCB_DAD_BEGIN_HBOX(ctx.dlg);
+						PCB_DAD_LABEL(ctx.dlg, "CRD:");
+						PCB_DAD_SPIN_COORD(ctx.dlg);
+							ctx.wspin_coord = PCB_DAD_CURRENT(ctx.dlg);
+							PCB_DAD_DEFAULT_NUM(ctx.dlg, PCB_MM_TO_COORD(42));
+							PCB_DAD_CHANGE_CB(ctx.dlg, pcb_act_spin_upd);
+						PCB_DAD_LABEL(ctx.dlg, "->");
+						PCB_DAD_LABEL(ctx.dlg, "n/a");
+							ctx.wspout_coord = PCB_DAD_CURRENT(ctx.dlg);
 					PCB_DAD_END(ctx.dlg);
 
 				PCB_DAD_END(ctx.dlg);
@@ -288,7 +299,7 @@ static void pcb_act_spin_upd(void *hid_ctx, void *caller_data, pcb_hid_attribute
 {
 	test_t *ctx = caller_data;
 	pcb_hid_attr_val_t hv;
-	char tmp[128];
+	char tmp[256];
 
 	hv.str_value = tmp;
 
@@ -296,6 +307,8 @@ static void pcb_act_spin_upd(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_int, &hv);
 	sprintf(tmp, "%f", ctx->dlg[ctx->wspin_double].default_val.real_value);
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_double, &hv);
+	pcb_snprintf(tmp, sizeof(tmp), "%mm\n%ml", ctx->dlg[ctx->wspin_coord].default_val.coord_value, ctx->dlg[ctx->wspin_coord].default_val.coord_value);
+	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_coord, &hv);
 }
 
 
