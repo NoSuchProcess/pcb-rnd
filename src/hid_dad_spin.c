@@ -90,7 +90,7 @@ static void spin_warn(void *hid_ctx, pcb_hid_dad_spin_t *spin, pcb_hid_attribute
 		pcb_gui->attr_dlg_set_help(hid_ctx, spin->wwarn, msg);
 }
 
-static char *gen_str_coord(pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *str, pcb_coord_t c, char *buf, int buflen)
+static char *gen_str_coord(pcb_hid_dad_spin_t *spin, pcb_coord_t c, char *buf, int buflen)
 {
 	const pcb_unit_t *unit;
 	if (spin->unit != NULL)
@@ -266,7 +266,7 @@ static void do_step(void *hid_ctx, pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t
 		case PCB_DAD_SPIN_COORD:
 			end->default_val.coord_value += step;
 			SPIN_CLAMP(end->default_val.coord_value);
-			gen_str_coord(spin, str, end->default_val.coord_value, buf, sizeof(buf));
+			gen_str_coord(spin, end->default_val.coord_value, buf, sizeof(buf));
 			break;
 	}
 
@@ -366,7 +366,7 @@ void pcb_dad_spin_set_num(pcb_hid_attribute_t *attr, long l, double d, pcb_coord
 			attr->default_val.coord_value = c;
 			spin->unit = NULL;
 			free((char *)str->default_val.str_value);
-			str->default_val.str_value = gen_str_coord(spin, str, c, NULL, 0);
+			str->default_val.str_value = gen_str_coord(spin, c, NULL, 0);
 			break;
 		default: pcb_trace("INTERNAL ERROR: spin_set_num\n");
 	}
