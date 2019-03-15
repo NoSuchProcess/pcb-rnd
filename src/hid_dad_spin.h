@@ -34,11 +34,13 @@ typedef struct {
 	unsigned vmax_valid:1;
 	int wstr, wup, wdown, wunit, wwarn;
 	enum {
-		PCB_DAD_SPIN_INT
+		PCB_DAD_SPIN_INT,
+		PCB_DAD_SPIN_DOUBLE
 	} type;
 } pcb_hid_dad_spin_t;
 
 #define PCB_DAD_SPIN_INT(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_INT, 1)
+#define PCB_DAD_SPIN_DOUBLE(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_DOUBLE, 1)
 
 /*** implementation ***/
 

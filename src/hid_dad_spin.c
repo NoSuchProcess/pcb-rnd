@@ -101,6 +101,9 @@ static double get_step(pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end)
 			if (step < 1)
 				step = 1;
 			break;
+		case PCB_DAD_SPIN_DOUBLE:
+			step = pow(10, floor(log10(fabs(end->default_val.real_value)) - 1.0));
+			break;
 	}
 	return step;
 }
@@ -128,6 +131,11 @@ static void do_step(void *hid_ctx, pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t
 			end->default_val.int_value += step;
 			SPIN_CLAMP(end->default_val.int_value);
 			sprintf(buf, "%d", end->default_val.int_value);
+			break;
+		case PCB_DAD_SPIN_DOUBLE:
+			end->default_val.real_value += step;
+			SPIN_CLAMP(end->default_val.real_value);
+			sprintf(buf, "%f", end->default_val.real_value);
 			break;
 	}
 
@@ -163,6 +171,7 @@ void pcb_dad_spin_txt_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	pcb_hid_attribute_t *end = attr - spin->wstr + spin->cmp.wend;
 	char *ends, *warn = NULL;
 	long l;
+	double d;
 
 	switch(spin->type) {
 		case PCB_DAD_SPIN_INT:
@@ -171,6 +180,13 @@ void pcb_dad_spin_txt_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 			if (*ends != '\0')
 				warn = "Invalid integer - result is truncated";
 			end->default_val.int_value = l;
+			break;
+		case PCB_DAD_SPIN_DOUBLE:
+			d = strtod(str->default_val.str_value, &ends);
+			SPIN_CLAMP(d);
+			if (*ends != '\0')
+				warn = "Invalid numeric - result is truncated";
+			end->default_val.real_value = d;
 			break;
 		default: pcb_trace("INTERNAL ERROR: spin_set_num\n");
 	}
@@ -196,6 +212,11 @@ void pcb_dad_spin_set_num(pcb_hid_attribute_t *attr, long l, double d, pcb_coord
 			attr->default_val.int_value = l;
 			free((char *)str->default_val.str_value);
 			str->default_val.str_value = pcb_strdup_printf("%ld", l);
+			break;
+		case PCB_DAD_SPIN_DOUBLE:
+			attr->default_val.real_value = d;
+			free((char *)str->default_val.str_value);
+			str->default_val.str_value = pcb_strdup_printf("%f", d);
 			break;
 		default: pcb_trace("INTERNAL ERROR: spin_set_num\n");
 	}
