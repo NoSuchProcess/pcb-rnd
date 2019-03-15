@@ -36,10 +36,12 @@ typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	int wtab, tt, wprog, whpane, wvpane, wtxt, wtxtpos, wtxtro;
 	int ttctr, wclr, txtro;
+	int wspin_int, wspout_int;
 } test_t;
 
 
 static void pcb_act_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+static void pcb_act_spin_upd(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_tab_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_color_print(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
@@ -120,7 +122,12 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					PCB_DAD_BEGIN_HBOX(ctx.dlg);
 						PCB_DAD_LABEL(ctx.dlg, "INT:");
 						PCB_DAD_SPIN_INT(ctx.dlg);
+							ctx.wspin_int = PCB_DAD_CURRENT(ctx.dlg);
 							PCB_DAD_DEFAULT_NUM(ctx.dlg, 42);
+							PCB_DAD_CHANGE_CB(ctx.dlg, pcb_act_spin_upd);
+						PCB_DAD_LABEL(ctx.dlg, "->");
+						PCB_DAD_LABEL(ctx.dlg, "n/a");
+							ctx.wspout_int = PCB_DAD_CURRENT(ctx.dlg);
 					PCB_DAD_END(ctx.dlg);
 				PCB_DAD_END(ctx.dlg);
 
@@ -263,6 +270,19 @@ static void pcb_act_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute
 
 	pcb_gui->attr_dlg_set_value(hid_ctx, attr_idx, &val);
 }
+
+static void pcb_act_spin_upd(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	test_t *ctx = caller_data;
+	pcb_hid_attr_val_t hv;
+	char tmp[128];
+
+	hv.str_value = tmp;
+
+	sprintf(tmp, "%d", ctx->dlg[ctx->wspin_int].default_val.int_value);
+	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_int, &hv);
+}
+
 
 static void cb_tab_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
