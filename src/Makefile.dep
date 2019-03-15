@@ -6648,8 +6648,9 @@ hid_dad_spin.o: hid_dad_spin.c ../config.h hid_attrib.h hid.h \
  ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
- ../src_3rd/genvector/gds_char.h hid_dad_spin.h pcb-printf.h \
- compat_misc.h
+ ../src_3rd/genvector/gds_char.h hid_dad.h compat_misc.h pcb-printf.h \
+ hid_dad_spin.h conf_core.h conf.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/genvector/vtp0.h list_conf.h
 hid_dad_tree.o: hid_dad_tree.c ../config.h hid_dad_tree.h hid_attrib.h \
  hid.h ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
