@@ -52,7 +52,7 @@ static GtkWidget *ghid_progress_create(attr_dlg_t *ctx, pcb_hid_attribute_t *att
 	gtk_widget_set_size_request(prg, -1, 16);
 
 	gtk_widget_set_tooltip_text(prg, attr->help_text);
-	ctx->wltop[j] = bparent = frame_scroll(parent, attr->pcb_hatt_flags);
+	bparent = frame_scroll(parent, attr->pcb_hatt_flags, &ctx->wltop[j]);
 	gtk_box_pack_start(GTK_BOX(bparent), prg, TRUE, TRUE, 0);
 	g_object_set_data(G_OBJECT(prg), PCB_OBJ_PROP, ctx);
 	return prg;
@@ -109,7 +109,7 @@ static GtkWidget *ghid_preview_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr
 	hp->hid_wdata = ctx;
 	hp->hid_zoomto_cb = ghid_preview_zoomto;
 
-	ctx->wltop[j] = bparent = frame_scroll(parent, attr->pcb_hatt_flags);
+	bparent = frame_scroll(parent, attr->pcb_hatt_flags, &ctx->wltop[j]);
 	prv = pcb_gtk_preview_new(ctx->com, ctx->com->init_drawing_widget, ctx->com->preview_expose, ghid_preview_expose, ghid_preview_config, attr->enumerations);
 	gtk_box_pack_start(GTK_BOX(bparent), prv, TRUE, TRUE, 0);
 	gtk_widget_set_tooltip_text(prv, attr->help_text);
@@ -132,7 +132,7 @@ static GtkWidget *ghid_picture_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr
 {
 	GtkWidget *bparent, *pic;
 	GdkPixbuf *pixbuf;
-	ctx->wltop[j] = bparent = frame_scroll(parent, attr->pcb_hatt_flags);
+	bparent = frame_scroll(parent, attr->pcb_hatt_flags, &ctx->wltop[j]);
 
 	pixbuf = gdk_pixbuf_new_from_xpm_data(attr->enumerations);
 	pic = gtk_image_new_from_pixbuf(pixbuf);
@@ -148,7 +148,7 @@ static GtkWidget *ghid_picbutton_create(attr_dlg_t *ctx, pcb_hid_attribute_t *at
 	GtkWidget *bparent, *button, *img;
 	GdkPixbuf *pixbuf;
 
-	ctx->wltop[j] = bparent = frame_scroll(parent, attr->pcb_hatt_flags);
+	bparent = frame_scroll(parent, attr->pcb_hatt_flags, &ctx->wltop[j]);
 
 	pixbuf = gdk_pixbuf_new_from_xpm_data(attr->enumerations);
 	img = gtk_image_new_from_pixbuf(pixbuf);
@@ -167,7 +167,7 @@ static GtkWidget *ghid_color_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, 
 	GtkWidget *bparent, *button;
 	pcb_gtk_color_t gclr;
 
-	ctx->wltop[j] = bparent = frame_scroll(parent, attr->pcb_hatt_flags);
+	bparent = frame_scroll(parent, attr->pcb_hatt_flags, &ctx->wltop[j]);
 
 	ctx->com->map_color_string("#000000", &gclr);
 

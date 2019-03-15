@@ -243,10 +243,11 @@ typedef struct {
 	attr_dlg_t *attrdlg;
 } resp_ctx_t;
 
-static GtkWidget *frame_scroll(GtkWidget *parent, pcb_hatt_compflags_t flags)
+static GtkWidget *frame_scroll(GtkWidget *parent, pcb_hatt_compflags_t flags, GtkWidget **wltop)
 {
 	GtkWidget *fr;
 	int expfill = (flags & PCB_HATF_EXPFILL);
+	int topped = 0;
 
 	if (flags & PCB_HATF_FRAME) {
 		fr = gtk_frame_new(NULL);
@@ -254,6 +255,10 @@ static GtkWidget *frame_scroll(GtkWidget *parent, pcb_hatt_compflags_t flags)
 
 		parent = gtkc_hbox_new(FALSE, 0);
 		gtk_container_add(GTK_CONTAINER(fr), parent);
+		if (wltop != NULL) {
+			*wltop = parent;
+			topped = 1; /* remember the outmost parent */
+		}
 	}
 	if (flags & PCB_HATF_SCROLL) {
 		fr = gtk_scrolled_window_new(NULL, NULL);
@@ -261,6 +266,8 @@ static GtkWidget *frame_scroll(GtkWidget *parent, pcb_hatt_compflags_t flags)
 		gtk_box_pack_start(GTK_BOX(parent), fr, TRUE, TRUE, 0);
 		parent = gtkc_hbox_new(FALSE, 0);
 		gtkc_scrolled_window_add_with_viewport(fr, parent);
+		if ((wltop != NULL) && (!topped))
+			*wltop = parent;
 	}
 	return parent;
 }
@@ -339,7 +346,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 		/* create the actual widget from attrs */
 		switch (ctx->attrs[j].type) {
 			case PCB_HATT_BEGIN_HBOX:
-				ctx->wltop[j] = bparent = frame_scroll(parent, ctx->attrs[j].pcb_hatt_flags);
+				bparent = frame_scroll(parent, ctx->attrs[j].pcb_hatt_flags, &ctx->wltop[j]);
 				hbox = gtkc_hbox_new(FALSE, ((ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TIGHT) ? 0 : 4));
 				expfill = (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_EXPFILL);
 				gtk_box_pack_start(GTK_BOX(bparent), hbox, expfill, expfill, 0);
@@ -348,7 +355,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				break;
 
 			case PCB_HATT_BEGIN_VBOX:
-				ctx->wltop[j] = bparent = frame_scroll(parent, ctx->attrs[j].pcb_hatt_flags);
+				bparent = frame_scroll(parent, ctx->attrs[j].pcb_hatt_flags, &ctx->wltop[j]);
 				vbox1 = gtkc_vbox_new(FALSE, ((ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TIGHT) ? 0 : 4));
 				expfill = (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_EXPFILL);
 				gtk_box_pack_start(GTK_BOX(bparent), vbox1, expfill, expfill, 0);
@@ -364,7 +371,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 			case PCB_HATT_BEGIN_TABLE:
 				{
 					ghid_attr_tb_t ts;
-					ctx->wltop[j] = bparent = frame_scroll(parent, ctx->attrs[j].pcb_hatt_flags);
+					bparent = frame_scroll(parent, ctx->attrs[j].pcb_hatt_flags, &ctx->wltop[j]);
 					ts.type = TB_TABLE;
 					ts.val.table.cols = ctx->attrs[j].pcb_hatt_table_cols;
 					ts.val.table.rows = pcb_hid_attrdlg_num_children(ctx->attrs, j+1, ctx->n_attrs) / ts.val.table.cols;

@@ -502,7 +502,7 @@ static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, pcb_hid_attribute_t *a
 	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
 
 	gtk_widget_set_tooltip_text(view, attr->help_text);
-	ctx->wltop[j] = bparent = frame_scroll(parent, attr->pcb_hatt_flags);
+	bparent = frame_scroll(parent, attr->pcb_hatt_flags, &ctx->wltop[j]);
 	gtk_box_pack_start(GTK_BOX(bparent), view, TRUE, TRUE, 0);
 	g_object_set_data(G_OBJECT(view), PCB_OBJ_PROP, ctx);
 	return view;
