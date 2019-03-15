@@ -55,9 +55,10 @@ const char *pcb_hid_dad_spin_down[] = {
 };
 
 const char *pcb_hid_dad_spin_unit[] = {
-"4 3 2 1",
+"4 4 2 1",
 " 	c None",
 "+	c #000000",
+"+  +",
 "+  +",
 "+  +",
 " ++ ",
