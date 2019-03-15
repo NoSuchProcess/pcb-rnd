@@ -231,6 +231,8 @@ static double get_step(pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end, pcb_h
 				unit = spin->unit;
 			v = pcb_coord_to_unit(unit, end->default_val.coord_value);
 			step = pow(10, floor(log10(fabs(v)) - 1.0));
+			if (step <= 0.0)
+				step = 1;
 			step = pcb_unit_to_coord(unit, step);
 			break;
 	}
