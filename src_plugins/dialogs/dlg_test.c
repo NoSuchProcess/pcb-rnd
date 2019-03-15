@@ -307,9 +307,9 @@ static void pcb_act_spin_reset(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	hv.real_value = 42.0;
 	hv.coord_value = PCB_MM_TO_COORD(42);
 
-pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspin_int, &hv);
-pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspin_double, &hv);
-pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspin_coord, &hv);
+	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspin_int, &hv);
+	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspin_double, &hv);
+	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspin_coord, &hv);
 }
 
 static void pcb_act_spin_upd(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
