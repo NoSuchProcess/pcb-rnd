@@ -12,6 +12,7 @@ int ghid_attr_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled);
 int ghid_attr_dlg_widget_hide(void *hid_ctx, int idx, pcb_bool hide);
 
 int ghid_attr_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
+void ghid_attr_dlg_set_help(void *hid_ctx, int idx, const char *val);
 
 
 /* Create an interacgive DAD subdialog under parent_vbox */

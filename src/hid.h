@@ -417,6 +417,10 @@ struct pcb_hid_s {
 	   except the value-changed callback is inhibited */
 	int (*attr_dlg_set_value)(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
 
+	/* Change the help text (tooltip) string of a widget; NULL means remove it.
+	   NOTE: does _not_ change the help_text field of the attribute. */
+	void (*attr_dlg_set_help)(void *hid_ctx, int idx, const char *val);
+
 	/* Something to alert the user.  */
 	void (*beep)(void);
 

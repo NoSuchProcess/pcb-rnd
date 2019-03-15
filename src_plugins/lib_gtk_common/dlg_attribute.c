@@ -980,3 +980,13 @@ int ghid_attr_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *va
 
 	return -1;
 }
+
+void ghid_attr_dlg_set_help(void *hid_ctx, int idx, const char *val)
+{
+	attr_dlg_t *ctx = hid_ctx;
+
+	if ((idx < 0) || (idx >= ctx->n_attrs))
+		return;
+
+	gtk_widget_set_tooltip_text(ctx->wl[idx], val);
+}

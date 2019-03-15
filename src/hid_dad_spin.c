@@ -84,6 +84,7 @@ static void spin_changed(void *hid_ctx, void *caller_data, pcb_hid_dad_spin_t *s
 static void spin_warn(void *hid_ctx, pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end, const char *msg)
 {
 	pcb_gui->attr_dlg_widget_hide(hid_ctx, spin->wwarn, (msg == NULL));
+	pcb_gui->attr_dlg_set_help(hid_ctx, spin->wwarn, msg);
 }
 
 static double get_step(pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end)
@@ -103,19 +104,34 @@ static double get_step(pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end)
 	return step;
 }
 
+#define SPIN_CLAMP(dst) \
+	do { \
+		if ((spin->vmin_valid) && (dst < spin->vmin)) { \
+			dst = spin->vmin; \
+			warn = "Value already at the minimum"; \
+		} \
+		if ((spin->vmax_valid) && (dst > spin->vmax)) { \
+			dst = spin->vmax; \
+			warn = "Value already at the maximum"; \
+		} \
+	} while(0)
+
 static void do_step(void *hid_ctx, pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *str, pcb_hid_attribute_t *end, double step)
 {
 	pcb_hid_attr_val_t hv;
+	const char *warn = NULL;
 	char buf[128];
 
 	switch(spin->type) {
 		case PCB_DAD_SPIN_INT:
 			end->default_val.int_value += step;
+			SPIN_CLAMP(end->default_val.int_value);
 			sprintf(buf, "%d", end->default_val.int_value);
 			break;
 	}
 
-	spin_warn(hid_ctx, spin, end, NULL);
+	spin_warn(hid_ctx, spin, end, warn);
+printf("warn=%s\n", warn);
 	hv.str_value = pcb_strdup(buf);
 	pcb_gui->attr_dlg_set_value(hid_ctx, spin->wstr, &hv);
 }

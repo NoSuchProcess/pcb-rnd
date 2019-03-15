@@ -500,6 +500,7 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->attr_dlg_widget_state = ghid_attr_dlg_widget_state;
 	dst->attr_dlg_widget_hide = ghid_attr_dlg_widget_hide;
 	dst->attr_dlg_set_value = ghid_attr_dlg_set_value;
+	dst->attr_dlg_set_help = ghid_attr_dlg_set_help;
 	dst->supports_dad_text_markup = 1;
 
 	dst->beep = ghid_beep;
