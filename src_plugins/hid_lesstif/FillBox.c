@@ -743,6 +743,9 @@ static void Layout(Widget wid, Widget instigator)
 		Dimension cw, ch;
 		XtWidgetGeometry reply;
 
+		if (!XtIsManaged(ic))
+			continue;
+
 		XtQueryGeometry(ic, NULL, &reply);
 		cw = (reply.request_mode & CWWidth) ? reply.width : ic->core.width;
 		ch = (reply.request_mode & CWHeight) ? reply.height : ic->core.height;
