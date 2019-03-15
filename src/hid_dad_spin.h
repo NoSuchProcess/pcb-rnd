@@ -29,6 +29,9 @@
 typedef struct {
 	pcb_hid_compound_t cmp;
 	double step; /* how much an up/down step modifies; 0 means automatic */
+	double vmin, vmax;
+	unsigned vmin_valid:1;
+	unsigned vmax_valid:1;
 	int wstr, wup, wdown, wunit, wwarn;
 	enum {
 		PCB_DAD_SPIN_INT
