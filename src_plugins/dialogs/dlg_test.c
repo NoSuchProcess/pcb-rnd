@@ -41,6 +41,7 @@ typedef struct {
 
 
 static void pcb_act_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+static void pcb_act_spin_reset(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void pcb_act_spin_upd(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_tab_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 static void cb_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
@@ -119,6 +120,8 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				PCB_DAD_BEGIN_VBOX(ctx.dlg);
 					PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_FRAME);
 					PCB_DAD_LABEL(ctx.dlg, "spin test");
+					PCB_DAD_BUTTON(ctx.dlg, "reset all to 42");
+						PCB_DAD_CHANGE_CB(ctx.dlg, pcb_act_spin_reset);
 
 					PCB_DAD_BEGIN_HBOX(ctx.dlg);
 						PCB_DAD_LABEL(ctx.dlg, "INT:");
@@ -293,6 +296,20 @@ static void pcb_act_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute
 /*	pcb_gui->attr_dlg_widget_state(hid_ctx, attr_idx, st);*/
 
 	pcb_gui->attr_dlg_set_value(hid_ctx, attr_idx, &val);
+}
+
+static void pcb_act_spin_reset(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	test_t *ctx = caller_data;
+	pcb_hid_attr_val_t hv;
+
+	hv.int_value = 42;
+	hv.real_value = 42.0;
+	hv.coord_value = PCB_MM_TO_COORD(42);
+
+pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspin_int, &hv);
+pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspin_double, &hv);
+pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspin_coord, &hv);
 }
 
 static void pcb_act_spin_upd(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
