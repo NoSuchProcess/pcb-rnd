@@ -38,6 +38,7 @@ typedef struct {
 	int wall, wstr, wup, wdown, wunit, wwarn;
 	const pcb_unit_t *unit; /* for PCB_DAD_SPIN_COORD only: current unit */
 	pcb_hid_attribute_t **attrs;
+	void **hid_ctx;
 	enum {
 		PCB_DAD_SPIN_INT,
 		PCB_DAD_SPIN_DOUBLE,
@@ -101,6 +102,7 @@ do { \
 	spin->cmp.set_value = pcb_dad_spin_set_value; \
 	spin->type = typ; \
 	spin->attrs = &table; \
+	spin->hid_ctx = &table ## _hid_ctx; \
 	\
 	if (typ == PCB_DAD_SPIN_COORD) \
 		gdl_append(&pcb_dad_coord_spins, spin, link); \

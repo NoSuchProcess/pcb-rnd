@@ -424,3 +424,21 @@ int pcb_dad_spin_set_value(pcb_hid_attribute_t *end, void *hid_ctx, int idx, con
 	do_step(hid_ctx, spin, str, end, 0); /* cheap conversion + error checks */
 	return 0;
 }
+
+void pcb_dad_spin_update_global_coords(void)
+{
+	pcb_hid_dad_spin_t *spin;
+
+
+	for(spin = gdl_first(&pcb_dad_coord_spins); spin != NULL; spin = gdl_next(&pcb_dad_coord_spins, spin)) {
+		pcb_hid_attribute_t *dlg;
+		void *hid_ctx;
+
+		if ((spin->unit != NULL) || (spin->attrs == NULL) || (*spin->attrs == NULL) || (spin->hid_ctx == NULL) || (*spin->hid_ctx == NULL))
+			continue;
+
+		dlg = *spin->attrs;
+		hid_ctx = *spin->hid_ctx;
+		do_step(hid_ctx, spin, &dlg[spin->wstr], &dlg[spin->cmp.wend], 0); /* cheap conversion*/
+	}
+}
