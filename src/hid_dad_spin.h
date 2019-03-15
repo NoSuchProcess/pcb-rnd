@@ -71,6 +71,7 @@ do { \
 						spin->wunit = PCB_DAD_CURRENT(table); \
 				} \
 				PCB_DAD_PICTURE(table, pcb_hid_dad_spin_warn); \
+					PCB_DAD_COMPFLAG(table, PCB_HATF_HIDE); \
 					PCB_DAD_SET_ATTR_FIELD(table, user_data, (const char **)spin); \
 					spin->wwarn = PCB_DAD_CURRENT(table); \
 			PCB_DAD_END(table); \

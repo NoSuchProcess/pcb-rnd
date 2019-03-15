@@ -207,6 +207,7 @@ static int ltf_tabbed_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_att
 	XtAddCallback(tctx->wpages, XmNunmapCallback, tabbed_destroy_cb, ctx);
 	XtManageChild(tctx->wpages);
 
+	ctx->wltop[i] = wtop;
 	if (add_top)
 		ctx->wl[i] = wtop;
 	else

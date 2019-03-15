@@ -53,7 +53,8 @@ typedef struct {
 	pcb_gtk_common_t *com;
 	pcb_hid_attribute_t *attrs;
 	pcb_hid_attr_val_t *results;
-	GtkWidget **wl;
+	GtkWidget **wl;     /* content widget */
+	GtkWidget **wltop;  /* the parent widget, which is different from wl if reparenting (extra boxes, e.g. for framing or scrolling) was needed */
 	int n_attrs;
 	void *caller_data;
 	GtkWidget *dialog;
@@ -338,7 +339,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 		/* create the actual widget from attrs */
 		switch (ctx->attrs[j].type) {
 			case PCB_HATT_BEGIN_HBOX:
-				bparent = frame_scroll(parent, ctx->attrs[j].pcb_hatt_flags);
+				ctx->wltop[j] = bparent = frame_scroll(parent, ctx->attrs[j].pcb_hatt_flags);
 				hbox = gtkc_hbox_new(FALSE, ((ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TIGHT) ? 0 : 4));
 				expfill = (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_EXPFILL);
 				gtk_box_pack_start(GTK_BOX(bparent), hbox, expfill, expfill, 0);
@@ -347,7 +348,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				break;
 
 			case PCB_HATT_BEGIN_VBOX:
-				bparent = frame_scroll(parent, ctx->attrs[j].pcb_hatt_flags);
+				ctx->wltop[j] = bparent = frame_scroll(parent, ctx->attrs[j].pcb_hatt_flags);
 				vbox1 = gtkc_vbox_new(FALSE, ((ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TIGHT) ? 0 : 4));
 				expfill = (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_EXPFILL);
 				gtk_box_pack_start(GTK_BOX(bparent), vbox1, expfill, expfill, 0);
@@ -363,7 +364,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 			case PCB_HATT_BEGIN_TABLE:
 				{
 					ghid_attr_tb_t ts;
-					bparent = frame_scroll(parent, ctx->attrs[j].pcb_hatt_flags);
+					ctx->wltop[j] = bparent = frame_scroll(parent, ctx->attrs[j].pcb_hatt_flags);
 					ts.type = TB_TABLE;
 					ts.val.table.cols = ctx->attrs[j].pcb_hatt_table_cols;
 					ts.val.table.rows = pcb_hid_attrdlg_num_children(ctx->attrs, j+1, ctx->n_attrs) / ts.val.table.cols;
@@ -484,7 +485,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				break;
 
 			case PCB_HATT_ENUM:
-				hbox = gtkc_hbox_new(FALSE, 4);
+				ctx->wltop[j] = hbox = gtkc_hbox_new(FALSE, 4);
 				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
 
 				combo = gtkc_combo_box_text_new();
@@ -507,11 +508,11 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				break;
 
 			case PCB_HATT_TREE:
-				ctx->wl[j] = ghid_tree_table_create(ctx, &ctx->attrs[j], parent);
+				ctx->wl[j] = ghid_tree_table_create(ctx, &ctx->attrs[j], parent, j);
 				break;
 
 			case PCB_HATT_PREVIEW:
-				ctx->wl[j] = ghid_preview_create(ctx, &ctx->attrs[j], parent);
+				ctx->wl[j] = ghid_preview_create(ctx, &ctx->attrs[j], parent, j);
 				break;
 
 			case PCB_HATT_TEXT:
@@ -519,27 +520,27 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				break;
 
 			case PCB_HATT_PICTURE:
-				ctx->wl[j] = ghid_picture_create(ctx, &ctx->attrs[j], parent);
+				ctx->wl[j] = ghid_picture_create(ctx, &ctx->attrs[j], parent, j);
 				break;
 
 			case PCB_HATT_PICBUTTON:
-				ctx->wl[j] = ghid_picbutton_create(ctx, &ctx->attrs[j], parent);
+				ctx->wl[j] = ghid_picbutton_create(ctx, &ctx->attrs[j], parent, j);
 				g_signal_connect(G_OBJECT(ctx->wl[j]), "clicked", G_CALLBACK(button_changed_cb), &(ctx->attrs[j]));
 				g_object_set_data(G_OBJECT(ctx->wl[j]), PCB_OBJ_PROP, ctx);
 				break;
 
 			case PCB_HATT_COLOR:
-				ctx->wl[j] = ghid_color_create(ctx, &ctx->attrs[j], parent);
+				ctx->wl[j] = ghid_color_create(ctx, &ctx->attrs[j], parent, j);
 				g_signal_connect(G_OBJECT(ctx->wl[j]), "color_set", G_CALLBACK(color_changed_cb), &(ctx->attrs[j]));
 				g_object_set_data(G_OBJECT(ctx->wl[j]), PCB_OBJ_PROP, ctx);
 				break;
 
 			case PCB_HATT_PROGRESS:
-				ctx->wl[j] = ghid_progress_create(ctx, &ctx->attrs[j], parent);
+				ctx->wl[j] = ghid_progress_create(ctx, &ctx->attrs[j], parent, j);
 				break;
 
 			case PCB_HATT_PATH:
-				vbox1 = ghid_category_vbox(parent, NULL, 4, 2, TRUE, TRUE);
+				ctx->wltop[j] = vbox1 = ghid_category_vbox(parent, NULL, 4, 2, TRUE, TRUE);
 				entry = gtk_entry_new();
 				g_object_set_data(G_OBJECT(entry), PCB_OBJ_PROP, ctx);
 				ctx->wl[j] = entry;
@@ -555,7 +556,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				unit_list = pcb_units;
 				n = pcb_get_n_units();
 
-				hbox = gtkc_hbox_new(FALSE, 4);
+				ctx->wltop[j] = hbox = gtkc_hbox_new(FALSE, 4);
 				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
 
 				combo = gtkc_combo_box_text_new();
@@ -589,6 +590,8 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				printf("ghid_attribute_dialog: unknown type of HID attribute\n");
 				break;
 		}
+		if (ctx->wltop[j] == NULL)
+			ctx->wltop[j] = ctx->wl[j];
 	}
 	return j;
 }
@@ -761,6 +764,14 @@ static gint ghid_attr_dlg_destroy_event_cb(GtkWidget *widget, gpointer data)
 	return 0;
 }
 
+static void ghid_initial_wstates(attr_dlg_t *ctx)
+{
+	int n;
+	for(n = 0; n < ctx->n_attrs; n++)
+		if (ctx->attrs[n].pcb_hatt_flags & PCB_HATF_HIDE)
+			gtk_widget_hide(ctx->wltop[n]);
+}
+
 void *ghid_attr_dlg_new(pcb_gtk_common_t *com, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy)
 {
 	GtkWidget *content_area;
@@ -779,6 +790,7 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, const char *id, pcb_hid_attribute
 	ctx->results = results;
 	ctx->n_attrs = n_attrs;
 	ctx->wl = calloc(sizeof(GtkWidget *), n_attrs);
+	ctx->wltop = calloc(sizeof(GtkWidget *), n_attrs);
 	ctx->caller_data = caller_data;
 	ctx->rc = 1; /* just in case the window is destroyed in an unknown way: take it as cancel */
 	ctx->close_cb_called = 0;
@@ -815,6 +827,7 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, const char *id, pcb_hid_attribute
 
 	gtk_widget_show_all(ctx->dialog);
 
+	ghid_initial_wstates(ctx);
 	return ctx;
 }
 
@@ -828,10 +841,13 @@ void *ghid_attr_sub_new(pcb_gtk_common_t *com, GtkWidget *parent_box, pcb_hid_at
 	ctx->attrs = attrs;
 	ctx->n_attrs = n_attrs;
 	ctx->wl = calloc(sizeof(GtkWidget *), n_attrs);
+	ctx->wltop = calloc(sizeof(GtkWidget *), n_attrs);
 	ctx->caller_data = caller_data;
 	ctx->rc = 1; /* just in case the window is destroyed in an unknown way: take it as cancel */
 
 	ghid_attr_dlg_add(ctx, parent_box, NULL, 0);
+
+	ghid_initial_wstates(ctx);
 
 	return ctx;
 }
@@ -889,8 +905,10 @@ void ghid_attr_dlg_free(void *hid_ctx)
 		gtk_widget_destroy(ctx->dialog);
 	free(ctx->id);
 	free(ctx->wl);
+	free(ctx->wltop);
 	ctx->id = NULL;
 	ctx->wl = NULL;
+	ctx->wltop = NULL;
 	ctx->dialog = NULL;
 }
 

@@ -25,7 +25,8 @@ typedef enum pcb_hatt_compflags_e {
 	PCB_HATF_CLR_STATIC  = 8,  /* color that can not be changed */
 	PCB_HATF_LEFT_TAB    = 16, /* display tab labels of TABBED on the left instead of on top (default) */
 	PCB_HATF_TREE_COL    = 32, /* first column of a PCB_HATT_TREE is a tree */
-	PCB_HATF_EXPFILL     = 64  /* for hbox and vbox: expand and fill */
+	PCB_HATF_EXPFILL     = 64, /* for hbox and vbox: expand and fill */
+	PCB_HATF_HIDE        = 128 /* widget is initially hidden */
 } pcb_hatt_compflags_t;
 
 typedef enum pcb_hids_e {

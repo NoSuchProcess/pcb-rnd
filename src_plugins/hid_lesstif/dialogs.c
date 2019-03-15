@@ -111,7 +111,8 @@ int pcb_ltf_wait_for_dialog(Widget w)
 typedef struct {
 	pcb_hid_attribute_t *attrs;
 	int n_attrs, actual_nattrs;
-	Widget *wl;
+	Widget *wl;   /* content widget */
+	Widget *wltop;/* the parent widget, which is different from wl if reparenting (extra boxes, e.g. for framing or scrolling) was needed */
 	Widget **btn; /* enum value buttons */
 	pcb_hid_attr_val_t *results;
 	void *caller_data;
@@ -448,6 +449,8 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 		}
 		if (ctx->wl[i] != NULL)
 			XtManageChild(ctx->wl[i]);
+		if (ctx->wltop[i] == NULL)
+			ctx->wltop[i] = ctx->wl[i];
 	}
 	return i;
 }
@@ -562,6 +565,7 @@ static void ltf_attr_destroy_cb(Widget w, void *v, void *cbs)
 		XtUnmanageChild(w);
 		XtDestroyWidget(w);
 		free(ctx->wl);
+		free(ctx->wltop);
 		free(ctx->id);
 		free(ctx);
 	}
@@ -584,6 +588,14 @@ static void ltf_attr_config_cb(Widget shell, XtPointer data, XEvent *xevent, cha
 	XTranslateCoordinates(dsp, win, rw, 0, 0, &x, &y, &cw);
 	pcb_event(PCB_EVENT_DAD_NEW_GEO, "psiiii", ctx, ctx->id,
 		(int)x, (int)y, (int)cevent->width, (int)cevent->height);
+}
+
+static void ltf_initial_wstates(lesstif_attr_dlg_t *ctx)
+{
+	int n;
+	for(n = 0; n < ctx->n_attrs; n++)
+		if (ctx->attrs[n].pcb_hatt_flags & PCB_HATF_HIDE)
+			XtUnmanageChild(ctx->wltop[n]);
 }
 
 void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy)
@@ -614,6 +626,7 @@ void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_att
 	}
 
 	ctx->wl = (Widget *) calloc(n_attrs, sizeof(Widget));
+	ctx->wltop = (Widget *)calloc(n_attrs, sizeof(Widget));
 	ctx->btn = (Widget **) calloc(n_attrs, sizeof(Widget *));
 
 	stdarg_n = 0;
@@ -665,6 +678,8 @@ void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_att
 	if (!modal)
 		XtManageChild(ctx->dialog);
 
+	ltf_initial_wstates(ctx);
+
 	return ctx;
 }
 
@@ -684,9 +699,11 @@ void *lesstif_attr_sub_new(Widget parent_box, pcb_hid_attribute_t *attrs, int n_
 	}
 
 	ctx->wl = (Widget *) calloc(n_attrs, sizeof(Widget));
+	ctx->wltop = (Widget *)calloc(n_attrs, sizeof(Widget));
 	ctx->btn = (Widget **) calloc(n_attrs, sizeof(Widget *));
 
 	attribute_dialog_add(ctx, parent_box, 0);
+	ltf_initial_wstates(ctx);
 
 	return ctx;
 }
@@ -732,6 +749,7 @@ void lesstif_attr_dlg_free(void *hid_ctx)
 			XtDestroyWidget(ctx->dialog);
 		}
 		free(ctx->wl);
+		free(ctx->wltop);
 		free(ctx->id);
 		free(ctx);
 	}

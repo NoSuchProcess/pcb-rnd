@@ -438,7 +438,7 @@ void ghid_tree_table_expcoll_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_
 }
 
 
-static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent)
+static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent, int j)
 {
 	int c;
 	const char **colhdr;
@@ -502,7 +502,7 @@ static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, pcb_hid_attribute_t *a
 	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
 
 	gtk_widget_set_tooltip_text(view, attr->help_text);
-	bparent = frame_scroll(parent, attr->pcb_hatt_flags);
+	ctx->wltop[j] = bparent = frame_scroll(parent, attr->pcb_hatt_flags);
 	gtk_box_pack_start(GTK_BOX(bparent), view, TRUE, TRUE, 0);
 	g_object_set_data(G_OBJECT(view), PCB_OBJ_PROP, ctx);
 	return view;
