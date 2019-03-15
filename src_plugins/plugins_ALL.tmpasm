@@ -45,7 +45,6 @@ include {../src_plugins/hid_batch/Plug.tmpasm}
 include {../src_plugins/hid_gtk2_gdk/Plug.tmpasm}
 include {../src_plugins/hid_gtk2_gl/Plug.tmpasm}
 include {../src_plugins/hid_gtk3_cairo/Plug.tmpasm}
-include {../src_plugins/hid_gtk3_gl/Plug.tmpasm}
 include {../src_plugins/hid_lesstif/Plug.tmpasm}
 include {../src_plugins/hid_remote/Plug.tmpasm}
 include {../src_plugins/import_calay/Plug.tmpasm}
