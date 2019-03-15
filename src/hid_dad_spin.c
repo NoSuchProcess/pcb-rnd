@@ -59,10 +59,31 @@ const char *pcb_hid_dad_spin_unit[] = {
 " ++ ",
 };
 
+const char *pcb_hid_dad_spin_warn[] = {
+"9 9 3 1",
+" 	c None",
+"+	c #000000",
+"*	c #FF0000",
+" ******* ",
+"**     **",
+"* +   + *",
+"* +   + *",
+"* + + + *",
+"* + + + *",
+"* +++++ *",
+"**     **",
+" ******* ",
+};
+
 static void spin_changed(void *hid_ctx, void *caller_data, pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end)
 {
 	if (end->change_cb != NULL)
 		end->change_cb(hid_ctx, caller_data, end);
+}
+
+static void spin_warn(void *hid_ctx, pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end, const char *msg)
+{
+	pcb_gui->attr_dlg_widget_hide(hid_ctx, spin->wwarn, (msg == NULL));
 }
 
 static double get_step(pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end)
@@ -94,6 +115,7 @@ static void do_step(void *hid_ctx, pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t
 			break;
 	}
 
+	spin_warn(hid_ctx, spin, end, NULL);
 	hv.str_value = pcb_strdup(buf);
 	pcb_gui->attr_dlg_set_value(hid_ctx, spin->wstr, &hv);
 }
@@ -136,6 +158,13 @@ TODO("handle conv error using *ends");
 	}
 
 	spin_changed(hid_ctx, caller_data, spin, end);
+}
+
+void pcb_dad_spin_unit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)attr->user_data;
+	pcb_hid_attribute_t *str = attr - spin->wdown + spin->wstr;
+	pcb_hid_attribute_t *end = attr - spin->wdown + spin->cmp.wend;
 }
 
 void pcb_dad_spin_set_num(pcb_hid_attribute_t *attr, long l, double d, pcb_coord_t c)

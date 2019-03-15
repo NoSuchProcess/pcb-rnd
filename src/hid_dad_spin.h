@@ -29,13 +29,17 @@
 typedef struct {
 	pcb_hid_compound_t cmp;
 	double step; /* how much an up/down step modifies; 0 means automatic */
-	int wstr, wup, wdown;
+	int wstr, wup, wdown, wunit, wwarn;
 	enum {
 		PCB_DAD_SPIN_INT
 	} type;
 } pcb_hid_dad_spin_t;
 
-#define PCB_DAD_SPIN_INT(table) \
+#define PCB_DAD_SPIN_INT(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_INT, 1)
+
+/*** implementation ***/
+
+#define PCB_DAD_SPIN_ANY(table, typ, has_unit) \
 do { \
 	pcb_hid_dad_spin_t *spin = calloc(sizeof(pcb_hid_dad_spin_t), 1); \
 	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_COMPOUND); \
@@ -58,6 +62,18 @@ do { \
 					PCB_DAD_SET_ATTR_FIELD(table, user_data, (const char **)spin); \
 					spin->wdown = PCB_DAD_CURRENT(table); \
 			PCB_DAD_END(table); \
+			PCB_DAD_BEGIN_VBOX(table); \
+				PCB_DAD_COMPFLAG(table, PCB_HATF_TIGHT); \
+				if (has_unit) { \
+					PCB_DAD_PICBUTTON(table, pcb_hid_dad_spin_unit); \
+						PCB_DAD_CHANGE_CB(ctx.dlg, pcb_dad_spin_unit_cb); \
+						PCB_DAD_SET_ATTR_FIELD(table, user_data, (const char **)spin); \
+						spin->wunit = PCB_DAD_CURRENT(table); \
+				} \
+				PCB_DAD_PICTURE(table, pcb_hid_dad_spin_warn); \
+					PCB_DAD_SET_ATTR_FIELD(table, user_data, (const char **)spin); \
+					spin->wwarn = PCB_DAD_CURRENT(table); \
+			PCB_DAD_END(table); \
 		PCB_DAD_END(table); \
 	PCB_DAD_END(table); \
 		PCB_DAD_SET_ATTR_FIELD(table, enumerations, (const char **)spin); \
@@ -65,18 +81,19 @@ do { \
 	\
 	spin->cmp.free = pcb_dad_spin_free; \
 	spin->cmp.set_val_num = pcb_dad_spin_set_num; \
-	spin->type = PCB_DAD_SPIN_INT; \
+	spin->type = typ; \
 } while(0)
-
-/*** implementation ***/
 
 extern const char *pcb_hid_dad_spin_up[];
 extern const char *pcb_hid_dad_spin_down[];
 extern const char *pcb_hid_dad_spin_unit[];
+extern const char *pcb_hid_dad_spin_unit[];
+extern const char *pcb_hid_dad_spin_warn[];
 
 void pcb_dad_spin_up_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 void pcb_dad_spin_down_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 void pcb_dad_spin_txt_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+void pcb_dad_spin_unit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 
 void pcb_dad_spin_free(pcb_hid_attribute_t *attrib);
 void pcb_dad_spin_set_num(pcb_hid_attribute_t *attr, long l, double d, pcb_coord_t c);
