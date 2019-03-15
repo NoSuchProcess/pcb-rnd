@@ -379,3 +379,18 @@ void pcb_dad_spin_free(pcb_hid_attribute_t *attr)
 		free(spin);
 	}
 }
+
+int pcb_dad_spin_widget_state(void *hid_ctx, int idx, pcb_bool enabled)
+{
+	return -1;
+}
+
+int pcb_dad_spin_widget_hide(void *hid_ctx, int idx, pcb_bool hide)
+{
+	return -1;
+}
+
+int pcb_dad_spin_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val)
+{
+	return -1;
+}

@@ -33,7 +33,7 @@ typedef struct {
 	unsigned vmin_valid:1;
 	unsigned vmax_valid:1;
 	unsigned no_unit_chg:1;
-	int wstr, wup, wdown, wunit, wwarn;
+	int wall, wstr, wup, wdown, wunit, wwarn;
 	const pcb_unit_t *unit; /* for PCB_DAD_SPIN_COORD only: current unit */
 	enum {
 		PCB_DAD_SPIN_INT,
@@ -55,6 +55,7 @@ do { \
 		spin->cmp.wbegin = PCB_DAD_CURRENT(table); \
 		PCB_DAD_SET_ATTR_FIELD(table, enumerations, (const char **)spin); \
 		PCB_DAD_BEGIN_HBOX(table); \
+			spin->wall = PCB_DAD_CURRENT(table); \
 			PCB_DAD_COMPFLAG(table, PCB_HATF_TIGHT); \
 			PCB_DAD_STRING(table); \
 				PCB_DAD_CHANGE_CB(ctx.dlg, pcb_dad_spin_txt_cb); \
@@ -91,6 +92,9 @@ do { \
 	\
 	spin->cmp.free = pcb_dad_spin_free; \
 	spin->cmp.set_val_num = pcb_dad_spin_set_num; \
+	spin->cmp.widget_state = pcb_dad_spin_widget_state; \
+	spin->cmp.widget_hide = pcb_dad_spin_widget_hide; \
+	spin->cmp.set_value = pcb_dad_spin_set_value; \
 	spin->type = typ; \
 } while(0)
 
@@ -107,3 +111,6 @@ void pcb_dad_spin_unit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 
 void pcb_dad_spin_free(pcb_hid_attribute_t *attrib);
 void pcb_dad_spin_set_num(pcb_hid_attribute_t *attr, long l, double d, pcb_coord_t c);
+int pcb_dad_spin_widget_state(void *hid_ctx, int idx, pcb_bool enabled);
+int pcb_dad_spin_widget_hide(void *hid_ctx, int idx, pcb_bool hide);
+int pcb_dad_spin_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
