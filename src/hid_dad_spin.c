@@ -382,19 +382,19 @@ void pcb_dad_spin_free(pcb_hid_attribute_t *attr)
 
 int pcb_dad_spin_widget_state(pcb_hid_attribute_t *end, void *hid_ctx, int idx, pcb_bool enabled)
 {
-	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)end->user_data;
+	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)end->enumerations;
 	return pcb_gui->attr_dlg_widget_state(hid_ctx, spin->wall, enabled);
 }
 
 int pcb_dad_spin_widget_hide(pcb_hid_attribute_t *end, void *hid_ctx, int idx, pcb_bool hide)
 {
-	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)end->user_data;
+	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)end->enumerations;
 	return pcb_gui->attr_dlg_widget_hide(hid_ctx, spin->wall, hide);
 }
 
 int pcb_dad_spin_set_value(pcb_hid_attribute_t *end, void *hid_ctx, int idx, const pcb_hid_attr_val_t *val)
 {
-	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)end->user_data;
+	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)end->enumerations;
 
 	/* do not modify the text field if the value is the same */
 	switch(spin->type) {
