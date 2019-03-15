@@ -395,25 +395,26 @@ int pcb_dad_spin_widget_hide(pcb_hid_attribute_t *end, void *hid_ctx, int idx, p
 int pcb_dad_spin_set_value(pcb_hid_attribute_t *end, void *hid_ctx, int idx, const pcb_hid_attr_val_t *val)
 {
 	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)end->enumerations;
+	pcb_hid_attribute_t *str = end - spin->cmp.wend + spin->wstr;
 
 	/* do not modify the text field if the value is the same */
 	switch(spin->type) {
 		case PCB_DAD_SPIN_INT:
 			if (val->int_value == end->default_val.int_value)
 				return 0;
-			pcb_dad_spin_set_num(end, val->int_value, 0, 0);
+			end->default_val.int_value = val->int_value;
 			break;
 		case PCB_DAD_SPIN_DOUBLE:
 			if (val->real_value == end->default_val.real_value)
 				return 0;
-			pcb_dad_spin_set_num(end, 0, val->real_value, 0);
+			end->default_val.real_value = val->real_value;
 			break;
 		case PCB_DAD_SPIN_COORD:
 			if (val->coord_value == end->default_val.coord_value)
 				return 0;
-			pcb_dad_spin_set_num(end, 0, 0, val->coord_value);
+			end->default_val.coord_value = val->coord_value;
 			break;
 	}
-
+	do_step(hid_ctx, spin, str, end, 0); /* cheap conversion + error checks */
 	return 0;
 }
