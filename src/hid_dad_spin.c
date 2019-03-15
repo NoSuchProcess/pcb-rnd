@@ -28,6 +28,7 @@
 
 #include "config.h"
 #include "hid_attrib.h"
+#include "hid_dad.h"
 #include "hid_dad_spin.h"
 #include "pcb-printf.h"
 #include "compat_misc.h"
@@ -101,6 +102,101 @@ static char *gen_str_coord(pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *str, p
 		return buf;
 	}
 	return pcb_strdup_printf("%$m*", unit->suffix, c);
+}
+
+typedef struct {
+	PCB_DAD_DECL_NOINIT(dlg)
+	pcb_hid_attribute_t *end;
+	int wout, wunit, wstick, wglob, valid;
+	char buf[128];
+} spin_unit_t;
+
+static void spin_unit_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_hid_attr_val_t hv;
+	spin_unit_t *su = (spin_unit_t *)caller_data;
+	const pcb_unit_t *unit;
+	int unum = su->dlg[su->wunit].default_val.int_value;
+
+	if ((!su->dlg[su->wglob].default_val.int_value) && (unum >= 0) && (unum < pcb_get_n_units()))
+		unit = &pcb_units[unum];
+	else
+		unit = conf_core.editor.grid_unit;
+
+	pcb_snprintf(su->buf, sizeof(su->buf), "%$m*", unit->suffix, su->end->default_val.coord_value);
+	hv.str_value = su->buf;
+	pcb_gui->attr_dlg_set_value(hid_ctx, su->wout, &hv);
+	su->valid = 1;
+}
+
+static void spin_unit_dialog(void *spin_hid_ctx, pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end, pcb_hid_attribute_t *str)
+{
+	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
+	spin_unit_t ctx;
+	int dlgres;
+
+	memset(&ctx, 0, sizeof(ctx));
+	ctx.end = end;
+
+	PCB_DAD_BEGIN_VBOX(ctx.dlg);
+		PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_BEGIN_TABLE(ctx.dlg, 2);
+			PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_FRAME);
+			PCB_DAD_LABEL(ctx.dlg, "Original:");
+			PCB_DAD_LABEL(ctx.dlg, str->default_val.str_value);
+			PCB_DAD_LABEL(ctx.dlg, "With new unit:");
+			PCB_DAD_LABEL(ctx.dlg, "");
+				ctx.wout = PCB_DAD_CURRENT(ctx.dlg);
+		PCB_DAD_END(ctx.dlg);
+
+
+		PCB_DAD_BEGIN_TABLE(ctx.dlg, 2);
+			PCB_DAD_LABEL(ctx.dlg, "Preferred unit");
+			PCB_DAD_UNIT(ctx.dlg);
+				ctx.wunit = PCB_DAD_CURRENT(ctx.dlg);
+				PCB_DAD_HELP(ctx.dlg, "Convert value to this unit and rewrite\nthe text entry field with the converted value.");
+				PCB_DAD_CHANGE_CB(ctx.dlg, spin_unit_chg_cb);
+
+			PCB_DAD_LABEL(ctx.dlg, "Use the global");
+			PCB_DAD_BOOL(ctx.dlg, "");
+				PCB_DAD_HELP(ctx.dlg, "Ignore the above unit selection,\nuse the global unit (grid unit) in this spinbox,\nfollow changes of the global unit");
+				ctx.wglob = PCB_DAD_CURRENT(ctx.dlg);
+				PCB_DAD_DEFAULT_NUM(ctx.dlg, (spin->unit == NULL));
+				PCB_DAD_CHANGE_CB(ctx.dlg, spin_unit_chg_cb);
+
+			PCB_DAD_LABEL(ctx.dlg, "Stick to unit");
+			PCB_DAD_BOOL(ctx.dlg, "");
+				PCB_DAD_HELP(ctx.dlg, "Upon any update from software, switch back to\the selected unit even if the user specified\na different unit in the text field.");
+				ctx.wstick = PCB_DAD_CURRENT(ctx.dlg);
+				PCB_DAD_DEFAULT_NUM(ctx.dlg, spin->no_unit_chg);
+				PCB_DAD_CHANGE_CB(ctx.dlg, spin_unit_chg_cb);
+		PCB_DAD_END(ctx.dlg);
+
+		PCB_DAD_BEGIN_HBOX(ctx.dlg);
+			PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_BEGIN_HBOX(ctx.dlg);
+				PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_END(ctx.dlg);
+			PCB_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
+		PCB_DAD_END(ctx.dlg);
+	PCB_DAD_END(ctx.dlg);
+
+	PCB_DAD_AUTORUN("unit", ctx.dlg, "spinbox coord unit change", &ctx, dlgres);
+	if ((dlgres == 0) && (ctx.valid)) {
+		pcb_hid_attr_val_t hv;
+		int unum = ctx.dlg[ctx.wunit].default_val.int_value;
+
+		if ((!ctx.dlg[ctx.wglob].default_val.int_value) && (unum >= 0) && (unum < pcb_get_n_units()))
+				spin->unit = &pcb_units[unum];
+			else
+				spin->unit = NULL;
+
+		spin->no_unit_chg = ctx.dlg[ctx.wstick].default_val.int_value;
+		hv.str_value = ctx.buf;
+		pcb_gui->attr_dlg_set_value(spin_hid_ctx, spin->wstr, &hv);
+	}
+
+	PCB_DAD_FREE(ctx.dlg);
 }
 
 static double get_step(pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end, pcb_hid_attribute_t *str)
@@ -245,8 +341,9 @@ void pcb_dad_spin_txt_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 void pcb_dad_spin_unit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)attr->user_data;
-	pcb_hid_attribute_t *str = attr - spin->wdown + spin->wstr;
-	pcb_hid_attribute_t *end = attr - spin->wdown + spin->cmp.wend;
+	pcb_hid_attribute_t *str = attr - spin->wunit + spin->wstr;
+	pcb_hid_attribute_t *end = attr - spin->wunit + spin->cmp.wend;
+	spin_unit_dialog(hid_ctx, spin, end, str);
 }
 
 void pcb_dad_spin_set_num(pcb_hid_attribute_t *attr, long l, double d, pcb_coord_t c)
