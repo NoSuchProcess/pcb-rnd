@@ -192,7 +192,7 @@ static void spin_unit_dialog(void *spin_hid_ctx, pcb_hid_dad_spin_t *spin, pcb_h
 				spin->unit = NULL;
 
 		spin->no_unit_chg = ctx.dlg[ctx.wstick].default_val.int_value;
-		hv.str_value = ctx.buf;
+		hv.str_value = pcb_strdup(ctx.buf);
 		pcb_gui->attr_dlg_set_value(spin_hid_ctx, spin->wstr, &hv);
 	}
 
