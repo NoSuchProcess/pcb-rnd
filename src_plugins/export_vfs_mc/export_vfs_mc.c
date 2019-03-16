@@ -26,6 +26,10 @@ static pcb_hid_attribute_t export_vfs_mc_options[] = {
 	{"cmd", "mc command",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_export_vfs_mc_cmd 0
+
+	{"qpath", "query path",
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_export_vfs_mc_qpath 1
 };
 
 #define NUM_OPTIONS (sizeof(export_vfs_mc_options)/sizeof(export_vfs_mc_options[0]))
@@ -52,6 +56,21 @@ static void mc_list(void)
 	pcb_vfs_list(PCB, mc_list_cb, NULL);
 }
 
+static void mc_copyout(const char *path)
+{
+	gds_t res;
+
+	gds_init(&res);
+	if (pcb_vfs_access(PCB, path, &res, 0) == 0) {
+		printf("%s", res.array);
+	}
+	else {
+		fprintf(stderr, "Can not access that field for read\n");
+		exit(1);
+	}
+	gds_uninit(&res);
+}
+
 static void export_vfs_mc_do_export(pcb_hid_attr_val_t * options)
 {
 	const char *cmd;
@@ -66,6 +85,7 @@ static void export_vfs_mc_do_export(pcb_hid_attr_val_t * options)
 
 	cmd = options[HA_export_vfs_mc_cmd].str_value;
 	if (strcmp(cmd, "list") == 0) mc_list();
+	else if (strcmp(cmd, "copyout") == 0) mc_copyout(options[HA_export_vfs_mc_qpath].str_value);
 	else {
 		fprintf(stderr, "Unknown vfs_mc command: '%s'\n", cmd);
 		exit(1);
