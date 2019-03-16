@@ -37,7 +37,8 @@ static const char nope[] = "Do not use.";
 
 static void prompt_enter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_hid_dad_close(hid_ctx, attr->user_data, 0);
+	pcb_dad_retovr_t **ro = attr->user_data;
+	pcb_hid_dad_close(hid_ctx, *ro, 0);
 }
 
 fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
