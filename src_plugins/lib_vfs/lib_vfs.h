@@ -29,4 +29,5 @@
 typedef void (*pcb_vfs_list_cb)(void *ctx, const char *path, int isdir);
 
 int pcb_vfs_list(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx);
+int pcb_vfs_access(pcb_board_t *pcb, const char *path, gds_t *data, int wr);
 

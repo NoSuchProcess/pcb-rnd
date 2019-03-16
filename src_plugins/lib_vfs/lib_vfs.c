@@ -54,6 +54,36 @@ static void vfs_list_props(gds_t *path, pcb_propedit_t *pctx, pcb_vfs_list_cb cb
 	path->used = orig_used;
 }
 
+static int vfs_access_prop(pcb_propedit_t *pctx, const char *path, gds_t *data, int wr)
+{
+	pcb_props_t *pt;
+	pcb_propval_t *pv;
+	htprop_entry_t *e;
+
+	pcb_propsel_map_core(pctx);
+	pt = htsp_get(&pctx->props, path);
+
+	if (pt == NULL)
+		return -1;
+
+	if (wr) {
+		pcb_propset_ctx_t sctx;
+		sctx.s = data->array;
+		TODO("convert the other fields as well");
+		return pcb_propsel_set(pctx, path, &sctx);
+	}
+
+
+	e = htprop_first(&pt->values);
+	pv = &e->key;
+	free(data->array);
+	data->array = pcb_propsel_printval(pt->type, pv);
+	data->used = data->alloced = strlen(data->array);
+	gds_append(data, '\n');
+
+	return 0;
+}
+
 static void vfs_list_layers(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 {
 	gds_t path;
@@ -78,6 +108,25 @@ static void vfs_list_layers(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 		pcb_props_uninit(&pctx);
 	}
 	gds_uninit(&path);
+}
+
+static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *data, int wr)
+{
+	pcb_propedit_t pctx;
+	char *end;
+	pcb_layer_id_t lid = strtol(path, &end, 10);
+	int res;
+
+	if (*end != '/')
+		return -1;
+	path=end+1;
+
+	pcb_props_init(&pctx, pcb);
+	vtl0_append(&pctx.layers, lid);
+	res = vfs_access_prop(&pctx, path, data, wr);
+	pcb_props_uninit(&pctx);
+
+	return res;
 }
 
 static void vfs_list_layergrps(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
@@ -106,6 +155,11 @@ static void vfs_list_layergrps(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 	gds_uninit(&path);
 }
 
+static int vfs_access_layergrp(pcb_board_t *pcb, const char *path, gds_t *data, int wr)
+{
+	return -1;
+}
+
 int pcb_vfs_list(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 {
 	vfs_list_layergrps(pcb, cb, ctx);
@@ -115,6 +169,19 @@ int pcb_vfs_list(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 	cb(ctx, "netlist", 1);
 
 	return 0;
+}
+
+
+
+int pcb_vfs_access(pcb_board_t *pcb, const char *path, gds_t *data, int wr)
+{
+	if (strncmp(path, "data/layers/", 12) == 0)
+		return vfs_access_layer(pcb, path+12, data, wr);
+
+	if (strncmp(path, "layer_groups/", 13) == 0)
+		return vfs_access_layergrp(pcb, path+13, data, wr);
+
+	return -1;
 }
 
 
