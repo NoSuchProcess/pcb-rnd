@@ -30,10 +30,6 @@
 #ifndef PCB_LAYER_H
 #define PCB_LAYER_H
 
-
-typedef long int pcb_layer_id_t;
-typedef long int pcb_layergrp_id_t;
-
 /* Layer type bitfield */
 typedef enum {
 	/* Stack-up (vertical position): */
