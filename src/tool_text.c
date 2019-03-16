@@ -86,7 +86,7 @@ void pcb_tool_text_draw_attached(void)
 	text.TextString = "A";
 	text.fid = conf_core.design.text_font_id;
 	text.ID = 0;
-
+	text.BoundingBox.X1 = text.BoundingBox.Y1 = text.BoundingBox.X2 = text.BoundingBox.Y2 = 0;
 	pcb_text_draw_xor(&text,0,0);
 
 }
