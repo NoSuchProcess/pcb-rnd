@@ -30,6 +30,8 @@ static pcb_hid_attribute_t export_vfs_fuse_options[] = {
 
 #define NUM_OPTIONS (sizeof(export_vfs_fuse_options)/sizeof(export_vfs_fuse_options[0]))
 
+PCB_REGISTER_ATTRIBUTES(export_vfs_fuse_options, export_vfs_fuse_cookie)
+
 static pcb_hid_attr_val_t export_vfs_fuse_values[NUM_OPTIONS];
 
 static pcb_hid_attribute_t *export_vfs_fuse_get_export_options(int *n)
@@ -76,6 +78,7 @@ int pplg_check_ver_export_vfs_fuse(int ver_needed) { return 0; }
 
 void pplg_uninit_export_vfs_fuse(void)
 {
+	pcb_hid_remove_attributes_by_cookie(export_vfs_fuse_cookie);
 }
 
 int pplg_init_export_vfs_fuse(void)
@@ -87,7 +90,7 @@ int pplg_init_export_vfs_fuse(void)
 	pcb_hid_nogui_init(&export_vfs_fuse_hid);
 
 	export_vfs_fuse_hid.struct_size = sizeof(pcb_hid_t);
-	export_vfs_fuse_hid.name = "export_vfs_fuse";
+	export_vfs_fuse_hid.name = "vfs_fuse";
 	export_vfs_fuse_hid.description = "Handler of FUSE calls, serving board data";
 	export_vfs_fuse_hid.exporter = 1;
 	export_vfs_fuse_hid.hide_from_gui = 1;
