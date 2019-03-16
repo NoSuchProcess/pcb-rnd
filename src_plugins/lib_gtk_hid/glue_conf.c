@@ -86,6 +86,16 @@ static void ghid_confchg_cli(conf_native_t *cfg, int arr_idx)
 	ghid_command_update_prompt(&ghidgui->topwin.cmd);
 }
 
+static void ghid_confchg_spec_color(conf_native_t *cfg, int arr_idx)
+{
+	if (!ghidgui->hid_active)
+		return;
+
+	if (ghidgui->common.set_special_colors != NULL)
+		ghidgui->common.set_special_colors(cfg);
+}
+
+
 
 static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*func)(conf_native_t *, int))
 {
@@ -101,7 +111,8 @@ void ghid_conf_regs(const char *cookie)
 {
 	static conf_hid_callbacks_t 
 		cbs_refraction, cbs_direction, cbs_fullscreen, cbs_show_sside, cbs_grid,
-		cbs_text_scale, cbs_grid_unit, cbs_rst[4], cbs_cli[2], cbs_compactv, cbs_compacth;
+		cbs_text_scale, cbs_grid_unit, cbs_rst[4], cbs_cli[2], cbs_compactv,
+		cbs_compacth, cbs_color[3];
 
 	ghidgui->conf_id = conf_hid_reg(cookie, NULL);
 
@@ -125,4 +136,8 @@ TODO("padstack: remove some paths when route style has proto")
 	init_conf_watch(&cbs_cli[1], "rc/cli_backend", ghid_confchg_cli);
 
 	init_conf_watch(&cbs_compacth, "appearance/compact", ghid_confchg_compact);
+
+	init_conf_watch(&cbs_color[0], "appearance/color/background", ghid_confchg_spec_color);
+	init_conf_watch(&cbs_color[1], "appearance/color/off_limit", ghid_confchg_spec_color);
+	init_conf_watch(&cbs_color[2], "appearance/color/grid", ghid_confchg_spec_color);
 }
