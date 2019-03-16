@@ -80,11 +80,37 @@ static void vfs_list_layers(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 	gds_uninit(&path);
 }
 
+static void vfs_list_layergrps(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
+{
+	gds_t path;
+	pcb_layergrp_id_t gid;
+	size_t orig_used;
+
+	cb(ctx, "layer_groups", 1);
+	gds_init(&path);
+	gds_append_str(&path, "layer_groups/");
+	orig_used = path.used;
+
+	for(gid = 0; gid < pcb->LayerGroups.len; gid++) {
+		pcb_propedit_t pctx;
+
+		path.used = orig_used;
+		pcb_append_printf(&path, "%ld", gid);
+		cb(ctx, path.array, 1);
+
+		pcb_props_init(&pctx, PCB);
+		vtl0_append(&pctx.layergrps, gid);
+		vfs_list_props(&path, &pctx, cb, ctx);
+		pcb_props_uninit(&pctx);
+	}
+	gds_uninit(&path);
+}
+
 int pcb_vfs_list(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 {
+	vfs_list_layergrps(pcb, cb, ctx);
 	cb(ctx, "data", 1);
 	vfs_list_layers(pcb, cb, ctx);
-	cb(ctx, "data/layer_groups", 1);
 	cb(ctx, "route_styles", 1);
 	cb(ctx, "netlist", 1);
 
