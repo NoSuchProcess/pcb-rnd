@@ -32,6 +32,11 @@
 
 #define ROUTE_SMALL_DATA_SIZE 4
 
+#include "obj_common.h"
+#include "global_typedefs.h"
+
+#include "hid.h"
+
 typedef struct {
 	pcb_objtype_t type;
 	pcb_point_t point1; /* Line: Start Point, Arc: Center Point */
