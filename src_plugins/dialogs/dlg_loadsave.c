@@ -154,6 +154,7 @@ static void setup_fmt_sub(save_t *save)
 		PCB_DAD_BEGIN_HBOX(save->fmtsub->dlg);
 			PCB_DAD_LABEL(save->fmtsub->dlg, "File format:");
 			PCB_DAD_ENUM(save->fmtsub->dlg, (const char **)save->avail->digest);
+				PCB_DAD_DEFAULT_NUM(save->fmtsub->dlg, save->pick);
 				PCB_DAD_CHANGE_CB(save->fmtsub->dlg, fmt_chg);
 		PCB_DAD_END(save->fmtsub->dlg);
 	PCB_DAD_END(save->fmtsub->dlg);
@@ -256,6 +257,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			memset(&fmtsub_local, 0, sizeof(fmtsub_local));
 			save.avail = &avail;
 			save.fmtsub = fmtsub;
+			save.pick = fmt;
 			fmtsub->sub_ctx = &save;
 			setup_fmt_sub(&save);
 		}
