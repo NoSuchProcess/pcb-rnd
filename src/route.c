@@ -40,6 +40,7 @@
 #include "undo.h"
 #include "obj_line_draw.h"
 #include "obj_arc_draw.h"
+#include "route_draw.h"
 #include "obj_line.h"
 #include "obj_line_op.h"
 #include "draw_wireframe.h"

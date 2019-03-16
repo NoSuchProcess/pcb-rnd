@@ -52,6 +52,7 @@
 #include "obj_arc_draw.h"
 #include "obj_text_draw.h"
 #include "obj_pstk_draw.h"
+#include "route_draw.h"
 #include "obj_arc_ui.h"
 #include "obj_subc_parent.h"
 

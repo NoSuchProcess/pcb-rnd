@@ -51,6 +51,7 @@
 #include "obj_line_op.h"
 #include "obj_line_draw.h"
 #include "obj_pstk_inlines.h"
+#include "route_draw.h"
 #include "plugins.h"
 #include "conf_core.h"
 #include "layer_grp.h"

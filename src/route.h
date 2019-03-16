@@ -35,8 +35,6 @@
 #include "obj_common.h"
 #include "global_typedefs.h"
 
-#include "hid.h"
-
 typedef struct {
 	pcb_objtype_t type;
 	pcb_point_t point1; /* Line: Start Point, Arc: Center Point */
@@ -80,8 +78,5 @@ void pcb_route_direct(pcb_board_t *PCB, pcb_route_t *p_route, pcb_point_t *point
 int pcb_route_apply(const pcb_route_t *p_route);
 int pcb_route_apply_to_line(const pcb_route_t *p_route, pcb_layer_t *Layer, pcb_line_t *apply_to_line);
 int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc_layer, pcb_arc_t *apply_to_arc);
-
-void pcb_route_draw(pcb_route_t *p_route, pcb_hid_gc_t GC);
-void pcb_route_draw_drc(pcb_route_t *p_route, pcb_hid_gc_t GC);
 
 #endif
