@@ -118,11 +118,19 @@ static int ltf_tabbed_set_(ltf_tab_t *tctx, int page)
 	if (page == tctx->at)
 		return 0;
 
+	XtVaSetValues(tctx->wpages, PxmNpagesAt, page, NULL);
+
+	if ((tctx->btn == NULL) || (tctx->btn[tctx->at].w == NULL))
+		return 0;
+
 	if (tctx->at >= 0)
 		XtVaSetValues(tctx->btn[tctx->at].w, XmNshadowThickness, 1, NULL);
+
 	tctx->at = page;
+	if (tctx->btn[tctx->at].w == NULL)
+		return 0;
+
 	XtVaSetValues(tctx->btn[tctx->at].w, XmNshadowThickness, 3, NULL);
-	XtVaSetValues(tctx->wpages, PxmNpagesAt, page, NULL);
 
 	return 0;
 }
