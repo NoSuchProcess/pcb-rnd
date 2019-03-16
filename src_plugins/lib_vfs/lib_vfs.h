@@ -24,3 +24,9 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include "board.h"
+
+typedef void (*pcb_vfs_list_cb)(void *ctx, const char *path, int isdir);
+
+int pcb_vfs_list(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx);
+

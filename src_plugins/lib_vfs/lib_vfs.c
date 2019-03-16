@@ -30,6 +30,37 @@
 #include "data.h"
 #include "plugins.h"
 
+#include "lib_vfs.h"
+
+static void vfs_list_layers(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
+{
+	gds_t path;
+	pcb_layer_id_t lid;
+	size_t orig_used;
+
+	cb(ctx, "data/layers", 1);
+	gds_init(&path);
+	gds_append_str(&path, "data/layers/");
+	orig_used = path.used;
+	for(lid = 0; lid < pcb->Data->LayerN; lid++) {
+		path.used = orig_used;
+		pcb_append_printf(&path, "%ld", lid);
+		cb(ctx, path.array, 1);
+	}
+	gds_uninit(&path);
+}
+
+int pcb_vfs_list(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
+{
+	cb(ctx, "data", 1);
+	vfs_list_layers(pcb, cb, ctx);
+	cb(ctx, "data/layer_groups", 1);
+	cb(ctx, "route_styles", 1);
+	cb(ctx, "netlist", 1);
+
+	return 0;
+}
+
 
 int pplg_check_ver_lib_vfs(int ver_needed) { return 0; }
 

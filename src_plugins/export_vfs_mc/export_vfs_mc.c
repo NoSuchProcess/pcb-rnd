@@ -30,6 +30,8 @@ static pcb_hid_attribute_t export_vfs_mc_options[] = {
 
 #define NUM_OPTIONS (sizeof(export_vfs_mc_options)/sizeof(export_vfs_mc_options[0]))
 
+PCB_REGISTER_ATTRIBUTES(export_vfs_mc_options, export_vfs_mc_cookie)
+
 static pcb_hid_attr_val_t export_vfs_mc_values[NUM_OPTIONS];
 
 static pcb_hid_attribute_t *export_vfs_mc_get_export_options(int *n)
@@ -37,6 +39,17 @@ static pcb_hid_attribute_t *export_vfs_mc_get_export_options(int *n)
 	if (n)
 		*n = NUM_OPTIONS;
 	return export_vfs_mc_options;
+}
+
+static void mc_list_cb(void *ctx, const char *path, int isdir)
+{
+	const char *attrs = isdir ? "drwxr-xr-x" : "-rw-r--r--";
+	printf("%s 1 pcb-rnd pcb-rnd 0 01/01/01 01:01 %s\n", attrs, path);
+}
+
+static void mc_list(void)
+{
+	pcb_vfs_list(PCB, mc_list_cb, NULL);
 }
 
 static void export_vfs_mc_do_export(pcb_hid_attr_val_t * options)
@@ -52,7 +65,11 @@ static void export_vfs_mc_do_export(pcb_hid_attr_val_t * options)
 	}
 
 	cmd = options[HA_export_vfs_mc_cmd].str_value;
-	TODO("Process cmd here");
+	if (strcmp(cmd, "list") == 0) mc_list();
+	else {
+		fprintf(stderr, "Unknown vfs_mc command: '%s'\n", cmd);
+		exit(1);
+	}
 }
 
 static int export_vfs_mc_usage(const char *topic)
@@ -76,6 +93,7 @@ int pplg_check_ver_export_vfs_mc(int ver_needed) { return 0; }
 
 void pplg_uninit_export_vfs_mc(void)
 {
+	pcb_hid_remove_attributes_by_cookie(export_vfs_mc_cookie);
 }
 
 int pplg_init_export_vfs_mc(void)
@@ -87,7 +105,7 @@ int pplg_init_export_vfs_mc(void)
 	pcb_hid_nogui_init(&export_vfs_mc_hid);
 
 	export_vfs_mc_hid.struct_size = sizeof(pcb_hid_t);
-	export_vfs_mc_hid.name = "export_vfs_mc";
+	export_vfs_mc_hid.name = "vfs_mc";
 	export_vfs_mc_hid.description = "Handler of mc VFS calls, serving board data";
 	export_vfs_mc_hid.exporter = 1;
 	export_vfs_mc_hid.hide_from_gui = 1;
