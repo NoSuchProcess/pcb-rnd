@@ -4,7 +4,6 @@
 - BUG: gtk: nothing calls ->set_special_colors - should be config bindings
 - BUG: scconfig: core gets glib dependency even if everything is in plugins (only plugins depend on glib) [report: Vuokko]
 - BUG: font bbox xor draw appears on wrong coords (on top) [report: Igor2]
-- BUG: lesstif: {i c p}, color tab: tabbed doesn't grow [report: Igor2]
 + CLEANUP: move the hackish gerber layer suffix functions into CAM configs [report: Ade]
 - FEATURE: (TT) route style upgrade to prototypes:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
@@ -86,7 +85,6 @@
 	- BUG: distalign pcb_crosshair option doesn't work as a reference point  [report:Miloh]
 - CLEANUP: move import_sch to import_sch_old and start a new, generic plugin
 - CLEANUP/FEATURE: boardflip doesn't function properly with undo -- repro: open pcb-rnd, place 1206, boardflip(), { u u } removes placed part instead of boardflip   [report: Miloh]
-- FEATURE: invert selection in the menu
 - FEATURE: tedax etest save (board save too)
 - FEATURE: padstack bbox:
 	- per layer: keep a bbox per transformed shape per prototype, then getting the bbox of a padstack ref on a specific layer is looking up the shape, then 4 integer additions [report: Wojciech]
@@ -107,7 +105,6 @@
 	- padstack
 	- clearing polygon
 	- text
-- BUG: dxf export does not export internal copper layers, not even with cam [report: Igor2]
 - BUG: wandering gtk window (window placement bug): using icewm, open the property editor, close, open, close, open: it's displaced by decoration; also check with lesstif [report: Igor2]
 - BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
 - SUBC: element removal:
