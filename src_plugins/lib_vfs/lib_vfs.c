@@ -201,27 +201,19 @@ static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *data, int
 
 		if (*end != '/')
 			return -1;
-		path=end+1;
 
-		if (strncmp(path, "line/", 5) == 0) {
-			path += 5;
+		if (strncmp(path, "line/", 5) == 0)
 			ty = PCB_OBJ_LINE;
-		}
-		else if (strncmp(path, "poly/", 5) == 0) {
-			path += 5;
+		else if (strncmp(path, "poly/", 5) == 0)
 			ty = PCB_OBJ_POLY;
-		}
-		else if (strncmp(path, "text/", 5) == 0) {
-			path += 5;
+		else if (strncmp(path, "text/", 5) == 0)
 			ty = PCB_OBJ_TEXT;
-		}
-		else if (strncmp(path, "arc/", 4) == 0) {
-			path += 4;
+		else if (strncmp(path, "arc/", 4) == 0)
 			ty = PCB_OBJ_ARC;
-		}
 		else
 			return -1;
 
+		path=end+1;
 		obj = htip_get(&pcb->Data->id2obj, oid);
 		if ((obj == NULL) || (obj->type != ty))
 			return -1;
