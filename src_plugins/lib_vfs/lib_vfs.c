@@ -84,6 +84,54 @@ static int vfs_access_prop(pcb_propedit_t *pctx, const char *path, gds_t *data, 
 	return 0;
 }
 
+static void vfs_list_obj(pcb_board_t *pcb, gds_t *path, pcb_any_obj_t *obj, pcb_vfs_list_cb cb, void *ctx)
+{
+	pcb_propedit_t pctx;
+	pcb_idpath_t *idp;
+	htsp_entry_t *e;
+	size_t ou, orig_used;
+
+	idp = pcb_obj2idpath(obj);
+	if (idp == NULL)
+		return;
+
+	pcb_props_init(&pctx, pcb);
+	pcb_idpath_list_append(&pctx.objs, idp);
+	pcb_propsel_map_core(&pctx);
+
+	orig_used = path->used;
+	pcb_append_printf(path, "/%s/%ld/", pcb_obj_type_name(obj->type), obj->ID);
+	ou = path->used;
+	for(e = htsp_first(&pctx.props); e != NULL; e = htsp_next(&pctx.props, e)) {
+		path->used = ou;
+		gds_append_str(path, e->key);
+		cb(ctx, path->array, 0);
+	}
+	path->used = orig_used;
+
+	pcb_props_uninit(&pctx);
+	pcb_idpath_destroy(idp);
+}
+
+static int vfs_access_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, const char *path, gds_t *data, int wr)
+{
+	pcb_propedit_t pctx;
+	pcb_idpath_t *idp;
+	int res;
+
+	idp = pcb_obj2idpath(obj);
+	if (idp == NULL)
+		return -1;
+
+	pcb_props_init(&pctx, pcb);
+	pcb_idpath_list_append(&pctx.objs, idp);
+	res = vfs_access_prop(&pctx, path, data, wr);
+	pcb_props_uninit(&pctx);
+	pcb_idpath_destroy(idp);
+
+	return res;
+}
+
 static void vfs_list_layers(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 {
 	gds_t path;
@@ -106,6 +154,24 @@ static void vfs_list_layers(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 		vtl0_append(&pctx.layers, lid);
 		vfs_list_props(&path, &pctx, cb, ctx);
 		pcb_props_uninit(&pctx);
+
+		{
+			pcb_layer_t *layer = pcb_get_layer(pcb->Data, lid);
+			pcb_line_t *l;
+			pcb_arc_t *a;
+			pcb_poly_t *p;
+			pcb_text_t *t;
+			gdl_iterator_t it;
+
+			linelist_foreach(&layer->Line, &it, l)
+				vfs_list_obj(pcb, &path, (pcb_any_obj_t *)l, cb, ctx);
+			polylist_foreach(&layer->Polygon, &it, p)
+				vfs_list_obj(pcb, &path, (pcb_any_obj_t *)p, cb, ctx);
+			textlist_foreach(&layer->Text, &it, t)
+				vfs_list_obj(pcb, &path, (pcb_any_obj_t *)t, cb, ctx);
+			arclist_foreach(&layer->Arc, &it, a)
+				vfs_list_obj(pcb, &path, (pcb_any_obj_t *)a, cb, ctx);
+		}
 	}
 	gds_uninit(&path);
 }
@@ -121,10 +187,48 @@ static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *data, int
 		return -1;
 	path=end+1;
 
-	pcb_props_init(&pctx, pcb);
-	vtl0_append(&pctx.layers, lid);
-	res = vfs_access_prop(&pctx, path, data, wr);
-	pcb_props_uninit(&pctx);
+	if (path[1] == '/') { /* direct layer access */
+		pcb_props_init(&pctx, pcb);
+		vtl0_append(&pctx.layers, lid);
+		res = vfs_access_prop(&pctx, path, data, wr);
+		pcb_props_uninit(&pctx);
+	}
+	else {
+		char *sep = strchr(path, '/');
+		long oid = strtol(sep+1, &end, 10);
+		pcb_any_obj_t *obj = NULL;
+		pcb_objtype_t ty;
+
+		if (*end != '/')
+			return -1;
+		path=end+1;
+
+		if (strncmp(path, "line/", 5) == 0) {
+			path += 5;
+			ty = PCB_OBJ_LINE;
+		}
+		else if (strncmp(path, "poly/", 5) == 0) {
+			path += 5;
+			ty = PCB_OBJ_POLY;
+		}
+		else if (strncmp(path, "text/", 5) == 0) {
+			path += 5;
+			ty = PCB_OBJ_TEXT;
+		}
+		else if (strncmp(path, "arc/", 4) == 0) {
+			path += 4;
+			ty = PCB_OBJ_ARC;
+		}
+		else
+			return -1;
+
+		obj = htip_get(&pcb->Data->id2obj, oid);
+		if ((obj == NULL) || (obj->type != ty))
+			return -1;
+		if ((obj->parent_type != PCB_PARENT_LAYER) || (obj->parent.layer != pcb_get_layer(pcb->Data, lid)))
+			return -1;
+		res = vfs_access_obj(pcb, obj, path, data, wr);
+	}
 
 	return res;
 }
