@@ -352,6 +352,7 @@ void ghid_gl_set_special_colors(conf_native_t *cfg)
 		if (map_color_string(cfg->val.color[0].str, &priv->grid_color))
 			set_special_grid_color();
 	}
+TODO("set the offlimits color or place a comment here why it is not set; see the gdk version");
 }
 
 typedef struct {
