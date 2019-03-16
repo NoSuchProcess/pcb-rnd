@@ -71,6 +71,34 @@ static void mc_copyout(const char *path)
 	gds_uninit(&res);
 }
 
+static void mc_copyin(const char *path)
+{
+	gds_t inp;
+	char buf[256];
+	int len;
+
+	gds_init(&inp);
+	while((len = read(0, buf, 256)) > 0) {
+		gds_append_len(&inp, buf, len);
+		if (inp.used > 1024*1024) {
+			fprintf(stderr, "Data too large\n");
+			exit(1);
+		}
+	}
+
+	if ((inp.used > 0) && (inp.array[inp.used-1] == '\n')) {
+		inp.used--; /* remove exactly one trailing newline */
+		inp.array[inp.used] = '\0';
+	}
+
+	if (pcb_vfs_access(PCB, path, &inp, 1) != 0) {
+		fprintf(stderr, "Can not access that field for write\n");
+		exit(1);
+	}
+	gds_uninit(&inp);
+	return pcb_save_pcb(PCB->Filename, NULL);
+}
+
 static void export_vfs_mc_do_export(pcb_hid_attr_val_t * options)
 {
 	const char *cmd;
@@ -86,6 +114,7 @@ static void export_vfs_mc_do_export(pcb_hid_attr_val_t * options)
 	cmd = options[HA_export_vfs_mc_cmd].str_value;
 	if (strcmp(cmd, "list") == 0) mc_list();
 	else if (strcmp(cmd, "copyout") == 0) mc_copyout(options[HA_export_vfs_mc_qpath].str_value);
+	else if (strcmp(cmd, "copyin") == 0) mc_copyin(options[HA_export_vfs_mc_qpath].str_value);
 	else {
 		fprintf(stderr, "Unknown vfs_mc command: '%s'\n", cmd);
 		exit(1);

@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# GNU mc VFS glue for printed circuit boards using pcb-rnd
+# This file is placed in the public domain by the author,
+# Tibor 'Igor2' Palinkas, in 2019.
+#
+# Install this file in /usr/lib/mc/extfs.d
+#
+# Then add this in mc.ext (e.g. in /etc/mc/mc.ext):
+#
+# # PCB files
+# shell/.pcb
+#  Open=%cd %p/upcb://
+#
+
+PCBRND="pcb-rnd -x vfs_mc"
+
+cmd=$1
+shift 1
+case "$cmd" in
+	list)    $PCBRND --cmd list "$1" ;;
+	copyout) $PCBRND --cmd copyout "$1" --qpath "$2" > $3;;
+	copyin)  $PCBRND --cmd copyin  "$1" --qpath "$2" < $3;;
+#	rm)      
+#	rmdir)   
+#	mkdir)   
+	*) exit 1 ;;
+esac
+exit 0
