@@ -44,7 +44,7 @@
 	int table ## _alloced = 0; \
 	void *table ## _hid_ctx = NULL; \
 	int table ## _defx = 0, table ## _defy = 0; \
-	pcb_dad_retovr_t table ## _ret_override = {0, 0, 0};
+	pcb_dad_retovr_t *table ## _ret_override;
 
 #define PCB_DAD_DECL_NOINIT(table) \
 	pcb_hid_attribute_t *table; \
@@ -54,13 +54,13 @@
 	int table ## _alloced; \
 	void *table ## _hid_ctx; \
 	int table ## _defx, table ## _defy; \
-	pcb_dad_retovr_t table ## _ret_override;
+	pcb_dad_retovr_t *table ## _ret_override;
 
 /* Free all resources allocated by DAD macros for table */
 #define PCB_DAD_FREE(table) \
 do { \
 	int __n__; \
-	if ((table ## _hid_ctx != NULL) && (!table ## _ret_override.already_freed)) \
+	if ((table ## _hid_ctx != NULL) && (table ## _ret_override != NULL)) \
 		pcb_gui->attr_dlg_free(table ## _hid_ctx); \
 	for(__n__ = 0; __n__ < table ## _len; __n__++) { \
 		PCB_DAD_FREE_FIELD(table, __n__); \
@@ -72,15 +72,18 @@ do { \
 	table ## _hid_ctx = NULL; \
 	table ## _len = 0; \
 	table ## _alloced = 0; \
-	table ## _ret_override.already_freed = 1; \
 	table ## _append_lock = 0; \
+	if (table ## _ret_override->dont_free == 0) {\
+		free(table ## _ret_override); \
+		table ## _ret_override = NULL; \
+	} \
 } while(0)
 
 #define PCB_DAD_NEW(id, table, title, caller_data, modal, ev_cb) \
 do { \
 	if (table ## _result == NULL) \
 		PCB_DAD_ALLOC_RESULT(table); \
-	table ## _ret_override.already_freed = 0; \
+	table ## _ret_override = calloc(sizeof(pcb_dad_retovr_t), 1); \
 	table ## _append_lock = 1; \
 	table ## _hid_ctx = pcb_gui->attr_dlg_new(id, table, table ## _len, table ## _result, title, caller_data, modal, ev_cb, table ## _defx, table ## _defy); \
 } while(0)
@@ -93,19 +96,19 @@ do { \
 	table ## _defy = height; \
 } while(0)
 
-#define PCB_DAD_RUN(table) pcb_hid_dad_run(table ## _hid_ctx, &table ## _ret_override)
+#define PCB_DAD_RUN(table) pcb_hid_dad_run(table ## _hid_ctx, table ## _ret_override)
 
 /* failed is non-zero on cancel */
 #define PCB_DAD_AUTORUN(id, table, title, caller_data, failed) \
 do { \
 	if (table ## _result == NULL) \
 		PCB_DAD_ALLOC_RESULT(table); \
-	table ## _ret_override.valid = 0; \
-	table ## _ret_override.already_freed = 0; \
-	failed = pcb_attribute_dialog_(id,table, table ## _len, table ## _result, title, caller_data, &(table ## _ret_override.already_freed), table ## _defx, table ## _defy, &table ## _hid_ctx); \
-	if (table ## _ret_override.valid) \
-		failed = table ## _ret_override.value; \
-	table ## _ret_override.already_freed = 1; \
+	table ## _ret_override->dont_free++; \
+	table ## _ret_override->valid = 0; \
+	failed = pcb_attribute_dialog_(id,table, table ## _len, table ## _result, title, caller_data, (void **)&(table ## _ret_override), table ## _defx, table ## _defy, &table ## _hid_ctx); \
+	if (table ## _ret_override->valid) \
+		failed = table ## _ret_override->value; \
+	table ## _ret_override->dont_free--; \
 } while(0)
 
 /* Return the index of the item currenty being edited */
@@ -637,8 +640,8 @@ void pcb_dad_tree_free(pcb_hid_attribute_t *attr);
 
 /* internal: retval override for the auto-close buttons */
 typedef struct {
+	int dont_free;
 	int valid;
-	int already_freed;
 	int value;
 } pcb_dad_retovr_t;
 

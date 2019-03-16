@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -91,24 +91,25 @@ void pcb_hid_dad_close(void *hid_ctx, pcb_dad_retovr_t *retovr, int retval)
 {
 	retovr->valid = 1;
 	retovr->value = retval;
-	retovr->already_freed = 1;
 	pcb_gui->attr_dlg_free(hid_ctx);
 }
 
 void pcb_hid_dad_close_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_hid_dad_close(hid_ctx, (pcb_dad_retovr_t *)attr->enumerations, attr->default_val.int_value);
+	pcb_dad_retovr_t **retovr = (pcb_dad_retovr_t **)attr->enumerations;
+	pcb_hid_dad_close(hid_ctx, *retovr, attr->default_val.int_value);
 }
 
 int pcb_hid_dad_run(void *hid_ctx, pcb_dad_retovr_t *retovr)
 {
 	int ret;
 
-	retovr->already_freed = 0;
 	retovr->valid = 0;
+	retovr->dont_free++;
 	ret = pcb_gui->attr_dlg_run(hid_ctx);
 	if (retovr->valid)
-		return retovr->value;
+		ret = retovr->value;
+	retovr->dont_free--;
 	return ret;
 }
 
