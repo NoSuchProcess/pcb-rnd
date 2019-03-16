@@ -48,7 +48,7 @@
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h obj_pstk_list.h obj_pstk.h vtpadstack.h \
  obj_pstk_shape.h polygon.h vtpadstack_t.h \
- ../src_plugins/acompnet/meshgraph.h rtree.h box.h error.h hid.h layer.h \
+ ../src_plugins/acompnet/meshgraph.h rtree.h box.h error.h layer.h \
  route.h
 ../src_plugins/act_draw/act_draw.o: ../src_plugins/act_draw/act_draw.c \
  ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h unit.h \
@@ -5563,10 +5563,11 @@
  ../src_3rd/libuundo/uundo.h undo_old.h operation.h rotate.h \
  compat_misc.h draw.h draw_wireframe.h crosshair.h obj_rat_draw.h \
  obj_line_op.h operation.h obj_line_draw.h draw.h obj_pstk_inlines.h \
- thermal.h plugins.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h conf_core.h conf.h \
- pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h layer_grp.h \
+ thermal.h route_draw.h plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h conf_core.h conf.h pcb-printf.h \
+ ../src_3rd/liblihata/lihata.h list_conf.h layer_grp.h \
  ../src_plugins/rubberband_orig/fgeometry.h obj_common.h search.h \
  polygon.h ../src_plugins/rubberband_orig/rubberband_conf.h conf.h \
  ../src_3rd/genvector/genvector_impl.c \
@@ -6320,7 +6321,7 @@ crosshair.o: crosshair.c ../config.h conf_core.h conf.h global_typedefs.h \
  draw_wireframe.h search.h actions.h hid_inlines.h compat_misc.h find.h \
  undo.h ../src_3rd/libuundo/uundo.h undo_old.h event.h macro.h grid.h \
  stub_stroke.h obj_line_draw.h obj_arc_draw.h obj_text_draw.h \
- obj_pstk_draw.h obj_arc_ui.h obj_subc_parent.h tool.h
+ obj_pstk_draw.h route_draw.h obj_arc_ui.h obj_subc_parent.h tool.h
 data.o: data.c ../config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h \
  attrib.h ../src_3rd/genvector/genvector_impl.h \
@@ -7740,7 +7741,7 @@ route.o: route.c ../config.h compat_misc.h conf_core.h conf.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h find.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h obj_line_draw.h draw.h \
- obj_arc_draw.h obj_line_op.h operation.h draw_wireframe.h
+ obj_arc_draw.h route_draw.h obj_line_op.h operation.h draw_wireframe.h
 route_style.o: route_style.c ../config.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h unit.h route_style.h \
@@ -8017,7 +8018,7 @@ tool_line.o: tool_line.c ../config.h conf_core.h conf.h global_typedefs.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h \
  draw_wireframe.h find.h search.h tool.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h netlist2.h obj_line_draw.h \
- obj_pstk_draw.h obj_rat_draw.h \
+ obj_pstk_draw.h obj_rat_draw.h route_draw.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h
 tool_lock.o: tool_lock.c ../config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h \
