@@ -53,7 +53,7 @@ static char *describe_location(pcb_coord_t X, pcb_coord_t Y)
 	pcb_any_obj_t *obj;
 	int type;
 	pcb_subc_t *subc;
-	pcb_net_term_t *term;
+	pcb_net_term_t *term = NULL;
 	gds_t desc;
 
 	/* check if there are any pins or pads at that position */
@@ -73,7 +73,8 @@ static char *describe_location(pcb_coord_t X, pcb_coord_t Y)
 	if (subc == NULL)
 		return NULL;
 
-	term = pcb_net_find_by_refdes_term(&PCB->netlist[PCB_NETLIST_EDITED], subc->refdes, obj->term);
+	if ((subc->refdes != NULL) && (obj->term != NULL))
+		term = pcb_net_find_by_refdes_term(&PCB->netlist[PCB_NETLIST_EDITED], subc->refdes, obj->term);
 
 	gds_init(&desc);
 	gds_append_str(&desc, "Subcircuit:\t"); gds_append_str(&desc, subc->refdes == NULL ? "--" : subc->refdes);
