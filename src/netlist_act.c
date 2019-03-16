@@ -282,6 +282,20 @@ static unsigned netlist_act_do(pcb_net_t *net, int argc, const char *a1, const c
 	return pin_found;
 }
 
+static void netlist_freeze(pcb_board_t *pcb)
+{
+	pcb->netlist_frozen++;
+}
+
+static void netlist_unfreeze(pcb_board_t *pcb)
+{
+	if (pcb->netlist_frozen > 0) {
+		pcb->netlist_frozen--;
+		if (pcb->netlist_needs_update)
+			pcb_netlist_changed(0);
+	}
+}
+
 static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	NFunc func;
@@ -323,14 +337,10 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_ratspatch_make_edited(PCB);
 			return 0;
 		case F_Freeze:
-			PCB->netlist_frozen++;
+			netlist_freeze(PCB);
 			return 0;
 		case F_Thaw:
-			if (PCB->netlist_frozen > 0) {
-				PCB->netlist_frozen--;
-				if (PCB->netlist_needs_update)
-					pcb_netlist_changed(0);
-			}
+			netlist_unfreeze(PCB);
 			return 0;
 		case F_ForceThaw:
 			PCB->netlist_frozen = 0;
@@ -341,6 +351,7 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			PCB_ACT_FAIL(Netlist);
 	}
 
+	netlist_freeze(PCB);
 	{
 		pcb_netlist_t *nl = &PCB->netlist[PCB_NETLIST_EDITED];
 		net = pcb_net_get(PCB, nl, a1, 0);
@@ -365,6 +376,7 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pin_found |= netlist_act_do(net, argc, a1, a2, func);
 		}
 	}
+	netlist_unfreeze(PCB);
 
 	if (argc > 3 && !pin_found) {
 		pcb_message(PCB_MSG_ERROR, "Net %s has no pin %s\n", a1, a2);
