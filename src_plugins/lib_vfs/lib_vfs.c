@@ -70,7 +70,7 @@ static int vfs_access_prop(pcb_propedit_t *pctx, const char *path, gds_t *data, 
 		pcb_propset_ctx_t sctx;
 		sctx.s = data->array;
 		TODO("convert the other fields as well");
-		return pcb_propsel_set(pctx, path, &sctx);
+		return pcb_propsel_set(pctx, path, &sctx) == 1;
 	}
 
 
