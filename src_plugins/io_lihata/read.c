@@ -768,6 +768,11 @@ static int parse_polygon(pcb_layer_t *ly, lht_node_t *obj)
 	else
 		return iolht_error(obj, "invalid polygon: empty geometry\n");
 
+	if (poly->PointN < 3) {
+		pcb_poly_free(poly);
+		return iolht_error(obj, "invalid polygon: less than 3 contour vertices\n");
+	}
+
 	if (err != 0) {
 		pcb_poly_free(poly);
 		return -1;
