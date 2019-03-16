@@ -157,7 +157,21 @@ static void vfs_list_layergrps(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 
 static int vfs_access_layergrp(pcb_board_t *pcb, const char *path, gds_t *data, int wr)
 {
-	return -1;
+	pcb_propedit_t pctx;
+	char *end;
+	pcb_layergrp_id_t gid = strtol(path, &end, 10);
+	int res;
+
+	if (*end != '/')
+		return -1;
+	path=end+1;
+
+	pcb_props_init(&pctx, pcb);
+	vtl0_append(&pctx.layergrps, gid);
+	res = vfs_access_prop(&pctx, path, data, wr);
+	pcb_props_uninit(&pctx);
+
+	return res;
 }
 
 int pcb_vfs_list(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
