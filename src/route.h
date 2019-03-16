@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef GUARD_PCB_RND_ROUTE_H
-#define GUARD_PCB_RND_ROUTE_H
+#ifndef PCB_ROUTE_H
+#define PCB_ROUTE_H
 
 #define ROUTE_SMALL_DATA_SIZE 4
 
@@ -79,4 +79,4 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 void pcb_route_draw(pcb_route_t *p_route, pcb_hid_gc_t GC);
 void pcb_route_draw_drc(pcb_route_t *p_route, pcb_hid_gc_t GC);
 
-#endif /* ! defined GUARD_PCB_RND_ROUTE_H */
+#endif
