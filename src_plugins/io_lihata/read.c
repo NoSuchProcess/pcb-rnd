@@ -765,8 +765,10 @@ static int parse_polygon(pcb_layer_t *ly, lht_node_t *obj)
 			}
 		}
 	}
-	else
+	else {
+		pcb_poly_free(poly);
 		return iolht_error(obj, "invalid polygon: empty geometry\n");
+	}
 
 	if (poly->PointN < 3) {
 		pcb_poly_free(poly);
