@@ -517,10 +517,8 @@ static void ghid_gdk_set_special_colors(conf_native_t *cfg)
 			gdk_gc_set_foreground(priv->offlimits_gc, &priv->offlimits_color);
 	}
 	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.grid) && priv->grid_gc) {
-		if (map_color_string(cfg->val.color[0].str, &priv->grid_color)) {
-			conf_setf(CFR_DESIGN, "appearance/color/grid", -1, "%s", get_color_name(&priv->grid_color));
+		if (map_color_string(cfg->val.color[0].str, &priv->grid_color))
 			set_special_grid_color();
-		}
 	}
 }
 
