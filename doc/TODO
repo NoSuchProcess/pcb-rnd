@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- BUG: gtk: nothing calls ->set_special_colors - should be config bindings
 - BUG: scconfig: core gets glib dependency even if everything is in plugins (only plugins depend on glib) [report: Vuokko]
 + CLEANUP: move the hackish gerber layer suffix functions into CAM configs [report: Ade]
 - FEATURE: (TT) route style upgrade to prototypes:
