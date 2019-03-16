@@ -2,4 +2,5 @@ $class lib
 $short fetch data for VFS export
 $long Retrieve, sort and query data under VFS export plugins
 $state works
+dep propedit
 default disable-all

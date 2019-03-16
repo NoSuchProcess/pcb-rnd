@@ -29,8 +29,30 @@
 #include "board.h"
 #include "data.h"
 #include "plugins.h"
+#include "pcb-printf.h"
+
+#include "../src_plugins/propedit/props.h"
+#include "../src_plugins/propedit/propsel.h"
 
 #include "lib_vfs.h"
+
+static void vfs_list_props(gds_t *path, pcb_propedit_t *pctx, pcb_vfs_list_cb cb, void *ctx)
+{
+	htsp_entry_t *e;
+	size_t ou, orig_used;
+
+	pcb_propsel_map_core(pctx);
+
+	orig_used = path->used;
+	gds_append(path, '/');
+	ou = path->used;
+	for(e = htsp_first(&pctx->props); e != NULL; e = htsp_next(&pctx->props, e)) {
+		path->used = ou;
+		gds_append_str(path, e->key);
+		cb(ctx, path->array, 0);
+	}
+	path->used = orig_used;
+}
 
 static void vfs_list_layers(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 {
@@ -42,10 +64,18 @@ static void vfs_list_layers(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 	gds_init(&path);
 	gds_append_str(&path, "data/layers/");
 	orig_used = path.used;
+
 	for(lid = 0; lid < pcb->Data->LayerN; lid++) {
+		pcb_propedit_t pctx;
+
 		path.used = orig_used;
 		pcb_append_printf(&path, "%ld", lid);
 		cb(ctx, path.array, 1);
+
+		pcb_props_init(&pctx, PCB);
+		vtl0_append(&pctx.layers, lid);
+		vfs_list_props(&path, &pctx, cb, ctx);
+		pcb_props_uninit(&pctx);
 	}
 	gds_uninit(&path);
 }
