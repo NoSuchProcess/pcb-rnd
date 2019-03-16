@@ -385,6 +385,12 @@ static int dxf_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int
 		return 1;
 	}
 
+	if (dxf_cam.active) {
+		pcb_layergrp_t *grp = pcb_get_layergrp(PCB, group);
+		dxf_ctx.layer_name = grp->name;
+		return 1;
+	}
+
 	if (PCB_LAYER_IS_PDRILL(flags, purpi)) {
 		dxf_ctx.layer_name = "drill_plated";
 		dxf_ctx.force_thin = 1;
