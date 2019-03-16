@@ -121,6 +121,7 @@ int pplg_init_export_test(void)
 	export_test_hid.name = "export_test";
 	export_test_hid.description = "Exports a dump of HID calls";
 	export_test_hid.exporter = 1;
+	export_test_hid.hide_from_gui = 1;
 
 	export_test_hid.get_export_options = export_test_get_export_options;
 	export_test_hid.do_export = export_test_do_export;

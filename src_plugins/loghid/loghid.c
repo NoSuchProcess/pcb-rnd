@@ -144,6 +144,7 @@ int pplg_init_loghid(void)
 	loghid_exp.name = "loghid-exp";
 	loghid_exp.description = "log export HID calls";
 	loghid_exp.exporter = 1;
+	loghid_exp.hide_from_gui = 1;
 
 	loghid_exp.usage = loghid_usage;
 	loghid_exp.parse_arguments = loghid_parse_arguments_exp;

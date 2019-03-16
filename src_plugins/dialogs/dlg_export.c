@@ -122,7 +122,7 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 
 	hids = pcb_hid_enumerate();
 	for(n = 0, export_ctx.len = 0; hids[n] != NULL; n++) {
-		if ((exporters && hids[n]->exporter) || (printers && hids[n]->printer))
+		if (((exporters && hids[n]->exporter) || (printers && hids[n]->printer)) && (!hids[n]->hide_from_gui))
 			export_ctx.len++;
 	}
 
@@ -139,7 +139,7 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 	export_ctx.ea = malloc(sizeof(pcb_hid_attribute_t *) * (export_ctx.len));
 
 	for(i = n = 0; hids[n] != NULL; n++) {
-		if ((exporters && hids[n]->exporter) || (printers && hids[n]->printer)) {
+		if (((exporters && hids[n]->exporter) || (printers && hids[n]->printer)) && (!hids[n]->hide_from_gui)) {
 			export_ctx.tab_name[i] = hids[n]->name;
 			export_ctx.hid[i] = hids[n];
 			i++;

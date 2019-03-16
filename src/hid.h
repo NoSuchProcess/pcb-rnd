@@ -192,6 +192,9 @@ struct pcb_hid_s {
 	   and EPS exporters.  */
 	unsigned exporter:1;
 
+	/* Export plugin should not be listed in the export dialog */
+	unsigned hide_from_gui:1;
+
 	/* If set, draw the mask layer inverted. Normally the mask is a filled
 	   rectangle over the board with cutouts at pins/pads. The HIDs
 	   use render in normal mode, gerber renders in inverse mode. */
