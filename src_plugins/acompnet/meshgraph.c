@@ -32,7 +32,6 @@
 #include "data.h"
 #include "meshgraph.h"
 #include "error.h"
-#include "hid.h"
 #include "layer.h"
 #include "route.h"
 
