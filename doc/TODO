@@ -24,7 +24,7 @@
 		- be able to convert a 'found' to a net
 	+ CLEANUP: When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Move this in core., iterate over rats to find the ones to deal with [report: Ade]
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
-- BUG: bug_files/proto1.* padstack prototype selection bug priv mail 20 Feb [report: Alain]
++ BUG: bug_files/proto1.* padstack prototype selection bug priv mail 20 Feb [report: Alain]
 - FEATURE: template print terminal id so attributes (like term name) can be displayed; gtk dwg tooltip  should use the same template to print the term [report: Peter] (report on the mailing list)
 - BUG: undo: clear rats, optimize rats, delete 1 rat then undo - it should undo the rat deletion but it undoes optimization
 + BUG: empty polygon contour in subc seems to crash pcb-rnd reliably. bug_files/STRIP-3PIN-CRASHES.lht [erich]
