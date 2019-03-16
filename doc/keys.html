@@ -359,13 +359,13 @@
 	<td> <I>Move to current layer</I><br>MoveToCurrentLayer(Object) 
 <tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;o
-	<td> <I>Edit name of/Change font on layout</I><br>FontSel(Object) 
+	<td> <I>Change font...</I><br>FontSel(Object) 
 <tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;p
 	<td> <I>Object Properties...</I><br>PropEdit(selection) 
 <tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;r
-	<td> <I>subcircuit refdes</I><br>ChangeName(Refdes) 
+	<td> <I>Change refdes</I><br>ChangeName(Refdes) 
 <tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;s<br>&nbsp;&nbsp;b
 	<td> <I>Layer bindings...</I><br>LayerBinding() 
@@ -380,7 +380,7 @@
 	<td> <I>Set Same Style</I><br>SetSame() 
 <tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;t
-	<td> <I>text or name</I><br>ChangeName(Object) 
+	<td> <I>Edit text...</I><br>ChangeName(Object) 
 <tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;v
 	<td> <I>Paste buffer to layout</I><br>Mode(PasteBuffer) 
@@ -598,74 +598,80 @@
 	<th align=left>m<br>&nbsp;p<br>&nbsp;&nbsp;f
 	<td> <I>New polygons are full ones</I><br>conf(toggle, editor/full_poly, design) 
 <tr bgcolor="#FFFFFF">
+	<th align=left>m<br>&nbsp;p<br>&nbsp;&nbsp;i
+	<td> <I>Polygon clip inhibit (toggle)</I><br>ClipInhibit(toggle)
+<tr bgcolor="#DDFFFF">
 	<th align=left>m<br>&nbsp;r<br>&nbsp;&nbsp;m
 	<td> <I>Rubber band keeps middle line dir</I><br>conf(toggle, editor/rubber_band_keep_midlinedir, design) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>m<br>&nbsp;r<br>&nbsp;&nbsp;r
 	<td> <I>Rubber band mode</I><br>conf(toggle, editor/rubber_band_mode, design) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>m<br>&nbsp;t<br>&nbsp;&nbsp;+
 	<td> <I>Text Tool scale +10 mil</I><br>SetValue(TextScale,+10,mil) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>m<br>&nbsp;t<br>&nbsp;&nbsp;-
 	<td> <I>Text Tool scale -10 mil</I><br>SetValue(TextScale,-10,mil) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>n-ctrl
 	<td> <I>Start New Layout</I><br>New() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>p<br>&nbsp;m<br>&nbsp;&nbsp;p<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>Manage plugins...</I><br>ManagePlugins() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>p<br>&nbsp;m<br>&nbsp;&nbsp;s<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>Manage scripts...</I><br>BrowseScripts() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>q-ctrl
 	<td> <I>Quit Program</I><br>Quit() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>r<br>&nbsp;r<br>&nbsp;&nbsp;+
 	<td> <I>Route radius +0.5</I><br>conf(delta, editor/route_radius, +0.5, design)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>r<br>&nbsp;r<br>&nbsp;&nbsp;-
 	<td> <I>Route radius -0.5</I><br>conf(delta, editor/route_radius, -0.5, design)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>r<br>&nbsp;r<br>&nbsp;&nbsp;m
 	<td> <I>Route radius -0.5</I><br>conf(delta, editor/route_radius, -0.5, design)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>r<br>&nbsp;r<br>&nbsp;&nbsp;p
 	<td> <I>Route radius +0.5</I><br>conf(delta, editor/route_radius, +0.5, design)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>right
 	<td> <I>Step Right</I><br>Cursor(Warp,1,0,grid) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>right-shift
 	<td> <I>Step +Right</I><br>Cursor(Pan,50,0,view) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>s-ctrl
 	<td> <I>Save Layout</I><br>Save(Layout)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>s-ctrl-shift
 	<td> <I>Save Layout As...</I><br>Save(LayoutAs)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>s<br>&nbsp;a<br>&nbsp;&nbsp;a<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>Select all visible objects</I><br>Select(All) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>s<br>&nbsp;a<br>&nbsp;&nbsp;c<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>Select all connected objects</I><br>Select(Connection) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>s<br>&nbsp;b<br>&nbsp;&nbsp;p
 	<td> <I>Break selection padstack to pieces</I><br>PadstackBreakup(selected) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>s<br>&nbsp;b<br>&nbsp;&nbsp;s
 	<td> <I>Break selection subcircuits to pieces</I><br>PasteBuffer(Push); PasteBuffer(5); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); PasteBuffer(Restore); PasteBuffer(ToLayout, crosshair); PasteBuffer(Clear); PasteBuffer(Pop)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>s<br>&nbsp;c<br>&nbsp;&nbsp;p<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>Convert selection to padstack</I><br>PadstackConvert(selected); Mode(PasteBuffer)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>s<br>&nbsp;c<br>&nbsp;&nbsp;s<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>Convert selection to subcircuit</I><br>Select(ConvertSubc) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>s<br>&nbsp;f<br>&nbsp;&nbsp;
 	<td> <I>Move selected subcircuits to other side</I><br>Flip(SelectedElements) 
+<tr bgcolor="#FFFFFF">
+	<th align=left>s<br>&nbsp;i<br>&nbsp;&nbsp;
+	<td> <I>Invert selection</I><br>Select(Invert) 
 <tr bgcolor="#DDFFFF">
 	<th align=left>s<br>&nbsp;l<br>&nbsp;&nbsp;
 	<td> <I>Move selected objects to current layer</I><br>MoveToCurrentLayer(Selected) 
@@ -800,7 +806,7 @@
 	<td> <I>Library</I><br>DoWindows(Library) 
 <tr bgcolor="#DDFFFF">
 	<th align=left>w<br>&nbsp;m
-	<td> <I>Message Log</I><br>DoWindows(Log) 
+	<td> <I>Message Log</I><br>LogDialog) 
 <tr bgcolor="#FFFFFF">
 	<th align=left>w<br>&nbsp;n
 	<td> <I>Netlist</I><br>DoWindows(Netlist) 

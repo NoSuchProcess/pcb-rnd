@@ -113,14 +113,14 @@ e;g;y	pcb-menu-default.lht	ChangeSizes(Object,style,mil) 	ChangeSizes to Route s
 e;i	pcb-menu-default.lht	Flip(Object) 	Flip Object
 e;j	pcb-menu-default.lht	ChangeJoin(Object) 	ChangeJoin Object
 e;l	pcb-menu-default.lht	MoveToCurrentLayer(Object) 	Move to current layer
-e;o	pcb-menu-default.lht	FontSel(Object) 	Edit name of/Change font on layout
+e;o	pcb-menu-default.lht	FontSel(Object) 	Change font...
 e;p	pcb-menu-default.lht	PropEdit(selection) 	Object Properties...
-e;r	pcb-menu-default.lht	ChangeName(Refdes) 	subcircuit refdes
+e;r	pcb-menu-default.lht	ChangeName(Refdes) 	Change refdes
 e;s;b	pcb-menu-default.lht	LayerBinding() 	Layer bindings...
 e;s;e	pcb-menu-default.lht	GetXY(Click on the subcircuit to edit);extedit(object)	External editor...
 e;s;r	pcb-menu-default.lht	ChangeName(Subc) 	Refdes
 e;s;s	pcb-menu-default.lht	SetSame() 	Set Same Style
-e;t	pcb-menu-default.lht	ChangeName(Object) 	text or name
+e;t	pcb-menu-default.lht	ChangeName(Object) 	Edit text...
 e;v	pcb-menu-default.lht	Mode(PasteBuffer) 	Paste buffer to layout
 e;x	pcb-menu-default.lht	GetXY(Click to set the snap point for this buffer);PasteBuffer(Clear);PasteBuffer(AddSelected);RemoveSelected();Unselect(All);Mode(PasteBuffer)	Cut selection to buffer
 e;y;	pcb-menu-default.lht	CycleDrag() 	Cycle object being dragged
@@ -193,6 +193,7 @@ m;o;b	pcb-menu-default.lht	conf(toggle, appearance\057black_current_group, desig
 m;o;i	pcb-menu-default.lht	conf(toggle, appearance\057invis_other_groups, design) 	Invisible-color on other groups
 m;p;c	pcb-menu-default.lht	conf(toggle, editor\057clear_polypoly, design) 	New polygons clear polygons
 m;p;f	pcb-menu-default.lht	conf(toggle, editor\057full_poly, design) 	New polygons are full ones
+m;p;i	pcb-menu-default.lht	ClipInhibit(toggle)	Polygon clip inhibit (toggle)
 m;r;m	pcb-menu-default.lht	conf(toggle, editor\057rubber_band_keep_midlinedir, design) 	Rubber band keeps middle line dir
 m;r;r	pcb-menu-default.lht	conf(toggle, editor\057rubber_band_mode, design) 	Rubber band mode
 m;t;+	pcb-menu-default.lht	SetValue(TextScale,+10,mil) 	Text Tool scale +10 mil
@@ -216,6 +217,7 @@ s;b;s	pcb-menu-default.lht	PasteBuffer(Push);PasteBuffer(5);PasteBuffer(Clear);P
 s;c;p;	pcb-menu-default.lht	PadstackConvert(selected);Mode(PasteBuffer)	Convert selection to padstack
 s;c;s;	pcb-menu-default.lht	Select(ConvertSubc) 	Convert selection to subcircuit
 s;f;	pcb-menu-default.lht	Flip(SelectedElements) 	Move selected subcircuits to other side
+s;i;	pcb-menu-default.lht	Select(Invert) 	Invert selection
 s;l;	pcb-menu-default.lht	MoveToCurrentLayer(Selected) 	Move selected objects to current layer
 s;r;	pcb-menu-default.lht	RemoveSelected() 	Remove selected objects
 s;s;	pcb-menu-default.lht	DoWindows(search) 	Advanced search and select
@@ -260,7 +262,7 @@ w;a	pcb-menu-default.lht	About() 	About...
 w;d	pcb-menu-default.lht	DRC() 	DRC Check
 w;f	pcb-menu-default.lht	FontSel() 	Font selector
 w;l	pcb-menu-default.lht	DoWindows(Library) 	Library
-w;m	pcb-menu-default.lht	DoWindows(Log) 	Message Log
+w;m	pcb-menu-default.lht	LogDialog) 	Message Log
 w;n	pcb-menu-default.lht	DoWindows(Netlist) 	Netlist
 w;p	pcb-menu-default.lht	Display(Pinout) 	Pinout
 y-ctrl	pcb-menu-default.lht	Redo() 	Redo last undone operation
