@@ -28,7 +28,7 @@
 - BUG: bug_files/proto1.* padstack prototype selection bug priv mail 20 Feb [report: Alain]
 - FEATURE: template print terminal id so attributes (like term name) can be displayed; gtk dwg tooltip  should use the same template to print the term [report: Peter] (report on the mailing list)
 - BUG: undo: clear rats, optimize rats, delete 1 rat then undo - it should undo the rat deletion but it undoes optimization
-- BUG: empty polygon contour in subc seems to crash pcb-rnd reliably. bug_files/STRIP-3PIN-CRASHES.lht [erich]
++ BUG: empty polygon contour in subc seems to crash pcb-rnd reliably. bug_files/STRIP-3PIN-CRASHES.lht [erich]
 
 2. For later releases ===============================================================================
 - CLEANUP: DAD: centralize the coordinate input spinbox: hid_dad_spin
@@ -220,7 +220,6 @@
 - BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - BUG: find.c: bug_files/find_slotcop.lht: plated slot should connect to any copper layer object it is going thru ml2571 [report: Igor2]
-- BUG: route.h is not self-contained, missing includes [report: Igor2]
 - BUG: pref: set role to user, add new library path -> it is saved in board! [report: aron]
 - BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
 - BUG: report: net length by xy_to_net_length() works from a single x,y startpoint, but what it a network is broken into multiple unconnected submnets? at least warn the user [report: Igor2]
