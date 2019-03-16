@@ -1,0 +1,7 @@
+$class export
+$short FUSE VFS server
+$long Export all data and config of a board to a FUSE mountable filesystem
+$state WIP
+dep lib_vfs
+default disable
+autoload 1

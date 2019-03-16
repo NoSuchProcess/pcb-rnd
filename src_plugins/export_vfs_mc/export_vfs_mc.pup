@@ -1,0 +1,7 @@
+$class export
+$short GNU mc VFS server
+$long Export all data and config of a board to GNU mc
+$state WIP
+dep lib_vfs
+default disable
+autoload 1

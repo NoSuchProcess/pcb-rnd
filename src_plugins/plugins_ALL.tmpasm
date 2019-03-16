@@ -35,6 +35,8 @@ include {../src_plugins/export_ps/Plug.tmpasm}
 include {../src_plugins/export_stat/Plug.tmpasm}
 include {../src_plugins/export_svg/Plug.tmpasm}
 include {../src_plugins/export_test/Plug.tmpasm}
+include {../src_plugins/export_vfs_fuse/Plug.tmpasm}
+include {../src_plugins/export_vfs_mc/Plug.tmpasm}
 include {../src_plugins/export_xy/Plug.tmpasm}
 include {../src_plugins/extedit/Plug.tmpasm}
 include {../src_plugins/fontmode/Plug.tmpasm}
@@ -80,6 +82,7 @@ include {../src_plugins/lib_hid_gl/Plug.tmpasm}
 include {../src_plugins/lib_legacy_func/Plug.tmpasm}
 include {../src_plugins/lib_netmap/Plug.tmpasm}
 include {../src_plugins/lib_polyhelp/Plug.tmpasm}
+include {../src_plugins/lib_vfs/Plug.tmpasm}
 include {../src_plugins/loghid/Plug.tmpasm}
 include {../src_plugins/millpath/Plug.tmpasm}
 include {../src_plugins/mincut/Plug.tmpasm}
