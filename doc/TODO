@@ -29,7 +29,6 @@
 + BUG: empty polygon contour in subc seems to crash pcb-rnd reliably. bug_files/STRIP-3PIN-CRASHES.lht [erich]
 + BUG: draw overlapping lines, a short fully under a long; click on the short, it gets selected but it's not visible because the long hides it [report:Evan]
 	+> the wireframe drawing mode (key: |) makes the hidden line visible
-- FEATURE: missing rotate polygon (mainline too)
 
 2. For later releases ===============================================================================
 - CLEANUP: DAD: centralize the coordinate input spinbox: hid_dad_spin
