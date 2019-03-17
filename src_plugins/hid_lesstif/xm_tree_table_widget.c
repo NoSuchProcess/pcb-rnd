@@ -302,7 +302,11 @@ static void Redisplay(Widget aw, XExposeEvent *event, Region region)
 	if (!XtIsRealized((Widget) aw))
 		return;
 	{
-		XRectangle clip = {0, 0, XtWidth(w), XtHeight(w)};
+		XRectangle clip;
+		clip.x = 0;
+		clip.y = 0;
+		clip.width = XtWidth(w);
+		clip.height = XtHeight(w);
 		xm_clip_rectangle(aw, clip);
 	}
 	xm_render_ttwidget(aw);
