@@ -263,7 +263,6 @@ FEATURES
 - CLEANUP: replace mkdtemp() with something safer
 - FEATURE: display net names on pins, vias (and maybe tracks?) when zoomed in enough
 - FEATURE: DRC should warn for thin poly hair
-- CLEANUP: In-line help needs update/re-structuration <lib_gtk_common/dlg_command.c>
 - CLEANUP: rethink/rewrite the action/change infrastructure - too many void *ptr1
   pointers, too many code duplication
 - BUG: double sided board, poly on both layers; grab existing lines on one layer and
