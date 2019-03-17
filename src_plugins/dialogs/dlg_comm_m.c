@@ -57,7 +57,7 @@ fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_DAD_LABEL(dlg, label);
 		PCB_DAD_STRING(dlg);
 			ws = PCB_DAD_CURRENT(dlg);
-			dlg[ws].default_val.str_value = pcb_strdup(default_str);
+			dlg[ws].default_val.str_value = pcb_strdup(default_str == NULL ? "" : default_str);
 			PCB_DAD_ENTER_CB(dlg, prompt_enter_cb);
 			dlg[ws].user_data = &dlg_ret_override;
 		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
