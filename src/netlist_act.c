@@ -349,6 +349,7 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	NFunc func;
 	const char *a1 = NULL, *a2 = NULL;
+	char *a2free = NULL;
 	int op;
 	pcb_net_t *net = NULL;
 	unsigned net_found = 0;
@@ -364,13 +365,31 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	switch(op) {
 		case F_Rename:
+			if (a1 == NULL)
+				PCB_ACT_FAIL(Netlist);
+			if (a2 == NULL) {
+				a2 = a2free = pcb_hid_prompt_for("New name of the network", NULL, "net rename");
+				if (a2 == NULL) {
+					PCB_ACT_IRES(1);
+					return 0;
+				}
+			}
 			PCB_ACT_IRES(netlist_merge(PCB, a1, a2, 0));
+			free(a2free);
 			return 0;
-			break;
 		case F_Merge:
+			if (a1 == NULL)
+				PCB_ACT_FAIL(Netlist);
+			if (a2 == NULL) {
+				a2 = a2free = pcb_hid_prompt_for("Network name to merge into", NULL, "net merge");
+				if (a2 == NULL) {
+					PCB_ACT_IRES(1);
+					return 0;
+				}
+			}
 			PCB_ACT_IRES(netlist_merge(PCB, a1, a2, 1));
+			free(a2free);
 			return 0;
-			break;
 		case F_Find: func = pcb_netlist_find; break;
 		case F_Select: func = pcb_netlist_select; break;
 		case F_Unselect: func = pcb_netlist_unselect; break;
