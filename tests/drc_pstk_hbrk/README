@@ -1,0 +1,97 @@
+Test files for pcb_pstk_shape_hole_break() and DRC
+
+1.  Polygon
+ -  polygon.lht
+single rectangle on top layer copper, with a hole.
+    Expected: No DRC violation
+    Status  : OK
+
+ -  polygon_violation.lht
+single rectangle on top layer copper, with a hole.
+    Expected: DRC violation
+    Status  : OK, error detected
+
+ -  polygon_mask.lht
+top layer mask only, with a hole.
+    Expected: No DRC violation
+    Status  : OK
+
+ -  polygon_mask_violation.lht
+top layer mask only, with a hole.
+    Expected: No DRC violation
+    Status  : OK, no error, because no rule set for this.
+    TODO    : Provide a mechanism to detect Soldermask rules (min. width, gap, clearance to drills...)
+
+ -  polygon_paste.lht
+top layer paste only, with a hole.
+    Expected: No DRC violation
+    Status  : OK
+
+ -  polygon_paste_violation.lht
+top layer paste only, with a hole.
+    Expected: No DRC violation (because no rule set for this)
+    Status  : OK, no error
+
+
+2.  Filled circle
+ -  circle.lht
+single circle on top layer copper, with a hole.
+    Expected: No DRC violation
+    Status  : OK
+
+ -  circle_violation.lht
+single circle on top layer copper, with a hole.
+    Expected: DRC violation
+    Status  : KO: no error detected, which is wrong
+
+ -  circle_mask.lht
+top layer mask only, with a hole.
+    Expected: No DRC violation
+    Status  : OK
+
+ -  circle_mask_violation.lht
+top layer mask only, with a hole.
+    Expected: No DRC violation
+    Status  : OK, no error, because no rule set for this.
+
+ -  circle_paste.lht
+top layer paste only, with a hole.
+    Expected: No DRC violation
+    Status  : OK
+
+ -  circle_paste_violation.lht
+top layer paste only, with a hole.
+    Expected: No DRC violation
+    Status  : OK, no error, because no rule set for this.
+
+
+3. (round cap) line
+ -  line.lht
+single line on top layer copper, with a hole.
+    Expected: No DRC violation
+    Status  : OK
+
+ -  line_violation.lht
+single line on top layer copper, with a hole.
+    Expected: DRC violation
+    Status  : OK: error detected
+
+ -  line_mask.lht
+single line on top mask only, with a hole.
+    Expected: No DRC violation
+    Status  : OK
+
+ -  line_mask_violation.lht
+single line on top mask only, with a hole.
+    Expected: No DRC violation
+    Status  : OK, no error, because no rule set for this.
+
+ -  line_paste.lht
+single line on top paste only, with a hole.
+    Expected: No DRC violation
+    Status  : OK
+
+ -  line_paste_violation.lht
+single line on top paste only, with a hole.
+    Expected: No DRC violation
+    Status  : OK, no error, because no rule set for this.

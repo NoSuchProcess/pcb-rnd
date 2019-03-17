@@ -1,0 +1,57 @@
+#!/bin/sh
+
+# Run pcb-rnd on each test case and check if drc found errors where it should
+# and does not find anything where it shouldn't. Run with -v to print each case.
+
+verbose=0
+
+do_test()
+{
+echo '
+drc()
+' | pcb-rnd --gui batch "$1" 2>/dev/null | grep -i broken
+}
+
+should_break()
+{
+	if test -z "$res"
+	then
+		echo "ERR: $fn: DRC did not find an error"
+	else
+		if test $verbose -gt 0
+		then
+			echo "OK:  $fn: DRC error"
+		fi
+	fi
+}
+
+should_pass()
+{
+	if test ! -z "$res"
+	then
+		echo "ERR: $fn: DRC found a non-existing error"
+	else
+		if test $verbose -gt 0
+		then
+			echo "OK:  $fn: DRC clean"
+		fi
+	fi
+}
+
+### main ###
+
+if test "$1" = "-v"
+then
+	verbose=1
+fi
+
+for fn in *.lht
+do
+	res=`do_test "$fn"`
+	case "$fn" in
+		*_mask_violation*) should_pass ;;
+		*_paste_violation*) should_pass ;;
+		*_violation*) should_break ;;
+		*) should_pass ;;
+	esac
+done
