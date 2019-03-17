@@ -98,7 +98,10 @@ static void mc_copyin(const char *path)
 		exit(1);
 	}
 	gds_uninit(&inp);
-	pcb_save_pcb(PCB->Filename, NULL);
+	if (pcb_save_pcb(PCB->Filename, NULL) != 0) {
+		fprintf(stderr, "Failed to save the modified board file\n");
+		exit(1);
+	}
 }
 
 static void export_vfs_mc_do_export(pcb_hid_attr_val_t * options)
