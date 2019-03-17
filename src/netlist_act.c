@@ -533,6 +533,7 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	pcb_net_claim_from_list(PCB, net, &termlist);
+	pcb_netlist_changed(0);
 	vtp0_uninit(&termlist);
 	return 0;
 }
