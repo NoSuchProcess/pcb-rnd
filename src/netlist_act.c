@@ -47,6 +47,8 @@
 #include "data_it.h"
 #include "find.h"
 #include "obj_term.h"
+#include "search.h"
+#include "obj_subc_parent.h"
 
 static int pcb_netlist_swap()
 {
@@ -390,9 +392,63 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+
+static int claim_net_cb(pcb_find_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
+{
+	pcb_subc_t *subc;
+
+	if (new_obj->term == NULL)
+		return 0;
+
+	subc = pcb_obj_parent_subc(new_obj);
+	if ((subc == NULL) || (subc->refdes == NULL))
+		return 0;
+
+	pcb_trace("claim %s-%s\n", subc->refdes, new_obj->term);
+	return 0;
+}
+
+
+static const char pcb_acts_ClaimNet[] = "ClaimNet(object|selected|found,[netname])\n";
+static const char pcb_acth_ClaimNet[] = "Claim existing connections and create a new net";
+static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_find_t fctx;
+	int op;
+
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, Netlist, op = fgw_keyword(&argv[1]));
+	PCB_ACT_IRES(0);
+
+	switch(op) {
+		case F_Object:
+			{
+				pcb_coord_t x, y;
+				void *r1, *r2, *r3;
+
+				pcb_hid_get_coords("Select a an object to claim network from", &x, &y, 0);
+				if (pcb_search_screen(x, y, PCB_OBJ_CLASS_REAL, &r1, &r2, &r3) <= 0)
+					return 0;
+
+				memset(&fctx, 0, sizeof(fctx));
+				fctx.consider_rats = 1;
+				fctx.found_cb = claim_net_cb;
+				pcb_find_from_obj(&fctx, PCB->Data, (pcb_any_obj_t *)r2);
+			}
+			break;
+		case F_Found:
+		case F_Selected:
+		default:
+			PCB_ACT_FAIL(ClaimNet);
+	}
+
+	return 0;
+}
+
+
 pcb_action_t netlist_action_list[] = {
 	{"net", pcb_act_Netlist, pcb_acth_Netlist, pcb_acts_Netlist},
-	{"netlist", pcb_act_Netlist, pcb_acth_Netlist, pcb_acts_Netlist}
+	{"netlist", pcb_act_Netlist, pcb_acth_Netlist, pcb_acts_Netlist},
+	{"claimnet", pcb_act_ClaimNet, pcb_acth_ClaimNet, pcb_acts_ClaimNet}
 };
 
 PCB_REGISTER_ACTIONS(netlist_action_list, NULL)
