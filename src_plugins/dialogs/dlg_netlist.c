@@ -35,7 +35,7 @@ typedef struct {
 	pcb_board_t *pcb;
 	pcb_box_t bb_prv;
 	int wnetlist, wprev, wtermlist;
-	int wsel, wunsel, wfind, wunfind, wrats, wnorats, wripup, waddrats;
+	int wsel, wunsel, wfind, wunfind, wrats, wnorats, wripup, waddrats, wrename, wmerge;
 	int active; /* already open - allow only one instance */
 } netlist_ctx_t;
 
@@ -219,6 +219,10 @@ static void netlist_button_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		pcb_actionl("netlist", "ripup", name, NULL);
 	else if (w == ctx->waddrats)
 		pcb_actionl("netlist", "AddRats", name, NULL);
+	else if (w == ctx->wrename)
+		pcb_actionl("netlist", "rename", name, NULL);
+	else if (w == ctx->wmerge)
+		pcb_actionl("netlist", "merge", name, NULL);
 	else {
 		pcb_message(PCB_MSG_ERROR, "Internal error: netlist_button_cb() called from an invalid widget\n");
 		return;
@@ -381,6 +385,14 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
 				PCB_DAD_BUTTON(netlist_ctx.dlg, "rip up  ");
 					netlist_ctx.wripup = PCB_DAD_CURRENT(netlist_ctx.dlg);
+					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
+			PCB_DAD_END(netlist_ctx.dlg);
+			PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg);
+				PCB_DAD_BUTTON(netlist_ctx.dlg, "rename");
+					netlist_ctx.wrename = PCB_DAD_CURRENT(netlist_ctx.dlg);
+					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
+				PCB_DAD_BUTTON(netlist_ctx.dlg, "merge ");
+					netlist_ctx.wmerge = PCB_DAD_CURRENT(netlist_ctx.dlg);
 					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
 			PCB_DAD_END(netlist_ctx.dlg);
 		PCB_DAD_END(netlist_ctx.dlg);
