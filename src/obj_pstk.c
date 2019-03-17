@@ -1070,7 +1070,7 @@ static pcb_bool pcb_pstk_shape_hole_break(pcb_pstk_shape_t *shp, pcb_coord_t hdi
 		case PCB_PSSH_HSHADOW:
 			break;
 		case PCB_PSSH_CIRC:
-			dist = sqrt(shp->data.circ.x*shp->data.circ.x + shp->data.circ.y*shp->data.circ.y);
+			dist = sqrt((double)shp->data.circ.x*(double)shp->data.circ.x + (double)shp->data.circ.y*(double)shp->data.circ.y);
 			neck = (double)(shp->data.circ.dia - hdia) / 2.0 - dist;
 			break;
 		case PCB_PSSH_LINE:
