@@ -73,7 +73,7 @@ do { \
 	table ## _len = 0; \
 	table ## _alloced = 0; \
 	table ## _append_lock = 0; \
-	if (table ## _ret_override->dont_free == 0) {\
+	if ((table ## _ret_override != NULL) && (table ## _ret_override->dont_free == 0)) {\
 		free(table ## _ret_override); \
 		table ## _ret_override = NULL; \
 	} \
