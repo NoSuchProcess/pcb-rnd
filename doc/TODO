@@ -281,7 +281,6 @@ FEATURES
 - FEATURE: push&shove
 	- keep 45-deg knee when grabbing a point for drag&drop in non-all-dir
 - CLEANUP: unify gui invocation options: pcb-rnd --help gtk_[gdk|gl] and pcb-rnd --help lesstif both show and use different input methods [report:miloh]
-- FEATURE: consider a simple all in one function to create a default layer stackup for static/predictable layer formats being imported, to simplify importer coding
 - FEATURE: trace length calculator:
 	- click a line or arc or via
 	- start a search in two directions mapping lines, arcs and vias connected (green-highlight them, marking them found)
