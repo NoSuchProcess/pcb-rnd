@@ -38,6 +38,7 @@
 
 #include "funchash_core.h"
 #include "data.h"
+#include "data_it.h"
 #include "board.h"
 #include "error.h"
 #include "plug_io.h"
@@ -392,6 +393,27 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static void claim_import_by_flag(pcb_data_t *data, vtp0_t *termlist, unsigned long flg)
+{
+	pcb_any_obj_t *o;
+	pcb_data_it_t it;
+
+	for(o = pcb_data_first(&it, data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
+		pcb_subc_t *subc;
+
+		if (o->type == PCB_OBJ_SUBC)
+			claim_import_by_flag(((pcb_subc_t *)o)->data, termlist, flg);
+
+		if ((o->term == NULL) || (!PCB_FLAG_TEST(flg, o)))
+			continue;
+
+		subc = pcb_obj_parent_subc(o);
+		if ((subc == NULL) || (subc->refdes == NULL))
+			continue;
+
+		vtp0_append(termlist, o);
+	}
+}
 
 static int claim_net_cb(pcb_find_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
 {
@@ -447,6 +469,7 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_MAY_CONVARG(2, FGW_STR, Netlist, netname = argv[2].val.str);
 	PCB_ACT_IRES(0);
 
+	vtp0_init(&termlist);
 	switch(op) {
 		case F_Object:
 			{
@@ -461,13 +484,17 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				fctx.consider_rats = 1;
 				fctx.found_cb = claim_net_cb;
 				fctx.user_data = &termlist;
-				vtp0_init(&termlist);
 				pcb_find_from_obj(&fctx, PCB->Data, (pcb_any_obj_t *)r2);
 			}
 			break;
 		case F_Found:
+			claim_import_by_flag(PCB->Data, &termlist, PCB_FLAG_FOUND);
+			break;
 		case F_Selected:
+			claim_import_by_flag(PCB->Data, &termlist, PCB_FLAG_SELECTED);
+			break;
 		default:
+			vtp0_uninit(&termlist);
 			PCB_ACT_FAIL(ClaimNet);
 	}
 
