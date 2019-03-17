@@ -111,7 +111,7 @@ void ghid_conf_regs(const char *cookie)
 {
 	static conf_hid_callbacks_t 
 		cbs_refraction, cbs_direction, cbs_fullscreen, cbs_show_sside, cbs_grid,
-		cbs_text_scale, cbs_grid_unit, cbs_rst[4], cbs_cli[2], cbs_compactv,
+		cbs_text_scale, cbs_grid_unit, cbs_rst[4], cbs_cli[2],
 		cbs_compacth, cbs_color[3];
 
 	ghidgui->conf_id = conf_hid_reg(cookie, NULL);
