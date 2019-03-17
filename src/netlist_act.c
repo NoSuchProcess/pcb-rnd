@@ -299,6 +299,52 @@ static void netlist_unfreeze(pcb_board_t *pcb)
 	}
 }
 
+/* Rename or merge networks: move all conns from 'from' to 'to'. If merge,
+   'to' shall be an existing network, else it shall be a non-existing network. */
+static int netlist_merge(pcb_board_t *pcb, const char *from, const char *to, int merge)
+{
+	pcb_net_t *nfrom, *nto;
+	pcb_net_term_t *t, *tnext;
+
+	nfrom = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], from, 0);
+	if (nfrom == NULL) {
+		pcb_message(PCB_MSG_ERROR, "No such net: '%s'\n", from);
+		return 1;
+	}
+
+		nto = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], to, 0);
+	if (merge) {
+		if (nto == NULL) {
+			pcb_message(PCB_MSG_ERROR, "No such net: '%s'\n", to);
+			return 1;
+		}
+	}
+	else {
+		if (nto != NULL) {
+			pcb_message(PCB_MSG_ERROR, "Net name '%s' already in use\n", to);
+			return 1;
+		}
+		nto = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], to, 1);
+	}
+
+	/* move over all terminals from nfrom to nto */
+	for(t = pcb_termlist_first(&nfrom->conns); t != NULL; t = tnext) {
+		char *pinname = pcb_strdup_printf("%s-%s", t->refdes, t->term);
+
+		tnext = pcb_termlist_next(t);
+		pcb_net_term_del(nfrom, t);
+		pcb_ratspatch_append_optimize(PCB, RATP_DEL_CONN, pinname, nfrom->name, NULL);
+
+		pcb_net_term_get_by_pinname(nto, pinname, 1);
+		pcb_ratspatch_append_optimize(PCB, RATP_ADD_CONN, pinname, nto->name, NULL);
+
+		free(pinname);
+	}
+	pcb_net_del(&PCB->netlist[PCB_NETLIST_EDITED], from);
+	pcb_netlist_changed(0);
+	return 0;
+}
+
 static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	NFunc func;
@@ -317,6 +363,14 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 1;
 
 	switch(op) {
+		case F_Rename:
+			PCB_ACT_IRES(netlist_merge(PCB, a1, a2, 0));
+			return 0;
+			break;
+		case F_Merge:
+			PCB_ACT_IRES(netlist_merge(PCB, a1, a2, 1));
+			return 0;
+			break;
 		case F_Find: func = pcb_netlist_find; break;
 		case F_Select: func = pcb_netlist_select; break;
 		case F_Unselect: func = pcb_netlist_unselect; break;
