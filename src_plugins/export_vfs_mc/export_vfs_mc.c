@@ -5,6 +5,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "build_run.h"
 #include "board.h"
@@ -12,6 +13,7 @@
 #include "error.h"
 #include "pcb-printf.h"
 #include "plugins.h"
+#include "plug_io.h"
 
 #include "hid.h"
 #include "hid_attrib.h"
@@ -96,7 +98,7 @@ static void mc_copyin(const char *path)
 		exit(1);
 	}
 	gds_uninit(&inp);
-	return pcb_save_pcb(PCB->Filename, NULL);
+	pcb_save_pcb(PCB->Filename, NULL);
 }
 
 static void export_vfs_mc_do_export(pcb_hid_attr_val_t * options)
