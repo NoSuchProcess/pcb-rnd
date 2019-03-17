@@ -16,11 +16,8 @@
 - CLEANUP: (TT) propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
-- FEATURE: rewrite the netlist code
++ FEATURE: rewrite the netlist code
 	+ when no netlist is loaded, new rats can't be drawn [report: agaran]
-	- FEATURE: rat line draw: [report: Igor2]
-		- be able to rename nets
-		- be able to convert a 'found' to a net
 	+ CLEANUP: When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Move this in core., iterate over rats to find the ones to deal with [report: Ade]
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
 + BUG: bug_files/proto1.* padstack prototype selection bug priv mail 20 Feb [report: Alain]
