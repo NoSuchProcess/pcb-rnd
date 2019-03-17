@@ -29,6 +29,12 @@
 + BUG: empty polygon contour in subc seems to crash pcb-rnd reliably. bug_files/STRIP-3PIN-CRASHES.lht [erich]
 + BUG: draw overlapping lines, a short fully under a long; click on the short, it gets selected but it's not visible because the long hides it [report:Evan]
 	+> the wireframe drawing mode (key: |) makes the hidden line visible
+- FEATURE: Ade's new subc construction with convert: need a config setting that results in creating the refdes text but not adding the refdes attribute as empty [report: Ade]
+- FEATURE: external editor on buffer [report: TwisteR]
+- FEATURE: fontsel: ttf import?
+- FEATURE: tedax etest save (board save too)
+- FEATURE: HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
+- FEATURE: optional display of as-drawn contours of polygons for editing [report: Ade]
 
 2. For later releases ===============================================================================
 - CLEANUP: DAD: centralize the coordinate input spinbox: hid_dad_spin
@@ -71,10 +77,7 @@
 	- CLEANUP: remove the hackish gerber layer suffix in favor of CAM [report: Ade]
 - BUG: autorouter broke on polygons: bug_files/ara.lht, {a r a}, bisect; broke before r14572 [report: Igor2]
 - FEATURE/BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
-- FEATURE: Ade's new subc construction with convert: need a config setting that results in creating the refdes text but not adding the refdes attribute as empty [report: Ade]
 - FEATURE: view list: import sch. shouldn't select elements to be removed but put them on a drc list
-- FEATURE: external editor on buffer [report: TwisteR]
-- FEATURE: fontsel: ttf import?
 - FEATURE: drc preview: follow board flips (should be a DAD preview flag) [report: Igor2]
 - FEATURE: DOC: new examples
 	- blinking led with parametric footprints
@@ -84,7 +87,6 @@
 	- BUG: distalign pcb_crosshair option doesn't work as a reference point  [report:Miloh]
 - CLEANUP: move import_sch to import_sch_old and start a new, generic plugin
 - CLEANUP/FEATURE: boardflip doesn't function properly with undo -- repro: open pcb-rnd, place 1206, boardflip(), { u u } removes placed part instead of boardflip   [report: Miloh]
-- FEATURE: tedax etest save (board save too)
 - FEATURE: padstack bbox:
 	- per layer: keep a bbox per transformed shape per prototype, then getting the bbox of a padstack ref on a specific layer is looking up the shape, then 4 integer additions [report: Wojciech]
 	- when calculating overall padstack bbox, ignore layers that are not present? but then a layer change would require a recalc (but this is true for subcs too!) [report: Wojciech]
@@ -117,11 +119,9 @@
 	- lesstif code upgrade for the new API
 	- menu file fixup on punctuation in lesstif
 - FEATURE: extedit: when editing subc with pcb, save configuration and load it in the external pcb-rnd so that grid sizes and other settings are preserved [report: jg]
-- FEATURE: HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
 - FEATURE: undo on new layer from right-click menu in gtk layersel doesn't work
 - FEATUER: gtk layersel: consider to provide a config setting for making open-group-name horizontal [report: istankovic]
-- FEATURE: optional display of as-drawn contours of polygons for editing [report: Ade]
-- FEATURE: pewview widget: allow to handle keys both in gtk and lesstif
+- FEATURE: preview widget: allow to handle keys both in gtk and lesstif
 - CLEANUP: fp_fs_search: kill anything that gets ':' separated string as path list, get a config list instead
 - CLEANUP: Mark
 	- see pool node mark_cleanup
