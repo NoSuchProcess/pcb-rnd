@@ -496,6 +496,10 @@ ha:{
 					li:submenu {
 						ha:Swap nets on two selected pins  = { a={<key>a;<key>b;<key>s;}; action=net(swap) }
 						ha:Replace footprint               = { a={<key>a;<key>b;<key>f;}; action=ReplaceFootprint() }
+						-
+						ha:claim net by object             = { a={<key>n;<key>c;<key>o;}; action=ClaimNet(object) }
+						ha:claim net on found              = { a={<key>n;<key>c;<key>f;}; action=ClaimNet(found) }
+						ha:claim net on selected           = { a={<key>n;<key>c;<key>s;}; action=ClaimNet(selected) }
 					}
 				}
 			}
