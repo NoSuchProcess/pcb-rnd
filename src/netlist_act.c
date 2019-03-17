@@ -396,6 +396,7 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static int claim_net_cb(pcb_find_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
 {
 	pcb_subc_t *subc;
+	vtp0_t *termlist = ctx->user_data;
 
 	if (new_obj->term == NULL)
 		return 0;
@@ -404,10 +405,33 @@ static int claim_net_cb(pcb_find_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *
 	if ((subc == NULL) || (subc->refdes == NULL))
 		return 0;
 
-	pcb_trace("claim %s-%s\n", subc->refdes, new_obj->term);
+	vtp0_append(termlist, new_obj);
 	return 0;
 }
 
+static void pcb_net_claim_from_list(pcb_board_t *pcb, pcb_net_t *net, vtp0_t *termlist)
+{
+	size_t n;
+
+	for(n = 0; n < vtp0_len(termlist); n++) {
+		pcb_any_obj_t *obj = termlist->array[n];
+		pcb_subc_t *subc = pcb_obj_parent_subc(obj);
+		pcb_net_term_t *t = pcb_net_find_by_obj(&pcb->netlist[PCB_NETLIST_EDITED], obj);
+		char *pinname;
+
+		if (t != NULL) {
+			/* remove term from its original net */
+			pinname = pcb_strdup_printf("%s-%s", t->refdes, t->term);
+			pcb_ratspatch_append_optimize(PCB, RATP_DEL_CONN, pinname, net->name, NULL);
+			free(pinname);
+		}
+
+		t = pcb_net_term_get(net, subc->refdes, obj->term, 1);
+		pinname = pcb_strdup_printf("%s-%s", t->refdes, t->term);
+		pcb_ratspatch_append_optimize(PCB, RATP_ADD_CONN, pinname, net->name, NULL);
+		free(pinname);
+	}
+}
 
 static const char pcb_acts_ClaimNet[] = "ClaimNet(object|selected|found,[netname])\n";
 static const char pcb_acth_ClaimNet[] = "Claim existing connections and create a new net";
@@ -415,8 +439,12 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_find_t fctx;
 	int op;
+	vtp0_t termlist;
+	pcb_net_t *net;
+	char *netname, *free_netname = NULL;
 
 	PCB_ACT_CONVARG(1, FGW_KEYWORD, Netlist, op = fgw_keyword(&argv[1]));
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, Netlist, netname = argv[2].val.str);
 	PCB_ACT_IRES(0);
 
 	switch(op) {
@@ -432,6 +460,8 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				memset(&fctx, 0, sizeof(fctx));
 				fctx.consider_rats = 1;
 				fctx.found_cb = claim_net_cb;
+				fctx.user_data = &termlist;
+				vtp0_init(&termlist);
 				pcb_find_from_obj(&fctx, PCB->Data, (pcb_any_obj_t *)r2);
 			}
 			break;
@@ -441,6 +471,42 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			PCB_ACT_FAIL(ClaimNet);
 	}
 
+	if (termlist.used < 1) {
+		vtp0_uninit(&termlist);
+		pcb_message(PCB_MSG_ERROR, "Can not claim network: no terminal found.\nPlease pick objects that have terminals with refdes-termID.\n");
+		PCB_ACT_IRES(1);
+		return 0;
+	}
+
+	if (netname == NULL) {
+		free_netname = netname = pcb_hid_prompt_for("Name of the new network", NULL, "net name");
+		if (netname == NULL) {
+			vtp0_uninit(&termlist);
+			PCB_ACT_IRES(1);
+			return 0;
+		}
+	}
+
+	if (pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], netname, 0) != NULL) {
+		free(free_netname);
+		vtp0_uninit(&termlist);
+		pcb_message(PCB_MSG_ERROR, "Can not claim network: '%s' is an existing network\n", netname);
+		PCB_ACT_IRES(1);
+		return 0;
+	}
+
+	net = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], netname, 1);
+	free(free_netname);
+
+	if (net == NULL) {
+		vtp0_uninit(&termlist);
+		pcb_message(PCB_MSG_ERROR, "Can not claim network: failed to create net '%s'\n", netname);
+		PCB_ACT_IRES(1);
+		return 0;
+	}
+
+	pcb_net_claim_from_list(PCB, net, &termlist);
+	vtp0_uninit(&termlist);
 	return 0;
 }
 
