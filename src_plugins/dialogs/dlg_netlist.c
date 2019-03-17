@@ -226,6 +226,21 @@ static void netlist_button_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pcb_gui->invalidate_all();
 }
 
+static void netlist_claim_obj_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_actionl("ClaimNet", "object", NULL);
+}
+
+static void netlist_claim_sel_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_actionl("ClaimNet", "selected", NULL);
+}
+
+static void netlist_claim_fnd_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_actionl("ClaimNet", "found", NULL);
+}
+
 static vtp0_t netlist_color_save;
 
 static void netlist_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
@@ -368,6 +383,16 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 					netlist_ctx.wripup = PCB_DAD_CURRENT(netlist_ctx.dlg);
 					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
 			PCB_DAD_END(netlist_ctx.dlg);
+		PCB_DAD_END(netlist_ctx.dlg);
+
+		PCB_DAD_BEGIN_HBOX(netlist_ctx.dlg); /* bottom button row */
+			PCB_DAD_LABEL(netlist_ctx.dlg, "Claim net:");
+			PCB_DAD_BUTTON(netlist_ctx.dlg, "click");
+				PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_claim_obj_cb);
+			PCB_DAD_BUTTON(netlist_ctx.dlg, "select");
+				PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_claim_sel_cb);
+			PCB_DAD_BUTTON(netlist_ctx.dlg, "found");
+				PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_claim_fnd_cb);
 			PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* fill between buttons and close */
 				PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_END(netlist_ctx.dlg);
