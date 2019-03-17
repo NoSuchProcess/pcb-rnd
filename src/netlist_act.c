@@ -477,7 +477,7 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				void *r1, *r2, *r3;
 
 				pcb_hid_get_coords("Select a an object to claim network from", &x, &y, 0);
-				if (pcb_search_screen(x, y, PCB_OBJ_CLASS_REAL, &r1, &r2, &r3) <= 0)
+				if (pcb_search_screen(x, y, PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_PSTK, &r1, &r2, &r3) <= 0)
 					return 0;
 
 				memset(&fctx, 0, sizeof(fctx));
