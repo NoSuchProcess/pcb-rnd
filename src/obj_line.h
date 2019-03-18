@@ -100,16 +100,22 @@ void pcb_line_45(pcb_attached_line_t *);
 
 void pcb_line_enforce_drc(void);
 
-/* Checks for intersectors against two lines and
- * adjusts the end point until there is no intersection or
- * it winds up back at the start. If way is pcb_false it checks
- * an ortho start line with one 45 refraction to reach the endpoint,
- * otherwise it checks a 45 start, with a ortho refraction to reach endpoint
- *
- * It returns the straight-line length of the best answer, and
- * changes the position of 'end' to the best answer.
- */
-double pcb_drc_lines(const pcb_point_t *start, pcb_point_t *end, pcb_bool way);
+/* Calculate a pair of refractioned (ortho-45) lines between 'start' and 'end'.
+   If 'mid_out' is not NULL, load it with the coords of the middle point.
+   If way is false it checks an ortho start line with one 45 refraction to
+   reach the endpoint, otherwise it checks a 45 start, with a ortho refraction
+   to reach endpoint.
+
+   Checks for intersectors against two lines.
+
+   If optimize is false, return straight-line distance between start and end
+   on success or -1 if the pair-of-lines has hit a blocker object.
+
+   If optimize is true, keep on looking for a mid-way solution, adjusting
+   the fields of 'end' needed to find the closest point to the original target
+   that still won't hit any object. Returns the straigh-line distance between
+   start and the new end. */
+double pcb_drc_lines(const pcb_point_t *start, pcb_point_t *end, pcb_point_t *mid_out, pcb_bool way, pcb_bool optimize);
 
 
 /* Rather than mode the line bounding box, we set it so the point bounding

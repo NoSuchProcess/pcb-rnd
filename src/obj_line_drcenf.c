@@ -228,7 +228,7 @@ static pcb_r_dir_t drcArc_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-double pcb_drc_lines(const pcb_point_t *start, pcb_point_t *end, pcb_bool way)
+double pcb_drc_lines(const pcb_point_t *start, pcb_point_t *end, pcb_point_t *mid_out, pcb_bool way, pcb_bool optimize)
 {
 	double f, s, f2, s2, len, best;
 	pcb_coord_t dx, dy, temp, last, length;
@@ -383,10 +383,21 @@ double pcb_drc_lines(const pcb_point_t *start, pcb_point_t *end, pcb_bool way)
 			f -= s;
 		s *= 0.5;
 		length = MIN(f * temp, temp);
+		if (!optimize) {
+			if (blocker)
+				best = -1;
+			else
+				best = length;
+			break;
+		}
 	}
 
 	end->X = ans.X;
 	end->Y = ans.Y;
+	if (mid_out != NULL) {
+		mid_out->X = line1.Point2.X;
+		mid_out->Y = line1.Point2.Y;
+	}
 	return best;
 }
 
@@ -472,9 +483,9 @@ void pcb_line_enforce_drc(void)
 
 	if (conf_core.editor.line_refraction != 0) {
 		/* first try starting straight */
-		r1 = pcb_drc_lines(&start, &rs, pcb_false);
+		r1 = pcb_drc_lines(&start, &rs, NULL, pcb_false, pcb_true);
 		/* then try starting at 45 */
-		r2 = pcb_drc_lines(&start, &r45, pcb_true);
+		r2 = pcb_drc_lines(&start, &r45, NULL, pcb_true, pcb_true);
 	}
 	else {
 		drc_line(&rs);
