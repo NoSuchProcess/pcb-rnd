@@ -32,7 +32,6 @@
 - FEATURE: fontsel: ttf import?
 - FEATURE: tedax etest save (board save too)
 - FEATURE: HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
-+ FEATURE: optional display of as-drawn contours of polygons for editing -> {m d d} [report: Ade]
 
 2. For later releases ===============================================================================
 - CLEANUP: DAD: centralize the coordinate input spinbox: hid_dad_spin
