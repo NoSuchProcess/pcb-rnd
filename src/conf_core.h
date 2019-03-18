@@ -92,7 +92,7 @@ typedef struct {
 
 		CFT_INTEGER undo_warning_size;     /* warn the user when undo list exceeds this amount of kilobytes in memory */
 
-		CFT_STRING subc_conv_refdes;       /* automatic refdes value assigned to new subcircuits on conversion from objects - if empty, no refdes text is added */
+		CFT_STRING subc_conv_refdes;       /* automatic refdes value assigned to new subcircuits on conversion from objects - if empty, no refdes text or attribute is added; if the value is <?>, the refdes text object is added but no refdes attribute is created */
 	} editor;
 
 	const struct rc {

@@ -596,7 +596,8 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 
 	/* Add refdes */
 	if ((conf_core.editor.subc_conv_refdes != NULL) && (*conf_core.editor.subc_conv_refdes != '\0')) {
-		pcb_attribute_put(&sc->Attributes, "refdes", conf_core.editor.subc_conv_refdes);
+		if (strcmp(conf_core.editor.subc_conv_refdes, "<?>") != 0)
+			pcb_attribute_put(&sc->Attributes, "refdes", conf_core.editor.subc_conv_refdes);
 		if (!has_refdes_text) {
 			if (dst_top_silk == NULL)
 				dst_top_silk = pcb_layer_new_bound(sc->data, PCB_LYT_TOP | PCB_LYT_SILK, "top-silk", NULL);
