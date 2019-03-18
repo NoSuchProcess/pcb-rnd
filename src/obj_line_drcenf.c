@@ -228,16 +228,7 @@ static pcb_r_dir_t drcArc_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-/* drc_lines() checks for intersectors against two lines and
- * adjusts the end point until there is no intersection or
- * it winds up back at the start. If way is pcb_false it checks
- * an ortho start line with one 45 refraction to reach the endpoint,
- * otherwise it checks a 45 start, with a ortho refraction to reach endpoint
- *
- * It returns the straight-line length of the best answer, and
- * changes the position of the input end point to the best answer.
- */
-static double drc_lines(pcb_point_t *end, pcb_bool way)
+double pcb_drc_lines(const pcb_point_t *start, pcb_point_t *end, pcb_bool way)
 {
 	double f, s, f2, s2, len, best;
 	pcb_coord_t dx, dy, temp, last, length;
@@ -258,8 +249,8 @@ static double drc_lines(pcb_point_t *end, pcb_bool way)
 	line1.Thickness = conf_core.design.line_thickness + 2 * (conf_core.design.bloat + 1);
 	line2.Thickness = line1.Thickness;
 	line1.Clearance = line2.Clearance = 0;
-	line1.Point1.X = pcb_crosshair.AttachedLine.Point1.X;
-	line1.Point1.Y = pcb_crosshair.AttachedLine.Point1.Y;
+	line1.Point1.X = start->X;
+	line1.Point1.Y = start->Y;
 	dy = end->Y - line1.Point1.Y;
 	dx = end->X - line1.Point1.X;
 
@@ -461,7 +452,7 @@ static void drc_line(pcb_point_t *end)
 
 void pcb_line_enforce_drc(void)
 {
-	pcb_point_t r45, rs;
+	pcb_point_t r45, rs, start;
 	pcb_bool shift;
 	double r1, r2;
 
@@ -474,14 +465,16 @@ void pcb_line_enforce_drc(void)
 	if (!(pcb_layer_flags(PCB, layer_idx) & PCB_LYT_COPPER))
 		return;
 
+	start.X = pcb_crosshair.AttachedLine.Point1.X;
+	start.Y = pcb_crosshair.AttachedLine.Point1.Y;
 	rs.X = r45.X = pcb_crosshair.X;
 	rs.Y = r45.Y = pcb_crosshair.Y;
 
 	if (conf_core.editor.line_refraction != 0) {
 		/* first try starting straight */
-		r1 = drc_lines(&rs, pcb_false);
+		r1 = pcb_drc_lines(&start, &rs, pcb_false);
 		/* then try starting at 45 */
-		r2 = drc_lines(&r45, pcb_true);
+		r2 = pcb_drc_lines(&start, &r45, pcb_true);
 	}
 	else {
 		drc_line(&rs);

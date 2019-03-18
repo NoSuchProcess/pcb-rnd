@@ -100,6 +100,18 @@ void pcb_line_45(pcb_attached_line_t *);
 
 void pcb_line_enforce_drc(void);
 
+/* Checks for intersectors against two lines and
+ * adjusts the end point until there is no intersection or
+ * it winds up back at the start. If way is pcb_false it checks
+ * an ortho start line with one 45 refraction to reach the endpoint,
+ * otherwise it checks a 45 start, with a ortho refraction to reach endpoint
+ *
+ * It returns the straight-line length of the best answer, and
+ * changes the position of 'end' to the best answer.
+ */
+double pcb_drc_lines(const pcb_point_t *start, pcb_point_t *end, pcb_bool way);
+
+
 /* Rather than mode the line bounding box, we set it so the point bounding
  * boxes are updated too.
  */
