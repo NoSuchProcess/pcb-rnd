@@ -42,9 +42,7 @@
 
 static double drc_lines(pcb_point_t *end, pcb_bool way);
 
-/* ---------------------------------------------------------------------------
- * Adjust the attached line to 45 degrees if necessary
- */
+/* Adjust the attached line to 45 degrees if necessary */
 void pcb_line_adjust_attached(void)
 {
 	pcb_attached_line_t *line = &pcb_crosshair.AttachedLine;
@@ -61,16 +59,11 @@ void pcb_line_adjust_attached(void)
 	line->Point2.Y = pcb_crosshair.Y;
 
 	pcb_route_calculate(PCB,
-											&pcb_crosshair.Route,
-											&line->Point1,
-											&line->Point2,
-											pcb_layer_id(PCB->Data, CURRENT),
-											conf_core.design.line_thickness,
-											conf_core.design.clearance * 2,
-											pcb_flag_make(flags),
-											pcb_gui->shift_is_pressed(),
-											pcb_gui->control_is_pressed() );
-
+		&pcb_crosshair.Route, &line->Point1, &line->Point2,
+		pcb_layer_id(PCB->Data, CURRENT),
+		conf_core.design.line_thickness, conf_core.design.clearance * 2,
+		pcb_flag_make(flags), pcb_gui->shift_is_pressed(),
+		pcb_gui->control_is_pressed());
 }
 
 /* ---------------------------------------------------------------------------
@@ -118,43 +111,41 @@ void pcb_line_45(pcb_attached_line_t *Line)
 
 	/* now set up the second pair of coordinates */
 	switch (direction) {
-	case 0:
-	case 4:
-		Line->Point2.X = Line->Point1.X;
-		Line->Point2.Y = pcb_crosshair.Y;
-		break;
+		case 0:
+		case 4:
+			Line->Point2.X = Line->Point1.X;
+			Line->Point2.Y = pcb_crosshair.Y;
+			break;
 
-	case 2:
-	case 6:
-		Line->Point2.X = pcb_crosshair.X;
-		Line->Point2.Y = Line->Point1.Y;
-		break;
+		case 2:
+		case 6:
+			Line->Point2.X = pcb_crosshair.X;
+			Line->Point2.Y = Line->Point1.Y;
+			break;
 
-	case 1:
-		Line->Point2.X = Line->Point1.X + min;
-		Line->Point2.Y = Line->Point1.Y + min;
-		break;
+		case 1:
+			Line->Point2.X = Line->Point1.X + min;
+			Line->Point2.Y = Line->Point1.Y + min;
+			break;
 
-	case 3:
-		Line->Point2.X = Line->Point1.X + min;
-		Line->Point2.Y = Line->Point1.Y - min;
-		break;
+		case 3:
+			Line->Point2.X = Line->Point1.X + min;
+			Line->Point2.Y = Line->Point1.Y - min;
+			break;
 
-	case 5:
-		Line->Point2.X = Line->Point1.X - min;
-		Line->Point2.Y = Line->Point1.Y - min;
-		break;
+		case 5:
+			Line->Point2.X = Line->Point1.X - min;
+			Line->Point2.Y = Line->Point1.Y - min;
+			break;
 
-	case 7:
-		Line->Point2.X = Line->Point1.X - min;
-		Line->Point2.Y = Line->Point1.Y + min;
-		break;
+		case 7:
+			Line->Point2.X = Line->Point1.X - min;
+			Line->Point2.Y = Line->Point1.Y + min;
+			break;
 	}
 }
 
-/* ---------------------------------------------------------------------------
- *  adjusts the insert lines to make them 45 degrees as necessary
- */
+/* adjusts the insert lines to make them 45 degrees as necessary */
 void pcb_line_adjust_attached_2lines(pcb_bool way)
 {
 	pcb_coord_t dx, dy;
@@ -162,6 +153,7 @@ void pcb_line_adjust_attached_2lines(pcb_bool way)
 
 	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
 		return;
+
 	/* don't draw outline when ctrl key is pressed */
 	if (pcb_gui->control_is_pressed()) {
 		line->draw = pcb_false;
@@ -169,16 +161,20 @@ void pcb_line_adjust_attached_2lines(pcb_bool way)
 	}
 	else
 		line->draw = pcb_true;
+
 	if (conf_core.editor.all_direction_lines) {
 		line->Point2.X = pcb_crosshair.X;
 		line->Point2.Y = pcb_crosshair.Y;
 		return;
 	}
+
 	/* swap the modes if shift is held down */
 	if (pcb_gui->shift_is_pressed())
 		way = !way;
+
 	dx = pcb_crosshair.X - line->Point1.X;
 	dy = pcb_crosshair.Y - line->Point1.Y;
+
 	if (!way) {
 		if (coord_abs(dx) > coord_abs(dy)) {
 			line->Point2.X = pcb_crosshair.X - SGN(dx) * coord_abs(dy);
@@ -271,6 +267,7 @@ static double drc_lines(pcb_point_t *end, pcb_bool way)
 	line1.Point1.Y = pcb_crosshair.AttachedLine.Point1.Y;
 	dy = end->Y - line1.Point1.Y;
 	dx = end->X - line1.Point1.X;
+
 	if (coord_abs(dx) > coord_abs(dy)) {
 		x_is_long = pcb_true;
 		length = coord_abs(dx);
@@ -279,8 +276,10 @@ static double drc_lines(pcb_point_t *end, pcb_bool way)
 		x_is_long = pcb_false;
 		length = coord_abs(dy);
 	}
+
 	group = pcb_layer_get_group(PCB, INDEXOFCURRENT);
-	comp = PCB->LayerGroups.len + 10;				/* this out-of-range group might save a call */
+	comp = PCB->LayerGroups.len + 10; /* this out-of-range group might save a call */
+
 	if (pcb_layergrp_flags(PCB, group) & PCB_LYT_BOTTOM)
 		info.solder = pcb_true;
 	else {
@@ -288,6 +287,7 @@ static double drc_lines(pcb_point_t *end, pcb_bool way)
 		pcb_layer_list(PCB, PCB_LYT_TOP | PCB_LYT_SILK, &comp, 1);
 	}
 	temp = length;
+
 	/* assume the worst */
 	best = 0.0;
 	ans.X = line1.Point1.X;
