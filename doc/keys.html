@@ -544,77 +544,89 @@
 	<th align=left>m<br>&nbsp;d<br>&nbsp;&nbsp;c
 	<td> <I>Check polygons</I><br>conf(toggle, editor/check_planes, design) 
 <tr bgcolor="#FFFFFF">
+	<th align=left>m<br>&nbsp;d<br>&nbsp;&nbsp;d
+	<td> <I>poly as-drawn frame annotation</I><br>conf(toggle, editor/as_drawn_poly, design)
+<tr bgcolor="#DDFFFF">
 	<th align=left>m<br>&nbsp;d<br>&nbsp;&nbsp;h
 	<td> <I>Highlighting on line, arc points</I><br>conf(toggle, editor/highlight_on_point, design) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>m<br>&nbsp;d<br>&nbsp;&nbsp;p
 	<td> <I>Thin draw poly</I><br>conf(toggle, editor/thin_draw_poly, design)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>m<br>&nbsp;d<br>&nbsp;&nbsp;t
 	<td> <I>Thin draw</I><br>conf(toggle, editor/thin_draw, design) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>m<br>&nbsp;d<br>&nbsp;&nbsp;w
 	<td> <I>Wireframe draw</I><br>conf(toggle, editor/wireframe_draw, design) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>m<br>&nbsp;f<br>&nbsp;&nbsp;h
 	<td> <I>Hide floaters</I><br>conf(toggle, editor/hide_names, design) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>m<br>&nbsp;f<br>&nbsp;&nbsp;l
 	<td> <I>Lock floaters</I><br>conf(toggle, editor/lock_names, design) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>m<br>&nbsp;f<br>&nbsp;&nbsp;o
 	<td> <I>Only floaters</I><br>conf(toggle, editor/only_names, design) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>m<br>&nbsp;k<br>&nbsp;&nbsp;s
 	<td> <I>Loose subcircuits (no subc lock)</I><br>subc(loose, toggle)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>m<br>&nbsp;l<br>&nbsp;&nbsp;+
 	<td> <I>Line Tool size +5 mil</I><br>SetValue(LineSize,+5,mil) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>m<br>&nbsp;l<br>&nbsp;&nbsp;-
 	<td> <I>Line Tool size -5 mil</I><br>SetValue(LineSize,-5,mil) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>m<br>&nbsp;l<br>&nbsp;&nbsp;a
 	<td> <I>'All-direction' lines</I><br>conf(toggle, editor/all_direction_lines, design)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>m<br>&nbsp;l<br>&nbsp;&nbsp;c
 	<td> <I>New lines, arcs clear polygons</I><br>conf(toggle, editor/clear_line, design) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>m<br>&nbsp;l<br>&nbsp;&nbsp;d
 	<td> <I>Auto enforce DRC clearance</I><br>conf(toggle, editor/auto_drc, design) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>m<br>&nbsp;l<br>&nbsp;&nbsp;f
 	<td> <I>Cycle line clip/refraction</I><br>Display(CycleClip) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>m<br>&nbsp;o<br>&nbsp;&nbsp;b
 	<td> <I>black current group</I><br>conf(toggle, appearance/black_current_group, design) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>m<br>&nbsp;o<br>&nbsp;&nbsp;i
 	<td> <I>Invisible-color on other groups</I><br>conf(toggle, appearance/invis_other_groups, design) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>m<br>&nbsp;p<br>&nbsp;&nbsp;c
 	<td> <I>New polygons clear polygons</I><br>conf(toggle, editor/clear_polypoly, design) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>m<br>&nbsp;p<br>&nbsp;&nbsp;f
 	<td> <I>New polygons are full ones</I><br>conf(toggle, editor/full_poly, design) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>m<br>&nbsp;p<br>&nbsp;&nbsp;i
 	<td> <I>Polygon clip inhibit (toggle)</I><br>ClipInhibit(toggle)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>m<br>&nbsp;r<br>&nbsp;&nbsp;m
 	<td> <I>Rubber band keeps middle line dir</I><br>conf(toggle, editor/rubber_band_keep_midlinedir, design) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>m<br>&nbsp;r<br>&nbsp;&nbsp;r
 	<td> <I>Rubber band mode</I><br>conf(toggle, editor/rubber_band_mode, design) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>m<br>&nbsp;t<br>&nbsp;&nbsp;+
 	<td> <I>Text Tool scale +10 mil</I><br>SetValue(TextScale,+10,mil) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>m<br>&nbsp;t<br>&nbsp;&nbsp;-
 	<td> <I>Text Tool scale -10 mil</I><br>SetValue(TextScale,-10,mil) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>n-ctrl
 	<td> <I>Start New Layout</I><br>New() 
+<tr bgcolor="#DDFFFF">
+	<th align=left>n<br>&nbsp;c<br>&nbsp;&nbsp;f<br>&nbsp;&nbsp;&nbsp;
+	<td> <I>claim net on found</I><br>ClaimNet(found) 
+<tr bgcolor="#FFFFFF">
+	<th align=left>n<br>&nbsp;c<br>&nbsp;&nbsp;o<br>&nbsp;&nbsp;&nbsp;
+	<td> <I>claim net by object</I><br>ClaimNet(object) 
+<tr bgcolor="#DDFFFF">
+	<th align=left>n<br>&nbsp;c<br>&nbsp;&nbsp;s<br>&nbsp;&nbsp;&nbsp;
+	<td> <I>claim net on selected</I><br>ClaimNet(selected) 
 <tr bgcolor="#FFFFFF">
 	<th align=left>p<br>&nbsp;m<br>&nbsp;&nbsp;p<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>Manage plugins...</I><br>ManagePlugins() 

@@ -175,6 +175,7 @@ m;c;p	pcb-menu-default.lht	conf(toggle, editor\057snap_pin, design) 	Crosshair s
 m;c;s	pcb-menu-default.lht	conf(toggle, editor\057snap_offgrid_line, design) 	Crosshair snaps to off-grid points on lines
 m;d;a	pcb-menu-default.lht	conf(toggle, editor\057live_routing, design) 	Show autorouter trials
 m;d;c	pcb-menu-default.lht	conf(toggle, editor\057check_planes, design) 	Check polygons
+m;d;d	pcb-menu-default.lht	conf(toggle, editor\057as_drawn_poly, design)	poly as-drawn frame annotation
 m;d;h	pcb-menu-default.lht	conf(toggle, editor\057highlight_on_point, design) 	Highlighting on line, arc points
 m;d;p	pcb-menu-default.lht	conf(toggle, editor\057thin_draw_poly, design)	Thin draw poly
 m;d;t	pcb-menu-default.lht	conf(toggle, editor\057thin_draw, design) 	Thin draw
@@ -199,6 +200,9 @@ m;r;r	pcb-menu-default.lht	conf(toggle, editor\057rubber_band_mode, design) 	Rub
 m;t;+	pcb-menu-default.lht	SetValue(TextScale,+10,mil) 	Text Tool scale +10 mil
 m;t;-	pcb-menu-default.lht	SetValue(TextScale,-10,mil) 	Text Tool scale -10 mil
 n-ctrl	pcb-menu-default.lht	New() 	Start New Layout
+n;c;f;	pcb-menu-default.lht	ClaimNet(found) 	claim net on found
+n;c;o;	pcb-menu-default.lht	ClaimNet(object) 	claim net by object
+n;c;s;	pcb-menu-default.lht	ClaimNet(selected) 	claim net on selected
 p;m;p;	pcb-menu-default.lht	ManagePlugins() 	Manage plugins...
 p;m;s;	pcb-menu-default.lht	BrowseScripts() 	Manage scripts...
 q-ctrl	pcb-menu-default.lht	Quit() 	Quit Program
