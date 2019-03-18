@@ -316,6 +316,7 @@ ha:{
 						ha:Wireframe draw                   = { li:a={{<key>m; <key>d; <key>w}; {<char>|};}; checked=editor/wireframe_draw; action=conf(toggle, editor/wireframe_draw, design) }
 						ha:Thin draw                        = { a={<key>m; <key>d; <key>t}; checked=editor/thin_draw;  action=conf(toggle, editor/thin_draw, design) }
 						ha:Thin draw poly                   = { a={<key>m; <key>d; <key>p}; checked=editor/thin_draw_poly; action=conf(toggle, editor/thin_draw_poly, design); update_on={editor/thin_draw_poly} }
+						ha:poly as-drawn frame annotation   = { a={<key>m; <key>d; <key>d}; checked=editor/as_drawn_poly; action=conf(toggle, editor/as_drawn_poly, design); update_on={editor/as_drawn_poly} }
 						ha:Check polygons                   = { a={<key>m; <key>d; <key>c}; checked=editor/check_planes; action=conf(toggle, editor/check_planes, design) }
 						-
 						ha:Lock floaters                    = { a={<key>m; <key>f; <key>l}; checked=editor/lock_names; action=conf(toggle, editor/lock_names, design) }

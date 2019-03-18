@@ -1092,6 +1092,31 @@ void pcb_poly_draw_label(pcb_draw_info_t *info, pcb_poly_t *poly)
 			conf_core.appearance.term_label_size, is_poly_term_vert(poly), pcb_true, poly->term, poly->intconn);
 }
 
+void pcb_poly_draw_annotation(pcb_draw_info_t *info, pcb_poly_t *poly)
+{
+	pcb_cardinal_t n, np;
+
+	if (!conf_core.editor.as_drawn_poly)
+		return;
+
+	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, poly))
+		pcb_gui->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.selected);
+	else
+		pcb_gui->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.pin_name);
+
+	pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
+	pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
+
+	if (poly->HoleIndexN > 0)
+		np = poly->HoleIndex[0];
+	else
+		np = poly->PointN;
+
+	for(n = 1; n < np; n++)
+		pcb_gui->draw_line(pcb_draw_out.fgGC, poly->Points[n-1].X, poly->Points[n-1].Y, poly->Points[n].X, poly->Points[n].Y);
+	pcb_gui->draw_line(pcb_draw_out.fgGC, poly->Points[n-1].X, poly->Points[n-1].Y, poly->Points[0].X, poly->Points[0].Y);
+}
+
 static void pcb_poly_draw_tr_offs(pcb_poly_it_t *it, pcb_coord_t offs)
 {
 	int go;
@@ -1164,6 +1189,9 @@ void pcb_poly_draw_(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_term_g
 		pcb_draw_delay_obj_add((pcb_any_obj_t *)polygon);
 		return;
 	}
+
+	if (conf_core.editor.as_drawn_poly)
+		pcb_draw_annotation_add((pcb_any_obj_t *)polygon);
 
 	if ((info != NULL) && (info->xform != NULL) && (info->xform->bloat != 0)) {
 		/* Slow dupping and recalculation every time; if we ever need this on-screen, we should cache */

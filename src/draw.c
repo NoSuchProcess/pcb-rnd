@@ -66,7 +66,7 @@ pcb_box_t pcb_draw_invalidated = { COORD_MAX, COORD_MAX, -COORD_MAX, -COORD_MAX 
 
 int pcb_draw_force_termlab = 0;
 pcb_bool pcb_draw_doing_assy = pcb_false;
-static vtp0_t delayed_labels, delayed_objs;
+static vtp0_t delayed_labels, delayed_objs, annot_objs;
 pcb_bool delayed_labels_enabled = pcb_false;
 pcb_bool delayed_terms_enabled = pcb_false;
 
@@ -96,6 +96,11 @@ void pcb_draw_delay_label_add(pcb_any_obj_t *obj)
 void pcb_draw_delay_obj_add(pcb_any_obj_t *obj)
 {
 	vtp0_append(&delayed_objs, obj);
+}
+
+void pcb_draw_annotation_add(pcb_any_obj_t *obj)
+{
+	vtp0_append(&annot_objs, obj);
 }
 
 
@@ -560,6 +565,21 @@ static void pcb_draw_delayed_objs(pcb_draw_info_t *info)
 	vtp0_truncate(&delayed_objs, 0);
 }
 
+static void pcb_draw_annotations(pcb_draw_info_t *info)
+{
+	size_t n;
+
+	for(n = 0; n < annot_objs.used; n++) {
+		pcb_any_obj_t *o = annot_objs.array[n];
+		switch(o->type) {
+			case PCB_OBJ_POLY: pcb_poly_draw_annotation(info, (pcb_poly_t *)o); break;
+			default:
+				assert(!"Don't know how to draw annotation for object");
+		}
+	}
+	vtp0_truncate(&annot_objs, 0);
+}
+
 #include "draw_composite.c"
 #include "draw_ly_spec.c"
 
@@ -658,6 +678,7 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 
 	if (may_have_delayed)
 		pcb_draw_delayed_objs(info);
+	pcb_draw_annotations(info);
 
 	out:;
 		pcb_draw_out.active_padGC = NULL;

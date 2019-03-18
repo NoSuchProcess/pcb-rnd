@@ -39,6 +39,7 @@ li:pcb-rnd-conf-v1 {
 			only_names = 0
 			thin_draw = 0
 			thin_draw_poly = 0
+			as_drawn_poly = 0
 			wireframe_draw = 0
 			local_ref = 0
 			check_planes = 0

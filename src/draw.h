@@ -93,6 +93,10 @@ do { \
 extern pcb_bool delayed_terms_enabled;
 void pcb_draw_delay_obj_add(pcb_any_obj_t *obj);
 
+/* Append an object to the annotatation list; annotations are drawn at the
+   end, after labels */
+void pcb_draw_annotation_add(pcb_any_obj_t *obj);
+
 /* the minimum box that needs to be redrawn */
 extern pcb_box_t pcb_draw_invalidated;
 

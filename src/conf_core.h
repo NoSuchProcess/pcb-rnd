@@ -53,6 +53,7 @@ typedef struct {
 		CFT_BOOLEAN only_names;            /* lock down everything else but text so only text objects can be moved or selected */
 		CFT_BOOLEAN thin_draw;             /* if set, objects on the screen are drawn as outlines (lines are drawn as center-lines).  This lets you see line endpoints hidden under pins, for example. */
 		CFT_BOOLEAN thin_draw_poly;        /* if set, polygons on the screen are drawn as outlines. */
+		CFT_BOOLEAN as_drawn_poly;         /* if set, also draw the as-drawn outline of polygons */
 		CFT_BOOLEAN wireframe_draw;        /* if set, lines and arcs on the screen are drawn as outlines. */
 		CFT_BOOLEAN local_ref;             /* use local reference for moves, by setting the mark at the beginning of each move. */
 		CFT_BOOLEAN check_planes;          /* when set, only polygons and their clearances are drawn, to see if polygons have isolated regions. */
