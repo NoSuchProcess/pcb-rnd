@@ -28,7 +28,7 @@
 + BUG: draw overlapping lines, a short fully under a long; click on the short, it gets selected but it's not visible because the long hides it [report:Evan]
 	+> the wireframe drawing mode (key: |) makes the hidden line visible
 + FEATURE: Ade's new subc construction with convert: need a config setting that results in creating the refdes text but not adding the refdes attribute as empty -> enter <?> in editor/subc_conv_refdes, that's a new special value there [report: Ade]
-- FEATURE: external editor on buffer [report: TwisteR]
++ FEATURE: external editor on buffer [report: TwisteR]
 - FEATURE: fontsel: ttf import?
 - FEATURE: tedax etest save (board save too)
 - FEATURE: HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
