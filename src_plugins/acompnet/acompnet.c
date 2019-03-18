@@ -202,6 +202,7 @@ static fgw_error_t pcb_act_acompnet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				break;
 			prev = htip_get(&gr.id2node, id);
 			pcb_line_new(ly, curr->bbox.X1, curr->bbox.Y1, prev->bbox.X1, prev->bbox.Y1, conf_core.design.line_thickness/2, conf_core.design.bloat/2, flg_mesh_pt);
+TODO("use pcb_drc_lines(), probably during A*, saving mid-point, and draw pairs of lines here");
 		}
 	}
 	PCB_ACT_IRES(0);
