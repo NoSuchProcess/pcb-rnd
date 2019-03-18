@@ -42,7 +42,6 @@
 
 static double drc_lines(pcb_point_t *end, pcb_bool way);
 
-/* Adjust the attached line to 45 degrees if necessary */
 void pcb_line_adjust_attached(void)
 {
 	pcb_attached_line_t *line = &pcb_crosshair.AttachedLine;
@@ -66,10 +65,7 @@ void pcb_line_adjust_attached(void)
 		pcb_gui->control_is_pressed());
 }
 
-/* ---------------------------------------------------------------------------
- * makes the attached line fit into a 45 degree direction
- *
- * directions:
+/* directions:
  *
  *           0
  *          7 1
@@ -145,7 +141,6 @@ void pcb_line_45(pcb_attached_line_t *Line)
 	}
 }
 
-/* adjusts the insert lines to make them 45 degrees as necessary */
 void pcb_line_adjust_attached_2lines(pcb_bool way)
 {
 	pcb_coord_t dx, dy;

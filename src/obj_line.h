@@ -88,9 +88,16 @@ void pcb_line_pre(pcb_line_t *line);
 void pcb_line_post(pcb_line_t *line);
 
 /*** DRC enforcement (obj_line_drcenf.c) ***/
+
+/* Adjust the attached line to 45 degrees if necessary */
 void pcb_line_adjust_attached(void);
+
+/* adjusts the insert lines to make them 45 degrees as necessary */
 void pcb_line_adjust_attached_2lines(pcb_bool);
+
+/* makes the attached line fit into a 45 degree direction */
 void pcb_line_45(pcb_attached_line_t *);
+
 void pcb_line_enforce_drc(void);
 
 /* Rather than mode the line bounding box, we set it so the point bounding
