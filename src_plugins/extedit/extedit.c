@@ -165,7 +165,7 @@ static void invoke(extedit_method_t *mth, const char *fn)
 
 
 
-static const char pcb_acts_extedit[] = "extedit(object|selected, [interactive|method])\n";
+static const char pcb_acts_extedit[] = "extedit(object|selected|buffer, [interactive|method])\n";
 static const char pcb_acth_extedit[] = "Invoke an external program to edit a specific part of the current board.";
 static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -176,6 +176,10 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char *tmp_fn;
 	int ret = 1;
 	FILE *f;
+	int bn = PCB_MAX_BUFFER - 1, load_bn = PCB_MAX_BUFFER - 1;
+	int obn = conf_core.editor.buffer_number;
+	int paste = 0, del_selected = 0;
+	pcb_coord_t pastex = 0, pastey = 0;
 
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, extedit, cmd = argv[1].val.str);
 	PCB_ACT_MAY_CONVARG(2, FGW_STR, extedit, method = argv[2].val.str);
@@ -185,17 +189,39 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_coord_t x, y;
 		pcb_hid_get_coords("Click on object to edit", &x, &y, 0);
 		type = pcb_search_screen(x, y, EXTEDIT_TYPES, &ptr1, &ptr2, &ptr3);
+
+		pcb_buffer_set_number(bn);
+		pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
+		if (pcb_copy_obj_to_buffer(PCB, pcb_buffers[bn].Data, PCB->Data, type, ptr1, ptr2, ptr3) == NULL) {
+			pcb_message(PCB_MSG_ERROR, "Failed to copy target objects to temporary paste buffer\n");
+			goto quit0;
+		}
+		paste = 1;
 	}
 	else if ((argc > 1) && (pcb_strcasecmp(cmd, "selected") == 0)) {
-TODO("TODO")
-		pcb_message(PCB_MSG_ERROR, "\"Selected\" not supported yet\n");
-		PCB_ACT_IRES(1);
-		return 0;
+		pcb_buffer_set_number(bn);
+		pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
+		pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, pcb_crosshair.X, pcb_crosshair.Y, pcb_false);
+		pastex = pcb_crosshair.X;
+		pastey = pcb_crosshair.Y;
+		del_selected = 1;
+		paste = 1;
+		if (pcb_data_is_empty(PCB_PASTEBUFFER->Data)) {
+			pcb_message(PCB_MSG_WARNING, "Nothing is selected, can't ext-edit selection\n");
+			goto quit0;
+		}
+	}
+	else if ((argc > 1) && (pcb_strcasecmp(cmd, "buffer") == 0)) {
+		load_bn = bn = conf_core.editor.buffer_number;
+		if (pcb_data_is_empty(PCB_PASTEBUFFER->Data)) {
+			pcb_message(PCB_MSG_WARNING, "Nothing in current buffer, can't ext-edit selection\n");
+			goto quit0;
+		}
 	}
 	else {
 		pcb_message(PCB_MSG_ERROR, "Wrong 1st argument '%s'\n", cmd);
-		PCB_ACT_IRES(1);
-		return 0;
+		ret = 1;
+		goto quit0;
 	}
 
 	/* determine the method */
@@ -212,38 +238,29 @@ TODO("TODO")
 				pcb_message(PCB_MSG_ERROR, "%s", mth->name);
 			}
 			pcb_message(PCB_MSG_ERROR, "\n");
-			PCB_ACT_IRES(1);
-			return 0;
+			ret = 1;
+			goto quit0;
 		}
 	}
 	if (mth == NULL) {
 		mth = extedit_interactive();
 		if (mth == NULL) { /* no method selected */
-			PCB_ACT_IRES(1);
-			return 0;
+			ret = 1;
+			goto quit0;
 		}
 	}
 
 	tmp_fn = pcb_tempfile_name_new("extedit");
 	if (tmp_fn == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Failed to create temporary file\n");
-		PCB_ACT_IRES(1);
-		return 0;
+		ret = 1;
+		goto quit0;
 	}
 
 	/* export */
 	switch(mth->fmt) {
 		case EEF_LIHATA:
 			{
-				int bn =PCB_MAX_BUFFER - 1;
-
-				pcb_buffer_set_number(bn);
-				pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
-				if (pcb_copy_obj_to_buffer(PCB, pcb_buffers[bn].Data, PCB->Data, type, ptr1, ptr2, ptr3) == NULL) {
-					pcb_message(PCB_MSG_ERROR, "Failed to copy target objects to temporary paste buffer\n");
-					goto quit1;
-				}
-
 				f = pcb_fopen(tmp_fn, "w");
 				if (f == NULL) {
 					pcb_message(PCB_MSG_ERROR, "Failed to open temporary file\n");
@@ -269,21 +286,26 @@ TODO("TODO")
 	switch(mth->fmt) {
 		case EEF_LIHATA:
 			{
-				int bn =PCB_MAX_BUFFER - 1;
+				int bn = load_bn;
 
 				pcb_buffer_set_number(bn);
 				pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 
 				if (io_lihata_parse_element(plug_io_lihata_default, pcb_buffers[bn].Data, tmp_fn) != 0) {
 					pcb_message(PCB_MSG_ERROR, "Failed to load the edited footprint. File left at '%s'.\n", tmp_fn);
-					goto quit0;
+					ret = 1;
+					goto quit1;
 				}
 
-				pcb_undo_save_serial();
-				pcb_buffer_copy_to_layout(PCB, 0, 0);
-				pcb_undo_restore_serial();
-				pcb_remove_object(type, ptr1, ptr2, ptr3);
-				pcb_undo_inc_serial();
+				if (del_selected)
+					pcb_remove_selected(pcb_true);
+				if (paste) {
+					pcb_undo_save_serial();
+					pcb_buffer_copy_to_layout(PCB, pastex, pastey);
+					pcb_undo_restore_serial();
+					pcb_remove_object(type, ptr1, ptr2, ptr3);
+					pcb_undo_inc_serial();
+				}
 				ret = 0;
 			}
 		case EEF_max:
@@ -295,6 +317,7 @@ TODO("TODO")
 	quit1:;
 	pcb_tempfile_unlink(tmp_fn);
 	quit0:;
+	pcb_buffer_set_number(obn);
 	PCB_ACT_IRES(ret);
 	return 0;
 }
