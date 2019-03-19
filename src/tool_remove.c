@@ -49,7 +49,7 @@ void pcb_tool_remove_notify_mode(void)
 	pcb_any_obj_t *obj;
 	int type;
 	
-	if ((type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_REMOVE_TYPES | PCB_LOOSE_SUBC, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
+	if ((type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_REMOVE_TYPES | PCB_LOOSE_SUBC | PCB_OBJ_FLOATER, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 		obj = (pcb_any_obj_t *)ptr2;
 		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj)) {
 			pcb_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
