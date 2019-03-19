@@ -367,7 +367,7 @@ int safe_atoi(const char *s)
 /* Runs when things should be detected for the target system */
 int hook_detect_target()
 {
-	int need_gtklibs = 0, want_glib = 0, want_gtk, want_gtk2, want_gtk3, want_gd, want_stroke, need_inl = 0, want_cairo, want_xml2, has_gtk2 = 0, has_gtk3 = 0, want_gl, want_freetype2;
+	int need_gtklibs = 0, want_glib = 0, want_gtk, want_gtk2, want_gtk3, want_gd, want_stroke, need_inl = 0, want_cairo, want_xml2, has_gtk2 = 0, has_gtk3 = 0, want_gl, want_freetype2, want_fuse;
 	const char *host_ansi, *host_ped, *target_ansi, *target_ped, *target_pg, *target_no_pie;
 
 	want_gtk2   = plug_is_enabled("hid_gtk2_gdk") || plug_is_enabled("hid_gtk2_gl");
@@ -378,6 +378,7 @@ int hook_detect_target()
 	want_cairo  = plug_is_enabled("export_bboard") | plug_is_enabled("hid_gtk3_cairo");
 	want_xml2   = plug_is_enabled("io_eagle");
 	want_freetype2 = plug_is_enabled("import_ttf");
+	want_fuse = plug_is_enabled("export_vfs_fuse");
 
 /****** TODO #21: core depends on this plugin (yes, this is a bug) ******/
 	hook_custom_arg("buildin-lib_compat_help", NULL);
@@ -472,6 +473,14 @@ int hook_detect_target()
 				report_repeat("\nERROR: Can not find any getcwd() variant.\n\n");
 				return 1;
 			}
+
+	if (want_fuse) {
+		require("libs/sul/fuse/*", 0, 0);
+		if (!istrue(get("libs/sul/fuse/presents"))) {
+			report_repeat("WARNING: Since there's no fuse found, disabling export_vfs_fuse plugin...\n");
+			hook_custom_arg("disable-export_vfs_fuse", NULL);
+		}
+	}
 
 	if (want_stroke) {
 		require("libs/gui/libstroke/presents", 0, 0);
