@@ -65,9 +65,8 @@ void pcb_tool_polyhole_notify_mode(void)
 			break; /* don't start doing anything if clicket out of polys */
 		}
 
-		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_poly_t *)
-									pcb_crosshair.AttachedObject.Ptr2)) {
-			pcb_message(PCB_MSG_WARNING, "Sorry, the object is locked\n");
+		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_poly_t *)pcb_crosshair.AttachedObject.Ptr2)) {
+			pcb_message(PCB_MSG_WARNING, "Sorry, poly object is locked\n");
 			pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 			break;
 		}

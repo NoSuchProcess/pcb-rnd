@@ -752,7 +752,7 @@ void *pcb_polyop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_poly_t
 	pcb_poly_t *newone;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Polygon)) {
-		pcb_message(PCB_MSG_WARNING, "Sorry, the object is locked\n");
+		pcb_message(PCB_MSG_WARNING, "Sorry, polygon object is locked\n");
 		return NULL;
 	}
 	if (Layer == ctx->move.dst_layer)

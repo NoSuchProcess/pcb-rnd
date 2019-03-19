@@ -198,9 +198,11 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 
 			pcb_hid_get_coords("Click on object to change", &x, &y, 0);
 
-			if ((type = pcb_search_screen(x, y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID)
-				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *) ptr2))
-					pcb_message(PCB_MSG_WARNING, "Sorry, the object is locked\n");
+			if ((type = pcb_search_screen(x, y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
+				pcb_any_obj_t *obj = (pcb_any_obj_t *)ptr2;
+				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj))
+					pcb_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
+			}
 			if (set_object(type, ptr1, ptr2, ptr3))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
@@ -304,9 +306,11 @@ static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		switch (funcid) {
 		case F_Object:
 			{
-				if (type != PCB_OBJ_VOID)
-					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *) ptr2))
-						pcb_message(PCB_MSG_WARNING, "Sorry, the object is locked\n");
+				if (type != PCB_OBJ_VOID) {
+					pcb_any_obj_t *obj = (pcb_any_obj_t *)ptr2;
+					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj))
+						pcb_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
+				}
 				if (tostyle) {
 					if (pcb_chg_obj_1st_size(type, ptr1, ptr2, ptr3, value, absolute))
 						pcb_board_set_changed_flag(pcb_true);
@@ -862,8 +866,9 @@ static fgw_error_t pcb_act_ChangeAngle(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		case F_Object:
 			{
 				if (type != PCB_OBJ_VOID) {
-					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *) ptr2))
-						pcb_message(PCB_MSG_WARNING, "Sorry, the object is locked\n");
+					pcb_any_obj_t *obj = (pcb_any_obj_t *)ptr2;
+					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj))
+						pcb_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
 					else {
 						if (pcb_chg_obj_angle(type, ptr1, ptr2, ptr3, which, value, absolute))
 							pcb_board_set_changed_flag(pcb_true);
@@ -930,8 +935,9 @@ static fgw_error_t pcb_act_ChangeRadius(fgw_arg_t *res, int argc, fgw_arg_t *arg
 		case F_Object:
 			{
 				if (type != PCB_OBJ_VOID) {
-					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *) ptr2))
-						pcb_message(PCB_MSG_WARNING, "Sorry, the object is locked\n");
+					pcb_any_obj_t *obj = (pcb_any_obj_t *)ptr2;
+					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj))
+						pcb_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
 					else {
 						if (pcb_chg_obj_radius(type, ptr1, ptr2, ptr3, which, value, absolute))
 							pcb_board_set_changed_flag(pcb_true);

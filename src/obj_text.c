@@ -649,7 +649,7 @@ void *pcb_textop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_t
 void *pcb_textop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, text)) {
-		pcb_message(PCB_MSG_WARNING, "Sorry, the object is locked\n");
+		pcb_message(PCB_MSG_WARNING, "Sorry, text object is locked\n");
 		return NULL;
 	}
 	if (ctx->move.dst_layer != layer) {
