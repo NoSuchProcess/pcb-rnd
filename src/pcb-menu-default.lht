@@ -520,7 +520,7 @@ ha:{
 		ha:Window {
 			li:submenu {
 				ha:Library        = { a={<Key>w;<Key>l}; action=DoWindows(Library) }
-				ha:Message Log    = { a={<Key>w;<Key>m}; action=LogDialog) }
+				ha:Message Log    = { a={<Key>w;<Key>m}; action=LogDialog() }
 				ha:DRC Check      = { a={<Key>w;<Key>d}; action=DRC() }
 				ha:Netlist        = { a={<Key>w;<Key>n}; action=DoWindows(Netlist) }
 				ha:Command Entry  = { li:a={a={<Key>w;<Key>c}; {<char>:};}  action=Command() }
