@@ -40,8 +40,6 @@
 #include "rtree.h"
 #include "macro.h"
 
-static double drc_lines(pcb_point_t *end, pcb_bool way);
-
 void pcb_line_adjust_attached(void)
 {
 	pcb_attached_line_t *line = &pcb_crosshair.AttachedLine;
