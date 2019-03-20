@@ -1,3 +1,5 @@
+#define _XOPEN_SOURCE 500
+
 #include "config.h"
 #include "conf_core.h"
 
@@ -5,6 +7,10 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <errno.h>
 #include "fuse_includes.h"
 
 #include "build_run.h"
@@ -42,7 +48,7 @@ static void pcb_fuse_list_cb(void *ctx_, const char *path, int isdir)
 	pcb_fuse_list_t *ctx = ctx_;
 	const char *attrs = isdir ? "drwxr-xr-x" : "-rw-r--r--";
 
-	fprintf(logf, "ctx->path=%s path=%s\n", ctx->path, path);
+	fprintf(logf, "list_cb ctx->path=%s path=%s\n", ctx->path, path);
 	fflush(logf);
 }
 
@@ -57,6 +63,21 @@ static int pcb_fuse_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 
 	pcb_vfs_list(PCB, pcb_fuse_list_cb, &ctx);
 	return -1;
+}
+
+static int pcb_fuse_getattr(const char *path, struct stat *stbuf)
+{
+	int isdir;
+	if (pcb_vfs_access(PCB, path, NULL, 0, &isdir) != 0)
+		return -ENOENT;
+
+	memset(stbuf, 0, sizeof(struct stat));
+	stbuf->st_mode = isdir ? S_IFDIR : S_IFREG;
+
+	fprintf(logf, "getattr path=%s\n", path);
+	fflush(logf);
+
+	return 0;
 }
 
 static int pcb_fuse_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
@@ -84,6 +105,7 @@ static void export_vfs_fuse_do_export(pcb_hid_attr_val_t *options)
 	oper.open = pcb_fuse_open;
 	oper.read = pcb_fuse_read;
 	oper.write = pcb_fuse_write;
+	oper.getattr = pcb_fuse_getattr;
 
 	logf = pcb_fopen("LOG.fuse", "w");
 
