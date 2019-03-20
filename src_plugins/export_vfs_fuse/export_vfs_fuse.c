@@ -65,7 +65,8 @@ static void pcb_fuse_list_cb(void *ctx_, const char *path, int isdir)
 		if (direct) {
 			struct stat st;
 			memset(&st, 0, sizeof(struct stat));
-			st.st_mode = isdir ? S_IFDIR : S_IFREG;
+			st.st_mode = (isdir ? S_IFDIR : S_IFREG) | 0755;
+			st.st_nlink = 1 + !!isdir;
 			ctx->filler(ctx->buf, path, &st, 0);
 			fprintf(logf, "list_cb ctx->path=%s path=%s\n", ctx->path, path);
 			fflush(logf);
@@ -117,9 +118,16 @@ static int pcb_fuse_getattr(const char *path, struct stat *stbuf)
 		isdir = 1;
 
 	memset(stbuf, 0, sizeof(struct stat));
-	stbuf->st_mode = isdir ? S_IFDIR : S_IFREG;
+	stbuf->st_mode = (isdir ? S_IFDIR : S_IFREG) | 0755;
+	stbuf->st_nlink = 1 + !!isdir;
 
+	return 0;
+}
 
+static int pcb_fuse_access(const char *path, int mask)
+{
+	fprintf(logf, "access path=%s %x\n", path, mask);
+	fflush(logf);
 	return 0;
 }
 
@@ -155,9 +163,9 @@ static void export_vfs_fuse_do_export(pcb_hid_attr_val_t *options)
 	oper.read = pcb_fuse_read;
 	oper.write = pcb_fuse_write;
 	oper.getattr = pcb_fuse_getattr;
+	oper.access = pcb_fuse_access;
 
 	logf = pcb_fopen("LOG.fuse", "w");
-
 	if (fuse_main(fuse_argc, fuse_argv, &oper, NULL) != 0)
 		fprintf(stderr, "fuse_main() returned error.\n");
 }
