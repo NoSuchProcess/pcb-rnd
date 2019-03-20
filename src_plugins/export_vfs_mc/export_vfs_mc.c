@@ -63,7 +63,7 @@ static void mc_copyout(const char *path)
 	gds_t res;
 
 	gds_init(&res);
-	if (pcb_vfs_access(PCB, path, &res, 0) == 0) {
+	if (pcb_vfs_access(PCB, path, &res, 0, NULL) == 0) {
 		printf("%s", res.array);
 	}
 	else {
@@ -93,7 +93,7 @@ static void mc_copyin(const char *path)
 		inp.array[inp.used] = '\0';
 	}
 
-	if (pcb_vfs_access(PCB, path, &inp, 1) != 0) {
+	if (pcb_vfs_access(PCB, path, &inp, 1, NULL) != 0) {
 		fprintf(stderr, "Can not access that field for write\n");
 		exit(1);
 	}

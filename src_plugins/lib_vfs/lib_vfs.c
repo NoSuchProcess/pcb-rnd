@@ -54,11 +54,19 @@ static void vfs_list_props(gds_t *path, pcb_propedit_t *pctx, pcb_vfs_list_cb cb
 	path->used = orig_used;
 }
 
-static int vfs_access_prop(pcb_propedit_t *pctx, const char *path, gds_t *data, int wr)
+static int vfs_access_prop(pcb_propedit_t *pctx, const char *path, gds_t *data, int wr, int *isdir)
 {
 	pcb_props_t *pt;
 	pcb_propval_t *pv;
 	htprop_entry_t *e;
+
+	if (*path == '\0') {
+		if (isdir != NULL)
+			*isdir = 1;
+		if (wr == 0)
+			return 0;
+		return -1;
+	}
 
 	pcb_propsel_map_core(pctx);
 	pt = htsp_get(&pctx->props, path);
@@ -76,10 +84,13 @@ static int vfs_access_prop(pcb_propedit_t *pctx, const char *path, gds_t *data, 
 
 	e = htprop_first(&pt->values);
 	pv = &e->key;
-	free(data->array);
-	data->array = pcb_propsel_printval(pt->type, pv);
-	data->used = data->alloced = strlen(data->array);
-	gds_append(data, '\n');
+
+	if (data != NULL) {
+		free(data->array);
+		data->array = pcb_propsel_printval(pt->type, pv);
+		data->used = data->alloced = strlen(data->array);
+		gds_append(data, '\n');
+	}
 
 	return 0;
 }
@@ -113,7 +124,7 @@ static void vfs_list_obj(pcb_board_t *pcb, gds_t *path, pcb_any_obj_t *obj, pcb_
 	pcb_idpath_destroy(idp);
 }
 
-static int vfs_access_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, const char *path, gds_t *data, int wr)
+static int vfs_access_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, const char *path, gds_t *data, int wr, int *isdir)
 {
 	pcb_propedit_t pctx;
 	pcb_idpath_t *idp;
@@ -123,9 +134,17 @@ static int vfs_access_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, const char *path
 	if (idp == NULL)
 		return -1;
 
+	if (*path == '\0') {
+		if (isdir != NULL)
+			*isdir = 1;
+		if (wr == 0)
+			return 0;
+		return -1;
+	}
+
 	pcb_props_init(&pctx, pcb);
 	pcb_idpath_list_append(&pctx.objs, idp);
-	res = vfs_access_prop(&pctx, path, data, wr);
+	res = vfs_access_prop(&pctx, path, data, wr, isdir);
 	pcb_props_uninit(&pctx);
 	pcb_idpath_destroy(idp);
 
@@ -176,7 +195,7 @@ static void vfs_list_layers(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 	gds_uninit(&path);
 }
 
-static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *data, int wr)
+static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *data, int wr, int *isdir)
 {
 	pcb_propedit_t pctx;
 	char *end;
@@ -190,7 +209,7 @@ static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *data, int
 	if (path[1] == '/') { /* direct layer access */
 		pcb_props_init(&pctx, pcb);
 		vtl0_append(&pctx.layers, lid);
-		res = vfs_access_prop(&pctx, path, data, wr);
+		res = vfs_access_prop(&pctx, path, data, wr, isdir);
 		pcb_props_uninit(&pctx);
 	}
 	else {
@@ -199,27 +218,30 @@ static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *data, int
 		pcb_any_obj_t *obj = NULL;
 		pcb_objtype_t ty;
 
-		if (*end != '/')
+		if ((*end != '/') && (*end != '\0'))
 			return -1;
 
-		if (strncmp(path, "line/", 5) == 0)
+		if ((strncmp(path, "line/", 5) == 0) || (strcmp(path, "line") == 0))
 			ty = PCB_OBJ_LINE;
-		else if (strncmp(path, "poly/", 5) == 0)
+		else if ((strncmp(path, "poly/", 5) == 0) || (strcmp(path, "poly") == 0))
 			ty = PCB_OBJ_POLY;
-		else if (strncmp(path, "text/", 5) == 0)
+		else if ((strncmp(path, "text/", 5) == 0) || (strcmp(path, "text") == 0))
 			ty = PCB_OBJ_TEXT;
-		else if (strncmp(path, "arc/", 4) == 0)
+		else if ((strncmp(path, "arc/", 4) == 0) || (strcmp(path, "arc") == 0))
 			ty = PCB_OBJ_ARC;
 		else
 			return -1;
 
-		path=end+1;
+		if (*end == '\0')
+			path = end;
+		else
+			path=end+1;
 		obj = htip_get(&pcb->Data->id2obj, oid);
 		if ((obj == NULL) || (obj->type != ty))
 			return -1;
 		if ((obj->parent_type != PCB_PARENT_LAYER) || (obj->parent.layer != pcb_get_layer(pcb->Data, lid)))
 			return -1;
-		res = vfs_access_obj(pcb, obj, path, data, wr);
+		res = vfs_access_obj(pcb, obj, path, data, wr, isdir);
 	}
 
 	return res;
@@ -251,20 +273,24 @@ static void vfs_list_layergrps(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 	gds_uninit(&path);
 }
 
-static int vfs_access_layergrp(pcb_board_t *pcb, const char *path, gds_t *data, int wr)
+static int vfs_access_layergrp(pcb_board_t *pcb, const char *path, gds_t *data, int wr, int *isdir)
 {
 	pcb_propedit_t pctx;
 	char *end;
 	pcb_layergrp_id_t gid = strtol(path, &end, 10);
 	int res;
 
-	if (*end != '/')
+	if ((*end != '/') && (*end != '\0'))
 		return -1;
-	path=end+1;
+
+	if (*end == '\0')
+		path = end;
+	else
+		path=end+1;
 
 	pcb_props_init(&pctx, pcb);
 	vtl0_append(&pctx.layergrps, gid);
-	res = vfs_access_prop(&pctx, path, data, wr);
+	res = vfs_access_prop(&pctx, path, data, wr, isdir);
 	pcb_props_uninit(&pctx);
 
 	return res;
@@ -283,13 +309,21 @@ int pcb_vfs_list(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 
 
 
-int pcb_vfs_access(pcb_board_t *pcb, const char *path, gds_t *data, int wr)
+int pcb_vfs_access(pcb_board_t *pcb, const char *path, gds_t *data, int wr, int *isdir)
 {
+	if ((strcmp(path, "data") == 0) || (strcmp(path, "data/layers") == 0)) {
+		if (isdir != NULL)
+			*isdir = 1;
+	}
 	if (strncmp(path, "data/layers/", 12) == 0)
-		return vfs_access_layer(pcb, path+12, data, wr);
+		return vfs_access_layer(pcb, path+12, data, wr, isdir);
 
+	if (strcmp(path, "layer_groups") == 0) {
+		if (isdir != NULL)
+			*isdir = 1;
+	}
 	if (strncmp(path, "layer_groups/", 13) == 0)
-		return vfs_access_layergrp(pcb, path+13, data, wr);
+		return vfs_access_layergrp(pcb, path+13, data, wr, isdir);
 
 	return -1;
 }
