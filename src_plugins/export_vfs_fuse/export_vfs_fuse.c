@@ -102,6 +102,9 @@ static int export_vfs_fuse_parse_arguments(int *argc, char ***argv)
 	fuse_ret_argv = malloc(sizeof(char *) * (*argc+1));
 	fuse_ret_argc = 0;
 
+	arg_append(fuse_argc, fuse_argv, "pcb-rnd"); /* program name */
+	arg_append(fuse_argc, fuse_argv, "?");       /* make room for the mount point */
+
 	for(n = 0; n < in_argc; n++) {
 		if (strcmp(in_argv[n], "-o") == 0)   arg_copy_to_fuse(2);
 		else if (*in_argv[n] == '-')         arg_copy_to_pcb(2);
@@ -115,8 +118,18 @@ static int export_vfs_fuse_parse_arguments(int *argc, char ***argv)
 		}
 	}
 
+	if (board == NULL) {
+		fprintf(stderr, "export_vfs_fuse: board name is required\n");
+		exit(1);
+	}
+
+	if (dir == NULL) {
+		fprintf(stderr, "export_vfs_fuse: mount point is required\n");
+		exit(1);
+	}
+
 	arg_append(fuse_ret_argc, fuse_ret_argv, board);
-	arg_append(fuse_argc, fuse_argv, dir);
+	fuse_argv[1] = dir;
 
 	fuse_argv[fuse_argc] = NULL;
 	fuse_ret_argv[fuse_ret_argc] = NULL;
