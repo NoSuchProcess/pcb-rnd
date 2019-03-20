@@ -46,52 +46,101 @@ typedef struct {
 static void pcb_fuse_list_cb(void *ctx_, const char *path, int isdir)
 {
 	pcb_fuse_list_t *ctx = ctx_;
+	int child, direct;
 	const char *attrs = isdir ? "drwxr-xr-x" : "-rw-r--r--";
 
-	fprintf(logf, "list_cb ctx->path=%s path=%s\n", ctx->path, path);
-	fflush(logf);
+	if (ctx->pathlen > 0) {
+		child = memcmp(path, ctx->path, ctx->pathlen) == 0;
+		path += ctx->pathlen;
+		if (*path == '/')
+			path++;
+		else if (*path != '\0')
+			child = 0;
+	}
+	else
+		child = 1;
+
+	if ((child) && (*path != '\0')) {
+		direct = (strchr(path, '/') == NULL);
+		if (direct) {
+			struct stat st;
+			memset(&st, 0, sizeof(struct stat));
+			st.st_mode = isdir ? S_IFDIR : S_IFREG;
+			ctx->filler(ctx->buf, path, &st, 0);
+			fprintf(logf, "list_cb ctx->path=%s path=%s\n", ctx->path, path);
+			fflush(logf);
+		}
+	}
 }
 
 static int pcb_fuse_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi)
 {
 	pcb_fuse_list_t ctx;
 
+	if (*path == '/')
+		path++;
+
 	ctx.path = path;
 	ctx.buf = buf;
 	ctx.filler = filler;
 	ctx.pathlen = strlen(path);
 
+	fprintf(logf, "LIST path=%s {\n", path);
+	fflush(logf);
+
+	filler(buf, ".", NULL, 0);
+	filler(buf, "..", NULL, 0);
 	pcb_vfs_list(PCB, pcb_fuse_list_cb, &ctx);
-	return -1;
+
+	fprintf(logf, "}\n", path);
+	fflush(logf);
+	return 0;
 }
 
 static int pcb_fuse_getattr(const char *path, struct stat *stbuf)
 {
 	int isdir;
-	if (pcb_vfs_access(PCB, path, NULL, 0, &isdir) != 0)
-		return -ENOENT;
+
+	fprintf(logf, "getattr path=%s\n", path);
+	fflush(logf);
+
+	if (strcmp(path, "/") != 0) {
+		if (*path == '/')
+			path++;
+		if (pcb_vfs_access(PCB, path, NULL, 0, &isdir) != 0) {
+			fprintf(logf, "   ->   path=%s ENOENT\n", path);
+			fflush(logf);
+			return -ENOENT;
+		}
+	}
+	else
+		isdir = 1;
 
 	memset(stbuf, 0, sizeof(struct stat));
 	stbuf->st_mode = isdir ? S_IFDIR : S_IFREG;
 
-	fprintf(logf, "getattr path=%s\n", path);
-	fflush(logf);
 
 	return 0;
 }
 
 static int pcb_fuse_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
 {
+	fprintf(logf, "read path=%s\n", path);
+	fflush(logf);
 	return -1;
 }
 
 static int pcb_fuse_write(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
 {
+	fprintf(logf, "write path=%s\n", path);
+	fflush(logf);
 	return -1;
 }
 
 static int pcb_fuse_open(const char *path, struct fuse_file_info *fi)
 {
+	fprintf(logf, "open path=%s\n", path);
+	fflush(logf);
 	return -1;
 }
 
