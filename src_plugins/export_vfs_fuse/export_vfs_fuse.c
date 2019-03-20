@@ -28,13 +28,40 @@ static pcb_hid_attribute_t *export_vfs_fuse_get_export_options(int *n)
 	return 0;
 }
 
+
+static int pcb_fuse_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi)
+{
+	return -1;
+}
+
+static int pcb_fuse_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
+{
+	return -1;
+}
+
+static int pcb_fuse_write(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
+{
+	return -1;
+}
+
+static int pcb_fuse_open(const char *path, struct fuse_file_info *fi)
+{
+	return -1;
+}
+
 static char **fuse_argv;
 static int fuse_argc = 0;
 static void export_vfs_fuse_do_export(pcb_hid_attr_val_t *options)
 {
-	int n;
-	for(n = 0; n < fuse_argc; n++)
-		printf("fuse arg [%d] '%s'\n", n, fuse_argv[n]);
+	static struct fuse_operations oper;
+
+	oper.readdir = pcb_fuse_readdir;
+	oper.open = pcb_fuse_open;
+	oper.read = pcb_fuse_read;
+	oper.write = pcb_fuse_write;
+
+	if (fuse_main(fuse_argc, fuse_argv, &oper, NULL) != 0)
+		fprintf(stderr, "fuse_main() returned error.\n");
 }
 
 static int export_vfs_fuse_usage(const char *topic)
