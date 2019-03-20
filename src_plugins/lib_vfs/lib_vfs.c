@@ -314,6 +314,8 @@ int pcb_vfs_access(pcb_board_t *pcb, const char *path, gds_t *data, int wr, int 
 	if ((strcmp(path, "data") == 0) || (strcmp(path, "data/layers") == 0)) {
 		if (isdir != NULL)
 			*isdir = 1;
+		if (!wr)
+			return 0;
 	}
 	if (strncmp(path, "data/layers/", 12) == 0)
 		return vfs_access_layer(pcb, path+12, data, wr, isdir);
@@ -321,6 +323,8 @@ int pcb_vfs_access(pcb_board_t *pcb, const char *path, gds_t *data, int wr, int 
 	if (strcmp(path, "layer_groups") == 0) {
 		if (isdir != NULL)
 			*isdir = 1;
+		if (!wr)
+			return 0;
 	}
 	if (strncmp(path, "layer_groups/", 13) == 0)
 		return vfs_access_layergrp(pcb, path+13, data, wr, isdir);
