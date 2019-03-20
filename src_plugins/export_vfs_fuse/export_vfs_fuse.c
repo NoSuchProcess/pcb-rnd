@@ -5,6 +5,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
+#include "fuse_includes.h"
 
 #include "build_run.h"
 #include "board.h"

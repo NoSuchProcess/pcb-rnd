@@ -1,0 +1,12 @@
+if ?libs/sul/fuse/presents
+then
+put /local/tmp ?libs/sul/fuse/includes
+gsub /local/tmp {\\\\n *} {\n}
+print [@
+@/local/tmp@
+@]
+else
+print [@
+#error Fuse is not configured, can not compile export_vfs_fuse
+@]
+end

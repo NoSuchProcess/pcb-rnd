@@ -906,6 +906,8 @@ int hook_generate()
 
 	printf("Generating opengl.h (%d)\n", generr |= tmpasm("../src_plugins/lib_hid_gl", "opengl.h.in", "opengl.h"));
 
+	printf("Generating fuse_includes.h (%d)\n", generr |= tmpasm("../src_plugins/export_vfs_fuse", "fuse_includes.h.in", "fuse_includes.h"));
+
 	generr |= pup_hook_generate("../src_3rd/puplug");
 
 	if (!istrue(get("libs/script/fungw/presents")))
