@@ -13,6 +13,7 @@
 #include "error.h"
 #include "pcb-printf.h"
 #include "plugins.h"
+#include "safe_fs.h"
 
 #include "hid.h"
 #include "hid_attrib.h"
@@ -21,16 +22,40 @@
 
 #include "../src_plugins/lib_vfs/lib_vfs.h"
 
-const char *export_vfs_fuse_cookie = "export_vfs_fuse HID";
+static const char *export_vfs_fuse_cookie = "export_vfs_fuse HID";
+static FILE *logf;
 
 static pcb_hid_attribute_t *export_vfs_fuse_get_export_options(int *n)
 {
 	return 0;
 }
 
+typedef struct {
+	const char *path;
+	void *buf;
+	fuse_fill_dir_t filler;
+	int pathlen;
+} pcb_fuse_list_t;
+
+static void pcb_fuse_list_cb(void *ctx_, const char *path, int isdir)
+{
+	pcb_fuse_list_t *ctx = ctx_;
+	const char *attrs = isdir ? "drwxr-xr-x" : "-rw-r--r--";
+
+	fprintf(logf, "ctx->path=%s path=%s\n", ctx->path, path);
+	fflush(logf);
+}
 
 static int pcb_fuse_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi)
 {
+	pcb_fuse_list_t ctx;
+
+	ctx.path = path;
+	ctx.buf = buf;
+	ctx.filler = filler;
+	ctx.pathlen = strlen(path);
+
+	pcb_vfs_list(PCB, pcb_fuse_list_cb, &ctx);
 	return -1;
 }
 
@@ -59,6 +84,8 @@ static void export_vfs_fuse_do_export(pcb_hid_attr_val_t *options)
 	oper.open = pcb_fuse_open;
 	oper.read = pcb_fuse_read;
 	oper.write = pcb_fuse_write;
+
+	logf = pcb_fopen("LOG.fuse", "w");
 
 	if (fuse_main(fuse_argc, fuse_argv, &oper, NULL) != 0)
 		fprintf(stderr, "fuse_main() returned error.\n");
