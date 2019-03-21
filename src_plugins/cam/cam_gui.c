@@ -26,6 +26,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include <genht/hash.h>
 #include "hid_dad.h"
 
 typedef struct {
@@ -51,19 +52,33 @@ static int cam_gui(const char *arg)
 		PCB_DAD_BEGIN_HPANE(ctx->dlg);
 
 			PCB_DAD_BEGIN_VBOX(ctx->dlg); /* left */
-			PCB_DAD_END(ctx->dlg);
-
-			PCB_DAD_BEGIN_VBOX(ctx->dlg); /* right */
-				PCB_DAD_BEGIN_VPANE(ctx->dlg);
-					PCB_DAD_BEGIN_VBOX(ctx->dlg); /* top */
-					PCB_DAD_END(ctx->dlg);
-					PCB_DAD_BEGIN_VBOX(ctx->dlg); /* bottom */
-					PCB_DAD_END(ctx->dlg);
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_TREE(ctx->dlg, 1, 0, NULL);
+					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+				PCB_DAD_BEGIN_HBOX(ctx->dlg); /* command section */
+					PCB_DAD_STRING(ctx->dlg);
+					PCB_DAD_BUTTON(ctx->dlg, "export!");
 				PCB_DAD_END(ctx->dlg);
 			PCB_DAD_END(ctx->dlg);
 
+			PCB_DAD_BEGIN_VBOX(ctx->dlg); /* right */
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_BEGIN_VPANE(ctx->dlg);
+					PCB_DAD_BEGIN_VBOX(ctx->dlg); /* top */
+						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+						PCB_DAD_TEXT(ctx->dlg, ctx);
+						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+					PCB_DAD_END(ctx->dlg);
+					PCB_DAD_BEGIN_VBOX(ctx->dlg); /* bottom */
+						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+						PCB_DAD_LABEL(ctx->dlg, "TODO");
+					PCB_DAD_END(ctx->dlg);
+				PCB_DAD_END(ctx->dlg);
+				PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
+			PCB_DAD_END(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
-		PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
+
+
 	PCB_DAD_END(ctx->dlg);
 
 	PCB_DAD_NEW("cam", ctx->dlg, "CAM export", ctx, pcb_false, cam_close_cb);
