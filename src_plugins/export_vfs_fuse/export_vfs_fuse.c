@@ -29,7 +29,7 @@
 #include "../src_plugins/lib_vfs/lib_vfs.h"
 
 static const char *export_vfs_fuse_cookie = "export_vfs_fuse HID";
-static FILE *logf;
+static FILE *flog;
 
 static pcb_hid_attribute_t *export_vfs_fuse_get_export_options(int *n)
 {
@@ -68,8 +68,8 @@ static void pcb_fuse_list_cb(void *ctx_, const char *path, int isdir)
 			st.st_mode = (isdir ? S_IFDIR : S_IFREG) | 0755;
 			st.st_nlink = 1 + !!isdir;
 			ctx->filler(ctx->buf, path, &st, 0);
-			fprintf(logf, "list_cb ctx->path=%s path=%s\n", ctx->path, path);
-			fflush(logf);
+			fprintf(flog, "list_cb ctx->path=%s path=%s\n", ctx->path, path);
+			fflush(flog);
 		}
 	}
 }
@@ -86,15 +86,15 @@ static int pcb_fuse_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 	ctx.filler = filler;
 	ctx.pathlen = strlen(path);
 
-	fprintf(logf, "LIST path=%s {\n", path);
-	fflush(logf);
+	fprintf(flog, "LIST path=%s {\n", path);
+	fflush(flog);
 
 	filler(buf, ".", NULL, 0);
 	filler(buf, "..", NULL, 0);
 	pcb_vfs_list(PCB, pcb_fuse_list_cb, &ctx);
 
-	fprintf(logf, "}\n", path);
-	fflush(logf);
+	fprintf(flog, "}\n", path);
+	fflush(flog);
 	return 0;
 }
 
@@ -102,15 +102,15 @@ static int pcb_fuse_getattr(const char *path, struct stat *stbuf)
 {
 	int isdir;
 
-	fprintf(logf, "getattr path=%s\n", path);
-	fflush(logf);
+	fprintf(flog, "getattr path=%s\n", path);
+	fflush(flog);
 
 	if (strcmp(path, "/") != 0) {
 		if (*path == '/')
 			path++;
 		if (pcb_vfs_access(PCB, path, NULL, 0, &isdir) != 0) {
-			fprintf(logf, "   ->   path=%s ENOENT\n", path);
-			fflush(logf);
+			fprintf(flog, "   ->   path=%s ENOENT\n", path);
+			fflush(flog);
 			return -ENOENT;
 		}
 	}
@@ -126,29 +126,29 @@ static int pcb_fuse_getattr(const char *path, struct stat *stbuf)
 
 static int pcb_fuse_access(const char *path, int mask)
 {
-	fprintf(logf, "access path=%s %x\n", path, mask);
-	fflush(logf);
+	fprintf(flog, "access path=%s %x\n", path, mask);
+	fflush(flog);
 	return 0;
 }
 
 static int pcb_fuse_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
 {
-	fprintf(logf, "read path=%s\n", path);
-	fflush(logf);
+	fprintf(flog, "read path=%s\n", path);
+	fflush(flog);
 	return -1;
 }
 
 static int pcb_fuse_write(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
 {
-	fprintf(logf, "write path=%s\n", path);
-	fflush(logf);
+	fprintf(flog, "write path=%s\n", path);
+	fflush(flog);
 	return -1;
 }
 
 static int pcb_fuse_open(const char *path, struct fuse_file_info *fi)
 {
-	fprintf(logf, "open path=%s\n", path);
-	fflush(logf);
+	fprintf(flog, "open path=%s\n", path);
+	fflush(flog);
 	return -1;
 }
 
@@ -165,7 +165,7 @@ static void export_vfs_fuse_do_export(pcb_hid_attr_val_t *options)
 	oper.getattr = pcb_fuse_getattr;
 	oper.access = pcb_fuse_access;
 
-	logf = pcb_fopen("LOG.fuse", "w");
+	flog = pcb_fopen("LOG.fuse", "w");
 	if (fuse_main(fuse_argc, fuse_argv, &oper, NULL) != 0)
 		fprintf(stderr, "fuse_main() returned error.\n");
 }
