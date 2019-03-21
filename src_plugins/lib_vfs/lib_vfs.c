@@ -111,7 +111,9 @@ static void vfs_list_obj(pcb_board_t *pcb, gds_t *path, pcb_any_obj_t *obj, pcb_
 	pcb_propsel_map_core(&pctx);
 
 	orig_used = path->used;
-	pcb_append_printf(path, "/%s/%ld/", pcb_obj_type_name(obj->type), obj->ID);
+	pcb_append_printf(path, "/%s/%ld", pcb_obj_type_name(obj->type), obj->ID);
+	cb(ctx, path->array, 1);
+	gds_append(path, '/');
 	ou = path->used;
 	for(e = htsp_first(&pctx.props); e != NULL; e = htsp_next(&pctx.props, e)) {
 		path->used = ou;
