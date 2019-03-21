@@ -216,9 +216,7 @@ static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *data, int
 		pcb_layer_t *ly = pcb_get_layer(pcb->Data, lid);
 		if (ly == NULL)
 			return -1;
-		if (isdir != NULL)
-			*isdir = 1;
-		return 0;
+		goto ret_dir;
 	}
 
 	if (*end != '/')
@@ -233,9 +231,14 @@ static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *data, int
 	}
 	else {
 		char *sep = strchr(path, '/');
-		long oid = strtol(sep+1, &end, 10);
+		long oid;
 		pcb_any_obj_t *obj = NULL;
 		pcb_objtype_t ty;
+
+		if (sep == NULL)
+			goto ret_dir;
+
+		sep = strtol(sep+1, &end, 10);
 
 		if ((*end != '/') && (*end != '\0'))
 			return -1;
@@ -264,6 +267,11 @@ static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *data, int
 	}
 
 	return res;
+
+	ret_dir:;
+	if (isdir != NULL)
+		*isdir = 1;
+	return 0;
 }
 
 static void vfs_list_layergrps(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
