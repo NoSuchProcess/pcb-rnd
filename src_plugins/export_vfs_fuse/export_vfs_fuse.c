@@ -1,5 +1,7 @@
 #define _XOPEN_SOURCE 500
 
+#include "fuse_includes.h"
+
 #include "config.h"
 #include "conf_core.h"
 
@@ -11,7 +13,6 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <errno.h>
-#include "fuse_includes.h"
 
 #include "build_run.h"
 #include "board.h"
