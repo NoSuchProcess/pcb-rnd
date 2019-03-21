@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *
  *  cam export jobs plugin
- *  pcb-rnd Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  pcb-rnd Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -62,10 +62,10 @@ typedef struct {
 	gds_t tmp;
 } cam_ctx_t;
 
+#include "cam_gui.c"
+
 static void cam_init_inst(cam_ctx_t *ctx)
 {
-
-
 	memset(ctx, 0, sizeof(cam_ctx_t));
 	ctx->old_base = pcb_cam_base;
 
@@ -280,16 +280,16 @@ static int cam_parse_opt(cam_ctx_t *ctx, const char *opt)
 	return 1;
 }
 
-static const char pcb_acts_cam[] = "cam(exec, script, [options])\ncam(call, jobname, [options])";
+static const char pcb_acts_cam[] = "cam(exec, script, [options])\ncam(call, jobname, [options])\ncam([gui])";
 static const char pcb_acth_cam[] = "Export jobs for feeding cam processes";
 static fgw_error_t pcb_act_cam(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	cam_ctx_t ctx;
-	const char *cmd, *arg, *opt;
+	const char *cmd = "gui", *arg = NULL, *opt;
 	int n, rs = -1;
 
-	PCB_ACT_CONVARG(1, FGW_STR, cam, cmd = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_STR, cam, arg = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, cam, cmd = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, cam, arg = argv[2].val.str);
 
 	cam_init_inst(&ctx);
 	for(n = 3; n < argc; n++) {
@@ -302,10 +302,21 @@ static fgw_error_t pcb_act_cam(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	if (pcb_strcasecmp(cmd, "exec") == 0)
-		rs = cam_exec(arg, cam_exec_inst, &ctx);
-	else if (pcb_strcasecmp(cmd, "call") == 0)
-		rs = cam_call(arg, &ctx);
+	if (pcb_strcasecmp(cmd, "gui") == 0) {
+		rs = cam_gui(arg);
+	}
+	else {
+		if (arg == NULL) {
+			pcb_message(PCB_MSG_ERROR, "cam: need one more argument for '%s'\n", cmd);
+			cam_uninit_inst(&ctx);
+			PCB_ACT_IRES(1);
+			return 0;
+		}
+		if (pcb_strcasecmp(cmd, "exec") == 0)
+			rs = cam_exec(arg, cam_exec_inst, &ctx);
+		else if (pcb_strcasecmp(cmd, "call") == 0)
+			rs = cam_call(arg, &ctx);
+	}
 
 	cam_uninit_inst(&ctx);
 	PCB_ACT_IRES(rs);
