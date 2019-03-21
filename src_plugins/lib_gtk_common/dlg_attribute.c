@@ -417,7 +417,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				break;
 
 			case PCB_HATT_INTEGER:
-				hbox = gtkc_hbox_new(FALSE, 4);
+				ctx->wltop[j] = hbox = gtkc_hbox_new(FALSE, 4);
 				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
 
 				/*
@@ -434,7 +434,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				break;
 
 			case PCB_HATT_COORD:
-				hbox = gtkc_hbox_new(FALSE, 4);
+				ctx->wltop[j] = hbox = gtkc_hbox_new(FALSE, 4);
 				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
 
 				entry = pcb_gtk_coord_entry_new(ctx->attrs[j].min_val, ctx->attrs[j].max_val,
@@ -450,7 +450,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				break;
 
 			case PCB_HATT_REAL:
-				hbox = gtkc_hbox_new(FALSE, 4);
+				ctx->wltop[j] = hbox = gtkc_hbox_new(FALSE, 4);
 				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
 
 				/*
@@ -468,7 +468,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				break;
 
 			case PCB_HATT_STRING:
-				hbox = gtkc_hbox_new(FALSE, 4);
+				ctx->wltop[j] = hbox = gtkc_hbox_new(FALSE, 4);
 				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
 
 				entry = gtk_entry_new();
