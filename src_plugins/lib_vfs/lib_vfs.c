@@ -202,6 +202,15 @@ static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *data, int
 	pcb_layer_id_t lid = strtol(path, &end, 10);
 	int res;
 
+	if (*end == '\0') {
+		pcb_layer_t *ly = pcb_get_layer(pcb->Data, lid);
+		if (ly == NULL)
+			return -1;
+		if (isdir != NULL)
+			*isdir = 1;
+		return 0;
+	}
+
 	if (*end != '/')
 		return -1;
 	path=end+1;
