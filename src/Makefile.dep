@@ -269,7 +269,8 @@
  ../src_plugins/cam/cam_conf.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf.h compat_misc.h safe_fs.h ../src_plugins/cam/conf_internal.c \
- dolists.h ../src_plugins/cam/cam_conf_fields.h
+ ../src_plugins/cam/cam_gui.c hid_dad.h compat_misc.h dolists.h \
+ ../src_plugins/cam/cam_conf_fields.h
 ../src_plugins/ddraft/centgeo.o: ../src_plugins/ddraft/centgeo.c \
  ../config.h ../src_plugins/ddraft/centgeo.h obj_line.h \
  ../src_3rd/genlist/gendlist.h obj_common.h flag.h globalconst.h attrib.h \
