@@ -67,7 +67,7 @@ typedef enum pcb_hids_e {
 	((type == PCB_HATT_STRING) || (type == PCB_HATT_PATH))
 
 /* alternative field names in struct pcb_hid_attribute_s */
-#define pcb_hatt_flags       max_val
+#define pcb_hatt_flags       hatt_flags
 #define pcb_hatt_table_cols  min_val
 
 typedef enum {
@@ -203,6 +203,7 @@ struct pcb_hid_attribute_s {
 	void (*change_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr); /* called upon value change by the user */
 	void (*enter_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);  /* called upon the user pressed enter in a widget that handles keys */
 	void *user_data; /* ignored; the caller is free to use it */
+	unsigned int hatt_flags;
 };
 
 extern void pcb_hid_register_attributes(pcb_hid_attribute_t *, int, const char *cookie, int copy);
