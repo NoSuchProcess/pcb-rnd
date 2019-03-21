@@ -70,7 +70,7 @@ static void cam_init_inst(cam_ctx_t *ctx)
 	ctx->old_base = pcb_cam_base;
 
 	if (PCB->Filename != NULL) {
-		char *end = strchr(PCB->Filename, PCB_DIR_SEPARATOR_C);
+		char *end = strrchr(PCB->Filename, PCB_DIR_SEPARATOR_C);
 		if (end != NULL)
 			pcb_cam_base = pcb_strdup(end+1);
 		else
