@@ -75,6 +75,22 @@ static void cam_gui_jobs2dlg(cam_dlg_t *ctx)
 	}
 }
 
+static void cam_gui_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
+{
+	cam_dlg_t *ctx = caller_data;
+	pcb_hid_attribute_t *attr;
+	pcb_hid_tree_t *tree;
+	const char *text;
+
+	attr = &ctx->dlg[ctx->wjobs];
+	tree = (pcb_hid_tree_t *)attr->enumerations;
+	text = attr_inp->default_val.str_value;
+
+	pcb_dad_tree_hide_all(tree, &tree->rows, 1);
+	pcb_dad_tree_unhide_filter(tree, &tree->rows, 0, text);
+	pcb_dad_tree_update_hide(attr);
+}
+
 
 static void cam_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
@@ -99,6 +115,8 @@ static int cam_gui(const char *arg)
 					ctx->wjobs = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_BEGIN_HBOX(ctx->dlg); /* command section */
 					PCB_DAD_STRING(ctx->dlg);
+						PCB_DAD_HELP(ctx->dlg, "Filter text:\nlist jobs with matching name only");
+						PCB_DAD_CHANGE_CB(ctx->dlg, cam_gui_filter_cb);
 					PCB_DAD_BUTTON(ctx->dlg, "export!");
 				PCB_DAD_END(ctx->dlg);
 			PCB_DAD_END(ctx->dlg);
