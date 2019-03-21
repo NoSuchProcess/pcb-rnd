@@ -33,13 +33,11 @@ typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 } cam_dlg_t;
 
-cam_dlg_t foo_ctx;
-
 static void cam_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	cam_dlg_t *ctx = caller_data;
 	PCB_DAD_FREE(ctx->dlg);
-	memset(ctx, 0, sizeof(cam_dlg_t)); /* reset all states to the initial - includes ctx->active = 0; */
+	free(ctx);
 }
 
 static int cam_gui(const char *arg)
@@ -77,8 +75,6 @@ static int cam_gui(const char *arg)
 				PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 			PCB_DAD_END(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
-
-
 	PCB_DAD_END(ctx->dlg);
 
 	PCB_DAD_NEW("cam", ctx->dlg, "CAM export", ctx, pcb_false, cam_close_cb);
