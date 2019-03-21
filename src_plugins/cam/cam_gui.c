@@ -28,10 +28,53 @@
 
 #include <genht/hash.h>
 #include "hid_dad.h"
+#include "hid_dad_tree.h"
 
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
+	int wjobs;
 } cam_dlg_t;
+
+static void cam_gui_jobs2dlg(cam_dlg_t *ctx)
+{
+	pcb_hid_attribute_t *attr;
+	pcb_hid_tree_t *tree;
+	pcb_hid_row_t *r;
+	char *cell[2], *cursor_path = NULL;
+	conf_native_t *cn;
+
+	attr = &ctx->dlg[ctx->wjobs];
+	tree = (pcb_hid_tree_t *)attr->enumerations;
+
+	/* remember cursor */
+	r = pcb_dad_tree_get_selected(attr);
+	if (r != NULL)
+		cursor_path = pcb_strdup(r->cell[0]);
+
+	/* remove existing items */
+	pcb_dad_tree_clear(tree);
+
+	/* add all new items */
+	cn = conf_get_field("plugins/cam/jobs");
+	if (cn != NULL) {
+		conf_listitem_t *item;
+		int idx;
+
+		cell[1] = NULL;
+		conf_loop_list(cn->val.list, item, idx) {
+			cell[0] = pcb_strdup(item->name);
+			pcb_dad_tree_append(attr, NULL, cell);
+		}
+	}
+
+	/* restore cursor */
+	if (cursor_path != NULL) {
+		pcb_hid_attr_val_t hv;
+		hv.str_value = cursor_path;
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wjobs, &hv);
+	}
+}
+
 
 static void cam_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
@@ -53,6 +96,7 @@ static int cam_gui(const char *arg)
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 				PCB_DAD_TREE(ctx->dlg, 1, 0, NULL);
 					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+					ctx->wjobs = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_BEGIN_HBOX(ctx->dlg); /* command section */
 					PCB_DAD_STRING(ctx->dlg);
 					PCB_DAD_BUTTON(ctx->dlg, "export!");
@@ -78,6 +122,8 @@ static int cam_gui(const char *arg)
 	PCB_DAD_END(ctx->dlg);
 
 	PCB_DAD_NEW("cam", ctx->dlg, "CAM export", ctx, pcb_false, cam_close_cb);
+
+	cam_gui_jobs2dlg(ctx);
 
 	return 0;
 }
