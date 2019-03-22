@@ -49,14 +49,18 @@ int pcb_cam_set_layer_group_(pcb_cam_t *cam, pcb_layergrp_id_t group, const char
 
 /*** CAM caller side API for global export ***/
 
-/* Init/uninit a new var context; caller needs to store the void * returned by
-   init and supply it with the uninit call. */
-void *pcb_cam_init_vars(void);
-void pcb_cam_uninit_vars(void *as_inited);
+/* Allocate or free a var context, in which pcb_cam_set_var() operates and
+   which then can be 'used' for exporting. */
+void *pcb_cam_vars_alloc(void);
+void pcb_cam_vars_free(void *ctx);
+
+/* Use new_vars for the next export; returns the old var context that the
+   caller needs to restore (with another call to this function) after the export. */
+void *pcb_cam_vars_use(void *new_vars);
 
 /* Overwrite a CAM variable in the currently active context; both key
    and val must be strdup'd on caller side (they are free'd by the CAM code) */
-void pcb_cam_set_var(char *key, char *val);
+void pcb_cam_set_var(void *ctx, char *key, char *val);
 
 
 /*** Obsolete file suffix API - new plugins should not use this ***/

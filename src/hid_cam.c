@@ -594,31 +594,37 @@ int pcb_cam_set_layer_group_(pcb_cam_t *cam, pcb_layergrp_id_t group, const char
 }
 
 
-void *pcb_cam_init_vars(void)
+void *pcb_cam_vars_alloc(void)
 {
-	void *old = pcb_cam_vars;
-	pcb_cam_vars = htsp_alloc(strhash, strkeyeq);
-	return old;
+	return htsp_alloc(strhash, strkeyeq);
 }
 
-void pcb_cam_uninit_vars(void *as_inited)
+void pcb_cam_vars_free(void *ctx)
 {
+	htsp_t *vars = ctx;
 	htsp_entry_t *e;
 
-	for(e = htsp_first(pcb_cam_vars); e != NULL; e = htsp_next(pcb_cam_vars, e)) {
+	for(e = htsp_first(vars); e != NULL; e = htsp_next(vars, e)) {
 		free(e->key);
 		free(e->value);
 	}
-	htsp_free(pcb_cam_vars);
-	pcb_cam_vars = as_inited;
+	htsp_free(vars);
 }
 
-void pcb_cam_set_var(char *key, char *val)
+void *pcb_cam_vars_use(void *new_vars)
 {
-	htsp_entry_t *e = htsp_popentry(pcb_cam_vars, key);
+	void *old = pcb_cam_vars;
+	pcb_cam_vars = new_vars;
+	return old;
+}
+
+void pcb_cam_set_var(void *ctx, char *key, char *val)
+{
+	htsp_t *vars = ctx;
+	htsp_entry_t *e = htsp_popentry(vars, key);
 	if (e != NULL) {
 		free(e->key);
 		free(e->value);
 	}
-	htsp_set(pcb_cam_vars, key, val);
+	htsp_set(vars, key, val);
 }

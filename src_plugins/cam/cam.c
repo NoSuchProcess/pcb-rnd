@@ -57,7 +57,7 @@ typedef struct {
 	char *argv[128];         /* [0] and [1] are for --cam; the rest point into args */
 	int argc;
 
-	void *old_vars;
+	void *vars;
 
 	gds_t tmp;
 } cam_ctx_t;
@@ -66,7 +66,7 @@ static void cam_init_inst(cam_ctx_t *ctx)
 {
 	memset(ctx, 0, sizeof(cam_ctx_t));
 
-	ctx->old_vars = pcb_cam_init_vars();
+	ctx->vars = pcb_cam_vars_alloc();
 
 	if (PCB->Filename != NULL) {
 		char *val, *end = strrchr(PCB->Filename, PCB_DIR_SEPARATOR_C);
@@ -74,13 +74,13 @@ static void cam_init_inst(cam_ctx_t *ctx)
 			val = pcb_strdup(end+1);
 		else
 			val = pcb_strdup(PCB->Filename);
-		pcb_cam_set_var(pcb_strdup("base"), val);
+		pcb_cam_set_var(ctx->vars, pcb_strdup("base"), val);
 	}
 }
 
 static void cam_uninit_inst(cam_ctx_t *ctx)
 {
-	pcb_cam_uninit_vars(ctx->old_vars);
+	pcb_cam_vars_free(ctx->vars);
 	free(ctx->prefix);
 	free(ctx->args);
 	gds_uninit(&ctx->tmp);
@@ -118,9 +118,8 @@ static int prefix_mkdir(char *arg, char **filename)
 	return res;
 }
 
-static int cam_exec_inst(void *ctx_, char *cmd, char *arg)
+static int cam_exec_inst(cam_ctx_t *ctx, char *cmd, char *arg)
 {
-	cam_ctx_t *ctx = ctx_;
 	char *curr, *next;
 	char **argv = ctx->argv;
 
@@ -198,11 +197,13 @@ static int cam_exec_inst(void *ctx_, char *cmd, char *arg)
 }
 
 /* Parse and execute a script */
-static int cam_exec(const char *script_in, int (*exec)(void *ctx, char *cmd, char *arg), void *ctx)
+static int cam_exec(cam_ctx_t *ctx, const char *script_in, int (*exec)(cam_ctx_t *ctxctx, char *cmd, char *arg))
 {
 	char *arg, *curr, *next, *script = pcb_strdup(script_in);
 	int res = 0;
+	void *old_vars, *tmp;
 
+	old_vars = pcb_cam_vars_use(ctx->vars);
 	for(curr = script; curr != NULL; curr = next) {
 		while(isspace(*curr)) curr++;
 		next = strpbrk(curr, ";\r\n");
@@ -219,6 +220,9 @@ static int cam_exec(const char *script_in, int (*exec)(void *ctx, char *cmd, cha
 		}
 		res |= exec(ctx, curr, arg);
 	}
+
+	tmp = pcb_cam_vars_use(old_vars);
+	assert(tmp == ctx->vars); /* we must be restoring from our own context else the recursion is broken */
 
 	free(script);
 	return res;
@@ -243,7 +247,7 @@ static int cam_call(const char *job, cam_ctx_t *ctx)
 	const char *script = cam_find_job(job);
 
 	if (script != NULL)
-		return cam_exec(script, cam_exec_inst, ctx);
+		return cam_exec(ctx, script, cam_exec_inst);
 
 	pcb_message(PCB_MSG_ERROR, "cam: can not find job configuration '%s'\n", job);
 	return -1;
@@ -263,7 +267,7 @@ static int cam_parse_opt_outfile(cam_ctx_t *ctx, const char *optval)
 	}
 	else
 		ctx->prefix = NULL;
-	pcb_cam_set_var(pcb_strdup("base"), pcb_strdup(fn));
+	pcb_cam_set_var(ctx->vars, pcb_strdup("base"), pcb_strdup(fn));
 	free(tmp);
 	return 0;
 }
@@ -278,7 +282,7 @@ static int cam_parse_opt(cam_ctx_t *ctx, const char *opt)
 		if (sep != NULL) {
 			char *key = pcb_strndup(opt, sep-opt);
 			char *val = pcb_strdup(sep+1);
-			pcb_cam_set_var(key, val);
+			pcb_cam_set_var(ctx->vars, key, val);
 			return 0;
 		}
 	}
@@ -321,7 +325,7 @@ static fgw_error_t pcb_act_cam(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return 0;
 		}
 		if (pcb_strcasecmp(cmd, "exec") == 0)
-			rs = cam_exec(arg, cam_exec_inst, &ctx);
+			rs = cam_exec(&ctx, arg, cam_exec_inst);
 		else if (pcb_strcasecmp(cmd, "call") == 0)
 			rs = cam_call(arg, &ctx);
 	}
