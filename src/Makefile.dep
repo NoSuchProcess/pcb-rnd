@@ -268,9 +268,10 @@
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
  ../src_plugins/cam/cam_conf.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
- conf.h compat_misc.h safe_fs.h ../src_plugins/cam/conf_internal.c \
- ../src_plugins/cam/cam_gui.c ../src_3rd/genht/hash.h hid_dad.h \
- compat_misc.h hid_dad_tree.h hid_dad.h dolists.h \
+ conf.h ../src_plugins/cam/cam_compile.h compat_misc.h safe_fs.h \
+ ../src_plugins/cam/conf_internal.c ../src_plugins/cam/cam_compile.c \
+ ../src_plugins/cam/cam_gui.c hid_dad.h compat_misc.h hid_dad_tree.h \
+ hid_dad.h ../src_3rd/genht/hash.h dolists.h \
  ../src_plugins/cam/cam_conf_fields.h
 ../src_plugins/ddraft/centgeo.o: ../src_plugins/ddraft/centgeo.c \
  ../config.h ../src_plugins/ddraft/centgeo.h obj_line.h \
