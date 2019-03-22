@@ -69,6 +69,7 @@ static void cam_init_inst(cam_ctx_t *ctx)
 static void cam_uninit_inst(cam_ctx_t *ctx)
 {
 	pcb_cam_vars_free(ctx->vars);
+	cam_free_code(ctx);
 	free(ctx->prefix);
 	free(ctx->args);
 	gds_uninit(&ctx->tmp);

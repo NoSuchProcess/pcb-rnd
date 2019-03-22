@@ -233,4 +233,35 @@ static int cam_compile(cam_ctx_t *ctx, const char *script_in)
 	return res;
 }
 
+static void cam_free_inst(cam_ctx_t *ctx, pcb_cam_code_t *code)
+{
+	int n;
 
+	switch(code->inst) {
+		case PCB_CAM_DESC:
+			break;
+
+		case PCB_CAM_PREFIX:
+			free(ctx->prefix);
+			ctx->prefix = NULL;
+			break;
+
+		case PCB_CAM_WRITE:
+			free(code->op.write.arg);
+			break;
+
+		case PCB_CAM_PLUGIN:
+			for(n = 0; n < code->op.plugin.argc; n++)
+				free(code->op.plugin.argv[n]);
+			free(code->op.plugin.argv);
+			break;
+	}
+}
+
+static void cam_free_code(cam_ctx_t *ctx)
+{
+	int n;
+	for(n = 0; n < ctx->code.used; n++)
+		cam_free_inst(ctx, &ctx->code.array[n]);
+	vtcc_uninit(&ctx->code);
+}
