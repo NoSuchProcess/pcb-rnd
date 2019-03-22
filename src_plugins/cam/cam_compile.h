@@ -29,5 +29,28 @@
 #ifndef PCB_CAM_COMPILE_H
 #define PCB_CAM_COMPILE_H
 
+typedef enum {
+	PCB_CAM_DESC,
+	PCB_CAM_PLUGIN,
+	PCB_CAM_WRITE
+} pcb_cam_inst_t;
+
+typedef struct {
+	pcb_cam_inst_t inst;
+	union {
+		struct {
+			char *txt;
+		} desc;
+		struct {
+			pcb_hid_t *exporter;
+			int argc;
+			char **argv;
+		} plugin;
+		struct {
+			char *arg;
+		} write;
+	} op;
+} pcb_cam_job_t;
+
 
 #endif
