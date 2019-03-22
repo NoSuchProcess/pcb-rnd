@@ -251,21 +251,21 @@ static int cam_call(const char *job, cam_ctx_t *ctx)
 
 static int cam_parse_opt_outfile(cam_ctx_t *ctx, const char *optval)
 {
-		char *fn, *tmp = pcb_strdup(optval);
-		int dirlen = prefix_mkdir(tmp, &fn);
+	char *fn, *tmp = pcb_strdup(optval);
+	int dirlen = prefix_mkdir(tmp, &fn);
 
-		free(ctx->prefix);
-		if (dirlen > 0) {
-			ctx->prefix = malloc(dirlen+2);
-			memcpy(ctx->prefix, optval, dirlen);
-			ctx->prefix[dirlen] = PCB_DIR_SEPARATOR_C;
-			ctx->prefix[dirlen+1] = '\0';
-		}
-		else
-			ctx->prefix = NULL;
-		pcb_cam_set_var(pcb_strdup("base"), pcb_strdup(fn));
-		free(tmp);
-		return 0;
+	free(ctx->prefix);
+	if (dirlen > 0) {
+		ctx->prefix = malloc(dirlen+2);
+		memcpy(ctx->prefix, optval, dirlen);
+		ctx->prefix[dirlen] = PCB_DIR_SEPARATOR_C;
+		ctx->prefix[dirlen+1] = '\0';
+	}
+	else
+		ctx->prefix = NULL;
+	pcb_cam_set_var(pcb_strdup("base"), pcb_strdup(fn));
+	free(tmp);
+	return 0;
 }
 
 static int cam_parse_opt(cam_ctx_t *ctx, const char *opt)
