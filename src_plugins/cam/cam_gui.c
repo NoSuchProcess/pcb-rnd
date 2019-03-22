@@ -91,6 +91,16 @@ static void cam_gui_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pcb_dad_tree_update_hide(attr);
 }
 
+static void cam_gui_export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
+{
+	cam_dlg_t *ctx = caller_data;
+	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wjobs];
+	pcb_hid_row_t *row = pcb_dad_tree_get_selected(attr);
+
+	if (row != NULL)
+		pcb_actionl("cam", "call", row->cell[0], NULL);
+}
+
 static void cam_job_select_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
@@ -135,6 +145,7 @@ static int cam_gui(const char *arg)
 						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 					PCB_DAD_END(ctx->dlg);
 					PCB_DAD_BUTTON(ctx->dlg, "export!");
+						PCB_DAD_CHANGE_CB(ctx->dlg, cam_gui_export_cb);
 				PCB_DAD_END(ctx->dlg);
 			PCB_DAD_END(ctx->dlg);
 

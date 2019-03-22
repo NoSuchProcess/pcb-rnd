@@ -4,7 +4,7 @@
 #include "layer.h"
 #include "hid_attrib.h"
 
-/*** CAM API ***/
+/*** CAM plugin side API ***/
 typedef struct pcb_cam_s {
 	/* public */
 	char *fn;
@@ -27,8 +27,6 @@ typedef struct pcb_cam_s {
 	int exported_grps;
 } pcb_cam_t;
 
-extern char *pcb_cam_base; /* substitute %base% with this */
-
 int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_hid_attribute_t *attr_tbl, int numa, pcb_hid_attr_val_t *options);
 
 /* Finish cam export, free all memory, mark cam export inactive and report
@@ -48,6 +46,18 @@ do { \
 /* the logics behind pcb_cam_set_layer_group(); returns non-zero if the macro
    should return (and skip the current group) */
 int pcb_cam_set_layer_group_(pcb_cam_t *cam, pcb_layergrp_id_t group, const char *purpose, int purpi, unsigned int flags, pcb_xform_t **xform);
+
+/*** CAM caller side API for global export ***/
+
+/* Init/uninit a new var context; caller needs to store the void * returned by
+   init and supply it with the uninit call. */
+void *pcb_cam_init_vars(void);
+void pcb_cam_uninit_vars(void *as_inited);
+
+/* Overwrite a CAM variable in the currently active context; both key
+   and val must be strdup'd on caller side (they are free'd by the CAM code) */
+void pcb_cam_set_var(char *key, char *val);
+
 
 /*** Obsolete file suffix API - new plugins should not use this ***/
 /* maximum size of a derived suffix */

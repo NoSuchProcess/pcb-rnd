@@ -29,6 +29,10 @@
  */
 
 #include "config.h"
+
+#include <genht/htsp.h>
+#include <genht/hash.h>
+
 #include "board.h"
 #include "data.h"
 #include "hid_cam.h"
@@ -37,7 +41,7 @@
 #include "layer_vis.h"
 #include "plug_io.h"
 
-char *pcb_cam_base = NULL;
+htsp_t *pcb_cam_vars = NULL; /* substitute %% variables from this hash */
 
 char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, pcb_file_name_style_t style)
 {
@@ -454,6 +458,7 @@ typedef struct  {
 	pcb_cam_t *cam;
 	const pcb_layergrp_t *grp;
 	const pcb_virt_layer_t *vl;
+	htsp_t *vars;
 } cam_name_ctx_t;
 
 /* convert string to integer, step input beyond the terminating % */
@@ -484,10 +489,6 @@ static int cam_update_name_cb(void *ctx_, gds_t *s, const char **input)
 		else if (ctx->vl != NULL)
 			gds_append_str(s, ctx->vl->name);
 	}
-	if (strncmp(*input, "base%", 5) == 0) {
-		(*input) += 5;
-		gds_append_str(s, pcb_cam_base == NULL ? "unspecifiedbase" : pcb_cam_base);
-	}
 	else if (strncmp(*input, "top_offs", 8) == 0) {
 		int tune, from_top = -1;
 		pcb_layergrp_t *tcop = pcb_get_grp(&PCB->LayerGroups, PCB_LYT_TOP, PCB_LYT_COPPER);
@@ -510,6 +511,31 @@ static int cam_update_name_cb(void *ctx_, gds_t *s, const char **input)
 		pcb_layergrp_dist(PCB, pcb_layergrp_id(PCB, ctx->grp), bcop_id, PCB_LYT_COPPER, &from_bot);
 		pcb_append_printf(s, "%d", from_bot+tune);
 	}
+	else {
+		char *end = strchr(*input, '%');
+		char varname[128];
+		int len;
+
+		if (end == NULL) {
+			gds_append_str(s, *input);
+			return 0;
+		}
+
+		if (ctx->vars != NULL) {
+			len = end - *input;
+			if (len < sizeof(varname)-1) {
+				const char *val;
+				strncpy(varname, *input, len);
+				val = htsp_get(ctx->vars, varname);
+				if (val != NULL)
+					gds_append_str(s, val);
+			}
+			else
+				pcb_message(PCB_MSG_ERROR, "cam job error: %%%% variable name too long at: '%%%s' - did not substitute\n", *input);
+		}
+
+		*input = end+1;
+	}
 
 	return 0;
 }
@@ -524,6 +550,7 @@ static int cam_update_name(pcb_cam_t *cam, pcb_layergrp_id_t gid, const pcb_virt
 	ctx.cam = cam;
 	ctx.grp = pcb_get_layergrp(cam->pcb, gid);
 	ctx.vl = vl;
+	ctx.vars = pcb_cam_vars;
 	cam->fn = pcb_strdup_subst(cam->fn_template, cam_update_name_cb, &ctx, PCB_SUBST_HOME | PCB_SUBST_PERCENT | PCB_SUBST_CONF);
 	if ((cam->fn_last == NULL) || (strcmp(cam->fn, cam->fn_last) != 0)) {
 		cam->fn_changed = 1;
@@ -566,3 +593,32 @@ int pcb_cam_set_layer_group_(pcb_cam_t *cam, pcb_layergrp_id_t group, const char
 	return cam_update_name(cam, group, NULL);;
 }
 
+
+void *pcb_cam_init_vars(void)
+{
+	void *old = pcb_cam_vars;
+	pcb_cam_vars = htsp_alloc(strhash, strkeyeq);
+	return old;
+}
+
+void pcb_cam_uninit_vars(void *as_inited)
+{
+	htsp_entry_t *e;
+
+	for(e = htsp_first(pcb_cam_vars); e != NULL; e = htsp_next(pcb_cam_vars, e)) {
+		free(e->key);
+		free(e->value);
+	}
+	htsp_free(pcb_cam_vars);
+	pcb_cam_vars = as_inited;
+}
+
+void pcb_cam_set_var(char *key, char *val)
+{
+	htsp_entry_t *e = htsp_popentry(pcb_cam_vars, key);
+	if (e != NULL) {
+		free(e->key);
+		free(e->value);
+	}
+	htsp_set(pcb_cam_vars, key, val);
+}

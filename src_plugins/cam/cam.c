@@ -57,7 +57,7 @@ typedef struct {
 	char *argv[128];         /* [0] and [1] are for --cam; the rest point into args */
 	int argc;
 
-	char *old_base;
+	void *old_vars;
 
 	gds_t tmp;
 } cam_ctx_t;
@@ -65,23 +65,22 @@ typedef struct {
 static void cam_init_inst(cam_ctx_t *ctx)
 {
 	memset(ctx, 0, sizeof(cam_ctx_t));
-	ctx->old_base = pcb_cam_base;
+
+	ctx->old_vars = pcb_cam_init_vars();
 
 	if (PCB->Filename != NULL) {
-		char *end = strrchr(PCB->Filename, PCB_DIR_SEPARATOR_C);
+		char *val, *end = strrchr(PCB->Filename, PCB_DIR_SEPARATOR_C);
 		if (end != NULL)
-			pcb_cam_base = pcb_strdup(end+1);
+			val = pcb_strdup(end+1);
 		else
-			pcb_cam_base = pcb_strdup(PCB->Filename);
+			val = pcb_strdup(PCB->Filename);
+		pcb_cam_set_var(pcb_strdup("base"), val);
 	}
-	else
-		pcb_cam_base = NULL;
 }
 
 static void cam_uninit_inst(cam_ctx_t *ctx)
 {
-	free(pcb_cam_base);
-	pcb_cam_base = ctx->old_base;
+	pcb_cam_uninit_vars(ctx->old_vars);
 	free(ctx->prefix);
 	free(ctx->args);
 	gds_uninit(&ctx->tmp);
@@ -252,12 +251,7 @@ static int cam_call(const char *job, cam_ctx_t *ctx)
 
 static int cam_parse_opt(cam_ctx_t *ctx, const char *opt)
 {
-	if (strncmp(opt, "base=", 5) == 0) {
-		free(pcb_cam_base);
-		pcb_cam_base = pcb_strdup(opt+5);
-		return 0;
-	}
-	else if (strncmp(opt, "outfile=", 8) == 0) {
+	if (strncmp(opt, "outfile=", 8) == 0) {
 		char *fn, *tmp = pcb_strdup(opt+8);
 		int dirlen = prefix_mkdir(tmp, &fn);
 
@@ -270,11 +264,20 @@ static int cam_parse_opt(cam_ctx_t *ctx, const char *opt)
 		}
 		else
 			ctx->prefix = NULL;
-		free(pcb_cam_base);
-		pcb_cam_base = pcb_strdup(fn);
+		pcb_cam_set_var(pcb_strdup("base"), pcb_strdup(fn));
 		free(tmp);
 		return 0;
 	}
+	else {
+		char *sep = strchr(opt, '=');
+		if (sep != NULL) {
+			char *key = pcb_strndup(opt, sep-opt);
+			char *val = pcb_strdup(sep+1);
+			pcb_cam_set_var(key, val);
+			return 0;
+		}
+	}
+
 	return 1;
 }
 
