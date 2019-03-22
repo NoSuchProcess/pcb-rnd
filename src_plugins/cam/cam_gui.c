@@ -152,16 +152,27 @@ static void cam_gui_export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		pcb_actionl("cam", "call", row->cell[0], NULL);
 }
 
+static char *kill_tabs(const char *str_in)
+{
+	char *res, *o;
+	res = pcb_strdup(str_in);
+	for(o = res; *o != '\0'; o++)
+		if (*o == '\t')
+			*o = ' ';
+	return res;
+}
+
 static void cam_job_select_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
 	cam_dlg_t *ctx = tree->user_ctx;
 
 	if (row != NULL) {
-		const char *script = cam_find_job(row->cell[0]);
+		char *script = kill_tabs(cam_find_job(row->cell[0]));
 		pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
 		pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
 		txt->hid_set_text(atxt, hid_ctx, PCB_HID_TEXT_REPLACE, script);
+		free(script);
 	}
 }
 
