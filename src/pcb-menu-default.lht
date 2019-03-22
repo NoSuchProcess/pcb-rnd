@@ -74,6 +74,7 @@ ha:{
 				}
 				ha:Print layout...      = { a={<key>f;<key>p}; action=Print()}
 				ha:Export layout...     = { a={<key>f;<key>e}; action=ExportGUI()}
+				ha:Export with CAM job...={ a={<key>f;<key>c}; action=cam()}
 				ha:Reports {
 					li:submenu {
 						ha:Generate object report  = { a={<key>i;<key>r}; action=ReportObject() }
