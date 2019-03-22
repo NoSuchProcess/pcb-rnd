@@ -603,11 +603,12 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 	return j;
 }
 
-static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val)
+static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val, int *copied)
 {
 	int ret, save;
 	save = ctx->inhibit_valchg;
 	ctx->inhibit_valchg = 1;
+	*copied = 0;
 
 	/* create the actual widget from attrs */
 	switch (ctx->attrs[idx].type) {
@@ -706,6 +707,8 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 				if (strcmp(s, nv) == 0)
 					goto nochg;
 				gtk_entry_set_text(GTK_ENTRY(ctx->wl[idx]), val->str_value);
+				ctx->attrs[idx].default_val.str_value = pcb_strdup(val->str_value);
+				*copied = 1;
 			}
 			break;
 
@@ -977,15 +980,16 @@ int ghid_attr_dlg_widget_hide(void *hid_ctx, int idx, pcb_bool hide)
 int ghid_attr_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val)
 {
 	attr_dlg_t *ctx = hid_ctx;
-	int res;
+	int res, copied;
 
 	if ((idx < 0) || (idx >= ctx->n_attrs))
 		return -1;
 
-	res = ghid_attr_dlg_set(ctx, idx, val);
+	res = ghid_attr_dlg_set(ctx, idx, val, &copied);
 
 	if (res == 0) {
-		ctx->attrs[idx].default_val = *val;
+		if (!copied)
+			ctx->attrs[idx].default_val = *val;
 		return 0;
 	}
 	else if (res == 1)
