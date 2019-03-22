@@ -84,4 +84,8 @@ char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags,
    look it up. Copies result in dest (which should be at least PCB_DERIVE_FN_SUFF_LEN bytes wide). */
 void pcb_derive_default_filename(const char *pcbfile, pcb_hid_attribute_t * filename_attrib, const char *suffix);
 
+/* Same as pcb_derive_default_filename() but returns an allocated string
+   directly, instead  of manipulating an attribute */
+char *pcb_derive_default_filename_(const char *pcbfile, const char *suffix);
+
 #endif
