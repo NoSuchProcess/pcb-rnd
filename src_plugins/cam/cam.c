@@ -57,12 +57,14 @@ static void cam_init_inst(cam_ctx_t *ctx)
 	ctx->vars = pcb_cam_vars_alloc();
 
 	if (PCB->Filename != NULL) {
-		char *val, *end = strrchr(PCB->Filename, PCB_DIR_SEPARATOR_C);
+		char *fn = pcb_derive_default_filename_(PCB->Filename, "");
+		char *val, *end = strrchr(fn, PCB_DIR_SEPARATOR_C);
 		if (end != NULL)
 			val = pcb_strdup(end+1);
 		else
-			val = pcb_strdup(PCB->Filename);
+			val = pcb_strdup(fn);
 		pcb_cam_set_var(ctx->vars, pcb_strdup("base"), val);
+		free(fn);
 	}
 }
 
