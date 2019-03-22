@@ -569,9 +569,6 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 		pcb_hid_restore_layer_ons(save_ons);
 	conf_update(NULL, -1); /* resotre forced sets */
 
-	if (pcb_cam_end(&gerber_cam) == 0)
-		pcb_message(PCB_MSG_ERROR, "gerber cam export for '%s' failed to produce any content\n", options[HA_cam].str_value);
-
 	if (!gerber_cam.active) {
 		int purpi;
 		const pcb_virt_layer_t *vl;
@@ -594,6 +591,9 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 		assign_file_suffix(filesuff, -1, vl->new_id, vl->type, purpose, purpi, 1, NULL);
 		pcb_drill_export_excellon(PCB, &udrills, conf_gerber.plugins.export_gerber.unplated_g85_slot, filename);
 	}
+
+	if (pcb_cam_end(&gerber_cam) == 0)
+		pcb_message(PCB_MSG_ERROR, "gerber cam export for '%s' failed to produce any content\n", options[HA_cam].str_value);
 
 	pcb_drill_uninit(&pdrills);
 	pcb_drill_uninit(&udrills);
