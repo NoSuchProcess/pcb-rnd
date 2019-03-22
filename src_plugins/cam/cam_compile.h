@@ -32,14 +32,15 @@
 typedef enum {
 	PCB_CAM_DESC,
 	PCB_CAM_PLUGIN,
-	PCB_CAM_WRITE
+	PCB_CAM_WRITE,
+	PCB_CAM_PREFIX
 } pcb_cam_inst_t;
 
 typedef struct {
 	pcb_cam_inst_t inst;
 	union {
 		struct {
-			char *txt;
+			char *arg;
 		} desc;
 		struct {
 			pcb_hid_t *exporter;
@@ -49,8 +50,10 @@ typedef struct {
 		struct {
 			char *arg;
 		} write;
+		struct {
+			char *arg;
+		} prefix;
 	} op;
-} pcb_cam_job_t;
-
+} pcb_cam_code_t;
 
 #endif

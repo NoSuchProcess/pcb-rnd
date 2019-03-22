@@ -138,3 +138,106 @@ static int cam_exec(cam_ctx_t *ctx, const char *script_in, int (*exec)(cam_ctx_t
 	return res;
 }
 
+
+/*** new ***/
+
+
+static int cam_compile_line(cam_ctx_t *ctx, char *cmd, char *arg, pcb_cam_code_t *code)
+{
+
+	if (strcmp(cmd, "prefix") == 0) {
+		code->inst = PCB_CAM_PREFIX;
+		code->op.prefix.arg = pcb_strdup(arg);
+	}
+	else if (strcmp(cmd, "desc") == 0) {
+		code->inst = PCB_CAM_DESC;
+		code->op.desc.arg = pcb_strdup(arg);
+	}
+	else if (strcmp(cmd, "write") == 0) {
+		code->inst = PCB_CAM_WRITE;
+		code->op.write.arg = pcb_strdup(arg);
+	}
+	else if (strcmp(cmd, "plugin") == 0) {
+		char *curr, *next;
+		int maxa;
+		char *s;
+	
+		code->inst = PCB_CAM_PLUGIN;
+		curr = strpbrk(arg, " \t");
+		if (curr != NULL) {
+			*curr = '\0';
+			curr++;
+		}
+		code->op.plugin.exporter = pcb_hid_find_exporter(arg);
+		if (code->op.plugin.exporter == NULL) {
+			pcb_message(PCB_MSG_ERROR, "cam: can not find export plugin: '%s'\n", arg);
+			return -1;
+		}
+		free(ctx->args);
+
+		curr = pcb_strdup(curr == NULL ? "" : curr);
+		for(maxa = 0, s = curr; *s != '\0'; s++)
+			if (isspace(*s))
+				maxa++;
+
+		code->op.plugin.argc = 2; /* [0] and [1] are reserved for the --cam argument */
+		code->op.plugin.argv = malloc(sizeof(char *) * (maxa+1));
+		if (code->op.plugin.argv == NULL)
+			return 1;
+		for(; curr != NULL; curr = next) {
+			while(isspace(*curr)) curr++;
+			next = strpbrk(curr, " \t");
+			if (next != NULL) {
+				*next = '\0';
+				next++;
+			}
+			if (*curr == '\0')
+				continue;
+			code->op.plugin.argv[code->op.plugin.argc] = curr;
+			code->op.plugin.argc++;
+			
+		}
+		code->op.plugin.argv[ctx->argc] = NULL;
+	}
+	else {
+		pcb_message(PCB_MSG_ERROR, "cam: syntax error (unknown instruction): '%s'\n", cmd);
+		return -1;
+	}
+	return 0;
+}
+
+static int pcb_cam_compile(cam_ctx_t *ctx, const char *script_in)
+{
+	char *arg, *curr, *next, *script = pcb_strdup(script_in);
+	int res = 0, r;
+
+	for(curr = script; curr != NULL; curr = next) {
+		pcb_cam_code_t code;
+
+		while(isspace(*curr)) curr++;
+		next = strpbrk(curr, ";\r\n");
+		if (next != NULL) {
+			*next = '\0';
+			next++;
+		}
+		if (*curr == '\0')
+			continue;
+		arg = strpbrk(curr, " \t");
+		if (arg != NULL) {
+			*arg = '\0';
+			arg++;
+		}
+		if ((*arg == '#') || (*arg == '\0'))
+			continue;
+		r = cam_compile_line(ctx, curr, arg, &code);
+		if (r == 0) {
+			TODO("append");
+		}
+		else
+			res = 1;
+	}
+
+	free(script);
+	return res;
+}
+
