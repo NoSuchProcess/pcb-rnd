@@ -269,7 +269,8 @@
  ../src_plugins/cam/cam_conf.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf.h compat_misc.h safe_fs.h ../src_plugins/cam/conf_internal.c \
- ../src_plugins/cam/cam_gui.c hid_dad.h compat_misc.h dolists.h \
+ ../src_plugins/cam/cam_gui.c ../src_3rd/genht/hash.h hid_dad.h \
+ compat_misc.h hid_dad_tree.h hid_dad.h dolists.h \
  ../src_plugins/cam/cam_conf_fields.h
 ../src_plugins/ddraft/centgeo.o: ../src_plugins/ddraft/centgeo.c \
  ../config.h ../src_plugins/ddraft/centgeo.h obj_line.h \
@@ -6637,9 +6638,10 @@ hid_attrib.o: hid_attrib.c ../config.h hid_attrib.h hid.h \
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
  ../src_3rd/genvector/gds_char.h pcb-printf.h
-hid_cam.o: hid_cam.c ../config.h board.h ../src_3rd/genht/htsp.h \
- ../src_3rd/genht/ht.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h \
- attrib.h ../src_3rd/genvector/genvector_impl.h \
+hid_cam.o: hid_cam.c ../config.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h board.h global_typedefs.h \
+ pcb_bool.h unit.h vtroutestyle.h attrib.h \
+ ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h color.h \
  obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_impl.h \
@@ -6654,7 +6656,7 @@ hid_cam.o: hid_cam.c ../config.h board.h ../src_3rd/genht/htsp.h \
  obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h rtree.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
- ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
+ ../src_3rd/genht/ht.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h hid_cam.h hid_attrib.h compat_misc.h layer_vis.h \
  plug_io.h conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h
