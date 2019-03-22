@@ -26,7 +26,6 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-
 #define GVT_DONT_UNDEF
 #include "cam_compile.h"
 #include <genvector/genvector_impl.c>

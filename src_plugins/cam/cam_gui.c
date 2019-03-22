@@ -118,7 +118,6 @@ static void cam_gui_digest2dlg(cam_dlg_t *ctx)
 				else
 					cell[1] = "<NO PLUGIN>";
 
-				
 				cell[3] = NULL;
 				pcb_dad_tree_append(attr, NULL, cell);
 				break;

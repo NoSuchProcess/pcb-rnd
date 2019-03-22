@@ -55,7 +55,6 @@ typedef struct {
 	} op;
 } pcb_cam_code_t;
 
-
 #define GVT(x) vtcc_ ## x
 #define GVT_ELEM_TYPE pcb_cam_code_t
 #define GVT_SIZE_TYPE size_t
@@ -82,6 +81,5 @@ typedef struct {
 
 	gds_t tmp;
 } cam_ctx_t;
-
 
 #endif
