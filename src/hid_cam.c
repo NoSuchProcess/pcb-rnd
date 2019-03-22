@@ -384,7 +384,7 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_h
 			int offs, has_offs;
 			pcb_layer_type_t lyt;
 			const pcb_virt_layer_t *vl;
-			pcb_xform_t *xf, xf_;
+			pcb_xform_t *xf = NULL, xf_;
 
 			if (parse_layer_type(curr, &lyt, &offs, &has_offs) != 0)
 				goto err;
