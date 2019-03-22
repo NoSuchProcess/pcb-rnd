@@ -39,6 +39,7 @@
 #include "plugins.h"
 #include "actions.h"
 #include "cam_conf.h"
+#include "cam_compile.h"
 #include "compat_misc.h"
 #include "safe_fs.h"
 #include "../src_plugins/cam/conf_internal.c"
@@ -118,115 +119,7 @@ static int prefix_mkdir(char *arg, char **filename)
 	return res;
 }
 
-static int cam_exec_inst(cam_ctx_t *ctx, char *cmd, char *arg)
-{
-	char *curr, *next;
-	char **argv = ctx->argv;
-
-	if (*cmd == '#') {
-		/* ignore comments */
-	}
-	else if (strcmp(cmd, "prefix") == 0) {
-		free(ctx->prefix);
-		ctx->prefix = pcb_strdup(arg);
-		prefix_mkdir(arg, NULL);
-	}
-	else if (strcmp(cmd, "desc") == 0) {
-		/* ignore */
-	}
-	else if (strcmp(cmd, "write") == 0) {
-		int argc = ctx->argc;
-		if (ctx->exporter == NULL) {
-			pcb_message(PCB_MSG_ERROR, "cam: no exporter selected before write\n");
-			return -1;
-		}
-
-		/* build the --cam args using the prefix */
-		ctx->argv[0] = "--cam";
-		gds_truncate(&ctx->tmp, 0);
-		if (ctx->prefix != NULL)
-			gds_append_str(&ctx->tmp, ctx->prefix);
-		gds_append_str(&ctx->tmp, arg);
-		ctx->argv[1] = ctx->tmp.array;
-
-		if (ctx->exporter->parse_arguments(&argc, &argv) != 0) {
-			pcb_message(PCB_MSG_ERROR, "cam: exporter '%s' refused the arguments\n", arg);
-			return -1;
-		}
-		ctx->exporter->do_export(0);
-		return 0;
-	}
-	else if (strcmp(cmd, "plugin") == 0) {
-		curr = strpbrk(arg, " \t");
-		if (curr != NULL) {
-			*curr = '\0';
-			curr++;
-		}
-		ctx->exporter = pcb_hid_find_exporter(arg);
-		if (ctx->exporter == NULL) {
-			pcb_message(PCB_MSG_ERROR, "cam: can not find export plugin: '%s'\n", arg);
-			return -1;
-		}
-		free(ctx->args);
-		curr = ctx->args = pcb_strdup(curr == NULL ? "" : curr);
-		ctx->argc = 2; /* [0] and [1] are reserved for the --cam argument */
-		for(; curr != NULL; curr = next) {
-			if (ctx->argc >= (sizeof(ctx->argv) / sizeof(ctx->argv[0]))) {
-				pcb_message(PCB_MSG_ERROR, "cam: too many arguments for plugin '%s'\n", arg);
-				return -1;
-			}
-			while(isspace(*curr)) curr++;
-			next = strpbrk(curr, " \t");
-			if (next != NULL) {
-				*next = '\0';
-				next++;
-			}
-			if (*curr == '\0')
-				continue;
-			argv[ctx->argc] = curr;
-			ctx->argc++;
-			
-		}
-		argv[ctx->argc] = NULL;
-	}
-	else {
-		pcb_message(PCB_MSG_ERROR, "cam: syntax error (unknown instruction): '%s'\n", cmd);
-		return -1;
-	}
-	return 0;
-}
-
-/* Parse and execute a script */
-static int cam_exec(cam_ctx_t *ctx, const char *script_in, int (*exec)(cam_ctx_t *ctxctx, char *cmd, char *arg))
-{
-	char *arg, *curr, *next, *script = pcb_strdup(script_in);
-	int res = 0;
-	void *old_vars, *tmp;
-
-	old_vars = pcb_cam_vars_use(ctx->vars);
-	for(curr = script; curr != NULL; curr = next) {
-		while(isspace(*curr)) curr++;
-		next = strpbrk(curr, ";\r\n");
-		if (next != NULL) {
-			*next = '\0';
-			next++;
-		}
-		if (*curr == '\0')
-			continue;
-		arg = strpbrk(curr, " \t");
-		if (arg != NULL) {
-			*arg = '\0';
-			arg++;
-		}
-		res |= exec(ctx, curr, arg);
-	}
-
-	tmp = pcb_cam_vars_use(old_vars);
-	assert(tmp == ctx->vars); /* we must be restoring from our own context else the recursion is broken */
-
-	free(script);
-	return res;
-}
+#include "cam_compile.c"
 
 /* look up a job by name in the config */
 static const char *cam_find_job(const char *job)
