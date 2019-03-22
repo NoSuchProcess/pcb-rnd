@@ -148,8 +148,12 @@ static void cam_gui_export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wjobs];
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(attr);
 
-	if (row != NULL)
-		pcb_actionl("cam", "call", row->cell[0], NULL);
+	if (row != NULL) {
+		const char *outfile = ctx->dlg[ctx->woutfile].default_val.str_value;
+		char *tmp = pcb_strdup_printf("outfile=%s", outfile);
+		pcb_actionl("cam", "call", row->cell[0], tmp, NULL);
+		free(tmp);
+	}
 }
 
 static char *kill_tabs(const char *str_in)
