@@ -30,6 +30,9 @@
 #include "hid_dad.h"
 #include "hid_dad_tree.h"
 
+static const char *OUTFILE_HELP = "Output file name sample, which will\nbe split to prefix and base name (%base%)\nto be used in file name templates";
+static const char *PREFIX_HELP = "File name prefix: every output file\npath will start with this prefix.\nIt is derived from outfile.";
+
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	cam_ctx_t cam;
@@ -180,6 +183,7 @@ static int cam_gui(const char *arg)
 					PCB_DAD_END(ctx->dlg);
 					PCB_DAD_BUTTON(ctx->dlg, "export!");
 						PCB_DAD_CHANGE_CB(ctx->dlg, cam_gui_export_cb);
+						PCB_DAD_HELP(ctx->dlg, "Export the current board using the above selected CAM job\nand the options set on the right");
 				PCB_DAD_END(ctx->dlg);
 			PCB_DAD_END(ctx->dlg);
 
@@ -198,12 +202,16 @@ static int cam_gui(const char *arg)
 						header_label(ctx, "CAM options");
 						PCB_DAD_BEGIN_TABLE(ctx->dlg, 2); /* special options */
 							PCB_DAD_LABEL(ctx->dlg, "outfile");
+								PCB_DAD_HELP(ctx->dlg, OUTFILE_HELP);
 							PCB_DAD_STRING(ctx->dlg);
 								PCB_DAD_CHANGE_CB(ctx->dlg, cam_gui_outfile_cb);
 								ctx->woutfile = PCB_DAD_CURRENT(ctx->dlg);
+								PCB_DAD_HELP(ctx->dlg, OUTFILE_HELP);
 							PCB_DAD_LABEL(ctx->dlg, "prefix");
+							PCB_DAD_HELP(ctx->dlg, PREFIX_HELP);
 							PCB_DAD_LABEL(ctx->dlg, "");
 								ctx->wprefix = PCB_DAD_CURRENT(ctx->dlg);
+								PCB_DAD_HELP(ctx->dlg, PREFIX_HELP);
 						PCB_DAD_END(ctx->dlg);
 
 						PCB_DAD_TREE(ctx->dlg, 2, 0, opt_hdr); /* option table */
