@@ -26,7 +26,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#include <genht/hash.h>
+#include <genht/htsp.h>
 #include "hid_dad.h"
 #include "hid_dad_tree.h"
 
@@ -36,7 +36,7 @@ static const char *PREFIX_HELP = "File name prefix: every output file\npath will
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	cam_ctx_t cam;
-	int wjobs, wtxt, woutfile, wprefix;
+	int wjobs, wtxt, woutfile, wprefix, wopts;
 } cam_dlg_t;
 
 static void cam_gui_jobs2dlg(cam_dlg_t *ctx)
@@ -81,11 +81,43 @@ static void cam_gui_jobs2dlg(cam_dlg_t *ctx)
 
 static void cam_gui_opts2dlg(cam_dlg_t *ctx)
 {
+	htsp_t *vars = ctx->cam.vars;
+	htsp_entry_t *e;
 	pcb_hid_attr_val_t hv;
+	pcb_hid_attribute_t *attr;
+	pcb_hid_tree_t *tree;
+	pcb_hid_row_t *r;
+	char *cell[2], *cursor_path = NULL;
+	conf_native_t *cn;
 
 	cam_parse_opt_outfile(&ctx->cam, ctx->dlg[ctx->woutfile].default_val.str_value);
 	hv.str_value = ctx->cam.prefix == NULL ? "" : ctx->cam.prefix;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprefix, &hv);
+
+	attr = &ctx->dlg[ctx->wopts];
+	tree = (pcb_hid_tree_t *)attr->enumerations;
+
+	/* remember cursor */
+	r = pcb_dad_tree_get_selected(attr);
+	if (r != NULL)
+		cursor_path = pcb_strdup(r->cell[0]);
+
+	/* remove existing items */
+	pcb_dad_tree_clear(tree);
+
+	/* add all new items */
+	for(e = htsp_first(vars); e != NULL; e = htsp_next(vars, e)) {
+		cell[0] = pcb_strdup(e->key);
+		cell[1] = pcb_strdup(e->value);
+		pcb_dad_tree_append(attr, NULL, cell);
+	}
+
+	/* restore cursor */
+	if (cursor_path != NULL) {
+		pcb_hid_attr_val_t hv;
+		hv.str_value = cursor_path;
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wopts, &hv);
+	}
 }
 
 static void cam_gui_outfile_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
@@ -216,6 +248,7 @@ static int cam_gui(const char *arg)
 
 						PCB_DAD_TREE(ctx->dlg, 2, 0, opt_hdr); /* option table */
 							PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+							ctx->wopts = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_END(ctx->dlg);
 				PCB_DAD_END(ctx->dlg);
 				PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
