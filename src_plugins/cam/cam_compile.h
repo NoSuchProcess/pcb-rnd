@@ -75,7 +75,7 @@ typedef struct {
 	pcb_hid_t *exporter;
 
 	char *args;              /* strdup'd argument string from the last plugin command - already split up */
-	char *argv[128];         /* [0] and [1] are for --cam; the rest point into args */
+	char **argv;             /* [0] and [1] are for --cam; the rest point into args */
 	int argc;
 
 	vtcc_t code;

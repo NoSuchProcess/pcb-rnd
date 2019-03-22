@@ -63,119 +63,77 @@ static int prefix_mkdir(char *arg, char **filename)
 	return res;
 }
 
-static int cam_exec_inst(cam_ctx_t *ctx, char *cmd, char *arg)
+static int cam_exec_inst(cam_ctx_t *ctx, pcb_cam_code_t *code)
 {
-	char *curr, *next;
-	char **argv = ctx->argv;
+/*	char *curr, *next;*/
+	int argc;
+	char **argv;
 
-	if (*cmd == '#') {
-		/* ignore comments */
-	}
-	else if (strcmp(cmd, "prefix") == 0) {
-		free(ctx->prefix);
-		ctx->prefix = pcb_strdup(arg);
-		prefix_mkdir(arg, NULL);
-	}
-	else if (strcmp(cmd, "desc") == 0) {
-		/* ignore */
-	}
-	else if (strcmp(cmd, "write") == 0) {
-		int argc = ctx->argc;
-		if (ctx->exporter == NULL) {
-			pcb_message(PCB_MSG_ERROR, "cam: no exporter selected before write\n");
-			return -1;
-		}
+	switch(code->inst) {
+		case PCB_CAM_PREFIX:
+			free(ctx->prefix);
+			ctx->prefix = pcb_strdup(code->op.prefix.arg);
+			prefix_mkdir(ctx->prefix, NULL);
+			break;
 
-		/* build the --cam args using the prefix */
-		ctx->argv[0] = "--cam";
-		gds_truncate(&ctx->tmp, 0);
-		if (ctx->prefix != NULL)
-			gds_append_str(&ctx->tmp, ctx->prefix);
-		gds_append_str(&ctx->tmp, arg);
-		ctx->argv[1] = ctx->tmp.array;
+		case PCB_CAM_DESC:
+			/* ignore */
+			break;
 
-		if (ctx->exporter->parse_arguments(&argc, &argv) != 0) {
-			pcb_message(PCB_MSG_ERROR, "cam: exporter '%s' refused the arguments\n", arg);
-			return -1;
-		}
-		ctx->exporter->do_export(0);
-		return 0;
-	}
-	else if (strcmp(cmd, "plugin") == 0) {
-		curr = strpbrk(arg, " \t");
-		if (curr != NULL) {
-			*curr = '\0';
-			curr++;
-		}
-		ctx->exporter = pcb_hid_find_exporter(arg);
-		if (ctx->exporter == NULL) {
-			pcb_message(PCB_MSG_ERROR, "cam: can not find export plugin: '%s'\n", arg);
-			return -1;
-		}
-		free(ctx->args);
-		curr = ctx->args = pcb_strdup(curr == NULL ? "" : curr);
-		ctx->argc = 2; /* [0] and [1] are reserved for the --cam argument */
-		for(; curr != NULL; curr = next) {
-			if (ctx->argc >= (sizeof(ctx->argv) / sizeof(ctx->argv[0]))) {
-				pcb_message(PCB_MSG_ERROR, "cam: too many arguments for plugin '%s'\n", arg);
+		case PCB_CAM_WRITE:
+			if (ctx->exporter == NULL) {
+				pcb_message(PCB_MSG_ERROR, "cam: no exporter selected before write\n");
 				return -1;
 			}
-			while(isspace(*curr)) curr++;
-			next = strpbrk(curr, " \t");
-			if (next != NULL) {
-				*next = '\0';
-				next++;
+
+			/* build the --cam args using the prefix */
+			ctx->argv[0] = "--cam";
+			gds_truncate(&ctx->tmp, 0);
+			if (ctx->prefix != NULL)
+				gds_append_str(&ctx->tmp, ctx->prefix);
+			gds_append_str(&ctx->tmp, code->op.write.arg);
+			ctx->argv[1] = ctx->tmp.array;
+
+			argc = ctx->argc;
+			argv = ctx->argv;
+			if (ctx->exporter->parse_arguments(&argc, &argv) != 0) {
+				pcb_message(PCB_MSG_ERROR, "cam: exporter '%s' refused the arguments\n", code->op.write.arg);
+				return -1;
 			}
-			if (*curr == '\0')
-				continue;
-			argv[ctx->argc] = curr;
-			ctx->argc++;
-			
-		}
-		argv[ctx->argc] = NULL;
-	}
-	else {
-		pcb_message(PCB_MSG_ERROR, "cam: syntax error (unknown instruction): '%s'\n", cmd);
-		return -1;
+
+			{ /* call the exporter */
+				void *old_vars, *tmp;
+				old_vars = pcb_cam_vars_use(ctx->vars);
+				ctx->exporter->do_export(0);
+				tmp = pcb_cam_vars_use(old_vars);
+				assert(tmp == ctx->vars); /* we must be restoring from our own context else the recursion is broken */
+			}
+
+			ctx->argv[0] = NULL;
+			ctx->argv[1] = NULL;
+			break;
+
+		case PCB_CAM_PLUGIN:
+			ctx->exporter = code->op.plugin.exporter;
+			ctx->argc = code->op.plugin.argc;
+			ctx->argv = code->op.plugin.argv;
+			break;
+
+		default:
+			assert(!"invalid cam code");
 	}
 	return 0;
 }
 
-/* Parse and execute a script */
-static int cam_exec(cam_ctx_t *ctx, const char *script_in, int (*exec)(cam_ctx_t *ctxctx, char *cmd, char *arg))
+
+static int cam_exec(cam_ctx_t *ctx)
 {
-	char *arg, *curr, *next, *script = pcb_strdup(script_in);
-	int res = 0;
-	void *old_vars, *tmp;
-
-	old_vars = pcb_cam_vars_use(ctx->vars);
-	for(curr = script; curr != NULL; curr = next) {
-		while(isspace(*curr)) curr++;
-		next = strpbrk(curr, ";\r\n");
-		if (next != NULL) {
-			*next = '\0';
-			next++;
-		}
-		if (*curr == '\0')
-			continue;
-		arg = strpbrk(curr, " \t");
-		if (arg != NULL) {
-			*arg = '\0';
-			arg++;
-		}
-		res |= exec(ctx, curr, arg);
-	}
-
-	tmp = pcb_cam_vars_use(old_vars);
-	assert(tmp == ctx->vars); /* we must be restoring from our own context else the recursion is broken */
-
-	free(script);
-	return res;
+	int n;
+	for(n = 0; n < ctx->code.used; n++)
+		if (cam_exec_inst(ctx, &ctx->code.array[n]) != 0)
+			return 1;
+	return 0;
 }
-
-
-/*** new ***/
-
 
 static int cam_compile_line(cam_ctx_t *ctx, char *cmd, char *arg, pcb_cam_code_t *code)
 {
@@ -216,7 +174,7 @@ static int cam_compile_line(cam_ctx_t *ctx, char *cmd, char *arg, pcb_cam_code_t
 				maxa++;
 
 		code->op.plugin.argc = 2; /* [0] and [1] are reserved for the --cam argument */
-		code->op.plugin.argv = malloc(sizeof(char *) * (maxa+1));
+		code->op.plugin.argv = malloc(sizeof(char *) * (maxa+3));
 		if (code->op.plugin.argv == NULL)
 			return 1;
 		for(; curr != NULL; curr = next) {
@@ -228,7 +186,7 @@ static int cam_compile_line(cam_ctx_t *ctx, char *cmd, char *arg, pcb_cam_code_t
 			}
 			if (*curr == '\0')
 				continue;
-			code->op.plugin.argv[code->op.plugin.argc] = curr;
+			code->op.plugin.argv[code->op.plugin.argc] = pcb_strdup(curr);
 			code->op.plugin.argc++;
 			
 		}
@@ -241,7 +199,7 @@ static int cam_compile_line(cam_ctx_t *ctx, char *cmd, char *arg, pcb_cam_code_t
 	return 0;
 }
 
-static int pcb_cam_compile(cam_ctx_t *ctx, const char *script_in)
+static int cam_compile(cam_ctx_t *ctx, const char *script_in)
 {
 	char *arg, *curr, *next, *script = pcb_strdup(script_in);
 	int res = 0, r;

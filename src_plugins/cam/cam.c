@@ -92,8 +92,11 @@ static int cam_call(const char *job, cam_ctx_t *ctx)
 {
 	const char *script = cam_find_job(job);
 
-	if (script != NULL)
-		return cam_exec(ctx, script, cam_exec_inst);
+	if (script != NULL) {
+		if (cam_compile(ctx, script) != 0)
+			return -1;
+		return cam_exec(ctx);
+	}
 
 	pcb_message(PCB_MSG_ERROR, "cam: can not find job configuration '%s'\n", job);
 	return -1;
@@ -170,8 +173,11 @@ static fgw_error_t pcb_act_cam(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			PCB_ACT_IRES(1);
 			return 0;
 		}
-		if (pcb_strcasecmp(cmd, "exec") == 0)
-			rs = cam_exec(&ctx, arg, cam_exec_inst);
+		if (pcb_strcasecmp(cmd, "exec") == 0) {
+			rs = cam_compile(&ctx, arg);
+			if (rs == 0)
+				rs = cam_exec(&ctx);
+		}
 		else if (pcb_strcasecmp(cmd, "call") == 0)
 			rs = cam_call(arg, &ctx);
 	}
