@@ -88,7 +88,6 @@ static void cam_gui_opts2dlg(cam_dlg_t *ctx)
 	pcb_hid_tree_t *tree;
 	pcb_hid_row_t *r;
 	char *cell[2], *cursor_path = NULL;
-	conf_native_t *cn;
 
 	cam_parse_opt_outfile(&ctx->cam, ctx->dlg[ctx->woutfile].default_val.str_value);
 	hv.str_value = ctx->cam.prefix == NULL ? "" : ctx->cam.prefix;
