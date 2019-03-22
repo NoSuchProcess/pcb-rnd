@@ -36,6 +36,7 @@
 #include "hid_cam.h"
 #include "hid_attrib.h"
 #include "hid_init.h"
+#include "hid_nogui.h"
 #include "plugins.h"
 #include "actions.h"
 #include "cam_conf.h"
@@ -197,6 +198,43 @@ static pcb_action_t cam_action_list[] = {
 
 PCB_REGISTER_ACTIONS(cam_action_list, cam_cookie)
 
+
+static pcb_hid_attribute_t *export_cam_get_export_options(int *n)
+{
+	return 0;
+}
+
+static int export_cam_usage(const char *topic)
+{
+	fprintf(stderr, "\nThe cam exporter shorthand:\n\n");
+	fprintf(stderr, "\nUsage: pcb-rnd -x cam jobname [pcb-rnd-options] filename\n\n");
+	return 0;
+}
+
+static char *cam_export_job;
+static int export_cam_parse_arguments(int *argc, char ***argv)
+{
+	int n;
+	cam_export_job = pcb_strdup((*argv)[0]);
+	(*argc)--;
+	for(n = 0; n < (*argc); n++)
+		(*argv)[n] = (*argv)[n+1];
+	return 0;
+}
+
+static void export_cam_do_export(pcb_hid_attr_val_t *options)
+{
+	cam_ctx_t ctx;
+
+	cam_init_inst(&ctx);
+	if (cam_call(cam_export_job, &ctx) != 0)
+		pcb_message(PCB_MSG_ERROR, "CAM job %s failed\n", cam_export_job);
+	cam_uninit_inst(&ctx);
+
+	free(cam_export_job);
+	cam_export_job = NULL;
+}
+
 int pplg_check_ver_cam(int ver_needed) { return 0; }
 
 void pplg_uninit_cam(void)
@@ -204,7 +242,10 @@ void pplg_uninit_cam(void)
 	conf_unreg_file(CAM_CONF_FN, cam_conf_internal);
 	conf_unreg_fields("plugins/cam/");
 	pcb_remove_actions_by_cookie(cam_cookie);
+	pcb_hid_remove_attributes_by_cookie(cam_cookie);
 }
+
+pcb_hid_t export_cam_hid;
 
 #include "dolists.h"
 int pplg_init_cam(void)
@@ -216,6 +257,25 @@ int pplg_init_cam(void)
 #include "cam_conf_fields.h"
 
 	PCB_REGISTER_ACTIONS(cam_action_list, cam_cookie)
+
+	memset(&export_cam_hid, 0, sizeof(pcb_hid_t));
+
+	pcb_hid_nogui_init(&export_cam_hid);
+
+	export_cam_hid.struct_size = sizeof(pcb_hid_t);
+	export_cam_hid.name = "cam";
+	export_cam_hid.description = "Shorthand for exporting by can job name";
+	export_cam_hid.exporter = 1;
+	export_cam_hid.hide_from_gui = 1;
+
+	export_cam_hid.get_export_options = export_cam_get_export_options;
+	export_cam_hid.do_export = export_cam_do_export;
+	export_cam_hid.parse_arguments = export_cam_parse_arguments;
+
+	export_cam_hid.usage = export_cam_usage;
+
+	pcb_hid_register_hid(&export_cam_hid);
+	return 0;
 
 	return 0;
 }
