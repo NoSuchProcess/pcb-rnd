@@ -131,6 +131,9 @@ static int cam_gui(const char *arg)
 					PCB_DAD_STRING(ctx->dlg);
 						PCB_DAD_HELP(ctx->dlg, "Filter text:\nlist jobs with matching name only");
 						PCB_DAD_CHANGE_CB(ctx->dlg, cam_gui_filter_cb);
+					PCB_DAD_BEGIN_VBOX(ctx->dlg); /* filler */
+						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_END(ctx->dlg);
 					PCB_DAD_BUTTON(ctx->dlg, "export!");
 				PCB_DAD_END(ctx->dlg);
 			PCB_DAD_END(ctx->dlg);
