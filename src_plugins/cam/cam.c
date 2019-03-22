@@ -39,29 +39,16 @@
 #include "plugins.h"
 #include "actions.h"
 #include "cam_conf.h"
-#include "cam_compile.h"
 #include "compat_misc.h"
 #include "safe_fs.h"
 #include "../src_plugins/cam/conf_internal.c"
-
 
 static const char *cam_cookie = "cam exporter";
 
 const conf_cam_t conf_cam;
 #define CAM_CONF_FN "cam.conf"
 
-typedef struct {
-	char *prefix;            /* strdup'd file name prefix from the last prefix command */
-	pcb_hid_t *exporter;
-
-	char *args;              /* strdup'd argument string from the last plugin command - already split up */
-	char *argv[128];         /* [0] and [1] are for --cam; the rest point into args */
-	int argc;
-
-	void *vars;
-
-	gds_t tmp;
-} cam_ctx_t;
+#include "cam_compile.c"
 
 static void cam_init_inst(cam_ctx_t *ctx)
 {
@@ -86,40 +73,6 @@ static void cam_uninit_inst(cam_ctx_t *ctx)
 	free(ctx->args);
 	gds_uninit(&ctx->tmp);
 }
-
-/* mkdir -p on arg - changes the string in arg */
-static int prefix_mkdir(char *arg, char **filename)
-{
-	char *curr, *next, *end;
-	int res;
-
-		/* mkdir -p if there's a path sep in the prefix */
-		end = strrchr(arg, PCB_DIR_SEPARATOR_C);
-		if (end == NULL) {
-			if (filename != NULL)
-				*filename = arg;
-			return 0;
-		}
-
-		*end = '\0';
-		res = end - arg;
-		if (filename != NULL)
-			*filename = end+1;
-
-		for(curr = arg; curr != NULL; curr = next) {
-			next = strrchr(curr, PCB_DIR_SEPARATOR_C);
-			if (next != NULL)
-				*next = '\0';
-			pcb_mkdir(arg, 0755);
-			if (next != NULL) {
-				*next = PCB_DIR_SEPARATOR_C;
-				next++;
-			}
-		}
-	return res;
-}
-
-#include "cam_compile.c"
 
 /* look up a job by name in the config */
 static const char *cam_find_job(const char *job)

@@ -56,4 +56,33 @@ typedef struct {
 	} op;
 } pcb_cam_code_t;
 
+
+#define GVT(x) vtcc_ ## x
+#define GVT_ELEM_TYPE pcb_cam_code_t
+#define GVT_SIZE_TYPE size_t
+#define GVT_DOUBLING_THRS 4096
+#define GVT_START_SIZE 32
+#define GVT_FUNC
+#define GVT_SET_NEW_BYTES_TO 0
+
+#include <genvector/genvector_impl.h>
+#define GVT_REALLOC(vect, ptr, size)  realloc(ptr, size)
+#define GVT_FREE(vect, ptr)           free(ptr)
+#include <genvector/genvector_undef.h>
+
+typedef struct {
+	char *prefix;            /* strdup'd file name prefix from the last prefix command */
+	pcb_hid_t *exporter;
+
+	char *args;              /* strdup'd argument string from the last plugin command - already split up */
+	char *argv[128];         /* [0] and [1] are for --cam; the rest point into args */
+	int argc;
+
+	vtcc_t code;
+	void *vars;
+
+	gds_t tmp;
+} cam_ctx_t;
+
+
 #endif

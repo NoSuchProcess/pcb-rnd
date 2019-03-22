@@ -26,7 +26,42 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+
+#define GVT_DONT_UNDEF
 #include "cam_compile.h"
+#include <genvector/genvector_impl.c>
+
+/* mkdir -p on arg - changes the string in arg */
+static int prefix_mkdir(char *arg, char **filename)
+{
+	char *curr, *next, *end;
+	int res;
+
+		/* mkdir -p if there's a path sep in the prefix */
+		end = strrchr(arg, PCB_DIR_SEPARATOR_C);
+		if (end == NULL) {
+			if (filename != NULL)
+				*filename = arg;
+			return 0;
+		}
+
+		*end = '\0';
+		res = end - arg;
+		if (filename != NULL)
+			*filename = end+1;
+
+		for(curr = arg; curr != NULL; curr = next) {
+			next = strrchr(curr, PCB_DIR_SEPARATOR_C);
+			if (next != NULL)
+				*next = '\0';
+			pcb_mkdir(arg, 0755);
+			if (next != NULL) {
+				*next = PCB_DIR_SEPARATOR_C;
+				next++;
+			}
+		}
+	return res;
+}
 
 static int cam_exec_inst(cam_ctx_t *ctx, char *cmd, char *arg)
 {
@@ -240,4 +275,5 @@ static int pcb_cam_compile(cam_ctx_t *ctx, const char *script_in)
 	free(script);
 	return res;
 }
+
 
