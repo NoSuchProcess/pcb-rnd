@@ -209,7 +209,7 @@ static int cam_compile(cam_ctx_t *ctx, const char *script_in)
 			*arg = '\0';
 			arg++;
 		}
-		if ((*arg == '#') || (*arg == '\0'))
+		if ((*curr == '#') || (*curr == '\0'))
 			continue;
 		r = cam_compile_line(ctx, curr, arg, &code);
 		if (r == 0)
