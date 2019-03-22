@@ -249,16 +249,15 @@ static int cam_call(const char *job, cam_ctx_t *ctx)
 	return -1;
 }
 
-static int cam_parse_opt(cam_ctx_t *ctx, const char *opt)
+static int cam_parse_opt_outfile(cam_ctx_t *ctx, const char *optval)
 {
-	if (strncmp(opt, "outfile=", 8) == 0) {
-		char *fn, *tmp = pcb_strdup(opt+8);
+		char *fn, *tmp = pcb_strdup(optval);
 		int dirlen = prefix_mkdir(tmp, &fn);
 
 		free(ctx->prefix);
 		if (dirlen > 0) {
 			ctx->prefix = malloc(dirlen+2);
-			memcpy(ctx->prefix, opt+8, dirlen);
+			memcpy(ctx->prefix, optval, dirlen);
 			ctx->prefix[dirlen] = PCB_DIR_SEPARATOR_C;
 			ctx->prefix[dirlen+1] = '\0';
 		}
@@ -267,6 +266,12 @@ static int cam_parse_opt(cam_ctx_t *ctx, const char *opt)
 		pcb_cam_set_var(pcb_strdup("base"), pcb_strdup(fn));
 		free(tmp);
 		return 0;
+}
+
+static int cam_parse_opt(cam_ctx_t *ctx, const char *opt)
+{
+	if (strncmp(opt, "outfile=", 8) == 0) {
+		return cam_parse_opt_outfile(ctx, opt+8);
 	}
 	else {
 		char *sep = strchr(opt, '=');
