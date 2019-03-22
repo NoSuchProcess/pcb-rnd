@@ -62,8 +62,6 @@ typedef struct {
 	gds_t tmp;
 } cam_ctx_t;
 
-#include "cam_gui.c"
-
 static void cam_init_inst(cam_ctx_t *ctx)
 {
 	memset(ctx, 0, sizeof(cam_ctx_t));
@@ -279,6 +277,8 @@ static int cam_parse_opt(cam_ctx_t *ctx, const char *opt)
 	}
 	return 1;
 }
+
+#include "cam_gui.c"
 
 static const char pcb_acts_cam[] = "cam(exec, script, [options])\ncam(call, jobname, [options])\ncam([gui])";
 static const char pcb_acth_cam[] = "Export jobs for feeding cam processes";

@@ -32,7 +32,7 @@
 
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
-	int wjobs;
+	int wjobs, wtxt;
 } cam_dlg_t;
 
 static void cam_gui_jobs2dlg(cam_dlg_t *ctx)
@@ -91,6 +91,18 @@ static void cam_gui_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pcb_dad_tree_update_hide(attr);
 }
 
+static void cam_job_select_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+{
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	cam_dlg_t *ctx = tree->user_ctx;
+
+	if (row != NULL) {
+		const char *script = cam_find_job(row->cell[0]);
+		pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
+		pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+		txt->hid_set_text(atxt, hid_ctx, PCB_HID_TEXT_REPLACE, script);
+	}
+}
 
 static void cam_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
@@ -112,6 +124,8 @@ static int cam_gui(const char *arg)
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 				PCB_DAD_TREE(ctx->dlg, 1, 0, NULL);
 					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+					PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, cam_job_select_cb);
+					PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
 					ctx->wjobs = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_BEGIN_HBOX(ctx->dlg); /* command section */
 					PCB_DAD_STRING(ctx->dlg);
@@ -128,6 +142,7 @@ static int cam_gui(const char *arg)
 						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 						PCB_DAD_TEXT(ctx->dlg, ctx);
 						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+						ctx->wtxt = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_END(ctx->dlg);
 					PCB_DAD_BEGIN_VBOX(ctx->dlg); /* bottom */
 						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
@@ -141,6 +156,11 @@ static int cam_gui(const char *arg)
 
 	PCB_DAD_NEW("cam", ctx->dlg, "CAM export", ctx, pcb_false, cam_close_cb);
 
+	{ /* set right top text read-only */
+		pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
+		pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+		txt->hid_set_readonly(atxt, ctx->dlg_hid_ctx, 1);
+	}
 	cam_gui_jobs2dlg(ctx);
 
 	return 0;
