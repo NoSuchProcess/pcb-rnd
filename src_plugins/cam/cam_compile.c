@@ -65,7 +65,6 @@ static int prefix_mkdir(char *arg, char **filename)
 
 static int cam_exec_inst(cam_ctx_t *ctx, pcb_cam_code_t *code)
 {
-/*	char *curr, *next;*/
 	int argc;
 	char **argv;
 
