@@ -459,7 +459,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val)
 {
 	char buf[30];
-	int save, n;
+	int save, n, copied = 0;
 
 	save = ctx->inhibit_valchg;
 	ctx->inhibit_valchg = 1;
@@ -496,6 +496,8 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 			break;
 		case PCB_HATT_STRING:
 			XtVaSetValues(ctx->wl[idx], XmNvalue, XmStrCast(val->str_value), NULL);
+			ctx->attrs[idx].default_val.str_value = pcb_strdup(val->str_value);
+			copied = 1;
 			break;
 		case PCB_HATT_INTEGER:
 			sprintf(buf, "%d", val->int_value);
@@ -539,7 +541,8 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 	}
 
 	ok:;
-	ctx->attrs[idx].default_val = *val;
+	if (!copied)
+		ctx->attrs[idx].default_val = *val;
 	ctx->inhibit_valchg = save;
 	return 0;
 
