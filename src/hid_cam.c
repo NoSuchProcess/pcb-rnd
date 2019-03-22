@@ -532,6 +532,7 @@ static int cam_update_name_cb(void *ctx_, gds_t *s, const char **input)
 			if (len < sizeof(varname)-1) {
 				const char *val;
 				strncpy(varname, *input, len);
+				varname[len] = 0;
 				val = htsp_get(ctx->vars, varname);
 				if (val != NULL)
 					gds_append_str(s, val);
