@@ -121,9 +121,24 @@ static void cam_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	free(ctx);
 }
 
+/* center aligned label */
+static void header_label(cam_dlg_t *ctx, const char *text)
+{
+	PCB_DAD_BEGIN_HBOX(ctx->dlg);
+		PCB_DAD_BEGIN_VBOX(ctx->dlg);
+			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_END(ctx->dlg);
+		PCB_DAD_LABEL(ctx->dlg, text);
+		PCB_DAD_BEGIN_VBOX(ctx->dlg);
+			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_END(ctx->dlg);
+	PCB_DAD_END(ctx->dlg);
+}
+
 static int cam_gui(const char *arg)
 {
 	cam_dlg_t *ctx = calloc(sizeof(cam_dlg_t), 1);
+	const char *opt_hdr[] = {"key", "option value", NULL};
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
@@ -154,13 +169,23 @@ static int cam_gui(const char *arg)
 				PCB_DAD_BEGIN_VPANE(ctx->dlg);
 					PCB_DAD_BEGIN_VBOX(ctx->dlg); /* top */
 						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+						header_label(ctx, "CAM job script");
 						PCB_DAD_TEXT(ctx->dlg, ctx);
 						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
 						ctx->wtxt = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_END(ctx->dlg);
 					PCB_DAD_BEGIN_VBOX(ctx->dlg); /* bottom */
 						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
-						PCB_DAD_LABEL(ctx->dlg, "TODO");
+						header_label(ctx, "CAM options");
+						PCB_DAD_BEGIN_TABLE(ctx->dlg, 2); /* special options */
+							PCB_DAD_LABEL(ctx->dlg, "outfile");
+							PCB_DAD_STRING(ctx->dlg);
+							PCB_DAD_LABEL(ctx->dlg, "prefix");
+							PCB_DAD_LABEL(ctx->dlg, "");
+						PCB_DAD_END(ctx->dlg);
+
+						PCB_DAD_TREE(ctx->dlg, 2, 0, opt_hdr); /* option table */
+							PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
 					PCB_DAD_END(ctx->dlg);
 				PCB_DAD_END(ctx->dlg);
 				PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
