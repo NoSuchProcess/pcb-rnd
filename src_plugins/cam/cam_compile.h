@@ -32,8 +32,7 @@
 typedef enum {
 	PCB_CAM_DESC,
 	PCB_CAM_PLUGIN,
-	PCB_CAM_WRITE,
-	PCB_CAM_PREFIX
+	PCB_CAM_WRITE
 } pcb_cam_inst_t;
 
 typedef struct {

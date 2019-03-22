@@ -69,12 +69,6 @@ static int cam_exec_inst(cam_ctx_t *ctx, pcb_cam_code_t *code)
 	char **argv;
 
 	switch(code->inst) {
-		case PCB_CAM_PREFIX:
-			free(ctx->prefix);
-			ctx->prefix = pcb_strdup(code->op.prefix.arg);
-			prefix_mkdir(ctx->prefix, NULL);
-			break;
-
 		case PCB_CAM_DESC:
 			/* ignore */
 			break;
@@ -137,11 +131,7 @@ static int cam_exec(cam_ctx_t *ctx)
 static int cam_compile_line(cam_ctx_t *ctx, char *cmd, char *arg, pcb_cam_code_t *code)
 {
 
-	if (strcmp(cmd, "prefix") == 0) {
-		code->inst = PCB_CAM_PREFIX;
-		code->op.prefix.arg = pcb_strdup(arg);
-	}
-	else if (strcmp(cmd, "desc") == 0) {
+	if (strcmp(cmd, "desc") == 0) {
 		code->inst = PCB_CAM_DESC;
 		code->op.desc.arg = pcb_strdup(arg);
 	}
@@ -238,11 +228,6 @@ static void cam_free_inst(cam_ctx_t *ctx, pcb_cam_code_t *code)
 
 	switch(code->inst) {
 		case PCB_CAM_DESC:
-			break;
-
-		case PCB_CAM_PREFIX:
-			free(ctx->prefix);
-			ctx->prefix = NULL;
 			break;
 
 		case PCB_CAM_WRITE:
