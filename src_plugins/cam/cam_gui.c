@@ -36,7 +36,7 @@ static const char *PREFIX_HELP = "File name prefix: every output file\npath will
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	cam_ctx_t cam;
-	int wjobs, wtxt, woutfile, wprefix, wopts;
+	int wjobs, wdigest, wtxt, woutfile, wprefix, wopts;
 } cam_dlg_t;
 
 static void cam_gui_jobs2dlg(cam_dlg_t *ctx)
@@ -78,6 +78,54 @@ static void cam_gui_jobs2dlg(cam_dlg_t *ctx)
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wjobs, &hv);
 	}
 }
+
+static void cam_gui_digest2dlg(cam_dlg_t *ctx)
+{
+	pcb_hid_attribute_t *attr;
+	pcb_hid_tree_t *tree;
+	pcb_cam_code_t *c, *plugin = NULL;
+	char *cell[4], tmp[1024];
+	int n;
+
+	attr = &ctx->dlg[ctx->wdigest];
+	tree = (pcb_hid_tree_t *)attr->enumerations;
+
+	/* remove existing items */
+	pcb_dad_tree_clear(tree);
+
+	/* add all new items */
+	for(n = 0, c = ctx->cam.code.array; n < ctx->cam.code.used; n++,c++) {
+		switch(c->inst) {
+			case PCB_CAM_DESC:
+				break;
+			case PCB_CAM_PLUGIN:
+				plugin = c;
+				break;
+			case PCB_CAM_WRITE:
+				strncpy(tmp, c->op.write.arg, sizeof(tmp));
+
+				cell[0] = tmp;
+				cell[2] = strchr(tmp, '=');
+				if (cell[2] != NULL) {
+					*cell[2] = '\0';
+					(cell[2])++;
+				}
+				else
+					cell[2] = "<none>";
+
+				if (plugin != NULL)
+					cell[1] = pcb_strdup(plugin->op.plugin.exporter->name);
+				else
+					cell[1] = "<NO PLUGIN>";
+
+				
+				cell[3] = NULL;
+				pcb_dad_tree_append(attr, NULL, cell);
+				break;
+		}
+	}
+}
+
 
 static void cam_gui_opts2dlg(cam_dlg_t *ctx)
 {
@@ -174,7 +222,14 @@ static void cam_job_select_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hi
 		char *script = kill_tabs(cam_find_job(row->cell[0]));
 		pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
 		pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+
 		txt->hid_set_text(atxt, hid_ctx, PCB_HID_TEXT_REPLACE, script);
+
+		cam_free_code(&ctx->cam);
+		if (script != NULL)
+			cam_compile(&ctx->cam, script);
+		cam_gui_digest2dlg(ctx);
+
 		free(script);
 	}
 }
@@ -205,6 +260,8 @@ static int cam_gui(const char *arg)
 {
 	cam_dlg_t *ctx = calloc(sizeof(cam_dlg_t), 1);
 	const char *opt_hdr[] = {"key", "option value", NULL};
+	const char *script_tabs[] = {"digest", "raw", NULL};
+	const char *digest_hdr[] = {"file", "plugin", "layer groups", NULL};
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
 	ctx->cam.vars = pcb_cam_vars_alloc();
@@ -239,9 +296,16 @@ static int cam_gui(const char *arg)
 					PCB_DAD_BEGIN_VBOX(ctx->dlg); /* top */
 						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 						header_label(ctx, "CAM job script");
-						PCB_DAD_TEXT(ctx->dlg, ctx);
-						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
-						ctx->wtxt = PCB_DAD_CURRENT(ctx->dlg);
+						PCB_DAD_BEGIN_TABBED(ctx->dlg, script_tabs);
+
+							PCB_DAD_TREE(ctx->dlg, 3, 0, digest_hdr);
+								PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+								ctx->wdigest = PCB_DAD_CURRENT(ctx->dlg);
+
+							PCB_DAD_TEXT(ctx->dlg, ctx);
+								PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+								ctx->wtxt = PCB_DAD_CURRENT(ctx->dlg);
+						PCB_DAD_END(ctx->dlg);
 					PCB_DAD_END(ctx->dlg);
 					PCB_DAD_BEGIN_VBOX(ctx->dlg); /* bottom */
 						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
