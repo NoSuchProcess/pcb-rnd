@@ -32,7 +32,8 @@
 
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
-	int wjobs, wtxt;
+	cam_ctx_t cam;
+	int wjobs, wtxt, woutfile, wprefix;
 } cam_dlg_t;
 
 static void cam_gui_jobs2dlg(cam_dlg_t *ctx)
@@ -73,6 +74,21 @@ static void cam_gui_jobs2dlg(cam_dlg_t *ctx)
 		hv.str_value = cursor_path;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wjobs, &hv);
 	}
+}
+
+static void cam_gui_opts2dlg(cam_dlg_t *ctx)
+{
+	pcb_hid_attr_val_t hv;
+
+	cam_parse_opt_outfile(&ctx->cam, ctx->dlg[ctx->woutfile].default_val.str_value);
+	hv.str_value = ctx->cam.prefix == NULL ? "" : ctx->cam.prefix;
+	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprefix, &hv);
+}
+
+static void cam_gui_outfile_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
+{
+	cam_dlg_t *ctx = caller_data;
+	cam_gui_opts2dlg(ctx);
 }
 
 static void cam_gui_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
@@ -117,6 +133,7 @@ static void cam_job_select_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hi
 static void cam_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	cam_dlg_t *ctx = caller_data;
+	cam_uninit_inst(&ctx->cam);
 	PCB_DAD_FREE(ctx->dlg);
 	free(ctx);
 }
@@ -140,6 +157,8 @@ static int cam_gui(const char *arg)
 	cam_dlg_t *ctx = calloc(sizeof(cam_dlg_t), 1);
 	const char *opt_hdr[] = {"key", "option value", NULL};
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+
+	ctx->cam.vars = pcb_cam_vars_alloc();
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
 		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
@@ -180,8 +199,11 @@ static int cam_gui(const char *arg)
 						PCB_DAD_BEGIN_TABLE(ctx->dlg, 2); /* special options */
 							PCB_DAD_LABEL(ctx->dlg, "outfile");
 							PCB_DAD_STRING(ctx->dlg);
+								PCB_DAD_CHANGE_CB(ctx->dlg, cam_gui_outfile_cb);
+								ctx->woutfile = PCB_DAD_CURRENT(ctx->dlg);
 							PCB_DAD_LABEL(ctx->dlg, "prefix");
 							PCB_DAD_LABEL(ctx->dlg, "");
+								ctx->wprefix = PCB_DAD_CURRENT(ctx->dlg);
 						PCB_DAD_END(ctx->dlg);
 
 						PCB_DAD_TREE(ctx->dlg, 2, 0, opt_hdr); /* option table */
@@ -195,11 +217,20 @@ static int cam_gui(const char *arg)
 
 	PCB_DAD_NEW("cam", ctx->dlg, "CAM export", ctx, pcb_false, cam_close_cb);
 
+	{ /* set default outfile */
+		pcb_hid_attr_val_t hv;
+		hv.str_value = pcb_derive_default_filename_(PCB->Filename, "");
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->woutfile, &hv);
+		free((char *)hv.str_value);
+		cam_gui_opts2dlg(ctx);
+	}
+
 	{ /* set right top text read-only */
 		pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
 		pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
 		txt->hid_set_readonly(atxt, ctx->dlg_hid_ctx, 1);
 	}
+
 	cam_gui_jobs2dlg(ctx);
 
 	return 0;
