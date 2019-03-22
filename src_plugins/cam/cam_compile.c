@@ -265,9 +265,8 @@ static int pcb_cam_compile(cam_ctx_t *ctx, const char *script_in)
 		if ((*arg == '#') || (*arg == '\0'))
 			continue;
 		r = cam_compile_line(ctx, curr, arg, &code);
-		if (r == 0) {
-			TODO("append");
-		}
+		if (r == 0)
+			vtcc_append(&ctx->code, code);
 		else
 			res = 1;
 	}
