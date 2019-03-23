@@ -164,6 +164,8 @@ static int kicad_parse_version(read_state_t *st, gsxl_node_t *subtree)
 static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree); /* for layout layer definitions */
 static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree); /* describes netlists for the layout */
 static int kicad_get_layeridx(read_state_t *st, const char *kicad_name);
+static pcb_layer_t *kicad_get_subc_layer(read_state_t *st, pcb_subc_t *subc, const char *layer_name, const char *default_layer_name);
+
 
 #define SEEN_NO_DUP(bucket, bit) \
 do { \
@@ -291,7 +293,7 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 	int mirrored = 0;
 	unsigned direction;
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
-	int PCBLayer;
+	pcb_layer_t *ly;
 
 		for(i = 0; text[i] != 0; i++)
 			textLength++;
@@ -301,16 +303,34 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 				PARSE_COORD(X, n, n->children, "text X1");
 				PARSE_COORD(Y, n, n->children->next, "text Y1");
 				PARSE_DOUBLE(rotdeg, NULL, n->children->next->next, "text rotation");
+				if (subc != NULL) {
+					pcb_coord_t sx, sy;
+					double srot;
+					if (pcb_subc_get_origin(subc, &sx, &sy) == 0) {
+						X += sx;
+						Y += sy;
+					}
+					TODO("subc roation is not properly mapped by the caller");
+					if (pcb_subc_get_rotation(subc, &srot) == 0)
+						rotdeg += srot;
+				}
 				direction = rotdeg_to_dir(rotdeg); /* used for centering only */
 			}
 			else if (n->str != NULL && strcmp("layer", n->str) == 0) {
 				SEEN_NO_DUP(tally, 1);
 				if (n->children != NULL && n->children->str != NULL) {
-					PCBLayer = kicad_get_layeridx(st, n->children->str);
-					if (PCBLayer < 0)
-						return kicad_error(subtree, "unexpected text layer def < 0 (%s)", n->children->str);
-					else if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM)
-						Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
+					if (subc != NULL) {
+						/* NOTE: for text there is no subc default layer (assumes KiCad has text on silk only) */
+						ly = kicad_get_subc_layer(st, subc, n->children->str, NULL);
+					}
+					else {
+						pcb_layer_id_t PCBLayer = kicad_get_layeridx(st, n->children->str);
+						if (PCBLayer < 0)
+							return kicad_error(subtree, "unexpected text layer def < 0 (%s)", n->children->str);
+						if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM)
+							Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
+						ly = &st->pcb->Data->Layer[PCBLayer];
+					}
 				}
 				else
 					return kicad_error(subtree, "unexpected empty/NULL text layer node");
@@ -394,14 +414,10 @@ TODO("TODO")
 			X += mx * PCB_MM_TO_COORD((GLYPH_WIDTH * textLength) / 2.0);
 			Y += my * PCB_MM_TO_COORD(GLYPH_WIDTH / 2.0); /* centre it vertically */
 		}
-		if (subc != NULL) {
-			TODO("resolve layer properly!");
-/*			pcb_text_new(&subc->data->Layer[0], pcb_font(st->pcb, 0, 1), X, Y, rotdeg, scaling, 0, text, Flags);*/
-		}
-		else
-			pcb_text_new(&st->pcb->Data->Layer[PCBLayer], pcb_font(st->pcb, 0, 1), X, Y, rotdeg, scaling, 0, text, Flags);
+		pcb_text_new(ly, pcb_font(st->pcb, 0, 1), X, Y, rotdeg, scaling, 0, text, Flags);
 		return 0; /* create new font */
 	}
+	return kicad_error(subtree, "failed to create text due to missing fields");
 }
 
 /* kicad_pcb/gr_text */
@@ -409,7 +425,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 {
 	if (subtree->str != NULL)
 		return kicad_parse_any_text(st, subtree, subtree->str, NULL);
-	return kicad_error(subtree, "failed to create text due to missing fields");
+	return kicad_error(subtree, "failed to create text: missing text string");
 }
 
 /* kicad_pcb/gr_line */
@@ -1332,7 +1348,7 @@ TODO(": pad rotation?")
 	return 0;
 }
 
-pcb_layer_t *kicad_get_subc_layer(read_state_t *st, pcb_subc_t *subc, const char *layer_name, const char *default_layer_name)
+static pcb_layer_t *kicad_get_subc_layer(read_state_t *st, pcb_subc_t *subc, const char *layer_name, const char *default_layer_name)
 {
 	int pcb_idx = -1;
 	pcb_layer_id_t lid;
