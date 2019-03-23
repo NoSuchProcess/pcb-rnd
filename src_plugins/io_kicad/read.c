@@ -241,6 +241,14 @@ static int kicad_parse_title_block(read_state_t *st, gsxl_node_t *subtree)
 	return kicad_error(subtree, "error parsing KiCad titleblock.");
 }
 
+static int rotdeg_to_dir(double rotdeg)
+{
+	if ((rotdeg > 45.0) && (rotdeg <= 135.0))   return 1;
+	if ((rotdeg > 135.0) && (rotdeg <= 225.0))  return 2;
+	if ((rotdeg > 225.0) && (rotdeg <= 315.0))  return 3;
+	return 0;
+}
+
 /* kicad_pcb/gr_text */
 static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 {
@@ -248,7 +256,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 	int i;
 	unsigned long tally = 0, required;
 	char *end, *text;
-	double val;
+	double val, rotdeg = 0.0;
 	pcb_coord_t X, Y;
 	int scaling = 100;
 	int textLength = 0;
@@ -281,21 +289,10 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 					else
 						Y = PCB_MM_TO_COORD(val);
 					if (n->children->next->next != NULL && n->children->next->next->str != NULL) {
-						val = strtod(n->children->next->next->str, &end);
-						if (*end == 0) {
-							direction = 0; /* default */
-							if (val > 45.0 && val <= 135.0) {
-								direction = 1;
-							}
-							else if (val > 135.0 && val <= 225.0) {
-								direction = 2;
-							}
-							else if (val > 225.0 && val <= 315.0) {
-								direction = 3;
-							}
-						}
-						else
+						rotdeg = strtod(n->children->next->next->str, &end);
+						if (*end != 0)
 							return kicad_error(subtree, "error parsing gr_text rotation");
+						direction = rotdeg_to_dir(rotdeg); /* used for centering only */
 					}
 				}
 				else {
@@ -378,6 +375,7 @@ TODO(": this will never be NULL; what are we trying to check here?")
 
 		if (mirrored != 0) {
 			if (direction % 2 == 0) {
+			rotdeg = fmod((rotdeg + 180.0), 360.0);
 				direction += 2;
 				direction = direction % 4;
 			}
@@ -417,8 +415,7 @@ TODO(": this will never be NULL; what are we trying to check here?")
 			}
 		}
 
-TODO("textrot: check if we can just use the rotation angle")
-		pcb_text_new(&st->pcb->Data->Layer[PCBLayer], pcb_font(st->pcb, 0, 1), X, Y, 90.0*direction, scaling, 0, text, Flags);
+		pcb_text_new(&st->pcb->Data->Layer[PCBLayer], pcb_font(st->pcb, 0, 1), X, Y, rotdeg, scaling, 0, text, Flags);
 		return 0; /* create new font */
 	}
 	return kicad_error(subtree, "failed to create gr_text element");
