@@ -325,21 +325,13 @@ TODO("TODO")
 					if (m->str != NULL && strcmp("font", m->str) == 0) {
 						for(l = m->children; l != NULL; l = l->next) {
 							if (m->str != NULL && strcmp("size", l->str) == 0) {
+								double sx, sy;
 								SEEN_NO_DUP(tally, 2);
-								if (l->children != NULL && l->children->str != NULL) {
-									val = strtod(l->children->str, &end);
-									if (*end != 0)
-										return kicad_error(subtree, "error parsing gr_text size X");
-									else
-										scaling = (int)(100 * val / 1.27); /* standard glyph width ~= 1.27mm */
-								}
-								else
-									return kicad_error(subtree, "unexpected empty/NULL gr_text font size X node");
-								if (l->children->next != NULL && l->children->next->str != NULL) {
-									/*pcb_trace("\tfont sizeY: '%s'\n", (l->children->next->str)); */
-								}
-								else
-									return kicad_error(subtree, "unexpected empty/NULL gr_text font size Y node");
+								PARSE_DOUBLE(sx, l, l->children, "gr_text size X");
+								PARSE_DOUBLE(sy, l, l->children->next, "gr_text size Y");
+								scaling = (int)(100 * ((sx+sy)/2.0) / 1.27); /* standard glyph width ~= 1.27mm */
+								if (sx != sy)
+									kicad_warning(subtree, "text font size mismatch in X and Y direction - skretching is not yet supported, using the average");
 							}
 							else if (strcmp("thickness", l->str) == 0) {
 								SEEN_NO_DUP(tally, 3);
