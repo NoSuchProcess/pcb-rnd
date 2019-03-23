@@ -134,9 +134,31 @@ static int pcb_fuse_access(const char *path, int mask)
 
 static int pcb_fuse_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
 {
+	gds_t data;
+	int len;
+
 	fprintf(flog, "read path=%s\n", path);
 	fflush(flog);
-	return -1;
+
+	if (*path == '/')
+		path++;
+	gds_init(&data);
+	if (pcb_vfs_access(PCB, path, &data, 0, NULL) != 0) {
+		gds_uninit(&data);
+		fprintf(flog, "   ->   path=%s ENOENT\n", path);
+		fflush(flog);
+		return -ENOENT;
+	}
+
+	len = data.used;
+	len -= offset;
+	if (len > 0)
+		memcpy(buf, data.array + offset, len);
+	else
+		len = 0;
+	gds_uninit(&data);
+
+	return len;
 }
 
 static int pcb_fuse_write(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
@@ -150,7 +172,7 @@ static int pcb_fuse_open(const char *path, struct fuse_file_info *fi)
 {
 	fprintf(flog, "open path=%s\n", path);
 	fflush(flog);
-	return -1;
+	return 0;
 }
 
 static char **fuse_argv;
