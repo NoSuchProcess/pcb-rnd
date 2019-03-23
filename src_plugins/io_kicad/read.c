@@ -72,7 +72,6 @@ static int kicad_error(gsxl_node_t *subtree, char *fmt, ...)
 	gds_t str;
 	va_list ap;
 
-
 	gds_init(&str);
 	pcb_append_printf(&str, "io_kicad parse error at %d.%d: ", subtree->line, subtree->col);
 
@@ -218,7 +217,6 @@ TODO(": size can be determined by kicad_pcb/general/area - when that is present,
 /* kicad_pcb/parse_title_block */
 static int kicad_parse_title_block(read_state_t *st, gsxl_node_t *subtree)
 {
-
 	gsxl_node_t *n;
 	const char *prefix = "kicad_titleblock_";
 	char *name;
@@ -246,7 +244,6 @@ static int kicad_parse_title_block(read_state_t *st, gsxl_node_t *subtree)
 /* kicad_pcb/gr_text */
 static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 {
-
 	gsxl_node_t *l, *n, *m;
 	int i;
 	unsigned long tally = 0, required;
@@ -904,7 +901,6 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 /* kicad_pcb/segment */
 static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 {
-
 	gsxl_node_t *n;
 	unsigned long tally = 0, required;
 
@@ -2393,7 +2389,6 @@ TODO(": why do we try to do this? an error is an error")
 
 static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 {
-
 	gsxl_node_t *n, *m;
 	int i;
 	int polycount = 0;
