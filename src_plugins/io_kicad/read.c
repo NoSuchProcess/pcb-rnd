@@ -279,7 +279,7 @@ do { \
 } while(0) \
 
 /* kicad_pcb/gr_text */
-static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
+static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, int fp)
 {
 	gsxl_node_t *l, *n, *m;
 	int i;
@@ -301,9 +301,9 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 		for(n = subtree, i = 0; n != NULL; n = n->next, i++) {
 			if (n->str != NULL && strcmp("at", n->str) == 0) {
 				SEEN_NO_DUP(tally, 0);
-				PARSE_COORD(X, n, n->children, "gr_text X1");
-				PARSE_COORD(Y, n, n->children->next, "gr_text Y1");
-				PARSE_DOUBLE(rotdeg, NULL, n->children->next->next, "gr_text rotation");
+				PARSE_COORD(X, n, n->children, "text X1");
+				PARSE_COORD(Y, n, n->children->next, "text Y1");
+				PARSE_DOUBLE(rotdeg, NULL, n->children->next->next, "text rotation");
 				direction = rotdeg_to_dir(rotdeg); /* used for centering only */
 			}
 			else if (n->str != NULL && strcmp("layer", n->str) == 0) {
@@ -311,12 +311,12 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 				if (n->children != NULL && n->children->str != NULL) {
 					PCBLayer = kicad_get_layeridx(st, n->children->str);
 					if (PCBLayer < 0)
-						return kicad_error(subtree, "unexpected gr_text layer def < 0");
+						return kicad_error(subtree, "unexpected text layer def < 0");
 					else if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM)
 						Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
 				}
 				else
-					return kicad_error(subtree, "unexpected empty/NULL gr_text layer node");
+					return kicad_error(subtree, "unexpected empty/NULL text layer node");
 			}
 			else if (n->str != NULL && strcmp("hide", n->str) == 0) {
 TODO("TODO")
@@ -328,8 +328,8 @@ TODO("TODO")
 							if (m->str != NULL && strcmp("size", l->str) == 0) {
 								double sx, sy;
 								SEEN_NO_DUP(tally, 2);
-								PARSE_DOUBLE(sx, l, l->children, "gr_text size X");
-								PARSE_DOUBLE(sy, l, l->children->next, "gr_text size Y");
+								PARSE_DOUBLE(sx, l, l->children, "text size X");
+								PARSE_DOUBLE(sy, l, l->children->next, "text size Y");
 								scaling = (int)(100 * ((sx+sy)/2.0) / 1.27); /* standard glyph width ~= 1.27mm */
 								if (sx != sy)
 									kicad_warning(subtree, "text font size mismatch in X and Y direction - skretching is not yet supported, using the average");
@@ -337,7 +337,7 @@ TODO("TODO")
 							else if (strcmp("thickness", l->str) == 0) {
 								double thickness;
 								SEEN_NO_DUP(tally, 3);
-								PARSE_DOUBLE(thickness, l, l->children, "gr_text thickness");
+								PARSE_DOUBLE(thickness, l, l->children, "text thickness");
 								TODO("do use the thickness parameter");
 								(void)thickness;
 							}
@@ -352,13 +352,13 @@ TODO("TODO")
 							TODO("right or left justification is ignored");
 						}
 						else
-							return kicad_error(subtree, "unexpected empty/NULL gr_text justify node");
+							return kicad_error(subtree, "unexpected empty/NULL text justify node");
 					}
 					else {
 						if (m->str != NULL) {
 							/*pcb_trace("Unknown effects argument %s:", m->str); */
 						}
-						return kicad_error(subtree, "unexpected empty/NULL gr_text effects node");
+						return kicad_error(subtree, "unexpected empty/NULL text effects node");
 					}
 				}
 			}
@@ -400,7 +400,13 @@ TODO("TODO")
 		pcb_text_new(&st->pcb->Data->Layer[PCBLayer], pcb_font(st->pcb, 0, 1), X, Y, rotdeg, scaling, 0, text, Flags);
 		return 0; /* create new font */
 	}
-	return kicad_error(subtree, "failed to create gr_text element");
+	return kicad_error(subtree, "failed to create text due to missing fields");
+}
+
+/* kicad_pcb/gr_text */
+static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
+{
+	return kicad_parse_any_text(st, subtree, 0);
 }
 
 /* kicad_pcb/gr_line */
