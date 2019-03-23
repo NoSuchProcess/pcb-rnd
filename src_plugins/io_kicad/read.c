@@ -375,9 +375,8 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 							return kicad_error(subtree, "unexpected empty/NULL text justify node");
 					}
 					else {
-						if (m->str != NULL) {
-							/*pcb_trace("Unknown effects argument %s:", m->str); */
-						}
+						if (m->str != NULL)
+							kicad_warning(m, "Unknown effects argument %s:", m->str);
 						return kicad_error(subtree, "unexpected empty/NULL text effects node");
 					}
 				}
