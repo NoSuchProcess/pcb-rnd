@@ -2385,17 +2385,14 @@ TODO(": why do we try to do this? an error is an error")
 static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 {
 	gsxl_node_t *n, *m;
-	int i;
-	int polycount = 0;
-	long j = 0;
-	unsigned long tally = 0;
-	unsigned long required;
+	int i, PCBLayer = 0;
+	long j = 0, polycount = 0;
+	unsigned long tally = 0, required;
 	pcb_poly_t *polygon = NULL;
 	pcb_flag_t flags = pcb_flag_make(PCB_FLAG_CLEARPOLY);
 	char *end;
 	double val;
 	pcb_coord_t X, Y;
-	int PCBLayer = 0;
 
 	if (subtree->str != NULL) {
 		/*pcb_trace("Zone element found:\t'%s'\n", subtree->str); */
