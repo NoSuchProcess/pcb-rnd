@@ -365,9 +365,6 @@ TODO("TODO")
 	}
 	required = BV(0) | BV(1) | BV(2) | BV(3);
 	if ((tally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
-TODO(": this will never be NULL; what are we trying to check here?")
-		if (&st->pcb->fontkit.dflt == NULL)
-			pcb_font_create_default(st->pcb);
 
 		if (mirrored != 0) {
 			if (direction % 2 == 0) {
