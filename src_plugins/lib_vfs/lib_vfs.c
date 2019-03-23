@@ -49,22 +49,55 @@ static void cb_mkdir(pcb_vfs_list_cb cb, void *ctx, gds_t *path, const char *app
 	cb_mknode(cb, ctx, path, append, 1);
 }
 
+/* append 'append' to path, assuming it is a data node, not a directory; create
+   all parent directories found within 'append' if they are not already in 'seen'
+   and store them in 'seen' */
+static void cb_mkdirp(pcb_vfs_list_cb cb, void *ctx, gds_t *path, const char *append, htsp_t *seen)
+{
+	int ou = path->used;
+	char *s, *next;
+
+	gds_append_str(path, append);
+/*pcb_trace("---- mkdirp '%s'\n", path->array);*/
+	for(s = path->array + ou;; s = next) {
+		next = strchr(s, '/');
+		if (next == NULL)
+			break;
+		*next= '\0';
+/*pcb_trace(" dir '%s'\n", path->array);*/
+		if (!htsp_has(seen, path->array)) {
+			htsp_set(seen, pcb_strdup(path->array), ctx);
+			cb(ctx, path->array, 1);
+		}
+		*next= '/';
+		next++;
+	}
+
+	path->used = ou;
+}
+
 static void vfs_list_props(gds_t *path, pcb_propedit_t *pctx, pcb_vfs_list_cb cb, void *ctx)
 {
+	htsp_t seen;
 	htsp_entry_t *e;
 	size_t ou, orig_used;
 
 	pcb_propsel_map_core(pctx);
 
+	htsp_init(&seen, strhash, strkeyeq);
 	orig_used = path->used;
 	gds_append(path, '/');
 	ou = path->used;
 	for(e = htsp_first(&pctx->props); e != NULL; e = htsp_next(&pctx->props, e)) {
+		cb_mkdirp(cb, ctx, path, e->key, &seen);
 		path->used = ou;
 		gds_append_str(path, e->key);
 		cb(ctx, path->array, 0);
 	}
 	path->used = orig_used;
+	for(e = htsp_first(&seen); e != NULL; e = htsp_next(&seen, e))
+		free(e->key);
+	htsp_uninit(&seen);
 }
 
 static int vfs_access_prop(pcb_propedit_t *pctx, const char *path, gds_t *data, int wr, int *isdir)
