@@ -186,12 +186,12 @@ static void vfs_list_layers(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 
 		{
 			int ou = path.used;
-			gds_append_str(&path, "/p"); cb(ctx, path.array, 1); path.used = ou;
-			gds_append_str(&path, "/a"); cb(ctx, path.array, 1); path.used = ou;
-			gds_append_str(&path, "/line"); cb(ctx, path.array, 1); path.used = ou;
-			gds_append_str(&path, "/poly"); cb(ctx, path.array, 1); path.used = ou;
-			gds_append_str(&path, "/text"); cb(ctx, path.array, 1); path.used = ou;
-			gds_append_str(&path, "/arc"); cb(ctx, path.array, 1); path.used = ou;
+			cb_mkdir(cb, ctx, &path, "/p");
+			cb_mkdir(cb, ctx, &path, "/a");
+			cb_mkdir(cb, ctx, &path, "/line");
+			cb_mkdir(cb, ctx, &path, "/poly");
+			cb_mkdir(cb, ctx, &path, "/text");
+			cb_mkdir(cb, ctx, &path, "/arc");
 		}
 
 		pcb_props_init(&pctx, PCB);
