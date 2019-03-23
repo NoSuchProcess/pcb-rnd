@@ -154,10 +154,13 @@ static void netlist_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
 	netlist_ctx_t *ctx= tree->user_ctx;
 	const char *netname = NULL;
+	pcb_net_t *net = NULL;
 
 	if (row != NULL)
 		netname = row->cell[0];
-	netlist_data2dlg_connlist(ctx, pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_EDITED], netname, 0));
+	if (netname != NULL)
+		net = pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_EDITED], netname, 0);
+	netlist_data2dlg_connlist(ctx, net);
 	pcb_event(PCB_EVENT_GUI_LEAD_USER, "cci", 0, 0, 0);
 	netlist_force_redraw(ctx);
 }
