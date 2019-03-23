@@ -365,49 +365,37 @@ TODO("TODO")
 	}
 	required = BV(0) | BV(1) | BV(2) | BV(3);
 	if ((tally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
-
+		pcb_coord_t mx, my;
+		int swap;
 		if (mirrored != 0) {
 			if (direction % 2 == 0) {
 			rotdeg = fmod((rotdeg + 180.0), 360.0);
 				direction += 2;
 				direction = direction % 4;
 			}
-			if (direction == 0) {
-				X -= PCB_MM_TO_COORD((glyphWidth * textLength) / 2.0);
-				Y += PCB_MM_TO_COORD(glyphWidth / 2.0); /* centre it vertically */
-			}
-			else if (direction == 1) {
-				Y -= PCB_MM_TO_COORD((glyphWidth * textLength) / 2.0);
-				X -= PCB_MM_TO_COORD(glyphWidth / 2.0); /* centre it vertically */
-			}
-			else if (direction == 2) {
-				X += PCB_MM_TO_COORD((glyphWidth * textLength) / 2.0);
-				Y -= PCB_MM_TO_COORD(glyphWidth / 2.0); /* centre it vertically */
-			}
-			else if (direction == 3) {
-				Y += PCB_MM_TO_COORD((glyphWidth * textLength) / 2.0);
-				X += PCB_MM_TO_COORD(glyphWidth / 2.0); /* centre it vertically */
+			switch(direction) {
+				case 0: mx = -1; my = +1; swap = 0; break;
+				case 1: mx = -1; my = -1; swap = 1; break;
+				case 2: mx = +1; my = -1; swap = 0; break;
+				case 3: mx = +1; my = +1; swap = 1; break;
 			}
 		}
 		else { /* not back of board text */
-			if (direction == 0) {
-				X -= PCB_MM_TO_COORD((glyphWidth * textLength) / 2.0);
-				Y -= PCB_MM_TO_COORD(glyphWidth / 2.0); /* centre it vertically */
-			}
-			else if (direction == 1) {
-				Y += PCB_MM_TO_COORD((glyphWidth * textLength) / 2.0);
-				X -= PCB_MM_TO_COORD(glyphWidth / 2.0); /* centre it vertically */
-			}
-			else if (direction == 2) {
-				X += PCB_MM_TO_COORD((glyphWidth * textLength) / 2.0);
-				Y += PCB_MM_TO_COORD(glyphWidth / 2.0); /* centre it vertically */
-			}
-			else if (direction == 3) {
-				Y -= PCB_MM_TO_COORD((glyphWidth * textLength) / 2.0);
-				X += PCB_MM_TO_COORD(glyphWidth / 2.0); /* centre it vertically */
+			switch(direction) {
+				case 0: mx = -1; my = -1; swap = 0; break;
+				case 1: mx = +1; my = -1; swap = 1; break;
+				case 2: mx = +1; my = +1; swap = 0; break;
+				case 3: mx = -1; my = +1; swap = 1; break;
 			}
 		}
-
+		if (swap) {
+			Y += mx * PCB_MM_TO_COORD((glyphWidth * textLength) / 2.0);
+			X += my * PCB_MM_TO_COORD(glyphWidth / 2.0); /* centre it vertically */
+		}
+		else {
+			X += mx * PCB_MM_TO_COORD((glyphWidth * textLength) / 2.0);
+			Y += my * PCB_MM_TO_COORD(glyphWidth / 2.0); /* centre it vertically */
+		}
 		pcb_text_new(&st->pcb->Data->Layer[PCBLayer], pcb_font(st->pcb, 0, 1), X, Y, rotdeg, scaling, 0, text, Flags);
 		return 0; /* create new font */
 	}
