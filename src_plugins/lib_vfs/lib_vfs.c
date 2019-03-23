@@ -36,6 +36,19 @@
 
 #include "lib_vfs.h"
 
+static void cb_mknode(pcb_vfs_list_cb cb, void *ctx, gds_t *path, const char *append, int isdir)
+{
+	int ou = path->used;
+	gds_append_str(path, append);
+	cb(ctx, path->array, isdir);
+	path->used = ou;
+}
+
+static void cb_mkdir(pcb_vfs_list_cb cb, void *ctx, gds_t *path, const char *append)
+{
+	cb_mknode(cb, ctx, path, append, 1);
+}
+
 static void vfs_list_props(gds_t *path, pcb_propedit_t *pctx, pcb_vfs_list_cb cb, void *ctx)
 {
 	htsp_entry_t *e;
@@ -276,6 +289,7 @@ static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *data, int
 	return 0;
 }
 
+
 static void vfs_list_layergrps(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 {
 	gds_t path;
@@ -289,11 +303,16 @@ static void vfs_list_layergrps(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 
 	for(gid = 0; gid < pcb->LayerGroups.len; gid++) {
 		pcb_propedit_t pctx;
+		int ou;
 
 		path.used = orig_used;
 		pcb_append_printf(&path, "%ld", gid);
 		cb(ctx, path.array, 1);
 
+		cb_mkdir(cb, ctx, &path, "/p");
+		cb_mkdir(cb, ctx, &path, "/p/layer_group");
+		cb_mkdir(cb, ctx, &path, "/a");
+	
 		pcb_props_init(&pctx, PCB);
 		vtl0_append(&pctx.layergrps, gid);
 		vfs_list_props(&path, &pctx, cb, ctx);
