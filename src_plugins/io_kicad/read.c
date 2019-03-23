@@ -292,7 +292,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 	int mirrored = 0;
 	unsigned direction;
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
-	int PCBLayer; /* sane default value */
+	int PCBLayer;
 
 	if (subtree->str != NULL) {
 		text = subtree->str;
@@ -344,7 +344,6 @@ TODO("TODO")
 						}
 					}
 					else if (m->str != NULL && strcmp("justify", m->str) == 0) {
-						/* SEEN_NO_DUP(tally, 4); */
 						if (m->children != NULL && m->children->str != NULL) {
 							if (strcmp("mirror", m->children->str) == 0) {
 								mirrored = 1;
