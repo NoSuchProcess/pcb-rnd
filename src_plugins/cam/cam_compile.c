@@ -163,6 +163,8 @@ static int cam_compile_line(cam_ctx_t *ctx, char *cmd, char *arg, pcb_cam_code_t
 
 		code->op.plugin.argc = 2; /* [0] and [1] are reserved for the --cam argument */
 		code->op.plugin.argv = malloc(sizeof(char *) * (maxa+3));
+		code->op.plugin.argv[0] = NULL;
+		code->op.plugin.argv[1] = NULL;
 		if (code->op.plugin.argv == NULL)
 			return 1;
 		for(; curr != NULL; curr = next) {
