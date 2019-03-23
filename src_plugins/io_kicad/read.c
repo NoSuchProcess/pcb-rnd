@@ -449,9 +449,10 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 	unsigned long tally = 0, required;
 	char *end;
 	double val;
-	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance; /* not sure what to do with mask */
-	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
-	int PCBLayer = 0; /* sane default value */
+TODO("not sure what to do with mask")
+	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance;
+	pcb_flag_t Flags = pcb_flag_make(0);
+	int PCBLayer = 0;
 
 	Clearance = Thickness = 1; /* start with sane default of one nanometre */
 
@@ -781,7 +782,8 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 	char *end, *name; /* not using via name for now */
 	double val;
 	pcb_coord_t X, Y, Thickness, Clearance, Mask, Drill; /* not sure what to do with mask */
-/*	int PCBLayer = 0;   not used for now; no blind or buried vias currently in pcb-rnd */
+TODO("not used for now; do support blind or buried vias currently");
+/*	int PCBLayer = 0;    */
 
 	Clearance = Mask = PCB_MM_TO_COORD(0.250); /* start with something bland here */
 	Drill = PCB_MM_TO_COORD(0.300); /* start with something sane */
