@@ -351,10 +351,6 @@ static void vfs_list_layergrps(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 		pcb_append_printf(&path, "%ld", gid);
 		cb(ctx, path.array, 1);
 
-		cb_mkdir(cb, ctx, &path, "/p");
-		cb_mkdir(cb, ctx, &path, "/p/layer_group");
-		cb_mkdir(cb, ctx, &path, "/a");
-	
 		pcb_props_init(&pctx, PCB);
 		vtl0_append(&pctx.layergrps, gid);
 		vfs_list_props(&path, &pctx, cb, ctx);
