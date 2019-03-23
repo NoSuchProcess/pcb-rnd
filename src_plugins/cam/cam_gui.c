@@ -134,7 +134,7 @@ static void cam_gui_opts2dlg(cam_dlg_t *ctx)
 	pcb_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
 	pcb_hid_row_t *r;
-	char *cell[2], *cursor_path = NULL;
+	char *cell[3], *cursor_path = NULL;
 
 	cam_parse_opt_outfile(&ctx->cam, ctx->dlg[ctx->woutfile].default_val.str_value);
 	hv.str_value = ctx->cam.prefix == NULL ? "" : ctx->cam.prefix;
@@ -155,6 +155,7 @@ static void cam_gui_opts2dlg(cam_dlg_t *ctx)
 	for(e = htsp_first(vars); e != NULL; e = htsp_next(vars, e)) {
 		cell[0] = pcb_strdup(e->key);
 		cell[1] = pcb_strdup(e->value);
+		cell[2] = NULL;
 		pcb_dad_tree_append(attr, NULL, cell);
 	}
 
