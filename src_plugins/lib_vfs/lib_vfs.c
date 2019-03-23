@@ -115,19 +115,17 @@ static int vfs_access_prop(pcb_propedit_t *pctx, const char *path, gds_t *data, 
 	pcb_propval_t *pv;
 	htprop_entry_t *e;
 
-	if (*path == '\0') {
-		if (isdir != NULL)
-			*isdir = 1;
-		if (wr == 0)
-			return 0;
-		return -1;
-	}
+	if ((*path == '\0') || (strcmp(path, "p") == 0))
+		goto ret_dir;
 
 	pcb_propsel_map_core(pctx);
 	pt = htsp_get(&pctx->props, path);
 
 	if (pt == NULL)
-		return -1;
+		goto ret_dir; /* trust our listing */
+
+	if (isdir != NULL)
+		*isdir = 0;
 
 	if (wr) {
 		pcb_propset_ctx_t sctx;
@@ -135,7 +133,6 @@ static int vfs_access_prop(pcb_propedit_t *pctx, const char *path, gds_t *data, 
 		TODO("convert the other fields as well");
 		return pcb_propsel_set(pctx, path, &sctx) == 1;
 	}
-
 
 	e = htprop_first(&pt->values);
 	pv = &e->key;
@@ -148,6 +145,13 @@ static int vfs_access_prop(pcb_propedit_t *pctx, const char *path, gds_t *data, 
 	}
 
 	return 0;
+
+	ret_dir:;
+		if (isdir != NULL)
+			*isdir = 1;
+		if (wr == 0)
+			return 0;
+		return -1;
 }
 
 static void vfs_list_obj(pcb_board_t *pcb, gds_t *path, pcb_any_obj_t *obj, pcb_vfs_list_cb cb, void *ctx)
