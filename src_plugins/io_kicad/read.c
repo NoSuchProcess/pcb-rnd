@@ -52,6 +52,9 @@
 #include "../src_plugins/lib_compat_help/pstk_help.h"
 #include "../src_plugins/lib_compat_help/subc_help.h"
 
+/* a reasonable approximation of pcb glyph width, ~=  5000 centimils; in mm */
+#define GLYPH_WIDTH (1.27)
+
 typedef struct {
 	pcb_board_t *pcb;
 	pcb_data_t *fp_data;
@@ -287,7 +290,6 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 	int scaling = 100;
 	int textLength = 0;
 	int mirrored = 0;
-	double glyphWidth = 1.27; /* a reasonable approximation of pcb glyph width, ~=  5000 centimils */
 	unsigned direction;
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 	int PCBLayer; /* sane default value */
@@ -389,12 +391,12 @@ TODO("TODO")
 			}
 		}
 		if (swap) {
-			Y += mx * PCB_MM_TO_COORD((glyphWidth * textLength) / 2.0);
-			X += my * PCB_MM_TO_COORD(glyphWidth / 2.0); /* centre it vertically */
+			Y += mx * PCB_MM_TO_COORD((GLYPH_WIDTH * textLength) / 2.0);
+			X += my * PCB_MM_TO_COORD(GLYPH_WIDTH / 2.0); /* centre it vertically */
 		}
 		else {
-			X += mx * PCB_MM_TO_COORD((glyphWidth * textLength) / 2.0);
-			Y += my * PCB_MM_TO_COORD(glyphWidth / 2.0); /* centre it vertically */
+			X += mx * PCB_MM_TO_COORD((GLYPH_WIDTH * textLength) / 2.0);
+			Y += my * PCB_MM_TO_COORD(GLYPH_WIDTH / 2.0); /* centre it vertically */
 		}
 		pcb_text_new(&st->pcb->Data->Layer[PCBLayer], pcb_font(st->pcb, 0, 1), X, Y, rotdeg, scaling, 0, text, Flags);
 		return 0; /* create new font */
@@ -1391,7 +1393,6 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	pcb_angle_t endAngle = 0.0;
 	pcb_angle_t delta = 360.0; /* these defaults allow a fp_circle to be parsed, which does not specify (angle XXX) */
 	double val;
-	double glyphWidth = 1.27; /* a reasonable approximation of pcb glyph width, ~=  5000 centimils */
 	unsigned direction = 0; /* default is horizontal */
 	char *end, *textLabel, *text;
 	char *pinName, *moduleName;
@@ -1696,6 +1697,7 @@ TODO(": this should be coming from the s-expr file preferences part")
 				}
 				required = BV(0) | BV(1) | BV(4) | BV(7) | BV(8);
 				if ((tally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
+					double glw;
 TODO(": this will never be NULL; what are we trying to check here?")
 					if (&st->pcb->fontkit.dflt == NULL) {
 						pcb_font_create_default(st->pcb);
@@ -1703,8 +1705,7 @@ TODO(": this will never be NULL; what are we trying to check here?")
 
 					X = refdesX;
 					Y = refdesY;
-					glyphWidth = 1.27;
-					glyphWidth = glyphWidth * refdesScaling / 100.0;
+					glw = GLYPH_WIDTH * refdesScaling / 100.0;
 
 					if (mirrored != 0) {
 						if (direction % 2 == 0) {
@@ -1712,38 +1713,38 @@ TODO(": this will never be NULL; what are we trying to check here?")
 							direction = direction % 4;
 						}
 						if (direction == 0) {
-							X -= PCB_MM_TO_COORD((glyphWidth * textLength) / 2.0);
-							Y += PCB_MM_TO_COORD(glyphWidth / 2.0); /* centre it vertically */
+							X -= PCB_MM_TO_COORD((glw * textLength) / 2.0);
+							Y += PCB_MM_TO_COORD(glw / 2.0); /* centre it vertically */
 						}
 						else if (direction == 1) {
-							Y -= PCB_MM_TO_COORD((glyphWidth * textLength) / 2.0);
-							X -= PCB_MM_TO_COORD(glyphWidth / 2.0); /* centre it vertically */
+							Y -= PCB_MM_TO_COORD((glw * textLength) / 2.0);
+							X -= PCB_MM_TO_COORD(glw / 2.0); /* centre it vertically */
 						}
 						else if (direction == 2) {
-							X += PCB_MM_TO_COORD((glyphWidth * textLength) / 2.0);
-							Y -= PCB_MM_TO_COORD(glyphWidth / 2.0); /* centre it vertically */
+							X += PCB_MM_TO_COORD((glw * textLength) / 2.0);
+							Y -= PCB_MM_TO_COORD(glw / 2.0); /* centre it vertically */
 						}
 						else if (direction == 3) {
-							Y += PCB_MM_TO_COORD((glyphWidth * textLength) / 2.0);
-							X += PCB_MM_TO_COORD(glyphWidth / 2.0); /* centre it vertically */
+							Y += PCB_MM_TO_COORD((glw * textLength) / 2.0);
+							X += PCB_MM_TO_COORD(glw / 2.0); /* centre it vertically */
 						}
 					}
 					else { /* not back of board text */
 						if (direction == 0) {
-							X -= PCB_MM_TO_COORD((glyphWidth * textLength) / 2.0);
-							Y -= PCB_MM_TO_COORD(glyphWidth / 2.0); /* centre it vertically */
+							X -= PCB_MM_TO_COORD((glw * textLength) / 2.0);
+							Y -= PCB_MM_TO_COORD(glw / 2.0); /* centre it vertically */
 						}
 						else if (direction == 1) {
-							Y += PCB_MM_TO_COORD((glyphWidth * textLength) / 2.0);
-							X -= PCB_MM_TO_COORD(glyphWidth / 2.0); /* centre it vertically */
+							Y += PCB_MM_TO_COORD((glw * textLength) / 2.0);
+							X -= PCB_MM_TO_COORD(glw / 2.0); /* centre it vertically */
 						}
 						else if (direction == 2) {
-							X += PCB_MM_TO_COORD((glyphWidth * textLength) / 2.0);
-							Y += PCB_MM_TO_COORD(glyphWidth / 2.0); /* centre it vertically */
+							X += PCB_MM_TO_COORD((glw * textLength) / 2.0);
+							Y += PCB_MM_TO_COORD(glw / 2.0); /* centre it vertically */
 						}
 						else if (direction == 3) {
-							Y -= PCB_MM_TO_COORD((glyphWidth * textLength) / 2.0);
-							X += PCB_MM_TO_COORD(glyphWidth / 2.0); /* centre it vertically */
+							Y -= PCB_MM_TO_COORD((glw * textLength) / 2.0);
+							X += PCB_MM_TO_COORD(glw / 2.0); /* centre it vertically */
 						}
 					}
 
