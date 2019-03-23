@@ -334,12 +334,11 @@ TODO("TODO")
 									kicad_warning(subtree, "text font size mismatch in X and Y direction - skretching is not yet supported, using the average");
 							}
 							else if (strcmp("thickness", l->str) == 0) {
+								double thickness;
 								SEEN_NO_DUP(tally, 3);
-								if (l->children != NULL && l->children->str != NULL) {
-									/*pcb_trace("\tfont thickness: '%s'\n", (l->children->str)); */
-								}
-								else
-									return kicad_error(subtree, "unexpected empty/NULL gr_text font thickness node");
+								PARSE_DOUBLE(thickness, l, l->children, "gr_text thickness");
+								TODO("do use the thickness parameter");
+								(void)thickness;
 							}
 						}
 					}
@@ -350,7 +349,7 @@ TODO("TODO")
 								mirrored = 1;
 								SEEN_NO_DUP(tally, 4);
 							}
-							/* ignore right or left justification for now */
+							TODO("right or left justification is ignored");
 						}
 						else
 							return kicad_error(subtree, "unexpected empty/NULL gr_text justify node");
