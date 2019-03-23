@@ -249,6 +249,32 @@ static int rotdeg_to_dir(double rotdeg)
 	return 0;
 }
 
+/* Convert the string value of node to double and store it in res. On conversion
+   error report error on node using errmsg. If node == NULL: report error
+   on missnode, or ignore the problem if missnode is NULL. */
+#define PARSE_DOUBLE(res, missnode, node, errmsg) \
+do { \
+	gsxl_node_t *__node__ = (node); \
+	if ((__node__ != NULL) && (__node__->str != NULL)) { \
+		char *__end__; \
+		double __val__ = strtod(__node__->str, &__end__); \
+		if (*__end__ != 0) \
+			return kicad_error(node, "Invalid numeric (double) " errmsg); \
+		else \
+			(res) = __val__; \
+	} \
+	else if (missnode != NULL) \
+		return kicad_error(missnode, "Missing child node for " errmsg); \
+} while(0) \
+
+/* same as PARSE_DOUBLE() but res is a pcb_coord_t, input string is in mm */
+#define PARSE_COORD(res, missnode, node, errmsg) \
+do { \
+	double __dtmp__; \
+	PARSE_DOUBLE(__dtmp__, missnode, node, errmsg); \
+	(res) = PCB_MM_TO_COORD(__dtmp__); \
+} while(0) \
+
 /* kicad_pcb/gr_text */
 static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 {
@@ -256,13 +282,14 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 	int i;
 	unsigned long tally = 0, required;
 	char *end, *text;
-	double val, rotdeg = 0.0;
+	double val;
+	double rotdeg = 0.0;  /* default is horizontal */
 	pcb_coord_t X, Y;
 	int scaling = 100;
 	int textLength = 0;
 	int mirrored = 0;
 	double glyphWidth = 1.27; /* a reasonable approximation of pcb glyph width, ~=  5000 centimils */
-	unsigned direction = 0; /* default is horizontal */
+	unsigned direction;
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 	int PCBLayer = 0; /* sane default value */
 
@@ -273,31 +300,10 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 		for(n = subtree, i = 0; n != NULL; n = n->next, i++) {
 			if (n->str != NULL && strcmp("at", n->str) == 0) {
 				SEEN_NO_DUP(tally, 0);
-				if (n->children != NULL && n->children->str != NULL) {
-					val = strtod(n->children->str, &end);
-					if (*end != 0)
-						return kicad_error(subtree, "error parsing gr_text X1");
-					else
-						X = PCB_MM_TO_COORD(val);
-				}
-				else
-					return kicad_error(subtree, "unexpected empty/NULL gr_text X1 node");
-				if (n->children->next != NULL && n->children->next->str != NULL) {
-					val = strtod(n->children->next->str, &end);
-					if (*end != 0)
-						return kicad_error(subtree, "error parsing gr_text Y1");
-					else
-						Y = PCB_MM_TO_COORD(val);
-					if (n->children->next->next != NULL && n->children->next->next->str != NULL) {
-						rotdeg = strtod(n->children->next->next->str, &end);
-						if (*end != 0)
-							return kicad_error(subtree, "error parsing gr_text rotation");
-						direction = rotdeg_to_dir(rotdeg); /* used for centering only */
-					}
-				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL gr_text Y1 node");
-				}
+				PARSE_COORD(X, n, n->children, "gr_text X1");
+				PARSE_COORD(Y, n, n->children->next, "gr_text Y1");
+				PARSE_DOUBLE(rotdeg, NULL, n->children->next->next, "gr_text rotation");
+				direction = rotdeg_to_dir(rotdeg); /* used for centering only */
 			}
 			else if (n->str != NULL && strcmp("layer", n->str) == 0) {
 				SEEN_NO_DUP(tally, 1);
