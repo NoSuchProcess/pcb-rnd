@@ -295,7 +295,7 @@ static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *data, int
 		if (sep == NULL)
 			goto ret_dir;
 
-		sep = strtol(sep+1, &end, 10);
+		oid = strtol(sep+1, &end, 10);
 
 		if ((*end != '/') && (*end != '\0'))
 			return -1;
