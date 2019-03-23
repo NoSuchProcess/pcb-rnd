@@ -295,93 +295,93 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 	pcb_layer_t *ly;
 
-		for(i = 0; text[i] != 0; i++)
-			textLength++;
-		for(n = subtree, i = 0; n != NULL; n = n->next, i++) {
-			if (n->str != NULL && strcmp("at", n->str) == 0) {
-				SEEN_NO_DUP(tally, 0);
-				PARSE_COORD(X, n, n->children, "text X1");
-				PARSE_COORD(Y, n, n->children->next, "text Y1");
-				PARSE_DOUBLE(rotdeg, NULL, n->children->next->next, "text rotation");
+	for(i = 0; text[i] != 0; i++)
+		textLength++;
+	for(n = subtree, i = 0; n != NULL; n = n->next, i++) {
+		if (n->str != NULL && strcmp("at", n->str) == 0) {
+			SEEN_NO_DUP(tally, 0);
+			PARSE_COORD(X, n, n->children, "text X1");
+			PARSE_COORD(Y, n, n->children->next, "text Y1");
+			PARSE_DOUBLE(rotdeg, NULL, n->children->next->next, "text rotation");
+			if (subc != NULL) {
+				pcb_coord_t sx, sy;
+				double srot;
+				if (pcb_subc_get_origin(subc, &sx, &sy) == 0) {
+					X += sx;
+					Y += sy;
+				}
+				TODO("subc roation is not properly mapped by the caller");
+				if (pcb_subc_get_rotation(subc, &srot) == 0)
+					rotdeg += srot;
+			}
+			direction = rotdeg_to_dir(rotdeg); /* used for centering only */
+		}
+		else if (n->str != NULL && strcmp("layer", n->str) == 0) {
+			SEEN_NO_DUP(tally, 1);
+			if (n->children != NULL && n->children->str != NULL) {
 				if (subc != NULL) {
-					pcb_coord_t sx, sy;
-					double srot;
-					if (pcb_subc_get_origin(subc, &sx, &sy) == 0) {
-						X += sx;
-						Y += sy;
-					}
-					TODO("subc roation is not properly mapped by the caller");
-					if (pcb_subc_get_rotation(subc, &srot) == 0)
-						rotdeg += srot;
+					/* NOTE: for text there is no subc default layer (assumes KiCad has text on silk only) */
+					ly = kicad_get_subc_layer(st, subc, n->children->str, NULL);
 				}
-				direction = rotdeg_to_dir(rotdeg); /* used for centering only */
-			}
-			else if (n->str != NULL && strcmp("layer", n->str) == 0) {
-				SEEN_NO_DUP(tally, 1);
-				if (n->children != NULL && n->children->str != NULL) {
-					if (subc != NULL) {
-						/* NOTE: for text there is no subc default layer (assumes KiCad has text on silk only) */
-						ly = kicad_get_subc_layer(st, subc, n->children->str, NULL);
-					}
-					else {
-						pcb_layer_id_t PCBLayer = kicad_get_layeridx(st, n->children->str);
-						if (PCBLayer < 0)
-							return kicad_error(subtree, "unexpected text layer def < 0 (%s)", n->children->str);
-						if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM)
-							Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
-						ly = &st->pcb->Data->Layer[PCBLayer];
-					}
+				else {
+					pcb_layer_id_t PCBLayer = kicad_get_layeridx(st, n->children->str);
+					if (PCBLayer < 0)
+						return kicad_error(subtree, "unexpected text layer def < 0 (%s)", n->children->str);
+					if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM)
+						Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
+					ly = &st->pcb->Data->Layer[PCBLayer];
 				}
-				else
-					return kicad_error(subtree, "unexpected empty/NULL text layer node");
 			}
-			else if (n->str != NULL && strcmp("hide", n->str) == 0) {
-				if (subc != NULL)
-					return 0; /* simply don't create the object */
-				else
-					kicad_warning(n, "'hide' is invalid for gr_text (ignored)");
-			}
-			else if (n->str != NULL && strcmp("effects", n->str) == 0) {
-				for(m = n->children; m != NULL; m = m->next) {
-					if (m->str != NULL && strcmp("font", m->str) == 0) {
-						for(l = m->children; l != NULL; l = l->next) {
-							if (m->str != NULL && strcmp("size", l->str) == 0) {
-								double sx, sy;
-								SEEN_NO_DUP(tally, 2);
-								PARSE_DOUBLE(sx, l, l->children, "text size X");
-								PARSE_DOUBLE(sy, l, l->children->next, "text size Y");
-								scaling = (int)(100 * ((sx+sy)/2.0) / 1.27); /* standard glyph width ~= 1.27mm */
-								if (sx != sy)
-									kicad_warning(subtree, "text font size mismatch in X and Y direction - skretching is not yet supported, using the average");
-							}
-							else if (strcmp("thickness", l->str) == 0) {
-								double thickness;
-								SEEN_NO_DUP(tally, 3);
-								PARSE_DOUBLE(thickness, l, l->children, "text thickness");
-								TODO("do use the thickness parameter");
-								(void)thickness;
-							}
+			else
+				return kicad_error(subtree, "unexpected empty/NULL text layer node");
+		}
+		else if (n->str != NULL && strcmp("hide", n->str) == 0) {
+			if (subc != NULL)
+				return 0; /* simply don't create the object */
+			else
+				kicad_warning(n, "'hide' is invalid for gr_text (ignored)");
+		}
+		else if (n->str != NULL && strcmp("effects", n->str) == 0) {
+			for(m = n->children; m != NULL; m = m->next) {
+				if (m->str != NULL && strcmp("font", m->str) == 0) {
+					for(l = m->children; l != NULL; l = l->next) {
+						if (m->str != NULL && strcmp("size", l->str) == 0) {
+							double sx, sy;
+							SEEN_NO_DUP(tally, 2);
+							PARSE_DOUBLE(sx, l, l->children, "text size X");
+							PARSE_DOUBLE(sy, l, l->children->next, "text size Y");
+							scaling = (int)(100 * ((sx+sy)/2.0) / 1.27); /* standard glyph width ~= 1.27mm */
+							if (sx != sy)
+								kicad_warning(subtree, "text font size mismatch in X and Y direction - skretching is not yet supported, using the average");
+						}
+						else if (strcmp("thickness", l->str) == 0) {
+							double thickness;
+							SEEN_NO_DUP(tally, 3);
+							PARSE_DOUBLE(thickness, l, l->children, "text thickness");
+							TODO("do use the thickness parameter");
+							(void)thickness;
 						}
 					}
-					else if (m->str != NULL && strcmp("justify", m->str) == 0) {
-						if (m->children != NULL && m->children->str != NULL) {
-							if (strcmp("mirror", m->children->str) == 0) {
-								mirrored = 1;
-								SEEN_NO_DUP(tally, 4);
-							}
-							TODO("right or left justification is ignored");
+				}
+				else if (m->str != NULL && strcmp("justify", m->str) == 0) {
+					if (m->children != NULL && m->children->str != NULL) {
+						if (strcmp("mirror", m->children->str) == 0) {
+							mirrored = 1;
+							SEEN_NO_DUP(tally, 4);
 						}
-						else
-							return kicad_error(subtree, "unexpected empty/NULL text justify node");
+						TODO("right or left justification is ignored");
 					}
-					else {
-						if (m->str != NULL)
-							kicad_warning(m, "Unknown effects argument %s:", m->str);
-						return kicad_error(subtree, "unexpected empty/NULL text effects node");
-					}
+					else
+						return kicad_error(subtree, "unexpected empty/NULL text justify node");
+				}
+				else {
+					if (m->str != NULL)
+						kicad_warning(m, "Unknown effects argument %s:", m->str);
+					return kicad_error(subtree, "unexpected empty/NULL text effects node");
 				}
 			}
 		}
+	}
 
 	required = BV(0) | BV(1) | BV(2) | BV(3);
 	if ((tally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
