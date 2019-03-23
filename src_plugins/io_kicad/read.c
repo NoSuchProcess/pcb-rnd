@@ -279,12 +279,11 @@ do { \
 } while(0) \
 
 /* kicad_pcb/gr_text */
-static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, int fp)
+static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *text, pcb_subc_t *subc)
 {
 	gsxl_node_t *l, *n, *m;
 	int i;
 	unsigned long tally = 0, required;
-	char *text;
 	double rotdeg = 0.0;  /* default is horizontal */
 	pcb_coord_t X, Y;
 	int scaling = 100;
@@ -294,8 +293,6 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, int fp)
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 	int PCBLayer;
 
-	if (subtree->str != NULL) {
-		text = subtree->str;
 		for(i = 0; text[i] != 0; i++)
 			textLength++;
 		for(n = subtree, i = 0; n != NULL; n = n->next, i++) {
@@ -311,7 +308,7 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, int fp)
 				if (n->children != NULL && n->children->str != NULL) {
 					PCBLayer = kicad_get_layeridx(st, n->children->str);
 					if (PCBLayer < 0)
-						return kicad_error(subtree, "unexpected text layer def < 0");
+						return kicad_error(subtree, "unexpected text layer def < 0 (%s)", n->children->str);
 					else if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM)
 						Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
 				}
@@ -363,7 +360,7 @@ TODO("TODO")
 				}
 			}
 		}
-	}
+
 	required = BV(0) | BV(1) | BV(2) | BV(3);
 	if ((tally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
 		pcb_coord_t mx, my;
@@ -397,16 +394,22 @@ TODO("TODO")
 			X += mx * PCB_MM_TO_COORD((GLYPH_WIDTH * textLength) / 2.0);
 			Y += my * PCB_MM_TO_COORD(GLYPH_WIDTH / 2.0); /* centre it vertically */
 		}
-		pcb_text_new(&st->pcb->Data->Layer[PCBLayer], pcb_font(st->pcb, 0, 1), X, Y, rotdeg, scaling, 0, text, Flags);
+		if (subc != NULL) {
+			TODO("resolve layer properly!");
+/*			pcb_text_new(&subc->data->Layer[0], pcb_font(st->pcb, 0, 1), X, Y, rotdeg, scaling, 0, text, Flags);*/
+		}
+		else
+			pcb_text_new(&st->pcb->Data->Layer[PCBLayer], pcb_font(st->pcb, 0, 1), X, Y, rotdeg, scaling, 0, text, Flags);
 		return 0; /* create new font */
 	}
-	return kicad_error(subtree, "failed to create text due to missing fields");
 }
 
 /* kicad_pcb/gr_text */
 static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 {
-	return kicad_parse_any_text(st, subtree, 0);
+	if (subtree->str != NULL)
+		return kicad_parse_any_text(st, subtree, subtree->str, NULL);
+	return kicad_error(subtree, "failed to create text due to missing fields");
 }
 
 /* kicad_pcb/gr_line */
@@ -1378,9 +1381,6 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 {
 	gsxl_node_t *l, *n, *m, *p;
 	int i;
-	int scaling = 100;
-	int textLength = 0;
-	int mirrored = 0;
 	int moduleDefined = 0;
 	int PCBLayer = 0;
 	int on_bottom = 0;
@@ -1398,8 +1398,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	pcb_angle_t endAngle = 0.0;
 	pcb_angle_t delta = 360.0; /* these defaults allow a fp_circle to be parsed, which does not specify (angle XXX) */
 	double val;
-	unsigned direction = 0; /* default is horizontal */
-	char *end, *textLabel, *text;
+	char *end, *text;
 	char *pinName, *moduleName;
 	const char *subc_layer_str;
 	pcb_subc_t *subc = NULL;
@@ -1526,20 +1525,16 @@ TODO(": this should be coming from the s-expr file preferences part")
 				/*pcb_trace("module 3D model found and ignored\n"); */
 			}
 			else if (n->str != NULL && strcmp("fp_text", n->str) == 0) {
-				/*pcb_trace("fp_text found\n"); */
 				featureTally = 0;
 
-/* ********************************************************** */
-
 				if (n->children != NULL && n->children->str != NULL) {
-					textLabel = n->children->str;
+					char *textLabel = n->children->str;
 					if (n->children->next != NULL && n->children->next->str != NULL) {
 						text = n->children->next->str;
 						if (strcmp("reference", textLabel) == 0) {
 							SEEN_NO_DUP(tally, 7);
 							pcb_attribute_put(&subc->Attributes, "refdes", text);
 							foundRefdes = 1;
-							textLength = strlen(text);
 							/*pcb_trace("\tmoduleRefdes now: '%s'\n", moduleRefdes); */
 						}
 						else if (strcmp("value", textLabel) == 0) {
@@ -1556,209 +1551,12 @@ TODO(": this should be coming from the s-expr file preferences part")
 							/*pcb_trace("\tignoring fp_text \"hide\" flag\n"); */
 						}
 					}
-					else {
+					else
 						text = textLabel; /* just a single string, no reference or value */
-					}
-
-					for(l = n->children->next->next, i = 0; l != NULL; l = l->next, i++) { /*fixed this */
-						if (l->str != NULL && strcmp("at", l->str) == 0) {
-							SEEN_NO_DUP(featureTally, 0);
-							if (l->children != NULL && l->children->str != NULL) {
-								SEEN_NO_DUP(featureTally, 1);
-								val = strtod(l->children->str, &end);
-								if (*end != 0) {
-									return kicad_error(subtree, "error parsing module fp_text X.");
-								}
-								else {
-									X = PCB_MM_TO_COORD(val);
-									if (foundRefdes) {
-										refdesX = X;
-									}
-								}
-							}
-							else {
-								return kicad_error(subtree, "unexpected empty/NULL module fp_text X node");
-							}
-							if (l->children->next != NULL && l->children->next->str != NULL) {
-								SEEN_NO_DUP(featureTally, 2);
-								val = strtod(l->children->next->str, &end);
-								if (*end != 0) {
-									return kicad_error(subtree, "error parsing module fp_text Y.");
-								}
-								else {
-									Y = PCB_MM_TO_COORD(val);
-									if (foundRefdes) {
-										refdesY = Y;
-									}
-								}
-								if (l->children->next->next != NULL && l->children->next->next->str != NULL) {
-									val = strtod(l->children->next->next->str, &end);
-									if (*end != 0) {
-										return kicad_error(subtree, "error parsing module fp_text rotation.");
-									}
-									else {
-										direction = 0; /* default */
-										if (val > 45.0 && val <= 135.0) {
-											direction = 1;
-										}
-										else if (val > 135.0 && val <= 225.0) {
-											direction = 2;
-										}
-										else if (val > 225.0 && val <= 315.0) {
-											direction = 3;
-										}
-									}
-									SEEN_NO_DUP(featureTally, 3);
-								}
-							}
-							else {
-								return kicad_error(subtree, "unexpected empty/NULL module fp_text Y node");
-							}
-						}
-						else if (l->str != NULL && strcmp("layer", l->str) == 0) {
-							SEEN_NO_DUP(featureTally, 4);
-							if (l->children != NULL && l->children->str != NULL) {
-								PCBLayer = kicad_get_layeridx(st, l->children->str);
-								if (PCBLayer < 0) {
-									/*pcb_trace("\ttext layer not defined for module text, default being used.\n"); */
-/*									Flags = pcb_flag_make(0);*/
-								}
-								else if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM) {
-/*									Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);*/
-								}
-							}
-							else {
-								return kicad_error(subtree, "unexpected empty/NULL module fp_text layer node");
-							}
-						}
-						else if (l->str != NULL && strcmp("hide", l->str) == 0) {
-							/*pcb_trace("\tfp_text hidden flag \"hide\" found and ignored.\n"); */
-						}
-						else if (l->str != NULL && strcmp("justify", l->str) == 0) { /*this may be unnecessary here */
-							/*pcb_trace("\tfp_text justify flag found and ignored.\n"); */
-						}
-						else if (l->str != NULL && strcmp("effects", l->str) == 0) {
-							SEEN_NO_DUP(featureTally, 5);
-							for(m = l->children; m != NULL; m = m->next) {
-								if (m->str != NULL && strcmp("font", m->str) == 0) {
-									SEEN_NO_DUP(featureTally, 6);
-									for(p = m->children; p != NULL; p = p->next) {
-										if (m->str != NULL && strcmp("size", p->str) == 0) {
-											SEEN_NO_DUP(featureTally, 7);
-											if (p->children != NULL && p->children->str != NULL) {
-												val = strtod(p->children->str, &end);
-												if (*end != 0) {
-													return kicad_error(subtree, "error parsing module fp_text font size X.");
-												}
-												else {
-													scaling = (int)(100 * val / 1.27); /* standard glyph width ~= 1.27mm */
-													if (foundRefdes) {
-														refdesScaling = scaling;
-													}
-												}
-											}
-											else {
-												return kicad_error(subtree, "unexpected empty/NULL module fp_text X size node");
-											}
-											if (p->children->next != NULL && p->children->next->str != NULL) {
-												/*pcb_trace("\tfont sizeY: '%s'\n", (p->children->next->str)); */
-											}
-											else {
-												return kicad_error(subtree, "unexpected empty/NULL module fp_text Y size node");
-											}
-										}
-										else if (strcmp("thickness", p->str) == 0) {
-											SEEN_NO_DUP(featureTally, 8);
-											if (p->children != NULL && p->children->str != NULL) {
-												/*pcb_trace("\tfont thickness: '%s'\n", (p->children->str)); */
-											}
-											else {
-												return kicad_error(subtree, "unexpected empty/NULL module fp_text thickness node");
-											}
-										}
-									}
-								}
-								else if (m->str != NULL && strcmp("justify", m->str) == 0) {
-									SEEN_NO_DUP(featureTally, 9);
-									if (m->children != NULL && m->children->str != NULL) {
-										/*pcb_trace("\ttext justification: '%s'\n", (m->children->str)); */
-										if (strcmp("mirror", m->children->str) == 0) {
-											mirrored = 1;
-										}
-									}
-									else {
-										return kicad_error(subtree, "unexpected empty/NULL module fp_text justify node");
-									}
-								}
-								else {
-									if (m->str != NULL) {
-										/*pcb_trace("Unknown text effects argument %s:", m->str); */
-									}
-									return kicad_error(subtree, "unknown fp_text text effects argument null node");
-								}
-							}
-						}
-					}
 				}
-				required = BV(0) | BV(1) | BV(4) | BV(7) | BV(8);
-				if ((tally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
-					double glw;
-TODO(": this will never be NULL; what are we trying to check here?")
-					if (&st->pcb->fontkit.dflt == NULL) {
-						pcb_font_create_default(st->pcb);
-					}
-
-					X = refdesX;
-					Y = refdesY;
-					glw = GLYPH_WIDTH * refdesScaling / 100.0;
-
-					if (mirrored != 0) {
-						if (direction % 2 == 0) {
-							direction += 2;
-							direction = direction % 4;
-						}
-						if (direction == 0) {
-							X -= PCB_MM_TO_COORD((glw * textLength) / 2.0);
-							Y += PCB_MM_TO_COORD(glw / 2.0); /* centre it vertically */
-						}
-						else if (direction == 1) {
-							Y -= PCB_MM_TO_COORD((glw * textLength) / 2.0);
-							X -= PCB_MM_TO_COORD(glw / 2.0); /* centre it vertically */
-						}
-						else if (direction == 2) {
-							X += PCB_MM_TO_COORD((glw * textLength) / 2.0);
-							Y -= PCB_MM_TO_COORD(glw / 2.0); /* centre it vertically */
-						}
-						else if (direction == 3) {
-							Y += PCB_MM_TO_COORD((glw * textLength) / 2.0);
-							X += PCB_MM_TO_COORD(glw / 2.0); /* centre it vertically */
-						}
-					}
-					else { /* not back of board text */
-						if (direction == 0) {
-							X -= PCB_MM_TO_COORD((glw * textLength) / 2.0);
-							Y -= PCB_MM_TO_COORD(glw / 2.0); /* centre it vertically */
-						}
-						else if (direction == 1) {
-							Y += PCB_MM_TO_COORD((glw * textLength) / 2.0);
-							X -= PCB_MM_TO_COORD(glw / 2.0); /* centre it vertically */
-						}
-						else if (direction == 2) {
-							X += PCB_MM_TO_COORD((glw * textLength) / 2.0);
-							Y += PCB_MM_TO_COORD(glw / 2.0); /* centre it vertically */
-						}
-						else if (direction == 3) {
-							Y -= PCB_MM_TO_COORD((glw * textLength) / 2.0);
-							X += PCB_MM_TO_COORD(glw / 2.0); /* centre it vertically */
-						}
-					}
-
-					/* if we  update X, Y for text fields (refdes, value), we would do it here */
+				if (kicad_parse_any_text(st, n->children->next->next, text, subc) != 0) {
+/*					return -1;*/
 				}
-
-
-/* ********************************************************** */
-
 			}
 			else if (n->str != NULL && strcmp("descr", n->str) == 0) {
 				SEEN_NO_DUP(tally, 9);
