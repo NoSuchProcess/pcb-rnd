@@ -447,7 +447,6 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 {
 	gsxl_node_t *n;
 	unsigned long tally = 0, required;
-
 	char *end;
 	double val;
 	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance; /* not sure what to do with mask */
@@ -779,7 +778,6 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 {
 	gsxl_node_t *m, *n;
 	unsigned long tally = 0, required;
-
 	char *end, *name; /* not using via name for now */
 	double val;
 	pcb_coord_t X, Y, Thickness, Clearance, Mask, Drill; /* not sure what to do with mask */
@@ -903,7 +901,6 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 {
 	gsxl_node_t *n;
 	unsigned long tally = 0, required;
-
 	char *end;
 	double val;
 	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance;
@@ -1370,8 +1367,6 @@ pcb_layer_t *kicad_get_subc_layer(read_state_t *st, pcb_subc_t *subc, const char
 	pcb_layer_type_t lyt;
 	pcb_layer_combining_t comb;
 	const char *lnm;
-
-
 
 	if (layer_name != NULL) {
 		/* check if the layer already exists (by name) */
@@ -2395,7 +2390,6 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 	long j = 0;
 	unsigned long tally = 0;
 	unsigned long required;
-
 	pcb_poly_t *polygon = NULL;
 	pcb_flag_t flags = pcb_flag_make(PCB_FLAG_CLEARPOLY);
 	char *end;
