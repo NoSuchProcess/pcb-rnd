@@ -1,0 +1,17 @@
+1. Mounting a board
+
+  mkdir /tmp/mntpt
+  pcb-rnd -x vfs_fuse board.lht /tmp/mntpt
+
+This will start a pcb-rnd process in the background. The proces will load
+board.lht, just like if it was a normal GUI or CLI user session, until the
+unmount.
+
+Make sure /dev/fuse has the right permissions and your user has write access
+to it. A typical setup is:
+ - /dev/fuse having group +rw with group owner set to 'fuse'
+ - the user added in the 'fuse' group
+
+2. Unmounting a board
+
+  fusermount -u /tmp/mntpt
