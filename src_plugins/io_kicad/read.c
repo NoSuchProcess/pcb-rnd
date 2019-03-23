@@ -287,7 +287,7 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 	int i;
 	unsigned long tally = 0, required;
 	double rotdeg = 0.0;  /* default is horizontal */
-	pcb_coord_t X, Y;
+	pcb_coord_t X, Y, thickness = 0;
 	int scaling = 100;
 	int textLength = 0;
 	int mirrored = 0;
@@ -355,11 +355,8 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 								kicad_warning(subtree, "text font size mismatch in X and Y direction - skretching is not yet supported, using the average");
 						}
 						else if (strcmp("thickness", l->str) == 0) {
-							double thickness;
 							SEEN_NO_DUP(tally, 3);
-							PARSE_DOUBLE(thickness, l, l->children, "text thickness");
-							TODO("do use the thickness parameter");
-							(void)thickness;
+							PARSE_COORD(thickness, l, l->children, "text thickness");
 						}
 					}
 				}
@@ -416,7 +413,8 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 			X += mx * PCB_MM_TO_COORD((GLYPH_WIDTH * textLength) / 2.0);
 			Y += my * PCB_MM_TO_COORD(GLYPH_WIDTH / 2.0); /* centre it vertically */
 		}
-		pcb_text_new(ly, pcb_font(st->pcb, 0, 1), X, Y, rotdeg, scaling, 0, text, Flags);
+		pcb_text_new(ly, pcb_font(st->pcb, 0, 1), X, Y, rotdeg, scaling, thickness, text, Flags);
+		
 		return 0; /* create new font */
 	}
 	return kicad_error(subtree, "failed to create text due to missing fields");
