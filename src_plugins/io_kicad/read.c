@@ -336,7 +336,10 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 					return kicad_error(subtree, "unexpected empty/NULL text layer node");
 			}
 			else if (n->str != NULL && strcmp("hide", n->str) == 0) {
-TODO("TODO")
+				if (subc != NULL)
+					return 0; /* simply don't create the object */
+				else
+					kicad_warning(n, "'hide' is invalid for gr_text (ignored)");
 			}
 			else if (n->str != NULL && strcmp("effects", n->str) == 0) {
 				for(m = n->children; m != NULL; m = m->next) {
