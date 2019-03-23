@@ -153,7 +153,6 @@ static int kicad_parse_version(read_state_t *st, gsxl_node_t *subtree)
 {
 	if (subtree->str != NULL) {
 		int ver = atoi(subtree->str);
-		printf("kicad version: '%s' == %d\n", subtree->str, ver);
 		if (ver == 3 || ver == 4 || ver == 20170123)
 			return 0;
 	}
@@ -1051,8 +1050,6 @@ TODO(": we should not depend on layer IDs other than 0")
 				return kicad_error(subtree, "layer 0 and 15/31 must be F.Cu and B.Cu (F or B mismatch)");
 			pcb_layergrp_list(st->pcb, PCB_LYT_COPPER | ((lname[0] == 'B') ? PCB_LYT_BOTTOM : PCB_LYT_TOP), &gid, 1);
 			id = pcb_layer_create(st->pcb, gid, lname);
-/*printf("------------------------------ layer=%s\n", lname);
-pcb_actionl("dumpcsect", NULL);*/
 			break;
 		default:
 			if (strcmp(lname, "Edge.Cuts") == 0) {
