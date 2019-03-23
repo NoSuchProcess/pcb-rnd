@@ -290,7 +290,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 	double glyphWidth = 1.27; /* a reasonable approximation of pcb glyph width, ~=  5000 centimils */
 	unsigned direction;
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
-	int PCBLayer = 0; /* sane default value */
+	int PCBLayer; /* sane default value */
 
 	if (subtree->str != NULL) {
 		text = subtree->str;
