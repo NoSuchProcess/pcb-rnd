@@ -281,8 +281,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 	gsxl_node_t *l, *n, *m;
 	int i;
 	unsigned long tally = 0, required;
-	char *end, *text;
-	double val;
+	char *text;
 	double rotdeg = 0.0;  /* default is horizontal */
 	pcb_coord_t X, Y;
 	int scaling = 100;
