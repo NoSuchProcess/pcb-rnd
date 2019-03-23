@@ -67,9 +67,7 @@ static char *netlist_data2dlg_netlist(netlist_ctx_t *ctx)
 		cursor_path = pcb_strdup(r->cell[0]);
 
 	/* remove existing items */
-	for(r = gdl_first(&tree->rows); r != NULL; r = gdl_first(&tree->rows))
-		pcb_dad_tree_remove(attr, r);
-
+	pcb_dad_tree_clear(tree);
 
 	nets = pcb_netlist_sort(&ctx->pcb->netlist[1]);
 	if (nets != NULL) {
@@ -110,8 +108,7 @@ static void netlist_data2dlg_connlist(netlist_ctx_t *ctx, pcb_net_t *net)
 	}
 
 	/* remove existing items */
-	for(r = gdl_first(&tree->rows); r != NULL; r = gdl_first(&tree->rows))
-		pcb_dad_tree_remove(attr, r);
+	pcb_dad_tree_clear(tree);
 
 	if (net == NULL)
 		return;

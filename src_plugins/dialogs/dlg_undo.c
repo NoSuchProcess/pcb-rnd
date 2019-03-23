@@ -82,8 +82,7 @@ static void undo_data2dlg(undo_ctx_t *ctx)
 		cursor_path = pcb_strdup(r->cell[0]);
 
 	/* remove existing items */
-	for(r = gdl_first(&tree->rows); r != NULL; r = gdl_first(&tree->rows))
-		pcb_dad_tree_remove(attr, r);
+	pcb_dad_tree_clear(tree);
 
 	mark[1] = '\0';
 	cell[3] = NULL;

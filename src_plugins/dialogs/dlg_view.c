@@ -98,8 +98,7 @@ static void view2dlg_list(view_ctx_t *ctx)
 		cursor_path = pcb_strdup(r->cell[0]);
 
 	/* remove existing items */
-	for(r = gdl_first(&tree->rows); r != NULL; r = gdl_first(&tree->rows))
-		pcb_dad_tree_remove(attr, r);
+	pcb_dad_tree_clear(tree);
 
 	/* add all items */
 	cell[2] = NULL;
