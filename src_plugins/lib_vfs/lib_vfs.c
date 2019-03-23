@@ -76,6 +76,17 @@ static void cb_mkdirp(pcb_vfs_list_cb cb, void *ctx, gds_t *path, const char *ap
 	path->used = ou;
 }
 
+#define SEE \
+	htsp_init(&seen, strhash, strkeyeq);
+
+#define UNSEE \
+	do { \
+		htsp_entry_t *e; \
+		for(e = htsp_first(&seen); e != NULL; e = htsp_next(&seen, e)) \
+			free(e->key); \
+		htsp_uninit(&seen); \
+	} while(0)
+
 static void vfs_list_props(gds_t *path, pcb_propedit_t *pctx, pcb_vfs_list_cb cb, void *ctx)
 {
 	htsp_t seen;
@@ -83,8 +94,8 @@ static void vfs_list_props(gds_t *path, pcb_propedit_t *pctx, pcb_vfs_list_cb cb
 	size_t ou, orig_used;
 
 	pcb_propsel_map_core(pctx);
+	SEE;
 
-	htsp_init(&seen, strhash, strkeyeq);
 	orig_used = path->used;
 	gds_append(path, '/');
 	ou = path->used;
@@ -95,9 +106,7 @@ static void vfs_list_props(gds_t *path, pcb_propedit_t *pctx, pcb_vfs_list_cb cb
 		cb(ctx, path->array, 0);
 	}
 	path->used = orig_used;
-	for(e = htsp_first(&seen); e != NULL; e = htsp_next(&seen, e))
-		free(e->key);
-	htsp_uninit(&seen);
+	UNSEE;
 }
 
 static int vfs_access_prop(pcb_propedit_t *pctx, const char *path, gds_t *data, int wr, int *isdir)
@@ -143,6 +152,7 @@ static int vfs_access_prop(pcb_propedit_t *pctx, const char *path, gds_t *data, 
 
 static void vfs_list_obj(pcb_board_t *pcb, gds_t *path, pcb_any_obj_t *obj, pcb_vfs_list_cb cb, void *ctx)
 {
+	htsp_t seen;
 	pcb_propedit_t pctx;
 	pcb_idpath_t *idp;
 	htsp_entry_t *e;
@@ -156,6 +166,8 @@ static void vfs_list_obj(pcb_board_t *pcb, gds_t *path, pcb_any_obj_t *obj, pcb_
 	pcb_idpath_list_append(&pctx.objs, idp);
 	pcb_propsel_map_core(&pctx);
 
+	SEE;
+
 	orig_used = path->used;
 	pcb_append_printf(path, "/%s/%ld", pcb_obj_type_name(obj->type), obj->ID);
 	cb(ctx, path->array, 1);
@@ -163,6 +175,7 @@ static void vfs_list_obj(pcb_board_t *pcb, gds_t *path, pcb_any_obj_t *obj, pcb_
 	ou = path->used;
 	for(e = htsp_first(&pctx.props); e != NULL; e = htsp_next(&pctx.props, e)) {
 		path->used = ou;
+		cb_mkdirp(cb, ctx, path, e->key, &seen);
 		gds_append_str(path, e->key);
 		cb(ctx, path->array, 0);
 	}
@@ -170,6 +183,7 @@ static void vfs_list_obj(pcb_board_t *pcb, gds_t *path, pcb_any_obj_t *obj, pcb_
 
 	pcb_props_uninit(&pctx);
 	pcb_idpath_destroy(idp);
+	UNSEE;
 }
 
 static int vfs_access_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, const char *path, gds_t *data, int wr, int *isdir)
