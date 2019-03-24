@@ -955,6 +955,8 @@ static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, con
 {
 	pcb_layer_id_t id = -1;
 	pcb_layergrp_id_t gid = -1;
+	pcb_layer_t *ly;
+
 TODO(": we should not depend on layer IDs other than 0")
 	switch (lnum) {
 		case 0:
@@ -979,20 +981,40 @@ TODO(": we should not depend on layer IDs other than 0")
 				pcb_layergrp_t *g = pcb_get_grp_new_intern(PCB, -1);
 				id = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, lname);
 			}
-			else if ((lname[1] == '.') && ((lname[0] == 'F') || (lname[0] == 'B'))) {
-				/* F. or B. layers */
-TODO(": update this: we have explicit silk, paste and mask now")
+			else if ((lname[1] == '.') && ((lname[0] == 'F') || (lname[0] == 'B'))) { /* F. or B. layers */
 				if (strcmp(lname + 2, "SilkS") == 0)
-					return 0; /* silk layers are implicit */
-#if 0
-				if (strcmp(lname + 2, "Adhes") == 0)
-					return 0; /* pcb-rnd has no adhesive support */
-				if (strcmp(lname + 2, "Paste") == 0)
-					return 0; /* pcb-rnd has no custom paste support */
-				if (strcmp(lname + 2, "Mask") == 0)
-					return 0; /* pcb-rnd has no custom mask support */
-				return kicad_error(subtree, "unknown F. or B. layer error"); /* unknown F. or B. layer -> error */
-#endif
+					return 0; /* silk layers are already created */
+				if (strcmp(lname + 2, "Paste") == 0) {
+					pcb_layergrp_list(st->pcb, PCB_LYT_PASTE | ((lname[0] == 'B') ? PCB_LYT_BOTTOM : PCB_LYT_TOP), &gid, 1);
+					id = pcb_layer_create(st->pcb, gid, lname);
+					ly = pcb_get_layer(st->pcb->Data, id);
+					ly->comb |= PCB_LYC_AUTO;
+					break;
+				}
+				if (strcmp(lname + 2, "Mask") == 0) {
+					pcb_layergrp_list(st->pcb, PCB_LYT_MASK | ((lname[0] == 'B') ? PCB_LYT_BOTTOM : PCB_LYT_TOP), &gid, 1);
+					id = pcb_layer_create(st->pcb, gid, lname);
+					ly = pcb_get_layer(st->pcb->Data, id);
+					ly->comb |= PCB_LYC_AUTO | PCB_LYC_SUB;
+					break;
+				}
+				if (strcmp(lname + 2, "Adhes") == 0) { /* mech layer */
+					pcb_layergrp_t *grp = pcb_get_grp_new_misc(st->pcb);
+					grp->name = pcb_strdup(lname);
+					grp->ltype = PCB_LYT_MECH | ((lname[0] == 'B') ? PCB_LYT_BOTTOM : PCB_LYT_TOP);
+					grp->purpose = pcb_strdup(lname+2);
+					id = pcb_layer_create(st->pcb, grp - st->pcb->LayerGroups.grp, lname);
+					break;
+				}
+				if ((strcmp(lname + 2, "CrtYd") == 0) || (strcmp(lname + 2, "Fab") == 0)) { /* documentation layers */
+					pcb_layergrp_t *grp = pcb_get_grp_new_misc(st->pcb);
+					grp->name = pcb_strdup(lname);
+					grp->ltype = PCB_LYT_DOC | ((lname[0] == 'B') ? PCB_LYT_BOTTOM : PCB_LYT_TOP);
+					grp->purpose = pcb_strdup(lname+2);
+					id = pcb_layer_create(st->pcb, grp - st->pcb->LayerGroups.grp, lname);
+					break;
+				}
+				kicad_warning(subtree, "unknown layer: %s", lname);
 				goto hack1;
 			}
 			else if (lnum > 15) {
