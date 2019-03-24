@@ -1176,7 +1176,7 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 	pcb_coord_t X, Y, drill, padXsize, padYsize, Clearance;
 	char *pinName = NULL, *pad_shape = NULL;
 	unsigned long featureTally = 0;
-	int SMD = 0, throughHole = 0;
+	int throughHole = 0;
 	int padLayerDefCount = 0;
 	unsigned int padRotation = 0;
 	pcb_layer_type_t smd_side;
@@ -1189,14 +1189,7 @@ TODO(": this should be coming from the s-expr file preferences part")
 		pinName = n->children->str;
 		SEEN_NO_DUP(featureTally, 0);
 		if (n->children->next != NULL && n->children->next->str != NULL) {
-			if (strcmp("thru_hole", n->children->next->str) == 0) {
-				SMD = 0;
-				throughHole = 1;
-			}
-			else {
-				SMD = 1;
-				throughHole = 0;
-			}
+			throughHole = (strcmp("thru_hole", n->children->next->str) == 0);
 			if (n->children->next->next != NULL && n->children->next->next->str != NULL)
 				pad_shape = n->children->next->next->str;
 			else
@@ -1248,7 +1241,7 @@ TODO(": this should be coming from the s-expr file preferences part")
 		}
 		else if (m->str != NULL && strcmp("layers", m->str) == 0) {
 			TODO("rather pass this subtree directly to the shape generator code so it does not need to guess the layers")
-			if (SMD) { /* skip testing for pins */
+			if (!throughHole) { /* skip testing for pins */
 				SEEN_NO_DUP(featureTally, 2);
 				smd_side = 0;
 				for(l = m->children; l != NULL; l = l->next) {
