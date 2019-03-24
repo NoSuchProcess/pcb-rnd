@@ -627,19 +627,22 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 }
 
 /* kicad_pcb/gr_line or fp_line */
-static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc)
+static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_flag_values_t flg, int is_seg)
 {
 	gsxl_node_t *n;
 	unsigned long tally = 0, required;
 	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance;
-	pcb_flag_t Flags = pcb_flag_make(0);
+	pcb_flag_t Flags = pcb_flag_make(flg);
 	pcb_layer_t *ly = NULL;
 
-	Clearance = Thickness = 1; /* start with sane default of one nanometre */
-
 	TODO("figure how default clearance works, probably not subc specific");
+	Clearance = Thickness = 1; /* start with sane default of one nanometre */
 	if (subc != NULL)
 		Clearance = 0;
+
+	TODO("this workaround is for segment - remove it when clearance is figured");
+	if (flg & PCB_FLAG_CLEARLINE)
+		Clearance = PCB_MM_TO_COORD(0.250);
 
 	if (subtree->str != NULL) {
 		for(n = subtree; n != NULL; n = n->next) {
@@ -686,7 +689,14 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 					/* ignore; netname is n->children->str */
 				}
 				else
-					return kicad_error(subtree, "unexpected empty/NULL gr_line net.");
+					return kicad_error(subtree, "unexpected empty/NULL line net.");
+			}
+			else if (n->str != NULL && strcmp("status", n->str) == 0) {
+				if (is_seg) {
+					TODO("process this")
+				}
+				else
+					return kicad_error(subtree, "unexpected status in line object (only segment should have a status)");
 			}
 			else if (n->str != NULL && strcmp("tstamp", n->str) == 0) {
 				/* ignore */
@@ -723,7 +733,7 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 /* kicad_pcb/gr_line */
 static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 {
-	return kicad_parse_any_line(st, subtree, NULL);
+	return kicad_parse_any_line(st, subtree, NULL, 0, 0);
 }
 
 /* kicad_pcb/gr_arc, gr_cicle, fp_arc, fp_circle */
@@ -926,135 +936,8 @@ TODO("bbvia");
 /* kicad_pcb/segment */
 static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 {
-	gsxl_node_t *n;
-	unsigned long tally = 0, required;
-	char *end;
-	double val;
-	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance;
-	pcb_flag_t Flags = pcb_flag_make(PCB_FLAG_CLEARLINE); /* we try clearline flag here */
-	int PCBLayer = 0; /* sane default value */
-
-	TODO("need to figure the clearance");
-	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
-
-	if (subtree->str != NULL) {
-		for(n = subtree; n != NULL; n = n->next) {
-TODO(": it is enough to test n->str == NULL only once, and do a "continue"")
-TODO(": none of the kicad_errors() here should refer to subtree - they should use n or even n->children")
-			if (n->str != NULL && strcmp("start", n->str) == 0) {
-				SEEN_NO_DUP(tally, 0);
-				if (n->children != NULL && n->children->str != NULL) {
-					val = strtod(n->children->str, &end);
-					if (*end != 0) {
-						return kicad_error(subtree, "error parsing segment X1");
-					}
-					else {
-						X1 = PCB_MM_TO_COORD(val);
-					}
-				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL segment X1 node");
-				}
-				if (n->children->next != NULL && n->children->next->str != NULL) {
-					val = strtod(n->children->next->str, &end);
-					if (*end != 0) {
-						return kicad_error(subtree, "error parsing segment Y1");
-					}
-					else {
-						Y1 = PCB_MM_TO_COORD(val);
-					}
-				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL segment Y1 node");
-				}
-			}
-			else if (n->str != NULL && strcmp("end", n->str) == 0) {
-				SEEN_NO_DUP(tally, 1);
-				if (n->children != NULL && n->children->str != NULL) {
-					val = strtod(n->children->str, &end);
-					if (*end != 0) {
-						return kicad_error(subtree, "error parsing segment X2");
-					}
-					else {
-						X2 = PCB_MM_TO_COORD(val);
-					}
-				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL segment X2 node");
-				}
-				if (n->children->next != NULL && n->children->next->str != NULL) {
-					val = strtod(n->children->next->str, &end);
-					if (*end != 0) {
-						return kicad_error(subtree, "error parsing segment Y2");
-					}
-					else {
-						Y2 = PCB_MM_TO_COORD(val);
-					}
-				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL segment Y2 node");
-				}
-			}
-			else if (n->str != NULL && strcmp("layer", n->str) == 0) {
-				SEEN_NO_DUP(tally, 2);
-				if (n->children != NULL && n->children->str != NULL) {
-					PCBLayer = kicad_get_layeridx(st, n->children->str);
-					if (PCBLayer < 0) {
-						return kicad_warning(subtree, "error parsing segment layer");
-					}
-				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL segment layer node");
-				}
-			}
-			else if (n->str != NULL && strcmp("width", n->str) == 0) {
-				SEEN_NO_DUP(tally, 3);
-				if (n->children != NULL && n->children->str != NULL) {
-					val = strtod(n->children->str, &end);
-					if (*end != 0) {
-						return kicad_error(subtree, "error parsing segment width");
-					}
-					else {
-						Thickness = PCB_MM_TO_COORD(val);
-					}
-				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL segment width node");
-				}
-			}
-			else if (n->str != NULL && strcmp("net", n->str) == 0) {
-				SEEN_NO_DUP(tally, 4);
-				if (n->children != NULL && n->children->str != NULL) {
-					SEEN_NO_DUP(tally, 11);
-				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL segment net node");
-				}
-			}
-			else if (n->str != NULL && strcmp("tstamp", n->str) == 0) { /* not likely to be used */
-				SEEN_NO_DUP(tally, 5);
-				if (n->children != NULL && n->children->str != NULL) {
-					SEEN_NO_DUP(tally, 13);
-				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL segment tstamp node");
-				}
-			}
-			else if (n->str != NULL && strcmp("status", n->str) == 0) {
-TODO(": process this")
-			}
-			else
-				return kicad_error(n, "unexpected empty/NULL segment argument node: '%s'", n->str);
-		}
-	}
-	required = BV(0) | BV(1) | BV(2) | BV(3);
-	if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
-		pcb_line_new(&st->pcb->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags);
-		return 0;
-	}
-	return kicad_error(subtree, "failed to create segment on layout");
+	return kicad_parse_any_line(st, subtree, NULL, PCB_FLAG_CLEARLINE, 1);
 }
-
 
 /* kicad_pcb  parse (layers  )  - either board layer defintions, or module pad/via layer defs */
 static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
@@ -1656,7 +1539,7 @@ TODO(": rather pass this subtree directly to the shape generator code so it does
 				pad_shape = NULL;
 			}
 			else if (n->str != NULL && strcmp("fp_line", n->str) == 0) {
-				if (kicad_parse_any_line(st, n->children, subc) != 0) {
+				if (kicad_parse_any_line(st, n->children, subc, 0, 0) != 0) {
 TODO("this should return an error");
 /*					return -1;*/
 				}
