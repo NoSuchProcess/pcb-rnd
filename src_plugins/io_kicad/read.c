@@ -277,7 +277,7 @@ do { \
 do { \
 	double __dtmp__; \
 	PARSE_DOUBLE(__dtmp__, missnode, node, errmsg); \
-	(res) = PCB_MM_TO_COORD(__dtmp__); \
+	(res) = pcb_round(PCB_MM_TO_COORD(__dtmp__)); \
 } while(0) \
 
 /* kicad_pcb/gr_text and fp_text */
