@@ -966,28 +966,19 @@ TODO("check if we really need these excess layers");
 	/* for modules */
 	res |= kicad_reg_layer(st, "Top", PCB_LYT_COPPER | PCB_LYT_TOP, NULL);
 	res |= kicad_reg_layer(st, "Bottom", PCB_LYT_COPPER | PCB_LYT_BOTTOM, NULL);
-#endif
-
-TODO("layer:")
-	/*
-	   We don't have custom mask layers yet
-	   res |= kicad_reg_layer(st, "F.Mask",  PCB_LYT_MASK | PCB_LYT_TOP, NULL);
-	   res |= kicad_reg_layer(st, "B.Mask",  PCB_LYT_MASK | PCB_LYT_BOTTOM, NULL);
-	 */
 
 	if (res != 0) {
 		pcb_message(PCB_MSG_ERROR, "Internal error: can't find a silk or mask layer\n");
 		pcb_layergrp_inhibit_dec();
 		return kicad_error(subtree, "Internal error: can't find a silk or mask layer while parsing KiCad layout");
 	}
+#endif
 
 	for(n = subtree, i = 0; n != NULL; n = n->next, i++) {
 		if ((n->str != NULL) && (n->children->str != NULL) && (n->children->next != NULL) && (n->children->next->str != NULL)) {
 			int lnum = atoi(n->str);
 			const char *lname = n->children->str, *ltype = n->children->next->str;
-			/*pcb_trace("\tlayer #%d LAYERNUM found:\t%s\n", i, n->str); */
-			/*pcb_trace("\tlayer #%d layer label found:\t%s\n", i, lname); */
-			/*pcb_trace("\tlayer #%d layer description/type found:\t%s\n", i, ltype); */
+
 			if (kicad_create_layer(st, lnum, lname, ltype, n) < 0) {
 				pcb_message(PCB_MSG_ERROR, "Unrecognized layer: %d, %s, %s\n", lnum, lname, ltype);
 				pcb_layergrp_inhibit_dec();
