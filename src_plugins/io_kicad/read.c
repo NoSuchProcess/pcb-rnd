@@ -161,11 +161,209 @@ static int kicad_parse_version(read_state_t *st, gsxl_node_t *subtree)
 	return kicad_error(subtree, "unexpected layout version");
 }
 
-static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree); /* for layout layer definitions */
-static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree); /* describes netlists for the layout */
-static int kicad_get_layeridx(read_state_t *st, const char *kicad_name);
-static pcb_layer_t *kicad_get_subc_layer(read_state_t *st, pcb_subc_t *subc, const char *layer_name, const char *default_layer_name);
+/* Parse a layer definition and do all the administration needed for the layer */
+static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, const char *ltype, gsxl_node_t *subtree)
+{
+	pcb_layer_id_t id = -1;
+	pcb_layergrp_id_t gid = -1;
+	pcb_layer_t *ly;
 
+TODO(": we should not depend on layer IDs other than 0")
+	switch (lnum) {
+		case 0:
+		case 15:
+		case 31:
+			if (strcmp(lname+1, ".Cu") != 0)
+				return kicad_error(subtree, "layer 0 and 15/31 must be F.Cu and B.Cu (.Cu mismatch)");
+			if ((lname[0] != 'F') && (lname[0] != 'B'))
+				return kicad_error(subtree, "layer 0 and 15/31 must be F.Cu and B.Cu (F or B mismatch)");
+			pcb_layergrp_list(st->pcb, PCB_LYT_COPPER | ((lname[0] == 'B') ? PCB_LYT_BOTTOM : PCB_LYT_TOP), &gid, 1);
+			id = pcb_layer_create(st->pcb, gid, lname);
+			break;
+		default:
+			if (strcmp(lname, "Edge.Cuts") == 0) {
+				/* Edge must be the outline */
+				pcb_layergrp_t *g = pcb_get_grp_new_intern(PCB, -1);
+				pcb_layergrp_fix_turn_to_outline(g);
+				id = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, lname);
+			}
+			else if ((strcmp(ltype, "signal") == 0) || (strcmp(ltype, "power") == 0) || (strncmp(lname, "Dwgs.", 4) == 0) || (strncmp(lname, "Cmts.", 4) == 0) || (strncmp(lname, "Eco", 3) == 0)) {
+				/* Create a new inner layer for signals and for emulating misc layers */
+				pcb_layergrp_t *g = pcb_get_grp_new_intern(PCB, -1);
+				id = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, lname);
+			}
+			else if ((lname[1] == '.') && ((lname[0] == 'F') || (lname[0] == 'B'))) { /* F. or B. layers */
+				if (strcmp(lname + 2, "SilkS") == 0)
+					return 0; /* silk layers are already created */
+				if (strcmp(lname + 2, "Paste") == 0) {
+					pcb_layergrp_list(st->pcb, PCB_LYT_PASTE | ((lname[0] == 'B') ? PCB_LYT_BOTTOM : PCB_LYT_TOP), &gid, 1);
+					id = pcb_layer_create(st->pcb, gid, lname);
+					ly = pcb_get_layer(st->pcb->Data, id);
+					ly->comb |= PCB_LYC_AUTO;
+					break;
+				}
+				if (strcmp(lname + 2, "Mask") == 0) {
+					pcb_layergrp_list(st->pcb, PCB_LYT_MASK | ((lname[0] == 'B') ? PCB_LYT_BOTTOM : PCB_LYT_TOP), &gid, 1);
+					id = pcb_layer_create(st->pcb, gid, lname);
+					ly = pcb_get_layer(st->pcb->Data, id);
+					ly->comb |= PCB_LYC_AUTO | PCB_LYC_SUB;
+					break;
+				}
+				if (strcmp(lname + 2, "Adhes") == 0) { /* mech layer */
+					pcb_layergrp_t *grp = pcb_get_grp_new_misc(st->pcb);
+					grp->name = pcb_strdup(lname);
+					grp->ltype = PCB_LYT_MECH | ((lname[0] == 'B') ? PCB_LYT_BOTTOM : PCB_LYT_TOP);
+					grp->purpose = pcb_strdup(lname+2);
+					id = pcb_layer_create(st->pcb, grp - st->pcb->LayerGroups.grp, lname);
+					break;
+				}
+				if ((strcmp(lname + 2, "CrtYd") == 0) || (strcmp(lname + 2, "Fab") == 0)) { /* documentation layers */
+					pcb_layergrp_t *grp = pcb_get_grp_new_misc(st->pcb);
+					grp->name = pcb_strdup(lname);
+					grp->ltype = PCB_LYT_DOC | ((lname[0] == 'B') ? PCB_LYT_BOTTOM : PCB_LYT_TOP);
+					grp->purpose = pcb_strdup(lname+2);
+					id = pcb_layer_create(st->pcb, grp - st->pcb->LayerGroups.grp, lname);
+					break;
+				}
+				kicad_warning(subtree, "unknown layer: %s", lname);
+				goto hack1;
+			}
+			else if (lnum > 15) {
+			hack1:;
+				/* HACK/WORKAROUND: remember kicad layers for those that are unsupported */
+				htsi_set(&st->layer_k2i, pcb_strdup(lname), -lnum);
+				return 0;
+			}
+			else
+				return -1; /* unknown field */
+	}
+
+/* valid layer, save it in the hash */
+	if (id >= 0) {
+		htsi_set(&st->layer_k2i, pcb_strdup(lname), id);
+	}
+	else {
+		assert(id < -1);
+	}
+	return 0;
+}
+
+/* Register a kicad layer in the layer hash after looking up the pcb-rnd equivalent */
+static unsigned int kicad_reg_layer(read_state_t *st, const char *kicad_name, unsigned int mask, const char *purpose)
+{
+	pcb_layer_id_t id;
+	if (st->pcb != NULL) {
+		if (pcb_layer_listp(st->pcb, mask, &id, 1, -1, purpose) != 1) {
+			pcb_layergrp_id_t gid;
+			pcb_layergrp_listp(PCB, mask, &gid, 1, -1, purpose);
+			id = pcb_layer_create(st->pcb, gid, kicad_name);
+		}
+	}
+	else {
+		/* registering a new layer in buffer */
+		pcb_layer_t *ly = pcb_layer_new_bound(st->fp_data, mask, kicad_name, purpose);
+		id = ly - st->fp_data->Layer;
+	}
+	htsi_set(&st->layer_k2i, pcb_strdup(kicad_name), id);
+	return 0;
+}
+
+static int kicad_get_layeridx_auto(read_state_t *st, const char *kicad_name);
+
+/* Returns the pcb-rnd layer index for a kicad_name, or -1 if not found */
+static int kicad_get_layeridx(read_state_t *st, const char *kicad_name)
+{
+	htsi_entry_t *e;
+	e = htsi_getentry(&st->layer_k2i, kicad_name);
+	if (e == NULL) {
+		if ((kicad_name[0] == 'I') && (kicad_name[1] == 'n')) {
+			/* Workaround: specal case InX.Cu, where X is an integer */
+			char *end;
+			long id = strtol(kicad_name + 2, &end, 10);
+			if ((pcb_strcasecmp(end, ".Cu") == 0) && (id >= 1) && (id <= 30)) {
+				if (kicad_reg_layer(st, kicad_name, PCB_LYT_COPPER | PCB_LYT_INTERN, NULL) == 0) {
+					/*pcb_trace("Created implicit copper layer %s as %d\n", kicad_name, id); */
+					return kicad_get_layeridx(st, kicad_name);
+				}
+				/*pcb_trace("Failed to create implicit copper layer %s as %d\n", kicad_name, id); */
+			}
+		}
+		if (st->auto_layers)
+			return kicad_get_layeridx_auto(st, kicad_name);
+		return -1;
+	}
+	return e->value;
+}
+
+static int kicad_get_layeridx_auto(read_state_t *st, const char *kicad_name)
+{
+	pcb_layer_type_t lyt = 0;
+	const char *purpose = NULL;
+
+	if ((kicad_name[0] == 'F') && (kicad_name[1] == '.')) lyt |= PCB_LYT_TOP;
+	else if ((kicad_name[0] == 'B') && (kicad_name[1] == '.')) lyt |= PCB_LYT_BOTTOM;
+	else if ((kicad_name[0] == 'I') && (kicad_name[1] == 'n')) lyt |= PCB_LYT_INTERN;
+
+	if (pcb_strcasecmp(kicad_name, "Edge.Cuts") == 0) { lyt |= PCB_LYT_BOUNDARY; purpose = "uroute"; }
+	else if (kicad_name[1] == '.') {
+		const char *ln = kicad_name + 2;
+		if (pcb_strcasecmp(ln, "SilkS") == 0) lyt |= PCB_LYT_SILK;
+		else if (pcb_strcasecmp(ln, "Mask") == 0) lyt |= PCB_LYT_MASK;
+		else if (pcb_strcasecmp(ln, "Paste") == 0) lyt |= PCB_LYT_PASTE;
+		else if (pcb_strcasecmp(ln, "Cu") == 0) lyt |= PCB_LYT_COPPER;
+		else lyt |= PCB_LYT_VIRTUAL;
+	}
+	else lyt |= PCB_LYT_VIRTUAL;
+
+	if (kicad_reg_layer(st, kicad_name, lyt, purpose) == 0)
+		return kicad_get_layeridx(st, kicad_name);
+	return -1;
+}
+
+
+static pcb_layer_t *kicad_get_subc_layer(read_state_t *st, pcb_subc_t *subc, const char *layer_name, const char *default_layer_name)
+{
+	int pcb_idx = -1;
+	pcb_layer_id_t lid;
+	pcb_layer_type_t lyt;
+	pcb_layer_combining_t comb;
+	const char *lnm;
+
+	if (layer_name != NULL) {
+		/* check if the layer already exists (by name) */
+		lid = pcb_layer_by_name(subc->data, layer_name);
+		if (lid >= 0)
+			return &subc->data->Layer[lid];
+
+		pcb_idx = kicad_get_layeridx(st, layer_name);
+		lnm = layer_name;
+		if (pcb_idx < 0) {
+			pcb_message(PCB_MSG_ERROR, "\tfp_* layer '%s' not found for module object, using unbound subc layer instead.\n", layer_name);
+			lyt = PCB_LYT_VIRTUAL;
+			comb = 0;
+			return pcb_subc_get_layer(subc, lyt, comb, 1, lnm, pcb_true);
+		}
+	}
+	else {
+		/* check if the layer already exists (by name) */
+		lid = pcb_layer_by_name(subc->data, default_layer_name);
+		if (lid >= 0)
+			return &subc->data->Layer[lid];
+
+		pcb_message(PCB_MSG_ERROR, "\tfp_* layer '%s' not found for module object, using module layer '%s' instead.\n", layer_name, default_layer_name);
+		pcb_idx = kicad_get_layeridx(st, default_layer_name);
+		if (pcb_idx < 0)
+			return NULL;
+		lnm = default_layer_name;
+	}
+
+	if (st->pcb == NULL)
+		lyt = st->fp_data->Layer[pcb_idx].meta.bound.type;
+	else
+		lyt = pcb_layer_flags(st->pcb, pcb_idx);
+	comb = 0;
+	return pcb_subc_get_layer(subc, lyt, comb, 1, lnm, pcb_true);
+}
 
 #define SEEN_NO_DUP(bucket, bit) \
 do { \
@@ -903,162 +1101,6 @@ TODO(": process this")
 	return kicad_error(subtree, "failed to create segment on layout");
 }
 
-/* Parse a layer definition and do all the administration needed for the layer */
-static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, const char *ltype, gsxl_node_t *subtree)
-{
-	pcb_layer_id_t id = -1;
-	pcb_layergrp_id_t gid = -1;
-	pcb_layer_t *ly;
-
-TODO(": we should not depend on layer IDs other than 0")
-	switch (lnum) {
-		case 0:
-		case 15:
-		case 31:
-			if (strcmp(lname+1, ".Cu") != 0)
-				return kicad_error(subtree, "layer 0 and 15/31 must be F.Cu and B.Cu (.Cu mismatch)");
-			if ((lname[0] != 'F') && (lname[0] != 'B'))
-				return kicad_error(subtree, "layer 0 and 15/31 must be F.Cu and B.Cu (F or B mismatch)");
-			pcb_layergrp_list(st->pcb, PCB_LYT_COPPER | ((lname[0] == 'B') ? PCB_LYT_BOTTOM : PCB_LYT_TOP), &gid, 1);
-			id = pcb_layer_create(st->pcb, gid, lname);
-			break;
-		default:
-			if (strcmp(lname, "Edge.Cuts") == 0) {
-				/* Edge must be the outline */
-				pcb_layergrp_t *g = pcb_get_grp_new_intern(PCB, -1);
-				pcb_layergrp_fix_turn_to_outline(g);
-				id = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, lname);
-			}
-			else if ((strcmp(ltype, "signal") == 0) || (strcmp(ltype, "power") == 0) || (strncmp(lname, "Dwgs.", 4) == 0) || (strncmp(lname, "Cmts.", 4) == 0) || (strncmp(lname, "Eco", 3) == 0)) {
-				/* Create a new inner layer for signals and for emulating misc layers */
-				pcb_layergrp_t *g = pcb_get_grp_new_intern(PCB, -1);
-				id = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, lname);
-			}
-			else if ((lname[1] == '.') && ((lname[0] == 'F') || (lname[0] == 'B'))) { /* F. or B. layers */
-				if (strcmp(lname + 2, "SilkS") == 0)
-					return 0; /* silk layers are already created */
-				if (strcmp(lname + 2, "Paste") == 0) {
-					pcb_layergrp_list(st->pcb, PCB_LYT_PASTE | ((lname[0] == 'B') ? PCB_LYT_BOTTOM : PCB_LYT_TOP), &gid, 1);
-					id = pcb_layer_create(st->pcb, gid, lname);
-					ly = pcb_get_layer(st->pcb->Data, id);
-					ly->comb |= PCB_LYC_AUTO;
-					break;
-				}
-				if (strcmp(lname + 2, "Mask") == 0) {
-					pcb_layergrp_list(st->pcb, PCB_LYT_MASK | ((lname[0] == 'B') ? PCB_LYT_BOTTOM : PCB_LYT_TOP), &gid, 1);
-					id = pcb_layer_create(st->pcb, gid, lname);
-					ly = pcb_get_layer(st->pcb->Data, id);
-					ly->comb |= PCB_LYC_AUTO | PCB_LYC_SUB;
-					break;
-				}
-				if (strcmp(lname + 2, "Adhes") == 0) { /* mech layer */
-					pcb_layergrp_t *grp = pcb_get_grp_new_misc(st->pcb);
-					grp->name = pcb_strdup(lname);
-					grp->ltype = PCB_LYT_MECH | ((lname[0] == 'B') ? PCB_LYT_BOTTOM : PCB_LYT_TOP);
-					grp->purpose = pcb_strdup(lname+2);
-					id = pcb_layer_create(st->pcb, grp - st->pcb->LayerGroups.grp, lname);
-					break;
-				}
-				if ((strcmp(lname + 2, "CrtYd") == 0) || (strcmp(lname + 2, "Fab") == 0)) { /* documentation layers */
-					pcb_layergrp_t *grp = pcb_get_grp_new_misc(st->pcb);
-					grp->name = pcb_strdup(lname);
-					grp->ltype = PCB_LYT_DOC | ((lname[0] == 'B') ? PCB_LYT_BOTTOM : PCB_LYT_TOP);
-					grp->purpose = pcb_strdup(lname+2);
-					id = pcb_layer_create(st->pcb, grp - st->pcb->LayerGroups.grp, lname);
-					break;
-				}
-				kicad_warning(subtree, "unknown layer: %s", lname);
-				goto hack1;
-			}
-			else if (lnum > 15) {
-			hack1:;
-				/* HACK/WORKAROUND: remember kicad layers for those that are unsupported */
-				htsi_set(&st->layer_k2i, pcb_strdup(lname), -lnum);
-				return 0;
-			}
-			else
-				return -1; /* unknown field */
-	}
-
-/* valid layer, save it in the hash */
-	if (id >= 0) {
-		htsi_set(&st->layer_k2i, pcb_strdup(lname), id);
-	}
-	else {
-		assert(id < -1);
-	}
-	return 0;
-}
-
-/* Register a kicad layer in the layer hash after looking up the pcb-rnd equivalent */
-static unsigned int kicad_reg_layer(read_state_t *st, const char *kicad_name, unsigned int mask, const char *purpose)
-{
-	pcb_layer_id_t id;
-	if (st->pcb != NULL) {
-		if (pcb_layer_listp(st->pcb, mask, &id, 1, -1, purpose) != 1) {
-			pcb_layergrp_id_t gid;
-			pcb_layergrp_listp(PCB, mask, &gid, 1, -1, purpose);
-			id = pcb_layer_create(st->pcb, gid, kicad_name);
-		}
-	}
-	else {
-		/* registering a new layer in buffer */
-		pcb_layer_t *ly = pcb_layer_new_bound(st->fp_data, mask, kicad_name, purpose);
-		id = ly - st->fp_data->Layer;
-	}
-	htsi_set(&st->layer_k2i, pcb_strdup(kicad_name), id);
-	return 0;
-}
-
-static int kicad_get_layeridx_auto(read_state_t *st, const char *kicad_name)
-{
-	pcb_layer_type_t lyt = 0;
-	const char *purpose = NULL;
-
-	if ((kicad_name[0] == 'F') && (kicad_name[1] == '.')) lyt |= PCB_LYT_TOP;
-	else if ((kicad_name[0] == 'B') && (kicad_name[1] == '.')) lyt |= PCB_LYT_BOTTOM;
-	else if ((kicad_name[0] == 'I') && (kicad_name[1] == 'n')) lyt |= PCB_LYT_INTERN;
-
-	if (pcb_strcasecmp(kicad_name, "Edge.Cuts") == 0) { lyt |= PCB_LYT_BOUNDARY; purpose = "uroute"; }
-	else if (kicad_name[1] == '.') {
-		const char *ln = kicad_name + 2;
-		if (pcb_strcasecmp(ln, "SilkS") == 0) lyt |= PCB_LYT_SILK;
-		else if (pcb_strcasecmp(ln, "Mask") == 0) lyt |= PCB_LYT_MASK;
-		else if (pcb_strcasecmp(ln, "Paste") == 0) lyt |= PCB_LYT_PASTE;
-		else if (pcb_strcasecmp(ln, "Cu") == 0) lyt |= PCB_LYT_COPPER;
-		else lyt |= PCB_LYT_VIRTUAL;
-	}
-	else lyt |= PCB_LYT_VIRTUAL;
-
-	if (kicad_reg_layer(st, kicad_name, lyt, purpose) == 0)
-		return kicad_get_layeridx(st, kicad_name);
-	return -1;
-}
-
-/* Returns the pcb-rnd layer index for a kicad_name, or -1 if not found */
-static int kicad_get_layeridx(read_state_t *st, const char *kicad_name)
-{
-	htsi_entry_t *e;
-	e = htsi_getentry(&st->layer_k2i, kicad_name);
-	if (e == NULL) {
-		if ((kicad_name[0] == 'I') && (kicad_name[1] == 'n')) {
-			/* Workaround: specal case InX.Cu, where X is an integer */
-			char *end;
-			long id = strtol(kicad_name + 2, &end, 10);
-			if ((pcb_strcasecmp(end, ".Cu") == 0) && (id >= 1) && (id <= 30)) {
-				if (kicad_reg_layer(st, kicad_name, PCB_LYT_COPPER | PCB_LYT_INTERN, NULL) == 0) {
-					/*pcb_trace("Created implicit copper layer %s as %d\n", kicad_name, id); */
-					return kicad_get_layeridx(st, kicad_name);
-				}
-				/*pcb_trace("Failed to create implicit copper layer %s as %d\n", kicad_name, id); */
-			}
-		}
-		if (st->auto_layers)
-			return kicad_get_layeridx_auto(st, kicad_name);
-		return -1;
-	}
-	return e->value;
-}
 
 /* kicad_pcb  parse (layers  )  - either board layer defintions, or module pad/via layer defs */
 static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
@@ -1257,51 +1299,6 @@ TODO(": pad rotation?")
 
 	return 0;
 }
-
-static pcb_layer_t *kicad_get_subc_layer(read_state_t *st, pcb_subc_t *subc, const char *layer_name, const char *default_layer_name)
-{
-	int pcb_idx = -1;
-	pcb_layer_id_t lid;
-	pcb_layer_type_t lyt;
-	pcb_layer_combining_t comb;
-	const char *lnm;
-
-	if (layer_name != NULL) {
-		/* check if the layer already exists (by name) */
-		lid = pcb_layer_by_name(subc->data, layer_name);
-		if (lid >= 0)
-			return &subc->data->Layer[lid];
-
-		pcb_idx = kicad_get_layeridx(st, layer_name);
-		lnm = layer_name;
-		if (pcb_idx < 0) {
-			pcb_message(PCB_MSG_ERROR, "\tfp_* layer '%s' not found for module object, using unbound subc layer instead.\n", layer_name);
-			lyt = PCB_LYT_VIRTUAL;
-			comb = 0;
-			return pcb_subc_get_layer(subc, lyt, comb, 1, lnm, pcb_true);
-		}
-	}
-	else {
-		/* check if the layer already exists (by name) */
-		lid = pcb_layer_by_name(subc->data, default_layer_name);
-		if (lid >= 0)
-			return &subc->data->Layer[lid];
-
-		pcb_message(PCB_MSG_ERROR, "\tfp_* layer '%s' not found for module object, using module layer '%s' instead.\n", layer_name, default_layer_name);
-		pcb_idx = kicad_get_layeridx(st, default_layer_name);
-		if (pcb_idx < 0)
-			return NULL;
-		lnm = default_layer_name;
-	}
-
-	if (st->pcb == NULL)
-		lyt = st->fp_data->Layer[pcb_idx].meta.bound.type;
-	else
-		lyt = pcb_layer_flags(st->pcb, pcb_idx);
-	comb = 0;
-	return pcb_subc_get_layer(subc, lyt, comb, 1, lnm, pcb_true);
-}
-
 
 static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 {
