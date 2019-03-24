@@ -1168,6 +1168,190 @@ static int kicad_parse_fp_text(read_state_t *st, gsxl_node_t *n, pcb_subc_t *sub
 	return 0;
 }
 
+static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, unsigned long *tally, pcb_coord_t moduleX, pcb_coord_t moduleY, unsigned int moduleRotation, int *moduleEmpty)
+{
+	gsxl_node_t *l, *m;
+	double val;
+	char *end;
+	pcb_coord_t X, Y, drill, padXsize, padYsize, Clearance;
+	char *pinName = NULL, *pad_shape = NULL;
+	unsigned long featureTally = 0;
+	int SMD = 0, throughHole = 0;
+	int padLayerDefCount = 0;
+	unsigned int padRotation = 0;
+	pcb_layer_type_t smd_side;
+	pcb_layer_id_t PCBLayer;
+
+TODO(": this should be coming from the s-expr file preferences part")
+	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
+
+	if (n->children != 0 && n->children->str != NULL) {
+		pinName = n->children->str;
+		SEEN_NO_DUP(featureTally, 0);
+		if (n->children->next != NULL && n->children->next->str != NULL) {
+			if (strcmp("thru_hole", n->children->next->str) == 0) {
+				SMD = 0;
+				throughHole = 1;
+			}
+			else {
+				SMD = 1;
+				throughHole = 0;
+			}
+			if (n->children->next->next != NULL && n->children->next->next->str != NULL)
+				pad_shape = n->children->next->next->str;
+			else
+				return kicad_error(n->children->next, "unexpected empty/NULL module pad shape node");
+		}
+		else
+			return kicad_error(n->children->next, "unexpected empty/NULL module pad type node");
+	}
+	else
+		return kicad_error(n->children, "unexpected empty/NULL module pad name  node");
+
+	if (n->children->next->next->next == NULL || n->children->next->next->next->str == NULL)
+		return kicad_error(n->children->next->next, "unexpected empty/NULL module node");
+
+	for(m = n->children->next->next->next; m != NULL; m = m->next) {
+		if (m->str != NULL && strcmp("at", m->str) == 0) {
+			SEEN_NO_DUP(featureTally, 1);
+			if (m->children != NULL && m->children->str != NULL) {
+				val = strtod(m->children->str, &end);
+				if (*end != 0) {
+					return kicad_error(m->children, "error parsing module pad X.");
+				}
+				else {
+					X = PCB_MM_TO_COORD(val);
+				}
+				if (m->children->next != NULL && m->children->next->str != NULL) {
+					val = strtod(m->children->next->str, &end);
+					if (*end != 0) {
+						return kicad_error(m->children->next, "error parsing module pad Y.");
+					}
+					else {
+						Y = PCB_MM_TO_COORD(val);
+					}
+				}
+				else
+					return kicad_error(m->children, "unexpected empty/NULL module X node");
+				if (m->children->next->next != NULL && m->children->next->next->str != NULL) {
+					val = strtod(m->children->next->next->str, &end);
+					if (*end != 0) {
+						/*pcb_trace("Odd pad rotation def ignored."); */
+					}
+					else {
+						padRotation = (int)val;
+					}
+				}
+			}
+			else
+				return kicad_error(m, "unexpected empty/NULL module Y node");
+		}
+		else if (m->str != NULL && strcmp("layers", m->str) == 0) {
+			TODO("rather pass this subtree directly to the shape generator code so it does not need to guess the layers")
+			if (SMD) { /* skip testing for pins */
+				SEEN_NO_DUP(featureTally, 2);
+				smd_side = 0;
+				for(l = m->children; l != NULL; l = l->next) {
+					if (l->str != NULL) {
+						if ((l->str[0] == 'F') || (l->str[0] == '*'))
+							smd_side |= PCB_LYT_TOP;
+						if ((l->str[0] == 'B') || (l->str[0] == '*'))
+							smd_side |= PCB_LYT_BOTTOM;
+						
+						PCBLayer = kicad_get_layeridx(st, l->str);
+						if (PCBLayer < 0) {
+							/* we ignore *.mask, *.paste, etc., if valid layer def already found */
+							/*pcb_trace("Unknown layer definition: %s\n", l->str); */
+							if (!padLayerDefCount) {
+								/*pcb_trace("Default placement of pad is the copper layer defined for module as a whole\n"); */
+								/*return -1; */
+							}
+						}
+						else if (PCBLayer < -1) {
+							/*pcb_trace("\tUnimplemented layer definition: %s\n", l->str); */
+						}
+						else if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM) {
+							padLayerDefCount++;
+						}
+						else if (padLayerDefCount) {
+							/*pcb_trace("More than one valid pad layer found, only using the first one found for layer.\n"); */
+							padLayerDefCount++;
+						}
+						else {
+							padLayerDefCount++;
+							/*pcb_trace("Valid layer defs found for current pad: %d\n", padLayerDefCount); */
+						}
+						/*pcb_trace("\tpad layer: '%s',  PCB layer number %d\n", (l->str), kicad_get_layeridx(st, l->str)); */
+					}
+					else
+						return kicad_error(l, "unexpected empty/NULL module layer node");
+				}
+			}
+			else {
+				/*pcb_trace("\tIgnoring layer definitions for through hole pin\n"); */
+			}
+		}
+		else if (m->str != NULL && strcmp("drill", m->str) == 0) {
+			SEEN_NO_DUP(featureTally, 3);
+			if (m->children != NULL && m->children->str != NULL) {
+				val = strtod(m->children->str, &end);
+				if (*end != 0)
+					return kicad_error(m->children, "error parsing module pad drill.");
+				else
+					drill = PCB_MM_TO_COORD(val);
+			}
+			else
+				return kicad_error(m, "unexpected empty/NULL module pad drill node");
+		}
+		else if (m->str != NULL && strcmp("net", m->str) == 0) {
+			SEEN_NO_DUP(featureTally, 4);
+			if (m->children != NULL && m->children->str != NULL) {
+				if (m->children->next != NULL && m->children->next->str != NULL) {
+					/*pcb_trace("\tpad's net name:\t'%s'\n", (m->children->next->str)); */
+				}
+				else
+					return kicad_error(m->children, "unexpected empty/NULL module pad net name node");
+			}
+			else
+				return kicad_error(m, "unexpected empty/NULL module pad net node");
+		}
+		else if (m->str != NULL && strcmp("size", m->str) == 0) {
+			SEEN_NO_DUP(featureTally, 5);
+			if (m->children != NULL && m->children->str != NULL) {
+				val = strtod(m->children->str, &end);
+				if (*end != 0) {
+					return kicad_error(m->children, "error parsing module pad size X.");
+				}
+				else {
+					padXsize = PCB_MM_TO_COORD(val);
+				}
+				if (m->children->next != NULL && m->children->next->str != NULL) {
+					val = strtod(m->children->next->str, &end);
+					if (*end != 0) {
+						return kicad_error(m->children->next, "error parsing module pad size Y.");
+					}
+					else {
+						padYsize = PCB_MM_TO_COORD(val);
+					}
+				}
+				else
+					return kicad_error(m->children, "unexpected empty/NULL module pad Y size node");
+			}
+			else
+				return kicad_error(m, "unexpected empty/NULL module pad X size node");
+		}
+		else {
+			if (m->str != NULL) {
+				/*pcb_trace("Unknown pad argument %s:", m->str); */
+			}
+		}
+	}
+
+	if (subc != NULL)
+		if (kicad_make_pad(st, n, subc, throughHole, moduleX, moduleY, X, Y, padXsize, padYsize, padRotation, moduleRotation, Clearance, drill, pinName, pad_shape, &featureTally, moduleEmpty, smd_side) != 0)
+			return -1;
+}
+
 static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 {
 	gsxl_node_t *l, *n, *m, *p;
@@ -1175,29 +1359,15 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	int moduleDefined = 0;
 	int PCBLayer = 0;
 	int on_bottom = 0;
-	int padLayerDefCount = 0;
-	int SMD = 0;
-	int throughHole = 0;
 	int foundRefdes = 0;
 	int refdesScaling = 100;
 	int moduleEmpty = 1;
 	unsigned int moduleRotation = 0; /* for rotating modules */
-	unsigned int padRotation = 0; /* for rotating pads */
 	unsigned long tally = 0, featureTally = 0, required;
-	pcb_coord_t moduleX = 0, moduleY = 0, X, Y, X1, Y1, X2, Y2, centreX, centreY, endX, endY, width, height, Thickness, Clearance, padXsize, padYsize, drill, refdesX, refdesY;
-	pcb_angle_t startAngle = 0.0;
-	pcb_angle_t endAngle = 0.0;
-	pcb_angle_t delta = 360.0; /* these defaults allow a fp_circle to be parsed, which does not specify (angle XXX) */
-	double val;
-	char *end;
-	char *pinName, *moduleName;
+	pcb_coord_t moduleX = 0, moduleY = 0, X, Y, X1, Y1, X2, Y2, centreX, centreY, endX, endY;
+	char *moduleName;
 	const char *subc_layer_str;
 	pcb_subc_t *subc = NULL;
-	pcb_layer_t *subc_layer;
-	pcb_layer_type_t smd_side;
-
-TODO(": this should be coming from the s-expr file preferences part")
-	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
 
 	if (st->pcb == NULL) {
 		/* loading a module as a footprint - always create the subc in advance */
@@ -1311,179 +1481,8 @@ TODO("don't ignore rotation here");
 				return kicad_error(subtree, "unexpected empty/NULL module model node");
 		}
 		else if (n->str != NULL && strcmp("pad", n->str) == 0) { /* pads next  - have thru_hole, circle, rect, roundrect, to think about */
-			char *pad_shape = NULL;
-			featureTally = 0;
-			padLayerDefCount = 0;
-			padRotation = 0;
-			if (n->children != 0 && n->children->str != NULL) {
-				pinName = n->children->str;
-				SEEN_NO_DUP(featureTally, 0);
-				if (n->children->next != NULL && n->children->next->str != NULL) {
-					if (strcmp("thru_hole", n->children->next->str) == 0) {
-						SMD = 0;
-						throughHole = 1;
-					}
-					else {
-						SMD = 1;
-						throughHole = 0;
-					}
-					if (n->children->next->next != NULL && n->children->next->next->str != NULL)
-						pad_shape = n->children->next->next->str;
-					else
-						return kicad_error(subtree, "unexpected empty/NULL module pad shape node");
-				}
-				else
-					return kicad_error(subtree, "unexpected empty/NULL module pad type node");
-			}
-			else
-				return kicad_error(subtree, "unexpected empty/NULL module pad name  node");
-
-			if (n->children->next->next->next == NULL || n->children->next->next->next->str == NULL)
-				return kicad_error(subtree, "unexpected empty/NULL module node");
-
-			for(m = n->children->next->next->next; m != NULL; m = m->next) {
-				if (m->str != NULL && strcmp("at", m->str) == 0) {
-					SEEN_NO_DUP(featureTally, 1);
-					if (m->children != NULL && m->children->str != NULL) {
-						val = strtod(m->children->str, &end);
-						if (*end != 0) {
-							return kicad_error(subtree, "error parsing module pad X.");
-						}
-						else {
-							X = PCB_MM_TO_COORD(val);
-						}
-						if (m->children->next != NULL && m->children->next->str != NULL) {
-							val = strtod(m->children->next->str, &end);
-							if (*end != 0) {
-								return kicad_error(subtree, "error parsing module pad Y.");
-							}
-							else {
-								Y = PCB_MM_TO_COORD(val);
-							}
-						}
-						else {
-							return kicad_error(subtree, "unexpected empty/NULL module X node");
-						}
-						if (m->children->next->next != NULL && m->children->next->next->str != NULL) {
-							val = strtod(m->children->next->next->str, &end);
-							if (*end != 0) {
-								/*pcb_trace("Odd pad rotation def ignored."); */
-							}
-							else {
-								padRotation = (int)val;
-							}
-						}
-					}
-					else {
-						return kicad_error(subtree, "unexpected empty/NULL module Y node");
-					}
-				}
-				else if (m->str != NULL && strcmp("layers", m->str) == 0) {
-					TODO("rather pass this subtree directly to the shape generator code so it does not need to guess the layers")
-					if (SMD) { /* skip testing for pins */
-						SEEN_NO_DUP(featureTally, 2);
-						smd_side = 0;
-						for(l = m->children; l != NULL; l = l->next) {
-							if (l->str != NULL) {
-								if ((l->str[0] == 'F') || (l->str[0] == '*'))
-									smd_side |= PCB_LYT_TOP;
-								if ((l->str[0] == 'B') || (l->str[0] == '*'))
-									smd_side |= PCB_LYT_BOTTOM;
-								
-								PCBLayer = kicad_get_layeridx(st, l->str);
-								if (PCBLayer < 0) {
-									/* we ignore *.mask, *.paste, etc., if valid layer def already found */
-									/*pcb_trace("Unknown layer definition: %s\n", l->str); */
-									if (!padLayerDefCount) {
-										/*pcb_trace("Default placement of pad is the copper layer defined for module as a whole\n"); */
-										/*return -1; */
-									}
-								}
-								else if (PCBLayer < -1) {
-									/*pcb_trace("\tUnimplemented layer definition: %s\n", l->str); */
-								}
-								else if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM) {
-									padLayerDefCount++;
-								}
-								else if (padLayerDefCount) {
-									/*pcb_trace("More than one valid pad layer found, only using the first one found for layer.\n"); */
-									padLayerDefCount++;
-								}
-								else {
-									padLayerDefCount++;
-									/*pcb_trace("Valid layer defs found for current pad: %d\n", padLayerDefCount); */
-								}
-								/*pcb_trace("\tpad layer: '%s',  PCB layer number %d\n", (l->str), kicad_get_layeridx(st, l->str)); */
-							}
-							else
-								return kicad_error(subtree, "unexpected empty/NULL module layer node");
-						}
-					}
-					else {
-						/*pcb_trace("\tIgnoring layer definitions for through hole pin\n"); */
-					}
-				}
-				else if (m->str != NULL && strcmp("drill", m->str) == 0) {
-					SEEN_NO_DUP(featureTally, 3);
-					if (m->children != NULL && m->children->str != NULL) {
-						val = strtod(m->children->str, &end);
-						if (*end != 0)
-							return kicad_error(subtree, "error parsing module pad drill.");
-						else
-							drill = PCB_MM_TO_COORD(val);
-					}
-					else
-						return kicad_error(subtree, "unexpected empty/NULL module pad drill node");
-				}
-				else if (m->str != NULL && strcmp("net", m->str) == 0) {
-					SEEN_NO_DUP(featureTally, 4);
-					if (m->children != NULL && m->children->str != NULL) {
-						if (m->children->next != NULL && m->children->next->str != NULL) {
-							/*pcb_trace("\tpad's net name:\t'%s'\n", (m->children->next->str)); */
-						}
-						else
-							return kicad_error(subtree, "unexpected empty/NULL module pad net name node");
-					}
-					else
-						return kicad_error(subtree, "unexpected empty/NULL module pad net node");
-				}
-				else if (m->str != NULL && strcmp("size", m->str) == 0) {
-					SEEN_NO_DUP(featureTally, 5);
-					if (m->children != NULL && m->children->str != NULL) {
-						val = strtod(m->children->str, &end);
-						if (*end != 0) {
-							return kicad_error(subtree, "error parsing module pad size X.");
-						}
-						else {
-							padXsize = PCB_MM_TO_COORD(val);
-						}
-						if (m->children->next != NULL && m->children->next->str != NULL) {
-							val = strtod(m->children->next->str, &end);
-							if (*end != 0) {
-								return kicad_error(subtree, "error parsing module pad size Y.");
-							}
-							else {
-								padYsize = PCB_MM_TO_COORD(val);
-							}
-						}
-						else {
-							return kicad_error(subtree, "unexpected empty/NULL module pad Y size node");
-						}
-					}
-					else {
-						return kicad_error(subtree, "unexpected empty/NULL module pad X size node");
-					}
-				}
-				else {
-					if (m->str != NULL) {
-						/*pcb_trace("Unknown pad argument %s:", m->str); */
-					}
-				}
-			}
-			if (subc != NULL)
-				if (kicad_make_pad(st, subtree, subc, throughHole, moduleX, moduleY, X, Y, padXsize, padYsize, padRotation, moduleRotation, Clearance, drill, pinName, pad_shape, &featureTally, &moduleEmpty, smd_side) != 0)
-					return -1;
-			pad_shape = NULL;
+			if (kicad_parse_pad(st, n, subc, &tally, moduleX, moduleY, moduleRotation, &moduleEmpty) != 0)
+				return -1;
 		}
 		else if (n->str != NULL && strcmp("fp_line", n->str) == 0) {
 			if (kicad_parse_any_line(st, n->children, subc, 0, 0) != 0) {
@@ -1507,11 +1506,6 @@ TODO("don't ignore rotation here");
 
 	if (subc == NULL)
 		return kicad_error(subtree, "unable to create incomplete subc.");
-
-	if (moduleEmpty) { /* should try and use module empty function here */
-		TODO("why do we try to do this? an error is an error")
-		Thickness = PCB_MM_TO_COORD(0.200);
-	}
 
 	pcb_subc_bbox(subc);
 	if (st->pcb != NULL) {
