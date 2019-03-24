@@ -1171,8 +1171,6 @@ static int kicad_parse_fp_text(read_state_t *st, gsxl_node_t *n, pcb_subc_t *sub
 static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, unsigned long *tally, pcb_coord_t moduleX, pcb_coord_t moduleY, unsigned int moduleRotation, int *moduleEmpty)
 {
 	gsxl_node_t *l, *m;
-	double val;
-	char *end;
 	pcb_coord_t X, Y, drill, padXsize, padYsize, Clearance;
 	char *pinName = NULL, *pad_shape = NULL;
 	unsigned long featureTally = 0;
@@ -1206,11 +1204,12 @@ TODO(": this should be coming from the s-expr file preferences part")
 
 	for(m = n->children->next->next->next; m != NULL; m = m->next) {
 		if (m->str != NULL && strcmp("at", m->str) == 0) {
+			double rot;
 			SEEN_NO_DUP(featureTally, 1);
 			PARSE_COORD(X, m, m->children, "module pad X");
 			PARSE_COORD(Y, m, m->children->next, "module pad Y");
-			PARSE_DOUBLE(val, NULL, m->children->next->next, "module pad rotation");
-			padRotation = (int)val;
+			PARSE_DOUBLE(rot, NULL, m->children->next->next, "module pad rotation");
+			padRotation = (int)rot;
 		}
 		else if (m->str != NULL && strcmp("layers", m->str) == 0) {
 			TODO("rather pass this subtree directly to the shape generator code so it does not need to guess the layers")
@@ -1261,28 +1260,8 @@ TODO(": this should be coming from the s-expr file preferences part")
 		}
 		else if (m->str != NULL && strcmp("size", m->str) == 0) {
 			SEEN_NO_DUP(featureTally, 5);
-			if (m->children != NULL && m->children->str != NULL) {
-				val = strtod(m->children->str, &end);
-				if (*end != 0) {
-					return kicad_error(m->children, "error parsing module pad size X.");
-				}
-				else {
-					padXsize = PCB_MM_TO_COORD(val);
-				}
-				if (m->children->next != NULL && m->children->next->str != NULL) {
-					val = strtod(m->children->next->str, &end);
-					if (*end != 0) {
-						return kicad_error(m->children->next, "error parsing module pad size Y.");
-					}
-					else {
-						padYsize = PCB_MM_TO_COORD(val);
-					}
-				}
-				else
-					return kicad_error(m->children, "unexpected empty/NULL module pad Y size node");
-			}
-			else
-				return kicad_error(m, "unexpected empty/NULL module pad X size node");
+			PARSE_COORD(padXsize, m, m->children, "module pad size X");
+			PARSE_COORD(padYsize, m, m->children->next, "module pad size Y");
 		}
 		else {
 			if (m->str != NULL) {
