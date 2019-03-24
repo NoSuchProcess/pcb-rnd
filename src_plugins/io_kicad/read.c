@@ -958,9 +958,12 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 	res |= kicad_reg_layer(st, "F.SilkS", PCB_LYT_SILK | PCB_LYT_TOP, NULL);
 	res |= kicad_reg_layer(st, "B.SilkS", PCB_LYT_SILK | PCB_LYT_BOTTOM, NULL);
 
+TODO("check if we really need these excess layers");
+#if 0
 	/* for modules */
 	res |= kicad_reg_layer(st, "Top", PCB_LYT_COPPER | PCB_LYT_TOP, NULL);
 	res |= kicad_reg_layer(st, "Bottom", PCB_LYT_COPPER | PCB_LYT_BOTTOM, NULL);
+#endif
 
 TODO("layer:")
 	/*
