@@ -1223,26 +1223,8 @@ TODO(": this should be coming from the s-expr file preferences part")
 		}
 		else if (n->str != NULL && strcmp("at", n->str) == 0) {
 			SEEN_NO_DUP(tally, 4);
-			if (n->children != NULL && n->children->str != NULL) {
-				SEEN_NO_DUP(tally, 5); /* same as ^= 1 was */
-				val = strtod(n->children->str, &end);
-				if (*end != 0)
-					return kicad_error(subtree, "error parsing module X.");
-				else
-					moduleX = PCB_MM_TO_COORD(val);
-			}
-			else
-				return kicad_error(subtree, "unexpected empty/NULL module X node");
-			if (n->children->next != NULL && n->children->next->str != NULL) {
-				SEEN_NO_DUP(tally, 6);
-				val = strtod(n->children->next->str, &end);
-				if (*end != 0)
-					return kicad_error(subtree, "error parsing module Y.");
-				else
-					moduleY = PCB_MM_TO_COORD(val);
-			}
-			else
-				return kicad_error(subtree, "unexpected empty/NULL module Y node");
+			PARSE_COORD(moduleX, n, n->children, "module X");
+			PARSE_COORD(moduleY, n, n->children->next, "module Y");
 
 			if (n->children->next->next != NULL && n->children->next->next->str != NULL) {
 				val = strtod(n->children->next->next->str, &end);
