@@ -1207,37 +1207,10 @@ TODO(": this should be coming from the s-expr file preferences part")
 	for(m = n->children->next->next->next; m != NULL; m = m->next) {
 		if (m->str != NULL && strcmp("at", m->str) == 0) {
 			SEEN_NO_DUP(featureTally, 1);
-			if (m->children != NULL && m->children->str != NULL) {
-				val = strtod(m->children->str, &end);
-				if (*end != 0) {
-					return kicad_error(m->children, "error parsing module pad X.");
-				}
-				else {
-					X = PCB_MM_TO_COORD(val);
-				}
-				if (m->children->next != NULL && m->children->next->str != NULL) {
-					val = strtod(m->children->next->str, &end);
-					if (*end != 0) {
-						return kicad_error(m->children->next, "error parsing module pad Y.");
-					}
-					else {
-						Y = PCB_MM_TO_COORD(val);
-					}
-				}
-				else
-					return kicad_error(m->children, "unexpected empty/NULL module X node");
-				if (m->children->next->next != NULL && m->children->next->next->str != NULL) {
-					val = strtod(m->children->next->next->str, &end);
-					if (*end != 0) {
-						/*pcb_trace("Odd pad rotation def ignored."); */
-					}
-					else {
-						padRotation = (int)val;
-					}
-				}
-			}
-			else
-				return kicad_error(m, "unexpected empty/NULL module Y node");
+			PARSE_COORD(X, m, m->children, "module pad X");
+			PARSE_COORD(Y, m, m->children->next, "module pad Y");
+			PARSE_DOUBLE(val, NULL, m->children->next->next, "module pad rotation");
+			padRotation = (int)val;
 		}
 		else if (m->str != NULL && strcmp("layers", m->str) == 0) {
 			TODO("rather pass this subtree directly to the shape generator code so it does not need to guess the layers")
