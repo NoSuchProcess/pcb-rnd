@@ -280,7 +280,7 @@ do { \
 	(res) = PCB_MM_TO_COORD(__dtmp__); \
 } while(0) \
 
-/* kicad_pcb/gr_text */
+/* kicad_pcb/gr_text and fp_text */
 static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *text, pcb_subc_t *subc)
 {
 	gsxl_node_t *l, *n, *m;
