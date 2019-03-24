@@ -854,6 +854,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 	char *name; /* not using via name for now */
 	pcb_coord_t X, Y, Thickness, Clearance, Mask, Drill; /* not sure what to do with mask */
 
+	TODO("need to figure the clearance");
 	Clearance = Mask = PCB_MM_TO_COORD(0.250); /* start with something bland here */
 	Drill = PCB_MM_TO_COORD(0.300); /* start with something sane */
 	name = "";
@@ -933,6 +934,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 	pcb_flag_t Flags = pcb_flag_make(PCB_FLAG_CLEARLINE); /* we try clearline flag here */
 	int PCBLayer = 0; /* sane default value */
 
+	TODO("need to figure the clearance");
 	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
 
 	if (subtree->str != NULL) {
