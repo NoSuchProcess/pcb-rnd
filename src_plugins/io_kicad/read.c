@@ -193,8 +193,13 @@ TODO(": we should not depend on layer IDs other than 0")
 				id = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, lname);
 			}
 			else if ((lname[1] == '.') && ((lname[0] == 'F') || (lname[0] == 'B'))) { /* F. or B. layers */
-				if (strcmp(lname + 2, "SilkS") == 0)
-					return 0; /* silk layers are already created */
+				if (strcmp(lname + 2, "SilkS") == 0) {
+					pcb_layergrp_list(st->pcb, PCB_LYT_SILK | ((lname[0] == 'B') ? PCB_LYT_BOTTOM : PCB_LYT_TOP), &gid, 1);
+					id = pcb_layer_create(st->pcb, gid, lname);
+					ly = pcb_get_layer(st->pcb->Data, id);
+					ly->comb |= PCB_LYC_AUTO;
+					break;
+				}
 				if (strcmp(lname + 2, "Paste") == 0) {
 					pcb_layergrp_list(st->pcb, PCB_LYT_PASTE | ((lname[0] == 'B') ? PCB_LYT_BOTTOM : PCB_LYT_TOP), &gid, 1);
 					id = pcb_layer_create(st->pcb, gid, lname);
@@ -955,8 +960,6 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 
 	/* set up the hash for implicit layers */
 	res = 0;
-	res |= kicad_reg_layer(st, "F.SilkS", PCB_LYT_SILK | PCB_LYT_TOP, NULL);
-	res |= kicad_reg_layer(st, "B.SilkS", PCB_LYT_SILK | PCB_LYT_BOTTOM, NULL);
 
 TODO("check if we really need these excess layers");
 #if 0
