@@ -1173,7 +1173,6 @@ TODO(": this should be coming from the s-expr file preferences part")
 	if (subtree->str == NULL)
 		return kicad_error(subtree, "module parsing failure.");
 
-	/*pcb_trace("Name of module element being parsed: '%s'\n", subtree->str); */
 	moduleName = subtree->str;
 	p = subtree->next;
 	if ((p != NULL) && (p->str != NULL) && (strcmp("locked", p->str) == 0)) {
@@ -1193,76 +1192,63 @@ TODO(": this should be coming from the s-expr file preferences part")
 				else if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM)
 					on_bottom = 1;
 			}
-			else {
+			else
 				return kicad_error(subtree, "unexpected empty/NULL module layer node");
-			}
 		}
 		else if (n->str != NULL && strcmp("tedit", n->str) == 0) {
 			SEEN_NO_DUP(tally, 2);
 			if (n->children != NULL && n->children->str != NULL) {
-				/*pcb_trace("\ttedit: '%s'\n", (n->children->str)); */
+				/* ingore time stamp */
 			}
-			else {
+			else
 				return kicad_error(subtree, "unexpected empty/NULL module tedit node");
-			}
 		}
 		else if (n->str != NULL && strcmp("tstamp", n->str) == 0) {
 			SEEN_NO_DUP(tally, 3);
 			if (n->children != NULL && n->children->str != NULL) {
-				/*pcb_trace("\ttstamp: '%s'\n", (n->children->str)); */
+				/* ignore time stamp */
 			}
-			else {
+			else
 				return kicad_error(subtree, "unexpected empty/NULL module tstamp node");
-			}
 		}
 		else if (n->str != NULL && strcmp("attr", n->str) == 0) {
 			if (n->children != NULL && n->children->str != NULL) {
-				/*pcb_trace("\tmodule attribute \"attr\": '%s' (not used)\n", (n->children->str)); */
+				TODO("do we really want to ignore attrs?");
 			}
-			else {
+			else
 				return kicad_error(subtree, "unexpected empty/NULL module attr node");
-			}
 		}
 		else if (n->str != NULL && strcmp("at", n->str) == 0) {
 			SEEN_NO_DUP(tally, 4);
 			if (n->children != NULL && n->children->str != NULL) {
 				SEEN_NO_DUP(tally, 5); /* same as ^= 1 was */
 				val = strtod(n->children->str, &end);
-				if (*end != 0) {
+				if (*end != 0)
 					return kicad_error(subtree, "error parsing module X.");
-				}
-				else {
+				else
 					moduleX = PCB_MM_TO_COORD(val);
-				}
 			}
-			else {
+			else
 				return kicad_error(subtree, "unexpected empty/NULL module X node");
-			}
 			if (n->children->next != NULL && n->children->next->str != NULL) {
 				SEEN_NO_DUP(tally, 6);
 				val = strtod(n->children->next->str, &end);
-				if (*end != 0) {
+				if (*end != 0)
 					return kicad_error(subtree, "error parsing module Y.");
-				}
-				else {
+				else
 					moduleY = PCB_MM_TO_COORD(val);
-				}
 			}
-			else {
+			else
 				return kicad_error(subtree, "unexpected empty/NULL module Y node");
-			}
+
 			if (n->children->next->next != NULL && n->children->next->next->str != NULL) {
 				val = strtod(n->children->next->next->str, &end);
-				if (*end != 0) {
+				if (*end != 0)
 					return kicad_error(subtree, "error parsing module rotation.");
-				}
-				else {
+				else
 					moduleRotation = (int)val;
-				}
 			}
-			else {
-				/*pcb_trace("\tno module (at) \"rotation\" value found'\n"); */
-			}
+
 			/* if we have been provided with a Module Name and location, create a new Element with default "" and "" for refdes and value fields */
 			if (moduleName != NULL && moduleDefined == 0) {
 				moduleDefined = 1; /* but might be empty, wait and see */
@@ -1276,11 +1262,10 @@ TODO(": this should be coming from the s-expr file preferences part")
 					pcb_subc_reg(st->pcb->Data, subc);
 					pcb_subc_bind_globals(st->pcb, subc);
 				}
-				
 			}
 		}
 		else if (n->str != NULL && strcmp("model", n->str) == 0) {
-			/*pcb_trace("module 3D model found and ignored\n"); */
+			TODO("save this as attribute");
 		}
 		else if (n->str != NULL && strcmp("fp_text", n->str) == 0) {
 			featureTally = 0;
@@ -1293,20 +1278,17 @@ TODO(": this should be coming from the s-expr file preferences part")
 						SEEN_NO_DUP(tally, 7);
 						pcb_attribute_put(&subc->Attributes, "refdes", text);
 						foundRefdes = 1;
-						/*pcb_trace("\tmoduleRefdes now: '%s'\n", moduleRefdes); */
 					}
 					else if (strcmp("value", textLabel) == 0) {
 						SEEN_NO_DUP(tally, 8);
 						pcb_attribute_put(&subc->Attributes, "value", text);
-						/*pcb_trace("\tmoduleValue now: '%s'\n", moduleValue); */
 					}
 					else if (strcmp("descr", textLabel) == 0) {
 						SEEN_NO_DUP(tally, 12);
 						pcb_attribute_put(&subc->Attributes, "footprint", text);
-						/*pcb_trace("\tmoduleValue now: '%s'\n", moduleValue); */
 					}
 					else if (strcmp("hide", textLabel) == 0) {
-						/*pcb_trace("\tignoring fp_text \"hide\" flag\n"); */
+						TODO("figure what 'hide' is doing");
 					}
 				}
 				else
@@ -1320,32 +1302,28 @@ TODO(": this should be coming from the s-expr file preferences part")
 		else if (n->str != NULL && strcmp("descr", n->str) == 0) {
 			SEEN_NO_DUP(tally, 9);
 			if (n->children != NULL && n->children->str != NULL) {
-				/*pcb_trace("\tmodule descr: '%s'\n", (n->children->str)); */
+				TODO("save this as attribute");
 			}
-			else {
+			else
 				return kicad_error(subtree, "unexpected empty/NULL module descr node");
-			}
 		}
 		else if (n->str != NULL && strcmp("tags", n->str) == 0) {
 			SEEN_NO_DUP(tally, 10);
 			if (n->children != NULL && n->children->str != NULL) {
-				/*pcb_trace("\tmodule tags: '%s'\n", (n->children->str)); may be more than one? */
+				TODO("save this as attribute");
 			}
-			else {
+			else
 				return kicad_error(subtree, "unexpected empty/NULL module tags node");
-			}
 		}
 		else if (n->str != NULL && strcmp("path", n->str) == 0) {
 			SEEN_NO_DUP(tally, 11);
 			if (n->children != NULL && n->children->str != NULL) {
-				/*pcb_trace("\tmodule path: '%s'\n", (n->children->str)); */
+				TODO("save this as attribute");
 			}
-			else {
+			else
 				return kicad_error(subtree, "unexpected empty/NULL module model node");
-			}
-			/* pads next  - have thru_hole, circle, rect, roundrect, to think about */
 		}
-		else if (n->str != NULL && strcmp("pad", n->str) == 0) {
+		else if (n->str != NULL && strcmp("pad", n->str) == 0) { /* pads next  - have thru_hole, circle, rect, roundrect, to think about */
 			char *pad_shape = NULL;
 			featureTally = 0;
 			padLayerDefCount = 0;
@@ -1362,30 +1340,21 @@ TODO(": this should be coming from the s-expr file preferences part")
 						SMD = 1;
 						throughHole = 0;
 					}
-					if (n->children->next->next != NULL && n->children->next->next->str != NULL) {
+					if (n->children->next->next != NULL && n->children->next->next->str != NULL)
 						pad_shape = n->children->next->next->str;
-					}
-					else {
+					else
 						return kicad_error(subtree, "unexpected empty/NULL module pad shape node");
-					}
 				}
-				else {
+				else
 					return kicad_error(subtree, "unexpected empty/NULL module pad type node");
-				}
 			}
-			else {
+			else
 				return kicad_error(subtree, "unexpected empty/NULL module pad name  node");
-			}
-			if (n->children->next->next->next == NULL || n->children->next->next->next->str == NULL) {
+
+			if (n->children->next->next->next == NULL || n->children->next->next->next->str == NULL)
 				return kicad_error(subtree, "unexpected empty/NULL module node");
-			}
+
 			for(m = n->children->next->next->next; m != NULL; m = m->next) {
-				if (m != NULL) {
-					/*pcb_trace("\tstepping through module pad defs, looking at: %s\n", m->str); */
-				}
-				else {
-					/*pcb_trace("error in pad def\n"); */
-				}
 				if (m->str != NULL && strcmp("at", m->str) == 0) {
 					SEEN_NO_DUP(featureTally, 1);
 					if (m->children != NULL && m->children->str != NULL) {
@@ -1423,7 +1392,7 @@ TODO(": this should be coming from the s-expr file preferences part")
 					}
 				}
 				else if (m->str != NULL && strcmp("layers", m->str) == 0) {
-					TODO(": rather pass this subtree directly to the shape generator code so it does not need to guess the layers")
+					TODO("rather pass this subtree directly to the shape generator code so it does not need to guess the layers")
 					if (SMD) { /* skip testing for pins */
 						SEEN_NO_DUP(featureTally, 2);
 						smd_side = 0;
@@ -1459,9 +1428,8 @@ TODO(": this should be coming from the s-expr file preferences part")
 								}
 								/*pcb_trace("\tpad layer: '%s',  PCB layer number %d\n", (l->str), kicad_get_layeridx(st, l->str)); */
 							}
-							else {
+							else
 								return kicad_error(subtree, "unexpected empty/NULL module layer node");
-							}
 						}
 					}
 					else {
@@ -1472,17 +1440,13 @@ TODO(": this should be coming from the s-expr file preferences part")
 					SEEN_NO_DUP(featureTally, 3);
 					if (m->children != NULL && m->children->str != NULL) {
 						val = strtod(m->children->str, &end);
-						if (*end != 0) {
+						if (*end != 0)
 							return kicad_error(subtree, "error parsing module pad drill.");
-						}
-						else {
+						else
 							drill = PCB_MM_TO_COORD(val);
-						}
-
 					}
-					else {
+					else
 						return kicad_error(subtree, "unexpected empty/NULL module pad drill node");
-					}
 				}
 				else if (m->str != NULL && strcmp("net", m->str) == 0) {
 					SEEN_NO_DUP(featureTally, 4);
@@ -1490,13 +1454,11 @@ TODO(": this should be coming from the s-expr file preferences part")
 						if (m->children->next != NULL && m->children->next->str != NULL) {
 							/*pcb_trace("\tpad's net name:\t'%s'\n", (m->children->next->str)); */
 						}
-						else {
+						else
 							return kicad_error(subtree, "unexpected empty/NULL module pad net name node");
-						}
 					}
-					else {
+					else
 						return kicad_error(subtree, "unexpected empty/NULL module pad net node");
-					}
 				}
 				else if (m->str != NULL && strcmp("size", m->str) == 0) {
 					SEEN_NO_DUP(featureTally, 5);
@@ -1550,7 +1512,8 @@ TODO(": this should be coming from the s-expr file preferences part")
 		}
 		else {
 			if (n->str != NULL) {
-				/*pcb_trace("Unknown pad argument : %s\n", n->str); */
+				kicad_error(n, "Unknown pad argument: %s\n", n->str);
+				TODO("Make this an error");
 			}
 		}
 	}
@@ -1559,7 +1522,7 @@ TODO(": this should be coming from the s-expr file preferences part")
 		return kicad_error(subtree, "unable to create incomplete subc.");
 
 	if (moduleEmpty) { /* should try and use module empty function here */
-		TODO(": why do we try to do this? an error is an error")
+		TODO("why do we try to do this? an error is an error")
 		Thickness = PCB_MM_TO_COORD(0.200);
 	}
 
