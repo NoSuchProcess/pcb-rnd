@@ -428,8 +428,8 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 	return kicad_error(subtree, "failed to create text: missing text string");
 }
 
-/* kicad_pcb/gr_line */
-static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
+/* kicad_pcb/gr_line or fp_line */
+static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc)
 {
 	gsxl_node_t *n;
 	unsigned long tally = 0, required;
@@ -437,7 +437,7 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 	double val;
 	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance;
 	pcb_flag_t Flags = pcb_flag_make(0);
-	int PCBLayer = 0;
+	pcb_layer_t *ly = NULL;
 
 	Clearance = Thickness = 1; /* start with sane default of one nanometre */
 
@@ -456,9 +456,16 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 			else if (n->str != NULL && strcmp("layer", n->str) == 0) {
 				SEEN_NO_DUP(tally, 2);
 				if (n->children != NULL && n->children->str != NULL) {
-					PCBLayer = kicad_get_layeridx(st, n->children->str);
-					if (PCBLayer < 0)
-						return kicad_error(subtree, "unexpected line layer def < 0 (%s)", n->children->str);
+					if (subc == NULL) {
+						pcb_layer_id_t PCBLayer = kicad_get_layeridx(st, n->children->str);
+						if (PCBLayer < 0)
+							return kicad_error(subtree, "unexpected line layer def < 0 (%s)", n->children->str);
+						ly = pcb_get_layer(st->pcb->Data, PCBLayer);
+					}
+					else {
+TODO("subc line");
+						abort();
+					}
 				}
 				else
 					return kicad_error(subtree, "unexpected empty/NULL line layer field.");
@@ -497,10 +504,16 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 
 	required = BV(0) | BV(1) | BV(2); /* | BV(3); now have 1nm default width, i.e. for edge cut */
 	if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
-		pcb_line_new(&st->pcb->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags);
+		pcb_line_new(ly, X1, Y1, X2, Y2, Thickness, Clearance, Flags);
 		return 0;
 	}
 	return kicad_error(subtree, "failed to create line: missing fields");
+}
+
+/* kicad_pcb/gr_line */
+static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
+{
+	return kicad_parse_any_line(st, subtree, NULL);
 }
 
 /* kicad_pcb/gr_arc     can also parse gr_cicle*/
