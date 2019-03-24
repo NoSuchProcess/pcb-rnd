@@ -1132,6 +1132,42 @@ TODO(": pad rotation?")
 	return 0;
 }
 
+static int kicad_parse_fp_text(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, unsigned long *tally, int *foundRefdes)
+{
+	char *text;
+
+	if (n->children != NULL && n->children->str != NULL) {
+		char *key = n->children->str;
+		if (n->children->next != NULL && n->children->next->str != NULL) {
+			text = n->children->next->str;
+			if (strcmp("reference", key) == 0) {
+				SEEN_NO_DUP(*tally, 7);
+				pcb_attribute_put(&subc->Attributes, "refdes", text);
+				*foundRefdes = 1;
+			}
+			else if (strcmp("value", key) == 0) {
+				SEEN_NO_DUP(*tally, 8);
+				pcb_attribute_put(&subc->Attributes, "value", text);
+			}
+			else if (strcmp("descr", key) == 0) {
+				SEEN_NO_DUP(*tally, 12);
+				pcb_attribute_put(&subc->Attributes, "footprint", text);
+			}
+			else if (strcmp("hide", key) == 0) {
+				TODO("figure what 'hide' is doing");
+			}
+		}
+		else /* only key, no value */
+			text = key;
+	}
+	if (kicad_parse_any_text(st, n->children->next->next, text, subc) != 0) {
+		TODO("this should return an error");
+/*					return -1;*/
+	}
+
+	return 0;
+}
+
 static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 {
 	gsxl_node_t *l, *n, *m, *p;
@@ -1250,38 +1286,7 @@ TODO("don't ignore rotation here");
 			TODO("save this as attribute");
 		}
 		else if (n->str != NULL && strcmp("fp_text", n->str) == 0) {
-/*			kicad_parse_fp_text(ctx, n);*/
-			char *text;
-			featureTally = 0;
-
-			if (n->children != NULL && n->children->str != NULL) {
-				char *key = n->children->str;
-				if (n->children->next != NULL && n->children->next->str != NULL) {
-					text = n->children->next->str;
-					if (strcmp("reference", key) == 0) {
-						SEEN_NO_DUP(tally, 7);
-						pcb_attribute_put(&subc->Attributes, "refdes", text);
-						foundRefdes = 1;
-					}
-					else if (strcmp("value", key) == 0) {
-						SEEN_NO_DUP(tally, 8);
-						pcb_attribute_put(&subc->Attributes, "value", text);
-					}
-					else if (strcmp("descr", key) == 0) {
-						SEEN_NO_DUP(tally, 12);
-						pcb_attribute_put(&subc->Attributes, "footprint", text);
-					}
-					else if (strcmp("hide", key) == 0) {
-						TODO("figure what 'hide' is doing");
-					}
-				}
-				else /* only key, no value */
-					text = key;
-			}
-			if (kicad_parse_any_text(st, n->children->next->next, text, subc) != 0) {
-				TODO("this should return an error");
-/*					return -1;*/
-			}
+			kicad_parse_fp_text(st, n, subc, &tally, &foundRefdes);
 		}
 		else if (n->str != NULL && strcmp("descr", n->str) == 0) {
 			SEEN_NO_DUP(tally, 9);
