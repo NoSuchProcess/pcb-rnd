@@ -439,6 +439,10 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 
 	Clearance = Thickness = 1; /* start with sane default of one nanometre */
 
+	TODO("figure how default clearance works, probably not subc specific");
+	if (subc != NULL)
+		Clearance = 0;
+
 	if (subtree->str != NULL) {
 		for(n = subtree; n != NULL; n = n->next) {
 			if (n->str != NULL && strcmp("start", n->str) == 0) {
@@ -457,13 +461,11 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 					if (subc == NULL) {
 						pcb_layer_id_t PCBLayer = kicad_get_layeridx(st, n->children->str);
 						if (PCBLayer < 0)
-							return kicad_error(subtree, "unexpected line layer def < 0 (%s)", n->children->str);
+							return kicad_error(n->children, "unexpected line layer def < 0 (%s)", n->children->str);
 						ly = pcb_get_layer(st->pcb->Data, PCBLayer);
 					}
-					else {
-TODO("subc line");
-						abort();
-					}
+					else
+						ly = kicad_get_subc_layer(st, subc, n->children->str, NULL);
 				}
 				else
 					return kicad_error(subtree, "unexpected empty/NULL line layer field.");
@@ -502,6 +504,18 @@ TODO("subc line");
 
 	required = BV(0) | BV(1) | BV(2); /* | BV(3); now have 1nm default width, i.e. for edge cut */
 	if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
+		if (subc != NULL) {
+			pcb_coord_t sx, sy;
+			double srot;
+			if (pcb_subc_get_origin(subc, &sx, &sy) == 0) {
+				X1 += sx;
+				Y1 += sy;
+				X2 += sx;
+				Y2 += sy;
+			}
+			TODO("subc roation is not properly mapped by the caller; when it is, we may need to rotate the line here");
+			if (pcb_subc_get_rotation(subc, &srot) == 0) {}
+		}
 		pcb_line_new(ly, X1, Y1, X2, Y2, Thickness, Clearance, Flags);
 		return 0;
 	}
@@ -1538,6 +1552,7 @@ TODO(": this should be coming from the s-expr file preferences part")
 						text = textLabel; /* just a single string, no reference or value */
 				}
 				if (kicad_parse_any_text(st, n->children->next->next, text, subc) != 0) {
+TODO("this should return an error");
 /*					return -1;*/
 				}
 			}
@@ -1761,137 +1776,10 @@ TODO(": rather pass this subtree directly to the shape generator code so it does
 				pad_shape = NULL;
 			}
 			else if (n->str != NULL && strcmp("fp_line", n->str) == 0) {
-				/*pcb_trace("fp_line found\n"); */
-				featureTally = 0;
-
-/* ********************************************************** */
-
-				if (n->children->str != NULL) {
-					for(l = n->children; l != NULL; l = l->next) {
-						if (l->str != NULL && strcmp("start", l->str) == 0) {
-							SEEN_NO_DUP(featureTally, 0);
-							if (l->children != NULL && l->children->str != NULL) {
-								SEEN_NO_DUP(featureTally, 1);
-								val = strtod(l->children->str, &end);
-								if (*end != 0) {
-									return kicad_error(subtree, "error parsing fp_line start X.");
-								}
-								else {
-									X1 = PCB_MM_TO_COORD(val) + moduleX;
-								}
-							}
-							else {
-								return kicad_error(subtree, "unexpected fp_line start X null node.");
-							}
-							if (l->children->next != NULL && l->children->next->str != NULL) {
-								SEEN_NO_DUP(featureTally, 2);
-								val = strtod(l->children->next->str, &end);
-								if (*end != 0) {
-									return kicad_error(subtree, "error parsing fp_line start Y.");
-								}
-								else {
-									Y1 = PCB_MM_TO_COORD(val) + moduleY;
-								}
-							}
-							else {
-								return kicad_error(subtree, "unexpected fp_line start Y null node.");
-							}
-						}
-						else if (l->str != NULL && strcmp("end", l->str) == 0) {
-							SEEN_NO_DUP(featureTally, 3);
-							if (l->children != NULL && l->children->str != NULL) {
-								SEEN_NO_DUP(featureTally, 4);
-								val = strtod(l->children->str, &end);
-								if (*end != 0) {
-									return kicad_error(subtree, "error parsing fp_line end X.");
-								}
-								else {
-									X2 = PCB_MM_TO_COORD(val) + moduleX;
-								}
-							}
-							else {
-								return kicad_error(subtree, "unexpected fp_line end X null node.");
-							}
-							if (l->children->next != NULL && l->children->next->str != NULL) {
-								SEEN_NO_DUP(featureTally, 5);
-								val = strtod(l->children->next->str, &end);
-								if (*end != 0) {
-									return kicad_error(subtree, "error parsing fp_line end Y.");
-								}
-								else {
-									Y2 = PCB_MM_TO_COORD(val) + moduleY;
-								}
-							}
-							else {
-								return kicad_error(subtree, "unexpected fp_line end Y null node.");
-							}
-						}
-						else if (l->str != NULL && strcmp("layer", l->str) == 0) {
-							SEEN_NO_DUP(featureTally, 6);
-							if (l->children != NULL && l->children->str != NULL) {
-								SEEN_NO_DUP(featureTally, 7);
-								subc_layer = kicad_get_subc_layer(st, subc, l->children->str, subc_layer_str);
-								if (subc_layer == NULL)
-									return kicad_error(l, "unable to set subcircuit layer");
-							}
-							else {
-								pcb_message(PCB_MSG_ERROR, "\tusing default module layer for gr_line element\n");
-								subc_layer = kicad_get_subc_layer(st, subc, NULL, subc_layer_str); /* default to module layer */
-								/* return -1; */
-							}
-							if (subc_layer == NULL)
-								return kicad_error(l, "unable to set subcircuit layer");
-						}
-						else if (l->str != NULL && strcmp("width", l->str) == 0) {
-							SEEN_NO_DUP(featureTally, 8);
-							if (l->children != NULL && l->children->str != NULL) {
-								SEEN_NO_DUP(featureTally, 9);
-								val = strtod(l->children->str, &end);
-								if (*end != 0) {
-									return kicad_error(subtree, "error parsing fp_line width.");
-								}
-								else {
-									Thickness = PCB_MM_TO_COORD(val);
-								}
-							}
-							else {
-								return kicad_error(subtree, "unexpected fp_line width null node.");
-							}
-						}
-						else if (l->str != NULL && strcmp("angle", l->str) == 0) { /* unlikely to be used or seen */
-							SEEN_NO_DUP(featureTally, 10);
-							if (l->children != NULL && l->children->str != NULL) {
-								SEEN_NO_DUP(featureTally, 11);
-							}
-							else {
-								return kicad_error(subtree, "unexpected fp_line angle null node.");
-							}
-						}
-						else if (l->str != NULL && strcmp("net", l->str) == 0) { /* unlikely to be used or seen */
-							SEEN_NO_DUP(featureTally, 12);
-							if (l->children != NULL && l->children->str != NULL) {
-								SEEN_NO_DUP(featureTally, 13);
-							}
-							else {
-								return kicad_error(subtree, "unexpected fp_line net null node.");
-							}
-						}
-						else {
-							if (l->str != NULL) {
-								/*pcb_trace("Unknown fp_line argument %s:", l->str); */
-							}
-							return kicad_error(subtree, "unexpected fp_line null node.");
-						}
-					}
+				if (kicad_parse_any_line(st, n->children, subc) != 0) {
+TODO("this should return an error");
+/*					return -1;*/
 				}
-				required = BV(0) | BV(3) | BV(6) | BV(8);
-				if (((featureTally & required) == required) && subc_layer != NULL) { /* need start, end, layer, thickness at a minimum */
-					moduleEmpty = 0;
-					pcb_line_new(subc_layer, X1, Y1, X2, Y2, Thickness, 0, pcb_no_flags());
-				}
-
-/* ********************************************************** */
-
 			}
 			else if ((n->str != NULL && strcmp("fp_arc", n->str) == 0) || (n->str != NULL && strcmp("fp_circle", n->str) == 0)) {
 				/*pcb_trace("fp_arc or fp_circle found\n"); */
