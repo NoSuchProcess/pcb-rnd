@@ -1001,17 +1001,17 @@ TODO("check if we really need these excess layers");
 static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree)
 {
 	if (subtree != NULL && subtree->str != NULL) {
-		/*pcb_trace("net number: '%s'\n", subtree->str); */
+		/* ignore net attachment: subtree->str */
 	}
-	else {
+	else
 		return kicad_error(subtree, "missing net number in net descriptors.");
-	}
+
 	if (subtree->next != NULL && subtree->next->str != NULL) {
-		/*pcb_trace("\tcorresponding net label: '%s'\n", (subtree->next->str)); */
+		/* ignore corresponding net label: subtree->next->str */
 	}
-	else {
-		return kicad_error(subtree, "missing net label in net descriptors.");
-	}
+	else
+		return kicad_error(subtree->next, "missing net label in net descriptors.");
+
 TODO("we are not building the netlist in memory?")
 	return 0;
 }
