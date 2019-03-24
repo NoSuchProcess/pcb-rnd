@@ -1265,7 +1265,8 @@ TODO(": this should be coming from the s-expr file preferences part")
 		}
 		else {
 			if (m->str != NULL) {
-				/*pcb_trace("Unknown pad argument %s:", m->str); */
+				kicad_error(m, "Unknown pad argument: %s", m->str);
+				TODO("this should result in error");
 			}
 		}
 	}
