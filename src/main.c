@@ -256,7 +256,7 @@ static void log_print_uninit_errs(const char *title)
 	for(n = from; n != NULL; n = n->next) {
 		if ((n->level >= PCB_MSG_INFO) || conf_core.rc.verbose) {
 			if (!printed)
-				fprintf(stderr, " *** %s:\n", title);
+				fprintf(stderr, "*** %s:\n", title);
 			fprintf(stderr, "%s", n->str);
 			printed = 1;
 		}
@@ -365,17 +365,17 @@ int gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[])
 		if (res == 0)
 			break; /* HID accepted, don't try anything else */
 		if (res < 0) {
-			fprintf(stderr, "Failed to initialize HID %s (unrecoverable, have to give up)\n", pcb_gui->name);
+			pcb_message(PCB_MSG_ERROR, "Failed to initialize HID %s (unrecoverable, have to give up)\n", pcb_gui->name);
 			return -1;
 		}
 		fprintf(stderr, "Failed to initialize HID %s (recoverable)\n", pcb_gui->name);
 		if (apg == NULL) {
 			if (conf_core.rc.hid_fallback) {
 				ran_out_of_hids:;
-				fprintf(stderr, "Tried all available HIDs, all failed, giving up.\n");
+				pcb_message(PCB_MSG_ERROR, "Tried all available HIDs, all failed, giving up.\n");
 			}
 			else
-				fprintf(stderr, "Not trying any other hid as fallback because rc/hid_fallback is disabled.\n");
+				pcb_message(PCB_MSG_ERROR, "Not trying any other hid as fallback because rc/hid_fallback is disabled.\n");
 			return -1;
 		}
 
@@ -611,12 +611,14 @@ int main(int argc, char *argv[])
 	if (main_action != NULL) {
 		int res = pcb_parse_command(main_action, pcb_true);
 		if ((res != 0) && (main_action_hint != NULL))
-			fprintf(stderr, "\nHint: %s\n", main_action_hint);
+			pcb_message(PCB_MSG_ERROR, "\nHint: %s\n", main_action_hint);
+		log_print_uninit_errs("main_action parse error");
 		pcb_main_uninit();
 		exit(res);
 	}
 
 	if (gui_parse_arguments(autopick_gui, &hid_argc, &hid_argv) != 0) {
+		log_print_uninit_errs("Export plugin argument parse error");
 		pcb_main_uninit();
 		exit(1);
 	}
