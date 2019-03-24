@@ -1350,6 +1350,8 @@ TODO(": this should be coming from the s-expr file preferences part")
 	if (subc != NULL)
 		if (kicad_make_pad(st, n, subc, throughHole, moduleX, moduleY, X, Y, padXsize, padYsize, padRotation, moduleRotation, Clearance, drill, pinName, pad_shape, &featureTally, moduleEmpty, smd_side) != 0)
 			return -1;
+
+	return 0;
 }
 
 static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
