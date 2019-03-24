@@ -1222,24 +1222,21 @@ TODO(": this should be coming from the s-expr file preferences part")
 				return kicad_error(subtree, "unexpected empty/NULL module attr node");
 		}
 		else if (n->str != NULL && strcmp("at", n->str) == 0) {
+			double rot = 0;
 			SEEN_NO_DUP(tally, 4);
 			PARSE_COORD(moduleX, n, n->children, "module X");
 			PARSE_COORD(moduleY, n, n->children->next, "module Y");
+			PARSE_DOUBLE(rot, NULL, n->children->next->next, "module rotation");
+TODO("why's the rounding?");
+			moduleRotation = (int)rot;
 
-			if (n->children->next->next != NULL && n->children->next->next->str != NULL) {
-				val = strtod(n->children->next->next->str, &end);
-				if (*end != 0)
-					return kicad_error(subtree, "error parsing module rotation.");
-				else
-					moduleRotation = (int)val;
-			}
-
-			/* if we have been provided with a Module Name and location, create a new Element with default "" and "" for refdes and value fields */
+			/* if we have been provided with a Module Name and location, create a new subc with default "" and "" for refdes and value fields */
 			if (moduleName != NULL && moduleDefined == 0) {
 				moduleDefined = 1; /* but might be empty, wait and see */
 				/*pcb_trace("Have new module name and location, defining module/element %s\n", moduleName); */
 				if (subc == NULL) {
 					subc = pcb_subc_new();
+TODO("don't ignore rotation here");
 					pcb_subc_create_aux(subc, moduleX, moduleY, 0.0, on_bottom);
 					pcb_attribute_put(&subc->Attributes, "refdes", "K1");
 				}
