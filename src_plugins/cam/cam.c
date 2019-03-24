@@ -215,6 +215,10 @@ static char *cam_export_job;
 static int export_cam_parse_arguments(int *argc, char ***argv)
 {
 	int n;
+	if (*argc < 1) {
+		pcb_message(PCB_MSG_ERROR, "-x cam needs a job name\n");
+		return -1;
+	}
 	cam_export_job = pcb_strdup((*argv)[0]);
 	(*argc)--;
 	for(n = 0; n < (*argc); n++)
