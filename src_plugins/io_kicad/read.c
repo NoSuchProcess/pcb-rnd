@@ -1245,21 +1245,13 @@ TODO(": this should be coming from the s-expr file preferences part")
 		}
 		else if (m->str != NULL && strcmp("drill", m->str) == 0) {
 			SEEN_NO_DUP(featureTally, 3);
-			if (m->children != NULL && m->children->str != NULL) {
-				val = strtod(m->children->str, &end);
-				if (*end != 0)
-					return kicad_error(m->children, "error parsing module pad drill.");
-				else
-					drill = PCB_MM_TO_COORD(val);
-			}
-			else
-				return kicad_error(m, "unexpected empty/NULL module pad drill node");
+			PARSE_COORD(drill, m, m->children, "module pad drill");
 		}
 		else if (m->str != NULL && strcmp("net", m->str) == 0) {
 			SEEN_NO_DUP(featureTally, 4);
 			if (m->children != NULL && m->children->str != NULL) {
 				if (m->children->next != NULL && m->children->next->str != NULL) {
-					/*pcb_trace("\tpad's net name:\t'%s'\n", (m->children->next->str)); */
+					TODO("save pad name and set it as attrib: m->children->next->str");
 				}
 				else
 					return kicad_error(m->children, "unexpected empty/NULL module pad net name node");
