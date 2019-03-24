@@ -536,10 +536,13 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 	pcb_coord_t centreX, centreY, endX, endY, Thickness, Clearance, deltaX, deltaY;
 	pcb_angle_t endAngle = 0.0, delta = 360.0; /* these defaults allow a gr_circle to be parsed, which does not specify (angle XXX) */
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
-	pcb_layer_t *ly;
+	pcb_layer_t *ly = NULL;
 
-	TODO("Figure the clearance and what happens without thickness");
-	Clearance = Thickness = PCB_MM_TO_COORD(0.250); /* start with sane defaults */
+	TODO("Figure the clearance and what happens without thickness; shouldn't depend on subc");
+	if (subc == NULL)
+		Clearance = Thickness = PCB_MM_TO_COORD(0.250); /* start with sane defaults */
+	else
+		Clearance = Thickness = PCB_MM_TO_COORD(0);
 
 	if (subtree->str != NULL) {
 		for(n = subtree; n != NULL; n = n->next) {
@@ -621,6 +624,17 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 				startAngle -= 360.0;
 			if (startAngle < 0.0)
 				startAngle += 360.0;
+		}
+
+		if (subc != NULL) {
+			pcb_coord_t sx, sy;
+			double srot;
+			if (pcb_subc_get_origin(subc, &sx, &sy) == 0) {
+				centreX += sx;
+				centreY += sy;
+			}
+			TODO("subc roation is not properly mapped by the caller; when it is, we may need to rotate the line here");
+			if (pcb_subc_get_rotation(subc, &srot) == 0) {}
 		}
 		pcb_arc_new(ly, centreX, centreY, width, height, startAngle, delta, Thickness, Clearance, Flags, pcb_true);
 		return 0;
@@ -1697,197 +1711,10 @@ TODO("this should return an error");
 				}
 			}
 			else if ((n->str != NULL && strcmp("fp_arc", n->str) == 0) || (n->str != NULL && strcmp("fp_circle", n->str) == 0)) {
-				/*pcb_trace("fp_arc or fp_circle found\n"); */
-				featureTally = 0;
-
-				if (n->str != NULL && strcmp("fp_circle", n->str) == 0)
-					delta = 360;
-
-/* ********************************************************** */
-
-				if (subtree->str != NULL) {
-					for(l = n->children; l != NULL; l = l->next) {
-						if (l->str != NULL && strcmp("start", l->str) == 0) {
-							SEEN_NO_DUP(featureTally, 0);
-							if (l->children != NULL && l->children->str != NULL) {
-								SEEN_NO_DUP(featureTally, 1);
-								val = strtod(l->children->str, &end);
-								if (*end != 0) {
-									return kicad_error(subtree, "error parsing fp_arc X.");
-								}
-								else {
-									centreX = PCB_MM_TO_COORD(val);
-								}
-							}
-							else {
-								return kicad_error(subtree, "unexpected fp_arc start X null node.");
-							}
-							if (l->children->next != NULL && l->children->next->str != NULL) {
-								SEEN_NO_DUP(featureTally, 2);
-								val = strtod(l->children->next->str, &end);
-								if (*end != 0) {
-									return kicad_error(subtree, "error parsing fp_arc Y.");
-								}
-								else {
-									centreY = PCB_MM_TO_COORD(val);
-								}
-							}
-							else {
-								return kicad_error(subtree, "unexpected fp_arc start Y null node.");
-							}
-						}
-						else if (l->str != NULL && strcmp("center", l->str) == 0) { /* this lets us parse a circle too */
-							SEEN_NO_DUP(featureTally, 0);
-							if (l->children != NULL && l->children->str != NULL) {
-								SEEN_NO_DUP(featureTally, 1);
-								val = strtod(l->children->str, &end);
-								if (*end != 0) {
-									return kicad_error(subtree, "error parsing fp_arc centre X.");
-								}
-								else {
-									centreX = PCB_MM_TO_COORD(val);
-								}
-							}
-							else {
-								return kicad_error(subtree, "unexpected fp_arc centre X null node.");
-							}
-							if (l->children->next != NULL && l->children->next->str != NULL) {
-								SEEN_NO_DUP(featureTally, 2);
-								val = strtod(l->children->next->str, &end);
-								if (*end != 0) {
-									return kicad_error(subtree, "error parsing fp_arc centre Y.");
-								}
-								else {
-									centreY = PCB_MM_TO_COORD(val);
-								}
-							}
-							else {
-								return kicad_error(subtree, "unexpected fp_arc centre Y null node.");
-							}
-						}
-						else if (l->str != NULL && strcmp("end", l->str) == 0) {
-							SEEN_NO_DUP(featureTally, 3);
-							if (l->children != NULL && l->children->str != NULL) {
-								SEEN_NO_DUP(featureTally, 4);
-								val = strtod(l->children->str, &end);
-								if (*end != 0) {
-									return kicad_error(subtree, "error parsing fp_arc end X.");
-								}
-								else {
-									endX = PCB_MM_TO_COORD(val);
-								}
-							}
-							else {
-								return kicad_error(subtree, "unexpected fp_arc end X null node.");
-							}
-							if (l->children->next != NULL && l->children->next->str != NULL) {
-								SEEN_NO_DUP(featureTally, 5);
-								val = strtod(l->children->next->str, &end);
-								if (*end != 0) {
-									return kicad_error(subtree, "error parsing fp_arc end Y.");
-								}
-								else {
-									endY = PCB_MM_TO_COORD(val);
-								}
-							}
-							else {
-								return kicad_error(subtree, "unexpected fp_arc end Y null node.");
-							}
-						}
-						else if (l->str != NULL && strcmp("layer", l->str) == 0) {
-TODO("this is just code duplication of fp_line code")
-							SEEN_NO_DUP(featureTally, 6);
-							if (l->children != NULL && l->children->str != NULL) {
-								SEEN_NO_DUP(featureTally, 7);
-								subc_layer = kicad_get_subc_layer(st, subc, l->children->str, subc_layer_str);
-								if (subc_layer == NULL)
-									return kicad_error(l, "unable to set subcircuit layer");
-							}
-							else {
-								pcb_message(PCB_MSG_ERROR, "\tusing default module layer for gr_line element\n");
-								subc_layer = kicad_get_subc_layer(st, subc, NULL, subc_layer_str); /* default to module layer */
-								/* return -1; */
-							}
-							if (subc_layer == NULL)
-								return kicad_error(l, "unable to set subcircuit layer");
-						}
-						else if (l->str != NULL && strcmp("width", l->str) == 0) {
-							SEEN_NO_DUP(featureTally, 8);
-							if (l->children != NULL && l->children->str != NULL) {
-								SEEN_NO_DUP(featureTally, 9);
-								val = strtod(l->children->str, &end);
-								if (*end != 0) {
-									return kicad_error(subtree, "error parsing fp_arc width.");
-								}
-								else {
-									Thickness = PCB_MM_TO_COORD(val);
-								}
-							}
-							else {
-								return kicad_error(subtree, "unexpected fp_arc width null node.");
-							}
-						}
-						else if (l->str != NULL && strcmp("angle", l->str) == 0) {
-							SEEN_NO_DUP(featureTally, 10);
-							if (l->children != NULL && l->children->str != NULL) {
-								SEEN_NO_DUP(featureTally, 11);
-								val = strtod(l->children->str, &end);
-								if (*end != 0) {
-									return kicad_error(subtree, "error parsing fp_arc angle.");
-								}
-								else {
-									delta = val;
-								}
-							}
-							else {
-								return kicad_error(subtree, "unexpected fp_arc angle null node.");
-							}
-						}
-						else if (l->str != NULL && strcmp("net", l->str) == 0) { /* unlikely to be used or seen */
-							SEEN_NO_DUP(featureTally, 12);
-							if (l->children != NULL && l->children->str != NULL) {
-								SEEN_NO_DUP(featureTally, 13);
-							}
-							else {
-								return kicad_error(subtree, "unexpected fp_arc net null node.");
-							}
-						}
-						else {
-							if (n->str != NULL) {
-								/*pcb_trace("Unknown gr_arc argument %s:", l->str); */
-							}
-							return kicad_error(subtree, "unexpected fp_arc null node.");
-						}
-					}
+				if (kicad_parse_any_arc(st, n->children, subc) != 0) {
+TODO("this should return an error");
+/*					return -1;*/
 				}
-				required = BV(0) | BV(6) | BV(8);
-				if (((featureTally & required) == required) && subc != NULL) {
-					moduleEmpty = 0;
-					/* need start, layer, thickness at a minimum */
-					/* same code used above for gr_arc parsing */
-					width = height = pcb_distance(centreX, centreY, endX, endY); /* calculate radius of arc */
-					if (width < 1) { /* degenerate case */
-						startAngle = 0;
-					}
-					else {
-						endAngle = 180 + 180 * atan2(-(endY - centreY), endX - centreX) / M_PI; /* avoid using atan2 with zero parameters */
-						if (endAngle < 0.0) {
-							endAngle += 360.0; /*make it 0...360 */
-						}
-						startAngle = (endAngle - delta); /* geda is 180 degrees out of phase with kicad, and opposite direction rotation */
-						if (startAngle > 360.0) {
-							startAngle -= 360.0;
-						}
-						if (startAngle < 0.0) {
-							startAngle += 360.0;
-						}
-					}
-					pcb_arc_new(subc_layer, moduleX + centreX, moduleY + centreY, width, height, startAngle, delta, Thickness, 0, pcb_no_flags(), pcb_true);
-				}
-
-/* ********************************************************** */
-
-
 			}
 			else {
 				if (n->str != NULL) {
