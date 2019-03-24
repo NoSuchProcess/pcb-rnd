@@ -433,8 +433,6 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 {
 	gsxl_node_t *n;
 	unsigned long tally = 0, required;
-	char *end;
-	double val;
 	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance;
 	pcb_flag_t Flags = pcb_flag_make(0);
 	pcb_layer_t *ly = NULL;
