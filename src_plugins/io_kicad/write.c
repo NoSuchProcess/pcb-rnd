@@ -395,9 +395,8 @@ TODO("textrot: use the degrees instead of 90 deg steps")
 		textOffsetX = halfStringWidth;
 	}
 	pcb_fprintf(ctx->f, "(at %.3mm %.3mm", text->X + dx + textOffsetX, text->Y + dy + textOffsetY);
-	if (rotation != 0) {
-		fprintf(ctx->f, " %d", rotation / 10); /* convert decidegrees to degrees */
-	}
+	if (text->rot != 0.0)
+		fprintf(ctx->f, " %f", text->rot);
 	pcb_fprintf(ctx->f, ") (layer %s)\n", kly->name);
 	fprintf(ctx->f, "%*s", ind + 2, "");
 	pcb_fprintf(ctx->f, "(effects (font (size %.3mm %.3mm) (thickness %.3mm))", defaultXSize, defaultYSize, strokeThickness); /* , rotation */
