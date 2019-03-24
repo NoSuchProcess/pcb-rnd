@@ -851,11 +851,8 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 {
 	gsxl_node_t *m, *n;
 	unsigned long tally = 0, required;
-	char *end, *name; /* not using via name for now */
-	double val;
+	char *name; /* not using via name for now */
 	pcb_coord_t X, Y, Thickness, Clearance, Mask, Drill; /* not sure what to do with mask */
-TODO("not used for now; do support blind or buried vias currently");
-/*	int PCBLayer = 0;    */
 
 	Clearance = Mask = PCB_MM_TO_COORD(0.250); /* start with something bland here */
 	Drill = PCB_MM_TO_COORD(0.300); /* start with something sane */
@@ -865,109 +862,64 @@ TODO("not used for now; do support blind or buried vias currently");
 		for(n = subtree; n != NULL; n = n->next) {
 			if (n->str != NULL && strcmp("at", n->str) == 0) {
 				SEEN_NO_DUP(tally, 0);
-				if (n->children != NULL && n->children->str != NULL) {
-					val = strtod(n->children->str, &end);
-					if (*end != 0) {
-						return kicad_error(subtree, "error parsing via X");
-					}
-					else {
-						X = PCB_MM_TO_COORD(val);
-					}
-				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL via X node");
-				}
-				if (n->children->next != NULL && n->children->next->str != NULL) {
-					val = strtod(n->children->next->str, &end);
-					if (*end != 0) {
-						return kicad_error(subtree, "error parsing via Y");
-					}
-					else {
-						Y = PCB_MM_TO_COORD(val);
-					}
-				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL via Y node");
-				}
+				PARSE_COORD(X, n, n->children, "via X coord");
+				PARSE_COORD(Y, n, n->children->next, "via Y coord");
 			}
 			else if (n->str != NULL && strcmp("size", n->str) == 0) {
 				SEEN_NO_DUP(tally, 1);
-				if (n->children != NULL && n->children->str != NULL) {
-					val = strtod(n->children->str, &end);
-					if (*end != 0) {
-						return kicad_error(subtree, "error parsing via size");
-					}
-					else {
-						Thickness = PCB_MM_TO_COORD(val);
-					}
-				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL via size node");
-				}
+				PARSE_COORD(Thickness, n, n->children, "via size coord");
 			}
 			else if (n->str != NULL && strcmp("layers", n->str) == 0) {
 				SEEN_NO_DUP(tally, 2);
 				for(m = n->children; m != NULL; m = m->next) {
 					if (m->str != NULL) {
+TODO("bbvia");
 /*							PCBLayer = kicad_get_layeridx(st, m->str);
  *							if (PCBLayer < 0) {
  *								return -1;
  *							}   via layers not currently used... padstacks
  */
 					}
-					else {
+					else
 						return kicad_error(subtree, "unexpected empty/NULL via layer node");
-					}
 				}
 			}
 			else if (n->str != NULL && strcmp("net", n->str) == 0) {
 				SEEN_NO_DUP(tally, 3);
 				if (n->children != NULL && n->children->str != NULL) {
-					/*pcb_trace("\tvia segment net: '%s'\n", (n->children->str)); */
+					/* ignore the net (n->children->str)); */
 				}
-				else {
+				else
 					return kicad_error(subtree, "unexpected empty/NULL via net node");
-				}
 			}
 			else if (n->str != NULL && strcmp("tstamp", n->str) == 0) {
 				SEEN_NO_DUP(tally, 4);
 				if (n->children != NULL && n->children->str != NULL) {
-					/*pcb_trace("\tvia tstamp: '%s'\n", (n->children->str)); */
+					/* ignore */
 				}
-				else {
+				else
 					return kicad_error(subtree, "unexpected empty/NULL via tstamp node");
-				}
 			}
 			else if (n->str != NULL && strcmp("drill", n->str) == 0) {
 				SEEN_NO_DUP(tally, 5);
-				if (n->children != NULL && n->children->str != NULL) {
-					val = strtod(n->children->str, &end);
-					if (*end != 0) {
-						return kicad_error(subtree, "error parsing via drill");
-					}
-					else {
-						Drill = PCB_MM_TO_COORD(val);
-					}
-				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL via drill node");
-				}
+				PARSE_COORD(Drill, n, n->children, "via drill size");
 			}
 			else {
-				if (n->str != NULL) {
-					/*pcb_trace("Unknown via argument %s:", n->str); */
-				}
-				return kicad_error(subtree, "unexpected empty/NULL via argument node");
+				if (n->str != NULL)
+					kicad_warning(n, "Unknown via argument %s:", n->str);
+				else
+					return kicad_error(n, "unexpected empty/NULL via argument node");
 			}
 		}
 	}
+
 	required = BV(0) | BV(1);
 	if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
 		if (pcb_pstk_new_compat_via(st->pcb->Data, -1, X, Y, Drill, Thickness, Clearance, Mask, PCB_PSTK_COMPAT_ROUND, pcb_true) == NULL)
 			return kicad_error(subtree, "failed to create via-padstack");
 		return 0;
 	}
-	return -1;
+	return kicad_error(subtree, "insufficient via arguments");
 }
 
 /* kicad_pcb/segment */
