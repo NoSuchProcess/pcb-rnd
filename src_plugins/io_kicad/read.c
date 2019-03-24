@@ -446,127 +446,62 @@ TODO("not sure what to do with mask")
 		for(n = subtree; n != NULL; n = n->next) {
 			if (n->str != NULL && strcmp("start", n->str) == 0) {
 				SEEN_NO_DUP(tally, 0);
-				if (n->children != NULL && n->children->str != NULL) {
-					val = strtod(n->children->str, &end);
-					if (*end != 0) {
-						return kicad_error(subtree, "error parsing gr_line X1");
-					}
-					else {
-						X1 = PCB_MM_TO_COORD(val);
-					}
-				}
-				else {
-					return kicad_error(subtree, "null/missing node gr_line X1 coord");
-				}
-				if (n->children->next != NULL && n->children->next->str != NULL) {
-					val = strtod(n->children->next->str, &end);
-					if (*end != 0) {
-						return kicad_error(subtree, "error parsing gr_line Y1");
-					}
-					else {
-						Y1 = PCB_MM_TO_COORD(val);
-					}
-				}
-				else {
-					return kicad_error(subtree, "null/missing node gr_line Y1 coord");
-				}
+				PARSE_COORD(X1, n, n->children, "line X1 coord");
+				PARSE_COORD(Y1, n, n->children->next, "line Y1 coord");
 			}
 			else if (n->str != NULL && strcmp("end", n->str) == 0) {
 				SEEN_NO_DUP(tally, 1);
-				if (n->children != NULL && n->children->str != NULL) {
-					val = strtod(n->children->str, &end);
-					if (*end != 0) {
-						return kicad_error(subtree, "error parsing gr_line X2");
-					}
-					else {
-						X2 = PCB_MM_TO_COORD(val);
-					}
-				}
-				else {
-					return kicad_error(subtree, "null/missing node gr_line X2 coord");
-				}
-				if (n->children->next != NULL && n->children->next->str != NULL) {
-					val = strtod(n->children->next->str, &end);
-					if (*end != 0) {
-						return kicad_error(subtree, "error parsing gr_line Y2");
-					}
-					else {
-						Y2 = PCB_MM_TO_COORD(val);
-					}
-				}
-				else {
-					return kicad_error(subtree, "null/missing node gr_line Y2 coord");
-				}
+				PARSE_COORD(X2, n, n->children, "line X2 coord");
+				PARSE_COORD(Y2, n, n->children->next, "line Y2 coord");
 			}
 			else if (n->str != NULL && strcmp("layer", n->str) == 0) {
 				SEEN_NO_DUP(tally, 2);
 				if (n->children != NULL && n->children->str != NULL) {
 					PCBLayer = kicad_get_layeridx(st, n->children->str);
-					if (PCBLayer < 0) {
-						/*pcb_trace("unsupported gr_line layer ignored.\n"); */
-						return 0;
-					}
+					if (PCBLayer < 0)
+						return kicad_error(subtree, "unexpected line layer def < 0 (%s)", n->children->str);
 				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL gr_line layer.");
-				}
+				else
+					return kicad_error(subtree, "unexpected empty/NULL line layer field.");
 			}
 			else if (n->str != NULL && strcmp("width", n->str) == 0) {
 				SEEN_NO_DUP(tally, 3);
-				if (n->children != NULL && n->children->str != NULL) {
-					/*pcb_trace("\tgr_line width: '%s'\n", (n->children->str)); */
-					val = strtod(n->children->str, &end);
-					if (*end != 0) {
-						return kicad_error(subtree, "error parsing gr_line width");
-					}
-					else {
-						Thickness = PCB_MM_TO_COORD(val);
-					}
-				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL gr_line width.");
-				}
+				PARSE_COORD(Thickness, n, n->children, "line thickness");
 			}
 			else if (n->str != NULL && strcmp("angle", n->str) == 0) { /* unlikely to be used or seen */
 				SEEN_NO_DUP(tally, 4);
 				if (n->children != NULL && n->children->str != NULL) {
-					/*pcb_trace("\tgr_line angle: '%s'\n", (n->children->str)); */
+					/* ignore: kicad 4.x doesn't use this at all */
 				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL gr_line angle.");
-				}
+				else
+					return kicad_error(subtree, "unexpected empty/NULL line angle");
 			}
 			else if (n->str != NULL && strcmp("net", n->str) == 0) { /* unlikely to be used or seen */
 				SEEN_NO_DUP(tally, 5);
 				if (n->children != NULL && n->children->str != NULL) {
-					/*pcb_trace("\tgr_line net: '%s'\n", (n->children->str)); */
+					/* ignore; netname is n->children->str */
 				}
-				else {
+				else
 					return kicad_error(subtree, "unexpected empty/NULL gr_line net.");
-				}
 			}
 			else if (n->str != NULL && strcmp("tstamp", n->str) == 0) {
-				/*pcb_trace("\tgr_line tstamp: '%s'\n", (n->children->str)); */
 				/* ignore */
 			}
 			else {
-				if (n->str != NULL) {
-					/*pcb_trace("Unknown gr_line argument %s:", n->str); */
-				}
-				return kicad_error(subtree, "unexpected empty/NULL gr_line node.");
+				if (n->str != NULL)
+					kicad_warning(subtree, "unexpected line node: %s", n->str);
+				else
+					return kicad_error(subtree, "unexpected empty/NULL line node");
 			}
 		}
 	}
+
 	required = BV(0) | BV(1) | BV(2); /* | BV(3); now have 1nm default width, i.e. for edge cut */
 	if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
 		pcb_line_new(&st->pcb->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags);
-		/*pcb_trace("\tnew gr_line on layer created\n"); */
 		return 0;
 	}
-	else {
-		/*pcb_trace("\tignoring malformed gr_line definition \n"); */
-		return 0;
-	}
+	return kicad_error(subtree, "failed to create line: missing fields");
 }
 
 /* kicad_pcb/gr_arc     can also parse gr_cicle*/
