@@ -1417,7 +1417,7 @@ TODO("don't ignore rotation here");
 		}
 		else {
 			if (n->str != NULL) {
-				kicad_error(n, "Unknown pad argument: %s\n", n->str);
+				kicad_error(n, "Unknown module argument: %s\n", n->str);
 				TODO("Make this an error");
 			}
 		}
