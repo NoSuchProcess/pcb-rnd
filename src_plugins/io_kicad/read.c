@@ -1212,8 +1212,11 @@ TODO(": this should be coming from the s-expr file preferences part")
 				return kicad_error(subtree, "unexpected empty/NULL module tstamp node");
 		}
 		else if (n->str != NULL && strcmp("attr", n->str) == 0) {
-			if (n->children != NULL && n->children->str != NULL) {
-				TODO("do we really want to ignore attrs?");
+			if ((n->children != NULL) && (n->children->str != NULL)) {
+				char *key;
+				key = pcb_concat("kicad_attr_", n->children->str);
+				pcb_attribute_put(&subc->Attributes, key, "1");
+				free(key);
 			}
 			else
 				return kicad_error(subtree, "unexpected empty/NULL module attr node");
