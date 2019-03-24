@@ -435,7 +435,6 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 	unsigned long tally = 0, required;
 	char *end;
 	double val;
-TODO("not sure what to do with mask")
 	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance;
 	pcb_flag_t Flags = pcb_flag_make(0);
 	int PCBLayer = 0;
