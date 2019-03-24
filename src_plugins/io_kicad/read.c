@@ -533,165 +533,72 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 {
 	gsxl_node_t *n;
 	unsigned long tally = 0, required;
-
-	char *end;
-	double val;
-	pcb_coord_t centreX, centreY, endX, endY, width, height, Thickness, Clearance, deltaX, deltaY;
-	pcb_angle_t startAngle = 0.0;
-	pcb_angle_t endAngle = 0.0;
-	pcb_angle_t delta = 360.0; /* these defaults allow a gr_circle to be parsed, which does not specify (angle XXX) */
+	pcb_coord_t centreX, centreY, endX, endY, Thickness, Clearance, deltaX, deltaY;
+	pcb_angle_t endAngle = 0.0, delta = 360.0; /* these defaults allow a gr_circle to be parsed, which does not specify (angle XXX) */
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 	int PCBLayer = 0; /* sane default value */
 
+	TODO("Figure the clearance and what happens without thickness");
 	Clearance = Thickness = PCB_MM_TO_COORD(0.250); /* start with sane defaults */
 
 	if (subtree->str != NULL) {
 		for(n = subtree; n != NULL; n = n->next) {
 			if (n->str != NULL && strcmp("start", n->str) == 0) {
 				SEEN_NO_DUP(tally, 0);
-				if (n->children != NULL && n->children->str != NULL) {
-					val = strtod(n->children->str, &end);
-					if (*end != 0) {
-						return kicad_error(subtree, "gr_arc X1 parse error.");
-					}
-					else {
-						centreX = PCB_MM_TO_COORD(val);
-					}
-				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL gr_arc X1.");
-				}
-				if (n->children->next != NULL && n->children->next->str != NULL) {
-					val = strtod(n->children->next->str, &end);
-					if (*end != 0) {
-						return kicad_error(subtree, "gr_arc Y1 parse error.");
-					}
-					else {
-						centreY = PCB_MM_TO_COORD(val);
-					}
-				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL gr_arc Y1.");
-				}
+				PARSE_COORD(centreX, n, n->children, "arc start X coord");
+				PARSE_COORD(centreY, n, n->children->next, "arc start Y coord");
 			}
 			else if (n->str != NULL && strcmp("center", n->str) == 0) { /* this lets us parse a circle too */
 				SEEN_NO_DUP(tally, 0);
-				if (n->children != NULL && n->children->str != NULL) {
-					val = strtod(n->children->str, &end);
-					if (*end != 0) {
-						return kicad_error(subtree, "gr_arc centre X parse error.");
-					}
-					else {
-						centreX = PCB_MM_TO_COORD(val);
-					}
-				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL gr_arc centre X.");
-				}
-				if (n->children->next != NULL && n->children->next->str != NULL) {
-					val = strtod(n->children->next->str, &end);
-					if (*end != 0) {
-						return kicad_error(subtree, "gr_arc centre Y parse error.");
-					}
-					else {
-						centreY = PCB_MM_TO_COORD(val);
-					}
-				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL gr_arc centre Y.");
-				}
+				PARSE_COORD(centreX, n, n->children, "arc start X coord");
+				PARSE_COORD(centreY, n, n->children->next, "arc start Y coord");
 			}
 			else if (n->str != NULL && strcmp("end", n->str) == 0) {
 				SEEN_NO_DUP(tally, 1);
-				if (n->children != NULL && n->children->str != NULL) {
-					val = strtod(n->children->str, &end);
-					if (*end != 0) {
-						return kicad_error(subtree, "gr_arc end X parse error.");
-					}
-					else {
-						endX = PCB_MM_TO_COORD(val);
-					}
-				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL gr_arc end X.");
-				}
-				if (n->children->next != NULL && n->children->next->str != NULL) {
-					val = strtod(n->children->next->str, &end);
-					if (*end != 0) {
-						return kicad_error(subtree, "gr_arc end Y parse error.");
-					}
-					else {
-						endY = PCB_MM_TO_COORD(val);
-					}
-				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL gr_arc end Y.");
-				}
+				PARSE_COORD(endX, n, n->children, "arc end X coord");
+				PARSE_COORD(endY, n, n->children->next, "arc end Y coord");
 			}
 			else if (n->str != NULL && strcmp("layer", n->str) == 0) {
 				SEEN_NO_DUP(tally, 2);
 				if (n->children != NULL && n->children->str != NULL) {
 					PCBLayer = kicad_get_layeridx(st, n->children->str);
-					if (PCBLayer < 0) {
-						return kicad_warning(subtree, "gr_arc: \"%s\" not found", n->children->str);
-					}
+					if (PCBLayer < 0)
+						return kicad_warning(subtree, "arc: \"%s\" not found", n->children->str);
 				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL gr_arc layer.");
-				}
+				else
+					return kicad_error(subtree, "unexpected empty/NULL arc layer.");
 			}
 			else if (n->str != NULL && strcmp("width", n->str) == 0) {
 				SEEN_NO_DUP(tally, 3);
-				if (n->children != NULL && n->children->str != NULL) {
-					val = strtod(n->children->str, &end);
-					if (*end != 0) {
-						return kicad_error(subtree, "gr_arc width parse error.");
-					}
-					else {
-						Thickness = PCB_MM_TO_COORD(val);
-					}
-				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL gr_arc width.");
-				}
+				PARSE_COORD(Thickness, n, n->children, "arc width");
 			}
 			else if (n->str != NULL && strcmp("angle", n->str) == 0) {
-				if (n->children != NULL && n->children->str != NULL) {
-					SEEN_NO_DUP(tally, 4);
-					val = strtod(n->children->str, &end);
-					if (*end != 0) {
-						return kicad_error(subtree, "gr_arc angle parse error.");
-					}
-					else {
-						delta = val;
-					}
-				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL gr_arc angle.");
-				}
+				PARSE_DOUBLE(delta, n, n->children, "arc angle");
 			}
 			else if (n->str != NULL && strcmp("net", n->str) == 0) { /* unlikely to be used or seen */
 				if (n->children != NULL && n->children->str != NULL) {
-					/*pcb_trace("\tgr_arc net: '%s'\n", (n->children->str)); */
+					/* ignore net (n->children->str) */
 				}
-				else {
-					return kicad_error(subtree, "unexpected empty/NULL gr_arc net.");
-				}
+				else
+					return kicad_error(subtree, "unexpected empty/NULL arc net.");
 			}
 			else if (n->str != NULL && strcmp("tstamp", n->str) == 0) {
-				/*pcb_trace("\tgr_arc tstamp: '%s'\n", (n->children->str)); */
 				/* ignore */
 			}
 			else {
-				if (n->str != NULL) {
-					/*pcb_trace("Unknown gr_arc argument %s:", n->str); */
-				}
-				return kicad_error(subtree, "unexpected empty/NULL gr_arc node.");
+				if (n->str != NULL)
+					kicad_warning(n, "Unknown arc argument %s:", n->str);
+				else
+					return kicad_error(n, "unexpected empty/NULL gr_arc node.");
 			}
 		}
 	}
+
 	required = BV(0) | BV(1) | BV(2) | BV(3); /* | BV(4); not needed for circles */
 	if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
+		pcb_angle_t startAngle;
+		pcb_coord_t width, height;
+
 		width = height = pcb_distance(centreX, centreY, endX, endY); /* calculate radius of arc */
 		deltaX = endX - centreX;
 		deltaY = endY - centreY;
@@ -702,21 +609,18 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 			endAngle = 180 + 180 * atan2(-deltaY, deltaX) / M_PI;
 			/* avoid using atan2 with zero parameters */
 
-			if (endAngle < 0.0) {
-				endAngle += 360.0; /*make it 0...360 */
-			}
-			startAngle = (endAngle - delta); /* geda is 180 degrees out of phase with kicad, and opposite direction rotation */
-			if (startAngle > 360.0) {
+			if (endAngle < 0.0)
+				endAngle += 360.0; /* make it 0...360 */
+			startAngle = (endAngle - delta); /* pcb-rnd is 180 degrees out of phase with kicad, and opposite direction rotation */
+			if (startAngle > 360.0)
 				startAngle -= 360.0;
-			}
-			if (startAngle < 0.0) {
+			if (startAngle < 0.0)
 				startAngle += 360.0;
-			}
 		}
 		pcb_arc_new(&st->pcb->Data->Layer[PCBLayer], centreX, centreY, width, height, startAngle, delta, Thickness, Clearance, Flags, pcb_true);
 		return 0;
 	}
-	return kicad_error(subtree, "unexpected empty/NULL node in gr_arc.");
+	return kicad_error(subtree, "unexpected empty/NULL node in arc.");
 }
 
 /* kicad_pcb/via */
