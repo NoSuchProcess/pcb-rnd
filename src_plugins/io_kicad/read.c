@@ -1153,7 +1153,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	pcb_angle_t endAngle = 0.0;
 	pcb_angle_t delta = 360.0; /* these defaults allow a fp_circle to be parsed, which does not specify (angle XXX) */
 	double val;
-	char *end, *text;
+	char *end;
 	char *pinName, *moduleName;
 	const char *subc_layer_str;
 	pcb_subc_t *subc = NULL;
@@ -1250,31 +1250,33 @@ TODO("don't ignore rotation here");
 			TODO("save this as attribute");
 		}
 		else if (n->str != NULL && strcmp("fp_text", n->str) == 0) {
+/*			kicad_parse_fp_text(ctx, n);*/
+			char *text;
 			featureTally = 0;
 
 			if (n->children != NULL && n->children->str != NULL) {
-				char *textLabel = n->children->str;
+				char *key = n->children->str;
 				if (n->children->next != NULL && n->children->next->str != NULL) {
 					text = n->children->next->str;
-					if (strcmp("reference", textLabel) == 0) {
+					if (strcmp("reference", key) == 0) {
 						SEEN_NO_DUP(tally, 7);
 						pcb_attribute_put(&subc->Attributes, "refdes", text);
 						foundRefdes = 1;
 					}
-					else if (strcmp("value", textLabel) == 0) {
+					else if (strcmp("value", key) == 0) {
 						SEEN_NO_DUP(tally, 8);
 						pcb_attribute_put(&subc->Attributes, "value", text);
 					}
-					else if (strcmp("descr", textLabel) == 0) {
+					else if (strcmp("descr", key) == 0) {
 						SEEN_NO_DUP(tally, 12);
 						pcb_attribute_put(&subc->Attributes, "footprint", text);
 					}
-					else if (strcmp("hide", textLabel) == 0) {
+					else if (strcmp("hide", key) == 0) {
 						TODO("figure what 'hide' is doing");
 					}
 				}
-				else
-					text = textLabel; /* just a single string, no reference or value */
+				else /* only key, no value */
+					text = key;
 			}
 			if (kicad_parse_any_text(st, n->children->next->next, text, subc) != 0) {
 				TODO("this should return an error");
