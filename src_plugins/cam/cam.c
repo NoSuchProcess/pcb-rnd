@@ -51,13 +51,9 @@ const conf_cam_t conf_cam;
 
 #include "cam_compile.c"
 
-static void cam_init_inst(cam_ctx_t *ctx)
+static void cam_init_inst_fn(cam_ctx_t *ctx)
 {
-	memset(ctx, 0, sizeof(cam_ctx_t));
-
-	ctx->vars = pcb_cam_vars_alloc();
-
-	if (PCB->Filename != NULL) {
+	if ((PCB != NULL) && (PCB->Filename != NULL)) {
 		char *fn = pcb_derive_default_filename_(PCB->Filename, "");
 		char *val, *end = strrchr(fn, PCB_DIR_SEPARATOR_C);
 		if (end != NULL)
@@ -67,6 +63,14 @@ static void cam_init_inst(cam_ctx_t *ctx)
 		pcb_cam_set_var(ctx->vars, pcb_strdup("base"), val);
 		free(fn);
 	}
+}
+
+static void cam_init_inst(cam_ctx_t *ctx)
+{
+	memset(ctx, 0, sizeof(cam_ctx_t));
+
+	ctx->vars = pcb_cam_vars_alloc();
+	cam_init_inst_fn(ctx);
 }
 
 static void cam_uninit_inst(cam_ctx_t *ctx)
@@ -125,20 +129,25 @@ static int cam_parse_opt_outfile(cam_ctx_t *ctx, const char *optval)
 	return 0;
 }
 
+static int cam_parse_set_var(cam_ctx_t *ctx, const char *opt)
+{
+	char *key, *val, *sep = strchr(opt, '=');
+
+	if (sep == NULL)
+		return 1;
+
+	key = pcb_strndup(opt, sep-opt);
+	val = pcb_strdup(sep+1);
+	pcb_cam_set_var(ctx->vars, key, val);
+	return 0;
+}
+
 static int cam_parse_opt(cam_ctx_t *ctx, const char *opt)
 {
-	if (strncmp(opt, "outfile=", 8) == 0) {
+	if (strncmp(opt, "outfile=", 8) == 0)
 		return cam_parse_opt_outfile(ctx, opt+8);
-	}
-	else {
-		char *sep = strchr(opt, '=');
-		if (sep != NULL) {
-			char *key = pcb_strndup(opt, sep-opt);
-			char *val = pcb_strdup(sep+1);
-			pcb_cam_set_var(ctx->vars, key, val);
-			return 0;
-		}
-	}
+	else
+		return cam_parse_set_var(ctx, opt);
 
 	return 1;
 }
@@ -207,34 +216,67 @@ static pcb_hid_attribute_t *export_cam_get_export_options(int *n)
 static int export_cam_usage(const char *topic)
 {
 	fprintf(stderr, "\nThe cam exporter shorthand:\n\n");
-	fprintf(stderr, "\nUsage: pcb-rnd -x cam jobname [pcb-rnd-options] filename\n\n");
+	fprintf(stderr, "\nUsage: pcb-rnd -x cam jobname [cam-opts] [pcb-rnd-options] filename");
+	fprintf(stderr, "\n\ncam-opts:");
+	fprintf(stderr, "\n --outfile path      set the output file path (affets prefix and %%base%%)");
+	fprintf(stderr, "\n -o key=value        set %%key%% to value");
+	fprintf(stderr, "\n\n");
 	return 0;
 }
 
 static char *cam_export_job;
+static cam_ctx_t cam_export_ctx;
+static int cam_export_has_outfile;
 static int export_cam_parse_arguments(int *argc, char ***argv)
 {
-	int n;
+	int d, s, oargc;
 	if (*argc < 1) {
 		pcb_message(PCB_MSG_ERROR, "-x cam needs a job name\n");
 		return -1;
 	}
+
+	cam_export_has_outfile = 0;
+	cam_init_inst(&cam_export_ctx);
 	cam_export_job = pcb_strdup((*argv)[0]);
+	oargc = (*argc);
 	(*argc)--;
-	for(n = 0; n < (*argc); n++)
-		(*argv)[n] = (*argv)[n+1];
+	for(d = 0, s = 1; s < oargc; s++) {
+		char *opt = (*argv)[s];
+		if (strcmp(opt, "--outfile") == 0) {
+			s++; (*argc)--;
+			cam_parse_opt_outfile(&cam_export_ctx, (*argv)[s]);
+			cam_export_has_outfile = 1;
+		}
+		else if (strcmp(opt, "-o") == 0) {
+			s++; (*argc)--;
+			if (cam_parse_set_var(&cam_export_ctx, (*argv)[s]) != 0) {
+				pcb_message(PCB_MSG_ERROR, "cam -o requires a key=value argument\n");
+				goto err;
+			}
+		}
+		else { /* copy over for pcb */
+			(*argv)[d] = opt;
+			d++;
+		}
+	}
 	return 0;
+
+	err:;
+	cam_uninit_inst(&cam_export_ctx);
+	free(cam_export_job);
+	cam_export_job = NULL;
+	return 1;
 }
 
 static void export_cam_do_export(pcb_hid_attr_val_t *options)
 {
-	cam_ctx_t ctx;
+	if (!cam_export_has_outfile)
+		cam_init_inst_fn(&cam_export_ctx);
 
-	cam_init_inst(&ctx);
-	if (cam_call(cam_export_job, &ctx) != 0)
+	if (cam_call(cam_export_job, &cam_export_ctx) != 0)
 		pcb_message(PCB_MSG_ERROR, "CAM job %s failed\n", cam_export_job);
-	cam_uninit_inst(&ctx);
 
+	cam_uninit_inst(&cam_export_ctx);
 	free(cam_export_job);
 	cam_export_job = NULL;
 }
