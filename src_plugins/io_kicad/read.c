@@ -528,15 +528,15 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 	return kicad_parse_any_line(st, subtree, NULL);
 }
 
-/* kicad_pcb/gr_arc     can also parse gr_cicle*/
-static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
+/* kicad_pcb/gr_arc, gr_cicle, fp_arc, fp_circle */
+static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc)
 {
 	gsxl_node_t *n;
 	unsigned long tally = 0, required;
 	pcb_coord_t centreX, centreY, endX, endY, Thickness, Clearance, deltaX, deltaY;
 	pcb_angle_t endAngle = 0.0, delta = 360.0; /* these defaults allow a gr_circle to be parsed, which does not specify (angle XXX) */
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
-	int PCBLayer = 0; /* sane default value */
+	pcb_layer_t *ly;
 
 	TODO("Figure the clearance and what happens without thickness");
 	Clearance = Thickness = PCB_MM_TO_COORD(0.250); /* start with sane defaults */
@@ -561,9 +561,14 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 			else if (n->str != NULL && strcmp("layer", n->str) == 0) {
 				SEEN_NO_DUP(tally, 2);
 				if (n->children != NULL && n->children->str != NULL) {
-					PCBLayer = kicad_get_layeridx(st, n->children->str);
-					if (PCBLayer < 0)
-						return kicad_warning(subtree, "arc: \"%s\" not found", n->children->str);
+					if (subc == NULL) {
+						pcb_layer_id_t PCBLayer = kicad_get_layeridx(st, n->children->str);
+						if (PCBLayer < 0)
+							return kicad_warning(subtree, "arc: layer \"%s\" not found", n->children->str);
+						ly = pcb_get_layer(st->pcb->Data, PCBLayer);
+					}
+					else
+						ly = kicad_get_subc_layer(st, subc, n->children->str, NULL);
 				}
 				else
 					return kicad_error(subtree, "unexpected empty/NULL arc layer.");
@@ -617,11 +622,17 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 			if (startAngle < 0.0)
 				startAngle += 360.0;
 		}
-		pcb_arc_new(&st->pcb->Data->Layer[PCBLayer], centreX, centreY, width, height, startAngle, delta, Thickness, Clearance, Flags, pcb_true);
+		pcb_arc_new(ly, centreX, centreY, width, height, startAngle, delta, Thickness, Clearance, Flags, pcb_true);
 		return 0;
 	}
 	return kicad_error(subtree, "unexpected empty/NULL node in arc.");
 }
+
+static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
+{
+	return kicad_parse_any_arc(st, subtree, NULL);
+}
+
 
 /* kicad_pcb/via */
 static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
