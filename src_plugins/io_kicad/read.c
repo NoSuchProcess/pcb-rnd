@@ -1408,16 +1408,12 @@ TODO("don't ignore rotation here");
 				return -1;
 		}
 		else if (n->str != NULL && strcmp("fp_line", n->str) == 0) {
-			if (kicad_parse_any_line(st, n->children, subc, 0, 0) != 0) {
-				TODO("this should return an error");
-/*					return -1;*/
-			}
+			if (kicad_parse_any_line(st, n->children, subc, 0, 0) != 0)
+				return -1;
 		}
 		else if ((n->str != NULL && strcmp("fp_arc", n->str) == 0) || (n->str != NULL && strcmp("fp_circle", n->str) == 0)) {
-			if (kicad_parse_any_arc(st, n->children, subc) != 0) {
-				TODO("this should return an error");
-/*					return -1;*/
-			}
+			if (kicad_parse_any_arc(st, n->children, subc) != 0)
+				return -1;
 		}
 		else {
 			if (n->str != NULL) {
