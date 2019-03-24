@@ -1290,24 +1290,22 @@ TODO("don't ignore rotation here");
 		}
 		else if (n->str != NULL && strcmp("descr", n->str) == 0) {
 			SEEN_NO_DUP(tally, 9);
-			if (n->children != NULL && n->children->str != NULL) {
-				TODO("save this as attribute");
-			}
+			if (n->children != NULL && n->children->str != NULL)
+				pcb_attribute_put(&subc->Attributes, "kicad_descr", n->children->str);
 			else
 				return kicad_error(subtree, "unexpected empty/NULL module descr node");
 		}
 		else if (n->str != NULL && strcmp("tags", n->str) == 0) {
 			SEEN_NO_DUP(tally, 10);
-			if (n->children != NULL && n->children->str != NULL) {
-				TODO("save this as attribute");
-			}
+			if (n->children != NULL && n->children->str != NULL)
+				pcb_attribute_put(&subc->Attributes, "kicad_tags", n->children->str);
 			else
 				return kicad_error(subtree, "unexpected empty/NULL module tags node");
 		}
 		else if (n->str != NULL && strcmp("path", n->str) == 0) {
 			SEEN_NO_DUP(tally, 11);
 			if (n->children != NULL && n->children->str != NULL) {
-				TODO("save this as attribute");
+				/* ignored */
 			}
 			else
 				return kicad_error(subtree, "unexpected empty/NULL module model node");
