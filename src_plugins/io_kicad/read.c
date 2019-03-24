@@ -1354,19 +1354,17 @@ TODO(": this should be coming from the s-expr file preferences part")
 
 static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 {
-	gsxl_node_t *l, *n, *m, *p;
+	gsxl_node_t *n, *p;
 	int i;
 	int moduleDefined = 0;
 	int PCBLayer = 0;
 	int on_bottom = 0;
 	int foundRefdes = 0;
-	int refdesScaling = 100;
 	int moduleEmpty = 1;
 	unsigned int moduleRotation = 0; /* for rotating modules */
-	unsigned long tally = 0, featureTally = 0, required;
-	pcb_coord_t moduleX = 0, moduleY = 0, X, Y, X1, Y1, X2, Y2, centreX, centreY, endX, endY;
+	unsigned long tally = 0;
+	pcb_coord_t moduleX = 0, moduleY = 0;
 	char *moduleName;
-	const char *subc_layer_str;
 	pcb_subc_t *subc = NULL;
 
 	if (st->pcb == NULL) {
@@ -1392,7 +1390,6 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			SEEN_NO_DUP(tally, 1);
 			if (n->children != NULL && n->children->str != NULL) {
 				PCBLayer = kicad_get_layeridx(st, n->children->str);
-				subc_layer_str = n->children->str;
 				if (PCBLayer < 0)
 					return kicad_error(subtree, "module layer error - layer < 0.");
 				else if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM)
