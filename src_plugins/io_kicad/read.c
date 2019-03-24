@@ -1227,34 +1227,20 @@ TODO(": this should be coming from the s-expr file preferences part")
 						PCBLayer = kicad_get_layeridx(st, l->str);
 						if (PCBLayer < 0) {
 							/* we ignore *.mask, *.paste, etc., if valid layer def already found */
-							/*pcb_trace("Unknown layer definition: %s\n", l->str); */
-							if (!padLayerDefCount) {
-								/*pcb_trace("Default placement of pad is the copper layer defined for module as a whole\n"); */
-								/*return -1; */
-							}
+							if (!padLayerDefCount)
+								return kicad_error(l, "Unknown pad layer %s\n", l->str);
 						}
-						else if (PCBLayer < -1) {
-							/*pcb_trace("\tUnimplemented layer definition: %s\n", l->str); */
-						}
-						else if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM) {
+						else if (PCBLayer < -1)
+							return kicad_error(l, "Unimplemented pad layer %s\n", l->str);
+						else
 							padLayerDefCount++;
-						}
-						else if (padLayerDefCount) {
-							/*pcb_trace("More than one valid pad layer found, only using the first one found for layer.\n"); */
-							padLayerDefCount++;
-						}
-						else {
-							padLayerDefCount++;
-							/*pcb_trace("Valid layer defs found for current pad: %d\n", padLayerDefCount); */
-						}
-						/*pcb_trace("\tpad layer: '%s',  PCB layer number %d\n", (l->str), kicad_get_layeridx(st, l->str)); */
 					}
 					else
 						return kicad_error(l, "unexpected empty/NULL module layer node");
 				}
 			}
 			else {
-				/*pcb_trace("\tIgnoring layer definitions for through hole pin\n"); */
+				TODO("Ignoring layer definitions for through hole pin - should set which layers have shape");
 			}
 		}
 		else if (m->str != NULL && strcmp("drill", m->str) == 0) {
