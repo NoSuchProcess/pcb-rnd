@@ -529,14 +529,14 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 				else {
 					pcb_layer_id_t PCBLayer = kicad_get_layeridx(st, n->children->str);
 					if (PCBLayer < 0)
-						return kicad_error(subtree, "unexpected text layer def < 0 (%s)", n->children->str);
+						return kicad_error(n->children, "unexpected text layer def < 0 (%s)", n->children->str);
 					if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM)
 						Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
 					ly = &st->pcb->Data->Layer[PCBLayer];
 				}
 			}
 			else
-				return kicad_error(subtree, "unexpected empty/NULL text layer node");
+				return kicad_error(n, "unexpected empty/NULL text layer node");
 		}
 		else if (n->str != NULL && strcmp("hide", n->str) == 0) {
 			if (subc != NULL)
@@ -572,12 +572,12 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 						TODO("right or left justification is ignored");
 					}
 					else
-						return kicad_error(subtree, "unexpected empty/NULL text justify node");
+						return kicad_error(m, "unexpected empty/NULL text justify node");
 				}
 				else {
 					if (m->str != NULL)
 						kicad_warning(m, "Unknown effects argument %s:", m->str);
-					return kicad_error(subtree, "unexpected empty/NULL text effects node");
+					return kicad_error(m, "unexpected empty/NULL text effects node");
 				}
 			}
 		}
@@ -674,7 +674,7 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 						ly = kicad_get_subc_layer(st, subc, n->children->str, NULL);
 				}
 				else
-					return kicad_error(subtree, "unexpected empty/NULL line layer field.");
+					return kicad_error(n, "unexpected empty/NULL line layer field.");
 			}
 			else if (n->str != NULL && strcmp("width", n->str) == 0) {
 				SEEN_NO_DUP(tally, 3);
@@ -686,7 +686,7 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 					/* ignore: kicad 4.x doesn't use this at all */
 				}
 				else
-					return kicad_error(subtree, "unexpected empty/NULL line angle");
+					return kicad_error(n, "unexpected empty/NULL line angle");
 			}
 			else if (n->str != NULL && strcmp("net", n->str) == 0) { /* unlikely to be used or seen */
 				SEEN_NO_DUP(tally, 5);
@@ -694,14 +694,14 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 					/* ignore; netname is n->children->str */
 				}
 				else
-					return kicad_error(subtree, "unexpected empty/NULL line net.");
+					return kicad_error(n, "unexpected empty/NULL line net.");
 			}
 			else if (n->str != NULL && strcmp("status", n->str) == 0) {
 				if (is_seg) {
 					TODO("process this")
 				}
 				else
-					return kicad_error(subtree, "unexpected status in line object (only segment should have a status)");
+					return kicad_error(n, "unexpected status in line object (only segment should have a status)");
 			}
 			else if (n->str != NULL && strcmp("tstamp", n->str) == 0) {
 				/* ignore */
@@ -710,7 +710,7 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 				if (n->str != NULL)
 					kicad_warning(subtree, "unexpected line node: %s", n->str);
 				else
-					return kicad_error(subtree, "unexpected empty/NULL line node");
+					return kicad_error(n, "unexpected empty/NULL line node");
 			}
 		}
 	}
@@ -787,7 +787,7 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 						ly = kicad_get_subc_layer(st, subc, n->children->str, NULL);
 				}
 				else
-					return kicad_error(subtree, "unexpected empty/NULL arc layer.");
+					return kicad_error(n, "unexpected empty/NULL arc layer.");
 			}
 			else if (n->str != NULL && strcmp("width", n->str) == 0) {
 				SEEN_NO_DUP(tally, 3);
@@ -801,7 +801,7 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 					/* ignore net (n->children->str) */
 				}
 				else
-					return kicad_error(subtree, "unexpected empty/NULL arc net.");
+					return kicad_error(n, "unexpected empty/NULL arc net.");
 			}
 			else if (n->str != NULL && strcmp("tstamp", n->str) == 0) {
 				/* ignore */
@@ -897,7 +897,7 @@ TODO("bbvia");
  */
 					}
 					else
-						return kicad_error(subtree, "unexpected empty/NULL via layer node");
+						return kicad_error(m, "unexpected empty/NULL via layer node");
 				}
 			}
 			else if (n->str != NULL && strcmp("net", n->str) == 0) {
@@ -906,7 +906,7 @@ TODO("bbvia");
 					/* ignore the net (n->children->str)); */
 				}
 				else
-					return kicad_error(subtree, "unexpected empty/NULL via net node");
+					return kicad_error(n, "unexpected empty/NULL via net node");
 			}
 			else if (n->str != NULL && strcmp("tstamp", n->str) == 0) {
 				SEEN_NO_DUP(tally, 4);
@@ -914,7 +914,7 @@ TODO("bbvia");
 					/* ignore */
 				}
 				else
-					return kicad_error(subtree, "unexpected empty/NULL via tstamp node");
+					return kicad_error(n, "unexpected empty/NULL via tstamp node");
 			}
 			else if (n->str != NULL && strcmp("drill", n->str) == 0) {
 				SEEN_NO_DUP(tally, 5);
@@ -1297,7 +1297,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	}
 
 	if (subtree->str == NULL)
-		return kicad_error(subtree, "module parsing failure.");
+		return kicad_error(subtree, "module parsing failure: empty");
 
 	moduleName = subtree->str;
 	p = subtree->next;
@@ -1313,12 +1313,12 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			if (n->children != NULL && n->children->str != NULL) {
 				PCBLayer = kicad_get_layeridx(st, n->children->str);
 				if (PCBLayer < 0)
-					return kicad_error(subtree, "module layer error - layer < 0.");
+					return kicad_error(n->children, "module layer error - unhandled layer %s", n->children->str);
 				else if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM)
 					on_bottom = 1;
 			}
 			else
-				return kicad_error(subtree, "unexpected empty/NULL module layer node");
+				return kicad_error(n, "unexpected empty/NULL module layer node");
 		}
 		else if (n->str != NULL && strcmp("tedit", n->str) == 0) {
 			SEEN_NO_DUP(tally, 2);
@@ -1326,7 +1326,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				/* ingore time stamp */
 			}
 			else
-				return kicad_error(subtree, "unexpected empty/NULL module tedit node");
+				return kicad_error(n, "unexpected empty/NULL module tedit node");
 		}
 		else if (n->str != NULL && strcmp("tstamp", n->str) == 0) {
 			SEEN_NO_DUP(tally, 3);
@@ -1334,7 +1334,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				/* ignore time stamp */
 			}
 			else
-				return kicad_error(subtree, "unexpected empty/NULL module tstamp node");
+				return kicad_error(n, "unexpected empty/NULL module tstamp node");
 		}
 		else if (n->str != NULL && strcmp("attr", n->str) == 0) {
 			if ((n->children != NULL) && (n->children->str != NULL)) {
@@ -1344,7 +1344,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				free(key);
 			}
 			else
-				return kicad_error(subtree, "unexpected empty/NULL module attr node");
+				return kicad_error(n, "unexpected empty/NULL module attr node");
 		}
 		else if (n->str != NULL && strcmp("at", n->str) == 0) {
 			double rot = 0;
@@ -1382,14 +1382,14 @@ TODO("don't ignore rotation here");
 			if (n->children != NULL && n->children->str != NULL)
 				pcb_attribute_put(&subc->Attributes, "kicad_descr", n->children->str);
 			else
-				return kicad_error(subtree, "unexpected empty/NULL module descr node");
+				return kicad_error(n, "unexpected empty/NULL module descr node");
 		}
 		else if (n->str != NULL && strcmp("tags", n->str) == 0) {
 			SEEN_NO_DUP(tally, 10);
 			if (n->children != NULL && n->children->str != NULL)
 				pcb_attribute_put(&subc->Attributes, "kicad_tags", n->children->str);
 			else
-				return kicad_error(subtree, "unexpected empty/NULL module tags node");
+				return kicad_error(n, "unexpected empty/NULL module tags node");
 		}
 		else if (n->str != NULL && strcmp("path", n->str) == 0) {
 			SEEN_NO_DUP(tally, 11);
@@ -1397,7 +1397,7 @@ TODO("don't ignore rotation here");
 				/* ignored */
 			}
 			else
-				return kicad_error(subtree, "unexpected empty/NULL module model node");
+				return kicad_error(n, "unexpected empty/NULL module model node");
 		}
 		else if (n->str != NULL && strcmp("pad", n->str) == 0) { /* pads next  - have thru_hole, circle, rect, roundrect, to think about */
 			if (kicad_parse_pad(st, n, subc, &tally, moduleX, moduleY, moduleRotation, &moduleEmpty) != 0)
@@ -1466,7 +1466,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 					/* ignore net */
 				}
 				else
-					return kicad_error(subtree, "unexpected zone net null node.");
+					return kicad_error(n, "unexpected zone net null node.");
 			}
 			else if (n->str != NULL && strcmp("net_name", n->str) == 0) {
 				SEEN_NO_DUP(tally, 1);
@@ -1474,7 +1474,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 					/* ignore net */
 				}
 				else
-					return kicad_error(subtree, "unexpected zone net_name null node.");
+					return kicad_error(n, "unexpected zone net_name null node.");
 			}
 			else if (n->str != NULL && strcmp("tstamp", n->str) == 0) {
 				SEEN_NO_DUP(tally, 2);
@@ -1482,7 +1482,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 					/* ignore time stamp */
 				}
 				else
-					return kicad_error(subtree, "unexpected zone tstamp null node.");
+					return kicad_error(n, "unexpected zone tstamp null node.");
 			}
 			else if (n->str != NULL && strcmp("hatch", n->str) == 0) {
 				SEEN_NO_DUP(tally, 3);
@@ -1490,12 +1490,12 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 					SEEN_NO_DUP(tally, 4); /* same as ^= 1 was */
 				}
 				else
-					return kicad_error(subtree, "unexpected zone hatch null node.");
+					return kicad_error(n, "unexpected zone hatch null node.");
 				if (n->children->next != NULL && n->children->next->str != NULL) {
 					SEEN_NO_DUP(tally, 5);
 				}
 				else
-					return kicad_error(subtree, "unexpected zone hatching null node.");
+					return kicad_error(n, "unexpected zone hatching null node.");
 			}
 			else if (n->str != NULL && strcmp("connect_pads", n->str) == 0) {
 				SEEN_NO_DUP(tally, 6);
@@ -1523,7 +1523,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 					polygon = pcb_poly_new(&st->pcb->Data->Layer[PCBLayer], 0, flags);
 				}
 				else
-					return kicad_error(subtree, "unexpected zone layer null node.");
+					return kicad_error(n, "unexpected zone layer null node.");
 			}
 			else if (n->str != NULL && strcmp("polygon", n->str) == 0) {
 				polycount++; /*keep track of number of polygons in zone */
@@ -1534,7 +1534,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 								if (m->children != NULL && m->children->str != NULL) {
 									val = strtod(m->children->str, &end);
 									if (*end != 0) {
-										return kicad_error(subtree, "error parsing zone vertex X.");
+										return kicad_error(m, "error parsing zone vertex X.");
 									}
 									else {
 										X = PCB_MM_TO_COORD(val);
@@ -1543,7 +1543,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 										/*pcb_trace("\tvertex Y[%d]:\t'%s'\n", j, (m->children->next->str)); */
 										val = strtod(m->children->next->str, &end);
 										if (*end != 0) {
-											return kicad_error(subtree, "error parsing zone vertex Y.");
+											return kicad_error(m, "error parsing zone vertex Y.");
 										}
 										else {
 											Y = PCB_MM_TO_COORD(val);
@@ -1553,20 +1553,20 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 										}
 									}
 									else {
-										return kicad_error(subtree, "unexpected zone vertex coord null node.");
+										return kicad_error(m, "unexpected zone vertex coord null node.");
 									}
 								}
 								else {
-									return kicad_error(subtree, "unexpected zone vertex null node.");
+									return kicad_error(m, "unexpected zone vertex null node.");
 								}
 							}
 						}
 					}
 					else
-						return kicad_error(subtree, "pts section vertices not found in zone polygon.");
+						return kicad_error(n->children, "pts section vertices not found in zone polygon.");
 				}
 				else
-					return kicad_error(subtree, "error parsing empty polygon.");
+					return kicad_error(n, "error parsing empty polygon.");
 			}
 			else if (n->str != NULL && strcmp("fill", n->str) == 0) {
 				SEEN_NO_DUP(tally, 11);
@@ -1576,21 +1576,21 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 							/* ignored */
 						}
 						else
-							return kicad_error(subtree, "unexpected zone arc_segment null node.");
+							return kicad_error(m, "unexpected zone arc_segment null node.");
 					}
 					else if (m->str != NULL && strcmp("thermal_gap", m->str) == 0) {
 						if (m->children != NULL && m->children->str != NULL) {
 							/* ignored */
 						}
 						else
-							return kicad_error(subtree, "unexpected zone thermal_gap null node.");
+							return kicad_error(m, "unexpected zone thermal_gap null node.");
 					}
 					else if (m->str != NULL && strcmp("thermal_bridge_width", m->str) == 0) {
 						if (m->children != NULL && m->children->str != NULL) {
 							/* ignored */
 						}
 						else
-							return kicad_error(subtree, "unexpected zone thermal_bridge_width null node.");
+							return kicad_error(m, "unexpected zone thermal_bridge_width null node.");
 					}
 					else if (m->str != NULL && strcmp("yes", m->str) == 0) {
 						/* ignored */
@@ -1605,7 +1605,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 					/* ignored */
 				}
 				else
-					return kicad_error(subtree, "unexpected zone min_thickness null node.");
+					return kicad_error(n, "unexpected zone min_thickness null node.");
 			}
 			else if (n->str != NULL && strcmp("priority", n->str) == 0) {
 				SEEN_NO_DUP(tally, 13);
@@ -1613,7 +1613,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 					/* ignored */
 				}
 				else
-					return kicad_error(subtree, "unexpected zone min_thickness null node.");
+					return kicad_error(n, "unexpected zone min_thickness null node.");
 			}
 			else if (n->str != NULL && strcmp("filled_polygon", n->str) == 0) {
 				TODO("isn't this the same as polygon?");
