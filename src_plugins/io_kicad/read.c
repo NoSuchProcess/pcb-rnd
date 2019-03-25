@@ -1123,11 +1123,8 @@ static int kicad_parse_fp_text(read_state_t *st, gsxl_node_t *n, pcb_subc_t *sub
 		else /* only key, no value */
 			text = key;
 	}
-	if (kicad_parse_any_text(st, n->children->next->next, text, subc) != 0) {
-		TODO("this should return an error");
-/*					return -1;*/
-	}
-
+	if (kicad_parse_any_text(st, n->children->next->next, text, subc) != 0)
+		return -1;
 	return 0;
 }
 
@@ -1224,8 +1221,8 @@ TODO(": this should be coming from the s-expr file preferences part")
 			PARSE_COORD(sy, m, m->children->next, "module pad size Y");
 		}
 		else {
-				kicad_error(m, "Unknown pad argument: %s", m->str);
-				TODO("this should result in error");
+			kicad_error(m, "Unknown pad argument: %s", m->str);
+			TODO("this should result in error");
 		}
 	}
 
