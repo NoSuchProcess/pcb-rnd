@@ -1592,12 +1592,23 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 						else
 							return kicad_error(subtree, "unexpected zone thermal_bridge_width null node.");
 					}
+					else if (m->str != NULL && strcmp("yes", m->str) == 0) {
+						/* ignored */
+					}
 					else if (m->str != NULL)
 						kicad_warning(m, "Unknown zone fill argument:\t%s\n", m->str);
 				}
 			}
 			else if (n->str != NULL && strcmp("min_thickness", n->str) == 0) {
 				SEEN_NO_DUP(tally, 12);
+				if (n->children != NULL && n->children->str != NULL) {
+					/* ignored */
+				}
+				else
+					return kicad_error(subtree, "unexpected zone min_thickness null node.");
+			}
+			else if (n->str != NULL && strcmp("priority", n->str) == 0) {
+				SEEN_NO_DUP(tally, 13);
 				if (n->children != NULL && n->children->str != NULL) {
 					/* ignored */
 				}
