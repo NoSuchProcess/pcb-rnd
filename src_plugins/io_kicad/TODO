@@ -1,5 +1,4 @@
 Must fix:
-- no camelCase, the only naming convention pcb-rnd accepts is lowercase_with_underscores
 - do not silenlty accept input that could not be handled; the goal is not to open huge complex boards and load only 30% of them but to open boards that we can load almost 100% of
 
 Features:
