@@ -1281,12 +1281,8 @@ TODO(": this should be coming from the s-expr file preferences part")
 static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 {
 	gsxl_node_t *n, *p;
-	int i;
-	int moduleDefined = 0;
 	int PCBLayer = 0;
-	int on_bottom = 0;
-	int foundRefdes = 0;
-	int moduleEmpty = 1;
+	int on_bottom = 0, foundRefdes = 0, moduleEmpty = 1, moduleDefined = 0, i;
 	unsigned int moduleRotation = 0; /* for rotating modules */
 	unsigned long tally = 0;
 	pcb_coord_t moduleX = 0, moduleY = 0;
