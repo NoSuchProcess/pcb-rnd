@@ -583,8 +583,12 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 		}
 	}
 
+	/* has location, layer, size and stroke thickness at a minimum */
 	required = BV(0) | BV(1) | BV(2) | BV(3);
-	if ((tally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
+	if ((tally & required) != required)
+		return kicad_error(subtree, "failed to create text due to missing fields");
+
+	{
 		pcb_coord_t mx, my;
 		int swap;
 		if (mirrored != 0) {
@@ -617,10 +621,8 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 			Y += my * PCB_MM_TO_COORD(GLYPH_WIDTH / 2.0); /* centre it vertically */
 		}
 		pcb_text_new(ly, pcb_font(st->pcb, 0, 1), X, Y, rotdeg, scaling, thickness, text, Flags);
-		
-		return 0; /* create new font */
 	}
-	return kicad_error(subtree, "failed to create text due to missing fields");
+	return 0; /* create new font */
 }
 
 /* kicad_pcb/gr_text */
@@ -715,24 +717,25 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 		}
 	}
 
+	/* need start, end, layer, thickness at a minimum */
 	required = BV(0) | BV(1) | BV(2); /* | BV(3); now have 1nm default width, i.e. for edge cut */
-	if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
-		if (subc != NULL) {
-			pcb_coord_t sx, sy;
-			double srot;
-			if (pcb_subc_get_origin(subc, &sx, &sy) == 0) {
-				X1 += sx;
-				Y1 += sy;
-				X2 += sx;
-				Y2 += sy;
-			}
-			TODO("subc roation is not properly mapped by the caller; when it is, we may need to rotate the line here");
-			if (pcb_subc_get_rotation(subc, &srot) == 0) {}
+	if ((tally & required) != required)
+		return kicad_error(subtree, "failed to create line: missing fields");
+
+	if (subc != NULL) {
+		pcb_coord_t sx, sy;
+		double srot;
+		if (pcb_subc_get_origin(subc, &sx, &sy) == 0) {
+			X1 += sx;
+			Y1 += sy;
+			X2 += sx;
+			Y2 += sy;
 		}
-		pcb_line_new(ly, X1, Y1, X2, Y2, Thickness, Clearance, Flags);
-		return 0;
+		TODO("subc roation is not properly mapped by the caller; when it is, we may need to rotate the line here");
+		if (pcb_subc_get_rotation(subc, &srot) == 0) {}
 	}
-	return kicad_error(subtree, "failed to create line: missing fields");
+	pcb_line_new(ly, X1, Y1, X2, Y2, Thickness, Clearance, Flags);
+	return 0;
 }
 
 /* kicad_pcb/gr_line */
@@ -815,8 +818,12 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 		}
 	}
 
+ /* need start, end, layer, thickness at a minimum */
 	required = BV(0) | BV(1) | BV(2) | BV(3); /* | BV(4); not needed for circles */
-	if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
+	if ((tally & required) != required)
+		return kicad_error(subtree, "unexpected empty/NULL node in arc.");
+
+	{
 		pcb_angle_t startAngle;
 		pcb_coord_t width, height;
 
@@ -850,9 +857,9 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 			if (pcb_subc_get_rotation(subc, &srot) == 0) {}
 		}
 		pcb_arc_new(ly, centreX, centreY, width, height, startAngle, delta, Thickness, Clearance, Flags, pcb_true);
-		return 0;
 	}
-	return kicad_error(subtree, "unexpected empty/NULL node in arc.");
+
+	return 0;
 }
 
 static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
@@ -929,13 +936,14 @@ TODO("bbvia");
 		}
 	}
 
+	/* need start, end, layer, thickness at a minimum */
 	required = BV(0) | BV(1);
-	if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
-		if (pcb_pstk_new_compat_via(st->pcb->Data, -1, X, Y, Drill, Thickness, Clearance, Mask, PCB_PSTK_COMPAT_ROUND, pcb_true) == NULL)
-			return kicad_error(subtree, "failed to create via-padstack");
-		return 0;
-	}
-	return kicad_error(subtree, "insufficient via arguments");
+	if ((tally & required) != required)
+		return kicad_error(subtree, "insufficient via arguments");
+
+	if (pcb_pstk_new_compat_via(st->pcb->Data, -1, X, Y, Drill, Thickness, Clearance, Mask, PCB_PSTK_COMPAT_ROUND, pcb_true) == NULL)
+		return kicad_error(subtree, "failed to create via-padstack");
+	return 0;
 }
 
 /* kicad_pcb/segment */
@@ -1601,14 +1609,14 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 	}
 
 	required = BV(10); /* layer at a minimum */
-	if ((tally & required) == required) {
-		if (polygon != NULL) {
-			pcb_add_poly_on_layer(&st->pcb->Data->Layer[PCBLayer], polygon);
-			pcb_poly_init_clip(st->pcb->Data, &st->pcb->Data->Layer[PCBLayer], polygon);
-		}
-		return 0;
+	if ((tally & required) != required)
+		return kicad_error(subtree, "can not create zone because required fields are missing");
+
+	if (polygon != NULL) {
+		pcb_add_poly_on_layer(&st->pcb->Data->Layer[PCBLayer], polygon);
+		pcb_poly_init_clip(st->pcb->Data, &st->pcb->Data->Layer[PCBLayer], polygon);
 	}
-	return kicad_error(subtree, "can not create zone because required fields are missing");
+	return 0;
 }
 
 
