@@ -1459,69 +1459,57 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 	pcb_coord_t X, Y;
 
 	if (subtree->str != NULL) {
-		/*pcb_trace("Zone element found:\t'%s'\n", subtree->str); */
 		for(n = subtree, i = 0; n != NULL; n = n->next, i++) {
 			if (n->str != NULL && strcmp("net", n->str) == 0) {
 				SEEN_NO_DUP(tally, 0);
 				if (n->children != NULL && n->children->str != NULL) {
-					/*pcb_trace("\tzone net number:\t'%s'\n", (n->children->str)); */
+					/* ignore net */
 				}
-				else {
+				else
 					return kicad_error(subtree, "unexpected zone net null node.");
-				}
 			}
 			else if (n->str != NULL && strcmp("net_name", n->str) == 0) {
 				SEEN_NO_DUP(tally, 1);
 				if (n->children != NULL && n->children->str != NULL) {
-					/*pcb_trace("\tzone net_name:\t'%s'\n", (n->children->str)); */
+					/* ignore net */
 				}
-				else {
+				else
 					return kicad_error(subtree, "unexpected zone net_name null node.");
-				}
 			}
 			else if (n->str != NULL && strcmp("tstamp", n->str) == 0) {
 				SEEN_NO_DUP(tally, 2);
 				if (n->children != NULL && n->children->str != NULL) {
-					/*pcb_trace("\tzone tstamp:\t'%s'\n", (n->children->str)); */
+					/* ignore time stamp */
 				}
-				else {
+				else
 					return kicad_error(subtree, "unexpected zone tstamp null node.");
-				}
 			}
 			else if (n->str != NULL && strcmp("hatch", n->str) == 0) {
 				SEEN_NO_DUP(tally, 3);
 				if (n->children != NULL && n->children->str != NULL) {
-					/*pcb_trace("\tzone hatch_edge:\t'%s'\n", (n->children->str)); */
 					SEEN_NO_DUP(tally, 4); /* same as ^= 1 was */
 				}
-				else {
+				else
 					return kicad_error(subtree, "unexpected zone hatch null node.");
-				}
 				if (n->children->next != NULL && n->children->next->str != NULL) {
-					/*pcb_trace("\tzone hatching size:\t'%s'\n", (n->children->next->str)); */
 					SEEN_NO_DUP(tally, 5);
 				}
-				else {
+				else
 					return kicad_error(subtree, "unexpected zone hatching null node.");
-				}
 			}
 			else if (n->str != NULL && strcmp("connect_pads", n->str) == 0) {
 				SEEN_NO_DUP(tally, 6);
 				if (n->children != NULL && n->children->str != NULL && (strcmp("clearance", n->children->str) == 0) && (n->children->children->str != NULL)) {
-					/*pcb_trace("\tzone clearance:\t'%s'\n", (n->children->children->str));  this is if yes/no flag for connected pads is absent */
 					SEEN_NO_DUP(tally, 7); /* same as ^= 1 was */
 				}
 				else if (n->children != NULL && n->children->str != NULL && n->children->next->str != NULL) {
-					/*pcb_trace("\tzone connect_pads:\t'%s'\n", (n->children->str)); this is if the optional(!) yes or no flag for connected pads is present */
 					SEEN_NO_DUP(tally, 8); /* same as ^= 1 was */
 					if (n->children->next != NULL && n->children->next->str != NULL && n->children->next->children != NULL && n->children->next->children->str != NULL) {
 						if (strcmp("clearance", n->children->next->str) == 0) {
 							SEEN_NO_DUP(tally, 9);
-							/*pcb_trace("\tzone connect_pads clearance: '%s'\n", (n->children->next->children->str)); */
 						}
-						else {
-							/*pcb_trace("Unrecognised zone connect_pads option %s\n", n->children->next->str); */
-						}
+						else
+							kicad_warning(n->children->next, "Unrecognised zone connect_pads option %s\n", n->children->next->str);
 					}
 				}
 			}
@@ -1534,9 +1522,8 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 					}
 					polygon = pcb_poly_new(&st->pcb->Data->Layer[PCBLayer], 0, flags);
 				}
-				else {
+				else
 					return kicad_error(subtree, "unexpected zone layer null node.");
-				}
 			}
 			else if (n->str != NULL && strcmp("polygon", n->str) == 0) {
 				polycount++; /*keep track of number of polygons in zone */
@@ -1545,7 +1532,6 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 						for(m = n->children->children, j = 0; m != NULL; m = m->next, j++) {
 							if (m->str != NULL && strcmp("xy", m->str) == 0) {
 								if (m->children != NULL && m->children->str != NULL) {
-									/*pcb_trace("\tvertex X[%d]:\t'%s'\n", j, (m->children->str)); */
 									val = strtod(m->children->str, &end);
 									if (*end != 0) {
 										return kicad_error(subtree, "error parsing zone vertex X.");
@@ -1576,75 +1562,65 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 							}
 						}
 					}
-					else {
+					else
 						return kicad_error(subtree, "pts section vertices not found in zone polygon.");
-					}
 				}
-				else {
+				else
 					return kicad_error(subtree, "error parsing empty polygon.");
-				}
 			}
 			else if (n->str != NULL && strcmp("fill", n->str) == 0) {
 				SEEN_NO_DUP(tally, 11);
 				for(m = n->children; m != NULL; m = m->next) {
 					if (m->str != NULL && strcmp("arc_segments", m->str) == 0) {
 						if (m->children != NULL && m->children->str != NULL) {
-							/*pcb_trace("\tzone arc_segments:\t'%s'\n", (m->children->str)); */
+							/* ignored */
 						}
-						else {
+						else
 							return kicad_error(subtree, "unexpected zone arc_segment null node.");
-						}
 					}
 					else if (m->str != NULL && strcmp("thermal_gap", m->str) == 0) {
 						if (m->children != NULL && m->children->str != NULL) {
-							/*pcb_trace("\tzone thermal_gap:\t'%s'\n", (m->children->str)); */
+							/* ignored */
 						}
-						else {
+						else
 							return kicad_error(subtree, "unexpected zone thermal_gap null node.");
-						}
 					}
 					else if (m->str != NULL && strcmp("thermal_bridge_width", m->str) == 0) {
 						if (m->children != NULL && m->children->str != NULL) {
-							/*pcb_trace("\tzone thermal_bridge_width:\t'%s'\n", (m->children->str)); */
+							/* ignored */
 						}
-						else {
+						else
 							return kicad_error(subtree, "unexpected zone thermal_bridge_width null node.");
-						}
 					}
-					else if (m->str != NULL) {
-						/*pcb_trace("Unknown zone fill argument:\t%s\n", m->str); */
-					}
+					else if (m->str != NULL)
+						kicad_warning(m, "Unknown zone fill argument:\t%s\n", m->str);
 				}
 			}
 			else if (n->str != NULL && strcmp("min_thickness", n->str) == 0) {
 				SEEN_NO_DUP(tally, 12);
 				if (n->children != NULL && n->children->str != NULL) {
-					/*pcb_trace("\tzone min_thickness:\t'%s'\n", (n->children->str)); */
+					/* ignored */
 				}
-				else {
+				else
 					return kicad_error(subtree, "unexpected zone min_thickness null node.");
-				}
 			}
 			else if (n->str != NULL && strcmp("filled_polygon", n->str) == 0) {
-				/*pcb_trace("\tIgnoring filled_polygon definition.\n"); */
+				TODO("isn't this the same as polygon?");
 			}
-			else {
-				if (n->str != NULL) {
-					/*pcb_trace("Unknown polygon argument:\t%s\n", n->str); */
-				}
-			}
+			else if (n->str != NULL)
+				kicad_warning(n, "Unknown polygon argument:\t%s\n", n->str);
 		}
 	}
 
-	required = BV(10);
-	if ((tally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
+	required = BV(10); /* layer at a minimum */
+	if ((tally & required) == required) {
 		if (polygon != NULL) {
 			pcb_add_poly_on_layer(&st->pcb->Data->Layer[PCBLayer], polygon);
 			pcb_poly_init_clip(st->pcb->Data, &st->pcb->Data->Layer[PCBLayer], polygon);
 		}
 		return 0;
 	}
-	return -1;
+	return kicad_error(subtree, "can not create zone because required fields are missing");
 }
 
 
