@@ -1238,7 +1238,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	gsxl_node_t *n, *p;
 	pcb_layer_id_t lid = 0;
 	int on_bottom = 0, found_refdes = 0, module_empty = 1, module_defined = 0, i;
-	unsigned int mod_rot = 0; /* for rotating modules */
+	double mod_rot = 0;
 	unsigned long tally = 0;
 	pcb_coord_t mod_x = 0, mod_y = 0;
 	char *mod_name;
@@ -1299,13 +1299,10 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			free(key);
 		}
 		else if (strcmp("at", n->str) == 0) {
-			double rot = 0;
 			SEEN_NO_DUP(tally, 4);
 			PARSE_COORD(mod_x, n, n->children, "module X");
 			PARSE_COORD(mod_y, n, n->children->next, "module Y");
-			PARSE_DOUBLE(rot, NULL, n->children->next->next, "module rotation");
-TODO("why's the rounding?");
-			mod_rot = (int)rot;
+			PARSE_DOUBLE(mod_rot, NULL, n->children->next->next, "module rotation");
 
 			/* if we have been provided with a Module Name and location, create a new subc with default "" and "" for refdes and value fields */
 			if (mod_name != NULL && module_defined == 0) {
@@ -1376,13 +1373,11 @@ TODO("don't ignore rotation here");
 
 	if ((mod_rot == 90) || (mod_rot == 180) || (mod_rot == 270)) {
 		/* lossles module rotation for round steps */
-		mod_rot = mod_rot / 90;
+		mod_rot = pcb_round(mod_rot / 90);
 		pcb_subc_rotate90(subc, mod_x, mod_y, mod_rot);
 	}
-	else if (mod_rot != 0) {
-		double rot = mod_rot;
-		pcb_subc_rotate(subc, mod_x, mod_y, cos(rot/PCB_RAD_TO_DEG), sin(rot/PCB_RAD_TO_DEG), rot);
-	}
+	else if (mod_rot != 0)
+		pcb_subc_rotate(subc, mod_x, mod_y, cos(mod_rot/PCB_RAD_TO_DEG), sin(mod_rot/PCB_RAD_TO_DEG), mod_rot);
 
 	return 0;
 }
