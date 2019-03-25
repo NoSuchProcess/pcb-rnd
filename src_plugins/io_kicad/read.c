@@ -652,68 +652,66 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 	if (flg & PCB_FLAG_CLEARLINE)
 		Clearance = PCB_MM_TO_COORD(0.250);
 
-	if (subtree->str != NULL) {
-		for(n = subtree; n != NULL; n = n->next) {
-			if (n->str == NULL)
-				return kicad_error(n, "empty line parameter");
-			if (strcmp("start", n->str) == 0) {
-				SEEN_NO_DUP(tally, 0);
-				PARSE_COORD(X1, n, n->children, "line X1 coord");
-				PARSE_COORD(Y1, n, n->children->next, "line Y1 coord");
-			}
-			else if (strcmp("end", n->str) == 0) {
-				SEEN_NO_DUP(tally, 1);
-				PARSE_COORD(X2, n, n->children, "line X2 coord");
-				PARSE_COORD(Y2, n, n->children->next, "line Y2 coord");
-			}
-			else if (strcmp("layer", n->str) == 0) {
-				SEEN_NO_DUP(tally, 2);
-				if (n->children != NULL && n->children->str != NULL) {
-					if (subc == NULL) {
-						pcb_layer_id_t PCBLayer = kicad_get_layeridx(st, n->children->str);
-						if (PCBLayer < 0)
-							return kicad_error(n->children, "unexpected line layer def < 0 (%s)", n->children->str);
-						ly = pcb_get_layer(st->pcb->Data, PCBLayer);
-					}
-					else
-						ly = kicad_get_subc_layer(st, subc, n->children->str, NULL);
+	for(n = subtree; n != NULL; n = n->next) {
+		if (n->str == NULL)
+			return kicad_error(n, "empty line parameter");
+		if (strcmp("start", n->str) == 0) {
+			SEEN_NO_DUP(tally, 0);
+			PARSE_COORD(X1, n, n->children, "line X1 coord");
+			PARSE_COORD(Y1, n, n->children->next, "line Y1 coord");
+		}
+		else if (strcmp("end", n->str) == 0) {
+			SEEN_NO_DUP(tally, 1);
+			PARSE_COORD(X2, n, n->children, "line X2 coord");
+			PARSE_COORD(Y2, n, n->children->next, "line Y2 coord");
+		}
+		else if (strcmp("layer", n->str) == 0) {
+			SEEN_NO_DUP(tally, 2);
+			if (n->children != NULL && n->children->str != NULL) {
+				if (subc == NULL) {
+					pcb_layer_id_t PCBLayer = kicad_get_layeridx(st, n->children->str);
+					if (PCBLayer < 0)
+						return kicad_error(n->children, "unexpected line layer def < 0 (%s)", n->children->str);
+					ly = pcb_get_layer(st->pcb->Data, PCBLayer);
 				}
 				else
-					return kicad_error(n, "unexpected empty/NULL line layer field.");
-			}
-			else if (strcmp("width", n->str) == 0) {
-				SEEN_NO_DUP(tally, 3);
-				PARSE_COORD(Thickness, n, n->children, "line thickness");
-			}
-			else if (strcmp("angle", n->str) == 0) { /* unlikely to be used or seen */
-				SEEN_NO_DUP(tally, 4);
-				if (n->children != NULL && n->children->str != NULL) {
-					/* ignore: kicad 4.x doesn't use this at all */
-				}
-				else
-					return kicad_error(n, "unexpected empty/NULL line angle");
-			}
-			else if (strcmp("net", n->str) == 0) { /* unlikely to be used or seen */
-				SEEN_NO_DUP(tally, 5);
-				if (n->children != NULL && n->children->str != NULL) {
-					/* ignore; netname is n->children->str */
-				}
-				else
-					return kicad_error(n, "unexpected empty/NULL line net.");
-			}
-			else if (strcmp("status", n->str) == 0) {
-				if (is_seg) {
-					TODO("process this")
-				}
-				else
-					return kicad_error(n, "unexpected status in line object (only segment should have a status)");
-			}
-			else if (strcmp("tstamp", n->str) == 0) {
-				/* ignore */
+					ly = kicad_get_subc_layer(st, subc, n->children->str, NULL);
 			}
 			else
-				kicad_warning(n, "unexpected line node: %s", n->str);
+				return kicad_error(n, "unexpected empty/NULL line layer field.");
 		}
+		else if (strcmp("width", n->str) == 0) {
+			SEEN_NO_DUP(tally, 3);
+			PARSE_COORD(Thickness, n, n->children, "line thickness");
+		}
+		else if (strcmp("angle", n->str) == 0) { /* unlikely to be used or seen */
+			SEEN_NO_DUP(tally, 4);
+			if (n->children != NULL && n->children->str != NULL) {
+				/* ignore: kicad 4.x doesn't use this at all */
+			}
+			else
+				return kicad_error(n, "unexpected empty/NULL line angle");
+		}
+		else if (strcmp("net", n->str) == 0) { /* unlikely to be used or seen */
+			SEEN_NO_DUP(tally, 5);
+			if (n->children != NULL && n->children->str != NULL) {
+				/* ignore; netname is n->children->str */
+			}
+			else
+				return kicad_error(n, "unexpected empty/NULL line net.");
+		}
+		else if (strcmp("status", n->str) == 0) {
+			if (is_seg) {
+				TODO("process this")
+			}
+			else
+				return kicad_error(n, "unexpected status in line object (only segment should have a status)");
+		}
+		else if (strcmp("tstamp", n->str) == 0) {
+			/* ignore */
+		}
+		else
+			kicad_warning(n, "unexpected line node: %s", n->str);
 	}
 
 	/* need start, end, layer, thickness at a minimum */
@@ -759,60 +757,58 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 	else
 		Clearance = Thickness = PCB_MM_TO_COORD(0);
 
-	if (subtree->str != NULL) {
-		for(n = subtree; n != NULL; n = n->next) {
-			if (n->str == NULL)
-				return kicad_error(n, "empty arc argument");
-			if (strcmp("start", n->str) == 0) {
-				SEEN_NO_DUP(tally, 0);
-				PARSE_COORD(centreX, n, n->children, "arc start X coord");
-				PARSE_COORD(centreY, n, n->children->next, "arc start Y coord");
-			}
-			else if (strcmp("center", n->str) == 0) { /* this lets us parse a circle too */
-				SEEN_NO_DUP(tally, 0);
-				PARSE_COORD(centreX, n, n->children, "arc start X coord");
-				PARSE_COORD(centreY, n, n->children->next, "arc start Y coord");
-			}
-			else if (strcmp("end", n->str) == 0) {
-				SEEN_NO_DUP(tally, 1);
-				PARSE_COORD(endX, n, n->children, "arc end X coord");
-				PARSE_COORD(endY, n, n->children->next, "arc end Y coord");
-			}
-			else if (strcmp("layer", n->str) == 0) {
-				SEEN_NO_DUP(tally, 2);
-				if (n->children != NULL && n->children->str != NULL) {
-					if (subc == NULL) {
-						pcb_layer_id_t PCBLayer = kicad_get_layeridx(st, n->children->str);
-						if (PCBLayer < 0)
-							return kicad_warning(n->children, "arc: layer \"%s\" not found", n->children->str);
-						ly = pcb_get_layer(st->pcb->Data, PCBLayer);
-					}
-					else
-						ly = kicad_get_subc_layer(st, subc, n->children->str, NULL);
+	for(n = subtree; n != NULL; n = n->next) {
+		if (n->str == NULL)
+			return kicad_error(n, "empty arc argument");
+		if (strcmp("start", n->str) == 0) {
+			SEEN_NO_DUP(tally, 0);
+			PARSE_COORD(centreX, n, n->children, "arc start X coord");
+			PARSE_COORD(centreY, n, n->children->next, "arc start Y coord");
+		}
+		else if (strcmp("center", n->str) == 0) { /* this lets us parse a circle too */
+			SEEN_NO_DUP(tally, 0);
+			PARSE_COORD(centreX, n, n->children, "arc start X coord");
+			PARSE_COORD(centreY, n, n->children->next, "arc start Y coord");
+		}
+		else if (strcmp("end", n->str) == 0) {
+			SEEN_NO_DUP(tally, 1);
+			PARSE_COORD(endX, n, n->children, "arc end X coord");
+			PARSE_COORD(endY, n, n->children->next, "arc end Y coord");
+		}
+		else if (strcmp("layer", n->str) == 0) {
+			SEEN_NO_DUP(tally, 2);
+			if (n->children != NULL && n->children->str != NULL) {
+				if (subc == NULL) {
+					pcb_layer_id_t PCBLayer = kicad_get_layeridx(st, n->children->str);
+					if (PCBLayer < 0)
+						return kicad_warning(n->children, "arc: layer \"%s\" not found", n->children->str);
+					ly = pcb_get_layer(st->pcb->Data, PCBLayer);
 				}
 				else
-					return kicad_error(n, "unexpected empty/NULL arc layer.");
-			}
-			else if (strcmp("width", n->str) == 0) {
-				SEEN_NO_DUP(tally, 3);
-				PARSE_COORD(Thickness, n, n->children, "arc width");
-			}
-			else if (strcmp("angle", n->str) == 0) {
-				PARSE_DOUBLE(delta, n, n->children, "arc angle");
-			}
-			else if (strcmp("net", n->str) == 0) { /* unlikely to be used or seen */
-				if (n->children != NULL && n->children->str != NULL) {
-					/* ignore net (n->children->str) */
-				}
-				else
-					return kicad_error(n, "unexpected empty/NULL arc net.");
-			}
-			else if (strcmp("tstamp", n->str) == 0) {
-				/* ignore */
+					ly = kicad_get_subc_layer(st, subc, n->children->str, NULL);
 			}
 			else
-				kicad_warning(n, "Unknown arc argument %s:", n->str);
+				return kicad_error(n, "unexpected empty/NULL arc layer.");
 		}
+		else if (strcmp("width", n->str) == 0) {
+			SEEN_NO_DUP(tally, 3);
+			PARSE_COORD(Thickness, n, n->children, "arc width");
+		}
+		else if (strcmp("angle", n->str) == 0) {
+			PARSE_DOUBLE(delta, n, n->children, "arc angle");
+		}
+		else if (strcmp("net", n->str) == 0) { /* unlikely to be used or seen */
+			if (n->children != NULL && n->children->str != NULL) {
+				/* ignore net (n->children->str) */
+			}
+			else
+				return kicad_error(n, "unexpected empty/NULL arc net.");
+		}
+		else if (strcmp("tstamp", n->str) == 0) {
+			/* ignore */
+		}
+		else
+			kicad_warning(n, "Unknown arc argument %s:", n->str);
 	}
 
  /* need start, end, layer, thickness at a minimum */
@@ -878,57 +874,55 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 	Drill = PCB_MM_TO_COORD(0.300); /* start with something sane */
 	name = "";
 
-	if (subtree->str != NULL) {
-		for(n = subtree; n != NULL; n = n->next) {
-			if (n->str == NULL)
-				return kicad_error(n, "empty via argument node");
-			if (strcmp("at", n->str) == 0) {
-				SEEN_NO_DUP(tally, 0);
-				PARSE_COORD(X, n, n->children, "via X coord");
-				PARSE_COORD(Y, n, n->children->next, "via Y coord");
-			}
-			else if (strcmp("size", n->str) == 0) {
-				SEEN_NO_DUP(tally, 1);
-				PARSE_COORD(Thickness, n, n->children, "via size coord");
-			}
-			else if (strcmp("layers", n->str) == 0) {
-				SEEN_NO_DUP(tally, 2);
-				for(m = n->children; m != NULL; m = m->next) {
-					if (m->str != NULL) {
+	for(n = subtree; n != NULL; n = n->next) {
+		if (n->str == NULL)
+			return kicad_error(n, "empty via argument node");
+		if (strcmp("at", n->str) == 0) {
+			SEEN_NO_DUP(tally, 0);
+			PARSE_COORD(X, n, n->children, "via X coord");
+			PARSE_COORD(Y, n, n->children->next, "via Y coord");
+		}
+		else if (strcmp("size", n->str) == 0) {
+			SEEN_NO_DUP(tally, 1);
+			PARSE_COORD(Thickness, n, n->children, "via size coord");
+		}
+		else if (strcmp("layers", n->str) == 0) {
+			SEEN_NO_DUP(tally, 2);
+			for(m = n->children; m != NULL; m = m->next) {
+				if (m->str != NULL) {
 TODO("bbvia");
 /*							PCBLayer = kicad_get_layeridx(st, m->str);
  *							if (PCBLayer < 0) {
  *								return -1;
  *							}   via layers not currently used... padstacks
  */
-					}
-					else
-						return kicad_error(m, "unexpected empty/NULL via layer node");
-				}
-			}
-			else if (strcmp("net", n->str) == 0) {
-				SEEN_NO_DUP(tally, 3);
-				if (n->children != NULL && n->children->str != NULL) {
-					/* ignore the net (n->children->str)); */
 				}
 				else
-					return kicad_error(n, "unexpected empty/NULL via net node");
+					return kicad_error(m, "unexpected empty/NULL via layer node");
 			}
-			else if (strcmp("tstamp", n->str) == 0) {
-				SEEN_NO_DUP(tally, 4);
-				if (n->children != NULL && n->children->str != NULL) {
-					/* ignore */
-				}
-				else
-					return kicad_error(n, "unexpected empty/NULL via tstamp node");
-			}
-			else if (strcmp("drill", n->str) == 0) {
-				SEEN_NO_DUP(tally, 5);
-				PARSE_COORD(Drill, n, n->children, "via drill size");
+		}
+		else if (strcmp("net", n->str) == 0) {
+			SEEN_NO_DUP(tally, 3);
+			if (n->children != NULL && n->children->str != NULL) {
+				/* ignore the net (n->children->str)); */
 			}
 			else
-				kicad_warning(n, "Unknown via argument %s:", n->str);
+				return kicad_error(n, "unexpected empty/NULL via net node");
 		}
+		else if (strcmp("tstamp", n->str) == 0) {
+			SEEN_NO_DUP(tally, 4);
+			if (n->children != NULL && n->children->str != NULL) {
+				/* ignore */
+			}
+			else
+				return kicad_error(n, "unexpected empty/NULL via tstamp node");
+		}
+		else if (strcmp("drill", n->str) == 0) {
+			SEEN_NO_DUP(tally, 5);
+			PARSE_COORD(Drill, n, n->children, "via drill size");
+		}
+		else
+			kicad_warning(n, "Unknown via argument %s:", n->str);
 	}
 
 	/* need start, end, layer, thickness at a minimum */
@@ -1461,152 +1455,150 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 	double val;
 	pcb_coord_t X, Y;
 
-	if (subtree->str != NULL) {
-		for(n = subtree, i = 0; n != NULL; n = n->next, i++) {
-			if (n->str == NULL)
-				return kicad_error(n, "empty zone parameter");
-			if (strcmp("net", n->str) == 0) {
-				SEEN_NO_DUP(tally, 0);
-				if (n->children != NULL && n->children->str != NULL) {
-					/* ignore net */
-				}
-				else
-					return kicad_error(n, "unexpected zone net null node.");
+	for(n = subtree, i = 0; n != NULL; n = n->next, i++) {
+		if (n->str == NULL)
+			return kicad_error(n, "empty zone parameter");
+		if (strcmp("net", n->str) == 0) {
+			SEEN_NO_DUP(tally, 0);
+			if (n->children != NULL && n->children->str != NULL) {
+				/* ignore net */
 			}
-			else if (strcmp("net_name", n->str) == 0) {
-				SEEN_NO_DUP(tally, 1);
-				if (n->children != NULL && n->children->str != NULL) {
-					/* ignore net */
-				}
-				else
-					return kicad_error(n, "unexpected zone net_name null node.");
+			else
+				return kicad_error(n, "unexpected zone net null node.");
+		}
+		else if (strcmp("net_name", n->str) == 0) {
+			SEEN_NO_DUP(tally, 1);
+			if (n->children != NULL && n->children->str != NULL) {
+				/* ignore net */
 			}
-			else if (strcmp("tstamp", n->str) == 0) {
-				SEEN_NO_DUP(tally, 2);
-				if (n->children != NULL && n->children->str != NULL) {
-					/* ignore time stamp */
-				}
-				else
-					return kicad_error(n, "unexpected zone tstamp null node.");
+			else
+				return kicad_error(n, "unexpected zone net_name null node.");
+		}
+		else if (strcmp("tstamp", n->str) == 0) {
+			SEEN_NO_DUP(tally, 2);
+			if (n->children != NULL && n->children->str != NULL) {
+				/* ignore time stamp */
 			}
-			else if (strcmp("hatch", n->str) == 0) {
-				SEEN_NO_DUP(tally, 3);
-				if (n->children != NULL && n->children->str != NULL) {
-					SEEN_NO_DUP(tally, 4); /* same as ^= 1 was */
-				}
-				else
-					return kicad_error(n, "unexpected zone hatch null node.");
-				if (n->children->next != NULL && n->children->next->str != NULL) {
-					SEEN_NO_DUP(tally, 5);
-				}
-				else
-					return kicad_error(n, "unexpected zone hatching null node.");
+			else
+				return kicad_error(n, "unexpected zone tstamp null node.");
+		}
+		else if (strcmp("hatch", n->str) == 0) {
+			SEEN_NO_DUP(tally, 3);
+			if (n->children != NULL && n->children->str != NULL) {
+				SEEN_NO_DUP(tally, 4); /* same as ^= 1 was */
 			}
-			else if (strcmp("connect_pads", n->str) == 0) {
-				SEEN_NO_DUP(tally, 6);
-				if (n->children != NULL && n->children->str != NULL && (strcmp("clearance", n->children->str) == 0) && (n->children->children->str != NULL)) {
-					SEEN_NO_DUP(tally, 7); /* same as ^= 1 was */
-				}
-				else if (n->children != NULL && n->children->str != NULL && n->children->next->str != NULL) {
-					SEEN_NO_DUP(tally, 8); /* same as ^= 1 was */
-					if (n->children->next != NULL && n->children->next->str != NULL && n->children->next->children != NULL && n->children->next->children->str != NULL) {
-						if (strcmp("clearance", n->children->next->str) == 0) {
-							SEEN_NO_DUP(tally, 9);
-						}
-						else
-							kicad_warning(n->children->next, "Unrecognised zone connect_pads option %s\n", n->children->next->str);
-					}
-				}
+			else
+				return kicad_error(n, "unexpected zone hatch null node.");
+			if (n->children->next != NULL && n->children->next->str != NULL) {
+				SEEN_NO_DUP(tally, 5);
 			}
-			else if (strcmp("layer", n->str) == 0) {
-				SEEN_NO_DUP(tally, 10);
-				if (n->children != NULL && n->children->str != NULL) {
-					PCBLayer = kicad_get_layeridx(st, n->children->str);
-					if (PCBLayer < 0) {
-						return kicad_warning(n->children, "parse error: unhandled zone layer: %s", n->children->str);
-					}
-					polygon = pcb_poly_new(&st->pcb->Data->Layer[PCBLayer], 0, flags);
-				}
-				else
-					return kicad_error(n, "unexpected zone layer null node.");
+			else
+				return kicad_error(n, "unexpected zone hatching null node.");
+		}
+		else if (strcmp("connect_pads", n->str) == 0) {
+			SEEN_NO_DUP(tally, 6);
+			if (n->children != NULL && n->children->str != NULL && (strcmp("clearance", n->children->str) == 0) && (n->children->children->str != NULL)) {
+				SEEN_NO_DUP(tally, 7); /* same as ^= 1 was */
 			}
-			else if (strcmp("polygon", n->str) == 0) {
-				polycount++; /*keep track of number of polygons in zone */
-				if (n->children != NULL && n->children->str != NULL) {
-					if (strcmp("pts", n->children->str) == 0) {
-						if (polygon != NULL) {
-							for(m = n->children->children, j = 0; m != NULL; m = m->next, j++) {
-								if (m->str != NULL && strcmp("xy", m->str) == 0) {
-									PARSE_COORD(X, m, m->children, "zone polygon vertex X");
-									PARSE_COORD(Y, m, m->children->next, "zone polygon vertex Y");
-									pcb_poly_point_new(polygon, X, Y);
-								}
-								else
-									return kicad_error(m, "empty pts element");
-							}
-						}
+			else if (n->children != NULL && n->children->str != NULL && n->children->next->str != NULL) {
+				SEEN_NO_DUP(tally, 8); /* same as ^= 1 was */
+				if (n->children->next != NULL && n->children->next->str != NULL && n->children->next->children != NULL && n->children->next->children->str != NULL) {
+					if (strcmp("clearance", n->children->next->str) == 0) {
+						SEEN_NO_DUP(tally, 9);
 					}
 					else
-						return kicad_error(n->children, "pts section vertices not found in zone polygon.");
+						kicad_warning(n->children->next, "Unrecognised zone connect_pads option %s\n", n->children->next->str);
+				}
+			}
+		}
+		else if (strcmp("layer", n->str) == 0) {
+			SEEN_NO_DUP(tally, 10);
+			if (n->children != NULL && n->children->str != NULL) {
+				PCBLayer = kicad_get_layeridx(st, n->children->str);
+				if (PCBLayer < 0) {
+					return kicad_warning(n->children, "parse error: unhandled zone layer: %s", n->children->str);
+				}
+				polygon = pcb_poly_new(&st->pcb->Data->Layer[PCBLayer], 0, flags);
+			}
+			else
+				return kicad_error(n, "unexpected zone layer null node.");
+		}
+		else if (strcmp("polygon", n->str) == 0) {
+			polycount++; /*keep track of number of polygons in zone */
+			if (n->children != NULL && n->children->str != NULL) {
+				if (strcmp("pts", n->children->str) == 0) {
+					if (polygon != NULL) {
+						for(m = n->children->children, j = 0; m != NULL; m = m->next, j++) {
+							if (m->str != NULL && strcmp("xy", m->str) == 0) {
+								PARSE_COORD(X, m, m->children, "zone polygon vertex X");
+								PARSE_COORD(Y, m, m->children->next, "zone polygon vertex Y");
+								pcb_poly_point_new(polygon, X, Y);
+							}
+							else
+								return kicad_error(m, "empty pts element");
+						}
+					}
 				}
 				else
-					return kicad_error(n, "error parsing empty polygon.");
+					return kicad_error(n->children, "pts section vertices not found in zone polygon.");
 			}
-			else if (strcmp("fill", n->str) == 0) {
-				SEEN_NO_DUP(tally, 11);
-				for(m = n->children; m != NULL; m = m->next) {
-					if (m->str == NULL)
-						return kicad_error(m, "empty fill parameter");
-					if (strcmp("arc_segments", m->str) == 0) {
-						if (m->children != NULL && m->children->str != NULL) {
-							/* ignored */
-						}
-						else
-							return kicad_error(m, "unexpected zone arc_segment null node.");
-					}
-					else if (strcmp("thermal_gap", m->str) == 0) {
-						if (m->children != NULL && m->children->str != NULL) {
-							/* ignored */
-						}
-						else
-							return kicad_error(m, "unexpected zone thermal_gap null node.");
-					}
-					else if (strcmp("thermal_bridge_width", m->str) == 0) {
-						if (m->children != NULL && m->children->str != NULL) {
-							/* ignored */
-						}
-						else
-							return kicad_error(m, "unexpected zone thermal_bridge_width null node.");
-					}
-					else if (strcmp("yes", m->str) == 0) {
+			else
+				return kicad_error(n, "error parsing empty polygon.");
+		}
+		else if (strcmp("fill", n->str) == 0) {
+			SEEN_NO_DUP(tally, 11);
+			for(m = n->children; m != NULL; m = m->next) {
+				if (m->str == NULL)
+					return kicad_error(m, "empty fill parameter");
+				if (strcmp("arc_segments", m->str) == 0) {
+					if (m->children != NULL && m->children->str != NULL) {
 						/* ignored */
 					}
 					else
-						kicad_warning(m, "Unknown zone fill argument:\t%s\n", m->str);
+						return kicad_error(m, "unexpected zone arc_segment null node.");
 				}
-			}
-			else if (strcmp("min_thickness", n->str) == 0) {
-				SEEN_NO_DUP(tally, 12);
-				if (n->children != NULL && n->children->str != NULL) {
+				else if (strcmp("thermal_gap", m->str) == 0) {
+					if (m->children != NULL && m->children->str != NULL) {
+						/* ignored */
+					}
+					else
+						return kicad_error(m, "unexpected zone thermal_gap null node.");
+				}
+				else if (strcmp("thermal_bridge_width", m->str) == 0) {
+					if (m->children != NULL && m->children->str != NULL) {
+						/* ignored */
+					}
+					else
+						return kicad_error(m, "unexpected zone thermal_bridge_width null node.");
+				}
+				else if (strcmp("yes", m->str) == 0) {
 					/* ignored */
 				}
 				else
-					return kicad_error(n, "unexpected zone min_thickness null node.");
+					kicad_warning(m, "Unknown zone fill argument:\t%s\n", m->str);
 			}
-			else if (strcmp("priority", n->str) == 0) {
-				SEEN_NO_DUP(tally, 13);
-				if (n->children != NULL && n->children->str != NULL) {
-					/* ignored */
-				}
-				else
-					return kicad_error(n, "unexpected zone min_thickness null node.");
-			}
-			else if (strcmp("filled_polygon", n->str) == 0) {
-				TODO("isn't this the same as polygon?");
+		}
+		else if (strcmp("min_thickness", n->str) == 0) {
+			SEEN_NO_DUP(tally, 12);
+			if (n->children != NULL && n->children->str != NULL) {
+				/* ignored */
 			}
 			else
-				kicad_warning(n, "Unknown polygon argument:\t%s\n", n->str);
+				return kicad_error(n, "unexpected zone min_thickness null node.");
 		}
+		else if (strcmp("priority", n->str) == 0) {
+			SEEN_NO_DUP(tally, 13);
+			if (n->children != NULL && n->children->str != NULL) {
+				/* ignored */
+			}
+			else
+				return kicad_error(n, "unexpected zone min_thickness null node.");
+		}
+		else if (strcmp("filled_polygon", n->str) == 0) {
+			TODO("isn't this the same as polygon?");
+		}
+		else
+			kicad_warning(n, "Unknown polygon argument:\t%s\n", n->str);
 	}
 
 	required = BV(10); /* layer at a minimum */
