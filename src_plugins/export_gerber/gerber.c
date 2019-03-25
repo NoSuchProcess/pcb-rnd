@@ -517,7 +517,7 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	if (!fnbase)
 		fnbase = "pcb-out";
 
-	verbose = options[HA_verbose].int_value;
+	verbose = options[HA_verbose].int_value || conf_core.rc.verbose;
 	all_layers = options[HA_all_layers].int_value;
 
 	copy_outline_mode = options[HA_copy_outline].int_value;
