@@ -2,7 +2,7 @@
  *			COPYRIGHT
  *
  *	pcb-rnd, interactive printed circuit board design
- *	Copyright (C) 2016, 2017, 2018 Tibor 'Igor2' Palinkas
+ *	Copyright (C) 2016..2019 Tibor 'Igor2' Palinkas
  *	Copyright (C) 2016, 2017 Erich S. Heinzle
  *	Copyright (C) 2017 Miloh
  *
@@ -286,11 +286,8 @@ static int kicad_get_layeridx(read_state_t *st, const char *kicad_name)
 			char *end;
 			long id = strtol(kicad_name + 2, &end, 10);
 			if ((pcb_strcasecmp(end, ".Cu") == 0) && (id >= 1) && (id <= 30)) {
-				if (kicad_reg_layer(st, kicad_name, PCB_LYT_COPPER | PCB_LYT_INTERN, NULL) == 0) {
-					/*pcb_trace("Created implicit copper layer %s as %d\n", kicad_name, id); */
+				if (kicad_reg_layer(st, kicad_name, PCB_LYT_COPPER | PCB_LYT_INTERN, NULL) == 0)
 					return kicad_get_layeridx(st, kicad_name);
-				}
-				/*pcb_trace("Failed to create implicit copper layer %s as %d\n", kicad_name, id); */
 			}
 		}
 		if (st->auto_layers)
@@ -1340,7 +1337,6 @@ TODO("why's the rounding?");
 			/* if we have been provided with a Module Name and location, create a new subc with default "" and "" for refdes and value fields */
 			if (moduleName != NULL && moduleDefined == 0) {
 				moduleDefined = 1; /* but might be empty, wait and see */
-				/*pcb_trace("Have new module name and location, defining module/element %s\n", moduleName); */
 				if (subc == NULL) {
 					subc = pcb_subc_new();
 TODO("don't ignore rotation here");
