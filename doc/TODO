@@ -3,6 +3,7 @@
 1. For the upcoming release ===============================================================================
 - BUG: scconfig: core gets glib dependency even if everything is in plugins (only plugins depend on glib) [report: Vuokko]
 + CLEANUP: move the hackish gerber layer suffix functions into CAM configs [report: Ade]
+- FEATURE: gerber metric support [report: Gabriel]
 - FEATURE: (TT) route style upgrade to prototypes:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
 	- BUG: padstack doesn't show drc xor shape while moving - because the whole drawing is a cheat for old vias [report: igor2]
