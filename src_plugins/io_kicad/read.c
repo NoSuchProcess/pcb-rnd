@@ -391,35 +391,35 @@ do { \
 static int kicad_parse_page_size(read_state_t *st, gsxl_node_t *subtree)
 {
 TODO(": size can be determined by kicad_pcb/general/area - when that is present, prefer that over the page size (see via1.kicad_pcb)")
-	if (subtree != NULL && subtree->str != NULL) {
-		if (strcmp("A4", subtree->str) == 0) {
-			st->pcb->MaxWidth = PCB_MM_TO_COORD(297.0);
-			st->pcb->MaxHeight = PCB_MM_TO_COORD(210.0);
-		}
-		else if (strcmp("A3", subtree->str) == 0) {
-			st->pcb->MaxWidth = PCB_MM_TO_COORD(420.0);
-			st->pcb->MaxHeight = PCB_MM_TO_COORD(297.0);
-		}
-		else if (strcmp("A2", subtree->str) == 0) {
-			st->pcb->MaxWidth = PCB_MM_TO_COORD(594.0);
-			st->pcb->MaxHeight = PCB_MM_TO_COORD(420.0);
-		}
-		else if (strcmp("A1", subtree->str) == 0) {
-			st->pcb->MaxWidth = PCB_MM_TO_COORD(841.0);
-			st->pcb->MaxHeight = PCB_MM_TO_COORD(594.0);
-		}
-		else if (strcmp("A0", subtree->str) == 0) {
-			st->pcb->MaxWidth = PCB_MM_TO_COORD(1189.0);
-			st->pcb->MaxHeight = PCB_MM_TO_COORD(841.0);
-		}
-		else { /* default to A0 */
-			st->pcb->MaxWidth = PCB_MM_TO_COORD(1189.0);
-			st->pcb->MaxHeight = PCB_MM_TO_COORD(841.0);
-			pcb_message(PCB_MSG_ERROR, "\tUnable to determine layout size. Defaulting to A0 layout size.\n");
-		}
-		return 0;
+	if ((subtree == NULL) || (subtree->str == NULL))
+		return kicad_error(subtree, "error parsing KiCad layout size.");
+
+	if (strcmp("A4", subtree->str) == 0) {
+		st->pcb->MaxWidth = PCB_MM_TO_COORD(297.0);
+		st->pcb->MaxHeight = PCB_MM_TO_COORD(210.0);
 	}
-	return kicad_error(subtree, "error parsing KiCad layout size.");
+	else if (strcmp("A3", subtree->str) == 0) {
+		st->pcb->MaxWidth = PCB_MM_TO_COORD(420.0);
+		st->pcb->MaxHeight = PCB_MM_TO_COORD(297.0);
+	}
+	else if (strcmp("A2", subtree->str) == 0) {
+		st->pcb->MaxWidth = PCB_MM_TO_COORD(594.0);
+		st->pcb->MaxHeight = PCB_MM_TO_COORD(420.0);
+	}
+	else if (strcmp("A1", subtree->str) == 0) {
+		st->pcb->MaxWidth = PCB_MM_TO_COORD(841.0);
+		st->pcb->MaxHeight = PCB_MM_TO_COORD(594.0);
+	}
+	else if (strcmp("A0", subtree->str) == 0) {
+		st->pcb->MaxWidth = PCB_MM_TO_COORD(1189.0);
+		st->pcb->MaxHeight = PCB_MM_TO_COORD(841.0);
+	}
+	else { /* default to A0 */
+		st->pcb->MaxWidth = PCB_MM_TO_COORD(1189.0);
+		st->pcb->MaxHeight = PCB_MM_TO_COORD(841.0);
+		pcb_message(PCB_MSG_ERROR, "\tUnable to determine layout size. Defaulting to A0 layout size.\n");
+	}
+	return 0;
 }
 
 /* kicad_pcb/parse_title_block */
@@ -428,25 +428,26 @@ static int kicad_parse_title_block(read_state_t *st, gsxl_node_t *subtree)
 	gsxl_node_t *n;
 	const char *prefix = "kicad_titleblock_";
 	char *name;
-	if (subtree->str != NULL) {
-		name = pcb_concat(prefix, subtree->str, NULL);
-		pcb_attrib_put(st->pcb, name, subtree->children->str);
-		free(name);
-		for(n = subtree->next; n != NULL; n = n->next) {
-			if (n->str != NULL && strcmp("comment", n->str) != 0) {
-				name = pcb_concat(prefix, n->str, NULL);
-				pcb_attrib_put(st->pcb, name, n->children->str);
-				free(name);
-			}
-			else { /* if comment field has extra children args */
-				name = pcb_concat(prefix, n->str, "_", n->children->str, NULL);
-				pcb_attrib_put(st->pcb, name, n->children->next->str);
-				free(name);
-			}
+
+	if (subtree->str == NULL)
+		return kicad_error(subtree, "error parsing KiCad titleblock: empty");
+
+	name = pcb_concat(prefix, subtree->str, NULL);
+	pcb_attrib_put(st->pcb, name, subtree->children->str);
+	free(name);
+	for(n = subtree->next; n != NULL; n = n->next) {
+		if (n->str != NULL && strcmp("comment", n->str) != 0) {
+			name = pcb_concat(prefix, n->str, NULL);
+			pcb_attrib_put(st->pcb, name, n->children->str);
+			free(name);
 		}
-		return 0;
+		else { /* if comment field has extra children args */
+			name = pcb_concat(prefix, n->str, "_", n->children->str, NULL);
+			pcb_attrib_put(st->pcb, name, n->children->next->str);
+			free(name);
+		}
 	}
-	return kicad_error(subtree, "error parsing KiCad titleblock.");
+	return 0;
 }
 
 static int rotdeg_to_dir(double rotdeg)
