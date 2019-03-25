@@ -493,6 +493,25 @@ do { \
 	(res) = pcb_round(PCB_MM_TO_COORD(__dtmp__)); \
 } while(0) \
 
+/* parse nd->str into a pcb_layer_t in ly, either as a subc layer or if subc
+   is NULL, as an st->pcb board layer. loc is a string literal, parent context
+   of the text, used in the error message.
+   NOTE: subc case: for text there is no subc default layer (assumes KiCad has text on silk only) */
+#define PARSE_LAYER(ly, nd, subc, loc) \
+	do { \
+		pcb_layer_id_t PCBLayer; \
+		if ((nd == NULL) || (nd->str == NULL)) \
+			return kicad_error(n, "unexpected empty/NULL " loc " layer node"); \
+		if (subc == NULL) { \
+			pcb_layer_id_t PCBLayer = kicad_get_layeridx(st, nd->str); \
+			if (PCBLayer < 0) \
+				return kicad_error(nd, "unhandled " loc " layer: (%s)", nd->str); \
+			ly = &st->pcb->Data->Layer[PCBLayer]; \
+		} \
+		else \
+			ly = kicad_get_subc_layer(st, subc, nd->str, NULL); \
+	} while(0)
+
 /* kicad_pcb/gr_text and fp_text */
 static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *text, pcb_subc_t *subc)
 {
@@ -532,22 +551,12 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 		}
 		else if (strcmp("layer", n->str) == 0) {
 			SEEN_NO_DUP(tally, 1);
-			if (n->children != NULL && n->children->str != NULL) {
-				if (subc != NULL) {
-					/* NOTE: for text there is no subc default layer (assumes KiCad has text on silk only) */
-					ly = kicad_get_subc_layer(st, subc, n->children->str, NULL);
-				}
-				else {
-					pcb_layer_id_t PCBLayer = kicad_get_layeridx(st, n->children->str);
-					if (PCBLayer < 0)
-						return kicad_error(n->children, "unexpected text layer def < 0 (%s)", n->children->str);
-					if (pcb_layer_flags(PCB, PCBLayer) & PCB_LYT_BOTTOM)
-						Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
-					ly = &st->pcb->Data->Layer[PCBLayer];
-				}
+			PARSE_LAYER(ly, n->children, subc, "text");
+			if (subc == NULL) {
+TODO("this should be applied on subc as well");
+				if (pcb_layer_flags_(ly) & PCB_LYT_BOTTOM)
+					Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
 			}
-			else
-				return kicad_error(n, "unexpected empty/NULL text layer node");
 		}
 		else if (strcmp("hide", n->str) == 0) {
 			if (subc != NULL)
@@ -676,18 +685,7 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 		}
 		else if (strcmp("layer", n->str) == 0) {
 			SEEN_NO_DUP(tally, 2);
-			if (n->children != NULL && n->children->str != NULL) {
-				if (subc == NULL) {
-					pcb_layer_id_t PCBLayer = kicad_get_layeridx(st, n->children->str);
-					if (PCBLayer < 0)
-						return kicad_error(n->children, "unexpected line layer def < 0 (%s)", n->children->str);
-					ly = pcb_get_layer(st->pcb->Data, PCBLayer);
-				}
-				else
-					ly = kicad_get_subc_layer(st, subc, n->children->str, NULL);
-			}
-			else
-				return kicad_error(n, "unexpected empty/NULL line layer field.");
+			PARSE_LAYER(ly, n->children, subc, "line");
 		}
 		else if (strcmp("width", n->str) == 0) {
 			SEEN_NO_DUP(tally, 3);
@@ -776,18 +774,7 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 		}
 		else if (strcmp("layer", n->str) == 0) {
 			SEEN_NO_DUP(tally, 2);
-			if (n->children != NULL && n->children->str != NULL) {
-				if (subc == NULL) {
-					pcb_layer_id_t PCBLayer = kicad_get_layeridx(st, n->children->str);
-					if (PCBLayer < 0)
-						return kicad_warning(n->children, "arc: layer \"%s\" not found", n->children->str);
-					ly = pcb_get_layer(st->pcb->Data, PCBLayer);
-				}
-				else
-					ly = kicad_get_subc_layer(st, subc, n->children->str, NULL);
-			}
-			else
-				return kicad_error(n, "unexpected empty/NULL arc layer.");
+			PARSE_LAYER(ly, n->children, subc, "arc");
 		}
 		else if (strcmp("width", n->str) == 0) {
 			SEEN_NO_DUP(tally, 3);
@@ -886,11 +873,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 			for(m = n->children; m != NULL; m = m->next) {
 				if (m->str != NULL) {
 TODO("bbvia");
-/*							PCBLayer = kicad_get_layeridx(st, m->str);
- *							if (PCBLayer < 0) {
- *								return -1;
- *							}   via layers not currently used... padstacks
- */
+					/*PARSE_LAYER(ly, n->children, subc, "via");*/
 				}
 				else
 					return kicad_error(m, "unexpected empty/NULL via layer node");
@@ -1419,7 +1402,6 @@ TODO("don't ignore rotation here");
 static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 {
 	gsxl_node_t *n, *m;
-	pcb_layer_id_t PCBLayer = 0;
 	int i;
 	long j = 0, polycount = 0;
 	unsigned long tally = 0, required;
@@ -1428,6 +1410,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 	char *end;
 	double val;
 	pcb_coord_t X, Y;
+	pcb_layer_t *ly = NULL;
 
 	for(n = subtree, i = 0; n != NULL; n = n->next, i++) {
 		if (n->str == NULL)
@@ -1471,16 +1454,10 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 			}
 		}
 		else if (strcmp("layer", n->str) == 0) {
+
 			SEEN_NO_DUP(tally, 10);
-			if (n->children != NULL && n->children->str != NULL) {
-				PCBLayer = kicad_get_layeridx(st, n->children->str);
-				if (PCBLayer < 0) {
-					return kicad_warning(n->children, "parse error: unhandled zone layer: %s", n->children->str);
-				}
-				polygon = pcb_poly_new(&st->pcb->Data->Layer[PCBLayer], 0, flags);
-			}
-			else
-				return kicad_error(n, "unexpected zone layer null node.");
+			PARSE_LAYER(ly, n->children, NULL, "zone polygon");
+			polygon = pcb_poly_new(ly, 0, flags);
 		}
 		else if (strcmp("polygon", n->str) == 0) {
 			polycount++; /*keep track of number of polygons in zone */
@@ -1543,8 +1520,8 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 		return kicad_error(subtree, "can not create zone because required fields are missing");
 
 	if (polygon != NULL) {
-		pcb_add_poly_on_layer(&st->pcb->Data->Layer[PCBLayer], polygon);
-		pcb_poly_init_clip(st->pcb->Data, &st->pcb->Data->Layer[PCBLayer], polygon);
+		pcb_add_poly_on_layer(ly, polygon);
+		pcb_poly_init_clip(st->pcb->Data, ly, polygon);
 	}
 	return 0;
 }
