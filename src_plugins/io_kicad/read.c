@@ -386,6 +386,18 @@ do { \
 
 #define BV(bit) (1<<(bit))
 
+#define ignore_value(n, err) \
+do { \
+	if ((n)->children != NULL && (n)->children->str != NULL) { } \
+	else \
+		return kicad_error(n, err); \
+} while(0)
+
+#define ignore_value_nodup(n, tally, bitval, err) \
+do { \
+	SEEN_NO_DUP(tally, bitval); \
+	ignore_value(n, err); \
+} while(0)
 
 /* kicad_pcb/parse_page */
 static int kicad_parse_page_size(read_state_t *st, gsxl_node_t *subtree)
@@ -685,20 +697,10 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 			PARSE_COORD(Thickness, n, n->children, "line thickness");
 		}
 		else if (strcmp("angle", n->str) == 0) { /* unlikely to be used or seen */
-			SEEN_NO_DUP(tally, 4);
-			if (n->children != NULL && n->children->str != NULL) {
-				/* ignore: kicad 4.x doesn't use this at all */
-			}
-			else
-				return kicad_error(n, "unexpected empty/NULL line angle");
+			ignore_value_nodup(n, tally, 4, "unexpected empty/NULL line angle");
 		}
 		else if (strcmp("net", n->str) == 0) { /* unlikely to be used or seen */
-			SEEN_NO_DUP(tally, 5);
-			if (n->children != NULL && n->children->str != NULL) {
-				/* ignore; netname is n->children->str */
-			}
-			else
-				return kicad_error(n, "unexpected empty/NULL line net.");
+			ignore_value_nodup(n, tally, 5, "unexpected empty/NULL line net.");
 		}
 		else if (strcmp("status", n->str) == 0) {
 			if (is_seg) {
@@ -798,11 +800,7 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 			PARSE_DOUBLE(delta, n, n->children, "arc angle");
 		}
 		else if (strcmp("net", n->str) == 0) { /* unlikely to be used or seen */
-			if (n->children != NULL && n->children->str != NULL) {
-				/* ignore net (n->children->str) */
-			}
-			else
-				return kicad_error(n, "unexpected empty/NULL arc net.");
+			ignore_value(n, "unexpected empty/NULL arc net.");
 		}
 		else if (strcmp("tstamp", n->str) == 0) {
 			/* ignore */
@@ -902,20 +900,10 @@ TODO("bbvia");
 			}
 		}
 		else if (strcmp("net", n->str) == 0) {
-			SEEN_NO_DUP(tally, 3);
-			if (n->children != NULL && n->children->str != NULL) {
-				/* ignore the net (n->children->str)); */
-			}
-			else
-				return kicad_error(n, "unexpected empty/NULL via net node");
+			ignore_value_nodup(n, tally, 3, "unexpected empty/NULL via net node");
 		}
 		else if (strcmp("tstamp", n->str) == 0) {
-			SEEN_NO_DUP(tally, 4);
-			if (n->children != NULL && n->children->str != NULL) {
-				/* ignore */
-			}
-			else
-				return kicad_error(n, "unexpected empty/NULL via tstamp node");
+			ignore_value_nodup(n, tally, 4, "unexpected empty/NULL via tstamp node");
 		}
 		else if (strcmp("drill", n->str) == 0) {
 			SEEN_NO_DUP(tally, 5);
@@ -1328,12 +1316,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				return kicad_error(n, "unexpected empty/NULL module tedit node");
 		}
 		else if (strcmp("tstamp", n->str) == 0) {
-			SEEN_NO_DUP(tally, 3);
-			if (n->children != NULL && n->children->str != NULL) {
-				/* ignore time stamp */
-			}
-			else
-				return kicad_error(n, "unexpected empty/NULL module tstamp node");
+			ignore_value_nodup(n, tally, 3, "unexpected empty/NULL module tstamp node");
 		}
 		else if (strcmp("attr", n->str) == 0) {
 			if ((n->children != NULL) && (n->children->str != NULL)) {
@@ -1391,12 +1374,7 @@ TODO("don't ignore rotation here");
 				return kicad_error(n, "unexpected empty/NULL module tags node");
 		}
 		else if (strcmp("path", n->str) == 0) {
-			SEEN_NO_DUP(tally, 11);
-			if (n->children != NULL && n->children->str != NULL) {
-				/* ignored */
-			}
-			else
-				return kicad_error(n, "unexpected empty/NULL module model node");
+			ignore_value_nodup(n, tally, 11, "unexpected empty/NULL module model node");
 		}
 		else if (strcmp("pad", n->str) == 0) { /* pads next  - have thru_hole, circle, rect, roundrect, to think about */
 			if (kicad_parse_pad(st, n, subc, &tally, moduleX, moduleY, moduleRotation, &moduleEmpty) != 0)
@@ -1459,28 +1437,13 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 		if (n->str == NULL)
 			return kicad_error(n, "empty zone parameter");
 		if (strcmp("net", n->str) == 0) {
-			SEEN_NO_DUP(tally, 0);
-			if (n->children != NULL && n->children->str != NULL) {
-				/* ignore net */
-			}
-			else
-				return kicad_error(n, "unexpected zone net null node.");
+			ignore_value_nodup(n, tally, 0, "unexpected zone net null node.");
 		}
 		else if (strcmp("net_name", n->str) == 0) {
-			SEEN_NO_DUP(tally, 1);
-			if (n->children != NULL && n->children->str != NULL) {
-				/* ignore net */
-			}
-			else
-				return kicad_error(n, "unexpected zone net_name null node.");
+			ignore_value_nodup(n, tally, 1, "unexpected zone net_name null node.");
 		}
 		else if (strcmp("tstamp", n->str) == 0) {
-			SEEN_NO_DUP(tally, 2);
-			if (n->children != NULL && n->children->str != NULL) {
-				/* ignore time stamp */
-			}
-			else
-				return kicad_error(n, "unexpected zone tstamp null node.");
+			ignore_value_nodup(n, tally, 2, "unexpected zone tstamp null node.");
 		}
 		else if (strcmp("hatch", n->str) == 0) {
 			SEEN_NO_DUP(tally, 3);
@@ -1551,25 +1514,13 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 				if (m->str == NULL)
 					return kicad_error(m, "empty fill parameter");
 				if (strcmp("arc_segments", m->str) == 0) {
-					if (m->children != NULL && m->children->str != NULL) {
-						/* ignored */
-					}
-					else
-						return kicad_error(m, "unexpected zone arc_segment null node.");
+					ignore_value(m, "unexpected zone arc_segment null node.");
 				}
 				else if (strcmp("thermal_gap", m->str) == 0) {
-					if (m->children != NULL && m->children->str != NULL) {
-						/* ignored */
-					}
-					else
-						return kicad_error(m, "unexpected zone thermal_gap null node.");
+					ignore_value(m, "unexpected zone thermal_gap null node.");
 				}
 				else if (strcmp("thermal_bridge_width", m->str) == 0) {
-					if (m->children != NULL && m->children->str != NULL) {
-						/* ignored */
-					}
-					else
-						return kicad_error(m, "unexpected zone thermal_bridge_width null node.");
+					ignore_value(m, "unexpected zone thermal_bridge_width null node.");
 				}
 				else if (strcmp("yes", m->str) == 0) {
 					/* ignored */
@@ -1579,20 +1530,10 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 			}
 		}
 		else if (strcmp("min_thickness", n->str) == 0) {
-			SEEN_NO_DUP(tally, 12);
-			if (n->children != NULL && n->children->str != NULL) {
-				/* ignored */
-			}
-			else
-				return kicad_error(n, "unexpected zone min_thickness null node.");
+			ignore_value_nodup(n, tally, 12, "unexpected zone min_thickness null node");
 		}
 		else if (strcmp("priority", n->str) == 0) {
-			SEEN_NO_DUP(tally, 13);
-			if (n->children != NULL && n->children->str != NULL) {
-				/* ignored */
-			}
-			else
-				return kicad_error(n, "unexpected zone min_thickness null node.");
+			ignore_value_nodup(n, tally, 13, "unexpected zone min_thickness null node.");
 		}
 		else if (strcmp("filled_polygon", n->str) == 0) {
 			TODO("isn't this the same as polygon?");
