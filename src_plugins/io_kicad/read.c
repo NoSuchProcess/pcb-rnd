@@ -493,14 +493,13 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 	double rotdeg = 0.0;  /* default is horizontal */
 	pcb_coord_t X, Y, thickness = 0;
 	int scaling = 100;
-	int textLength = 0;
+	int textLength;
 	int mirrored = 0;
 	unsigned direction;
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 	pcb_layer_t *ly;
 
-	for(i = 0; text[i] != 0; i++)
-		textLength++;
+	textLength = strlen(text);
 	for(n = subtree, i = 0; n != NULL; n = n->next, i++) {
 		if (n->str != NULL && strcmp("at", n->str) == 0) {
 			SEEN_NO_DUP(tally, 0);
