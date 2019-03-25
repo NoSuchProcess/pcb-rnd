@@ -1529,35 +1529,12 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 				polycount++; /*keep track of number of polygons in zone */
 				if (n->children != NULL && n->children->str != NULL) {
 					if (strcmp("pts", n->children->str) == 0) {
-						for(m = n->children->children, j = 0; m != NULL; m = m->next, j++) {
-							if (m->str != NULL && strcmp("xy", m->str) == 0) {
-								if (m->children != NULL && m->children->str != NULL) {
-									val = strtod(m->children->str, &end);
-									if (*end != 0) {
-										return kicad_error(m, "error parsing zone vertex X.");
-									}
-									else {
-										X = PCB_MM_TO_COORD(val);
-									}
-									if (m->children->next != NULL && m->children->next->str != NULL) {
-										/*pcb_trace("\tvertex Y[%d]:\t'%s'\n", j, (m->children->next->str)); */
-										val = strtod(m->children->next->str, &end);
-										if (*end != 0) {
-											return kicad_error(m, "error parsing zone vertex Y.");
-										}
-										else {
-											Y = PCB_MM_TO_COORD(val);
-										}
-										if (polygon != NULL) {
-											pcb_poly_point_new(polygon, X, Y);
-										}
-									}
-									else {
-										return kicad_error(m, "unexpected zone vertex coord null node.");
-									}
-								}
-								else {
-									return kicad_error(m, "unexpected zone vertex null node.");
+						if (polygon != NULL) {
+							for(m = n->children->children, j = 0; m != NULL; m = m->next, j++) {
+								if (m->str != NULL && strcmp("xy", m->str) == 0) {
+									PARSE_COORD(X, m, m->children, "zone polygon vertex X");
+									PARSE_COORD(Y, m, m->children->next, "zone polygon vertex Y");
+									pcb_poly_point_new(polygon, X, Y);
 								}
 							}
 						}
