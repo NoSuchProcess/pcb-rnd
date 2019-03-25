@@ -1281,7 +1281,7 @@ TODO(": this should be coming from the s-expr file preferences part")
 static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 {
 	gsxl_node_t *n, *p;
-	int PCBLayer = 0;
+	pcb_layer_id_t PCBLayer = 0;
 	int on_bottom = 0, foundRefdes = 0, moduleEmpty = 1, moduleDefined = 0, i;
 	unsigned int moduleRotation = 0; /* for rotating modules */
 	unsigned long tally = 0;
@@ -1448,7 +1448,8 @@ TODO("don't ignore rotation here");
 static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 {
 	gsxl_node_t *n, *m;
-	int i, PCBLayer = 0;
+	pcb_layer_id_t PCBLayer = 0;
+	int i;
 	long j = 0, polycount = 0;
 	unsigned long tally = 0, required;
 	pcb_poly_t *polygon = NULL;
