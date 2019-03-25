@@ -586,15 +586,13 @@ TODO("this should be applied on subc as well");
 					}
 				}
 				else if (strcmp("justify", m->str) == 0) {
-					if (m->children != NULL && m->children->str != NULL) {
-						if (strcmp("mirror", m->children->str) == 0) {
-							mirrored = 1;
-							SEEN_NO_DUP(tally, 4);
-						}
-						TODO("right or left justification is ignored");
-					}
-					else
+					if ((m->children == NULL) || (m->children->str == NULL))
 						return kicad_error(m, "unexpected empty/NULL text justify node");
+					if (strcmp("mirror", m->children->str) == 0) {
+						mirrored = 1;
+						SEEN_NO_DUP(tally, 4);
+					}
+					TODO("right or left justification is ignored");
 				}
 				else
 					kicad_warning(m, "Unknown text effects argument %s:", m->str);
@@ -1151,15 +1149,14 @@ TODO(": this should be coming from the s-expr file preferences part")
 	if (n->children != 0 && n->children->str != NULL) {
 		pinName = n->children->str;
 		SEEN_NO_DUP(featureTally, 0);
-		if (n->children->next != NULL && n->children->next->str != NULL) {
-			throughHole = (strcmp("thru_hole", n->children->next->str) == 0);
-			if (n->children->next->next != NULL && n->children->next->next->str != NULL)
-				pad_shape = n->children->next->next->str;
-			else
-				return kicad_error(n->children->next, "unexpected empty/NULL module pad shape node");
-		}
-		else
+		if ((n->children->next == NULL) || (n->children->next->str == NULL))
 			return kicad_error(n->children->next, "unexpected empty/NULL module pad type node");
+
+		throughHole = (strcmp("thru_hole", n->children->next->str) == 0);
+		if (n->children->next->next != NULL && n->children->next->next->str != NULL)
+			pad_shape = n->children->next->next->str;
+		else
+			return kicad_error(n->children->next, "unexpected empty/NULL module pad shape node");
 	}
 	else
 		return kicad_error(n->children, "unexpected empty/NULL module pad name  node");
@@ -1215,15 +1212,11 @@ TODO(": this should be coming from the s-expr file preferences part")
 		}
 		else if (strcmp("net", m->str) == 0) {
 			SEEN_NO_DUP(featureTally, 4);
-			if (m->children != NULL && m->children->str != NULL) {
-				if (m->children->next != NULL && m->children->next->str != NULL) {
-					TODO("save pad name and set it as attrib: m->children->next->str");
-				}
-				else
-					return kicad_error(m->children, "unexpected empty/NULL module pad net name node");
-			}
-			else
+			if ((m->children == NULL) || (m->children->str == NULL))
 				return kicad_error(m, "unexpected empty/NULL module pad net node");
+			if ((m->children->next == NULL) || (m->children->next->str == NULL))
+				return kicad_error(m->children, "unexpected empty/NULL module pad net name node");
+			TODO("save pad name and set it as attrib: m->children->next->str");
 		}
 		else if (strcmp("size", m->str) == 0) {
 			SEEN_NO_DUP(featureTally, 5);
@@ -1299,14 +1292,14 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			ignore_value_nodup(n, tally, 3, "unexpected empty/NULL module tstamp node");
 		}
 		else if (strcmp("attr", n->str) == 0) {
-			if ((n->children != NULL) && (n->children->str != NULL)) {
-				char *key;
-				key = pcb_concat("kicad_attr_", n->children->str, NULL);
-				pcb_attribute_put(&subc->Attributes, key, "1");
-				free(key);
-			}
-			else
+			char *key;
+
+			if ((n->children == NULL) || (n->children->str == NULL))
 				return kicad_error(n, "unexpected empty/NULL module attr node");
+
+			key = pcb_concat("kicad_attr_", n->children->str, NULL);
+			pcb_attribute_put(&subc->Attributes, key, "1");
+			free(key);
 		}
 		else if (strcmp("at", n->str) == 0) {
 			double rot = 0;
@@ -1340,17 +1333,15 @@ TODO("don't ignore rotation here");
 		}
 		else if (strcmp("descr", n->str) == 0) {
 			SEEN_NO_DUP(tally, 9);
-			if (n->children != NULL && n->children->str != NULL)
-				pcb_attribute_put(&subc->Attributes, "kicad_descr", n->children->str);
-			else
+			if ((n->children == NULL) || (n->children->str == NULL))
 				return kicad_error(n, "unexpected empty/NULL module descr node");
+			pcb_attribute_put(&subc->Attributes, "kicad_descr", n->children->str);
 		}
 		else if (strcmp("tags", n->str) == 0) {
 			SEEN_NO_DUP(tally, 10);
-			if (n->children != NULL && n->children->str != NULL)
-				pcb_attribute_put(&subc->Attributes, "kicad_tags", n->children->str);
-			else
+			if ((n->children == NULL) || (n->children->str == NULL))
 				return kicad_error(n, "unexpected empty/NULL module tags node");
+			pcb_attribute_put(&subc->Attributes, "kicad_tags", n->children->str);
 		}
 		else if (strcmp("path", n->str) == 0) {
 			ignore_value_nodup(n, tally, 11, "unexpected empty/NULL module model node");
@@ -1426,16 +1417,12 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 		}
 		else if (strcmp("hatch", n->str) == 0) {
 			SEEN_NO_DUP(tally, 3);
-			if (n->children != NULL && n->children->str != NULL) {
-				SEEN_NO_DUP(tally, 4); /* same as ^= 1 was */
-			}
-			else
+			if ((n->children == NULL) || (n->children->str == NULL))
 				return kicad_error(n, "unexpected zone hatch null node.");
-			if (n->children->next != NULL && n->children->next->str != NULL) {
-				SEEN_NO_DUP(tally, 5);
-			}
-			else
+			SEEN_NO_DUP(tally, 4); /* same as ^= 1 was */
+			if ((n->children->next == NULL) || (n->children->next->str == NULL))
 				return kicad_error(n, "unexpected zone hatching null node.");
+			SEEN_NO_DUP(tally, 5);
 		}
 		else if (strcmp("connect_pads", n->str) == 0) {
 			SEEN_NO_DUP(tally, 6);
