@@ -555,7 +555,7 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 							PARSE_DOUBLE(sy, l, l->children->next, "text size Y");
 							scaling = (int)(100 * ((sx+sy)/2.0) / 1.27); /* standard glyph width ~= 1.27mm */
 							if (sx != sy)
-								kicad_warning(subtree, "text font size mismatch in X and Y direction - skretching is not yet supported, using the average");
+								kicad_warning(l->children, "text font size mismatch in X and Y direction - skretching is not yet supported, using the average");
 						}
 						else if (strcmp("thickness", l->str) == 0) {
 							SEEN_NO_DUP(tally, 3);
@@ -708,7 +708,7 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 			}
 			else {
 				if (n->str != NULL)
-					kicad_warning(subtree, "unexpected line node: %s", n->str);
+					kicad_warning(n, "unexpected line node: %s", n->str);
 				else
 					return kicad_error(n, "unexpected empty/NULL line node");
 			}
@@ -780,7 +780,7 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 					if (subc == NULL) {
 						pcb_layer_id_t PCBLayer = kicad_get_layeridx(st, n->children->str);
 						if (PCBLayer < 0)
-							return kicad_warning(subtree, "arc: layer \"%s\" not found", n->children->str);
+							return kicad_warning(n->children, "arc: layer \"%s\" not found", n->children->str);
 						ly = pcb_get_layer(st->pcb->Data, PCBLayer);
 					}
 					else
@@ -1518,7 +1518,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 				if (n->children != NULL && n->children->str != NULL) {
 					PCBLayer = kicad_get_layeridx(st, n->children->str);
 					if (PCBLayer < 0) {
-						return kicad_warning(subtree, "parse error: zone layer <0.");
+						return kicad_warning(n->children, "parse error: unhandled zone layer: %s", n->children->str);
 					}
 					polygon = pcb_poly_new(&st->pcb->Data->Layer[PCBLayer], 0, flags);
 				}
