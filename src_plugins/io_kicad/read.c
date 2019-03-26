@@ -399,7 +399,7 @@ do { \
 /* kicad_pcb/parse_page */
 static int kicad_parse_page_size(read_state_t *st, gsxl_node_t *subtree)
 {
-TODO(": size can be determined by kicad_pcb/general/area - when that is present, prefer that over the page size (see via1.kicad_pcb)")
+TODO("size can be determined by kicad_pcb/general/area - when that is present, prefer that over the page size (see via1.kicad_pcb) CUCP#36")
 	if ((subtree == NULL) || (subtree->str == NULL))
 		return kicad_error(subtree, "error parsing KiCad layout size.");
 
@@ -543,7 +543,7 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 					X += sx;
 					Y += sy;
 				}
-				TODO("subc roation is not properly mapped by the caller");
+				TODO("subc roation is not properly mapped by the caller CUCP#37");
 				if (pcb_subc_get_rotation(subc, &srot) == 0)
 					rotdeg += srot;
 			}
@@ -553,7 +553,7 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 			SEEN_NO_DUP(tally, 1);
 			PARSE_LAYER(ly, n->children, subc, "text");
 			if (subc == NULL) {
-TODO("this should be applied on subc as well");
+TODO("this should be applied on subc as well CUCP#37");
 				if (pcb_layer_flags_(ly) & PCB_LYT_BOTTOM)
 					flg = pcb_flag_make(PCB_FLAG_ONSOLDER);
 			}
@@ -592,7 +592,7 @@ TODO("this should be applied on subc as well");
 						mirrored = 1;
 						SEEN_NO_DUP(tally, 4);
 					}
-					TODO("right or left justification is ignored");
+					TODO("right or left justification is ignored CUCP#38");
 				}
 				else
 					kicad_warning(m, "Unknown text effects argument %s:", m->str);
@@ -659,12 +659,12 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 	pcb_flag_t flg = pcb_flag_make(flag);
 	pcb_layer_t *ly = NULL;
 
-	TODO("figure how default clearance works, probably not subc specific");
+	TODO("figure how default clearance works, probably not subc specific CUCP#39");
 	clearance = thickness = 1; /* start with sane default of one nanometre */
 	if (subc != NULL)
 		clearance = 0;
 
-	TODO("this workaround is for segment - remove it when clearance is figured");
+	TODO("this workaround is for segment - remove it when clearance is figured CUCP#39");
 	if (flag & PCB_FLAG_CLEARLINE)
 		clearance = PCB_MM_TO_COORD(0.250);
 
@@ -697,7 +697,7 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 		}
 		else if (strcmp("status", n->str) == 0) {
 			if (is_seg) {
-				TODO("process this")
+				TODO("process this CUCP#40")
 			}
 			else
 				return kicad_error(n, "unexpected status in line object (only segment should have a status)");
@@ -723,7 +723,7 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 			x2 += sx;
 			y2 += sy;
 		}
-		TODO("subc roation is not properly mapped by the caller; when it is, we may need to rotate the line here");
+		TODO("subc roation is not properly mapped by the caller; when it is, we may need to rotate the line here CUCP#37");
 		if (pcb_subc_get_rotation(subc, &srot) == 0) {}
 	}
 	pcb_line_new(ly, x1, y1, x2, y2, thickness, clearance, flg);
@@ -746,7 +746,7 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 	pcb_flag_t flg = pcb_flag_make(0); /* start with something bland here */
 	pcb_layer_t *ly = NULL;
 
-	TODO("Figure the clearance and what happens without thickness; shouldn't depend on subc");
+	TODO("Figure the clearance and what happens without thickness; shouldn't depend on subc CUCP#39");
 	if (subc == NULL)
 		clearance = thickness = PCB_MM_TO_COORD(0.250); /* start with sane defaults */
 	else
@@ -826,7 +826,7 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 				cx += sx;
 				cy += sy;
 			}
-			TODO("subc roation is not properly mapped by the caller; when it is, we may need to rotate the line here");
+			TODO("subc roation is not properly mapped by the caller; when it is, we may need to rotate the line here CUCP#37");
 			if (pcb_subc_get_rotation(subc, &srot) == 0) {}
 		}
 		pcb_arc_new(ly, cx, cy, width, height, start_angle, delta, thickness, clearance, flg, pcb_true);
@@ -849,7 +849,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 	char *name; /* not using via name for now */
 	pcb_coord_t x, y, thickness, clearance, mask, drill; /* not sure what to do with mask */
 
-	TODO("need to figure the clearance");
+	TODO("need to figure the clearance CUCP#39");
 	clearance = mask = PCB_MM_TO_COORD(0.250); /* start with something bland here */
 	drill = PCB_MM_TO_COORD(0.300); /* start with something sane */
 	name = "";
@@ -870,7 +870,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 			SEEN_NO_DUP(tally, 2);
 			for(m = n->children; m != NULL; m = m->next) {
 				if (m->str != NULL) {
-TODO("bbvia");
+TODO("bbvia CUCP#41");
 					/*PARSE_LAYER(ly, n->children, subc, "via");*/
 				}
 				else
@@ -1080,7 +1080,7 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 	if (pinName != NULL)
 		pcb_attribute_put(&ps->Attributes, "term", pinName);
 
-TODO(": pad rotation?")
+TODO("pad rotation? CUCP#37")
 #if 0
 		/* the rotation value describes rotation to the pad
 		   versus the original pad orientation, _NOT_ rotation
@@ -1117,7 +1117,7 @@ static int kicad_parse_fp_text(read_state_t *st, gsxl_node_t *n, pcb_subc_t *sub
 				pcb_attribute_put(&subc->Attributes, "footprint", text);
 			}
 			else if (strcmp("hide", key) == 0) {
-				TODO("figure what 'hide' is doing");
+				TODO("figure what 'hide' is doing CUCP#42");
 			}
 		}
 		else /* only key, no value */
@@ -1140,7 +1140,7 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 	pcb_layer_type_t smd_side;
 	pcb_layer_id_t lid;
 
-TODO(": this should be coming from the s-expr file preferences part")
+TODO("this should be coming from the s-expr file preferences part CUCP#39")
 	clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
 
 	if (n->children != 0 && n->children->str != NULL) {
@@ -1200,7 +1200,7 @@ TODO(": this should be coming from the s-expr file preferences part")
 				}
 			}
 			else {
-				TODO("Ignoring layer definitions for through hole pin - should set which layers have shape");
+				TODO("Ignoring layer definitions for through hole pin - should set which layers have shape CUCP#43");
 			}
 		}
 		else if (strcmp("drill", m->str) == 0) {
@@ -1309,7 +1309,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				module_defined = 1; /* but might be empty, wait and see */
 				if (subc == NULL) {
 					subc = pcb_subc_new();
-TODO("don't ignore rotation here");
+TODO("don't ignore rotation here CUCP#37");
 					pcb_subc_create_aux(subc, mod_x, mod_y, 0.0, on_bottom);
 					pcb_attribute_put(&subc->Attributes, "refdes", "K1");
 				}
@@ -1488,7 +1488,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 			ignore_value_nodup(n, tally, 13, "unexpected zone min_thickness null node.");
 		}
 		else if (strcmp("filled_polygon", n->str) == 0) {
-			TODO("isn't this the same as polygon?");
+			TODO("isn't this the same as polygon? CUCP#44");
 		}
 		else
 			kicad_warning(n, "Unknown polygon argument:\t%s\n", n->str);
@@ -1598,7 +1598,7 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 		pcb_message(PCB_MSG_WARNING, "Had to make changes to the coords so that the design fits the board.\n");
 	pcb_layer_colors_from_conf(Ptr, 1);
 
-TODO(": free the layer hash")
+TODO("free the layer hash")
 
 	return readres;
 }
