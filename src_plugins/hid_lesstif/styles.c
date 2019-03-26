@@ -119,8 +119,10 @@ void lesstif_styles_update_values()
 
 static void update_style_buttons()
 {
-	int i = pcb_hid_get_flag("GetStyle()");
-	int j, n;
+	extern fgw_error_t pcb_act_GetStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv);
+	int i, j, n;
+	fgw_arg_t res, argv;
+	i = PCB_ACT_CALL_C(pcb_act_GetStyle, &res, 1, &argv);
 
 	for (n = 0; n < num_style_buttons; n++) {
 		for (j = 0; j < vtroutestyle_len(&PCB->RouteStyle); j++)
