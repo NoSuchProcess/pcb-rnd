@@ -1303,7 +1303,7 @@ static void eagle_read_subc_attrs(read_state_t *st, trnode_t *nd, pcb_subc_t *su
 	if (!add_text)
 		return;
 
-TODO(": text objects should be already created in the library; we should probably set the attributes here only")
+TODO("some text objects should be already created in the library; we should iterate over existing %DYNTEXT% attributes, add the new ones, change the coords of existing ones CUCP#45")
 #if 0
 	y += EAGLE_TEXT_SIZE_100;
 
