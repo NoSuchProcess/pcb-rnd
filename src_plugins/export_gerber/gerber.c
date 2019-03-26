@@ -724,7 +724,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 
 		if (verbose) {
 			int c = aptr_list->count;
-			printf("Gerber: %d aperture%s in %s\n", c, c == 1 ? "" : "s", filename);
+			fprintf(stderr, "Gerber: %d aperture%s in %s\n", c, c == 1 ? "" : "s", filename);
 		}
 
 		fprintf(f, "G04 start of page %d for group %ld layer_idx %ld *\r\n", pagecount, group, layer);
