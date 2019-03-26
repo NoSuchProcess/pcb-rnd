@@ -543,8 +543,12 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 
 /* set route style to the first one, if the current one doesn't
    happen to match any.  This way, "revert" won't change the route style. */
-		if (pcb_hid_get_flag("GetStyle()") < 0)
+	{
+		extern fgw_error_t pcb_act_GetStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv);
+		fgw_arg_t res, argv;
+		if (PCB_ACT_CALL_C(pcb_act_GetStyle, &res, 1, &argv) < 0)
 			pcb_use_route_style_idx(&PCB->RouteStyle, 0);
+	}
 
 		if ((how == 0) || (revert))
 			pcb_board_changed(revert);
