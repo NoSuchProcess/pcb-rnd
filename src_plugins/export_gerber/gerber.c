@@ -203,6 +203,27 @@ static const char *name_style_names[] = {
 	NULL
 };
 
+typedef struct {
+	const char *hdr1;
+	const char *fmt;
+} coord_format_t;
+
+coord_format_t coord_format[] = {
+	{"%MOIN*%\r\n%FSLAX25Y25*%\r\n", "%.0mc"}, /* centimil:   inch, leading zero suppression, Absolute Data, 2.5 format */
+	{"%MOMM*%\r\n%FSLAX43Y43*%\r\n", "%.0mu"}, /* micrometer: mm,   leading zero suppression, Absolute Data, 4.3 format */
+	{"%MOMM*%\r\n%FSLAX46Y46*%\r\n", "%.0mn"}  /* nanometer:  mm,   leading zero suppression, Absolute Data, 4.6 format */
+};
+#define NUM_COORD_FORMATS (sizeof(coord_format)/sizeof(coord_format[0]))
+
+static coord_format_t *gerber_cfmt;
+
+static const char *coord_format_names[NUM_COORD_FORMATS+1] = {
+	"centimil",
+	"micrometer",
+	"nanometer",
+	NULL
+};
+
 static pcb_hid_attribute_t gerber_options[] = {
 
 /* %start-doc options "90 Gerber Export"
@@ -247,9 +268,13 @@ Print file names and aperture counts on stdout.
 	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_cross_sect 5
 
+	{"coord-format", "Coordinate format (resolution)",
+	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, coord_format_names, 0},
+#define HA_coord_format 6
+
 	{"cam", "CAM instruction",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_cam 6
+#define HA_cam 7
 };
 
 #define NUM_OPTIONS (sizeof(gerber_options)/sizeof(gerber_options[0]))
@@ -511,6 +536,15 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 		options = gerber_values;
 	}
 
+	/* set up the coord format */
+	i = options[HA_coord_format].int_value;
+	if ((i < 0) || (i >= NUM_COORD_FORMATS)) {
+		pcb_message(PCB_MSG_ERROR, "Invalid coordinate format (out of bounds)\n");
+		return;
+	}
+	gerber_cfmt = &coord_format[i];
+	pcb_printf_slot[4] = gerber_cfmt->fmt;
+
 	pcb_cam_begin(PCB, &gerber_cam, options[HA_cam].str_value, gerber_options, NUM_OPTIONS, options);
 
 	fnbase = options[HA_gerberfile].str_value;
@@ -744,11 +778,8 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 		pcb_fprintf(f, "G04 PCB-Dimensions: %.0mc %.0mc *\r\n", PCB->MaxWidth, PCB->MaxHeight);
 		fprintf(f, "G04 PCB-Coordinate-Origin: lower left *\r\n");
 
-		/* Signal data in inches. */
-		fprintf(f, "%%MOIN*%%\r\n");
-
-		/* Signal Leading zero suppression, Absolute Data, 2.5 format */
-		fprintf(f, "%%FSLAX25Y25*%%\r\n");
+		/* Unit and coord format */
+		fprintf(f, "%s", gerber_cfmt->hdr1);
 
 		/* build a legal identifier. */
 		if (layername)
