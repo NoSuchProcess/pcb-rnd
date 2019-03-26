@@ -273,10 +273,10 @@ fgw_error_t pcb_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_
 	hid_cookie_action_t *ca = f->reg_data;
 
 	if (conf_core.rc.verbose) {
-		printf("Action: \033[34m%s(", f->name);
+		fprintf(stderr, "Action: \033[34m%s(", f->name);
 		for (i = 0; i < argc; i++)
-			printf("%s%s", i ? "," : "", (argv[i].type & FGW_STR) == FGW_STR ? argv[i].val.str : "<non-str>");
-		printf(")\033[0m\n");
+			fprintf(stderr, "%s%s", i ? "," : "", (argv[i].type & FGW_STR) == FGW_STR ? argv[i].val.str : "<non-str>");
+		fprintf(stderr, ")\033[0m\n");
 	}
 
 	if (ca != NULL) {
