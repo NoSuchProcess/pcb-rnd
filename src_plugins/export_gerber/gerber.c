@@ -775,7 +775,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 		fprintf(f, "G04 For: %s *\r\n", pcb_author());
 
 		fprintf(f, "G04 Format: Gerber/RS-274X *\r\n");
-		pcb_fprintf(f, "G04 PCB-Dimensions: %.0mc %.0mc *\r\n", PCB->MaxWidth, PCB->MaxHeight);
+		pcb_fprintf(f, "G04 PCB-Dimensions: %[4] %[4] *\r\n", PCB->MaxWidth, PCB->MaxHeight);
 		fprintf(f, "G04 PCB-Coordinate-Origin: lower left *\r\n");
 
 		/* Unit and coord format */
@@ -1016,12 +1016,12 @@ static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 	if (x1 != lastX) {
 		m = pcb_true;
 		lastX = x1;
-		pcb_fprintf(f, "X%.0mc", gerberX(PCB, lastX));
+		pcb_fprintf(f, "X%[4]", gerberX(PCB, lastX));
 	}
 	if (y1 != lastY) {
 		m = pcb_true;
 		lastY = y1;
-		pcb_fprintf(f, "Y%.0mc", gerberY(PCB, lastY));
+		pcb_fprintf(f, "Y%[4]", gerberY(PCB, lastY));
 	}
 	if ((x1 == x2) && (y1 == y2))
 		fprintf(f, "D03*\r\n");
@@ -1030,11 +1030,11 @@ static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 			fprintf(f, "D02*");
 		if (x2 != lastX) {
 			lastX = x2;
-			pcb_fprintf(f, "X%.0mc", gerberX(PCB, lastX));
+			pcb_fprintf(f, "X%[4]", gerberX(PCB, lastX));
 		}
 		if (y2 != lastY) {
 			lastY = y2;
-			pcb_fprintf(f, "Y%.0mc", gerberY(PCB, lastY));
+			pcb_fprintf(f, "Y%[4]", gerberY(PCB, lastY));
 
 		}
 		fprintf(f, "D01*\r\n");
@@ -1125,17 +1125,17 @@ static void gerber_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb
 	if (arcStartX != lastX) {
 		m = pcb_true;
 		lastX = arcStartX;
-		pcb_fprintf(f, "X%.0mc", gerberX(PCB, lastX));
+		pcb_fprintf(f, "X%[4]", gerberX(PCB, lastX));
 	}
 	if (arcStartY != lastY) {
 		m = pcb_true;
 		lastY = arcStartY;
-		pcb_fprintf(f, "Y%.0mc", gerberY(PCB, lastY));
+		pcb_fprintf(f, "Y%[4]", gerberY(PCB, lastY));
 	}
 	if (m)
 		fprintf(f, "D02*");
 	pcb_fprintf(f,
-							"G75*G0%1dX%.0mcY%.0mcI%.0mcJ%.0mcD01*G01*\r\n",
+							"G75*G0%1dX%[4]Y%[4]I%[4]J%[4]D01*G01*\r\n",
 							(delta_angle < 0) ? 2 : 3,
 							gerberX(PCB, arcStopX), gerberY(PCB, arcStopY),
 							gerberXOffset(PCB, cx - arcStartX), gerberYOffset(PCB, cy - arcStartY));
@@ -1160,11 +1160,11 @@ static void gerber_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, 
 		return;
 	if (cx != lastX) {
 		lastX = cx;
-		pcb_fprintf(f, "X%.0mc", gerberX(PCB, lastX));
+		pcb_fprintf(f, "X%[4]", gerberX(PCB, lastX));
 	}
 	if (cy != lastY) {
 		lastY = cy;
-		pcb_fprintf(f, "Y%.0mc", gerberY(PCB, lastY));
+		pcb_fprintf(f, "Y%[4]", gerberY(PCB, lastY));
 	}
 	fprintf(f, "D03*\r\n");
 }
@@ -1192,12 +1192,12 @@ static void gerber_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t 
 		if (x[i]+dx != lastX) {
 			m = pcb_true;
 			lastX = x[i]+dx;
-			pcb_fprintf(f, "X%.0mc", gerberX(PCB, lastX));
+			pcb_fprintf(f, "X%[4]", gerberX(PCB, lastX));
 		}
 		if (y[i]+dy != lastY) {
 			m = pcb_true;
 			lastY = y[i]+dy;
-			pcb_fprintf(f, "Y%.0mc", gerberY(PCB, lastY));
+			pcb_fprintf(f, "Y%[4]", gerberY(PCB, lastY));
 		}
 		if (firstTime) {
 			firstTime = 0;
@@ -1213,12 +1213,12 @@ static void gerber_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t 
 	if (startX != lastX) {
 		m = pcb_true;
 		lastX = startX;
-		pcb_fprintf(f, "X%.0mc", gerberX(PCB, startX));
+		pcb_fprintf(f, "X%[4]", gerberX(PCB, startX));
 	}
 	if (startY != lastY) {
 		m = pcb_true;
 		lastY = startY;
-		pcb_fprintf(f, "Y%.0mc", gerberY(PCB, lastY));
+		pcb_fprintf(f, "Y%[4]", gerberY(PCB, lastY));
 	}
 	if (m)
 		fprintf(f, "D01*\r\n");
