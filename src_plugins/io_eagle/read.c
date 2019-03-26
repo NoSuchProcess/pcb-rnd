@@ -1399,12 +1399,11 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 			pcb_subc_bbox(new_subc);
 			pcb_subc_rebind(st->pcb, new_subc);
 
-TODO("subc: why not use the arbtirary angle rot?")
 			if (rot != NULL) {
 				char *end;
 				double ang = strtod(rot+1, &end);
 				if (*end == '\0') {
-					if (fmod(ang, 90) == 0) {
+					if (fmod(ang, 90) == 0) { /* use lossles rotation without any sin() */
 						int steps = eagle_rot2steps(rot);
 						if (back)
 							steps = (steps + 2)%4;
