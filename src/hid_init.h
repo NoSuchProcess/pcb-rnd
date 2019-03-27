@@ -1,6 +1,7 @@
 #ifndef PCB_HID_INIT_H
 #define PCB_HID_INIT_H
 
+#include <puplug/puplug.h>
 #include "hid.h"
 
 /* NULL terminated list of all static HID structures.  Built by
@@ -59,5 +60,10 @@ extern pcb_plugin_dir_t *pcb_plugin_dir_first, *pcb_plugin_dir_last;
    user requested in the config, this becomes the basename of filename,
    else it is the full file name */
 const char *pcb_hid_export_fn(const char *filename);
+
+
+void pcb_hidlib_init1(void); /* before CLI argument parsing */
+void pcb_hidlib_init2(const pup_buildin_t *buildins); /* after CLI argument parsing */
+void pcb_hidlib_uninit(void);
 
 #endif

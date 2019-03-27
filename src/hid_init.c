@@ -32,6 +32,7 @@
 
 #include "hid.h"
 #include "hid_nogui.h"
+#include "event.h"
 
 /* for dlopen() and friends; will also solve all system-dependent includes
    and provides a dl-compat layer on windows. Also solves the opendir related
@@ -265,4 +266,48 @@ const char *pcb_hid_export_fn(const char *filename)
 	}
 	else
 		return filename;
+}
+
+extern void pcb_hid_dlg_uninit(void);
+extern void pcb_hid_dlg_init(void);
+
+void pcb_hidlib_init1(void)
+{
+	pcb_events_init();
+	pcb_file_loaded_init();
+	conf_init();
+	conf_core_init();
+	conf_core_postproc(); /* to get all the paths initialized */
+	pcb_hid_dlg_init();
+	pcb_hid_init();
+}
+
+void pcb_hidlib_init2(const pup_buildin_t *buildins)
+{
+	pcb_actions_init();
+
+	conf_load_all(NULL, NULL);
+
+	pup_init(&pcb_pup);
+	pcb_pup.error_stack_enable = 1;
+	pup_buildin_load(&pcb_pup, buildins);
+	pup_autoload_dir(&pcb_pup, NULL, NULL);
+
+	conf_load_extra(NULL, NULL);
+	pcb_units_init();
+}
+
+
+void pcb_hidlib_uninit(void)
+{
+	pcb_hid_dlg_uninit();
+
+	if (conf_isdirty(CFR_USER))
+		conf_save_file(NULL, NULL, CFR_USER, NULL);
+
+	pcb_hid_uninit();
+	pcb_events_uninit();
+	conf_uninit();
+	pcb_plugin_uninit();
+	pcb_actions_uninit();
 }

@@ -74,9 +74,6 @@ static const char *EXPERIMENTAL = NULL;
 #include "hid_init.h"
 #include "compat_misc.h"
 
-void pcb_hid_dlg_uninit(void);
-void pcb_hid_dlg_init(void);
-
 /* ----------------------------------------------------------------------
  * initialize signal and error handlers
  */
@@ -270,12 +267,9 @@ void pcb_main_uninit(void)
 	if (pcb_log_last != NULL)
 		pcb_log_last->seen = 1; /* ignore anything unseen before the uninit */
 
-	pcb_hid_dlg_uninit();
+
 	pcb_brave_uninit();
 	pcb_polygon_uninit();
-
-	if (conf_isdirty(CFR_USER))
-		conf_save_file(NULL, NULL, CFR_USER, NULL);
 
 	if (PCB != NULL) {
 		pcb_uninit_buffers(PCB);
@@ -288,28 +282,26 @@ void pcb_main_uninit(void)
 	}
 	PCB = NULL;
 
-	pcb_hid_uninit();
 	pcb_text_uninit();
 	pcb_layer_vis_uninit();
-	pcb_events_uninit();
 
 	pcb_strflg_uninit_buf();
 	pcb_strflg_uninit_layerlist();
 
-	pcb_fp_uninit();
-	pcb_fp_host_uninit();
+	pcb_hidlib_uninit(); /* plugin unload */
+
 	pcb_funchash_uninit();
 	free(hid_argv_orig);
-	conf_uninit();
-	pcb_io_uninit();
-	pcb_plugin_uninit();
-	pcb_tool_uninit();
 	pcb_file_loaded_uninit();
-	pcb_import_uninit();
-	pcb_actions_uninit();
 	pcb_uilayer_uninit();
 	pcb_cli_uninit();
 	pcb_dynflag_uninit();
+
+	pcb_import_uninit();
+	pcb_io_uninit();
+	pcb_fp_uninit();
+	pcb_fp_host_uninit();
+	pcb_tool_uninit();
 
 	log_print_uninit_errs("Log produced during uninitialization");
 	pcb_log_uninit();
@@ -425,13 +417,9 @@ int main(int argc, char *argv[])
 
 	/* Minimal conf setup before we do anything else */
 	pcb_netlist_geo_init();
-	pcb_hid_dlg_init();
-	pcb_color_init();
-	pcb_file_loaded_init();
 	pcb_minuid_init();
-	conf_init();
-	conf_core_init();
-	conf_core_postproc(); /* to get all the paths initialized */
+	pcb_hidlib_init1();
+	pcb_color_init();
 	pcb_layer_vis_init();
 	pcb_brave_init();
 
@@ -507,18 +495,16 @@ int main(int argc, char *argv[])
 
 		next_arg:;
 	}
-	conf_load_all(NULL, NULL);
+	pcb_hidlib_init2(pup_buildins);
 
 	setbuf(stdout, 0);
 	InitPaths(argv[0]);
 
 	pcb_fp_init();
 
-
 	srand(time(NULL));  /* Set seed for rand() */
 
 	pcb_funchash_init();
-	pcb_units_init();
 	pcb_polygon_init();
 
 	/* Register a function to be called when the program terminates.
@@ -528,23 +514,14 @@ int main(int argc, char *argv[])
 	 * the critical sections will be handled by parse_l.l */
 	atexit(pcb_emergency_save);
 
-	pcb_events_init();
 	pcb_text_init();
 	pcb_tool_init();
-
-	pcb_actions_init();
-	pup_init(&pcb_pup);
-	pcb_pup.error_stack_enable = 1;
-	pup_buildin_load(&pcb_pup, pup_buildins);
-	pup_autoload_dir(&pcb_pup, NULL, NULL);
-	conf_load_extra(NULL, NULL);
 
 	if (pcb_pup.err_stack != NULL) {
 		pcb_message(PCB_MSG_ERROR, "Some of the static linked buildins could not be loaded:\n");
 		pup_err_stack_process_str(&pcb_pup, print_pup_err);
 	}
 
-	pcb_hid_init();
 	for(sp = pcb_pup_paths; *sp != NULL; sp++) {
 		pcb_message(PCB_MSG_DEBUG, "Loading plugins from '%s'\n", *sp);
 		pup_autoload_dir(&pcb_pup, *sp, (const char **)pcb_pup_paths);
