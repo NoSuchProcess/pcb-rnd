@@ -29,8 +29,6 @@
 #ifndef PCB_BUILD_RUN_H
 #define PCB_BUILD_RUN_H
 
-#include <genht/htsp.h>
-
 void pcb_quit_app(void);
 
 /* Returns a string that has a bunch of information about this program. */
@@ -56,55 +54,5 @@ char *pcb_get_info_compile_options(void);
 const char *pcb_author(void);
 
 void pcb_catch_signal(int Signal);
-
-
-
-/*** info on where files are loaded from ***/
-
-/* Hash-in-hash tree with the top tree being categories. */
-
-typedef enum pcb_file_loaded_type_e {
-	PCB_FLT_CATEGORY,
-	PCB_FLT_FILE
-} pcb_file_loaded_type_t;
-
-typedef struct pcb_file_loaded_s pcb_file_loaded_t;
-
-struct pcb_file_loaded_s {
-	char *name; /* same as the hash key; strdup'd */
-	pcb_file_loaded_type_t type;
-	union {
-		struct {
-			htsp_t children;
-		} category;
-		struct {
-			char *path;
-			char *desc;
-		} file;
-	} data;
-};
-
-extern htsp_t pcb_file_loaded;
-
-/* Return the category called name; if doesn't exist and alloc is 1,
-   allocate it it (else return NULL) */
-pcb_file_loaded_t *pcb_file_loaded_category(const char *name, int alloc);
-
-/* clear the subtree of a category, keeping the category; return 0 on success */
-int pcb_file_loaded_clear(pcb_file_loaded_t *cat);
-int pcb_file_loaded_clear_at(const char *catname);
-
-/* clear the subtree of a category, keeping the category; return 0 on success */
-int pcb_file_loaded_set(pcb_file_loaded_t *cat, const char *name, const char *path, const char *desc);
-int pcb_file_loaded_set_at(const char *catname, const char *name, const char *path, const char *desc);
-
-/* remove an entry */
-int pcb_file_loaded_del(pcb_file_loaded_t *cat, const char *name);
-int pcb_file_loaded_del_at(const char *catname, const char *name);
-
-
-/* called once, from main */
-void pcb_file_loaded_init(void);
-void pcb_file_loaded_uninit(void);
 
 #endif

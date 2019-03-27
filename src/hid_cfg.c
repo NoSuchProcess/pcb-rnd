@@ -38,7 +38,7 @@
 #include "paths.h"
 #include "safe_fs.h"
 #include "compat_misc.h"
-#include "build_run.h"
+#include "file_loaded.h"
 #include "conf_core.h"
 
 char hid_cfg_error_shared[1024];

@@ -42,7 +42,7 @@
 #include "paths.h"
 #include "compat_misc.h"
 #include "event.h"
-#include "build_run.h"
+#include "file_loaded.h"
 
 #define STEP_SYMBOLLINE 10
 

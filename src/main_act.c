@@ -51,6 +51,7 @@
 #include "conf_core.h"
 #include "plugins.h"
 #include "build_run.h"
+#include "file_loaded.h"
 #include "safe_fs.h"
 #include "flag_str.h"
 #include "obj_common.h"

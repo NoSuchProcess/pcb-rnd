@@ -69,6 +69,7 @@ append /local/pcb/OBJS_HIDLIB [@
 	compat_misc.o
 	error.o
 	event.o
+	file_loaded.o
 	hid_attrib.o
 	hid_cfg.o
 	hid_cfg_action.o

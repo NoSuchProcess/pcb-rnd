@@ -42,7 +42,7 @@
 #include "compat_fs.h"
 #include "compat_misc.h"
 #include "safe_fs.h"
-#include "build_run.h"
+#include "file_loaded.h"
 
 #define CONF_USER_DIR "~/" DOT_PCB_RND
 

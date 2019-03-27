@@ -52,6 +52,7 @@ static const char *EXPERIMENTAL = NULL;
 #include "polygon.h"
 #include "buildin.h"
 #include "build_run.h"
+#include "file_loaded.h"
 #include "flag.h"
 #include "flag_str.h"
 #include "plugins.h"

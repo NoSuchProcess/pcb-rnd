@@ -29,6 +29,7 @@
 #include <genvector/gds_char.h>
 #include "actions.h"
 #include "build_run.h"
+#include "file_loaded.h"
 #include "hid_dad.h"
 #include "pcb-printf.h"
 #include "dlg_about.h"

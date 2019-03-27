@@ -45,6 +45,7 @@
 #include "conf_core.h"
 #include "compat_misc.h"
 #include "compat_inc.h"
+#include "file_loaded.h"
 
 static const char *flt_any[] = {"*", "*.*", NULL};
 

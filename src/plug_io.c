@@ -66,7 +66,7 @@
 #include "layer_vis.h"
 #include "safe_fs.h"
 #include "plug_footprint.h"
-#include "build_run.h"
+#include "file_loaded.h"
 #include "macro.h"
 #include "view.h"
 
