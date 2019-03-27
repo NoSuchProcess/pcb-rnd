@@ -41,16 +41,82 @@ put /local/pcb/DEPDEPS { conf_core_fields.h conf_internal.c generated_lists.h de
 include {../scconfig/template/debug.tmpasm}
 
 # main: objects
+# hidlib will be a library that provides:
+#  - the plugin system
+#  - the conf system
+#  - some basic/generic types like pcb_coord_t
+#  - the HID infra, including DAD
+# but nothing else; in short the HID part of pcb-rnd for developing a
+# GUI program based on pcb-rnd HIDs.
+
 # These have constructs that are not c89 strictly speaking but are
 # effectively c89; typical example is casting a function pointer to a
 # data pointer for dlsym().
-put /local/pcb/OBJS_C99 [@
+put /local/pcb/OBJS_C99_HIDLIB [@
 	fptr_cast.o
 @]
 
-append /local/pcb/OBJS [@
+append /local/pcb/OBJS_HIDLIB [@
 	actions.o
 	attrib.o
+	color.o
+	conf.o
+	conf_core.o
+	conf_hid.o
+	conf_internal.o
+	compat_fs.o
+	compat_lrealpath.o
+	compat_misc.o
+	error.o
+	event.o
+	hid_attrib.o
+	hid_cfg.o
+	hid_cfg_action.o
+	hid_cfg_input.o
+	hid_color.o
+	hid_dlg.o
+	hid_dad_tree.o
+	hid_dad_spin.o
+	hid_flags.o
+	hid_init.o
+	hid_nogui.o
+	list_conf.o
+	misc_util.o
+	paths.o
+	pcb_bool.o
+	pcb-printf.o
+	plugins.o
+	plug_import.o
+	safe_fs.o
+	unit.o
+	vtc0.o
+	../src_3rd/liblihata/parser.o
+	../src_3rd/liblihata/dom.o
+	../src_3rd/liblihata/dom_list.o
+	../src_3rd/liblihata/dom_hash.o
+	../src_3rd/liblihata/dom_table.o
+	../src_3rd/liblihata/lihata.o
+	../src_3rd/liblihata/hash_str.o
+	../src_3rd/liblihata/tree.o
+	../src_3rd/liblihata/tree_list.o
+	../src_3rd/liblihata/tree_hash.o
+	../src_3rd/liblihata/tree_table.o
+	../src_3rd/liblihata/tree_symlink.o
+	../src_3rd/liblihata/tree_path.o
+	../src_3rd/liblhtpers/lhtpers.o
+	../src_3rd/genvector/gds_char.o
+	../src_3rd/genvector/vtp0.o
+	../src_3rd/genvector/vts0.o
+	../src_3rd/genvector/vti0.o
+	../src_3rd/genvector/vtl0.o
+	../src_3rd/genregex/regex_sei.o
+	../src_3rd/genregex/regex_se.o
+	../src_3rd/genregex/regex.o
+@]
+
+put /local/pcb/OBJS_C99 /local/pcb/OBJS_C99_HIDLIB
+put /local/pcb/OBJS /local/pcb/OBJS_HIDLIB
+append /local/pcb/OBJS [@
 	board.o
 	box.o
 	brave.o
@@ -58,21 +124,11 @@ append /local/pcb/OBJS [@
 	build_run.o
 	change.o
 	change_act.o
-	color.o
-	conf.o
 	conf_act.o
-	conf_core.o
-	conf_hid.o
-	conf_internal.o
-	compat_fs.o
-	compat_lrealpath.o
-	compat_misc.o
 	crosshair.o
 	data.o
 	draw.o
 	drc.o
-	error.o
-	event.o
 	font.o
 	font_act.o
 	file_act.o
@@ -83,19 +139,8 @@ append /local/pcb/OBJS [@
 	grid.o
 	gui_act.o
 	heap.o
-	hid_attrib.o
-	hid_cfg.o
-	hid_cfg_action.o
-	hid_cfg_input.o
 	hid_cam.o
-	hid_color.o
-	hid_dlg.o
-	hid_dad_tree.o
-	hid_dad_spin.o
 	hid_draw_helpers.o
-	hid_flags.o
-	hid_init.o
-	hid_nogui.o
 	ht_subc.o
 	idpath.o
 	insert.o
@@ -104,10 +149,8 @@ append /local/pcb/OBJS [@
 	layer_grp.o
 	layer_ui.o
 	layer_vis.o
-	list_conf.o
 	main.o
 	main_act.o
-	misc_util.o
 	move.o
 	netlist2.o
 	netlist_act.o
@@ -135,13 +178,8 @@ append /local/pcb/OBJS [@
 	obj_text.o
 	obj_text_list.o
 	operation.o
-	paths.o
-	pcb_bool.o
 	pcb_menu_default.o
 	pcb_minuid.o
-	pcb-printf.o
-	plugins.o
-	plug_import.o
 	plug_io.o
 	plug_footprint.o
 	plug_footprint_act.o
@@ -156,7 +194,6 @@ append /local/pcb/OBJS [@
 	route.o
 	route_style.o
 	rtree.o
-	safe_fs.o
 	search.o
 	select.o
 	select_act.o
@@ -183,38 +220,14 @@ append /local/pcb/OBJS [@
 	undo.o
 	undo_act.o
 	undo_old.o
-	unit.o
 	view.o
 	vtlibrary.o
-	vtc0.o
 	vtonpoint.o
 	vtpadstack.o
 	vtpadstack_t.o
 	vtr0.o
 	vtroutestyle.o
 	buildin.o
-	../src_3rd/liblihata/parser.o
-	../src_3rd/liblihata/dom.o
-	../src_3rd/liblihata/dom_list.o
-	../src_3rd/liblihata/dom_hash.o
-	../src_3rd/liblihata/dom_table.o
-	../src_3rd/liblihata/lihata.o
-	../src_3rd/liblihata/hash_str.o
-	../src_3rd/liblihata/tree.o
-	../src_3rd/liblihata/tree_list.o
-	../src_3rd/liblihata/tree_hash.o
-	../src_3rd/liblihata/tree_table.o
-	../src_3rd/liblihata/tree_symlink.o
-	../src_3rd/liblihata/tree_path.o
-	../src_3rd/liblhtpers/lhtpers.o
-	../src_3rd/genvector/gds_char.o
-	../src_3rd/genvector/vtp0.o
-	../src_3rd/genvector/vts0.o
-	../src_3rd/genvector/vti0.o
-	../src_3rd/genvector/vtl0.o
-	../src_3rd/genregex/regex_sei.o
-	../src_3rd/genregex/regex_se.o
-	../src_3rd/genregex/regex.o
 	../src_3rd/qparse/qparse.o
 	../src_3rd/libuundo/uundo.o
 	../src_3rd/libuundo/uundo_debug.o
@@ -284,6 +297,8 @@ order /local/pcb/LDFLAGS {-lXm} {before} {-lXt}
 # Clean up variables
 uniq /local/pcb/OBJS
 uniq /local/pcb/OBJS_C99
+uniq /local/pcb/OBJS_HIDLIB
+uniq /local/pcb/OBJS_C99_HIDLIB
 uniq /local/pcb/OBJS_UTIL
 uniq /local/pcb/CFLAGS
 uniq /local/pcb/LDFLAGS
@@ -320,6 +335,8 @@ SRC_3RD_DIR=$(ROOT)/src_3rd
 @?/local/pcb/TOPVARS@
 OBJS=@/local/pcb/OBJS@
 OBJS_C99=@/local/pcb/OBJS_C99@
+OBJS_HIDLIB=@/local/pcb/OBJS_HIDLIB@
+OBJS_C99_HIDLIB=@/local/pcb/OBJS_C99_HIDLIB@
 OBJS_UTIL=@/local/pcb/OBJS_UTIL@
 SRCS=@/local/pcb/SRCS@
 CFLAGS=@?cc/argstd/std_c99@ @/local/pcb/CFLAGS@
@@ -354,6 +371,10 @@ all_exe: pcb-rnd$(EXE) @/local/pcb/all@
 
 pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS) $(LIBS_3RD)
 	$(CC) $(OBJS) $(OBJS_C99) -o pcb-rnd$(EXE) $(LIBS_PRE) $(LDFLAGS) $(LIBS)
+
+# temporary, for testig
+hidlib$(EXE): $(OBJS_HIDLIB) $(OBJS_C99_HIDLIB) $(EXEDEPS) $(LIBS_3RD)
+	$(CC) $(OBJS_HIDLIB) $(OBJS_C99_HIDLIB) -o hidlib$(EXE) $(LIBS_PRE) $(LDFLAGS) $(LIBS) $(LIBS_3RD)
 
 
 $(SPHASH_PATH)/sphash: $(SPHASH_PATH)/sphash.c
