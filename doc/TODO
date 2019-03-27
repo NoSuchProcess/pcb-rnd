@@ -35,6 +35,7 @@
 - BUG: The 'As Drawn' polygon contour is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
 
 2. For later releases ===============================================================================
+- CLEANUP: remove hid_flag.h - probably merge the function into a menu related .h
 - CLEANUP: DAD: centralize the coordinate input spinbox: hid_dad_spin
 	- remove per hid implementation, get DAD macros to build spinboxes (maybe in brave mode first)
 	- hid_dad_spin.[ch]: bind conf change on conf_core.editor.grid_unit, call pcb_dad_spin_widget_state() to get them updated:
