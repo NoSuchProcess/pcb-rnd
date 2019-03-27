@@ -7,7 +7,7 @@ append /local/pcb/LDFLAGS cc/ldflags
 append /local/pcb/LDFLAGS cc/rdynamic
 append /local/pcb/LDFLAGS ?/local/pcb/cflags_profile
 put /local/pcb/DEPCFLAGS {}
-put /local/pcb/OBJS {}
+put /local/pcb/OBJS_HIDLIB {}
 put /tmpasm/OFS { }
 
 if ?libs/script/fungw/presents
@@ -16,7 +16,7 @@ then
 	append /local/pcb/LDFLAGS libs/script/fungw/ldflags
 else
 # no system installed fungw means we need to use local genht
-	append /local/pcb/OBJS [@
+	append /local/pcb/OBJS_HIDLIB [@
 	../src_3rd/genht/hash.o
 	../src_3rd/genht/htsp.o
 	../src_3rd/genht/htss.o
@@ -26,7 +26,7 @@ else
 	../src_3rd/genht/htpp.o
 	@]
 # local compilation of fungw objects
-	append /local/pcb/OBJS [@
+	append /local/pcb/OBJS_HIDLIB [@
 	../src_3rd/libfungw/fungw.o
 	../src_3rd/libfungw/fungw_conv.o
 	../src_3rd/libfungw/fungw_ptr.o
