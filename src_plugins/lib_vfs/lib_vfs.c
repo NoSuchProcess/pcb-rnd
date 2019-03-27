@@ -30,6 +30,7 @@
 #include "data.h"
 #include "plugins.h"
 #include "pcb-printf.h"
+#include "compat_misc.h"
 
 #include "../src_plugins/propedit/props.h"
 #include "../src_plugins/propedit/propsel.h"
