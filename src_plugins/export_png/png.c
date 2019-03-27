@@ -63,7 +63,6 @@
 #include "hid_attrib.h"
 #include "hid_color.h"
 #include "hid_cam.h"
-#include "hid_flags.h"
 
 #define PNG_SCALE_HACK1 0
 #include "compat_misc.h"

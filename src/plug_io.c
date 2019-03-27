@@ -56,7 +56,6 @@
 #include "paths.h"
 #include "rats_patch.h"
 #include "actions.h"
-#include "hid_flags.h"
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "event.h"

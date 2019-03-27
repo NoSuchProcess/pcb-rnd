@@ -33,7 +33,6 @@
 #include "hid_draw_helpers.h"
 #include "hid_init.h"
 #include "hid_attrib.h"
-#include "hid_flags.h"
 #include "hid_inlines.h"
 #include "conf_core.h"
 

@@ -26,7 +26,6 @@
 #include "ps.h"
 #include "hid_init.h"
 #include "hid_attrib.h"
-#include "hid_flags.h"
 #include "actions.h"
 #include "conf_core.h"
 #include "compat_misc.h"

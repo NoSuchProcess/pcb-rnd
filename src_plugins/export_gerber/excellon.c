@@ -12,7 +12,6 @@
 #include "hid.h"
 #include "hid_attrib.h"
 #include "hid_cam.h"
-#include "hid_flags.h"
 #include "hid_init.h"
 #include "hid_nogui.h"
 #include "hid_draw_helpers.h"

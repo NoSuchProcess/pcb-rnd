@@ -15,7 +15,6 @@
 #include "actions.h"
 #include "hid.h"
 #include "lesstif.h"
-#include "hid_flags.h"
 #include "stdarg.h"
 #include "misc_util.h"
 #include "event.h"

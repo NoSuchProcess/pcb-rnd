@@ -44,7 +44,6 @@
 #include "error.h"
 #include "undo.h"
 #include "plugins.h"
-#include "hid_flags.h"
 #include "actions.h"
 #include "hid_cfg.h"
 #include "vendor_conf.h"

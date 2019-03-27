@@ -74,7 +74,6 @@
 
 #include "hid_init.h"
 #include "hid_attrib.h"
-#include "hid_flags.h"
 #include "hid_color.h"
 
 

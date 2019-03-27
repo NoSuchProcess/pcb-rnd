@@ -59,7 +59,6 @@
 #include "paths.h"
 #include "rats_patch.h"
 #include "actions.h"
-#include "hid_flags.h"
 #include "flag_str.h"
 #include "attribs.h"
 #include "route_style.h"
