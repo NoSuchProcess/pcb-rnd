@@ -47,8 +47,12 @@ typedef struct {
 static void pcb_fuse_list_cb(void *ctx_, const char *path, int isdir)
 {
 	pcb_fuse_list_t *ctx = ctx_;
-	int child, direct;
+	int child, direct, pl;
 	const char *attrs = isdir ? "drwxr-xr-x" : "-rw-r--r--";
+
+	pl = strlen(path);
+	if (pl <= ctx->pathlen)
+		return;
 
 	if (ctx->pathlen > 0) {
 		child = memcmp(path, ctx->path, ctx->pathlen) == 0;
