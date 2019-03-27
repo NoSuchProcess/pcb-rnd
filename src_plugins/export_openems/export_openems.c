@@ -40,6 +40,7 @@
 #include "compat_misc.h"
 #include "plugins.h"
 #include "safe_fs.h"
+#include "layer_vis.h"
 #include "obj_subc_parent.h"
 #include "obj_pstk_inlines.h"
 

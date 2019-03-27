@@ -3,6 +3,7 @@
 
 #include <puplug/puplug.h>
 #include "hid.h"
+#include "build_run.h"
 
 /* NULL terminated list of all static HID structures.  Built by
    hid_register_hid, used by hid_find_*() and pcb_hid_enumerate().  The

@@ -40,6 +40,7 @@
 #include "draw.h"
 #include "error.h"
 #include "layer.h"
+#include "layer_vis.h"
 #include "plugins.h"
 #include "pcb-printf.h"
 #include "compat_misc.h"

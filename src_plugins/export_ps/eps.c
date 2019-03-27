@@ -12,6 +12,7 @@
 #include "data.h"
 #include "draw.h"
 #include "layer.h"
+#include "layer_vis.h"
 #include "pcb-printf.h"
 #include "safe_fs.h"
 

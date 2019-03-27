@@ -43,6 +43,7 @@
 #include "draw.h"
 #include "error.h"
 #include "layer.h"
+#include "layer_vis.h"
 #include "math_helper.h"
 #include "misc_util.h"
 #include "plugins.h"

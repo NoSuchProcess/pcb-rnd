@@ -55,6 +55,7 @@
 #include "draw.h"
 #include "hid_cam.h"
 #include "layer.h"
+#include "layer_vis.h"
 #include "compat_misc.h"
 #include "safe_fs.h"
 

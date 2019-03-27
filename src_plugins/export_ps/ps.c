@@ -18,6 +18,7 @@
 #include "hid_cam.h"
 #include "safe_fs.h"
 #include "funchash_core.h"
+#include "layer_vis.h"
 
 #include "hid.h"
 #include "hid_nogui.h"

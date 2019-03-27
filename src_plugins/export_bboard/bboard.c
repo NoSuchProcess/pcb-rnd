@@ -49,6 +49,7 @@
 #include "buffer.h"
 #include "layer.h"
 #include "layer_grp.h"
+#include "layer_vis.h"
 #include "plugins.h"
 #include "compat_misc.h"
 #include "compat_fs.h"

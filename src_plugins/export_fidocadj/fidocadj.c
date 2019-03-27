@@ -45,6 +45,7 @@
 #include "math_helper.h"
 #include "board.h"
 #include "data.h"
+#include "layer_vis.h"
 #include "plugins.h"
 #include "pcb-printf.h"
 #include "compat_misc.h"

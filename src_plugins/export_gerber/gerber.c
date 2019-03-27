@@ -18,6 +18,7 @@
 #include "error.h"
 #include "draw.h"
 #include "layer.h"
+#include "layer_vis.h"
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "hid_cam.h"

@@ -8,6 +8,7 @@
 #include "draw.h"
 #include "compat_misc.h"
 #include "layer.h"
+#include "layer_vis.h"
 #include "hid.h"
 #include "hid_attrib.h"
 #include "hid_cam.h"
