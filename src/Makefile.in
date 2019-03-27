@@ -70,6 +70,7 @@ append /local/pcb/OBJS_HIDLIB [@
 	error.o
 	event.o
 	file_loaded.o
+	funchash.o
 	hid_attrib.o
 	hid_cfg.o
 	hid_cfg_action.o
@@ -136,7 +137,6 @@ append /local/pcb/OBJS [@
 	find.o
 	flag.o
 	flag_str.o
-	funchash.o
 	grid.o
 	gui_act.o
 	heap.o
