@@ -1,4 +1,4 @@
-24271	configure	preparing for hidlib, splitting source files
+24277	configure	preparing for hidlib, splitting source files
 23917	configure	compound DAD widgets, for DAD based spinboxes
 23902	configure	cleanup: remove dead code from gtk
 23857	configure	new, centralized log dialog

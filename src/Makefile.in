@@ -119,6 +119,7 @@ append /local/pcb/OBJS_HIDLIB [@
 put /local/pcb/OBJS_C99 /local/pcb/OBJS_C99_HIDLIB
 put /local/pcb/OBJS /local/pcb/OBJS_HIDLIB
 append /local/pcb/OBJS [@
+	actions_pcb.o
 	board.o
 	box.o
 	brave.o

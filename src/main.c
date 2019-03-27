@@ -72,6 +72,7 @@ static const char *EXPERIMENTAL = NULL;
 #include "netlist2.h"
 
 #include "actions.h"
+#include "actions_pcb.h"
 #include "hid_init.h"
 #include "compat_misc.h"
 
@@ -497,6 +498,7 @@ int main(int argc, char *argv[])
 		next_arg:;
 	}
 	pcb_hidlib_init2(pup_buildins);
+	pcb_actions_init_pcb_only();
 
 	setbuf(stdout, 0);
 	InitPaths(argv[0]);
