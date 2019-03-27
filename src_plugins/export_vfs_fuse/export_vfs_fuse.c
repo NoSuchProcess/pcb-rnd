@@ -106,16 +106,19 @@ static int pcb_fuse_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 static int pcb_fuse_getattr(const char *path, struct stat *stbuf)
 {
 	int isdir;
+	gds_t data;
 
 	fprintf(flog, "getattr path=%s\n", path);
 	fflush(flog);
 
+	gds_init(&data);
 	if (strcmp(path, "/") != 0) {
 		if (*path == '/')
 			path++;
-		if (pcb_vfs_access(PCB, path, NULL, 0, &isdir) != 0) {
+		if (pcb_vfs_access(PCB, path, &data, 0, &isdir) != 0) {
 			fprintf(flog, "   ->   path=%s ENOENT\n", path);
 			fflush(flog);
+			gds_uninit(&data);
 			return -ENOENT;
 		}
 	}
@@ -125,7 +128,9 @@ static int pcb_fuse_getattr(const char *path, struct stat *stbuf)
 	memset(stbuf, 0, sizeof(struct stat));
 	stbuf->st_mode = (isdir ? S_IFDIR : S_IFREG) | 0755;
 	stbuf->st_nlink = 1 + !!isdir;
+	stbuf->st_size = data.used;
 
+	gds_uninit(&data);
 	return 0;
 }
 
