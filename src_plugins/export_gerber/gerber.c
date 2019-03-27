@@ -118,13 +118,13 @@ static void fprint_aperture(FILE *f, aperture_t *aptr)
 {
 	switch (aptr->shape) {
 	case ROUND:
-		pcb_fprintf(f, "%%ADD%dC,%.4mi*%%\r\n", aptr->dCode, aptr->width);
+		pcb_fprintf(f, "%%ADD%dC,%[5]*%%\r\n", aptr->dCode, aptr->width);
 		break;
 	case SQUARE:
-		pcb_fprintf(f, "%%ADD%dR,%.4miX%.4mi*%%\r\n", aptr->dCode, aptr->width, aptr->width);
+		pcb_fprintf(f, "%%ADD%dR,%[5]X%[5]*%%\r\n", aptr->dCode, aptr->width, aptr->width);
 		break;
 	case OCTAGON:
-		pcb_fprintf(f, "%%AMOCT%d*5,0,8,0,0,%.4mi,22.5*%%\r\n"
+		pcb_fprintf(f, "%%AMOCT%d*5,0,8,0,0,%[5],22.5*%%\r\n"
 								"%%ADD%dOCT%d*%%\r\n", aptr->dCode, (pcb_coord_t) ((double) aptr->width / PCB_COS_22_5_DEGREE), aptr->dCode, aptr->dCode);
 		break;
 	}
@@ -205,13 +205,14 @@ static const char *name_style_names[] = {
 
 typedef struct {
 	const char *hdr1;
-	const char *fmt;
+	const char *cfmt; /* drawing coordinate format */
+	const char *afmt; /* aperture description format */
 } coord_format_t;
 
 coord_format_t coord_format[] = {
-	{"%MOIN*%\r\n%FSLAX25Y25*%\r\n", "%.0mc"}, /* centimil:   inch, leading zero suppression, Absolute Data, 2.5 format */
-	{"%MOMM*%\r\n%FSLAX43Y43*%\r\n", "%.0mu"}, /* micrometer: mm,   leading zero suppression, Absolute Data, 4.3 format */
-	{"%MOMM*%\r\n%FSLAX46Y46*%\r\n", "%.0mn"}  /* nanometer:  mm,   leading zero suppression, Absolute Data, 4.6 format */
+	{"%MOIN*%\r\n%FSLAX25Y25*%\r\n", "%.0mc", "%.4mi"}, /* centimil:   inch, leading zero suppression, Absolute Data, 2.5 format */
+	{"%MOMM*%\r\n%FSLAX43Y43*%\r\n", "%.0mu", "%.3mm"}, /* micrometer: mm,   leading zero suppression, Absolute Data, 4.3 format */
+	{"%MOMM*%\r\n%FSLAX46Y46*%\r\n", "%.0mn", "%.6mm"}  /* nanometer:  mm,   leading zero suppression, Absolute Data, 4.6 format */
 };
 #define NUM_COORD_FORMATS (sizeof(coord_format)/sizeof(coord_format[0]))
 
@@ -543,7 +544,8 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 		return;
 	}
 	gerber_cfmt = &coord_format[i];
-	pcb_printf_slot[4] = gerber_cfmt->fmt;
+	pcb_printf_slot[4] = gerber_cfmt->cfmt;
+	pcb_printf_slot[5] = gerber_cfmt->afmt;
 
 	pcb_cam_begin(PCB, &gerber_cam, options[HA_cam].str_value, gerber_options, NUM_OPTIONS, options);
 
