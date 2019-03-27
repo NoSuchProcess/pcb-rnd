@@ -98,7 +98,7 @@ static int pcb_fuse_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 	filler(buf, "..", NULL, 0);
 	pcb_vfs_list(PCB, pcb_fuse_list_cb, &ctx);
 
-	fprintf(flog, "}\n", path);
+	fprintf(flog, "}\n");
 	fflush(flog);
 	return 0;
 }
