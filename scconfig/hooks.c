@@ -400,10 +400,16 @@ static void calc_dialog_deps(void)
 		if (strcmp(st, "plugin") == 0)
 			plugin = 1;
 	}
-	if (buildin)
+	if (buildin) {
+		hook_custom_arg("buildin-draw_csect", NULL);
+		hook_custom_arg("buildin-draw_fontsel", NULL);
 		hook_custom_arg("buildin-dialogs", NULL);
-	else if (plugin)
+	}
+	else if (plugin) {
+		hook_custom_arg("plugin-draw_csect", NULL);
+		hook_custom_arg("plugin-draw_fontsel", NULL);
 		hook_custom_arg("plugin-dialogs", NULL);
+	}
 }
 
 /* Runs when things should be detected for the target system */
