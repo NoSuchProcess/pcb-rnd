@@ -393,7 +393,6 @@ static void calc_dialog_deps(void)
 	const char **p;
 	for(p = dialog_deps; *p != NULL; p++) {
 		const char *st = get(*p);
-		printf("********** %s -> %s\n", *p, st);
 		if (strcmp(st, "buildin") == 0) {
 			buildin = 1;
 			break;
