@@ -31,6 +31,7 @@
 
 static const char *export_vfs_fuse_cookie = "export_vfs_fuse HID";
 static FILE *flog;
+static int pcb_fuse_changed;
 
 static pcb_hid_attribute_t *export_vfs_fuse_get_export_options(int *n)
 {
@@ -191,11 +192,13 @@ static int pcb_fuse_write(const char *path, const char *buf, size_t size, off_t 
 		return -EIO;
 	}
 
+	pcb_fuse_changed = 1;
 	return size;
 }
 
 static int pcb_fuse_truncate(const char *path, off_t size)
 {
+	pcb_fuse_changed = 1;
 	return 0;
 }
 
@@ -206,6 +209,17 @@ static int pcb_fuse_open(const char *path, struct fuse_file_info *fi)
 	fflush(flog);
 	return 0;
 }
+
+static void pcb_fuse_destroy(void *private_data)
+{
+	if (!pcb_fuse_changed)
+		return;
+	if (pcb_save_pcb(PCB->Filename, NULL) != 0) {
+		fprintf(stderr, "Failed to save the modified board file\n");
+		exit(1);
+	}
+}
+
 
 static char **fuse_argv;
 static int fuse_argc = 0;
@@ -220,7 +234,9 @@ static void export_vfs_fuse_do_export(pcb_hid_attr_val_t *options)
 	oper.truncate = pcb_fuse_truncate;
 	oper.getattr = pcb_fuse_getattr;
 	oper.access = pcb_fuse_access;
+	oper.destroy = pcb_fuse_destroy;
 
+	pcb_fuse_changed = 0;
 	flog = pcb_fopen("LOG.fuse", "w");
 	if (fuse_main(fuse_argc, fuse_argv, &oper, NULL) != 0)
 		fprintf(stderr, "fuse_main() returned error.\n");
