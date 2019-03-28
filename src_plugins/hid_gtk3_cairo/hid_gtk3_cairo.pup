@@ -5,5 +5,4 @@ $state WIP
 default disable-all
 dep lib_gtk_common
 dep lib_gtk_hid
-dep draw_csect
 autoload 1

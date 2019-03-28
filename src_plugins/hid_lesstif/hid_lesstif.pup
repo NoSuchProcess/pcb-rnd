@@ -4,7 +4,6 @@ $long GUI: the lesstif HID.
 $state works
 $package hid-lesstif
 default buildin
-dep draw_csect
 dep lib_hid_common
 dep dialogs
 autoload 1
