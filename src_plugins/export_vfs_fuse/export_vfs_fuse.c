@@ -198,6 +198,42 @@ static int pcb_fuse_write(const char *path, const char *buf, size_t size, off_t 
 
 static int pcb_fuse_truncate(const char *path, off_t size)
 {
+	gds_t data;
+
+	if (*path == '/')
+		path++;
+	gds_init(&data);
+	if (pcb_vfs_access(PCB, path, &data, 0, NULL) != 0) {
+		gds_uninit(&data);
+		fprintf(flog, "   ->   path=%s ENOENT\n", path);
+		fflush(flog);
+		return -ENOENT;
+	}
+
+	if ((size == data.used) || (size < 0))
+		return 0;
+
+	if (size < data.used) {
+		data.used = size;
+		data.array[size] = '\0';
+	}
+	else {
+		size_t old = data.used;
+		gds_enlarge(&data, size);
+		if ((old > 0)&&  (data.array[old-1] == '\n'))
+			data.array[old-1] = '!';
+		memset(&data.array[old-1], ' ', size-old-1);
+		data.array[size] = '\0';
+	}
+
+	if (pcb_vfs_access(PCB, path, &data, 1, NULL) != 0) {
+		gds_uninit(&data);
+		fprintf(flog, "   ->   path=%s EIO\n", path);
+		fflush(flog);
+		return -EIO;
+	}
+
+	gds_uninit(&data);
 	pcb_fuse_changed = 1;
 	return 0;
 }
