@@ -30,7 +30,7 @@
 + FEATURE: external editor on buffer [report: TwisteR]
 - FEATURE: fontsel: ttf import?
 - FEATURE: tedax etest save (board save too)
-- FEATURE: HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain]
++ FEATURE: HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain] -> it is already configurable as appearance/color/background, which affects both the main drawing and all previews. I do not want different backgrounds for the two.
 - BUG: Setting the 'dyntext' flag on a text object doesn't update the bounding box. To reproduce - Create a text object and set it to '%a.parent.refdes%'. Edit the objects flags {e f} and set the 'dyntext' flag. The text should change to the refdes value but the bounding box remains at the size of the original text. [report: Ade]
 - BUG: The 'As Drawn' polygon contour is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
 
