@@ -15,3 +15,6 @@ to it. A typical setup is:
 2. Unmounting a board
 
   fusermount -u /tmp/mntpt
+
+This is when the board is saved if there was any change (write) while it
+was mounted.
