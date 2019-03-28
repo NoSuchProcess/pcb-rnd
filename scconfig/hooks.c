@@ -19,6 +19,17 @@
 
 int want_coord_bits;
 
+/* if any of these are enabled, we need the dialog plugin; dialog can not be
+   a pup dep because it must be omitted from the hidlib */
+const char *dialog_deps[] = {
+	"/local/pcb/dialogs/controls",         /* so we don't relax user's explicit request */
+	"/local/pcb/hid_remote/controls",
+	"/local/pcb/lib_gtk_common/controls",
+	"/local/pcb/hid_lesstif/controls",
+	NULL
+};
+
+
 const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtree they affect */
 	{"disable-xrender",   "libs/gui/xrender",             arg_lib_nodes, "$do not use xrender for lesstif"},
 	{"disable-xinerama",  "libs/gui/xinerama",            arg_lib_nodes, "$do not use xinerama for lesstif"},
@@ -375,6 +386,27 @@ int safe_atoi(const char *s)
 	return atoi(s);
 }
 
+	/* figure if we need the dialogs plugin */
+static void calc_dialog_deps(void)
+{
+	int buildin = 0, plugin = 0;
+	const char **p;
+	for(p = dialog_deps; *p != NULL; p++) {
+		const char *st = get(*p);
+		printf("********** %s -> %s\n", *p, st);
+		if (strcmp(st, "buildin") == 0) {
+			buildin = 1;
+			break;
+		}
+		if (strcmp(st, "plugin") == 0)
+			plugin = 1;
+	}
+	if (buildin)
+		hook_custom_arg("buildin-dialogs", NULL);
+	else if (plugin)
+		hook_custom_arg("plugin-dialogs", NULL);
+}
+
 /* Runs when things should be detected for the target system */
 int hook_detect_target()
 {
@@ -624,7 +656,6 @@ int hook_detect_target()
 		hook_custom_arg("disable-xrender", NULL);
 	}
 
-
 	if (want_gtk)
 		want_glib = 1;
 
@@ -658,6 +689,8 @@ int hook_detect_target()
 		put("libs/sul/glib/cflags", "");
 		put("libs/sul/glib/ldflags", "");
 	}
+
+	calc_dialog_deps();
 
 	if (want_gd) {
 		require("libs/gui/gd/presents", 0, 0);
