@@ -173,7 +173,7 @@ static int pcb_fuse_read(const char *path, char *buf, size_t size, off_t offset,
 
 static int pcb_fuse_write(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
 {
-	gds_t data;
+	gds_t data, src;
 
 	fprintf(flog, "write path=%s\n", path);
 	fflush(flog);
@@ -182,9 +182,24 @@ static int pcb_fuse_write(const char *path, const char *buf, size_t size, off_t 
 		path++;
 
 	gds_init(&data);
-	gds_append_len(&data, buf, size);
-	if ((size > 0)&&  (data.array[size-1] == '\n'))
-		data.array[size-1] = '\0';
+
+	if (offset > 0) {
+		if (pcb_vfs_access(PCB, path, &data, 0, NULL) != 0) {
+			gds_uninit(&data);
+			fprintf(flog, "   ->   path=%s ENOENT\n", path);
+			fflush(flog);
+			return -ENOENT;
+		}
+		src.array = (char *)buf;
+		src.used = src.alloced = size;
+		src.no_realloc = 1;
+		gds_copy(&data, offset, &src, 0, size);
+	}
+	else
+		gds_append_len(&data, buf, size);
+
+	if ((data.used > 0) && (data.array[data.used-1] == '\n'))
+		data.array[data.used-1] = '\0';
 
 	if (pcb_vfs_access(PCB, path, &data, 1, NULL) != 0) {
 		gds_uninit(&data);
