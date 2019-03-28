@@ -24,4 +24,15 @@ mod_@/local/pcb/mod@: all
 
 @]
 
+# if plugin is part of the hidlib system, also append the objects
+# to the hidlib object lists
+put /local/pcb/mod/is_hidlib  [@/local/pcb/@/local/pcb/mod@/hidlib@]
+resolve /local/pcb/mod/is_hidlib ?/local/pcb/mod/is_hidlib
+if ?/local/pcb/mod/is_hidlib
+then
+	append /local/pcb/HIDLIB_PLG              /local/pcb/mod
+	append /local/pcb/OBJS_HIDLIB_PLG         ?/local/pcb/mod/OBJS
+	append /local/pcb/OBJS_C99_HIDLIB_PLG     ?/local/pcb/mod/OBJS_C99
+end
+
 include /local/pcb/tmpasm/common_enabled

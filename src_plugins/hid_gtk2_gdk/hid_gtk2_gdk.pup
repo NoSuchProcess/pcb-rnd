@@ -3,6 +3,7 @@ $short GTK2 GUI, software render
 $long GUI: GTK2 HID with GDK software rendering.
 $state works
 $package hid-gtk2-gdk
+$hidlib 1
 default buildin
 dep lib_gtk_common
 dep lib_gtk_hid

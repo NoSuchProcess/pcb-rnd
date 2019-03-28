@@ -50,7 +50,7 @@ END { print "\n" }
 
 ' > ../scconfig/plugins.h
 
-$PUPLUG findpups . "" 'plugin_dep("%N", "%m")\n' | sort >> ../scconfig/plugins.h
+$PUPLUG findpups . "" 'plugin_dep("%N", "%m", 0%$hidlib$)\n' | sort >> ../scconfig/plugins.h
 
 
 # Generate the plugin list

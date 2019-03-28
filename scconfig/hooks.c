@@ -36,7 +36,7 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 #undef plugin_dep
 #define plugin_def(name, desc, default_, all_) plugin3_args(name, desc)
 #define plugin_header(sect)
-#define plugin_dep(plg, on)
+#define plugin_dep(plg, on, hidlib)
 #include "plugins.h"
 
 	{NULL, NULL, NULL, NULL}
@@ -179,11 +179,22 @@ int hook_custom_arg(const char *key, const char *value)
 	require = 1 - check if dependencies are met, disable plugins that have
 	              unmet deps
 */
-int plugin_dep1(int require, const char *plugin, const char *deps_on)
+int plugin_dep1(int require, const char *plugin, const char *deps_on, int hidlib)
 {
 	char buff[1024];
 	const char *st_plugin, *st_deps_on;
 	int dep_chg = 0;
+
+	sprintf(buff, "/local/pcb/%s/hidlib", plugin);
+	if (!hidlib) { /* may be inherited */
+		hidlib = get(buff) != NULL;
+	}
+
+	if (hidlib) {
+		put(buff, strue);
+		sprintf(buff, "/local/pcb/%s/hidlib", deps_on);
+		put(buff, strue);
+	}
 
 	sprintf(buff, "/local/pcb/%s/controls", plugin);
 	st_plugin = get(buff);
@@ -235,7 +246,7 @@ static void all_plugin_select(const char *state, int force)
 		put(buff, state); \
 	}
 #define plugin_header(sect)
-#define plugin_dep(plg, on)
+#define plugin_dep(plg, on, hidlib)
 #include "plugins.h"
 }
 
@@ -247,7 +258,7 @@ int plugin_deps(int require)
 #undef plugin_dep
 #define plugin_def(name, desc, default_, all_)
 #define plugin_header(sect)
-#define plugin_dep(plg, on) dep_chg += plugin_dep1(require, plg, on);
+#define plugin_dep(plg, on, hidlib) dep_chg += plugin_dep1(require, plg, on, hidlib);
 #include "plugins.h"
 	return dep_chg;
 }
@@ -279,7 +290,7 @@ int hook_postinit()
 #undef plugin_dep
 #define plugin_def(name, desc, default_, all_) plugin3_default(name, default_)
 #define plugin_header(sect)
-#define plugin_dep(plg, on)
+#define plugin_dep(plg, on, hidlib)
 #include "plugins.h"
 
 	put("/local/pcb/want_bison", sfalse);
@@ -314,7 +325,7 @@ static int all_plugin_check_explicit(void)
 		} \
 	}
 #define plugin_header(sect)
-#define plugin_dep(plg, on)
+#define plugin_dep(plg, on, hidlib)
 #include "plugins.h"
 	return tainted;
 }
@@ -932,7 +943,7 @@ int hook_generate()
 #undef plugin_dep
 #define plugin_def(name, desc, default_, all_) plugin3_stat(name, desc)
 #define plugin_header(sect) printf(sect);
-#define plugin_dep(plg, on)
+#define plugin_dep(plg, on, hidlib)
 #include "plugins.h"
 
 	if (repeat != NULL) {

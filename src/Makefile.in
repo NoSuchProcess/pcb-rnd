@@ -8,6 +8,8 @@ append /local/pcb/LDFLAGS cc/rdynamic
 append /local/pcb/LDFLAGS ?/local/pcb/cflags_profile
 put /local/pcb/DEPCFLAGS {}
 put /local/pcb/OBJS_HIDLIB {}
+put /local/pcb/OBJS_C99_HIDLIB_PLG {}
+put /local/pcb/OBJS_HIDLIB_PLG {}
 put /tmpasm/OFS { }
 
 if ?libs/script/fungw/presents
@@ -305,8 +307,10 @@ order /local/pcb/LDFLAGS {-lXm} {before} {-lXt}
 uniq /local/pcb/OBJS
 uniq /local/pcb/OBJS_C99
 uniq /local/pcb/OBJS_HIDLIB
-uniq /local/pcb/OBJS_HIDLIB_ONLY
 uniq /local/pcb/OBJS_C99_HIDLIB
+uniq /local/pcb/OBJS_HIDLIB_PLG
+uniq /local/pcb/OBJS_C99_HIDLIB_PLG
+uniq /local/pcb/OBJS_HIDLIB_ONLY
 uniq /local/pcb/OBJS_UTIL
 uniq /local/pcb/CFLAGS
 uniq /local/pcb/LDFLAGS
@@ -346,8 +350,10 @@ SRC_3RD_DIR=$(ROOT)/src_3rd
 OBJS=@/local/pcb/OBJS@
 OBJS_C99=@/local/pcb/OBJS_C99@
 OBJS_HIDLIB=@/local/pcb/OBJS_HIDLIB@
-OBJS_HIDLIB_ONLY=@/local/pcb/OBJS_HIDLIB_ONLY@
 OBJS_C99_HIDLIB=@/local/pcb/OBJS_C99_HIDLIB@
+OBJS_HIDLIB_PLG=@/local/pcb/OBJS_HIDLIB_PLG@
+OBJS_C99_HIDLIB_PLG=@/local/pcb/OBJS_C99_HIDLIB_PLG@
+OBJS_HIDLIB_ONLY=@/local/pcb/OBJS_HIDLIB_ONLY@
 OBJS_UTIL=@/local/pcb/OBJS_UTIL@
 SRCS=@/local/pcb/SRCS@
 CFLAGS=@?cc/argstd/std_c99@ @/local/pcb/CFLAGS@
@@ -384,8 +390,8 @@ pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS) $(LIBS_3RD)
 	$(CC) $(OBJS) $(OBJS_C99) -o pcb-rnd$(EXE) $(LIBS_PRE) $(LDFLAGS) $(LIBS)
 
 # temporary, for testig
-hidlib$(EXE): $(OBJS_HIDLIB) $(OBJS_HIDLIB_ONLY) $(OBJS_C99_HIDLIB) $(EXEDEPS) $(LIBS_3RD)
-	$(CC) $(OBJS_HIDLIB) $(OBJS_HIDLIB_ONLY) $(OBJS_C99_HIDLIB) -o hidlib$(EXE) $(LIBS_PRE) $(LDFLAGS) $(LIBS) $(LIBS_3RD)
+hidlib$(EXE): $(OBJS_HIDLIB) $(OBJS_C99_HIDLIB) $(OBJS_HIDLIB_PLG) $(OBJS_C99_HIDLIB_PLG) $(OBJS_HIDLIB_ONLY) $(EXEDEPS) $(LIBS_3RD)
+	$(CC) $(OBJS_HIDLIB_PLG) $(OBJS_C99_HIDLIB_PLG) $(OBJS_HIDLIB) $(OBJS_C99_HIDLIB) $(OBJS_HIDLIB_ONLY) -o hidlib$(EXE) $(LIBS_PRE) $(LDFLAGS) $(LIBS) $(LIBS_3RD)
 
 
 $(SPHASH_PATH)/sphash: $(SPHASH_PATH)/sphash.c
