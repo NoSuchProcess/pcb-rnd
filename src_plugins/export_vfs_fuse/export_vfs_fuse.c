@@ -172,10 +172,33 @@ static int pcb_fuse_read(const char *path, char *buf, size_t size, off_t offset,
 
 static int pcb_fuse_write(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
 {
+	gds_t data;
+
 	fprintf(flog, "write path=%s\n", path);
 	fflush(flog);
-	return -1;
+
+	if (*path == '/')
+		path++;
+
+	data.used = data.alloced = size;
+	data.array = (char *)buf;
+	data.no_realloc = 1;
+
+	if (pcb_vfs_access(PCB, path, &data, 1, NULL) != 0) {
+		gds_uninit(&data);
+		fprintf(flog, "   ->   path=%s EIO\n", path);
+		fflush(flog);
+		return -EIO;
+	}
+
+	return size;
 }
+
+static int pcb_fuse_truncate(const char *path, off_t size)
+{
+	return 0;
+}
+
 
 static int pcb_fuse_open(const char *path, struct fuse_file_info *fi)
 {
@@ -194,6 +217,7 @@ static void export_vfs_fuse_do_export(pcb_hid_attr_val_t *options)
 	oper.open = pcb_fuse_open;
 	oper.read = pcb_fuse_read;
 	oper.write = pcb_fuse_write;
+	oper.truncate = pcb_fuse_truncate;
 	oper.getattr = pcb_fuse_getattr;
 	oper.access = pcb_fuse_access;
 
