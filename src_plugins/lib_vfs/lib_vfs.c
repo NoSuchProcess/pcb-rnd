@@ -272,9 +272,43 @@ static void vfs_list_layers(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx, con
 	gds_uninit(&path);
 }
 
+static void vfs_list_subcs(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx, const char *datapath, pcb_data_t *data)
+{
+	pcb_subc_t *subc;
+	gdl_iterator_t it;
+	gds_t path;
+	size_t shrt, orig_used;
+
+	gds_init(&path);
+	gds_append_str(&path, datapath);
+	shrt = path.used;
+	gds_append_str(&path, "/subcircuit");
+	cb(ctx, path.array, 1);
+
+	gds_append(&path, '/');
+	orig_used = path.used;
+
+	subclist_foreach(&data->subc, &it, subc) {
+		pcb_propedit_t pctx;
+
+		path.used = orig_used;
+		pcb_append_printf(&path, "%ld", subc->ID);
+		cb(ctx, path.array, 1);
+
+		pcb_append_printf(&path, "/data");
+		cb(ctx, path.array, 1);
+		vfs_list_layers(pcb, cb, ctx, path.array, subc->data);
+
+		path.used = shrt;
+		vfs_list_obj(pcb, &path, (pcb_any_obj_t *)subc, cb, ctx);
+	}
+	gds_uninit(&path);
+}
+
 static void vfs_list_data(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx, const char *datapath, pcb_data_t *data)
 {
 	vfs_list_layers(pcb, cb, ctx, datapath, data);
+	vfs_list_subcs(pcb, cb, ctx, datapath, data);
 }
 
 static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *buff, int wr, int *isdir)
