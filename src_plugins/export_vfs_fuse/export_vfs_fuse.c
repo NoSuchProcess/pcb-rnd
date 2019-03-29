@@ -30,7 +30,6 @@
 #include "../src_plugins/lib_vfs/lib_vfs.h"
 
 static const char *export_vfs_fuse_cookie = "export_vfs_fuse HID";
-static FILE *flog;
 static int pcb_fuse_changed;
 
 static pcb_hid_attribute_t *export_vfs_fuse_get_export_options(int *n)
@@ -74,8 +73,6 @@ static void pcb_fuse_list_cb(void *ctx_, const char *path, int isdir)
 			st.st_mode = (isdir ? (S_IFDIR | 0755) : (S_IFREG | 0644));
 			st.st_nlink = 1 + !!isdir;
 			ctx->filler(ctx->buf, path, &st, 0);
-			fprintf(flog, "list_cb ctx->path=%s path=%s\n", ctx->path, path);
-			fflush(flog);
 		}
 	}
 }
@@ -92,15 +89,10 @@ static int pcb_fuse_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 	ctx.filler = filler;
 	ctx.pathlen = strlen(path);
 
-	fprintf(flog, "LIST path=%s {\n", path);
-	fflush(flog);
-
 	filler(buf, ".", NULL, 0);
 	filler(buf, "..", NULL, 0);
 	pcb_vfs_list(PCB, pcb_fuse_list_cb, &ctx);
 
-	fprintf(flog, "}\n");
-	fflush(flog);
 	return 0;
 }
 
@@ -109,16 +101,11 @@ static int pcb_fuse_getattr(const char *path, struct stat *stbuf)
 	int isdir;
 	gds_t data;
 
-	fprintf(flog, "getattr path=%s\n", path);
-	fflush(flog);
-
 	gds_init(&data);
 	if (strcmp(path, "/") != 0) {
 		if (*path == '/')
 			path++;
 		if (pcb_vfs_access(PCB, path, &data, 0, &isdir) != 0) {
-			fprintf(flog, "   ->   path=%s ENOENT\n", path);
-			fflush(flog);
 			gds_uninit(&data);
 			return -ENOENT;
 		}
@@ -137,8 +124,6 @@ static int pcb_fuse_getattr(const char *path, struct stat *stbuf)
 
 static int pcb_fuse_access(const char *path, int mask)
 {
-	fprintf(flog, "access path=%s %x\n", path, mask);
-	fflush(flog);
 	return 0;
 }
 
@@ -147,16 +132,11 @@ static int pcb_fuse_read(const char *path, char *buf, size_t size, off_t offset,
 	gds_t data;
 	int len;
 
-	fprintf(flog, "read path=%s\n", path);
-	fflush(flog);
-
 	if (*path == '/')
 		path++;
 	gds_init(&data);
 	if (pcb_vfs_access(PCB, path, &data, 0, NULL) != 0) {
 		gds_uninit(&data);
-		fprintf(flog, "   ->   path=%s ENOENT\n", path);
-		fflush(flog);
 		return -ENOENT;
 	}
 
@@ -175,9 +155,6 @@ static int pcb_fuse_write(const char *path, const char *buf, size_t size, off_t 
 {
 	gds_t data, src;
 
-	fprintf(flog, "write path=%s\n", path);
-	fflush(flog);
-
 	if (*path == '/')
 		path++;
 
@@ -186,8 +163,6 @@ static int pcb_fuse_write(const char *path, const char *buf, size_t size, off_t 
 	if (offset > 0) {
 		if (pcb_vfs_access(PCB, path, &data, 0, NULL) != 0) {
 			gds_uninit(&data);
-			fprintf(flog, "   ->   path=%s ENOENT\n", path);
-			fflush(flog);
 			return -ENOENT;
 		}
 		src.array = (char *)buf;
@@ -203,8 +178,6 @@ static int pcb_fuse_write(const char *path, const char *buf, size_t size, off_t 
 
 	if (pcb_vfs_access(PCB, path, &data, 1, NULL) != 0) {
 		gds_uninit(&data);
-		fprintf(flog, "   ->   path=%s EIO\n", path);
-		fflush(flog);
 		return -EIO;
 	}
 
@@ -222,8 +195,6 @@ static int pcb_fuse_truncate(const char *path, off_t size)
 	gds_init(&data);
 	if (pcb_vfs_access(PCB, path, &data, 0, NULL) != 0) {
 		gds_uninit(&data);
-		fprintf(flog, "   ->   path=%s ENOENT\n", path);
-		fflush(flog);
 		return -ENOENT;
 	}
 
@@ -245,8 +216,6 @@ static int pcb_fuse_truncate(const char *path, off_t size)
 
 	if (pcb_vfs_access(PCB, path, &data, 1, NULL) != 0) {
 		gds_uninit(&data);
-		fprintf(flog, "   ->   path=%s EIO\n", path);
-		fflush(flog);
 		return -EIO;
 	}
 
@@ -258,8 +227,6 @@ static int pcb_fuse_truncate(const char *path, off_t size)
 
 static int pcb_fuse_open(const char *path, struct fuse_file_info *fi)
 {
-	fprintf(flog, "open path=%s\n", path);
-	fflush(flog);
 	return 0;
 }
 
@@ -290,7 +257,6 @@ static void export_vfs_fuse_do_export(pcb_hid_attr_val_t *options)
 	oper.destroy = pcb_fuse_destroy;
 
 	pcb_fuse_changed = 0;
-	flog = pcb_fopen("LOG.fuse", "w");
 	if (fuse_main(fuse_argc, fuse_argv, &oper, NULL) != 0)
 		fprintf(stderr, "fuse_main() returned error.\n");
 }
