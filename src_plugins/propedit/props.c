@@ -80,7 +80,7 @@ void pcb_props_init(pcb_propedit_t *ctx, pcb_board_t *pcb)
 	memset(ctx, 0, sizeof(pcb_propedit_t));
 	htsp_init(&ctx->props, strhash, strkeyeq);
 	ctx->pcb = pcb;
-	ctx->data = pcb->Data;
+	ctx->data = pcb == NULL ? NULL : pcb->Data;
 }
 
 void pcb_props_reset(pcb_propedit_t *ctx)
