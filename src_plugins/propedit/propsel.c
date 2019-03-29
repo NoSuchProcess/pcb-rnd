@@ -315,14 +315,16 @@ static void set_board(pcb_propset_ctx_t *st, pcb_board_t *pcb)
 		return;
 	}
 
-	if ((strcmp(pn, "name") == 0) &&
-	    (pcb_board_change_name(pcb_strdup(st->s)))) DONE;
+	if (strncmp(st->name, "p/board/", 8) == 0) {
+		if ((strcmp(pn, "name") == 0) &&
+		    (pcb_board_change_name(pcb_strdup(st->s)))) DONE;
 
-	if (st->c_valid && (strcmp(pn, "width") == 0) &&
-	    brd_resize(st->c, PCB->MaxHeight)) DONE;
+		if (st->c_valid && (strcmp(pn, "width") == 0) &&
+		    brd_resize(st->c, PCB->MaxHeight)) DONE;
 
-	if (st->c_valid && (strcmp(pn, "height") == 0) &&
-	    brd_resize(PCB->MaxWidth,st->c)) DONE;
+		if (st->c_valid && (strcmp(pn, "height") == 0) &&
+		    brd_resize(PCB->MaxWidth,st->c)) DONE;
+	}
 }
 
 static int layer_recolor(pcb_layer_t *layer, const char *clr)
@@ -342,11 +344,13 @@ static int set_layer(pcb_propset_ctx_t *st, pcb_layer_t *layer)
 		return 0;
 	}
 
-	if ((strcmp(pn, "name") == 0) &&
-	    (pcb_layer_rename_(layer, pcb_strdup(st->s)) == 0)) DONE0;
+	if (strncmp(st->name, "p/layer/", 8) == 0) {
+		if ((strcmp(pn, "name") == 0) &&
+		    (pcb_layer_rename_(layer, pcb_strdup(st->s)) == 0)) DONE0;
 
-	if ((strcmp(pn, "color") == 0) &&
-	    (layer_recolor(layer, st->color.str) == 0)) DONE0;
+		if ((strcmp(pn, "color") == 0) &&
+		    (layer_recolor(layer, st->color.str) == 0)) DONE0;
+	}
 
 	return 0;
 }
@@ -361,11 +365,13 @@ static void set_layergrp(pcb_propset_ctx_t *st, pcb_layergrp_t *grp)
 		return;
 	}
 
-	if ((strcmp(pn, "name") == 0) &&
-	    (pcb_layergrp_rename_(grp, pcb_strdup(st->s)) == 0)) DONE;
+	if (strncmp(st->name, "p/layer_group/", 14) == 0) {
+		if ((strcmp(pn, "name") == 0) &&
+		    (pcb_layergrp_rename_(grp, pcb_strdup(st->s)) == 0)) DONE;
 
-	if ((strcmp(pn, "purpose") == 0) &&
-	    (pcb_layergrp_set_purpose(grp, st->s) == 0)) DONE;
+		if ((strcmp(pn, "purpose") == 0) &&
+		    (pcb_layergrp_set_purpose(grp, st->s) == 0)) DONE;
+	}
 }
 
 
@@ -380,11 +386,13 @@ static void set_line(pcb_propset_ctx_t *st, pcb_line_t *line)
 
 	if (set_common(st, (pcb_any_obj_t *)line)) return;
 
-	if (st->is_trace && st->c_valid && (strcmp(pn, "thickness") == 0) &&
-	    pcb_chg_obj_1st_size(PCB_OBJ_LINE, line->parent.layer, line, NULL, st->c, st->c_absolute)) DONE;
+	if (strncmp(st->name, "p/trace/", 8) == 0) {
+		if (st->is_trace && st->c_valid && (strcmp(pn, "thickness") == 0) &&
+		    pcb_chg_obj_1st_size(PCB_OBJ_LINE, line->parent.layer, line, NULL, st->c, st->c_absolute)) DONE;
 
-	if (st->is_trace && st->c_valid && (strcmp(pn, "clearance") == 0) &&
-	    pcb_chg_obj_clear_size(PCB_OBJ_LINE, line->parent.layer, line, NULL, st->c*2, st->c_absolute)) DONE;
+		if (st->is_trace && st->c_valid && (strcmp(pn, "clearance") == 0) &&
+		    pcb_chg_obj_clear_size(PCB_OBJ_LINE, line->parent.layer, line, NULL, st->c*2, st->c_absolute)) DONE;
+	}
 }
 
 static void set_arc(pcb_propset_ctx_t *st, pcb_arc_t *arc)
@@ -398,25 +406,28 @@ static void set_arc(pcb_propset_ctx_t *st, pcb_arc_t *arc)
 
 	if (set_common(st, (pcb_any_obj_t *)arc)) return;
 
-	if (st->is_trace && st->c_valid && (strcmp(pn, "thickness") == 0) &&
-	    pcb_chg_obj_1st_size(PCB_OBJ_ARC, arc->parent.layer, arc, NULL, st->c, st->c_absolute)) DONE;
+	if (strncmp(st->name, "p/trace/", 8) == 0)  {
+		if (st->is_trace && st->c_valid && (strcmp(pn, "thickness") == 0) &&
+		    pcb_chg_obj_1st_size(PCB_OBJ_ARC, arc->parent.layer, arc, NULL, st->c, st->c_absolute)) DONE;
 
-	if (st->is_trace && st->c_valid && (strcmp(pn, "clearance") == 0) &&
-	    pcb_chg_obj_clear_size(PCB_OBJ_ARC, arc->parent.layer, arc, NULL, st->c*2, st->c_absolute)) DONE;
+		if (st->is_trace && st->c_valid && (strcmp(pn, "clearance") == 0) &&
+		    pcb_chg_obj_clear_size(PCB_OBJ_ARC, arc->parent.layer, arc, NULL, st->c*2, st->c_absolute)) DONE;
+	}
 
 	pn = st->name + 6;
+	if (strncmp(st->name, "p/arc/", 6) == 0) {
+		if (!st->is_trace && st->c_valid && (strcmp(pn, "width") == 0) &&
+		    pcb_chg_obj_radius(PCB_OBJ_ARC, arc->parent.layer, arc, NULL, 0, st->c, st->c_absolute)) DONE;
 
-	if (!st->is_trace && st->c_valid && (strcmp(pn, "width") == 0) &&
-	    pcb_chg_obj_radius(PCB_OBJ_ARC, arc->parent.layer, arc, NULL, 0, st->c, st->c_absolute)) DONE;
+		if (!st->is_trace && st->c_valid && (strcmp(pn, "height") == 0) &&
+		    pcb_chg_obj_radius(PCB_OBJ_ARC, arc->parent.layer, arc, NULL, 1, st->c, st->c_absolute)) DONE;
 
-	if (!st->is_trace && st->c_valid && (strcmp(pn, "height") == 0) &&
-	    pcb_chg_obj_radius(PCB_OBJ_ARC, arc->parent.layer, arc, NULL, 1, st->c, st->c_absolute)) DONE;
+		if (!st->is_trace && st->d_valid && (strcmp(pn, "angle/start") == 0) &&
+		    pcb_chg_obj_angle(PCB_OBJ_ARC, arc->parent.layer, arc, NULL, 0, st->d, st->d_absolute)) DONE;
 
-	if (!st->is_trace && st->d_valid && (strcmp(pn, "angle/start") == 0) &&
-	    pcb_chg_obj_angle(PCB_OBJ_ARC, arc->parent.layer, arc, NULL, 0, st->d, st->d_absolute)) DONE;
-
-	if (!st->is_trace && st->d_valid && (strcmp(pn, "angle/delta") == 0) &&
-	    pcb_chg_obj_angle(PCB_OBJ_ARC, arc->parent.layer, arc, NULL, 1, st->d, st->d_absolute)) DONE;
+		if (!st->is_trace && st->d_valid && (strcmp(pn, "angle/delta") == 0) &&
+		    pcb_chg_obj_angle(PCB_OBJ_ARC, arc->parent.layer, arc, NULL, 1, st->d, st->d_absolute)) DONE;
+	}
 }
 
 static void set_text(pcb_propset_ctx_t *st, pcb_text_t *text)
@@ -431,20 +442,22 @@ static void set_text(pcb_propset_ctx_t *st, pcb_text_t *text)
 
 	if (set_common(st, (pcb_any_obj_t *)text)) return;
 
-	if (st->c_valid && (strcmp(pn, "scale") == 0) &&
-	    pcb_chg_obj_size(PCB_OBJ_TEXT, text->parent.layer, text, text, PCB_MIL_TO_COORD(st->c), st->c_absolute)) DONE;
+	if (strncmp(st->name, "p/text/", 7) == 0) {
+		if (st->c_valid && (strcmp(pn, "scale") == 0) &&
+		    pcb_chg_obj_size(PCB_OBJ_TEXT, text->parent.layer, text, text, PCB_MIL_TO_COORD(st->c), st->c_absolute)) DONE;
 
-	if ((strcmp(pn, "string") == 0) &&
-	    (old = pcb_chg_obj_name(PCB_OBJ_TEXT, text->parent.layer, text, NULL, pcb_strdup(st->s)))) {
-		free(old);
-		DONE;
+		if ((strcmp(pn, "string") == 0) &&
+		    (old = pcb_chg_obj_name(PCB_OBJ_TEXT, text->parent.layer, text, NULL, pcb_strdup(st->s)))) {
+			free(old);
+			DONE;
+		}
+
+		if (st->d_valid && (strcmp(pn, "rotation") == 0) &&
+			pcb_chg_obj_rot(PCB_OBJ_TEXT, text->parent.layer, text, text, st->d, st->d_absolute, pcb_true)) DONE;
+
+		if (st->c_valid && (strcmp(pn, "thickness") == 0) &&
+			pcb_chg_obj_2nd_size(PCB_OBJ_TEXT, text->parent.layer, text, text, st->c, st->c_absolute, pcb_true)) DONE;
 	}
-
-	if (st->d_valid && (strcmp(pn, "rotation") == 0) &&
-		pcb_chg_obj_rot(PCB_OBJ_TEXT, text->parent.layer, text, text, st->d, st->d_absolute, pcb_true)) DONE;
-
-	if (st->c_valid && (strcmp(pn, "thickness") == 0) &&
-		pcb_chg_obj_2nd_size(PCB_OBJ_TEXT, text->parent.layer, text, text, st->c, st->c_absolute, pcb_true)) DONE;
 }
 
 static void set_poly(pcb_propset_ctx_t *st, pcb_poly_t *poly)
@@ -453,8 +466,10 @@ static void set_poly(pcb_propset_ctx_t *st, pcb_poly_t *poly)
 
 	if (set_common(st, (pcb_any_obj_t *)poly)) return;
 
-	if (st->is_trace && st->c_valid && (strcmp(pn, "clearance") == 0) &&
-	    pcb_chg_obj_clear_size(PCB_OBJ_POLY, poly->parent.layer, poly, NULL, st->c*2, st->c_absolute)) DONE;
+	if (strncmp(st->name, "p/trace/", 8) == 0) {
+		if (st->is_trace && st->c_valid && (strcmp(pn, "clearance") == 0) &&
+		    pcb_chg_obj_clear_size(PCB_OBJ_POLY, poly->parent.layer, poly, NULL, st->c*2, st->c_absolute)) DONE;
+	}
 
 	if (st->is_attr) {
 		set_attr(st, &poly->Attributes);
@@ -479,31 +494,33 @@ static void set_pstk(pcb_propset_ctx_t *st, pcb_pstk_t *ps)
 	ca = i = (st->c != 0);
 	proto = pcb_pstk_get_proto(ps);
 
-	if (st->c_valid && (strcmp(pn, "clearance") == 0) &&
-	    pcb_chg_obj_clear_size(PCB_OBJ_PSTK, ps, ps, NULL, st->c*2, st->c_absolute)) DONE;
-	if (st->d_valid && (strcmp(pn, "rotation") == 0)) {
-		if (st->d_absolute) {
-			if (pcb_obj_rotate(PCB_OBJ_PSTK, ps, ps, NULL, ps->x, ps->y, st->d - ps->rot)) DONE;
+	if (strncmp(st->name, "p/padstack/", 11) == 0) {
+		if (st->c_valid && (strcmp(pn, "clearance") == 0) &&
+		    pcb_chg_obj_clear_size(PCB_OBJ_PSTK, ps, ps, NULL, st->c*2, st->c_absolute)) DONE;
+		if (st->d_valid && (strcmp(pn, "rotation") == 0)) {
+			if (st->d_absolute) {
+				if (pcb_obj_rotate(PCB_OBJ_PSTK, ps, ps, NULL, ps->x, ps->y, st->d - ps->rot)) DONE;
+			}
+			else {
+				if (pcb_obj_rotate(PCB_OBJ_PSTK, ps, ps, NULL, ps->x, ps->y, st->d)) DONE;
+			}
+			return;
 		}
-		else {
-			if (pcb_obj_rotate(PCB_OBJ_PSTK, ps, ps, NULL, ps->x, ps->y, st->d)) DONE;
-		}
-		return;
+		if (st->c_valid && (strcmp(pn, "xmirror") == 0) &&
+		    (pcb_pstk_change_instance(ps, NULL, NULL, NULL, &i, NULL) == 0)) DONE;
+		if (st->c_valid && (strcmp(pn, "smirror") == 0) &&
+		    (pcb_pstk_change_instance(ps, NULL, NULL, NULL, NULL, &i) == 0)) DONE;
+		if (st->c_valid && (strcmp(pn, "proto") == 0) &&
+		    (pcb_pstk_change_instance(ps, &ca, NULL, NULL, NULL, NULL) == 0)) DONE;
+		if (st->c_valid && (strcmp(pn, "hole") == 0) &&
+		    (pcb_pstk_proto_change_hole(proto, NULL, &st->c, NULL, NULL) == 0)) DONE;
+		if (st->c_valid && (strcmp(pn, "plated") == 0) &&
+		    (pcb_pstk_proto_change_hole(proto, &i, NULL, NULL, NULL) == 0)) DONE;
+		if (st->c_valid && (strcmp(pn, "htop") == 0) &&
+		    (pcb_pstk_proto_change_hole(proto, NULL, NULL, &i, NULL) == 0)) DONE;
+		if (st->c_valid && (strcmp(pn, "hbottom") == 0) &&
+		    (pcb_pstk_proto_change_hole(proto, NULL, NULL, NULL, &i) == 0)) DONE;
 	}
-	if (st->c_valid && (strcmp(pn, "xmirror") == 0) &&
-	    (pcb_pstk_change_instance(ps, NULL, NULL, NULL, &i, NULL) == 0)) DONE;
-	if (st->c_valid && (strcmp(pn, "smirror") == 0) &&
-	    (pcb_pstk_change_instance(ps, NULL, NULL, NULL, NULL, &i) == 0)) DONE;
-	if (st->c_valid && (strcmp(pn, "proto") == 0) &&
-	    (pcb_pstk_change_instance(ps, &ca, NULL, NULL, NULL, NULL) == 0)) DONE;
-	if (st->c_valid && (strcmp(pn, "hole") == 0) &&
-	    (pcb_pstk_proto_change_hole(proto, NULL, &st->c, NULL, NULL) == 0)) DONE;
-	if (st->c_valid && (strcmp(pn, "plated") == 0) &&
-	    (pcb_pstk_proto_change_hole(proto, &i, NULL, NULL, NULL) == 0)) DONE;
-	if (st->c_valid && (strcmp(pn, "htop") == 0) &&
-	    (pcb_pstk_proto_change_hole(proto, NULL, NULL, &i, NULL) == 0)) DONE;
-	if (st->c_valid && (strcmp(pn, "hbottom") == 0) &&
-	    (pcb_pstk_proto_change_hole(proto, NULL, NULL, NULL, &i) == 0)) DONE;
 }
 
 static void set_subc(pcb_propset_ctx_t *st, pcb_subc_t *ssubc)
