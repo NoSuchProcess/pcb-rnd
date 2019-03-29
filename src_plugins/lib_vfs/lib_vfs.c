@@ -410,7 +410,7 @@ static int vfs_access_subcircuit(pcb_board_t *pcb, const char *path, gds_t *buff
 		end += 5;
 		if (strcmp(end, "layers") == 0)
 			goto ret_dir;
-		return vfs_access_layer(pcb, end, buff, wr, isdir, subc->data);
+		return vfs_access_layer(pcb, end+7, buff, wr, isdir, subc->data);
 	}
 
 	/* unknown subtree */
