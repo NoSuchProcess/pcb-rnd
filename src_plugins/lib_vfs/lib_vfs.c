@@ -309,7 +309,7 @@ static void vfs_list_data(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx, const
 	vfs_list_subcs(pcb, cb, ctx, datapath, data);
 }
 
-static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *buff, int wr, int *isdir)
+static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *buff, int wr, int *isdir, pcb_data_t *data)
 {
 	pcb_propedit_t pctx;
 	char *end;
@@ -317,7 +317,7 @@ static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *buff, int
 	int res;
 
 	if (*end == '\0') {
-		pcb_layer_t *ly = pcb_get_layer(PCB->Data, lid);
+		pcb_layer_t *ly = pcb_get_layer(data, lid);
 		if (ly == NULL)
 			return -1;
 		goto ret_dir;
@@ -362,7 +362,7 @@ static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *buff, int
 			path = end;
 		else
 			path=end+1;
-		obj = htip_get(&PCB->Data->id2obj, oid);
+		obj = htip_get(&data->id2obj, oid);
 		if ((obj == NULL) || (obj->type != ty))
 			return -1;
 		if ((obj->parent_type != PCB_PARENT_LAYER) || (obj->parent.layer != pcb_get_layer(PCB->Data, lid)))
@@ -384,10 +384,7 @@ static int vfs_access_subcircuit(pcb_board_t *pcb, const char *path, gds_t *buff
 	pcb_propedit_t pctx;
 	char *end;
 	long int oid = strtol(path, &end, 10);
-	int res = -1;
 	pcb_subc_t *subc;
-
-	fprintf(stderr, "** subc access: '%s' '%s'\n", path, end);
 
 	if (*end == '\0')
 		goto ret_dir;
@@ -400,12 +397,24 @@ static int vfs_access_subcircuit(pcb_board_t *pcb, const char *path, gds_t *buff
 		return -1;
 
 	end++;
-	if ((end[1] == '/') || (end[1] == '\0')) {
-printf("*** access obj '%s'\n", end);
+
+	/* single char dir, like a/ or p/ means object property of the subc itself */
+	if ((end[1] == '/') || (end[1] == '\0'))
 		return vfs_access_obj(pcb, (pcb_any_obj_t *)subc, end, buff, wr, isdir);
+
+	if (strncmp(end, "data", 4) == 0) {
+		if (end[4] == '\0')
+			goto ret_dir;
+		if (end[4] != '/')
+			return -1;
+		end += 5;
+		if (strcmp(end, "layers") == 0)
+			goto ret_dir;
+		return vfs_access_layer(pcb, end, buff, wr, isdir, subc->data);
 	}
 
-	return res;
+	/* unknown subtree */
+	return -1;
 
 	ret_dir:;
 	if (isdir != NULL)
@@ -544,7 +553,7 @@ int pcb_vfs_access(pcb_board_t *pcb, const char *path, gds_t *buff, int wr, int 
 			return 0;
 	}
 	if (strncmp(path, "data/layers/", 12) == 0)
-		return vfs_access_layer(pcb, path+12, buff, wr, isdir);
+		return vfs_access_layer(pcb, path+12, buff, wr, isdir, pcb->Data);
 	if (strncmp(path, "data/subcircuit/", 16) == 0)
 		return vfs_access_subcircuit(pcb, path+16, buff, wr, isdir);
 
