@@ -20,6 +20,7 @@
 #include "error.h"
 #include "pcb-printf.h"
 #include "plugins.h"
+#include "plug_io.h"
 #include "safe_fs.h"
 
 #include "hid.h"
