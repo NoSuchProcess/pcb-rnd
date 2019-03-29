@@ -31,6 +31,7 @@
 #include "plugins.h"
 #include "pcb-printf.h"
 #include "compat_misc.h"
+#include "conf.h"
 
 #include "../src_plugins/propedit/props.h"
 #include "../src_plugins/propedit/propsel.h"
@@ -387,11 +388,37 @@ static int vfs_access_layergrp(pcb_board_t *pcb, const char *path, gds_t *data, 
 	return res;
 }
 
+
+static void vfs_list_conf(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
+{
+	gds_t path;
+	htsp_entry_t *e;
+	htsp_t seen;
+
+	gds_init(&path);
+	gds_append_str(&path, "conf/");
+	SEE;
+	conf_fields_foreach(e) {
+		cb_mkdirp(cb, ctx, &path, e->key, &seen);
+	}
+	UNSEE;
+	gds_uninit(&path);
+}
+
+static int vfs_access_conf(pcb_board_t *pcb, const char *path, gds_t *data, int wr, int *isdir)
+{
+	if (isdir != NULL)
+		*isdir = 1;
+	return 0;
+}
+
 int pcb_vfs_list(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 {
 	vfs_list_layergrps(pcb, cb, ctx);
 	cb(ctx, "data", 1);
 	vfs_list_layers(pcb, cb, ctx);
+	cb(ctx, "conf", 1);
+	vfs_list_conf(pcb, cb, ctx);
 	cb(ctx, "route_styles", 1);
 	cb(ctx, "netlist", 1);
 
@@ -419,6 +446,15 @@ int pcb_vfs_access(pcb_board_t *pcb, const char *path, gds_t *data, int wr, int 
 	}
 	if (strncmp(path, "layer_groups/", 13) == 0)
 		return vfs_access_layergrp(pcb, path+13, data, wr, isdir);
+
+	if (strcmp(path, "conf") == 0) {
+		if (isdir != NULL)
+			*isdir = 1;
+		if (!wr)
+			return 0;
+	}
+	if (strncmp(path, "conf/", 5) == 0)
+		return vfs_access_conf(pcb, path+5, data, wr, isdir);
 
 	return -1;
 }
