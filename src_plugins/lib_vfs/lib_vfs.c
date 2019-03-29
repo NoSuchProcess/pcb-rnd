@@ -219,18 +219,22 @@ static int vfs_access_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, const char *path
 	return res;
 }
 
-static void vfs_list_layers(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
+static void vfs_list_layers(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx, const char *datapath, pcb_data_t *data)
 {
 	gds_t path;
 	pcb_layer_id_t lid;
 	size_t orig_used;
 
-	cb(ctx, "data/layers", 1);
 	gds_init(&path);
-	gds_append_str(&path, "data/layers/");
+	gds_append_str(&path, datapath);
+	gds_append_str(&path, "/layers");
+	cb(ctx, path.array, 1);
+
+	gds_append(&path, '/');
 	orig_used = path.used;
 
-	for(lid = 0; lid < pcb->Data->LayerN; lid++) {
+
+	for(lid = 0; lid < data->LayerN; lid++) {
 		pcb_propedit_t pctx;
 
 		path.used = orig_used;
@@ -248,7 +252,7 @@ static void vfs_list_layers(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 		pcb_props_uninit(&pctx);
 
 		{
-			pcb_layer_t *layer = pcb_get_layer(pcb->Data, lid);
+			pcb_layer_t *layer = pcb_get_layer(data, lid);
 			pcb_line_t *l;
 			pcb_arc_t *a;
 			pcb_poly_t *p;
@@ -268,6 +272,11 @@ static void vfs_list_layers(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 	gds_uninit(&path);
 }
 
+static void vfs_list_data(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx, const char *datapath, pcb_data_t *data)
+{
+	vfs_list_layers(pcb, cb, ctx, datapath, data);
+}
+
 static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *data, int wr, int *isdir)
 {
 	pcb_propedit_t pctx;
@@ -276,7 +285,7 @@ static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *data, int
 	int res;
 
 	if (*end == '\0') {
-		pcb_layer_t *ly = pcb_get_layer(pcb->Data, lid);
+		pcb_layer_t *ly = pcb_get_layer(PCB->Data, lid);
 		if (ly == NULL)
 			return -1;
 		goto ret_dir;
@@ -321,10 +330,10 @@ static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *data, int
 			path = end;
 		else
 			path=end+1;
-		obj = htip_get(&pcb->Data->id2obj, oid);
+		obj = htip_get(&PCB->Data->id2obj, oid);
 		if ((obj == NULL) || (obj->type != ty))
 			return -1;
-		if ((obj->parent_type != PCB_PARENT_LAYER) || (obj->parent.layer != pcb_get_layer(pcb->Data, lid)))
+		if ((obj->parent_type != PCB_PARENT_LAYER) || (obj->parent.layer != pcb_get_layer(PCB->Data, lid)))
 			return -1;
 		res = vfs_access_obj(pcb, obj, path, data, wr, isdir);
 	}
@@ -448,7 +457,7 @@ int pcb_vfs_list(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 {
 	vfs_list_layergrps(pcb, cb, ctx);
 	cb(ctx, "data", 1);
-	vfs_list_layers(pcb, cb, ctx);
+	vfs_list_data(pcb, cb, ctx, "data", pcb->Data);
 	cb(ctx, "conf", 1);
 	vfs_list_conf(pcb, cb, ctx);
 	cb(ctx, "route_styles", 1);
