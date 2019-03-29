@@ -381,6 +381,41 @@ static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *buff, int
 }
 
 
+static int vfs_access_subcircuit(pcb_board_t *pcb, const char *path, gds_t *buff, int wr, int *isdir)
+{
+	pcb_propedit_t pctx;
+	char *end;
+	long int oid = strtol(path, &end, 10);
+	int res = -1;
+	pcb_subc_t *subc;
+
+	fprintf(stderr, "** subc access: '%s' '%s'\n", path, end);
+
+	if (*end == '\0')
+		goto ret_dir;
+
+	if (*end != '/')
+		return -1;
+
+	subc = htip_get(&pcb->Data->id2obj, oid);
+	if ((subc == NULL) || (subc->type != PCB_OBJ_SUBC))
+		return -1;
+
+	end++;
+	if ((end[1] == '/') || (end[1] == '\0')) {
+printf("*** access obj '%s'\n", end);
+		return vfs_access_obj(pcb, (pcb_any_obj_t *)subc, end, buff, wr, isdir);
+	}
+
+	return res;
+
+	ret_dir:;
+	if (isdir != NULL)
+		*isdir = 1;
+	return 0;
+}
+
+
 static void vfs_list_layergrps(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 {
 	gds_t path;
@@ -504,7 +539,7 @@ int pcb_vfs_list(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 
 int pcb_vfs_access(pcb_board_t *pcb, const char *path, gds_t *buff, int wr, int *isdir)
 {
-	if ((strcmp(path, "data") == 0) || (strcmp(path, "data/layers") == 0)) {
+	if ((strcmp(path, "data") == 0) || (strcmp(path, "data/layers") == 0) || (strcmp(path, "data/subcircuit") == 0)) {
 		if (isdir != NULL)
 			*isdir = 1;
 		if (!wr)
@@ -512,6 +547,8 @@ int pcb_vfs_access(pcb_board_t *pcb, const char *path, gds_t *buff, int wr, int 
 	}
 	if (strncmp(path, "data/layers/", 12) == 0)
 		return vfs_access_layer(pcb, path+12, buff, wr, isdir);
+	if (strncmp(path, "data/subcircuit/", 16) == 0)
+		return vfs_access_subcircuit(pcb, path+16, buff, wr, isdir);
 
 	if (strcmp(path, "layer_groups") == 0) {
 		if (isdir != NULL)
