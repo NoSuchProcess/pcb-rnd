@@ -394,21 +394,54 @@ static void vfs_list_conf(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 	gds_t path;
 	htsp_entry_t *e;
 	htsp_t seen;
+	int ou;
 
 	gds_init(&path);
 	gds_append_str(&path, "conf/");
+	ou = path.used;
 	SEE;
 	conf_fields_foreach(e) {
+		path.used = ou;
 		cb_mkdirp(cb, ctx, &path, e->key, &seen);
+		gds_append_str(&path, e->key);
+		cb(ctx, path.array, 0);
 	}
 	UNSEE;
 	gds_uninit(&path);
 }
 
+static int vfs_conf_printf(void *ctx, const char *fmt, ...)
+{
+	va_list ap;
+	gds_t *data = ctx;
+	int res;
+
+	va_start(ap, fmt);
+	res = pcb_append_vprintf(data, fmt, ap);
+	va_end(ap);
+	return res;
+}
+
 static int vfs_access_conf(pcb_board_t *pcb, const char *path, gds_t *data, int wr, int *isdir)
 {
+	conf_native_t *nat = conf_get_field(path);
+	if (nat == NULL) {
+		if (isdir != NULL)
+			*isdir = 1;
+		if (wr == 0)
+			return 0;
+		return 1;
+	}
+
+
 	if (isdir != NULL)
-		*isdir = 1;
+		*isdir = 0;
+
+	if (wr)
+		return conf_set(CFR_DESIGN, path, 0, data->array, POL_OVERWRITE);
+	else
+		conf_print_native((conf_pfn)vfs_conf_printf, data, NULL, 0, nat);
+
 	return 0;
 }
 
