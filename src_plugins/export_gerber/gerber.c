@@ -658,6 +658,9 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 	if ((!gerber_cam.active) && (PCB_LAYER_IS_ASSY(flags, purpi)))
 		return 0;
 
+	if ((!gerber_cam.active) && (flags & PCB_LYT_DOC))
+		return 0;
+
 	if (flags & PCB_LYT_UI)
 		return 0;
 
