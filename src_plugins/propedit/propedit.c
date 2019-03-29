@@ -90,7 +90,7 @@ int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 	}
 	else if (strncmp(cmd, "layer", 5) == 0) {
 		if (cmd[5] == ':') {
-			id = pcb_layer_str2id(pe->pcb->Data, cmd+6);
+			id = pcb_layer_str2id(pe->data, cmd+6);
 			if (id < 0) {
 				if (!quiet)
 					pcb_message(PCB_MSG_ERROR, "Invalid layer ID '%s'\n", cmd+6);

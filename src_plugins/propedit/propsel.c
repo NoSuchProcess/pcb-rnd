@@ -250,18 +250,18 @@ void pcb_propsel_map_core(pcb_propedit_t *ctx)
 	size_t n;
 
 	for(n = 0; n < vtl0_len(&ctx->layers); n++)
-		map_layer(ctx, pcb_get_layer(ctx->pcb->Data, ctx->layers.array[n]));
+		map_layer(ctx, pcb_get_layer(ctx->data, ctx->layers.array[n]));
 
 	for(n = 0; n < vtl0_len(&ctx->layergrps); n++)
 		map_layergrp(ctx, pcb_get_layergrp(ctx->pcb, ctx->layergrps.array[n]));
 
 	for(idp = pcb_idpath_list_first(&ctx->objs); idp != NULL; idp = pcb_idpath_list_next(idp))
-		map_any(ctx, pcb_idpath2obj(ctx->pcb->Data, idp));
+		map_any(ctx, pcb_idpath2obj(ctx->data, idp));
 
 	if (ctx->selection) {
 		pcb_any_obj_t *o;
 		pcb_data_it_t it;
-		for(o = pcb_data_first(&it, ctx->pcb->Data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it))
+		for(o = pcb_data_first(&it, ctx->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it))
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, o))
 				map_any(ctx, o);
 	}
@@ -562,6 +562,7 @@ int pcb_propsel_set(pcb_propedit_t *ctx, const char *prop, pcb_propset_ctx_t *sc
 	pcb_idpath_t *idp;
 
 	sctx->pcb = ctx->pcb;
+	sctx->data = ctx->data;
 	sctx->is_trace = (strncmp(prop, "p/trace/", 8) == 0);
 	sctx->is_attr = (prop[0] == 'a');
 	sctx->name = prop;
@@ -569,18 +570,18 @@ int pcb_propsel_set(pcb_propedit_t *ctx, const char *prop, pcb_propset_ctx_t *sc
 	pcb_undo_save_serial();
 
 	for(n = 0; n < vtl0_len(&ctx->layers); n++)
-		set_layer(sctx, pcb_get_layer(ctx->pcb->Data, ctx->layers.array[n]));
+		set_layer(sctx, pcb_get_layer(ctx->data, ctx->layers.array[n]));
 
 	for(n = 0; n < vtl0_len(&ctx->layergrps); n++)
 		set_layergrp(sctx, pcb_get_layergrp(ctx->pcb, ctx->layergrps.array[n]));
 
 	for(idp = pcb_idpath_list_first(&ctx->objs); idp != NULL; idp = pcb_idpath_list_next(idp))
-		set_any(sctx, pcb_idpath2obj(ctx->pcb->Data, idp));
+		set_any(sctx, pcb_idpath2obj(ctx->data, idp));
 
 	if (ctx->selection) {
 		pcb_any_obj_t *o;
 		pcb_data_it_t it;
-		for(o = pcb_data_first(&it, ctx->pcb->Data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it))
+		for(o = pcb_data_first(&it, ctx->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it))
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, o))
 				set_any(sctx, o);
 	}
@@ -664,18 +665,18 @@ int pcb_propsel_del(pcb_propedit_t *ctx, const char *key)
 	key += 2;
 
 	for(n = 0; n < vtl0_len(&ctx->layers); n++)
-		del_cnt += del_layer(ctx, pcb_get_layer(ctx->pcb->Data, ctx->layers.array[n]), key);
+		del_cnt += del_layer(ctx, pcb_get_layer(ctx->data, ctx->layers.array[n]), key);
 
 	for(n = 0; n < vtl0_len(&ctx->layergrps); n++)
 		del_cnt += del_layergrp(ctx, pcb_get_layergrp(ctx->pcb, ctx->layergrps.array[n]), key);
 
 	for(idp = pcb_idpath_list_first(&ctx->objs); idp != NULL; idp = pcb_idpath_list_next(idp))
-		del_cnt += del_any(ctx, pcb_idpath2obj(ctx->pcb->Data, idp), key);
+		del_cnt += del_any(ctx, pcb_idpath2obj(ctx->data, idp), key);
 
 	if (ctx->selection) {
 		pcb_any_obj_t *o;
 		pcb_data_it_t it;
-		for(o = pcb_data_first(&it, ctx->pcb->Data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it))
+		for(o = pcb_data_first(&it, ctx->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it))
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, o))
 				del_cnt += del_any(ctx, o, key);
 	}

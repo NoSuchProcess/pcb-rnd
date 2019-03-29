@@ -78,6 +78,7 @@ typedef struct {
 
 	/* scope */
 	pcb_board_t *pcb;
+	pcb_data_t *data; /* change this after init in case of subc */
 
 	/* target objects */
 	pcb_idpath_list_t objs;

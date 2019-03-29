@@ -38,6 +38,7 @@ typedef struct set_ctx_s {
 	unsigned is_trace:1;
 	unsigned is_attr:1;
 	pcb_board_t *pcb;
+	pcb_data_t *data;
 	const char *name;
 	int set_cnt;
 } pcb_propset_ctx_t;

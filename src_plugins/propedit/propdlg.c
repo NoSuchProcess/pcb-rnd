@@ -150,7 +150,7 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 			gds_append_str(&scope, "selected objects, ");
 		inv = 0;
 		for(n = 0, l = ctx->pe.layers.array; n < vtl0_len(&ctx->pe.layers); n++, l++) {
-			const char *name = pcb_layer_name(ctx->pe.pcb->Data, *l);
+			const char *name = pcb_layer_name(ctx->pe.data, *l);
 			if (name != 0) {
 				gds_append_str(&scope, "layer: ");
 				gds_append_str(&scope, name);
@@ -177,7 +177,7 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 
 		inv = 0;
 		for(idp = pcb_idpath_list_first(&ctx->pe.objs); idp != NULL; idp = pcb_idpath_list_next(idp)) {
-			pcb_any_obj_t *o = pcb_idpath2obj(ctx->pe.pcb->Data, idp);
+			pcb_any_obj_t *o = pcb_idpath2obj(ctx->pe.data, idp);
 			if (o != NULL)
 				pcb_append_printf(&scope, "%s #%ld, ", pcb_obj_type_name(o->type), o->ID);
 			else

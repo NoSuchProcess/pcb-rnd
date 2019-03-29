@@ -27,6 +27,7 @@
 #include "props.h"
 #include "propsel.h"
 #include "compat_misc.h"
+#include "board.h"
 #include "pcb-printf.h"
 #include "hid.h"
 #include <genht/hash.h>
@@ -79,6 +80,7 @@ void pcb_props_init(pcb_propedit_t *ctx, pcb_board_t *pcb)
 	memset(ctx, 0, sizeof(pcb_propedit_t));
 	htsp_init(&ctx->props, strhash, strkeyeq);
 	ctx->pcb = pcb;
+	ctx->data = pcb->Data;
 }
 
 void pcb_props_reset(pcb_propedit_t *ctx)
