@@ -246,7 +246,7 @@ static void vfs_list_layers(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx, con
 		cb_mkdir(cb, ctx, &path, "/text");
 		cb_mkdir(cb, ctx, &path, "/arc");
 
-		pcb_props_init(&pctx, PCB);
+		pcb_props_init(&pctx, pcb);
 		vtl0_append(&pctx.layers, lid);
 		vfs_list_props(&path, &pctx, cb, ctx);
 		pcb_props_uninit(&pctx);
@@ -441,7 +441,7 @@ static void vfs_list_layergrps(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 		pcb_append_printf(&path, "%ld", gid);
 		cb(ctx, path.array, 1);
 
-		pcb_props_init(&pctx, PCB);
+		pcb_props_init(&pctx, pcb);
 		vtl0_append(&pctx.layergrps, gid);
 		vfs_list_props(&path, &pctx, cb, ctx);
 		pcb_props_uninit(&pctx);
