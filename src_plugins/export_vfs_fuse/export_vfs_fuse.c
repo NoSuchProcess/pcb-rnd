@@ -71,7 +71,7 @@ static void pcb_fuse_list_cb(void *ctx_, const char *path, int isdir)
 		if (direct) {
 			struct stat st;
 			memset(&st, 0, sizeof(struct stat));
-			st.st_mode = (isdir ? S_IFDIR : S_IFREG) | 0755;
+			st.st_mode = (isdir ? (S_IFDIR | 0755) : (S_IFREG | 0644));
 			st.st_nlink = 1 + !!isdir;
 			ctx->filler(ctx->buf, path, &st, 0);
 			fprintf(flog, "list_cb ctx->path=%s path=%s\n", ctx->path, path);
@@ -127,7 +127,7 @@ static int pcb_fuse_getattr(const char *path, struct stat *stbuf)
 		isdir = 1;
 
 	memset(stbuf, 0, sizeof(struct stat));
-	stbuf->st_mode = (isdir ? S_IFDIR : S_IFREG) | 0755;
+	stbuf->st_mode = (isdir ? (S_IFDIR | 0755) : (S_IFREG | 0644));
 	stbuf->st_nlink = 1 + !!isdir;
 	stbuf->st_size = data.used;
 
