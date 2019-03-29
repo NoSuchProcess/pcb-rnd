@@ -525,30 +525,33 @@ static void set_pstk(pcb_propset_ctx_t *st, pcb_pstk_t *ps)
 
 static void set_subc(pcb_propset_ctx_t *st, pcb_subc_t *ssubc)
 {
-	PCB_ARC_ALL_LOOP(ssubc->data); {
-		if (pcb_subc_part_editable(st->pcb, arc))
-			set_arc(st, arc);
-	} PCB_ENDALL_LOOP;
-	PCB_LINE_ALL_LOOP(ssubc->data); {
-		if (pcb_subc_part_editable(st->pcb, line))
-			set_line(st, line);
-	} PCB_ENDALL_LOOP;
-	PCB_POLY_ALL_LOOP(ssubc->data); {
-		if (pcb_subc_part_editable(st->pcb, polygon))
-			set_poly(st, polygon);
-	} PCB_ENDALL_LOOP;
-	PCB_TEXT_ALL_LOOP(ssubc->data); {
-		if (pcb_subc_part_editable(st->pcb, text))
-			set_text(st, text);
-	} PCB_ENDALL_LOOP;
-	PCB_PADSTACK_LOOP(ssubc->data); {
-		if (pcb_subc_part_editable(st->pcb, padstack))
-			set_pstk(st, padstack);
-	} PCB_END_LOOP;
-	PCB_SUBC_LOOP(ssubc->data); {
-		if (pcb_subc_part_editable(st->pcb, subc))
-			set_subc(st, subc);
-	} PCB_END_LOOP;
+
+	if (((st->name[0] != 'a') && (st->name[0] != 'f')) || (st->name[1] != '/')) { /* attributes and flags are not recursive */
+		PCB_ARC_ALL_LOOP(ssubc->data); {
+			if (pcb_subc_part_editable(st->pcb, arc))
+				set_arc(st, arc);
+		} PCB_ENDALL_LOOP;
+		PCB_LINE_ALL_LOOP(ssubc->data); {
+			if (pcb_subc_part_editable(st->pcb, line))
+				set_line(st, line);
+		} PCB_ENDALL_LOOP;
+		PCB_POLY_ALL_LOOP(ssubc->data); {
+			if (pcb_subc_part_editable(st->pcb, polygon))
+				set_poly(st, polygon);
+		} PCB_ENDALL_LOOP;
+		PCB_TEXT_ALL_LOOP(ssubc->data); {
+			if (pcb_subc_part_editable(st->pcb, text))
+				set_text(st, text);
+		} PCB_ENDALL_LOOP;
+		PCB_PADSTACK_LOOP(ssubc->data); {
+			if (pcb_subc_part_editable(st->pcb, padstack))
+				set_pstk(st, padstack);
+		} PCB_END_LOOP;
+		PCB_SUBC_LOOP(ssubc->data); {
+			if (pcb_subc_part_editable(st->pcb, subc))
+				set_subc(st, subc);
+		} PCB_END_LOOP;
+	}
 
 	if (set_common(st, (pcb_any_obj_t *)ssubc)) return;
 
