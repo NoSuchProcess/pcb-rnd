@@ -137,8 +137,14 @@ static void map_layergrp(pcb_propedit_t *ctx, pcb_layergrp_t *grp)
 {
 	if (grp == NULL)
 		return;
+
 	map_add_prop(ctx, "p/layer_group/name", String, grp->name);
 	map_add_prop(ctx, "p/layer_group/purpose", String, grp->purpose);
+
+	map_add_prop(ctx, "p/layer_group/location", String, pcb_layer_type_bit2str(grp->ltype & PCB_LYT_ANYWHERE));
+	map_add_prop(ctx, "p/layer_group/main_type", String, pcb_layer_type_bit2str(grp->ltype & PCB_LYT_ANYTHING));
+	map_add_prop(ctx, "p/layer_group/prop_type", String, pcb_layer_type_bit2str(grp->ltype & PCB_LYT_ANYPROP));
+
 	map_attr(ctx, &grp->Attributes);
 }
 
