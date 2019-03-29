@@ -365,7 +365,7 @@ static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *buff, int
 		obj = htip_get(&data->id2obj, oid);
 		if ((obj == NULL) || (obj->type != ty))
 			return -1;
-		if ((obj->parent_type != PCB_PARENT_LAYER) || (obj->parent.layer != pcb_get_layer(PCB->Data, lid)))
+		if ((obj->parent_type != PCB_PARENT_LAYER) || (obj->parent.layer != pcb_get_layer(data, lid)))
 			return -1;
 		res = vfs_access_obj(pcb, obj, path, buff, wr, isdir);
 	}
