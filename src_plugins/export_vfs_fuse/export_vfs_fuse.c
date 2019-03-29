@@ -32,6 +32,7 @@
 
 static const char *export_vfs_fuse_cookie = "export_vfs_fuse HID";
 static int pcb_fuse_changed;
+static char fuse_cwd[PCB_PATH_MAX];
 
 static pcb_hid_attribute_t *export_vfs_fuse_get_export_options(int *n)
 {
@@ -232,9 +233,16 @@ static int pcb_fuse_open(const char *path, struct fuse_file_info *fi)
 
 static void pcb_fuse_destroy(void *private_data)
 {
+	char *fn = PCB->Filename;
+
 	if (!pcb_fuse_changed)
 		return;
-	if (pcb_save_pcb(PCB->Filename, NULL) != 0) {
+
+	/* pwd is lost during daemonisation */
+	if (!pcb_is_path_abs(PCB->Filename))
+		fn = pcb_strdup_printf("%s%c%s", fuse_cwd, PCB_DIR_SEPARATOR_C, PCB->Filename);
+
+	if (pcb_save_pcb(fn, NULL) != 0) {
 		fprintf(stderr, "Failed to save the modified board file\n");
 		exit(1);
 	}
@@ -246,6 +254,8 @@ static int fuse_argc = 0;
 static void export_vfs_fuse_do_export(pcb_hid_attr_val_t *options)
 {
 	static struct fuse_operations oper;
+
+	pcb_get_wd(fuse_cwd);
 
 	oper.readdir = pcb_fuse_readdir;
 	oper.open = pcb_fuse_open;
