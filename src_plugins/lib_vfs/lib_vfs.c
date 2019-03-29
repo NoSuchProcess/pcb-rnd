@@ -351,7 +351,6 @@ static void vfs_list_layergrps(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 
 	for(gid = 0; gid < pcb->LayerGroups.len; gid++) {
 		pcb_propedit_t pctx;
-		int ou;
 
 		path.used = orig_used;
 		pcb_append_printf(&path, "%ld", gid);
