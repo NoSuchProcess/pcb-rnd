@@ -102,6 +102,7 @@ static void vfs_list_props(gds_t *path, pcb_propedit_t *pctx, pcb_vfs_list_cb cb
 	gds_append(path, '/');
 	ou = path->used;
 	for(e = htsp_first(&pctx->props); e != NULL; e = htsp_next(&pctx->props, e)) {
+		path->used = ou;
 		cb_mkdirp(cb, ctx, path, e->key, &seen);
 		path->used = ou;
 		gds_append_str(path, e->key);
