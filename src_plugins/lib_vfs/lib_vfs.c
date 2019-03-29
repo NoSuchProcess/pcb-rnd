@@ -111,7 +111,7 @@ static void vfs_list_props(gds_t *path, pcb_propedit_t *pctx, pcb_vfs_list_cb cb
 	UNSEE;
 }
 
-static int vfs_access_prop(pcb_propedit_t *pctx, const char *path, gds_t *data, int wr, int *isdir)
+static int vfs_access_prop(pcb_propedit_t *pctx, const char *path, gds_t *buff, int wr, int *isdir)
 {
 	pcb_props_t *pt;
 	pcb_propval_t *pv;
@@ -131,7 +131,7 @@ static int vfs_access_prop(pcb_propedit_t *pctx, const char *path, gds_t *data, 
 
 	if (wr) {
 		pcb_propset_ctx_t sctx;
-		sctx.s = data->array;
+		sctx.s = buff->array;
 		TODO("convert the other fields as well");
 		return pcb_propsel_set(pctx, path, &sctx) == 1;
 	}
@@ -139,11 +139,11 @@ static int vfs_access_prop(pcb_propedit_t *pctx, const char *path, gds_t *data, 
 	e = htprop_first(&pt->values);
 	pv = &e->key;
 
-	if (data != NULL) {
-		free(data->array);
-		data->array = pcb_propsel_printval(pt->type, pv);
-		data->used = data->alloced = strlen(data->array);
-		gds_append(data, '\n');
+	if (buff != NULL) {
+		free(buff->array);
+		buff->array = pcb_propsel_printval(pt->type, pv);
+		buff->used = buff->alloced = strlen(buff->array);
+		gds_append(buff, '\n');
 	}
 
 	return 0;
@@ -192,7 +192,7 @@ static void vfs_list_obj(pcb_board_t *pcb, gds_t *path, pcb_any_obj_t *obj, pcb_
 	UNSEE;
 }
 
-static int vfs_access_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, const char *path, gds_t *data, int wr, int *isdir)
+static int vfs_access_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, const char *path, gds_t *buff, int wr, int *isdir)
 {
 	pcb_propedit_t pctx;
 	pcb_idpath_t *idp;
@@ -212,7 +212,7 @@ static int vfs_access_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, const char *path
 
 	pcb_props_init(&pctx, pcb);
 	pcb_idpath_list_append(&pctx.objs, idp);
-	res = vfs_access_prop(&pctx, path, data, wr, isdir);
+	res = vfs_access_prop(&pctx, path, buff, wr, isdir);
 	pcb_props_uninit(&pctx);
 	pcb_idpath_destroy(idp);
 
@@ -277,7 +277,7 @@ static void vfs_list_data(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx, const
 	vfs_list_layers(pcb, cb, ctx, datapath, data);
 }
 
-static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *data, int wr, int *isdir)
+static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *buff, int wr, int *isdir)
 {
 	pcb_propedit_t pctx;
 	char *end;
@@ -298,7 +298,7 @@ static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *data, int
 	if (path[1] == '/') { /* direct layer access */
 		pcb_props_init(&pctx, pcb);
 		vtl0_append(&pctx.layers, lid);
-		res = vfs_access_prop(&pctx, path, data, wr, isdir);
+		res = vfs_access_prop(&pctx, path, buff, wr, isdir);
 		pcb_props_uninit(&pctx);
 	}
 	else {
@@ -335,7 +335,7 @@ static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *data, int
 			return -1;
 		if ((obj->parent_type != PCB_PARENT_LAYER) || (obj->parent.layer != pcb_get_layer(PCB->Data, lid)))
 			return -1;
-		res = vfs_access_obj(pcb, obj, path, data, wr, isdir);
+		res = vfs_access_obj(pcb, obj, path, buff, wr, isdir);
 	}
 
 	return res;
@@ -373,7 +373,7 @@ static void vfs_list_layergrps(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 	gds_uninit(&path);
 }
 
-static int vfs_access_layergrp(pcb_board_t *pcb, const char *path, gds_t *data, int wr, int *isdir)
+static int vfs_access_layergrp(pcb_board_t *pcb, const char *path, gds_t *buff, int wr, int *isdir)
 {
 	pcb_propedit_t pctx;
 	char *end;
@@ -390,7 +390,7 @@ static int vfs_access_layergrp(pcb_board_t *pcb, const char *path, gds_t *data, 
 
 	pcb_props_init(&pctx, pcb);
 	vtl0_append(&pctx.layergrps, gid);
-	res = vfs_access_prop(&pctx, path, data, wr, isdir);
+	res = vfs_access_prop(&pctx, path, buff, wr, isdir);
 	pcb_props_uninit(&pctx);
 
 	return res;
@@ -421,16 +421,16 @@ static void vfs_list_conf(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 static int vfs_conf_printf(void *ctx, const char *fmt, ...)
 {
 	va_list ap;
-	gds_t *data = ctx;
+	gds_t *buff = ctx;
 	int res;
 
 	va_start(ap, fmt);
-	res = pcb_append_vprintf(data, fmt, ap);
+	res = pcb_append_vprintf(buff, fmt, ap);
 	va_end(ap);
 	return res;
 }
 
-static int vfs_access_conf(pcb_board_t *pcb, const char *path, gds_t *data, int wr, int *isdir)
+static int vfs_access_conf(pcb_board_t *pcb, const char *path, gds_t *buff, int wr, int *isdir)
 {
 	conf_native_t *nat = conf_get_field(path);
 	if (nat == NULL) {
@@ -446,9 +446,9 @@ static int vfs_access_conf(pcb_board_t *pcb, const char *path, gds_t *data, int 
 		*isdir = 0;
 
 	if (wr)
-		return conf_set(CFR_DESIGN, path, 0, data->array, POL_OVERWRITE);
+		return conf_set(CFR_DESIGN, path, 0, buff->array, POL_OVERWRITE);
 	else
-		conf_print_native((conf_pfn)vfs_conf_printf, data, NULL, 0, nat);
+		conf_print_native((conf_pfn)vfs_conf_printf, buff, NULL, 0, nat);
 
 	return 0;
 }
@@ -468,7 +468,7 @@ int pcb_vfs_list(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 
 
 
-int pcb_vfs_access(pcb_board_t *pcb, const char *path, gds_t *data, int wr, int *isdir)
+int pcb_vfs_access(pcb_board_t *pcb, const char *path, gds_t *buff, int wr, int *isdir)
 {
 	if ((strcmp(path, "data") == 0) || (strcmp(path, "data/layers") == 0)) {
 		if (isdir != NULL)
@@ -477,7 +477,7 @@ int pcb_vfs_access(pcb_board_t *pcb, const char *path, gds_t *data, int wr, int 
 			return 0;
 	}
 	if (strncmp(path, "data/layers/", 12) == 0)
-		return vfs_access_layer(pcb, path+12, data, wr, isdir);
+		return vfs_access_layer(pcb, path+12, buff, wr, isdir);
 
 	if (strcmp(path, "layer_groups") == 0) {
 		if (isdir != NULL)
@@ -486,7 +486,7 @@ int pcb_vfs_access(pcb_board_t *pcb, const char *path, gds_t *data, int wr, int 
 			return 0;
 	}
 	if (strncmp(path, "layer_groups/", 13) == 0)
-		return vfs_access_layergrp(pcb, path+13, data, wr, isdir);
+		return vfs_access_layergrp(pcb, path+13, buff, wr, isdir);
 
 	if (strcmp(path, "conf") == 0) {
 		if (isdir != NULL)
@@ -495,7 +495,7 @@ int pcb_vfs_access(pcb_board_t *pcb, const char *path, gds_t *data, int wr, int 
 			return 0;
 	}
 	if (strncmp(path, "conf/", 5) == 0)
-		return vfs_access_conf(pcb, path+5, data, wr, isdir);
+		return vfs_access_conf(pcb, path+5, buff, wr, isdir);
 
 	return -1;
 }
