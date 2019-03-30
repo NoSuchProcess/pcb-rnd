@@ -28,6 +28,8 @@
 
 #define GVT_DONT_UNDEF
 #include "cam_compile.h"
+#include "layer_vis.h"
+#include "event.h"
 #include <genvector/genvector_impl.c>
 
 /* mkdir -p on arg - changes the string in arg */
@@ -120,10 +122,20 @@ static int cam_exec_inst(cam_ctx_t *ctx, pcb_cam_code_t *code)
 
 static int cam_exec(cam_ctx_t *ctx)
 {
-	int n;
+	int n, save_ons[PCB_MAX_LAYER + 2], have_gui;
+	
+	have_gui = (pcb_gui != NULL) && pcb_gui->gui;
+	if (have_gui)
+		pcb_hid_save_and_show_layer_ons(save_ons);
+
 	for(n = 0; n < ctx->code.used; n++)
 		if (cam_exec_inst(ctx, &ctx->code.array[n]) != 0)
 			return 1;
+
+	if (have_gui) {
+		pcb_hid_restore_layer_ons(save_ons);
+		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
+	}
 	return 0;
 }
 
