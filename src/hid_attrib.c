@@ -31,6 +31,7 @@
 #include "config.h"
 #include "hid_attrib.h"
 #include "misc_util.h"
+#include "compat_misc.h"
 #include "pcb-printf.h"
 
 pcb_hid_attr_node_t *hid_attr_nodes = 0;
@@ -140,7 +141,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 				break;
 			case PCB_HATT_STRING:
 				if (a->value)
-					*(const char **) a->value = a->default_val.str_value;
+					*(const char **) a->value = pcb_strdup(a->default_val.str_value);
 				break;
 			case PCB_HATT_ENUM:
 				if (a->value)
@@ -199,9 +200,9 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 						break;
 					case PCB_HATT_STRING:
 						if (a->value)
-							*(char **) a->value = (*argv)[1];
+							*(char **) a->value = pcb_strdup((*argv)[1]);
 						else
-							a->default_val.str_value = (*argv)[1];
+							a->default_val.str_value = pcb_strdup((*argv)[1]);
 						(*argc)--;
 						(*argv)++;
 						break;
@@ -230,7 +231,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 						break;
 					case PCB_HATT_PATH:
 						abort();
-						a->default_val.str_value = (*argv)[1];
+						a->default_val.str_value = pcb_strdup((*argv)[1]);
 						(*argc)--;
 						(*argv)++;
 						break;
