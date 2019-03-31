@@ -66,7 +66,7 @@ set_fmt_args()
 			ext=.png
 			;;
 		gerber)
-			fmt_args="--cross-sect -c plugins/draw_fab/omit_date=1"
+			fmt_args="--name-style fixed --cross-sect -c plugins/draw_fab/omit_date=1"
 # multifile: do not set ext
 			;;
 		remote)
