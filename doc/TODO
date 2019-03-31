@@ -28,7 +28,7 @@
 	+ when no netlist is loaded, new rats can't be drawn [report: agaran]
 	+ CLEANUP: When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Move this in core., iterate over rats to find the ones to deal with [report: Ade]
 + BUG: bug_files/proto1.* padstack prototype selection bug priv mail 20 Feb [report: Alain]
-- FEATURE: template print terminal id so attributes (like term name) can be displayed; gtk dwg tooltip  should use the same template to print the term [report: Peter] (report on the mailing list)
++ FEATURE: template print terminal id so attributes (like term name) can be displayed; gtk dwg tooltip  should use the same template to print the term [report: Peter] (report on the mailing list)
 + FEATURE: Ade's new subc construction with convert: need a config setting that results in creating the refdes text but not adding the refdes attribute as empty -> enter <?> in editor/subc_conv_refdes, that's a new special value there [report: Ade]
 + FEATURE: external editor on buffer [report: TwisteR]
 - FEATURE: fontsel: ttf import?
