@@ -188,17 +188,19 @@ static const char *copy_outline_names[] = {
 };
 
 static const char *name_style_names[] = {
-#define NAME_STYLE_FIXED 0
+#define NAME_STYLE_PCB_RND 0
+	"pcb-rnd",
+#define NAME_STYLE_FIXED 1
 	"fixed",
-#define NAME_STYLE_SINGLE 1
+#define NAME_STYLE_SINGLE 2
 	"single",
-#define NAME_STYLE_FIRST 2
+#define NAME_STYLE_FIRST 3
 	"first",
-#define NAME_STYLE_EAGLE 3
+#define NAME_STYLE_EAGLE 4
 	"eagle",
-#define NAME_STYLE_HACKVANA 4
+#define NAME_STYLE_HACKVANA 5
 	"hackvana",
-#define NAME_STYLE_UNIVERSAL 5
+#define NAME_STYLE_UNIVERSAL 6
 	"universal",
 	NULL
 };
@@ -487,6 +489,9 @@ static void assign_file_suffix(char *dest, pcb_layergrp_id_t gid, pcb_layer_id_t
 
 	switch (name_style) {
 	default:
+	case NAME_STYLE_PCB_RND:
+		fns_style = PCB_FNS_pcb_rnd;
+		break;
 	case NAME_STYLE_FIXED:
 		fns_style = PCB_FNS_fixed;
 		break;
@@ -611,23 +616,22 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	if (!gerber_cam.active) {
 		int purpi;
 		const pcb_virt_layer_t *vl;
-		const char *purpose = NULL;
 
 		maybe_close_f(f);
 		f = NULL;
 
 		pagecount++;
 		purpi = F_pdrill;
-		vl = pcb_vlayer_get_first(PCB_LYT_VIRTUAL, purpose, purpi);
+		vl = pcb_vlayer_get_first(PCB_LYT_VIRTUAL, "pdrill", purpi);
 		assert(vl != NULL);
-		assign_file_suffix(filesuff, -1, vl->new_id, vl->type, purpose, purpi, 1, NULL);
+		assign_file_suffix(filesuff, -1, vl->new_id, vl->type, "pdrill", purpi, 1, NULL);
 		pcb_drill_export_excellon(PCB, &pdrills, conf_gerber.plugins.export_gerber.plated_g85_slot, filename);
 
 		pagecount++;
 		purpi = F_udrill;
-		vl = pcb_vlayer_get_first(PCB_LYT_VIRTUAL, purpose, purpi);
+		vl = pcb_vlayer_get_first(PCB_LYT_VIRTUAL, "udrill", purpi);
 		assert(vl != NULL);
-		assign_file_suffix(filesuff, -1, vl->new_id, vl->type, purpose, purpi, 1, NULL);
+		assign_file_suffix(filesuff, -1, vl->new_id, vl->type, "udrill", purpi, 1, NULL);
 		pcb_drill_export_excellon(PCB, &udrills, conf_gerber.plugins.export_gerber.unplated_g85_slot, filename);
 	}
 
