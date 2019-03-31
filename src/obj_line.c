@@ -1056,7 +1056,7 @@ void pcb_line_name_invalidate_draw(pcb_line_t *line)
 {
 	if (line->term != NULL) {
 		pcb_term_label_invalidate((line->Point1.X + line->Point2.X)/2, (line->Point1.Y + line->Point2.Y)/2,
-			100.0, is_line_term_vert(line), pcb_true, line->term, line->intconn);
+			100.0, is_line_term_vert(line), pcb_true, (pcb_any_obj_t *)line);
 	}
 }
 
@@ -1064,7 +1064,7 @@ void pcb_line_draw_label(pcb_draw_info_t *info, pcb_line_t *line)
 {
 	if (line->term != NULL)
 		pcb_term_label_draw(info, (line->Point1.X + line->Point2.X)/2, (line->Point1.Y + line->Point2.Y)/2,
-			conf_core.appearance.term_label_size, is_line_term_vert(line), pcb_true, line->term, line->intconn);
+			conf_core.appearance.term_label_size, is_line_term_vert(line), pcb_true, (pcb_any_obj_t *)line);
 }
 
 

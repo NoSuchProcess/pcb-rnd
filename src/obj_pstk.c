@@ -762,9 +762,9 @@ void pcb_pstk_draw_label(pcb_draw_info_t *info, pcb_pstk_t *ps)
 	proto = pcb_pstk_get_proto(ps);
 	if ((proto != NULL) && (proto->hdia > 0))
 		offs = proto->hdia/2;
-	pcb_term_label_draw(info, ps->x + offs, ps->y, conf_core.appearance.term_label_size, vert, pcb_false, ps->term, ps->intconn);
+	pcb_term_label_draw(info, ps->x + offs, ps->y, conf_core.appearance.term_label_size, vert, pcb_false, (pcb_any_obj_t *)ps);
 #endif
-	pcb_term_label_draw(info, ps->x, ps->y, conf_core.appearance.term_label_size, vert, pcb_true, ps->term, ps->intconn);
+	pcb_term_label_draw(info, ps->x, ps->y, conf_core.appearance.term_label_size, vert, pcb_true, (pcb_any_obj_t *)ps);
 }
 
 void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, char *layers, pcb_bool mark, pcb_bool label, const pcb_box_t *drawn_area)

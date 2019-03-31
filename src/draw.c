@@ -1066,7 +1066,7 @@ static const char *lab_with_intconn(int intconn, const char *lab, char *buff, in
 	}
 
 
-void pcb_term_label_draw(pcb_draw_info_t *info, pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab, int intconn)
+void pcb_label_draw(pcb_draw_info_t *info, pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab, int intconn)
 {
 	int mirror, direction;
 	PCB_TERM_LABEL_SETUP;
@@ -1083,7 +1083,7 @@ void pcb_term_label_draw(pcb_draw_info_t *info, pcb_coord_t x, pcb_coord_t y, do
 		pcb_draw_force_termlab--;
 }
 
-void pcb_term_label_invalidate(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab, int intconn)
+void pcb_label_invalidate(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab, int intconn)
 {
 	pcb_coord_t ox = x, oy = y, margin = 0;
 	pcb_box_t b;
@@ -1097,5 +1097,15 @@ void pcb_term_label_invalidate(pcb_coord_t x, pcb_coord_t y, double scale, pcb_b
 	b.Y2 = oy + dy + margin;
 
 	pcb_draw_invalidate(&b);
+}
+
+void pcb_term_label_draw(pcb_draw_info_t *info, pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const pcb_any_obj_t *obj)
+{
+	pcb_label_draw(info, x, y, scale, vert, centered, obj->term, obj->intconn);
+}
+
+void pcb_term_label_invalidate(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const pcb_any_obj_t *obj)
+{
+	pcb_label_invalidate(x, y, scale, vert, centered, obj->term, obj->intconn);
 }
 
