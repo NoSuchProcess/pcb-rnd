@@ -231,7 +231,7 @@ ha:{
 					li:submenu {
 						ha:term                   = { a={<key>v; <key>t; <key>t}; checked=ChkTermID(%a.term%); action=Display(TermID, "%a.term%"); update_on={editor/term_id} }
 						ha:name                   = { a={<key>v; <key>t; <key>n}; checked=ChkTermID(%a.name%); action=Display(TermID, "%a.name%"); update_on={editor/term_id} }
-						ha:term+name              = { a={<key>v; <key>t; <key>s}; checked=ChkTermID(%a.term%\\n%a.name%); action=Display(TermID, "%a.term%\\\\n%a.name%"); update_on={editor/term_id} }
+						ha:term+name              = { a={<key>v; <key>t; <key>s}; checked=ChkTermID("%a.term%,%a.name%"); action=Display(TermID, "%a.term%,%a.name%"); update_on={editor/term_id} }
 						ha:user configured        = { a={<key>v; <key>t; <key>c}; action=Display(TermID); }
 					}
 				}
