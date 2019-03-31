@@ -313,8 +313,11 @@ static int layer_sort(const void *va, const void *vb)
 static void maybe_close_f(FILE * f)
 {
 	if (f) {
-		if (was_drill)
+		if ((was_drill) && (!gerber_cam.active)) {
+			TODO("excellon split");
+			/* Leftover from when we generate excellon from gerber. Remove this. */
 			fprintf(f, "M30\r\n");
+		}
 		else
 			fprintf(f, "M02*\r\n");
 		fclose(f);
@@ -913,8 +916,19 @@ static void use_gc(pcb_hid_gc_t gc, int radius)
 			aperture_t *aptr = find_aperture(curr_aptr_list, radius, ROUND);
 			if (aptr == NULL)
 				pcb_fprintf(stderr, "error: aperture for radius %$mS type ROUND is null\n", radius);
-			else if (f && !is_drill)
-				fprintf(f, "G54D%d*", aptr->dCode);
+			else if (f != NULL) {
+				if (gerber_cam.active) {
+					fprintf(f, "G54D%d*", aptr->dCode);
+				}
+				else {
+					TODO("excellon split");
+					/* remove this else part once excellon is removed: when exporting
+					   drill in gerber, we shall always use the above code and generate
+					   G54 */
+					if (!is_drill)
+						fprintf(f, "G54D%d*", aptr->dCode);
+				}
+			}
 			linewidth = radius;
 			lastcap = pcb_cap_round;
 		}
@@ -943,7 +957,7 @@ static void use_gc(pcb_hid_gc_t gc, int radius)
 			fprintf(f, "G54D%d*", aptr->dCode);
 	}
 
-
+TODO("gerber: remove this dead code");
 #if 0
 	if (lastcolor != gc->color) {
 		c = gc->color;
@@ -983,9 +997,18 @@ static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 		find_aperture((is_plated ? &pdrills.apr : &udrills.apr), dia*2, ROUND);
 		find_aperture(curr_aptr_list, dia*2, ROUND); /* for a real gerber export of the BOUNDARY group: place aperture on the per layer aperture list */
 
-		if (!finding_apertures)
-			pcb_drill_new_pending(is_plated ? &pdrills : &udrills, x1, y1, x2, y2, dia*2);
-		return;
+		if (!gerber_cam.active) {
+			TODO("excellon split");
+			/* This is the old, excellon-in-gerber behavior - remove this once the split
+			   is complete: excellon should do new_pending, not gerber */
+			if (!finding_apertures)
+				pcb_drill_new_pending(is_plated ? &pdrills : &udrills, x1, y1, x2, y2, dia*2);
+			return;
+		}
+		else {
+			if (finding_apertures)
+				return;
+		}
 	}
 
 	if (x1 != x2 && y1 != y2 && gc->cap == pcb_cap_square) {
@@ -1158,8 +1181,17 @@ static void gerber_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, 
 	if (!f)
 		return;
 	if (is_drill) {
-		pcb_drill_new_pending(is_plated ? &pdrills : &udrills, cx, cy, cx, cy, radius * 2);
-		return;
+		if (!gerber_cam.active) {
+			TODO("excellon split");
+			/* This is the old, excellon-in-gerber behavior - remove this once the split
+			   is complete: excellon should do new_pending, not gerber */
+			pcb_drill_new_pending(is_plated ? &pdrills : &udrills, cx, cy, cx, cy, radius * 2);
+			return;
+		}
+		else {
+			if (finding_apertures)
+				return;
+		}
 	}
 	else if (gc->drill && !flash_drills)
 		return;
