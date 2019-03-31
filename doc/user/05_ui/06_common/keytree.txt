@@ -140,6 +140,7 @@ f7-shift	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Rotate,1)	Rotate buf
 f8	pcb-menu-default.lht	Mode(Remove)	Del\057Remove
 f9	pcb-menu-default.lht	Mode(Rotate)	Rotate
 f;a	pcb-menu-default.lht	Save(LayoutAs)	Save Layout As...
+f;c	pcb-menu-default.lht	cam()	Export with CAM job...
 f;e	pcb-menu-default.lht	ExportGUI()	Export layout...
 f;l	pcb-menu-default.lht	Load(Layout)	Load layout...
 f;n	pcb-menu-default.lht	New() 	Start New Layout
@@ -262,11 +263,15 @@ v;s;f	pcb-menu-default.lht	Display(SubcID,"%a.footprint%")	footprint
 v;s;r	pcb-menu-default.lht	Display(SubcID, "%a.refdes%")	refdes
 v;s;s	pcb-menu-default.lht	Display(SubcID,"%a.refdes%\\n%a.value%")	refdes+value
 v;s;v	pcb-menu-default.lht	Display(SubcID,"%a.value%")	value
+v;t;c	pcb-menu-default.lht	Display(TermID)	user configured
+v;t;n	pcb-menu-default.lht	Display(TermID, "%a.name%")	name
+v;t;s	pcb-menu-default.lht	Display(TermID, "%a.term%,%a.name%")	term+name
+v;t;t	pcb-menu-default.lht	Display(TermID, "%a.term%")	term
 w;a	pcb-menu-default.lht	About() 	About...
 w;d	pcb-menu-default.lht	DRC() 	DRC Check
 w;f	pcb-menu-default.lht	FontSel() 	Font selector
 w;l	pcb-menu-default.lht	DoWindows(Library) 	Library
-w;m	pcb-menu-default.lht	LogDialog) 	Message Log
+w;m	pcb-menu-default.lht	LogDialog() 	Message Log
 w;n	pcb-menu-default.lht	DoWindows(Netlist) 	Netlist
 w;p	pcb-menu-default.lht	Display(Pinout) 	Pinout
 y-ctrl	pcb-menu-default.lht	Redo() 	Redo last undone operation
