@@ -290,8 +290,6 @@ static void vfs_list_subcs(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx, cons
 	orig_used = path.used;
 
 	subclist_foreach(&data->subc, &it, subc) {
-		pcb_propedit_t pctx;
-
 		path.used = shrt;
 		vfs_list_obj(pcb, &path, (pcb_any_obj_t *)subc, cb, ctx);
 
@@ -382,7 +380,6 @@ static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *buff, int
 
 static int vfs_access_subcircuit(pcb_board_t *pcb, const char *path, gds_t *buff, int wr, int *isdir)
 {
-	pcb_propedit_t pctx;
 	char *end;
 	long int oid = strtol(path, &end, 10);
 	pcb_subc_t *subc;
