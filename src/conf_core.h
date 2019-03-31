@@ -61,6 +61,7 @@ typedef struct {
 		CFT_BOOLEAN description;           /* obsolete - DO NOT USE - kept for compatibility */
 		CFT_BOOLEAN name_on_pcb;           /* obsolete - DO NOT USE - kept for compatibility */
 		CFT_STRING  subc_id;               /* subcircuit ID template for diplaying the subcircuit label on the subcircuit layer; default to displaying the refes, if empty; syntax if the same as for DYNTEXT */
+		CFT_STRING  term_id;               /* terminal ID template for diplaying the subcircuit label on the subcircuit layer; default to displaying termid[intconn], if empty; syntax if the same as for DYNTEXT */
 		CFT_BOOLEAN fullscreen;            /* hide widgets to make more room for the drawing */
 		CFT_BOOLEAN move_linepoint_uses_route;	/* Moving a line point calculates a new line route. This allows 45/90 line modes when editing lines. */
 		CFT_BOOLEAN auto_via;              /* when drawing traces and switching layers or when moving an object from one layer to another, try to keep connections by automatically inserting vias. */

@@ -1027,11 +1027,24 @@ void pcb_hid_expose_generic(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 	expose_end(&save);
 }
 
-static const char *lab_with_intconn(int intconn, const char *lab, char *buff, int bufflen)
+static const char *lab_with_intconn(pcb_any_obj_t *term, int intconn, const char *lab, char *buff, int bufflen)
 {
+	if ((conf_core.editor.term_id != NULL) && (*conf_core.editor.term_id != '\0')) {
+		gds_t tmp;
+		if (pcb_append_dyntext(&tmp, term, conf_core.editor.term_id) == 0) {
+			int len = tmp.used < (bufflen-1) ? tmp.used : (bufflen-1);
+			memcpy(buff, tmp.array, len);
+			buff[len] = '\0';
+			gds_uninit(&tmp);
+			return buff;
+		}
+	}
+
+	/* fallback when template is not available or failed */
 	if (intconn <= 0)
 		return lab;
 	pcb_snprintf(buff, bufflen, "%s[%d]", lab, intconn);
+
 	return buff;
 }
 
@@ -1099,14 +1112,14 @@ void pcb_label_invalidate(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool v
 void pcb_term_label_draw(pcb_draw_info_t *info, pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const pcb_any_obj_t *obj)
 {
 	char buff[128];
-	const char *label = lab_with_intconn(obj->intconn, obj->term, buff, sizeof(buff));
+	const char *label = lab_with_intconn(obj, obj->intconn, obj->term, buff, sizeof(buff));
 	pcb_label_draw(info, x, y, scale, vert, centered, label);
 }
 
 void pcb_term_label_invalidate(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const pcb_any_obj_t *obj)
 {
 	char buff[128];
-	const char *label = lab_with_intconn(obj->intconn, obj->term, buff, sizeof(buff));
+	const char *label = lab_with_intconn(obj, obj->intconn, obj->term, buff, sizeof(buff));
 	pcb_label_invalidate(x, y, scale, vert, centered, label);
 }
 
