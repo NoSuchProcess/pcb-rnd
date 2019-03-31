@@ -220,11 +220,19 @@ ha:{
 				-
 				ha:Displayed subcircuit ID {
 					li:submenu {
-						ha:refdes                 = { a={<key>v; <key>s; <key>r}; checked=ChkSubcID(%a.refdes%); action=Display(SubcID, "%a.refdes%"); update_on={editor/name_on_pcb} }
+						ha:refdes                 = { a={<key>v; <key>s; <key>r}; checked=ChkSubcID(%a.refdes%); action=Display(SubcID, "%a.refdes%"); update_on={editor/subc_id} }
 						ha:footprint              = { a={<key>v; <key>s; <key>f}; checked=ChkSubcID(%a.footprint%); action=Display(SubcID,"%a.footprint%"); update_on={editor/subc_id} }
 						ha:value                  = { a={<key>v; <key>s; <key>v}; checked=ChkSubcID(%a.value%); action=Display(SubcID,"%a.value%"); update_on={editor/subc_id} }
 						ha:refdes+value           = { a={<key>v; <key>s; <key>s}; checked=ChkSubcID(%a.refdes%\\n%a.value%); action=Display(SubcID,"%a.refdes%\\\\n%a.value%"); update_on={editor/subc_id} }
 						ha:user configured        = { a={<key>v; <key>s; <key>c}; action=Display(SubcID); }
+					}
+				}
+				ha:Displayed terminal ID {
+					li:submenu {
+						ha:term                   = { a={<key>v; <key>t; <key>t}; checked=ChkTermID(%a.term%); action=Display(TermID, "%a.term%"); update_on={editor/term_id} }
+						ha:name                   = { a={<key>v; <key>t; <key>n}; checked=ChkTermID(%a.name%); action=Display(TermID, "%a.name%"); update_on={editor/term_id} }
+						ha:term+name              = { a={<key>v; <key>t; <key>s}; checked=ChkTermID(%a.term%\\n%a.name%); action=Display(TermID, "%a.term%\\\\n%a.name%"); update_on={editor/term_id} }
+						ha:user configured        = { a={<key>v; <key>t; <key>c}; action=Display(TermID); }
 					}
 				}
 				ha:Zoom and side {

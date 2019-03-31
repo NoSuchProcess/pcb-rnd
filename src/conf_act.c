@@ -293,6 +293,20 @@ static fgw_error_t pcb_act_ChkSubcID(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_ChkTermID[] = "ChkTermID(pattern)\n";
+static const char pcb_acth_ChkTermID[] = "Return 1 if currently shown term ID matches the requested pattern";
+static fgw_error_t pcb_act_ChkTermID(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *have = conf_core.editor.term_id, *expected = "";
+
+	if (have == NULL) have = "";
+
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, ChkTermID, expected = argv[1].val.str);
+
+	PCB_ACT_IRES(strcmp(expected, have) == 0);
+	return 0;
+}
+
 static const char pcb_acts_ChkGridUnits[] = "ChkGridUnits(expected)";
 static const char pcb_acth_ChkGridUnits[] = "Return 1 if currently selected grid unit matches the expected (normally mm or mil)";
 static fgw_error_t pcb_act_ChkGridUnits(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -319,6 +333,7 @@ pcb_action_t conf_action_list[] = {
 	{"ChkMode", pcb_act_ChkMode, pcb_acth_ChkMode, pcb_acts_ChkMode},
 	{"ChkGridSize", pcb_act_ChkGridSize, pcb_acth_ChkGridSize, pcb_acts_ChkGridSize},
 	{"ChkSubcID", pcb_act_ChkSubcID, pcb_acth_ChkSubcID, pcb_acts_ChkSubcID},
+	{"ChkTermID", pcb_act_ChkTermID, pcb_acth_ChkTermID, pcb_acts_ChkTermID},
 	{"ChkGridUnits", pcb_act_ChkGridUnits, pcb_acth_ChkGridUnits, pcb_acts_ChkGridUnits},
 	{"ChkBuffer", pcb_act_ChkBuffer, pcb_acth_ChkBuffer, pcb_acts_ChkBuffer}
 };

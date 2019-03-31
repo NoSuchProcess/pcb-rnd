@@ -119,6 +119,17 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
+	if (id == F_TermID) { /* change the displayed name of terminals */
+		if (argc > 1)
+			conf_set(CFR_DESIGN, "editor/term_id", -1, str_dir, POL_OVERWRITE);
+		else
+			conf_set(CFR_DESIGN, "editor/term_id", -1, "", POL_OVERWRITE);
+
+		pcb_gui->invalidate_all(); /* doesn't change too often, isn't worth anything more complicated */
+		pcb_draw();
+		return 0;
+	}
+
 	if (!str_dir || !*str_dir) {
 		switch (id) {
 
