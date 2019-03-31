@@ -2,26 +2,16 @@
 
 1. For the upcoming release ===============================================================================
 - BUG: scconfig: core gets glib dependency even if everything is in plugins (only plugins depend on glib) [report: Vuokko]
+- BUG: Setting the 'dyntext' flag on a text object doesn't update the bounding box. To reproduce - Create a text object and set it to '%a.parent.refdes%'. Edit the objects flags {e f} and set the 'dyntext' flag. The text should change to the refdes value but the bounding box remains at the size of the original text. [report: Ade]
+- BUG: The 'As Drawn' polygon contour is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
 + CLEANUP: move the hackish gerber layer suffix functions into CAM configs [report: Ade]
 - FEATURE: gerber metric support [report: Gabriel]
-- FEATURE: (TT) route style upgrade to prototypes:
-	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
-	- BUG: padstack doesn't show drc xor shape while moving - because the whole drawing is a cheat for old vias [report: igor2]
-	- replace the route style dialog box's via part
-	- proto copy to buffer - a buffer with a single padstack should also serve as a prototype copy vehicle? or just import by a list from the buffer
-	- load/import from buffer and file
-	- CLEANUP: remove PCB_MIN_PINORVIA* PCB_DEFAULT_DRILLINGHOLE macros - nothing should use them anymore
-	- add text font, update the pool node text_edit [report: Igor2]
 + CLEANUP/FEATURE: session persistent DAD message log (messages are flushed after dialog is closed?) [report: Miloh]
 - DOC: document the DAD text widget
 - DOC: action ClaimNet()
-- CLEANUP: (TT) propedit revamp:
-	- test under lesstif
-	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
 + FEATURE: rewrite the netlist code
 	+ when no netlist is loaded, new rats can't be drawn [report: agaran]
 	+ CLEANUP: When a subc or padstack is renamed or removed (PCB_EVENT_RUBBER_REMOVE_SUBC & PCB_EVENT_RUBBER_RENAME), any connected rats are removed by the rubberband plugin. Move this in core., iterate over rats to find the ones to deal with [report: Ade]
-- FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
 + BUG: bug_files/proto1.* padstack prototype selection bug priv mail 20 Feb [report: Alain]
 - FEATURE: template print terminal id so attributes (like term name) can be displayed; gtk dwg tooltip  should use the same template to print the term [report: Peter] (report on the mailing list)
 - BUG: undo: clear rats, optimize rats, delete 1 rat then undo - it should undo the rat deletion but it undoes optimization
@@ -31,8 +21,6 @@
 - FEATURE: fontsel: ttf import?
 - FEATURE: tedax etest save (board save too)
 + FEATURE: HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain] -> it is already configurable as appearance/color/background, which affects both the main drawing and all previews. I do not want different backgrounds for the two.
-- BUG: Setting the 'dyntext' flag on a text object doesn't update the bounding box. To reproduce - Create a text object and set it to '%a.parent.refdes%'. Edit the objects flags {e f} and set the 'dyntext' flag. The text should change to the refdes value but the bounding box remains at the size of the original text. [report: Ade]
-- BUG: The 'As Drawn' polygon contour is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
 
 2. For later releases ===============================================================================
 - CLEANUP: pcb_layer_to_file_name() dest should be gds_t to avoid potential buffer overflow
@@ -75,6 +63,18 @@
 	- CLEANUP: remove the gerber->drill dep and ask users to use the CAM instead
 	- CLEANUP: unify how output files are accessed/checked: confirmation on overwrite
 	- CLEANUP: remove the hackish gerber layer suffix in favor of CAM [report: Ade]
+- CLEANUP: (TT) propedit revamp:
+	- test under lesstif
+	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
+- FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
+- FEATURE: (TT) route style upgrade to prototypes:
+	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
+	- BUG: padstack doesn't show drc xor shape while moving - because the whole drawing is a cheat for old vias [report: igor2]
+	- replace the route style dialog box's via part
+	- proto copy to buffer - a buffer with a single padstack should also serve as a prototype copy vehicle? or just import by a list from the buffer
+	- load/import from buffer and file
+	- CLEANUP: remove PCB_MIN_PINORVIA* PCB_DEFAULT_DRILLINGHOLE macros - nothing should use them anymore
+	- add text font, update the pool node text_edit [report: Igor2]
 - BUG: autorouter broke on polygons: bug_files/ara.lht, {a r a}, bisect; broke before r14572 [report: Igor2]
 - FEATURE/BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
 - FEATURE: view list: import sch. shouldn't select elements to be removed but put them on a drc list
