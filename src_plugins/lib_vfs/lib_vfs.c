@@ -537,8 +537,9 @@ int pcb_vfs_list(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 	vfs_list_data(pcb, cb, ctx, "data", pcb->Data);
 	cb(ctx, "conf", 1);
 	vfs_list_conf(pcb, cb, ctx);
-	cb(ctx, "route_styles", 1);
-	cb(ctx, "netlist", 1);
+
+	TODO("cb(ctx, route_styles, 1)");
+	TODO("cb(ctx, netlist, 1)");
 
 	return 0;
 }
