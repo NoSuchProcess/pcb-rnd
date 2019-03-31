@@ -68,6 +68,8 @@ void pcb_cam_set_var(void *ctx, char *key, char *val);
 #define PCB_DERIVE_FN_SUFF_LEN 20
 
 typedef enum pcb_file_name_style_e {
+	/* The only style that will be available long term: native */
+	PCB_FNS_pcb_rnd,
 	/* Files for copper layers are named top, groupN, bottom.  */
 	PCB_FNS_fixed,
 	/* Groups with multiple layers are named as above, else the single

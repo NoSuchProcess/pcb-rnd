@@ -53,18 +53,36 @@ char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags,
 	if (flags == 0)
 		flags = pcb_layer_flags(PCB, lid);
 
+	if (style == PCB_FNS_pcb_rnd) {
+		const char *sloc, *styp;
+		group = pcb_layer_get_group(PCB, lid);
+		sloc = pcb_layer_type_bit2str(flags & PCB_LYT_ANYWHERE);
+		styp = pcb_layer_type_bit2str(flags & (PCB_LYT_ANYTHING | PCB_LYT_VIRTUAL));
+		if (sloc == NULL) sloc = "global";
+		if (styp == NULL) styp = "none";
+		if (purpose == NULL) purpose = "none";
+		if (group < 0) {
+			sprintf(dest, "%s.%s.%s.none", sloc, styp, purpose);
+		}
+		else
+			sprintf(dest, "%s.%s.%s.%ld", sloc, styp, purpose, group);
+		return dest;
+	}
+
 	if (flags & PCB_LYT_BOUNDARY) {
 		strcpy(dest, "outline");
 		return dest;
 	}
 
+	/* NOTE: long term only PCB_FNS_pcb_rnd will be supported and the rest,
+	   below, will be removed */
 	v = pcb_vlayer_get_first(flags, purpose, purpi);
 	if (v != NULL) {
 		strcpy(dest, v->name);
 		return dest;
 	}
 
-	
+
 	group = pcb_layer_get_group(PCB, lid);
 	nlayers = PCB->LayerGroups.grp[group].len;
 	single_name = pcb_layer_name(PCB->Data, lid);
