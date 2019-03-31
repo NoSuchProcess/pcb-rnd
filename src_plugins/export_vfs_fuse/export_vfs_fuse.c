@@ -22,6 +22,7 @@
 #include "plugins.h"
 #include "plug_io.h"
 #include "safe_fs.h"
+#include "compat_fs.h"
 
 #include "hid.h"
 #include "hid_attrib.h"
