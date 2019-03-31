@@ -5,7 +5,7 @@
 - BUG: Setting the 'dyntext' flag on a text object doesn't update the bounding box. To reproduce - Create a text object and set it to '%a.parent.refdes%'. Edit the objects flags {e f} and set the 'dyntext' flag. The text should change to the refdes value but the bounding box remains at the size of the original text. [report: Ade]
 - BUG: The 'As Drawn' polygon contour is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
 + CLEANUP: move the hackish gerber layer suffix functions into CAM configs [report: Ade]
-- FEATURE: gerber metric support [report: Gabriel]
++ FEATURE: gerber metric support [report: Gabriel]
 + CLEANUP/FEATURE: session persistent DAD message log (messages are flushed after dialog is closed?) [report: Miloh]
 - DOC: document the DAD text widget
 - DOC: action ClaimNet()
