@@ -1036,14 +1036,11 @@ static const char *lab_with_intconn(int intconn, const char *lab, char *buff, in
 }
 
 /* vert flip magic: make sure the offset is in-line with the flip and our sick y coords for vertical */
-#define PCB_TERM_LABEL_SETUP \
-	const unsigned char *label; \
-	char buff[128]; \
+#define PCB_TERM_LABEL_SETUP(label) \
 	pcb_bool flip_x = conf_core.editor.view.flip_x; \
 	pcb_bool flip_y = conf_core.editor.view.flip_y; \
 	pcb_font_t *font = pcb_font(PCB, 0, 0); \
 	pcb_coord_t w, h, dx, dy; \
-	label = (const unsigned char *)lab_with_intconn(intconn, lab, buff, sizeof(buff)); \
 	if (vert) { \
 		h = pcb_text_width(font, scale, label); \
 		w = pcb_text_height(font, scale, label); \
@@ -1066,10 +1063,10 @@ static const char *lab_with_intconn(int intconn, const char *lab, char *buff, in
 	}
 
 
-void pcb_label_draw(pcb_draw_info_t *info, pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab, int intconn)
+void pcb_label_draw(pcb_draw_info_t *info, pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *label)
 {
 	int mirror, direction;
-	PCB_TERM_LABEL_SETUP;
+	PCB_TERM_LABEL_SETUP((const unsigned char *)label);
 
 	mirror = (flip_x ^ flip_y);
 	direction = (vert ? 1 : 0) + (flip_x ? 2 : 0);
@@ -1078,16 +1075,16 @@ void pcb_label_draw(pcb_draw_info_t *info, pcb_coord_t x, pcb_coord_t y, double 
 
 	if (pcb_gui->gui)
 		pcb_draw_force_termlab++;
-	pcb_text_draw_string(info, font, label, x, y, scale, direction*90.0, mirror, 1, 0, 0, 0, 0, PCB_TXT_TINY_HIDE);
+	pcb_text_draw_string(info, font, (unsigned const char *)label, x, y, scale, direction*90.0, mirror, 1, 0, 0, 0, 0, PCB_TXT_TINY_HIDE);
 	if (pcb_gui->gui)
 		pcb_draw_force_termlab--;
 }
 
-void pcb_label_invalidate(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *lab, int intconn)
+void pcb_label_invalidate(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *label)
 {
 	pcb_coord_t ox = x, oy = y, margin = 0;
 	pcb_box_t b;
-	PCB_TERM_LABEL_SETUP;
+	PCB_TERM_LABEL_SETUP((const unsigned char *)label);
 
 	dx = PCB_ABS(dx);
 	dy = PCB_ABS(dy);
@@ -1101,11 +1098,15 @@ void pcb_label_invalidate(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool v
 
 void pcb_term_label_draw(pcb_draw_info_t *info, pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const pcb_any_obj_t *obj)
 {
-	pcb_label_draw(info, x, y, scale, vert, centered, obj->term, obj->intconn);
+	char buff[128];
+	const char *label = lab_with_intconn(obj->intconn, obj->term, buff, sizeof(buff));
+	pcb_label_draw(info, x, y, scale, vert, centered, label);
 }
 
 void pcb_term_label_invalidate(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const pcb_any_obj_t *obj)
 {
-	pcb_label_invalidate(x, y, scale, vert, centered, obj->term, obj->intconn);
+	char buff[128];
+	const char *label = lab_with_intconn(obj->intconn, obj->term, buff, sizeof(buff));
+	pcb_label_invalidate(x, y, scale, vert, centered, label);
 }
 
