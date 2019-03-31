@@ -190,7 +190,10 @@ static int pcb_text_render_str_cb(void *ctx, gds_t *s, const char **input)
 		path = key+2;
 		if ((path[0] == 'p') && (memcmp(path, "parent.", 7) == 0)) {
 			pcb_data_t *par = text->parent.layer->parent.data;
-			if (par->parent_type == PCB_PARENT_SUBC)
+
+			if (par == NULL)
+				attr = NULL;
+			else if (par->parent_type == PCB_PARENT_SUBC)
 				attr = &par->parent.subc->Attributes;
 			else if (par->parent_type == PCB_PARENT_BOARD)
 				attr = &par->parent.board->Attributes;
