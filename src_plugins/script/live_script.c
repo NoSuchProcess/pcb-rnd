@@ -26,12 +26,16 @@
 
 #include "config.h"
 
-/* for opendir */
+/* for opendir - must be the first */
 #include "compat_inc.h"
+
+#include <ctype.h>
+#include <genvector/vtp0.h>
 
 #include "actions.h"
 #include "plugins.h"
 #include "hid_dad.h"
+#include "safe_fs.h"
 
 
 #include "live_script.h"
@@ -40,12 +44,24 @@ typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	char *name;
 	char **langs;
+	char **lang_engines;
 } live_script_t;
+
+static void lvs_free_langs(live_script_t *lvs)
+{
+	char **s;
+	for(s = lvs->langs; *s != NULL; s++) free(*s);
+	for(s = lvs->lang_engines; *s != NULL; s++) free(*s);
+	free(lvs->langs);
+	free(lvs->lang_engines);
+}
+
 
 static void lvs_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	live_script_t *lvs = caller_data;
 	PCB_DAD_FREE(lvs->dlg);
+	lvs_free_langs(lvs);
 	free(lvs);
 }
 
@@ -53,16 +69,30 @@ extern const char *pcb_script_pup_paths[];
 static int lvs_list_langs(live_script_t *lvs)
 {
 	const char **path;
+	vtp0_t vl, ve;
+
+	vtp0_init(&vl);
+	vtp0_init(&ve);
+
 	for(path = pcb_script_pup_paths; *path != NULL; path++) {
+		char fn[PCB_PATH_MAX*2], *fn_end;
+		int dirlen;
 		struct dirent *de;
 		DIR *d = opendir(*path);
 
 		if (d == NULL)
 			continue;
+
+		dirlen = strlen(*path);
+		memcpy(fn, *path, dirlen);
+		fn_end = fn + dirlen;
+		*fn_end = PCB_DIR_SEPARATOR_C;
+		fn_end++;
 		printf("path=%s d=%p\n", *path, d);
 		while((de = readdir(d)) != NULL) {
-			int len = strlen(de->d_name);
-			char *end;
+			FILE *f;
+			int el, len = strlen(de->d_name);
+			char *s1, *s2, *eng, *s, *end, line[1024];
 
 			if (len < 5)
 				continue;
@@ -70,11 +100,34 @@ static int lvs_list_langs(live_script_t *lvs)
 			if ((strcmp(end, ".pup") != 0) || (strncmp(de->d_name, "fungw_", 6) != 0))
 				continue;
 
-			printf(" %s\n", de->d_name);
+			strcpy(fn_end, de->d_name);
+			printf(" %s -> '%s'\n", de->d_name, fn);
+			f = pcb_fopen(fn, "r");
+			if (f == NULL)
+				continue;
+			while((s = fgets(line, sizeof(line), f)) != NULL) {
+				while(isspace(*s)) s++;
+				if (strncmp(s, "$desc", 5) != 0)
+					continue;
+				s += 5;
+				if (((s1 = strstr(s, "binding")) == NULL) || ((s2 = strstr(s, "engine")) == NULL))
+					continue;
+				if (s1 < s2) *s1 = '\0';
+				else *s2 = '\0';
+				eng = pcb_strdup(de->d_name);
+				el = strlen(eng);
+				eng[el-4] = '\0';
+				printf("  -> %s %s\n", eng, s);
+				vtp0_append(&ve, eng);
+				vtp0_append(&vl, pcb_strdup(s));
+			}
+			fclose(f);
 		}
 		closedir(d);
 	}
-	return 0;
+	lvs->langs = (char **)vl.array;
+	lvs->lang_engines = (char **)ve.array;
+	return vl.used;
 }
 
 static live_script_t *pcb_dlg_live_script(const char *name)
@@ -84,7 +137,7 @@ static live_script_t *pcb_dlg_live_script(const char *name)
 	live_script_t *lvs = calloc(sizeof(live_script_t), 1);
 
 	lvs_list_langs(lvs);
-return NULL;
+
 	name = pcb_strdup(name);
 	PCB_DAD_BEGIN_VBOX(lvs->dlg);
 		PCB_DAD_COMPFLAG(lvs->dlg, PCB_HATF_EXPFILL);
