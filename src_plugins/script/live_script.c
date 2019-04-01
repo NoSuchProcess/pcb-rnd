@@ -26,14 +26,20 @@
 
 #include "config.h"
 
+/* for opendir */
+#include "compat_inc.h"
+
 #include "actions.h"
+#include "plugins.h"
 #include "hid_dad.h"
+
 
 #include "live_script.h"
 
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	char *name;
+	char **langs;
 } live_script_t;
 
 static void lvs_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
@@ -43,12 +49,42 @@ static void lvs_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	free(lvs);
 }
 
+extern const char *pcb_script_pup_paths[];
+static int lvs_list_langs(live_script_t *lvs)
+{
+	const char **path;
+	for(path = pcb_script_pup_paths; *path != NULL; path++) {
+		struct dirent *de;
+		DIR *d = opendir(*path);
+
+		if (d == NULL)
+			continue;
+		printf("path=%s d=%p\n", *path, d);
+		while((de = readdir(d)) != NULL) {
+			int len = strlen(de->d_name);
+			char *end;
+
+			if (len < 5)
+				continue;
+			end = de->d_name + len -4;
+			if ((strcmp(end, ".pup") != 0) || (strncmp(de->d_name, "fungw_", 6) != 0))
+				continue;
+
+			printf(" %s\n", de->d_name);
+		}
+		closedir(d);
+	}
+	return 0;
+}
+
 static live_script_t *pcb_dlg_live_script(const char *name)
 {
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	char *title;
 	live_script_t *lvs = calloc(sizeof(live_script_t), 1);
 
+	lvs_list_langs(lvs);
+return NULL;
 	name = pcb_strdup(name);
 	PCB_DAD_BEGIN_VBOX(lvs->dlg);
 		PCB_DAD_COMPFLAG(lvs->dlg, PCB_HATF_EXPFILL);
@@ -60,6 +96,10 @@ static live_script_t *pcb_dlg_live_script(const char *name)
 			PCB_DAD_BUTTON(lvs->dlg, "undo");
 			PCB_DAD_BUTTON(lvs->dlg, "save");
 			PCB_DAD_BUTTON(lvs->dlg, "load");
+			PCB_DAD_BEGIN_HBOX(lvs->dlg);
+				PCB_DAD_COMPFLAG(lvs->dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_END(lvs->dlg);
+			PCB_DAD_ENUM(lvs->dlg, lvs->langs);
 			PCB_DAD_BEGIN_HBOX(lvs->dlg);
 				PCB_DAD_COMPFLAG(lvs->dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_END(lvs->dlg);

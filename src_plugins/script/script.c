@@ -64,7 +64,7 @@ static pup_context_t script_pup;
 /* allow only 1 megabyte of script persistency to be loaded */
 #define PERS_MAX_SIZE 1024*1024
 
-static const char *script_pup_paths[] = {
+const char *pcb_script_pup_paths[] = {
 	"/usr/local/lib/puplug",
 	"/usr/lib/puplug",
 	NULL
@@ -260,7 +260,7 @@ TODO(": guess")
 
 		old_id = script_persistency_id;
 		script_persistency_id = id;
-		pup = pup_load(&script_pup, script_pup_paths, name, 0, &st);
+		pup = pup_load(&script_pup, pcb_script_pup_paths, name, 0, &st);
 		script_persistency_id = old_id;
 		if (pup == NULL) {
 			pcb_message(PCB_MSG_ERROR, "Can not load script engine %s for language %s\n", name, lang);
