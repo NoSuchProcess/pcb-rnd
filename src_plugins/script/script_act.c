@@ -136,7 +136,7 @@ static void btn_unload_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	if (row == NULL)
 		return;
 
-	script_unload(row->cell[0], "unload");
+	pcb_script_unload(row->cell[0], "unload");
 	script_dlg_s2d(ctx);
 }
 
@@ -200,7 +200,7 @@ static void btn_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 
 	PCB_DAD_AUTORUN("script_load", idlang.dlg, "load script", NULL, failed);
 
-	if ((!failed) && (script_load(idlang.dlg_result[idlang.wid].str_value, fn, idlang.dlg_result[idlang.wlang].str_value) == 0))
+	if ((!failed) && (pcb_script_load(idlang.dlg_result[idlang.wid].str_value, fn, idlang.dlg_result[idlang.wlang].str_value) == 0))
 		script_dlg_s2d(ctx);
 
 	PCB_DAD_FREE(idlang.dlg);
@@ -285,7 +285,7 @@ static fgw_error_t pcb_act_LoadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	ID_VALIDATE(id, LoadScript);
 
-	PCB_ACT_IRES(script_load(id, fn, lang));
+	PCB_ACT_IRES(pcb_script_load(id, fn, lang));
 	script_dlg_update();
 	return 0;
 }
@@ -300,7 +300,7 @@ static fgw_error_t pcb_act_UnloadScript(fgw_arg_t *res, int argc, fgw_arg_t *arg
 
 	ID_VALIDATE(id, UnloadScript);
 
-	PCB_ACT_IRES(script_unload(id, "unload"));
+	PCB_ACT_IRES(pcb_script_unload(id, "unload"));
 	return 0;
 }
 

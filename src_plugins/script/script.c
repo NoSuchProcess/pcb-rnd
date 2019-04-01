@@ -223,7 +223,7 @@ static char *script_gen_cookie(const char *force_id)
 	return pcb_concat("script::fungw::", force_id, NULL);
 }
 
-static int script_unload(const char *id, const char *preunload)
+int pcb_script_unload(const char *id, const char *preunload)
 {
 	char *cookie;
 	htsp_entry_t *e = htsp_getentry(&scripts, id);
@@ -236,7 +236,7 @@ static int script_unload(const char *id, const char *preunload)
 	return 0;
 }
 
-static int script_load(const char *id, const char *fn, const char *lang)
+int pcb_script_load(const char *id, const char *fn, const char *lang)
 {
 	char name[PCB_PATH_MAX];
 	pup_plugin_t *pup;
@@ -311,7 +311,7 @@ static int script_reload(const char *id)
 	script_unload_entry(e, "reload", cookie);
 	free(cookie);
 
-	ret = script_load(id, fn, lang);
+	ret = pcb_script_load(id, fn, lang);
 	free(fn);
 	free(lang);
 	return ret;
@@ -364,11 +364,11 @@ int script_oneliner(const char *lang, const char *src)
 	oneliner_boilerplate(f, lang, 0);
 	fclose(f);
 
-	if (script_load("__oneliner", fn, lang) != 0) {
+	if (pcb_script_load("__oneliner", fn, lang) != 0) {
 		pcb_message(PCB_MSG_ERROR, "script oneliner: can't load/parse the script\n");
 		res = -1;
 	}
-	script_unload("__oneliner", NULL);
+	pcb_script_unload("__oneliner", NULL);
 
 	pcb_tempfile_unlink(fn);
 	return res;

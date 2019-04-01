@@ -38,15 +38,16 @@
 #include "plugins.h"
 #include "hid_dad.h"
 #include "safe_fs.h"
+#include "compat_fs.h"
 
 #include "live_script.h"
 
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
-	char *name;
+	char *name, *longname;
 	char **langs;
 	char **lang_engines;
-	int wrerun, wrun, wundo, wload, wsave;
+	int wtxt, wrerun, wrun, wundo, wload, wsave, wlang;
 } live_script_t;
 
 static htsp_t pcb_live_scripts;
@@ -71,10 +72,15 @@ static void lvs_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 		PCB_DAD_FREE(lvs->dlg);
 	lvs_free_langs(lvs);
 	free(lvs->name);
+	free(lvs->longname);
 	free(lvs);
 }
 
+TODO("make a proper script.h for these")
 extern const char *pcb_script_pup_paths[];
+extern int pcb_script_load(const char *id, const char *fn, const char *lang);
+extern int pcb_script_unload(const char *id, const char *preunload);
+
 static int lvs_list_langs(live_script_t *lvs)
 {
 	const char **path;
@@ -123,7 +129,7 @@ static int lvs_list_langs(live_script_t *lvs)
 					continue;
 				if (s1 < s2) *s1 = '\0';
 				else *s2 = '\0';
-				eng = pcb_strdup(de->d_name);
+				eng = pcb_strdup(de->d_name + 6); /* remove the fungw_ prefix, the low level script runner will insert it */
 				el = strlen(eng);
 				eng[el-4] = '\0';
 				vtp0_append(&ve, eng);
@@ -167,9 +173,11 @@ static live_script_t *pcb_dlg_live_script(const char *name)
 	lvs_list_langs(lvs);
 
 	lvs->name = pcb_strdup(name);
+	lvs->longname = pcb_concat("_live_script_", name, NULL);
 	PCB_DAD_BEGIN_VBOX(lvs->dlg);
 		PCB_DAD_COMPFLAG(lvs->dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_TEXT(lvs->dlg, lvs);
+			lvs->wtxt = PCB_DAD_CURRENT(lvs->dlg);
 
 		PCB_DAD_BEGIN_HBOX(lvs->dlg);
 			PCB_DAD_BUTTON(lvs->dlg, "re-run");
@@ -190,6 +198,7 @@ static live_script_t *pcb_dlg_live_script(const char *name)
 		PCB_DAD_END(lvs->dlg);
 		PCB_DAD_BEGIN_HBOX(lvs->dlg);
 			PCB_DAD_ENUM(lvs->dlg, (const char **)lvs->langs);
+				lvs->wlang = PCB_DAD_CURRENT(lvs->dlg);
 			PCB_DAD_BEGIN_HBOX(lvs->dlg);
 				PCB_DAD_COMPFLAG(lvs->dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_END(lvs->dlg);
@@ -202,6 +211,40 @@ static live_script_t *pcb_dlg_live_script(const char *name)
 	free(title);
 	return lvs;
 }
+
+static int live_run(live_script_t *lvs)
+{
+	pcb_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
+	pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+	FILE *f;
+	char *src, *fn, *lang;
+	int res = 0;
+
+	fn = pcb_tempfile_name_new("live_script");
+	f = pcb_fopen(fn, "w");
+	if (f == NULL) {
+		pcb_tempfile_unlink(fn);
+		pcb_message(PCB_MSG_ERROR, "live_script: can't open temp file for write\n");
+		return -1;
+	}
+
+	src = txt->hid_get_text(atxt, lvs->dlg_hid_ctx);
+	fputs(src, f);
+	free(src);
+	fclose(f);
+
+	lang = lvs->lang_engines[lvs->dlg[lvs->wlang].default_val.int_value];
+
+	if (pcb_script_load(lvs->longname, fn, lang) != 0) {
+		pcb_message(PCB_MSG_ERROR, "live_script: can't load/parse the script\n");
+		res = -1;
+	}
+	pcb_script_unload(lvs->longname, NULL);
+
+	pcb_tempfile_unlink(fn);
+	return res;
+}
+
 
 const char pcb_acts_LiveScript[] = 
 	"LiveScript([new], [name])\n"
@@ -251,8 +294,11 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else if (pcb_strcasecmp(cmd, "undo") == 0) {
 	}
 	else if (pcb_strcasecmp(cmd, "run") == 0) {
+		live_run(lvs);
 	}
 	else if (pcb_strcasecmp(cmd, "rerun") == 0) {
+TODO("undo");
+		live_run(lvs);
 	}
 
 	PCB_ACT_IRES(0);
