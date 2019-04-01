@@ -88,7 +88,7 @@ static int lvs_list_langs(live_script_t *lvs)
 		fn_end = fn + dirlen;
 		*fn_end = PCB_DIR_SEPARATOR_C;
 		fn_end++;
-		printf("path=%s d=%p\n", *path, d);
+
 		while((de = readdir(d)) != NULL) {
 			FILE *f;
 			int el, len = strlen(de->d_name);
@@ -101,7 +101,7 @@ static int lvs_list_langs(live_script_t *lvs)
 				continue;
 
 			strcpy(fn_end, de->d_name);
-			printf(" %s -> '%s'\n", de->d_name, fn);
+
 			f = pcb_fopen(fn, "r");
 			if (f == NULL)
 				continue;
@@ -117,7 +117,6 @@ static int lvs_list_langs(live_script_t *lvs)
 				eng = pcb_strdup(de->d_name);
 				el = strlen(eng);
 				eng[el-4] = '\0';
-				printf("  -> %s %s\n", eng, s);
 				vtp0_append(&ve, eng);
 				vtp0_append(&vl, pcb_strdup(s));
 			}
