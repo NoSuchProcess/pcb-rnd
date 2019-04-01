@@ -31,12 +31,13 @@
 
 #include <ctype.h>
 #include <genvector/vtp0.h>
+#include <genht/htsp.h>
+#include <genht/hash.h>
 
 #include "actions.h"
 #include "plugins.h"
 #include "hid_dad.h"
 #include "safe_fs.h"
-
 
 #include "live_script.h"
 
@@ -47,6 +48,8 @@ typedef struct {
 	char **lang_engines;
 	int wrerun, wrun, wundo, wload, wsave;
 } live_script_t;
+
+static htsp_t pcb_live_scripts;
 
 static void lvs_free_langs(live_script_t *lvs)
 {
@@ -61,8 +64,13 @@ static void lvs_free_langs(live_script_t *lvs)
 static void lvs_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	live_script_t *lvs = caller_data;
-	PCB_DAD_FREE(lvs->dlg);
+
+	htsp_popentry(&pcb_live_scripts, lvs->name);
+
+	if (pcb_gui != NULL)
+		PCB_DAD_FREE(lvs->dlg);
 	lvs_free_langs(lvs);
+	free(lvs->name);
 	free(lvs);
 }
 
@@ -147,7 +155,7 @@ static void lvs_button_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 		return;
 	}
 
-	pcb_actionl("livescript", lvs->name, arg, NULL);
+	pcb_actionl("livescript", arg, lvs->name, NULL);
 }
 
 static live_script_t *pcb_dlg_live_script(const char *name)
@@ -158,7 +166,7 @@ static live_script_t *pcb_dlg_live_script(const char *name)
 
 	lvs_list_langs(lvs);
 
-	name = pcb_strdup(name);
+	lvs->name = pcb_strdup(name);
 	PCB_DAD_BEGIN_VBOX(lvs->dlg);
 		PCB_DAD_COMPFLAG(lvs->dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_TEXT(lvs->dlg, lvs);
@@ -195,10 +203,76 @@ static live_script_t *pcb_dlg_live_script(const char *name)
 	return lvs;
 }
 
-const char pcb_acts_LiveScript[] = "LiveScript([name], [new])\n";
+const char pcb_acts_LiveScript[] = 
+	"LiveScript([new], [name])\n"
+	"LiveScript(load|save, [name], [filame])\n"
+	"LiveScript(run|rerun|undo, [name])\n";
 const char pcb_acth_LiveScript[] = "Manage a live script";
 fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_dlg_live_script("name");
+	live_script_t *lvs;
+	const char *cmd = "new", *name = NULL, *arg = NULL;
+
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, LiveScript, cmd = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, LiveScript, name = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, LiveScript, arg = argv[3].val.str);
+
+	if (pcb_strcasecmp(cmd, "new") == 0) {
+		if (name == NULL) name = "default";
+		lvs = htsp_get(&pcb_live_scripts, name);
+		if (lvs != NULL) {
+			pcb_message(PCB_MSG_ERROR, "live script '%s' is already open\n");
+			PCB_ACT_IRES(1);
+			return 0;
+		}
+		lvs = pcb_dlg_live_script(name);
+		htsp_set(&pcb_live_scripts, lvs->name, lvs);
+		PCB_ACT_IRES(1);
+		return 0;
+	}
+
+	if (name == NULL) {
+		pcb_message(PCB_MSG_ERROR, "script name (second argument) required\n");
+		PCB_ACT_IRES(1);
+		return 0;
+	}
+
+	lvs = htsp_get(&pcb_live_scripts, name);
+	if (lvs == NULL) {
+		pcb_message(PCB_MSG_ERROR, "script '%s' does not exist\n", name);
+		PCB_ACT_IRES(1);
+		return 0;
+	}
+
+	if (pcb_strcasecmp(cmd, "load") == 0) {
+	}
+	else if (pcb_strcasecmp(cmd, "save") == 0) {
+	}
+	else if (pcb_strcasecmp(cmd, "undo") == 0) {
+	}
+	else if (pcb_strcasecmp(cmd, "run") == 0) {
+	}
+	else if (pcb_strcasecmp(cmd, "rerun") == 0) {
+	}
+
+	PCB_ACT_IRES(0);
 	return 0;
 }
+
+void pcb_live_script_init(void)
+{
+	htsp_init(&pcb_live_scripts, strhash, strkeyeq);
+}
+
+void pcb_live_script_uninit(void)
+{
+	htsp_entry_t *e;
+	for(e = htsp_first(&pcb_live_scripts); e != NULL; e = htsp_next(&pcb_live_scripts, e)) {
+/*		pcb_dad_retovr_t retovr;*/
+		live_script_t *lvs = e->value;
+/*		pcb_hid_dad_close(lvs->dlg_hid_ctx, &retovr, 0);*/
+		lvs_close_cb(lvs, PCB_HID_ATTR_EV_CODECLOSE);
+	}
+	htsp_uninit(&pcb_live_scripts);
+}
+

@@ -386,6 +386,8 @@ int pplg_check_ver_script(int ver_needed) { return 0; }
 void pplg_uninit_script(void)
 {
 	htsp_entry_t *e;
+
+	pcb_live_script_uninit();
 	pcb_remove_actions_by_cookie(script_cookie);
 	for(e = htsp_first(&scripts); e; e = htsp_next(&scripts, e)) {
 		script_t *script = e->value;
@@ -406,5 +408,6 @@ int pplg_init_script(void)
 	pcb_c_script_init();
 	htsp_init(&scripts, strhash, strkeyeq);
 	pup_init(&script_pup);
+	pcb_live_script_init();
 	return 0;
 }
