@@ -179,9 +179,8 @@ static live_script_t *pcb_dlg_live_script(const char *name)
 			PCB_DAD_BUTTON(lvs->dlg, "load");
 				lvs->wload = PCB_DAD_CURRENT(lvs->dlg);
 				PCB_DAD_CHANGE_CB(lvs->dlg, lvs_button_cb);
-			PCB_DAD_BEGIN_HBOX(lvs->dlg);
-				PCB_DAD_COMPFLAG(lvs->dlg, PCB_HATF_EXPFILL);
-			PCB_DAD_END(lvs->dlg);
+		PCB_DAD_END(lvs->dlg);
+		PCB_DAD_BEGIN_HBOX(lvs->dlg);
 			PCB_DAD_ENUM(lvs->dlg, (const char **)lvs->langs);
 			PCB_DAD_BEGIN_HBOX(lvs->dlg);
 				PCB_DAD_COMPFLAG(lvs->dlg, PCB_HATF_EXPFILL);
