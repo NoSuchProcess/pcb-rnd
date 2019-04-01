@@ -162,6 +162,7 @@ static live_script_t *pcb_dlg_live_script(const char *name)
 	title = pcb_concat("Live Scripting: ", name, NULL);
 	PCB_DAD_NEW("live_script", lvs->dlg, title, lvs, pcb_false, lvs_close_cb);
 	free(title);
+	return lvs;
 }
 
 const char pcb_acts_LiveScript[] = "LiveScript([name], [new])\n";
