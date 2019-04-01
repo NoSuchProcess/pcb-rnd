@@ -1,5 +1,8 @@
 put /local/pcb/mod {script}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/script/script.o @]
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/script/script.o
+	$(PLUGDIR)/script/live_script.o
+@]
 
 switch /local/pcb/script/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

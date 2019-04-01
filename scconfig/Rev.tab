@@ -1,3 +1,4 @@
+24389	configure live scripting: new source files for the new feature
 24292	configure	preparing for hidlib, splitting source files, scconfig hidlib deps
 23917	configure	compound DAD widgets, for DAD based spinboxes
 23902	configure	cleanup: remove dead code from gtk

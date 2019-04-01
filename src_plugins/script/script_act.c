@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
  *
  *  This module, debug, was written and is Copyright (C) 2016 by Tibor Palinkas
  *  this module is also subject to the GNU GPL as described below
@@ -30,6 +30,7 @@
 #include <ctype.h>
 #include "hid_dad.h"
 #include "hid_dad_tree.h"
+#include "live_script.h"
 
 /*** dialog box ***/
 typedef struct {
@@ -437,7 +438,8 @@ static pcb_action_t script_action_list[] = {
 	{"BrowseScripts", pcb_act_BrowseScripts, pcb_acth_BrowseScripts, pcb_acts_BrowseScripts},
 	{"AddTimer", pcb_act_AddTimer, pcb_acth_AddTimer, pcb_acts_AddTimer},
 	{"ScriptCookie", pcb_act_ScriptCookie, pcb_acth_ScriptCookie, pcb_acts_ScriptCookie},
-
+	{"LiveScript", pcb_act_LiveScript, pcb_acth_LiveScript, pcb_acts_LiveScript},
+	
 	/* script shorthands */
 	{"awk",         pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
 	{"mawk",        pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
