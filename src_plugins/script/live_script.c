@@ -45,6 +45,7 @@ typedef struct {
 	char *name;
 	char **langs;
 	char **lang_engines;
+	int wrerun, wrun, wundo, wload, wsave;
 } live_script_t;
 
 static void lvs_free_langs(live_script_t *lvs)
@@ -129,6 +130,26 @@ static int lvs_list_langs(live_script_t *lvs)
 	return vl.used;
 }
 
+static void lvs_button_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
+{
+	live_script_t *lvs = caller_data;
+	const char *arg;
+	int w = attr_btn - lvs->dlg;
+
+
+	if (w == lvs->wrerun)     arg = "rerun";
+	else if (w == lvs->wrun)  arg = "run";
+	else if (w == lvs->wundo) arg = "undo";
+	else if (w == lvs->wload) arg = "load";
+	else if (w == lvs->wsave) arg = "save";
+	else {
+		pcb_message(PCB_MSG_ERROR, "lvs_button_cb(): internal error: unhandled switch case\n");
+		return;
+	}
+
+	pcb_actionl("livescript", lvs->name, arg, NULL);
+}
+
 static live_script_t *pcb_dlg_live_script(const char *name)
 {
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
@@ -144,10 +165,20 @@ static live_script_t *pcb_dlg_live_script(const char *name)
 
 		PCB_DAD_BEGIN_HBOX(lvs->dlg);
 			PCB_DAD_BUTTON(lvs->dlg, "re-run");
+				lvs->wrerun = PCB_DAD_CURRENT(lvs->dlg);
+				PCB_DAD_CHANGE_CB(lvs->dlg, lvs_button_cb);
 			PCB_DAD_BUTTON(lvs->dlg, "run");
+				lvs->wrun = PCB_DAD_CURRENT(lvs->dlg);
+				PCB_DAD_CHANGE_CB(lvs->dlg, lvs_button_cb);
 			PCB_DAD_BUTTON(lvs->dlg, "undo");
+				lvs->wundo = PCB_DAD_CURRENT(lvs->dlg);
+				PCB_DAD_CHANGE_CB(lvs->dlg, lvs_button_cb);
 			PCB_DAD_BUTTON(lvs->dlg, "save");
+				lvs->wsave = PCB_DAD_CURRENT(lvs->dlg);
+				PCB_DAD_CHANGE_CB(lvs->dlg, lvs_button_cb);
 			PCB_DAD_BUTTON(lvs->dlg, "load");
+				lvs->wload = PCB_DAD_CURRENT(lvs->dlg);
+				PCB_DAD_CHANGE_CB(lvs->dlg, lvs_button_cb);
 			PCB_DAD_BEGIN_HBOX(lvs->dlg);
 				PCB_DAD_COMPFLAG(lvs->dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_END(lvs->dlg);
