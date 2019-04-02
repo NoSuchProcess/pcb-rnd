@@ -423,7 +423,7 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (name == NULL) name = "default";
 		lvs = htsp_get(&pcb_live_scripts, name);
 		if (lvs != NULL) {
-			pcb_message(PCB_MSG_ERROR, "live script '%s' is already open\n");
+			pcb_message(PCB_MSG_ERROR, "live script '%s' is already open\n", name);
 			PCB_ACT_IRES(1);
 			return 0;
 		}
