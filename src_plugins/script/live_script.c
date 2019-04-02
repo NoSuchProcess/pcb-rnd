@@ -44,7 +44,7 @@
 
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
-	char *name, *longname;
+	char *name, *longname, *fn;
 	char **langs;
 	char **lang_engines;
 	int wtxt, wrerun, wrun, wundo, wload, wsave, wlang;
@@ -73,6 +73,7 @@ static void lvs_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	lvs_free_langs(lvs);
 	free(lvs->name);
 	free(lvs->longname);
+	free(lvs->fn);
 	free(lvs);
 }
 
@@ -250,6 +251,90 @@ static int live_run(live_script_t *lvs)
 	return res;
 }
 
+static const char *live_default_ext(live_script_t *lvs)
+{
+	return NULL;
+}
+
+static int live_load(live_script_t *lvs, const char *fn)
+{
+	pcb_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
+	pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+	FILE *f;
+	gds_t tmp;
+
+	if (fn == NULL) {
+		const char *default_ext = live_default_ext(lvs);
+		fn = pcb_gui->fileselect(
+			"Load live script", "Load the a live script from file",
+			lvs->fn, default_ext, pcb_hid_fsd_filter_any, "live_script", PCB_HID_FSD_READ, NULL);
+		if (fn == NULL)
+			return 0;
+	}
+
+	f = pcb_fopen(fn, "r");
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "live_script: failed to open '%s' for read\n", fn);
+		return -1;
+	}
+
+	gds_init(&tmp);
+
+	while(!feof(f)) {
+		int len, ou = tmp.used;
+		gds_alloc_append(&tmp, 1024);
+		len = fread(tmp.array+ou, 1, 1024, f);
+		if (len > 0) {
+			tmp.used = ou+len;
+			tmp.array[tmp.used] = '\0';
+		}
+	}
+
+	txt->hid_set_text(atxt, lvs->dlg_hid_ctx, PCB_HID_TEXT_REPLACE, tmp.array);
+
+	gds_uninit(&tmp);
+	fclose(f);
+	return 0;
+}
+
+static int live_save(live_script_t *lvs, const char *fn)
+{
+	pcb_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
+	pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+	FILE *f;
+	char *src;
+	int res = 0;
+
+	if (fn == NULL) {
+		const char *default_ext = live_default_ext(lvs);
+
+		if (lvs->fn == NULL)
+			lvs->fn = pcb_concat(lvs->name, ".", default_ext, NULL);
+
+		fn = pcb_gui->fileselect(
+			"Save live script", "Save the source of a live script",
+			lvs->fn, default_ext, pcb_hid_fsd_filter_any, "live_script", 0, NULL);
+		if (fn == NULL)
+			return 0;
+	}
+
+	f = pcb_fopen(fn, "w");
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "live_script: failed to open '%s' for write\n", fn);
+		return -1;
+	}
+
+	src = txt->hid_get_text(atxt, lvs->dlg_hid_ctx);
+	if (fwrite(src, strlen(src), 1, f) != 1) {
+		pcb_message(PCB_MSG_ERROR, "live_script: failed to write script source to '%s'\n", fn);
+		res = -1;
+	}
+	free(src);
+
+	fclose(f);
+	return res;
+}
+
 
 const char pcb_acts_LiveScript[] = 
 	"LiveScript([new], [name])\n"
@@ -296,9 +381,12 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
+	PCB_ACT_IRES(0);
 	if (pcb_strcasecmp(cmd, "load") == 0) {
+		PCB_ACT_IRES(live_load(lvs, arg));
 	}
 	else if (pcb_strcasecmp(cmd, "save") == 0) {
+		PCB_ACT_IRES(live_save(lvs, arg));
 	}
 	else if (pcb_strcasecmp(cmd, "undo") == 0) {
 	}
@@ -310,7 +398,6 @@ TODO("undo");
 		live_run(lvs);
 	}
 
-	PCB_ACT_IRES(0);
 	return 0;
 }
 
@@ -323,9 +410,7 @@ void pcb_live_script_uninit(void)
 {
 	htsp_entry_t *e;
 	for(e = htsp_first(&pcb_live_scripts); e != NULL; e = htsp_next(&pcb_live_scripts, e)) {
-/*		pcb_dad_retovr_t retovr;*/
 		live_script_t *lvs = e->value;
-/*		pcb_hid_dad_close(lvs->dlg_hid_ctx, &retovr, 0);*/
 		lvs_close_cb(lvs, PCB_HID_ATTR_EV_CODECLOSE);
 	}
 	htsp_uninit(&pcb_live_scripts);
