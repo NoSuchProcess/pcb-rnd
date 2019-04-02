@@ -40,6 +40,7 @@
 #include "safe_fs.h"
 #include "compat_fs.h"
 #include "undo.h"
+#include "script.h"
 
 #include "live_script.h"
 
@@ -82,11 +83,6 @@ static void lvs_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	free(lvs->fn);
 	free(lvs);
 }
-
-TODO("make a proper script.h for these")
-extern const char *pcb_script_pup_paths[];
-extern int pcb_script_load(const char *id, const char *fn, const char *lang);
-extern int pcb_script_unload(const char *id, const char *preunload);
 
 static int lvs_list_langs(live_script_t *lvs)
 {

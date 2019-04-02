@@ -44,6 +44,8 @@
 #include "pcb-printf.h"
 #include "globalconst.h"
 
+#include "script.h"
+
 typedef struct {
 	char *id, *fn, *lang;
 	pup_plugin_t *pup;
