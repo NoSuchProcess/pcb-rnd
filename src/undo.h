@@ -45,6 +45,8 @@ typedef enum pcb_undo_ev_e {
 void *pcb_undo_alloc(pcb_board_t *pcb, const uundo_oper_t *oper, size_t data_len);
 int pcb_undo(pcb_bool);
 int pcb_redo(pcb_bool);
+int pcb_undo_above(uundo_serial_t s_min);
+
 void pcb_undo_inc_serial(void);
 void pcb_undo_save_serial(void);
 void pcb_undo_restore_serial(void);
@@ -61,6 +63,9 @@ void pcb_undo_freeze_serial(void);
 void pcb_undo_unfreeze_serial(void);
 void pcb_undo_freeze_add(void);
 void pcb_undo_unfreeze_add(void);
+
+/* Return the number of undo slots in use */
+size_t pcb_num_undo(void);
 
 /* Returns 0 if undo integrity is not broken */
 int undo_check(void);

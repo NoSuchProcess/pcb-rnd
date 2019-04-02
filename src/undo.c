@@ -124,6 +124,11 @@ int pcb_undo(pcb_bool draw)
 	return res;
 }
 
+int pcb_undo_above(uundo_serial_t s_min)
+{
+	return uundo_undo_above(&pcb_uundo, s_min);
+}
+
 int pcb_redo(pcb_bool draw)
 {
 	int res;
@@ -276,6 +281,11 @@ void undo_dump(void)
 	uundo_dump(&pcb_uundo, NULL, NULL);
 }
 #endif
+
+size_t pcb_num_undo(void)
+{
+	return pcb_uundo.num_undo;
+}
 
 void pcb_undo_freeze_serial(void)
 {
