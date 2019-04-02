@@ -147,7 +147,7 @@ static fgw_error_t pcb_act_ArcNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_TextNew[] = "TextNew(data, layer, x, y, rot, scale, thickness, test_string, flags)";
+static const char pcb_acts_TextNew[] = "TextNew(data, layer, fontID, x, y, rot, scale, thickness, test_string, flags)";
 static const char pcb_acth_TextNew[] = "Create a pcb text on a layer. For now data must be \"pcb\". Font id 0 is the default font. Thickness 0 means default, calculated thickness. Scale=100 is the original font size. Returns the ID of the new object or 0 on error.";
 static fgw_error_t pcb_act_TextNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
