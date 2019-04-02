@@ -47,7 +47,7 @@ typedef struct {
 	char *name, *longname, *fn;
 	char **langs;
 	char **lang_engines;
-	int wtxt, wrerun, wrun, wundo, wload, wsave, wlang;
+	int wtxt, wrerun, wrun, wstop, wundo, wload, wsave, wlang;
 	unsigned loaded:1;
 } live_script_t;
 
@@ -158,6 +158,7 @@ static void lvs_button_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 
 	if (w == lvs->wrerun)     arg = "rerun";
 	else if (w == lvs->wrun)  arg = "run";
+	else if (w == lvs->wstop) arg = "stop";
 	else if (w == lvs->wundo) arg = "undo";
 	else if (w == lvs->wload) arg = "load";
 	else if (w == lvs->wsave) arg = "save";
@@ -197,6 +198,9 @@ static live_script_t *pcb_dlg_live_script(const char *name)
 			PCB_DAD_BUTTON(lvs->dlg, "run");
 				lvs->wrun = PCB_DAD_CURRENT(lvs->dlg);
 				PCB_DAD_CHANGE_CB(lvs->dlg, lvs_button_cb);
+			PCB_DAD_BUTTON(lvs->dlg, "stop");
+				lvs->wstop = PCB_DAD_CURRENT(lvs->dlg);
+				PCB_DAD_CHANGE_CB(lvs->dlg, lvs_button_cb);
 			PCB_DAD_BUTTON(lvs->dlg, "undo");
 				lvs->wundo = PCB_DAD_CURRENT(lvs->dlg);
 				PCB_DAD_CHANGE_CB(lvs->dlg, lvs_button_cb);
@@ -220,6 +224,7 @@ static live_script_t *pcb_dlg_live_script(const char *name)
 	title = pcb_concat("Live Scripting: ", name, NULL);
 	PCB_DAD_NEW("live_script", lvs->dlg, title, lvs, pcb_false, lvs_close_cb);
 	free(title);
+	pcb_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wstop, 0);
 	return lvs;
 }
 
@@ -231,6 +236,7 @@ static int live_stop(live_script_t *lvs)
 	}
 
 	pcb_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wrun, 1);
+	pcb_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wstop, 0);
 }
 
 
@@ -264,6 +270,7 @@ static int live_run(live_script_t *lvs)
 	}
 	lvs->loaded = 1;
 	pcb_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wrun, 0);
+	pcb_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wstop, 1);
 
 	pcb_tempfile_unlink(fn);
 	return res;
@@ -410,6 +417,9 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (pcb_strcasecmp(cmd, "run") == 0) {
 		live_run(lvs);
+	}
+	else if (pcb_strcasecmp(cmd, "stop") == 0) {
+		live_stop(lvs);
 	}
 	else if (pcb_strcasecmp(cmd, "rerun") == 0) {
 		live_stop(lvs);
