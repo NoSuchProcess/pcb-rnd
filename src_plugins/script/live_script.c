@@ -48,6 +48,7 @@ typedef struct {
 	char **langs;
 	char **lang_engines;
 	int wtxt, wrerun, wrun, wundo, wload, wsave, wlang;
+	unsigned loaded:1;
 } live_script_t;
 
 static htsp_t pcb_live_scripts;
@@ -67,6 +68,9 @@ static void lvs_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	live_script_t *lvs = caller_data;
 
 	htsp_popentry(&pcb_live_scripts, lvs->name);
+
+	if (lvs->loaded)
+		pcb_script_unload(lvs->longname, NULL);
 
 	if (pcb_gui != NULL)
 		PCB_DAD_FREE(lvs->dlg);
@@ -242,11 +246,17 @@ static int live_run(live_script_t *lvs)
 
 	lang = lvs->lang_engines[lvs->dlg[lvs->wlang].default_val.int_value];
 
+	if (lvs->loaded) {
+		pcb_script_unload(lvs->longname, NULL);
+		lvs->loaded = 0;
+	}
+
+
 	if (pcb_script_load(lvs->longname, fn, lang) != 0) {
 		pcb_message(PCB_MSG_ERROR, "live_script: can't load/parse the script\n");
 		res = -1;
 	}
-	pcb_script_unload(lvs->longname, NULL);
+	lvs->loaded = 1;
 
 	pcb_tempfile_unlink(fn);
 	return res;
