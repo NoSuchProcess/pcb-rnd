@@ -39,6 +39,7 @@
 #include "hid_dad.h"
 #include "safe_fs.h"
 #include "compat_fs.h"
+#include "undo.h"
 
 #include "live_script.h"
 
@@ -48,6 +49,7 @@ typedef struct {
 	char **langs;
 	char **lang_engines;
 	int wtxt, wrerun, wrun, wstop, wundo, wload, wsave, wpers, wlang;
+	uundo_serial_t undo_pre, undo_post; /* undo serials pre-run and post-run */
 	unsigned loaded:1;
 } live_script_t;
 
@@ -275,6 +277,7 @@ static int live_run(live_script_t *lvs)
 	lang = lvs->lang_engines[lvs->dlg[lvs->wlang].default_val.int_value];
 
 	live_stop(lvs);
+	lvs->undo_pre = pcb_undo_serial();
 	if (pcb_script_load(lvs->longname, fn, lang) != 0) {
 		pcb_message(PCB_MSG_ERROR, "live_script: can't load/parse the script\n");
 		res = -1;
@@ -285,6 +288,9 @@ static int live_run(live_script_t *lvs)
 
 	if (!lvs->dlg[lvs->wpers].default_val.int_value)
 		live_stop(lvs);
+	lvs->undo_post = pcb_undo_serial();
+
+	pcb_gui->invalidate_all(); /* if the script drew anything, get it displayed */
 
 	pcb_tempfile_unlink(fn);
 	return res;
@@ -292,8 +298,27 @@ static int live_run(live_script_t *lvs)
 
 static const char *live_default_ext(live_script_t *lvs)
 {
+	TODO("get this info from fungw for the selected language");
 	return NULL;
 }
+
+static int live_undo(live_script_t *lvs)
+{
+	if (lvs->undo_pre == lvs->undo_post) {
+pcb_trace("nothing!");
+		return 0; /* the script did nothing */
+	}
+	if (lvs->undo_post < pcb_undo_serial()) {
+		pcb_message(PCB_MSG_WARNING, "Can not undo live script modifications:\nthere was user edit after script executaion.\n");
+		return 1;
+	}
+	while(pcb_undo_serial() > lvs->undo_pre) {
+pcb_trace("undo 1\n");
+		pcb_undo(1);
+	}
+	return 0;
+}
+
 
 static int live_load(live_script_t *lvs, const char *fn)
 {
@@ -428,6 +453,7 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_IRES(live_save(lvs, arg));
 	}
 	else if (pcb_strcasecmp(cmd, "undo") == 0) {
+		PCB_ACT_IRES(live_undo(lvs));
 	}
 	else if (pcb_strcasecmp(cmd, "run") == 0) {
 		live_run(lvs);
@@ -437,7 +463,7 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (pcb_strcasecmp(cmd, "rerun") == 0) {
 		live_stop(lvs);
-TODO("undo");
+		live_undo(lvs);
 		live_run(lvs);
 	}
 
