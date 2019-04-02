@@ -39,10 +39,16 @@
 #include "hid_dad.h"
 #include "safe_fs.h"
 #include "compat_fs.h"
+#include "event.h"
 #include "undo.h"
+
 #include "script.h"
 
 #include "live_script.h"
+
+static const char *lvs_cookie = "live_script";
+#define ANCH "@scripts"
+
 
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
@@ -469,9 +475,37 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static void lvs_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, char *path)
+{
+	char *end = path + strlen(path);
+	pcb_menu_prop_t props;
+	char act[256];
+
+	memset(&props, 0,sizeof(props));
+	props.action = act;
+	props.cookie = ANCH;
+
+	/* prepare for appending the strings at the end of the path, "under" the anchor */
+	*end = '/';
+	end++;
+
+	strcpy(end, "Open live script dialog...."); strcpy(act, "LiveScript(new)"); 
+	pcb_gui->create_menu(path, &props);
+
+/*	strcpy(end, "Load live script...."); strcpy(act, "LiveScript(load)");
+	pcb_gui->create_menu(path, &props);*/
+}
+
+
+static void lvs_menu_init(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	pcb_hid_cfg_map_anchor_menus(ANCH, lvs_install_menu, NULL);
+}
+
 void pcb_live_script_init(void)
 {
 	htsp_init(&pcb_live_scripts, strhash, strkeyeq);
+	pcb_event_bind(PCB_EVENT_GUI_INIT, lvs_menu_init, NULL, lvs_cookie);
 }
 
 void pcb_live_script_uninit(void)
@@ -482,5 +516,8 @@ void pcb_live_script_uninit(void)
 		lvs_close_cb(lvs, PCB_HID_ATTR_EV_CODECLOSE);
 	}
 	htsp_uninit(&pcb_live_scripts);
+	if (pcb_gui != NULL)
+		pcb_gui->remove_menu(lvs_cookie);
+	pcb_event_unbind_allcookie(lvs_cookie);
 }
 
