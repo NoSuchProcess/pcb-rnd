@@ -39,6 +39,7 @@
 #include "obj_pstk.h"
 #include "obj_text.h"
 #include "plugins.h"
+#include "undo.h"
 
 static const char *PTR_DOMAIN_POLY = "fgw_ptr_domain_poly";
 
@@ -74,7 +75,14 @@ static int flg_error(const char *msg)
 	return 0;
 }
 
-static const char pcb_acts_LineNew[] = "LineNew(data, layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags)";
+#define DRAWOPTARG \
+	int noundo = 0, ao = 0; \
+	if ((argv[1].type == FGW_STR) && (strcmp(argv[1].val.str, "noundo") == 0)) { \
+		noundo = 1; \
+		ao++; \
+	}
+
+static const char pcb_acts_LineNew[] = "LineNew([noundo,] data, layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags)";
 static const char pcb_acth_LineNew[] = "Create a pcb line segment on a layer. For now data must be \"pcb\". Returns the ID of the new object or 0 on error.";
 static fgw_error_t pcb_act_LineNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -84,17 +92,18 @@ static fgw_error_t pcb_act_LineNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_layer_t *layer;
 	pcb_coord_t x1, y1, x2, y2, th, cl;
 	pcb_flag_t flags;
+	DRAWOPTARG;
 
 	PCB_ACT_IRES(0);
-	PCB_ACT_CONVARG(1, FGW_DATA, LineNew, data = fgw_data(&argv[1]));
-	PCB_ACT_CONVARG(2, FGW_LAYER, LineNew, layer = fgw_layer(&argv[2]));
-	PCB_ACT_CONVARG(3, FGW_COORD, LineNew, x1 = fgw_coord(&argv[3]));
-	PCB_ACT_CONVARG(4, FGW_COORD, LineNew, y1 = fgw_coord(&argv[4]));
-	PCB_ACT_CONVARG(5, FGW_COORD, LineNew, x2 = fgw_coord(&argv[5]));
-	PCB_ACT_CONVARG(6, FGW_COORD, LineNew, y2 = fgw_coord(&argv[6]));
-	PCB_ACT_CONVARG(7, FGW_COORD, LineNew, th = fgw_coord(&argv[7]));
-	PCB_ACT_CONVARG(8, FGW_COORD, LineNew, cl = fgw_coord(&argv[8]));
-	PCB_ACT_CONVARG(9, FGW_STR, LineNew, sflg = argv[9].val.str);
+	PCB_ACT_CONVARG(1+ao, FGW_DATA, LineNew, data = fgw_data(&argv[1+ao]));
+	PCB_ACT_CONVARG(2+ao, FGW_LAYER, LineNew, layer = fgw_layer(&argv[2+ao]));
+	PCB_ACT_CONVARG(3+ao, FGW_COORD, LineNew, x1 = fgw_coord(&argv[3+ao]));
+	PCB_ACT_CONVARG(4+ao, FGW_COORD, LineNew, y1 = fgw_coord(&argv[4+ao]));
+	PCB_ACT_CONVARG(5+ao, FGW_COORD, LineNew, x2 = fgw_coord(&argv[5+ao]));
+	PCB_ACT_CONVARG(6+ao, FGW_COORD, LineNew, y2 = fgw_coord(&argv[6+ao]));
+	PCB_ACT_CONVARG(7+ao, FGW_COORD, LineNew, th = fgw_coord(&argv[7+ao]));
+	PCB_ACT_CONVARG(8+ao, FGW_COORD, LineNew, cl = fgw_coord(&argv[8+ao]));
+	PCB_ACT_CONVARG(9+ao, FGW_STR, LineNew, sflg = argv[9+ao].val.str);
 
 	if ((data != PCB->Data) || (layer == NULL))
 		return 0;
@@ -105,11 +114,13 @@ static fgw_error_t pcb_act_LineNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (line != NULL) {
 		res->type = FGW_LONG;
 		res->val.nat_long = line->ID;
+		if (!noundo)
+			pcb_undo_add_obj_to_create(PCB_OBJ_LINE, layer, line, line);
 	}
 	return 0;
 }
 
-static const char pcb_acts_ArcNew[] = "ArcNew(data, layer, centx, centy, radiusx, radiusy, start_ang, delta_ang, thickness, clearance, flags)";
+static const char pcb_acts_ArcNew[] = "ArcNew([noundo,] data, layer, centx, centy, radiusx, radiusy, start_ang, delta_ang, thickness, clearance, flags)";
 static const char pcb_acth_ArcNew[] = "Create a pcb arc segment on a layer. For now data must be \"pcb\". Returns the ID of the new object or 0 on error.";
 static fgw_error_t pcb_act_ArcNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -120,19 +131,20 @@ static fgw_error_t pcb_act_ArcNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_coord_t cx, cy, hr, wr, th, cl;
 	double sa, da;
 	pcb_flag_t flags;
+	DRAWOPTARG;
 
 	PCB_ACT_IRES(0);
-	PCB_ACT_CONVARG(1, FGW_DATA, ArcNew, data = fgw_data(&argv[1]));
-	PCB_ACT_CONVARG(2, FGW_LAYER, ArcNew, layer = fgw_layer(&argv[2]));
-	PCB_ACT_CONVARG(3, FGW_COORD, ArcNew, cx = fgw_coord(&argv[3]));
-	PCB_ACT_CONVARG(4, FGW_COORD, ArcNew, cy = fgw_coord(&argv[4]));
-	PCB_ACT_CONVARG(5, FGW_COORD, ArcNew, wr = fgw_coord(&argv[5]));
-	PCB_ACT_CONVARG(6, FGW_COORD, ArcNew, hr = fgw_coord(&argv[6]));
-	PCB_ACT_CONVARG(7, FGW_DOUBLE, ArcNew, sa = argv[7].val.nat_double);
-	PCB_ACT_CONVARG(8, FGW_DOUBLE, ArcNew, da = argv[8].val.nat_double);
-	PCB_ACT_CONVARG(9, FGW_COORD, ArcNew, th = fgw_coord(&argv[9]));
-	PCB_ACT_CONVARG(10, FGW_COORD, ArcNew, cl = fgw_coord(&argv[10]));
-	PCB_ACT_CONVARG(11, FGW_STR, ArcNew, sflg = argv[11].val.str);
+	PCB_ACT_CONVARG(1+ao, FGW_DATA, ArcNew, data = fgw_data(&argv[1+ao]));
+	PCB_ACT_CONVARG(2+ao, FGW_LAYER, ArcNew, layer = fgw_layer(&argv[2+ao]));
+	PCB_ACT_CONVARG(3+ao, FGW_COORD, ArcNew, cx = fgw_coord(&argv[3+ao]));
+	PCB_ACT_CONVARG(4+ao, FGW_COORD, ArcNew, cy = fgw_coord(&argv[4+ao]));
+	PCB_ACT_CONVARG(5+ao, FGW_COORD, ArcNew, wr = fgw_coord(&argv[5+ao]));
+	PCB_ACT_CONVARG(6+ao, FGW_COORD, ArcNew, hr = fgw_coord(&argv[6+ao]));
+	PCB_ACT_CONVARG(7+ao, FGW_DOUBLE, ArcNew, sa = argv[7+ao].val.nat_double);
+	PCB_ACT_CONVARG(8+ao, FGW_DOUBLE, ArcNew, da = argv[8+ao].val.nat_double);
+	PCB_ACT_CONVARG(9+ao, FGW_COORD, ArcNew, th = fgw_coord(&argv[9+ao]));
+	PCB_ACT_CONVARG(10+ao, FGW_COORD, ArcNew, cl = fgw_coord(&argv[10+ao]));
+	PCB_ACT_CONVARG(11+ao, FGW_STR, ArcNew, sflg = argv[11+ao].val.str);
 
 	if ((data != PCB->Data) || (layer == NULL))
 		return 0;
@@ -143,11 +155,13 @@ static fgw_error_t pcb_act_ArcNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (arc != NULL) {
 		res->type = FGW_LONG;
 		res->val.nat_long = arc->ID;
+		if (!noundo)
+			pcb_undo_add_obj_to_create(PCB_OBJ_ARC, layer, arc, arc);
 	}
 	return 0;
 }
 
-static const char pcb_acts_TextNew[] = "TextNew(data, layer, fontID, x, y, rot, scale, thickness, test_string, flags)";
+static const char pcb_acts_TextNew[] = "TextNew([noundo,] data, layer, fontID, x, y, rot, scale, thickness, test_string, flags)";
 static const char pcb_acth_TextNew[] = "Create a pcb text on a layer. For now data must be \"pcb\". Font id 0 is the default font. Thickness 0 means default, calculated thickness. Scale=100 is the original font size. Returns the ID of the new object or 0 on error.";
 static fgw_error_t pcb_act_TextNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -160,18 +174,19 @@ static fgw_error_t pcb_act_TextNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	double rot;
 	pcb_flag_t flags;
 	pcb_font_t *font;
+	DRAWOPTARG;
 
 	PCB_ACT_IRES(0);
-	PCB_ACT_CONVARG(1, FGW_DATA, TextNew, data = fgw_data(&argv[1]));
-	PCB_ACT_CONVARG(2, FGW_LAYER, TextNew, layer = fgw_layer(&argv[2]));
-	PCB_ACT_CONVARG(3, FGW_INT, TextNew, fontid = argv[3].val.nat_int);
-	PCB_ACT_CONVARG(4, FGW_COORD, TextNew, x = fgw_coord(&argv[4]));
-	PCB_ACT_CONVARG(5, FGW_COORD, TextNew, y = fgw_coord(&argv[5]));
-	PCB_ACT_CONVARG(6, FGW_DOUBLE, TextNew, rot = argv[6].val.nat_double);
-	PCB_ACT_CONVARG(7, FGW_INT, TextNew, scale = argv[7].val.nat_int);
-	PCB_ACT_CONVARG(8, FGW_COORD, TextNew, th = fgw_coord(&argv[8]));
-	PCB_ACT_CONVARG(9, FGW_STR, TextNew, str = argv[9].val.str);
-	PCB_ACT_CONVARG(10, FGW_STR, TextNew, sflg = argv[10].val.str);
+	PCB_ACT_CONVARG(1+ao, FGW_DATA, TextNew, data = fgw_data(&argv[1+ao]));
+	PCB_ACT_CONVARG(2+ao, FGW_LAYER, TextNew, layer = fgw_layer(&argv[2+ao]));
+	PCB_ACT_CONVARG(3+ao, FGW_INT, TextNew, fontid = argv[3+ao].val.nat_int);
+	PCB_ACT_CONVARG(4+ao, FGW_COORD, TextNew, x = fgw_coord(&argv[4+ao]));
+	PCB_ACT_CONVARG(5+ao, FGW_COORD, TextNew, y = fgw_coord(&argv[5+ao]));
+	PCB_ACT_CONVARG(6+ao, FGW_DOUBLE, TextNew, rot = argv[6+ao].val.nat_double);
+	PCB_ACT_CONVARG(7+ao, FGW_INT, TextNew, scale = argv[7+ao].val.nat_int);
+	PCB_ACT_CONVARG(8+ao, FGW_COORD, TextNew, th = fgw_coord(&argv[8+ao]));
+	PCB_ACT_CONVARG(9+ao, FGW_STR, TextNew, str = argv[9+ao].val.str);
+	PCB_ACT_CONVARG(10+ao, FGW_STR, TextNew, sflg = argv[10+ao].val.str);
 
 	if ((data != PCB->Data) || (layer == NULL))
 		return 0;
@@ -187,11 +202,13 @@ static fgw_error_t pcb_act_TextNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (text != NULL) {
 		res->type = FGW_LONG;
 		res->val.nat_long = text->ID;
+		if (!noundo)
+			pcb_undo_add_obj_to_create(PCB_OBJ_TEXT, layer, text, text);
 	}
 	return 0;
 }
 
-static const char pcb_acts_PstkNew[] = "PstkNew(data, protoID, x, y, glob_clearance, flags)";
+static const char pcb_acts_PstkNew[] = "PstkNew([noundo,] data, protoID, x, y, glob_clearance, flags)";
 static const char pcb_acth_PstkNew[] = "Create a padstack. For now data must be \"pcb\". glob_clearance=0 turns off global clearance. Returns the ID of the new object or 0 on error.";
 static fgw_error_t pcb_act_PstkNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -201,14 +218,15 @@ static fgw_error_t pcb_act_PstkNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	long proto;
 	pcb_coord_t x, y, cl;
 	pcb_flag_t flags;
+	DRAWOPTARG;
 
 	PCB_ACT_IRES(0);
-	PCB_ACT_CONVARG(1, FGW_DATA, PstkNew, data = fgw_data(&argv[1]));
-	PCB_ACT_CONVARG(2, FGW_LONG, PstkNew, proto = argv[2].val.nat_int);
-	PCB_ACT_CONVARG(3, FGW_COORD, PstkNew, x = fgw_coord(&argv[3]));
-	PCB_ACT_CONVARG(4, FGW_COORD, PstkNew, y = fgw_coord(&argv[4]));
-	PCB_ACT_CONVARG(5, FGW_COORD, PstkNew, cl = fgw_coord(&argv[5]));
-	PCB_ACT_CONVARG(6, FGW_STR, PstkNew, sflg = argv[6].val.str);
+	PCB_ACT_CONVARG(1+ao, FGW_DATA, PstkNew, data = fgw_data(&argv[1+ao]));
+	PCB_ACT_CONVARG(2+ao, FGW_LONG, PstkNew, proto = argv[2+ao].val.nat_int);
+	PCB_ACT_CONVARG(3+ao, FGW_COORD, PstkNew, x = fgw_coord(&argv[3+ao]));
+	PCB_ACT_CONVARG(4+ao, FGW_COORD, PstkNew, y = fgw_coord(&argv[4+ao]));
+	PCB_ACT_CONVARG(5+ao, FGW_COORD, PstkNew, cl = fgw_coord(&argv[5+ao]));
+	PCB_ACT_CONVARG(6+ao, FGW_STR, PstkNew, sflg = argv[6+ao].val.str);
 
 	if (data != PCB->Data)
 		return 0;
@@ -219,11 +237,13 @@ static fgw_error_t pcb_act_PstkNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (pstk != NULL) {
 		res->type = FGW_LONG;
 		res->val.nat_long = pstk->ID;
+		if (!noundo)
+			pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, data, pstk, pstk);
 	}
 	return 0;
 }
 
-static const char pcb_acts_PolyNewFromRectangle[] = "PolyNewFromRectangle(data, layer, x1, y1, x2, y2, clearance, flags)";
+static const char pcb_acts_PolyNewFromRectangle[] = "PolyNewFromRectangle([noundo,] data, layer, x1, y1, x2, y2, clearance, flags)";
 static const char pcb_acth_PolyNewFromRectangle[] = "Create a rectangular polygon. For now data must be \"pcb\". Returns the ID of the new object or 0 on error.";
 static fgw_error_t pcb_act_PolyNewFromRectangle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -233,16 +253,17 @@ static fgw_error_t pcb_act_PolyNewFromRectangle(fgw_arg_t *res, int argc, fgw_ar
 	pcb_layer_t *layer;
 	pcb_coord_t x1, y1, x2, y2, cl;
 	pcb_flag_t flags;
+	DRAWOPTARG;
 
 	PCB_ACT_IRES(0);
-	PCB_ACT_CONVARG(1, FGW_DATA, PolyNewFromRectangle, data = fgw_data(&argv[1]));
-	PCB_ACT_CONVARG(2, FGW_LAYER, PolyNewFromRectangle, layer = fgw_layer(&argv[2]));
-	PCB_ACT_CONVARG(3, FGW_COORD, PolyNewFromRectangle, x1 = fgw_coord(&argv[3]));
-	PCB_ACT_CONVARG(4, FGW_COORD, PolyNewFromRectangle, y1 = fgw_coord(&argv[4]));
-	PCB_ACT_CONVARG(5, FGW_COORD, PolyNewFromRectangle, x2 = fgw_coord(&argv[5]));
-	PCB_ACT_CONVARG(6, FGW_COORD, PolyNewFromRectangle, y2 = fgw_coord(&argv[6]));
-	PCB_ACT_CONVARG(7, FGW_COORD, PolyNewFromRectangle, cl = fgw_coord(&argv[7]));
-	PCB_ACT_CONVARG(8, FGW_STR, PolyNewFromRectangle, sflg = argv[8].val.str);
+	PCB_ACT_CONVARG(1+ao, FGW_DATA, PolyNewFromRectangle, data = fgw_data(&argv[1+ao]));
+	PCB_ACT_CONVARG(2+ao, FGW_LAYER, PolyNewFromRectangle, layer = fgw_layer(&argv[2+ao]));
+	PCB_ACT_CONVARG(3+ao, FGW_COORD, PolyNewFromRectangle, x1 = fgw_coord(&argv[3+ao]));
+	PCB_ACT_CONVARG(4+ao, FGW_COORD, PolyNewFromRectangle, y1 = fgw_coord(&argv[4+ao]));
+	PCB_ACT_CONVARG(5+ao, FGW_COORD, PolyNewFromRectangle, x2 = fgw_coord(&argv[5+ao]));
+	PCB_ACT_CONVARG(6+ao, FGW_COORD, PolyNewFromRectangle, y2 = fgw_coord(&argv[6+ao]));
+	PCB_ACT_CONVARG(7+ao, FGW_COORD, PolyNewFromRectangle, cl = fgw_coord(&argv[7+ao]));
+	PCB_ACT_CONVARG(8+ao, FGW_STR, PolyNewFromRectangle, sflg = argv[8+ao].val.str);
 
 	if (data != PCB->Data)
 		return 0;
@@ -253,6 +274,8 @@ static fgw_error_t pcb_act_PolyNewFromRectangle(fgw_arg_t *res, int argc, fgw_ar
 	if (poly != NULL) {
 		res->type = FGW_LONG;
 		res->val.nat_long = poly->ID;
+		if (!noundo)
+			pcb_undo_add_obj_to_create(PCB_OBJ_POLY, layer, poly, poly);
 	}
 	return 0;
 }
@@ -292,7 +315,7 @@ static long poly_append_ptlist(pcb_poly_t *poly, const char *ptlist)
 	return len/2;
 }
 
-static const char pcb_acts_PolyNewFromPoints[] = "PolyNewFromRectangle(data, layer, ptlist, clearance, flags)";
+static const char pcb_acts_PolyNewFromPoints[] = "PolyNewFromRectangle([noundo,] data, layer, ptlist, clearance, flags)";
 static const char pcb_acth_PolyNewFromPoints[] = "Create a polygon. For now data must be \"pcb\". ptlist is a comma separated list of coordinates (untiless coordinates are treated as mm). Returns the ID of the new object or 0 on error.";
 static fgw_error_t pcb_act_PolyNewFromPoints(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -302,13 +325,14 @@ static fgw_error_t pcb_act_PolyNewFromPoints(fgw_arg_t *res, int argc, fgw_arg_t
 	pcb_layer_t *layer;
 	pcb_coord_t cl;
 	pcb_flag_t flags;
+	DRAWOPTARG;
 
 	PCB_ACT_IRES(0);
-	PCB_ACT_CONVARG(1, FGW_DATA, PolyNewFromPoints, data = fgw_data(&argv[1]));
-	PCB_ACT_CONVARG(2, FGW_LAYER, PolyNewFromPoints, layer = fgw_layer(&argv[2]));
-	PCB_ACT_CONVARG(3, FGW_STR, PolyNewFromPoints, ptlist = argv[3].val.str);
-	PCB_ACT_CONVARG(4, FGW_COORD, PolyNewFromPoints, cl = fgw_coord(&argv[4]));
-	PCB_ACT_CONVARG(5, FGW_STR, PolyNewFromPoints, sflg = argv[5].val.str);
+	PCB_ACT_CONVARG(1+ao, FGW_DATA, PolyNewFromPoints, data = fgw_data(&argv[1+ao]));
+	PCB_ACT_CONVARG(2+ao, FGW_LAYER, PolyNewFromPoints, layer = fgw_layer(&argv[2+ao]));
+	PCB_ACT_CONVARG(3+ao, FGW_STR, PolyNewFromPoints, ptlist = argv[3+ao].val.str);
+	PCB_ACT_CONVARG(4+ao, FGW_COORD, PolyNewFromPoints, cl = fgw_coord(&argv[4+ao]));
+	PCB_ACT_CONVARG(5+ao, FGW_STR, PolyNewFromPoints, sflg = argv[5+ao].val.str);
 
 	if (data != PCB->Data)
 		return 0;
@@ -322,12 +346,14 @@ static fgw_error_t pcb_act_PolyNewFromPoints(fgw_arg_t *res, int argc, fgw_arg_t
 			pcb_add_poly_on_layer(layer, poly);
 			res->type = FGW_LONG;
 			res->val.nat_long = poly->ID;
+			if (!noundo)
+				pcb_undo_add_obj_to_create(PCB_OBJ_POLY, layer, poly, poly);
 		}
 	}
 	return 0;
 }
 
-static const char pcb_acts_PolyNew[] = "PolyNew(data, layer, ptlist, clearance, flags)";
+static const char pcb_acts_PolyNew[] = "PolyNew([noundo,] data, layer, ptlist, clearance, flags)";
 static const char pcb_acth_PolyNew[] = "Create an empty polygon. For now data must be \"pcb\". Use PolyNewPoint to add points. Returns a polygon pointer valid until PolyNewEnd() is called.";
 static fgw_error_t pcb_act_PolyNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -337,12 +363,14 @@ static fgw_error_t pcb_act_PolyNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_layer_t *layer;
 	pcb_coord_t cl;
 	pcb_flag_t flags;
+	DRAWOPTARG;
+	(void)noundo;
 
 	PCB_ACT_IRES(0);
-	PCB_ACT_CONVARG(1, FGW_DATA, PolyNewFromPoints, data = fgw_data(&argv[1]));
-	PCB_ACT_CONVARG(2, FGW_LAYER, PolyNewFromPoints, layer = fgw_layer(&argv[2]));
-	PCB_ACT_CONVARG(3, FGW_COORD, PolyNewFromPoints, cl = fgw_coord(&argv[3]));
-	PCB_ACT_CONVARG(4, FGW_STR, PolyNewFromPoints, sflg = argv[4].val.str);
+	PCB_ACT_CONVARG(1+ao, FGW_DATA, PolyNewFromPoints, data = fgw_data(&argv[1+ao]));
+	PCB_ACT_CONVARG(2+ao, FGW_LAYER, PolyNewFromPoints, layer = fgw_layer(&argv[2+ao]));
+	PCB_ACT_CONVARG(3+ao, FGW_COORD, PolyNewFromPoints, cl = fgw_coord(&argv[3+ao]));
+	PCB_ACT_CONVARG(4+ao, FGW_STR, PolyNewFromPoints, sflg = argv[4+ao].val.str);
 
 	if (data != PCB->Data)
 		return 0;
@@ -355,15 +383,17 @@ static fgw_error_t pcb_act_PolyNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_PolyNewPoints[] = "PolyNewPoints(poly, ptlist)";
+static const char pcb_acts_PolyNewPoints[] = "PolyNewPoints([noundo,] poly, ptlist)";
 static const char pcb_acth_PolyNewPoints[] = "Add a list of points to a polygon created by PolyNew. Returns 0 on success.";
 static fgw_error_t pcb_act_PolyNewPoints(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_poly_t *poly;
 	const char *ptlist;
+	DRAWOPTARG;
+	(void)noundo;
 
-	PCB_ACT_CONVARG(1, FGW_PTR, PolyNewPoints, poly = argv[1].val.ptr_void);
-	PCB_ACT_CONVARG(2, FGW_STR, PolyNewPoints, ptlist = argv[2].val.str);
+	PCB_ACT_CONVARG(1+ao, FGW_PTR, PolyNewPoints, poly = argv[1+ao].val.ptr_void);
+	PCB_ACT_CONVARG(2+ao, FGW_STR, PolyNewPoints, ptlist = argv[2+ao].val.str);
 	if (!fgw_ptr_in_domain(&pcb_fgw, &argv[1], PTR_DOMAIN_POLY)) {
 		pcb_message(PCB_MSG_ERROR, "PolyNewPoints: invalid polygon pointer\n");
 		PCB_ACT_IRES(-1);
@@ -378,17 +408,18 @@ static fgw_error_t pcb_act_PolyNewPoints(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	return 0;
 }
 
-static const char pcb_acts_PolyNewEnd[] = "PolyNewEnd(data, layer, poly)";
+static const char pcb_acts_PolyNewEnd[] = "PolyNewEnd([noundo,] data, layer, poly)";
 static const char pcb_acth_PolyNewEnd[] = "Close and place a polygon started by PolyNew. Returns the ID of the new object or 0 on error.";
 static fgw_error_t pcb_act_PolyNewEnd(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_poly_t *poly;
 	pcb_data_t *data;
 	pcb_layer_t *layer;
+	DRAWOPTARG;
 
-	PCB_ACT_CONVARG(1, FGW_DATA, PolyNewFromPoints, data = fgw_data(&argv[1]));
-	PCB_ACT_CONVARG(2, FGW_LAYER, PolyNewFromPoints, layer = fgw_layer(&argv[2]));
-	PCB_ACT_CONVARG(3, FGW_PTR, PolyNewPoints, poly = argv[3].val.ptr_void);
+	PCB_ACT_CONVARG(1+ao, FGW_DATA, PolyNewFromPoints, data = fgw_data(&argv[1+ao]));
+	PCB_ACT_CONVARG(2+ao, FGW_LAYER, PolyNewFromPoints, layer = fgw_layer(&argv[2+ao]));
+	PCB_ACT_CONVARG(3+ao, FGW_PTR, PolyNewPoints, poly = argv[3+ao].val.ptr_void);
 	if (!fgw_ptr_in_domain(&pcb_fgw, &argv[1], PTR_DOMAIN_POLY)) {
 		pcb_message(PCB_MSG_ERROR, "PolyNewEnd: invalid polygon pointer\n");
 		PCB_ACT_IRES(0);
@@ -404,6 +435,8 @@ static fgw_error_t pcb_act_PolyNewEnd(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_add_poly_on_layer(layer, poly);
 	res->type = FGW_LONG;
 	res->val.nat_long = poly->ID;
+	if (!noundo)
+		pcb_undo_add_obj_to_create(PCB_OBJ_POLY, layer, poly, poly);
 	fgw_ptr_unreg(&pcb_fgw, &argv[1], PTR_DOMAIN_POLY);
 	return 0;
 }
