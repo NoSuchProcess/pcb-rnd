@@ -519,7 +519,9 @@ ha:{
 			li:submenu {
 				ha:script            = {
 					# submenu dedicated for user scripts to register their menu items
-					li:submenu { }
+					li:submenu {
+						@scripts
+					}
 				}
 				ha:Manage plugins... = { a={<Key>p;<Key>m;<Key>p;}; action=ManagePlugins() }
 				ha:Manage scripts... = { a={<Key>p;<Key>m;<Key>s;}; action=BrowseScripts() }
