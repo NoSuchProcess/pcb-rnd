@@ -220,6 +220,7 @@ static live_script_t *pcb_dlg_live_script(const char *name)
 			PCB_DAD_BUTTON_CLOSES(lvs->dlg, clbtn);
 		PCB_DAD_END(lvs->dlg);
 	PCB_DAD_END(lvs->dlg);
+	PCB_DAD_DEFSIZE(lvs->dlg, 300, 500);
 
 	title = pcb_concat("Live Scripting: ", name, NULL);
 	PCB_DAD_NEW("live_script", lvs->dlg, title, lvs, pcb_false, lvs_close_cb);
