@@ -170,7 +170,12 @@ static live_script_t *pcb_dlg_live_script(const char *name)
 	char *title;
 	live_script_t *lvs = calloc(sizeof(live_script_t), 1);
 
-	lvs_list_langs(lvs);
+	if (lvs_list_langs(lvs) < 1) {
+		lvs_free_langs(lvs);
+		free(lvs);
+		pcb_message(PCB_MSG_ERROR, "live_script: no scripting language engines found\nPlease compile and install fungw from source, then\nreconfigure and recompile pcb-rnd.\n");
+		return NULL;
+	}
 
 	lvs->name = pcb_strdup(name);
 	lvs->longname = pcb_concat("_live_script_", name, NULL);
@@ -269,8 +274,12 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return 0;
 		}
 		lvs = pcb_dlg_live_script(name);
-		htsp_set(&pcb_live_scripts, lvs->name, lvs);
-		PCB_ACT_IRES(1);
+		if (lvs != NULL) {
+			htsp_set(&pcb_live_scripts, lvs->name, lvs);
+			PCB_ACT_IRES(0);
+		}
+		else
+			PCB_ACT_IRES(1);
 		return 0;
 	}
 
