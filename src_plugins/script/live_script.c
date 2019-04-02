@@ -252,7 +252,6 @@ static int live_stop(live_script_t *lvs)
 	pcb_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wstop, 0);
 }
 
-
 static int live_run(live_script_t *lvs)
 {
 	pcb_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
@@ -260,6 +259,7 @@ static int live_run(live_script_t *lvs)
 	FILE *f;
 	char *src, *fn, *lang;
 	int res = 0;
+	long numu;
 
 	fn = pcb_tempfile_name_new("live_script");
 	f = pcb_fopen(fn, "w");
@@ -277,7 +277,10 @@ static int live_run(live_script_t *lvs)
 	lang = lvs->lang_engines[lvs->dlg[lvs->wlang].default_val.int_value];
 
 	live_stop(lvs);
+
 	lvs->undo_pre = pcb_undo_serial();
+	numu = pcb_num_undo();
+
 	if (pcb_script_load(lvs->longname, fn, lang) != 0) {
 		pcb_message(PCB_MSG_ERROR, "live_script: can't load/parse the script\n");
 		res = -1;
@@ -288,6 +291,9 @@ static int live_run(live_script_t *lvs)
 
 	if (!lvs->dlg[lvs->wpers].default_val.int_value)
 		live_stop(lvs);
+
+	if ((pcb_num_undo() != numu) && (lvs->undo_pre == pcb_undo_serial()))
+		pcb_undo_inc_serial();
 	lvs->undo_post = pcb_undo_serial();
 
 	pcb_gui->invalidate_all(); /* if the script drew anything, get it displayed */
@@ -304,18 +310,14 @@ static const char *live_default_ext(live_script_t *lvs)
 
 static int live_undo(live_script_t *lvs)
 {
-	if (lvs->undo_pre == lvs->undo_post) {
-pcb_trace("nothing!");
+	if (lvs->undo_pre == lvs->undo_post)
 		return 0; /* the script did nothing */
-	}
 	if (lvs->undo_post < pcb_undo_serial()) {
 		pcb_message(PCB_MSG_WARNING, "Can not undo live script modifications:\nthere was user edit after script executaion.\n");
 		return 1;
 	}
-	while(pcb_undo_serial() > lvs->undo_pre) {
-pcb_trace("undo 1\n");
-		pcb_undo(1);
-	}
+	pcb_undo_above(lvs->undo_pre);
+	pcb_gui->invalidate_all();
 	return 0;
 }
 
