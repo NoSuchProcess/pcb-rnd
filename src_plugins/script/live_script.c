@@ -47,7 +47,7 @@ typedef struct {
 	char *name, *longname, *fn;
 	char **langs;
 	char **lang_engines;
-	int wtxt, wrerun, wrun, wstop, wundo, wload, wsave, wlang;
+	int wtxt, wrerun, wrun, wstop, wundo, wload, wsave, wpers, wlang;
 	unsigned loaded:1;
 } live_script_t;
 
@@ -212,6 +212,9 @@ static live_script_t *pcb_dlg_live_script(const char *name)
 				PCB_DAD_CHANGE_CB(lvs->dlg, lvs_button_cb);
 		PCB_DAD_END(lvs->dlg);
 		PCB_DAD_BEGIN_HBOX(lvs->dlg);
+			PCB_DAD_BOOL(lvs->dlg, "");
+				lvs->wpers = PCB_DAD_CURRENT(lvs->dlg);
+			PCB_DAD_LABEL(lvs->dlg, "persistent");
 			PCB_DAD_ENUM(lvs->dlg, (const char **)lvs->langs);
 				lvs->wlang = PCB_DAD_CURRENT(lvs->dlg);
 			PCB_DAD_BEGIN_HBOX(lvs->dlg);
@@ -272,6 +275,9 @@ static int live_run(live_script_t *lvs)
 	lvs->loaded = 1;
 	pcb_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wrun, 0);
 	pcb_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wstop, 1);
+
+	if (!lvs->dlg[lvs->wpers].default_val.int_value)
+		live_stop(lvs);
 
 	pcb_tempfile_unlink(fn);
 	return res;
