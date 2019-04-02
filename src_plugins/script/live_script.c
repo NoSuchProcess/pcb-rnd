@@ -223,6 +223,17 @@ static live_script_t *pcb_dlg_live_script(const char *name)
 	return lvs;
 }
 
+static int live_stop(live_script_t *lvs)
+{
+	if (lvs->loaded) {
+		pcb_script_unload(lvs->longname, NULL);
+		lvs->loaded = 0;
+	}
+
+	pcb_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wrun, 1);
+}
+
+
 static int live_run(live_script_t *lvs)
 {
 	pcb_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
@@ -246,17 +257,13 @@ static int live_run(live_script_t *lvs)
 
 	lang = lvs->lang_engines[lvs->dlg[lvs->wlang].default_val.int_value];
 
-	if (lvs->loaded) {
-		pcb_script_unload(lvs->longname, NULL);
-		lvs->loaded = 0;
-	}
-
-
+	live_stop(lvs);
 	if (pcb_script_load(lvs->longname, fn, lang) != 0) {
 		pcb_message(PCB_MSG_ERROR, "live_script: can't load/parse the script\n");
 		res = -1;
 	}
 	lvs->loaded = 1;
+	pcb_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wrun, 0);
 
 	pcb_tempfile_unlink(fn);
 	return res;
@@ -405,6 +412,7 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		live_run(lvs);
 	}
 	else if (pcb_strcasecmp(cmd, "rerun") == 0) {
+		live_stop(lvs);
 TODO("undo");
 		live_run(lvs);
 	}
