@@ -246,6 +246,7 @@ static int live_stop(live_script_t *lvs)
 
 	pcb_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wrun, 1);
 	pcb_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wstop, 0);
+	return 0;
 }
 
 static int live_run(live_script_t *lvs)
