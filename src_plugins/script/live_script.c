@@ -183,6 +183,7 @@ static live_script_t *pcb_dlg_live_script(const char *name)
 	PCB_DAD_BEGIN_VBOX(lvs->dlg);
 		PCB_DAD_COMPFLAG(lvs->dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_TEXT(lvs->dlg, lvs);
+			PCB_DAD_COMPFLAG(lvs->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
 			lvs->wtxt = PCB_DAD_CURRENT(lvs->dlg);
 
 		PCB_DAD_BEGIN_HBOX(lvs->dlg);
