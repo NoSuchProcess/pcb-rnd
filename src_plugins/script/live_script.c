@@ -517,7 +517,7 @@ void pcb_live_script_uninit(void)
 		lvs_close_cb(lvs, PCB_HID_ATTR_EV_CODECLOSE);
 	}
 	htsp_uninit(&pcb_live_scripts);
-	if (pcb_gui != NULL)
+	if ((pcb_gui != NULL) && (pcb_gui->remove_menu != NULL))
 		pcb_gui->remove_menu(lvs_cookie);
 	pcb_event_unbind_allcookie(lvs_cookie);
 }
