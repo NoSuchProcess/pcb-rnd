@@ -1764,6 +1764,107 @@ Print one line in the log for each currently loaded script. If
  as a case sensitive regex on script ID, file name and language (list only scripts that match with any of these fields).  
 </dd></dl>
 
+<h2 id="livescript">LiveScript</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+LiveScript([new], [name])
+LiveScript(load|save, name, [filame])
+LiveScript(run|stop|rerun|undo, name)
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Manage a live script
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+script plugin
+</table>
+<p>
+The first argument determines what operation the action performs and how subsequent arguments are interpreted: 
+<p>
+ 
+<table border=1 cellspacing=0>
+  
+<tr>
+
+<th>
+ new, [name]  
+<td>
+ Create a new live script and open a new live script dialog. 
+<i>
+name
+</i>
+       is an unique live script name that identifies the window. If not       specified, "default" is used"   
+<tr>
+
+<th>
+ load, name, [filename]  
+<td>
+ Replace the script source in the LiveScript window identified by       
+<i>
+name
+</i>
+ with the content loaded from a file. If 
+<i>
+filename
+</i>
+       is not specified, open a file selector dialog.   
+<tr>
+
+<th>
+ save, name, [filename]  
+<td>
+ Save the script source in the LiveScript window identified by       
+<i>
+name
+</i>
+ to a file. If 
+<i>
+filename
+</i>
+ is not specified, open a       file selector dialog.   
+<tr>
+
+<th>
+ run, name  
+<td>
+ Run the script in the LiveScript window identified by       
+<i>
+name
+</i>
+.   
+<tr>
+
+<th>
+ stop, name  
+<td>
+ Stop the script in the LiveScript window identified by       
+<i>
+name
+</i>
+, if ti is running in persistent mode.   
+<tr>
+
+<th>
+ undo, name  
+<td>
+ Undo the "init changes" of the script in the LiveScript window       identified by 
+<i>
+name
+</i>
+. Init changes are those board changes       the script has done while running its initialization section.       Live script undo is possible only if there was no user edit after       the script finished.   
+<tr>
+
+<th>
+ rerun, name  
+<td>
+ Stop, undo and run the script in the LiveScript window identified by       
+<i>
+name
+</i>
+.  
+</table>
+  
+</dd></dl>
+
 <h2 id="load">Load</h2>
 <dl><dd>
 <p>
@@ -2221,7 +2322,7 @@ Note that moving an subcircuit from a component layer to a solder layer, or from
 Net(find|select|rats|norats||ripup|addrats|clear[,net[,pin]])
 Net(freeze|thaw|forcethaw)
 Net(swap)
-Net(add,net,pin)
+Net(add,net,pin)Net([rename|merge],srcnet,dstnet)
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
 Perform various actions on netlists.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
