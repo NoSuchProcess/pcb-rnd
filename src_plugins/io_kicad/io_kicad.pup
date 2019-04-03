@@ -11,5 +11,6 @@ $package io-alien
 default buildin
 
 dep lib_gensexpr
+dep lib_compat_help
 
 autoload 1
