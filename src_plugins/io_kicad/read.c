@@ -56,6 +56,13 @@
 /* a reasonable approximation of pcb glyph width, ~=  5000 centimils; in mm */
 #define GLYPH_WIDTH (1.27)
 
+typedef enum {
+	DIM_PAGE,
+	DIM_AREA,
+	DIM_FALLBACK,
+	DIM_max
+} kicad_dim_prio_t;
+
 typedef struct {
 	pcb_board_t *pcb;
 	pcb_data_t *fp_data;
@@ -64,6 +71,10 @@ typedef struct {
 	gsxl_dom_t dom;
 	unsigned auto_layers:1;
 	htsi_t layer_k2i; /* layer name-to-index hash; name is the kicad name, index is the pcb-rnd layer index */
+
+	pcb_coord_t width[DIM_max];
+	pcb_coord_t height[DIM_max];
+	pcb_coord_t dim_valid[DIM_max];
 } read_state_t;
 
 typedef struct {
@@ -397,29 +408,46 @@ do { \
 	ignore_value(n, err); \
 } while(0)
 
+static int kicad_update_size(read_state_t *st)
+{
+	int n;
+	for(n = 0; n < DIM_max; n++) {
+		if (st->dim_valid[n]) {
+			st->pcb->MaxWidth = st->width[n];
+			st->pcb->MaxHeight = st->height[n];
+			return 0;
+		}
+	}
+
+	return 0;
+}
+
 /* kicad_pcb/parse_page */
 static int kicad_parse_page_size(read_state_t *st, gsxl_node_t *subtree)
 {
 	pcb_media_t *m;
 
-TODO("size can be determined by kicad_pcb/general/area - when that is present, prefer that over the page size (see via1.kicad_pcb) CUCP#36")
 	if ((subtree == NULL) || (subtree->str == NULL))
 		return kicad_error(subtree, "error parsing KiCad layout size.");
 
 	for(m = pcb_media_data; m->name != NULL; m++) {
 		if (strcmp(m->name, subtree->str) == 0) {
 			/* pivot: KiCad assumes portrait */
-			st->pcb->MaxWidth = m->height;
-			st->pcb->MaxHeight = m->width;
-			return 0;
+			st->width[DIM_PAGE] = m->height;
+			st->height[DIM_PAGE] = m->width;
+			st->dim_valid[DIM_PAGE] = 1;
+			return kicad_update_size(st);
 		}
 	}
 
-	/* default to A0 */
-	st->pcb->MaxWidth = PCB_MM_TO_COORD(1189.0);
-	st->pcb->MaxHeight = PCB_MM_TO_COORD(841.0);
-	pcb_message(PCB_MSG_ERROR, "\tUnable to determine layout size. Defaulting to A0 layout size.\n");
-	return 0;
+	kicad_error(subtree, "Unknown layout size '%s', using fallback.\n", subtree->str);
+	return kicad_update_size(st);
+}
+
+static int kicad_parse_general(read_state_t *st, gsxl_node_t *subtree)
+{
+TODO("size can be determined by kicad_pcb/general/area - when that is present, prefer that over the page size (see via1.kicad_pcb) CUCP#36")
+	return kicad_update_size(st);
 }
 
 /* kicad_pcb/parse_title_block */
@@ -1504,7 +1532,7 @@ static int kicad_parse_pcb(read_state_t *st)
 	static const dispatch_t disp[] = { /* possible children of root */
 		{"version", kicad_parse_version},
 		{"host", kicad_parse_nop},
-		{"general", kicad_parse_nop},
+		{"general", kicad_parse_general},
 		{"page", kicad_parse_page_size},
 		{"title_block", kicad_parse_title_block},
 		{"layers", kicad_parse_layer_definitions}, /* board layer defs */
@@ -1564,10 +1592,16 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 
 	/* set up the parse context */
 	memset(&st, 0, sizeof(st));
+
 	st.pcb = Ptr;
 	st.Filename = Filename;
 	st.settings_dest = settings_dest;
 	htsi_init(&st.layer_k2i, strhash, strkeyeq);
+
+	/* A0 */
+	st.width[DIM_FALLBACK] = PCB_MM_TO_COORD(1189.0);
+	st.height[DIM_FALLBACK] = PCB_MM_TO_COORD(841.0);
+	st.dim_valid[DIM_FALLBACK] = 1;
 
 	/* load the file into the dom */
 	res = kicad_parse_file(FP, &st.dom);
