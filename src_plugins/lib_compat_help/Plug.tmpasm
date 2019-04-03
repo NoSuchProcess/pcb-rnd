@@ -1,6 +1,7 @@
 put /local/pcb/mod {lib_compat_help}
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/lib_compat_help/lib_compat_help.o
+	$(PLUGDIR)/lib_compat_help/media.o
 @]
 
 switch /local/pcb/lib_compat_help/controls

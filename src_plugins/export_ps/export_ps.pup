@@ -6,5 +6,6 @@ $fmt-native no
 $fmt-feature-w render black&white postscript (single or multiple files)
 $fmt-feature-w render black&white or color embedded postscript (single file)
 $package export
+dep lib_compat_help
 default buildin
 autoload 1
