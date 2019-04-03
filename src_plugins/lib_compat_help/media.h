@@ -1,6 +1,6 @@
 typedef struct {
 	const char *name;
-	pcb_coord_t width, height;
+	pcb_coord_t width, height; /* orientation: landscape */
 	pcb_coord_t margin_x, margin_y;
 } pcb_media_t;
 
