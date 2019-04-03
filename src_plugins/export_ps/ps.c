@@ -47,19 +47,6 @@ typedef struct hid_gc_s {
 	int faded;
 } hid_gc_s;
 
-static const char *medias[] = {
-	"A0", "A1", "A2", "A3", "A4", "A5",
-	"A6", "A7", "A8", "A9", "A10",
-	"B0", "B1", "B2", "B3", "B4", "B5",
-	"B6", "B7", "B8", "B9", "B10",
-	"Letter", "11x17", "Ledger",
-	"Legal", "Executive",
-	"A-Size", "B-size",
-	"C-Size", "D-size", "E-size",
-	"US-Business_Card", "Intl-Business_Card",
-	0
-};
-
 static pcb_cam_t ps_cam;
 
 pcb_hid_attribute_t ps_attribute_list[] = {
@@ -179,7 +166,7 @@ to @samp{A10}, @samp{B0} to @samp{B10}, @samp{Letter}, @samp{11x17},
 %end-doc
 */
 	{"media", "media type",
-	 PCB_HATT_ENUM, 0, 0, {22, 0, 0}, medias, 0},
+	 PCB_HATT_ENUM, 0, 0, {22, 0, 0}, pcb_medias, 0},
 #define HA_media 9
 
 /* %start-doc options "91 Postscript Export"

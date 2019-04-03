@@ -109,5 +109,15 @@ pcb_media_t pcb_media_data[] = {
 	{NULL, 0, 0, 0, 0},
 };
 
+/* MUST BE IN SYNC with the above table */
+const char *pcb_medias[] = {
+	"A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "A10",
+	"B0", "B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B10",
+	"Letter", "11x17", "Ledger", "Legal", "Executive",
+	"A-Size", "B-size", "C-Size", "D-size", "E-size",
+	"US-Business_Card", "Intl-Business_Card",
+	NULL
+};
+
 #undef MARGINX
 #undef MARGINY
