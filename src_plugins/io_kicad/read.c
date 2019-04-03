@@ -444,11 +444,6 @@ static int kicad_parse_page_size(read_state_t *st, gsxl_node_t *subtree)
 	return kicad_update_size(st);
 }
 
-static int kicad_parse_general(read_state_t *st, gsxl_node_t *subtree)
-{
-TODO("size can be determined by kicad_pcb/general/area - when that is present, prefer that over the page size (see via1.kicad_pcb) CUCP#36")
-	return kicad_update_size(st);
-}
 
 /* kicad_pcb/parse_title_block */
 static int kicad_parse_title_block(read_state_t *st, gsxl_node_t *subtree)
@@ -530,6 +525,38 @@ do { \
 		else \
 			ly = kicad_get_subc_layer(st, subc, nd->str, NULL); \
 	} while(0)
+
+static int kicad_parse_general_area(read_state_t *st, gsxl_node_t *subtree)
+{
+	if ((subtree->str == NULL) || (subtree->next->str == NULL) || (subtree->next->next->str == NULL) || (subtree->next->next->next->str == NULL))
+		return kicad_error(subtree, "area requires 4 arguments.\n");
+
+	PARSE_COORD(st->width[DIM_AREA], NULL, subtree->next->next, "area x2");
+	PARSE_COORD(st->height[DIM_AREA], NULL, subtree->next->next->next, "area y2");
+	st->dim_valid[DIM_AREA] = 1;
+	return kicad_update_size(st);
+}
+
+
+static int kicad_parse_general(read_state_t *st, gsxl_node_t *subtree)
+{
+	static const dispatch_t disp[] = { /* possible children of root */
+		{"links", kicad_parse_nop},
+		{"no_connects", kicad_parse_nop},
+		{"area", kicad_parse_general_area},
+		{"thickness", kicad_parse_nop},
+		{"drawings", kicad_parse_nop},
+		{"tracks", kicad_parse_nop},
+		{"zones", kicad_parse_nop},
+		{"modules", kicad_parse_nop},
+		{"nets", kicad_parse_nop},
+		{NULL, NULL}
+	};
+
+	/* Call the corresponding subtree parser for each child node of the root
+	   node; if any of them fail, parse fails */
+	return kicad_foreach_dispatch(st, subtree, disp);
+}
 
 /* kicad_pcb/gr_text and fp_text */
 static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *text, pcb_subc_t *subc)
