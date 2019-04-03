@@ -1,7 +1,7 @@
 typedef struct {
 	const char *name;
-	pcb_coord_t Width, Height;
-	pcb_coord_t MarginX, MarginY;
-} MediaType, *MediaTypePtr;
+	pcb_coord_t width, height;
+	pcb_coord_t margin_x, margin_y;
+} pcb_media_t;
 
-extern MediaType media_data[];
+extern pcb_media_t pcb_media_data[];

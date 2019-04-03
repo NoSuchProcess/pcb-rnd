@@ -460,10 +460,10 @@ void ps_start_file(FILE * f)
 	 * Media sizes are in PCB units
 	 */
 	pcb_fprintf(f, "%%%%DocumentMedia: %s %f %f 0 \"\" \"\"\n",
-							media_data[global.media_idx].name,
-							72 * PCB_COORD_TO_INCH(media_data[global.media_idx].Width),
-							72 * PCB_COORD_TO_INCH(media_data[global.media_idx].Height));
-	pcb_fprintf(f, "%%%%DocumentPaperSizes: %s\n", media_data[global.media_idx].name);
+							pcb_media_data[global.media_idx].name,
+							72 * PCB_COORD_TO_INCH(pcb_media_data[global.media_idx].width),
+							72 * PCB_COORD_TO_INCH(pcb_media_data[global.media_idx].height));
+	pcb_fprintf(f, "%%%%DocumentPaperSizes: %s\n", pcb_media_data[global.media_idx].name);
 
 	/* End General Header Comments. */
 
@@ -555,10 +555,10 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	global.invert = options[HA_psinvert].int_value;
 	global.fade_ratio = PCB_CLAMP(options[HA_psfade].real_value, 0, 1);
 	global.media_idx = options[HA_media].int_value;
-	global.media_width = media_data[global.media_idx].Width;
-	global.media_height = media_data[global.media_idx].Height;
-	global.ps_width = global.media_width - 2.0 * media_data[global.media_idx].MarginX;
-	global.ps_height = global.media_height - 2.0 * media_data[global.media_idx].MarginY;
+	global.media_width = pcb_media_data[global.media_idx].width;
+	global.media_height = pcb_media_data[global.media_idx].height;
+	global.ps_width = global.media_width - 2.0 * pcb_media_data[global.media_idx].margin_x;
+	global.ps_height = global.media_height - 2.0 * pcb_media_data[global.media_idx].margin_y;
 	global.scale_factor = options[HA_scale].real_value;
 	global.calibration_x = options[HA_xcalib].real_value;
 	global.calibration_y = options[HA_ycalib].real_value;
