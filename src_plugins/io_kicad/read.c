@@ -1555,7 +1555,6 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 /* Parse a board from &st->dom into st->pcb */
 static int kicad_parse_pcb(read_state_t *st)
 {
-	/* gsxl_node_t *n;  not used */
 	static const dispatch_t disp[] = { /* possible children of root */
 		{"version", kicad_parse_version},
 		{"host", kicad_parse_nop},
