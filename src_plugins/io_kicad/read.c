@@ -51,6 +51,7 @@
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 #include "../src_plugins/lib_compat_help/pstk_help.h"
 #include "../src_plugins/lib_compat_help/subc_help.h"
+#include "../src_plugins/lib_compat_help/media.h"
 
 /* a reasonable approximation of pcb glyph width, ~=  5000 centimils; in mm */
 #define GLYPH_WIDTH (1.27)
@@ -399,35 +400,25 @@ do { \
 /* kicad_pcb/parse_page */
 static int kicad_parse_page_size(read_state_t *st, gsxl_node_t *subtree)
 {
+	pcb_media_t *m;
+
 TODO("size can be determined by kicad_pcb/general/area - when that is present, prefer that over the page size (see via1.kicad_pcb) CUCP#36")
 	if ((subtree == NULL) || (subtree->str == NULL))
 		return kicad_error(subtree, "error parsing KiCad layout size.");
 
-	if (strcmp("A4", subtree->str) == 0) {
-		st->pcb->MaxWidth = PCB_MM_TO_COORD(297.0);
-		st->pcb->MaxHeight = PCB_MM_TO_COORD(210.0);
+	for(m = pcb_media_data; m->name != NULL; m++) {
+		if (strcmp(m->name, subtree->str) == 0) {
+			/* pivot: KiCad assumes portrait */
+			st->pcb->MaxWidth = m->height;
+			st->pcb->MaxHeight = m->width;
+			return 0;
+		}
 	}
-	else if (strcmp("A3", subtree->str) == 0) {
-		st->pcb->MaxWidth = PCB_MM_TO_COORD(420.0);
-		st->pcb->MaxHeight = PCB_MM_TO_COORD(297.0);
-	}
-	else if (strcmp("A2", subtree->str) == 0) {
-		st->pcb->MaxWidth = PCB_MM_TO_COORD(594.0);
-		st->pcb->MaxHeight = PCB_MM_TO_COORD(420.0);
-	}
-	else if (strcmp("A1", subtree->str) == 0) {
-		st->pcb->MaxWidth = PCB_MM_TO_COORD(841.0);
-		st->pcb->MaxHeight = PCB_MM_TO_COORD(594.0);
-	}
-	else if (strcmp("A0", subtree->str) == 0) {
-		st->pcb->MaxWidth = PCB_MM_TO_COORD(1189.0);
-		st->pcb->MaxHeight = PCB_MM_TO_COORD(841.0);
-	}
-	else { /* default to A0 */
-		st->pcb->MaxWidth = PCB_MM_TO_COORD(1189.0);
-		st->pcb->MaxHeight = PCB_MM_TO_COORD(841.0);
-		pcb_message(PCB_MSG_ERROR, "\tUnable to determine layout size. Defaulting to A0 layout size.\n");
-	}
+
+	/* default to A0 */
+	st->pcb->MaxWidth = PCB_MM_TO_COORD(1189.0);
+	st->pcb->MaxHeight = PCB_MM_TO_COORD(841.0);
+	pcb_message(PCB_MSG_ERROR, "\tUnable to determine layout size. Defaulting to A0 layout size.\n");
 	return 0;
 }
 
