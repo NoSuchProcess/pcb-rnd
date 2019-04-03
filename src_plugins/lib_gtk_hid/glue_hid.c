@@ -359,6 +359,8 @@ static void ghid_notify_filename_changed()
 /* Create a new menu by path */
 static int ghid_remove_menu(const char *menu_path)
 {
+	if (ghidgui->topwin.ghid_cfg == NULL)
+		return -1;
 	return pcb_hid_cfg_remove_menu(ghidgui->topwin.ghid_cfg, menu_path, ghid_remove_menu_widget, ghidgui->topwin.menu.menu_bar);
 }
 
