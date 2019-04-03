@@ -1,0 +1,40 @@
+The first argument determines what operation the action performs and
+how subsequent arguments are interpreted:
+<p>
+<table border=1 cellspacing=0>
+	<tr><th> new, [name]
+	<td> Create a new live script and open a new live script dialog. <i>name</i>
+	     is an unique live script name that identifies the window. If not
+	     specified, "default" is used"
+
+	<tr><th> load, name, [filename]
+	<td> Replace the script source in the LiveScript window identified by
+	     <i>name</i> with the content loaded from a file. If <i>filename</i>
+	     is not specified, open a file selector dialog.
+
+	<tr><th> save, name, [filename]
+	<td> Save the script source in the LiveScript window identified by
+	     <i>name</i> to a file. If <i>filename</i> is not specified, open a
+	     file selector dialog.
+
+	<tr><th> run, name
+	<td> Run the script in the LiveScript window identified by
+	     <i>name</i>.
+
+	<tr><th> stop, name
+	<td> Stop the script in the LiveScript window identified by
+	     <i>name</i>, if ti is running in persistent mode.
+
+	<tr><th> undo, name
+	<td> Undo the "init changes" of the script in the LiveScript window
+	     identified by <i>name</i>. Init changes are those board changes
+	     the script has done while running its initialization section.
+	     Live script undo is possible only if there was no user edit after
+	     the script finished.
+
+	<tr><th> rerun, name
+	<td> Stop, undo and run the script in the LiveScript window identified by
+	     <i>name</i>.
+
+</table>
+
