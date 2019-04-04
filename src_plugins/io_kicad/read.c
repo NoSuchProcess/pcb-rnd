@@ -26,12 +26,14 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  *
  */
+#include "config.h"
+
+#include <stddef.h>
 #include <assert.h>
 #include <math.h>
 #include <gensexpr/gsxl.h>
 #include <genht/htsi.h>
 #include "compat_misc.h"
-#include "config.h"
 #include "board.h"
 #include "plug_io.h"
 #include "error.h"
@@ -75,12 +77,24 @@ typedef struct {
 	pcb_coord_t width[DIM_max];
 	pcb_coord_t height[DIM_max];
 	pcb_coord_t dim_valid[DIM_max];
+
+	/* setup */
+	pcb_coord_t pad_to_mask_clearance;
 } read_state_t;
 
 typedef struct {
 	const char *node_name;
 	int (*parser) (read_state_t *st, gsxl_node_t *subtree);
 } dispatch_t;
+
+typedef struct {
+	const char *node_name;
+	int offset;
+	enum {
+		KICAD_COORD,
+		KICAD_DOUBLE
+	} type;
+} autoload_t;
 
 static int kicad_error(gsxl_node_t *subtree, char *fmt, ...)
 {
@@ -526,6 +540,43 @@ do { \
 			ly = kicad_get_subc_layer(st, subc, nd->str, NULL); \
 	} while(0)
 
+/* Search the autoload table for subtree->str, convert data to a struct field
+   on match with the children ("parameters") of the subtree */
+static int kicad_autoload(read_state_t *st, gsxl_node_t *subtree, void *dst, const autoload_t *auto_table, int allow_unknown)
+{
+	const autoload_t *a;
+
+	/* do not tolerate empty/NIL node */
+	if (subtree->str == NULL)
+		return kicad_error(subtree, "unexpected empty/NIL subtree");
+
+	for(a = auto_table; a->node_name != NULL; a++) {
+		if (strcmp(a->node_name, subtree->str) == 0) {
+			char *dst = ((char *)dst) + a->offset;
+			switch(a->type) {
+				case KICAD_DOUBLE:
+					{
+						double *d = (double *)dst;
+						PARSE_DOUBLE(*d, NULL, subtree->children, "");
+					}
+					break;
+				case KICAD_COORD:
+					{
+						pcb_coord_t *d = (pcb_coord_t *)dst;
+						PARSE_COORD(*d, NULL, subtree->children, "");
+					}
+					break;
+			}
+		}
+	}
+
+	if (allow_unknown)
+		return 0;
+
+	/* node name not found in the dispatcher table */
+	return kicad_error(subtree, "Unknown node: '%s'", subtree->str);
+}
+
 static int kicad_parse_general_area(read_state_t *st, gsxl_node_t *subtree)
 {
 	if ((subtree->str == NULL) || (subtree->next->str == NULL) || (subtree->next->next->str == NULL) || (subtree->next->next->next->str == NULL))
@@ -536,7 +587,6 @@ static int kicad_parse_general_area(read_state_t *st, gsxl_node_t *subtree)
 	st->dim_valid[DIM_AREA] = 1;
 	return kicad_update_size(st);
 }
-
 
 static int kicad_parse_general(read_state_t *st, gsxl_node_t *subtree)
 {
@@ -557,6 +607,16 @@ static int kicad_parse_general(read_state_t *st, gsxl_node_t *subtree)
 	   node; if any of them fail, parse fails */
 	return kicad_foreach_dispatch(st, subtree, disp);
 }
+
+static int kicad_parse_setup(read_state_t *st, gsxl_node_t *subtree)
+{
+	static const autoload_t atbl[] = {
+		{"pad_to_mask_clearance", offsetof(read_state_t, pad_to_mask_clearance), KICAD_COORD},
+		{NULL, 0, 0}
+	};
+	return kicad_autoload(st, subtree, st, atbl, 1);
+}
+
 
 /* kicad_pcb/gr_text and fp_text */
 static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *text, pcb_subc_t *subc, double mod_rot)
@@ -1552,7 +1612,7 @@ static int kicad_parse_pcb(read_state_t *st)
 		{"page", kicad_parse_page_size},
 		{"title_block", kicad_parse_title_block},
 		{"layers", kicad_parse_layer_definitions}, /* board layer defs */
-		{"setup", kicad_parse_nop},
+		{"setup", kicad_parse_setup},
 		{"net", kicad_parse_net}, /* net labels if child of root, otherwise net attribute of element */
 		{"net_class", kicad_parse_nop},
 		{"module", kicad_parse_module}, /* for footprints */
