@@ -559,7 +559,7 @@ static int kicad_parse_general(read_state_t *st, gsxl_node_t *subtree)
 }
 
 /* kicad_pcb/gr_text and fp_text */
-static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *text, pcb_subc_t *subc)
+static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *text, pcb_subc_t *subc, double mod_rot)
 {
 	gsxl_node_t *l, *n, *m;
 	int i;
@@ -582,6 +582,7 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 			PARSE_COORD(X, n, n->children, "text X1");
 			PARSE_COORD(Y, n, n->children->next, "text Y1");
 			PARSE_DOUBLE(rotdeg, NULL, n->children->next->next, "text rotation");
+			rotdeg -= mod_rot;
 			if (subc != NULL) {
 				pcb_coord_t sx, sy;
 				double srot;
@@ -692,7 +693,7 @@ TODO("this should be applied on subc as well CUCP#37");
 static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 {
 	if (subtree->str != NULL)
-		return kicad_parse_any_text(st, subtree, subtree->str, NULL);
+		return kicad_parse_any_text(st, subtree, subtree->str, NULL, 0.0);
 	return kicad_error(subtree, "failed to create text: missing text string");
 }
 
@@ -1147,7 +1148,7 @@ TODO("pad rotation? CUCP#37")
 	return 0;
 }
 
-static int kicad_parse_fp_text(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, unsigned long *tally, int *foundRefdes)
+static int kicad_parse_fp_text(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, unsigned long *tally, int *foundRefdes, double mod_rot)
 {
 	char *text;
 
@@ -1175,7 +1176,7 @@ static int kicad_parse_fp_text(read_state_t *st, gsxl_node_t *n, pcb_subc_t *sub
 		else /* only key, no value */
 			text = key;
 	}
-	if (kicad_parse_any_text(st, n->children->next->next, text, subc) != 0)
+	if (kicad_parse_any_text(st, n->children->next->next, text, subc, mod_rot) != 0)
 		return -1;
 	return 0;
 }
@@ -1375,7 +1376,7 @@ TODO("don't ignore rotation here CUCP#37");
 			TODO("save this as attribute");
 		}
 		else if (strcmp("fp_text", n->str) == 0) {
-			kicad_parse_fp_text(st, n, subc, &tally, &found_refdes);
+			kicad_parse_fp_text(st, n, subc, &tally, &found_refdes, mod_rot);
 		}
 		else if (strcmp("descr", n->str) == 0) {
 			SEEN_NO_DUP(tally, 9);
