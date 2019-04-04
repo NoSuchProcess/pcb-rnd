@@ -590,9 +590,6 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 					X += sx;
 					Y += sy;
 				}
-				TODO("subc roation is not properly mapped by the caller CUCP#37");
-				if (pcb_subc_get_rotation(subc, &srot) == 0)
-					rotdeg += srot;
 			}
 			direction = rotdeg_to_dir(rotdeg); /* used for centering only */
 		}
@@ -600,7 +597,6 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 			SEEN_NO_DUP(tally, 1);
 			PARSE_LAYER(ly, n->children, subc, "text");
 			if (subc == NULL) {
-TODO("this should be applied on subc as well CUCP#37");
 				if (pcb_layer_flags_(ly) & PCB_LYT_BOTTOM)
 					flg = pcb_flag_make(PCB_FLAG_ONSOLDER);
 			}
@@ -776,8 +772,6 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 			x2 += sx;
 			y2 += sy;
 		}
-		TODO("subc roation is not properly mapped by the caller; when it is, we may need to rotate the line here CUCP#37");
-		if (pcb_subc_get_rotation(subc, &srot) == 0) {}
 	}
 	pcb_line_new(ly, x1, y1, x2, y2, thickness, clearance, flg);
 	return 0;
@@ -879,8 +873,6 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 				cx += sx;
 				cy += sy;
 			}
-			TODO("subc roation is not properly mapped by the caller; when it is, we may need to rotate the line here CUCP#37");
-			if (pcb_subc_get_rotation(subc, &srot) == 0) {}
 		}
 		pcb_arc_new(ly, cx, cy, width, height, start_angle, delta, thickness, clearance, flg, pcb_true);
 	}
@@ -1133,18 +1125,6 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 	if (pinName != NULL)
 		pcb_attribute_put(&ps->Attributes, "term", pinName);
 
-TODO("pad rotation? CUCP#37")
-#if 0
-		/* the rotation value describes rotation to the pad
-		   versus the original pad orientation, _NOT_ rotation
-		   that now needs to be applied, it seems */
-		if (padRotation != 0 && padRotation != moduleRotation) {
-			padRotation = padRotation / 90; /*ignore rotation != n*90 */
-			PCB_COORD_ROTATE90(x1, y1, X, Y, padRotation);
-			PCB_COORD_ROTATE90(x2, y2, X, Y, padRotation);
-		}
-#endif
-
 	return 0;
 }
 
@@ -1362,7 +1342,10 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				module_defined = 1; /* but might be empty, wait and see */
 				if (subc == NULL) {
 					subc = pcb_subc_new();
-TODO("don't ignore rotation here CUCP#37");
+					/* modules are specified in rot=0; build time like that and rotate
+					   the whole subc at the end. Text is special case because kicad
+					   has no 'floater' - rotation is encoded both in text and subc
+					   and it has to be subtracted from text later on */
 					pcb_subc_create_aux(subc, mod_x, mod_y, 0.0, on_bottom);
 					pcb_attribute_put(&subc->Attributes, "refdes", "K1");
 				}
