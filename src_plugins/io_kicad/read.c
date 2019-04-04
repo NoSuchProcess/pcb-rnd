@@ -542,7 +542,7 @@ do { \
 
 /* Search the autoload table for subtree->str, convert data to a struct field
    on match with the children ("parameters") of the subtree */
-static int kicad_autoload(read_state_t *st, gsxl_node_t *subtree, void *dst, const autoload_t *auto_table, int allow_unknown)
+static int kicad_autoload(read_state_t *st, gsxl_node_t *subtree, void *dst_struct, const autoload_t *auto_table, int allow_unknown)
 {
 	const autoload_t *a;
 
@@ -552,7 +552,7 @@ static int kicad_autoload(read_state_t *st, gsxl_node_t *subtree, void *dst, con
 
 	for(a = auto_table; a->node_name != NULL; a++) {
 		if (strcmp(a->node_name, subtree->str) == 0) {
-			char *dst = ((char *)dst) + a->offset;
+			char *dst = ((char *)dst_struct) + a->offset;
 			switch(a->type) {
 				case KICAD_DOUBLE:
 					{
@@ -576,6 +576,21 @@ static int kicad_autoload(read_state_t *st, gsxl_node_t *subtree, void *dst, con
 	/* node name not found in the dispatcher table */
 	return kicad_error(subtree, "Unknown node: '%s'", subtree->str);
 }
+
+/* Take each children of tree and execute them using kicad_autoload
+   Useful for procssing nodes that may host various subtrees of different
+   nodes in a flexible way. Return non-zero if any subtree processor failed. */
+static int kicad_foreach_autoload(read_state_t *st, gsxl_node_t *tree, void *dst, const autoload_t *auto_table, int allow_unknown)
+{
+	gsxl_node_t *n;
+
+	for(n = tree; n != NULL; n = n->next)
+		if (kicad_autoload(st, n, dst, auto_table, allow_unknown) != 0)
+			return -1;
+
+	return 0; /* success */
+}
+
 
 static int kicad_parse_general_area(read_state_t *st, gsxl_node_t *subtree)
 {
@@ -614,7 +629,7 @@ static int kicad_parse_setup(read_state_t *st, gsxl_node_t *subtree)
 		{"pad_to_mask_clearance", offsetof(read_state_t, pad_to_mask_clearance), KICAD_COORD},
 		{NULL, 0, 0}
 	};
-	return kicad_autoload(st, subtree, st, atbl, 1);
+	return kicad_foreach_autoload(st, subtree, st, atbl, 1);
 }
 
 
@@ -1094,8 +1109,8 @@ static pcb_pstk_t *kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pc
 	if (strcmp(pad_shape, "rect") == 0) {
 		pcb_pstk_shape_t sh[6];
 		memset(sh, 0, sizeof(sh));
-		sh[0].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[0], padXsize+clearance, padYsize+clearance);
-		sh[1].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[1].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[1], padXsize+clearance, padYsize+clearance);
+		sh[0].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[0], padXsize+st->pad_to_mask_clearance*2, padYsize+st->pad_to_mask_clearance*2);
+		sh[1].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[1].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[1], padXsize+st->pad_to_mask_clearance*2, padYsize+st->pad_to_mask_clearance*2);
 		sh[2].layer_mask = PCB_LYT_TOP    | PCB_LYT_COPPER; pcb_shape_rect(&sh[2], padXsize, padYsize);
 		sh[3].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER; pcb_shape_rect(&sh[3], padXsize, padYsize);
 		sh[4].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER; pcb_shape_rect(&sh[4], padXsize, padYsize);
@@ -1105,8 +1120,8 @@ static pcb_pstk_t *kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pc
 	else if ((strcmp(pad_shape, "oval") == 0) || (strcmp(pad_shape, "circle") == 0)) {
 		pcb_pstk_shape_t sh[6];
 		memset(sh, 0, sizeof(sh));
-		sh[0].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_oval(&sh[0], padXsize+clearance, padYsize+clearance);
-		sh[1].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[1].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_oval(&sh[1], padXsize+clearance, padYsize+clearance);
+		sh[0].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_oval(&sh[0], padXsize+st->pad_to_mask_clearance*2, padYsize+st->pad_to_mask_clearance*2);
+		sh[1].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[1].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_oval(&sh[1], padXsize+st->pad_to_mask_clearance*2, padYsize+st->pad_to_mask_clearance*2);
 		sh[2].layer_mask = PCB_LYT_TOP    | PCB_LYT_COPPER; pcb_shape_oval(&sh[2], padXsize, padYsize);
 		sh[3].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER; pcb_shape_oval(&sh[3], padXsize, padYsize);
 		sh[4].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER; pcb_shape_oval(&sh[4], padXsize, padYsize);
@@ -1133,7 +1148,7 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 	if (strcmp(pad_shape, "rect") == 0) {
 		pcb_pstk_shape_t sh[4];
 		memset(sh, 0, sizeof(sh));
-		sh[0].layer_mask = side | PCB_LYT_MASK;   sh[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[0], padXsize+clearance, padYsize+clearance);
+		sh[0].layer_mask = side | PCB_LYT_MASK;   sh[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[0], padXsize+st->pad_to_mask_clearance*2, padYsize+st->pad_to_mask_clearance*2);
 		sh[1].layer_mask = side | PCB_LYT_PASTE;  sh[1].comb = PCB_LYC_AUTO; pcb_shape_rect(&sh[1], padXsize, padYsize);
 		sh[2].layer_mask = side | PCB_LYT_COPPER; pcb_shape_rect(&sh[2], padXsize, padYsize);
 		sh[3].layer_mask = 0;
@@ -1142,7 +1157,7 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 	else if ((strcmp(pad_shape, "oval") == 0) || (strcmp(pad_shape, "circle") == 0)) {
 		pcb_pstk_shape_t sh[4];
 		memset(sh, 0, sizeof(sh));
-		sh[0].layer_mask = side | PCB_LYT_MASK; sh[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_oval(&sh[0], padXsize+clearance, padYsize+clearance);
+		sh[0].layer_mask = side | PCB_LYT_MASK; sh[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_oval(&sh[0], padXsize+st->pad_to_mask_clearance*2, padYsize+st->pad_to_mask_clearance*2);
 		sh[1].layer_mask = side | PCB_LYT_PASTE; pcb_shape_oval(&sh[1], padXsize, padYsize);
 		sh[2].layer_mask = side | PCB_LYT_COPPER; pcb_shape_oval(&sh[2], padXsize, padYsize);
 		sh[3].layer_mask = 0;
