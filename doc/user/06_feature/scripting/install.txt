@@ -1,10 +1,13 @@
 Requirements:
- 1. download and install fungw - svn://repo.hu/fungw/trunk
- 2. at the moment fungw must be installed as root, into /usr/local/ or /usr (TODO)
+ 1. download and install genht - svn://repo.hu/genht/trunk
+    Some Linux distributions already have this packaged, please check your
+    repositries (and install the development version)
+ 2. download and install fungw - svn://repo.hu/fungw/trunk
+ 3. at the moment fungw must be installed as root, into /usr/local/ or /usr (TODO)
     during configuration, make sure all relevant scripting languages are found
- 3. (re)configure and (re)compile pcb-rnd so that it uses the system-installed
+ 4. (re)configure and (re)compile pcb-rnd so that it uses the system-installed
     version of fungw instead of the local, no-script version; make sure the
     "script" plugin is compiled (as builtin or plugin)
- 4. later on if a new scripting language is required, reconfigure,
+ 5. later on if a new scripting language is required, reconfigure,
     recompile and reinstall fungw - no pcb-rnd recompilation is needed as
     long as the system-installed fungw version is not upgraded
