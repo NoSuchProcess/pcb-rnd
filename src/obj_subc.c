@@ -424,8 +424,8 @@ void pcb_subc_create_aux(pcb_subc_t *sc, pcb_coord_t ox, pcb_coord_t oy, double 
 	}
 
 	add_aux_line(sc->aux_layer, "subc-role", "origin", ox, oy, ox, oy);
-	add_aux_line(sc->aux_layer, "subc-role", "x", ox, oy, pcb_round((double)ox + cs*unit), pcb_round(oy + sn*unit));
-	add_aux_line(sc->aux_layer, "subc-role", "y", ox, oy, pcb_round((double)ox + sn*unit), pcb_round(oy + cs*unit));
+	add_aux_line(sc->aux_layer, "subc-role", "x", ox, oy, pcb_round((double)ox + cs*unit), pcb_round((double)oy + sn*unit));
+	add_aux_line(sc->aux_layer, "subc-role", "y", ox, oy, pcb_round((double)ox + sn*unit), pcb_round((double)oy + cs*unit));
 }
 
 void pcb_subc_create_aux_point(pcb_subc_t *sc, pcb_coord_t x, pcb_coord_t y, const char *role)
