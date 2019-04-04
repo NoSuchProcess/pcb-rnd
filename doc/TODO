@@ -23,8 +23,6 @@
 + CLEANUP/FEATURE: session persistent DAD message log (messages are flushed after dialog is closed?) [report: Miloh]
 - DOC: document the DAD text widget
 - DOC: action ClaimNet()
-+ FEATURE: rewrite the netlist code
-	+ when no netlist is loaded, new rats can't be drawn [report: agaran]
 + BUG: bug_files/proto1.* padstack prototype selection bug priv mail 20 Feb [report: Alain]
 + FEATURE: template print terminal id so attributes (like term name) can be displayed; gtk dwg tooltip  should use the same template to print the term [report: Peter] (report on the mailing list)
 + FEATURE: external editor on buffer [report: TwisteR]
