@@ -95,6 +95,7 @@ pcb_media_t pcb_media_data[] = {
 	{"B9", PCB_MM_TO_COORD(44), PCB_MM_TO_COORD(62), MARGINX, MARGINY},
 	{"B10", PCB_MM_TO_COORD(31), PCB_MM_TO_COORD(44), MARGINX, MARGINY},
 	{"Letter", PCB_INCH_TO_COORD(8.5), PCB_INCH_TO_COORD(11), MARGINX, MARGINY},
+	{"USLetter", PCB_INCH_TO_COORD(8.5), PCB_INCH_TO_COORD(11), MARGINX, MARGINY}, /* kicad */
 	{"11x17", PCB_INCH_TO_COORD(11), PCB_INCH_TO_COORD(17), MARGINX, MARGINY},
 	{"Ledger", PCB_INCH_TO_COORD(17), PCB_INCH_TO_COORD(11), MARGINX, MARGINY},
 	{"Legal", PCB_INCH_TO_COORD(8.5), PCB_INCH_TO_COORD(14), MARGINX, MARGINY},
@@ -113,7 +114,7 @@ pcb_media_t pcb_media_data[] = {
 const char *pcb_medias[] = {
 	"A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "A10",
 	"B0", "B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B10",
-	"Letter", "11x17", "Ledger", "Legal", "Executive",
+	"Letter", "USLetter", "11x17", "Ledger", "Legal", "Executive",
 	"A-Size", "B-size", "C-Size", "D-size", "E-size",
 	"US-Business_Card", "Intl-Business_Card",
 	NULL
