@@ -192,6 +192,25 @@ const char *pcb_obj_id_invalid(const char *id)
 	return NULL;
 }
 
+char *pcb_obj_id_fix(char *id)
+{
+	char *s;
+	if (id == NULL)
+		return NULL;
+
+	for(s = id; *s != '\0'; s++) {
+		if (isalnum(*s))
+			continue;
+		switch(*s) {
+			case '_': case '.': case '$': case ':': continue;
+			default: *s = '_';
+		}
+	}
+
+	return id;
+}
+
+
 pcb_flag_values_t pcb_obj_valid_flags(unsigned long int objtype)
 {
 	pcb_flag_values_t res = 0;

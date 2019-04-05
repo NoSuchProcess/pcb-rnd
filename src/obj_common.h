@@ -222,6 +222,9 @@ void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, co
 /* Returns the first invalid character of an ID (terminal, refdes) or NULL */
 const char *pcb_obj_id_invalid(const char *id);
 
+/* Fix an ID in place (replace anything invalid with '_'); returns id */
+char *pcb_obj_id_fix(char *id);
+
 #define pcb_obj_id_reg(data, obj) \
 	do { \
 		pcb_any_obj_t *__obj__ = (pcb_any_obj_t *)(obj); \
