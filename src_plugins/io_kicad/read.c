@@ -1171,7 +1171,7 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 	return NULL;
 }
 
-static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, const char *netname, int throughHole, pcb_coord_t moduleX, pcb_coord_t moduleY, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, unsigned int padRotation, unsigned int moduleRotation, pcb_coord_t clearance, pcb_coord_t drill, const char *pinName, const char *pad_shape, unsigned long *featureTally, int *moduleEmpty, pcb_layer_type_t smd_side)
+static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, const char *netname, int throughHole, pcb_coord_t moduleX, pcb_coord_t moduleY, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, unsigned int padRotation, unsigned int moduleRotation, pcb_coord_t clearance, pcb_coord_t drill, const char *pin_name, const char *pad_shape, unsigned long *featureTally, int *moduleEmpty, pcb_layer_type_t smd_side)
 {
 	pcb_pstk_t *ps;
 	unsigned long required;
@@ -1200,8 +1200,8 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 	else
 		*moduleEmpty = 0;
 
-	if (pinName != NULL)
-		pcb_attribute_put(&ps->Attributes, "term", pinName);
+	if (pin_name != NULL)
+		pcb_attribute_put(&ps->Attributes, "term", pin_name);
 
 	if (netname != NULL) {
 		pcb_net_term_t *term;
@@ -1210,14 +1210,14 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 		if (subc->refdes == NULL)
 			return kicad_error(subtree, "Can not connect pad to net '%s': no parent module refdes", netname);
 
-		if (pinName == NULL)
+		if (pin_name == NULL)
 			return kicad_error(subtree, "Can not connect pad to net '%s': no pad name", netname);
 
 		net = pcb_net_get(st->pcb, &st->pcb->netlist[PCB_NETLIST_INPUT], netname, 0);
 		if (net == NULL)
-			return kicad_error(subtree, "Can not connect pad %s-%s to net '%s': no such net", subc->refdes, pinName, netname);
+			return kicad_error(subtree, "Can not connect pad %s-%s to net '%s': no such net", subc->refdes, pin_name, netname);
 
-		term = pcb_net_term_get(net, subc->refdes, pinName, 1);
+		term = pcb_net_term_get(net, subc->refdes, pin_name, 1);
 		if (term == NULL)
 			return kicad_error(subtree, "Failed to connect pad to net '%s'", netname);
 	}
