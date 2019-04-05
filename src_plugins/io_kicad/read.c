@@ -1277,6 +1277,7 @@ TODO("this should be coming from the s-expr file preferences part CUCP#39")
 
 	if (n->children != 0 && n->children->str != NULL) {
 		pin_name = n->children->str;
+		pcb_obj_id_fix(pin_name);
 		SEEN_NO_DUP(feature_tally, 0);
 		if ((n->children->next == NULL) || (n->children->next->str == NULL))
 			return kicad_error(n->children->next, "unexpected empty/NULL module pad type node");
