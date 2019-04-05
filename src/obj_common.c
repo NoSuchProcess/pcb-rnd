@@ -185,7 +185,7 @@ const char *pcb_obj_id_invalid(const char *id)
 			if (isalnum(*s))
 				continue;
 			switch(*s) {
-				case '_': case '.': case '$': case ':': continue;
+				case '_': case '.': case '$': case '*': case ':': continue;
 			}
 			return s;
 		}
@@ -202,7 +202,7 @@ char *pcb_obj_id_fix(char *id)
 		if (isalnum(*s))
 			continue;
 		switch(*s) {
-			case '_': case '.': case '$': case ':': continue;
+			case '_': case '.': case '$': case '*': case ':': continue;
 			default: *s = '_';
 		}
 	}
