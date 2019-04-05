@@ -1493,10 +1493,8 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			if (kicad_parse_any_arc(st, n->children, subc) != 0)
 				return -1;
 		}
-		else {
-			kicad_error(n, "Unknown module argument: %s\n", n->str);
-			TODO("Make this an error");
-		}
+		else
+			return kicad_error(n, "Unknown module argument: %s\n", n->str);
 	}
 
 	if (subc == NULL)
