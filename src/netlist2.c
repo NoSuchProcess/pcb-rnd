@@ -376,7 +376,7 @@ static void net_found_short(pcb_short_ctx_t *sctx, pcb_any_obj_t *offender)
 	int handled = 0;
 
 	pcb_net_term_t *offt = pcb_net_find_by_refdes_term(&sctx->pcb->netlist[PCB_NETLIST_EDITED], sc->refdes, offender->term);
-	pcb_net_t *offn;
+	pcb_net_t *offn = NULL;
 	const char *offnn = "<unknown>";
 	
 	if (offt != NULL) {
