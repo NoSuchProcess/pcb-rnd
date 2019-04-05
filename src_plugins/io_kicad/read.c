@@ -1742,7 +1742,13 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 		pcb_message(PCB_MSG_WARNING, "Had to make changes to the coords so that the design fits the board.\n");
 	pcb_layer_colors_from_conf(Ptr, 1);
 
-TODO("free the layer hash")
+	{ /* free layer hack */
+		htsi_entry_t *e;
+		for(e = htsi_first(&st.layer_k2i); e != NULL; e = htsi_next(&st.layer_k2i, e))
+			free(e->key);
+		htsi_uninit(&st.layer_k2i);
+	}
+
 
 	return readres;
 }
