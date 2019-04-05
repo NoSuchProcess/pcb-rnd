@@ -1102,7 +1102,7 @@ static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree)
 	return 0;
 }
 
-static pcb_pstk_t *kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, pcb_coord_t clearance, pcb_coord_t drill, const char *pad_shape)
+static pcb_pstk_t *kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, pcb_coord_t clearance, double paste_ratio, pcb_coord_t drill, const char *pad_shape)
 {
 	if (pad_shape == NULL) {
 		kicad_error(subtree, "pin with no shape");
@@ -1136,7 +1136,7 @@ static pcb_pstk_t *kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pc
 	return NULL;
 }
 
-static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, pcb_coord_t clearance, pcb_coord_t drill, const char *pad_shape, pcb_layer_type_t side)
+static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, pcb_coord_t clearance, double paste_ratio, pcb_coord_t drill, const char *pad_shape, pcb_layer_type_t side)
 {
 	if ((side & PCB_LYT_TOP) && (side & PCB_LYT_BOTTOM)) {
 		kicad_error(subtree, "can't place the same smd pad on both sides");
@@ -1148,11 +1148,13 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 		return NULL;
 	}
 
+	paste_ratio = 1.0 + (2.0 * paste_ratio);
+
 	if (strcmp(pad_shape, "rect") == 0) {
 		pcb_pstk_shape_t sh[4];
 		memset(sh, 0, sizeof(sh));
 		sh[0].layer_mask = side | PCB_LYT_MASK;   sh[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[0], padXsize+st->pad_to_mask_clearance*2, padYsize+st->pad_to_mask_clearance*2);
-		sh[1].layer_mask = side | PCB_LYT_PASTE;  sh[1].comb = PCB_LYC_AUTO; pcb_shape_rect(&sh[1], padXsize, padYsize);
+		sh[1].layer_mask = side | PCB_LYT_PASTE;  sh[1].comb = PCB_LYC_AUTO; pcb_shape_rect(&sh[1], padXsize * paste_ratio, padYsize * paste_ratio);
 		sh[2].layer_mask = side | PCB_LYT_COPPER; pcb_shape_rect(&sh[2], padXsize, padYsize);
 		sh[3].layer_mask = 0;
 		return pcb_pstk_new_from_shape(subc->data, X, Y, 0, pcb_false, clearance, sh);
@@ -1161,7 +1163,7 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 		pcb_pstk_shape_t sh[4];
 		memset(sh, 0, sizeof(sh));
 		sh[0].layer_mask = side | PCB_LYT_MASK; sh[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_oval(&sh[0], padXsize+st->pad_to_mask_clearance*2, padYsize+st->pad_to_mask_clearance*2);
-		sh[1].layer_mask = side | PCB_LYT_PASTE; pcb_shape_oval(&sh[1], padXsize, padYsize);
+		sh[1].layer_mask = side | PCB_LYT_PASTE; pcb_shape_oval(&sh[1], padXsize * paste_ratio, padYsize * paste_ratio);
 		sh[2].layer_mask = side | PCB_LYT_COPPER; pcb_shape_oval(&sh[2], padXsize, padYsize);
 		sh[3].layer_mask = 0;
 		return pcb_pstk_new_from_shape(subc->data, X, Y, 0, pcb_false, clearance, sh);
@@ -1171,7 +1173,7 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 	return NULL;
 }
 
-static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, const char *netname, int throughHole, pcb_coord_t moduleX, pcb_coord_t moduleY, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, unsigned int padRotation, unsigned int moduleRotation, pcb_coord_t clearance, pcb_coord_t drill, const char *pin_name, const char *pad_shape, unsigned long *featureTally, int *moduleEmpty, pcb_layer_type_t smd_side)
+static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, const char *netname, int throughHole, pcb_coord_t moduleX, pcb_coord_t moduleY, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, unsigned int padRotation, unsigned int moduleRotation, pcb_coord_t clearance, double paste_ratio, pcb_coord_t drill, const char *pin_name, const char *pad_shape, unsigned long *featureTally, int *moduleEmpty, pcb_layer_type_t smd_side)
 {
 	pcb_pstk_t *ps;
 	unsigned long required;
@@ -1186,13 +1188,13 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 		required = BV(0) | BV(1) | BV(3) | BV(5);
 		if ((*featureTally & required) != required)
 			return kicad_error(subtree, "malformed module pad/pin definition.");
-		ps = kicad_make_pad_thr(st, subtree, subc, X, Y, padXsize, padYsize, clearance, drill, pad_shape);
+		ps = kicad_make_pad_thr(st, subtree, subc, X, Y, padXsize, padYsize, clearance, paste_ratio, drill, pad_shape);
 	}
 	else {
 		required = BV(0) | BV(1) | BV(2) | BV(5);
 		if ((*featureTally & required) != required)
 			return kicad_error(subtree, "error parsing incomplete module definition.");
-		ps = kicad_make_pad_smd(st, subtree, subc, X, Y, padXsize, padYsize, clearance, drill, pad_shape, smd_side);
+		ps = kicad_make_pad_smd(st, subtree, subc, X, Y, padXsize, padYsize, clearance, paste_ratio, drill, pad_shape, smd_side);
 	}
 
 	if (ps == NULL)
@@ -1271,6 +1273,7 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 	unsigned int pad_rot = 0;
 	pcb_layer_type_t smd_side;
 	pcb_layer_id_t lid;
+	double paste_ratio = 0;
 
 TODO("this should be coming from the s-expr file preferences part CUCP#39")
 	clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
@@ -1353,14 +1356,16 @@ TODO("this should be coming from the s-expr file preferences part CUCP#39")
 			PARSE_COORD(sx, m, m->children, "module pad size X");
 			PARSE_COORD(sy, m, m->children->next, "module pad size Y");
 		}
-		else {
-			kicad_error(m, "Unknown pad argument: %s", m->str);
-			TODO("this should result in error");
+		else if (strcmp("solder_paste_margin_ratio", m->str) == 0) {
+			SEEN_NO_DUP(feature_tally, 6);
+			PARSE_DOUBLE(paste_ratio, m, m->children, "module pad solder mask ratio");
 		}
+		else
+			return kicad_error(m, "Unknown pad argument: %s", m->str);
 	}
 
 	if (subc != NULL)
-		if (kicad_make_pad(st, n, subc, netname, through_hole, moduleX, moduleY, x, y, sx, sy, pad_rot, moduleRotation, clearance, drill, pin_name, pad_shape, &feature_tally, moduleEmpty, smd_side) != 0)
+		if (kicad_make_pad(st, n, subc, netname, through_hole, moduleX, moduleY, x, y, sx, sy, pad_rot, moduleRotation, clearance, paste_ratio, drill, pin_name, pad_shape, &feature_tally, moduleEmpty, smd_side) != 0)
 			return -1;
 
 	return 0;
