@@ -1083,16 +1083,21 @@ TODO("check if we really need these excess layers");
 /* kicad_pcb parse global (board level) net */
 static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree)
 {
+	const char *netname;
+
 	if ((subtree == NULL) || (subtree->str == NULL))
 		return kicad_error(subtree, "missing net number in net descriptors.");
 
 	if ((subtree->next == NULL) || (subtree->next->str == NULL))
 		return kicad_error(subtree->next, "missing net label in net descriptors.");
 
-	/* ignore net attachment: subtree->str */
-	/* ignore corresponding net label: subtree->next->str */
+	netname = subtree->next->str;
+	if (*netname == '\0')
+		return; /* do not create the anonymous net (is it the no-connect net in kicad?) */
 
-TODO("netlist: we are not building the netlist in memory?")
+	if (pcb_net_get(st->pcb, &st->pcb->netlist[PCB_NETLIST_INPUT], netname, 1) == NULL)
+		return kicad_error(subtree->next, "Failed to create net %s", netname);
+
 	return 0;
 }
 
