@@ -1080,22 +1080,19 @@ TODO("check if we really need these excess layers");
 	return 0;
 }
 
-/* kicad_pcb  parse (net  ) ;   used for net descriptions for the entire layout */
+/* kicad_pcb parse global (board level) net */
 static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree)
 {
-	if (subtree != NULL && subtree->str != NULL) {
-		/* ignore net attachment: subtree->str */
-	}
-	else
+	if ((subtree == NULL) || (subtree->str == NULL))
 		return kicad_error(subtree, "missing net number in net descriptors.");
 
-	if (subtree->next != NULL && subtree->next->str != NULL) {
-		/* ignore corresponding net label: subtree->next->str */
-	}
-	else
+	if ((subtree->next == NULL) || (subtree->next->str == NULL))
 		return kicad_error(subtree->next, "missing net label in net descriptors.");
 
-TODO("we are not building the netlist in memory?")
+	/* ignore net attachment: subtree->str */
+	/* ignore corresponding net label: subtree->next->str */
+
+TODO("netlist: we are not building the netlist in memory?")
 	return 0;
 }
 
