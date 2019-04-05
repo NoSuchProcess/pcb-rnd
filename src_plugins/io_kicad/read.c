@@ -49,6 +49,7 @@
 #include "rotate.h"
 #include "safe_fs.h"
 #include "attrib.h"
+#include "netlist2.h"
 
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 #include "../src_plugins/lib_compat_help/pstk_help.h"
@@ -1170,7 +1171,7 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 	return NULL;
 }
 
-static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, int throughHole, pcb_coord_t moduleX, pcb_coord_t moduleY, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, unsigned int padRotation, unsigned int moduleRotation, pcb_coord_t clearance, pcb_coord_t drill, const char *pinName, const char *pad_shape, unsigned long *featureTally, int *moduleEmpty, pcb_layer_type_t smd_side)
+static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, const char *netname, int throughHole, pcb_coord_t moduleX, pcb_coord_t moduleY, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, unsigned int padRotation, unsigned int moduleRotation, pcb_coord_t clearance, pcb_coord_t drill, const char *pinName, const char *pad_shape, unsigned long *featureTally, int *moduleEmpty, pcb_layer_type_t smd_side)
 {
 	pcb_pstk_t *ps;
 	unsigned long required;
@@ -1201,6 +1202,25 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 
 	if (pinName != NULL)
 		pcb_attribute_put(&ps->Attributes, "term", pinName);
+
+	if (netname != NULL) {
+		pcb_net_term_t *term;
+		pcb_net_t *net;
+
+		if (subc->refdes == NULL)
+			return kicad_error(subtree, "Can not connect pad to net '%s': no parent module refdes", netname);
+
+		if (pinName == NULL)
+			return kicad_error(subtree, "Can not connect pad to net '%s': no pad name", netname);
+
+		net = pcb_net_get(st->pcb, &st->pcb->netlist[PCB_NETLIST_INPUT], netname, 0);
+		if (net == NULL)
+			return kicad_error(subtree, "Can not connect pad %s-%s to net '%s': no such net", subc->refdes, pinName, netname);
+
+		term = pcb_net_term_get(net, subc->refdes, pinName, 1);
+		if (term == NULL)
+			return kicad_error(subtree, "Failed to connect pad to net '%s'", netname);
+	}
 
 	return 0;
 }
@@ -1242,6 +1262,7 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 {
 	gsxl_node_t *l, *m;
 	pcb_coord_t x, y, drill, sx, sy, clearance;
+	const char *netname = NULL;
 	char *pin_name = NULL, *pad_shape = NULL;
 	unsigned long feature_tally = 0;
 	int through_hole = 0;
@@ -1323,7 +1344,7 @@ TODO("this should be coming from the s-expr file preferences part CUCP#39")
 				return kicad_error(m, "unexpected empty/NULL module pad net node");
 			if ((m->children->next == NULL) || (m->children->next->str == NULL))
 				return kicad_error(m->children, "unexpected empty/NULL module pad net name node");
-			TODO("save pad name and set it as attrib: m->children->next->str");
+			netname = m->children->next->str;
 		}
 		else if (strcmp("size", m->str) == 0) {
 			SEEN_NO_DUP(feature_tally, 5);
@@ -1337,7 +1358,7 @@ TODO("this should be coming from the s-expr file preferences part CUCP#39")
 	}
 
 	if (subc != NULL)
-		if (kicad_make_pad(st, n, subc, through_hole, moduleX, moduleY, x, y, sx, sy, pad_rot, moduleRotation, clearance, drill, pin_name, pad_shape, &feature_tally, moduleEmpty, smd_side) != 0)
+		if (kicad_make_pad(st, n, subc, netname, through_hole, moduleX, moduleY, x, y, sx, sy, pad_rot, moduleRotation, clearance, drill, pin_name, pad_shape, &feature_tally, moduleEmpty, smd_side) != 0)
 			return -1;
 
 	return 0;
