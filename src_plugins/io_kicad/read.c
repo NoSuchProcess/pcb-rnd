@@ -1235,6 +1235,7 @@ static int kicad_parse_fp_text(read_state_t *st, gsxl_node_t *n, pcb_subc_t *sub
 			text = n->children->next->str;
 			if (strcmp("reference", key) == 0) {
 				SEEN_NO_DUP(*tally, 7);
+				pcb_obj_id_fix(text);
 				pcb_attribute_put(&subc->Attributes, "refdes", text);
 				*foundRefdes = 1;
 			}
