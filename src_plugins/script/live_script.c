@@ -36,6 +36,7 @@
 
 #include "actions.h"
 #include "plugins.h"
+#include "hid_cfg.h"
 #include "hid_dad.h"
 #include "safe_fs.h"
 #include "compat_fs.h"
