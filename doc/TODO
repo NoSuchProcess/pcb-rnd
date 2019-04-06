@@ -3,7 +3,6 @@
 1. For the upcoming release ===============================================================================
 - BUG: scconfig: core gets glib dependency even if everything is in plugins (only plugins depend on glib) [report: Vuokko]
 - BUG: Setting the 'dyntext' flag on a text object doesn't update the bounding box. To reproduce - Create a text object and set it to '%a.parent.refdes%'. Edit the objects flags {e f} and set the 'dyntext' flag. The text should change to the refdes value but the bounding box remains at the size of the original text. [report: Ade]
-- BUG: The 'As Drawn' polygon contour is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
 - BUG: wandering gtk window (window placement bug): using icewm, open the property editor, close, open, close, open: it's displaced by decoration; also check with lesstif [report: Igor2]
 - BUG: undo: clear rats, optimize rats, delete 1 rat then undo - it should undo the rat deletion but it undoes optimization
 - BUG: gtk: slipping 'tab' issue view drifts when tab is used repeatedly at different zooms around the cardinal edges of a placed part, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
@@ -31,6 +30,8 @@
 + FEATURE: HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain] -> it is already configurable as appearance/color/background, which affects both the main drawing and all previews. I do not want different backgrounds for the two.
 
 2. For later releases ===============================================================================
+- CLEANUP/BUG: The 'As Drawn' polygon contour is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
+	-> need a new rtree that holds the polygons that have ->clipped == NULL for this purpose
 - CLEANUP: move opendir/readdir in safe_fs from everywhere
 - CLEANUP: pcb_layer_to_file_name() dest should be gds_t to avoid potential buffer overflow
 - CLEANUP: remove hid_flag.h - probably merge the function into a menu related .h
