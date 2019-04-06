@@ -57,7 +57,7 @@ static void fill_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 static void thindraw_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 {
 	pcb_vnode_t *v;
-	pcb_coord_t last_x, last_y, this_x, this_y, mindist;
+	pcb_coord_t last_x, last_y, this_x, this_y, next_x, next_y, mindist;
 
 
 	pcb_hid_set_line_width(gc, 0);
@@ -82,8 +82,12 @@ static void thindraw_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 		this_x = v->point[0];
 		this_y = v->point[1];
 
-		if ((PCB_ABS(this_x - last_x) < mindist) && (PCB_ABS(this_y - last_y) < mindist))
-			continue;
+		if ((PCB_ABS(this_x - last_x) < mindist) && (PCB_ABS(this_y - last_y) < mindist)) {
+			next_x = v->next->point[0];
+			next_y = v->next->point[1];
+			if ((PCB_ABS(this_x - next_x) < mindist) && (PCB_ABS(this_y - next_y) < mindist))
+				continue;
+		}
 
 		pcb_gui->draw_line(gc, last_x, last_y, this_x, this_y);
 		/* pcb_gui->fill_circle (gc, this_x, this_y, 30); */
