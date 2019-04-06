@@ -963,13 +963,11 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 {
 	gsxl_node_t *m, *n;
 	unsigned long tally = 0, required;
-	char *name; /* not using via name for now */
 	pcb_coord_t x, y, thickness, clearance, mask, drill; /* not sure what to do with mask */
 
 	TODO("need to figure the clearance CUCP#39");
 	clearance = mask = PCB_MM_TO_COORD(0.250); /* start with something bland here */
 	drill = PCB_MM_TO_COORD(0.300); /* start with something sane */
-	name = "";
 
 	for(n = subtree; n != NULL; n = n->next) {
 		if (n->str == NULL)
