@@ -83,7 +83,7 @@ void pcb_text_post(pcb_text_t *text);
    address of a local (void *) cache. The calls make sure bbox and rtree
    administration are done properly */
 void pcb_text_flagchg_pre(pcb_text_t *Text, unsigned long flagbits, void **save);
-void pcb_text_flagchg_post(pcb_text_t *Text, unsigned long flagbits, void **save);
+void pcb_text_flagchg_post(pcb_text_t *Text, unsigned long oldflagbits, void **save);
 
 /* Low level draw call for direct rendering on preview */
 void pcb_text_draw_string_simple(pcb_font_t *font, const char *string, pcb_coord_t x0, pcb_coord_t y0, int scale, double rotdeg, int mirror, pcb_coord_t thickness, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy);

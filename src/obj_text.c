@@ -884,16 +884,19 @@ void pcb_text_flagchg_pre(pcb_text_t *Text, unsigned long flagbits, void **save)
 	}
 }
 
-void pcb_text_flagchg_post(pcb_text_t *Text, unsigned long flagbits, void **save)
+void pcb_text_flagchg_post(pcb_text_t *Text, unsigned long oldflagbits, void **save)
 {
 	pcb_data_t *data = Text->parent.layer->parent.data;
 	pcb_layer_t *orig_layer = *save;
+	unsigned long newflagbits = Text->Flags.f;
 
-	if (orig_layer != NULL) {
+	if ((oldflagbits & PCB_FLAG_DYNTEXT) || (newflagbits & PCB_FLAG_DYNTEXT) || (orig_layer != NULL))
 		pcb_text_bbox(pcb_font(PCB, Text->fid, 1), Text);
+
+	if (orig_layer != NULL)
 		pcb_r_insert_entry(orig_layer->text_tree, (pcb_box_t *)Text);
-	}
-	if ((flagbits & PCB_FLAG_CLEARLINE) || (orig_layer != NULL))
+
+	if ((newflagbits & PCB_FLAG_CLEARLINE) || (orig_layer != NULL))
 		pcb_poly_clear_from_poly(data, PCB_OBJ_TEXT, Text->parent.layer, Text);
 
 	*save = NULL;
@@ -903,6 +906,8 @@ void *pcb_textop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 {
 	void *save;
 	static pcb_flag_values_t pcb_text_flags = 0;
+	unsigned long oldflg = Text->Flags.f;
+
 	if (pcb_text_flags == 0)
 		pcb_text_flags = pcb_obj_valid_flags(PCB_OBJ_TEXT);
 
@@ -914,7 +919,7 @@ void *pcb_textop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 
 	pcb_text_flagchg_pre(/*ctx->chgflag.pcb->Data, */Text, ctx->chgflag.flag, &save);
 	PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, Text);
-	pcb_text_flagchg_post(Text, ctx->chgflag.flag, &save);
+	pcb_text_flagchg_post(Text, oldflg, &save);
 
 	return Text;
 }
