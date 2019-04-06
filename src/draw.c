@@ -1027,7 +1027,7 @@ void pcb_hid_expose_generic(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 	expose_end(&save);
 }
 
-static const char *lab_with_intconn(pcb_any_obj_t *term, int intconn, const char *lab, char *buff, int bufflen)
+static const char *lab_with_intconn(const pcb_any_obj_t *term, int intconn, const char *lab, char *buff, int bufflen)
 {
 	if ((conf_core.editor.term_id != NULL) && (*conf_core.editor.term_id != '\0')) {
 		gds_t tmp;

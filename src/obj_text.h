@@ -101,7 +101,7 @@ int pcb_text_eq(const pcb_host_trans_t *tr1, const pcb_text_t *t1, const pcb_hos
 unsigned int pcb_text_hash(const pcb_host_trans_t *tr, const pcb_text_t *t);
 
 /* Append dyntext fmt rendered from the perspective of obj */
-int pcb_append_dyntext(gds_t *dst, pcb_any_obj_t *obj, const char *fmt);
+int pcb_append_dyntext(gds_t *dst, const pcb_any_obj_t *obj, const char *fmt);
 
 void pcb_text_init(void);
 void pcb_text_uninit(void);

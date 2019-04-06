@@ -47,7 +47,7 @@ struct pcb_attribute_list_s {
 
 /* Returns NULL if the name isn't found, else the value for that named
    attribute.  */
-char *pcb_attribute_get(pcb_attribute_list_t * list, const char *name);
+char *pcb_attribute_get(const pcb_attribute_list_t *list, const char *name);
 
 /* Adds an attribute to the list.  If the attribute already exists, the value
    is replaced. Returns non-zero if an existing attribute was replaced.  */

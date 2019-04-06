@@ -172,7 +172,7 @@ void pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCB
 
 static int pcb_text_render_str_cb(void *ctx, gds_t *s, const char **input)
 {
-	pcb_text_t *text = ctx;
+	const pcb_text_t *text = ctx;
 	char *end, key[128], *path, *attrs;
 	size_t len;
 
@@ -186,7 +186,7 @@ static int pcb_text_render_str_cb(void *ctx, gds_t *s, const char **input)
 	*input += len+1;
 
 	if ((key[0] == 'a') && (key[1] == '.')) {
-		pcb_attribute_list_t *attr = &text->Attributes;
+		const pcb_attribute_list_t *attr = &text->Attributes;
 		path = key+2;
 		if ((path[0] == 'p') && (memcmp(path, "parent.", 7) == 0)) {
 			pcb_data_t *par = text->parent.layer->parent.data;
@@ -230,9 +230,9 @@ static unsigned char *pcb_text_render_str(pcb_text_t *text)
 	return res;
 }
 
-int pcb_append_dyntext(gds_t *dst, pcb_any_obj_t *obj, const char *fmt)
+int pcb_append_dyntext(gds_t *dst, const pcb_any_obj_t *obj, const char *fmt)
 {
-	return pcb_subst_append(dst, fmt, pcb_text_render_str_cb, obj, PCB_SUBST_PERCENT | PCB_SUBST_CONF, 0);
+	return pcb_subst_append(dst, fmt, pcb_text_render_str_cb, (void *)obj, PCB_SUBST_PERCENT | PCB_SUBST_CONF, 0);
 }
 
 /* Free rendered if it was allocated */

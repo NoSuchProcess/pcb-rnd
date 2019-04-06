@@ -40,7 +40,7 @@ do { \
 		list->post_change(list, name, value); \
 } while(0)
 
-char *pcb_attribute_get(pcb_attribute_list_t * list, const char *name)
+char *pcb_attribute_get(const pcb_attribute_list_t *list, const char *name)
 {
 	int i;
 	for (i = 0; i < list->Number; i++)
