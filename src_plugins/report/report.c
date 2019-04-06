@@ -443,23 +443,46 @@ static int report_found_pins(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+typedef struct {
+	pcb_board_t *pcb;
+	double length;
+	pcb_net_t *net;
+	pcb_cardinal_t terms, badterms;
+} net_length_t;
+
 static int net_length_cb(pcb_find_t *fctx, pcb_any_obj_t *o, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
 {
-	double *length = fctx->user_data;
+	net_length_t *nt = fctx->user_data;
 	double dx, dy;
 	pcb_line_t *line = (pcb_line_t *)o;
 	pcb_arc_t *arc = (pcb_arc_t *)o;
+
+	if (o->term != NULL) {
+		pcb_net_term_t *t = pcb_net_find_by_obj(&nt->pcb->netlist[PCB_NETLIST_EDITED], o);
+		if (t != NULL) {
+			pcb_net_t *net = t->parent.net;
+			assert(t->parent_type == PCB_PARENT_NET);
+			if (net != NULL) {
+				if (nt->net == NULL)
+					nt->net = net;
+				if (nt->net != net)
+					nt->badterms++;
+				else
+					nt->terms++;
+			}
+		}
+	}
 
 	switch(o->type) {
 		case PCB_OBJ_LINE:
 			dx = line->Point1.X - line->Point2.X;
 			dy = line->Point1.Y - line->Point2.Y;
-			(*length) += sqrt(dx * dx + dy * dy);
+			nt->length += sqrt(dx * dx + dy * dy);
 			break;
 
 		case PCB_OBJ_ARC:
 			/* NOTE: this assumes circuilar arc! */
-			(*length) += M_PI * 2 * arc->Width * fabs(arc->Delta) / 360.0;
+			nt->length += M_PI * 2 * arc->Width * fabs(arc->Delta) / 360.0;
 			break;
 
 		default:
@@ -468,19 +491,30 @@ static int net_length_cb(pcb_find_t *fctx, pcb_any_obj_t *o, pcb_any_obj_t *arri
 	return 0;
 }
 
-static double xy_to_net_length(pcb_coord_t x, pcb_coord_t y, int *found)
+static double xy_to_net_length(pcb_coord_t x, pcb_coord_t y, int *found, gds_t *err)
 {
-	double length = 0;
 	pcb_find_t fctx;
+	net_length_t nt;
+
+	memset(&nt, 0, sizeof(nt));
+	nt.pcb = PCB;
 
 	memset(&fctx, 0, sizeof(fctx));
 	fctx.consider_rats = 0;
-	fctx.user_data = &length;
+	fctx.user_data = &nt;
 	fctx.found_cb = net_length_cb;
 	*found = pcb_find_from_xy(&fctx, PCB->Data, x, y) > 0;
 	pcb_find_free(&fctx);
 
-	return length;
+	if (nt.net != NULL) {
+		pcb_cardinal_t explen = pcb_termlist_length(&nt.net->conns);
+		if (explen != nt.terms)
+			pcb_append_printf(err, "\nonly %ld terminals of the %ld on the network are connected!", (long)nt.terms, (long)explen);
+		if (nt.badterms != 0)
+			pcb_append_printf(err, "\n%ld terminals or other networks are connected (shorted)", (long)nt.badterms);
+	}
+
+	return nt.length;
 }
 
 static int report_all_net_lengths(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -505,6 +539,7 @@ static int report_all_net_lengths(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			const char *units_name;
 			pcb_coord_t length;
 			pcb_coord_t x = 0, y = 0;
+			gds_t err;
 
 			PCB_ACT_CONVARG(1, FGW_STR, Report, units_name = argv[2].val.str);
 
@@ -513,10 +548,15 @@ static int report_all_net_lengths(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (argc < 1)
 				units_name = conf_core.editor.grid_unit->suffix;
 
-			length = xy_to_net_length(x, y, &found);
+			gds_init(&err);
+			length = xy_to_net_length(x, y, &found, &err);
 
 			pcb_snprintf(buf, sizeof(buf), "%$m*", units_name, length);
-			pcb_message(PCB_MSG_INFO, "Net %s length %s\n", net->name, buf);
+			if (err.used != 0)
+				pcb_message(PCB_MSG_INFO, "Net %s length %s, BUT BEWARE:%s\n", net->name, buf, err.array);
+			else
+					pcb_message(PCB_MSG_INFO, "Net %s length %s\n", net->name, buf);
+			gds_uninit(&err);
 		}
 	}
 
@@ -560,8 +600,10 @@ static int report_net_length_(fgw_arg_t *res, int argc, fgw_arg_t *argv, pcb_coo
 {
 	pcb_coord_t length = 0;
 	int found = 0, ret;
+	gds_t err;
 
-	length = xy_to_net_length(x, y, &found);
+	gds_init(&err);
+	length = xy_to_net_length(x, y, &found, &err);
 
 	if (found) {
 		char buf[50];
@@ -573,6 +615,9 @@ static int report_net_length_(fgw_arg_t *res, int argc, fgw_arg_t *argv, pcb_coo
 		else
 			pcb_message(PCB_MSG_INFO, "Net length: %s\n", buf);
 
+		if (err.used != 0)
+			pcb_message(PCB_MSG_INFO, "BUT BEWARE: %s\n", err.array);
+
 		ret = 0;
 	}
 	else {
@@ -580,6 +625,7 @@ static int report_net_length_(fgw_arg_t *res, int argc, fgw_arg_t *argv, pcb_coo
 		ret = 1;
 	}
 
+	gds_uninit(&err);
 	return ret;
 }
 
@@ -650,6 +696,7 @@ static int report_net_length_by_name(const char *tofind)
 	pcb_coord_t length = 0;
 	int found = 0;
 	pcb_coord_t x, y;
+	gds_t err;
 
 	if (!PCB)
 		return 1;
@@ -684,7 +731,9 @@ static int report_net_length_by_name(const char *tofind)
 		return 1;
 	}
 
-	length = xy_to_net_length(x, y, &found);
+
+	gds_init(&err);
+	length = xy_to_net_length(x, y, &found, &err);
 
 	if (!found) {
 		if (netname != NULL)
@@ -692,6 +741,7 @@ static int report_net_length_by_name(const char *tofind)
 		else
 			pcb_message(PCB_MSG_ERROR, "Net not found.\n");
 
+		gds_uninit(&err);
 		return 1;
 	}
 
@@ -702,8 +752,11 @@ static int report_net_length_by_name(const char *tofind)
 			pcb_message(PCB_MSG_INFO, "Net \"%s\" length: %s\n", netname, buf);
 		else
 			pcb_message(PCB_MSG_INFO, "Net length: %s\n", buf);
+		if (err.used != 0)
+			pcb_message(PCB_MSG_INFO, "BUT BEWARE: %s\n", err.array);
 	}
 
+	gds_uninit(&err);
 	return 0;
 }
 
