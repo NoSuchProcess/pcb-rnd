@@ -528,7 +528,6 @@ do { \
    NOTE: subc case: for text there is no subc default layer (assumes KiCad has text on silk only) */
 #define PARSE_LAYER(ly, nd, subc, loc) \
 	do { \
-		pcb_layer_id_t lid; \
 		if ((nd == NULL) || (nd->str == NULL)) \
 			return kicad_error(n, "unexpected empty/NULL " loc " layer node"); \
 		if (subc == NULL) { \
@@ -661,7 +660,6 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 			rotdeg -= mod_rot;
 			if (subc != NULL) {
 				pcb_coord_t sx, sy;
-				double srot;
 				if (pcb_subc_get_origin(subc, &sx, &sy) == 0) {
 					X += sx;
 					Y += sy;
@@ -841,7 +839,6 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 
 	if (subc != NULL) {
 		pcb_coord_t sx, sy;
-		double srot;
 		if (pcb_subc_get_origin(subc, &sx, &sy) == 0) {
 			x1 += sx;
 			y1 += sy;
@@ -944,7 +941,6 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 
 		if (subc != NULL) {
 			pcb_coord_t sx, sy;
-			double srot;
 			if (pcb_subc_get_origin(subc, &sx, &sy) == 0) {
 				cx += sx;
 				cy += sy;
@@ -1033,7 +1029,6 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 {
 	gsxl_node_t *n;
 	int i;
-	unsigned int res;
 
 	if (strcmp(subtree->parent->parent->str, "kicad_pcb") != 0) /* test if deeper in tree than layer definitions for entire board */
 		return kicad_error(subtree, "layer definition found in unexpected location in KiCad layout");
@@ -1042,12 +1037,11 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 	pcb_layergrp_inhibit_inc();
 	pcb_layer_group_setup_default(st->pcb);
 
-	/* set up the hash for implicit layers */
-	res = 0;
 
 TODO("check if we really need these excess layers");
 #if 0
-	/* for modules */
+	/* set up the hash for implicit layers for modules */
+	res = 0;
 	res |= kicad_reg_layer(st, "Top", PCB_LYT_COPPER | PCB_LYT_TOP, NULL);
 	res |= kicad_reg_layer(st, "Bottom", PCB_LYT_COPPER | PCB_LYT_BOTTOM, NULL);
 
@@ -1529,8 +1523,6 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 	unsigned long tally = 0, required;
 	pcb_poly_t *polygon = NULL;
 	pcb_flag_t flags = pcb_flag_make(PCB_FLAG_CLEARPOLY);
-	char *end;
-	double val;
 	pcb_coord_t x, y;
 	pcb_layer_t *ly = NULL;
 
