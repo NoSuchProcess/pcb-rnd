@@ -365,12 +365,19 @@ static void on_mouse_action(ett_x11_event_t ett_event, Widget aw, XEvent *event,
 	}
 
 	tp->event_data.current_row = xm_find_row_pointed_by_mouse(aw, tp->event_data.position.mouse.y);
+	tp->event_data.current_cell = 0;
+	if (0 <= tp->event_data.current_row) {
+		unsigned idx = 0;
+		long coord_x = SCROLL_TR(0, tp->virtual_canvas_size.width, tp->w_horiz_sbar.cur, tp->w_horiz_sbar.lo, tp->w_horiz_sbar.hi);
+		for (; idx < tp->render_attr.column_vector_len && coord_x < tp->event_data.position.mouse.x; ++idx) {
+			coord_x += tp->render_attr.column_dimensions_vector[idx];
+		}
+		tp->event_data.current_cell = idx ? (--idx) : 0;
+	}
 
 	if (tp->table_access_padlock) {
 		tp->table_access_padlock->unlock(tp->table, tp->table_access_padlock->p_user_data);
 	}
-	TODO("compute current column as well.");
-	tp->event_data.current_cell = 0;
 	if (tp->p_mouse_kbd_handler)
 		tp->p_mouse_kbd_handler(&tp->event_data);
 }
