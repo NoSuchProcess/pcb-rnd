@@ -447,7 +447,7 @@ typedef struct {
 	pcb_board_t *pcb;
 	double length;
 	pcb_net_t *net;
-	pcb_cardinal_t terms, badterms;
+	pcb_cardinal_t terms, badterms, badobjs;
 } net_length_t;
 
 static int net_length_cb(pcb_find_t *fctx, pcb_any_obj_t *o, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
@@ -485,6 +485,11 @@ static int net_length_cb(pcb_find_t *fctx, pcb_any_obj_t *o, pcb_any_obj_t *arri
 			nt->length += M_PI * 2 * arc->Width * fabs(arc->Delta) / 360.0;
 			break;
 
+		case PCB_OBJ_POLY:
+		case PCB_OBJ_TEXT:
+			nt->badobjs++;
+			break;
+
 		default:
 			break; /* silently ignore anything else... */
 	}
@@ -512,6 +517,8 @@ static double xy_to_net_length(pcb_coord_t x, pcb_coord_t y, int *found, gds_t *
 			pcb_append_printf(err, "\nonly %ld terminals of the %ld on the network are connected!", (long)nt.terms, (long)explen);
 		if (nt.badterms != 0)
 			pcb_append_printf(err, "\n%ld terminals or other networks are connected (shorted)", (long)nt.badterms);
+		if (nt.badobjs != 0)
+			pcb_append_printf(err, "\n%ld polygons/texts are ignored while they may affect the signal path", (long)nt.badobjs);
 	}
 
 	return nt.length;
