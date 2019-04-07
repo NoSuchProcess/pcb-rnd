@@ -8,4 +8,8 @@
    dialog box is created but before the configure event is bound. */
 void pcb_gtk_winplace(GtkWidget *dialog, const char *id);
 
+/* Report new window coords to the central window placement code
+   emitting an event */
+gint pcb_gtk_winplace_cfg(GtkWidget *widget, void *ctx, const char *id);
+
 #endif

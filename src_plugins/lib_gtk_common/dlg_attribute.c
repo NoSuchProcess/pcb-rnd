@@ -46,6 +46,7 @@
 #include "bu_box.h"
 #include "bu_spin_button.h"
 #include "wt_coord_entry.h"
+#include "win_place.h"
 
 #define PCB_OBJ_PROP "pcb-rnd_context"
 
@@ -763,9 +764,7 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 static gint ghid_attr_dlg_configure_event_cb(GtkWidget *widget, GdkEventConfigure *ev, gpointer data)
 {
 	attr_dlg_t *ctx = (attr_dlg_t *)data;
-	pcb_event(PCB_EVENT_DAD_NEW_GEO, "psiiii", ctx, ctx->id,
-		(int)ev->x, (int)ev->y, (int)ev->width, (int)ev->height);
-	return 0;
+	return pcb_gtk_winplace_cfg(widget, ctx, ctx->id);
 }
 
 static gint ghid_attr_dlg_destroy_event_cb(GtkWidget *widget, gpointer data)

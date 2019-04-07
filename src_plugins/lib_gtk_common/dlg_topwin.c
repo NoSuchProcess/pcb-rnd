@@ -92,10 +92,7 @@ static void v_adjustment_changed_cb(GtkAdjustment *adj, pcb_gtk_topwin_t *tw)
 	 */
 static gint top_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, void *gport)
 {
-	pcb_event(PCB_EVENT_DAD_NEW_GEO, "psiiii", NULL, "top",
-		(int)ev->x, (int)ev->y, (int)ev->width, (int)ev->height);
-
-	return FALSE;
+	return pcb_gtk_winplace_cfg(widget, NULL, "top");
 }
 
 static gboolean top_window_enter_cb(GtkWidget * widget, GdkEvent * event, pcb_gtk_topwin_t *tw)

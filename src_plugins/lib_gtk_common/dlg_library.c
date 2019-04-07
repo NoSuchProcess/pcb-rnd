@@ -95,10 +95,7 @@ static GtkWidget *library_window;
 /* GtkWidget "configure_event" signal emitted when the size, position or stacking of the widget's window has changed. */
 static gint library_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, gpointer data)
 {
-	pcb_event(PCB_EVENT_DAD_NEW_GEO, "psiiii", NULL, "library",
-		(int)ev->x, (int)ev->y, (int)ev->width, (int)ev->height);
-
-	return FALSE;
+	return pcb_gtk_winplace_cfg(widget, NULL, "library");
 }
 
 enum {
