@@ -146,7 +146,6 @@ static XtResource resources[] =
 	{XtNverticalSpacing, XtCMargin, XtRDimension, sizeof(Dimension), offset(v_spacing), XtRImmediate, (XtPointer) 0},
 	{XtNlineWidth, XtCMargin, XtRDimension, sizeof(Dimension), offset(line_width), XtRImmediate, (XtPointer) 1},
 	{XtNpixWidth, XtCMargin, XtRDimension, sizeof(int), offset(pix_width), XtRInt, (XtPointer) 0},
-	{XtNfont, XtCFont, XtRFontStruct, sizeof(XFontStruct *), offset(font), XtRString, XtDefaultFont},
 	{XtNbranchPixmap, XtCPixmap, XtRBitmap, sizeof(Pixmap), offset(pix_branch_closed.bitmap), XtRImmediate, (XtPointer) XtUnspecifiedPixmap},
 	{XtNbranchOpenPixmap, XtCPixmap, XtRBitmap, sizeof(Pixmap), offset(pix_branch_open.bitmap), XtRImmediate, (XtPointer) XtUnspecifiedPixmap},
 	{XtNleafPixmap, XtCPixmap, XtRBitmap, sizeof(Pixmap), offset(pix_leaf.bitmap), XtRImmediate, (XtPointer) XtUnspecifiedPixmap},
@@ -212,6 +211,7 @@ static void xt_gc_init(XmTreeTableWidget w)
 	XGCValues values;
 	XtGCMask mask;
 
+	assert(w->tree_table.font);
 	values.line_style = LineSolid;
 	values.line_width = w->tree_table.line_width;
 	values.fill_style = FillSolid;
