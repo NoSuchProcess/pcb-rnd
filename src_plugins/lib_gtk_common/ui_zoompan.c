@@ -393,15 +393,15 @@ fgw_error_t pcb_gtk_swap_sides(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw
 		switch (a[0]) {
 		case 'h':
 		case 'H':
-			pcb_gtk_flip_view(vw, vw->pcb_x, vw->pcb_y, pcb_true, pcb_false);
+			pcb_gtk_flip_view(vw, vw->crosshair_x, vw->crosshair_y, pcb_true, pcb_false);
 			break;
 		case 'v':
 		case 'V':
-			pcb_gtk_flip_view(vw, vw->pcb_x, vw->pcb_y, pcb_false, pcb_true);
+			pcb_gtk_flip_view(vw, vw->crosshair_x, vw->crosshair_y, pcb_false, pcb_true);
 			break;
 		case 'r':
 		case 'R':
-			pcb_gtk_flip_view(vw, vw->pcb_x, vw->pcb_y, pcb_true, pcb_true);
+			pcb_gtk_flip_view(vw, vw->crosshair_x, vw->crosshair_y, pcb_true, pcb_true);
 			conf_toggle_editor(show_solder_side); /* Swapped back below */
 			break;
 		default:
