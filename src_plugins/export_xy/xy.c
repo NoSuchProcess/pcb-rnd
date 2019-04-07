@@ -18,10 +18,12 @@
 #include "plugins.h"
 #include "compat_misc.h"
 #include "obj_pstk_inlines.h"
+#include "obj_subc_op.h"
 #include "layer.h"
 #include "netlist2.h"
 #include "safe_fs.h"
 #include "macro.h"
+#include "operation.h"
 #include "xy_conf.h"
 
 #include "hid.h"
@@ -281,6 +283,11 @@ TODO("subc: subc-in-subc")
 static void calc_pad_bbox(subst_ctx_t *ctx, int prerot, pcb_coord_t *pw, pcb_coord_t *ph, pcb_coord_t *pcx, pcb_coord_t *pcy)
 {
 	if (prerot) {
+		pcb_subc_t *save, *sc_rot0;
+		pcb_data_t *tmp = pcb_buffers[PCB_MAX_BUFFER-1].Data;
+		double ang;
+		pcb_opctx_t op;
+
 		/* this is what we would do if we wanted to return the pre-rotation state */
 		if ((ctx->theta == 0) || (ctx->theta == 180) || (ctx->theta == -180)) {
 			calc_pad_bbox_(ctx, pw, ph, pcx, pcy);
@@ -290,7 +297,20 @@ static void calc_pad_bbox(subst_ctx_t *ctx, int prerot, pcb_coord_t *pw, pcb_coo
 			calc_pad_bbox_(ctx, ph, pw, pcx, pcy);
 			return;
 		}
-		pcb_message(PCB_MSG_ERROR, "XY can't calculate pad bbox for non-90-deg rotated elements yet (angle=%f)\n", ctx->theta);
+		
+		sc_rot0 = pcb_subc_dup_at(NULL, tmp, ctx->subc, 0, 0, 0);
+		ang = ctx->theta / PCB_RAD_TO_DEG;
+		pcb_subc_rotate(sc_rot0, 0, 0, cos(ang), sin(ang), ctx->theta);
+
+		save = ctx->subc;
+		ctx->subc = sc_rot0;
+		calc_pad_bbox_(ctx, pw, ph, pcx, pcy);
+		ctx->subc = save;
+
+		op.remove.pcb = PCB;
+		op.remove.destroy_target = tmp;
+		pcb_subcop_destroy(&op, sc_rot0);
+		return;
 	}
 
 	calc_pad_bbox_(ctx, pw, ph, pcx, pcy);
