@@ -1,3 +1,4 @@
+24494	configure	core shall not use glib for CFLAGS/LDFLAGS as core doesn't depend on glib
 24429	configure	move paper sizes out from ps to common code (io_kicad needs it too)
 24389	configure	live scripting: new source files for the new feature
 24292	configure	preparing for hidlib, splitting source files, scconfig hidlib deps
