@@ -3,13 +3,13 @@
 1. For the upcoming release ===============================================================================
 + BUG: scconfig: core gets glib dependency even if everything is in plugins (only plugins depend on glib) [report: Vuokko]
 - BUG: undo: clear rats, optimize rats, delete 1 rat then undo - it should undo the rat deletion but it undos optimization
+- FEATURE: excellon metric support to pair up with gerber's late feature [report: Gabriel]
 - BUG: kicad I/O bugs:
 	+ BUG: does not save the netlist [TwisteR]
 	- BUG: io_kicad parse err w/drill & roundrect pads  work/testcase_cnc_cesc.kicad_mod work/pcbnew_pad_handles_drill.png [report: Miloh]
 	? BUG: direct load of footprint, e.g. pcb-rnd km.mod, fails while load to buffer works on bug_files/km.mod [report: Ade] -> need a test file (km.mod not found)
 	+ BUG: fails to load a layout with older french or Italian layer names. Names listed at kicad-pcb.org/help/upgrading/ [report: erich]  multiple test files now in alien formats kicad; layer number seems to anchor layer, and techniccal name is just a label or hash
 + BUG: empty polygon contour in subc seems to crash pcb-rnd reliably. bug_files/STRIP-3PIN-CRASHES.lht [erich]
-+ FEATURE: gerber metric support [report: Gabriel]
 - DOC: document the DAD text widget
 - DOC: action ClaimNet()
 + BUG: bug_files/proto1.* padstack prototype selection bug priv mail 20 Feb [report: Alain]
