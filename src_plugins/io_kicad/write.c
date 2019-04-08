@@ -508,15 +508,24 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind, pcb_coord_
 			psrot = -psrot;
 
 		if (is_subc) {
+			pcb_net_t *net = NULL;
+			if (ps->term != NULL) {
+				pcb_net_term_t *t = pcb_net_find_by_obj(&ctx->pcb->netlist[PCB_NETLIST_EDITED], (const pcb_any_obj_t *)ps);
+				if (t != NULL)
+					net = t->parent.net;
+			}
 			if (pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
 				fprintf(ctx->f, "%*s", ind, "");
 TODO(": handle all cshapes (throw warnings)")
-				pcb_fprintf(ctx->f, "(pad %s thru_hole %s (at %.3mm %.3mm %f) (size %.3mm %.3mm) (drill %.3mm) (layers %s %s))\n",
+				pcb_fprintf(ctx->f, "(pad %s thru_hole %s (at %.3mm %.3mm %f) (size %.3mm %.3mm) (drill %.3mm) (layers %s %s)",
 					ps->term, ((cshape == PCB_PSTK_COMPAT_SQUARE) ? "rect" : "oval"),
 					x + dx, y + dy, psrot,
 					pad_dia, pad_dia,
 					drill_dia,
-					kicad_sexpr_layer_to_text(ctx, 0), kicad_sexpr_layer_to_text(ctx, 15)); /* skip (net 0) for now */
+					kicad_sexpr_layer_to_text(ctx, 0), kicad_sexpr_layer_to_text(ctx, 15));
+				if (net != NULL)
+					fprintf(ctx->f, " (net %ld %s)", (long)net->export_tmp, net->name);
+				fprintf(ctx->f, ")\n");
 			}
 			else if (pcb_pstk_export_compat_pad(ps, &x1, &y1, &x2, &y2, &thickness, &clearance, &mask, &square, &nopaste)) {
 				/* the above check only makes sure this is a plain padstack, get the geometry from the copper layer shape */
@@ -578,14 +587,17 @@ TODO("hshadow TODO")
 					ps->term, shape_str,
 					ps->x + dx, ps->y + dy, psrot,
 					w, h,
-					kicad_sexpr_layer_to_text(ctx, 0), kicad_sexpr_layer_to_text(ctx, 15)); /* skip (net 0) for now */
+					kicad_sexpr_layer_to_text(ctx, 0), kicad_sexpr_layer_to_text(ctx, 15));
 				
 				fprintf(ctx->f, " %sCu", side_str); /* always has copper */
 				if (has_mask)
 					fprintf(ctx->f, " %sMask", side_str);
 				if (!nopaste)
 					fprintf(ctx->f, " %sPaste", side_str);
-				fprintf(ctx->f, "))\n");
+				fprintf(ctx->f, ")");
+				if (net != NULL)
+					fprintf(ctx->f, " (net %ld %s)", (long)net->export_tmp, net->name);
+				fprintf(ctx->f, ")\n");
 			}
 			else
 				pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "padstack-shape", "Can't convert padstack to pin or pad", "use a simpler, uniform shape");
@@ -798,7 +810,6 @@ TODO(": make this initialization a common function with write_kicad_layout()")
 	return kicad_print_subcs(&wctx, Data, 0, 0, 0);
 }
 
-TODO("terminals written later do not seem to use the net number")
 static int write_kicad_equipotential_netlists(FILE *FP, pcb_board_t *Layout, pcb_cardinal_t indentation)
 {
 	pcb_cardinal_t netNumber = 0;
