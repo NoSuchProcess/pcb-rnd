@@ -3,7 +3,6 @@
 1. For the upcoming release ===============================================================================
 + BUG: scconfig: core gets glib dependency even if everything is in plugins (only plugins depend on glib) [report: Vuokko]
 - BUG: undo: clear rats, optimize rats, delete 1 rat then undo - it should undo the rat deletion but it undos optimization
-+ BUG: gtk: slipping 'tab' issue view drifts when tab is used repeatedly at different zooms around the cardinal edges of a placed part, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
 - BUG: kicad I/O bugs:
 	+ BUG: segfault when loading kicad_pcb in work/alien_formats/A20*.kicad_pcb gdb at http://scififaster.net/kicad_pcb_gdb.txt - see bug_files/A20-minimal.kicad_pcb [report: miloh flag: erichvk_]
 	+ BUG: does not save the netlist [TwisteR]
