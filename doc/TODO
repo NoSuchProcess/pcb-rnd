@@ -251,7 +251,6 @@ FEATURES
 	- FEATURE: consider a move-only lock?
 	- BUG: when thermal and some other operations are applied on a locked element, indicate it
 - BUG: Erich's gtk lag report: press 's' a lot then move the mouse - 's' ends up in the new loc!
-- BUG: the TAB bug: (over ssh -X) press tab for a good 15 seconds; release; it won't work again for a fraction of a second
 - BUG: rubberband_orig: draw a 90 deg arc, a 45 deg line that ends in the endpoints of the arc; enable rubber band, move the arc: only one endpoint of the line is moved [fixing:Ade]
 - FEATURE: "save as" dialog: there should be an "auto" or "guess by extension" option in the save dialog format
 - CLEANUP: insert drag&drop strangeness (mainline too):
