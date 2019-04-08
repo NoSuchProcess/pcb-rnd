@@ -7,7 +7,7 @@
 + BUG: gtk: slipping 'tab' issue view drifts when tab is used repeatedly at different zooms around the cardinal edges of a placed part, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
 - BUG: kicad I/O bugs:
 	+ BUG: segfault when loading kicad_pcb in work/alien_formats/A20*.kicad_pcb gdb at http://scififaster.net/kicad_pcb_gdb.txt - see bug_files/A20-minimal.kicad_pcb [report: miloh flag: erichvk_]
-	- BUG: does not save the netlist [TwisteR]
+	+ BUG: does not save the netlist [TwisteR]
 	- BUG: io_kicad parse err w/drill & roundrect pads  work/testcase_cnc_cesc.kicad_mod work/pcbnew_pad_handles_drill.png [report: Miloh]
 	? BUG: direct load of footprint, e.g. pcb-rnd km.mod, fails while load to buffer works on bug_files/km.mod [report: Ade] -> need a test file (km.mod not found)
 	? BUG: fails to load a layout with older french or Italian layer names. Names listed at kicad-pcb.org/help/upgrading/ [report: erich]  -> need a copyright-legal test file
