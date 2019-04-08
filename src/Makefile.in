@@ -292,9 +292,7 @@ put /local/pcb/tmpasm/plugin_intconf  {../scconfig/template/plugin_intconf.tmpas
 
 include {../src_plugins/plugins_ALL.tmpasm}
 
-append /local/pcb/CFLAGS  /target/libs/sul/glib/cflags
 append /local/pcb/CFLAGS  /target/libs/sul/dmalloc/cflags
-append /local/pcb/LIBS    /target/libs/sul/glib/ldflags
 append /local/pcb/LIBS    /target/libs/sul/dmalloc/ldflags
 
 # Lesstif requires that -lXm is before -lXt or else there is a runtime BadWindow error
