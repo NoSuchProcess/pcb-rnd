@@ -3,7 +3,6 @@
 1. For the upcoming release ===============================================================================
 - BUG: scconfig: core gets glib dependency even if everything is in plugins (only plugins depend on glib) [report: Vuokko]
 + BUG: Setting the 'dyntext' flag on a text object doesn't update the bounding box. To reproduce - Create a text object and set it to '%a.parent.refdes%'. Edit the objects flags {e f} and set the 'dyntext' flag. The text should change to the refdes value but the bounding box remains at the size of the original text. [report: Ade]
-- BUG: wandering lesstif window (window placement bug): using icewm, open the property editor, close, open, close, open: it's displaced by decoration [report: Igor2]
 - BUG: undo: clear rats, optimize rats, delete 1 rat then undo - it should undo the rat deletion but it undos optimization
 + BUG: gtk: slipping 'tab' issue view drifts when tab is used repeatedly at different zooms around the cardinal edges of a placed part, video repro: http://scififaster.net/wantitthatway_pcb-rnd.ogg [report: Miloh]
 - BUG: kicad I/O bugs:
@@ -222,6 +221,7 @@
 - BUG: find.c: bug_files/find_slotcop.lht: plated slot should connect to any copper layer object it is going thru ml2571 [report: Igor2]
 - BUG: pref: set role to user, add new library path -> it is saved in board! [report: aron]
 - BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
+- BUG: wandering lesstif window (window placement bug): using icewm, open the property editor, close, open, close, open: it's displaced by decoration [report: Igor2]
 
 3. Long term ===============================================================================
 - BUG: draw a large padstack poly (as a subc term); put some vias (padtsacks) on top of it; with gdk and gl, after the 6th via some via rings will disappear [report: James]
