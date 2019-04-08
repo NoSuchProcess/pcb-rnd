@@ -252,12 +252,7 @@ static void Initialize(Widget request, Widget tnew, ArgList args, Cardinal *num)
 
 	xm_init_render_target(&(w->tree_table.render_attr));
 	tt->font = NULL;
-	{
-		static XmFontList flist = NULL;
-		if (!flist)
-			flist = XmeGetDefaultRenderTable(tnew, XmTEXT_RENDER_TABLE);
-		XmeRenderTableGetDefaultFont(flist, &tt->font);
-	}
+	XmeRenderTableGetDefaultFont(XmeGetDefaultRenderTable(tnew, XmTEXT_RENDER_TABLE), &tt->font);
 
 	/* init Xt GC structures for drawing routines. */
 	xt_gc_init(w);
