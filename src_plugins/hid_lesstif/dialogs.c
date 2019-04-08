@@ -58,12 +58,30 @@ void pcb_ltf_winplace(Display *dsp, Window w, const char *id, int defx, int defy
 	}
 }
 
+static void ltf_winplace_cfg(Display *dsp, Window win, void *ctx, const char *id)
+{
+	
+	Window rw;
+	int x = -1, y = -1;
+	unsigned int w, h, brd, depth;
+
+#if 0
+	Window cw;
+	rw = DefaultRootWindow(dsp);
+	XTranslateCoordinates(dsp, win, rw, 0, 0, &x, &y, &cw);
+	printf("plc1: %s: %d %d\n", id, x, y);
+#endif
+
+	XGetGeometry(dsp, win, &rw, &x, &y, &w, &h, &brd, &depth);
+	pcb_event(PCB_EVENT_DAD_NEW_GEO, "psiiii", ctx, id, (int)x, (int)y, (int)w, (int)h);
+}
+
+
 void pcb_ltf_wplc_config_cb(Widget shell, XtPointer data, XEvent *xevent, char *dummy)
 {
 	char *id = data;
-	Window win, rw, cw;
 	Display *dsp;
-	int x, y;
+	Window win;
 	XConfigureEvent *cevent = (XConfigureEvent *)xevent;
 
 	if (cevent->type != ConfigureNotify)
@@ -71,10 +89,7 @@ void pcb_ltf_wplc_config_cb(Widget shell, XtPointer data, XEvent *xevent, char *
 
 	win = XtWindow(shell);
 	dsp = XtDisplay(shell);
-	rw = DefaultRootWindow(dsp);
-	XTranslateCoordinates(dsp, win, rw, 0, 0, &x, &y, &cw);
-	pcb_event(PCB_EVENT_DAD_NEW_GEO, "psiiii", NULL, id,
-		(int)x, (int)y, (int)cevent->width, (int)cevent->height);
+	ltf_winplace_cfg(dsp, win, NULL, id);
 }
 
 
@@ -577,9 +592,8 @@ static void ltf_attr_destroy_cb(Widget w, void *v, void *cbs)
 static void ltf_attr_config_cb(Widget shell, XtPointer data, XEvent *xevent, char *dummy)
 {
 	lesstif_attr_dlg_t *ctx = data;
-	Window win, rw, cw;
+	Window win;
 	Display *dsp;
-	int x, y;
 	XConfigureEvent *cevent = (XConfigureEvent *)xevent;
 
 	if (cevent->type != ConfigureNotify)
@@ -587,10 +601,8 @@ static void ltf_attr_config_cb(Widget shell, XtPointer data, XEvent *xevent, cha
 
 	win = XtWindow(shell);
 	dsp = XtDisplay(shell);
-	rw = DefaultRootWindow(dsp);
-	XTranslateCoordinates(dsp, win, rw, 0, 0, &x, &y, &cw);
-	pcb_event(PCB_EVENT_DAD_NEW_GEO, "psiiii", ctx, ctx->id,
-		(int)x, (int)y, (int)cevent->width, (int)cevent->height);
+
+	ltf_winplace_cfg(dsp, XtWindow(XtParent(XtParent(ctx->dialog))), ctx, ctx->id);
 }
 
 static void ltf_initial_wstates(lesstif_attr_dlg_t *ctx)
