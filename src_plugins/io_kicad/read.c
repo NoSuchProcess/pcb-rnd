@@ -195,38 +195,38 @@ static int kicad_create_copper_layer(read_state_t *st, int lnum, const char *lna
 	pcb_layer_id_t id = -1;
 	pcb_layergrp_id_t gid = -1;
 
-		pcb_layer_type_t loc = PCB_LYT_INTERN;
+	pcb_layer_type_t loc = PCB_LYT_INTERN;
 
-		if (strcmp(lname+1, ".Cu") == 0) {
-			if (st->ver > 20170000) {
-				if ((lnum == 0) && (lname[0] != 'F'))
-					kicad_warning(subtree, "layer 0 should be named F.Cu (recoverable error; new stack)\n");
-				if ((lnum == last_copper) && (lname[0] != 'B'))
-					kicad_warning(subtree, "layer %d should be named B.Cu (recoverable error; new stack)\n", last_copper);
-			}
-			else {
-				if ((lnum == 0) && (lname[0] != 'B'))
-					kicad_warning(subtree, "layer 0 should be named B.Cu (recoverable error; old stack)\n");
-				if ((lnum == last_copper) && (lname[0] != 'F'))
-					kicad_warning(subtree, "layer %d should be named F.Cu (recoverable error; old stack)\n", last_copper);
-			}
-		}
-		else
-			kicad_warning(subtree, "layer %d name should end in .Cu (recoverable error)\n", last_copper);
-
+	if (strcmp(lname+1, ".Cu") == 0) {
 		if (st->ver > 20170000) {
-			if (lnum == 0) loc = PCB_LYT_TOP;
-			else if (lnum == last_copper) loc = PCB_LYT_BOTTOM;
+			if ((lnum == 0) && (lname[0] != 'F'))
+				kicad_warning(subtree, "layer 0 should be named F.Cu (recoverable error; new stack)\n");
+			if ((lnum == last_copper) && (lname[0] != 'B'))
+				kicad_warning(subtree, "layer %d should be named B.Cu (recoverable error; new stack)\n", last_copper);
 		}
 		else {
-			if (lnum == 0) loc = PCB_LYT_BOTTOM;
-			else if (lnum == last_copper) loc = PCB_LYT_TOP;
+			if ((lnum == 0) && (lname[0] != 'B'))
+				kicad_warning(subtree, "layer 0 should be named B.Cu (recoverable error; old stack)\n");
+			if ((lnum == last_copper) && (lname[0] != 'F'))
+				kicad_warning(subtree, "layer %d should be named F.Cu (recoverable error; old stack)\n", last_copper);
 		}
+	}
+	else
+		kicad_warning(subtree, "layer %d name should end in .Cu (recoverable error)\n", last_copper);
 
-		pcb_layergrp_list(st->pcb, PCB_LYT_COPPER | loc, &gid, 1);
-		id = pcb_layer_create(st->pcb, gid, lname);
-		htsi_set(&st->layer_k2i, pcb_strdup(lname), id);
-		return 0;
+	if (st->ver > 20170000) {
+		if (lnum == 0) loc = PCB_LYT_TOP;
+		else if (lnum == last_copper) loc = PCB_LYT_BOTTOM;
+	}
+	else {
+		if (lnum == 0) loc = PCB_LYT_BOTTOM;
+		else if (lnum == last_copper) loc = PCB_LYT_TOP;
+	}
+
+	pcb_layergrp_list(st->pcb, PCB_LYT_COPPER | loc, &gid, 1);
+	id = pcb_layer_create(st->pcb, gid, lname);
+	htsi_set(&st->layer_k2i, pcb_strdup(lname), id);
+	return 0;
 }
 
 /* Parse a layer definition and do all the administration needed for the layer */
