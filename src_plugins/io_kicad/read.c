@@ -227,6 +227,7 @@ static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, con
 
 		pcb_layergrp_list(st->pcb, PCB_LYT_COPPER | loc, &gid, 1);
 		id = pcb_layer_create(st->pcb, gid, lname);
+		htsi_set(&st->layer_k2i, pcb_strdup(lname), id);
 		return 0;
 	}
 
