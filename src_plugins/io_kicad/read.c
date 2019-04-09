@@ -74,6 +74,7 @@ typedef struct {
 	gsxl_dom_t dom;
 	unsigned auto_layers:1;
 	htsi_t layer_k2i; /* layer name-to-index hash; name is the kicad name, index is the pcb-rnd layer index */
+	long ver;
 
 	pcb_coord_t width[DIM_max];
 	pcb_coord_t height[DIM_max];
@@ -181,8 +182,8 @@ static int kicad_parse_nop(read_state_t *st, gsxl_node_t *subtree)
 static int kicad_parse_version(read_state_t *st, gsxl_node_t *subtree)
 {
 	if (subtree->str != NULL) {
-		int ver = atoi(subtree->str);
-		if (ver == 3 || ver == 4 || ver == 20170123)
+		st->ver = atoi(subtree->str);
+		if (st->ver == 3 || st->ver == 4 || st->ver == 20170123)
 			return 0;
 	}
 	return kicad_error(subtree, "unexpected layout version");
@@ -195,18 +196,42 @@ static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, con
 	pcb_layergrp_id_t gid = -1;
 	pcb_layer_t *ly;
 
+	if (lnum <= last_copper) { /* handle copper layers */
+		pcb_layer_type_t loc = PCB_LYT_INTERN;
+
+		if (strcmp(lname+1, ".Cu") == 0) {
+			if (st->ver > 20170000) {
+				if ((lnum == 0) && (lname[0] != 'F'))
+					kicad_warning(subtree, "layer 0 should be named F.Cu (recoverable error; new stack)\n");
+				if ((lnum == last_copper) && (lname[0] != 'B'))
+					kicad_warning(subtree, "layer %d should be named B.Cu (recoverable error; new stack)\n", last_copper);
+			}
+			else {
+				if ((lnum == 0) && (lname[0] != 'B'))
+					kicad_warning(subtree, "layer 0 should be named B.Cu (recoverable error; old stack)\n");
+				if ((lnum == last_copper) && (lname[0] != 'F'))
+					kicad_warning(subtree, "layer %d should be named F.Cu (recoverable error; old stack)\n", last_copper);
+			}
+		}
+		else
+			kicad_warning(subtree, "layer %d name should end in .Cu (recoverable error)\n", last_copper);
+
+		if (st->ver > 20170000) {
+			if (lnum == 0) loc = PCB_LYT_TOP;
+			else if (lnum == last_copper) loc = PCB_LYT_BOTTOM;
+		}
+		else {
+			if (lnum == 0) loc = PCB_LYT_BOTTOM;
+			else if (lnum == last_copper) loc = PCB_LYT_TOP;
+		}
+
+		pcb_layergrp_list(st->pcb, PCB_LYT_COPPER | loc, &gid, 1);
+		id = pcb_layer_create(st->pcb, gid, lname);
+		return 0;
+	}
+
 TODO(": we should not depend on layer IDs other than 0")
 	switch (lnum) {
-		case 0:
-		case 15:
-		case 31:
-			if (strcmp(lname+1, ".Cu") != 0)
-				return kicad_error(subtree, "layer 0 and 15/31 must be F.Cu and B.Cu (.Cu mismatch)");
-			if ((lname[0] != 'F') && (lname[0] != 'B'))
-				return kicad_error(subtree, "layer 0 and 15/31 must be F.Cu and B.Cu (F or B mismatch)");
-			pcb_layergrp_list(st->pcb, PCB_LYT_COPPER | ((lname[0] == 'B') ? PCB_LYT_BOTTOM : PCB_LYT_TOP), &gid, 1);
-			id = pcb_layer_create(st->pcb, gid, lname);
-			break;
 		default:
 			if (strcmp(lname, "Edge.Cuts") == 0) {
 				/* Edge must be the outline */
@@ -214,8 +239,8 @@ TODO(": we should not depend on layer IDs other than 0")
 				pcb_layergrp_fix_turn_to_outline(g);
 				id = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, lname);
 			}
-			else if ((strcmp(ltype, "signal") == 0) || (strcmp(ltype, "power") == 0) || (strncmp(lname, "Dwgs.", 4) == 0) || (strncmp(lname, "Cmts.", 4) == 0) || (strncmp(lname, "Eco", 3) == 0)) {
-				/* Create a new inner layer for signals and for emulating misc layers */
+			else if ((strncmp(lname, "Dwgs.", 4) == 0) || (strncmp(lname, "Cmts.", 4) == 0) || (strncmp(lname, "Eco", 3) == 0)) {
+				/* Create a new inner layer for emulating misc layers */
 				pcb_layergrp_t *g = pcb_get_grp_new_intern(PCB, -1);
 				id = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, lname);
 			}
@@ -260,7 +285,7 @@ TODO(": we should not depend on layer IDs other than 0")
 				kicad_warning(subtree, "unknown layer: %s", lname);
 				goto hack1;
 			}
-			else if (lnum > 15) {
+			else if (lnum > last_copper) {
 			hack1:;
 				/* HACK/WORKAROUND: remember kicad layers for those that are unsupported */
 				htsi_set(&st->layer_k2i, pcb_strdup(lname), -lnum);
