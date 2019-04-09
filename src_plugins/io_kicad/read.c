@@ -189,7 +189,7 @@ static int kicad_parse_version(read_state_t *st, gsxl_node_t *subtree)
 }
 
 /* Parse a layer definition and do all the administration needed for the layer */
-static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, const char *ltype, gsxl_node_t *subtree, int last_signal)
+static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, const char *ltype, gsxl_node_t *subtree, int last_copper)
 {
 	pcb_layer_id_t id = -1;
 	pcb_layergrp_id_t gid = -1;
@@ -1026,7 +1026,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 {
 	gsxl_node_t *n;
-	int i, last_signal;
+	int i, last_copper;
 
 	if (strcmp(subtree->parent->parent->str, "kicad_pcb") != 0) /* test if deeper in tree than layer definitions for entire board */
 		return kicad_error(subtree, "layer definition found in unexpected location in KiCad layout");
@@ -1050,29 +1050,29 @@ TODO("check if we really need these excess layers");
 #endif
 
 	/* find the first non-signal layer */
-	last_signal = -1;
+	last_copper = -1;
 	for(n = subtree; n != NULL; n = n->next) {
-		int lnum, is_sig;
+		int lnum, is_copper;
 		if ((n->str == NULL) || (n->children->str == NULL) || (n->children->next == NULL) || (n->children->next->str == NULL)) {
 			kicad_error(n, "unexpected board layer definition encountered\n");
 			goto error;
 		}
 		lnum = atoi(n->str);
-		is_sig = (strcmp(n->children->next->str, "signal") == 0);
-		if ((lnum == 0) && (!is_sig)) {
+		is_copper = (strcmp(n->children->next->str, "signal") == 0) || (strcmp(n->children->next->str, "power") == 0);
+		if ((lnum == 0) && (!is_copper)) {
 			kicad_error(n, "unexpected board layer definition: layer 0 must be signal\n");
 			goto error;
 		}
-		if (is_sig && (lnum > last_signal))
-			last_signal = lnum;
+		if (is_copper && (lnum > last_copper))
+			last_copper = lnum;
 	}
 
-	if (last_signal < 2) {
+	if (last_copper < 2) {
 		kicad_error(subtree, "broken layer stack: need at least 2 signal layers (copper layers)\n");
 		goto error;
 	}
-	if ((last_signal != 15) && (last_signal != 31))
-		kicad_error(subtree, "unusual KiCad layer stack: there should be 16 or 32 copper layers, you seem to have %d instead\n", last_signal+1);
+	if ((last_copper != 15) && (last_copper != 31))
+		kicad_error(subtree, "unusual KiCad layer stack: there should be 16 or 32 copper layers, you seem to have %d instead\n", last_copper+1);
 
 	for(n = subtree, i = 0; n != NULL; n = n->next, i++) {
 		int lnum;
@@ -1084,7 +1084,7 @@ TODO("check if we really need these excess layers");
 			kicad_error(n, "Invalid numeric in layer number (must be a small integer)\n");
 			goto error;
 		}
-		if (kicad_create_layer(st, lnum, lname, ltype, n, last_signal) < 0) {
+		if (kicad_create_layer(st, lnum, lname, ltype, n, last_copper) < 0) {
 			kicad_error(n, "Unrecognized layer: %d, %s, %s\n", lnum, lname, ltype);
 			goto error;
 		}
