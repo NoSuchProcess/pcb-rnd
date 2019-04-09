@@ -189,14 +189,12 @@ static int kicad_parse_version(read_state_t *st, gsxl_node_t *subtree)
 	return kicad_error(subtree, "unexpected layout version");
 }
 
-/* Parse a layer definition and do all the administration needed for the layer */
-static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, const char *ltype, gsxl_node_t *subtree, int last_copper)
+
+static int kicad_create_copper_layer(read_state_t *st, int lnum, const char *lname, const char *ltype, gsxl_node_t *subtree, int last_copper)
 {
 	pcb_layer_id_t id = -1;
 	pcb_layergrp_id_t gid = -1;
-	pcb_layer_t *ly;
 
-	if (lnum <= last_copper) { /* handle copper layers */
 		pcb_layer_type_t loc = PCB_LYT_INTERN;
 
 		if (strcmp(lname+1, ".Cu") == 0) {
@@ -229,7 +227,17 @@ static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, con
 		id = pcb_layer_create(st->pcb, gid, lname);
 		htsi_set(&st->layer_k2i, pcb_strdup(lname), id);
 		return 0;
-	}
+}
+
+/* Parse a layer definition and do all the administration needed for the layer */
+static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, const char *ltype, gsxl_node_t *subtree, int last_copper)
+{
+	pcb_layer_id_t id = -1;
+	pcb_layergrp_id_t gid = -1;
+	pcb_layer_t *ly;
+
+	if (lnum <= last_copper)
+		return kicad_create_copper_layer(st, lnum, lname, ltype, subtree, last_copper);
 
 TODO(": we should not depend on layer IDs other than 0")
 	switch (lnum) {
