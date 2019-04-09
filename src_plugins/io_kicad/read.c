@@ -1044,9 +1044,8 @@ TODO("check if we really need these excess layers");
 	res |= kicad_reg_layer(st, "Bottom", PCB_LYT_COPPER | PCB_LYT_BOTTOM, NULL);
 
 	if (res != 0) {
-		pcb_message(PCB_MSG_ERROR, "Internal error: can't find a silk or mask layer\n");
-		pcb_layergrp_inhibit_dec();
-		return kicad_error(subtree, "Internal error: can't find a silk or mask layer while parsing KiCad layout");
+		kicad_error(subtree, "Internal error: can't find a silk or mask layer while parsing KiCad layout");
+		goto error;
 	}
 #endif
 
@@ -1056,15 +1055,13 @@ TODO("check if we really need these excess layers");
 		int lnum, is_sig;
 		if ((n->str == NULL) || (n->children->str == NULL) || (n->children->next == NULL) || (n->children->next->str == NULL)) {
 			kicad_error(n, "unexpected board layer definition encountered\n");
-			pcb_layergrp_inhibit_dec();
-			return -1;
+			goto error;
 		}
 		lnum = atoi(n->str);
 		is_sig = (strcmp(n->children->next->str, "signal") == 0);
 		if ((lnum == 0) && (!is_sig)) {
 			kicad_error(n, "unexpected board layer definition: layer 0 must be signal\n");
-			pcb_layergrp_inhibit_dec();
-			return -1;
+			goto error;
 		}
 		if (is_sig && (lnum > last_signal))
 			last_signal = lnum;
@@ -1072,8 +1069,7 @@ TODO("check if we really need these excess layers");
 
 	if (last_signal < 2) {
 		kicad_error(subtree, "broken layer stack: need at least 2 signal layers (copper layers)\n");
-		pcb_layergrp_inhibit_dec();
-		return -1;
+		goto error;
 	}
 	if ((last_signal != 15) && (last_signal != 31))
 		kicad_error(subtree, "unusual KiCad layer stack: there should be 16 or 32 copper layers, you seem to have %d instead\n", last_signal+1);
@@ -1086,19 +1082,21 @@ TODO("check if we really need these excess layers");
 		lnum = strtol(n->str, &end, 10);
 		if (*end != '\0') {
 			kicad_error(n, "Invalid numeric in layer number (must be a small integer)\n");
-			pcb_layergrp_inhibit_dec();
-			return -1;
+			goto error;
 		}
 		if (kicad_create_layer(st, lnum, lname, ltype, n, last_signal) < 0) {
 			kicad_error(n, "Unrecognized layer: %d, %s, %s\n", lnum, lname, ltype);
-			pcb_layergrp_inhibit_dec();
-			return -1;
+			goto error;
 		}
 	}
 
 	pcb_layergrp_fix_old_outline(PCB);
 	pcb_layergrp_inhibit_dec();
 	return 0;
+
+	error:;
+	pcb_layergrp_inhibit_dec();
+	return -1;
 }
 
 /* kicad_pcb parse global (board level) net */
