@@ -1026,7 +1026,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 {
 	gsxl_node_t *n;
-	int i, last_copper;
+	int last_copper;
 
 	if (strcmp(subtree->parent->parent->str, "kicad_pcb") != 0) /* test if deeper in tree than layer definitions for entire board */
 		return kicad_error(subtree, "layer definition found in unexpected location in KiCad layout");
@@ -1074,7 +1074,7 @@ TODO("check if we really need these excess layers");
 	if ((last_copper != 15) && (last_copper != 31))
 		kicad_error(subtree, "unusual KiCad layer stack: there should be 16 or 32 copper layers, you seem to have %d instead\n", last_copper+1);
 
-	for(n = subtree, i = 0; n != NULL; n = n->next, i++) {
+	for(n = subtree; n != NULL; n = n->next) {
 		int lnum;
 		char *end;
 		const char *lname = n->children->str, *ltype = n->children->next->str;
