@@ -189,7 +189,7 @@ static int kicad_parse_version(read_state_t *st, gsxl_node_t *subtree)
 }
 
 /* Parse a layer definition and do all the administration needed for the layer */
-static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, const char *ltype, gsxl_node_t *subtree)
+static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, const char *ltype, gsxl_node_t *subtree, int last_signal)
 {
 	pcb_layer_id_t id = -1;
 	pcb_layergrp_id_t gid = -1;
@@ -1026,7 +1026,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 {
 	gsxl_node_t *n;
-	int i;
+	int i, last_signal;
 
 	if (strcmp(subtree->parent->parent->str, "kicad_pcb") != 0) /* test if deeper in tree than layer definitions for entire board */
 		return kicad_error(subtree, "layer definition found in unexpected location in KiCad layout");
@@ -1050,19 +1050,47 @@ TODO("check if we really need these excess layers");
 	}
 #endif
 
-	for(n = subtree, i = 0; n != NULL; n = n->next, i++) {
-		if ((n->str != NULL) && (n->children->str != NULL) && (n->children->next != NULL) && (n->children->next->str != NULL)) {
-			int lnum = atoi(n->str);
-			const char *lname = n->children->str, *ltype = n->children->next->str;
-
-			if (kicad_create_layer(st, lnum, lname, ltype, n) < 0) {
-				pcb_message(PCB_MSG_ERROR, "Unrecognized layer: %d, %s, %s\n", lnum, lname, ltype);
-				pcb_layergrp_inhibit_dec();
-				return -1;
-			}
+	/* find the first non-signal layer */
+	last_signal = -1;
+	for(n = subtree; n != NULL; n = n->next) {
+		int lnum, is_sig;
+		if ((n->str == NULL) || (n->children->str == NULL) || (n->children->next == NULL) || (n->children->next->str == NULL)) {
+			kicad_error(n, "unexpected board layer definition encountered\n");
+			pcb_layergrp_inhibit_dec();
+			return -1;
 		}
-		else {
-			pcb_message(PCB_MSG_ERROR, "unexpected board layer definition(s) encountered.\n");
+		lnum = atoi(n->str);
+		is_sig = (strcmp(n->children->next->str, "signal") == 0);
+		if ((lnum == 0) && (!is_sig)) {
+			kicad_error(n, "unexpected board layer definition: layer 0 must be signal\n");
+			pcb_layergrp_inhibit_dec();
+			return -1;
+		}
+		if (is_sig && (lnum > last_signal))
+			last_signal = lnum;
+	}
+
+	if (last_signal < 2) {
+		kicad_error(subtree, "broken layer stack: need at least 2 signal layers (copper layers)\n");
+		pcb_layergrp_inhibit_dec();
+		return -1;
+	}
+	if ((last_signal != 15) && (last_signal != 31))
+		kicad_error(subtree, "unusual KiCad layer stack: there should be 16 or 32 copper layers, you seem to have %d instead\n", last_signal+1);
+
+	for(n = subtree, i = 0; n != NULL; n = n->next, i++) {
+		int lnum;
+		char *end;
+		const char *lname = n->children->str, *ltype = n->children->next->str;
+
+		lnum = strtol(n->str, &end, 10);
+		if (*end != '\0') {
+			kicad_error(n, "Invalid numeric in layer number (must be a small integer)\n");
+			pcb_layergrp_inhibit_dec();
+			return -1;
+		}
+		if (kicad_create_layer(st, lnum, lname, ltype, n, last_signal) < 0) {
+			kicad_error(n, "Unrecognized layer: %d, %s, %s\n", lnum, lname, ltype);
 			pcb_layergrp_inhibit_dec();
 			return -1;
 		}
