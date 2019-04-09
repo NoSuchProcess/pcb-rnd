@@ -198,7 +198,7 @@ static int kicad_create_copper_layer(read_state_t *st, int lnum, const char *lna
 	pcb_layer_type_t loc = PCB_LYT_INTERN;
 
 	if (strcmp(lname+1, ".Cu") == 0) {
-		if (st->ver > 20170000) {
+		if (st->ver > 3) {
 			if ((lnum == 0) && (lname[0] != 'F'))
 				kicad_warning(subtree, "layer 0 should be named F.Cu (recoverable error; new stack)\n");
 			if ((lnum == last_copper) && (lname[0] != 'B'))
@@ -214,7 +214,7 @@ static int kicad_create_copper_layer(read_state_t *st, int lnum, const char *lna
 	else
 		kicad_warning(subtree, "layer %d name should end in .Cu (recoverable error)\n", last_copper);
 
-	if (st->ver > 20170000) {
+	if (st->ver > 3) {
 		if (lnum == 0) loc = PCB_LYT_TOP;
 		else if (lnum == last_copper) loc = PCB_LYT_BOTTOM;
 	}
