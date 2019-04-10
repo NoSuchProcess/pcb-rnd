@@ -223,7 +223,13 @@ static int kicad_create_copper_layer(read_state_t *st, int lnum, const char *lna
 		else if (lnum == last_copper) loc = PCB_LYT_TOP;
 	}
 
-	pcb_layergrp_list(st->pcb, PCB_LYT_COPPER | loc, &gid, 1);
+	if (loc & PCB_LYT_INTERN) {
+		pcb_layergrp_t *g = pcb_get_grp_new_intern(st->pcb, -1);
+		gid = g - st->pcb->LayerGroups.grp;
+	}
+	else
+		pcb_layergrp_list(st->pcb, PCB_LYT_COPPER | loc, &gid, 1);
+
 	id = pcb_layer_create(st->pcb, gid, lname);
 	htsi_set(&st->layer_k2i, pcb_strdup(lname), id);
 	return 0;
