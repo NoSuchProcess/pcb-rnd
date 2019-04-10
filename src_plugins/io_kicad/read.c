@@ -33,6 +33,8 @@
 #include <math.h>
 #include <gensexpr/gsxl.h>
 #include <genht/htsi.h>
+#include <genvector/vtp0.h>
+
 #include "compat_misc.h"
 #include "board.h"
 #include "plug_io.h"
@@ -75,6 +77,7 @@ typedef struct {
 	unsigned auto_layers:1;
 	htsi_t layer_k2i; /* layer name-to-index hash; name is the kicad name, index is the pcb-rnd layer index */
 	long ver;
+	vtp0_t intern_copper; /* temporary storage of internal copper layers */
 
 	pcb_coord_t width[DIM_max];
 	pcb_coord_t height[DIM_max];
@@ -190,9 +193,16 @@ static int kicad_parse_version(read_state_t *st, gsxl_node_t *subtree)
 }
 
 
+static int kicad_create_copper_layer_(read_state_t *st, pcb_layergrp_id_t gid, const char *lname, const char *ltype, gsxl_node_t *subtree)
+{
+	pcb_layer_id_t id;
+	id = pcb_layer_create(st->pcb, gid, lname);
+	htsi_set(&st->layer_k2i, pcb_strdup(lname), id);
+	return 0;
+}
+
 static int kicad_create_copper_layer(read_state_t *st, int lnum, const char *lname, const char *ltype, gsxl_node_t *subtree, int last_copper)
 {
-	pcb_layer_id_t id = -1;
 	pcb_layergrp_id_t gid = -1;
 	const char *cu;
 
@@ -233,15 +243,15 @@ static int kicad_create_copper_layer(read_state_t *st, int lnum, const char *lna
 	}
 
 	if (loc & PCB_LYT_INTERN) {
-		pcb_layergrp_t *g = pcb_get_grp_new_intern(st->pcb, -1);
-		gid = g - st->pcb->LayerGroups.grp;
+		/* for intern copper layers we need to have an array and delay
+		   creation to order them correctly by layer number even if
+		   their are listed in a different order in the file */
+		vtp0_set(&st->intern_copper, lnum, subtree);
+		return 0;
 	}
-	else
-		pcb_layergrp_list(st->pcb, PCB_LYT_COPPER | loc, &gid, 1);
 
-	id = pcb_layer_create(st->pcb, gid, lname);
-	htsi_set(&st->layer_k2i, pcb_strdup(lname), id);
-	return 0;
+	pcb_layergrp_list(st->pcb, PCB_LYT_COPPER | loc, &gid, 1);
+	return kicad_create_copper_layer_(st, gid, lname, ltype, subtree);
 }
 
 /* Parse a layer definition and do all the administration needed for the layer */
@@ -1098,6 +1108,8 @@ TODO("check if we really need these excess layers");
 	}
 #endif
 
+	vtp0_init(&st->intern_copper);
+
 	/* find the first non-signal layer */
 	last_copper = -1;
 	for(n = subtree; n != NULL; n = n->next) {
@@ -1138,6 +1150,42 @@ TODO("check if we really need these excess layers");
 			goto error;
 		}
 	}
+
+	/* create internal copper layers, in the right order, regardless of in
+	   what order they are present in the file */
+	{
+		int n, from, dir, reverse_order = (st->ver <= 3);
+
+		if (reverse_order) {
+			from = last_copper;
+			dir = -1;
+		}
+		else {
+			from = 0;
+			dir = 1;
+		}
+
+		for(n = from; (n <= last_copper) && (n >= 0); n += dir) {
+			void **ndp = vtp0_get(&st->intern_copper, n, 0);
+			gsxl_node_t *nd;
+			if ((ndp != NULL) && (*ndp != NULL)) {
+				pcb_layergrp_t *g = pcb_get_grp_new_intern(st->pcb, -1);
+				pcb_layergrp_id_t gid = g - st->pcb->LayerGroups.grp;
+				const char *lname, *ltype;
+
+				nd = *ndp;
+				lname = nd->children->str;
+				ltype = nd->children->next->str;
+
+				if (kicad_create_copper_layer_(st, gid, lname, ltype, nd) != 0) {
+					kicad_error(nd, "Failed to create internal copper layer: %d, %s, %s\n", n, lname, ltype);
+					goto error;
+				}
+			}
+		}
+	}
+
+	vtp0_uninit(&st->intern_copper);
 
 	pcb_layergrp_fix_old_outline(PCB);
 	pcb_layergrp_inhibit_dec();
