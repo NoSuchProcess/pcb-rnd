@@ -198,6 +198,10 @@ static int kicad_create_copper_layer_(read_state_t *st, pcb_layergrp_id_t gid, c
 	pcb_layer_id_t id;
 	id = pcb_layer_create(st->pcb, gid, lname);
 	htsi_set(&st->layer_k2i, pcb_strdup(lname), id);
+	if (ltype != NULL) {
+		pcb_layer_t *ly = pcb_get_layer(st->pcb->Data, id);
+		pcb_attribute_put(&ly->Attributes, "kicad::type", ltype);
+	}
 	return 0;
 }
 
