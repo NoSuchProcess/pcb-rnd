@@ -55,13 +55,13 @@ typedef struct {
 
 static const kicad_layertab_t kicad_layertab[] = {
 	/*id prefix     plen score | action            lyc   purp      layer-type */
-	{ 1, "B.Adhes",   0,  3,     LYACT_EXISTING,    LYP, "adhes",     PCB_LYT_MECH | PCB_LYT_BOTTOM},
-	{ 0, "B.Adhes",   0,  2,     LYACT_EXISTING,    LYP, "adhes",     PCB_LYT_MECH | PCB_LYT_BOTTOM},
-	{ 1, NULL,        0,  1,     LYACT_EXISTING,    LYP, "adhes",     PCB_LYT_MECH | PCB_LYT_BOTTOM},
+	{ 1, "B.Adhes",   0,  3,     LYACT_NEW_MISC,    0,   "adhes",  PCB_LYT_MECH | PCB_LYT_BOTTOM},
+	{ 0, "B.Adhes",   0,  2,     LYACT_NEW_MISC,    0,   "adhes",  PCB_LYT_MECH | PCB_LYT_BOTTOM},
+	{ 1, NULL,        0,  1,     LYACT_NEW_MISC,    0,   "adhes",  PCB_LYT_MECH | PCB_LYT_BOTTOM},
 
-	{ 2, "F.Adhes",   0,  3,     LYACT_EXISTING,    LYP, "adhes",     PCB_LYT_MECH | PCB_LYT_TOP},
-	{ 0, "F.Adhes",   0,  2,     LYACT_EXISTING,    LYP, "adhes",     PCB_LYT_MECH | PCB_LYT_TOP},
-	{ 2, NULL,        0,  1,     LYACT_EXISTING,    LYP, "adhes",     PCB_LYT_MECH | PCB_LYT_TOP},
+	{ 2, "F.Adhes",   0,  3,     LYACT_NEW_MISC,    0,   "adhes",  PCB_LYT_MECH | PCB_LYT_TOP},
+	{ 0, "F.Adhes",   0,  2,     LYACT_NEW_MISC,    0,   "adhes",  PCB_LYT_MECH | PCB_LYT_TOP},
+	{ 2, NULL,        0,  1,     LYACT_NEW_MISC,    0,   "adhes",  PCB_LYT_MECH | PCB_LYT_TOP},
 
 	{ 3, "B.Paste",   0,  3,     LYACT_EXISTING,    LYP, NULL,     PCB_LYT_PASTE | PCB_LYT_BOTTOM},
 	{ 0, "B.Paste",   0,  2,     LYACT_EXISTING,    LYP, NULL,     PCB_LYT_PASTE | PCB_LYT_BOTTOM},
@@ -111,21 +111,21 @@ static const kicad_layertab_t kicad_layertab[] = {
 	{00, "Margin",    0,  2,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC},
 	{14, NULL,        0,  1,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC},
 
-	{15, "B.CrtYd",   0,  3,     LYACT_EXISTING,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_BOTTOM},
-	{00, "B.CrtYd",   0,  2,     LYACT_EXISTING,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_BOTTOM},
-	{15, NULL,        0,  1,     LYACT_EXISTING,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_BOTTOM},
+	{15, "B.CrtYd",   0,  3,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_BOTTOM},
+	{00, "B.CrtYd",   0,  2,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_BOTTOM},
+	{15, NULL,        0,  1,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_BOTTOM},
 
-	{16, "F.CrtYd",   0,  3,     LYACT_EXISTING,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_TOP},
-	{00, "F.CrtYd",   0,  2,     LYACT_EXISTING,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_TOP},
-	{16, NULL,        0,  1,     LYACT_EXISTING,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_TOP},
+	{16, "F.CrtYd",   0,  3,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_TOP},
+	{00, "F.CrtYd",   0,  2,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_TOP},
+	{16, NULL,        0,  1,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_TOP},
 
-	{17, "B.Fab",     0,  3,     LYACT_EXISTING,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_BOTTOM},
-	{00, "B.Fab",     0,  2,     LYACT_EXISTING,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_BOTTOM},
-	{17, NULL,        0,  1,     LYACT_EXISTING,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_BOTTOM},
+	{17, "B.Fab",     0,  3,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_BOTTOM},
+	{00, "B.Fab",     0,  2,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_BOTTOM},
+	{17, NULL,        0,  1,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_BOTTOM},
 
-	{18, "F.Fab",     0,  3,     LYACT_EXISTING,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_TOP},
-	{00, "F.Fab",     0,  2,     LYACT_EXISTING,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_TOP},
-	{18, NULL,        0,  1,     LYACT_EXISTING,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_TOP},
+	{18, "F.Fab",     0,  3,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_TOP},
+	{00, "F.Fab",     0,  2,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_TOP},
+	{18, NULL,        0,  1,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_TOP},
 
 	{0, NULL, 0, 0, 0, 0, NULL, 0} /* terminator: score = 0 */
 };
