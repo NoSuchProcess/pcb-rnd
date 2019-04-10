@@ -194,10 +194,21 @@ static int kicad_create_copper_layer(read_state_t *st, int lnum, const char *lna
 {
 	pcb_layer_id_t id = -1;
 	pcb_layergrp_id_t gid = -1;
+	const char *cu;
 
 	pcb_layer_type_t loc = PCB_LYT_INTERN;
 
-	if (strcmp(lname+1, ".Cu") == 0) {
+	cu = lname + strlen(lname) - 3;
+	if (strcmp(cu, ".Cu") != 0) {
+		if (st->ver < 4) {
+			if ((strcmp(lname, "Front") != 0) && (strcmp(lname, "Back") != 0))
+				kicad_warning(subtree, "layer %d: unusual name for front/back copper (recoverable error)\n", lnum);
+		}
+		else
+			kicad_warning(subtree, "layer %d name should end in .Cu because it is a copper layer (recoverable error)\n", lnum);
+	}
+
+	if ((lnum == 0) || (lnum == last_copper)) { /* top or bottom - order depends on file version */
 		if (st->ver > 3) {
 			if ((lnum == 0) && (lname[0] != 'F'))
 				kicad_warning(subtree, "layer 0 should be named F.Cu (recoverable error; new stack)\n");
@@ -211,8 +222,6 @@ static int kicad_create_copper_layer(read_state_t *st, int lnum, const char *lna
 				kicad_warning(subtree, "layer %d should be named F.Cu (recoverable error; old stack)\n", last_copper);
 		}
 	}
-	else
-		kicad_warning(subtree, "layer %d name should end in .Cu (recoverable error)\n", last_copper);
 
 	if (st->ver > 3) {
 		if (lnum == 0) loc = PCB_LYT_TOP;
