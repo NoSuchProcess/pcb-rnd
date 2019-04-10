@@ -71,12 +71,12 @@ static const kicad_layertab_t kicad_layertab[] = {
 	{ 0, "F.Paste",   0,  2,     LYACT_EXISTING,    LYP, NULL,     PCB_LYT_PASTE | PCB_LYT_TOP},
 	{ 4, NULL,        0,  1,     LYACT_EXISTING,    LYP, NULL,     PCB_LYT_PASTE | PCB_LYT_TOP},
 
-	{ 5, "B.Silks",   0,  3,     LYACT_EXISTING,    LYS, NULL,     PCB_LYT_SILK | PCB_LYT_BOTTOM},
-	{ 0, "B.Silks",   0,  2,     LYACT_EXISTING,    LYS, NULL,     PCB_LYT_SILK | PCB_LYT_BOTTOM},
+	{ 5, "B.SilkS",   0,  3,     LYACT_EXISTING,    LYS, NULL,     PCB_LYT_SILK | PCB_LYT_BOTTOM},
+	{ 0, "B.SilkS",   0,  2,     LYACT_EXISTING,    LYS, NULL,     PCB_LYT_SILK | PCB_LYT_BOTTOM},
 	{ 5, NULL,        0,  1,     LYACT_EXISTING,    LYS, NULL,     PCB_LYT_SILK | PCB_LYT_BOTTOM},
 
-	{ 6, "F.Silks",   0,  3,     LYACT_EXISTING,    LYS, NULL,     PCB_LYT_SILK | PCB_LYT_TOP},
-	{ 0, "F.Silks",   0,  2,     LYACT_EXISTING,    LYS, NULL,     PCB_LYT_SILK | PCB_LYT_TOP},
+	{ 6, "F.SilkS",   0,  3,     LYACT_EXISTING,    LYS, NULL,     PCB_LYT_SILK | PCB_LYT_TOP},
+	{ 0, "F.SilkS",   0,  2,     LYACT_EXISTING,    LYS, NULL,     PCB_LYT_SILK | PCB_LYT_TOP},
 	{ 6, NULL,        0,  1,     LYACT_EXISTING,    LYS, NULL,     PCB_LYT_SILK | PCB_LYT_TOP},
 
 	{ 7, "B.Mask",    0,  3,     LYACT_EXISTING,    LYM, NULL,     PCB_LYT_MASK | PCB_LYT_BOTTOM},
