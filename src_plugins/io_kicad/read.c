@@ -1107,7 +1107,7 @@ TODO("check if we really need these excess layers");
 			goto error;
 		}
 		lnum = atoi(n->str);
-		is_copper = (strcmp(n->children->next->str, "signal") == 0) || (strcmp(n->children->next->str, "power") == 0);
+		is_copper = (strcmp(n->children->next->str, "signal") == 0) || (strcmp(n->children->next->str, "power") == 0) || (strcmp(n->children->next->str, "mixed") == 0);
 		if ((lnum == 0) && (!is_copper)) {
 			kicad_error(n, "unexpected board layer definition: layer 0 must be signal\n");
 			goto error;
