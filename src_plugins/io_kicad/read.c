@@ -58,6 +58,8 @@
 #include "../src_plugins/lib_compat_help/subc_help.h"
 #include "../src_plugins/lib_compat_help/media.h"
 
+#include "layertab.h"
+
 /* a reasonable approximation of pcb glyph width, ~=  5000 centimils; in mm */
 #define GLYPH_WIDTH (1.27)
 
