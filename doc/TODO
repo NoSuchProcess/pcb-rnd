@@ -65,6 +65,7 @@
 - CLEANUP: (TT) propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
+- FEATURE: data model: object minimal clearance value from the polygon side; final clearance should be MAX(obj->Clearance, poly->Clearance); kicad example: 1 line, 2 polygons with 2 different clearance values - see CUCP#38 provided by Karl [report: Igor2]
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
 - FEATURE: (TT) route style upgrade to prototypes:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
@@ -208,6 +209,7 @@
 	- remove via geometry from route style
 	- remove netlist net ->style, should be a plain attribute (but keep the dedicated field in old versions)
 	- save and load rat anchor object idpath
+	- poly side clearance when it is introduced in the data model
 - BUG: lesstif clip_set() doesn't seem to affect the X clipboard
 - BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
