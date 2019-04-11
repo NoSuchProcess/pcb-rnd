@@ -812,11 +812,10 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 		int swap;
 		pcb_text_t txt;
 
-TODO("kicad's mirror is left-right, ours is top-bottom");
-/*
-		if (mirrored)
-			flg.f |= PCB_FLAG_ONSOLDER;
-*/
+		if (mirrored) {
+			kicad_warning(subtree, "Text effect: can not mirror text horizontally");
+			/*flg.f |= PCB_FLAG_ONSOLDER; - this would be vertical */
+		}
 
 		memset(&txt, 0, sizeof(txt));
 		txt.Scale = scaling;
