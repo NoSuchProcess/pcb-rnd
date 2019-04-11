@@ -812,6 +812,11 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 		int swap;
 		pcb_text_t txt;
 
+TODO("kicad's mirror is left-right, ours is top-bottom");
+/*
+		if (mirrored)
+			flg.f |= PCB_FLAG_ONSOLDER;
+*/
 
 		memset(&txt, 0, sizeof(txt));
 		txt.Scale = scaling;
@@ -823,11 +828,18 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 		tw = txt.bbox_naked.X2 - txt.bbox_naked.X1;
 		th = txt.bbox_naked.Y2 - txt.bbox_naked.Y1;
 
+
+		if (mirrored)
+			align = -align;
+
 		switch(align) {
 			case -1: xalign = 0 - thickness; break;
 			case 0:  xalign = tw/2 - thickness; break;
 			case +1: xalign = tw + thickness; break;
 		}
+
+		if (mirrored)
+			xalign = -xalign;
 
 		if (mirrored != 0) {
 			if (direction % 2 == 0) {
