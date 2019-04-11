@@ -715,6 +715,7 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 	int scaling = 100;
 	int txt_len;
 	int mirrored = 0;
+	int align = 1; /* -1 for left, 0 for center and +1 for right */
 	unsigned direction;
 	pcb_flag_t flg = pcb_flag_make(0); /* start with something bland here */
 	pcb_layer_t *ly;
@@ -774,13 +775,24 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 					}
 				}
 				else if (strcmp("justify", m->str) == 0) {
-					if ((m->children == NULL) || (m->children->str == NULL))
-						return kicad_error(m, "unexpected empty/NULL text justify node");
-					if (strcmp("mirror", m->children->str) == 0) {
-						mirrored = 1;
-						SEEN_NO_DUP(tally, 4);
+					gsxl_node_t *j;
+
+					SEEN_NO_DUP(tally, 4);
+
+					for(j = m->children; (j != NULL) && (j->str != NULL); j = j->next) {
+						if (strcmp("mirror", j->str) == 0)
+							mirrored = 1;
+						else if (strcmp("left", j->str) == 0)
+							align = -1;
+						else if (strcmp("center", j->str) == 0)
+							align = 0;
+						else if (strcmp("right", j->str) == 0)
+							align = 1;
+						else
+							return kicad_error(j, "unknown text justification: %s\n", j->str);
 					}
 					TODO("right or left justification is ignored CUCP#38");
+					
 				}
 				else
 					kicad_warning(m, "Unknown text effects argument %s:", m->str);
