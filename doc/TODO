@@ -18,6 +18,7 @@
 - FEATURE: fontsel: ttf import?
 - FEATURE: tedax etest save (board save too)
 + FEATURE: HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain] -> it is already configurable as appearance/color/background, which affects both the main drawing and all previews. I do not want different backgrounds for the two.
+- BUG: polyhatch(interactive) dialog is broken -- repro: open svn head pcb-rnd and run polyhatch(interactive), dialog loads with checkbox items that have no text [report: Miloh] 
 
 2. For later releases ===============================================================================
 - CLEANUP/BUG: The 'As Drawn' polygon contour is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
