@@ -810,7 +810,7 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 		int swap;
 		if (mirrored != 0) {
 			if (direction % 2 == 0) {
-			rotdeg = fmod((rotdeg + 180.0), 360.0);
+				rotdeg = fmod((rotdeg + 180.0), 360.0);
 				direction += 2;
 				direction = direction % 4;
 			}
