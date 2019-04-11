@@ -713,14 +713,12 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 	double rotdeg = 0.0;  /* default is horizontal */
 	pcb_coord_t X, Y, thickness = 0;
 	int scaling = 100;
-	int txt_len;
 	int mirrored = 0;
 	int align = 0; /* -1 for left, 0 for center and +1 for right */
 	unsigned direction;
 	pcb_flag_t flg = pcb_flag_make(0); /* start with something bland here */
 	pcb_layer_t *ly;
 
-	txt_len = strlen(text);
 	for(n = subtree, i = 0; n != NULL; n = n->next, i++) {
 		if (n->str == NULL)
 			return kicad_error(n, "empty text node");
@@ -810,12 +808,25 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 		return kicad_error(subtree, "failed to create text due to missing fields");
 
 	{
-		pcb_coord_t mx, my, xalign;
+		pcb_coord_t mx, my, xalign, tw, th;
 		int swap;
+		pcb_text_t txt;
+
+
+		memset(&txt, 0, sizeof(txt));
+		txt.Scale = scaling;
+		txt.rot = rotdeg;
+		txt.thickness = thickness;
+		txt.TextString = text;
+		txt.Flags = flg;
+		pcb_text_bbox(pcb_font(PCB, 0, 1), &txt);
+		tw = txt.bbox_naked.X2 - txt.bbox_naked.X1;
+		th = txt.bbox_naked.Y2 - txt.bbox_naked.Y1;
+
 		switch(align) {
-			case -1: xalign = PCB_MM_TO_COORD((GLYPH_WIDTH * txt_len) * 0); break;
-			case 0:  xalign = PCB_MM_TO_COORD((GLYPH_WIDTH * txt_len) * 0.5); break;
-			case +1: xalign = PCB_MM_TO_COORD((GLYPH_WIDTH * txt_len) * 1); break;
+			case -1: xalign = 0 - thickness; break;
+			case 0:  xalign = tw/2 - thickness; break;
+			case +1: xalign = tw + thickness; break;
 		}
 
 		if (mirrored != 0) {
@@ -842,14 +853,14 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 
 		if (swap) {
 			Y += mx * xalign;
-			X += my * PCB_MM_TO_COORD(GLYPH_WIDTH / 2.0); /* centre it vertically */
+			X += my * th / 2.0; /* centre it vertically */
 		}
 		else {
 			X += mx * xalign;
-			Y += my * PCB_MM_TO_COORD(GLYPH_WIDTH / 2.0); /* centre it vertically */
+			Y += my * th / 2.0; /* centre it vertically */
 		}
 
-		pcb_text_new(ly, pcb_font(st->pcb, 0, 1), X, Y, rotdeg, scaling, thickness, text, flg);
+		pcb_text_new(ly, pcb_font(st->pcb, 0, 1), X, Y, txt.rot, txt.Scale, txt.thickness, txt.TextString, txt.Flags);
 	}
 	return 0; /* create new font */
 }
