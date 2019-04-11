@@ -1403,6 +1403,7 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 static int kicad_parse_fp_text(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, unsigned long *tally, int *foundRefdes, double mod_rot)
 {
 	char *text;
+	int hidden = 0;
 
 	if (n->children != NULL && n->children->str != NULL) {
 		char *key = n->children->str;
@@ -1423,12 +1424,16 @@ static int kicad_parse_fp_text(read_state_t *st, gsxl_node_t *n, pcb_subc_t *sub
 				pcb_attribute_put(&subc->Attributes, "footprint", text);
 			}
 			else if (strcmp("hide", key) == 0) {
-				TODO("figure what 'hide' is doing CUCP#42");
+				hidden = 1;
 			}
 		}
 		else /* only key, no value */
 			text = key;
 	}
+
+	if (hidden)
+		return 0; /* pcb-rnd policy: there are no hidden objects; if an object is not needed, it is not created */
+
 	if (kicad_parse_any_text(st, n->children->next->next, text, subc, mod_rot) != 0)
 		return -1;
 	return 0;
