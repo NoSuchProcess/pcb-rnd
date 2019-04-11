@@ -8,7 +8,7 @@
 	+ BUG: does not save the netlist [TwisteR]
 	- BUG: io_kicad parse err w/drill & roundrect pads  work/testcase_cnc_cesc.kicad_mod work/pcbnew_pad_handles_drill.png [report: Miloh]
 	? BUG: direct load of footprint, e.g. pcb-rnd km.mod, fails while load to buffer works on bug_files/km.mod [report: Ade] -> need a test file (km.mod not found)
-	- BUG: fails to load a layout with older french or Italian layer names. Names listed at kicad-pcb.org/help/upgrading/ [report: erich]  multiple test files now in alien formats kicad; layer number seems to anchor layer, and techniccal name is just a label or hash
+	+ BUG: fails to load a layout with older french or Italian layer names. Names listed at kicad-pcb.org/help/upgrading/ [report: erich]  multiple test files now in alien formats kicad; layer number seems to anchor layer, and techniccal name is just a label or hash
 + BUG: empty polygon contour in subc seems to crash pcb-rnd reliably. bug_files/STRIP-3PIN-CRASHES.lht [erich]
 - DOC: document the DAD text widget
 - DOC: action ClaimNet()
@@ -209,7 +209,7 @@
 	- remove via geometry from route style
 	- remove netlist net ->style, should be a plain attribute (but keep the dedicated field in old versions)
 	- save and load rat anchor object idpath
-	- poly side clearance when it is introduced in the data model
+	- poly side clearance when it is introduced in the data model3
 - BUG: lesstif clip_set() doesn't seem to affect the X clipboard
 - BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
