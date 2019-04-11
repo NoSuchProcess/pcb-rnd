@@ -1874,6 +1874,9 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 		htsi_uninit(&st.layer_k2i);
 	}
 
+	/* enable fallback to the default font picked up when creating the based
+	   PCB (loading the default PCB), because we won't get a font from KiCad. */
+	st.pcb->fontkit.valid = pcb_true;
 
 	return readres;
 }
