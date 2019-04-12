@@ -121,9 +121,16 @@ static void free_attr(pcb_hid_attribute_t *a)
 static pcb_hid_attribute_t *find_attr(pcb_hid_attribute_t *attrs, int numattr, const char *name)
 {
 	int n;
-	for(n = 0; n < numattr; n++)
-		if ((attrs[n].type != PCB_HATT_LABEL) && (strcmp(attrs[n].name, name) == 0))
-			return &attrs[n];
+	for(n = 0; n < numattr; n++) {
+		switch(attrs[n].type) {
+			case PCB_HATT_STRING:
+			case PCB_HATT_ENUM:
+			case PCB_HATT_COORD:
+				if (strcmp(attrs[n].name, name) == 0)
+				return &attrs[n];
+			default:;
+		}
+	}
 	return NULL;
 }
 
@@ -154,6 +161,8 @@ static char *gen_cmd(char *fpname, pcb_hid_attribute_t *attrs, pcb_hid_attr_val_
 
 		switch(attrs[n].type) {
 			case PCB_HATT_LABEL:
+			case PCB_HATT_BEGIN_TABLE:
+			case PCB_HATT_END:
 				continue;
 			case PCB_HATT_ENUM:
 				val = attrs[n].enumerations[res[n].int_value];
@@ -197,9 +206,6 @@ static void set_attr(pcb_hid_attribute_t *a, char *val)
 	int vlen, len, n;
 
 	switch(a->type) {
-		case PCB_HATT_LABEL:
-			assert(!"set_attr() can't set a label!\n");
-			break;
 		case PCB_HATT_ENUM:
 			vlen = strlen(val);
 			for(n = 0, s = a->enumerations; *s != NULL; s++,n++) {
@@ -221,7 +227,9 @@ static void set_attr(pcb_hid_attribute_t *a, char *val)
 		case PCB_HATT_COORD:
 			a->default_val.coord_value = pcb_get_value_ex(val, NULL, NULL, NULL, "mil", NULL);
 			break;
-		default:;
+		default:
+			assert(!"set_attr() can't set non-data field!\n");
+			break;
 	}
 }
 
@@ -349,7 +357,7 @@ char *pcb_gtk_library_param_ui(void *com, pcb_gtk_library_t *library_window, pcb
 {
 	FILE *f;
 	char *sres, *cmd, line[1024];
-	pcb_hid_attribute_t *curr, attrs[MAX_PARAMS];
+	pcb_hid_attribute_t *curr, attrs[MAX_PARAMS*2+4];
 	pcb_hid_attr_val_t res[MAX_PARAMS];
 	int n, numattr = 0, dirty = 0;
 	char *params = NULL, *descr = NULL, *example = NULL;
@@ -370,6 +378,10 @@ char *pcb_gtk_library_param_ui(void *com, pcb_gtk_library_t *library_window, pcb
 		pcb_message(PCB_MSG_ERROR, "Can not execute parametric footprint %s\n", entry->data.fp.loc_info);
 		return NULL;
 	}
+
+	curr = attr_append_(PCB_HATT_BEGIN_TABLE, "", attrs, &numattr);
+	curr->pcb_hatt_table_cols = 2;
+	curr->user_data = &ctx;
 
 	while(fgets(line, sizeof(line), f) > 0) {
 		char *end, *col, *arg, *cmd = line;
@@ -438,6 +450,9 @@ char *pcb_gtk_library_param_ui(void *com, pcb_gtk_library_t *library_window, pcb
 		}
 	}
 	pcb_pclose(f);
+
+	curr = attr_append_(PCB_HATT_END, "", attrs, &numattr);
+	curr->user_data = &ctx;
 
 	if (filter_txt == NULL) {
 		filter_txt = example;
