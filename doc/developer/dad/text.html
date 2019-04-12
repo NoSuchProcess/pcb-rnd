@@ -1,0 +1,21 @@
+<html>
+<body>
+
+<h1> DAD: Dynamic Attribute Dialogs </h1>
+<p>
+The text widget is a tex viewer/editor that operates on a string
+that may contain multiple lines.
+
+<h2> Helper macro for widget creation </h2>
+<p>
+<i>PCB_DAD_TEXT(table, user_ctx)</i>
+creates a new text widget and installs user context.
+
+<h2> User callbacks </h2>
+<p>
+The only callback the user may provide is user_free_cb which is called
+when the text widget is destroyed. Other than this, DAD caller code can not
+react on events happening in the text.
+
+</body>
+</html>
