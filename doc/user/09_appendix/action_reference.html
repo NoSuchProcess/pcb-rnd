@@ -12,7 +12,7 @@
 <h2> Action Reference</h2>
 <table border=1>
 <caption>\n <b>
-This is pcb-rnd 2.1.1 (svn r23108) an interactive printed circuit board editor ,  Revision: 24426
+This is pcb-rnd 2.1.1 (svn r23108) an interactive printed circuit board editor ,  Revision: 24573
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -243,7 +243,7 @@ This is pcb-rnd 2.1.1 (svn r23108) an interactive printed circuit board editor ,
 <tr><td>awk</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>cam</td><td>Export jobs for feeding cam processes</td><td>cam(exec, script, [options])<br>cam(call, jobname, [options])<br>cam([gui])</td><td>cam exporter</td>
 <tr><td>circle</td><td>Generate a filled circle (zero length round cap line)</td><td>circle([where,] diameter)</td><td>shape plugin</td>
-<tr><td>claimnet</td><td>Claim existing connections and create a new net</td><td>ClaimNet(object|selected|found,[netname])</td><td></td>
+<tr><td><a href="action_details.html#claimnet">claimnet</a></td><td>Claim existing connections and create a new net</td><td>ClaimNet(object|selected|found,[netname])</td><td></td>
 <tr><td>cli_MessageBox</td><td>Intenal: CLI frontend action. Do not use directly.</td><td></td><td></td>
 <tr><td>cli_PromptFor</td><td>Intenal: CLI frontend action. Do not use directly.</td><td></td><td></td>
 <tr><td>conf</td><td>Perform various operations on the configuration tree.</td><td>conf(set, path, value, [role], [policy]) - change a config setting to an absolute value<br>conf(delta, path, value, [role], [policy]) - change a config setting by a delta value (numerics-only)<br>conf(toggle, path, [role]) - invert boolean value of a flag; if no role given, overwrite the highest prio config<br>conf(reset, role) - reset the in-memory lihata of a role<br>conf(iseq, path, value) - returns whether the value of a conf item matches value (for menu checked's)</td><td></td>

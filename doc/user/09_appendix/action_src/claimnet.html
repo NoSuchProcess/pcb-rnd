@@ -1,0 +1,16 @@
+The ClaimNet() action can be used to construct network metadata
+(netlist entry) converting existing physical (galvanic, copper) connections
+or object lists.
+<p>
+When galvanic connections are mapped, the first argument shall be <arg>object</arg>;
+in this case the object under the mouse cursor is the starting point and
+anything galvanically connected (at the moment) is considered part of the new
+network. This mode of operation is useful for capturing existing nets.
+<p>
+When the first argument is <arg>selected</arg> or <arg>found</arg>, the
+list of (selected or found) terminals are converted to a new net, regardless
+of galvanic connections. This mode is useful for designing a PCB by a netlist
+but without a schematics - in this setup the netlist is "drawn" in pcb-rnd as
+well.
+<p>
+If <arg>netname</arg> is specified, the user is prompted for a name.

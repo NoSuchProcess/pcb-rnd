@@ -603,6 +603,34 @@ Return 1 if layerid is visible.
 Return 1 if layerid is visible. Intended for menu item 'checked' fields. 
 </dd></dl>
 
+<h2 id="claimnet">claimnet</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+ClaimNet(object|selected|found,[netname])
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Claim existing connections and create a new net
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+</table>
+<p>
+The ClaimNet() action can be used to construct network metadata (netlist entry) converting existing physical (galvanic, copper) connections or object lists. 
+<p>
+ When galvanic connections are mapped, the first argument shall be 
+<i>object</i>
+; in this case the object under the mouse cursor is the starting point and anything galvanically connected (at the moment) is considered part of the new network. This mode of operation is useful for capturing existing nets. 
+<p>
+ When the first argument is 
+<i>selected</i>
+ or 
+<i>found</i>
+, the list of (selected or found) terminals are converted to a new net, regardless of galvanic connections. This mode is useful for designing a PCB by a netlist but without a schematics - in this setup the netlist is "drawn" in pcb-rnd as well. 
+<p>
+ If 
+<i>netname</i>
+ is specified, the user is prompted for a name. 
+</dd></dl>
+
 <h2 id="clrflag">ClrFlag</h2>
 <dl><dd>
 <p>
