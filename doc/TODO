@@ -81,6 +81,7 @@
 - BUG: autorouter broke on polygons: bug_files/ara.lht, {a r a}, bisect; broke before r14572 [report: Igor2]
 - CLEANUP: add the thin line draw optimization to the filled poly optimization, including hole, in hid_draw_helper (search for last_x); make this configurable for both (exporters shall not optimize!); remove the similar optimization from hidgl triangulation [report: Ade]
 - FEATURE/BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
+- FEATURE: extend the CAM job script syntax so that XY and other non-layer exporters can be called [report: celem]
 - FEATURE: view list: import sch. shouldn't select elements to be removed but put them on a drc list
 - FEATURE: drc preview: follow board flips (should be a DAD preview flag) [report: Igor2]
 - FEATURE: DOC: new examples
