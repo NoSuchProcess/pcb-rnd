@@ -1084,9 +1084,12 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 /* kicad_pcb/via */
 static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 {
-	gsxl_node_t *m, *n;
+	gsxl_node_t *n, *nly1, *nly2;
 	unsigned long tally = 0, required;
+	int blind_cnt = 0;
 	pcb_coord_t x, y, thickness, clearance, mask, drill; /* not sure what to do with mask */
+	pcb_layer_t *ly1, *ly2; /* blind/buried: from-to layers */
+	pcb_pstk_t *ps;
 
 	TODO("need to figure the clearance CUCP#39");
 	clearance = mask = PCB_MM_TO_COORD(0.250); /* start with something bland here */
@@ -1105,15 +1108,27 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 			PARSE_COORD(thickness, n, n->children, "via size coord");
 		}
 		else if (strcmp("layers", n->str) == 0) {
+			int top=0, bottom=0;
+			pcb_layer_type_t lyt1, lyt2;
+			
 			SEEN_NO_DUP(tally, 2);
-			for(m = n->children; m != NULL; m = m->next) {
-				if (m->str != NULL) {
-TODO("bbvia CUCP#41");
-					/*PARSE_LAYER(ly, n->children, subc, "via");*/
-				}
-				else
-					return kicad_error(m, "unexpected empty/NULL via layer node");
-			}
+			nly1 = n->children;
+			if ((nly1 == NULL) || (nly1->next == NULL) || (nly1->str == NULL) || (nly1->next->str == NULL))
+				return kicad_error(n, "too few layers: \"layers\" must have exactly 2 parameters (start and end layer)");
+			nly2 = nly1->next;
+			if (nly2->next != NULL)
+				return kicad_error(nly2->next, "too few many: \"layers\" must have exactly 2 parameters (start and end layer)");
+
+			PARSE_LAYER(ly1, nly1, NULL, "via layer1");
+			PARSE_LAYER(ly2, nly2, NULL, "via layer2");
+			lyt1 = pcb_layer_flags_(ly1);
+			lyt2 = pcb_layer_flags_(ly2);
+			if (lyt1 & PCB_LYT_TOP) top++;
+			if (lyt2 & PCB_LYT_TOP) top++;
+			if (lyt1 & PCB_LYT_BOTTOM) bottom++;
+			if (lyt2 & PCB_LYT_BOTTOM) bottom++;
+			if ((top != 1) || (bottom != 1))
+				blind_cnt++; /* a top-to-bottom via is not blind */
 		}
 		else if (strcmp("net", n->str) == 0) {
 			ignore_value_nodup(n, tally, 3, "unexpected empty/NULL via net node");
@@ -1125,6 +1140,10 @@ TODO("bbvia CUCP#41");
 			SEEN_NO_DUP(tally, 5);
 			PARSE_COORD(drill, n, n->children, "via drill size");
 		}
+		else if (strcmp("blind", n->str) == 0) {
+			SEEN_NO_DUP(tally, 6);
+			blind_cnt++;
+		}
 		else
 			kicad_warning(n, "Unknown via argument %s:", n->str);
 	}
@@ -1134,8 +1153,18 @@ TODO("bbvia CUCP#41");
 	if ((tally & required) != required)
 		return kicad_error(subtree, "insufficient via arguments");
 
-	if (pcb_pstk_new_compat_via(st->pcb->Data, -1, x, y, drill, thickness, clearance, mask, PCB_PSTK_COMPAT_ROUND, pcb_true) == NULL)
+	if ((blind_cnt != 0) && (blind_cnt != 2))
+		return kicad_error(subtree, "Contradiction in blind via parameters: the \"blind\" node must present and the via needs to end on an inner layer");
+
+	ps = pcb_pstk_new_compat_via(st->pcb->Data, -1, x, y, drill, thickness, clearance, mask, PCB_PSTK_COMPAT_ROUND, pcb_true);
+	if (ps == NULL)
 		return kicad_error(subtree, "failed to create via-padstack");
+
+	if (blind_cnt == 2) {
+		TODO("bbvia CUCP#41");
+		kicad_warning(subtree, "blind/buried via detected, but not yet supported");
+	}
+
 	return 0;
 }
 
