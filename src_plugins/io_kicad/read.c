@@ -1867,7 +1867,8 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 			ignore_value_nodup(n, tally, 13, "unexpected zone min_thickness null node.");
 		}
 		else if (strcmp("filled_polygon", n->str) == 0) {
-			TODO("isn't this the same as polygon? CUCP#44");
+			/* Ignore fill type: it's purely on-screen visual, doesn't affect data */
+			/* doc: trunk/doc/alien_formats/io_kicad/hatch.txt */
 		}
 		else
 			kicad_warning(n, "Unknown polygon argument:\t%s\n", n->str);
