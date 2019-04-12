@@ -1528,6 +1528,8 @@ static int kicad_parse_fp_text(read_state_t *st, gsxl_node_t *n, pcb_subc_t *sub
 	return 0;
 }
 
+/* Parse the (layers) subtree, set layer bits in "layers" and return smd_side 
+   (PCB_LYT_ANYWHERE indicating on which side a pad is supposed to be)*/
 pcb_layer_type_t kicad_parse_pad_layers(read_state_t *st, gsxl_node_t *subtree, kicad_padly_t *layers)
 {
 	gsxl_node_t *l;
