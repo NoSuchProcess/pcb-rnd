@@ -3208,7 +3208,8 @@
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_plugins/io_kicad/read.h layer.h polygon.h plug_footprint.h \
  vtlibrary.h data.h misc_util.h conf_core.h move.h macro.h rotate.h \
- compat_misc.h safe_fs.h attrib.h netlist2.h \
+ compat_misc.h safe_fs.h attrib.h netlist2.h math_helper.h \
+ obj_pstk_inlines.h thermal.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h \
  ../src_plugins/lib_compat_help/pstk_help.h \
  ../src_plugins/lib_compat_help/subc_help.h obj_subc.h \
@@ -4983,22 +4984,23 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_line.h box.h misc_util.h \
- polygon_offs.h ../src_plugins/lib_polyhelp/topoly.h board.h \
- ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h vtroutestyle.h layer.h \
- color.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h obj_text_list.h \
- obj_text.h font.h ../src_3rd/genht/htip.h box.h layer_grp.h rats_patch.h \
- board.h obj_common.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
- data.h crosshair.h vtonpoint.h hid.h ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h error.h \
- route.h buffer.h obj_rat_list.h obj_rat.h idpath.h obj_subc_list.h \
- obj_subc.h ../src_3rd/libminuid/libminuid.h ht_subc.h \
- ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
+ polygon_offs.h hid_dad.h compat_misc.h hid_attrib.h hid.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h error.h layer.h color.h obj_arc_list.h obj_arc.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
+ obj_poly_list.h obj_poly.h obj_text_list.h obj_text.h font.h \
+ ../src_3rd/genht/htip.h box.h pcb-printf.h \
+ ../src_plugins/lib_polyhelp/topoly.h board.h vtroutestyle.h layer_grp.h \
+ rats_patch.h board.h obj_common.h ../src_3rd/libfungw/fungw.h \
+ ../src_3rd/genht/htpp.h data.h crosshair.h vtonpoint.h route.h buffer.h \
+ obj_rat_list.h obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
+ ../src_3rd/libminuid/libminuid.h ht_subc.h ../src_3rd/genht/ht.h \
+ ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h conf_core.h conf.h pcb-printf.h \
- ../src_3rd/liblihata/lihata.h list_conf.h compat_misc.h hid_attrib.h \
- actions.h dolists.h
+ vtpadstack_t.h conf_core.h conf.h ../src_3rd/liblihata/lihata.h \
+ list_conf.h compat_misc.h hid_attrib.h actions.h dolists.h
 ../src_plugins/lib_polyhelp/topoly.o: \
  ../src_plugins/lib_polyhelp/topoly.c ../config.h \
  ../src_3rd/genvector/vtp0.h ../src_3rd/genvector/genvector_impl.h \
