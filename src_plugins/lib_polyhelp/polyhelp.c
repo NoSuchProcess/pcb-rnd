@@ -36,6 +36,7 @@
 #include "obj_line.h"
 #include "box.h"
 #include "polygon_offs.h"
+#include "hid_dad.h"
 
 #include "topoly.h"
 
@@ -360,6 +361,65 @@ void pcb_cpoly_hatch_lines(pcb_layer_t *dst, const pcb_poly_t *src, pcb_cpoly_ha
 	pcb_cpoly_hatch(src, dir, (thickness/2)+1, period, &ctx, hatch_cb);
 }
 
+static int polyhatch_gui(pcb_coord_t *period, pcb_cpoly_hatchdir_t *dir, pcb_flag_t *flg, int *want_contour)
+{
+	int wspc, wcont, whor, wver, wclr;
+	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
+	PCB_DAD_DECL(dlg);
+
+	PCB_DAD_BEGIN_VBOX(dlg);
+		PCB_DAD_BEGIN_TABLE(dlg, 2);
+
+			PCB_DAD_LABEL(dlg, "Spacing");
+			PCB_DAD_COORD(dlg, "");
+				PCB_DAD_HELP(dlg, "Distance between centerlines of adjacent hatch lines for vertical and horizontal hatching");
+				PCB_DAD_DEFAULT_NUM(dlg, conf_core.design.line_thickness * 2);
+				PCB_DAD_MINMAX(dlg, 1, PCB_MM_TO_COORD(100));
+				wspc = PCB_DAD_CURRENT(dlg);
+
+			PCB_DAD_LABEL(dlg, "Draw contour");
+			PCB_DAD_BOOL(dlg, "");
+				PCB_DAD_HELP(dlg, "Draw the contour of the polygon");
+				wcont = PCB_DAD_CURRENT(dlg);
+
+			PCB_DAD_LABEL(dlg, "Draw horizontal hatch");
+			PCB_DAD_BOOL(dlg, "");
+				PCB_DAD_HELP(dlg, "Draw evenly spaced horizontal hatch lines");
+				whor = PCB_DAD_CURRENT(dlg);
+
+			PCB_DAD_LABEL(dlg, "Draw vertical hatch");
+			PCB_DAD_BOOL(dlg, "");
+				PCB_DAD_HELP(dlg, "Draw evenly spaced vertical hatch lines");
+				wver = PCB_DAD_CURRENT(dlg);
+
+			PCB_DAD_LABEL(dlg, "Clear-line");
+			PCB_DAD_BOOL(dlg, "");
+				PCB_DAD_HELP(dlg, "Hatch lines have clearance");
+				wclr = PCB_DAD_CURRENT(dlg);
+
+		PCB_DAD_END(dlg);
+		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
+	PCB_DAD_END(dlg);
+
+	PCB_DAD_NEW("poly_hatch", dlg, "Polygon hatch", NULL, pcb_true, NULL);
+	if (PCB_DAD_RUN(dlg) != 0) {
+	/* cancel */
+		PCB_DAD_FREE(dlg);
+		return -1;
+	}
+
+	*period = dlg[wspc].default_val.coord_value;
+	if (dlg[wcont].default_val.int_value) *want_contour = 1;
+
+	*dir = 0;
+	if (dlg[whor].default_val.int_value) *dir |= PCB_CPOLY_HATCH_HORIZONTAL;
+	if (dlg[wver].default_val.int_value) *dir |= PCB_CPOLY_HATCH_VERTICAL;
+
+	*flg = pcb_flag_make(dlg[wclr].default_val.int_value ? PCB_FLAG_CLEARLINE : 0);
+
+	PCB_DAD_FREE(dlg);
+	return 0;
+}
 
 static const char pcb_acts_PolyHatch[] = "PolyHatch([spacing], [hvcp])\nPolyHatch(interactive)\n";
 static const char pcb_acth_PolyHatch[] = "hatch the selected polygon(s) with lines of the current style; lines are drawn on the current layer; flags are h:horizontal, v:vertical, c:contour, p:poly";
@@ -375,48 +435,10 @@ static fgw_error_t pcb_act_PolyHatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_MAY_CONVARG(2, FGW_STR, PolyHatch, arg = argv[2].val.str);
 
 	if (pcb_strcasecmp(op, "interactive") == 0) {
-		pcb_hid_attribute_t attrs[5];
-#define nattr sizeof(attrs)/sizeof(attrs[0])
-		static pcb_hid_attr_val_t results[nattr] = { {0}, {1}, {1}, {1}, {1} };
-
-		memset(attrs, 0, sizeof(attrs));
-
-		results[0].coord_value = conf_core.design.line_thickness * 2;
-		attrs[0].name = "Spacing";
-		attrs[0].help_text = "Distance between centerlines of adjacent hatch lines for vertical and horizontal hatching";
-		attrs[0].type = PCB_HATT_COORD;
-		attrs[0].default_val.coord_value = results[0].coord_value;
-		attrs[0].min_val = 1;
-		attrs[0].max_val = PCB_MM_TO_COORD(100);
-
-		attrs[1].name = "Draw contour";
-		attrs[1].help_text = "Draw the contour of the polygon";
-		attrs[1].type = PCB_HATT_BOOL;
-		attrs[1].default_val.int_value = results[1].int_value;
-
-		attrs[2].name = "Draw horizontal hatch";
-		attrs[2].help_text = "Draw evenly spaced horizontal hatch lines";
-		attrs[2].type = PCB_HATT_BOOL;
-		attrs[2].default_val.int_value = results[2].int_value;
-
-		attrs[3].name = "Draw vertical hatch";
-		attrs[3].help_text = "Draw evenly spaced vertical hatch lines";
-		attrs[3].type = PCB_HATT_BOOL;
-		attrs[3].default_val.int_value = results[3].int_value;
-
-		attrs[4].name = "Clear-line";
-		attrs[4].help_text = "Hatch lines have clearance";
-		attrs[4].type = PCB_HATT_BOOL;
-		attrs[4].default_val.int_value = results[4].int_value;
-
-		if (pcb_attribute_dialog("poly_hatch", attrs, nattr, results, "Polygon hatch", NULL) != 0)
-			return 1;
-
-		period = results[0].coord_value;
-		if (results[1].int_value) want_contour = 1;
-		if (results[2].int_value) dir |= PCB_CPOLY_HATCH_HORIZONTAL;
-		if (results[3].int_value) dir |= PCB_CPOLY_HATCH_VERTICAL;
-		flg = pcb_flag_make(results[4].int_value ? PCB_FLAG_CLEARLINE : 0);
+		if (polyhatch_gui(&period, &dir, &flg, &want_contour) != 0) {
+			PCB_ACT_IRES(1);
+			return 0;
+		}
 	}
 	else {
 		if (op != NULL) {
