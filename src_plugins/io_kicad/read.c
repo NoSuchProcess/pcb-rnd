@@ -1583,21 +1583,41 @@ TODO("this should be coming from the s-expr file preferences part pool/io_kicad 
 				smd_side = 0;
 				for(l = m->children; l != NULL; l = l->next) {
 					if (l->str != NULL) {
+						int any = 0;
+						pcb_layer_type_t lyt, lytor;
+
 						if ((l->str[0] == 'F') || (l->str[0] == '*'))
 							smd_side |= PCB_LYT_TOP;
 						if ((l->str[0] == 'B') || (l->str[0] == '*'))
 							smd_side |= PCB_LYT_BOTTOM;
 						
-						lid = kicad_get_layeridx(st, l->str);
-						if (lid < 0) {
-							/* we ignore *.mask, *.paste, etc., if valid layer def already found */
-							if (!layer_cnt)
-								return kicad_error(l, "Unknown pad layer %s\n", l->str);
+						if (l->str[0] == '*') {
+							any = 1;
+							l->str[0] = 'F';
+							lid = kicad_get_layeridx(st, l->str);
+							if (lid < 0) {
+								l->str[0] = 'B';
+								lid = kicad_get_layeridx(st, l->str);
+							}
+							l->str[0] = '*';
 						}
-						else if (lid < -1)
-							return kicad_error(l, "Unimplemented pad layer %s\n", l->str);
 						else
-							layer_cnt++;
+							lid = kicad_get_layeridx(st, l->str);
+
+						if (lid < 0)
+							return kicad_error(l, "Unknown pad layer %s\n", l->str);
+
+						layer_cnt++;
+						lyt = pcb_layer_flags(st->pcb, lid);
+						lytor = lyt & PCB_LYT_ANYTHING;
+						if (any) {
+							layers.want[PCB_LYT_TOP] |= lytor;
+							layers.want[PCB_LYT_BOTTOM] |= lytor;
+							if (lytor & PCB_LYT_COPPER)
+								layers.want[PCB_LYT_INTERN] |= lytor;
+						}
+						else
+							layers.want[(lyt & PCB_LYT_ANYWHERE) & 7] |= lytor;
 					}
 					else
 						return kicad_error(l, "unexpected empty/NULL module layer node");
