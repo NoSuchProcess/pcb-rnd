@@ -82,6 +82,7 @@ typedef struct {
 	htsi_t layer_k2i; /* layer name-to-index hash; name is the kicad name, index is the pcb-rnd layer index */
 	long ver;
 	vtp0_t intern_copper; /* temporary storage of internal copper layers */
+	double subc_rot; /* for padstacks know the final parent subc rotation in advance to compensate (this depends on the fact that the rotation appears earlier in the file than any pad) */
 
 	pcb_coord_t width[DIM_max];
 	pcb_coord_t height[DIM_max];
@@ -1446,7 +1447,7 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 #undef LYSHT
 #undef LYSHS
 
-static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, const char *netname, int throughHole, pcb_coord_t moduleX, pcb_coord_t moduleY, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, unsigned int padRotation, unsigned int moduleRotation, pcb_coord_t clearance, double paste_ratio, pcb_coord_t drill, const char *pin_name, const char *pad_shape, unsigned long *featureTally, int *moduleEmpty, pcb_layer_type_t smd_side, kicad_padly_t *layers)
+static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, const char *netname, int throughHole, pcb_coord_t moduleX, pcb_coord_t moduleY, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, double pad_rot, unsigned int moduleRotation, pcb_coord_t clearance, double paste_ratio, pcb_coord_t drill, const char *pin_name, const char *pad_shape, unsigned long *featureTally, int *moduleEmpty, pcb_layer_type_t smd_side, kicad_padly_t *layers)
 {
 	pcb_pstk_t *ps;
 	unsigned long required;
@@ -1474,6 +1475,24 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 		return kicad_error(subtree, "failed to created padstack");
 
 	*moduleEmpty = 0;
+
+	pad_rot -= st->subc_rot;
+	if (pad_rot != 0) {
+		pcb_pstk_pre(ps);
+
+		if (ps->xmirror)
+			ps->rot -= (double)pad_rot;
+		else
+			ps->rot += (double)pad_rot;
+
+		if ((ps->rot > 360.0) || (ps->rot < -360.0))
+			ps->rot = fmod(ps->rot, 360.0);
+
+		if ((ps->rot == 360.0) || (ps->rot == -360.0))
+			ps->rot = 0;
+
+		pcb_pstk_post(ps);
+	}
 
 	if (pin_name != NULL)
 		pcb_attribute_put(&ps->Attributes, "term", pin_name);
@@ -1629,7 +1648,7 @@ TODO("this should be coming from the s-expr file preferences part pool/io_kicad 
 		if (m->str == NULL)
 			return kicad_error(m, "empty parameter in pad description");
 		if (strcmp("at", m->str) == 0) {
-			double rot;
+			double rot = 0.0;
 			SEEN_NO_DUP(feature_tally, 1);
 			PARSE_COORD(x, m, m->children, "module pad X");
 			PARSE_COORD(y, m, m->children->next, "module pad Y");
@@ -1744,6 +1763,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			PARSE_COORD(mod_x, n, n->children, "module X");
 			PARSE_COORD(mod_y, n, n->children->next, "module Y");
 			PARSE_DOUBLE(mod_rot, NULL, n->children->next->next, "module rotation");
+			st->subc_rot = mod_rot;
 
 			/* if we have been provided with a Module Name and location, create a new subc with default "" and "" for refdes and value fields */
 			if (mod_name != NULL && module_defined == 0) {
@@ -1821,6 +1841,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	else if (mod_rot != 0)
 		pcb_subc_rotate(subc, mod_x, mod_y, cos(mod_rot/PCB_RAD_TO_DEG), sin(mod_rot/PCB_RAD_TO_DEG), mod_rot);
 
+	st->subc_rot = 0.0;
 	return 0;
 }
 
