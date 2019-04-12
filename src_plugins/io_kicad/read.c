@@ -1375,6 +1375,8 @@ static pcb_pstk_t *kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pc
 		return NULL;
 	}
 
+TODO("CUCP#51: may need to add paste too");
+
 	if (strcmp(pad_shape, "rect") == 0) {
 		pcb_pstk_shape_t sh[6];
 		memset(sh, 0, sizeof(sh));
