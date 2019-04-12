@@ -40,7 +40,7 @@
 
 #define MAX_PARAMS 128
 
-static pcb_hid_attribute_t *attr_append(const char *name, pcb_hid_attribute_t *attrs, int *numattr)
+static pcb_hid_attribute_t *attr_append_(pcb_hids_t type, const char *name, pcb_hid_attribute_t *attrs, int *numattr)
 {
 	pcb_hid_attribute_t *a;
 
@@ -50,11 +50,22 @@ static pcb_hid_attribute_t *attr_append(const char *name, pcb_hid_attribute_t *a
 	a = &attrs[*numattr];
 	memset(a, 0, sizeof(pcb_hid_attribute_t));
 	a->name = name;
-	a->type = PCB_HATT_STRING;
+	a->type = type;
 
 	(*numattr)++;
 	return a;
 }
+
+static pcb_hid_attribute_t *attr_append(const char *name, pcb_hid_attribute_t *attrs, int *numattr, void *user_data)
+{
+	pcb_hid_attribute_t *a;
+	a = attr_append_(PCB_HATT_LABEL, name, attrs, numattr);
+	a->user_data = user_data;
+	a = attr_append_(PCB_HATT_STRING, name, attrs, numattr);
+	a->user_data = user_data;
+	return a;
+}
+
 
 #define used min_val
 #define alloced max_val
@@ -71,7 +82,7 @@ static void append_enum(pcb_hid_attribute_t *a, const char *val)
 #undef used
 #undef alloced
 
-#define append(name) attr_append(pcb_strdup(name), attrs, &numattr);
+#define append(name, user_data) attr_append(pcb_strdup(name), attrs, &numattr, user_data);
 
 #define colsplit() \
 do { \
@@ -111,7 +122,7 @@ static pcb_hid_attribute_t *find_attr(pcb_hid_attribute_t *attrs, int numattr, c
 {
 	int n;
 	for(n = 0; n < numattr; n++)
-		if (strcmp(attrs[n].name, name) == 0)
+		if ((attrs[n].type != PCB_HATT_LABEL) && (strcmp(attrs[n].name, name) == 0))
 			return &attrs[n];
 	return NULL;
 }
@@ -142,6 +153,8 @@ static char *gen_cmd(char *fpname, pcb_hid_attribute_t *attrs, pcb_hid_attr_val_
 			continue;
 
 		switch(attrs[n].type) {
+			case PCB_HATT_LABEL:
+				continue;
 			case PCB_HATT_ENUM:
 				val = attrs[n].enumerations[res[n].int_value];
 				if (val != NULL) {
@@ -184,6 +197,9 @@ static void set_attr(pcb_hid_attribute_t *a, char *val)
 	int vlen, len, n;
 
 	switch(a->type) {
+		case PCB_HATT_LABEL:
+			assert(!"set_attr() can't set a label!\n");
+			break;
 		case PCB_HATT_ENUM:
 			vlen = strlen(val);
 			for(n = 0, s = a->enumerations; *s != NULL; s++,n++) {
@@ -394,12 +410,10 @@ char *pcb_gtk_library_param_ui(void *com, pcb_gtk_library_t *library_window, pcb
 		}
 		else if (strncmp(cmd, "param:", 6) == 0) {
 			colsplit();
-			curr = append(col);
+			curr = append(col, &ctx);
 			curr->help_text = pcb_strdup(arg);
-			if (cb != NULL) {
-				curr->user_data = &ctx;
+			if (cb != NULL)
 				curr->change_cb = attr_change_cb;
-			}
 		}
 		else if (strncmp(cmd, "default:", 6) == 0) {
 			char *nstr;
