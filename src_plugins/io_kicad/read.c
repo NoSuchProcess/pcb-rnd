@@ -1472,8 +1472,8 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 
 	if (ps == NULL)
 		return kicad_error(subtree, "failed to created padstack");
-	else
-		*moduleEmpty = 0;
+
+	*moduleEmpty = 0;
 
 	if (pin_name != NULL)
 		pcb_attribute_put(&ps->Attributes, "term", pin_name);
