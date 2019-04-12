@@ -931,13 +931,19 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 		}
 		else if (strcmp("status", n->str) == 0) {
 			if (is_seg) {
-				/* Karl says: the status field dissappears when opening the file pcbnew and "save as" some name.
-				   Some wild guesses:
-				    if polygon has been recalculated
-				    something with rats nests
-				    used in older versions, obsolete now
-				*/
-				/* Conclusion: ignore */
+				/* doc: trunk/doc/developer/alien_formats/segment_status.txt */
+				/* Conclusion: ignore anything but LOCKED (pcb-rnd doesn't need star/end on pad) */
+				if ((n->children != NULL) && (n->children->str != NULL)) {
+					unsigned long int kf;
+					char *end;
+					kf = strtoul(n->children->str, &end, 16);
+					if (*end != '\0')
+						return kicad_error(n->children, "invalid hex integer in status");
+					if (kf & 0x40000UL)
+						flg.f |= PCB_FLAG_LOCK;
+				}
+				else
+					kicad_warning(n, "missing status hex integer");
 			}
 			else
 				return kicad_error(n, "unexpected status in line object (only segment should have a status)");
