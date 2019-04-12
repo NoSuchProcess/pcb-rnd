@@ -1528,18 +1528,65 @@ static int kicad_parse_fp_text(read_state_t *st, gsxl_node_t *n, pcb_subc_t *sub
 	return 0;
 }
 
+pcb_layer_type_t kicad_parse_pad_layers(read_state_t *st, gsxl_node_t *subtree, kicad_padly_t *layers)
+{
+	gsxl_node_t *l;
+	pcb_layer_type_t smd_side = 0;
+	pcb_layer_id_t lid;
+
+				for(l = subtree; l != NULL; l = l->next) {
+					if (l->str != NULL) {
+						int any = 0;
+						pcb_layer_type_t lyt, lytor;
+
+						if ((l->str[0] == 'F') || (l->str[0] == '*'))
+							smd_side |= PCB_LYT_TOP;
+						if ((l->str[0] == 'B') || (l->str[0] == '*'))
+							smd_side |= PCB_LYT_BOTTOM;
+						
+						if (l->str[0] == '*') {
+							any = 1;
+							l->str[0] = 'F';
+							lid = kicad_get_layeridx(st, l->str);
+							if (lid < 0) {
+								l->str[0] = 'B';
+								lid = kicad_get_layeridx(st, l->str);
+							}
+							l->str[0] = '*';
+						}
+						else
+							lid = kicad_get_layeridx(st, l->str);
+
+						if (lid < 0)
+							return kicad_error(l, "Unknown pad layer %s\n", l->str);
+
+						lyt = pcb_layer_flags(st->pcb, lid);
+						lytor = lyt & PCB_LYT_ANYTHING;
+						if (any) {
+							layers->want[PCB_LYT_TOP] |= lytor;
+							layers->want[PCB_LYT_BOTTOM] |= lytor;
+							if (lytor & PCB_LYT_COPPER)
+								layers->want[PCB_LYT_INTERN] |= lytor;
+						}
+						else
+							layers->want[(lyt & PCB_LYT_ANYWHERE) & 7] |= lytor;
+					}
+					else
+						return kicad_error(l, "unexpected empty/NULL module layer node");
+				}
+	return smd_side;
+}
+
 static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, unsigned long *tally, pcb_coord_t moduleX, pcb_coord_t moduleY, unsigned int moduleRotation, int *moduleEmpty)
 {
-	gsxl_node_t *l, *m;
+	gsxl_node_t *m;
 	pcb_coord_t x, y, drill, sx, sy, clearance;
 	const char *netname = NULL;
 	char *pin_name = NULL, *pad_shape = NULL;
 	unsigned long feature_tally = 0;
 	int through_hole = 0;
-	int layer_cnt = 0;
 	unsigned int pad_rot = 0;
 	pcb_layer_type_t smd_side;
-	pcb_layer_id_t lid;
 	double paste_ratio = 0;
 	kicad_padly_t layers = {0};
 
@@ -1580,48 +1627,9 @@ TODO("this should be coming from the s-expr file preferences part pool/io_kicad 
 			TODO("rather pass this subtree directly to the shape generator code so it does not need to guess the layers")
 			if (!through_hole) { /* skip testing for pins */
 				SEEN_NO_DUP(feature_tally, 2);
-				smd_side = 0;
-				for(l = m->children; l != NULL; l = l->next) {
-					if (l->str != NULL) {
-						int any = 0;
-						pcb_layer_type_t lyt, lytor;
-
-						if ((l->str[0] == 'F') || (l->str[0] == '*'))
-							smd_side |= PCB_LYT_TOP;
-						if ((l->str[0] == 'B') || (l->str[0] == '*'))
-							smd_side |= PCB_LYT_BOTTOM;
-						
-						if (l->str[0] == '*') {
-							any = 1;
-							l->str[0] = 'F';
-							lid = kicad_get_layeridx(st, l->str);
-							if (lid < 0) {
-								l->str[0] = 'B';
-								lid = kicad_get_layeridx(st, l->str);
-							}
-							l->str[0] = '*';
-						}
-						else
-							lid = kicad_get_layeridx(st, l->str);
-
-						if (lid < 0)
-							return kicad_error(l, "Unknown pad layer %s\n", l->str);
-
-						layer_cnt++;
-						lyt = pcb_layer_flags(st->pcb, lid);
-						lytor = lyt & PCB_LYT_ANYTHING;
-						if (any) {
-							layers.want[PCB_LYT_TOP] |= lytor;
-							layers.want[PCB_LYT_BOTTOM] |= lytor;
-							if (lytor & PCB_LYT_COPPER)
-								layers.want[PCB_LYT_INTERN] |= lytor;
-						}
-						else
-							layers.want[(lyt & PCB_LYT_ANYWHERE) & 7] |= lytor;
-					}
-					else
-						return kicad_error(l, "unexpected empty/NULL module layer node");
-				}
+				smd_side = kicad_parse_pad_layers(st, m->children, &layers);
+				if (smd_side == -1)
+					return -1;
 			}
 			else {
 				TODO("Ignoring layer definitions for through hole pin - should set which layers have shape CUCP#43");
