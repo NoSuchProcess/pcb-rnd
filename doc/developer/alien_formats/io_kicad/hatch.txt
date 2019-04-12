@@ -1,0 +1,30 @@
+CUCP#44 file format zone/fill: create a hatched zone on one board, plain
+        old polygon on another and filled_polygon on a third
+
+Igor2: (question)
+> I see no difference in the gerber render, not sure if it's yet another 
+> gerbv bug or really what kicad exported. Did you see any difference on the 
+> on-screen rendering? 
+> 
+> If so, please make screenshots!
+> 
+> If not, we'll need to make some more research to figure what this setting 
+> is for.
+
+Karl Hammar: (answer)
+
+The setting seems to be just about visual on screen appearance.
+
+If the hatch lines are short, just inside the border,
+no hatch lines at all, or if the hatch lines fill the zone.
+
+Also, in kicad the zones arn't filled automatically as in pcb/pcb-rnd,
+you have to manually request it.
+
+So you right click on the zone border, a menu appears, choose zones, and
+there you can Fill zone, Remove filled areas in zone etc.
+
+This two stage approach is probably a performance optimization, make 
+the zone, draw your tracks etc., then fill the zone. Polygons can be slow.
+And the hatch thing is how the zone is presented when it isn't filled.
+
