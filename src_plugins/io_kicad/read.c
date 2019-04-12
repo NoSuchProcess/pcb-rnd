@@ -895,7 +895,7 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 	pcb_flag_t flg = pcb_flag_make(flag);
 	pcb_layer_t *ly = NULL;
 
-	TODO("figure how default clearance works, probably not subc specific CUCP#39");
+	TODO("apply poly clearance as in pool/io_kicad (CUCP#39)");
 	clearance = thickness = 1; /* start with sane default of one nanometre */
 	if (subc != NULL)
 		clearance = 0;
@@ -991,7 +991,7 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 	pcb_flag_t flg = pcb_flag_make(0); /* start with something bland here */
 	pcb_layer_t *ly = NULL;
 
-	TODO("Figure the clearance and what happens without thickness; shouldn't depend on subc CUCP#39");
+	TODO("apply poly clearance as in pool/io_kicad (CUCP#39)");
 	if (subc == NULL)
 		clearance = thickness = PCB_MM_TO_COORD(0.250); /* start with sane defaults */
 	else
@@ -1093,7 +1093,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 	pcb_layer_t *ly1, *ly2; /* blind/buried: from-to layers */
 	pcb_pstk_t *ps;
 
-	TODO("need to figure the clearance CUCP#39");
+	TODO("apply poly clearance as in pool/io_kicad (CUCP#39)");
 	clearance = mask = PCB_MM_TO_COORD(0.250); /* start with something bland here */
 	drill = PCB_MM_TO_COORD(0.300); /* start with something sane */
 
@@ -1517,7 +1517,7 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 	pcb_layer_id_t lid;
 	double paste_ratio = 0;
 
-TODO("this should be coming from the s-expr file preferences part CUCP#39")
+TODO("this should be coming from the s-expr file preferences part pool/io_kicad (CUCP#39)")
 	clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
 
 	if (n->children != 0 && n->children->str != NULL) {
