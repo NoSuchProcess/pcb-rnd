@@ -52,6 +52,8 @@
 #include "safe_fs.h"
 #include "attrib.h"
 #include "netlist2.h"
+#include "math_helper.h"
+#include "obj_pstk_inlines.h"
 
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 #include "../src_plugins/lib_compat_help/pstk_help.h"
@@ -1160,9 +1162,36 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 	if (ps == NULL)
 		return kicad_error(subtree, "failed to create via-padstack");
 
-	if (blind_cnt == 2) {
-		TODO("bbvia CUCP#41");
-		kicad_warning(subtree, "blind/buried via detected, but not yet supported");
+	if (blind_cnt == 2) { /* change the prototype of the padstack to be blind or buried */
+		const pcb_pstk_proto_t *orig_proto;
+		pcb_pstk_proto_t *new_proto;
+		pcb_cardinal_t new_pid;
+		int ot1, ot2, ob1, ob2, err;
+		pcb_layergrp_id_t gtop = pcb_layergrp_get_top_copper();
+		pcb_layergrp_id_t gbot = pcb_layergrp_get_bottom_copper();
+
+		orig_proto = pcb_pstk_get_proto(ps);
+		assert(orig_proto != NULL);
+
+		err = pcb_layergrp_dist(st->pcb, ly1->meta.real.grp, gtop, PCB_LYT_COPPER, &ot1);
+		err |= pcb_layergrp_dist(st->pcb, ly2->meta.real.grp, gtop, PCB_LYT_COPPER, &ot2);
+		err |= pcb_layergrp_dist(st->pcb, ly1->meta.real.grp, gbot, PCB_LYT_COPPER, &ob1);
+		err |= pcb_layergrp_dist(st->pcb, ly2->meta.real.grp, gbot, PCB_LYT_COPPER, &ob2);
+
+		if (err != 0)
+			return kicad_error(subtree, "failed to calculate blind/buried via span: invalid layer(s) specified");
+		if ((ot1 == ot2) || (ob1 == ob2))
+			return kicad_error(subtree, "failed to calculate blind/buried via span: start layer group matches end layer group");
+
+		pcb_pstk_pre(ps);
+		new_proto = calloc(sizeof(pcb_pstk_proto_t), 1);
+		pcb_pstk_proto_copy(new_proto, orig_proto); /* to get all the original shapes and attributes and flags */
+
+		new_proto->htop = MIN(ot1, ot2);
+		new_proto->hbottom = MIN(ob1, ob2);
+		new_pid = pcb_pstk_proto_insert_or_free(st->pcb->Data, new_proto, 0);
+		ps->proto = new_pid;
+		pcb_pstk_post(ps);
 	}
 
 	return 0;
