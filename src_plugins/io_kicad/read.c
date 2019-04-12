@@ -1635,16 +1635,10 @@ TODO("this should be coming from the s-expr file preferences part pool/io_kicad 
 			pad_rot = (int)rot;
 		}
 		else if (strcmp("layers", m->str) == 0) {
-			TODO("rather pass this subtree directly to the shape generator code so it does not need to guess the layers")
-			if (!through_hole) { /* skip testing for pins */
-				SEEN_NO_DUP(feature_tally, 2);
-				smd_side = kicad_parse_pad_layers(st, m->children, &layers);
-				if (smd_side == -1)
-					return -1;
-			}
-			else {
-				TODO("Ignoring layer definitions for through hole pin - should set which layers have shape CUCP#43");
-			}
+			SEEN_NO_DUP(feature_tally, 2);
+			smd_side = kicad_parse_pad_layers(st, m->children, &layers);
+			if (smd_side == -1)
+				return -1;
 		}
 		else if (strcmp("drill", m->str) == 0) {
 			SEEN_NO_DUP(feature_tally, 3);
