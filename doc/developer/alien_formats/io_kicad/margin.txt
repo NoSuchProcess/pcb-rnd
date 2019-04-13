@@ -1,0 +1,24 @@
+CUCP#50 kicad5: figure what the Margin layer is used for; provide minimalistic
+        kicad_pcb+gerber examples accordingly.
+
+#50 margin layer: (answer by Karl Hammar)
+
+ kicad-doc/build_5.1.0/src/pcbnew/en/pcbnew.pdf p. 40/140:
+
+ 5.3.3 Independant Technical Layers
+
+ Edge.Cuts
+   This layer is reserved for the drawing of circuit board
+   outline. Any element (graphic, texts. . . ) placed on this layer
+   appears on all the other layers. Use this layer only to draw board
+   outlines.
+
+ Margin
+       Board's edge setback outline (?).
+
+So the kicad folks doesn't know to explain it.
+
+You can draw tracks outside the Margin, but not outside the Edge.Cuts.
+You can place components outside the Edge.Cuts.
+
+So I guess it is for the designers own information only.
