@@ -190,13 +190,16 @@ static int kicad_parse_nop(read_state_t *st, gsxl_node_t *subtree)
 static int kicad_parse_version(read_state_t *st, gsxl_node_t *subtree)
 {
 	if (subtree->str != NULL) {
-		st->ver = atoi(subtree->str);
+		char *end;
+		st->ver = strtol(subtree->str, &end, 10);
+		if (*end != '\0')
+			return kicad_error(subtree, "unexpected layout version syntax (perhaps too new, please file a feature request!)");
 		if ((st->ver == 3) || (st->ver == 4))
 			return 0;
 		if ((st->ver > 20170000L) && (st->ver < 20180000L)) /* kicad 5 */
 			return 0;
 	}
-	return kicad_error(subtree, "unexpected layout version");
+	return kicad_error(subtree, "unexpected layout version number (perhaps too new, please file a feature request!)");
 }
 
 
