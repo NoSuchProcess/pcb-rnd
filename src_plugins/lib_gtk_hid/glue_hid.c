@@ -1,6 +1,8 @@
 #include "config.h"
 #include "glue_hid.h"
 
+#include <locale.h>
+
 #include "gui.h"
 #include "actions.h"
 #include "glue_hid.h"
@@ -240,11 +242,10 @@ int gtkhid_parse_arguments(int *argc, char ***argv)
 
 	conf_parse_arguments("plugins/hid_gtk/", argc, argv);
 
-	/*
-	 * Prevent gtk_init() and gtk_init_check() from automatically
-	 * calling setlocale (LC_ALL, "") which would undo LC_NUMERIC if ENABLE_NLS
-	 * We also don't want locale set if no ENABLE_NLS to keep "C" LC_NUMERIC.
-	 */
+	/* Prevent gtk_init() and gtk_init_check() from automatically
+	   calling setlocale (LC_ALL, "") which would go back to user's
+	   locale and undo our "C" locale set from main, messing up decimal dots on
+	   some locales, but ... */
 	gtk_disable_setlocale();
 
 	if (!gtk_init_check(argc, argv)) {
@@ -252,6 +253,9 @@ int gtkhid_parse_arguments(int *argc, char ***argv)
 		return 1; /* recoverable error - try another HID */
 	}
 
+	/* ... but gtk is broken, as usual, so some versions still mess with the
+	   locale. Let's try to force set it back. */
+	setlocale(LC_ALL, "C");
 
 	gport = &ghid_port;
 	gport->view.use_max_pcb = 1;
@@ -259,14 +263,6 @@ int gtkhid_parse_arguments(int *argc, char ***argv)
 	pcb_pixel_slop = 300;
 
 	ghidgui->common.init_renderer(argc, argv, gport);
-
-#ifdef ENABLE_NLS
-#ifdef LOCALEDIR
-	bindtextdomain(PCB_PACKAGE, LOCALEDIR);
-#endif
-	textdomain(PCB_PACKAGE);
-	bind_textdomain_codeset(PCB_PACKAGE, "UTF-8");
-#endif /* ENABLE_NLS */
 
 	ghidgui->topwin.com = &ghidgui->common;
 	ghidgui->common.top_window = window = gport->top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
