@@ -191,7 +191,9 @@ static int kicad_parse_version(read_state_t *st, gsxl_node_t *subtree)
 {
 	if (subtree->str != NULL) {
 		st->ver = atoi(subtree->str);
-		if (st->ver == 3 || st->ver == 4 || st->ver == 20170123)
+		if ((st->ver == 3) || (st->ver == 4))
+			return 0;
+		if ((st->ver > 20170000L) && (st->ver < 20180000L)) /* kicad 5 */
 			return 0;
 	}
 	return kicad_error(subtree, "unexpected layout version");
