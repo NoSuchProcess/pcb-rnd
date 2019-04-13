@@ -3213,8 +3213,8 @@
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h \
  ../src_plugins/lib_compat_help/pstk_help.h \
  ../src_plugins/lib_compat_help/subc_help.h obj_subc.h \
- ../src_plugins/lib_compat_help/media.h \
- ../src_plugins/io_kicad/layertab.h
+ ../src_plugins/lib_compat_help/media.h ../src_plugins/shape/shape.h \
+ pcb_bool.h ../src_plugins/io_kicad/layertab.h
 ../src_plugins/io_kicad/read_net.o: ../src_plugins/io_kicad/read_net.c \
  ../config.h ../src_3rd/gensexpr/gsxl.h \
  ../src_3rd/gensexpr/gensexpr_impl.h ../src_3rd/gensexpr/gsx_parse.h \
