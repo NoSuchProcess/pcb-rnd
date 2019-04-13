@@ -1346,22 +1346,6 @@ static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree)
 	return 0;
 }
 
-/*typedef enum {
-	KPL_TOP_MASK =   0x11,
-	KPL_BOT_MASK =   0x12,
-	KPL_TOP_PASTE =  0x21,
-	KPL_BOT_PASTE =  0x22,
-	KPL_TOP_COPPER = 0x31,
-	KPL_BOT_COPPER = 0x32,
-	KPL_INT_COPPER = 0x34,
-
-	KPL_ANY_MASK   = 0x13,
-	KPL_ANY_PASTE  = 0x23,
-	KPL_ANY_COPPER = 0x37,
-
-	KPL_ANY        = 0x77
-} kicad_padly_t;*/
-
 void pcb_shape_roundrect(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height, double roundness)
 {
 	pcb_pstk_poly_t *dst = &shape->data.poly;
