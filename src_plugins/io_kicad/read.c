@@ -1667,6 +1667,26 @@ pcb_layer_type_t kicad_parse_pad_layers(read_state_t *st, gsxl_node_t *subtree, 
 	return smd_side;
 }
 
+static int kicad_parse_pad_options(read_state_t *st, gsxl_node_t *subtree)
+{
+	gsxl_node_t *n;
+	for(n = subtree; n != NULL; n = n->next) {
+		if (strcmp(n->str, "clearance") == 0) {
+			if ((n->children == NULL) || (n->children->str == NULL))
+				return kicad_error(n, "missing clearance option argument");
+			if (strcmp(n->children->str, "outline"))
+				continue; /* normal */
+			else if (strcmp(n->children->str, "convexhull"))
+				kicad_warning(n, "convexhull clearance not supported - going to render a normam clearance around the pad");
+			else
+				return kicad_error(n, "unknwon clearance option argument %s", n->children->str);
+		}
+		else
+			return kicad_error(n, "unknwon pad option %s", n->str);
+	}
+	return 0;
+}
+
 static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, unsigned long *tally, pcb_coord_t moduleX, pcb_coord_t moduleY, unsigned int moduleRotation, int *moduleEmpty)
 {
 	gsxl_node_t *m;
@@ -1737,6 +1757,18 @@ TODO("this should be coming from the s-expr file preferences part pool/io_kicad 
 			PARSE_COORD(sx, m, m->children, "module pad size X");
 			PARSE_COORD(sy, m, m->children->next, "module pad size Y");
 		}
+		else if (strcmp("solder_mask_margin", m->str) == 0) {
+			TODO("CUCP#54");
+			kicad_warning(m, "Ignoring pad %s for now", m->str);
+		}
+		else if (strcmp("solder_mask_margin_ratio", m->str) == 0) {
+			TODO("CUCP#56");
+			kicad_warning(m, "Ignoring pad %s for now", m->str);
+		}
+		else if (strcmp("solder_paste_margin", m->str) == 0) {
+			TODO("CUCP#55");
+			kicad_warning(m, "Ignoring pad %s for now", m->str);
+		}
 		else if (strcmp("solder_paste_margin_ratio", m->str) == 0) {
 			SEEN_NO_DUP(feature_tally, 6);
 			PARSE_DOUBLE(paste_ratio, m, m->children, "module pad solder mask ratio");
@@ -1744,6 +1776,11 @@ TODO("this should be coming from the s-expr file preferences part pool/io_kicad 
 		else if (strcmp("roundrect_rratio", m->str) == 0) {
 			SEEN_NO_DUP(feature_tally, 7);
 			PARSE_DOUBLE(shape_arg, m, m->children, "module pad roundrect_rratio");
+		}
+		else if (strcmp("options", m->str) == 0) {
+			SEEN_NO_DUP(feature_tally, 8);
+			if (kicad_parse_pad_options(st, m->children) != 0)
+				return -1;
 		}
 		else
 			return kicad_error(m, "Unknown pad argument: %s", m->str);
