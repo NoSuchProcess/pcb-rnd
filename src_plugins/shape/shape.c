@@ -139,7 +139,7 @@ static void elarc90(pcb_poly_t *p, pcb_coord_t ccx, pcb_coord_t ccy, pcb_coord_t
 #define CORNER(outx, outy, rect_signx, rect_signy, rsignx, rsigny) \
 	outx = pcb_round((double)cx + rect_signx * (double)w/2 + rsignx*rx); \
 	outy = pcb_round((double)cy + rect_signy * (double)h/2 + rsigny*ry);
-static pcb_poly_t *roundrect(pcb_layer_t *layer, pcb_coord_t w, pcb_coord_t h, pcb_coord_t rx, pcb_coord_t ry, double rot_deg, pcb_coord_t cx, pcb_coord_t cy, pcb_shape_corner_t corner[4], double roundres)
+pcb_poly_t *pcb_shape_roundrect(pcb_layer_t *layer, pcb_coord_t w, pcb_coord_t h, pcb_coord_t rx, pcb_coord_t ry, double rot_deg, pcb_coord_t cx, pcb_coord_t cy, pcb_shape_corner_t corner[4], double roundres)
 {
 	pcb_poly_t *p;
 	pcb_coord_t maxr = (w < h ? w : h) / 2, x, y, ex, ey, acx, acy, ccx, ccy;
@@ -241,7 +241,7 @@ static pcb_poly_t *roundrect_place(pcb_data_t *data, pcb_layer_t *layer, pcb_coo
 	if (layer == pcb_shape_current_layer)
 		layer = CURRENT;
 
-	p = roundrect(layer, w, h, rx, ry, rot_deg, cx, cy, corner, roundres);
+	p = pcb_shape_roundrect(layer, w, h, rx, ry, rot_deg, cx, cy, corner, roundres);
 	return any_poly_place(data, layer, p);
 }
 
