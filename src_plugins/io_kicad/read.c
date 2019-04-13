@@ -59,6 +59,7 @@
 #include "../src_plugins/lib_compat_help/pstk_help.h"
 #include "../src_plugins/lib_compat_help/subc_help.h"
 #include "../src_plugins/lib_compat_help/media.h"
+#include "../src_plugins/shape/shape.h"
 
 #include "layertab.h"
 
@@ -1361,6 +1362,42 @@ static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree)
 	KPL_ANY        = 0x77
 } kicad_padly_t;*/
 
+void pcb_shape_roundrect(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height, double roundness)
+{
+	pcb_pstk_poly_t *dst = &shape->data.poly;
+	pcb_poly_t *p;
+	pcb_layer_t *layer;
+	static pcb_data_t data = {0};
+	int inited = 0, n;
+	pcb_coord_t rr, minor = MIN(width, height);
+	pcb_shape_corner_t corner[4] = { PCB_CORN_ROUND, PCB_CORN_ROUND, PCB_CORN_ROUND, PCB_CORN_ROUND};
+
+
+	if (!inited) {
+		pcb_data_init(&data);
+		data.LayerN = 1;
+		layer = &data.Layer[0];
+		memset(layer, 0, sizeof(pcb_layer_t));
+		layer->parent.data = &data;
+		layer->parent_type = PCB_PARENT_DATA;
+		inited = 1;
+	}
+	else
+		layer = &data.Layer[0];
+
+	rr = pcb_round(minor * roundness);
+	p = pcb_genpoly_roundrect(layer, width, height, rr, rr, 0, 0, 0, corner, 4.0);
+	pcb_pstk_shape_alloc_poly(dst, p->PointN);
+	shape->shape = PCB_PSSH_POLY;
+
+	for(n = 0; n < p->PointN; n++) {
+		dst->x[n] = p->Points[n].X;
+		dst->y[n] = p->Points[n].Y;
+	}
+	pcb_poly_free_fields(p);
+	free(p);
+}
+
 typedef struct {
 	pcb_layer_type_t want[PCB_LYT_INTERN+1]; /* indexed by location, contains OR'd bitmask of PCB_LYT_COPPER, PCB_LYT_MASK, PCB_LYT_PASTE */
 } kicad_padly_t;
@@ -1447,12 +1484,10 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 	if (strcmp(pad_shape, "roundrect") == 0) {
 		pcb_pstk_shape_t sh[4];
 		memset(sh, 0, sizeof(sh));
-		if (LYSHS(side, MASK))      {sh[len].layer_mask = side | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_oval(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+st->pad_to_mask_clearance*2);}
-		if (LYSHS(side, PASTE))     {sh[len].layer_mask = side | PCB_LYT_PASTE; sh[len].comb = PCB_LYC_AUTO; pcb_shape_oval(&sh[len++], padXsize * paste_ratio, padYsize * paste_ratio);}
-		if (LYSHS(side, COPPER))    {sh[len].layer_mask = side | PCB_LYT_COPPER; pcb_shape_oval(&sh[len++], padXsize, padYsize);}
+		if (LYSHS(side, MASK))      {sh[len].layer_mask = side | PCB_LYT_MASK;   sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+st->pad_to_mask_clearance*2, shape_arg);}
+		if (LYSHS(side, PASTE))     {sh[len].layer_mask = side | PCB_LYT_PASTE;  sh[len].comb = PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize * paste_ratio, padYsize * paste_ratio, shape_arg);}
+		if (LYSHS(side, COPPER))    {sh[len].layer_mask = side | PCB_LYT_COPPER; pcb_shape_roundrect(&sh[len++], padXsize, padYsize, shape_arg);}
 		sh[len++].layer_mask = 0;
-kicad_error(subtree, "Round rectangle pad shape is not yet supported");
-return NULL;
 		return pcb_pstk_new_from_shape(subc->data, X, Y, 0, pcb_false, clearance, sh);
 	}
 

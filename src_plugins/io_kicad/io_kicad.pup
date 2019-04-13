@@ -3,7 +3,7 @@ $short Kicad's s-expr format
 $long Load and save the design and footprints in Kicad's s-expression format - this is the new, currently preferred format in Kicad.
 $state works
 $fmt-native no
-$fmt-feature-r kicad board, version 3, 4 and 20170123 (s-expr)
+$fmt-feature-r kicad board, version 3, 4 and 5 (s-expr)
 $fmt-feature-w kicad board, version 3 (s-expr)
 $fmt-feature-w kicad module (s-expr, according to version 3)
 $fmt-feature-r eeschema netlist and footprint info
@@ -12,5 +12,6 @@ default buildin
 
 dep lib_gensexpr
 dep lib_compat_help
+dep shape
 
 autoload 1

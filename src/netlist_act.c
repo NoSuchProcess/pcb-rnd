@@ -534,6 +534,7 @@ static void pcb_net_claim_from_list(pcb_board_t *pcb, pcb_net_t *net, vtp0_t *te
 
 static const char pcb_acts_ClaimNet[] = "ClaimNet(object|selected|found,[netname])\n";
 static const char pcb_acth_ClaimNet[] = "Claim existing connections and create a new net";
+/* DOC: claimnet.html */
 static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_find_t fctx;
