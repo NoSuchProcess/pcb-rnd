@@ -1809,7 +1809,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 		else if (strcmp("path", n->str) == 0) {
 			ignore_value_nodup(n, tally, 11, "unexpected empty/NULL module model node");
 		}
-		else if (strcmp("pad", n->str) == 0) { /* pads next  - have thru_hole, circle, rect, roundrect, to think about */
+		else if (strcmp("pad", n->str) == 0) {
 			if (kicad_parse_pad(st, n, subc, &tally, mod_x, mod_y, mod_rot, &module_empty) != 0)
 				return -1;
 		}
