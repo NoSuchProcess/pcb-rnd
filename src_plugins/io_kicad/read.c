@@ -1467,6 +1467,12 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 	}
 	if (strcmp(pad_shape, "roundrect") == 0) {
 		pcb_pstk_shape_t sh[4];
+
+		if ((shape_arg <= 0.0) || (shape_arg > 0.5)) {
+			kicad_error(subtree, "Round rectangle ratio %f out of range: must be >0 and <=0.5", shape_arg);
+			return NULL;
+		}
+
 		memset(sh, 0, sizeof(sh));
 		if (LYSHS(side, MASK))      {sh[len].layer_mask = side | PCB_LYT_MASK;   sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+st->pad_to_mask_clearance*2, shape_arg);}
 		if (LYSHS(side, PASTE))     {sh[len].layer_mask = side | PCB_LYT_PASTE;  sh[len].comb = PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize * paste_ratio, padYsize * paste_ratio, shape_arg);}
