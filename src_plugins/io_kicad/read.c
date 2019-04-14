@@ -84,6 +84,7 @@ typedef struct {
 	long ver;
 	vtp0_t intern_copper; /* temporary storage of internal copper layers */
 	double subc_rot; /* for padstacks know the final parent subc rotation in advance to compensate (this depends on the fact that the rotation appears earlier in the file than any pad) */
+	pcb_subc_t *last_sc;
 
 	pcb_coord_t width[DIM_max];
 	pcb_coord_t height[DIM_max];
@@ -1681,6 +1682,10 @@ static int kicad_parse_pad_options(read_state_t *st, gsxl_node_t *subtree)
 			else
 				return kicad_error(n, "unknwon clearance option argument %s", n->children->str);
 		}
+		if (strcmp(n->str, "anchor") == 0) {
+			TODO("CUCP#60");
+			kicad_warning(n, "ignoring pad anchor for now");
+		}
 		else
 			return kicad_error(n, "unknwon pad option %s", n->str);
 	}
@@ -1772,6 +1777,18 @@ TODO("this should be coming from the s-expr file preferences part pool/io_kicad 
 		else if (strcmp("solder_paste_margin_ratio", m->str) == 0) {
 			SEEN_NO_DUP(feature_tally, 6);
 			PARSE_DOUBLE(paste_ratio, m, m->children, "module pad solder mask ratio");
+		}
+		else if (strcmp("zone_connect", m->str) == 0) {
+			TODO("CUCP#57");
+			kicad_warning(m, "Ignoring pad %s for now", m->str);
+		}
+		else if (strcmp("clearance", m->str) == 0) {
+			TODO("CUCP#58");
+			kicad_warning(m, "Ignoring pad %s for now", m->str);
+		}
+		else if (strcmp("primitives", m->str) == 0) {
+			TODO("CUCP#48");
+			kicad_warning(m, "Ignoring pad %s for now", m->str);
 		}
 		else if (strcmp("roundrect_rratio", m->str) == 0) {
 			SEEN_NO_DUP(feature_tally, 7);
@@ -1942,6 +1959,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 		pcb_subc_rotate(subc, mod_x, mod_y, cos(mod_rot/PCB_RAD_TO_DEG), sin(mod_rot/PCB_RAD_TO_DEG), mod_rot);
 
 	st->subc_rot = 0.0;
+	st->last_sc = subc;
 	return 0;
 }
 
@@ -2151,7 +2169,19 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 
 	if (res == GSX_RES_EOE) {
 		/* recursively parse the dom */
-		readres = kicad_parse_pcb(&st);
+		if ((st.dom.root->str != NULL) && (strcmp(st.dom.root->str, "module") == 0)) {
+			Ptr->is_footprint = 1;
+			readres = kicad_parse_module(&st, st.dom.root->children);
+
+			if (readres == 0) {
+				pcb_layergrp_upgrade_to_pstk(Ptr);
+				pcb_layer_create_all_for_recipe(Ptr, st.last_sc->data->Layer, st.last_sc->data->LayerN);
+				pcb_subc_rebind(Ptr, st.last_sc);
+				pcb_data_clip_polys(st.last_sc->data);
+			}
+		}
+		else
+			readres = kicad_parse_pcb(&st);
 	}
 	else
 		readres = -1;
