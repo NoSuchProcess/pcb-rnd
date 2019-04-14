@@ -29,7 +29,7 @@
 #include "hid_dad.h"
 
 #define MAX_EXC 16
-
+#define FREQ_MAX 10000000000L
 #define AEPREFIX "openems::excitation::"
 
 typedef struct {
@@ -119,11 +119,13 @@ static void exc_gaus_dad(int idx)
 	PCB_DAD_BEGIN_TABLE(exc_ctx.dlg, 2);
 		PCB_DAD_LABEL(exc_ctx.dlg, "fc");
 		PCB_DAD_INTEGER(exc_ctx.dlg, "");
+			PCB_DAD_MINMAX(exc_ctx.dlg, 0, FREQ_MAX);
 			PCB_DAD_HELP(exc_ctx.dlg, "20db Cutoff Frequency [Hz]\nbandwidth is 2*fc");
 			exc_ctx.exc_data[idx].w[I_FC] = PCB_DAD_CURRENT(exc_ctx.dlg);
 
 		PCB_DAD_LABEL(exc_ctx.dlg, "f0");
 		PCB_DAD_INTEGER(exc_ctx.dlg, "");
+			PCB_DAD_MINMAX(exc_ctx.dlg, 0, FREQ_MAX);
 			PCB_DAD_HELP(exc_ctx.dlg, "Center Frequency [Hz]");
 			exc_ctx.exc_data[idx].w[I_F0] = PCB_DAD_CURRENT(exc_ctx.dlg);
 
@@ -162,6 +164,7 @@ static void exc_sin_dad(int idx)
 	PCB_DAD_BEGIN_TABLE(exc_ctx.dlg, 2);
 		PCB_DAD_LABEL(exc_ctx.dlg, "f0");
 		PCB_DAD_INTEGER(exc_ctx.dlg, "");
+			PCB_DAD_MINMAX(exc_ctx.dlg, 0, FREQ_MAX);
 			PCB_DAD_HELP(exc_ctx.dlg, "Center Frequency [Hz]");
 			exc_ctx.exc_data[idx].w[I_F0] = PCB_DAD_CURRENT(exc_ctx.dlg);
 	PCB_DAD_END(exc_ctx.dlg);
@@ -196,6 +199,7 @@ static void exc_cust_dad(int idx)
 	PCB_DAD_BEGIN_TABLE(exc_ctx.dlg, 2);
 		PCB_DAD_LABEL(exc_ctx.dlg, "f0");
 		PCB_DAD_INTEGER(exc_ctx.dlg, "");
+			PCB_DAD_MINMAX(exc_ctx.dlg, 0, FREQ_MAX);
 			PCB_DAD_HELP(exc_ctx.dlg, "Nyquest Rate [Hz]");
 			exc_ctx.exc_data[idx].w[I_F0] = PCB_DAD_CURRENT(exc_ctx.dlg);
 
