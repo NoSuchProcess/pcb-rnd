@@ -629,7 +629,8 @@ void openems_hid_export_to_file(const char *filename, FILE *the_file, FILE *fsim
 
 static void openems_do_export(pcb_hid_attr_val_t * options)
 {
-	const char *filename, *runfn, *end;
+	const char *filename;
+	char *runfn, *end;
 	int save_ons[PCB_MAX_LAYER + 2];
 	int i, len;
 	FILE *fsim;
