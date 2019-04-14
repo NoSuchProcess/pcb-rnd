@@ -181,7 +181,7 @@ static char *exc_sin_get(int idx)
 
 static void exc_sin_ser(int idx, int save)
 {
-	ser_int(save, exc_ctx.exc_data[idx].w[I_F0], AEPREFIX "sinusoidal:f0");
+	ser_int(save, exc_ctx.exc_data[idx].w[I_F0], AEPREFIX "sinusoidal::f0");
 }
 
 #undef I_F0
