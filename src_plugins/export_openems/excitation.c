@@ -139,22 +139,17 @@ static void exc_gaus_dad(int idx)
 
 static char *exc_gaus_get(int idx)
 {
-	int wf0, wfc;
-
-	wf0 = exc_ctx.exc_data[idx].w[I_F0];
-	wfc = exc_ctx.exc_data[idx].w[I_FC];
-
 	return pcb_strdup_printf(
-		"FDTD = SetGaussExcite(FDTD, %d, %d);",
-		exc_ctx.dlg[wf0].default_val.int_value,
-		exc_ctx.dlg[wfc].default_val.int_value
+		"FDTD = SetGaussExcite(FDTD, %s, %s);",
+		pcb_attribute_get(&PCB->Attributes, AEPREFIX "gaussian::f0"),
+		pcb_attribute_get(&PCB->Attributes, AEPREFIX "gaussian::fc")
 	);
 }
 
 static void exc_gaus_ser(int idx, int save)
 {
 	ser_int(save, exc_ctx.exc_data[idx].w[I_F0], AEPREFIX "gaussian::f0");
-	ser_int(save, exc_ctx.exc_data[idx].w[I_FC], AEPREFIX "gaussian::f0");
+	ser_int(save, exc_ctx.exc_data[idx].w[I_FC], AEPREFIX "gaussian::fc");
 }
 
 #undef I_FC
@@ -178,13 +173,9 @@ static void exc_sin_dad(int idx)
 
 static char *exc_sin_get(int idx)
 {
-	int wf0;
-
-	wf0 = exc_ctx.exc_data[idx].w[I_F0];
-
 	return pcb_strdup_printf(
-		"FDTD = SetSinusExcite(FDTD, %d);",
-		exc_ctx.dlg[wf0].default_val.int_value
+		"FDTD = SetSinusExcite(FDTD, %s);",
+		pcb_attribute_get(&PCB->Attributes, AEPREFIX "sinusiodal::f0")
 	);
 }
 
@@ -220,15 +211,10 @@ static void exc_cust_dad(int idx)
 
 static char *exc_cust_get(int idx)
 {
-	int wf0, wfunc;
-
-	wf0 = exc_ctx.exc_data[idx].w[I_F0];
-	wfunc = exc_ctx.exc_data[idx].w[I_FUNC];
-
 	return pcb_strdup_printf(
-		"FDTD = SetCustomExcite(FDTD, %d, %s)",
-		exc_ctx.dlg[wf0].default_val.int_value,
-		exc_ctx.dlg[wfunc].default_val.str_value
+		"FDTD = SetCustomExcite(FDTD, %s, %s)",
+		pcb_attribute_get(&PCB->Attributes, AEPREFIX "custom::f0"),
+		pcb_attribute_get(&PCB->Attributes, AEPREFIX "custom::func")
 	);
 }
 
@@ -260,6 +246,11 @@ static void exc_user_dad(int idx)
 
 static char *exc_user_get(int idx)
 {
+	return pcb_strdup(pcb_attribute_get(&PCB->Attributes, AEPREFIX "user-defined::script"));
+}
+
+static void exc_user_ser(int idx, int save)
+{
 	int wscript;
 	pcb_hid_attribute_t *attr;
 	pcb_hid_text_t *txt;
@@ -268,12 +259,7 @@ static char *exc_user_get(int idx)
 	attr = &exc_ctx.dlg[wscript];
 	txt = (pcb_hid_text_t *)attr->enumerations;
 
-	return txt->hid_get_text(attr, exc_ctx.dlg_hid_ctx);
-}
-
-static void exc_user_ser(int idx, int save)
-{
-	ser_str(save, exc_ctx.exc_data[idx].w[I_SCRIPT], AEPREFIX "user-defined::script");
+	ser_save(txt->hid_get_text(attr, exc_ctx.dlg_hid_ctx), AEPREFIX "user-defined::script");
 }
 
 #undef I_SCRIPT
