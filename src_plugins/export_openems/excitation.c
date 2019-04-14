@@ -280,7 +280,7 @@ static void pcb_dlg_exc(void)
 				PCB_DAD_CHANGE_CB(exc_ctx.dlg, select_cb);
 		PCB_DAD_END(exc_ctx.dlg);
 		PCB_DAD_BEGIN_TABBED(exc_ctx.dlg, excnames);
-			PCB_DAD_COMPFLAG(exc_ctx.dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(exc_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_HIDE_TABLAB);
 			exc_ctx.wtab = PCB_DAD_CURRENT(exc_ctx.dlg);
 			for(n = 0, e = excitations; e->name != NULL; n++,e++) {
 				if (e->dad != NULL)
