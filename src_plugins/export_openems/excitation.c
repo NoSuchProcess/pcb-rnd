@@ -53,12 +53,95 @@ typedef struct {
 } exc_t;
 
 
-static const exc_t excitations[] = {
-	{ "gaussian", NULL },
-	{ "sinusoidal", NULL },
-	{ "custom", NULL },
+/*** excitation "micro-plugins" ***/
 
-	{ "user-defined", NULL },
+#define I_FC 0
+#define I_F0 1
+
+/** gaussian **/
+static void exc_gaus_dad(int idx)
+{
+	PCB_DAD_BEGIN_TABLE(exc_ctx.dlg, 2);
+		PCB_DAD_LABEL(exc_ctx.dlg, "fc");
+		PCB_DAD_INTEGER(exc_ctx.dlg, "");
+			PCB_DAD_HELP(exc_ctx.dlg, "20db Cutoff Frequency [Hz]\nbandwidth is 2*fc");
+			exc_ctx.exc_data[idx].w[I_FC] = PCB_DAD_CURRENT(exc_ctx.dlg);
+
+		PCB_DAD_LABEL(exc_ctx.dlg, "f0");
+		PCB_DAD_INTEGER(exc_ctx.dlg, "");
+			PCB_DAD_HELP(exc_ctx.dlg, "Center Frequency [Hz]");
+			exc_ctx.exc_data[idx].w[I_F0] = PCB_DAD_CURRENT(exc_ctx.dlg);
+
+	PCB_DAD_END(exc_ctx.dlg);
+}
+
+#undef I_FC
+#undef I_F0
+
+/** sinusoidal **/
+
+#define I_F0 0
+
+static void exc_sin_dad(int idx)
+{
+	PCB_DAD_BEGIN_TABLE(exc_ctx.dlg, 2);
+		PCB_DAD_LABEL(exc_ctx.dlg, "f0");
+		PCB_DAD_INTEGER(exc_ctx.dlg, "");
+			PCB_DAD_HELP(exc_ctx.dlg, "Center Frequency [Hz]");
+			exc_ctx.exc_data[idx].w[I_F0] = PCB_DAD_CURRENT(exc_ctx.dlg);
+	PCB_DAD_END(exc_ctx.dlg);
+}
+
+#undef I_F0
+
+/** custom **/
+
+#define I_F0 0
+#define I_FUNC 1
+
+static void exc_cust_dad(int idx)
+{
+	PCB_DAD_BEGIN_TABLE(exc_ctx.dlg, 2);
+		PCB_DAD_LABEL(exc_ctx.dlg, "f0");
+		PCB_DAD_INTEGER(exc_ctx.dlg, "");
+			PCB_DAD_HELP(exc_ctx.dlg, "Nyquest Rate [Hz]");
+			exc_ctx.exc_data[idx].w[I_F0] = PCB_DAD_CURRENT(exc_ctx.dlg);
+
+		PCB_DAD_LABEL(exc_ctx.dlg, "function");
+		PCB_DAD_STRING(exc_ctx.dlg);
+			PCB_DAD_HELP(exc_ctx.dlg, "Custom function");
+			exc_ctx.exc_data[idx].w[I_FUNC] = PCB_DAD_CURRENT(exc_ctx.dlg);
+	PCB_DAD_END(exc_ctx.dlg);
+}
+
+#undef I_F0
+#undef I_FUNC
+
+
+/** user-specified **/
+
+#define I_SCRIPT 0
+
+static void exc_user_dad(int idx)
+{
+	PCB_DAD_BEGIN_VBOX(exc_ctx.dlg);
+		PCB_DAD_COMPFLAG(exc_ctx.dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_LABEL(exc_ctx.dlg, "Specify the excitation setup script:");
+		PCB_DAD_TEXT(exc_ctx.dlg, NULL);
+			PCB_DAD_COMPFLAG(exc_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+			exc_ctx.exc_data[idx].w[I_SCRIPT] = PCB_DAD_CURRENT(exc_ctx.dlg);
+	PCB_DAD_END(exc_ctx.dlg);
+}
+
+#undef I_SCRIPT
+/*** generic code ***/
+
+static const exc_t excitations[] = {
+	{ "gaussian",      exc_gaus_dad },
+	{ "sinusoidal",    exc_sin_dad },
+	{ "custom",        exc_cust_dad },
+
+	{ "user-defined",  exc_user_dad },
 	{ NULL, NULL}
 };
 
