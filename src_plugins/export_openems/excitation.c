@@ -108,6 +108,8 @@ static void ser_str(int save, int widx, const char *attrkey)
 	}
 }
 
+static void exc_val_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+
 /*** excitation "micro-plugins" ***/
 
 #define I_FC 0
@@ -121,12 +123,14 @@ static void exc_gaus_dad(int idx)
 		PCB_DAD_INTEGER(exc_ctx.dlg, "");
 			PCB_DAD_MINMAX(exc_ctx.dlg, 0, FREQ_MAX);
 			PCB_DAD_HELP(exc_ctx.dlg, "20db Cutoff Frequency [Hz]\nbandwidth is 2*fc");
+			PCB_DAD_CHANGE_CB(exc_ctx.dlg, exc_val_chg_cb);
 			exc_ctx.exc_data[idx].w[I_FC] = PCB_DAD_CURRENT(exc_ctx.dlg);
 
 		PCB_DAD_LABEL(exc_ctx.dlg, "f0");
 		PCB_DAD_INTEGER(exc_ctx.dlg, "");
 			PCB_DAD_MINMAX(exc_ctx.dlg, 0, FREQ_MAX);
 			PCB_DAD_HELP(exc_ctx.dlg, "Center Frequency [Hz]");
+			PCB_DAD_CHANGE_CB(exc_ctx.dlg, exc_val_chg_cb);
 			exc_ctx.exc_data[idx].w[I_F0] = PCB_DAD_CURRENT(exc_ctx.dlg);
 
 	PCB_DAD_END(exc_ctx.dlg);
@@ -166,6 +170,7 @@ static void exc_sin_dad(int idx)
 		PCB_DAD_INTEGER(exc_ctx.dlg, "");
 			PCB_DAD_MINMAX(exc_ctx.dlg, 0, FREQ_MAX);
 			PCB_DAD_HELP(exc_ctx.dlg, "Center Frequency [Hz]");
+			PCB_DAD_CHANGE_CB(exc_ctx.dlg, exc_val_chg_cb);
 			exc_ctx.exc_data[idx].w[I_F0] = PCB_DAD_CURRENT(exc_ctx.dlg);
 	PCB_DAD_END(exc_ctx.dlg);
 }
@@ -201,11 +206,13 @@ static void exc_cust_dad(int idx)
 		PCB_DAD_INTEGER(exc_ctx.dlg, "");
 			PCB_DAD_MINMAX(exc_ctx.dlg, 0, FREQ_MAX);
 			PCB_DAD_HELP(exc_ctx.dlg, "Nyquest Rate [Hz]");
+			PCB_DAD_CHANGE_CB(exc_ctx.dlg, exc_val_chg_cb);
 			exc_ctx.exc_data[idx].w[I_F0] = PCB_DAD_CURRENT(exc_ctx.dlg);
 
 		PCB_DAD_LABEL(exc_ctx.dlg, "function");
 		PCB_DAD_STRING(exc_ctx.dlg);
 			PCB_DAD_HELP(exc_ctx.dlg, "Custom function");
+			PCB_DAD_CHANGE_CB(exc_ctx.dlg, exc_val_chg_cb);
 			exc_ctx.exc_data[idx].w[I_FUNC] = PCB_DAD_CURRENT(exc_ctx.dlg);
 	PCB_DAD_END(exc_ctx.dlg);
 }
@@ -245,6 +252,7 @@ static void exc_user_dad(int idx)
 		PCB_DAD_LABEL(exc_ctx.dlg, "Specify the excitation setup script:");
 		PCB_DAD_TEXT(exc_ctx.dlg, NULL);
 			PCB_DAD_COMPFLAG(exc_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+			PCB_DAD_CHANGE_CB(exc_ctx.dlg, exc_val_chg_cb);
 			exc_ctx.exc_data[idx].w[I_SCRIPT] = PCB_DAD_CURRENT(exc_ctx.dlg);
 	PCB_DAD_END(exc_ctx.dlg);
 }
@@ -331,6 +339,11 @@ static void select_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 {
 	exc_ctx.selected = attr->default_val.int_value;
 	select_update(1);
+}
+
+static void exc_val_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	excitations[exc_ctx.selected].ser(exc_ctx.selected, 1);
 }
 
 static void pcb_dlg_exc(void)
