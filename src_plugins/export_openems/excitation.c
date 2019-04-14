@@ -30,6 +30,8 @@
 
 #define MAX_EXC 16
 
+#define AEPREFIX "openems::excitation::"
+
 typedef struct {
 	int w[8];
 } exc_data_t;
@@ -48,7 +50,63 @@ typedef struct {
 	const char *name;
 	void (*dad)(int idx);
 	char *(*get)(int idx);
+	void (*ser)(int idx, int save);  /* serialization: if save is 1, set attributes, else load attributes */
 } exc_t;
+
+
+static void ser_save(const char *data, const char *attrkey)
+{
+	const char *orig = pcb_attribute_get(&PCB->Attributes, attrkey);
+	if ((orig == NULL) || (strcmp(orig, data) != 0)) {
+		pcb_attribute_put(&PCB->Attributes, attrkey, data);
+		pcb_board_set_changed_flag(pcb_true);
+	}
+}
+
+static const char *ser_load(const char *attrkey)
+{
+	return pcb_attribute_get(&PCB->Attributes, attrkey);
+}
+
+static void ser_int(int save, int widx, const char *attrkey)
+{
+	if (save) {
+		char tmp[128];
+		sprintf(tmp, "%d", exc_ctx.dlg[widx].default_val.int_value);
+		ser_save(tmp, attrkey);
+	}
+	else {
+		pcb_hid_attr_val_t hv;
+		char *end;
+		const char *orig = ser_load(attrkey);
+
+		if (orig != NULL) {
+			hv.int_value = strtol(orig, &end, 10);
+			if (*end != '\0') {
+				pcb_message(PCB_MSG_ERROR, "Invalid integer value in board attribute '%s': '%s'\n", attrkey, orig);
+				hv.int_value = 0;
+			}
+		}
+		else
+			hv.int_value = 0;
+
+		pcb_gui->attr_dlg_set_value(exc_ctx.dlg_hid_ctx, widx, &hv);
+	}
+}
+
+static void ser_str(int save, int widx, const char *attrkey)
+{
+	if (save) {
+		ser_save(exc_ctx.dlg[widx].default_val.str_value, attrkey);
+	}
+	else {
+		pcb_hid_attr_val_t hv;
+		hv.str_value = ser_load(attrkey);
+		if (hv.str_value == NULL)
+			hv.str_value = "";
+		pcb_gui->attr_dlg_set_value(exc_ctx.dlg_hid_ctx, widx, &hv);
+	}
+}
 
 /*** excitation "micro-plugins" ***/
 
@@ -86,6 +144,12 @@ static char *exc_gaus_get(int idx)
 	);
 }
 
+static void exc_gaus_ser(int idx, int save)
+{
+	ser_int(save, exc_ctx.exc_data[idx].w[I_F0], AEPREFIX "gaussian::f0");
+	ser_int(save, exc_ctx.exc_data[idx].w[I_FC], AEPREFIX "gaussian::f0");
+}
+
 #undef I_FC
 #undef I_F0
 
@@ -113,6 +177,11 @@ static char *exc_sin_get(int idx)
 		"FDTD = SetSinusExcite(FDTD, %d);",
 		exc_ctx.dlg[wf0].default_val.int_value
 	);
+}
+
+static void exc_sin_ser(int idx, int save)
+{
+	ser_int(save, exc_ctx.exc_data[idx].w[I_F0], AEPREFIX "sinusoidal:f0");
 }
 
 #undef I_F0
@@ -151,6 +220,12 @@ static char *exc_cust_get(int idx)
 	);
 }
 
+static void exc_cust_ser(int idx, int save)
+{
+	ser_int(save, exc_ctx.exc_data[idx].w[I_F0], AEPREFIX "custom::f0");
+	ser_str(save, exc_ctx.exc_data[idx].w[I_FUNC], AEPREFIX "custom::func");
+}
+
 #undef I_F0
 #undef I_FUNC
 
@@ -183,15 +258,19 @@ static char *exc_user_get(int idx)
 	return txt->hid_get_text(attr, exc_ctx.dlg_hid_ctx);
 }
 
+static void exc_user_ser(int idx, int save)
+{
+	ser_str(save, exc_ctx.exc_data[idx].w[I_SCRIPT], AEPREFIX "user-defined::script");
+}
+
 #undef I_SCRIPT
 /*** generic code ***/
 
 static const exc_t excitations[] = {
-	{ "gaussian",      exc_gaus_dad, exc_gaus_get },
-	{ "sinusoidal",    exc_sin_dad,  exc_sin_get  },
-	{ "custom",        exc_cust_dad, exc_cust_get },
-
-	{ "user-defined",  exc_user_dad, exc_user_get },
+	{ "gaussian",      exc_gaus_dad, exc_gaus_get, exc_gaus_ser },
+	{ "sinusoidal",    exc_sin_dad,  exc_sin_get,  exc_sin_ser  },
+	{ "custom",        exc_cust_dad, exc_cust_get, exc_cust_ser },
+	{ "user-defined",  exc_user_dad, exc_user_get, exc_user_ser },
 	{ NULL, NULL}
 };
 
@@ -204,7 +283,7 @@ static void exc_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 
 static int load_selector(void)
 {
-	const char *type = pcb_attribute_get(&PCB->Attributes, "openems::excitation::type");
+	const char *type = pcb_attribute_get(&PCB->Attributes, AEPREFIX "type");
 	const exc_t *e;
 	int n;
 
