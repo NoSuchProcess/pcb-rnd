@@ -202,6 +202,27 @@ static void exc_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	memset(ctx, 0, sizeof(exc_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
+static int load_selector(void)
+{
+	const char *type = pcb_attribute_get(&PCB->Attributes, "openems::excitation::type");
+	const exc_t *e;
+	int n;
+
+	if (type == NULL) {
+		exc_ctx.selected = 0;
+		return 0;
+	}
+
+	for(n = 0, e = excitations; e->name != NULL; n++,e++) {
+		if (strcmp(e->name, type) == 0) {
+			exc_ctx.selected = n;
+			return 0;
+		}
+	}
+
+	return -1;
+}
+
 static void select_update(int setattr)
 {
 	pcb_hid_attr_val_t hv;
@@ -215,8 +236,11 @@ static void select_update(int setattr)
 	pcb_gui->attr_dlg_set_value(exc_ctx.dlg_hid_ctx, exc_ctx.wtab, &hv);
 	pcb_gui->attr_dlg_set_value(exc_ctx.dlg_hid_ctx, exc_ctx.wselector, &hv);
 	if (setattr) {
-		pcb_attribute_put(&PCB->Attributes, "openems::excitation::type", excitations[exc_ctx.selected].name);
-		pcb_board_set_changed_flag(pcb_true);
+		const char *orig = pcb_attribute_get(&PCB->Attributes, "openems::excitation::type");
+		if ((orig == NULL) || (strcmp(orig, excitations[exc_ctx.selected].name) != 0)) {
+			pcb_attribute_put(&PCB->Attributes, "openems::excitation::type", excitations[exc_ctx.selected].name);
+			pcb_board_set_changed_flag(pcb_true);
+		}
 	}
 }
 
@@ -272,6 +296,9 @@ static void pcb_dlg_exc(void)
 	exc_ctx.active = 1;
 
 	PCB_DAD_NEW("openems_excitation", exc_ctx.dlg, "openems: excitation", &exc_ctx, pcb_false, exc_close_cb);
+
+	load_selector();
+	select_update(1);
 }
 
 static const char pcb_acts_OpenemsExcitation[] = 
