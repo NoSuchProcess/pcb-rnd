@@ -37,7 +37,7 @@ typedef struct {
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
-	int wselector;
+	int wselector, wtab;
 	int selected;
 	exc_data_t exc_data[MAX_EXC];
 } exc_ctx_t;
@@ -202,6 +202,30 @@ static void exc_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	memset(ctx, 0, sizeof(exc_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
+static void select_update(int setattr)
+{
+	pcb_hid_attr_val_t hv;
+	hv.int_value = exc_ctx.selected;
+
+	if ((exc_ctx.selected < 0) || (exc_ctx.selected >= sizeof(excitations)/sizeof(excitations[0]))) {
+		pcb_message(PCB_MSG_ERROR, "Invalid excitation selected\n");
+		exc_ctx.selected = 0;
+	}
+
+	pcb_gui->attr_dlg_set_value(exc_ctx.dlg_hid_ctx, exc_ctx.wtab, &hv);
+	pcb_gui->attr_dlg_set_value(exc_ctx.dlg_hid_ctx, exc_ctx.wselector, &hv);
+	if (setattr) {
+		pcb_attribute_put(&PCB->Attributes, "openems::excitation::type", excitations[exc_ctx.selected].name);
+		pcb_board_set_changed_flag(pcb_true);
+	}
+}
+
+static void select_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	exc_ctx.selected = attr->default_val.int_value;
+	select_update(1);
+}
+
 static void pcb_dlg_exc(void)
 {
 	static const char *excnames[MAX_EXC+1];
@@ -228,9 +252,12 @@ static void pcb_dlg_exc(void)
 		PCB_DAD_BEGIN_HBOX(exc_ctx.dlg);
 			PCB_DAD_LABEL(exc_ctx.dlg, "Excitation type:");
 			PCB_DAD_ENUM(exc_ctx.dlg, excnames);
+				exc_ctx.wselector = PCB_DAD_CURRENT(exc_ctx.dlg);
+				PCB_DAD_CHANGE_CB(exc_ctx.dlg, select_cb);
 		PCB_DAD_END(exc_ctx.dlg);
 		PCB_DAD_BEGIN_TABBED(exc_ctx.dlg, excnames);
 			PCB_DAD_COMPFLAG(exc_ctx.dlg, PCB_HATF_EXPFILL);
+			exc_ctx.wtab = PCB_DAD_CURRENT(exc_ctx.dlg);
 			for(n = 0, e = excitations; e->name != NULL; n++,e++) {
 				if (e->dad != NULL)
 					e->dad(n);
