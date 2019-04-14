@@ -418,6 +418,7 @@ static char *pcb_openems_excitation_get(pcb_board_t *pcb)
 
 static void exc_ev_board_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 {
+	load_selector();
 	if (exc_ctx.active)
 		exc_load_all();
 }
