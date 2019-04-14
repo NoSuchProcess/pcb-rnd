@@ -28,11 +28,6 @@
 
 #include "hid_dad.h"
 
-static const char *pcb_openems_excitation_get(pcb_board_t *pcb)
-{
-	return "DUMMY_EXCITATION";
-}
-
 #define MAX_EXC 16
 
 typedef struct {
@@ -42,6 +37,8 @@ typedef struct {
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
+	int wselector;
+	int selected;
 	exc_data_t exc_data[MAX_EXC];
 } exc_ctx_t;
 
@@ -50,8 +47,8 @@ exc_ctx_t exc_ctx;
 typedef struct {
 	const char *name;
 	void (*dad)(int idx);
+	char *(*get)(int idx);
 } exc_t;
-
 
 /*** excitation "micro-plugins" ***/
 
@@ -75,6 +72,20 @@ static void exc_gaus_dad(int idx)
 	PCB_DAD_END(exc_ctx.dlg);
 }
 
+static char *exc_gaus_get(int idx)
+{
+	int wf0, wfc;
+
+	wf0 = exc_ctx.exc_data[idx].w[I_F0];
+	wfc = exc_ctx.exc_data[idx].w[I_FC];
+
+	return pcb_strdup_printf(
+		"FDTD = SetGaussExcite(FDTD, %d, %d);",
+		exc_ctx.dlg[wf0].default_val.int_value,
+		exc_ctx.dlg[wfc].default_val.int_value
+	);
+}
+
 #undef I_FC
 #undef I_F0
 
@@ -90,6 +101,18 @@ static void exc_sin_dad(int idx)
 			PCB_DAD_HELP(exc_ctx.dlg, "Center Frequency [Hz]");
 			exc_ctx.exc_data[idx].w[I_F0] = PCB_DAD_CURRENT(exc_ctx.dlg);
 	PCB_DAD_END(exc_ctx.dlg);
+}
+
+static char *exc_sin_get(int idx)
+{
+	int wf0;
+
+	wf0 = exc_ctx.exc_data[idx].w[I_F0];
+
+	return pcb_strdup_printf(
+		"FDTD = SetSinusExcite(FDTD, %d);",
+		exc_ctx.dlg[wf0].default_val.int_value
+	);
 }
 
 #undef I_F0
@@ -114,6 +137,20 @@ static void exc_cust_dad(int idx)
 	PCB_DAD_END(exc_ctx.dlg);
 }
 
+static char *exc_cust_get(int idx)
+{
+	int wf0, wfunc;
+
+	wf0 = exc_ctx.exc_data[idx].w[I_F0];
+	wfunc = exc_ctx.exc_data[idx].w[I_FUNC];
+
+	return pcb_strdup_printf(
+		"FDTD = SetCustomExcite(FDTD, %d, %s)",
+		exc_ctx.dlg[wf0].default_val.int_value,
+		exc_ctx.dlg[wfunc].default_val.str_value
+	);
+}
+
 #undef I_F0
 #undef I_FUNC
 
@@ -133,15 +170,28 @@ static void exc_user_dad(int idx)
 	PCB_DAD_END(exc_ctx.dlg);
 }
 
+static char *exc_user_get(int idx)
+{
+	int wscript;
+	pcb_hid_attribute_t *attr;
+	pcb_hid_text_t *txt;
+
+	wscript = exc_ctx.exc_data[idx].w[I_SCRIPT];
+	attr = &exc_ctx.dlg[wscript];
+	txt = (pcb_hid_text_t *)attr->enumerations;
+
+	return txt->hid_get_text(attr, exc_ctx.dlg_hid_ctx);
+}
+
 #undef I_SCRIPT
 /*** generic code ***/
 
 static const exc_t excitations[] = {
-	{ "gaussian",      exc_gaus_dad },
-	{ "sinusoidal",    exc_sin_dad },
-	{ "custom",        exc_cust_dad },
+	{ "gaussian",      exc_gaus_dad, exc_gaus_get },
+	{ "sinusoidal",    exc_sin_dad,  exc_sin_get  },
+	{ "custom",        exc_cust_dad, exc_cust_get },
 
-	{ "user-defined",  exc_user_dad },
+	{ "user-defined",  exc_user_dad, exc_user_get },
 	{ NULL, NULL}
 };
 
@@ -210,3 +260,13 @@ static fgw_error_t pcb_act_OpenemsExcitation(fgw_arg_t *res, int argc, fgw_arg_t
 	pcb_dlg_exc();
 	return 0;
 }
+
+static char *pcb_openems_excitation_get(pcb_board_t *pcb)
+{
+	if ((exc_ctx.selected < 0) || (exc_ctx.selected >= sizeof(excitations)/sizeof(excitations[0]))) {
+		pcb_message(PCB_MSG_ERROR, "No excitation selected\n");
+		return pcb_strdup("%% ERROR: no excitation selected\n");
+	}
+	return excitations[exc_ctx.selected].get(exc_ctx.selected);
+}
+

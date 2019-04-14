@@ -518,12 +518,16 @@ static void openems_write_mesh_lines(wctx_t *ctx, pcb_mesh_lines_t *l)
 static void openems_write_mesh1(wctx_t *ctx)
 {
 	pcb_mesh_t *mesh = pcb_mesh_get(MESH_NAME);
+	char *exc = pcb_openems_excitation_get(ctx->pcb);
 	int n;
 
 	fprintf(ctx->fsim, "%%%%%% Board mesh, part 1\n");
 	fprintf(ctx->fsim, "unit = 1.0e-3;\n");
 	fprintf(ctx->fsim, "FDTD = InitFDTD();\n");
-	fprintf(ctx->fsim, "FDTD = %s;\n", pcb_openems_excitation_get(ctx->pcb));
+	fprintf(ctx->fsim, "%% Excitation begin\n");
+	fprintf(ctx->fsim, "%s\n", exc);
+	fprintf(ctx->fsim, "%% Excitation end\n");
+	free(exc);
 
 	if (mesh != NULL) {
 
