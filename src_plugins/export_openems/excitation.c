@@ -30,7 +30,7 @@
 #include "event.h"
 
 #define MAX_EXC 16
-#define FREQ_MAX 10000000000L
+#define FREQ_MAX INT_MAX
 #define AEPREFIX "openems::excitation::"
 
 typedef struct {
