@@ -33,12 +33,34 @@ static const char *pcb_openems_excitation_get(pcb_board_t *pcb)
 	return "DUMMY_EXCITATION";
 }
 
-typedef struct{
+#define MAX_EXC 16
+
+typedef struct {
+	int w[8];
+} exc_data_t;
+
+typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
+	exc_data_t exc_data[MAX_EXC];
 } exc_ctx_t;
 
 exc_ctx_t exc_ctx;
+
+typedef struct {
+	const char *name;
+	void (*dad)(int idx);
+} exc_t;
+
+
+static const exc_t excitations[] = {
+	{ "gaussian", NULL },
+	{ "sinusoidal", NULL },
+	{ "custom", NULL },
+
+	{ "user-defined", NULL },
+	{ NULL, NULL}
+};
 
 static void exc_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
@@ -49,13 +71,40 @@ static void exc_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 
 static void pcb_dlg_exc(void)
 {
+	static const char *excnames[MAX_EXC+1];
+	const exc_t *e;
+	int n;
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+
 	if (exc_ctx.active)
 		return; /* do not open another */
 
+	if (excnames[0] == NULL) {
+		for(n = 0, e = excitations; e->name != NULL; n++,e++) {
+			if (n >= MAX_EXC) {
+				pcb_message(PCB_MSG_ERROR, "internal error: too many excitations");
+				break;
+			}
+			excnames[n] = e->name;
+		}
+		excnames[n] = NULL;
+	}
+
 	PCB_DAD_BEGIN_VBOX(exc_ctx.dlg);
 		PCB_DAD_COMPFLAG(exc_ctx.dlg, PCB_HATF_EXPFILL);
-		PCB_DAD_LABEL(exc_ctx.dlg, "foo");
+		PCB_DAD_BEGIN_HBOX(exc_ctx.dlg);
+			PCB_DAD_LABEL(exc_ctx.dlg, "Excitation type:");
+			PCB_DAD_ENUM(exc_ctx.dlg, excnames);
+		PCB_DAD_END(exc_ctx.dlg);
+		PCB_DAD_BEGIN_TABBED(exc_ctx.dlg, excnames);
+			PCB_DAD_COMPFLAG(exc_ctx.dlg, PCB_HATF_EXPFILL);
+			for(n = 0, e = excitations; e->name != NULL; n++,e++) {
+				if (e->dad != NULL)
+					e->dad(n);
+				else
+					PCB_DAD_LABEL(exc_ctx.dlg, "Not yet available.");
+			}
+		PCB_DAD_END(exc_ctx.dlg);
 		PCB_DAD_BUTTON_CLOSES(exc_ctx.dlg, clbtn);
 	PCB_DAD_END(exc_ctx.dlg);
 
@@ -75,5 +124,6 @@ static const char pcb_acts_OpenemsExcitation[] =
 static const char pcb_acth_OpenemsExcitation[] = "Select which openEMS excitation method should be exported and manipulate the associated parameters. When invoked without arguments a dialog box with the same functionality is presented.";
 static fgw_error_t pcb_act_OpenemsExcitation(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_dlg_exc();
 	return 0;
 }
