@@ -394,16 +394,77 @@ static void pcb_dlg_exc(void)
 }
 
 static const char pcb_acts_OpenemsExcitation[] = 
-	"OpenemsExcitation()\n"
+	"OpenemsExcitation([interactive])\n"
 	"OpenemsExcitation(select, excitationname)\n"
-	"OpenemsExcitation(set, paramname, paramval)\n"
-	"OpenemsExcitation(get, paramname)\n"
+	"OpenemsExcitation(set, [excitationnme], paramname, paramval)\n"
+	"OpenemsExcitation(get, [excitationnme], paramname)\n"
 	;
-
 static const char pcb_acth_OpenemsExcitation[] = "Select which openEMS excitation method should be exported and manipulate the associated parameters. When invoked without arguments a dialog box with the same functionality is presented.";
 static fgw_error_t pcb_act_OpenemsExcitation(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_dlg_exc();
+	const char *op = "interactive", *a1 = NULL;
+
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, OpenemsExcitation, op = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, OpenemsExcitation, a1 = argv[2].val.str);
+
+	PCB_ACT_IRES(0);
+
+	if (strcmp(op, "interactive") == 0)
+		pcb_dlg_exc();
+	else if (strcmp(op, "select") == 0) {
+		if (a1 == NULL) {
+			pcb_message(PCB_MSG_ERROR, "OpenemsExcitation(select) needs a excitation name");
+			goto error;
+		}
+		pcb_attribute_put(&PCB->Attributes, AEPREFIX "type", a1);
+		load_selector();
+		select_update(1);
+	}
+	else if (strcmp(op, "set") == 0) {
+		int start;
+		const char *key, *val;
+		char *attrkey;
+		switch(argc) {
+			case 4: a1 = excitations[exc_ctx.selected].name; start = 2; break;
+			case 5: start = 3; break;
+			default:
+				pcb_message(PCB_MSG_ERROR, "OpenemsExcitation(set) needs exactly 2 or 3 more arguments");
+				goto error;
+		}
+
+		PCB_ACT_CONVARG(start+0, FGW_STR, OpenemsExcitation, key = argv[start+0].val.str);
+		PCB_ACT_CONVARG(start+1, FGW_STR, OpenemsExcitation, val = argv[start+1].val.str);
+
+		attrkey = pcb_strdup_printf(AEPREFIX "%s::%s", a1, key);
+		pcb_attribute_put(&PCB->Attributes, attrkey, val);
+		free(attrkey);
+
+		exc_load_all();
+	}
+	else if (strcmp(op, "get") == 0) {
+		int start;
+		const char *key;
+		char *attrkey;
+		switch(argc) {
+			case 3: a1 = excitations[exc_ctx.selected].name; start = 2; break;
+			case 4: start = 3; break;
+			default:
+				pcb_message(PCB_MSG_ERROR, "OpenemsExcitation(get) needs exactly 1 or 2 more arguments");
+				goto error;
+		}
+
+		PCB_ACT_CONVARG(start+0, FGW_STR, OpenemsExcitation, key = argv[start+0].val.str);
+
+		attrkey = pcb_strdup_printf(AEPREFIX "%s::%s", a1, key);
+		res->type = FGW_STR;
+		res->val.cstr = pcb_attribute_get(&PCB->Attributes, attrkey);
+		free(attrkey);
+	}
+
+	return 0;
+
+	error:;
+	PCB_ACT_IRES(1);
 	return 0;
 }
 
