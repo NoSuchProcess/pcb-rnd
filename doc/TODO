@@ -3,7 +3,6 @@
 1. For the upcoming release ===============================================================================
 - BUG: lesstif attr dialog: valgrind invalid mem handling (open brave and close it)
 - BUG: undo: clear rats, optimize rats, delete 1 rat then undo - it should undo the rat deletion but it undos optimization
-- FEATURE: excellon metric support to pair up with gerber's late feature [report: Gabriel]
 - BUG: kicad I/O bugs:
 	+ BUG: does not save the netlist [TwisteR]
 	- BUG: io_kicad parse err w/drill & roundrect pads  work/testcase_cnc_cesc.kicad_mod work/pcbnew_pad_handles_drill.png [report: Miloh]
@@ -20,6 +19,7 @@
 - DOC: OpenemsExcitation()
 
 2. For later releases ===============================================================================
+- FEATURE: excellon metric support to pair up with gerber's late feature [report: Gabriel]
 - CLEANUP: remove pcb_attribute_dialog() and the label argument from the DAD API [report: igor2]
 - CLEANUP/BUG: The 'As Drawn' polygon contour is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
 	-> need a new rtree that holds the polygons that have ->clipped == NULL for this purpose
