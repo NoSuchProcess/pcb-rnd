@@ -58,6 +58,8 @@ static pcb_hid_t openems_hid;
 
 const char *openems_cookie = "openems HID";
 
+#include "excitation.c"
+
 #define MESH_NAME "openems"
 
 typedef struct hid_gc_s {
@@ -144,13 +146,9 @@ pcb_hid_attribute_t openems_attribute_list[] = {
 	 PCB_HATT_INTEGER, 0, 10, {0, 0, 0}, 0, 0},
 #define HA_base_prio 12
 
-	{"excite", "Excite directive",
-	 PCB_HATT_STRING, 0, 0, {0, "SetGaussExcite(FDTD, f0, fc)", 0}, 0, 0},
-#define HA_excite 13
-
 	{"port-resistance", "default port resistance",
 	 PCB_HATT_REAL, 0, 1000, {0, 0, 50}, 0, 0}
-#define HA_def_port_res 14
+#define HA_def_port_res 13
 
 };
 
@@ -174,7 +172,6 @@ static pcb_hid_attribute_t *openems_get_export_options(int *n)
 	}
 
 TODO(": when export dialogs change into DAD, this hack to convert the strings to allocated ones will not be needed anymore")
-	openems_attribute_list[HA_excite].default_val.str_value = pcb_strdup(openems_attribute_list[HA_excite].default_val.str_value);
 	openems_attribute_list[HA_def_copper_cond].default_val.str_value = pcb_strdup(openems_attribute_list[HA_def_copper_cond].default_val.str_value);
 	openems_attribute_list[HA_def_subst_epsilon].default_val.str_value = pcb_strdup(openems_attribute_list[HA_def_subst_epsilon].default_val.str_value);
 	openems_attribute_list[HA_def_subst_mue].default_val.str_value = pcb_strdup(openems_attribute_list[HA_def_subst_mue].default_val.str_value);
@@ -525,10 +522,8 @@ static void openems_write_mesh1(wctx_t *ctx)
 
 	fprintf(ctx->fsim, "%%%%%% Board mesh, part 1\n");
 	fprintf(ctx->fsim, "unit = 1.0e-3;\n");
-	fprintf(ctx->fsim, "f0 = 1.1e9; %% pulse center frequency\n");
-	fprintf(ctx->fsim, "fc = 0.9e9; %% \"20dB cutoff frequency --> bandwidth is 2*fc\n");
 	fprintf(ctx->fsim, "FDTD = InitFDTD();\n");
-	fprintf(ctx->fsim, "FDTD = %s;\n", ctx->options[HA_excite].str_value);
+	fprintf(ctx->fsim, "FDTD = %s;\n", pcb_openems_excitation_get(ctx->pcb));
 
 	if (mesh != NULL) {
 
