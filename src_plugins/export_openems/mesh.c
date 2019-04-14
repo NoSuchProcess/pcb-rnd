@@ -1034,7 +1034,7 @@ static void ia_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 	pcb_gui->invalidate_all();
 }
 
-pcb_mesh_t *pcb_mesg_get(const char *name)
+pcb_mesh_t *pcb_mesh_get(const char *name)
 {
 	return &mesh;
 }

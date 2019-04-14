@@ -161,7 +161,7 @@ static pcb_hid_attr_val_t openems_values[NUM_OPTIONS];
 static pcb_hid_attribute_t *openems_get_export_options(int *n)
 {
 	const char *suffix = ".m";
-	pcb_mesh_t *mesh = pcb_mesg_get(MESH_NAME);
+	pcb_mesh_t *mesh = pcb_mesh_get(MESH_NAME);
 
 	if ((PCB != NULL)  && (openems_attribute_list[HA_openemsfile].default_val.str_value == NULL))
 		pcb_derive_default_filename(PCB->Filename, &openems_attribute_list[HA_openemsfile], suffix);
@@ -517,7 +517,7 @@ static void openems_write_mesh_lines(wctx_t *ctx, pcb_mesh_lines_t *l)
 
 static void openems_write_mesh1(wctx_t *ctx)
 {
-	pcb_mesh_t *mesh = pcb_mesg_get(MESH_NAME);
+	pcb_mesh_t *mesh = pcb_mesh_get(MESH_NAME);
 	int n;
 
 	fprintf(ctx->fsim, "%%%%%% Board mesh, part 1\n");
@@ -542,7 +542,7 @@ static void openems_write_mesh1(wctx_t *ctx)
 
 static void openems_write_mesh2(wctx_t *ctx)
 {
-	pcb_mesh_t *mesh = pcb_mesg_get(MESH_NAME);
+	pcb_mesh_t *mesh = pcb_mesh_get(MESH_NAME);
 
 	if (mesh == NULL) {
 		fprintf(ctx->f, "%%%%%% Board mesh (NOT defined in pcb-rnd)\n");
