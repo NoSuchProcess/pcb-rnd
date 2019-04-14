@@ -27,6 +27,7 @@
 #include "config.h"
 
 #include "hid_dad.h"
+#include "event.h"
 
 #define MAX_EXC 16
 #define FREQ_MAX 10000000000L
@@ -293,6 +294,14 @@ static void exc_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	memset(ctx, 0, sizeof(exc_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
+static void exc_load_all(void)
+{
+	const exc_t *e;
+	int n;
+	for(n = 0, e = excitations; e->name != NULL; n++,e++)
+		e->ser(n, 0);
+}
+
 static int load_selector(void)
 {
 	const char *type = pcb_attribute_get(&PCB->Attributes, AEPREFIX "type");
@@ -395,6 +404,7 @@ static void pcb_dlg_exc(void)
 
 	load_selector();
 	select_update(1);
+	exc_load_all();
 }
 
 static const char pcb_acts_OpenemsExcitation[] = 
@@ -420,3 +430,18 @@ static char *pcb_openems_excitation_get(pcb_board_t *pcb)
 	return excitations[exc_ctx.selected].get(exc_ctx.selected);
 }
 
+static void exc_ev_board_changed(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	if (exc_ctx.active)
+		exc_load_all();
+}
+
+static void pcb_openems_excitation_init(void)
+{
+	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, exc_ev_board_changed, NULL, openems_cookie);
+}
+
+static void pcb_openems_excitation_uninit(void)
+{
+	pcb_event_unbind_allcookie(openems_cookie);
+}
