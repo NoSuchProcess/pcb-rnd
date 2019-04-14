@@ -175,7 +175,7 @@ static char *exc_sin_get(int idx)
 {
 	return pcb_strdup_printf(
 		"FDTD = SetSinusExcite(FDTD, %s);",
-		pcb_attribute_get(&PCB->Attributes, AEPREFIX "sinusiodal::f0")
+		pcb_attribute_get(&PCB->Attributes, AEPREFIX "sinusoidal::f0")
 	);
 }
 
