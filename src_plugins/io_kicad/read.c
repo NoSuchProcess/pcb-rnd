@@ -1890,6 +1890,8 @@ static int kicad_parse_fp_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 	pcb_layer_t *ly = NULL;
 	pcb_coord_t width = 0;
 	unsigned long tally = 0;
+	pcb_poly_t *poly;
+	pcb_flag_t flags = pcb_flag_make(PCB_FLAG_CLEARPOLY);
 
 	for(n = subtree; n != NULL; n = n->next) {
 		if (strcmp(n->str, "pts") == 0) {
@@ -1923,7 +1925,15 @@ static int kicad_parse_fp_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 	if (ly == NULL)
 		return kicad_error(subtree, "missing layer subtree in fp_poly");
 
-	return kicad_error(subtree, "no support for fp_poly yet");
+
+	poly = pcb_poly_new(ly, 0, flags);
+	if (kicad_parse_poly_pts(st, npts, poly) < 0)
+		return -1;
+
+	pcb_add_poly_on_layer(ly, poly);
+	pcb_poly_init_clip(subc->data, ly, poly);
+
+	return 0;
 }
 
 static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
