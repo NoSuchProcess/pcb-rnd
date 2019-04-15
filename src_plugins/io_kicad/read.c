@@ -2029,23 +2029,23 @@ static int kicad_parse_poly_pts(read_state_t *st, gsxl_node_t *subtree, pcb_poly
 	gsxl_node_t *m;
 	pcb_coord_t x, y;
 
-			if (subtree != NULL && subtree->str != NULL) {
-				if (strcmp("pts", subtree->str) == 0) {
-					for(m = subtree->children; m != NULL; m = m->next) {
-						if (m->str != NULL && strcmp("xy", m->str) == 0) {
-							PARSE_COORD(x, m, m->children, "zone polygon vertex X");
-							PARSE_COORD(y, m, m->children->next, "zone polygon vertex Y");
-							pcb_poly_point_new(polygon, x, y);
-						}
-						else
-							return kicad_error(m, "empty pts element");
-					}
+	if (subtree != NULL && subtree->str != NULL) {
+		if (strcmp("pts", subtree->str) == 0) {
+			for(m = subtree->children; m != NULL; m = m->next) {
+				if (m->str != NULL && strcmp("xy", m->str) == 0) {
+					PARSE_COORD(x, m, m->children, "zone polygon vertex X");
+					PARSE_COORD(y, m, m->children->next, "zone polygon vertex Y");
+					pcb_poly_point_new(polygon, x, y);
 				}
 				else
-					return kicad_error(subtree, "pts section vertices not found in polygon.");
+					return kicad_error(m, "empty pts element");
 			}
-			else
-				return kicad_error(subtree, "error parsing empty polygon.");
+		}
+		else
+			return kicad_error(subtree, "pts section vertices not found in polygon.");
+	}
+	else
+		return kicad_error(subtree, "error parsing empty polygon.");
 	return 0;
 }
 static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
