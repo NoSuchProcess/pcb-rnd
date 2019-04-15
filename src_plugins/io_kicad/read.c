@@ -1886,6 +1886,43 @@ static int kicad_parse_poly_pts(read_state_t *st, gsxl_node_t *subtree, pcb_poly
 
 static int kicad_parse_fp_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc)
 {
+	gsxl_node_t *n, *npts = NULL;
+	pcb_layer_t *ly = NULL;
+	pcb_coord_t width = 0;
+	unsigned long tally = 0;
+
+	for(n = subtree; n != NULL; n = n->next) {
+		if (strcmp(n->str, "pts") == 0) {
+			SEEN_NO_DUP(tally, 1);
+			npts = n;
+		}
+		else if (strcmp(n->str, "layer") == 0) {
+			SEEN_NO_DUP(tally, 2);
+			PARSE_LAYER(ly, n->children, subc, "line");
+		}
+		else if (strcmp(n->str, "status") == 0) {
+			SEEN_NO_DUP(tally, 3);
+			TODO("do the same as for other object's status");
+		}
+		else if (strcmp(n->str, "tstamp") == 0) {
+			SEEN_NO_DUP(tally, 4);
+			/* ignore */
+		}
+		else if (strcmp(n->str, "width") == 0) {
+			SEEN_NO_DUP(tally, 5);
+			PARSE_COORD(width, n, n->children, "fp_poly width");
+			if (width != 0)
+				kicad_warning(n, "Ignoring non-zero fp_poly width");
+		}
+		else
+			return kicad_error(subtree, "Invalid fp_poly child: %s", n->str);
+	}
+
+	if (npts == NULL)
+		return kicad_error(subtree, "missing pts subtree in fp_poly");
+	if (ly == NULL)
+		return kicad_error(subtree, "missing layer subtree in fp_poly");
+
 	return kicad_error(subtree, "no support for fp_poly yet");
 }
 
