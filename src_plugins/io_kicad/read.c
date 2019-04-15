@@ -2051,13 +2051,12 @@ static int kicad_parse_poly_pts(read_state_t *st, gsxl_node_t *subtree, pcb_poly
 static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 {
 	gsxl_node_t *n, *m;
-	int i;
 	unsigned long tally = 0, required;
 	pcb_poly_t *polygon = NULL;
 	pcb_flag_t flags = pcb_flag_make(PCB_FLAG_CLEARPOLY);
 	pcb_layer_t *ly = NULL;
 
-	for(n = subtree, i = 0; n != NULL; n = n->next, i++) {
+	for(n = subtree; n != NULL; n = n->next) {
 		if (n->str == NULL)
 			return kicad_error(n, "empty zone parameter");
 		if (strcmp("net", n->str) == 0) {
