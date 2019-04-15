@@ -2033,8 +2033,8 @@ static int kicad_parse_poly_pts(read_state_t *st, gsxl_node_t *subtree, pcb_poly
 		if (strcmp("pts", subtree->str) == 0) {
 			for(m = subtree->children; m != NULL; m = m->next) {
 				if (m->str != NULL && strcmp("xy", m->str) == 0) {
-					PARSE_COORD(x, m, m->children, "zone polygon vertex X");
-					PARSE_COORD(y, m, m->children->next, "zone polygon vertex Y");
+					PARSE_COORD(x, m, m->children, "polygon vertex X");
+					PARSE_COORD(y, m, m->children->next, "polygon vertex Y");
 					pcb_poly_point_new(polygon, x, y);
 				}
 				else
