@@ -8,6 +8,7 @@
 	+ BUG: io_kicad parse err w/drill & roundrect pads  work/testcase_cnc_cesc.kicad_mod work/pcbnew_pad_handles_drill.png [report: Miloh]
 	+ BUG: direct load of footprint, e.g. pcb-rnd km.mod, fails while load to buffer works on bug_files/km.mod [report: Ade] -> need a test file (km.mod not found)
 	+ BUG: fails to load a layout with older french or Italian layer names. Names listed at kicad-pcb.org/help/upgrading/ [report: erich]  multiple test files now in alien formats kicad; layer number seems to anchor layer, and techniccal name is just a label or hash
+	- BUG: empty (layers) in padstack is possible; figure what to do with it; example on .17: traffic_display.kicad_mod [report: Igor2]
 + BUG: empty polygon contour in subc seems to crash pcb-rnd reliably. bug_files/STRIP-3PIN-CRASHES.lht [erich]
 + BUG: bug_files/proto1.* padstack prototype selection bug priv mail 20 Feb [report: Alain]
 + FEATURE: template print terminal id so attributes (like term name) can be displayed; gtk dwg tooltip  should use the same template to print the term [report: Peter] (report on the mailing list)
