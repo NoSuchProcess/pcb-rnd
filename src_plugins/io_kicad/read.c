@@ -2024,15 +2024,38 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	return 0;
 }
 
+static int kicad_parse_poly_pts(read_state_t *st, gsxl_node_t *subtree, pcb_poly_t *polygon)
+{
+	gsxl_node_t *m;
+	pcb_coord_t x, y;
+
+			if (subtree != NULL && subtree->str != NULL) {
+				if (strcmp("pts", subtree->str) == 0) {
+					for(m = subtree->children; m != NULL; m = m->next) {
+						if (m->str != NULL && strcmp("xy", m->str) == 0) {
+							PARSE_COORD(x, m, m->children, "zone polygon vertex X");
+							PARSE_COORD(y, m, m->children->next, "zone polygon vertex Y");
+							pcb_poly_point_new(polygon, x, y);
+						}
+						else
+							return kicad_error(m, "empty pts element");
+					}
+				}
+				else
+					return kicad_error(subtree, "pts section vertices not found in polygon.");
+			}
+			else
+				return kicad_error(subtree, "error parsing empty polygon.");
+	return 0;
+}
 static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 {
 	gsxl_node_t *n, *m;
 	int i;
-	long j = 0, polycount = 0;
+	long polycount = 0;
 	unsigned long tally = 0, required;
 	pcb_poly_t *polygon = NULL;
 	pcb_flag_t flags = pcb_flag_make(PCB_FLAG_CLEARPOLY);
-	pcb_coord_t x, y;
 	pcb_layer_t *ly = NULL;
 
 	for(n = subtree, i = 0; n != NULL; n = n->next, i++) {
@@ -2080,25 +2103,8 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 		}
 		else if (strcmp("polygon", n->str) == 0) {
 			polycount++; /*keep track of number of polygons in zone */
-			if (n->children != NULL && n->children->str != NULL) {
-				if (strcmp("pts", n->children->str) == 0) {
-					if (polygon != NULL) {
-						for(m = n->children->children, j = 0; m != NULL; m = m->next, j++) {
-							if (m->str != NULL && strcmp("xy", m->str) == 0) {
-								PARSE_COORD(x, m, m->children, "zone polygon vertex X");
-								PARSE_COORD(y, m, m->children->next, "zone polygon vertex Y");
-								pcb_poly_point_new(polygon, x, y);
-							}
-							else
-								return kicad_error(m, "empty pts element");
-						}
-					}
-				}
-				else
-					return kicad_error(n->children, "pts section vertices not found in zone polygon.");
-			}
-			else
-				return kicad_error(n, "error parsing empty polygon.");
+			if (kicad_parse_poly_pts(st, n->children, polygon) < 0)
+				return -1;
 		}
 		else if (strcmp("fill", n->str) == 0) {
 			SEEN_NO_DUP(tally, 11);
