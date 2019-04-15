@@ -5,7 +5,6 @@
 - BUG: undo: clear rats, optimize rats, delete 1 rat then undo - it should undo the rat deletion but it undos optimization
 + BUG: kicad I/O bugs:
 	+ BUG: does not save the netlist [TwisteR]
-	+ BUG: direct load of footprint, e.g. pcb-rnd km.mod, fails while load to buffer works on bug_files/km.mod [report: Ade] -> need a test file (km.mod not found)
 	+ BUG: fails to load a layout with older french or Italian layer names. Names listed at kicad-pcb.org/help/upgrading/ [report: erich]  multiple test files now in alien formats kicad; layer number seems to anchor layer, and techniccal name is just a label or hash
 	- BUG: empty (layers) in padstack is possible; figure what to do with it; example on .17: traffic_display.kicad_mod [report: Igor2]
 	- BUG: bug_files/testcase_cnc_cesc.kicad_mod : drill offset on an smd pad - kicad seems to accept this [report: Miloh]
