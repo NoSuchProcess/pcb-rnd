@@ -436,15 +436,19 @@ static void kicad_create_fp_layers(read_state_t *st, gsxl_node_t *subtree)
 	const kicad_layertab_t *l;
 	int last_copper = 15;
 
-	kicad_create_layer(st, 0,           "F.Cu",      NULL, subtree, last_copper);
-	kicad_create_layer(st, 1,           "Inner1.Cu", NULL, subtree, last_copper);
-	kicad_create_layer(st, last_copper, "B.Cu",      NULL, subtree, last_copper);
+	pcb_layergrp_inhibit_inc();
+	pcb_layer_group_setup_default(st->pcb);
+
+	kicad_create_layer(st, 0,           "F.Cu",      "signal", subtree, last_copper);
+	kicad_create_layer(st, 1,           "Inner1.Cu", "signal", subtree, last_copper);
+	kicad_create_layer(st, last_copper, "B.Cu",      "signal", subtree, last_copper);
 
 	for(l = kicad_layertab; l->score != 0; l++) {
 		if (l->auto_create) {
 			kicad_create_layer(st, last_copper+l->id, l->prefix, NULL, subtree, last_copper);
 		}
 	}
+	pcb_layergrp_inhibit_dec();
 }
 
 static pcb_layer_t *kicad_get_subc_layer(read_state_t *st, pcb_subc_t *subc, const char *layer_name, const char *default_layer_name)
