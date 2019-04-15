@@ -1324,7 +1324,8 @@
  hid_attrib.h hid_attrib.h hid_init.h hid_draw_helpers.h \
  ../src_plugins/lib_polyhelp/topoly.h obj_common.h \
  ../src_plugins/export_openems/mesh.h layer.h vtc0.h vtr0.h \
- ../src_plugins/export_openems/excitation.c dolists.h
+ ../src_plugins/export_openems/excitation.c hid_dad.h compat_misc.h \
+ event.h dolists.h
 ../src_plugins/export_openems/mesh.o: \
  ../src_plugins/export_openems/mesh.c ../config.h \
  ../src_plugins/export_openems/mesh.h layer.h globalconst.h \
@@ -3183,6 +3184,17 @@
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_plugins/io_kicad/read.h ../src_plugins/io_kicad/read_net.h unit.h \
  actions.h dolists.h
+../src_plugins/io_kicad/layertab.o: ../src_plugins/io_kicad/layertab.c \
+ ../config.h ../src_plugins/io_kicad/layertab.h layer.h globalconst.h \
+ global_typedefs.h pcb_bool.h unit.h attrib.h color.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h data_parent.h \
+ obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
+ obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
+ ../src_3rd/genht/htip.h ../src_3rd/genht/ht.h box.h math_helper.h \
+ misc_util.h ../src_3rd/genvector/gds_char.h
 ../src_plugins/io_kicad/read.o: ../src_plugins/io_kicad/read.c \
  ../config.h ../src_3rd/gensexpr/gsxl.h \
  ../src_3rd/gensexpr/gensexpr_impl.h ../src_3rd/gensexpr/gsx_parse.h \
