@@ -1,3 +1,4 @@
+24625	configure	io_kicad common layer table code among read and write side
 24585	configure	io_kicad depends on the shape plugin for round-rect pads
 24494	configure	core shall not use glib for CFLAGS/LDFLAGS as core doesn't depend on glib
 24429	configure	move paper sizes out from ps to common code (io_kicad needs it too)

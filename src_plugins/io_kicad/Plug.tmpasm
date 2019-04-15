@@ -1,6 +1,7 @@
 put /local/pcb/mod {io_kicad}
 put /local/pcb/mod/OBJS [@
  $(PLUGDIR)/io_kicad/io_kicad.o
+ $(PLUGDIR)/io_kicad/layertab.o
  $(PLUGDIR)/io_kicad/write.o
  $(PLUGDIR)/io_kicad/read.o
  $(PLUGDIR)/io_kicad/read_net.o
