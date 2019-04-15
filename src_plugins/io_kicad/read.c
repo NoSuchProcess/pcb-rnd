@@ -1859,7 +1859,7 @@ TODO("this should be coming from the s-expr file preferences part pool/io_kicad 
 	return 0;
 }
 
-static int kicad_parse_poly_pts(read_state_t *st, gsxl_node_t *subtree, pcb_poly_t *polygon)
+static int kicad_parse_poly_pts(read_state_t *st, gsxl_node_t *subtree, pcb_poly_t *polygon, pcb_coord_t xo, pcb_coord_t yo)
 {
 	gsxl_node_t *m;
 	pcb_coord_t x, y;
@@ -1870,7 +1870,7 @@ static int kicad_parse_poly_pts(read_state_t *st, gsxl_node_t *subtree, pcb_poly
 				if (m->str != NULL && strcmp("xy", m->str) == 0) {
 					PARSE_COORD(x, m, m->children, "polygon vertex X");
 					PARSE_COORD(y, m, m->children->next, "polygon vertex Y");
-					pcb_poly_point_new(polygon, x, y);
+					pcb_poly_point_new(polygon, x + xo, y + yo);
 				}
 				else
 					return kicad_error(m, "empty pts element");
@@ -1884,7 +1884,7 @@ static int kicad_parse_poly_pts(read_state_t *st, gsxl_node_t *subtree, pcb_poly
 	return 0;
 }
 
-static int kicad_parse_fp_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc)
+static int kicad_parse_fp_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t modx, pcb_coord_t mody)
 {
 	gsxl_node_t *n, *npts = NULL;
 	pcb_layer_t *ly = NULL;
@@ -1925,9 +1925,8 @@ static int kicad_parse_fp_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 	if (ly == NULL)
 		return kicad_error(subtree, "missing layer subtree in fp_poly");
 
-
 	poly = pcb_poly_new(ly, 0, flags);
-	if (kicad_parse_poly_pts(st, npts, poly) < 0)
+	if (kicad_parse_poly_pts(st, npts, poly, modx, mody) < 0)
 		return -1;
 
 	pcb_add_poly_on_layer(ly, poly);
@@ -2068,7 +2067,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				return -1;
 		}
 		else if (strcmp("fp_poly", n->str) == 0) {
-			if (kicad_parse_fp_poly(st, n->children, subc) != 0)
+			if (kicad_parse_fp_poly(st, n->children, subc, mod_x, mod_y) != 0)
 				return -1;
 		}
 		else if ((strcmp("fp_arc", n->str) == 0) || (strcmp("fp_circle", n->str) == 0)) {
@@ -2157,7 +2156,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 			polygon = pcb_poly_new(ly, 0, flags);
 		}
 		else if (strcmp("polygon", n->str) == 0) {
-			if (kicad_parse_poly_pts(st, n->children, polygon) < 0)
+			if (kicad_parse_poly_pts(st, n->children, polygon, 0, 0) < 0)
 				return -1;
 		}
 		else if (strcmp("fill", n->str) == 0) {
