@@ -68,6 +68,7 @@ typedef struct {
 	int num_layers;              /* number of groups in use */
 } wctx_t;
 
+TODO("remove these few structs and the table below in favor of layertab.[ch]")
 typedef enum {
 	FLP_COP_FIRST,
 	FLP_COP_INT,
