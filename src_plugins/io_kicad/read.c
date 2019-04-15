@@ -1842,6 +1842,10 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 		subc = pcb_subc_new();
 		pcb_subc_create_aux(subc, 0, 0, 0.0, 0);
 		pcb_attribute_put(&subc->Attributes, "refdes", "K1");
+		if (st->pcb != NULL) {
+			pcb_subc_reg(st->pcb->Data, subc);
+			pcb_subc_bind_globals(st->pcb, subc);
+		}
 	}
 
 	if (subtree->str == NULL)
