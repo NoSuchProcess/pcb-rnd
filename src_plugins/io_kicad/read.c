@@ -1442,6 +1442,7 @@ TODO("CUCP#51: may need to add paste too");
 		if (LYSHT(TOP, COPPER))    {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_COPPER; pcb_shape_rect(&sh[len++], padXsize, padYsize);}
 		if (LYSHT(BOTTOM, COPPER)) {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER; pcb_shape_rect(&sh[len++], padXsize, padYsize);}
 		if (LYSHT(INTERN, COPPER)) {sh[len].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER; pcb_shape_rect(&sh[len++], padXsize, padYsize);}
+		if (len == 0) goto no_layer;
 		sh[len++].layer_mask = 0;
 		return pcb_pstk_new_from_shape(subc->data, X, Y, drill, pcb_true, clearance, sh);
 	}
@@ -1453,6 +1454,7 @@ TODO("CUCP#51: may need to add paste too");
 		if (LYSHT(TOP, COPPER))    {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_COPPER; pcb_shape_oval(&sh[len++], padXsize, padYsize);}
 		if (LYSHT(BOTTOM, COPPER)) {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER; pcb_shape_oval(&sh[len++], padXsize, padYsize);}
 		if (LYSHT(INTERN, COPPER)) {sh[len].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER; pcb_shape_oval(&sh[len++], padXsize, padYsize);}
+		if (len == 0) goto no_layer;
 		sh[len++].layer_mask = 0;
 		return pcb_pstk_new_from_shape(subc->data, X, Y, drill, pcb_true, clearance, sh);
 	}
@@ -1470,11 +1472,16 @@ TODO("CUCP#51: may need to add paste too");
 		if (LYSHT(TOP, COPPER))    {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_COPPER; pcb_shape_roundrect(&sh[len++], padXsize, padYsize, shape_arg);}
 		if (LYSHT(BOTTOM, COPPER)) {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER; pcb_shape_roundrect(&sh[len++], padXsize, padYsize, shape_arg);}
 		if (LYSHT(INTERN, COPPER)) {sh[len].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER; pcb_shape_roundrect(&sh[len++], padXsize, padYsize, shape_arg);}
+		if (len == 0) goto no_layer;
 		sh[len++].layer_mask = 0;
 		return pcb_pstk_new_from_shape(subc->data, X, Y, 0, pcb_false, clearance, sh);
 	}
 
 	kicad_error(subtree, "unsupported pad shape '%s'.", pad_shape);
+	return NULL;
+
+	no_layer:;
+	kicad_error(subtree, "thru-hole padstack ended up with no shape on any layer");
 	return NULL;
 }
 
@@ -1500,6 +1507,7 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 		if (LYSHS(side, MASK))      {sh[len].layer_mask = side | PCB_LYT_MASK;   sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+st->pad_to_mask_clearance*2);}
 		if (LYSHS(side, PASTE))     {sh[len].layer_mask = side | PCB_LYT_PASTE;  sh[len].comb = PCB_LYC_AUTO; pcb_shape_rect(&sh[len++], padXsize * paste_ratio, padYsize * paste_ratio);}
 		if (LYSHS(side, COPPER))    {sh[len].layer_mask = side | PCB_LYT_COPPER; pcb_shape_rect(&sh[len++], padXsize, padYsize);}
+		if (len == 0) goto no_layer;
 		sh[len++].layer_mask = 0;
 		return pcb_pstk_new_from_shape(subc->data, X, Y, 0, pcb_false, clearance, sh);
 	}
@@ -1509,6 +1517,7 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 		if (LYSHS(side, MASK))      {sh[len].layer_mask = side | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_oval(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+st->pad_to_mask_clearance*2);}
 		if (LYSHS(side, PASTE))     {sh[len].layer_mask = side | PCB_LYT_PASTE; sh[len].comb = PCB_LYC_AUTO; pcb_shape_oval(&sh[len++], padXsize * paste_ratio, padYsize * paste_ratio);}
 		if (LYSHS(side, COPPER))    {sh[len].layer_mask = side | PCB_LYT_COPPER; pcb_shape_oval(&sh[len++], padXsize, padYsize);}
+		if (len == 0) goto no_layer;
 		sh[len++].layer_mask = 0;
 		return pcb_pstk_new_from_shape(subc->data, X, Y, 0, pcb_false, clearance, sh);
 	}
@@ -1524,11 +1533,16 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 		if (LYSHS(side, MASK))      {sh[len].layer_mask = side | PCB_LYT_MASK;   sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+st->pad_to_mask_clearance*2, shape_arg);}
 		if (LYSHS(side, PASTE))     {sh[len].layer_mask = side | PCB_LYT_PASTE;  sh[len].comb = PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize * paste_ratio, padYsize * paste_ratio, shape_arg);}
 		if (LYSHS(side, COPPER))    {sh[len].layer_mask = side | PCB_LYT_COPPER; pcb_shape_roundrect(&sh[len++], padXsize, padYsize, shape_arg);}
+		if (len == 0) goto no_layer;
 		sh[len++].layer_mask = 0;
 		return pcb_pstk_new_from_shape(subc->data, X, Y, 0, pcb_false, clearance, sh);
 	}
 
 	kicad_error(subtree, "unsupported pad shape '%s'.", pad_shape);
+	return NULL;
+
+	no_layer:;
+	kicad_error(subtree, "SMD padstack ended up with no shape on any layer");
 	return NULL;
 }
 
