@@ -49,7 +49,7 @@ typedef struct {
 	const char *purpose;        /* may be NULL */
 	pcb_layer_type_t type;      /* for selecting/creating the group */
 
-	int auto_create;            /* if automatic layer creation is necessary, use this line for a layer */
+	int auto_create;            /* if automatic layer creation is necessary, use this line for a layer; when 1, prefix must be a full name */
 } kicad_layertab_t;
 
 extern const kicad_layertab_t kicad_layertab[];

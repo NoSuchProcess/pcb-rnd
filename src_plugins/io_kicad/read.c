@@ -430,6 +430,21 @@ static int kicad_get_layeridx_auto(read_state_t *st, const char *kicad_name)
 	return -1;
 }
 
+static void kicad_create_fp_layers(read_state_t *st, gsxl_node_t *subtree)
+{
+	const kicad_layertab_t *l;
+	int last_copper = 15;
+
+	kicad_create_layer(st, 0,           "F.Cu",      NULL, subtree, last_copper);
+	kicad_create_layer(st, 1,           "Inner1.Cu", NULL, subtree, last_copper);
+	kicad_create_layer(st, last_copper, "B.Cu",      NULL, subtree, last_copper);
+
+	for(l = kicad_layertab; l->score != 0; l++) {
+		if (l->auto_create) {
+			kicad_create_layer(st, last_copper+l->id, l->prefix, NULL, subtree, last_copper);
+		}
+	}
+}
 
 static pcb_layer_t *kicad_get_subc_layer(read_state_t *st, pcb_subc_t *subc, const char *layer_name, const char *default_layer_name)
 {
@@ -2171,14 +2186,12 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 		/* recursively parse the dom */
 		if ((st.dom.root->str != NULL) && (strcmp(st.dom.root->str, "module") == 0)) {
 			Ptr->is_footprint = 1;
+			kicad_create_fp_layers(&st, st.dom.root);
 			readres = kicad_parse_module(&st, st.dom.root->children);
 
-			if (readres == 0) {
+/*			if (readres == 0) {
 				pcb_layergrp_upgrade_to_pstk(Ptr);
-				pcb_layer_create_all_for_recipe(Ptr, st.last_sc->data->Layer, st.last_sc->data->LayerN);
-				pcb_subc_rebind(Ptr, st.last_sc);
-				pcb_data_clip_polys(st.last_sc->data);
-			}
+			}*/
 		}
 		else
 			readres = kicad_parse_pcb(&st);
