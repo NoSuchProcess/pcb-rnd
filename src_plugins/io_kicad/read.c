@@ -419,6 +419,9 @@ static int kicad_get_layeridx_auto(read_state_t *st, const char *kicad_name)
 	else if ((kicad_name[0] == 'B') && (kicad_name[1] == '.')) lyt |= PCB_LYT_BOTTOM;
 	else if ((kicad_name[0] == 'I') && (kicad_name[1] == 'n')) lyt |= PCB_LYT_INTERN;
 
+	TODO("for In, also remember the offset");
+
+	TODO("this should use the layertab instead");
 	if (pcb_strcasecmp(kicad_name, "Edge.Cuts") == 0) { lyt |= PCB_LYT_BOUNDARY; purpose = "uroute"; }
 	else if (kicad_name[1] == '.') {
 		const char *ln = kicad_name + 2;
@@ -1694,7 +1697,10 @@ pcb_layer_type_t kicad_parse_pad_layers(read_state_t *st, gsxl_node_t *subtree, 
 			if (lid < 0)
 				return kicad_error(l, "Unknown pad layer %s\n", l->str);
 
-			lyt = pcb_layer_flags(PCB_FOR_FP, lid);
+			if (st->pcb == NULL)
+				lyt = st->fp_data->Layer[lid].meta.bound.type;
+			else
+				lyt = pcb_layer_flags(st->pcb, lid);
 			lytor = lyt & PCB_LYT_ANYTHING;
 			if (any) {
 				layers->want[PCB_LYT_TOP] |= lytor;
@@ -1892,10 +1898,18 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 		if (strcmp("layer", n->str) == 0) { /* need this to sort out ONSOLDER flags etc... */
 			SEEN_NO_DUP(tally, 1);
 			if (n->children != NULL && n->children->str != NULL) {
+				pcb_layer_type_t lyt;
+
 				lid = kicad_get_layeridx(st, n->children->str);
 				if (lid < 0)
 					return kicad_error(n->children, "module layer error - unhandled layer %s", n->children->str);
-				else if (pcb_layer_flags(PCB, lid) & PCB_LYT_BOTTOM)
+
+				if (st->pcb == NULL)
+					lyt = st->fp_data->Layer[lid].meta.bound.type;
+				else
+					lyt = pcb_layer_flags(st->pcb, lid);
+
+				if (lyt & PCB_LYT_BOTTOM)
 					on_bottom = 1;
 			}
 			else
@@ -2276,7 +2290,6 @@ int io_kicad_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name
 	st.fp_data = Ptr;
 	st.Filename = name;
 	st.settings_dest = CFR_invalid;
-TODO("remove this option, set up layers in advance");
 	st.auto_layers = 1;
 
 	res = kicad_parse_file(f, &st.dom);
