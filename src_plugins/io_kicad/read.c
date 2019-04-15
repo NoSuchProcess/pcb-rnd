@@ -66,6 +66,10 @@
 /* a reasonable approximation of pcb glyph width, ~=  5000 centimils; in mm */
 #define GLYPH_WIDTH (1.27)
 
+/* If we are reading a pcb, use st->pcb, else we are reading a footprint and
+   use global PCB */
+#define PCB_FOR_FP (st->pcb == NULL ? PCB : st->pcb)
+
 typedef enum {
 	DIM_PAGE,
 	DIM_AREA,
@@ -906,8 +910,7 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 			X += mx * xalign;
 			Y += my * th / 2.0; /* centre it vertically */
 		}
-
-		pcb_text_new(ly, pcb_font(st->pcb, 0, 1), X, Y, txt.rot, txt.Scale, txt.thickness, txt.TextString, txt.Flags);
+		pcb_text_new(ly, pcb_font(PCB_FOR_FP, 0, 1), X, Y, txt.rot, txt.Scale, txt.thickness, txt.TextString, txt.Flags);
 	}
 	return 0; /* create new font */
 }
@@ -1677,7 +1680,7 @@ pcb_layer_type_t kicad_parse_pad_layers(read_state_t *st, gsxl_node_t *subtree, 
 			if (lid < 0)
 				return kicad_error(l, "Unknown pad layer %s\n", l->str);
 
-			lyt = pcb_layer_flags(st->pcb, lid);
+			lyt = pcb_layer_flags(PCB_FOR_FP, lid);
 			lytor = lyt & PCB_LYT_ANYTHING;
 			if (any) {
 				layers->want[PCB_LYT_TOP] |= lytor;
