@@ -2052,7 +2052,6 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 {
 	gsxl_node_t *n, *m;
 	int i;
-	long polycount = 0;
 	unsigned long tally = 0, required;
 	pcb_poly_t *polygon = NULL;
 	pcb_flag_t flags = pcb_flag_make(PCB_FLAG_CLEARPOLY);
@@ -2102,7 +2101,6 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 			polygon = pcb_poly_new(ly, 0, flags);
 		}
 		else if (strcmp("polygon", n->str) == 0) {
-			polycount++; /*keep track of number of polygons in zone */
 			if (kicad_parse_poly_pts(st, n->children, polygon) < 0)
 				return -1;
 		}
