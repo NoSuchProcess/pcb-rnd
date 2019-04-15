@@ -80,6 +80,7 @@ typedef struct {
 	conf_role_t settings_dest;
 	gsxl_dom_t dom;
 	unsigned auto_layers:1;
+	unsigned module_pre_create:1;
 	htsi_t layer_k2i; /* layer name-to-index hash; name is the kicad name, index is the pcb-rnd layer index */
 	long ver;
 	vtp0_t intern_copper; /* temporary storage of internal copper layers */
@@ -1836,7 +1837,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	char *mod_name;
 	pcb_subc_t *subc = NULL;
 
-	if (st->pcb == NULL) {
+	if (st->module_pre_create) {
 		/* loading a module as a footprint - always create the subc in advance */
 		subc = pcb_subc_new();
 		pcb_subc_create_aux(subc, 0, 0, 0.0, 0);
@@ -2186,7 +2187,9 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 		/* recursively parse the dom */
 		if ((st.dom.root->str != NULL) && (strcmp(st.dom.root->str, "module") == 0)) {
 			Ptr->is_footprint = 1;
+			st.ver = 4;
 			kicad_create_fp_layers(&st, st.dom.root);
+			st.module_pre_create = 1;
 			readres = kicad_parse_module(&st, st.dom.root->children);
 
 /*			if (readres == 0) {
@@ -2242,6 +2245,7 @@ int io_kicad_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name
 	st.fp_data = Ptr;
 	st.Filename = name;
 	st.settings_dest = CFR_invalid;
+TODO("remove this option, set up layers in advance");
 	st.auto_layers = 1;
 
 	res = kicad_parse_file(f, &st.dom);
@@ -2262,6 +2266,7 @@ int io_kicad_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name
 
 	htsi_init(&st.layer_k2i, strhash, strkeyeq);
 
+	st.module_pre_create = 1;
 	mres = kicad_parse_module(&st, st.dom.root->children);
 /*	if (mres == 0)
 		pcb_data_clip_polys(sc->data);*/
