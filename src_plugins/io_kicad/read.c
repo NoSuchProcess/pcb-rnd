@@ -381,6 +381,8 @@ static unsigned int kicad_reg_layer(read_state_t *st, const char *kicad_name, un
 		/* registering a new layer in buffer */
 		pcb_layer_t *ly = pcb_layer_new_bound(st->fp_data, mask, kicad_name, purpose);
 		id = ly - st->fp_data->Layer;
+		if (mask & PCB_LYT_MASK)
+			ly->comb |= PCB_LYC_SUB;
 	}
 	htsi_set(&st->layer_k2i, pcb_strdup(kicad_name), id);
 	return 0;
@@ -505,6 +507,8 @@ static pcb_layer_t *kicad_get_subc_layer(read_state_t *st, pcb_subc_t *subc, con
 	else
 		lyt = pcb_layer_flags(st->pcb, pcb_idx);
 	comb = 0;
+	if (lyt & PCB_LYT_MASK)
+		comb |= PCB_LYC_SUB;
 	return pcb_subc_get_layer(subc, lyt, comb, 1, lnm, pcb_true);
 }
 
