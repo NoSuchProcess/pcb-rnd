@@ -2284,7 +2284,7 @@ static int kicad_parse_pcb(read_state_t *st)
 		pcb_layer_id_t lid = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, "plated_slots");
 		pcb_layer_t *ly = pcb_get_layer(st->pcb->Data, lid);
 		g->ltype = PCB_LYT_MECH;
-		pcb_layergrp_set_purpose_(g, "proute");
+		pcb_layergrp_set_purpose(g, "proute");
 		if (ly != NULL)
 			ly->comb = PCB_LYC_AUTO;
 	}
