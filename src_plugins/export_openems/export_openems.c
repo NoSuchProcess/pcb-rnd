@@ -392,9 +392,9 @@ static void openems_vport_write(wctx_t *ctx, pcb_any_obj_t *o, pcb_coord_t x, pc
 		if (!isalnum(*s))
 			*s = '_';
 
-	pcb_fprintf(ctx->f, "\n%s_point(1, 1) = %mm; %s_point(2, 1) = %mm;\n", safe_name, x, safe_name, -y);
-	fprintf(ctx->f, "[%s_start, %s_stop] = CalcPcbrnd2PortV(PCBRND, %s_point, %d, %d);\n", safe_name, safe_name, safe_name, ctx->lg_pcb2ems[gid1], ctx->lg_pcb2ems[gid2]);
-	fprintf(ctx->f, "[CSX, port{%ld}] = AddLumpedPort(CSX, 999, %ld, %f, %s_start, %s_stop, [0 0 -1]%s);\n", ctx->port_id, ctx->port_id, resistance, safe_name, safe_name, act ? ", true" : "");
+	pcb_fprintf(ctx->f, "\npoint%s(1, 1) = %mm; point%s(2, 1) = %mm;\n", safe_name, x, safe_name, -y);
+	fprintf(ctx->f, "[start%s, stop%s] = CalcPcbrnd2PortV(PCBRND, point%s, %d, %d);\n", safe_name, safe_name, safe_name, ctx->lg_pcb2ems[gid1], ctx->lg_pcb2ems[gid2]);
+	fprintf(ctx->f, "[CSX, port{%ld}] = AddLumpedPort(CSX, 999, %ld, %f, start%s, stop%s, [0 0 -1]%s);\n", ctx->port_id, ctx->port_id, resistance, safe_name, safe_name, act ? ", true" : "");
 
 	free(safe_name);
 }
