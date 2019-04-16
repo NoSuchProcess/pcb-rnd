@@ -444,7 +444,6 @@ static void kicad_create_fp_layers(read_state_t *st, gsxl_node_t *subtree)
 {
 	const kicad_layertab_t *l;
 	pcb_layergrp_t *g;
-	pcb_layer_id_t lid;
 	int last_copper = 15;
 
 	pcb_layergrp_inhibit_inc();
@@ -452,7 +451,7 @@ static void kicad_create_fp_layers(read_state_t *st, gsxl_node_t *subtree)
 
 	/* one intern copper */
 	g = pcb_get_grp_new_intern(st->pcb, -1);
-	lid = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, "Inner1.Cu");
+	pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, "Inner1.Cu");
 
 	kicad_create_layer(st, 0,           "F.Cu",      "signal", subtree, last_copper);
 	kicad_create_layer(st, 1,           "Inner1.Cu", "signal", subtree, last_copper);
