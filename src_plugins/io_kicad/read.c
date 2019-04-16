@@ -2246,6 +2246,8 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 /* Parse a board from &st->dom into st->pcb */
 static int kicad_parse_pcb(read_state_t *st)
 {
+	int ret;
+
 	static const dispatch_t disp[] = { /* possible children of root */
 		{"version", kicad_parse_version},
 		{"host", kicad_parse_nop},
@@ -2274,7 +2276,20 @@ static int kicad_parse_pcb(read_state_t *st)
 
 	/* Call the corresponding subtree parser for each child node of the root
 	   node; if any of them fail, parse fails */
-	return kicad_foreach_dispatch(st, st->dom.root->children, disp);
+	ret = kicad_foreach_dispatch(st, st->dom.root->children, disp);
+
+	/* create an extra layer for plated slots so they show up properly */
+	{
+		pcb_layergrp_t *g = pcb_get_grp_new_misc(st->pcb);
+		pcb_layer_id_t lid = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, "plated_slots");
+		pcb_layer_t *ly = pcb_get_layer(st->pcb->Data, lid);
+		g->ltype = PCB_LYT_MECH;
+		pcb_layergrp_set_purpose_(g, "proute");
+		if (ly != NULL)
+			ly->comb = PCB_LYC_AUTO;
+	}
+
+	return ret;
 }
 
 static gsx_parse_res_t kicad_parse_file(FILE *FP, gsxl_dom_t *dom)
