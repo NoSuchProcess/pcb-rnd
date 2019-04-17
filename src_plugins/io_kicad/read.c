@@ -1746,7 +1746,7 @@ pcb_layer_type_t kicad_parse_pad_layers(read_state_t *st, gsxl_node_t *subtree, 
 				lyt = pcb_layer_flags(st->pcb, lid);
 			lytor = lyt & PCB_LYT_ANYTHING;
 
-			if (side_from_lyt) {
+			if ((side_from_lyt) && (smd_side == 0) && (lyt & PCB_LYT_COPPER)) {
 				if (lyt & PCB_LYT_TOP) smd_side |= PCB_LYT_TOP;
 				if (lyt & PCB_LYT_BOTTOM) smd_side |= PCB_LYT_BOTTOM;
 			}
