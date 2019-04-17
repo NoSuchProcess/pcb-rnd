@@ -1696,11 +1696,12 @@ static int kicad_parse_fp_text(read_state_t *st, gsxl_node_t *n, pcb_subc_t *sub
 
 /* Parse the (layers) subtree, set layer bits in "layers" and return smd_side 
    (PCB_LYT_ANYWHERE indicating on which side a pad is supposed to be)*/
-pcb_layer_type_t kicad_parse_pad_layers(read_state_t *st, gsxl_node_t *subtree, kicad_padly_t *layers)
+pcb_layer_type_t kicad_parse_pad_layers(read_state_t *st, gsxl_node_t *subtree, gsxl_node_t *parent, kicad_padly_t *layers)
 {
 	gsxl_node_t *l;
 	pcb_layer_type_t smd_side = 0;
 	pcb_layer_id_t lid;
+	int numly = 0;
 
 	for(l = subtree; l != NULL; l = l->next) {
 		if (l->str != NULL) {
@@ -1741,10 +1742,19 @@ pcb_layer_type_t kicad_parse_pad_layers(read_state_t *st, gsxl_node_t *subtree, 
 			}
 			else
 				layers->want[(lyt & PCB_LYT_ANYWHERE) & 7] |= lytor;
+			numly++;
 		}
 		else
 			return kicad_error(l, "unexpected empty/NULL module layer node");
 	}
+
+	if (numly == 0) {
+		kicad_warning(parent, "empty (layers) subtree in pad; assuming *.Cu");
+		layers->want[PCB_LYT_TOP] |= PCB_LYT_COPPER;
+		layers->want[PCB_LYT_BOTTOM] |= PCB_LYT_COPPER;
+		layers->want[PCB_LYT_INTERN] |= PCB_LYT_COPPER;
+	}
+
 	return smd_side;
 }
 
@@ -1822,7 +1832,7 @@ TODO("this should be coming from the s-expr file preferences part pool/io_kicad 
 		}
 		else if (strcmp("layers", m->str) == 0) {
 			SEEN_NO_DUP(feature_tally, 2);
-			smd_side = kicad_parse_pad_layers(st, m->children, &layers);
+			smd_side = kicad_parse_pad_layers(st, m->children, m, &layers);
 			if (smd_side == -1)
 				return -1;
 		}
