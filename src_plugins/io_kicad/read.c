@@ -1827,13 +1827,23 @@ TODO("this should be coming from the s-expr file preferences part pool/io_kicad 
 				return -1;
 		}
 		else if (strcmp("drill", m->str) == 0) {
+			gsxl_node_t *nd;
 			SEEN_NO_DUP(feature_tally, 3);
-			if (strcmp(m->children->str, "oval") == 0) {
-				PARSE_COORD(drillx, m, m->children->next, "module pad oval drill X");
-				PARSE_COORD(drilly, m, m->children->next->next, "module pad oval drill Y");
+			nd = m->children;
+			if (strcmp(nd->str, "offset") == 0) {
+				kicad_warning(nd, "Ignoring drill offset");
+				nd = nd->next;
+			}
+			
+			if (nd == NULL) {
+				/* do nothing; may happen if there's only an offset */
+			}
+			else if (strcmp(nd->str, "oval") == 0) {
+				PARSE_COORD(drillx, m, nd->next, "module pad oval drill X");
+				PARSE_COORD(drilly, m, nd->next->next, "module pad oval drill Y");
 			}
 			else {
-				PARSE_COORD(drillx, m, m->children, "module pad round drill");
+				PARSE_COORD(drillx, m, nd, "module pad round drill");
 				drilly = drillx;
 			}
 		}
