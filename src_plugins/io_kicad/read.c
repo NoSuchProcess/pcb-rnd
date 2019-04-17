@@ -1701,7 +1701,7 @@ pcb_layer_type_t kicad_parse_pad_layers(read_state_t *st, gsxl_node_t *subtree, 
 	gsxl_node_t *l;
 	pcb_layer_type_t smd_side = 0;
 	pcb_layer_id_t lid;
-	int numly = 0;
+	int numly = 0, side_from_lyt = 0;
 
 	for(l = subtree; l != NULL; l = l->next) {
 		if (l->str != NULL) {
@@ -1723,8 +1723,19 @@ pcb_layer_type_t kicad_parse_pad_layers(read_state_t *st, gsxl_node_t *subtree, 
 				}
 				l->str[0] = '*';
 			}
-			else
+			else {
 				lid = kicad_get_layeridx(st, l->str);
+				side_from_lyt = 1;
+			}
+
+			if (lid < 0) {
+				/* foreign language files have mismatched layer names in the stackup
+				   and in the module layer reference. Work it around for a few known
+				   cases */
+				if (strcmp(l->str, "F.Cu")) { pcb_layer_list(st->pcb, PCB_LYT_COPPER | PCB_LYT_TOP, &lid, 1); smd_side |= PCB_LYT_TOP; }
+				else if (strcmp(l->str, "B.Cu")) { pcb_layer_list(st->pcb, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &lid, 1); smd_side |= PCB_LYT_BOTTOM; }
+				else if (strcmp(l->str, "*.Cu")) pcb_layer_list(st->pcb, PCB_LYT_COPPER | PCB_LYT_TOP, &lid, 1);
+			}
 
 			if (lid < 0)
 				return kicad_error(l, "Unknown pad layer %s\n", l->str);
@@ -1734,6 +1745,12 @@ pcb_layer_type_t kicad_parse_pad_layers(read_state_t *st, gsxl_node_t *subtree, 
 			else
 				lyt = pcb_layer_flags(st->pcb, lid);
 			lytor = lyt & PCB_LYT_ANYTHING;
+
+			if (side_from_lyt) {
+				if (lyt & PCB_LYT_TOP) smd_side |= PCB_LYT_TOP;
+				if (lyt & PCB_LYT_BOTTOM) smd_side |= PCB_LYT_BOTTOM;
+			}
+
 			if (any) {
 				layers->want[PCB_LYT_TOP] |= lytor;
 				layers->want[PCB_LYT_BOTTOM] |= lytor;
@@ -2287,11 +2304,14 @@ static int kicad_parse_pcb(read_state_t *st)
 		{"gr_arc", kicad_parse_gr_arc},
 		{"gr_circle", kicad_parse_gr_arc},
 		{"gr_text", kicad_parse_gr_text},
+		{"target", kicad_parse_nop},
 		{"via", kicad_parse_via},
 		{"segment", kicad_parse_segment},
 		{"zone", kicad_parse_zone}, /* polygonal zones */
 		{NULL, NULL}
 	};
+
+ TODO("CUCP#62 the target object above ^^^ is ignored")
 
 	/* require the root node to be kicad_pcb */
 	if ((st->dom.root->str == NULL) || (strcmp(st->dom.root->str, "kicad_pcb") != 0))
