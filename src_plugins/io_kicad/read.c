@@ -2131,6 +2131,9 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			if (kicad_parse_any_arc(st, n->children, subc) != 0)
 				return -1;
 		}
+		else if (strncmp("autoplace", n->str, 9) == 0) {
+			/* ignore */
+		}
 		else
 			return kicad_error(n, "Unknown module argument: %s\n", n->str);
 	}
