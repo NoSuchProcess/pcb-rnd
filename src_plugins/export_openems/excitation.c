@@ -30,7 +30,7 @@
 #include "event.h"
 
 #define MAX_EXC 16
-#define FREQ_MAX INT_MAX
+#define FREQ_MAX ((double)(100.0*1000.0*1000.0*1000.0))
 #define AEPREFIX "openems::excitation::"
 
 typedef struct {
@@ -69,6 +69,8 @@ static const char *ser_load(const char *attrkey)
 	return pcb_attribute_get(&PCB->Attributes, attrkey);
 }
 
+#if 0
+/* unused at the moment */
 static void ser_int(int save, int widx, const char *attrkey)
 {
 	if (save) {
@@ -90,6 +92,36 @@ static void ser_int(int save, int widx, const char *attrkey)
 		}
 		else
 			hv.int_value = 0;
+
+		pcb_gui->attr_dlg_set_value(exc_ctx.dlg_hid_ctx, widx, &hv);
+	}
+}
+#endif
+
+static void ser_hz(int save, int widx, const char *attrkey)
+{
+	if (save) {
+		char tmp[128];
+		sprintf(tmp, "%f Hz", exc_ctx.dlg[widx].default_val.real_value);
+		ser_save(tmp, attrkey);
+	}
+	else {
+		pcb_hid_attr_val_t hv;
+		char *end;
+		const char *orig = ser_load(attrkey);
+
+		if (orig != NULL) {
+			hv.real_value = strtod(orig, &end);
+			if (*end != '\0') {
+				while(isspace(*end)) end++;
+				if (pcb_strcasecmp(end, "hz") != 0) {
+					pcb_message(PCB_MSG_ERROR, "Invalid real value (Hz) in board attribute '%s': '%s'\n", attrkey, orig);
+					hv.real_value = 0;
+				}
+			}
+		}
+		else
+			hv.real_value = 0;
 
 		pcb_gui->attr_dlg_set_value(exc_ctx.dlg_hid_ctx, widx, &hv);
 	}
@@ -121,14 +153,14 @@ static void exc_gaus_dad(int idx)
 {
 	PCB_DAD_BEGIN_TABLE(exc_ctx.dlg, 2);
 		PCB_DAD_LABEL(exc_ctx.dlg, "fc");
-		PCB_DAD_INTEGER(exc_ctx.dlg, "");
+		PCB_DAD_REAL(exc_ctx.dlg, "");
 			PCB_DAD_MINMAX(exc_ctx.dlg, 0, FREQ_MAX);
 			PCB_DAD_HELP(exc_ctx.dlg, "20db Cutoff Frequency [Hz]\nbandwidth is 2*fc");
 			PCB_DAD_CHANGE_CB(exc_ctx.dlg, exc_val_chg_cb);
 			exc_ctx.exc_data[idx].w[I_FC] = PCB_DAD_CURRENT(exc_ctx.dlg);
 
 		PCB_DAD_LABEL(exc_ctx.dlg, "f0");
-		PCB_DAD_INTEGER(exc_ctx.dlg, "");
+		PCB_DAD_REAL(exc_ctx.dlg, "");
 			PCB_DAD_MINMAX(exc_ctx.dlg, 0, FREQ_MAX);
 			PCB_DAD_HELP(exc_ctx.dlg, "Center Frequency [Hz]");
 			PCB_DAD_CHANGE_CB(exc_ctx.dlg, exc_val_chg_cb);
@@ -148,8 +180,8 @@ static char *exc_gaus_get(int idx)
 
 static void exc_gaus_ser(int idx, int save)
 {
-	ser_int(save, exc_ctx.exc_data[idx].w[I_F0], AEPREFIX "gaussian::f0");
-	ser_int(save, exc_ctx.exc_data[idx].w[I_FC], AEPREFIX "gaussian::fc");
+	ser_hz(save, exc_ctx.exc_data[idx].w[I_F0], AEPREFIX "gaussian::f0");
+	ser_hz(save, exc_ctx.exc_data[idx].w[I_FC], AEPREFIX "gaussian::fc");
 }
 
 #undef I_FC
@@ -163,7 +195,7 @@ static void exc_sin_dad(int idx)
 {
 	PCB_DAD_BEGIN_TABLE(exc_ctx.dlg, 2);
 		PCB_DAD_LABEL(exc_ctx.dlg, "f0");
-		PCB_DAD_INTEGER(exc_ctx.dlg, "");
+		PCB_DAD_REAL(exc_ctx.dlg, "");
 			PCB_DAD_MINMAX(exc_ctx.dlg, 0, FREQ_MAX);
 			PCB_DAD_HELP(exc_ctx.dlg, "Center Frequency [Hz]");
 			PCB_DAD_CHANGE_CB(exc_ctx.dlg, exc_val_chg_cb);
@@ -181,7 +213,7 @@ static char *exc_sin_get(int idx)
 
 static void exc_sin_ser(int idx, int save)
 {
-	ser_int(save, exc_ctx.exc_data[idx].w[I_F0], AEPREFIX "sinusoidal::f0");
+	ser_hz(save, exc_ctx.exc_data[idx].w[I_F0], AEPREFIX "sinusoidal::f0");
 }
 
 #undef I_F0
@@ -195,7 +227,7 @@ static void exc_cust_dad(int idx)
 {
 	PCB_DAD_BEGIN_TABLE(exc_ctx.dlg, 2);
 		PCB_DAD_LABEL(exc_ctx.dlg, "f0");
-		PCB_DAD_INTEGER(exc_ctx.dlg, "");
+		PCB_DAD_REAL(exc_ctx.dlg, "");
 			PCB_DAD_MINMAX(exc_ctx.dlg, 0, FREQ_MAX);
 			PCB_DAD_HELP(exc_ctx.dlg, "Nyquest Rate [Hz]");
 			PCB_DAD_CHANGE_CB(exc_ctx.dlg, exc_val_chg_cb);
@@ -220,7 +252,7 @@ static char *exc_cust_get(int idx)
 
 static void exc_cust_ser(int idx, int save)
 {
-	ser_int(save, exc_ctx.exc_data[idx].w[I_F0], AEPREFIX "custom::f0");
+	ser_hz(save, exc_ctx.exc_data[idx].w[I_F0], AEPREFIX "custom::f0");
 	ser_str(save, exc_ctx.exc_data[idx].w[I_FUNC], AEPREFIX "custom::func");
 }
 
