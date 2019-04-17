@@ -5,12 +5,12 @@
 - BUG: undo: clear rats, optimize rats, delete 1 rat then undo - it should undo the rat deletion but it undos optimization
 + BUG: kicad I/O bugs:
 	+ BUG: does not save the netlist [TwisteR]
-	+ BUG: fails to load a layout with older french or Italian layer names. Names listed at kicad-pcb.org/help/upgrading/ [report: erich]  multiple test files now in alien formats kicad; layer number seems to anchor layer, and techniccal name is just a label or hash
+	+ BUG: fails to load a layout with older french or Italian layer names. Names listed at kicad-pcb.org/help/upgrading/ ;  multiple test files now in alien formats kicad; layer number seems to anchor layer, and techniccal name is just a label or hash [report: erich]
 	+ BUG: bug_files/testcase_cnc_cesc.kicad_mod : drill offset on an smd pad - kicad seems to accept this [report: Miloh]
 + BUG: empty polygon contour in subc seems to crash pcb-rnd reliably. bug_files/STRIP-3PIN-CRASHES.lht [erich]
-+ FEATURE: template print terminal id so attributes (like term name) can be displayed; gtk dwg tooltip  should use the same template to print the term [report: Peter] (report on the mailing list)
++ FEATURE: template print terminal id so attributes (like term name) can be displayed; gtk dwg tooltip  should use the same template to print the term (report on the mailing list) [report: Peter]
 + FEATURE: external editor on buffer [report: TwisteR]
-+ FEATURE: HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark [report: Alain] -> it is already configurable as appearance/color/background, which affects both the main drawing and all previews. I do not want different backgrounds for the two.
++ FEATURE: HID: option for using a fixed background color for the preview widget renders; using the user configured one goes wrong when it's set to dark -> it is already configurable as appearance/color/background, which affects both the main drawing and all previews. I do not want different backgrounds for the two. [report: Alain]
 - DOC: OpenemsExcitation()
 
 2. For later releases ===============================================================================
