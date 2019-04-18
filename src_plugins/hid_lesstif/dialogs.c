@@ -766,7 +766,7 @@ void lesstif_attr_dlg_free(void *hid_ctx)
 		free(ctx->wl);
 		free(ctx->wltop);
 		free(ctx->id);
-		free(ctx);
+		TODO("#51: free(ctx);");
 	}
 }
 
