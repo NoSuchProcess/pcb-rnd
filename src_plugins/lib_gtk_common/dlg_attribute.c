@@ -919,6 +919,7 @@ void ghid_attr_dlg_free(void *hid_ctx)
 	ctx->wl = NULL;
 	ctx->wltop = NULL;
 	ctx->dialog = NULL;
+	TODO("#51: free(ctx);");
 }
 
 void ghid_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const pcb_hid_attr_val_t *val)
