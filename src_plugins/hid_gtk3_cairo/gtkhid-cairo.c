@@ -1542,6 +1542,8 @@ static gboolean ghid_cairo_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *
 	priv->cr_target = p;
 	priv->cr = p;
 	cairo_save(p);
+	/* clear background */
+	erase_with_background_color(p, &priv->bg_color);
 	/* calls the off-line drawing routine */
 	expcall(&gtk3_cairo_hid, ctx);
 	cairo_restore(p);
