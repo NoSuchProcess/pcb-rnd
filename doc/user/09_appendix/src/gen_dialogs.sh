@@ -35,6 +35,7 @@ echo '
 	<th> dialog box name
 	<th> action
 	<th> source
+	<th> comments
 '
 
 $trunk/util/devhelpers/list_dialogs.sh | awk -F "[\t]" '
@@ -47,12 +48,19 @@ function orna(s)
 '"$dlgtbl"'
 '"`cat dialog_extra.awk`"'
 
-function out(id, name, src, action) {
+function out(id, name, src, action, comment) {
 	if (action == "") {
 		if (id in ACTION) action = ACTION[id]
 		else if (src in ACTION) action = ACTION[src]
 	}
-	print "<tr><td>" orna(id) "<td>" orna(name) "<td>" orna(action) "<td>" src
+
+	if (comment == "") {
+		if (id in COMMENT) comment = COMMENT[id]
+		else if (src in COMMENT) comment = COMMENT[src]
+		else comment = "&nbsp;"
+	}
+
+	print "<tr><td>" orna(id) "<td>" orna(name) "<td>" orna(action) "<td>" src "<td>" comment
 }
 
 {
