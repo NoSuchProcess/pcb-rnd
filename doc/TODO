@@ -2,6 +2,7 @@
 
 1. For the upcoming release ===============================================================================
 - BUG: undo: clear rats, optimize rats, delete 1 rat then undo - it should undo the rat deletion but it undos optimization
+- BUG: lesstif: {e t} and {e r} doesn't work on a newly placed 1206 [report: Igor2]
 + BUG: kicad I/O bugs:
 	+ BUG: does not save the netlist [TwisteR]
 	+ BUG: fails to load a layout with older french or Italian layer names. Names listed at kicad-pcb.org/help/upgrading/ ;  multiple test files now in alien formats kicad; layer number seems to anchor layer, and techniccal name is just a label or hash [report: erich]
