@@ -528,7 +528,7 @@ static void build_propval(propdlg_t *ctx)
 
 static void pcb_dlg_propdlg(propdlg_t *ctx)
 {
-	const char *hdr[] = {"property", "common", "min", "max", "avg"};
+	const char *hdr[] = {"property", "common", "min", "max", "avg", NULL};
 	const char *hdr_val[] = {"use", "values"};
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	static pcb_box_t prvbb = {0, 0, PCB_MM_TO_COORD(10), PCB_MM_TO_COORD(10)};
