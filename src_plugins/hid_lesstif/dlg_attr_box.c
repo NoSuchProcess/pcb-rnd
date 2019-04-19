@@ -192,7 +192,6 @@ static int ltf_tabbed_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_att
 			XtManageChild(t);
 		}
 
-		XtVaSetValues(wtop, PxmNfillBoxFill, 1, XmNuserData, tctx, NULL);
 		XtVaSetValues(wtab, XmNmarginWidth, 0, XmNmarginHeight, 0, NULL);
 		XtManageChild(wtop);
 		XtManageChild(wtab);
@@ -220,6 +219,8 @@ static int ltf_tabbed_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_att
 		ctx->wl[i] = wtop;
 	else
 		ctx->wl[i] = wframe;
+
+	XtVaSetValues(ctx->wl[i], PxmNfillBoxFill, 1, XmNuserData, tctx, NULL);
 
 	res = attribute_dialog_add(ctx, tctx->wpages, i+1);
 
