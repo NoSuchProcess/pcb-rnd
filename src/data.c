@@ -823,7 +823,8 @@ unsigned long pcb_data_clear_obj_flag(pcb_data_t *data, pcb_objtype_t tmask, uns
 	pcb_layer_t *l;
 	unsigned long cnt = 0;
 
-	conf_core.temp.rat_warn = pcb_false;
+	if (flag & PCB_FLAG_WARN)
+		conf_core.temp.rat_warn = pcb_false;
 
 	if (tmask & PCB_OBJ_PSTK) {
 		for(n = pcb_r_first(data->padstack_tree, &it); n != NULL; n = pcb_r_next(&it))
