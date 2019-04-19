@@ -223,6 +223,7 @@
 - BUG: io_pcb hole clearance import: Peter's report: "bug: .fp/.pcb import..." ml2933 [report: Peter]
 - BUG: bug_files/bug_silk.lht: swap board, far-side color applies only to the first silk because it's not done by group but by layer [report: Peter]
 - BUG: bug_files/bug_silk.lht: while top copper layer is active, selecting/moving/deleting ojects on the bug-silk layer (diagonal line) doesn't work properly [report: Igor2]
+- BUG: bug_files/drc-pstk.lht: via-line "too close" is missed [report: Peter]
 
 3. Long term ===============================================================================
 - BUG: draw a large padstack poly (as a subc term); put some vias (padtsacks) on top of it; with gdk and gl, after the 6th via some via rings will disappear [report: James]
