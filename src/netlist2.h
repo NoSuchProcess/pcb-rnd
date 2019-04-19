@@ -140,7 +140,7 @@ typedef struct {
 	const pcb_board_t *pcb;
 	pcb_net_t *current_net;
 	htsp_t found;
-	pcb_cardinal_t changed, missing;
+	pcb_cardinal_t changed, missing, num_shorts;
 } pcb_short_ctx_t;
 
 void pcb_net_short_ctx_init(pcb_short_ctx_t *sctx, const pcb_board_t *pcb, pcb_net_t *net);
