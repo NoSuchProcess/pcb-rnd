@@ -38,20 +38,20 @@
 <tr><td>padstack<td>Edit padstack<td>PadstackEdit()<td>src_plugins/dialogs/dlg_padstack.c<td>&nbsp;
 <tr><td>pinout<td>n/a<td>pinout()<td>src_plugins/dialogs/dlg_pinout.c<td>&nbsp;
 <tr><td>plugins<td>Manage plugins<td>ManagePlugins()<td>src_plugins/dialogs/dlg_plugins.c<td>read-only list at the moment
-<tr><td>preferences<td>pcb-rnd preferences<td>n/a<td>src_plugins/dialogs/dlg_pref.c<td>&nbsp;
+<tr><td>preferences<td>pcb-rnd preferences<td>preferences()<td>src_plugins/dialogs/dlg_pref.c<td>lesstif: some tabs are unusable
 <tr><td>pref_confedit<td>pcb-rnd conf item<td>n/a<td>src_plugins/dialogs/dlg_pref_confedit.c<td>&nbsp;
-<tr><td>pref_lib_path<td>Edit library path<td>n/a<td>src_plugins/dialogs/dlg_pref_lib.c<td>&nbsp;
-<tr><td>pref_lib_path_help<td>pcb-rnd preferences: library help<td>n/a<td>src_plugins/dialogs/dlg_pref_lib.c<td>&nbsp;
-<tr><td>undo<td>pcb-rnd undo list<td>n/a<td>src_plugins/dialogs/dlg_undo.c<td>&nbsp;
-<tr><td>openems_excitation<td>openems: excitation<td>n/a<td>src_plugins/export_openems/excitation.c<td>&nbsp;
-<tr><td>mesh<td>mesher<td>n/a<td>src_plugins/export_openems/mesh.c<td>&nbsp;
-<tr><td>extedit<td>External editor<td>n/a<td>src_plugins/extedit/extedit_dad.c<td>&nbsp;
-<tr><td>poly_hatch<td>Polygon hatch<td>n/a<td>src_plugins/lib_polyhelp/polyhelp.c<td>&nbsp;
-<tr><td>propedit<td>Property editor<td>n/a<td>src_plugins/propedit/propdlg.c<td>&nbsp;
-<tr><td>report<td>n/a<td>n/a<td>src_plugins/report/report.c<td>&nbsp;
-<tr><td>live_script<td>n/a<td>n/a<td>src_plugins/script/live_script.c<td>&nbsp;
-<tr><td>scripts<td>pcb-rnd Scripts<td>n/a<td>src_plugins/script/script_act.c<td>&nbsp;
-<tr><td>shape<td>dlg_shape<td>n/a<td>src_plugins/shape/shape_dialog.c<td>&nbsp;
+<tr><td>pref_lib_path<td>Edit library path<td>n/a<td>src_plugins/dialogs/dlg_pref_lib.c<td>open from within the preferences dialog
+<tr><td>pref_lib_path_help<td>pcb-rnd preferences: library help<td>n/a<td>src_plugins/dialogs/dlg_pref_lib.c<td>open from within the preferences dialog
+<tr><td>undo<td>pcb-rnd undo list<td>UndoDialog()<td>src_plugins/dialogs/dlg_undo.c<td>&nbsp;
+<tr><td>openems_excitation<td>openems: excitation<td>OpenEMSExcitation()<td>src_plugins/export_openems/excitation.c<td>&nbsp;
+<tr><td>mesh<td>mesher<td>mesh()<td>src_plugins/export_openems/mesh.c<td>&nbsp;
+<tr><td>extedit<td>External editor<td>extedit()<td>src_plugins/extedit/extedit_dad.c<td>&nbsp;
+<tr><td>poly_hatch<td>Polygon hatch<td>hatch(interactive)<td>src_plugins/lib_polyhelp/polyhelp.c<td>&nbsp;
+<tr><td>propedit<td>Property editor<td>propedit()<td>src_plugins/propedit/propdlg.c<td>&nbsp;
+<tr><td>report<td>n/a<td>report()<td>src_plugins/report/report.c<td>&nbsp;
+<tr><td>live_script<td>n/a<td>LiveScript()<td>src_plugins/script/live_script.c<td>&nbsp;
+<tr><td>scripts<td>pcb-rnd Scripts<td>BrowseScript()<td>src_plugins/script/script_act.c<td>&nbsp;
+<tr><td>shape<td>dlg_shape<td>shape()<td>src_plugins/shape/shape_dialog.c<td>&nbsp;
 <tr><td>view*<td>view*<td>n/a<td>src_plugins/dialogs/dlg_view.c<td>&nbsp;
 
 </table>

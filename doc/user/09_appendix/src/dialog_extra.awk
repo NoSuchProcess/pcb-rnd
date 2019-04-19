@@ -19,5 +19,17 @@ BEGIN {
 	ACTION["padstack"] = "PadstackEdit()"
 	ACTION["pinout"] = "pinout()"
 	ACTION["plugins"] = "ManagePlugins()"; COMMENT["plugins"] = "read-only list at the moment"
-
+	ACTION["preferences"] = "preferences()"; COMMENT["preferences"] = "lesstif: some tabs are unusable"
+	ACTION["pref_lib_path"] = "n/a"; COMMENT["pref_lib_path"] = "open from within the preferences dialog"
+	ACTION["pref_lib_path_help"] = "n/a"; COMMENT["pref_lib_path_help"] = "open from within the preferences dialog"
+	ACTION["undo"] = "UndoDialog()"
+	ACTION["openems_excitation"] = "OpenEMSExcitation()"
+	ACTION["mesh"] = "mesh()"
+	ACTION["extedit"] = "extedit()"
+	ACTION["poly_hatch"] = "hatch(interactive)"
+	ACTION["propedit"] = "propedit()"
+	ACTION["report"] = "report()"
+	ACTION["live_script"] = "LiveScript()"
+	ACTION["scripts"] = "BrowseScript()"
+	ACTION["shape"] = "shape()"
 }
