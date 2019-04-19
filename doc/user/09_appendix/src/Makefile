@@ -1,10 +1,9 @@
 # NOTE: aagraph is at svn://repo.hu/projects/aagraph/trunk
 
-CLEANFILES=../action_reference.html ../bridges.svg ../formats.html
-
 PCBRND = ../../../../src/pcb-rnd
+CLEANFILES=../action_details.html ../action_reference.html ../formats.html ../bridges.svg ../dialogs.html
 
-all: ../action_details.html ../action_reference.html ../formats.html ../bridges.svg ../dialogs.html
+all: $(CLEANFILES)
 
 ../action_details.html: ./action_compiler.sh ../action_src/*.html
 	./action_compiler.sh ../action_src/*.html > ../action_details.html
