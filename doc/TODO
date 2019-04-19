@@ -8,7 +8,6 @@
 - BUG: lesstif: layerbinding() -> missing EXPFILL [report: Igor2]
 - BUG: lesstif: pstklib(), netlistdialog(), propedit() -> widget size allocation problem [report: Igor2]
 - BUG: lesstif: preferences dialog: library, layers, config tabs are unusable [report: Igor2]
-- BUG: lesstif: extedit C1 on 7805.pcb, exit the new pcb-rnd instance without save -> segf [report: Igor2]
 - BUG: lessitf: report(object) prints only to the console [report: Igor2]
 - BUG: BrowseScripts: missing expfill; also check on lesstif [report: Igor2]
 + BUG: kicad I/O bugs:
