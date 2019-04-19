@@ -326,6 +326,7 @@ void pcb_net_short_ctx_init(pcb_short_ctx_t *sctx, const pcb_board_t *pcb, pcb_n
 	sctx->current_net = net;
 	sctx->changed = 0;
 	sctx->missing = 0;
+	sctx->num_shorts = 0;
 	htsp_init(&sctx->found, strhash, strkeyeq);
 }
 
@@ -402,6 +403,7 @@ static void net_found_short(pcb_short_ctx_t *sctx, pcb_any_obj_t *offender)
 			PCB_FLAG_SET(PCB_FLAG_WARN, orig_o);
 	}
 	sctx->changed++;
+	sctx->num_shorts++;
 }
 
 static int net_short_check(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
@@ -708,7 +710,7 @@ pcb_cardinal_t pcb_net_add_all_rats(const pcb_board_t *pcb, pcb_rat_accuracy_t a
 			pcb_message(PCB_MSG_WARNING, "No rat for any network that has selected terminal\n");
 		else if (sctx.missing > 0)
 			pcb_message(PCB_MSG_WARNING, "Nothing more to add, but there are\neither rat-lines in the layout, disabled nets\nin the net-list, or missing components\n");
-		else
+		else if (sctx.num_shorts == 0)
 			pcb_message(PCB_MSG_INFO, "Congratulations!!\n" "The layout is complete and has no shorted nets.\n");
 	}
 
