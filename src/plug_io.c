@@ -558,6 +558,8 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		pcb_message(PCB_MSG_INFO, "Loading file %s took %f seconds of CPU time\n", new_filename, elapsed);
 #endif
 
+		conf_core.temp.rat_warn = pcb_true; /* make sure the first click can remove warnings */
+
 		return 0;
 	}
 
