@@ -17,7 +17,7 @@ all: $(CLEANFILES)
 ../formats.html: gen_formats.sh ../../../../src_plugins/io_*/*.pup ../../../../src_plugins/import_*/*.pup ../../../../src_plugins/export_*/*.pup
 	./gen_formats.sh > ../formats.html
 
-../dialogs.html: $(PCBRND) ./gen_dialogs.sh
+../dialogs.html: $(PCBRND) ./gen_dialogs.sh ./dialog_extra.awk
 	./gen_dialogs.sh > ../dialogs.html
 
 clean:  

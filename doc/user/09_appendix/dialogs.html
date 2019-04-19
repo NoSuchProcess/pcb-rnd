@@ -17,41 +17,42 @@
 	<th> dialog box name
 	<th> action
 	<th> source
+	<th> comments
 
-<tr><td>brave<td>Brave features<td>brave<td>src/brave.c
-<tr><td>progress<td>pcb-rnd progress<td>n/a<td>src/hid_dlg.c
-<tr><td>asm<td>Hand assembly with pcb-rnd<td>n/a<td>src_plugins/asm/asm.c
-<tr><td>cam<td>CAM export<td>n/a<td>src_plugins/cam/cam_gui.c
-<tr><td>constraint<td>Drawing constraints<td>n/a<td>src_plugins/ddraft/constraint_gui.c
-<tr><td>about<td>About pcb-rnd<td>n/a<td>src_plugins/dialogs/dlg_about.c
-<tr><td>prompt_for<td>n/a<td>n/a<td>src_plugins/dialogs/dlg_comm_m.c
-<tr><td>fallback_color_pick<td>Change color<td>n/a<td>src_plugins/dialogs/dlg_comm_m.c
-<tr><td>export<td>n/a<td>n/a<td>src_plugins/dialogs/dlg_export.c
-<tr><td>flags<td>Edit flags<td>n/a<td>src_plugins/dialogs/dlg_flag_edit.c
-<tr><td>fontsel<td>Font selection<td>n/a<td>src_plugins/dialogs/dlg_fontsel.c
-<tr><td>layer_binding<td>Layer bindings<td>n/a<td>src_plugins/dialogs/dlg_layer_binding.c
-<tr><td>pstk_lib<td>n/a<td>n/a<td>src_plugins/dialogs/dlg_lib_pstk.c
-<tr><td>log<td>pcb-rnd message log<td>n/a<td>src_plugins/dialogs/dlg_log.c
-<tr><td>netlist<td>pcb-rnd netlist<td>n/a<td>src_plugins/dialogs/dlg_netlist.c
-<tr><td>padstack_shape<td>Edit padstack shape<td>n/a<td>src_plugins/dialogs/dlg_padstack.c
-<tr><td>padstack<td>Edit padstack<td>n/a<td>src_plugins/dialogs/dlg_padstack.c
-<tr><td>pinout<td>n/a<td>n/a<td>src_plugins/dialogs/dlg_pinout.c
-<tr><td>plugins<td>Manage plugins<td>n/a<td>src_plugins/dialogs/dlg_plugins.c
-<tr><td>preferences<td>pcb-rnd preferences<td>n/a<td>src_plugins/dialogs/dlg_pref.c
-<tr><td>pref_confedit<td>pcb-rnd conf item<td>n/a<td>src_plugins/dialogs/dlg_pref_confedit.c
-<tr><td>pref_lib_path<td>Edit library path<td>n/a<td>src_plugins/dialogs/dlg_pref_lib.c
-<tr><td>pref_lib_path_help<td>pcb-rnd preferences: library help<td>n/a<td>src_plugins/dialogs/dlg_pref_lib.c
-<tr><td>undo<td>pcb-rnd undo list<td>n/a<td>src_plugins/dialogs/dlg_undo.c
-<tr><td>openems_excitation<td>openems: excitation<td>n/a<td>src_plugins/export_openems/excitation.c
-<tr><td>mesh<td>mesher<td>n/a<td>src_plugins/export_openems/mesh.c
-<tr><td>extedit<td>External editor<td>n/a<td>src_plugins/extedit/extedit_dad.c
-<tr><td>poly_hatch<td>Polygon hatch<td>n/a<td>src_plugins/lib_polyhelp/polyhelp.c
-<tr><td>propedit<td>Property editor<td>n/a<td>src_plugins/propedit/propdlg.c
-<tr><td>report<td>n/a<td>n/a<td>src_plugins/report/report.c
-<tr><td>live_script<td>n/a<td>n/a<td>src_plugins/script/live_script.c
-<tr><td>scripts<td>pcb-rnd Scripts<td>n/a<td>src_plugins/script/script_act.c
-<tr><td>shape<td>dlg_shape<td>n/a<td>src_plugins/shape/shape_dialog.c
-<tr><td>view*<td>view*<td>n/a<td>src_plugins/dialogs/dlg_view.c
+<tr><td>brave<td>Brave features<td>brave()<td>src/brave.c<td>&nbsp;
+<tr><td>progress<td>pcb-rnd progress<td>n/a<td>src/hid_dlg.c<td>no action API yet (but it is planned)
+<tr><td>asm<td>Hand assembly with pcb-rnd<td>asm()<td>src_plugins/asm/asm.c<td>&nbsp;
+<tr><td>cam<td>CAM export<td>cam()<td>src_plugins/cam/cam_gui.c<td>does not yet work in lesstif
+<tr><td>constraint<td>Drawing constraints<td>constraint()<td>src_plugins/ddraft/constraint_gui.c<td>&nbsp;
+<tr><td>about<td>About pcb-rnd<td>about()<td>src_plugins/dialogs/dlg_about.c<td>lesstif: needs to be resized to at least 600 pixels high
+<tr><td>prompt_for<td>n/a<td>n/a<td>src_plugins/dialogs/dlg_comm_m.c<td>not for use from actions (for internal HID use)
+<tr><td>fallback_color_pick<td>Change color<td>n/a<td>src_plugins/dialogs/dlg_comm_m.c<td>not for use from actions (for internal HID use)
+<tr><td>export<td>n/a<td>n/a<td>src_plugins/dialogs/dlg_export.c<td>&nbsp;
+<tr><td>flags<td>Edit flags<td>FlagEdit()<td>src_plugins/dialogs/dlg_flag_edit.c<td>&nbsp;
+<tr><td>fontsel<td>Font selection<td>FontSel()<td>src_plugins/dialogs/dlg_fontsel.c<td>&nbsp;
+<tr><td>layer_binding<td>Layer bindings<td>LayerBinding()<td>src_plugins/dialogs/dlg_layer_binding.c<td>&nbsp;
+<tr><td>pstk_lib<td>n/a<td>PstkLib()<td>src_plugins/dialogs/dlg_lib_pstk.c<td>does not yet work in lesstif
+<tr><td>log<td>pcb-rnd message log<td>log()<td>src_plugins/dialogs/dlg_log.c<td>&nbsp;
+<tr><td>netlist<td>pcb-rnd netlist<td>NetlistDialog()<td>src_plugins/dialogs/dlg_netlist.c<td>&nbsp;
+<tr><td>padstack_shape<td>Edit padstack shape<td>n/a<td>src_plugins/dialogs/dlg_padstack.c<td>open from within the padstack dialog
+<tr><td>padstack<td>Edit padstack<td>PadstackEdit()<td>src_plugins/dialogs/dlg_padstack.c<td>&nbsp;
+<tr><td>pinout<td>n/a<td>pinout()<td>src_plugins/dialogs/dlg_pinout.c<td>&nbsp;
+<tr><td>plugins<td>Manage plugins<td>ManagePlugins()<td>src_plugins/dialogs/dlg_plugins.c<td>read-only list at the moment
+<tr><td>preferences<td>pcb-rnd preferences<td>n/a<td>src_plugins/dialogs/dlg_pref.c<td>&nbsp;
+<tr><td>pref_confedit<td>pcb-rnd conf item<td>n/a<td>src_plugins/dialogs/dlg_pref_confedit.c<td>&nbsp;
+<tr><td>pref_lib_path<td>Edit library path<td>n/a<td>src_plugins/dialogs/dlg_pref_lib.c<td>&nbsp;
+<tr><td>pref_lib_path_help<td>pcb-rnd preferences: library help<td>n/a<td>src_plugins/dialogs/dlg_pref_lib.c<td>&nbsp;
+<tr><td>undo<td>pcb-rnd undo list<td>n/a<td>src_plugins/dialogs/dlg_undo.c<td>&nbsp;
+<tr><td>openems_excitation<td>openems: excitation<td>n/a<td>src_plugins/export_openems/excitation.c<td>&nbsp;
+<tr><td>mesh<td>mesher<td>n/a<td>src_plugins/export_openems/mesh.c<td>&nbsp;
+<tr><td>extedit<td>External editor<td>n/a<td>src_plugins/extedit/extedit_dad.c<td>&nbsp;
+<tr><td>poly_hatch<td>Polygon hatch<td>n/a<td>src_plugins/lib_polyhelp/polyhelp.c<td>&nbsp;
+<tr><td>propedit<td>Property editor<td>n/a<td>src_plugins/propedit/propdlg.c<td>&nbsp;
+<tr><td>report<td>n/a<td>n/a<td>src_plugins/report/report.c<td>&nbsp;
+<tr><td>live_script<td>n/a<td>n/a<td>src_plugins/script/live_script.c<td>&nbsp;
+<tr><td>scripts<td>pcb-rnd Scripts<td>n/a<td>src_plugins/script/script_act.c<td>&nbsp;
+<tr><td>shape<td>dlg_shape<td>n/a<td>src_plugins/shape/shape_dialog.c<td>&nbsp;
+<tr><td>view*<td>view*<td>n/a<td>src_plugins/dialogs/dlg_view.c<td>&nbsp;
 
 </table>
 </body>
