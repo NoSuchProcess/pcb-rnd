@@ -98,9 +98,8 @@ pcb_bool extedit_fd_watch(pcb_hidval_t watch, int fd, unsigned int condition, pc
 
 	res = fread(tmp, 1, sizeof(tmp), ctx->fc);
 	if (res <= 0) {
-		pcb_gui->unwatch_file(ctx->wid);
 		ctx->stay = 0;
-		return pcb_false;
+		return pcb_false; /* also disables/removes the watch */
 	}
 	return pcb_true;
 }
