@@ -567,6 +567,17 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 			pcb_hid_cfg_error(mr, "/main_menu should be a list");
 	}
 
+	mr = pcb_hid_cfg_get_menu(lesstif_cfg, "/popups");
+	if (mr != NULL) {
+		if (mr->type == LHT_LIST) {
+			lht_node_t *n;
+			for(n = mr->data.list.first; n != NULL; n = n->next)
+				add_node_to_menu(mb, NULL, n, (XtCallbackProc) callback, 0);
+		}
+		else
+			pcb_hid_cfg_error(mr, "/popups should be a list");
+	}
+
 
 	hid_cfg_mouse_init(lesstif_cfg, &lesstif_mouse);
 
