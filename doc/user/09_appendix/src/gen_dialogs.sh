@@ -2,6 +2,21 @@
 
 trunk=../../../..
 
+# exceptions
+dlgtbl='
+BEGIN {
+	# if source filename is the index and value regex-matches either id or name
+	# just ignore that line
+	IGNORE["src_plugins/dialogs/dlg_view.c"] = "<dyn>"
+	IGNORE["src_plugins/dialogs/act_dad.c"] = "<dyn>"
+
+}
+
+END {
+	out("view*", "view*", "src_plugins/dialogs/dlg_view.c")
+}
+'
+
 echo '
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -28,10 +43,20 @@ function orna(s)
 	if ((s == "") || (s == "<dyn>")) return "n/a"
 	return s
 }
+
+'"$dlgtbl"'
+
+function out(id, name, src) {
+	print "<tr><td>" orna(id) "<td>" orna(name) "<td>" src
+}
+
 {
 	id=$1
 	name=$2
-	print "<tr><td>" orna(id) "<td>" orna(name) "<td>" $3
+	src=$3
+	if ((src in IGNORE) && ((name ~ IGNORE[src]) || (id ~ IGNORE[src])))
+		next
+	out(id, name, src)
 }
 '
 
