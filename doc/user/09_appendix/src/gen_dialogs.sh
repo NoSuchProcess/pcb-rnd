@@ -23,8 +23,15 @@ echo '
 '
 
 $trunk/util/devhelpers/list_dialogs.sh | awk -F "[\t]" '
+function orna(s)
 {
-	print "<tr><td>" $1 "<td>" $2 "<td>" $3
+	if ((s == "") || (s == "<dyn>")) return "n/a"
+	return s
+}
+{
+	id=$1
+	name=$2
+	print "<tr><td>" orna(id) "<td>" orna(name) "<td>" $3
 }
 '
 
