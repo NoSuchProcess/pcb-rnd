@@ -182,7 +182,8 @@ static void ltf_tt_jumpto(ltf_tree_t *lt, tt_entry_t *e, int inhibit_cb)
 	changed = (lt->cursor != e);
 	lt->cursor = e;
 	lt->cursor->flags.is_selected = 1;
-	xm_tree_table_focus_row(lt->w, e->row_index);
+	if (e != NULL)
+		xm_tree_table_focus_row(lt->w, e->row_index);
 	REDRAW();
 
 	if ((changed) && (!inhibit_cb))
@@ -231,8 +232,13 @@ static void ltf_tree_jumpto_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb
 {
 	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
 	ltf_tree_t *lt = ht->hid_wdata;
-	tt_entry_t *e = row->hid_data;
-	ltf_tt_jumpto(lt, e, 1);
+	if (row != NULL) {
+		tt_entry_t *e = row->hid_data;
+		ltf_tt_jumpto(lt, e, 1);
+	}
+	else {
+		TODO("remove cursor");
+	}
 }
 
 static void ltf_hide_rows(ltf_tree_t *lt, tt_entry_t *root, int val, int user, int parent, int children)
