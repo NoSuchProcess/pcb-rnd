@@ -9,7 +9,6 @@ BEGIN {
 	# just ignore that line
 	IGNORE["src_plugins/dialogs/dlg_view.c"] = "<dyn>"
 	IGNORE["src_plugins/dialogs/act_dad.c"] = "<dyn>"
-
 }
 
 END {
@@ -34,6 +33,7 @@ echo '
 <tr>
 	<th> ID
 	<th> dialog box name
+	<th> action
 	<th> source
 '
 
@@ -45,9 +45,14 @@ function orna(s)
 }
 
 '"$dlgtbl"'
+'"`cat dialog_extra.awk`"'
 
-function out(id, name, src) {
-	print "<tr><td>" orna(id) "<td>" orna(name) "<td>" src
+function out(id, name, src, action) {
+	if (action == "") {
+		if (id in ACTION) action = ACTION[id]
+		else if (src in ACTION) action = ACTION[src]
+	}
+	print "<tr><td>" orna(id) "<td>" orna(name) "<td>" orna(action) "<td>" src
 }
 
 {
