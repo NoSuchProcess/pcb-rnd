@@ -159,7 +159,8 @@ static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
 			free((char *)ctx->attrs[widx].default_val.str_value);
 			ctx->attrs[widx].default_val.str_value = pcb_strdup(XmTextGetString(ctx->wl[widx]));
 			if (ctx->results != NULL) {
-				free((char *)ctx->results[widx].str_value);
+				TODO("this is a memory leak at the moment, because ctx->results[widx].str_value may be const char * in some cases; will be gone when result is gone");
+/*				free((char *)ctx->results[widx].str_value);*/
 				ctx->results[widx].str_value = ctx->attrs[widx].default_val.str_value;
 			}
 			return; /* can't rely on central copy because of the allocation */
