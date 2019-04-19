@@ -276,12 +276,13 @@ static fgw_error_t pcb_act_Export(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 1;
 	}
 
+	args[0] = NULL;
 	for(n = 1; n < argc; n++)
 		PCB_ACT_CONVARG(n, FGW_STR, Export, args[n-1] = argv[n].val.str);
 
 	pcb_exporter = pcb_hid_find_exporter(args[0]);
 	if (pcb_exporter == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Export plugin %s not found. Was it enabled in ./configure?\n", argv[0]);
+		pcb_message(PCB_MSG_ERROR, "Export plugin %s not found. Was it enabled in ./configure?\n", args[0]);
 		return 1;
 	}
 
