@@ -341,8 +341,10 @@ static void Initialize(Widget request_w, Widget new_w, ArgList args, Cardinal *n
 /*	PxmFillBoxWidget rw = (PxmFillBoxWidget) request_w;*/
 	PxmFillBoxWidget nw = (PxmFillBoxWidget) new_w;
 
-	/* Initialize one of the internal fields of the PxmFillBox widget. */
+	/* Initialize internal fields of the PxmFillBox widget. */
 	nw->fillBox.processing_constraints = False;
+	nw->core.width = nw->core.height = 0;
+	nw->fillBox.margin_width = nw->fillBox.margin_height = 0;
 }
 
 
