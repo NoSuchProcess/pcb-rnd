@@ -21,7 +21,7 @@ all: ../action_details.html ../action_reference.html ../dialogtable.html ../form
 ../formats.html: gen_formats.sh ../../../../src_plugins/io_*/*.pup ../../../../src_plugins/import_*/*.pup ../../../../src_plugins/export_*/*.pup
 	./gen_formats.sh > ../formats.html
 
-../dialogs.html: $(PCBRND)
+../dialogs.html: $(PCBRND) ./gen_dialogs.sh
 	./gen_dialogs.sh > ../dialogs.html
 
 clean:  
