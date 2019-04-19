@@ -723,13 +723,13 @@ static void Layout(Widget wid, Widget instigator)
 	Dimension mh = gw->fillBox.margin_height;
 	Dimension TotalWidthOfFillBoxWidget = gw->core.width;
 	Dimension TotalHeightOfFillBoxWidget = gw->core.height;
-	Dimension AvailWidthForChildren, AvailHeightForChildren;
-	Dimension pos, extra, total, wextra;
+	long AvailWidthForChildren, AvailHeightForChildren;
+	long pos, extra = 0, total = 0, wextra = 0;
 	unsigned int i;
 	int numfills, vert = gw->fillBox.vertical;
 
-	AvailWidthForChildren = TotalWidthOfFillBoxWidget - 2 * mw;
-	AvailHeightForChildren = TotalHeightOfFillBoxWidget - 2 * mh;
+	AvailWidthForChildren = (long)TotalWidthOfFillBoxWidget - 2 * (long)mw;
+	AvailHeightForChildren = (long)TotalHeightOfFillBoxWidget - 2 * (long)mh;
 
 
 	/* calculate the extra space we need to allocate and reset width/height of each widget temporarily */
@@ -766,10 +766,12 @@ static void Layout(Widget wid, Widget instigator)
 			extra = AvailHeightForChildren - total;
 		else
 			extra = AvailWidthForChildren - total;
+		if (extra < 0)
+			extra = 0;
 		wextra = extra / numfills;
 	}
 
-/*printf("avail=%d total=%d extra=%d numfills=%d wextra=%d vert=%d\n", AvailWidthForChildren, total, extra, numfills, wextra, gw->fillBox.vertical);*/
+	/* printf("avail=%ld:%ld total=%ld extra=%ld numfills=%d wextra=%ld vert=%d\n", AvailWidthForChildren, AvailHeightForChildren, total, extra, numfills, wextra, gw->fillBox.vertical); */
 
 	/* sequential layout, insert extra space in children with fill turned on */
 	pos = mw;
@@ -826,6 +828,7 @@ static void Layout(Widget wid, Widget instigator)
 		else {
 			ic->core.x = ChildsStartingX;
 			ic->core.y = ChildsStartingY;
+/*			printf(" {%d %d}\n", ic->core.x, ic->core.y);*/
 			ic->core.width = ChildsActualWidth;
 			ic->core.height = ChildsActualHeight;
 			ic->core.border_width = cb;
