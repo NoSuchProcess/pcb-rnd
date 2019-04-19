@@ -29,7 +29,7 @@ echo '
 <h1> pcb-rnd User Manual: Appendix </h1>
 <p>
 <h2> List of GUI dialog boxes </h2>
-<table>
+<table border=1 cellspacing=0>
 <tr>
 	<th> ID
 	<th> dialog box name
