@@ -1,3 +1,4 @@
 - rename:
 	- conf_*
 - remove menu_toggle_update_cb()
+- pcb-rnd: remove dad result & rethink static export tables, rename default_val to val
