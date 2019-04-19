@@ -3,6 +3,17 @@
 1. For the upcoming release ===============================================================================
 - BUG: undo: clear rats, optimize rats, delete 1 rat then undo - it should undo the rat deletion but it undos optimization
 - BUG: lesstif: {e t} and {e r} doesn't work on a newly placed 1206 [report: Igor2]
+- BUG: lesstif: segfault at the end of asm (pretend everything is done) with src/7805.pcb [report: Igor2]
+- BUG: lesstif: segfault in constraint: set line constraints, apply, edit, apply -> valgrind problems? [report: Igor2]
+- BUG: lesstif: about box: if not high enough, hbox/vbox/tab gets confused [report: Igor2]
+- BUG: lesstif: export(), openemsexcitation(), propedit() -> insta segf [report: Igor2]
+- BUG: lesstif: fontsel() -> no buttons [report: Igor2]
+- BUG: lesstif: layerbinding() -> missing EXPFILL [report: Igor2]
+- BUG: lesstif: pstklib(), netlistdialog() -> widget size allocation problem [report: Igor2]
+- BUG: lesstif: preferences dialog: library, layers, config tabs are unusable [report: Igor2]
+- BUG: lesstif: extedit C1 on 7805.pcb, exit the new pcb-rnd instance without save -> segf [report: Igor2]
+- BUG: lessitf: report(object) prints only to the console [report: Igor2]
+- BUG: BrowseScripts: missing expfill; also check on lesstif [report: Igor2]
 + BUG: kicad I/O bugs:
 	+ BUG: does not save the netlist [TwisteR]
 	+ BUG: fails to load a layout with older french or Italian layer names. Names listed at kicad-pcb.org/help/upgrading/ ;  multiple test files now in alien formats kicad; layer number seems to anchor layer, and techniccal name is just a label or hash [report: erich]
