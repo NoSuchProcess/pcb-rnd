@@ -306,7 +306,7 @@ pcb_any_obj_t *pcb_term_find_name(const pcb_board_t *pcb, pcb_data_t *data, pcb_
 	int l;
 
 	if (lyt == 0)
-		return pcb_false;
+		return NULL;
 
 	if ((subc = pcb_subc_by_refdes(data, subc_name)) == NULL)
 		return NULL;
