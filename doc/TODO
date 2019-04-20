@@ -208,6 +208,7 @@
 		- padstacks
 		- new outline/mech layers and slots
 		- new doc layers
+- FEATURE: scripting: example script that tents/untents all/selected/object vias [report: keantoken]
 - FEATURE: lihata v7
 	- remove via geometry from route style
 	- remove netlist net ->style, should be a plain attribute (but keep the dedicated field in old versions)
