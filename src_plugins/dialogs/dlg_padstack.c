@@ -626,13 +626,13 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 }
 
 /* Auto gen shape on a single layer */
-static void pse_gen_shape(pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, int shape, pcb_coord_t size)
+static int pse_gen_shape(pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, int shape, pcb_coord_t size)
 {
 	int idx = ts->len;
 
 	if (size <= 0) {
 		pcb_message(PCB_MSG_ERROR, "Invalid size - has to be larger than 0\n");
-		return;
+		return -1;
 	}
 
 	ts->len++;
@@ -661,6 +661,7 @@ static void pse_gen_shape(pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, int shape
 			ts->shape[idx].data.poly.y[3] = ts->shape[idx].data.poly.y[0];
 			break;
 	}
+	return 0;
 }
 
 /* Auto derive shape from the related copper layer */
@@ -675,6 +676,7 @@ static void pse_drv_shape(pcb_pstk_proto_t *proto, pcb_pstk_tshape_t *ts, pcb_la
 /* Auto gen shapes for all layers the user selected on the dialog plus add the hole */
 static void pse_gen(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
+	int err = 0;
 	pse_t *pse = caller_data;
 	pcb_pstk_proto_t proto;
 	int sides = pse->attrs[pse->gen_sides].default_val.int_value;
@@ -694,9 +696,11 @@ static void pse_gen(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	ts->smirror = 0;
 	ts->len = 0;
 
-	if (lyt & PCB_LYT_TOP)     pse_gen_shape(ts, PCB_LYT_COPPER | PCB_LYT_TOP, shape, size);
-	if (lyt & PCB_LYT_BOTTOM)  pse_gen_shape(ts, PCB_LYT_COPPER | PCB_LYT_BOTTOM, shape, size);
-	if (lyt & PCB_LYT_INTERN)  pse_gen_shape(ts, PCB_LYT_COPPER | PCB_LYT_INTERN, shape, size);
+	if (lyt & PCB_LYT_TOP)     err |= pse_gen_shape(ts, PCB_LYT_COPPER | PCB_LYT_TOP, shape, size);
+	if (lyt & PCB_LYT_BOTTOM)  err |= pse_gen_shape(ts, PCB_LYT_COPPER | PCB_LYT_BOTTOM, shape, size);
+	if (lyt & PCB_LYT_INTERN)  err |= pse_gen_shape(ts, PCB_LYT_COPPER | PCB_LYT_INTERN, shape, size);
+	if (err)
+		return;
 	if (expose) {
 		if (lyt & PCB_LYT_TOP)    pse_drv_shape(&proto, ts, PCB_LYT_TOP, paste);
 		if (lyt & PCB_LYT_BOTTOM) pse_drv_shape(&proto, ts, PCB_LYT_BOTTOM, paste);
