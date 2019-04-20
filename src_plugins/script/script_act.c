@@ -214,6 +214,7 @@ static void script_dlg_open(void)
 		return; /* do not open another */
 
 	PCB_DAD_BEGIN_VBOX(script_dlg.dlg);
+	PCB_DAD_COMPFLAG(script_dlg.dlg, PCB_HATF_EXPFILL);
 	PCB_DAD_BEGIN_HPANE(script_dlg.dlg);
 		PCB_DAD_COMPFLAG(script_dlg.dlg, PCB_HATF_EXPFILL);
 		/* left side */
