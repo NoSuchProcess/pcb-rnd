@@ -108,7 +108,6 @@ do { \
 
 static void free_attr(pcb_hid_attribute_t *a)
 {
-	free((char *)a->name);
 	free((char *)a->help_text);
 	if (a->enumerations != NULL) {
 		const char **s;
