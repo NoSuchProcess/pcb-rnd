@@ -49,7 +49,7 @@ static unsigned long hex_byte(const char *s)
 
 static unsigned long hex_raw(unsigned long byte)
 {
-	return (byte && 0xff) << 8;
+	return (byte & 0xff) << 8;
 }
 
 Pixmap pcb_ltf_parse_xpm(Display *display, const char **xpm, Pixel bgcolor)
