@@ -1757,7 +1757,7 @@ static void lesstif_do_export(pcb_hid_attr_val_t * options)
 	stdarg(XmNmessageWindow, messages);
 	XtSetValues(mainwind, stdarg_args, stdarg_n);
 
-	if (background_image_file)
+	if ((background_image_file != NULL) && (*background_image_file != '\0'))
 		LoadBackgroundImage(background_image_file);
 
 	XtRealizeWidget(appwidget);
