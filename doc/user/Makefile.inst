@@ -105,7 +105,7 @@ install_all:
 	$(SCCBOX) $(HOW) 09_appendix/action_reference.html $(USERDIR)/09_appendix/action_reference.html
 	$(SCCBOX) $(HOW) 09_appendix/bridges.svg $(USERDIR)/09_appendix/bridges.svg
 	$(SCCBOX) $(HOW) 09_appendix/combined_glossary.html $(USERDIR)/09_appendix/combined_glossary.html
-	$(SCCBOX) $(HOW) 09_appendix/dialogtable.html $(USERDIR)/09_appendix/dialogtable.html
+	$(SCCBOX) $(HOW) 09_appendix/dialogs.html $(USERDIR)/09_appendix/dialogs.html
 	$(SCCBOX) $(HOW) 09_appendix/external_resources.html $(USERDIR)/09_appendix/external_resources.html
 	$(SCCBOX) $(HOW) 09_appendix/formats.html $(USERDIR)/09_appendix/formats.html
 	$(SCCBOX) $(HOW) 09_appendix/index.html $(USERDIR)/09_appendix/index.html
