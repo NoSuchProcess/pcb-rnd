@@ -6,6 +6,7 @@ switch /local/pcb/export_vfs_fuse/controls
 	default
 		put /local/pcb/mod/CFLAGS   [@@/target/libs/sul/fuse/cflags@@]
 		put /local/pcb/mod/LDFLAGS  [@@/target/libs/sul/fuse/ldflags@@]
+		append /local/pcb/mod/DISTCLEANFILES { $(PLUGDIR)/export_vfs_fuse/fuse_includes.h }
 	end
 end
 

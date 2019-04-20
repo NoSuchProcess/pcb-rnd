@@ -65,6 +65,7 @@ include  /local/pcb/tmpasm/plugin_sphash
 include  /local/pcb/tmpasm/plugin_intconf
 
 append /local/pcb/CLEANFILES ?/local/pcb/mod/CLEANFILES
+append /local/pcb/DISTCLEANFILES ?/local/pcb/mod/DISTCLEANFILES
 
 put /local/pcb/mod/enabled {}
 put /local/pcb/mod/OBJS {}
@@ -75,6 +76,7 @@ put /local/pcb/mod/YACC {}
 put /local/pcb/mod/LEX {}
 put /local/pcb/mod/SPHASH {}
 put /local/pcb/mod/CLEANFILES {}
+put /local/pcb/mod/DISTCLEANFILES {}
 put /local/pcb/mod {}
 put /local/pcb/mod/CONFFILE {}
 put /local/pcb/mod/CONFVAR  {}
