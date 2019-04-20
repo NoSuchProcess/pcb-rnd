@@ -1,6 +1,6 @@
 How to get a release candidate tarball in /tmp:
 
-  ver=2.1.1
+  ver=2.1.2
   cd /tmp
   svn export svn://repo.hu/pcb-rnd/trunk pcb-rnd-$ver
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
