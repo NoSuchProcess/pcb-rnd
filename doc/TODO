@@ -77,7 +77,7 @@
 	- CLEANUP: remove PCB_MIN_PINORVIA* PCB_DEFAULT_DRILLINGHOLE macros - nothing should use them anymore
 	- add text font, update the pool node text_edit [report: Igor2]
 - BUG: autorouter broke on polygons: bug_files/ara.lht, {a r a}, bisect; broke before r14572 [report: Igor2]
-- CLEANUP: add the thin line draw optimization to the filled poly optimization, including hole, in hid_draw_helper (search for last_x); make this configurable for both (exporters shall not optimize!); remove the similar optimization from hidgl triangulation [report: Ade]
+- CLEANUP: add the thin line draw optimization to the filled poly optimization, including hole, in hid_draw_helper (search for last_x); make this configurable for both (exporters shall not optimize!); remove the similar optimization from hidgl triangulation and gdk and lesstif [report: Ade, Peter]
 - FEATURE: fontsel: ttf import?
 - FEATURE: tedax etest save (board save too)
 - FEATURE/BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
