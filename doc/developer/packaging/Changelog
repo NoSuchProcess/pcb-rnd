@@ -6,6 +6,19 @@ How to get a release candidate tarball in /tmp:
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
 
 
+Packaging changes between 2.1.1 and 2.1.2
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A. changes that probably don't need action
+
+1. Fixed typo in the packages.html: pcb-rnd-hid-gtk2-dl -> pcb-rnd-hid-gtk2-gl
+
+B. changes that probably DO need action
+
+1. Fixed wording in the description of package pcb-rnd-io-alien:
+   "PCB board" -> "PCB layout" (to avoid redundancy with the acrynom)
+   Please adjust the description of your package.
+
+
 Packaging changes between 2.1.0 and 2.1.1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
