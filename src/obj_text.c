@@ -1182,13 +1182,13 @@ static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const
 					pcb_gui->draw_line(pcb_crosshair.GC, px[0] + xordx, py[0] + xordy, px[1] + xordx, py[1] + xordy);
 					pcb_gui->draw_line(pcb_crosshair.GC, px[1] + xordx, py[1] + xordy, px[2] + xordx, py[2] + xordy);
 					pcb_gui->draw_line(pcb_crosshair.GC, px[2] + xordx, py[2] + xordy, px[3] + xordx, py[3] + xordy);
-					pcb_gui->draw_line(pcb_crosshair.GC, px[3] + xordx, py[3] + xordy, px[4] + xordx, py[4] + xordy);
+					pcb_gui->draw_line(pcb_crosshair.GC, px[3] + xordx, py[3] + xordy, px[0] + xordx, py[0] + xordy);
 				}
 				else {
 					pcb_gui->draw_line(pcb_draw_out.fgGC, px[0], py[0], px[1], py[1]);
 					pcb_gui->draw_line(pcb_draw_out.fgGC, px[1], py[1], px[2], py[2]);
 					pcb_gui->draw_line(pcb_draw_out.fgGC, px[2], py[2], px[3], py[3]);
-					pcb_gui->draw_line(pcb_draw_out.fgGC, px[3], py[3], px[4], py[4]);
+					pcb_gui->draw_line(pcb_draw_out.fgGC, px[3], py[3], px[0], py[0]);
 				}
 			}
 			else {
