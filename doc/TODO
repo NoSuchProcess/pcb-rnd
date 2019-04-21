@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 + BUG: kicad I/O bugs:
 	+ BUG: does not save the netlist [TwisteR]
-+ BUG: empty polygon contour in subc seems to crash pcb-rnd reliably. bug_files/STRIP-3PIN-CRASHES.lht [erich]
 + FEATURE: external editor on buffer [report: TwisteR]
 
 1. For the upcoming release ===============================================================================
