@@ -186,11 +186,6 @@
 		- new outline/mech layers and slots
 		- new doc layers
 - FEATURE: scripting: example script that tents/untents all/selected/object vias [report: keantoken]
-- FEATURE: lihata v7
-	- remove via geometry from route style
-	- remove netlist net ->style, should be a plain attribute (but keep the dedicated field in old versions)
-	- save and load rat anchor object idpath
-	- poly side clearance when it is introduced in the data model3
 - BUG: lesstif clip_set() doesn't seem to affect the X clipboard
 - BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
@@ -235,6 +230,11 @@
 - vendor drill plugin:
 	- CLEANUP: check if we want to keep vendor name
 	- FEATURE: vendor: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
+- FEATURE: lihata v7
+	- remove via geometry from route style
+	- remove netlist net ->style, should be a plain attribute (but keep the dedicated field in old versions)
+	- save and load rat anchor object idpath
+	- poly side clearance when it is introduced in the data model3
 
 Lesstif:
 	- implement/enable local grid in lesstif (menu option is disabled)
