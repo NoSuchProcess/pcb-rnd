@@ -1,0 +1,16 @@
+When invoked without argument or with <arg>interactive</arg> a dialog box
+is presented, allowing the user to do the same operations as with the
+action.
+<p>
+If the first argument <arg>select</arg>, further OpenEMS exports will use
+the excitation named in the <arg>excitationname</arg> argument (in short:
+the excitation is selected).
+<p>
+Arguments <arg>set</arg> and <arg>get</arg> is used to read or change an
+excitation parameter named in <arg>paramname</arg>. When <arg>excitationname</arg>
+is not set, they operate on the currently selected excitation. For <arg>set</arg>
+the <arg>paramval</arg> argument is mandatory.
+<p>
+Note: the code remembers all settings for all excitements, not only the 
+excitement that is currently selected. The selection and all parameters are
+saved as board attributes.

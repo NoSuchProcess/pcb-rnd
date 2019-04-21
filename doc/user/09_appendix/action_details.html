@@ -2577,6 +2577,48 @@ print 42*3
  
 </dd></dl>
 
+<h2 id="openemsexcitation">OpenemsExcitation</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+OpenemsExcitation([interactive])
+OpenemsExcitation(select, excitationname)
+OpenemsExcitation(set, [excitationnme], paramname, paramval)
+OpenemsExcitation(get, [excitationnme], paramname)
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Select which openEMS excitation method should be exported and manipulate the associated parameters. When invoked without arguments a dialog box with the same functionality is presented.
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+openems HID
+</table>
+<p>
+When invoked without argument or with 
+<i>interactive</i>
+ a dialog box is presented, allowing the user to do the same operations as with the action. 
+<p>
+ If the first argument 
+<i>select</i>
+, further OpenEMS exports will use the excitation named in the 
+<i>excitationname</i>
+ argument (in short: the excitation is selected). 
+<p>
+ Arguments 
+<i>set</i>
+ and 
+<i>get</i>
+ is used to read or change an excitation parameter named in 
+<i>paramname</i>
+. When 
+<i>excitationname</i>
+ is not set, they operate on the currently selected excitation. For 
+<i>set</i>
+ the 
+<i>paramval</i>
+ argument is mandatory. 
+<p>
+ Note: the code remembers all settings for all excitements, not only the  excitement that is currently selected. The selection and all parameters are saved as board attributes.
+</dd></dl>
+
 <h2 id="pan">pan</h2>
 <dl><dd>
 <p>

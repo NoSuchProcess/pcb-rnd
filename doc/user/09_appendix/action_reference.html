@@ -12,7 +12,7 @@
 <h2> Action Reference</h2>
 <table border=1>
 <caption>\n <b>
-This is pcb-rnd 2.1.1 (svn r23108) an interactive printed circuit board editor ,  Revision: 24700
+This is pcb-rnd 2.1.1 (svn r23108) an interactive printed circuit board editor ,  Revision: 24770
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -158,7 +158,7 @@ This is pcb-rnd 2.1.1 (svn r23108) an interactive printed circuit board editor ,
 <tr><td>NewGroup</td><td>Create a new layer group with a single, positive drawn layer in it</td><td>NewGroup(type [,location [, purpose[, auto|sub]]])</td><td></td>
 <tr><td>Normalize</td><td>Move all objects within the drawing area, align the drawing to 0;0</td><td>Normalize()</td><td></td>
 <tr><td>Oneliner</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
-<tr><td>OpenemsExcitation</td><td>Select which openEMS excitation method should be exported and manipulate the associated parameters. When invoked without arguments a dialog box with the same functionality is presented.</td><td>OpenemsExcitation([interactive])<br>OpenemsExcitation(select, excitationname)<br>OpenemsExcitation(set, [excitationnme], paramname, paramval)<br>OpenemsExcitation(get, [excitationnme], paramname)</td><td>openems HID</td>
+<tr><td><a href="action_details.html#openemsexcitation">OpenemsExcitation</a></td><td>Select which openEMS excitation method should be exported and manipulate the associated parameters. When invoked without arguments a dialog box with the same functionality is presented.</td><td>OpenemsExcitation([interactive])<br>OpenemsExcitation(select, excitationname)<br>OpenemsExcitation(set, [excitationnme], paramname, paramval)<br>OpenemsExcitation(get, [excitationnme], paramname)</td><td>openems HID</td>
 <tr><td>OptAutoOnly</td><td>Toggles the optimize-only-autorouted flag.</td><td>OptAutoOnly()</td><td>oldactions plugin</td>
 <tr><td>PCBChanged</td><td>Tells the GUI that the whole PCB has changed. The optional "revert"parameter can be used as a hint to the GUI that the same design is beingreloaded, and that it might keep some viewport settings</td><td>PCBChanged([revert])</td><td>oldactions plugin</td>
 <tr><td>PadstackBreakup</td><td>Break up a padstack into one non-padstack object per layer type (the hole is ignored)</td><td>PadstackBreakup(buffer|selected|objet)</td><td></td>
