@@ -104,9 +104,7 @@
 	- padstack
 	- clearing polygon
 	- text
-- BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
 - SUBC: element removal:
-	- FEATURE: "thermal recipe" so a padstack thermal can be put in a subc and it is change with the layer binding [report: jg]
 	- CLEANUP: convert pcblib to subcircuits:
 		- revise the value attribute - should be empty by default
 		- remove old install elements
@@ -236,6 +234,8 @@
 - BUG: draw a large padstack poly (as a subc term); put some vias (padtsacks) on top of it; with gdk and gl, after the 6th via some via rings will disappear [report: James]
 	-> reason: order of padstack shape rendering is random
 	-> we should probably render large objects first then smaller ones
+- BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
+- FEATURE: "thermal recipe" so a padstack thermal can be put in a padstack or subc and it is change with the layer binding [report: jg]
 
 Lesstif:
 	- implement/enable local grid in lesstif (menu option is disabled)
