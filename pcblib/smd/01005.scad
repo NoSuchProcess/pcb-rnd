@@ -1,4 +1,4 @@
-module part_1206(len=3.2, width=1.6, height=0.6, pad_len=0.5)
+module part_01005(len=0.4, width=0.2, height=0.13, pad_len=0.1)
 {
 	union() {
 		translate([0,0,height/2]) {
@@ -17,4 +17,3 @@ module part_1206(len=3.2, width=1.6, height=0.6, pad_len=0.5)
 		}
 	}
 }
-
