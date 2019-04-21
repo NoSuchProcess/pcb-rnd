@@ -230,6 +230,7 @@
 - BUG: bug_files/drc-pstk.lht: via-line "too close" is missed [report: Peter]
 - BUG: direct gerber export (with which naming style?) results in empty drill gbrs ml=2928 [report: Peter]
 - BUG: png export: the no-plating mark should not be drawn on png unless 'as-shown' is enabled ml=2931 [report: Peter]
+- BUG: bug_files/warn.lht: load, click to somewhere to remove the warning (orange): object flag cleared but the board is not marked as changed [report: Peter]
 
 3. Long term ===============================================================================
 - BUG: draw a large padstack poly (as a subc term); put some vias (padtsacks) on top of it; with gdk and gl, after the 6th via some via rings will disappear [report: James]
