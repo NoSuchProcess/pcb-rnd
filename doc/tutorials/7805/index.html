@@ -5,92 +5,41 @@
 		A project is just a directory that holds at least the schematics, but
 		usually also the pcb layout file and scripts.</i>
 		<p>
-		Start the new project by creating an empty directory. Start
-		gschem with an empty design and save it in the project directory.
-		Place the following symbols and edit/add these attributes:
+		Start the new project by creating an empty directory. Draw
+		the schematics with any schematics editor supported by pcb-rnd and
+		save it in this new directory. On the schematics
+		place the following symbols and edit/add these attributes:
 		<ul>
 			<li> 7805, footprint=TO220, refdes=U1
-			<li> connector-3-2, footprint=connector(3,1), refdes=CONN1
-			<li> connector-2-2, footprint=connector(2,1), refdes=CONN2
-			<li> capacitor-2, fooptrint=rcy(200), value=47uF, refdes=C1
-			<li> capacitor-1, fooptrint=0805, value=100nF, refdes=C2
-			<li> capacitor-2, fooptrint=0805, value=100nF, refdes=C2
-			<li> gnd-1
+			<li> 2 pin connector, footprint=connector(1,2), refdes=J1
+			<li> 2 pin connector, footprint=connector(1,2), refdes=J2
+			<li> polarized capacitor, fooptrint=rcy(200), value=100uF, refdes=C3
+			<li> capacitor, fooptrint=acy(200), value=100nF, refdes=C1
+			<li> capacitor, fooptrint=acy(200), value=100nF, refdes=C2
+			<li> gnd
 		</ul>
 		<p>
 		Arrange and connect the pins as shown below.
 		<p>
 		<img src="sch.png" alt="schematics">
 		<p>
-		Save the design as 7805.sch.
-		<H3> Step 2: build script </H3>
-		<p>
-		<i>We are going to use a Makefile in this example to demonstrate
-		how to automate certain steps. In a fully automated project all
-		data exchange between the various tools (schematics editor, pcb-rnd,
-		simulators, etc.) is done by scripts. Generating the documentation
-		and exporting various other output like gerbers are usually automated
-		the same way. (As an alternative, all these can be done manually, from
-		the GUI as well.)</i>
-		<p>
-		Create a new file called Makefile and edit it using your favorite text
-		editor to the following:
-		<pre>
-7805.lht: 7805.sch
-	gsch2pcb-rnd -m import 7805.sch
 
-clean:
-	rm -f 7805.cmd
-		</pre>
-		<p>
-		The first rule calls the forward annotation utility, gsch2pcb-rnd to
-		create a forward annotation command file called 7805.cmd when the
-		schematics file is newer than the layout file (7805.lht). The second
-		rule removes such a command file to make the directory clean of
-		auto-generated temporary files.
+<h3> Step 2: export the netlist as needed </h3>
+<p>
+Depending on the schematics capture software you choose, you may need to
+export a netlist that can be imported in pcb-rnd.
+<p>
+TODO: create a pool node on this
 
-		<H3> Step 3: Create the initial board </H3>
-		<p>
-		<i>The layout process usually starts when there's at least a partially
-		finished schematics is available. The most common workflow is that
-		changes and improvements in the schematics are forward annotated to
-		the layout.</i>
-		<p>
-		Start pcb-rnd. This will load the system-installed template board
-		as a new, empty design. Save it in the project directory as 7805.lht.
-		<p>
-		Start a shell (but don't close pcb-rnd); in the project directory,
-		type <tt>make</tt>. This will create 7805.cmd that contains a pcb-rnd
-		action script that can sync a board to the information extracted from
-		the schematics.
-		<p>
-		Back in pcb-rnd, type ":ExecuteFile(7805.cmd)" and press enter. The colon
-		will open the CLI entry where the ExecuteFile(filename) is an action that
-		will load the file named and execute each line as an action.
-		<p>
-		At the end of the process, the layout should have all footprints. Press
-		'o' and the logical connections will show up as a "rats nest".
+<h3> Step 3: lay out the board </h3>
+<p>
+Please follow <a href="../16_tdx_netlist/index.html#step2"> the tEDAx netlist
+tutorial from step2 </a> for laying out the board.
 
-		<H3> Step 4: Lay out the board </H3>
-		<p>
-		Move the subcircuits around. Pressing 'o' after some moves will re-optimize
-		the rats. As rats nest gets simpler and simpler, this can help choosing
-		the best placement. All components started out on the component (top) side.
-		Hover the mouse over the 0805 capacitors and press 'b' - this will send
-		them to the solder side.
-		<p>
-		After the placement, pick the solder layer to draw on and use the line tool
-		to draw the traces. Change the style to 'Power' or 'Fat' to get wider
-		traces. Press 'o' after drawing a few connections. When only the ground
-		network is left, use the rectangle tool to draw a large polygon on the
-		solder-gnd layer. Use the thermal tool to connect pins to the ground polygon.
-		The thermal tool does not work on SMD pads, they need to be connected using
-		lines.
-		<p>
-		When everything is connected, pressing 'o' will remove the last rat line.
-		The message log window also shows how many rats are remaining when 'o'
-		is pressed. The message log can be opened using the
-		<i>Window/Message Log</i> menu.
+<h3> Step 4: updates: forward annotation </h3>
+<p>
+If you need to change the schematics later, re-export it from the schematics
+editor and re-import it from pcb-rnd. If the format included importing
+footprints, all new footprints will be imported. The netlist will be updated.
+press {c r} after the import and update the board to reflect schematics changes.
 
-		<H3> Step 5: updates </H3>
-		<p>
