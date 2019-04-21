@@ -1,0 +1,29 @@
+tEDAx v1
+begin netlist v1 linear_stab
+	conn gnd U1 2
+	conn gnd J1 2
+	conn gnd J2 2
+	conn in U1 1
+	conn in J1 1
+	conn out U1 3
+	conn out J2 1
+	conn gnd C1 2
+	conn in C1 1
+	conn gnd C2 2
+	conn out C2 1
+	conn gnd C3 2
+	conn out C3 1
+	footprint J1 connector(1,2)
+	footprint J2 connector(1,2)
+	footprint U1 TO220
+	footprint C1 acy(200)
+	footprint C2 acy(200)
+	footprint C3 rcy(200)
+	value C1 100 nf
+	value C2 100 nf
+	value C3 100 uf
+	device C1 ceramic\ capacitor
+	device C2 ceramic\ capacitor
+	device C3 electrolithic\ capacitor
+	device U1 7805
+end netlist

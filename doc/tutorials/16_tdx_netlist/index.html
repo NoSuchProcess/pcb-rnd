@@ -1,0 +1,38 @@
+<h3> Step 1: import the schematics </h3>
+<p>
+Our schematics is coming from a tEDAx netlist, which is a bit more than
+just a list of networks: it also contains information about footprints and
+device attributes.
+<p>
+Start with an empty board and import the schematics information from
+7805.tdx using the File menu, Import submenu, Import tEDAx schematics submenu.
+<p>
+All subcircuits and networks should be loaded.
+
+<h3> Step 2: disperse </h3>
+<p>
+However, the subcircuits are placed randomly. There are many different
+strategies to resolve this:
+<ul>
+	<li> manual placement: drag&drop move the subcircuits around; you may
+	     want to temporarily enable the "floater lock" in the Mode menu,
+	     Drawing submenu, "lock floaters" item (or using {m f l}). Since
+	     refdes text is normally a floater, this will lock it down to
+	     its parent subc so it will be easier to grab the subc to move, not
+	     the refdes.
+	<li> disperse: Connects menu, Subcircuit placement submenu, disperse all
+	     subcircuits. This will place the subcircuits in a grid in random order
+	     so that there will be no overlap
+	<li> in the same submenu there is an auto-place selected subcircuits item;
+	     select all subcircuits (drag-and-drop selection box enclosing them all)
+	     then execute this menu. It's a smarter algorithm that is trying to
+	     place subcircuits to minimize resulting rat line length. It will
+	     try to use both sides of the board.
+</ul>
+
+<h3> Step 3 on: lay out the board </h3>
+<p>
+Once subcircuits are placed, press {c r} and the nets are shown with rat lines.
+From this point, please follow <a href="../15_no_sch/index.html#step5">
+the no-sch tutorial from step 5.</a>
+
