@@ -6,7 +6,6 @@
 + FEATURE: external editor on buffer [report: TwisteR]
 
 1. For the upcoming release ===============================================================================
-- DOC: OpenemsExcitation()
 
 2. For later releases ===============================================================================
 - CLEANUP: (prio) hidlib: move window placement code from dialog to a separate plugin and remove dialog dependency from the hid plugins reverting r24758 [report: Igor2]
