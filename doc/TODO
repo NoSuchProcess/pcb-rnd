@@ -6,7 +6,6 @@
 + FEATURE: external editor on buffer [report: TwisteR]
 
 1. For the upcoming release ===============================================================================
-- BUG: lessitf: report(object) prints only to the console [report: Igor2]
 - DOC: OpenemsExcitation()
 
 2. For later releases ===============================================================================
