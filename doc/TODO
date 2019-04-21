@@ -16,6 +16,7 @@
 - DOC: OpenemsExcitation()
 
 2. For later releases ===============================================================================
+- CLEANUP: (prio) hidlib: move window placement code from dialog to a separate plugin and remove dialog dependency from the hid plugins reverting r24758 [report: Igor2]
 - CLEANUP: (prio) Vuokko's list of warnings on OpenBSD: bug_files/warn-obsd-r24746.log [report: Vuokko]
 - BUG: (prio) setenv() LC_ALL and LANG to "C" around setlocale; remove setlocale from lib_gtk; bug_files/locale.diff [report: osetroff]
 - FEATURE: excellon metric support to pair up with gerber's late feature [report: Gabriel]

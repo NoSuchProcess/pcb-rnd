@@ -5,4 +5,5 @@ $state works
 $package hid-lesstif
 default buildin
 dep lib_hid_common
+dep dialogs
 autoload 1
