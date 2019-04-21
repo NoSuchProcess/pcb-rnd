@@ -635,6 +635,49 @@ static void command_callback(Widget w, XtPointer uptr, XmTextVerifyCallbackStruc
 	}
 }
 
+static int panning = 0;
+static int shift_pressed;
+static int ctrl_pressed;
+static int alt_pressed;
+
+static void ltf_mod_key(XKeyEvent *e, int set, int mainloop)
+{
+	switch (XKeycodeToKeysym(display, e->keycode, 0)) {
+	case XK_Shift_L:
+	case XK_Shift_R:
+		shift_pressed = set;
+		break;
+	case XK_Control_L:
+	case XK_Control_R:
+		ctrl_pressed = set;
+		break;
+#ifdef __APPLE__
+	case XK_Mode_switch:
+#else
+	case XK_Alt_L:
+	case XK_Alt_R:
+#endif
+		alt_pressed = set;
+		break;
+	default:
+		/* to include the Apple keyboard left and right command keys use XK_Meta_L and XK_Meta_R respectivly. */
+		if (mainloop)
+			return;
+	}
+
+	if (!mainloop)
+		return;
+
+	in_move_event = 1;
+	pcb_notify_crosshair_change(pcb_false);
+	if (panning)
+		Pan(2, e->x, e->y);
+	pcb_event_move_crosshair(Px(e->x), Py(e->y));
+	pcb_tool_adjust_attached_objects();
+	pcb_notify_crosshair_change(pcb_true);
+	in_move_event = 0;
+}
+
 static void command_event_handler(Widget w, XtPointer p, XEvent * e, Boolean * cont)
 {
 	const char *hist;
@@ -647,6 +690,13 @@ static void command_event_handler(Widget w, XtPointer p, XEvent * e, Boolean * c
 				pcb_cli_edit();
 			break;
 		case KeyPress:
+
+			/* update mod keys */
+			switch (e->type) {
+				case KeyPress:   ltf_mod_key((XKeyEvent *)e, 1, 0);
+				case KeyRelease: ltf_mod_key((XKeyEvent *)e, 0, 0);
+			}
+
 			XLookupString((XKeyEvent *) e, buf, sizeof(buf), &sym, NULL);
 			switch (sym) {
 				case XK_Up:
@@ -1079,11 +1129,6 @@ void zoom_by(double factor, pcb_coord_t x, pcb_coord_t y)
 	zoom_to(view_zoom * factor, x, y);
 }
 
-static int panning = 0;
-static int shift_pressed;
-static int ctrl_pressed;
-static int alt_pressed;
-
 /* X and Y are in screen coordinates.  */
 static void Pan(int mode, pcb_coord_t x, pcb_coord_t y)
 {
@@ -1128,37 +1173,10 @@ static void Pan(int mode, pcb_coord_t x, pcb_coord_t y)
 	}
 }
 
-static void mod_changed(XKeyEvent * e, int set)
+
+static void mod_changed(XKeyEvent *e, int set)
 {
-	switch (XKeycodeToKeysym(display, e->keycode, 0)) {
-	case XK_Shift_L:
-	case XK_Shift_R:
-		shift_pressed = set;
-		break;
-	case XK_Control_L:
-	case XK_Control_R:
-		ctrl_pressed = set;
-		break;
-#ifdef __APPLE__
-	case XK_Mode_switch:
-#else
-	case XK_Alt_L:
-	case XK_Alt_R:
-#endif
-		alt_pressed = set;
-		break;
-	default:
-		/* to include the Apple keyboard left and right command keys use XK_Meta_L and XK_Meta_R respectivly. */
-		return;
-	}
-	in_move_event = 1;
-	pcb_notify_crosshair_change(pcb_false);
-	if (panning)
-		Pan(2, e->x, e->y);
-	pcb_event_move_crosshair(Px(e->x), Py(e->y));
-	pcb_tool_adjust_attached_objects();
-	pcb_notify_crosshair_change(pcb_true);
-	in_move_event = 0;
+	ltf_mod_key(e, set, 1);
 }
 
 static pcb_hid_cfg_mod_t lesstif_mb2cfg(int but)
