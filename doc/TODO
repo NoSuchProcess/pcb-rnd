@@ -7,11 +7,6 @@
 
 1. For the upcoming release ===============================================================================
 - BUG: lessitf: report(object) prints only to the console [report: Igor2]
-- BUG: lesstif hbox/vbox allocation issues:
-	- fontsel() -> no buttons (if the preview has no extfill, they appear!) [report: Igor2]
-	- about box: if not high enough, hbox/vbox/tab gets confused [report: Igor2]
-	- 0 room allocated under HPANE: pstklib(), netlistdialog(), propedit(), BrowseScripts, preferences dialog config tab
-	- preferences dialog: library, layers tabs are unusable [report: Igor2]
 - DOC: OpenemsExcitation()
 
 2. For later releases ===============================================================================
@@ -233,6 +228,11 @@
 - BUG: bug_files/macrofab_rot/: rotation (and coords?) is off on xy for macrofab [report: celem]
 - BUG: bug_files/cam_layer_bug.lht: after cam export (from gui) the mask and paste layers are visible but the layer selector is not updated  - r24366 supposed to fix this [report: keantoken]
 - BUG: undo: clear rats, optimize rats, delete 1 rat then undo - it should undo the rat deletion but it undos optimization
+- BUG: lesstif hbox/vbox allocation issues: test with bug_files/ltf_fillbox/ patches applied, with the fontsel action; opening it multiple times will randomly show or hide the button
+	- fontsel() -> no buttons (if the preview has no extfill, they appear!) [report: Igor2]
+	- about box: if not high enough, hbox/vbox/tab gets confused [report: Igor2]
+	- 0 room allocated under HPANE: pstklib(), netlistdialog(), propedit(), BrowseScripts, preferences dialog config tab
+	- preferences dialog: library, layers tabs are unusable [report: Igor2]
 
 3. Long term ===============================================================================
 - BUG: draw a large padstack poly (as a subc term); put some vias (padtsacks) on top of it; with gdk and gl, after the 6th via some via rings will disappear [report: James]
