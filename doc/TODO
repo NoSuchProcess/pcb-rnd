@@ -43,7 +43,7 @@
 	- CLEANUP: a new "report(NetLength)" should not care about netlists but depend on find.c only
 	- BUG: unplated padtsakcs shall not connect layers; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
 	- BUG: bug_files/rat_shortest.lht: because of "don't add non-manhattan lines" part [report: pstuge]
-- CLEANUP: layre order from data
+- CLEANUP: layer order from data
 	- central code for building a list of layer groups ordered by draw from front to back (omit disabled/invisible layers)
 	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
 - CLEANUP/feature: pcb_subc_smash_buffer() should really copy data so it can smash multiple subcs and subc objects end up on the layer they were bound to [report: keantoken]
