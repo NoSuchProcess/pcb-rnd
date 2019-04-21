@@ -140,9 +140,6 @@
 	- extend png hid attribs with a flag for this, maybe do the same for others
 	- document the decision in "hacking"
 - FEATURE: project specific menus from extra lihata files - maybe from project.lht
-- vendor drill plugin:
-	- CLEANUP: check if we want to keep vendor name
-	- FEATURE: vendor: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
 - BUG: Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
 	- ind: FONTS: second font indents incorrectly
@@ -236,6 +233,9 @@
 			- search for /units, replace it with pcb-printf something
 			- add round down
 			- replace ignore_refdes, ignore_value and ignore_descr with genvector
+- vendor drill plugin:
+	- CLEANUP: check if we want to keep vendor name
+	- FEATURE: vendor: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
 
 Lesstif:
 	- implement/enable local grid in lesstif (menu option is disabled)
