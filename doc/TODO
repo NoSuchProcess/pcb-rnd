@@ -6,7 +6,6 @@
 + FEATURE: external editor on buffer [report: TwisteR]
 
 1. For the upcoming release ===============================================================================
-- BUG: undo: clear rats, optimize rats, delete 1 rat then undo - it should undo the rat deletion but it undos optimization
 - BUG: lessitf: report(object) prints only to the console [report: Igor2]
 - BUG: lesstif hbox/vbox allocation issues:
 	- fontsel() -> no buttons (if the preview has no extfill, they appear!) [report: Igor2]
@@ -233,6 +232,7 @@
 - BUG: bug_files/warn.lht: load, click to somewhere to remove the warning (orange): object flag cleared but the board is not marked as changed [report: Peter]
 - BUG: bug_files/macrofab_rot/: rotation (and coords?) is off on xy for macrofab [report: celem]
 - BUG: bug_files/cam_layer_bug.lht: after cam export (from gui) the mask and paste layers are visible but the layer selector is not updated  - r24366 supposed to fix this [report: keantoken]
+- BUG: undo: clear rats, optimize rats, delete 1 rat then undo - it should undo the rat deletion but it undos optimization
 
 3. Long term ===============================================================================
 - BUG: draw a large padstack poly (as a subc term); put some vias (padtsacks) on top of it; with gdk and gl, after the 6th via some via rings will disappear [report: James]
