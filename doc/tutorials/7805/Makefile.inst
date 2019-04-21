@@ -8,7 +8,7 @@ install_all:
 	$(SCCBOX) mkdir -p $(TUTDIR)
 	$(SCCBOX) $(HOW) 7805.pcb $(TUTDIR)/7805.pcb
 	$(SCCBOX) $(HOW) 7805.sch $(TUTDIR)/7805.sch
-	$(SCCBOX) $(HOW) Makefile $(TUTDIR)/Makefile
+	$(SCCBOX) $(HOW) sch.png $(TUTDIR)/sch.png
 	$(SCCBOX) $(HOW) index.html $(TUTDIR)/index.html
 
 install:
