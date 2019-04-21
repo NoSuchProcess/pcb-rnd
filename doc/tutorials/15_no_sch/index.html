@@ -104,13 +104,89 @@ updated. The preview highlights affected terminals.
 	<li> network called <i>out</i>: J2-1, U1-3, C2-1
 </ul>
 <p>
-<a href="step3.lht"> Board file for step3.</a>
+<a href="step4.lht"> Board file for step3.</a>
 <p>
 
-<h3> step 4: draw the in and out nets </h3>
+<h3> step 5: draw the in and out nets </h3>
+<p>
+Select the line tool (hotkey: F2). Select the 'Power' style from the
+bottom left style selector - this will get the traces you'll be
+drawing thicker. Select the bottom signal layer, called "bottom-sig" in
+the layer selector on the left. This way the new traces will end up on
+copper on the bottom side of the board.
+<p>
+Start drawing a line from J1-1 with left click. The line will bend in
+45 degrees. You can press the shift key and move the mouse to invert
+the refraction temporarily, or use the slash key to cycle through differen
+refractions (including the ortho mode, which allows 90 degree lines only).
+With 2..3 clicks, connect J1-1 and C3's '+' pin.
+<p>
+Now that one of the logical connections is turned to copper, press {c r}
+(for "connection, refresh rats") - this will recalculate all rats, considering
+already established connections.
+<p>
+Draw the remaining segments of the <i>in</i> net, using {c r} to see the
+progress. The number of remaining rat lines is also printed in the message
+log, which can be opened using {w m}.
+<p>
+Do the same for the <i>out</i> network. At the end only the <i>gnd</i> network
+should remain unrouted:
+<p>
+<img src="step5.png" alt="step4: in and out routed">
+<p>
+<a href="step5.lht"> Board file for step4. </a>
 
-<h3> step 5: draw the gnd poly </h3>
+<h3> step 6: draw the gnd poly </h3>
+<p>
+We could route the <i>gnd</i> net the same way, using thick traces.
+However, it's more common to have a solid ground plane/pour, which is
+a polygon in pcb-rnd.
+<p>
+Select the bottom-gnd layer. This layer is in the same layer group,
+bottom copper, as the other layer we used, so at the end it will go
+on the same physical copper layer. However, it has a different color
+configured on screen, which would make it easier to see what's connected
+to gnd.
+<p>
+Select the rect tool from the toolbar. This will draw a rectangular polygon.
+Do a single click on the top left corner of your circuit. After releasing
+the mouse button, the rectangle tool draws an overlay indication on how big
+the polygon would be. Move the mouse cursor to the bottom right corner until the
+box encloses the whole circuit and some margin and do another single click.
+<p>
+This will finish the operation and a large red rectangular polygon will appear.
+However, {c r} shows that no gnd rat line got routed: the terminals of
+the subcircuits won't automatically touch the polygon. The easiest way to
+get them connected is using the thermal tool (labelled THRM in the toolbar).
+Select the thermal tool and click on the J1-2. An X shaped connection will
+appear to the polygon.
+<p>
+Note: it's important to still have the bottom-gnd
+layer selected: the thermal tool connects the terminal to the polygon on the
+currently selected layer, so the currently selected layer should be the one
+we drew the ground plane polygon on.
+<p>
+Another click on the terminal would remove the thermal - it's a toggle operation.
+When the thermal is there, a shift+click with the thermal tool will change
+the thermal style, cycling through different available styles.
+<p>
+Use the thermal tool to connect all gnd terminals and press {c r}.
+<p>
+<img src="step6.png" alt="step6: board finished">
+<p>
+<a href="step6.lht"> Board file for step6. </a>
 
+
+<h3> Note on the view </h3>
+<p>
+We've been drawing the board from looking at it from the top, with
+'x-ray vision', seeing all copper on the bottom. Once the board is fabbed,
+this is not how we'll see it.
+<p>
+It is possible to flip the board using the tab key, to get a bottom view.
+There's also shift-tab an ctrl-tab to flip among different axes. Flipping
+is a view-only feature, it does not modify any geometry or physical
+property of the board.
 
 <hr>
 Footnotes:
