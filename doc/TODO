@@ -125,9 +125,6 @@
 - unravel the undo code
 	- FEATURE: grid size change should be undoable? [report:Evan]
 	- FEATURE: maybe other conf settings too?
-- CLEANUP: layer group rewrite: remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic
-- FEATURE: io_pcb: new, optional "layer tag" field in mainline's file format
-- FEATURE: layer binding dialog: manual layer binding (reuse csect?)
 - res/menu:
 	- FEATURE: load/swap menus (TODO#1)
 	- CLEANUP: search for vendor in the hid plugins, there should be no trace of it (vendor should register its in submenus with anchors)
@@ -142,15 +139,6 @@
 	- png exports selection (even in not-as-shown), others don't
 	- extend png hid attribs with a flag for this, maybe do the same for others
 	- document the decision in "hacking"
-- CLEANUP: reduce
-		- export_bom: rewrite the string list code using htsp and/or lists
-		- hash in hid_attrib.c?
-		- gcode invents .png name locally
-		- get rid of gcode/lists.h,  and vector.[ch] (autorouter)
-		- vendordrill
-			- search for /units, replace it with pcb-printf something
-			- add round down
-			- replace ignore_refdes, ignore_value and ignore_descr with genvector
 - FEATURE: project specific menus from extra lihata files - maybe from project.lht
 - vendor drill plugin:
 	- CLEANUP: check if we want to keep vendor name
@@ -236,6 +224,18 @@
 	-> we should probably render large objects first then smaller ones
 - BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
 - FEATURE: "thermal recipe" so a padstack thermal can be put in a padstack or subc and it is change with the layer binding [report: jg]
+- CLEANUP: layer group rewrite: remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic
+- FEATURE: io_pcb: new, optional "layer tag" field in mainline's file format
+- FEATURE: layer binding dialog: manual layer binding (reuse csect?)
+- CLEANUP: reduce
+		- export_bom: rewrite the string list code using htsp and/or lists
+		- hash in hid_attrib.c?
+		- gcode invents .png name locally
+		- get rid of gcode/lists.h,  and vector.[ch] (autorouter)
+		- vendordrill
+			- search for /units, replace it with pcb-printf something
+			- add round down
+			- replace ignore_refdes, ignore_value and ignore_descr with genvector
 
 Lesstif:
 	- implement/enable local grid in lesstif (menu option is disabled)
