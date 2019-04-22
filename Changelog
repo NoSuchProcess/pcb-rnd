@@ -1,4 +1,4 @@
-pcb-rnd 2.1.2 (r24753)
+pcb-rnd 2.1.2 (r24805)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[act_draw]
 		-Fix: TextNew() syntax: missing font ID
@@ -80,6 +80,7 @@ pcb-rnd 2.1.2 (r24753)
 		-Fix: AUTORUN shall allocate retovrt and lock the dialog against new widgets
 		-Fix: don't deref ret-override struct fields if it's already NULL
 		-Fix: make flags an explicit field of the attribute struct - abusing max_val makes it impossible to use with numeric values
+		-Fix: trace mod key states even if the command prompt is open
 		-Add: infra for compound widgets
 		-Add: spinbox: compound widget for a DAD based universal spinbox
 		-Add: HATF for tightly packed boxes (used in spinbox buttons)
@@ -103,6 +104,12 @@ pcb-rnd 2.1.2 (r24753)
 	[doc]
 		-Fix: typo: <b> not closed in action ref
 		-Del: remove AdjustSizes() doc (action is getting removed)
+		-Update: datasheet: format support update, move gEDA down in the priorities
+		-Change: restructure the 7805 tutorial to be the generic work-from-schematics-editor tutorial, removing gschem references
+		-Add: tutorial: no-sch for beginners
+		-Add: tutorial: 15/step5 id for direct ref
+		-Add: tutorial: 16 (working from a tEDAx netlist)
+		-Add: datasheet: mention edakrill direct footprint access
 		-Add: explain dad _DEFAULT_VAL() and _DEFAULT_PTR()
 		-Add: action doc: Netlist, LiveScript, ClaimNet, OpenemsExcitation
 		-Add: document the cam syntax extension for multiple layers
@@ -371,6 +378,9 @@ pcb-rnd 2.1.2 (r24753)
 		-Add: case insensitive net search by name, standardize how user input is looked up
 		-Add: ClaimNet() for mapping existing objecrts as network
 		-Add: Netlist() rename and merge (action and GUI)
+
+	[pcblib]
+		-Add: openscad models for the standard smd between 01005 and 1206
 
 	[propedit]
 		-Fix: memory handling error: set property only if address prefix matches
