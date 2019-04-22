@@ -1,45 +1,29 @@
-pcb-rnd 2.1.1
+pcb-rnd 2.1.2
 ~~~~~~~~~~~~~
 
-This release is mainly a cleanup release: rewrite of some essential
-infrastructure (find, drc) and extend the GUI APIs to provide better
-user interface (around DRC and the preferences dialog).
+Feature highlight:
 
-Major changes:
+1. CAM jobs from the command line with -x and from the GUI with the
+   cam export dialog using {f c}
 
-1. find.c rewrite: smaller, slightly more efficient code with a simpler,
-more versatile API. Does not mess with global/static object flags.
+2. live scripting: dialog box with an script editor for real time
+   development and experimentation with scripting
 
-2. DRC API rewrite: the algorithm is decoupled from how violations is stored
-and from the GUI. There is a generic DRC infra and a generic GUI for
-displaying the results, that can be driven by multiple different DRC algorithms.
-The old DRC algorithm has been moved out to a plugin.
+4. almost complete KiCad load support for files generated with version 4
+   or older
 
-3. DRC GUI rewrite: violations are presented as a tree, grouped by topic, so
-it is easier to skip or focus on similar errors. The window layout follows
-the library layout, with preview and filter. DRC preview colors offending
-objects: there is a red and a blue group which makes it much easier to see
-what exactly went wrong. Lesstif's interactive 'skip-through' DRC indication
-is available as an option on GTK.
+5. optional gerber drill files
 
-4. View lists: under the DRC GUI there is a generic "view list" mechanism.
-It remembers a list of board location (with zoom) and highlight objects. The
-user can remove, add, copy, paste elements of the list. Lists can be saved to
-file and loaded later. The same list display is now used to indicate
-incompatibilities when saving in alien format.
+6. option to directly export in the excellon format, without any gerber
 
-5. DAD upgrades: gtk-only dialogs are being rewritten with DAD, more and
-more dialogs accessible in all HIDs (including lesstif). Introduced new
-DAD widgets for this effort.
+7. full netlist code rewrite: support for network mapping, renaming, merging
 
-6. The GTK-only preferences window got removed in favor of the new,
-HID-agnostic preferences window.
+8 actions and GUI for starting a board without a netlist and build
+   the netlist from within pcb-rnd
 
-7. Major HID API cleanup: DAD allows a cleaner separation of feature code
-into self contained plugins; the HID API should be as small as possible,
-with generic features only. This makes it easier to write new HIDs.
+9 new netlist dialog with enchanced functionality (same code for all HIDs)
 
+10. new log window with enchanced functionality (same code for all HIDs);
+    log is persistent (messages before GUI startup are not lost);
+    export log to file button/action
 
-Plans for the next release:
-
-Going on with the cleanups and similar minor features.
