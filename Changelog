@@ -1,3 +1,456 @@
+pcb-rnd 2.1.2 (r24753)
+~~~~~~~~~~~~~~~~~~~~~~
+	[act_draw]
+		-Fix: TextNew() syntax: missing font ID
+		-Add: do undo by default; optional first argument to suppress undo
+
+	[autoroute]
+		-Fix: reset last subnet state when hitting a terminal
+		-Split: route data network mapping into a separate function from the overgrown main route data prepare function
+		-Split: mapping code: "line add" to a separate, reusable function
+		-Split: connection mapping: misc "object box add" into a separate, reusable function
+		-Add: code for the new netlist API
+
+	[cam]
+		-Fix: virtual layers can be referenced by name
+		-Fix: _begin() should reset the struct even if cam is disabled, to make sure all states the exporter may check on are 0
+		-Fix: don't crash if plugin has no arguments
+		-Add: file name templating
+		-Add: accept comments
+		-Add: cam() action accepts key=value options to set the base
+		-Add: prefix mkdir can return the file name
+		-Add: cam job configs for the old gerber exporter naming styles, where applicable
+		-Add: cam job configs for a few commonly used fabs
+		-Add: cam job configs for a few commonly used naming styles in other EDAs
+		-Add: cam dialog box
+		-Add: hidden cam exporter so that 'pcb-rnd -x cam jobname [pcb-rnd-options] filename' works
+		-Add: menu item for cam exporting, bound to {f c}
+
+	[core]
+		-Fix: data dynflag clear shall be recursive so subc parts are cleared too
+		-Fix: while drawing slots, make sure to use the same layer that was set
+		-Fix: proper string handling in key quote for unrecognised key error
+		-Fix: hid_nogui, reading the stdin, takes EOF as cancel
+		-Fix: don't pop up an extra dialog for footprints-not-found in quiet mode
+		-Fix: don't crash on file not found while importing a netlist
+		-Fix: don't call hid ->log directly, uses pcb_message()
+		-Fix: throw an error on file load error (e.g. non-existing file) if there is no GUI
+		-Fix: do not draw broken bounding box of the xor drawn attached 'A' for text tool font placement
+		-Fix: the error message for not doing somethign to a locked object, also include the type name of the object to ease debugging
+		-Fix: allow the remove tool to operate on subc floaters even in non-loose-subc
+		-Fix: verbose action logging should go to stderr, not stdout
+		-Fix: plug_io calls GetStyles() directly, through C API to avoid action verbose prints
+		-Fix: text flag post-change: if dyntext flag changes, recalculate the bounding box because the display text likely changed too
+		-Fix: export() without arguments shouldn't crash but throw an error
+		-Fix: allow removing warnings on the first click after board load
+		-Fix: clear the warn cache flag only if we are clearing the WARN flag on all objects
+		-Fix: pcb_menu_default.c is a generated file, make distclean should remove it
+		-Fix: text rendering: invalid memory access on drawing the thin-drawn and xor-drawn version of the invalid/unspecified symbol
+		-Cleanup: box.h shouldn't depend on move.h; box.h is the lower level construct
+		-Cleanup: merge copy.[ch] into move.[ch] for compactness
+		-Cleanup: completly remove NLS _("")
+		-Rename: project file root prefix is not "geda-" but "coraleda-" because there's zero chance geda would ever use this project file format
+		-Rename: PCB_MOVE to PCB_MOVE_POINT - name too generic; move PCB_MOVE_POINT from move.h to box.h - all box and point helper macros are there
+		-Move: ClipInhibit() action from experimental features to core; add menu checkbox
+		-Change: exporting an empty board is useful in some situation - it should be only a warning, not an error
+		-Change: allow '*' in IDs, for kicad compatibility
+		-Split: route_draw.h from route.h to avoid unwanted hid.h dependency
+		-Add: render terminal IDs using a configurable template
+		-Add: safe_fs wrapper for pcb_mkdir, file size query, pcb_is_dir()
+		-Add: quoted string print variant that doesn't print the wrapping quotes but leaves that to the caller
+		-Add: include lihata node location (file:line) in keydesc parse error messages
+		-Add: LoadFrom() has a better function name for loading a footprint to buffer, deprecating the Element based name
+		-Add: throw error message on unknown first arg in LoadFrom
+		-Add: extend pcb_drc_lines() so that it can stop on the first blocker and return the mid-point coords
+		-Add: optional as-drawn-annotation of polygons
+		-Add: function to fix up IDs (subc refdes, terminal ID) by replacing invalid chars with underscore
+
+	[hidlib]
+		-Cleanup: move layer visibility related calls from hid_flags to layer_vis (for hidlib clean)
+		-Split: hidlib: the common parts from main init and uninit sequence moved to hid_init - to be reused in a hidlib initialization
+		-Split: file_loaded from build_run, for hidlib
+		-Change: funchash should be in hidlib (generic keyword hash)
+		-Add: split OBJS and OBJS_C99 in preparation for a hidlib
+
+	[dad]
+		-Fix: split _DEFAULT and use the _NUM and _PTR default setter to avoid int<->ptr casts
+		-Fix: runtime hide/unhide should deal with wltop[] in both lesstif and gtk, to affect the possible framing/scrolling as well
+		-Fix: autorun shall set table hid_ctx so that callback functions can access it
+		-Fix: retovr invalid memory handling: can not be part of the context because the context may be free'd by the caller too soon
+		-Fix: AUTORUN shall allocate retovrt and lock the dialog against new widgets
+		-Fix: don't deref ret-override struct fields if it's already NULL
+		-Fix: make flags an explicit field of the attribute struct - abusing max_val makes it impossible to use with numeric values
+		-Add: infra for compound widgets
+		-Add: spinbox: compound widget for a DAD based universal spinbox
+		-Add: HATF for tightly packed boxes (used in spinbox buttons)
+		-Add: PCB_HATF_HIDE for initial widget hide
+		-Add: dynamic settable help text (tooltip) so that spinbox can set the error message for the warning widget
+		-Change: the export dialog doesn't depend on PCB_HATF_LABEL, but creates labels locally
+		-Change: the flagedit dialog doesn't depend on PCB_HATF_LABEL but creates labels locally
+		-Del: PCB_HATF_LABEL - no implicit labels anymore
+
+	[dialogs]
+		-Fix: printcalibrate: don't crash if there's no printer but print error and return
+		-Fix: prompt-for 'enter key' handler: need a pointer to the pointer of return override, as it will be filled in by DLG_RUN() after widget creation
+		-Fix: the prompt-for action accepts NULL default string (uses "")
+		-Fix: remember all export attr widget ID, not only the first one per exporter, because it is not trivial (and rather frafile) to calculate further IDs
+		-Fix: layer bindings dialog: expfill on the table
+		-Fix: padstack dialog, generator tab: do not derive shapes if the initial shape generation failed
+		-Add: export dialog: if an exporter has more than 12 settings, rather add a scroll to the vbox so the dialog box won't grow too large
+		-Cleanup: move printer calibration out from core to the dialogs plugin - it's gui-only
+		-Split: compile dlg_about, dlg_comm_m, dlg_export, dlg_flag_edit, dlg_fontsel, dlg_layer_binding, dlg_layer_flags, dlg_lib_pstk, dlg_padstack as separate objects for speed
+
+	[doc]
+		-Fix: typo: <b> not closed in action ref
+		-Del: remove AdjustSizes() doc (action is getting removed)
+		-Add: explain dad _DEFAULT_VAL() and _DEFAULT_PTR()
+		-Add: action doc: Netlist, LiveScript, ClaimNet, OpenemsExcitation
+		-Add: document the cam syntax extension for multiple layers
+		-Add: cam examples on virtual layers (for exporting drills)
+		-Add: cam doc: document file name templating
+		-Add: script install genht 1.0.1 is too old for this
+		-Add: auto-generated table of all dialog boxes for the appendix
+
+	[drc]
+		-Fix: missing cast caused overflow on circle shape hole ring break check, missing legit broken rings
+
+	[export_dxf]
+		-Fix: do export internal copper layers when explicitly requested by cam
+
+	[export_gerber]
+		-Fix: do not export DOC layers in non-cam mode, the old name-style code gets confused
+		-Add: coordinate format enum, support for higher precision output
+		-Add: in cam mode, allow exporting route/drill files in gerber
+
+	[export_ipcd356]
+		-Fix: typo: invalid memory clear for heavy terminals
+		-Fix: test feature struct reset should overwrite the whole struct (sizeof() dereference bug)
+
+	[export_ps]
+		-Fix: don't crash in calibration if there's no lpr specified
+
+	[export_xy]
+		-Fix: pre-rotation pad width calculation (e.g. for the Macrofab template) works for non-90 deg rotation too
+
+	[extedit]
+		-Fix: avoid double-remove of watches, some HIDs (e.g. lesstif) won't tolerate that
+		-Add: extedit(selected) and extedit(buffer)
+
+	[find]
+		-Fix: don't clear mark on incremental search - we don't need to revisit objects already visited
+		-Fix: pcb_check_and_open_file() shouldn't use stat directly, but the compat_fs call for checking if a file is readable
+		-Cleanup: move pcb_check_and_open_file() from core to export_oldconn, that's the only user
+		-Add: incremental search from object
+		-Add: macro to check if an object is already marked by a find context
+
+	[font]
+		-Fix: get rid of global fontsel object, make the code and API reentrant
+		-Fix: remember fontedit target object by id, not by object pointer so the dialog won't crash if the object is gone
+		-Fix: object font dialogs: on replacing the board, close all text object font edit dialogs - the are sure invalid for the new board
+		-Add: make object fontsel dialogs non-modal, keep them on a double linked list, don't let two dialogs open for the same text object
+
+	[fp_fs]
+		-Fix: uninitialized libshell
+
+	[fsd] (the new file selection dialog API)
+		-Del: old, per-HID save() and load() actions and associated custom file selection code
+		-Del: old filechooser and orphaned fileio action file from gtk
+		-Cleanup: move file selector flags from macros to an enum
+		-Cleanup: name prefix flags
+		-Cleanup: centralize ImportGUI(), remove the per HID implementation and related orphaned dialog box code
+		-Add: gtk: new fileselect implementation with subdialog support
+		-Add: lesstif: new fileselect implementation with subdialog support
+
+
+	[gerber]
+		-Fix: make sure to open a new file if cam file name template changed file
+		-Fix: premature uninit of cam caused unwanted drill file export when using the cam syntax
+		-Fix: verbose output should go to stderr, not stdout
+		-Split: move out and generalize the aperture code from the gerber exporter into separate source files
+		-Split: excellon exporting from gerber exporting; excellon can be called separately now
+		-Change: allow cam to export assembly layers
+		-Add: excellon: per plated/unplated file name option, overridden by the CAM file name when present
+		-Add: gerber verbose mode is also turned on by conf rc/verbose
+		-Add: make the new default the pcb-rnd name style
+
+	[gtk]
+		-Fix: tooltip code with the new netlist won't crash if there's no refdes or terminal ID
+		-Fix: old library dialog refresh: make not a dir messages more explicit
+		-Fix: don't call hid ->log directly, use pcb_message()
+		-Fix: terminal tooltip shouldn't attempt to resolve netname if refdes or terminal ID is missing
+		-Fix: gdk special color set should never trigger a conf change, that'd result in an infinite loop
+		-Fix: old gtk-only DAD spinbox: save wltop[] properly
+		-Fix: DAD set on string values should save the new value with strdup
+		-Fix: don't unregister menus if the GUI is not active
+		-Fix: typo in the gdk render poly vertex optimization made offset polygons grow tentacles sometimes
+		-Fix: slipping tap bug
+		-Fix: window placement: have to query the window's geometry from the configure event, the data the event delivers does not include decoration (the "wandering window bug")
+		-Fix: use explicit label widgets for the parametric footprint parameter dialog - implicit names are not supported anymore
+		-Fix: param lib dialog: do not free non-allocated const char * string field name
+		-Del: ghid_scrolled_vbox(), ghid_scrolled_selection(), bu_check_button, ghid_table_coord_entry(), ghid_table_spin_button(), pcb_gtk_g_strdup(), util_str.[ch], util_gtk_debug.h, ghid_framed_vbox_end(), coord entry builder, text_view builder - no user
+		-Del: obsolete action: LogShowOnAppend()
+		-Cleanup: excess memory allocations and string copies on building top window titlebar
+		-Cleanup: remove unnecessary includes from the preview widget
+		-Add: DAD text scroll-to-bottom implementation
+		-Add: call the renderer's special color set callback upon conf change that affects those colors (this used to be a hackish direct call from the gtk-only config code)
+
+	[hid]
+		-Fix: fallback no-gui hid: always print the "progress bar" if GUI is not the no-gui hid; in this state we are printing the progress bar for another HID
+		-Fix: do not draw the progress bar before GUI_INIT (fall back on the no-gui progress inidication) with HIDs that don't support opening DAD dialog before the GUI_INIT event (lesstif)
+		-Fix: always strdup HID string/path arguments parsed because the caller may free them
+		-Fix: don't crash when default hid argument string value is NULL
+		-Del: the old ->log() API, only ->logv() is in use now
+		-Cleanup: centralize the benchmark action to simplify the HID API
+		-Add: centralize user-lead code, replace the circles with an alternating arrow
+		-Add: DAD text scroll-to-end hid callback
+		-Add: hid property bit to inidicate if markup in DAD text is possible
+		-Add: attribute dialog: raise window call
+		-Add: infra for hiding non-conventional export plugins from the export dialog, e.g. export_test and loghid and vfs later
+
+	[import_edif]
+		-Fix: binary char leaked in to source code
+
+	[import_netlist]
+		-Fix: uninitialized rat commands
+
+	[import_sch]
+		-Cleanup: remove direct netlist dependency - rather use actions
+
+	[io_eagle]
+		-Cleanup: resolve subc rotation TODO (precise vs. lossles)
+		-Add: poly clip inhibit during load to speed up
+
+	[io_kicad]
+		-Cleanup: remove unused vars, remove, debug printfs
+		-Cleanup: code compaction on excess {}, compact var declaration
+		-Fix: text rotation: keep floating point rotation, use 'direction' only for centering and mirroring
+		-Cleanup: remove code dup in gr_text coord/rotation conversion with macros
+		-Cleanup: simplify text size X and size Y conversion
+		-Add: throw a warning if text size X and Y don't match, use the average
+		-Cleanup: simplify text thickness conversion and add a TODO for justification
+		-Cleanup: simplify the calculation for text rotation/mirror
+		-Fix: centralize GLYPH_WIDTH config and turn it into a macro
+		-Clenaup: remove gr_text/fp_text code duplication
+		-Add: create subc text on the right layer with subc offset and rotation applied
+		-Add: support for fp_text hide
+		-Add: warn for unknown effect argument
+		-Add: support for text thickness
+		-Add: create mech layer group for adhes layers and doc groups for courtyard and fab
+		-Cleanup: remove code dup: generalize gr_line parser to also handle fp_line and segment
+		-Fix: properly round coords after conversion
+		-Cleanup: rewrite gr_arc with the low level field parse macros
+		-Cleanup: remove code dup: gr_arc handles fp_arc as well
+		-Cleanup: via parsing: use the low level field parser macros, remove code duplications
+		-Cleanup: do not special case silk or top/bottom copper layer creation, layer stack parsing should handle it
+		-Fix: better error handling in the module code
+		-Add: preserve kicad module attributes as kicad_attr_* subc attribute
+		-Cleanup: reduce module parse code length by splitting fp_text out to a function
+		-Cleanup: split pad parser out from module parser, into a separate function, because it is large
+		-Cleanup: pad parse: simplify pad layer logics
+		-Fix: don't silently ignore unhandled pad child node, throw an error
+		-Fix: fp_line and fp_arc parsing error means module parsing error
+		-Cleanup: always use the layer id type, not int, for storing layer IDs
+		-Cleanup: compact the zone code, get more warnings and errors
+		-Add: ignore zone filled=yes and priority value
+		-Clenaup: all kicad_error() and kicad_warning() point to the right node
+		-Cleanup: use the COORD conversion macros for polygon vertex x;y instead of code duplication
+		-Cleanup: remove excess/redundant (node->str == NULL) checks
+		-Cleanup: centralize "ignore value but throw an error if it is NULL", optionally with also warning for duplicate arguments (remove code duplication)
+		-Cleanup: centralize layer parser to reduce code duplication
+		-Cleanup: remove CamelCase from read.c
+		-Fix: do not round module rotation, use a double
+		-Add: parse general/area for a mid-prio fallback to missing page size; use the central page size table
+		-Add: text object creation needs to get parent ("module") rotation because refdes text has this also embedded in the text rotation and that needs to be compensated to avoid double rotation
+		-Add: read pad_to_mask_clearance from the setup subtree using a table based loader
+		-Add: apply setup/pad_to_mask_clearance on smd and thr pads
+		-Add: create netlist on load; parse net of pads, add pads to the netlist
+		-Fix: don't create subc with invalid refdes, fix up the name with underscores
+		-Fix: filter pin names (terminal IDs), fix them up with underscore until they are valid
+		-Add: support for pad paste_ratio
+		-Fix: make unknown module parameter a fatal error
+		-Del: unused/dead code for via name: you don't name vias in pcb-rnd
+		-Add: layer parse shall count signal layers first - we can not depend on layer names in some old layers and KiCad's file format is just too broken to solve this without some guessing
+		-Add: accept "power" and "mixed" layers as copper layers, and use a better terminology for variables (copper instead of signal); remember layer type as layer attribute
+		-Add: parse the layer stackup by considering, IDs, names _and_ file version, trying to figure old board files; handle random foreign layer names and reverse order stack
+		-Add: force-reorder copper layers by layer number (used as emulated array index) to make sure internal layers are ordered properly, independently of what order they appear in the file - also consider KiCad's layer order switch after version 3
+		-Cleanup: replace the old, hardwired C code based layer guesser with a data driven, generic, scoring algorithm
+		-Fix: don't warn for missing font: kicad doesn't embed font in the board file
+		-Add: parse multiple string children of text justify node, remember the alignment
+		-Add: consider left/right/center alignment in text placement
+		-Fix: caculate and use real text bounding box for fine placement/alignment/justify, instead of guessing from string length
+		-Fix: do not create hidden text objects (cucp#42)
+		-Add: segment status: load 0x40000 as PCB_FLAG_LOCK (CUCP#40)
+		-Add: parse "layers" and "blind" for vias, throw error on contradiction or if layers don't resolve
+		-Add: support for loading and creating blind/buried vias (CUCP#41)
+		-Add: parse and apply "layers" subtree of pads
+		-Fix: do not ingore pad rotation; apply it considering subc rotation
+		-Add: allow loading any file format version from 2017
+		-Fix: convert file version as long, not int - values like 20170000 are just too large, we must have at least 31 bits
+		-Add: support for round rect pads
+		-Add: parse pad options and mask/paste margins
+		-Fix: when loading a module as pcb, call the module parser
+		-Add: when loading footprint as pcb, create all layers the parser will need in advance
+		-Fix: throw an error if padstack ends up with no shape on any layer
+		-Add: parse fp_poly fields and create fp polygons
+		-Add: support for np_thru_hole pads
+		-Add: parse and create oval holes as slots
+		-Add: auto-create a mech layer for plated slots so they show up properly
+		-Add: ignore drill offset with a warning
+		-Add: handle empty (layers) in smd: assume *.Cu and throw a warning
+		-Add: ignore the autoplace* subtrees in modules
+		-Fix: some old files are defining thru-hole pads without drill geometry - improvise 0.5 mm for now
+
+	[io_lihata]
+		-Fix: netlist patch typo mixed up "del" and "add" on load
+		-Fix: read: tolerate tailing whitepsace in integer values
+		-Fix: do not crash when reading polygons with no contour
+		-Fix: free broken poly when reporting parse error
+
+	[io_pcb]
+		-Fix: uninitialized fcmd
+		-Cleanup: move pcb_tmp_data_save() from core to io_pcb, the only user
+
+	[layer]
+		-Fix: don't crash if virtual layer purpose comparison is requested but the virtual layer has no purpose string
+
+	[lesstif]
+		-Fix: tree table binding: append new tree node at the right level when it has an existing sibling
+		-Fix: mem. err: dont manually unmanage a managed widget
+		-Fix: DAD close memory bug: do not wait for the dialog's widget if it is already destroyed
+		-Fix: tree table: various memory handling errors
+		-Fix: DAD result copy-back: always set default_val and make only the part that copes to results[] optional
+		-Fix: DAD text widget respects EXPFILL
+		-Fix: DAD: read/copy back the result even if there is no callback function registered for a widget - the readout may be async
+		-Fix: pack boxes as tight as possible
+		-Fix: DAD set on string values should save the new value with strdup
+		-Fix: do not load the background image if it is an empty string
+		-Fix: typo in hex digit converter of xpm
+		-Fix: call GetStyles() directly through C API to avoid verbose trace
+		-Cleanup: publish wait-for-dialog API and remove code duplication on it
+		-Cleanup: move box helper to dlg_attr_box
+		-Change: centralize the window geometry query code for window placement and make it query the real window size, don't rely on the config event data
+		-Del: AdjustSizes() - use the preferences dialog instead
+		-Add: integrate the new FillBox widget and replace the old RowColumn (no exp/fill support yet)
+		-Add: replace the non-portable motif tabbed widget with a local pages widget implementation
+		-Add: subbox DAD
+		-Add: new fileselect implementation
+		-Add: tree table: finish DAD binding
+		-Add: DAD text: scroll-to-bottom implementation
+		-Add: DAD text: respect the SCROLL flag
+		-Add: menu system: process and create popups/ - even tho there is no code to open popup menus at the moment, the key bindings are required
+	[lib_compat_help]
+		-Fix: handle rotated square old pads properly: do the 90 deg rotation or throw an error on non-90-deg
+		-Add: paper size def for USLetter, required by kicad
+	[lib_polyhelp]
+		-Fix: rewrite polyhatch(interactive) with DAD to fix the missing input labels problem
+
+	[log]
+		-Fix: print pending log messages after a failed export with -x
+		-Cleanup: simplify the error.h API: file-system specific error messages have a central template and are macros instead of functions (wrappers around pcb_message())
+		-Add: remember all log lines for a persistent log system, free all on exit
+		-Add: log append event so that the GUI can react
+		-Add: LogDialog() action, new log dialog code (using DAD)
+		-Add: conf node: rc/dup_log_to_stderr to allow reproducing error messages to stderr (console support)
+		-Add: Log() action with Clear command
+		-Add: the batch HID doesn't print debug messages unless verbose is set
+
+	[mincut]
+		-Del: stub API - switched to the event API
+		-Del: obsolete "ignore" argument
+		-Cleanup: remove global variables, use local contexts
+
+	[netlist]
+		-Change: full netlist engine rewrite from scratch
+		-Fix: do not assume the first terminal we are searching from actually exists - missing first terminal left the find state uninitialized
+		-Change: don't use intrusive popup for indicating footprint not found, just write an error in the log, that normally should pop up the log window and works better on CLI too
+		-Add: look up offender net on short circuit
+		-Add: short deduplication using a hash table
+		-Add: short indication event so that the netlist code does not need to depend on the mincut stub
+		-Add: rat draw: accept the situation that neither terminal is in a net - that's when a new net is created
+		-Add: use the user provided net name when creating a new net - create a netlist patch entry
+		-Add: case insensitive net search by name, standardize how user input is looked up
+		-Add: ClaimNet() for mapping existing objecrts as network
+		-Add: Netlist() rename and merge (action and GUI)
+
+	[propedit]
+		-Fix: memory handling error: set property only if address prefix matches
+		-Fix: flag and attribute sets are not recursive in subc
+		-Fix: propedit(object) should pick subc part padstack before subc
+		-Add: expose layer group type bits by name (read-only)
+
+	[ps]
+		-Split: move out paper sizes to common code to lib_compat_help (io_kicad needs it too)
+
+	[puller]
+		-Fix: make dependency on glib explicit
+
+	[rat]
+		-Add: prepare the API for rat lines to remember their anchor objects
+		-Add: implementation of pcb_rat_anchor_guess()
+
+	[report]
+		-Add: netlength warns for incomplete/shorted nets
+		-Add: warn for polygons/text objects in net length
+
+	[res]
+		-Del: "Edit name of" menu - redundant; hotkey submenus for {e t} text edit and {e r} refdes edit moved to text and subc context menu; the rest are accessible more easily from the property editor
+		-Add: menu item for invert selection
+
+	[rubberband]
+		-Move: move and rewrite the remove-rats-upon-object-removal from the rubber band code to core - it has nothing to do with rubber banding
+		-Cleanup: remove the old attempt for rubber band manipulation after refdes rename - there are too many corner cases, rather just erase all rats and let the user re-optimize them
+
+	[scconfig]
+		-Fix: disable the script plugin if there's no system installed fungw found
+		-Fix: when enabling dialogs, draw_csect and draw_fontsel need to be enabled too
+		-Fix: do not -I or -l glib for core, even if glib is found on the system, as core does not depend on it in any way
+		-Fix: make distclean removes gmon.out which may be created during the -pg test
+
+	[script]
+		-Fix: browse scripts dialog missing EXPFILL for proper layout
+		-Add: dialog live scripting
+		-Add: live script: list all fungw scripting plugins available
+		-Add: scripting anchor in the default menu file; live script dialog menu
+
+	[shape]
+		-Fix: initial round rect rounding radius should be 1/10th of the width to result in a valid round rect shape that can be generated
+		-Fix: generate the new shape on tab change
+
+	[subc]
+		-Fix: missing cast for subc rotation (may have caused truncation)
+		-Cleanup: const correctness on parent obj lookup
+		-Add: editor/subc_conv_refdes conf node special value "<?>" means "do not create the refdes attrib, but create the refdes text", which will result in the <?> printout with DYNTEXT
+
+	[tests]
+		-Add: test cases for the new rat geo code (with shortest path on any object vs. any object)
+		-Add: netlist geo test case for polygon hole
+		-Add: run the drc_pstk_hbrk tests by default
+
+	[tests/RTT]
+		-Fix: do not run on Proto or default (save some CPU cycles on uninteresting input)
+		-Update: rat.svg ref (it is exported despite of being empty)
+		-Update: rat.bom ref missing TEST author
+		-Update: layer_spc.bom missing TEST author (empty boards are exported now)
+		-Update: stderr filter for the new, more accurate warning/error messages on empty export and friends
+		-Update: eps refs for 'empty board exported'
+		-Update: ps refs for 'empty board is exported'
+		-Update: XY refs for 'empty board is exported'
+		-Update: gerber refs for 'empty board is exported'
+		-Update: svg refs for 'empty board is exported'
+		-Update: png refs for 'empty board is exported'
+		-Add: more SVG warning filter (for elliptical arc)
+		-Add: make sure gerber is generated with the fixed name style (explicit)
+
+	[tool]
+		-Fix: box selection should be triggered only if there is a valid box (box is in the second state); fixes: random right click selections
+
+	[util]
+		-Update: gsch2pcb-rnd to the new error API
+		-Add: script to list all dialog boxes
+
+	[vfs]
+		-Add: plugin for exporting/exposing a board as a filesystem via FUSE or Midnight Commander vfs
+
 pcb-rnd 2.1.1 (r23079)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[portability]
