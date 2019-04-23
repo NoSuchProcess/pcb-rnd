@@ -9,21 +9,21 @@ Feature highlight:
 2. live scripting: dialog box with an script editor for real time
    development and experimentation with scripting
 
-4. almost complete KiCad load support for files generated with version 4
+3. almost complete KiCad load support for files generated with version 4
    or older
 
-5. optional gerber drill files
+4. optional gerber drill files
 
-6. option to directly export in the excellon format, without any gerber
+5. option to directly export in the excellon format, without any gerber
 
-7. full netlist code rewrite: support for network mapping, renaming, merging
+6. full netlist code rewrite: support for network mapping, renaming, merging
 
-8 actions and GUI for starting a board without a netlist and build
+7. actions and GUI for starting a board without a netlist and build
    the netlist from within pcb-rnd
 
-9 new netlist dialog with enchanced functionality (same code for all HIDs)
+8. new netlist dialog with enchanced functionality (same code for all HIDs)
 
-10. new log window with enchanced functionality (same code for all HIDs);
-    log is persistent (messages before GUI startup are not lost);
-    export log to file button/action
+9. new log window with enchanced functionality (same code for all HIDs);
+   log is persistent (messages before GUI startup are not lost);
+   export log to file button/action
 
