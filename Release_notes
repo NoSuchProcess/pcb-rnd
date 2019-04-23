@@ -6,7 +6,7 @@ Feature highlight:
 1. CAM jobs from the command line with -x and from the GUI with the
    cam export dialog using {f c}
 
-2. live scripting: dialog box with an script editor for real time
+2. live scripting: dialog box with a script editor for real time
    development and experimentation with scripting
 
 3. almost complete KiCad load support for files generated with version 4
@@ -21,9 +21,9 @@ Feature highlight:
 7. actions and GUI for starting a board without a netlist and build
    the netlist from within pcb-rnd
 
-8. new netlist dialog with enchanced functionality (same code for all HIDs)
+8. new netlist dialog with enhanced functionality (same code for all HIDs)
 
-9. new log window with enchanced functionality (same code for all HIDs);
+9. new log window with enhanced functionality (same code for all HIDs);
    log is persistent (messages before GUI startup are not lost);
    export log to file button/action
 
