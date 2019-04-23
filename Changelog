@@ -36,7 +36,7 @@ pcb-rnd 2.1.2 (r24805)
 		-Fix: don't call hid ->log directly, uses pcb_message()
 		-Fix: throw an error on file load error (e.g. non-existing file) if there is no GUI
 		-Fix: do not draw broken bounding box of the xor drawn attached 'A' for text tool font placement
-		-Fix: the error message for not doing somethign to a locked object, also include the type name of the object to ease debugging
+		-Fix: the error message for not doing something to a locked object, also include the type name of the object to ease debugging
 		-Fix: allow the remove tool to operate on subc floaters even in non-loose-subc
 		-Fix: verbose action logging should go to stderr, not stdout
 		-Fix: plug_io calls GetStyles() directly, through C API to avoid action verbose prints
@@ -94,7 +94,7 @@ pcb-rnd 2.1.2 (r24805)
 		-Fix: printcalibrate: don't crash if there's no printer but print error and return
 		-Fix: prompt-for 'enter key' handler: need a pointer to the pointer of return override, as it will be filled in by DLG_RUN() after widget creation
 		-Fix: the prompt-for action accepts NULL default string (uses "")
-		-Fix: remember all export attr widget ID, not only the first one per exporter, because it is not trivial (and rather frafile) to calculate further IDs
+		-Fix: remember all export attr widget ID, not only the first one per exporter, because it is not trivial (and rather fragile) to calculate further IDs
 		-Fix: layer bindings dialog: expfill on the table
 		-Fix: padstack dialog, generator tab: do not derive shapes if the initial shape generation failed
 		-Add: export dialog: if an exporter has more than 12 settings, rather add a scroll to the vbox so the dialog box won't grow too large
@@ -210,7 +210,7 @@ pcb-rnd 2.1.2 (r24805)
 		-Cleanup: centralize the benchmark action to simplify the HID API
 		-Add: centralize user-lead code, replace the circles with an alternating arrow
 		-Add: DAD text scroll-to-end hid callback
-		-Add: hid property bit to inidicate if markup in DAD text is possible
+		-Add: hid property bit to indicate if markup in DAD text is possible
 		-Add: attribute dialog: raise window call
 		-Add: infra for hiding non-conventional export plugins from the export dialog, e.g. export_test and loghid and vfs later
 
@@ -224,7 +224,7 @@ pcb-rnd 2.1.2 (r24805)
 		-Cleanup: remove direct netlist dependency - rather use actions
 
 	[io_eagle]
-		-Cleanup: resolve subc rotation TODO (precise vs. lossles)
+		-Cleanup: resolve subc rotation TODO (precise vs. lossless)
 		-Add: poly clip inhibit during load to speed up
 
 	[io_kicad]
@@ -259,7 +259,7 @@ pcb-rnd 2.1.2 (r24805)
 		-Cleanup: always use the layer id type, not int, for storing layer IDs
 		-Cleanup: compact the zone code, get more warnings and errors
 		-Add: ignore zone filled=yes and priority value
-		-Clenaup: all kicad_error() and kicad_warning() point to the right node
+		-Cleanup: all kicad_error() and kicad_warning() point to the right node
 		-Cleanup: use the COORD conversion macros for polygon vertex x;y instead of code duplication
 		-Cleanup: remove excess/redundant (node->str == NULL) checks
 		-Cleanup: centralize "ignore value but throw an error if it is NULL", optionally with also warning for duplicate arguments (remove code duplication)
@@ -285,12 +285,12 @@ pcb-rnd 2.1.2 (r24805)
 		-Add: parse multiple string children of text justify node, remember the alignment
 		-Add: consider left/right/center alignment in text placement
 		-Fix: caculate and use real text bounding box for fine placement/alignment/justify, instead of guessing from string length
-		-Fix: do not create hidden text objects (cucp#42)
+		-Fix: do not create hidden text objects (CUCP#42)
 		-Add: segment status: load 0x40000 as PCB_FLAG_LOCK (CUCP#40)
 		-Add: parse "layers" and "blind" for vias, throw error on contradiction or if layers don't resolve
 		-Add: support for loading and creating blind/buried vias (CUCP#41)
 		-Add: parse and apply "layers" subtree of pads
-		-Fix: do not ingore pad rotation; apply it considering subc rotation
+		-Fix: do not ignore pad rotation; apply it considering subc rotation
 		-Add: allow loading any file format version from 2017
 		-Fix: convert file version as long, not int - values like 20170000 are just too large, we must have at least 31 bits
 		-Add: support for round rect pads
@@ -309,7 +309,7 @@ pcb-rnd 2.1.2 (r24805)
 
 	[io_lihata]
 		-Fix: netlist patch typo mixed up "del" and "add" on load
-		-Fix: read: tolerate tailing whitepsace in integer values
+		-Fix: read: tolerate tailing whitespace in integer values
 		-Fix: do not crash when reading polygons with no contour
 		-Fix: free broken poly when reporting parse error
 
@@ -345,9 +345,11 @@ pcb-rnd 2.1.2 (r24805)
 		-Add: DAD text: scroll-to-bottom implementation
 		-Add: DAD text: respect the SCROLL flag
 		-Add: menu system: process and create popups/ - even tho there is no code to open popup menus at the moment, the key bindings are required
+
 	[lib_compat_help]
 		-Fix: handle rotated square old pads properly: do the 90 deg rotation or throw an error on non-90-deg
 		-Add: paper size def for USLetter, required by kicad
+
 	[lib_polyhelp]
 		-Fix: rewrite polyhatch(interactive) with DAD to fix the missing input labels problem
 
