@@ -120,7 +120,7 @@ static int ltf_tabbed_set_(ltf_tab_t *tctx, int page)
 
 	XtVaSetValues(tctx->wpages, PxmNpagesAt, page, NULL);
 
-	if ((tctx->btn == NULL) || (tctx->btn[tctx->at].w == NULL))
+	if (tctx->btn[tctx->at].w == NULL)
 		return 0;
 
 	if (tctx->at >= 0)
