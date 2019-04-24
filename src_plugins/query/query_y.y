@@ -273,7 +273,7 @@ fname:
 		$$ = pcb_qry_n_alloc(PCBQ_FNAME);
 		$$->data.fnc = pcb_qry_fnc_lookup($1);
 		if ($$->data.fnc == NULL) {
-			yyerror("Unknown function");
+			yyerror(NULL, "Unknown function");
 			free($1);
 			return -1;
 		}

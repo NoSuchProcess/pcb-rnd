@@ -165,4 +165,8 @@ int pcb_qry_fnc_reg(const char *name, pcb_qry_fnc_t fnc);
 pcb_qry_fnc_t pcb_qry_fnc_lookup(const char *name);
 const char *pcb_qry_fnc_name(pcb_qry_fnc_t fnc);
 
+/* parser */
+void qry_error(void *prog, const char *err);
+
+
 #endif
