@@ -1,6 +1,11 @@
 pcb-rnd 2.1.2
 ~~~~~~~~~~~~~
 
+This release of pcb-rnd focuses on code cleanup and fixin bugs. The three
+major cleanups are the full netlist code rewrite, introduction of
+CAM jobs which will long term replace the more limited gerber name
+styles, and refactoring the KiCad file read code for more proper operation.
+
 Feature highlight:
 
 1. CAM jobs from the command line with -x and from the GUI with the
