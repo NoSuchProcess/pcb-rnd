@@ -347,7 +347,7 @@ static fgw_error_t pcb_act_tang(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	arc = (pcb_arc_t *)ptr2;
-	if (fabs(arc->Height - arc->Width) > 100) {
+	if (fabs((double)(arc->Height - arc->Width)) > 100) {
 		pcb_message(PCB_MSG_ERROR, "tang: elliptical arcs are not supported (%$mm != %$mm)\n", arc->Height, arc->Width);
 		PCB_ACT_IRES(-1);
 		return 0;
