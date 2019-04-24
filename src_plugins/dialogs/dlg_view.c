@@ -146,7 +146,7 @@ static void view2dlg_count(view_ctx_t *ctx)
 {
 	char tmp[32];
 
-	sprintf(tmp, "%d", pcb_view_list_length(ctx->lst));
+	sprintf(tmp, "%ld", (long)pcb_view_list_length(ctx->lst));
 	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wcount, str_value, pcb_strdup(tmp));
 }
 
