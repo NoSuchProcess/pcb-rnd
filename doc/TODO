@@ -16,7 +16,6 @@
 - CLEANUP: remove pcb_attribute_dialog() and the label argument from the DAD API [report: igor2]
 - CLEANUP/BUG: The 'As Drawn' polygon contour is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
 	-> need a new rtree that holds the polygons that have ->clipped == NULL for this purpose
-- CLEANUP: move opendir/readdir in safe_fs from everywhere
 - CLEANUP: pcb_layer_to_file_name() dest should be gds_t to avoid potential buffer overflow
 - CLEANUP: remove hid_flag.h - probably merge the function into a menu related .h
 - CLEANUP: DAD: centralize the coordinate input spinbox: hid_dad_spin
