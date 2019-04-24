@@ -52,10 +52,6 @@
 #include "obj_rat.h"
 #include "safe_fs.h"
 
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-
 conf_import_sch_t conf_import_sch;
 
 extern fgw_error_t pcb_act_ExecuteFile(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv);
@@ -216,7 +212,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			*dot = 0;
 		strcat(schname, ".sch");
 
-		if (access(schname, F_OK)) {
+		if (pcb_file_readable(schname)) {
 			PCB_ACT_IRES(pcb_action("ImportGUI"));
 			return 0;
 		}
