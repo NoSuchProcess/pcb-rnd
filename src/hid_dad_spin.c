@@ -212,12 +212,12 @@ static double get_step(pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end, pcb_h
 
 	switch(spin->type) {
 		case PCB_DAD_SPIN_INT:
-			step = pow(10, floor(log10(fabs(end->default_val.int_value)) - 1.0));
+			step = pow(10, floor(log10(fabs((double)end->default_val.int_value)) - 1.0));
 			if (step < 1)
 				step = 1;
 			break;
 		case PCB_DAD_SPIN_DOUBLE:
-			step = pow(10, floor(log10(fabs(end->default_val.real_value)) - 1.0));
+			step = pow(10, floor(log10(fabs((double)end->default_val.real_value)) - 1.0));
 			break;
 		case PCB_DAD_SPIN_COORD:
 			if (spin->unit == NULL) {
