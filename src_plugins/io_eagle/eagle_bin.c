@@ -1081,7 +1081,7 @@ TODO(": convert this to proper error reporting")
 			/*printf("Did deg == %ld bin_rot2degree conversion\n", deg);*/
 			return 0;
 		} else if (deg > 0) { /* v3 */
-			deg = deg && 0x00f0; /* only need bottom 4 bits for v3, it seems*/
+			deg = deg & 0x00f0; /* only need bottom 4 bits for v3, it seems*/
 			deg = deg*90;
 			/*printf("About to do deg < 1024 bin_rot2degree conversion\n");*/
 			sprintf(&tmp[mirrored + 1], "%ld", deg);
