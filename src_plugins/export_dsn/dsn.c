@@ -141,7 +141,7 @@ TODO("revise this; use attributes instead")
 				layeropts = pcb_strdup_printf("(type power) (use_net \"%s\")", g->name);
 			}
 		}
-		fprintf(fp, "    (layer \"%d__%s\"\n", GRP_NAME(g));
+		fprintf(fp, "    (layer \"%ld__%s\"\n", (long)GRP_NAME(g));
 		fprintf(fp, "      %s\n", layeropts);
 		fprintf(fp, "    )\n");
 		free(layeropts);
