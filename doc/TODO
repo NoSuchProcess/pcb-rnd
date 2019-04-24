@@ -1,7 +1,4 @@
 0. old, still waiting for ack
-+ BUG: kicad I/O bugs:
-	+ BUG: does not save the netlist [TwisteR]
-+ FEATURE: external editor on buffer [report: TwisteR]
 
 1. For the upcoming release ===============================================================================
 - DOC: (prio) tutorial:
