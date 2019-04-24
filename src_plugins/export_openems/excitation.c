@@ -432,6 +432,7 @@ static const char pcb_acts_OpenemsExcitation[] =
 	"OpenemsExcitation(get, [excitationnme], paramname)\n"
 	;
 static const char pcb_acth_OpenemsExcitation[] = "Select which openEMS excitation method should be exported and manipulate the associated parameters. When invoked without arguments a dialog box with the same functionality is presented.";
+/* DOC: openemsexcication.html */
 static fgw_error_t pcb_act_OpenemsExcitation(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *op = "interactive", *a1 = NULL;
