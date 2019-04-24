@@ -928,7 +928,7 @@ static int rdax_net(read_state_t *st, FILE *FP)
 				else if (!in_node_table) {
 					s = line;
 					rtrim(s);
-					if (line != NULL && netname != NULL) {
+					if ((*line != '\0') && (netname != NULL)) {
 						pcb_actionl("Netlist", "Add", netname, line, NULL);
 					}
 				}
