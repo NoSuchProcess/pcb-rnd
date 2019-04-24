@@ -1029,7 +1029,7 @@ void hyp_arc2contour(pcb_pline_t * contour, pcb_coord_t x1, pcb_coord_t y1, pcb_
 		pcb_message(PCB_MSG_ERROR, "error: negative arc precision\n");
 
 	/* A full circle is drawn using 'segments' segments; a 90 degree arc using segments/4. */
-	poly_points = pcb_round(segments * abs(beta - alpha) / (2 * M_PI));
+	poly_points = pcb_round(segments * fabs(beta - alpha) / (2 * M_PI));
 
 	/* Sanity checks */
 	if (poly_points < 1)
