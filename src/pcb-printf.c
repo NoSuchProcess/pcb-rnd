@@ -207,7 +207,7 @@ static int CoordsToString(gds_t *dest, pcb_coord_t coord[], int n_coords, const 
 			int n_above_one = 0;
 
 			for (i = 0; i < n_coords; ++i)
-				if (abs(value[i] * pcb_units[n].scale_factor) > 1)
+				if (fabs(value[i] * pcb_units[n].scale_factor) > 1)
 					++n_above_one;
 			if (n_above_one == n_coords)
 				break;
