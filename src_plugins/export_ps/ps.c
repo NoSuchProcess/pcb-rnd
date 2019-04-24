@@ -693,8 +693,7 @@ static void corner(FILE * fh, pcb_coord_t x, pcb_coord_t y, int dx, int dy)
 
 static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
-	char tmp_fn[PCB_PATH_MAX];
-	char tmp_ln[PCB_PATH_MAX];
+	gds_t tmp_ln;
 	static int lastgroup = -1;
 	time_t currenttime;
 	const char *name;
@@ -729,7 +728,8 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 	}
 
 
-	name = pcb_layer_to_file_name(tmp_ln, layer, flags, purpose, purpi, PCB_FNS_fixed);
+	gds_init(&tmp_ln);
+	name = pcb_layer_to_file_name(&tmp_ln, layer, flags, purpose, purpi, PCB_FNS_fixed);
 
 	global.is_drill = PCB_LAYER_IS_DRILL(flags, purpi);
 	global.is_mask = !!(flags & PCB_LYT_MASK);
@@ -759,6 +759,7 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 			fprintf(global.f, "(%d.) tocp\n", global.single_page ? 2 : global.pagecount);
 		}
 		fprintf(global.f, "(%s) toc\n", name);
+		gds_uninit(&tmp_ln);
 		return 0;
 	}
 
@@ -778,14 +779,21 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 		}
 		global.pagecount++;
 		if ((!ps_cam.active && global.multi_file) || (ps_cam.active && ps_cam.fn_changed)) {
-			const char *fn = ps_cam.active ? ps_cam.fn : pcb_layer_to_file_name(tmp_fn, layer, flags, purpose, purpi, PCB_FNS_fixed);
+			const char *fn;
+			gds_t tmp;
+
+			gds_init(&tmp);
+			fn = ps_cam.active ? ps_cam.fn : pcb_layer_to_file_name(&tmp, layer, flags, purpose, purpi, PCB_FNS_fixed);
 			if (global.f) {
 				ps_end_file(global.f);
 				fclose(global.f);
 			}
 			global.f = psopen(ps_cam.active ? fn : global.filename, fn);
+			gds_uninit(&tmp);
+
 			if (!global.f) {
 				perror(global.filename);
+				gds_uninit(&tmp_ln);
 				return 0;
 			}
 
@@ -800,7 +808,12 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 		 * ordinal page number must reflect the position of that page in
 		 * the body of the PostScript file and must start with 1, not 0.
 		 */
-		fprintf(global.f, "%%%%Page: %s %d\n", pcb_layer_to_file_name(tmp_fn, layer, flags, purpose, purpi, PCB_FNS_fixed), global.pagecount);
+		{
+			gds_t tmp;
+			gds_init(&tmp);
+			fprintf(global.f, "%%%%Page: %s %d\n", pcb_layer_to_file_name(&tmp, layer, flags, purpose, purpi, PCB_FNS_fixed), global.pagecount);
+			gds_uninit(&tmp);
+		}
 
 		if (global.mirror)
 			mirror_this = !mirror_this;
@@ -809,11 +822,16 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 
 		fprintf(global.f, "/Helvetica findfont 10 scalefont setfont\n");
 		if (global.legend) {
+			gds_t tmp;
 			fprintf(global.f, "30 30 moveto (%s) show\n", pcb_hid_export_fn(PCB->Filename));
+
+			gds_init(&tmp);
 			if (PCB->Name)
-				fprintf(global.f, "30 41 moveto (%s, %s) show\n", PCB->Name, pcb_layer_to_file_name(tmp_fn, layer, flags, purpose, purpi, PCB_FNS_fixed));
+				fprintf(global.f, "30 41 moveto (%s, %s) show\n", PCB->Name, pcb_layer_to_file_name(&tmp, layer, flags, purpose, purpi, PCB_FNS_fixed));
 			else
-				fprintf(global.f, "30 41 moveto (%s) show\n", pcb_layer_to_file_name(tmp_fn, layer, flags, purpose, purpi, PCB_FNS_fixed));
+				fprintf(global.f, "30 41 moveto (%s) show\n", pcb_layer_to_file_name(&tmp, layer, flags, purpose, purpi, PCB_FNS_fixed));
+			gds_uninit(&tmp);
+
 			if (mirror_this)
 				fprintf(global.f, "( \\(mirrored\\)) show\n");
 
@@ -919,6 +937,7 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 		global.is_drill = save_drill;
 	}
 
+	gds_uninit(&tmp_ln);
 	return 1;
 }
 

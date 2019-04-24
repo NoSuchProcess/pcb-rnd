@@ -3,6 +3,7 @@
 
 #include "layer.h"
 #include "hid_attrib.h"
+#include <genvector/gds_char.h>
 
 /*** CAM plugin side API ***/
 typedef struct pcb_cam_s {
@@ -79,8 +80,9 @@ typedef enum pcb_file_name_style_e {
 	PCB_FNS_first
 } pcb_file_name_style_t;
 
-/* Returns a filename base that can be used to output the layer.  */
-char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, pcb_file_name_style_t style);
+/* Returns a filename base that can be used to output the layer. The file
+   name is built in dest, the returned pointer is pointing to the array of dest.  */
+char *pcb_layer_to_file_name(gds_t *dest, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, pcb_file_name_style_t style);
 
 /* Returns a filename base that can be used to output the layer; if flags is 0,
    look it up. Copies result in dest (which should be at least PCB_DERIVE_FN_SUFF_LEN bytes wide). */

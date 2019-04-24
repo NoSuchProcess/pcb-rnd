@@ -480,7 +480,7 @@ static void assign_universal_file_suffix(char *dest, pcb_layergrp_id_t gid, unsi
 
 #undef fmatch
 
-static void assign_file_suffix(char *dest, pcb_layergrp_id_t gid, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, int drill, int *merge_same)
+static int assign_file_suffix_(gds_t *dest, char *direct, pcb_layergrp_id_t gid, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, int drill, int *merge_same)
 {
 	int fns_style;
 	const char *sext = ".gbr";
@@ -502,23 +502,38 @@ static void assign_file_suffix(char *dest, pcb_layergrp_id_t gid, pcb_layer_id_t
 		fns_style = PCB_FNS_first;
 		break;
 	case NAME_STYLE_EAGLE:
-		assign_eagle_file_suffix(dest, lid, flags, purpi);
+		assign_eagle_file_suffix(direct, lid, flags, purpi);
 		if (merge_same != NULL) *merge_same = 1;
-		return;
+		return 1;
 	case NAME_STYLE_HACKVANA:
-		assign_hackvana_file_suffix(dest, lid, flags, purpi);
+		assign_hackvana_file_suffix(direct, lid, flags, purpi);
 		if (merge_same != NULL) *merge_same = 1;
-		return;
+		return 1;
 	case NAME_STYLE_UNIVERSAL:
-		assign_universal_file_suffix(dest, gid, flags, purpi);
+		assign_universal_file_suffix(direct, gid, flags, purpi);
 		if (merge_same != NULL) *merge_same = 1;
-		return;
+		return 1;
 	}
 
 	if (drill && PCB_LAYER_IS_DRILL(flags, purpi))
 		sext = ".cnc";
 	pcb_layer_to_file_name(dest, lid, flags, purpose, purpi, fns_style);
-	strcat(dest, sext);
+	gds_append_str(dest, sext);
+	return 0;
+}
+
+TODO("Once file naming styles are gone, this should be gone too and we should use the gds version only, without fixed length file buffers")
+static void assign_file_suffix(char *dest, pcb_layergrp_id_t gid, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, int drill, int *merge_same)
+{
+	gds_t tmp;
+
+	gds_init(&tmp);
+	if (assign_file_suffix_(&tmp, dest, gid, lid, flags, purpose, purpi, drill, merge_same)) {
+		gds_uninit(&tmp);
+		return;
+	}
+	strncpy(dest, tmp.array, SUFF_LEN);
+	gds_uninit(&tmp);
 }
 
 static void gerber_do_export(pcb_hid_attr_val_t * options)

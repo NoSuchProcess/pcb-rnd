@@ -385,7 +385,7 @@ static int is_drill;
 
 static int eps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
-	char tmp_ln[PCB_PATH_MAX];
+	gds_t tmp_ln;
 	const char *name;
 
 	if (flags & PCB_LYT_UI)
@@ -420,12 +420,14 @@ static int eps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int
 	if (is_mask || is_paste)
 		return 0;
 
-	name = pcb_layer_to_file_name(tmp_ln, layer, flags, purpose, purpi, PCB_FNS_fixed);
+	gds_init(&tmp_ln);
+	name = pcb_layer_to_file_name(&tmp_ln, layer, flags, purpose, purpi, PCB_FNS_fixed);
 
 #if 0
 	printf("Layer %s group %d drill %d mask %d\n", name, group, is_drill, is_mask);
 #endif
 	fprintf(f, "%% Layer %s group %ld drill %d mask %d\n", name, group, is_drill, is_mask);
+	gds_uninit(&tmp_ln);
 
 	if (as_shown) {
 		if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))

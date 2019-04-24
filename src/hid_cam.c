@@ -43,7 +43,7 @@
 
 htsp_t *pcb_cam_vars = NULL; /* substitute %% variables from this hash */
 
-char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, pcb_file_name_style_t style)
+char *pcb_layer_to_file_name(gds_t *dest, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, pcb_file_name_style_t style)
 {
 	const pcb_virt_layer_t *v;
 	pcb_layergrp_id_t group;
@@ -52,6 +52,8 @@ char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags,
 
 	if (flags == 0)
 		flags = pcb_layer_flags(PCB, lid);
+
+	dest->used = 0;
 
 	if (style == PCB_FNS_pcb_rnd) {
 		const char *sloc, *styp;
@@ -62,24 +64,24 @@ char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags,
 		if (styp == NULL) styp = "none";
 		if (purpose == NULL) purpose = "none";
 		if (group < 0) {
-			sprintf(dest, "%s.%s.%s.none", sloc, styp, purpose);
+			pcb_append_printf(dest, "%s.%s.%s.none", sloc, styp, purpose);
 		}
 		else
-			sprintf(dest, "%s.%s.%s.%ld", sloc, styp, purpose, group);
-		return dest;
+			pcb_append_printf(dest, "%s.%s.%s.%ld", sloc, styp, purpose, group);
+		return dest->array;
 	}
 
 	if (flags & PCB_LYT_BOUNDARY) {
-		strcpy(dest, "outline");
-		return dest;
+		gds_append_str(dest, "outline");
+		return dest->array;
 	}
 
 	/* NOTE: long term only PCB_FNS_pcb_rnd will be supported and the rest,
 	   below, will be removed */
 	v = pcb_vlayer_get_first(flags, purpose, purpi);
 	if (v != NULL) {
-		strcpy(dest, v->name);
-		return dest;
+		gds_append_str(dest, v->name);
+		return dest->array;
 	}
 
 
@@ -120,8 +122,8 @@ char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags,
 	}
 
 	assert(res != NULL);
-	strcpy(dest, res);
-	return dest;
+	gds_append_str(dest, res);
+	return dest->array;
 }
 
 

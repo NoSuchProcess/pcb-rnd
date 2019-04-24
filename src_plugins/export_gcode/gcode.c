@@ -411,10 +411,12 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 
 	for (i = 0; i < PCB_MAX_LAYERGRP; i++) {
 		if (gcode_export_group[i]) {
-			char tmp_ln[PCB_PATH_MAX];
-			const char *name = pcb_layer_to_file_name(tmp_ln, -1, pcb_layergrp_flags(PCB, i), PCB->LayerGroups.grp[i].purpose, PCB->LayerGroups.grp[i].purpi, PCB_FNS_fixed);
+			gds_t tmp_ln;
+			const char *name;
 			gcode_cur_group = i;
 
+			gds_init(&tmp_ln);
+			name = pcb_layer_to_file_name(&tmp_ln, -1, pcb_layergrp_flags(PCB, i), PCB->LayerGroups.grp[i].purpose, PCB->LayerGroups.grp[i].purpi, PCB_FNS_fixed);
 			/* magic */
 			idx = (i >= 0 && i < pcb_max_group(PCB)) ? PCB->LayerGroups.grp[i].lid[0] : i;
 			printf("idx=%d %s\n", idx, name);
@@ -452,6 +454,7 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 			gcode_f2 = pcb_fopen(filename, "wb");
 			if (!gcode_f2) {
 				perror(filename);
+				gds_uninit(&tmp_ln);
 				return;
 			}
 			fprintf(gcode_f2, "(Created by G-code exporter)\n");
@@ -474,12 +477,14 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 			r = bm_to_pathlist(bm, &plist, &param_default);
 			if (r) {
 				fprintf(stderr, "ERROR: pathlist function failed\n");
+				gds_uninit(&tmp_ln);
 				return;
 			}
 			/* generate best polygon and write vertices in g-code format */
 			d = process_path(plist, &param_default, bm, gcode_f2, metric ? 25.4 / gcode_dpi : 1.0 / gcode_dpi);
 			if (d < 0) {
 				fprintf(stderr, "ERROR: path process function failed\n");
+				gds_uninit(&tmp_ln);
 				return;
 			}
 			if (metric)
@@ -497,6 +502,7 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 				gcode_f2 = pcb_fopen(filename, "wb");
 				if (!gcode_f2) {
 					perror(filename);
+					gds_uninit(&tmp_ln);
 					return;
 				}
 				fprintf(gcode_f2, "(Created by G-code exporter)\n");
@@ -540,6 +546,7 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 
 /* ******************* end gcode conversion **************************** */
 			gcode_finish_png();
+			gds_uninit(&tmp_ln);
 		}
 	}
 }
