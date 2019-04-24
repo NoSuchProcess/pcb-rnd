@@ -1,2 +1,3 @@
+- shouldn't a xm_extent_prediction() call be part of the xm_draw_tree_table_widget() call?
 - event pointer vs. enum:  ../src_plugins/hid_lesstif/xm_tree_table_widget.c:337:25: warning: expression which evaluates to zero treated as a null pointer constant of type 'XEvent *' (aka 'union _XEvent *') [-Wnon-literal-null-conversion]:  tp->event_data.event = ett_none;
                                ^~~~~~~~
