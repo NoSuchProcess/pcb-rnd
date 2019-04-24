@@ -278,6 +278,7 @@ typedef @/local/pcb/long64@    pcb_long64_t;
 #		define opendir     never_use_opendir__use_pcb_opendir
 #		define readdir     never_use_readdir__use_pcb_readdir
 #		define closedir    never_use_closedir__use_pcb_closedir
+#		define access      never_use_access__use_pcb_file_readable
 #	endif
 
 #endif
