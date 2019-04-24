@@ -184,6 +184,16 @@ int pcb_rename(const char *old_path, const char *new_path)
 	return res;
 }
 
+int pcb_unlink(const char *path)
+{
+	int res;
+	char *path_exp = pcb_build_fn(path);
+	res = unlink(path_exp);
+	free(path_exp);
+	return res;
+}
+
+
 DIR *pcb_opendir(const char *name)
 {
 	DIR *d;

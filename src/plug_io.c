@@ -811,7 +811,7 @@ int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, p
 	fclose(fp);
 	if (fn_tmp != NULL) {
 		if ((result == 0) && (!conf_core.rc.keep_save_backups))
-			unlink(fn_tmp);
+			pcb_unlink(fn_tmp);
 		free(fn_tmp);
 	}
 	return result;

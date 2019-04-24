@@ -50,6 +50,7 @@
 #include "misc_util.h"
 #include "compat_misc.h"
 #include "obj_rat.h"
+#include "safe_fs.h"
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -266,7 +267,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (pcb_spawnvp(cmd)) {
 			for(i = 0; i < nsources; i++)
 				free((char *) cmd[8 + i]);
-			unlink(tmpfile);
+			pcb_unlink(tmpfile);
 			PCB_ACT_IRES(1);
 			return 0;
 		}
@@ -343,7 +344,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		if (pcb_spawnvp(cmd)) {
 			if (must_free_tmpfile)
-				unlink(tmpfile);
+				pcb_unlink(tmpfile);
 			free((char*)cmd[2]);
 			free((char*)cmd[3]);
 			free((char*)cmd[4]);

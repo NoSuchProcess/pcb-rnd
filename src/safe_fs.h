@@ -40,6 +40,7 @@ int pcb_system(const char *cmd);
 int pcb_remove(const char *path);
 int pcb_rename(const char *old_path, const char *new_path);
 int pcb_mkdir(const char *path, int mode);
+int pcb_unlink(const char *path);
 
 /* Return the size of non-large files; on error or for large files
    (size larger than the value long can hold) return -1 */
