@@ -16,7 +16,6 @@
 #include <math.h>
 #include <float.h>
 #include <stdlib.h>
-#include <unistd.h>
 
 #include "config.h"
 #include "board.h"
