@@ -1,3 +1,3 @@
-#include "lib_hid_common_conf.h"
+#include "dialogs_conf.h"
 
-extern conf_lib_hid_common_t lib_hid_common_conf;
+extern const conf_dialogs_t dialogs_conf;

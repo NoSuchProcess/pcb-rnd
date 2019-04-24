@@ -36,7 +36,7 @@
 #include "safe_fs.h"
 #include "paths.h"
 
-#define CFG lib_hid_common_conf.plugins.lib_hid_common.cli_history
+#define CFG dialogs_conf.plugins.lib_hid_common.cli_history
 
 typedef struct hist_t {
 	gdl_elem_t lst;

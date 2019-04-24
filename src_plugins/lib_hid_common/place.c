@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,9 +25,18 @@
  */
 
 #include "config.h"
+#include "event.h"
+#include "compat_misc.h"
+#include "error.h"
+#include "conf.h"
+#include "board.h"
 #include "safe_fs.h"
 
 static const char *place_cookie = "dialogs/place";
+
+#include "dialogs_conf.h"
+extern const conf_dialogs_t dialogs_conf;
+
 
 typedef struct {
 	int x, y, w, h;
@@ -70,7 +79,7 @@ static void pcb_dialog_store(const char *id, int x, int y, int w, int h)
 }
 
 
-static void pcb_dialog_place(void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_dialog_place(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	const char *id;
 	int *geo;
@@ -92,7 +101,7 @@ static void pcb_dialog_place(void *user_data, int argc, pcb_event_arg_t argv[])
 /*	pcb_trace("dialog place: %p '%s'\n", hid_ctx, id);*/
 }
 
-static void pcb_dialog_resize(void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_dialog_resize(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if ((argc < 7) || (argv[1].type != PCB_EVARG_PTR) || (argv[2].type != PCB_EVARG_STR))
 		return;
@@ -194,9 +203,9 @@ static void place_maybe_save(conf_role_t role, int force)
 	char *end, *end2;
 
 	switch(role) {
-		case CFR_USER:    if (!force && !conf_dialogs.plugins.dialogs.auto_save_window_geometry.to_user) return; break;
-		case CFR_DESIGN:  if (!force && !conf_dialogs.plugins.dialogs.auto_save_window_geometry.to_design) return; break;
-		case CFR_PROJECT: if (!force && !conf_dialogs.plugins.dialogs.auto_save_window_geometry.to_project) return; break;
+		case CFR_USER:    if (!force && !dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_user) return; break;
+		case CFR_DESIGN:  if (!force && !dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_design) return; break;
+		case CFR_PROJECT: if (!force && !dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_project) return; break;
 		default: return;
 	}
 
@@ -278,7 +287,7 @@ int pcb_wplc_save_to_file(const char *fn)
 	return 0;
 }
 
-static void pcb_dialog_place_uninit(void)
+void pcb_dialog_place_uninit(void)
 {
 	htsw_entry_t *e;
 	int n;
@@ -297,7 +306,7 @@ static void pcb_dialog_place_uninit(void)
 	vtp0_uninit(&cleanup_later);
 }
 
-static void pcb_dialog_place_init(void)
+void pcb_dialog_place_init(void)
 {
 	htsw_init(&wingeo, strhash, strkeyeq);
 	pcb_event_bind(PCB_EVENT_SAVE_PRE, place_save_pre, NULL, place_cookie);

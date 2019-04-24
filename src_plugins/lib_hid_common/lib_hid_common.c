@@ -29,6 +29,7 @@
 #include <stdlib.h>
 #include "plugins.h"
 #include "conf_hid.h"
+#include "event.h"
 
 #include "grid_menu.h"
 #include "layer_menu.h"
@@ -36,17 +37,18 @@
 #include "cli_history.h"
 #include "util.c"
 #include "lead_user.h"
+#include "place.h"
 
 #include "lib_hid_common.h"
-#include "lib_hid_common_conf.h"
+#include "dialogs_conf.h"
 
-conf_lib_hid_common_t lib_hid_common_conf;
-
+const conf_dialogs_t dialogs_conf;
 
 static const char *grid_cookie = "lib_hid_common/grid";
 static const char *layer_cookie = "lib_hid_common/layer";
 static const char *rst_cookie = "lib_hid_common/route_style";
 static const char *lead_cookie = "lib_hid_common/user_lead";
+static const char *wplc_cookie = "lib_hid_common/window_placement";
 
 int pplg_check_ver_lib_hid_common(int ver_needed) { return 0; }
 
@@ -60,8 +62,10 @@ void pplg_uninit_lib_hid_common(void)
 	pcb_event_unbind_allcookie(layer_cookie);
 	pcb_event_unbind_allcookie(rst_cookie);
 	pcb_event_unbind_allcookie(lead_cookie);
+	pcb_event_unbind_allcookie(wplc_cookie);
 	conf_hid_unreg(grid_cookie);
 	conf_hid_unreg(rst_cookie);
+	pcb_dialog_place_uninit();
 	conf_unreg_fields("plugins/lib_hid_common/");
 }
 
@@ -75,8 +79,11 @@ TODO("padstack: remove some paths when route style has proto")
 
 	PCB_API_CHK_VER;
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	conf_reg_field(lib_hid_common_conf, field,isarray,type_name,cpath,cname,desc,flags);
-#include "lib_hid_common_conf_fields.h"
+	conf_reg_field(dialogs_conf, field,isarray,type_name,cpath,cname,desc,flags);
+/*#include "lib_hid_common_conf_fields.h"*/
+#include "dialogs_conf_fields.h"
+
+	pcb_dialog_place_init();
 
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_grid_update_ev, NULL, grid_cookie);
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, pcb_layer_menu_update_ev, NULL, layer_cookie);
@@ -87,6 +94,8 @@ TODO("padstack: remove some paths when route style has proto")
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_rst_update_ev, NULL, rst_cookie);
 	pcb_event_bind(PCB_EVENT_GUI_LEAD_USER, pcb_lead_user_ev, NULL, lead_cookie);
 	pcb_event_bind(PCB_EVENT_GUI_DRAW_OVERLAY_XOR, pcb_lead_user_draw_ev, NULL, lead_cookie);
+	pcb_event_bind(PCB_EVENT_DAD_NEW_DIALOG, pcb_dialog_place, NULL, wplc_cookie);
+	pcb_event_bind(PCB_EVENT_DAD_NEW_GEO, pcb_dialog_resize, NULL, wplc_cookie);
 
 	conf_id = conf_hid_reg(grid_cookie, NULL);
 	memset(&ccb, 0, sizeof(ccb));

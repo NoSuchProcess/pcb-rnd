@@ -3,6 +3,6 @@ $short all-hid_gtk common code
 $long hid_gtk* common code (regardless of gtk version or drawing mechanism: for both gtk2 and gtk3 and for both sw rendering and gl)
 $state works
 $package lib-gtk
-dep dialogs
+dep lib_hid_common
 default disable-all
 

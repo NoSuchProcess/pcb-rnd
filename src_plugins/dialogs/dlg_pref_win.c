@@ -29,18 +29,18 @@
 #include "dlg_pref.h"
 #include "conf.h"
 #include "conf_core.h"
-#include "dialogs_conf.h"
+#include "../src_plugins/lib_hid_common/dialogs_conf.h"
 
-extern const conf_dialogs_t conf_dialogs;
+extern const conf_dialogs_t dialogs_conf;
 extern void pcb_wplc_save_to_role(conf_role_t role);
 extern int pcb_wplc_save_to_file(const char *fn);
 
 static void pref_win_brd2dlg(pref_ctx_t *ctx)
 {
 	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wmaster, int_value, conf_core.editor.auto_place);
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wboard, int_value, conf_dialogs.plugins.dialogs.auto_save_window_geometry.to_design);
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wproject, int_value, conf_dialogs.plugins.dialogs.auto_save_window_geometry.to_project);
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wuser, int_value, conf_dialogs.plugins.dialogs.auto_save_window_geometry.to_user);
+	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wboard, int_value, dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_design);
+	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wproject, int_value, dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_project);
+	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wuser, int_value, dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_user);
 }
 
 void pcb_dlg_pref_win_open(pref_ctx_t *ctx)

@@ -3,6 +3,9 @@
 
 #include "conf.h"
 
+/* dialog config is here because of hidlib: each hidlib user shall have its
+   own dialogs plugin */
+
 typedef struct {
 	const struct plugins {
 		const struct dialogs {
@@ -20,6 +23,14 @@ typedef struct {
 				} example_template;
 			} window_geometry;
 		} dialogs;
+
+		const struct lib_hid_common {
+			const struct cli_history {
+				CFT_STRING file;       /* Path to the history file (empty/unset means history is not preserved) */
+				CFT_INTEGER slots;     /* Number of commands to store in the history */
+			} cli_history;
+		} lib_hid_common;
+
 	} plugins;
 } conf_dialogs_t;
 

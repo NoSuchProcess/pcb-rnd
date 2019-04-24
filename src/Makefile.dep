@@ -417,7 +417,7 @@
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h funchash_core.h \
- funchash.h funchash_core_list.h ../src_plugins/dialogs/dialogs_conf.h \
+ funchash.h funchash_core_list.h ../src_plugins/lib_hid_common/dialogs_conf.h \
  conf.h ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
  list_conf.h conf.h ../src_plugins/dialogs/dlg_test.c board.h \
  vtroutestyle.h layer_grp.h rats_patch.h board.h obj_text.h \
@@ -442,7 +442,7 @@
  ../src_plugins/dialogs/dlg_netlist.c \
  ../src_plugins/dialogs/dlg_plugins.c \
  ../src_plugins/dialogs/dlg_printcalib.c hid_init.h \
- ../src_plugins/dialogs/place.c safe_fs.h ../src_3rd/genht/ht.c \
+ safe_fs.h ../src_3rd/genht/ht.c \
  ../src_3rd/genht/ht_inlines.h ../src_plugins/dialogs/dlg_view.h \
  ../src_plugins/dialogs/dlg_pref.h conf_hid.h \
  ../src_plugins/dialogs/dlg_pref_sizes.h \
@@ -452,7 +452,7 @@
  ../src_plugins/dialogs/dlg_pref_color.h \
  ../src_plugins/dialogs/dlg_pref_win.h \
  ../src_plugins/dialogs/dlg_pref_conf.h ../src_plugins/dialogs/act_dad.h \
- dolists.h ../src_plugins/dialogs/dialogs_conf_fields.h
+ dolists.h ../src_plugins/lib_hid_common/dialogs_conf_fields.h
 ../src_plugins/dialogs/dlg_about.o: ../src_plugins/dialogs/dlg_about.c \
  ../config.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -710,7 +710,7 @@
  paths.h ../src_plugins/dialogs/dlg_pref_layer.c stub_draw.h draw.h \
  ../src_plugins/dialogs/dlg_pref_color.c \
  ../src_plugins/dialogs/dlg_pref_win.c \
- ../src_plugins/dialogs/dialogs_conf.h \
+ ../src_plugins/lib_hid_common/dialogs_conf.h \
  ../src_plugins/dialogs/dlg_pref_conf.c misc_util.h \
  ../src_plugins/dialogs/dlg_pref_confedit.c
 ../src_plugins/dialogs/dlg_view.o: ../src_plugins/dialogs/dlg_view.c \
@@ -4277,7 +4277,7 @@
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h \
- ../src_plugins/dialogs/place.h \
+ ../src_plugins/lib_hid_common/place.h \
  ../src_plugins/lib_gtk_common/hid_gtk_conf_fields.h
 ../src_plugins/lib_gtk_common/ui_crosshair.o: \
  ../src_plugins/lib_gtk_common/ui_crosshair.c ../config.h \
@@ -4766,7 +4766,7 @@
  ../src_3rd/genlist/gendlist.h \
  ../src_plugins/lib_hid_common/cli_history.h \
  ../src_plugins/lib_hid_common/lib_hid_common.h \
- ../src_plugins/lib_hid_common/lib_hid_common_conf.h conf.h \
+ conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
@@ -4860,9 +4860,7 @@
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h data_it.h data.h \
  flag.h ../src_plugins/lib_hid_common/lead_user.h \
- ../src_plugins/lib_hid_common/lib_hid_common.h \
- ../src_plugins/lib_hid_common/lib_hid_common_conf.h \
- ../src_plugins/lib_hid_common/lib_hid_common_conf_fields.h
+ ../src_plugins/lib_hid_common/lib_hid_common.h
 ../src_plugins/lib_hid_common/routest_menu.o: \
  ../src_plugins/lib_hid_common/routest_menu.c ../config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h global_typedefs.h \

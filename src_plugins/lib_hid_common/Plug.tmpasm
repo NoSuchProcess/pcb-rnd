@@ -6,8 +6,13 @@ put /local/pcb/mod/OBJS [@
   $(PLUGDIR)/lib_hid_common/grid_menu.o
   $(PLUGDIR)/lib_hid_common/routest_menu.o
   $(PLUGDIR)/lib_hid_common/cli_history.o
+  $(PLUGDIR)/lib_hid_common/place.o
 @]
-put /local/pcb/mod/CONF {$(PLUGDIR)/lib_hid_common/lib_hid_common_conf.h}
+
+# dialog config is here because of hidlib: each hidlib user shall have its
+# own dialogs plugin
+put /local/pcb/mod/CONFFILE {dialogs.conf}
+put /local/pcb/mod/CONF {$(PLUGDIR)/lib_hid_common/dialogs_conf.h}
 
 
 switch /local/pcb/lib_hid_common/controls

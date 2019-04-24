@@ -34,9 +34,10 @@
 #include "hid_dad.h"
 #include "plugins.h"
 #include "funchash_core.h"
-#include "dialogs_conf.h"
+#include "../src_plugins/lib_hid_common/dialogs_conf.h"
 
-const conf_dialogs_t conf_dialogs;
+/* from lib_hid_common */
+extern const conf_dialogs_t dialogs_conf;
 
 /* include them all for static inlines */
 #include "dlg_test.c"
@@ -56,7 +57,6 @@ const conf_dialogs_t conf_dialogs;
 #include "dlg_netlist.c"
 #include "dlg_plugins.c"
 #include "dlg_printcalib.c"
-#include "place.c"
 
 #include "dlg_view.h"
 #include "dlg_pref.h"
@@ -105,7 +105,6 @@ int pplg_check_ver_dialogs(int ver_needed) { return 0; }
 
 void pplg_uninit_dialogs(void)
 {
-	pcb_event_unbind_allcookie(dialogs_cookie);
 	pcb_dlg_netlist_uninit();
 	pcb_dlg_undo_uninit();
 	pcb_dlg_pstklib_uninit();
@@ -113,7 +112,6 @@ void pplg_uninit_dialogs(void)
 	pcb_act_dad_uninit();
 	pcb_remove_actions_by_cookie(dialogs_cookie);
 	pcb_view_dlg_uninit();
-	pcb_dialog_place_uninit();
 	pcb_dlg_fontsel_uninit();
 	conf_unreg_fields("plugins/dialogs/");
 	pcb_dlg_log_uninit();
@@ -125,15 +123,8 @@ int pplg_init_dialogs(void)
 {
 	PCB_API_CHK_VER;
 
-#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	conf_reg_field(conf_dialogs, field,isarray,type_name,cpath,cname,desc,flags);
-#include "dialogs_conf_fields.h"
-
 	pcb_dlg_log_init();
-	pcb_dialog_place_init();
 	PCB_REGISTER_ACTIONS(dialogs_action_list, dialogs_cookie)
-	pcb_event_bind(PCB_EVENT_DAD_NEW_DIALOG, pcb_dialog_place, NULL, dialogs_cookie);
-	pcb_event_bind(PCB_EVENT_DAD_NEW_GEO, pcb_dialog_resize, NULL, dialogs_cookie);
 	pcb_act_dad_init();
 	pcb_dlg_pref_init();
 	pcb_dlg_pstklib_init();
