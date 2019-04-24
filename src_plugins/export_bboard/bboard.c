@@ -29,17 +29,8 @@
 
 #include "config.h"
 #include <stdio.h>
-#include <stdarg.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
 #include <string.h>
-#include <assert.h>
-#include <ctype.h>
-#include <math.h>
-#include <dirent.h>
-#include <sys/stat.h>
-#include <time.h>
 
 #include "math_helper.h"
 #include "board.h"
