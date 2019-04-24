@@ -4,13 +4,12 @@
 + FEATURE: external editor on buffer [report: TwisteR]
 
 1. For the upcoming release ===============================================================================
-
-2. For later releases ===============================================================================
 - DOC: (prio) tutorial:
 	- rename 7805 to 17_sch and re-enable step 3 text (uncomment)
 	- install all tutorial steps
 - CLEANUP: (prio) Vuokko's list of warnings on OpenBSD: bug_files/warn-obsd-r24746.log [report: Vuokko]
 - BUG: (prio) setenv() LC_ALL and LANG to "C" around setlocale; remove setlocale from lib_gtk; bug_files/locale.diff [report: osetroff]
+- CLEANUP: add the thin line draw optimization to the filled poly optimization, including hole, in hid_draw_helper (search for last_x); make this configurable for both (exporters shall not optimize!); remove the similar optimization from hidgl triangulation and gdk and lesstif [report: Ade, Peter]
 - FEATURE: excellon metric support to pair up with gerber's late feature [report: Gabriel]
 - CLEANUP: remove pcb_attribute_dialog() and the label argument from the DAD API [report: igor2]
 - CLEANUP/BUG: The 'As Drawn' polygon contour is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
@@ -30,6 +29,16 @@
 - CLEANUP: think over how to handle subc selection: selecting all parts automatically is bad for propedit; bug_files/subcsel.bug [report: Wojciech]
 	- BUG: adding attribute works on subc parts but deleting attribute stops after deleiting it from a subc; bug_files/subcsel.bug [report: Wojciech]
 - CLEANUP: DAD close sequence: TODO#51: there are three sources to trigger hid_ctx (caller's free on modal, close button free and window destroy callback); requre the user to always call free last and add bits to track what frees are already called and free(ctx) last; test in 4 situations: (modal,nonmodal)*(close_buttons,wmclose) [report: Igor2]
+- CLEANUP: non-modal fontsel: refresh on text font change from other source [report: Igor2]
+- CLEANUP: find.c rewrite:
+	- CLEANUP: a new "report(NetLength)" should not care about netlists but depend on find.c only
+	- BUG: unplated padtsakcs shall not connect layers; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
+	- BUG: bug_files/rat_shortest.lht: because of "don't add non-manhattan lines" part [report: pstuge]
+- CLEANUP: (TT) propedit revamp:
+	- test under lesstif
+	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
+
+2. For later releases ===============================================================================
 - CLEANUP: color:
 	- remove per hid, non-backup-lib custom color structs
 	- COLOR_TO_STR should not use sprintf - remove stdio.h
@@ -37,11 +46,6 @@
 	- rewrite gtk conv so it wouldn't use the string version anymore
 	- remove src/hid_color.[ch] and src/color_cache.[ch]
 	- remove pcb_color_t ->str, convert only when really needed
-- CLEANUP: non-modal fontsel: refresh on text font change from other source [report: Igor2]
-- CLEANUP: find.c rewrite:
-	- CLEANUP: a new "report(NetLength)" should not care about netlists but depend on find.c only
-	- BUG: unplated padtsakcs shall not connect layers; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
-	- BUG: bug_files/rat_shortest.lht: because of "don't add non-manhattan lines" part [report: pstuge]
 - CLEANUP: layer order from data
 	- central code for building a list of layer groups ordered by draw from front to back (omit disabled/invisible layers)
 	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
@@ -55,9 +59,6 @@
 	- CLEANUP: unify how output files are accessed/checked: confirmation on overwrite
 	- CLEANUP: later: remove the gerber->drill dep and ask users to use the CAM instead
 	- CLEANUP: later: remove the hackish gerber layer suffix in favor of CAM [report: Ade]
-- CLEANUP: (TT) propedit revamp:
-	- test under lesstif
-	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
 - FEATURE: data model: object minimal clearance value from the polygon side; final clearance should be MAX(obj->Clearance, poly->Clearance); kicad example: 1 line, 2 polygons with 2 different clearance values - see CUCP#38 provided by Karl [report: Igor2]
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
 - FEATURE: (TT) route style upgrade to prototypes:
@@ -69,7 +70,6 @@
 	- CLEANUP: remove PCB_MIN_PINORVIA* PCB_DEFAULT_DRILLINGHOLE macros - nothing should use them anymore
 	- add text font, update the pool node text_edit [report: Igor2]
 - BUG: autorouter broke on polygons: bug_files/ara.lht, {a r a}, bisect; broke before r14572 [report: Igor2]
-- CLEANUP: add the thin line draw optimization to the filled poly optimization, including hole, in hid_draw_helper (search for last_x); make this configurable for both (exporters shall not optimize!); remove the similar optimization from hidgl triangulation and gdk and lesstif [report: Ade, Peter]
 - FEATURE: fontsel: ttf import?
 - FEATURE: tedax etest save (board save too)
 - FEATURE/BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
