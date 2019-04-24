@@ -81,7 +81,6 @@ append /local/pcb/OBJS_HIDLIB [@
 	hid_dlg.o
 	hid_dad_tree.o
 	hid_dad_spin.o
-	hid_flags.o
 	hid_init.o
 	hid_nogui.o
 	list_conf.o

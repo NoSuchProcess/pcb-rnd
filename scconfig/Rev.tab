@@ -1,3 +1,4 @@
+24851	configure	code simplification: merge hid_flags.[ch] into hid_cfg.[ch]
 24824	configure	move window placement from dialogs to lib_hid_commonfor hidlib cleanup
 24816	configure	safety wrapper around unlink, opendir, closedir and readdir
 24736	configure	make distclean fixes to really remove all generated files

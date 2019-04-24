@@ -2291,7 +2291,7 @@
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h error.h \
  pcb-printf.h layer.h hid.h hid_cfg.h hid_cfg_action.h hid_cfg.h \
  hid_cfg_input.h conf_hid.h ../src_plugins/hid_lesstif/lesstif.h board.h \
- vtroutestyle.h rats_patch.h board.h paths.h actions.h hid_flags.h \
+ vtroutestyle.h rats_patch.h board.h paths.h actions.h \
  ../src_plugins/hid_lesstif/stdarg.h color.h event.h compat_misc.h \
  layer_vis.h
 ../src_plugins/hid_lesstif/netlist.o: \
@@ -3925,7 +3925,7 @@
  math_helper.h misc_util.h ../src_3rd/genvector/gds_char.h layer_grp.h \
  rats_patch.h board.h pcb-printf.h misc_util.h error.h conf.h \
  pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
- list_conf.h conf.h hid_flags.h hid_cfg.h hid.h error.h hid_cfg_action.h \
+ list_conf.h conf.h hid_cfg.h hid.h error.h hid_cfg_action.h \
  hid_cfg.h event.h ../src_plugins/lib_gtk_common/bu_menu.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h \
  ../src_plugins/lib_gtk_common/glue.h hid.h \
@@ -6902,7 +6902,7 @@ hid_flags.o: hid_flags.c ../config.h data.h globalconst.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h board.h vtroutestyle.h rats_patch.h conf.h pcb-printf.h \
- ../src_3rd/liblihata/lihata.h list_conf.h hid_flags.h actions.h
+ ../src_3rd/liblihata/lihata.h list_conf.h actions.h
 hid_init.o: hid_init.c ../config.h hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h error.h global_typedefs.h \

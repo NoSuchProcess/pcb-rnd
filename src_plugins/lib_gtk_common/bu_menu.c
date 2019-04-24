@@ -10,7 +10,6 @@
 #include "misc_util.h"
 #include "error.h"
 #include "conf.h"
-#include "hid_flags.h"
 #include "hid_cfg.h"
 #include "hid_cfg_action.h"
 #include "event.h"

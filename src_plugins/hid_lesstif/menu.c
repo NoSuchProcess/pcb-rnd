@@ -22,7 +22,6 @@
 #include "lesstif.h"
 #include "paths.h"
 #include "actions.h"
-#include "hid_flags.h"
 #include "stdarg.h"
 #include "event.h"
 #include "compat_misc.h"
