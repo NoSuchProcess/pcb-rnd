@@ -106,7 +106,7 @@ typedef struct {
 	pcb_board_t *pcb;
 	const char *Filename;
 	conf_role_t settings_dest;
-	pcb_layer_id_t protel_to_stackup[13];
+	pcb_layer_id_t protel_to_stackup[14];
 	int lineno;
 	pcb_coord_t mask_clearance;
 	pcb_coord_t copper_clearance;
