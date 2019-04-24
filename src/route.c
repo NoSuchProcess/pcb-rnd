@@ -178,8 +178,8 @@ void pcb_route_calculate_corner_arc(const pcb_point_t *point1, const pcb_point_t
 	const double vy2 = sin(angle2);
 
 	/* Distance from point2 to the other points */
-	const double l1 = fabs(abs(vx1) > fabs(vy1) ? dx1 / vx1 : dy1 / vy1);
-	const double l2 = fabs(abs(vx2) > fabs(vy2) ? dx2 / vx2 : dy2 / vy2);
+	const double l1 = fabs(fabs(vx1) > fabs(vy1) ? dx1 / vx1 : dy1 / vy1);
+	const double l2 = fabs(fabs(vx2) > fabs(vy2) ? dx2 / vx2 : dy2 / vy2);
 
 	/* Calculate maximum possible radius */
 	const double rmax = (l1 < l2 ? l1 : l2) * tan(hangle);
