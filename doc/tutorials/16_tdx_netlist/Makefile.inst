@@ -1,0 +1,21 @@
+ROOT=../../..
+TUTDIR=$(DOCDIR)/tutorial/16_tdx_netlist
+
+
+all:
+
+install_all:
+	$(SCCBOX) mkdir -p $(TUTDIR)
+	$(SCCBOX) $(HOW) 7805.tdx $(TUTDIR)/7805.tdx
+	$(SCCBOX) $(HOW) index.html $(TUTDIR)/index.html
+
+install:
+	$(MAKE) -f Makefile.inst install_all HOW="install -f"
+
+linstall:
+	$(MAKE) -f Makefile.inst install_all HOW="install -f -l --absolute "
+
+uninstall:
+	$(MAKE) -f Makefile.inst install_all HOW="install -u"
+
+include $(ROOT)/Makefile.conf

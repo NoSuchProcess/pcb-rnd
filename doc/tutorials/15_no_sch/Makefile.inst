@@ -1,0 +1,31 @@
+ROOT=../../..
+TUTDIR=$(DOCDIR)/tutorial/15_no_sch
+
+all:
+
+install_all:
+	$(SCCBOX) mkdir -p $(TUTDIR)
+	$(SCCBOX) $(HOW) step1a.png  $(TUTDIR)/step1a.png
+	$(SCCBOX) $(HOW) step1b.png  $(TUTDIR)/step1b.png
+	$(SCCBOX) $(HOW) step2.lht   $(TUTDIR)/step2.lht
+	$(SCCBOX) $(HOW) step2.png   $(TUTDIR)/step2.png
+	$(SCCBOX) $(HOW) step3.lht   $(TUTDIR)/step3.lht
+	$(SCCBOX) $(HOW) step3a.png  $(TUTDIR)/step3a.png
+	$(SCCBOX) $(HOW) step3b.png  $(TUTDIR)/step3b.png
+	$(SCCBOX) $(HOW) step4.lht   $(TUTDIR)/step4.lht
+	$(SCCBOX) $(HOW) step5.lht   $(TUTDIR)/step5.lht
+	$(SCCBOX) $(HOW) step5.png   $(TUTDIR)/step5.png
+	$(SCCBOX) $(HOW) step6.lht   $(TUTDIR)/step6.lht
+	$(SCCBOX) $(HOW) step6.png   $(TUTDIR)/step6.png
+	$(SCCBOX) $(HOW) index.html  $(TUTDIR)/index.html
+
+install:
+	$(MAKE) -f Makefile.inst install_all HOW="install -f"
+
+linstall:
+	$(MAKE) -f Makefile.inst install_all HOW="install -f -l --absolute "
+
+uninstall:
+	$(MAKE) -f Makefile.inst install_all HOW="install -u"
+
+include $(ROOT)/Makefile.conf
