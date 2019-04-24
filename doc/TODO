@@ -7,7 +7,7 @@
 - DOC: (prio) tutorial:
 	- rename 7805 to 17_sch and re-enable step 3 text (uncomment)
 	- install all tutorial steps
-- CLEANUP: (prio) Vuokko's list of warnings on OpenBSD: bug_files/warn-obsd-r24746.log [report: Vuokko]
++ CLEANUP: Vuokko's list of warnings on OpenBSD: bug_files/warn-obsd-r24746.log [report: Vuokko]
 - BUG: (prio) setenv() LC_ALL and LANG to "C" around setlocale; remove setlocale from lib_gtk; bug_files/locale.diff [report: osetroff]
 - CLEANUP: add the thin line draw optimization to the filled poly optimization, including hole, in hid_draw_helper (search for last_x); make this configurable for both (exporters shall not optimize!); remove the similar optimization from hidgl triangulation and gdk and lesstif [report: Ade, Peter]
 - FEATURE: excellon metric support to pair up with gerber's late feature [report: Gabriel]
