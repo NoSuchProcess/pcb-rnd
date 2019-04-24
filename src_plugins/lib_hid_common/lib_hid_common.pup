@@ -1,6 +1,6 @@
 $class lib
-$short all-hid common code
-$long hid_* common helper functions
+$short all-gui-hid common code
+$long hid_* common helper functions for GUI HIDs
 $state works
 $package lib-gui
 default disable-all
