@@ -1,13 +1,12 @@
 ROOT=../../..
-TUTDIR=$(DOCDIR)/tutorial/7805
+TUTDIR=$(DOCDIR)/tutorial/17_sch
 
 
 all:
 
 install_all:
 	$(SCCBOX) mkdir -p $(TUTDIR)
-	$(SCCBOX) $(HOW) 7805.pcb $(TUTDIR)/7805.pcb
-	$(SCCBOX) $(HOW) 7805.sch $(TUTDIR)/7805.sch
+	$(SCCBOX) $(HOW) 7805_gschem.sch $(TUTDIR)/7805_gschem.sch
 	$(SCCBOX) $(HOW) sch.png $(TUTDIR)/sch.png
 	$(SCCBOX) $(HOW) index.html $(TUTDIR)/index.html
 

@@ -2,7 +2,7 @@ all:
 	$(MAKE) all_ CMD=all
 
 all_:
-	cd 7805 && $(MAKE) -f Makefile.inst $(CMD)
+	cd 17_sch && $(MAKE) -f Makefile.inst $(CMD)
 
 install:
 	$(MAKE) all_ CMD=install
