@@ -26,9 +26,6 @@
 
 #include "config.h"
 
-/* for opendir - must be the first */
-#include "compat_inc.h"
-
 #include <ctype.h>
 #include <genvector/vtp0.h>
 #include <genht/htsp.h>
@@ -39,6 +36,7 @@
 #include "hid_cfg.h"
 #include "hid_dad.h"
 #include "safe_fs.h"
+#include "safe_fs_dir.h"
 #include "compat_fs.h"
 #include "event.h"
 #include "undo.h"
@@ -103,7 +101,7 @@ static int lvs_list_langs(live_script_t *lvs)
 		char fn[PCB_PATH_MAX*2], *fn_end;
 		int dirlen;
 		struct dirent *de;
-		DIR *d = opendir(*path);
+		DIR *d = pcb_opendir(*path);
 
 		if (d == NULL)
 			continue;
@@ -114,7 +112,7 @@ static int lvs_list_langs(live_script_t *lvs)
 		*fn_end = PCB_DIR_SEPARATOR_C;
 		fn_end++;
 
-		while((de = readdir(d)) != NULL) {
+		while((de = pcb_readdir(d)) != NULL) {
 			FILE *f;
 			int el, len = strlen(de->d_name);
 			char *s1, *s2, *eng, *s, *end, line[1024];
@@ -147,7 +145,7 @@ static int lvs_list_langs(live_script_t *lvs)
 			}
 			fclose(f);
 		}
-		closedir(d);
+		pcb_closedir(d);
 	}
 	lvs->langs = (char **)vl.array;
 	lvs->lang_engines = (char **)ve.array;

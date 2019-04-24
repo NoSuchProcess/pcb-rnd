@@ -70,9 +70,6 @@
 #include "macro.h"
 #include "view.h"
 
-/* for opendir */
-#include "compat_inc.h"
-
 pcb_plug_io_t *pcb_plug_io_chain = NULL;
 int pcb_io_err_inhibit = 0;
 pcb_view_list_t pcb_io_incompat_lst;

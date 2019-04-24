@@ -184,6 +184,26 @@ int pcb_rename(const char *old_path, const char *new_path)
 	return res;
 }
 
+DIR *pcb_opendir(const char *name)
+{
+	DIR *d;
+	char *path_exp = pcb_build_fn(name);
+	d = opendir(path_exp);
+	free(path_exp);
+	return d;
+}
+
+struct dirent *pcb_readdir(DIR *dir)
+{
+	return readdir(dir);
+}
+
+int pcb_closedir(DIR *dir)
+{
+	return closedir(dir);
+}
+
+
 static FILE *pcb_fopen_at_(const char *from, const char *fn, const char *mode, char **full_path, int recursive)
 {
 	char tmp[PCB_PATH_MAX];
@@ -205,11 +225,11 @@ static FILE *pcb_fopen_at_(const char *from, const char *fn, const char *mode, c
 	if (!recursive)
 		return NULL;
 
-	d = opendir(from);
+	d = pcb_opendir(from);
 	if (d == NULL)
 		return NULL;
 
-	while((de = readdir(d)) != NULL) {
+	while((de = pcb_readdir(d)) != NULL) {
 		struct stat st;
 		if (de->d_name[0] == '.')
 			continue;

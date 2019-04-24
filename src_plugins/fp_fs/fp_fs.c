@@ -36,6 +36,8 @@
 #include <ctype.h>
 #include <errno.h>
 
+#include "compat_inc.h"
+
 #include "data.h"
 #include "paths.h"
 #include "plugins.h"
@@ -47,9 +49,7 @@
 #include "conf_core.h"
 #include "macro.h"
 #include "safe_fs.h"
-
-/* opendir, readdir */
-#include "compat_inc.h"
+#include "safe_fs_dir.h"
 
 static pcb_fptype_t pcb_fp_file_type(const char *fn, void ***tags);
 
@@ -150,7 +150,7 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 	fn_end = fn + l + 1;
 
 	/* First try opening the directory specified by path */
-	if ((subdirobj = opendir(new_subdir)) == NULL) {
+	if ((subdirobj = pcb_opendir(new_subdir)) == NULL) {
 		pcb_opendir_error_message(new_subdir);
 		if (chdir(olddir))
 			pcb_chdir_error_message(olddir);
@@ -160,7 +160,7 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 	/* Now loop over files in this directory looking for files.
 	 * We ignore certain files which are not footprints.
 	 */
-	while ((subdirentry = readdir(subdirobj)) != NULL) {
+	while ((subdirentry = pcb_readdir(subdirobj)) != NULL) {
 #ifdef DEBUG
 /*    printf("...  Examining file %s ... \n", subdirentry->d_name); */
 #endif
@@ -211,7 +211,7 @@ TODO("fp: make this a configurable list")
 		}
 	}
 	/* Done.  Clean up, cd back into old dir, and return */
-	closedir(subdirobj);
+	pcb_closedir(subdirobj);
 	if (chdir(olddir))
 		pcb_chdir_error_message(olddir);
 	return n_footprints;

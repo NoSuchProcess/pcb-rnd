@@ -274,6 +274,9 @@ typedef @/local/pcb/long64@    pcb_long64_t;
 #		define remove      never_use_remove__use_pcb_remove
 #		define rename      never_use_rename__use_pcb_rename
 #		define mkdir       never_use_mkdir__use_pcb_mkdir
+#		define opendir     never_use_opendir__use_pcb_opendir
+#		define readdir     never_use_readdir__use_pcb_readdir
+#		define closedir    never_use_closedir__use_pcb_closedir
 #	endif
 
 #endif

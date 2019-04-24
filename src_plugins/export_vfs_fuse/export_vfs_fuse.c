@@ -1,5 +1,8 @@
 #define _XOPEN_SOURCE 500
 
+/* Required because FUSE uses readdir as struct field name */
+#define PCB_SAFE_FS
+
 #include "fuse_includes.h"
 
 #include "config.h"
