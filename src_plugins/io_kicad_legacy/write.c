@@ -612,7 +612,7 @@ static int write_kicad_legacy_layout_subcs(FILE *FP, pcb_board_t *Layout, pcb_da
 	subclist_foreach(&Data->subc, &sit, subc) {
 		const char *uname = unm_name(&group1, or_empty(pcb_attribute_get(&subc->Attributes, "footprint")), subc);
 TODO(": what did we need this for?")
-/*		elementlist_dedup_skip(ededup, element); /* skip duplicate elements */
+/*		elementlist_dedup_skip(ededup, element); skip duplicate elements */
 		io_kicad_legacy_write_subc(FP, PCB, subc, xOffset, yOffset, uname);
 	}
 
