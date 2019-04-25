@@ -34,12 +34,16 @@ typedef struct {
 } coord_format_t;
 
 static coord_format_t coord_format[] = {
-	{"INCH", "%06.0mk", "%.4mi"}, /* decimil: inch in 00.0000 formatm implicit leading-zero (LZ) */
+	{"INCH",            "%06.0mk", "%.3mi"}, /* decimil: inch in 00.0000 format, implicit leading-zero (LZ); max board size: 99 inch (2514mm) */
+	{"METRIC,000.000",  "%03.3mm", "%.6mm"}, /* micron: mm in 000.0000 format, implicit leading-zero (LZ); max board size: 999mm */
+	{"METRIC,0000.00",  "%04.2mm", "%.5mm"}, /* micron: mm in 000.0000 format, implicit leading-zero (LZ); max board size: 9999mm */
 };
 #define NUM_COORD_FORMATS (sizeof(coord_format)/sizeof(coord_format[0]))
 
 static const char *coord_format_names[NUM_COORD_FORMATS+1] = {
-	"decimil (INCH, 00.0000 format)",
+	"decimil",
+	"um",
+	"10um",
 	NULL
 };
 
@@ -91,7 +95,7 @@ static pcb_cardinal_t drill_print_holes(pcb_board_t *pcb, FILE *f, pcb_drill_ctx
 	   always six-digit 0.1 mil resolution (i.e. 001100 = 0.11") */
 	fprintf(f, "M48\r\n%s\r\n", coord_fmt_hdr);
 	for (search = ctx->apr.data; search; search = search->next)
-		pcb_fprintf(f, "T%02dC%.3mi\r\n", search->dCode, search->width);
+		pcb_fprintf(f, "T%02dC%[2]\r\n", search->dCode, search->width);
 	fprintf(f, "%%\r\n");
 
 	/* dump pending drills in sequence */
@@ -118,7 +122,7 @@ void pcb_drill_export_excellon(pcb_board_t *pcb, pcb_drill_ctx_t *ctx, int force
 
 	cfmt = &coord_format[coord_fmt_idx];
 	pcb_printf_slot[3] = cfmt->cfmt;
-	pcb_printf_slot[5] = cfmt->afmt;
+	pcb_printf_slot[2] = cfmt->afmt;
 
 	if (ctx->obj.used > 0)
 		drill_print_holes(pcb, f, ctx, force_g85, cfmt->hdr1);
