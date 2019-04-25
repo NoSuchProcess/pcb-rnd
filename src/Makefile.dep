@@ -1100,7 +1100,8 @@
  funchash.h funchash_core_list.h conf_core.h \
  ../src_plugins/export_excellon/excellon_conf.h conf.h \
  ../src_plugins/export_excellon/excellon.h \
- ../src_plugins/export_excellon/aperture.h
+ ../src_plugins/export_excellon/aperture.h \
+ ../src_plugins/export_excellon/excellon_conf_fields.h
 ../src_plugins/export_fidocadj/fidocadj.o: \
  ../src_plugins/export_fidocadj/fidocadj.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
