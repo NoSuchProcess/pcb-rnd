@@ -211,7 +211,7 @@ typedef struct {
 	const char *afmt; /* aperture description format */
 } coord_format_t;
 
-coord_format_t coord_format[] = {
+static coord_format_t coord_format[] = {
 	{"%MOIN*%\r\n%FSLAX25Y25*%\r\n", "%.0mc", "%.4mi"}, /* centimil:   inch, leading zero suppression, Absolute Data, 2.5 format */
 	{"%MOMM*%\r\n%FSLAX43Y43*%\r\n", "%.0mu", "%.3mm"}, /* micrometer: mm,   leading zero suppression, Absolute Data, 4.3 format */
 	{"%MOMM*%\r\n%FSLAX46Y46*%\r\n", "%.0mn", "%.6mm"}  /* nanometer:  mm,   leading zero suppression, Absolute Data, 4.6 format */
