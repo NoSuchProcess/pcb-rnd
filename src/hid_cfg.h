@@ -38,19 +38,6 @@ struct pcb_hid_cfg_s {
 	lht_doc_t *doc;
 };
 
-/* Create a set of resources representing a single menu item
-   If action is NULL, it's a drop-down item that has submenus.
-   The callback is called after the new lihata node is created.
-   NOTE: unlike other cookies, this cookie is strdup()'d. 
-   */
-typedef int (*pcb_create_menu_widget_t)(void *ctx, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item);
-int pcb_hid_cfg_create_menu(pcb_hid_cfg_t *hr, const char *path, const pcb_menu_prop_t *props, pcb_create_menu_widget_t cb, void *cb_ctx);
-
-/* Remove a path recursively; call gui_remove() on leaf paths until the subtree
-   is consumed (should return 0 on success) */
-int pcb_hid_cfg_remove_menu(pcb_hid_cfg_t *hr, const char *path, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx);
-int pcb_hid_cfg_remove_menu_node(pcb_hid_cfg_t *hr, lht_node_t *root, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx);
-
 /* Search and load the menu res for hidname; if not found, and embedded_fallback
    is not NULL, parse that string instead. Returns NULL on error */
 pcb_hid_cfg_t *pcb_hid_cfg_load(const char *fn, int exact_fn, const char *embedded_fallback);
@@ -64,47 +51,6 @@ const char *pcb_hid_cfg_text_value(lht_doc_t *doc, const char *path);
 
 lht_node_t *pcb_hid_cfg_get_menu(pcb_hid_cfg_t *hr, const char *menu_path);
 lht_node_t *pcb_hid_cfg_get_menu_at(pcb_hid_cfg_t *hr, lht_node_t *at, const char *menu_path, lht_node_t *(*cb)(void *ctx, lht_node_t *node, const char *path, int rel_level), void *ctx);
-
-/* search all instances of an @anchor menu in the currently active GUI and
-   call cb on the lihata node; path has 128 extra bytes available at the end */
-void pcb_hid_cfg_map_anchor_menus(const char *name, void (*cb)(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *n, char *path), void *ctx);
-
-/* remove all adjacent anchor menus with matching cookie below anode, the
-   anchor node */
-int pcb_hid_cfg_del_anchor_menus(lht_node_t *anode, const char *cookie);
-
-
-/* Fields are retrieved using this enum so that HIDs don't need to hardwire
-   lihata node names */
-typedef enum {
-	PCB_MF_ACCELERATOR,
-	PCB_MF_SUBMENU,
-	PCB_MF_CHECKED,
-	PCB_MF_UPDATE_ON,
-	PCB_MF_SENSITIVE,
-	PCB_MF_TIP,
-	PCB_MF_ACTIVE,
-	PCB_MF_ACTION,
-	PCB_MF_FOREGROUND,
-	PCB_MF_BACKGROUND,
-	PCB_MF_FONT
-} pcb_hid_cfg_menufield_t;
-
-/* Return a field of a submenu and optionally fill in field_name with the
-   field name expected in the lihata document (useful for error messages) */
-lht_node_t *pcb_hid_cfg_menu_field(const lht_node_t *submenu, pcb_hid_cfg_menufield_t field, const char **field_name);
-
-/* Return a lihata node using a relative lihata path from parent - this is
-   just a wrapper around lht_tree_path_ */
-lht_node_t *pcb_hid_cfg_menu_field_path(const lht_node_t *parent, const char *path);
-
-/* Return a text field of a submenu; return NULL and generate a pcb_message(PCB_MSG_ERROR, ) if
-   the given field is not text */
-const char *pcb_hid_cfg_menu_field_str(const lht_node_t *submenu, pcb_hid_cfg_menufield_t field);
-
-/* Return non-zero if submenu has further submenus; generate pcb_message(PCB_MSG_ERROR, ) if
-   there is a submenu field with the wrong lihata type */
-int pcb_hid_cfg_has_submenus(const lht_node_t *submenu);
 
 /* Create a new hash node under parent (optional) and create a flat subtree of
    text nodes from name,value varargs (NULL terminated). This is a shorthand
@@ -125,4 +71,15 @@ int pcb_hid_cfg_dfs(lht_node_t *parent, int (*cb)(void *ctx, lht_node_t *n), voi
 
 /* Report an error about a node */
 void pcb_hid_cfg_error(const lht_node_t *node, const char *fmt, ...);
+
+
+/* search all instances of an @anchor menu in the currently active GUI and
+   call cb on the lihata node; path has 128 extra bytes available at the end */
+void pcb_hid_cfg_map_anchor_menus(const char *name, void (*cb)(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *n, char *path), void *ctx);
+
+/* remove all adjacent anchor menus with matching cookie below anode, the
+   anchor node */
+int pcb_hid_cfg_del_anchor_menus(lht_node_t *anode, const char *cookie);
+
+
 #endif

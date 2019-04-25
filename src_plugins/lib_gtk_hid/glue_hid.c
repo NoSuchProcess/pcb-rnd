@@ -25,6 +25,7 @@
 #include "../src_plugins/lib_gtk_common/win_place.h"
 #include "../src_plugins/lib_gtk_common/hid_gtk_conf.h"
 #include "../src_plugins/lib_gtk_common/lib_gtk_config.h"
+#include "../src_plugins/lib_hid_common/menu_helper.h"
 
 void gtkhid_begin(void)
 {
