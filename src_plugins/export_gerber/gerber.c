@@ -36,8 +36,8 @@
 #include "hid_inlines.h"
 #include "conf_core.h"
 
-#include "aperture.h"
-#include "excellon.h"
+#include "../src_plugins/export_excellon/aperture.h"
+#include "../src_plugins/export_excellon/excellon.h"
 
 const char *gerber_cookie = "gerber HID";
 
@@ -1325,7 +1325,6 @@ void pplg_uninit_export_gerber(void)
 {
 	pcb_hid_remove_attributes_by_cookie(gerber_cookie);
 	conf_unreg_fields("plugins/export_gerber/");
-	pplg_uninit_export_excellon();
 }
 
 int pplg_init_export_gerber(void)
@@ -1371,6 +1370,6 @@ int pplg_init_export_gerber(void)
 	gerber_hid.usage = gerber_usage;
 
 	pcb_hid_register_hid(&gerber_hid);
-	return pplg_init_export_excellon();
+	return 0;
 }
 

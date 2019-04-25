@@ -1,0 +1,9 @@
+$class export
+$short Excellon drill exporter
+$long Export to excellon drill/cnc files
+$state works
+$fmt-native no
+$fmt-feature-w export excellon drill/cnc for PCB fabbing, multiple files (configurable)
+$package export
+default buildin
+autoload 1

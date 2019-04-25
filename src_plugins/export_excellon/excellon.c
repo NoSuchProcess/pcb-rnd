@@ -18,14 +18,14 @@
 #include "plugins.h"
 #include "funchash_core.h"
 #include "conf_core.h"
-#include "gerber_conf.h"
+#include "excellon_conf.h"
 
 #include "excellon.h"
 
-extern conf_gerber_t conf_gerber;
+conf_excellon_t conf_excellon;
 
-#define gerberDrX(pcb, x) ((pcb_coord_t) (x))
-#define gerberDrY(pcb, y) ((pcb_coord_t) ((pcb)->MaxHeight - (y)))
+#define excellonDrX(pcb, x) ((pcb_coord_t) (x))
+#define excellonDrY(pcb, y) ((pcb_coord_t) ((pcb)->MaxHeight - (y)))
 
 static pcb_cardinal_t drill_print_objs(pcb_board_t *pcb, FILE *f, pcb_drill_ctx_t *ctx, int force_g85, int slots, pcb_coord_t *excellon_last_tool_dia)
 {
@@ -47,9 +47,9 @@ static pcb_cardinal_t drill_print_objs(pcb_board_t *pcb, FILE *f, pcb_drill_ctx_
 				first = 0;
 			}
 			if (force_g85)
-				pcb_fprintf(f, "X%06.0mkY%06.0mkG85X%06.0mkY%06.0mk\r\n", gerberDrX(pcb, pd->x), gerberDrY(PCB, pd->y), gerberDrX(pcb, pd->x2), gerberDrY(PCB, pd->y2));
+				pcb_fprintf(f, "X%06.0mkY%06.0mkG85X%06.0mkY%06.0mk\r\n", excellonDrX(pcb, pd->x), excellonDrY(PCB, pd->y), excellonDrX(pcb, pd->x2), excellonDrY(PCB, pd->y2));
 			else
-				pcb_fprintf(f, "X%06.0mkY%06.0mk\r\nM15\r\nG01X%06.0mkY%06.0mk\r\nM17\r\n", gerberDrX(pcb, pd->x), gerberDrY(PCB, pd->y), gerberDrX(pcb, pd->x2), gerberDrY(PCB, pd->y2));
+				pcb_fprintf(f, "X%06.0mkY%06.0mk\r\nM15\r\nG01X%06.0mkY%06.0mk\r\nM17\r\n", excellonDrX(pcb, pd->x), excellonDrY(PCB, pd->y), excellonDrX(pcb, pd->x2), excellonDrY(PCB, pd->y2));
 			first = 1; /* each new slot will need a G00 for some fabs that ignore M17 and M15 */
 		}
 		else {
@@ -57,7 +57,7 @@ static pcb_cardinal_t drill_print_objs(pcb_board_t *pcb, FILE *f, pcb_drill_ctx_
 				pcb_fprintf(f, "G05\r\n");
 				first = 0;
 			}
-			pcb_fprintf(f, "X%06.0mkY%06.0mk\r\n", gerberDrX(pcb, pd->x), gerberDrY(pcb, pd->y));
+			pcb_fprintf(f, "X%06.0mkY%06.0mk\r\n", excellonDrX(pcb, pd->x), excellonDrY(pcb, pd->y));
 		}
 		cnt++;
 	}
@@ -101,7 +101,7 @@ void pcb_drill_export_excellon(pcb_board_t *pcb, pcb_drill_ctx_t *ctx, int force
 
 /*** HID ***/
 static pcb_hid_t excellon_hid;
-static const char *excellon_cookie = "gerber exporter: excellon";
+static const char *excellon_cookie = "excellon drill/cnc exporter";
 
 #define SUFF_LEN 32
 
@@ -218,7 +218,7 @@ static void excellon_do_export(pcb_hid_attr_val_t * options)
 
 	if (excellon_cam.active) {
 		fn = excellon_cam.fn;
-		pcb_drill_export_excellon(PCB, &pdrills, conf_gerber.plugins.export_gerber.plated_g85_slot, fn);
+		pcb_drill_export_excellon(PCB, &pdrills, conf_excellon.plugins.export_excellon.plated_g85_slot, fn);
 	}
 	else {
 		if (options[HA_excellonfile_plated].str_value == NULL) {
@@ -227,7 +227,7 @@ static void excellon_do_export(pcb_hid_attr_val_t * options)
 		}
 		else
 			fn = options[HA_excellonfile_plated].str_value;
-		pcb_drill_export_excellon(PCB, &pdrills, conf_gerber.plugins.export_gerber.plated_g85_slot, fn);
+		pcb_drill_export_excellon(PCB, &pdrills, conf_excellon.plugins.export_excellon.plated_g85_slot, fn);
 
 		if (options[HA_excellonfile_unplated].str_value == NULL) {
 			strcpy(filesuff, ".unplated.cnc");
@@ -235,7 +235,7 @@ static void excellon_do_export(pcb_hid_attr_val_t * options)
 		}
 		else
 			fn = options[HA_excellonfile_unplated].str_value;
-		pcb_drill_export_excellon(PCB, &udrills, conf_gerber.plugins.export_gerber.unplated_g85_slot, fn);
+		pcb_drill_export_excellon(PCB, &udrills, conf_excellon.plugins.export_excellon.unplated_g85_slot, fn);
 	}
 
 	if (pcb_cam_end(&excellon_cam) == 0)

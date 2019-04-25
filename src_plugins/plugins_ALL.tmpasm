@@ -22,6 +22,7 @@ include {../src_plugins/export_bboard/Plug.tmpasm}
 include {../src_plugins/export_bom/Plug.tmpasm}
 include {../src_plugins/export_dsn/Plug.tmpasm}
 include {../src_plugins/export_dxf/Plug.tmpasm}
+include {../src_plugins/export_excellon/Plug.tmpasm}
 include {../src_plugins/export_fidocadj/Plug.tmpasm}
 include {../src_plugins/export_gcode/Plug.tmpasm}
 include {../src_plugins/export_gerber/Plug.tmpasm}

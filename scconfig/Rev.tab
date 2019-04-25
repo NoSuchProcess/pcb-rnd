@@ -1,3 +1,4 @@
+24872	configure	split excellon exporter from gerber to a separate plugin
 24862	configure	code simplification: merge hid_flags.[ch] into lib_hid_common
 24824	configure	move window placement from dialogs to lib_hid_commonfor hidlib cleanup
 24816	configure	safety wrapper around unlink, opendir, closedir and readdir

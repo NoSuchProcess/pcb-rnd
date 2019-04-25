@@ -1149,14 +1149,14 @@
  ../src_plugins/export_gcode/auxiliary.h \
  ../src_plugins/export_gcode/lists.h ../src_plugins/export_gcode/trace.h \
  compat_cc.h
-../src_plugins/export_gerber/aperture.o: \
- ../src_plugins/export_gerber/aperture.c ../config.h global_typedefs.h \
- pcb_bool.h unit.h ../src_plugins/export_gerber/aperture.h \
+../src_plugins/export_excellon/aperture.o: \
+ ../src_plugins/export_excellon/aperture.c ../config.h global_typedefs.h \
+ pcb_bool.h unit.h ../src_plugins/export_excellon/aperture.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
  ../src_3rd/genvector/genvector_impl.c
-../src_plugins/export_gerber/excellon.o: \
- ../src_plugins/export_gerber/excellon.c ../config.h board.h \
+../src_plugins/export_excellon/excellon.o: \
+ ../src_plugins/export_excellon/excellon.c ../config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h global_typedefs.h \
  pcb_bool.h unit.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -1178,8 +1178,8 @@
  hid_draw_helpers.h plugins.h ../src_3rd/puplug/error.h funchash_core.h \
  funchash.h funchash_core_list.h conf_core.h \
  ../src_plugins/export_gerber/gerber_conf.h conf.h \
- ../src_plugins/export_gerber/excellon.h \
- ../src_plugins/export_gerber/aperture.h
+ ../src_plugins/export_excellon/excellon.h \
+ ../src_plugins/export_excellon/aperture.h
 ../src_plugins/export_gerber/gerber.o: \
  ../src_plugins/export_gerber/gerber.c ../config.h math_helper.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h global_typedefs.h \
@@ -1210,8 +1210,8 @@
  funchash.h funchash_core_list.h \
  ../src_plugins/export_gerber/gerber_conf.h conf.h hid.h hid_nogui.h \
  hid_draw_helpers.h hid_init.h hid_attrib.h hid_inlines.h conf_core.h \
- ../src_plugins/export_gerber/aperture.h \
- ../src_plugins/export_gerber/excellon.h \
+ ../src_plugins/export_excellon/aperture.h \
+ ../src_plugins/export_excellon/excellon.h \
  ../src_plugins/export_gerber/gerber_conf_fields.h
 ../src_plugins/export_ipcd356/ipcd356.o: \
  ../src_plugins/export_ipcd356/ipcd356.c ../config.h board.h \
