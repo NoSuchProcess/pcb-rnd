@@ -769,9 +769,9 @@ static fgw_error_t pcb_act_SetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		pcb_grid_inval();
 		if (val[0] == '*')
-			pcb_board_set_grid(pcb_round(PCB->Grid * d), pcb_false, 0, 0);
+			pcb_board_set_grid(pcb_round(PCB->hidlib.grid * d), pcb_false, 0, 0);
 		else
-			pcb_board_set_grid(pcb_round(PCB->Grid / d), pcb_false, 0, 0);
+			pcb_board_set_grid(pcb_round(PCB->hidlib.grid / d), pcb_false, 0, 0);
 	}
 
 	value = pcb_get_value(val, units, &absolute, NULL);
@@ -784,12 +784,12 @@ static fgw_error_t pcb_act_SetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			else {
 				/* On the way down, short against the minimum
 				 * PCB drawing unit */
-				if ((value + PCB->Grid) < 1)
+				if ((value + PCB->hidlib.grid) < 1)
 					pcb_board_set_grid(1, pcb_false, 0, 0);
-				else if (PCB->Grid == 1)
+				else if (PCB->hidlib.grid == 1)
 					pcb_board_set_grid(value, pcb_false, 0, 0);
 				else
-					pcb_board_set_grid(value + PCB->Grid, pcb_false, 0, 0);
+					pcb_board_set_grid(value + PCB->hidlib.grid, pcb_false, 0, 0);
 			}
 			break;
 

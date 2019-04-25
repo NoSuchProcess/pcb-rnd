@@ -862,8 +862,8 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		nearest_grid_y = -PCB_MIL_TO_COORD(6);
 	}
 	else {
-		nearest_grid_x = pcb_grid_fit(pcb_crosshair.X, PCB->Grid, PCB->GridOffsetX);
-		nearest_grid_y = pcb_grid_fit(pcb_crosshair.Y, PCB->Grid, PCB->GridOffsetY);
+		nearest_grid_x = pcb_grid_fit(pcb_crosshair.X, PCB->hidlib.grid, PCB->hidlib.grid_ox);
+		nearest_grid_y = pcb_grid_fit(pcb_crosshair.Y, PCB->hidlib.grid, PCB->hidlib.grid_oy);
 
 		if (pcb_marked.status && conf_core.editor.orthogonal_moves) {
 			pcb_coord_t dx = pcb_crosshair.X - pcb_marked.X;
@@ -1034,12 +1034,12 @@ void pcb_crosshair_set_range(pcb_coord_t MinX, pcb_coord_t MinY, pcb_coord_t Max
  */
 void pcb_center_display(pcb_coord_t X, pcb_coord_t Y)
 {
-	pcb_coord_t save_grid = PCB->Grid;
-	PCB->Grid = 1;
+	pcb_coord_t save_grid = PCB->hidlib.grid;
+	PCB->hidlib.grid = 1;
 	if (pcb_crosshair_move_absolute(X, Y))
 		pcb_notify_crosshair_change(pcb_true);
 	pcb_gui->set_crosshair(pcb_crosshair.X, pcb_crosshair.Y, HID_SC_WARP_POINTER);
-	PCB->Grid = save_grid;
+	PCB->hidlib.grid = save_grid;
 }
 
 /* ---------------------------------------------------------------------------

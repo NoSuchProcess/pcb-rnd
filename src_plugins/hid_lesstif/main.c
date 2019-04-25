@@ -809,8 +809,8 @@ static fgw_error_t pcb_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	pcb_hid_get_coords("Click on a location to center", &x, &y, 0);
 
-	x = pcb_grid_fit(x, PCB->Grid, PCB->GridOffsetX);
-	y = pcb_grid_fit(y, PCB->Grid, PCB->GridOffsetY);
+	x = pcb_grid_fit(x, PCB->hidlib.grid, PCB->hidlib.grid_ox);
+	y = pcb_grid_fit(y, PCB->hidlib.grid, PCB->hidlib.grid_oy);
 	view_left_x = x - (view_width * view_zoom) / 2;
 	view_top_y = y - (view_height * view_zoom) / 2;
 	lesstif_pan_fixup();
@@ -2130,7 +2130,7 @@ static void draw_grid()
 
 	if (!conf_core.editor.draw_grid)
 		return;
-	if (Vz(PCB->Grid) < PCB_MIN_GRID_DISTANCE)
+	if (Vz(PCB->hidlib.grid) < PCB_MIN_GRID_DISTANCE)
 		return;
 	if (!grid_gc) {
 		grid_gc = XCreateGC(display, window, 0, 0);
@@ -2138,45 +2138,45 @@ static void draw_grid()
 		XSetForeground(display, grid_gc, grid_color);
 	}
 	if (conf_core.editor.view.flip_x) {
-		x2 = pcb_grid_fit(Px(0), PCB->Grid, PCB->GridOffsetX);
-		x1 = pcb_grid_fit(Px(view_width), PCB->Grid, PCB->GridOffsetX);
+		x2 = pcb_grid_fit(Px(0), PCB->hidlib.grid, PCB->hidlib.grid_ox);
+		x1 = pcb_grid_fit(Px(view_width), PCB->hidlib.grid, PCB->hidlib.grid_ox);
 		if (Vx(x2) < 0)
-			x2 -= PCB->Grid;
+			x2 -= PCB->hidlib.grid;
 		if (Vx(x1) >= view_width)
-			x1 += PCB->Grid;
+			x1 += PCB->hidlib.grid;
 	}
 	else {
-		x1 = pcb_grid_fit(Px(0), PCB->Grid, PCB->GridOffsetX);
-		x2 = pcb_grid_fit(Px(view_width), PCB->Grid, PCB->GridOffsetX);
+		x1 = pcb_grid_fit(Px(0), PCB->hidlib.grid, PCB->hidlib.grid_ox);
+		x2 = pcb_grid_fit(Px(view_width), PCB->hidlib.grid, PCB->hidlib.grid_ox);
 		if (Vx(x1) < 0)
-			x1 += PCB->Grid;
+			x1 += PCB->hidlib.grid;
 		if (Vx(x2) >= view_width)
-			x2 -= PCB->Grid;
+			x2 -= PCB->hidlib.grid;
 	}
 	if (conf_core.editor.view.flip_y) {
-		y2 = pcb_grid_fit(Py(0), PCB->Grid, PCB->GridOffsetY);
-		y1 = pcb_grid_fit(Py(view_height), PCB->Grid, PCB->GridOffsetY);
+		y2 = pcb_grid_fit(Py(0), PCB->hidlib.grid, PCB->hidlib.grid_oy);
+		y1 = pcb_grid_fit(Py(view_height), PCB->hidlib.grid, PCB->hidlib.grid_oy);
 		if (Vy(y2) < 0)
-			y2 -= PCB->Grid;
+			y2 -= PCB->hidlib.grid;
 		if (Vy(y1) >= view_height)
-			y1 += PCB->Grid;
+			y1 += PCB->hidlib.grid;
 	}
 	else {
-		y1 = pcb_grid_fit(Py(0), PCB->Grid, PCB->GridOffsetY);
-		y2 = pcb_grid_fit(Py(view_height), PCB->Grid, PCB->GridOffsetY);
+		y1 = pcb_grid_fit(Py(0), PCB->hidlib.grid, PCB->hidlib.grid_oy);
+		y2 = pcb_grid_fit(Py(view_height), PCB->hidlib.grid, PCB->hidlib.grid_oy);
 		if (Vy(y1) < 0)
-			y1 += PCB->Grid;
+			y1 += PCB->hidlib.grid;
 		if (Vy(y2) >= view_height)
-			y2 -= PCB->Grid;
+			y2 -= PCB->hidlib.grid;
 	}
-	n = (x2 - x1) / PCB->Grid + 1;
+	n = (x2 - x1) / PCB->hidlib.grid + 1;
 	if (n > npoints) {
 		npoints = n + 10;
 		points = (XPoint *) realloc(points, npoints * sizeof(XPoint));
 	}
 	n = 0;
 	prevx = 0;
-	for (x = x1; x <= x2; x += PCB->Grid) {
+	for (x = x1; x <= x2; x += PCB->hidlib.grid) {
 		int temp = Vx(x);
 		points[n].x = temp;
 		if (n) {
@@ -2186,7 +2186,7 @@ static void draw_grid()
 		prevx = temp;
 		n++;
 	}
-	for (y = y1; y <= y2; y += PCB->Grid) {
+	for (y = y1; y <= y2; y += PCB->hidlib.grid) {
 		int vy = Vy(y);
 		points[0].y = vy;
 		XDrawPoints(display, pixmap, grid_gc, points, n, CoordModePrevious);
@@ -2196,7 +2196,7 @@ static void draw_grid()
 static void mark_delta_to_widget(pcb_coord_t dx, pcb_coord_t dy, Widget w)
 {
 	char *buf;
-	double g = pcb_coord_to_unit(conf_core.editor.grid_unit, PCB->Grid);
+	double g = pcb_coord_to_unit(conf_core.editor.grid_unit, PCB->hidlib.grid);
 	int prec;
 	XmString ms;
 
@@ -2227,7 +2227,7 @@ static int cursor_pos_to_widget(pcb_coord_t x, pcb_coord_t y, Widget w, int prev
 	int this_state = prev_state;
 	char *buf = NULL;
 	const char *msg = "";
-	double g = pcb_coord_to_unit(conf_core.editor.grid_unit, PCB->Grid);
+	double g = pcb_coord_to_unit(conf_core.editor.grid_unit, PCB->hidlib.grid);
 	XmString ms;
 	int prec;
 
@@ -2467,12 +2467,12 @@ static Boolean idle_proc(XtPointer dummy)
 		static pcb_coord_t old_gx, old_gy;
 		static const pcb_unit_t *old_unit;
 		XmString ms;
-		if (PCB->Grid != old_grid || PCB->GridOffsetX != old_gx || PCB->GridOffsetY != old_gy || conf_core.editor.grid_unit != old_unit) {
+		if (PCB->hidlib.grid != old_grid || PCB->hidlib.grid_ox != old_gx || PCB->hidlib.grid_oy != old_gy || conf_core.editor.grid_unit != old_unit) {
 			static char buf[100];
-			old_grid = PCB->Grid;
+			old_grid = PCB->hidlib.grid;
 			old_unit = conf_core.editor.grid_unit;
-			old_gx = PCB->GridOffsetX;
-			old_gy = PCB->GridOffsetY;
+			old_gx = PCB->hidlib.grid_ox;
+			old_gy = PCB->hidlib.grid_oy;
 			if (old_grid == 1) {
 				strcpy(buf, "No Grid");
 			}

@@ -49,10 +49,10 @@ static fgw_error_t pcb_act_autocrop(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 
 	pcb_data_bbox(&box, PCB->Data, 0);
-	dx = -((box.X1 / PCB->Grid - 1) * PCB->Grid);
-	dy = -((box.Y1 / PCB->Grid - 1) * PCB->Grid);
-	w = ((box.X2 + dx) / PCB->Grid + 2) * PCB->Grid;
-	h = ((box.Y2 + dy) / PCB->Grid + 2) * PCB->Grid;
+	dx = -((box.X1 / PCB->hidlib.grid - 1) * PCB->hidlib.grid);
+	dy = -((box.Y1 / PCB->hidlib.grid - 1) * PCB->hidlib.grid);
+	w = ((box.X2 + dx) / PCB->hidlib.grid + 2) * PCB->hidlib.grid;
+	h = ((box.Y2 + dy) / PCB->hidlib.grid + 2) * PCB->hidlib.grid;
 
 	if ((dx == 0) && (dy == 0) && (w == PCB->MaxWidth) && (h == PCB->MaxHeight))
 		return 0;

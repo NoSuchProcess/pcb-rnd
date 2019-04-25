@@ -287,8 +287,8 @@ void pcb_tool_attach_for_copy(pcb_coord_t PlaceX, pcb_coord_t PlaceY, pcb_bool d
 		get_grid_lock_coordinates(pcb_crosshair.AttachedObject.Type,
 															pcb_crosshair.AttachedObject.Ptr1,
 															pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3, &mx, &my);
-		mx = pcb_grid_fit(mx, PCB->Grid, PCB->GridOffsetX) - mx;
-		my = pcb_grid_fit(my, PCB->Grid, PCB->GridOffsetY) - my;
+		mx = pcb_grid_fit(mx, PCB->hidlib.grid, PCB->hidlib.grid_ox) - mx;
+		my = pcb_grid_fit(my, PCB->hidlib.grid, PCB->hidlib.grid_oy) - my;
 	}
 	pcb_crosshair.AttachedObject.X = PlaceX - mx;
 	pcb_crosshair.AttachedObject.Y = PlaceY - my;

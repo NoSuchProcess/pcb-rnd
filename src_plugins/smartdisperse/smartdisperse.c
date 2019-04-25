@@ -56,13 +56,13 @@ static void place_subc(pcb_subc_t *sc)
 	dy = miny - sc->BoundingBox.Y1;
 
 	/* snap to the grid */
-	dx -= (ox + dx) % PCB->Grid;
-	dx += PCB->Grid;
-	dy -= (oy + dy) % PCB->Grid;
-	dy += PCB->Grid;
+	dx -= (ox + dx) % PCB->hidlib.grid;
+	dx += PCB->hidlib.grid;
+	dy -= (oy + dy) % PCB->hidlib.grid;
+	dy += PCB->hidlib.grid;
 
 	/* and add one grid size so we make sure we always space by GAP or more */
-	dx += PCB->Grid;
+	dx += PCB->hidlib.grid;
 
 	/* Figure out if this row has room.  If not, start a new row */
 	if (minx != GAP && GAP + sc->BoundingBox.X2 + dx > PCB->MaxWidth) {

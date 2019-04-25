@@ -286,9 +286,9 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			/* shift grid alignment */
 		case F_ToggleGrid:
 			{
-				pcb_coord_t oldGrid = PCB->Grid;
+				pcb_coord_t oldGrid = PCB->hidlib.grid;
 
-				PCB->Grid = 1;
+				PCB->hidlib.grid = 1;
 				if (pcb_crosshair_move_absolute(pcb_crosshair.X, pcb_crosshair.Y))
 					pcb_notify_crosshair_change(pcb_true);	/* first notify was in MoveCrosshairAbs */
 				pcb_board_set_grid(oldGrid, pcb_true, pcb_crosshair.X, pcb_crosshair.Y);
@@ -360,8 +360,8 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					PCB_ACT_FAIL(Display);
 					return FGW_ERR_ARG_CONV;
 				}
-				PCB->GridOffsetX = pcb_get_value(argv[2].val.str, NULL, NULL, NULL);
-				PCB->GridOffsetY = pcb_get_value(argv[3].val.str, NULL, NULL, NULL);
+				PCB->hidlib.grid_ox = pcb_get_value(argv[2].val.str, NULL, NULL, NULL);
+				PCB->hidlib.grid_oy = pcb_get_value(argv[3].val.str, NULL, NULL, NULL);
 				if (conf_core.editor.draw_grid)
 					pcb_redraw();
 			}
@@ -975,10 +975,10 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_coord_t view_width, view_height;
 	const char *a1, *a2, *a3;
 
-	extra_units_x[0].scale = PCB->Grid;
+	extra_units_x[0].scale = PCB->hidlib.grid;
 	extra_units_x[2].scale = PCB->MaxWidth;
 
-	extra_units_y[0].scale = PCB->Grid;
+	extra_units_y[0].scale = PCB->hidlib.grid;
 	extra_units_y[2].scale = PCB->MaxHeight;
 
 	pcb_gui->get_view_size(&view_width, &view_height);

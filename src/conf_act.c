@@ -271,11 +271,11 @@ static fgw_error_t pcb_act_ChkGridSize(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	PCB_ACT_CONVARG(1, FGW_STR, ChkGridSize, dst = argv[1].val.str);
 
 	if (strcmp(dst, "none") == 0) {
-		PCB_ACT_IRES(PCB->Grid <= 300);
+		PCB_ACT_IRES(PCB->hidlib.grid <= 300);
 		return 0;
 	}
 
-	PCB_ACT_IRES(PCB->Grid == pcb_get_value_ex(dst, NULL, NULL, NULL, NULL, NULL));
+	PCB_ACT_IRES(PCB->hidlib.grid == pcb_get_value_ex(dst, NULL, NULL, NULL, NULL, NULL));
 	return 0;
 }
 

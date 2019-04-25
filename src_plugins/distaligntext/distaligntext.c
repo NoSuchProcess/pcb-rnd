@@ -350,7 +350,7 @@ static fgw_error_t pcb_act_aligntext(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		/* TODO re-enable for text, need textcoord()
 		   if (!gridless)
 		   {
-		   dp -= (coord (text, dir, K_Marks) + dp) % (long) (PCB->Grid);
+		   dp -= (coord (text, dir, K_Marks) + dp) % (long) (PCB->hidlib.grid);
 		   }
 		 */
 		if (dp) {
@@ -378,7 +378,7 @@ static fgw_error_t pcb_act_aligntext(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			/* TODO re-enable for text, need textcoord()
 			   if (!gridless)
 			   {
-			   dp -= (coord (text, dir, K_Marks) + dp) % (long) (PCB->Grid);
+			   dp -= (coord (text, dir, K_Marks) + dp) % (long) (PCB->hidlib.grid);
 			   }
 			 */
 			if (dp) {
@@ -550,7 +550,7 @@ static fgw_error_t pcb_act_distributetext(fgw_arg_t *res, int argc, fgw_arg_t *a
 		/* TODO re-enable grid
 		   if (! gridless)
 		   {
-		   dp -= (coord (text, dir, K_Marks) + dp) % (long) (PCB->Grid);
+		   dp -= (coord (text, dir, K_Marks) + dp) % (long) (PCB->hidlib.grid);
 		   }
 		 */
 		if (dp) {

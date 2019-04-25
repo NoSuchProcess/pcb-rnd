@@ -183,12 +183,12 @@ static inline void ghid_gdk_draw_grid_global(void)
 	static GdkPoint *points = NULL;
 	static int npoints = 0;
 
-	x1 = pcb_grid_fit(MAX(0, SIDE_X(gport->view.x0)), PCB->Grid, PCB->GridOffsetX);
-	y1 = pcb_grid_fit(MAX(0, SIDE_Y(gport->view.y0)), PCB->Grid, PCB->GridOffsetY);
-	x2 = pcb_grid_fit(MIN(PCB->MaxWidth,  SIDE_X(gport->view.x0 + gport->view.width - 1)), PCB->Grid, PCB->GridOffsetX);
-	y2 = pcb_grid_fit(MIN(PCB->MaxHeight, SIDE_Y(gport->view.y0 + gport->view.height - 1)), PCB->Grid, PCB->GridOffsetY);
+	x1 = pcb_grid_fit(MAX(0, SIDE_X(gport->view.x0)), PCB->hidlib.grid, PCB->hidlib.grid_ox);
+	y1 = pcb_grid_fit(MAX(0, SIDE_Y(gport->view.y0)), PCB->hidlib.grid, PCB->hidlib.grid_oy);
+	x2 = pcb_grid_fit(MIN(PCB->MaxWidth,  SIDE_X(gport->view.x0 + gport->view.width - 1)), PCB->hidlib.grid, PCB->hidlib.grid_ox);
+	y2 = pcb_grid_fit(MIN(PCB->MaxHeight, SIDE_Y(gport->view.y0 + gport->view.height - 1)), PCB->hidlib.grid, PCB->hidlib.grid_oy);
 
-	grd = PCB->Grid;
+	grd = PCB->hidlib.grid;
 
 	if (Vz(grd) < conf_hid_gtk.plugins.hid_gtk.global_grid.min_dist_px) {
 		if (!conf_hid_gtk.plugins.hid_gtk.global_grid.sparse)
@@ -260,8 +260,8 @@ static void ghid_gdk_draw_grid_local_(pcb_coord_t cx, pcb_coord_t cy, int radius
 		recalc = 1;
 	}
 
-	if (last_grid != PCB->Grid) {
-		last_grid = PCB->Grid;
+	if (last_grid != PCB->hidlib.grid) {
+		last_grid = PCB->hidlib.grid;
 		recalc = 1;
 	}
 
@@ -273,8 +273,8 @@ static void ghid_gdk_draw_grid_local_(pcb_coord_t cx, pcb_coord_t cy, int radius
 			int y2 = y*y;
 			for(x = -radius; x <= radius; x++) {
 				if (x*x + y2 < r2) {
-					points_base[npoints].x = x*PCB->Grid;
-					points_base[npoints].y = y*PCB->Grid;
+					points_base[npoints].x = x*PCB->hidlib.grid;
+					points_base[npoints].y = y*PCB->hidlib.grid;
 					npoints++;
 				}
 			}
@@ -304,12 +304,12 @@ static void ghid_gdk_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy)
 	if (!conf_hid_gtk.plugins.hid_gtk.local_grid.enable)
 		return;
 
-	if ((Vz(PCB->Grid) < PCB_MIN_GRID_DISTANCE) || (!conf_core.editor.draw_grid))
+	if ((Vz(PCB->hidlib.grid) < PCB_MIN_GRID_DISTANCE) || (!conf_core.editor.draw_grid))
 		return;
 
 	/* cx and cy are the actual cursor snapped to wherever - round them to the nearest real grid point */
-	cx = (cx / PCB->Grid) * PCB->Grid + PCB->GridOffsetX;
-	cy = (cy / PCB->Grid) * PCB->Grid + PCB->GridOffsetY;
+	cx = (cx / PCB->hidlib.grid) * PCB->hidlib.grid + PCB->hidlib.grid_ox;
+	cy = (cy / PCB->hidlib.grid) * PCB->hidlib.grid + PCB->hidlib.grid_oy;
 
 	grid_local_have_old = 1;
 	ghid_gdk_draw_grid_local_(cx, cy, conf_hid_gtk.plugins.hid_gtk.local_grid.radius);

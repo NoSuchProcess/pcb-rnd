@@ -123,7 +123,7 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	PCB->MaxWidth = CELL_SIZE * 18;
 	PCB->MaxHeight = CELL_SIZE * ((PCB_MAX_FONTPOSITION + 15) / 16 + 2);
-	PCB->Grid = PCB_MIL_TO_COORD(5);
+	PCB->hidlib.grid = PCB_MIL_TO_COORD(5);
 
 	/* create the layer stack and logical layers */
 	pcb_layergrp_inhibit_inc();

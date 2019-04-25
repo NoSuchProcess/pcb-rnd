@@ -207,8 +207,8 @@ void hidgl_draw_local_grid(pcb_coord_t cx, pcb_coord_t cy, int radius)
 		int y2 = y * y;
 		for(x = -radius; x <= radius; x++) {
 			if (x * x + y2 < r2) {
-				grid_points[npoints * 2] = x * PCB->Grid + cx;
-				grid_points[npoints * 2 + 1] = y * PCB->Grid + cy;
+				grid_points[npoints * 2] = x * PCB->hidlib.grid + cx;
+				grid_points[npoints * 2 + 1] = y * PCB->hidlib.grid + cy;
 				npoints++;
 			}
 		}
@@ -226,10 +226,10 @@ void hidgl_draw_grid(pcb_box_t *drawn_area)
 	pcb_coord_t x1, y1, x2, y2, n, i;
 	double x, y;
 
-	x1 = pcb_grid_fit(MAX(0, drawn_area->X1), PCB->Grid, PCB->GridOffsetX);
-	y1 = pcb_grid_fit(MAX(0, drawn_area->Y1), PCB->Grid, PCB->GridOffsetY);
-	x2 = pcb_grid_fit(MIN(PCB->MaxWidth, drawn_area->X2), PCB->Grid, PCB->GridOffsetX);
-	y2 = pcb_grid_fit(MIN(PCB->MaxHeight, drawn_area->Y2), PCB->Grid, PCB->GridOffsetY);
+	x1 = pcb_grid_fit(MAX(0, drawn_area->X1), PCB->hidlib.grid, PCB->hidlib.grid_ox);
+	y1 = pcb_grid_fit(MAX(0, drawn_area->Y1), PCB->hidlib.grid, PCB->hidlib.grid_oy);
+	x2 = pcb_grid_fit(MIN(PCB->MaxWidth, drawn_area->X2), PCB->hidlib.grid, PCB->hidlib.grid_ox);
+	y2 = pcb_grid_fit(MIN(PCB->MaxHeight, drawn_area->Y2), PCB->hidlib.grid, PCB->hidlib.grid_oy);
 
 	if (x1 > x2) {
 		pcb_coord_t tmp = x1;
@@ -243,17 +243,17 @@ void hidgl_draw_grid(pcb_box_t *drawn_area)
 		y2 = tmp;
 	}
 
-	n = (int)((x2 - x1) / PCB->Grid + 0.5) + 1;
+	n = (int)((x2 - x1) / PCB->hidlib.grid + 0.5) + 1;
 	reserve_grid_points(n);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2, GL_FLOAT, 0, grid_points);
 
 	n = 0;
-	for(x = x1; x <= x2; x += PCB->Grid, ++n)
+	for(x = x1; x <= x2; x += PCB->hidlib.grid, ++n)
 		grid_points[2 * n + 0] = x;
 
-	for(y = y1; y <= y2; y += PCB->Grid) {
+	for(y = y1; y <= y2; y += PCB->hidlib.grid) {
 		for(i = 0; i < n; i++)
 			grid_points[2 * i + 1] = y;
 		glDrawArrays(GL_POINTS, 0, n);

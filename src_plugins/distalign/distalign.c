@@ -324,7 +324,7 @@ static fgw_error_t pcb_act_align(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		dp = q - p;
 		/* ...but if we're gridful, keep the mark on the grid */
 		if (!gridless) {
-			dp -= (coord(subc, dir, K_Marks) + dp) % (long) (PCB->Grid);
+			dp -= (coord(subc, dir, K_Marks) + dp) % (long) (PCB->hidlib.grid);
 		}
 		if (dp) {
 			/* move from generic to X or Y */
@@ -486,7 +486,7 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		dp = q - p;
 		/* ...but if we're gridful, keep the mark on the grid */
 		if (!gridless) {
-			dp -= (coord(subc, dir, K_Marks) + dp) % (long) (PCB->Grid);
+			dp -= (coord(subc, dir, K_Marks) + dp) % (long) (PCB->hidlib.grid);
 		}
 		if (dp) {
 			/* move from generic to X or Y */

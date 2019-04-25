@@ -139,9 +139,9 @@ static lht_node_t *build_board_meta(pcb_board_t *pcb)
 
 	grp = lht_dom_node_alloc(LHT_HASH, "grid");
 	lht_dom_hash_put(meta, grp);
-	lht_dom_hash_put(grp, build_textf("offs_x", CFMT, pcb->GridOffsetX));
-	lht_dom_hash_put(grp, build_textf("offs_y", CFMT, pcb->GridOffsetY));
-	lht_dom_hash_put(grp, build_textf("spacing", CFMT, pcb->Grid));
+	lht_dom_hash_put(grp, build_textf("offs_x", CFMT, pcb->hidlib.grid_ox));
+	lht_dom_hash_put(grp, build_textf("offs_y", CFMT, pcb->hidlib.grid_oy));
+	lht_dom_hash_put(grp, build_textf("spacing", CFMT, pcb->hidlib.grid));
 
 	grp = lht_dom_node_alloc(LHT_HASH, "size");
 	lht_dom_hash_put(meta, grp);

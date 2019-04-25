@@ -54,6 +54,7 @@ enum {
 #include "attrib.h"
 #include "rats_patch.h"
 #include "font.h"
+#include "hidlib.h"
 
 typedef htsp_t pcb_netlist_t;
 
@@ -64,6 +65,8 @@ typedef htsp_t pcb_netlist_t;
 	   |  This struct is also used for the remove list and for buffer handling
 	 */
 struct pcb_board_s {
+	pcb_hidlib_t hidlib;
+
 	long ID;
 	char *Name;                                     /* name of board */
 	char *Filename;                                 /* name of file (from load) */
@@ -78,7 +81,6 @@ struct pcb_board_s {
 	pcb_bool RatDraw;                               /* we're drawing rats */
 
 	pcb_bool loose_subc;                            /* when set, subc parts are not locked into the subc */
-	pcb_coord_t Grid, GridOffsetX, GridOffsetY;     /* as saved with layout */
 	pcb_coord_t MaxWidth, MaxHeight;                /* board dimensions (drawing area extents) */
 
 	double ThermScale;                              /* scale factor used with thermals */

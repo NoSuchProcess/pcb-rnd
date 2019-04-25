@@ -170,10 +170,10 @@ static void disperse_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t ox, p
 	*dx = *minx - obj->BoundingBox.X1;
 
 	/* snap to the grid */
-	*dx -= (ox + *dx) % pcb->Grid;
+	*dx -= (ox + *dx) % pcb->hidlib.grid;
 
 	/* and add one grid size so we make sure we always space by GAP or more */
-	*dx += pcb->Grid;
+	*dx += pcb->hidlib.grid;
 
 	/* Figure out if this row has room.  If not, start a new row */
 	if (GAP + obj->BoundingBox.X2 + *dx > pcb->MaxWidth) {
@@ -186,10 +186,10 @@ static void disperse_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t ox, p
 	*dy = *miny - obj->BoundingBox.Y1;
 
 	/* snap to the grid */
-	*dx -= (ox + *dx) % pcb->Grid;
-	*dx += pcb->Grid;
-	*dy -= (oy + *dy) % pcb->Grid;
-	*dy += pcb->Grid;
+	*dx -= (ox + *dx) % pcb->hidlib.grid;
+	*dx += pcb->hidlib.grid;
+	*dy -= (oy + *dy) % pcb->hidlib.grid;
+	*dy += pcb->hidlib.grid;
 
 	/* new X2 and Y2 coords with snapping considered */
 	newx2 = obj->BoundingBox.X2 + *dx;

@@ -88,7 +88,7 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 	ptr->RatDraw = pcb_false;
 
 	/* NOTE: we used to set all the pcb flags on ptr here, but we don't need to do that anymore due to the new conf system */
-	ptr->Grid = conf_core.editor.grid;
+	ptr->hidlib.grid = conf_core.editor.grid;
 
 	ptr->MaxHeight = ptr->MaxWidth = PCB_MM_TO_COORD(20); /* should be overriden by the default design */
 	ptr->ID = pcb_create_ID_get();
@@ -289,10 +289,10 @@ void pcb_board_set_grid(pcb_coord_t Grid, pcb_bool align, pcb_coord_t ox, pcb_co
 {
 	if (Grid >= 1 && Grid <= PCB_MAX_GRID) {
 		if (align) {
-			PCB->GridOffsetX = ox % Grid;
-			PCB->GridOffsetY = oy % Grid;
+			PCB->hidlib.grid_ox = ox % Grid;
+			PCB->hidlib.grid_oy = oy % Grid;
 		}
-		PCB->Grid = Grid;
+		PCB->hidlib.grid = Grid;
 		conf_set_design("editor/grid", "%$mS", Grid);
 		if (conf_core.editor.draw_grid)
 			pcb_redraw();

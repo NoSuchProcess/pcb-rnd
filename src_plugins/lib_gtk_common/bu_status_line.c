@@ -73,7 +73,7 @@ static inline void gen_status_long(char *text, size_t text_size, int compat_hori
 		"<b>text</b>=%i%% %$mS "
 		"<b>buff</b>=#%i",
 		unit->allow, conf_core.editor.show_solder_side ? "bottom" : "top",
-		PCB->Grid,
+		PCB->hidlib.grid,
 		conf_core.design.line_thickness, flag, conf_core.editor.rubber_band_mode ? ",R" : "",
 		kbd,
 		compat_horiz ? "\n" : "", /* line break */
@@ -93,7 +93,7 @@ static inline void gen_status_short(char *text, size_t text_size, int compat_hor
 		"via=%mS (%mS) "
 		"clearance=%mS",
 		unit->allow,
-		PCB->Grid,
+		PCB->hidlib.grid,
 		conf_core.design.line_thickness,
 		conf_core.design.via_thickness, conf_core.design.via_drilling_hole, 
 		conf_core.design.clearance);

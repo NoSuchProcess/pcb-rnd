@@ -332,17 +332,17 @@ pcbgrid
 pcbgridold
 		: T_GRID '(' measure measure measure ')'
 			{
-				yyPCB->Grid = OU ($3);
-				yyPCB->GridOffsetX = OU ($4);
-				yyPCB->GridOffsetY = OU ($5);
+				yyPCB->hidlib.grid = OU ($3);
+				yyPCB->hidlib.grid_ox = OU ($4);
+				yyPCB->hidlib.grid_oy = OU ($5);
 			}
 		;
 pcbgridnew
 		: T_GRID '(' measure measure measure INTEGER ')'
 			{
-				yyPCB->Grid = OU ($3);
-				yyPCB->GridOffsetX = OU ($4);
-				yyPCB->GridOffsetY = OU ($5);
+				yyPCB->hidlib.grid = OU ($3);
+				yyPCB->hidlib.grid_ox = OU ($4);
+				yyPCB->hidlib.grid_oy = OU ($5);
 				if (yy_settings_dest != CFR_invalid) {
 					if ($6)
 						conf_set(yy_settings_dest, "editor/draw_grid", -1, "true", POL_OVERWRITE);
@@ -355,9 +355,9 @@ pcbgridnew
 pcbhigrid
 		: T_GRID '[' measure measure measure INTEGER ']'
 			{
-				yyPCB->Grid = NU ($3);
-				yyPCB->GridOffsetX = NU ($4);
-				yyPCB->GridOffsetY = NU ($5);
+				yyPCB->hidlib.grid = NU ($3);
+				yyPCB->hidlib.grid_ox = NU ($4);
+				yyPCB->hidlib.grid_oy = NU ($5);
 				if (yy_settings_dest != CFR_invalid) {
 					if ($6)
 						conf_set(yy_settings_dest, "editor/draw_grid", -1, "true", POL_OVERWRITE);

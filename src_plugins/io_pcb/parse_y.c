@@ -1,8 +1,9 @@
-/* A Bison parser, made by GNU Bison 3.0.2.  */
+/* A Bison parser, made by GNU Bison 3.3.2.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2019 Free Software Foundation,
+   Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -40,11 +41,14 @@
    define necessary library symbols; they are noted "INFRINGES ON
    USER NAME SPACE" below.  */
 
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
+
 /* Identify Bison output.  */
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "3.0.2"
+#define YYBISON_VERSION "3.3.2"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -69,8 +73,8 @@
 #define yylval          pcb_lval
 #define yychar          pcb_char
 
-/* Copy the first part of user declarations.  */
-#line 1 "parse_y.y" /* yacc.c:339  */
+/* First part of user prologue.  */
+#line 1 "parse_y.y" /* yacc.c:337  */
 
 /*
  *                            COPYRIGHT
@@ -182,13 +186,16 @@ static void load_meta_float(const char *path, double val);
 #include "parse_y.h"
 
 
-#line 186 "parse_y.c" /* yacc.c:339  */
-
+#line 190 "parse_y.c" /* yacc.c:337  */
 # ifndef YY_NULLPTR
-#  if defined __cplusplus && 201103L <= __cplusplus
-#   define YY_NULLPTR nullptr
+#  if defined __cplusplus
+#   if 201103L <= __cplusplus
+#    define YY_NULLPTR nullptr
+#   else
+#    define YY_NULLPTR 0
+#   endif
 #  else
-#   define YY_NULLPTR 0
+#   define YY_NULLPTR ((void*)0)
 #  endif
 # endif
 
@@ -270,10 +277,10 @@ extern int pcb_debug;
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef union YYSTYPE YYSTYPE;
+
 union YYSTYPE
 {
-#line 118 "parse_y.y" /* yacc.c:355  */
+#line 118 "parse_y.y" /* yacc.c:352  */
 
 	int		integer;
 	double		number;
@@ -281,8 +288,10 @@ union YYSTYPE
 	pcb_flag_t	flagtype;
 	PLMeasure	measure;
 
-#line 285 "parse_y.c" /* yacc.c:355  */
+#line 292 "parse_y.c" /* yacc.c:352  */
 };
+
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
@@ -294,9 +303,7 @@ int pcb_parse (void);
 
 #endif /* !YY_PCB_PARSE_Y_H_INCLUDED  */
 
-/* Copy the second part of user declarations.  */
 
-#line 300 "parse_y.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -317,13 +324,13 @@ typedef signed char yytype_int8;
 #ifdef YYTYPE_UINT16
 typedef YYTYPE_UINT16 yytype_uint16;
 #else
-typedef unsigned short int yytype_uint16;
+typedef unsigned short yytype_uint16;
 #endif
 
 #ifdef YYTYPE_INT16
 typedef YYTYPE_INT16 yytype_int16;
 #else
-typedef short int yytype_int16;
+typedef short yytype_int16;
 #endif
 
 #ifndef YYSIZE_T
@@ -335,7 +342,7 @@ typedef short int yytype_int16;
 #  include <stddef.h> /* INFRINGES ON USER NAME SPACE */
 #  define YYSIZE_T size_t
 # else
-#  define YYSIZE_T unsigned int
+#  define YYSIZE_T unsigned
 # endif
 #endif
 
@@ -371,15 +378,6 @@ typedef short int yytype_int16;
 # define YY_ATTRIBUTE_UNUSED YY_ATTRIBUTE ((__unused__))
 #endif
 
-#if !defined _Noreturn \
-     && (!defined __STDC_VERSION__ || __STDC_VERSION__ < 201112)
-# if defined _MSC_VER && 1200 <= _MSC_VER
-#  define _Noreturn __declspec (noreturn)
-# else
-#  define _Noreturn YY_ATTRIBUTE ((__noreturn__))
-# endif
-#endif
-
 /* Suppress unused-variable warnings by "using" E.  */
 #if ! defined lint || defined __GNUC__
 # define YYUSE(E) ((void) (E))
@@ -387,7 +385,7 @@ typedef short int yytype_int16;
 # define YYUSE(E) /* empty */
 #endif
 
-#if defined __GNUC__ && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
+#if defined __GNUC__ && ! defined __ICC && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
 /* Suppress an incorrect diagnostic about yylval being uninitialized.  */
 # define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN \
     _Pragma ("GCC diagnostic push") \
@@ -549,16 +547,16 @@ union yyalloc
 /* YYNSTATES -- Number of states.  */
 #define YYNSTATES  643
 
-/* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
-   by yylex, with out-of-bounds checking.  */
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   305
 
+/* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
+   as returned by yylex, with out-of-bounds checking.  */
 #define YYTRANSLATE(YYX)                                                \
-  ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
+  ((unsigned) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
 
 /* YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to TOKEN-NUM
-   as returned by yylex, without out-of-bounds checking.  */
+   as returned by yylex.  */
 static const yytype_uint8 yytranslate[] =
 {
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -1135,22 +1133,22 @@ static const yytype_uint8 yyr2[] =
 
 #define YYRECOVERING()  (!!yyerrstatus)
 
-#define YYBACKUP(Token, Value)                                  \
-do                                                              \
-  if (yychar == YYEMPTY)                                        \
-    {                                                           \
-      yychar = (Token);                                         \
-      yylval = (Value);                                         \
-      YYPOPSTACK (yylen);                                       \
-      yystate = *yyssp;                                         \
-      goto yybackup;                                            \
-    }                                                           \
-  else                                                          \
-    {                                                           \
-      yyerror (YY_("syntax error: cannot back up")); \
-      YYERROR;                                                  \
-    }                                                           \
-while (0)
+#define YYBACKUP(Token, Value)                                    \
+  do                                                              \
+    if (yychar == YYEMPTY)                                        \
+      {                                                           \
+        yychar = (Token);                                         \
+        yylval = (Value);                                         \
+        YYPOPSTACK (yylen);                                       \
+        yystate = *yyssp;                                         \
+        goto yybackup;                                            \
+      }                                                           \
+    else                                                          \
+      {                                                           \
+        yyerror (YY_("syntax error: cannot back up")); \
+        YYERROR;                                                  \
+      }                                                           \
+  while (0)
 
 /* Error token number */
 #define YYTERROR        1
@@ -1190,37 +1188,37 @@ do {                                                                      \
 } while (0)
 
 
-/*----------------------------------------.
-| Print this symbol's value on YYOUTPUT.  |
-`----------------------------------------*/
+/*-----------------------------------.
+| Print this symbol's value on YYO.  |
+`-----------------------------------*/
 
 static void
-yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)
+yy_symbol_value_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep)
 {
-  FILE *yyo = yyoutput;
-  YYUSE (yyo);
+  FILE *yyoutput = yyo;
+  YYUSE (yyoutput);
   if (!yyvaluep)
     return;
 # ifdef YYPRINT
   if (yytype < YYNTOKENS)
-    YYPRINT (yyoutput, yytoknum[yytype], *yyvaluep);
+    YYPRINT (yyo, yytoknum[yytype], *yyvaluep);
 # endif
   YYUSE (yytype);
 }
 
 
-/*--------------------------------.
-| Print this symbol on YYOUTPUT.  |
-`--------------------------------*/
+/*---------------------------.
+| Print this symbol on YYO.  |
+`---------------------------*/
 
 static void
-yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)
+yy_symbol_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep)
 {
-  YYFPRINTF (yyoutput, "%s %s (",
+  YYFPRINTF (yyo, "%s %s (",
              yytype < YYNTOKENS ? "token" : "nterm", yytname[yytype]);
 
-  yy_symbol_value_print (yyoutput, yytype, yyvaluep);
-  YYFPRINTF (yyoutput, ")");
+  yy_symbol_value_print (yyo, yytype, yyvaluep);
+  YYFPRINTF (yyo, ")");
 }
 
 /*------------------------------------------------------------------.
@@ -1254,7 +1252,7 @@ do {                                                            \
 static void
 yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule)
 {
-  unsigned long int yylno = yyrline[yyrule];
+  unsigned long yylno = yyrline[yyrule];
   int yynrhs = yyr2[yyrule];
   int yyi;
   YYFPRINTF (stderr, "Reducing stack by rule %d (line %lu):\n",
@@ -1265,7 +1263,7 @@ yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule)
       YYFPRINTF (stderr, "   $%d = ", yyi + 1);
       yy_symbol_print (stderr,
                        yystos[yyssp[yyi + 1 - yynrhs]],
-                       &(yyvsp[(yyi + 1) - (yynrhs)])
+                       &yyvsp[(yyi + 1) - (yynrhs)]
                                               );
       YYFPRINTF (stderr, "\n");
     }
@@ -1369,7 +1367,10 @@ yytnamerr (char *yyres, const char *yystr)
           case '\\':
             if (*++yyp != '\\')
               goto do_not_strip_quotes;
-            /* Fall through.  */
+            else
+              goto append;
+
+          append:
           default:
             if (yyres)
               yyres[yyn] = *yyp;
@@ -1387,7 +1388,7 @@ yytnamerr (char *yyres, const char *yystr)
   if (! yyres)
     return yystrlen (yystr);
 
-  return yystpcpy (yyres, yystr) - yyres;
+  return (YYSIZE_T) (yystpcpy (yyres, yystr) - yyres);
 }
 # endif
 
@@ -1465,10 +1466,10 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
                 yyarg[yycount++] = yytname[yyx];
                 {
                   YYSIZE_T yysize1 = yysize + yytnamerr (YY_NULLPTR, yytname[yyx]);
-                  if (! (yysize <= yysize1
-                         && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
+                  if (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM)
+                    yysize = yysize1;
+                  else
                     return 2;
-                  yysize = yysize1;
                 }
               }
         }
@@ -1480,6 +1481,7 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
       case N:                               \
         yyformat = S;                       \
       break
+    default: /* Avoid compiler warnings. */
       YYCASE_(0, YY_("syntax error"));
       YYCASE_(1, YY_("syntax error, unexpected %s"));
       YYCASE_(2, YY_("syntax error, unexpected %s, expecting %s"));
@@ -1491,9 +1493,10 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
 
   {
     YYSIZE_T yysize1 = yysize + yystrlen (yyformat);
-    if (! (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
+    if (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM)
+      yysize = yysize1;
+    else
       return 2;
-    yysize = yysize1;
   }
 
   if (*yymsg_alloc < yysize)
@@ -1619,23 +1622,31 @@ yyparse (void)
   yychar = YYEMPTY; /* Cause a token to be read.  */
   goto yysetstate;
 
+
 /*------------------------------------------------------------.
-| yynewstate -- Push a new state, which is found in yystate.  |
+| yynewstate -- push a new state, which is found in yystate.  |
 `------------------------------------------------------------*/
- yynewstate:
+yynewstate:
   /* In all cases, when you get here, the value and location stacks
      have just been pushed.  So pushing a state here evens the stacks.  */
   yyssp++;
 
- yysetstate:
-  *yyssp = yystate;
+
+/*--------------------------------------------------------------------.
+| yynewstate -- set current state (the top of the stack) to yystate.  |
+`--------------------------------------------------------------------*/
+yysetstate:
+  *yyssp = (yytype_int16) yystate;
 
   if (yyss + yystacksize - 1 <= yyssp)
+#if !defined yyoverflow && !defined YYSTACK_RELOCATE
+    goto yyexhaustedlab;
+#else
     {
       /* Get the current used size of the three stacks, in elements.  */
-      YYSIZE_T yysize = yyssp - yyss + 1;
+      YYSIZE_T yysize = (YYSIZE_T) (yyssp - yyss + 1);
 
-#ifdef yyoverflow
+# if defined yyoverflow
       {
         /* Give user a chance to reallocate the stack.  Use copies of
            these so that the &'s don't force the real ones into
@@ -1651,14 +1662,10 @@ yyparse (void)
                     &yyss1, yysize * sizeof (*yyssp),
                     &yyvs1, yysize * sizeof (*yyvsp),
                     &yystacksize);
-
         yyss = yyss1;
         yyvs = yyvs1;
       }
-#else /* no yyoverflow */
-# ifndef YYSTACK_RELOCATE
-      goto yyexhaustedlab;
-# else
+# else /* defined YYSTACK_RELOCATE */
       /* Extend the stack our own way.  */
       if (YYMAXDEPTH <= yystacksize)
         goto yyexhaustedlab;
@@ -1674,22 +1681,22 @@ yyparse (void)
           goto yyexhaustedlab;
         YYSTACK_RELOCATE (yyss_alloc, yyss);
         YYSTACK_RELOCATE (yyvs_alloc, yyvs);
-#  undef YYSTACK_RELOCATE
+# undef YYSTACK_RELOCATE
         if (yyss1 != yyssa)
           YYSTACK_FREE (yyss1);
       }
 # endif
-#endif /* no yyoverflow */
 
       yyssp = yyss + yysize - 1;
       yyvsp = yyvs + yysize - 1;
 
       YYDPRINTF ((stderr, "Stack size increased to %lu\n",
-                  (unsigned long int) yystacksize));
+                  (unsigned long) yystacksize));
 
       if (yyss + yystacksize - 1 <= yyssp)
         YYABORT;
     }
+#endif /* !defined yyoverflow && !defined YYSTACK_RELOCATE */
 
   YYDPRINTF ((stderr, "Entering state %d\n", yystate));
 
@@ -1698,11 +1705,11 @@ yyparse (void)
 
   goto yybackup;
 
+
 /*-----------.
 | yybackup.  |
 `-----------*/
 yybackup:
-
   /* Do appropriate processing given the current state.  Read a
      lookahead token if we need one and don't already have one.  */
 
@@ -1775,7 +1782,7 @@ yydefault:
 
 
 /*-----------------------------.
-| yyreduce -- Do a reduction.  |
+| yyreduce -- do a reduction.  |
 `-----------------------------*/
 yyreduce:
   /* yyn is the number of a rule to reduce with.  */
@@ -1796,13 +1803,13 @@ yyreduce:
   switch (yyn)
     {
         case 5:
-#line 148 "parse_y.y" /* yacc.c:1646  */
+#line 148 "parse_y.y" /* yacc.c:1652  */
     { YYABORT; }
-#line 1802 "parse_y.c" /* yacc.c:1646  */
+#line 1809 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 6:
-#line 152 "parse_y.y" /* yacc.c:1646  */
+#line 152 "parse_y.y" /* yacc.c:1652  */
     {
 					/* reset flags for 'used layers';
 					 * init font and data pointers
@@ -1825,11 +1832,11 @@ yyreduce:
 				layer_group_string = NULL;
 				old_fmt = 0;
 			}
-#line 1829 "parse_y.c" /* yacc.c:1646  */
+#line 1836 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 7:
-#line 188 "parse_y.y" /* yacc.c:1646  */
+#line 188 "parse_y.y" /* yacc.c:1652  */
     {
 			  pcb_board_t *pcb_save = PCB;
 			  if ((yy_settings_dest != CFR_invalid) && (layer_group_string != NULL))
@@ -1867,18 +1874,18 @@ yyreduce:
 			PCB_ENDALL_LOOP;
 			PCB = pcb_save;
 			}
-#line 1871 "parse_y.c" /* yacc.c:1646  */
+#line 1878 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 8:
-#line 226 "parse_y.y" /* yacc.c:1646  */
+#line 226 "parse_y.y" /* yacc.c:1652  */
     { PreLoadElementPCB ();
 		    layer_group_string = NULL; }
-#line 1878 "parse_y.c" /* yacc.c:1646  */
+#line 1885 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 9:
-#line 229 "parse_y.y" /* yacc.c:1646  */
+#line 229 "parse_y.y" /* yacc.c:1652  */
     { LayerFlag[0] = pcb_true;
 		    LayerFlag[1] = pcb_true;
 		    if (yyElemFixLayers) {
@@ -1894,11 +1901,11 @@ yyreduce:
 		    }
 		    PostLoadElementPCB ();
 		  }
-#line 1898 "parse_y.c" /* yacc.c:1646  */
+#line 1905 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 10:
-#line 247 "parse_y.y" /* yacc.c:1646  */
+#line 247 "parse_y.y" /* yacc.c:1652  */
     {
 					/* reset flags for 'used layers';
 					 * init font and data pointers
@@ -1914,11 +1921,11 @@ yyreduce:
 					LayerFlag[i] = pcb_false;
 				yyData->LayerN = 0;
 			}
-#line 1918 "parse_y.c" /* yacc.c:1646  */
+#line 1925 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 14:
-#line 272 "parse_y.y" /* yacc.c:1646  */
+#line 272 "parse_y.y" /* yacc.c:1652  */
     {
 					/* mark all symbols invalid */
 				if (!yyFont)
@@ -1932,78 +1939,78 @@ yyreduce:
 				}
 				*yyFontkitValid = pcb_false;
 			}
-#line 1936 "parse_y.c" /* yacc.c:1646  */
+#line 1943 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 15:
-#line 286 "parse_y.y" /* yacc.c:1646  */
+#line 286 "parse_y.y" /* yacc.c:1652  */
     {
 				*yyFontkitValid = pcb_true;
 		  		pcb_font_set_info(yyFont);
 			}
-#line 1945 "parse_y.c" /* yacc.c:1646  */
+#line 1952 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 17:
-#line 295 "parse_y.y" /* yacc.c:1646  */
+#line 295 "parse_y.y" /* yacc.c:1652  */
     {
   if (check_file_version ((yyvsp[-1].integer)) != 0)
     {
       YYABORT;
     }
 }
-#line 1956 "parse_y.c" /* yacc.c:1646  */
+#line 1963 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 18:
-#line 305 "parse_y.y" /* yacc.c:1646  */
+#line 305 "parse_y.y" /* yacc.c:1652  */
     {
 				yyPCB->Name = (yyvsp[-1].string);
 				yyPCB->MaxWidth = PCB_MAX_COORD;
 				yyPCB->MaxHeight = PCB_MAX_COORD;
 				old_fmt = 1;
 			}
-#line 1967 "parse_y.c" /* yacc.c:1646  */
+#line 1974 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 19:
-#line 312 "parse_y.y" /* yacc.c:1646  */
+#line 312 "parse_y.y" /* yacc.c:1652  */
     {
 				yyPCB->Name = (yyvsp[-3].string);
 				yyPCB->MaxWidth = OU ((yyvsp[-2].measure));
 				yyPCB->MaxHeight = OU ((yyvsp[-1].measure));
 				old_fmt = 1;
 			}
-#line 1978 "parse_y.c" /* yacc.c:1646  */
+#line 1985 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 20:
-#line 319 "parse_y.y" /* yacc.c:1646  */
+#line 319 "parse_y.y" /* yacc.c:1652  */
     {
 				yyPCB->Name = (yyvsp[-3].string);
 				yyPCB->MaxWidth = NU ((yyvsp[-2].measure));
 				yyPCB->MaxHeight = NU ((yyvsp[-1].measure));
 				old_fmt = 0;
 			}
-#line 1989 "parse_y.c" /* yacc.c:1646  */
+#line 1996 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 24:
-#line 334 "parse_y.y" /* yacc.c:1646  */
+#line 334 "parse_y.y" /* yacc.c:1652  */
     {
-				yyPCB->Grid = OU ((yyvsp[-3].measure));
-				yyPCB->GridOffsetX = OU ((yyvsp[-2].measure));
-				yyPCB->GridOffsetY = OU ((yyvsp[-1].measure));
+				yyPCB->hidlib.grid = OU ((yyvsp[-3].measure));
+				yyPCB->hidlib.grid_ox = OU ((yyvsp[-2].measure));
+				yyPCB->hidlib.grid_oy = OU ((yyvsp[-1].measure));
 			}
-#line 1999 "parse_y.c" /* yacc.c:1646  */
+#line 2006 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 25:
-#line 342 "parse_y.y" /* yacc.c:1646  */
+#line 342 "parse_y.y" /* yacc.c:1652  */
     {
-				yyPCB->Grid = OU ((yyvsp[-4].measure));
-				yyPCB->GridOffsetX = OU ((yyvsp[-3].measure));
-				yyPCB->GridOffsetY = OU ((yyvsp[-2].measure));
+				yyPCB->hidlib.grid = OU ((yyvsp[-4].measure));
+				yyPCB->hidlib.grid_ox = OU ((yyvsp[-3].measure));
+				yyPCB->hidlib.grid_oy = OU ((yyvsp[-2].measure));
 				if (yy_settings_dest != CFR_invalid) {
 					if ((yyvsp[-1].integer))
 						conf_set(yy_settings_dest, "editor/draw_grid", -1, "true", POL_OVERWRITE);
@@ -2011,15 +2018,15 @@ yyreduce:
 						conf_set(yy_settings_dest, "editor/draw_grid", -1, "false", POL_OVERWRITE);
 				}
 			}
-#line 2015 "parse_y.c" /* yacc.c:1646  */
+#line 2022 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 26:
-#line 357 "parse_y.y" /* yacc.c:1646  */
+#line 357 "parse_y.y" /* yacc.c:1652  */
     {
-				yyPCB->Grid = NU ((yyvsp[-4].measure));
-				yyPCB->GridOffsetX = NU ((yyvsp[-3].measure));
-				yyPCB->GridOffsetY = NU ((yyvsp[-2].measure));
+				yyPCB->hidlib.grid = NU ((yyvsp[-4].measure));
+				yyPCB->hidlib.grid_ox = NU ((yyvsp[-3].measure));
+				yyPCB->hidlib.grid_oy = NU ((yyvsp[-2].measure));
 				if (yy_settings_dest != CFR_invalid) {
 					if ((yyvsp[-1].integer))
 						conf_set(yy_settings_dest, "editor/draw_grid", -1, "true", POL_OVERWRITE);
@@ -2027,55 +2034,55 @@ yyreduce:
 						conf_set(yy_settings_dest, "editor/draw_grid", -1, "false", POL_OVERWRITE);
 				}
 			}
-#line 2031 "parse_y.c" /* yacc.c:1646  */
+#line 2038 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 27:
-#line 372 "parse_y.y" /* yacc.c:1646  */
+#line 372 "parse_y.y" /* yacc.c:1652  */
     {
 /* Not loading cursor position and zoom anymore */
 			}
-#line 2039 "parse_y.c" /* yacc.c:1646  */
+#line 2046 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 28:
-#line 376 "parse_y.y" /* yacc.c:1646  */
+#line 376 "parse_y.y" /* yacc.c:1652  */
     {
 /* Not loading cursor position and zoom anymore */
 			}
-#line 2047 "parse_y.c" /* yacc.c:1646  */
+#line 2054 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 31:
-#line 385 "parse_y.y" /* yacc.c:1646  */
+#line 385 "parse_y.y" /* yacc.c:1652  */
     {
 				/* Read in cmil^2 for now; in future this should be a noop. */
 				load_meta_float("design/poly_isle_area", PCB_MIL_TO_COORD(PCB_MIL_TO_COORD ((yyvsp[-1].number)) / 100.0) / 100.0);
 			}
-#line 2056 "parse_y.c" /* yacc.c:1646  */
+#line 2063 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 33:
-#line 394 "parse_y.y" /* yacc.c:1646  */
+#line 394 "parse_y.y" /* yacc.c:1652  */
     {
 				yyPCB->ThermScale = (yyvsp[-1].number);
 			}
-#line 2064 "parse_y.c" /* yacc.c:1646  */
+#line 2071 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 38:
-#line 408 "parse_y.y" /* yacc.c:1646  */
+#line 408 "parse_y.y" /* yacc.c:1652  */
     {
 				load_meta_coord("design/bloat", NU((yyvsp[-3].measure)));
 				load_meta_coord("design/shrink", NU((yyvsp[-2].measure)));
 				load_meta_coord("design/min_wid", NU((yyvsp[-1].measure)));
 				load_meta_coord("design/min_ring", NU((yyvsp[-1].measure)));
 			}
-#line 2075 "parse_y.c" /* yacc.c:1646  */
+#line 2082 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 39:
-#line 418 "parse_y.y" /* yacc.c:1646  */
+#line 418 "parse_y.y" /* yacc.c:1652  */
     {
 				load_meta_coord("design/bloat", NU((yyvsp[-4].measure)));
 				load_meta_coord("design/shrink", NU((yyvsp[-3].measure)));
@@ -2083,11 +2090,11 @@ yyreduce:
 				load_meta_coord("design/min_slk", NU((yyvsp[-1].measure)));
 				load_meta_coord("design/min_ring", NU((yyvsp[-2].measure)));
 			}
-#line 2087 "parse_y.c" /* yacc.c:1646  */
+#line 2094 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 40:
-#line 429 "parse_y.y" /* yacc.c:1646  */
+#line 429 "parse_y.y" /* yacc.c:1652  */
     {
 				load_meta_coord("design/bloat", NU((yyvsp[-6].measure)));
 				load_meta_coord("design/shrink", NU((yyvsp[-5].measure)));
@@ -2096,36 +2103,36 @@ yyreduce:
 				load_meta_coord("design/min_drill", NU((yyvsp[-2].measure)));
 				load_meta_coord("design/min_ring", NU((yyvsp[-1].measure)));
 			}
-#line 2100 "parse_y.c" /* yacc.c:1646  */
+#line 2107 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 41:
-#line 441 "parse_y.y" /* yacc.c:1646  */
+#line 441 "parse_y.y" /* yacc.c:1652  */
     {
 				yy_pcb_flags = pcb_flag_make((yyvsp[-1].integer) & PCB_FLAGS);
 			}
-#line 2108 "parse_y.c" /* yacc.c:1646  */
+#line 2115 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 42:
-#line 445 "parse_y.y" /* yacc.c:1646  */
+#line 445 "parse_y.y" /* yacc.c:1652  */
     {
 			  yy_pcb_flags = pcb_strflg_board_s2f((yyvsp[-1].string), yyerror);
 			  free((yyvsp[-1].string));
 			}
-#line 2117 "parse_y.c" /* yacc.c:1646  */
+#line 2124 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 44:
-#line 454 "parse_y.y" /* yacc.c:1646  */
+#line 454 "parse_y.y" /* yacc.c:1652  */
     {
 			  layer_group_string = (yyvsp[-1].string);
 			}
-#line 2125 "parse_y.c" /* yacc.c:1646  */
+#line 2132 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 46:
-#line 462 "parse_y.y" /* yacc.c:1646  */
+#line 462 "parse_y.y" /* yacc.c:1652  */
     {
 				if (pcb_route_string_parse((yyvsp[-1].string), &yyPCB->RouteStyle, "mil"))
 				{
@@ -2134,11 +2141,11 @@ yyreduce:
 				}
 				free((yyvsp[-1].string));
 			}
-#line 2138 "parse_y.c" /* yacc.c:1646  */
+#line 2145 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 47:
-#line 471 "parse_y.y" /* yacc.c:1646  */
+#line 471 "parse_y.y" /* yacc.c:1652  */
     {
 				if (pcb_route_string_parse(((yyvsp[-1].string) == NULL ? "" : (yyvsp[-1].string)), &yyPCB->RouteStyle, "cmil"))
 				{
@@ -2147,74 +2154,74 @@ yyreduce:
 				}
 				free((yyvsp[-1].string));
 			}
-#line 2151 "parse_y.c" /* yacc.c:1646  */
+#line 2158 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 54:
-#line 494 "parse_y.y" /* yacc.c:1646  */
+#line 494 "parse_y.y" /* yacc.c:1652  */
     { attr_list = & yyPCB->Attributes; }
-#line 2157 "parse_y.c" /* yacc.c:1646  */
+#line 2164 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 58:
-#line 498 "parse_y.y" /* yacc.c:1646  */
+#line 498 "parse_y.y" /* yacc.c:1652  */
     {
 					/* clear pointer to force memory allocation by
 					 * the appropriate subroutine
 					 */
 				yysubc = NULL;
 			}
-#line 2168 "parse_y.c" /* yacc.c:1646  */
+#line 2175 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 60:
-#line 505 "parse_y.y" /* yacc.c:1646  */
+#line 505 "parse_y.y" /* yacc.c:1652  */
     { YYABORT; }
-#line 2174 "parse_y.c" /* yacc.c:1646  */
+#line 2181 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 66:
-#line 519 "parse_y.y" /* yacc.c:1646  */
+#line 519 "parse_y.y" /* yacc.c:1652  */
     {
 				pcb_old_via_new(yyData, -1, NU ((yyvsp[-8].measure)), NU ((yyvsp[-7].measure)), NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)),
 				                     NU ((yyvsp[-3].measure)), (yyvsp[-2].string), (yyvsp[-1].flagtype));
 				free ((yyvsp[-2].string));
 			}
-#line 2184 "parse_y.c" /* yacc.c:1646  */
+#line 2191 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 67:
-#line 529 "parse_y.y" /* yacc.c:1646  */
+#line 529 "parse_y.y" /* yacc.c:1652  */
     {
 				pcb_old_via_new(yyData, -1, OU ((yyvsp[-8].measure)), OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), (yyvsp[-2].string),
 					pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
-#line 2194 "parse_y.c" /* yacc.c:1646  */
+#line 2201 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 68:
-#line 540 "parse_y.y" /* yacc.c:1646  */
+#line 540 "parse_y.y" /* yacc.c:1652  */
     {
 				pcb_old_via_new(yyData, -1, OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)),
 					     OU ((yyvsp[-5].measure)) + OU((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), (yyvsp[-2].string), pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
-#line 2204 "parse_y.c" /* yacc.c:1646  */
+#line 2211 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 69:
-#line 550 "parse_y.y" /* yacc.c:1646  */
+#line 550 "parse_y.y" /* yacc.c:1652  */
     {
 				pcb_old_via_new(yyData, -1, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), 2*PCB_GROUNDPLANEFRAME,
 					OU((yyvsp[-4].measure)) + 2*PCB_MASKFRAME,  OU ((yyvsp[-3].measure)), (yyvsp[-2].string), pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
-#line 2214 "parse_y.c" /* yacc.c:1646  */
+#line 2221 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 70:
-#line 560 "parse_y.y" /* yacc.c:1646  */
+#line 560 "parse_y.y" /* yacc.c:1652  */
     {
 				pcb_coord_t	hole = (OU((yyvsp[-3].measure)) * PCB_DEFAULT_DRILLINGHOLE);
 
@@ -2227,29 +2234,29 @@ yyreduce:
 					OU((yyvsp[-3].measure)) + 2*PCB_MASKFRAME, hole, (yyvsp[-2].string), pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
-#line 2231 "parse_y.c" /* yacc.c:1646  */
+#line 2238 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 71:
-#line 576 "parse_y.y" /* yacc.c:1646  */
+#line 576 "parse_y.y" /* yacc.c:1652  */
     {
 				pcb_rat_new(yyData, -1, NU ((yyvsp[-7].measure)), NU ((yyvsp[-6].measure)), NU ((yyvsp[-4].measure)), NU ((yyvsp[-3].measure)), (yyvsp[-5].integer), (yyvsp[-2].integer),
 					conf_core.appearance.rat_thickness, (yyvsp[-1].flagtype), NULL, NULL);
 			}
-#line 2240 "parse_y.c" /* yacc.c:1646  */
+#line 2247 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 72:
-#line 581 "parse_y.y" /* yacc.c:1646  */
+#line 581 "parse_y.y" /* yacc.c:1652  */
     {
 				pcb_rat_new(yyData, -1, OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), (yyvsp[-5].integer), (yyvsp[-2].integer),
 					conf_core.appearance.rat_thickness, pcb_flag_old((yyvsp[-1].integer)), NULL, NULL);
 			}
-#line 2249 "parse_y.c" /* yacc.c:1646  */
+#line 2256 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 73:
-#line 590 "parse_y.y" /* yacc.c:1646  */
+#line 590 "parse_y.y" /* yacc.c:1652  */
     {
 				if ((yyvsp[-4].integer) <= 0 || (yyvsp[-4].integer) > PCB_MAX_LAYER)
 				{
@@ -2276,92 +2283,92 @@ yyreduce:
 				if ((yyvsp[-2].string) != NULL)
 					free((yyvsp[-2].string));
 			}
-#line 2280 "parse_y.c" /* yacc.c:1646  */
+#line 2287 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 85:
-#line 638 "parse_y.y" /* yacc.c:1646  */
+#line 638 "parse_y.y" /* yacc.c:1652  */
     {
 				pcb_poly_new_from_rectangle(Layer,
 					OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-5].measure)) + OU ((yyvsp[-3].measure)), OU ((yyvsp[-4].measure)) + OU ((yyvsp[-2].measure)), 0, pcb_flag_old((yyvsp[-1].integer)));
 			}
-#line 2289 "parse_y.c" /* yacc.c:1646  */
+#line 2296 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 89:
-#line 645 "parse_y.y" /* yacc.c:1646  */
+#line 645 "parse_y.y" /* yacc.c:1652  */
     { attr_list = & Layer->Attributes; }
-#line 2295 "parse_y.c" /* yacc.c:1646  */
+#line 2302 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 92:
-#line 651 "parse_y.y" /* yacc.c:1646  */
+#line 651 "parse_y.y" /* yacc.c:1652  */
     {
 				pcb_line_new(Layer, NU ((yyvsp[-7].measure)), NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)),
 				                            NU ((yyvsp[-3].measure)), NU ((yyvsp[-2].measure)), (yyvsp[-1].flagtype));
 			}
-#line 2304 "parse_y.c" /* yacc.c:1646  */
+#line 2311 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 93:
-#line 660 "parse_y.y" /* yacc.c:1646  */
+#line 660 "parse_y.y" /* yacc.c:1652  */
     {
 				pcb_line_new(Layer, OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)),
 						     OU ((yyvsp[-3].measure)), OU ((yyvsp[-2].measure)), pcb_flag_old((yyvsp[-1].integer)));
 			}
-#line 2313 "parse_y.c" /* yacc.c:1646  */
+#line 2320 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 94:
-#line 669 "parse_y.y" /* yacc.c:1646  */
+#line 669 "parse_y.y" /* yacc.c:1652  */
     {
 				/* eliminate old-style rat-lines */
 			if ((IV ((yyvsp[-1].measure)) & PCB_FLAG_RAT) == 0)
 				pcb_line_new(Layer, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), OU ((yyvsp[-2].measure)),
 					200*PCB_GROUNDPLANEFRAME, pcb_flag_old(IV ((yyvsp[-1].measure))));
 			}
-#line 2324 "parse_y.c" /* yacc.c:1646  */
+#line 2331 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 95:
-#line 680 "parse_y.y" /* yacc.c:1646  */
+#line 680 "parse_y.y" /* yacc.c:1652  */
     {
 			  pcb_arc_new(Layer, NU ((yyvsp[-9].measure)), NU ((yyvsp[-8].measure)), NU ((yyvsp[-7].measure)), NU ((yyvsp[-6].measure)), (yyvsp[-3].number), (yyvsp[-2].number),
 			                             NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)), (yyvsp[-1].flagtype), pcb_true);
 			}
-#line 2333 "parse_y.c" /* yacc.c:1646  */
+#line 2340 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 96:
-#line 689 "parse_y.y" /* yacc.c:1646  */
+#line 689 "parse_y.y" /* yacc.c:1652  */
     {
 				pcb_arc_new(Layer, OU ((yyvsp[-9].measure)), OU ((yyvsp[-8].measure)), OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), (yyvsp[-3].number), (yyvsp[-2].number),
 						    OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), pcb_flag_old((yyvsp[-1].integer)), pcb_true);
 			}
-#line 2342 "parse_y.c" /* yacc.c:1646  */
+#line 2349 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 97:
-#line 698 "parse_y.y" /* yacc.c:1646  */
+#line 698 "parse_y.y" /* yacc.c:1652  */
     {
 				pcb_arc_new(Layer, OU ((yyvsp[-8].measure)), OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-6].measure)), IV ((yyvsp[-3].measure)), (yyvsp[-2].number),
 					OU ((yyvsp[-4].measure)), 200*PCB_GROUNDPLANEFRAME, pcb_flag_old((yyvsp[-1].integer)), pcb_true);
 			}
-#line 2351 "parse_y.c" /* yacc.c:1646  */
+#line 2358 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 98:
-#line 707 "parse_y.y" /* yacc.c:1646  */
+#line 707 "parse_y.y" /* yacc.c:1652  */
     {
 					/* use a default scale of 100% */
 				pcb_text_new(Layer,yyFont,OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), (yyvsp[-3].number) * 90.0, 100, 0, (yyvsp[-2].string), pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
-#line 2361 "parse_y.c" /* yacc.c:1646  */
+#line 2368 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 99:
-#line 717 "parse_y.y" /* yacc.c:1646  */
+#line 717 "parse_y.y" /* yacc.c:1652  */
     {
 				if ((yyvsp[-1].integer) & PCB_FLAG_ONSILK)
 				{
@@ -2376,11 +2383,11 @@ yyreduce:
 						      pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
-#line 2380 "parse_y.c" /* yacc.c:1646  */
+#line 2387 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 100:
-#line 735 "parse_y.y" /* yacc.c:1646  */
+#line 735 "parse_y.y" /* yacc.c:1652  */
     {
 				/* FIXME: shouldn't know about .f */
 				/* I don't think this matters because anything with hi_format
@@ -2400,19 +2407,19 @@ yyreduce:
 					pcb_text_new(Layer, yyFont, NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), (yyvsp[-4].number) * 90.0, (yyvsp[-3].number), 0, (yyvsp[-2].string), (yyvsp[-1].flagtype));
 				free ((yyvsp[-2].string));
 			}
-#line 2404 "parse_y.c" /* yacc.c:1646  */
+#line 2411 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 101:
-#line 759 "parse_y.y" /* yacc.c:1646  */
+#line 759 "parse_y.y" /* yacc.c:1652  */
     {
 				Polygon = pcb_poly_new(Layer, 0, (yyvsp[-2].flagtype));
 			}
-#line 2412 "parse_y.c" /* yacc.c:1646  */
+#line 2419 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 102:
-#line 764 "parse_y.y" /* yacc.c:1646  */
+#line 764 "parse_y.y" /* yacc.c:1652  */
     {
 				pcb_cardinal_t contour, contour_start, contour_end;
 				pcb_bool bad_contour_found = pcb_false;
@@ -2444,35 +2451,35 @@ yyreduce:
 				    pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 				  }
 			}
-#line 2448 "parse_y.c" /* yacc.c:1646  */
+#line 2455 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 105:
-#line 804 "parse_y.y" /* yacc.c:1646  */
+#line 804 "parse_y.y" /* yacc.c:1652  */
     {
 				pcb_poly_hole_new(Polygon);
 			}
-#line 2456 "parse_y.c" /* yacc.c:1646  */
+#line 2463 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 109:
-#line 818 "parse_y.y" /* yacc.c:1646  */
+#line 818 "parse_y.y" /* yacc.c:1652  */
     {
 				pcb_poly_point_new(Polygon, OU ((yyvsp[-2].measure)), OU ((yyvsp[-1].measure)));
 			}
-#line 2464 "parse_y.c" /* yacc.c:1646  */
+#line 2471 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 110:
-#line 822 "parse_y.y" /* yacc.c:1646  */
+#line 822 "parse_y.y" /* yacc.c:1652  */
     {
 				pcb_poly_point_new(Polygon, NU ((yyvsp[-2].measure)), NU ((yyvsp[-1].measure)));
 			}
-#line 2472 "parse_y.c" /* yacc.c:1646  */
+#line 2479 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 116:
-#line 840 "parse_y.y" /* yacc.c:1646  */
+#line 840 "parse_y.y" /* yacc.c:1652  */
     {
 				yysubc = io_pcb_element_new(yyData, yysubc, yyFont, pcb_no_flags(),
 					(yyvsp[-6].string), (yyvsp[-5].string), NULL, OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), (yyvsp[-2].integer), 100, pcb_no_flags(), pcb_false);
@@ -2480,19 +2487,19 @@ yyreduce:
 				free ((yyvsp[-5].string));
 				pin_num = 1;
 			}
-#line 2484 "parse_y.c" /* yacc.c:1646  */
+#line 2491 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 117:
-#line 848 "parse_y.y" /* yacc.c:1646  */
+#line 848 "parse_y.y" /* yacc.c:1652  */
     {
 				io_pcb_element_fin(yyData);
 			}
-#line 2492 "parse_y.c" /* yacc.c:1646  */
+#line 2499 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 118:
-#line 858 "parse_y.y" /* yacc.c:1646  */
+#line 858 "parse_y.y" /* yacc.c:1652  */
     {
 				yysubc = io_pcb_element_new(yyData, yysubc, yyFont, pcb_flag_old((yyvsp[-9].integer)),
 					(yyvsp[-8].string), (yyvsp[-7].string), NULL, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), IV ((yyvsp[-4].measure)), IV ((yyvsp[-3].measure)), pcb_flag_old((yyvsp[-2].integer)), pcb_false);
@@ -2500,19 +2507,19 @@ yyreduce:
 				free ((yyvsp[-7].string));
 				pin_num = 1;
 			}
-#line 2504 "parse_y.c" /* yacc.c:1646  */
+#line 2511 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 119:
-#line 866 "parse_y.y" /* yacc.c:1646  */
+#line 866 "parse_y.y" /* yacc.c:1652  */
     {
 				io_pcb_element_fin(yyData);
 			}
-#line 2512 "parse_y.c" /* yacc.c:1646  */
+#line 2519 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 120:
-#line 876 "parse_y.y" /* yacc.c:1646  */
+#line 876 "parse_y.y" /* yacc.c:1652  */
     {
 				yysubc = io_pcb_element_new(yyData, yysubc, yyFont, pcb_flag_old((yyvsp[-10].integer)),
 					(yyvsp[-9].string), (yyvsp[-8].string), (yyvsp[-7].string), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), IV ((yyvsp[-4].measure)), IV ((yyvsp[-3].measure)), pcb_flag_old((yyvsp[-2].integer)), pcb_false);
@@ -2521,19 +2528,19 @@ yyreduce:
 				free ((yyvsp[-7].string));
 				pin_num = 1;
 			}
-#line 2525 "parse_y.c" /* yacc.c:1646  */
+#line 2532 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 121:
-#line 885 "parse_y.y" /* yacc.c:1646  */
+#line 885 "parse_y.y" /* yacc.c:1652  */
     {
 				io_pcb_element_fin(yyData);
 			}
-#line 2533 "parse_y.c" /* yacc.c:1646  */
+#line 2540 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 122:
-#line 896 "parse_y.y" /* yacc.c:1646  */
+#line 896 "parse_y.y" /* yacc.c:1652  */
     {
 				yysubc = io_pcb_element_new(yyData, yysubc, yyFont, pcb_flag_old((yyvsp[-12].integer)),
 					(yyvsp[-11].string), (yyvsp[-10].string), (yyvsp[-9].string), OU ((yyvsp[-8].measure)) + OU ((yyvsp[-6].measure)), OU ((yyvsp[-7].measure)) + OU ((yyvsp[-5].measure)),
@@ -2544,19 +2551,19 @@ yyreduce:
 				free ((yyvsp[-10].string));
 				free ((yyvsp[-9].string));
 			}
-#line 2548 "parse_y.c" /* yacc.c:1646  */
+#line 2555 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 123:
-#line 907 "parse_y.y" /* yacc.c:1646  */
+#line 907 "parse_y.y" /* yacc.c:1652  */
     {
 				io_pcb_element_fin(yyData);
 			}
-#line 2556 "parse_y.c" /* yacc.c:1646  */
+#line 2563 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 124:
-#line 918 "parse_y.y" /* yacc.c:1646  */
+#line 918 "parse_y.y" /* yacc.c:1652  */
     {
 				yysubc = io_pcb_element_new(yyData, yysubc, yyFont, (yyvsp[-12].flagtype),
 					(yyvsp[-11].string), (yyvsp[-10].string), (yyvsp[-9].string), NU ((yyvsp[-8].measure)) + NU ((yyvsp[-6].measure)), NU ((yyvsp[-7].measure)) + NU ((yyvsp[-5].measure)),
@@ -2567,11 +2574,11 @@ yyreduce:
 				free ((yyvsp[-10].string));
 				free ((yyvsp[-9].string));
 			}
-#line 2571 "parse_y.c" /* yacc.c:1646  */
+#line 2578 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 125:
-#line 929 "parse_y.y" /* yacc.c:1646  */
+#line 929 "parse_y.y" /* yacc.c:1652  */
     {
 				if (pcb_subc_is_empty(yysubc)) {
 					pcb_subc_free(yysubc);
@@ -2581,111 +2588,111 @@ yyreduce:
 					io_pcb_element_fin(yyData);
 				}
 			}
-#line 2585 "parse_y.c" /* yacc.c:1646  */
+#line 2592 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 133:
-#line 953 "parse_y.y" /* yacc.c:1646  */
+#line 953 "parse_y.y" /* yacc.c:1652  */
     {
 				io_pcb_element_line_new(yysubc, NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)), NU ((yyvsp[-3].measure)), NU ((yyvsp[-2].measure)), NU ((yyvsp[-1].measure)));
 			}
-#line 2593 "parse_y.c" /* yacc.c:1646  */
+#line 2600 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 134:
-#line 958 "parse_y.y" /* yacc.c:1646  */
+#line 958 "parse_y.y" /* yacc.c:1652  */
     {
 				io_pcb_element_line_new(yysubc, OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), OU ((yyvsp[-2].measure)), OU ((yyvsp[-1].measure)));
 			}
-#line 2601 "parse_y.c" /* yacc.c:1646  */
+#line 2608 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 135:
-#line 963 "parse_y.y" /* yacc.c:1646  */
+#line 963 "parse_y.y" /* yacc.c:1652  */
     {
 				io_pcb_element_arc_new(yysubc, NU ((yyvsp[-7].measure)), NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)), (yyvsp[-3].number), (yyvsp[-2].number), NU ((yyvsp[-1].measure)));
 			}
-#line 2609 "parse_y.c" /* yacc.c:1646  */
+#line 2616 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 136:
-#line 968 "parse_y.y" /* yacc.c:1646  */
+#line 968 "parse_y.y" /* yacc.c:1652  */
     {
 				io_pcb_element_arc_new(yysubc, OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), (yyvsp[-3].number), (yyvsp[-2].number), OU ((yyvsp[-1].measure)));
 			}
-#line 2617 "parse_y.c" /* yacc.c:1646  */
+#line 2624 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 137:
-#line 973 "parse_y.y" /* yacc.c:1646  */
+#line 973 "parse_y.y" /* yacc.c:1652  */
     {
 				yysubc_ox = NU ((yyvsp[-2].measure));
 				yysubc_oy = NU ((yyvsp[-1].measure));
 			}
-#line 2626 "parse_y.c" /* yacc.c:1646  */
+#line 2633 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 138:
-#line 978 "parse_y.y" /* yacc.c:1646  */
+#line 978 "parse_y.y" /* yacc.c:1652  */
     {
 				yysubc_ox = OU ((yyvsp[-2].measure));
 				yysubc_oy = OU ((yyvsp[-1].measure));
 			}
-#line 2635 "parse_y.c" /* yacc.c:1646  */
+#line 2642 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 139:
-#line 982 "parse_y.y" /* yacc.c:1646  */
+#line 982 "parse_y.y" /* yacc.c:1652  */
     { attr_list = & yysubc->Attributes; }
-#line 2641 "parse_y.c" /* yacc.c:1646  */
+#line 2648 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 147:
-#line 997 "parse_y.y" /* yacc.c:1646  */
+#line 997 "parse_y.y" /* yacc.c:1652  */
     {
 				io_pcb_element_line_new(yysubc, NU ((yyvsp[-5].measure)) + yysubc_ox,
 					NU ((yyvsp[-4].measure)) + yysubc_oy, NU ((yyvsp[-3].measure)) + yysubc_ox,
 					NU ((yyvsp[-2].measure)) + yysubc_oy, NU ((yyvsp[-1].measure)));
 			}
-#line 2651 "parse_y.c" /* yacc.c:1646  */
+#line 2658 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 148:
-#line 1003 "parse_y.y" /* yacc.c:1646  */
+#line 1003 "parse_y.y" /* yacc.c:1652  */
     {
 				io_pcb_element_line_new(yysubc, OU ((yyvsp[-5].measure)) + yysubc_ox,
 					OU ((yyvsp[-4].measure)) + yysubc_oy, OU ((yyvsp[-3].measure)) + yysubc_ox,
 					OU ((yyvsp[-2].measure)) + yysubc_oy, OU ((yyvsp[-1].measure)));
 			}
-#line 2661 "parse_y.c" /* yacc.c:1646  */
+#line 2668 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 149:
-#line 1010 "parse_y.y" /* yacc.c:1646  */
+#line 1010 "parse_y.y" /* yacc.c:1652  */
     {
 				io_pcb_element_arc_new(yysubc, NU ((yyvsp[-7].measure)) + yysubc_ox,
 					NU ((yyvsp[-6].measure)) + yysubc_oy, NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)), (yyvsp[-3].number), (yyvsp[-2].number), NU ((yyvsp[-1].measure)));
 			}
-#line 2670 "parse_y.c" /* yacc.c:1646  */
+#line 2677 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 150:
-#line 1015 "parse_y.y" /* yacc.c:1646  */
+#line 1015 "parse_y.y" /* yacc.c:1652  */
     {
 				io_pcb_element_arc_new(yysubc, OU ((yyvsp[-7].measure)) + yysubc_ox,
 					OU ((yyvsp[-6].measure)) + yysubc_oy, OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), (yyvsp[-3].number), (yyvsp[-2].number), OU ((yyvsp[-1].measure)));
 			}
-#line 2679 "parse_y.c" /* yacc.c:1646  */
+#line 2686 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 151:
-#line 1019 "parse_y.y" /* yacc.c:1646  */
+#line 1019 "parse_y.y" /* yacc.c:1652  */
     { attr_list = & yysubc->Attributes; }
-#line 2685 "parse_y.c" /* yacc.c:1646  */
+#line 2692 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 153:
-#line 1026 "parse_y.y" /* yacc.c:1646  */
+#line 1026 "parse_y.y" /* yacc.c:1652  */
     {
 				pcb_pstk_t *pin = io_pcb_element_pin_new(yysubc, NU ((yyvsp[-9].measure)) + yysubc_ox,
 					NU ((yyvsp[-8].measure)) + yysubc_oy, NU ((yyvsp[-7].measure)), NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)), (yyvsp[-3].string),
@@ -2694,11 +2701,11 @@ yyreduce:
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
 			}
-#line 2698 "parse_y.c" /* yacc.c:1646  */
+#line 2705 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 154:
-#line 1039 "parse_y.y" /* yacc.c:1646  */
+#line 1039 "parse_y.y" /* yacc.c:1652  */
     {
 				io_pcb_element_pin_new(yysubc, OU ((yyvsp[-9].measure)) + yysubc_ox,
 					OU ((yyvsp[-8].measure)) + yysubc_oy, OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), (yyvsp[-3].string),
@@ -2706,22 +2713,22 @@ yyreduce:
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
 			}
-#line 2710 "parse_y.c" /* yacc.c:1646  */
+#line 2717 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 155:
-#line 1051 "parse_y.y" /* yacc.c:1646  */
+#line 1051 "parse_y.y" /* yacc.c:1652  */
     {
 				io_pcb_element_pin_new(yysubc, OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), 2*PCB_GROUNDPLANEFRAME,
 					OU ((yyvsp[-5].measure)) + 2*PCB_MASKFRAME, OU ((yyvsp[-4].measure)), (yyvsp[-3].string), (yyvsp[-2].string), pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
 			}
-#line 2721 "parse_y.c" /* yacc.c:1646  */
+#line 2728 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 156:
-#line 1062 "parse_y.y" /* yacc.c:1646  */
+#line 1062 "parse_y.y" /* yacc.c:1652  */
     {
 				char	p_number[8];
 
@@ -2731,11 +2738,11 @@ yyreduce:
 
 				free ((yyvsp[-2].string));
 			}
-#line 2735 "parse_y.c" /* yacc.c:1646  */
+#line 2742 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 157:
-#line 1078 "parse_y.y" /* yacc.c:1646  */
+#line 1078 "parse_y.y" /* yacc.c:1652  */
     {
 				pcb_coord_t	hole = OU ((yyvsp[-3].measure)) * PCB_DEFAULT_DRILLINGHOLE;
 				char	p_number[8];
@@ -2750,11 +2757,11 @@ yyreduce:
 					OU ((yyvsp[-3].measure)) + 2*PCB_MASKFRAME, hole, (yyvsp[-2].string), p_number, pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
-#line 2754 "parse_y.c" /* yacc.c:1646  */
+#line 2761 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 158:
-#line 1097 "parse_y.y" /* yacc.c:1646  */
+#line 1097 "parse_y.y" /* yacc.c:1652  */
     {
 				pcb_pstk_t *pad = io_pcb_element_pad_new(yysubc, NU ((yyvsp[-10].measure)) + yysubc_ox,
 					NU ((yyvsp[-9].measure)) + yysubc_oy,
@@ -2765,11 +2772,11 @@ yyreduce:
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
 			}
-#line 2769 "parse_y.c" /* yacc.c:1646  */
+#line 2776 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 159:
-#line 1112 "parse_y.y" /* yacc.c:1646  */
+#line 1112 "parse_y.y" /* yacc.c:1652  */
     {
 				io_pcb_element_pad_new(yysubc,OU ((yyvsp[-10].measure)) + yysubc_ox,
 					OU ((yyvsp[-9].measure)) + yysubc_oy, OU ((yyvsp[-8].measure)) + yysubc_ox,
@@ -2778,22 +2785,22 @@ yyreduce:
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
 			}
-#line 2782 "parse_y.c" /* yacc.c:1646  */
+#line 2789 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 160:
-#line 1125 "parse_y.y" /* yacc.c:1646  */
+#line 1125 "parse_y.y" /* yacc.c:1652  */
     {
 				io_pcb_element_pad_new(yysubc,OU ((yyvsp[-8].measure)),OU ((yyvsp[-7].measure)),OU ((yyvsp[-6].measure)),OU ((yyvsp[-5].measure)),OU ((yyvsp[-4].measure)), 2*PCB_GROUNDPLANEFRAME,
 					OU ((yyvsp[-4].measure)) + 2*PCB_MASKFRAME, (yyvsp[-3].string), (yyvsp[-2].string), pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
 			}
-#line 2793 "parse_y.c" /* yacc.c:1646  */
+#line 2800 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 161:
-#line 1136 "parse_y.y" /* yacc.c:1646  */
+#line 1136 "parse_y.y" /* yacc.c:1652  */
     {
 				char		p_number[8];
 
@@ -2802,23 +2809,23 @@ yyreduce:
 					OU ((yyvsp[-3].measure)) + 2*PCB_MASKFRAME, (yyvsp[-2].string),p_number, pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
-#line 2806 "parse_y.c" /* yacc.c:1646  */
+#line 2813 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 162:
-#line 1146 "parse_y.y" /* yacc.c:1646  */
+#line 1146 "parse_y.y" /* yacc.c:1652  */
     { (yyval.flagtype) = pcb_flag_old((yyvsp[0].integer)); }
-#line 2812 "parse_y.c" /* yacc.c:1646  */
+#line 2819 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 163:
-#line 1147 "parse_y.y" /* yacc.c:1646  */
+#line 1147 "parse_y.y" /* yacc.c:1652  */
     { (yyval.flagtype) = pcb_strflg_s2f((yyvsp[0].string), yyerror, &yy_intconn, 1); free((yyvsp[0].string)); }
-#line 2818 "parse_y.c" /* yacc.c:1646  */
+#line 2825 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 167:
-#line 1158 "parse_y.y" /* yacc.c:1646  */
+#line 1158 "parse_y.y" /* yacc.c:1652  */
     {
 				if ((yyvsp[-3].integer) <= 0 || (yyvsp[-3].integer) > PCB_MAX_FONTPOSITION)
 				{
@@ -2834,11 +2841,11 @@ yyreduce:
 				Symbol->Valid = pcb_true;
 				Symbol->Delta = NU ((yyvsp[-2].measure));
 			}
-#line 2838 "parse_y.c" /* yacc.c:1646  */
+#line 2845 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 168:
-#line 1174 "parse_y.y" /* yacc.c:1646  */
+#line 1174 "parse_y.y" /* yacc.c:1652  */
     {
 				if ((yyvsp[-3].integer) <= 0 || (yyvsp[-3].integer) > PCB_MAX_FONTPOSITION)
 				{
@@ -2854,27 +2861,27 @@ yyreduce:
 				Symbol->Valid = pcb_true;
 				Symbol->Delta = OU ((yyvsp[-2].measure));
 			}
-#line 2858 "parse_y.c" /* yacc.c:1646  */
+#line 2865 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 174:
-#line 1205 "parse_y.y" /* yacc.c:1646  */
+#line 1205 "parse_y.y" /* yacc.c:1652  */
     {
 				pcb_font_new_line_in_sym(Symbol, OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), OU ((yyvsp[-2].measure)), OU ((yyvsp[-1].measure)));
 			}
-#line 2866 "parse_y.c" /* yacc.c:1646  */
+#line 2873 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 175:
-#line 1212 "parse_y.y" /* yacc.c:1646  */
+#line 1212 "parse_y.y" /* yacc.c:1652  */
     {
 				pcb_font_new_line_in_sym(Symbol, NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)), NU ((yyvsp[-3].measure)), NU ((yyvsp[-2].measure)), NU ((yyvsp[-1].measure)));
 			}
-#line 2874 "parse_y.c" /* yacc.c:1646  */
+#line 2881 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 183:
-#line 1239 "parse_y.y" /* yacc.c:1646  */
+#line 1239 "parse_y.y" /* yacc.c:1652  */
     {
 				currnet = pcb_net_get(yyPCB, &yyPCB->netlist[PCB_NETLIST_INPUT], (yyvsp[-3].string), 1);
 				if (((yyvsp[-2].string) != NULL) && (*(yyvsp[-2].string) != '\0'))
@@ -2882,38 +2889,38 @@ yyreduce:
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
 			}
-#line 2886 "parse_y.c" /* yacc.c:1646  */
+#line 2893 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 189:
-#line 1261 "parse_y.y" /* yacc.c:1646  */
+#line 1261 "parse_y.y" /* yacc.c:1652  */
     {
 				pcb_net_term_get_by_pinname(currnet, (yyvsp[-1].string), 1);
 				free ((yyvsp[-1].string));
 			}
-#line 2895 "parse_y.c" /* yacc.c:1646  */
+#line 2902 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 197:
-#line 1308 "parse_y.y" /* yacc.c:1646  */
+#line 1308 "parse_y.y" /* yacc.c:1652  */
     { pcb_ratspatch_append(yyPCB, RATP_ADD_CONN, (yyvsp[-2].string), (yyvsp[-1].string), NULL); free((yyvsp[-2].string)); free((yyvsp[-1].string)); }
-#line 2901 "parse_y.c" /* yacc.c:1646  */
+#line 2908 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 198:
-#line 1309 "parse_y.y" /* yacc.c:1646  */
+#line 1309 "parse_y.y" /* yacc.c:1652  */
     { pcb_ratspatch_append(yyPCB, RATP_DEL_CONN, (yyvsp[-2].string), (yyvsp[-1].string), NULL); free((yyvsp[-2].string)); free((yyvsp[-1].string)); }
-#line 2907 "parse_y.c" /* yacc.c:1646  */
+#line 2914 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 199:
-#line 1310 "parse_y.y" /* yacc.c:1646  */
+#line 1310 "parse_y.y" /* yacc.c:1652  */
     { pcb_ratspatch_append(yyPCB, RATP_CHANGE_ATTRIB, (yyvsp[-3].string), (yyvsp[-2].string), (yyvsp[-1].string)); free((yyvsp[-3].string)); free((yyvsp[-2].string)); free((yyvsp[-1].string)); }
-#line 2913 "parse_y.c" /* yacc.c:1646  */
+#line 2920 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 200:
-#line 1315 "parse_y.y" /* yacc.c:1646  */
+#line 1315 "parse_y.y" /* yacc.c:1652  */
     {
 				char *old_val, *key = (yyvsp[-2].string), *val = (yyvsp[-1].string) ? (yyvsp[-1].string) : (char *)"";
 				old_val = pcb_attribute_get(attr_list, key);
@@ -2924,95 +2931,95 @@ yyreduce:
 				free(key);
 				free(val);
 			}
-#line 2928 "parse_y.c" /* yacc.c:1646  */
+#line 2935 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 201:
-#line 1327 "parse_y.y" /* yacc.c:1646  */
+#line 1327 "parse_y.y" /* yacc.c:1652  */
     { (yyval.string) = (yyvsp[0].string); }
-#line 2934 "parse_y.c" /* yacc.c:1646  */
+#line 2941 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 202:
-#line 1328 "parse_y.y" /* yacc.c:1646  */
+#line 1328 "parse_y.y" /* yacc.c:1652  */
     { (yyval.string) = 0; }
-#line 2940 "parse_y.c" /* yacc.c:1646  */
+#line 2947 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 203:
-#line 1332 "parse_y.y" /* yacc.c:1646  */
+#line 1332 "parse_y.y" /* yacc.c:1652  */
     { (yyval.number) = (yyvsp[0].number); }
-#line 2946 "parse_y.c" /* yacc.c:1646  */
+#line 2953 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 204:
-#line 1333 "parse_y.y" /* yacc.c:1646  */
+#line 1333 "parse_y.y" /* yacc.c:1652  */
     { (yyval.number) = (yyvsp[0].integer); }
-#line 2952 "parse_y.c" /* yacc.c:1646  */
+#line 2959 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 205:
-#line 1338 "parse_y.y" /* yacc.c:1646  */
+#line 1338 "parse_y.y" /* yacc.c:1652  */
     { do_measure(&(yyval.measure), (yyvsp[0].number), PCB_MIL_TO_COORD ((yyvsp[0].number)) / 100.0, 0); }
-#line 2958 "parse_y.c" /* yacc.c:1646  */
+#line 2965 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 206:
-#line 1339 "parse_y.y" /* yacc.c:1646  */
+#line 1339 "parse_y.y" /* yacc.c:1652  */
     { M ((yyval.measure), (yyvsp[-1].number), PCB_MIL_TO_COORD ((yyvsp[-1].number)) / 100000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
-#line 2964 "parse_y.c" /* yacc.c:1646  */
+#line 2971 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 207:
-#line 1340 "parse_y.y" /* yacc.c:1646  */
+#line 1340 "parse_y.y" /* yacc.c:1652  */
     { M ((yyval.measure), (yyvsp[-1].number), PCB_MIL_TO_COORD ((yyvsp[-1].number)) / 100.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
-#line 2970 "parse_y.c" /* yacc.c:1646  */
+#line 2977 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 208:
-#line 1341 "parse_y.y" /* yacc.c:1646  */
+#line 1341 "parse_y.y" /* yacc.c:1652  */
     { M ((yyval.measure), (yyvsp[-1].number), PCB_MIL_TO_COORD ((yyvsp[-1].number))); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
-#line 2976 "parse_y.c" /* yacc.c:1646  */
+#line 2983 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 209:
-#line 1342 "parse_y.y" /* yacc.c:1646  */
+#line 1342 "parse_y.y" /* yacc.c:1652  */
     { M ((yyval.measure), (yyvsp[-1].number), PCB_INCH_TO_COORD ((yyvsp[-1].number))); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
-#line 2982 "parse_y.c" /* yacc.c:1646  */
+#line 2989 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 210:
-#line 1343 "parse_y.y" /* yacc.c:1646  */
+#line 1343 "parse_y.y" /* yacc.c:1652  */
     { M ((yyval.measure), (yyvsp[-1].number), PCB_MM_TO_COORD ((yyvsp[-1].number)) / 1000000.0); pcb_io_pcb_usty_seen |= PCB_USTY_NANOMETER; }
-#line 2988 "parse_y.c" /* yacc.c:1646  */
+#line 2995 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 211:
-#line 1344 "parse_y.y" /* yacc.c:1646  */
+#line 1344 "parse_y.y" /* yacc.c:1652  */
     { M ((yyval.measure), (yyvsp[-1].number), PCB_MM_TO_COORD ((yyvsp[-1].number)) / 1000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
-#line 2994 "parse_y.c" /* yacc.c:1646  */
+#line 3001 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 212:
-#line 1345 "parse_y.y" /* yacc.c:1646  */
+#line 1345 "parse_y.y" /* yacc.c:1652  */
     { M ((yyval.measure), (yyvsp[-1].number), PCB_MM_TO_COORD ((yyvsp[-1].number))); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
-#line 3000 "parse_y.c" /* yacc.c:1646  */
+#line 3007 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 213:
-#line 1346 "parse_y.y" /* yacc.c:1646  */
+#line 1346 "parse_y.y" /* yacc.c:1652  */
     { M ((yyval.measure), (yyvsp[-1].number), PCB_MM_TO_COORD ((yyvsp[-1].number)) * 1000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
-#line 3006 "parse_y.c" /* yacc.c:1646  */
+#line 3013 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 214:
-#line 1347 "parse_y.y" /* yacc.c:1646  */
+#line 1347 "parse_y.y" /* yacc.c:1652  */
     { M ((yyval.measure), (yyvsp[-1].number), PCB_MM_TO_COORD ((yyvsp[-1].number)) * 1000000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
-#line 3012 "parse_y.c" /* yacc.c:1646  */
+#line 3019 "parse_y.c" /* yacc.c:1652  */
     break;
 
 
-#line 3016 "parse_y.c" /* yacc.c:1646  */
+#line 3023 "parse_y.c" /* yacc.c:1652  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -3037,14 +3044,13 @@ yyreduce:
   /* Now 'shift' the result of the reduction.  Determine what state
      that goes to, based on the state we popped back to and the rule
      number reduced by.  */
-
-  yyn = yyr1[yyn];
-
-  yystate = yypgoto[yyn - YYNTOKENS] + *yyssp;
-  if (0 <= yystate && yystate <= YYLAST && yycheck[yystate] == *yyssp)
-    yystate = yytable[yystate];
-  else
-    yystate = yydefgoto[yyn - YYNTOKENS];
+  {
+    const int yylhs = yyr1[yyn] - YYNTOKENS;
+    const int yyi = yypgoto[yylhs] + *yyssp;
+    yystate = (0 <= yyi && yyi <= YYLAST && yycheck[yyi] == *yyssp
+               ? yytable[yyi]
+               : yydefgoto[yylhs]);
+  }
 
   goto yynewstate;
 
@@ -3127,12 +3133,10 @@ yyerrlab:
 | yyerrorlab -- error raised explicitly by YYERROR.  |
 `---------------------------------------------------*/
 yyerrorlab:
-
-  /* Pacify compilers like GCC when the user code never invokes
-     YYERROR and the label yyerrorlab therefore never appears in user
-     code.  */
-  if (/*CONSTCOND*/ 0)
-     goto yyerrorlab;
+  /* Pacify compilers when the user code never invokes YYERROR and the
+     label yyerrorlab therefore never appears in user code.  */
+  if (0)
+    YYERROR;
 
   /* Do not reclaim the symbols of the rule whose action triggered
      this YYERROR.  */
@@ -3194,12 +3198,14 @@ yyacceptlab:
   yyresult = 0;
   goto yyreturn;
 
+
 /*-----------------------------------.
 | yyabortlab -- YYABORT comes here.  |
 `-----------------------------------*/
 yyabortlab:
   yyresult = 1;
   goto yyreturn;
+
 
 #if !defined yyoverflow || YYERROR_VERBOSE
 /*-------------------------------------------------.
@@ -3211,6 +3217,10 @@ yyexhaustedlab:
   /* Fall through.  */
 #endif
 
+
+/*-----------------------------------------------------.
+| yyreturn -- parsing is finished, return the result.  |
+`-----------------------------------------------------*/
 yyreturn:
   if (yychar != YYEMPTY)
     {
@@ -3240,7 +3250,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 1350 "parse_y.y" /* yacc.c:1906  */
+#line 1350 "parse_y.y" /* yacc.c:1918  */
 
 
 /* ---------------------------------------------------------------------------

@@ -410,9 +410,9 @@ static int parse_meta(pcb_board_t *pcb, lht_node_t *nd)
 
 	grp = lht_dom_hash_get(nd, "grid");
 	if ((grp != NULL) && (grp->type == LHT_HASH)) {
-		err |= parse_coord(&pcb->GridOffsetX, hash_get(grp, "offs_x", 1));
-		err |= parse_coord(&pcb->GridOffsetY, hash_get(grp, "offs_y", 1));
-		err |= parse_coord(&pcb->Grid, hash_get(grp, "spacing", 1));
+		err |= parse_coord(&pcb->hidlib.grid_ox, hash_get(grp, "offs_x", 1));
+		err |= parse_coord(&pcb->hidlib.grid_oy, hash_get(grp, "offs_y", 1));
+		err |= parse_coord(&pcb->hidlib.grid, hash_get(grp, "spacing", 1));
 		if (err != 0)
 			return -1;
 	}

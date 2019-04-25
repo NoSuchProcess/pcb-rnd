@@ -26,6 +26,11 @@
 
 #include "config.h"
 
+struct pcb_hidlib_s {
+	pcb_coord_t grid;                  /* grid resolution */
+	pcb_coord_t grid_ox, grid_oy;      /* grid offset */
+};
+
 /* optional: if non-NULL, called back to determine the file name or project
    name of the current design */
 const char *(*pcb_hidlib_get_filename)(void);
