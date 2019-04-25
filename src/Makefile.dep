@@ -1070,6 +1070,37 @@
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/liblihata/tree.h \
  ../src_plugins/export_dxf/lht_template.h
+../src_plugins/export_excellon/aperture.o: \
+ ../src_plugins/export_excellon/aperture.c ../config.h global_typedefs.h \
+ pcb_bool.h unit.h ../src_plugins/export_excellon/aperture.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h \
+ ../src_3rd/genvector/genvector_impl.c
+../src_plugins/export_excellon/excellon.o: \
+ ../src_plugins/export_excellon/excellon.c ../config.h board.h \
+ ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h global_typedefs.h \
+ pcb_bool.h unit.h vtroutestyle.h attrib.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h color.h \
+ obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h polyarea.h \
+ obj_text_list.h obj_text.h font.h ../src_3rd/genht/htip.h box.h \
+ math_helper.h misc_util.h ../src_3rd/genvector/gds_char.h layer_grp.h \
+ rats_patch.h board.h global_typedefs.h pcb-printf.h safe_fs.h conf.h \
+ pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/genvector/vtp0.h list_conf.h error.h draw.h hid.h error.h \
+ compat_misc.h layer.h layer_vis.h hid.h hid_attrib.h hid_cam.h \
+ hid_attrib.h hid_init.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h hid_nogui.h \
+ hid_draw_helpers.h plugins.h ../src_3rd/puplug/error.h funchash_core.h \
+ funchash.h funchash_core_list.h conf_core.h \
+ ../src_plugins/export_excellon/excellon_conf.h conf.h \
+ ../src_plugins/export_excellon/excellon.h \
+ ../src_plugins/export_excellon/aperture.h
 ../src_plugins/export_fidocadj/fidocadj.o: \
  ../src_plugins/export_fidocadj/fidocadj.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
@@ -1149,37 +1180,6 @@
  ../src_plugins/export_gcode/auxiliary.h \
  ../src_plugins/export_gcode/lists.h ../src_plugins/export_gcode/trace.h \
  compat_cc.h
-../src_plugins/export_excellon/aperture.o: \
- ../src_plugins/export_excellon/aperture.c ../config.h global_typedefs.h \
- pcb_bool.h unit.h ../src_plugins/export_excellon/aperture.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h \
- ../src_3rd/genvector/genvector_impl.c
-../src_plugins/export_excellon/excellon.o: \
- ../src_plugins/export_excellon/excellon.c ../config.h board.h \
- ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h global_typedefs.h \
- pcb_bool.h unit.h vtroutestyle.h attrib.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h color.h \
- obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h polyarea.h \
- obj_text_list.h obj_text.h font.h ../src_3rd/genht/htip.h box.h \
- math_helper.h misc_util.h ../src_3rd/genvector/gds_char.h layer_grp.h \
- rats_patch.h board.h global_typedefs.h pcb-printf.h safe_fs.h conf.h \
- pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- ../src_3rd/genvector/vtp0.h list_conf.h error.h draw.h hid.h error.h \
- compat_misc.h layer.h layer_vis.h hid.h hid_attrib.h hid_cam.h \
- hid_attrib.h hid_init.h ../src_3rd/puplug/puplug.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
- ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h hid_nogui.h \
- hid_draw_helpers.h plugins.h ../src_3rd/puplug/error.h funchash_core.h \
- funchash.h funchash_core_list.h conf_core.h \
- ../src_plugins/export_gerber/gerber_conf.h conf.h \
- ../src_plugins/export_excellon/excellon.h \
- ../src_plugins/export_excellon/aperture.h
 ../src_plugins/export_gerber/gerber.o: \
  ../src_plugins/export_gerber/gerber.c ../config.h math_helper.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h global_typedefs.h \
@@ -1212,6 +1212,7 @@
  hid_draw_helpers.h hid_init.h hid_attrib.h hid_inlines.h conf_core.h \
  ../src_plugins/export_excellon/aperture.h \
  ../src_plugins/export_excellon/excellon.h \
+ ../src_plugins/export_excellon/aperture.h \
  ../src_plugins/export_gerber/gerber_conf_fields.h
 ../src_plugins/export_ipcd356/ipcd356.o: \
  ../src_plugins/export_ipcd356/ipcd356.c ../config.h board.h \
