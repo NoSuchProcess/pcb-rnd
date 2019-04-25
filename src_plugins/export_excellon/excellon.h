@@ -3,7 +3,7 @@
 
 #include "aperture.h"
 
-void pcb_drill_export_excellon(pcb_board_t *pcb, pcb_drill_ctx_t *ctx, int force_g85, const char *fn);
+void pcb_drill_export_excellon(pcb_board_t *pcb, pcb_drill_ctx_t *ctx, int force_g85, int coord_fmt_idx, const char *fn);
 
 int pplg_check_ver_export_excellon(int ver_needed);
 void pplg_uninit_export_excellon(void);

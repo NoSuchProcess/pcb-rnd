@@ -27,6 +27,23 @@ conf_excellon_t conf_excellon;
 #define excellonDrX(pcb, x) ((pcb_coord_t) (x))
 #define excellonDrY(pcb, y) ((pcb_coord_t) ((pcb)->MaxHeight - (y)))
 
+typedef struct {
+	const char *hdr1;
+	const char *cfmt; /* drawing coordinate format */
+	const char *afmt; /* aperture description format */
+} coord_format_t;
+
+static coord_format_t coord_format[] = {
+	{"INCH", "%06.0mk", "%.4mi"}, /* decimil: inch in 00.0000 formatm implicit leading-zero (LZ) */
+};
+#define NUM_COORD_FORMATS (sizeof(coord_format)/sizeof(coord_format[0]))
+
+static const char *coord_format_names[NUM_COORD_FORMATS+1] = {
+	"decimil (INCH, 00.0000 format)",
+	NULL
+};
+
+
 static pcb_cardinal_t drill_print_objs(pcb_board_t *pcb, FILE *f, pcb_drill_ctx_t *ctx, int force_g85, int slots, pcb_coord_t *excellon_last_tool_dia)
 {
 	pcb_cardinal_t i, cnt = 0;
@@ -47,9 +64,9 @@ static pcb_cardinal_t drill_print_objs(pcb_board_t *pcb, FILE *f, pcb_drill_ctx_
 				first = 0;
 			}
 			if (force_g85)
-				pcb_fprintf(f, "X%06.0mkY%06.0mkG85X%06.0mkY%06.0mk\r\n", excellonDrX(pcb, pd->x), excellonDrY(PCB, pd->y), excellonDrX(pcb, pd->x2), excellonDrY(PCB, pd->y2));
+				pcb_fprintf(f, "X%[3]Y%[3]G85X%[3]Y%[3]\r\n", excellonDrX(pcb, pd->x), excellonDrY(PCB, pd->y), excellonDrX(pcb, pd->x2), excellonDrY(PCB, pd->y2));
 			else
-				pcb_fprintf(f, "X%06.0mkY%06.0mk\r\nM15\r\nG01X%06.0mkY%06.0mk\r\nM17\r\n", excellonDrX(pcb, pd->x), excellonDrY(PCB, pd->y), excellonDrX(pcb, pd->x2), excellonDrY(PCB, pd->y2));
+				pcb_fprintf(f, "X%[3]Y%[3]\r\nM15\r\nG01X%[3]Y%[3]\r\nM17\r\n", excellonDrX(pcb, pd->x), excellonDrY(PCB, pd->y), excellonDrX(pcb, pd->x2), excellonDrY(PCB, pd->y2));
 			first = 1; /* each new slot will need a G00 for some fabs that ignore M17 and M15 */
 		}
 		else {
@@ -57,14 +74,14 @@ static pcb_cardinal_t drill_print_objs(pcb_board_t *pcb, FILE *f, pcb_drill_ctx_
 				pcb_fprintf(f, "G05\r\n");
 				first = 0;
 			}
-			pcb_fprintf(f, "X%06.0mkY%06.0mk\r\n", excellonDrX(pcb, pd->x), excellonDrY(pcb, pd->y));
+			pcb_fprintf(f, "X%[3]Y%[3]\r\n", excellonDrX(pcb, pd->x), excellonDrY(pcb, pd->y));
 		}
 		cnt++;
 	}
 	return cnt;
 }
 
-static pcb_cardinal_t drill_print_holes(pcb_board_t *pcb, FILE *f, pcb_drill_ctx_t *ctx, int force_g85)
+static pcb_cardinal_t drill_print_holes(pcb_board_t *pcb, FILE *f, pcb_drill_ctx_t *ctx, int force_g85, const char *coord_fmt_hdr)
 {
 	aperture_t *search;
 	pcb_cardinal_t cnt = 0;
@@ -72,7 +89,7 @@ static pcb_cardinal_t drill_print_holes(pcb_board_t *pcb, FILE *f, pcb_drill_ctx
 
 	/* We omit the ,TZ here because we are not omitting trailing zeros.  Our format is
 	   always six-digit 0.1 mil resolution (i.e. 001100 = 0.11") */
-	fprintf(f, "M48\r\n" "INCH\r\n");
+	fprintf(f, "M48\r\n%s\r\n", coord_fmt_hdr);
 	for (search = ctx->apr.data; search; search = search->next)
 		pcb_fprintf(f, "T%02dC%.3mi\r\n", search->dCode, search->width);
 	fprintf(f, "%%\r\n");
@@ -84,16 +101,27 @@ static pcb_cardinal_t drill_print_holes(pcb_board_t *pcb, FILE *f, pcb_drill_ctx
 	return cnt;
 }
 
-void pcb_drill_export_excellon(pcb_board_t *pcb, pcb_drill_ctx_t *ctx, int force_g85, const char *fn)
+void pcb_drill_export_excellon(pcb_board_t *pcb, pcb_drill_ctx_t *ctx, int force_g85, int coord_fmt_idx, const char *fn)
 {
 	FILE *f = pcb_fopen(fn, "wb"); /* Binary needed to force CR-LF */
+	coord_format_t *cfmt;
+
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Error:  Could not open %s for writing the excellon file.\n", fn);
 		return;
 	}
 
+	if ((coord_fmt_idx < 0) || (coord_fmt_idx >= NUM_COORD_FORMATS)) {
+		pcb_message(PCB_MSG_ERROR, "Error: Invalid excellon coordinate format idx %d.\n", coord_fmt_idx);
+		return;
+	}
+
+	cfmt = &coord_format[coord_fmt_idx];
+	pcb_printf_slot[3] = cfmt->cfmt;
+	pcb_printf_slot[5] = cfmt->afmt;
+
 	if (ctx->obj.used > 0)
-		drill_print_holes(pcb, f, ctx, force_g85);
+		drill_print_holes(pcb, f, ctx, force_g85, cfmt->hdr1);
 
 	fprintf(f, "M30\r\n");
 	fclose(f);
@@ -124,6 +152,7 @@ typedef struct hid_gc_s {
 	pcb_coord_t width;
 } hid_gc_s;
 
+
 static pcb_hid_attribute_t excellon_options[] = {
 
 /* %start-doc options "90 excellon Export"
@@ -145,9 +174,13 @@ excellon output file prefix. Can include a path.
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_excellonfile_unplated 2
 
+	{"coord-format", "Coordinate format (resolution)",
+	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, coord_format_names, 0},
+#define HA_excellonfile_coordfmt 3
+
 	{"cam", "CAM instruction",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_cam 3
+#define HA_cam 4
 };
 
 #define NUM_OPTIONS (sizeof(excellon_options)/sizeof(excellon_options[0]))
@@ -218,7 +251,7 @@ static void excellon_do_export(pcb_hid_attr_val_t * options)
 
 	if (excellon_cam.active) {
 		fn = excellon_cam.fn;
-		pcb_drill_export_excellon(PCB, &pdrills, conf_excellon.plugins.export_excellon.plated_g85_slot, fn);
+		pcb_drill_export_excellon(PCB, &pdrills, conf_excellon.plugins.export_excellon.plated_g85_slot, options[HA_excellonfile_coordfmt].int_value, fn);
 	}
 	else {
 		if (options[HA_excellonfile_plated].str_value == NULL) {
@@ -227,7 +260,7 @@ static void excellon_do_export(pcb_hid_attr_val_t * options)
 		}
 		else
 			fn = options[HA_excellonfile_plated].str_value;
-		pcb_drill_export_excellon(PCB, &pdrills, conf_excellon.plugins.export_excellon.plated_g85_slot, fn);
+		pcb_drill_export_excellon(PCB, &pdrills, conf_excellon.plugins.export_excellon.plated_g85_slot, options[HA_excellonfile_coordfmt].int_value, fn);
 
 		if (options[HA_excellonfile_unplated].str_value == NULL) {
 			strcpy(filesuff, ".unplated.cnc");
@@ -235,7 +268,7 @@ static void excellon_do_export(pcb_hid_attr_val_t * options)
 		}
 		else
 			fn = options[HA_excellonfile_unplated].str_value;
-		pcb_drill_export_excellon(PCB, &udrills, conf_excellon.plugins.export_excellon.unplated_g85_slot, fn);
+		pcb_drill_export_excellon(PCB, &udrills, conf_excellon.plugins.export_excellon.unplated_g85_slot, options[HA_excellonfile_coordfmt].int_value, fn);
 	}
 
 	if (pcb_cam_end(&excellon_cam) == 0)
