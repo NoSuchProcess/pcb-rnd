@@ -19,6 +19,7 @@
 #include "in_keyboard.h"
 #include "wt_accel_label.h"
 
+#include "../src_plugins/lib_hid_common/menu_helper.h"
 
 static int action_counter;
 

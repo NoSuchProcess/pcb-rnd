@@ -28,6 +28,8 @@
 #include "layer_vis.h"
 #include <genht/hash.h>
 
+#include "../src_plugins/lib_hid_common/menu_helper.h"
+
 Widget lesstif_menubar;
 pcb_hid_cfg_t *lesstif_cfg;
 conf_hid_id_t lesstif_menuconf_id = -1;

@@ -7,6 +7,7 @@ put /local/pcb/mod/OBJS [@
   $(PLUGDIR)/lib_hid_common/routest_menu.o
   $(PLUGDIR)/lib_hid_common/cli_history.o
   $(PLUGDIR)/lib_hid_common/place.o
+  $(PLUGDIR)/lib_hid_common/menu_helper.o
 @]
 
 # dialog config is here because of hidlib: each hidlib user shall have its

@@ -125,11 +125,4 @@ int pcb_hid_cfg_dfs(lht_node_t *parent, int (*cb)(void *ctx, lht_node_t *n), voi
 
 /* Report an error about a node */
 void pcb_hid_cfg_error(const lht_node_t *node, const char *fmt, ...);
-
-/* Looks up an integer (usually boolean) value by conf path or by running
-   an action (if name has a parenthesis). When an action is run, it has 0
-   or 1 argument only and the return value of the action is returned.
-   On error, returns -1. */
-int pcb_hid_get_flag(const char *name);
-
 #endif
