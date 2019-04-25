@@ -149,7 +149,7 @@ TODO("revise this; use attributes instead")
 
 	/* PCB outline */
 	pcb_fprintf(fp, "    (boundary\n");
-	pcb_fprintf(fp, "      (rect pcb 0.0 0.0 %.6mm %.6mm)\n", PCB->MaxWidth, PCB->MaxHeight);
+	pcb_fprintf(fp, "      (rect pcb 0.0 0.0 %.6mm %.6mm)\n", PCB->hidlib.size_x, PCB->hidlib.size_y);
 	pcb_fprintf(fp, "    )\n");
 	pcb_fprintf(fp, "    (via via_%ld_%ld)\n", viawidth, viadrill);
 
@@ -186,7 +186,7 @@ static void print_placement(FILE * fp)
 		else
 			ename = pcb_strdup("null");
 		pcb_fprintf(fp, "    (component %d\n", subc->ID);
-		pcb_fprintf(fp, "      (place \"%s\" %.6mm %.6mm %s 0 (PN 0))\n", ename, ox, PCB->MaxHeight - oy, side);
+		pcb_fprintf(fp, "      (place \"%s\" %.6mm %.6mm %s 0 (PN 0))\n", ename, ox, PCB->hidlib.size_y - oy, side);
 		pcb_fprintf(fp, "    )\n");
 		free(ename);
 	}
@@ -196,7 +196,7 @@ TODO("padstack: check if real shapes are exported")
 	PCB_PADSTACK_LOOP(PCB->Data);
 	{ /* add mounting holes */
 		pcb_fprintf(fp, "    (component %d\n", padstack->ID);
-		pcb_fprintf(fp, "      (place %d %.6mm %.6mm %s 0 (PN 0))\n", padstack->ID, padstack->x, (PCB->MaxHeight - padstack->y), "front");
+		pcb_fprintf(fp, "      (place %d %.6mm %.6mm %s 0 (PN 0))\n", padstack->ID, padstack->x, (PCB->hidlib.size_y - padstack->y), "front");
 		pcb_fprintf(fp, "    )\n");
 	}
 	PCB_END_LOOP;
@@ -492,8 +492,8 @@ static void print_wires(FILE * fp)
 			{
 				pcb_fprintf(fp,
 					"        (wire (path %d__%s %.6mm %.6mm %.6mm %.6mm %.6mm)\n", GRP_NAME(g), line->Thickness,
-					line->Point1.X, (PCB->MaxHeight - line->Point1.Y),
-					line->Point2.X, (PCB->MaxHeight - line->Point2.Y));
+					line->Point1.X, (PCB->hidlib.size_y - line->Point1.Y),
+					line->Point2.X, (PCB->hidlib.size_y - line->Point2.Y));
 				fprintf(fp, "            (type protect))\n");
 			}
 			PCB_END_LOOP;

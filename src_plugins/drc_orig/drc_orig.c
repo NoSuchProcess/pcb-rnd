@@ -368,15 +368,15 @@ static void drc_beyond_extents(pcb_view_list_t *lst, pcb_data_t *data)
 		const char *message = NULL;
 		pcb_coord_t measured, required;
 		
-		if (o->BoundingBox.X1 > PCB->MaxWidth) {
+		if (o->BoundingBox.X1 > PCB->hidlib.size_x) {
 			message = "Beyond the drawing area, to the right";
 			measured = o->BoundingBox.X1;
-			required = PCB->MaxWidth;
+			required = PCB->hidlib.size_x;
 		}
-		else if (o->BoundingBox.Y1 > PCB->MaxHeight) {
+		else if (o->BoundingBox.Y1 > PCB->hidlib.size_y) {
 			message = "Beyond the drawing area, to the bottom";
 			measured = o->BoundingBox.Y1;
-			required = PCB->MaxHeight;
+			required = PCB->hidlib.size_y;
 		}
 		else if (o->BoundingBox.X2 < 0) {
 			message = "Beyond the drawing area, to the left";

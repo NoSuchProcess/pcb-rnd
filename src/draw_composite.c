@@ -43,7 +43,7 @@ static void comp_fill_board(comp_ctx_t *ctx)
 {
 	pcb_gui->set_color(pcb_draw_out.fgGC, ctx->color);
 	if (ctx->info->drawn_area == NULL)
-		pcb_gui->fill_rect(pcb_draw_out.fgGC, 0, 0, ctx->info->pcb->MaxWidth, ctx->info->pcb->MaxHeight);
+		pcb_gui->fill_rect(pcb_draw_out.fgGC, 0, 0, ctx->info->pcb->hidlib.size_x, ctx->info->pcb->hidlib.size_y);
 	else
 		pcb_gui->fill_rect(pcb_draw_out.fgGC, ctx->info->drawn_area->X1, ctx->info->drawn_area->Y1, ctx->info->drawn_area->X2, ctx->info->drawn_area->Y2);
 }

@@ -187,7 +187,7 @@ static void ipcd356_write_feature(write_ctx_t *ctx, test_feature_t *t)
 	line[41] = 'X';
 	fill_field_coord(ctx, line, 42, 48, t->cx, 1, "X coord");
 	line[49] = 'Y';
-	fill_field_coord(ctx, line, 50, 56, PCB->MaxHeight - t->cy, 1, "Y coord");
+	fill_field_coord(ctx, line, 50, 56, PCB->hidlib.size_y - t->cy, 1, "Y coord");
 
 	line[57] = 'X';
 	fill_field_coord(ctx, line, 58, 61, t->width, 0, "width");

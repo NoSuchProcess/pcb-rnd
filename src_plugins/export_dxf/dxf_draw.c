@@ -25,7 +25,7 @@
  */
 
 #define TRX(x)   (x)
-#define TRY(y)   (PCB->MaxHeight - (y))
+#define TRY(y)   (PCB->hidlib.size_y - (y))
 
 static void dxf_draw_handle(dxf_ctx_t *ctx)
 {

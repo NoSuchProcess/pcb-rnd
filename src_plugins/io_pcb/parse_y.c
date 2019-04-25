@@ -1966,8 +1966,8 @@ yyreduce:
 #line 305 "parse_y.y" /* yacc.c:1652  */
     {
 				yyPCB->Name = (yyvsp[-1].string);
-				yyPCB->MaxWidth = PCB_MAX_COORD;
-				yyPCB->MaxHeight = PCB_MAX_COORD;
+				yyPCB->hidlib.size_x = PCB_MAX_COORD;
+				yyPCB->hidlib.size_y = PCB_MAX_COORD;
 				old_fmt = 1;
 			}
 #line 1974 "parse_y.c" /* yacc.c:1652  */
@@ -1977,8 +1977,8 @@ yyreduce:
 #line 312 "parse_y.y" /* yacc.c:1652  */
     {
 				yyPCB->Name = (yyvsp[-3].string);
-				yyPCB->MaxWidth = OU ((yyvsp[-2].measure));
-				yyPCB->MaxHeight = OU ((yyvsp[-1].measure));
+				yyPCB->hidlib.size_x = OU ((yyvsp[-2].measure));
+				yyPCB->hidlib.size_y = OU ((yyvsp[-1].measure));
 				old_fmt = 1;
 			}
 #line 1985 "parse_y.c" /* yacc.c:1652  */
@@ -1988,8 +1988,8 @@ yyreduce:
 #line 319 "parse_y.y" /* yacc.c:1652  */
     {
 				yyPCB->Name = (yyvsp[-3].string);
-				yyPCB->MaxWidth = NU ((yyvsp[-2].measure));
-				yyPCB->MaxHeight = NU ((yyvsp[-1].measure));
+				yyPCB->hidlib.size_x = NU ((yyvsp[-2].measure));
+				yyPCB->hidlib.size_y = NU ((yyvsp[-1].measure));
 				old_fmt = 0;
 			}
 #line 1996 "parse_y.c" /* yacc.c:1652  */

@@ -149,7 +149,7 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 	fprintf(f, "\nbegin board v1 ");
 	tedax_fprint_escape(f, pcb->Name);
 	fputc('\n', f);
-	pcb_fprintf(f, " drawing_area 0 0 %.06mm %.06mm\n", pcb->MaxWidth, pcb->MaxHeight);
+	pcb_fprintf(f, " drawing_area 0 0 %.06mm %.06mm\n", pcb->hidlib.size_x, pcb->hidlib.size_y);
 	for(n = 0, a = pcb->Attributes.List; n < pcb->Attributes.Number; n++,a++) {
 		pcb_fprintf(f, " attr ");
 		tedax_fprint_escape(f, a->name);
@@ -379,8 +379,8 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 			if (!succ) errexit("Invalid y2 coord in drawing_area\n");
 			if ((x1 >= x2) || (y1 >= y2)) errexit("Invalid (unordered, negative box) drawing area\n");
 			if ((x1 < 0) || (y1 < 0)) pcb_message(PCB_MSG_WARNING, "drawing_area starts at negative coords; some objects may not display;\nyou may want to run autocrop()\n");
-			PCB->MaxWidth = x2 - x1;
-			PCB->MaxHeight = y2 - y1;
+			PCB->hidlib.size_x = x2 - x1;
+			PCB->hidlib.size_y = y2 - y1;
 		}
 		else if (strcmp(argv[0], "attr") == 0) {
 			reqarg("attr", 3);

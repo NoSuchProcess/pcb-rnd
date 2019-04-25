@@ -96,13 +96,13 @@ static void remote_do_export(pcb_hid_attr_val_t * options)
 
 	ctx.view.X1 = 0;
 	ctx.view.Y1 = 0;
-	ctx.view.X2 = PCB->MaxWidth;
-	ctx.view.Y2 = PCB->MaxHeight;
+	ctx.view.X2 = PCB->hidlib.size_x;
+	ctx.view.Y2 = PCB->hidlib.size_y;
 
 TODO(": wait for a connection?")
 	remote_proto_send_ver();
 	remote_proto_send_unit();
-	remote_proto_send_brddim(PCB->MaxWidth, PCB->MaxHeight);
+	remote_proto_send_brddim(PCB->hidlib.size_x, PCB->hidlib.size_y);
 	remote_send_all_layers();
 	if (remote_proto_send_ready() != 0)
 		exit(1);

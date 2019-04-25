@@ -486,8 +486,8 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 	if ((ctx->bbox.X1 < 0) || (ctx->bbox.Y1 < 0))
 		pcb_message(PCB_MSG_WARNING, "Negative coordinates on input - you may want to execute autocrop()\n");
 
-	ctx->pcb->MaxWidth = ctx->bbox.X2 - ctx->bbox.X1;
-	ctx->pcb->MaxHeight = ctx->bbox.Y2 - ctx->bbox.Y1;
+	ctx->pcb->hidlib.size_x = ctx->bbox.X2 - ctx->bbox.X1;
+	ctx->pcb->hidlib.size_y = ctx->bbox.Y2 - ctx->bbox.Y1;
 
 	if (!ctx->has_pcb_boundary) {
 		ctx->bbox.X1 = ctx->bbox.Y1 = ctx->bbox.X2 = ctx->bbox.Y2 = 0;
@@ -1569,7 +1569,7 @@ static int dsn_parse_place_component(dsn_read_t *ctx, gsxl_node_t *plr, int mirr
 
 		if (mirror_first) {
 			if (need_mirror)
-				pcb_subc_change_side(nsc, crd[1] * 2 - PCB->MaxHeight);
+				pcb_subc_change_side(nsc, crd[1] * 2 - PCB->hidlib.size_y);
 			if (rot != 0.0)
 				pcb_subc_rotate(nsc, crd[0], crd[1], cos(rot / PCB_RAD_TO_DEG), sin(rot / PCB_RAD_TO_DEG), rot);
 		}
@@ -1577,7 +1577,7 @@ static int dsn_parse_place_component(dsn_read_t *ctx, gsxl_node_t *plr, int mirr
 			if (rot != 0.0)
 				pcb_subc_rotate(nsc, crd[0], crd[1], cos(rot / PCB_RAD_TO_DEG), sin(rot / PCB_RAD_TO_DEG), rot);
 			if (need_mirror)
-				pcb_subc_change_side(nsc, crd[1] * 2 - PCB->MaxHeight);
+				pcb_subc_change_side(nsc, crd[1] * 2 - PCB->hidlib.size_y);
 		}
 	}
 

@@ -28,7 +28,7 @@
 #include "plug_io.h"
 
 #define TRX_(x) (x)
-#define TRY_(y) (PCB->MaxHeight - (y))
+#define TRY_(y) (PCB->hidlib.size_y - (y))
 
 #define TRX(x)
 #define TRY(y) y = TRY_(y)
@@ -87,9 +87,9 @@ static int scad_draw_outline(void)
 	if (start == NULL) {
 		poly = pcb_poly_alloc(PCB->Data->Layer);
 		pcb_poly_point_new(poly, 0, 0);
-		pcb_poly_point_new(poly, PCB->MaxWidth, 0);
-		pcb_poly_point_new(poly, PCB->MaxWidth, PCB->MaxHeight);
-		pcb_poly_point_new(poly, 0, PCB->MaxHeight);
+		pcb_poly_point_new(poly, PCB->hidlib.size_x, 0);
+		pcb_poly_point_new(poly, PCB->hidlib.size_x, PCB->hidlib.size_y);
+		pcb_poly_point_new(poly, 0, PCB->hidlib.size_y);
 	}
 	else {
 		poly = pcb_topoly_conn(PCB, start, PCB_TOPOLY_FLOATING);

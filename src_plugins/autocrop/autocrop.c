@@ -54,7 +54,7 @@ static fgw_error_t pcb_act_autocrop(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	w = ((box.X2 + dx) / PCB->hidlib.grid + 2) * PCB->hidlib.grid;
 	h = ((box.Y2 + dy) / PCB->hidlib.grid + 2) * PCB->hidlib.grid;
 
-	if ((dx == 0) && (dy == 0) && (w == PCB->MaxWidth) && (h == PCB->MaxHeight))
+	if ((dx == 0) && (dy == 0) && (w == PCB->hidlib.size_x) && (h == PCB->hidlib.size_y))
 		return 0;
 
 	pcb_draw_inhibit_inc();

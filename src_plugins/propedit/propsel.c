@@ -116,8 +116,8 @@ static void map_common(void *ctx, pcb_any_obj_t *obj)
 static void map_board(pcb_propedit_t *ctx, pcb_board_t *pcb)
 {
 	map_add_prop(ctx, "p/board/name",   String, pcb->Name);
-	map_add_prop(ctx, "p/board/width", pcb_coord_t, pcb->MaxWidth);
-	map_add_prop(ctx, "p/board/height", pcb_coord_t, pcb->MaxHeight);
+	map_add_prop(ctx, "p/board/width", pcb_coord_t, pcb->hidlib.size_x);
+	map_add_prop(ctx, "p/board/height", pcb_coord_t, pcb->hidlib.size_y);
 	map_attr(ctx, &pcb->Attributes);
 }
 
@@ -331,10 +331,10 @@ static void set_board(pcb_propset_ctx_t *st, pcb_board_t *pcb)
 		    (pcb_board_change_name(pcb_strdup(st->s)))) DONE;
 
 		if (st->c_valid && (strcmp(pn, "width") == 0) &&
-		    brd_resize(st->c, PCB->MaxHeight)) DONE;
+		    brd_resize(st->c, PCB->hidlib.size_y)) DONE;
 
 		if (st->c_valid && (strcmp(pn, "height") == 0) &&
-		    brd_resize(PCB->MaxWidth,st->c)) DONE;
+		    brd_resize(PCB->hidlib.size_x,st->c)) DONE;
 	}
 }
 

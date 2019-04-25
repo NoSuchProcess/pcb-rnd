@@ -289,7 +289,7 @@ static void WritePCBDataHeader(FILE * FP)
 
 	fputs("\nPCB[", FP);
 	pcb_print_quoted_string(FP, (char *) PCB_EMPTY(PCB->Name));
-	pcb_fprintf(FP, " %[0] %[0]]\n\n", PCB->MaxWidth, PCB->MaxHeight);
+	pcb_fprintf(FP, " %[0] %[0]]\n\n", PCB->hidlib.size_x, PCB->hidlib.size_y);
 	pcb_fprintf(FP, "Grid[%[0] %[0] %[0] %d]\n", PCB->hidlib.grid, PCB->hidlib.grid_ox, PCB->hidlib.grid_oy, conf_core.editor.draw_grid);
 	pcb_fprintf(FP, "Cursor[%[0] %[0] 1000]\n", pcb_crosshair.X, pcb_crosshair.Y);
 	/* PolyArea should be output in square cmils, no suffix */
@@ -759,8 +759,8 @@ void PostLoadElementPCB()
 	pcb_data_bbox(&dbb, yyPCB->Data, pcb_false);
 	pcb_data_normalize_(yyPCB->Data, &dbb);
 	PCB = pcb_save;
-	yyPCB->MaxWidth = dbb.X2*2;
-	yyPCB->MaxHeight = dbb.Y2*2;
+	yyPCB->hidlib.size_x = dbb.X2*2;
+	yyPCB->hidlib.size_y = dbb.Y2*2;
 	yyPCB->is_footprint = 1;
 
 	/* opening a footprint: we don't have a layer stack; make sure top and bottom copper exist */

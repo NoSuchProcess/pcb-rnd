@@ -530,10 +530,10 @@ void pcb_gtk_preview_board_zoomto(pcb_gtk_preview_t *p, pcb_coord_t x1, pcb_coor
 	pcb_coord_t tmp;
 
 	/* just in case the size has changed meanwhile */
-	p->view.height = PCB->MaxHeight;
-	p->view.width = PCB->MaxWidth;
-	p->view.max_height = PCB->MaxHeight;
-	p->view.max_width = PCB->MaxWidth;
+	p->view.height = PCB->hidlib.size_y;
+	p->view.width = PCB->hidlib.size_x;
+	p->view.max_height = PCB->hidlib.size_y;
+	p->view.max_width = PCB->hidlib.size_x;
 	p->view.canvas_width = canvas_width;
 	p->view.canvas_height = canvas_height;
 

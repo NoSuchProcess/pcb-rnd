@@ -196,7 +196,7 @@ static void draw_fab_layer(pcb_draw_info_t *info, pcb_hid_gc_t gc, const pcb_hid
 	PCB_END_LOOP;
 	if (!found) {
 		pcb_hid_set_line_width(gc, FAB_LINE_W);
-		text_at(info, gc, PCB->MaxWidth / 2, PCB->MaxHeight + PCB_MIL_TO_COORD(20), 1, "Board outline is the centerline of this path");
+		text_at(info, gc, PCB->hidlib.size_x / 2, PCB->hidlib.size_y + PCB_MIL_TO_COORD(20), 1, "Board outline is the centerline of this path");
 	}
 }
 
@@ -307,18 +307,18 @@ static void DrawFab(pcb_draw_info_t *info, pcb_hid_gc_t gc, const pcb_hid_expose
 	}
 	if (!found) {
 		pcb_hid_set_line_width(gc, PCB_MIL_TO_COORD(10));
-		pcb_gui->draw_line(gc, 0, 0, PCB->MaxWidth, 0);
-		pcb_gui->draw_line(gc, 0, 0, 0, PCB->MaxHeight);
-		pcb_gui->draw_line(gc, PCB->MaxWidth, 0, PCB->MaxWidth, PCB->MaxHeight);
-		pcb_gui->draw_line(gc, 0, PCB->MaxHeight, PCB->MaxWidth, PCB->MaxHeight);
+		pcb_gui->draw_line(gc, 0, 0, PCB->hidlib.size_x, 0);
+		pcb_gui->draw_line(gc, 0, 0, 0, PCB->hidlib.size_y);
+		pcb_gui->draw_line(gc, PCB->hidlib.size_x, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
+		pcb_gui->draw_line(gc, 0, PCB->hidlib.size_y, PCB->hidlib.size_x, PCB->hidlib.size_y);
 		/*FPrintOutline (); */
 		pcb_hid_set_line_width(gc, FAB_LINE_W);
 		text_at(info, gc, PCB_MIL_TO_COORD(2000), yoff, 0,
-						"Maximum Dimensions: %f mils wide, %f mils high", PCB_COORD_TO_MIL(PCB->MaxWidth), PCB_COORD_TO_MIL(PCB->MaxHeight));
-		text_at(info, gc, PCB->MaxWidth / 2, PCB->MaxHeight + PCB_MIL_TO_COORD(20), 1,
+						"Maximum Dimensions: %f mils wide, %f mils high", PCB_COORD_TO_MIL(PCB->hidlib.size_x), PCB_COORD_TO_MIL(PCB->hidlib.size_y));
+		text_at(info, gc, PCB->hidlib.size_x / 2, PCB->hidlib.size_y + PCB_MIL_TO_COORD(20), 1,
 						"Board outline is the centerline of this %f mil"
 						" rectangle - 0,0 to %f,%f mils",
-						PCB_COORD_TO_MIL(FAB_LINE_W), PCB_COORD_TO_MIL(PCB->MaxWidth), PCB_COORD_TO_MIL(PCB->MaxHeight));
+						PCB_COORD_TO_MIL(FAB_LINE_W), PCB_COORD_TO_MIL(PCB->hidlib.size_x), PCB_COORD_TO_MIL(PCB->hidlib.size_y));
 	}
 	yoff -= TEXT_LINE;
 

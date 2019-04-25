@@ -725,22 +725,22 @@ int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_file
 
 TODO(": se this from io_kicad, do not duplicate the code here")
 	/* we sort out the needed kicad sheet size here, using A4, A3, A2, A1 or A0 size as needed */
-	if (PCB_COORD_TO_MIL(PCB->MaxWidth) > A4WidthMil || PCB_COORD_TO_MIL(PCB->MaxHeight) > A4HeightMil) {
+	if (PCB_COORD_TO_MIL(PCB->hidlib.size_x) > A4WidthMil || PCB_COORD_TO_MIL(PCB->hidlib.size_y) > A4HeightMil) {
 		sheetHeight = A4WidthMil; /* 11.7" */
 		sheetWidth = 2 * A4HeightMil; /* 16.5" */
 		paperSize = 3; /* this is A3 size */
 	}
-	if (PCB_COORD_TO_MIL(PCB->MaxWidth) > sheetWidth || PCB_COORD_TO_MIL(PCB->MaxHeight) > sheetHeight) {
+	if (PCB_COORD_TO_MIL(PCB->hidlib.size_x) > sheetWidth || PCB_COORD_TO_MIL(PCB->hidlib.size_y) > sheetHeight) {
 		sheetHeight = 2 * A4HeightMil; /* 16.5" */
 		sheetWidth = 2 * A4WidthMil; /* 23.4" */
 		paperSize = 2; /* this is A2 size */
 	}
-	if (PCB_COORD_TO_MIL(PCB->MaxWidth) > sheetWidth || PCB_COORD_TO_MIL(PCB->MaxHeight) > sheetHeight) {
+	if (PCB_COORD_TO_MIL(PCB->hidlib.size_x) > sheetWidth || PCB_COORD_TO_MIL(PCB->hidlib.size_y) > sheetHeight) {
 		sheetHeight = 2 * A4WidthMil; /* 23.4" */
 		sheetWidth = 4 * A4HeightMil; /* 33.1" */
 		paperSize = 1; /* this is A1 size */
 	}
-	if (PCB_COORD_TO_MIL(PCB->MaxWidth) > sheetWidth || PCB_COORD_TO_MIL(PCB->MaxHeight) > sheetHeight) {
+	if (PCB_COORD_TO_MIL(PCB->hidlib.size_x) > sheetWidth || PCB_COORD_TO_MIL(PCB->hidlib.size_y) > sheetHeight) {
 		sheetHeight = 4 * A4HeightMil; /* 33.1" */
 		sheetWidth = 4 * A4WidthMil; /* 46.8"  */
 		paperSize = 0; /* this is A0 size; where would you get it made ?!?! */
@@ -748,20 +748,20 @@ TODO(": se this from io_kicad, do not duplicate the code here")
 
 	fprintf(FP, "Sheet A%d ", paperSize);
 	/* we now sort out the offsets for centring the layout in the chosen sheet size here */
-	if (sheetWidth > PCB_COORD_TO_MIL(PCB->MaxWidth)) { /* usually A4, bigger if needed */
+	if (sheetWidth > PCB_COORD_TO_MIL(PCB->hidlib.size_x)) { /* usually A4, bigger if needed */
 		fprintf(FP, "%d ", sheetWidth); /* legacy kicad: elements decimils, sheet size mils */
-		LayoutXOffset = PCB_MIL_TO_COORD(sheetWidth) / 2 - PCB->MaxWidth / 2;
+		LayoutXOffset = PCB_MIL_TO_COORD(sheetWidth) / 2 - PCB->hidlib.size_x / 2;
 	}
 	else { /* the layout is bigger than A0; most unlikely, but... */
-		pcb_fprintf(FP, "%.0ml ", PCB->MaxWidth);
+		pcb_fprintf(FP, "%.0ml ", PCB->hidlib.size_x);
 		LayoutXOffset = 0;
 	}
-	if (sheetHeight > PCB_COORD_TO_MIL(PCB->MaxHeight)) {
+	if (sheetHeight > PCB_COORD_TO_MIL(PCB->hidlib.size_y)) {
 		fprintf(FP, "%d", sheetHeight);
-		LayoutYOffset = PCB_MIL_TO_COORD(sheetHeight) / 2 - PCB->MaxHeight / 2;
+		LayoutYOffset = PCB_MIL_TO_COORD(sheetHeight) / 2 - PCB->hidlib.size_y / 2;
 	}
 	else { /* the layout is bigger than A0; most unlikely, but... */
-		pcb_fprintf(FP, "%.0ml", PCB->MaxHeight);
+		pcb_fprintf(FP, "%.0ml", PCB->hidlib.size_y);
 		LayoutYOffset = 0;
 	}
 	fputs("\n", FP);
@@ -872,19 +872,19 @@ TODO(": se this from io_kicad, do not duplicate the code here")
 	}
 	else { /* no outline layer per se, export the board margins instead  - obviously some scope to reduce redundant code... */
 		fputs("$DRAWSEGMENT\n", FP);
-		pcb_fprintf(FP, "Po 0 %.0mk %.0mk %.0mk %.0mk %.0mk\n", PCB->MaxWidth / 2 - LayoutXOffset, PCB->MaxHeight / 2 - LayoutYOffset, PCB->MaxWidth / 2 + LayoutXOffset, PCB->MaxHeight / 2 - LayoutYOffset, outlineThickness);
+		pcb_fprintf(FP, "Po 0 %.0mk %.0mk %.0mk %.0mk %.0mk\n", PCB->hidlib.size_x / 2 - LayoutXOffset, PCB->hidlib.size_y / 2 - LayoutYOffset, PCB->hidlib.size_x / 2 + LayoutXOffset, PCB->hidlib.size_y / 2 - LayoutYOffset, outlineThickness);
 		pcb_fprintf(FP, "De %d 0 0 0 0\n", currentKicadLayer);
 		fputs("$EndDRAWSEGMENT\n", FP);
 		fputs("$DRAWSEGMENT\n", FP);
-		pcb_fprintf(FP, "Po 0 %.0mk %.0mk %.0mk %.0mk %.0mk\n", PCB->MaxWidth / 2 + LayoutXOffset, PCB->MaxHeight / 2 - LayoutYOffset, PCB->MaxWidth / 2 + LayoutXOffset, PCB->MaxHeight / 2 + LayoutYOffset, outlineThickness);
+		pcb_fprintf(FP, "Po 0 %.0mk %.0mk %.0mk %.0mk %.0mk\n", PCB->hidlib.size_x / 2 + LayoutXOffset, PCB->hidlib.size_y / 2 - LayoutYOffset, PCB->hidlib.size_x / 2 + LayoutXOffset, PCB->hidlib.size_y / 2 + LayoutYOffset, outlineThickness);
 		pcb_fprintf(FP, "De %d 0 0 0 0\n", currentKicadLayer);
 		fputs("$EndDRAWSEGMENT\n", FP);
 		fputs("$DRAWSEGMENT\n", FP);
-		pcb_fprintf(FP, "Po 0 %.0mk %.0mk %.0mk %.0mk %.0mk\n", PCB->MaxWidth / 2 + LayoutXOffset, PCB->MaxHeight / 2 + LayoutYOffset, PCB->MaxWidth / 2 - LayoutXOffset, PCB->MaxHeight / 2 + LayoutYOffset, outlineThickness);
+		pcb_fprintf(FP, "Po 0 %.0mk %.0mk %.0mk %.0mk %.0mk\n", PCB->hidlib.size_x / 2 + LayoutXOffset, PCB->hidlib.size_y / 2 + LayoutYOffset, PCB->hidlib.size_x / 2 - LayoutXOffset, PCB->hidlib.size_y / 2 + LayoutYOffset, outlineThickness);
 		pcb_fprintf(FP, "De %d 0 0 0 0\n", currentKicadLayer);
 		fputs("$EndDRAWSEGMENT\n", FP);
 		fputs("$DRAWSEGMENT\n", FP);
-		pcb_fprintf(FP, "Po 0 %.0mk %.0mk %.0mk %.0mk %.0mk\n", PCB->MaxWidth / 2 - LayoutXOffset, PCB->MaxHeight / 2 + LayoutYOffset, PCB->MaxWidth / 2 - LayoutXOffset, PCB->MaxHeight / 2 - LayoutYOffset, outlineThickness);
+		pcb_fprintf(FP, "Po 0 %.0mk %.0mk %.0mk %.0mk %.0mk\n", PCB->hidlib.size_x / 2 - LayoutXOffset, PCB->hidlib.size_y / 2 + LayoutYOffset, PCB->hidlib.size_x / 2 - LayoutXOffset, PCB->hidlib.size_y / 2 - LayoutYOffset, outlineThickness);
 		pcb_fprintf(FP, "De %d 0 0 0 0\n", currentKicadLayer);
 		fputs("$EndDRAWSEGMENT\n", FP);
 	}

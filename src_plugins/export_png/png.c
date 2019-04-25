@@ -86,12 +86,12 @@ static pcb_coord_t y_shift = 0;
 static int show_solder_side;
 #define SCALE(w)   ((int)pcb_round((w)/scale))
 #define SCALE_X(x) ((int)pcb_hack_round(((x) - x_shift)/scale))
-#define SCALE_Y(y) ((int)pcb_hack_round(((show_solder_side ? (PCB->MaxHeight-(y)) : (y)) - y_shift)/scale))
+#define SCALE_Y(y) ((int)pcb_hack_round(((show_solder_side ? (PCB->hidlib.size_y-(y)) : (y)) - y_shift)/scale))
 #define SWAP_IF_SOLDER(a,b) do { int c; if (show_solder_side) { c=a; a=b; b=c; }} while (0)
 
 /* Used to detect non-trivial outlines */
-#define NOT_EDGE_X(x) ((x) != 0 && (x) != PCB->MaxWidth)
-#define NOT_EDGE_Y(y) ((y) != 0 && (y) != PCB->MaxHeight)
+#define NOT_EDGE_X(x) ((x) != 0 && (x) != PCB->hidlib.size_x)
+#define NOT_EDGE_Y(y) ((y) != 0 && (y) != PCB->hidlib.size_y)
 #define NOT_EDGE(x,y) (NOT_EDGE_X(x) || NOT_EDGE_Y(y))
 
 static void png_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius);
@@ -888,8 +888,8 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 
 	region.X1 = 0;
 	region.Y1 = 0;
-	region.X2 = PCB->MaxWidth;
-	region.Y2 = PCB->MaxHeight;
+	region.X2 = PCB->hidlib.size_x;
+	region.Y2 = PCB->hidlib.size_y;
 
 	png_options = options;
 	if (options[HA_only_visible].int_value)
@@ -1039,8 +1039,8 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 	else {
 		x_shift = 0;
 		y_shift = 0;
-		h = PCB->MaxHeight;
-		w = PCB->MaxWidth;
+		h = PCB->hidlib.size_y;
+		w = PCB->hidlib.size_x;
 	}
 
 	/*
@@ -1680,11 +1680,11 @@ static void png_draw_line_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t x1, pcb_c
 		/* Special case - lines drawn along the bottom or right edges
 		   are brought in by a pixel to make sure we have contiguous
 		   outlines.  */
-		if (x1 == PCB->MaxWidth && x2 == PCB->MaxWidth) {
+		if (x1 == PCB->hidlib.size_x && x2 == PCB->hidlib.size_x) {
 			x1o = -1;
 			x2o = -1;
 		}
-		if (y1 == PCB->MaxHeight && y2 == PCB->MaxHeight) {
+		if (y1 == PCB->hidlib.size_y && y2 == PCB->hidlib.size_y) {
 			y1o = -1;
 			y2o = -1;
 		}

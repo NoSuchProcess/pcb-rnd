@@ -1074,7 +1074,7 @@ void *pcb_subcop_copy(pcb_opctx_t *ctx, pcb_subc_t *src)
 		pcb_undo_inc_serial();
 		last = pcb_undo_serial();
 TODO("subc: should not depend on crosshair, because of automatic/scripted placement; test case 1: load subc footprint in buffer, swap side to bottom, place; test case 2: bug_files/cmd_element, execute the cmd while being on the bottom side, without crosshair set subcircuits catapult to negative y")
-		pcb_subc_change_side(sc, 2 * pcb_crosshair.Y - PCB->MaxHeight);
+		pcb_subc_change_side(sc, 2 * pcb_crosshair.Y - PCB->hidlib.size_y);
 		pcb_undo_truncate_from(last);
 		
 	}
@@ -1163,7 +1163,7 @@ pcb_bool pcb_selected_subc_change_side(void)
 		PCB_SUBC_LOOP(PCB->Data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc)) {
-				change |= pcb_subc_change_side(subc, 2 * pcb_crosshair.Y - PCB->MaxHeight);
+				change |= pcb_subc_change_side(subc, 2 * pcb_crosshair.Y - PCB->hidlib.size_y);
 			}
 		}
 		PCB_END_LOOP;
@@ -1966,7 +1966,7 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 	}
 
 	if (dst_on_bottom != src_on_bottom)
-		pcb_subc_change_side(placed, 2 * oy - PCB->MaxHeight);
+		pcb_subc_change_side(placed, 2 * oy - PCB->hidlib.size_y);
 
 	pcb_undo_freeze_add();
 	pcb_subc_select(pcb, placed, (flags & PCB_FLAG_SELECTED) ? PCB_CHGFLG_SET : PCB_CHGFLG_CLEAR, 0);

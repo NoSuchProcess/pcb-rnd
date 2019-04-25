@@ -7,7 +7,7 @@ static inline int Vx(pcb_coord_t x)
 {
 	double rv;
 	if (conf_core.editor.view.flip_x)
-		rv = (PCB->MaxWidth - x - gport->view.x0) / gport->view.coord_per_px + 0.5;
+		rv = (PCB->hidlib.size_x - x - gport->view.x0) / gport->view.coord_per_px + 0.5;
 	else
 		rv = (x - gport->view.x0) / gport->view.coord_per_px + 0.5;
 	return pcb_round(rv);
@@ -17,7 +17,7 @@ static inline int Vy(pcb_coord_t y)
 {
 	double rv;
 	if (conf_core.editor.view.flip_y)
-		rv = (PCB->MaxHeight - y - gport->view.y0) / gport->view.coord_per_px + 0.5;
+		rv = (PCB->hidlib.size_y - y - gport->view.y0) / gport->view.coord_per_px + 0.5;
 	else
 		rv = (y - gport->view.y0) / gport->view.coord_per_px + 0.5;
 	return pcb_round(rv);
@@ -32,7 +32,7 @@ static inline double Vxd(pcb_coord_t x)
 {
 	double rv;
 	if (conf_core.editor.view.flip_x)
-		rv = (PCB->MaxWidth - x - gport->view.x0) / gport->view.coord_per_px;
+		rv = (PCB->hidlib.size_x - x - gport->view.x0) / gport->view.coord_per_px;
 	else
 		rv = (x - gport->view.x0) / gport->view.coord_per_px;
 	return rv;
@@ -42,7 +42,7 @@ static inline double Vyd(pcb_coord_t y)
 {
 	double rv;
 	if (conf_core.editor.view.flip_y)
-		rv = (PCB->MaxHeight - y - gport->view.y0) / gport->view.coord_per_px;
+		rv = (PCB->hidlib.size_y - y - gport->view.y0) / gport->view.coord_per_px;
 	else
 		rv = (y - gport->view.y0) / gport->view.coord_per_px;
 	return rv;
@@ -57,7 +57,7 @@ static inline pcb_coord_t Px(int x)
 {
 	pcb_coord_t rv = x * gport->view.coord_per_px + gport->view.x0;
 	if (conf_core.editor.view.flip_x)
-		rv = PCB->MaxWidth - (x * gport->view.coord_per_px + gport->view.x0);
+		rv = PCB->hidlib.size_x - (x * gport->view.coord_per_px + gport->view.x0);
 	return rv;
 }
 
@@ -65,7 +65,7 @@ static inline pcb_coord_t Py(int y)
 {
 	pcb_coord_t rv = y * gport->view.coord_per_px + gport->view.y0;
 	if (conf_core.editor.view.flip_y)
-		rv = PCB->MaxHeight - (y * gport->view.coord_per_px + gport->view.y0);
+		rv = PCB->hidlib.size_y - (y * gport->view.coord_per_px + gport->view.y0);
 	return rv;
 }
 

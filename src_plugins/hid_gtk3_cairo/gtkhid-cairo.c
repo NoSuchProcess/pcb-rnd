@@ -309,8 +309,8 @@ static inline void ghid_cairo_draw_grid_global(cairo_t *cr)
 
 	x1 = pcb_grid_fit(MAX(0, SIDE_X(gport->view.x0)), PCB->hidlib.grid, PCB->hidlib.grid_ox);
 	y1 = pcb_grid_fit(MAX(0, SIDE_Y(gport->view.y0)), PCB->hidlib.grid, PCB->hidlib.grid_oy);
-	x2 = pcb_grid_fit(MIN(PCB->MaxWidth, SIDE_X(gport->view.x0 + gport->view.width - 1)), PCB->hidlib.grid, PCB->hidlib.grid_ox);
-	y2 = pcb_grid_fit(MIN(PCB->MaxHeight, SIDE_Y(gport->view.y0 + gport->view.height - 1)), PCB->hidlib.grid, PCB->hidlib.grid_oy);
+	x2 = pcb_grid_fit(MIN(PCB->hidlib.size_x, SIDE_X(gport->view.x0 + gport->view.width - 1)), PCB->hidlib.grid, PCB->hidlib.grid_ox);
+	y2 = pcb_grid_fit(MIN(PCB->hidlib.size_y, SIDE_Y(gport->view.y0 + gport->view.height - 1)), PCB->hidlib.grid, PCB->hidlib.grid_oy);
 
 	grd = PCB->hidlib.grid;
 
@@ -530,8 +530,8 @@ static void ghid_cairo_draw_bg_image(void)
 		src_y = 0;
 	}
 
-	w = PCB->MaxWidth / gport->view.coord_per_px;
-	h = PCB->MaxHeight / gport->view.coord_per_px;
+	w = PCB->hidlib.size_x / gport->view.coord_per_px;
+	h = PCB->hidlib.size_y / gport->view.coord_per_px;
 	src_x = src_x / gport->view.coord_per_px;
 	src_y = src_y / gport->view.coord_per_px;
 	dst_x = dst_x / gport->view.coord_per_px;
@@ -1083,15 +1083,15 @@ static void redraw_region(GdkRectangle * rect)
 	ctx.view.X2 = MAX(Px(priv->clip_rect.x), Px(priv->clip_rect.x + priv->clip_rect.width + 1));
 	ctx.view.Y2 = MAX(Py(priv->clip_rect.y), Py(priv->clip_rect.y + priv->clip_rect.height + 1));
 
-	ctx.view.X1 = MAX(0, MIN(PCB->MaxWidth, ctx.view.X1));
-	ctx.view.X2 = MAX(0, MIN(PCB->MaxWidth, ctx.view.X2));
-	ctx.view.Y1 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y1));
-	ctx.view.Y2 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y2));
+	ctx.view.X1 = MAX(0, MIN(PCB->hidlib.size_x, ctx.view.X1));
+	ctx.view.X2 = MAX(0, MIN(PCB->hidlib.size_x, ctx.view.X2));
+	ctx.view.Y1 = MAX(0, MIN(PCB->hidlib.size_y, ctx.view.Y1));
+	ctx.view.Y2 = MAX(0, MIN(PCB->hidlib.size_y, ctx.view.Y2));
 
 	eleft = Vx(0);
-	eright = Vx(PCB->MaxWidth);
+	eright = Vx(PCB->hidlib.size_x);
 	etop = Vy(0);
-	ebottom = Vy(PCB->MaxHeight);
+	ebottom = Vy(PCB->hidlib.size_y);
 	if (eleft > eright) {
 		int tmp = eleft;
 		eleft = eright;

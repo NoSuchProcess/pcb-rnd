@@ -255,7 +255,7 @@ static int cpcb_save(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netma
 	htpp_entry_t *e;
 
 	/* print dims */
-	pcb_fprintf(f, "(%d %d %d)\n", (int)(PCB_COORD_TO_MM(pcb->MaxWidth)+0.5), (int)(PCB_COORD_TO_MM(pcb->MaxHeight)+0.5), stack->maxlayer);
+	pcb_fprintf(f, "(%d %d %d)\n", (int)(PCB_COORD_TO_MM(pcb->hidlib.size_x)+0.5), (int)(PCB_COORD_TO_MM(pcb->hidlib.size_y)+0.5), stack->maxlayer);
 
 	/* print tracks */
 	for(e = htpp_first(&nmap->netmap.n2o); e != NULL; e = htpp_next(&nmap->netmap.n2o, e)) {

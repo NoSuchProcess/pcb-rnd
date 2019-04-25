@@ -337,8 +337,8 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 		height = bb.Y2 - bb.Y1;
 	}
 	else {
-		width = PCB->MaxWidth;
-		height = PCB->MaxHeight;
+		width = PCB->hidlib.size_x;
+		height = PCB->hidlib.size_y;
 	}
 
 	fprintf(f, "	ha:board {\n");

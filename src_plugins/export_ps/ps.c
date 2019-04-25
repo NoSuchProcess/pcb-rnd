@@ -558,13 +558,13 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 
 	if (global.fillpage) {
 		double zx, zy;
-		if (PCB->MaxWidth > PCB->MaxHeight) {
-			zx = global.ps_height / PCB->MaxWidth;
-			zy = global.ps_width / PCB->MaxHeight;
+		if (PCB->hidlib.size_x > PCB->hidlib.size_y) {
+			zx = global.ps_height / PCB->hidlib.size_x;
+			zy = global.ps_width / PCB->hidlib.size_y;
 		}
 		else {
-			zx = global.ps_height / PCB->MaxHeight;
-			zy = global.ps_width / PCB->MaxWidth;
+			zx = global.ps_height / PCB->hidlib.size_y;
+			zy = global.ps_width / PCB->hidlib.size_x;
 		}
 		global.scale_factor *= MIN(zx, zy);
 	}
@@ -580,8 +580,8 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 
 	global.exps.view.X1 = 0;
 	global.exps.view.Y1 = 0;
-	global.exps.view.X2 = PCB->MaxWidth;
-	global.exps.view.Y2 = PCB->MaxHeight;
+	global.exps.view.X2 = PCB->hidlib.size_x;
+	global.exps.view.Y2 = PCB->hidlib.size_y;
 
 	if ((!global.multi_file && !global.multi_file_cam) && (options[HA_toc].int_value)) {
 		/* %%Page DSC requires both a label and an ordinal */
@@ -845,7 +845,7 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 		pcb_fprintf(global.f, "72 72 scale %mi %mi translate\n", global.media_width / 2, global.media_height / 2);
 
 		boffset = global.media_height / 2;
-		if (PCB->MaxWidth > PCB->MaxHeight) {
+		if (PCB->hidlib.size_x > PCB->hidlib.size_y) {
 			fprintf(global.f, "90 rotate\n");
 			boffset = global.media_width / 2;
 			fprintf(global.f, "%g %g scale %% calibration\n", global.calibration_y, global.calibration_x);
@@ -857,14 +857,14 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 			fprintf(global.f, "1 -1 scale\n");
 
 		fprintf(global.f, "%g dup neg scale\n", PCB_LAYER_IS_FAB(flags, purpi) ? 1.0 : global.scale_factor);
-		pcb_fprintf(global.f, "%mi %mi translate\n", -PCB->MaxWidth / 2, -PCB->MaxHeight / 2);
+		pcb_fprintf(global.f, "%mi %mi translate\n", -PCB->hidlib.size_x / 2, -PCB->hidlib.size_y / 2);
 
 		/* Keep the drill list from falling off the left edge of the paper,
 		 * even if it means some of the board falls off the right edge.
 		 * If users don't want to make smaller boards, or use fewer drill
 		 * sizes, they can always ignore this sheet. */
 		if (PCB_LAYER_IS_FAB(flags, purpi)) {
-			pcb_coord_t natural = boffset - PCB_MIL_TO_COORD(500) - PCB->MaxHeight / 2;
+			pcb_coord_t natural = boffset - PCB_MIL_TO_COORD(500) - PCB->hidlib.size_y / 2;
 			pcb_coord_t needed = pcb_stub_draw_fab_overhang();
 			pcb_fprintf(global.f, "%% PrintFab overhang natural %mi, needed %mi\n", natural, needed);
 			if (needed > natural)
@@ -886,15 +886,15 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 									"0 setgray %mi setlinewidth 0 0 moveto 0 "
 									"%mi lineto %mi %mi lineto %mi 0 lineto closepath %s\n",
 									conf_core.design.min_wid,
-									PCB->MaxHeight, PCB->MaxWidth, PCB->MaxHeight, PCB->MaxWidth, global.invert ? "fill" : "stroke");
+									PCB->hidlib.size_y, PCB->hidlib.size_x, PCB->hidlib.size_y, PCB->hidlib.size_x, global.invert ? "fill" : "stroke");
 			}
 		}
 
 		if (global.align_marks) {
 			corner(global.f, 0, 0, -1, -1);
-			corner(global.f, PCB->MaxWidth, 0, 1, -1);
-			corner(global.f, PCB->MaxWidth, PCB->MaxHeight, 1, 1);
-			corner(global.f, 0, PCB->MaxHeight, -1, 1);
+			corner(global.f, PCB->hidlib.size_x, 0, 1, -1);
+			corner(global.f, PCB->hidlib.size_x, PCB->hidlib.size_y, 1, 1);
+			corner(global.f, 0, PCB->hidlib.size_y, -1, 1);
 		}
 
 		global.linewidth = -1;

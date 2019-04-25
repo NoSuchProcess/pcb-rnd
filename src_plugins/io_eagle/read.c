@@ -479,10 +479,10 @@ static pcb_subc_t *eagle_libelem_by_idx(read_state_t *st, trnode_t *libs, long l
 
 static void size_bump(read_state_t *st, pcb_coord_t x, pcb_coord_t y)
 {
-	if (x > st->pcb->MaxWidth)
-		st->pcb->MaxWidth = x;
-	if (y > st->pcb->MaxHeight)
-		st->pcb->MaxHeight = y;
+	if (x > st->pcb->hidlib.size_x)
+		st->pcb->hidlib.size_x = x;
+	if (y > st->pcb->hidlib.size_y)
+		st->pcb->hidlib.size_y = y;
 }
 
 /* Convert eagle Rxxx to degrees. Binary n*1024 string converted to Rxxx in eagle_bin.c */
@@ -1425,7 +1425,7 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 			}
 
 			if (back)
-				pcb_subc_change_side(new_subc, 2 * y - st->pcb->MaxHeight);
+				pcb_subc_change_side(new_subc, 2 * y - st->pcb->hidlib.size_y);
 
 			size_bump(st, new_subc->BoundingBox.X2, new_subc->BoundingBox.Y2);
 		}

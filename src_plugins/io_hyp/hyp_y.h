@@ -1,8 +1,9 @@
-/* A Bison parser, made by GNU Bison 3.0.2.  */
+/* A Bison parser, made by GNU Bison 3.3.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2019 Free Software Foundation,
+   Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -30,6 +31,9 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
+
 #ifndef YY_HYY_HYP_Y_H_INCLUDED
 # define YY_HYY_HYP_Y_H_INCLUDED
 /* Debug traces.  */
@@ -48,11 +52,11 @@
 extern int hyydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 21 "hyp_y.y" /* yacc.c:1909  */
+#line 21 "hyp_y.y" /* yacc.c:1921  */
 
 #include "parser.h"
 
-#line 56 "hyp_y.h" /* yacc.c:1909  */
+#line 60 "hyp_y.h" /* yacc.c:1921  */
 
 /* Token type.  */
 #ifndef HYYTOKENTYPE
@@ -165,18 +169,20 @@ extern int hyydebug;
 
 /* Value type.  */
 #if ! defined HYYSTYPE && ! defined HYYSTYPE_IS_DECLARED
-typedef union HYYSTYPE HYYSTYPE;
+
 union HYYSTYPE
 {
-#line 30 "hyp_y.y" /* yacc.c:1909  */
+#line 30 "hyp_y.y" /* yacc.c:1921  */
 
     int boolval;
     int intval;
     double floatval;
     char* strval;
 
-#line 179 "hyp_y.h" /* yacc.c:1909  */
+#line 183 "hyp_y.h" /* yacc.c:1921  */
 };
+
+typedef union HYYSTYPE HYYSTYPE;
 # define HYYSTYPE_IS_TRIVIAL 1
 # define HYYSTYPE_IS_DECLARED 1
 #endif

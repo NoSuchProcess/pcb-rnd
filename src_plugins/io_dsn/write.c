@@ -66,7 +66,7 @@ static void group_name(char *dst, const char *src, pcb_layergrp_id_t gid)
 }
 
 #define COORDX(x) (x)
-#define COORDY(y) (PCB->MaxHeight - (y))
+#define COORDY(y) (PCB->hidlib.size_y - (y))
 
 static int dsn_write_structure(dsn_write_t *wctx)
 {

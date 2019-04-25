@@ -560,7 +560,7 @@ static int mesh_sort(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 
 	r = vtr0_alloc_append(&mesh->line[dir].dens, 1);
 	r->begin = mesh->line[dir].dens.array[vtr0_len(&mesh->line[dir].dens)-2].end;
-	r->end = (dir == PCB_MESH_HORIZONTAL) ? PCB->MaxHeight : PCB->MaxWidth;
+	r->end = (dir == PCB_MESH_HORIZONTAL) ? PCB->hidlib.size_y : PCB->hidlib.size_x;
 	r->data[0].c = mesh->dens_gap;
 
 
@@ -728,7 +728,7 @@ static int mesh_vis_xy(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	mesh_trace("\n");
 
 	mesh_trace("%s result:\n", dir == PCB_MESH_HORIZONTAL ? "horizontal" : "vertical");
-	end = (dir == PCB_MESH_HORIZONTAL) ? PCB->MaxWidth : PCB->MaxHeight;
+	end = (dir == PCB_MESH_HORIZONTAL) ? PCB->hidlib.size_x : PCB->hidlib.size_y;
 	for(n = 0; n < vtc0_len(&mesh->line[dir].result); n++) {
 		mesh_trace(" %mm", mesh->line[dir].result.array[n]);
 		mesh_draw_line(mesh, dir, mesh->line[dir].result.array[n], 0, end, PCB_MM_TO_COORD(0.03));
@@ -742,9 +742,9 @@ static int mesh_vis_z(pcb_mesh_t *mesh)
 {
 	int n;
 	pcb_layergrp_id_t gid;
-	pcb_coord_t x0 = PCB->MaxWidth/15, y0 = PCB->MaxHeight/3, y = y0, y2;
-	pcb_coord_t xl = PCB->MaxWidth/5; /* board left */
-	pcb_coord_t xr = PCB->MaxWidth/5*3; /* board right */
+	pcb_coord_t x0 = PCB->hidlib.size_x/15, y0 = PCB->hidlib.size_y/3, y = y0, y2;
+	pcb_coord_t xl = PCB->hidlib.size_x/5; /* board left */
+	pcb_coord_t xr = PCB->hidlib.size_x/5*3; /* board right */
 	pcb_coord_t spen = PCB_MM_TO_COORD(0.3), cpen = PCB_MM_TO_COORD(0.2), mpen = PCB_MM_TO_COORD(0.03);
 	int mag = 2;
 
@@ -770,7 +770,7 @@ static int mesh_vis_z(pcb_mesh_t *mesh)
 	for(n = 0; n < vtc0_len(&mesh->line[PCB_MESH_Z].result); n++) {
 		pcb_coord_t y = y0+mesh->line[PCB_MESH_Z].result.array[n]*mag;
 		mesh_trace(" %mm", y);
-		pcb_line_new(mesh->ui_layer_z, 0, y, PCB->MaxWidth, y, mpen, 0, pcb_no_flags());
+		pcb_line_new(mesh->ui_layer_z, 0, y, PCB->hidlib.size_x, y, mpen, 0, pcb_no_flags());
 	}
 	mesh_trace("\n");
 	return 0;
@@ -892,7 +892,7 @@ static int mesh_auto_build(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	/* right edge, after the last known line */
 	if (!mesh->noimpl) {
 		c1 = mesh->line[dir].edge.array[vtc0_len(&mesh->line[dir].edge)-1];
-		c2 = (dir == PCB_MESH_HORIZONTAL) ? PCB->MaxHeight : PCB->MaxWidth;
+		c2 = (dir == PCB_MESH_HORIZONTAL) ? PCB->hidlib.size_y : PCB->hidlib.size_x;
 		mesh_find_range(&mesh->line[dir].dens, (c1+c2)/2, &d, &d1, &d2);
 		if (mesh->smooth)
 			mesh_auto_add_smooth(&mesh->line[dir].result, c1, c2, d1, d, d2);

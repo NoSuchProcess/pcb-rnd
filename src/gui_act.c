@@ -976,10 +976,10 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *a1, *a2, *a3;
 
 	extra_units_x[0].scale = PCB->hidlib.grid;
-	extra_units_x[2].scale = PCB->MaxWidth;
+	extra_units_x[2].scale = PCB->hidlib.size_x;
 
 	extra_units_y[0].scale = PCB->hidlib.grid;
-	extra_units_y[2].scale = PCB->MaxHeight;
+	extra_units_y[2].scale = PCB->hidlib.size_y;
 
 	pcb_gui->get_view_size(&view_width, &view_height);
 

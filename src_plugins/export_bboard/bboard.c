@@ -521,7 +521,7 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 			group_data[pcb_layer_get_group(PCB, i)].draw = 1;
 	}
 
-	bboard_init_board_cairo(PCB->MaxWidth, PCB->MaxHeight, bboard_bgcolor, options[HA_antialias].int_value);
+	bboard_init_board_cairo(PCB->hidlib.size_x, PCB->hidlib.size_y, bboard_bgcolor, options[HA_antialias].int_value);
 
 TODO("subc: rewrite")
 #if 0

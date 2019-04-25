@@ -147,8 +147,8 @@ void openscad_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 
 	ctx.view.X1 = 0;
 	ctx.view.Y1 = 0;
-	ctx.view.X2 = PCB->MaxWidth;
-	ctx.view.Y2 = PCB->MaxHeight;
+	ctx.view.X2 = PCB->hidlib.size_x;
+	ctx.view.Y2 = PCB->hidlib.size_y;
 
 	f = the_file;
 

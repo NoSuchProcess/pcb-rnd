@@ -311,8 +311,8 @@ static void gcode_start_png(const char *basename, const char *suffix)
 
 	buf = gcode_get_png_name(basename, suffix);
 
-	h = pcb_to_gcode(PCB->MaxHeight);
-	w = pcb_to_gcode(PCB->MaxWidth);
+	h = pcb_to_gcode(PCB->hidlib.size_y);
+	w = pcb_to_gcode(PCB->hidlib.size_x);
 
 	/* Nelma only works with true color images */
 	gcode_im = gdImageCreate(w, h);
@@ -346,8 +346,8 @@ void gcode_start_png_export()
 
 	ctx.view.X1 = 0;
 	ctx.view.Y1 = 0;
-	ctx.view.X2 = PCB->MaxWidth;
-	ctx.view.Y2 = PCB->MaxHeight;
+	ctx.view.X2 = PCB->hidlib.size_x;
+	ctx.view.Y2 = PCB->hidlib.size_y;
 
 	linewidth = -1;
 	lastbrush = (gdImagePtr) ((void *) -1);
@@ -465,9 +465,9 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 			fprintf(gcode_f2, "(%d dpi)\n", gcode_dpi);
 			fprintf(gcode_f2, "(Unit: %s)\n", metric ? "mm" : "inch");
 			if (metric)
-				pcb_fprintf(gcode_f2, "(Board size: %.2mmx%.2mm mm)", PCB->MaxWidth, PCB->MaxHeight);
+				pcb_fprintf(gcode_f2, "(Board size: %.2mmx%.2mm mm)", PCB->hidlib.size_x, PCB->hidlib.size_y);
 			else
-				pcb_fprintf(gcode_f2, "(Board size: %.2mix%.2mi inches)", PCB->MaxWidth, PCB->MaxHeight);
+				pcb_fprintf(gcode_f2, "(Board size: %.2mix%.2mi inches)", PCB->hidlib.size_x, PCB->hidlib.size_y);
 			fprintf(gcode_f2, "#100=%f  (safe Z)\n", gcode_safeZ);
 			fprintf(gcode_f2, "#101=%f  (cutting depth)\n", gcode_cutdepth);
 			fprintf(gcode_f2, "(---------------------------------)\n");
@@ -512,9 +512,9 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 				fprintf(gcode_f2, "( %s )\n", filename);
 				fprintf(gcode_f2, "(Unit: %s)\n", metric ? "mm" : "inch");
 				if (metric)
-					pcb_fprintf(gcode_f2, "(Board size: %.2mmx%.2mm mm)", PCB->MaxWidth, PCB->MaxHeight);
+					pcb_fprintf(gcode_f2, "(Board size: %.2mmx%.2mm mm)", PCB->hidlib.size_x, PCB->hidlib.size_y);
 				else
-					pcb_fprintf(gcode_f2, "(Board size: %.2mix%.2mi inches)", PCB->MaxWidth, PCB->MaxHeight);
+					pcb_fprintf(gcode_f2, "(Board size: %.2mix%.2mi inches)", PCB->hidlib.size_x, PCB->hidlib.size_y);
 				fprintf(gcode_f2, "#100=%f  (safe Z)\n", gcode_safeZ);
 				fprintf(gcode_f2, "#101=%f  (drill depth)\n", gcode_drilldepth);
 				fprintf(gcode_f2, "(---------------------------------)\n");
@@ -830,8 +830,8 @@ static void gcode_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, p
 			drill = (struct drill_struct *) realloc(drill, (nmax_drill + 100) * sizeof(struct drill_struct));
 			nmax_drill += 100;
 		}
-		drill[n_drill].x = PCB_COORD_TO_INCH(PCB->MaxWidth - cx);	/* convert to inch, flip: will drill from bottom side */
-		drill[n_drill].y = PCB_COORD_TO_INCH(PCB->MaxHeight - cy);	/* PCB reverses y axis */
+		drill[n_drill].x = PCB_COORD_TO_INCH(PCB->hidlib.size_x - cx);	/* convert to inch, flip: will drill from bottom side */
+		drill[n_drill].y = PCB_COORD_TO_INCH(PCB->hidlib.size_y - cy);	/* PCB reverses y axis */
 		n_drill++;
 /*              printf("Circle %d %d\n",cx,cy); */
 	}

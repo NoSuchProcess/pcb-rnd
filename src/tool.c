@@ -300,8 +300,8 @@ void pcb_tool_attach_for_copy(pcb_coord_t PlaceX, pcb_coord_t PlaceY, pcb_bool d
 	pcb_obj_get_bbox_naked(pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3, &box);
 	pcb_crosshair_set_range(pcb_crosshair.AttachedObject.X - box.X1,
 										pcb_crosshair.AttachedObject.Y - box.Y1,
-										PCB->MaxWidth - (box.X2 - pcb_crosshair.AttachedObject.X),
-										PCB->MaxHeight - (box.Y2 - pcb_crosshair.AttachedObject.Y));
+										PCB->hidlib.size_x - (box.X2 - pcb_crosshair.AttachedObject.X),
+										PCB->hidlib.size_y - (box.Y2 - pcb_crosshair.AttachedObject.Y));
 
 	/* get all attached objects if necessary */
 	if (do_rubberband && conf_core.editor.rubber_band_mode)

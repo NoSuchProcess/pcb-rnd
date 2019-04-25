@@ -145,8 +145,8 @@ static lht_node_t *build_board_meta(pcb_board_t *pcb)
 
 	grp = lht_dom_node_alloc(LHT_HASH, "size");
 	lht_dom_hash_put(meta, grp);
-	lht_dom_hash_put(grp, build_textf("x", CFMT, pcb->MaxWidth));
-	lht_dom_hash_put(grp, build_textf("y", CFMT, pcb->MaxHeight));
+	lht_dom_hash_put(grp, build_textf("x", CFMT, pcb->hidlib.size_x));
+	lht_dom_hash_put(grp, build_textf("y", CFMT, pcb->hidlib.size_y));
 	if (wrver < 5) {
 		lht_dom_hash_put(grp, build_textf("isle_area_nm2", "%f", conf_core.design.poly_isle_area));
 	}

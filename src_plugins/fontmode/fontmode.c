@@ -121,8 +121,8 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	conf_set_design("design/text_font_id", "%s", "0");
 
 
-	PCB->MaxWidth = CELL_SIZE * 18;
-	PCB->MaxHeight = CELL_SIZE * ((PCB_MAX_FONTPOSITION + 15) / 16 + 2);
+	PCB->hidlib.size_x = CELL_SIZE * 18;
+	PCB->hidlib.size_y = CELL_SIZE * ((PCB_MAX_FONTPOSITION + 15) / 16 + 2);
 	PCB->hidlib.grid = PCB_MIL_TO_COORD(5);
 
 	/* create the layer stack and logical layers */
@@ -215,11 +215,11 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	for (l = 0; l < 16; l++) {
 		int x = (l + 1) * CELL_SIZE;
-		pcb_line_new_merge(lgrid, x, 0, x, PCB->MaxHeight, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), pcb_no_flags());
+		pcb_line_new_merge(lgrid, x, 0, x, PCB->hidlib.size_y, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), pcb_no_flags());
 	}
 	for (l = 0; l <= PCB_MAX_FONTPOSITION / 16 + 1; l++) {
 		int y = (l + 1) * CELL_SIZE;
-		pcb_line_new_merge(lgrid, 0, y, PCB->MaxWidth, y, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), pcb_no_flags());
+		pcb_line_new_merge(lgrid, 0, y, PCB->hidlib.size_x, y, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), pcb_no_flags());
 	}
 	PCB_ACT_IRES(0);
 	return 0;

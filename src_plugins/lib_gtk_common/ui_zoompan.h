@@ -45,8 +45,8 @@
 #define	FROM_PCB_UNITS(v)	pcb_coord_to_unit(conf_core.editor.grid_unit, v)
 #define	TO_PCB_UNITS(v)		pcb_unit_to_coord(conf_core.editor.grid_unit, v)
 
-#define SIDE_X(x)         ((conf_core.editor.view.flip_x ? PCB->MaxWidth - (x) : (x)))
-#define SIDE_Y(y)         ((conf_core.editor.view.flip_y ? PCB->MaxHeight - (y) : (y)))
+#define SIDE_X(x)         ((conf_core.editor.view.flip_x ? PCB->hidlib.size_x - (x) : (x)))
+#define SIDE_Y(y)         ((conf_core.editor.view.flip_y ? PCB->hidlib.size_y - (y) : (y)))
 
 #define	DRAW_X(view, x)         (gint)((SIDE_X(x) - (view)->x0) / (view)->coord_per_px)
 #define	DRAW_Y(view, y)         (gint)((SIDE_Y(y) - (view)->y0) / (view)->coord_per_px)

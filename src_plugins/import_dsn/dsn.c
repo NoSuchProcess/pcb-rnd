@@ -127,8 +127,8 @@ static void parse_polyline(long int *nlines, pcb_coord_t clear, const gsxl_node_
 			return;
 		(*nlines)++;
 		if (pn > 0) {
-			/*pcb_line_t *line = */pcb_line_new_merge(layer, lx, PCB->MaxHeight - ly,
-				x, PCB->MaxHeight - y, thick, clear, pcb_flag_make(PCB_FLAG_AUTO | PCB_FLAG_CLEARLINE));
+			/*pcb_line_t *line = */pcb_line_new_merge(layer, lx, PCB->hidlib.size_y - ly,
+				x, PCB->hidlib.size_y - y, thick, clear, pcb_flag_make(PCB_FLAG_AUTO | PCB_FLAG_CLEARLINE));
 /*				pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_LINE, layer, line);*/
 /*				pcb_printf("LINE: %$mm %$mm .. %$mm %$mm\n", lx, ly, x, y);*/
 		}
@@ -196,7 +196,7 @@ static void parse_via(pcb_coord_t clear, const gsxl_node_t *via, dsn_type_t type
 	}
 
 	{
-		pcb_pstk_t *ps = pcb_pstk_new_compat_via(PCB->Data, -1, x, PCB->MaxHeight - y, drill, dia, clear, 0, PCB_PSTK_COMPAT_ROUND, 1);
+		pcb_pstk_t *ps = pcb_pstk_new_compat_via(PCB->Data, -1, x, PCB->hidlib.size_y - y, drill, dia, clear, 0, PCB_PSTK_COMPAT_ROUND, 1);
 		PCB_FLAG_SET(PCB_FLAG_AUTO, ps);
 	}
 }

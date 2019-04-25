@@ -78,7 +78,7 @@ static void gerber_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, 
 
 /* These are for films */
 #define gerberX(pcb, x) ((pcb_coord_t) (x))
-#define gerberY(pcb, y) ((pcb_coord_t) ((pcb)->MaxHeight - (y)))
+#define gerberY(pcb, y) ((pcb_coord_t) ((pcb)->hidlib.size_y - (y)))
 #define gerberXOffset(pcb, x) ((pcb_coord_t) (x))
 #define gerberYOffset(pcb, y) ((pcb_coord_t) (-(y)))
 
@@ -604,8 +604,8 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 
 	ctx.view.X1 = 0;
 	ctx.view.Y1 = 0;
-	ctx.view.X2 = PCB->MaxWidth;
-	ctx.view.Y2 = PCB->MaxHeight;
+	ctx.view.X2 = PCB->hidlib.size_x;
+	ctx.view.Y2 = PCB->hidlib.size_y;
 
 	pagecount = 1;
 	reset_apertures();
@@ -802,7 +802,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 		fprintf(f, "G04 For: %s *\r\n", pcb_author());
 
 		fprintf(f, "G04 Format: Gerber/RS-274X *\r\n");
-		pcb_fprintf(f, "G04 PCB-Dimensions: %[4] %[4] *\r\n", PCB->MaxWidth, PCB->MaxHeight);
+		pcb_fprintf(f, "G04 PCB-Dimensions: %[4] %[4] *\r\n", PCB->hidlib.size_x, PCB->hidlib.size_y);
 		fprintf(f, "G04 PCB-Coordinate-Origin: lower left *\r\n");
 
 		/* Unit and coord format */
@@ -858,10 +858,10 @@ emit_outline:
 				pcb_hid_set_line_width(gc, conf_core.design.min_wid);
 			else
 				pcb_hid_set_line_width(gc, AUTO_OUTLINE_WIDTH);
-			pcb_gui->draw_line(gc, 0, 0, PCB->MaxWidth, 0);
-			pcb_gui->draw_line(gc, 0, 0, 0, PCB->MaxHeight);
-			pcb_gui->draw_line(gc, PCB->MaxWidth, 0, PCB->MaxWidth, PCB->MaxHeight);
-			pcb_gui->draw_line(gc, 0, PCB->MaxHeight, PCB->MaxWidth, PCB->MaxHeight);
+			pcb_gui->draw_line(gc, 0, 0, PCB->hidlib.size_x, 0);
+			pcb_gui->draw_line(gc, 0, 0, 0, PCB->hidlib.size_y);
+			pcb_gui->draw_line(gc, PCB->hidlib.size_x, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
+			pcb_gui->draw_line(gc, 0, PCB->hidlib.size_y, PCB->hidlib.size_x, PCB->hidlib.size_y);
 			pcb_hid_destroy_gc(gc);
 		}
 	}

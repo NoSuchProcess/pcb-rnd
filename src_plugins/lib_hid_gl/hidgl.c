@@ -228,8 +228,8 @@ void hidgl_draw_grid(pcb_box_t *drawn_area)
 
 	x1 = pcb_grid_fit(MAX(0, drawn_area->X1), PCB->hidlib.grid, PCB->hidlib.grid_ox);
 	y1 = pcb_grid_fit(MAX(0, drawn_area->Y1), PCB->hidlib.grid, PCB->hidlib.grid_oy);
-	x2 = pcb_grid_fit(MIN(PCB->MaxWidth, drawn_area->X2), PCB->hidlib.grid, PCB->hidlib.grid_ox);
-	y2 = pcb_grid_fit(MIN(PCB->MaxHeight, drawn_area->Y2), PCB->hidlib.grid, PCB->hidlib.grid_oy);
+	x2 = pcb_grid_fit(MIN(PCB->hidlib.size_x, drawn_area->X2), PCB->hidlib.grid, PCB->hidlib.grid_ox);
+	y2 = pcb_grid_fit(MIN(PCB->hidlib.size_y, drawn_area->Y2), PCB->hidlib.grid, PCB->hidlib.grid_oy);
 
 	if (x1 > x2) {
 		pcb_coord_t tmp = x1;

@@ -187,7 +187,7 @@ Flip board, look at it from the bottom side
 #define TRY(y) \
 do { \
 	if (flip) \
-		y = PCB->MaxHeight - y; \
+		y = PCB->hidlib.size_y - y; \
 } while(0)
 
 
@@ -214,8 +214,8 @@ void svg_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 
 	ctx.view.X1 = 0;
 	ctx.view.Y1 = 0;
-	ctx.view.X2 = PCB->MaxWidth;
-	ctx.view.Y2 = PCB->MaxHeight;
+	ctx.view.X2 = PCB->hidlib.size_x;
+	ctx.view.Y2 = PCB->hidlib.size_y;
 
 	f = the_file;
 
@@ -243,7 +243,7 @@ void svg_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 
 	if (photo_mode) {
 		pcb_fprintf(f, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
-			0, 0, PCB->MaxWidth, PCB->MaxHeight, board_color);
+			0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y, board_color);
 	}
 
 	opacity = options[HA_opacity].int_value;
@@ -286,8 +286,8 @@ static void svg_header(void)
 	pcb_coord_t w, h, x1, y1, x2, y2;
 
 	fprintf(f, "<?xml version=\"1.0\"?>\n");
-	w = PCB->MaxWidth;
-	h = PCB->MaxHeight;
+	w = PCB->hidlib.size_x;
+	h = PCB->hidlib.size_y;
 	while((w < PCB_MM_TO_COORD(1024)) && (h < PCB_MM_TO_COORD(1024))) {
 		w *= 2;
 		h *= 2;
@@ -295,8 +295,8 @@ static void svg_header(void)
 
 	x1 = PCB_MM_TO_COORD(2);
 	y1 = PCB_MM_TO_COORD(2);
-	x2 = PCB->MaxWidth;
-	y2 = PCB->MaxHeight;
+	x2 = PCB->hidlib.size_x;
+	y2 = PCB->hidlib.size_y;
 	x2 += PCB_MM_TO_COORD(5);
 	y2 += PCB_MM_TO_COORD(5);
 	pcb_fprintf(f, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%mm\" height=\"%mm\" viewBox=\"-%mm -%mm %mm %mm\">\n", w, h, x1, y1, x2, y2);
@@ -481,7 +481,7 @@ static void svg_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const p
 			pcb_append_printf(&snormal, "<!-- Composite: reset -->\n");
 			pcb_append_printf(&snormal, "<defs>\n");
 			pcb_append_printf(&snormal, "<g id=\"comp_pixel_%d\">\n", comp_cnt);
-			pcb_append_printf(&sclip, "<mask id=\"comp_clip_%d\" maskUnits=\"userSpaceOnUse\" x=\"0\" y=\"0\" width=\"%mm\" height=\"%mm\">\n", comp_cnt, PCB->MaxWidth, PCB->MaxHeight);
+			pcb_append_printf(&sclip, "<mask id=\"comp_clip_%d\" maskUnits=\"userSpaceOnUse\" x=\"0\" y=\"0\" width=\"%mm\" height=\"%mm\">\n", comp_cnt, PCB->hidlib.size_x, PCB->hidlib.size_y);
 			break;
 
 		case PCB_HID_COMP_POSITIVE:

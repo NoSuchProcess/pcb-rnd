@@ -304,22 +304,22 @@ pcbname
 		: T_PCB '(' STRING ')'
 			{
 				yyPCB->Name = $3;
-				yyPCB->MaxWidth = PCB_MAX_COORD;
-				yyPCB->MaxHeight = PCB_MAX_COORD;
+				yyPCB->hidlib.size_x = PCB_MAX_COORD;
+				yyPCB->hidlib.size_y = PCB_MAX_COORD;
 				old_fmt = 1;
 			}
 		| T_PCB '(' STRING measure measure ')'
 			{
 				yyPCB->Name = $3;
-				yyPCB->MaxWidth = OU ($4);
-				yyPCB->MaxHeight = OU ($5);
+				yyPCB->hidlib.size_x = OU ($4);
+				yyPCB->hidlib.size_y = OU ($5);
 				old_fmt = 1;
 			}
 		| T_PCB '[' STRING measure measure ']'
 			{
 				yyPCB->Name = $3;
-				yyPCB->MaxWidth = NU ($4);
-				yyPCB->MaxHeight = NU ($5);
+				yyPCB->hidlib.size_x = NU ($4);
+				yyPCB->hidlib.size_y = NU ($5);
 				old_fmt = 0;
 			}
 		;

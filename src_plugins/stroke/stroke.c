@@ -47,8 +47,8 @@
 
 conf_stroke_t conf_stroke;
 
-#define SIDE_X(x)  ((conf_core.editor.view.flip_x ? PCB->MaxWidth - (x) : (x)))
-#define SIDE_Y(y)  ((conf_core.editor.view.flip_y ? PCB->MaxHeight - (y) : (y)))
+#define SIDE_X(x)  ((conf_core.editor.view.flip_x ? PCB->hidlib.size_x - (x) : (x)))
+#define SIDE_Y(y)  ((conf_core.editor.view.flip_y ? PCB->hidlib.size_y - (y) : (y)))
 
 static const char *pcb_stroke_cookie = "stroke plugin";
 

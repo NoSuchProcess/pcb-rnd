@@ -127,7 +127,7 @@ static fgw_error_t pcb_act_info(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 	printf("Filename: %s\n", PCB->Filename);
-	pcb_printf("Size: %ml x %ml mils, %mm x %mm mm\n", PCB->MaxWidth, PCB->MaxHeight, PCB->MaxWidth, PCB->MaxHeight);
+	pcb_printf("Size: %ml x %ml mils, %mm x %mm mm\n", PCB->hidlib.size_x, PCB->hidlib.size_y, PCB->hidlib.size_x, PCB->hidlib.size_y);
 	for (i = 0; i < PCB_MAX_LAYER; i++) {
 		pcb_layergrp_id_t lg = pcb_layer_get_group(PCB, i);
 		unsigned int gflg = pcb_layergrp_flags(PCB, lg);
@@ -288,8 +288,8 @@ static void batch_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, in
 
 static void batch_get_view_size(pcb_coord_t *width, pcb_coord_t *height)
 {
-	*width = PCB->MaxWidth;
-	*height = PCB->MaxHeight;
+	*width = PCB->hidlib.size_x;
+	*height = PCB->hidlib.size_y;
 }
 
 static void batch_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)

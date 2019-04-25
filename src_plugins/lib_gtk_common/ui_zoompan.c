@@ -76,8 +76,8 @@ static void pcb_gtk_pan_common(pcb_gtk_view_t *v)
 	v->y0 = MAX(-v->height, v->y0);
 
 	if (v->use_max_pcb) {
-		v->x0 = MIN(v->x0, PCB->MaxWidth);
-		v->y0 = MIN(v->y0, PCB->MaxHeight);
+		v->x0 = MIN(v->x0, PCB->hidlib.size_x);
+		v->y0 = MIN(v->y0, PCB->hidlib.size_y);
 	}
 	else {
 		assert(v->max_width > 0);
@@ -211,7 +211,7 @@ static void pcb_gtk_zoom_view_win_side(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_co
 void pcb_gtk_zoom_view_fit(pcb_gtk_view_t *v)
 {
 	pcb_gtk_pan_view_abs(v, SIDE_X(0), SIDE_Y(0), 0, 0);
-	ghid_zoom_view_abs(v, SIDE_X(0), SIDE_Y(0), MAX(PCB->MaxWidth / v->canvas_width, PCB->MaxHeight / v->canvas_height));
+	ghid_zoom_view_abs(v, SIDE_X(0), SIDE_Y(0), MAX(PCB->hidlib.size_x / v->canvas_width, PCB->hidlib.size_y / v->canvas_height));
 }
 
 static void pcb_gtk_flip_view(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, pcb_bool flip_x, pcb_bool flip_y)

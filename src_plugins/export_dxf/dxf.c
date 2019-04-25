@@ -220,8 +220,8 @@ void dxf_hid_export_to_file(dxf_ctx_t *ctx, pcb_hid_attr_val_t * options)
 
 	hectx.view.X1 = 0;
 	hectx.view.Y1 = 0;
-	hectx.view.X2 = PCB->MaxWidth;
-	hectx.view.Y2 = PCB->MaxHeight;
+	hectx.view.X2 = PCB->hidlib.size_x;
+	hectx.view.Y2 = PCB->hidlib.size_y;
 
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 
@@ -246,7 +246,7 @@ int insert_hdr(FILE *f, const char *prefix, char *name, lht_err_t *err)
 	if (strcmp(name, "extmin") == 0)
 		fprintf(f, "10\n0\n20\n0\n30\n0\n");
 	else if (strcmp(name, "extmax") == 0)
-		pcb_fprintf(f, "10\n%mm\n20\n0\n30\n%mm\n", PCB->MaxWidth, PCB->MaxHeight);
+		pcb_fprintf(f, "10\n%mm\n20\n0\n30\n%mm\n", PCB->hidlib.size_x, PCB->hidlib.size_y);
 	else if (strcmp(name, "layers") == 0) {
 		const char **s;
 		for(s = layer_names; *s != NULL; s++)

@@ -312,8 +312,8 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 
 	netlist_ctx.bb_prv.X1 = 0;
 	netlist_ctx.bb_prv.Y1 = 0;
-	netlist_ctx.bb_prv.X2 = pcb->MaxWidth;
-	netlist_ctx.bb_prv.Y2 = pcb->MaxHeight;
+	netlist_ctx.bb_prv.X2 = pcb->hidlib.size_x;
+	netlist_ctx.bb_prv.Y2 = pcb->hidlib.size_y;
 	netlist_ctx.pcb = pcb;
 
 	PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* layout */

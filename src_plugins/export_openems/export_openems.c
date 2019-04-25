@@ -345,9 +345,9 @@ TODO("layer: consider multiple outline layers instead")
 	else {
 		/* rectangular board size */
 		pcb_fprintf(ctx->f, "outline_xy(1, 1) = 0; outline_xy(2, 1) = 0;\n");
-		pcb_fprintf(ctx->f, "outline_xy(1, 2) = %mm; outline_xy(2, 2) = 0;\n", ctx->pcb->MaxWidth);
-		pcb_fprintf(ctx->f, "outline_xy(1, 3) = %mm; outline_xy(2, 3) = %mm;\n", ctx->pcb->MaxWidth, -ctx->pcb->MaxHeight);
-		pcb_fprintf(ctx->f, "outline_xy(1, 4) = 0; outline_xy(2, 4) = %mm;\n", -ctx->pcb->MaxHeight);
+		pcb_fprintf(ctx->f, "outline_xy(1, 2) = %mm; outline_xy(2, 2) = 0;\n", ctx->pcb->hidlib.size_x);
+		pcb_fprintf(ctx->f, "outline_xy(1, 3) = %mm; outline_xy(2, 3) = %mm;\n", ctx->pcb->hidlib.size_x, -ctx->pcb->hidlib.size_y);
+		pcb_fprintf(ctx->f, "outline_xy(1, 4) = 0; outline_xy(2, 4) = %mm;\n", -ctx->pcb->hidlib.size_y);
 	}
 
 	/* create all substrate layers using this polygon*/
@@ -604,8 +604,8 @@ void openems_hid_export_to_file(const char *filename, FILE *the_file, FILE *fsim
 
 	ctx.view.X1 = 0;
 	ctx.view.Y1 = 0;
-	ctx.view.X2 = PCB->MaxWidth;
-	ctx.view.Y2 = PCB->MaxHeight;
+	ctx.view.X2 = PCB->hidlib.size_x;
+	ctx.view.Y2 = PCB->hidlib.size_y;
 
 	f = the_file;
 

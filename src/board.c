@@ -90,7 +90,7 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 	/* NOTE: we used to set all the pcb flags on ptr here, but we don't need to do that anymore due to the new conf system */
 	ptr->hidlib.grid = conf_core.editor.grid;
 
-	ptr->MaxHeight = ptr->MaxWidth = PCB_MM_TO_COORD(20); /* should be overriden by the default design */
+	ptr->hidlib.size_y = ptr->hidlib.size_x = PCB_MM_TO_COORD(20); /* should be overriden by the default design */
 	ptr->ID = pcb_create_ID_get();
 	ptr->ThermScale = 0.5;
 
@@ -259,8 +259,8 @@ pcb_bool pcb_board_change_name(char *Name)
 
 void pcb_board_resize(pcb_coord_t Width, pcb_coord_t Height)
 {
-	PCB->MaxWidth = Width;
-	PCB->MaxHeight = Height;
+	PCB->hidlib.size_x = Width;
+	PCB->hidlib.size_y = Height;
 
 	/* crosshair range is different if pastebuffer-mode
 	 * is enabled
@@ -374,13 +374,13 @@ int pcb_board_normalize(pcb_board_t *pcb)
 	if (pcb_data_bbox(&b, pcb->Data, pcb_false) == NULL)
 		return -1;
 
-	if ((b.X2 - b.X1) > pcb->MaxWidth) {
-		pcb->MaxWidth = b.X2 - b.X1;
+	if ((b.X2 - b.X1) > pcb->hidlib.size_x) {
+		pcb->hidlib.size_x = b.X2 - b.X1;
 		chg++;
 	}
 
-	if ((b.Y2 - b.Y1) > pcb->MaxHeight) {
-		pcb->MaxHeight = b.Y2 - b.Y1;
+	if ((b.Y2 - b.Y1) > pcb->hidlib.size_y) {
+		pcb->hidlib.size_y = b.Y2 - b.Y1;
 		chg++;
 	}
 

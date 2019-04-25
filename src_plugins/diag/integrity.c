@@ -116,7 +116,7 @@ static void chk_subc_cache(pcb_subc_t *subc)
 	if ((subc->BoundingBox.X2 < 0) || (subc->BoundingBox.Y2 < 0))
 		pcb_message(PCB_MSG_ERROR, CHK "subc %ld is on negative coordinates; its bottom right corner is %$mm;%$mm\n", subc->ID, subc->BoundingBox.X2, subc->BoundingBox.Y2);
 
-	if ((subc->BoundingBox.X1 > PCB->MaxWidth) || (subc->BoundingBox.Y1 > PCB->MaxHeight))
+	if ((subc->BoundingBox.X1 > PCB->hidlib.size_x) || (subc->BoundingBox.Y1 > PCB->hidlib.size_y))
 		pcb_message(PCB_MSG_ERROR, CHK "subc %ld is olost beyond board extents; its top left corner is %$mm;%$mm\n", subc->ID, subc->BoundingBox.X1, subc->BoundingBox.Y1);
 
 	if ((arefdes == NULL) && (subc->refdes == NULL))

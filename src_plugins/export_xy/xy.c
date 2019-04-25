@@ -363,12 +363,12 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 	}
 	if (strncmp(*input, "boardw%", 7) == 0) {
 		*input += 7;
-		pcb_append_printf(s, "%m+%mN", xy_unit->allow, PCB->MaxWidth);
+		pcb_append_printf(s, "%m+%mN", xy_unit->allow, PCB->hidlib.size_x);
 		return 0;
 	}
 	if (strncmp(*input, "boardh%", 7) == 0) {
 		*input += 7;
-		pcb_append_printf(s, "%m+%mN", xy_unit->allow, PCB->MaxHeight);
+		pcb_append_printf(s, "%m+%mN", xy_unit->allow, PCB->hidlib.size_y);
 		return 0;
 	}
 	if (strncmp(*input, "subc.", 5) == 0) {
@@ -638,7 +638,7 @@ static void xy_translate(subst_ctx_t *ctx, pcb_coord_t *x, pcb_coord_t *y)
 			*x = *x - ctx->ox;
 		}
 		else
-			*y = PCB->MaxHeight - *y;
+			*y = PCB->hidlib.size_y - *y;
 }
 
 typedef struct {

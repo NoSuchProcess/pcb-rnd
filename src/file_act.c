@@ -157,8 +157,8 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB->Name = name;
 
 		pcb_layervis_reset_stack();
-		pcb_crosshair_set_range(0, 0, PCB->MaxWidth, PCB->MaxHeight);
-		pcb_center_display(PCB->MaxWidth / 2, PCB->MaxHeight / 2);
+		pcb_crosshair_set_range(0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
+		pcb_center_display(PCB->hidlib.size_x / 2, PCB->hidlib.size_y / 2);
 		pcb_redraw();
 		pcb_board_changed(0);
 		pcb_notify_crosshair_change(pcb_true);

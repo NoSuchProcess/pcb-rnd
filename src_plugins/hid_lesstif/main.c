@@ -177,7 +177,7 @@ static void ShowCrosshair(pcb_bool show)
 }
 
 /* This is the size of the current PCB work area.  */
-/* Use PCB->MaxWidth, PCB->MaxHeight.  */
+/* Use PCB->hidlib.size_x, PCB->hidlib.size_y.  */
 /* static int pcb_width, pcb_height; */
 static int use_private_colormap = 0;
 static int stdin_listen = 0;
@@ -351,18 +351,18 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (work_area == 0)
 		return;
-	/*pcb_printf("PCB Changed! %$mD\n", PCB->MaxWidth, PCB->MaxHeight); */
+	/*pcb_printf("PCB Changed! %$mD\n", PCB->hidlib.size_x, PCB->hidlib.size_y); */
 	stdarg_n = 0;
 	stdarg(XmNminimum, 0);
 	stdarg(XmNvalue, 0);
-	stdarg(XmNsliderSize, PCB->MaxWidth ? PCB->MaxWidth : 1);
-	stdarg(XmNmaximum, PCB->MaxWidth ? PCB->MaxWidth : 1);
+	stdarg(XmNsliderSize, PCB->hidlib.size_x ? PCB->hidlib.size_x : 1);
+	stdarg(XmNmaximum, PCB->hidlib.size_x ? PCB->hidlib.size_x : 1);
 	XtSetValues(hscroll, stdarg_args, stdarg_n);
 	stdarg_n = 0;
 	stdarg(XmNminimum, 0);
 	stdarg(XmNvalue, 0);
-	stdarg(XmNsliderSize, PCB->MaxHeight ? PCB->MaxHeight : 1);
-	stdarg(XmNmaximum, PCB->MaxHeight ? PCB->MaxHeight : 1);
+	stdarg(XmNsliderSize, PCB->hidlib.size_y ? PCB->hidlib.size_y : 1);
+	stdarg(XmNmaximum, PCB->hidlib.size_y ? PCB->hidlib.size_y : 1);
 	XtSetValues(vscroll, stdarg_args, stdarg_n);
 	zoom_max();
 
@@ -783,8 +783,8 @@ static double ltf_benchmark(void)
 
 	ctx.view.X1 = 0;
 	ctx.view.Y1 = 0;
-	ctx.view.X2 = PCB->MaxWidth;
-	ctx.view.Y2 = PCB->MaxHeight;
+	ctx.view.X2 = PCB->hidlib.size_x;
+	ctx.view.Y2 = PCB->hidlib.size_y;
 
 	pixmap = window;
 	XSync(display, 0);
@@ -961,8 +961,8 @@ static void DrawBackgroundImage()
 {
 	int x, y, w, h;
 	double xscale, yscale;
-	int pcbwidth = PCB->MaxWidth / view_zoom;
-	int pcbheight = PCB->MaxHeight / view_zoom;
+	int pcbwidth = PCB->hidlib.size_x / view_zoom;
+	int pcbheight = PCB->hidlib.size_y / view_zoom;
 
 	if (!window || !bg)
 		return;
@@ -979,8 +979,8 @@ static void DrawBackgroundImage()
 	w = MIN(view_width, pcbwidth);
 	h = MIN(view_height, pcbheight);
 
-	xscale = (double) bg_w / PCB->MaxWidth;
-	yscale = (double) bg_h / PCB->MaxHeight;
+	xscale = (double) bg_w / PCB->hidlib.size_x;
+	yscale = (double) bg_h / PCB->hidlib.size_y;
 
 	for (y = 0; y < h; y++) {
 		int pr = Py(y);
@@ -1023,29 +1023,29 @@ static void set_scroll(Widget s, int pos, int view, int pcb)
 
 void lesstif_pan_fixup()
 {
-	if (view_left_x > PCB->MaxWidth + (view_width * view_zoom))
-		view_left_x = PCB->MaxWidth + (view_width * view_zoom);
-	if (view_top_y > PCB->MaxHeight + (view_height * view_zoom))
-		view_top_y = PCB->MaxHeight + (view_height * view_zoom);
+	if (view_left_x > PCB->hidlib.size_x + (view_width * view_zoom))
+		view_left_x = PCB->hidlib.size_x + (view_width * view_zoom);
+	if (view_top_y > PCB->hidlib.size_y + (view_height * view_zoom))
+		view_top_y = PCB->hidlib.size_y + (view_height * view_zoom);
 	if (view_left_x < -(view_width * view_zoom))
 		view_left_x = -(view_width * view_zoom);
 	if (view_top_y < -(view_height * view_zoom))
 		view_top_y = -(view_height * view_zoom);
 
-	set_scroll(hscroll, view_left_x, view_width, PCB->MaxWidth);
-	set_scroll(vscroll, view_top_y, view_height, PCB->MaxHeight);
+	set_scroll(hscroll, view_left_x, view_width, PCB->hidlib.size_x);
+	set_scroll(vscroll, view_top_y, view_height, PCB->hidlib.size_y);
 
 	lesstif_invalidate_all();
 }
 
 static void zoom_max()
 {
-	double new_zoom = PCB->MaxWidth / view_width;
-	if (new_zoom < PCB->MaxHeight / view_height)
-		new_zoom = PCB->MaxHeight / view_height;
+	double new_zoom = PCB->hidlib.size_x / view_width;
+	if (new_zoom < PCB->hidlib.size_y / view_height)
+		new_zoom = PCB->hidlib.size_y / view_height;
 
-	view_left_x = -(view_width * new_zoom - PCB->MaxWidth) / 2;
-	view_top_y = -(view_height * new_zoom - PCB->MaxHeight) / 2;
+	view_left_x = -(view_width * new_zoom - PCB->hidlib.size_x) / 2;
+	view_top_y = -(view_height * new_zoom - PCB->hidlib.size_y) / 2;
 	view_zoom = new_zoom;
 	pcb_pixel_slop = view_zoom;
 	lesstif_pan_fixup();
@@ -1068,9 +1068,9 @@ static void zoom_to(double new_zoom, pcb_coord_t x, pcb_coord_t y)
 	if (conf_core.editor.view.flip_y)
 		yfrac = 1 - yfrac;
 
-	max_zoom = PCB->MaxWidth / view_width;
-	if (max_zoom < PCB->MaxHeight / view_height)
-		max_zoom = PCB->MaxHeight / view_height;
+	max_zoom = PCB->hidlib.size_x / view_width;
+	if (max_zoom < PCB->hidlib.size_y / view_height)
+		max_zoom = PCB->hidlib.size_y / view_height;
 
 	max_zoom *= MAX_ZOOM_SCALE;
 
@@ -1140,12 +1140,12 @@ static void Pan(int mode, pcb_coord_t x, pcb_coord_t y)
 	   proportional to the cursor position in the window (like the Xaw
 	   thumb panner) */
 	if (pan_thumb_mode) {
-		opx = x * PCB->MaxWidth / view_width;
-		opy = y * PCB->MaxHeight / view_height;
+		opx = x * PCB->hidlib.size_x / view_width;
+		opy = y * PCB->hidlib.size_y / view_height;
 		if (conf_core.editor.view.flip_x)
-			opx = PCB->MaxWidth - opx;
+			opx = PCB->hidlib.size_x - opx;
 		if (conf_core.editor.view.flip_y)
-			opy = PCB->MaxHeight - opy;
+			opy = PCB->hidlib.size_y - opy;
 		view_left_x = opx - view_width / 2 * view_zoom;
 		view_top_y = opy - view_height / 2 * view_zoom;
 		lesstif_pan_fixup();
@@ -1699,7 +1699,7 @@ static void lesstif_do_export(pcb_hid_attr_val_t * options)
 	stdarg_n = 0;
 	stdarg(XmNorientation, XmVERTICAL);
 	stdarg(XmNprocessingDirection, XmMAX_ON_BOTTOM);
-	stdarg(XmNmaximum, PCB->MaxHeight ? PCB->MaxHeight : 1);
+	stdarg(XmNmaximum, PCB->hidlib.size_y ? PCB->hidlib.size_y : 1);
 	vscroll = XmCreateScrollBar(mainwind, XmStrCast("vscroll"), stdarg_args, stdarg_n);
 	XtAddCallback(vscroll, XmNvalueChangedCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_top_y);
 	XtAddCallback(vscroll, XmNdragCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_top_y);
@@ -1707,7 +1707,7 @@ static void lesstif_do_export(pcb_hid_attr_val_t * options)
 
 	stdarg_n = 0;
 	stdarg(XmNorientation, XmHORIZONTAL);
-	stdarg(XmNmaximum, PCB->MaxWidth ? PCB->MaxWidth : 1);
+	stdarg(XmNmaximum, PCB->hidlib.size_x ? PCB->hidlib.size_x : 1);
 	hscroll = XmCreateScrollBar(mainwind, XmStrCast("hscroll"), stdarg_args, stdarg_n);
 	XtAddCallback(hscroll, XmNvalueChangedCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_left_x);
 	XtAddCallback(hscroll, XmNdragCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_left_x);
@@ -2332,13 +2332,13 @@ static Boolean idle_proc(XtPointer dummy)
 		XSetForeground(display, bg_gc, bgcolor);
 		XFillRectangle(display, main_pixmap, bg_gc, 0, 0, mx, my);
 
-		if (ctx.view.X1 < 0 || ctx.view.Y1 < 0 || ctx.view.X2 > PCB->MaxWidth || ctx.view.Y2 > PCB->MaxHeight) {
+		if (ctx.view.X1 < 0 || ctx.view.Y1 < 0 || ctx.view.X2 > PCB->hidlib.size_x || ctx.view.Y2 > PCB->hidlib.size_y) {
 			int leftmost, rightmost, topmost, bottommost;
 
 			leftmost = Vx(0);
-			rightmost = Vx(PCB->MaxWidth);
+			rightmost = Vx(PCB->hidlib.size_x);
 			topmost = Vy(0);
-			bottommost = Vy(PCB->MaxHeight);
+			bottommost = Vy(PCB->hidlib.size_y);
 			if (leftmost > rightmost) {
 				int t = leftmost;
 				leftmost = rightmost;
@@ -2693,7 +2693,7 @@ static void lesstif_invalidate_lr(pcb_coord_t l, pcb_coord_t r, pcb_coord_t t, p
 
 void lesstif_invalidate_all(void)
 {
-	lesstif_invalidate_lr(0, PCB->MaxWidth, 0, PCB->MaxHeight);
+	lesstif_invalidate_lr(0, PCB->hidlib.size_x, 0, PCB->hidlib.size_y);
 }
 
 static void lesstif_notify_crosshair_change(pcb_bool changes_complete)

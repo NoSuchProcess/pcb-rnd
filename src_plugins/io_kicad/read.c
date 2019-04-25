@@ -545,8 +545,8 @@ static int kicad_update_size(read_state_t *st)
 	int n;
 	for(n = 0; n < DIM_max; n++) {
 		if (st->dim_valid[n]) {
-			st->pcb->MaxWidth = st->width[n];
-			st->pcb->MaxHeight = st->height[n];
+			st->pcb->hidlib.size_x = st->width[n];
+			st->pcb->hidlib.size_y = st->height[n];
 			return 0;
 		}
 	}

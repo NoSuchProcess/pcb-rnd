@@ -501,7 +501,7 @@ void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 /* this results in saving flipped (bottom-side) footprints whenlooking at the board from the bottom */
 	PCB_SUBC_LOOP(Buffer->Data);
 	{
-		pcb_subc_change_side(subc, /*2 * pcb_crosshair.Y - PCB->MaxHeight*/0);
+		pcb_subc_change_side(subc, /*2 * pcb_crosshair.Y - PCB->hidlib.size_y*/0);
 	}
 	PCB_END_LOOP;
 #endif

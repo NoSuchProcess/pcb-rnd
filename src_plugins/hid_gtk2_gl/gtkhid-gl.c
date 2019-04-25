@@ -157,7 +157,7 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int pu
 	glTranslatef(0.0f, 0.0f, -Z_NEAR);
 
 	glScalef((conf_core.editor.view.flip_x ? -1. : 1.) / gport->view.coord_per_px, (conf_core.editor.view.flip_y ? -1. : 1.) / gport->view.coord_per_px, ((conf_core.editor.view.flip_x == conf_core.editor.view.flip_y) ? 1. : -1.) / gport->view.coord_per_px);
-	glTranslatef(conf_core.editor.view.flip_x ? gport->view.x0 - PCB->MaxWidth : -gport->view.x0, conf_core.editor.view.flip_y ? gport->view.y0 - PCB->MaxHeight : -gport->view.y0, 0);
+	glTranslatef(conf_core.editor.view.flip_x ? gport->view.x0 - PCB->hidlib.size_x : -gport->view.x0, conf_core.editor.view.flip_y ? gport->view.y0 - PCB->hidlib.size_y : -gport->view.y0, 0);
 
 	/* Put the renderer into a good state so that any drawing is done in standard mode */
 
@@ -286,11 +286,11 @@ void pcb_gl_draw_texture(GLuint texture_handle)
 	glTexCoord2d(0., 0.);
 	glVertex3i(0, 0, 0);
 	glTexCoord2d(1., 0.);
-	glVertex3i(PCB->MaxWidth, 0, 0);
+	glVertex3i(PCB->hidlib.size_x, 0, 0);
 	glTexCoord2d(1., 1.);
-	glVertex3i(PCB->MaxWidth, PCB->MaxHeight, 0);
+	glVertex3i(PCB->hidlib.size_x, PCB->hidlib.size_y, 0);
 	glTexCoord2d(0., 1.);
-	glVertex3i(0, PCB->MaxHeight, 0);
+	glVertex3i(0, PCB->hidlib.size_y, 0);
 	glEnd();
 
 	glDisable(GL_TEXTURE_2D);
@@ -636,34 +636,34 @@ static void ghid_gl_notify_mark_change(pcb_bool changes_complete)
 static void pcb_gl_draw_right_cross(GLint x, GLint y, GLint z)
 {
 	glVertex3i(x, 0, z);
-	glVertex3i(x, PCB->MaxHeight, z);
+	glVertex3i(x, PCB->hidlib.size_y, z);
 	glVertex3i(0, y, z);
-	glVertex3i(PCB->MaxWidth, y, z);
+	glVertex3i(PCB->hidlib.size_x, y, z);
 }
 
 static void pcb_gl_draw_slanted_cross(GLint x, GLint y, GLint z)
 {
 	GLint x0, y0, x1, y1;
 
-	x0 = x + (PCB->MaxHeight - y);
-	x0 = MAX(0, MIN(x0, PCB->MaxWidth));
+	x0 = x + (PCB->hidlib.size_y - y);
+	x0 = MAX(0, MIN(x0, PCB->hidlib.size_x));
 	x1 = x - y;
-	x1 = MAX(0, MIN(x1, PCB->MaxWidth));
-	y0 = y + (PCB->MaxWidth - x);
-	y0 = MAX(0, MIN(y0, PCB->MaxHeight));
+	x1 = MAX(0, MIN(x1, PCB->hidlib.size_x));
+	y0 = y + (PCB->hidlib.size_x - x);
+	y0 = MAX(0, MIN(y0, PCB->hidlib.size_y));
 	y1 = y - x;
-	y1 = MAX(0, MIN(y1, PCB->MaxHeight));
+	y1 = MAX(0, MIN(y1, PCB->hidlib.size_y));
 	glVertex3i(x0, y0, z);
 	glVertex3i(x1, y1, z);
 
-	x0 = x - (PCB->MaxHeight - y);
-	x0 = MAX(0, MIN(x0, PCB->MaxWidth));
+	x0 = x - (PCB->hidlib.size_y - y);
+	x0 = MAX(0, MIN(x0, PCB->hidlib.size_x));
 	x1 = x + y;
-	x1 = MAX(0, MIN(x1, PCB->MaxWidth));
+	x1 = MAX(0, MIN(x1, PCB->hidlib.size_x));
 	y0 = y + x;
-	y0 = MAX(0, MIN(y0, PCB->MaxHeight));
-	y1 = y - (PCB->MaxWidth - x);
-	y1 = MAX(0, MIN(y1, PCB->MaxHeight));
+	y0 = MAX(0, MIN(y0, PCB->hidlib.size_y));
+	y1 = y - (PCB->hidlib.size_x - x);
+	y1 = MAX(0, MIN(y1, PCB->hidlib.size_y));
 	glVertex3i(x0, y0, z);
 	glVertex3i(x1, y1, z);
 }
@@ -673,47 +673,47 @@ static void pcb_gl_draw_dozen_cross(GLint x, GLint y, GLint z)
 	GLint x0, y0, x1, y1;
 	gdouble tan60 = sqrt(3);
 
-	x0 = x + (PCB->MaxHeight - y) / tan60;
-	x0 = MAX(0, MIN(x0, PCB->MaxWidth));
+	x0 = x + (PCB->hidlib.size_y - y) / tan60;
+	x0 = MAX(0, MIN(x0, PCB->hidlib.size_x));
 	x1 = x - y / tan60;
-	x1 = MAX(0, MIN(x1, PCB->MaxWidth));
-	y0 = y + (PCB->MaxWidth - x) * tan60;
-	y0 = MAX(0, MIN(y0, PCB->MaxHeight));
+	x1 = MAX(0, MIN(x1, PCB->hidlib.size_x));
+	y0 = y + (PCB->hidlib.size_x - x) * tan60;
+	y0 = MAX(0, MIN(y0, PCB->hidlib.size_y));
 	y1 = y - x * tan60;
-	y1 = MAX(0, MIN(y1, PCB->MaxHeight));
+	y1 = MAX(0, MIN(y1, PCB->hidlib.size_y));
 	glVertex3i(x0, y0, z);
 	glVertex3i(x1, y1, z);
 
-	x0 = x + (PCB->MaxHeight - y) * tan60;
-	x0 = MAX(0, MIN(x0, PCB->MaxWidth));
+	x0 = x + (PCB->hidlib.size_y - y) * tan60;
+	x0 = MAX(0, MIN(x0, PCB->hidlib.size_x));
 	x1 = x - y * tan60;
-	x1 = MAX(0, MIN(x1, PCB->MaxWidth));
-	y0 = y + (PCB->MaxWidth - x) / tan60;
-	y0 = MAX(0, MIN(y0, PCB->MaxHeight));
+	x1 = MAX(0, MIN(x1, PCB->hidlib.size_x));
+	y0 = y + (PCB->hidlib.size_x - x) / tan60;
+	y0 = MAX(0, MIN(y0, PCB->hidlib.size_y));
 	y1 = y - x / tan60;
-	y1 = MAX(0, MIN(y1, PCB->MaxHeight));
+	y1 = MAX(0, MIN(y1, PCB->hidlib.size_y));
 	glVertex3i(x0, y0, z);
 	glVertex3i(x1, y1, z);
 
-	x0 = x - (PCB->MaxHeight - y) / tan60;
-	x0 = MAX(0, MIN(x0, PCB->MaxWidth));
+	x0 = x - (PCB->hidlib.size_y - y) / tan60;
+	x0 = MAX(0, MIN(x0, PCB->hidlib.size_x));
 	x1 = x + y / tan60;
-	x1 = MAX(0, MIN(x1, PCB->MaxWidth));
+	x1 = MAX(0, MIN(x1, PCB->hidlib.size_x));
 	y0 = y + x * tan60;
-	y0 = MAX(0, MIN(y0, PCB->MaxHeight));
-	y1 = y - (PCB->MaxWidth - x) * tan60;
-	y1 = MAX(0, MIN(y1, PCB->MaxHeight));
+	y0 = MAX(0, MIN(y0, PCB->hidlib.size_y));
+	y1 = y - (PCB->hidlib.size_x - x) * tan60;
+	y1 = MAX(0, MIN(y1, PCB->hidlib.size_y));
 	glVertex3i(x0, y0, z);
 	glVertex3i(x1, y1, z);
 
-	x0 = x - (PCB->MaxHeight - y) * tan60;
-	x0 = MAX(0, MIN(x0, PCB->MaxWidth));
+	x0 = x - (PCB->hidlib.size_y - y) * tan60;
+	x0 = MAX(0, MIN(x0, PCB->hidlib.size_x));
 	x1 = x + y * tan60;
-	x1 = MAX(0, MIN(x1, PCB->MaxWidth));
+	x1 = MAX(0, MIN(x1, PCB->hidlib.size_x));
 	y0 = y + x / tan60;
-	y0 = MAX(0, MIN(y0, PCB->MaxHeight));
-	y1 = y - (PCB->MaxWidth - x) / tan60;
-	y1 = MAX(0, MIN(y1, PCB->MaxHeight));
+	y0 = MAX(0, MIN(y0, PCB->hidlib.size_y));
+	y1 = y - (PCB->hidlib.size_x - x) / tan60;
+	y1 = MAX(0, MIN(y1, PCB->hidlib.size_y));
 	glVertex3i(x0, y0, z);
 	glVertex3i(x1, y1, z);
 }
@@ -928,10 +928,10 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 	ctx.view.Y1 = MIN(Py(ev->area.y), Py(ev->area.y + ev->area.height + 1));
 	ctx.view.Y2 = MAX(Py(ev->area.y), Py(ev->area.y + ev->area.height + 1));
 
-	ctx.view.X1 = MAX(0, MIN(PCB->MaxWidth, ctx.view.X1));
-	ctx.view.X2 = MAX(0, MIN(PCB->MaxWidth, ctx.view.X2));
-	ctx.view.Y1 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y1));
-	ctx.view.Y2 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y2));
+	ctx.view.X1 = MAX(0, MIN(PCB->hidlib.size_x, ctx.view.X1));
+	ctx.view.X2 = MAX(0, MIN(PCB->hidlib.size_x, ctx.view.X2));
+	ctx.view.Y1 = MAX(0, MIN(PCB->hidlib.size_y, ctx.view.Y1));
+	ctx.view.Y2 = MAX(0, MIN(PCB->hidlib.size_y, ctx.view.Y2));
 
 	gtk2gl_color(&off_c, &priv->offlimits_color);
 	gtk2gl_color(&bg_c, &priv->bg_color);
@@ -939,15 +939,15 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 	pcb_gl_draw_expose_init(&gtk2_gl_hid, allocation.width, allocation.height, ev->area.x, allocation.height - ev->area.height - ev->area.y, ev->area.width, ev->area.height, &off_c);
 
 	glScalef((conf_core.editor.view.flip_x ? -1. : 1.) / port->view.coord_per_px, (conf_core.editor.view.flip_y ? -1. : 1.) / port->view.coord_per_px, ((conf_core.editor.view.flip_x == conf_core.editor.view.flip_y) ? 1. : -1.) / port->view.coord_per_px);
-	glTranslatef(conf_core.editor.view.flip_x ? port->view.x0 - PCB->MaxWidth : -port->view.x0, conf_core.editor.view.flip_y ? port->view.y0 - PCB->MaxHeight : -port->view.y0, 0);
+	glTranslatef(conf_core.editor.view.flip_x ? port->view.x0 - PCB->hidlib.size_x : -port->view.x0, conf_core.editor.view.flip_y ? port->view.y0 - PCB->hidlib.size_y : -port->view.y0, 0);
 
 	/* Draw PCB background, before PCB primitives */
 	glColor3f(bg_c.red, bg_c.green, bg_c.blue);
 	glBegin(GL_QUADS);
 	glVertex3i(0, 0, 0);
-	glVertex3i(PCB->MaxWidth, 0, 0);
-	glVertex3i(PCB->MaxWidth, PCB->MaxHeight, 0);
-	glVertex3i(0, PCB->MaxHeight, 0);
+	glVertex3i(PCB->hidlib.size_x, 0, 0);
+	glVertex3i(PCB->hidlib.size_x, PCB->hidlib.size_y, 0);
+	glVertex3i(0, PCB->hidlib.size_y, 0);
 	glEnd();
 
 	ghid_gl_draw_bg_image();
@@ -1085,7 +1085,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	ghid_gl_invalidate_current_gc();
 	glPushMatrix();
 	glScalef((conf_core.editor.view.flip_x ? -1. : 1.) / gport->view.coord_per_px, (conf_core.editor.view.flip_y ? -1. : 1.) / gport->view.coord_per_px, 1);
-	glTranslatef(conf_core.editor.view.flip_x ? gport->view.x0 - PCB->MaxWidth : -gport->view.x0, conf_core.editor.view.flip_y ? gport->view.y0 - PCB->MaxHeight : -gport->view.y0, 0);
+	glTranslatef(conf_core.editor.view.flip_x ? gport->view.x0 - PCB->hidlib.size_x : -gport->view.x0, conf_core.editor.view.flip_y ? gport->view.y0 - PCB->hidlib.size_y : -gport->view.y0, 0);
 
 	expcall(&gtk2_gl_hid, ctx);
 

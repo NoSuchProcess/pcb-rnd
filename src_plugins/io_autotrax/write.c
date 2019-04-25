@@ -221,7 +221,7 @@ TODO(": figure which is the gnd and which is the power plane")
 TODO(": add checks for thermals: only gnd/pwr can have them, warn for others")
 
 	pcb_fprintf(ctx->f, "%.0ml %.0ml %.0ml %.0ml %d %.0ml 1 %d\r\n",
-		x+dx, PCB->MaxHeight - (y+dy), w, h,
+		x+dx, PCB->hidlib.size_y - (y+dy), w, h,
 		ashape, drill_dia, alayer);
 
 	fputs(name, ctx->f);
@@ -247,7 +247,7 @@ static int wrax_vias(wctx_t *ctx, pcb_data_t *Data, pcb_coord_t dx, pcb_coord_t 
 static int wrax_line(wctx_t *ctx, pcb_line_t *line, pcb_cardinal_t layer, pcb_coord_t dx, pcb_coord_t dy)
 {
 	int user_routed = 1;
-	pcb_fprintf(ctx->f, "%.0ml %.0ml %.0ml %.0ml %.0ml %d %d\r\n", line->Point1.X+dx, PCB->MaxHeight - (line->Point1.Y+dy), line->Point2.X+dx, PCB->MaxHeight - (line->Point2.Y+dy), line->Thickness, layer, user_routed);
+	pcb_fprintf(ctx->f, "%.0ml %.0ml %.0ml %.0ml %.0ml %d %d\r\n", line->Point1.X+dx, PCB->hidlib.size_y - (line->Point1.Y+dy), line->Point2.X+dx, PCB->hidlib.size_y - (line->Point2.Y+dy), line->Thickness, layer, user_routed);
 	return 0;
 }
 
@@ -255,7 +255,7 @@ static int wrax_line(wctx_t *ctx, pcb_line_t *line, pcb_cardinal_t layer, pcb_co
 static int wrax_pline_segment(wctx_t *ctx, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t Thickness, pcb_cardinal_t layer)
 {
 	int user_routed = 1;
-	pcb_fprintf(ctx->f, "FT\r\n%.0ml %.0ml %.0ml %.0ml %.0ml %d %d\r\n", x1, PCB->MaxHeight - y1, x2, PCB->MaxHeight - y2, Thickness, layer, user_routed);
+	pcb_fprintf(ctx->f, "FT\r\n%.0ml %.0ml %.0ml %.0ml %.0ml %d %d\r\n", x1, PCB->hidlib.size_y - y1, x2, PCB->hidlib.size_y - y2, Thickness, layer, user_routed);
 	return 0;
 }
 
@@ -340,7 +340,7 @@ static int wrax_arc(wctx_t *ctx, pcb_arc_t *arc, int current_layer, pcb_coord_t 
 	else {
 		radius = arc->Width;
 	}
-	pcb_fprintf(ctx->f, "%.0ml %.0ml %.0ml %d %.0ml %d\r\n", arc->X+dx, PCB->MaxHeight - (arc->Y+dy), radius, pcb_rnd_arc_to_autotrax_segments(arc->StartAngle, arc->Delta), arc->Thickness, current_layer);
+	pcb_fprintf(ctx->f, "%.0ml %.0ml %.0ml %d %.0ml %d\r\n", arc->X+dx, PCB->hidlib.size_y - (arc->Y+dy), radius, pcb_rnd_arc_to_autotrax_segments(arc->StartAngle, arc->Delta), arc->Thickness, current_layer);
 	return 0;
 }
 
@@ -469,7 +469,7 @@ TODO(": indicate save incompatibility")
 				else if (direction == 0) /*normal text */
 					rotation = 0;
 
-				pcb_fprintf(ctx->f, "%.0ml %.0ml %.0ml %d %.0ml %d\r\n", text->X+dx, PCB->MaxHeight - (text->Y+dy), textHeight, rotation + autotrax_mirrored, strokeThickness, current_layer);
+				pcb_fprintf(ctx->f, "%.0ml %.0ml %.0ml %d %.0ml %d\r\n", text->X+dx, PCB->hidlib.size_y - (text->Y+dy), textHeight, rotation + autotrax_mirrored, strokeThickness, current_layer);
 				for(index = 0; index < 32; index++) {
 					if (text->TextString[index] == '\0')
 						index = 32;
@@ -506,7 +506,7 @@ TODO(": do not hardcode things like this, especially when actual data is availab
 TODO(": rename these variables to something more expressive")
 TODO(": instead of hardwiring coords, just read existing dyntex coords")
 	xPos = (box->X1 + box->X2) / 2;
-	yPos = PCB->MaxHeight - (box->Y1 - text_offset);
+	yPos = PCB->hidlib.size_y - (box->Y1 - text_offset);
 	yPos2 = yPos - PCB_MIL_TO_COORD(200);
 	yPos3 = yPos2 - PCB_MIL_TO_COORD(200);
 
@@ -580,7 +580,7 @@ TODO(": why do we recalculate the bounding box here?")
 					if (maxy < polygon->Points[i].Y)
 						maxy = polygon->Points[i].Y;
 				}
-				pcb_fprintf(ctx->f, "%cF\r\n%.0ml %.0ml %.0ml %.0ml %d\r\n", (in_subc ? 'C' : 'F'), minx+dx, PCB->MaxHeight - (miny+dy), maxx+dx, PCB->MaxHeight - (maxy+dy), current_layer);
+				pcb_fprintf(ctx->f, "%cF\r\n%.0ml %.0ml %.0ml %.0ml %d\r\n", (in_subc ? 'C' : 'F'), minx+dx, PCB->hidlib.size_y - (miny+dy), maxx+dx, PCB->hidlib.size_y - (maxy+dy), current_layer);
 
 				local_flag |= 1;
 /* here we need to test for non rectangular polygons to flag imperfect export to easy/autotrax
@@ -680,7 +680,7 @@ TODO(": this is a bug - exporting to a file shall not change the content we are 
 	fputs("PCB FILE 4\r\n", FP); /*autotrax header */
 
 	/* we sort out if the layout dimensions exceed the autotrax maxima */
-	if (PCB_COORD_TO_MIL(PCB->MaxWidth) > max_width_mil || PCB_COORD_TO_MIL(PCB->MaxHeight) > max_height_mil) {
+	if (PCB_COORD_TO_MIL(PCB->hidlib.size_x) > max_width_mil || PCB_COORD_TO_MIL(PCB->hidlib.size_y) > max_height_mil) {
 		pcb_message(PCB_MSG_ERROR, "Layout size exceeds protel autotrax 32000 mil x 32000 mil maximum.");
 		return -1;
 	}

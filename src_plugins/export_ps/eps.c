@@ -258,8 +258,8 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t *options)
 
 	region.X1 = 0;
 	region.Y1 = 0;
-	region.X2 = PCB->MaxWidth;
-	region.Y2 = PCB->MaxHeight;
+	region.X2 = PCB->hidlib.size_x;
+	region.Y2 = PCB->hidlib.size_y;
 
 	if (options[HA_only_visible].int_value)
 		bounds = pcb_data_bbox(&tmp, PCB->Data, pcb_false);

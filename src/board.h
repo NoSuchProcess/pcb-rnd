@@ -81,7 +81,6 @@ struct pcb_board_s {
 	pcb_bool RatDraw;                               /* we're drawing rats */
 
 	pcb_bool loose_subc;                            /* when set, subc parts are not locked into the subc */
-	pcb_coord_t MaxWidth, MaxHeight;                /* board dimensions (drawing area extents) */
 
 	double ThermScale;                              /* scale factor used with thermals */
 
@@ -129,7 +128,7 @@ void pcb_board_count_holes(pcb_board_t *pcb, int *plated, int *unplated, const p
 void pcb_board_count_slots(pcb_board_t *pcb, int *plated, int *unplated, const pcb_box_t *within_area);
 
 #define	PCB_SWAP_X(x)		(PCB_SWAP_SIGN_X(x))
-#define	PCB_SWAP_Y(y)		(PCB->MaxHeight +PCB_SWAP_SIGN_Y(y))
+#define	PCB_SWAP_Y(y)		(PCB->hidlib.size_y +PCB_SWAP_SIGN_Y(y))
 
 #define	PCB_CSWAP_X(x, w, cond)		((cond) ? (PCB_SWAP_SIGN_X(x)) : (x))
 #define	PCB_CSWAP_Y(y, h, cond)		((cond) ? (h+PCB_SWAP_SIGN_Y(y)) : (y))

@@ -270,7 +270,7 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 		pcb_gui->set_color(pcb_draw_out.fgGC, &PCB->Data->Layer[goutl->lid[0]].meta.real.color);
 		pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, conf_core.design.min_wid);
-		pcb_gui->draw_rect(pcb_draw_out.fgGC, 0, 0, PCB->MaxWidth, PCB->MaxHeight);
+		pcb_gui->draw_rect(pcb_draw_out.fgGC, 0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
 
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 		pcb_gui->end_layer();

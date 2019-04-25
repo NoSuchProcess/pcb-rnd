@@ -25,8 +25,8 @@ void pcb_gtk_tw_ranges_scale(pcb_gtk_topwin_t *tw)
 	 */
 	pcb_gtk_zoom_post(&gport->view);
 
-	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->h_range)), gport->view.width, PCB->MaxWidth);
-	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->v_range)), gport->view.height, PCB->MaxHeight);
+	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->h_range)), gport->view.width, PCB->hidlib.size_x);
+	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->v_range)), gport->view.height, PCB->hidlib.size_y);
 }
 
 void ghid_note_event_location(GdkEventButton *ev)

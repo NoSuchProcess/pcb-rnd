@@ -1162,8 +1162,8 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	}
 
 	if (box != NULL) {
-		Ptr->MaxWidth = box->X2;
-		Ptr->MaxHeight = box->Y2;
+		Ptr->hidlib.size_x = box->X2;
+		Ptr->hidlib.size_y = box->Y2;
 	}
 	else
 		pcb_message(PCB_MSG_ERROR, "Can not determine board extents - empty board?\n");

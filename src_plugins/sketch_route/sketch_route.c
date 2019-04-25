@@ -695,7 +695,7 @@ static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 	char name[256];
 
 	sk->cdt = malloc(sizeof(cdt_t));
-	cdt_init(sk->cdt, 0, 0, PCB->MaxWidth, -PCB->MaxHeight);
+	cdt_init(sk->cdt, 0, 0, PCB->hidlib.size_x, -PCB->hidlib.size_y);
 	htpp_init(&sk->terminals, ptrhash, ptrkeyeq);
 	sk->wires.elem_constructor = vtwire_constructor;
 	sk->wires.elem_destructor = vtwire_destructor;
@@ -708,7 +708,7 @@ static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 
 	sk->spoke_tree = pcb_r_create_tree();
 
-	bbox.X1 = 0; bbox.Y1 = 0; bbox.X2 = PCB->MaxWidth; bbox.Y2 = PCB->MaxHeight;
+	bbox.X1 = 0; bbox.Y1 = 0; bbox.X2 = PCB->hidlib.size_x; bbox.Y2 = PCB->hidlib.size_y;
 	info.layer = layer;
 	info.sk = sk;
 	pcb_r_search(PCB->Data->padstack_tree, &bbox, NULL, r_search_cb, &info, NULL);

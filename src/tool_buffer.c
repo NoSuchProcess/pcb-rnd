@@ -52,7 +52,7 @@ void pcb_tool_buffer_init(void)
 
 void pcb_tool_buffer_uninit(void)
 {
-	pcb_crosshair_set_range(0, 0, PCB->MaxWidth, PCB->MaxHeight);
+	pcb_crosshair_set_range(0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
 }
 
 void pcb_tool_buffer_notify_mode(void)

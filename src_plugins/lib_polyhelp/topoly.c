@@ -289,7 +289,7 @@ pcb_any_obj_t *pcb_topoly_find_1st_outline(pcb_board_t *pcb)
 	pcb_layer_t *layer;
 	pcb_any_obj_t *best = NULL;
 	pcb_coord_t x, y;
-	double bestd = (double)pcb->MaxHeight*(double)pcb->MaxHeight + (double)pcb->MaxWidth*(double)pcb->MaxWidth;
+	double bestd = (double)pcb->hidlib.size_y*(double)pcb->hidlib.size_y + (double)pcb->hidlib.size_x*(double)pcb->hidlib.size_x;
 
 	for(lid = 0; lid < pcb->Data->LayerN; lid++) {
 		if (!PCB_LAYER_IS_OUTLINE(pcb_layer_flags(PCB, lid), pcb_layer_purpose(PCB, lid, NULL)))

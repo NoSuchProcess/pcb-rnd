@@ -1022,8 +1022,8 @@ void pcb_crosshair_set_range(pcb_coord_t MinX, pcb_coord_t MinY, pcb_coord_t Max
 {
 	pcb_crosshair.MinX = MAX(0, MinX);
 	pcb_crosshair.MinY = MAX(0, MinY);
-	pcb_crosshair.MaxX = MIN(PCB->MaxWidth, MaxX);
-	pcb_crosshair.MaxY = MIN(PCB->MaxHeight, MaxY);
+	pcb_crosshair.MaxX = MIN(PCB->hidlib.size_x, MaxX);
+	pcb_crosshair.MaxY = MIN(PCB->hidlib.size_y, MaxY);
 
 	/* force update of position */
 	pcb_crosshair_move_relative(0, 0);
@@ -1060,8 +1060,8 @@ void pcb_crosshair_init(void)
 
 	/* set default limits */
 	pcb_crosshair.MinX = pcb_crosshair.MinY = 0;
-	pcb_crosshair.MaxX = PCB->MaxWidth;
-	pcb_crosshair.MaxY = PCB->MaxHeight;
+	pcb_crosshair.MaxX = PCB->hidlib.size_x;
+	pcb_crosshair.MaxY = PCB->hidlib.size_y;
 
 	/* Initialize the onpoint data. */
 	memset(&pcb_crosshair.onpoint_objs, 0, sizeof(vtop_t));
@@ -1088,12 +1088,12 @@ void pcb_crosshair_range_to_buffer(void)
 		if (pcb_set_buffer_bbox(PCB_PASTEBUFFER) == 0) {
 			pcb_crosshair_set_range(PCB_PASTEBUFFER->X - PCB_PASTEBUFFER->bbox_naked.X1,
 											PCB_PASTEBUFFER->Y - PCB_PASTEBUFFER->bbox_naked.Y1,
-											PCB->MaxWidth -
+											PCB->hidlib.size_x -
 											(PCB_PASTEBUFFER->bbox_naked.X2 - PCB_PASTEBUFFER->X),
-											PCB->MaxHeight - (PCB_PASTEBUFFER->bbox_naked.Y2 - PCB_PASTEBUFFER->Y));
+											PCB->hidlib.size_y - (PCB_PASTEBUFFER->bbox_naked.Y2 - PCB_PASTEBUFFER->Y));
 		}
 		else /* failed to calculate the bounding box of the buffer, it's probably a single-object move, allow the whole page */
-			pcb_crosshair_set_range(0, 0, PCB->MaxWidth, PCB->MaxHeight);
+			pcb_crosshair_set_range(0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
 	}
 }
 
