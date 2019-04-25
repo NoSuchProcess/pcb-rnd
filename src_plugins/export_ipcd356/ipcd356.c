@@ -125,7 +125,7 @@ static void ipcd356_write_head(write_ctx_t *ctx)
 	fprintf(ctx->f, "C  \n");
 	fprintf(ctx->f, "C  File created on %s\n", utc);
 	fprintf(ctx->f, "C  \n");
-	fprintf(ctx->f, "P  JOB   %s\n", (PCB->Name == NULL) ? PCB->Filename : PCB->Name);
+	fprintf(ctx->f, "P  JOB   %s\n", (PCB->hidlib.name == NULL) ? PCB->hidlib.filename : PCB->hidlib.name);
 	fprintf(ctx->f, "P  CODE  00\n");
 	fprintf(ctx->f, "P  UNITS CUST %d\n", ctx->is_mil ? 0 : 1);
 	fprintf(ctx->f, "P  DIM   N\n");
@@ -418,7 +418,7 @@ static pcb_hid_attr_val_t ipcd356_values[NUM_OPTIONS];
 static pcb_hid_attribute_t *ipcd356_get_export_options(int *n)
 {
 	if ((PCB != NULL) && (ipcd356_options[HA_ipcd356_filename].default_val.str_value == NULL))
-		pcb_derive_default_filename(PCB->Filename, &ipcd356_options[HA_ipcd356_filename], ".net");
+		pcb_derive_default_filename(PCB->hidlib.filename, &ipcd356_options[HA_ipcd356_filename], ".net");
 
 	if (n != NULL)
 		*n = NUM_OPTIONS;

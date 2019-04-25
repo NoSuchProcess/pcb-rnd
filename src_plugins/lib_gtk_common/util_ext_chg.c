@@ -43,10 +43,10 @@ pcb_bool check_externally_modified(pcb_gtk_ext_chg_t *ec)
 	GTimeVal timeval;
 
 	/* Treat zero time as a flag to indicate we've not got an mtime yet */
-	if (PCB->Filename == NULL || (ec->our_mtime.tv_sec == 0 && ec->our_mtime.tv_usec == 0))
+	if (PCB->hidlib.filename == NULL || (ec->our_mtime.tv_sec == 0 && ec->our_mtime.tv_usec == 0))
 		return pcb_false;
 
-	file = g_file_new_for_path(PCB->Filename);
+	file = g_file_new_for_path(PCB->hidlib.filename);
 	info = g_file_query_info(file, G_FILE_ATTRIBUTE_TIME_MODIFIED, G_FILE_QUERY_INFO_NONE, NULL, NULL);
 	g_object_unref(file);
 
@@ -76,10 +76,10 @@ void update_board_mtime_from_disk(pcb_gtk_ext_chg_t *ec)
 	ec->our_mtime.tv_usec = 0;
 	ec->last_seen_mtime = ec->our_mtime;
 
-	if (PCB->Filename == NULL)
+	if (PCB->hidlib.filename == NULL)
 		return;
 
-	file = g_file_new_for_path(PCB->Filename);
+	file = g_file_new_for_path(PCB->hidlib.filename);
 	info = g_file_query_info(file, G_FILE_ATTRIBUTE_TIME_MODIFIED, G_FILE_QUERY_INFO_NONE, NULL, NULL);
 	g_object_unref(file);
 

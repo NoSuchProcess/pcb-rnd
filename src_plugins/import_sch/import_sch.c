@@ -190,7 +190,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (sources == NULL) {
 		/* Replace .pcb with .sch and hope for the best.  */
-		char *pcbname = PCB->Filename;
+		char *pcbname = PCB->hidlib.filename;
 		char *schname;
 		char *dot, *slash, *bslash;
 
@@ -327,7 +327,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		cmd[0] = conf_import_sch.plugins.import_sch.make_program;
 		cmd[1] = "-s";
-		cmd[2] = pcb_concat("PCB=", PCB->Filename, NULL);
+		cmd[2] = pcb_concat("PCB=", PCB->hidlib.filename, NULL);
 		cmd[3] = srclist;
 		cmd[4] = pcb_concat("OUT=", tmpfile, NULL);
 		i = 5;

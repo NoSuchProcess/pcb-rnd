@@ -288,7 +288,7 @@ static void WritePCBDataHeader(FILE * FP)
 	fprintf(FP, "FileVersion[%i]\n", PCBFileVersionNeeded());
 
 	fputs("\nPCB[", FP);
-	pcb_print_quoted_string(FP, (char *) PCB_EMPTY(PCB->Name));
+	pcb_print_quoted_string(FP, (char *) PCB_EMPTY(PCB->hidlib.name));
 	pcb_fprintf(FP, " %[0] %[0]]\n\n", PCB->hidlib.size_x, PCB->hidlib.size_y);
 	pcb_fprintf(FP, "Grid[%[0] %[0] %[0] %d]\n", PCB->hidlib.grid, PCB->hidlib.grid_ox, PCB->hidlib.grid_oy, conf_core.editor.draw_grid);
 	pcb_fprintf(FP, "Cursor[%[0] %[0] 1000]\n", pcb_crosshair.X, pcb_crosshair.Y);

@@ -162,7 +162,7 @@ pcb_coord_t bboard_scale_coord(pcb_coord_t x)
 static pcb_hid_attribute_t *bboard_get_export_options(int *n)
 {
 	if ((PCB != NULL)  && (bboard_options[HA_bboardfile].default_val.str_value == NULL))
-		pcb_derive_default_filename(PCB->Filename, &bboard_options[HA_bboardfile], ".png");
+		pcb_derive_default_filename(PCB->hidlib.filename, &bboard_options[HA_bboardfile], ".png");
 
 	bboard_options[HA_bgcolor].default_val.str_value = pcb_strdup("#FFFFFF");
 

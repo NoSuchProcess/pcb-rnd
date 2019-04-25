@@ -67,7 +67,7 @@ typedef struct _BomList {
 static pcb_hid_attribute_t *bom_get_export_options(int *n)
 {
 	if ((PCB != NULL)  && (bom_options[HA_bomfile].default_val.str_value == NULL))
-		pcb_derive_default_filename(PCB->Filename, &bom_options[HA_bomfile], ".bom");
+		pcb_derive_default_filename(PCB->hidlib.filename, &bom_options[HA_bomfile], ".bom");
 
 	if (n)
 		*n = NUM_OPTIONS;
@@ -251,7 +251,7 @@ static int PrintBOM(void)
 	fprintf(fp, "# PcbBOM Version 1.0\n");
 	fprintf(fp, "# Date: %s\n", utcTime);
 	fprintf(fp, "# Author: %s\n", pcb_author());
-	fprintf(fp, "# Title: %s - PCB BOM\n", PCB_UNKNOWN(PCB->Name));
+	fprintf(fp, "# Title: %s - PCB BOM\n", PCB_UNKNOWN(PCB->hidlib.name));
 	fprintf(fp, "# Quantity, Description, Value, RefDes\n");
 	fprintf(fp, "# --------------------------------------------\n");
 

@@ -1678,8 +1678,8 @@ static int dsn_parse_pcb(dsn_read_t *ctx, gsxl_node_t *root)
 	/* default unit in case the file does not specify one */
 	ctx->unit = get_unit_struct("inch");
 
-	free(ctx->pcb->Name);
-	ctx->pcb->Name = pcb_strdup(STRE(root->children));
+	free(ctx->pcb->hidlib.name);
+	ctx->pcb->hidlib.name = pcb_strdup(STRE(root->children));
 
 	for(n = root->children->next; n != NULL; n = n->next) {
 		if (n->str == NULL)

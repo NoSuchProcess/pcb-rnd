@@ -84,7 +84,7 @@ static fgw_error_t pcb_act_Savetedax(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (pcb_strcasecmp(type, "stackup") == 0) {
-		PCB_ACT_IRES(tedax_stackup_save(PCB, PCB->Name, fname));
+		PCB_ACT_IRES(tedax_stackup_save(PCB, PCB->hidlib.name, fname));
 		return 0;
 	}
 

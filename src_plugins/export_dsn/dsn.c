@@ -109,7 +109,7 @@ static const char *dsn_filename;
 static pcb_hid_attribute_t *dsn_get_export_options(int *n)
 {
 	if ((PCB != NULL)  && (dsn_options[HA_dsnfile].default_val.str_value == NULL))
-		pcb_derive_default_filename(PCB->Filename, &dsn_options[HA_dsnfile], ".dsn");
+		pcb_derive_default_filename(PCB->hidlib.filename, &dsn_options[HA_dsnfile], ".dsn");
 	if (n)
 		*n = NUM_OPTIONS;
 	return dsn_options;
@@ -513,7 +513,7 @@ static int PrintSPECCTRA(void)
 	}
 
 	/* pcb [required] */
-	fprintf(fp, "(pcb %s\n", ((PCB->Name) && *(PCB->Name) ? (PCB->Name) : "notnamed"));
+	fprintf(fp, "(pcb %s\n", ((PCB->hidlib.name) && *(PCB->hidlib.name) ? (PCB->hidlib.name) : "notnamed"));
 
 	/* parser descriptor [optional] */
 	fprintf(fp, "  (parser\n");

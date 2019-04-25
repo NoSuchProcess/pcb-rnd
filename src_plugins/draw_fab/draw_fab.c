@@ -326,7 +326,7 @@ static void DrawFab(pcb_draw_info_t *info, pcb_hid_gc_t gc, const pcb_hid_expose
 	yoff -= TEXT_LINE;
 	text_at(info, gc, PCB_MIL_TO_COORD(2000), yoff, 0, "Author: %s", pcb_author());
 	yoff -= TEXT_LINE;
-	text_at(info, gc, PCB_MIL_TO_COORD(2000), yoff, 0, "Title: %s - Fabrication Drawing", PCB_UNKNOWN(PCB->Name));
+	text_at(info, gc, PCB_MIL_TO_COORD(2000), yoff, 0, "Title: %s - Fabrication Drawing", PCB_UNKNOWN(PCB->hidlib.name));
 }
 
 int pplg_check_ver_draw_fab(int ver_needed) { return 0; }

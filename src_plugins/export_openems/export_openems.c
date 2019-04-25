@@ -164,7 +164,7 @@ static pcb_hid_attribute_t *openems_get_export_options(int *n)
 	pcb_mesh_t *mesh = pcb_mesh_get(MESH_NAME);
 
 	if ((PCB != NULL)  && (openems_attribute_list[HA_openemsfile].default_val.str_value == NULL))
-		pcb_derive_default_filename(PCB->Filename, &openems_attribute_list[HA_openemsfile], suffix);
+		pcb_derive_default_filename(PCB->hidlib.filename, &openems_attribute_list[HA_openemsfile], suffix);
 
 	if (mesh != NULL) {
 		openems_attribute_list[HA_def_substrate_thick].default_val.coord_value = mesh->def_subs_thick;

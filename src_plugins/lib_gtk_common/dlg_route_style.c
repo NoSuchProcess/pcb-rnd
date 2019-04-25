@@ -244,7 +244,7 @@ TODO(": some of these should be in core")
 	make_route_style_buttons(GHID_ROUTE_STYLE(dialog->rss));
 	pcb_trace("Style: %d deleted\n", dialog->rss->selected);
 	pcb_board_set_changed_flag(pcb_true);
-	dialog->rss->com->window_set_name_label(PCB->Name);
+	dialog->rss->com->window_set_name_label(PCB->hidlib.name);
 	add_new_iter(dialog->rss);
 	dialog->inhibit_style_change = 0;
 	pcb_gtk_route_style_select_style(dialog->rss, &pcb_custom_route_style);
@@ -454,7 +454,7 @@ void pcb_gtk_route_style_edit_dialog(pcb_gtk_common_t *com, pcb_gtk_route_style_
 
 		if (changed) {
 			pcb_board_set_changed_flag(pcb_true);
-			com->window_set_name_label(PCB->Name);
+			com->window_set_name_label(PCB->hidlib.name);
 		}
 
 		if (changed || need_rebuild) {

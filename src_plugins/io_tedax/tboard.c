@@ -147,7 +147,7 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 		goto error;
 
 	fprintf(f, "\nbegin board v1 ");
-	tedax_fprint_escape(f, pcb->Name);
+	tedax_fprint_escape(f, pcb->hidlib.name);
 	fputc('\n', f);
 	pcb_fprintf(f, " drawing_area 0 0 %.06mm %.06mm\n", pcb->hidlib.size_x, pcb->hidlib.size_y);
 	for(n = 0, a = pcb->Attributes.List; n < pcb->Attributes.Number; n++,a++) {

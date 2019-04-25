@@ -369,10 +369,10 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 	LesstifNetlistChanged(NULL, 0, NULL);
 	LesstifRouteStylesChanged(NULL, 0, NULL);
 	lesstif_update_layer_groups();
-	if (PCB->Filename) {
-		char *cp = strrchr(PCB->Filename, '/');
+	if (PCB->hidlib.filename) {
+		char *cp = strrchr(PCB->hidlib.filename, '/');
 		stdarg_n = 0;
-		stdarg(XmNtitle, cp ? cp + 1 : PCB->Filename);
+		stdarg(XmNtitle, cp ? cp + 1 : PCB->hidlib.filename);
 		XtSetValues(appwidget, stdarg_args, stdarg_n);
 	}
 	return;

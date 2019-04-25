@@ -344,7 +344,7 @@ static struct {
 static pcb_hid_attribute_t *ps_get_export_options(int *n)
 {
 	if ((PCB != NULL) && (ps_attribute_list[HA_psfile].default_val.str_value == NULL))
-		pcb_derive_default_filename(PCB->Filename, &ps_attribute_list[HA_psfile], ".ps");
+		pcb_derive_default_filename(PCB->hidlib.filename, &ps_attribute_list[HA_psfile], ".ps");
 
 	if (n)
 		*n = NUM_OPTIONS;
@@ -383,7 +383,7 @@ void ps_start_file(FILE * f)
 	 * %%Title DCS provides text title for the document that is useful
 	 * for printing banner pages.
 	 */
-	fprintf(f, "%%%%Title: %s\n", pcb_hid_export_fn(PCB->Filename));
+	fprintf(f, "%%%%Title: %s\n", pcb_hid_export_fn(PCB->hidlib.filename));
 
 	/*
 	 * %%CreationDate DCS indicates the date and time the document was
@@ -745,7 +745,7 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 		if (group < 0 || group != lastgroup) {
 			if (global.pagecount == 1) {
 				currenttime = time(NULL);
-				fprintf(global.f, "30 30 moveto (%s) show\n", pcb_hid_export_fn(PCB->Filename));
+				fprintf(global.f, "30 30 moveto (%s) show\n", pcb_hid_export_fn(PCB->hidlib.filename));
 
 				fprintf(global.f, "(%d.) tocp\n", global.pagecount);
 				fprintf(global.f, "(Table of Contents \\(This Page\\)) toc\n");
@@ -823,11 +823,11 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int 
 		fprintf(global.f, "/Helvetica findfont 10 scalefont setfont\n");
 		if (global.legend) {
 			gds_t tmp;
-			fprintf(global.f, "30 30 moveto (%s) show\n", pcb_hid_export_fn(PCB->Filename));
+			fprintf(global.f, "30 30 moveto (%s) show\n", pcb_hid_export_fn(PCB->hidlib.filename));
 
 			gds_init(&tmp);
-			if (PCB->Name)
-				fprintf(global.f, "30 41 moveto (%s, %s) show\n", PCB->Name, pcb_layer_to_file_name(&tmp, layer, flags, purpose, purpi, PCB_FNS_fixed));
+			if (PCB->hidlib.name)
+				fprintf(global.f, "30 41 moveto (%s, %s) show\n", PCB->hidlib.name, pcb_layer_to_file_name(&tmp, layer, flags, purpose, purpi, PCB_FNS_fixed));
 			else
 				fprintf(global.f, "30 41 moveto (%s) show\n", pcb_layer_to_file_name(&tmp, layer, flags, purpose, purpi, PCB_FNS_fixed));
 			gds_uninit(&tmp);

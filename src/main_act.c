@@ -353,7 +353,7 @@ fgw_error_t pcb_act_System(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_CONVARG(1, FGW_STR, System, cmd = argv[1].val.str);
 	PCB_ACT_IRES(0);
 
-	pcb_setenv("PCB_RND_BOARD_FILE_NAME", PCB->Filename == NULL ? "" : PCB->Filename, 1);
+	pcb_setenv("PCB_RND_BOARD_FILE_NAME", PCB->hidlib.filename == NULL ? "" : PCB->hidlib.filename, 1);
 	pcb_snprintf(tmp, sizeof(tmp), "%mm", pcb_crosshair.X);
 	pcb_setenv("PCB_RND_CROSSHAIR_X_MM", tmp, 1);
 	pcb_snprintf(tmp, sizeof(tmp), "%mm", pcb_crosshair.Y);

@@ -132,8 +132,8 @@ static int dsn_write_board(dsn_write_t *wctx)
 	}
 
 	fprintf(wctx->f, "(pcb ");
-	if ((wctx->pcb->Name != NULL) && (*wctx->pcb->Name != '\0')) {
-		for(s = wctx->pcb->Name; *s != '\0'; s++) {
+	if ((wctx->pcb->hidlib.name != NULL) && (*wctx->pcb->hidlib.name != '\0')) {
+		for(s = wctx->pcb->hidlib.name; *s != '\0'; s++) {
 			if (isalnum(*s))
 				fputc(*s, wctx->f);
 			else

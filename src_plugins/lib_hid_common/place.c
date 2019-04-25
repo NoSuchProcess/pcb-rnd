@@ -227,7 +227,7 @@ static void place_maybe_save(conf_role_t role, int force)
 
 
 	if (role != CFR_DESIGN) {
-		int r = conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), role, NULL);
+		int r = conf_save_file(NULL, (PCB == NULL ? NULL : PCB->hidlib.filename), role, NULL);
 		if (r != 0)
 			pcb_message(PCB_MSG_ERROR, "Failed to save window geometry in %s\n", conf_role_name(role));
 	}

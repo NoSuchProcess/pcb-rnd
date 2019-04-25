@@ -30,6 +30,8 @@ struct pcb_hidlib_s {
 	pcb_coord_t grid;                  /* grid resolution */
 	pcb_coord_t grid_ox, grid_oy;      /* grid offset */
 	pcb_coord_t size_x, size_y;        /* drawing area extents (or board dimensions) */
+	char *name;                        /* name of the design */
+	char *filename;                    /* name of the file (from load) */
 };
 
 /* optional: if non-NULL, called back to determine the file name or project

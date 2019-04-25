@@ -200,7 +200,7 @@ static pcb_hid_attribute_t *svg_get_export_options(int *n)
 	const char *suffix = ".svg";
 
 	if ((PCB != NULL)  && (svg_attribute_list[HA_svgfile].default_val.str_value == NULL))
-		pcb_derive_default_filename(PCB->Filename, &svg_attribute_list[HA_svgfile], suffix);
+		pcb_derive_default_filename(PCB->hidlib.filename, &svg_attribute_list[HA_svgfile], suffix);
 
 	if (n)
 		*n = NUM_OPTIONS;

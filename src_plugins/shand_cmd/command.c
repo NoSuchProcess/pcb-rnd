@@ -164,8 +164,8 @@ static fgw_error_t pcb_act_SaveLayout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, SaveLayout, filename = argv[1].val.str);
 
 	if (filename == NULL) {
-		if (PCB->Filename) {
-			if (pcb_save_pcb(PCB->Filename, NULL) == 0)
+		if (PCB->hidlib.filename) {
+			if (pcb_save_pcb(PCB->hidlib.filename, NULL) == 0)
 				pcb_board_set_changed_flag(pcb_false);
 		}
 		else
@@ -174,8 +174,8 @@ static fgw_error_t pcb_act_SaveLayout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else {
 		if (pcb_save_pcb(filename, NULL) == 0) {
 			pcb_board_set_changed_flag(pcb_false);
-			free(PCB->Filename);
-			PCB->Filename = pcb_strdup(filename);
+			free(PCB->hidlib.filename);
+			PCB->hidlib.filename = pcb_strdup(filename);
 			if (pcb_gui->notify_filename_changed != NULL)
 				pcb_gui->notify_filename_changed();
 		}

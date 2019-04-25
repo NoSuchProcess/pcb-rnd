@@ -648,7 +648,7 @@ int main(int argc, char *argv[])
 				exit(1);
 			}
 			/* keep filename if load failed: file might not exist, save it by that name */
-			PCB->Filename = pcb_strdup(command_line_pcb);
+			PCB->hidlib.filename = pcb_strdup(command_line_pcb);
 		}
 	}
 

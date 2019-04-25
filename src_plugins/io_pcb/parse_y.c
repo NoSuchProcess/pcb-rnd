@@ -1965,7 +1965,7 @@ yyreduce:
   case 18:
 #line 305 "parse_y.y" /* yacc.c:1652  */
     {
-				yyPCB->Name = (yyvsp[-1].string);
+				yyPCB->hidlib.name = (yyvsp[-1].string);
 				yyPCB->hidlib.size_x = PCB_MAX_COORD;
 				yyPCB->hidlib.size_y = PCB_MAX_COORD;
 				old_fmt = 1;
@@ -1976,7 +1976,7 @@ yyreduce:
   case 19:
 #line 312 "parse_y.y" /* yacc.c:1652  */
     {
-				yyPCB->Name = (yyvsp[-3].string);
+				yyPCB->hidlib.name = (yyvsp[-3].string);
 				yyPCB->hidlib.size_x = OU ((yyvsp[-2].measure));
 				yyPCB->hidlib.size_y = OU ((yyvsp[-1].measure));
 				old_fmt = 1;
@@ -1987,7 +1987,7 @@ yyreduce:
   case 20:
 #line 319 "parse_y.y" /* yacc.c:1652  */
     {
-				yyPCB->Name = (yyvsp[-3].string);
+				yyPCB->hidlib.name = (yyvsp[-3].string);
 				yyPCB->hidlib.size_x = NU ((yyvsp[-2].measure));
 				yyPCB->hidlib.size_y = NU ((yyvsp[-1].measure));
 				old_fmt = 0;

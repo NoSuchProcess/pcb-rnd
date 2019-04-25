@@ -206,7 +206,7 @@ static pcb_hid_attribute_t *dxf_get_export_options(int *n)
 	const char *suffix = ".dxf";
 
 	if ((PCB != NULL)  && (dxf_attribute_list[HA_dxffile].default_val.str_value == NULL))
-		pcb_derive_default_filename(PCB->Filename, &dxf_attribute_list[HA_dxffile], suffix);
+		pcb_derive_default_filename(PCB->hidlib.filename, &dxf_attribute_list[HA_dxffile], suffix);
 
 	if (n)
 		*n = NUM_OPTIONS;

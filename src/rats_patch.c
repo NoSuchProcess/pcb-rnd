@@ -492,12 +492,12 @@ static fgw_error_t pcb_act_SavePatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (fn == NULL) {
 		char *default_file;
 
-		if (PCB->Filename != NULL) {
+		if (PCB->hidlib.filename != NULL) {
 			char *end;
 			int len;
-			len = strlen(PCB->Filename);
+			len = strlen(PCB->hidlib.filename);
 			default_file = malloc(len + 8);
-			memcpy(default_file, PCB->Filename, len + 1);
+			memcpy(default_file, PCB->hidlib.filename, len + 1);
 			end = strrchr(default_file, '.');
 			if ((end == NULL) || (pcb_strcasecmp(end, ".pcb") != 0))
 				end = default_file + len;

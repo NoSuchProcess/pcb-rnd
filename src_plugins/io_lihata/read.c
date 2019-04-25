@@ -404,9 +404,9 @@ static int parse_meta(pcb_board_t *pcb, lht_node_t *nd)
 	if (nd->type != LHT_HASH)
 		return iolht_error(nd, "board meta must be a hash\n");
 
-	parse_text(&pcb->Name, lht_dom_hash_get(nd, "meta"));
+	parse_text(&pcb->hidlib.name, lht_dom_hash_get(nd, "meta"));
 
-	parse_text(&pcb->Name, lht_dom_hash_get(nd, "board_name"));
+	parse_text(&pcb->hidlib.name, lht_dom_hash_get(nd, "board_name"));
 
 	grp = lht_dom_hash_get(nd, "grid");
 	if ((grp != NULL) && (grp->type == LHT_HASH)) {
@@ -2213,7 +2213,7 @@ static int parse_netlists(pcb_board_t *pcb, lht_node_t *netlists)
 static void parse_conf(pcb_board_t *pcb, lht_node_t *sub)
 {
 	if (conf_insert_tree_as(CFR_DESIGN, sub) != 0)
-		pcb_message(PCB_MSG_ERROR, "Failed to insert the config subtree '%s' found in %s\n", sub->name, pcb->Filename);
+		pcb_message(PCB_MSG_ERROR, "Failed to insert the config subtree '%s' found in %s\n", sub->name, pcb->hidlib.filename);
 	else
 		conf_update(NULL, -1);
 }

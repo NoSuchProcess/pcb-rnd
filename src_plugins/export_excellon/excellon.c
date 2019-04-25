@@ -194,7 +194,7 @@ static pcb_hid_attr_val_t excellon_values[NUM_OPTIONS];
 static pcb_hid_attribute_t *excellon_get_export_options(int *n)
 {
 	if ((PCB != NULL)  && (excellon_options[HA_excellonfile].default_val.str_value == NULL))
-		pcb_derive_default_filename(PCB->Filename, &excellon_options[HA_excellonfile], "");
+		pcb_derive_default_filename(PCB->hidlib.filename, &excellon_options[HA_excellonfile], "");
 
 	if (n)
 		*n = NUM_OPTIONS;

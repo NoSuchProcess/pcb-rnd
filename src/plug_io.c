@@ -329,9 +329,9 @@ static pcb_plug_io_t *find_writer(pcb_plug_iot_t typ, const char *fmt)
 	int len;
 
 	if (fmt == NULL) {
-		if (PCB->Filename != NULL) { /* have a file name, guess from extension */
-			int fn_len = strlen(PCB->Filename);
-			const char *end = PCB->Filename + fn_len;
+		if (PCB->hidlib.filename != NULL) { /* have a file name, guess from extension */
+			int fn_len = strlen(PCB->hidlib.filename);
+			const char *end = PCB->hidlib.filename + fn_len;
 			pcb_plug_io_t *n, *best = NULL;
 			int best_score = 0;
 
@@ -358,7 +358,7 @@ static pcb_plug_io_t *find_writer(pcb_plug_iot_t typ, const char *fmt)
 			return NULL;
 		}
 		else {
-			if (PCB->Filename != NULL)
+			if (PCB->hidlib.filename != NULL)
 				pcb_message(PCB_MSG_WARNING, "Saving a file with unknown format: failed to guess format from file name, falling back to %s as configured in rc/save_final_fallback_fmt\n", fmt);
 		}
 	}
@@ -523,7 +523,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 
 		/* clear 'changed flag' */
 		pcb_board_set_changed_flag(pcb_false);
-		PCB->Filename = new_filename;
+		PCB->hidlib.filename = new_filename;
 		/* just in case a bad file saved file is loaded */
 
 		/* Use attribute PCB::grid::unit as unit, if we can */
@@ -649,7 +649,7 @@ int pcb_load_pcb(const char *file, const char *fmt, pcb_bool require_font, int h
 
 int pcb_revert_pcb(void)
 {
-	return real_load_pcb(PCB->Filename, NULL, pcb_true, pcb_true, 1);
+	return real_load_pcb(PCB->hidlib.filename, NULL, pcb_true, pcb_true, 1);
 }
 
 void pcb_print_quoted_string_(FILE * FP, const char *S)

@@ -237,14 +237,14 @@ static int pcb_fuse_open(const char *path, struct fuse_file_info *fi)
 
 static void pcb_fuse_destroy(void *private_data)
 {
-	char *fn = PCB->Filename;
+	char *fn = PCB->hidlib.filename;
 
 	if (!pcb_fuse_changed)
 		return;
 
 	/* pwd is lost during daemonisation */
-	if (!pcb_is_path_abs(PCB->Filename))
-		fn = pcb_strdup_printf("%s%c%s", fuse_cwd, PCB_DIR_SEPARATOR_C, PCB->Filename);
+	if (!pcb_is_path_abs(PCB->hidlib.filename))
+		fn = pcb_strdup_printf("%s%c%s", fuse_cwd, PCB_DIR_SEPARATOR_C, PCB->hidlib.filename);
 
 	if (pcb_save_pcb(fn, NULL) != 0) {
 		fprintf(stderr, "Failed to save the modified board file\n");

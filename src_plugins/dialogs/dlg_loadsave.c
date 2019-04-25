@@ -183,7 +183,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, Save, function = argv[1].val.str);
 
 	if (pcb_strcasecmp(function, "Layout") == 0)
-		if (PCB->Filename != NULL)
+		if (PCB->hidlib.filename != NULL)
 			return pcb_actionl("SaveTo", "Layout", NULL);
 
 	if (pcb_strcasecmp(function, "PasteBuffer") == 0) {
@@ -270,10 +270,10 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	/* construct the input file name and run a file selection dialog to get the final file name */
 	if (name_in == NULL) {
-		if (PCB->Filename == NULL)
+		if (PCB->hidlib.filename == NULL)
 			name_in = pcb_concat("unnamed", extensions_param[fmt], NULL);
 		else
-			name_in = pcb_strdup(PCB->Filename);
+			name_in = pcb_strdup(PCB->hidlib.filename);
 	}
 	final_name = pcb_gui->fileselect(prompt, NULL, name_in, NULL, NULL, "board", PCB_HID_FSD_MAY_NOT_EXIST, fmtsub);
 	free(name_in);

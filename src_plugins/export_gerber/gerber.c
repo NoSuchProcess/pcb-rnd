@@ -287,7 +287,7 @@ static pcb_hid_attr_val_t gerber_values[NUM_OPTIONS];
 static pcb_hid_attribute_t *gerber_get_export_options(int *n)
 {
 	if ((PCB != NULL)  && (gerber_options[HA_gerberfile].default_val.str_value == NULL))
-		pcb_derive_default_filename(PCB->Filename, &gerber_options[HA_gerberfile], "");
+		pcb_derive_default_filename(PCB->hidlib.filename, &gerber_options[HA_gerberfile], "");
 
 	if (n)
 		*n = NUM_OPTIONS;
@@ -794,7 +794,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, const char *purpose, 
 		pcb_print_utc(utcTime, sizeof(utcTime), 0);
 
 		/* Print a cute file header at the beginning of each file. */
-		fprintf(f, "G04 Title: %s, %s *\r\n", PCB_UNKNOWN(PCB->Name), PCB_UNKNOWN(group_name));
+		fprintf(f, "G04 Title: %s, %s *\r\n", PCB_UNKNOWN(PCB->hidlib.name), PCB_UNKNOWN(group_name));
 		fprintf(f, "G04 Creator: pcb-rnd " PCB_VERSION " *\r\n");
 		fprintf(f, "G04 CreationDate: %s *\r\n", utcTime);
 

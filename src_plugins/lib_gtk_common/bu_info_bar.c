@@ -78,7 +78,7 @@ void pcb_gtk_info_bar_file_extmod_prompt(pcb_gtk_info_bar_t *ibar, GtkWidget *vb
 
 	g_signal_connect(ibar->info_bar, "response", G_CALLBACK(info_bar_response_cb), ibar);
 
-	file_path_utf8 = g_filename_to_utf8(PCB->Filename, -1, NULL, NULL, NULL);
+	file_path_utf8 = g_filename_to_utf8(PCB->hidlib.filename, -1, NULL, NULL, NULL);
 
 	secondary_text = PCB->Changed ? "Do you want to drop your changes and reload the file?" : "Do you want to reload the file?";
 

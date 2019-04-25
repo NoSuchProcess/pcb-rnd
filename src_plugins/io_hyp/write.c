@@ -131,8 +131,8 @@ static int write_hdr(hyp_wr_t * wr)
 
 	pcb_print_utc(dt, sizeof(dt), 0);
 
-	fprintf(wr->f, "* %s exported by pcb-rnd " PCB_VERSION " (" PCB_REVISION ") on %s\n", wr->pcb->Filename, dt);
-	fprintf(wr->f, "* Board: %s\n", wr->pcb->Name);
+	fprintf(wr->f, "* %s exported by pcb-rnd " PCB_VERSION " (" PCB_REVISION ") on %s\n", wr->pcb->hidlib.filename, dt);
+	fprintf(wr->f, "* Board: %s\n", wr->pcb->hidlib.name);
 	fprintf(wr->f, "{VERSION=2.0}\n");
 	fprintf(wr->f, "{DATA_MODE=DETAILED}\n");
 	fprintf(wr->f, "{UNITS=METRIC LENGTH}\n");

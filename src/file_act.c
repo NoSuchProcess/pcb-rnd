@@ -107,7 +107,7 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 
 		case F_Revert:
-			if (PCB->Filename && (!PCB->Changed || (pcb_hid_message_box("warning", "Revert: lose data", "Really revert all modifications?", "no", 0, "yes", 1, NULL) == 1)))
+			if (PCB->hidlib.filename && (!PCB->Changed || (pcb_hid_message_box("warning", "Revert: lose data", "Really revert all modifications?", "no", 0, "yes", 1, NULL) == 1)))
 				pcb_revert_pcb();
 			break;
 
@@ -153,8 +153,8 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		conf_set(CFR_DESIGN, "design/text_font_id", 0, "0", POL_OVERWRITE); /* we have only one font now, make sure it is selected */
 
 		/* setup the new name and reset some values to default */
-		free(PCB->Name);
-		PCB->Name = name;
+		free(PCB->hidlib.name);
+		PCB->hidlib.name = name;
 
 		pcb_layervis_reset_stack();
 		pcb_crosshair_set_range(0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
@@ -204,7 +204,7 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_message(PCB_MSG_ERROR, "SaveTo(Layout) doesn't take file name or format - did you mean SaveTo(LayoutAs)?\n");
 				return FGW_ERR_ARGC;
 			}
-			if (pcb_save_pcb(PCB->Filename, NULL) == 0)
+			if (pcb_save_pcb(PCB->hidlib.filename, NULL) == 0)
 				pcb_board_set_changed_flag(pcb_false);
 			if (pcb_gui->notify_filename_changed != NULL)
 				pcb_gui->notify_filename_changed();
@@ -213,8 +213,8 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_LayoutAs:
 			if (pcb_save_pcb(name, fmt) == 0) {
 				pcb_board_set_changed_flag(pcb_false);
-				free(PCB->Filename);
-				PCB->Filename = pcb_strdup(name);
+				free(PCB->hidlib.filename);
+				PCB->hidlib.filename = pcb_strdup(name);
 				if (pcb_gui->notify_filename_changed != NULL)
 					pcb_gui->notify_filename_changed();
 			}

@@ -303,21 +303,21 @@ T_FILEVERSION '[' INTEGER ']'
 pcbname
 		: T_PCB '(' STRING ')'
 			{
-				yyPCB->Name = $3;
+				yyPCB->hidlib.name = $3;
 				yyPCB->hidlib.size_x = PCB_MAX_COORD;
 				yyPCB->hidlib.size_y = PCB_MAX_COORD;
 				old_fmt = 1;
 			}
 		| T_PCB '(' STRING measure measure ')'
 			{
-				yyPCB->Name = $3;
+				yyPCB->hidlib.name = $3;
 				yyPCB->hidlib.size_x = OU ($4);
 				yyPCB->hidlib.size_y = OU ($5);
 				old_fmt = 1;
 			}
 		| T_PCB '[' STRING measure measure ']'
 			{
-				yyPCB->Name = $3;
+				yyPCB->hidlib.name = $3;
 				yyPCB->hidlib.size_x = NU ($4);
 				yyPCB->hidlib.size_y = NU ($5);
 				old_fmt = 0;

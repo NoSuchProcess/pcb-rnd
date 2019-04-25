@@ -67,12 +67,12 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (prompt != NULL)
 		free(prompt);
-	if (PCB && PCB->Filename) {
-		prompt = strrchr(PCB->Filename, '/');
+	if (PCB && PCB->hidlib.filename) {
+		prompt = strrchr(PCB->hidlib.filename, '/');
 		if (prompt)
 			prompt++;
 		else
-			prompt = PCB->Filename;
+			prompt = PCB->hidlib.filename;
 		if (prompt != NULL)
 			prompt = pcb_strdup(prompt);
 	}
@@ -122,11 +122,11 @@ static fgw_error_t pcb_act_help(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static fgw_error_t pcb_act_info(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int i, j;
-	if (!PCB || !PCB->Data || !PCB->Filename) {
+	if (!PCB || !PCB->Data || !PCB->hidlib.filename) {
 		printf("No PCB loaded.\n");
 		return 0;
 	}
-	printf("Filename: %s\n", PCB->Filename);
+	printf("Filename: %s\n", PCB->hidlib.filename);
 	pcb_printf("Size: %ml x %ml mils, %mm x %mm mm\n", PCB->hidlib.size_x, PCB->hidlib.size_y, PCB->hidlib.size_x, PCB->hidlib.size_y);
 	for (i = 0; i < PCB_MAX_LAYER; i++) {
 		pcb_layergrp_id_t lg = pcb_layer_get_group(PCB, i);

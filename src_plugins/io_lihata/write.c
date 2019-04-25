@@ -135,7 +135,7 @@ static lht_node_t *build_board_meta(pcb_board_t *pcb)
 	lht_node_t *meta, *grp;
 
 	meta = lht_dom_node_alloc(LHT_HASH, "meta");
-	lht_dom_hash_put(meta, build_text("board_name", pcb->Name));
+	lht_dom_hash_put(meta, build_text("board_name", pcb->hidlib.name));
 
 	grp = lht_dom_node_alloc(LHT_HASH, "grid");
 	lht_dom_hash_put(meta, grp);
@@ -1512,8 +1512,8 @@ static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fi
 			char *orig_fn, *end;
 			char *pcb_fn = pcb_strdup_subst(fnpat, pcb_build_fn_cb, NULL, PCB_SUBST_ALL);
 			
-			orig_fn = PCB->Filename;
-			PCB->Filename = NULL;
+			orig_fn = PCB->hidlib.filename;
+			PCB->hidlib.filename = NULL;
 
 			/* avoid .lht.lht.pcb */
 			end = pcb_fn + strlen(pcb_fn) - 1;
@@ -1524,8 +1524,8 @@ static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fi
 			free(pcb_fn);
 			
 			/* restore these because SaveTo() has changed them */
-			free(PCB->Filename);
-			PCB->Filename = orig_fn;
+			free(PCB->hidlib.filename);
+			PCB->hidlib.filename = orig_fn;
 			PCB->Data->loader = ctx;
 		}
 	}

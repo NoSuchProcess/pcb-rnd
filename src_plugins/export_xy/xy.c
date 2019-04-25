@@ -144,7 +144,7 @@ static pcb_hid_attribute_t *xy_get_export_options(int *n)
 		last_unit_value = xy_options[HA_unit].default_val.int_value;
 	}
 	if ((PCB != NULL)  && (xy_options[HA_xyfile].default_val.str_value == NULL))
-		pcb_derive_default_filename(PCB->Filename, &xy_options[HA_xyfile], ".xy");
+		pcb_derive_default_filename(PCB->hidlib.filename, &xy_options[HA_xyfile], ".xy");
 
 	if (n)
 		*n = NUM_OPTIONS;
@@ -353,7 +353,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 	}
 	if (strncmp(*input, "title%", 6) == 0) {
 		*input += 6;
-		gds_append_str(s, PCB_UNKNOWN(PCB->Name));
+		gds_append_str(s, PCB_UNKNOWN(PCB->hidlib.name));
 		return 0;
 	}
 	if (strncmp(*input, "suffix%", 7) == 0) {

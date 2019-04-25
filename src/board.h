@@ -68,8 +68,6 @@ struct pcb_board_s {
 	pcb_hidlib_t hidlib;
 
 	long ID;
-	char *Name;                                     /* name of board */
-	char *Filename;                                 /* name of file (from load) */
 	char *PrintFilename;                            /* from print dialog */
 	char *Netlistname;                              /* name of netlist file */
 

@@ -517,7 +517,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			/* change the layout's name */
 		case F_Layout:
-			name = pcb_hid_prompt_for("Enter the layout name:", PCB_EMPTY(PCB->Name), "Layout name");
+			name = pcb_hid_prompt_for("Enter the layout name:", PCB_EMPTY(PCB->hidlib.name), "Layout name");
 			/* NB: ChangeLayoutName takes ownership of the passed memory */
 			if (name && pcb_board_change_name(name))
 				pcb_board_set_changed_flag(pcb_true);
