@@ -387,6 +387,20 @@ int gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[])
 	return 0;
 }
 
+void pcb_fix_locale(void)
+{
+	static const char *lcs[] = { "LANG", "LC_NUMERIC", "LC_ALL", NULL };
+	const char **lc;
+
+	/* some Xlib calls tend ot hardwire setenv() to "" or NULL so a simple
+	   setlocale() won't do the trick on GUI. Also set all related env var
+	   to "C" so a setlocale(LC_ALL, "") will also do the right thing. */
+	for(lc = lcs; *lc != NULL; lc++)
+		pcb_setenv(*lc, "C", 1);
+
+	setlocale(LC_ALL, "C");
+}
+
 #define we_are_exporting (pcb_gui->printer || pcb_gui->exporter)
 
 int main(int argc, char *argv[])
@@ -405,7 +419,7 @@ int main(int argc, char *argv[])
 	vtp0_t plugin_cli_conf;
 	int autopick_gui = -1;
 
-	setlocale(LC_ALL, "C");
+	pcb_fix_locale();
 
 	hid_argv_orig = hid_argv = calloc(sizeof(char *), argc);
 	/* init application:

@@ -243,20 +243,10 @@ int gtkhid_parse_arguments(int *argc, char ***argv)
 
 	conf_parse_arguments("plugins/hid_gtk/", argc, argv);
 
-	/* Prevent gtk_init() and gtk_init_check() from automatically
-	   calling setlocale (LC_ALL, "") which would go back to user's
-	   locale and undo our "C" locale set from main, messing up decimal dots on
-	   some locales, but ... */
-	gtk_disable_setlocale();
-
 	if (!gtk_init_check(argc, argv)) {
 		fprintf(stderr, "gtk_init_check() fail - maybe $DISPLAY not set or X/GUI not accessible?\n");
 		return 1; /* recoverable error - try another HID */
 	}
-
-	/* ... but gtk is broken, as usual, so some versions still mess with the
-	   locale. Let's try to force set it back. */
-	setlocale(LC_ALL, "C");
 
 	gport = &ghid_port;
 	gport->view.use_max_pcb = 1;
