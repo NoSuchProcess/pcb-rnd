@@ -26,8 +26,8 @@
  *
  */
 
-#ifndef PCB_HID_FLAGS_H
-#define PCB_HID_FLAGS_H
+#ifndef PCB_HID_COMMON_MENU_HELPER_H
+#define PCB_HID_COMMON_MENU_HELPER_H
 
 /* Create a set of resources representing a single menu item
    If action is NULL, it's a drop-down item that has submenus.
