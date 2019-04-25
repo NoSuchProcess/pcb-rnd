@@ -594,10 +594,6 @@ int main(int argc, char *argv[])
 	if (!pcb_gui)
 		exit(1);
 
-	if (PCB_HAVE_GUI_ATTR_DLG) {
-		printf("JAJJ for hid!");
-	}
-
 /* Initialize actions only when the gui is already known so only the right
    one is registered (there can be only one GUI). */
 #include "generated_lists.h"
