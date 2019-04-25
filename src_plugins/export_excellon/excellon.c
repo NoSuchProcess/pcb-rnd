@@ -429,11 +429,16 @@ void pplg_uninit_export_excellon(void)
 {
 	pcb_hid_remove_attributes_by_cookie(excellon_cookie);
 	free(filename);
+	conf_unreg_fields("plugins/export_excellon/");
 }
 
 int pplg_init_export_excellon(void)
 {
 	PCB_API_CHK_VER;
+
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	conf_reg_field(conf_excellon, field,isarray,type_name,cpath,cname,desc,flags);
+#include "excellon_conf_fields.h"
 
 	memset(&excellon_hid, 0, sizeof(excellon_hid));
 
