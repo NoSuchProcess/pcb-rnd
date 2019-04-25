@@ -6,7 +6,6 @@
 - BUG: (prio) setenv() LC_ALL and LANG to "C" around setlocale; remove setlocale from lib_gtk; bug_files/locale.diff [report: osetroff]
 - CLEANUP: add the thin line draw optimization to the filled poly optimization, including hole, in hid_draw_helper (search for last_x); make this configurable for both (exporters shall not optimize!); remove the similar optimization from hidgl triangulation and gdk and lesstif [report: Ade, Peter]
 - FEATURE: excellon metric support to pair up with gerber's late feature [report: Gabriel]
-- CLEANUP: remove pcb_attribute_dialog() and the label argument from the DAD API [report: igor2]
 - CLEANUP/BUG: The 'As Drawn' polygon contour is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
 	-> need a new rtree that holds the polygons that have ->clipped == NULL for this purpose
 - CLEANUP: DAD: centralize the coordinate input spinbox: hid_dad_spin
@@ -19,6 +18,7 @@
 - CLEANUP: library window DAD-ification: remove pcb_act_LibraryShow()
 	- FEATURE: library window: allow long tags and long location text to split
 	- BUG: double check parametric footprint edit window: bug_files/parametric.txt [report: Piotr]
+	- CLEANUP: remove pcb_attribute_dialog() and the label argument from the DAD API [report: igor2]
 - CLEANUP: think over how to handle subc selection: selecting all parts automatically is bad for propedit; bug_files/subcsel.bug [report: Wojciech]
 	- BUG: adding attribute works on subc parts but deleting attribute stops after deleiting it from a subc; bug_files/subcsel.bug [report: Wojciech]
 - CLEANUP: DAD close sequence: TODO#51: there are three sources to trigger hid_ctx (caller's free on modal, close button free and window destroy callback); requre the user to always call free last and add bits to track what frees are already called and free(ctx) last; test in 4 situations: (modal,nonmodal)*(close_buttons,wmclose) [report: Igor2]
