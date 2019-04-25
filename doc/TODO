@@ -46,7 +46,6 @@
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - CAM:
-	- CLEANUP: move excellon to a separate plugin, move aperture to a lib plugin, make gerber depend on excellon (for backward compatibility) instead of reinventing it
 	- FEATURE: make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file (for support for plugged vias/filled vias) [report: Vuokko]
 	- FEATURE: invent a generic API for both the drill attrib config table
 	- CLEANUP: unify how output files are accessed/checked: confirmation on overwrite
