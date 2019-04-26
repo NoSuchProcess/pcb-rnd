@@ -778,7 +778,7 @@ static void ghid_initial_wstates(attr_dlg_t *ctx)
 	int n;
 	for(n = 0; n < ctx->n_attrs; n++)
 		if (ctx->attrs[n].pcb_hatt_flags & PCB_HATF_HIDE)
-			gtk_widget_hide(ctx->wltop[n]);
+			gtk_widget_hide(ctx->wltop[n] != NULL ? ctx->wltop[n] : ctx->wl[n]);
 }
 
 void *ghid_attr_dlg_new(pcb_gtk_common_t *com, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy)
@@ -954,7 +954,9 @@ int ghid_attr_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled)
 
 int ghid_attr_dlg_widget_hide(void *hid_ctx, int idx, pcb_bool hide)
 {
+	GtkWidget *w;
 	attr_dlg_t *ctx = hid_ctx;
+
 	if ((idx < 0) || (idx >= ctx->n_attrs) || (ctx->wl[idx] == NULL))
 		return -1;
 
@@ -969,10 +971,12 @@ int ghid_attr_dlg_widget_hide(void *hid_ctx, int idx, pcb_bool hide)
 			return -1;
 	}
 
+	w = (ctx->wltop[idx] != NULL) ? ctx->wltop[idx] : ctx->wl[idx];
+
 	if (hide)
-		gtk_widget_hide(ctx->wltop[idx]);
+		gtk_widget_hide(w);
 	else
-		gtk_widget_show(ctx->wltop[idx]);
+		gtk_widget_show(w);
 
 	return 0;
 }
