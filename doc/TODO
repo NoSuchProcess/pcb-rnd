@@ -29,6 +29,7 @@
 - CLEANUP: (TT) propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
+- BUG: query(select, '(@.plated == 1)') does not select the padstack when using bug_files/query_plated_slot.lht [report: Alain]
 
 2. For later releases ===============================================================================
 - CLEANUP: color:
