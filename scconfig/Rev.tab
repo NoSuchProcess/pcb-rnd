@@ -1,4 +1,4 @@
-24907	configure	hidlib: split lib_hid_common into a PCB-related and a PCB-unrelated plugin
+24910	configure	hidlib: split lib_hid_common into a PCB-related and a PCB-unrelated plugin
 24872	configure	split excellon exporter from gerber to a separate plugin
 24862	configure	code simplification: merge hid_flags.[ch] into lib_hid_common
 24824	configure	move window placement from dialogs to lib_hid_commonfor hidlib cleanup

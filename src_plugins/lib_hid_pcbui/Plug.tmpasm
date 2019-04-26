@@ -5,12 +5,6 @@ put /local/pcb/mod/OBJS [@
   $(PLUGDIR)/lib_hid_pcbui/routest.o
 @]
 
-# dialog config is here because of hidlib: each hidlib user shall have its
-# own dialogs plugin
-put /local/pcb/mod/CONFFILE {dialogs.conf}
-put /local/pcb/mod/CONF {$(PLUGDIR)/lib_hid_pcbui/dialogs_conf.h}
-
-
 switch /local/pcb/lib_hid_pcbui/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
