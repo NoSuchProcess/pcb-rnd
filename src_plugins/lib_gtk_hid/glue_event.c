@@ -53,7 +53,7 @@ static void ev_pcb_meta_changed(void *user_data, int argc, pcb_event_arg_t argv[
 		return;
 
 	if (PCB != NULL)
-		ghidgui->common.window_set_name_label(PCB->hidlib.name);
+		ghidgui->common.window_set_name_label(ghidgui->common.hidlib->name);
 }
 
 static void ghid_gui_sync(void *user_data, int argc, pcb_event_arg_t argv[])
@@ -64,7 +64,7 @@ static void ghid_gui_sync(void *user_data, int argc, pcb_event_arg_t argv[])
 	/* Sync gui status display with pcb state */
 	pcb_tool_adjust_attached_objects();
 	ghid_invalidate_all();
-	ghidgui->common.window_set_name_label(PCB->hidlib.name);
+	ghidgui->common.window_set_name_label(ghidgui->common.hidlib->name);
 	ghidgui->common.set_status_line_label();
 
 	/* Sync menu checkboxes */
@@ -73,7 +73,7 @@ static void ghid_gui_sync(void *user_data, int argc, pcb_event_arg_t argv[])
 
 static void ghid_gui_sync_status(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	ghidgui->common.window_set_name_label(PCB->hidlib.name);
+	ghidgui->common.window_set_name_label(ghidgui->common.hidlib->name);
 	ghidgui->common.set_status_line_label();
 }
 
