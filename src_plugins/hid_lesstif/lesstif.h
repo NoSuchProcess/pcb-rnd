@@ -50,7 +50,6 @@ extern void lesstif_show_library(void);
 extern void lesstif_show_netlist(void);
 extern Pixel lesstif_parse_color(const pcb_color_t *value);
 extern Pixel lesstif_parse_color_str(const char *value);
-extern void lesstif_styles_update_values();
 extern void lesstif_update_layer_groups();
 extern void lesstif_update_status_line();
 extern void lesstif_attributes_dialog(const char *, pcb_attribute_list_t *);

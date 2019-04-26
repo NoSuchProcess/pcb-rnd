@@ -6,7 +6,6 @@ put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/hid_lesstif/main.o
 	$(PLUGDIR)/hid_lesstif/menu.o
 	$(PLUGDIR)/hid_lesstif/netlist.o
-	$(PLUGDIR)/hid_lesstif/styles.o
 	$(PLUGDIR)/hid_lesstif/stdarg.o
 	$(PLUGDIR)/hid_lesstif/wt_colorbtn.o
 	$(PLUGDIR)/hid_lesstif/wt_xpm.o

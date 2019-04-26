@@ -1,3 +1,4 @@
+24951	configure	remove the lesstif implementation of route style
 24944	configure	reimplement the gtk-only route style selector and dialog using DAD
 24910	configure	hidlib: split lib_hid_common into a PCB-related and a PCB-unrelated plugin
 24872	configure	split excellon exporter from gerber to a separate plugin
