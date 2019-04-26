@@ -245,7 +245,6 @@ void ghid_handle_user_command(pcb_gtk_command_t *ctx, pcb_bool raise)
 		pcb_parse_command(command, pcb_false);
 		g_free(command);
 	}
-	ctx->com->window_set_name_label(PCB->hidlib.name);
 	ctx->com->set_status_line_label();
 }
 
