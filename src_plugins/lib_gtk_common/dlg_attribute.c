@@ -570,19 +570,6 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				ctx->wl[j] = ghid_progress_create(ctx, &ctx->attrs[j], parent, j);
 				break;
 
-			case PCB_HATT_PATH:
-				ctx->wltop[j] = vbox1 = ghid_category_vbox(parent, 2);
-				entry = gtk_entry_new();
-				g_object_set_data(G_OBJECT(entry), PCB_OBJ_PROP, ctx);
-				ctx->wl[j] = entry;
-
-				gtk_box_pack_start(GTK_BOX(vbox1), entry, FALSE, FALSE, 0);
-				gtk_entry_set_text(GTK_ENTRY(entry), ctx->attrs[j].default_val.str_value);
-				g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(entry_changed_cb), &(ctx->attrs[j]));
-
-				gtk_widget_set_tooltip_text(entry, ctx->attrs[j].help_text);
-				break;
-
 			case PCB_HATT_UNIT:
 				unit_list = pcb_units;
 				n = pcb_get_n_units();
@@ -722,7 +709,6 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 			break;
 
 		case PCB_HATT_STRING:
-		case PCB_HATT_PATH:
 			{
 				const char *nv, *s = gtk_entry_get_text(GTK_ENTRY(ctx->wl[idx]));
 				nv = val->str_value;

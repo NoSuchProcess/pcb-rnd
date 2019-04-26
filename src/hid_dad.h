@@ -454,7 +454,6 @@ do { \
 			break; \
 		case PCB_HATT_STRING: \
 		case PCB_HATT_TEXT: \
-		case PCB_HATT_PATH: \
 		case PCB_HATT_BUTTON: \
 		case PCB_HATT_TREE: \
 			table[table ## _len - 1].field.str_value = (char *)val; \
@@ -498,7 +497,6 @@ do { \
 			break; \
 		case PCB_HATT_STRING: \
 		case PCB_HATT_TEXT: \
-		case PCB_HATT_PATH: \
 		case PCB_HATT_BUTTON: \
 		case PCB_HATT_TREE: \
 		case PCB_HATT_COLOR: \
@@ -544,7 +542,6 @@ do { \
 			break; \
 		case PCB_HATT_STRING: \
 		case PCB_HATT_TEXT: \
-		case PCB_HATT_PATH: \
 		case PCB_HATT_BUTTON: \
 		case PCB_HATT_TREE: \
 			table[table ## _len - 1].field.str_value = (char *)val; \
@@ -586,7 +583,6 @@ do { \
 		case PCB_HATT_REAL: \
 		case PCB_HATT_PROGRESS: \
 		case PCB_HATT_STRING: \
-		case PCB_HATT_PATH: \
 		case PCB_HATT_BUTTON: \
 		case PCB_HATT_PICTURE: \
 		case PCB_HATT_PICBUTTON: \

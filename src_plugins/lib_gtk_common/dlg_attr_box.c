@@ -26,27 +26,6 @@
 
 /* Boxes and group widgets */
 
-static GtkWidget *ghid_category_vbox(GtkWidget *box, gint box_pad)
-{
-	GtkWidget *vbox, *vbox1, *hbox, *label;
-	gchar *s;
-
-	vbox = gtkc_vbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(box), vbox, FALSE, FALSE, 0);
-
-	hbox = gtkc_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-	label = gtk_label_new("     ");
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	vbox1 = gtkc_vbox_new(FALSE, box_pad);
-	gtk_box_pack_start(GTK_BOX(hbox), vbox1, TRUE, TRUE, 0);
-
-	label = gtk_label_new("");
-	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-	return vbox1;
-}
-
-
 static int ghid_pane_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val)
 {
 	GtkWidget *pane = ctx->wl[idx];

@@ -1911,7 +1911,6 @@ static int lesstif_parse_arguments(int *argc, char ***argv)
 			case PCB_HATT_COORD:
 			case PCB_HATT_REAL:
 			case PCB_HATT_STRING:
-			case PCB_HATT_PATH:
 			case PCB_HATT_BOOL:
 				acount++;
 				rcount++;
@@ -1962,7 +1961,6 @@ static int lesstif_parse_arguments(int *argc, char ***argv)
 			case PCB_HATT_COORD:
 			case PCB_HATT_REAL:
 			case PCB_HATT_STRING:
-			case PCB_HATT_PATH:
 				o->argKind = XrmoptionSepArg;
 				o->value = NULL;
 				acount++;
@@ -2003,7 +2001,6 @@ static int lesstif_parse_arguments(int *argc, char ***argv)
 				rcount++;
 				break;
 			case PCB_HATT_STRING:
-			case PCB_HATT_PATH:
 				r->resource_type = XtRString;
 				r->default_type = XtRString;
 				r->resource_size = sizeof(char *);
@@ -2092,7 +2089,6 @@ static int lesstif_parse_arguments(int *argc, char ***argv)
 				rcount++;
 				break;
 			case PCB_HATT_STRING:
-			case PCB_HATT_PATH:
 				if (a->value)
 					*(char **) a->value = v->s;
 				else

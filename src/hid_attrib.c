@@ -230,12 +230,6 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 						(*argc)--;
 						(*argv)++;
 						break;
-					case PCB_HATT_PATH:
-						abort();
-						a->default_val.str_value = pcb_strdup(PCB_EMPTY((*argv)[1]));
-						(*argc)--;
-						(*argv)++;
-						break;
 					case PCB_HATT_UNIT:
 						unit = get_unit_struct((*argv)[1]);
 						if (unit == NULL) {

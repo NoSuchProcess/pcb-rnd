@@ -37,7 +37,6 @@ typedef enum pcb_hids_e {
 	PCB_HATT_STRING,              /* WARNING: string, must be malloc()'d, can't be a (const char *) */
 	PCB_HATT_BOOL,
 	PCB_HATT_ENUM,
-	PCB_HATT_PATH,                /* WARNING: string, must be malloc()'d, can't be a (const char *) */
 	PCB_HATT_UNIT,
 	PCB_HATT_COORD,
 	PCB_HATT_BUTTON,              /* push button; default value is the label */
@@ -63,8 +62,7 @@ typedef enum pcb_hids_e {
 #define PCB_HATT_IS_COMPOSITE(type) \
 	(((type) >= PCB_HATT_BEGIN_HBOX) && ((type) < PCB_HATT_END))
 
-#define PCB_HAT_IS_STR(type) \
-	((type == PCB_HATT_STRING) || (type == PCB_HATT_PATH))
+#define PCB_HAT_IS_STR(type) (type == PCB_HATT_STRING)
 
 /* alternative field names in struct pcb_hid_attribute_s */
 #define pcb_hatt_flags       hatt_flags
