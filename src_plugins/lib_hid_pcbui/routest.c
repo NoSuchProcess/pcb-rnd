@@ -145,6 +145,23 @@ static void rst_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 		pcb_dlg_rstdlg(target);
 }
 
+static void rst_new_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	int target = vtroutestyle_len(&PCB->RouteStyle);
+	pcb_route_style_t *rst = vtroutestyle_alloc_append(&PCB->RouteStyle, 1);
+
+	strcpy(rst->name, "new style");
+	rst->Thick = conf_core.design.line_thickness;
+	rst->textt = conf_core.design.text_thickness;
+	rst->texts = conf_core.design.text_scale;
+	rst->Clearance = conf_core.design.clearance;
+	rst->Diameter = conf_core.design.via_thickness*2;
+	rst->Hole = conf_core.design.via_drilling_hole;
+
+	pcb_dlg_rstdlg(target);
+	rst_updated(rst);
+}
+
 static void rst_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	int target = pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
@@ -174,6 +191,7 @@ static void rst_docked_create()
 
 		PCB_DAD_BEGIN_HBOX(rst.sub.dlg);
 			PCB_DAD_BUTTON(rst.sub.dlg, "New");
+				PCB_DAD_CHANGE_CB(rst.sub.dlg, rst_new_cb);
 			PCB_DAD_BUTTON(rst.sub.dlg, "Edit");
 				PCB_DAD_CHANGE_CB(rst.sub.dlg, rst_edit_cb);
 			PCB_DAD_BUTTON(rst.sub.dlg, "Del");
