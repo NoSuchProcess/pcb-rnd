@@ -1,10 +1,8 @@
 put /local/pcb/mod {lib_hid_common}
 put /local/pcb/mod/OBJS [@
   $(PLUGDIR)/lib_hid_common/lib_hid_common.o
-  $(PLUGDIR)/lib_hid_common/layer_menu.o
   $(PLUGDIR)/lib_hid_common/lead_user.o
   $(PLUGDIR)/lib_hid_common/grid_menu.o
-  $(PLUGDIR)/lib_hid_common/routest_menu.o
   $(PLUGDIR)/lib_hid_common/cli_history.o
   $(PLUGDIR)/lib_hid_common/place.o
   $(PLUGDIR)/lib_hid_common/menu_helper.o

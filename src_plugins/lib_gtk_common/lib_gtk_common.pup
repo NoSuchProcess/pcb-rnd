@@ -4,5 +4,6 @@ $long hid_gtk* common code (regardless of gtk version or drawing mechanism: for 
 $state works
 $package lib-gtk
 dep lib_hid_common
+dep lib_hid_pcbui
 default disable-all
 

@@ -6,5 +6,6 @@ $state works
 dep draw_fontsel
 dep draw_csect
 dep lib_hid_common
+dep lib_hid_pcbui
 default disable
 autoload 1

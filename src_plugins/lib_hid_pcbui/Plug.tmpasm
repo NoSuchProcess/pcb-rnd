@@ -1,0 +1,18 @@
+put /local/pcb/mod {lib_hid_pcbui}
+put /local/pcb/mod/OBJS [@
+  $(PLUGDIR)/lib_hid_pcbui/lib_hid_pcbui.o
+  $(PLUGDIR)/lib_hid_pcbui/layer_menu.o
+  $(PLUGDIR)/lib_hid_pcbui/routest_menu.o
+@]
+
+# dialog config is here because of hidlib: each hidlib user shall have its
+# own dialogs plugin
+put /local/pcb/mod/CONFFILE {dialogs.conf}
+put /local/pcb/mod/CONF {$(PLUGDIR)/lib_hid_pcbui/dialogs_conf.h}
+
+
+switch /local/pcb/lib_hid_pcbui/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

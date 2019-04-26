@@ -1,0 +1,6 @@
+$class lib
+$short all-gui-hid common PCB GUI elements
+$long PCB related helper functions for GUI HIDs
+$state works
+$package lib-gui
+default disable-all

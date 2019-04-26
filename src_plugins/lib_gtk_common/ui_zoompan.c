@@ -40,7 +40,7 @@
 #include "layer_vis.h"
 #include "bu_status_line.h"
 
-#include "../src_plugins/lib_hid_common/util.h"
+#include "../src_plugins/lib_hid_pcbui/util.h"
 
 double pcb_gtk_clamp_zoom(const pcb_gtk_view_t *vw, double coord_per_px)
 {

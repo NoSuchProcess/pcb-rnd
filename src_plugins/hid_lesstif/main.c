@@ -47,7 +47,7 @@
 #include "dlg_fileselect.h"
 
 #include "../src_plugins/lib_hid_common/clip.h"
-#include "../src_plugins/lib_hid_common/util.h"
+#include "../src_plugins/lib_hid_pcbui/util.h"
 #include "../src_plugins/lib_hid_common/cli_history.h"
 
 #include <sys/poll.h>

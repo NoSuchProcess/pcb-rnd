@@ -1,6 +1,6 @@
 $class lib
 $short all-gui-hid common code
-$long hid_* common helper functions for GUI HIDs
+$long hidlib common helper functions for non-PCB GUI
 $state works
 $package lib-gui
 default disable-all

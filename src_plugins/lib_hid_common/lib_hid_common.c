@@ -32,10 +32,7 @@
 #include "event.h"
 
 #include "grid_menu.h"
-#include "layer_menu.h"
-#include "routest_menu.h"
 #include "cli_history.h"
-#include "util.c"
 #include "lead_user.h"
 #include "place.h"
 
@@ -45,8 +42,6 @@
 const conf_dialogs_t dialogs_conf;
 
 static const char *grid_cookie = "lib_hid_common/grid";
-static const char *layer_cookie = "lib_hid_common/layer";
-static const char *rst_cookie = "lib_hid_common/route_style";
 static const char *lead_cookie = "lib_hid_common/user_lead";
 static const char *wplc_cookie = "lib_hid_common/window_placement";
 
@@ -59,23 +54,17 @@ void pplg_uninit_lib_hid_common(void)
 	pcb_clihist_save();
 	pcb_clihist_uninit();
 	pcb_event_unbind_allcookie(grid_cookie);
-	pcb_event_unbind_allcookie(layer_cookie);
-	pcb_event_unbind_allcookie(rst_cookie);
 	pcb_event_unbind_allcookie(lead_cookie);
 	pcb_event_unbind_allcookie(wplc_cookie);
 	conf_hid_unreg(grid_cookie);
-	conf_hid_unreg(rst_cookie);
 	pcb_dialog_place_uninit();
 	conf_unreg_fields("plugins/lib_hid_common/");
 }
 
 int pplg_init_lib_hid_common(void)
 {
-TODO("padstack: remove some paths when route style has proto")
-	const char **rp, *rpaths[] = {"design/line_thickness", "design/via_thickness", "design/via_drilling_hole", "design/clearance", NULL};
-	static conf_hid_callbacks_t ccb, rcb[sizeof(rpaths)/sizeof(rpaths[0])];
+	static conf_hid_callbacks_t ccb;
 	conf_native_t *nat;
-	int n;
 
 	PCB_API_CHK_VER;
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
@@ -86,12 +75,6 @@ TODO("padstack: remove some paths when route style has proto")
 	pcb_dialog_place_init();
 
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_grid_update_ev, NULL, grid_cookie);
-	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, pcb_layer_menu_update_ev, NULL, layer_cookie);
-	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, pcb_layer_menu_update_ev, NULL, layer_cookie);
-	pcb_event_bind(PCB_EVENT_LAYERVIS_CHANGED, pcb_layer_menu_vis_update_ev, NULL, layer_cookie);
-	pcb_event_bind(PCB_EVENT_ROUTE_STYLES_CHANGED, pcb_rst_update_ev, NULL, rst_cookie);
-	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, pcb_rst_update_ev, NULL, rst_cookie);
-	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_rst_update_ev, NULL, rst_cookie);
 	pcb_event_bind(PCB_EVENT_GUI_LEAD_USER, pcb_lead_user_ev, NULL, lead_cookie);
 	pcb_event_bind(PCB_EVENT_GUI_DRAW_OVERLAY_XOR, pcb_lead_user_draw_ev, NULL, lead_cookie);
 	pcb_event_bind(PCB_EVENT_DAD_NEW_DIALOG, pcb_dialog_place, NULL, wplc_cookie);
@@ -104,15 +87,6 @@ TODO("padstack: remove some paths when route style has proto")
 
 	if (nat != NULL)
 		conf_hid_set_cb(nat, conf_id, &ccb);
-
-	conf_id = conf_hid_reg(rst_cookie, NULL);
-	for(rp = rpaths, n = 0; *rp != NULL; rp++, n++) {
-		memset(&rcb[n], 0, sizeof(rcb[0]));
-		rcb[n].val_change_post = pcb_rst_update_conf;
-		nat = conf_get_field(*rp);
-		if (nat != NULL)
-			conf_hid_set_cb(nat, conf_id, &rcb[n]);
-	}
 
 	return 0;
 }
