@@ -31,6 +31,7 @@
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
+	int curr;
 	int wname, wlineth, wclr, wtxtscale, wtxtth, wviahole, wviaring, wattr;
 } rstdlg_ctx_t;
 
@@ -50,6 +51,9 @@ static void rstdlg_pcb2dlg(int rst_idx)
 
 	if (!rstdlg_ctx.active)
 		return;
+
+	if (rst_idx < 0)
+		rst_idx = rstdlg_ctx.curr;
 
 	rst = vtroutestyle_get(&PCB->RouteStyle, rst_idx, 0);
 
@@ -73,6 +77,47 @@ static void rstdlg_pcb2dlg(int rst_idx)
 
 	hv.coord_value = rst->Diameter;
 	pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wviaring, &hv);
+
+	rstdlg_ctx.curr = rst_idx;
+}
+
+static void rst_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	int idx = attr - rstdlg_ctx.dlg;
+	pcb_route_style_t *rst = vtroutestyle_get(&PCB->RouteStyle, rstdlg_ctx.curr, 0);
+
+	if (rst == NULL) {
+		pcb_message(PCB_MSG_ERROR, "route style does not exist");
+		return;
+	}
+
+TODO("This change is not undoable");
+
+	if (idx == rstdlg_ctx.wname) {
+		const char *s = attr->default_val.str_value;
+		while(isspace(*s)) s++;
+		strncpy(rst->name, s, sizeof(rst->name));
+	}
+	else if (idx == rstdlg_ctx.wlineth)
+		rst->Thick = attr->default_val.coord_value;
+	else if (idx == rstdlg_ctx.wtxtth)
+		rst->textt = attr->default_val.coord_value;
+	else if (idx == rstdlg_ctx.wtxtscale)
+		rst->texts = attr->default_val.coord_value;
+	else if (idx == rstdlg_ctx.wclr)
+		rst->Clearance = attr->default_val.coord_value;
+	else if (idx == rstdlg_ctx.wviahole)
+		rst->Hole = attr->default_val.coord_value;
+	else if (idx == rstdlg_ctx.wviaring)
+		rst->Diameter = attr->default_val.coord_value;
+	else {
+		pcb_message(PCB_MSG_ERROR, "Internal error: route style field does not exist");
+		return;
+	}
+
+	pcb_use_route_style(rst);
+	pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
+	pcb_board_set_changed_flag(1);
 }
 
 static void pcb_dlg_rstdlg(int rst_idx)
@@ -93,42 +138,49 @@ static void pcb_dlg_rstdlg(int rst_idx)
 			PCB_DAD_STRING(rstdlg_ctx.dlg);
 				rstdlg_ctx.wname = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
 				PCB_DAD_HELP(rstdlg_ctx.dlg, "Name of the routing style");
+				PCB_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
 
 			PCB_DAD_LABEL(rstdlg_ctx.dlg, "Line thick.:");
 			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
 				rstdlg_ctx.wlineth = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
 				PCB_DAD_HELP(rstdlg_ctx.dlg, "Thickness of line/arc objects");
 				PCB_DAD_MINMAX(rstdlg_ctx.dlg, 1, PCB_MAX_COORD);
+				PCB_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
 
 			PCB_DAD_LABEL(rstdlg_ctx.dlg, "Text scale:");
 			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
 				rstdlg_ctx.wtxtscale = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
 				PCB_DAD_HELP(rstdlg_ctx.dlg, "Text size scale in %; 100 means normal size");
 				PCB_DAD_MINMAX(rstdlg_ctx.dlg, 1, PCB_MAX_COORD);
+				PCB_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
 
 			PCB_DAD_LABEL(rstdlg_ctx.dlg, "Clearance:");
 			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
 				rstdlg_ctx.wclr = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
 				PCB_DAD_HELP(rstdlg_ctx.dlg, "Object clearance: any object placed with this style\nwill clear this much from sorrunding clearing-enabled polygons\n(unless the object is joined to the polygon)");
 				PCB_DAD_MINMAX(rstdlg_ctx.dlg, 1, PCB_MAX_COORD);
+				PCB_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
 
 			PCB_DAD_LABEL(rstdlg_ctx.dlg, "Text thick.:");
 			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
 				rstdlg_ctx.wtxtth = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
 				PCB_DAD_HELP(rstdlg_ctx.dlg, "Text stroke thickness;\nif 0 use the default heuristics that\ncalculates it from text scale");
 				PCB_DAD_MINMAX(rstdlg_ctx.dlg, 1, PCB_MAX_COORD);
+				PCB_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
 
 			PCB_DAD_LABEL(rstdlg_ctx.dlg, "*Via hole:");
 			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
 				rstdlg_ctx.wviahole = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
 				PCB_DAD_HELP(rstdlg_ctx.dlg, "Via hole diameter\nwarning: will be replaced with the padstack selector");
 				PCB_DAD_MINMAX(rstdlg_ctx.dlg, 1, PCB_MAX_COORD);
+				PCB_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
 
 			PCB_DAD_LABEL(rstdlg_ctx.dlg, "*Via ring:");
 			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
 				rstdlg_ctx.wviaring = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
 				PCB_DAD_HELP(rstdlg_ctx.dlg, "Via ring diameter\nwarning: will be replaced with the padstack selector");
 				PCB_DAD_MINMAX(rstdlg_ctx.dlg, 1, PCB_MAX_COORD);
+				PCB_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
 
 		PCB_DAD_END(rstdlg_ctx.dlg);
 		PCB_DAD_TREE(rstdlg_ctx.dlg, 2, 0, attr_hdr);
