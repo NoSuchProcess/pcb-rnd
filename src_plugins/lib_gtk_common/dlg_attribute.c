@@ -207,6 +207,17 @@ static void button_changed_cb(GtkButton *button, pcb_hid_attribute_t *dst)
 	change_cb(ctx, dst);
 }
 
+static void label_click_cb(GtkButton *evbox, GdkEvent *event, pcb_hid_attribute_t *dst)
+{
+	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(evbox), PCB_OBJ_PROP);
+
+	dst->changed = 1;
+	if (ctx->inhibit_valchg)
+		return;
+
+	change_cb(ctx, dst);
+}
+
 static void color_changed_cb(GtkColorButton *button, pcb_hid_attribute_t *dst)
 {
 	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(button), PCB_OBJ_PROP);
@@ -293,6 +304,16 @@ typedef struct {
 		} pane;
 	} val;
 } ghid_attr_tb_t;
+
+/* Wrap w so that clicks on it are triggering a callback */
+static GtkWidget *wrap_bind_click(GtkWidget *w, GCallback cb, void *cb_data)
+{
+	GtkWidget *event_box = gtk_event_box_new();
+	gtk_container_add(GTK_CONTAINER(event_box), w);
+	g_signal_connect(event_box, "button-press-event", G_CALLBACK(cb), cb_data);
+
+	return event_box;
+}
 
 static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_tb_t *tb_st, int start_from);
 
@@ -410,9 +431,12 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 			case PCB_HATT_LABEL:
 				ctx->wl[j] = widget = gtk_label_new(ctx->attrs[j].name);
-				g_object_set_data(G_OBJECT(widget), PCB_OBJ_PROP, ctx);
+				ctx->wltop[j] = wrap_bind_click(widget, G_CALLBACK(label_click_cb), &(ctx->attrs[j]));
 
-				gtk_box_pack_start(GTK_BOX(parent), widget, FALSE, FALSE, 0);
+				g_object_set_data(G_OBJECT(widget), PCB_OBJ_PROP, ctx);
+				g_object_set_data(G_OBJECT(ctx->wltop[j]), PCB_OBJ_PROP, ctx);
+
+				gtk_box_pack_start(GTK_BOX(parent), ctx->wltop[j], FALSE, FALSE, 0);
 				gtk_misc_set_alignment(GTK_MISC(widget), 0., 0.5);
 				gtk_widget_set_tooltip_text(widget, ctx->attrs[j].help_text);
 				break;
