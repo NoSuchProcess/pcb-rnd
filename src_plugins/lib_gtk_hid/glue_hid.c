@@ -452,9 +452,9 @@ static double ghid_benchmark(void)
 	return i/10.0;
 }
 
-static pcb_hid_dad_subdialog_t *ghid_dock_enter(pcb_hid_dock_t where, const char *id)
+static int ghid_dock_enter(pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id)
 {
-	return pcb_gtk_tw_dock_enter(&ghidgui->topwin, where, id);
+	return pcb_gtk_tw_dock_enter(&ghidgui->topwin, sub, where, id);
 }
 
 static void ghid_dock_leave(pcb_hid_dad_subdialog_t *sub)

@@ -435,8 +435,9 @@ struct pcb_hid_s {
 	void (*attr_dlg_set_help)(void *hid_ctx, int idx, const char *val);
 
 	/* top window docking: enter a new docked part by registering a
-	   new subdialog or leave (remove a docked part) from a subdialog */
-	pcb_hid_dad_subdialog_t *(*dock_enter)(pcb_hid_dock_t where, const char *id);
+	   new subdialog or leave (remove a docked part) from a subdialog. Return 0
+	   on success. */
+	int (*dock_enter)(pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id);
 	void (*dock_leave)(pcb_hid_dad_subdialog_t *sub);
 
 	/* Something to alert the user.  */
@@ -592,5 +593,6 @@ int pcb_hid_progress(long so_far, long total, const char *message);
 	((pcb_gui != NULL) && (pcb_gui->gui) && (pcb_gui->attr_dlg_new != NULL) && (pcb_gui->attr_dlg_new != pcb_nogui_attr_dlg_new))
 void *pcb_nogui_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy);
 
+int pcb_hid_dock_enter(pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id);
 
 #endif

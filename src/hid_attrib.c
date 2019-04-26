@@ -349,3 +349,10 @@ int pcb_attribute_dialog(const char *id, pcb_hid_attribute_t *attrs, int n_attrs
 {
 	return pcb_attribute_dialog_(id, attrs, n_attrs, results, title, caller_data, NULL, 0, 0, NULL);
 }
+
+int pcb_hid_dock_enter(pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id)
+{
+	if ((pcb_gui == NULL) || (pcb_gui->dock_enter == NULL))
+		return -1;
+	return pcb_gui->dock_enter(sub, where, id);
+}

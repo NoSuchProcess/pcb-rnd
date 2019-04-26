@@ -72,9 +72,9 @@ static int pcb_gtk_dock_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, pcb_
 	return -1;
 }
 
-pcb_hid_dad_subdialog_t *pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dock_t where, const char *id)
+int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id)
 {
-	return NULL;
+	return -1;
 }
 
 void pcb_gtk_tw_dock_leave(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub)
