@@ -77,31 +77,6 @@ static void rst_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, ch
 	}
 }
 
-static void rst_docked_create()
-{
-	int n;
-	PCB_DAD_BEGIN_VBOX(rst.sub.dlg);
-		for(n = 0; n < MAX_STYLES; n++) {
-			PCB_DAD_BEGIN_HBOX(rst.sub.dlg);
-				PCB_DAD_COMPFLAG(rst.sub.dlg, PCB_HATF_HIDE);
-					rst.whbox[n] = PCB_DAD_CURRENT(rst.sub.dlg);
-				PCB_DAD_BOOL(rst.sub.dlg, "");
-					rst.wchk[n] = PCB_DAD_CURRENT(rst.sub.dlg);
-				PCB_DAD_LABEL(rst.sub.dlg, "unused");
-					rst.wlab[n] = PCB_DAD_CURRENT(rst.sub.dlg);
-			PCB_DAD_END(rst.sub.dlg);
-		}
-
-		PCB_DAD_BEGIN_HBOX(rst.sub.dlg);
-			PCB_DAD_BUTTON(rst.sub.dlg, "New");
-			PCB_DAD_BUTTON(rst.sub.dlg, "Edit");
-			PCB_DAD_BUTTON(rst.sub.dlg, "Del");
-		PCB_DAD_END(rst.sub.dlg);
-	PCB_DAD_END(rst.sub.dlg);
-
-	rst.sub_inited = 1;
-}
-
 static int rst_lock = 0;
 static void rst_update()
 {
@@ -131,6 +106,32 @@ static void rst_update()
 	}
 	rst_lock--;
 }
+
+static void rst_docked_create()
+{
+	int n;
+	PCB_DAD_BEGIN_VBOX(rst.sub.dlg);
+		for(n = 0; n < MAX_STYLES; n++) {
+			PCB_DAD_BEGIN_HBOX(rst.sub.dlg);
+				PCB_DAD_COMPFLAG(rst.sub.dlg, PCB_HATF_HIDE);
+					rst.whbox[n] = PCB_DAD_CURRENT(rst.sub.dlg);
+				PCB_DAD_BOOL(rst.sub.dlg, "");
+					rst.wchk[n] = PCB_DAD_CURRENT(rst.sub.dlg);
+				PCB_DAD_LABEL(rst.sub.dlg, "unused");
+					rst.wlab[n] = PCB_DAD_CURRENT(rst.sub.dlg);
+			PCB_DAD_END(rst.sub.dlg);
+		}
+
+		PCB_DAD_BEGIN_HBOX(rst.sub.dlg);
+			PCB_DAD_BUTTON(rst.sub.dlg, "New");
+			PCB_DAD_BUTTON(rst.sub.dlg, "Edit");
+			PCB_DAD_BUTTON(rst.sub.dlg, "Del");
+		PCB_DAD_END(rst.sub.dlg);
+	PCB_DAD_END(rst.sub.dlg);
+
+	rst.sub_inited = 1;
+}
+
 
 void pcb_rst_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 {
