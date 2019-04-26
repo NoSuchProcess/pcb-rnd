@@ -153,9 +153,13 @@ static int rst_edit_attr(char **key, char **val)
 			PCB_DAD_LABEL(dlg, "key");
 			PCB_DAD_STRING(dlg);
 				wkey = PCB_DAD_CURRENT(dlg);
+				if (*key != NULL)
+					PCB_DAD_DEFAULT_PTR(dlg, pcb_strdup(*key));
 			PCB_DAD_LABEL(dlg, "value");
 			PCB_DAD_STRING(dlg);
 				wval = PCB_DAD_CURRENT(dlg);
+				if (*val != NULL)
+					PCB_DAD_DEFAULT_PTR(dlg, pcb_strdup(*val));
 		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
 	PCB_DAD_END(dlg);
 
@@ -175,6 +179,26 @@ static void rst_add_attr_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	char *key = NULL, *val = NULL;
 
 	if (rst_edit_attr(&key, &val) == 0) {
+		pcb_attribute_put(&rst->attr, key, val);
+		rst_updated(rst);
+	}
+}
+
+static void rst_edit_attr_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_route_style_t *rst = vtroutestyle_get(&PCB->RouteStyle, rstdlg_ctx.curr, 0);
+	pcb_hid_attribute_t *treea = &rstdlg_ctx.dlg[rstdlg_ctx.wattr];
+	pcb_hid_row_t *row = pcb_dad_tree_get_selected(treea);
+	char *key, *val;
+
+	if (row == NULL)
+		return;
+
+	key = row->cell[0];
+	val = row->cell[1];
+
+	if (rst_edit_attr(&key, &val) == 0) {
+		pcb_attribute_remove(&rst->attr, row->cell[0]);
 		pcb_attribute_put(&rst->attr, key, val);
 		rst_updated(rst);
 	}
@@ -255,6 +279,8 @@ static void pcb_dlg_rstdlg(int rst_idx)
 		PCB_DAD_BEGIN_HBOX(rstdlg_ctx.dlg);
 			PCB_DAD_BUTTON(rstdlg_ctx.dlg, "add");
 				PCB_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_add_attr_cb);
+			PCB_DAD_BUTTON(rstdlg_ctx.dlg, "edit");
+				PCB_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_edit_attr_cb);
 			PCB_DAD_BUTTON(rstdlg_ctx.dlg, "del");
 				PCB_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_del_attr_cb);
 		PCB_DAD_END(rstdlg_ctx.dlg);
