@@ -190,6 +190,10 @@ void pcb_rst_gui_init_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 
 void pcb_rst_update_conf(conf_native_t *cfg, int arr_idx)
 {
-	if ((pcb_gui != NULL) && (pcb_gui->update_menu_checkbox != NULL))
-		pcb_gui->update_menu_checkbox(NULL);
+	if ((PCB != NULL) && (pcb_gui != NULL)) {
+		if (pcb_gui->update_menu_checkbox != NULL)
+			pcb_gui->update_menu_checkbox(NULL);
+		if (rst.sub_inited)
+			rst_force_update_chk_and_dlg();
+	}
 }
