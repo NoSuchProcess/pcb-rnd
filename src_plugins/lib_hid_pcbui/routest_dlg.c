@@ -206,7 +206,15 @@ static void rst_edit_attr_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 
 static void rst_del_attr_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
+	pcb_route_style_t *rst = vtroutestyle_get(&PCB->RouteStyle, rstdlg_ctx.curr, 0);
+	pcb_hid_attribute_t *treea = &rstdlg_ctx.dlg[rstdlg_ctx.wattr];
+	pcb_hid_row_t *row = pcb_dad_tree_get_selected(treea);
 
+	if (row == NULL)
+		return;
+
+	pcb_attribute_remove(&rst->attr, row->cell[0]);
+	rst_updated(rst);
 }
 
 
