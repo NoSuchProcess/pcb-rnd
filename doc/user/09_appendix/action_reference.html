@@ -12,12 +12,13 @@
 <h2> Action Reference</h2>
 <table border=1>
 <caption>\n <b>
-This is pcb-rnd 2.1.1 (svn r23108) an interactive printed circuit board editor ,  Revision: 24770
+This is pcb-rnd 2.1.2 (svn r24946) an interactive printed circuit board editor ,  Revision: 24954
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#addrats">AddRats</a></td><td>Add one or more rat lines to the board.</td><td>AddRats(AllRats|SelectedRats|Close)</td><td></td>
 <tr><td><a href="action_details.html#addtimer">AddTimer</a></td><td>Add a new timer</td><td>AddTimer(action, period, [repeat], [userdata])</td><td>script plugin</td>
+<tr><td><a href="action_details.html#adjuststyle">AdjustStyle</a></td><td>Open the dialog box for editing the route styles.</td><td>AdjustStyle([routestyle_idx])</td><td>lib_hid_pcbui/route_style</td>
 <tr><td><a href="action_details.html#applyvendor">ApplyVendor</a></td><td>Applies the currently loaded vendor drill table to the current design.</td><td>ApplyVendor()</td><td>vendor drill mapping</td>
 <tr><td>ArcNew</td><td>Create a pcb arc segment on a layer. For now data must be "pcb". Returns the ID of the new object or 0 on error.</td><td>ArcNew([noundo,] data, layer, centx, centy, radiusx, radiusy, start_ang, delta_ang, thickness, clearance, flags)</td><td>act_draw</td>
 <tr><td><a href="action_details.html#atomic">Atomic</a></td><td>Save or restore the undo serial number.</td><td>Atomic(Save|Restore|Close|Block)</td><td></td>
