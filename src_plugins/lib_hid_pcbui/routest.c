@@ -77,6 +77,18 @@ static void rst_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, ch
 	}
 }
 
+/* Update all checkboxes, but nothing else */
+static void rst_force_update_chk()
+{
+	int n, target = pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
+	pcb_hid_attr_val_t hv;
+
+	for(n = 0; n < vtroutestyle_len(&PCB->RouteStyle); n++) {
+		hv.int_value = (n == target);
+		pcb_gui->attr_dlg_set_value(rst.sub.dlg_hid_ctx, rst.wchk[n], &hv);
+	}
+}
+
 static int rst_lock = 0;
 static void rst_update()
 {
@@ -107,6 +119,21 @@ static void rst_update()
 	rst_lock--;
 }
 
+static void rst_select_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	int n, ridx = -1;
+	for(n = 0; n < vtroutestyle_len(&PCB->RouteStyle); n++) {
+		if ((attr == &rst.sub.dlg[rst.wlab[n]]) || (attr == &rst.sub.dlg[rst.wchk[n]])) {
+			ridx = n;
+			break;
+		}
+	}
+	if (ridx < 0)
+		return;
+	pcb_use_route_style(&(PCB->RouteStyle.array[ridx]));
+	rst_force_update_chk();
+}
+
 static void rst_docked_create()
 {
 	int n;
@@ -117,8 +144,10 @@ static void rst_docked_create()
 					rst.whbox[n] = PCB_DAD_CURRENT(rst.sub.dlg);
 				PCB_DAD_BOOL(rst.sub.dlg, "");
 					rst.wchk[n] = PCB_DAD_CURRENT(rst.sub.dlg);
+					PCB_DAD_CHANGE_CB(rst.sub.dlg, rst_select_cb);
 				PCB_DAD_LABEL(rst.sub.dlg, "unused");
 					rst.wlab[n] = PCB_DAD_CURRENT(rst.sub.dlg);
+					PCB_DAD_CHANGE_CB(rst.sub.dlg, rst_select_cb);
 			PCB_DAD_END(rst.sub.dlg);
 		}
 
