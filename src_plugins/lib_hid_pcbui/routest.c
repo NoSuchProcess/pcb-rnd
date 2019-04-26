@@ -169,8 +169,6 @@ static void rst_docked_create()
 			PCB_DAD_BUTTON(rst.sub.dlg, "Del");
 		PCB_DAD_END(rst.sub.dlg);
 	PCB_DAD_END(rst.sub.dlg);
-
-	rst.sub_inited = 1;
 }
 
 
@@ -183,7 +181,8 @@ void pcb_rst_gui_init_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (PCB_HAVE_GUI_ATTR_DLG) {
 		rst_docked_create();
-		pcb_hid_dock_enter(&rst.sub, PCB_HID_DOCK_LEFT, "Route styles");
+		if (pcb_hid_dock_enter(&rst.sub, PCB_HID_DOCK_LEFT, "Route styles") == 0)
+			rst.sub_inited = 1;
 	}
 	rst_update();
 }
