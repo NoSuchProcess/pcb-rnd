@@ -523,20 +523,16 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	gtk_box_pack_start(GTK_BOX(hbox_middle), tw->left_toolbar, FALSE, FALSE, 0);
 
 	gtk_box_pack_start(GTK_BOX(tw->left_toolbar), tw->layer_selector, TRUE, TRUE, 0);
+	tw->dockbox[PCB_HID_DOCK_LEFT] = gtkc_vbox_new(FALSE, 8);
+	gtk_box_pack_end(GTK_BOX(GTK_BOX(tw->left_toolbar)), tw->dockbox[PCB_HID_DOCK_LEFT], FALSE, FALSE, 0);
 
-	/* tw->mode_btn.mode_buttons_frame was created above in the call to
-	 * make_mode_buttons_and_toolbar (...);
-	 */
-	gtk_box_pack_start(GTK_BOX(tw->left_toolbar), tw->mode_btn.mode_buttons_frame, FALSE, FALSE, 0);
-
+	/* -- main content */
 	tw->vbox_middle = gtkc_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_middle), tw->vbox_middle, TRUE, TRUE, 0);
 
 	hbox = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(tw->vbox_middle), hbox, TRUE, TRUE, 0);
 
-	tw->dockbox[PCB_HID_DOCK_LEFT] = gtkc_vbox_new(FALSE, 8);
-	gtk_box_pack_end(GTK_BOX(GTK_BOX(tw->left_toolbar)), tw->dockbox[PCB_HID_DOCK_LEFT], FALSE, FALSE, 0);
 
 	/* -- The PCB layout output drawing area */
 
