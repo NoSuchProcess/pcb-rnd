@@ -79,8 +79,8 @@ static void rst_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, ch
 	}
 }
 
-/* Update all checkboxes, but nothing else */
-static void rst_force_update_chk()
+/* Update the edit dialog and all checkboxes, but nothing else on the sub */
+static void rst_force_update_chk_and_dlg()
 {
 	int n, target = pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
 	pcb_hid_attr_val_t hv;
@@ -89,6 +89,7 @@ static void rst_force_update_chk()
 		hv.int_value = (n == target);
 		pcb_gui->attr_dlg_set_value(rst.sub.dlg_hid_ctx, rst.wchk[n], &hv);
 	}
+	rstdlg_pcb2dlg(target);
 }
 
 static int rst_lock = 0;
@@ -117,6 +118,7 @@ static void rst_update()
 			for(n = 0; n < MAX_STYLES; n++)
 				pcb_gui->attr_dlg_widget_hide(rst.sub.dlg_hid_ctx, rst.whbox[n], n >= rst.last_len);
 		}
+		rstdlg_pcb2dlg(target);
 	}
 	rst_lock--;
 }
@@ -133,7 +135,7 @@ static void rst_select_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	if (ridx < 0)
 		return;
 	pcb_use_route_style(&(PCB->RouteStyle.array[ridx]));
-	rst_force_update_chk();
+	rst_force_update_chk_and_dlg();
 }
 
 static void rst_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)

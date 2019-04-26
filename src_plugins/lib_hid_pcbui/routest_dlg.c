@@ -43,14 +43,47 @@ static void rstdlg_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	memset(ctx, 0, sizeof(rstdlg_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
+static void rstdlg_pcb2dlg(int rst_idx)
+{
+	pcb_hid_attr_val_t hv;
+	pcb_route_style_t *rst;
+
+	if (!rstdlg_ctx.active)
+		return;
+
+	rst = vtroutestyle_get(&PCB->RouteStyle, rst_idx, 0);
+
+	hv.str_value = rst->name;
+	pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wname, &hv);
+
+	hv.coord_value = rst->Thick;
+	pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wlineth, &hv);
+
+	hv.coord_value = rst->textt;
+	pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wtxtth, &hv);
+
+	hv.coord_value = rst->texts;
+	pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wtxtscale, &hv);
+
+	hv.coord_value = rst->Clearance;
+	pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wclr, &hv);
+
+	hv.coord_value = rst->Hole;
+	pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wviahole, &hv);
+
+	hv.coord_value = rst->Diameter;
+	pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wviaring, &hv);
+}
+
 static void pcb_dlg_rstdlg(int rst_idx)
 {
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	static const char *attr_hdr[] = {"attribute key", "attribute value", NULL};
 
-TODO("if already active, switch to rst_idx");
-	if (rstdlg_ctx.active)
-		return; /* do not open another */
+	if (rstdlg_ctx.active) { /* do not open another, just refresh data to target */
+		rstdlg_pcb2dlg(rst_idx);
+		return;
+	}
 
 	PCB_DAD_BEGIN_VBOX(rstdlg_ctx.dlg);
 		PCB_DAD_COMPFLAG(rstdlg_ctx.dlg, PCB_HATF_EXPFILL);
@@ -105,5 +138,7 @@ TODO("if already active, switch to rst_idx");
 	rstdlg_ctx.active = 1;
 
 	PCB_DAD_NEW("route_style", rstdlg_ctx.dlg, "Edit route style", &rstdlg_ctx, pcb_false, rstdlg_close_cb);
+
+	rstdlg_pcb2dlg(rst_idx);
 }
 
