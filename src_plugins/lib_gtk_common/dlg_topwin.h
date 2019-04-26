@@ -20,7 +20,7 @@
 
 typedef struct {
 	GtkWidget *box; /* parent box */
-	pcb_hid_dad_subdialog_t *sub_head; /* singly linked list of subboxes */
+	gdl_list_t subs; /* ordered list of subboxes: left->right or top->bottom */
 } pcb_gtk_dock_t;
 
 typedef struct {
