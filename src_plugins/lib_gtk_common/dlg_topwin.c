@@ -51,7 +51,6 @@
 #include "compat_misc.h"
 
 #include "compat.h"
-#include "bu_box.h"
 #include "bu_status_line.h"
 #include "bu_menu.h"
 #include "bu_icons.h"

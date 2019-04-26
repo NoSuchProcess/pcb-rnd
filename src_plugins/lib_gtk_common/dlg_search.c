@@ -42,8 +42,6 @@
 
 #include "win_place.h"
 #include "wt_coord_entry.h"
-#include "bu_box.h"
-
 #include "compat.h"
 
 typedef struct expr1_s expr1_t;

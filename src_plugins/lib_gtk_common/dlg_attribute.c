@@ -43,7 +43,6 @@
 #include "event.h"
 
 #include "compat.h"
-#include "bu_box.h"
 #include "bu_spin_button.h"
 #include "wt_coord_entry.h"
 #include "win_place.h"
