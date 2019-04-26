@@ -97,6 +97,13 @@ static void rstdlg_pcb2dlg(int rst_idx)
 	rstdlg_ctx.curr = rst_idx;
 }
 
+static void rst_updated(pcb_route_style_t *rst)
+{
+	pcb_use_route_style(rst);
+	pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
+	pcb_board_set_changed_flag(1);
+}
+
 static void rst_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	int idx = attr - rstdlg_ctx.dlg;
@@ -131,10 +138,53 @@ TODO("This change is not undoable");
 		return;
 	}
 
-	pcb_use_route_style(rst);
-	pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
-	pcb_board_set_changed_flag(1);
+	rst_updated(rst);
 }
+
+static int rst_edit_attr(char **key, char **val)
+{
+	int wkey, wval, res;
+	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
+	PCB_DAD_DECL(dlg);
+
+	PCB_DAD_BEGIN_VBOX(dlg);
+		PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_BEGIN_TABLE(dlg, 2);
+			PCB_DAD_LABEL(dlg, "key");
+			PCB_DAD_STRING(dlg);
+				wkey = PCB_DAD_CURRENT(dlg);
+			PCB_DAD_LABEL(dlg, "value");
+			PCB_DAD_STRING(dlg);
+				wval = PCB_DAD_CURRENT(dlg);
+		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
+	PCB_DAD_END(dlg);
+
+	PCB_DAD_NEW("route_style_attr", dlg, "Edit route style attribute", NULL, pcb_true, NULL);
+	res = PCB_DAD_RUN(dlg);
+	if (res == 0) {
+		*key = pcb_strdup(dlg[wkey].default_val.str_value);
+		*val = pcb_strdup(dlg[wval].default_val.str_value);
+	}
+	PCB_DAD_FREE(dlg);
+	return res;
+}
+
+static void rst_add_attr_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_route_style_t *rst = vtroutestyle_get(&PCB->RouteStyle, rstdlg_ctx.curr, 0);
+	char *key = NULL, *val = NULL;
+
+	if (rst_edit_attr(&key, &val) == 0) {
+		pcb_attribute_put(&rst->attr, key, val);
+		rst_updated(rst);
+	}
+}
+
+static void rst_del_attr_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+
+}
+
 
 static void pcb_dlg_rstdlg(int rst_idx)
 {
@@ -204,7 +254,9 @@ static void pcb_dlg_rstdlg(int rst_idx)
 			rstdlg_ctx.wattr = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
 		PCB_DAD_BEGIN_HBOX(rstdlg_ctx.dlg);
 			PCB_DAD_BUTTON(rstdlg_ctx.dlg, "add");
+				PCB_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_add_attr_cb);
 			PCB_DAD_BUTTON(rstdlg_ctx.dlg, "del");
+				PCB_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_del_attr_cb);
 		PCB_DAD_END(rstdlg_ctx.dlg);
 		PCB_DAD_BUTTON_CLOSES(rstdlg_ctx.dlg, clbtn);
 	PCB_DAD_END(rstdlg_ctx.dlg);
