@@ -156,6 +156,16 @@ typedef enum pcb_hid_clipfmt_e {
 	PCB_HID_CLIPFMT_TEXT              /* plain text (c string with the \0 included) */
 } pcb_hid_clipfmt_t;
 
+typedef enum {
+	PCB_HID_DOCK_TOP_LEFT,       /*  hbox on the top, below the menubar */
+	PCB_HID_DOCK_TOP_RIGHT,      /*  hbox on the top, next to the menubar */
+	PCB_HID_DOCK_LEFT,
+	PCB_HID_DOCK_BOTTOM,
+	PCB_HID_DOCK_FLOAT,          /* separate window */
+
+	PCB_HID_DOCK_max
+} pcb_hid_dock_t;
+
 typedef struct pcb_hid_s pcb_hid_t;
 
 /* This is the main HID structure.  */
@@ -423,6 +433,11 @@ struct pcb_hid_s {
 	/* Change the help text (tooltip) string of a widget; NULL means remove it.
 	   NOTE: does _not_ change the help_text field of the attribute. */
 	void (*attr_dlg_set_help)(void *hid_ctx, int idx, const char *val);
+
+	/* top window docking: enter a new docked part by registering a
+	   new subdialog or leave (remove a docked part) from a subdialog */
+	pcb_hid_dad_subdialog_t *(*dock_enter)(pcb_hid_dock_t where, const char *id);
+	void (*dock_leave)(pcb_hid_dad_subdialog_t *sub);
 
 	/* Something to alert the user.  */
 	void (*beep)(void);

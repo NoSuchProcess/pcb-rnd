@@ -671,6 +671,8 @@ struct pcb_hid_dad_subdialog_s {
 
 	void *parent_ctx; /* used by the parent dialog code */
 	void *sub_ctx;    /* used by the sub-dialog's creator */
+
+	pcb_hid_dad_subdialog_t *next; /* in case it's part of a list, e.g. dock */
 };
 
 #endif
