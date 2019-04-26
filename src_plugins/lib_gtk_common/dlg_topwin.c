@@ -183,9 +183,6 @@ gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, p
 	 */
 void ghid_sync_with_new_layout(pcb_gtk_topwin_t *tw)
 {
-	if (vtroutestyle_len(&PCB->RouteStyle) > 0)
-		pcb_use_route_style(&PCB->RouteStyle.array[0]);
-
 	ghid_handle_units_changed(tw);
 
 	tw->com->window_set_name_label(tw->com->hidlib->name);
