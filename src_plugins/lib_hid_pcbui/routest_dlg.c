@@ -218,14 +218,14 @@ static void rst_del_attr_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 }
 
 
-static void pcb_dlg_rstdlg(int rst_idx)
+static int pcb_dlg_rstdlg(int rst_idx)
 {
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	static const char *attr_hdr[] = {"attribute key", "attribute value", NULL};
 
 	if (rstdlg_ctx.active) { /* do not open another, just refresh data to target */
 		rstdlg_pcb2dlg(rst_idx);
-		return;
+		return 0;
 	}
 
 	PCB_DAD_BEGIN_VBOX(rstdlg_ctx.dlg);
@@ -301,5 +301,36 @@ static void pcb_dlg_rstdlg(int rst_idx)
 	PCB_DAD_NEW("route_style", rstdlg_ctx.dlg, "Edit route style", &rstdlg_ctx, pcb_false, rstdlg_close_cb);
 
 	rstdlg_pcb2dlg(rst_idx);
+	return 0;
 }
 
+
+const char pcb_acts_AdjustStyle[] = "AdjustStyle([routestyle_idx])\n";
+const char pcb_acth_AdjustStyle[] = "Open the dialog box for editing the route styles.";
+/* DOC: adjuststyle.html */
+fgw_error_t pcb_act_AdjustStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	long idx = -1;
+
+	if (argc > 2)
+		PCB_ACT_FAIL(AdjustStyle);
+
+	PCB_ACT_MAY_CONVARG(1, FGW_LONG, AdjustStyle, idx = argv[1].val.nat_long);
+
+	if (idx >= (long)vtroutestyle_len(&PCB->RouteStyle)) {
+		pcb_message(PCB_MSG_ERROR, "Invalid route style %ld index; max value: %ld\n", idx, vtroutestyle_len(&PCB->RouteStyle)-1);
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+
+	if (idx < 0) {
+		idx = pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
+		if (idx < 0) {
+			pcb_message(PCB_MSG_ERROR, "No style selected\n");
+			PCB_ACT_IRES(-1);
+		}
+	}
+
+	PCB_ACT_IRES(pcb_dlg_rstdlg(idx));
+	return 0;
+}

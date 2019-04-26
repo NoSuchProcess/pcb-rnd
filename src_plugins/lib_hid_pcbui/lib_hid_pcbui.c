@@ -39,16 +39,24 @@
 static const char *layer_cookie = "lib_hid_pcbui/layer";
 static const char *rst_cookie = "lib_hid_pcbui/route_style";
 
+static pcb_action_t rst_action_list[] = {
+	{"AdjustStyle", pcb_act_AdjustStyle, pcb_acth_AdjustStyle, pcb_acts_AdjustStyle}
+};
+PCB_REGISTER_ACTIONS(rst_action_list, rst_cookie)
+
 int pplg_check_ver_lib_hid_pcbui(int ver_needed) { return 0; }
 
 static conf_hid_id_t conf_id;
 
 void pplg_uninit_lib_hid_pcbui(void)
 {
+	pcb_remove_actions_by_cookie(rst_cookie);
 	pcb_event_unbind_allcookie(layer_cookie);
 	pcb_event_unbind_allcookie(rst_cookie);
 	conf_hid_unreg(rst_cookie);
 }
+
+#include "dolists.h"
 
 int pplg_init_lib_hid_pcbui(void)
 {
@@ -59,6 +67,8 @@ TODO("padstack: remove some paths when route style has proto")
 	int n;
 
 	PCB_API_CHK_VER;
+
+	PCB_REGISTER_ACTIONS(rst_action_list, rst_cookie);
 
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, pcb_layer_menu_update_ev, NULL, layer_cookie);
 	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, pcb_layer_menu_update_ev, NULL, layer_cookie);
