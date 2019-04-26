@@ -40,22 +40,22 @@
 #define SIDE_X(x)         ((conf_core.editor.view.flip_x ? PCB->hidlib.size_x - (x) : (x)))
 #define SIDE_Y(y)         ((conf_core.editor.view.flip_y ? PCB->hidlib.size_y - (y) : (y)))
 
-#define	DRAW_X(view, x)         (gint)((SIDE_X(x) - (view)->x0) / (view)->coord_per_px)
-#define	DRAW_Y(view, y)         (gint)((SIDE_Y(y) - (view)->y0) / (view)->coord_per_px)
+#define DRAW_X(view, x)         (gint)((SIDE_X(x) - (view)->x0) / (view)->coord_per_px)
+#define DRAW_Y(view, y)         (gint)((SIDE_Y(y) - (view)->y0) / (view)->coord_per_px)
 
-#define	EVENT_TO_PCB_X(view, x) (pcb_coord_t)pcb_round(SIDE_X((double)(x) * (view)->coord_per_px + (double)(view)->x0))
-#define	EVENT_TO_PCB_Y(view, y) (pcb_coord_t)pcb_round(SIDE_Y((double)(y) * (view)->coord_per_px + (double)(view)->y0))
+#define EVENT_TO_PCB_X(view, x) (pcb_coord_t)pcb_round(SIDE_X((double)(x) * (view)->coord_per_px + (double)(view)->x0))
+#define EVENT_TO_PCB_Y(view, y) (pcb_coord_t)pcb_round(SIDE_Y((double)(y) * (view)->coord_per_px + (double)(view)->y0))
 
 
 typedef struct {
-	double coord_per_px;					/* Zoom level described as PCB units per screen pixel */
+	double coord_per_px;     /* Zoom level described as PCB units per screen pixel */
 
 	pcb_coord_t x0;
 	pcb_coord_t y0;
 	pcb_coord_t width;
 	pcb_coord_t height;
 
-	unsigned use_max_pcb:1; /* when 1, use PCB->Max*; when 0, use the following two: */
+	unsigned use_max_pcb:1;  /* when 1, use PCB->Max*; when 0, use the following two: */
 	pcb_coord_t max_width;
 	pcb_coord_t max_height;
 
@@ -63,8 +63,8 @@ typedef struct {
 
 	gboolean has_entered;
 	gboolean panning;
-	pcb_coord_t pcb_x, pcb_y;						/* PCB coordinates of the mouse pointer */
-	pcb_coord_t crosshair_x, crosshair_y;	/* PCB coordinates of the crosshair     */
+	pcb_coord_t pcb_x, pcb_y;              /* PCB coordinates of the mouse pointer */
+	pcb_coord_t crosshair_x, crosshair_y;  /* PCB coordinates of the crosshair     */
 
 	pcb_gtk_common_t *com;
 } pcb_gtk_view_t;
@@ -116,11 +116,11 @@ static inline void pcb_gtk_zoom_adjustment(GtkAdjustment *adj, pcb_coord_t view_
 
 	page_size = MIN(view_size, board_size);
 	gtk_adjustment_configure(adj, gtk_adjustment_get_value(adj), /* value */
-													 -view_size,              /* lower */
-													 board_size + page_size,  /* upper */
-													 page_size / 100.0,       /* step_increment */
-													 page_size / 10.0,        /* page_increment */
-													 page_size);              /* page_size */
+		-view_size,              /* lower */
+		board_size + page_size,  /* upper */
+		page_size / 100.0,       /* step_increment */
+		page_size / 10.0,        /* page_increment */
+		page_size);              /* page_size */
 }
 
 #endif
