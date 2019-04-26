@@ -120,7 +120,7 @@ static void ghid_interface_set_sensitive(gboolean sensitive)
 static void ghid_port_button_press_main(void)
 {
 	ghid_invalidate_all();
-	ghid_window_set_name_label(PCB->hidlib.name);
+	ghid_window_set_name_label(ghidgui->common.hidlib->name);
 	ghid_set_status_line_label();
 	if (!gport->view.panning)
 		g_idle_add(ghid_idle_cb, &ghidgui->topwin);
@@ -131,7 +131,7 @@ static void ghid_port_button_release_main(void)
 	pcb_tool_adjust_attached_objects();
 	ghid_invalidate_all();
 
-	ghid_window_set_name_label(PCB->hidlib.name);
+	ghid_window_set_name_label(ghidgui->common.hidlib->name);
 	ghid_set_status_line_label();
 	g_idle_add(ghid_idle_cb, &ghidgui->topwin);
 }
