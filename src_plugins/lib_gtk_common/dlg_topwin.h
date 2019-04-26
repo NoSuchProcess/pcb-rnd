@@ -6,6 +6,7 @@
 #include <gtk/gtk.h>
 
 #include "hid_cfg.h"
+#include "hid_dad.h"
 
 #include "util_ext_chg.h"
 #include "bu_info_bar.h"
@@ -15,6 +16,12 @@
 #include "glue.h"
 #include "bu_command.h"
 #include "wt_layersel.h"
+
+
+typedef struct {
+	GtkWidget *box; /* parent box */
+	pcb_hid_dad_subdialog_t *sub_head; /* singly linked list of subboxes */
+} pcb_gtk_dock_t;
 
 typedef struct {
 	/* util/builder states */
@@ -44,6 +51,7 @@ typedef struct {
 	gboolean small_label_markup;
 	int active; /* 0 before init finishes */
 	pcb_gtk_layersel_t layersel;
+	pcb_gtk_dock_t dock[PCB_HID_DOCK_max];
 } pcb_gtk_topwin_t;
 
 void ghid_update_toggle_flags(pcb_gtk_topwin_t *tw, const char *cookie);
@@ -61,6 +69,10 @@ void pcb_gtk_tw_notify_save_pcb(pcb_gtk_topwin_t *tw, const char *filename, pcb_
 void pcb_gtk_tw_notify_filename_changed(pcb_gtk_topwin_t *tw);
 void pcb_gtk_tw_interface_set_sensitive(pcb_gtk_topwin_t *tw, gboolean sensitive);
 void pcb_gtk_tw_window_set_name_label(pcb_gtk_topwin_t *tw, const char *name);
+
+pcb_hid_dad_subdialog_t *pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dock_t where, const char *id);
+void pcb_gtk_tw_dock_leave(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub);
+
 
 gboolean ghid_idle_cb(void *topwin);
 gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, pcb_gtk_topwin_t *tw);

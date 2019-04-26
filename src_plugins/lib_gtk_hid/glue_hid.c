@@ -452,6 +452,17 @@ static double ghid_benchmark(void)
 	return i/10.0;
 }
 
+static pcb_hid_dad_subdialog_t *ghid_dock_enter(pcb_hid_dock_t where, const char *id)
+{
+	return pcb_gtk_tw_dock_enter(&ghidgui->topwin, where, id);
+}
+
+static void ghid_dock_leave(pcb_hid_dad_subdialog_t *sub)
+{
+	pcb_gtk_tw_dock_leave(&ghidgui->topwin, sub);
+}
+
+
 void ghid_glue_hid_init(pcb_hid_t *dst)
 {
 	memset(dst, 0, sizeof(pcb_hid_t));
@@ -492,6 +503,9 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->attr_dlg_set_value = ghid_attr_dlg_set_value;
 	dst->attr_dlg_set_help = ghid_attr_dlg_set_help;
 	dst->supports_dad_text_markup = 1;
+
+	dst->dock_enter = ghid_dock_enter;
+	dst->dock_leave = ghid_dock_leave;
 
 	dst->beep = ghid_beep;
 	dst->edit_attributes = ghid_attributes;

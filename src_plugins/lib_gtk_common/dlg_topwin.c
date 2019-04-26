@@ -66,6 +66,22 @@
 #include "hid_gtk_conf.h"
 #include "win_place.h"
 
+/*** docking code (dynamic parts) ***/
+static int pcb_gtk_dock_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, pcb_event_arg_t *res, int argc, pcb_event_arg_t *argv)
+{
+	return -1;
+}
+
+pcb_hid_dad_subdialog_t *pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dock_t where, const char *id)
+{
+	return NULL;
+}
+
+void pcb_gtk_tw_dock_leave(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub)
+{
+}
+
+/*** static top window code ***/
 /* sync the menu checkboxes with actual pcb state */
 void ghid_update_toggle_flags(pcb_gtk_topwin_t *tw, const char *cookie)
 {
@@ -518,6 +534,10 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 
 	hbox = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(tw->vbox_middle), hbox, TRUE, TRUE, 0);
+
+
+	tw->dock[PCB_HID_DOCK_LEFT].box = gtkc_vbox_new(FALSE, 8);
+	gtk_box_pack_end(GTK_BOX(GTK_BOX(tw->left_toolbar)), tw->dock[PCB_HID_DOCK_LEFT].box, FALSE, FALSE, 0);
 
 	/* -- The PCB layout output drawing area */
 
