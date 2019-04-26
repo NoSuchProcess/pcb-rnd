@@ -525,38 +525,6 @@ TODO(": maybe expose these through the object API so the caller can set it up?")
 	return GTK_WIDGET(prv);
 }
 
-void pcb_gtk_preview_board_zoomto(pcb_gtk_preview_t *p, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int canvas_width, int canvas_height)
-{
-	pcb_coord_t tmp;
-
-	/* just in case the size has changed meanwhile */
-	p->view.height = PCB->hidlib.size_y;
-	p->view.width = PCB->hidlib.size_x;
-	p->view.max_height = PCB->hidlib.size_y;
-	p->view.max_width = PCB->hidlib.size_x;
-	p->view.canvas_width = canvas_width;
-	p->view.canvas_height = canvas_height;
-
-	x1 = SIDE_X(x1);
-	y1 = SIDE_Y(y1);
-	x2 = SIDE_X(x2);
-	y2 = SIDE_Y(y2);
-
-	if (x1 > x2) {
-		tmp = x1;
-		x1 = x2;
-		x2 = tmp;
-	}
-
-	if (y1 > y2) {
-		tmp = y1;
-		y1 = y2;
-		y2 = tmp;
-	}
-
-	pcb_gtk_zoom_view_win(&p->view, x1, y1, x2, y2);
-}
-
 void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t *preview, int *width, int *height)
 {
 	*width = preview->w_pixels;
