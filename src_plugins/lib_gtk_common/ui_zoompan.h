@@ -37,14 +37,6 @@
 #include "in_mouse.h"
 #include "glue.h"
 
-	/* Go from from the grid units in use (millimeters or mils) to PCB units
-	   |  and back again.
-	   |  PCB keeps values internally higher precision, but gui
-	   |  widgets (spin buttons, labels, etc) need mils or millimeters.
-	 */
-#define	FROM_PCB_UNITS(v)	pcb_coord_to_unit(conf_core.editor.grid_unit, v)
-#define	TO_PCB_UNITS(v)		pcb_unit_to_coord(conf_core.editor.grid_unit, v)
-
 #define SIDE_X(x)         ((conf_core.editor.view.flip_x ? PCB->hidlib.size_x - (x) : (x)))
 #define SIDE_Y(y)         ((conf_core.editor.view.flip_y ? PCB->hidlib.size_y - (y) : (y)))
 
