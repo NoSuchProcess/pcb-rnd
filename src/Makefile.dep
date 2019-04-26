@@ -1898,8 +1898,8 @@
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h hid_cfg.h \
  ../src_plugins/lib_gtk_common/glue.h conf.h \
  ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h \
- ../src_plugins/lib_gtk_common/util_ext_chg.h \
+ ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
+ compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h conf_hid.h \
@@ -1943,8 +1943,8 @@
  ../src_3rd/genht/htpp.h unit.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h hid_cfg.h \
  ../src_plugins/lib_gtk_common/glue.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h \
- ../src_plugins/lib_gtk_common/util_ext_chg.h \
+ ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
+ compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h \
@@ -1992,8 +1992,8 @@
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h hid_cfg.h \
  ../src_plugins/lib_gtk_common/glue.h \
  ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h \
- ../src_plugins/lib_gtk_common/util_ext_chg.h \
+ ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
+ compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h \
@@ -2039,8 +2039,8 @@
  ../src_3rd/genht/htpp.h unit.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h hid_cfg.h \
  ../src_plugins/lib_gtk_common/glue.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h \
- ../src_plugins/lib_gtk_common/util_ext_chg.h \
+ ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
+ compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h \
@@ -2085,8 +2085,8 @@
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h hid_cfg.h \
  ../src_plugins/lib_gtk_common/glue.h conf.h \
  ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h \
- ../src_plugins/lib_gtk_common/util_ext_chg.h \
+ ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
+ compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h conf_hid.h \
@@ -2130,8 +2130,8 @@
  ../src_3rd/genht/htpp.h unit.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h hid_cfg.h \
  ../src_plugins/lib_gtk_common/glue.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h \
- ../src_plugins/lib_gtk_common/util_ext_chg.h \
+ ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
+ compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h \
@@ -4181,15 +4181,15 @@
  ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
- ../src_3rd/genvector/gds_char.h \
- ../src_plugins/lib_gtk_common/util_ext_chg.h pcb_bool.h \
+ ../src_3rd/genvector/gds_char.h hid_dad.h compat_misc.h hid_attrib.h \
+ pcb-printf.h ../src_plugins/lib_gtk_common/util_ext_chg.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h \
  vtroutestyle.h ../src_plugins/lib_gtk_common/glue.h hid.h conf.h \
- pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
- list_conf.h conf.h ../src_plugins/lib_gtk_common/compat.h \
- hid_cfg_input.h ../src_3rd/genht/htpp.h hid_cfg.h conf_hid.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
+ conf.h ../src_plugins/lib_gtk_common/compat.h hid_cfg_input.h \
+ ../src_3rd/genht/htpp.h hid_cfg.h conf_hid.h \
  ../src_plugins/lib_gtk_common/bu_mode_btn.h \
  ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
@@ -4519,8 +4519,8 @@
  ../src_plugins/lib_gtk_common/glue.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf.h ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h \
- ../src_plugins/lib_gtk_common/util_ext_chg.h \
+ ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
+ compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h \
@@ -4563,8 +4563,8 @@
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h hid_cfg.h \
  ../src_plugins/lib_gtk_common/glue.h conf.h \
  ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h \
- ../src_plugins/lib_gtk_common/util_ext_chg.h \
+ ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
+ compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h \
@@ -4602,8 +4602,8 @@
  ../src_plugins/lib_gtk_common/glue.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h list_conf.h conf.h \
  ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h \
- ../src_plugins/lib_gtk_common/util_ext_chg.h \
+ ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
+ compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h \
@@ -4638,8 +4638,8 @@
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h hid_cfg.h hid.h \
  ../src_plugins/lib_gtk_common/glue.h \
  ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h \
- ../src_plugins/lib_gtk_common/util_ext_chg.h \
+ ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
+ compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h \
@@ -4664,15 +4664,15 @@
  ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
- ../src_3rd/genvector/gds_char.h \
- ../src_plugins/lib_gtk_common/util_ext_chg.h pcb_bool.h \
+ ../src_3rd/genvector/gds_char.h hid_dad.h compat_misc.h hid_attrib.h \
+ pcb-printf.h ../src_plugins/lib_gtk_common/util_ext_chg.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h \
  vtroutestyle.h ../src_plugins/lib_gtk_common/glue.h hid.h conf.h \
- pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
- list_conf.h conf.h ../src_plugins/lib_gtk_common/compat.h \
- hid_cfg_input.h ../src_3rd/genht/htpp.h hid_cfg.h conf_hid.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
+ conf.h ../src_plugins/lib_gtk_common/compat.h hid_cfg_input.h \
+ ../src_3rd/genht/htpp.h hid_cfg.h conf_hid.h \
  ../src_plugins/lib_gtk_common/bu_mode_btn.h \
  ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
@@ -4706,8 +4706,8 @@
  ../src_plugins/lib_gtk_common/glue.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf.h ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h \
- ../src_plugins/lib_gtk_common/util_ext_chg.h \
+ ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
+ compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h \
@@ -4763,8 +4763,8 @@
  ../src_plugins/lib_gtk_common/glue.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf.h ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h \
- ../src_plugins/lib_gtk_common/util_ext_chg.h \
+ ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
+ compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h \
