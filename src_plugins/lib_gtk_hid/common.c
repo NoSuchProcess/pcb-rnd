@@ -80,7 +80,6 @@ void ghid_interface_input_signals_connect(void)
 	ghidgui->button_release_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_release_event", G_CALLBACK(ghid_port_button_release_cb), &gport->mouse);
 	kbd_input_signals_connect(0, gport->drawing_area);
 	kbd_input_signals_connect(1, ghidgui->topwin.layer_selector);
-	kbd_input_signals_connect(2, ghidgui->topwin.route_style_selector);
 	kbd_input_signals_connect(3, ghidgui->topwin.left_toolbar);
 	kbd_input_signals_connect(4, ghidgui->topwin.cps.grid_units_button);
 }
@@ -89,7 +88,6 @@ void ghid_interface_input_signals_disconnect(void)
 {
 	kbd_input_signals_disconnect(0, gport->drawing_area);
 	kbd_input_signals_disconnect(1, ghidgui->topwin.layer_selector);
-	kbd_input_signals_disconnect(2, ghidgui->topwin.route_style_selector);
 	kbd_input_signals_disconnect(3, ghidgui->topwin.left_toolbar);
 	kbd_input_signals_disconnect(4, ghidgui->topwin.cps.grid_units_button);
 

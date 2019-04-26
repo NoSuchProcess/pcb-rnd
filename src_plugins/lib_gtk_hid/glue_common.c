@@ -44,11 +44,6 @@ static void ghid_layer_buttons_update(void)
 	pcb_gtk_tw_layer_buttons_update(&ghidgui->topwin);
 }
 
-static void ghid_route_styles_edited_cb()
-{
-	pcb_gtk_tw_route_styles_edited_cb(&ghidgui->topwin);
-}
-
 static void ghid_port_ranges_changed(void)
 {
 	GtkAdjustment *h_adj, *v_adj;
@@ -184,7 +179,6 @@ void ghid_glue_common_init(void)
 	ghidgui->common.port_button_press_main = ghid_port_button_press_main;
 	ghidgui->common.port_button_release_main = ghid_port_button_release_main;
 	ghidgui->common.status_line_set_text = ghid_status_line_set_text;
-	ghidgui->common.route_styles_edited_cb = ghid_route_styles_edited_cb;
 	ghidgui->common.mode_cursor_main = ghid_mode_cursor_main;
 	ghidgui->common.pan_common = ghid_pan_common;
 	ghidgui->common.port_ranges_scale = ghid_port_ranges_scale;

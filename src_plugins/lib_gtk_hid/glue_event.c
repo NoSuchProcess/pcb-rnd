@@ -7,22 +7,6 @@
 #include "../src_plugins/lib_gtk_common/hid_gtk_conf.h"
 #include "../src_plugins/lib_gtk_common/lib_gtk_config.h"
 
-void pcb_ghid_rst_chg(void)
-{
-	if (!ghidgui || !ghidgui->topwin.route_style_selector)
-		return;
-
-	pcb_gtk_route_style_sync (GHID_ROUTE_STYLE(ghidgui->topwin.route_style_selector), conf_core.design.line_thickness, conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance);
-
-	return;
-}
-
-static void RouteStylesChanged(void *user_data, int argc, pcb_event_arg_t argv[])
-{
-	pcb_ghid_rst_chg();
-}
-
-
 static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	ghidgui->common.hidlib = &PCB->hidlib;
@@ -35,12 +19,6 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 
 	if (!gport->drawing_allowed)
 		return;
-
-	if (ghidgui->topwin.route_style_selector) {
-		pcb_gtk_route_style_empty(GHID_ROUTE_STYLE(ghidgui->topwin.route_style_selector));
-		make_route_style_buttons(GHID_ROUTE_STYLE(ghidgui->topwin.route_style_selector));
-	}
-	RouteStylesChanged(0, 0, NULL);
 
 	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);
 	pcb_gtk_zoom_view_fit(&gport->view);
@@ -87,7 +65,6 @@ void glue_event_init(const char *cookie)
 {
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, cookie);
 	pcb_event_bind(PCB_EVENT_BOARD_META_CHANGED, ev_pcb_meta_changed, NULL, cookie);
-	pcb_event_bind(PCB_EVENT_ROUTE_STYLES_CHANGED, RouteStylesChanged, NULL, cookie);
 	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, ghid_LayersChanged, NULL, cookie);
 	pcb_event_bind(PCB_EVENT_LAYERVIS_CHANGED, ghid_LayervisChanged, NULL, cookie);
 	pcb_event_bind(PCB_EVENT_BUSY, ghid_Busy, NULL, cookie);

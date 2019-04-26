@@ -54,7 +54,6 @@ typedef struct pcb_gtk_common_s {
 
 	/* execute events */
 	void (*LayersChanged)(void);
-	void (*route_styles_edited_cb)(void);
 
 	void (*main_destroy)(void *gport);
 

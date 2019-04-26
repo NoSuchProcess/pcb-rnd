@@ -15,7 +15,6 @@
 #include "event.h"
 
 #include "bu_menu.h"
-#include "wt_route_style.h"
 #include "in_keyboard.h"
 #include "wt_accel_label.h"
 

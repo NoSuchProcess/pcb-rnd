@@ -22,7 +22,6 @@ put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/dlg_fileselect.o
   $(PLUGDIR)/lib_gtk_common/dlg_library.o
   $(PLUGDIR)/lib_gtk_common/dlg_library_param.o
-  $(PLUGDIR)/lib_gtk_common/dlg_route_style.o
   $(PLUGDIR)/lib_gtk_common/dlg_search.o
   $(PLUGDIR)/lib_gtk_common/dlg_topwin.o
   $(PLUGDIR)/lib_gtk_common/in_keyboard.o
@@ -38,7 +37,6 @@ put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/wt_coord_entry.o
   $(PLUGDIR)/lib_gtk_common/wt_layersel.o
   $(PLUGDIR)/lib_gtk_common/wt_preview.o
-  $(PLUGDIR)/lib_gtk_common/wt_route_style.o
 @]
 
 switch /local/pcb/hid_gtk3_cairo/controls

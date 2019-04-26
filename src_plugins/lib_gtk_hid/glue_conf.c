@@ -34,11 +34,6 @@
 #include "conf_core.h"
 #include "gui.h"
 
-static void ghid_confchg_rst(conf_native_t *cfg, int arr_idx)
-{
-	pcb_ghid_rst_chg();
-}
-
 /* Update the status line - should be bound to any config value displayed there */
 static void ghid_confchg_status_line(conf_native_t *cfg, int arr_idx)
 {
@@ -125,12 +120,6 @@ void ghid_conf_regs(const char *cookie)
 
 	init_conf_watch(&cbs_fullscreen, "editor/fullscreen", ghid_confchg_fullscreen);
 	init_conf_watch(&cbs_grid_unit, "editor/grid_unit", ghid_confchg_grid_unit);
-
-	init_conf_watch(&cbs_rst[0], "design/line_thickness", ghid_confchg_rst);
-	init_conf_watch(&cbs_rst[1], "design/clearance", ghid_confchg_rst);
-TODO("padstack: remove some paths when route style has proto")
-	init_conf_watch(&cbs_rst[2], "design/via_thickness", ghid_confchg_rst);
-	init_conf_watch(&cbs_rst[3], "design/via_drilling_hole", ghid_confchg_rst);
 
 	init_conf_watch(&cbs_cli[0], "rc/cli_prompt", ghid_confchg_cli);
 	init_conf_watch(&cbs_cli[1], "rc/cli_backend", ghid_confchg_cli);

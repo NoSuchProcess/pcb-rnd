@@ -57,7 +57,6 @@
 #include "bu_icons.h"
 #include "bu_info_bar.h"
 #include "dlg_attribute.h"
-#include "dlg_route_style.h"
 #include "util_listener.h"
 #include "in_mouse.h"
 #include "in_keyboard.h"
@@ -185,10 +184,8 @@ gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, p
 	 */
 void ghid_sync_with_new_layout(pcb_gtk_topwin_t *tw)
 {
-	if (vtroutestyle_len(&PCB->RouteStyle) > 0) {
+	if (vtroutestyle_len(&PCB->RouteStyle) > 0)
 		pcb_use_route_style(&PCB->RouteStyle.array[0]);
-		pcb_gtk_route_style_select_style(GHID_ROUTE_STYLE(tw->route_style_selector), &PCB->RouteStyle.array[0]);
-	}
 
 	ghid_handle_units_changed(tw);
 
@@ -219,13 +216,11 @@ void pcb_gtk_tw_notify_filename_changed(pcb_gtk_topwin_t *tw)
 void ghid_install_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw)
 {
 	gtk_window_add_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(tw->menu.menu_bar)));
-	gtk_window_add_accel_group(window, pcb_gtk_route_style_get_accel_group(GHID_ROUTE_STYLE(tw->route_style_selector)));
 }
 
 void ghid_remove_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw)
 {
 	gtk_window_remove_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(tw->menu.menu_bar)));
-	gtk_window_remove_accel_group(window, pcb_gtk_route_style_get_accel_group(GHID_ROUTE_STYLE(tw->route_style_selector)));
 }
 
 /* Refreshes the window title bar and sets the PCB name to the
@@ -260,12 +255,6 @@ void pcb_gtk_tw_layer_buttons_update(pcb_gtk_topwin_t *tw)
 void pcb_gtk_tw_layer_vis_update(pcb_gtk_topwin_t *tw)
 {
 	pcb_gtk_layersel_vis_update(&tw->layersel);
-}
-
-/* Called when user clicks OK on route style dialog */
-void pcb_gtk_tw_route_styles_edited_cb(pcb_gtk_topwin_t *tw)
-{
-TODO(": generate a route styles changed event")
 }
 
 /*
@@ -544,22 +533,11 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	 */
 	gtk_box_pack_start(GTK_BOX(tw->left_toolbar), tw->mode_btn.mode_buttons_frame, FALSE, FALSE, 0);
 
-	frame = gtk_frame_new(NULL);
-	gtk_box_pack_end(GTK_BOX(tw->left_toolbar), frame, FALSE, FALSE, 0);
-	vbox = gtkc_vbox_new(FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(frame), vbox);
-	hbox = gtkc_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 1);
-	tw->route_style_selector = pcb_gtk_route_style_new(tw->com);
-	make_route_style_buttons(GHID_ROUTE_STYLE(tw->route_style_selector));
-	gtk_box_pack_start(GTK_BOX(hbox), tw->route_style_selector, FALSE, FALSE, 0);
-
 	tw->vbox_middle = gtkc_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_middle), tw->vbox_middle, TRUE, TRUE, 0);
 
 	hbox = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(tw->vbox_middle), hbox, TRUE, TRUE, 0);
-
 
 	tw->dockbox[PCB_HID_DOCK_LEFT] = gtkc_vbox_new(FALSE, 8);
 	gtk_box_pack_end(GTK_BOX(GTK_BOX(tw->left_toolbar)), tw->dockbox[PCB_HID_DOCK_LEFT], FALSE, FALSE, 0);

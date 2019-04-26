@@ -3,7 +3,6 @@
 
 #include <gtk/gtk.h>
 
-#include "wt_route_style.h"
 
 #include "conf.h"
 #include "hid_cfg.h"

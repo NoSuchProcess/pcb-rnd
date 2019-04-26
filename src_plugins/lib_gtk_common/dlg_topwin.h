@@ -34,7 +34,7 @@ typedef struct {
 
 	GtkWidget *top_hbox, *top_bar_background, *menu_hbox, *position_hbox, *menubar_toolbar_vbox;
 	GtkWidget *left_toolbar;
-	GtkWidget *layer_selector, *route_style_selector;
+	GtkWidget *layer_selector;
 	GtkWidget *vbox_middle;
 
 	GtkWidget *h_range, *v_range;
@@ -61,7 +61,6 @@ void pcb_gtk_tw_layer_buttons_update(pcb_gtk_topwin_t *tw);
 void pcb_gtk_tw_layer_vis_update(pcb_gtk_topwin_t *tw);
 void ghid_handle_units_changed(pcb_gtk_topwin_t *tw);
 
-void pcb_gtk_tw_route_styles_edited_cb(pcb_gtk_topwin_t *tw);
 void pcb_gtk_tw_notify_save_pcb(pcb_gtk_topwin_t *tw, const char *filename, pcb_bool done);
 void pcb_gtk_tw_notify_filename_changed(pcb_gtk_topwin_t *tw);
 void pcb_gtk_tw_interface_set_sensitive(pcb_gtk_topwin_t *tw, gboolean sensitive);

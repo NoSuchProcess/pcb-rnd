@@ -40,7 +40,6 @@
 #include "compat_misc.h"
 
 #include "../src_plugins/lib_gtk_common/wt_layersel.h"
-#include "../src_plugins/lib_gtk_common/dlg_route_style.h"
 #include "../src_plugins/lib_gtk_common/dlg_library.h"
 #include "../src_plugins/lib_gtk_common/dlg_search.h"
 #include "../src_plugins/lib_gtk_common/lib_gtk_config.h"
@@ -48,19 +47,6 @@
 #include "actions.h"
 
 static const char *ghid_act_cookie = "gtk HID actions";
-
-static const char pcb_acts_AdjustStyle[] = "AdjustStyle()\n";
-static const char pcb_acth_AdjustStyle[] = "Open the window which allows editing of the route styles.";
-/* DOC: adjuststyle.html */
-static fgw_error_t pcb_act_AdjustStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	if (argc > 2)
-		PCB_ACT_FAIL(AdjustStyle);
-
-	pcb_gtk_route_style_edit_dialog(&ghidgui->common, GHID_ROUTE_STYLE(ghidgui->topwin.route_style_selector));
-	PCB_ACT_IRES(0);
-	return 0;
-}
 
 /* DOC: command.html */
 static fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -266,12 +252,6 @@ static fgw_error_t pcb_act_Pan(fgw_arg_t *res, int argc, fgw_arg_t *argv)
  *
  */
 
-pcb_action_t ghid_menu_action_list[] = {
-	{"AdjustStyle", pcb_act_AdjustStyle, pcb_acth_AdjustStyle, pcb_acts_AdjustStyle},
-};
-
-PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_act_cookie)
-
 pcb_action_t ghid_main_action_list[] = {
 	{"Center", pcb_act_Center, pcb_acth_center, pcb_acts_center},
 	{"Command", pcb_act_Command},
@@ -291,7 +271,6 @@ PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_act_cookie)
 void pcb_gtk_action_reg(void)
 {
 	PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_act_cookie)
-	PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_act_cookie)
 }
 
 void pcb_gtk_action_unreg(void)
