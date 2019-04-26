@@ -145,15 +145,15 @@ static void ghid_zoom_view_abs(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coor
 		return;
 	}
 
-	xtmp = (SIDE_X(center_x) - v->x0) / (double) v->width;
-	ytmp = (SIDE_Y(center_y) - v->y0) / (double) v->height;
+	xtmp = (SIDE_X(v, center_x) - v->x0) / (double) v->width;
+	ytmp = (SIDE_Y(v, center_y) - v->y0) / (double) v->height;
 
 	v->coord_per_px = new_zoom;
 	pcb_pixel_slop = new_zoom;
 	v->com->port_ranges_scale();
 
-	v->x0 = SIDE_X(center_x) - xtmp * v->width;
-	v->y0 = SIDE_Y(center_y) - ytmp * v->height;
+	v->x0 = SIDE_X(v, center_x) - xtmp * v->width;
+	v->y0 = SIDE_Y(v, center_y) - ytmp * v->height;
 
 	pcb_gtk_pan_common(v);
 	v->com->set_status_line_label();
@@ -196,8 +196,8 @@ static void pcb_gtk_zoom_view_win_side(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_co
 	yf = (y2 - y1) / v->canvas_height;
 	v->coord_per_px = (xf > yf ? xf : yf);
 
-	v->x0 = SIDE_X(conf_core.editor.view.flip_x ? x2 : x1);
-	v->y0 = SIDE_Y(conf_core.editor.view.flip_y ? y2 : y1);
+	v->x0 = SIDE_X(v, conf_core.editor.view.flip_x ? x2 : x1);
+	v->y0 = SIDE_Y(v, conf_core.editor.view.flip_y ? y2 : y1);
 
 	pcb_gtk_pan_common(v);
 	if (setch) {
@@ -210,8 +210,8 @@ static void pcb_gtk_zoom_view_win_side(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_co
 
 void pcb_gtk_zoom_view_fit(pcb_gtk_view_t *v)
 {
-	pcb_gtk_pan_view_abs(v, SIDE_X(0), SIDE_Y(0), 0, 0);
-	ghid_zoom_view_abs(v, SIDE_X(0), SIDE_Y(0), MAX(v->com->hidlib->size_x / v->canvas_width, v->com->hidlib->size_y / v->canvas_height));
+	pcb_gtk_pan_view_abs(v, SIDE_X(v, 0), SIDE_Y(v, 0), 0, 0);
+	ghid_zoom_view_abs(v, SIDE_X(v, 0), SIDE_Y(v, 0), MAX(v->com->hidlib->size_x / v->canvas_width, v->com->hidlib->size_y / v->canvas_height));
 }
 
 static void pcb_gtk_flip_view(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, pcb_bool flip_x, pcb_bool flip_y)
@@ -236,8 +236,8 @@ static void pcb_gtk_flip_view(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord
 
 void pcb_gtk_pan_view_abs(pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int widget_x, int widget_y)
 {
-	v->x0 = pcb_round((double)SIDE_X(pcb_x) - (double)widget_x * v->coord_per_px);
-	v->y0 = pcb_round((double)SIDE_Y(pcb_y) - (double)widget_y * v->coord_per_px);
+	v->x0 = pcb_round((double)SIDE_X(v, pcb_x) - (double)widget_x * v->coord_per_px);
+	v->y0 = pcb_round((double)SIDE_Y(v, pcb_y) - (double)widget_y * v->coord_per_px);
 
 	pcb_gtk_pan_common(v);
 }

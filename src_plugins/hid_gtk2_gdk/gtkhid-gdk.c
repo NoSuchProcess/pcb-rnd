@@ -183,10 +183,10 @@ static inline void ghid_gdk_draw_grid_global(void)
 	static GdkPoint *points = NULL;
 	static int npoints = 0;
 
-	x1 = pcb_grid_fit(MAX(0, SIDE_X(gport->view.x0)), PCB->hidlib.grid, PCB->hidlib.grid_ox);
-	y1 = pcb_grid_fit(MAX(0, SIDE_Y(gport->view.y0)), PCB->hidlib.grid, PCB->hidlib.grid_oy);
-	x2 = pcb_grid_fit(MIN(PCB->hidlib.size_x,  SIDE_X(gport->view.x0 + gport->view.width - 1)), PCB->hidlib.grid, PCB->hidlib.grid_ox);
-	y2 = pcb_grid_fit(MIN(PCB->hidlib.size_y, SIDE_Y(gport->view.y0 + gport->view.height - 1)), PCB->hidlib.grid, PCB->hidlib.grid_oy);
+	x1 = pcb_grid_fit(MAX(0, SIDE_X(&gport->view, gport->view.x0)), PCB->hidlib.grid, PCB->hidlib.grid_ox);
+	y1 = pcb_grid_fit(MAX(0, SIDE_Y(&gport->view, gport->view.y0)), PCB->hidlib.grid, PCB->hidlib.grid_oy);
+	x2 = pcb_grid_fit(MIN(PCB->hidlib.size_x, SIDE_X(&gport->view, gport->view.x0 + gport->view.width - 1)), PCB->hidlib.grid, PCB->hidlib.grid_ox);
+	y2 = pcb_grid_fit(MIN(PCB->hidlib.size_y, SIDE_Y(&gport->view, gport->view.y0 + gport->view.height - 1)), PCB->hidlib.grid, PCB->hidlib.grid_oy);
 
 	grd = PCB->hidlib.grid;
 
@@ -729,9 +729,10 @@ static void ghid_gdk_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, p
 	w = gport->view.canvas_width * gport->view.coord_per_px;
 	h = gport->view.canvas_height * gport->view.coord_per_px;
 	radius = (xradius > yradius) ? xradius : yradius;
-	if (SIDE_X(cx) < gport->view.x0 - radius
-			|| SIDE_X(cx) > gport->view.x0 + w + radius
-			|| SIDE_Y(cy) < gport->view.y0 - radius || SIDE_Y(cy) > gport->view.y0 + h + radius)
+	if (SIDE_X(&gport->view, cx) < gport->view.x0 - radius
+			|| SIDE_X(&gport->view, cx) > gport->view.x0 + w + radius
+			|| SIDE_Y(&gport->view, cy) < gport->view.y0 - radius
+			|| SIDE_Y(&gport->view, cy) > gport->view.y0 + h + radius)
 		return;
 
 	USE_GC(gc);
@@ -779,10 +780,10 @@ static void ghid_gdk_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 	w = gport->view.canvas_width * gport->view.coord_per_px;
 	h = gport->view.canvas_height * gport->view.coord_per_px;
 
-	if ((SIDE_X(x1) < gport->view.x0 - lw && SIDE_X(x2) < gport->view.x0 - lw)
-			|| (SIDE_X(x1) > gport->view.x0 + w + lw && SIDE_X(x2) > gport->view.x0 + w + lw)
-			|| (SIDE_Y(y1) < gport->view.y0 - lw && SIDE_Y(y2) < gport->view.y0 - lw)
-			|| (SIDE_Y(y1) > gport->view.y0 + h + lw && SIDE_Y(y2) > gport->view.y0 + h + lw))
+	if ((SIDE_X(&gport->view, x1) < gport->view.x0 - lw && SIDE_X(&gport->view, x2) < gport->view.x0 - lw)
+			|| (SIDE_X(&gport->view, x1) > gport->view.x0 + w + lw && SIDE_X(&gport->view, x2) > gport->view.x0 + w + lw)
+			|| (SIDE_Y(&gport->view, y1) < gport->view.y0 - lw && SIDE_Y(&gport->view, y2) < gport->view.y0 - lw)
+			|| (SIDE_Y(&gport->view, y1) > gport->view.y0 + h + lw && SIDE_Y(&gport->view, y2) > gport->view.y0 + h + lw))
 		return;
 
 	sx1 = Vx(x1);
@@ -830,9 +831,10 @@ static void ghid_gdk_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy
 
 	w = gport->view.canvas_width * gport->view.coord_per_px;
 	h = gport->view.canvas_height * gport->view.coord_per_px;
-	if (SIDE_X(cx) < gport->view.x0 - radius
-			|| SIDE_X(cx) > gport->view.x0 + w + radius
-			|| SIDE_Y(cy) < gport->view.y0 - radius || SIDE_Y(cy) > gport->view.y0 + h + radius)
+	if (SIDE_X(&gport->view, cx) < gport->view.x0 - radius
+			|| SIDE_X(&gport->view, cx) > gport->view.x0 + w + radius
+			|| SIDE_Y(&gport->view, cy) < gport->view.y0 - radius
+			|| SIDE_Y(&gport->view, cy) > gport->view.y0 + h + radius)
 		return;
 
 	USE_GC(gc);
@@ -1027,10 +1029,10 @@ static void ghid_gdk_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 	w = gport->view.canvas_width * gport->view.coord_per_px;
 	h = gport->view.canvas_height * gport->view.coord_per_px;
 
-	if ((SIDE_X(x1) < gport->view.x0 - lw && SIDE_X(x2) < gport->view.x0 - lw)
-			|| (SIDE_X(x1) > gport->view.x0 + w + lw && SIDE_X(x2) > gport->view.x0 + w + lw)
-			|| (SIDE_Y(y1) < gport->view.y0 - lw && SIDE_Y(y2) < gport->view.y0 - lw)
-			|| (SIDE_Y(y1) > gport->view.y0 + h + lw && SIDE_Y(y2) > gport->view.y0 + h + lw))
+	if ((SIDE_X(&gport->view, x1) < gport->view.x0 - lw && SIDE_X(&gport->view, x2) < gport->view.x0 - lw)
+			|| (SIDE_X(&gport->view, x1) > gport->view.x0 + w + lw && SIDE_X(&gport->view, x2) > gport->view.x0 + w + lw)
+			|| (SIDE_Y(&gport->view, y1) < gport->view.y0 - lw && SIDE_Y(&gport->view, y2) < gport->view.y0 - lw)
+			|| (SIDE_Y(&gport->view, y1) > gport->view.y0 + h + lw && SIDE_Y(&gport->view, y2) > gport->view.y0 + h + lw))
 		return;
 
 	sx1 = Vx(x1);
