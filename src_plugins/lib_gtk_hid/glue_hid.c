@@ -27,7 +27,7 @@
 #include "../src_plugins/lib_gtk_common/lib_gtk_config.h"
 #include "../src_plugins/lib_hid_common/menu_helper.h"
 
-void gtkhid_begin(pcb_hidlib_t **hidlib)
+void gtkhid_begin(pcb_hidlib_t *hidlib)
 {
 	ghidgui->common.hidlib = hidlib;
 	pcb_gtk_action_reg();
@@ -149,7 +149,7 @@ static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, Gd
 
 void gtkhid_do_export(pcb_hid_attr_val_t *options)
 {
-	gtkhid_begin((pcb_hidlib_t **)&PCB);
+	gtkhid_begin(&PCB->hidlib);
 
 	pcb_hid_cfg_keys_init(&ghid_keymap);
 	ghid_keymap.translate_key = ghid_translate_key;

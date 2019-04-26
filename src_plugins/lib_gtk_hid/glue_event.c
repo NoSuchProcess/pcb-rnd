@@ -25,6 +25,8 @@ static void RouteStylesChanged(void *user_data, int argc, pcb_event_arg_t argv[]
 
 static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 {
+	ghidgui->common.hidlib = &PCB->hidlib;
+
 	if ((!ghidgui) || (!ghidgui->hid_active))
 		return;
 
