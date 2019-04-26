@@ -26,6 +26,8 @@
 
 /* included from routest.c - split for clarity */
 
+#include "hid_dad_tree.h"
+
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
@@ -43,6 +45,7 @@ static void rstdlg_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 static void pcb_dlg_rstdlg(int rst_idx)
 {
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	static const char *attr_hdr[] = {"attribute key", "attribute value", NULL};
 
 TODO("if already active, switch to rst_idx");
 	if (rstdlg_ctx.active)
@@ -50,7 +53,35 @@ TODO("if already active, switch to rst_idx");
 
 	PCB_DAD_BEGIN_VBOX(rstdlg_ctx.dlg);
 		PCB_DAD_COMPFLAG(rstdlg_ctx.dlg, PCB_HATF_EXPFILL);
-		PCB_DAD_LABEL(rstdlg_ctx.dlg, "rstdlg");
+		PCB_DAD_BEGIN_TABLE(rstdlg_ctx.dlg, 2);
+			PCB_DAD_LABEL(rstdlg_ctx.dlg, "Name:");
+			PCB_DAD_STRING(rstdlg_ctx.dlg);
+				PCB_DAD_HELP(rstdlg_ctx.dlg, "Name of the routing style");
+			PCB_DAD_LABEL(rstdlg_ctx.dlg, "Line width:");
+			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
+				PCB_DAD_HELP(rstdlg_ctx.dlg, "Width of line/arc objects");
+			PCB_DAD_LABEL(rstdlg_ctx.dlg, "Text scale:");
+			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
+				PCB_DAD_HELP(rstdlg_ctx.dlg, "Text size scale in %; 100 means normal size");
+			PCB_DAD_LABEL(rstdlg_ctx.dlg, "Text thick.:");
+			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
+				PCB_DAD_HELP(rstdlg_ctx.dlg, "Text stroke thickness;\nif 0 use the default heuristics that\ncalculates it from text scale");
+			PCB_DAD_LABEL(rstdlg_ctx.dlg, "*Via hole:");
+			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
+				PCB_DAD_HELP(rstdlg_ctx.dlg, "Via hole diameter\nwarning: will be replaced with the padstack selector");
+			PCB_DAD_LABEL(rstdlg_ctx.dlg, "*Via ring:");
+			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
+				PCB_DAD_HELP(rstdlg_ctx.dlg, "Via ring diameter\nwarning: will be replaced with the padstack selector");
+			PCB_DAD_LABEL(rstdlg_ctx.dlg, "Clearance:");
+			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
+				PCB_DAD_HELP(rstdlg_ctx.dlg, "Object clearance: any object placed with this style\nwill clear this much from sorrunding clearing-enabled polygons\n(unless the object is joined to the polygon)");
+		PCB_DAD_END(rstdlg_ctx.dlg);
+		PCB_DAD_TREE(rstdlg_ctx.dlg, 2, 0, attr_hdr);
+			PCB_DAD_HELP(rstdlg_ctx.dlg, "These attributes are automatically added to\nany object drawn with this routing style");
+		PCB_DAD_BEGIN_HBOX(rstdlg_ctx.dlg);
+			PCB_DAD_BUTTON(rstdlg_ctx.dlg, "add");
+			PCB_DAD_BUTTON(rstdlg_ctx.dlg, "del");
+		PCB_DAD_END(rstdlg_ctx.dlg);
 		PCB_DAD_BUTTON_CLOSES(rstdlg_ctx.dlg, clbtn);
 	PCB_DAD_END(rstdlg_ctx.dlg);
 
