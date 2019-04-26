@@ -80,6 +80,11 @@ void pcb_rst_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 	rst_update();
 }
 
+void pcb_rst_gui_init_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	rst_update();
+}
+
 void pcb_rst_update_conf(conf_native_t *cfg, int arr_idx)
 {
 	if ((pcb_gui != NULL) && (pcb_gui->update_menu_checkbox != NULL))
