@@ -56,6 +56,7 @@
 #include "bu_menu.h"
 #include "bu_icons.h"
 #include "bu_info_bar.h"
+#include "dlg_attribute.h"
 #include "dlg_route_style.h"
 #include "util_listener.h"
 #include "in_mouse.h"
@@ -72,9 +73,32 @@ static int pcb_gtk_dock_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, pcb_
 	return -1;
 }
 
+typedef struct {
+	void *hid_ctx;
+	GtkWidget *frame;
+	pcb_gtk_topwin_t *tw;
+} docked_t;
+
 int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id)
 {
-	return -1;
+	docked_t *docked;
+	GtkWidget *vbox;
+
+	docked = calloc(sizeof(docked_t), 1);
+
+	docked->frame = gtk_frame_new(id);
+	gtk_box_pack_end(GTK_BOX(tw->dockbox[where]), docked->frame, FALSE, FALSE, 0);
+	vbox = gtkc_vbox_new(FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(docked->frame), vbox);
+
+	sub->parent_poke = pcb_gtk_dock_poke;
+	docked->hid_ctx = ghid_attr_sub_new(tw->com, vbox, sub->dlg, sub->dlg_len, sub);
+	docked->tw = tw;
+	sub->parent_ctx = docked;
+
+	gdl_append(&tw->dock[where], sub, link);
+	gtk_widget_show_all(docked->frame);
+	return 0;
 }
 
 void pcb_gtk_tw_dock_leave(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub)
@@ -536,8 +560,8 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	gtk_box_pack_start(GTK_BOX(tw->vbox_middle), hbox, TRUE, TRUE, 0);
 
 
-	tw->dock[PCB_HID_DOCK_LEFT].box = gtkc_vbox_new(FALSE, 8);
-	gtk_box_pack_end(GTK_BOX(GTK_BOX(tw->left_toolbar)), tw->dock[PCB_HID_DOCK_LEFT].box, FALSE, FALSE, 0);
+	tw->dockbox[PCB_HID_DOCK_LEFT] = gtkc_vbox_new(FALSE, 8);
+	gtk_box_pack_end(GTK_BOX(GTK_BOX(tw->left_toolbar)), tw->dockbox[PCB_HID_DOCK_LEFT], FALSE, FALSE, 0);
 
 	/* -- The PCB layout output drawing area */
 

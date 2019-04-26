@@ -17,12 +17,6 @@
 #include "bu_command.h"
 #include "wt_layersel.h"
 
-
-typedef struct {
-	GtkWidget *box; /* parent box */
-	gdl_list_t subs; /* ordered list of subboxes: left->right or top->bottom */
-} pcb_gtk_dock_t;
-
 typedef struct {
 	/* util/builder states */
 	pcb_gtk_common_t *com;
@@ -51,7 +45,10 @@ typedef struct {
 	gboolean small_label_markup;
 	int active; /* 0 before init finishes */
 	pcb_gtk_layersel_t layersel;
-	pcb_gtk_dock_t dock[PCB_HID_DOCK_max];
+
+	/* docking */
+	GtkWidget *dockbox[PCB_HID_DOCK_max];
+	gdl_list_t dock[PCB_HID_DOCK_max];
 } pcb_gtk_topwin_t;
 
 void ghid_update_toggle_flags(pcb_gtk_topwin_t *tw, const char *cookie);
