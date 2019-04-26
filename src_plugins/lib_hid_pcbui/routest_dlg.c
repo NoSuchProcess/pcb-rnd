@@ -46,11 +46,18 @@ static void rstdlg_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 
 static void rstdlg_pcb2dlg(int rst_idx)
 {
+	int n;
 	pcb_hid_attr_val_t hv;
 	pcb_route_style_t *rst;
+	pcb_hid_attribute_t *attr;
+	pcb_hid_tree_t *tree;
+	pcb_attribute_t *a;
 
 	if (!rstdlg_ctx.active)
 		return;
+
+	attr = &rstdlg_ctx.dlg[rstdlg_ctx.wattr];
+	tree = (pcb_hid_tree_t *)attr->enumerations;
 
 	if (rst_idx < 0)
 		rst_idx = rstdlg_ctx.curr;
@@ -77,6 +84,15 @@ static void rstdlg_pcb2dlg(int rst_idx)
 
 	hv.coord_value = rst->Diameter;
 	pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wviaring, &hv);
+
+	pcb_dad_tree_clear(tree);
+
+	for(a = rst->attr.List, n = 0; n < rst->attr.Number; a++,n++) {
+		char *cell[3]= {NULL};
+		cell[0] = pcb_strdup(a->name);
+		cell[1] = pcb_strdup(a->value);
+		pcb_dad_tree_append(attr, NULL, cell);
+	}
 
 	rstdlg_ctx.curr = rst_idx;
 }
@@ -185,6 +201,7 @@ static void pcb_dlg_rstdlg(int rst_idx)
 		PCB_DAD_END(rstdlg_ctx.dlg);
 		PCB_DAD_TREE(rstdlg_ctx.dlg, 2, 0, attr_hdr);
 			PCB_DAD_HELP(rstdlg_ctx.dlg, "These attributes are automatically added to\nany object drawn with this routing style");
+			rstdlg_ctx.wattr = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
 		PCB_DAD_BEGIN_HBOX(rstdlg_ctx.dlg);
 			PCB_DAD_BUTTON(rstdlg_ctx.dlg, "add");
 			PCB_DAD_BUTTON(rstdlg_ctx.dlg, "del");
