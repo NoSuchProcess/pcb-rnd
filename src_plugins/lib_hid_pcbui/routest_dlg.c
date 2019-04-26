@@ -31,6 +31,7 @@
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
+	int wname, wlineth, wclr, wtxtscale, wtxtth, wviahole, wviaring, wattr;
 } rstdlg_ctx_t;
 
 rstdlg_ctx_t rstdlg_ctx;
@@ -56,24 +57,31 @@ TODO("if already active, switch to rst_idx");
 		PCB_DAD_BEGIN_TABLE(rstdlg_ctx.dlg, 2);
 			PCB_DAD_LABEL(rstdlg_ctx.dlg, "Name:");
 			PCB_DAD_STRING(rstdlg_ctx.dlg);
+				rstdlg_ctx.wname = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
 				PCB_DAD_HELP(rstdlg_ctx.dlg, "Name of the routing style");
-			PCB_DAD_LABEL(rstdlg_ctx.dlg, "Line width:");
+			PCB_DAD_LABEL(rstdlg_ctx.dlg, "Line thick.:");
 			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
-				PCB_DAD_HELP(rstdlg_ctx.dlg, "Width of line/arc objects");
+				rstdlg_ctx.wlineth = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
+				PCB_DAD_HELP(rstdlg_ctx.dlg, "Thickness of line/arc objects");
 			PCB_DAD_LABEL(rstdlg_ctx.dlg, "Text scale:");
 			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
+				rstdlg_ctx.wtxtscale = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
 				PCB_DAD_HELP(rstdlg_ctx.dlg, "Text size scale in %; 100 means normal size");
 			PCB_DAD_LABEL(rstdlg_ctx.dlg, "Text thick.:");
 			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
+				rstdlg_ctx.wtxtth = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
 				PCB_DAD_HELP(rstdlg_ctx.dlg, "Text stroke thickness;\nif 0 use the default heuristics that\ncalculates it from text scale");
 			PCB_DAD_LABEL(rstdlg_ctx.dlg, "*Via hole:");
 			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
+				rstdlg_ctx.wviahole = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
 				PCB_DAD_HELP(rstdlg_ctx.dlg, "Via hole diameter\nwarning: will be replaced with the padstack selector");
 			PCB_DAD_LABEL(rstdlg_ctx.dlg, "*Via ring:");
 			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
+				rstdlg_ctx.wviaring = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
 				PCB_DAD_HELP(rstdlg_ctx.dlg, "Via ring diameter\nwarning: will be replaced with the padstack selector");
 			PCB_DAD_LABEL(rstdlg_ctx.dlg, "Clearance:");
 			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
+				rstdlg_ctx.wclr = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
 				PCB_DAD_HELP(rstdlg_ctx.dlg, "Object clearance: any object placed with this style\nwill clear this much from sorrunding clearing-enabled polygons\n(unless the object is joined to the polygon)");
 		PCB_DAD_END(rstdlg_ctx.dlg);
 		PCB_DAD_TREE(rstdlg_ctx.dlg, 2, 0, attr_hdr);
