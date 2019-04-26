@@ -4199,6 +4199,7 @@
  ../src_plugins/lib_gtk_common/bu_box.h \
  ../src_plugins/lib_gtk_common/bu_status_line.h \
  ../src_plugins/lib_gtk_common/bu_icons.h \
+ ../src_plugins/lib_gtk_common/dlg_attribute.h \
  ../src_plugins/lib_gtk_common/dlg_route_style.h \
  ../src_plugins/lib_gtk_common/util_listener.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
@@ -4983,8 +4984,9 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genvector/vtp0.h list_conf.h conf.h conf_core.h route_style.h \
- event.h hid_cfg.h hid.h error.h hid.h \
- ../src_plugins/lib_hid_pcbui/routest.h
+ event.h hid.h error.h hid_cfg.h hid.h hid_dad.h compat_misc.h \
+ hid_attrib.h ../src_plugins/lib_hid_pcbui/routest.h \
+ ../src_plugins/lib_hid_pcbui/routest_dlg.c
 ../src_plugins/lib_legacy_func/lib_legacy_func.o: \
  ../src_plugins/lib_legacy_func/lib_legacy_func.c \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
