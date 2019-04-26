@@ -245,7 +245,7 @@ void ghid_handle_user_command(pcb_gtk_command_t *ctx, pcb_bool raise)
 		pcb_parse_command(command, pcb_false);
 		g_free(command);
 	}
-	ctx->com->set_status_line_label();
+	ctx->com->set_status_line_label(); /* replace the command prompt with the status line */
 }
 
 const char *pcb_gtk_cmd_command_entry(pcb_gtk_command_t *ctx, const char *ovr, int *cursor)
