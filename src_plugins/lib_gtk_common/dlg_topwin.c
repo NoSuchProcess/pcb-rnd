@@ -151,7 +151,7 @@ void ghid_sync_with_new_layout(pcb_gtk_topwin_t *tw)
 
 	ghid_handle_units_changed(tw);
 
-	tw->com->window_set_name_label(PCB->hidlib.name);
+	tw->com->window_set_name_label(tw->com->hidlib->name);
 	tw->com->set_status_line_label();
 	pcb_gtk_close_info_bar(&tw->ibar);
 	update_board_mtime_from_disk(&tw->ext_chg);
@@ -161,7 +161,7 @@ void pcb_gtk_tw_notify_save_pcb(pcb_gtk_topwin_t *tw, const char *filename, pcb_
 {
 	/* Do nothing if it is not the active PCB file that is being saved.
 	 */
-	if (PCB->hidlib.filename == NULL || strcmp(filename, PCB->hidlib.filename) != 0)
+	if (tw->com->hidlib->filename == NULL || strcmp(filename, tw->com->hidlib->filename) != 0)
 		return;
 
 	if (done)
@@ -172,7 +172,7 @@ void pcb_gtk_tw_notify_filename_changed(pcb_gtk_topwin_t *tw)
 {
 	/* Pick up the mtime of the new PCB file */
 	update_board_mtime_from_disk(&tw->ext_chg);
-	tw->com->window_set_name_label(PCB->hidlib.name);
+	tw->com->window_set_name_label(tw->com->hidlib->name);
 }
 
 void ghid_install_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw)
@@ -202,10 +202,10 @@ void pcb_gtk_tw_window_set_name_label(pcb_gtk_topwin_t *tw, const char *name)
 	if ((name == NULL) || (*name == '\0'))
 		name = "Unnamed";
 
-	if (!PCB->hidlib.filename || !*PCB->hidlib.filename)
+	if (!tw->com->hidlib->filename || !*tw->com->hidlib->filename)
 		filename = "<board with no file name or format>";
 	else
-		filename = PCB->hidlib.filename;
+		filename = tw->com->hidlib->filename;
 
 	pcb_snprintf(tmp, sizeof(tmp), "%s%s (%s) - %s - pcb-rnd", PCB->Changed ? "*" : "", name, filename, PCB->is_footprint ? "footprint" : "board");
 	gtk_window_set_title(GTK_WINDOW(tw->com->top_window), tmp);
