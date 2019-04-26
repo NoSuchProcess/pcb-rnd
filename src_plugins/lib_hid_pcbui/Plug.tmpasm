@@ -2,7 +2,7 @@ put /local/pcb/mod {lib_hid_pcbui}
 put /local/pcb/mod/OBJS [@
   $(PLUGDIR)/lib_hid_pcbui/lib_hid_pcbui.o
   $(PLUGDIR)/lib_hid_pcbui/layer_menu.o
-  $(PLUGDIR)/lib_hid_pcbui/routest_menu.o
+  $(PLUGDIR)/lib_hid_pcbui/routest.o
 @]
 
 # dialog config is here because of hidlib: each hidlib user shall have its
