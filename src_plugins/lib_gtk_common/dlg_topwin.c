@@ -90,6 +90,7 @@ int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub, pc
 	gtk_box_pack_end(GTK_BOX(tw->dockbox[where]), docked->frame, FALSE, FALSE, 0);
 	vbox = gtkc_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(docked->frame), vbox);
+	gtk_widget_show_all(docked->frame);
 
 	sub->parent_poke = pcb_gtk_dock_poke;
 	sub->dlg_hid_ctx = docked->hid_ctx = ghid_attr_sub_new(tw->com, vbox, sub->dlg, sub->dlg_len, sub);
@@ -97,7 +98,7 @@ int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub, pc
 	sub->parent_ctx = docked;
 
 	gdl_append(&tw->dock[where], sub, link);
-	gtk_widget_show_all(docked->frame);
+
 	return 0;
 }
 

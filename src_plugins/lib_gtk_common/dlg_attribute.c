@@ -856,6 +856,8 @@ void *ghid_attr_sub_new(pcb_gtk_common_t *com, GtkWidget *parent_box, pcb_hid_at
 
 	ghid_attr_dlg_add(ctx, parent_box, NULL, 0);
 
+	gtk_widget_show_all(parent_box);
+
 	ghid_initial_wstates(ctx);
 
 	return ctx;
