@@ -24,6 +24,9 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#ifndef PCB_HIDLIB_H
+#define PCB_HIDLIB_H
+
 #include "config.h"
 
 struct pcb_hidlib_s {
@@ -38,3 +41,5 @@ struct pcb_hidlib_s {
    name of the current design */
 const char *(*pcb_hidlib_get_filename)(void);
 const char *(*pcb_hidlib_get_name)(void);
+
+#endif
