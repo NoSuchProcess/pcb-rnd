@@ -817,6 +817,21 @@ static void dialog_cb(GtkDialog * dlg, gint response_id, gpointer * data)
 	}
 }
 
+static GtkWidget *ghid_framed_vbox(GtkWidget *box, gchar *label, gint frame_border_width, gboolean frame_expand, gint vbox_pad, gint vbox_border_width)
+{
+	GtkWidget *frame;
+	GtkWidget *vbox;
+
+	frame = gtk_frame_new(label);
+	gtk_container_set_border_width(GTK_CONTAINER(frame), frame_border_width);
+	gtk_box_pack_start(GTK_BOX(box), frame, frame_expand, frame_expand, 0);
+	vbox = gtkc_vbox_new(FALSE, vbox_pad);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), vbox_border_width);
+	gtk_container_add(GTK_CONTAINER(frame), vbox);
+	return vbox;
+}
+
+
 static void ghid_search_window_create(GtkWidget *top_window)
 {
 	GtkWidget *vbox_win, *lab, *vbox;

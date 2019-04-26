@@ -1,9 +1,1 @@
 #include <gtk/gtk.h>
-
-/* Builds a vertical box, surrounded by a labeled frame
-    frame_border_width: border around outside of frame.
-    vbox_pad: pad between widgets to be packed in returned vbox.
-    vbox_border_width: border between returned vbox and frame. */
-GtkWidget *ghid_framed_vbox(GtkWidget * box, gchar * label, gint frame_border_width,
-														gboolean frame_expand, gint vbox_pad, gint vbox_border_width);
-
