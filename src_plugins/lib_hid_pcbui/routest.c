@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -48,6 +48,8 @@ typedef struct {
 } rst_ctx_t;
 
 static rst_ctx_t rst;
+
+#include "routest_dlg.c"
 
 static void rst_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, char *path)
 {
@@ -134,6 +136,13 @@ static void rst_select_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	rst_force_update_chk();
 }
 
+static void rst_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	int target = pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
+	if (target >= 0)
+		pcb_dlg_rstdlg(target);
+}
+
 static void rst_docked_create()
 {
 	int n;
@@ -154,6 +163,7 @@ static void rst_docked_create()
 		PCB_DAD_BEGIN_HBOX(rst.sub.dlg);
 			PCB_DAD_BUTTON(rst.sub.dlg, "New");
 			PCB_DAD_BUTTON(rst.sub.dlg, "Edit");
+				PCB_DAD_CHANGE_CB(rst.sub.dlg, rst_edit_cb);
 			PCB_DAD_BUTTON(rst.sub.dlg, "Del");
 		PCB_DAD_END(rst.sub.dlg);
 	PCB_DAD_END(rst.sub.dlg);
