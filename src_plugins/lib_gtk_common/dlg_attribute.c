@@ -571,7 +571,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				break;
 
 			case PCB_HATT_PATH:
-				ctx->wltop[j] = vbox1 = ghid_category_vbox(parent, NULL, 4, 2, TRUE, TRUE);
+				ctx->wltop[j] = vbox1 = ghid_category_vbox(parent, 2);
 				entry = gtk_entry_new();
 				g_object_set_data(G_OBJECT(entry), PCB_OBJ_PROP, ctx);
 				ctx->wl[j] = entry;

@@ -26,26 +26,13 @@
 
 /* Boxes and group widgets */
 
-static GtkWidget *ghid_category_vbox(GtkWidget *box, const gchar *category_header, gint header_pad, gint box_pad, gboolean pack_start, gboolean bottom_pad)
+static GtkWidget *ghid_category_vbox(GtkWidget *box, gint box_pad)
 {
 	GtkWidget *vbox, *vbox1, *hbox, *label;
 	gchar *s;
 
 	vbox = gtkc_vbox_new(FALSE, 0);
-	if (pack_start)
-		gtk_box_pack_start(GTK_BOX(box), vbox, FALSE, FALSE, 0);
-	else
-		gtk_box_pack_end(GTK_BOX(box), vbox, FALSE, FALSE, 0);
-
-	if (category_header) {
-		label = gtk_label_new(NULL);
-		s = g_strconcat("<span weight=\"bold\">", category_header, "</span>", NULL);
-		gtk_label_set_markup(GTK_LABEL(label), s);
-		/*TODO: Deprecated in GTK3. Use gtk_widget_set_[h|v]align () functions ? */
-		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-		gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, header_pad);
-		g_free(s);
-	}
+	gtk_box_pack_start(GTK_BOX(box), vbox, FALSE, FALSE, 0);
 
 	hbox = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
@@ -54,10 +41,8 @@ static GtkWidget *ghid_category_vbox(GtkWidget *box, const gchar *category_heade
 	vbox1 = gtkc_vbox_new(FALSE, box_pad);
 	gtk_box_pack_start(GTK_BOX(hbox), vbox1, TRUE, TRUE, 0);
 
-	if (bottom_pad) {
-		label = gtk_label_new("");
-		gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-	}
+	label = gtk_label_new("");
+	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 	return vbox1;
 }
 
