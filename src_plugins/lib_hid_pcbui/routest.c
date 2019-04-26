@@ -145,6 +145,16 @@ static void rst_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 		pcb_dlg_rstdlg(target);
 }
 
+static void rst_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	int target = pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
+	if (target >= 0) {
+		vtroutestyle_remove(&PCB->RouteStyle, target, 1);
+		rst_updated(NULL);
+		rst_force_update_chk_and_dlg();
+	}
+}
+
 static void rst_docked_create()
 {
 	int n;
@@ -167,6 +177,7 @@ static void rst_docked_create()
 			PCB_DAD_BUTTON(rst.sub.dlg, "Edit");
 				PCB_DAD_CHANGE_CB(rst.sub.dlg, rst_edit_cb);
 			PCB_DAD_BUTTON(rst.sub.dlg, "Del");
+				PCB_DAD_CHANGE_CB(rst.sub.dlg, rst_del_cb);
 		PCB_DAD_END(rst.sub.dlg);
 	PCB_DAD_END(rst.sub.dlg);
 }
