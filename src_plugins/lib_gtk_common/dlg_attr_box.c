@@ -26,8 +26,7 @@
 
 /* Boxes and group widgets */
 
-static GtkWidget *ghid_category_vbox(GtkWidget * box, const gchar * category_header,
-															gint header_pad, gint box_pad, gboolean pack_start, gboolean bottom_pad)
+static GtkWidget *ghid_category_vbox(GtkWidget *box, const gchar *category_header, gint header_pad, gint box_pad, gboolean pack_start, gboolean bottom_pad)
 {
 	GtkWidget *vbox, *vbox1, *hbox, *label;
 	gchar *s;
