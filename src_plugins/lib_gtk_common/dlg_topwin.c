@@ -470,7 +470,7 @@ static gboolean resize_grip_button_press(GtkWidget *area, GdkEventButton *event,
 static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 {
 	GtkWidget *vbox_main, *hbox_middle, *hbox;
-	GtkWidget *vbox, *frame, *hbox_scroll, *fullscreen_btn;
+	GtkWidget *hbox_scroll, *fullscreen_btn;
 	GtkWidget *label;
 	GtkWidget *resize_grip_vbox;
 	GtkWidget *resize_grip;
