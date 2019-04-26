@@ -98,31 +98,37 @@ static void pcb_dlg_rstdlg(int rst_idx)
 			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
 				rstdlg_ctx.wlineth = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
 				PCB_DAD_HELP(rstdlg_ctx.dlg, "Thickness of line/arc objects");
+				PCB_DAD_MINMAX(rstdlg_ctx.dlg, 1, PCB_MAX_COORD);
 
 			PCB_DAD_LABEL(rstdlg_ctx.dlg, "Text scale:");
 			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
 				rstdlg_ctx.wtxtscale = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
 				PCB_DAD_HELP(rstdlg_ctx.dlg, "Text size scale in %; 100 means normal size");
+				PCB_DAD_MINMAX(rstdlg_ctx.dlg, 1, PCB_MAX_COORD);
 
 			PCB_DAD_LABEL(rstdlg_ctx.dlg, "Clearance:");
 			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
 				rstdlg_ctx.wclr = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
 				PCB_DAD_HELP(rstdlg_ctx.dlg, "Object clearance: any object placed with this style\nwill clear this much from sorrunding clearing-enabled polygons\n(unless the object is joined to the polygon)");
+				PCB_DAD_MINMAX(rstdlg_ctx.dlg, 1, PCB_MAX_COORD);
 
 			PCB_DAD_LABEL(rstdlg_ctx.dlg, "Text thick.:");
 			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
 				rstdlg_ctx.wtxtth = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
 				PCB_DAD_HELP(rstdlg_ctx.dlg, "Text stroke thickness;\nif 0 use the default heuristics that\ncalculates it from text scale");
+				PCB_DAD_MINMAX(rstdlg_ctx.dlg, 1, PCB_MAX_COORD);
 
 			PCB_DAD_LABEL(rstdlg_ctx.dlg, "*Via hole:");
 			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
 				rstdlg_ctx.wviahole = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
 				PCB_DAD_HELP(rstdlg_ctx.dlg, "Via hole diameter\nwarning: will be replaced with the padstack selector");
+				PCB_DAD_MINMAX(rstdlg_ctx.dlg, 1, PCB_MAX_COORD);
 
 			PCB_DAD_LABEL(rstdlg_ctx.dlg, "*Via ring:");
 			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
 				rstdlg_ctx.wviaring = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
 				PCB_DAD_HELP(rstdlg_ctx.dlg, "Via ring diameter\nwarning: will be replaced with the padstack selector");
+				PCB_DAD_MINMAX(rstdlg_ctx.dlg, 1, PCB_MAX_COORD);
 
 		PCB_DAD_END(rstdlg_ctx.dlg);
 		PCB_DAD_TREE(rstdlg_ctx.dlg, 2, 0, attr_hdr);
