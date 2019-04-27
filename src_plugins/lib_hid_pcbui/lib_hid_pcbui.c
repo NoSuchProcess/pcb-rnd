@@ -55,6 +55,7 @@ void pplg_uninit_lib_hid_pcbui(void)
 	pcb_remove_actions_by_cookie(rst_cookie);
 	pcb_event_unbind_allcookie(layer_cookie);
 	pcb_event_unbind_allcookie(rst_cookie);
+	pcb_event_unbind_allcookie(toolbar_cookie);
 	conf_hid_unreg(rst_cookie);
 }
 
@@ -63,8 +64,11 @@ void pplg_uninit_lib_hid_pcbui(void)
 int pplg_init_lib_hid_pcbui(void)
 {
 TODO("padstack: remove some paths when route style has proto")
-	const char **rp, *rpaths[] = {"design/line_thickness", "design/via_thickness", "design/via_drilling_hole", "design/clearance", NULL};
+	const char **rp;
+	const char *rpaths[] = {"design/line_thickness", "design/via_thickness", "design/via_drilling_hole", "design/clearance", NULL};
+	const char *tpaths[] = {"editor/mode",  NULL};
 	static conf_hid_callbacks_t rcb[sizeof(rpaths)/sizeof(rpaths[0])];
+	static conf_hid_callbacks_t tcb[sizeof(tpaths)/sizeof(tpaths[0])];
 	conf_native_t *nat;
 	int n;
 
@@ -87,6 +91,15 @@ TODO("padstack: remove some paths when route style has proto")
 		nat = conf_get_field(*rp);
 		if (nat != NULL)
 			conf_hid_set_cb(nat, conf_id, &rcb[n]);
+	}
+
+	conf_id = conf_hid_reg(toolbar_cookie, NULL);
+	for(rp = tpaths, n = 0; *rp != NULL; rp++, n++) {
+		memset(&tcb[n], 0, sizeof(tcb[0]));
+		tcb[n].val_change_post = pcb_toolbar_update_conf;
+		nat = conf_get_field(*rp);
+		if (nat != NULL)
+			conf_hid_set_cb(nat, conf_id, &tcb[n]);
 	}
 
 	return 0;
