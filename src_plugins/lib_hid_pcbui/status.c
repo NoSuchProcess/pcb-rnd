@@ -190,17 +190,17 @@ static void status_rd_pcb2dlg(void)
 			double a = atan2(dy, dx) * PCB_RAD_TO_DEG;
 
 			s1 = status.buf.array;
-			pcb_append_printf(&status.buf, "%m+r %-mS;%c", conf_core.editor.grid_unit->allow, r, sep);
+			pcb_append_printf(&status.buf, "%m+r %-mS%c", conf_core.editor.grid_unit->allow, r, sep);
 			s2 = status.buf.array + status.buf.used;
-			pcb_append_printf(&status.buf, "phi %-.1f;%c", a, sep);
+			pcb_append_printf(&status.buf, "phi %-.1f%c", a, sep);
 			s3 = status.buf.array + status.buf.used;
 			pcb_append_printf(&status.buf, "%m+ %-mS %-mS", conf_core.editor.grid_unit->allow, dx, dy);
 		}
 		else {
-			pcb_append_printf(&status.buf, "r __.__;%cphi __._;%c__.__ __.__", sep, sep, sep);
+			pcb_append_printf(&status.buf, "r __.__%cphi __._%c__.__ __.__", sep, sep, sep);
 			s1 = status.buf.array;
-			s2 = status.buf.array + 9;
-			s3 = status.buf.array + 19;
+			s2 = status.buf.array + 8;
+			s3 = status.buf.array + 17;
 		}
 
 		hv.str_value = s1;
