@@ -1,0 +1,11 @@
+What the user code needs to implement
+
+1. actions (optional)
+	StatusSetText()
+	DescribeLocation()
+
+2. docked DAD subwindows (optional)
+	bottom status line
+	top right coord readout
+	top left toolbar
+
