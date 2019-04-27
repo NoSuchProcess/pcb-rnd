@@ -472,6 +472,11 @@ struct pcb_hid_s {
 	int (*remove_menu)(const char *menu_path);
 	int (*remove_menu_node)(lht_node_t *nd);
 
+	/* At the moment HIDs load the menu file. Some plugin code, like the toolbar
+	   code needs to traverse the menu tree too. This call exposes the
+	   HID-internal menu struct */
+	pcb_hid_cfg_t *(*get_menu_cfg)(void);
+
 	/* Update the state of all checkboxed menus whose luhata
 	   node cookie matches cookie (or all checkboxed menus globally if cookie
 	   is NULL) */

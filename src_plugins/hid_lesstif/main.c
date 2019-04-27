@@ -3537,6 +3537,7 @@ static void ltf_clip_free(pcb_hid_clipfmt_t format, void *data, size_t len)
 void lesstif_create_menu(const char *menu, const pcb_menu_prop_t *props);
 int lesstif_remove_menu(const char *menu);
 int lesstif_remove_menu_node(lht_node_t *node);
+pcb_hid_cfg_t *lesstif_get_menu_cfg(void);
 
 int pplg_check_ver_hid_lesstif(int version_we_need) { return 0; }
 
@@ -3630,6 +3631,7 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.remove_menu = lesstif_remove_menu;
 	lesstif_hid.remove_menu_node = lesstif_remove_menu_node;
 	lesstif_hid.update_menu_checkbox = lesstif_update_widget_flags;
+	lesstif_hid.get_menu_cfg = lesstif_get_menu_cfg;
 	lesstif_hid.usage = lesstif_usage;
 
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, lesstif_cookie);

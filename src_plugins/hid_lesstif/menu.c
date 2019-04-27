@@ -613,6 +613,11 @@ int lesstif_remove_menu_node(lht_node_t *node)
 	return pcb_hid_cfg_remove_menu_node(lesstif_cfg, node, del_menu, NULL);
 }
 
+pcb_hid_cfg_t *lesstif_get_menu_cfg(void)
+{
+	return lesstif_cfg;
+}
+
 static const char *lesstif_menu_cookie = "hid_lesstif_menu";
 void lesstif_init_menu(void)
 {
