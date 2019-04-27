@@ -115,6 +115,7 @@ TODO("padstack: remove some paths when route style has proto")
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_toolbar_gui_init_ev, NULL, toolbar_cookie);
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_status_gui_init_ev, NULL, status_cookie);
 	pcb_event_bind(PCB_EVENT_USER_INPUT_KEY, pcb_status_st_update_ev, NULL, status_cookie);
+	pcb_event_bind(PCB_EVENT_CROSSHAIR_MOVE, pcb_status_rd_update_ev, NULL, status_cookie);
 
 	install_events(rst_cookie, rpaths, rcb, pcb_rst_update_conf);
 	install_events(toolbar_cookie, tpaths, tcb, pcb_toolbar_update_conf);

@@ -33,6 +33,7 @@
 #include "hid_cfg_input.h"
 #include "hid_dad.h"
 #include "conf_core.h"
+#include "crosshair.h"
 
 #include "status.h"
 
@@ -152,8 +153,27 @@ static void status_st_pcb2dlg(void)
 
 static void status_rd_pcb2dlg(void)
 {
+	static pcb_hid_attr_val_t hv;
+
 	if (status.rdsub_inited) {
-	
+		/* coordinate readout (right side box) */
+		if (conf_core.appearance.compact) {
+			status.buf.used = 0;
+			pcb_append_printf(&status.buf, "%m+%-mS", conf_core.editor.grid_unit->allow, pcb_crosshair.X);
+			hv.str_value = status.buf.array;
+			pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd2[0], &hv);
+
+			status.buf.used = 0;
+			pcb_append_printf(&status.buf, "%m+%-mS", conf_core.editor.grid_unit->allow, pcb_crosshair.Y);
+			hv.str_value = status.buf.array;
+			pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd2[1], &hv);
+			pcb_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd2[1], 0);
+		}
+		else {
+			status.buf.used = 0;
+			pcb_append_printf(&status.buf, "%m+%-mS %-mS", conf_core.editor.grid_unit->allow, pcb_crosshair.X, pcb_crosshair.Y);
+			pcb_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd2[1], 1);
+		}
 	}
 }
 
@@ -229,6 +249,11 @@ void pcb_status_st_update_conf(conf_native_t *cfg, int arr_idx)
 void pcb_status_st_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	status_st_pcb2dlg();
+}
+
+void pcb_status_rd_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	status_rd_pcb2dlg();
 }
 
 const char pcb_acts_StatusSetText[] = "StatusSetText([text])\n";
