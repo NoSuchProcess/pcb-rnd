@@ -368,7 +368,6 @@ GtkAccelGroup *ghid_main_menu_get_accel_group(GHidMainMenu *menu)
 static GtkWidget *new_popup(lht_node_t *menu_item)
 {
 	GtkWidget *new_menu = gtk_menu_new();
-/*	GHidMainMenu *menu  = GHID_MAIN_MENU(ctx->menu_bar);*/
 
 	g_object_ref_sink(new_menu);
 	menu_item->user_data = handle_alloc(new_menu, new_menu, NULL);
