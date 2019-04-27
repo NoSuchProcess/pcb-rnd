@@ -159,8 +159,10 @@ void ghid_cmd_close(pcb_gtk_command_t *ctx)
 	ctx->command_entered = NULL; /* We are aborting */
 
 	/* Hide the host widget in full screen - not enough if only the entry is gone */
-	if (conf_core.editor.fullscreen)
+	if (conf_core.editor.fullscreen) {
 		gtk_widget_hide(gtk_widget_get_parent(ctx->command_combo_box));
+		gtk_widget_hide(gtk_widget_get_parent(ctx->prompt_label));
+	}
 }
 
 
@@ -187,6 +189,7 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 		gtk_widget_show_all(gtk_widget_get_parent(ctx->command_combo_box));
 
 	gtk_widget_show(ctx->command_combo_box);
+	gtk_widget_show(ctx->prompt_label);
 	ctx->hide_status(ctx->status_ctx, 0);
 
 	/* Remove the top window accel group so keys intended for the entry
@@ -212,12 +215,15 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 	g_signal_handler_disconnect(ctx->command_entry, escape_sig2_id);
 
 	/* Hide/show the widgets */
-	if (conf_core.editor.fullscreen)
+	if (conf_core.editor.fullscreen) {
 		gtk_widget_hide(gtk_widget_get_parent(ctx->command_combo_box));
+		gtk_widget_hide(gtk_widget_get_parent(ctx->prompt_label));
+	}
 	ctx->hide_status(ctx->status_ctx, 1);
 
 	/* Restore the status line label and give focus back to the drawing area */
 	gtk_widget_hide(ctx->command_combo_box);
+	gtk_widget_hide(ctx->prompt_label);
 	ctx->post_entry();
 
 	return ctx->command_entered;

@@ -527,6 +527,8 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	tw->dockbox[PCB_HID_DOCK_BOTTOM] = gtkc_hbox_new(TRUE, 2);
 	gtk_box_pack_start(GTK_BOX(tw->bottom_hbox), tw->dockbox[PCB_HID_DOCK_BOTTOM], FALSE, FALSE, 0);
 
+	tw->cmd.prompt_label = gtk_label_new("action:");
+	gtk_box_pack_start(GTK_BOX(tw->bottom_hbox), tw->cmd.prompt_label, FALSE, FALSE, 0);
 	ghid_command_combo_box_entry_create(&tw->cmd, ghid_topwin_hide_status, tw);
 	gtk_box_pack_start(GTK_BOX(tw->bottom_hbox), tw->cmd.command_combo_box, FALSE, FALSE, 0);
 
@@ -557,6 +559,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	tw->active = 1;
 
 	gtk_widget_hide(tw->cmd.command_combo_box);
+	gtk_widget_hide(tw->cmd.prompt_label);
 }
 
 /* We'll set the interface insensitive when a g_main_loop is running so the
