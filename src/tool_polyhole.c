@@ -174,8 +174,38 @@ pcb_bool pcb_tool_polyhole_redo_act(void)
 		return pcb_true;
 }
 
+/* XPM */
+static const char * polyhole_icon[] = {
+"21 21 3 1",
+" 	c None",
+".	c #6EA5D7",
+"+	c #000000",
+"        ..           ",
+"       ...           ",
+"      .....          ",
+"     .......         ",
+"    .........        ",
+"  ....+++++...       ",
+"  ....+   +....      ",
+"  ...+    +.....     ",
+"  ...++++++......    ",
+"  ................   ",
+"  .................  ",
+"                     ",
+"  +  +  ++  +   +++  ",
+"  +  + +  + +   +    ",
+"  +  + +  + +   +    ",
+"  ++++ +  + +   +++  ",
+"  +  + +  + +   +    ",
+"  +  + +  + +   +    ",
+"  +  + +  + +   +    ",
+"  +  +  ++  +++ +++  ",
+"                     "
+};
+
+
 pcb_tool_t pcb_tool_polyhole = {
-	"polyhole", NULL, 100, NULL,
+	"polyhole", NULL, 100, polyhole_icon,
 	NULL,
 	pcb_tool_polyhole_uninit,
 	pcb_tool_polyhole_notify_mode,

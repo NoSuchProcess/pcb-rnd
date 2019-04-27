@@ -48,8 +48,41 @@ void pcb_tool_rotate_notify_mode(void)
 	pcb_subc_as_board_update(PCB);
 }
 
+/* XPM */
+static const char *rot_icon[] = {
+/* columns rows colors chars-per-pixel */
+"21 21 4 1",
+"  c black",
+". c #4E85b7",
+"X c gray100",
+"o c None",
+/* pixels */
+"ooooooooooo.ooooooooo",
+"oooooooooo..ooooooooo",
+"ooooooooo....oooooooo",
+"oooooooooo..o.ooooooo",
+"ooooooooooo.oo.oooooo",
+"oooooooooooooo.oooooo",
+"oooooooooooooo.oooooo",
+"oooooooooooooo.oooooo",
+"oooooooooooooo.oooooo",
+"ooooooooooooo.ooooooo",
+"oooooooooooo.oooooooo",
+"oooooooooo..ooooooooo",
+"ooooooooooooooooooooo",
+"ooo    ooo   oo     o",
+"ooo ooo o ooo ooo ooo",
+"ooo ooo o ooo ooo ooo",
+"ooo    oo ooo ooo ooo",
+"ooo   ooo ooo ooo ooo",
+"ooo o  oo ooo ooo ooo",
+"ooo oo  o ooo ooo ooo",
+"ooo ooo oo   oooo ooo"
+};
+
+
 pcb_tool_t pcb_tool_rotate = {
-	"rotate", NULL, 100, NULL,
+	"rotate", NULL, 100, rot_icon,
 	NULL,
 	NULL,
 	pcb_tool_rotate_notify_mode,

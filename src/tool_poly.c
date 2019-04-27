@@ -145,8 +145,40 @@ pcb_bool pcb_tool_poly_redo_act(void)
 		return pcb_true;
 }
 
+/* XPM */
+static const char *poly_icon[] = {
+/* columns rows colors chars-per-pixel */
+"21 21 4 1",
+"  c black",
+". c #6EA5D7",
+"X c gray100",
+"o c None",
+/* pixels */
+"ooooooooooo.ooooooooo",
+"oooooooooo..ooooooooo",
+"ooooooooo...ooooooooo",
+"oooooooo....ooooooooo",
+"ooooooo.....ooooooooo",
+"oooooo.......oooooooo",
+"ooooo.........ooooooo",
+"oooo...........oooooo",
+"oooo............ooooo",
+"oooo.............oooo",
+"oooo..............ooo",
+"ooooooooooooooooooooo",
+"o    ooo   oo oo ooo ",
+"o ooo o ooo o oo ooo ",
+"o ooo o ooo o ooo o o",
+"o    oo ooo o oooo oo",
+"o ooooo ooo o oooo oo",
+"o ooooo ooo o oooo oo",
+"o ooooo ooo o oooo oo",
+"o oooooo   oo    o oo",
+"ooooooooooooooooooooo"
+};
+
 pcb_tool_t pcb_tool_poly = {
-	"poly", NULL, 100, NULL,
+	"poly", NULL, 100, poly_icon,
 	NULL,
 	pcb_tool_poly_uninit,
 	pcb_tool_poly_notify_mode,

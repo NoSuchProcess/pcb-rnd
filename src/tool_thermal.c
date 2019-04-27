@@ -101,8 +101,40 @@ void pcb_tool_thermal_notify_mode(void)
 	}
 }
 
+/* XPM */
+static const char *thrm_icon[] = {
+/* columns rows colors chars-per-pixel */
+"21 21 4 1",
+"  c black",
+". c #69E1B0",
+"X c gray100",
+"o c None",
+/* pixels */
+"ooooooooooooooooooooo",
+"oooo ooooooooo oooooo",
+"ooooo ooooooo ooooooo",
+"oooooo o...o oooooooo",
+"ooooooo ooo ooooooooo",
+"oooooo.ooooo.oooooooo",
+"oooooo.ooooo.oooooooo",
+"oooooo.ooooo.oooooooo",
+"ooooooo ooo ooooooooo",
+"oooooo o...o oooooooo",
+"ooooo ooooooo ooooooo",
+"oooo ooooooooo oooooo",
+"ooooooooooooooooooooo",
+"     o oo o   oo ooo ",
+"oo ooo oo o oo o  o  ",
+"oo ooo oo o oo o o o ",
+"oo ooo oo o   oo o o ",
+"oo ooo    o o oo ooo ",
+"oo ooo oo o oo o ooo ",
+"oo ooo oo o oo o ooo ",
+"oo ooo oo o oo o ooo "
+};
+
 pcb_tool_t pcb_tool_thermal = {
-	"thermal", NULL, 100, NULL,
+	"thermal", NULL, 100, thrm_icon,
 	NULL,
 	NULL,
 	pcb_tool_thermal_notify_mode,

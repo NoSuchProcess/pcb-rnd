@@ -81,8 +81,39 @@ void pcb_tool_remove_notify_mode(void)
 	}
 }
 
+/* XPM */
+static const char *del_icon[] = {
+/* columns rows colors chars-per-pixel */
+"21 21 3 1",
+"  c black",
+". c gray100",
+"X c None",
+/* pixels */
+"XXX XXXXXXXXXXXX XXXX",
+"XXXX XXX    XXX XXXXX",
+"XXXXX X      X XXXXXX",
+"XXXXXX XX  XX XXXXXXX",
+"XXXXX  XX  XX  XXXXXX",
+"XXXXX          XXXXXX",
+"XXXXXX        XXXXXXX",
+"XXXXXXX  XX  XXXXXXXX",
+"XXXXXXX  XX XXXXXXXXX",
+"XXXXXX X XX  XXXXXXXX",
+"XXXX  XX    X  XXXXXX",
+"XX  XXXXX  XXXX  XXXX",
+"XXXXXXXXXXXXXXXXXXXXX",
+"XX     XX     X XXXXX",
+"XXX XXX X XXXXX XXXXX",
+"XXX XXX X XXXXX XXXXX",
+"XXX XXX X XXXXX XXXXX",
+"XXX XXX X    XX XXXXX",
+"XXX XXX X XXXXX XXXXX",
+"XXX XXX X XXXXX XXXXX",
+"XX     XX     X     X"
+};
+
 pcb_tool_t pcb_tool_remove = {
-	"remove", NULL, 100, NULL,
+	"remove", NULL, 100, del_icon,
 	NULL,
 	NULL,
 	pcb_tool_remove_notify_mode,

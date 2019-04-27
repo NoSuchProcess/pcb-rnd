@@ -460,8 +460,42 @@ pcb_bool pcb_tool_line_redo_act(void)
 	return pcb_false;
 }
 
+/* XPM */
+static const char *line_icon[] = {
+/* columns rows colors chars-per-pixel */
+"21 21 5 1",
+"  c black",
+". c #7A8584",
+"X c #4E85b7",
+"o c gray100",
+"O c None",
+/* pixels */
+"OOOOOOOOOOOOOOOOOOOOO",
+"OO...OOOOOOOOOOOOOOOO",
+"O.OOO.OOOOOOOOOOOOOOO",
+"O.OXXXOOOOOOOOOOOOOOO",
+"O.OOO.XXXOOOOOOOOOOOO",
+"OO...OOOOXXXOOOO...OO",
+"OOOOOOOOOOOOXXX.OOO.O",
+"OOOOOOOOOOOOOOOXXXO.O",
+"OOOOOOOOOOOOOOO.OOO.O",
+"OOOOOOOOOOOOOOOO...OO",
+"OOOOOOOOOOOOOOOOOOOOO",
+"OOOOOOOOOOOOOOOOOOOOO",
+" OOOO   O OOOO O    O",
+" OOOOO OO  OOO O OOOO",
+" OOOOO OO O OO O OOOO",
+" OOOOO OO O OO O OOOO",
+" OOOOO OO OO O O   OO",
+" OOOOO OO OO O O OOOO",
+" OOOOO OO OOO  O OOOO",
+"    O   O OOOO O    O",
+"OOOOOOOOOOOOOOOOOOOOO"
+};
+
+
 pcb_tool_t pcb_tool_line = {
-	"line", NULL, 100, NULL,
+	"line", NULL, 100, line_icon,
 	pcb_tool_line_init,
 	pcb_tool_line_uninit,
 	pcb_tool_line_notify_mode,

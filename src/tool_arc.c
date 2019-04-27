@@ -187,8 +187,40 @@ pcb_bool pcb_tool_arc_undo_act(void)
 	return pcb_true;
 }
 
+/* XPM */
+static const char *arc_icon[] = {
+/* columns rows colors chars-per-pixel */
+"21 21 4 1",
+"  c black",
+". c #4E85b7",
+"X c gray100",
+"o c None",
+/* pixels */
+"ooooo.ooooooooooooooo",
+"ooooo.ooooooooooooooo",
+"ooooo.ooooooooooooooo",
+"ooooo.ooooooooooooooo",
+"oooooo.oooooooooooooo",
+"oooooo.oooooooooooooo",
+"ooooooo.ooooooooooooo",
+"ooooooo..oooooooooooo",
+"oooooooo..ooooooooooo",
+"oooooooooo..ooooooooo",
+"oooooooooooo....ooooo",
+"ooooooooooooooooooooo",
+"ooo oooo    oooo   oo",
+"oo o ooo ooo oo ooo o",
+"oo o ooo ooo oo ooo o",
+"o ooo oo    ooo ooooo",
+"o     oo  ooooo ooooo",
+"o ooo oo o oooo ooooo",
+"o ooo oo oo ooo ooo o",
+"o ooo oo ooo ooo   oo",
+"ooooooooooooooooooooo"
+};
+
 pcb_tool_t pcb_tool_arc = {
-	"arc", NULL, 100, NULL,
+	"arc", NULL, 100, arc_icon,
 	pcb_tool_arc_init,
 	pcb_tool_arc_uninit,
 	pcb_tool_arc_notify_mode,

@@ -220,6 +220,7 @@ done | awk -v import=$import -v "save=$1" '
 			MASK[18719]++
 			MASK[19685]++
 			MASK[19686]++
+			MASK[24965]++
 		}
 
 		function do_save()

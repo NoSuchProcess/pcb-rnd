@@ -112,8 +112,41 @@ pcb_bool pcb_tool_rectangle_anydo_act(void)
 	return pcb_true;
 }
 
+/* XPM */
+static const char *rect_icon[] = {
+/* columns rows colors chars-per-pixel */
+"21 21 4 1",
+"  c black",
+". c #6EA5D7",
+"X c gray100",
+"o c None",
+/* pixels */
+"ooooooooooooooooooooo",
+"oo..................o",
+"oo..................o",
+"oo..................o",
+"oo..................o",
+"oo..................o",
+"oo..................o",
+"oo..................o",
+"oo..................o",
+"oo..................o",
+"ooooooooooooooooooooo",
+"ooooooooooooooooooooo",
+"o   oo    oo  oo     ",
+"o oo o oooo oo ooo oo",
+"o oo o oooo oooooo oo",
+"o   oo oooo oooooo oo",
+"o o oo   oo oooooo oo",
+"o oo o oooo oooooo oo",
+"o oo o oooo oo ooo oo",
+"o oo o    oo  oooo oo",
+"ooooooooooooooooooooo"
+};
+
+
 pcb_tool_t pcb_tool_rectangle = {
-	"rectangle", NULL, 100, NULL,
+	"rectangle", NULL, 100, rect_icon,
 	NULL,
 	pcb_tool_rectangle_uninit,
 	pcb_tool_rectangle_notify_mode,

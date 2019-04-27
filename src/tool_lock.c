@@ -74,8 +74,39 @@ void pcb_tool_lock_notify_mode(void)
 	}
 }
 
+/* XPM */
+static const char *lock_icon[] = {
+/* columns rows colors chars-per-pixel */
+"21 21 3 1",
+"  c black",
+". c gray100",
+"X c None",
+/* pixels */
+"XXXXXXXX     XXXXXXXX",
+"XXXXXXX  XXX  XXXXXXX",
+"XXXXXXX XXXXX XXXXXXX",
+"XXXXXX  XXXXX  XXXXXX",
+"XXXXXX XXXXXXX XXXXXX",
+"XXXXXX XXXXXXX XXXXXX",
+"XXXX             XXXX",
+"XXXX XXXXXXXXXXX XXXX",
+"XXXX             XXXX",
+"XXXX XXXXXXXXXXX XXXX",
+"XXXX             XXXX",
+"XXXX XXXXXXXXXXX XXXX",
+"XXXX             XXXX",
+"XXXXXXXXXXXXXXXXXXXXX",
+"XX XXXX  XXX  X XX XX",
+"XX XXX XX X XXX XX XX",
+"XX XXX XX X XXX X XXX",
+"XX XXX XX X XXX  XXXX",
+"XX XXX XX X XXX X XXX",
+"XX XXX XX X XXX XX XX",
+"XX   XX  XXX  X XX XX"
+};
+
 pcb_tool_t pcb_tool_lock = {
-	"lock", NULL, 100, NULL,
+	"lock", NULL, 100, lock_icon,
 	NULL,
 	NULL,
 	pcb_tool_lock_notify_mode,

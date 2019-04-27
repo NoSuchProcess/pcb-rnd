@@ -91,8 +91,40 @@ void pcb_tool_text_draw_attached(void)
 
 }
 
+/* XPM */
+static const char *text_icon[] = {
+/* columns rows colors chars-per-pixel */
+"21 21 4 1",
+"  c black",
+". c #4E85b7",
+"X c gray100",
+"o c None",
+/* pixels */
+"ooooooooooooooooooooo",
+"ooooooooooooooooooooo",
+"ooooooooooooooooooooo",
+"oo.ooo.ooo.ooo.ooo.oo",
+"o.o.o.o.o.o.o.o.o.o.o",
+"oo.ooo.ooo.ooo.ooo.oo",
+"ooooooooooooooooooooo",
+"ooooooooooooooooooooo",
+"ooooooooooooooooooooo",
+"ooooooooooooooooooooo",
+"ooooooooooooooooooooo",
+"ooooooooooooooooooooo",
+"     o   o ooo o     ",
+"oo ooo ooo ooo ooo oo",
+"oo ooo oooo o oooo oo",
+"oo ooo ooooo ooooo oo",
+"oo ooo  ooo o oooo oo",
+"oo ooo ooo ooo ooo oo",
+"oo ooo ooo ooo ooo oo",
+"oo ooo   o ooo ooo oo",
+"ooooooooooooooooooooo"
+};
+
 pcb_tool_t pcb_tool_text = {
-	"text", NULL, 100, NULL,
+	"text", NULL, 100, text_icon,
 	NULL,
 	NULL,
 	pcb_tool_text_notify_mode,

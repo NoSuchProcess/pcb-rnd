@@ -101,8 +101,40 @@ TODO("pstk: replace this when route style has a prototype")
 	}
 }
 
+/* XPM */
+static const char *via_icon[] = {
+/* columns rows colors chars-per-pixel */
+"21 21 4 1",
+"  c black",
+". c #7A8584",
+"X c gray100",
+"o c None",
+/* pixels */
+"ooooooooooooooooooooo",
+"ooooooooo...ooooooooo",
+"oooooooo.....oooooooo",
+"ooooooo..ooo..ooooooo",
+"oooooo..ooooo..oooooo",
+"oooooo..ooooo..oooooo",
+"oooooo..ooooo..oooooo",
+"ooooooo..ooo..ooooooo",
+"oooooooo.....oooooooo",
+"ooooooooo...ooooooooo",
+"ooooooooooooooooooooo",
+"ooooooooooooooooooooo",
+"ooooooooooooooooooooo",
+"ooo ooo o   ooo ooooo",
+"ooo ooo oo ooo o oooo",
+"ooo ooo oo oo ooo ooo",
+"oooo o ooo oo ooo ooo",
+"oooo o ooo oo     ooo",
+"oooo o ooo oo ooo ooo",
+"ooooo ooo   o ooo ooo",
+"ooooooooooooooooooooo"
+};
+
 pcb_tool_t pcb_tool_via = {
-	"via", NULL, 100, NULL,
+	"via", NULL, 100, via_icon,
 	NULL,
 	NULL,
 	pcb_tool_via_notify_mode,

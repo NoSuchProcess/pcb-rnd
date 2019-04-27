@@ -131,8 +131,40 @@ pcb_bool pcb_tool_insert_undo_act(void)
 	return pcb_true;
 }
 
+/* XPM */
+static const char *ins_icon[] = {
+/* columns rows colors chars-per-pixel */
+"21 21 4 1",
+"  c black",
+". c #7A8584",
+"X c gray100",
+"o c None",
+/* pixels */
+"oooooo...oooooooooooo",
+"ooooo.ooo.ooooooooooo",
+"ooooo.o.o.ooooooooooo",
+"oooooo....ooooooooooo",
+"ooooooooooooooooooooo",
+"oooo  ooooo  oooooooo",
+"ooooooooooooooooooooo",
+"oo...ooooooooooo...oo",
+"o.oo..ooooooooo.ooo.o",
+"o.o o...........o o.o",
+"o.ooo.ooooooooo.ooo.o",
+"oo...ooooooooooo...oo",
+"ooooooooooooooooooooo",
+"ooo   o ooo oo    ooo",
+"oooo oo ooo o ooooooo",
+"oooo oo  oo o ooooooo",
+"oooo oo o o oo   oooo",
+"oooo oo oo  ooooo ooo",
+"oooo oo ooo ooooo ooo",
+"oooo oo ooo ooooo ooo",
+"ooo   o ooo o    oooo"
+};
+
 pcb_tool_t pcb_tool_insert = {
-	"insert", NULL, 100, NULL,
+	"insert", NULL, 100, ins_icon,
 	NULL,
 	pcb_tool_insert_uninit,
 	pcb_tool_insert_notify_mode,

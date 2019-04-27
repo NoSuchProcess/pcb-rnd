@@ -215,8 +215,40 @@ void pcb_tool_arrow_adjust_attached_objects(void)
 	}
 }
 
+/* XPM */
+static const char *arrow_icon[] = {
+/* columns rows colors chars-per-pixel */
+"21 21 4 1",
+"  c black",
+". c #6EA5D7",
+"X c gray100",
+"o c None",
+/* pixels */
+"oo .. ooooooooooooooo",
+"oo .... ooooooooooooo",
+"ooo ...... oooooooooo",
+"ooo ........ oooooooo",
+"ooo ....... ooooooooo",
+"oooo ..... oooooooooo",
+"oooo ...... ooooooooo",
+"ooooo .. ... oooooooo",
+"ooooo . o ... ooooooo",
+"oooooooooo ... oooooo",
+"ooooooooooo .. oooooo",
+"oooooooooooo  ooooooo",
+"ooooooooooooooooooooo",
+"ooo ooo    ooo    ooo",
+"oo o oo ooo oo ooo oo",
+"oo o oo ooo oo ooo oo",
+"o ooo o    ooo    ooo",
+"o ooo o ooo oo ooo oo",
+"o     o ooo oo ooo oo",
+"o ooo o ooo oo ooo oo",
+"o ooo o ooo oo ooo oo"
+};
+
 pcb_tool_t pcb_tool_arrow = {
-	"arrow", NULL, 10, NULL,
+	"arrow", NULL, 10, arrow_icon,
 	NULL,
 	pcb_tool_arrow_uninit,
 	pcb_tool_arrow_notify_mode,

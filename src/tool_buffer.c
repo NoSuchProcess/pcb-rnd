@@ -91,8 +91,40 @@ void pcb_tool_buffer_draw_attached(void)
 	pcb_xordraw_buffer(PCB_PASTEBUFFER);
 }
 
+/* XPM */
+static const char *buf_icon[] = {
+/* columns rows colors chars-per-pixel */
+"21 21 4 1",
+"  c black",
+". c #D0C7AD",
+"X c gray100",
+"o c None",
+/* pixels */
+"oooooooo  oo  ooooooo",
+"oooooo.. o  o ..ooooo",
+"oooooooo oooo ooooooo",
+"oooooo.. oooo ..ooooo",
+"oooooooo oooo ooooooo",
+"oooooo.. oooo ..ooooo",
+"oooooooo oooo ooooooo",
+"oooooo.. oooo ..ooooo",
+"oooooooo oooo ooooooo",
+"oooooo.. oooo ..ooooo",
+"oooooooo      ooooooo",
+"ooooooooooooooooooooo",
+"oo     oo ooo o     o",
+"ooo ooo o ooo o ooooo",
+"ooo ooo o ooo o ooooo",
+"ooo ooo o ooo o    oo",
+"ooo    oo ooo o ooooo",
+"ooo ooo o ooo o ooooo",
+"ooo ooo o ooo o ooooo",
+"oo     ooo   oo ooooo",
+"ooooooooooooooooooooo"
+};
+
 pcb_tool_t pcb_tool_buffer = {
-	"buffer", NULL, 100, NULL,
+	"buffer", NULL, 100, buf_icon,
 	pcb_tool_buffer_init,
 	pcb_tool_buffer_uninit,
 	pcb_tool_buffer_notify_mode,
