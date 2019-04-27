@@ -39,7 +39,8 @@
 typedef struct {
 	pcb_hid_dad_subdialog_t stsub, rdsub; /* st is for the bottom status line, rd is for the top readouts */
 	int stsub_inited, rdsub_inited;
-	int wst1, wst2;
+	int wst1, wst2, wsttxt;
+	int st_has_text;
 	int wrdunit, wrd1[3], wrd2[2];
 	gds_t buf; /* save on allocation */
 } status_ctx_t;
@@ -138,7 +139,8 @@ static void status_st_pcb2dlg(void)
 			build_st_line2();
 			hv.str_value = status.buf.array;
 			pcb_gui->attr_dlg_set_value(status.stsub.dlg_hid_ctx, status.wst2, &hv);
-			pcb_gui->attr_dlg_widget_hide(status.stsub.dlg_hid_ctx, status.wst2, 0);
+			if (!status.st_has_text)
+				pcb_gui->attr_dlg_widget_hide(status.stsub.dlg_hid_ctx, status.wst2, 0);
 		}
 
 		status.buf.used = 0;
@@ -159,9 +161,13 @@ static void status_docked_create_st()
 {
 	PCB_DAD_BEGIN_VBOX(status.stsub.dlg);
 		PCB_DAD_COMPFLAG(status.stsub.dlg, PCB_HATF_EXPFILL | PCB_HATF_TIGHT);
+		PCB_DAD_LABEL(status.stsub.dlg, "");
+			PCB_DAD_COMPFLAG(status.stsub.dlg, PCB_HATF_HIDE);
+			status.wsttxt = PCB_DAD_CURRENT(status.stsub.dlg);
 		PCB_DAD_LABEL(status.stsub.dlg, "<pending update>");
 			status.wst1 = PCB_DAD_CURRENT(status.stsub.dlg);
 		PCB_DAD_LABEL(status.stsub.dlg, "<pending update>");
+			PCB_DAD_COMPFLAG(status.stsub.dlg, PCB_HATF_HIDE);
 			status.wst2 = PCB_DAD_CURRENT(status.stsub.dlg);
 	PCB_DAD_END(status.stsub.dlg);
 }
@@ -223,4 +229,36 @@ void pcb_status_st_update_conf(conf_native_t *cfg, int arr_idx)
 void pcb_status_st_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	status_st_pcb2dlg();
+}
+
+const char pcb_acts_StatusSetText[] = "StatusSetText([text])\n";
+const char pcb_acth_StatusSetText[] = "Replace status printout with text temporarily; turn status printout back on if text is not provided.";
+fgw_error_t pcb_act_StatusSetText(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *text = NULL;
+
+	if (argc > 2)
+		PCB_ACT_FAIL(StatusSetText);
+
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, StatusSetText, text = argv[1].val.str);
+
+	if (text != NULL) {
+		pcb_hid_attr_val_t hv;
+		hv.str_value = text;
+		pcb_gui->attr_dlg_set_value(status.stsub.dlg_hid_ctx, status.wsttxt, &hv);
+		hv.str_value = "";
+		pcb_gui->attr_dlg_set_value(status.stsub.dlg_hid_ctx, status.wst2, &hv);
+		pcb_gui->attr_dlg_widget_hide(status.stsub.dlg_hid_ctx, status.wst1, 1);
+		pcb_gui->attr_dlg_widget_hide(status.stsub.dlg_hid_ctx, status.wsttxt, 0);
+		status.st_has_text = 1;
+	}
+	else {
+		status.st_has_text = 0;
+		pcb_gui->attr_dlg_widget_hide(status.stsub.dlg_hid_ctx, status.wst1, 0);
+		pcb_gui->attr_dlg_widget_hide(status.stsub.dlg_hid_ctx, status.wsttxt, 1);
+		status_st_pcb2dlg();
+	}
+
+	PCB_ACT_IRES(0);
+	return 0;
 }

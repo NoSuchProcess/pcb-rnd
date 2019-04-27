@@ -48,12 +48,18 @@ static pcb_action_t rst_action_list[] = {
 };
 PCB_REGISTER_ACTIONS(rst_action_list, rst_cookie)
 
+static pcb_action_t status_action_list[] = {
+	{"StatusSetText", pcb_act_StatusSetText, pcb_acth_StatusSetText, pcb_acts_StatusSetText}
+};
+PCB_REGISTER_ACTIONS(status_action_list, status_cookie)
+
 int pplg_check_ver_lib_hid_pcbui(int ver_needed) { return 0; }
 
 
 void pplg_uninit_lib_hid_pcbui(void)
 {
 	pcb_remove_actions_by_cookie(rst_cookie);
+	pcb_remove_actions_by_cookie(status_cookie);
 	pcb_event_unbind_allcookie(layer_cookie);
 	pcb_event_unbind_allcookie(rst_cookie);
 	pcb_event_unbind_allcookie(toolbar_cookie);
@@ -98,6 +104,7 @@ TODO("padstack: remove some paths when route style has proto")
 	PCB_API_CHK_VER;
 
 	PCB_REGISTER_ACTIONS(rst_action_list, rst_cookie);
+	PCB_REGISTER_ACTIONS(status_action_list, status_cookie);
 
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, pcb_layer_menu_update_ev, NULL, layer_cookie);
 	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, pcb_layer_menu_update_ev, NULL, layer_cookie);
