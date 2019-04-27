@@ -57,8 +57,10 @@ void pplg_uninit_lib_hid_pcbui(void)
 	pcb_event_unbind_allcookie(layer_cookie);
 	pcb_event_unbind_allcookie(rst_cookie);
 	pcb_event_unbind_allcookie(toolbar_cookie);
+	pcb_event_unbind_allcookie(status_cookie);
 	conf_hid_unreg(rst_cookie);
 	conf_hid_unreg(toolbar_cookie);
+	conf_hid_unreg(status_cookie);
 }
 
 #include "dolists.h"
@@ -88,8 +90,10 @@ int pplg_init_lib_hid_pcbui(void)
 TODO("padstack: remove some paths when route style has proto")
 	const char *rpaths[] = {"design/line_thickness", "design/via_thickness", "design/via_drilling_hole", "design/clearance", NULL};
 	const char *tpaths[] = {"editor/mode",  NULL};
+	const char *stpaths[] = { "editor/show_solder_side", "design/line_thickness", "editor/all_direction_lines", "editor/line_refraction", "editor/rubber_band_mode", "design/via_thickness", "design/via_drilling_hole", "design/clearance", "design/text_scale", "design/text_thickness", "editor/buffer_number", NULL };
 	static conf_hid_callbacks_t rcb[sizeof(rpaths)/sizeof(rpaths[0])];
 	static conf_hid_callbacks_t tcb[sizeof(tpaths)/sizeof(tpaths[0])];
+	static conf_hid_callbacks_t stcb[sizeof(stpaths)/sizeof(stpaths[0])];
 
 	PCB_API_CHK_VER;
 
@@ -106,6 +110,7 @@ TODO("padstack: remove some paths when route style has proto")
 
 	install_events(rst_cookie, rpaths, rcb, pcb_rst_update_conf);
 	install_events(toolbar_cookie, tpaths, tcb, pcb_toolbar_update_conf);
+	install_events(status_cookie, stpaths, stcb, pcb_status_st_update_conf);
 
 	return 0;
 }
