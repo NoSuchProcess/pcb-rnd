@@ -541,11 +541,16 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	tw->status_line_hbox = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(tw->vbox_middle), tw->status_line_hbox, FALSE, FALSE, 0);
 
-	label = pcb_gtk_status_line_label_new();
+	tw->dockbox[PCB_HID_DOCK_BOTTOM] = gtkc_hbox_new(TRUE, 2);
+	gtk_box_pack_start(GTK_BOX(tw->status_line_hbox), tw->dockbox[PCB_HID_DOCK_BOTTOM], FALSE, FALSE, 0);
 
+/* status line: remove these: { */
+	label = pcb_gtk_status_line_label_new();
 	tw->status_line_label = label;
 	gtk_box_pack_start(GTK_BOX(tw->status_line_hbox), label, FALSE, FALSE, 0);
+/* } */
 
+	/* resize grip: rightmost widget in the status line hbox */
 	resize_grip_vbox = gtkc_vbox_new(FALSE, 0);
 	resize_grip = gtk_event_box_new();
 	resize_grip_pixbuf = gdk_pixbuf_new_from_xpm_data(resize_grip_xpm);
