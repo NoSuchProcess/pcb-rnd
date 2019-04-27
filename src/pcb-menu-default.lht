@@ -29,7 +29,28 @@ ha:{
 			li:press-ctrl  = { Scroll(right) }
 		}
 	}
-	
+
+	# List of tool names for the toolbar.
+	# Do not specify keys here, they are specified in the menu; the GUI will
+	# not pick up keys from this subtree. There's also no action here: the
+	# plugin handling this subtree will always pick the tool.
+	li:toolbar_static {
+		ha:via       {tip={place a via on the board}}
+		ha:line      {tip={draw a line segment (trace) on the board}}
+		ha:arc       {tip={draw an arc segment (trace) on the board}}
+		ha:text      {tip={draw text on the board}}
+		ha:rectangle {tip={draw a rectangular polygon on the board}}
+		ha:poly      {tip={draw a polygon on the board}}
+		ha:polyhole  {tip={cut out a hole from existing polygons on the board}}
+		ha:buffer    {tip={paste the current buffer on the board}}
+		ha:remove    {tip={remove an object from the board}}
+		ha:rotate    {tip={rotate an object on the board}}
+		ha:insert    {tip={insert a point in a trace or polygon contour}}
+		ha:thermal   {tip={change thermal connectivity of a pin or via}}
+		ha:arrow     {tip={switch to arrow mode}}
+		ha:lock      {tip={lock or unlock objects on the board}}
+	}
+
 	li:main_menu {
 		### File Menu
 		ha:File {
