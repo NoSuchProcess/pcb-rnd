@@ -92,7 +92,7 @@ void pcb_tool_text_draw_attached(void)
 }
 
 pcb_tool_t pcb_tool_text = {
-	"text", NULL, 100,
+	"text", NULL, 100, NULL,
 	NULL,
 	NULL,
 	pcb_tool_text_notify_mode,

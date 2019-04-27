@@ -132,7 +132,7 @@ pcb_bool pcb_tool_insert_undo_act(void)
 }
 
 pcb_tool_t pcb_tool_insert = {
-	"insert", NULL, 100,
+	"insert", NULL, 100, NULL,
 	NULL,
 	pcb_tool_insert_uninit,
 	pcb_tool_insert_notify_mode,

@@ -113,7 +113,7 @@ pcb_bool pcb_tool_rectangle_anydo_act(void)
 }
 
 pcb_tool_t pcb_tool_rectangle = {
-	"rectangle", NULL, 100,
+	"rectangle", NULL, 100, NULL,
 	NULL,
 	pcb_tool_rectangle_uninit,
 	pcb_tool_rectangle_notify_mode,

@@ -461,7 +461,7 @@ pcb_bool pcb_tool_line_redo_act(void)
 }
 
 pcb_tool_t pcb_tool_line = {
-	"line", NULL, 100,
+	"line", NULL, 100, NULL,
 	pcb_tool_line_init,
 	pcb_tool_line_uninit,
 	pcb_tool_line_notify_mode,

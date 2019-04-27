@@ -60,6 +60,7 @@ typedef struct pcb_tool_s {
 	const char *name;             /* textual name of the tool */
 	const char *cookie;           /* plugin cookie _pointer_ of the registrar (comparision is pointer based, not strcmp) */
 	unsigned int priority;        /* lower values are higher priorities; escaping mode will try to select the highest prio tool */
+	const char **icon;            /* XPM for the tool buttons */
 
 	/* tool implementation */
 	void     (*init)(void);

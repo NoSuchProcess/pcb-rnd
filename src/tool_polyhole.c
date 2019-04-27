@@ -175,7 +175,7 @@ pcb_bool pcb_tool_polyhole_redo_act(void)
 }
 
 pcb_tool_t pcb_tool_polyhole = {
-	"polyhole", NULL, 100,
+	"polyhole", NULL, 100, NULL,
 	NULL,
 	pcb_tool_polyhole_uninit,
 	pcb_tool_polyhole_notify_mode,

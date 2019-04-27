@@ -92,7 +92,7 @@ void pcb_tool_buffer_draw_attached(void)
 }
 
 pcb_tool_t pcb_tool_buffer = {
-	"buffer", NULL, 100,
+	"buffer", NULL, 100, NULL,
 	pcb_tool_buffer_init,
 	pcb_tool_buffer_uninit,
 	pcb_tool_buffer_notify_mode,

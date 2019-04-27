@@ -216,7 +216,7 @@ void pcb_tool_arrow_adjust_attached_objects(void)
 }
 
 pcb_tool_t pcb_tool_arrow = {
-	"arrow", NULL, 10,
+	"arrow", NULL, 10, NULL,
 	NULL,
 	pcb_tool_arrow_uninit,
 	pcb_tool_arrow_notify_mode,

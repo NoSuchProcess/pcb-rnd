@@ -102,7 +102,7 @@ TODO("pstk: replace this when route style has a prototype")
 }
 
 pcb_tool_t pcb_tool_via = {
-	"via", NULL, 100,
+	"via", NULL, 100, NULL,
 	NULL,
 	NULL,
 	pcb_tool_via_notify_mode,

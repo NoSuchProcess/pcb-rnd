@@ -102,7 +102,7 @@ void pcb_tool_thermal_notify_mode(void)
 }
 
 pcb_tool_t pcb_tool_thermal = {
-	"thermal", NULL, 100,
+	"thermal", NULL, 100, NULL,
 	NULL,
 	NULL,
 	pcb_tool_thermal_notify_mode,

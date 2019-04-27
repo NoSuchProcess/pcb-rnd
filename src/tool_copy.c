@@ -115,7 +115,7 @@ pcb_bool pcb_tool_copy_undo_act(void)
 }
 
 pcb_tool_t pcb_tool_copy = {
-	"copy", NULL, 100,
+	"copy", NULL, 100, NULL,
 	NULL,
 	pcb_tool_copy_uninit,
 	pcb_tool_copy_notify_mode,
