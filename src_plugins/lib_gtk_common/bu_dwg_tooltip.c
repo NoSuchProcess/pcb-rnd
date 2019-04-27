@@ -33,74 +33,35 @@
 /* Drawing area tooltips */
 
 #include "config.h"
+#include "actions.h"
 #include "bu_dwg_tooltip.h"
 
-#include "layer.h"
-#include "search.h"
-#include "find.h"
-#include "board.h"
-#include "obj_subc.h"
-#include "obj_subc_parent.h"
-#include "netlist2.h"
-
 #define TOOLTIP_UPDATE_DELAY 200
-
-#define PCB_SILK_TYPE (PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY)
-
-static char *describe_location(pcb_coord_t X, pcb_coord_t Y)
-{
-	void *ptr1, *ptr2, *ptr3;
-	pcb_any_obj_t *obj;
-	int type;
-	pcb_subc_t *subc;
-	pcb_net_term_t *term = NULL;
-	gds_t desc;
-
-	/* check if there are any pins or pads at that position */
-	type = pcb_search_obj_by_location(PCB_OBJ_CLASS_TERM, &ptr1, &ptr2, &ptr3, X, Y, 0);
-	if (type == PCB_OBJ_VOID)
-		return NULL;
-
-	/* don't mess with silk objects! */
-	if ((type & PCB_SILK_TYPE) && (pcb_layer_flags_((pcb_layer_t *)ptr1) & PCB_LYT_SILK))
-		return NULL;
-
-	obj = ptr2;
-	if (obj->term == NULL)
-		return NULL;
-
-	subc = pcb_obj_parent_subc(ptr2);
-	if (subc == NULL)
-		return NULL;
-
-	if ((subc->refdes != NULL) && (obj->term != NULL))
-		term = pcb_net_find_by_refdes_term(&PCB->netlist[PCB_NETLIST_EDITED], subc->refdes, obj->term);
-
-	gds_init(&desc);
-	gds_append_str(&desc, "Subcircuit:\t"); gds_append_str(&desc, subc->refdes == NULL ? "--" : subc->refdes);
-	gds_append_str(&desc, "\nTerminal:  \t"); gds_append_str(&desc, obj->term == NULL ? "--" : obj->term);
-	gds_append_str(&desc, "\nNetlist:     \t"); gds_append_str(&desc, term == NULL ? "--" : term->parent.net->name);
-
-	return desc.array;
-}
 
 static int tooltip_update_timeout_id = 0;
 gboolean pcb_gtk_dwg_tooltip_check_object(GtkWidget *drawing_area, pcb_coord_t crosshairx, pcb_coord_t crosshairy)
 {
-	char *description;
+	const char *description;
+	fgw_arg_t res, argv[3];
 
 	/* Make sure the timer is not removed - we are called by the timer and it is
 	   automatically removed because we are returning false */
 	tooltip_update_timeout_id = 0;
 
 	/* check if there are any pins or pads at that position */
-	description = describe_location(crosshairx, crosshairy);
+	argv[1].type = FGW_COORD_;
+	fgw_coord(&argv[1]) = crosshairx;
+	argv[2].type = FGW_COORD_;
+	fgw_coord(&argv[2]) = crosshairy;
+
+	if (pcb_actionv_bin("DescribeLocation", &res, 3, argv) != 0)
+		return FALSE;
+
+	description = res.val.cstr;
 	if (description == NULL)
 		return FALSE;
 
 	gtk_widget_set_tooltip_text(drawing_area, description);
-
-	free(description);
 
 	return FALSE;
 }

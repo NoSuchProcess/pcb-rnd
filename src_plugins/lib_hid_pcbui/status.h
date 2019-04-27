@@ -11,3 +11,7 @@ void pcb_status_rd_update_ev(void *user_data, int argc, pcb_event_arg_t argv[]);
 extern const char pcb_acts_StatusSetText[];
 extern const char pcb_acth_StatusSetText[];
 fgw_error_t pcb_act_StatusSetText(fgw_arg_t *res, int argc, fgw_arg_t *argv);
+
+extern const char pcb_acts_DescribeLocation[];
+extern const char pcb_acth_DescribeLocation[];
+fgw_error_t pcb_act_DescribeLocation(fgw_arg_t *res, int argc, fgw_arg_t *argv);

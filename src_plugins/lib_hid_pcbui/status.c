@@ -34,6 +34,12 @@
 #include "hid_dad.h"
 #include "conf_core.h"
 #include "crosshair.h"
+#include "layer.h"
+#include "search.h"
+#include "find.h"
+#include "obj_subc.h"
+#include "obj_subc_parent.h"
+#include "netlist2.h"
 
 #include "status.h"
 
@@ -363,3 +369,59 @@ fgw_error_t pcb_act_StatusSetText(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_IRES(0);
 	return 0;
 }
+
+#define PCB_DESCRIBE_TYPE (PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY)
+
+const char pcb_acts_DescribeLocation[] = "DescribeLocation(x, y)\n";
+const char pcb_acth_DescribeLocation[] = "Return a string constant (valud until the next call) containing a short description at x;y (object, net, etc.)";
+fgw_error_t pcb_act_DescribeLocation(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_coord_t x, y;
+	void *ptr1, *ptr2, *ptr3;
+	pcb_any_obj_t *obj;
+	int type;
+	pcb_subc_t *subc;
+	pcb_net_term_t *term = NULL;
+	static gds_t desc;
+	const char *ret = NULL;
+
+	if (argc > 3)
+		PCB_ACT_FAIL(StatusSetText);
+
+	PCB_ACT_MAY_CONVARG(1, FGW_COORD, StatusSetText, x = fgw_coord(&argv[1]));
+	PCB_ACT_MAY_CONVARG(2, FGW_COORD, StatusSetText, y = fgw_coord(&argv[2]));
+
+	/* check if there are any pins or pads at that position */
+	type = pcb_search_obj_by_location(PCB_OBJ_CLASS_TERM, &ptr1, &ptr2, &ptr3, x, y, 0);
+	if (type == PCB_OBJ_VOID)
+		goto fin;
+
+	/* don't mess with silk objects! */
+	if ((type & PCB_DESCRIBE_TYPE) && (pcb_layer_flags_((pcb_layer_t *)ptr1) & PCB_LYT_SILK))
+		goto fin;
+
+	obj = ptr2;
+	if (obj->term == NULL)
+		goto fin;
+
+	subc = pcb_obj_parent_subc(ptr2);
+	if (subc == NULL)
+		goto fin;
+
+	if ((subc->refdes != NULL) && (obj->term != NULL))
+		term = pcb_net_find_by_refdes_term(&PCB->netlist[PCB_NETLIST_EDITED], subc->refdes, obj->term);
+
+	desc.used = 0;
+	gds_append_str(&desc, "Subcircuit:\t"); gds_append_str(&desc, subc->refdes == NULL ? "--" : subc->refdes);
+	gds_append_str(&desc, "\nTerminal:  \t"); gds_append_str(&desc, obj->term == NULL ? "--" : obj->term);
+	gds_append_str(&desc, "\nNetlist:     \t"); gds_append_str(&desc, term == NULL ? "--" : term->parent.net->name);
+
+	ret = desc.array;
+
+	fin:;
+	res->type = FGW_STR;
+	res->val.cstr = ret;
+	return 0;
+}
+
+#undef PCB_DESCRIBE_TYPE

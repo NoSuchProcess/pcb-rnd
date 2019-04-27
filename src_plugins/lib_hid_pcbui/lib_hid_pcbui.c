@@ -50,7 +50,8 @@ static pcb_action_t rst_action_list[] = {
 PCB_REGISTER_ACTIONS(rst_action_list, rst_cookie)
 
 static pcb_action_t status_action_list[] = {
-	{"StatusSetText", pcb_act_StatusSetText, pcb_acth_StatusSetText, pcb_acts_StatusSetText}
+	{"StatusSetText", pcb_act_StatusSetText, pcb_acth_StatusSetText, pcb_acts_StatusSetText},
+	{"DescribeLocation", pcb_act_DescribeLocation, pcb_acth_DescribeLocation, pcb_acts_DescribeLocation}
 };
 PCB_REGISTER_ACTIONS(status_action_list, status_cookie)
 
