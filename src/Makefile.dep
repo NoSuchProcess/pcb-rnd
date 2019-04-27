@@ -1902,7 +1902,6 @@
  compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_mode_btn.h \
  ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer_grp.h \
@@ -1946,7 +1945,6 @@
  compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
- ../src_plugins/lib_gtk_common/bu_mode_btn.h \
  ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
@@ -1994,7 +1992,6 @@
  compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
- ../src_plugins/lib_gtk_common/bu_mode_btn.h \
  ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer_grp.h \
@@ -2040,7 +2037,6 @@
  compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
- ../src_plugins/lib_gtk_common/bu_mode_btn.h \
  ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
@@ -2085,7 +2081,6 @@
  compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_mode_btn.h \
  ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer_grp.h \
@@ -2129,7 +2124,6 @@
  compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
- ../src_plugins/lib_gtk_common/bu_mode_btn.h \
  ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
@@ -3929,7 +3923,7 @@
  ../src_3rd/genvector/gds_char.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf.h ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/bu_mode_btn.data crosshair.h vtonpoint.h \
+  crosshair.h vtonpoint.h \
  hid.h route.h conf_core.h tool.h \
  ../src_plugins/lib_gtk_common/hid_gtk_conf.h
 ../src_plugins/lib_gtk_common/bu_spin_button.o: \
@@ -4127,7 +4121,6 @@
  ../src_plugins/lib_gtk_common/bu_menu.h conf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf.h hid_cfg_input.h ../src_3rd/genht/htpp.h hid_cfg.h conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_mode_btn.h \
  ../src_plugins/lib_gtk_common/glue.h hid.h \
  ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
@@ -4441,7 +4434,6 @@
  compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_mode_btn.h \
  ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
@@ -4483,7 +4475,6 @@
  compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_mode_btn.h \
  ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
@@ -4521,7 +4512,6 @@
  compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_mode_btn.h \
  ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
@@ -4556,7 +4546,6 @@
  compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_mode_btn.h \
  ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
@@ -4584,7 +4573,6 @@
  ../src_plugins/lib_gtk_common/bu_menu.h conf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf.h hid_cfg_input.h ../src_3rd/genht/htpp.h hid_cfg.h conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_mode_btn.h \
  ../src_plugins/lib_gtk_common/glue.h hid.h \
  ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
@@ -4623,7 +4611,6 @@
  compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_mode_btn.h \
  ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
@@ -4679,7 +4666,6 @@
  compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_mode_btn.h \
  ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \

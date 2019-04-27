@@ -167,10 +167,6 @@ gboolean ghid_idle_cb(void *topwin)
 	if (conf_core.editor.mode == PCB_MODE_NO)
 		pcb_tool_select_by_id(PCB_MODE_ARROW);
 	tw->com->mode_cursor_main(conf_core.editor.mode);
-	if (tw->mode_btn.settings_mode != conf_core.editor.mode) {
-		ghid_mode_buttons_update();
-	}
-	tw->mode_btn.settings_mode = conf_core.editor.mode;
 	return FALSE;
 }
 
@@ -275,31 +271,11 @@ static void destroy_chart_cb(GtkWidget *widget, pcb_gtk_topwin_t *tw)
 	tw->com->main_destroy(tw->com->gport);
 }
 
-static void get_widget_styles(pcb_gtk_topwin_t *tw, GtkStyle **menu_bar_style, GtkStyle **tool_button_style, GtkStyle **tool_button_label_style)
+static void get_widget_styles(pcb_gtk_topwin_t *tw, GtkStyle **menu_bar_style)
 {
-	GtkWidget *tool_button;
-	GtkWidget *tool_button_label;
-	GtkToolItem *tool_item;
-
-	/* Build a tool item to extract the theme's styling for a toolbar button with text */
-	tool_item = gtk_tool_item_new();
-	gtk_toolbar_insert(GTK_TOOLBAR(tw->mode_btn.mode_toolbar), tool_item, 0);
-	tool_button = gtk_button_new();
-	gtk_container_add(GTK_CONTAINER(tool_item), tool_button);
-	tool_button_label = gtk_label_new("");
-	gtk_container_add(GTK_CONTAINER(tool_button), tool_button_label);
-
 	/* Grab the various styles we need */
 	gtk_widget_ensure_style(tw->menu.menu_bar);
 	*menu_bar_style = gtk_widget_get_style(tw->menu.menu_bar);
-
-	gtk_widget_ensure_style(tool_button);
-	*tool_button_style = gtk_widget_get_style(tool_button);
-
-	gtk_widget_ensure_style(tool_button_label);
-	*tool_button_label_style = gtk_widget_get_style(tool_button_label);
-
-	gtk_widget_destroy(GTK_WIDGET(tool_item));
 }
 
 static void do_fix_topbar_theming(pcb_gtk_topwin_t *tw)
@@ -307,10 +283,8 @@ static void do_fix_topbar_theming(pcb_gtk_topwin_t *tw)
 	GtkWidget *rel_pos_frame;
 	GtkWidget *abs_pos_frame;
 	GtkStyle *menu_bar_style;
-	GtkStyle *tool_button_style;
-	GtkStyle *tool_button_label_style;
 
-	get_widget_styles(tw, &menu_bar_style, &tool_button_style, &tool_button_label_style);
+	get_widget_styles(tw, &menu_bar_style);
 
 	/* Style the top bar background as if it were all a menu bar */
 	gtk_widget_set_style(tw->top_bar_background, menu_bar_style);
@@ -330,8 +304,6 @@ static void do_fix_topbar_theming(pcb_gtk_topwin_t *tw)
 	abs_pos_frame = gtk_widget_get_parent(tw->cps.cursor_position_absolute_label);
 	gtk_widget_set_style(rel_pos_frame, menu_bar_style);
 	gtk_widget_set_style(abs_pos_frame, menu_bar_style);
-	gtk_widget_set_style(tw->cps.grid_units_button, tool_button_style);
-	gtk_widget_set_style(tw->cps.grid_units_label, tool_button_label_style);
 }
 
 /* Attempt to produce a conststent style for our extra menu-bar items by
@@ -498,9 +470,6 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	tw->dockbox[PCB_HID_DOCK_TOP_LEFT] = gtkc_hbox_new(TRUE, 2);
 	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), tw->dockbox[PCB_HID_DOCK_TOP_LEFT], FALSE, FALSE, 0);
 
-	pcb_gtk_make_mode_buttons_and_toolbar(tw->com, &tw->mode_btn);
-	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), tw->mode_btn.mode_toolbar_vbox, FALSE, FALSE, 0);
-
 	tw->position_hbox = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_end(GTK_BOX(tw->top_hbox), tw->position_hbox, FALSE, FALSE, 0);
 
@@ -602,7 +571,6 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	g_signal_connect(G_OBJECT(tw->com->top_window), "destroy", G_CALLBACK(destroy_chart_cb), tw);
 
 	gtk_widget_show_all(tw->com->top_window);
-	tw->com->pack_mode_buttons();
 
 	ghid_fullscreen_apply(tw);
 	tw->active = 1;
@@ -627,7 +595,6 @@ void ghid_create_pcb_widgets(pcb_gtk_topwin_t *tw, GtkWidget *in_top_window)
 
 	pcb_gtk_icons_init(GTK_WINDOW(tw->com->top_window));
 	pcb_tool_select_by_id(PCB_MODE_ARROW);
-	ghid_mode_buttons_update();
 }
 
 void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw)

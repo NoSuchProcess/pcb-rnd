@@ -778,7 +778,7 @@ void lesstif_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const pcb
 		ctx->property[prop] = *val;
 }
 
-int lesstif_attr_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled)
+int lesstif_attr_dlg_widget_state(void *hid_ctx, int idx, int enabled)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
 

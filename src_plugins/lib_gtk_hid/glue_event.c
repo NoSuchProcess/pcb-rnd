@@ -36,9 +36,6 @@ static void ev_pcb_meta_changed(void *user_data, int argc, pcb_event_arg_t argv[
 
 static void ghid_gui_sync(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	/* Sync gui widgets with pcb state */
-	ghid_mode_buttons_update();
-
 	/* Sync gui status display with pcb state */
 	pcb_tool_adjust_attached_objects();
 	ghid_invalidate_all();

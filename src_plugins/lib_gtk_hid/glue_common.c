@@ -66,11 +66,6 @@ static void ghid_pan_common(void)
 	ghid_port_ranges_changed();
 }
 
-void ghid_pack_mode_buttons(void)
-{
-	pcb_gtk_pack_mode_buttons(&ghidgui->topwin.mode_btn);
-}
-
 int ghid_command_entry_is_active(void)
 {
 	return ghidgui->topwin.cmd.command_entry_status_line_active;
@@ -182,7 +177,6 @@ void ghid_glue_common_init(void)
 	ghidgui->common.mode_cursor_main = ghid_mode_cursor_main;
 	ghidgui->common.pan_common = ghid_pan_common;
 	ghidgui->common.port_ranges_scale = ghid_port_ranges_scale;
-	ghidgui->common.pack_mode_buttons = ghid_pack_mode_buttons;
 
 	ghidgui->common.layer_buttons_update = ghid_layer_buttons_update;
 	ghidgui->common.LayersChanged = LayersChanged_cb;

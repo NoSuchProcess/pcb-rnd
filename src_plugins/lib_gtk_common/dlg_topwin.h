@@ -11,7 +11,6 @@
 #include "util_ext_chg.h"
 #include "bu_info_bar.h"
 #include "bu_menu.h"
-#include "bu_mode_btn.h"
 #include "bu_cursor_pos.h"
 #include "glue.h"
 #include "bu_command.h"
@@ -24,7 +23,6 @@ typedef struct {
 	pcb_gtk_info_bar_t ibar;
 	pcb_gtk_menu_ctx_t menu;
 	pcb_hid_cfg_t *ghid_cfg;
-	pcb_gtk_mode_btn_t mode_btn;
 	pcb_gtk_cursor_pos_t cps;
 	pcb_gtk_command_t cmd;
 

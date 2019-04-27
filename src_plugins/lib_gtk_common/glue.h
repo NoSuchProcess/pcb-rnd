@@ -48,7 +48,6 @@ typedef struct pcb_gtk_common_s {
 	void (*invalidate_all)();
 	void (*pan_common)(void);
 	void (*port_ranges_scale)(void);
-	void (*pack_mode_buttons)(void);
 	void (*screen_update)(void);
 	void (*shutdown_renderer)(void *port);
 
