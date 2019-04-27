@@ -97,7 +97,7 @@ static void toolbar_create_static(pcb_hid_cfg_t *cfg)
 			PCB_DAD_COMPFLAG(toolbar.sub.dlg, PCB_HATF_TIGHT | PCB_HATF_TOGGLE);
 			PCB_DAD_HELP(toolbar.sub.dlg, "TODO: tooltip");
 			wid = PCB_DAD_CURRENT(toolbar.sub.dlg);
-			toolbar.sub.dlg[wid].user_data = (int)tid;
+			toolbar.sub.dlg[wid].user_data = (void *)tid;
 			vti0_set(&toolbar.tid2wid, tid, wid);
 		}
 	}
