@@ -50,7 +50,6 @@ PCB_REGISTER_ACTIONS(rst_action_list, rst_cookie)
 
 int pplg_check_ver_lib_hid_pcbui(int ver_needed) { return 0; }
 
-static conf_hid_id_t conf_id;
 
 void pplg_uninit_lib_hid_pcbui(void)
 {
@@ -59,20 +58,38 @@ void pplg_uninit_lib_hid_pcbui(void)
 	pcb_event_unbind_allcookie(rst_cookie);
 	pcb_event_unbind_allcookie(toolbar_cookie);
 	conf_hid_unreg(rst_cookie);
+	conf_hid_unreg(toolbar_cookie);
 }
 
 #include "dolists.h"
 
+
+static conf_hid_id_t install_events(const char *cookie, const char *paths[], conf_hid_callbacks_t cb[], void (*update_cb)(conf_native_t*,int))
+{
+	const char **rp;
+	conf_native_t *nat;
+	int n;
+	conf_hid_id_t conf_id;
+
+	conf_id = conf_hid_reg(cookie, NULL);
+	for(rp = paths, n = 0; *rp != NULL; rp++, n++) {
+		memset(&cb[n], 0, sizeof(cb[0]));
+		cb[n].val_change_post = update_cb;
+		nat = conf_get_field(*rp);
+		if (nat != NULL)
+			conf_hid_set_cb(nat, conf_id, &cb[n]);
+	}
+
+	return conf_id;
+}
+
 int pplg_init_lib_hid_pcbui(void)
 {
 TODO("padstack: remove some paths when route style has proto")
-	const char **rp;
 	const char *rpaths[] = {"design/line_thickness", "design/via_thickness", "design/via_drilling_hole", "design/clearance", NULL};
 	const char *tpaths[] = {"editor/mode",  NULL};
 	static conf_hid_callbacks_t rcb[sizeof(rpaths)/sizeof(rpaths[0])];
 	static conf_hid_callbacks_t tcb[sizeof(tpaths)/sizeof(tpaths[0])];
-	conf_native_t *nat;
-	int n;
 
 	PCB_API_CHK_VER;
 
@@ -87,23 +104,8 @@ TODO("padstack: remove some paths when route style has proto")
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_toolbar_gui_init_ev, NULL, toolbar_cookie);
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_status_gui_init_ev, NULL, status_cookie);
 
-	conf_id = conf_hid_reg(rst_cookie, NULL);
-	for(rp = rpaths, n = 0; *rp != NULL; rp++, n++) {
-		memset(&rcb[n], 0, sizeof(rcb[0]));
-		rcb[n].val_change_post = pcb_rst_update_conf;
-		nat = conf_get_field(*rp);
-		if (nat != NULL)
-			conf_hid_set_cb(nat, conf_id, &rcb[n]);
-	}
-
-	conf_id = conf_hid_reg(toolbar_cookie, NULL);
-	for(rp = tpaths, n = 0; *rp != NULL; rp++, n++) {
-		memset(&tcb[n], 0, sizeof(tcb[0]));
-		tcb[n].val_change_post = pcb_toolbar_update_conf;
-		nat = conf_get_field(*rp);
-		if (nat != NULL)
-			conf_hid_set_cb(nat, conf_id, &tcb[n]);
-	}
+	install_events(rst_cookie, rpaths, rcb, pcb_rst_update_conf);
+	install_events(toolbar_cookie, tpaths, tcb, pcb_toolbar_update_conf);
 
 	return 0;
 }
