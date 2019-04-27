@@ -555,7 +555,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				break;
 
 			case PCB_HATT_PICBUTTON:
-				ctx->wl[j] = ghid_picbutton_create(ctx, &ctx->attrs[j], parent, j);
+				ctx->wl[j] = ghid_picbutton_create(ctx, &ctx->attrs[j], parent, j, (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TOGGLE));
 				g_signal_connect(G_OBJECT(ctx->wl[j]), "clicked", G_CALLBACK(button_changed_cb), &(ctx->attrs[j]));
 				g_object_set_data(G_OBJECT(ctx->wl[j]), PCB_OBJ_PROP, ctx);
 				break;
@@ -596,7 +596,10 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				hbox = gtkc_hbox_new(FALSE, 4);
 				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
 
-				ctx->wl[j] = gtk_button_new_with_label(ctx->attrs[j].default_val.str_value);
+				if (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TOGGLE)
+					ctx->wl[j] = gtk_toggle_button_new_with_label(ctx->attrs[j].default_val.str_value);
+				else
+					ctx->wl[j] = gtk_button_new_with_label(ctx->attrs[j].default_val.str_value);
 				gtk_box_pack_start(GTK_BOX(hbox), ctx->wl[j], FALSE, FALSE, 0);
 
 				gtk_widget_set_tooltip_text(ctx->wl[j], ctx->attrs[j].help_text);
@@ -941,7 +944,7 @@ void ghid_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const pcb_hi
 		ctx->property[prop] = *val;
 }
 
-int ghid_attr_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled)
+int ghid_attr_dlg_widget_state(void *hid_ctx, int idx, int enabled)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	if ((idx < 0) || (idx >= ctx->n_attrs) || (ctx->wl[idx] == NULL))
@@ -959,6 +962,16 @@ int ghid_attr_dlg_widget_state(void *hid_ctx, int idx, pcb_bool enabled)
 	}
 
 	gtk_widget_set_sensitive(ctx->wl[idx], enabled);
+
+	if (ctx->attrs[idx].pcb_hatt_flags & PCB_HATF_TOGGLE) {
+		switch(ctx->attrs[idx].type) {
+			case PCB_HATT_PICBUTTON:
+			case PCB_HATT_BUTTON:
+				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ctx->wl[idx]), (enabled == 2));
+				break;
+			default:;
+		}
+	}
 
 	return 0;
 }

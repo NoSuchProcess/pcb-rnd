@@ -143,7 +143,7 @@ static GtkWidget *ghid_picture_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr
 }
 
 
-static GtkWidget *ghid_picbutton_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent, int j)
+static GtkWidget *ghid_picbutton_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent, int j, int toggle)
 {
 	GtkWidget *bparent, *button, *img;
 	GdkPixbuf *pixbuf;
@@ -153,7 +153,10 @@ static GtkWidget *ghid_picbutton_create(attr_dlg_t *ctx, pcb_hid_attribute_t *at
 	pixbuf = gdk_pixbuf_new_from_xpm_data(attr->enumerations);
 	img = gtk_image_new_from_pixbuf(pixbuf);
 
-	button = gtk_button_new();
+	if (toggle)
+		button = gtk_toggle_button_new();
+	else
+		button = gtk_button_new();
 	gtk_container_add(GTK_CONTAINER(button), img);
 
 	gtk_box_pack_start(GTK_BOX(bparent), button, TRUE, TRUE, 0);
