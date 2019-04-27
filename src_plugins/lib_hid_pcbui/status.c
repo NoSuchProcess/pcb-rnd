@@ -127,30 +127,31 @@ static void status_st_pcb2dlg(void)
 {
 	static pcb_hid_attr_val_t hv;
 
-	if (status.stsub_inited) {
-		status.buf.used = 0;
-		build_st_line1();
-		if (!conf_core.appearance.compact) {
-			build_st_line2();
-			pcb_gui->attr_dlg_widget_hide(status.stsub.dlg_hid_ctx, status.wst2, 1);
-		}
-		hv.str_value = status.buf.array;
-		pcb_gui->attr_dlg_set_value(status.stsub.dlg_hid_ctx, status.wst1, &hv);
+	if (!status.stsub_inited)
+		return;
 
-		if (conf_core.appearance.compact) {
-			status.buf.used = 0;
-			build_st_line2();
-			hv.str_value = status.buf.array;
-			pcb_gui->attr_dlg_set_value(status.stsub.dlg_hid_ctx, status.wst2, &hv);
-			if (!status.st_has_text)
-				pcb_gui->attr_dlg_widget_hide(status.stsub.dlg_hid_ctx, status.wst2, 0);
-		}
-
-		status.buf.used = 0;
-		build_st_help();
-		pcb_gui->attr_dlg_set_help(status.stsub.dlg_hid_ctx, status.wst1, status.buf.array);
-		pcb_gui->attr_dlg_set_help(status.stsub.dlg_hid_ctx, status.wst2, status.buf.array);
+	status.buf.used = 0;
+	build_st_line1();
+	if (!conf_core.appearance.compact) {
+		build_st_line2();
+		pcb_gui->attr_dlg_widget_hide(status.stsub.dlg_hid_ctx, status.wst2, 1);
 	}
+	hv.str_value = status.buf.array;
+	pcb_gui->attr_dlg_set_value(status.stsub.dlg_hid_ctx, status.wst1, &hv);
+
+	if (conf_core.appearance.compact) {
+		status.buf.used = 0;
+		build_st_line2();
+		hv.str_value = status.buf.array;
+		pcb_gui->attr_dlg_set_value(status.stsub.dlg_hid_ctx, status.wst2, &hv);
+		if (!status.st_has_text)
+			pcb_gui->attr_dlg_widget_hide(status.stsub.dlg_hid_ctx, status.wst2, 0);
+	}
+
+	status.buf.used = 0;
+	build_st_help();
+	pcb_gui->attr_dlg_set_help(status.stsub.dlg_hid_ctx, status.wst1, status.buf.array);
+	pcb_gui->attr_dlg_set_help(status.stsub.dlg_hid_ctx, status.wst2, status.buf.array);
 }
 
 static void status_rd_pcb2dlg(void)
@@ -162,66 +163,64 @@ static void status_rd_pcb2dlg(void)
 	if ((status.lock) || (!status.rdsub_inited))
 		return;
 
-	if (status.rdsub_inited) {
-		/* coordinate readout (right side box) */
-		if (conf_core.appearance.compact) {
-			status.buf.used = 0;
-			pcb_append_printf(&status.buf, "%m+%-mS", conf_core.editor.grid_unit->allow, pcb_crosshair.X);
-			hv.str_value = status.buf.array;
-			pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd2[0], &hv);
-
-			status.buf.used = 0;
-			pcb_append_printf(&status.buf, "%m+%-mS", conf_core.editor.grid_unit->allow, pcb_crosshair.Y);
-			hv.str_value = status.buf.array;
-			pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd2[1], &hv);
-			pcb_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd2[1], 0);
-		}
-		else {
-			status.buf.used = 0;
-			pcb_append_printf(&status.buf, "%m+%-mS %-mS", conf_core.editor.grid_unit->allow, pcb_crosshair.X, pcb_crosshair.Y);
-			hv.str_value = status.buf.array;
-			pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd2[0], &hv);
-			pcb_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd2[1], 1);
-		}
-
-		/* distance readout (left side box) */
-		sep = (conf_core.appearance.compact) ? '\0' : ';';
+	/* coordinate readout (right side box) */
+	if (conf_core.appearance.compact) {
+		status.buf.used = 0;
+		pcb_append_printf(&status.buf, "%m+%-mS", conf_core.editor.grid_unit->allow, pcb_crosshair.X);
+		hv.str_value = status.buf.array;
+		pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd2[0], &hv);
 
 		status.buf.used = 0;
-		if (pcb_marked.status) {
-			pcb_coord_t dx = pcb_crosshair.X - pcb_marked.X;
-			pcb_coord_t dy = pcb_crosshair.Y - pcb_marked.Y;
-			pcb_coord_t r = pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, pcb_marked.X, pcb_marked.Y);
-			double a = atan2(dy, dx) * PCB_RAD_TO_DEG;
+		pcb_append_printf(&status.buf, "%m+%-mS", conf_core.editor.grid_unit->allow, pcb_crosshair.Y);
+		hv.str_value = status.buf.array;
+		pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd2[1], &hv);
+		pcb_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd2[1], 0);
+	}
+	else {
+		status.buf.used = 0;
+		pcb_append_printf(&status.buf, "%m+%-mS %-mS", conf_core.editor.grid_unit->allow, pcb_crosshair.X, pcb_crosshair.Y);
+		hv.str_value = status.buf.array;
+		pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd2[0], &hv);
+		pcb_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd2[1], 1);
+	}
 
-			s1 = status.buf.array;
-			pcb_append_printf(&status.buf, "%m+r %-mS%c", conf_core.editor.grid_unit->allow, r, sep);
-			s2 = status.buf.array + status.buf.used;
-			pcb_append_printf(&status.buf, "phi %-.1f%c", a, sep);
-			s3 = status.buf.array + status.buf.used;
-			pcb_append_printf(&status.buf, "%m+ %-mS %-mS", conf_core.editor.grid_unit->allow, dx, dy);
-		}
-		else {
-			pcb_append_printf(&status.buf, "r __.__%cphi __._%c__.__ __.__", sep, sep, sep);
-			s1 = status.buf.array;
-			s2 = status.buf.array + 8;
-			s3 = status.buf.array + 17;
-		}
+	/* distance readout (left side box) */
+	sep = (conf_core.appearance.compact) ? '\0' : ';';
 
-		hv.str_value = s1;
-		pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd1[0], &hv);
-		if (conf_core.appearance.compact) {
-			hv.str_value = s2;
-			pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd1[1], &hv);
-			hv.str_value = s3;
-			pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd1[2], &hv);
-			pcb_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd1[1], 0);
-			pcb_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd1[2], 0);
-		}
-		else {
-			pcb_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd1[1], 1);
-			pcb_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd1[2], 1);
-		}
+	status.buf.used = 0;
+	if (pcb_marked.status) {
+		pcb_coord_t dx = pcb_crosshair.X - pcb_marked.X;
+		pcb_coord_t dy = pcb_crosshair.Y - pcb_marked.Y;
+		pcb_coord_t r = pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, pcb_marked.X, pcb_marked.Y);
+		double a = atan2(dy, dx) * PCB_RAD_TO_DEG;
+
+		s1 = status.buf.array;
+		pcb_append_printf(&status.buf, "%m+r %-mS%c", conf_core.editor.grid_unit->allow, r, sep);
+		s2 = status.buf.array + status.buf.used;
+		pcb_append_printf(&status.buf, "phi %-.1f%c", a, sep);
+		s3 = status.buf.array + status.buf.used;
+		pcb_append_printf(&status.buf, "%m+ %-mS %-mS", conf_core.editor.grid_unit->allow, dx, dy);
+	}
+	else {
+		pcb_append_printf(&status.buf, "r __.__%cphi __._%c__.__ __.__", sep, sep, sep);
+		s1 = status.buf.array;
+		s2 = status.buf.array + 8;
+		s3 = status.buf.array + 17;
+	}
+
+	hv.str_value = s1;
+	pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd1[0], &hv);
+	if (conf_core.appearance.compact) {
+		hv.str_value = s2;
+		pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd1[1], &hv);
+		hv.str_value = s3;
+		pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd1[2], &hv);
+		pcb_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd1[1], 0);
+		pcb_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd1[2], 0);
+	}
+	else {
+		pcb_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd1[1], 1);
+		pcb_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd1[2], 1);
 	}
 
 	if (status.last_unit != conf_core.editor.grid_unit) {
