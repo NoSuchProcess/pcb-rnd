@@ -59,8 +59,6 @@ struct _GHidMainMenuClass {
 	GtkMenuBarClass parent_class;
 };
 
-/* TODO: write finalize function */
-
 /* SIGNAL HANDLERS */
 
 /* LHT HANDLER */
