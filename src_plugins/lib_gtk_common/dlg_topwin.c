@@ -152,14 +152,6 @@ static gboolean top_window_enter_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_
 }
 
 
-void ghid_handle_units_changed(pcb_gtk_topwin_t *tw)
-{
-	char *text = pcb_strdup_printf("<b>%s</b>", conf_core.editor.grid_unit->in_suffix);
-	ghid_set_cursor_position_labels(&tw->cps, conf_core.appearance.compact);
-	gtk_label_set_markup(GTK_LABEL(tw->cps.grid_units_label), text);
-	free(text);
-}
-
 gboolean ghid_idle_cb(void *topwin)
 {
 	pcb_gtk_topwin_t *tw = topwin;
@@ -187,8 +179,6 @@ gboolean ghid_port_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, pcb
    config code to update Settings values it manages. */
 void ghid_sync_with_new_layout(pcb_gtk_topwin_t *tw)
 {
-	ghid_handle_units_changed(tw);
-
 	tw->com->window_set_name_label(tw->com->hidlib->name);
 	pcb_gtk_close_info_bar(&tw->ibar);
 	update_board_mtime_from_disk(&tw->ext_chg);
@@ -286,22 +276,6 @@ static void do_fix_topbar_theming(pcb_gtk_topwin_t *tw)
 
 	/* Style the top bar background as if it were all a menu bar */
 	gtk_widget_set_style(tw->top_bar_background, menu_bar_style);
-
-	/* Style the cursor position labels using the menu bar style as well.
-	   If this turns out to cause problems with certain gtk themes, we may
-	   need to grab the GtkStyle associated with an actual menu item to
-	   get a text color to render with. */
-	gtk_widget_set_style(tw->cps.cursor_position_relative_label, menu_bar_style);
-	gtk_widget_set_style(tw->cps.cursor_position_absolute_label, menu_bar_style);
-
-	/* Style the units button as if it were a toolbar button - hopefully
-	   this isn't too ugly sitting on a background themed as a menu bar.
-	   It is unlikely any theme defines colours for a GtkButton sitting on
-	   a menu bar. */
-	rel_pos_frame = gtk_widget_get_parent(tw->cps.cursor_position_relative_label);
-	abs_pos_frame = gtk_widget_get_parent(tw->cps.cursor_position_absolute_label);
-	gtk_widget_set_style(rel_pos_frame, menu_bar_style);
-	gtk_widget_set_style(abs_pos_frame, menu_bar_style);
 }
 
 /* Attempt to produce a conststent style for our extra menu-bar items by
@@ -483,8 +457,6 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 
 	tw->dockbox[PCB_HID_DOCK_TOP_RIGHT] = gtkc_vbox_new(FALSE, 8);
 	gtk_box_pack_end(GTK_BOX(GTK_BOX(tw->position_hbox)), tw->dockbox[PCB_HID_DOCK_TOP_RIGHT], FALSE, FALSE, 0);
-
-	make_cursor_position_labels(tw->position_hbox, &tw->cps);
 
 	hbox_middle = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_main), hbox_middle, TRUE, TRUE, 0);

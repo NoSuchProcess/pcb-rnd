@@ -11,7 +11,6 @@
 #include "util_ext_chg.h"
 #include "bu_info_bar.h"
 #include "bu_menu.h"
-#include "bu_cursor_pos.h"
 #include "glue.h"
 #include "bu_command.h"
 #include "wt_layersel.h"
@@ -23,7 +22,6 @@ typedef struct {
 	pcb_gtk_info_bar_t ibar;
 	pcb_gtk_menu_ctx_t menu;
 	pcb_hid_cfg_t *ghid_cfg;
-	pcb_gtk_cursor_pos_t cps;
 	pcb_gtk_command_t cmd;
 
 	/* own widgets */
@@ -57,7 +55,6 @@ void ghid_sync_with_new_layout(pcb_gtk_topwin_t *tw);
 void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw);
 void pcb_gtk_tw_layer_buttons_update(pcb_gtk_topwin_t *tw);
 void pcb_gtk_tw_layer_vis_update(pcb_gtk_topwin_t *tw);
-void ghid_handle_units_changed(pcb_gtk_topwin_t *tw);
 
 void pcb_gtk_tw_notify_save_pcb(pcb_gtk_topwin_t *tw, const char *filename, pcb_bool done);
 void pcb_gtk_tw_notify_filename_changed(pcb_gtk_topwin_t *tw);

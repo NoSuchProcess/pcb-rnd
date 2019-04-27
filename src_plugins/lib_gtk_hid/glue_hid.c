@@ -282,7 +282,7 @@ static void ghid_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
 
 	ghidgui->common.draw_grid_local(x, y);
 	gdk_window_get_origin(gtk_widget_get_window(gport->drawing_area), &offset_x, &offset_y);
-	pcb_gtk_crosshair_set(x, y, action, offset_x, offset_y, &ghidgui->topwin.cps, &gport->view);
+	pcb_gtk_crosshair_set(x, y, action, offset_x, offset_y, &gport->view);
 }
 
 static void ghid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)

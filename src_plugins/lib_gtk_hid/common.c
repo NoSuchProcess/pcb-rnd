@@ -44,7 +44,6 @@ void ghid_note_event_location(GdkEventButton *ev)
 	pcb_gtk_coords_event2pcb(&gport->view, event_x, event_y, &gport->view.pcb_x, &gport->view.pcb_y);
 
 	pcb_event_move_crosshair(gport->view.pcb_x, gport->view.pcb_y);
-	ghid_set_cursor_position_labels(&ghidgui->topwin.cps, conf_core.appearance.compact);
 }
 
 static void kbd_input_signals_connect(int idx, void *obj)
@@ -81,7 +80,6 @@ void ghid_interface_input_signals_connect(void)
 	kbd_input_signals_connect(0, gport->drawing_area);
 	kbd_input_signals_connect(1, ghidgui->topwin.layer_selector);
 	kbd_input_signals_connect(3, ghidgui->topwin.left_toolbar);
-	kbd_input_signals_connect(4, ghidgui->topwin.cps.grid_units_button);
 }
 
 void ghid_interface_input_signals_disconnect(void)
@@ -89,7 +87,6 @@ void ghid_interface_input_signals_disconnect(void)
 	kbd_input_signals_disconnect(0, gport->drawing_area);
 	kbd_input_signals_disconnect(1, ghidgui->topwin.layer_selector);
 	kbd_input_signals_disconnect(3, ghidgui->topwin.left_toolbar);
-	kbd_input_signals_disconnect(4, ghidgui->topwin.cps.grid_units_button);
 
 	if (ghidgui->button_press_handler != 0)
 		g_signal_handler_disconnect(G_OBJECT(gport->drawing_area), ghidgui->button_press_handler);

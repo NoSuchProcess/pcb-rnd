@@ -47,15 +47,6 @@ void ghid_confchg_checkbox(conf_native_t *cfg, int arr_idx)
 		ghid_update_toggle_flags(&ghidgui->topwin, NULL);
 }
 
-static void ghid_confchg_grid_unit(conf_native_t *cfg, int arr_idx)
-{
-	/* test if PCB struct doesn't exist at startup */
-	if ((PCB == NULL) || !ghidgui->hid_active)
-		return;
-
-	ghid_handle_units_changed(&ghidgui->topwin);
-}
-
 static void ghid_confchg_mode(conf_native_t *cfg, int arr_idx)
 {
 	/* test if PCB struct doesn't exist at startup */
@@ -101,12 +92,11 @@ static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*
 
 void ghid_conf_regs(const char *cookie)
 {
-	static conf_hid_callbacks_t cbs_fullscreen, cbs_grid_unit, cbs_cli[2], cbs_compacth, cbs_color[3], cbs_mode;
+	static conf_hid_callbacks_t cbs_fullscreen, cbs_cli[2], cbs_compacth, cbs_color[3], cbs_mode;
 
 	ghidgui->conf_id = conf_hid_reg(cookie, NULL);
 
 	init_conf_watch(&cbs_fullscreen, "editor/fullscreen", ghid_confchg_fullscreen);
-	init_conf_watch(&cbs_grid_unit, "editor/grid_unit", ghid_confchg_grid_unit);
 	init_conf_watch(&cbs_mode, "editor/mode", ghid_confchg_mode);
 
 	init_conf_watch(&cbs_cli[0], "rc/cli_prompt", ghid_confchg_cli);

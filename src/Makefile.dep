@@ -1902,7 +1902,7 @@
  compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+   \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer_grp.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
@@ -1945,7 +1945,7 @@
  compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+   \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
  ../src_plugins/lib_gtk_common/in_mouse.h board.h vtroutestyle.h \
@@ -1992,7 +1992,7 @@
  compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+   \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer_grp.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
@@ -2037,7 +2037,7 @@
  compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+   \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
  ../src_plugins/lib_gtk_common/in_mouse.h board.h vtroutestyle.h \
@@ -2081,7 +2081,7 @@
  compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+   \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer_grp.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
@@ -2124,7 +2124,7 @@
  compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+   \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
  ../src_plugins/lib_gtk_common/in_mouse.h board.h vtroutestyle.h \
@@ -3821,7 +3821,7 @@
  ../src_plugins/lib_hid_common/cli_history.h
 ../src_plugins/lib_gtk_common/bu_cursor_pos.o: \
  ../src_plugins/lib_gtk_common/bu_cursor_pos.c ../config.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h conf_core.h conf.h \
+   conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
@@ -4079,7 +4079,7 @@
  ../src_plugins/lib_gtk_common/bu_menu.h conf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf.h hid_cfg_input.h ../src_3rd/genht/htpp.h hid_cfg.h conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+   \
  ../src_plugins/lib_gtk_common/glue.h hid.h \
  ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
@@ -4197,7 +4197,7 @@
  ../src_plugins/lib_gtk_common/glue.h hid.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf.h ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+   \
  ../src_plugins/lib_gtk_common/hid_gtk_conf.h conf_core.h
 ../src_plugins/lib_gtk_common/ui_zoompan.o: \
  ../src_plugins/lib_gtk_common/ui_zoompan.c ../config.h \
@@ -4389,7 +4389,7 @@
  compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+   \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
@@ -4430,7 +4430,7 @@
  compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+   \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
@@ -4467,7 +4467,7 @@
  compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+   \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
@@ -4500,7 +4500,7 @@
  compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+   \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
@@ -4527,7 +4527,7 @@
  ../src_plugins/lib_gtk_common/bu_menu.h conf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf.h hid_cfg_input.h ../src_3rd/genht/htpp.h hid_cfg.h conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+   \
  ../src_plugins/lib_gtk_common/glue.h hid.h \
  ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
@@ -4565,7 +4565,7 @@
  compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+   \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
@@ -4620,7 +4620,7 @@
  compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
  ../src_plugins/lib_gtk_common/bu_info_bar.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+   \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
