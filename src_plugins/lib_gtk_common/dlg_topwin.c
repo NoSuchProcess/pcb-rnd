@@ -51,7 +51,6 @@
 #include "compat_misc.h"
 
 #include "compat.h"
-#include "bu_status_line.h"
 #include "bu_menu.h"
 #include "bu_icons.h"
 #include "bu_info_bar.h"
@@ -191,7 +190,6 @@ void ghid_sync_with_new_layout(pcb_gtk_topwin_t *tw)
 	ghid_handle_units_changed(tw);
 
 	tw->com->window_set_name_label(tw->com->hidlib->name);
-	tw->com->set_status_line_label();
 	pcb_gtk_close_info_bar(&tw->ibar);
 	update_board_mtime_from_disk(&tw->ext_chg);
 }
@@ -399,7 +397,7 @@ static void drawing_area_size_allocate_cb(GtkWidget *widget, GdkRectangle *alloc
 
 	gtkc_widget_get_preferred_height(GTK_WIDGET(tw->v_range), &min, NULL);
 	gtkc_widget_get_preferred_height(GTK_WIDGET(gtk_widget_get_parent(tw->h_range)), &min, NULL);
-	gtkc_widget_get_preferred_height(GTK_WIDGET(tw->status_line_hbox), &min, NULL);
+	gtkc_widget_get_preferred_height(GTK_WIDGET(tw->bottom_hbox), &min, NULL);
 }
 
 static gboolean drawing_area_enter_cb(GtkWidget *w, pcb_gtk_expose_t *p, void *user_data)
@@ -428,6 +426,16 @@ static gboolean resize_grip_button_press(GtkWidget *area, GdkEventButton *event,
 	}
 
 	return TRUE;
+}
+
+void ghid_topwin_hide_status(void *ctx, int show)
+{
+	pcb_gtk_topwin_t *tw = ctx;
+
+	if (show)
+		gtk_widget_show(tw->dockbox[PCB_HID_DOCK_BOTTOM]);
+	else
+		gtk_widget_hide(tw->dockbox[PCB_HID_DOCK_BOTTOM]);
 }
 
 /* Create the top_window contents.  The config settings should be loaded
@@ -538,17 +546,14 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	g_signal_connect(G_OBJECT(tw->h_adjustment), "value_changed", G_CALLBACK(h_adjustment_changed_cb), tw);
 
 	/* -- The bottom status line label */
-	tw->status_line_hbox = gtkc_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(tw->vbox_middle), tw->status_line_hbox, FALSE, FALSE, 0);
+	tw->bottom_hbox = gtkc_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(tw->vbox_middle), tw->bottom_hbox, FALSE, FALSE, 0);
 
 	tw->dockbox[PCB_HID_DOCK_BOTTOM] = gtkc_hbox_new(TRUE, 2);
-	gtk_box_pack_start(GTK_BOX(tw->status_line_hbox), tw->dockbox[PCB_HID_DOCK_BOTTOM], FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(tw->bottom_hbox), tw->dockbox[PCB_HID_DOCK_BOTTOM], FALSE, FALSE, 0);
 
-/* status line: remove these: { */
-	label = pcb_gtk_status_line_label_new();
-	tw->status_line_label = label;
-	gtk_box_pack_start(GTK_BOX(tw->status_line_hbox), label, FALSE, FALSE, 0);
-/* } */
+	ghid_command_combo_box_entry_create(&tw->cmd, ghid_topwin_hide_status, tw);
+	gtk_box_pack_start(GTK_BOX(tw->bottom_hbox), tw->cmd.command_combo_box, FALSE, FALSE, 0);
 
 	/* resize grip: rightmost widget in the status line hbox */
 	resize_grip_vbox = gtkc_vbox_new(FALSE, 0);
@@ -561,11 +566,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	gtk_widget_set_tooltip_text(resize_grip, "Left-click to resize the main window\nMid-click to move the window");
 	g_signal_connect(resize_grip, "button_press_event", G_CALLBACK(resize_grip_button_press), NULL);
 	gtk_box_pack_end(GTK_BOX(resize_grip_vbox), resize_grip, FALSE, FALSE, 0);
-	gtk_box_pack_end(GTK_BOX(tw->status_line_hbox), resize_grip_vbox, FALSE, FALSE, 0);
-
-	/* Depending on user setting, the command_combo_box may get packed into
-	   the status_line_hbox, but it will happen on demand the first time
-	   the user does a command entry. */
+	gtk_box_pack_end(GTK_BOX(tw->bottom_hbox), resize_grip_vbox, FALSE, FALSE, 0);
 
 	g_signal_connect(G_OBJECT(tw->drawing_area), "size-allocate", G_CALLBACK(drawing_area_size_allocate_cb), tw);
 	g_signal_connect(G_OBJECT(tw->drawing_area), "enter-notify-event", G_CALLBACK(drawing_area_enter_cb), tw);
@@ -579,6 +580,8 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 
 	ghid_fullscreen_apply(tw);
 	tw->active = 1;
+
+	gtk_widget_hide(tw->cmd.command_combo_box);
 }
 
 /* We'll set the interface insensitive when a g_main_loop is running so the
@@ -607,11 +610,11 @@ void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw)
 	if (conf_core.editor.fullscreen) {
 		gtk_widget_hide(tw->left_toolbar);
 		gtk_widget_hide(tw->top_hbox);
-		gtk_widget_hide(tw->status_line_hbox);
+		gtk_widget_hide(tw->bottom_hbox);
 	}
 	else {
 		gtk_widget_show(tw->left_toolbar);
 		gtk_widget_show(tw->top_hbox);
-		gtk_widget_show(tw->status_line_hbox);
+		gtk_widget_show(tw->bottom_hbox);
 	}
 }

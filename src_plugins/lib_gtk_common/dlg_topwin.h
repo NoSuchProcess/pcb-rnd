@@ -28,7 +28,7 @@ typedef struct {
 
 	/* own widgets */
 	GtkWidget *drawing_area;
-	GtkWidget *status_line_label, *status_line_hbox;
+	GtkWidget *bottom_hbox;
 
 	GtkWidget *top_hbox, *top_bar_background, *menu_hbox, *position_hbox, *menubar_toolbar_vbox;
 	GtkWidget *left_toolbar;

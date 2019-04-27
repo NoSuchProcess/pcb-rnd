@@ -8,7 +8,6 @@
 #include "render.h"
 #include "common.h"
 #include "conf_core.h"
-#include "../src_plugins/lib_gtk_common/bu_status_line.h"
 #include "../src_plugins/lib_gtk_common/dlg_topwin.h"
 #include "../src_plugins/lib_gtk_common/hid_gtk_conf.h"
 
@@ -20,18 +19,6 @@ static void ghid_interface_set_sensitive(gboolean sensitive);
 static void ghid_window_set_name_label(gchar *name)
 {
 	pcb_gtk_tw_window_set_name_label(&ghidgui->topwin, name);
-}
-
-static void ghid_set_status_line_label(void)
-{
-	if (!ghidgui->topwin.cmd.command_entry_status_line_active)
-		pcb_gtk_status_line_update(ghidgui->topwin.status_line_label, conf_core.appearance.compact);
-}
-
-void ghid_status_line_set_text(const gchar *text)
-{
-	if (!ghidgui->topwin.cmd.command_entry_status_line_active)
-		pcb_gtk_status_line_set_text(ghidgui->topwin.status_line_label, text);
 }
 
 static void ghid_port_ranges_scale(void)
@@ -71,11 +58,6 @@ int ghid_command_entry_is_active(void)
 	return ghidgui->topwin.cmd.command_entry_status_line_active;
 }
 
-static void command_pack_in_status_line(void)
-{
-	gtk_box_pack_start(GTK_BOX(ghidgui->topwin.status_line_hbox), ghidgui->topwin.cmd.command_combo_box, TRUE, TRUE, 0);
-}
-
 static void command_post_entry(void)
 {
 #if PCB_GTK_DISABLE_MOUSE_DURING_CMD_ENTRY
@@ -97,11 +79,6 @@ static void command_pre_entry(void)
 
 /*** input ***/
 
-void ghid_status_update(void)
-{
-	ghidgui->common.set_status_line_label();
-}
-
 static void ghid_interface_set_sensitive(gboolean sensitive)
 {
 	pcb_gtk_tw_interface_set_sensitive(&ghidgui->topwin, sensitive);
@@ -111,7 +88,6 @@ static void ghid_port_button_press_main(void)
 {
 	ghid_invalidate_all();
 	ghid_window_set_name_label(ghidgui->common.hidlib->name);
-	ghid_set_status_line_label();
 	if (!gport->view.panning)
 		g_idle_add(ghid_idle_cb, &ghidgui->topwin);
 }
@@ -122,7 +98,6 @@ static void ghid_port_button_release_main(void)
 	ghid_invalidate_all();
 
 	ghid_window_set_name_label(ghidgui->common.hidlib->name);
-	ghid_set_status_line_label();
 	g_idle_add(ghid_idle_cb, &ghidgui->topwin);
 }
 
@@ -165,7 +140,6 @@ void ghid_glue_common_init(void)
 	/* Set up the glue struct to lib_gtk_common */
 	ghidgui->common.gport = &ghid_port;
 	ghidgui->common.window_set_name_label = ghid_window_set_name_label;
-	ghidgui->common.set_status_line_label = ghid_set_status_line_label;
 	ghidgui->common.note_event_location = ghid_note_event_location;
 	ghidgui->common.shift_is_pressed = ghid_shift_is_pressed;
 	ghidgui->common.interface_input_signals_disconnect = ghid_interface_input_signals_disconnect;
@@ -173,7 +147,6 @@ void ghid_glue_common_init(void)
 	ghidgui->common.interface_set_sensitive = ghid_interface_set_sensitive;
 	ghidgui->common.port_button_press_main = ghid_port_button_press_main;
 	ghidgui->common.port_button_release_main = ghid_port_button_release_main;
-	ghidgui->common.status_line_set_text = ghid_status_line_set_text;
 	ghidgui->common.mode_cursor_main = ghid_mode_cursor_main;
 	ghidgui->common.pan_common = ghid_pan_common;
 	ghidgui->common.port_ranges_scale = ghid_port_ranges_scale;
@@ -186,7 +159,6 @@ void ghid_glue_common_init(void)
 	ghidgui->common.port_ranges_changed = ghid_port_ranges_changed;
 
 	ghidgui->topwin.cmd.com = &ghidgui->common;
-	ghidgui->topwin.cmd.pack_in_status_line = command_pack_in_status_line;
 	ghidgui->topwin.cmd.post_entry = command_post_entry;
 	ghidgui->topwin.cmd.pre_entry = command_pre_entry;
 

@@ -11,7 +11,6 @@ typedef struct pcb_gtk_command_s {
 	GtkEntry *command_entry;
 	gboolean command_entry_status_line_active;
 
-	void (*pack_in_status_line)(void); /* embed the command combo box in top window's status line */
 	void (*post_entry)(void);
 	void (*pre_entry)(void);
 
@@ -20,6 +19,8 @@ typedef struct pcb_gtk_command_s {
 	/* internal */
 	GMainLoop *ghid_entry_loop;
 	gchar *command_entered;
+	void (*hide_status)(void*,int); /* called with status_ctx when the status line needs to be hidden */
+	void *status_ctx;
 } pcb_gtk_command_t;
 
 void ghid_handle_user_command(pcb_gtk_command_t *ctx, pcb_bool raise);

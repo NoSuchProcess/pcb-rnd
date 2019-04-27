@@ -34,15 +34,6 @@
 #include "conf_core.h"
 #include "gui.h"
 
-/* Update the status line - should be bound to any config value displayed there */
-static void ghid_confchg_status_line(conf_native_t *cfg, int arr_idx)
-{
-	/* test if PCB struct doesn't exist at startup */
-	if ((PCB == NULL) || (ghidgui->common.set_status_line_label == NULL))
-		return;
-	ghidgui->common.set_status_line_label();
-}
-
 static void ghid_confchg_fullscreen(conf_native_t *cfg, int arr_idx)
 {
 	if (ghidgui->hid_active)
@@ -63,7 +54,6 @@ static void ghid_confchg_grid_unit(conf_native_t *cfg, int arr_idx)
 		return;
 
 	ghid_handle_units_changed(&ghidgui->topwin);
-	ghidgui->common.set_status_line_label();
 }
 
 static void ghid_confchg_mode(conf_native_t *cfg, int arr_idx)
@@ -81,7 +71,6 @@ static void ghid_confchg_compact(conf_native_t *cfg, int arr_idx)
 		return;
 
 	ghid_command_update_prompt(&ghidgui->topwin.cmd);
-	ghidgui->common.set_status_line_label();
 }
 
 static void ghid_confchg_cli(conf_native_t *cfg, int arr_idx)
@@ -112,19 +101,9 @@ static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*
 
 void ghid_conf_regs(const char *cookie)
 {
-	static conf_hid_callbacks_t
-		cbs_refraction, cbs_direction, cbs_fullscreen, cbs_show_sside, cbs_grid,
-		cbs_text_scale, cbs_grid_unit, cbs_cli[2], cbs_compacth, cbs_color[3],
-		cbs_mode;
+	static conf_hid_callbacks_t cbs_fullscreen, cbs_grid_unit, cbs_cli[2], cbs_compacth, cbs_color[3], cbs_mode;
 
 	ghidgui->conf_id = conf_hid_reg(cookie, NULL);
-
-	init_conf_watch(&cbs_direction, "editor/all_direction_lines", ghid_confchg_status_line);
-	init_conf_watch(&cbs_refraction, "editor/line_refraction", ghid_confchg_status_line);
-	init_conf_watch(&cbs_show_sside, "editor/show_solder_side", ghid_confchg_status_line);
-	init_conf_watch(&cbs_grid, "editor/grid", ghid_confchg_status_line);
-	init_conf_watch(&cbs_text_scale, "design/text_scale", ghid_confchg_status_line);
-	init_conf_watch(&cbs_text_scale, "design/text_thickness", ghid_confchg_status_line);
 
 	init_conf_watch(&cbs_fullscreen, "editor/fullscreen", ghid_confchg_fullscreen);
 	init_conf_watch(&cbs_grid_unit, "editor/grid_unit", ghid_confchg_grid_unit);

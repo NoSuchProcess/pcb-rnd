@@ -38,7 +38,6 @@
 #include "draw.h"
 #include "data.h"
 #include "layer_vis.h"
-#include "bu_status_line.h"
 
 #include "../src_plugins/lib_hid_pcbui/util.h"
 
@@ -156,7 +155,6 @@ static void ghid_zoom_view_abs(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coor
 	v->y0 = SIDE_Y(v, center_y) - ytmp * v->height;
 
 	pcb_gtk_pan_common(v);
-	v->com->set_status_line_label();
 }
 
 

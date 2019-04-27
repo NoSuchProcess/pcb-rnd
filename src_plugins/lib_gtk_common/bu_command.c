@@ -43,7 +43,6 @@
 #include "crosshair.h"
 #include "actions.h"
 
-#include "bu_status_line.h"
 #include "hid_gtk_conf.h"
 #include "../src_plugins/lib_hid_common/cli_history.h"
 
@@ -100,41 +99,6 @@ static void command_entry_activate_cb(GtkWidget * widget, gpointer data)
 	ctx->command_entered = command; /* Caller will free it */
 }
 
-/* Create the command_combo_box.  Called once, by
-   ghid_command_entry_get().  The command_combo_box
-   lives in the status_line_hbox either shown or hidden.
-   Since it's never destroyed, the combo history strings never need
-   rebuilding. */
-static void command_combo_box_entry_create(pcb_gtk_command_t *ctx)
-{
-	ctx->command_combo_box = gtk_combo_box_text_new_with_entry();
-	ctx->command_entry = GTK_ENTRY(gtk_bin_get_child(GTK_BIN(ctx->command_combo_box)));
-
-	gtk_entry_set_width_chars(ctx->command_entry, 40);
-	gtk_entry_set_activates_default(ctx->command_entry, TRUE);
-
-	g_signal_connect(G_OBJECT(ctx->command_entry), "activate", G_CALLBACK(command_entry_activate_cb), ctx);
-
-	g_object_ref(G_OBJECT(ctx->command_combo_box)); /* so can move it */
-	pcb_clihist_init();
-	pcb_clihist_sync(ctx, ghid_chist_append);
-}
-
-void ghid_cmd_close(pcb_gtk_command_t *ctx)
-{
-	if (!ctx->com->command_entry_is_active())
-		return;
-
-	if (ctx->ghid_entry_loop && g_main_loop_is_running(ctx->ghid_entry_loop)) /* should always be (the entry is active) */
-		g_main_loop_quit(ctx->ghid_entry_loop);
-
-	ctx->command_entered = NULL; /* We are aborting */
-
-	/* Hide the host widget in full screen - not enough if only the entry is gone */
-	if (conf_core.editor.fullscreen)
-		gtk_widget_hide(gtk_widget_get_parent(ctx->command_combo_box));
-}
-
 static pcb_bool command_keypress_cb(GtkWidget * widget, GdkEventKey * kev, pcb_gtk_command_t *ctx)
 {
 	gint ksym = kev->keyval;
@@ -160,6 +124,46 @@ static pcb_bool command_keyrelease_cb(GtkWidget *widget, GdkEventKey *kev, pcb_g
 	return TRUE;
 }
 
+/* Create the command_combo_box.  The command_combo_box
+   lives in the bottom_hbox either shown or hidden.
+   Since it's never destroyed, the combo history strings never need
+   rebuilding. */
+void ghid_command_combo_box_entry_create(pcb_gtk_command_t *ctx, void (*hide_status)(void*,int), void *status_ctx)
+{
+	ctx->status_ctx = status_ctx;
+	ctx->hide_status = hide_status;
+	ctx->command_combo_box = gtk_combo_box_text_new_with_entry();
+	ctx->command_entry = GTK_ENTRY(gtk_bin_get_child(GTK_BIN(ctx->command_combo_box)));
+
+	gtk_entry_set_width_chars(ctx->command_entry, 40);
+	gtk_entry_set_activates_default(ctx->command_entry, TRUE);
+
+	g_signal_connect(G_OBJECT(ctx->command_entry), "activate", G_CALLBACK(command_entry_activate_cb), ctx);
+
+	g_object_ref(G_OBJECT(ctx->command_combo_box)); /* so can move it */
+	pcb_clihist_init();
+	pcb_clihist_sync(ctx, ghid_chist_append);
+
+	g_signal_connect(G_OBJECT(ctx->command_entry), "key_press_event", G_CALLBACK(command_keypress_cb), ctx);
+	g_signal_connect(G_OBJECT(ctx->command_entry), "key_release_event", G_CALLBACK(command_keyrelease_cb), ctx);
+}
+
+void ghid_cmd_close(pcb_gtk_command_t *ctx)
+{
+	if (!ctx->com->command_entry_is_active())
+		return;
+
+	if (ctx->ghid_entry_loop && g_main_loop_is_running(ctx->ghid_entry_loop)) /* should always be (the entry is active) */
+		g_main_loop_quit(ctx->ghid_entry_loop);
+
+	ctx->command_entered = NULL; /* We are aborting */
+
+	/* Hide the host widget in full screen - not enough if only the entry is gone */
+	if (conf_core.editor.fullscreen)
+		gtk_widget_hide(gtk_widget_get_parent(ctx->command_combo_box));
+}
+
+
 void ghid_command_update_prompt(pcb_gtk_command_t *ctx)
 {
 	if (ctx->prompt_label != NULL)
@@ -171,23 +175,7 @@ void ghid_command_update_prompt(pcb_gtk_command_t *ctx)
    The command_combo_box is packed into the status line label hbox. */
 char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const char *command)
 {
-	gchar *s;
 	gint escape_sig_id, escape_sig2_id;
-
-	/* If this is the first user command entry, we have to create the
-	   command_combo_box and pack it into the status_line_hbox. */
-	if (!ctx->command_combo_box) {
-		command_combo_box_entry_create(ctx);
-		g_signal_connect(G_OBJECT(ctx->command_entry), "key_press_event", G_CALLBACK(command_keypress_cb), ctx);
-		g_signal_connect(G_OBJECT(ctx->command_entry), "key_release_event", G_CALLBACK(command_keyrelease_cb), ctx);
-		ctx->pack_in_status_line();
-	}
-
-	/* Make the prompt bold and set the label before showing the combo to
-	   avoid window resizing wider. */
-	s = g_strdup_printf("<b>%s</b>", prompt ? prompt : "");
-	ctx->com->status_line_set_text(s);
-	g_free(s);
 
 	/* Flag so output drawing area won't try to get focus away from us and
 	   so resetting the status line label can be blocked when resize
@@ -195,7 +183,11 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 	ctx->command_entry_status_line_active = TRUE;
 
 	gtk_entry_set_text(ctx->command_entry, command ? command : "");
-	gtk_widget_show_all(gtk_widget_get_parent(ctx->command_combo_box));
+	if (conf_core.editor.fullscreen)
+		gtk_widget_show_all(gtk_widget_get_parent(ctx->command_combo_box));
+
+	gtk_widget_show(ctx->command_combo_box);
+	ctx->hide_status(ctx->status_ctx, 0);
 
 	/* Remove the top window accel group so keys intended for the entry
 	   don't get intercepted by the menu system.  Set the interface
@@ -219,10 +211,10 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 	g_signal_handler_disconnect(ctx->command_entry, escape_sig_id);
 	g_signal_handler_disconnect(ctx->command_entry, escape_sig2_id);
 
-	/* Hide the widgets */
-	if (conf_core.editor.fullscreen) {
+	/* Hide/show the widgets */
+	if (conf_core.editor.fullscreen)
 		gtk_widget_hide(gtk_widget_get_parent(ctx->command_combo_box));
-	}
+	ctx->hide_status(ctx->status_ctx, 1);
 
 	/* Restore the status line label and give focus back to the drawing area */
 	gtk_widget_hide(ctx->command_combo_box);
@@ -245,7 +237,6 @@ void ghid_handle_user_command(pcb_gtk_command_t *ctx, pcb_bool raise)
 		pcb_parse_command(command, pcb_false);
 		g_free(command);
 	}
-	ctx->com->set_status_line_label(); /* replace the command prompt with the status line */
 }
 
 const char *pcb_gtk_cmd_command_entry(pcb_gtk_command_t *ctx, const char *ovr, int *cursor)

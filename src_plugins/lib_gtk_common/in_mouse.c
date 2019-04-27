@@ -43,7 +43,6 @@
 #include "tool.h"
 
 #include "in_keyboard.h"
-#include "bu_status_line.h"
 #include "bu_icons.h"
 
 pcb_hid_cfg_mouse_t ghid_mouse;
@@ -298,7 +297,7 @@ static gboolean run_get_location_loop(pcb_gtk_mouse_t *ctx, const gchar * messag
 		return pcb_false;
 
 	getting_loc = 1;
-	ctx->com->status_line_set_text(message);
+	pcb_actionl("StatusSetText", message, NULL);
 
 	oldObjState = pcb_crosshair.AttachedObject.State;
 	oldLineState = pcb_crosshair.AttachedLine.State;
@@ -344,8 +343,7 @@ static gboolean run_get_location_loop(pcb_gtk_mouse_t *ctx, const gchar * messag
 	pcb_notify_crosshair_change(pcb_true);
 	ghid_restore_cursor(ctx);
 
-	ctx->com->set_status_line_label();
-
+	pcb_actionl("StatusSetText", NULL);
 	getting_loc = 0;
 	return lctx.got_location;
 }

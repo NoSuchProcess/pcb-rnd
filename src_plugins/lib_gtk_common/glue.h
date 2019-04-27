@@ -30,8 +30,6 @@ typedef struct pcb_gtk_common_s {
 
 	/* main window */
 	void (*window_set_name_label)(gchar *name);
-	void (*set_status_line_label)(void);
-	void (*status_line_set_text)(const gchar *text);
 
 	/* UI */
 	void (*note_event_location)(GdkEventButton *ev);
