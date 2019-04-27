@@ -43,8 +43,7 @@ GdkPixbuf *XC_clock_source, *XC_hand_source, *XC_lock_source;
 /* Allocates (with refco=1) an RGBA 24x24 GdkPixbuf from data, using mask;
    width and height should be smaller than 24. Use g_object_unref() to free
    the structure. */
-static GdkPixbuf *pcb_gtk_cursor_from_xbm_data(unsigned char *data, unsigned char *mask,
-																							 unsigned int width, unsigned int height)
+static GdkPixbuf *pcb_gtk_cursor_from_xbm_data(unsigned char *data, unsigned char *mask, unsigned int width, unsigned int height)
 {
 	GdkPixbuf *dest;
 	unsigned char *src_data, *mask_data, *dest_data;
@@ -91,14 +90,14 @@ static GdkPixbuf *pcb_gtk_cursor_from_xbm_data(unsigned char *data, unsigned cha
 	return dest;
 }
 
-void pcb_gtk_icons_init(GtkWindow * top_window)
+void pcb_gtk_icons_init(GtkWindow *top_window)
 {
 	GdkPixbuf *icon;
 
 	if (inited)
 		return;
 
-	icon = gdk_pixbuf_new_from_xpm_data((const gchar **) icon_bits);
+	icon = gdk_pixbuf_new_from_xpm_data((const gchar **)icon_bits);
 	gtk_window_set_default_icon(icon);
 	gtk_window_set_icon(top_window, icon);
 
