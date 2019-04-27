@@ -186,7 +186,7 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 
 	gtk_entry_set_text(ctx->command_entry, command ? command : "");
 	if (conf_core.editor.fullscreen)
-		gtk_widget_show_all(gtk_widget_get_parent(ctx->command_combo_box));
+		gtk_widget_show(gtk_widget_get_parent(ctx->command_combo_box));
 
 	gtk_widget_show(ctx->command_combo_box);
 	gtk_widget_show(ctx->prompt_label);
