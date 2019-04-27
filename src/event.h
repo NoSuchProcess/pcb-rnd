@@ -70,6 +70,7 @@ typedef enum {
 	PCB_EVENT_GUI_LEAD_USER,          /* GUI aid to lead the user attention to a specific location on the board in the main drawing area; args: (coord x, coord y, int enabled) */
 	PCB_EVENT_GUI_DRAW_OVERLAY_XOR,   /* called in board draw after finished drawing the xor marks, still in xor draw mode */
 	PCB_EVENT_USER_INPUT_POST,        /* generated any time any user input reaches core, after processing it */
+	PCB_EVENT_USER_INPUT_KEY,         /* generated any time a keypress is registered by the hid_cfg_key code (may be one key stroke of a multi-stroke sequence) */
 
 	PCB_EVENT_DRAW_CROSSHAIR_CHATT,   /* called from crosshair code upon attached object recalculation; event handlers can use this hook to enforce various geometric restrictions */
 

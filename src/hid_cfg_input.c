@@ -543,9 +543,11 @@ int pcb_hid_cfg_keys_input_(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_mod_t mods, unsi
 	if (ns->action_node != NULL) {
 		km->seq_len_action = *seq_len;
 		(*seq_len) = 0;
+		pcb_event(PCB_EVENT_USER_INPUT_KEY, NULL);
 		return km->seq_len_action;
 	}
 
+	pcb_event(PCB_EVENT_USER_INPUT_KEY, NULL);
 	return 0;
 }
 
