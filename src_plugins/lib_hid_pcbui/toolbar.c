@@ -84,7 +84,7 @@ static void toolbar_create_static(pcb_hid_cfg_t *cfg)
 			pcb_toolid_t tid = pcb_tool_lookup(t->name);
 			pcb_tool_t **tool;
 
-			tool = vtp0_get(&pcb_tools, tid, 0);
+			tool = (pcb_tool_t **)vtp0_get(&pcb_tools, tid, 0);
 			if ((tid < 0) || (tool == NULL)) {
 				pcb_message(PCB_MSG_ERROR, "toolbar: tool '%s' not found (referenced from the menu file %s:%d)\n", t->name, t->file_name, t->line);
 				continue;
