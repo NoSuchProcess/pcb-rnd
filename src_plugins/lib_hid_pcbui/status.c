@@ -172,6 +172,8 @@ static void status_rd_pcb2dlg(void)
 		else {
 			status.buf.used = 0;
 			pcb_append_printf(&status.buf, "%m+%-mS %-mS", conf_core.editor.grid_unit->allow, pcb_crosshair.X, pcb_crosshair.Y);
+			hv.str_value = status.buf.array;
+			pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd2[0], &hv);
 			pcb_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd2[1], 1);
 		}
 	}
