@@ -33,11 +33,13 @@
 
 #include "layer_menu.h"
 #include "routest.h"
+#include "toolbar.h"
 #include "util.c"
 
 
 static const char *layer_cookie = "lib_hid_pcbui/layer";
 static const char *rst_cookie = "lib_hid_pcbui/route_style";
+static const char *toolbar_cookie = "lib_hid_pcbui/toolbar";
 
 static pcb_action_t rst_action_list[] = {
 	{"AdjustStyle", pcb_act_AdjustStyle, pcb_acth_AdjustStyle, pcb_acts_AdjustStyle}
@@ -76,6 +78,7 @@ TODO("padstack: remove some paths when route style has proto")
 	pcb_event_bind(PCB_EVENT_ROUTE_STYLES_CHANGED, pcb_rst_update_ev, NULL, rst_cookie);
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, pcb_rst_update_ev, NULL, rst_cookie);
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_rst_gui_init_ev, NULL, rst_cookie);
+	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_toolbar_gui_init_ev, NULL, toolbar_cookie);
 
 	conf_id = conf_hid_reg(rst_cookie, NULL);
 	for(rp = rpaths, n = 0; *rp != NULL; rp++, n++) {
