@@ -87,7 +87,7 @@ static void toolbar_pcb2dlg()
 		int st, wid = toolbar.tid2wid.array[tid];
 		if (wid == 0)
 			continue;
-		st = (tid == conf_core.editor.mode) ? 1 : 0;
+		st = (tid == conf_core.editor.mode) ? 2 : 1;
 		pcb_gui->attr_dlg_widget_state(toolbar.sub.dlg_hid_ctx, wid, st);
 	}
 }
