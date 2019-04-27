@@ -3451,12 +3451,6 @@ static void lesstif_globconf_change_post(conf_native_t *cfg, int arr_idx)
 }
 
 static conf_hid_id_t lesstif_conf_id = -1;
-void lesstif_confchg_grid_unit(conf_native_t *cfg, int arr_idx)
-{
-	/* test if PCB struct doesn't exist at startup */
-	if ((PCB == NULL) || (!lesstif_active))
-		return;
-}
 
 static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*func)(conf_native_t *, int))
 {
@@ -3471,7 +3465,6 @@ static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*
 static void lesstif_conf_regs(const char *cookie)
 {
 	static conf_hid_callbacks_t cbs_grid_unit;
-	init_conf_watch(&cbs_grid_unit, "editor/grid_unit", lesstif_confchg_grid_unit);
 }
 
 #include <Xm/CutPaste.h>
