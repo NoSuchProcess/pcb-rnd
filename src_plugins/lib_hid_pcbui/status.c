@@ -44,6 +44,8 @@ typedef struct {
 	int st_has_text;
 	int wrdunit, wrd1[3], wrd2[2];
 	gds_t buf; /* save on allocation */
+	int lock;
+	const pcb_unit_t *last_unit;
 } status_ctx_t;
 
 static status_ctx_t status;
@@ -157,6 +159,9 @@ static void status_rd_pcb2dlg(void)
 	const char *s1, *s2, *s3;
 	char sep;
 
+	if ((status.lock) || (!status.rdsub_inited))
+		return;
+
 	if (status.rdsub_inited) {
 		/* coordinate readout (right side box) */
 		if (conf_core.appearance.compact) {
@@ -218,6 +223,24 @@ static void status_rd_pcb2dlg(void)
 			pcb_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd1[2], 1);
 		}
 	}
+
+	if (status.last_unit != conf_core.editor.grid_unit) {
+		status.lock++;
+		status.last_unit = conf_core.editor.grid_unit;
+		hv.str_value = conf_core.editor.grid_unit->in_suffix;
+		pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrdunit, &hv);
+		status.lock--;
+	}
+}
+
+static void unit_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	if (conf_core.editor.grid_unit == get_unit_struct("mm"))
+		pcb_actionl("SetUnits", "mil", NULL);
+	else
+		pcb_actionl("SetUnits", "mm", NULL);
+
+	status_rd_pcb2dlg();
 }
 
 static void status_docked_create_st()
@@ -268,6 +291,7 @@ static void status_docked_create_rd()
 		PCB_DAD_END(status.rdsub.dlg);
 		PCB_DAD_BUTTON(status.rdsub.dlg, "<un>");
 			status.wrdunit = PCB_DAD_CURRENT(status.rdsub.dlg);
+			PCB_DAD_CHANGE_CB(status.rdsub.dlg, unit_change_cb);
 	PCB_DAD_END(status.rdsub.dlg);
 }
 
