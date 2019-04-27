@@ -38,7 +38,7 @@
 
 typedef struct {
 	pcb_hid_dad_subdialog_t sub;
-	int sub_inited;
+	int sub_inited, lock;
 	vti0_t tid2wid; /* tool ID to widget ID conversion - value 0 means no widget */
 } toolbar_ctx_t;
 
@@ -51,6 +51,8 @@ static void toolbar_pcb2dlg()
 	if (!toolbar.sub_inited)
 		return;
 
+	toolbar.lock = 1;
+
 	for(tid = 0; tid < toolbar.tid2wid.used; tid++) {
 		int st, wid = toolbar.tid2wid.array[tid];
 		if (wid == 0)
@@ -58,6 +60,18 @@ static void toolbar_pcb2dlg()
 		st = (tid == conf_core.editor.mode) ? 2 : 1;
 		pcb_gui->attr_dlg_widget_state(toolbar.sub.dlg_hid_ctx, wid, st);
 	}
+	toolbar.lock = 0;
+}
+
+static void toolbar_select_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	int tid;
+
+	if (toolbar.lock)
+		return;
+
+	tid = (int)attr->user_data;
+	pcb_tool_select_by_id(tid);
 }
 
 static void toolbar_create_static(pcb_hid_cfg_t *cfg)
@@ -79,9 +93,11 @@ static void toolbar_create_static(pcb_hid_cfg_t *cfg)
 				PCB_DAD_PICBUTTON(toolbar.sub.dlg, (*tool)->icon);
 			else
 				PCB_DAD_BUTTON(toolbar.sub.dlg, t->name);
+			PCB_DAD_CHANGE_CB(toolbar.sub.dlg, toolbar_select_cb);
 			PCB_DAD_COMPFLAG(toolbar.sub.dlg, PCB_HATF_TIGHT | PCB_HATF_TOGGLE);
 			PCB_DAD_HELP(toolbar.sub.dlg, "TODO: tooltip");
 			wid = PCB_DAD_CURRENT(toolbar.sub.dlg);
+			toolbar.sub.dlg[wid].user_data = (int)tid;
 			vti0_set(&toolbar.tid2wid, tid, wid);
 		}
 	}
