@@ -12,7 +12,7 @@ typedef struct {
 			CFT_BOOLEAN compact_horizontal;              /* OBSOLETE: ignored; use central appearance/compact instead */
 			CFT_BOOLEAN compact_vertical;                /* OBSOLETE: ignored; use central appearance/compact instead */
 			CFT_INTEGER history_size;                    /* OBSOLETE: ignored; use plugins/lib_hid_common/cli_history/slots instead */
-			CFT_INTEGER n_mode_button_columns;
+			CFT_INTEGER n_mode_button_columns;           /* OBSOLETE: always have horizontal mode buttons */
 
 			const struct local_grid {
 				CFT_BOOLEAN enable;                       /* enable local grid to draw grid points only in a small radius around the crosshair - speeds up software rendering on large screens */

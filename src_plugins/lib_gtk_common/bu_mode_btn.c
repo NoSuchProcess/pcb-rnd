@@ -145,7 +145,7 @@ void pcb_gtk_make_mode_buttons_and_toolbar(pcb_gtk_common_t *com, pcb_gtk_mode_b
 	GSList *group = NULL;
 	GSList *toolbar_group = NULL;
 	ModeButton *MB;
-	int n_mb, i, tb_width = 0;
+	int i, tb_width = 0;
 
 	mb->com = com;
 	mb->mode_toolbar = gtk_toolbar_new();
@@ -170,13 +170,8 @@ void pcb_gtk_make_mode_buttons_and_toolbar(pcb_gtk_common_t *com, pcb_gtk_mode_b
 		gtk_widget_set_tooltip_text(MB->toolbar_button, MB->tooltip);
 
 		/* Pack mode-frame button into the frame */
-		n_mb = conf_hid_gtk.plugins.hid_gtk.n_mode_button_columns;
-		if ((n_mb < 1) || (n_mb > 10))
-			n_mb = 3;
-		if ((i % n_mb) == 0) {
-			hbox = gtkc_hbox_new(FALSE, 0);
-			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-		}
+		hbox = gtkc_hbox_new(FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(hbox), MB->button, FALSE, FALSE, 0);
 
 		/* Create a container for the toolbar button and add that */
