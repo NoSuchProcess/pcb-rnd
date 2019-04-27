@@ -59,8 +59,6 @@ struct _GHidMainMenuClass {
 	GtkMenuBarClass parent_class;
 };
 
-/* SIGNAL HANDLERS */
-
 /* LHT HANDLER */
 
 void ghid_main_menu_real_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, GtkMenuShell *shell, lht_node_t *ins_after, lht_node_t *base);
