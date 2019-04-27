@@ -534,6 +534,7 @@ void pcb_notify_crosshair_change(pcb_bool changes_complete)
 {
 	if (pcb_gui->notify_crosshair_change)
 		pcb_gui->notify_crosshair_change(changes_complete);
+	pcb_event(PCB_EVENT_CROSSHAIR_MOVE, "i", (int)changes_complete, NULL);
 }
 
 

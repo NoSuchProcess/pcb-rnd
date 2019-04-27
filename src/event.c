@@ -69,6 +69,7 @@ static const char *pcb_fgw_evnames[] = {
 	"pcbev_user_input_post",
 	"pcbev_user_input_key",
 	"pcbev_draw_crosshair_chatt",
+	"pcbev_crosshair_move",
 	"pcbev_drc_run",
 	"pcbev_dad_new_dialog",
 	"pcbev_dad_new_geo",
