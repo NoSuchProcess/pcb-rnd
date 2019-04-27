@@ -40,6 +40,7 @@ typedef struct {
 	pcb_hid_dad_subdialog_t stsub, rdsub; /* st is for the bottom status line, rd is for the top readouts */
 	int stsub_inited, rdsub_inited;
 	int wst1, wst2;
+	int wrdunit, wrd1[3], wrd2[2];
 	gds_t buf; /* save on allocation */
 } status_ctx_t;
 
@@ -118,7 +119,7 @@ static void build_st_help(void)
 }
 
 
-static void status_pcb2dlg(void)
+static void status_st_pcb2dlg(void)
 {
 	static pcb_hid_attr_val_t hv;
 
@@ -145,7 +146,10 @@ static void status_pcb2dlg(void)
 		pcb_gui->attr_dlg_set_help(status.stsub.dlg_hid_ctx, status.wst1, status.buf.array);
 		pcb_gui->attr_dlg_set_help(status.stsub.dlg_hid_ctx, status.wst2, status.buf.array);
 	}
+}
 
+static void status_rd_pcb2dlg(void)
+{
 	if (status.rdsub_inited) {
 	
 	}
@@ -163,24 +167,60 @@ static void status_docked_create_st()
 }
 
 
+static void status_docked_create_rd()
+{
+	int n;
+	PCB_DAD_BEGIN_HBOX(status.rdsub.dlg);
+		PCB_DAD_COMPFLAG(status.rdsub.dlg, PCB_HATF_TIGHT);
+		PCB_DAD_BEGIN_VBOX(status.rdsub.dlg);
+			PCB_DAD_COMPFLAG(status.rdsub.dlg, PCB_HATF_EXPFILL | PCB_HATF_FRAME);
+			for(n = 0; n < 3; n++) {
+				PCB_DAD_LABEL(status.rdsub.dlg, "<pending>");
+					status.wrd1[n] = PCB_DAD_CURRENT(status.rdsub.dlg);
+			}
+		PCB_DAD_END(status.rdsub.dlg);
+		PCB_DAD_BEGIN_VBOX(status.rdsub.dlg);
+			PCB_DAD_COMPFLAG(status.rdsub.dlg, PCB_HATF_EXPFILL | PCB_HATF_FRAME);
+			PCB_DAD_BEGIN_VBOX(status.rdsub.dlg);
+				PCB_DAD_COMPFLAG(status.rdsub.dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_END(status.rdsub.dlg);
+			for(n = 0; n < 2; n++) {
+					PCB_DAD_LABEL(status.rdsub.dlg, "<pending>");
+							status.wrd2[n] = PCB_DAD_CURRENT(status.rdsub.dlg);
+			}
+			PCB_DAD_BEGIN_VBOX(status.rdsub.dlg);
+				PCB_DAD_COMPFLAG(status.rdsub.dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_END(status.rdsub.dlg);
+		PCB_DAD_END(status.rdsub.dlg);
+		PCB_DAD_BUTTON(status.rdsub.dlg, "<un>");
+			status.wrdunit = PCB_DAD_CURRENT(status.rdsub.dlg);
+	PCB_DAD_END(status.rdsub.dlg);
+}
+
+
 void pcb_status_gui_init_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if ((PCB_HAVE_GUI_ATTR_DLG) && (pcb_gui->get_menu_cfg != NULL)) {
 		status_docked_create_st();
 		if (pcb_hid_dock_enter(&status.stsub, PCB_HID_DOCK_BOTTOM, "status") == 0) {
 			status.stsub_inited = 1;
+			status_st_pcb2dlg();
 		}
-		
-		status_pcb2dlg();
+
+		status_docked_create_rd();
+		if (pcb_hid_dock_enter(&status.rdsub, PCB_HID_DOCK_TOP_RIGHT, "readout") == 0) {
+			status.rdsub_inited = 1;
+			status_rd_pcb2dlg();
+		}
 	}
 }
 
 void pcb_status_st_update_conf(conf_native_t *cfg, int arr_idx)
 {
-	status_pcb2dlg();
+	status_st_pcb2dlg();
 }
 
-void pcb_status_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_status_st_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	status_pcb2dlg();
+	status_st_pcb2dlg();
 }
