@@ -235,6 +235,13 @@ static void status_docked_create_st()
 	PCB_DAD_END(status.stsub.dlg);
 }
 
+/* append an expand-vbox to eat up excess space for center-align */
+static void vpad(pcb_hid_dad_subdialog_t *sub)
+{
+	PCB_DAD_BEGIN_VBOX(sub->dlg);
+		PCB_DAD_COMPFLAG(sub->dlg, PCB_HATF_EXPFILL | PCB_HATF_TIGHT);
+	PCB_DAD_END(sub->dlg);
+}
 
 static void status_docked_create_rd()
 {
@@ -242,24 +249,22 @@ static void status_docked_create_rd()
 	PCB_DAD_BEGIN_HBOX(status.rdsub.dlg);
 		PCB_DAD_COMPFLAG(status.rdsub.dlg, PCB_HATF_TIGHT);
 		PCB_DAD_BEGIN_VBOX(status.rdsub.dlg);
-			PCB_DAD_COMPFLAG(status.rdsub.dlg, PCB_HATF_EXPFILL | PCB_HATF_FRAME);
+			PCB_DAD_COMPFLAG(status.rdsub.dlg, PCB_HATF_EXPFILL | PCB_HATF_FRAME | PCB_HATF_TIGHT);
+			vpad(&status.rdsub);
 			for(n = 0; n < 3; n++) {
 				PCB_DAD_LABEL(status.rdsub.dlg, "<pending>");
 					status.wrd1[n] = PCB_DAD_CURRENT(status.rdsub.dlg);
 			}
+			vpad(&status.rdsub);
 		PCB_DAD_END(status.rdsub.dlg);
 		PCB_DAD_BEGIN_VBOX(status.rdsub.dlg);
 			PCB_DAD_COMPFLAG(status.rdsub.dlg, PCB_HATF_EXPFILL | PCB_HATF_FRAME);
-			PCB_DAD_BEGIN_VBOX(status.rdsub.dlg);
-				PCB_DAD_COMPFLAG(status.rdsub.dlg, PCB_HATF_EXPFILL);
-			PCB_DAD_END(status.rdsub.dlg);
+			vpad(&status.rdsub);
 			for(n = 0; n < 2; n++) {
 					PCB_DAD_LABEL(status.rdsub.dlg, "<pending>");
 							status.wrd2[n] = PCB_DAD_CURRENT(status.rdsub.dlg);
 			}
-			PCB_DAD_BEGIN_VBOX(status.rdsub.dlg);
-				PCB_DAD_COMPFLAG(status.rdsub.dlg, PCB_HATF_EXPFILL);
-			PCB_DAD_END(status.rdsub.dlg);
+			vpad(&status.rdsub);
 		PCB_DAD_END(status.rdsub.dlg);
 		PCB_DAD_BUTTON(status.rdsub.dlg, "<un>");
 			status.wrdunit = PCB_DAD_CURRENT(status.rdsub.dlg);
