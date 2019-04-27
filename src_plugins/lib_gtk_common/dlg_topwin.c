@@ -610,7 +610,8 @@ void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw)
 	if (conf_core.editor.fullscreen) {
 		gtk_widget_hide(tw->left_toolbar);
 		gtk_widget_hide(tw->top_hbox);
-		gtk_widget_hide(tw->bottom_hbox);
+		if (!tw->cmd.command_entry_status_line_active)
+			gtk_widget_hide(tw->bottom_hbox);
 	}
 	else {
 		gtk_widget_show(tw->left_toolbar);
