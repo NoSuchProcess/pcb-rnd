@@ -481,6 +481,9 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	tw->position_hbox = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_end(GTK_BOX(tw->top_hbox), tw->position_hbox, FALSE, FALSE, 0);
 
+	tw->dockbox[PCB_HID_DOCK_TOP_RIGHT] = gtkc_vbox_new(FALSE, 8);
+	gtk_box_pack_end(GTK_BOX(GTK_BOX(tw->position_hbox)), tw->dockbox[PCB_HID_DOCK_TOP_RIGHT], FALSE, FALSE, 0);
+
 	make_cursor_position_labels(tw->position_hbox, &tw->cps);
 
 	hbox_middle = gtkc_hbox_new(FALSE, 0);
