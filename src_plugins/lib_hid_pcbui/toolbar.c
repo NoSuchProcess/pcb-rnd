@@ -26,16 +26,20 @@
 
 #include "config.h"
 
+#include <genvector/vti0.h>
+
 #include "hid.h"
 #include "hid_cfg.h"
 #include "hid_dad.h"
 #include "tool.h"
+#include "conf_core.h"
 
 #include "toolbar.h"
 
 typedef struct {
 	pcb_hid_dad_subdialog_t sub;
 	int sub_inited;
+	vti0_t tid2wid; /* tool ID to widget ID conversion - value 0 means no widget */
 } toolbar_ctx_t;
 
 static toolbar_ctx_t toolbar;
@@ -46,6 +50,7 @@ static void toolbar_create_static(pcb_hid_cfg_t *cfg)
 
 	if ((ts != NULL) || (t->type != LHT_LIST)) {
 		for(t = ts->data.list.first; t != NULL; t = t->next) {
+			int wid;
 			pcb_toolid_t tid = pcb_tool_lookup(t->name);
 			pcb_tool_t **tool;
 
@@ -61,6 +66,8 @@ static void toolbar_create_static(pcb_hid_cfg_t *cfg)
 			else
 				PCB_DAD_BUTTON(toolbar.sub.dlg, t->name);
 			PCB_DAD_HELP(toolbar.sub.dlg, "TODO: tooltip");
+			wid = PCB_DAD_CURRENT(toolbar.sub.dlg);
+			vti0_set(&toolbar.tid2wid, tid, wid);
 		}
 	}
 	else {
@@ -69,8 +76,25 @@ static void toolbar_create_static(pcb_hid_cfg_t *cfg)
 	}
 }
 
+static void toolbar_pcb2dlg()
+{
+	pcb_toolid_t tid;
+
+	if (!toolbar.sub_inited)
+		return;
+
+	for(tid = 0; tid < toolbar.tid2wid.used; tid++) {
+		int st, wid = toolbar.tid2wid.array[tid];
+		if (wid == 0)
+			continue;
+		st = (tid == conf_core.editor.mode) ? 1 : 0;
+		pcb_gui->attr_dlg_widget_state(toolbar.sub.dlg_hid_ctx, wid, st);
+	}
+}
+
 static void toolbar_docked_create(pcb_hid_cfg_t *cfg)
 {
+	toolbar.tid2wid.used = 0;
 
 	PCB_DAD_BEGIN_HBOX(toolbar.sub.dlg);
 		PCB_DAD_COMPFLAG(toolbar.sub.dlg, PCB_HATF_EXPFILL | PCB_HATF_TIGHT);
@@ -95,8 +119,10 @@ void pcb_toolbar_gui_init_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 		if (cfg == NULL)
 			return;
 		toolbar_docked_create(cfg);
-		if (pcb_hid_dock_enter(&toolbar.sub, PCB_HID_DOCK_TOP_LEFT, "Toolbar") == 0)
+		if (pcb_hid_dock_enter(&toolbar.sub, PCB_HID_DOCK_TOP_LEFT, "Toolbar") == 0) {
 			toolbar.sub_inited = 1;
+			toolbar_pcb2dlg();
+		}
 	}
 }
 
