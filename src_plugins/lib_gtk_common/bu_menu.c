@@ -23,8 +23,8 @@
 static int action_counter;
 
 typedef struct {
-	GtkWidget *widget;						/* for most uses */
-	GtkWidget *destroy;						/* destroy this */
+	GtkWidget *widget;    /* for most uses */
+	GtkWidget *destroy;   /* destroy this */
 	GtkAction *action;    /* for removing from the central lists */
 } menu_handle_t;
 
@@ -216,7 +216,7 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 void ghid_main_menu_real_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, GtkMenuShell *shell, lht_node_t *ins_after, lht_node_t *base)
 {
 	switch (base->type) {
-	case LHT_HASH:								/* leaf submenu */
+	case LHT_HASH:                /* leaf submenu */
 		{
 			GtkAction *action = NULL;
 			action = ghid_add_menu(ctx, menu, shell, ins_after, base);
@@ -233,7 +233,7 @@ void ghid_main_menu_real_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, G
 			}
 		}
 		break;
-	case LHT_TEXT:								/* separator */
+	case LHT_TEXT:                /* separator */
 		{
 			GList *children;
 
@@ -258,12 +258,12 @@ void ghid_main_menu_real_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, G
 }
 
 /* CONSTRUCTOR */
-static void ghid_main_menu_init(GHidMainMenu * mm)
+static void ghid_main_menu_init(GHidMainMenu *mm)
 {
 	/* Hookup signal handlers */
 }
 
-static void ghid_main_menu_class_init(GHidMainMenuClass * klass)
+static void ghid_main_menu_class_init(GHidMainMenuClass *klass)
 {
 }
 
@@ -275,13 +275,13 @@ GType ghid_main_menu_get_type(void)
 	if (!mm_type) {
 		const GTypeInfo mm_info = {
 			sizeof(GHidMainMenuClass),
-			NULL,											/* base_init */
-			NULL,											/* base_finalize */
-			(GClassInitFunc) ghid_main_menu_class_init,
-			NULL,											/* class_finalize */
-			NULL,											/* class_data */
+			NULL,                       /* base_init */
+			NULL,                       /* base_finalize */
+			(GClassInitFunc)ghid_main_menu_class_init,
+			NULL,                       /* class_finalize */
+			NULL,                       /* class_data */
 			sizeof(GHidMainMenu),
-			0,												/* n_preallocs */
+			0,                          /* n_preallocs */
 			(GInstanceInitFunc) ghid_main_menu_init,
 		};
 
@@ -337,10 +337,10 @@ void ghid_main_menu_add_popup_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, 
 }
 
 /* Updates the toggle/active state of all items:
- * Loops through all actions, passing the action, its toggle
- * flag (maybe NULL), and its active flag (maybe NULL), to a
- * callback function. It is the responsibility of the function
- * to actually change the state of the action. */
+   Loops through all actions, passing the action, its toggle
+   flag (maybe NULL), and its active flag (maybe NULL), to a
+   callback function. It is the responsibility of the function
+   to actually change the state of the action. */
 void ghid_main_menu_update_toggle_state(GHidMainMenu *menu, void (*cb)(GtkAction *, const char *toggle_flag, const char *active_flag))
 {
 	GList *list;
@@ -355,7 +355,7 @@ void ghid_main_menu_update_toggle_state(GHidMainMenu *menu, void (*cb)(GtkAction
 	}
 }
 
-GtkAccelGroup *ghid_main_menu_get_accel_group(GHidMainMenu * menu)
+GtkAccelGroup *ghid_main_menu_get_accel_group(GHidMainMenu *menu)
 {
 	if (menu == NULL) {
 		pcb_message(PCB_MSG_ERROR, "ghid: can't initialize the menu - is your menu .lht valid?\n");
@@ -365,7 +365,7 @@ GtkAccelGroup *ghid_main_menu_get_accel_group(GHidMainMenu * menu)
 }
 
 /* Create a new popup window */
-static GtkWidget *new_popup(lht_node_t * menu_item)
+static GtkWidget *new_popup(lht_node_t *menu_item)
 {
 	GtkWidget *new_menu = gtk_menu_new();
 /*	GHidMainMenu *menu  = GHID_MAIN_MENU(ctx->menu_bar);*/
@@ -405,7 +405,7 @@ int ghid_remove_menu_widget(void *ctx, lht_node_t * nd)
 }
 
 /* callback for ghid_main_menu_update_toggle_state() */
-void menu_toggle_update_cb(GtkAction * act, const char *tflag, const char *aflag)
+void menu_toggle_update_cb(GtkAction *act, const char *tflag, const char *aflag)
 {
 	if (tflag != NULL) {
 		int v = pcb_hid_get_flag(tflag);
@@ -414,19 +414,19 @@ void menu_toggle_update_cb(GtkAction * act, const char *tflag, const char *aflag
 			gtk_action_set_sensitive(act, 0);
 		}
 		else
-			gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(act), ! !v);
+			gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(act), !!v);
 	}
 	if (aflag != NULL) {
 		int v = pcb_hid_get_flag(aflag);
-		gtk_action_set_sensitive(act, ! !v);
+		gtk_action_set_sensitive(act, !!v);
 	}
 }
 
 /* Menu action callback function
- * This is the main menu callback function.  The callback receives
- * the original lihata action node pointer HID actions to be
- * executed. */
-static void ghid_menu_cb(GtkAction * action, const lht_node_t * node)
+   This is the main menu callback function.  The callback receives
+   the original lihata action node pointer HID actions to be
+   executed. */
+static void ghid_menu_cb(GtkAction *action, const lht_node_t *node)
 {
 	if (action == NULL || node == NULL)
 		return;
