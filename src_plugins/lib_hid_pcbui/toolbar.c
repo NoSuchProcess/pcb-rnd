@@ -59,12 +59,11 @@ static void toolbar_create_static(pcb_hid_cfg_t *cfg)
 				pcb_message(PCB_MSG_ERROR, "toolbar: tool '%s' not found (referenced from the menu file %s:%d)\n", t->name, t->file_name, t->line);
 				continue;
 			}
-			if ((*tool)->icon != NULL) {
+			if ((*tool)->icon != NULL)
 				PCB_DAD_PICBUTTON(toolbar.sub.dlg, (*tool)->icon);
-					PCB_DAD_COMPFLAG(toolbar.sub.dlg, PCB_HATF_TIGHT);
-			}
 			else
 				PCB_DAD_BUTTON(toolbar.sub.dlg, t->name);
+			PCB_DAD_COMPFLAG(toolbar.sub.dlg, PCB_HATF_TIGHT | PCB_HATF_TOGGLE);
 			PCB_DAD_HELP(toolbar.sub.dlg, "TODO: tooltip");
 			wid = PCB_DAD_CURRENT(toolbar.sub.dlg);
 			vti0_set(&toolbar.tid2wid, tid, wid);
