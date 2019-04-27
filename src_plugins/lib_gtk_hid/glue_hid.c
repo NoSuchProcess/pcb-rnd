@@ -27,6 +27,8 @@
 #include "../src_plugins/lib_gtk_common/lib_gtk_config.h"
 #include "../src_plugins/lib_hid_common/menu_helper.h"
 
+extern pcb_hid_cfg_keys_t ghid_keymap;
+
 void gtkhid_begin(pcb_hidlib_t *hidlib)
 {
 	ghidgui->common.hidlib = hidlib;
@@ -533,6 +535,8 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->clip_set  = ghid_clip_set;
 	dst->clip_get  = ghid_clip_get;
 	dst->clip_free = ghid_clip_free;
+
+	dst->key_state = &ghid_keymap;
 
 	dst->usage = ghid_usage;
 }

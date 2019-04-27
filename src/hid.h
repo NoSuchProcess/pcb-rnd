@@ -526,6 +526,9 @@ struct pcb_hid_s {
 
 	/* run redraw-benchmark and return an FPS value (optional) */
 	double (*benchmark)(void);
+
+	/* (pcb_hid_cfg_keys_t *): key state */
+	void *key_state;
 };
 
 /* One of these functions (in the common code) will be called whenever the GUI

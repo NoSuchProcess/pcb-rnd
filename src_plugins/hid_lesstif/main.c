@@ -3632,6 +3632,10 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.remove_menu_node = lesstif_remove_menu_node;
 	lesstif_hid.update_menu_checkbox = lesstif_update_widget_flags;
 	lesstif_hid.get_menu_cfg = lesstif_get_menu_cfg;
+
+	lesstif_hid.key_state = &lesstif_keymap;
+
+
 	lesstif_hid.usage = lesstif_usage;
 
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, lesstif_cookie);
