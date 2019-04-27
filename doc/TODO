@@ -29,6 +29,7 @@
 - CLEANUP: (TT) propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
+- CLEANUP: lesstif DAD support for top window docks [report: Igor2]
 - BUG: query(select, '(@.plated == 1)') does not select the padstack when using bug_files/query_plated_slot.lht [report: Alain]
 - BUG: grid size and mm unit are not reloaded when using bug_files/query_plated_slot.lht. I do expect to be in mm unit (not mil) and grid=0.1mm  [report: Alain]
 
@@ -52,6 +53,7 @@
 	- CLEANUP: unify how output files are accessed/checked: confirmation on overwrite
 	- CLEANUP: later: remove the gerber->drill dep and ask users to use the CAM instead
 	- CLEANUP: later: remove the hackish gerber layer suffix in favor of CAM [report: Ade]
+- FEATURE: lesstif DAD support for toggle buttons [report: Igor2]
 - FEATURE: data model: object minimal clearance value from the polygon side; final clearance should be MAX(obj->Clearance, poly->Clearance); kicad example: 1 line, 2 polygons with 2 different clearance values - see CUCP#38 provided by Karl [report: Igor2]
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
 - FEATURE: (TT) route style upgrade to prototypes:
