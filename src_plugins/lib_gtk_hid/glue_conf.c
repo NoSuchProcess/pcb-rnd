@@ -55,15 +55,6 @@ static void ghid_confchg_mode(conf_native_t *cfg, int arr_idx)
 	ghid_mode_cursor(&gport->mouse, -1);
 }
 
-static void ghid_confchg_compact(conf_native_t *cfg, int arr_idx)
-{
-	/* test if PCB struct doesn't exist at startup */
-	if ((PCB == NULL) || !ghidgui->hid_active)
-		return;
-
-	ghid_command_update_prompt(&ghidgui->topwin.cmd);
-}
-
 static void ghid_confchg_cli(conf_native_t *cfg, int arr_idx)
 {
 	ghid_command_update_prompt(&ghidgui->topwin.cmd);
@@ -92,7 +83,7 @@ static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*
 
 void ghid_conf_regs(const char *cookie)
 {
-	static conf_hid_callbacks_t cbs_fullscreen, cbs_cli[2], cbs_compacth, cbs_color[3], cbs_mode;
+	static conf_hid_callbacks_t cbs_fullscreen, cbs_cli[2], cbs_color[3], cbs_mode;
 
 	ghidgui->conf_id = conf_hid_reg(cookie, NULL);
 
@@ -101,8 +92,6 @@ void ghid_conf_regs(const char *cookie)
 
 	init_conf_watch(&cbs_cli[0], "rc/cli_prompt", ghid_confchg_cli);
 	init_conf_watch(&cbs_cli[1], "rc/cli_backend", ghid_confchg_cli);
-
-	init_conf_watch(&cbs_compacth, "appearance/compact", ghid_confchg_compact);
 
 	init_conf_watch(&cbs_color[0], "appearance/color/background", ghid_confchg_spec_color);
 	init_conf_watch(&cbs_color[1], "appearance/color/off_limit", ghid_confchg_spec_color);
