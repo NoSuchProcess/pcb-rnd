@@ -77,21 +77,32 @@ typedef struct {
 	pcb_gtk_topwin_t *tw;
 } docked_t;
 
+static int dock_is_vert[PCB_HID_DOCK_max]   = {0, 0, 1, 0, 1}; /* Update this if pcb_hid_dock_t changes */
+static int dock_has_frame[PCB_HID_DOCK_max] = {0, 0, 1, 0, 0}; /* Update this if pcb_hid_dock_t changes */
 int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id)
 {
 	docked_t *docked;
-	GtkWidget *vbox;
+	GtkWidget *hvbox;
 
 	docked = calloc(sizeof(docked_t), 1);
 
-	docked->frame = gtk_frame_new(id);
-	gtk_box_pack_end(GTK_BOX(tw->dockbox[where]), docked->frame, FALSE, FALSE, 0);
-	vbox = gtkc_vbox_new(FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(docked->frame), vbox);
+	if (dock_is_vert[where])
+		hvbox = gtkc_vbox_new(FALSE, 0);
+	else
+		hvbox = gtkc_hbox_new(TRUE, 0);
+
+	if (dock_has_frame[where]) {
+		docked->frame = gtk_frame_new(id);
+		gtk_container_add(GTK_CONTAINER(docked->frame), hvbox);
+	}
+	else
+		docked->frame = hvbox;
+
+	gtk_box_pack_end(GTK_BOX(tw->dockbox[where]), docked->frame, TRUE, TRUE, 0);
 	gtk_widget_show_all(docked->frame);
 
 	sub->parent_poke = pcb_gtk_dock_poke;
-	sub->dlg_hid_ctx = docked->hid_ctx = ghid_attr_sub_new(tw->com, vbox, sub->dlg, sub->dlg_len, sub);
+	sub->dlg_hid_ctx = docked->hid_ctx = ghid_attr_sub_new(tw->com, hvbox, sub->dlg, sub->dlg_len, sub);
 	docked->tw = tw;
 	sub->parent_ctx = docked;
 
@@ -483,6 +494,9 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	/* Build main menu */
 	tw->menu.menu_bar = ghid_load_menus(&tw->menu, &tw->ghid_cfg);
 	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), tw->menu.menu_bar, FALSE, FALSE, 0);
+
+	tw->dockbox[PCB_HID_DOCK_TOP_LEFT] = gtkc_hbox_new(TRUE, 2);
+	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), tw->dockbox[PCB_HID_DOCK_TOP_LEFT], FALSE, FALSE, 0);
 
 	pcb_gtk_make_mode_buttons_and_toolbar(tw->com, &tw->mode_btn);
 	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), tw->mode_btn.mode_toolbar_vbox, FALSE, FALSE, 0);
