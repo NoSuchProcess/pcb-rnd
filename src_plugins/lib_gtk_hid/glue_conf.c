@@ -66,6 +66,14 @@ static void ghid_confchg_grid_unit(conf_native_t *cfg, int arr_idx)
 	ghidgui->common.set_status_line_label();
 }
 
+static void ghid_confchg_mode(conf_native_t *cfg, int arr_idx)
+{
+	/* test if PCB struct doesn't exist at startup */
+	if ((PCB == NULL) || !ghidgui->hid_active)
+		return;
+	ghid_mode_cursor(&gport->mouse, -1);
+}
+
 static void ghid_confchg_compact(conf_native_t *cfg, int arr_idx)
 {
 	/* test if PCB struct doesn't exist at startup */
@@ -104,9 +112,10 @@ static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*
 
 void ghid_conf_regs(const char *cookie)
 {
-	static conf_hid_callbacks_t 
+	static conf_hid_callbacks_t
 		cbs_refraction, cbs_direction, cbs_fullscreen, cbs_show_sside, cbs_grid,
-		cbs_text_scale, cbs_grid_unit, cbs_cli[2], cbs_compacth, cbs_color[3];
+		cbs_text_scale, cbs_grid_unit, cbs_cli[2], cbs_compacth, cbs_color[3],
+		cbs_mode;
 
 	ghidgui->conf_id = conf_hid_reg(cookie, NULL);
 
@@ -119,6 +128,7 @@ void ghid_conf_regs(const char *cookie)
 
 	init_conf_watch(&cbs_fullscreen, "editor/fullscreen", ghid_confchg_fullscreen);
 	init_conf_watch(&cbs_grid_unit, "editor/grid_unit", ghid_confchg_grid_unit);
+	init_conf_watch(&cbs_mode, "editor/mode", ghid_confchg_mode);
 
 	init_conf_watch(&cbs_cli[0], "rc/cli_prompt", ghid_confchg_cli);
 	init_conf_watch(&cbs_cli[1], "rc/cli_backend", ghid_confchg_cli);
