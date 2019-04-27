@@ -133,7 +133,7 @@ void pcb_tool_notify_block(void);	/* create first or second corner of a marked b
 pcb_bool pcb_tool_should_snap_offgrid_line(pcb_layer_t *layer, pcb_line_t *line);
 
 
-/**** old heleprs ****/
+/**** old helpers ****/
 
 /* does what's appropriate for the current mode setting (when clicked). This
    normally means creation of an object at the current crosshair location.
