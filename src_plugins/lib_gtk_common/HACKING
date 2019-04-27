@@ -1,4 +1,4 @@
-act_*: actions
+compat.h: compatibility layer for various GTK versions
 util_*: generic, non-UI related utilities
 ui_*: ui logic related, but gtk-free utilities
 wt_*: custom widgets, cell renderers for gtk - must work in both gtk2 and gtk3
