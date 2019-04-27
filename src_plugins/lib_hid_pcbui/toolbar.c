@@ -27,7 +27,9 @@
 #include "config.h"
 
 #include "hid.h"
+#include "hid_cfg.h"
 #include "hid_dad.h"
+#include "tool.h"
 
 #include "toolbar.h"
 
@@ -38,20 +40,61 @@ typedef struct {
 
 static toolbar_ctx_t toolbar;
 
-static void toolbar_docked_create()
+static void toolbar_create_static(pcb_hid_cfg_t *cfg)
 {
-	int n;
+	const lht_node_t *t, *ts = pcb_hid_cfg_get_menu(cfg, "/toolbar_static");
+
+	if ((ts != NULL) || (t->type != LHT_LIST)) {
+		for(t = ts->data.list.first; t != NULL; t = t->next) {
+			pcb_toolid_t tid = pcb_tool_lookup(t->name);
+			pcb_tool_t **tool;
+
+			tool = vtp0_get(&pcb_tools, tid, 0);
+			if ((tid < 0) || (tool == NULL)) {
+				pcb_message(PCB_MSG_ERROR, "toolbar: tool '%s' not found (referenced from the menu file %s:%d)\n", t->name, t->file_name, t->line);
+				continue;
+			}
+			if ((*tool)->icon != NULL) {
+				PCB_DAD_PICBUTTON(toolbar.sub.dlg, (*tool)->icon);
+					PCB_DAD_COMPFLAG(toolbar.sub.dlg, PCB_HATF_TIGHT);
+			}
+			else
+				PCB_DAD_BUTTON(toolbar.sub.dlg, t->name);
+			PCB_DAD_HELP(toolbar.sub.dlg, "TODO: tooltip");
+		}
+	}
+	else {
+		PCB_DAD_LABEL(toolbar.sub.dlg, "No toolbar found in the menu file.");
+		PCB_DAD_HELP(toolbar.sub.dlg, "Check your menu file. If you use a locally modified or custom\nmenu file, make sure you merge upstream changes\n(such as the new toolbar subtree)");
+	}
+}
+
+static void toolbar_docked_create(pcb_hid_cfg_t *cfg)
+{
+
 	PCB_DAD_BEGIN_HBOX(toolbar.sub.dlg);
-		PCB_DAD_COMPFLAG(toolbar.sub.dlg, PCB_HATF_EXPFILL);
-		PCB_DAD_LABEL(toolbar.sub.dlg, "TODO");
+		PCB_DAD_COMPFLAG(toolbar.sub.dlg, PCB_HATF_EXPFILL | PCB_HATF_TIGHT);
+
+		toolbar_create_static(cfg);
+
+	/* eat up remaining space in the middle before displaying the dynamic tools */
+		PCB_DAD_BEGIN_HBOX(toolbar.sub.dlg);
+			PCB_DAD_COMPFLAG(toolbar.sub.dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_END(toolbar.sub.dlg);
+
+	/* later on dynamic tools would be displayed here */
+
 	PCB_DAD_END(toolbar.sub.dlg);
 }
 
 
 void pcb_toolbar_gui_init_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	if (PCB_HAVE_GUI_ATTR_DLG) {
-		toolbar_docked_create();
+	if ((PCB_HAVE_GUI_ATTR_DLG) && (pcb_gui->get_menu_cfg != NULL)) {
+		pcb_hid_cfg_t *cfg = pcb_gui->get_menu_cfg();
+		if (cfg == NULL)
+			return;
+		toolbar_docked_create(cfg);
 		if (pcb_hid_dock_enter(&toolbar.sub, PCB_HID_DOCK_TOP_LEFT, "Toolbar") == 0)
 			toolbar.sub_inited = 1;
 	}
