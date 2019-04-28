@@ -489,7 +489,7 @@ static void ghid_pan(pcb_coord_t x, pcb_coord_t y, int relative)
 	if (relative)
 		pcb_gtk_pan_view_rel(&gport->view, x, y);
 	else
-		pcb_gtk_pan_view_abs(&gport->view, x, y, gport->view.canvas_width/2, gport->view.canvas_height/2);
+		pcb_gtk_pan_view_abs(&gport->view, x, y, gport->view.canvas_width/2.0, gport->view.canvas_height/2.0);
 }
 
 static void ghid_pan_mode(pcb_coord_t x, pcb_coord_t y, pcb_bool mode)
@@ -501,8 +501,8 @@ static void ghid_view_get(pcb_box_t *viewbox)
 {
 	viewbox->X1 = gport->view.x0;
 	viewbox->Y1 = gport->view.y0;
-	viewbox->X2 = gport->view.x0 + gport->view.width;
-	viewbox->Y2 = gport->view.y0 + gport->view.height;
+	viewbox->X2 = pcb_round((double)gport->view.x0 + (double)gport->view.canvas_width * gport->view.coord_per_px);
+	viewbox->Y2 = pcb_round((double)gport->view.y0 + (double)gport->view.canvas_height * gport->view.coord_per_px);
 }
 
 void ghid_glue_hid_init(pcb_hid_t *dst)
