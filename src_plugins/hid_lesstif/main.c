@@ -1137,6 +1137,8 @@ static void Pan(int mode, pcb_coord_t x, pcb_coord_t y)
 	/* This is for ctrl-pan, where the viewport's position is directly
 	   proportional to the cursor position in the window (like the Xaw
 	   thumb panner) */
+TODO("remove this if there is no bugreport for a long time");
+#if 0
 	if (pan_thumb_mode) {
 		opx = x * PCB->hidlib.size_x / view_width;
 		opy = y * PCB->hidlib.size_y / view_height;
@@ -1148,9 +1150,12 @@ static void Pan(int mode, pcb_coord_t x, pcb_coord_t y)
 		view_top_y = opy - view_height / 2 * view_zoom;
 		lesstif_pan_fixup();
 	}
+	else
+#endif
+
 	/* This is the start of a regular pan.  On the first click, we
 	   remember the coordinates where we "grabbed" the screen.  */
-	else if (mode == 1) {
+	if (mode == 1) {
 		ox = x;
 		oy = y;
 		opx = view_left_x;
