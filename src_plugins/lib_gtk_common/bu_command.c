@@ -233,13 +233,10 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 void ghid_handle_user_command(pcb_gtk_command_t *ctx, pcb_bool raise)
 {
 	char *command;
-	static char *previous = NULL;
 
-	command = ghid_command_entry_get(ctx, pcb_cli_prompt(":"), (conf_core.editor.save_last_command && previous) ? previous : (gchar *)"");
+	command = ghid_command_entry_get(ctx, pcb_cli_prompt(":"), (gchar *)"");
 	if (command != NULL) {
 		/* copy new command line to save buffer */
-		g_free(previous);
-		previous = g_strdup(command);
 		pcb_parse_command(command, pcb_false);
 		g_free(command);
 	}
