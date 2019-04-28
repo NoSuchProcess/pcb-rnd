@@ -152,7 +152,7 @@ static pcb_coord_t view_left_x = 0, view_top_y = 0;
 /* Denotes PCB units per screen pixel.  Larger numbers mean zooming
    out - the largest value means you are looking at the whole
    board.  */
-static double view_zoom = PCB_MIL_TO_COORD(10), prev_view_zoom = PCB_MIL_TO_COORD(10);
+static double view_zoom = PCB_MIL_TO_COORD(10);
 static pcb_bool autofade = 0;
 static pcb_bool crosshair_on = pcb_true;
 
@@ -3168,6 +3168,8 @@ static void lesstif_globconf_change_post(conf_native_t *cfg, int arr_idx)
 
 static conf_hid_id_t lesstif_conf_id = -1;
 
+TODO("decide if we'll ever need this")
+#if 0
 static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*func)(conf_native_t *, int))
 {
 	conf_native_t *n = conf_get_field(path);
@@ -3182,6 +3184,7 @@ static void lesstif_conf_regs(const char *cookie)
 {
 	static conf_hid_callbacks_t cbs_grid_unit;
 }
+#endif
 
 #include <Xm/CutPaste.h>
 
@@ -3415,7 +3418,7 @@ int pplg_init_hid_lesstif(void)
 	pcb_hid_register_hid(&lesstif_hid);
 	if (lesstif_conf_id < 0)
 		lesstif_conf_id = conf_hid_reg(lesstif_cookie, &ccb);
-	lesstif_conf_regs(lesstif_cookie);
+/*	lesstif_conf_regs(lesstif_cookie);*/
 
 	return 0;
 }
