@@ -30,9 +30,6 @@
 #ifndef PCB_LIB_GTK_COMMON_UI_ZOOMPAN_H
 #define PCB_LIB_GTK_COMMON_UI_ZOOMPAN_H
 
-#include <glib.h>
-#include <libfungw/fungw.h>
-#include "unit.h"
 #include "pcb_bool.h"
 #include "in_mouse.h"
 #include "glue.h"
@@ -63,10 +60,10 @@ typedef struct {
 	pcb_coord_t max_width;
 	pcb_coord_t max_height;
 
-	gint canvas_width, canvas_height;
+	int canvas_width, canvas_height;
 
-	gboolean has_entered;
-	gboolean panning;
+	pcb_bool has_entered;
+	pcb_bool panning;
 	pcb_coord_t pcb_x, pcb_y;              /* PCB coordinates of the mouse pointer */
 	pcb_coord_t crosshair_x, crosshair_y;  /* PCB coordinates of the crosshair     */
 

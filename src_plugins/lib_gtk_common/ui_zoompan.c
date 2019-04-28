@@ -29,15 +29,9 @@
 #include "config.h"
 #include "ui_zoompan.h"
 
-#include "unit.h"
-#include "actions.h"
-#include "error.h"
 #include "conf_core.h"
-#include "board.h"
 #include "compat_misc.h"
-#include "draw.h"
-#include "data.h"
-#include "layer_vis.h"
+#include "hidlib.h"
 
 #include "../src_plugins/lib_hid_pcbui/util.h"
 
