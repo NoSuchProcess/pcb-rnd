@@ -215,12 +215,23 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_layergrp_id_t active_group = pcb_layer_get_group(PCB, pcb_layer_stack[0]);
 	pcb_layergrp_id_t comp_group = -1, solder_group = -1;
 	pcb_bool comp_on = pcb_false, solder_on = pcb_false;
+	pcb_box_t vb;
 	pcb_coord_t x, y;
+	double xcent, ycent, xoffs, yoffs;
+
 	NOGUI();
 
 	pcb_hid_get_coords("Click to center of flip", &x, &y, 0);
+
 	x = pcb_crosshair.X;
 	y = pcb_crosshair.Y;
+
+	pcb_gui->view_get(&vb);
+	xcent = (double)(vb.X1 + vb.X2)/2.0;
+	ycent = (double)(vb.Y1 + vb.Y2)/2.0;
+	xoffs = xcent - x;
+	yoffs = ycent - y;
+/*	pcb_trace("SwapSides: xy=%mm;%mm cent=%mm;%mm ofs=%mm;%mm\n", x, y, (pcb_coord_t)xcent, (pcb_coord_t)ycent, (pcb_coord_t)xoffs, (pcb_coord_t)yoffs);*/
 
 	if (pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder_group, 1) > 0)
 		solder_on = LAYER_PTR(PCB->LayerGroups.grp[solder_group].lid[0])->meta.real.vis;
@@ -241,6 +252,10 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				conf_toggle_editor_("view/flip_x", view.flip_x);
 				break;
 			case 'v': case 'V':
+				if (!conf_core.editor.view.flip_y)
+					yoffs = -yoffs;
+				else
+					yoffs = 0;
 				conf_toggle_editor_("view/flip_y", view.flip_y);
 				break;
 			case 'r': case 'R':
@@ -278,7 +293,10 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	pcb_draw_inhibit_dec();
 
-	pcb_gui->pan(x, y, 0);
+/*pcb_trace("-jump-> %mm;%mm -> %mm;%mm\n", x, y, (pcb_coord_t)(x + xoffs), (pcb_coord_t)(y + yoffs));*/
+	pcb_gui->pan(pcb_round(x + xoffs), pcb_round(y + yoffs), 0);
+	pcb_gui->set_crosshair(x, y, HID_SC_PAN_VIEWPORT);
+
 	pcb_gui->invalidate_all();
 
 	PCB_ACT_IRES(0);
