@@ -182,16 +182,6 @@ static fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* ------------------------------------------------------------ */
-static const char pcb_acts_SaveWinGeo[] = "SaveWindowGeometry()";
-static const char pcb_acth_SaveWinGeo[] = "Saves window geometry in the config.\n";
-
-static fgw_error_t pcb_act_SaveWinGeo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	PCB_ACT_IRES(0);
-	return 0;
-}
-
 /* ------------------------------------------------------------
  *
  * Actions specific to the GTK HID follow from here
@@ -200,8 +190,7 @@ static fgw_error_t pcb_act_SaveWinGeo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 pcb_action_t ghid_main_action_list[] = {
 	{"Command", pcb_act_Command},
 	{"DoWindows", pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows},
-	{"Popup", pcb_act_Popup, pcb_acth_Popup, pcb_acts_Popup},
-	{"SaveWindowGeometry", pcb_act_SaveWinGeo, pcb_acth_SaveWinGeo, pcb_acts_SaveWinGeo}
+	{"Popup", pcb_act_Popup, pcb_acth_Popup, pcb_acts_Popup}
 };
 
 PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_act_cookie)
