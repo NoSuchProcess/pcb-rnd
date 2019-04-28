@@ -183,7 +183,7 @@ void pcb_gtk_zoom_view_win(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_coord_t y1, pc
 }
 
 /* Side-correct version - long term this will be kept and the other is removed */
-static void pcb_gtk_zoom_view_win_side(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int setch)
+void pcb_gtk_zoom_view_win_side(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int setch)
 {
 	double xf, yf;
 
@@ -204,12 +204,6 @@ static void pcb_gtk_zoom_view_win_side(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_co
 		pcb_crosshair_move_absolute(v->pcb_x, v->pcb_y);
 		pcb_notify_crosshair_change(pcb_true);
 	}
-}
-
-void pcb_gtk_zoom_view_fit(pcb_gtk_view_t *v)
-{
-	pcb_gtk_pan_view_abs(v, SIDE_X(v, 0), SIDE_Y(v, 0), 0, 0);
-	ghid_zoom_view_abs(v, SIDE_X(v, 0), SIDE_Y(v, 0), MAX(v->com->hidlib->size_x / v->canvas_width, v->com->hidlib->size_y / v->canvas_height));
 }
 
 static void pcb_gtk_flip_view(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, pcb_bool flip_x, pcb_bool flip_y)
@@ -259,7 +253,7 @@ fgw_error_t pcb_gtk_act_zoom(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_a
 	pcb_coord_t x, y;
 
 	if (argc < 2) {
-		pcb_gtk_zoom_view_fit(vw);
+		pcb_gtk_zoom_view_win_side(vw, 0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y, 1);
 		return 0;
 	}
 

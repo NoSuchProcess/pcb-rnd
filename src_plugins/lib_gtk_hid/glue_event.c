@@ -21,7 +21,7 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 		return;
 
 	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);
-	pcb_gtk_zoom_view_fit(&gport->view);
+	pcb_gtk_zoom_view_win_side(&gport->view, 0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y, 0);
 	ghid_sync_with_new_layout(&ghidgui->topwin);
 }
 
