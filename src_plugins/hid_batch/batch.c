@@ -318,6 +318,36 @@ static void batch_create_menu(const char *menu_path, const pcb_menu_prop_t *prop
 {
 }
 
+static void batch_zoom_win(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_bool set_crosshair)
+{
+}
+
+static void batch_zoom(pcb_coord_t center_x, pcb_coord_t center_y, double factor, int relative)
+{
+}
+
+static void batch_pan(pcb_coord_t x, pcb_coord_t y, int relative)
+{
+}
+
+static void batch_pan_mode(pcb_coord_t x, pcb_coord_t y, pcb_bool mode)
+{
+}
+
+static void batch_view_get(pcb_box_t *viewbox)
+{
+	viewbox->X1 = 0;
+	viewbox->Y1 = 0;
+	viewbox->X2 = PCB->hidlib.size_x;
+	viewbox->Y2 = PCB->hidlib.size_y;
+}
+
+static void batch_open_command(void)
+{
+
+}
+
+
 #include "dolists.h"
 
 static pcb_hid_t batch_hid;
@@ -375,6 +405,14 @@ int pplg_init_hid_batch(void)
 	batch_hid.unwatch_file = batch_unwatch_file;
 	batch_hid.create_menu = batch_create_menu;
 	batch_hid.usage = batch_usage;
+
+	batch_hid.create_menu  = batch_create_menu;
+	batch_hid.zoom_win = batch_zoom_win;
+	batch_hid.zoom = batch_zoom;
+	batch_hid.pan = batch_pan;
+	batch_hid.pan_mode = batch_pan_mode;
+	batch_hid.view_get = batch_view_get;
+	batch_hid.open_command = batch_open_command;
 
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, batch_cookie);
 	pcb_event_bind(PCB_EVENT_LOG_APPEND, ev_log_append, NULL, batch_cookie);
