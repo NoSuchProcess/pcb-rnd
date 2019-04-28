@@ -529,6 +529,23 @@ struct pcb_hid_s {
 
 	/* (pcb_hid_cfg_keys_t *): key state */
 	void *key_state;
+
+	/*** zoom/pan calls ***/
+
+	/* side-correct zoom to show a window of the board. If set_crosshair
+	   is true, also update the crosshair to be on the center of the window */
+	void (*zoom_win)(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_bool set_crosshair);
+
+	/* Zoom relative or absolute by factor; relative means current zoom is
+	   multiplied by factor */
+	void (*zoom)(pcb_coord_t center_x, pcb_coord_t center_y, double factor, int relative);
+
+	/* Pan relative/absolute by x and y; relative means x and y are added to
+	   the current pan */
+	void (*pan)(pcb_coord_t x, pcb_coord_t y, int relative);
+
+	/* Start or stop panning at x;y - stop is mode=0, start is mode=1 */
+	void (*pan_mode)(pcb_coord_t x, pcb_coord_t y, pcb_bool mode);
 };
 
 /* One of these functions (in the common code) will be called whenever the GUI
