@@ -268,8 +268,6 @@ static void get_widget_styles(pcb_gtk_topwin_t *tw, GtkStyle **menu_bar_style)
 
 static void do_fix_topbar_theming(pcb_gtk_topwin_t *tw)
 {
-	GtkWidget *rel_pos_frame;
-	GtkWidget *abs_pos_frame;
 	GtkStyle *menu_bar_style;
 
 	get_widget_styles(tw, &menu_bar_style);
@@ -418,7 +416,6 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 {
 	GtkWidget *vbox_main, *hbox_middle, *hbox;
 	GtkWidget *hbox_scroll, *fullscreen_btn;
-	GtkWidget *label;
 	GtkWidget *resize_grip_vbox;
 	GtkWidget *resize_grip;
 	GdkPixbuf *resize_grip_pixbuf;
