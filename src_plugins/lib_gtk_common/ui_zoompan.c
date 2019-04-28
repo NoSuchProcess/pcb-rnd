@@ -124,7 +124,7 @@ void pcb_gtk_zoom_post(pcb_gtk_view_t *v)
  *
  * gport->view_width and gport->view_height are in PCB coordinates
  */
-static void ghid_zoom_view_abs(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, double new_zoom)
+static void pcb_gtk_zoom_view_abs(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, double new_zoom)
 {
 	double clamped_zoom;
 	double xtmp, ytmp;
@@ -161,7 +161,7 @@ static void ghid_zoom_view_abs(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coor
 
 void pcb_gtk_zoom_view_rel(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, double factor)
 {
-	ghid_zoom_view_abs(v, center_x, center_y, v->coord_per_px * factor);
+	pcb_gtk_zoom_view_abs(v, center_x, center_y, v->coord_per_px * factor);
 }
 
 TODO(": remove this and make the side-correct version the default (rename that to this short name); check when looking from the bottom: library window, drc window")
@@ -319,7 +319,7 @@ fgw_error_t pcb_gtk_act_zoom(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_a
 		pcb_gtk_zoom_view_rel(vw, x, y, v);
 		break;
 	case '=':
-		ghid_zoom_view_abs(vw, x, y, v);
+		pcb_gtk_zoom_view_abs(vw, x, y, v);
 		break;
 	}
 
