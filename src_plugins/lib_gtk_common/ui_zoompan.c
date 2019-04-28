@@ -313,35 +313,6 @@ fgw_error_t pcb_gtk_swap_sides(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw
 	return 0;
 }
 
-const char pcb_acts_scroll[] = "Scroll(up|down|left|right, [div])";
-const char pcb_acth_scroll[] = "Scroll the viewport.";
-/* DOC: scroll.html */
-fgw_error_t pcb_gtk_act_scroll(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	const char *op;
-	gdouble dx = 0.0, dy = 0.0;
-	int div = 40;
-
-	PCB_ACT_CONVARG(1, FGW_STR, scroll, op = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_INT, scroll, div = argv[2].val.nat_int);
-
-	if (pcb_strcasecmp(op, "up") == 0)
-		dy = -vw->height / div;
-	else if (pcb_strcasecmp(op, "down") == 0)
-		dy = vw->height / div;
-	else if (pcb_strcasecmp(op, "right") == 0)
-		dx = vw->width / div;
-	else if (pcb_strcasecmp(op, "left") == 0)
-		dx = -vw->width / div;
-	else
-		PCB_ACT_FAIL(scroll);
-
-	pcb_gtk_pan_view_rel(vw, dx, dy);
-
-	PCB_ACT_IRES(0);
-	return 0;
-}
-
 void pcb_gtk_get_coords(pcb_gtk_mouse_t *mouse, pcb_gtk_view_t *vw, const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)
 {
 	if ((force || !vw->has_entered) && msg)

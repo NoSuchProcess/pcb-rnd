@@ -206,14 +206,6 @@ static fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return rv;
 }
 
-static fgw_error_t pcb_act_Scroll(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	if (ghidgui == NULL)
-		return 0;
-
-	return pcb_gtk_act_scroll(&gport->view, res, argc, argv);
-}
-
 /* ------------------------------------------------------------
  *
  * Actions specific to the GTK HID follow from here
@@ -225,7 +217,6 @@ pcb_action_t ghid_main_action_list[] = {
 	{"DoWindows", pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows},
 	{"Popup", pcb_act_Popup, pcb_acth_Popup, pcb_acts_Popup},
 	{"SaveWindowGeometry", pcb_act_SaveWinGeo, pcb_acth_SaveWinGeo, pcb_acts_SaveWinGeo},
-	{"Scroll", pcb_act_Scroll, pcb_acth_scroll, pcb_acts_scroll},
 	{"SwapSides", pcb_act_SwapSides, pcb_acth_swapsides, pcb_acts_swapsides},
 };
 

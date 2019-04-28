@@ -173,3 +173,32 @@ fgw_error_t pcb_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_IRES(0);
 	return 0;
 }
+
+const char pcb_acts_Scroll[] = "Scroll(up|down|left|right, [pixels])";
+const char pcb_acth_Scroll[] = "Scroll the viewport.";
+/* DOC: scroll.html */
+fgw_error_t pcb_act_Scroll(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *op;
+	double dx = 0.0, dy = 0.0, pixels = 100.0;
+
+	PCB_ACT_CONVARG(1, FGW_STR, Scroll, op = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_DOUBLE, Scroll, pixels = argv[2].val.nat_double);
+
+	if (pcb_strcasecmp(op, "up") == 0)
+		dy = -pcb_gui->coord_per_pix * pixels;
+	else if (pcb_strcasecmp(op, "down") == 0)
+		dy = pcb_gui->coord_per_pix * pixels;
+	else if (pcb_strcasecmp(op, "right") == 0)
+		dx = pcb_gui->coord_per_pix * pixels;
+	else if (pcb_strcasecmp(op, "left") == 0)
+		dx = -pcb_gui->coord_per_pix * pixels;
+	else
+		PCB_ACT_FAIL(Scroll);
+
+	pcb_gui->pan(dx, dy, 1);
+
+	PCB_ACT_IRES(0);
+	return 0;
+}
+
