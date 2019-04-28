@@ -34,7 +34,7 @@ typedef struct {
 		CFT_BOOLEAN marker_snaps;          /* marker snaps to grid or snap points, as any other click */
 		CFT_BOOLEAN highlight_on_point;    /* Highlight if crosshair is on endpoints. */
 		CFT_BOOLEAN show_solder_side;      /* mirror output */
-		CFT_BOOLEAN save_last_command;     /* the command entry editline always starts with the last command entered by user in the current session */
+		CFT_BOOLEAN save_last_command;     /* OBSOLETE: use the session-persistent command line history instead (press the up arrow) */
 		CFT_INTEGER line_refraction;       /* value for line lookahead setting */
 		CFT_BOOLEAN save_in_tmp;           /* emergency save unsaved PCB data (despite the user clicks don't save) when: user starts a new PCB; user quits pcb-rnd. Does not affect the on-crash emergency save. */
 		CFT_BOOLEAN draw_grid;             /* draw grid points */
