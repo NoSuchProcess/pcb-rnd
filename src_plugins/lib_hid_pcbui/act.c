@@ -29,7 +29,11 @@
 #include "actions.h"
 #include "board.h"
 #include "compat_misc.h"
+#include "conf.h"
+#include "conf_core.h"
+#include "draw.h"
 #include "hid.h"
+#include "layer_vis.h"
 
 #include "util.h"
 #include "act.h"
@@ -202,3 +206,81 @@ fgw_error_t pcb_act_Scroll(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+
+const char pcb_acts_SwapSides[] = "SwapSides(|v|h|r, [S])";
+const char pcb_acth_SwapSides[] = "Swaps the side of the board you're looking at.";
+/* DOC: swapsides.html */
+fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_layergrp_id_t active_group = pcb_layer_get_group(PCB, pcb_layer_stack[0]);
+	pcb_layergrp_id_t comp_group = -1, solder_group = -1;
+	pcb_bool comp_on = pcb_false, solder_on = pcb_false;
+	pcb_coord_t x, y;
+	NOGUI();
+
+	pcb_hid_get_coords("Click to center of flip", &x, &y, 0);
+	x = pcb_crosshair.X;
+	y = pcb_crosshair.Y;
+
+	if (pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder_group, 1) > 0)
+		solder_on = LAYER_PTR(PCB->LayerGroups.grp[solder_group].lid[0])->meta.real.vis;
+
+	if (pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &comp_group, 1) > 0)
+		comp_on = LAYER_PTR(PCB->LayerGroups.grp[comp_group].lid[0])->meta.real.vis;
+
+	pcb_draw_inhibit_inc();
+	if (argc > 1) {
+		const char *a, *b = "";
+		pcb_layer_id_t lid;
+		pcb_layer_type_t lyt;
+
+		PCB_ACT_CONVARG(1, FGW_STR, SwapSides, a = argv[1].val.str);
+		PCB_ACT_MAY_CONVARG(2, FGW_STR, SwapSides, b = argv[2].val.str);
+		switch (a[0]) {
+			case 'h': case 'H':
+				conf_toggle_editor_("view/flip_x", view.flip_x);
+				break;
+			case 'v': case 'V':
+				conf_toggle_editor_("view/flip_y", view.flip_y);
+				break;
+			case 'r': case 'R':
+				conf_toggle_editor_("view/flip_x", view.flip_x);
+				conf_toggle_editor_("view/flip_y", view.flip_y);
+				conf_toggle_editor(show_solder_side); /* Swapped back below */
+				break;
+
+			default:
+				pcb_draw_inhibit_dec();
+				PCB_ACT_IRES(1);
+				return 0;
+		}
+
+		switch (b[0]) {
+			case 'S':
+			case 's':
+				lyt = (pcb_layer_flags_(CURRENT) & PCB_LYT_ANYTHING) | (!conf_core.editor.show_solder_side ?  PCB_LYT_BOTTOM : PCB_LYT_TOP);
+				lid = pcb_layer_vis_last_lyt(lyt);
+				if (lid >= 0)
+					pcb_layervis_change_group_vis(lid, 1, 1);
+		}
+	}
+
+	conf_toggle_editor(show_solder_side);
+
+	if ((active_group == comp_group && comp_on && !solder_on) || (active_group == solder_group && solder_on && !comp_on)) {
+		pcb_bool new_solder_vis = conf_core.editor.show_solder_side;
+
+		if (comp_group >= 0)
+			pcb_layervis_change_group_vis(PCB->LayerGroups.grp[comp_group].lid[0], !new_solder_vis, !new_solder_vis);
+		if (solder_group >= 0)
+			pcb_layervis_change_group_vis(PCB->LayerGroups.grp[solder_group].lid[0], new_solder_vis, new_solder_vis);
+	}
+
+	pcb_draw_inhibit_dec();
+
+	pcb_gui->pan(x, y, 0);
+	pcb_gui->invalidate_all();
+
+	PCB_ACT_IRES(0);
+	return 0;
+}

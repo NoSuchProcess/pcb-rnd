@@ -62,7 +62,8 @@ static pcb_action_t act_action_list[] = {
 	{"ZoomTo", pcb_act_Zoom, pcb_acth_Zoom, pcb_acts_Zoom},
 	{"Pan", pcb_act_Pan, pcb_acth_Pan, pcb_acts_Pan},
 	{"Center", pcb_act_Center, pcb_acth_Center, pcb_acts_Center},
-	{"Scroll", pcb_act_Scroll, pcb_acth_Scroll, pcb_acts_Scroll}
+	{"Scroll", pcb_act_Scroll, pcb_acth_Scroll, pcb_acts_Scroll},
+	{"SwapSides", pcb_act_SwapSides, pcb_acth_SwapSides, pcb_acts_SwapSides}
 };
 PCB_REGISTER_ACTIONS(act_action_list, act_cookie)
 

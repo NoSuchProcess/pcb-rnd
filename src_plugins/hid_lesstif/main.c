@@ -375,120 +375,6 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 	return;
 }
 
-static const char pcb_acts_SwapSides[] = "SwapSides(|v|h|r, [S])";
-static const char pcb_acth_SwapSides[] = "Swaps the side of the board you're looking at.";
-/* DOC: swapsides.html */
-static int group_showing(int g, int *c)
-{
-	int i, l;
-	*c = PCB->LayerGroups.grp[g].lid[0];
-	for (i = 0; i < PCB->LayerGroups.grp[g].len; i++) {
-		l = PCB->LayerGroups.grp[g].lid[i];
-		if (l >= 0 && l < pcb_max_layer && (!(pcb_layer_flags(PCB, l) & PCB_LYT_SILK))) {
-			*c = l;
-			if (PCB->Data->Layer[l].meta.real.vis)
-				return 1;
-		}
-	}
-	return 0;
-}
-
-TODO(": ui_zoomplan.c does the same, maybe make the code common?")
-static fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	const char *op = NULL, *b = "";
-	int old_shown_side = conf_core.editor.show_solder_side;
-	pcb_layergrp_id_t comp_group = -1, solder_group = -1;
-	pcb_layergrp_id_t active_group = pcb_layer_get_group(PCB, pcb_layer_stack[0]);
-	int comp_layer;
-	int solder_layer;
-	int comp_showing = 0, solder_showing = 0;
-	pcb_layer_id_t lid;
-	pcb_layer_type_t lyt;
-
-	if (pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder_group, 1) > 0)
-		solder_showing = group_showing(solder_group, &solder_layer);
-
-	if (pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &comp_group, 1) > 0)
-		comp_showing = group_showing(comp_group, &comp_layer);
-
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, SwapSides, op = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, SwapSides, b = argv[2].val.str);
-
-	if (op != NULL) {
-		switch (op[0]) {
-		case 'h':
-		case 'H':
-			conf_toggle_editor_("view/flip_x", view.flip_x);
-			break;
-		case 'v':
-		case 'V':
-			conf_toggle_editor_("view/flip_y", view.flip_y);
-			break;
-		case 'r':
-		case 'R':
-			conf_toggle_editor_("view/flip_x", view.flip_x);
-			conf_toggle_editor_("view/flip_y", view.flip_y);
-			break;
-		default:
-			return 1;
-		}
-
-		switch (b[0]) {
-			case 'S':
-			case 's':
-				lyt = (pcb_layer_flags_(CURRENT) & PCB_LYT_ANYTHING) | (!conf_core.editor.show_solder_side ?  PCB_LYT_BOTTOM : PCB_LYT_TOP);
-				lid = pcb_layer_vis_last_lyt(lyt);
-				if (lid >= 0)
-					pcb_layervis_change_group_vis(lid, 1, 1);
-		}
-
-		/* SwapSides will swap this */
-		conf_set_editor(show_solder_side, (conf_core.editor.view.flip_x == conf_core.editor.view.flip_y));
-	}
-
-	stdarg_n = 0;
-	if (conf_core.editor.view.flip_x)
-		stdarg(XmNprocessingDirection, XmMAX_ON_LEFT);
-	else
-		stdarg(XmNprocessingDirection, XmMAX_ON_RIGHT);
-	XtSetValues(hscroll, stdarg_args, stdarg_n);
-
-	stdarg_n = 0;
-	if (conf_core.editor.view.flip_y)
-		stdarg(XmNprocessingDirection, XmMAX_ON_TOP);
-	else
-		stdarg(XmNprocessingDirection, XmMAX_ON_BOTTOM);
-	XtSetValues(vscroll, stdarg_args, stdarg_n);
-
-	conf_toggle_editor(show_solder_side);
-
-	/* The idea is that if we're looking at the front side and the front
-	   layer is active (or visa versa), switching sides should switch
-	   layers too.  We used to only do this if the other layer wasn't
-	   shown, but we now do it always.  Change it back if users get
-	   confused.  */
-	if (conf_core.editor.show_solder_side != old_shown_side) {
-		if (conf_core.editor.show_solder_side) {
-			if (active_group == comp_group) {
-				if (comp_showing && !solder_showing)
-					pcb_layervis_change_group_vis(comp_layer, 0, 0);
-				pcb_layervis_change_group_vis(solder_layer, 1, 1);
-			}
-		}
-		else {
-			if (active_group == solder_group) {
-				if (solder_showing && !comp_showing)
-					pcb_layervis_change_group_vis(solder_layer, 0, 0);
-				pcb_layervis_change_group_vis(comp_layer, 1, 1);
-			}
-		}
-	}
-	lesstif_invalidate_all();
-	PCB_ACT_IRES(0);
-	return 0;
-}
-
 static Widget m_cmd = 0, m_cmd_label;
 static int cmd_is_active = 0;
 
@@ -679,7 +565,6 @@ static double ltf_benchmark(void)
 }
 
 pcb_action_t lesstif_main_action_list[] = {
-	{"SwapSides", pcb_act_SwapSides, pcb_acth_SwapSides, pcb_acts_SwapSides},
 	{"Command", pcb_act_Command, pcb_acth_Command, pcb_acts_Command},
 };
 

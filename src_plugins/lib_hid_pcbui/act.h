@@ -14,3 +14,6 @@ extern const char pcb_acts_Scroll[];
 extern const char pcb_acth_Scroll[];
 fgw_error_t pcb_act_Scroll(fgw_arg_t *res, int argc, fgw_arg_t *argv);
 
+extern const char pcb_acts_SwapSides[];
+extern const char pcb_acth_SwapSides[];
+fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv);

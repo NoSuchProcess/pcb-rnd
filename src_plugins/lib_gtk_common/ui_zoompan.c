@@ -206,26 +206,6 @@ void pcb_gtk_zoom_view_win_side(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_coord_t y
 	}
 }
 
-static void pcb_gtk_flip_view(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, pcb_bool flip_x, pcb_bool flip_y)
-{
-	int widget_x, widget_y;
-
-	pcb_draw_inhibit_inc();
-
-	/* Work out where on the screen the flip point is */
-	pcb_gtk_coords_pcb2event(v, center_x, center_y, &widget_x, &widget_y);
-
-	conf_set_design("editor/view/flip_x", "%d", conf_core.editor.view.flip_x != flip_x);
-	conf_set_design("editor/view/flip_y", "%d", conf_core.editor.view.flip_y != flip_y);
-
-	/* Pan the board so the center location remains in the same place */
-	pcb_gtk_pan_view_abs(v, center_x, center_y, widget_x, widget_y);
-
-	pcb_draw_inhibit_dec();
-
-	v->com->invalidate_all();
-}
-
 void pcb_gtk_pan_view_abs(pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int widget_x, int widget_y)
 {
 	v->x0 = pcb_round((double)SIDE_X(v, pcb_x) - (double)widget_x * v->coord_per_px);
@@ -240,77 +220,6 @@ void pcb_gtk_pan_view_rel(pcb_gtk_view_t *v, pcb_coord_t dx, pcb_coord_t dy)
 	v->y0 += dy;
 
 	pcb_gtk_pan_common(v);
-}
-
-/* ---------------------------------------------------------------------- */
-const char pcb_acts_swapsides[] = "SwapSides(|v|h|r, [S])";
-const char pcb_acth_swapsides[] = "Swaps the side of the board you're looking at.";
-/* DOC: swapsides.html */
-fgw_error_t pcb_gtk_swap_sides(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	pcb_layergrp_id_t active_group = pcb_layer_get_group(PCB, pcb_layer_stack[0]);
-	pcb_layergrp_id_t comp_group = -1, solder_group = -1;
-	pcb_bool comp_on = pcb_false, solder_on = pcb_false;
-
-	if (pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder_group, 1) > 0)
-		solder_on = LAYER_PTR(PCB->LayerGroups.grp[solder_group].lid[0])->meta.real.vis;
-
-	if (pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &comp_group, 1) > 0)
-		comp_on = LAYER_PTR(PCB->LayerGroups.grp[comp_group].lid[0])->meta.real.vis;
-
-	pcb_draw_inhibit_inc();
-	if (argc > 1) {
-		const char *a, *b = "";
-		pcb_layer_id_t lid;
-		pcb_layer_type_t lyt;
-
-		PCB_ACT_CONVARG(1, FGW_STR, swapsides, a = argv[1].val.str);
-		PCB_ACT_MAY_CONVARG(2, FGW_STR, swapsides, b = argv[2].val.str);
-		switch (a[0]) {
-		case 'h':
-		case 'H':
-			pcb_gtk_flip_view(vw, vw->crosshair_x, vw->crosshair_y, pcb_true, pcb_false);
-			break;
-		case 'v':
-		case 'V':
-			pcb_gtk_flip_view(vw, vw->crosshair_x, vw->crosshair_y, pcb_false, pcb_true);
-			break;
-		case 'r':
-		case 'R':
-			pcb_gtk_flip_view(vw, vw->crosshair_x, vw->crosshair_y, pcb_true, pcb_true);
-			conf_toggle_editor(show_solder_side); /* Swapped back below */
-			break;
-		default:
-			pcb_draw_inhibit_dec();
-			return 1;
-		}
-		switch (b[0]) {
-			case 'S':
-			case 's':
-				lyt = (pcb_layer_flags_(CURRENT) & PCB_LYT_ANYTHING) | (!conf_core.editor.show_solder_side ?  PCB_LYT_BOTTOM : PCB_LYT_TOP);
-				lid = pcb_layer_vis_last_lyt(lyt);
-				if (lid >= 0)
-					pcb_layervis_change_group_vis(lid, 1, 1);
-		}
-	}
-
-	conf_toggle_editor(show_solder_side);
-
-	if ((active_group == comp_group && comp_on && !solder_on) || (active_group == solder_group && solder_on && !comp_on)) {
-		pcb_bool new_solder_vis = conf_core.editor.show_solder_side;
-
-		if (comp_group >= 0)
-			pcb_layervis_change_group_vis(PCB->LayerGroups.grp[comp_group].lid[0], !new_solder_vis, !new_solder_vis);
-		if (solder_group >= 0)
-			pcb_layervis_change_group_vis(PCB->LayerGroups.grp[solder_group].lid[0], new_solder_vis, new_solder_vis);
-	}
-
-	pcb_draw_inhibit_dec();
-
-	vw->com->invalidate_all();
-
-	PCB_ACT_IRES(0);
-	return 0;
 }
 
 void pcb_gtk_get_coords(pcb_gtk_mouse_t *mouse, pcb_gtk_view_t *vw, const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)

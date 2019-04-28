@@ -192,32 +192,16 @@ static fgw_error_t pcb_act_SaveWinGeo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	int rv, oa;
-
-	/* ugly workaround: turn off gui refreshes until the swap finishes to avoid triggering more events that may lead to infinite loop */
-	oa = ghidgui->hid_active;
-	ghidgui->hid_active = 0;
-
-	rv = pcb_gtk_swap_sides(&gport->view, res, argc, argv);
-
-	ghidgui->hid_active = oa;
-	return rv;
-}
-
 /* ------------------------------------------------------------
  *
  * Actions specific to the GTK HID follow from here
  *
  */
-
 pcb_action_t ghid_main_action_list[] = {
 	{"Command", pcb_act_Command},
 	{"DoWindows", pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows},
 	{"Popup", pcb_act_Popup, pcb_acth_Popup, pcb_acts_Popup},
-	{"SaveWindowGeometry", pcb_act_SaveWinGeo, pcb_acth_SaveWinGeo, pcb_acts_SaveWinGeo},
-	{"SwapSides", pcb_act_SwapSides, pcb_acth_swapsides, pcb_acts_swapsides},
+	{"SaveWindowGeometry", pcb_act_SaveWinGeo, pcb_acth_SaveWinGeo, pcb_acts_SaveWinGeo}
 };
 
 PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_act_cookie)
