@@ -376,97 +376,6 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 	return;
 }
 
-static const char pcb_acts_Zoom[] = "Zoom()\n" "Zoom(factor)";
-static const char pcb_acth_Zoom[] = "Various zoom factor changes.";
-/* DOC: zoom.html */
-static fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	pcb_coord_t x, y;
-	const char *vp, *ovp;
-	double v;
-
-	PCB_ACT_IRES(0);
-
-	if ((argc > 1) && ((argv[1].type & FGW_STR) == FGW_STR)) {
-		if (pcb_strcasecmp(argv[1].val.str, "selected") == 0) {
-			pcb_box_t sb;
-			if (pcb_get_selection_bbox(&sb, PCB->Data) > 0)
-				zoom_win(sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
-			else
-				pcb_message(PCB_MSG_ERROR, "Can't zoom to selection: nothing selected\n");
-			return 0;
-		}
-		if (pcb_strcasecmp(argv[1].val.str, "found") == 0) {
-			pcb_box_t sb;
-			if (pcb_get_found_bbox(&sb, PCB->Data) > 0)
-				zoom_win(sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
-			else
-				pcb_message(PCB_MSG_ERROR, "Can't zoom to 'found': nothing is found\n");
-			return 0;
-		}
-		if (pcb_strcasecmp(argv[1].val.str, "?") == 0) {
-			pcb_message(PCB_MSG_INFO, "Current lesstif zoom level: %f\n", view_zoom);
-			return 0;
-		}
-		if (pcb_strcasecmp(argv[1].val.str, "get") == 0) {
-			res->type = FGW_DOUBLE;
-			res->val.nat_double = view_zoom;
-			return 0;
-		}
-	}
-
-	if (argc > 3) {
-		pcb_coord_t x1, y1, x2, y2;
-		PCB_ACT_CONVARG(1, FGW_COORD, Zoom, x1 = fgw_coord(&argv[1]));
-		PCB_ACT_CONVARG(2, FGW_COORD, Zoom, y1 = fgw_coord(&argv[2]));
-		PCB_ACT_CONVARG(3, FGW_COORD, Zoom, x2 = fgw_coord(&argv[3]));
-		PCB_ACT_CONVARG(4, FGW_COORD, Zoom, y2 = fgw_coord(&argv[4]));
-		zoom_win(x1, y1, x2, y2, 1);
-		return 0;
-	}
-
-	pcb_hid_get_coords("Click on a place to zoom in", &x, &y, 0);
-
-	if (x == 0 && y == 0) {
-		x = view_width / 2;
-		y = view_height / 2;
-	}
-	else {
-		x = Vx(x);
-		y = Vy(y);
-	}
-	if (argc < 2) {
-		zoom_max();
-		return 0;
-	}
-	PCB_ACT_CONVARG(1, FGW_STR, Zoom, ovp = vp = argv[1].val.str);
-	if (pcb_strcasecmp(vp, "toggle") == 0) {
-		zoom_toggle(x, y);
-		return 0;
-	}
-	if (*vp == '+' || *vp == '-' || *vp == '=')
-		vp++;
-
-	v = strtod(vp, NULL);
-
-	if (v <= 0)
-		return 1;
-	switch (ovp[0]) {
-	case '-':
-		zoom_by(1 / v, x, y);
-		break;
-	default:
-	case '+':
-		zoom_by(v, x, y);
-		break;
-	case '=':
-		zoom_to(v, x, y);
-		break;
-	}
-	PCB_ACT_IRES(0);
-	return 0;
-}
-
 static int pan_thumb_mode;
 
 static const char pcb_acts_Pan[] = "Pan([thumb], mode)";
@@ -818,8 +727,6 @@ static fgw_error_t pcb_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 pcb_action_t lesstif_main_action_list[] = {
-	{"Zoom", pcb_act_Zoom, pcb_acth_Zoom, pcb_acts_Zoom},
-	{"ZoomTo", pcb_act_Zoom, pcb_acth_Zoom, pcb_acts_Zoom},
 	{"Pan", pcb_act_Pan, pcb_acth_Pan, pcb_acts_Pan},
 	{"SwapSides", pcb_act_SwapSides, pcb_acth_SwapSides, pcb_acts_SwapSides},
 	{"Command", pcb_act_Command, pcb_acth_Command, pcb_acts_Command},
@@ -3540,9 +3447,9 @@ static void ltf_zoom_win(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coo
 static void ltf_zoom(pcb_coord_t center_x, pcb_coord_t center_y, double factor, int relative)
 {
 	if (relative)
-		zoom_by(factor, center_x, center_y);
+		zoom_by(factor, Vx(center_x), Vy(center_y));
 	else
-		zoom_to(factor, center_x, center_y);
+		zoom_to(factor, Vx(center_x), Vy(center_y));
 }
 
 static void ltf_pan(pcb_coord_t x, pcb_coord_t y, int relative)

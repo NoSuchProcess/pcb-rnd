@@ -35,11 +35,13 @@
 #include "routest.h"
 #include "toolbar.h"
 #include "status.h"
+#include "act.h"
 #include "util.c"
 
 
 static const char *layer_cookie = "lib_hid_pcbui/layer";
 static const char *rst_cookie = "lib_hid_pcbui/route_style";
+static const char *act_cookie = "lib_hid_pcbui/actions";
 static const char *toolbar_cookie = "lib_hid_pcbui/toolbar";
 static const char *status_cookie = "lib_hid_pcbui/status";
 static const char *status_rd_cookie = "lib_hid_pcbui/status/readouts";
@@ -55,6 +57,12 @@ static pcb_action_t status_action_list[] = {
 };
 PCB_REGISTER_ACTIONS(status_action_list, status_cookie)
 
+static pcb_action_t act_action_list[] = {
+	{"Zoom", pcb_act_Zoom, pcb_acth_Zoom, pcb_acts_Zoom},
+	{"ZoomTo", pcb_act_Zoom, pcb_acth_Zoom, pcb_acts_Zoom}
+};
+PCB_REGISTER_ACTIONS(act_action_list, act_cookie)
+
 int pplg_check_ver_lib_hid_pcbui(int ver_needed) { return 0; }
 
 
@@ -62,6 +70,7 @@ void pplg_uninit_lib_hid_pcbui(void)
 {
 	pcb_remove_actions_by_cookie(rst_cookie);
 	pcb_remove_actions_by_cookie(status_cookie);
+	pcb_remove_actions_by_cookie(act_cookie);
 	pcb_event_unbind_allcookie(layer_cookie);
 	pcb_event_unbind_allcookie(rst_cookie);
 	pcb_event_unbind_allcookie(toolbar_cookie);
@@ -110,6 +119,7 @@ TODO("padstack: remove some paths when route style has proto")
 
 	PCB_REGISTER_ACTIONS(rst_action_list, rst_cookie);
 	PCB_REGISTER_ACTIONS(status_action_list, status_cookie);
+	PCB_REGISTER_ACTIONS(act_action_list, act_cookie);
 
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, pcb_layer_menu_update_ev, NULL, layer_cookie);
 	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, pcb_layer_menu_update_ev, NULL, layer_cookie);

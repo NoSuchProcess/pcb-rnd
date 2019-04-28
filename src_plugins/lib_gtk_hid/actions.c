@@ -194,12 +194,6 @@ static fgw_error_t pcb_act_SaveWinGeo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 
 /* ------------------------------------------------------------ */
-static fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	PCB_ACT_IRES(pcb_gtk_act_zoom(&gport->view, res, argc, argv));
-	return 0;
-}
-
 static fgw_error_t pcb_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	fgw_error_t e;
@@ -261,8 +255,6 @@ pcb_action_t ghid_main_action_list[] = {
 	{"SaveWindowGeometry", pcb_act_SaveWinGeo, pcb_acth_SaveWinGeo, pcb_acts_SaveWinGeo},
 	{"Scroll", pcb_act_Scroll, pcb_acth_scroll, pcb_acts_scroll},
 	{"SwapSides", pcb_act_SwapSides, pcb_acth_swapsides, pcb_acts_swapsides},
-	{"Zoom", pcb_act_Zoom, pcb_acth_zoom, pcb_acts_zoom},
-	{"ZoomTo", pcb_act_Zoom, pcb_acth_zoom, pcb_acts_zoom}
 };
 
 PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_act_cookie)
