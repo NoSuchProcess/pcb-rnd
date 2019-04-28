@@ -34,6 +34,15 @@
 #include "util.h"
 #include "act.h"
 
+#define NOGUI() \
+do { \
+	if ((pcb_gui == NULL) || (!pcb_gui->gui)) { \
+		PCB_ACT_IRES(1); \
+		return 0; \
+	} \
+	PCB_ACT_IRES(0); \
+} while(0)
+
 const char pcb_acts_Zoom[] =
 	"Zoom()\n"
 	"Zoom([+|-|=]factor)\n"
@@ -50,12 +59,8 @@ fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	double v;
 	pcb_coord_t x = 0, y = 0;
 
-	if ((pcb_gui == NULL) || (!pcb_gui->gui)) {
-		PCB_ACT_IRES(1);
-		return 0;
-	}
+	NOGUI();
 
-	PCB_ACT_IRES(0);
 	if (argc < 2) {
 		pcb_gui->zoom_win(0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y, 1);
 		return 0;
@@ -126,6 +131,25 @@ fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_gui->zoom(x, y, v, 0);
 		break;
 	}
+
+	PCB_ACT_IRES(0);
+	return 0;
+}
+
+const char pcb_acts_Pan[] = "Pan(Mode)";
+const char pcb_acth_Pan[] = "Start or stop panning (Mode = 1 to start, 0 to stop)\n";
+/* DOC: pan.html */
+fgw_error_t pcb_act_Pan(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	int mode;
+	pcb_coord_t x, y;
+
+	NOGUI();
+
+	pcb_hid_get_coords("Click on a place to pan", &x, &y, 0);
+
+	PCB_ACT_CONVARG(1, FGW_INT, Pan, mode = argv[1].val.nat_int);
+	pcb_gui->pan_mode(x, y, mode);
 
 	PCB_ACT_IRES(0);
 	return 0;

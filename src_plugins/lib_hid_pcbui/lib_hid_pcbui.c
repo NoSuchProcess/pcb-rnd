@@ -59,7 +59,8 @@ PCB_REGISTER_ACTIONS(status_action_list, status_cookie)
 
 static pcb_action_t act_action_list[] = {
 	{"Zoom", pcb_act_Zoom, pcb_acth_Zoom, pcb_acts_Zoom},
-	{"ZoomTo", pcb_act_Zoom, pcb_acth_Zoom, pcb_acts_Zoom}
+	{"ZoomTo", pcb_act_Zoom, pcb_acth_Zoom, pcb_acts_Zoom},
+	{"Pan", pcb_act_Pan, pcb_acth_Pan, pcb_acts_Pan}
 };
 PCB_REGISTER_ACTIONS(act_action_list, act_cookie)
 

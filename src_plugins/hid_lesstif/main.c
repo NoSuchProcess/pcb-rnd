@@ -375,36 +375,6 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 	return;
 }
 
-static int pan_thumb_mode;
-
-static const char pcb_acts_Pan[] = "Pan([thumb], mode)";
-static const char pcb_acth_Pan[] = "TODO";
-/* DOC: pan.html */
-static fgw_error_t pcb_act_Pan(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	const char *a0, *a1;
-	pcb_coord_t x, y;
-	int mode;
-
-	pcb_hid_get_coords("Click on a place to pan", &x, &y, 0);
-
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, Pan, a0 = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, Pan, a1 = argv[2].val.str);
-
-	if (argc == 3) {
-		pan_thumb_mode = (pcb_strcasecmp(a0, "thumb") == 0) ? 1 : 0;
-		mode = atoi(a1);
-	}
-	else {
-		pan_thumb_mode = 0;
-		mode = atoi(a0);
-	}
-	Pan(mode, Vx(x), Vy(y));
-
-	PCB_ACT_IRES(0);
-	return 0;
-}
-
 static const char pcb_acts_SwapSides[] = "SwapSides(|v|h|r, [S])";
 static const char pcb_acth_SwapSides[] = "Swaps the side of the board you're looking at.";
 /* DOC: swapsides.html */
@@ -726,7 +696,6 @@ static fgw_error_t pcb_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 pcb_action_t lesstif_main_action_list[] = {
-	{"Pan", pcb_act_Pan, pcb_acth_Pan, pcb_acts_Pan},
 	{"SwapSides", pcb_act_SwapSides, pcb_acth_SwapSides, pcb_acts_SwapSides},
 	{"Command", pcb_act_Command, pcb_acth_Command, pcb_acts_Command},
 	{"Center", pcb_act_Center}

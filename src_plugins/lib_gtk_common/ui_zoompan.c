@@ -374,33 +374,6 @@ fgw_error_t pcb_gtk_act_scroll(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw
 	return 0;
 }
 
-const char pcb_acts_pan[] = "Pan([thumb], Mode)";
-const char pcb_acth_pan[] = "Start or stop panning (Mode = 1 to start, 0 to stop)\n" "Optional thumb argument is ignored for now in gtk hid.\n";
-/* DOC: pan.html */
-fgw_error_t pcb_gtk_act_pan(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	int mode;
-
-	switch(argc) {
-		case 2:
-			PCB_ACT_CONVARG(1, FGW_INT, pan, mode = argv[1].val.nat_int);
-			break;
-		case 3:
-			PCB_ACT_CONVARG(2, FGW_INT, pan, mode = argv[2].val.nat_int);
-			pcb_message(PCB_MSG_WARNING, "The gtk gui currently ignores the optional first argument to the Pan action.\nFeel free to provide patches.\n");
-			PCB_ACT_IRES(1);
-			return 0;
-		default:
-			PCB_ACT_FAIL(pan);
-	}
-
-	vw->panning = mode;
-
-	PCB_ACT_IRES(0);
-	return 0;
-}
-
-
 void pcb_gtk_get_coords(pcb_gtk_mouse_t *mouse, pcb_gtk_view_t *vw, const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)
 {
 	if ((force || !vw->has_entered) && msg)

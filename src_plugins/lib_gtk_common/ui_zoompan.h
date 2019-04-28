@@ -110,10 +110,6 @@ extern const char pcb_acts_scroll[];
 extern const char pcb_acth_scroll[];
 fgw_error_t pcb_gtk_act_scroll(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_arg_t *argv);
 
-extern const char pcb_acts_pan[];
-extern const char pcb_acth_pan[];
-fgw_error_t pcb_gtk_act_pan(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_arg_t *argv);
-
 void pcb_gtk_get_coords(pcb_gtk_mouse_t *mouse, pcb_gtk_view_t *vw, const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force);
 
 /* Update adj limits to match the current zoom level */
