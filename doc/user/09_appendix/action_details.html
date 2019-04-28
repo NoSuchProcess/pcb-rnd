@@ -402,13 +402,16 @@ All objects on the board are up-down flipped (mirrored over the x axis).
  To flip the board physically, use BoardFlip(sides) 
 </dd></dl>
 
-<h2 id="center">center</h2>
+<h2 id="center">Center</h2>
 <dl><dd>
 <p>
 <table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+Center()
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Moves the pointer to the center of the window.
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+lib_hid_pcbui/actions
 </table>
 <p>
 Move the pointer to the center of the window, but only if it's currently within the window already. 
@@ -658,13 +661,16 @@ Example: ClrFlag(SelectedLines,join) <br>
  
 </dd></dl>
 
-<h2 id="command">command</h2>
+<h2 id="command">Command</h2>
 <dl><dd>
 <p>
 <table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+Command()
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Displays the command line input in the status area.
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+lib_hid_pcbui/actions
 </table>
 <p>
 The command window allows the user to manually enter actions to be executed. 
@@ -2622,13 +2628,16 @@ When invoked without argument or with
  Note: the code remembers all settings for all excitements, not only the  excitement that is currently selected. The selection and all parameters are saved as board attributes.
 </dd></dl>
 
-<h2 id="pan">pan</h2>
+<h2 id="pan">Pan</h2>
 <dl><dd>
 <p>
 <table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+Pan(Mode)
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Start or stop panning (Mode = 1 to start, 0 to stop)
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+lib_hid_pcbui/actions
 </table>
 <p>
 Start or stop panning.  To start call with Mode = 1, to stop call with Mode = 0.  
@@ -3338,13 +3347,16 @@ When a script is unloaded, its action
  Note: the data is per script id, not per script file name. 
 </dd></dl>
 
-<h2 id="scroll">scroll</h2>
+<h2 id="scroll">Scroll</h2>
 <dl><dd>
 <p>
 <table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+Scroll(up|down|left|right, [pixels])
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Scroll the viewport.
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+lib_hid_pcbui/actions
 </table>
 <p>
 Arguments: 
@@ -3639,13 +3651,16 @@ smartdisperse plugin
 Improve the initial dispersion of subcircuits by choosing an order based on the netlist, rather than the arbitrary subcircuit order.  This isn't the same as a global autoplace, it's more of a linear autoplace.  It might make some useful local groupings.  For example, you should not have to chase all over the board to find the resistor that goes with a given LED. 
 </dd></dl>
 
-<h2 id="swapsides">swapsides</h2>
+<h2 id="swapsides">SwapSides</h2>
 <dl><dd>
 <p>
 <table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+SwapSides(|v|h|r, [S])
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Swaps the side of the board you're looking at.
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+lib_hid_pcbui/actions
 </table>
 <p>
 This action changes the way you view the board (flipping the board). 
@@ -3839,13 +3854,22 @@ vi
 . 
 </dd></dl>
 
-<h2 id="zoom">zoom</h2>
+<h2 id="zoom">Zoom</h2>
 <dl><dd>
 <p>
 <table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+Zoom()
+Zoom([+|-|=]factor)
+Zoom(x1, y1, x2, y2)
+Zoom(selected)
+Zoom(?)
+Zoom(get)
+Zoom(found)
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+GUI zoom
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+lib_hid_pcbui/actions
 </table>
 <p>
 Changes the zoom (magnification) of the view of the board.  If no arguments are passed, the view is scaled such that the board just fits inside the visible window (i.e. "view all").  Otherwise, 
@@ -3883,6 +3907,12 @@ Changes the zoom (magnification) of the view of the board.  If no arguments are 
  
 <table border=1 cellspacing=0>
    
+<tr>
+
+<th>
+ (no argument)  
+<td>
+ Without argments: zoom to board extents.   
 <tr>
 
 <th>

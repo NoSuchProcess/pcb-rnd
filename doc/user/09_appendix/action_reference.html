@@ -12,7 +12,7 @@
 <h2> Action Reference</h2>
 <table border=1>
 <caption>\n <b>
-This is pcb-rnd 2.1.2 (svn r24946) an interactive printed circuit board editor ,  Revision: 24954
+This is pcb-rnd 2.1.2 (svn r25015) an interactive printed circuit board editor ,  Revision: 25064
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -31,6 +31,7 @@ This is pcb-rnd 2.1.2 (svn r24946) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#boardflip">BoardFlip</a></td><td>Mirror the board over the x axis, optionally mirroring sides as well.</td><td>BoardFlip([sides])</td><td></td>
 <tr><td>Brave</td><td>Changes brave settings.</td><td>Brave()<br>Brave(setting, on|off)</td><td></td>
 <tr><td>BrowseScripts</td><td>Present a dialog box for browsing scripts</td><td>BrowseScripts()</td><td>script plugin</td>
+<tr><td><a href="action_details.html#center">Center</a></td><td>Moves the pointer to the center of the window.</td><td>Center()</td><td>lib_hid_pcbui/actions</td>
 <tr><td>ChangeAngle</td><td>Changes the start angle, delta angle or both angles of an arc.</td><td>ChangeAngle(Object, start|delta|both, delta)<br>ChangeAngle(SelectedObjects|Selected, start|delta|both, delta)<br>ChangeAngle(SelectedArcs, start|delta|both, delta)</td><td></td>
 <tr><td><a href="action_details.html#changeclearsize">ChangeClearSize</a></td><td>Changes the clearance size of objects.</td><td>ChangeClearSize(Object, delta|style)<br>ChangeClearSize(SelectedPins|SelectedPads|SelectedVias, delta|style)<br>ChangeClearSize(SelectedLines|SelectedArcs, delta|style)<br>ChangeClearSize(Selected|SelectedObjects, delta|style)</td><td></td>
 <tr><td>ChangeDrillSize</td><td>Changes the drilling hole size of objects.</td><td>ChangeDrillSize(Object, delta|style)<br>ChangeDrillSize(SelectedPins|SelectedVias|Selected|SelectedObjects, delta|style)</td><td></td>
@@ -59,6 +60,7 @@ This is pcb-rnd 2.1.2 (svn r24946) an interactive printed circuit board editor ,
 <tr><td>ClearSquare</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td>ClipInhibit</td><td>ClipInhibit Feature Template.</td><td>ClipInhibit([on|off|check])</td><td></td>
 <tr><td><a href="action_details.html#clrflag">ClrFlag</a></td><td>Clears flags on objects.</td><td>ClrFlag(Object|Selected|SelectedObjects, flag)<br>ClrFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>ClrFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>ClrFlag(SelectedElements, flag)<br>flag = thermal | join</td><td></td>
+<tr><td><a href="action_details.html#command">Command</a></td><td>Displays the command line input in the status area.</td><td>Command()</td><td>lib_hid_pcbui/actions</td>
 <tr><td><a href="action_details.html#connection">Connection</a></td><td>Searches connections of the object at the cursor position.</td><td>Connection(Find|ResetLinesAndPolygons|ResetPinsAndVias|Reset)</td><td></td>
 <tr><td>CreateMenu</td><td>Creates a new menu, popup (only path specified) or submenu (at least path and action are specified)</td><td>CreateMenu(path)<br>CreateMenu(path, action, tooltip, cookie)</td><td></td>
 <tr><td>CreateText</td><td>Create a new text object</td><td>CreateText(layer, fontID, X, Y, direction, scale, text)</td><td></td>
@@ -70,6 +72,7 @@ This is pcb-rnd 2.1.2 (svn r24946) an interactive printed circuit board editor ,
 <tr><td>DelGroup</td><td>Remove a layer group; if the first argument is not specified, the current group is removed</td><td>DelGroup([@group])</td><td></td>
 <tr><td>Delete</td><td>Delete stuff.</td><td>Delete(Object|Selected)<br>Delete(AllRats|SelectedRats)</td><td></td>
 <tr><td>DeleteRats</td><td>Delete rat lines.</td><td>DeleteRats(AllRats|Selected|SelectedRats)</td><td></td>
+<tr><td>DescribeLocation</td><td>Return a string constant (valud until the next call) containing a short description at x;y (object, net, etc.)</td><td>DescribeLocation(x, y)</td><td>lib_hid_pcbui/status</td>
 <tr><td>DisableVendor</td><td>Disables automatic drill size mapping.</td><td>DisableVendor()</td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#disperseelements">DisperseElements</a></td><td>Disperses subcircuits.</td><td>DisperseElements(All|Selected)</td><td></td>
 <tr><td><a href="action_details.html#display">Display</a></td><td>Several display-related actions.</td><td>Display(SubcID, template)<br>Display(Grid|Redraw|Pinout|PinOrPadName)<br>Display(CycleClip|CycleCrosshair|ToggleAllDirections|ToggleStartDirection)<br>Display(ToggleGrid|ToggleRubberBandMode|ToggleUniqueNames)<br>Display(ToggleName|ToggleClearLine|ToggleFullPoly|ToggleSnapPin)<br>Display(ToggleSnapOffGridLine|ToggleHighlightOnPoint|ToggleCheckPlanes)<br>Display(ToggleThindraw|ToggleThindrawPoly|ToggleOrthoMove|ToggleLocalRef)<br>Display(ToggleLiveRoute|ToggleShowDRC|ToggleAutoDRC|LockNames|OnlyNames)</td><td></td>
@@ -166,6 +169,7 @@ This is pcb-rnd 2.1.2 (svn r24946) an interactive printed circuit board editor ,
 <tr><td>PadstackConvert</td><td>Convert selection or current buffer to padstack</td><td>PadstackConvert(buffer|selected, [originx, originy])</td><td></td>
 <tr><td>PadstackEdit</td><td>interactive pad stack editor</td><td>PadstackEdit(object, [tab])</td><td>dialogs plugin</td>
 <tr><td>PadstackPlace</td><td>Place a pad stack (either proto_id, or if not specified, the default for style)</td><td>PadstackPlace([proto_id|default], [x, y])</td><td></td>
+<tr><td><a href="action_details.html#pan">Pan</a></td><td>Start or stop panning (Mode = 1 to start, 0 to stop)</td><td>Pan(Mode)</td><td>lib_hid_pcbui/actions</td>
 <tr><td><a href="action_details.html#pastebuffer">PasteBuffer</a></td><td>Various operations on the paste buffer.</td><td>PasteBuffer(AddSelected|Clear|1..PCB_MAX_BUFFER)<br>PasteBuffer(Rotate, 1..3)<br>PasteBuffer(Convert|Restore|Mirror)<br>PasteBuffer(ToLayout, X, Y, units)<br>PasteBuffer(ToLayout, crosshair)<br>PasteBuffer(Save, Filename, [format], [force])<br>PasteBuffer(Push)<br>PasteBuffer(Pop)</td><td></td>
 <tr><td>Pinout</td><td>Present the subcircuit pinout box</td><td>Pinout()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#polycombine">PolyCombine</a></td><td></td><td></td><td>polycombine plugin</td>
@@ -214,6 +218,7 @@ This is pcb-rnd 2.1.2 (svn r24946) an interactive printed circuit board editor ,
 <tr><td>ScaleBuffer</td><td>Scales the buffer by multiplying all coordinates by a floating point number.<br>If only x is given, it is also used for y and thickness too. If subc is not<br>empty, subcircuits are also scaled</td><td>ScaleBuffer(x [,y [,thickness [,subc]]])</td><td></td>
 <tr><td><a href="action_details.html#scriptcookie">ScriptCookie</a></td><td>Return a cookie specific to the current script instance during script initialization</td><td>ScriptCookie()</td><td>script plugin</td>
 <tr><td><a href="action_details.html#scriptpersistency">ScriptPersistency</a></td><td>Read or remove script persistency data savd on preunload</td><td>ScriptPersistency(read|remove)</td><td>script plugin</td>
+<tr><td><a href="action_details.html#scroll">Scroll</a></td><td>Scroll the viewport.</td><td>Scroll(up|down|left|right, [pixels])</td><td>lib_hid_pcbui/actions</td>
 <tr><td><a href="action_details.html#select">Select</a></td><td>Toggles or sets the selection.</td><td>Select(Object|ToggleObject)<br>Select(All|Block|Connection|Invert)<br>Select(Convert)</td><td></td>
 <tr><td><a href="action_details.html#selectlayer">SelectLayer</a></td><td>Select which layer is the current layer.</td><td>SelectLayer(1..MAXLAYER|Silk|Rats)</td><td></td>
 <tr><td><a href="action_details.html#setflag">SetFlag</a></td><td>Sets flags on objects.</td><td>SetFlag(Object|Selected|SelectedObjects, flag)<br>SetFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>SetFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>SetFlag(SelectedElements, flag)<br>flag = thermal | join</td><td></td>
@@ -223,6 +228,8 @@ This is pcb-rnd 2.1.2 (svn r24946) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#setthermal">SetThermal</a></td><td>Set the thermal (on the current layer) of padstacks to the given style.<br>Style = 0 means no thermal.<br>Style = 1 has diagonal fingers with sharp edges.<br>Style = 2 has horizontal and vertical fingers with sharp edges.<br>Style = 3 is a solid connection to the plane.<br>Style = 4 has diagonal fingers with rounded edges.<br>Style = 5 has horizontal and vertical fingers with rounded edges.</td><td>SetThermal(Object|SelectedPins|SelectedVias|Selected, Style)</td><td></td>
 <tr><td><a href="action_details.html#setunits">SetUnits</a></td><td>Set the default measurement units.</td><td>SetUnits(mm|mil)</td><td></td>
 <tr><td><a href="action_details.html#setvalue">SetValue</a></td><td>Change various board-wide values and sizes.</td><td>SetValue(Grid|Line|LineSize|Text|TextScale, delta)</td><td></td>
+<tr><td>StatusSetText</td><td>Replace status printout with text temporarily; turn status printout back on if text is not provided.</td><td>StatusSetText([text])</td><td>lib_hid_pcbui/status</td>
+<tr><td><a href="action_details.html#swapsides">SwapSides</a></td><td>Swaps the side of the board you're looking at.</td><td>SwapSides(|v|h|r, [S])</td><td>lib_hid_pcbui/actions</td>
 <tr><td>SwitchHID</td><td>Switch to another HID.</td><td>SwitchHID(lesstif|gtk|batch)</td><td></td>
 <tr><td>System</td><td>Run shell command</td><td>System(shell_cmd)</td><td></td>
 <tr><td>Teardrops</td><td></td><td></td><td>teardrops plugin</td>
@@ -237,6 +244,8 @@ This is pcb-rnd 2.1.2 (svn r24946) an interactive printed circuit board editor ,
 <tr><td>UnloadVendor</td><td>Unloads the current vendor drill mapping table.</td><td>UnloadVendor()</td><td>vendor drill mapping</td>
 <tr><td><a href="action_details.html#unselect">Unselect</a></td><td>Unselects the object at the pointer location or the specified objects.</td><td>Unselect(All|Block|Connection)</td><td></td>
 <tr><td>ViewList</td><td>Present a new empty view list</td><td>viewlist([name, [winid]])</td><td>dialogs plugin</td>
+<tr><td><a href="action_details.html#zoom">Zoom</a></td><td>GUI zoom</td><td>Zoom()<br>Zoom([+|-|=]factor)<br>Zoom(x1, y1, x2, y2)<br>Zoom(selected)<br>Zoom(?)<br>Zoom(get)<br>Zoom(found)</td><td>lib_hid_pcbui/actions</td>
+<tr><td>ZoomTo</td><td>GUI zoom</td><td>Zoom()<br>Zoom([+|-|=]factor)<br>Zoom(x1, y1, x2, y2)<br>Zoom(selected)<br>Zoom(?)<br>Zoom(get)<br>Zoom(found)</td><td>lib_hid_pcbui/actions</td>
 <tr><td>acompnet</td><td>Attempt to auto-complete the current network</td><td>acompnet()</td><td>acompnet plugin</td>
 <tr><td><a href="action_details.html#align">align</a></td><td>Align subcircuits</td><td>Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distalign plugin</td>
 <tr><td><a href="action_details.html#aligntext">aligntext</a></td><td>Align Text Elements</td><td>AlignText(X/Y, [Lefts/Rights/Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distaligntext plugin</td>
