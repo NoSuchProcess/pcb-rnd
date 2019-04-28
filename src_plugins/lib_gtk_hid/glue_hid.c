@@ -471,6 +471,31 @@ static void ghid_dock_leave(pcb_hid_dad_subdialog_t *sub)
 	pcb_gtk_tw_dock_leave(&ghidgui->topwin, sub);
 }
 
+static void ghid_zoom_win(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_bool set_crosshair)
+{
+	pcb_gtk_zoom_view_win_side(&gport->view, x1, y1, x2, y2, set_crosshair);
+}
+
+static void ghid_zoom(pcb_coord_t center_x, pcb_coord_t center_y, double factor, int relative)
+{
+	if (relative)
+		pcb_gtk_zoom_view_rel(&gport->view, center_x, center_y, factor);
+	else
+		pcb_gtk_zoom_view_abs(&gport->view, center_x, center_y, factor);
+}
+
+static void ghid_pan(pcb_coord_t x, pcb_coord_t y, int relative)
+{
+	if (relative)
+		pcb_gtk_pan_view_rel(&gport->view, x, y);
+	else
+		pcb_gtk_pan_view_abs(&gport->view, x, y, gport->view.canvas_width/2, gport->view.canvas_height/2);
+}
+
+static void ghid_pan_mode(pcb_coord_t x, pcb_coord_t y, pcb_bool mode)
+{
+	gport->view.panning = mode;
+}
 
 void ghid_glue_hid_init(pcb_hid_t *dst)
 {
@@ -535,6 +560,11 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->clip_set  = ghid_clip_set;
 	dst->clip_get  = ghid_clip_get;
 	dst->clip_free = ghid_clip_free;
+
+	dst->zoom_win = ghid_zoom_win;
+	dst->zoom = ghid_zoom;
+	dst->pan = ghid_pan;
+	dst->pan_mode = ghid_pan_mode;
 
 	dst->key_state = &ghid_keymap;
 
