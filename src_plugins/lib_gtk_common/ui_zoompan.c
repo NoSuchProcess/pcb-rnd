@@ -124,7 +124,7 @@ void pcb_gtk_zoom_post(pcb_gtk_view_t *v)
  *
  * gport->view_width and gport->view_height are in PCB coordinates
  */
-static void pcb_gtk_zoom_view_abs(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, double new_zoom)
+void pcb_gtk_zoom_view_abs(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, double new_zoom)
 {
 	double clamped_zoom;
 	double xtmp, ytmp;
