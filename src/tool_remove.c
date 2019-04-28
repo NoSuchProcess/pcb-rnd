@@ -40,6 +40,7 @@
 #include "undo.h"
 #include "remove.h"
 #include "search.h"
+#include "obj_rat.h"
 #include "tool.h"
 
 
