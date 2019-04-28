@@ -3395,10 +3395,18 @@ static void ltf_zoom(pcb_coord_t center_x, pcb_coord_t center_y, double factor, 
 
 static void ltf_pan(pcb_coord_t x, pcb_coord_t y, int relative)
 {
-	view_left_x = x - (view_width * view_zoom) / 2;
-	view_top_y = y - (view_height * view_zoom) / 2;
-	lesstif_pan_fixup();
-	XWarpPointer(display, window, window, 0, 0, view_width, view_height, Vx(x), Vy(y));
+	if (relative) {
+		view_left_x += x;
+		view_top_y += y;
+		lesstif_pan_fixup();
+
+	}
+	else {
+		view_left_x = x - (view_width * view_zoom) / 2;
+		view_top_y = y - (view_height * view_zoom) / 2;
+		lesstif_pan_fixup();
+		XWarpPointer(display, window, window, 0, 0, view_width, view_height, Vx(x), Vy(y));
+	}
 }
 
 static void ltf_pan_mode(pcb_coord_t x, pcb_coord_t y, pcb_bool mode)
