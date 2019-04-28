@@ -34,4 +34,6 @@ const char *pcb_gtk_cmd_command_entry(pcb_gtk_command_t *ctx, const char *ovr, i
 /* cancel editing and quit the main loop - NOP if not active*/
 void ghid_cmd_close(pcb_gtk_command_t *ctx);
 
+void ghid_command_combo_box_entry_create(pcb_gtk_command_t *ctx, void (*hide_status)(void*,int), void *status_ctx);
+
 #endif
