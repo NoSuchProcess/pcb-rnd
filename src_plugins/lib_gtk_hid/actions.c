@@ -192,24 +192,6 @@ static fgw_error_t pcb_act_SaveWinGeo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-
-/* ------------------------------------------------------------ */
-static fgw_error_t pcb_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	fgw_error_t e;
-	pcb_coord_t x, y;
-	int offset_x, offset_y, pointer_x, pointer_y;
-	GdkDisplay *display = gdk_display_get_default();
-	GdkScreen *screen = gdk_display_get_default_screen(display);
-
-	pcb_hid_get_coords("Click to center", &x, &y, 0);
-
-	gdk_window_get_origin(gtk_widget_get_window(gport->drawing_area), &offset_x, &offset_y);
-	e = pcb_gtk_act_center(&gport->view, res, argc, argv, x, y, offset_x, offset_y, &pointer_x, &pointer_y);
-	gdk_display_warp_pointer(display, screen, pointer_x, pointer_y);
-	return e;
-}
-
 static fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int rv, oa;
@@ -239,7 +221,6 @@ static fgw_error_t pcb_act_Scroll(fgw_arg_t *res, int argc, fgw_arg_t *argv)
  */
 
 pcb_action_t ghid_main_action_list[] = {
-	{"Center", pcb_act_Center, pcb_acth_center, pcb_acts_center},
 	{"Command", pcb_act_Command},
 	{"DoWindows", pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows},
 	{"Popup", pcb_act_Popup, pcb_acth_Popup, pcb_acts_Popup},

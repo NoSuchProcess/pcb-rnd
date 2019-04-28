@@ -154,3 +154,22 @@ fgw_error_t pcb_act_Pan(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_IRES(0);
 	return 0;
 }
+
+const char pcb_acts_Center[] = "Center()\n";
+const char pcb_acth_Center[] = "Moves the pointer to the center of the window.";
+/* DOC: center.html */
+fgw_error_t pcb_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_coord_t x, y;
+	NOGUI();
+
+	pcb_hid_get_coords("Click to center", &x, &y, 0);
+
+	if (argc != 1)
+		PCB_ACT_FAIL(Center);
+
+	pcb_gui->pan(x, y, 0);
+
+	PCB_ACT_IRES(0);
+	return 0;
+}

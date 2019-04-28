@@ -98,10 +98,6 @@ extern const char pcb_acts_zoom[];
 extern const char pcb_acth_zoom[];
 fgw_error_t pcb_gtk_act_zoom(pcb_gtk_view_t *v, fgw_arg_t *res, int argc, fgw_arg_t *argv);
 
-extern const char pcb_acts_center[];
-extern const char pcb_acth_center[];
-fgw_error_t pcb_gtk_act_center(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_arg_t *argv, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int offset_x, int offset_y, int *out_pointer_x, int *out_pointer_y);
-
 extern const char pcb_acts_swapsides[];
 extern const char pcb_acth_swapsides[];
 fgw_error_t pcb_gtk_swap_sides(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_arg_t *argv);

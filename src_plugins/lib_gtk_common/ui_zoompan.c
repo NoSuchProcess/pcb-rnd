@@ -242,38 +242,6 @@ void pcb_gtk_pan_view_rel(pcb_gtk_view_t *v, pcb_coord_t dx, pcb_coord_t dy)
 	pcb_gtk_pan_common(v);
 }
 
-
-const char pcb_acts_center[] = "Center()\n";
-const char pcb_acth_center[] = "Moves the pointer to the center of the window.";
-/* DOC: center.html */
-fgw_error_t pcb_gtk_act_center(pcb_gtk_view_t *vw, fgw_arg_t *res, int argc, fgw_arg_t *argv, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int offset_x, int offset_y, int *out_pointer_x, int *out_pointer_y)
-{
-	int widget_x, widget_y;
-
-	if (argc != 1)
-		PCB_ACT_FAIL(center);
-
-	/* Aim to put the given x, y PCB coordinates in the center of the widget */
-	widget_x = vw->canvas_width / 2;
-	widget_y = vw->canvas_height / 2;
-
-	pcb_gtk_pan_view_abs(vw, pcb_x, pcb_y, widget_x, widget_y);
-
-	/* Now move the mouse pointer to the place where the board location
-	 * actually ended up.
-	 *
-	 * XXX: Should only do this if we confirm we are inside our window?
-	 */
-
-	pcb_gtk_coords_pcb2event(vw, pcb_x, pcb_y, &widget_x, &widget_y);
-
-	*out_pointer_x = offset_x + widget_x;
-	*out_pointer_y = offset_y + widget_y;
-
-	PCB_ACT_IRES(0);
-	return 0;
-}
-
 /* ---------------------------------------------------------------------- */
 const char pcb_acts_swapsides[] = "SwapSides(|v|h|r, [S])";
 const char pcb_acth_swapsides[] = "Swaps the side of the board you're looking at.";

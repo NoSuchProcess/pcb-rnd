@@ -678,27 +678,9 @@ static double ltf_benchmark(void)
 	return i/10.0;
 }
 
-/* DOC: center.html */
-static fgw_error_t pcb_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	pcb_coord_t x, y;
-
-	pcb_hid_get_coords("Click on a location to center", &x, &y, 0);
-
-	x = pcb_grid_fit(x, PCB->hidlib.grid, PCB->hidlib.grid_ox);
-	y = pcb_grid_fit(y, PCB->hidlib.grid, PCB->hidlib.grid_oy);
-	view_left_x = x - (view_width * view_zoom) / 2;
-	view_top_y = y - (view_height * view_zoom) / 2;
-	lesstif_pan_fixup();
-	XWarpPointer(display, window, window, 0, 0, view_width, view_height, Vx(x), Vy(y));
-	PCB_ACT_IRES(0);
-	return 0;
-}
-
 pcb_action_t lesstif_main_action_list[] = {
 	{"SwapSides", pcb_act_SwapSides, pcb_acth_SwapSides, pcb_acts_SwapSides},
 	{"Command", pcb_act_Command, pcb_acth_Command, pcb_acts_Command},
-	{"Center", pcb_act_Center}
 };
 
 PCB_REGISTER_ACTIONS(lesstif_main_action_list, lesstif_cookie)
