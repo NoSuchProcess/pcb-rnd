@@ -21,5 +21,4 @@ HID API simplification: actions
 	- lesstif: LesstifNetlistShow
 
 - action unification:
-	- Scroll is only in the gtk hid
 	- Popup is gtk only
