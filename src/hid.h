@@ -549,6 +549,9 @@ struct pcb_hid_s {
 
 	/* Load viewbox with the extents of visible pixels translated to board coords */
 	void (*view_get)(pcb_box_t *viewbox);
+
+	/* Open the command line */
+	void (*open_command)(void);
 };
 
 /* One of these functions (in the common code) will be called whenever the GUI

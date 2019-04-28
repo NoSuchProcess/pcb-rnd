@@ -63,7 +63,8 @@ static pcb_action_t act_action_list[] = {
 	{"Pan", pcb_act_Pan, pcb_acth_Pan, pcb_acts_Pan},
 	{"Center", pcb_act_Center, pcb_acth_Center, pcb_acts_Center},
 	{"Scroll", pcb_act_Scroll, pcb_acth_Scroll, pcb_acts_Scroll},
-	{"SwapSides", pcb_act_SwapSides, pcb_acth_SwapSides, pcb_acts_SwapSides}
+	{"SwapSides", pcb_act_SwapSides, pcb_acth_SwapSides, pcb_acts_SwapSides},
+	{"Command", pcb_act_Command, pcb_acth_Command, pcb_acts_Command}
 };
 PCB_REGISTER_ACTIONS(act_action_list, act_cookie)
 

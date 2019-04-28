@@ -40,14 +40,6 @@
 
 static const char *ghid_act_cookie = "gtk HID actions";
 
-/* DOC: command.html */
-static fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	ghid_handle_user_command(&ghidgui->topwin.cmd, TRUE);
-	PCB_ACT_IRES(0);
-	return 0;
-}
-
 static const char pcb_acts_DoWindows[] =
 	"DoWindows(1|2|3|4|5|6|7 [,false])\n"
 	"DoWindows(Layout|Library|Log|Search [,false])";
@@ -180,7 +172,6 @@ static fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
  *
  */
 pcb_action_t ghid_main_action_list[] = {
-	{"Command", pcb_act_Command},
 	{"DoWindows", pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows},
 	{"Popup", pcb_act_Popup, pcb_acth_Popup, pcb_acts_Popup}
 };

@@ -505,6 +505,11 @@ static void ghid_view_get(pcb_box_t *viewbox)
 	viewbox->Y2 = pcb_round((double)gport->view.y0 + (double)gport->view.canvas_height * gport->view.coord_per_px);
 }
 
+static void ghid_open_command(void)
+{
+	ghid_handle_user_command(&ghidgui->topwin.cmd, TRUE);
+}
+
 void ghid_glue_hid_init(pcb_hid_t *dst)
 {
 	memset(dst, 0, sizeof(pcb_hid_t));
@@ -574,6 +579,7 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->pan = ghid_pan;
 	dst->pan_mode = ghid_pan_mode;
 	dst->view_get = ghid_view_get;
+	dst->open_command = ghid_open_command;
 
 	dst->key_state = &ghid_keymap;
 

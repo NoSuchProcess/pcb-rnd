@@ -517,21 +517,6 @@ static const char *lesstif_command_entry(const char *ovr, int *cursor)
 	return XmTextGetString(m_cmd);
 }
 
-static const char pcb_acts_Command[] = "Command()";
-static const char pcb_acth_Command[] = "Displays the command line input window.";
-/* DOC: command */
-static fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	pcb_clihist_init();
-	pcb_clihist_reset();
-	XtManageChild(m_cmd_label);
-	XtManageChild(m_cmd);
-	XmProcessTraversal(m_cmd, XmTRAVERSE_CURRENT);
-	cmd_is_active = 1;
-	PCB_ACT_IRES(0);
-	return 0;
-}
-
 static double ltf_benchmark(void)
 {
 	int i = 0;
@@ -563,13 +548,6 @@ static double ltf_benchmark(void)
 	main_pixmap = save_main;
 	return i/10.0;
 }
-
-pcb_action_t lesstif_main_action_list[] = {
-	{"Command", pcb_act_Command, pcb_acth_Command, pcb_acts_Command},
-};
-
-PCB_REGISTER_ACTIONS(lesstif_main_action_list, lesstif_cookie)
-
 
 /* ----------------------------------------------------------------------
  * redraws the background image
@@ -3308,6 +3286,17 @@ static void ltf_view_get(pcb_box_t *viewbox)
 	viewbox->Y2 = pcb_round(view_top_y + view_height * view_zoom);
 }
 
+static void ltf_open_command(void)
+{
+	pcb_clihist_init();
+	pcb_clihist_reset();
+	XtManageChild(m_cmd_label);
+	XtManageChild(m_cmd);
+	XmProcessTraversal(m_cmd, XmTRAVERSE_CURRENT);
+	cmd_is_active = 1;
+}
+
+
 void lesstif_create_menu(const char *menu, const pcb_menu_prop_t *props);
 int lesstif_remove_menu(const char *menu);
 int lesstif_remove_menu_node(lht_node_t *node);
@@ -3414,6 +3403,7 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.pan = ltf_pan;
 	lesstif_hid.pan_mode = ltf_pan_mode;
 	lesstif_hid.view_get = ltf_view_get;
+	lesstif_hid.open_command = ltf_open_command;
 
 	lesstif_hid.usage = lesstif_usage;
 
@@ -3442,7 +3432,6 @@ static void lesstif_begin(void)
 {
 	PCB_REGISTER_ACTIONS(lesstif_library_action_list, lesstif_cookie)
 	lesstif_reg_attrs();
-	PCB_REGISTER_ACTIONS(lesstif_main_action_list, lesstif_cookie)
 	PCB_REGISTER_ACTIONS(lesstif_dialog_action_list, lesstif_cookie)
 	PCB_REGISTER_ACTIONS(lesstif_netlist_action_list, lesstif_cookie)
 

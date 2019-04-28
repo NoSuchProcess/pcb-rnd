@@ -302,3 +302,14 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_IRES(0);
 	return 0;
 }
+
+const char pcb_acts_Command[] = "Command()";
+const char pcb_acth_Command[] = "Displays the command line input in the status area.";
+/* DOC: command */
+fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	NOGUI();
+	pcb_gui->open_command();
+	PCB_ACT_IRES(0);
+	return 0;
+}
