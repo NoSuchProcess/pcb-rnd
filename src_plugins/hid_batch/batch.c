@@ -286,12 +286,6 @@ static void batch_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, in
 {
 }
 
-static void batch_get_view_size(pcb_coord_t *width, pcb_coord_t *height)
-{
-	*width = PCB->hidlib.size_x;
-	*height = PCB->hidlib.size_y;
-}
-
 static void batch_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
 {
 }
@@ -374,7 +368,6 @@ int pplg_init_hid_batch(void)
 	batch_hid.control_is_pressed = batch_control_is_pressed;
 	batch_hid.mod1_is_pressed = batch_mod1_is_pressed;
 	batch_hid.get_coords = batch_get_coords;
-	batch_hid.get_view_size = batch_get_view_size;
 	batch_hid.set_crosshair = batch_set_crosshair;
 	batch_hid.add_timer = batch_add_timer;
 	batch_hid.stop_timer = batch_stop_timer;

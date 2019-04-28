@@ -290,12 +290,6 @@ static void ghid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int
 	pcb_gtk_get_coords(&gport->mouse, &gport->view, msg, x, y, force);
 }
 
-static void ghid_get_view_size(pcb_coord_t * width, pcb_coord_t * height)
-{
-	*width = gport->view.width;
-	*height = gport->view.height;
-}
-
 pcb_hidval_t ghid_add_timer(void (*func) (pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
 {
 	return pcb_gtk_add_timer(&ghidgui->common, func, milliseconds, user_data);
@@ -532,7 +526,6 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->control_is_pressed = ghid_control_is_pressed;
 	dst->mod1_is_pressed = ghid_mod1_is_pressed;
 	dst->get_coords = ghid_get_coords;
-	dst->get_view_size = ghid_get_view_size;
 	dst->set_crosshair = ghid_set_crosshair;
 	dst->add_timer = ghid_add_timer;
 	dst->stop_timer = ghid_stop_timer;

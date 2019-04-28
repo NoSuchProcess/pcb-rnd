@@ -3136,13 +3136,6 @@ static void lesstif_beep(void)
 	fflush(stdout);
 }
 
-static void lesstif_get_view_size(pcb_coord_t *width, pcb_coord_t *height)
-{
-	*width = Pz(view_width);
-	*width = Pz(view_height);
-}
-
-
 static int lesstif_usage(const char *topic)
 {
 	fprintf(stderr, "\nLesstif GUI command line arguments:\n\n");
@@ -3366,7 +3359,6 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.control_is_pressed = lesstif_control_is_pressed;
 	lesstif_hid.mod1_is_pressed = lesstif_mod1_is_pressed;
 	lesstif_hid.get_coords = lesstif_get_coords;
-	lesstif_hid.get_view_size = lesstif_get_view_size;
 	lesstif_hid.set_crosshair = lesstif_set_crosshair;
 	lesstif_hid.add_timer = lesstif_add_timer;
 	lesstif_hid.stop_timer = lesstif_stop_timer;

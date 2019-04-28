@@ -338,11 +338,6 @@ struct pcb_hid_s {
 
 	void (*get_coords)(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force);
 
-	/* Fill in width and height with the sizes of the current view in
-	   pcb coordinates. used by action "Cursor" to determine max cursor pos.
-	   Width and height are never NULL. */
-	void (*get_view_size)(pcb_coord_t *width, pcb_coord_t *height);
-
 	/* Sets the crosshair, which may differ from the pointer depending
 	   on grid and pad snap.  Note that the HID is responsible for
 	   hiding, showing, redrawing, etc.  The core just tells it what
