@@ -225,7 +225,6 @@ static void zoom_max();
 static void zoom_to(double factor, pcb_coord_t x, pcb_coord_t y);
 static void zoom_win(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int setch);
 static void zoom_by(double factor, pcb_coord_t x, pcb_coord_t y);
-static void zoom_toggle(pcb_coord_t x, pcb_coord_t y);
 static void Pan(int mode, pcb_coord_t x, pcb_coord_t y);
 
 /* Px converts view->pcb, Vx converts pcb->view */
@@ -1018,15 +1017,6 @@ static void zoom_win(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t
 	lesstif_pan_fixup();
 	if (setch)
 		pcb_crosshair_move_absolute((x1+x2)/2, (y1+y2)/2);
-}
-
-static void zoom_toggle(pcb_coord_t x, pcb_coord_t y)
-{
-	double tmp;
-
-	tmp = prev_view_zoom;
-	prev_view_zoom = view_zoom;
-	zoom_to(tmp, x, y);
 }
 
 void zoom_by(double factor, pcb_coord_t x, pcb_coord_t y)
