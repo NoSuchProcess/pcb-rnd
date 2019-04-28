@@ -3532,6 +3532,33 @@ static void ltf_clip_free(pcb_hid_clipfmt_t format, void *data, size_t len)
 	free(data);
 }
 
+static void ltf_zoom_win(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_bool set_crosshair)
+{
+	zoom_win(x1, y1, x2, y2, 1);
+}
+
+static void ltf_zoom(pcb_coord_t center_x, pcb_coord_t center_y, double factor, int relative)
+{
+	if (relative)
+		zoom_by(factor, center_x, center_y);
+	else
+		zoom_to(factor, center_x, center_y);
+}
+
+static void ltf_pan(pcb_coord_t x, pcb_coord_t y, int relative)
+{
+	view_left_x = x - (view_width * view_zoom) / 2;
+	view_top_y = y - (view_height * view_zoom) / 2;
+	lesstif_pan_fixup();
+	XWarpPointer(display, window, window, 0, 0, view_width, view_height, Vx(x), Vy(y));
+}
+
+static void ltf_pan_mode(pcb_coord_t x, pcb_coord_t y, pcb_bool mode)
+{
+	Pan(mode, Vx(x), Vy(y));
+}
+
+
 void lesstif_create_menu(const char *menu, const pcb_menu_prop_t *props);
 int lesstif_remove_menu(const char *menu);
 int lesstif_remove_menu_node(lht_node_t *node);
@@ -3633,6 +3660,10 @@ int pplg_init_hid_lesstif(void)
 
 	lesstif_hid.key_state = &lesstif_keymap;
 
+	lesstif_hid.zoom_win = ltf_zoom_win;
+	lesstif_hid.zoom = ltf_zoom;
+	lesstif_hid.pan = ltf_pan;
+	lesstif_hid.pan_mode = ltf_pan_mode;
 
 	lesstif_hid.usage = lesstif_usage;
 
