@@ -546,6 +546,9 @@ struct pcb_hid_s {
 
 	/* Start or stop panning at x;y - stop is mode=0, start is mode=1 */
 	void (*pan_mode)(pcb_coord_t x, pcb_coord_t y, pcb_bool mode);
+
+	/* Load viewbox with the extents of visible pixels translated to board coords */
+	void (*view_get)(pcb_box_t *viewbox);
 };
 
 /* One of these functions (in the common code) will be called whenever the GUI

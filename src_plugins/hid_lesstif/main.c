@@ -3300,6 +3300,14 @@ static void ltf_pan_mode(pcb_coord_t x, pcb_coord_t y, pcb_bool mode)
 }
 
 
+static void ltf_view_get(pcb_box_t *viewbox)
+{
+	viewbox->X1 = view_left_x;
+	viewbox->Y1 = view_top_y;
+	viewbox->X2 = pcb_round(view_left_x + view_width * view_zoom);
+	viewbox->Y2 = pcb_round(view_top_y + view_height * view_zoom);
+}
+
 void lesstif_create_menu(const char *menu, const pcb_menu_prop_t *props);
 int lesstif_remove_menu(const char *menu);
 int lesstif_remove_menu_node(lht_node_t *node);
@@ -3405,6 +3413,7 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.zoom = ltf_zoom;
 	lesstif_hid.pan = ltf_pan;
 	lesstif_hid.pan_mode = ltf_pan_mode;
+	lesstif_hid.view_get = ltf_view_get;
 
 	lesstif_hid.usage = lesstif_usage;
 

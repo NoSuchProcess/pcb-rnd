@@ -497,6 +497,14 @@ static void ghid_pan_mode(pcb_coord_t x, pcb_coord_t y, pcb_bool mode)
 	gport->view.panning = mode;
 }
 
+static void ghid_view_get(pcb_box_t *viewbox)
+{
+	viewbox->X1 = gport->view.x0;
+	viewbox->Y1 = gport->view.y0;
+	viewbox->X2 = gport->view.x0 + gport->view.width;
+	viewbox->Y2 = gport->view.y0 + gport->view.height;
+}
+
 void ghid_glue_hid_init(pcb_hid_t *dst)
 {
 	memset(dst, 0, sizeof(pcb_hid_t));
@@ -565,6 +573,7 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->zoom = ghid_zoom;
 	dst->pan = ghid_pan;
 	dst->pan_mode = ghid_pan_mode;
+	dst->view_get = ghid_view_get;
 
 	dst->key_state = &ghid_keymap;
 
