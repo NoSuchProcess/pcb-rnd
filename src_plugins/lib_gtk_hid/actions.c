@@ -30,21 +30,13 @@
 
 #include "gui.h"
 
-#include "board.h"
 #include "actions.h"
-#include "data.h"
 #include "search.h"
-#include "change.h"
-#include "hid_attrib.h"
 #include "../src/actions.h"
 #include "compat_misc.h"
 
-#include "../src_plugins/lib_gtk_common/wt_layersel.h"
 #include "../src_plugins/lib_gtk_common/dlg_library.h"
 #include "../src_plugins/lib_gtk_common/dlg_search.h"
-#include "../src_plugins/lib_gtk_common/lib_gtk_config.h"
-
-#include "actions.h"
 
 static const char *ghid_act_cookie = "gtk HID actions";
 
