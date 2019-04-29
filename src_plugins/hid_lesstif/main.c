@@ -3297,6 +3297,7 @@ void lesstif_create_menu(const char *menu, const pcb_menu_prop_t *props);
 int lesstif_remove_menu(const char *menu);
 int lesstif_remove_menu_node(lht_node_t *node);
 pcb_hid_cfg_t *lesstif_get_menu_cfg(void);
+int ltf_open_popup(const char *menupath);
 
 int pplg_check_ver_hid_lesstif(int version_we_need) { return 0; }
 
@@ -3399,6 +3400,7 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.pan_mode = ltf_pan_mode;
 	lesstif_hid.view_get = ltf_view_get;
 	lesstif_hid.open_command = ltf_open_command;
+	lesstif_hid.open_popup = ltf_open_popup;
 
 	lesstif_hid.usage = lesstif_usage;
 

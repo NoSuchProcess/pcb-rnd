@@ -574,9 +574,30 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 	if (mr != NULL) {
 		if (mr->type == LHT_LIST) {
 			lht_node_t *n;
+
 			for(n = mr->data.list.first; n != NULL; n = n->next) {
-				Widget pmw = XmCreatePopupMenu(parent, XmStrCast(n->name), margs, mn);
-				add_node_to_menu(pmw, NULL, n, (XtCallbackProc) callback, 0);
+				menu_data_t *md;
+				Widget pmw, sh;
+				lht_node_t *i;
+
+				md = calloc(sizeof(menu_data_t), 1);
+				md->sub = XtCreatePopupShell("popupshell", topLevelShellWidgetClass, parent, margs, mn);
+/*				md->sub = XtCreatePopupShell("popupshell", xmMenuShellWidgetClass, parent, margs, mn); -> size 0 error */
+				{
+					Arg a[2];
+					int an = 0;
+/*					XtSetArg(a[0], XmNrowColumnType, XmMENU_POPUP); an++; -> inappropriate menu shell error */
+					pmw = XmCreateRowColumn(md->sub, XmStrCast(n->name), a, an);
+				}
+
+				i = pcb_hid_cfg_menu_field(n, PCB_MF_SUBMENU, NULL);
+				for(i = i->data.list.first; i != NULL; i = i->next)
+					add_node_to_menu(pmw, NULL, i, callback, 1);
+
+				XtManageChild(md->sub);
+				XtManageChild(pmw);
+				n->user_data = md;
+				md->btn = pmw;
 				htsp_set(&ltf_popups, n->name, pmw);
 			}
 		}
@@ -590,10 +611,26 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 	return mb;
 }
 
+int ltf_open_popup(const char *menupath)
+{
+	menu_data_t *md;
+	lht_node_t *menu_node = pcb_hid_cfg_get_menu(lesstif_cfg, menupath);
+
+	pcb_trace("ltf_open_popup: %s: %p\n", menupath, menu_node);
+
+	if (menu_node == NULL)
+		return -1;
+
+	md = menu_node->user_data;
+	XtPopup(md->sub, XtGrabExclusive);
+	return 0;
+}
+
 static int lesstif_create_menu_widget(void *ctx, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
 {
 	Widget w = (is_main) ? lesstif_menubar : ((menu_data_t *)parent->user_data)->sub;
 
+TODO("addin popup menu should be possible now TODO#59");
 	if (strncmp(path, "/popups", 7) == 0)
 		return -1; /* there's no popup support in lesstif */
 
