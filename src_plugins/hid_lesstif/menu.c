@@ -630,10 +630,6 @@ static int lesstif_create_menu_widget(void *ctx, const char *path, const char *n
 {
 	Widget w = (is_main) ? lesstif_menubar : ((menu_data_t *)parent->user_data)->sub;
 
-TODO("addin popup menu should be possible now TODO#59");
-	if (strncmp(path, "/popups", 7) == 0)
-		return -1; /* there's no popup support in lesstif */
-
 	add_node_to_menu(w, ins_after, menu_item, (XtCallbackProc) callback, is_main ? 0 : 2);
 
 	return 0;
