@@ -33,6 +33,7 @@
 Widget lesstif_menubar;
 pcb_hid_cfg_t *lesstif_cfg;
 conf_hid_id_t lesstif_menuconf_id = -1;
+htsp_t ltf_popups; /* popup_name -> Widget */
 
 #ifndef R_OK
 /* Common value for systems that don't define it.  */
@@ -568,12 +569,16 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 			pcb_hid_cfg_error(mr, "/main_menu should be a list");
 	}
 
+	htsp_init(&ltf_popups, strhash, strkeyeq);
 	mr = pcb_hid_cfg_get_menu(lesstif_cfg, "/popups");
 	if (mr != NULL) {
 		if (mr->type == LHT_LIST) {
 			lht_node_t *n;
-			for(n = mr->data.list.first; n != NULL; n = n->next)
-				add_node_to_menu(mb, NULL, n, (XtCallbackProc) callback, 0);
+			for(n = mr->data.list.first; n != NULL; n = n->next) {
+				Widget pmw = XmCreatePopupMenu(parent, XmStrCast(n->name), margs, mn);
+				add_node_to_menu(pmw, NULL, n, (XtCallbackProc) callback, 0);
+				htsp_set(&ltf_popups, n->name, pmw);
+			}
 		}
 		else
 			pcb_hid_cfg_error(mr, "/popups should be a list");
