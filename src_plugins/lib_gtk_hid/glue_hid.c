@@ -504,6 +504,26 @@ static void ghid_open_command(void)
 	ghid_handle_user_command(&ghidgui->topwin.cmd, TRUE);
 }
 
+static int ghid_open_popup(const char *menupath)
+{
+	GtkWidget *menu = NULL;
+	lht_node_t *menu_node = pcb_hid_cfg_get_menu(ghidgui->topwin.ghid_cfg, menupath);
+
+	if (menu_node == NULL)
+		return 1;
+
+	menu = pcb_gtk_menu_widget(menu_node);
+	if (!GTK_IS_MENU(menu)) {
+		pcb_message(PCB_MSG_ERROR, "The specified popup menu \"%s\" has not been defined.\n", menupath);
+		return 1;
+	}
+
+	ghidgui->topwin.in_popup = TRUE;
+	gtk_widget_grab_focus(ghid_port.drawing_area);
+	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time());
+	return 0;
+}
+
 void ghid_glue_hid_init(pcb_hid_t *dst)
 {
 	memset(dst, 0, sizeof(pcb_hid_t));
@@ -573,6 +593,7 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->pan_mode = ghid_pan_mode;
 	dst->view_get = ghid_view_get;
 	dst->open_command = ghid_open_command;
+	dst->open_popup = ghid_open_popup;
 
 	dst->key_state = &ghid_keymap;
 

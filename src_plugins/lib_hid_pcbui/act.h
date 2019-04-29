@@ -21,3 +21,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv);
 extern const char pcb_acts_Command[];
 extern const char pcb_acth_Command[];
 fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv);
+
+extern const char pcb_acts_Popup[];
+extern const char pcb_acth_Popup[];
+fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv);

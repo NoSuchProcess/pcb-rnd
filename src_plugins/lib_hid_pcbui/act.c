@@ -313,3 +313,68 @@ fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_IRES(0);
 	return 0;
 }
+
+const char pcb_acts_Popup[] = "Popup(MenuName, [obj-type])";
+const char pcb_acth_Popup[] = "Bring up the popup menu specified by MenuName, optionally modified with the object type under the cursor.\n";
+/* DOC: popup.html */
+fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	char name[256], name2[256];
+	const char *tn = NULL, *a0, *a1 = NULL;
+	int r = 1;
+	enum {
+		CTX_NONE,
+		CTX_OBJ_TYPE
+	} ctx_sens = CTX_NONE;
+
+	NOGUI();
+
+	if (argc != 2 && argc != 3)
+		PCB_ACT_FAIL(Popup);
+
+	PCB_ACT_CONVARG(1, FGW_STR, Popup, a0 = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, Popup, a1 = argv[2].val.str);
+
+	*name = '\0';
+	*name2 = '\0';
+
+	if (argc == 3) {
+		if (strcmp(a1, "obj-type") == 0) ctx_sens = CTX_OBJ_TYPE;
+	}
+
+	if (strlen(a0) < sizeof(name) - 32) {
+		switch(ctx_sens) {
+			case CTX_OBJ_TYPE:
+				{
+					pcb_coord_t x, y;;
+					pcb_objtype_t type;
+					void *o1, *o2, *o3;
+					pcb_hid_get_coords("context sensitive popup: select object", &x, &y, 0);
+					type = pcb_search_screen(x, y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &o1, &o2, &o3);
+					if (type == 0)
+						type = pcb_search_screen(x, y, PCB_OBJ_CLASS_REAL, &o1, &o2, &o3);
+
+					if (type == 0)
+						tn = "none";
+					else
+						tn = pcb_obj_type_name(type);
+
+					sprintf(name, "/popups/%s-%s", a0, tn);
+					sprintf(name2, "/popups/%s-misc", a0);
+				}
+				break;
+			case CTX_NONE:
+				sprintf(name, "/popups/%s", a0);
+				break;
+				
+		}
+	}
+
+	if (*name != '\0')
+		r = pcb_gui->open_popup(name);
+	if ((r != 0) && (*name2 != '\0'))
+		r = pcb_gui->open_popup(name2);
+
+	PCB_ACT_IRES(r);
+	return 0;
+}

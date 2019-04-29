@@ -547,6 +547,10 @@ struct pcb_hid_s {
 
 	/* Open the command line */
 	void (*open_command)(void);
+
+	/* Open a popup menu addressed by full menu path (starting with "/popups/").
+	   Return 0 on success. */
+	int (*open_popup)(const char *menupath);
 };
 
 /* One of these functions (in the common code) will be called whenever the GUI
