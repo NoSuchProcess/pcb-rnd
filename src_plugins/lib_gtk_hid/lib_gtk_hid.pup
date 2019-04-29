@@ -5,4 +5,4 @@ $state works
 $package lib-gtk
 default disable-all
 dep lib_hid_common
-dep lib_hid_pcbui
+
