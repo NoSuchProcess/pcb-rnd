@@ -78,7 +78,7 @@ static void command_history_add(pcb_gtk_command_t *ctx, gchar *cmd)
    line hbox, then we need stop the command entry g_main_loop from running
    and save the allocated string so it can be returned from
    ghid_command_entry_get() */
-static void command_entry_activate_cb(GtkWidget * widget, gpointer data)
+static void command_entry_activate_cb(GtkWidget *widget, gpointer data)
 {
 	pcb_gtk_command_t *ctx = data;
 	gchar *command;
@@ -99,7 +99,7 @@ static void command_entry_activate_cb(GtkWidget * widget, gpointer data)
 	ctx->command_entered = command; /* Caller will free it */
 }
 
-static pcb_bool command_keypress_cb(GtkWidget * widget, GdkEventKey * kev, pcb_gtk_command_t *ctx)
+static pcb_bool command_keypress_cb(GtkWidget *widget, GdkEventKey *kev, pcb_gtk_command_t *ctx)
 {
 	gint ksym = kev->keyval;
 
