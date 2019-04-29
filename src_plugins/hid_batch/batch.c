@@ -347,6 +347,11 @@ static void batch_open_command(void)
 
 }
 
+static int batch_open_popup(const char *menupath)
+{
+	return 1;
+}
+
 
 #include "dolists.h"
 
@@ -413,6 +418,7 @@ int pplg_init_hid_batch(void)
 	batch_hid.pan_mode = batch_pan_mode;
 	batch_hid.view_get = batch_view_get;
 	batch_hid.open_command = batch_open_command;
+	batch_hid.open_popup = batch_open_popup;
 
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, batch_cookie);
 	pcb_event_bind(PCB_EVENT_LOG_APPEND, ev_log_append, NULL, batch_cookie);
