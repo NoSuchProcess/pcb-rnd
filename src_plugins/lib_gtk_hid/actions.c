@@ -88,11 +88,8 @@ static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 /* ------------------------------------------------------------ */
-static const char pcb_acts_Popup[] = "Popup(MenuName, [Button])";
-
-static const char pcb_acth_Popup[] =
-	"Bring up the popup menu specified by MenuName.\n"
-	"If called by a mouse event then the mouse button number\n" "must be specified as the optional second argument.";
+static const char pcb_acts_Popup[] = "Popup(MenuName, [obj-type])";
+static const char pcb_acth_Popup[] = "Bring up the popup menu specified by MenuName, optionally modified with the object type under the cursor.\n";
 /* DOC: popup.html */
 static fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
