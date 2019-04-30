@@ -34,8 +34,8 @@
 #include "in_mouse.h"
 #include "glue.h"
 
-#define SIDE_X_(hidlib, x)      ((conf_core.editor.view.flip_x ? hidlib->size_x - (x) : (x)))
-#define SIDE_Y_(hidlib, y)      ((conf_core.editor.view.flip_y ? hidlib->size_y - (y) : (y)))
+#define SIDE_X_(hidlib, x)      ((*pcbhlc_editor_view_flip_x ? hidlib->size_x - (x) : (x)))
+#define SIDE_Y_(hidlib, y)      ((*pcbhlc_editor_view_flip_y ? hidlib->size_y - (y) : (y)))
 #define SIDE_X(v, x)            SIDE_X_((v)->com->hidlib, (x))
 #define SIDE_Y(v, y)            SIDE_Y_((v)->com->hidlib, (y))
 

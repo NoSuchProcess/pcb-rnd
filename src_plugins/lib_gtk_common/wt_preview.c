@@ -34,7 +34,7 @@
  */
 
 #include "config.h"
-#include "conf_core.h"
+#include "hidlib_conf.h"
 
 #include "in_mouse.h"
 #include "compat.h"
@@ -233,15 +233,15 @@ static gboolean ghid_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev)
 	preview->expose_data.view.Y1 = preview->y_min;
 	preview->expose_data.view.X2 = preview->x_max;
 	preview->expose_data.view.Y2 = preview->y_max;
-	save_fx = conf_core.editor.view.flip_x;
-	save_fy = conf_core.editor.view.flip_y;
-	conf_force_set_bool(conf_core.editor.view.flip_x, 0);
-	conf_force_set_bool(conf_core.editor.view.flip_y, 0);
+	save_fx = *pcbhlc_editor_view_flip_x;
+	save_fy = *pcbhlc_editor_view_flip_y;
+	conf_force_set_bool(*pcbhlc_editor_view_flip_x, 0);
+	conf_force_set_bool(*pcbhlc_editor_view_flip_y, 0);
 
 	res = preview->expose(widget, ev, pcb_hid_expose_generic, &preview->expose_data);
 
-	conf_force_set_bool(conf_core.editor.view.flip_x, save_fx);
-	conf_force_set_bool(conf_core.editor.view.flip_y, save_fy);
+	conf_force_set_bool(*pcbhlc_editor_view_flip_x, save_fx);
+	conf_force_set_bool(*pcbhlc_editor_view_flip_y, save_fy);
 
 	return res;
 }

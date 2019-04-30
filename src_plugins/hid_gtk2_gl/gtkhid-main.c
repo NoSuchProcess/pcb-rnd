@@ -6,6 +6,7 @@
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "hid_init.h"
+#include "hidlib_conf.h"
 #include "conf_core.h"
 
 #include "../src_plugins/lib_hid_gl/draw_gl.h"
