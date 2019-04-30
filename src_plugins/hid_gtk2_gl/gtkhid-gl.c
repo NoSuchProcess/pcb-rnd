@@ -747,7 +747,7 @@ static void ghid_gl_show_crosshair(gboolean paint_new_location)
 	if (!done_once) {
 		done_once = 1;
 		/* FIXME: when CrossColor changed from config */
-		map_color_string(conf_core.appearance.color.cross.str, &cross_color);
+		map_color_string((*pcbhlc_appearance_color_cross).str, &cross_color);
 	}
 	x = gport->view.crosshair_x;
 	y = gport->view.crosshair_y;

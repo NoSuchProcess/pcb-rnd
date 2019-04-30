@@ -1375,7 +1375,7 @@ static void show_crosshair(gboolean paint_new_location)
 		gdk_gc_set_clip_origin(xor_gc, 0, 0);
 		set_clip(priv, xor_gc);
 		/* FIXME: when CrossColor changed from config */
-		map_color_string(conf_core.appearance.color.cross.str, &cross_color);
+		map_color_string((*pcbhlc_appearance_color_cross).str, &cross_color);
 	}
 	x = Vx(gport->view.crosshair_x);
 	y = Vy(gport->view.crosshair_y);
