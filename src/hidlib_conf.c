@@ -27,6 +27,7 @@
 #include "config.h"
 
 #include "conf.h"
+#include "error.h"
 
 #include "hidlib_conf.h"
 
@@ -57,10 +58,12 @@ do { \
 	pcb_conf_resolve_t rsv = {sname, type, 0, NULL}; \
 	r = pcb_conf_resolve(&rsv); \
 	cnt += r; \
-	if (r > 0) \
-		pcbhlc_ ## name = rsv.nat->val.typef; \
-	else \
+	if (r <= 0) { \
 		pcbhlc_ ## name = (void *)&pcb_hidlib_zero; \
+		pcb_message(PCB_MSG_ERROR, "hidlib: pcb_hidlib_conf_init(): filed to resolve hidlib conf path %s\n", sname); \
+	} \
+	else \
+		pcbhlc_ ## name = rsv.nat->val.typef; \
 } while(0)
 
 int pcb_hidlib_conf_init()
