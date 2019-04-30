@@ -82,6 +82,7 @@ append /local/pcb/OBJS_HIDLIB [@
 	hid_dad_spin.o
 	hid_init.o
 	hid_nogui.o
+	hidlib_conf.o
 	list_conf.o
 	misc_util.o
 	paths.o
@@ -144,7 +145,6 @@ append /local/pcb/OBJS [@
 	heap.o
 	hid_cam.o
 	hid_draw_helpers.o
-	hidlib_conf.o
 	ht_subc.o
 	idpath.o
 	insert.o
