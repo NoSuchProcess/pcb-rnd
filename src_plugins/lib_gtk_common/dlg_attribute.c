@@ -31,6 +31,7 @@
 
 #include "config.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 #include "dlg_attribute.h"
 #include <stdlib.h>
 
@@ -462,7 +463,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
 
 				entry = pcb_gtk_coord_entry_new(ctx->attrs[j].min_val, ctx->attrs[j].max_val,
-																				ctx->attrs[j].default_val.coord_value, conf_core.editor.grid_unit, CE_SMALL);
+																				ctx->attrs[j].default_val.coord_value, *pcbhlc_editor_grid_unit, CE_SMALL);
 				gtk_box_pack_start(GTK_BOX(hbox), entry, FALSE, FALSE, 0);
 				g_object_set_data(G_OBJECT(entry), PCB_OBJ_PROP, ctx);
 				ctx->wl[j] = entry;
