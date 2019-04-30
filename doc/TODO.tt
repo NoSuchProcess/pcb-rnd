@@ -1,3 +1,105 @@
-- shouldn't a xm_extent_prediction() call be part of the xm_draw_tree_table_widget() call?
-- event pointer vs. enum:  ../src_plugins/hid_lesstif/xm_tree_table_widget.c:337:25: warning: expression which evaluates to zero treated as a null pointer constant of type 'XEvent *' (aka 'union _XEvent *') [-Wnon-literal-null-conversion]:  tp->event_data.event = ett_none;
-                               ^~~~~~~~
+1. [critical] handling resize
+
+pcb-rnd does rely on dynamic layouts, which means widgets need to be able 
+to resize. You can test this with the attached patch, applying it from 
+trunk (please don't commit it). Once applied, execute action d1 and you 
+will get a dialog. Please compare with gtk's behavior, when the COMPFLAG 
+line is present and when removed. 
+
+Mechanism: when EXPFILL is disabled, the widget needs to be as big as its 
+children wants it to be. Without scroll bar, that means as big as the 
+content says. So if I do a table with only 2 rows, it should be exactly as 
+big as needed for hosting those 2 rows, and no bigger. When EXPFILL is 
+enabled, the parent dialog resizes the widget to the correct size, so that 
+it fills up all remaining space in the dialog. This means the widget must 
+react to resize requests properly and grow.
+
+2. [major] scroll
+
+This is somewhat related to scrollbars: please never draw the scrollbar if 
+it is not needed. If the widget is large enough to host all items without 
+scrolling, please hide the scrollbars.
+
+In EXPFILL mode disabled this means we will never have a scroll bar, 
+because the widget will just grow large enough to host all children, 
+without scrolling. We also have a SCROLL flag, so if there's enough API, 
+we can pass that on too, and limit this: if the widget is larger than some 
+maximum value (that we should be able through SetValues), it stops growing 
+and adds the scroll bar. But we definitely needs a mode where the widget 
+really just grows exactly as big as needed, for layout reasons, for small, 
+static tables.
+
+When EXPFILL mode is enabled, the widget must be exactly as big as the 
+parent says. If this size is smaller than the content, it should add the 
+scrollbars; if this size is larger than the content, it should hide scroll 
+bars, grow as requested and leave unused space empty.
+
+I think we need a boolean property for this, that we can set with 
+SetValue. It should be not be EXPFILL, because that's a boxing thing, but 
+should control whether minimum size request reported by the widget does 
+include all content (so we never get a scroll bar) or not (we get 
+automatic scroll bars depending on widget size vs. content size).
+
+3. [minor] header col padding doesn't work
+
+as the d1() example shows, if there's no content, only the header, the 
+columns are not separated by anything. I think the same spacing should 
+apply that we have for the non-header cells.
+
+4. [minor] header background color
+
+at the moment the header background color is the same as the selection 
+background color, this way it is not possible to distinguish between 
+header and selection. I think we should use a different background color 
+for the header.
+
+5. [critical] on ett_mouse_btn_down, the current_cell field is always 0.
+
+Please note: I'd like to get a special value (different from 0) here if 
+the user clicked on the indentation/tree-pixmap part, so I know when I 
+need to do the collapse/expand.
+
+
+6. [major] shouldn't a xm_extent_prediction() call be part of the xm_draw_tree_table_widget() call?
+
+I'm adding (inserting, appending) new rows on the run. I need to call 
+xm_extend_prediction() to get the rows in the right spot on the screen, 
+but this call is in the priv header. Or is there another API call I should 
+do after making modifications to the tree model?
+
+7. [normal] global sym prefix
+
+public, global symbols must be prefixed, and xm_ is not a good prefix 
+e.g. for extend_prediction(). The other prefix, "xm_tree_table_" is way 
+too long for a namespace prefix.
+
+Please rename any non-static function and variable to have the same, short 
+prefix: Pxmtt_. I started to use Pxm for our other locally implemented 
+widgets, I think it is in-line with motif naming conventions. P stands for 
+"pcb-rnd", xm is for motif, and then we should have something for the 
+widget. If that something is always very short, one word, like with 
+the FillBox implementation, the prefix can be longer, but the tree table 
+names are long, so I'd prefer to have just tt as widget-specific prefix 
+there to keep names short. 
+
+8. [minor] pixmaps
+
+We also need to revise the pixmap part, it pollutes the 
+gobal namespace with unprefixed things like "make_pixmap_data".
+
+
+9. [normal] row location computation error
+
+please open the preferences with {i c p}, click the last tab (config), 
+place the cursor on the first node on the large tree on the left, then 
+start pressing the 'down' arrow key. After each cursor change, I call 
+xm_tree_table_focus_row() to adjust the scroll if needed.
+
+It seems on long trees there is some error in the calculation and the 
+lower we go the bigger the difference between the scroll and the actual 
+row location is.
+
+
+10. [minor] compiler warning
+
+event pointer vs. enum:  ../src_plugins/hid_lesstif/xm_tree_table_widget.c:337:25: warning: expression which evaluates to zero treated as a null pointer constant of type 'XEvent *' (aka 'union _XEvent *') [-Wnon-literal-null-conversion]:  tp->event_data.event = ett_none;
