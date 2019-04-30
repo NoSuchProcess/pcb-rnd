@@ -70,6 +70,7 @@ static const char *EXPERIMENTAL = NULL;
 #include "tool.h"
 #include "color.h"
 #include "netlist2.h"
+#include "hidlib_conf.h"
 
 #include "actions.h"
 #include "actions_pcb.h"
@@ -432,6 +433,7 @@ int main(int argc, char *argv[])
 
 
 	/* Minimal conf setup before we do anything else */
+	pcb_hidlib_conf_init();
 	pcb_netlist_geo_init();
 	pcb_minuid_init();
 	pcb_hidlib_init1();
