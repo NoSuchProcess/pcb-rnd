@@ -29,7 +29,6 @@
  */
 
 #include "config.h"
-#include "conf_core.h"
 
 #include <ctype.h>
 
