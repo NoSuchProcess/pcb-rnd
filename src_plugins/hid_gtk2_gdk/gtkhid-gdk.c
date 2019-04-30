@@ -745,11 +745,11 @@ static void ghid_gdk_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, p
 		delta_angle = 360;
 	}
 
-	if (conf_core.editor.view.flip_x) {
+	if (*pcbhlc_editor_view_flip_x) {
 		start_angle = 180 - start_angle;
 		delta_angle = -delta_angle;
 	}
-	if (conf_core.editor.view.flip_y) {
+	if (*pcbhlc_editor_view_flip_y) {
 		start_angle = -start_angle;
 		delta_angle = -delta_angle;
 	}

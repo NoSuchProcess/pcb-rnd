@@ -9,6 +9,7 @@
 #include "hid_draw_helpers.h"
 #include "hid_attrib.h"
 #include "hid_color.h"
+#include "hidlib_conf.h"
 #include "funchash_core.h"
 
 #include "../src_plugins/lib_hid_common/clip.h"
@@ -156,8 +157,8 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int pu
 	glLoadIdentity();
 	glTranslatef(0.0f, 0.0f, -Z_NEAR);
 
-	glScalef((conf_core.editor.view.flip_x ? -1. : 1.) / gport->view.coord_per_px, (conf_core.editor.view.flip_y ? -1. : 1.) / gport->view.coord_per_px, ((conf_core.editor.view.flip_x == conf_core.editor.view.flip_y) ? 1. : -1.) / gport->view.coord_per_px);
-	glTranslatef(conf_core.editor.view.flip_x ? gport->view.x0 - PCB->hidlib.size_x : -gport->view.x0, conf_core.editor.view.flip_y ? gport->view.y0 - PCB->hidlib.size_y : -gport->view.y0, 0);
+	glScalef((*pcbhlc_editor_view_flip_x ? -1. : 1.) / gport->view.coord_per_px, (*pcbhlc_editor_view_flip_y ? -1. : 1.) / gport->view.coord_per_px, ((*pcbhlc_editor_view_flip_x == *pcbhlc_editor_view_flip_y) ? 1. : -1.) / gport->view.coord_per_px);
+	glTranslatef(*pcbhlc_editor_view_flip_x ? gport->view.x0 - PCB->hidlib.size_x : -gport->view.x0, *pcbhlc_editor_view_flip_y ? gport->view.y0 - PCB->hidlib.size_y : -gport->view.y0, 0);
 
 	/* Put the renderer into a good state so that any drawing is done in standard mode */
 
@@ -938,8 +939,8 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 
 	pcb_gl_draw_expose_init(&gtk2_gl_hid, allocation.width, allocation.height, ev->area.x, allocation.height - ev->area.height - ev->area.y, ev->area.width, ev->area.height, &off_c);
 
-	glScalef((conf_core.editor.view.flip_x ? -1. : 1.) / port->view.coord_per_px, (conf_core.editor.view.flip_y ? -1. : 1.) / port->view.coord_per_px, ((conf_core.editor.view.flip_x == conf_core.editor.view.flip_y) ? 1. : -1.) / port->view.coord_per_px);
-	glTranslatef(conf_core.editor.view.flip_x ? port->view.x0 - PCB->hidlib.size_x : -port->view.x0, conf_core.editor.view.flip_y ? port->view.y0 - PCB->hidlib.size_y : -port->view.y0, 0);
+	glScalef((*pcbhlc_editor_view_flip_x ? -1. : 1.) / port->view.coord_per_px, (*pcbhlc_editor_view_flip_y ? -1. : 1.) / port->view.coord_per_px, ((*pcbhlc_editor_view_flip_x == *pcbhlc_editor_view_flip_y) ? 1. : -1.) / port->view.coord_per_px);
+	glTranslatef(*pcbhlc_editor_view_flip_x ? port->view.x0 - PCB->hidlib.size_x : -port->view.x0, *pcbhlc_editor_view_flip_y ? port->view.y0 - PCB->hidlib.size_y : -port->view.y0, 0);
 
 	/* Draw PCB background, before PCB primitives */
 	glColor3f(bg_c.red, bg_c.green, bg_c.blue);
@@ -1084,8 +1085,8 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	/* call the drawing routine */
 	ghid_gl_invalidate_current_gc();
 	glPushMatrix();
-	glScalef((conf_core.editor.view.flip_x ? -1. : 1.) / gport->view.coord_per_px, (conf_core.editor.view.flip_y ? -1. : 1.) / gport->view.coord_per_px, 1);
-	glTranslatef(conf_core.editor.view.flip_x ? gport->view.x0 - PCB->hidlib.size_x : -gport->view.x0, conf_core.editor.view.flip_y ? gport->view.y0 - PCB->hidlib.size_y : -gport->view.y0, 0);
+	glScalef((*pcbhlc_editor_view_flip_x ? -1. : 1.) / gport->view.coord_per_px, (*pcbhlc_editor_view_flip_y ? -1. : 1.) / gport->view.coord_per_px, 1);
+	glTranslatef(*pcbhlc_editor_view_flip_x ? gport->view.x0 - PCB->hidlib.size_x : -gport->view.x0, *pcbhlc_editor_view_flip_y ? gport->view.y0 - PCB->hidlib.size_y : -gport->view.y0, 0);
 
 	expcall(&gtk2_gl_hid, ctx);
 
