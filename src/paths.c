@@ -31,7 +31,7 @@
 #include "config.h"
 #include "paths.h"
 #include "error.h"
-#include "conf_core.h"
+#include "hidlib_conf.h"
 
 /* don't include board.h or compat_misc.h because of gsch2pcb-rnd */
 const char *pcb_board_get_filename(void);
@@ -133,11 +133,11 @@ int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 		template++;
 
 	if ((*template == '~') && (flags & PCB_SUBST_HOME)) {
-		if (conf_core.rc.path.home == NULL) {
+		if (*pcbhlc_rc_path_home == NULL) {
 			pcb_message(PCB_MSG_ERROR, "pcb_strdup_subst(): can't resolve home dir required for path %s\n", template);
 			goto error;
 		}
-		gds_append_str(s, conf_core.rc.path.home);
+		gds_append_str(s, *pcbhlc_rc_path_home);
 		template++;
 	}
 
