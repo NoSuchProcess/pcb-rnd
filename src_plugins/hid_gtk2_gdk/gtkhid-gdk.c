@@ -513,7 +513,7 @@ static void ghid_gdk_set_special_colors(conf_native_t *cfg)
 			set_special_grid_color();
 		}
 	}
-	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.off_limit) && priv->offlimits_gc) {
+	else if (((CFT_COLOR *)cfg->val.color == &(*pcbhlc_appearance_color_off_limit)) && priv->offlimits_gc) {
 		if (map_color_string(cfg->val.color[0].str, &priv->offlimits_color))
 			gdk_gc_set_foreground(priv->offlimits_gc, &priv->offlimits_color);
 	}
@@ -1434,7 +1434,7 @@ static void ghid_gdk_drawing_area_configure_hook(void *vport)
 		gdk_gc_set_clip_origin(priv->bg_gc, 0, 0);
 
 		priv->offlimits_gc = gdk_gc_new(priv->out_pixel);
-		if (!map_color_string(conf_core.appearance.color.off_limit.str, &priv->offlimits_color))
+		if (!map_color_string((*pcbhlc_appearance_color_off_limit).str, &priv->offlimits_color))
 			map_color_string("white", &priv->offlimits_color);
 		gdk_gc_set_foreground(priv->offlimits_gc, &priv->offlimits_color);
 		gdk_gc_set_clip_origin(priv->offlimits_gc, 0, 0);

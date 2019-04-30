@@ -817,7 +817,7 @@ static void ghid_gl_drawing_area_configure_hook(void *port)
 		if (!map_color_string((*pcbhlc_appearance_color_background).str, &priv->bg_color))
 			map_color_string("white", &priv->bg_color);
 
-		if (!map_color_string(conf_core.appearance.color.off_limit.str, &priv->offlimits_color))
+		if (!map_color_string((*pcbhlc_appearance_color_off_limit).str, &priv->offlimits_color))
 			map_color_string("white", &priv->offlimits_color);
 
 		if (!map_color_string((*pcbhlc_appearance_color_grid).str, &priv->grid_color))
