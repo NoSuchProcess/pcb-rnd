@@ -350,7 +350,7 @@ void ghid_gl_set_special_colors(conf_native_t *cfg)
 		if (map_color_string(cfg->val.color[0].str, &priv->bg_color))
 			set_special_grid_color();
 	}
-	else if (((CFT_COLOR *) cfg->val.color == &conf_core.appearance.color.grid)) {
+	else if (((CFT_COLOR *) cfg->val.color == &(*pcbhlc_appearance_color_grid))) {
 		if (map_color_string(cfg->val.color[0].str, &priv->grid_color))
 			set_special_grid_color();
 	}
@@ -820,7 +820,7 @@ static void ghid_gl_drawing_area_configure_hook(void *port)
 		if (!map_color_string(conf_core.appearance.color.off_limit.str, &priv->offlimits_color))
 			map_color_string("white", &priv->offlimits_color);
 
-		if (!map_color_string(conf_core.appearance.color.grid.str, &priv->grid_color))
+		if (!map_color_string((*pcbhlc_appearance_color_grid).str, &priv->grid_color))
 			map_color_string("blue", &priv->grid_color);
 		set_special_grid_color();
 

@@ -332,7 +332,7 @@ static void ghid_gdk_draw_grid(void)
 		colormap = gtk_widget_get_colormap(gport->top_window);
 
 	if (!priv->grid_gc) {
-		if (gdk_color_parse(conf_core.appearance.color.grid.str, &priv->grid_color)) {
+		if (gdk_color_parse((*pcbhlc_appearance_color_grid).str, &priv->grid_color)) {
 			priv->grid_color.red ^= priv->bg_color.red;
 			priv->grid_color.green ^= priv->bg_color.green;
 			priv->grid_color.blue ^= priv->bg_color.blue;
@@ -494,7 +494,7 @@ static void set_special_grid_color(void)
 	render_priv_t *priv = gport->render_priv;
 
           /* The color grid is combined with background color */
-	map_color_string(conf_core.appearance.color.grid.str, &priv->grid_color);
+	map_color_string((*pcbhlc_appearance_color_grid).str, &priv->grid_color);
 	priv->grid_color.red = (priv->grid_color.red ^ priv->bg_color.red) & 0xFF;
 	priv->grid_color.green = (priv->grid_color.green ^ priv->bg_color.green) & 0xFF;
 	priv->grid_color.blue = (priv->grid_color.blue ^ priv->bg_color.blue) & 0xFF;
@@ -517,7 +517,7 @@ static void ghid_gdk_set_special_colors(conf_native_t *cfg)
 		if (map_color_string(cfg->val.color[0].str, &priv->offlimits_color))
 			gdk_gc_set_foreground(priv->offlimits_gc, &priv->offlimits_color);
 	}
-	else if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.grid) && priv->grid_gc) {
+	else if (((CFT_COLOR *)cfg->val.color == &(*pcbhlc_appearance_color_grid)) && priv->grid_gc) {
 		if (map_color_string(cfg->val.color[0].str, &priv->grid_color))
 			set_special_grid_color();
 	}
