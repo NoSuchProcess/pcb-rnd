@@ -4097,9 +4097,10 @@
  box.h math_helper.h misc_util.h ../src_3rd/genvector/gds_char.h \
  ../src_plugins/lib_gtk_common/glue.h hid.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
- conf.h ../src_plugins/lib_gtk_common/compat.h board.h vtroutestyle.h \
- layer_grp.h rats_patch.h board.h hidlib.h crosshair.h vtonpoint.h \
- route.h conf_core.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h tool.h \
+ conf.h ../src_plugins/lib_gtk_common/compat.h actions.h \
+ ../src_3rd/libfungw/fungw.h board.h vtroutestyle.h layer_grp.h \
+ rats_patch.h board.h hidlib.h crosshair.h vtonpoint.h route.h \
+ conf_core.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h tool.h \
  ../src_plugins/lib_gtk_common/in_keyboard.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/bu_icons.h
@@ -6165,22 +6166,22 @@
  ../src_3rd/libuundo/uundo.h ../src_3rd/libuundo/uundo_debug.h
 ../src_3rd/qparse/qparse.o: ../src_3rd/qparse/qparse.c \
  ../src_3rd/qparse/qparse.h
-actions.o: actions.c ../config.h conf_core.h conf.h global_typedefs.h \
- pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
+actions.o: actions.c ../config.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/libfungw/fungw_conv.h error.h event.h \
+ unit.h global_typedefs.h pcb_bool.h actions.h hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
- ../src_3rd/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h globalconst.h color.h \
- ../src_3rd/libfungw/fungw_conv.h error.h event.h actions.h hid.h \
- attrib.h layer.h obj_common.h flag.h data_parent.h obj_arc_list.h \
- obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
+ ../src_3rd/liblihata/parser.h attrib.h layer.h globalconst.h color.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h data_parent.h \
+ obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
- ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h compat_misc.h \
- funchash.h
+ ../src_3rd/genvector/gds_char.h ../src_3rd/libfungw/fungw.h \
+ ../src_3rd/genht/htpp.h compat_misc.h funchash.h hidlib_conf.h conf.h \
+ pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
+ list_conf.h
 actions_pcb.o: actions_pcb.c ../config.h ../src_3rd/libfungw/fungw_conv.h \
  actions.h hid.h ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
@@ -6408,7 +6409,7 @@ conf_hid.o: conf_hid.c ../config.h conf_hid.h conf.h global_typedefs.h \
  ../src_3rd/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h error.h ../src_3rd/genht/hash.h \
- ../src_3rd/genht/htpp.h conf_core.h globalconst.h color.h
+ ../src_3rd/genht/htpp.h hidlib_conf.h
 conf_internal.o: conf_internal.c
 crosshair.o: crosshair.c ../config.h conf_core.h conf.h global_typedefs.h \
  pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
@@ -6833,7 +6834,7 @@ hid_init.o: hid_init.c ../config.h hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h hid_attrib.h \
  hid_init.h conf_core.h conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/vtp0.h list_conf.h compat_misc.h compat_inc.h \
- file_loaded.h
+ file_loaded.h hidlib_conf.h
 hid_nogui.o: hid_nogui.c ../config.h actions.h hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
@@ -6850,6 +6851,15 @@ hid_nogui.o: hid_nogui.c ../config.h actions.h hid.h \
  ../src_3rd/genht/htpp.h compat_misc.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h
 hidlib.o: hidlib.c ../config.h
+hidlib_conf.o: hidlib_conf.c ../config.h conf.h global_typedefs.h \
+ pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h error.h hidlib_conf.h
 ht_subc.o: ht_subc.c ../config.h obj_subc_list.h obj_subc.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/libminuid/libminuid.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h obj_common.h flag.h \
@@ -8225,8 +8235,8 @@ tool_remove.o: tool_remove.c ../config.h board.h ../src_3rd/genht/htsp.h \
  rats_patch.h hidlib.h event.h actions.h hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h error.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h remove.h search.h tool.h \
- ../src_3rd/genvector/vtp0.h
+ ../src_3rd/libuundo/uundo.h undo_old.h remove.h search.h obj_rat.h \
+ idpath.h tool.h ../src_3rd/genvector/vtp0.h
 tool_rotate.o: tool_rotate.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
