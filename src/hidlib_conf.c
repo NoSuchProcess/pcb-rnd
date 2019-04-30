@@ -35,6 +35,9 @@ CFT_INTEGER *pcbhlc_rc_verbose;
 CFT_INTEGER *pcbhlc_rc_quiet;
 CFT_STRING *pcbhlc_rc_cli_prompt;
 CFT_STRING *pcbhlc_rc_cli_backend;
+CFT_BOOLEAN *pcbhlc_rc_export_basename;
+CFT_STRING *pcbhlc_rc_path_exec_prefix;
+CFT_STRING *pcbhlc_rc_path_home;
 
 CFT_BOOLEAN *pcbhlc_appearance_loglevels_debug_popup;
 CFT_BOOLEAN *pcbhlc_appearance_loglevels_info_popup;
@@ -73,10 +76,13 @@ int pcb_hidlib_conf_init()
 {
 	int cnt = 0;
 
-	SCALAR(rc_verbose,      "rc/verbose",      CFN_INTEGER, integer);
-	SCALAR(rc_quiet,        "rc/quiet",        CFN_INTEGER, integer);
-	SCALAR(rc_cli_prompt,   "rc/cli_prompt",   CFN_STRING,  string);
-	SCALAR(rc_cli_backend,  "rc/cli_backend",  CFN_STRING,  string);
+	SCALAR(rc_verbose,           "rc/verbose",           CFN_INTEGER, integer);
+	SCALAR(rc_quiet,             "rc/quiet",             CFN_INTEGER, integer);
+	SCALAR(rc_cli_prompt,        "rc/cli_prompt",        CFN_STRING,  string);
+	SCALAR(rc_cli_backend,       "rc/cli_backend",       CFN_STRING,  string);
+	SCALAR(rc_export_basename,   "rc/export_basename",   CFN_BOOLEAN, boolean);
+	SCALAR(rc_path_exec_prefix,  "rc/path/exec_prefix",  CFN_STRING,  string);
+	SCALAR(rc_path_home,         "rc/path/home",         CFN_STRING,  string);
 
 	SCALAR(appearance_loglevels_debug_popup,    "appearance/loglevels/debug_popup",    CFN_BOOLEAN, boolean);
 	SCALAR(appearance_loglevels_info_popup,     "appearance/loglevels/info_popup",     CFN_BOOLEAN, boolean);

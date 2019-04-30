@@ -33,6 +33,9 @@ extern CFT_INTEGER *pcbhlc_rc_verbose;
 extern CFT_INTEGER *pcbhlc_rc_quiet;
 extern CFT_STRING *pcbhlc_rc_cli_prompt;
 extern CFT_STRING *pcbhlc_rc_cli_backend;
+extern CFT_BOOLEAN *pcbhlc_rc_export_basename;
+extern CFT_STRING *pcbhlc_rc_path_exec_prefix;
+extern CFT_STRING *pcbhlc_rc_path_home;
 
 extern CFT_BOOLEAN *pcbhlc_appearance_loglevels_debug_popup;
 extern CFT_BOOLEAN *pcbhlc_appearance_loglevels_info_popup;

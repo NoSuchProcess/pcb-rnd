@@ -62,7 +62,7 @@ extern pcb_plugin_dir_t *pcb_plugin_dir_first, *pcb_plugin_dir_last;
 const char *pcb_hid_export_fn(const char *filename);
 
 
-void pcb_hidlib_init1(void); /* before CLI argument parsing */
+void pcb_hidlib_init1(void (*conf_core_init)(void)); /* before CLI argument parsing; conf_core_init should conf_reg() at least the hidlib related nodes */
 void pcb_hidlib_init2(const pup_buildin_t *buildins); /* after CLI argument parsing */
 void pcb_hidlib_uninit(void);
 

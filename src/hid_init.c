@@ -42,7 +42,6 @@
 #include "hid_attrib.h"
 #include "hid_init.h"
 #include "misc_util.h"
-#include "conf_core.h"
 #include "compat_misc.h"
 #include "compat_inc.h"
 #include "file_loaded.h"
@@ -74,11 +73,11 @@ void pcb_hid_init()
 	pcb_gui = pcb_hid_nogui_get_hid();
 
 TODO("make this configurable - add to conf_board_ignores avoid plugin injection")
-	tmp = pcb_concat(conf_core.rc.path.exec_prefix, PCB_DIR_SEPARATOR_S, "lib", PCB_DIR_SEPARATOR_S, "pcb-rnd", PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL);
+	tmp = pcb_concat(*pcbhlc_rc_path_exec_prefix, PCB_DIR_SEPARATOR_S, "lib", PCB_DIR_SEPARATOR_S, "pcb-rnd", PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL);
 	pcb_plugin_add_dir(tmp);
 	free(tmp);
 
-	tmp = pcb_concat(conf_core.rc.path.exec_prefix, PCB_DIR_SEPARATOR_S, "lib", PCB_DIR_SEPARATOR_S, "pcb-rnd", PCB_DIR_SEPARATOR_S, "plugins", NULL);
+	tmp = pcb_concat(*pcbhlc_rc_path_exec_prefix, PCB_DIR_SEPARATOR_S, "lib", PCB_DIR_SEPARATOR_S, "pcb-rnd", PCB_DIR_SEPARATOR_S, "plugins", NULL);
 	pcb_plugin_add_dir(tmp);
 	free(tmp);
 
@@ -90,13 +89,13 @@ TODO("make this configurable - add to conf_board_ignores avoid plugin injection"
 	pcb_plugin_add_dir(tmp);
 	free(tmp);
 
-	/* conf_core.rc.path.home is set by the conf_core immediately on startup */
-	if (conf_core.rc.path.home != NULL) {
-		tmp = pcb_concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL);
+	/* *pcbhlc_rc_path_home is set by the conf_core immediately on startup */
+	if (*pcbhlc_rc_path_home != NULL) {
+		tmp = pcb_concat(*pcbhlc_rc_path_home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL);
 		pcb_plugin_add_dir(tmp);
 		free(tmp);
 
-		tmp = pcb_concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, "plugins", NULL);
+		tmp = pcb_concat(*pcbhlc_rc_path_home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, "plugins", NULL);
 		pcb_plugin_add_dir(tmp);
 		free(tmp);
 	}
@@ -260,7 +259,7 @@ pcb_hid_t **pcb_hid_enumerate()
 
 const char *pcb_hid_export_fn(const char *filename)
 {
-	if (conf_core.rc.export_basename) {
+	if (*pcbhlc_rc_export_basename) {
 		const char *outfn = strrchr(filename, PCB_DIR_SEPARATOR_C);
 		if (outfn == NULL)
 			return filename;
@@ -273,14 +272,13 @@ const char *pcb_hid_export_fn(const char *filename)
 extern void pcb_hid_dlg_uninit(void);
 extern void pcb_hid_dlg_init(void);
 
-void pcb_hidlib_init1(void)
+void pcb_hidlib_init1(void (*conf_core_init)(void))
 {
 	pcb_events_init();
 	pcb_file_loaded_init();
 	conf_init();
 	conf_core_init();
 	pcb_hidlib_conf_init();
-	conf_core_postproc(); /* to get all the paths initialized */
 	pcb_hid_dlg_init();
 	pcb_hid_init();
 }

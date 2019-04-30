@@ -401,6 +401,12 @@ void pcb_fix_locale(void)
 	setlocale(LC_ALL, "C");
 }
 
+static void conf_core_init_local(void)
+{
+	conf_core_init();
+	conf_core_postproc(); /* to get all the paths initialized */
+}
+
 #define we_are_exporting (pcb_gui->printer || pcb_gui->exporter)
 
 int main(int argc, char *argv[])
@@ -434,7 +440,7 @@ int main(int argc, char *argv[])
 	/* Minimal conf setup before we do anything else */
 	pcb_netlist_geo_init();
 	pcb_minuid_init();
-	pcb_hidlib_init1();
+	pcb_hidlib_init1(conf_core_init_local);
 	pcb_color_init();
 	pcb_layer_vis_init();
 	pcb_brave_init();
