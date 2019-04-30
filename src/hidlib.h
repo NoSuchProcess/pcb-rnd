@@ -27,8 +27,6 @@
 #ifndef PCB_HIDLIB_H
 #define PCB_HIDLIB_H
 
-#include "config.h"
-
 struct pcb_hidlib_s {
 	pcb_coord_t grid;                  /* grid resolution */
 	pcb_coord_t grid_ox, grid_oy;      /* grid offset */
