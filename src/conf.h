@@ -392,4 +392,18 @@ void conf_unreg_file(const char *path, const char *intern);
 
 void pcb_conf_files_uninit(void);
 
+/*** mass resolve (useful to avoid conf_core dep) ***/
+typedef struct {
+	const char *path;           /* full conf path to look up */
+	conf_native_type_t type;    /* accept only if type matches */
+	int allow_array;            /* if 0, refuse arrays */
+	conf_native_t *nat;         /* NULL if refused or not found */
+} pcb_conf_resolve_t;
+
+/* Resolve a single nat or an array of them (until a terminaltor where
+   path==NULL). Return the number of succesful resolves */
+int pcb_conf_resolve(pcb_conf_resolve_t *res);
+int pcb_conf_resolve_all(pcb_conf_resolve_t *res);
+
+
 #endif

@@ -2111,4 +2111,24 @@ void conf_setf(conf_role_t role, const char *path, int idx, const char *fmt, ...
 	free(tmp);
 }
 
+int pcb_conf_resolve(pcb_conf_resolve_t *res)
+{
+	res->nat = conf_get_field(res->path);
+	if (res->nat == NULL)
+		return 0;
+	if ((res->type != res->nat->type) || (!res->allow_array && (res->nat->array_size > 1))) {
+		res->nat = NULL;
+		return 0;
+	}
+	return 1;
+}
+
+int pcb_conf_resolve_all(pcb_conf_resolve_t *res)
+{
+	int cnt = 0;
+	for(; res->path != NULL; res++)
+		cnt += pcb_conf_resolve(res);
+	return cnt;
+}
+
 #include "conf_regfile.c"
