@@ -43,6 +43,8 @@ extern CFT_STRING *pcbhlc_appearance_loglevels_info_tag;
 extern CFT_STRING *pcbhlc_appearance_loglevels_warning_tag;
 extern CFT_STRING *pcbhlc_appearance_loglevels_error_tag;
 
+extern CFT_UNIT *pcbhlc_editor_grid_unit;
+
 int pcb_hidlib_conf_init();
 
 #endif

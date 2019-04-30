@@ -45,10 +45,13 @@ CFT_STRING *pcbhlc_appearance_loglevels_info_tag;
 CFT_STRING *pcbhlc_appearance_loglevels_warning_tag;
 CFT_STRING *pcbhlc_appearance_loglevels_error_tag;
 
+CFT_UNIT *pcbhlc_editor_grid_unit;
+
 static union {
 	CFT_INTEGER i;
 	CFT_BOOLEAN b;
 	CFT_STRING s;
+	CFT_UNIT c;
 } pcb_hidlib_zero; /* implicit initialized to 0 */
 
 
@@ -83,6 +86,8 @@ int pcb_hidlib_conf_init()
 	SCALAR(appearance_loglevels_info_tag,       "appearance/loglevels/info_tag",       CFN_STRING,  string);
 	SCALAR(appearance_loglevels_warning_tag,    "appearance/loglevels/warning_tag",    CFN_STRING,  string);
 	SCALAR(appearance_loglevels_error_tag,      "appearance/loglevels/error_tag",      CFN_STRING,  string);
+
+	SCALAR(editor_grid_unit,  "editor/grid_unit",  CFN_UNIT,  unit);
 
 	return cnt;
 }

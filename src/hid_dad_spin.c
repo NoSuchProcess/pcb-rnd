@@ -32,7 +32,7 @@
 #include "hid_dad_spin.h"
 #include "pcb-printf.h"
 #include "compat_misc.h"
-#include "conf_core.h"
+#include "hidlib_conf.h"
 
 gdl_list_t pcb_dad_coord_spins;
 
@@ -99,7 +99,7 @@ static char *gen_str_coord(pcb_hid_dad_spin_t *spin, pcb_coord_t c, char *buf, i
 	if (spin->unit != NULL)
 		unit = spin->unit;
 	else
-		unit = conf_core.editor.grid_unit;
+		unit = *pcbhlc_editor_grid_unit;
 	if (buf != NULL) {
 		pcb_snprintf(buf, buflen, "%$m*", unit->suffix, c);
 		return buf;
@@ -124,7 +124,7 @@ static void spin_unit_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	if ((!su->dlg[su->wglob].default_val.int_value) && (unum >= 0) && (unum < pcb_get_n_units()))
 		unit = &pcb_units[unum];
 	else
-		unit = conf_core.editor.grid_unit;
+		unit = *pcbhlc_editor_grid_unit;
 
 	pcb_snprintf(su->buf, sizeof(su->buf), "%$m*", unit->suffix, su->end->default_val.coord_value);
 	hv.str_value = su->buf;
@@ -224,7 +224,7 @@ static double get_step(pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end, pcb_h
 				pcb_bool succ = pcb_get_value_unit(str->default_val.str_value, NULL, 0, &v, &unit);
 				if (!succ) {
 					v = end->default_val.coord_value;
-					unit = conf_core.editor.grid_unit;
+					unit = *pcbhlc_editor_grid_unit;
 				}
 			}
 			else
