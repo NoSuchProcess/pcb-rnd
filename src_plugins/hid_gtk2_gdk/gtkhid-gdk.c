@@ -162,7 +162,7 @@ static pcb_hid_gc_t ghid_gdk_make_gc(void)
 
 	rv = g_new0(hid_gc_s, 1);
 	rv->me_pointer = &gtk2_gdk_hid;
-	rv->pcolor = conf_core.appearance.color.background;
+	rv->pcolor = (*pcbhlc_appearance_color_background);
 	return rv;
 }
 
@@ -507,7 +507,7 @@ static void ghid_gdk_set_special_colors(conf_native_t *cfg)
 {
 	render_priv_t *priv = gport->render_priv;
 
-	if (((CFT_COLOR *)cfg->val.color == &conf_core.appearance.color.background) && priv->bg_gc) {
+	if (((CFT_COLOR *)cfg->val.color == &(*pcbhlc_appearance_color_background)) && priv->bg_gc) {
 		if (map_color_string(cfg->val.color[0].str, &priv->bg_color)) {
 			gdk_gc_set_foreground(priv->bg_gc, &priv->bg_color);
 			set_special_grid_color();
@@ -1428,7 +1428,7 @@ static void ghid_gdk_drawing_area_configure_hook(void *vport)
 
 	if (!done_once) {
 		priv->bg_gc = gdk_gc_new(priv->out_pixel);
-		if (!map_color_string(conf_core.appearance.color.background.str, &priv->bg_color))
+		if (!map_color_string((*pcbhlc_appearance_color_background).str, &priv->bg_color))
 			map_color_string("white", &priv->bg_color);
 		gdk_gc_set_foreground(priv->bg_gc, &priv->bg_color);
 		gdk_gc_set_clip_origin(priv->bg_gc, 0, 0);

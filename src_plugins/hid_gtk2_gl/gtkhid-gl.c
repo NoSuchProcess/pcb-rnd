@@ -238,7 +238,7 @@ pcb_hid_gc_t ghid_gl_make_gc(void)
 
 	rv = g_new0(hid_gc_s, 1);
 	rv->me_pointer = &gtk2_gl_hid;
-	rv->pcolor = &conf_core.appearance.color.background;
+	rv->pcolor = pcbhlc_appearance_color_background;
 	rv->alpha_mult = 1.0;
 	return rv;
 }
@@ -346,7 +346,7 @@ void ghid_gl_set_special_colors(conf_native_t *cfg)
 {
 	render_priv_t *priv = gport->render_priv;
 
-	if (((CFT_COLOR *) cfg->val.color == &conf_core.appearance.color.background)) {
+	if (((CFT_COLOR *) cfg->val.color == pcbhlc_appearance_color_background)) {
 		if (map_color_string(cfg->val.color[0].str, &priv->bg_color))
 			set_special_grid_color();
 	}
@@ -814,7 +814,7 @@ static void ghid_gl_drawing_area_configure_hook(void *port)
 	gport->drawing_allowed = pcb_true;
 
 	if (!done_once) {
-		if (!map_color_string(conf_core.appearance.color.background.str, &priv->bg_color))
+		if (!map_color_string((*pcbhlc_appearance_color_background).str, &priv->bg_color))
 			map_color_string("white", &priv->bg_color);
 
 		if (!map_color_string(conf_core.appearance.color.off_limit.str, &priv->offlimits_color))

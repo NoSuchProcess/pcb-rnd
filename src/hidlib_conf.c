@@ -28,6 +28,7 @@
 
 #include "conf.h"
 #include "error.h"
+#include "color.h"
 
 #include "hidlib_conf.h"
 
@@ -49,6 +50,7 @@ CFT_STRING *pcbhlc_appearance_loglevels_debug_tag;
 CFT_STRING *pcbhlc_appearance_loglevels_info_tag;
 CFT_STRING *pcbhlc_appearance_loglevels_warning_tag;
 CFT_STRING *pcbhlc_appearance_loglevels_error_tag;
+CFT_COLOR *pcbhlc_appearance_color_background;
 
 CFT_UNIT *pcbhlc_editor_grid_unit;
 CFT_BOOLEAN *pcbhlc_editor_view_flip_x;
@@ -61,6 +63,7 @@ static union {
 	CFT_BOOLEAN b;
 	CFT_STRING s;
 	CFT_UNIT c;
+	CFT_COLOR clr;
 } pcb_hidlib_zero; /* implicit initialized to 0 */
 
 
@@ -101,6 +104,7 @@ int pcb_hidlib_conf_init()
 	SCALAR(appearance_loglevels_info_tag,       "appearance/loglevels/info_tag",       CFN_STRING,  string);
 	SCALAR(appearance_loglevels_warning_tag,    "appearance/loglevels/warning_tag",    CFN_STRING,  string);
 	SCALAR(appearance_loglevels_error_tag,      "appearance/loglevels/error_tag",      CFN_STRING,  string);
+	SCALAR(appearance_color_background,         "appearance/color/background",         CFN_COLOR,   color);
 
 	SCALAR(editor_grid_unit,    "editor/grid_unit",    CFN_UNIT,    unit);
 	SCALAR(editor_view_flip_x,  "editor/view/flip_x",  CFN_BOOLEAN, boolean);
