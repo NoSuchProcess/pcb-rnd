@@ -5,6 +5,7 @@
 #include "conf.h"
 #include "conf_hid.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 #include "compat_misc.h"
 #include "src_plugins/diag/diag_conf.h"
 
