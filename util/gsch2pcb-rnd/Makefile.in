@@ -55,7 +55,7 @@ uniq /local/pcb/OBJS
 print [@
 
 FP_OBJS    = @/local/pcb/OBJS@ ../../src/plug_footprint.o
-CONF_OBJS  = ../../src/vtlibrary.o ../../src/compat_fs.o ../../src/paths.o ../../src/conf.o ../../src/conf_core.o ../../src/hid_cfg.o ../../src/misc_util.o ../../src/unit.o ../../src/conf_internal.o ../../src/list_conf.o ../../src/conf_hid.o ../../src/pcb-printf.o ../../src/compat_misc.o ../../src/safe_fs.o
+CONF_OBJS  = ../../src/vtlibrary.o ../../src/compat_fs.o ../../src/paths.o ../../src/conf.o ../../src/conf_core.o ../../src/hid_cfg.o ../../src/hidlib_conf.o ../../src/misc_util.o ../../src/unit.o ../../src/conf_internal.o ../../src/list_conf.o ../../src/conf_hid.o ../../src/pcb-printf.o ../../src/compat_misc.o ../../src/safe_fs.o
 FP_LDFLAGS = @/local/pcb/LDFLAGS@
 FP_CFLAGS  = @/local/pcb/CFLAGS@
 OBJS = \
