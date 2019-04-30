@@ -6,7 +6,6 @@
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "hid_init.h"
-#include "conf_core.h"
 
 #include "../src_plugins/lib_gtk_common/glue.h"
 #include "../src_plugins/lib_gtk_common/lib_gtk_config.h"
