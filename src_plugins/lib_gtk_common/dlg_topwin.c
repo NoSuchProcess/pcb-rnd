@@ -43,6 +43,7 @@
 #include "config.h"
 #include "dlg_topwin.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 
 #include "board.h"
 #include "crosshair.h"
@@ -293,7 +294,7 @@ static void fix_topbar_theming(pcb_gtk_topwin_t *tw)
 
 static void fullscreen_cb(GtkButton *btn, void *data)
 {
-	conf_setf(CFR_DESIGN, "editor/fullscreen", -1, "%d", !conf_core.editor.fullscreen, POL_OVERWRITE);
+	conf_setf(CFR_DESIGN, "editor/fullscreen", -1, "%d", !*pcbhlc_editor_fullscreen, POL_OVERWRITE);
 }
 
 /* XPM */
@@ -582,7 +583,7 @@ void ghid_create_pcb_widgets(pcb_gtk_topwin_t *tw, GtkWidget *in_top_window)
 
 void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw)
 {
-	if (conf_core.editor.fullscreen) {
+	if (*pcbhlc_editor_fullscreen) {
 		gtk_widget_hide(tw->left_toolbar);
 		gtk_widget_hide(tw->top_hbox);
 		if (!tw->cmd.command_entry_status_line_active)
