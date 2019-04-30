@@ -31,6 +31,7 @@
 
 extern CFT_INTEGER *pcbhlc_rc_verbose;
 extern CFT_INTEGER *pcbhlc_rc_quiet;
+extern CFT_BOOLEAN *pcbhlc_rc_dup_log_to_stderr;
 extern CFT_STRING *pcbhlc_rc_cli_prompt;
 extern CFT_STRING *pcbhlc_rc_cli_backend;
 extern CFT_BOOLEAN *pcbhlc_rc_export_basename;

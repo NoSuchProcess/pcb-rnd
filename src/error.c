@@ -36,7 +36,7 @@
 #include "hid_dad.h"
 #include "safe_fs.h"
 #include "funchash_core.h"
-#include "conf_core.h"
+#include "hidlib_conf.h"
 #include "genvector/gds_char.h"
 
 void pcb_trace(const char *Format, ...)
@@ -59,11 +59,11 @@ void pcb_message(enum pcb_message_level level, const char *Format, ...)
 	gds_t tmp;
 	pcb_logline_t *line;
 
-	if ((pcb_gui == NULL) || (conf_core.rc.dup_log_to_stderr)) {
-		if (conf_core.rc.quiet)
+	if ((pcb_gui == NULL) || (pcbhlc_rc_dup_log_to_stderr == NULL) || (*pcbhlc_rc_dup_log_to_stderr)) {
+		if (*pcbhlc_rc_quiet)
 			min_level = PCB_MSG_ERROR;
 
-		if ((level >= min_level) || (conf_core.rc.verbose)) {
+		if ((level >= min_level) || (pcbhlc_rc_verbose == NULL) || (*pcbhlc_rc_verbose)) {
 			va_start(args, Format);
 			pcb_vfprintf(stderr, Format, args);
 			va_end(args);

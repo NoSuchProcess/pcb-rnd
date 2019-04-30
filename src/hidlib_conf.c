@@ -33,6 +33,7 @@
 
 CFT_INTEGER *pcbhlc_rc_verbose;
 CFT_INTEGER *pcbhlc_rc_quiet;
+CFT_BOOLEAN *pcbhlc_rc_dup_log_to_stderr;
 CFT_STRING *pcbhlc_rc_cli_prompt;
 CFT_STRING *pcbhlc_rc_cli_backend;
 CFT_BOOLEAN *pcbhlc_rc_export_basename;
@@ -78,6 +79,8 @@ int pcb_hidlib_conf_init()
 
 	SCALAR(rc_verbose,           "rc/verbose",           CFN_INTEGER, integer);
 	SCALAR(rc_quiet,             "rc/quiet",             CFN_INTEGER, integer);
+	SCALAR(rc_dup_log_to_stderr, "rc/dup_log_to_stderr", CFN_BOOLEAN, boolean);
+
 	SCALAR(rc_cli_prompt,        "rc/cli_prompt",        CFN_STRING,  string);
 	SCALAR(rc_cli_backend,       "rc/cli_backend",       CFN_STRING,  string);
 	SCALAR(rc_export_basename,   "rc/export_basename",   CFN_BOOLEAN, boolean);
