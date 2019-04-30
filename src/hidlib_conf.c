@@ -35,8 +35,18 @@ CFT_INTEGER *pcbhlc_rc_quiet;
 CFT_STRING *pcbhlc_rc_cli_prompt;
 CFT_STRING *pcbhlc_rc_cli_backend;
 
+CFT_BOOLEAN *pcbhlc_appearance_loglevels_debug_popup;
+CFT_BOOLEAN *pcbhlc_appearance_loglevels_info_popup;
+CFT_BOOLEAN *pcbhlc_appearance_loglevels_warning_popup;
+CFT_BOOLEAN *pcbhlc_appearance_loglevels_error_popup;
+CFT_STRING *pcbhlc_appearance_loglevels_debug_tag;
+CFT_STRING *pcbhlc_appearance_loglevels_info_tag;
+CFT_STRING *pcbhlc_appearance_loglevels_warning_tag;
+CFT_STRING *pcbhlc_appearance_loglevels_error_tag;
+
 static union {
 	CFT_INTEGER i;
+	CFT_BOOLEAN b;
 	CFT_STRING s;
 } pcb_hidlib_zero; /* implicit initialized to 0 */
 
@@ -56,10 +66,20 @@ do { \
 int pcb_hidlib_conf_init()
 {
 	int cnt = 0;
+
 	SCALAR(rc_verbose,      "rc/verbose",      CFN_INTEGER, integer);
 	SCALAR(rc_quiet,        "rc/quiet",        CFN_INTEGER, integer);
 	SCALAR(rc_cli_prompt,   "rc/cli_prompt",   CFN_STRING,  string);
 	SCALAR(rc_cli_backend,  "rc/cli_backend",  CFN_STRING,  string);
+
+	SCALAR(appearance_loglevels_debug_popup,    "appearance/loglevels/debug_popup",    CFN_BOOLEAN, boolean);
+	SCALAR(appearance_loglevels_info_popup,     "appearance/loglevels/info_popup",     CFN_BOOLEAN, boolean);
+	SCALAR(appearance_loglevels_warning_popup,  "appearance/loglevels/warning_popup",  CFN_BOOLEAN, boolean);
+	SCALAR(appearance_loglevels_error_popup,    "appearance/loglevels/error_popup",    CFN_BOOLEAN, boolean);
+	SCALAR(appearance_loglevels_debug_tag,      "appearance/loglevels/debug_tag",      CFN_STRING,  string);
+	SCALAR(appearance_loglevels_info_tag,       "appearance/loglevels/info_tag",       CFN_STRING,  string);
+	SCALAR(appearance_loglevels_warning_tag,    "appearance/loglevels/warning_tag",    CFN_STRING,  string);
+	SCALAR(appearance_loglevels_error_tag,      "appearance/loglevels/error_tag",      CFN_STRING,  string);
 
 	return cnt;
 }

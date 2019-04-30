@@ -34,6 +34,15 @@ extern CFT_INTEGER *pcbhlc_rc_quiet;
 extern CFT_STRING *pcbhlc_rc_cli_prompt;
 extern CFT_STRING *pcbhlc_rc_cli_backend;
 
+extern CFT_BOOLEAN *pcbhlc_appearance_loglevels_debug_popup;
+extern CFT_BOOLEAN *pcbhlc_appearance_loglevels_info_popup;
+extern CFT_BOOLEAN *pcbhlc_appearance_loglevels_warning_popup;
+extern CFT_BOOLEAN *pcbhlc_appearance_loglevels_error_popup;
+extern CFT_STRING *pcbhlc_appearance_loglevels_debug_tag;
+extern CFT_STRING *pcbhlc_appearance_loglevels_info_tag;
+extern CFT_STRING *pcbhlc_appearance_loglevels_warning_tag;
+extern CFT_STRING *pcbhlc_appearance_loglevels_error_tag;
+
 int pcb_hidlib_conf_init();
 
 #endif
