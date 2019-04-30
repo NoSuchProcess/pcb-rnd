@@ -350,7 +350,6 @@ int main()
 
 	conf_init();
 	conf_core_init();
-	conf_core_postproc();
 	pcb_hidlib_conf_init();
 	conf_reset(CFR_SYSTEM, "<main>");
 	conf_reset(CFR_USER, "<main>");

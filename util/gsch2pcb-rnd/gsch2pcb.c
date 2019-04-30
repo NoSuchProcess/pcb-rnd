@@ -383,7 +383,6 @@ int main(int argc, char ** argv)
 
 	conf_init();
 	conf_core_init();
-	conf_core_postproc(); /* to get all the paths initialized */
 	pcb_hidlib_conf_init();
 
 	gadl_list_init(&schematics, sizeof(char *), NULL, NULL);
