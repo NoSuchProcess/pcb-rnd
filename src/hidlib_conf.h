@@ -49,6 +49,8 @@ extern CFT_STRING *pcbhlc_appearance_loglevels_warning_tag;
 extern CFT_STRING *pcbhlc_appearance_loglevels_error_tag;
 
 extern CFT_UNIT *pcbhlc_editor_grid_unit;
+extern CFT_BOOLEAN *pcbhlc_editor_view_flip_x;
+extern CFT_BOOLEAN *pcbhlc_editor_view_flip_y;
 
 int pcb_hidlib_conf_init();
 
