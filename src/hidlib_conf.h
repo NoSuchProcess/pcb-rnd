@@ -51,6 +51,8 @@ extern CFT_COLOR *pcbhlc_appearance_color_background;
 extern CFT_COLOR *pcbhlc_appearance_color_grid;
 extern CFT_COLOR *pcbhlc_appearance_color_off_limit;
 extern CFT_COLOR *pcbhlc_appearance_color_cross;
+extern CFT_REAL *pcbhlc_appearance_layer_alpha;
+extern CFT_REAL *pcbhlc_appearance_drill_alpha;
 
 extern CFT_UNIT *pcbhlc_editor_grid_unit;
 extern CFT_BOOLEAN *pcbhlc_editor_view_flip_x;

@@ -54,6 +54,9 @@ CFT_COLOR *pcbhlc_appearance_color_background;
 CFT_COLOR *pcbhlc_appearance_color_grid;
 CFT_COLOR *pcbhlc_appearance_color_off_limit;
 CFT_COLOR *pcbhlc_appearance_color_cross;
+CFT_REAL *pcbhlc_appearance_layer_alpha;
+CFT_REAL *pcbhlc_appearance_drill_alpha;
+
 
 CFT_UNIT *pcbhlc_editor_grid_unit;
 CFT_BOOLEAN *pcbhlc_editor_view_flip_x;
@@ -68,6 +71,7 @@ static union {
 	CFT_STRING s;
 	CFT_UNIT c;
 	CFT_COLOR clr;
+	CFT_REAL r;
 } pcb_hidlib_zero; /* implicit initialized to 0 */
 
 
@@ -112,6 +116,8 @@ int pcb_hidlib_conf_init()
 	SCALAR(appearance_color_grid,               "appearance/color/grid",               CFN_COLOR,   color);
 	SCALAR(appearance_color_off_limit,          "appearance/color/off_limit",          CFN_COLOR,   color);
 	SCALAR(appearance_color_cross,              "appearance/color/cross",              CFN_COLOR,   color);
+	SCALAR(appearance_layer_alpha,              "appearance/layer_alpha",              CFN_COLOR,   color);
+	SCALAR(appearance_drill_alpha,              "appearance/drill_alpha",              CFN_COLOR,   color);
 
 	SCALAR(editor_grid_unit,    "editor/grid_unit",    CFN_UNIT,    unit);
 	SCALAR(editor_view_flip_x,  "editor/view/flip_x",  CFN_BOOLEAN, boolean);

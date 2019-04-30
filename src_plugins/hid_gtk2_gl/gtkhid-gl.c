@@ -395,7 +395,7 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 		r = priv->offlimits_color.red / 65535.;
 		g = priv->offlimits_color.green / 65535.;
 		b = priv->offlimits_color.blue / 65535.;
-		a = conf_core.appearance.drill_alpha;
+		a = *pcbhlc_appearance_drill_alpha;
 	}
 	else {
 		if (pcb_hid_cache_color(0, gc->pcolor->str, &cval, &cache))
@@ -432,7 +432,7 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 		r = cc->red;
 		g = cc->green;
 		b = cc->blue;
-		a = conf_core.appearance.layer_alpha;
+		a = *pcbhlc_appearance_layer_alpha;
 	}
 	if (1) {
 		double maxi, mult;
