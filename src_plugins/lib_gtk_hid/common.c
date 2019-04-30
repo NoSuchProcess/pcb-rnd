@@ -1,7 +1,6 @@
 #include "config.h"
 
 #include "crosshair.h"
-#include "conf_core.h"
 
 #include "gui.h"
 #include "common.h"

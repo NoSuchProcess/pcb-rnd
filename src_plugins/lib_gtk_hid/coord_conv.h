@@ -1,12 +1,12 @@
 /* Coordinate conversions */
 #include "compat_misc.h"
-#include "conf_core.h"
+#include "hidlib_conf.h"
 
 /* Px converts view->pcb, Vx converts pcb->view */
 static inline int Vx(pcb_coord_t x)
 {
 	double rv;
-	if (conf_core.editor.view.flip_x)
+	if (*pcbhlc_editor_view_flip_x)
 		rv = (gport->view.com->hidlib->size_x - x - gport->view.x0) / gport->view.coord_per_px + 0.5;
 	else
 		rv = (x - gport->view.x0) / gport->view.coord_per_px + 0.5;
@@ -16,7 +16,7 @@ static inline int Vx(pcb_coord_t x)
 static inline int Vy(pcb_coord_t y)
 {
 	double rv;
-	if (conf_core.editor.view.flip_y)
+	if (*pcbhlc_editor_view_flip_y)
 		rv = (gport->view.com->hidlib->size_y - y - gport->view.y0) / gport->view.coord_per_px + 0.5;
 	else
 		rv = (y - gport->view.y0) / gport->view.coord_per_px + 0.5;
@@ -31,7 +31,7 @@ static inline int Vz(pcb_coord_t z)
 static inline double Vxd(pcb_coord_t x)
 {
 	double rv;
-	if (conf_core.editor.view.flip_x)
+	if (*pcbhlc_editor_view_flip_x)
 		rv = (gport->view.com->hidlib->size_x - x - gport->view.x0) / gport->view.coord_per_px;
 	else
 		rv = (x - gport->view.x0) / gport->view.coord_per_px;
@@ -41,7 +41,7 @@ static inline double Vxd(pcb_coord_t x)
 static inline double Vyd(pcb_coord_t y)
 {
 	double rv;
-	if (conf_core.editor.view.flip_y)
+	if (*pcbhlc_editor_view_flip_y)
 		rv = (gport->view.com->hidlib->size_y - y - gport->view.y0) / gport->view.coord_per_px;
 	else
 		rv = (y - gport->view.y0) / gport->view.coord_per_px;
@@ -56,7 +56,7 @@ static inline double Vzd(pcb_coord_t z)
 static inline pcb_coord_t Px(int x)
 {
 	pcb_coord_t rv = x * gport->view.coord_per_px + gport->view.x0;
-	if (conf_core.editor.view.flip_x)
+	if (*pcbhlc_editor_view_flip_x)
 		rv = gport->view.com->hidlib->size_x - (x * gport->view.coord_per_px + gport->view.x0);
 	return rv;
 }
@@ -64,7 +64,7 @@ static inline pcb_coord_t Px(int x)
 static inline pcb_coord_t Py(int y)
 {
 	pcb_coord_t rv = y * gport->view.coord_per_px + gport->view.y0;
-	if (conf_core.editor.view.flip_y)
+	if (*pcbhlc_editor_view_flip_y)
 		rv = gport->view.com->hidlib->size_y - (y * gport->view.coord_per_px + gport->view.y0);
 	return rv;
 }

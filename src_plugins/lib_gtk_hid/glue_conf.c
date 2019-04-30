@@ -31,7 +31,6 @@
 #include "glue_conf.h"
 #include "glue_event.h"
 #include "conf.h"
-#include "conf_core.h"
 #include "gui.h"
 
 static void ghid_confchg_fullscreen(conf_native_t *cfg, int arr_idx)

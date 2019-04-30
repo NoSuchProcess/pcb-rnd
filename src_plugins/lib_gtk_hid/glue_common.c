@@ -7,7 +7,6 @@
 #include "gui.h"
 #include "render.h"
 #include "common.h"
-#include "conf_core.h"
 #include "../src_plugins/lib_gtk_common/dlg_topwin.h"
 #include "../src_plugins/lib_gtk_common/hid_gtk_conf.h"
 
