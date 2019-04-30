@@ -29,7 +29,6 @@
 /* This file written by Bill Wilson for the PCB Gtk port. */
 
 #include "config.h"
-#include "conf_core.h"
 #include "dlg_attributes.h"
 #include <stdlib.h>
 
