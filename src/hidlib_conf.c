@@ -103,8 +103,8 @@ int pcb_hidlib_conf_init()
 	SCALAR(appearance_loglevels_error_tag,      "appearance/loglevels/error_tag",      CFN_STRING,  string);
 
 	SCALAR(editor_grid_unit,    "editor/grid_unit",    CFN_UNIT,    unit);
-	SCALAR(editor_view_flip_x,  "editor/view_flip_x",  CFN_BOOLEAN, boolean);
-	SCALAR(editor_view_flip_y,  "editor/view_flip_y",  CFN_BOOLEAN, boolean);
+	SCALAR(editor_view_flip_x,  "editor/view/flip_x",  CFN_BOOLEAN, boolean);
+	SCALAR(editor_view_flip_y,  "editor/view/flip_y",  CFN_BOOLEAN, boolean);
 	SCALAR(editor_fullscreen,   "editor/fullscreen",   CFN_BOOLEAN, boolean);
 	SCALAR(editor_auto_place,   "editor/auto_place",   CFN_BOOLEAN, boolean);
 
