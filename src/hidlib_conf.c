@@ -39,6 +39,7 @@ CFT_STRING *pcbhlc_rc_cli_backend;
 CFT_BOOLEAN *pcbhlc_rc_export_basename;
 CFT_STRING *pcbhlc_rc_path_exec_prefix;
 CFT_STRING *pcbhlc_rc_path_home;
+CFT_STRING *pcbhlc_rc_menu_file;
 
 CFT_BOOLEAN *pcbhlc_appearance_loglevels_debug_popup;
 CFT_BOOLEAN *pcbhlc_appearance_loglevels_info_popup;
@@ -86,6 +87,7 @@ int pcb_hidlib_conf_init()
 	SCALAR(rc_export_basename,   "rc/export_basename",   CFN_BOOLEAN, boolean);
 	SCALAR(rc_path_exec_prefix,  "rc/path/exec_prefix",  CFN_STRING,  string);
 	SCALAR(rc_path_home,         "rc/path/home",         CFN_STRING,  string);
+	SCALAR(rc_menu_file,         "rc/menu_file",         CFN_STRING,  string);
 
 	SCALAR(appearance_loglevels_debug_popup,    "appearance/loglevels/debug_popup",    CFN_BOOLEAN, boolean);
 	SCALAR(appearance_loglevels_info_popup,     "appearance/loglevels/info_popup",     CFN_BOOLEAN, boolean);
