@@ -102,12 +102,12 @@ void pcb_grid_update_conf(conf_native_t *cfg, int arr_idx)
 
 void pcb_grid_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	if ((grid_lock) || (grids_idx.nat == NULL)) return;
+	if (grid_lock) return;
 	grid_lock++;
 	pcb_grid_install_menu();
 
 	/* to get the right menu checked */
-	if (grids_idx.nat->val.integer[0] >= 0)
+	if ((grids_idx.nat != NULL) && (grids_idx.nat->val.integer[0] >= 0))
 		pcb_grid_list_step(0);
 	grid_lock--;
 }
