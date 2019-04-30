@@ -57,6 +57,7 @@ extern CFT_BOOLEAN *pcbhlc_editor_view_flip_x;
 extern CFT_BOOLEAN *pcbhlc_editor_view_flip_y;
 extern CFT_BOOLEAN *pcbhlc_editor_fullscreen;
 extern CFT_BOOLEAN *pcbhlc_editor_auto_place;
+extern CFT_BOOLEAN *pcbhlc_editor_draw_grid;
 
 int pcb_hidlib_conf_init();
 

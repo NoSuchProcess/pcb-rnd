@@ -305,7 +305,7 @@ static void ghid_gdk_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy)
 	if (!conf_hid_gtk.plugins.hid_gtk.local_grid.enable)
 		return;
 
-	if ((Vz(PCB->hidlib.grid) < PCB_MIN_GRID_DISTANCE) || (!conf_core.editor.draw_grid))
+	if ((Vz(PCB->hidlib.grid) < PCB_MIN_GRID_DISTANCE) || (!*pcbhlc_editor_draw_grid))
 		return;
 
 	/* cx and cy are the actual cursor snapped to wherever - round them to the nearest real grid point */
@@ -326,7 +326,7 @@ static void ghid_gdk_draw_grid(void)
 
 	grid_local_have_old = 0;
 
-	if (!conf_core.editor.draw_grid)
+	if (!*pcbhlc_editor_draw_grid)
 		return;
 	if (colormap == NULL)
 		colormap = gtk_widget_get_colormap(gport->top_window);
