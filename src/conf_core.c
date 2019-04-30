@@ -3,13 +3,6 @@
 #include "conf_core.h"
 conf_core_t conf_core;
 
-void conf_core_init()
-{
-#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	conf_reg_field(conf_core, field,isarray,type_name,cpath,cname,desc,flags);
-#include "conf_core_fields.h"
-}
-
 #define conf_clamp_to(type, var, min, max, safe_val) \
 do { \
 	if ((var < min) || (var > max)) \
@@ -41,7 +34,7 @@ void pcb_conf_ro(const char *path)
 	}
 }
 
-void conf_core_postproc()
+static void conf_core_postproc(void)
 {
 	conf_clamp_to(CFT_COORD, conf_core.design.line_thickness, PCB_MIN_LINESIZE, PCB_MAX_LINESIZE, PCB_MIL_TO_COORD(10));
 	conf_clamp_to(CFT_COORD, conf_core.design.via_thickness, PCB_MIN_PINORVIASIZE, PCB_MAX_PINORVIASIZE, PCB_MIL_TO_COORD(40));
@@ -54,4 +47,13 @@ void conf_core_postproc()
 	conf_force_set_str(conf_core.rc.path.bin, BINDIR);          pcb_conf_ro("rc/path/bin");
 	conf_force_set_str(conf_core.rc.path.share, PCBSHAREDIR);   pcb_conf_ro("rc/path/share");
 	conf_force_set_str(conf_core.rc.path.home, get_homedir());  pcb_conf_ro("rc/path/home");
+}
+
+void conf_core_init()
+{
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	conf_reg_field(conf_core, field,isarray,type_name,cpath,cname,desc,flags);
+#include "conf_core_fields.h"
+	pcb_conf_core_postproc = conf_core_postproc;
+	conf_core_postproc();
 }

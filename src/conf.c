@@ -56,6 +56,7 @@ static htsi_t conf_files;
 static htsi_t conf_interns;
 static int conf_files_inited = 0;
 
+void (*pcb_conf_core_postproc)(void) = NULL;
 
 int conf_in_production = 0;
 
@@ -1055,7 +1056,8 @@ void conf_update(const char *path, int arr_idx)
 
 	/* merge all memory-lht data to memory-bin */
 	conf_merge_all(path);
-	conf_core_postproc();
+	if (pcb_conf_core_postproc != NULL)
+		pcb_conf_core_postproc();
 
 	if (path == NULL) {
 		htsp_entry_t *e;
