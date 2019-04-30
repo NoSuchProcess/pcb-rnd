@@ -30,16 +30,36 @@
 
 #include "hidlib_conf.h"
 
-pcb_conf_resolve_t pcb_hidlib_conf_verbose     = { "rc/verbose",      CFN_INTEGER, 0, NULL};
-pcb_conf_resolve_t pcb_hidlib_conf_quiet       = { "rc/quiet",        CFN_INTEGER, 0, NULL};
-pcb_conf_resolve_t pcb_hidlib_conf_cli_prompt  = { "rc/cli_prompt",   CFN_STRING,  0, NULL};
+CFT_INTEGER *pcbhlc_rc_verbose;
+CFT_INTEGER *pcbhlc_rc_quiet;
+CFT_STRING *pcbhlc_rc_cli_prompt;
+CFT_STRING *pcbhlc_rc_cli_backend;
 
+static union {
+	CFT_INTEGER i;
+	CFT_STRING s;
+} pcb_hidlib_zero; /* implicit initialized to 0 */
+
+
+#define SCALAR(name, sname, type, typef) \
+do { \
+	int r; \
+	pcb_conf_resolve_t rsv = {sname, type, 0, NULL}; \
+	r = pcb_conf_resolve(&rsv); \
+	cnt += r; \
+	if (r > 0) \
+		pcbhlc_ ## name = rsv.nat->val.typef; \
+	else \
+		pcbhlc_ ## name = (void *)&pcb_hidlib_zero; \
+} while(0)
 
 int pcb_hidlib_conf_init()
 {
 	int cnt = 0;
-	cnt += pcb_conf_resolve(&pcb_hidlib_conf_verbose);
-	cnt += pcb_conf_resolve(&pcb_hidlib_conf_quiet);
-	cnt += pcb_conf_resolve(&pcb_hidlib_conf_cli_prompt);
+	SCALAR(rc_verbose,      "rc/verbose",      CFN_INTEGER, integer);
+	SCALAR(rc_quiet,        "rc/quiet",        CFN_INTEGER, integer);
+	SCALAR(rc_cli_prompt,   "rc/cli_prompt",   CFN_STRING,  string);
+	SCALAR(rc_cli_backend,  "rc/cli_backend",  CFN_STRING,  string);
+
 	return cnt;
 }

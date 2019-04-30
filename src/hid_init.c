@@ -46,6 +46,7 @@
 #include "compat_misc.h"
 #include "compat_inc.h"
 #include "file_loaded.h"
+#include "hidlib_conf.h"
 
 static const char *flt_any[] = {"*", "*.*", NULL};
 
@@ -278,6 +279,7 @@ void pcb_hidlib_init1(void)
 	pcb_file_loaded_init();
 	conf_init();
 	conf_core_init();
+	pcb_hidlib_conf_init();
 	conf_core_postproc(); /* to get all the paths initialized */
 	pcb_hid_dlg_init();
 	pcb_hid_init();

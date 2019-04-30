@@ -29,9 +29,10 @@
 
 #include "conf.h"
 
-extern pcb_conf_resolve_t pcb_hidlib_conf_verbose;
-extern pcb_conf_resolve_t pcb_hidlib_conf_quiet;
-extern pcb_conf_resolve_t pcb_hidlib_conf_cli_prompt;
+extern CFT_INTEGER *pcbhlc_rc_verbose;
+extern CFT_INTEGER *pcbhlc_rc_quiet;
+extern CFT_STRING *pcbhlc_rc_cli_prompt;
+extern CFT_STRING *pcbhlc_rc_cli_backend;
 
 int pcb_hidlib_conf_init();
 
