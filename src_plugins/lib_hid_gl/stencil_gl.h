@@ -29,7 +29,6 @@
 #define STENCIL_GL_H
 /*
 #include "config.h"
-#include "conf_core.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
