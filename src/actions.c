@@ -41,6 +41,7 @@
 #include "actions.h"
 #include "compat_misc.h"
 #include "funchash.h"
+#include "hidlib_conf.h"
 
 const pcb_action_t *pcb_current_action = NULL;
 
@@ -269,7 +270,7 @@ fgw_error_t pcb_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_
 	const pcb_action_t *old_action;
 	hid_cookie_action_t *ca = f->reg_data;
 
-	if (conf_core.rc.verbose) {
+	if (*pcbhlc_rc_verbose) {
 		fprintf(stderr, "Action: \033[34m%s(", f->name);
 		for (i = 0; i < argc; i++)
 			fprintf(stderr, "%s%s", i ? "," : "", (argv[i].type & FGW_STR) == FGW_STR ? argv[i].val.str : "<non-str>");
@@ -509,12 +510,12 @@ const char *pcb_cli_prompt(const char *suffix)
 	static char prompt[128];
 	int blen, slen, len;
 
-	if ((conf_core.rc.cli_prompt != NULL) && (*conf_core.rc.cli_prompt != '\0'))
-		base = conf_core.rc.cli_prompt;
-	else if ((conf_core.rc.cli_backend == NULL) || (*conf_core.rc.cli_backend == '\0'))
+	if ((*pcbhlc_rc_cli_prompt != NULL) && (**pcbhlc_rc_cli_prompt != '\0'))
+		base = *pcbhlc_rc_cli_prompt;
+	else if ((*pcbhlc_rc_cli_backend == NULL) || (**pcbhlc_rc_cli_backend == '\0'))
 		base = "action";
 	else
-		base = conf_core.rc.cli_backend;
+		base = *pcbhlc_rc_cli_backend;
 
 	if ((suffix == NULL) || (*suffix == '\0'))
 		return base;
@@ -550,8 +551,8 @@ static char *cli_pop(void)
 
 int pcb_cli_enter(const char *backend, const char *prompt)
 {
-	cli_push(conf_core.rc.cli_backend);
-	cli_push(conf_core.rc.cli_prompt);
+	cli_push(*pcbhlc_rc_cli_backend);
+	cli_push(*pcbhlc_rc_cli_prompt);
 
 	if (conf_set(CFR_CLI, "rc/cli_backend", 0, backend, POL_OVERWRITE) != 0)
 		return -1;
@@ -582,11 +583,11 @@ static int pcb_cli_common(fgw_arg_t *args)
 	fgw_func_t *f;
 
 	/* no backend: let the original action work */
-	if ((conf_core.rc.cli_backend == NULL) || (*conf_core.rc.cli_backend == '\0'))
+	if ((*pcbhlc_rc_cli_backend == NULL) || (**pcbhlc_rc_cli_backend == '\0'))
 		return -1;
 
 	/* backend: let the backend action handle it */
-	a = pcb_find_action(conf_core.rc.cli_backend, &f);
+	a = pcb_find_action(*pcbhlc_rc_cli_backend, &f);
 	if (!a)
 		return -1;
 
@@ -660,15 +661,15 @@ int pcb_parse_command(const char *str_, pcb_bool force_action_mode)
 	const char *end;
 
 	/* no backend or forced action mode: classic pcb-rnd action parse */
-	if (force_action_mode || (conf_core.rc.cli_backend == NULL) || (*conf_core.rc.cli_backend == '\0')) {
+	if (force_action_mode || (*pcbhlc_rc_cli_backend == NULL) || (**pcbhlc_rc_cli_backend == '\0')) {
 		pcb_event(PCB_EVENT_CLI_ENTER, "s", str_);
 		return hid_parse_actionstring(str_, pcb_false);
 	}
 
 	/* backend: let the backend action handle it */
-	a = pcb_find_action(conf_core.rc.cli_backend, &f);
+	a = pcb_find_action(*pcbhlc_rc_cli_backend, &f);
 	if (!a) {
-		pcb_message(PCB_MSG_ERROR, "cli: no action %s; leaving mode\n", conf_core.rc.cli_backend);
+		pcb_message(PCB_MSG_ERROR, "cli: no action %s; leaving mode\n", *pcbhlc_rc_cli_backend);
 		pcb_cli_leave();
 		return -1;
 	}
