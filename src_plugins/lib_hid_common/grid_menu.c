@@ -27,7 +27,7 @@
 #include "config.h"
 
 #include "conf.h"
-#include "conf_core.h"
+#include "hidlib_conf.h"
 #include "grid.h"
 #include "event.h"
 #include "hid_cfg.h"
@@ -37,14 +37,30 @@
 
 #define ANCH "@grid"
 
+static pcb_conf_resolve_t grids_idx = {"editor.grids_idx", CFN_INTEGER, 0, NULL};
+
 static void grid_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, char *path)
 {
-	conflist_t *lst = (conflist_t *)&conf_core.editor.grids;
+	conf_native_t *nat;
+	conflist_t *lst;
 	conf_listitem_t *li;
 	char *end = path + strlen(path);
 	pcb_menu_prop_t props;
 	char act[256], chk[256];
 	int idx;
+
+	nat = conf_get_field("editor/grids");
+	if (nat == NULL)
+		return;
+
+	if (nat->type != CFN_LIST) {
+		pcb_message(PCB_MSG_ERROR, "grid_install_menu(): conf node editor/grids should be a list\n");
+		return;
+	}
+
+	lst = nat->val.list;
+
+	pcb_conf_resolve(&grids_idx);
 
 	memset(&props, 0,sizeof(props));
 	props.action = act;
@@ -86,12 +102,12 @@ void pcb_grid_update_conf(conf_native_t *cfg, int arr_idx)
 
 void pcb_grid_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	if (grid_lock) return;
+	if ((grid_lock) || (grids_idx.nat == NULL)) return;
 	grid_lock++;
 	pcb_grid_install_menu();
 
 	/* to get the right menu checked */
-	if (conf_core.editor.grids_idx >= 0)
+	if (grids_idx.nat->val.integer[0] >= 0)
 		pcb_grid_list_step(0);
 	grid_lock--;
 }
