@@ -38,7 +38,6 @@
 #include "board.h"
 #include "data.h"
 #include "event.h"
-#include "conf_core.h"
 #include "actions.h"
 #include "math_helper.h"
 

@@ -29,7 +29,6 @@
 #include "config.h"
 #include "util_watch.h"
 #include "in_mouse.h"
-#include "conf_core.h"
 
 typedef struct {
 	pcb_bool (*func) (pcb_hidval_t, int, unsigned int, pcb_hidval_t);

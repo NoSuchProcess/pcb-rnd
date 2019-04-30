@@ -29,7 +29,6 @@
 #include "config.h"
 #include <glib.h>
 #include "util_timer.h"
-#include "conf_core.h"
 
 typedef struct {
 	void (*func) (pcb_hidval_t);
