@@ -54,6 +54,7 @@ CFT_UNIT *pcbhlc_editor_grid_unit;
 CFT_BOOLEAN *pcbhlc_editor_view_flip_x;
 CFT_BOOLEAN *pcbhlc_editor_view_flip_y;
 CFT_BOOLEAN *pcbhlc_editor_fullscreen;
+CFT_BOOLEAN *pcbhlc_editor_auto_place;
 
 static union {
 	CFT_INTEGER i;
@@ -105,6 +106,7 @@ int pcb_hidlib_conf_init()
 	SCALAR(editor_view_flip_x,  "editor/view_flip_x",  CFN_BOOLEAN, boolean);
 	SCALAR(editor_view_flip_y,  "editor/view_flip_y",  CFN_BOOLEAN, boolean);
 	SCALAR(editor_fullscreen,   "editor/fullscreen",   CFN_BOOLEAN, boolean);
+	SCALAR(editor_auto_place,   "editor/auto_place",   CFN_BOOLEAN, boolean);
 
 	return cnt;
 }

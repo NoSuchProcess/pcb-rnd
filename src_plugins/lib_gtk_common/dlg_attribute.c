@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,7 +30,6 @@
 /* This file written by Bill Wilson for the PCB Gtk port. */
 
 #include "config.h"
-#include "conf_core.h"
 #include "hidlib_conf.h"
 #include "dlg_attribute.h"
 #include <stdlib.h>
@@ -830,7 +829,7 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, const char *id, pcb_hid_attribute
 	if (modal)
 		gtk_window_set_transient_for(GTK_WINDOW(ctx->dialog), GTK_WINDOW(com->top_window));
 
-	if (conf_core.editor.auto_place) {
+	if (*pcbhlc_editor_auto_place) {
 		if ((plc[2] > 0) && (plc[3] > 0))
 			gtk_window_resize(GTK_WINDOW(ctx->dialog), plc[2], plc[3]);
 		if ((plc[0] >= 0) && (plc[1] >= 0))

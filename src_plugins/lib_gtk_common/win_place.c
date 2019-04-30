@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 
 #include "config.h"
 #include "win_place.h"
-#include "conf_core.h"
+#include "hidlib_conf.h"
 #include "event.h"
 
 TODO("DAD: the only legitimate user is top window, move this code there once all other gtk-only dialogs are gone");
@@ -36,7 +36,7 @@ void pcb_gtk_winplace(GtkWidget *dialog, const char *id)
 
 	pcb_event(PCB_EVENT_DAD_NEW_DIALOG, "psp", NULL, id, plc);
 
-	if (conf_core.editor.auto_place) {
+	if (*pcbhlc_editor_auto_place) {
 		if ((plc[2] > 0) && (plc[3] > 0))
 			gtk_window_resize(GTK_WINDOW(dialog), plc[2], plc[3]);
 		if ((plc[0] >= 0) && (plc[1] >= 0))
