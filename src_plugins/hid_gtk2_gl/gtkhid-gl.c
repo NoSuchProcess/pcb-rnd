@@ -10,8 +10,6 @@
 #include "hid_attrib.h"
 #include "hid_color.h"
 #include "hidlib_conf.h"
-#include "conf_core.h"
-#include "hidlib_conf.h"
 #include "funchash_core.h"
 
 #include "../src_plugins/lib_hid_common/clip.h"
