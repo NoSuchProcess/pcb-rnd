@@ -30,6 +30,8 @@
 #include "conf.h"
 #include "color.h"
 
+/* to @conf_gen.sh: begin hidlib */
+
 typedef struct {
 
 	const struct {                       /* rc */
@@ -81,6 +83,9 @@ typedef struct {
 
 	} editor;
 } pcbhl_conf_t;
+
+/* to @conf_gen.sh: end hidlib */
+
 
 extern pcbhl_conf_t pcbhl_conf;
 

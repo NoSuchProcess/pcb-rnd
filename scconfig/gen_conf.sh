@@ -45,7 +45,7 @@ $AWK -v "docdir=$1" '
 		print "</table></body></html>" > fn
 	}
 
-	function gen(path, src_line,          id, name, type, array, desc, flags,path_tmp,type2,fn)
+	function gen(path, src_line,state_tags,          id, name, type, array, desc, flags,path_tmp,type2,fn)
 	{
 		name=src_line
 		sub("^.*CFT_", "CFN_", name)
@@ -100,7 +100,7 @@ $AWK -v "docdir=$1" '
 			type2 = tolower(type)
 			sub("^cfn_", "", type2)
 
-			print "<tr><td>", name, "<td><a href=\"" type ".html\">", type2, "</a><td>", flags, "<td>", desc > fn
+			print "<tr><td>", name, "<td><a href=\"" type ".html\">", type2, "</a><td>", flags, "<td>", state_tags desc > fn
 		}
 	}
 
@@ -134,7 +134,19 @@ $AWK -v "docdir=$1" '
 
 	/^[ \t]*[\/][\/]/ { next }
 
-	/CFT_/ { SRC[uid, LEN[uid]++] = $0 }
+	/CFT_/ {
+		SRC[uid, LEN[uid]] = $0
+
+		state_tags = ""
+		for(st in STATE)
+			if (STATE[st]) state_tags=state_tags "," st
+		if (state_tags != "") {
+			sub("^,", "[", state_tags)
+			state_tags = state_tags "] "
+		}
+		SRC_STATE[uid, LEN[uid]] = state_tags
+		LEN[uid]++
+	}
 
 	/[}]/ {
 		name = $0
@@ -147,6 +159,17 @@ $AWK -v "docdir=$1" '
 		LEVEL[uid] = level
 
 		pop_uid()
+	}
+
+	/@conf_gen.sh:/ {
+		sub(".*@conf_gen.sh: *", "", $0)
+		sub("*/", "", $0)
+		if ($1 == "begin")
+			STATE[$2] = 1
+		else if ($1 == "end")
+			STATE[$2] = 0
+		else
+			print "Unknown @conf_gen.sh directive:", $0 > stderr
 	}
 
 
@@ -162,7 +185,7 @@ $AWK -v "docdir=$1" '
 		for(uid = 0; uid < uids; uid++) {
 			path = gen_path(uid)
 			for(n = 0; n < LEN[uid]; n++)
-				gen(path, SRC[uid, n])
+				gen(path, SRC[uid, n], SRC_STATE[uid, n])
 		}
 
 		for(fn in DOCS)
