@@ -348,7 +348,7 @@ fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		switch(ctx_sens) {
 			case CTX_OBJ_TYPE:
 				{
-					pcb_coord_t x, y;;
+					pcb_coord_t x, y;
 					pcb_objtype_t type;
 					void *o1, *o2, *o3;
 					pcb_hid_get_coords("context sensitive popup: select object", &x, &y, 0);
