@@ -159,17 +159,6 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int pu
 	glDisable(GL_STENCIL_TEST);
 
 	priv->trans_lines = pcb_true;
-
-	if (PCB_LAYER_IS_CSECT(flags, purpi)) {
-		/* Opaque draw */
-		priv->trans_lines = pcb_false;
-		/* Disable stencil for cross-section drawing; that code
-		 * relies on overdraw doing the right thing and doesn't
-		 * use layers */
-		/*glDisable(GL_STENCIL_TEST); */
-		return 0;
-	}
-
 	return 1;
 }
 
