@@ -445,11 +445,14 @@ all-local: pcbtest.sh
 generated_lists.h: @/local/pcb/ACTION_REG_SRC@ Makefile
 	AWK=@/host/fstools/awk@ $(ROOT)/scconfig/gen_core_lists.sh @/local/pcb/ACTION_REG_SRC@ > generated_lists.h
 
-conf_core_fields.h: conf_core.h
-	AWK=@/host/fstools/awk@ $(ROOT)/scconfig/gen_conf.sh $(ROOT)/doc/conf/tree < conf_core.h > conf_core_fields.h
+conf_core_fields.h: conf_core.h $(ROOT)/doc/conf/tree/rc.html
+	AWK=@/host/fstools/awk@ $(ROOT)/scconfig/gen_conf.sh  < conf_core.h > conf_core_fields.h
 
-hidlib_conf_fields.h: hidlib_conf.h
-	AWK=@/host/fstools/awk@ $(ROOT)/scconfig/gen_conf.sh $(ROOT)/doc/conf/tree_hidlib < hidlib_conf.h > hidlib_conf_fields.h
+hidlib_conf_fields.h: hidlib_conf.h $(ROOT)/doc/conf/tree/rc.html
+	AWK=@/host/fstools/awk@ $(ROOT)/scconfig/gen_conf.sh < hidlib_conf.h > hidlib_conf_fields.h
+
+$(ROOT)/doc/conf/tree/rc.html: hidlib_conf.h conf_core.h
+	cat conf_core.h hidlib_conf.h | AWK=@/host/fstools/awk@ $(ROOT)/scconfig/gen_conf.sh $(ROOT)/doc/conf/tree > hidlib_conf_fields.h
 
 conf_internal.c: pcb-conf.lht $(CQUOTE)
 	$(CQUOTE) -n conf_internal < pcb-conf.lht > conf_internal.c
