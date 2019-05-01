@@ -84,6 +84,7 @@ void pplg_uninit_lib_hid_pcbui(void)
 	pcb_event_unbind_allcookie(rst_cookie);
 	pcb_event_unbind_allcookie(toolbar_cookie);
 	pcb_event_unbind_allcookie(status_cookie);
+	pcb_event_unbind_allcookie(rendering_cookie);
 	conf_hid_unreg(rst_cookie);
 	conf_hid_unreg(toolbar_cookie);
 	conf_hid_unreg(status_cookie);
