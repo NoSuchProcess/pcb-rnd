@@ -672,6 +672,8 @@ int main(int argc, char *argv[])
 	if (we_are_exporting) {
 		if (pcb_data_is_empty(PCB->Data))
 			pcb_message(PCB_MSG_WARNING, "Exporting empty board (nothing loaded or drawn).\n");
+		if (pcb_gui->set_hidlib != NULL)
+			pcb_gui->set_hidlib(&PCB->hidlib);
 		pcb_gui->do_export(0);
 		log_print_uninit_errs("Exporting");
 		pcb_main_uninit();
@@ -689,6 +691,8 @@ int main(int argc, char *argv[])
 			pcb_message(PCB_MSG_ERROR, "%s\n", EXPERIMENTAL);
 			pcb_message(PCB_MSG_ERROR, "******************************** IMPORTANT ********************************\n");
 		}
+		if (pcb_gui->set_hidlib != NULL)
+			pcb_gui->set_hidlib(&PCB->hidlib);
 		pcb_gui->do_export(0);
 		pcb_gui = pcb_next_gui;
 		pcb_next_gui = NULL;

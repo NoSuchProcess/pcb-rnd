@@ -551,6 +551,10 @@ struct pcb_hid_s {
 	/* Open a popup menu addressed by full menu path (starting with "/popups/").
 	   Return 0 on success. */
 	int (*open_popup)(const char *menupath);
+
+	/* optional: called by core when the global hidlib context changes
+	   (e.g. board changed) */
+	void (*set_hidlib)(pcb_hidlib_t *hidlib);
 };
 
 /* One of these functions (in the common code) will be called whenever the GUI
