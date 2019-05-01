@@ -29,6 +29,7 @@
 
 #include "actions.h"
 #include "drc.h"
+#include "hidlib_conf.h"
 #include "conf_core.h"
 #include "compat_misc.h"
 #include "event.h"
@@ -160,7 +161,7 @@ fgw_error_t pcb_act_IOIncompatList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_MAY_CONVARG(2, FGW_STR, IOIncompatList, aauto = argv[2].val.str);
 
 	if ((aauto != NULL) && (strcmp(aauto, "auto") == 0)) {
-		if (conf_core.rc.quiet && !PCB_HAVE_GUI_ATTR_DLG) {
+		if (pcbhl_conf.rc.quiet && !PCB_HAVE_GUI_ATTR_DLG) {
 			/* if not explicitly asked for a listing style and we are on CLI and quiet is set, don't print anything */
 			PCB_ACT_IRES(0);
 			return 0;

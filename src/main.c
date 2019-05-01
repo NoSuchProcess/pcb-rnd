@@ -62,6 +62,7 @@ static const char *EXPERIMENTAL = NULL;
 #include "funchash.h"
 #include "conf.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 #include <genvector/vtp0.h>
 #include "layer_vis.h"
 #include "layer_ui.h"
@@ -253,7 +254,7 @@ static void log_print_uninit_errs(const char *title)
 	int printed = 0;
 
 	for(n = from; n != NULL; n = n->next) {
-		if ((n->level >= PCB_MSG_INFO) || conf_core.rc.verbose) {
+		if ((n->level >= PCB_MSG_INFO) || pcbhl_conf.rc.verbose) {
 			if (!printed)
 				fprintf(stderr, "*** %s:\n", title);
 			fprintf(stderr, "%s", n->str);

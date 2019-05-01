@@ -14,6 +14,7 @@
 #include "compat_misc.h"
 #include "event.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 
 #include "hid_draw_helpers.h"
 #include "hid_nogui.h"
@@ -82,7 +83,7 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 
 static void log_append(pcb_logline_t *line)
 {
-	if ((line->level < PCB_MSG_INFO) && !conf_core.rc.verbose)
+	if ((line->level < PCB_MSG_INFO) && !pcbhl_conf.rc.verbose)
 		return;
 
 	if ((line->prev == NULL) || (line->prev->str[line->prev->len-1] == '\n')) {
@@ -164,14 +165,14 @@ static void batch_do_export(pcb_hid_attr_val_t * options)
 
 	log_import();
 
-	if ((interactive) && (!conf_core.rc.quiet)) {
+	if ((interactive) && (!pcbhl_conf.rc.quiet)) {
 		printf("Entering %s version %s batch mode.\n", PCB_PACKAGE, PCB_VERSION);
 		printf("See http://repo.hu/projects/pcb-rnd for project information\n");
 	}
 
 	batch_stay = 1;
 	while (batch_stay) {
-		if ((interactive) && (!conf_core.rc.quiet)) {
+		if ((interactive) && (!pcbhl_conf.rc.quiet)) {
 			printf("%s:%s> ", prompt, pcb_cli_prompt(NULL));
 			fflush(stdout);
 		}

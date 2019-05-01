@@ -34,6 +34,7 @@
 #include "hid_dad.h"
 #include "compat_fs.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 #include "plug_io.h"
 
 #include "dlg_loadsave.h"
@@ -81,7 +82,7 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (name != NULL) {
-		if (conf_core.rc.verbose)
+		if (pcbhl_conf.rc.verbose)
 			fprintf(stderr, "Load:  Calling LoadFrom(%s, %s)\n", function, name);
 		pcb_actionl("LoadFrom", function, name, NULL);
 		free(name);
@@ -284,7 +285,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	if (conf_core.rc.verbose)
+	if (pcbhl_conf.rc.verbose)
 		fprintf(stderr, "Save:  Calling SaveTo(%s, %s)\n", function, final_name);
 
 	if (pcb_strcasecmp(function, "PasteBuffer") == 0) {

@@ -60,10 +60,10 @@ void pcb_message(enum pcb_message_level level, const char *Format, ...)
 	pcb_logline_t *line;
 
 	if ((pcb_gui == NULL) || (pcbhlc_rc_dup_log_to_stderr == NULL) || (*pcbhlc_rc_dup_log_to_stderr)) {
-		if (*pcbhlc_rc_quiet)
+		if (pcbhl_conf.rc.quiet)
 			min_level = PCB_MSG_ERROR;
 
-		if ((level >= min_level) || (pcbhlc_rc_verbose == NULL) || (*pcbhlc_rc_verbose)) {
+		if ((level >= min_level) || (pcbhl_conf.rc.verbose)) {
 			va_start(args, Format);
 			pcb_vfprintf(stderr, Format, args);
 			va_end(args);

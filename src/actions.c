@@ -269,7 +269,7 @@ fgw_error_t pcb_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_
 	const pcb_action_t *old_action;
 	hid_cookie_action_t *ca = f->reg_data;
 
-	if (*pcbhlc_rc_verbose) {
+	if (pcbhl_conf.rc.verbose) {
 		fprintf(stderr, "Action: \033[34m%s(", f->name);
 		for (i = 0; i < argc; i++)
 			fprintf(stderr, "%s%s", i ? "," : "", (argv[i].type & FGW_STR) == FGW_STR ? argv[i].val.str : "<non-str>");

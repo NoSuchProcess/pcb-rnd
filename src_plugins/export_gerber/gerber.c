@@ -35,6 +35,7 @@
 #include "hid_attrib.h"
 #include "hid_inlines.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 
 #include "../src_plugins/export_excellon/aperture.h"
 #include "../src_plugins/export_excellon/excellon.h"
@@ -576,7 +577,7 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	if (!fnbase)
 		fnbase = "pcb-out";
 
-	verbose = options[HA_verbose].int_value || conf_core.rc.verbose;
+	verbose = options[HA_verbose].int_value || pcbhl_conf.rc.verbose;
 	all_layers = options[HA_all_layers].int_value;
 
 	copy_outline_mode = options[HA_copy_outline].int_value;

@@ -28,6 +28,7 @@
 #include "board.h"
 #include "actions.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 #include "funchash_core.h"
 #include "route_style.h"
 #include "error.h"
@@ -155,7 +156,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		n = conf_get_field(a1);
 		if (n == NULL) {
-			if (conf_core.rc.verbose)
+			if (pcbhl_conf.rc.verbose)
 				pcb_message(PCB_MSG_ERROR, "Invalid conf field '%s' in iseq: no such path\n", path);
 			return FGW_ERR_ARG_CONV;
 		}

@@ -32,8 +32,9 @@
 
 #include "hidlib_conf.h"
 
-CFT_INTEGER *pcbhlc_rc_verbose;
-CFT_INTEGER *pcbhlc_rc_quiet;
+pcbhl_conf_t pcbhl_conf;
+
+
 CFT_BOOLEAN *pcbhlc_rc_dup_log_to_stderr;
 CFT_STRING *pcbhlc_rc_cli_prompt;
 CFT_STRING *pcbhlc_rc_cli_backend;
@@ -93,8 +94,10 @@ int pcb_hidlib_conf_init()
 {
 	int cnt = 0;
 
-	SCALAR(rc_verbose,           "rc/verbose",           CFN_INTEGER, integer);
-	SCALAR(rc_quiet,             "rc/quiet",             CFN_INTEGER, integer);
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	conf_reg_field(pcbhl_conf, field,isarray,type_name,cpath,cname,desc,flags);
+#include "hidlib_conf_fields.h"
+
 	SCALAR(rc_dup_log_to_stderr, "rc/dup_log_to_stderr", CFN_BOOLEAN, boolean);
 
 	SCALAR(rc_cli_prompt,        "rc/cli_prompt",        CFN_STRING,  string);

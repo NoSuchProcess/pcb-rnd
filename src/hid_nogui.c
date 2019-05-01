@@ -267,7 +267,7 @@ static fgw_error_t pcb_act_cli_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	PCB_ACT_MAY_CONVARG(2, FGW_STR, cli_PromptFor, default_str = argv[2].val.str);
 	PCB_ACT_MAY_CONVARG(3, FGW_STR, cli_PromptFor, title = argv[3].val.str);
 
-	if (!*pcbhlc_rc_quiet) {
+	if (!pcbhl_conf.rc.quiet) {
 		char *tmp;
 		if (title != NULL)
 			printf("*** %s ***\n", title);
@@ -298,7 +298,7 @@ static fgw_error_t pcb_act_cli_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *a
 	int n, ret;
 
 	res->type = FGW_INT;
-	if (*pcbhlc_rc_quiet) {
+	if (pcbhl_conf.rc.quiet) {
 		cancel:;
 		res->val.nat_int = -1;
 		return 0;
@@ -340,7 +340,7 @@ static char *nogui_fileselect(const char *title, const char *descr,
 {
 	char *answer;
 
-	if (*pcbhlc_rc_quiet)
+	if (pcbhl_conf.rc.quiet)
 		return pcb_strdup("");
 
 	if (default_file)
@@ -387,15 +387,15 @@ int pcb_nogui_progress(long so_far, long total, const char *message)
 	static double nextt;
 	double now;
 
-	if (*pcbhlc_rc_quiet)
+	if (pcbhl_conf.rc.quiet)
 		return 0;
 	if (message == NULL) {
-		if ((on) && (*pcbhlc_rc_verbose >= PCB_MSG_INFO))
+		if ((on) && (pcbhl_conf.rc.verbose >= PCB_MSG_INFO))
 			fprintf(stderr, "progress: finished\n");
 		on = 0;
 	}
 	else {
-		if ((*pcbhlc_rc_verbose >= PCB_MSG_INFO) || (pcb_gui != &nogui_hid)) {
+		if ((pcbhl_conf.rc.verbose >= PCB_MSG_INFO) || (pcb_gui != &nogui_hid)) {
 			now = pcb_dtime();
 			if (now >= nextt) {
 				fprintf(stderr, "progress: %ld/%ld %s\n", so_far, total, message);
