@@ -262,7 +262,7 @@ static void load_extra_project_files(void)
 	load_project("/etc/gsch2pcb");
 	load_project("/usr/local/etc/gsch2pcb");
 
-	path = pcb_concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, ".gEDA", PCB_DIR_SEPARATOR_S, "gsch2pcb", NULL);
+	path = pcb_concat(pcbhl_conf.rc.path.home, PCB_DIR_SEPARATOR_S, ".gEDA", PCB_DIR_SEPARATOR_S, "gsch2pcb", NULL);
 	load_project(path);
 	free(path);
 
