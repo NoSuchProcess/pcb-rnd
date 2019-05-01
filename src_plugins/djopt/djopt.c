@@ -33,6 +33,7 @@
 
 #include "config.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 #include "board.h"
 
 #include <memory.h>
@@ -240,7 +241,7 @@ static int gridsnap(pcb_coord_t n)
 {
 	if (n <= 0)
 		return 0;
-	return n - n % (conf_core.editor.grid);
+	return n - n % (pcbhl_conf.editor.grid);
 }
 
 /* Avoid commonly used names. */
@@ -1362,9 +1363,9 @@ static int orthopull_1(corner_s * c, int fdir, int rdir, int any_sel)
 		len = c->x + max;
 		break;
 	}
-	if (snap && max > conf_core.editor.grid) {
+	if (snap && max > pcbhl_conf.editor.grid) {
 		if (pull < 0)
-			len += conf_core.editor.grid - 1;
+			len += pcbhl_conf.editor.grid - 1;
 		len = gridsnap(len);
 	}
 	if ((fdir == RIGHT && len == cs[0]->y) || (fdir == DOWN && len == cs[0]->x))
@@ -2000,13 +2001,13 @@ static int miter()
 				}
 
 #if 0
-				if (dist < conf_core.editor.grid) {
+				if (dist < pcbhl_conf.editor.grid) {
 					c->miter = 0;
 					progress = 1;
 					continue;
 				}
 
-				dist -= dist % conf_core.editor.grid;
+				dist -= dist % pcbhl_conf.editor.grid;
 #endif
 				if (dist <= 0) {
 					c->miter = 0;

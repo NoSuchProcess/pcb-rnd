@@ -39,7 +39,7 @@
 #include "grid.h"
 #include "board.h"
 #include "conf.h"
-#include "conf_core.h"
+#include "hidlib_conf.h"
 #include "conf_hid.h"
 #include "compat_misc.h"
 #include "misc_util.h"
@@ -183,7 +183,7 @@ pcb_bool_t pcb_grid_list_jump(int dst)
 {
 	const conf_listitem_t *li;
 	pcb_grid_t g;
-	int max = conflist_length((conflist_t *)&conf_core.editor.grids);
+	int max = conflist_length((conflist_t *)&pcbhl_conf.editor.grids);
 
 	if (dst < 0)
 		dst = 0;
@@ -194,7 +194,7 @@ pcb_bool_t pcb_grid_list_jump(int dst)
 
 	conf_setf(CFR_DESIGN, "editor/grids_idx", -1, "%d", dst);
 
-	li = conflist_nth((conflist_t *)&conf_core.editor.grids, dst);
+	li = conflist_nth((conflist_t *)&pcbhl_conf.editor.grids, dst);
 	/* clamp */
 	if (li == NULL)
 		return pcb_false;
@@ -209,7 +209,7 @@ pcb_bool_t pcb_grid_list_jump(int dst)
 
 pcb_bool_t pcb_grid_list_step(int stp)
 {
-	int dst = conf_core.editor.grids_idx;
+	int dst = pcbhl_conf.editor.grids_idx;
 	if (dst < 0)
 		dst = -dst-1;
 	return pcb_grid_list_jump(dst + stp);
@@ -217,7 +217,7 @@ pcb_bool_t pcb_grid_list_step(int stp)
 
 void pcb_grid_inval(void)
 {
-	if (conf_core.editor.grids_idx > 0)
-		conf_setf(CFR_DESIGN, "editor/grids_idx", -1, "%d", -1 - conf_core.editor.grids_idx);
+	if (pcbhl_conf.editor.grids_idx > 0)
+		conf_setf(CFR_DESIGN, "editor/grids_idx", -1, "%d", -1 - pcbhl_conf.editor.grids_idx);
 }
 

@@ -72,6 +72,9 @@ typedef struct {
 
 	const struct {
 		CFT_UNIT grid_unit;                /* select whether you draw in mm or mil */
+		CFT_COORD grid;                    /* grid in pcb-units */
+		CFT_LIST grids;                    /* grid in grid-string format */
+		CFT_INTEGER grids_idx;             /* the index of the currently active grid from grids */
 		CFT_BOOLEAN draw_grid;             /* draw grid points */
 		CFT_BOOLEAN auto_place;            /* force placement of GUI windows (dialogs), trying to override the window manager */
 		CFT_BOOLEAN fullscreen;            /* hide widgets to make more room for the drawing */

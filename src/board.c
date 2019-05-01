@@ -89,7 +89,7 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 	ptr->RatDraw = pcb_false;
 
 	/* NOTE: we used to set all the pcb flags on ptr here, but we don't need to do that anymore due to the new conf system */
-	ptr->hidlib.grid = conf_core.editor.grid;
+	ptr->hidlib.grid = pcbhl_conf.editor.grid;
 
 	ptr->hidlib.size_y = ptr->hidlib.size_x = PCB_MM_TO_COORD(20); /* should be overriden by the default design */
 	ptr->ID = pcb_create_ID_get();
