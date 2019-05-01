@@ -11,6 +11,7 @@
 #include "hid_color.h"
 #include "hidlib_conf.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 #include "funchash_core.h"
 
 #include "../src_plugins/lib_hid_common/clip.h"
@@ -238,7 +239,7 @@ pcb_hid_gc_t ghid_gl_make_gc(void)
 
 	rv = g_new0(hid_gc_s, 1);
 	rv->me_pointer = &gtk2_gl_hid;
-	rv->pcolor = pcbhlc_appearance_color_background;
+	rv->pcolor = &pcbhl_conf.appearance.color.background;
 	rv->alpha_mult = 1.0;
 	return rv;
 }
@@ -346,7 +347,7 @@ void ghid_gl_set_special_colors(conf_native_t *cfg)
 {
 	render_priv_t *priv = gport->render_priv;
 
-	if (((CFT_COLOR *) cfg->val.color == pcbhlc_appearance_color_background)) {
+	if (((CFT_COLOR *) cfg->val.color == &pcbhl_conf.appearance.color.background)) {
 		if (map_color_string(cfg->val.color[0].str, &priv->bg_color))
 			set_special_grid_color();
 	}
@@ -395,7 +396,7 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 		r = priv->offlimits_color.red / 65535.;
 		g = priv->offlimits_color.green / 65535.;
 		b = priv->offlimits_color.blue / 65535.;
-		a = *pcbhlc_appearance_drill_alpha;
+		a = pcbhl_conf.appearance.drill_alpha;
 	}
 	else {
 		if (pcb_hid_cache_color(0, gc->pcolor->str, &cval, &cache))
@@ -432,7 +433,7 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 		r = cc->red;
 		g = cc->green;
 		b = cc->blue;
-		a = *pcbhlc_appearance_layer_alpha;
+		a = pcbhl_conf.appearance.layer_alpha;
 	}
 	if (1) {
 		double maxi, mult;
