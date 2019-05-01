@@ -4,8 +4,8 @@
 #include "conf.h"
 
 typedef struct {
-	const struct plugins {
-		const struct export_excellon {
+	const struct {
+		const struct {
 			CFT_BOOLEAN plated_g85_slot;         /* use G85 (drill cycle instead of route) for plated slots */
 			CFT_BOOLEAN unplated_g85_slot;       /* use G85 (drill cycle instead of route) for unplated slots */
 		} export_excellon;

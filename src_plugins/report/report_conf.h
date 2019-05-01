@@ -4,8 +4,8 @@
 #include "conf.h"
 
 typedef struct {
-	const struct plugins {
-		const struct report {
+	const struct {
+		const struct {
 			CFT_INTEGER columns;         /* @usage number of columns for found pin report  */
 		} report;
 	} plugins;

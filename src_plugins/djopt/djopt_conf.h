@@ -4,8 +4,8 @@
 #include "conf.h"
 
 typedef struct {
-	const struct plugins {
-		const struct djopt {
+	const struct {
+		const struct {
 			CFT_BOOLEAN auto_only;         /* Operate on autorouted tracks only */
 		} djopt;
 	} plugins;

@@ -4,8 +4,8 @@
 #include "conf.h"
 
 typedef struct {
-	const struct plugins {
-		const struct export_xy {
+	const struct {
+		const struct {
 			CFT_LIST templates;
 		} export_xy;
 	} plugins;

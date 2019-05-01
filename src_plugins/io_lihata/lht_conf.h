@@ -4,8 +4,8 @@
 #include "conf.h"
 
 typedef struct {
-	const struct plugins {
-		const struct io_lihata {
+	const struct {
+		const struct {
 			CFT_STRING aux_pcb_pattern;  /* [obsolete] file name pattern to use when generating the .pcb backup */
 		} io_lihata;
 	} plugins;

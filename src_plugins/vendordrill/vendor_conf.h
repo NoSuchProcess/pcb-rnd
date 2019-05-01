@@ -4,8 +4,8 @@
 #include "conf.h"
 
 typedef struct {
-	const struct plugins {
-		const struct vendor {
+	const struct {
+		const struct {
 			CFT_BOOLEAN enable;         /* Enable vendor mapping */
 		} vendor;
 	} plugins;

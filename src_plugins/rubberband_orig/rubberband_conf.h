@@ -4,8 +4,8 @@
 #include "conf.h"
 
 typedef struct {
-	const struct plugins {
-		const struct rubberband_orig {
+	const struct {
+		const struct {
 			CFT_BOOLEAN enable_rubberband_arcs;   /* TODO: Enable to allow attached arcs to rubberband. */
 		} rubberband_orig;
 	} plugins;

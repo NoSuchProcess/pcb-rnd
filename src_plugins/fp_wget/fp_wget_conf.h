@@ -4,8 +4,8 @@
 #include "conf.h"
 
 typedef struct {
-	const struct plugins {
-		const struct fp_wget {
+	const struct {
+		const struct {
 			CFT_BOOLEAN auto_update_gedasymbols;       /* update the index of gedasymbols on startup automatically */
 			CFT_BOOLEAN auto_update_edakrill;          /* update the index of edakrill on startup automatically */
 			CFT_STRING cache_dir;                      /* where to build the cache */

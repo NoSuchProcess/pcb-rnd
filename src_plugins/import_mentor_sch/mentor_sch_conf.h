@@ -4,8 +4,8 @@
 #include "conf.h"
 
 typedef struct {
-	const struct plugins {
-		const struct import_mentor_sch {
+	const struct {
+		const struct {
 			CFT_LIST map_search_paths; /* parts map file search paths */
 		} import_mentor_sch;
 	} plugins;

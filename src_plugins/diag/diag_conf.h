@@ -4,8 +4,8 @@
 #include "conf.h"
 
 typedef struct {
-	const struct plugins {
-		const struct diag {
+	const struct {
+		const struct {
 			CFT_BOOLEAN auto_integrity;         /* Enable (expensive) automatic integrity check after each user action */
 		} diag;
 	} plugins;

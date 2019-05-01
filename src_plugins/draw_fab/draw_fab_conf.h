@@ -4,8 +4,8 @@
 #include "conf.h"
 
 typedef struct {
-	const struct plugins {
-		const struct draw_fab {
+	const struct {
+		const struct {
 			CFT_BOOLEAN omit_date;         /* do not draw date (useful for testing) */
 		} draw_fab;
 	} plugins;

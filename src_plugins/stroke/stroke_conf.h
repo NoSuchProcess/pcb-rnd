@@ -4,8 +4,8 @@
 #include "conf.h"
 
 typedef struct {
-	const struct plugins {
-		const struct stroke {
+	const struct {
+		const struct {
 			CFT_LIST gestures;
 			CFT_BOOLEAN warn4unknown; /* Warn for unknown sequences */
 		} stroke;

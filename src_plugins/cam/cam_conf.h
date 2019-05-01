@@ -4,8 +4,8 @@
 #include "conf.h"
 
 typedef struct {
-	const struct plugins {
-		const struct cam {
+	const struct {
+		const struct {
 			CFT_LIST jobs;         /* named cam scripts */
 		} cam;
 	} plugins;

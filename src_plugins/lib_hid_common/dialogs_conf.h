@@ -7,15 +7,15 @@
    own dialogs plugin */
 
 typedef struct {
-	const struct plugins {
-		const struct dialogs {
-			const struct auto_save_window_geometry {
+	const struct {
+		const struct {
+			const struct {
 				CFT_BOOLEAN to_design;
 				CFT_BOOLEAN to_project;
 				CFT_BOOLEAN to_user;
 			} auto_save_window_geometry;
-			const struct window_geometry {
-				const struct example_template {
+			const struct {
+				const struct {
 					CFT_INTEGER x;
 					CFT_INTEGER y;
 					CFT_INTEGER width;
@@ -24,8 +24,8 @@ typedef struct {
 			} window_geometry;
 		} dialogs;
 
-		const struct lib_hid_common {
-			const struct cli_history {
+		const struct {
+			const struct {
 				CFT_STRING file;       /* Path to the history file (empty/unset means history is not preserved) */
 				CFT_INTEGER slots;     /* Number of commands to store in the history */
 			} cli_history;

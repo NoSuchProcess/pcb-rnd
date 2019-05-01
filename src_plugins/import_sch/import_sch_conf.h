@@ -4,8 +4,8 @@
 #include "conf.h"
 
 typedef struct {
-	const struct plugins {
-		const struct import_sch {
+	const struct {
+		const struct {
 			CFT_STRING gnetlist_program;       /* gnetlist program name */
 			CFT_STRING make_program;           /* make program name */
 			CFT_BOOLEAN verbose;                  /* verbose logging of the import code */
