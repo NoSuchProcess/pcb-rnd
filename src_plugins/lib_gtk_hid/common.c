@@ -150,7 +150,7 @@ int ghid_mod1_is_pressed()
 
 void ghid_LayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	if (!ghidgui || !ghidgui->topwin.active || PCB == NULL || ghidgui->topwin.layersel.running)
+	if (!ghidgui || !ghidgui->topwin.active || ghidgui->common.hidlib == NULL || ghidgui->topwin.layersel.running)
 		return;
 
 	pcb_gtk_tw_layer_buttons_update(&ghidgui->topwin);
@@ -160,7 +160,7 @@ void ghid_LayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 
 void ghid_LayervisChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	if (!ghidgui || !ghidgui->topwin.active || PCB == NULL || ghidgui->topwin.layersel.running)
+	if (!ghidgui || !ghidgui->topwin.active || ghidgui->common.hidlib == NULL || ghidgui->topwin.layersel.running)
 		return;
 
 	pcb_gtk_tw_layer_vis_update(&ghidgui->topwin);
