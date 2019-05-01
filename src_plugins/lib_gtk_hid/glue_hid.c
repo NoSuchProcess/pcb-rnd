@@ -522,6 +522,29 @@ static int ghid_open_popup(const char *menupath)
 	return 0;
 }
 
+static void ghid_set_hidlib(pcb_hidlib_t *hidlib)
+{
+	ghidgui->common.hidlib = hidlib;
+
+	if (ghidgui == NULL)
+		return;
+
+	ghidgui->common.hidlib = hidlib;
+
+	if(!ghidgui->hid_active)
+		return;
+
+	if (PCB != NULL)
+		ghidgui->common.window_set_name_label(hidlib->name);
+
+	if (!gport->drawing_allowed)
+		return;
+
+	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);
+	pcb_gtk_zoom_view_win_side(&gport->view, 0, 0, hidlib->size_x, hidlib->size_y, 0);
+	ghid_sync_with_new_layout(&ghidgui->topwin);
+}
+
 void ghid_glue_hid_init(pcb_hid_t *dst)
 {
 	memset(dst, 0, sizeof(pcb_hid_t));
@@ -592,6 +615,8 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->view_get = ghid_view_get;
 	dst->open_command = ghid_open_command;
 	dst->open_popup = ghid_open_popup;
+
+	dst->set_hidlib = ghid_set_hidlib;
 
 	dst->key_state = &ghid_keymap;
 

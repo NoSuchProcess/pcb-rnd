@@ -6,24 +6,6 @@
 #include "../src_plugins/lib_gtk_common/hid_gtk_conf.h"
 #include "../src_plugins/lib_gtk_common/lib_gtk_config.h"
 
-static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
-{
-	ghidgui->common.hidlib = &PCB->hidlib;
-
-	if ((!ghidgui) || (!ghidgui->hid_active))
-		return;
-
-	if (PCB != NULL)
-		ghidgui->common.window_set_name_label(PCB->hidlib.name);
-
-	if (!gport->drawing_allowed)
-		return;
-
-	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);
-	pcb_gtk_zoom_view_win_side(&gport->view, 0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y, 0);
-	ghid_sync_with_new_layout(&ghidgui->topwin);
-}
-
 static void ev_pcb_meta_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if ((!ghidgui) || (!ghidgui->hid_active))
@@ -57,7 +39,6 @@ static void ghid_Busy(void *user_data, int argc, pcb_event_arg_t argv[])
 
 void glue_event_init(const char *cookie)
 {
-	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, cookie);
 	pcb_event_bind(PCB_EVENT_BOARD_META_CHANGED, ev_pcb_meta_changed, NULL, cookie);
 	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, ghid_LayersChanged, NULL, cookie);
 	pcb_event_bind(PCB_EVENT_LAYERVIS_CHANGED, ghid_LayervisChanged, NULL, cookie);
