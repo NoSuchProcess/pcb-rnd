@@ -6,8 +6,8 @@
 #include "conf.h"
 
 typedef struct {
-	const struct plugins {
-		const struct foobar {
+	const struct {
+		const struct {
 			CFT_BOOLEAN enable;         /* Enable the plugin */
 			CFT_INTEGER snow;           /* intensity of snowing, 0..100 */
 		} foobar;
