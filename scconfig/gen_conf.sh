@@ -163,7 +163,7 @@ $AWK -v "docdir=$1" '
 
 	/@conf_gen.sh:/ {
 		sub(".*@conf_gen.sh: *", "", $0)
-		sub("*/", "", $0)
+		sub("[*]/", "", $0)
 		if ($1 == "begin")
 			STATE[$2] = 1
 		else if ($1 == "end")
