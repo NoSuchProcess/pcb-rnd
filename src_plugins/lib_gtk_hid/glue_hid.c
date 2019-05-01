@@ -64,7 +64,6 @@ static gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev,
 		 */
 		gtk_widget_grab_focus(out->drawing_area);
 	}
-	ghidgui->topwin.in_popup = FALSE;
 
 	/* Following expression is true if a you open a menu from the menu bar,
 	 * move the mouse to the viewport and click on it. This closes the menu
@@ -518,7 +517,6 @@ static int ghid_open_popup(const char *menupath)
 		return 1;
 	}
 
-	ghidgui->topwin.in_popup = TRUE;
 	gtk_widget_grab_focus(ghid_port.drawing_area);
 	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time());
 	return 0;

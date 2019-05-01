@@ -37,7 +37,7 @@ typedef struct {
 	GObject *h_adjustment, *v_adjustment;
 
 	/* own internal states */
-	gboolean adjustment_changed_holdoff, in_popup;
+	gboolean adjustment_changed_holdoff;
 	gboolean small_label_markup;
 	int active; /* 0 before init finishes */
 	pcb_gtk_layersel_t layersel;
