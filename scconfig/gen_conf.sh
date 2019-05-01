@@ -7,11 +7,24 @@ then
 	AWK="awk"
 fi
 
+# Trickery: the name (for path) of the current struct is learned only at
+# the end, when the struct is closed because struct type names would be
+# global and pollute the namespace while variable names are local. So to
+# pick up trailing variable names:
+#  - each struct gets an integer uid, 0 being the root; structs remember
+#    their ancestry using PARENT[uid].
+#  - each entry is remembered in an SRC[uid, n], where n is between 0
+#    and LEN[uid]
+#  - the output is build in END{} after loading everything into those arrays
+
+
 $AWK -v "docdir=$1" '
 	BEGIN {
 		level = -1
 		q = "\""
 		cm = ","
+		uids = 0
+		stderr = "/dev/stderr"
 	}
 
 	function doc_head(fn, path)
@@ -32,25 +45,9 @@ $AWK -v "docdir=$1" '
 		print "</table></body></html>" > fn
 	}
 
-	/[{]/ { level++ }
-
-	/struct.*/ {
-		name = $0
-		sub(".*struct[ \t]*", "", name)
-		sub("[ \t{].*", "", name)
-		if (level == 0)
-			path = ""
-		else
-			path = path "/" name
-	}
-
-	/^[ \t]*[\/][\/]/ { next }
-
-	/CFT_/ {
-		if (level < 1)
-			next
-
-		name=$0
+	function gen(path, src_line,          id, name, type, array, desc, flags,path_tmp,type2,fn)
+	{
+		name=src_line
 		sub("^.*CFT_", "CFN_", name)
 		sub(";.*", "", name)
 		type=name
@@ -64,7 +61,7 @@ $AWK -v "docdir=$1" '
 		gsub("/", ".", id)
 		id = id "." name
 
-		desc = $0
+		desc = src_line
 		if (desc ~ "/[*]") {
 			sub("^.*/[*]", "", desc)
 			sub("[*]/.*$", "", desc)
@@ -107,15 +104,67 @@ $AWK -v "docdir=$1" '
 		}
 	}
 
-	/[}]/ {
+	function push_uid()
+	{
+		level++
+		UID_STACK[level] = uid
+	}
+
+	function pop_uid()
+	{
 		level--
-		sub("[/][^/]*$", "", path)
+		uid = UID_STACK[level]
+	}
+
+	function gen_path(uid     ,path) {
+		path = ""
+		while(LEVEL[uid] > 0) {
+			path = NAME[uid] "/" path
+			uid = PARENT[uid]
+		}
+		sub("/$", "", path)
+		return path
+	}
+
+	/[{]/ {
+		uid = uids++
+		LEN[uid] = 0
+		push_uid()
+	}
+
+	/^[ \t]*[\/][\/]/ { next }
+
+	/CFT_/ { SRC[uid, LEN[uid]++] = $0 }
+
+	/[}]/ {
+		name = $0
+		sub(".*}[ \t]*", "", name)
+		sub("[ \t{].*", "", name)
+		sub(";.*", "", name);
+
+		PARENT[uid] = UID_STACK[level-1]
+		NAME[uid] = name
+		LEVEL[uid] = level
+
+		pop_uid()
 	}
 
 
 	END {
 		if (level != -1)
 			print "Error: unbalanced braces" > "/dev/stderr"
+
+		if (LEN[0] != 0) {
+			for(n = 0; n < LEN[0]; n++)
+				print "gen_conf ERROR: ignoring line \"" SRC[0, n] "\" in root - needs to be within a struct" > stderr
+		}
+
+		for(uid = 0; uid < uids; uid++) {
+			path = gen_path(uid)
+			for(n = 0; n < LEN[uid]; n++)
+				gen(path, SRC[uid, n])
+		}
+
 		for(fn in DOCS)
 			doc_foot(fn)
 	}
