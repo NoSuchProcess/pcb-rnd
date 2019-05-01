@@ -1,6 +1,5 @@
 #include "config.h"
 #include "hidlib_conf.h"
-#include "conf_core.h"
 
 #include <stdio.h>
 
