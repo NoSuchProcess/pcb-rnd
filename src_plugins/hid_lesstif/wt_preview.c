@@ -71,11 +71,11 @@ void pcb_ltf_preview_getxy(pcb_ltf_preview_t *pd, int px, int py, pcb_coord_t *d
 {
 	pcb_coord_t x, y;
 
-	if (conf_core.editor.view.flip_x)
+	if (pcbhl_conf.editor.view.flip_x)
 		px = pd->v_width - px;
 	x = pcb_round((double)px * pd->zoom + (double)pd->x1);
 
-	if (conf_core.editor.view.flip_y)
+	if (pcbhl_conf.editor.view.flip_y)
 		py = pd->v_height - py;
 	y = pcb_round((double)py * pd->zoom + (double)pd->y1);
 
@@ -106,8 +106,8 @@ void pcb_ltf_preview_redraw(pcb_ltf_preview_t *pd)
 	save_vz = view_zoom;
 	save_vw = view_width;
 	save_vh = view_height;
-	save_fx = conf_core.editor.view.flip_x;
-	save_fy = conf_core.editor.view.flip_y;
+	save_fx = pcbhl_conf.editor.view.flip_x;
+	save_fy = pcbhl_conf.editor.view.flip_y;
 	save_px = main_pixmap;
 	save_main_px = main_pixmap;
 	save_mask_px = mask_pixmap;
@@ -121,8 +121,8 @@ void pcb_ltf_preview_redraw(pcb_ltf_preview_t *pd)
 	view_zoom = pd->zoom;
 	view_width = pd->x2;
 	view_height = pd->y2;
-	conf_force_set_bool(conf_core.editor.view.flip_x, 0);
-	conf_force_set_bool(conf_core.editor.view.flip_y, 0);
+	conf_force_set_bool(pcbhl_conf.editor.view.flip_x, 0);
+	conf_force_set_bool(pcbhl_conf.editor.view.flip_y, 0);
 
 	XFillRectangle(display, pixmap, bg_gc, 0, 0, pd->v_width, pd->v_height);
 
@@ -148,8 +148,8 @@ void pcb_ltf_preview_redraw(pcb_ltf_preview_t *pd)
 	mask_pixmap = save_mask_px;
 	mask_bitmap = save_mask_bm;
 	pixmap = save_px;
-	conf_force_set_bool(conf_core.editor.view.flip_x, save_fx);
-	conf_force_set_bool(conf_core.editor.view.flip_y, save_fy);
+	conf_force_set_bool(pcbhl_conf.editor.view.flip_x, save_fx);
+	conf_force_set_bool(pcbhl_conf.editor.view.flip_y, save_fy);
 
 	pd->expose_lock = 0;
 }

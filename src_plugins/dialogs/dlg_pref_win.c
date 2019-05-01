@@ -29,6 +29,7 @@
 #include "dlg_pref.h"
 #include "conf.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 #include "../src_plugins/lib_hid_common/dialogs_conf.h"
 
 extern const conf_dialogs_t dialogs_conf;
@@ -37,7 +38,7 @@ extern int pcb_wplc_save_to_file(const char *fn);
 
 static void pref_win_brd2dlg(pref_ctx_t *ctx)
 {
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wmaster, int_value, conf_core.editor.auto_place);
+	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wmaster, int_value, pcbhl_conf.editor.auto_place);
 	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wboard, int_value, dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_design);
 	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wproject, int_value, dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_project);
 	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wuser, int_value, dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_user);

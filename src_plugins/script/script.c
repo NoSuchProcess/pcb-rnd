@@ -57,7 +57,7 @@ static htsp_t scripts; /* ID->script_t */
 static pup_context_t script_pup;
 
 #include "c_script.c"
-#include "conf_core.h"
+#include "hidlib_conf.h"
 #include "compat_fs.h"
 
 /* dir name under dotdir for saving script persistency data */
@@ -78,7 +78,7 @@ static int script_save_preunload(script_t *s, const char *data)
 	gds_t fn;
 
 	gds_init(&fn);
-	gds_append_str(&fn, conf_core.rc.path.home);
+	gds_append_str(&fn, pcbhl_conf.rc.path.home);
 	gds_append(&fn, PCB_DIR_SEPARATOR_C);
 	gds_append_str(&fn, DOT_PCB_RND);
 	pcb_mkdir(fn.array, 0755);
@@ -164,7 +164,7 @@ static int script_persistency(fgw_arg_t *res, const char *cmd)
 		goto err;
 	}
 
-	fn = pcb_concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, SCRIPT_PERS, PCB_DIR_SEPARATOR_S, script_persistency_id, NULL);
+	fn = pcb_concat(pcbhl_conf.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, SCRIPT_PERS, PCB_DIR_SEPARATOR_S, script_persistency_id, NULL);
 
 	if (strcmp(cmd, "remove") == 0) {
 		PCB_ACT_IRES(pcb_remove(fn));

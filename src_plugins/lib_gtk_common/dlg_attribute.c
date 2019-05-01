@@ -462,7 +462,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
 
 				entry = pcb_gtk_coord_entry_new(ctx->attrs[j].min_val, ctx->attrs[j].max_val,
-																				ctx->attrs[j].default_val.coord_value, *pcbhlc_editor_grid_unit, CE_SMALL);
+																				ctx->attrs[j].default_val.coord_value, pcbhl_conf.editor.grid_unit, CE_SMALL);
 				gtk_box_pack_start(GTK_BOX(hbox), entry, FALSE, FALSE, 0);
 				g_object_set_data(G_OBJECT(entry), PCB_OBJ_PROP, ctx);
 				ctx->wl[j] = entry;
@@ -829,7 +829,7 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, const char *id, pcb_hid_attribute
 	if (modal)
 		gtk_window_set_transient_for(GTK_WINDOW(ctx->dialog), GTK_WINDOW(com->top_window));
 
-	if (*pcbhlc_editor_auto_place) {
+	if (pcbhl_conf.editor.auto_place) {
 		if ((plc[2] > 0) && (plc[3] > 0))
 			gtk_window_resize(GTK_WINDOW(ctx->dialog), plc[2], plc[3]);
 		if ((plc[0] >= 0) && (plc[1] >= 0))

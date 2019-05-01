@@ -36,7 +36,7 @@ void pcb_gtk_winplace(GtkWidget *dialog, const char *id)
 
 	pcb_event(PCB_EVENT_DAD_NEW_DIALOG, "psp", NULL, id, plc);
 
-	if (*pcbhlc_editor_auto_place) {
+	if (pcbhl_conf.editor.auto_place) {
 		if ((plc[2] > 0) && (plc[3] > 0))
 			gtk_window_resize(GTK_WINDOW(dialog), plc[2], plc[3]);
 		if ((plc[0] >= 0) && (plc[1] >= 0))

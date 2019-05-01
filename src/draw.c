@@ -30,6 +30,7 @@
 #include "config.h"
 
 #include "conf_core.h"
+#include "hidlib_conf.h"
 #include "math_helper.h"
 #include "board.h"
 #include "data.h"
@@ -1050,8 +1051,8 @@ static const char *lab_with_intconn(const pcb_any_obj_t *term, int intconn, cons
 
 /* vert flip magic: make sure the offset is in-line with the flip and our sick y coords for vertical */
 #define PCB_TERM_LABEL_SETUP(label) \
-	pcb_bool flip_x = conf_core.editor.view.flip_x; \
-	pcb_bool flip_y = conf_core.editor.view.flip_y; \
+	pcb_bool flip_x = pcbhl_conf.editor.view.flip_x; \
+	pcb_bool flip_y = pcbhl_conf.editor.view.flip_y; \
 	pcb_font_t *font = pcb_font(PCB, 0, 0); \
 	pcb_coord_t w, h, dx, dy; \
 	if (vert) { \

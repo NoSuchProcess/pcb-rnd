@@ -56,6 +56,7 @@
 #include "math_helper.h"
 #include "pcb_minuid.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 
 #define SUBC_AUX_NAME "subc-aux"
 
@@ -1700,14 +1701,14 @@ pcb_r_dir_t draw_subc_label_callback(const pcb_box_t *b, void *cl)
 	dx = font->MaxWidth/2;
 	dy = font->MaxHeight/2;
 
-	if (conf_core.editor.view.flip_x) {
+	if (pcbhl_conf.editor.view.flip_x) {
 		x0 = bb->X2;
 		dx = -dx;
 	}
 	else
 		x0 = bb->X1;
 
-	if (conf_core.editor.view.flip_y) {
+	if (pcbhl_conf.editor.view.flip_y) {
 		y0 = bb->Y2;
 		dy = -dy;
 	}

@@ -30,6 +30,7 @@
 
 #include "compat_misc.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 #include "math_helper.h"
 #include "board.h"
 #include "data.h"
@@ -708,7 +709,7 @@ void pcb_route_draw_drc(pcb_route_t *p_route, pcb_hid_gc_t GC)
 	pcb_coord_t thickness = p_route->thickness + 2 * conf_core.design.bloat;
 	int i;
 
-	pcb_gui->set_color(GC, &conf_core.appearance.color.cross);
+	pcb_gui->set_color(GC, &pcbhl_conf.appearance.color.cross);
 
 	for(i = 0; i < p_route->size; ++i) {
 		const pcb_route_object_t *p_obj = &p_route->objects[i];

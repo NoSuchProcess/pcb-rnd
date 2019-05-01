@@ -33,6 +33,7 @@
 #include "hid_cfg_input.h"
 #include "hid_dad.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 #include "crosshair.h"
 #include "layer.h"
 #include "search.h"
@@ -81,7 +82,7 @@ static void build_st_line1(void)
 	"grid=%$mS  "
 	"line=%mS (%s%s) "
 	"kbd=%s",
-	conf_core.editor.grid_unit->allow, conf_core.editor.show_solder_side ? "bottom" : "top",
+	pcbhl_conf.editor.grid_unit->allow, conf_core.editor.show_solder_side ? "bottom" : "top",
 	PCB->hidlib.grid,
 	conf_core.design.line_thickness, flag, conf_core.editor.rubber_band_mode ? ",R" : "",
 	kbd);
@@ -110,7 +111,7 @@ static void build_st_help(void)
 		unit_mm  = get_unit_struct("mm");
 		unit_mil = get_unit_struct("mil");
 	}
-	if (conf_core.editor.grid_unit == unit_mm)
+	if (pcbhl_conf.editor.grid_unit == unit_mm)
 		unit_inv = unit_mil;
 	else
 		unit_inv = unit_mm;
@@ -172,19 +173,19 @@ static void status_rd_pcb2dlg(void)
 	/* coordinate readout (right side box) */
 	if (conf_core.appearance.compact) {
 		status.buf.used = 0;
-		pcb_append_printf(&status.buf, "%m+%-mS", conf_core.editor.grid_unit->allow, pcb_crosshair.X);
+		pcb_append_printf(&status.buf, "%m+%-mS", pcbhl_conf.editor.grid_unit->allow, pcb_crosshair.X);
 		hv.str_value = status.buf.array;
 		pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd2[0], &hv);
 
 		status.buf.used = 0;
-		pcb_append_printf(&status.buf, "%m+%-mS", conf_core.editor.grid_unit->allow, pcb_crosshair.Y);
+		pcb_append_printf(&status.buf, "%m+%-mS", pcbhl_conf.editor.grid_unit->allow, pcb_crosshair.Y);
 		hv.str_value = status.buf.array;
 		pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd2[1], &hv);
 		pcb_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd2[1], 0);
 	}
 	else {
 		status.buf.used = 0;
-		pcb_append_printf(&status.buf, "%m+%-mS %-mS", conf_core.editor.grid_unit->allow, pcb_crosshair.X, pcb_crosshair.Y);
+		pcb_append_printf(&status.buf, "%m+%-mS %-mS", pcbhl_conf.editor.grid_unit->allow, pcb_crosshair.X, pcb_crosshair.Y);
 		hv.str_value = status.buf.array;
 		pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd2[0], &hv);
 		pcb_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd2[1], 1);
@@ -201,11 +202,11 @@ static void status_rd_pcb2dlg(void)
 		double a = atan2(dy, dx) * PCB_RAD_TO_DEG;
 
 		s1 = status.buf.array;
-		pcb_append_printf(&status.buf, "%m+r %-mS%c", conf_core.editor.grid_unit->allow, r, sep);
+		pcb_append_printf(&status.buf, "%m+r %-mS%c", pcbhl_conf.editor.grid_unit->allow, r, sep);
 		s2 = status.buf.array + status.buf.used;
 		pcb_append_printf(&status.buf, "phi %-.1f%c", a, sep);
 		s3 = status.buf.array + status.buf.used;
-		pcb_append_printf(&status.buf, "%m+ %-mS %-mS", conf_core.editor.grid_unit->allow, dx, dy);
+		pcb_append_printf(&status.buf, "%m+ %-mS %-mS", pcbhl_conf.editor.grid_unit->allow, dx, dy);
 	}
 	else {
 		pcb_append_printf(&status.buf, "r __.__%cphi __._%c__.__ __.__", sep, sep, sep);
@@ -229,10 +230,10 @@ static void status_rd_pcb2dlg(void)
 		pcb_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd1[2], 1);
 	}
 
-	if (status.last_unit != conf_core.editor.grid_unit) {
+	if (status.last_unit != pcbhl_conf.editor.grid_unit) {
 		status.lock++;
-		status.last_unit = conf_core.editor.grid_unit;
-		hv.str_value = conf_core.editor.grid_unit->in_suffix;
+		status.last_unit = pcbhl_conf.editor.grid_unit;
+		hv.str_value = pcbhl_conf.editor.grid_unit->in_suffix;
 		pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrdunit, &hv);
 		status.lock--;
 	}
@@ -240,7 +241,7 @@ static void status_rd_pcb2dlg(void)
 
 static void unit_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	if (conf_core.editor.grid_unit == get_unit_struct("mm"))
+	if (pcbhl_conf.editor.grid_unit == get_unit_struct("mm"))
 		pcb_actionl("SetUnits", "mil", NULL);
 	else
 		pcb_actionl("SetUnits", "mm", NULL);

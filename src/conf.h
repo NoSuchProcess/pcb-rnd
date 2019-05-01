@@ -323,8 +323,14 @@ do { \
 #define conf_toggle_editor(field) \
 	conf_set_editor(field, !conf_core.editor.field)
 
+#define conf_toggle_heditor(field) \
+	conf_set_editor(field, !pcbhl_conf.editor.field)
+
 #define conf_toggle_editor_(sfield, field) \
 	conf_set_editor_("editor/" sfield, !conf_core.editor.field)
+
+#define conf_toggle_heditor_(sfield, field) \
+	conf_set_editor_("editor/" sfield, !pcbhl_conf.editor.field)
 
 /* For temporary modification/restoration of variables (hack) */
 #define conf_force_set_bool(var, val) *((CFT_BOOLEAN *)(&var)) = val

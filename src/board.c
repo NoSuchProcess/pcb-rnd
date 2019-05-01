@@ -29,6 +29,7 @@
 #include "board.h"
 #include "data.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 #include "plug_io.h"
 #include "compat_misc.h"
 #include "actions.h"
@@ -294,7 +295,7 @@ void pcb_board_set_grid(pcb_coord_t Grid, pcb_bool align, pcb_coord_t ox, pcb_co
 		}
 		PCB->hidlib.grid = Grid;
 		conf_set_design("editor/grid", "%$mS", Grid);
-		if (conf_core.editor.draw_grid)
+		if (pcbhl_conf.editor.draw_grid)
 			pcb_redraw();
 	}
 }

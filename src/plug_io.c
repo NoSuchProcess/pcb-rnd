@@ -38,7 +38,9 @@
 #define DEFAULT_EMERGENCY_FMT "lihata"
 
 #include "config.h"
+
 #include "conf_core.h"
+#include "hidlib_conf.h"
 
 #include <locale.h>
 #include <dirent.h>
@@ -533,7 +535,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 			if (new_unit)
 				conf_set(settings_dest, "editor/grid_unit", -1, unit_suffix, POL_OVERWRITE);
 		}
-		pcb_attrib_put(PCB, "PCB::grid::unit", conf_core.editor.grid_unit->suffix);
+		pcb_attrib_put(PCB, "PCB::grid::unit", pcbhl_conf.editor.grid_unit->suffix);
 
 		pcb_ratspatch_make_edited(PCB);
 

@@ -133,11 +133,11 @@ int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 		template++;
 
 	if ((*template == '~') && (flags & PCB_SUBST_HOME)) {
-		if (*pcbhlc_rc_path_home == NULL) {
+		if (pcbhl_conf.rc.path.home == NULL) {
 			pcb_message(PCB_MSG_ERROR, "pcb_strdup_subst(): can't resolve home dir required for path %s\n", template);
 			goto error;
 		}
-		gds_append_str(s, *pcbhlc_rc_path_home);
+		gds_append_str(s, pcbhl_conf.rc.path.home);
 		template++;
 	}
 

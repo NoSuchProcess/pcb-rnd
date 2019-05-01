@@ -1,5 +1,6 @@
 #include "config.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -137,8 +138,8 @@ static pcb_hid_attribute_t *xy_get_export_options(int *n)
 
 	/* set default unit and filename */
 	if (xy_options[HA_unit].default_val.int_value == last_unit_value) {
-		if (conf_core.editor.grid_unit)
-			xy_options[HA_unit].default_val.int_value = conf_core.editor.grid_unit->index;
+		if (pcbhl_conf.editor.grid_unit)
+			xy_options[HA_unit].default_val.int_value = pcbhl_conf.editor.grid_unit->index;
 		else
 			xy_options[HA_unit].default_val.int_value = get_unit_struct("mil")->index;
 		last_unit_value = xy_options[HA_unit].default_val.int_value;

@@ -29,6 +29,7 @@
 #include "board.h"
 #include "data.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 #include "event.h"
 #include "layer.h"
 #include "layer_ui.h"
@@ -138,7 +139,7 @@ static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node
 				pcb_layer_type_t lyt = pcb_layer_flags_(l);
 
 				props.background = &l->meta.real.color;
-				props.foreground = &conf_core.appearance.color.background;
+				props.foreground = &pcbhl_conf.appearance.color.background;
 				props.checked = chk;
 				if (ctx->view) {
 					sprintf(act, "ToggleView(%ld)", lid+1);

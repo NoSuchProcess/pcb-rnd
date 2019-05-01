@@ -31,7 +31,9 @@
  */
 
 #include "config.h"
+
 #include "conf_core.h"
+#include "hidlib_conf.h"
 
 #include "board.h"
 #include "data.h"
@@ -153,9 +155,9 @@ do { \
 
 	/* If board view is flipped, box coords need to be flipped too to reflect
 	   the on-screen direction of draw */
-	if (conf_core.editor.view.flip_x)
+	if (pcbhl_conf.editor.view.flip_x)
 		swap(Box->X1, Box->X2);
-	if (conf_core.editor.view.flip_y)
+	if (pcbhl_conf.editor.view.flip_y)
 		swap(Box->Y1, Box->Y2);
 
 	if ((force_pos) || (conf_core.editor.selection.disable_negative)) {
@@ -200,7 +202,7 @@ static long int *ListBlock_(pcb_board_t *pcb, pcb_box_t *Box, pcb_bool Flag, int
 	long int *list = NULL;
 
 	fix_box_dir(Box, 0);
-/*pcb_printf("box: %mm %mm - %mm %mm    [ %d ] %d %d\n", Box->X1, Box->Y1, Box->X2, Box->Y2, PCB_IS_BOX_NEGATIVE(Box), conf_core.editor.view.flip_x, conf_core.editor.view.flip_y);*/
+/*pcb_printf("box: %mm %mm - %mm %mm    [ %d ] %d %d\n", Box->X1, Box->Y1, Box->X2, Box->Y2, PCB_IS_BOX_NEGATIVE(Box), pcbhl_conf.editor.view.flip_x, pcbhl_conf.editor.view.flip_y);*/
 
 /* append an object to the return list OR set the flag if there's no list */
 #define append(undo_type, p1, obj) \

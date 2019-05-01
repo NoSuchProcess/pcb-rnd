@@ -34,62 +34,6 @@
 
 pcbhl_conf_t pcbhl_conf;
 
-
-CFT_BOOLEAN *pcbhlc_rc_dup_log_to_stderr;
-CFT_STRING *pcbhlc_rc_cli_prompt;
-CFT_STRING *pcbhlc_rc_cli_backend;
-CFT_BOOLEAN *pcbhlc_rc_export_basename;
-CFT_STRING *pcbhlc_rc_path_exec_prefix;
-CFT_STRING *pcbhlc_rc_path_home;
-CFT_STRING *pcbhlc_rc_menu_file;
-
-CFT_BOOLEAN *pcbhlc_appearance_loglevels_debug_popup;
-CFT_BOOLEAN *pcbhlc_appearance_loglevels_info_popup;
-CFT_BOOLEAN *pcbhlc_appearance_loglevels_warning_popup;
-CFT_BOOLEAN *pcbhlc_appearance_loglevels_error_popup;
-CFT_STRING *pcbhlc_appearance_loglevels_debug_tag;
-CFT_STRING *pcbhlc_appearance_loglevels_info_tag;
-CFT_STRING *pcbhlc_appearance_loglevels_warning_tag;
-CFT_STRING *pcbhlc_appearance_loglevels_error_tag;
-CFT_COLOR *pcbhlc_appearance_color_background;
-CFT_COLOR *pcbhlc_appearance_color_grid;
-CFT_COLOR *pcbhlc_appearance_color_off_limit;
-CFT_COLOR *pcbhlc_appearance_color_cross;
-CFT_REAL *pcbhlc_appearance_layer_alpha;
-CFT_REAL *pcbhlc_appearance_drill_alpha;
-
-
-CFT_UNIT *pcbhlc_editor_grid_unit;
-CFT_BOOLEAN *pcbhlc_editor_view_flip_x;
-CFT_BOOLEAN *pcbhlc_editor_view_flip_y;
-CFT_BOOLEAN *pcbhlc_editor_fullscreen;
-CFT_BOOLEAN *pcbhlc_editor_auto_place;
-CFT_BOOLEAN *pcbhlc_editor_draw_grid;
-
-static union {
-	CFT_INTEGER i;
-	CFT_BOOLEAN b;
-	CFT_STRING s;
-	CFT_UNIT c;
-	CFT_COLOR clr;
-	CFT_REAL r;
-} pcb_hidlib_zero; /* implicit initialized to 0 */
-
-
-#define SCALAR(name, sname, type, typef) \
-do { \
-	int r; \
-	pcb_conf_resolve_t rsv = {sname, type, 0, NULL}; \
-	r = pcb_conf_resolve(&rsv); \
-	cnt += r; \
-	if (r <= 0) { \
-		pcbhlc_ ## name = (void *)&pcb_hidlib_zero; \
-		pcb_message(PCB_MSG_ERROR, "hidlib: pcb_hidlib_conf_init(): filed to resolve hidlib conf path %s\n", sname); \
-	} \
-	else \
-		pcbhlc_ ## name = rsv.nat->val.typef; \
-} while(0)
-
 int pcb_hidlib_conf_init()
 {
 	int cnt = 0;
@@ -97,37 +41,6 @@ int pcb_hidlib_conf_init()
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	conf_reg_field(pcbhl_conf, field,isarray,type_name,cpath,cname,desc,flags);
 #include "hidlib_conf_fields.h"
-
-	SCALAR(rc_dup_log_to_stderr, "rc/dup_log_to_stderr", CFN_BOOLEAN, boolean);
-
-	SCALAR(rc_cli_prompt,        "rc/cli_prompt",        CFN_STRING,  string);
-	SCALAR(rc_cli_backend,       "rc/cli_backend",       CFN_STRING,  string);
-	SCALAR(rc_export_basename,   "rc/export_basename",   CFN_BOOLEAN, boolean);
-	SCALAR(rc_path_exec_prefix,  "rc/path/exec_prefix",  CFN_STRING,  string);
-	SCALAR(rc_path_home,         "rc/path/home",         CFN_STRING,  string);
-	SCALAR(rc_menu_file,         "rc/menu_file",         CFN_STRING,  string);
-
-	SCALAR(appearance_loglevels_debug_popup,    "appearance/loglevels/debug_popup",    CFN_BOOLEAN, boolean);
-	SCALAR(appearance_loglevels_info_popup,     "appearance/loglevels/info_popup",     CFN_BOOLEAN, boolean);
-	SCALAR(appearance_loglevels_warning_popup,  "appearance/loglevels/warning_popup",  CFN_BOOLEAN, boolean);
-	SCALAR(appearance_loglevels_error_popup,    "appearance/loglevels/error_popup",    CFN_BOOLEAN, boolean);
-	SCALAR(appearance_loglevels_debug_tag,      "appearance/loglevels/debug_tag",      CFN_STRING,  string);
-	SCALAR(appearance_loglevels_info_tag,       "appearance/loglevels/info_tag",       CFN_STRING,  string);
-	SCALAR(appearance_loglevels_warning_tag,    "appearance/loglevels/warning_tag",    CFN_STRING,  string);
-	SCALAR(appearance_loglevels_error_tag,      "appearance/loglevels/error_tag",      CFN_STRING,  string);
-	SCALAR(appearance_color_background,         "appearance/color/background",         CFN_COLOR,   color);
-	SCALAR(appearance_color_grid,               "appearance/color/grid",               CFN_COLOR,   color);
-	SCALAR(appearance_color_off_limit,          "appearance/color/off_limit",          CFN_COLOR,   color);
-	SCALAR(appearance_color_cross,              "appearance/color/cross",              CFN_COLOR,   color);
-	SCALAR(appearance_layer_alpha,              "appearance/layer_alpha",              CFN_COLOR,   color);
-	SCALAR(appearance_drill_alpha,              "appearance/drill_alpha",              CFN_COLOR,   color);
-
-	SCALAR(editor_grid_unit,    "editor/grid_unit",    CFN_UNIT,    unit);
-	SCALAR(editor_view_flip_x,  "editor/view/flip_x",  CFN_BOOLEAN, boolean);
-	SCALAR(editor_view_flip_y,  "editor/view/flip_y",  CFN_BOOLEAN, boolean);
-	SCALAR(editor_fullscreen,   "editor/fullscreen",   CFN_BOOLEAN, boolean);
-	SCALAR(editor_auto_place,   "editor/auto_place",   CFN_BOOLEAN, boolean);
-	SCALAR(editor_draw_grid,    "editor/draw_grid",    CFN_BOOLEAN, boolean);
 
 	return cnt;
 }

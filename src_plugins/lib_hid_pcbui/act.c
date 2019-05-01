@@ -31,6 +31,7 @@
 #include "compat_misc.h"
 #include "conf.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 #include "draw.h"
 #include "hid.h"
 #include "layer_vis.h"
@@ -249,18 +250,18 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_MAY_CONVARG(2, FGW_STR, SwapSides, b = argv[2].val.str);
 		switch (a[0]) {
 			case 'h': case 'H':
-				conf_toggle_editor_("view/flip_x", view.flip_x);
+				conf_toggle_heditor_("view/flip_x", view.flip_x);
 				break;
 			case 'v': case 'V':
-				if (!conf_core.editor.view.flip_y)
+				if (!pcbhl_conf.editor.view.flip_y)
 					yoffs = -yoffs;
 				else
 					yoffs = 0;
-				conf_toggle_editor_("view/flip_y", view.flip_y);
+				conf_toggle_heditor_("view/flip_y", view.flip_y);
 				break;
 			case 'r': case 'R':
-				conf_toggle_editor_("view/flip_x", view.flip_x);
-				conf_toggle_editor_("view/flip_y", view.flip_y);
+				conf_toggle_heditor_("view/flip_x", view.flip_x);
+				conf_toggle_heditor_("view/flip_y", view.flip_y);
 				conf_toggle_editor(show_solder_side); /* Swapped back below */
 				break;
 

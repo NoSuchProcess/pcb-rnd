@@ -509,12 +509,12 @@ const char *pcb_cli_prompt(const char *suffix)
 	static char prompt[128];
 	int blen, slen, len;
 
-	if ((*pcbhlc_rc_cli_prompt != NULL) && (**pcbhlc_rc_cli_prompt != '\0'))
-		base = *pcbhlc_rc_cli_prompt;
-	else if ((*pcbhlc_rc_cli_backend == NULL) || (**pcbhlc_rc_cli_backend == '\0'))
+	if ((pcbhl_conf.rc.cli_prompt != NULL) && (*pcbhl_conf.rc.cli_prompt != '\0'))
+		base = pcbhl_conf.rc.cli_prompt;
+	else if ((pcbhl_conf.rc.cli_backend == NULL) || (*pcbhl_conf.rc.cli_backend == '\0'))
 		base = "action";
 	else
-		base = *pcbhlc_rc_cli_backend;
+		base = pcbhl_conf.rc.cli_backend;
 
 	if ((suffix == NULL) || (*suffix == '\0'))
 		return base;
@@ -550,8 +550,8 @@ static char *cli_pop(void)
 
 int pcb_cli_enter(const char *backend, const char *prompt)
 {
-	cli_push(*pcbhlc_rc_cli_backend);
-	cli_push(*pcbhlc_rc_cli_prompt);
+	cli_push(pcbhl_conf.rc.cli_backend);
+	cli_push(pcbhl_conf.rc.cli_prompt);
 
 	if (conf_set(CFR_CLI, "rc/cli_backend", 0, backend, POL_OVERWRITE) != 0)
 		return -1;
@@ -582,11 +582,11 @@ static int pcb_cli_common(fgw_arg_t *args)
 	fgw_func_t *f;
 
 	/* no backend: let the original action work */
-	if ((*pcbhlc_rc_cli_backend == NULL) || (**pcbhlc_rc_cli_backend == '\0'))
+	if ((pcbhl_conf.rc.cli_backend == NULL) || (*pcbhl_conf.rc.cli_backend == '\0'))
 		return -1;
 
 	/* backend: let the backend action handle it */
-	a = pcb_find_action(*pcbhlc_rc_cli_backend, &f);
+	a = pcb_find_action(pcbhl_conf.rc.cli_backend, &f);
 	if (!a)
 		return -1;
 
@@ -660,15 +660,15 @@ int pcb_parse_command(const char *str_, pcb_bool force_action_mode)
 	const char *end;
 
 	/* no backend or forced action mode: classic pcb-rnd action parse */
-	if (force_action_mode || (*pcbhlc_rc_cli_backend == NULL) || (**pcbhlc_rc_cli_backend == '\0')) {
+	if (force_action_mode || (pcbhl_conf.rc.cli_backend == NULL) || (*pcbhl_conf.rc.cli_backend == '\0')) {
 		pcb_event(PCB_EVENT_CLI_ENTER, "s", str_);
 		return hid_parse_actionstring(str_, pcb_false);
 	}
 
 	/* backend: let the backend action handle it */
-	a = pcb_find_action(*pcbhlc_rc_cli_backend, &f);
+	a = pcb_find_action(pcbhl_conf.rc.cli_backend, &f);
 	if (!a) {
-		pcb_message(PCB_MSG_ERROR, "cli: no action %s; leaving mode\n", *pcbhlc_rc_cli_backend);
+		pcb_message(PCB_MSG_ERROR, "cli: no action %s; leaving mode\n", pcbhl_conf.rc.cli_backend);
 		pcb_cli_leave();
 		return -1;
 	}

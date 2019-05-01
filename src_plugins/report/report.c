@@ -31,7 +31,10 @@
 
 
 #include "config.h"
+
 #include "conf_core.h"
+#include "hidlib_conf.h"
+
 
 #include <math.h>
 
@@ -71,7 +74,7 @@ conf_report_t conf_report;
 static const char pcb_acts_Report[] = "Report(Object|DrillReport|FoundPins|NetLength|NetLengthTo|AllNetLengths|[,name])";
 static const char pcb_acth_Report[] = "Produce various report.";
 
-#define USER_UNITMASK (conf_core.editor.grid_unit->allow)
+#define USER_UNITMASK (pcbhl_conf.editor.grid_unit->allow)
 
 
 typedef struct rdialog_ctx_s {
@@ -123,14 +126,14 @@ static int report_drills(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	sprintf(stringlist,
 					"There are %d different drill sizes used in this layout, %d holes total\n\n"
 					"Drill Diam. (%s)\t# of Pins\t# of Vias\t# of Elements\t# Unplated\n",
-					AllDrills->DrillN, total_drills, conf_core.editor.grid_unit->suffix);
+					AllDrills->DrillN, total_drills, pcbhl_conf.editor.grid_unit->suffix);
 	thestring = stringlist;
 	while (*thestring != '\0')
 		thestring++;
 	for (n = 0; n < AllDrills->DrillN; n++) {
 		pcb_sprintf(thestring,
 								"%10m*\t\t\t%d\t\t%d\t\t%d\t\t\t\t%d\n",
-								conf_core.editor.grid_unit->suffix,
+								pcbhl_conf.editor.grid_unit->suffix,
 								AllDrills->Drill[n].DrillSize,
 								AllDrills->Drill[n].PinCount, AllDrills->Drill[n].ViaCount,
 								AllDrills->Drill[n].ElementN, AllDrills->Drill[n].UnplatedCount);
@@ -317,7 +320,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 #endif
 			Polygon = (pcb_poly_t *) ptr2;
 
-			aunit = conf_core.editor.grid_unit->in_suffix;
+			aunit = pcbhl_conf.editor.grid_unit->in_suffix;
 			if (aunit[1] == 'm')
 				u = PCB_MM_TO_COORD(1);
 			else
@@ -553,7 +556,7 @@ static int report_all_net_lengths(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_obj_center(term, &x, &y);
 
 			if (argc < 1)
-				units_name = conf_core.editor.grid_unit->suffix;
+				units_name = pcbhl_conf.editor.grid_unit->suffix;
 
 			gds_init(&err);
 			length = xy_to_net_length(x, y, &found, &err);
@@ -616,7 +619,7 @@ static int report_net_length_(fgw_arg_t *res, int argc, fgw_arg_t *argv, pcb_coo
 		char buf[50];
 		const char *netname = net_name_found(PCB);
 
-		pcb_snprintf(buf, sizeof(buf), "%$m*", conf_core.editor.grid_unit->suffix, length);
+		pcb_snprintf(buf, sizeof(buf), "%$m*", pcbhl_conf.editor.grid_unit->suffix, length);
 		if (netname)
 			pcb_message(PCB_MSG_INFO, "Net \"%s\" length: %s\n", netname, buf);
 		else
@@ -754,7 +757,7 @@ static int report_net_length_by_name(const char *tofind)
 
 	{
 		char buf[50];
-		pcb_snprintf(buf, sizeof(buf), "%$m*", conf_core.editor.grid_unit->suffix, length);
+		pcb_snprintf(buf, sizeof(buf), "%$m*", pcbhl_conf.editor.grid_unit->suffix, length);
 		if (netname)
 			pcb_message(PCB_MSG_INFO, "Net \"%s\" length: %s\n", netname, buf);
 		else

@@ -162,7 +162,7 @@ static pcb_hid_gc_t ghid_gdk_make_gc(void)
 
 	rv = g_new0(hid_gc_s, 1);
 	rv->me_pointer = &gtk2_gdk_hid;
-	rv->pcolor = (*pcbhlc_appearance_color_background);
+	rv->pcolor = pcbhl_conf.appearance.color.background;
 	return rv;
 }
 
@@ -305,7 +305,7 @@ static void ghid_gdk_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy)
 	if (!conf_hid_gtk.plugins.hid_gtk.local_grid.enable)
 		return;
 
-	if ((Vz(PCB->hidlib.grid) < PCB_MIN_GRID_DISTANCE) || (!*pcbhlc_editor_draw_grid))
+	if ((Vz(PCB->hidlib.grid) < PCB_MIN_GRID_DISTANCE) || (!pcbhl_conf.editor.draw_grid))
 		return;
 
 	/* cx and cy are the actual cursor snapped to wherever - round them to the nearest real grid point */
@@ -326,13 +326,13 @@ static void ghid_gdk_draw_grid(void)
 
 	grid_local_have_old = 0;
 
-	if (!*pcbhlc_editor_draw_grid)
+	if (!pcbhl_conf.editor.draw_grid)
 		return;
 	if (colormap == NULL)
 		colormap = gtk_widget_get_colormap(gport->top_window);
 
 	if (!priv->grid_gc) {
-		if (gdk_color_parse((*pcbhlc_appearance_color_grid).str, &priv->grid_color)) {
+		if (gdk_color_parse(pcbhl_conf.appearance.color.grid.str, &priv->grid_color)) {
 			priv->grid_color.red ^= priv->bg_color.red;
 			priv->grid_color.green ^= priv->bg_color.green;
 			priv->grid_color.blue ^= priv->bg_color.blue;
@@ -494,7 +494,7 @@ static void set_special_grid_color(void)
 	render_priv_t *priv = gport->render_priv;
 
           /* The color grid is combined with background color */
-	map_color_string((*pcbhlc_appearance_color_grid).str, &priv->grid_color);
+	map_color_string(pcbhl_conf.appearance.color.grid.str, &priv->grid_color);
 	priv->grid_color.red = (priv->grid_color.red ^ priv->bg_color.red) & 0xFF;
 	priv->grid_color.green = (priv->grid_color.green ^ priv->bg_color.green) & 0xFF;
 	priv->grid_color.blue = (priv->grid_color.blue ^ priv->bg_color.blue) & 0xFF;
@@ -507,17 +507,17 @@ static void ghid_gdk_set_special_colors(conf_native_t *cfg)
 {
 	render_priv_t *priv = gport->render_priv;
 
-	if (((CFT_COLOR *)cfg->val.color == &(*pcbhlc_appearance_color_background)) && priv->bg_gc) {
+	if (((CFT_COLOR *)cfg->val.color == &pcbhl_conf.appearance.color.background) && priv->bg_gc) {
 		if (map_color_string(cfg->val.color[0].str, &priv->bg_color)) {
 			gdk_gc_set_foreground(priv->bg_gc, &priv->bg_color);
 			set_special_grid_color();
 		}
 	}
-	else if (((CFT_COLOR *)cfg->val.color == &(*pcbhlc_appearance_color_off_limit)) && priv->offlimits_gc) {
+	else if (((CFT_COLOR *)cfg->val.color == &pcbhl_conf.appearance.color.off_limit) && priv->offlimits_gc) {
 		if (map_color_string(cfg->val.color[0].str, &priv->offlimits_color))
 			gdk_gc_set_foreground(priv->offlimits_gc, &priv->offlimits_color);
 	}
-	else if (((CFT_COLOR *)cfg->val.color == &(*pcbhlc_appearance_color_grid)) && priv->grid_gc) {
+	else if (((CFT_COLOR *)cfg->val.color == &pcbhl_conf.appearance.color.grid) && priv->grid_gc) {
 		if (map_color_string(cfg->val.color[0].str, &priv->grid_color))
 			set_special_grid_color();
 	}
@@ -745,11 +745,11 @@ static void ghid_gdk_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, p
 		delta_angle = 360;
 	}
 
-	if (*pcbhlc_editor_view_flip_x) {
+	if (pcbhl_conf.editor.view.flip_x) {
 		start_angle = 180 - start_angle;
 		delta_angle = -delta_angle;
 	}
-	if (*pcbhlc_editor_view_flip_y) {
+	if (pcbhl_conf.editor.view.flip_y) {
 		start_angle = -start_angle;
 		delta_angle = -delta_angle;
 	}
@@ -1375,7 +1375,7 @@ static void show_crosshair(gboolean paint_new_location)
 		gdk_gc_set_clip_origin(xor_gc, 0, 0);
 		set_clip(priv, xor_gc);
 		/* FIXME: when CrossColor changed from config */
-		map_color_string((*pcbhlc_appearance_color_cross).str, &cross_color);
+		map_color_string(pcbhl_conf.appearance.color.cross.str, &cross_color);
 	}
 	x = Vx(gport->view.crosshair_x);
 	y = Vy(gport->view.crosshair_y);
@@ -1428,13 +1428,13 @@ static void ghid_gdk_drawing_area_configure_hook(void *vport)
 
 	if (!done_once) {
 		priv->bg_gc = gdk_gc_new(priv->out_pixel);
-		if (!map_color_string((*pcbhlc_appearance_color_background).str, &priv->bg_color))
+		if (!map_color_string(pcbhl_conf.appearance.color.background.str, &priv->bg_color))
 			map_color_string("white", &priv->bg_color);
 		gdk_gc_set_foreground(priv->bg_gc, &priv->bg_color);
 		gdk_gc_set_clip_origin(priv->bg_gc, 0, 0);
 
 		priv->offlimits_gc = gdk_gc_new(priv->out_pixel);
-		if (!map_color_string((*pcbhlc_appearance_color_off_limit).str, &priv->offlimits_color))
+		if (!map_color_string(pcbhl_conf.appearance.color.off_limit.str, &priv->offlimits_color))
 			map_color_string("white", &priv->offlimits_color);
 		gdk_gc_set_foreground(priv->offlimits_gc, &priv->offlimits_color);
 		gdk_gc_set_clip_origin(priv->offlimits_gc, 0, 0);

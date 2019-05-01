@@ -466,11 +466,11 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	argc = 4;
 
 	/* turn of flip to avoid mirror/rotat confusion */
-	fx = conf_core.editor.view.flip_x;
-	fy = conf_core.editor.view.flip_y;
+	fx = pcbhl_conf.editor.view.flip_x;
+	fy = pcbhl_conf.editor.view.flip_y;
 	fs = conf_core.editor.show_solder_side;
-	conf_force_set_bool(conf_core.editor.view.flip_x, 0);
-	conf_force_set_bool(conf_core.editor.view.flip_y, 0);
+	conf_force_set_bool(pcbhl_conf.editor.view.flip_x, 0);
+	conf_force_set_bool(pcbhl_conf.editor.view.flip_y, 0);
 	conf_force_set_bool(conf_core.editor.show_solder_side, 0);
 
 #ifdef DEBUG
@@ -596,8 +596,8 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	printf(" ... Leaving pcb_act_ElementList.\n");
 #endif
 
-	conf_force_set_bool(conf_core.editor.view.flip_x, fx);
-	conf_force_set_bool(conf_core.editor.view.flip_y, fy);
+	conf_force_set_bool(pcbhl_conf.editor.view.flip_x, fx);
+	conf_force_set_bool(pcbhl_conf.editor.view.flip_y, fy);
 	conf_force_set_bool(conf_core.editor.show_solder_side, fs);
 
 	PCB_ACT_IRES(0);

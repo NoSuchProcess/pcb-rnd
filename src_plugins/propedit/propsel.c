@@ -39,6 +39,7 @@
 #include "obj_pstk_inlines.h"
 #include "pcb-printf.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 
 /*********** map ***********/
 #define type2field_String string
@@ -724,7 +725,7 @@ char *pcb_propsel_printval(pcb_prop_type_t type, const pcb_propval_t *val)
 {
 	switch(type) {
 		case PCB_PROPT_STRING: return val->string == NULL ? pcb_strdup("") : pcb_strdup(val->string);
-		case PCB_PROPT_COORD:  return pcb_strdup_printf("%m+%.02mS", conf_core.editor.grid_unit->allow, val->coord);
+		case PCB_PROPT_COORD:  return pcb_strdup_printf("%m+%.02mS", pcbhl_conf.editor.grid_unit->allow, val->coord);
 		case PCB_PROPT_ANGLE:  return pcb_strdup_printf("%f", val->angle);
 		case PCB_PROPT_INT:    return pcb_strdup_printf("%d", val->i);
 		case PCB_PROPT_BOOL:   return pcb_strdup(val->i ? "true" : "false");

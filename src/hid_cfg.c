@@ -134,9 +134,9 @@ pcb_hid_cfg_t *pcb_hid_cfg_load(const char *fn, int exact_fn, const char *embedd
 	pcb_hid_cfg_t *hr;
 
 	/* override HID defaults with the configured path */
-	if ((*pcbhlc_rc_menu_file != NULL) && (**pcbhlc_rc_menu_file != '\0')) {
-		fn = *pcbhlc_rc_menu_file;
-		exact_fn = (strchr(*pcbhlc_rc_menu_file, '/') != NULL);
+	if ((pcbhl_conf.rc.menu_file != NULL) && (*pcbhl_conf.rc.menu_file != '\0')) {
+		fn = pcbhl_conf.rc.menu_file;
+		exact_fn = (strchr(pcbhl_conf.rc.menu_file, '/') != NULL);
 	}
 
 	if (!exact_fn) {

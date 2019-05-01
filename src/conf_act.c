@@ -314,7 +314,7 @@ static fgw_error_t pcb_act_ChkGridUnits(fgw_arg_t *res, int argc, fgw_arg_t *arg
 {
 	const char *expected;
 	PCB_ACT_CONVARG(1, FGW_STR, ChkGridUnits, expected = argv[1].val.str);
-	PCB_ACT_IRES(strcmp(conf_core.editor.grid_unit->suffix, expected) == 0);
+	PCB_ACT_IRES(strcmp(pcbhl_conf.editor.grid_unit->suffix, expected) == 0);
 	return 0;
 }
 

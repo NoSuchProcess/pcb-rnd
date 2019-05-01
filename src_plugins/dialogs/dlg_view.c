@@ -33,6 +33,7 @@
 #include "actions.h"
 #include "board.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 #include "view.h"
 #include "draw.h"
 #include "drc.h"
@@ -173,9 +174,9 @@ void view_simple_show(view_ctx_t *ctx)
 				break;
 			case PCB_VIEW_DRC:
 				if (v->data.drc.have_measured)
-					PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup_printf("DRC: %m+required: %$ms\nmeasured: %$ms\n", conf_core.editor.grid_unit->allow, v->data.drc.required_value, v->data.drc.measured_value));
+					PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup_printf("DRC: %m+required: %$ms\nmeasured: %$ms\n", pcbhl_conf.editor.grid_unit->allow, v->data.drc.required_value, v->data.drc.measured_value));
 				else
-					PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup_printf("DRC: %m+required: %$ms\n", conf_core.editor.grid_unit->allow, v->data.drc.required_value));
+					PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str_value, pcb_strdup_printf("DRC: %m+required: %$ms\n", pcbhl_conf.editor.grid_unit->allow, v->data.drc.required_value));
 				break;
 		}
 	}

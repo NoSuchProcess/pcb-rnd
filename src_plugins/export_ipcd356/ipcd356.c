@@ -34,6 +34,7 @@
 #include "data.h"
 #include "safe_fs.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 #include "compat_misc.h"
 #include "netlist2.h"
 #include "math_helper.h"
@@ -372,7 +373,7 @@ static void ipcd356_write(pcb_board_t *pcb, FILE *f)
 
 	ctx.pcb = pcb;
 	ctx.f = f;
-	ctx.is_mil = (strcmp(conf_core.editor.grid_unit->suffix, "mil") == 0);
+	ctx.is_mil = (strcmp(pcbhl_conf.editor.grid_unit->suffix, "mil") == 0);
 
 	ipcd356_write_head(&ctx);
 	PCB_SUBC_LOOP(pcb->Data); {

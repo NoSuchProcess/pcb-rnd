@@ -41,6 +41,7 @@
 #include "stub_draw.h"
 #include "draw_fab_conf.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 #include "macro.h"
 #include "obj_pstk_inlines.h"
 #include "hid_inlines.h"
@@ -207,7 +208,7 @@ static void DrawFab(pcb_draw_info_t *info, pcb_hid_gc_t gc, const pcb_hid_expose
 	char utcTime[64];
 
 	AllDrills = drill_get_info(PCB->Data);
-	if (conf_core.editor.grid_unit->family == PCB_UNIT_IMPERIAL)
+	if (pcbhl_conf.editor.grid_unit->family == PCB_UNIT_IMPERIAL)
 		drill_round_info(AllDrills, PCB_MIL_TO_COORD(1));
 	else
 		drill_round_info(AllDrills, PCB_MM_TO_COORD(0.01));
@@ -262,12 +263,12 @@ static void DrawFab(pcb_draw_info_t *info, pcb_hid_gc_t gc, const pcb_hid_expose
 			text_at(info, gc, PCB_MIL_TO_COORD(980), yoff, PCB_MIL_TO_COORD(2), "%d", drill->UnplatedCount);
 		}
 		pcb_gui->set_color(gc, &conf_core.appearance.color.element);
-		if (conf_core.editor.grid_unit->family == PCB_UNIT_IMPERIAL)
+		if (pcbhl_conf.editor.grid_unit->family == PCB_UNIT_IMPERIAL)
 			text_at(info, gc, PCB_MIL_TO_COORD(450), yoff, PCB_MIL_TO_COORD(2), "%0.3f", PCB_COORD_TO_INCH(drill->DrillSize));
 		else
 			text_at(info, gc, PCB_MIL_TO_COORD(450), yoff, PCB_MIL_TO_COORD(2), "%1.2f", PCB_COORD_TO_MM(drill->DrillSize));
 		if (plated_sym != -1 && unplated_sym != -1) {
-			if (conf_core.editor.grid_unit->family == PCB_UNIT_IMPERIAL)
+			if (pcbhl_conf.editor.grid_unit->family == PCB_UNIT_IMPERIAL)
 				text_at(info, gc, PCB_MIL_TO_COORD(450), yoff + TEXT_LINE, PCB_MIL_TO_COORD(2), "%0.3f", PCB_COORD_TO_INCH(drill->DrillSize));
 			else
 				text_at(info, gc, PCB_MIL_TO_COORD(450), yoff + TEXT_LINE, PCB_MIL_TO_COORD(2), "%1.2f", PCB_COORD_TO_MM(drill->DrillSize));
@@ -279,7 +280,7 @@ static void DrawFab(pcb_draw_info_t *info, pcb_hid_gc_t gc, const pcb_hid_expose
 
 	pcb_gui->set_color(gc, &conf_core.appearance.color.element);
 	text_at(info, gc, 0, yoff, PCB_MIL_TO_COORD(9), "Symbol");
-	if (conf_core.editor.grid_unit->family == PCB_UNIT_IMPERIAL)
+	if (pcbhl_conf.editor.grid_unit->family == PCB_UNIT_IMPERIAL)
 		text_at(info, gc, PCB_MIL_TO_COORD(410), yoff, PCB_MIL_TO_COORD(9), "Diam. (Inch)");
 	else
 		text_at(info, gc, PCB_MIL_TO_COORD(410), yoff, PCB_MIL_TO_COORD(9), "Diam. (mm)");

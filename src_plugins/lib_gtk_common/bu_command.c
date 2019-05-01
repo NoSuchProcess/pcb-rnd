@@ -159,7 +159,7 @@ void ghid_cmd_close(pcb_gtk_command_t *ctx)
 	ctx->command_entered = NULL; /* We are aborting */
 
 	/* Hide the host widget in full screen - not enough if only the entry is gone */
-	if (*pcbhlc_editor_fullscreen) {
+	if (pcbhl_conf.editor.fullscreen) {
 		gtk_widget_hide(gtk_widget_get_parent(ctx->command_combo_box));
 		gtk_widget_hide(gtk_widget_get_parent(ctx->prompt_label));
 	}
@@ -185,7 +185,7 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 	ctx->command_entry_status_line_active = TRUE;
 
 	gtk_entry_set_text(ctx->command_entry, command ? command : "");
-	if (*pcbhlc_editor_fullscreen)
+	if (pcbhl_conf.editor.fullscreen)
 		gtk_widget_show(gtk_widget_get_parent(ctx->command_combo_box));
 
 	gtk_widget_show(ctx->command_combo_box);
@@ -215,7 +215,7 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 	g_signal_handler_disconnect(ctx->command_entry, escape_sig2_id);
 
 	/* Hide/show the widgets */
-	if (*pcbhlc_editor_fullscreen) {
+	if (pcbhl_conf.editor.fullscreen) {
 		gtk_widget_hide(gtk_widget_get_parent(ctx->command_combo_box));
 		gtk_widget_hide(gtk_widget_get_parent(ctx->prompt_label));
 	}

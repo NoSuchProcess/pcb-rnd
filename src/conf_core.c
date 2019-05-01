@@ -1,6 +1,7 @@
 #include "config.h"
 #include "conf.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 conf_core_t conf_core;
 
 #define conf_clamp_to(type, var, min, max, safe_val) \
@@ -46,7 +47,7 @@ static void conf_core_postproc(void)
 	conf_force_set_str(conf_core.rc.path.lib, PCBLIBDIR);       pcb_conf_ro("rc/path/lib");
 	conf_force_set_str(conf_core.rc.path.bin, BINDIR);          pcb_conf_ro("rc/path/bin");
 	conf_force_set_str(conf_core.rc.path.share, PCBSHAREDIR);   pcb_conf_ro("rc/path/share");
-	conf_force_set_str(conf_core.rc.path.home, get_homedir());  pcb_conf_ro("rc/path/home");
+	conf_force_set_str(pcbhl_conf.rc.path.home, get_homedir()); pcb_conf_ro("rc/path/home");
 }
 
 void conf_core_init()

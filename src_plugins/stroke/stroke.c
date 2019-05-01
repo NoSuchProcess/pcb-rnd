@@ -32,6 +32,7 @@
 
 #include "board.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 #include "crosshair.h"
 #include "actions.h"
 #include "unit.h"
@@ -47,8 +48,8 @@
 
 conf_stroke_t conf_stroke;
 
-#define SIDE_X(x)  ((conf_core.editor.view.flip_x ? PCB->hidlib.size_x - (x) : (x)))
-#define SIDE_Y(y)  ((conf_core.editor.view.flip_y ? PCB->hidlib.size_y - (y) : (y)))
+#define SIDE_X(x)  ((pcbhl_conf.editor.view.flip_x ? PCB->hidlib.size_x - (x) : (x)))
+#define SIDE_Y(y)  ((pcbhl_conf.editor.view.flip_y ? PCB->hidlib.size_y - (y) : (y)))
 
 static const char *pcb_stroke_cookie = "stroke plugin";
 

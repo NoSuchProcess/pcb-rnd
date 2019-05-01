@@ -18,7 +18,6 @@ typedef struct {
 	} temp;
 
 	const struct {                       /* editor */
-		CFT_UNIT grid_unit;                /* select whether you draw in mm or mil */
 		CFT_COORD grid;                    /* grid in pcb-units */
 		CFT_LIST grids;                    /* grid in grid-string format */
 		CFT_INTEGER grids_idx;             /* the index of the currently active grid from grids */
@@ -37,7 +36,6 @@ typedef struct {
 		CFT_BOOLEAN save_last_command;     /* OBSOLETE: use the session-persistent command line history instead (press the up arrow) */
 		CFT_INTEGER line_refraction;       /* value for line lookahead setting */
 		CFT_BOOLEAN save_in_tmp;           /* emergency save unsaved PCB data (despite the user clicks don't save) when: user starts a new PCB; user quits pcb-rnd. Does not affect the on-crash emergency save. */
-		CFT_BOOLEAN draw_grid;             /* draw grid points */
 		CFT_BOOLEAN all_direction_lines;   /* enable lines to all directions */
 		CFT_BOOLEAN rubber_band_mode;      /* move, rotate use rubberband connections */
 		CFT_BOOLEAN rubber_band_keep_midlinedir; /* keep line direction when a middle line is moved */
@@ -48,7 +46,6 @@ typedef struct {
 		CFT_BOOLEAN show_number;           /* OBSOLETE: pinout shows number */
 		CFT_BOOLEAN orthogonal_moves;      /* move items orthogonally. */
 		CFT_BOOLEAN reset_after_element;   /* OBSOLETE: reset connections after each element while saving all connections */
-		CFT_BOOLEAN auto_place;            /* force placement of GUI windows (dialogs), trying to override the window manager */
 		CFT_BOOLEAN lock_names;            /* lock down text so they can not be moved or selected */
 		CFT_BOOLEAN only_names;            /* lock down everything else but text so only text objects can be moved or selected */
 		CFT_BOOLEAN thin_draw;             /* if set, objects on the screen are drawn as outlines (lines are drawn as center-lines).  This lets you see line endpoints hidden under pins, for example. */
@@ -62,7 +59,6 @@ typedef struct {
 		CFT_BOOLEAN name_on_pcb;           /* obsolete - DO NOT USE - kept for compatibility */
 		CFT_STRING  subc_id;               /* subcircuit ID template for diplaying the subcircuit label on the subcircuit layer; default to displaying the refes, if empty; syntax if the same as for DYNTEXT */
 		CFT_STRING  term_id;               /* terminal ID template for diplaying the subcircuit label on the subcircuit layer; default to displaying termid[intconn], if empty; syntax if the same as for DYNTEXT */
-		CFT_BOOLEAN fullscreen;            /* hide widgets to make more room for the drawing */
 		CFT_BOOLEAN move_linepoint_uses_route;	/* Moving a line point calculates a new line route. This allows 45/90 line modes when editing lines. */
 		CFT_BOOLEAN auto_via;              /* when drawing traces and switching layers or when moving an object from one layer to another, try to keep connections by automatically inserting vias. */
 		CFT_REAL route_radius;             /* temporary: route draw helper's arc radius at corners (factor of the trace thickness) */
@@ -71,11 +67,6 @@ typedef struct {
 		CFT_STRING io_incomp_style;        /* view listing style (list or simple), when io_incomp_popup is true */
 
 		CFT_INTEGER click_time;            /* default time for click expiration, in ms */
-
-		struct {
-			CFT_BOOLEAN flip_x;              /* view: flip the board along the X (horizontal) axis */
-			CFT_BOOLEAN flip_y;              /* view: flip the board along the Y (vertical) axis */
-		} view;
 
 		struct {
 			CFT_BOOLEAN disable_negative;    /* selection box behaviour: disable the negative-direction selection - any selection box will select only what's fully within the box */
@@ -98,7 +89,6 @@ typedef struct {
 	} editor;
 
 	const struct {                       /* rc */
-		CFT_BOOLEAN dup_log_to_stderr;     /* copy log messages to stderr even if there is a HID that can show them */
 		CFT_INTEGER backup_interval;       /* time between two backups in seconds; 0 means disabled (no backups) */
 		CFT_BOOLEAN hid_fallback;          /* if there is no explicitly specified HID (--gui) and the preferred GUI fails, automatically fall back on other HIDs, eventually running in batch mode */
 		CFT_STRING brave;                  /* brave mode flags: when non-empty, enable various experimental (unstable) features - useful for testers */
@@ -107,8 +97,6 @@ typedef struct {
 		CFT_STRING file_path;
 		CFT_STRING library_shell;
 		CFT_LIST library_search_paths;
-		CFT_STRING menu_file;              /* where to load the default menu file from. If empty/unset, fall back to the legacy 'per hid ow menu file' setup. If contains slash, take it as a full path, if no slash, do a normal menu search for pcb-menu-NAME.lht */
-		CFT_BOOLEAN export_basename;       /* if an exported file contains the source file name, remove path from it, keeping the basename only */
 
 		CFT_STRING emergency_name;         /* file name template for emergency save anonymous .pcb files (when pcb-rnd crashes); optional field: %ld --> pid; must be shorter than 240 characters. Don't do emergency save if this item is empty. */
 		CFT_STRING emergency_format;       /* if set, use this format for the backups; if unset, use the default format */
@@ -130,9 +118,6 @@ typedef struct {
 		CFT_STRING save_final_fallback_fmt;/* when a new file is created (by running pcb-rnd with the file name) there won't be a known format; pcb-rnd will guess from the file name (extension) but eventhat may fail. This format is the final fallback that'll be used if no other guessing mechanism worked. The user can override this by save as. */
 		CFT_STRING save_fp_fmt;            /* when saving a buffer element/subcircuit, prefer this format by default */
 
-		CFT_STRING cli_prompt;             /* plain text prompt to prefix the command entry */
-		CFT_STRING cli_backend;            /* command parser action */
-
 		/***** automatically set (in postproc) *****/
 		CFT_BOOLEAN have_regex;            /* whether we have regex compiled in */
 		struct {
@@ -140,9 +125,6 @@ typedef struct {
 			CFT_STRING lib;                  /* e.g. /usr/lib/pcb-rnd */
 			CFT_STRING bin;                  /* e.g. /usr/bin */
 			CFT_STRING share;                /* e.g. /usr/share/pcb-rnd */
-			CFT_STRING home;                 /* user's home dir, determined run-time */
-			
-			CFT_STRING exec_prefix;          /* exec prefix path (extracted from argv[0]) */
 
 			CFT_STRING design;               /* directory path of the current design, or <invalid> if the current design doesn't have a file name yet */
 		} path;
@@ -175,27 +157,14 @@ typedef struct {
 		CFT_BOOLEAN compact;               /* when set: optimize GUI widget arrangement for small screen; may be wasting some screen space on large screen */
 		CFT_COORD rat_thickness;
 		CFT_COORD mark_size;               /* relative marker size */
-		CFT_REAL layer_alpha;              /* alpha value for layer drawing */
-		CFT_REAL drill_alpha;              /* alpha value for drill drawing */
 		CFT_BOOLEAN text_host_bbox;        /* when moving a text object, the outline thin-draw should also include the bounding box */
 		CFT_REAL term_label_size;          /* size of terminal labels, in pcb font scale (100 is for the normal size) */
 		CFT_BOOLEAN subc_layer_per_side;   /* hide top or bottom placed subcircuit annotations if the view is showing the other side */
 		CFT_BOOLEAN invis_other_groups;    /* render non-current group layers with the inivisble color */
 		CFT_BOOLEAN black_current_group;   /* render all layers of the current group black, for maximum contrast */
-		struct {
-			CFT_STRING   debug_tag;          /* log style tag of debug messages */
-			CFT_BOOLEAN  debug_popup;        /* whether a debug line should pop up the log window */
-			CFT_STRING   info_tag;           /* log style tag of info messages */
-			CFT_BOOLEAN  info_popup;         /* whether an info line should pop up the log window */
-			CFT_STRING   warning_tag;        /* log style tag of warnings */
-			CFT_BOOLEAN  warning_popup;      /* whether a warning should pop up the log window */
-			CFT_STRING   error_tag;          /* log style tag of errors */
-			CFT_BOOLEAN  error_popup;        /* whether an error should pop up the log window */
-		} loglevels;
+
 		struct {                           /* color */
-			CFT_COLOR background;            /* background and cursor color ... */
 			CFT_COLOR crosshair;             /* different object colors */
-			CFT_COLOR cross;                 /* crosshair, drc outline color */
 			CFT_COLOR selected;              /* generic object selection color */
 			CFT_COLOR via;                   /* non-terminal padstack shape on current layer */
 			CFT_COLOR via_far;               /* non-terminal padstack shape on non-current ('far side') layer */
@@ -209,8 +178,6 @@ typedef struct {
 			CFT_COLOR invisible_objects;     /* other-side objects and padstack shapes on non-current layer */
 			CFT_COLOR connected;             /* 'connected' highlight (galvanic connections found) */
 			CFT_COLOR warn;                  /* warning highlight (e.g. object found to cause a short) */
-			CFT_COLOR off_limit;             /* on-screen background beyond the configured drawing area */
-			CFT_COLOR grid;                  /* on-screen grid */
 			CFT_COLOR layer[PCB_MAX_LAYER];  /* default layer colors; when a new layer is created, a color from this list is assigned initially */
 			CFT_COLOR mask;                  /* default mask layer color (when a new mask layer is created) */
 			CFT_COLOR paste;                 /* default paste layer color (when a new paste layer is created) */

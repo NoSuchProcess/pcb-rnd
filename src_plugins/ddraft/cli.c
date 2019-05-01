@@ -29,6 +29,7 @@
 #include "hid_inlines.h"
 #include "compat_misc.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 
 #define CLI_MAX_INS_LEN 128
 
@@ -201,7 +202,7 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 							}
 							memcpy(tmp, s, sep-s);
 							tmp[sep-s] = '\0';
-							dst[i-1].x = pcb_get_value_ex(tmp, NULL, NULL, NULL, conf_core.editor.grid_unit->suffix, &succ);
+							dst[i-1].x = pcb_get_value_ex(tmp, NULL, NULL, NULL, pcbhl_conf.editor.grid_unit->suffix, &succ);
 							if (!succ)
 								dst[i-1].invalid = 1;
 
@@ -212,12 +213,12 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 							}
 							memcpy(tmp, sep, next-sep);
 							tmp[next-sep] = '\0';
-							dst[i-1].y = pcb_get_value_ex(tmp, NULL, NULL, NULL, conf_core.editor.grid_unit->suffix, &succ);
+							dst[i-1].y = pcb_get_value_ex(tmp, NULL, NULL, NULL, pcbhl_conf.editor.grid_unit->suffix, &succ);
 							if (!succ)
 								dst[i-1].invalid = 1;
 							break;
 						case CLI_DIST:
-							dst[i-1].dist = pcb_get_value_ex(s, NULL, NULL, NULL, conf_core.editor.grid_unit->suffix, &succ);
+							dst[i-1].dist = pcb_get_value_ex(s, NULL, NULL, NULL, pcbhl_conf.editor.grid_unit->suffix, &succ);
 							dst[i-1].invalid = !succ;
 							dst[i-1].end = next - line;
 							break;

@@ -769,7 +769,7 @@ static void expr_wizard_dialog(GtkWidget *top_window, expr1_t * e)
 	expr_wizard_dlg.right_double = gtk_spin_button_new(expr_wizard_dlg.right_adj2, 1, 8);
 	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.right_double, FALSE, TRUE, 4);
 
-	expr_wizard_dlg.right_coord = pcb_gtk_coord_entry_new(0, PCB_MM_TO_COORD(2100), 0, *pcbhlc_editor_grid_unit, CE_MEDIUM);
+	expr_wizard_dlg.right_coord = pcb_gtk_coord_entry_new(0, PCB_MM_TO_COORD(2100), 0, pcbhl_conf.editor.grid_unit, CE_MEDIUM);
 	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.right_coord, FALSE, TRUE, 4);
 
 	gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, TRUE, 4);

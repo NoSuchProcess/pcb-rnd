@@ -35,6 +35,7 @@
 #include "board.h"
 #include "build_run.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 #include "data.h"
 #include "tool.h"
 #include "grid.h"
@@ -298,7 +299,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			/* toggle displaying of the grid */
 		case F_Grid:
-			conf_toggle_editor(draw_grid);
+			conf_toggle_heditor(draw_grid);
 			pcb_redraw();
 			break;
 
@@ -362,7 +363,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				}
 				PCB->hidlib.grid_ox = pcb_get_value(argv[2].val.str, NULL, NULL, NULL);
 				PCB->hidlib.grid_oy = pcb_get_value(argv[3].val.str, NULL, NULL, NULL);
-				if (conf_core.editor.draw_grid)
+				if (pcbhl_conf.editor.draw_grid)
 					pcb_redraw();
 			}
 			break;
@@ -939,7 +940,7 @@ static fgw_error_t pcb_act_FullScreen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	switch(id) {
 		case -2:
 		case F_Toggle:
-			conf_setf(CFR_DESIGN, "editor/fullscreen", -1, "%d", !conf_core.editor.fullscreen, POL_OVERWRITE);
+			conf_setf(CFR_DESIGN, "editor/fullscreen", -1, "%d", !pcbhl_conf.editor.fullscreen, POL_OVERWRITE);
 			break;
 		case F_On:
 			conf_set(CFR_DESIGN, "editor/fullscreen", -1, "1", POL_OVERWRITE);
@@ -1002,10 +1003,10 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_FAIL(Cursor);
 
 	dx = pcb_get_value_ex(a1, a3, NULL, extra_units_x, "", NULL);
-	if (conf_core.editor.view.flip_x)
+	if (pcbhl_conf.editor.view.flip_x)
 		dx = -dx;
 	dy = pcb_get_value_ex(a2, a3, NULL, extra_units_y, "", NULL);
-	if (!conf_core.editor.view.flip_y)
+	if (!pcbhl_conf.editor.view.flip_y)
 		dy = -dy;
 	
 	/* Allow leaving snapped pin/pad/padstack */

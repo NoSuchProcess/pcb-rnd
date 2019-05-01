@@ -138,10 +138,10 @@ void conf_loglevel_props(enum pcb_message_level level, const char **tag, int *po
 	*tag = NULL;
 	*popup = 0;
 	switch(level) {
-		case PCB_MSG_DEBUG:   *tag = *pcbhlc_appearance_loglevels_debug_tag; *popup = *pcbhlc_appearance_loglevels_debug_popup; break;
-		case PCB_MSG_INFO:    *tag = *pcbhlc_appearance_loglevels_info_tag; *popup = *pcbhlc_appearance_loglevels_info_popup; break;
-		case PCB_MSG_WARNING: *tag = *pcbhlc_appearance_loglevels_warning_tag; *popup = *pcbhlc_appearance_loglevels_warning_popup; break;
-		case PCB_MSG_ERROR:   *tag = *pcbhlc_appearance_loglevels_error_tag; *popup = *pcbhlc_appearance_loglevels_error_popup; break;
+		case PCB_MSG_DEBUG:   *tag = pcbhl_conf.appearance.loglevels.debug_tag; *popup = pcbhl_conf.appearance.loglevels.debug_popup; break;
+		case PCB_MSG_INFO:    *tag = pcbhl_conf.appearance.loglevels.info_tag; *popup = pcbhl_conf.appearance.loglevels.info_popup; break;
+		case PCB_MSG_WARNING: *tag = pcbhl_conf.appearance.loglevels.warning_tag; *popup = pcbhl_conf.appearance.loglevels.warning_popup; break;
+		case PCB_MSG_ERROR:   *tag = pcbhl_conf.appearance.loglevels.error_tag; *popup = pcbhl_conf.appearance.loglevels.error_popup; break;
 			break;
 	}
 }

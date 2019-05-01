@@ -28,45 +28,61 @@
 #define PCB_HIDLIB_CONF_H
 
 #include "conf.h"
+#include "color.h"
 
 typedef struct {
+
 	const struct {                       /* rc */
 		CFT_INTEGER verbose;
 		CFT_INTEGER quiet;                 /* print only errors on stderr */
+		CFT_BOOLEAN dup_log_to_stderr;     /* copy log messages to stderr even if there is a HID that can show them */
+		CFT_STRING cli_prompt;             /* plain text prompt to prefix the command entry */
+		CFT_STRING cli_backend;            /* command parser action */
+		CFT_BOOLEAN export_basename;       /* if an exported file contains the source file name, remove path from it, keeping the basename only */
+		CFT_STRING menu_file;              /* where to load the default menu file from. If empty/unset, fall back to the legacy 'per hid ow menu file' setup. If contains slash, take it as a full path, if no slash, do a normal menu search for pcb-menu-NAME.lht */
+		const struct {
+			CFT_STRING home;                 /* user's home dir, determined run-time */
+			CFT_STRING exec_prefix;          /* exec prefix path (extracted from argv[0]) */
+		} path;
 	} rc;
+
+	const struct {
+		CFT_REAL layer_alpha;              /* alpha value for layer drawing */
+		CFT_REAL drill_alpha;              /* alpha value for drill drawing */
+
+		const struct {
+			CFT_STRING   debug_tag;          /* log style tag of debug messages */
+			CFT_BOOLEAN  debug_popup;        /* whether a debug line should pop up the log window */
+			CFT_STRING   info_tag;           /* log style tag of info messages */
+			CFT_BOOLEAN  info_popup;         /* whether an info line should pop up the log window */
+			CFT_STRING   warning_tag;        /* log style tag of warnings */
+			CFT_BOOLEAN  warning_popup;      /* whether a warning should pop up the log window */
+			CFT_STRING   error_tag;          /* log style tag of errors */
+			CFT_BOOLEAN  error_popup;        /* whether an error should pop up the log window */
+		} loglevels;
+		const struct {
+			CFT_COLOR background;            /* background and cursor color ... */
+			CFT_COLOR off_limit;             /* on-screen background beyond the configured drawing area */
+			CFT_COLOR grid;                  /* on-screen grid */
+			CFT_COLOR cross;                 /* crosshair, drc outline color */
+		} color;
+	} appearance;
+
+	const struct {
+		CFT_UNIT grid_unit;                /* select whether you draw in mm or mil */
+		CFT_BOOLEAN draw_grid;             /* draw grid points */
+		CFT_BOOLEAN auto_place;            /* force placement of GUI windows (dialogs), trying to override the window manager */
+		CFT_BOOLEAN fullscreen;            /* hide widgets to make more room for the drawing */
+
+		const struct {
+			CFT_BOOLEAN flip_x;              /* view: flip the board along the X (horizontal) axis */
+			CFT_BOOLEAN flip_y;              /* view: flip the board along the Y (vertical) axis */
+		} view;
+
+	} editor;
 } pcbhl_conf_t;
 
 extern pcbhl_conf_t pcbhl_conf;
-
-extern CFT_BOOLEAN *pcbhlc_rc_dup_log_to_stderr;
-extern CFT_STRING *pcbhlc_rc_cli_prompt;
-extern CFT_STRING *pcbhlc_rc_cli_backend;
-extern CFT_BOOLEAN *pcbhlc_rc_export_basename;
-extern CFT_STRING *pcbhlc_rc_path_exec_prefix;
-extern CFT_STRING *pcbhlc_rc_path_home;
-extern CFT_STRING *pcbhlc_rc_menu_file;
-
-extern CFT_BOOLEAN *pcbhlc_appearance_loglevels_debug_popup;
-extern CFT_BOOLEAN *pcbhlc_appearance_loglevels_info_popup;
-extern CFT_BOOLEAN *pcbhlc_appearance_loglevels_warning_popup;
-extern CFT_BOOLEAN *pcbhlc_appearance_loglevels_error_popup;
-extern CFT_STRING *pcbhlc_appearance_loglevels_debug_tag;
-extern CFT_STRING *pcbhlc_appearance_loglevels_info_tag;
-extern CFT_STRING *pcbhlc_appearance_loglevels_warning_tag;
-extern CFT_STRING *pcbhlc_appearance_loglevels_error_tag;
-extern CFT_COLOR *pcbhlc_appearance_color_background;
-extern CFT_COLOR *pcbhlc_appearance_color_grid;
-extern CFT_COLOR *pcbhlc_appearance_color_off_limit;
-extern CFT_COLOR *pcbhlc_appearance_color_cross;
-extern CFT_REAL *pcbhlc_appearance_layer_alpha;
-extern CFT_REAL *pcbhlc_appearance_drill_alpha;
-
-extern CFT_UNIT *pcbhlc_editor_grid_unit;
-extern CFT_BOOLEAN *pcbhlc_editor_view_flip_x;
-extern CFT_BOOLEAN *pcbhlc_editor_view_flip_y;
-extern CFT_BOOLEAN *pcbhlc_editor_fullscreen;
-extern CFT_BOOLEAN *pcbhlc_editor_auto_place;
-extern CFT_BOOLEAN *pcbhlc_editor_draw_grid;
 
 int pcb_hidlib_conf_init();
 

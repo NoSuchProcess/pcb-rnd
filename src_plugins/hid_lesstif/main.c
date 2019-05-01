@@ -3,6 +3,7 @@
 #include "config.h"
 #include "math_helper.h"
 #include "conf_core.h"
+#include "hidlib_conf.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -67,7 +68,7 @@ static int need_redraw = 0;
 
 /* How big the viewport can be relative to the pcb size.  */
 #define MAX_ZOOM_SCALE	10
-#define UUNIT	conf_core.editor.grid_unit->allow
+#define UUNIT	pcbhl_conf.editor.grid_unit->allow
 
 typedef struct hid_gc_s {
 	pcb_core_gc_t core_gc;
@@ -232,7 +233,7 @@ static void Pan(int mode, pcb_coord_t x, pcb_coord_t y);
 static inline int Vx(pcb_coord_t x)
 {
 	int rv = (x - view_left_x) / view_zoom + 0.5;
-	if (conf_core.editor.view.flip_x)
+	if (pcbhl_conf.editor.view.flip_x)
 		rv = view_width - rv;
 	return rv;
 }
@@ -240,7 +241,7 @@ static inline int Vx(pcb_coord_t x)
 static inline int Vy(pcb_coord_t y)
 {
 	int rv = (y - view_top_y) / view_zoom + 0.5;
-	if (conf_core.editor.view.flip_y)
+	if (pcbhl_conf.editor.view.flip_y)
 		rv = view_height - rv;
 	return rv;
 }
@@ -257,14 +258,14 @@ static inline int Vw(pcb_coord_t w)
 
 static inline pcb_coord_t Px(int x)
 {
-	if (conf_core.editor.view.flip_x)
+	if (pcbhl_conf.editor.view.flip_x)
 		x = view_width - x;
 	return x * view_zoom + view_left_x;
 }
 
 static inline pcb_coord_t Py(int y)
 {
-	if (conf_core.editor.view.flip_y)
+	if (pcbhl_conf.editor.view.flip_y)
 		y = view_height - y;
 	return y * view_zoom + view_top_y;
 }
@@ -781,9 +782,9 @@ static void zoom_to(double new_zoom, pcb_coord_t x, pcb_coord_t y)
 	xfrac = (double) x / (double) view_width;
 	yfrac = (double) y / (double) view_height;
 
-	if (conf_core.editor.view.flip_x)
+	if (pcbhl_conf.editor.view.flip_x)
 		xfrac = 1 - xfrac;
-	if (conf_core.editor.view.flip_y)
+	if (pcbhl_conf.editor.view.flip_y)
 		yfrac = 1 - yfrac;
 
 	max_zoom = PCB->hidlib.size_x / view_width;
@@ -853,9 +854,9 @@ TODO("remove this if there is no bugreport for a long time");
 	if (pan_thumb_mode) {
 		opx = x * PCB->hidlib.size_x / view_width;
 		opy = y * PCB->hidlib.size_y / view_height;
-		if (conf_core.editor.view.flip_x)
+		if (pcbhl_conf.editor.view.flip_x)
 			opx = PCB->hidlib.size_x - opx;
-		if (conf_core.editor.view.flip_y)
+		if (pcbhl_conf.editor.view.flip_y)
 			opy = PCB->hidlib.size_y - opy;
 		view_left_x = opx - view_width / 2 * view_zoom;
 		view_top_y = opy - view_height / 2 * view_zoom;
@@ -875,11 +876,11 @@ TODO("remove this if there is no bugreport for a long time");
 	/* continued drag, we calculate how far we've moved the cursor and
 	   set the position accordingly.  */
 	else {
-		if (conf_core.editor.view.flip_x)
+		if (pcbhl_conf.editor.view.flip_x)
 			view_left_x = opx + (x - ox) * view_zoom;
 		else
 			view_left_x = opx - (x - ox) * view_zoom;
-		if (conf_core.editor.view.flip_y)
+		if (pcbhl_conf.editor.view.flip_y)
 			view_top_y = opy + (y - oy) * view_zoom;
 		else
 			view_top_y = opy - (y - oy) * view_zoom;
@@ -1241,8 +1242,8 @@ static void work_area_first_expose(Widget work_area, void *me, XmDrawingAreaCall
 	view_width = width;
 	view_height = height;
 
-	offlimit_color = lesstif_parse_color(&conf_core.appearance.color.off_limit);
-	grid_color = lesstif_parse_color(&conf_core.appearance.color.grid);
+	offlimit_color = lesstif_parse_color(&pcbhl_conf.appearance.color.off_limit);
+	grid_color = lesstif_parse_color(&pcbhl_conf.appearance.color.grid);
 
 	bg_gc = XCreateGC(display, window, 0, 0);
 	XSetForeground(display, bg_gc, bgcolor);
@@ -1251,7 +1252,7 @@ static void work_area_first_expose(Widget work_area, void *me, XmDrawingAreaCall
 
 #ifdef HAVE_XRENDER
 	if (use_xrender) {
-		double l_alpha = conf_core.appearance.layer_alpha;
+		double l_alpha = pcbhl_conf.appearance.layer_alpha;
 		XRenderPictureAttributes pa;
 		XRenderColor a = { 0, 0, 0,  0x8000};
 		
@@ -1398,7 +1399,7 @@ static void lesstif_do_export(pcb_hid_attr_val_t * options)
 	XtManageChild(work_area_frame);
 
 	stdarg_n = 0;
-	stdarg_do_color(&conf_core.appearance.color.background, XmNbackground);
+	stdarg_do_color(&pcbhl_conf.appearance.color.background, XmNbackground);
 	work_area = XmCreateDrawingArea(work_area_frame, XmStrCast("work_area"), stdarg_args, stdarg_n);
 	XtManageChild(work_area);
 	XtAddCallback(work_area, XmNexposeCallback, (XtCallbackProc) work_area_first_expose, 0);
@@ -1838,7 +1839,7 @@ static void draw_grid()
 	int n;
 	static GC grid_gc = 0;
 
-	if (!conf_core.editor.draw_grid)
+	if (!pcbhl_conf.editor.draw_grid)
 		return;
 	if (Vz(PCB->hidlib.grid) < PCB_MIN_GRID_DISTANCE)
 		return;
@@ -1847,7 +1848,7 @@ static void draw_grid()
 		XSetFunction(display, grid_gc, GXxor);
 		XSetForeground(display, grid_gc, grid_color);
 	}
-	if (conf_core.editor.view.flip_x) {
+	if (pcbhl_conf.editor.view.flip_x) {
 		x2 = pcb_grid_fit(Px(0), PCB->hidlib.grid, PCB->hidlib.grid_ox);
 		x1 = pcb_grid_fit(Px(view_width), PCB->hidlib.grid, PCB->hidlib.grid_ox);
 		if (Vx(x2) < 0)
@@ -1863,7 +1864,7 @@ static void draw_grid()
 		if (Vx(x2) >= view_width)
 			x2 -= PCB->hidlib.grid;
 	}
-	if (conf_core.editor.view.flip_y) {
+	if (pcbhl_conf.editor.view.flip_y) {
 		y2 = pcb_grid_fit(Py(0), PCB->hidlib.grid, PCB->hidlib.grid_oy);
 		y1 = pcb_grid_fit(Py(view_height), PCB->hidlib.grid, PCB->hidlib.grid_oy);
 		if (Vy(y2) < 0)
@@ -1906,7 +1907,7 @@ static void draw_grid()
 static void mark_delta_to_widget(pcb_coord_t dx, pcb_coord_t dy, Widget w)
 {
 	char *buf;
-	double g = pcb_coord_to_unit(conf_core.editor.grid_unit, PCB->hidlib.grid);
+	double g = pcb_coord_to_unit(pcbhl_conf.editor.grid_unit, PCB->hidlib.grid);
 	int prec;
 	XmString ms;
 
@@ -1914,7 +1915,7 @@ static void mark_delta_to_widget(pcb_coord_t dx, pcb_coord_t dy, Widget w)
 	if (((int) (g * 10000 + 0.5) % 10000) == 0)
 		prec = 0;
 	else
-		prec = conf_core.editor.grid_unit->default_prec;
+		prec = pcbhl_conf.editor.grid_unit->default_prec;
 
 	if (dx == 0 && dy == 0)
 		buf = pcb_strdup_printf("%m+%+.*mS, %+.*mS", UUNIT, prec, dx, prec, dy);
@@ -1937,7 +1938,7 @@ static int cursor_pos_to_widget(pcb_coord_t x, pcb_coord_t y, Widget w, int prev
 	int this_state = prev_state;
 	char *buf = NULL;
 	const char *msg = "";
-	double g = pcb_coord_to_unit(conf_core.editor.grid_unit, PCB->hidlib.grid);
+	double g = pcb_coord_to_unit(pcbhl_conf.editor.grid_unit, PCB->hidlib.grid);
 	XmString ms;
 	int prec;
 
@@ -1945,11 +1946,11 @@ static int cursor_pos_to_widget(pcb_coord_t x, pcb_coord_t y, Widget w, int prev
 	 * on the user's grid setting */
 	if (((int) (g * 10000 + 0.5) % 10000) == 0) {
 		prec = 0;
-		this_state = conf_core.editor.grid_unit->allow;
+		this_state = pcbhl_conf.editor.grid_unit->allow;
 	}
 	else {
-		prec = conf_core.editor.grid_unit->default_prec;
-		this_state = -conf_core.editor.grid_unit->allow;
+		prec = pcbhl_conf.editor.grid_unit->default_prec;
+		this_state = -pcbhl_conf.editor.grid_unit->allow;
 	}
 
 	if (x >= 0) {
@@ -2029,12 +2030,12 @@ static Boolean idle_proc(XtPointer dummy)
 		ctx.view.Y1 = Py(0);
 		ctx.view.X2 = Px(view_width);
 		ctx.view.Y2 = Py(view_height);
-		if (conf_core.editor.view.flip_x) {
+		if (pcbhl_conf.editor.view.flip_x) {
 			pcb_coord_t tmp = ctx.view.X1;
 			ctx.view.X1 = ctx.view.X2;
 			ctx.view.X2 = tmp;
 		}
-		if (conf_core.editor.view.flip_y) {
+		if (pcbhl_conf.editor.view.flip_y) {
 			pcb_coord_t tmp = ctx.view.Y1;
 			ctx.view.Y1 = ctx.view.Y2;
 			ctx.view.Y2 = tmp;
@@ -2108,7 +2109,7 @@ static Boolean idle_proc(XtPointer dummy)
 		static pcb_mark_t saved_mark;
 		static const pcb_unit_t *old_grid_unit = NULL;
 		if (crosshair_x != c_x || crosshair_y != c_y
-				|| conf_core.editor.grid_unit != old_grid_unit || memcmp(&saved_mark, &pcb_marked, sizeof(pcb_mark_t))) {
+				|| pcbhl_conf.editor.grid_unit != old_grid_unit || memcmp(&saved_mark, &pcb_marked, sizeof(pcb_mark_t))) {
 			static int last_state = 0;
 			static int this_state = 0;
 
@@ -2138,8 +2139,8 @@ static Boolean idle_proc(XtPointer dummy)
 			}
 			memcpy(&saved_mark, &pcb_marked, sizeof(pcb_mark_t));
 
-			if (old_grid_unit != conf_core.editor.grid_unit) {
-				old_grid_unit = conf_core.editor.grid_unit;
+			if (old_grid_unit != pcbhl_conf.editor.grid_unit) {
+				old_grid_unit = pcbhl_conf.editor.grid_unit;
 				/* Force a resize on units change.  */
 				last_state++;
 			}
@@ -2177,10 +2178,10 @@ static Boolean idle_proc(XtPointer dummy)
 		static pcb_coord_t old_gx, old_gy;
 		static const pcb_unit_t *old_unit;
 		XmString ms;
-		if (PCB->hidlib.grid != old_grid || PCB->hidlib.grid_ox != old_gx || PCB->hidlib.grid_oy != old_gy || conf_core.editor.grid_unit != old_unit) {
+		if (PCB->hidlib.grid != old_grid || PCB->hidlib.grid_ox != old_gx || PCB->hidlib.grid_oy != old_gy || pcbhl_conf.editor.grid_unit != old_unit) {
 			static char buf[100];
 			old_grid = PCB->hidlib.grid;
-			old_unit = conf_core.editor.grid_unit;
+			old_unit = pcbhl_conf.editor.grid_unit;
 			old_gx = PCB->hidlib.grid_ox;
 			old_gy = PCB->hidlib.grid_oy;
 			if (old_grid == 1) {
@@ -2202,13 +2203,13 @@ static Boolean idle_proc(XtPointer dummy)
 	{
 		static double old_zoom = -1;
 		static const pcb_unit_t *old_grid_unit = NULL;
-		if (view_zoom != old_zoom || conf_core.editor.grid_unit != old_grid_unit) {
+		if (view_zoom != old_zoom || pcbhl_conf.editor.grid_unit != old_grid_unit) {
 			char *buf = pcb_strdup_printf("%m+%$mS/pix",
-																			 conf_core.editor.grid_unit->allow, (pcb_coord_t) view_zoom);
+																			 pcbhl_conf.editor.grid_unit->allow, (pcb_coord_t) view_zoom);
 			XmString ms;
 
 			old_zoom = view_zoom;
-			old_grid_unit = conf_core.editor.grid_unit;
+			old_grid_unit = pcbhl_conf.editor.grid_unit;
 
 			ms = XmStringCreatePCB(buf);
 			stdarg_n = 0;
@@ -2776,11 +2777,11 @@ static void lesstif_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pc
 		delta_angle = 360;
 	}
 
-	if (conf_core.editor.view.flip_x) {
+	if (pcbhl_conf.editor.view.flip_x) {
 		start_angle = 180 - start_angle;
 		delta_angle = -delta_angle;
 	}
-	if (conf_core.editor.view.flip_y) {
+	if (pcbhl_conf.editor.view.flip_y) {
 		start_angle = -start_angle;
 		delta_angle = -delta_angle;
 	}
@@ -2999,11 +3000,11 @@ static void lesstif_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
 		unsigned int keys_buttons;
 		int pos_x, pos_y, root_x, root_y;
 		XQueryPointer(display, window, &root, &child, &root_x, &root_y, &pos_x, &pos_y, &keys_buttons);
-		if (conf_core.editor.view.flip_x)
+		if (pcbhl_conf.editor.view.flip_x)
 			view_left_x = x - (view_width - pos_x) * view_zoom;
 		else
 			view_left_x = x - pos_x * view_zoom;
-		if (conf_core.editor.view.flip_y)
+		if (pcbhl_conf.editor.view.flip_y)
 			view_top_y = y - (view_height - pos_y) * view_zoom;
 		else
 			view_top_y = y - pos_y * view_zoom;
