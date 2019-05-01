@@ -4731,7 +4731,7 @@
  ../src_3rd/genht/htpp.h board.h vtroutestyle.h layer_grp.h rats_patch.h \
  board.h hidlib.h compat_misc.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
- conf.h conf_core.h hidlib_conf.h draw.h hid.h layer_vis.h \
+ conf.h conf_core.h hidlib_conf.h draw.h hid.h layer_vis.h search.h \
  ../src_plugins/lib_hid_pcbui/util.h data.h crosshair.h vtonpoint.h \
  route.h buffer.h obj_rat_list.h obj_rat.h idpath.h obj_subc_list.h \
  obj_subc.h ../src_3rd/libminuid/libminuid.h rtree.h \
