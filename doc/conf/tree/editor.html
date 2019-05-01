@@ -3,7 +3,6 @@
 <h2>subtree: editor</h2>
 <table border=1>
 <tr><th>node name <th> type <td> flags <td> description
-<tr><td> grid_unit <td><a href="CFN_UNIT.html"> unit </a><td> 0 <td> select whether you draw in mm or mil
 <tr><td> grid <td><a href="CFN_COORD.html"> coord </a><td> 0 <td> grid in pcb-units
 <tr><td> grids <td><a href="CFN_LIST.html"> list </a><td> 0 <td> grid in grid-string format
 <tr><td> grids_idx <td><a href="CFN_INTEGER.html"> integer </a><td> 0 <td> the index of the currently active grid from grids
@@ -22,7 +21,6 @@
 <tr><td> save_last_command <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> OBSOLETE: use the session-persistent command line history instead (press the up arrow)
 <tr><td> line_refraction <td><a href="CFN_INTEGER.html"> integer </a><td> 0 <td> value for line lookahead setting
 <tr><td> save_in_tmp <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> emergency save unsaved PCB data (despite the user clicks don't save) when: user starts a new PCB; user quits pcb-rnd. Does not affect the on-crash emergency save.
-<tr><td> draw_grid <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> draw grid points
 <tr><td> all_direction_lines <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> enable lines to all directions
 <tr><td> rubber_band_mode <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> move, rotate use rubberband connections
 <tr><td> rubber_band_keep_midlinedir <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> keep line direction when a middle line is moved
@@ -33,7 +31,6 @@
 <tr><td> show_number <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> OBSOLETE: pinout shows number
 <tr><td> orthogonal_moves <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> move items orthogonally.
 <tr><td> reset_after_element <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> OBSOLETE: reset connections after each element while saving all connections
-<tr><td> auto_place <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> force placement of GUI windows (dialogs), trying to override the window manager
 <tr><td> lock_names <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> lock down text so they can not be moved or selected
 <tr><td> only_names <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> lock down everything else but text so only text objects can be moved or selected
 <tr><td> thin_draw <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> if set, objects on the screen are drawn as outlines (lines are drawn as center-lines).  This lets you see line endpoints hidden under pins, for example.
@@ -47,7 +44,6 @@
 <tr><td> name_on_pcb <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> obsolete - DO NOT USE - kept for compatibility
 <tr><td> subc_id <td><a href="CFN_STRING.html"> string </a><td> 0 <td> subcircuit ID template for diplaying the subcircuit label on the subcircuit layer; default to displaying the refes, if empty; syntax if the same as for DYNTEXT
 <tr><td> term_id <td><a href="CFN_STRING.html"> string </a><td> 0 <td> terminal ID template for diplaying the subcircuit label on the subcircuit layer; default to displaying termid[intconn], if empty; syntax if the same as for DYNTEXT
-<tr><td> fullscreen <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> hide widgets to make more room for the drawing
 <tr><td> move_linepoint_uses_route <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> Moving a line point calculates a new line route. This allows 45/90 line modes when editing lines.
 <tr><td> auto_via <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> when drawing traces and switching layers or when moving an object from one layer to another, try to keep connections by automatically inserting vias.
 <tr><td> route_radius <td><a href="CFN_REAL.html"> real </a><td> 0 <td> temporary: route draw helper's arc radius at corners (factor of the trace thickness)
@@ -59,4 +55,8 @@
 <tr><td> beep_when_finished <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> flag if a signal should be produced when searching of  connections is done
 <tr><td> undo_warning_size <td><a href="CFN_INTEGER.html"> integer </a><td> 0 <td> warn the user when undo list exceeds this amount of kilobytes in memory
 <tr><td> subc_conv_refdes <td><a href="CFN_STRING.html"> string </a><td> 0 <td> automatic refdes value assigned to new subcircuits on conversion from objects - if empty, no refdes text or attribute is added; if the value is <?>, the refdes text object is added but no refdes attribute is created
+<tr><td> grid_unit <td><a href="CFN_UNIT.html"> unit </a><td> 0 <td> [hidlib] select whether you draw in mm or mil
+<tr><td> draw_grid <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> [hidlib] draw grid points
+<tr><td> auto_place <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> [hidlib] force placement of GUI windows (dialogs), trying to override the window manager
+<tr><td> fullscreen <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> [hidlib] hide widgets to make more room for the drawing
 </table></body></html>

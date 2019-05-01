@@ -3,9 +3,6 @@
 <h2>subtree: rc</h2>
 <table border=1>
 <tr><th>node name <th> type <td> flags <td> description
-<tr><td> verbose <td><a href="CFN_INTEGER.html"> integer </a><td> 0 <td> <verbose>
-<tr><td> quiet <td><a href="CFN_INTEGER.html"> integer </a><td> 0 <td> print only errors on stderr
-<tr><td> dup_log_to_stderr <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> copy log messages to stderr even if there is a HID that can show them
 <tr><td> backup_interval <td><a href="CFN_INTEGER.html"> integer </a><td> 0 <td> time between two backups in seconds; 0 means disabled (no backups)
 <tr><td> hid_fallback <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> if there is no explicitly specified HID (--gui) and the preferred GUI fails, automatically fall back on other HIDs, eventually running in batch mode
 <tr><td> brave <td><a href="CFN_STRING.html"> string </a><td> 0 <td> brave mode flags: when non-empty, enable various experimental (unstable) features - useful for testers
@@ -14,8 +11,6 @@
 <tr><td> file_path <td><a href="CFN_STRING.html"> string </a><td> 0 <td> <file_path>
 <tr><td> library_shell <td><a href="CFN_STRING.html"> string </a><td> 0 <td> <library_shell>
 <tr><td> library_search_paths <td><a href="CFN_LIST.html"> list </a><td> 0 <td> <library_search_paths>
-<tr><td> menu_file <td><a href="CFN_STRING.html"> string </a><td> 0 <td> where to load the default menu file from. If empty/unset, fall back to the legacy 'per hid ow menu file' setup. If contains slash, take it as a full path, if no slash, do a normal menu search for pcb-menu-NAME.lht
-<tr><td> export_basename <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> if an exported file contains the source file name, remove path from it, keeping the basename only
 <tr><td> emergency_name <td><a href="CFN_STRING.html"> string </a><td> 0 <td> file name template for emergency save anonymous .pcb files (when pcb-rnd crashes); optional field: %ld --> pid; must be shorter than 240 characters. Don't do emergency save if this item is empty.
 <tr><td> emergency_format <td><a href="CFN_STRING.html"> string </a><td> 0 <td> if set, use this format for the backups; if unset, use the default format
 <tr><td> backup_name <td><a href="CFN_STRING.html"> string </a><td> 0 <td> file name template for periodic backup of board files; optional fields (the usual % substitutions work)
@@ -31,7 +26,12 @@
 <tr><td> preferred_gui <td><a href="CFN_LIST.html"> list </a><td> 0 <td> if set, try GUI HIDs in this order when no GUI is explicitly selected
 <tr><td> save_final_fallback_fmt <td><a href="CFN_STRING.html"> string </a><td> 0 <td> when a new file is created (by running pcb-rnd with the file name) there won't be a known format; pcb-rnd will guess from the file name (extension) but eventhat may fail. This format is the final fallback that'll be used if no other guessing mechanism worked. The user can override this by save as.
 <tr><td> save_fp_fmt <td><a href="CFN_STRING.html"> string </a><td> 0 <td> when saving a buffer element/subcircuit, prefer this format by default
-<tr><td> cli_prompt <td><a href="CFN_STRING.html"> string </a><td> 0 <td> plain text prompt to prefix the command entry
-<tr><td> cli_backend <td><a href="CFN_STRING.html"> string </a><td> 0 <td> command parser action
 <tr><td> have_regex <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> whether we have regex compiled in
+<tr><td> verbose <td><a href="CFN_INTEGER.html"> integer </a><td> 0 <td> [hidlib] <verbose>
+<tr><td> quiet <td><a href="CFN_INTEGER.html"> integer </a><td> 0 <td> [hidlib] print only errors on stderr
+<tr><td> dup_log_to_stderr <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> [hidlib] copy log messages to stderr even if there is a HID that can show them
+<tr><td> cli_prompt <td><a href="CFN_STRING.html"> string </a><td> 0 <td> [hidlib] plain text prompt to prefix the command entry
+<tr><td> cli_backend <td><a href="CFN_STRING.html"> string </a><td> 0 <td> [hidlib] command parser action
+<tr><td> export_basename <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> [hidlib] if an exported file contains the source file name, remove path from it, keeping the basename only
+<tr><td> menu_file <td><a href="CFN_STRING.html"> string </a><td> 0 <td> [hidlib] where to load the default menu file from. If empty/unset, fall back to the legacy 'per hid ow menu file' setup. If contains slash, take it as a full path, if no slash, do a normal menu search for pcb-menu-NAME.lht
 </table></body></html>
