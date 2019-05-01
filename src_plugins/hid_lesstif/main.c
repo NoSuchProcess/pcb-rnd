@@ -377,6 +377,11 @@ static void ltf_set_hidlib(pcb_hidlib_t *hidlib)
 		stdarg(XmNtitle, cp ? cp + 1 : ltf_hidlib->filename);
 		XtSetValues(appwidget, stdarg_args, stdarg_n);
 	}
+	else {
+		stdarg_n = 0;
+		stdarg(XmNtitle, "Unknown");
+		XtSetValues(appwidget, stdarg_args, stdarg_n);
+	}
 	return;
 }
 
