@@ -4,6 +4,7 @@
 #include "math_helper.h"
 #include "conf_core.h"
 #include "hidlib_conf.h"
+#include "hidlib.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -54,6 +55,8 @@
 #include <sys/poll.h>
 
 const char *lesstif_cookie = "lesstif HID";
+
+pcb_hidlib_t *ltf_hidlib;
 
 pcb_hid_cfg_mouse_t lesstif_mouse;
 pcb_hid_cfg_keys_t lesstif_keymap;
@@ -178,7 +181,7 @@ static void ShowCrosshair(pcb_bool show)
 }
 
 /* This is the size of the current PCB work area.  */
-/* Use PCB->hidlib.size_x, PCB->hidlib.size_y.  */
+/* Use ltf_hidlib->size_x, ltf_hidlib->size_y.  */
 /* static int pcb_width, pcb_height; */
 static int use_private_colormap = 0;
 static int stdin_listen = 0;
@@ -346,31 +349,32 @@ extern void LesstifNetlistChanged(void *user_data, int argc, pcb_event_arg_t arg
 extern void LesstifLibraryChanged(void *user_data, int argc, pcb_event_arg_t argv[]);
 
 
-static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
+static void ltf_set_hidlib(pcb_hidlib_t *hidlib)
 {
-	if (work_area == 0)
+	ltf_hidlib = hidlib;
+	if ((work_area == 0) || (hidlib == NULL))
 		return;
-	/*pcb_printf("PCB Changed! %$mD\n", PCB->hidlib.size_x, PCB->hidlib.size_y); */
+	/*pcb_printf("PCB Changed! %$mD\n", ltf_hidlib->size_x, ltf_hidlib->size_y); */
 	stdarg_n = 0;
 	stdarg(XmNminimum, 0);
 	stdarg(XmNvalue, 0);
-	stdarg(XmNsliderSize, PCB->hidlib.size_x ? PCB->hidlib.size_x : 1);
-	stdarg(XmNmaximum, PCB->hidlib.size_x ? PCB->hidlib.size_x : 1);
+	stdarg(XmNsliderSize, ltf_hidlib->size_x ? ltf_hidlib->size_x : 1);
+	stdarg(XmNmaximum, ltf_hidlib->size_x ? ltf_hidlib->size_x : 1);
 	XtSetValues(hscroll, stdarg_args, stdarg_n);
 	stdarg_n = 0;
 	stdarg(XmNminimum, 0);
 	stdarg(XmNvalue, 0);
-	stdarg(XmNsliderSize, PCB->hidlib.size_y ? PCB->hidlib.size_y : 1);
-	stdarg(XmNmaximum, PCB->hidlib.size_y ? PCB->hidlib.size_y : 1);
+	stdarg(XmNsliderSize, ltf_hidlib->size_y ? ltf_hidlib->size_y : 1);
+	stdarg(XmNmaximum, ltf_hidlib->size_y ? ltf_hidlib->size_y : 1);
 	XtSetValues(vscroll, stdarg_args, stdarg_n);
 	zoom_max();
 
 	LesstifNetlistChanged(NULL, 0, NULL);
 	lesstif_update_layer_groups();
-	if (PCB->hidlib.filename) {
-		char *cp = strrchr(PCB->hidlib.filename, '/');
+	if (ltf_hidlib->filename) {
+		char *cp = strrchr(ltf_hidlib->filename, '/');
 		stdarg_n = 0;
-		stdarg(XmNtitle, cp ? cp + 1 : PCB->hidlib.filename);
+		stdarg(XmNtitle, cp ? cp + 1 : ltf_hidlib->filename);
 		XtSetValues(appwidget, stdarg_args, stdarg_n);
 	}
 	return;
@@ -531,8 +535,8 @@ static double ltf_benchmark(void)
 
 	ctx.view.X1 = 0;
 	ctx.view.Y1 = 0;
-	ctx.view.X2 = PCB->hidlib.size_x;
-	ctx.view.Y2 = PCB->hidlib.size_y;
+	ctx.view.X2 = ltf_hidlib->size_x;
+	ctx.view.Y2 = ltf_hidlib->size_y;
 
 	pixmap = window;
 	XSync(display, 0);
@@ -680,8 +684,8 @@ static void DrawBackgroundImage()
 {
 	int x, y, w, h;
 	double xscale, yscale;
-	int pcbwidth = PCB->hidlib.size_x / view_zoom;
-	int pcbheight = PCB->hidlib.size_y / view_zoom;
+	int pcbwidth = ltf_hidlib->size_x / view_zoom;
+	int pcbheight = ltf_hidlib->size_y / view_zoom;
 
 	if (!window || !bg)
 		return;
@@ -698,8 +702,8 @@ static void DrawBackgroundImage()
 	w = MIN(view_width, pcbwidth);
 	h = MIN(view_height, pcbheight);
 
-	xscale = (double) bg_w / PCB->hidlib.size_x;
-	yscale = (double) bg_h / PCB->hidlib.size_y;
+	xscale = (double) bg_w / ltf_hidlib->size_x;
+	yscale = (double) bg_h / ltf_hidlib->size_y;
 
 	for (y = 0; y < h; y++) {
 		int pr = Py(y);
@@ -742,29 +746,31 @@ static void set_scroll(Widget s, int pos, int view, int pcb)
 
 void lesstif_pan_fixup()
 {
-	if (view_left_x > PCB->hidlib.size_x + (view_width * view_zoom))
-		view_left_x = PCB->hidlib.size_x + (view_width * view_zoom);
-	if (view_top_y > PCB->hidlib.size_y + (view_height * view_zoom))
-		view_top_y = PCB->hidlib.size_y + (view_height * view_zoom);
+	if (ltf_hidlib == NULL)
+		return;
+	if (view_left_x > ltf_hidlib->size_x + (view_width * view_zoom))
+		view_left_x = ltf_hidlib->size_x + (view_width * view_zoom);
+	if (view_top_y > ltf_hidlib->size_y + (view_height * view_zoom))
+		view_top_y = ltf_hidlib->size_y + (view_height * view_zoom);
 	if (view_left_x < -(view_width * view_zoom))
 		view_left_x = -(view_width * view_zoom);
 	if (view_top_y < -(view_height * view_zoom))
 		view_top_y = -(view_height * view_zoom);
 
-	set_scroll(hscroll, view_left_x, view_width, PCB->hidlib.size_x);
-	set_scroll(vscroll, view_top_y, view_height, PCB->hidlib.size_y);
+	set_scroll(hscroll, view_left_x, view_width, ltf_hidlib->size_x);
+	set_scroll(vscroll, view_top_y, view_height, ltf_hidlib->size_y);
 
 	lesstif_invalidate_all();
 }
 
 static void zoom_max()
 {
-	double new_zoom = PCB->hidlib.size_x / view_width;
-	if (new_zoom < PCB->hidlib.size_y / view_height)
-		new_zoom = PCB->hidlib.size_y / view_height;
+	double new_zoom = ltf_hidlib->size_x / view_width;
+	if (new_zoom < ltf_hidlib->size_y / view_height)
+		new_zoom = ltf_hidlib->size_y / view_height;
 
-	view_left_x = -(view_width * new_zoom - PCB->hidlib.size_x) / 2;
-	view_top_y = -(view_height * new_zoom - PCB->hidlib.size_y) / 2;
+	view_left_x = -(view_width * new_zoom - ltf_hidlib->size_x) / 2;
+	view_top_y = -(view_height * new_zoom - ltf_hidlib->size_y) / 2;
 	view_zoom = new_zoom;
 	pcb_pixel_slop = view_zoom;
 	lesstif_pan_fixup();
@@ -787,9 +793,9 @@ static void zoom_to(double new_zoom, pcb_coord_t x, pcb_coord_t y)
 	if (pcbhl_conf.editor.view.flip_y)
 		yfrac = 1 - yfrac;
 
-	max_zoom = PCB->hidlib.size_x / view_width;
-	if (max_zoom < PCB->hidlib.size_y / view_height)
-		max_zoom = PCB->hidlib.size_y / view_height;
+	max_zoom = ltf_hidlib->size_x / view_width;
+	if (max_zoom < ltf_hidlib->size_y / view_height)
+		max_zoom = ltf_hidlib->size_y / view_height;
 
 	max_zoom *= MAX_ZOOM_SCALE;
 
@@ -852,12 +858,12 @@ static void Pan(int mode, pcb_coord_t x, pcb_coord_t y)
 TODO("remove this if there is no bugreport for a long time");
 #if 0
 	if (pan_thumb_mode) {
-		opx = x * PCB->hidlib.size_x / view_width;
-		opy = y * PCB->hidlib.size_y / view_height;
+		opx = x * ltf_hidlib->size_x / view_width;
+		opy = y * ltf_hidlib->size_y / view_height;
 		if (pcbhl_conf.editor.view.flip_x)
-			opx = PCB->hidlib.size_x - opx;
+			opx = ltf_hidlib->size_x - opx;
 		if (pcbhl_conf.editor.view.flip_y)
-			opy = PCB->hidlib.size_y - opy;
+			opy = ltf_hidlib->size_y - opy;
 		view_left_x = opx - view_width / 2 * view_zoom;
 		view_top_y = opy - view_height / 2 * view_zoom;
 		lesstif_pan_fixup();
@@ -1414,7 +1420,7 @@ static void lesstif_do_export(pcb_hid_attr_val_t * options)
 	stdarg_n = 0;
 	stdarg(XmNorientation, XmVERTICAL);
 	stdarg(XmNprocessingDirection, XmMAX_ON_BOTTOM);
-	stdarg(XmNmaximum, PCB->hidlib.size_y ? PCB->hidlib.size_y : 1);
+	stdarg(XmNmaximum, ltf_hidlib->size_y ? ltf_hidlib->size_y : 1);
 	vscroll = XmCreateScrollBar(mainwind, XmStrCast("vscroll"), stdarg_args, stdarg_n);
 	XtAddCallback(vscroll, XmNvalueChangedCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_top_y);
 	XtAddCallback(vscroll, XmNdragCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_top_y);
@@ -1422,7 +1428,7 @@ static void lesstif_do_export(pcb_hid_attr_val_t * options)
 
 	stdarg_n = 0;
 	stdarg(XmNorientation, XmHORIZONTAL);
-	stdarg(XmNmaximum, PCB->hidlib.size_x ? PCB->hidlib.size_x : 1);
+	stdarg(XmNmaximum, ltf_hidlib->size_x ? ltf_hidlib->size_x : 1);
 	hscroll = XmCreateScrollBar(mainwind, XmStrCast("hscroll"), stdarg_args, stdarg_n);
 	XtAddCallback(hscroll, XmNvalueChangedCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_left_x);
 	XtAddCallback(hscroll, XmNdragCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_left_x);
@@ -1841,7 +1847,7 @@ static void draw_grid()
 
 	if (!pcbhl_conf.editor.draw_grid)
 		return;
-	if (Vz(PCB->hidlib.grid) < PCB_MIN_GRID_DISTANCE)
+	if (Vz(ltf_hidlib->grid) < PCB_MIN_GRID_DISTANCE)
 		return;
 	if (!grid_gc) {
 		grid_gc = XCreateGC(display, window, 0, 0);
@@ -1849,45 +1855,45 @@ static void draw_grid()
 		XSetForeground(display, grid_gc, grid_color);
 	}
 	if (pcbhl_conf.editor.view.flip_x) {
-		x2 = pcb_grid_fit(Px(0), PCB->hidlib.grid, PCB->hidlib.grid_ox);
-		x1 = pcb_grid_fit(Px(view_width), PCB->hidlib.grid, PCB->hidlib.grid_ox);
+		x2 = pcb_grid_fit(Px(0), ltf_hidlib->grid, ltf_hidlib->grid_ox);
+		x1 = pcb_grid_fit(Px(view_width), ltf_hidlib->grid, ltf_hidlib->grid_ox);
 		if (Vx(x2) < 0)
-			x2 -= PCB->hidlib.grid;
+			x2 -= ltf_hidlib->grid;
 		if (Vx(x1) >= view_width)
-			x1 += PCB->hidlib.grid;
+			x1 += ltf_hidlib->grid;
 	}
 	else {
-		x1 = pcb_grid_fit(Px(0), PCB->hidlib.grid, PCB->hidlib.grid_ox);
-		x2 = pcb_grid_fit(Px(view_width), PCB->hidlib.grid, PCB->hidlib.grid_ox);
+		x1 = pcb_grid_fit(Px(0), ltf_hidlib->grid, ltf_hidlib->grid_ox);
+		x2 = pcb_grid_fit(Px(view_width), ltf_hidlib->grid, ltf_hidlib->grid_ox);
 		if (Vx(x1) < 0)
-			x1 += PCB->hidlib.grid;
+			x1 += ltf_hidlib->grid;
 		if (Vx(x2) >= view_width)
-			x2 -= PCB->hidlib.grid;
+			x2 -= ltf_hidlib->grid;
 	}
 	if (pcbhl_conf.editor.view.flip_y) {
-		y2 = pcb_grid_fit(Py(0), PCB->hidlib.grid, PCB->hidlib.grid_oy);
-		y1 = pcb_grid_fit(Py(view_height), PCB->hidlib.grid, PCB->hidlib.grid_oy);
+		y2 = pcb_grid_fit(Py(0), ltf_hidlib->grid, ltf_hidlib->grid_oy);
+		y1 = pcb_grid_fit(Py(view_height), ltf_hidlib->grid, ltf_hidlib->grid_oy);
 		if (Vy(y2) < 0)
-			y2 -= PCB->hidlib.grid;
+			y2 -= ltf_hidlib->grid;
 		if (Vy(y1) >= view_height)
-			y1 += PCB->hidlib.grid;
+			y1 += ltf_hidlib->grid;
 	}
 	else {
-		y1 = pcb_grid_fit(Py(0), PCB->hidlib.grid, PCB->hidlib.grid_oy);
-		y2 = pcb_grid_fit(Py(view_height), PCB->hidlib.grid, PCB->hidlib.grid_oy);
+		y1 = pcb_grid_fit(Py(0), ltf_hidlib->grid, ltf_hidlib->grid_oy);
+		y2 = pcb_grid_fit(Py(view_height), ltf_hidlib->grid, ltf_hidlib->grid_oy);
 		if (Vy(y1) < 0)
-			y1 += PCB->hidlib.grid;
+			y1 += ltf_hidlib->grid;
 		if (Vy(y2) >= view_height)
-			y2 -= PCB->hidlib.grid;
+			y2 -= ltf_hidlib->grid;
 	}
-	n = (x2 - x1) / PCB->hidlib.grid + 1;
+	n = (x2 - x1) / ltf_hidlib->grid + 1;
 	if (n > npoints) {
 		npoints = n + 10;
 		points = (XPoint *) realloc(points, npoints * sizeof(XPoint));
 	}
 	n = 0;
 	prevx = 0;
-	for (x = x1; x <= x2; x += PCB->hidlib.grid) {
+	for (x = x1; x <= x2; x += ltf_hidlib->grid) {
 		int temp = Vx(x);
 		points[n].x = temp;
 		if (n) {
@@ -1897,7 +1903,7 @@ static void draw_grid()
 		prevx = temp;
 		n++;
 	}
-	for (y = y1; y <= y2; y += PCB->hidlib.grid) {
+	for (y = y1; y <= y2; y += ltf_hidlib->grid) {
 		int vy = Vy(y);
 		points[0].y = vy;
 		XDrawPoints(display, pixmap, grid_gc, points, n, CoordModePrevious);
@@ -1907,7 +1913,7 @@ static void draw_grid()
 static void mark_delta_to_widget(pcb_coord_t dx, pcb_coord_t dy, Widget w)
 {
 	char *buf;
-	double g = pcb_coord_to_unit(pcbhl_conf.editor.grid_unit, PCB->hidlib.grid);
+	double g = pcb_coord_to_unit(pcbhl_conf.editor.grid_unit, ltf_hidlib->grid);
 	int prec;
 	XmString ms;
 
@@ -1938,7 +1944,7 @@ static int cursor_pos_to_widget(pcb_coord_t x, pcb_coord_t y, Widget w, int prev
 	int this_state = prev_state;
 	char *buf = NULL;
 	const char *msg = "";
-	double g = pcb_coord_to_unit(pcbhl_conf.editor.grid_unit, PCB->hidlib.grid);
+	double g = pcb_coord_to_unit(pcbhl_conf.editor.grid_unit, ltf_hidlib->grid);
 	XmString ms;
 	int prec;
 
@@ -2043,13 +2049,13 @@ static Boolean idle_proc(XtPointer dummy)
 		XSetForeground(display, bg_gc, bgcolor);
 		XFillRectangle(display, main_pixmap, bg_gc, 0, 0, mx, my);
 
-		if (ctx.view.X1 < 0 || ctx.view.Y1 < 0 || ctx.view.X2 > PCB->hidlib.size_x || ctx.view.Y2 > PCB->hidlib.size_y) {
+		if (ctx.view.X1 < 0 || ctx.view.Y1 < 0 || ctx.view.X2 > ltf_hidlib->size_x || ctx.view.Y2 > ltf_hidlib->size_y) {
 			int leftmost, rightmost, topmost, bottommost;
 
 			leftmost = Vx(0);
-			rightmost = Vx(PCB->hidlib.size_x);
+			rightmost = Vx(ltf_hidlib->size_x);
 			topmost = Vy(0);
-			bottommost = Vy(PCB->hidlib.size_y);
+			bottommost = Vy(ltf_hidlib->size_y);
 			if (leftmost > rightmost) {
 				int t = leftmost;
 				leftmost = rightmost;
@@ -2178,12 +2184,12 @@ static Boolean idle_proc(XtPointer dummy)
 		static pcb_coord_t old_gx, old_gy;
 		static const pcb_unit_t *old_unit;
 		XmString ms;
-		if (PCB->hidlib.grid != old_grid || PCB->hidlib.grid_ox != old_gx || PCB->hidlib.grid_oy != old_gy || pcbhl_conf.editor.grid_unit != old_unit) {
+		if (ltf_hidlib->grid != old_grid || ltf_hidlib->grid_ox != old_gx || ltf_hidlib->grid_oy != old_gy || pcbhl_conf.editor.grid_unit != old_unit) {
 			static char buf[100];
-			old_grid = PCB->hidlib.grid;
+			old_grid = ltf_hidlib->grid;
 			old_unit = pcbhl_conf.editor.grid_unit;
-			old_gx = PCB->hidlib.grid_ox;
-			old_gy = PCB->hidlib.grid_oy;
+			old_gx = ltf_hidlib->grid_ox;
+			old_gy = ltf_hidlib->grid_oy;
 			if (old_grid == 1) {
 				strcpy(buf, "No Grid");
 			}
@@ -2404,7 +2410,8 @@ static void lesstif_invalidate_lr(pcb_coord_t l, pcb_coord_t r, pcb_coord_t t, p
 
 void lesstif_invalidate_all(void)
 {
-	lesstif_invalidate_lr(0, PCB->hidlib.size_x, 0, PCB->hidlib.size_y);
+	if (ltf_hidlib != NULL)
+		lesstif_invalidate_lr(0, ltf_hidlib->size_x, 0, ltf_hidlib->size_y);
 }
 
 static void lesstif_notify_crosshair_change(pcb_bool changes_complete)
@@ -3355,9 +3362,10 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.open_command = ltf_open_command;
 	lesstif_hid.open_popup = ltf_open_popup;
 
+	lesstif_hid.set_hidlib = ltf_set_hidlib;
+
 	lesstif_hid.usage = lesstif_usage;
 
-	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, lesstif_cookie);
 	pcb_event_bind(PCB_EVENT_NETLIST_CHANGED, LesstifNetlistChanged, NULL, lesstif_cookie);
 	pcb_event_bind(PCB_EVENT_LIBRARY_CHANGED, LesstifLibraryChanged, NULL, lesstif_cookie);
 	pcb_event_bind(PCB_EVENT_BUSY, LesstifBusy, NULL, lesstif_cookie);
