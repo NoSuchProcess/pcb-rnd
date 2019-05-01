@@ -1,4 +1,4 @@
-25137	configure	hidlib: indirect conf lookups to cut conf_core dependency
+25143	configure	hidlib: indirect conf lookups to cut conf_core dependency
 25036	configure	hidlib: centralize GUI actions to remove code dup among gtk/lesstif and free up HIDs from PCB
 25016	configure	move the status bar and readouts out from gtk/lesstif to plugin lib_hid_pcbui
 24987	configure	move the toolbar out from gtk to plugin lib_hid_pcbui
