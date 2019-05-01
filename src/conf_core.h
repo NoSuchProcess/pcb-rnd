@@ -12,12 +12,12 @@
 
 typedef struct {
 
-	struct temp {
+	struct {
 		CFT_BOOLEAN rat_warn;              /* rats nest has set warnings */
 		CFT_BOOLEAN clip_inhibit_chg;      /* dummy node to inform the menu about clip inhibit change */
 	} temp;
 
-	const struct editor {
+	const struct {                       /* editor */
 		CFT_UNIT grid_unit;                /* select whether you draw in mm or mil */
 		CFT_COORD grid;                    /* grid in pcb-units */
 		CFT_LIST grids;                    /* grid in grid-string format */
@@ -72,12 +72,12 @@ typedef struct {
 
 		CFT_INTEGER click_time;            /* default time for click expiration, in ms */
 
-		struct view {
+		struct {
 			CFT_BOOLEAN flip_x;              /* view: flip the board along the X (horizontal) axis */
 			CFT_BOOLEAN flip_y;              /* view: flip the board along the Y (vertical) axis */
 		} view;
 
-		struct selection {
+		struct {
 			CFT_BOOLEAN disable_negative;    /* selection box behaviour: disable the negative-direction selection - any selection box will select only what's fully within the box */
 			CFT_BOOLEAN symmetric_negative;  /* selection box behaviour: when set, the selection direction is considered negative only if the box has negative size in the X direction */
 		} selection;
@@ -97,7 +97,7 @@ typedef struct {
 		CFT_STRING subc_conv_refdes;       /* automatic refdes value assigned to new subcircuits on conversion from objects - if empty, no refdes text or attribute is added; if the value is <?>, the refdes text object is added but no refdes attribute is created */
 	} editor;
 
-	const struct rc {
+	const struct {                       /* rc */
 		CFT_INTEGER verbose;
 		CFT_INTEGER quiet;                 /* print only errors on stderr */
 		CFT_BOOLEAN dup_log_to_stderr;     /* copy log messages to stderr even if there is a HID that can show them */
@@ -137,7 +137,7 @@ typedef struct {
 
 		/***** automatically set (in postproc) *****/
 		CFT_BOOLEAN have_regex;            /* whether we have regex compiled in */
-		struct path {
+		struct {
 			CFT_STRING prefix;               /* e.g. /usr/local */
 			CFT_STRING lib;                  /* e.g. /usr/lib/pcb-rnd */
 			CFT_STRING bin;                  /* e.g. /usr/bin */
@@ -150,7 +150,7 @@ typedef struct {
 		} path;
 	} rc;
 
-	const struct design { /* defaults of a new layout */
+	const struct {                       /* design: defaults of a new layout */
 		CFT_COORD via_thickness;
 		CFT_COORD via_drilling_hole;
 		CFT_COORD line_thickness;
@@ -173,7 +173,7 @@ typedef struct {
 	} design;
 
 /* @path appearance/color */
-	const struct appearance {
+	const struct {                       /* appearance */
 		CFT_BOOLEAN compact;               /* when set: optimize GUI widget arrangement for small screen; may be wasting some screen space on large screen */
 		CFT_COORD rat_thickness;
 		CFT_COORD mark_size;               /* relative marker size */
@@ -184,7 +184,7 @@ typedef struct {
 		CFT_BOOLEAN subc_layer_per_side;   /* hide top or bottom placed subcircuit annotations if the view is showing the other side */
 		CFT_BOOLEAN invis_other_groups;    /* render non-current group layers with the inivisble color */
 		CFT_BOOLEAN black_current_group;   /* render all layers of the current group black, for maximum contrast */
-		struct loglevels {
+		struct {
 			CFT_STRING   debug_tag;          /* log style tag of debug messages */
 			CFT_BOOLEAN  debug_popup;        /* whether a debug line should pop up the log window */
 			CFT_STRING   info_tag;           /* log style tag of info messages */
@@ -194,7 +194,7 @@ typedef struct {
 			CFT_STRING   error_tag;          /* log style tag of errors */
 			CFT_BOOLEAN  error_popup;        /* whether an error should pop up the log window */
 		} loglevels;
-		struct color {
+		struct {                           /* color */
 			CFT_COLOR background;            /* background and cursor color ... */
 			CFT_COLOR crosshair;             /* different object colors */
 			CFT_COLOR cross;                 /* crosshair, drc outline color */
@@ -218,17 +218,17 @@ typedef struct {
 			CFT_COLOR paste;                 /* default paste layer color (when a new paste layer is created) */
 			CFT_COLOR element;               /* default silk layer color (when a new silk layer is created) */
 		} color;
-		struct padstack {
+		struct {
 			CFT_INTEGER cross_thick;      /* cross thickness in pixels - 0 means disable crosses */
 			CFT_COORD cross_size;         /* cross size in word coords - size of one arm of the cross (minus the hole radius) */
 		} padstack;
-		struct subc {
+		struct {
 			CFT_INTEGER dash_freq;        /* how dense the dashed outline should be; -1 means do not display the dashed outline; 0 means solid outline; 1..32 means dashed outline */
 		} subc;
-		struct messages {
+		struct {
 			CFT_INTEGER char_per_line;   /* width of an output line in characters (used by separator drawing in find.c) */		
 		} messages;
-		struct misc {
+		struct {
 			CFT_INTEGER volume;          /* the speakers volume -100..100 */
 		} misc;
 	} appearance;
