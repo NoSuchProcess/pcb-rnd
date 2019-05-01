@@ -534,8 +534,10 @@ static void ghid_set_hidlib(pcb_hidlib_t *hidlib)
 	if(!ghidgui->hid_active)
 		return;
 
-	if (PCB != NULL)
-		ghidgui->common.window_set_name_label(hidlib->name);
+	if (hidlib == NULL)
+		return;
+
+	ghidgui->common.window_set_name_label(hidlib->name);
 
 	if (!gport->drawing_allowed)
 		return;
