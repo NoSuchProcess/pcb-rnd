@@ -1879,14 +1879,14 @@
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h color.h conf_core.h globalconst.h \
- crosshair.h vtonpoint.h hid.h error.h attrib.h layer.h obj_common.h \
- flag.h data_parent.h obj_arc_list.h obj_arc.h \
- ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
- obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
- ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h route.h data.h \
- crosshair.h buffer.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
- obj_rat_list.h obj_rat.h layer_grp.h idpath.h obj_subc_list.h obj_subc.h \
+ ../src_3rd/genlist/gendlist.h color.h crosshair.h vtonpoint.h hid.h \
+ error.h attrib.h layer.h globalconst.h obj_common.h flag.h data_parent.h \
+ obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h \
+ obj_line.h obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h \
+ obj_text.h font.h ../src_3rd/genht/htip.h box.h math_helper.h \
+ misc_util.h route.h data.h crosshair.h buffer.h \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h obj_rat_list.h \
+ obj_rat.h layer_grp.h idpath.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h rtree.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
@@ -4793,7 +4793,9 @@
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h data_it.h data.h \
- flag.h dolists.h
+ flag.h ../src_plugins/lib_hid_pcbui/rendering.c board.h vtroutestyle.h \
+ rats_patch.h board.h hidlib.h conf_core.h funchash_core.h funchash.h \
+ funchash_core_list.h layer.h dolists.h
 ../src_plugins/lib_hid_pcbui/routest.o: \
  ../src_plugins/lib_hid_pcbui/routest.c ../config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h global_typedefs.h \
