@@ -35,6 +35,7 @@
 #include "draw.h"
 #include "hid.h"
 #include "layer_vis.h"
+#include "search.h"
 
 #include "util.h"
 #include "act.h"
