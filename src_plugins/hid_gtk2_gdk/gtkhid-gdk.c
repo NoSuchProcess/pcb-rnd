@@ -123,9 +123,6 @@ static int ghid_gdk_set_layer_group(pcb_layergrp_id_t group, const char *purpose
 	if (idx >= 0 && idx < pcb_max_layer && ((flags & PCB_LYT_ANYTHING) != PCB_LYT_SILK))
 		return PCB->Data->Layer[idx].meta.real.vis;
 
-	if (PCB_LAYER_IS_ASSY(flags, purpi))
-		return 0;
-
 	/* virtual layers */
 	{
 		if (PCB_LAYER_IS_DRILL(flags, purpi))

@@ -188,9 +188,6 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int pu
 		return PCB->Data->Layer[idx].meta.real.vis;
 	}
 
-	if (PCB_LAYER_IS_ASSY(flags, purpi))
-		return 0;
-
 	if (PCB_LAYER_IS_CSECT(flags, purpi)) {
 		/* Opaque draw */
 		priv->trans_lines = pcb_false;
