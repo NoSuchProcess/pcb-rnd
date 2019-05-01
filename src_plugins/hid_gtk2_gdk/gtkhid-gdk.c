@@ -102,46 +102,8 @@ static pcb_bool map_color_string(const char *color_string, pcb_gtk_color_t * col
 
 static int ghid_gdk_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
-	int idx = group;
-	if (idx >= 0 && idx < pcb_max_group(PCB)) {
-		int n = PCB->LayerGroups.grp[group].len;
-		for (idx = 0; idx < n - 1; idx++) {
-			int ni = PCB->LayerGroups.grp[group].lid[idx];
-			if (ni >= 0 && ni < pcb_max_layer && PCB->Data->Layer[ni].meta.real.vis)
-				break;
-		}
-		idx = PCB->LayerGroups.grp[group].lid[idx];
-	}
-
-	/* non-virtual layers with group visibility */
-	switch (flags & PCB_LYT_ANYTHING) {
-		case PCB_LYT_MASK:
-		case PCB_LYT_PASTE:
-			return (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) && PCB->LayerGroups.grp[group].vis);
-	}
-
-	if (idx >= 0 && idx < pcb_max_layer && ((flags & PCB_LYT_ANYTHING) != PCB_LYT_SILK))
-		return PCB->Data->Layer[idx].meta.real.vis;
-
-	/* virtual layers */
-	{
-		if (PCB_LAYER_IS_DRILL(flags, purpi))
-			return 1;
-
-		switch (flags & PCB_LYT_ANYTHING) {
-		case PCB_LYT_INVIS:
-			return PCB->InvisibleObjectsOn;
-		case PCB_LYT_SILK:
-			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
-				return pcb_silk_on(PCB);
-			return 0;
-		case PCB_LYT_UI:
-			return 1;
-		case PCB_LYT_RAT:
-			return PCB->RatOn;
-		}
-	}
-	return 0;
+	/* draw anything */
+	return 1;
 }
 
 static void ghid_gdk_destroy_gc(pcb_hid_gc_t gc)

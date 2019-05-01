@@ -36,7 +36,9 @@
 #include "toolbar.h"
 #include "status.h"
 #include "act.h"
+
 #include "util.c"
+#include "rendering.c"
 
 
 static const char *layer_cookie = "lib_hid_pcbui/layer";
@@ -45,6 +47,7 @@ static const char *act_cookie = "lib_hid_pcbui/actions";
 static const char *toolbar_cookie = "lib_hid_pcbui/toolbar";
 static const char *status_cookie = "lib_hid_pcbui/status";
 static const char *status_rd_cookie = "lib_hid_pcbui/status/readouts";
+static const char *rendering_cookie = "lib_hid_pcbui/rendering";
 
 static pcb_action_t rst_action_list[] = {
 	{"AdjustStyle", pcb_act_AdjustStyle, pcb_acth_AdjustStyle, pcb_acts_AdjustStyle}
@@ -135,6 +138,7 @@ TODO("padstack: remove some paths when route style has proto")
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_rst_gui_init_ev, NULL, rst_cookie);
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_toolbar_gui_init_ev, NULL, toolbar_cookie);
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_status_gui_init_ev, NULL, status_cookie);
+	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_rendering_gui_init_ev, NULL, rendering_cookie);
 	pcb_event_bind(PCB_EVENT_USER_INPUT_KEY, pcb_status_st_update_ev, NULL, status_cookie);
 	pcb_event_bind(PCB_EVENT_CROSSHAIR_MOVE, pcb_status_rd_update_ev, NULL, status_cookie);
 

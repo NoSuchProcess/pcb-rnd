@@ -143,17 +143,6 @@ static void end_subcomposite(void)
 int ghid_gl_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
 	render_priv_t *priv = gport->render_priv;
-	int idx = group;
-
-	if (idx >= 0 && idx < pcb_max_group(PCB)) {
-		int n = PCB->LayerGroups.grp[group].len;
-		for(idx = 0; idx < n - 1; idx++) {
-			int ni = PCB->LayerGroups.grp[group].lid[idx];
-			if (ni >= 0 && ni < pcb_max_layer && PCB->Data->Layer[ni].meta.real.vis)
-				break;
-		}
-		idx = PCB->LayerGroups.grp[group].lid[idx];
-	}
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -169,24 +158,7 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int pu
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glDisable(GL_STENCIL_TEST);
 
-/*
-	end_subcomposite();
-	start_subcomposite();
-*/
 	priv->trans_lines = pcb_true;
-
-	/* non-virtual layers with group visibility */
-	switch (flags & PCB_LYT_ANYTHING) {
-		case PCB_LYT_MASK:
-		case PCB_LYT_PASTE:
-			return (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) && PCB->LayerGroups.grp[group].vis);
-	}
-
-	/* normal layers */
-	if (idx >= 0 && idx < pcb_max_layer && ((flags & PCB_LYT_ANYTHING) != PCB_LYT_SILK)) {
-		priv->trans_lines = pcb_true;
-		return PCB->Data->Layer[idx].meta.real.vis;
-	}
 
 	if (PCB_LAYER_IS_CSECT(flags, purpi)) {
 		/* Opaque draw */
@@ -198,25 +170,7 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int pu
 		return 0;
 	}
 
-	/* virtual layers */
-	{
-		if (PCB_LAYER_IS_DRILL(flags, purpi))
-			return 1;
-
-		switch (flags & PCB_LYT_ANYTHING) {
-			case PCB_LYT_INVIS:
-				return PCB->InvisibleObjectsOn;
-			case PCB_LYT_SILK:
-				if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
-					return pcb_silk_on(PCB);
-				return 0;
-			case PCB_LYT_UI:
-				return 1;
-			case PCB_LYT_RAT:
-				return PCB->RatOn;
-		}
-	}
-	return 0;
+	return 1;
 }
 
 static void ghid_gl_end_layer(void)
