@@ -244,15 +244,18 @@ fgw_error_t pcb_act_InfoBarFileChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				PCB_DAD_END(sub.dlg);
 				PCB_DAD_BEGIN_VBOX(sub.dlg);
 					PCB_DAD_COMPFLAG(sub.dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_BEGIN_HBOX(sub.dlg); PCB_DAD_COMPFLAG(sub.dlg, PCB_HATF_EXPFILL); PCB_DAD_END(sub.dlg);
 					PCB_DAD_LABEL(sub.dlg, "line0");
 						wlab[0] = PCB_DAD_CURRENT(sub.dlg);
 					PCB_DAD_LABEL(sub.dlg, "line1");
 						wlab[1] = PCB_DAD_CURRENT(sub.dlg);
+					PCB_DAD_BEGIN_HBOX(sub.dlg); PCB_DAD_COMPFLAG(sub.dlg, PCB_HATF_EXPFILL); PCB_DAD_END(sub.dlg);
 				PCB_DAD_END(sub.dlg);
 				PCB_DAD_BEGIN_VBOX(sub.dlg);
 					PCB_DAD_BUTTON(sub.dlg, "Reload");
 						PCB_DAD_HELP(sub.dlg, "Load the new verison of the file from disk,\ndiscarding any in-memory change on the board");
 						PCB_DAD_CHANGE_CB(sub.dlg, ifb_file_chg_reload_cb);
+					PCB_DAD_BEGIN_HBOX(sub.dlg); PCB_DAD_COMPFLAG(sub.dlg, PCB_HATF_EXPFILL); PCB_DAD_END(sub.dlg);
 					PCB_DAD_BUTTON(sub.dlg, "Cancel");
 						PCB_DAD_HELP(sub.dlg, "Hide this info bar until the file changes again on disk");
 						PCB_DAD_CHANGE_CB(sub.dlg, ifb_file_chg_close_cb);
