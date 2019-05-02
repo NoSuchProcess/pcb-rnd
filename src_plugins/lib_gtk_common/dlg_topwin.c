@@ -54,7 +54,6 @@
 #include "compat.h"
 #include "bu_menu.h"
 #include "bu_icons.h"
-#include "bu_info_bar.h"
 #include "dlg_attribute.h"
 #include "util_listener.h"
 #include "in_mouse.h"
@@ -157,15 +156,6 @@ static gint top_window_configure_event_cb(GtkWidget *widget, GdkEventConfigure *
 	return pcb_gtk_winplace_cfg(widget, NULL, "top");
 }
 
-static gboolean top_window_enter_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_topwin_t *tw)
-{
-	if (check_externally_modified(&tw->ext_chg))
-		pcb_gtk_info_bar_file_extmod_prompt(&tw->ibar, tw->com, tw->vbox_middle);
-
-	return FALSE;
-}
-
-
 gboolean ghid_idle_cb(void *topwin)
 {
 	pcb_gtk_topwin_t *tw = topwin;
@@ -194,7 +184,6 @@ gboolean ghid_port_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, pcb
 void ghid_sync_with_new_layout(pcb_gtk_topwin_t *tw)
 {
 	tw->com->window_set_name_label(tw->com->hidlib->name);
-	pcb_gtk_close_info_bar(&tw->ibar);
 	update_board_mtime_from_disk(&tw->ext_chg);
 }
 
@@ -574,7 +563,6 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	g_signal_connect(G_OBJECT(tw->drawing_area), "size-allocate", G_CALLBACK(drawing_area_size_allocate_cb), tw);
 	g_signal_connect(G_OBJECT(tw->drawing_area), "enter-notify-event", G_CALLBACK(drawing_area_enter_cb), tw);
 	g_signal_connect(G_OBJECT(tw->com->top_window), "configure_event", G_CALLBACK(top_window_configure_event_cb), tw->com->gport);
-	g_signal_connect(tw->com->top_window, "enter-notify-event", G_CALLBACK(top_window_enter_cb), tw);
 
 	g_signal_connect(G_OBJECT(tw->com->top_window), "delete_event", G_CALLBACK(delete_chart_cb), tw->com->gport);
 	g_signal_connect(G_OBJECT(tw->com->top_window), "destroy", G_CALLBACK(destroy_chart_cb), tw);

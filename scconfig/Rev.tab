@@ -1,3 +1,4 @@
+25180	configure	rewrite PCB-file-changed-on-disk detection to common code, instead of gtk-specific
 25154	configure	hidlib: split lib_hid_common into a PCB-related and a PCB-unrelated plugin
 25143	configure	hidlib: indirect conf lookups to cut conf_core dependency
 25036	configure	hidlib: centralize GUI actions to remove code dup among gtk/lesstif and free up HIDs from PCB
