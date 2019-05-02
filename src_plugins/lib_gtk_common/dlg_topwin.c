@@ -75,6 +75,7 @@ typedef struct {
 	void *hid_ctx;
 	GtkWidget *frame;
 	pcb_gtk_topwin_t *tw;
+	pcb_hid_dock_t where;
 } docked_t;
 
 static int dock_is_vert[PCB_HID_DOCK_max]   = {0, 0, 0, 1, 0, 1}; /* Update this if pcb_hid_dock_t changes */
@@ -85,6 +86,7 @@ int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub, pc
 	GtkWidget *hvbox;
 
 	docked = calloc(sizeof(docked_t), 1);
+	docked->where = where;
 
 	if (dock_is_vert[where])
 		hvbox = gtkc_vbox_new(FALSE, 0);
@@ -113,6 +115,11 @@ int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub, pc
 
 void pcb_gtk_tw_dock_leave(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub)
 {
+	docked_t *docked = sub->parent_ctx;
+	gtk_widget_destroy(docked->frame);
+	gdl_remove(&tw->dock[docked->where], sub, link);
+	free(docked);
+	PCB_DAD_FREE(sub->dlg);
 }
 
 /*** static top window code ***/
