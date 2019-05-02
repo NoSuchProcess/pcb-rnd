@@ -35,7 +35,7 @@
 #include "board.h"
 #include "plug_io.h"
 
-static void info_bar_response_cb(GtkInfoBar * info_bar, gint response_id, pcb_gtk_info_bar_t *ibar)
+static void info_bar_response_cb(GtkInfoBar *info_bar, gint response_id, pcb_gtk_info_bar_t *ibar)
 {
 	gtk_widget_destroy(ibar->info_bar);
 	ibar->info_bar = NULL;
