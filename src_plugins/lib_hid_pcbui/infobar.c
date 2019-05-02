@@ -34,6 +34,7 @@ static pcb_hidval_t infobar_timer;
 static int infobar_timer_active = 0;
 static double last_interval = -2;
 static double last_date = -1;
+static int infobar_gui_inited = 0;
 
 static void pcb_infobar_brdchg_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 {
@@ -69,7 +70,7 @@ static void infobar_tick(pcb_hidval_t user_data)
 
 static void pcb_infobar_update_conf(conf_native_t *cfg, int arr_idx)
 {
-	if (last_interval == conf_core.rc.file_changed_interval)
+	if ((!infobar_gui_inited) || (last_interval == conf_core.rc.file_changed_interval))
 		return;
 	if ((infobar_timer_active) && (pcb_gui != NULL) && (pcb_gui->stop_timer != NULL)) {
 		pcb_gui->stop_timer(infobar_timer);
@@ -81,6 +82,7 @@ static void pcb_infobar_update_conf(conf_native_t *cfg, int arr_idx)
 
 static void pcb_infobar_gui_init_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 {
+	infobar_gui_inited = 1;
 	if (!infobar_timer_active)
 		infobar_tick(infobar_timer);
 }
