@@ -203,7 +203,7 @@ static void end_subcomposite(void)
 
 	cairo_set_operator(priv->cr_target, CAIRO_OPERATOR_OVER);
 	cairo_set_source_surface(priv->cr_target, priv->surf_layer, 0, 0);
-	cairo_paint_with_alpha(priv->cr_target, conf_core.appearance.layer_alpha);
+	cairo_paint_with_alpha(priv->cr_target, pcbhl_conf.appearance.layer_alpha);
 	priv->cr = priv->cr_target;
 }
 
@@ -278,7 +278,7 @@ static pcb_hid_gc_t ghid_cairo_make_gc(void)
 
 	rv = g_new0(hid_gc_s, 1);
 	rv->me_pointer = &gtk3_cairo_hid;
-	rv->pcolor = conf_core.appearance.color.background;
+	rv->pcolor = pcbhl_conf.appearance.color.background;
 	return rv;
 }
 
@@ -448,7 +448,7 @@ static void ghid_cairo_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy)
 	if (!conf_hid_gtk.plugins.hid_gtk.local_grid.enable)
 		return;
 
-	if ((Vz(PCB->hidlib.grid) < PCB_MIN_GRID_DISTANCE) || (!conf_core.editor.draw_grid))
+	if ((Vz(PCB->hidlib.grid) < PCB_MIN_GRID_DISTANCE) || (!pcbhl_conf.editor.draw_grid))
 		return;
 
 	/* cx and cy are the actual cursor snapped to wherever - round them to the nearest real grid point */
@@ -472,10 +472,10 @@ static void ghid_cairo_draw_grid(void)
 
 	grid_local_have_old = 0;
 
-	if (!conf_core.editor.draw_grid)
+	if (!pcbhl_conf.editor.draw_grid)
 		return;
 	//if (!priv->grid_gc) {
-	//  if (gdk_color_parse(conf_core.appearance.color.grid, &gport->grid_color)) {
+	//  if (gdk_color_parse(pcbhl_conf.appearance.color.grid, &gport->grid_color)) {
 	//    gport->grid_color.red ^= gport->bg_color.red;
 	//    gport->grid_color.green ^= gport->bg_color.green;
 	//    gport->grid_color.blue ^= gport->bg_color.blue;
@@ -610,7 +610,7 @@ static void ghid_cairo_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, 
 				cairo_mask_surface(priv->cr, priv->surf_layer, 0, 0);
 				cairo_fill(priv->cr);
 			}
-			//cairo_paint_with_alpha(priv->cr, conf_core.appearance.layer_alpha);
+			//cairo_paint_with_alpha(priv->cr, pcbhl_conf.appearance.layer_alpha);
 			//cairo_paint_with_alpha(priv->cr, 1.0);
 
 			//if (priv->copy_gc == NULL)
@@ -649,7 +649,7 @@ typedef struct {
 //  green = priv->grid_color.green;
 //  blue = priv->grid_color.blue;
 //  conf_setf(CFR_DESIGN, "appearance/color/grid", -1, "#%02x%02x%02x", red, green, blue);
-//  map_color_string(conf_core.appearance.color.grid, &priv->grid_color);
+//  map_color_string(pcbhl_conf.appearance.color.grid, &priv->grid_color);
 //
 //  config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/grid"), -1);
 //
@@ -661,18 +661,18 @@ static void ghid_cairo_set_special_colors(conf_native_t * cfg)
 {
 	render_priv_t *priv = gport->render_priv;
 
-	if (((CFT_COLOR *) cfg->val.color == &conf_core.appearance.color.background) /*&& priv->bg_gc */ ) {
+	if (((CFT_COLOR *) cfg->val.color == &pcbhl_conf.appearance.color.background) /*&& priv->bg_gc */ ) {
 		if (map_color_string(cfg->val.color[0].str, &priv->bg_color)) {
 			//gdk_gc_set_foreground(priv->bg_gc, &priv->bg_color);
 			//set_special_grid_color();
 		}
 	}
-	else if (((CFT_COLOR *) cfg->val.color == &conf_core.appearance.color.off_limit) /*&& priv->offlimits_gc */ ) {
+	else if (((CFT_COLOR *) cfg->val.color == &pcbhl_conf.appearance.color.off_limit) /*&& priv->offlimits_gc */ ) {
 		if (map_color_string(cfg->val.color[0].str, &priv->offlimits_color)) {
 			//gdk_gc_set_foreground(priv->offlimits_gc, &priv->offlimits_color);
 		}
 	}
-	else if (((CFT_COLOR *) cfg->val.color == &conf_core.appearance.color.grid) /*&& priv->grid_gc */ ) {
+	else if (((CFT_COLOR *) cfg->val.color == &pcbhl_conf.appearance.color.grid) /*&& priv->grid_gc */ ) {
 		if (map_color_string(cfg->val.color[0].str, &priv->grid_color)) {
 			conf_setf(CFR_DESIGN, "appearance/color/grid", -1, "%s", get_color_name(&priv->grid_color));
 			//set_special_grid_color();
@@ -883,11 +883,11 @@ static void ghid_cairo_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy,
 		delta_angle = 360;
 	}
 
-	if (conf_core.editor.view.flip_x) {
+	if (pcbhl_conf.editor.view.flip_x) {
 		start_angle = 180 - start_angle;
 		delta_angle = -delta_angle;
 	}
-	if (conf_core.editor.view.flip_y) {
+	if (pcbhl_conf.editor.view.flip_y) {
 		start_angle = -start_angle;
 		delta_angle = -delta_angle;
 	}
@@ -1358,7 +1358,7 @@ static void show_crosshair(gboolean paint_new_location)
 	}
 
 TODO("gtk3: when CrossColor changed from config")
-	map_color_string(conf_core.appearance.color.cross.str, &priv->crosshair_color);
+	map_color_string(pcbhl_conf.appearance.color.cross.str, &priv->crosshair_color);
 	//cr = priv->cr_drawing_area;
 	cr = priv->cr;
 	gdk_cairo_set_source_rgba(cr, &priv->crosshair_color);
@@ -1371,7 +1371,7 @@ TODO("gtk3: when CrossColor changed from config")
 	//  gdk_gc_set_clip_origin(xor_gc, 0, 0);
 	//  set_clip(priv, xor_gc);
 TODO("gtk3:FIXME: when CrossColor changed from config")
-	//  map_color_string(conf_core.appearance.color.cross, &cross_color);
+	//  map_color_string(pcbhl_conf.appearance.color.cross, &cross_color);
 	//}
 	x = Vx(gport->view.crosshair_x);
 	y = Vy(gport->view.crosshair_y);
@@ -1439,13 +1439,13 @@ static void ghid_cairo_drawing_area_configure_hook(void *vport)
 		//gdk_gc_set_foreground(priv->offlimits_gc, &port->offlimits_color);
 		//gdk_gc_set_clip_origin(priv->offlimits_gc, 0, 0);
 
-		if (!map_color_string(conf_core.appearance.color.background.str, &priv->bg_color))
+		if (!map_color_string(pcbhl_conf.appearance.color.background.str, &priv->bg_color))
 			map_color_string("white", &priv->bg_color);
 
-		if (!map_color_string(conf_core.appearance.color.off_limit.str, &priv->offlimits_color))
+		if (!map_color_string(pcbhl_conf.appearance.color.off_limit.str, &priv->offlimits_color))
 			map_color_string("white", &priv->offlimits_color);
 
-		if (!map_color_string(conf_core.appearance.color.grid.str, &priv->grid_color))
+		if (!map_color_string(pcbhl_conf.appearance.color.grid.str, &priv->grid_color))
 			map_color_string("blue", &priv->grid_color);
 		//set_special_grid_color();
 
