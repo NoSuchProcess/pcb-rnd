@@ -70,6 +70,7 @@ li:pcb-rnd-conf-v1 {
 		ha:rc {
 			verbose = 0
 			quiet = 0
+			file_changed_interval = 2
 			backup_interval = 60
 			hid_fallback = 1
 			brave = {}

@@ -86,6 +86,7 @@ typedef struct {
 	} editor;
 
 	const struct {                       /* rc */
+		CFT_REAL file_changed_interval;    /* how often to check if the file has changed on the disk (in seconds); 0 or negative means no check at all */
 		CFT_INTEGER backup_interval;       /* time between two backups in seconds; 0 means disabled (no backups) */
 		CFT_BOOLEAN hid_fallback;          /* if there is no explicitly specified HID (--gui) and the preferred GUI fails, automatically fall back on other HIDs, eventually running in batch mode */
 		CFT_STRING brave;                  /* brave mode flags: when non-empty, enable various experimental (unstable) features - useful for testers */
