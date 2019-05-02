@@ -19,6 +19,3 @@ HID API simplification: actions
 - obsolete actions to remove/revise:
 	- lesstif: AdjustStyle (lesstif has its own window!)
 	- lesstif: LesstifNetlistShow
-
-- action unification:
-	- Popup is gtk only
