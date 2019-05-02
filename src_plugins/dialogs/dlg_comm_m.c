@@ -34,6 +34,7 @@
 #include "hid_dad.h"
 #include "xpm.h"
 #include "dlg_comm_m.h"
+#include "plug_io.h"
 
 static const char nope[] = "Do not use.";
 
