@@ -44,4 +44,3 @@ const char *pcb_board_get_name(void)
 		return pcb_hidlib_get_name();
 	return NULL;
 }
-

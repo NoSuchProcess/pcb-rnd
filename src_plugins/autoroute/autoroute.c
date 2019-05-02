@@ -4774,7 +4774,7 @@ donerouting:
 
 		pcb_undo_inc_serial();
 
-		pcb_redraw();
+		pcb_hid_redraw();
 	}
 #if defined (ROUTE_DEBUG)
 	aabort = 0;

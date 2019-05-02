@@ -47,7 +47,6 @@
 #define PCB_MAX_PINORVIASIZE ((pcb_coord_t)PCB_LARGE_VALUE)
 #define PCB_MIN_PINORVIACOPPER PCB_MIL_TO_COORD(4)	/* min difference outer-inner diameter */
 #define PCB_MIN_GRID         1
-#define PCB_MAX_GRID         PCB_MIL_TO_COORD(1000)
 #define PCB_MAX_FONTPOSITION 255 /* upper limit of characters in my font */
 
 #define PCB_MAX_COORD        ((pcb_coord_t)PCB_LARGE_VALUE) /* coordinate limits */

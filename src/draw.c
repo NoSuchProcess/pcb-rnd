@@ -167,14 +167,6 @@ void pcb_draw(void)
 	pcb_draw_invalidated.X2 = pcb_draw_invalidated.Y2 = -COORD_MAX;
 }
 
-/* ----------------------------------------------------------------------
- * redraws all the data by the event handlers
- */
-void pcb_redraw(void)
-{
-	pcb_gui->invalidate_all();
-}
-
 static void draw_everything_holes(pcb_draw_info_t *info, pcb_layergrp_id_t gid)
 {
 	int plated, unplated;

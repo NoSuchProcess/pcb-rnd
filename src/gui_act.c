@@ -137,7 +137,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			/* redraw layout */
 		case F_ClearAndRedraw:
 		case F_Redraw:
-			pcb_redraw();
+			pcb_hid_redraw();
 			break;
 
 			/* toggle line-adjust flag */
@@ -207,12 +207,12 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		case F_ToggleThindraw:
 			conf_toggle_editor(thin_draw);
-			pcb_redraw();
+			pcb_hid_redraw();
 			break;
 
 		case F_ToggleThindrawPoly:
 			conf_toggle_editor(thin_draw_poly);
-			pcb_redraw();
+			pcb_hid_redraw();
 			break;
 
 		case F_ToggleLockNames:
@@ -227,7 +227,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		case F_ToggleHideNames:
 			conf_toggle_editor(hide_names);
-			pcb_redraw();
+			pcb_hid_redraw();
 			break;
 
 		case F_ToggleStroke:
@@ -264,7 +264,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		case F_ToggleCheckPlanes:
 			conf_toggle_editor(check_planes);
-			pcb_redraw();
+			pcb_hid_redraw();
 			break;
 
 		case F_ToggleOrthoMove:
@@ -273,7 +273,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		case F_ToggleName:
 			conf_toggle_editor(show_number);
-			pcb_redraw();
+			pcb_hid_redraw();
 			break;
 
 		case F_ToggleClearLine:
@@ -292,7 +292,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				PCB->hidlib.grid = 1;
 				if (pcb_crosshair_move_absolute(pcb_crosshair.X, pcb_crosshair.Y))
 					pcb_notify_crosshair_change(pcb_true);	/* first notify was in MoveCrosshairAbs */
-				pcb_board_set_grid(oldGrid, pcb_true, pcb_crosshair.X, pcb_crosshair.Y);
+				pcb_hidlib_set_grid(&PCB->hidlib, oldGrid, pcb_true, pcb_crosshair.X, pcb_crosshair.Y);
 				pcb_grid_inval();
 			}
 			break;
@@ -300,7 +300,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			/* toggle displaying of the grid */
 		case F_Grid:
 			conf_toggle_heditor(draw_grid);
-			pcb_redraw();
+			pcb_hid_redraw();
 			break;
 
 			/* display the pinout of a subcircuit */
@@ -364,7 +364,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				PCB->hidlib.grid_ox = pcb_get_value(argv[2].val.str, NULL, NULL, NULL);
 				PCB->hidlib.grid_oy = pcb_get_value(argv[3].val.str, NULL, NULL, NULL);
 				if (pcbhl_conf.editor.draw_grid)
-					pcb_redraw();
+					pcb_hid_redraw();
 			}
 			break;
 
@@ -892,7 +892,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	if (layer != CURRENT) {
 		pcb_layervis_change_group_vis(pcb_layer_id(PCB->Data, layer), pcb_true, pcb_true);
-		pcb_redraw();
+		pcb_hid_redraw();
 	}
 	PCB_ACT_IRES(0);
 	return 0;
@@ -1635,7 +1635,7 @@ static fgw_error_t pcb_act_SetUnits(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_IRES(0);
 
 	new_unit = get_unit_struct(name);
-	pcb_board_set_unit(PCB, new_unit);
+	pcb_hidlib_set_unit(&PCB->hidlib, new_unit);
 
 	return 0;
 }
@@ -1656,19 +1656,19 @@ static fgw_error_t pcb_act_grid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_CONVARG(2, FGW_STR, grid, a = argv[2].val.str);
 		if (!pcb_grid_parse(&dst, a))
 			PCB_ACT_FAIL(grid);
-		pcb_grid_set(PCB, &dst);
+		pcb_grid_set(&PCB->hidlib, &dst);
 		pcb_grid_free(&dst);
 	}
 	else if ((strcmp(op, "up") == 0) || (strcmp(op, "+") == 0))
-		pcb_grid_list_step(+1);
+		pcb_grid_list_step(&PCB->hidlib, +1);
 	else if ((strcmp(op, "down") == 0) || (strcmp(op, "-") == 0))
-		pcb_grid_list_step(-1);
+		pcb_grid_list_step(&PCB->hidlib, -1);
 	else if (strcmp(op, "idx") == 0) {
 		PCB_ACT_CONVARG(2, FGW_STR, grid, a = argv[2].val.str);
-		pcb_grid_list_jump(atoi(a));
+		pcb_grid_list_jump(&PCB->hidlib, atoi(a));
 	}
 	else if (op[0] == '#') {
-		pcb_grid_list_jump(atoi(op+1));
+		pcb_grid_list_jump(&PCB->hidlib, atoi(op+1));
 	}
 	else
 		PCB_ACT_FAIL(grid);

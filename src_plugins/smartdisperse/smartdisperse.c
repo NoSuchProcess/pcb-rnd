@@ -217,7 +217,7 @@ static fgw_error_t pcb_act_smartdisperse(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	htpi_uninit(&visited);
 
 	pcb_undo_inc_serial();
-	pcb_redraw();
+	pcb_hid_redraw();
 	pcb_board_set_changed_flag(1);
 
 	PCB_ACT_IRES(0);

@@ -61,13 +61,13 @@ pcb_bool_t pcb_grid_append_print(gds_t *dst, const pcb_grid_t *src);
 char *pcb_grid_print(const pcb_grid_t *src);
 
 /* Apply grid settings from src to the pcb */
-void pcb_grid_set(pcb_board_t *pcb, const pcb_grid_t *src);
+void pcb_grid_set(pcb_hidlib_t *hidlib, const pcb_grid_t *src);
 
 /* Jump to grid index dst (clamped); absolute set */
-pcb_bool_t pcb_grid_list_jump(int dst);
+pcb_bool_t pcb_grid_list_jump(pcb_hidlib_t *hidlib, int dst);
 
 /* Step stp steps (can be 0) on the grids list and set the resulting grid; relative set */
-pcb_bool_t pcb_grid_list_step(int stp);
+pcb_bool_t pcb_grid_list_step(pcb_hidlib_t *hidlib, int stp);
 
 /* invalidate the grid index; call this when changing the grid settings */
 void pcb_grid_inval(void);

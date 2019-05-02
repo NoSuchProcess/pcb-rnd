@@ -146,11 +146,6 @@ void pcb_board_resize(pcb_coord_t Width, pcb_coord_t Height);
 /* free the board and remove its undo list */
 void pcb_board_remove(pcb_board_t *Ptr);
 
-/* sets cursor grid with respect to grid offset values or default unit*/
-void pcb_board_set_grid(pcb_coord_t Grid, pcb_bool align, pcb_coord_t ox, pcb_coord_t oy);
-void pcb_board_set_unit(pcb_board_t *pcb, const pcb_unit_t *new_unit);
-
-
 /* sets a new line thickness */
 void pcb_board_set_line_width(pcb_coord_t Size);
 

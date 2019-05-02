@@ -124,7 +124,6 @@ void pcb_draw_dashed_line(pcb_draw_info_t *info, pcb_hid_gc_t GC, pcb_coord_t x1
 
 
 void pcb_draw(void);
-void pcb_redraw(void);
 void pcb_draw_obj(pcb_any_obj_t *obj);
 void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *ly);
 void pcb_draw_layer_noxform(pcb_board_t *pcb, const pcb_layer_t *ly, const pcb_box_t *screen);

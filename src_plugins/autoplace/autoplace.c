@@ -799,7 +799,7 @@ done:
 	if (changed) {
 		pcb_rats_destroy(pcb_false);
 		pcb_net_add_all_rats(PCB, PCB_RATACC_PRECISE);
-		pcb_redraw();
+		pcb_hid_redraw();
 	}
 	vtp0_uninit(&Selected);
 	return changed;

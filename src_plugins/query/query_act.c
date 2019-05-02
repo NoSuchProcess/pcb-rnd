@@ -164,7 +164,7 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			printf("Failed to run the query\n");
 		if (sel.cnt > 0) {
 			pcb_board_set_changed_flag(pcb_true);
-			pcb_redraw();
+			pcb_hid_redraw();
 		}
 		PCB_ACT_IRES(0);
 		return 0;
@@ -176,7 +176,7 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			printf("Failed to run the query\n");
 		if (sel.cnt > 0) {
 			pcb_board_set_changed_flag(pcb_true);
-			pcb_redraw();
+			pcb_hid_redraw();
 		}
 		PCB_ACT_IRES(0);
 		return 0;

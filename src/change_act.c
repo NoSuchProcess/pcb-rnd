@@ -55,6 +55,7 @@
 #include "macro.h"
 #include "grid.h"
 #include "route_style.h"
+#include "hidlib_conf.h"
 
 static void ChangeFlag(const char *, const char *, int, const char *);
 static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv);
@@ -507,7 +508,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				if ((type = pcb_search_screen(x, y, type, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 					pcb_undo_save_serial();
 					if (pcb_chg_obj_name_query(ptr2)) {
-						pcb_redraw();
+						pcb_hid_redraw();
 						pcb_board_set_changed_flag(pcb_true);
 						pcb_actionl("DeleteRats", "AllRats", NULL);
 					}
@@ -769,9 +770,9 @@ static fgw_error_t pcb_act_SetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		pcb_grid_inval();
 		if (val[0] == '*')
-			pcb_board_set_grid(pcb_round(PCB->hidlib.grid * d), pcb_false, 0, 0);
+			pcb_hidlib_set_grid(&PCB->hidlib, pcb_round(PCB->hidlib.grid * d), pcb_false, 0, 0);
 		else
-			pcb_board_set_grid(pcb_round(PCB->hidlib.grid / d), pcb_false, 0, 0);
+			pcb_hidlib_set_grid(&PCB->hidlib, pcb_round(PCB->hidlib.grid / d), pcb_false, 0, 0);
 	}
 
 	value = pcb_get_value(val, units, &absolute, NULL);
@@ -780,16 +781,16 @@ static fgw_error_t pcb_act_SetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_Grid:
 			pcb_grid_inval();
 			if (absolute)
-				pcb_board_set_grid(value, pcb_false, 0, 0);
+				pcb_hidlib_set_grid(&PCB->hidlib, value, pcb_false, 0, 0);
 			else {
 				/* On the way down, short against the minimum
 				 * PCB drawing unit */
 				if ((value + PCB->hidlib.grid) < 1)
-					pcb_board_set_grid(1, pcb_false, 0, 0);
+					pcb_hidlib_set_grid(&PCB->hidlib, 1, pcb_false, 0, 0);
 				else if (PCB->hidlib.grid == 1)
-					pcb_board_set_grid(value, pcb_false, 0, 0);
+					pcb_hidlib_set_grid(&PCB->hidlib, value, pcb_false, 0, 0);
 				else
-					pcb_board_set_grid(value + PCB->hidlib.grid, pcb_false, 0, 0);
+					pcb_hidlib_set_grid(&PCB->hidlib, value + PCB->hidlib.grid, pcb_false, 0, 0);
 			}
 			break;
 

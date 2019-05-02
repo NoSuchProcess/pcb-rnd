@@ -166,11 +166,11 @@ char *pcb_grid_print(const pcb_grid_t *src)
 	return tmp.array; /* do not uninit tmp */
 }
 
-void pcb_grid_set(pcb_board_t *pcb, const pcb_grid_t *src)
+void pcb_grid_set(pcb_hidlib_t *hidlib, const pcb_grid_t *src)
 {
-	pcb_board_set_grid(src->size, pcb_true, src->ox, src->oy);
+	pcb_hidlib_set_grid(hidlib, src->size, pcb_true, src->ox, src->oy);
 	if (src->unit != NULL)
-		pcb_board_set_unit(pcb, src->unit);
+		pcb_hidlib_set_unit(hidlib, src->unit);
 }
 
 void pcb_grid_free(pcb_grid_t *dst)
@@ -179,7 +179,7 @@ void pcb_grid_free(pcb_grid_t *dst)
 	dst->name = NULL;
 }
 
-pcb_bool_t pcb_grid_list_jump(int dst)
+pcb_bool_t pcb_grid_list_jump(pcb_hidlib_t *hidlib, int dst)
 {
 	const conf_listitem_t *li;
 	pcb_grid_t g;
@@ -201,18 +201,18 @@ pcb_bool_t pcb_grid_list_jump(int dst)
 
 	if (!pcb_grid_parse(&g, li->payload))
 		return pcb_false;
-	pcb_grid_set(PCB, &g);
+	pcb_grid_set(hidlib, &g);
 	pcb_grid_free(&g);
 
 	return pcb_true;
 }
 
-pcb_bool_t pcb_grid_list_step(int stp)
+pcb_bool_t pcb_grid_list_step(pcb_hidlib_t *hidlib, int stp)
 {
 	int dst = pcbhl_conf.editor.grids_idx;
 	if (dst < 0)
 		dst = -dst-1;
-	return pcb_grid_list_jump(dst + stp);
+	return pcb_grid_list_jump(hidlib, dst + stp);
 }
 
 void pcb_grid_inval(void)

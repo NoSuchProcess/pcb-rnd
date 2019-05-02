@@ -306,7 +306,7 @@ static void asm_greyout(int grey)
 			ly->meta.real.color = asm_ctx.layer_colors.array[n];
 		vtclr_uninit(&asm_ctx.layer_colors);
 	}
-	pcb_redraw();
+	pcb_hid_redraw();
 }
 
 /*** UI callbacks ***/
@@ -377,7 +377,7 @@ static void asm_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid
 	pcb_gui->attr_dlg_widget_state(hid_ctx, asm_ctx.wdoneg, isgrp | ispart);
 	pcb_gui->attr_dlg_widget_state(hid_ctx, asm_ctx.wskipp, ispart);
 	pcb_gui->attr_dlg_widget_state(hid_ctx, asm_ctx.wdonep, ispart);
-	pcb_redraw(); /* for displaying the new selection */
+	pcb_hid_redraw(); /* for displaying the new selection */
 }
 
 static void skip(void *hid_ctx, int pick_grp, pcb_hid_row_t *row)

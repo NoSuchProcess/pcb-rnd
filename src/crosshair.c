@@ -721,7 +721,7 @@ static void onpoint_work(pcb_crosshair_t * crosshair, pcb_coord_t X, pcb_coord_t
 	}
 
 	if (redraw) {
-		pcb_redraw();
+		pcb_hid_redraw();
 	}
 }
 
