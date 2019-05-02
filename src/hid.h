@@ -630,5 +630,6 @@ int pcb_hid_progress(long so_far, long total, const char *message);
 void *pcb_nogui_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy);
 
 int pcb_hid_dock_enter(pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id);
+void pcb_hid_dock_leave(pcb_hid_dad_subdialog_t *sub);
 
 #endif
