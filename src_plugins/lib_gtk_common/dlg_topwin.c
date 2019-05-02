@@ -415,12 +415,13 @@ void ghid_topwin_hide_status(void *ctx, int show)
    before this is called. */
 static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 {
-	GtkWidget *vbox_main, *hbox_middle, *hbox;
+	GtkWidget *vbox_main, *hbox_middle, *hbox, *hboxi, *evb;
 	GtkWidget *hbox_scroll, *fullscreen_btn;
 	GtkWidget *resize_grip_vbox;
 	GtkWidget *resize_grip;
 	GdkPixbuf *resize_grip_pixbuf;
 	GtkWidget *resize_grip_image;
+	GdkColor clr;
 
 	vbox_main = gtkc_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(tw->com->top_window), vbox_main);
@@ -475,12 +476,26 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	tw->vbox_middle = gtkc_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_middle), tw->vbox_middle, TRUE, TRUE, 0);
 
-	hbox = gtkc_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(tw->vbox_middle), hbox, TRUE, TRUE, 0);
-
 
 	/* -- The PCB layout output drawing area */
 
+	/* info bar: hboxi->event_box->hbox2:
+	    hboxi is for the layout (horizontal fill)
+	    the event box is neeed for background color
+      vbox is tw->dockbox[PCB_HID_DOCK_TOP_INFOBAR] where DAD widgets are packed */
+	hboxi = gtkc_hbox_new(TRUE, 0);
+	tw->dockbox[PCB_HID_DOCK_TOP_INFOBAR] = gtkc_vbox_new(TRUE, 0);
+	evb = gtk_event_box_new();
+	gtk_container_add(GTK_CONTAINER(evb), tw->dockbox[PCB_HID_DOCK_TOP_INFOBAR]);
+	gtk_box_pack_start(GTK_BOX(hboxi), evb, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(tw->vbox_middle), hboxi, FALSE, FALSE, 0);
+	clr.red = 0xffff; clr.green = 0xaaaa; clr.blue = 0x3333;
+	gtk_widget_modify_bg(evb, GTK_STATE_NORMAL, &clr);
+
+	hbox = gtkc_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(tw->vbox_middle), hbox, TRUE, TRUE, 0);
+
+	/* drawing area */
 	tw->drawing_area = tw->com->new_drawing_widget(tw->com);
 	g_signal_connect(G_OBJECT(tw->drawing_area), "realize", G_CALLBACK(tw->com->drawing_realize), tw->com->gport);
 	tw->com->init_drawing_widget(tw->drawing_area, tw->com->gport);
