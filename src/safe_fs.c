@@ -345,3 +345,11 @@ int pcb_is_dir(const char *path)
 	CHECK("is_dir", "stat", path, NULL, return -1);
 	return pcb_is_dir_(path);
 }
+
+extern double pcb_file_mtime_(const char *path);
+double pcb_file_mtime(const char *path)
+{
+	CHECK("file_mtime", "access", path, NULL, return -1);
+	CHECK("file_mtime", "stat", path, NULL, return -1);
+	return pcb_file_mtime_(path);
+}

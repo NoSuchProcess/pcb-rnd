@@ -314,6 +314,14 @@ long pcb_file_size_(const char *path)
 	return st.st_size;
 }
 
+double pcb_file_mtime_(const char *path)
+{
+	struct stat st;
+	if (stat(path, &st) != 0)
+		return -1;
+	return st.st_mtime;
+}
+
 int pcb_is_path_abs(const char *fn)
 {
 #ifdef __WIN32__

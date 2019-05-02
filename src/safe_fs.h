@@ -46,6 +46,9 @@ int pcb_unlink(const char *path);
    (size larger than the value long can hold) return -1 */
 long pcb_file_size(const char *path);
 
+/* Return -1 on error or the last modification time (in sec from epoch) */
+double pcb_file_mtime(const char *path);
+
 /* Return non-zero if path is a directory */
 int pcb_is_dir(const char *path);
 
