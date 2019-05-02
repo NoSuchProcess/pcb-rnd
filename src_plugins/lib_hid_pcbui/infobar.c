@@ -59,7 +59,6 @@ static void infobar_tick(pcb_hidval_t user_data)
 	if (infobar_timer_active) { /* check for file change */
 		if ((PCB != NULL) && (PCB->hidlib.filename != NULL)) {
 			double last_chg = pcb_file_mtime(PCB->hidlib.filename);
-			pcb_trace("check for file change %f %f!\n", last_date, last_chg);
 			if (last_chg > last_date) {
 				last_date = last_chg;
 				pcb_actionl("InfoBarFileChanged", "open");
