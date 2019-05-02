@@ -78,8 +78,11 @@ typedef struct {
 	pcb_hid_dock_t where;
 } docked_t;
 
+GdkColor clr_orange = {0,  0xffff, 0xaaaa, 0x3333};
+
 static int dock_is_vert[PCB_HID_DOCK_max]   = {0, 0, 0, 1, 0, 1}; /* Update this if pcb_hid_dock_t changes */
 static int dock_has_frame[PCB_HID_DOCK_max] = {0, 0, 0, 1, 0, 0}; /* Update this if pcb_hid_dock_t changes */
+static GdkColor *dock_color[PCB_HID_DOCK_max] = {NULL, NULL, &clr_orange, NULL, NULL, NULL}; /* force change color when docked */
 int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id)
 {
 	docked_t *docked;
@@ -109,6 +112,9 @@ int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub, pc
 	sub->parent_ctx = docked;
 
 	gdl_append(&tw->dock[where], sub, link);
+
+	if (dock_color[where] != NULL)
+		pcb_gtk_dad_fixcolor(sub->dlg_hid_ctx, dock_color[where]);
 
 	return 0;
 }
@@ -428,7 +434,6 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	GtkWidget *resize_grip;
 	GdkPixbuf *resize_grip_pixbuf;
 	GtkWidget *resize_grip_image;
-	GdkColor clr;
 
 	vbox_main = gtkc_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(tw->com->top_window), vbox_main);
@@ -496,8 +501,9 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	gtk_container_add(GTK_CONTAINER(evb), tw->dockbox[PCB_HID_DOCK_TOP_INFOBAR]);
 	gtk_box_pack_start(GTK_BOX(hboxi), evb, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(tw->vbox_middle), hboxi, FALSE, FALSE, 0);
-	clr.red = 0xffff; clr.green = 0xaaaa; clr.blue = 0x3333;
-	gtk_widget_modify_bg(evb, GTK_STATE_NORMAL, &clr);
+
+	if (dock_color[PCB_HID_DOCK_TOP_INFOBAR] != NULL)
+		gtk_widget_modify_bg(evb, GTK_STATE_NORMAL, dock_color[PCB_HID_DOCK_TOP_INFOBAR]);
 
 	hbox = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(tw->vbox_middle), hbox, TRUE, TRUE, 0);

@@ -1035,3 +1035,18 @@ void ghid_attr_dlg_set_help(void *hid_ctx, int idx, const char *val)
 
 	gtk_widget_set_tooltip_text(ctx->wl[idx], val);
 }
+
+void pcb_gtk_dad_fixcolor(void *hid_ctx, const GdkColor *color)
+{
+	attr_dlg_t *ctx = hid_ctx;
+
+	int n;
+	for(n = 0; n < ctx->n_attrs; n++) {
+		switch(ctx->attrs[n].type) {
+			case PCB_HATT_BUTTON:
+			case PCB_HATT_LABEL:
+				gtk_widget_modify_bg(ctx->wltop[n], GTK_STATE_NORMAL, color);
+			default:;
+		}
+	}
+}

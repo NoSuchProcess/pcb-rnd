@@ -17,3 +17,6 @@ void ghid_attr_dlg_set_help(void *hid_ctx, int idx, const char *val);
 
 /* Create an interacgive DAD subdialog under parent_vbox */
 void *ghid_attr_sub_new(pcb_gtk_common_t *com, GtkWidget *parent_box, pcb_hid_attribute_t *attrs, int n_attrs, void *caller_data);
+
+/* Fix up background color of various widgets - useful if the host dialog's background color is not the default */
+void pcb_gtk_dad_fixcolor(void *hid_ctx, const GdkColor *color);
