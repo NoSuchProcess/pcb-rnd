@@ -77,8 +77,8 @@ typedef struct {
 	pcb_gtk_topwin_t *tw;
 } docked_t;
 
-static int dock_is_vert[PCB_HID_DOCK_max]   = {0, 0, 1, 0, 1}; /* Update this if pcb_hid_dock_t changes */
-static int dock_has_frame[PCB_HID_DOCK_max] = {0, 0, 1, 0, 0}; /* Update this if pcb_hid_dock_t changes */
+static int dock_is_vert[PCB_HID_DOCK_max]   = {0, 0, 0, 1, 0, 1}; /* Update this if pcb_hid_dock_t changes */
+static int dock_has_frame[PCB_HID_DOCK_max] = {0, 0, 0, 1, 0, 0}; /* Update this if pcb_hid_dock_t changes */
 int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id)
 {
 	docked_t *docked;
