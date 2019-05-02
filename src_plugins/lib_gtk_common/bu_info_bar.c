@@ -51,7 +51,7 @@ void pcb_gtk_close_info_bar(pcb_gtk_info_bar_t *ibar)
 	ibar->info_bar = NULL;
 }
 
-void pcb_gtk_info_bar_file_extmod_prompt(pcb_gtk_info_bar_t *ibar, GtkWidget *vbox_middle)
+void pcb_gtk_info_bar_file_extmod_prompt(pcb_gtk_info_bar_t *ibar, pcb_gtk_common_t *com, GtkWidget *vbox_middle)
 {
 	GtkWidget *button;
 	GtkWidget *button_image;
@@ -63,6 +63,8 @@ void pcb_gtk_info_bar_file_extmod_prompt(pcb_gtk_info_bar_t *ibar, GtkWidget *vb
 	char *markup;
 
 	pcb_gtk_close_info_bar(ibar);
+
+	ibar->com = com;
 
 	ibar->info_bar = gtk_info_bar_new();
 
@@ -78,7 +80,7 @@ void pcb_gtk_info_bar_file_extmod_prompt(pcb_gtk_info_bar_t *ibar, GtkWidget *vb
 
 	g_signal_connect(ibar->info_bar, "response", G_CALLBACK(info_bar_response_cb), ibar);
 
-	file_path_utf8 = g_filename_to_utf8(PCB->hidlib.filename, -1, NULL, NULL, NULL);
+	file_path_utf8 = g_filename_to_utf8(ibar->com->hidlib->filename, -1, NULL, NULL, NULL);
 
 	secondary_text = PCB->Changed ? "Do you want to drop your changes and reload the file?" : "Do you want to reload the file?";
 

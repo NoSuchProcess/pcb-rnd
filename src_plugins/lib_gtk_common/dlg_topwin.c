@@ -147,7 +147,7 @@ static gint top_window_configure_event_cb(GtkWidget *widget, GdkEventConfigure *
 static gboolean top_window_enter_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_topwin_t *tw)
 {
 	if (check_externally_modified(&tw->ext_chg))
-		pcb_gtk_info_bar_file_extmod_prompt(&tw->ibar, tw->vbox_middle);
+		pcb_gtk_info_bar_file_extmod_prompt(&tw->ibar, tw->com, tw->vbox_middle);
 
 	return FALSE;
 }
