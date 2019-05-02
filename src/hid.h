@@ -159,6 +159,7 @@ typedef enum pcb_hid_clipfmt_e {
 typedef enum {
 	PCB_HID_DOCK_TOP_LEFT,       /*  hbox on the top, below the menubar */
 	PCB_HID_DOCK_TOP_RIGHT,      /*  hbox on the top, next to the menubar */
+	PCB_HID_DOCK_TOP_INFOBAR,    /*  vbox for horizontally aligned important messages, above ("on top of") the drawing area for critical warnings - may have bright background color */
 	PCB_HID_DOCK_LEFT,
 	PCB_HID_DOCK_BOTTOM,
 	PCB_HID_DOCK_FLOAT,          /* separate window */
