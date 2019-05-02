@@ -91,6 +91,7 @@ pcb_action_t dialogs_action_list[] = {
 	{"Save", pcb_act_Save, pcb_acth_Save, pcb_acts_Save},
 	{"ImportGUI", pcb_act_ImportGUI, pcb_acth_ImportGUI, pcb_acts_ImportGUI},
 	{"LogDialog", pcb_act_LogDialog, pcb_acth_LogDialog, pcb_acts_LogDialog},
+	{"InfoBarFileChanged", pcb_act_InfoBarFileChanged, pcb_acth_InfoBarFileChanged, pcb_acts_InfoBarFileChanged},
 
 	{"gui_PromptFor", pcb_act_gui_PromptFor, pcb_acth_gui, NULL},
 	{"gui_MessageBox", pcb_act_gui_MessageBox, pcb_acth_gui, NULL},

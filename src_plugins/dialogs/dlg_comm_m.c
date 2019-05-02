@@ -24,11 +24,13 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-/* Common dialogs: simple, modal dialogs for all parts of the code, not just
-   the GUI HIDs. Even the core will run some of these, through a dispatcher. */
+/* Common dialogs: simple, modal dialogs and info bars.
+   Even the core will run some of these, through a dispatcher (e.g.
+   action). */
 
 #include "config.h"
 #include "actions.h"
+#include "board.h"
 #include "hid_dad.h"
 #include "xpm.h"
 #include "dlg_comm_m.h"
@@ -206,3 +208,80 @@ fgw_error_t pcb_act_gui_FallbackColorPick(fgw_arg_t *res, int argc, fgw_arg_t *a
 	return 0;
 }
 
+static void ifb_file_chg_reload_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_revert_pcb();
+	pcb_actionl("InfoBarFileChanged", "close");
+}
+
+static void ifb_file_chg_close_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_actionl("InfoBarFileChanged", "close");
+}
+
+const char pcb_acts_InfoBarFileChanged[] = "InfoBarFileChanged(open|close)\n";
+const char pcb_acth_InfoBarFileChanged[] = "Present the \"file changed\" warning info bar with buttons to reload or cancel";
+fgw_error_t pcb_act_InfoBarFileChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	static pcb_hid_dad_subdialog_t sub;
+	static int active = 0, wlab[2];
+	pcb_hid_attr_val_t hv;
+	const char *cmd;
+
+	if (!PCB_HAVE_GUI_ATTR_DLG) {
+		PCB_ACT_IRES(0);
+		return 0;
+	}
+
+	PCB_ACT_CONVARG(1, FGW_STR, InfoBarFileChanged, cmd = argv[1].val.str);
+
+	if (strcmp(cmd, "open") == 0) {
+		if (!active) {
+			PCB_DAD_BEGIN_HBOX(sub.dlg);
+				PCB_DAD_COMPFLAG(sub.dlg, PCB_HATF_EXPFILL | PCB_HATF_FRAME);
+				PCB_DAD_BEGIN_VBOX(sub.dlg);
+					PCB_DAD_PICTURE(sub.dlg, pcp_dlg_xpm_by_name("warning"));
+				PCB_DAD_END(sub.dlg);
+				PCB_DAD_BEGIN_VBOX(sub.dlg);
+					PCB_DAD_COMPFLAG(sub.dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_LABEL(sub.dlg, "line0");
+						wlab[0] = PCB_DAD_CURRENT(sub.dlg);
+					PCB_DAD_LABEL(sub.dlg, "line1");
+						wlab[1] = PCB_DAD_CURRENT(sub.dlg);
+				PCB_DAD_END(sub.dlg);
+				PCB_DAD_BEGIN_VBOX(sub.dlg);
+					PCB_DAD_BUTTON(sub.dlg, "Reload");
+						PCB_DAD_HELP(sub.dlg, "Load the new verison of the file from disk,\ndiscarding any in-memory change on the board");
+						PCB_DAD_CHANGE_CB(sub.dlg, ifb_file_chg_reload_cb);
+					PCB_DAD_BUTTON(sub.dlg, "Cancel");
+						PCB_DAD_HELP(sub.dlg, "Hide this info bar until the file changes again on disk");
+						PCB_DAD_CHANGE_CB(sub.dlg, ifb_file_chg_close_cb);
+				PCB_DAD_END(sub.dlg);
+			PCB_DAD_END(sub.dlg);
+			if (pcb_hid_dock_enter(&sub, PCB_HID_DOCK_TOP_INFOBAR, "file_changed") != 0) {
+				PCB_ACT_IRES(1);
+				return 0;
+			}
+			active = 1;
+		}
+
+		/* update labels */
+		hv.str_value = pcb_strdup_printf("The file %s has changed on disk", PCB->hidlib.filename);
+		pcb_gui->attr_dlg_set_value(sub.dlg_hid_ctx, wlab[0], &hv);
+		free((char *)hv.str_value);
+
+		hv.str_value = (PCB->Changed ? "Do you want to drop your changes and reload the file?" : "Do you want to reload the file?");
+		pcb_gui->attr_dlg_set_value(sub.dlg_hid_ctx, wlab[1], &hv);
+	}
+	else if (strcmp(cmd, "close") == 0) {
+		if (active) {
+			pcb_hid_dock_leave(&sub);
+			active = 0;
+		}
+	}
+	else
+		PCB_ACT_FAIL(InfoBarFileChanged);
+
+	PCB_ACT_IRES(0);
+	return 0;
+}
