@@ -89,7 +89,7 @@ event_t *events[PCB_EVENT_last];
 
 #define event_valid(ev) (((ev) >= 0) && ((ev) < PCB_EVENT_last))
 
-void pcb_event_bind(pcb_event_id_t ev, pcb_event_handler_t * handler, void *user_data, const char *cookie)
+void pcb_event_bind(pcb_event_id_t ev, pcb_event_handler_t *handler, void *user_data, const char *cookie)
 {
 	event_t *e;
 
@@ -106,12 +106,12 @@ void pcb_event_bind(pcb_event_id_t ev, pcb_event_handler_t * handler, void *user
 	events[ev] = e;
 }
 
-static void event_destroy(event_t * ev)
+static void event_destroy(event_t *ev)
 {
 	free(ev);
 }
 
-void pcb_event_unbind(pcb_event_id_t ev, pcb_event_handler_t * handler)
+void pcb_event_unbind(pcb_event_id_t ev, pcb_event_handler_t *handler)
 {
 	event_t *prev = NULL, *e, *next;
 	if (!(event_valid(ev)))

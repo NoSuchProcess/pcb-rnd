@@ -123,10 +123,10 @@ typedef void (pcb_event_handler_t) (void *user_data, int argc, pcb_event_arg_t a
 
 /* Bind: add a handler to the call-list of an event; the cookie is also remembered
    so that mass-unbind is easier later. user_data is passed to the handler. */
-void pcb_event_bind(pcb_event_id_t ev, pcb_event_handler_t * handler, void *user_data, const char *cookie);
+void pcb_event_bind(pcb_event_id_t ev, pcb_event_handler_t *handler, void *user_data, const char *cookie);
 
 /* Unbind: remove a handler from an event */
-void pcb_event_unbind(pcb_event_id_t ev, pcb_event_handler_t * handler);
+void pcb_event_unbind(pcb_event_id_t ev, pcb_event_handler_t *handler);
 
 /* Unbind by cookie: remove all handlers from an event matching the cookie */
 void pcb_event_unbind_cookie(pcb_event_id_t ev, const char *cookie);
