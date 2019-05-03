@@ -8,7 +8,6 @@ put /local/pcb/mod/OBJS [@
 
 put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/bu_dwg_tooltip.o
-  $(PLUGDIR)/lib_gtk_common/bu_icons.o
   $(PLUGDIR)/lib_gtk_common/bu_menu.o
   $(PLUGDIR)/lib_gtk_common/bu_spin_button.o
   $(PLUGDIR)/lib_gtk_common/bu_command.o
