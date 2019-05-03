@@ -437,7 +437,7 @@ static fgw_error_t pcb_act_NetlistDialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 }
 
 /* update the dialog after a netlist change */
-static void pcb_dlg_netlist_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_dlg_netlist_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	netlist_ctx_t *ctx = user_data;
 	if (!ctx->active)

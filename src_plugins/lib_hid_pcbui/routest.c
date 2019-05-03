@@ -201,12 +201,12 @@ static void rst_docked_create()
 }
 
 
-void pcb_rst_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_rst_update_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	rst_update();
 }
 
-void pcb_rst_gui_init_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_rst_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (PCB_HAVE_GUI_ATTR_DLG) {
 		rst_docked_create();

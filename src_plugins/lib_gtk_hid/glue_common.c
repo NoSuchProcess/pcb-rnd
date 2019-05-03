@@ -110,7 +110,7 @@ static void ghid_mode_cursor_main(int mode)
 /*** misc ***/
 static void LayersChanged_cb(void)
 {
-	ghid_LayersChanged(0, 0, 0);
+	ghid_LayersChanged(ghidgui->common.hidlib, 0, 0, 0);
 }
 
 static void ghid_load_bg_image(void)

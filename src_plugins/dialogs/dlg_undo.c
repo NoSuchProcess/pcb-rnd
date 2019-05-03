@@ -158,7 +158,7 @@ static fgw_error_t pcb_act_UndoDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 /* update the dialog after an undo operation */
-static void pcb_dlg_undo_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_dlg_undo_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	undo_ctx_t *ctx = user_data;
 	if (!ctx->active)
@@ -167,7 +167,7 @@ static void pcb_dlg_undo_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 }
 
 /* Check if the serial has changed and update the dialog if so */
-static void pcb_dlg_undo_ev_chk(void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_dlg_undo_ev_chk(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	undo_ctx_t *ctx = user_data;
 	if (!ctx->active)

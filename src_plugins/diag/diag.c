@@ -391,7 +391,7 @@ static fgw_error_t pcb_act_dumpflags(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static void ev_ui_post(void *user_data, int argc, pcb_event_arg_t argv[])
+static void ev_ui_post(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 
 	if (conf_diag.plugins.diag.auto_integrity) {

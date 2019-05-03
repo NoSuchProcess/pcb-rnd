@@ -79,7 +79,7 @@ static void pcb_dialog_store(const char *id, int x, int y, int w, int h)
 }
 
 
-void pcb_dialog_place(void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_dialog_place(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	const char *id;
 	int *geo;
@@ -101,7 +101,7 @@ void pcb_dialog_place(void *user_data, int argc, pcb_event_arg_t argv[])
 /*	pcb_trace("dialog place: %p '%s'\n", hid_ctx, id);*/
 }
 
-void pcb_dialog_resize(void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_dialog_resize(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if ((argc < 7) || (argv[1].type != PCB_EVARG_PTR) || (argv[2].type != PCB_EVARG_STR))
 		return;
@@ -236,13 +236,13 @@ static void place_maybe_save(conf_role_t role, int force)
 /* event handlers that run before the current pcb is saved to save win geo
    in the board conf and after loading a new board to fetch window placement
    info. */
-static void place_save_pre(void *user_data, int argc, pcb_event_arg_t argv[])
+static void place_save_pre(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	place_maybe_save(CFR_PROJECT, 0);
 	place_maybe_save(CFR_DESIGN, 0);
 }
 
-static void place_load_post(void *user_data, int argc, pcb_event_arg_t argv[])
+static void place_load_post(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_wplc_load(CFR_PROJECT);
 	pcb_wplc_load(CFR_DESIGN);

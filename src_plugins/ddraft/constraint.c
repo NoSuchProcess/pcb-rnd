@@ -171,7 +171,7 @@ static void cnst_move(ddraft_cnst_t *cn)
 	pcb_crosshair.AttachedObject.ty = pcb_crosshair.AttachedObject.Y + dy;
 }
 
-static void cnst_enforce(void *user_data, int argc, pcb_event_arg_t argv[])
+static void cnst_enforce(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if ((pcb_crosshair.AttachedLine.State == PCB_CH_STATE_SECOND) || (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_THIRD))
 		cnst_line2(&cons);

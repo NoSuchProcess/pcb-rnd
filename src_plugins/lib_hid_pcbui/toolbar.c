@@ -127,7 +127,7 @@ static void toolbar_docked_create(pcb_hid_cfg_t *cfg)
 }
 
 
-void pcb_toolbar_gui_init_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_toolbar_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if ((PCB_HAVE_GUI_ATTR_DLG) && (pcb_gui->get_menu_cfg != NULL)) {
 		pcb_hid_cfg_t *cfg = pcb_gui->get_menu_cfg();

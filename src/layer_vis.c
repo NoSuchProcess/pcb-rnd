@@ -266,7 +266,7 @@ void pcb_layer_vis_change_all(pcb_board_t *pcb, pcb_bool_op_t open, pcb_bool_op_
 	/* do NOT generate an event: some callers want to handle that */
 }
 
-static void layer_vis_grp_defaults(void *user_data, int argc, pcb_event_arg_t argv[])
+static void layer_vis_grp_defaults(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_layergrp_id_t gid;
 

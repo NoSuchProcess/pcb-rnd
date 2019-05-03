@@ -64,7 +64,7 @@ static void uninit_batch(void)
 	}
 }
 
-static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
+static void ev_pcb_changed(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (prompt != NULL)
 		free(prompt);
@@ -98,7 +98,7 @@ static void log_append(pcb_logline_t *line)
 	line->seen = 1;
 }
 
-static void ev_log_append(void *user_data, int argc, pcb_event_arg_t argv[])
+static void ev_log_append(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (!batch_active)
 		return;

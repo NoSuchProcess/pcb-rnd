@@ -148,7 +148,7 @@ int ghid_mod1_is_pressed()
 #endif
 }
 
-void ghid_LayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
+void ghid_LayersChanged(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (!ghidgui || !ghidgui->topwin.active || ghidgui->common.hidlib == NULL || ghidgui->topwin.layersel.running)
 		return;
@@ -158,7 +158,7 @@ void ghid_LayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 	return;
 }
 
-void ghid_LayervisChanged(void *user_data, int argc, pcb_event_arg_t argv[])
+void ghid_LayervisChanged(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (!ghidgui || !ghidgui->topwin.active || ghidgui->common.hidlib == NULL || ghidgui->topwin.layersel.running)
 		return;

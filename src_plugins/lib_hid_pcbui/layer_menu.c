@@ -180,14 +180,14 @@ static void layer_install_menu(void)
 	pcb_hid_cfg_map_anchor_menus(ctx.anch, layer_install_menu1, &ctx);
 }
 
-void pcb_layer_menu_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_layer_menu_update_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	layer_install_menu();
 	if ((pcb_gui != NULL) && (pcb_gui->update_menu_checkbox != NULL))
 		pcb_gui->update_menu_checkbox(NULL);
 }
 
-void pcb_layer_menu_vis_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_layer_menu_vis_update_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if ((pcb_gui != NULL) && (pcb_gui->update_menu_checkbox != NULL))
 		pcb_gui->update_menu_checkbox(NULL);

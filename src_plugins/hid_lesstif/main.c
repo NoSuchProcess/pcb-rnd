@@ -319,7 +319,7 @@ static const char *cur_clip()
 
 /* Called from the core when it's busy doing something and we need to
    indicate that to the user.  */
-static void LesstifBusy(void *user_data, int argc, pcb_event_arg_t argv[])
+static void LesstifBusy(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	static Cursor busy_cursor = 0;
 	if (!lesstif_active)
@@ -345,8 +345,8 @@ static void PointCursor(pcb_bool grabbed)
 	old_cursor_mode = -1;
 }
 
-extern void LesstifNetlistChanged(void *user_data, int argc, pcb_event_arg_t argv[]);
-extern void LesstifLibraryChanged(void *user_data, int argc, pcb_event_arg_t argv[]);
+extern void LesstifNetlistChanged(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
+extern void LesstifLibraryChanged(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
 
 
 static void ltf_set_hidlib(pcb_hidlib_t *hidlib)
@@ -369,7 +369,7 @@ static void ltf_set_hidlib(pcb_hidlib_t *hidlib)
 	XtSetValues(vscroll, stdarg_args, stdarg_n);
 	zoom_max();
 
-	LesstifNetlistChanged(NULL, 0, NULL);
+	LesstifNetlistChanged(ltf_hidlib, NULL, 0, NULL);
 	lesstif_update_layer_groups();
 	if (ltf_hidlib->filename) {
 		char *cp = strrchr(ltf_hidlib->filename, '/');

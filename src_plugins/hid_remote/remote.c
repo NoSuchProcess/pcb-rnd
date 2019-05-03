@@ -41,7 +41,7 @@ static pcb_hid_attribute_t *remote_get_export_options(int *n_ret)
 
 /* ----------------------------------------------------------------------------- */
 
-static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
+static void ev_pcb_changed(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 }
 

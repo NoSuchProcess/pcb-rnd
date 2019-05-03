@@ -400,7 +400,7 @@ static void drc_beyond_extents(pcb_view_list_t *lst, pcb_data_t *data)
 	}
 }
 
-static void pcb_drc_orig(void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_drc_orig(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_view_list_t *lst = &pcb_drc_lst;
 	pcb_view_list_free_fields(lst);

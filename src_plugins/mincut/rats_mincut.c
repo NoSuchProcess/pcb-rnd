@@ -317,7 +317,7 @@ static int proc_short(pcb_any_obj_t *term, pcb_net_t *Snet, pcb_net_t *Tnet)
 	return bad_gr;
 }
 
-static void pcb_mincut_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_mincut_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	int *handled;
 	pcb_any_obj_t *term;

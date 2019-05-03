@@ -642,7 +642,7 @@ static void vendor_free_all(void)
 }
 
 /* Tune newly placed padstacks */
-static void vendor_new_pstk(void *user_data, int argc, pcb_event_arg_t argv[])
+static void vendor_new_pstk(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_pstk_t *ps;
 	pcb_cardinal_t dummy;

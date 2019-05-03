@@ -497,7 +497,7 @@ static void lvs_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, ch
 }
 
 
-static void lvs_menu_init(void *user_data, int argc, pcb_event_arg_t argv[])
+static void lvs_menu_init(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_hid_cfg_map_anchor_menus(ANCH, lvs_install_menu, NULL);
 }

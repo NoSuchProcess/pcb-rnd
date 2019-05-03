@@ -71,7 +71,7 @@ static void pcb_lead_user_to_location(pcb_coord_t x, pcb_coord_t y, pcb_bool ena
 		lead_timer = pcb_gui->add_timer(lead_cb, LEAD_PERIOD_MS, user_data);
 }
 
-void pcb_lead_user_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_lead_user_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (argc < 4)
 		return;
@@ -84,7 +84,7 @@ void pcb_lead_user_ev(void *user_data, int argc, pcb_event_arg_t argv[])
 
 
 #define ARL LEAD_ARROW_LEN/3
-void pcb_lead_user_draw_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_lead_user_draw_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (lead) {
 		pcb_coord_t x = leadx + step, y = leady + step;

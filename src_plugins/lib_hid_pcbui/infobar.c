@@ -36,7 +36,7 @@ static double last_interval = -2;
 static double last_date = -1;
 static int infobar_gui_inited = 0;
 
-static void pcb_infobar_brdchg_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_infobar_brdchg_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_actionl("InfoBarFileChanged", "close");
 	if ((PCB != NULL) && (PCB->hidlib.filename != NULL))
@@ -79,7 +79,7 @@ static void pcb_infobar_update_conf(conf_native_t *cfg, int arr_idx)
 }
 
 
-static void pcb_infobar_gui_init_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_infobar_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	infobar_gui_inited = 1;
 	if (!infobar_timer_active)

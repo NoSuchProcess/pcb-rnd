@@ -302,7 +302,7 @@ static void status_docked_create_rd()
 }
 
 
-void pcb_status_gui_init_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_status_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if ((PCB_HAVE_GUI_ATTR_DLG) && (pcb_gui->get_menu_cfg != NULL)) {
 		status_docked_create_st();
@@ -329,12 +329,12 @@ void pcb_status_rd_update_conf(conf_native_t *cfg, int arr_idx)
 	status_rd_pcb2dlg();
 }
 
-void pcb_status_st_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_status_st_update_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	status_st_pcb2dlg();
 }
 
-void pcb_status_rd_update_ev(void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_status_rd_update_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	status_rd_pcb2dlg();
 }

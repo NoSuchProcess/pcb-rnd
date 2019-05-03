@@ -510,7 +510,7 @@ static char *pcb_openems_excitation_get(pcb_board_t *pcb)
 	return excitations[exc_ctx.selected].get(exc_ctx.selected);
 }
 
-static void exc_ev_board_changed(void *user_data, int argc, pcb_event_arg_t argv[])
+static void exc_ev_board_changed(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	load_selector();
 	if (exc_ctx.active)

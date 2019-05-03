@@ -795,7 +795,7 @@ fgw_error_t pcb_act_ViewList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static void view_preview_update_cb(void *user_data, int argc, pcb_event_arg_t argv[])
+static void view_preview_update_cb(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (drc_gui_ctx.active)
 		view_preview_update(&drc_gui_ctx);

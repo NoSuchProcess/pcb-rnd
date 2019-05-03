@@ -21,6 +21,8 @@
 #include "event.h"
 #include "tool.h"
 
+extern pcb_hidlib_t *ltf_hidlib;
+
 static Widget library_dialog = 0;
 static Widget library_list, libnode_list;
 
@@ -126,7 +128,7 @@ static void lib_dfs(pcb_fplibrary_t *parent, int level)
 		lib_dfs(l, level+1);
 }
 
-void LesstifLibraryChanged(void *user_data, int argc, pcb_event_arg_t argv[])
+void LesstifLibraryChanged(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	int i;
 	if (pcb_library.data.dir.children.used == 0)
@@ -171,7 +173,7 @@ void lesstif_show_library()
 {
 	if (mainwind) {
 		if (!library_dialog)
-			LesstifLibraryChanged(0, 0, 0);
+			LesstifLibraryChanged(ltf_hidlib, 0, 0, 0);
 		XtManageChild(library_dialog);
 		pcb_ltf_winplace(display, XtWindow(XtParent(library_dialog)), "library", 300, 300);
 		XtAddEventHandler(XtParent(library_dialog), StructureNotifyMask, False, pcb_ltf_wplc_config_cb, "library");
