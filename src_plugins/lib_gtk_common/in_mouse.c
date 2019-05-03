@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996,1997,1998,1999 Thomas Nau
- *  pcb-rnd Copyright (C) 2017, Tibor 'Igor2' Palinkas
+ *  pcb-rnd Copyright (C) 2017,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,7 +34,6 @@
 
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
-#include "in_mouse.h"
 
 #include "actions.h"
 #include "board.h"
@@ -43,8 +42,12 @@
 #include "undo.h"
 #include "tool.h"
 
-#include "in_keyboard.h"
+#define GVT_DONT_UNDEF
+#include "in_mouse.h"
+#include <genvector/genvector_impl.c>
+
 #include "bu_icons.h"
+#include "in_keyboard.h"
 
 pcb_hid_cfg_mouse_t ghid_mouse;
 int ghid_wheel_zoom = 0;
@@ -69,6 +72,8 @@ static GdkCursorType gport_set_cursor(pcb_gtk_mouse_t *ctx, GdkCursorType shape)
 {
 	GdkWindow *window;
 	GdkCursorType old_shape = ctx->X_cursor_shape;
+
+return old_shape; /* turn off original logics */
 
 	if (ctx->drawing_area == NULL)
 		return GDK_X_CURSOR;
@@ -422,5 +427,83 @@ gboolean ghid_port_button_release_cb(GtkWidget *drawing_area, GdkEventButton *ev
 
 	ctx->com->port_button_release_main();
 	return TRUE;
+}
+
+typedef struct {
+	const char *name;
+	GdkCursorType shape;
+} named_cursor_t;
+
+static const named_cursor_t named_cursors[] = {
+	{"question_arrow", GDK_QUESTION_ARROW},
+	{"left_ptr", GDK_LEFT_PTR},
+	{"hand", GDK_HAND1},
+	{"crosshair", GDK_CROSSHAIR},
+	{"dotbox", GDK_DOTBOX},
+	{"pencil", GDK_PENCIL},
+	{"up_arrow", GDK_SB_UP_ARROW},
+	{"ul_angle", GDK_UL_ANGLE},
+	{"pirate", GDK_PIRATE},
+	{"xterm", GDK_XTERM},
+	{"iron_cross", GDK_IRON_CROSS},
+	{NULL, 0}
+};
+
+#define GHID_CURSOR_START (GDK_LAST_CURSOR+10)
+
+void ghid_port_reg_mouse_cursor(pcb_gtk_mouse_t *ctx, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
+{
+	ghid_cursor_t *mc = vtmc_get(&ctx->cursor, idx, 1);
+	if (pixel == NULL) {
+		const named_cursor_t *c;
+
+		mc->pb = NULL;
+		if (name != NULL) {
+			for(c = named_cursors; c->name != NULL; c++) {
+				if (strcmp(c->name, name) == 0) {
+					mc->shape = c->shape;
+					mc->X_cursor = gdk_cursor_new(mc->shape);
+					return;
+				}
+			}
+			pcb_message(PCB_MSG_ERROR, "Failed to register named mouse cursor for tool: '%s' is unknown name\n", name);
+		}
+		mc->shape = GDK_LEFT_PTR; /* default */
+		mc->X_cursor = gdk_cursor_new(mc->shape);
+	}
+	else {
+		mc->shape = GHID_CURSOR_START + idx;
+		mc->pb = pcb_gtk_cursor_from_xbm_data(pixel, mask, 16, 16);
+		mc->X_cursor = gdk_cursor_new_from_pixbuf(gtk_widget_get_display(ctx->drawing_area), mc->pb, ICON_X_HOT, ICON_Y_HOT);
+	}
+}
+
+void ghid_port_set_mouse_cursor(pcb_gtk_mouse_t *ctx, int idx)
+{
+	ghid_cursor_t *mc = vtmc_get(&ctx->cursor, idx, 0);
+	GdkWindow *window;
+
+	if (mc == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Failed to set mouse cursor for unregistered tool %d\n", idx);
+		return;
+	}
+
+	if (ctx->drawing_area == NULL)
+		return GDK_X_CURSOR;
+
+	window = gtk_widget_get_window(ctx->drawing_area);
+
+	if (ctx->X_cursor_shape == mc->shape)
+		return mc->shape;
+
+	/* check if window exists to prevent from fatal errors */
+	if (window == NULL)
+		return GDK_X_CURSOR;
+
+	ctx->X_cursor_shape = mc->shape;
+	ctx->X_cursor = mc->X_cursor;
+
+	gdk_window_set_cursor(window, ctx->X_cursor);
+/*	gdk_cursor_unref(ctx->X_cursor);*/
 }
 

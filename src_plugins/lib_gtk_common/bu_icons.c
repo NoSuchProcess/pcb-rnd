@@ -43,7 +43,7 @@ GdkPixbuf *XC_clock_source, *XC_hand_source, *XC_lock_source;
 /* Allocates (with refco=1) an RGBA 24x24 GdkPixbuf from data, using mask;
    width and height should be smaller than 24. Use g_object_unref() to free
    the structure. */
-static GdkPixbuf *pcb_gtk_cursor_from_xbm_data(unsigned char *data, unsigned char *mask, unsigned int width, unsigned int height)
+GdkPixbuf *pcb_gtk_cursor_from_xbm_data(unsigned char *data, unsigned char *mask, unsigned int width, unsigned int height)
 {
 	GdkPixbuf *dest;
 	unsigned char *src_data, *mask_data, *dest_data;
