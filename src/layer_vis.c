@@ -123,7 +123,7 @@ int pcb_layervis_change_group_vis(pcb_layer_id_t Layer, int On, pcb_bool ChangeS
 
 	done:;
 	/* update control panel and exit */
-	pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
+	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	return changed;
 }
 
@@ -230,7 +230,7 @@ void layer_vis_chg_mask(conf_native_t *cfg, int arr_idx)
 		}
 	}
 	if (chg)
-		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
+		pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	in = 0;
 }
 
@@ -288,7 +288,7 @@ static void layer_vis_grp_defaults(void *user_data, int argc, pcb_event_arg_t ar
 		}
 	}
 
-	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); /* Can't send LAYERVIS_CHANGED here: it's a race condition, the layer selector could still have the old widgets */
+	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL); /* Can't send LAYERVIS_CHANGED here: it's a race condition, the layer selector could still have the old widgets */
 }
 
 pcb_layer_id_t pcb_layer_vis_last_lyt(pcb_layer_type_t target)

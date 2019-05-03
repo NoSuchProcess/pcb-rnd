@@ -222,7 +222,7 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 		pcb_data_binding_update(pcb, Buffer->Data);
 		pcb_board_remove(newPCB);
 		Buffer->from_outside = 1;
-		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); /* undo the events generated on load */
+		pcb_event(&newPCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL); /* undo the events generated on load */
 		return pcb_true;
 	}
 
@@ -230,7 +230,7 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 	pcb_board_remove(newPCB);
 	if (Buffer->Data != NULL)
 		PCB_CLEAR_PARENT(Buffer->Data);
-	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); /* undo the events generated on load */
+	pcb_event(&pcb->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL); /* undo the events generated on load */
 	Buffer->from_outside = 0;
 	return pcb_false;
 }

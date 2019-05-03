@@ -104,13 +104,13 @@ TODO(": rewrite this - this is very unpcb-rnd")
 	if (debug > 0)
 		pcb_message(PCB_MSG_INFO, "Importing Hyperlynx file '%s', debug level %d\n", fname, debug);
 
-	pcb_event(PCB_EVENT_BUSY, NULL);
+	pcb_event(&PCB->hidlib, PCB_EVENT_BUSY, NULL);
 
 	retval = hyp_parse(PCB->Data, fname, debug);
 
 	/* notify GUI */
-	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
-	pcb_event(PCB_EVENT_BOARD_CHANGED, NULL);
+	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
+	pcb_event(&PCB->hidlib, PCB_EVENT_BOARD_CHANGED, NULL);
 
 	PCB_ACT_IRES(retval);
 	return 0;

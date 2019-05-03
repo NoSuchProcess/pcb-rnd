@@ -448,7 +448,7 @@ int pcb_fp_read_lib_all(void)
 	return 1;
 }
 
-int pcb_fp_rehash(pcb_fplibrary_t *l)
+int pcb_fp_rehash(pcb_hidlib_t *hidlib, pcb_fplibrary_t *l)
 {
 	pcb_plug_fp_t *be;
 	char *path;
@@ -472,7 +472,7 @@ int pcb_fp_rehash(pcb_fplibrary_t *l)
 	free(path);
 
 	if (res >= 0) {
-		pcb_event(PCB_EVENT_LIBRARY_CHANGED, NULL);
+		pcb_event(hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);
 		return 0;
 	}
 	return -1;

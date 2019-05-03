@@ -432,7 +432,7 @@ static void ghid_menu_cb(GtkAction *action, const lht_node_t *node)
 
 	pcb_hid_cfg_action(node);
 
-	pcb_event(PCB_EVENT_GUI_SYNC, NULL);
+	pcb_event(NULL, PCB_EVENT_GUI_SYNC, NULL);
 }
 
 

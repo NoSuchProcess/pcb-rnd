@@ -146,9 +146,8 @@ pcb_board_t *pcb_board_new(int inhibit_events)
 		}
 	}
 
-	pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
-
 	PCB = old;
+	pcb_event(&PCB->hidlib, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 	return nw;
 }
 
@@ -335,7 +334,7 @@ void pcb_board_set_changed_flag(pcb_bool New)
 	PCB->Changed = New;
 
 	if (old != New)
-		pcb_event(PCB_EVENT_BOARD_META_CHANGED, NULL);
+		pcb_event(&PCB->hidlib, PCB_EVENT_BOARD_META_CHANGED, NULL);
 }
 
 
@@ -343,7 +342,7 @@ void pcb_board_changed(int reverted)
 {
 	if ((pcb_gui != NULL) && (pcb_gui->set_hidlib != NULL))
 		pcb_gui->set_hidlib(&PCB->hidlib);
-	pcb_event(PCB_EVENT_BOARD_CHANGED, "i", reverted);
+	pcb_event(&PCB->hidlib, PCB_EVENT_BOARD_CHANGED, "i", reverted);
 }
 
 int pcb_board_normalize(pcb_board_t *pcb)

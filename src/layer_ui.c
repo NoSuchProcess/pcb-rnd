@@ -30,6 +30,7 @@
 
 /* Virtual layers for UI and debug */
 #include "config.h"
+#include "board.h"
 #include "layer.h"
 #include "event.h"
 #include "compat_misc.h"
@@ -67,7 +68,7 @@ found:;
 	l->meta.real.vis = 1;
 	l->parent_type = PCB_PARENT_UI;
 	l->parent.any = NULL;
-	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 	return l;
 }
 
@@ -88,7 +89,7 @@ void pcb_uilayer_free(pcb_layer_t *ly)
 			break;
 		}
 	}
-	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 }
 
 void pcb_uilayer_free_all_cookie(const char *cookie)
@@ -99,7 +100,7 @@ void pcb_uilayer_free_all_cookie(const char *cookie)
 		if ((l != NULL) && (l->meta.real.cookie == cookie))
 			pcb_uilayer_free_(l, n);
 	}
-	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 }
 
 void pcb_uilayer_uninit(void)

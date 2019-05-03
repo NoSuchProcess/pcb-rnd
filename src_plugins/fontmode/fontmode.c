@@ -145,8 +145,8 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_layergrp_inhibit_dec();
 
 	/* Inform the rest about the board change (layer stack, size) */
-	pcb_event(PCB_EVENT_BOARD_CHANGED, NULL);
-	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+	pcb_event(&PCB->hidlib, PCB_EVENT_BOARD_CHANGED, NULL);
+	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 
 	for (s = 0; s <= PCB_MAX_FONTPOSITION; s++) {
 		char txt[32];

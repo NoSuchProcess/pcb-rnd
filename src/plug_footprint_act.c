@@ -29,6 +29,7 @@
 
 #include "config.h"
 #include "actions.h"
+#include "board.h"
 #include "plug_footprint.h"
 
 static const char pcb_acts_fp_rehash[] = "fp_rehash()" ;
@@ -42,7 +43,7 @@ static fgw_error_t pcb_act_fp_rehash(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_IRES(0);
 
 	if (name == NULL) {
-		pcb_fp_rehash(NULL);
+		pcb_fp_rehash(&PCB->hidlib, NULL);
 		return 0;
 	}
 
@@ -65,7 +66,7 @@ static fgw_error_t pcb_act_fp_rehash(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	if (pcb_fp_rehash(l) != 0) {
+	if (pcb_fp_rehash(&PCB->hidlib, l) != 0) {
 		pcb_message(PCB_MSG_ERROR, "Failed to rehash %s\n", name);
 		PCB_ACT_IRES(1);
 		return 0;

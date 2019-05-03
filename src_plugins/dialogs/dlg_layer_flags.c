@@ -206,7 +206,7 @@ fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		if (changed) {
 			pcb_board_set_changed_flag(pcb_true);
-			pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+			pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 		}
 	}
 	else

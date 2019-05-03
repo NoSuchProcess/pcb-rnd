@@ -33,6 +33,8 @@
 #include "plug_io.h"
 
 int pcb_ltf_ok;
+extern pcb_hidlib_t *ltf_hidlib;
+
 
 #define COMPONENT_SIDE_NAME "(top)"
 #define SOLDER_SIDE_NAME "(bottom)"
@@ -44,7 +46,7 @@ void pcb_ltf_winplace(Display *dsp, Window w, const char *id, int defx, int defy
 	plc[2] = defx;
 	plc[3] = defy;
 
-	pcb_event(PCB_EVENT_DAD_NEW_DIALOG, "psp", NULL, id, plc);
+	pcb_event(ltf_hidlib, PCB_EVENT_DAD_NEW_DIALOG, "psp", NULL, id, plc);
 
 	if (pcbhl_conf.editor.auto_place) {
 		if ((plc[2] > 0) && (plc[3] > 0) && (plc[0] >= 0) && (plc[1] >= 0)) {
@@ -74,7 +76,7 @@ static void ltf_winplace_cfg(Display *dsp, Window win, void *ctx, const char *id
 #endif
 
 	XGetGeometry(dsp, win, &rw, &x, &y, &w, &h, &brd, &depth);
-	pcb_event(PCB_EVENT_DAD_NEW_GEO, "psiiii", ctx, id, (int)x, (int)y, (int)w, (int)h);
+	pcb_event(ltf_hidlib, PCB_EVENT_DAD_NEW_GEO, "psiiii", ctx, id, (int)x, (int)y, (int)w, (int)h);
 }
 
 

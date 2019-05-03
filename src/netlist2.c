@@ -392,7 +392,7 @@ static void net_found_short(pcb_short_ctx_t *sctx, pcb_any_obj_t *offender)
 	else
 		pcb_message(PCB_MSG_WARNING, "SHORT: net \"%s\" is shorted to terminal %s-%s\n", sctx->current_net->name, sc->refdes, offender->term);
 
-	pcb_event(PCB_EVENT_NET_INDICATE_SHORT, "pppp", sctx->current_net, offender, offn, &handled);
+	pcb_event(&PCB->hidlib, PCB_EVENT_NET_INDICATE_SHORT, "pppp", sctx->current_net, offender, offn, &handled);
 	if (!handled) {
 		pcb_net_term_t *orig_t = pcb_termlist_first(&sctx->current_net->conns);
 		pcb_any_obj_t *orig_o = pcb_term_find_name(sctx->pcb, sctx->pcb->Data, PCB_LYT_COPPER, orig_t->refdes, orig_t->term, NULL, NULL);
@@ -727,7 +727,7 @@ void pcb_netlist_changed(int force_unfreeze)
 		PCB->netlist_needs_update = 1;
 	else {
 		PCB->netlist_needs_update = 0;
-		pcb_event(PCB_EVENT_NETLIST_CHANGED, NULL);
+		pcb_event(&PCB->hidlib, PCB_EVENT_NETLIST_CHANGED, NULL);
 	}
 }
 

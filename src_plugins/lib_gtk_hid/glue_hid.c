@@ -186,7 +186,7 @@ TODO(": move this to render init")
 
 	ghidgui->gui_is_up = 1;
 
-	pcb_event(PCB_EVENT_GUI_INIT, NULL);
+	pcb_event(&PCB->hidlib, PCB_EVENT_GUI_INIT, NULL);
 
 	/* Make sure drawing area has keyboard focus so that keys are handled
 	   while the mouse cursor is over the top window or children widgets,
@@ -260,7 +260,7 @@ int gtkhid_parse_arguments(int *argc, char ***argv)
 	ghidgui->topwin.com = &ghidgui->common;
 	ghidgui->common.top_window = window = gport->top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
-	pcb_gtk_winplace(window, "top");
+	pcb_gtk_winplace(ghidgui->common.hidlib, window, "top");
 	gtk_window_set_title(GTK_WINDOW(window), "pcb-rnd");
 
 	gtk_widget_show_all(gport->top_window);

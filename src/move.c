@@ -167,18 +167,18 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 				/* Get the new arc point positions so that we can calculate the position deltas */
 				pcb_arc_get_end(p_arc,0, &nx1, &ny1);
 				pcb_arc_get_end(p_arc,1, &nx2, &ny2);
-				pcb_event(PCB_EVENT_RUBBER_MOVE, "icccc", 0, nx1-ox1, ny1-oy1, nx2-ox2, ny2-oy2);
+				pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE, "icccc", 0, nx1-ox1, ny1-oy1, nx2-ox2, ny2-oy2);
 			}
 			break;
 
 		case PCB_OBJ_ARC:
-			pcb_event(PCB_EVENT_RUBBER_MOVE, "icccc", 0, DX, DY, DX, DY);
+			pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE, "icccc", 0, DX, DY, DX, DY);
 			pcb_undo_add_obj_to_move(Type, Ptr1, Ptr2, Ptr3, DX, DY);
 			ptr2 = pcb_object_operation(&MoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 			break;
 
 		case PCB_OBJ_LINE_POINT :
-			pcb_event(PCB_EVENT_RUBBER_MOVE, "icc", 0, DX, DY);
+			pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE, "icc", 0, DX, DY);
 			ptr2 = pcb_lineop_move_point_with_route(&ctx, Ptr1, Ptr2, Ptr3);
 			break;
 
@@ -192,8 +192,8 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 				int constrained = 0;
 
 				if(conf_core.editor.rubber_band_keep_midlinedir)
-					pcb_event(PCB_EVENT_RUBBER_CONSTRAIN_MAIN_LINE, "pppppp", line, &constrained, &dx1, &dy1, &dx2, &dy2);
-				pcb_event(PCB_EVENT_RUBBER_MOVE, "icccc", constrained, dx1, dy1, dx2, dy2);
+					pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_CONSTRAIN_MAIN_LINE, "pppppp", line, &constrained, &dx1, &dy1, &dx2, &dy2);
+				pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE, "icccc", constrained, dx1, dy1, dx2, dy2);
 
 				ctx.move.dx = dx1;
 				ctx.move.dy = dy1;
@@ -223,7 +223,7 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 			break;
 
 		default:
-			pcb_event(PCB_EVENT_RUBBER_MOVE, "icc", 0, DX, DY);
+			pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE, "icc", 0, DX, DY);
 			pcb_undo_add_obj_to_move(Type, Ptr1, Ptr2, Ptr3, DX, DY);
 			ptr2 = pcb_object_operation(&MoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 			break;

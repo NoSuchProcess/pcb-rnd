@@ -157,7 +157,7 @@ void pcb_event_unbind_allcookie(const char *cookie)
 		pcb_event_unbind_cookie(n, cookie);
 }
 
-void pcb_event(pcb_event_id_t ev, const char *fmt, ...)
+void pcb_event(pcb_hidlib_t *hidlib, pcb_event_id_t ev, const char *fmt, ...)
 {
 	va_list ap;
 	pcb_event_arg_t argv[EVENT_MAX_ARG], *a;

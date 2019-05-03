@@ -538,7 +538,7 @@ int pcb_layer_rename_(pcb_layer_t *Layer, char *Name)
 {
 	free((char*)Layer->name);
 	Layer->name = Name;
-	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 	return 0;
 }
 
@@ -552,7 +552,7 @@ int pcb_layer_recolor_(pcb_layer_t *Layer, const pcb_color_t *color)
 	if (Layer->is_bound)
 		return -1;
 	Layer->meta.real.color = *color;
-	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 	return 0;
 }
 
@@ -695,9 +695,9 @@ int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t ne
 			grp_idx = 0;
 		g->lid[grp_idx] = new_lid;
 		g->len++;
-		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+		pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 		pcb_layervis_change_group_vis(new_lid, 1, 1);
-		pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
+		pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 		at = new_lid;
 	}
 	else if (new_index == -1) { /* Delete the layer at old_index */
@@ -745,7 +745,7 @@ int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t ne
 			if (pcb_layer_stack[l] > old_index)
 				pcb_layer_stack[l]--;
 
-		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+		pcb_event(&pcb->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 	}
 	else {
 		pcb_message(PCB_MSG_ERROR, "Logical layer move is not supported any more. This function should have not been called. Please report this error.\n");

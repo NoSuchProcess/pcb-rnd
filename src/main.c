@@ -658,7 +658,7 @@ int main(int argc, char *argv[])
 
 	/* read the library file and display it if it's not empty */
 	if (!pcb_fp_read_lib_all() && pcb_library.data.dir.children.used)
-		pcb_event(PCB_EVENT_LIBRARY_CHANGED, NULL);
+		pcb_event(&PCB->hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);
 
 	if (conf_core.rc.script_filename) {
 		pcb_message(PCB_MSG_INFO, "Executing startup script file %s\n", conf_core.rc.script_filename);
@@ -702,7 +702,7 @@ int main(int argc, char *argv[])
 			if (pcb_gui->gui)
 				pcb_crosshair_init();
 			pcb_tool_select_by_id(PCB_MODE_ARROW);
-			pcb_event(PCB_EVENT_LIBRARY_CHANGED, NULL);
+			pcb_event(&PCB->hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);
 		}
 	} while(pcb_gui != NULL);
 

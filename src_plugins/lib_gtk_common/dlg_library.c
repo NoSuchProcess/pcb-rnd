@@ -63,6 +63,7 @@
 #include "conf_core.h"
 
 #include "buffer.h"
+#include "board.h"
 #include "data.h"
 #include "plug_footprint.h"
 #include "compat_misc.h"
@@ -94,7 +95,7 @@ static GtkWidget *library_window;
 /* GtkWidget "configure_event" signal emitted when the size, position or stacking of the widget's window has changed. */
 static gint library_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, gpointer data)
 {
-	return pcb_gtk_winplace_cfg(widget, NULL, "library");
+	return pcb_gtk_winplace_cfg(&PCB->hidlib, widget, NULL, "library");
 }
 
 enum {
@@ -499,7 +500,7 @@ static void library_window_callback_refresh_library(GtkButton * button, gpointer
 		}
 	}
 
-	if (pcb_fp_rehash(entry) != 0) {
+	if (pcb_fp_rehash(&PCB->hidlib, entry) != 0) {
 		pcb_message(PCB_MSG_ERROR, "Failed to rehash library\n");
 		return;
 	}
@@ -940,7 +941,7 @@ void pcb_gtk_library_create(pcb_gtk_common_t *com)
 	lwcom = com;
 	library_window = (GtkWidget *) g_object_new(GHID_TYPE_LIBRARY_WINDOW, NULL);
 
-	pcb_gtk_winplace(library_window, "library");
+	pcb_gtk_winplace(&PCB->hidlib, library_window, "library");
 
 	g_signal_connect(GTK_DIALOG(library_window), "response", G_CALLBACK(library_window_callback_response), NULL);
 	g_signal_connect(library_window, "configure_event", G_CALLBACK(library_window_configure_event_cb), NULL);

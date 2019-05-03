@@ -1517,7 +1517,7 @@ static void lesstif_do_export(pcb_hid_attr_val_t * options)
 	pcb_board_changed(0);
 
 	lesstif_menubar = menu;
-	pcb_event(PCB_EVENT_GUI_INIT, NULL);
+	pcb_event(&PCB->hidlib, PCB_EVENT_GUI_INIT, NULL);
 
 
 	lesstif_hid_inited = 1;

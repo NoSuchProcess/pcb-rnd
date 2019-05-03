@@ -2451,7 +2451,7 @@ static fgw_error_t pcb_act_DJopt(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	SwitchDrawingWindow(PCB->Zoom, Output.drawing_area->window, conf_core.editor.show_solder_side, pcb_false);
 #endif
 
-	pcb_event(PCB_EVENT_BUSY, NULL);
+	pcb_event(&PCB->hidlib, PCB_EVENT_BUSY, NULL);
 
 	lines = 0;
 	corners = 0;

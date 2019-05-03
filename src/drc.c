@@ -28,6 +28,7 @@
 #include "config.h"
 
 #include "actions.h"
+#include "board.h"
 #include "drc.h"
 #include "hidlib_conf.h"
 #include "conf_core.h"
@@ -137,7 +138,7 @@ static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const cha
 
 void pcb_drc_all(void)
 {
-	pcb_event(PCB_EVENT_DRC_RUN, NULL);
+	pcb_event(&PCB->hidlib, PCB_EVENT_DRC_RUN, NULL);
 }
 
 static const char pcb_acts_DRC[] = "DRC([list|simple|print|log|dump])";

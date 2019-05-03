@@ -30,11 +30,11 @@
 #include "event.h"
 
 TODO("DAD: the only legitimate user is top window, move this code there once all other gtk-only dialogs are gone");
-void pcb_gtk_winplace(GtkWidget *dialog, const char *id)
+void pcb_gtk_winplace(pcb_hidlib_t *hidlib, GtkWidget *dialog, const char *id)
 {
 	int plc[4] = {-1, -1, -1, -1};
 
-	pcb_event(PCB_EVENT_DAD_NEW_DIALOG, "psp", NULL, id, plc);
+	pcb_event(hidlib, PCB_EVENT_DAD_NEW_DIALOG, "psp", NULL, id, plc);
 
 	if (pcbhl_conf.editor.auto_place) {
 		if ((plc[2] > 0) && (plc[3] > 0))
@@ -44,7 +44,7 @@ void pcb_gtk_winplace(GtkWidget *dialog, const char *id)
 	}
 }
 
-gint pcb_gtk_winplace_cfg(GtkWidget *widget, void *ctx, const char *id)
+gint pcb_gtk_winplace_cfg(pcb_hidlib_t *hidlib, GtkWidget *widget, void *ctx, const char *id)
 {
 	GtkAllocation allocation;
 
@@ -53,7 +53,7 @@ gint pcb_gtk_winplace_cfg(GtkWidget *widget, void *ctx, const char *id)
 	/* For whatever reason, get_allocation doesn't set these. Gtk. */
 	gtk_window_get_position(GTK_WINDOW(widget), &allocation.x, &allocation.y);
 
-	pcb_event(PCB_EVENT_DAD_NEW_GEO, "psiiii", ctx, id,
+	pcb_event(hidlib, PCB_EVENT_DAD_NEW_GEO, "psiiii", ctx, id,
 		(int)allocation.x, (int)allocation.y, (int)allocation.width, (int)allocation.height);
 
 	return 0;

@@ -29,6 +29,7 @@
 #include "config.h"
 #include "unit.h"
 #include "global_typedefs.h"
+#include "hidlib.h"
 
 typedef enum {
 	PCB_EVENT_GUI_INIT,               /* finished initializing the GUI called right before the main loop of the GUI; args: (void) */
@@ -136,5 +137,5 @@ void pcb_event_unbind_allcookie(const char *cookie);
 
 /* Event trigger: call all handlers for an event. Fmt is a list of
    format characters (e.g. i for PCB_EVARG_INT). */
-void pcb_event(pcb_event_id_t ev, const char *fmt, ...);
+void pcb_event(pcb_hidlib_t *hidlib, pcb_event_id_t ev, const char *fmt, ...);
 #endif

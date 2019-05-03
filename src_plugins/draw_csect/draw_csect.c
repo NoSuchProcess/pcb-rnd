@@ -738,7 +738,7 @@ static pcb_bool mouse_csect(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t 
 
 					outline_gactive = pcb_layergrp_id(PCB, g);
 					pcb_layer_create(PCB, outline_gactive, "outline");
-					pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+					pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 				}
 				drag_addoutline = 0;
 				gactive = -1;
@@ -775,11 +775,11 @@ static pcb_bool mouse_csect(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t 
 			else if (drag_addlayer) {
 				if (gactive >= 0) {
 					pcb_layer_create(PCB, gactive, "New Layer");
-					pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+					pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 				}
 				else if (outline_gactive >= 0 && PCB->LayerGroups.grp[outline_gactive].len == 0) {
 					pcb_layer_create(PCB, outline_gactive, "outline");
-					pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+					pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 				}
 				drag_addlayer = 0;
 				gactive = -1;
@@ -826,7 +826,7 @@ static pcb_bool mouse_csect(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t 
 							memmove(g->lid + lactive_idx + 1, g->lid + lactive_idx, (g->len - 1 - lactive_idx) * sizeof(pcb_layer_id_t));
 							g->lid[lactive_idx] = drag_lid;
 						}
-						pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+						pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 					}
 				}
 				else if (outline_gactive >= 0 && PCB->LayerGroups.grp[outline_gactive].len == 0) {

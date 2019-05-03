@@ -725,7 +725,7 @@ static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 	pcb_snprintf(name, sizeof(name), "%s: ERBS", layer->name);
 	sk->ui_layer_erbs = pcb_uilayer_alloc(pcb_sketch_route_cookie, name, &layer->meta.real.color);
 	sketch_update_erbs_layer(sk);
-	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 }
 
 static sketch_t *sketch_alloc()

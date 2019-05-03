@@ -661,7 +661,7 @@ static void LayersFixup(void)
 	}
 
 	if (chg)
-		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+		pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 }
 
 static void WriteLayers(FILE *FP, pcb_data_t *data)

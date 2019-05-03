@@ -146,7 +146,7 @@ static int pcb_test_parse_all(FILE *ft, const char *Filename, const char *fmt, p
 	}
 
 	if (gen_event)
-		pcb_event(PCB_EVENT_LOAD_PRE, "s", Filename);
+		pcb_event(&PCB->hidlib, PCB_EVENT_LOAD_PRE, "s", Filename);
 
 	len = pcb_find_io(available, maxav, type, 0, fmt);
 	if (fmt != NULL) {
@@ -233,8 +233,8 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 		pcb_set_design_dir(Filename);
 
 	if (load_settings)
-		pcb_event(PCB_EVENT_LOAD_POST, "si", Filename, res);
-	pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
+		pcb_event(&PCB->hidlib, PCB_EVENT_LOAD_POST, "si", Filename, res);
+	pcb_event(&PCB->hidlib, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 	conf_set(CFR_DESIGN, "design/text_font_id", 0, "0", POL_OVERWRITE); /* we have only one font now, make sure it is selected */
 
 	plug_io_err(res, "load pcb", Filename);
@@ -443,9 +443,9 @@ static int pcb_write_pcb(FILE *f, const char *old_filename, const char *new_file
 
 	if (p != NULL) {
 		if (p->write_pcb != NULL) {
-			pcb_event(PCB_EVENT_SAVE_PRE, "s", fmt);
+			pcb_event(&PCB->hidlib, PCB_EVENT_SAVE_PRE, "s", fmt);
 			res = p->write_pcb(p, f, old_filename, new_filename, emergency);
-			pcb_event(PCB_EVENT_SAVE_POST, "si", fmt, res);
+			pcb_event(&PCB->hidlib, PCB_EVENT_SAVE_POST, "si", fmt, res);
 		}
 		else {
 			pcb_message(PCB_MSG_ERROR, "Can't write PCB: internal error: io plugin %s doesn't implement write_pcb()\n", p->description);
@@ -510,7 +510,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		}
 
 		/* have to be called after pcb_board_resize() so vis update is after a board changed update */
-		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+		pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 		pcb_layervis_reset_stack();
 
 		/* enable default font if necessary */

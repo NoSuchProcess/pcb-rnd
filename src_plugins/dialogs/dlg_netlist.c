@@ -46,7 +46,7 @@ static void netlist_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	netlist_ctx_t *ctx = caller_data;
 	PCB_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(netlist_ctx_t));
-	pcb_event(PCB_EVENT_GUI_LEAD_USER, "cci", 0, 0, 0);
+	pcb_event(&PCB->hidlib, PCB_EVENT_GUI_LEAD_USER, "cci", 0, 0, 0);
 }
 
 /* returns allocated net name for the currently selected net */
@@ -158,7 +158,7 @@ static void netlist_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb
 	if (netname != NULL)
 		net = pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_EDITED], netname, 0);
 	netlist_data2dlg_connlist(ctx, net);
-	pcb_event(PCB_EVENT_GUI_LEAD_USER, "cci", 0, 0, 0);
+	pcb_event(&PCB->hidlib, PCB_EVENT_GUI_LEAD_USER, "cci", 0, 0, 0);
 	netlist_force_redraw(ctx);
 }
 
@@ -169,7 +169,7 @@ static void termlist_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pc
 	char *refdes, *term;
 	pcb_any_obj_t *obj;
 
-	pcb_event(PCB_EVENT_GUI_LEAD_USER, "cci", 0, 0, 0);
+	pcb_event(&PCB->hidlib, PCB_EVENT_GUI_LEAD_USER, "cci", 0, 0, 0);
 	if (row == NULL)
 		return;
 	refdes = pcb_strdup(row->cell[0]);
@@ -181,7 +181,7 @@ static void termlist_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pc
 		if (obj != NULL) {
 			pcb_coord_t x, y;
 			pcb_obj_center(obj, &x, &y);
-			pcb_event(PCB_EVENT_GUI_LEAD_USER, "cci", x, y, 1);
+			pcb_event(&PCB->hidlib, PCB_EVENT_GUI_LEAD_USER, "cci", x, y, 1);
 		}
 	}
 	free(refdes);

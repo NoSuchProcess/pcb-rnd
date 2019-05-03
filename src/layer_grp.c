@@ -43,7 +43,7 @@ static int inhibit_notify = 0;
 do { \
 	pcb->LayerGroups.cache.copper_valid = 0; \
 	if (!inhibit_notify) { \
-		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); \
+		pcb_event(&pcb->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL); \
 		if ((pcb_gui != NULL) && (pcb_exporter == NULL)) \
 			pcb_gui->invalidate_all(); \
 		pcb_board_set_changed_flag(pcb_true); \
@@ -188,7 +188,7 @@ pcb_layergrp_id_t pcb_layer_move_to_group(pcb_board_t *pcb, pcb_layer_id_t lid, 
 	if (pcb_layergrp_del_layer(pcb, -1, lid) != 0)
 		return -1;
 	pcb_layer_add_in_group(pcb, lid, gid);
-	pcb_event(PCB_EVENT_LAYER_CHANGED_GRP, "p", &pcb->Data->Layer[lid]);
+	pcb_event(&pcb->hidlib, PCB_EVENT_LAYER_CHANGED_GRP, "p", &pcb->Data->Layer[lid]);
 	NOTIFY(pcb);
 	return gid;
 }
@@ -812,7 +812,7 @@ int pcb_layergrp_rename_(pcb_layergrp_t *grp, char *name)
 {
 	free(grp->name);
 	grp->name = name;
-	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 	return 0;
 }
 
@@ -842,7 +842,7 @@ int pcb_layergrp_set_purpose__(pcb_layergrp_t *lg, char *purpose)
 int pcb_layergrp_set_purpose_(pcb_layergrp_t *lg, char *purpose)
 {
 	int ret = pcb_layergrp_set_purpose__(lg, purpose);
-	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 	return ret;
 }
 

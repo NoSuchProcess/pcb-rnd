@@ -407,7 +407,7 @@ static void pcb_drc_orig(void *user_data, int argc, pcb_event_arg_t argv[])
 
 	pcb_layervis_save_stack();
 	pcb_layervis_reset_stack();
-	pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
+	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 
 	/* actual tests */
 	pcb_hid_progress(0, 0, NULL);
@@ -437,7 +437,7 @@ static void pcb_drc_orig(void *user_data, int argc, pcb_event_arg_t argv[])
 	out:;
 	pcb_hid_progress(0, 0, NULL);
 	pcb_layervis_restore_stack();
-	pcb_event(PCB_EVENT_LAYERVIS_CHANGED, NULL);
+	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	pcb_gui->invalidate_all();
 }
 

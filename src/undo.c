@@ -119,7 +119,7 @@ int pcb_undo(pcb_bool draw)
 	else if (pcb_undo_and_draw)
 		pcb_draw();
 
-	pcb_event(PCB_EVENT_UNDO_POST, "i", PCB_UNDO_EV_UNDO);
+	pcb_event(&PCB->hidlib, PCB_EVENT_UNDO_POST, "i", PCB_UNDO_EV_UNDO);
 
 	return res;
 }
@@ -168,7 +168,7 @@ int pcb_redo(pcb_bool draw)
 	else if (pcb_undo_and_draw)
 		pcb_draw();
 
-	pcb_event(PCB_EVENT_UNDO_POST, "i", PCB_UNDO_EV_REDO);
+	pcb_event(&PCB->hidlib, PCB_EVENT_UNDO_POST, "i", PCB_UNDO_EV_REDO);
 
 	return res;
 }
@@ -221,7 +221,7 @@ void pcb_undo_clear_list(pcb_bool Force)
 {
 	if (pcb_uundo.num_undo && (Force || pcb_hid_message_box("warning", "clear undo buffer", "Do you reall want to clear 'undo' buffer?", "yes", 1, "no", 0, NULL) == 1)) {
 		uundo_list_clear(&pcb_uundo);
-		pcb_event(PCB_EVENT_UNDO_POST, "i", PCB_UNDO_EV_CLEAR_LIST);
+		pcb_event(&PCB->hidlib, PCB_EVENT_UNDO_POST, "i", PCB_UNDO_EV_CLEAR_LIST);
 	}
 }
 
@@ -258,7 +258,7 @@ uundo_serial_t pcb_undo_serial(void)
 void pcb_undo_truncate_from(uundo_serial_t sfirst)
 {
 	uundo_list_truncate_from(&pcb_uundo, sfirst);
-	pcb_event(PCB_EVENT_UNDO_POST, "i", PCB_UNDO_EV_TRUNCATE);
+	pcb_event(&PCB->hidlib, PCB_EVENT_UNDO_POST, "i", PCB_UNDO_EV_TRUNCATE);
 }
 
 int undo_check(void)

@@ -48,7 +48,7 @@ static fgw_error_t pcb_act_AutoRoute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	PCB_ACT_CONVARG(1, FGW_KEYWORD, AutoRoute, op = fgw_keyword(&argv[1]));
 
-	pcb_event(PCB_EVENT_BUSY, NULL);
+	pcb_event(&PCB->hidlib, PCB_EVENT_BUSY, NULL);
 	switch(op) {
 		case F_AllRats:
 		case F_All:

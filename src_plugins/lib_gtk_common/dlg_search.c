@@ -36,6 +36,7 @@
 #include <genvector/gds_char.h>
 #include "compat_misc.h"
 #include "actions.h"
+#include "board.h"
 #include "misc_util.h"
 #include "pcb-printf.h"
 #include "hidlib_conf.h"
@@ -854,7 +855,7 @@ static void ghid_search_window_create(GtkWidget *top_window)
 																						GTK_DIALOG_DESTROY_WITH_PARENT,
 																						GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE, GTK_STOCK_APPLY, GTK_RESPONSE_APPLY, NULL);
 
-	pcb_gtk_winplace(sdlg.window, "search");
+	pcb_gtk_winplace(&PCB->hidlib, sdlg.window, "search");
 	g_signal_connect(sdlg.window, "response", G_CALLBACK(dialog_cb), NULL);
 
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(sdlg.window));

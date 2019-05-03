@@ -273,7 +273,7 @@ static const char pcb_acts_RouteStylesChanged[] = "RouteStylesChanged()";
 static const char pcb_acth_RouteStylesChanged[] = "Tells the GUI that the routing styles have changed.";
 static fgw_error_t pcb_act_RouteStylesChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
+	pcb_event(&PCB->hidlib, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 	return 0;
 }
 
@@ -281,7 +281,7 @@ static const char pcb_acts_LibraryChanged[] = "LibraryChanged()";
 static const char pcb_acth_LibraryChanged[] = "Tells the GUI that the libraries have changed.";
 static fgw_error_t pcb_act_LibraryChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_event(PCB_EVENT_LIBRARY_CHANGED, NULL);
+	pcb_event(&PCB->hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);
 	return 0;
 }
 

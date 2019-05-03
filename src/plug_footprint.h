@@ -91,6 +91,6 @@ const char *pcb_fp_default_search_path(void);
 int pcb_fp_host_uninit(void);
 
 /* rescan/reload all footprints in the library cache */
-int pcb_fp_rehash(pcb_fplibrary_t *l);
+int pcb_fp_rehash(pcb_hidlib_t *hidlib, pcb_fplibrary_t *l);
 
 #endif

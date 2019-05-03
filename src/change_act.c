@@ -797,7 +797,7 @@ static fgw_error_t pcb_act_SetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_LineSize:
 		case F_Line:
 			pcb_board_set_line_width(absolute ? value : value + conf_core.design.line_thickness);
-			pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
+			pcb_event(&PCB->hidlib, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 			break;
 
 		case F_Text:

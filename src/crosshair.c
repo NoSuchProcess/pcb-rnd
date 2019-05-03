@@ -271,8 +271,8 @@ void pcb_xordraw_movecopy(void)
 			memcpy(&line, (pcb_line_t *) pcb_crosshair.AttachedObject.Ptr2, sizeof(line));
 
 			if(conf_core.editor.rubber_band_keep_midlinedir)
-				pcb_event(PCB_EVENT_RUBBER_CONSTRAIN_MAIN_LINE, "pppppp", &line, &constrained, &dx1, &dy1, &dx2, &dy2);
-			pcb_event(PCB_EVENT_RUBBER_MOVE_DRAW, "icccc", constrained, dx1, dy1, dx2, dy2);
+				pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_CONSTRAIN_MAIN_LINE, "pppppp", &line, &constrained, &dx1, &dy1, &dx2, &dy2);
+			pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icccc", constrained, dx1, dy1, dx2, dy2);
 
 			event_sent = 1;
 
@@ -301,7 +301,7 @@ void pcb_xordraw_movecopy(void)
 		{
 			/* Make a temporary arc and move it by dx,dy */
 			pcb_arc_t arc = *((pcb_arc_t *) pcb_crosshair.AttachedObject.Ptr2);
-			pcb_event(PCB_EVENT_RUBBER_MOVE_DRAW, "icccc", 0, dx, dy, dx, dy);
+			pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icccc", 0, dx, dy, dx, dy);
 			event_sent = 1;
 			
 			arc.X += dx;
@@ -420,7 +420,7 @@ void pcb_xordraw_movecopy(void)
 			pcb_arc_get_end(&arc,0, &nx1, &ny1);
 			pcb_arc_get_end(&arc,1, &nx2, &ny2);
 
-			pcb_event(PCB_EVENT_RUBBER_MOVE_DRAW, "icccc", 0, nx1-ox1,ny1-oy1,nx2-ox2,ny2-oy2);
+			pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icccc", 0, nx1-ox1,ny1-oy1,nx2-ox2,ny2-oy2);
 			event_sent = 1;
 			break;
 		}
@@ -466,7 +466,7 @@ void pcb_xordraw_movecopy(void)
 	}
 
 	if(!event_sent)
-		pcb_event(PCB_EVENT_RUBBER_MOVE_DRAW, "icc", 0, dx, dy );
+		pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icc", 0, dx, dy );
 }
 
 /* ---------------------------------------------------------------------------
@@ -536,7 +536,7 @@ void pcb_notify_crosshair_change(pcb_bool changes_complete)
 {
 	if (pcb_gui->notify_crosshair_change)
 		pcb_gui->notify_crosshair_change(changes_complete);
-	pcb_event(PCB_EVENT_CROSSHAIR_MOVE, "i", (int)changes_complete, NULL);
+	pcb_event(&PCB->hidlib, PCB_EVENT_CROSSHAIR_MOVE, "i", (int)changes_complete, NULL);
 }
 
 
@@ -1130,7 +1130,7 @@ void pcb_event_move_crosshair(pcb_coord_t ev_x, pcb_coord_t ev_y)
 	if (pcb_crosshair_move_absolute(ev_x, ev_y)) {
 		/* update object position and cursor location */
 		pcb_tool_adjust_attached_objects();
-		pcb_event(PCB_EVENT_DRAW_CROSSHAIR_CHATT, NULL);
+		pcb_event(&PCB->hidlib, PCB_EVENT_DRAW_CROSSHAIR_CHATT, NULL);
 		pcb_notify_crosshair_change(pcb_true);
 	}
 }

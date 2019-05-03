@@ -132,7 +132,7 @@ pcb_pstk_t *pcb_pstk_new_tr(pcb_data_t *data, long int id, pcb_cardinal_t proto,
 	ps->xmirror = xmirror;
 	ps->smirror = smirror;
 	pcb_pstk_add(data, ps);
-	pcb_event(PCB_EVENT_NEW_PSTK, "p", ps);
+	pcb_event(&PCB->hidlib, PCB_EVENT_NEW_PSTK, "p", ps);
 	pcb_poly_clear_from_poly(data, PCB_OBJ_PSTK, NULL, ps);
 	return ps;
 }
