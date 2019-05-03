@@ -32,6 +32,7 @@ typedef struct pcb_gtk_mouse_s {
 	GdkCursor *X_cursor;          /* used X cursor */
 	GdkCursorType X_cursor_shape; /* and its shape */
 	vtmc_t cursor;
+	int last_cursor_idx; /* tool index of the tool last selected */
 	pcb_gtk_common_t *com;
 } pcb_gtk_mouse_t;
 
@@ -39,18 +40,6 @@ extern pcb_hid_cfg_mouse_t ghid_mouse;
 extern int ghid_wheel_zoom;
 
 pcb_hid_cfg_mod_t ghid_mouse_button(int ev_button);
-
-void ghid_hand_cursor(pcb_gtk_mouse_t *ctx);
-void ghid_point_cursor(pcb_gtk_mouse_t *ctx, pcb_bool grabbed);
-
-/* Changes the cursor appearance to signifies a wait state */
-void ghid_watch_cursor(pcb_gtk_mouse_t *ctx);
-
-/* Changes the cursor appearance according to mode */
-void ghid_mode_cursor(pcb_gtk_mouse_t *ctx, gint mode);
-
-void ghid_corner_cursor(pcb_gtk_mouse_t *ctx);
-void ghid_restore_cursor(pcb_gtk_mouse_t *ctx);
 
 gboolean ghid_get_user_xy(pcb_gtk_mouse_t *ctx, const char *msg);
 
@@ -61,4 +50,11 @@ gboolean ghid_port_button_release_cb(GtkWidget * drawing_area, GdkEventButton * 
 
 void ghid_port_reg_mouse_cursor(pcb_gtk_mouse_t *ctx, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask);
 void ghid_port_set_mouse_cursor(pcb_gtk_mouse_t *ctx, int idx);
+
+void ghid_watch_cursor(pcb_gtk_mouse_t *ctx); /* Changes the cursor appearance to signifies a wait state */
+void ghid_point_cursor(pcb_gtk_mouse_t *ctx, pcb_bool grabbed);
+void ghid_mode_cursor(pcb_gtk_mouse_t *ctx); /* Changes the cursor appearance according to last set mode, but respect override */
+void ghid_restore_cursor(pcb_gtk_mouse_t *ctx); /* Remove override and restore the mode cursor */
+
+
 #endif

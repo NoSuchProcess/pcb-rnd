@@ -53,7 +53,6 @@
 
 #include "compat.h"
 #include "bu_menu.h"
-#include "bu_icons.h"
 #include "dlg_attribute.h"
 #include "util_listener.h"
 #include "in_mouse.h"
@@ -160,7 +159,8 @@ static gint top_window_configure_event_cb(GtkWidget *widget, GdkEventConfigure *
 gboolean ghid_idle_cb(void *topwin)
 {
 	pcb_gtk_topwin_t *tw = topwin;
-	tw->com->mode_cursor_main(conf_core.editor.mode);
+TODO("hidlib: do we really need to set the cursor here?");
+/*	tw->com->mode_cursor_main(conf_core.editor.mode);*/
 	return FALSE;
 }
 
@@ -591,8 +591,6 @@ void ghid_create_pcb_widgets(pcb_gtk_topwin_t *tw, GtkWidget *in_top_window)
 	ghid_build_pcb_top_window(tw);
 	ghid_install_accel_groups(GTK_WINDOW(tw->com->top_window), tw);
 	ghid_update_toggle_flags(tw, NULL);
-
-	pcb_gtk_icons_init(GTK_WINDOW(tw->com->top_window));
 }
 
 void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw)

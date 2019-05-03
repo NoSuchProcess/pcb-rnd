@@ -42,7 +42,7 @@ typedef struct pcb_gtk_common_s {
 	void (*port_ranges_changed)(void);
 
 	/* screen */
-	void (*mode_cursor_main)(int mode);
+	void (*mode_cursor_main)(void);
 	void (*invalidate_all)(pcb_hidlib_t *hidlib);
 	void (*pan_common)(void);
 	void (*port_ranges_scale)(void);

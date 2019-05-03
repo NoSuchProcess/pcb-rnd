@@ -46,7 +46,6 @@
 #include "in_mouse.h"
 #include <genvector/genvector_impl.c>
 
-#include "bu_icons.h"
 #include "in_keyboard.h"
 
 pcb_hid_cfg_mouse_t ghid_mouse;
@@ -58,7 +57,8 @@ pcb_hid_cfg_mod_t ghid_mouse_button(int ev_button)
 	return (PCB_MB_LEFT << (ev_button - 1));
 }
 
-static GdkCursorType old_cursor, cursor_override;
+static GdkCursorType cursor_override;
+static GdkCursor *cursor_override_X;
 
 #define CUSTOM_CURSOR_CLOCKWISE		(GDK_LAST_CURSOR + 10)
 #define CUSTOM_CURSOR_DRAG			  (GDK_LAST_CURSOR + 11)
@@ -67,163 +67,41 @@ static GdkCursorType old_cursor, cursor_override;
 #define ICON_X_HOT 8
 #define ICON_Y_HOT 8
 
-
-static GdkCursorType gport_set_cursor(pcb_gtk_mouse_t *ctx, GdkCursorType shape)
+void ghid_watch_cursor(pcb_gtk_mouse_t *ctx)
 {
-	GdkWindow *window;
-	GdkCursorType old_shape = ctx->X_cursor_shape;
+	static GdkCursor *xc;
 
-return old_shape; /* turn off original logics */
-
-	if (ctx->drawing_area == NULL)
-		return GDK_X_CURSOR;
-
-	window = gtk_widget_get_window(ctx->drawing_area);
-
-	if (ctx->X_cursor_shape == shape)
-		return shape;
-
-	/* check if window exists to prevent from fatal errors */
-	if (window == NULL)
-		return GDK_X_CURSOR;
-
-	ctx->X_cursor_shape = shape;
-	if (shape > GDK_LAST_CURSOR) {
-		if (shape == CUSTOM_CURSOR_CLOCKWISE)
-			ctx->X_cursor = gdk_cursor_new_from_pixbuf(gtk_widget_get_display(ctx->drawing_area), XC_clock_source, ICON_X_HOT, ICON_Y_HOT);
-		else if (shape == CUSTOM_CURSOR_DRAG)
-			ctx->X_cursor = gdk_cursor_new_from_pixbuf(gtk_widget_get_display(ctx->drawing_area), XC_hand_source, ICON_X_HOT, ICON_Y_HOT);
-		else if (shape == CUSTOM_CURSOR_LOCK)
-			ctx->X_cursor = gdk_cursor_new_from_pixbuf(gtk_widget_get_display(ctx->drawing_area), XC_lock_source, ICON_X_HOT, ICON_Y_HOT);
-	}
-	else
-		ctx->X_cursor = gdk_cursor_new(shape);
-
-	gdk_window_set_cursor(window, ctx->X_cursor);
-	gdk_cursor_unref(ctx->X_cursor);
-
-	return old_shape;
+	cursor_override = GDK_WATCH;
+	if (xc == NULL) xc = gdk_cursor_new(cursor_override);
+	cursor_override_X = xc;
+	ghid_mode_cursor(ctx);
 }
+
+static void ghid_hand_cursor(pcb_gtk_mouse_t *ctx)
+{
+	static GdkCursor *xc;
+
+	cursor_override = GDK_HAND2;
+	if (xc == NULL) xc = gdk_cursor_new(cursor_override);
+	cursor_override_X = xc;
+	ghid_mode_cursor(ctx);
+}
+
 
 void ghid_point_cursor(pcb_gtk_mouse_t *ctx, pcb_bool grabbed)
 {
 	if (grabbed) {
-		old_cursor = gport_set_cursor(ctx, GDK_DRAPED_BOX);
+		static GdkCursor *xc;
 		cursor_override = GDK_DRAPED_BOX;
+		if (xc == NULL) xc = gdk_cursor_new(cursor_override);
+		cursor_override_X = xc;
 	}
-	else {
-		cursor_override = 0;
-		ghid_mode_cursor(ctx, -1);
-	}
-}
-
-void ghid_hand_cursor(pcb_gtk_mouse_t *ctx)
-{
-	old_cursor = gport_set_cursor(ctx, GDK_HAND2);
-	cursor_override = GDK_HAND2;
-}
-
-void ghid_watch_cursor(pcb_gtk_mouse_t *ctx)
-{
-	GdkCursorType tmp;
-
-	tmp = gport_set_cursor(ctx, GDK_WATCH);
-	if (tmp != GDK_WATCH)
-		old_cursor = tmp;
-}
-
-void ghid_mode_cursor(pcb_gtk_mouse_t *ctx, int mode)
-{
-	if (cursor_override != 0) {
-		gport_set_cursor(ctx, cursor_override);
-		return;
-	}
-
-	if (mode < 0) /* automatic */
-		mode = conf_core.editor.mode;
-
-	switch (mode) {
-	case PCB_MODE_VIA:
-		gport_set_cursor(ctx, GDK_ARROW);
-		break;
-
-	case PCB_MODE_LINE:
-		gport_set_cursor(ctx, GDK_PENCIL);
-		break;
-
-	case PCB_MODE_ARC:
-		gport_set_cursor(ctx, GDK_QUESTION_ARROW);
-		break;
-
-	case PCB_MODE_ARROW:
-		gport_set_cursor(ctx, GDK_LEFT_PTR);
-		break;
-
-	case PCB_MODE_POLYGON:
-	case PCB_MODE_POLYGON_HOLE:
-		gport_set_cursor(ctx, GDK_SB_UP_ARROW);
-		break;
-
-	case PCB_MODE_PASTE_BUFFER:
-		gport_set_cursor(ctx, GDK_HAND1);
-		break;
-
-	case PCB_MODE_TEXT:
-		gport_set_cursor(ctx, GDK_XTERM);
-		break;
-
-	case PCB_MODE_RECTANGLE:
-		gport_set_cursor(ctx, GDK_UL_ANGLE);
-		break;
-
-	case PCB_MODE_THERMAL:
-		gport_set_cursor(ctx, GDK_IRON_CROSS);
-		break;
-
-	case PCB_MODE_REMOVE:
-		gport_set_cursor(ctx, GDK_PIRATE);
-		break;
-
-	case PCB_MODE_ROTATE:
-		if (ctx->com->shift_is_pressed())
-			gport_set_cursor(ctx, (GdkCursorType) CUSTOM_CURSOR_CLOCKWISE);
-		else
-			gport_set_cursor(ctx, GDK_EXCHANGE);
-		break;
-
-	case PCB_MODE_COPY:
-	case PCB_MODE_MOVE:
-		gport_set_cursor(ctx, GDK_CROSSHAIR);
-		break;
-
-	case PCB_MODE_INSERT_POINT:
-		gport_set_cursor(ctx, GDK_DOTBOX);
-		break;
-
-	case PCB_MODE_LOCK:
-		gport_set_cursor(ctx, (GdkCursorType) CUSTOM_CURSOR_LOCK);
-	}
-}
-
-void ghid_corner_cursor(pcb_gtk_mouse_t *ctx)
-{
-	GdkCursorType shape;
-
-	if (pcb_crosshair.Y <= pcb_crosshair.AttachedBox.Point1.Y)
-		shape = (pcb_crosshair.X >= pcb_crosshair.AttachedBox.Point1.X) ? GDK_UR_ANGLE : GDK_UL_ANGLE;
 	else
-		shape = (pcb_crosshair.X >= pcb_crosshair.AttachedBox.Point1.X) ? GDK_LR_ANGLE : GDK_LL_ANGLE;
-	if (ctx->X_cursor_shape != shape)
-		gport_set_cursor(ctx, shape);
+		cursor_override = 0;
+	ghid_mode_cursor(ctx);
 }
 
-void ghid_restore_cursor(pcb_gtk_mouse_t *ctx)
-{
-	cursor_override = 0;
-	gport_set_cursor(ctx, old_cursor);
-}
 
-	/* =============================================================== */
 typedef struct {
 	GMainLoop *loop;
 	pcb_gtk_common_t *com;
@@ -429,6 +307,58 @@ gboolean ghid_port_button_release_cb(GtkWidget *drawing_area, GdkEventButton *ev
 	return TRUE;
 }
 
+/* Allocates (with refco=1) an RGBA 24x24 GdkPixbuf from data, using mask;
+   width and height should be smaller than 24. Use g_object_unref() to free
+   the structure. */
+static GdkPixbuf *pcb_gtk_cursor_from_xbm_data(const unsigned char *data, const unsigned char *mask, unsigned int width, unsigned int height)
+{
+	GdkPixbuf *dest;
+	const unsigned char *src_data, *mask_data;
+	unsigned char *dest_data;
+	int dest_stride;
+	unsigned char reg, reg_m;
+	unsigned char data_b, mask_b;
+	int bits;
+	int x, y;
+
+	g_return_val_if_fail((width < 25 && height < 25), NULL);
+
+	/* Creates a new suitable GdkPixbuf structure for cursor. */
+	dest = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, 24, 24);
+	dest_data = gdk_pixbuf_get_pixels(dest);
+	dest_stride = gdk_pixbuf_get_rowstride(dest);
+
+	src_data = data;
+	mask_data = mask;
+
+	/* Copy data + mask into GdkPixbuf RGBA pixels. */
+	for (y = 0; y < height; y++) {
+		bits = 0;
+		for (x = 0; x < width; x++) {
+			if (bits == 0) {
+				reg = *src_data++;
+				reg_m = *mask_data++;
+				bits = 8;
+			}
+			data_b = (reg & 0x01) ? 255 : 0;
+			reg >>= 1;
+			mask_b = (reg_m & 0x01) ? 255 : 0;
+			reg_m >>= 1;
+			bits--;
+
+			dest_data[x * 4 + 0] = data_b;
+			dest_data[x * 4 + 1] = data_b;
+			dest_data[x * 4 + 2] = data_b;
+			dest_data[x * 4 + 3] = mask_b;
+		}
+
+		dest_data += dest_stride;
+	}
+
+	return dest;
+}
+
+
 typedef struct {
 	const char *name;
 	GdkCursorType shape;
@@ -483,27 +413,46 @@ void ghid_port_set_mouse_cursor(pcb_gtk_mouse_t *ctx, int idx)
 	ghid_cursor_t *mc = vtmc_get(&ctx->cursor, idx, 0);
 	GdkWindow *window;
 
+	ctx->last_cursor_idx = idx;
+
 	if (mc == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Failed to set mouse cursor for unregistered tool %d\n", idx);
+		if (ctx->cursor.used > 0)
+			pcb_message(PCB_MSG_ERROR, "Failed to set mouse cursor for unregistered tool %d\n", idx);
 		return;
 	}
 
 	if (ctx->drawing_area == NULL)
-		return GDK_X_CURSOR;
+		return;
 
 	window = gtk_widget_get_window(ctx->drawing_area);
 
-	if (ctx->X_cursor_shape == mc->shape)
-		return mc->shape;
-
 	/* check if window exists to prevent from fatal errors */
 	if (window == NULL)
-		return GDK_X_CURSOR;
+		return;
+
+	if (cursor_override != 0) {
+		gdk_window_set_cursor(window, cursor_override_X);
+		return;
+	}
+
+	if (ctx->X_cursor_shape == mc->shape)
+		return;
+
 
 	ctx->X_cursor_shape = mc->shape;
 	ctx->X_cursor = mc->X_cursor;
 
 	gdk_window_set_cursor(window, ctx->X_cursor);
-/*	gdk_cursor_unref(ctx->X_cursor);*/
+}
+
+void ghid_mode_cursor(pcb_gtk_mouse_t *ctx)
+{
+	ghid_port_set_mouse_cursor(ctx, ctx->last_cursor_idx);
+}
+
+void ghid_restore_cursor(pcb_gtk_mouse_t *ctx)
+{
+	cursor_override = 0;
+	ghid_port_set_mouse_cursor(ctx, ctx->last_cursor_idx);
 }
 

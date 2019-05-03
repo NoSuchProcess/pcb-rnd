@@ -46,13 +46,6 @@ void ghid_confchg_checkbox(conf_native_t *cfg, int arr_idx)
 		ghid_update_toggle_flags(&ghidgui->topwin, NULL);
 }
 
-static void ghid_confchg_mode(conf_native_t *cfg, int arr_idx)
-{
-	if ((ghidgui->common.hidlib == NULL) || !ghidgui->hid_active)
-		return;
-	ghid_mode_cursor(&gport->mouse, -1);
-}
-
 static void ghid_confchg_cli(conf_native_t *cfg, int arr_idx)
 {
 	ghid_command_update_prompt(&ghidgui->topwin.cmd);
@@ -81,12 +74,11 @@ static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*
 
 void ghid_conf_regs(const char *cookie)
 {
-	static conf_hid_callbacks_t cbs_fullscreen, cbs_cli[2], cbs_color[3], cbs_mode;
+	static conf_hid_callbacks_t cbs_fullscreen, cbs_cli[2], cbs_color[3];
 
 	ghidgui->conf_id = conf_hid_reg(cookie, NULL);
 
 	init_conf_watch(&cbs_fullscreen, "editor/fullscreen", ghid_confchg_fullscreen);
-	init_conf_watch(&cbs_mode, "editor/mode", ghid_confchg_mode);
 
 	init_conf_watch(&cbs_cli[0], "rc/cli_prompt", ghid_confchg_cli);
 	init_conf_watch(&cbs_cli[1], "rc/cli_backend", ghid_confchg_cli);
