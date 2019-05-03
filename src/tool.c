@@ -126,7 +126,7 @@ int pcb_tool_select_by_id(pcb_toolid_t id)
 	
 	if (PCB->RatDraw && !pcb_tool_get(id)->allow_when_drawing_ratlines) {
 		pcb_message(PCB_MSG_WARNING, "That mode is NOT allowed when drawing ratlines!\n");
-		id = PCB_MODE_NO;
+		id = PCB_MODE_ARROW;
 	}
 	
 	pcb_tool_prev_id = conf_core.editor.mode;

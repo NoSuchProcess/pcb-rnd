@@ -33,7 +33,6 @@
 #include "pcb_bool.h"
 
 typedef enum {
-	PCB_MODE_NO              = -1,  /* no mode selected - panning - TODO: remove this in favor of the default mode (it's the same as the arrow mode) */
 	PCB_MODE_VIA             = 15,  /* draw vias */
 	PCB_MODE_LINE            = 5,   /* draw lines */
 	PCB_MODE_RECTANGLE       = 10,  /* create rectangles */

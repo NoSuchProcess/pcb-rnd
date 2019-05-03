@@ -401,6 +401,7 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_tool_select_by_id(PCB_MODE_ARC);
 		break;
 	case F_Arrow:
+	case F_None:
 		pcb_tool_select_by_id(PCB_MODE_ARROW);
 		break;
 	case F_Copy:
@@ -418,13 +419,10 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	case F_Move:
 		pcb_tool_select_by_id(PCB_MODE_MOVE);
 		break;
-	case F_None:
-		pcb_tool_select_by_id(PCB_MODE_NO);
-		break;
 	case F_Cancel:
 		{
 			int saved_mode = conf_core.editor.mode;
-			pcb_tool_select_by_id(PCB_MODE_NO);
+			pcb_tool_select_by_id(PCB_MODE_ARROW);
 			pcb_tool_select_by_id(saved_mode);
 		}
 		break;
@@ -442,7 +440,7 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			case PCB_MODE_RUBBERBAND_MOVE:
 			case PCB_MODE_THERMAL:
 			case PCB_MODE_LOCK:
-				pcb_tool_select_by_id(PCB_MODE_NO);
+				pcb_tool_select_by_id(PCB_MODE_ARROW);
 				pcb_tool_select_by_id(PCB_MODE_ARROW);
 				pcb_tool_note.Hit = pcb_tool_note.Click = 0; /* if the mouse button is still pressed, don't start selecting a box */
 				break;
@@ -452,7 +450,7 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					pcb_tool_select_by_id(PCB_MODE_ARROW);
 				}
 				else {
-					pcb_tool_select_by_id(PCB_MODE_NO);
+					pcb_tool_select_by_id(PCB_MODE_ARROW);
 					pcb_tool_select_by_id(PCB_MODE_LINE);
 				}
 				break;
@@ -461,7 +459,7 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_FIRST)
 					pcb_tool_select_by_id(PCB_MODE_ARROW);
 				else {
-					pcb_tool_select_by_id(PCB_MODE_NO);
+					pcb_tool_select_by_id(PCB_MODE_ARROW);
 					pcb_tool_select_by_id(PCB_MODE_RECTANGLE);
 				}
 				break;
@@ -470,7 +468,7 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
 					pcb_tool_select_by_id(PCB_MODE_ARROW);
 				else {
-					pcb_tool_select_by_id(PCB_MODE_NO);
+					pcb_tool_select_by_id(PCB_MODE_ARROW);
 					pcb_tool_select_by_id(PCB_MODE_POLYGON);
 				}
 				break;
@@ -479,7 +477,7 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
 					pcb_tool_select_by_id(PCB_MODE_ARROW);
 				else {
-					pcb_tool_select_by_id(PCB_MODE_NO);
+					pcb_tool_select_by_id(PCB_MODE_ARROW);
 					pcb_tool_select_by_id(PCB_MODE_POLYGON_HOLE);
 				}
 				break;
@@ -488,7 +486,7 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_FIRST)
 					pcb_tool_select_by_id(PCB_MODE_ARROW);
 				else {
-					pcb_tool_select_by_id(PCB_MODE_NO);
+					pcb_tool_select_by_id(PCB_MODE_ARROW);
 					pcb_tool_select_by_id(PCB_MODE_ARC);
 				}
 				break;

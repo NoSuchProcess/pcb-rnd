@@ -138,10 +138,6 @@ void ghid_mode_cursor(pcb_gtk_mouse_t *ctx, int mode)
 		mode = conf_core.editor.mode;
 
 	switch (mode) {
-	case PCB_MODE_NO:
-		gport_set_cursor(ctx, (GdkCursorType) CUSTOM_CURSOR_DRAG);
-		break;
-
 	case PCB_MODE_VIA:
 		gport_set_cursor(ctx, GDK_ARROW);
 		break;

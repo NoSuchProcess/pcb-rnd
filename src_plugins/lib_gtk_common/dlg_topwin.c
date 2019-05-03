@@ -160,8 +160,6 @@ static gint top_window_configure_event_cb(GtkWidget *widget, GdkEventConfigure *
 gboolean ghid_idle_cb(void *topwin)
 {
 	pcb_gtk_topwin_t *tw = topwin;
-	if (conf_core.editor.mode == PCB_MODE_NO)
-		pcb_tool_select_by_id(PCB_MODE_ARROW);
 	tw->com->mode_cursor_main(conf_core.editor.mode);
 	return FALSE;
 }

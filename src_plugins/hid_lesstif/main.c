@@ -2006,7 +2006,6 @@ void lesstif_update_status_line()
 		if (s45 != NULL)
 			buf = pcb_strdup(s45);
 		break;
-	case PCB_MODE_NO:
 	case PCB_MODE_PASTE_BUFFER:
 	case PCB_MODE_ROTATE:
 	case PCB_MODE_REMOVE:
@@ -2239,10 +2238,6 @@ static Boolean idle_proc(XtPointer dummy)
 
 			old_cursor_mode = conf_core.editor.mode;
 			switch (conf_core.editor.mode) {
-			case PCB_MODE_NO:
-				s = "None";
-				cursor = XC_X_cursor;
-				break;
 			case PCB_MODE_VIA:
 				s = "Via";
 				cursor = -1;
