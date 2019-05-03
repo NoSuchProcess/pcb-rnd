@@ -3810,10 +3810,6 @@
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/libfungw/fungw.h \
  ../src_3rd/genht/htpp.h ../src_plugins/lib_gtk_common/bu_dwg_tooltip.h
-../src_plugins/lib_gtk_common/bu_icons.o: \
- ../src_plugins/lib_gtk_common/bu_icons.c ../config.h \
-   \
- ../src_plugins/lib_gtk_common/bu_icons.data
 ../src_plugins/lib_gtk_common/bu_menu.o: \
  ../src_plugins/lib_gtk_common/bu_menu.c ../config.h \
  ../src_3rd/liblihata/tree.h ../src_3rd/liblihata/dom.h \
@@ -4023,7 +4019,6 @@
  conf_core.h hidlib_conf.h board.h vtroutestyle.h layer_grp.h \
  rats_patch.h board.h hidlib.h crosshair.h vtonpoint.h route.h \
  pcb-printf.h actions.h ../src_3rd/libfungw/fungw.h compat_misc.h \
-   \
  ../src_plugins/lib_gtk_common/dlg_attribute.h \
  ../src_plugins/lib_gtk_common/util_listener.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
@@ -4053,28 +4048,29 @@
  conf.h ../src_plugins/lib_gtk_common/compat.h event.h hidlib.h \
  compat_misc.h
 ../src_plugins/lib_gtk_common/in_mouse.o: \
- ../src_plugins/lib_gtk_common/in_mouse.c ../config.h \
- ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h \
+ ../src_plugins/lib_gtk_common/in_mouse.c ../config.h actions.h hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
- ../src_3rd/genht/ht.h ../src_3rd/genht/htip.h ../src_3rd/genht/htpp.h \
- hid_cfg.h global_typedefs.h pcb_bool.h unit.h hid.h error.h attrib.h \
- layer.h globalconst.h color.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genht/ht.h error.h global_typedefs.h pcb_bool.h unit.h \
+ attrib.h layer.h globalconst.h color.h \
+ ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
- box.h math_helper.h misc_util.h ../src_3rd/genvector/gds_char.h \
- ../src_plugins/lib_gtk_common/glue.h hid.h conf.h pcb-printf.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
- conf.h ../src_plugins/lib_gtk_common/compat.h actions.h \
- ../src_3rd/libfungw/fungw.h board.h vtroutestyle.h layer_grp.h \
- rats_patch.h board.h hidlib.h crosshair.h vtonpoint.h route.h \
- conf_core.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h tool.h \
+ ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/libfungw/fungw.h \
+ ../src_3rd/genht/htpp.h board.h vtroutestyle.h layer_grp.h rats_patch.h \
+ board.h hidlib.h crosshair.h vtonpoint.h route.h conf_core.h conf.h \
+ pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
+ list_conf.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h tool.h \
+ ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h hid_cfg.h \
+ ../src_plugins/lib_gtk_common/glue.h hid.h conf.h \
+ ../src_plugins/lib_gtk_common/compat.h \
+ ../src_3rd/genvector/genvector_impl.c \
  ../src_plugins/lib_gtk_common/in_keyboard.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h pcb_bool.h \
-  
+ ../src_plugins/lib_gtk_common/ui_zoompan.h pcb_bool.h
 ../src_plugins/lib_gtk_common/lib_gtk_common.o: \
  ../src_plugins/lib_gtk_common/lib_gtk_common.c ../config.h plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
@@ -6771,7 +6767,9 @@ hid_dlg.o: hid_dlg.c ../config.h actions.h hid.h \
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/libfungw/fungw.h \
  ../src_3rd/genht/htpp.h event.h hidlib.h hid_dad.h compat_misc.h \
- hid_attrib.h pcb-printf.h hid_nogui.h
+ hid_attrib.h pcb-printf.h hid_nogui.h conf_core.h conf.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
+ tool.h
 hid_draw_helpers.o: hid_draw_helpers.c ../config.h hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
