@@ -9,3 +9,7 @@ What the user code needs to implement
 	top right coord readout
 	top left toolbar
 
+3. conventions
+	all calls have access to the current (pcb_hidlib_t *)
+	there's a design (pcb_board_t)
+	recommendation: the design struct's first field should be pcb_hildib_t so they can be casted forth and back
