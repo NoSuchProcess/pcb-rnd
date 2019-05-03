@@ -191,13 +191,14 @@ int pcb_tool_restore(pcb_hidlib_t *hidlib)
 void pcb_tool_gui_init(void)
 {
 	pcb_toolid_t n;
-	pcb_tool_t *tool;
+	pcb_tool_t **tool;
 
 	if (pcb_gui == NULL)
 		return;
 
 	for(n = 0, tool = (pcb_tool_t *)pcb_tools.array; n < pcb_tools.used; n++,tool++)
-		pcb_gui->reg_mouse_cursor(NULL, n, tool->cursor.name, tool->cursor.pixel, tool->cursor.mask);
+		if (*tool != NULL)
+			pcb_gui->reg_mouse_cursor(NULL, n, (*tool)->cursor.name, (*tool)->cursor.pixel, (*tool)->cursor.mask);
 }
 
 /**** current tool function wrappers ****/
