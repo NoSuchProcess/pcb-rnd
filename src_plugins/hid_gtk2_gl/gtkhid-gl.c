@@ -201,9 +201,9 @@ static void ghid_gl_draw_grid(pcb_hidlib_t *hidlib, pcb_box_t *drawn_area)
 	glColor3f(priv->grid_color.red / 65535., priv->grid_color.green / 65535., priv->grid_color.blue / 65535.);
 
 	if (conf_hid_gtk.plugins.hid_gtk.local_grid.enable)
-		hidgl_draw_local_grid(grid_local_x, grid_local_y, grid_local_radius);
+		hidgl_draw_local_grid(hidlib, grid_local_x, grid_local_y, grid_local_radius);
 	else
-		hidgl_draw_grid(drawn_area);
+		hidgl_draw_grid(hidlib, drawn_area);
 
 	glDisable(GL_COLOR_LOGIC_OP);
 }
