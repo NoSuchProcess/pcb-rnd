@@ -196,7 +196,7 @@ void pcb_wplc_load(conf_role_t role)
 }
 
 
-static void place_maybe_save(conf_role_t role, int force)
+static void place_maybe_save(pcb_hidlib_t *hidlib, conf_role_t role, int force)
 {
 	htsw_entry_t *e;
 	char path[128 + sizeof(BASEPATH)];
@@ -227,7 +227,7 @@ static void place_maybe_save(conf_role_t role, int force)
 
 
 	if (role != CFR_DESIGN) {
-		int r = conf_save_file(NULL, (PCB == NULL ? NULL : PCB->hidlib.filename), role, NULL);
+		int r = conf_save_file(NULL, (hidlib == NULL ? NULL : hidlib->filename), role, NULL);
 		if (r != 0)
 			pcb_message(PCB_MSG_ERROR, "Failed to save window geometry in %s\n", conf_role_name(role));
 	}
@@ -238,8 +238,8 @@ static void place_maybe_save(conf_role_t role, int force)
    info. */
 static void place_save_pre(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	place_maybe_save(CFR_PROJECT, 0);
-	place_maybe_save(CFR_DESIGN, 0);
+	place_maybe_save(hidlib, CFR_PROJECT, 0);
+	place_maybe_save(hidlib, CFR_DESIGN, 0);
 }
 
 static void place_load_post(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
@@ -248,9 +248,9 @@ static void place_load_post(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb
 	pcb_wplc_load(CFR_DESIGN);
 }
 
-void pcb_wplc_save_to_role(conf_role_t role)
+void pcb_wplc_save_to_role(pcb_hidlib_t *hidlib, conf_role_t role)
 {
-	place_maybe_save(role, 1);
+	place_maybe_save(hidlib, role, 1);
 }
 
 int pcb_wplc_save_to_file(const char *fn)
@@ -294,7 +294,7 @@ void pcb_dialog_place_uninit(void)
 
 	conf_unreg_fields(BASEPATH);
 
-	place_maybe_save(CFR_USER, 0);
+	place_maybe_save(NULL, CFR_USER, 0);
 
 	for(e = htsw_first(&wingeo); e != NULL; e = htsw_next(&wingeo, e))
 		free((char *)e->key);
