@@ -164,7 +164,7 @@ static const char *ins_icon[] = {
 };
 
 pcb_tool_t pcb_tool_insert = {
-	"insert", NULL, 100, ins_icon,
+	"insert", NULL, 100, ins_icon, PCB_TOOL_CURSOR_NAMED("dotbox"),
 	NULL,
 	pcb_tool_insert_uninit,
 	pcb_tool_insert_notify_mode,

@@ -82,7 +82,7 @@ static const char *rot_icon[] = {
 
 
 pcb_tool_t pcb_tool_rotate = {
-	"rotate", NULL, 100, rot_icon,
+	"rotate", NULL, 100, rot_icon, PCB_TOOL_CURSOR_NAMED("exchange"),
 	NULL,
 	NULL,
 	pcb_tool_rotate_notify_mode,

@@ -407,8 +407,7 @@ static pcb_action_t ddraft_action_list[] = {
 PCB_REGISTER_ACTIONS(ddraft_action_list, ddraft_cookie)
 
 static pcb_tool_t tool_ddraft = {
-	"ddraft", NULL, 1000,
-	NULL,
+	"ddraft", NULL, 1000, NULL, PCB_TOOL_CURSOR_NAMED(NULL),
 	NULL,
 	NULL,
 	NULL,

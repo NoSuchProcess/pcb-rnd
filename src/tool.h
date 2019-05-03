@@ -55,11 +55,21 @@ typedef enum {
 typedef int pcb_toolid_t;
 #define PCB_TOOLID_INVALID (-1)
 
+typedef struct pcb_tool_cursor_s {
+	const char *name;            /* if no custom graphics is provided, use a stock cursor by name */
+	const unsigned char *pixel;  /* 32 bytes: 16*16 bitmap */
+	const unsigned char *mask;   /* 32 bytes: 16*16 mask (1 means draw pixel) */
+} pcb_tool_cursor_t;
+
+#define PCB_TOOL_CURSOR_NAMED(name)       { name, NULL, NULL }
+#define PCB_TOOL_CURSOR_XBM(pixel, mask)  { NULL, pixel, mask }
+
 typedef struct pcb_tool_s {
 	const char *name;             /* textual name of the tool */
 	const char *cookie;           /* plugin cookie _pointer_ of the registrar (comparision is pointer based, not strcmp) */
 	unsigned int priority;        /* lower values are higher priorities; escaping mode will try to select the highest prio tool */
 	const char **icon;            /* XPM for the tool buttons */
+	pcb_tool_cursor_t cursor;     /* name of the mouse cursor to switch to when the tool is activated */
 
 	/* tool implementation */
 	void     (*init)(void);

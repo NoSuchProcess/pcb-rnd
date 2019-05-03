@@ -205,7 +205,7 @@ static const char * polyhole_icon[] = {
 
 
 pcb_tool_t pcb_tool_polyhole = {
-	"polyhole", NULL, 100, polyhole_icon,
+	"polyhole", NULL, 100, polyhole_icon, PCB_TOOL_CURSOR_NAMED("up_arrow"),
 	NULL,
 	pcb_tool_polyhole_uninit,
 	pcb_tool_polyhole_notify_mode,

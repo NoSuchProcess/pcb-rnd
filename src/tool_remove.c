@@ -114,7 +114,7 @@ static const char *del_icon[] = {
 };
 
 pcb_tool_t pcb_tool_remove = {
-	"remove", NULL, 100, del_icon,
+	"remove", NULL, 100, del_icon, PCB_TOOL_CURSOR_NAMED("pirate"),
 	NULL,
 	NULL,
 	pcb_tool_remove_notify_mode,

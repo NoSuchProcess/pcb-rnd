@@ -106,7 +106,7 @@ static const char *lock_icon[] = {
 };
 
 pcb_tool_t pcb_tool_lock = {
-	"lock", NULL, 100, lock_icon,
+	"lock", NULL, 100, lock_icon, PCB_TOOL_CURSOR_NAMED("hand"),
 	NULL,
 	NULL,
 	pcb_tool_lock_notify_mode,

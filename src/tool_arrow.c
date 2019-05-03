@@ -248,7 +248,7 @@ static const char *arrow_icon[] = {
 };
 
 pcb_tool_t pcb_tool_arrow = {
-	"arrow", NULL, 10, arrow_icon,
+	"arrow", NULL, 10, arrow_icon, PCB_TOOL_CURSOR_NAMED("left_ptr"),
 	NULL,
 	pcb_tool_arrow_uninit,
 	pcb_tool_arrow_notify_mode,

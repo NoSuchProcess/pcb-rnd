@@ -178,7 +178,7 @@ static const char *poly_icon[] = {
 };
 
 pcb_tool_t pcb_tool_poly = {
-	"poly", NULL, 100, poly_icon,
+	"poly", NULL, 100, poly_icon, PCB_TOOL_CURSOR_NAMED("up_arrow"),
 	NULL,
 	pcb_tool_poly_uninit,
 	pcb_tool_poly_notify_mode,
