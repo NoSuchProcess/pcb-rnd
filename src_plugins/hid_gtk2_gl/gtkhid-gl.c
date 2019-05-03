@@ -551,7 +551,7 @@ void ghid_gl_invalidate_all(pcb_hidlib_t *hidlib)
 
 void ghid_gl_invalidate_lr(pcb_hidlib_t *hidlib, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
 {
-	ghid_gl_invalidate_all();
+	ghid_gl_invalidate_all(hidlib);
 }
 
 static void ghid_gl_notify_crosshair_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
@@ -561,7 +561,7 @@ static void ghid_gl_notify_crosshair_change(pcb_hidlib_t *hidlib, pcb_bool chang
 		return;
 
 	/* FIXME: We could just invalidate the bounds of the crosshair attached objects? */
-	ghid_gl_invalidate_all();
+	ghid_gl_invalidate_all(hidlib);
 }
 
 static void ghid_gl_notify_mark_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
