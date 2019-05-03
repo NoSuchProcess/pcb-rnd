@@ -289,7 +289,7 @@ static int excellon_parse_arguments(int *argc, char ***argv)
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static int excellon_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
+static int excellon_set_layer_group(pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
 	int is_drill;
 

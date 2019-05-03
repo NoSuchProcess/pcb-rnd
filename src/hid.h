@@ -270,7 +270,7 @@ struct pcb_hid_s {
 	   functions.  In addition to the copper layer groups, you may select virtual
 	   layers. The is_empty argument is a hint - if set, the layer is empty, if
 	   zero it may be non-empty. */
-	int (*set_layer_group)(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform);
+	int (*set_layer_group)(pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform);
 
 	/* Tell the GUI the layer last selected has been finished with. */
 	void (*end_layer)(void);

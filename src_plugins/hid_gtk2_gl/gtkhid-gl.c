@@ -138,7 +138,7 @@ static void end_subcomposite(void)
 }
 #endif
 
-int ghid_gl_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
+int ghid_gl_set_layer_group(pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
 	render_priv_t *priv = gport->render_priv;
 
@@ -147,7 +147,7 @@ int ghid_gl_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int pu
 	glTranslatef(0.0f, 0.0f, -Z_NEAR);
 
 	glScalef((pcbhl_conf.editor.view.flip_x ? -1. : 1.) / gport->view.coord_per_px, (pcbhl_conf.editor.view.flip_y ? -1. : 1.) / gport->view.coord_per_px, ((pcbhl_conf.editor.view.flip_x == pcbhl_conf.editor.view.flip_y) ? 1. : -1.) / gport->view.coord_per_px);
-	glTranslatef(pcbhl_conf.editor.view.flip_x ? gport->view.x0 - PCB->hidlib.size_x : -gport->view.x0, pcbhl_conf.editor.view.flip_y ? gport->view.y0 - PCB->hidlib.size_y : -gport->view.y0, 0);
+	glTranslatef(pcbhl_conf.editor.view.flip_x ? gport->view.x0 - hidlib->size_x : -gport->view.x0, pcbhl_conf.editor.view.flip_y ? gport->view.y0 - hidlib->size_y : -gport->view.y0, 0);
 
 	/* Put the renderer into a good state so that any drawing is done in standard mode */
 

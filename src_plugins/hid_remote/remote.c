@@ -134,7 +134,7 @@ static void remote_invalidate_all(pcb_hidlib_t *hidlib)
 	proto_send_invalidate_all(hidlib);
 }
 
-static int remote_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
+static int remote_set_layer_group(pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
 	if (flags & PCB_LYT_UI) /* do not draw UI layers yet, we didn't create them */
 		return 0;
