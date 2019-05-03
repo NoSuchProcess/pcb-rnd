@@ -196,7 +196,7 @@ void pcb_tool_gui_init(void)
 	if (pcb_gui == NULL)
 		return;
 
-	for(n = 0, tool = (pcb_tool_t *)pcb_tools.array; n < pcb_tools.used; n++,tool++)
+	for(n = 0, tool = (pcb_tool_t **)pcb_tools.array; n < pcb_tools.used; n++,tool++)
 		if (*tool != NULL)
 			pcb_gui->reg_mouse_cursor(NULL, n, (*tool)->cursor.name, (*tool)->cursor.pixel, (*tool)->cursor.mask);
 }
