@@ -108,7 +108,7 @@ void pcb_grid_update_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_eve
 
 	/* to get the right menu checked */
 	if ((grids_idx.nat != NULL) && (grids_idx.nat->val.integer[0] >= 0))
-		pcb_grid_list_step(&PCB->hidlib, 0);
+		pcb_grid_list_step(hidlib, 0);
 	grid_lock--;
 }
 
