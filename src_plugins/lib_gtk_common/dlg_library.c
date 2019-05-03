@@ -258,9 +258,9 @@ static void library_window_preview_refresh(pcb_gtk_library_t * library_window, c
 			return;
 		fullp = entry->data.fp.loc_info;
 	}
-	pcb_tool_select_by_id(PCB_MODE_ARROW);
+	pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_ARROW);
 	if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, name == NULL ? fullp : name, NULL))
-		pcb_tool_select_by_id(PCB_MODE_PASTE_BUFFER);
+		pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
 
 	/* update the preview with new symbol data */
 	if (PCB_PASTEBUFFER->Data != NULL) {

@@ -72,16 +72,16 @@ static void click_timer_cb(pcb_hidval_t hv)
 			pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, pcb_tool_note.X, pcb_tool_note.Y, pcb_true);
 			pcb_undo_save_serial();
 			pcb_remove_selected(pcb_false);
-			pcb_tool_save();
+			pcb_tool_save(&PCB->hidlib);
 			pcb_tool_is_saved = pcb_true;
-			pcb_tool_select_by_id(PCB_MODE_PASTE_BUFFER);
+			pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
 		}
 		else if (pcb_tool_note.Hit && !pcb_gui->shift_is_pressed()) {
 			pcb_box_t box;
 
-			pcb_tool_save();
+			pcb_tool_save(&PCB->hidlib);
 			pcb_tool_is_saved = pcb_true;
-			pcb_tool_select_by_id(pcb_gui->control_is_pressed()? PCB_MODE_COPY : PCB_MODE_MOVE);
+			pcb_tool_select_by_id(&PCB->hidlib, pcb_gui->control_is_pressed()? PCB_MODE_COPY : PCB_MODE_MOVE);
 			pcb_crosshair.AttachedObject.Ptr1 = pcb_tool_note.ptr1;
 			pcb_crosshair.AttachedObject.Ptr2 = pcb_tool_note.ptr2;
 			pcb_crosshair.AttachedObject.Ptr3 = pcb_tool_note.ptr3;

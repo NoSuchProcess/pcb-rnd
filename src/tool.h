@@ -91,18 +91,17 @@ pcb_toolid_t pcb_tool_lookup(const char *name);
 
 
 /* Select a tool by name, id or pick the highest prio tool; return 0 on success */
-int pcb_tool_select_by_name(const char *name);
-int pcb_tool_select_by_id(pcb_toolid_t id);
-int pcb_tool_select_highest(void);
+int pcb_tool_select_by_name(pcb_hidlib_t *hidlib, const char *name);
+int pcb_tool_select_by_id(pcb_hidlib_t *hidlib, pcb_toolid_t id);
+int pcb_tool_select_highest(pcb_hidlib_t *hidlib);
 
-int pcb_tool_save(void);
-int pcb_tool_restore(void);
+int pcb_tool_save(pcb_hidlib_t *hidlib);
+int pcb_tool_restore(pcb_hidlib_t *hidlib);
 
 /**** Tool function wrappers; calling these will operate on the current tool 
       as defined in conf_core.editor.mode ****/
 
 void pcb_tool_notify_mode(void);
-void pcb_tool_release_mode(void);
 void pcb_tool_adjust_attached_objects(void);
 void pcb_tool_draw_attached(void);
 pcb_bool pcb_tool_undo_act(void);
@@ -137,9 +136,9 @@ pcb_bool pcb_tool_should_snap_offgrid_line(pcb_layer_t *layer, pcb_line_t *line)
 /* does what's appropriate for the current mode setting (when clicked). This
    normally means creation of an object at the current crosshair location.
    new created objects are added to the create undo list of course */
-void pcb_notify_mode(void);
+void pcb_notify_mode(pcb_hidlib_t *hidlib);
 
-void pcb_release_mode(void);
+void pcb_release_mode(pcb_hidlib_t *hidlib);
 
 
 /**** Low level, for internal use ****/

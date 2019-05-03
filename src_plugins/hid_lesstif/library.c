@@ -69,7 +69,7 @@ static void libnode_select(Widget w, void *v, XmListCallbackStruct * cbs)
 	pcb_fplibrary_t *e = picks.array[last_pick];
 	e = &e->data.dir.children.array[cbs->item_position - 1];
 	if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, e->data.fp.loc_info, NULL))
-		pcb_tool_select_by_id(PCB_MODE_PASTE_BUFFER);
+		pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
 }
 
 static int build_library_dialog()

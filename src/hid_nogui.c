@@ -464,6 +464,10 @@ static void nogui_clip_free(pcb_hid_clipfmt_t format, void *data, size_t len)
 }
 
 
+static void nogui_set_mouse_cursor(pcb_hidlib_t *hidlib, const char *name)
+{
+}
+
 void pcb_hid_nogui_init(pcb_hid_t * hid)
 {
 	hid->get_export_options = nogui_get_export_options;
@@ -509,6 +513,7 @@ void pcb_hid_nogui_init(pcb_hid_t * hid)
 	hid->clip_set = nogui_clip_set;
 	hid->clip_get = nogui_clip_get;
 	hid->clip_free = nogui_clip_free;
+	hid->set_mouse_cursor = nogui_set_mouse_cursor;
 }
 
 

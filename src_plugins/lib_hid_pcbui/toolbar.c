@@ -32,6 +32,7 @@
 #include "hid_cfg.h"
 #include "hid_dad.h"
 #include "tool.h"
+#include "board.h"
 #include "conf_core.h"
 
 #include "toolbar.h"
@@ -71,7 +72,7 @@ static void toolbar_select_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		return;
 
 	tid = (int)attr->user_data;
-	pcb_tool_select_by_id(tid);
+	pcb_tool_select_by_id(&PCB->hidlib, tid);
 }
 
 static void toolbar_create_static(pcb_hid_cfg_t *cfg)

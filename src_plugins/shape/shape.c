@@ -218,7 +218,7 @@ static pcb_poly_t *any_poly_place(pcb_data_t *data, pcb_layer_t *layer, pcb_poly
 		pcb_r_delete_entry(CURRENT->polygon_tree, (pcb_box_t *)p);
 		pcb_poly_free_fields(p);
 		pcb_poly_free(p);
-		pcb_tool_select_by_id(PCB_MODE_PASTE_BUFFER);
+		pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
 	}
 	return p;
 }
@@ -266,7 +266,7 @@ static pcb_line_t *circle_place(pcb_data_t *data, pcb_layer_t *layer, pcb_coord_
 			pcb_copy_obj_to_buffer(PCB, data, PCB->Data, PCB_OBJ_LINE, CURRENT, l, l);
 			pcb_r_delete_entry(CURRENT->line_tree, (pcb_box_t *)l);
 			pcb_line_free(l);
-			pcb_tool_select_by_id(PCB_MODE_PASTE_BUFFER);
+			pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
 		}
 	}
 	return l;

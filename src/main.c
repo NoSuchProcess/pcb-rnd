@@ -639,7 +639,7 @@ int main(int argc, char *argv[])
 	InitHandler();
 	pcb_init_buffers(PCB);
 
-	pcb_tool_select_by_id(PCB_MODE_ARROW);
+	pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_ARROW);
 
 	if (command_line_pcb) {
 		if (pcb_load_pcb(command_line_pcb, NULL, pcb_true, 0) != 0) {
@@ -701,7 +701,7 @@ int main(int argc, char *argv[])
 			pcb_gui->parse_arguments(&hid_argc, &hid_argv);
 			if (pcb_gui->gui)
 				pcb_crosshair_init();
-			pcb_tool_select_by_id(PCB_MODE_ARROW);
+			pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_ARROW);
 			pcb_event(&PCB->hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);
 		}
 	} while(pcb_gui != NULL);

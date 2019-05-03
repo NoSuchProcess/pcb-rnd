@@ -429,7 +429,7 @@ static const char pcb_acts_serpentine[] = "serpentine()";
 static const char pcb_acth_serpentine[] = "Tool for drawing serpentines";
 fgw_error_t pcb_act_serpentine(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_tool_select_by_name("serpentine");
+	pcb_tool_select_by_name(&PCB->hidlib, "serpentine");
 	PCB_ACT_IRES(0);
 	return 0;
 }

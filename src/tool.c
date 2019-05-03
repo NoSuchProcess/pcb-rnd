@@ -100,15 +100,15 @@ pcb_toolid_t pcb_tool_lookup(const char *name)
 	return PCB_TOOLID_INVALID;
 }
 
-int pcb_tool_select_by_name(const char *name)
+int pcb_tool_select_by_name(pcb_hidlib_t *hidlib, const char *name)
 {
 	pcb_toolid_t id = pcb_tool_lookup(name);
 	if (id == PCB_TOOLID_INVALID)
 		return -1;
-	return pcb_tool_select_by_id(id);
+	return pcb_tool_select_by_id(hidlib, id);
 }
 
-int pcb_tool_select_by_id(pcb_toolid_t id)
+int pcb_tool_select_by_id(pcb_hidlib_t *hidlib, pcb_toolid_t id)
 {
 	char id_s[32];
 	static pcb_bool recursing = pcb_false;
@@ -144,10 +144,12 @@ int pcb_tool_select_by_id(pcb_toolid_t id)
 	pcb_notify_crosshair_change(pcb_false);
 	pcb_crosshair_move_relative(0, 0);
 	pcb_notify_crosshair_change(pcb_true);
+	if (pcb_gui != NULL)
+		pcb_gui->set_mouse_cursor(hidlib, "TODO");
 	return 0;
 }
 
-int pcb_tool_select_highest(void)
+int pcb_tool_select_highest(pcb_hidlib_t *hidlib)
 {
 	pcb_toolid_t n, bestn = PCB_TOOLID_INVALID;
 	unsigned int bestp = -1;
@@ -160,10 +162,10 @@ int pcb_tool_select_highest(void)
 	}
 	if (bestn == PCB_TOOLID_INVALID)
 		return -1;
-	return pcb_tool_select_by_id(bestn);
+	return pcb_tool_select_by_id(hidlib, bestn);
 }
 
-int pcb_tool_save(void)
+int pcb_tool_save(pcb_hidlib_t *hidlib)
 {
 	save_stack[save_position] = conf_core.editor.mode;
 	if (save_position < PCB_MAX_MODESTACK_DEPTH - 1)
@@ -173,13 +175,13 @@ int pcb_tool_save(void)
 	return 0;
 }
 
-int pcb_tool_restore(void)
+int pcb_tool_restore(pcb_hidlib_t *hidlib)
 {
 	if (save_position == 0) {
 		pcb_message(PCB_MSG_ERROR, "hace: underflow of restore mode\n");
 		return -1;
 	}
-	return pcb_tool_select_by_id(save_stack[--save_position]);
+	return pcb_tool_select_by_id(hidlib, save_stack[--save_position]);
 }
 
 /**** current tool function wrappers ****/
@@ -212,7 +214,7 @@ void pcb_tool_notify_mode(void)
 	wrap_void(notify_mode, ());
 }
 
-void pcb_tool_release_mode(void)
+void pcb_tool_release_mode(pcb_hidlib_t *hidlib)
 {
 	wrap_void(release_mode, ());
 }
@@ -394,20 +396,20 @@ static void default_tool_unreg(void)
 
 
 /*** old helpers ***/
-void pcb_release_mode(void)
+void pcb_release_mode(pcb_hidlib_t *hidlib)
 {
 	if (pcb_crosshair.click_cmd_entry_active && (pcb_cli_mouse(0) == 0))
 		return;
 
-	pcb_tool_release_mode();
+	pcb_tool_release_mode(hidlib);
 
 	if (pcb_tool_is_saved)
-		pcb_tool_restore();
+		pcb_tool_restore(hidlib);
 	pcb_tool_is_saved = pcb_false;
 	pcb_draw();
 }
 
-void pcb_notify_mode(void)
+void pcb_notify_mode(pcb_hidlib_t *hidlib)
 {
 	if (pcb_crosshair.click_cmd_entry_active && (pcb_cli_mouse(1) == 0))
 		return;

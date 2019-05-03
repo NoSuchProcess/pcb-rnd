@@ -3252,6 +3252,10 @@ static void ltf_open_command(void)
 	cmd_is_active = 1;
 }
 
+static void ltf_set_mouse_cursor(pcb_hidlib_t *hidlib, const char *name)
+{
+
+}
 
 void lesstif_create_menu(const char *menu, const pcb_menu_prop_t *props);
 int lesstif_remove_menu(const char *menu);
@@ -3361,6 +3365,7 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.view_get = ltf_view_get;
 	lesstif_hid.open_command = ltf_open_command;
 	lesstif_hid.open_popup = ltf_open_popup;
+	lesstif_hid.set_mouse_cursor = ltf_set_mouse_cursor;
 
 	lesstif_hid.set_hidlib = ltf_set_hidlib;
 

@@ -1125,7 +1125,7 @@ static const char pcb_acts_skline[] = "skline()";
 static const char pcb_acth_skline[] = "Tool for drawing sketch lines";
 fgw_error_t pcb_act_skline(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_tool_select_by_name("skline");
+	pcb_tool_select_by_name(&PCB->hidlib, "skline");
 
 	PCB_ACT_IRES(0);
 	return 0;

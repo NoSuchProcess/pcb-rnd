@@ -131,11 +131,11 @@ static fgw_error_t pcb_act_stroke(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (pcb_strcasecmp(cmd, "stopline") == 0) {
 		if (conf_core.editor.mode == PCB_MODE_LINE)
-			pcb_tool_select_by_id(PCB_MODE_LINE);
+			pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_LINE);
 		else if (conf_core.editor.mode == PCB_MODE_POLYGON)
-			pcb_tool_select_by_id(PCB_MODE_POLYGON);
+			pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_POLYGON);
 		else if (conf_core.editor.mode == PCB_MODE_POLYGON_HOLE)
-			pcb_tool_select_by_id(PCB_MODE_POLYGON_HOLE);
+			pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_POLYGON_HOLE);
 	}
 	else
 		PCB_ACT_FAIL(stroke);
