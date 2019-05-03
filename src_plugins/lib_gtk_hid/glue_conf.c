@@ -48,8 +48,7 @@ void ghid_confchg_checkbox(conf_native_t *cfg, int arr_idx)
 
 static void ghid_confchg_mode(conf_native_t *cfg, int arr_idx)
 {
-	/* test if PCB struct doesn't exist at startup */
-	if ((PCB == NULL) || !ghidgui->hid_active)
+	if ((ghidgui->common.hidlib == NULL) || !ghidgui->hid_active)
 		return;
 	ghid_mode_cursor(&gport->mouse, -1);
 }

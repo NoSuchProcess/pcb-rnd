@@ -186,7 +186,7 @@ TODO(": move this to render init")
 
 	ghidgui->gui_is_up = 1;
 
-	pcb_event(&PCB->hidlib, PCB_EVENT_GUI_INIT, NULL);
+	pcb_event(ghidgui->common.hidlib, PCB_EVENT_GUI_INIT, NULL);
 
 	/* Make sure drawing area has keyboard focus so that keys are handled
 	   while the mouse cursor is over the top window or children widgets,

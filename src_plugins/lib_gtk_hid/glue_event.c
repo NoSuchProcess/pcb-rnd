@@ -11,7 +11,7 @@ static void ev_pcb_meta_changed(pcb_hidlib_t *hidlib, void *user_data, int argc,
 	if ((!ghidgui) || (!ghidgui->hid_active))
 		return;
 
-	if (PCB != NULL)
+	if (hidlib != NULL)
 		ghidgui->common.window_set_name_label(ghidgui->common.hidlib->name);
 }
 
