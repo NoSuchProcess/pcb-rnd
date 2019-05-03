@@ -3,9 +3,7 @@
 #include <stdio.h>
 
 #include "crosshair.h"
-#include "data.h"
 #include "draw.h"
-#include "layer.h"
 #include "hid_draw_helpers.h"
 #include "hid_attrib.h"
 #include "hid_color.h"
@@ -185,16 +183,16 @@ pcb_hid_gc_t ghid_gl_make_gc(void)
 void ghid_gl_draw_grid_local(pcb_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy)
 {
 	/* cx and cy are the actual cursor snapped to wherever - round them to the nearest real grid point */
-	grid_local_x = (cx / PCB->hidlib.grid) * PCB->hidlib.grid + PCB->hidlib.grid_ox;
-	grid_local_y = (cy / PCB->hidlib.grid) * PCB->hidlib.grid + PCB->hidlib.grid_oy;
+	grid_local_x = (cx / hidlib->grid) * hidlib->grid + hidlib->grid_ox;
+	grid_local_y = (cy / hidlib->grid) * hidlib->grid + hidlib->grid_oy;
 	grid_local_radius = conf_hid_gtk.plugins.hid_gtk.local_grid.radius;
 }
 
-static void ghid_gl_draw_grid(pcb_box_t *drawn_area)
+static void ghid_gl_draw_grid(pcb_hidlib_t *hidlib, pcb_box_t *drawn_area)
 {
 	render_priv_t *priv = gport->render_priv;
 
-	if ((Vz(PCB->hidlib.grid) < PCB_MIN_GRID_DISTANCE) || (!pcbhl_conf.editor.draw_grid))
+	if ((Vz(hidlib->grid) < PCB_MIN_GRID_DISTANCE) || (!pcbhl_conf.editor.draw_grid))
 		return;
 
 	glEnable(GL_COLOR_LOGIC_OP);
@@ -210,7 +208,7 @@ static void ghid_gl_draw_grid(pcb_box_t *drawn_area)
 	glDisable(GL_COLOR_LOGIC_OP);
 }
 
-void pcb_gl_draw_texture(GLuint texture_handle)
+void pcb_gl_draw_texture(pcb_hidlib_t *hidlib, GLuint texture_handle)
 {
 	glBindTexture(GL_TEXTURE_2D, texture_handle);
 
@@ -227,17 +225,17 @@ void pcb_gl_draw_texture(GLuint texture_handle)
 	glTexCoord2d(0., 0.);
 	glVertex3i(0, 0, 0);
 	glTexCoord2d(1., 0.);
-	glVertex3i(PCB->hidlib.size_x, 0, 0);
+	glVertex3i(hidlib->size_x, 0, 0);
 	glTexCoord2d(1., 1.);
-	glVertex3i(PCB->hidlib.size_x, PCB->hidlib.size_y, 0);
+	glVertex3i(hidlib->size_x, hidlib->size_y, 0);
 	glTexCoord2d(0., 1.);
-	glVertex3i(0, PCB->hidlib.size_y, 0);
+	glVertex3i(0, hidlib->size_y, 0);
 	glEnd();
 
 	glDisable(GL_TEXTURE_2D);
 }
 
-static void ghid_gl_draw_bg_image(void)
+static void ghid_gl_draw_bg_image(pcb_hidlib_t *hidlib)
 {
 	static GLuint texture_handle = 0;
 
@@ -266,7 +264,7 @@ static void ghid_gl_draw_bg_image(void)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, (n_channels == 4) ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, pixels);
 	}
 
-	pcb_gl_draw_texture(texture_handle);
+	pcb_gl_draw_texture(hidlib, texture_handle);
 }
 
 	/* Config helper functions for when the user changes color preferences.
@@ -855,6 +853,7 @@ static void gtk2gl_color(pcb_gl_color_t *gl_c, pcb_gtk_color_t *gtk_c)
 static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose_t *ev, void *vport)
 {
 	GHidPort *port = vport;
+	pcb_hidlib_t *hidlib = port->view.com->hidlib;
 	render_priv_t *priv = port->render_priv;
 	GtkAllocation allocation;
 	pcb_hid_expose_ctx_t ctx;
@@ -880,18 +879,18 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 	pcb_gl_draw_expose_init(&gtk2_gl_hid, allocation.width, allocation.height, ev->area.x, allocation.height - ev->area.height - ev->area.y, ev->area.width, ev->area.height, &off_c);
 
 	glScalef((pcbhl_conf.editor.view.flip_x ? -1. : 1.) / port->view.coord_per_px, (pcbhl_conf.editor.view.flip_y ? -1. : 1.) / port->view.coord_per_px, ((pcbhl_conf.editor.view.flip_x == pcbhl_conf.editor.view.flip_y) ? 1. : -1.) / port->view.coord_per_px);
-	glTranslatef(pcbhl_conf.editor.view.flip_x ? port->view.x0 - PCB->hidlib.size_x : -port->view.x0, pcbhl_conf.editor.view.flip_y ? port->view.y0 - PCB->hidlib.size_y : -port->view.y0, 0);
+	glTranslatef(pcbhl_conf.editor.view.flip_x ? port->view.x0 - hidlib->size_x : -port->view.x0, pcbhl_conf.editor.view.flip_y ? port->view.y0 - hidlib->size_y : -port->view.y0, 0);
 
 	/* Draw PCB background, before PCB primitives */
 	glColor3f(bg_c.red, bg_c.green, bg_c.blue);
 	glBegin(GL_QUADS);
 	glVertex3i(0, 0, 0);
-	glVertex3i(PCB->hidlib.size_x, 0, 0);
-	glVertex3i(PCB->hidlib.size_x, PCB->hidlib.size_y, 0);
-	glVertex3i(0, PCB->hidlib.size_y, 0);
+	glVertex3i(hidlib->size_x, 0, 0);
+	glVertex3i(hidlib->size_x, hidlib->size_y, 0);
+	glVertex3i(0, hidlib->size_y, 0);
 	glEnd();
 
-	ghid_gl_draw_bg_image();
+	ghid_gl_draw_bg_image(hidlib);
 
 	ghid_gl_invalidate_current_gc();
 	glMatrixMode(GL_PROJECTION);
@@ -901,7 +900,7 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 
-	ghid_gl_draw_grid(&ctx.view);
+	ghid_gl_draw_grid(hidlib, &ctx.view);
 
 	ghid_gl_invalidate_current_gc();
 
@@ -942,6 +941,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
 	GtkAllocation allocation;
 	render_priv_t *priv = gport->render_priv;
+	pcb_hidlib_t *hidlib = gport->view.com->hidlib;
 	pcb_gtk_view_t save_view;
 	int save_width, save_height;
 	double xz, yz, vw, vh;
@@ -1026,7 +1026,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	ghid_gl_invalidate_current_gc();
 	glPushMatrix();
 	glScalef((pcbhl_conf.editor.view.flip_x ? -1. : 1.) / gport->view.coord_per_px, (pcbhl_conf.editor.view.flip_y ? -1. : 1.) / gport->view.coord_per_px, 1);
-	glTranslatef(pcbhl_conf.editor.view.flip_x ? gport->view.x0 - PCB->hidlib.size_x : -gport->view.x0, pcbhl_conf.editor.view.flip_y ? gport->view.y0 - PCB->hidlib.size_y : -gport->view.y0, 0);
+	glTranslatef(pcbhl_conf.editor.view.flip_x ? gport->view.x0 - hidlib->size_x : -gport->view.x0, pcbhl_conf.editor.view.flip_y ? gport->view.y0 - hidlib->size_y : -gport->view.y0, 0);
 
 	expcall(&gtk2_gl_hid, ctx);
 
