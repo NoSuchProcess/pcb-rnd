@@ -4,9 +4,7 @@
 #include <stdio.h>
 
 #include "crosshair.h"
-#include "data.h"
 #include "draw.h"
-#include "layer.h"
 #include "grid.h"
 #include "hid_draw_helpers.h"
 #include "hid_attrib.h"
