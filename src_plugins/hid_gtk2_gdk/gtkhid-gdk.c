@@ -144,8 +144,8 @@ static inline void ghid_gdk_draw_grid_global(pcb_hidlib_t *hidlib)
 
 	x1 = pcb_grid_fit(MAX(0, SIDE_X(&gport->view, gport->view.x0)), hidlib->grid, hidlib->grid_ox);
 	y1 = pcb_grid_fit(MAX(0, SIDE_Y(&gport->view, gport->view.y0)), hidlib->grid, hidlib->grid_oy);
-	x2 = pcb_grid_fit(MIN(PCB->hidlib.size_x, SIDE_X(&gport->view, gport->view.x0 + gport->view.width - 1)), hidlib->grid, hidlib->grid_ox);
-	y2 = pcb_grid_fit(MIN(PCB->hidlib.size_y, SIDE_Y(&gport->view, gport->view.y0 + gport->view.height - 1)), hidlib->grid, hidlib->grid_oy);
+	x2 = pcb_grid_fit(MIN(hidlib->size_x, SIDE_X(&gport->view, gport->view.x0 + gport->view.width - 1)), hidlib->grid, hidlib->grid_ox);
+	y2 = pcb_grid_fit(MIN(hidlib->size_y, SIDE_Y(&gport->view, gport->view.y0 + gport->view.height - 1)), hidlib->grid, hidlib->grid_oy);
 
 	grd = hidlib->grid;
 
