@@ -463,8 +463,11 @@ static void nogui_clip_free(pcb_hid_clipfmt_t format, void *data, size_t len)
 	free(data);
 }
 
+static void nogui_reg_mouse_cursor(pcb_hidlib_t *hidlib, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
+{
+}
 
-static void nogui_set_mouse_cursor(pcb_hidlib_t *hidlib, const char *name)
+static void nogui_set_mouse_cursor(pcb_hidlib_t *hidlib, int idx)
 {
 }
 
@@ -514,6 +517,7 @@ void pcb_hid_nogui_init(pcb_hid_t * hid)
 	hid->clip_get = nogui_clip_get;
 	hid->clip_free = nogui_clip_free;
 	hid->set_mouse_cursor = nogui_set_mouse_cursor;
+	hid->reg_mouse_cursor = nogui_reg_mouse_cursor;
 }
 
 

@@ -559,7 +559,8 @@ struct pcb_hid_s {
 
 	/* Change the mouse cursor to a named cursor e.g. after the tool has changed.
 	   The list of cursors names available may depend on the HID. */
-	void (*set_mouse_cursor)(pcb_hidlib_t *hidlib, const char *name);
+	void (*reg_mouse_cursor)(pcb_hidlib_t *hidlib, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask);
+	void (*set_mouse_cursor)(pcb_hidlib_t *hidlib, int idx);
 };
 
 /* One of these functions (in the common code) will be called whenever the GUI

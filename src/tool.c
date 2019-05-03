@@ -70,10 +70,14 @@ void pcb_tool_uninit(void)
 
 int pcb_tool_reg(pcb_tool_t *tool, const char *cookie)
 {
+	pcb_toolid_t id;
 	if (pcb_tool_lookup(tool->name) != PCB_TOOLID_INVALID) /* don't register two tools with the same name */
 		return -1;
 	tool->cookie = cookie;
+	id = pcb_tools.used;
 	vtp0_append(&pcb_tools, (void *)tool);
+	if (pcb_gui != NULL)
+		pcb_gui->reg_mouse_cursor(NULL, id, tool->cursor.name, tool->cursor.pixel, tool->cursor.mask);
 	return 0;
 }
 
@@ -145,7 +149,7 @@ int pcb_tool_select_by_id(pcb_hidlib_t *hidlib, pcb_toolid_t id)
 	pcb_crosshair_move_relative(0, 0);
 	pcb_notify_crosshair_change(pcb_true);
 	if (pcb_gui != NULL)
-		pcb_gui->set_mouse_cursor(hidlib, "TODO");
+		pcb_gui->set_mouse_cursor(hidlib, id);
 	return 0;
 }
 
