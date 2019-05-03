@@ -108,6 +108,10 @@ int pcb_tool_select_highest(pcb_hidlib_t *hidlib);
 int pcb_tool_save(pcb_hidlib_t *hidlib);
 int pcb_tool_restore(pcb_hidlib_t *hidlib);
 
+/* Called after GUI_INIT; registers all mouse cursors in the GUI */
+void pcb_tool_gui_init(void);
+
+
 /**** Tool function wrappers; calling these will operate on the current tool 
       as defined in conf_core.editor.mode ****/
 

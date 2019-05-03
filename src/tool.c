@@ -188,6 +188,18 @@ int pcb_tool_restore(pcb_hidlib_t *hidlib)
 	return pcb_tool_select_by_id(hidlib, save_stack[--save_position]);
 }
 
+void pcb_tool_gui_init(void)
+{
+	pcb_toolid_t n;
+	pcb_tool_t *tool;
+
+	if (pcb_gui == NULL)
+		return;
+
+	for(n = 0, tool = (pcb_tool_t *)pcb_tools.array; n < pcb_tools.used; n++,tool++)
+		pcb_gui->reg_mouse_cursor(NULL, n, tool->cursor.name, tool->cursor.pixel, tool->cursor.mask);
+}
+
 /**** current tool function wrappers ****/
 #define wrap(func, err_ret, prefix, args) \
 	do { \
