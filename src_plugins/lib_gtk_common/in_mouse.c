@@ -431,6 +431,7 @@ void ghid_port_set_mouse_cursor(pcb_gtk_mouse_t *ctx, int idx)
 		return;
 
 	if (cursor_override != 0) {
+		ctx->X_cursor_shape = cursor_override;
 		gdk_window_set_cursor(window, cursor_override_X);
 		return;
 	}
