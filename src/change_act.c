@@ -468,7 +468,7 @@ TODO(": make this undoable")
 			defer_needs_update = 1;
 		else {
 			/* pcb_undo_inc_serial(); */
-			pcb_gui->invalidate_all();
+			pcb_gui->invalidate_all(&PCB->hidlib);
 		}
 	}
 
@@ -508,7 +508,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				if ((type = pcb_search_screen(x, y, type, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 					pcb_undo_save_serial();
 					if (pcb_chg_obj_name_query(ptr2)) {
-						pcb_hid_redraw();
+						pcb_hid_redraw(PCB);
 						pcb_board_set_changed_flag(pcb_true);
 						pcb_actionl("DeleteRats", "AllRats", NULL);
 					}

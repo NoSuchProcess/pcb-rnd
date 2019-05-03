@@ -341,7 +341,7 @@ static fgw_error_t pcb_act_align(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_END_LOOP;
 	if (changed) {
 		pcb_undo_inc_serial();
-		pcb_hid_redraw();
+		pcb_hid_redraw(PCB);
 		pcb_board_set_changed_flag(1);
 	}
 	free_subcs_by_pos();
@@ -510,7 +510,7 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	if (changed) {
 		pcb_undo_inc_serial();
-		pcb_hid_redraw();
+		pcb_hid_redraw(PCB);
 		pcb_board_set_changed_flag(1);
 	}
 	free_subcs_by_pos();

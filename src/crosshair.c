@@ -535,7 +535,7 @@ void pcb_draw_mark(pcb_bool inhibit_drawing_mode)
 void pcb_notify_crosshair_change(pcb_bool changes_complete)
 {
 	if (pcb_gui->notify_crosshair_change)
-		pcb_gui->notify_crosshair_change(changes_complete);
+		pcb_gui->notify_crosshair_change(&PCB->hidlib, changes_complete);
 	pcb_event(&PCB->hidlib, PCB_EVENT_CROSSHAIR_MOVE, "i", (int)changes_complete, NULL);
 }
 
@@ -557,7 +557,7 @@ void pcb_notify_crosshair_change(pcb_bool changes_complete)
 void pcb_notify_mark_change(pcb_bool changes_complete)
 {
 	if (pcb_gui->notify_mark_change)
-		pcb_gui->notify_mark_change(changes_complete);
+		pcb_gui->notify_mark_change(&PCB->hidlib, changes_complete);
 }
 
 
@@ -721,7 +721,7 @@ static void onpoint_work(pcb_crosshair_t * crosshair, pcb_coord_t X, pcb_coord_t
 	}
 
 	if (redraw) {
-		pcb_hid_redraw();
+		pcb_hid_redraw(PCB);
 	}
 }
 

@@ -187,7 +187,7 @@ static void ensure_visible_current(pcb_gtk_layersel_t *ls)
 
 	change_selection:;
 		pcb_layervis_change_group_vis(pcb_layer_id(PCB->Data, l), 1, 1);
-		ls->com->invalidate_all();
+		ls->com->invalidate_all(&PCB->hidlib);
 		pcb_gtk_layersel_vis_update(ls);
 }
 
@@ -257,7 +257,7 @@ static gboolean group_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 			for(n = 0; n < lsg->grp->len; n++)
 				layersel_lyr_vis_sync(&lsg->layer[n]);
 			group_vis_sync(lsg);
-			ls->com->invalidate_all();
+			ls->com->invalidate_all(&PCB->hidlib);
 			pcb_event(ls->com->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 			break;
 		case 3:
@@ -317,7 +317,7 @@ static gboolean layer_vis_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gtk_l
 				pcb_gtk_layersel_vis_update(ls); /* rather do a full redraw because the selection may have changed */
 			}
 
-			ls->com->invalidate_all();
+			ls->com->invalidate_all(&PCB->hidlib);
 			pcb_event(ls->com->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 			layer_popup(ls, event->button.button, lsl->lid, lsl->lsg->grp);
 			break;
@@ -337,7 +337,7 @@ static gboolean layer_select_press_cb(GtkWidget *widget, GdkEvent *event, pcb_gt
 		case 3:
 			if ((lsl->ev_selected == NULL) || (lsl->ev_selected(lsl, 1) >= 0)) {
 				pcb_layervis_change_group_vis(lsl->lid, 1, 1);
-				ls->com->invalidate_all();
+				ls->com->invalidate_all(&PCB->hidlib);
 				pcb_gtk_layersel_vis_update(ls); /* need to do a full redraw because of side effects of special layer selections (e.g. Rats') */
 			}
 			pcb_event(ls->com->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);

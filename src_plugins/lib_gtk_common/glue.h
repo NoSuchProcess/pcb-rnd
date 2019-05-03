@@ -26,7 +26,7 @@ typedef struct pcb_gtk_common_s {
 	gboolean (*preview_expose)(GtkWidget *widget, pcb_gtk_expose_t *p, pcb_hid_expose_t expcall, pcb_hid_expose_ctx_t *ctx);
 	void (*load_bg_image)(void);
 	void (*init_renderer)(int *argc, char ***argv, void *port);
-	void (*draw_grid_local)(pcb_coord_t cx, pcb_coord_t cy);
+	void (*draw_grid_local)(pcb_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy);
 
 	/* main window */
 	void (*window_set_name_label)(gchar *name);
@@ -43,7 +43,7 @@ typedef struct pcb_gtk_common_s {
 
 	/* screen */
 	void (*mode_cursor_main)(int mode);
-	void (*invalidate_all)();
+	void (*invalidate_all)(pcb_hidlib_t *hidlib);
 	void (*pan_common)(void);
 	void (*port_ranges_scale)(void);
 	void (*screen_update)(void);

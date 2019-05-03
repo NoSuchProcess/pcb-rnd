@@ -765,7 +765,7 @@ void lesstif_pan_fixup()
 	set_scroll(hscroll, view_left_x, view_width, ltf_hidlib->size_x);
 	set_scroll(vscroll, view_top_y, view_height, ltf_hidlib->size_y);
 
-	lesstif_invalidate_all();
+	lesstif_invalidate_all(ltf_hidlib);
 }
 
 static void zoom_max()
@@ -1156,7 +1156,7 @@ static void work_area_expose(Widget work_area, void *me, XmDrawingAreaCallbackSt
 static void scroll_callback(Widget scroll, int *view_dim, XmScrollBarCallbackStruct * cbs)
 {
 	*view_dim = cbs->value;
-	lesstif_invalidate_all();
+	lesstif_invalidate_all(ltf_hidlib);
 }
 
 static void work_area_make_pixmaps(Dimension width, Dimension height)
@@ -1292,7 +1292,7 @@ static void work_area_first_expose(Widget work_area, void *me, XmDrawingAreaCall
 
 	XtRemoveCallback(work_area, XmNexposeCallback, (XtCallbackProc) work_area_first_expose, 0);
 	XtAddCallback(work_area, XmNexposeCallback, (XtCallbackProc) work_area_expose, 0);
-	lesstif_invalidate_all();
+	lesstif_invalidate_all(ltf_hidlib);
 }
 
 static Widget make_message(const char *name, Widget left, int resizeable)
@@ -2404,7 +2404,7 @@ void lesstif_need_idle_proc()
 	idle_proc_set = 1;
 }
 
-static void lesstif_invalidate_lr(pcb_coord_t l, pcb_coord_t r, pcb_coord_t t, pcb_coord_t b)
+static void lesstif_invalidate_lr(pcb_hidlib_t *hidlib, pcb_coord_t l, pcb_coord_t r, pcb_coord_t t, pcb_coord_t b)
 {
 	if (!window)
 		return;
@@ -2413,13 +2413,13 @@ static void lesstif_invalidate_lr(pcb_coord_t l, pcb_coord_t r, pcb_coord_t t, p
 	need_idle_proc();
 }
 
-void lesstif_invalidate_all(void)
+void lesstif_invalidate_all(pcb_hidlib_t *hidlib)
 {
-	if (ltf_hidlib != NULL)
-		lesstif_invalidate_lr(0, ltf_hidlib->size_x, 0, ltf_hidlib->size_y);
+	if (hidlib != NULL)
+		lesstif_invalidate_lr(hidlib, 0, hidlib->size_x, 0, hidlib->size_y);
 }
 
-static void lesstif_notify_crosshair_change(pcb_bool changes_complete)
+static void lesstif_notify_crosshair_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
 {
 	static int invalidate_depth = 0;
 	Pixmap save_pixmap;
@@ -2453,7 +2453,7 @@ static void lesstif_notify_crosshair_change(pcb_bool changes_complete)
 		invalidate_depth++;
 }
 
-static void lesstif_notify_mark_change(pcb_bool changes_complete)
+static void lesstif_notify_mark_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
 {
 	static int invalidate_depth = 0;
 	Pixmap save_pixmap;
@@ -3116,7 +3116,7 @@ static void lesstif_globconf_change_post(conf_native_t *cfg, int arr_idx)
 	if (!lesstif_active)
 		return;
 	if (strncmp(cfg->hash_path, "appearance/color/", 17) == 0)
-		lesstif_invalidate_all();
+		lesstif_invalidate_all(ltf_hidlib);
 	if (strncmp(cfg->hash_path, "rc/cli_", 7) == 0) {
 		stdarg_n = 0;
 		stdarg(XmNlabelString, XmStringCreatePCB(pcb_cli_prompt(":")));

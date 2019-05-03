@@ -143,7 +143,7 @@ static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, Gd
 	}
 
 	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);
-	ghid_invalidate_all();
+	ghid_invalidate_all(ghidgui->common.hidlib);
 	return 0;
 }
 
@@ -279,7 +279,7 @@ static void ghid_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
 	if (gport->drawing_area == NULL)
 		return;
 
-	ghidgui->common.draw_grid_local(x, y);
+	ghidgui->common.draw_grid_local(ghidgui->common.hidlib, x, y);
 	gdk_window_get_origin(gtk_widget_get_window(gport->drawing_area), &offset_x, &offset_y);
 	pcb_gtk_crosshair_set(x, y, action, offset_x, offset_y, &gport->view);
 }
@@ -444,7 +444,7 @@ static double ghid_benchmark(void)
 	gdk_display_sync(display);
 	time(&start);
 	do {
-		ghid_invalidate_all();
+		ghid_invalidate_all(ghidgui->common.hidlib);
 		gdk_window_process_updates(window, FALSE);
 		time(&end);
 		i++;

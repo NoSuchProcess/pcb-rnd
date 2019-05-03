@@ -14,7 +14,7 @@ void ghid_gl_install(pcb_gtk_common_t *common, pcb_hid_t *hid);
 /* Utility functions for renderers to call ***/
 void ghid_draw_area_update(GHidPort *out, GdkRectangle *rect);
 
-static inline void ghid_invalidate_all(void) { pcb_gui->invalidate_all(); }
+static inline void ghid_invalidate_all(pcb_hidlib_t *hidlib) { pcb_gui->invalidate_all(hidlib); }
 void ghid_drawing_area_configure_hook(void *out);
 
 #endif

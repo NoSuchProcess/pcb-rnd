@@ -74,7 +74,7 @@ static int line_edit(char *line, int cursor, int argc, cli_node_t *argv)
 		pcb_ddraft_attached.line.Point1.Y = box.Y1;
 		pcb_ddraft_attached.line.Point2.X = box.X2;
 		pcb_ddraft_attached.line.Point2.Y = box.Y2;
-		pcb_gui->invalidate_all();
+		pcb_gui->invalidate_all(&PCB->hidlib);
 	}
 	return res;
 }

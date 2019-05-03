@@ -39,6 +39,7 @@
 static pcb_coord_t leadx, leady, step;
 static pcb_bool lead;
 static pcb_hidval_t lead_timer;
+static pcb_hidlib_t *lead_hidlib;
 
 static void lead_cb(pcb_hidval_t user_data)
 {
@@ -47,25 +48,26 @@ static void lead_cb(pcb_hidval_t user_data)
 	step = sin(p) * LEAD_ANIM_AMP - LEAD_ANIM_AMP;
 	p += LEAD_ANIM_SPEED;
 
-	pcb_gui->invalidate_all();
+	pcb_gui->invalidate_all(lead_hidlib);
 
 	if (lead)
 		lead_timer = pcb_gui->add_timer(lead_cb, LEAD_PERIOD_MS, user_data);
 }
 
-static void pcb_lead_user_to_location(pcb_coord_t x, pcb_coord_t y, pcb_bool enabled)
+static void pcb_lead_user_to_location(pcb_hidlib_t *hidlib, pcb_coord_t x, pcb_coord_t y, pcb_bool enabled)
 {
 	pcb_hidval_t user_data;
 
 	if (lead) {
 		pcb_gui->stop_timer(lead_timer);
 		lead = enabled;
-		pcb_gui->invalidate_all();
+		pcb_gui->invalidate_all(lead_hidlib);
 	}
 
 	leadx = x;
 	leady = y;
 	lead = enabled;
+	lead_hidlib = hidlib;
 
 	if (enabled)
 		lead_timer = pcb_gui->add_timer(lead_cb, LEAD_PERIOD_MS, user_data);
@@ -78,7 +80,7 @@ void pcb_lead_user_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event
 	if ((argv[1].type != PCB_EVARG_COORD) || (argv[2].type != PCB_EVARG_COORD) || (argv[3].type != PCB_EVARG_INT))
 		return;
 
-	pcb_lead_user_to_location(argv[1].d.c, argv[2].d.c, argv[3].d.i);
+	pcb_lead_user_to_location(hidlib, argv[1].d.c, argv[2].d.c, argv[3].d.i);
 }
 
 

@@ -174,7 +174,7 @@ static pcb_bool pcb_mouse_fontsel(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_co
 						default:
 							break;
 					}
-					pcb_gui->invalidate_all();
+					pcb_gui->invalidate_all(&PCB->hidlib);
 				}
 				return 1;
 			}

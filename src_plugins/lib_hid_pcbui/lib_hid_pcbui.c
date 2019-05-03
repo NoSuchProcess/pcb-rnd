@@ -92,6 +92,7 @@ void pplg_uninit_lib_hid_pcbui(void)
 	conf_hid_unreg(toolbar_cookie);
 	conf_hid_unreg(status_cookie);
 	conf_hid_unreg(status_rd_cookie);
+	conf_hid_unreg(infobar_cookie);
 }
 
 #include "dolists.h"

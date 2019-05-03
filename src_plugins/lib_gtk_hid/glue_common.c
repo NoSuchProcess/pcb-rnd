@@ -39,7 +39,7 @@ static void ghid_port_ranges_changed(void)
 	gport->view.x0 = gtk_adjustment_get_value(h_adj);
 	gport->view.y0 = gtk_adjustment_get_value(v_adj);
 
-	ghid_invalidate_all();
+	ghid_invalidate_all(ghidgui->common.hidlib);
 }
 
 static void ghid_pan_common(void)
@@ -85,7 +85,7 @@ static void ghid_interface_set_sensitive(gboolean sensitive)
 
 static void ghid_port_button_press_main(void)
 {
-	ghid_invalidate_all();
+	ghid_invalidate_all(ghidgui->common.hidlib);
 	ghid_window_set_name_label(ghidgui->common.hidlib->name);
 	if (!gport->view.panning)
 		g_idle_add(ghid_idle_cb, &ghidgui->topwin);
@@ -94,7 +94,7 @@ static void ghid_port_button_press_main(void)
 static void ghid_port_button_release_main(void)
 {
 	pcb_tool_adjust_attached_objects();
-	ghid_invalidate_all();
+	ghid_invalidate_all(ghidgui->common.hidlib);
 
 	ghid_window_set_name_label(ghidgui->common.hidlib->name);
 	g_idle_add(ghid_idle_cb, &ghidgui->topwin);

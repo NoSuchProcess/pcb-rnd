@@ -397,7 +397,7 @@ static fgw_error_t pcb_act_aligntext(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (changed) {
 		pcb_undo_restore_serial();
 		pcb_undo_inc_serial();
-		pcb_hid_redraw();
+		pcb_hid_redraw(PCB);
 		pcb_board_set_changed_flag(pcb_true);
 	}
 	free_texts_by_pos();
@@ -576,7 +576,7 @@ static fgw_error_t pcb_act_distributetext(fgw_arg_t *res, int argc, fgw_arg_t *a
 	if (changed) {
 		pcb_undo_restore_serial();
 		pcb_undo_inc_serial();
-		pcb_hid_redraw();
+		pcb_hid_redraw(PCB);
 		pcb_board_set_changed_flag(pcb_true);
 	}
 	free_texts_by_pos();

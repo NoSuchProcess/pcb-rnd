@@ -64,7 +64,7 @@ void pcb_tool_buffer_notify_mode(void)
 
 	if (pcb_buffer_copy_to_layout(PCB, pcb_crosshair.AttachedObject.tx, pcb_crosshair.AttachedObject.ty)) {
 		pcb_board_set_changed_flag(pcb_true);
-		pcb_gui->invalidate_all();
+		pcb_gui->invalidate_all(&PCB->hidlib);
 	}
 }
 

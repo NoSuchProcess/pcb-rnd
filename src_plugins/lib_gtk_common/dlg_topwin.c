@@ -174,7 +174,7 @@ gboolean ghid_port_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, pcb
 		tw->com->note_event_location(NULL);
 
 	pcb_tool_adjust_attached_objects();
-	tw->com->invalidate_all();
+	tw->com->invalidate_all(tw->com->hidlib);
 	g_idle_add(ghid_idle_cb, tw);
 	return FALSE;
 }
@@ -379,7 +379,7 @@ static void drawing_area_size_allocate_cb(GtkWidget *widget, GdkRectangle *alloc
 static gboolean drawing_area_enter_cb(GtkWidget *w, pcb_gtk_expose_t *p, void *user_data)
 {
 	pcb_gtk_topwin_t *tw = user_data;
-	tw->com->invalidate_all();
+	tw->com->invalidate_all(tw->com->hidlib);
 	return FALSE;
 }
 

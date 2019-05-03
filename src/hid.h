@@ -255,10 +255,10 @@ struct pcb_hid_s {
 	int (*parse_arguments)(int *argc, char ***argv);
 
 	/* This may be called to ask the GUI to force a redraw of a given area */
-	void (*invalidate_lr)(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom);
-	void (*invalidate_all)(void);
-	void (*notify_crosshair_change)(pcb_bool changes_complete);
-	void (*notify_mark_change)(pcb_bool changes_complete);
+	void (*invalidate_lr)(pcb_hidlib_t *hidlib, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom);
+	void (*invalidate_all)(pcb_hidlib_t *hidlib);
+	void (*notify_crosshair_change)(pcb_hidlib_t *hidlib, pcb_bool changes_complete);
+	void (*notify_mark_change)(pcb_hidlib_t *hidlib, pcb_bool changes_complete);
 
 	/* During redraw or print/export cycles, this is called once per layer group
 	   (physical layer); pusrpose/purpi are the extracted purpose field and its
@@ -632,6 +632,6 @@ void *pcb_nogui_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs_, int n_
 int pcb_hid_dock_enter(pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id);
 void pcb_hid_dock_leave(pcb_hid_dad_subdialog_t *sub);
 
-#define pcb_hid_redraw() pcb_gui->invalidate_all()
+#define pcb_hid_redraw(pcb) pcb_gui->invalidate_all(&pcb->hidlib)
 
 #endif

@@ -311,7 +311,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 	}
 	if (pcb_gui != NULL)
-		pcb_gui->invalidate_all();
+		pcb_gui->invalidate_all(&PCB->hidlib);
 
 	quit1:;
 	pcb_tempfile_unlink(tmp_fn);

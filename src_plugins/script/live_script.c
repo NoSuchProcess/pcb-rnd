@@ -32,6 +32,7 @@
 #include <genht/hash.h>
 
 #include "actions.h"
+#include "board.h"
 #include "plugins.h"
 #include "hid_cfg.h"
 #include "hid_dad.h"
@@ -298,7 +299,7 @@ static int live_run(live_script_t *lvs)
 		pcb_undo_inc_serial();
 	lvs->undo_post = pcb_undo_serial();
 
-	pcb_gui->invalidate_all(); /* if the script drew anything, get it displayed */
+	pcb_gui->invalidate_all(&PCB->hidlib); /* if the script drew anything, get it displayed */
 
 	pcb_tempfile_unlink(fn);
 	return res;
@@ -319,7 +320,7 @@ static int live_undo(live_script_t *lvs)
 		return 1;
 	}
 	pcb_undo_above(lvs->undo_pre);
-	pcb_gui->invalidate_all();
+	pcb_gui->invalidate_all(&PCB->hidlib);
 	return 0;
 }
 

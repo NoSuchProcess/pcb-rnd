@@ -411,7 +411,7 @@ fgw_error_t pcb_act_ExecuteFile(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	defer_updates = 0;
 	if (defer_needs_update) {
 		pcb_undo_inc_serial();
-		pcb_gui->invalidate_all();
+		pcb_gui->invalidate_all(&PCB->hidlib);
 	}
 	fclose(fp);
 	PCB_ACT_IRES(0);

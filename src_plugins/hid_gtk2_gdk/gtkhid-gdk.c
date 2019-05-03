@@ -134,7 +134,7 @@ static void set_clip(render_priv_t *priv, GdkGC *gc)
 		gdk_gc_set_clip_mask(gc, NULL);
 }
 
-static inline void ghid_gdk_draw_grid_global(void)
+static inline void ghid_gdk_draw_grid_global(pcb_hidlib_t *hidlib)
 {
 	render_priv_t *priv = gport->render_priv;
 	pcb_coord_t x, y, x1, y1, x2, y2, grd;
@@ -142,12 +142,12 @@ static inline void ghid_gdk_draw_grid_global(void)
 	static GdkPoint *points = NULL;
 	static int npoints = 0;
 
-	x1 = pcb_grid_fit(MAX(0, SIDE_X(&gport->view, gport->view.x0)), PCB->hidlib.grid, PCB->hidlib.grid_ox);
-	y1 = pcb_grid_fit(MAX(0, SIDE_Y(&gport->view, gport->view.y0)), PCB->hidlib.grid, PCB->hidlib.grid_oy);
-	x2 = pcb_grid_fit(MIN(PCB->hidlib.size_x, SIDE_X(&gport->view, gport->view.x0 + gport->view.width - 1)), PCB->hidlib.grid, PCB->hidlib.grid_ox);
-	y2 = pcb_grid_fit(MIN(PCB->hidlib.size_y, SIDE_Y(&gport->view, gport->view.y0 + gport->view.height - 1)), PCB->hidlib.grid, PCB->hidlib.grid_oy);
+	x1 = pcb_grid_fit(MAX(0, SIDE_X(&gport->view, gport->view.x0)), hidlib->grid, hidlib->grid_ox);
+	y1 = pcb_grid_fit(MAX(0, SIDE_Y(&gport->view, gport->view.y0)), hidlib->grid, hidlib->grid_oy);
+	x2 = pcb_grid_fit(MIN(PCB->hidlib.size_x, SIDE_X(&gport->view, gport->view.x0 + gport->view.width - 1)), hidlib->grid, hidlib->grid_ox);
+	y2 = pcb_grid_fit(MIN(PCB->hidlib.size_y, SIDE_Y(&gport->view, gport->view.y0 + gport->view.height - 1)), hidlib->grid, hidlib->grid_oy);
 
-	grd = PCB->hidlib.grid;
+	grd = hidlib->grid;
 
 	if (Vz(grd) < conf_hid_gtk.plugins.hid_gtk.global_grid.min_dist_px) {
 		if (!conf_hid_gtk.plugins.hid_gtk.global_grid.sparse)
@@ -195,7 +195,7 @@ static inline void ghid_gdk_draw_grid_global(void)
 	}
 }
 
-static void ghid_gdk_draw_grid_local_(pcb_coord_t cx, pcb_coord_t cy, int radius)
+static void ghid_gdk_draw_grid_local_(pcb_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy, int radius)
 {
 	render_priv_t *priv = gport->render_priv;
 	static GdkPoint *points_base = NULL;
@@ -219,8 +219,8 @@ static void ghid_gdk_draw_grid_local_(pcb_coord_t cx, pcb_coord_t cy, int radius
 		recalc = 1;
 	}
 
-	if (last_grid != PCB->hidlib.grid) {
-		last_grid = PCB->hidlib.grid;
+	if (last_grid != hidlib->grid) {
+		last_grid = hidlib->grid;
 		recalc = 1;
 	}
 
@@ -232,8 +232,8 @@ static void ghid_gdk_draw_grid_local_(pcb_coord_t cx, pcb_coord_t cy, int radius
 			int y2 = y*y;
 			for(x = -radius; x <= radius; x++) {
 				if (x*x + y2 < r2) {
-					points_base[npoints].x = x*PCB->hidlib.grid;
-					points_base[npoints].y = y*PCB->hidlib.grid;
+					points_base[npoints].x = x*hidlib->grid;
+					points_base[npoints].y = y*hidlib->grid;
 					npoints++;
 				}
 			}
@@ -253,31 +253,31 @@ static void ghid_gdk_draw_grid_local_(pcb_coord_t cx, pcb_coord_t cy, int radius
 static int grid_local_have_old = 0, grid_local_old_r = 0;
 static pcb_coord_t grid_local_old_x, grid_local_old_y;
 
-static void ghid_gdk_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy)
+static void ghid_gdk_draw_grid_local(pcb_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy)
 {
 	if (grid_local_have_old) {
-		ghid_gdk_draw_grid_local_(grid_local_old_x, grid_local_old_y, grid_local_old_r);
+		ghid_gdk_draw_grid_local_(hidlib, grid_local_old_x, grid_local_old_y, grid_local_old_r);
 		grid_local_have_old = 0;
 	}
 
 	if (!conf_hid_gtk.plugins.hid_gtk.local_grid.enable)
 		return;
 
-	if ((Vz(PCB->hidlib.grid) < PCB_MIN_GRID_DISTANCE) || (!pcbhl_conf.editor.draw_grid))
+	if ((Vz(hidlib->grid) < PCB_MIN_GRID_DISTANCE) || (!pcbhl_conf.editor.draw_grid))
 		return;
 
 	/* cx and cy are the actual cursor snapped to wherever - round them to the nearest real grid point */
-	cx = (cx / PCB->hidlib.grid) * PCB->hidlib.grid + PCB->hidlib.grid_ox;
-	cy = (cy / PCB->hidlib.grid) * PCB->hidlib.grid + PCB->hidlib.grid_oy;
+	cx = (cx / hidlib->grid) * hidlib->grid + hidlib->grid_ox;
+	cy = (cy / hidlib->grid) * hidlib->grid + hidlib->grid_oy;
 
 	grid_local_have_old = 1;
-	ghid_gdk_draw_grid_local_(cx, cy, conf_hid_gtk.plugins.hid_gtk.local_grid.radius);
+	ghid_gdk_draw_grid_local_(hidlib, cx, cy, conf_hid_gtk.plugins.hid_gtk.local_grid.radius);
 	grid_local_old_x = cx;
 	grid_local_old_y = cy;
 	grid_local_old_r = conf_hid_gtk.plugins.hid_gtk.local_grid.radius;
 }
 
-static void ghid_gdk_draw_grid(void)
+static void ghid_gdk_draw_grid(pcb_hidlib_t *hidlib)
 {
 	static GdkColormap *colormap = NULL;
 	render_priv_t *priv = gport->render_priv;
@@ -304,15 +304,15 @@ static void ghid_gdk_draw_grid(void)
 	}
 
 	if (conf_hid_gtk.plugins.hid_gtk.local_grid.enable) {
-		ghid_gdk_draw_grid_local(grid_local_old_x, grid_local_old_y);
+		ghid_gdk_draw_grid_local(hidlib, grid_local_old_x, grid_local_old_y);
 		return;
 	}
 
-	ghid_gdk_draw_grid_global();
+	ghid_gdk_draw_grid_global(hidlib);
 }
 
 /* ------------------------------------------------------------ */
-static void ghid_gdk_draw_bg_image(void)
+static void ghid_gdk_draw_bg_image(pcb_hidlib_t *hidlib)
 {
 	static GdkPixbuf *pixbuf;
 	GdkInterpType interp_type;
@@ -337,8 +337,8 @@ static void ghid_gdk_draw_bg_image(void)
 		src_y = 0;
 	}
 
-	w = PCB->hidlib.size_x / gport->view.coord_per_px;
-	h = PCB->hidlib.size_y / gport->view.coord_per_px;
+	w = hidlib->size_x / gport->view.coord_per_px;
+	h = hidlib->size_y / gport->view.coord_per_px;
 	src_x = src_x / gport->view.coord_per_px;
 	src_y = src_y / gport->view.coord_per_px;
 	dst_x = dst_x / gport->view.coord_per_px;
@@ -1027,7 +1027,7 @@ static void ghid_gdk_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 		gdk_draw_rectangle(priv->out_clip, priv->clip_gc, TRUE, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
 }
 
-static void redraw_region(GdkRectangle * rect)
+static void redraw_region(pcb_hidlib_t *hidlib, GdkRectangle *rect)
 {
 	int eleft, eright, etop, ebottom;
 	pcb_hid_expose_ctx_t ctx;
@@ -1057,15 +1057,15 @@ static void redraw_region(GdkRectangle * rect)
 	ctx.view.X2 = MAX(Px(priv->clip_rect.x), Px(priv->clip_rect.x + priv->clip_rect.width + 1));
 	ctx.view.Y2 = MAX(Py(priv->clip_rect.y), Py(priv->clip_rect.y + priv->clip_rect.height + 1));
 
-	ctx.view.X1 = MAX(0, MIN(PCB->hidlib.size_x, ctx.view.X1));
-	ctx.view.X2 = MAX(0, MIN(PCB->hidlib.size_x, ctx.view.X2));
-	ctx.view.Y1 = MAX(0, MIN(PCB->hidlib.size_y, ctx.view.Y1));
-	ctx.view.Y2 = MAX(0, MIN(PCB->hidlib.size_y, ctx.view.Y2));
+	ctx.view.X1 = MAX(0, MIN(hidlib->size_x, ctx.view.X1));
+	ctx.view.X2 = MAX(0, MIN(hidlib->size_x, ctx.view.X2));
+	ctx.view.Y1 = MAX(0, MIN(hidlib->size_y, ctx.view.Y1));
+	ctx.view.Y2 = MAX(0, MIN(hidlib->size_y, ctx.view.Y2));
 
 	eleft = Vx(0);
-	eright = Vx(PCB->hidlib.size_x);
+	eright = Vx(hidlib->size_x);
 	etop = Vy(0);
-	ebottom = Vy(PCB->hidlib.size_y);
+	ebottom = Vy(hidlib->size_y);
 	if (eleft > eright) {
 		int tmp = eleft;
 		eleft = eright;
@@ -1096,10 +1096,10 @@ static void redraw_region(GdkRectangle * rect)
 
 	gdk_draw_rectangle(priv->out_pixel, priv->bg_gc, 1, eleft, etop, eright - eleft + 1, ebottom - etop + 1);
 
-	ghid_gdk_draw_bg_image();
+	ghid_gdk_draw_bg_image(hidlib);
 
 	pcb_hid_expose_all(&gtk2_gdk_hid, &ctx, NULL);
-	ghid_gdk_draw_grid();
+	ghid_gdk_draw_grid(hidlib);
 
 	/* In some cases we are called with the crosshair still off */
 	if (priv->attached_invalidate_depth == 0)
@@ -1115,7 +1115,7 @@ static void redraw_region(GdkRectangle * rect)
 	gdk_gc_set_clip_mask(priv->bg_gc, NULL);
 }
 
-static void ghid_gdk_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
+static void ghid_gdk_invalidate_lr(pcb_hidlib_t *hidlib, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
 {
 	int dleft, dright, dtop, dbottom;
 	int minx, maxx, miny, maxy;
@@ -1136,20 +1136,20 @@ static void ghid_gdk_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coor
 	rect.width = maxx - minx;
 	rect.height = maxy - miny;
 
-	redraw_region(&rect);
+	redraw_region(hidlib, &rect);
 	ghid_gdk_screen_update();
 }
 
 
-static void ghid_gdk_invalidate_all()
+static void ghid_gdk_invalidate_all(pcb_hidlib_t *hidlib)
 {
 	if (ghidgui && ghidgui->topwin.menu.menu_bar) {
-		redraw_region(NULL);
+		redraw_region(hidlib, NULL);
 		ghid_gdk_screen_update();
 	}
 }
 
-static void ghid_gdk_notify_crosshair_change(pcb_bool changes_complete)
+static void ghid_gdk_notify_crosshair_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
 {
 	render_priv_t *priv = gport->render_priv;
 
@@ -1168,7 +1168,7 @@ static void ghid_gdk_notify_crosshair_change(pcb_bool changes_complete)
 		 * As we know the crosshair will have been shown already, we must
 		 * repaint the entire view to be sure not to leave an artaefact.
 		 */
-		ghid_gdk_invalidate_all();
+		ghid_gdk_invalidate_all(hidlib);
 		return;
 	}
 
@@ -1184,7 +1184,7 @@ static void ghid_gdk_notify_crosshair_change(pcb_bool changes_complete)
 	}
 }
 
-static void ghid_gdk_notify_mark_change(pcb_bool changes_complete)
+static void ghid_gdk_notify_mark_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
 {
 	render_priv_t *priv = gport->render_priv;
 
@@ -1202,7 +1202,7 @@ static void ghid_gdk_notify_mark_change(pcb_bool changes_complete)
 		 * As we know the mark will have been shown already, we must
 		 * repaint the entire view to be sure not to leave an artaefact.
 		 */
-		ghid_gdk_invalidate_all();
+		ghid_gdk_invalidate_all(hidlib);
 		return;
 	}
 

@@ -182,7 +182,7 @@ pcb_hid_gc_t ghid_gl_make_gc(void)
 	return rv;
 }
 
-void ghid_gl_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy)
+void ghid_gl_draw_grid_local(pcb_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy)
 {
 	/* cx and cy are the actual cursor snapped to wherever - round them to the nearest real grid point */
 	grid_local_x = (cx / PCB->hidlib.grid) * PCB->hidlib.grid + PCB->hidlib.grid_ox;
@@ -543,18 +543,18 @@ static void ghid_gl_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, p
 	hidgl_fill_rect(x1, y1, x2, y2);
 }
 
-void ghid_gl_invalidate_all()
+void ghid_gl_invalidate_all(pcb_hidlib_t *hidlib)
 {
 	if (ghidgui && ghidgui->topwin.menu.menu_bar)
 		ghid_draw_area_update(gport, NULL);
 }
 
-void ghid_gl_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
+void ghid_gl_invalidate_lr(pcb_hidlib_t *hidlib, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
 {
 	ghid_gl_invalidate_all();
 }
 
-static void ghid_gl_notify_crosshair_change(pcb_bool changes_complete)
+static void ghid_gl_notify_crosshair_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
 {
 	/* We sometimes get called before the GUI is up */
 	if (gport->drawing_area == NULL)
@@ -564,14 +564,14 @@ static void ghid_gl_notify_crosshair_change(pcb_bool changes_complete)
 	ghid_gl_invalidate_all();
 }
 
-static void ghid_gl_notify_mark_change(pcb_bool changes_complete)
+static void ghid_gl_notify_mark_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
 {
 	/* We sometimes get called before the GUI is up */
 	if (gport->drawing_area == NULL)
 		return;
 
 	/* FIXME: We could just invalidate the bounds of the mark? */
-	ghid_gl_invalidate_all();
+	ghid_gl_invalidate_all(hidlib);
 }
 
 static void pcb_gl_draw_right_cross(GLint x, GLint y, GLint z)

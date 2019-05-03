@@ -232,7 +232,7 @@ static void pcb_lookup_conns_to_all_subcs(FILE *f)
 
 	if (conf_core.editor.beep_when_finished)
 		pcb_gui->beep();
-	pcb_hid_redraw();
+	pcb_hid_redraw(PCB);
 }
 
 static FILE *pcb_check_and_open_file(const char *Filename)

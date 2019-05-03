@@ -74,7 +74,7 @@ static void pref_color_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pref_ctx_t *ctx = caller_data;
 	const char *path = attr->user_data;
 	conf_setf(ctx->role, path, -1, "%s", attr->default_val.clr_value.str);
-	pcb_gui->invalidate_all();
+	pcb_gui->invalidate_all(&PCB->hidlib);
 }
 
 static void pref_color_layer_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
