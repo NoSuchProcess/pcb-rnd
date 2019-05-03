@@ -120,7 +120,7 @@ void pcb_events_uninit(void);
 
 /* Event callback prototype; user_data is the same as in pcb_event_bind().
    argv[0] is always an PCB_EVARG_INT with the event id that triggered the event. */
-typedef void (pcb_event_handler_t) (void *user_data, int argc, pcb_event_arg_t argv[]);
+typedef void (pcb_event_handler_t)(void *user_data, int argc, pcb_event_arg_t argv[]);
 
 /* Bind: add a handler to the call-list of an event; the cookie is also remembered
    so that mass-unbind is easier later. user_data is passed to the handler. */
