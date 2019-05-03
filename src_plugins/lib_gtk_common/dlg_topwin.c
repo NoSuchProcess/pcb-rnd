@@ -595,7 +595,6 @@ void ghid_create_pcb_widgets(pcb_gtk_topwin_t *tw, GtkWidget *in_top_window)
 	ghid_update_toggle_flags(tw, NULL);
 
 	pcb_gtk_icons_init(GTK_WINDOW(tw->com->top_window));
-	pcb_tool_select_by_id(PCB_MODE_ARROW);
 }
 
 void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw)
