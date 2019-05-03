@@ -64,7 +64,6 @@ append /local/pcb/OBJS_HIDLIB [@
 	color.o
 	conf.o
 	conf_hid.o
-	conf_internal.o
 	compat_fs.o
 	compat_lrealpath.o
 	compat_misc.o
@@ -131,6 +130,7 @@ append /local/pcb/OBJS [@
 	change_act.o
 	conf_act.o
 	conf_core.o
+	conf_internal.o
 	crosshair.o
 	data.o
 	draw.o
