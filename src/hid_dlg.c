@@ -280,6 +280,7 @@ static const char *event_dlg_cookie = "hid_dlg";
 static void hid_dlg_log_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	hid_dlg_gui_inited = 1;
+	pcb_tool_gui_init();
 }
 
 void pcb_hid_dlg_uninit(void)

@@ -699,10 +699,8 @@ int main(int argc, char *argv[])
 		if (pcb_gui != NULL) {
 			/* init the next GUI */
 			pcb_gui->parse_arguments(&hid_argc, &hid_argv);
-			if (pcb_gui->gui) {
+			if (pcb_gui->gui)
 				pcb_crosshair_init();
-				pcb_tool_gui_init();
-			}
 			pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_ARROW);
 			pcb_event(&PCB->hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);
 		}
