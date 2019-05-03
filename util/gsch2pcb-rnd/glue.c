@@ -58,7 +58,7 @@ void pcb_trace(const char *Format, ...)
 const char *pcb_board_get_filename(void) { return NULL; }
 const char *pcb_board_get_name(void) { return NULL; }
 
-void pcb_event(pcb_event_id_t ev, const char *fmt, ...)
+void pcb_event(pcb_hidlib_t *hidlib, pcb_event_id_t ev, const char *fmt, ...)
 {
 
 }
