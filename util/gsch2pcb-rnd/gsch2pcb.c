@@ -207,7 +207,7 @@ static void load_project(char * path)
 	char *s, buf[1024], config[32], arg[768];
 	int n;
 
-	f = pcb_fopen(path, "r");
+	f = pcb_fopen(NULL, path, "r");
 	if (!f)
 		return;
 
