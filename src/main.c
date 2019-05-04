@@ -402,6 +402,21 @@ void pcb_fix_locale(void)
 	setlocale(LC_ALL, "C");
 }
 
+static void load_gui_support_plugins(void)
+{
+	static int loaded = 0;
+	if (!loaded) {
+		static const char *plugin_name = "dialogs";
+		int state = 0;
+		void *h;
+		loaded = 1;
+		pcb_message(PCB_MSG_DEBUG, "Loading GUI support plugin: '%s'\n", plugin_name);
+		h = pup_load(&pcb_pup, (const char **)pcb_pup_paths, plugin_name, 0, &state);
+		if (h == NULL)
+			pcb_message(PCB_MSG_ERROR, "Error: failed to load GUI support plugin '%s'\n-> expect missing widgets and dialog boxes\n", plugin_name);
+	}
+}
+
 #define we_are_exporting (pcb_gui->printer || pcb_gui->exporter)
 
 int main(int argc, char *argv[])
@@ -595,6 +610,9 @@ int main(int argc, char *argv[])
 	if (!pcb_gui)
 		exit(1);
 
+	if (PCB_HAVE_GUI_ATTR_DLG)
+		load_gui_support_plugins();
+
 /* Initialize actions only when the gui is already known so only the right
    one is registered (there can be only one GUI). */
 #include "generated_lists.h"
@@ -695,6 +713,8 @@ int main(int argc, char *argv[])
 			pcb_gui->set_hidlib(&PCB->hidlib);
 		pcb_gui->do_export(&PCB->hidlib, 0);
 		pcb_gui = pcb_next_gui;
+		if (PCB_HAVE_GUI_ATTR_DLG)
+			load_gui_support_plugins();
 		pcb_next_gui = NULL;
 		if (pcb_gui != NULL) {
 			/* init the next GUI */
