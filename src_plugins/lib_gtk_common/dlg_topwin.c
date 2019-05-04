@@ -445,7 +445,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	tw->layer_selector = pcb_gtk_layersel_build(tw->com, &tw->layersel);
 
 	/* Build main menu */
-	tw->menu.menu_bar = ghid_load_menus(&tw->menu, &tw->ghid_cfg);
+	tw->menu.menu_bar = ghid_load_menus(&tw->menu, tw->com->hidlib, &tw->ghid_cfg);
 	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), tw->menu.menu_bar, FALSE, FALSE, 0);
 
 	tw->dockbox[PCB_HID_DOCK_TOP_LEFT] = gtkc_hbox_new(TRUE, 2);

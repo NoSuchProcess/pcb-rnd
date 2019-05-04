@@ -21,6 +21,7 @@ typedef struct pcb_gtk_menu_ctx_s {
 	GtkWidget *menu_bar;
 	conf_hid_id_t ghid_menuconf_id;
 	void (*confchg_checkbox)(conf_native_t *cfg, int arr_idx);
+	pcb_hidlib_t *hidlib;
 } pcb_gtk_menu_ctx_t;
 
 GType ghid_main_menu_get_type(void);
@@ -37,7 +38,7 @@ int ghid_create_menu_widget(void *ctx_, const char *path, const char *name, int 
 
 void menu_toggle_update_cb(GtkAction * act, const char *tflag, const char *aflag);
 
-GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, pcb_hid_cfg_t **cfg_out);
+GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, pcb_hidlib_t *hidlib, pcb_hid_cfg_t **cfg_out);
 
 GtkWidget *pcb_gtk_menu_widget(lht_node_t *node);
 

@@ -427,20 +427,26 @@ void menu_toggle_update_cb(GtkAction *act, const char *tflag, const char *aflag)
    executed. */
 static void ghid_menu_cb(GtkAction *action, const lht_node_t *node)
 {
+	pcb_gtk_menu_ctx_t *menu;
+
 	if (action == NULL || node == NULL)
 		return;
 
+	menu = node->doc->root->user_data;
+
 	pcb_hid_cfg_action(node);
 
-	pcb_event(NULL, PCB_EVENT_GUI_SYNC, NULL);
+	pcb_event(menu->hidlib, PCB_EVENT_GUI_SYNC, NULL);
 }
 
 
-GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, pcb_hid_cfg_t **cfg_out)
+GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, pcb_hidlib_t *hidlib, pcb_hid_cfg_t **cfg_out)
 {
 	const lht_node_t *mr;
 	GtkWidget *menu_bar = NULL;
 	extern const char *pcb_menu_default;
+
+	menu->hidlib = hidlib;
 
 	*cfg_out = pcb_hid_cfg_load("gtk", 0, pcb_menu_default);
 	if (*cfg_out == NULL) {
@@ -452,6 +458,7 @@ GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, pcb_hid_cfg_t **cfg_out)
 	if (mr != NULL) {
 		menu_bar = ghid_main_menu_new(G_CALLBACK(ghid_menu_cb));
 		ghid_main_menu_add_node(menu, GHID_MAIN_MENU(menu_bar), mr);
+		mr->doc->root->user_data = menu;
 	}
 
 	mr = pcb_hid_cfg_get_menu(*cfg_out, "/popups");
@@ -463,6 +470,7 @@ GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, pcb_hid_cfg_t **cfg_out)
 		}
 		else
 			pcb_hid_cfg_error(mr, "/popups should be a list");
+		mr->doc->root->user_data = menu;
 	}
 
 	mr = pcb_hid_cfg_get_menu(*cfg_out, "/mouse");
