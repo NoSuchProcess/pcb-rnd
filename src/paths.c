@@ -31,18 +31,16 @@
 #include "config.h"
 #include "paths.h"
 #include "error.h"
+#include "hidlib.h"
 #include "hidlib_conf.h"
 
-/* don't include board.h or compat_misc.h because of gsch2pcb-rnd */
-const char *pcb_board_get_filename(void);
-const char *pcb_board_get_name(void);
 int pcb_getpid(void);
-
 
 int pcb_build_fn_cb(void *ctx, gds_t *s, const char **input)
 {
+	pcb_hidlib_t *hidlib = ctx;
 	char buff[20];
-	const char *name;
+	const char *name = NULL;
 
 	switch(**input) {
 		case 'P':
@@ -51,12 +49,14 @@ int pcb_build_fn_cb(void *ctx, gds_t *s, const char **input)
 			(*input)++;
 			return 0;
 		case 'F':
-			name = pcb_board_get_filename();
-			gds_append_str(s, (name != NULL) ? name : "PCB-anon");
+			if (hidlib != NULL)
+				name = hidlib->filename;
+			gds_append_str(s, (name != NULL) ? name : "no_filename");
 			(*input)++;
 			return 0;
 		case 'B':
-			name = pcb_board_get_filename();
+			if (hidlib != NULL)
+				name = hidlib->filename;
 			if (name != NULL) {
 				const char *bn = strrchr(name, '/');
 				if (bn != NULL)
@@ -70,7 +70,8 @@ int pcb_build_fn_cb(void *ctx, gds_t *s, const char **input)
 			(*input)++;
 			return 0;
 		case 'D':
-			name = pcb_board_get_filename();
+			if (hidlib != NULL)
+				name = hidlib->filename;
 			if (name != NULL) {
 				char *bn = strrchr(name, '/');
 				if (bn != NULL)
@@ -83,7 +84,8 @@ int pcb_build_fn_cb(void *ctx, gds_t *s, const char **input)
 			(*input)++;
 			return 0;
 		case 'N':
-			name = pcb_board_get_name();
+			if (hidlib != NULL)
+				name = hidlib->name;
 			gds_append_str(s, (name != NULL) ? name : "no_name");
 			(*input)++;
 			return 0;
@@ -98,21 +100,21 @@ int pcb_build_fn_cb(void *ctx, gds_t *s, const char **input)
 
 int pcb_build_argfn_cb(void *ctx_, gds_t *s, const char **input)
 {
+	pcb_build_argfn_t *ctx = ctx_;
 	if ((**input >= 'a') && (**input <= 'z')) {
 		int idx = **input - 'a';
-		pcb_build_argfn_t *ctx = ctx_;
 		if (ctx->params[idx] == NULL)
 			return -1;
 		gds_append_str(s, ctx->params[idx]);
 		(*input)++;
 		return 0;
 	}
-	return pcb_build_fn_cb(NULL, s, input);
+	return pcb_build_fn_cb(ctx->hidlib, s, input);
 }
 
-char *pcb_build_fn(const char *template)
+char *pcb_build_fn(pcb_hidlib_t *hidlib, const char *template)
 {
-	return pcb_strdup_subst(template, pcb_build_fn_cb, NULL, PCB_SUBST_ALL);
+	return pcb_strdup_subst(template, pcb_build_fn_cb, hidlib, PCB_SUBST_ALL);
 }
 
 char *pcb_build_argfn(const char *template, pcb_build_argfn_t *arg)
@@ -280,24 +282,24 @@ char *pcb_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, cons
 	return pcb_strdup_subst_(template, cb, ctx, flags, 0);
 }
 
-void pcb_paths_resolve(const char **in, char **out, int numpaths, unsigned int extra_room, int quiet)
+void pcb_paths_resolve(pcb_hidlib_t *hidlib, const char **in, char **out, int numpaths, unsigned int extra_room, int quiet)
 {
 	pcb_strdup_subst_t flags = PCB_SUBST_ALL;
 	if (quiet)
 		flags |= PCB_SUBST_QUIET;
 	for (; numpaths > 0; numpaths--, in++, out++)
-		*out = pcb_strdup_subst_(*in, pcb_build_fn_cb, NULL, flags, extra_room);
+		*out = pcb_strdup_subst_(*in, pcb_build_fn_cb, hidlib, flags, extra_room);
 }
 
-void pcb_path_resolve(const char *in, char **out, unsigned int extra_room, int quiet)
+void pcb_path_resolve(pcb_hidlib_t *hidlib, const char *in, char **out, unsigned int extra_room, int quiet)
 {
-	pcb_paths_resolve(&in, out, 1, extra_room, quiet);
+	pcb_paths_resolve(hidlib, &in, out, 1, extra_room, quiet);
 }
 
-char *pcb_path_resolve_inplace(char *in, unsigned int extra_room, int quiet)
+char *pcb_path_resolve_inplace(pcb_hidlib_t *hidlib, char *in, unsigned int extra_room, int quiet)
 {
 	char *out;
-	pcb_path_resolve(in, &out, extra_room, quiet);
+	pcb_path_resolve(hidlib, in, &out, extra_room, quiet);
 	free(in);
 	return out;
 }

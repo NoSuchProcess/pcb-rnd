@@ -2396,6 +2396,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 			memset(&p, 0, sizeof(p));
 			p.params['p' - 'a'] = Path;
 			p.params['f' - 'a'] = Filename;
+			p.hidlib = &PCB->hidlib;
 			command = pcb_build_argfn(Executable, &p);
 			/* open pipe to stdout of command */
 			if (*command == '\0' || (pcb_in = pcb_popen(command, "r")) == NULL) {

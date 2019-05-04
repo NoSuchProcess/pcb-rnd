@@ -84,6 +84,7 @@ static int ReadNetlist(const char *filename)
 		memset(&p, 0, sizeof(p));
 		p.params['p'-'a'] = conf_core.rc.rat_path;
 		p.params['f'-'a'] = filename;
+		p.hidlib = &PCB->hidlib;
 		command = pcb_build_argfn(conf_core.rc.rat_command, &p);
 
 		/* open pipe to stdout of command */

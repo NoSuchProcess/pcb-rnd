@@ -19,7 +19,8 @@ static void ghid_gui_sync(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 {
 	/* Sync gui status display with pcb state */
 	pcb_tool_adjust_attached_objects();
-	ghid_invalidate_all(hidlib);
+	if (gport->drawing_area != NULL)
+		ghid_invalidate_all(hidlib);
 	ghidgui->common.window_set_name_label(ghidgui->common.hidlib->name);
 
 	/* Sync menu checkboxes */

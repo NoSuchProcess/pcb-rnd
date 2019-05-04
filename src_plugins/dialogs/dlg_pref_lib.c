@@ -90,7 +90,7 @@ static void pref_lib_conf2dlg_post(conf_native_t *cfg, int arr_idx)
 	conf_loop_list_str(&conf_core.rc.library_search_paths, i, s, idx) {
 		char *tmp;
 		cell[0] = pcb_strdup(i->payload);
-		pcb_path_resolve(cell[0], &tmp, 0, pcb_false);
+		pcb_path_resolve(&PCB->hidlib, cell[0], &tmp, 0, pcb_false);
 		cell[1] = pcb_strdup(tmp == NULL ? "" : tmp);
 		cell[2] = pcb_strdup((i->prop.src->file_name == NULL ? SRC_BRD : i->prop.src->file_name));
 		cell[3] = NULL;
@@ -231,7 +231,7 @@ static void lib_cell_edit_update(void *hid_ctx, void *caller_data, pcb_hid_attri
 	cell_edit_ctx_t *ctx = caller_data;
 	char *tmp;
 
-	pcb_path_resolve(ctx->dlg[ctx->wpath].default_val.str_value, &tmp, 0, pcb_true);
+	pcb_path_resolve(&PCB->hidlib, ctx->dlg[ctx->wpath].default_val.str_value, &tmp, 0, pcb_true);
 	if (tmp != NULL)
 		PCB_DAD_SET_VALUE(hid_ctx, ctx->wexp, str_value, tmp);
 }

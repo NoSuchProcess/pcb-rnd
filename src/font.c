@@ -100,7 +100,7 @@ void pcb_font_create_default(pcb_board_t *pcb)
 {
 	int res = -1;
 	pcb_io_err_inhibit_inc();
-	conf_list_foreach_path_first(res, &conf_core.rc.default_font_file, pcb_parse_font_default(&pcb->fontkit.dflt, __path__));
+	conf_list_foreach_path_first(&pcb->hidlib, res, &conf_core.rc.default_font_file, pcb_parse_font_default(&pcb->fontkit.dflt, __path__));
 	pcb_io_err_inhibit_dec();
 
 	if (res != 0) {

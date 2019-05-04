@@ -30,6 +30,8 @@
 
 #include "../src_plugins/lib_hid_common/menu_helper.h"
 
+extern pcb_hidlib_t *ltf_hidlib;
+
 Widget lesstif_menubar;
 pcb_hid_cfg_t *lesstif_cfg;
 conf_hid_id_t lesstif_menuconf_id = -1;
@@ -551,7 +553,7 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 	screen = DefaultScreen(display);
 	cmap = DefaultColormap(display, screen);
 
-	lesstif_cfg = pcb_hid_cfg_load("lesstif", 0, pcb_menu_default);
+	lesstif_cfg = pcb_hid_cfg_load(ltf_hidlib, "lesstif", 0, pcb_menu_default);
 	lesstif_hid.hid_cfg = lesstif_cfg;
 	if (lesstif_cfg == NULL) {
 		pcb_message(PCB_MSG_ERROR, "FATAL: can't load the lesstif menu res either from file or from hardwired default.");

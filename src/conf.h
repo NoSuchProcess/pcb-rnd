@@ -252,7 +252,7 @@ int conf_replace_subtree(conf_role_t dst_role, const char *dst_path, conf_role_t
 void conf_reset(conf_role_t target, const char *source_fn);
 
 /* Save an in-memory lihata representation to the disk */
-int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role, const char *fn);
+int conf_save_file(pcb_hidlib_t *hidlib, const char *project_fn, const char *pcb_fn, conf_role_t role, const char *fn);
 
 /* Returns whether a given lihata tree is locked */
 int conf_islocked(conf_role_t target);
@@ -284,7 +284,7 @@ int conf_print_native(conf_pfn pfn, void *ctx, const char * prefix, int verbose,
 
 void conf_setf(conf_role_t role, const char *path, int idx, const char *fmt, ...);
 
-#define conf_list_foreach_path_first(res, conf_list, call) \
+#define conf_list_foreach_path_first(hidlib, res, conf_list, call) \
 do { \
 	conf_listitem_t *__n__; \
 	const conflist_t *__lst1__ = (conf_list); \
@@ -295,7 +295,7 @@ do { \
 			const char **__in__ = __n__->val.string; \
 			if (__in__ == NULL) \
 				continue; \
-			pcb_path_resolve(*__in__, &__path__, 0, pcb_false); \
+			pcb_path_resolve(hidlib, *__in__, &__path__, 0, pcb_false); \
 			res = call; \
 			free(__path__); \
 			if (res == 0) \

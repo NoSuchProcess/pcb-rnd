@@ -40,7 +40,7 @@ struct pcb_hid_cfg_s {
 
 /* Search and load the menu res for hidname; if not found, and embedded_fallback
    is not NULL, parse that string instead. Returns NULL on error */
-pcb_hid_cfg_t *pcb_hid_cfg_load(const char *fn, int exact_fn, const char *embedded_fallback);
+pcb_hid_cfg_t *pcb_hid_cfg_load(pcb_hidlib_t *hidlib, const char *fn, int exact_fn, const char *embedded_fallback);
 
 /* Generic, low level lihata loader */
 lht_doc_t *pcb_hid_cfg_load_lht(const char *filename);

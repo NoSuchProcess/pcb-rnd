@@ -1510,7 +1510,7 @@ static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fi
 		   Thus this feature should be disabled */
 		if ((fnpat != NULL) && (*fnpat != '\0')) {
 			char *orig_fn, *end;
-			char *pcb_fn = pcb_strdup_subst(fnpat, pcb_build_fn_cb, NULL, PCB_SUBST_ALL);
+			char *pcb_fn = pcb_strdup_subst(fnpat, pcb_build_fn_cb, &PCB->hidlib, PCB_SUBST_ALL);
 			
 			orig_fn = PCB->hidlib.filename;
 			PCB->hidlib.filename = NULL;

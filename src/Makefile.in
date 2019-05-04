@@ -82,6 +82,7 @@ append /local/pcb/OBJS_HIDLIB [@
 	hid_dad_spin.o
 	hid_init.o
 	hid_nogui.o
+	hidlib.o
 	hidlib_conf.o
 	list_conf.o
 	misc_util.o
@@ -237,11 +238,6 @@ append /local/pcb/OBJS [@
 	../src_3rd/libuundo/uundo_debug.o
 @]
 
-# linked only in the hidlib, dummy/bridge code
-append /local/pcb/OBJS_HIDLIB_ONLY [@
-	hidlib.o
-@]
-
 put /local/pcb/LIBS_3RD [@
 	../src_3rd/puplug/libpuplug.a
 	../src_3rd/libminuid/libminuid.a
@@ -308,7 +304,6 @@ uniq /local/pcb/OBJS_HIDLIB
 uniq /local/pcb/OBJS_C99_HIDLIB
 uniq /local/pcb/OBJS_HIDLIB_PLG
 uniq /local/pcb/OBJS_C99_HIDLIB_PLG
-uniq /local/pcb/OBJS_HIDLIB_ONLY
 uniq /local/pcb/OBJS_UTIL
 uniq /local/pcb/CFLAGS
 uniq /local/pcb/LDFLAGS
@@ -324,7 +319,6 @@ uniq /local/pcb/all
 put /local/pcb/SRCS /local/pcb/OBJS 
 append /local/pcb/SRCS ?/local/pcb/OBJS_C99
 append /local/pcb/SRCS ?/local/pcb/OBJS_HIDLIB
-append /local/pcb/SRCS ?/local/pcb/OBJS_HIDLIB_ONLY
 gsub /local/pcb/SRCS {.o } {.c }
 
 # Makefile, static
@@ -351,7 +345,6 @@ OBJS_HIDLIB=@/local/pcb/OBJS_HIDLIB@
 OBJS_C99_HIDLIB=@/local/pcb/OBJS_C99_HIDLIB@
 OBJS_HIDLIB_PLG=@/local/pcb/OBJS_HIDLIB_PLG@
 OBJS_C99_HIDLIB_PLG=@/local/pcb/OBJS_C99_HIDLIB_PLG@
-OBJS_HIDLIB_ONLY=@/local/pcb/OBJS_HIDLIB_ONLY@
 OBJS_UTIL=@/local/pcb/OBJS_UTIL@
 SRCS=@/local/pcb/SRCS@
 CFLAGS=@?cc/argstd/std_c99@ @/local/pcb/CFLAGS@
@@ -388,8 +381,8 @@ pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS) $(LIBS_3RD)
 	$(CC) $(OBJS) $(OBJS_C99) -o pcb-rnd$(EXE) $(LIBS_PRE) $(LDFLAGS) $(LIBS)
 
 # temporary, for testig
-hidlib$(EXE): $(OBJS_HIDLIB) $(OBJS_C99_HIDLIB) $(OBJS_HIDLIB_PLG) $(OBJS_C99_HIDLIB_PLG) $(OBJS_HIDLIB_ONLY) $(EXEDEPS) $(LIBS_3RD)
-	$(CC) $(OBJS_HIDLIB_PLG) $(OBJS_C99_HIDLIB_PLG) $(OBJS_HIDLIB) $(OBJS_C99_HIDLIB) $(OBJS_HIDLIB_ONLY) -o hidlib$(EXE) $(LIBS_PRE) $(LDFLAGS) $(LIBS) $(LIBS_3RD)
+hidlib$(EXE): $(OBJS_HIDLIB) $(OBJS_C99_HIDLIB) $(OBJS_HIDLIB_PLG) $(OBJS_C99_HIDLIB_PLG) $(EXEDEPS) $(LIBS_3RD)
+	$(CC) $(OBJS_HIDLIB_PLG) $(OBJS_C99_HIDLIB_PLG) $(OBJS_HIDLIB) $(OBJS_C99_HIDLIB) -o hidlib$(EXE) $(LIBS_PRE) $(LDFLAGS) $(LIBS) $(LIBS_3RD)
 
 
 $(SPHASH_PATH)/sphash: $(SPHASH_PATH)/sphash.c

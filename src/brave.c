@@ -31,6 +31,7 @@
 
 #include <genvector/gds_char.h>
 
+#include "board.h"
 #include "brave.h"
 #include "actions.h"
 #include "conf_core.h"
@@ -185,7 +186,7 @@ static void brave_dialog_save(void *hid_ctx, void *caller_data, pcb_hid_attribut
 {
 	conf_set(CFR_USER, "rc/brave", 0, conf_core.rc.brave, POL_OVERWRITE);
 	if (conf_isdirty(CFR_USER))
-		conf_save_file(NULL, NULL, CFR_USER, NULL);
+		conf_save_file(&PCB->hidlib, NULL, NULL, CFR_USER, NULL);
 }
 
 static int brave_interact(void)

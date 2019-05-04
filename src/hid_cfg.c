@@ -128,7 +128,7 @@ const char *pcb_hid_cfg_text_value(lht_doc_t *doc, const char *path)
 	return n->data.text.value;
 }
 
-pcb_hid_cfg_t *pcb_hid_cfg_load(const char *fn, int exact_fn, const char *embedded_fallback)
+pcb_hid_cfg_t *pcb_hid_cfg_load(pcb_hidlib_t *hidlib, const char *fn, int exact_fn, const char *embedded_fallback)
 {
 	lht_doc_t *doc;
 	pcb_hid_cfg_t *hr;
@@ -146,7 +146,7 @@ pcb_hid_cfg_t *pcb_hid_cfg_load(const char *fn, int exact_fn, const char *embedd
 		int fn_len = strlen(fn);
 
 		doc = NULL;
-		pcb_paths_resolve_all(hid_cfg_paths_in, paths, fn_len+32, pcb_false);
+		pcb_paths_resolve_all(hidlib, hid_cfg_paths_in, paths, fn_len+32, pcb_false);
 		for(p = paths; *p != NULL; p++) {
 			if (doc == NULL) {
 				char *end = *p + strlen(*p);

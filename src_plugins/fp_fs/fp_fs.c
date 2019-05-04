@@ -34,6 +34,7 @@
 
 #include "compat_inc.h"
 
+#include "board.h"
 #include "data.h"
 #include "paths.h"
 #include "plugins.h"
@@ -224,7 +225,7 @@ static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *
 
 
 	sprintf(working_, "%s%c%s", toppath, PCB_DIR_SEPARATOR_C, subdir);
-	pcb_path_resolve(working_, &working, 0, pcb_false);
+	pcb_path_resolve(&PCB->hidlib, working_, &working, 0, pcb_false);
 
 	/* Return error if the root is not a directory, to give other fp_ plugins a chance */
 	if ((is_root) && (!pcb_is_dir(working))) {
@@ -324,7 +325,7 @@ static char *fp_fs_search(const char *search_path, const char *basename, int par
 		else
 			strcpy(path, p);
 
-		pcb_path_resolve(path, &fpath, 0, pcb_false);
+		pcb_path_resolve(&PCB->hidlib, path, &fpath, 0, pcb_false);
 /*		fprintf(stderr, " in '%s'\n", fpath);*/
 
 		fp_fs_list(&pcb_library, fpath, 1, fp_search_cb, &ctx, 1, 0);

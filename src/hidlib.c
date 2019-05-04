@@ -26,21 +26,3 @@
 
 #include "config.h"
 
-#include <stdlib.h>
-
-const char *(*pcb_hidlib_get_filename)(void);
-const char *(*pcb_hidlib_get_name)(void);
-
-const char *pcb_board_get_filename(void)
-{
-	if (pcb_hidlib_get_filename != NULL)
-		return pcb_hidlib_get_filename();
-	return NULL;
-}
-
-const char *pcb_board_get_name(void)
-{
-	if (pcb_hidlib_get_name != NULL)
-		return pcb_hidlib_get_name();
-	return NULL;
-}

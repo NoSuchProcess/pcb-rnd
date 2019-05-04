@@ -35,9 +35,4 @@ struct pcb_hidlib_s {
 	char *filename;                    /* name of the file (from load) */
 };
 
-/* optional: if non-NULL, called back to determine the file name or project
-   name of the current design */
-const char *(*pcb_hidlib_get_filename)(void);
-const char *(*pcb_hidlib_get_name)(void);
-
 #endif

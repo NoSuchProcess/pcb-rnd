@@ -304,7 +304,7 @@ void pcb_hidlib_uninit(void)
 	pcb_hid_dlg_uninit();
 
 	if (conf_isdirty(CFR_USER))
-		conf_save_file(NULL, NULL, CFR_USER, NULL);
+		conf_save_file(NULL, NULL, NULL, CFR_USER, NULL);
 
 	pcb_hid_uninit();
 	pcb_events_uninit();

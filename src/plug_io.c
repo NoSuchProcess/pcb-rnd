@@ -480,7 +480,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 	start = clock();
 #endif
 
-	pcb_path_resolve(Filename, &new_filename, 0, pcb_false);
+	pcb_path_resolve(&PCB->hidlib, Filename, &new_filename, 0, pcb_false);
 
 	oldPCB = PCB;
 	PCB = newPCB;
@@ -751,7 +751,7 @@ void pcb_backup(void)
 	const char *fmt = NULL;
 	pcb_plug_io_t *orig;
 
-	filename = pcb_build_fn(conf_core.rc.backup_name);
+	filename = pcb_build_fn(&PCB->hidlib, conf_core.rc.backup_name);
 	if (filename == NULL) {
 		fprintf(stderr, "pcb_backup(): can't build file name for a backup\n");
 		exit(1);

@@ -1759,7 +1759,7 @@ int conf_replace_subtree(conf_role_t dst_role, const char *dst_path, conf_role_t
 }
 
 
-int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role, const char *fn)
+int conf_save_file(pcb_hidlib_t *hidlib, const char *project_fn, const char *pcb_fn, conf_role_t role, const char *fn)
 {
 	int fail = 1;
 	lht_node_t *r = conf_lht_get_first(role, 0);
@@ -1797,7 +1797,7 @@ int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role,
 			if (efn != NULL)
 				path = pcb_strdup(efn);
 			else
-				path = pcb_build_fn(fn);
+				path = pcb_build_fn(hidlib, fn);
 
 			if (path == NULL) {
 				pcb_message(PCB_MSG_ERROR, "Error: failed to calculate the project file name (board file name or allocation error)\n");

@@ -115,6 +115,7 @@ static void invoke(extedit_method_t *mth, const char *fn)
 
 	memset(&subs, 0, sizeof(subs));
 	subs.params['f' - 'a'] = fn;
+	subs.hidlib = &PCB->hidlib;
 	cmd = pcb_build_argfn(mth->command, &subs);
 
 	/* Don't use pcb_system() because that blocks the current process and the

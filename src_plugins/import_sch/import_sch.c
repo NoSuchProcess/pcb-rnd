@@ -250,7 +250,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		cmd[6] = tmpfile;
 		cmd[7] = "--";
 		for (i = 0; i < nsources; i++)
-			cmd[8 + i] = pcb_build_fn(sources[i]);
+			cmd[8 + i] = pcb_build_fn(&PCB->hidlib, sources[i]);
 		cmd[8 + nsources] = NULL;
 
 		if (conf_import_sch.plugins.import_sch.verbose) {
