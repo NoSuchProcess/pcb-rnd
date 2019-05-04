@@ -71,7 +71,7 @@ typedef struct {
 	} appearance;
 
 	const struct {
-		CFT_INTEGER mode;                  /* currently active mode */
+		CFT_INTEGER mode;                  /* currently active tool */
 		CFT_UNIT grid_unit;                /* select whether you draw in mm or mil */
 		CFT_COORD grid;                    /* grid in pcb-units */
 		CFT_LIST grids;                    /* grid in grid-string format */
