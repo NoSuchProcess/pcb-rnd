@@ -274,6 +274,14 @@ void pcb_main_uninit(void)
 	pcb_brave_uninit();
 	pcb_polygon_uninit();
 
+	pcb_text_uninit();
+	pcb_layer_vis_uninit();
+
+	pcb_strflg_uninit_buf();
+	pcb_strflg_uninit_layerlist();
+
+	pcb_hidlib_uninit(); /* plugin unload */
+
 	if (PCB != NULL) {
 		pcb_uninit_buffers(PCB);
 
@@ -284,14 +292,6 @@ void pcb_main_uninit(void)
 		free(PCB);
 	}
 	PCB = NULL;
-
-	pcb_text_uninit();
-	pcb_layer_vis_uninit();
-
-	pcb_strflg_uninit_buf();
-	pcb_strflg_uninit_layerlist();
-
-	pcb_hidlib_uninit(); /* plugin unload */
 
 	pcb_funchash_uninit();
 	free(hid_argv_orig);
