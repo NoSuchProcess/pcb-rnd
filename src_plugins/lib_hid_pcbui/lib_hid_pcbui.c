@@ -40,6 +40,7 @@
 #include "util.c"
 #include "rendering.c"
 #include "infobar.c"
+#include "title.c"
 
 
 static const char *layer_cookie = "lib_hid_pcbui/layer";
@@ -50,6 +51,7 @@ static const char *status_cookie = "lib_hid_pcbui/status";
 static const char *status_rd_cookie = "lib_hid_pcbui/status/readouts";
 static const char *rendering_cookie = "lib_hid_pcbui/rendering";
 static const char *infobar_cookie = "lib_hid_pcbui/infobar";
+static const char *title_cookie = "lib_hid_pcbui/title";
 
 static pcb_action_t rst_action_list[] = {
 	{"AdjustStyle", pcb_act_AdjustStyle, pcb_acth_AdjustStyle, pcb_acts_AdjustStyle}
@@ -88,6 +90,7 @@ void pplg_uninit_lib_hid_pcbui(void)
 	pcb_event_unbind_allcookie(status_cookie);
 	pcb_event_unbind_allcookie(rendering_cookie);
 	pcb_event_unbind_allcookie(infobar_cookie);
+	pcb_event_unbind_allcookie(title_cookie);
 	conf_hid_unreg(rst_cookie);
 	conf_hid_unreg(toolbar_cookie);
 	conf_hid_unreg(status_cookie);
@@ -150,6 +153,9 @@ TODO("padstack: remove some paths when route style has proto")
 	pcb_event_bind(PCB_EVENT_CROSSHAIR_MOVE, pcb_status_rd_update_ev, NULL, status_cookie);
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, pcb_infobar_brdchg_ev, NULL, infobar_cookie);
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_infobar_gui_init_ev, NULL, infobar_cookie);
+	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_title_gui_init_ev, NULL, title_cookie);
+	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, pcb_title_board_changed_ev, NULL, title_cookie);
+	pcb_event_bind(PCB_EVENT_BOARD_META_CHANGED, pcb_title_meta_changed_ev, NULL, title_cookie);
 
 	install_events(rst_cookie, rpaths, rcb, pcb_rst_update_conf);
 	install_events(toolbar_cookie, tpaths, tcb, pcb_toolbar_update_conf);

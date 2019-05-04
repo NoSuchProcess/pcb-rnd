@@ -202,23 +202,6 @@ void ghid_remove_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw)
    window title bar or to a seperate label */
 void pcb_gtk_tw_window_set_name_label(pcb_gtk_topwin_t *tw, const char *name)
 {
-	const char *filename;
-	char tmp[512];
-
-	/* This happens if we're calling an exporter from the command line */
-	if (!tw->active)
-		return;
-
-	if ((name == NULL) || (*name == '\0'))
-		name = "Unnamed";
-
-	if (!tw->com->hidlib->filename || !*tw->com->hidlib->filename)
-		filename = "<board with no file name or format>";
-	else
-		filename = tw->com->hidlib->filename;
-
-	pcb_snprintf(tmp, sizeof(tmp), "%s%s (%s) - %s - pcb-rnd", PCB->Changed ? "*" : "", name, filename, PCB->is_footprint ? "footprint" : "board");
-	gtk_window_set_title(GTK_WINDOW(tw->com->top_window), tmp);
 }
 
 void pcb_gtk_tw_layer_buttons_update(pcb_gtk_topwin_t *tw)
