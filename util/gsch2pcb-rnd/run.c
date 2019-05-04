@@ -112,7 +112,7 @@ int build_and_run_command(const char * format_, ...)
 			printf("%s", SEP_STRING);
 		}
 
-		f = pcb_popen(cmd, "r");
+		f = pcb_popen(NULL, cmd, "r");
 		while(fgets(line, sizeof(line), f) != NULL) {
 			if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
 				fputs(line, stdout);
