@@ -12,7 +12,7 @@
 #include "conf.h"
 #include "hid_cfg.h"
 #include "hid_cfg_action.h"
-#include "event.h"
+#include "tool.h"
 
 #include "bu_menu.h"
 #include "in_keyboard.h"
@@ -436,7 +436,9 @@ static void ghid_menu_cb(GtkAction *action, const lht_node_t *node)
 
 	pcb_hid_cfg_action(node);
 
-	pcb_event(menu->hidlib, PCB_EVENT_GUI_SYNC, NULL);
+	/* GUI updates to reflect the result of the above action */
+	pcb_tool_adjust_attached_objects();
+	pcb_gui->invalidate_all(menu->hidlib);
 }
 
 

@@ -62,7 +62,6 @@ static const char *pcb_fgw_evnames[] = {
 	"pcbev_rubber_lookup_lines",
 	"pcbev_rubber_lookup_rats",
 	"pcbev_rubber_constrain_main_line",
-	"pcbev_gui_sync",
 	"pcbev_gui_lead_user",
 	"pcbev_gui_draw_overlay_xor",
 	"pcbev_user_input_post",

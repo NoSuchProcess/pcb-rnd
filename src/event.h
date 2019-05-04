@@ -66,7 +66,6 @@ typedef enum {
 	PCB_EVENT_RUBBER_LOOKUP_RATS,     /* rubber band: attach rubber banded rat lines objects to crosshair */
 	PCB_EVENT_RUBBER_CONSTRAIN_MAIN_LINE, /* rubber band: adapt main line to keep rubberband lines direction */
 
-	PCB_EVENT_GUI_SYNC,               /* sync full GUI state (e.g. after a menu clicked) */
 	PCB_EVENT_GUI_LEAD_USER,          /* GUI aid to lead the user attention to a specific location on the board in the main drawing area; args: (coord x, coord y, int enabled) */
 	PCB_EVENT_GUI_DRAW_OVERLAY_XOR,   /* called in board draw after finished drawing the xor marks, still in xor draw mode */
 	PCB_EVENT_USER_INPUT_POST,        /* generated any time any user input reaches core, after processing it */
