@@ -121,7 +121,6 @@ gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpoin
 		if (kv == GDK_KEY_KP_Enter) key_raw = kv = GDK_KEY_Return;
 
 		slen = pcb_hid_cfg_keys_input(&ghid_keymap, mods, key_raw, kv);
-		pcb_event(view->com->hidlib, PCB_EVENT_GUI_SYNC_STATUS, 0, NULL);
 		if (slen > 0) {
 			pcb_hid_cfg_keys_action(&ghid_keymap);
 			return TRUE;

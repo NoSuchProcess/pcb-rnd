@@ -47,14 +47,11 @@ void ghid_update_toggle_flags(pcb_gtk_topwin_t *tw, const char *cookie);
 void ghid_install_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw);
 void ghid_remove_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw);
 void ghid_create_pcb_widgets(pcb_gtk_topwin_t *tw, GtkWidget *in_top_window);
-void ghid_sync_with_new_layout(pcb_gtk_topwin_t *tw);
 void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw);
 void pcb_gtk_tw_layer_buttons_update(pcb_gtk_topwin_t *tw);
 void pcb_gtk_tw_layer_vis_update(pcb_gtk_topwin_t *tw);
 
-void pcb_gtk_tw_notify_filename_changed(pcb_gtk_topwin_t *tw);
 void pcb_gtk_tw_interface_set_sensitive(pcb_gtk_topwin_t *tw, gboolean sensitive);
-void pcb_gtk_tw_window_set_name_label(pcb_gtk_topwin_t *tw, const char *name);
 
 int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id);
 void pcb_gtk_tw_dock_leave(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub);

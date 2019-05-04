@@ -15,11 +15,6 @@ static void ghid_interface_set_sensitive(gboolean sensitive);
 
 /*** drawing widget - output ***/
 
-static void ghid_window_set_name_label(gchar *name)
-{
-	pcb_gtk_tw_window_set_name_label(&ghidgui->topwin, name);
-}
-
 static void ghid_port_ranges_scale(void)
 {
 	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);
@@ -86,7 +81,6 @@ static void ghid_interface_set_sensitive(gboolean sensitive)
 static void ghid_port_button_press_main(void)
 {
 	ghid_invalidate_all(ghidgui->common.hidlib);
-	ghid_window_set_name_label(ghidgui->common.hidlib->name);
 	if (!gport->view.panning)
 		g_idle_add(ghid_idle_cb, &ghidgui->topwin);
 }
@@ -96,7 +90,6 @@ static void ghid_port_button_release_main(void)
 	pcb_tool_adjust_attached_objects();
 	ghid_invalidate_all(ghidgui->common.hidlib);
 
-	ghid_window_set_name_label(ghidgui->common.hidlib->name);
 	g_idle_add(ghid_idle_cb, &ghidgui->topwin);
 }
 
@@ -136,7 +129,6 @@ void ghid_glue_common_init(void)
 {
 	/* Set up the glue struct to lib_gtk_common */
 	ghidgui->common.gport = &ghid_port;
-	ghidgui->common.window_set_name_label = ghid_window_set_name_label;
 	ghidgui->common.note_event_location = ghid_note_event_location;
 	ghidgui->common.shift_is_pressed = ghid_shift_is_pressed;
 	ghidgui->common.interface_input_signals_disconnect = ghid_interface_input_signals_disconnect;

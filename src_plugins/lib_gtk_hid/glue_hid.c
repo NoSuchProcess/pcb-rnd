@@ -329,11 +329,6 @@ static void PointCursor(pcb_bool grabbed)
 	ghid_point_cursor(&gport->mouse, grabbed);
 }
 
-static void ghid_notify_filename_changed()
-{
-	pcb_gtk_tw_notify_filename_changed(&ghidgui->topwin);
-}
-
 /* Create a new menu by path */
 static int ghid_remove_menu(const char *menu_path)
 {
@@ -532,14 +527,11 @@ static void ghid_set_hidlib(pcb_hidlib_t *hidlib)
 	if (hidlib == NULL)
 		return;
 
-	ghidgui->common.window_set_name_label(hidlib->name);
-
 	if (!gport->drawing_allowed)
 		return;
 
 	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);
 	pcb_gtk_zoom_view_win_side(&gport->view, 0, 0, hidlib->size_x, hidlib->size_y, 0);
-	ghid_sync_with_new_layout(&ghidgui->topwin);
 }
 
 static void ghid_reg_mouse_cursor(pcb_hidlib_t *hidlib, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
@@ -604,8 +596,6 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->edit_attributes = ghid_attributes;
 	dst->point_cursor = PointCursor;
 	dst->benchmark = ghid_benchmark;
-
-	dst->notify_filename_changed = ghid_notify_filename_changed;
 
 	dst->command_entry = ghid_command_entry;
 

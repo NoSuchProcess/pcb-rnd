@@ -28,9 +28,6 @@ typedef struct pcb_gtk_common_s {
 	void (*init_renderer)(int *argc, char ***argv, void *port);
 	void (*draw_grid_local)(pcb_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy);
 
-	/* main window */
-	void (*window_set_name_label)(gchar *name);
-
 	/* UI */
 	void (*note_event_location)(GdkEventButton *ev);
 	int (*shift_is_pressed)();

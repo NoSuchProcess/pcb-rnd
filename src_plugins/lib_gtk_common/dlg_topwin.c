@@ -175,19 +175,6 @@ gboolean ghid_port_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, pcb
 	return FALSE;
 }
 
-
-/* Sync toggle states that were saved with the layout and notify the
-   config code to update Settings values it manages. */
-void ghid_sync_with_new_layout(pcb_gtk_topwin_t *tw)
-{
-	tw->com->window_set_name_label(tw->com->hidlib->name);
-}
-
-void pcb_gtk_tw_notify_filename_changed(pcb_gtk_topwin_t *tw)
-{
-	tw->com->window_set_name_label(tw->com->hidlib->name);
-}
-
 void ghid_install_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw)
 {
 	gtk_window_add_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(tw->menu.menu_bar)));
@@ -196,12 +183,6 @@ void ghid_install_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw)
 void ghid_remove_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw)
 {
 	gtk_window_remove_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(tw->menu.menu_bar)));
-}
-
-/* Refreshes the window title bar and sets the PCB name to the
-   window title bar or to a seperate label */
-void pcb_gtk_tw_window_set_name_label(pcb_gtk_topwin_t *tw, const char *name)
-{
 }
 
 void pcb_gtk_tw_layer_buttons_update(pcb_gtk_topwin_t *tw)
