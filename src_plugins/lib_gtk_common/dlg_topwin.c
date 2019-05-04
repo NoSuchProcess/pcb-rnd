@@ -158,9 +158,7 @@ static gint top_window_configure_event_cb(GtkWidget *widget, GdkEventConfigure *
 
 gboolean ghid_idle_cb(void *topwin)
 {
-	pcb_gtk_topwin_t *tw = topwin;
-TODO("hidlib: do we really need to set the cursor here?");
-/*	tw->com->mode_cursor_main(conf_core.editor.mode);*/
+/*	pcb_gtk_topwin_t *tw = topwin; - just in case anything needs to be done from idle */
 	return FALSE;
 }
 
