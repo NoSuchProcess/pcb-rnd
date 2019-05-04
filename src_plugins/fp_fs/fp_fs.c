@@ -228,7 +228,7 @@ static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *
 	pcb_path_resolve(&PCB->hidlib, working_, &working, 0, pcb_false);
 
 	/* Return error if the root is not a directory, to give other fp_ plugins a chance */
-	if ((is_root) && (!pcb_is_dir(working))) {
+	if ((is_root) && (!pcb_is_dir(&PCB->hidlib, working))) {
 		free(working);
 		return -1;
 	}
@@ -373,7 +373,7 @@ TODO("fp: rather call plug_io if it is not parametric")
 	if (tags != NULL)
 		*tags = NULL;
 
-	f = pcb_fopen(fn, "r");
+	f = pcb_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL)
 		return PCB_FP_INVALID;
 
@@ -516,11 +516,11 @@ static FILE *fp_fs_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name,
 			sprintf(cmd, "%s%s%s %s", libshell, sep, fullname, params);
 /*fprintf(stderr, " cmd=%s\n",  cmd);*/
 			fctx->field[F_TMPNAME].p = pcb_tempfile_name_new("pcb-rnd-pfp");
-			f = pcb_fopen((char *)fctx->field[F_TMPNAME].p, "w+");
+			f = pcb_fopen(&PCB->hidlib, (char *)fctx->field[F_TMPNAME].p, "w+");
 			if (f != NULL) {
 				char buff[4096];
 				int len;
-				fp = pcb_popen(cmd, "r");
+				fp = pcb_popen(&PCB->hidlib, cmd, "r");
 				while((len = fread(buff, 1, sizeof(buff), fp)) > 0)
 					fwrite(buff, 1, len, f);
 				pcb_pclose(fp);
@@ -529,7 +529,7 @@ static FILE *fp_fs_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name,
 			free(cmd);
 		}
 		else
-			f = pcb_fopen(fullname, "r");
+			f = pcb_fopen(&PCB->hidlib, fullname, "r");
 		free(fullname);
 	}
 

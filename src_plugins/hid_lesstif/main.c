@@ -675,7 +675,7 @@ static void LoadBackgroundFile(FILE *f, char *filename)
 
 void LoadBackgroundImage(char *filename)
 {
-	FILE *f = pcb_fopen(filename, "rb");
+	FILE *f = pcb_fopen(ltf_hidlib, filename, "rb");
 	if (!f) {
 		if (PCB_NSTRCMP(filename, "pcb-background.ppm"))
 			perror(filename);

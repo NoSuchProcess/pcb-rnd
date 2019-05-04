@@ -2366,7 +2366,7 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 	gsx_parse_res_t res;
 	FILE *FP;
 
-	FP = pcb_fopen(Filename, "r");
+	FP = pcb_fopen(&PCB->hidlib, Filename, "r");
 	if (FP == NULL)
 		return -1;
 

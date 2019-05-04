@@ -45,7 +45,7 @@ static int eagle_xml_load(trparse_t *pst, const char *fn)
 	FILE *f;
 	char *efn;
 
-	f = pcb_fopen_fn(fn, "r", &efn);
+	f = pcb_fopen_fn(NULL, fn, "r", &efn);
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "can't open '%s'\n", fn);
 		return -1;

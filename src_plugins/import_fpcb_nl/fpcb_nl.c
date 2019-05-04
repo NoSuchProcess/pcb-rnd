@@ -64,7 +64,7 @@ static int fpcb_nl_load(const char *fn)
 	enum { MODE_NONE, MODE_PART, MODE_NET, MODE_SIGNAL } mode = MODE_NONE;
 	int anon = 0;
 
-	f = pcb_fopen(fn, "r");
+	f = pcb_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can't open %s for read\n", fn);
 		return -1;

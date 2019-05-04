@@ -451,7 +451,7 @@ static void ipcd356_do_export(pcb_hid_attr_val_t *options)
 	if (fn == NULL)
 		fn = "pcb-rnd-out.net";
 
-	f = pcb_fopen(fn, "w");
+	f = pcb_fopen(&PCB->hidlib, fn, "w");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can't open %s for write\n", fn);
 		return;

@@ -72,7 +72,7 @@ static int ReadNetlist(const char *filename)
 
 	ratcmd = conf_core.rc.rat_command;
 	if (PCB_EMPTY_STRING_P(ratcmd)) {
-		fp = pcb_fopen(filename, "r");
+		fp = pcb_fopen(&PCB->hidlib, filename, "r");
 		if (!fp) {
 			pcb_message(PCB_MSG_ERROR, "Cannot open %s for reading", filename);
 			return 1;
@@ -88,7 +88,7 @@ static int ReadNetlist(const char *filename)
 		command = pcb_build_argfn(conf_core.rc.rat_command, &p);
 
 		/* open pipe to stdout of command */
-		if (*command == '\0' || (fp = pcb_popen(command, "r")) == NULL) {
+		if (*command == '\0' || (fp = pcb_popen(&PCB->hidlib, command, "r")) == NULL) {
 			pcb_popen_error_message(command);
 			free(command);
 			return 1;

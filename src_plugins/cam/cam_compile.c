@@ -55,7 +55,7 @@ static int prefix_mkdir(char *arg, char **filename)
 			next = strrchr(curr, PCB_DIR_SEPARATOR_C);
 			if (next != NULL)
 				*next = '\0';
-			pcb_mkdir(arg, 0755);
+			pcb_mkdir(&PCB->hidlib, arg, 0755);
 			if (next != NULL) {
 				*next = PCB_DIR_SEPARATOR_C;
 				next++;

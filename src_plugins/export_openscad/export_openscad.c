@@ -310,7 +310,7 @@ static void openscad_do_export(pcb_hid_attr_val_t * options)
 	if (!filename)
 		filename = "pcb.openscad";
 
-	f = pcb_fopen(filename, "wb");
+	f = pcb_fopen(&PCB->hidlib, filename, "wb");
 	if (!f) {
 		perror(filename);
 		return;
@@ -602,7 +602,7 @@ static fgw_error_t pcb_act_scad_export_poly(fgw_arg_t *res, int argc, fgw_arg_t 
 
 	PCB_ACT_CONVARG(1, FGW_STR, scad_export_poly, name = argv[1].val.str);
 
-	f = pcb_fopen(name, "w");
+	f = pcb_fopen(&PCB->hidlib, name, "w");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Failed to open %s for writing\n", name);
 		PCB_ACT_IRES(-1);

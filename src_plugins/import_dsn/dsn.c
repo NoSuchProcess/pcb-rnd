@@ -229,7 +229,7 @@ fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	/* load and parse the file into a dom tree */
-	f = pcb_fopen(fname, "r");
+	f = pcb_fopen(&PCB->hidlib, fname, "r");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "import_dsn: can't open %s for read\n", fname);
 		return 1;

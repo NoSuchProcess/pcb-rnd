@@ -170,7 +170,7 @@ int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 	if (md5_new == NULL)
 		goto err;
 
-	f = pcb_fopen(last_sum_fn, "r");
+	f = pcb_fopen(NULL, last_sum_fn, "r");
 	md5_last = load_md5_sum(f);
 	if (f != NULL)
 		fclose(f);
@@ -186,7 +186,7 @@ int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 
 	if (fp_wget_open(url_idx_list, conf_fp_wget.plugins.fp_wget.cache_dir, &f, &fctx, mode) != 0) {
 		pcb_message(PCB_MSG_ERROR, "edakrill: failed to download the new list\n");
-		pcb_remove(last_sum_fn); /* make sure it is downloaded next time */
+		pcb_remove(NULL, last_sum_fn); /* make sure it is downloaded next time */
 		goto err;
 	}
 

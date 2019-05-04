@@ -102,7 +102,7 @@ static int load_lib(htsi_t *ht, const char *fn)
 {
 	FILE *f;
 	char line[1024];
-	f = pcb_fopen(fn, "r");
+	f = pcb_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can't open fidocadj PCB library file '%s' for read\n", fn);
 		return -1;
@@ -193,7 +193,7 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 	if (!filename)
 		filename = "pcb-rnd-default.fcd";
 
-	f = pcb_fopen(filename, "w");
+	f = pcb_fopen(&PCB->hidlib, filename, "w");
 	if (!f) {
 		perror(filename);
 		return;

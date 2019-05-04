@@ -256,7 +256,7 @@ int tedax_board_save(pcb_board_t *pcb, const char *fn)
 	int res;
 	FILE *f;
 
-	f = pcb_fopen(fn, "w");
+	f = pcb_fopen(&PCB->hidlib, fn, "w");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "tedax_board_save(): can't open %s for writing\n", fn);
 		return -1;
@@ -543,7 +543,7 @@ int tedax_board_load(pcb_board_t *pcb, const char *fn, const char *blk_id, int s
 	int res;
 	FILE *f;
 
-	f = pcb_fopen(fn, "r");
+	f = pcb_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "tedax_board_load(): can't open %s for reading\n", fn);
 		return -1;

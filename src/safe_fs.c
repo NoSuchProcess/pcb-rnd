@@ -27,9 +27,6 @@
 /* permit direct access to the libc calls (turn off config.h masking) */
 #define PCB_SAFE_FS
 
-/* temporary */
-#define TODO_hidlib NULL
-
 /* opendir, readdir */
 #include "compat_inc.h"
 
@@ -63,7 +60,7 @@ do { \
 	} \
 } while(0)
 
-FILE *pcb_fopen_fn(const char *path, const char *mode, char **fn_out)
+FILE *pcb_fopen_fn(pcb_hidlib_t *hidlib, const char *path, const char *mode, char **fn_out)
 {
 	FILE *f;
 	char *path_exp;
@@ -75,7 +72,7 @@ FILE *pcb_fopen_fn(const char *path, const char *mode, char **fn_out)
 		return NULL;
 	}
 
-	path_exp = pcb_build_fn(TODO_hidlib, path);
+	path_exp = pcb_build_fn(hidlib, path);
 
 	CHECK("fopen", "access", path_exp, mode, goto err);
 	CHECK("fopen", "fopen", path_exp, mode, goto err);
@@ -98,14 +95,14 @@ FILE *pcb_fopen_fn(const char *path, const char *mode, char **fn_out)
 	return NULL;
 }
 
-FILE *pcb_fopen(const char *path, const char *mode)
+FILE *pcb_fopen(pcb_hidlib_t *hidlib, const char *path, const char *mode)
 {
-	return pcb_fopen_fn(path, mode, NULL);
+	return pcb_fopen_fn(hidlib, path, mode, NULL);
 }
 
-char *pcb_fopen_check(const char *path, const char *mode)
+char *pcb_fopen_check(pcb_hidlib_t *hidlib, const char *path, const char *mode)
 {
-	char *path_exp = pcb_build_fn(TODO_hidlib, path);
+	char *path_exp = pcb_build_fn(hidlib, path);
 
 	CHECK("fopen", "access", path_exp, mode, goto err);
 	CHECK("fopen", "fopen", path_exp, mode, goto err);
@@ -116,10 +113,10 @@ char *pcb_fopen_check(const char *path, const char *mode)
 	return NULL;
 }
 
-FILE *pcb_popen(const char *cmd, const char *mode)
+FILE *pcb_popen(pcb_hidlib_t *hidlib, const char *cmd, const char *mode)
 {
 	FILE *f = NULL;
-	char *cmd_exp = pcb_build_fn(TODO_hidlib, cmd);
+	char *cmd_exp = pcb_build_fn(hidlib, cmd);
 
 	CHECK("popen", "access", cmd_exp, mode, goto err);
 	CHECK("popen", "exec", cmd_exp, NULL, goto err);
@@ -138,10 +135,10 @@ int pcb_pclose(FILE *f)
 }
 
 
-int pcb_system(const char *cmd)
+int pcb_system(pcb_hidlib_t *hidlib, const char *cmd)
 {
 	int res = -1;
-	char *cmd_exp = pcb_build_fn(TODO_hidlib, cmd);
+	char *cmd_exp = pcb_build_fn(hidlib, cmd);
 
 	CHECK("access", "access", cmd_exp, "r", goto err);
 	CHECK("access", "exec", cmd_exp, NULL, goto err);
@@ -154,10 +151,10 @@ int pcb_system(const char *cmd)
 	return res;
 }
 
-int pcb_remove(const char *path)
+int pcb_remove(pcb_hidlib_t *hidlib, const char *path)
 {
 	int res = -1;
-	char *path_exp = pcb_build_fn(TODO_hidlib, path);
+	char *path_exp = pcb_build_fn(hidlib, path);
 
 	CHECK("remove", "access", path_exp, "w", goto err);
 	CHECK("remove", "remove", path_exp, NULL, goto err);
@@ -169,11 +166,11 @@ int pcb_remove(const char *path)
 	return res;
 }
 
-int pcb_rename(const char *old_path, const char *new_path)
+int pcb_rename(pcb_hidlib_t *hidlib, const char *old_path, const char *new_path)
 {
 	int res = -1;
-	char *old_path_exp = pcb_build_fn(TODO_hidlib, old_path);
-	char *new_path_exp = pcb_build_fn(TODO_hidlib, new_path);
+	char *old_path_exp = pcb_build_fn(hidlib, old_path);
+	char *new_path_exp = pcb_build_fn(hidlib, new_path);
 
 	CHECK("rename", "access", old_path_exp, "w", goto err);
 	CHECK("rename", "access", new_path_exp, "w", goto err);
@@ -187,20 +184,20 @@ int pcb_rename(const char *old_path, const char *new_path)
 	return res;
 }
 
-int pcb_unlink(const char *path)
+int pcb_unlink(pcb_hidlib_t *hidlib, const char *path)
 {
 	int res;
-	char *path_exp = pcb_build_fn(TODO_hidlib, path);
+	char *path_exp = pcb_build_fn(hidlib, path);
 	res = unlink(path_exp);
 	free(path_exp);
 	return res;
 }
 
 
-DIR *pcb_opendir(const char *name)
+DIR *pcb_opendir(pcb_hidlib_t *hidlib, const char *name)
 {
 	DIR *d;
-	char *path_exp = pcb_build_fn(TODO_hidlib, name);
+	char *path_exp = pcb_build_fn(hidlib, name);
 	d = opendir(path_exp);
 	free(path_exp);
 	return d;
@@ -217,7 +214,7 @@ int pcb_closedir(DIR *dir)
 }
 
 
-static FILE *pcb_fopen_at_(const char *from, const char *fn, const char *mode, char **full_path, int recursive)
+static FILE *pcb_fopen_at_(pcb_hidlib_t *hidlib, const char *from, const char *fn, const char *mode, char **full_path, int recursive)
 {
 	char tmp[PCB_PATH_MAX];
 	DIR *d;
@@ -226,7 +223,7 @@ static FILE *pcb_fopen_at_(const char *from, const char *fn, const char *mode, c
 
 	/* try the trivial: directly under this  dir */
 	pcb_snprintf(tmp, sizeof(tmp), "%s%c%s", from, PCB_DIR_SEPARATOR_C, fn);
-	res = pcb_fopen(tmp, mode);
+	res = pcb_fopen(hidlib, tmp, mode);
 
 	if (res != NULL) {
 		if (full_path != NULL)
@@ -238,7 +235,7 @@ static FILE *pcb_fopen_at_(const char *from, const char *fn, const char *mode, c
 	if (!recursive)
 		return NULL;
 
-	d = pcb_opendir(from);
+	d = pcb_opendir(hidlib, from);
 	if (d == NULL)
 		return NULL;
 
@@ -253,7 +250,7 @@ static FILE *pcb_fopen_at_(const char *from, const char *fn, const char *mode, c
 			continue;
 
 		/* dir: recurse */
-		res = pcb_fopen_at_(tmp, fn, mode, full_path, recursive);
+		res = pcb_fopen_at_(hidlib, tmp, fn, mode, full_path, recursive);
 		if (res != NULL) {
 			closedir(d);
 			return res;
@@ -263,18 +260,18 @@ static FILE *pcb_fopen_at_(const char *from, const char *fn, const char *mode, c
 	return NULL;
 }
 
-FILE *pcb_fopen_at(const char *dir, const char *fn, const char *mode, char **full_path, int recursive)
+FILE *pcb_fopen_at(pcb_hidlib_t *hidlib, const char *dir, const char *fn, const char *mode, char **full_path, int recursive)
 {
 	if (full_path != NULL)
 		*full_path = NULL;
 
-	return pcb_fopen_at_(dir, fn, mode, full_path, recursive);
+	return pcb_fopen_at_(hidlib, dir, fn, mode, full_path, recursive);
 }
 
-FILE *pcb_fopen_first(const conflist_t *paths, const char *fn, const char *mode, char **full_path, int recursive)
+FILE *pcb_fopen_first(pcb_hidlib_t *hidlib, const conflist_t *paths, const char *fn, const char *mode, char **full_path, int recursive)
 {
 	FILE *res;
-	char *real_fn = pcb_build_fn(TODO_hidlib, fn);
+	char *real_fn = pcb_build_fn(hidlib, fn);
 	conf_listitem_t *ci;
 
 	if (full_path != NULL)
@@ -284,7 +281,7 @@ FILE *pcb_fopen_first(const conflist_t *paths, const char *fn, const char *mode,
 		return NULL;
 
 	if (pcb_is_path_abs(fn)) {
-		res = pcb_fopen(real_fn, mode);
+		res = pcb_fopen(hidlib, real_fn, mode);
 		if ((res != NULL) && (full_path != NULL))
 			*full_path = real_fn;
 		else
@@ -305,12 +302,12 @@ FILE *pcb_fopen_first(const conflist_t *paths, const char *fn, const char *mode,
 				p++;
 
 			/* resolve the path from the list, truncate trailing '/' */
-			real_p = pcb_build_fn(TODO_hidlib, p);
+			real_p = pcb_build_fn(hidlib, p);
 			pl = strlen(real_p);
 			if ((pl > 0) && (real_p[pl-1] == '/'))
 				real_p[pl-1] = '\0';
 	
-			res = pcb_fopen_at(real_p, real_fn, mode, full_path, recursive);
+			res = pcb_fopen_at(hidlib, real_p, real_fn, mode, full_path, recursive);
 			free(real_p);
 
 			if (res != NULL) {
@@ -324,7 +321,7 @@ FILE *pcb_fopen_first(const conflist_t *paths, const char *fn, const char *mode,
 }
 
 extern int pcb_mkdir_(const char *path, int mode);
-int pcb_mkdir(const char *path, int mode)
+int pcb_mkdir(pcb_hidlib_t *hidlib, const char *path, int mode)
 {
 	CHECK("mkdir", "access", path, NULL, return -1);
 	CHECK("mkdir", "mkdir", path, NULL, return -1);
@@ -334,7 +331,7 @@ int pcb_mkdir(const char *path, int mode)
 
 
 extern long pcb_file_size_(const char *path);
-long pcb_file_size(const char *path)
+long pcb_file_size(pcb_hidlib_t *hidlib, const char *path)
 {
 	CHECK("file_size", "access", path, NULL, return -1);
 	CHECK("file_size", "stat", path, NULL, return -1);
@@ -342,7 +339,7 @@ long pcb_file_size(const char *path)
 }
 
 extern int pcb_is_dir_(const char *path);
-int pcb_is_dir(const char *path)
+int pcb_is_dir(pcb_hidlib_t *hidlib, const char *path)
 {
 	CHECK("is_dir", "access", path, NULL, return -1);
 	CHECK("is_dir", "stat", path, NULL, return -1);
@@ -350,7 +347,7 @@ int pcb_is_dir(const char *path)
 }
 
 extern double pcb_file_mtime_(const char *path);
-double pcb_file_mtime(const char *path)
+double pcb_file_mtime(pcb_hidlib_t *hidlib, const char *path)
 {
 	CHECK("file_mtime", "access", path, NULL, return -1);
 	CHECK("file_mtime", "stat", path, NULL, return -1);

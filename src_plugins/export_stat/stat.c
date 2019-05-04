@@ -154,7 +154,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	if (!filename)
 		filename = "pcb.stat.lht";
 
-	f = pcb_fopen(filename, "w");
+	f = pcb_fopen(&PCB->hidlib, filename, "w");
 	if (!f) {
 		perror(filename);
 		return;

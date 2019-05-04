@@ -33,7 +33,7 @@ static void scad_insert_model(htsp_t *models, const char *name, pcb_coord_t x0, 
 
 	if (!htsp_has(models, name)) {
 		char buff[1024], *full_path;
-		fin = pcb_fopen_first(&conf_core.rc.library_search_paths, name, "r", &full_path, pcb_true);
+		fin = pcb_fopen_first(&PCB->hidlib, &conf_core.rc.library_search_paths, name, "r", &full_path, pcb_true);
 
 		if (fin != NULL) {
 			char *s, *safe_name = pcb_strdup(name);

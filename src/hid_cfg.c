@@ -52,13 +52,13 @@ static int hid_cfg_load_error(lht_doc_t *doc, const char *filename, lht_err_t er
 	return 1;
 }
 
-lht_doc_t *pcb_hid_cfg_load_lht(const char *filename)
+lht_doc_t *pcb_hid_cfg_load_lht(pcb_hidlib_t *hidlib, const char *filename)
 {
 	FILE *f;
 	lht_doc_t *doc;
 	int error = 0;
 
-	f = pcb_fopen(filename, "r");
+	f = pcb_fopen(hidlib, filename, "r");
 	if (f == NULL)
 		return NULL;
 
@@ -151,7 +151,7 @@ pcb_hid_cfg_t *pcb_hid_cfg_load(pcb_hidlib_t *hidlib, const char *fn, int exact_
 			if (doc == NULL) {
 				char *end = *p + strlen(*p);
 				sprintf(end, "pcb-menu-%s.lht", fn);
-				doc = pcb_hid_cfg_load_lht(*p);
+				doc = pcb_hid_cfg_load_lht(hidlib, *p);
 				if (doc != NULL)
 					pcb_file_loaded_set_at("menu", "HID main", *p, "main menu system");
 			}
@@ -160,7 +160,7 @@ pcb_hid_cfg_t *pcb_hid_cfg_load(pcb_hidlib_t *hidlib, const char *fn, int exact_
 		free(paths);
 	}
 	else
-		doc = pcb_hid_cfg_load_lht(fn);
+		doc = pcb_hid_cfg_load_lht(hidlib, fn);
 
 	if (doc == NULL) {
 		doc = pcb_hid_cfg_load_str(embedded_fallback);

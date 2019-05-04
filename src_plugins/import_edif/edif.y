@@ -4075,7 +4075,7 @@ void ParseEDIF(char* filename,FILE* err)
    *	Set up the file state to something useful.
    */
   InFile = filename;
-  Input = pcb_fopen(filename, "r");
+  Input = pcb_fopen(&PCB->hidlib, filename, "r");
   Error = err;
   LineNumber = 1;
   /*

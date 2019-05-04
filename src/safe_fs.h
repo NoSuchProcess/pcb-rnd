@@ -25,45 +25,50 @@
   */
 
 /* Wrap standard file system calls, giving the user a chance to control
-   where pcb-rnd may go on the file system */
+   where pcb-rnd may go on the file system. Where hidlib is NULL, some
+   of the % substitutions will not be performed (the ones that depend on
+   design (file) name) */
 
 #ifndef PCB_SAFE_FS_H
 #define PCB_SAFE_FS_H
 
 #include <stdio.h>
+#include "global_typedefs.h"
 
+/* file name templating wrappers around file system calls; later they
+   will also execute checks to avoid unsafe access */
 
-FILE *pcb_fopen(const char *path, const char *mode);
-FILE *pcb_popen(const char *cmd, const char *mode);
+FILE *pcb_fopen(pcb_hidlib_t *hidlib, const char *path, const char *mode);
+FILE *pcb_popen(pcb_hidlib_t *hidlib, const char *cmd, const char *mode);
 int pcb_pclose(FILE *f);
-int pcb_system(const char *cmd);
-int pcb_remove(const char *path);
-int pcb_rename(const char *old_path, const char *new_path);
-int pcb_mkdir(const char *path, int mode);
-int pcb_unlink(const char *path);
+int pcb_system(pcb_hidlib_t *hidlib, const char *cmd);
+int pcb_remove(pcb_hidlib_t *hidlib, const char *path);
+int pcb_rename(pcb_hidlib_t *hidlib, const char *old_path, const char *new_path);
+int pcb_mkdir(pcb_hidlib_t *hidlib, const char *path, int mode);
+int pcb_unlink(pcb_hidlib_t *hidlib, const char *path);
 
 /* Return the size of non-large files; on error or for large files
    (size larger than the value long can hold) return -1 */
-long pcb_file_size(const char *path);
+long pcb_file_size(pcb_hidlib_t *hidlib, const char *path);
 
 /* Return -1 on error or the last modification time (in sec from epoch) */
-double pcb_file_mtime(const char *path);
+double pcb_file_mtime(pcb_hidlib_t *hidlib, const char *path);
 
 /* Return non-zero if path is a directory */
-int pcb_is_dir(const char *path);
+int pcb_is_dir(pcb_hidlib_t *hidlib, const char *path);
 
 /* Check if path could be open with mode; if yes, return the substituted/expanded
    file name, if no, return NULL */
-char *pcb_fopen_check(const char *path, const char *mode);
+char *pcb_fopen_check(pcb_hidlib_t *hidlib, const char *path, const char *mode);
 
 /* Same as pcb_fopen(), but on success load fn_out() with the malloc()'d
    file name as it looked after the substitution */
-FILE *pcb_fopen_fn(const char *path, const char *mode, char **fn_out);
+FILE *pcb_fopen_fn(pcb_hidlib_t *hidlib, const char *path, const char *mode, char **fn_out);
 
 /* Open a file given as a basename fn, under the directory dir, optionally
    doing a recusrive search in the directory tree. If full_path is not NULL,
    and the call succeeds, load it with the full path of the file opened. */
-FILE *pcb_fopen_at(const char *dir, const char *fn, const char *mode, char **full_path, int recursive);
+FILE *pcb_fopen_at(pcb_hidlib_t *hidlib, const char *dir, const char *fn, const char *mode, char **full_path, int recursive);
 
 
 #include "conf.h"
@@ -75,6 +80,6 @@ FILE *pcb_fopen_at(const char *dir, const char *fn, const char *mode, char **ful
    (or NULL on failure); the caller needs to call free() on it.
    If recursive is set, all subcirectories under each path is also searched for the file.
    */
-FILE *pcb_fopen_first(const conflist_t *paths, const char *fn, const char *mode, char **full_path, int recursive);
+FILE *pcb_fopen_first(pcb_hidlib_t *hidlib, const conflist_t *paths, const char *fn, const char *mode, char **full_path, int recursive);
 
 #endif

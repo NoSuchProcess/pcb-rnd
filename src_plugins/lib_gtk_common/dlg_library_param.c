@@ -371,7 +371,7 @@ char *pcb_gtk_library_param_ui(void *com, pcb_gtk_library_t *library_window, pcb
 	ctx.first_optional = -1;
 
 	cmd = pcb_strdup_printf("%s --help", entry->data.fp.loc_info);
-	f = pcb_popen(cmd, "r");
+	f = pcb_popen(NULL, cmd, "r");
 	free(cmd);
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can not execute parametric footprint %s\n", entry->data.fp.loc_info);

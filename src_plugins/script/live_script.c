@@ -126,7 +126,7 @@ static int lvs_list_langs(live_script_t *lvs)
 
 			strcpy(fn_end, de->d_name);
 
-			f = pcb_fopen(fn, "r");
+			f = pcb_fopen(&PCB->hidlib, fn, "r");
 			if (f == NULL)
 				continue;
 			while((s = fgets(line, sizeof(line), f)) != NULL) {
@@ -265,7 +265,7 @@ static int live_run(live_script_t *lvs)
 	long numu;
 
 	fn = pcb_tempfile_name_new("live_script");
-	f = pcb_fopen(fn, "w");
+	f = pcb_fopen(&PCB->hidlib, fn, "w");
 	if (f == NULL) {
 		pcb_tempfile_unlink(fn);
 		pcb_message(PCB_MSG_ERROR, "live_script: can't open temp file for write\n");
@@ -341,7 +341,7 @@ static int live_load(live_script_t *lvs, const char *fn)
 			return 0;
 	}
 
-	f = pcb_fopen(fn, "r");
+	f = pcb_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "live_script: failed to open '%s' for read\n", fn);
 		return -1;
@@ -387,7 +387,7 @@ static int live_save(live_script_t *lvs, const char *fn)
 			return 0;
 	}
 
-	f = pcb_fopen(fn, "w");
+	f = pcb_fopen(&PCB->hidlib, fn, "w");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "live_script: failed to open '%s' for write\n", fn);
 		return -1;

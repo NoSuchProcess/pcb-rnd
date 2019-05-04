@@ -120,7 +120,7 @@ static void invoke(extedit_method_t *mth, const char *fn)
 
 	/* Don't use pcb_system() because that blocks the current process and the
 	   GUI toolkit won't have a chance to handle expose events */
-	fc = pcb_popen(cmd, "r");
+	fc = pcb_popen(&PCB->hidlib, cmd, "r");
 
 	if (pcb_gui != NULL) {
 		int fd = pcb_fileno(fc);
@@ -261,7 +261,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	switch(mth->fmt) {
 		case EEF_LIHATA:
 			{
-				f = pcb_fopen(tmp_fn, "w");
+				f = pcb_fopen(&PCB->hidlib, tmp_fn, "w");
 				if (f == NULL) {
 					pcb_message(PCB_MSG_ERROR, "Failed to open temporary file\n");
 					goto quit1;

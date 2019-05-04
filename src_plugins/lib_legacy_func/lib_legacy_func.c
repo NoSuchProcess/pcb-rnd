@@ -62,7 +62,7 @@ char *ExpandFilename(char *Dirname, char *Filename)
 	}
 
 	/* execute it with shell */
-	if ((pipe = pcb_popen(command, "r")) != NULL) {
+	if ((pipe = pcb_popen(&PCB->hidlib, command, "r")) != NULL) {
 		/* discard all but the first returned line */
 		for (;;) {
 			if ((c = fgetc(pipe)) == EOF || c == '\n' || c == '\r')

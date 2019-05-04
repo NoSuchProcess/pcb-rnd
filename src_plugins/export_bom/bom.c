@@ -239,7 +239,7 @@ static int PrintBOM(void)
 	}
 	PCB_END_LOOP;
 
-	fp = pcb_fopen(bom_filename, "w");
+	fp = pcb_fopen(&PCB->hidlib, bom_filename, "w");
 	if (!fp) {
 		pcb_message(PCB_MSG_ERROR, "Cannot open file %s for writing\n", bom_filename);
 		print_and_free(NULL, bom);

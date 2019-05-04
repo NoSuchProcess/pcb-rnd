@@ -97,7 +97,7 @@ int gr_draw(gr_t *g, const char *name, const char *type)
 
 	cmd = malloc(strlen(type)*2 + strlen(name) + 64);
 	sprintf(cmd, "dot -T%s -o %s.%s", type, name, type);
-	f = pcb_popen(cmd, "w");
+	f = pcb_popen(NULL, cmd, "w");
 	if (f == NULL)
 		return -1;
 

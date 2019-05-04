@@ -129,7 +129,7 @@ int tedax_net_load(const char *fname_net, int import_fp, const char *blk_id, int
 	FILE *fn;
 	int ret = 0;
 
-	fn = pcb_fopen(fname_net, "r");
+	fn = pcb_fopen(&PCB->hidlib, fname_net, "r");
 	if (fn == NULL) {
 		pcb_message(PCB_MSG_ERROR, "can't open file '%s' for read\n", fname_net);
 		return -1;
@@ -205,7 +205,7 @@ int tedax_net_save(pcb_board_t *pcb, const char *netlistid, const char *fn)
 	int res;
 	FILE *f;
 
-	f = pcb_fopen(fn, "w");
+	f = pcb_fopen(&PCB->hidlib, fn, "w");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "tedax_net_save(): can't open %s for writing\n", fn);
 		return -1;

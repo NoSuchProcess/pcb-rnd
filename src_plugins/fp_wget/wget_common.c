@@ -47,7 +47,7 @@ static int mkdirp(const char *dir)
 /* TODO */
 	char buff[8192];
 	sprintf(buff, "mkdir -p '%s'", dir);
-	return pcb_system(buff);
+	return pcb_system(NULL, buff);
 }
 
 int fp_wget_open(const char *url, const char *cache_path, FILE **f, int *fctx, fp_get_mode mode)
@@ -69,7 +69,7 @@ int fp_wget_open(const char *url, const char *cache_path, FILE **f, int *fctx, f
 		if (f == NULL)
 			goto error;
 		if (!fp_wget_offline)
-			*f = pcb_popen(cmd, "r");
+			*f = pcb_popen(NULL, cmd, "r");
 		if (*f == NULL)
 			goto error;
 		*fctx = FCTX_POPEN;
@@ -96,17 +96,17 @@ int fp_wget_open(const char *url, const char *cache_path, FILE **f, int *fctx, f
 		if ((!fp_wget_offline) && !(mode & FP_WGET_OFFLINE)) {
 			int res;
 			sprintf(cmd, "%s -O '%s/%s' %s '%s'", wget_cmd, cache_path, cdir, upds, url);
-			res = pcb_system(cmd);
+			res = pcb_system(NULL, cmd);
 /*			pcb_trace("------res=%d\n", res); */
 			if ((res != 0) && (res != 768)) { /* some versions of wget will return error on -c if the file doesn't need update; try to guess whether it's really an error */
 				/* when wget fails, a 0-long file might be left there - remove it so it won't block new downloads */
 				sprintf(cmd, "%s/%s", cache_path, cdir);
-				pcb_remove(cmd);
+				pcb_remove(NULL, cmd);
 			}
 		}
 		if (f != NULL) {
 			sprintf(cmd, "%s/%s", cache_path, cdir);
-			*f = pcb_fopen(cmd, "r");
+			*f = pcb_fopen(NULL, cmd, "r");
 			if (*f == NULL)
 				goto error;
 			*fctx = FCTX_FOPEN;
@@ -175,7 +175,7 @@ int md5_cmp_free(const char *last_fn, char *md5_last, char *md5_new)
 
 	if ((md5_last == NULL) || (strcmp(md5_last, md5_new) != 0)) {
 		FILE *f;
-		f = pcb_fopen(last_fn, "w");
+		f = pcb_fopen(NULL, last_fn, "w");
 		fputs(md5_new, f);
 		fclose(f);
 		changed = 1;

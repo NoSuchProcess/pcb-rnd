@@ -72,7 +72,7 @@ char *pcb_build_fn(pcb_hidlib_t *hidlib, const char *template);
    the array if they are not NULL; use with pcb_build_argfn() */
 typedef struct {
 	const char *params['z' - 'a' + 1]; /* [0] for 'a' */
-	pcb_hidlib_t *hidlib;
+	pcb_hidlib_t *hidlib; /* if NULL, some of the substitutions (e.g. %B, %D, %N) won't be performed */
 } pcb_build_argfn_t;
 
 char *pcb_build_argfn(const char *template, pcb_build_argfn_t *arg);

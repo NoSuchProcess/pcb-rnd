@@ -221,7 +221,7 @@ static int mentor_sch_load(const char *fname_net)
 	int c, ret = 0;
 	gsx_parse_res_t res;
 
-	fn = pcb_fopen(fname_net, "r");
+	fn = pcb_fopen(NULL, fname_net, "r");
 	if (fn == NULL) {
 		pcb_message(PCB_MSG_ERROR, "can't open file '%s' for read\n", fname_net);
 		return -1;

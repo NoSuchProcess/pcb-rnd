@@ -106,7 +106,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		default_file = pcb_strdup(name);
 	}
 
-	if ((out = pcb_fopen(name, "r"))) {
+	if ((out = pcb_fopen(&PCB->hidlib, name, "r"))) {
 		fclose(out);
 		if (pcb_hid_message_box("warning", "Renumber: overwrite", "File exists!  Ok to overwrite?", "cancel", 0, "overwrite", 1, NULL) != 1) {
 			if (free_name && name)
@@ -116,7 +116,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	if ((out = pcb_fopen(name, "w")) == NULL) {
+	if ((out = pcb_fopen(&PCB->hidlib, name, "w")) == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Could not open %s\n", name);
 		if (free_name && name)
 			free((char*)name);

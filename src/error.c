@@ -163,12 +163,12 @@ void pcb_log_del_range(unsigned long from, unsigned long to)
 
 
 
-int pcb_log_export(const char *fn, int fmt_lihata)
+int pcb_log_export(pcb_hidlib_t *hidlib, const char *fn, int fmt_lihata)
 {
 	FILE *f;
 	pcb_logline_t *n;
 
-	f = pcb_fopen(fn, "w");
+	f = pcb_fopen(hidlib, fn, "w");
 	if (f == NULL)
 		return -1;
 
@@ -233,7 +233,7 @@ static fgw_error_t pcb_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					wfmt = PCB_DAD_CURRENT(fmtsub.dlg);
 				fn = pcb_gui->fileselect("Export log", NULL, "log.txt", NULL, NULL, "log", PCB_HID_FSD_MAY_NOT_EXIST, &fmtsub);
 				if (fn != NULL) {
-					ret = pcb_log_export(fn, (fmtsub.dlg[wfmt].default_val.int_value == 1));
+					ret = pcb_log_export(NULL, fn, (fmtsub.dlg[wfmt].default_val.int_value == 1));
 					if (ret != 0)
 						pcb_message(PCB_MSG_ERROR, "Failed to export log to '%s'\n", fn);
 					free(fn);

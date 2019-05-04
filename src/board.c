@@ -122,7 +122,7 @@ pcb_board_t *pcb_board_new(int inhibit_events)
 		const char *tmp_fn = ".pcb-rnd.default.pcb";
 
 		/* We can parse from file only, make a temp file */
-		f = pcb_fopen_fn(tmp_fn, "wb", &efn);
+		f = pcb_fopen_fn(NULL, tmp_fn, "wb", &efn);
 		if (f != NULL) {
 			fwrite(default_pcb_internal, strlen(default_pcb_internal), 1, f);
 			fclose(f);
@@ -131,7 +131,7 @@ pcb_board_t *pcb_board_new(int inhibit_events)
 				pcb_message(PCB_MSG_WARNING, "Couldn't find default.pcb - using the embedded fallback\n");
 			else
 				pcb_message(PCB_MSG_ERROR, "Couldn't find default.pcb and failed to load the embedded fallback\n");
-			pcb_remove(efn);
+			pcb_remove(NULL, efn);
 			free(efn);
 		}
 	}

@@ -1,8 +1,9 @@
-/* A Bison parser, made by GNU Bison 3.0.2.  */
+/* A Bison parser, made by GNU Bison 3.3.2.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2019 Free Software Foundation,
+   Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -40,11 +41,14 @@
    define necessary library symbols; they are noted "INFRINGES ON
    USER NAME SPACE" below.  */
 
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
+
 /* Identify Bison output.  */
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "3.0.2"
+#define YYBISON_VERSION "3.3.2"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -69,8 +73,8 @@
 #define yylval          ediflval
 #define yychar          edifchar
 
-/* Copy the first part of user declarations.  */
-#line 1 "edif.y" /* yacc.c:339  */
+/* First part of user prologue.  */
+#line 1 "edif.y" /* yacc.c:337  */
 
 /*
  * PCB Edif parser based heavily on:
@@ -263,13 +267,16 @@
  static void yyerror(const char *);
  static void PopC(void);
 
-#line 267 "edif.c" /* yacc.c:339  */
-
+#line 271 "edif.c" /* yacc.c:337  */
 # ifndef YY_NULLPTR
-#  if defined __cplusplus && 201103L <= __cplusplus
-#   define YY_NULLPTR nullptr
+#  if defined __cplusplus
+#   if 201103L <= __cplusplus
+#    define YY_NULLPTR nullptr
+#   else
+#    define YY_NULLPTR 0
+#   endif
 #  else
-#   define YY_NULLPTR 0
+#   define YY_NULLPTR ((void*)0)
 #  endif
 # endif
 
@@ -595,17 +602,19 @@ extern int edifdebug;
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef union YYSTYPE YYSTYPE;
+
 union YYSTYPE
 {
-#line 196 "edif.y" /* yacc.c:355  */
+#line 196 "edif.y" /* yacc.c:352  */
 
     char* s;
     pair_list* pl;
     str_pair* ps;
 
-#line 608 "edif.c" /* yacc.c:355  */
+#line 615 "edif.c" /* yacc.c:352  */
 };
+
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
@@ -617,9 +626,7 @@ int edifparse (void);
 
 #endif /* !YY_EDIF_EDIF_H_INCLUDED  */
 
-/* Copy the second part of user declarations.  */
 
-#line 623 "edif.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -640,13 +647,13 @@ typedef signed char yytype_int8;
 #ifdef YYTYPE_UINT16
 typedef YYTYPE_UINT16 yytype_uint16;
 #else
-typedef unsigned short int yytype_uint16;
+typedef unsigned short yytype_uint16;
 #endif
 
 #ifdef YYTYPE_INT16
 typedef YYTYPE_INT16 yytype_int16;
 #else
-typedef short int yytype_int16;
+typedef short yytype_int16;
 #endif
 
 #ifndef YYSIZE_T
@@ -658,7 +665,7 @@ typedef short int yytype_int16;
 #  include <stddef.h> /* INFRINGES ON USER NAME SPACE */
 #  define YYSIZE_T size_t
 # else
-#  define YYSIZE_T unsigned int
+#  define YYSIZE_T unsigned
 # endif
 #endif
 
@@ -694,15 +701,6 @@ typedef short int yytype_int16;
 # define YY_ATTRIBUTE_UNUSED YY_ATTRIBUTE ((__unused__))
 #endif
 
-#if !defined _Noreturn \
-     && (!defined __STDC_VERSION__ || __STDC_VERSION__ < 201112)
-# if defined _MSC_VER && 1200 <= _MSC_VER
-#  define _Noreturn __declspec (noreturn)
-# else
-#  define _Noreturn YY_ATTRIBUTE ((__noreturn__))
-# endif
-#endif
-
 /* Suppress unused-variable warnings by "using" E.  */
 #if ! defined lint || defined __GNUC__
 # define YYUSE(E) ((void) (E))
@@ -710,7 +708,7 @@ typedef short int yytype_int16;
 # define YYUSE(E) /* empty */
 #endif
 
-#if defined __GNUC__ && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
+#if defined __GNUC__ && ! defined __ICC && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
 /* Suppress an incorrect diagnostic about yylval being uninitialized.  */
 # define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN \
     _Pragma ("GCC diagnostic push") \
@@ -872,16 +870,16 @@ union yyalloc
 /* YYNSTATES -- Number of states.  */
 #define YYNSTATES  1626
 
-/* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
-   by yylex, with out-of-bounds checking.  */
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   549
 
+/* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
+   as returned by yylex, with out-of-bounds checking.  */
 #define YYTRANSLATE(YYX)                                                \
-  ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
+  ((unsigned) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
 
 /* YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to TOKEN-NUM
-   as returned by yylex, without out-of-bounds checking.  */
+   as returned by yylex.  */
 static const yytype_uint16 yytranslate[] =
 {
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -2704,22 +2702,22 @@ static const yytype_uint8 yyr2[] =
 
 #define YYRECOVERING()  (!!yyerrstatus)
 
-#define YYBACKUP(Token, Value)                                  \
-do                                                              \
-  if (yychar == YYEMPTY)                                        \
-    {                                                           \
-      yychar = (Token);                                         \
-      yylval = (Value);                                         \
-      YYPOPSTACK (yylen);                                       \
-      yystate = *yyssp;                                         \
-      goto yybackup;                                            \
-    }                                                           \
-  else                                                          \
-    {                                                           \
-      yyerror (YY_("syntax error: cannot back up")); \
-      YYERROR;                                                  \
-    }                                                           \
-while (0)
+#define YYBACKUP(Token, Value)                                    \
+  do                                                              \
+    if (yychar == YYEMPTY)                                        \
+      {                                                           \
+        yychar = (Token);                                         \
+        yylval = (Value);                                         \
+        YYPOPSTACK (yylen);                                       \
+        yystate = *yyssp;                                         \
+        goto yybackup;                                            \
+      }                                                           \
+    else                                                          \
+      {                                                           \
+        yyerror (YY_("syntax error: cannot back up")); \
+        YYERROR;                                                  \
+      }                                                           \
+  while (0)
 
 /* Error token number */
 #define YYTERROR        1
@@ -2759,37 +2757,37 @@ do {                                                                      \
 } while (0)
 
 
-/*----------------------------------------.
-| Print this symbol's value on YYOUTPUT.  |
-`----------------------------------------*/
+/*-----------------------------------.
+| Print this symbol's value on YYO.  |
+`-----------------------------------*/
 
 static void
-yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)
+yy_symbol_value_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep)
 {
-  FILE *yyo = yyoutput;
-  YYUSE (yyo);
+  FILE *yyoutput = yyo;
+  YYUSE (yyoutput);
   if (!yyvaluep)
     return;
 # ifdef YYPRINT
   if (yytype < YYNTOKENS)
-    YYPRINT (yyoutput, yytoknum[yytype], *yyvaluep);
+    YYPRINT (yyo, yytoknum[yytype], *yyvaluep);
 # endif
   YYUSE (yytype);
 }
 
 
-/*--------------------------------.
-| Print this symbol on YYOUTPUT.  |
-`--------------------------------*/
+/*---------------------------.
+| Print this symbol on YYO.  |
+`---------------------------*/
 
 static void
-yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)
+yy_symbol_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep)
 {
-  YYFPRINTF (yyoutput, "%s %s (",
+  YYFPRINTF (yyo, "%s %s (",
              yytype < YYNTOKENS ? "token" : "nterm", yytname[yytype]);
 
-  yy_symbol_value_print (yyoutput, yytype, yyvaluep);
-  YYFPRINTF (yyoutput, ")");
+  yy_symbol_value_print (yyo, yytype, yyvaluep);
+  YYFPRINTF (yyo, ")");
 }
 
 /*------------------------------------------------------------------.
@@ -2823,7 +2821,7 @@ do {                                                            \
 static void
 yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule)
 {
-  unsigned long int yylno = yyrline[yyrule];
+  unsigned long yylno = yyrline[yyrule];
   int yynrhs = yyr2[yyrule];
   int yyi;
   YYFPRINTF (stderr, "Reducing stack by rule %d (line %lu):\n",
@@ -2834,7 +2832,7 @@ yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule)
       YYFPRINTF (stderr, "   $%d = ", yyi + 1);
       yy_symbol_print (stderr,
                        yystos[yyssp[yyi + 1 - yynrhs]],
-                       &(yyvsp[(yyi + 1) - (yynrhs)])
+                       &yyvsp[(yyi + 1) - (yynrhs)]
                                               );
       YYFPRINTF (stderr, "\n");
     }
@@ -2938,7 +2936,10 @@ yytnamerr (char *yyres, const char *yystr)
           case '\\':
             if (*++yyp != '\\')
               goto do_not_strip_quotes;
-            /* Fall through.  */
+            else
+              goto append;
+
+          append:
           default:
             if (yyres)
               yyres[yyn] = *yyp;
@@ -2956,7 +2957,7 @@ yytnamerr (char *yyres, const char *yystr)
   if (! yyres)
     return yystrlen (yystr);
 
-  return yystpcpy (yyres, yystr) - yyres;
+  return (YYSIZE_T) (yystpcpy (yyres, yystr) - yyres);
 }
 # endif
 
@@ -3034,10 +3035,10 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
                 yyarg[yycount++] = yytname[yyx];
                 {
                   YYSIZE_T yysize1 = yysize + yytnamerr (YY_NULLPTR, yytname[yyx]);
-                  if (! (yysize <= yysize1
-                         && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
+                  if (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM)
+                    yysize = yysize1;
+                  else
                     return 2;
-                  yysize = yysize1;
                 }
               }
         }
@@ -3049,6 +3050,7 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
       case N:                               \
         yyformat = S;                       \
       break
+    default: /* Avoid compiler warnings. */
       YYCASE_(0, YY_("syntax error"));
       YYCASE_(1, YY_("syntax error, unexpected %s"));
       YYCASE_(2, YY_("syntax error, unexpected %s, expecting %s"));
@@ -3060,9 +3062,10 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
 
   {
     YYSIZE_T yysize1 = yysize + yystrlen (yyformat);
-    if (! (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
+    if (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM)
+      yysize = yysize1;
+    else
       return 2;
-    yysize = yysize1;
   }
 
   if (*yymsg_alloc < yysize)
@@ -3188,23 +3191,31 @@ yyparse (void)
   yychar = YYEMPTY; /* Cause a token to be read.  */
   goto yysetstate;
 
+
 /*------------------------------------------------------------.
-| yynewstate -- Push a new state, which is found in yystate.  |
+| yynewstate -- push a new state, which is found in yystate.  |
 `------------------------------------------------------------*/
- yynewstate:
+yynewstate:
   /* In all cases, when you get here, the value and location stacks
      have just been pushed.  So pushing a state here evens the stacks.  */
   yyssp++;
 
- yysetstate:
-  *yyssp = yystate;
+
+/*--------------------------------------------------------------------.
+| yynewstate -- set current state (the top of the stack) to yystate.  |
+`--------------------------------------------------------------------*/
+yysetstate:
+  *yyssp = (yytype_int16) yystate;
 
   if (yyss + yystacksize - 1 <= yyssp)
+#if !defined yyoverflow && !defined YYSTACK_RELOCATE
+    goto yyexhaustedlab;
+#else
     {
       /* Get the current used size of the three stacks, in elements.  */
-      YYSIZE_T yysize = yyssp - yyss + 1;
+      YYSIZE_T yysize = (YYSIZE_T) (yyssp - yyss + 1);
 
-#ifdef yyoverflow
+# if defined yyoverflow
       {
         /* Give user a chance to reallocate the stack.  Use copies of
            these so that the &'s don't force the real ones into
@@ -3220,14 +3231,10 @@ yyparse (void)
                     &yyss1, yysize * sizeof (*yyssp),
                     &yyvs1, yysize * sizeof (*yyvsp),
                     &yystacksize);
-
         yyss = yyss1;
         yyvs = yyvs1;
       }
-#else /* no yyoverflow */
-# ifndef YYSTACK_RELOCATE
-      goto yyexhaustedlab;
-# else
+# else /* defined YYSTACK_RELOCATE */
       /* Extend the stack our own way.  */
       if (YYMAXDEPTH <= yystacksize)
         goto yyexhaustedlab;
@@ -3243,22 +3250,22 @@ yyparse (void)
           goto yyexhaustedlab;
         YYSTACK_RELOCATE (yyss_alloc, yyss);
         YYSTACK_RELOCATE (yyvs_alloc, yyvs);
-#  undef YYSTACK_RELOCATE
+# undef YYSTACK_RELOCATE
         if (yyss1 != yyssa)
           YYSTACK_FREE (yyss1);
       }
 # endif
-#endif /* no yyoverflow */
 
       yyssp = yyss + yysize - 1;
       yyvsp = yyvs + yysize - 1;
 
       YYDPRINTF ((stderr, "Stack size increased to %lu\n",
-                  (unsigned long int) yystacksize));
+                  (unsigned long) yystacksize));
 
       if (yyss + yystacksize - 1 <= yyssp)
         YYABORT;
     }
+#endif /* !defined yyoverflow && !defined YYSTACK_RELOCATE */
 
   YYDPRINTF ((stderr, "Entering state %d\n", yystate));
 
@@ -3267,11 +3274,11 @@ yyparse (void)
 
   goto yybackup;
 
+
 /*-----------.
 | yybackup.  |
 `-----------*/
 yybackup:
-
   /* Do appropriate processing given the current state.  Read a
      lookahead token if we need one and don't already have one.  */
 
@@ -3344,7 +3351,7 @@ yydefault:
 
 
 /*-----------------------------.
-| yyreduce -- Do a reduction.  |
+| yyreduce -- do a reduction.  |
 `-----------------------------*/
 yyreduce:
   /* yyn is the number of a rule to reduce with.  */
@@ -3365,541 +3372,541 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 508 "edif.y" /* yacc.c:1646  */
+#line 508 "edif.y" /* yacc.c:1652  */
     { PopC(); }
-#line 3371 "edif.c" /* yacc.c:1646  */
+#line 3378 "edif.c" /* yacc.c:1652  */
     break;
 
   case 11:
-#line 523 "edif.y" /* yacc.c:1646  */
+#line 523 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3377 "edif.c" /* yacc.c:1646  */
+#line 3384 "edif.c" /* yacc.c:1652  */
     break;
 
   case 12:
-#line 526 "edif.y" /* yacc.c:1646  */
+#line 526 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[-1].s)); }
-#line 3383 "edif.c" /* yacc.c:1646  */
+#line 3390 "edif.c" /* yacc.c:1652  */
     break;
 
   case 13:
-#line 530 "edif.y" /* yacc.c:1646  */
+#line 530 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[-3].s)); free((yyvsp[-2].s)); free((yyvsp[-1].s)); }
-#line 3389 "edif.c" /* yacc.c:1646  */
+#line 3396 "edif.c" /* yacc.c:1652  */
     break;
 
   case 25:
-#line 554 "edif.y" /* yacc.c:1646  */
+#line 554 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 3395 "edif.c" /* yacc.c:1646  */
+#line 3402 "edif.c" /* yacc.c:1652  */
     break;
 
   case 34:
-#line 571 "edif.y" /* yacc.c:1646  */
+#line 571 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[-3].ps)); free((yyvsp[-2].s)); }
-#line 3401 "edif.c" /* yacc.c:1646  */
+#line 3408 "edif.c" /* yacc.c:1652  */
     break;
 
   case 36:
-#line 575 "edif.y" /* yacc.c:1646  */
+#line 575 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 3407 "edif.c" /* yacc.c:1646  */
+#line 3414 "edif.c" /* yacc.c:1652  */
     break;
 
   case 47:
-#line 600 "edif.y" /* yacc.c:1646  */
+#line 600 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[-1].s)); }
-#line 3413 "edif.c" /* yacc.c:1646  */
+#line 3420 "edif.c" /* yacc.c:1652  */
     break;
 
   case 69:
-#line 648 "edif.y" /* yacc.c:1646  */
+#line 648 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[-3].s)); free((yyvsp[-2].s)); }
-#line 3419 "edif.c" /* yacc.c:1646  */
+#line 3426 "edif.c" /* yacc.c:1652  */
     break;
 
   case 70:
-#line 651 "edif.y" /* yacc.c:1646  */
+#line 651 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[-1].s)); }
-#line 3425 "edif.c" /* yacc.c:1646  */
+#line 3432 "edif.c" /* yacc.c:1652  */
     break;
 
   case 80:
-#line 669 "edif.y" /* yacc.c:1646  */
+#line 669 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3431 "edif.c" /* yacc.c:1646  */
+#line 3438 "edif.c" /* yacc.c:1652  */
     break;
 
   case 84:
-#line 679 "edif.y" /* yacc.c:1646  */
+#line 679 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 3437 "edif.c" /* yacc.c:1646  */
+#line 3444 "edif.c" /* yacc.c:1652  */
     break;
 
   case 91:
-#line 694 "edif.y" /* yacc.c:1646  */
+#line 694 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3443 "edif.c" /* yacc.c:1646  */
+#line 3450 "edif.c" /* yacc.c:1652  */
     break;
 
   case 102:
-#line 717 "edif.y" /* yacc.c:1646  */
+#line 717 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 3449 "edif.c" /* yacc.c:1646  */
+#line 3456 "edif.c" /* yacc.c:1652  */
     break;
 
   case 140:
-#line 777 "edif.y" /* yacc.c:1646  */
+#line 777 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 3455 "edif.c" /* yacc.c:1646  */
+#line 3462 "edif.c" /* yacc.c:1652  */
     break;
 
   case 147:
-#line 792 "edif.y" /* yacc.c:1646  */
+#line 792 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[-2].s)); }
-#line 3461 "edif.c" /* yacc.c:1646  */
+#line 3468 "edif.c" /* yacc.c:1652  */
     break;
 
   case 150:
-#line 799 "edif.y" /* yacc.c:1646  */
+#line 799 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[-2].s)); }
-#line 3467 "edif.c" /* yacc.c:1646  */
+#line 3474 "edif.c" /* yacc.c:1652  */
     break;
 
   case 182:
-#line 869 "edif.y" /* yacc.c:1646  */
+#line 869 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 3473 "edif.c" /* yacc.c:1646  */
+#line 3480 "edif.c" /* yacc.c:1652  */
     break;
 
   case 184:
-#line 873 "edif.y" /* yacc.c:1646  */
+#line 873 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3479 "edif.c" /* yacc.c:1646  */
+#line 3486 "edif.c" /* yacc.c:1652  */
     break;
 
   case 240:
-#line 977 "edif.y" /* yacc.c:1646  */
+#line 977 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3485 "edif.c" /* yacc.c:1646  */
+#line 3492 "edif.c" /* yacc.c:1652  */
     break;
 
   case 247:
-#line 990 "edif.y" /* yacc.c:1646  */
+#line 990 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3491 "edif.c" /* yacc.c:1646  */
+#line 3498 "edif.c" /* yacc.c:1652  */
     break;
 
   case 278:
-#line 1037 "edif.y" /* yacc.c:1646  */
+#line 1037 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3497 "edif.c" /* yacc.c:1646  */
+#line 3504 "edif.c" /* yacc.c:1652  */
     break;
 
   case 279:
-#line 1040 "edif.y" /* yacc.c:1646  */
+#line 1040 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 3503 "edif.c" /* yacc.c:1646  */
+#line 3510 "edif.c" /* yacc.c:1652  */
     break;
 
   case 333:
-#line 1126 "edif.y" /* yacc.c:1646  */
+#line 1126 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[-3].s)); free((yyvsp[-2].s)); }
-#line 3509 "edif.c" /* yacc.c:1646  */
+#line 3516 "edif.c" /* yacc.c:1652  */
     break;
 
   case 336:
-#line 1133 "edif.y" /* yacc.c:1646  */
+#line 1133 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3515 "edif.c" /* yacc.c:1646  */
+#line 3522 "edif.c" /* yacc.c:1652  */
     break;
 
   case 337:
-#line 1136 "edif.y" /* yacc.c:1646  */
+#line 1136 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3521 "edif.c" /* yacc.c:1646  */
+#line 3528 "edif.c" /* yacc.c:1652  */
     break;
 
   case 344:
-#line 1149 "edif.y" /* yacc.c:1646  */
+#line 1149 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[-2].s)); }
-#line 3527 "edif.c" /* yacc.c:1646  */
+#line 3534 "edif.c" /* yacc.c:1652  */
     break;
 
   case 346:
-#line 1153 "edif.y" /* yacc.c:1646  */
+#line 1153 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 3533 "edif.c" /* yacc.c:1646  */
+#line 3540 "edif.c" /* yacc.c:1652  */
     break;
 
   case 347:
-#line 1154 "edif.y" /* yacc.c:1646  */
+#line 1154 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 3539 "edif.c" /* yacc.c:1646  */
+#line 3546 "edif.c" /* yacc.c:1652  */
     break;
 
   case 348:
-#line 1155 "edif.y" /* yacc.c:1646  */
+#line 1155 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 3545 "edif.c" /* yacc.c:1646  */
+#line 3552 "edif.c" /* yacc.c:1652  */
     break;
 
   case 369:
-#line 1196 "edif.y" /* yacc.c:1646  */
+#line 1196 "edif.y" /* yacc.c:1652  */
     { (yyval.s)=(yyvsp[-2].s); }
-#line 3551 "edif.c" /* yacc.c:1646  */
+#line 3558 "edif.c" /* yacc.c:1652  */
     break;
 
   case 371:
-#line 1200 "edif.y" /* yacc.c:1646  */
+#line 1200 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 3557 "edif.c" /* yacc.c:1646  */
+#line 3564 "edif.c" /* yacc.c:1652  */
     break;
 
   case 374:
-#line 1207 "edif.y" /* yacc.c:1646  */
+#line 1207 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 3563 "edif.c" /* yacc.c:1646  */
+#line 3570 "edif.c" /* yacc.c:1652  */
     break;
 
   case 381:
-#line 1218 "edif.y" /* yacc.c:1646  */
+#line 1218 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 3569 "edif.c" /* yacc.c:1646  */
+#line 3576 "edif.c" /* yacc.c:1652  */
     break;
 
   case 384:
-#line 1225 "edif.y" /* yacc.c:1646  */
+#line 1225 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 3575 "edif.c" /* yacc.c:1646  */
+#line 3582 "edif.c" /* yacc.c:1652  */
     break;
 
   case 388:
-#line 1231 "edif.y" /* yacc.c:1646  */
+#line 1231 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3581 "edif.c" /* yacc.c:1646  */
+#line 3588 "edif.c" /* yacc.c:1652  */
     break;
 
   case 390:
-#line 1235 "edif.y" /* yacc.c:1646  */
+#line 1235 "edif.y" /* yacc.c:1652  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3587 "edif.c" /* yacc.c:1646  */
+#line 3594 "edif.c" /* yacc.c:1652  */
     break;
 
   case 393:
-#line 1242 "edif.y" /* yacc.c:1646  */
+#line 1242 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 3593 "edif.c" /* yacc.c:1646  */
+#line 3600 "edif.c" /* yacc.c:1652  */
     break;
 
   case 397:
-#line 1250 "edif.y" /* yacc.c:1646  */
+#line 1250 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 3599 "edif.c" /* yacc.c:1646  */
+#line 3606 "edif.c" /* yacc.c:1652  */
     break;
 
   case 408:
-#line 1265 "edif.y" /* yacc.c:1646  */
+#line 1265 "edif.y" /* yacc.c:1652  */
     { pair_list_free((yyvsp[0].pl)); }
-#line 3605 "edif.c" /* yacc.c:1646  */
+#line 3612 "edif.c" /* yacc.c:1652  */
     break;
 
   case 437:
-#line 1315 "edif.y" /* yacc.c:1646  */
+#line 1315 "edif.y" /* yacc.c:1652  */
     { (yyval.pl) = new_pair_list((yyvsp[-1].ps)); }
-#line 3611 "edif.c" /* yacc.c:1646  */
+#line 3618 "edif.c" /* yacc.c:1652  */
     break;
 
   case 438:
-#line 1318 "edif.y" /* yacc.c:1646  */
+#line 1318 "edif.y" /* yacc.c:1652  */
     { (yyval.ps)=NULL; }
-#line 3617 "edif.c" /* yacc.c:1646  */
+#line 3624 "edif.c" /* yacc.c:1652  */
     break;
 
   case 439:
-#line 1319 "edif.y" /* yacc.c:1646  */
+#line 1319 "edif.y" /* yacc.c:1652  */
     { (yyvsp[0].ps)->next = (yyvsp[-1].ps); (yyval.ps) = (yyvsp[0].ps); }
-#line 3623 "edif.c" /* yacc.c:1646  */
+#line 3630 "edif.c" /* yacc.c:1652  */
     break;
 
   case 455:
-#line 1345 "edif.y" /* yacc.c:1646  */
+#line 1345 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[-1].s)); }
-#line 3629 "edif.c" /* yacc.c:1646  */
+#line 3636 "edif.c" /* yacc.c:1652  */
     break;
 
   case 459:
-#line 1355 "edif.y" /* yacc.c:1646  */
+#line 1355 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 3635 "edif.c" /* yacc.c:1646  */
+#line 3642 "edif.c" /* yacc.c:1652  */
     break;
 
   case 460:
-#line 1358 "edif.y" /* yacc.c:1646  */
+#line 1358 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3641 "edif.c" /* yacc.c:1646  */
+#line 3648 "edif.c" /* yacc.c:1652  */
     break;
 
   case 462:
-#line 1364 "edif.y" /* yacc.c:1646  */
+#line 1364 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3647 "edif.c" /* yacc.c:1646  */
+#line 3654 "edif.c" /* yacc.c:1652  */
     break;
 
   case 463:
-#line 1367 "edif.y" /* yacc.c:1646  */
+#line 1367 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 3653 "edif.c" /* yacc.c:1646  */
+#line 3660 "edif.c" /* yacc.c:1652  */
     break;
 
   case 483:
-#line 1409 "edif.y" /* yacc.c:1646  */
+#line 1409 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3659 "edif.c" /* yacc.c:1646  */
+#line 3666 "edif.c" /* yacc.c:1652  */
     break;
 
   case 484:
-#line 1412 "edif.y" /* yacc.c:1646  */
+#line 1412 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3665 "edif.c" /* yacc.c:1646  */
+#line 3672 "edif.c" /* yacc.c:1652  */
     break;
 
   case 492:
-#line 1426 "edif.y" /* yacc.c:1646  */
+#line 1426 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3671 "edif.c" /* yacc.c:1646  */
+#line 3678 "edif.c" /* yacc.c:1652  */
     break;
 
   case 506:
-#line 1454 "edif.y" /* yacc.c:1646  */
+#line 1454 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3677 "edif.c" /* yacc.c:1646  */
+#line 3684 "edif.c" /* yacc.c:1652  */
     break;
 
   case 507:
-#line 1457 "edif.y" /* yacc.c:1646  */
+#line 1457 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 3683 "edif.c" /* yacc.c:1646  */
+#line 3690 "edif.c" /* yacc.c:1652  */
     break;
 
   case 514:
-#line 1472 "edif.y" /* yacc.c:1646  */
+#line 1472 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3689 "edif.c" /* yacc.c:1646  */
+#line 3696 "edif.c" /* yacc.c:1652  */
     break;
 
   case 549:
-#line 1527 "edif.y" /* yacc.c:1646  */
+#line 1527 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3695 "edif.c" /* yacc.c:1646  */
+#line 3702 "edif.c" /* yacc.c:1652  */
     break;
 
   case 555:
-#line 1539 "edif.y" /* yacc.c:1646  */
+#line 1539 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3701 "edif.c" /* yacc.c:1646  */
+#line 3708 "edif.c" /* yacc.c:1652  */
     break;
 
   case 560:
-#line 1548 "edif.y" /* yacc.c:1646  */
+#line 1548 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[-2].s)); }
-#line 3707 "edif.c" /* yacc.c:1646  */
+#line 3714 "edif.c" /* yacc.c:1652  */
     break;
 
   case 561:
-#line 1551 "edif.y" /* yacc.c:1646  */
+#line 1551 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 3713 "edif.c" /* yacc.c:1646  */
+#line 3720 "edif.c" /* yacc.c:1652  */
     break;
 
   case 562:
-#line 1552 "edif.y" /* yacc.c:1646  */
+#line 1552 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 3719 "edif.c" /* yacc.c:1646  */
+#line 3726 "edif.c" /* yacc.c:1652  */
     break;
 
   case 582:
-#line 1594 "edif.y" /* yacc.c:1646  */
+#line 1594 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3725 "edif.c" /* yacc.c:1646  */
+#line 3732 "edif.c" /* yacc.c:1652  */
     break;
 
   case 585:
-#line 1597 "edif.y" /* yacc.c:1646  */
+#line 1597 "edif.y" /* yacc.c:1652  */
     { pair_list_free((yyvsp[0].pl)); }
-#line 3731 "edif.c" /* yacc.c:1646  */
+#line 3738 "edif.c" /* yacc.c:1652  */
     break;
 
   case 586:
-#line 1600 "edif.y" /* yacc.c:1646  */
+#line 1600 "edif.y" /* yacc.c:1652  */
     { (yyval.s)=(yyvsp[-1].s); }
-#line 3737 "edif.c" /* yacc.c:1646  */
+#line 3744 "edif.c" /* yacc.c:1652  */
     break;
 
   case 587:
-#line 1603 "edif.y" /* yacc.c:1646  */
+#line 1603 "edif.y" /* yacc.c:1652  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3743 "edif.c" /* yacc.c:1646  */
+#line 3750 "edif.c" /* yacc.c:1652  */
     break;
 
   case 589:
-#line 1607 "edif.y" /* yacc.c:1646  */
+#line 1607 "edif.y" /* yacc.c:1652  */
     { (yyval.ps) = new_str_pair((yyvsp[0].s),NULL); }
-#line 3749 "edif.c" /* yacc.c:1646  */
+#line 3756 "edif.c" /* yacc.c:1652  */
     break;
 
   case 590:
-#line 1608 "edif.y" /* yacc.c:1646  */
+#line 1608 "edif.y" /* yacc.c:1652  */
     { (yyval.ps) = new_str_pair((yyvsp[0].s),NULL); }
-#line 3755 "edif.c" /* yacc.c:1646  */
+#line 3762 "edif.c" /* yacc.c:1652  */
     break;
 
   case 591:
-#line 1609 "edif.y" /* yacc.c:1646  */
+#line 1609 "edif.y" /* yacc.c:1652  */
     { (yyval.ps)=(yyvsp[0].ps); }
-#line 3761 "edif.c" /* yacc.c:1646  */
+#line 3768 "edif.c" /* yacc.c:1652  */
     break;
 
   case 592:
-#line 1612 "edif.y" /* yacc.c:1646  */
+#line 1612 "edif.y" /* yacc.c:1652  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3767 "edif.c" /* yacc.c:1646  */
+#line 3774 "edif.c" /* yacc.c:1652  */
     break;
 
   case 593:
-#line 1613 "edif.y" /* yacc.c:1646  */
+#line 1613 "edif.y" /* yacc.c:1652  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3773 "edif.c" /* yacc.c:1646  */
+#line 3780 "edif.c" /* yacc.c:1652  */
     break;
 
   case 594:
-#line 1616 "edif.y" /* yacc.c:1646  */
+#line 1616 "edif.y" /* yacc.c:1652  */
     { define_pcb_net((yyvsp[-2].ps), (yyvsp[-1].pl)); }
-#line 3779 "edif.c" /* yacc.c:1646  */
+#line 3786 "edif.c" /* yacc.c:1652  */
     break;
 
   case 595:
-#line 1619 "edif.y" /* yacc.c:1646  */
+#line 1619 "edif.y" /* yacc.c:1652  */
     { (yyval.pl)=(yyvsp[0].pl); }
-#line 3785 "edif.c" /* yacc.c:1646  */
+#line 3792 "edif.c" /* yacc.c:1652  */
     break;
 
   case 611:
-#line 1641 "edif.y" /* yacc.c:1646  */
+#line 1641 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[-2].ps)); }
-#line 3791 "edif.c" /* yacc.c:1646  */
+#line 3798 "edif.c" /* yacc.c:1652  */
     break;
 
   case 632:
-#line 1678 "edif.y" /* yacc.c:1646  */
+#line 1678 "edif.y" /* yacc.c:1652  */
     { (yyval.ps)=(yyvsp[0].ps); }
-#line 3797 "edif.c" /* yacc.c:1646  */
+#line 3804 "edif.c" /* yacc.c:1652  */
     break;
 
   case 633:
-#line 1679 "edif.y" /* yacc.c:1646  */
+#line 1679 "edif.y" /* yacc.c:1652  */
     { (yyval.ps)=NULL; }
-#line 3803 "edif.c" /* yacc.c:1646  */
+#line 3810 "edif.c" /* yacc.c:1652  */
     break;
 
   case 634:
-#line 1683 "edif.y" /* yacc.c:1646  */
+#line 1683 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 3809 "edif.c" /* yacc.c:1646  */
+#line 3816 "edif.c" /* yacc.c:1652  */
     break;
 
   case 639:
-#line 1692 "edif.y" /* yacc.c:1646  */
+#line 1692 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 3815 "edif.c" /* yacc.c:1646  */
+#line 3822 "edif.c" /* yacc.c:1652  */
     break;
 
   case 644:
-#line 1703 "edif.y" /* yacc.c:1646  */
+#line 1703 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3821 "edif.c" /* yacc.c:1646  */
+#line 3828 "edif.c" /* yacc.c:1652  */
     break;
 
   case 698:
-#line 1805 "edif.y" /* yacc.c:1646  */
+#line 1805 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[-3].s)); }
-#line 3827 "edif.c" /* yacc.c:1646  */
+#line 3834 "edif.c" /* yacc.c:1652  */
     break;
 
   case 701:
-#line 1812 "edif.y" /* yacc.c:1646  */
+#line 1812 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[-1].s)); }
-#line 3833 "edif.c" /* yacc.c:1646  */
+#line 3840 "edif.c" /* yacc.c:1652  */
     break;
 
   case 727:
-#line 1864 "edif.y" /* yacc.c:1646  */
+#line 1864 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[-1].s)); }
-#line 3839 "edif.c" /* yacc.c:1646  */
+#line 3846 "edif.c" /* yacc.c:1652  */
     break;
 
   case 730:
-#line 1871 "edif.y" /* yacc.c:1646  */
+#line 1871 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3845 "edif.c" /* yacc.c:1646  */
+#line 3852 "edif.c" /* yacc.c:1652  */
     break;
 
   case 747:
-#line 1906 "edif.y" /* yacc.c:1646  */
+#line 1906 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[-2].s)); free((yyvsp[-1].s)); }
-#line 3851 "edif.c" /* yacc.c:1646  */
+#line 3858 "edif.c" /* yacc.c:1652  */
     break;
 
   case 766:
-#line 1937 "edif.y" /* yacc.c:1646  */
+#line 1937 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3857 "edif.c" /* yacc.c:1646  */
+#line 3864 "edif.c" /* yacc.c:1652  */
     break;
 
   case 789:
-#line 1972 "edif.y" /* yacc.c:1646  */
+#line 1972 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3863 "edif.c" /* yacc.c:1646  */
+#line 3870 "edif.c" /* yacc.c:1652  */
     break;
 
   case 791:
-#line 1978 "edif.y" /* yacc.c:1646  */
+#line 1978 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3869 "edif.c" /* yacc.c:1646  */
+#line 3876 "edif.c" /* yacc.c:1652  */
     break;
 
   case 803:
-#line 1994 "edif.y" /* yacc.c:1646  */
+#line 1994 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3875 "edif.c" /* yacc.c:1646  */
+#line 3882 "edif.c" /* yacc.c:1652  */
     break;
 
   case 818:
-#line 2013 "edif.y" /* yacc.c:1646  */
+#line 2013 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3881 "edif.c" /* yacc.c:1646  */
+#line 3888 "edif.c" /* yacc.c:1652  */
     break;
 
   case 823:
-#line 2024 "edif.y" /* yacc.c:1646  */
+#line 2024 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3887 "edif.c" /* yacc.c:1646  */
+#line 3894 "edif.c" /* yacc.c:1652  */
     break;
 
   case 827:
-#line 2030 "edif.y" /* yacc.c:1646  */
+#line 2030 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3893 "edif.c" /* yacc.c:1646  */
+#line 3900 "edif.c" /* yacc.c:1652  */
     break;
 
   case 829:
-#line 2034 "edif.y" /* yacc.c:1646  */
+#line 2034 "edif.y" /* yacc.c:1652  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3899 "edif.c" /* yacc.c:1646  */
+#line 3906 "edif.c" /* yacc.c:1652  */
     break;
 
   case 831:
-#line 2039 "edif.y" /* yacc.c:1646  */
+#line 2039 "edif.y" /* yacc.c:1652  */
     {
     if ((yyvsp[-1].ps))
     {
@@ -3912,251 +3919,251 @@ yyreduce:
 	(yyval.ps) = new_str_pair(NULL,(yyvsp[-2].s));
     }
 }
-#line 3916 "edif.c" /* yacc.c:1646  */
+#line 3923 "edif.c" /* yacc.c:1652  */
     break;
 
   case 832:
-#line 2053 "edif.y" /* yacc.c:1646  */
+#line 2053 "edif.y" /* yacc.c:1652  */
     { (yyval.ps)=NULL; }
-#line 3922 "edif.c" /* yacc.c:1646  */
+#line 3929 "edif.c" /* yacc.c:1652  */
     break;
 
   case 833:
-#line 2054 "edif.y" /* yacc.c:1646  */
+#line 2054 "edif.y" /* yacc.c:1652  */
     { (yyval.ps)=(yyvsp[0].ps); }
-#line 3928 "edif.c" /* yacc.c:1646  */
+#line 3935 "edif.c" /* yacc.c:1652  */
     break;
 
   case 834:
-#line 2055 "edif.y" /* yacc.c:1646  */
+#line 2055 "edif.y" /* yacc.c:1652  */
     { (yyval.ps) = new_str_pair((yyvsp[0].s),NULL); }
-#line 3934 "edif.c" /* yacc.c:1646  */
+#line 3941 "edif.c" /* yacc.c:1652  */
     break;
 
   case 835:
-#line 2056 "edif.y" /* yacc.c:1646  */
+#line 2056 "edif.y" /* yacc.c:1652  */
     { (yyval.ps)=NULL; }
-#line 3940 "edif.c" /* yacc.c:1646  */
+#line 3947 "edif.c" /* yacc.c:1652  */
     break;
 
   case 848:
-#line 2083 "edif.y" /* yacc.c:1646  */
+#line 2083 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3946 "edif.c" /* yacc.c:1646  */
+#line 3953 "edif.c" /* yacc.c:1652  */
     break;
 
   case 849:
-#line 2086 "edif.y" /* yacc.c:1646  */
+#line 2086 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 3952 "edif.c" /* yacc.c:1646  */
+#line 3959 "edif.c" /* yacc.c:1652  */
     break;
 
   case 881:
-#line 2139 "edif.y" /* yacc.c:1646  */
+#line 2139 "edif.y" /* yacc.c:1652  */
     { (yyval.ps) = new_str_pair((yyvsp[-2].s),(yyvsp[-1].s)); }
-#line 3958 "edif.c" /* yacc.c:1646  */
+#line 3965 "edif.c" /* yacc.c:1652  */
     break;
 
   case 882:
-#line 2142 "edif.y" /* yacc.c:1646  */
+#line 2142 "edif.y" /* yacc.c:1652  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3964 "edif.c" /* yacc.c:1646  */
+#line 3971 "edif.c" /* yacc.c:1652  */
     break;
 
   case 883:
-#line 2143 "edif.y" /* yacc.c:1646  */
+#line 2143 "edif.y" /* yacc.c:1652  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3970 "edif.c" /* yacc.c:1646  */
+#line 3977 "edif.c" /* yacc.c:1652  */
     break;
 
   case 884:
-#line 2146 "edif.y" /* yacc.c:1646  */
+#line 2146 "edif.y" /* yacc.c:1652  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 3976 "edif.c" /* yacc.c:1646  */
+#line 3983 "edif.c" /* yacc.c:1652  */
     break;
 
   case 885:
-#line 2147 "edif.y" /* yacc.c:1646  */
+#line 2147 "edif.y" /* yacc.c:1652  */
     { (yyval.s)=NULL; }
-#line 3982 "edif.c" /* yacc.c:1646  */
+#line 3989 "edif.c" /* yacc.c:1652  */
     break;
 
   case 889:
-#line 2157 "edif.y" /* yacc.c:1646  */
+#line 2157 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 3988 "edif.c" /* yacc.c:1646  */
+#line 3995 "edif.c" /* yacc.c:1652  */
     break;
 
   case 891:
-#line 2163 "edif.y" /* yacc.c:1646  */
+#line 2163 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 3994 "edif.c" /* yacc.c:1646  */
+#line 4001 "edif.c" /* yacc.c:1652  */
     break;
 
   case 892:
-#line 2164 "edif.y" /* yacc.c:1646  */
+#line 2164 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[-2].s)); free((yyvsp[-1].s)); }
-#line 4000 "edif.c" /* yacc.c:1646  */
+#line 4007 "edif.c" /* yacc.c:1652  */
     break;
 
   case 893:
-#line 2167 "edif.y" /* yacc.c:1646  */
+#line 2167 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[-2].s)); free((yyvsp[-1].s)); }
-#line 4006 "edif.c" /* yacc.c:1646  */
+#line 4013 "edif.c" /* yacc.c:1652  */
     break;
 
   case 894:
-#line 2170 "edif.y" /* yacc.c:1646  */
+#line 2170 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[-2].s)); free((yyvsp[-1].s)); }
-#line 4012 "edif.c" /* yacc.c:1646  */
+#line 4019 "edif.c" /* yacc.c:1652  */
     break;
 
   case 896:
-#line 2176 "edif.y" /* yacc.c:1646  */
+#line 2176 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 4018 "edif.c" /* yacc.c:1646  */
+#line 4025 "edif.c" /* yacc.c:1652  */
     break;
 
   case 898:
-#line 2178 "edif.y" /* yacc.c:1646  */
+#line 2178 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 4024 "edif.c" /* yacc.c:1646  */
+#line 4031 "edif.c" /* yacc.c:1652  */
     break;
 
   case 903:
-#line 2189 "edif.y" /* yacc.c:1646  */
+#line 2189 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 4030 "edif.c" /* yacc.c:1646  */
+#line 4037 "edif.c" /* yacc.c:1652  */
     break;
 
   case 935:
-#line 2253 "edif.y" /* yacc.c:1646  */
+#line 2253 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 4036 "edif.c" /* yacc.c:1646  */
+#line 4043 "edif.c" /* yacc.c:1652  */
     break;
 
   case 943:
-#line 2269 "edif.y" /* yacc.c:1646  */
+#line 2269 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 4042 "edif.c" /* yacc.c:1646  */
+#line 4049 "edif.c" /* yacc.c:1652  */
     break;
 
   case 946:
-#line 2274 "edif.y" /* yacc.c:1646  */
+#line 2274 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 4048 "edif.c" /* yacc.c:1646  */
+#line 4055 "edif.c" /* yacc.c:1652  */
     break;
 
   case 973:
-#line 2319 "edif.y" /* yacc.c:1646  */
+#line 2319 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 4054 "edif.c" /* yacc.c:1646  */
+#line 4061 "edif.c" /* yacc.c:1652  */
     break;
 
   case 987:
-#line 2341 "edif.y" /* yacc.c:1646  */
+#line 2341 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[-1].s)); }
-#line 4060 "edif.c" /* yacc.c:1646  */
+#line 4067 "edif.c" /* yacc.c:1652  */
     break;
 
   case 994:
-#line 2357 "edif.y" /* yacc.c:1646  */
+#line 2357 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[-6].s)); free((yyvsp[-5].s)); free((yyvsp[-4].s)); free((yyvsp[-3].s)); free((yyvsp[-2].s)); free((yyvsp[-1].s)); }
-#line 4066 "edif.c" /* yacc.c:1646  */
+#line 4073 "edif.c" /* yacc.c:1652  */
     break;
 
   case 1054:
-#line 2464 "edif.y" /* yacc.c:1646  */
+#line 2464 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 4072 "edif.c" /* yacc.c:1646  */
+#line 4079 "edif.c" /* yacc.c:1652  */
     break;
 
   case 1055:
-#line 2465 "edif.y" /* yacc.c:1646  */
+#line 2465 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 4078 "edif.c" /* yacc.c:1646  */
+#line 4085 "edif.c" /* yacc.c:1652  */
     break;
 
   case 1056:
-#line 2466 "edif.y" /* yacc.c:1646  */
+#line 2466 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 4084 "edif.c" /* yacc.c:1646  */
+#line 4091 "edif.c" /* yacc.c:1652  */
     break;
 
   case 1057:
-#line 2467 "edif.y" /* yacc.c:1646  */
+#line 2467 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 4090 "edif.c" /* yacc.c:1646  */
+#line 4097 "edif.c" /* yacc.c:1652  */
     break;
 
   case 1059:
-#line 2471 "edif.y" /* yacc.c:1646  */
+#line 2471 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 4096 "edif.c" /* yacc.c:1646  */
+#line 4103 "edif.c" /* yacc.c:1652  */
     break;
 
   case 1061:
-#line 2475 "edif.y" /* yacc.c:1646  */
+#line 2475 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 4102 "edif.c" /* yacc.c:1646  */
+#line 4109 "edif.c" /* yacc.c:1652  */
     break;
 
   case 1063:
-#line 2479 "edif.y" /* yacc.c:1646  */
+#line 2479 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[-1].s)); }
-#line 4108 "edif.c" /* yacc.c:1646  */
+#line 4115 "edif.c" /* yacc.c:1652  */
     break;
 
   case 1085:
-#line 2515 "edif.y" /* yacc.c:1646  */
+#line 2515 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 4114 "edif.c" /* yacc.c:1646  */
+#line 4121 "edif.c" /* yacc.c:1652  */
     break;
 
   case 1086:
-#line 2518 "edif.y" /* yacc.c:1646  */
+#line 2518 "edif.y" /* yacc.c:1652  */
     { free((yyvsp[0].s)); }
-#line 4120 "edif.c" /* yacc.c:1646  */
+#line 4127 "edif.c" /* yacc.c:1652  */
     break;
 
   case 1107:
-#line 2559 "edif.y" /* yacc.c:1646  */
+#line 2559 "edif.y" /* yacc.c:1652  */
     { str_pair_free((yyvsp[0].ps)); }
-#line 4126 "edif.c" /* yacc.c:1646  */
+#line 4133 "edif.c" /* yacc.c:1652  */
     break;
 
   case 1109:
-#line 2561 "edif.y" /* yacc.c:1646  */
+#line 2561 "edif.y" /* yacc.c:1652  */
     { pair_list_free((yyvsp[0].pl)); }
-#line 4132 "edif.c" /* yacc.c:1646  */
+#line 4139 "edif.c" /* yacc.c:1652  */
     break;
 
   case 1126:
-#line 2588 "edif.y" /* yacc.c:1646  */
+#line 2588 "edif.y" /* yacc.c:1652  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 4138 "edif.c" /* yacc.c:1646  */
+#line 4145 "edif.c" /* yacc.c:1652  */
     break;
 
   case 1127:
-#line 2591 "edif.y" /* yacc.c:1646  */
+#line 2591 "edif.y" /* yacc.c:1652  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 4144 "edif.c" /* yacc.c:1646  */
+#line 4151 "edif.c" /* yacc.c:1652  */
     break;
 
   case 1128:
-#line 2594 "edif.y" /* yacc.c:1646  */
+#line 2594 "edif.y" /* yacc.c:1652  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 4150 "edif.c" /* yacc.c:1646  */
+#line 4157 "edif.c" /* yacc.c:1652  */
     break;
 
   case 1129:
-#line 2597 "edif.y" /* yacc.c:1646  */
+#line 2597 "edif.y" /* yacc.c:1652  */
     { (yyval.s)=(yyvsp[0].s); }
-#line 4156 "edif.c" /* yacc.c:1646  */
+#line 4163 "edif.c" /* yacc.c:1652  */
     break;
 
 
-#line 4160 "edif.c" /* yacc.c:1646  */
+#line 4167 "edif.c" /* yacc.c:1652  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -4181,14 +4188,13 @@ yyreduce:
   /* Now 'shift' the result of the reduction.  Determine what state
      that goes to, based on the state we popped back to and the rule
      number reduced by.  */
-
-  yyn = yyr1[yyn];
-
-  yystate = yypgoto[yyn - YYNTOKENS] + *yyssp;
-  if (0 <= yystate && yystate <= YYLAST && yycheck[yystate] == *yyssp)
-    yystate = yytable[yystate];
-  else
-    yystate = yydefgoto[yyn - YYNTOKENS];
+  {
+    const int yylhs = yyr1[yyn] - YYNTOKENS;
+    const int yyi = yypgoto[yylhs] + *yyssp;
+    yystate = (0 <= yyi && yyi <= YYLAST && yycheck[yyi] == *yyssp
+               ? yytable[yyi]
+               : yydefgoto[yylhs]);
+  }
 
   goto yynewstate;
 
@@ -4271,12 +4277,10 @@ yyerrlab:
 | yyerrorlab -- error raised explicitly by YYERROR.  |
 `---------------------------------------------------*/
 yyerrorlab:
-
-  /* Pacify compilers like GCC when the user code never invokes
-     YYERROR and the label yyerrorlab therefore never appears in user
-     code.  */
-  if (/*CONSTCOND*/ 0)
-     goto yyerrorlab;
+  /* Pacify compilers when the user code never invokes YYERROR and the
+     label yyerrorlab therefore never appears in user code.  */
+  if (0)
+    YYERROR;
 
   /* Do not reclaim the symbols of the rule whose action triggered
      this YYERROR.  */
@@ -4338,12 +4342,14 @@ yyacceptlab:
   yyresult = 0;
   goto yyreturn;
 
+
 /*-----------------------------------.
 | yyabortlab -- YYABORT comes here.  |
 `-----------------------------------*/
 yyabortlab:
   yyresult = 1;
   goto yyreturn;
+
 
 #if !defined yyoverflow || YYERROR_VERBOSE
 /*-------------------------------------------------.
@@ -4355,6 +4361,10 @@ yyexhaustedlab:
   /* Fall through.  */
 #endif
 
+
+/*-----------------------------------------------------.
+| yyreturn -- parsing is finished, return the result.  |
+`-----------------------------------------------------*/
 yyreturn:
   if (yychar != YYEMPTY)
     {
@@ -4384,7 +4394,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 2600 "edif.y" /* yacc.c:1906  */
+#line 2600 "edif.y" /* yacc.c:1918  */
 
 /*
  *	xmalloc:
@@ -5863,7 +5873,7 @@ void ParseEDIF(char* filename,FILE* err)
    *	Set up the file state to something useful.
    */
   InFile = filename;
-  Input = pcb_fopen(filename, "r");
+  Input = pcb_fopen(&PCB->hidlib, filename, "r");
   Error = err;
   LineNumber = 1;
   /*

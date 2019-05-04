@@ -166,7 +166,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	vendor_free_all();
 
 	/* load the resource file */
-	doc = pcb_hid_cfg_load_lht(fname);
+	doc = pcb_hid_cfg_load_lht(&PCB->hidlib, fname);
 	if (doc == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Could not load vendor resource file \"%s\"\n", fname);
 		PCB_ACT_IRES(1);

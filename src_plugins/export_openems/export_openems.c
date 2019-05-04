@@ -650,7 +650,7 @@ static void openems_do_export(pcb_hid_attr_val_t * options)
 	if (!filename)
 		filename = "pcb.m";
 
-	f = pcb_fopen(filename, "wb");
+	f = pcb_fopen(&PCB->hidlib, filename, "wb");
 	if (!f) {
 		perror(filename);
 		return;
@@ -664,7 +664,7 @@ static void openems_do_export(pcb_hid_attr_val_t * options)
 	if (strcmp(end, ".m") != 0)
 		end = runfn + len;
 	strcpy(end, ".sim.m");
-	fsim = pcb_fopen(runfn, "wb");
+	fsim = pcb_fopen(&PCB->hidlib, runfn, "wb");
 	if (fsim == NULL) {
 		perror(runfn);
 		return;

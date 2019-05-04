@@ -102,7 +102,7 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					pcb_netlist_init(&(PCB->netlist[i]));
 				}
 			}
-			if (!pcb_import_netlist(PCB->Netlistname))
+			if (!pcb_import_netlist(&PCB->hidlib, PCB->Netlistname))
 				pcb_netlist_changed(1);
 			break;
 

@@ -77,7 +77,7 @@ int pcb_io_err_inhibit = 0;
 pcb_view_list_t pcb_io_incompat_lst;
 static pcb_bool pcb_io_incompat_lst_enable = pcb_false;
 
-static void plug_io_err(int res, const char *what, const char *filename)
+static void plug_io_err(pcb_hidlib_t *hidlib, int res, const char *what, const char *filename)
 {
 	if (pcb_io_err_inhibit)
 		return;
@@ -91,7 +91,7 @@ static void plug_io_err(int res, const char *what, const char *filename)
 			else {
 				FILE *f;
 				reason = "none of io plugins could successfully read file";
-				f = pcb_fopen(filename, "r");
+				f = pcb_fopen(hidlib, filename, "r");
 				if (f != NULL) {
 					fclose(f);
 					comment = "(unknown/invalid file format?)";
@@ -205,7 +205,7 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 	int accept_total = 0;
 	FILE *ft;
 
-	ft = pcb_fopen(Filename, "r");
+	ft = pcb_fopen(&Ptr->hidlib, Filename, "r");
 	len = pcb_test_parse_all(ft, Filename, fmt, PCB_IOT_PCB, available, accepts, &accept_total, sizeof(available)/sizeof(available[0]), ignore_missing, load_settings);
 	if (ft != NULL)
 		fclose(ft);
@@ -237,7 +237,7 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 	pcb_event(&PCB->hidlib, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 	conf_set(CFR_DESIGN, "design/text_font_id", 0, "0", POL_OVERWRITE); /* we have only one font now, make sure it is selected */
 
-	plug_io_err(res, "load pcb", Filename);
+	plug_io_err(&Ptr->hidlib, res, "load pcb", Filename);
 	return res;
 }
 
@@ -277,7 +277,7 @@ int pcb_parse_footprint(pcb_data_t *Ptr, const char *Filename, const char *fmt)
 	if (res == 0)
 		pcb_data_flag_change(Ptr, PCB_OBJ_CLASS_REAL, PCB_CHGFLG_CLEAR, PCB_FLAG_FOUND | PCB_FLAG_SELECTED);
 
-	plug_io_err(res, "load footprint", Filename);
+	plug_io_err(&PCB->hidlib, res, "load footprint", Filename);
 	return res;
 }
 
@@ -286,7 +286,7 @@ int pcb_parse_font(pcb_font_t *Ptr, const char *Filename)
 	int res = -1;
 	PCB_HOOK_CALL(pcb_plug_io_t, pcb_plug_io_chain, parse_font, res, == 0, (self, Ptr, Filename));
 
-	plug_io_err(res, "load font", Filename);
+	plug_io_err(&PCB->hidlib, res, "load font", Filename);
 	return res;
 }
 
@@ -387,7 +387,7 @@ int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt, pcb_bool elem
 /*	if ((res == 0) && (newfmt))
 		PCB->Data->loader = p;*/
 
-	plug_io_err(res, "write buffer", NULL);
+	plug_io_err(&PCB->hidlib, res, "write buffer", NULL);
 	return res;
 }
 
@@ -407,7 +407,7 @@ int pcb_write_footprint_data(FILE *f, pcb_data_t *e, const char *fmt)
 	if ((res == 0) && (newfmt))
 		e->loader = p;
 
-	plug_io_err(res, "write element", NULL);
+	plug_io_err(&PCB->hidlib, res, "write element", NULL);
 	return res;
 }
 
@@ -426,7 +426,7 @@ int pcb_write_font(pcb_font_t *Ptr, const char *Filename, const char *fmt)
 /*	if ((res == 0) && (newfmt))
 		PCB->Data->loader = p;*/
 
-	plug_io_err(res, "write font", NULL);
+	plug_io_err(&PCB->hidlib, res, "write font", NULL);
 	return res;
 }
 
@@ -459,7 +459,7 @@ static int pcb_write_pcb(FILE *f, const char *old_filename, const char *new_file
 	if (res == 0)
 		pcb_set_design_dir(new_filename);
 
-	plug_io_err(res, "write pcb", NULL);
+	plug_io_err(&PCB->hidlib, res, "write pcb", NULL);
 	return res;
 }
 
@@ -790,7 +790,7 @@ int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, p
 		fn_tmp = malloc(len+8);
 		memcpy(fn_tmp, Filename, len);
 		strcpy(fn_tmp+len, ".old");
-		if (pcb_rename(Filename, fn_tmp) != 0) {
+		if (pcb_rename(NULL, Filename, fn_tmp) != 0) {
 			if (emergency) {
 				/* Try an alternative emergency file */
 				strcpy(fn_tmp+len, ".emr");
@@ -803,7 +803,7 @@ int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, p
 		}
 	}
 
-	if ((fp = pcb_fopen(Filename, "w")) == NULL) {
+	if ((fp = pcb_fopen(&PCB->hidlib, Filename, "w")) == NULL) {
 		pcb_open_error_message(Filename);
 		return (-1);
 	}
@@ -813,7 +813,7 @@ int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, p
 	fclose(fp);
 	if (fn_tmp != NULL) {
 		if ((result == 0) && (!conf_core.rc.keep_save_backups))
-			pcb_unlink(fn_tmp);
+			pcb_unlink(&PCB->hidlib, fn_tmp);
 		free(fn_tmp);
 	}
 	return result;
@@ -848,7 +848,7 @@ int pcb_write_pipe(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_b
 		}
 	}
 	printf("write to pipe \"%s\"\n", command.array);
-	if ((fp = pcb_popen(command.array, "w")) == NULL) {
+	if ((fp = pcb_popen(&PCB->hidlib, command.array, "w")) == NULL) {
 		pcb_popen_error_message(command.array);
 		return (-1);
 	}

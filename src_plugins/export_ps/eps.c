@@ -352,7 +352,7 @@ static void eps_do_export(pcb_hid_attr_val_t * options)
 		filename = "pcb-out.eps";
 
 	if (eps_cam.fn_template == NULL) {
-		f = pcb_fopen(eps_cam.active ? eps_cam.fn : filename, "w");
+		f = pcb_fopen(&PCB->hidlib, eps_cam.active ? eps_cam.fn : filename, "w");
 		if (!f) {
 			perror(filename);
 			return;
@@ -398,7 +398,7 @@ static int eps_set_layer_group(pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, co
 			eps_print_footer(f);
 			fclose(f);
 		}
-		f = pcb_fopen(eps_cam.fn, "w");
+		f = pcb_fopen(&PCB->hidlib, eps_cam.fn, "w");
 		eps_print_header(f, eps_cam.fn);
 	}
 

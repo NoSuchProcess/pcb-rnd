@@ -136,7 +136,7 @@ char *pcb_gtk_fileselect(pcb_gtk_common_t *com, const char *title, const char *d
 	}
 
 	if ((default_file != NULL) && (*default_file != '\0')) {
-		if (pcb_is_dir(default_file)) {
+		if (pcb_is_dir(com->hidlib, default_file)) {
 			path = g_strdup(default_file);
 			base = NULL;
 		}

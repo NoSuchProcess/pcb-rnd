@@ -171,7 +171,7 @@ static int calay_load(const char *fname_net, const char *fname_cmp)
 	FILE *f;
 	int ret = 0;
 
-	f = pcb_fopen(fname_net, "r");
+	f = pcb_fopen(&PCB->hidlib, fname_net, "r");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "can't open calay netlist file '%s' for read\n", fname_net);
 		return -1;
@@ -179,7 +179,7 @@ static int calay_load(const char *fname_net, const char *fname_cmp)
 	ret = calay_parse_net(f);
 	fclose(f);
 
-	f = pcb_fopen(fname_cmp, "r");
+	f = pcb_fopen(&PCB->hidlib, fname_cmp, "r");
 	if (f == NULL)
 		pcb_message(PCB_MSG_ERROR, "can't open calay component file '%s' for read\n(non-fatal, but footprints will not be placed)\n", fname_cmp);
 

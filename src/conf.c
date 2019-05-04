@@ -136,7 +136,7 @@ static lht_doc_t *conf_load_plug_file(const char *fn, int fn_is_text)
 		ifn = "<string>";
 	}
 	else {
-		d = pcb_hid_cfg_load_lht(fn);
+		d = pcb_hid_cfg_load_lht(NULL, fn);
 		ifn = fn;
 	}
 
@@ -178,7 +178,7 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 		ifn = "<string>";
 	}
 	else {
-		d = pcb_hid_cfg_load_lht(fn);
+		d = pcb_hid_cfg_load_lht(NULL, fn);
 		ifn = fn;
 	}
 
@@ -186,7 +186,7 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 		FILE *f;
 		char *efn;
 
-		f = pcb_fopen_fn(fn, "r", &efn);
+		f = pcb_fopen_fn(NULL, fn, "r", &efn);
 		if (f != NULL) { /* warn only if the file is there - missing file is normal */
 			pcb_message(PCB_MSG_ERROR, "error: failed to load lht config: %s (%s)\n", fn, efn);
 			fclose(f);
@@ -470,7 +470,7 @@ const char *conf_get_project_conf_name(const char *project_fn, const char *pcb_f
 
 	check:;
 	*try = res;
-	f = pcb_fopen_fn(res, "r", &efn);
+	f = pcb_fopen_fn(NULL, res, "r", &efn);
 	if (f != NULL) {
 		fclose(f);
 		strncpy(res, efn, sizeof(res)-1);
@@ -1789,7 +1789,7 @@ int conf_save_file(pcb_hidlib_t *hidlib, const char *project_fn, const char *pcb
 	if (r != NULL) {
 		FILE *f;
 
-		f = pcb_fopen_fn(fn, "w", &efn);
+		f = pcb_fopen_fn(hidlib, fn, "w", &efn);
 		if ((f == NULL) && (role == CFR_USER)) {
 			/* create the directory and try again */
 			char *path = NULL, *end;
@@ -1808,10 +1808,10 @@ int conf_save_file(pcb_hidlib_t *hidlib, const char *project_fn, const char *pcb
 			end = strrchr(path, '/');
 			if (end != NULL) {
 				*end = '\0';
-				if (pcb_mkdir(path, 0755) == 0) {
+				if (pcb_mkdir(NULL, path, 0755) == 0) {
 					pcb_message(PCB_MSG_INFO, "Created directory %s for saving %s\n", path, fn);
 					*end = '/';
-					f = pcb_fopen(path, "w");
+					f = pcb_fopen(hidlib, path, "w");
 				}
 				else
 					pcb_message(PCB_MSG_ERROR, "Error: failed to create directory %s for saving %s\n", path, efn);
@@ -1834,7 +1834,7 @@ TODO("CONF: a project file needs to be loaded, merged, then written (to preserve
 	return fail;
 }
 
-int conf_export_to_file(const char *fn, conf_role_t role, const char *conf_path)
+int conf_export_to_file(pcb_hidlib_t *hidlib, const char *fn, conf_role_t role, const char *conf_path)
 {
 	lht_node_t *at = conf_lht_get_at(role, conf_path, 0);
 	lht_err_t r;
@@ -1843,7 +1843,7 @@ int conf_export_to_file(const char *fn, conf_role_t role, const char *conf_path)
 	if (at == NULL)
 		return -1;
 
-	f = pcb_fopen(fn, "w");
+	f = pcb_fopen(hidlib, fn, "w");
 	if (f == NULL)
 		return -1;
 

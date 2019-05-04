@@ -157,7 +157,7 @@ static int tinycad_load(const char *fname_net)
 	FILE *fn;
 	int ret = 0;
 
-	fn = pcb_fopen(fname_net, "r");
+	fn = pcb_fopen(&PCB->hidlib, fname_net, "r");
 	if (fn == NULL) {
 		pcb_message(PCB_MSG_ERROR, "can't open file '%s' for read\n", fname_net);
 		return -1;

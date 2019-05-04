@@ -163,7 +163,7 @@ int nethlp_load_part_map(nethlp_ctx_t *nhctx, const char *fn)
 	int cnt, argc, lineno;
 	char line[1024], *argv[8];
 
-	f = pcb_fopen(fn, "r");
+	f = pcb_fopen(NULL, fn, "r");
 	if (f == NULL)
 		return -1;
 

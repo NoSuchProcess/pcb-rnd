@@ -89,7 +89,7 @@ int pcb_mkdir_(const char *path, int mode)
 int pcb_file_readable(const char *path)
 {
 	FILE *f;
-	f = pcb_fopen(path, "r");
+	f = pcb_fopen(NULL, path, "r");
 	if (f != NULL) {
 		fclose(f);
 		return 1;

@@ -82,7 +82,7 @@ static void lpr_do_export(pcb_hid_attr_val_t * options)
 	filename = options[HA_lprcommand].str_value;
 
 	printf("LPR: open %s\n", filename);
-	f = pcb_popen(filename, "w");
+	f = pcb_popen(NULL, filename, "w");
 	if (!f) {
 		perror(filename);
 		return;

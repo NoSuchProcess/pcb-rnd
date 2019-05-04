@@ -81,16 +81,16 @@ static int script_save_preunload(script_t *s, const char *data)
 	gds_append_str(&fn, pcbhl_conf.rc.path.home);
 	gds_append(&fn, PCB_DIR_SEPARATOR_C);
 	gds_append_str(&fn, DOT_PCB_RND);
-	pcb_mkdir(fn.array, 0755);
+	pcb_mkdir(NULL, fn.array, 0755);
 
 	gds_append(&fn, PCB_DIR_SEPARATOR_C);
 	gds_append_str(&fn, SCRIPT_PERS);
-	pcb_mkdir(fn.array, 0750);
+	pcb_mkdir(NULL, fn.array, 0750);
 
 	gds_append(&fn, PCB_DIR_SEPARATOR_C);
 	gds_append_str(&fn, s->obj->name);
 
-	f = pcb_fopen(fn.array, "w");
+	f = pcb_fopen(NULL, fn.array, "w");
 	if (f != NULL) {
 		gds_uninit(&fn);
 		fputs(data, f);
@@ -167,13 +167,13 @@ static int script_persistency(fgw_arg_t *res, const char *cmd)
 	fn = pcb_concat(pcbhl_conf.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, SCRIPT_PERS, PCB_DIR_SEPARATOR_S, script_persistency_id, NULL);
 
 	if (strcmp(cmd, "remove") == 0) {
-		PCB_ACT_IRES(pcb_remove(fn));
+		PCB_ACT_IRES(pcb_remove(NULL, fn));
 		goto succ;
 	}
 
 	if (strcmp(cmd, "read") == 0) {
 		FILE *f;
-		long fsize = pcb_file_size(fn);
+		long fsize = pcb_file_size(NULL, fn);
 		char *data;
 
 		if ((fsize < 0) || (fsize > PERS_MAX_SIZE))
@@ -183,7 +183,7 @@ static int script_persistency(fgw_arg_t *res, const char *cmd)
 		if (data == NULL)
 			goto err;
 
-		f = pcb_fopen(fn, "r");
+		f = pcb_fopen(NULL, fn, "r");
 		if (f == NULL) {
 			free(data);
 			goto err;
@@ -354,7 +354,7 @@ int script_oneliner(const char *lang, const char *src)
 	int res = 0;
 
 	fn = pcb_tempfile_name_new("oneliner");
-	f = pcb_fopen(fn, "w");
+	f = pcb_fopen(NULL, fn, "w");
 	if (f == NULL) {
 		pcb_tempfile_unlink(fn);
 		pcb_message(PCB_MSG_ERROR, "script oneliner: can't open temp file for write\n");

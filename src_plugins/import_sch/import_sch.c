@@ -263,7 +263,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (pcb_spawnvp(cmd)) {
 			for(i = 0; i < nsources; i++)
 				free((char *) cmd[8 + i]);
-			pcb_unlink(tmpfile);
+			pcb_unlink(&PCB->hidlib, tmpfile);
 			PCB_ACT_IRES(1);
 			return 0;
 		}
@@ -340,7 +340,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		if (pcb_spawnvp(cmd)) {
 			if (must_free_tmpfile)
-				pcb_unlink(tmpfile);
+				pcb_unlink(&PCB->hidlib, tmpfile);
 			free((char*)cmd[2]);
 			free((char*)cmd[3]);
 			free((char*)cmd[4]);

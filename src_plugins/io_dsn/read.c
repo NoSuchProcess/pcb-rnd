@@ -1780,7 +1780,7 @@ static int dsn_parse_file(dsn_read_t *rdctx, const char *fn)
 	long q_offs = -1, offs;
 
 
-	f = pcb_fopen(fn, "r");
+	f = pcb_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL)
 		return -1;
 

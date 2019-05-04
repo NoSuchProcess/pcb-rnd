@@ -167,7 +167,7 @@ int io_eagle_read_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	static const char prefix[] = "io_eagle::dru::";
 	char tmp[256];
 
-	f = pcb_fopen_fn(Filename, "r", &efn);
+	f = pcb_fopen_fn(&PCB->hidlib, Filename, "r", &efn);
 	if (f == NULL)
 		return -1;
 

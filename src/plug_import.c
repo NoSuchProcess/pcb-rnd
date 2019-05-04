@@ -89,7 +89,7 @@ static pcb_plug_import_t *find_importer(unsigned int aspects, FILE *f, const cha
 }
 
 
-int pcb_import(char *filename, unsigned int aspect)
+int pcb_import(pcb_hidlib_t *hidlib, char *filename, unsigned int aspect)
 {
 	pcb_plug_import_t *plug;
 	FILE *fp;
@@ -98,7 +98,7 @@ int pcb_import(char *filename, unsigned int aspect)
 		pcb_message(PCB_MSG_ERROR, "Error: need a file name for pcb_import_netlist()\n");
 		return 1; /* nothing to do */
 	}
-	fp = pcb_fopen(filename, "r");
+	fp = pcb_fopen(hidlib, filename, "r");
 
 	plug = find_importer(aspect, fp, filename);
 	if (plug == NULL) {
@@ -117,9 +117,9 @@ int pcb_import(char *filename, unsigned int aspect)
 	return plug->import(plug, aspect, filename);
 }
 
-int pcb_import_netlist(char *filename)
+int pcb_import_netlist(pcb_hidlib_t *hidlib, char *filename)
 {
-	return pcb_import(filename, IMPORT_ASPECT_NETLIST);
+	return pcb_import(hidlib, filename, IMPORT_ASPECT_NETLIST);
 }
 
 void pcb_import_uninit(void)

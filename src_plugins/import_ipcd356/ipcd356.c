@@ -379,7 +379,7 @@ fgw_error_t pcb_act_LoadIpc356From(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	f = pcb_fopen(fname, "r");
+	f = pcb_fopen(&PCB->hidlib, fname, "r");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can't open %s for read\n", fname);
 		PCB_ACT_IRES(1);

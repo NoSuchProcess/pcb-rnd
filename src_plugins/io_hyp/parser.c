@@ -330,7 +330,7 @@ int hyp_parse(pcb_data_t * dest, const char *fname, int debug)
 	hyyset_lineno(1);
 
 	/* parse hyperlynx file */
-	hyyin = pcb_fopen(fname, "r");
+	hyyin = pcb_fopen(&PCB->hidlib, fname, "r");
 	if (hyyin == NULL)
 		return 1;
 	retval = hyyparse();

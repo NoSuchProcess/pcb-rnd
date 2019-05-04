@@ -39,8 +39,8 @@ static int infobar_gui_inited = 0;
 static void pcb_infobar_brdchg_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_actionl("InfoBarFileChanged", "close");
-	if ((PCB != NULL) && (PCB->hidlib.filename != NULL))
-		last_date = pcb_file_mtime(PCB->hidlib.filename);
+	if ((hidlib != NULL) && (hidlib->filename != NULL))
+		last_date = pcb_file_mtime(NULL, PCB->hidlib.filename);
 	else
 		last_date = -1;
 }
@@ -58,7 +58,7 @@ static void infobar_tick(pcb_hidval_t user_data)
 
 	if (infobar_timer_active) { /* check for file change */
 		if ((PCB != NULL) && (PCB->hidlib.filename != NULL)) {
-			double last_chg = pcb_file_mtime(PCB->hidlib.filename);
+			double last_chg = pcb_file_mtime(NULL, PCB->hidlib.filename);
 			if (last_chg > last_date) {
 				last_date = last_chg;
 				pcb_actionl("InfoBarFileChanged", "open");

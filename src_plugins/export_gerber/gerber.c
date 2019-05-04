@@ -775,7 +775,7 @@ static int gerber_set_layer_group(pcb_hidlib_t *hidlib, pcb_layergrp_id_t group,
 		pagecount++;
 		assign_file_suffix(filesuff, group, layer, flags, purpose, purpi, 0, NULL);
 		if (f == NULL) { /* open a new file if we closed the previous (cam mode: only one file) */
-			f = pcb_fopen(gerber_cam.active ? gerber_cam.fn : filename, "wb"); /* Binary needed to force CR-LF */
+			f = pcb_fopen(&PCB->hidlib, gerber_cam.active ? gerber_cam.fn : filename, "wb"); /* Binary needed to force CR-LF */
 			if (f == NULL) {
 				pcb_message(PCB_MSG_ERROR, "Error:  Could not open %s for writing.\n", filename);
 				return 1;

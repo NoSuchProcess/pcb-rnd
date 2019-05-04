@@ -317,7 +317,7 @@ static void gcode_start_png(const char *basename, const char *suffix)
 
 	/* Nelma only works with true color images */
 	gcode_im = gdImageCreate(w, h);
-	gcode_f = pcb_fopen(buf, "wb");
+	gcode_f = pcb_fopen(&PCB->hidlib, buf, "wb");
 
 	gcode_alloc_colors();
 
@@ -452,7 +452,7 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 					BM_PUT(bm, r, c, p);
 				}
 			}
-			gcode_f2 = pcb_fopen(filename, "wb");
+			gcode_f2 = pcb_fopen(&PCB->hidlib, filename, "wb");
 			if (!gcode_f2) {
 				perror(filename);
 				gds_uninit(&tmp_ln);
@@ -500,7 +500,7 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 				d = 0;
 				drill = sort_drill(drill, n_drill);
 				sprintf(filename, "%s.drill.cnc", gcode_basename);
-				gcode_f2 = pcb_fopen(filename, "wb");
+				gcode_f2 = pcb_fopen(&PCB->hidlib, filename, "wb");
 				if (!gcode_f2) {
 					perror(filename);
 					gds_uninit(&tmp_ln);

@@ -43,7 +43,7 @@ struct pcb_hid_cfg_s {
 pcb_hid_cfg_t *pcb_hid_cfg_load(pcb_hidlib_t *hidlib, const char *fn, int exact_fn, const char *embedded_fallback);
 
 /* Generic, low level lihata loader */
-lht_doc_t *pcb_hid_cfg_load_lht(const char *filename);
+lht_doc_t *pcb_hid_cfg_load_lht(pcb_hidlib_t *hidlib, const char *filename);
 lht_doc_t *pcb_hid_cfg_load_str(const char *text);
 
 /* Generic, low level lihata text value fetch */

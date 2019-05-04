@@ -249,7 +249,7 @@ static FILE *pcb_check_and_open_file(const char *Filename)
 			if (response != 1)
 				return NULL;
 		}
-		if ((fp = pcb_fopen(Filename, "w")) == NULL)
+		if ((fp = pcb_fopen(&PCB->hidlib, Filename, "w")) == NULL)
 			pcb_open_error_message(Filename);
 	}
 	return fp;

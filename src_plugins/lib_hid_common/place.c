@@ -253,12 +253,12 @@ void pcb_wplc_save_to_role(pcb_hidlib_t *hidlib, conf_role_t role)
 	place_maybe_save(hidlib, role, 1);
 }
 
-int pcb_wplc_save_to_file(const char *fn)
+int pcb_wplc_save_to_file(pcb_hidlib_t *hidlib, const char *fn)
 {
 	htsw_entry_t *e;
 	FILE *f;
 
-	f = pcb_fopen(fn, "w");
+	f = pcb_fopen(hidlib, fn, "w");
 	if (f == NULL)
 		return -1;
 

@@ -184,7 +184,7 @@ void pcb_clihist_load(void)
 	real_fn = pcb_build_fn(NULL, CFG.file); /* no hidlib: we are loading from the user dir */
 	if (real_fn == NULL)
 		return;
-	f = pcb_fopen(real_fn, "r");
+	f = pcb_fopen(NULL, real_fn, "r");
 	free(real_fn);
 	if (f == NULL)
 		return;
@@ -212,7 +212,7 @@ void pcb_clihist_save(void)
 	real_fn = pcb_build_fn(NULL, CFG.file); /* no hidlib: we are saving in user dir */
 	if (real_fn == NULL)
 		return;
-	f = pcb_fopen(real_fn, "w");
+	f = pcb_fopen(NULL, real_fn, "w");
 	free(real_fn);
 	if (f == NULL)
 		return;

@@ -652,7 +652,7 @@ static int PrintXY(const template_t *templ, const char *format_name)
 	FILE *fp;
 	subst_ctx_t ctx;
 
-	fp = pcb_fopen(xy_filename, "w");
+	fp = pcb_fopen(&PCB->hidlib, xy_filename, "w");
 	if (!fp) {
 		pcb_message(PCB_MSG_ERROR, "Cannot open file %s for writing\n", xy_filename);
 		return 1;
