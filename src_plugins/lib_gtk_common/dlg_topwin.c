@@ -43,6 +43,7 @@
 #include "config.h"
 #include "dlg_topwin.h"
 #include "conf_core.h"
+#include "hidlib.h"
 #include "hidlib_conf.h"
 
 #include "board.h"
@@ -58,7 +59,6 @@
 #include "in_mouse.h"
 #include "in_keyboard.h"
 #include "wt_layersel.h"
-#include "tool.h"
 #include "lib_gtk_config.h"
 #include "hid_gtk_conf.h"
 #include "win_place.h"
@@ -169,7 +169,7 @@ gboolean ghid_port_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, pcb
 	if (ghid_is_modifier_key_sym(ksym))
 		tw->com->note_event_location(NULL);
 
-	pcb_tool_adjust_attached_objects();
+	pcb_hidlib_adjust_attached_objects();
 	tw->com->invalidate_all(tw->com->hidlib);
 	g_idle_add(ghid_idle_cb, tw);
 	return FALSE;

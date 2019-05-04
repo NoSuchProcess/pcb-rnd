@@ -2,11 +2,10 @@
 
 #include "glue_common.h"
 
-#include "tool.h"
-
 #include "gui.h"
 #include "render.h"
 #include "common.h"
+#include "hidlib.h"
 #include "../src_plugins/lib_gtk_common/dlg_topwin.h"
 #include "../src_plugins/lib_gtk_common/hid_gtk_conf.h"
 
@@ -87,7 +86,7 @@ static void ghid_port_button_press_main(void)
 
 static void ghid_port_button_release_main(void)
 {
-	pcb_tool_adjust_attached_objects();
+	pcb_hidlib_adjust_attached_objects();
 	ghid_invalidate_all(ghidgui->common.hidlib);
 
 	g_idle_add(ghid_idle_cb, &ghidgui->topwin);
