@@ -39,6 +39,7 @@
 #include "safe_fs.h"
 #include "compat_misc.h"
 #include "file_loaded.h"
+#include "hidlib.h"
 #include "hidlib_conf.h"
 
 char hid_cfg_error_shared[1024];
@@ -132,6 +133,9 @@ pcb_hid_cfg_t *pcb_hid_cfg_load(pcb_hidlib_t *hidlib, const char *fn, int exact_
 {
 	lht_doc_t *doc;
 	pcb_hid_cfg_t *hr;
+
+	if (embedded_fallback == NULL)
+		embedded_fallback = pcb_hidlib_default_embedded_menu;
 
 	/* override HID defaults with the configured path */
 	if ((pcbhl_conf.rc.menu_file != NULL) && (*pcbhl_conf.rc.menu_file != '\0')) {

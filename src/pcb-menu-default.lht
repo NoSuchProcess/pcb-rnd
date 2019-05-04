@@ -140,7 +140,6 @@ ha:{
 						ha:Flip Object              = { a={<key>e; <key>i}; action=Flip(Object) }
 						ha:Move to current layer    = { a={<key>e; <key>l}; action=MoveToCurrentLayer(Object) }
 						ha:ChangeJoin Object        = { a={<key>e; <key>j}; action=ChangeJoin(Object) }
-
 						ha:Geometry {
 							li:submenu {
 								ha:Clearance +2 mil             = { a={<key>e; <key>g; <key>c}; action=ChangeClearSize(Object,+2,mil) }

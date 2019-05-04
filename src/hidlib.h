@@ -38,9 +38,12 @@ struct pcb_hidlib_s {
 void pcb_hidlib_event_uninit(void);
 void pcb_hidlib_event_init(void);
 
-/*** The following functions are implemented by the host application ***/
+/*** The following API is implemented by the host application ***/
 
 /* update crosshair-attached object because crosshair coords likely changed */
 void pcb_hidlib_adjust_attached_objects(void);
+
+/* The whole default menu file embedded in the executable; NULL if not present */
+extern const char *pcb_hidlib_default_embedded_menu;
 
 #endif

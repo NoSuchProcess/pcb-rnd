@@ -382,8 +382,9 @@ pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS) $(LIBS_3RD)
 	$(CC) $(OBJS) $(OBJS_C99) -o pcb-rnd$(EXE) $(LIBS_PRE) $(LDFLAGS) $(LIBS)
 
 # temporary, for testig
-hidlib$(EXE): $(OBJS_HIDLIB) $(OBJS_C99_HIDLIB) $(OBJS_HIDLIB_PLG) $(OBJS_C99_HIDLIB_PLG) $(EXEDEPS) $(LIBS_3RD)
-	$(CC) $(OBJS_HIDLIB_PLG) $(OBJS_C99_HIDLIB_PLG) $(OBJS_HIDLIB) $(OBJS_C99_HIDLIB) -o hidlib$(EXE) $(LIBS_PRE) $(LDFLAGS) $(LIBS) $(LIBS_3RD)
+hidlib.a: $(OBJS_HIDLIB) $(OBJS_C99_HIDLIB) $(OBJS_HIDLIB_PLG) $(OBJS_C99_HIDLIB_PLG) $(EXEDEPS) $(LIBS_3RD)
+	$(AR) rvu hidlib.a $(OBJS_HIDLIB_PLG) $(OBJS_C99_HIDLIB_PLG) $(OBJS_HIDLIB) $(OBJS_C99_HIDLIB)
+	echo "LDFLAGS_HIDLIB=$(LIBS_PRE) $(LDFLAGS) $(LIBS) $(LIBS_3RD)" > hidlib.mak
 
 
 $(SPHASH_PATH)/sphash: $(SPHASH_PATH)/sphash.c
@@ -416,7 +417,7 @@ print [@
 
 ### default menu embed
 pcb_menu_default.c: pcb-menu-default.lht $(CQUOTE)
-	$(CQUOTE) -n pcb_menu_default <pcb-menu-default.lht > pcb_menu_default.c
+	$(CQUOTE) -n pcb_hidlib_default_embedded_menu <pcb-menu-default.lht > pcb_menu_default.c
 
 pcblib_DATA= \
 	default_font \
