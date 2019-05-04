@@ -25,7 +25,9 @@
  */
 
 #include "config.h"
-#include "draw.h"
+
+#include <assert.h>
+
 #include "unit.h"
 #include "event.h"
 #include "hid.h"
@@ -89,19 +91,22 @@ void pcb_lead_user_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event
 void pcb_lead_user_draw_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (lead) {
+		pcb_hid_gc_t *gc = argv[1].d.p;
 		pcb_coord_t x = leadx + step, y = leady + step;
 
-		pcb_gui->set_line_width(pcb_draw_out.fgGC, ARL/40);
-		pcb_gui->draw_arc(pcb_draw_out.fgGC, leadx, leady, LEAD_CENTER_RAD+step/10, LEAD_CENTER_RAD+step/10, 0, 360);
+		assert(argv[1].type == PCB_EVARG_PTR);
 
-/*		pcb_gui->set_color(pcb_draw_out.fgGC, const pcb_color_t *color);*/
+		pcb_gui->set_line_width(*gc, ARL/40);
+		pcb_gui->draw_arc(*gc, leadx, leady, LEAD_CENTER_RAD+step/10, LEAD_CENTER_RAD+step/10, 0, 360);
 
-		pcb_gui->draw_line(pcb_draw_out.fgGC, x, y, x - ARL, y);
-		pcb_gui->draw_line(pcb_draw_out.fgGC, x, y, x, y-ARL);
-		pcb_gui->draw_line(pcb_draw_out.fgGC, x - ARL, y, x, y-ARL);
+/*		pcb_gui->set_color(*gc, const pcb_color_t *color);*/
 
-		pcb_gui->set_line_width(pcb_draw_out.fgGC, ARL/4);
-		pcb_gui->draw_line(pcb_draw_out.fgGC, x - ARL/2, y - ARL/2, x - LEAD_ARROW_LEN, y - LEAD_ARROW_LEN);
+		pcb_gui->draw_line(*gc, x, y, x - ARL, y);
+		pcb_gui->draw_line(*gc, x, y, x, y-ARL);
+		pcb_gui->draw_line(*gc, x - ARL, y, x, y-ARL);
+
+		pcb_gui->set_line_width(*gc, ARL/4);
+		pcb_gui->draw_line(*gc, x - ARL/2, y - ARL/2, x - LEAD_ARROW_LEN, y - LEAD_ARROW_LEN);
 
 	}
 }
