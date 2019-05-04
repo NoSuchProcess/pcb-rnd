@@ -371,17 +371,6 @@ static void ltf_set_hidlib(pcb_hidlib_t *hidlib)
 
 	LesstifNetlistChanged(ltf_hidlib, NULL, 0, NULL);
 	lesstif_update_layer_groups();
-	if (ltf_hidlib->filename) {
-		char *cp = strrchr(ltf_hidlib->filename, '/');
-		stdarg_n = 0;
-		stdarg(XmNtitle, cp ? cp + 1 : ltf_hidlib->filename);
-		XtSetValues(appwidget, stdarg_args, stdarg_n);
-	}
-	else {
-		stdarg_n = 0;
-		stdarg(XmNtitle, "Unknown");
-		XtSetValues(appwidget, stdarg_args, stdarg_n);
-	}
 	return;
 }
 
@@ -3263,7 +3252,9 @@ static void ltf_set_mouse_cursor(pcb_hidlib_t *hidlib, int idx)
 
 static void ltf_set_top_title(pcb_hidlib_t *hidlib, const char *title)
 {
-
+	stdarg_n = 0;
+	stdarg(XmNtitle, title);
+	XtSetValues(appwidget, stdarg_args, stdarg_n);
 }
 
 void lesstif_create_menu(const char *menu, const pcb_menu_prop_t *props);
