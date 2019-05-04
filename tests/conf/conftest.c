@@ -14,6 +14,7 @@ int global_notify = 0;
 conf_hid_id_t hid_id;
 const char *hid_cookie = "conftest cookie";
 pcb_hid_t *pcb_gui = NULL;
+const char *pcb_hidlib_default_embedded_menu = "";
 
 void pcb_message(enum pcb_message_level level, const char *Format, ...)
 {
