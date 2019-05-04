@@ -268,7 +268,7 @@ static int export_cam_parse_arguments(int *argc, char ***argv)
 	return 1;
 }
 
-static void export_cam_do_export(pcb_hid_attr_val_t *options)
+static void export_cam_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 {
 	if (!cam_export_has_outfile)
 		cam_init_inst_fn(&cam_export_ctx);

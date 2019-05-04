@@ -201,7 +201,7 @@ static pcb_hid_attribute_t *excellon_get_export_options(int *n)
 	return excellon_options;
 }
 
-static void excellon_do_export(pcb_hid_attr_val_t * options)
+static void excellon_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 {
 	const char *fnbase, *fn;
 	char *filesuff;

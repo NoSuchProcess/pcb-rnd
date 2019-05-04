@@ -988,7 +988,7 @@ static void png_free_cache(void)
 		pcb_hid_cache_color_destroy(&brush_cache, png_brush_free);
 }
 
-static void png_do_export(pcb_hid_attr_val_t * options)
+static void png_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 {
 	int save_ons[PCB_MAX_LAYER + 2];
 	int i;

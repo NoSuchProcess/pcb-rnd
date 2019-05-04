@@ -674,7 +674,7 @@ int main(int argc, char *argv[])
 			pcb_message(PCB_MSG_WARNING, "Exporting empty board (nothing loaded or drawn).\n");
 		if (pcb_gui->set_hidlib != NULL)
 			pcb_gui->set_hidlib(&PCB->hidlib);
-		pcb_gui->do_export(0);
+		pcb_gui->do_export(&PCB->hidlib, 0);
 		log_print_uninit_errs("Exporting");
 		pcb_main_uninit();
 		exit(0);
@@ -693,7 +693,7 @@ int main(int argc, char *argv[])
 		}
 		if (pcb_gui->set_hidlib != NULL)
 			pcb_gui->set_hidlib(&PCB->hidlib);
-		pcb_gui->do_export(0);
+		pcb_gui->do_export(&PCB->hidlib, 0);
 		pcb_gui = pcb_next_gui;
 		pcb_next_gui = NULL;
 		if (pcb_gui != NULL) {

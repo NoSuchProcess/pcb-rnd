@@ -128,7 +128,7 @@ typedef struct layer_stat_s {
 	unsigned long int lines, arcs, polys, elements;
 } layer_stat_t;
 
-static void stat_do_export(pcb_hid_attr_val_t * options)
+static void stat_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 {
 	FILE *f;
 	const char *filename;

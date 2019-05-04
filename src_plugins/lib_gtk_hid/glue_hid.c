@@ -148,9 +148,9 @@ static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, Gd
 }
 
 
-void gtkhid_do_export(pcb_hid_attr_val_t *options)
+void gtkhid_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 {
-	gtkhid_begin(&PCB->hidlib);
+	gtkhid_begin(hidlib);
 
 	pcb_hid_cfg_keys_init(&ghid_keymap);
 	ghid_keymap.translate_key = ghid_translate_key;

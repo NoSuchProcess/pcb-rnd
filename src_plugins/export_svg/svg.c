@@ -312,7 +312,7 @@ static void svg_footer(void)
 	fprintf(f, "</svg>\n");
 }
 
-static void svg_do_export(pcb_hid_attr_val_t * options)
+static void svg_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 {
 	const char *filename;
 	int save_ons[PCB_MAX_LAYER + 2];

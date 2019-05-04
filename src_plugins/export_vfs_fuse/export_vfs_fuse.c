@@ -255,7 +255,7 @@ static void pcb_fuse_destroy(void *private_data)
 
 static char **fuse_argv;
 static int fuse_argc = 0;
-static void export_vfs_fuse_do_export(pcb_hid_attr_val_t *options)
+static void export_vfs_fuse_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 {
 	static struct fuse_operations oper;
 

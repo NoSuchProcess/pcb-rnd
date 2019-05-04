@@ -26,6 +26,7 @@
 
 #include "config.h"
 #include "actions.h"
+#include "board.h"
 #include "hid.h"
 #include "hid_dad.h"
 #include "hid_init.h"
@@ -71,7 +72,7 @@ static void export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 	for(h = 0; h < export_ctx->len; h++) {
 		if (export_ctx->button[h] == wid) {
 			pcb_hid_attr_val_t *results = get_results(export_ctx, h);
-			export_ctx->hid[h]->do_export(results);
+			export_ctx->hid[h]->do_export(&PCB->hidlib, results);
 			free(results);
 			pcb_message(PCB_MSG_INFO, "Export done using exporter: %s\n", export_ctx->hid[h]->name);
 			return;

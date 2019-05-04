@@ -61,7 +61,7 @@ static pcb_hid_attribute_t *nogui_get_export_options(int *n_ret)
 	return NULL;
 }
 
-static void nogui_do_export(pcb_hid_attr_val_t * options)
+static void nogui_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 {
 	CRASH("do_export");
 }

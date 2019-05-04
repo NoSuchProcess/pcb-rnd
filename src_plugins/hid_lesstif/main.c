@@ -1358,7 +1358,7 @@ void lesstif_init_menu(void);
 extern Widget lesstif_menubar;
 static int lesstif_hid_inited = 0;
 
-static void lesstif_do_export(pcb_hid_attr_val_t * options)
+static void lesstif_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 {
 	Dimension width, height;
 	Widget menu;
