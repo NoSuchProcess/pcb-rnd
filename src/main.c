@@ -265,6 +265,8 @@ static void log_print_uninit_errs(const char *title)
 		fprintf(stderr, "\n\n");
 }
 
+static void gui_support_plugins(int load);
+
 void pcb_main_uninit(void)
 {
 	if (pcb_log_last != NULL)
@@ -280,6 +282,7 @@ void pcb_main_uninit(void)
 	pcb_strflg_uninit_buf();
 	pcb_strflg_uninit_layerlist();
 
+	gui_support_plugins(0);
 	pcb_hidlib_uninit(); /* plugin unload */
 
 	if (PCB != NULL) {
@@ -402,18 +405,24 @@ void pcb_fix_locale(void)
 	setlocale(LC_ALL, "C");
 }
 
-static void load_gui_support_plugins(void)
+static void gui_support_plugins(int load)
 {
 	static int loaded = 0;
-	if (!loaded) {
+	static pup_plugin_t *puphand;
+
+	if (load && !loaded) {
 		static const char *plugin_name = "dialogs";
 		int state = 0;
-		void *h;
 		loaded = 1;
 		pcb_message(PCB_MSG_DEBUG, "Loading GUI support plugin: '%s'\n", plugin_name);
-		h = pup_load(&pcb_pup, (const char **)pcb_pup_paths, plugin_name, 0, &state);
-		if (h == NULL)
+		puphand = pup_load(&pcb_pup, (const char **)pcb_pup_paths, plugin_name, 0, &state);
+		if (puphand == NULL)
 			pcb_message(PCB_MSG_ERROR, "Error: failed to load GUI support plugin '%s'\n-> expect missing widgets and dialog boxes\n", plugin_name);
+	}
+	if (!load && loaded && (puphand != NULL)) {
+		pup_unload(&pcb_pup, puphand, NULL);
+		loaded = 0;
+		puphand = NULL;
 	}
 }
 
@@ -611,7 +620,7 @@ int main(int argc, char *argv[])
 		exit(1);
 
 	if (PCB_HAVE_GUI_ATTR_DLG)
-		load_gui_support_plugins();
+		gui_support_plugins(1);
 
 /* Initialize actions only when the gui is already known so only the right
    one is registered (there can be only one GUI). */
@@ -714,7 +723,7 @@ int main(int argc, char *argv[])
 		pcb_gui->do_export(&PCB->hidlib, 0);
 		pcb_gui = pcb_next_gui;
 		if (PCB_HAVE_GUI_ATTR_DLG)
-			load_gui_support_plugins();
+			gui_support_plugins(1);
 		pcb_next_gui = NULL;
 		if (pcb_gui != NULL) {
 			/* init the next GUI */
