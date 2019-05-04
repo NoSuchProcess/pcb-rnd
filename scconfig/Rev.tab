@@ -1,3 +1,4 @@
+25253	configure	split the tool API to hidlib doesn't depend on tool.h
 25228	configure	rewrite PCB-file-changed-on-disk detection to common code, instead of gtk-specific
 25226	configure	hidlib: core-independent mouse cursor vs. tool handling
 25187	configure	hidlib: further split core code to hidlib and non-hidlib to reduce hidlib size

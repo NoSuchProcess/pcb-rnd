@@ -24,23 +24,9 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#ifndef PCB_HIDLIB_H
-#define PCB_HIDLIB_H
+#include "tool.h"
 
-struct pcb_hidlib_s {
-	pcb_coord_t grid;                  /* grid resolution */
-	pcb_coord_t grid_ox, grid_oy;      /* grid offset */
-	pcb_coord_t size_x, size_y;        /* drawing area extents (or board dimensions) */
-	char *name;                        /* name of the design */
-	char *filename;                    /* name of the file (from load) */
-};
-
-void pcb_hidlib_event_uninit(void);
-void pcb_hidlib_event_init(void);
-
-/*** The following functions are implemented by the host application ***/
-
-/* update crosshair-attached object because crosshair coords likely changed */
-void pcb_hidlib_adjust_attached_objects(void);
-
-#endif
+void pcb_hidlib_adjust_attached_objects(void)
+{
+	pcb_tool_adjust_attached_objects();
+}
