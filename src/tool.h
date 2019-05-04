@@ -113,7 +113,7 @@ void pcb_tool_gui_init(void);
 
 
 /**** Tool function wrappers; calling these will operate on the current tool 
-      as defined in conf_core.editor.mode ****/
+      as defined in pcbhl_conf.editor.mode ****/
 
 void pcb_tool_notify_mode(void);
 void pcb_tool_adjust_attached_objects(void);

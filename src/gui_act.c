@@ -245,7 +245,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_ToggleAutoDRC:
 			pcb_notify_crosshair_change(pcb_false);
 			conf_toggle_editor(auto_drc);
-			if (conf_core.editor.auto_drc && conf_core.editor.mode == PCB_MODE_LINE) {
+			if (conf_core.editor.auto_drc && pcbhl_conf.editor.mode == PCB_MODE_LINE) {
 				if (pcb_data_clear_flag(PCB->Data, PCB_FLAG_FOUND, 1, 1) > 0) {
 					pcb_undo_inc_serial();
 					pcb_draw();
@@ -421,13 +421,13 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		break;
 	case F_Cancel:
 		{
-			int saved_mode = conf_core.editor.mode;
+			int saved_mode = pcbhl_conf.editor.mode;
 			pcb_tool_select_by_id(&PCB->hidlib, saved_mode);
 		}
 		break;
 	case F_Escape:
 		{
-			switch (conf_core.editor.mode) {
+			switch (pcbhl_conf.editor.mode) {
 			case PCB_MODE_VIA:
 			case PCB_MODE_PASTE_BUFFER:
 			case PCB_MODE_TEXT:
@@ -531,13 +531,13 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		/* Handle middle mouse button restarts of drawing mode.
 		   If not in a drawing mode, middle mouse button will select objects. */
-		if (conf_core.editor.mode == PCB_MODE_LINE && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
+		if (pcbhl_conf.editor.mode == PCB_MODE_LINE && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
 			pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_LINE);
-		else if (conf_core.editor.mode == PCB_MODE_ARC && pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST)
+		else if (pcbhl_conf.editor.mode == PCB_MODE_ARC && pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST)
 			pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_ARC);
-		else if (conf_core.editor.mode == PCB_MODE_RECTANGLE && pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST)
+		else if (pcbhl_conf.editor.mode == PCB_MODE_RECTANGLE && pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST)
 			pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_RECTANGLE);
-		else if (conf_core.editor.mode == PCB_MODE_POLYGON && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
+		else if (pcbhl_conf.editor.mode == PCB_MODE_POLYGON && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
 			pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_POLYGON);
 		else {
 			pcb_tool_save(&PCB->hidlib);
@@ -857,7 +857,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_notify_crosshair_change(pcb_false);
 		set_same_(((pcb_line_t *) ptr2)->Thickness, -1, -1, ((pcb_line_t *) ptr2)->Clearance / 2, NULL);
 		layer = (pcb_layer_t *) ptr1;
-		if (conf_core.editor.mode != PCB_MODE_LINE)
+		if (pcbhl_conf.editor.mode != PCB_MODE_LINE)
 			pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_LINE);
 		pcb_notify_crosshair_change(pcb_true);
 		pcb_event(&PCB->hidlib, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
@@ -867,7 +867,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_notify_crosshair_change(pcb_false);
 		set_same_(((pcb_arc_t *) ptr2)->Thickness, -1, -1, ((pcb_arc_t *) ptr2)->Clearance / 2, NULL);
 		layer = (pcb_layer_t *) ptr1;
-		if (conf_core.editor.mode != PCB_MODE_ARC)
+		if (pcbhl_conf.editor.mode != PCB_MODE_ARC)
 			pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_ARC);
 		pcb_notify_crosshair_change(pcb_true);
 		pcb_event(&PCB->hidlib, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);

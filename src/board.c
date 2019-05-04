@@ -265,7 +265,7 @@ void pcb_board_resize(pcb_coord_t Width, pcb_coord_t Height)
 	/* crosshair range is different if pastebuffer-mode
 	 * is enabled
 	 */
-	if (conf_core.editor.mode == PCB_MODE_PASTE_BUFFER)
+	if (pcbhl_conf.editor.mode == PCB_MODE_PASTE_BUFFER)
 		pcb_crosshair_set_range(PCB_PASTEBUFFER->X - PCB_PASTEBUFFER->BoundingBox.X1,
 											PCB_PASTEBUFFER->Y - PCB_PASTEBUFFER->BoundingBox.Y1,
 											MAX(0,

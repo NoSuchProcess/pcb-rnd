@@ -19,7 +19,6 @@ typedef struct {
 
 	const struct {                       /* editor */
 		CFT_REAL zoom;                     /* default zoom */
-		CFT_INTEGER mode;                  /* currently active mode */
 		CFT_INTEGER buffer_number;         /* number of the current buffer */
 		CFT_BOOLEAN clear_line;            /* new lines/arc clear polygons. */
 		CFT_BOOLEAN clear_polypoly;        /* new polygons clear polygons. */

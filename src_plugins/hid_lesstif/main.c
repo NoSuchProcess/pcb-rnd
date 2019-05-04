@@ -1984,7 +1984,7 @@ void lesstif_update_status_line()
 	const char *s45 = cur_clip();
 	XmString xs;
 
-	switch (conf_core.editor.mode) {
+	switch (pcbhl_conf.editor.mode) {
 	case PCB_MODE_VIA:
 		buf = pcb_strdup_printf("%m+%.2mS/%.2mS \370=%.2mS", UUNIT, conf_core.design.via_thickness, conf_core.design.clearance, conf_core.design.via_drilling_hole);
 		break;
@@ -2230,14 +2230,14 @@ static Boolean idle_proc(XtPointer dummy)
 	}
 
 	{
-		if (old_cursor_mode != conf_core.editor.mode) {
+		if (old_cursor_mode != pcbhl_conf.editor.mode) {
 			const char *s = "None";
 			XmString ms;
 			int cursor = -1;
 			static int free_cursor = 0;
 
-			old_cursor_mode = conf_core.editor.mode;
-			switch (conf_core.editor.mode) {
+			old_cursor_mode = pcbhl_conf.editor.mode;
+			switch (pcbhl_conf.editor.mode) {
 			case PCB_MODE_VIA:
 				s = "Via";
 				cursor = -1;

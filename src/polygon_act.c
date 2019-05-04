@@ -32,7 +32,8 @@
  *
  */
 #include "config.h"
-#include "conf_core.h"
+
+#include "hidlib_conf.h"
 
 #include "board.h"
 #include "data.h"
@@ -97,7 +98,7 @@ static fgw_error_t pcb_act_Polygon(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	
 	PCB_ACT_CONVARG(1, FGW_KEYWORD, Polygon, op = fgw_keyword(&argv[1]));
 
-	if ((argc > 1) && ((conf_core.editor.mode == PCB_MODE_POLYGON) || (conf_core.editor.mode == PCB_MODE_POLYGON_HOLE))) {
+	if ((argc > 1) && ((pcbhl_conf.editor.mode == PCB_MODE_POLYGON) || (pcbhl_conf.editor.mode == PCB_MODE_POLYGON_HOLE))) {
 		pcb_notify_crosshair_change(pcb_false);
 		switch(op) {
 			/* close open polygon if possible */

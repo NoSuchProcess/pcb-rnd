@@ -753,7 +753,7 @@ static void check_snap_object(struct snap_data *snap_data, pcb_coord_t x, pcb_co
 	double sq_dist;
 
 	/* avoid snapping to an object if it is in the same subc */
-	if ((snapo != NULL) && (conf_core.editor.mode == PCB_MODE_MOVE) && (pcb_crosshair.AttachedObject.Type == PCB_OBJ_SUBC)) {
+	if ((snapo != NULL) && (pcbhl_conf.editor.mode == PCB_MODE_MOVE) && (pcb_crosshair.AttachedObject.Type == PCB_OBJ_SUBC)) {
 		pcb_any_obj_t *parent = (pcb_any_obj_t *)pcb_obj_parent_subc(snapo);
 		int n;
 		pcb_cardinal_t parent_id = snapo->ID;
@@ -902,7 +902,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
 
 	/* Avoid snapping padstack to any other padstack */
-	if (conf_core.editor.mode == PCB_MODE_MOVE && pcb_crosshair.AttachedObject.Type == PCB_OBJ_PSTK && (ans & PCB_OBJ_PSTK))
+	if (pcbhl_conf.editor.mode == PCB_MODE_MOVE && pcb_crosshair.AttachedObject.Type == PCB_OBJ_PSTK && (ans & PCB_OBJ_PSTK))
 		ans = PCB_OBJ_VOID;
 
 	if (ans != PCB_OBJ_VOID) {
@@ -966,7 +966,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 	if (conf_core.editor.highlight_on_point)
 		onpoint_work(&pcb_crosshair, pcb_crosshair.X, pcb_crosshair.Y);
 
-	if (conf_core.editor.mode == PCB_MODE_ARROW) {
+	if (pcbhl_conf.editor.mode == PCB_MODE_ARROW) {
 		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_LINE_POINT, &ptr1, &ptr2, &ptr3);
 		if (ans == PCB_OBJ_VOID) {
 			if ((pcb_gui != NULL) && (pcb_gui->point_cursor != NULL))
@@ -978,7 +978,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		}
 	}
 
-	if (conf_core.editor.mode == PCB_MODE_LINE && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && conf_core.editor.auto_drc)
+	if (pcbhl_conf.editor.mode == PCB_MODE_LINE && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && conf_core.editor.auto_drc)
 		pcb_line_enforce_drc();
 
 	pcb_gui->set_crosshair(pcb_crosshair.X, pcb_crosshair.Y, HID_SC_DO_NOTHING);
@@ -1087,7 +1087,7 @@ void pcb_crosshair_uninit(void)
 
 void pcb_crosshair_range_to_buffer(void)
 {
-	if (conf_core.editor.mode == PCB_MODE_PASTE_BUFFER) {
+	if (pcbhl_conf.editor.mode == PCB_MODE_PASTE_BUFFER) {
 		if (pcb_set_buffer_bbox(PCB_PASTEBUFFER) == 0) {
 			pcb_crosshair_set_range(PCB_PASTEBUFFER->X - PCB_PASTEBUFFER->bbox_naked.X1,
 											PCB_PASTEBUFFER->Y - PCB_PASTEBUFFER->bbox_naked.Y1,

@@ -29,6 +29,7 @@
 #include "tool.h"
 
 #include "board.h"
+#include "hidlib_conf.h"
 #include "conf_core.h"
 #include "crosshair.h"
 #include "data.h"
@@ -133,7 +134,7 @@ int pcb_tool_select_by_id(pcb_hidlib_t *hidlib, pcb_toolid_t id)
 		id = PCB_MODE_ARROW;
 	}
 	
-	pcb_tool_prev_id = conf_core.editor.mode;
+	pcb_tool_prev_id = pcbhl_conf.editor.mode;
 	pcb_tool_next_id = id;
 	uninit_current_tool();
 	sprintf(id_s, "%d", id);
@@ -171,7 +172,7 @@ int pcb_tool_select_highest(pcb_hidlib_t *hidlib)
 
 int pcb_tool_save(pcb_hidlib_t *hidlib)
 {
-	save_stack[save_position] = conf_core.editor.mode;
+	save_stack[save_position] = pcbhl_conf.editor.mode;
 	if (save_position < PCB_MAX_MODESTACK_DEPTH - 1)
 		save_position++;
 	else
@@ -205,9 +206,9 @@ void pcb_tool_gui_init(void)
 #define wrap(func, err_ret, prefix, args) \
 	do { \
 		const pcb_tool_t *tool; \
-		if ((conf_core.editor.mode < 0) || (conf_core.editor.mode >= vtp0_len(&pcb_tools))) \
+		if ((pcbhl_conf.editor.mode < 0) || (pcbhl_conf.editor.mode >= vtp0_len(&pcb_tools))) \
 			{ err_ret; } \
-		tool = (const pcb_tool_t *)pcb_tools.array[conf_core.editor.mode]; \
+		tool = (const pcb_tool_t *)pcb_tools.array[pcbhl_conf.editor.mode]; \
 		if (tool->func == NULL) \
 			{ err_ret; } \
 		prefix tool->func args; \
@@ -355,8 +356,8 @@ pcb_bool pcb_tool_should_snap_offgrid_line(pcb_layer_t *layer, pcb_line_t *line)
 	 * the same layer), and when moving a line end-point
 	 * (but don't snap to the same line)
 	 */
-	if ((conf_core.editor.mode == PCB_MODE_LINE && CURRENT == layer) ||
-			(conf_core.editor.mode == PCB_MODE_MOVE
+	if ((pcbhl_conf.editor.mode == PCB_MODE_LINE && CURRENT == layer) ||
+			(pcbhl_conf.editor.mode == PCB_MODE_MOVE
 			 && pcb_crosshair.AttachedObject.Type == PCB_OBJ_LINE_POINT
 			 && pcb_crosshair.AttachedObject.Ptr1 == layer
 			 && pcb_crosshair.AttachedObject.Ptr2 != line))

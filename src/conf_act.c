@@ -252,7 +252,7 @@ static fgw_error_t pcb_act_ChkMode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	id = pcb_tool_lookup(dst);
 	if (id >= 0) {
-		PCB_ACT_IRES(conf_core.editor.mode == id);
+		PCB_ACT_IRES(pcbhl_conf.editor.mode == id);
 		return 0;
 	}
 	PCB_ACT_IRES(-1);
