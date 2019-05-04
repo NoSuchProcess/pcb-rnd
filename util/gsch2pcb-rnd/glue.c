@@ -29,6 +29,8 @@
 
 pcb_hid_t *pcb_gui = NULL;
 
+const char *pcb_hidlib_default_embedded_menu = "";
+
 int pcb_color_load_str(pcb_color_t *dst, const char *src)
 {
 	memset(dst, 0, sizeof(pcb_color_t));
