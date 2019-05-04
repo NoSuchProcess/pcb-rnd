@@ -331,7 +331,6 @@ static void PointCursor(pcb_bool grabbed)
 
 static void ghid_notify_save_pcb(const char *filename, pcb_bool done)
 {
-	pcb_gtk_tw_notify_save_pcb(&ghidgui->topwin, filename, done);
 }
 
 static void ghid_notify_filename_changed()

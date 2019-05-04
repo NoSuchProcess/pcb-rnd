@@ -183,23 +183,10 @@ gboolean ghid_port_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, pcb
 void ghid_sync_with_new_layout(pcb_gtk_topwin_t *tw)
 {
 	tw->com->window_set_name_label(tw->com->hidlib->name);
-	update_board_mtime_from_disk(&tw->ext_chg);
-}
-
-void pcb_gtk_tw_notify_save_pcb(pcb_gtk_topwin_t *tw, const char *filename, pcb_bool done)
-{
-	/* Do nothing if it is not the active PCB file that is being saved. */
-	if (tw->com->hidlib->filename == NULL || strcmp(filename, tw->com->hidlib->filename) != 0)
-		return;
-
-	if (done)
-		update_board_mtime_from_disk(&tw->ext_chg);
 }
 
 void pcb_gtk_tw_notify_filename_changed(pcb_gtk_topwin_t *tw)
 {
-	/* Pick up the mtime of the new PCB file */
-	update_board_mtime_from_disk(&tw->ext_chg);
 	tw->com->window_set_name_label(tw->com->hidlib->name);
 }
 

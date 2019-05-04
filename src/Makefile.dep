@@ -1897,7 +1897,7 @@
  ../src_3rd/genht/htpp.h hid_cfg.h ../src_plugins/lib_gtk_common/glue.h \
  conf.h ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
- compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
+ compat_misc.h hid_attrib.h   \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
@@ -1936,7 +1936,7 @@
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h \
  ../src_3rd/genht/htpp.h hid_cfg.h ../src_plugins/lib_gtk_common/glue.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
- compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
+ compat_misc.h hid_attrib.h   \
  ../src_plugins/lib_gtk_common/bu_menu.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
@@ -1975,7 +1975,7 @@
  ../src_3rd/genht/htpp.h hid_cfg.h ../src_plugins/lib_gtk_common/glue.h \
  ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
- compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
+ compat_misc.h hid_attrib.h   \
  ../src_plugins/lib_gtk_common/bu_menu.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
@@ -2017,7 +2017,7 @@
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h \
  ../src_3rd/genht/htpp.h hid_cfg.h ../src_plugins/lib_gtk_common/glue.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
- compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
+ compat_misc.h hid_attrib.h   \
  ../src_plugins/lib_gtk_common/bu_menu.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
@@ -2059,7 +2059,7 @@
  ../src_plugins/lib_gtk_common/glue.h conf.h \
  ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
- compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
+ compat_misc.h hid_attrib.h   \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer_grp.h \
@@ -2098,7 +2098,7 @@
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h \
  ../src_3rd/genht/htpp.h hid_cfg.h ../src_plugins/lib_gtk_common/glue.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
- compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
+ compat_misc.h hid_attrib.h   \
  ../src_plugins/lib_gtk_common/bu_menu.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
@@ -4008,7 +4008,7 @@
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
  ../src_3rd/genvector/gds_char.h hid_dad.h compat_misc.h hid_attrib.h \
- pcb-printf.h ../src_plugins/lib_gtk_common/util_ext_chg.h pcb_bool.h \
+ pcb-printf.h   pcb_bool.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf.h hid_cfg_input.h ../src_3rd/genht/htpp.h hid_cfg.h conf_hid.h \
@@ -4160,7 +4160,7 @@
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h
 ../src_plugins/lib_gtk_common/util_ext_chg.o: \
  ../src_plugins/lib_gtk_common/util_ext_chg.c ../config.h \
- ../src_plugins/lib_gtk_common/util_ext_chg.h pcb_bool.h board.h \
+   pcb_bool.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h global_typedefs.h \
  pcb_bool.h unit.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -4319,7 +4319,7 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf.h ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
- compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
+ compat_misc.h hid_attrib.h   \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
@@ -4350,7 +4350,7 @@
  ../src_3rd/genvector/vtp0.h list_conf.h conf.h \
  ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
- compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
+ compat_misc.h hid_attrib.h   \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
@@ -4385,7 +4385,7 @@
  ../src_3rd/liblihata/lihata.h list_conf.h conf.h \
  ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
- compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
+ compat_misc.h hid_attrib.h   \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
@@ -4416,7 +4416,7 @@
  ../src_plugins/lib_gtk_common/glue.h \
  ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
- compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
+ compat_misc.h hid_attrib.h   \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
@@ -4440,7 +4440,7 @@
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
  ../src_3rd/genvector/gds_char.h hid_dad.h compat_misc.h hid_attrib.h \
- pcb-printf.h ../src_plugins/lib_gtk_common/util_ext_chg.h pcb_bool.h \
+ pcb-printf.h   pcb_bool.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf.h hid_cfg_input.h ../src_3rd/genht/htpp.h hid_cfg.h conf_hid.h \
@@ -4478,7 +4478,7 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf.h ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
- compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
+ compat_misc.h hid_attrib.h   \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \
@@ -4531,7 +4531,7 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf.h ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
- compat_misc.h hid_attrib.h ../src_plugins/lib_gtk_common/util_ext_chg.h \
+ compat_misc.h hid_attrib.h   \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/wt_layersel.h layer.h layer_grp.h \

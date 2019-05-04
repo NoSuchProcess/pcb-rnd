@@ -22,7 +22,6 @@ put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/in_mouse.o
   $(PLUGDIR)/lib_gtk_common/ui_crosshair.o
   $(PLUGDIR)/lib_gtk_common/ui_zoompan.o
-  $(PLUGDIR)/lib_gtk_common/util_ext_chg.o
   $(PLUGDIR)/lib_gtk_common/util_listener.o
   $(PLUGDIR)/lib_gtk_common/util_timer.o
   $(PLUGDIR)/lib_gtk_common/util_watch.o

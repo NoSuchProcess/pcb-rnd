@@ -8,7 +8,6 @@
 #include "hid_cfg.h"
 #include "hid_dad.h"
 
-#include "util_ext_chg.h"
 #include "bu_menu.h"
 #include "glue.h"
 #include "bu_command.h"
@@ -17,7 +16,6 @@
 typedef struct {
 	/* util/builder states */
 	pcb_gtk_common_t *com;
-	pcb_gtk_ext_chg_t ext_chg;
 	pcb_gtk_menu_ctx_t menu;
 	pcb_hid_cfg_t *ghid_cfg;
 	pcb_gtk_command_t cmd;
@@ -54,7 +52,6 @@ void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw);
 void pcb_gtk_tw_layer_buttons_update(pcb_gtk_topwin_t *tw);
 void pcb_gtk_tw_layer_vis_update(pcb_gtk_topwin_t *tw);
 
-void pcb_gtk_tw_notify_save_pcb(pcb_gtk_topwin_t *tw, const char *filename, pcb_bool done);
 void pcb_gtk_tw_notify_filename_changed(pcb_gtk_topwin_t *tw);
 void pcb_gtk_tw_interface_set_sensitive(pcb_gtk_topwin_t *tw, gboolean sensitive);
 void pcb_gtk_tw_window_set_name_label(pcb_gtk_topwin_t *tw, const char *name);
