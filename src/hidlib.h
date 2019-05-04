@@ -35,4 +35,7 @@ struct pcb_hidlib_s {
 	char *filename;                    /* name of the file (from load) */
 };
 
+void pcb_hidlib_event_uninit(void);
+void pcb_hidlib_event_init(void);
+
 #endif

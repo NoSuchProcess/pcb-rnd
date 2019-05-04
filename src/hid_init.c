@@ -45,6 +45,7 @@
 #include "compat_misc.h"
 #include "compat_inc.h"
 #include "file_loaded.h"
+#include "hidlib.h"
 #include "hidlib_conf.h"
 
 static const char *flt_any[] = {"*", "*.*", NULL};
