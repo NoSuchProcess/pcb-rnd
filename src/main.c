@@ -265,7 +265,26 @@ static void log_print_uninit_errs(const char *title)
 		fprintf(stderr, "\n\n");
 }
 
-static void gui_support_plugins(int load);
+static void gui_support_plugins(int load)
+{
+	static int loaded = 0;
+	static pup_plugin_t *puphand;
+
+	if (load && !loaded) {
+		static const char *plugin_name = "dialogs";
+		int state = 0;
+		loaded = 1;
+		pcb_message(PCB_MSG_DEBUG, "Loading GUI support plugin: '%s'\n", plugin_name);
+		puphand = pup_load(&pcb_pup, (const char **)pcb_pup_paths, plugin_name, 0, &state);
+		if (puphand == NULL)
+			pcb_message(PCB_MSG_ERROR, "Error: failed to load GUI support plugin '%s'\n-> expect missing widgets and dialog boxes\n", plugin_name);
+	}
+	if (!load && loaded && (puphand != NULL)) {
+		pup_unload(&pcb_pup, puphand, NULL);
+		loaded = 0;
+		puphand = NULL;
+	}
+}
 
 void pcb_main_uninit(void)
 {
@@ -403,27 +422,6 @@ void pcb_fix_locale(void)
 		pcb_setenv(*lc, "C", 1);
 
 	setlocale(LC_ALL, "C");
-}
-
-static void gui_support_plugins(int load)
-{
-	static int loaded = 0;
-	static pup_plugin_t *puphand;
-
-	if (load && !loaded) {
-		static const char *plugin_name = "dialogs";
-		int state = 0;
-		loaded = 1;
-		pcb_message(PCB_MSG_DEBUG, "Loading GUI support plugin: '%s'\n", plugin_name);
-		puphand = pup_load(&pcb_pup, (const char **)pcb_pup_paths, plugin_name, 0, &state);
-		if (puphand == NULL)
-			pcb_message(PCB_MSG_ERROR, "Error: failed to load GUI support plugin '%s'\n-> expect missing widgets and dialog boxes\n", plugin_name);
-	}
-	if (!load && loaded && (puphand != NULL)) {
-		pup_unload(&pcb_pup, puphand, NULL);
-		loaded = 0;
-		puphand = NULL;
-	}
 }
 
 #define we_are_exporting (pcb_gui->printer || pcb_gui->exporter)
