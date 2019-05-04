@@ -609,13 +609,7 @@ int pcb_save_pcb(const char *file, const char *fmt)
 	if (conf_core.editor.io_incomp_popup)
 		pcb_view_list_free_fields(&pcb_io_incompat_lst);
 
-	if (pcb_gui->notify_save_pcb != NULL) {
-		pcb_gui->notify_save_pcb(file, pcb_false);
-		retcode = pcb_write_pipe(file, pcb_true, fmt, pcb_false);
-		pcb_gui->notify_save_pcb(file, pcb_true);
-	}
-	else
-		retcode = pcb_write_pipe(file, pcb_true, fmt, pcb_false);
+	retcode = pcb_write_pipe(file, pcb_true, fmt, pcb_false);
 
 	pcb_io_incompat_lst_enable = pcb_false;
 	if (conf_core.editor.io_incomp_popup) {

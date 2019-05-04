@@ -329,10 +329,6 @@ static void PointCursor(pcb_bool grabbed)
 	ghid_point_cursor(&gport->mouse, grabbed);
 }
 
-static void ghid_notify_save_pcb(const char *filename, pcb_bool done)
-{
-}
-
 static void ghid_notify_filename_changed()
 {
 	pcb_gtk_tw_notify_filename_changed(&ghidgui->topwin);
@@ -605,7 +601,6 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->point_cursor = PointCursor;
 	dst->benchmark = ghid_benchmark;
 
-	dst->notify_save_pcb = ghid_notify_save_pcb;
 	dst->notify_filename_changed = ghid_notify_filename_changed;
 
 	dst->command_entry = ghid_command_entry;

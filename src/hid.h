@@ -442,16 +442,6 @@ struct pcb_hid_s {
 
 	void (*edit_attributes)(const char *owner, pcb_attribute_list_t *attrlist);
 
-	/* Notification to the GUI around saving the PCB file.
-	 *
-	 * Called with a false parameter before the save, called again
-	 * with pcb_true after the save.
-	 *
-	 * Allows GUIs which watch for file-changes on disk to ignore
-	 * our deliberate changes.
-	 */
-	void (*notify_save_pcb)(const char *filename, pcb_bool done);
-
 	/* Notification to the GUI that the PCB file has been renamed. */
 	void (*notify_filename_changed)(void);
 
