@@ -277,14 +277,9 @@ PCB_REGISTER_ACTIONS(hid_dlg_action_list, NULL)
 
 static const char *event_dlg_cookie = "hid_dlg";
 
-#include "conf_core.h"
-#include "tool.h"
 static void hid_dlg_log_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	hid_dlg_gui_inited = 1;
-	pcb_tool_gui_init();
-	pcb_gui->set_mouse_cursor(hidlib, conf_core.editor.mode); /* make sure the mouse cursor is set up now that it is registered */
-
 }
 
 void pcb_hid_dlg_uninit(void)

@@ -26,3 +26,27 @@
 
 #include "config.h"
 
+#include "conf_core.h"
+#include "hidlib_conf.h"
+#include "tool.h"
+#include "event.h"
+#include "hid.h"
+
+static const char *hidlib_cookie = "hidlib";
+
+static void hidlib_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	pcb_tool_gui_init();
+	pcb_gui->set_mouse_cursor(hidlib, conf_core.editor.mode); /* make sure the mouse cursor is set up now that it is registered */
+}
+
+
+void pcb_hidlib_event_uninit(void)
+{
+	pcb_event_unbind_allcookie(hidlib_cookie);
+}
+
+void pcb_hidlib_event_init(void)
+{
+	pcb_event_bind(PCB_EVENT_GUI_INIT, hidlib_gui_init_ev, NULL, hidlib_cookie);
+}

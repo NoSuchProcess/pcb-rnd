@@ -279,6 +279,7 @@ void pcb_hidlib_init1(void (*conf_core_init)(void))
 	conf_init();
 	conf_core_init();
 	pcb_hidlib_conf_init();
+	pcb_hidlib_event_init();
 	pcb_hid_dlg_init();
 	pcb_hid_init();
 }
@@ -301,6 +302,7 @@ void pcb_hidlib_init2(const pup_buildin_t *buildins)
 
 void pcb_hidlib_uninit(void)
 {
+	pcb_hidlib_event_uninit();
 	pcb_hid_dlg_uninit();
 
 	if (conf_isdirty(CFR_USER))
