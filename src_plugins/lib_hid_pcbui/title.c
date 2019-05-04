@@ -40,7 +40,7 @@ static void update_title(void)
 
 	if ((pcb_gui == NULL) || (pcb_gui->set_top_title == NULL) || (!gui_inited))
 		return;
-pcb_trace("TITLE!!\n");
+
 	if ((PCB->hidlib.name == NULL) || (*PCB->hidlib.name == '\0'))
 		name = "Unnamed";
 	else
