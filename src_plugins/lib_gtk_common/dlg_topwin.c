@@ -592,3 +592,8 @@ void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw)
 		gtk_widget_show(tw->bottom_hbox);
 	}
 }
+
+void pcb_gtk_tw_set_title(pcb_gtk_topwin_t *tw, const char *title)
+{
+	gtk_window_set_title(GTK_WINDOW(tw->com->top_window), title);
+}

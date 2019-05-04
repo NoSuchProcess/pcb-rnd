@@ -536,6 +536,7 @@ struct pcb_hid_s {
 	/* Load viewbox with the extents of visible pixels translated to board coords */
 	void (*view_get)(pcb_box_t *viewbox);
 
+	/*** misc GUI ***/
 	/* Open the command line */
 	void (*open_command)(void);
 
@@ -551,6 +552,9 @@ struct pcb_hid_s {
 	   The list of cursors names available may depend on the HID. */
 	void (*reg_mouse_cursor)(pcb_hidlib_t *hidlib, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask);
 	void (*set_mouse_cursor)(pcb_hidlib_t *hidlib, int idx);
+
+	/* change top window title any time the after the GUI_INIT event */
+	void (*set_top_title)(pcb_hidlib_t *hidlib, const char *title);
 };
 
 /* One of these functions (in the common code) will be called whenever the GUI

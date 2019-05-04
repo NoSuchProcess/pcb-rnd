@@ -550,7 +550,11 @@ static void ghid_reg_mouse_cursor(pcb_hidlib_t *hidlib, int idx, const char *nam
 static void ghid_set_mouse_cursor(pcb_hidlib_t *hidlib, int idx)
 {
 	ghid_port_set_mouse_cursor(&gport->mouse, idx);
+}
 
+static void ghid_set_top_title(pcb_hidlib_t *hidlib, const char *title)
+{
+	pcb_gtk_tw_set_title(&ghidgui->topwin, title);
 }
 
 void ghid_glue_hid_init(pcb_hid_t *dst)
@@ -624,6 +628,7 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->open_popup = ghid_open_popup;
 	dst->reg_mouse_cursor = ghid_reg_mouse_cursor;
 	dst->set_mouse_cursor = ghid_set_mouse_cursor;
+	dst->set_top_title = ghid_set_top_title;
 
 	dst->set_hidlib = ghid_set_hidlib;
 

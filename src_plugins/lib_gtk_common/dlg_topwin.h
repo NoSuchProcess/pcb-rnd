@@ -59,6 +59,7 @@ void pcb_gtk_tw_window_set_name_label(pcb_gtk_topwin_t *tw, const char *name);
 int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id);
 void pcb_gtk_tw_dock_leave(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub);
 
+void pcb_gtk_tw_set_title(pcb_gtk_topwin_t *tw, const char *title);
 
 gboolean ghid_idle_cb(void *topwin);
 gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, pcb_gtk_topwin_t *tw);

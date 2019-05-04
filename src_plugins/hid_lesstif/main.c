@@ -3259,6 +3259,10 @@ static void ltf_reg_mouse_cursor(pcb_hidlib_t *hidlib, int idx, const char *name
 
 static void ltf_set_mouse_cursor(pcb_hidlib_t *hidlib, int idx)
 {
+}
+
+static void ltf_set_top_title(pcb_hidlib_t *hidlib, const char *title)
+{
 
 }
 
@@ -3372,6 +3376,7 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.open_popup = ltf_open_popup;
 	lesstif_hid.reg_mouse_cursor = ltf_reg_mouse_cursor;
 	lesstif_hid.set_mouse_cursor = ltf_set_mouse_cursor;
+	lesstif_hid.set_top_title = ltf_set_top_title;
 
 	lesstif_hid.set_hidlib = ltf_set_hidlib;
 

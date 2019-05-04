@@ -471,6 +471,10 @@ static void nogui_set_mouse_cursor(pcb_hidlib_t *hidlib, int idx)
 {
 }
 
+static void nogui_set_top_title(pcb_hidlib_t *hidlib, const char *title)
+{
+}
+
 void pcb_hid_nogui_init(pcb_hid_t * hid)
 {
 	hid->get_export_options = nogui_get_export_options;
@@ -518,6 +522,7 @@ void pcb_hid_nogui_init(pcb_hid_t * hid)
 	hid->clip_free = nogui_clip_free;
 	hid->set_mouse_cursor = nogui_set_mouse_cursor;
 	hid->reg_mouse_cursor = nogui_reg_mouse_cursor;
+	hid->set_top_title = nogui_set_top_title;
 }
 
 
