@@ -265,7 +265,7 @@ static void draw_xor_marks(pcb_draw_info_t *info)
 		pcb_draw_pstk_marks(info);
 	}
 
-	pcb_event(&PCB->hidlib, PCB_EVENT_GUI_DRAW_OVERLAY_XOR, NULL);
+	pcb_event(&PCB->hidlib, PCB_EVENT_GUI_DRAW_OVERLAY_XOR, "p", &pcb_draw_out.fgGC, NULL);
 
 	pcb_hid_set_draw_xor(pcb_draw_out.fgGC, 0);
 	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
