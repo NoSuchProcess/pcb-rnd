@@ -78,9 +78,9 @@ typedef struct {
 
 GdkColor clr_orange = {0,  0xffff, 0xaaaa, 0x3333};
 
-static int dock_is_vert[PCB_HID_DOCK_max]   = {0, 0, 0, 1, 0, 1}; /* Update this if pcb_hid_dock_t changes */
-static int dock_has_frame[PCB_HID_DOCK_max] = {0, 0, 0, 1, 0, 0}; /* Update this if pcb_hid_dock_t changes */
-static GdkColor *dock_color[PCB_HID_DOCK_max] = {NULL, NULL, &clr_orange, NULL, NULL, NULL}; /* force change color when docked */
+static int pcb_dock_is_vert[PCB_HID_DOCK_max]   = {0, 0, 0, 1, 0, 1}; /* Update this if pcb_hid_dock_t changes */
+static int pcb_dock_has_frame[PCB_HID_DOCK_max] = {0, 0, 0, 1, 0, 0}; /* Update this if pcb_hid_dock_t changes */
+static GdkColor *pcb_dock_color[PCB_HID_DOCK_max] = {NULL, NULL, &clr_orange, NULL, NULL, NULL}; /* force change color when docked */
 int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id)
 {
 	docked_t *docked;
@@ -89,12 +89,12 @@ int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub, pc
 	docked = calloc(sizeof(docked_t), 1);
 	docked->where = where;
 
-	if (dock_is_vert[where])
+	if (pcb_dock_is_vert[where])
 		hvbox = gtkc_vbox_new(FALSE, 0);
 	else
 		hvbox = gtkc_hbox_new(TRUE, 0);
 
-	if (dock_has_frame[where]) {
+	if (pcb_dock_has_frame[where]) {
 		docked->frame = gtk_frame_new(id);
 		gtk_container_add(GTK_CONTAINER(docked->frame), hvbox);
 	}
@@ -111,8 +111,8 @@ int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub, pc
 
 	gdl_append(&tw->dock[where], sub, link);
 
-	if (dock_color[where] != NULL)
-		pcb_gtk_dad_fixcolor(sub->dlg_hid_ctx, dock_color[where]);
+	if (pcb_dock_color[where] != NULL)
+		pcb_gtk_dad_fixcolor(sub->dlg_hid_ctx, pcb_dock_color[where]);
 
 	return 0;
 }
@@ -439,8 +439,8 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	gtk_box_pack_start(GTK_BOX(hboxi), evb, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(tw->vbox_middle), hboxi, FALSE, FALSE, 0);
 
-	if (dock_color[PCB_HID_DOCK_TOP_INFOBAR] != NULL)
-		gtk_widget_modify_bg(evb, GTK_STATE_NORMAL, dock_color[PCB_HID_DOCK_TOP_INFOBAR]);
+	if (pcb_dock_color[PCB_HID_DOCK_TOP_INFOBAR] != NULL)
+		gtk_widget_modify_bg(evb, GTK_STATE_NORMAL, pcb_dock_color[PCB_HID_DOCK_TOP_INFOBAR]);
 
 	hbox = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(tw->vbox_middle), hbox, TRUE, TRUE, 0);
