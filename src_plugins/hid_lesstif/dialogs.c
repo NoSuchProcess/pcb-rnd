@@ -470,6 +470,8 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 			XtManageChild(ctx->wl[i]);
 		if (ctx->wltop[i] == NULL)
 			ctx->wltop[i] = ctx->wl[i];
+		else
+			XtManageChild(ctx->wltop[i]);
 	}
 	return i;
 }
