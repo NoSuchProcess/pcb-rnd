@@ -38,6 +38,7 @@
 #include "hid_attrib.h"
 #include "hid_init.h"
 #include "hid_color.h"
+#include "hid_dad.h"
 #include "actions.h"
 #include "ltf_stdarg.h"
 #include "grid.h"
@@ -169,20 +170,70 @@ static void lesstif_end(void);
 static Widget ltf_dockbox[PCB_HID_DOCK_max];
 static gdl_list_t ltf_dock[PCB_HID_DOCK_max];
 
+typedef struct {
+	void *hid_ctx;
+	Widget frame;
+	pcb_hid_dock_t where;
+} docked_t;
+
 static Widget ltf_create_dockbox(Widget parent, pcb_hid_dock_t where, int vert)
 {
+	Widget w;
 	stdarg(PxmNfillBoxVertical, vert);
 	stdarg(XmNmarginWidth, 0);
 	stdarg(XmNmarginHeight, 0);
 	ltf_dockbox[where] = PxmCreateFillBox(parent, "dockbox", stdarg_args, stdarg_n);
 
 	stdarg_n = 0;
-	XmCreateLabel(ltf_dockbox[where], XmStrCast("dock1"), stdarg_args, stdarg_n);
+	stdarg(XmNlabelString, XmStringCreatePCB("dock1"));
+	w = XmCreateLabel(ltf_dockbox[where], XmStrCast("dock1"), stdarg_args, stdarg_n);
+	XtManageChild(w);
 	stdarg_n = 0;
-	XmCreateLabel(ltf_dockbox[where], XmStrCast("dock2"), stdarg_args, stdarg_n);
-
+	stdarg(XmNlabelString, XmStringCreatePCB("dock2"));
+	w = XmCreateLabel(ltf_dockbox[where], XmStrCast("dock2"), stdarg_args, stdarg_n);
+	XtManageChild(w);
 	return ltf_dockbox[where];
 }
+
+static int ltf_dock_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, pcb_event_arg_t *res, int argc, pcb_event_arg_t *argv)
+{
+	return -1;
+}
+
+static int ltf_dock_enter(pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id)
+{
+	docked_t *docked;
+	Widget hvbox;
+
+	docked = calloc(sizeof(docked_t), 1);
+	docked->where = where;
+
+	stdarg_n = 0;
+	stdarg(PxmNfillBoxVertical, pcb_dock_is_vert[where]);
+	stdarg(XmNmarginWidth, 0);
+	stdarg(XmNmarginHeight, 0);
+	hvbox = PxmCreateFillBox(ltf_dockbox[where], "dockbox", stdarg_args, stdarg_n);
+
+TODO("hidlib: dock frame");
+/*
+	if (pcb_dock_has_frame[where]) {
+		docked->frame = gtk_frame_new(id);
+		gtk_container_add(GTK_CONTAINER(docked->frame), hvbox);
+	}
+	else*/
+		docked->frame = hvbox;
+
+	XtManageChild(docked->frame);
+
+	sub->parent_poke = ltf_dock_poke;
+	sub->dlg_hid_ctx = docked->hid_ctx = lesstif_attr_sub_new(hvbox, sub->dlg, sub->dlg_len, sub);
+	sub->parent_ctx = docked;
+
+	gdl_append(&ltf_dock[where], sub, link);
+
+	return 0;
+}
+
 
 typedef struct {
 	void *hid_ctx;
@@ -1342,24 +1393,6 @@ static Widget make_message(const char *name, Widget left, int resizeable)
 	return w;
 }
 
-static Widget make_messageb(void)
-{
-	Widget f;
-
-	stdarg_n = 0;
-	stdarg(XmNleftAttachment, XmATTACH_FORM);
-	stdarg(XmNtopAttachment, XmATTACH_FORM);
-	stdarg(XmNbottomAttachment, XmATTACH_FORM);
-	stdarg(XmNshadowType, XmSHADOW_IN);
-	stdarg(XmNshadowThickness, 1);
-	stdarg(XmNalignment, XmALIGNMENT_CENTER);
-	stdarg(XmNmarginWidth, 4);
-	stdarg(XmNmarginHeight, 1);
-		stdarg(XmNresizePolicy, XmRESIZE_GROW);
-	f = XmCreateForm(messages, XmStrCast("status dock"), stdarg_args, stdarg_n);
-	XtManageChild(f);
-	return f;
-}
 
 static unsigned short int lesstif_translate_key(const char *desc, int len)
 {
@@ -1512,21 +1545,19 @@ static void lesstif_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 
 	/* status dock */
 	{
-		Widget w, smsg;
-
-		smsg = make_messageb();
+		Widget w;
 
 		stdarg_n = 0;
 		stdarg(XmNtopAttachment, XmATTACH_FORM);
 		stdarg(XmNbottomAttachment, XmATTACH_FORM);
 		stdarg(XmNleftAttachment, XmATTACH_FORM);
 		stdarg(XmNrightAttachment, XmATTACH_FORM);
-		w = ltf_create_dockbox(smsg, PCB_HID_DOCK_BOTTOM, 0);
+		w = ltf_create_dockbox(messages, PCB_HID_DOCK_BOTTOM, 0);
 		XtManageChild(w);
 
 
 	{ /* old status line */
-	m_mark = make_message("m_mark", smsg, 0);
+	m_mark = make_message("m_mark", w, 0);
 	m_crosshair = make_message("m_crosshair", m_mark, 0);
 	m_grid = make_message("m_grid", m_crosshair, 1);
 	m_zoom = make_message("m_zoom", m_grid, 1);
@@ -3431,6 +3462,7 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.reg_mouse_cursor = ltf_reg_mouse_cursor;
 	lesstif_hid.set_mouse_cursor = ltf_set_mouse_cursor;
 	lesstif_hid.set_top_title = ltf_set_top_title;
+	lesstif_hid.dock_enter = ltf_dock_enter;
 
 	lesstif_hid.set_hidlib = ltf_set_hidlib;
 
