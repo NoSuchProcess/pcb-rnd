@@ -145,9 +145,6 @@ static int in_move_event = 0, crosshair_in_window = 1;
 
 Widget mainwind;
 Widget work_area, messages, command, hscroll, vscroll;
-static Widget m_mark, m_crosshair, m_grid, m_zoom, m_mode, m_status;
-static Widget m_rats;
-Widget lesstif_m_layer;
 Widget m_click;
 
 /* This is the size, in pixels, of the viewport.  */
@@ -178,20 +175,20 @@ typedef struct {
 
 static Widget ltf_create_dockbox(Widget parent, pcb_hid_dock_t where, int vert)
 {
-	Widget w;
 	stdarg(PxmNfillBoxVertical, vert);
 	stdarg(XmNmarginWidth, 0);
 	stdarg(XmNmarginHeight, 0);
 	ltf_dockbox[where] = PxmCreateFillBox(parent, "dockbox", stdarg_args, stdarg_n);
 
-	stdarg_n = 0;
-	stdarg(XmNlabelString, XmStringCreatePCB("dock1"));
-	w = XmCreateLabel(ltf_dockbox[where], XmStrCast("dock1"), stdarg_args, stdarg_n);
-	XtManageChild(w);
-	stdarg_n = 0;
-	stdarg(XmNlabelString, XmStringCreatePCB("dock2"));
-	w = XmCreateLabel(ltf_dockbox[where], XmStrCast("dock2"), stdarg_args, stdarg_n);
-	XtManageChild(w);
+	{
+		Widget w;
+		stdarg_n = 0;
+		stdarg(XmNlabelString, XmStringCreatePCB("TODO#12"));
+		w = XmCreateLabel(ltf_dockbox[where], XmStrCast("dock1"), stdarg_args, stdarg_n);
+		XtManageChild(w);
+	}
+
+
 	return ltf_dockbox[where];
 }
 
@@ -1557,30 +1554,6 @@ static void lesstif_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 		stdarg(XmNrightAttachment, XmATTACH_FORM);
 		w = ltf_create_dockbox(messages, PCB_HID_DOCK_BOTTOM, 0);
 		XtManageChild(w);
-
-
-	{ /* old status line */
-	m_mark = make_message("m_mark", w, 0);
-	m_crosshair = make_message("m_crosshair", m_mark, 0);
-	m_grid = make_message("m_grid", m_crosshair, 1);
-	m_zoom = make_message("m_zoom", m_grid, 1);
-	lesstif_m_layer = make_message("m_layer", m_zoom, 0);
-	m_mode = make_message("m_mode", lesstif_m_layer, 1);
-	m_rats = make_message("m_rats", m_mode, 1);
-	m_status = make_message("m_status", m_mode, 1);
-
-	XtUnmanageChild(XtParent(m_mark));
-	XtUnmanageChild(XtParent(m_rats));
-
-	stdarg_n = 0;
-	stdarg(XmNrightAttachment, XmATTACH_FORM);
-	XtSetValues(XtParent(m_status), stdarg_args, stdarg_n);
-
-	/* We'll use this later.  */
-	stdarg_n = 0;
-	stdarg(XmNleftWidget, XtParent(m_mark));
-	XtSetValues(XtParent(m_crosshair), stdarg_args, stdarg_n);
-	}
 	}
 
 	stdarg_n = 0;
@@ -2063,56 +2036,6 @@ static int cursor_pos_to_widget(pcb_coord_t x, pcb_coord_t y, Widget w, int prev
 	return this_state;
 }
 
-void lesstif_update_status_line()
-{
-	const char *msg = "";
-	char *buf = NULL;
-	const char *s45 = cur_clip();
-	XmString xs;
-
-	switch (pcbhl_conf.editor.mode) {
-	case PCB_MODE_VIA:
-		buf = pcb_strdup_printf("%m+%.2mS/%.2mS \370=%.2mS", UUNIT, conf_core.design.via_thickness, conf_core.design.clearance, conf_core.design.via_drilling_hole);
-		break;
-	case PCB_MODE_LINE:
-	case PCB_MODE_ARC:
-		buf = pcb_strdup_printf("%m+%.2mS/%.2mS %s", UUNIT, conf_core.design.line_thickness, conf_core.design.clearance, s45);
-		break;
-	case PCB_MODE_RECTANGLE:
-	case PCB_MODE_POLYGON:
-		buf = pcb_strdup_printf("%m+%.2mS %s", UUNIT, conf_core.design.clearance, s45);
-		break;
-	case PCB_MODE_TEXT:
-		buf = pcb_strdup_printf("%d %% %m+%.2mS", conf_core.design.text_scale, UUNIT, conf_core.design.text_thickness);
-		break;
-	case PCB_MODE_MOVE:
-	case PCB_MODE_COPY:
-	case PCB_MODE_INSERT_POINT:
-	case PCB_MODE_RUBBERBAND_MOVE:
-		if (s45 != NULL)
-			buf = pcb_strdup(s45);
-		break;
-	case PCB_MODE_PASTE_BUFFER:
-	case PCB_MODE_ROTATE:
-	case PCB_MODE_REMOVE:
-	case PCB_MODE_THERMAL:
-	case PCB_MODE_ARROW:
-	case PCB_MODE_LOCK:
-	default:
-		break;
-	}
-
-	if (buf != NULL) {
-		msg = buf;
-	}
-	xs = XmStringCreatePCB(msg);
-	stdarg_n = 0;
-	stdarg(XmNlabelString, xs);
-	XtSetValues(m_status, stdarg_args, stdarg_n);
-	free(buf);
-}
-
-
 static Boolean idle_proc(XtPointer dummy)
 {
 	if (need_redraw) {
@@ -2212,27 +2135,6 @@ static Boolean idle_proc(XtPointer dummy)
 			c_x = crosshair_x;
 			c_y = crosshair_y;
 
-			this_state = cursor_pos_to_widget(crosshair_x, crosshair_y, m_crosshair, this_state);
-			if (pcb_marked.status)
-				mark_delta_to_widget(crosshair_x - pcb_marked.X, crosshair_y - pcb_marked.Y, m_mark);
-
-			if (pcb_marked.status != saved_mark.status) {
-				if (pcb_marked.status) {
-					XtManageChild(XtParent(m_mark));
-					XtManageChild(m_mark);
-					stdarg_n = 0;
-					stdarg(XmNleftAttachment, XmATTACH_WIDGET);
-					stdarg(XmNleftWidget, XtParent(m_mark));
-					XtSetValues(XtParent(m_crosshair), stdarg_args, stdarg_n);
-				}
-				else {
-					stdarg_n = 0;
-					stdarg(XmNleftAttachment, XmATTACH_FORM);
-					XtSetValues(XtParent(m_crosshair), stdarg_args, stdarg_n);
-					XtUnmanageChild(XtParent(m_mark));
-				}
-				last_state = this_state + 100;
-			}
 			memcpy(&saved_mark, &pcb_marked, sizeof(pcb_mark_t));
 
 			if (old_grid_unit != pcbhl_conf.editor.grid_unit) {
@@ -2240,166 +2142,71 @@ static Boolean idle_proc(XtPointer dummy)
 				/* Force a resize on units change.  */
 				last_state++;
 			}
-
-			/* This is obtuse.  We want to enable XmRESIZE_ANY long enough
-			   to shrink to fit the new format (if any), then switch it
-			   back to XmRESIZE_GROW to prevent it from shrinking due to
-			   changes in the number of actual digits printed.  Thus, when
-			   you switch from a small grid and %.2f formats to a large
-			   grid and %d formats, you aren't punished with a wide and
-			   mostly white-space label widget.  "this_state" indicates
-			   which of the above formats we're using.  "last_state" is
-			   either zero (when resizing) or the same as "this_state"
-			   (when grow-only), or a non-zero but not "this_state" which
-			   means we need to start a resize cycle.  */
-			if (this_state != last_state && last_state) {
-				stdarg_n = 0;
-				stdarg(XmNresizePolicy, XmRESIZE_ANY);
-				XtSetValues(XtParent(m_mark), stdarg_args, stdarg_n);
-				XtSetValues(XtParent(m_crosshair), stdarg_args, stdarg_n);
-				last_state = 0;
-			}
-			else if (this_state != last_state) {
-				stdarg_n = 0;
-				stdarg(XmNresizePolicy, XmRESIZE_GROW);
-				XtSetValues(XtParent(m_mark), stdarg_args, stdarg_n);
-				XtSetValues(XtParent(m_crosshair), stdarg_args, stdarg_n);
-				last_state = this_state;
-			}
-		}
-	}
-
-	{
-		static pcb_coord_t old_grid = -1;
-		static pcb_coord_t old_gx, old_gy;
-		static const pcb_unit_t *old_unit;
-		XmString ms;
-		if (ltf_hidlib->grid != old_grid || ltf_hidlib->grid_ox != old_gx || ltf_hidlib->grid_oy != old_gy || pcbhl_conf.editor.grid_unit != old_unit) {
-			static char buf[100];
-			old_grid = ltf_hidlib->grid;
-			old_unit = pcbhl_conf.editor.grid_unit;
-			old_gx = ltf_hidlib->grid_ox;
-			old_gy = ltf_hidlib->grid_oy;
-			if (old_grid == 1) {
-				strcpy(buf, "No Grid");
-			}
-			else {
-				if (old_gx || old_gy)
-					pcb_snprintf(buf, sizeof(buf), "%m+%$mS @%mS,%mS", UUNIT, old_grid, old_gx, old_gy);
-				else
-					pcb_snprintf(buf, sizeof(buf), "%m+%$mS", UUNIT, old_grid);
-			}
-			ms = XmStringCreatePCB(buf);
-			stdarg_n = 0;
-			stdarg(XmNlabelString, ms);
-			XtSetValues(m_grid, stdarg_args, stdarg_n);
-		}
-	}
-
-	{
-		static double old_zoom = -1;
-		static const pcb_unit_t *old_grid_unit = NULL;
-		if (view_zoom != old_zoom || pcbhl_conf.editor.grid_unit != old_grid_unit) {
-			char *buf = pcb_strdup_printf("%m+%$mS/pix",
-																			 pcbhl_conf.editor.grid_unit->allow, (pcb_coord_t) view_zoom);
-			XmString ms;
-
-			old_zoom = view_zoom;
-			old_grid_unit = pcbhl_conf.editor.grid_unit;
-
-			ms = XmStringCreatePCB(buf);
-			stdarg_n = 0;
-			stdarg(XmNlabelString, ms);
-			XtSetValues(m_zoom, stdarg_args, stdarg_n);
-			free(buf);
 		}
 	}
 
 	{
 		if (old_cursor_mode != pcbhl_conf.editor.mode) {
-			const char *s = "None";
-			XmString ms;
 			int cursor = -1;
 			static int free_cursor = 0;
 
 			old_cursor_mode = pcbhl_conf.editor.mode;
 			switch (pcbhl_conf.editor.mode) {
 			case PCB_MODE_VIA:
-				s = "Via";
 				cursor = -1;
 				break;
 			case PCB_MODE_LINE:
-				s = "Line";
 				cursor = XC_pencil;
 				break;
 			case PCB_MODE_RECTANGLE:
-				s = "Rectangle";
 				cursor = XC_ul_angle;
 				break;
 			case PCB_MODE_POLYGON:
-				s = "Polygon";
 				cursor = XC_sb_up_arrow;
 				break;
 			case PCB_MODE_POLYGON_HOLE:
-				s = "Polygon Hole";
 				cursor = XC_sb_up_arrow;
 				break;
 			case PCB_MODE_PASTE_BUFFER:
-				s = "Paste";
 				cursor = XC_hand1;
 				break;
 			case PCB_MODE_TEXT:
-				s = "Text";
 				cursor = XC_xterm;
 				break;
 			case PCB_MODE_ROTATE:
-				s = "Rotate";
 				cursor = XC_exchange;
 				break;
 			case PCB_MODE_REMOVE:
-				s = "Remove";
 				cursor = XC_pirate;
 				break;
 			case PCB_MODE_MOVE:
-				s = "Move";
 				cursor = XC_crosshair;
 				break;
 			case PCB_MODE_COPY:
-				s = "Copy";
 				cursor = XC_crosshair;
 				break;
 			case PCB_MODE_INSERT_POINT:
-				s = "Insert";
 				cursor = XC_dotbox;
 				break;
 			case PCB_MODE_RUBBERBAND_MOVE:
-				s = "RBMove";
 				cursor = XC_top_left_corner;
 				break;
 			case PCB_MODE_THERMAL:
-				s = "Thermal";
 				cursor = XC_iron_cross;
 				break;
 			case PCB_MODE_ARC:
-				s = "Arc";
 				cursor = XC_question_arrow;
 				break;
 			case PCB_MODE_ARROW:
-				s = "Arrow";
 				if (over_point)
 					cursor = XC_draped_box;
 				else
 					cursor = XC_left_ptr;
 				break;
 			case PCB_MODE_LOCK:
-				s = "Lock";
 				cursor = XC_hand2;
 				break;
 			}
-			ms = XmStringCreatePCB(s);
-			stdarg_n = 0;
-			stdarg(XmNlabelString, ms);
-			XtSetValues(m_mode, stdarg_args, stdarg_n);
 
 			if (free_cursor) {
 				XFreeCursor(display, my_cursor);
@@ -2426,7 +2233,6 @@ static Boolean idle_proc(XtPointer dummy)
 				free_cursor = 1;
 			}
 			XDefineCursor(display, window, my_cursor);
-			lesstif_update_status_line();
 		}
 	}
 	{
@@ -2435,37 +2241,8 @@ static Boolean idle_proc(XtPointer dummy)
 		const char *new_clip = cur_clip();
 
 		if (new_clip != old_clip || conf_core.design.text_scale != old_tscale) {
-			lesstif_update_status_line();
 			old_clip = new_clip;
 			old_tscale = conf_core.design.text_scale;
-		}
-	}
-
-	{
-		static int old_nrats = -1;
-		static char buf[20];
-
-		if (old_nrats != ratlist_length(&PCB->Data->Rat)) {
-			old_nrats = ratlist_length(&PCB->Data->Rat);
-			sprintf(buf, "%ld rat%s", (long)ratlist_length(&PCB->Data->Rat), ratlist_length(&PCB->Data->Rat) == 1 ? "" : "s");
-			if (ratlist_length(&PCB->Data->Rat)) {
-				XtManageChild(XtParent(m_rats));
-				XtManageChild(m_rats);
-				stdarg_n = 0;
-				stdarg(XmNleftWidget, m_rats);
-				XtSetValues(XtParent(m_status), stdarg_args, stdarg_n);
-			}
-
-			stdarg_n = 0;
-			stdarg(XmNlabelString, XmStringCreatePCB(buf));
-			XtSetValues(m_rats, stdarg_args, stdarg_n);
-
-			if (!ratlist_length(&PCB->Data->Rat)) {
-				stdarg_n = 0;
-				stdarg(XmNleftWidget, m_mode);
-				XtSetValues(XtParent(m_status), stdarg_args, stdarg_n);
-				XtUnmanageChild(XtParent(m_rats));
-			}
 		}
 	}
 
