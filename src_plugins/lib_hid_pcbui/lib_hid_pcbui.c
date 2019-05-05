@@ -125,7 +125,7 @@ int pplg_init_lib_hid_pcbui(void)
 TODO("padstack: remove some paths when route style has proto")
 	const char *rpaths[] = {"design/line_thickness", "design/via_thickness", "design/via_drilling_hole", "design/clearance", NULL};
 	const char *tpaths[] = {"editor/mode",  NULL};
-	const char *stpaths[] = { "editor/show_solder_side", "design/line_thickness", "editor/all_direction_lines", "editor/line_refraction", "editor/rubber_band_mode", "design/via_thickness", "design/via_drilling_hole", "design/clearance", "design/text_scale", "design/text_thickness", "editor/buffer_number", "editor/grid_unit", "appearance/compact", NULL };
+	const char *stpaths[] = { "editor/show_solder_side", "design/line_thickness", "editor/all_direction_lines", "editor/line_refraction", "editor/rubber_band_mode", "design/via_thickness", "design/via_drilling_hole", "design/clearance", "design/text_scale", "design/text_thickness", "editor/buffer_number", "editor/grid_unit", "editor/grid", "appearance/compact", NULL };
 	const char *rdpaths[] = { "editor/grid_unit", "appearance/compact", NULL };
 	const char *ibpaths[] = { "rc/file_changed_interval", NULL };
 	static conf_hid_callbacks_t rcb[sizeof(rpaths)/sizeof(rpaths[0])];
