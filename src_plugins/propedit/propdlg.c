@@ -375,6 +375,10 @@ static void prop_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 {
 	propdlg_t *ctx = caller_data;
 	pcb_hid_row_t *r = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wtree]);
+	if (r == NULL) {
+		pcb_message(PCB_MSG_ERROR, "can not delete: no attribute selected\n");
+		return;
+	}
 	if (r->path[0] != 'a') {
 		pcb_message(PCB_MSG_ERROR, "Only atributes (a/ subtree) can be deleted.\n");
 		return;
