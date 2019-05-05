@@ -167,6 +167,9 @@ typedef enum {
 	PCB_HID_DOCK_max
 } pcb_hid_dock_t;
 
+extern int pcb_dock_is_vert[PCB_HID_DOCK_max];    /* 1 if a new dock box (parent of a new sub-DAD) should be a vbox, 0 if hbox */
+extern int pcb_dock_has_frame[PCB_HID_DOCK_max];  /* 1 if a new dock box (parent of a new sub-DAD) should be framed */
+
 typedef struct pcb_hid_s pcb_hid_t;
 
 /* This is the main HID structure.  */
