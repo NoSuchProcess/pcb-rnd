@@ -205,6 +205,9 @@ static int ltf_dock_enter(pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, co
 	docked_t *docked;
 	Widget hvbox;
 
+	if (ltf_dockbox[where] == NULL)
+		return -1;
+
 	docked = calloc(sizeof(docked_t), 1);
 	docked->where = where;
 
