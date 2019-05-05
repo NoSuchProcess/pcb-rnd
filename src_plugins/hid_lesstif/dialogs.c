@@ -711,6 +711,7 @@ void *lesstif_attr_sub_new(Widget parent_box, pcb_hid_attribute_t *attrs, int n_
 	ctx->attrs = attrs;
 	ctx->n_attrs = n_attrs;
 	ctx->caller_data = caller_data;
+	ctx->results = calloc(n_attrs, sizeof(pcb_hid_attr_val_t));
 
 	for (i = 0; i < n_attrs; i++) {
 		if (attrs[i].help_text != ATTR_UNDOCUMENTED)
