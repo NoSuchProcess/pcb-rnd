@@ -191,7 +191,7 @@ static int hid_cfg_remove_item(pcb_hid_cfg_t *hr, lht_node_t *item, int (*gui_re
 
 int pcb_hid_cfg_remove_menu_node(pcb_hid_cfg_t *hr, lht_node_t *root, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
 {
-	if (root == NULL)
+	if ((root == NULL) || (hr == NULL))
 		return -1;
 
 	if (root->type == LHT_HASH) {

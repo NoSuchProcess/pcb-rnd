@@ -188,6 +188,9 @@ lht_node_t *pcb_hid_cfg_get_menu_at(pcb_hid_cfg_t *hr, lht_node_t *at, const cha
 	int level = 0, len = strlen(menu_path), iafter = 0;
 	char *next_seg, *path;
 
+	if (hr == NULL)
+		return;
+
  path = malloc(len+4); /* need a few bytes after the end for the ':' */
  strcpy(path, menu_path);
 
