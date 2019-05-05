@@ -23,7 +23,7 @@
 #include "hid.h"
 #include "actions.h"
 #include "lesstif.h"
-#include "stdarg.h"
+#include "ltf_stdarg.h"
 
 static Widget netlist_dialog = 0;
 static Widget netlist_list, netnode_list;

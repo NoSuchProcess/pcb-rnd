@@ -39,7 +39,7 @@
 #include "hid_init.h"
 #include "hid_color.h"
 #include "actions.h"
-#include "stdarg.h"
+#include "ltf_stdarg.h"
 #include "grid.h"
 #include "misc_util.h"
 #include "compat_misc.h"

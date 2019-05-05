@@ -17,7 +17,7 @@
 
 #include "hid.h"
 #include "lesstif.h"
-#include "stdarg.h"
+#include "ltf_stdarg.h"
 #include "event.h"
 #include "tool.h"
 

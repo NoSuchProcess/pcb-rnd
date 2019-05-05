@@ -22,7 +22,7 @@
 #include "lesstif.h"
 #include "paths.h"
 #include "actions.h"
-#include "stdarg.h"
+#include "ltf_stdarg.h"
 #include "event.h"
 #include "compat_misc.h"
 #include "layer_vis.h"

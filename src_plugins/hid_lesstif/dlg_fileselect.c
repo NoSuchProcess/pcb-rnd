@@ -28,7 +28,7 @@
 
 #include "xincludes.h"
 #include "lesstif.h"
-#include "stdarg.h"
+#include "ltf_stdarg.h"
 
 #include "hid.h"
 #include "hid_dad.h"

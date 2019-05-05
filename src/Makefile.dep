@@ -2141,7 +2141,7 @@
  vtroutestyle.h rats_patch.h board.h hid_attrib.h actions.h hid_init.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_plugins/hid_lesstif/stdarg.h color.h \
+ ../src_3rd/puplug/libs.h ../src_plugins/hid_lesstif/ltf_stdarg.h color.h \
  misc_util.h search.h change.h plug_io.h \
  ../src_plugins/hid_lesstif/dlg_attr_misc.c \
  ../src_plugins/hid_lesstif/wt_xpm.h \
@@ -2169,7 +2169,7 @@
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  box.h math_helper.h misc_util.h ../src_3rd/genvector/gds_char.h board.h \
  vtroutestyle.h layer_grp.h rats_patch.h board.h hidlib.h \
- ../src_plugins/hid_lesstif/stdarg.h color.h hid.h hid_dad.h \
+ ../src_plugins/hid_lesstif/ltf_stdarg.h color.h hid.h hid_dad.h \
  compat_misc.h hid_attrib.h pcb-printf.h event.h \
  ../src_plugins/hid_lesstif/dlg_fileselect.h global_typedefs.h
 ../src_plugins/hid_lesstif/library.o: \
@@ -2196,7 +2196,7 @@
  buffer.h plug_footprint.h vtlibrary.h data.h hid.h \
  ../src_plugins/hid_lesstif/lesstif.h hid_cfg_input.h hid_cfg.h board.h \
  vtroutestyle.h rats_patch.h board.h hidlib.h \
- ../src_plugins/hid_lesstif/stdarg.h color.h event.h tool.h
+ ../src_plugins/hid_lesstif/ltf_stdarg.h color.h event.h tool.h
 ../src_plugins/hid_lesstif/main.o: ../src_plugins/hid_lesstif/main.c \
  ../src_plugins/hid_lesstif/xincludes.h ../config.h math_helper.h \
  conf_core.h conf.h global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
@@ -2226,7 +2226,7 @@
  hid_draw_helpers.h hid_cfg.h ../src_plugins/hid_lesstif/lesstif.h \
  hid_cfg_input.h hid_cfg.h board.h vtroutestyle.h rats_patch.h board.h \
  hid_attrib.h hid_init.h hid_color.h actions.h \
- ../src_plugins/hid_lesstif/stdarg.h color.h grid.h misc_util.h \
+ ../src_plugins/hid_lesstif/ltf_stdarg.h color.h grid.h misc_util.h \
  compat_misc.h layer_vis.h tool.h \
  ../src_plugins/hid_lesstif/dlg_fileselect.h global_typedefs.h \
  ../src_plugins/lib_hid_common/clip.h ../src_plugins/lib_hid_pcbui/util.h \
@@ -2256,7 +2256,7 @@
  pcb-printf.h layer.h hid.h hid_cfg.h hid_cfg_action.h hid_cfg.h \
  hid_cfg_input.h conf_hid.h ../src_plugins/hid_lesstif/lesstif.h board.h \
  vtroutestyle.h rats_patch.h board.h hidlib.h paths.h actions.h \
- ../src_plugins/hid_lesstif/stdarg.h color.h event.h compat_misc.h \
+ ../src_plugins/hid_lesstif/ltf_stdarg.h color.h event.h compat_misc.h \
  layer_vis.h ../src_plugins/lib_hid_common/menu_helper.h
 ../src_plugins/hid_lesstif/netlist.o: \
  ../src_plugins/hid_lesstif/netlist.c ../config.h \
@@ -2282,9 +2282,9 @@
  hidlib.h select.h operation.h undo.h ../src_3rd/libuundo/uundo.h \
  undo_old.h remove.h crosshair.h draw.h event.h fptr_cast.h hid.h \
  actions.h ../src_plugins/hid_lesstif/lesstif.h hid_cfg_input.h hid_cfg.h \
- board.h ../src_plugins/hid_lesstif/stdarg.h color.h
+ board.h ../src_plugins/hid_lesstif/ltf_stdarg.h color.h
 ../src_plugins/hid_lesstif/stdarg.o: ../src_plugins/hid_lesstif/stdarg.c \
- ../src_plugins/hid_lesstif/stdarg.h \
+ ../src_plugins/hid_lesstif/ltf_stdarg.h \
  ../src_plugins/hid_lesstif/xincludes.h color.h global_typedefs.h \
  ../config.h pcb_bool.h unit.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h

@@ -1,4 +1,4 @@
-#include "stdarg.h"
+#include "ltf_stdarg.h"
 Arg stdarg_args[30];
 int stdarg_n;
 

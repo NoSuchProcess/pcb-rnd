@@ -24,7 +24,7 @@
 #include "hid_attrib.h"
 #include "actions.h"
 #include "hid_init.h"
-#include "stdarg.h"
+#include "ltf_stdarg.h"
 #include "misc_util.h"
 #include "search.h"
 #include "change.h"
