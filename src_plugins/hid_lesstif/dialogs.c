@@ -844,6 +844,13 @@ int lesstif_attr_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t 
 	return -1;
 }
 
+int lesstif_attr_dlg_set_help(void *hid_ctx, int idx, const char *val)
+{
+/*	lesstif_attr_dlg_t *ctx = hid_ctx;*/
+	/* lesstif doesn't have help tooltips now, and it is not an error */
+	return 0;
+}
+
 
 static const char pcb_acts_DoWindows[] = "DoWindows(1|2|3|4)\n" "DoWindows(Layout|Library|Log|Netlist)";
 static const char pcb_acth_DoWindows[] = "Open various GUI windows.";
