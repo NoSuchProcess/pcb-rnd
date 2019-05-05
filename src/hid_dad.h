@@ -99,16 +99,19 @@ do { \
 
 #define PCB_DAD_RUN(table) pcb_hid_dad_run(table ## _hid_ctx, table ## _ret_override)
 
-/* failed is non-zero on cancel */
+/* failed is zero on success and -1 on error (e.g. cancel) or an arbitrary
+   value set by ret_override (e.g. on close buttons) */
 #define PCB_DAD_AUTORUN(id, table, title, caller_data, failed) \
 do { \
+	int __ok__; \
 	if (table ## _result == NULL) \
 		PCB_DAD_ALLOC_RESULT(table); \
 	table ## _ret_override = calloc(sizeof(pcb_dad_retovr_t), 1); \
 	table ## _ret_override->dont_free++; \
 	table ## _ret_override->valid = 0; \
 	table ## _append_lock = 1; \
-	failed = pcb_attribute_dialog_(id,table, table ## _len, table ## _result, title, caller_data, (void **)&(table ## _ret_override), table ## _defx, table ## _defy, &table ## _hid_ctx); \
+	__ok__ = pcb_attribute_dialog_(id,table, table ## _len, table ## _result, title, caller_data, (void **)&(table ## _ret_override), table ## _defx, table ## _defy, &table ## _hid_ctx); \
+	failed = (__ok__ == 0) ? -1 : 0; \
 	if (table ## _ret_override->valid) \
 		failed = table ## _ret_override->value; \
 	table ## _ret_override->dont_free--; \

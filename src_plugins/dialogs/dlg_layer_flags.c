@@ -37,8 +37,8 @@ const char pcb_acth_LayerPropGui[] = "Change layer flags and properties";
 fgw_error_t pcb_act_LayerPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	PCB_DAD_DECL(dlg)
-	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", 0}, {"OK", 1}, {NULL, 0}};
-	int wname, wsub, wauto, ok, ar = 0;
+	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", 1}, {"OK", 0}, {NULL, 0}};
+	int wname, wsub, wauto, failed, ar = 0;
 	pcb_layer_t *ly;
 	pcb_layer_id_t lid;
 
@@ -69,9 +69,9 @@ fgw_error_t pcb_act_LayerPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	dlg[wsub].default_val.int_value = ly->comb & PCB_LYC_SUB;
 	dlg[wauto].default_val.int_value = ly->comb & PCB_LYC_AUTO;
 
-	PCB_DAD_AUTORUN("layer_prop", dlg, "Properties of a logical layer", NULL, ok);
+	PCB_DAD_AUTORUN("layer_prop", dlg, "Properties of a logical layer", NULL, failed);
 
-	if (ok) {
+	if (failed == 0) {
 		pcb_layer_combining_t comb = 0;
 		if (strcmp(ly->name, dlg[wname].default_val.str_value) != 0) {
 			ar |= pcb_layer_rename_(ly, (char *)dlg[wname].default_val.str_value);
@@ -97,9 +97,9 @@ const char pcb_acth_GroupPropGui[] = "Change group flags and properties";
 fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	PCB_DAD_DECL(dlg)
-	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", 0}, {"OK", 1}, {NULL, 0}};
+	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", 1}, {"OK", 0}, {NULL, 0}};
 	int wname, wtype, wpurp, wloc;
-	int ok, n, ar = 0, orig_type, changed = 0, omit_loc = 0, orig_loc = -1, def_loc;
+	int failed, n, ar = 0, orig_type, changed = 0, omit_loc = 0, orig_loc = -1, def_loc;
 	pcb_layergrp_id_t gid;
 	pcb_layergrp_t *g;
 	static const char *ltypes[] = { "top", "bottom", "any intern", "global", NULL };
@@ -163,8 +163,8 @@ fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		orig_loc = dlg[wloc].default_val.int_value;
 	}
 
-	PCB_DAD_AUTORUN("layer_grp_prop", dlg, "Edit the properties of a layer group (physical layer)", NULL, ok);
-	if (ok) {
+	PCB_DAD_AUTORUN("layer_grp_prop", dlg, "Edit the properties of a layer group (physical layer)", NULL, failed);
+	if (failed == 0) {
 		if (strcmp(g->name, dlg[wname].default_val.str_value) != 0) {
 			ar |= pcb_layergrp_rename_(g, (char *)dlg[wname].default_val.str_value);
 			dlg[wname].default_val.str_value = NULL;

@@ -345,7 +345,7 @@ static void prop_add_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 {
 	PCB_DAD_DECL(dlg)
 	propdlg_t *ctx = caller_data;
-	int wkey, wval, res;
+	int wkey, wval, failed;
 	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"OK", 0}, {NULL, 0}};
 
 	PCB_DAD_BEGIN_VBOX(dlg);
@@ -360,9 +360,9 @@ static void prop_add_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 		PCB_DAD_END(dlg);
 		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
 	PCB_DAD_END(dlg);
-	PCB_DAD_AUTORUN("propedit_add", dlg, "Propedit: add new attribute", NULL, res);
+	PCB_DAD_AUTORUN("propedit_add", dlg, "Propedit: add new attribute", NULL, failed);
 
-	if (res == 0) {
+	if (failed == 0) {
 		char *path = pcb_strdup_printf("a/%s", dlg[wkey].default_val.str_value);
 		pcb_propsel_set_str(&ctx->pe, path, dlg[wval].default_val.str_value);
 		free(path);

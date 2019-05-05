@@ -136,7 +136,7 @@ static void spin_unit_dialog(void *spin_hid_ctx, pcb_hid_dad_spin_t *spin, pcb_h
 {
 	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
 	spin_unit_t ctx;
-	int dlgres;
+	int dlgfail;
 
 	memset(&ctx, 0, sizeof(ctx));
 	ctx.end = end;
@@ -184,8 +184,8 @@ static void spin_unit_dialog(void *spin_hid_ctx, pcb_hid_dad_spin_t *spin, pcb_h
 		PCB_DAD_END(ctx.dlg);
 	PCB_DAD_END(ctx.dlg);
 
-	PCB_DAD_AUTORUN("unit", ctx.dlg, "spinbox coord unit change", &ctx, dlgres);
-	if ((dlgres == 0) && (ctx.valid)) {
+	PCB_DAD_AUTORUN("unit", ctx.dlg, "spinbox coord unit change", &ctx, dlgfail);
+	if ((dlgfail == 0) && (ctx.valid)) {
 		pcb_hid_attr_val_t hv;
 		int unum = ctx.dlg[ctx.wunit].default_val.int_value;
 
