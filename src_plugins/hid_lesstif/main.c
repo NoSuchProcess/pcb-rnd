@@ -48,6 +48,8 @@
 
 #include "dlg_fileselect.h"
 
+#include "FillBox.h"
+
 #include "../src_plugins/lib_hid_common/clip.h"
 #include "../src_plugins/lib_hid_pcbui/util.h"
 #include "../src_plugins/lib_hid_common/cli_history.h"
@@ -163,6 +165,30 @@ static pcb_bool crosshair_on = pcb_true;
 static void lesstif_reg_attrs(void);
 static void lesstif_begin(void);
 static void lesstif_end(void);
+
+static Widget ltf_dockbox[PCB_HID_DOCK_max];
+static gdl_list_t ltf_dock[PCB_HID_DOCK_max];
+
+static Widget ltf_create_dockbox(Widget parent, pcb_hid_dock_t where, int vert)
+{
+	stdarg(PxmNfillBoxVertical, vert);
+	stdarg(XmNmarginWidth, 0);
+	stdarg(XmNmarginHeight, 0);
+	ltf_dockbox[where] = PxmCreateFillBox(parent, "dockbox", stdarg_args, stdarg_n);
+
+	stdarg_n = 0;
+	XmCreateLabel(ltf_dockbox[where], XmStrCast("dock1"), stdarg_args, stdarg_n);
+	stdarg_n = 0;
+	XmCreateLabel(ltf_dockbox[where], XmStrCast("dock2"), stdarg_args, stdarg_n);
+
+	return ltf_dockbox[where];
+}
+
+typedef struct {
+	void *hid_ctx;
+	Widget frame;
+	pcb_hid_dock_t where;
+} ltf_docked_t;
 
 static void ShowCrosshair(pcb_bool show)
 {
@@ -1316,6 +1342,25 @@ static Widget make_message(const char *name, Widget left, int resizeable)
 	return w;
 }
 
+static Widget make_messageb(void)
+{
+	Widget f;
+
+	stdarg_n = 0;
+	stdarg(XmNleftAttachment, XmATTACH_FORM);
+	stdarg(XmNtopAttachment, XmATTACH_FORM);
+	stdarg(XmNbottomAttachment, XmATTACH_FORM);
+	stdarg(XmNshadowType, XmSHADOW_IN);
+	stdarg(XmNshadowThickness, 1);
+	stdarg(XmNalignment, XmALIGNMENT_CENTER);
+	stdarg(XmNmarginWidth, 4);
+	stdarg(XmNmarginHeight, 1);
+		stdarg(XmNresizePolicy, XmRESIZE_GROW);
+	f = XmCreateForm(messages, XmStrCast("status dock"), stdarg_args, stdarg_n);
+	XtManageChild(f);
+	return f;
+}
+
 static unsigned short int lesstif_translate_key(const char *desc, int len)
 {
 	KeySym key;
@@ -1465,7 +1510,23 @@ static void lesstif_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 	XtAddCallback(m_cmd, XmNlosingFocusCallback, (XtCallbackProc) command_callback, 0);
 	XtAddEventHandler(m_cmd, KeyPressMask | KeyReleaseMask, 0, command_event_handler, 0);
 
-	m_mark = make_message("m_mark", 0, 0);
+	/* status dock */
+	{
+		Widget w, smsg;
+
+		smsg = make_messageb();
+
+		stdarg_n = 0;
+		stdarg(XmNtopAttachment, XmATTACH_FORM);
+		stdarg(XmNbottomAttachment, XmATTACH_FORM);
+		stdarg(XmNleftAttachment, XmATTACH_FORM);
+		stdarg(XmNrightAttachment, XmATTACH_FORM);
+		w = ltf_create_dockbox(smsg, PCB_HID_DOCK_BOTTOM, 0);
+		XtManageChild(w);
+
+
+	{ /* old status line */
+	m_mark = make_message("m_mark", smsg, 0);
 	m_crosshair = make_message("m_crosshair", m_mark, 0);
 	m_grid = make_message("m_grid", m_crosshair, 1);
 	m_zoom = make_message("m_zoom", m_grid, 1);
@@ -1485,6 +1546,8 @@ static void lesstif_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 	stdarg_n = 0;
 	stdarg(XmNleftWidget, XtParent(m_mark));
 	XtSetValues(XtParent(m_crosshair), stdarg_args, stdarg_n);
+	}
+	}
 
 	stdarg_n = 0;
 	stdarg(XmNmessageWindow, messages);
