@@ -5,6 +5,7 @@
 
 #include "gui.h"
 #include "actions.h"
+#include "../src/actions.h"
 #include "glue_hid.h"
 #include "render.h"
 #include "common.h"
@@ -139,7 +140,7 @@ static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, Gd
 	ghid_drawing_area_configure_hook(out);
 	if (!first_time_done) {
 		first_time_done = TRUE;
-		pcb_board_changed(0);
+		pcb_actionl("zoom", NULL);
 	}
 
 	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);

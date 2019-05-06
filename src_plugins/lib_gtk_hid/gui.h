@@ -42,7 +42,6 @@ extern GhidGui _ghidgui, *ghidgui;
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
 #include "../src_plugins/lib_gtk_common/glue.h"
 
-#include "board.h"
 #include "event.h"
 #include "conf_hid.h"
 #include "render.h"
