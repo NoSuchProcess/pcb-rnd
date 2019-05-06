@@ -2127,21 +2127,14 @@ static Boolean idle_proc(XtPointer dummy)
 		static int c_x = -2, c_y = -2;
 		static pcb_mark_t saved_mark;
 		static const pcb_unit_t *old_grid_unit = NULL;
-		if (crosshair_x != c_x || crosshair_y != c_y
-				|| pcbhl_conf.editor.grid_unit != old_grid_unit || memcmp(&saved_mark, &pcb_marked, sizeof(pcb_mark_t))) {
-			static int last_state = 0;
-			static int this_state = 0;
-
+		if (crosshair_x != c_x || crosshair_y != c_y || pcbhl_conf.editor.grid_unit != old_grid_unit || memcmp(&saved_mark, &pcb_marked, sizeof(pcb_mark_t))) {
 			c_x = crosshair_x;
 			c_y = crosshair_y;
 
 			memcpy(&saved_mark, &pcb_marked, sizeof(pcb_mark_t));
 
-			if (old_grid_unit != pcbhl_conf.editor.grid_unit) {
+			if (old_grid_unit != pcbhl_conf.editor.grid_unit)
 				old_grid_unit = pcbhl_conf.editor.grid_unit;
-				/* Force a resize on units change.  */
-				last_state++;
-			}
 		}
 	}
 
