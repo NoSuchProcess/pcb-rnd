@@ -53,6 +53,7 @@ extern const conf_dialogs_t dialogs_conf;
 #include "dlg_log.h"
 #include "dlg_padstack.h"
 #include "dlg_pinout.c"
+#include "dlg_search.h"
 #include "dlg_undo.c"
 #include "dlg_netlist.c"
 #include "dlg_plugins.c"
@@ -91,6 +92,7 @@ pcb_action_t dialogs_action_list[] = {
 	{"Save", pcb_act_Save, pcb_acth_Save, pcb_acts_Save},
 	{"ImportGUI", pcb_act_ImportGUI, pcb_acth_ImportGUI, pcb_acts_ImportGUI},
 	{"LogDialog", pcb_act_LogDialog, pcb_acth_LogDialog, pcb_acts_LogDialog},
+	{"SearchDialog", pcb_act_SearchDialog, pcb_acth_SearchDialog, pcb_acts_SearchDialog},
 	{"InfoBarFileChanged", pcb_act_InfoBarFileChanged, pcb_acth_InfoBarFileChanged, pcb_acts_InfoBarFileChanged},
 
 	{"gui_PromptFor", pcb_act_gui_PromptFor, pcb_acth_gui, NULL},

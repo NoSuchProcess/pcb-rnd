@@ -1,3 +1,4 @@
+25291	configure	new, DAD-based search dialog
 25261	configure	hidlib: various lesstif fixes
 25255	configure	split the tool API and default menus to hidlib doesn't depend on core
 25228	configure	rewrite PCB-file-changed-on-disk detection to common code, instead of gtk-specific

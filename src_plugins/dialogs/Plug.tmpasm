@@ -14,6 +14,7 @@ put /local/pcb/mod/OBJS [@
  $(PLUGDIR)/dialogs/dlg_log.o
  $(PLUGDIR)/dialogs/dlg_padstack.o
  $(PLUGDIR)/dialogs/dlg_pref.o
+ $(PLUGDIR)/dialogs/dlg_search.o
  $(PLUGDIR)/dialogs/dlg_view.o
  $(PLUGDIR)/dialogs/xpm.o
 @]
