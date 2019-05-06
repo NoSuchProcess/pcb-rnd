@@ -39,7 +39,6 @@
 #include "board.h"
 #include "crosshair.h"
 #include "conf_core.h"
-#include "undo.h"
 #include "tool.h"
 
 #define GVT_DONT_UNDEF
@@ -220,7 +219,6 @@ static gboolean run_get_location_loop(pcb_gtk_mouse_t *ctx, const gchar * messag
 
 gboolean ghid_get_user_xy(pcb_gtk_mouse_t *ctx, const char *msg)
 {
-	pcb_undo_save_serial(); /* will be restored on button release in action helper in core */
 	return run_get_location_loop(ctx, msg);
 }
 
