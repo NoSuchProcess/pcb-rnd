@@ -1134,3 +1134,38 @@ void pcb_event_move_crosshair(pcb_coord_t ev_x, pcb_coord_t ev_y)
 		pcb_notify_crosshair_change(pcb_true);
 	}
 }
+
+
+typedef struct {
+	int obj, line, box;
+} old_crosshair_t;
+
+void *pcb_hidlib_crosshair_suspend(void)
+{
+	old_crosshair_t *buf = malloc(sizeof(old_crosshair_t));
+
+	buf->obj = pcb_crosshair.AttachedObject.State;
+	buf->line = pcb_crosshair.AttachedLine.State;
+	buf->box = pcb_crosshair.AttachedBox.State;
+	pcb_notify_crosshair_change(pcb_false);
+	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
+	pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
+	pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
+	pcb_notify_crosshair_change(pcb_true);
+	return buf;
+}
+
+void pcb_hidlib_crosshair_restore(void *susp_data)
+{
+	old_crosshair_t *buf = susp_data;
+
+	pcb_notify_crosshair_change(pcb_false);
+	pcb_crosshair.AttachedObject.State = buf->obj;
+	pcb_crosshair.AttachedLine.State = buf->line;
+	pcb_crosshair.AttachedBox.State = buf->box;
+	pcb_notify_crosshair_change(pcb_true);
+
+	free(buf);
+}
+
+

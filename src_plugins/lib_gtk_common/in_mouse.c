@@ -167,7 +167,7 @@ static gboolean run_get_location_loop(pcb_gtk_mouse_t *ctx, const gchar * messag
 	static int getting_loc = 0;
 	loop_ctx_t lctx;
 	gulong button_handler, key_handler1, key_handler2;
-	gint oldObjState, oldLineState, oldBoxState;
+	void *chst;
 
 	/* Do not enter the loop recursively (ask for coord only once); also don't
 	   ask for coord if the scrollwheel triggered the event, it may cause strange
@@ -179,15 +179,9 @@ static gboolean run_get_location_loop(pcb_gtk_mouse_t *ctx, const gchar * messag
 	getting_loc = 1;
 	pcb_actionl("StatusSetText", message, NULL);
 
-	oldObjState = pcb_crosshair.AttachedObject.State;
-	oldLineState = pcb_crosshair.AttachedLine.State;
-	oldBoxState = pcb_crosshair.AttachedBox.State;
-	pcb_notify_crosshair_change(pcb_false);
-	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
-	pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
-	pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
+	
+	chst = pcb_hidlib_crosshair_suspend();
 	ghid_hand_cursor(ctx);
-	pcb_notify_crosshair_change(pcb_true);
 
 	/*  Stop the top level GMainLoop from getting user input from keyboard
 	   and mouse so we can install our own handlers here.  Also set the
@@ -216,11 +210,7 @@ static gboolean run_get_location_loop(pcb_gtk_mouse_t *ctx, const gchar * messag
 	ctx->com->interface_input_signals_connect(); /* return to normal */
 	ctx->com->interface_set_sensitive(TRUE);
 
-	pcb_notify_crosshair_change(pcb_false);
-	pcb_crosshair.AttachedObject.State = oldObjState;
-	pcb_crosshair.AttachedLine.State = oldLineState;
-	pcb_crosshair.AttachedBox.State = oldBoxState;
-	pcb_notify_crosshair_change(pcb_true);
+	pcb_hidlib_crosshair_restore(chst);
 	ghid_restore_cursor(ctx);
 
 	pcb_actionl("StatusSetText", NULL);

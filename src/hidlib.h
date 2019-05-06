@@ -43,6 +43,13 @@ void pcb_hidlib_event_init(void);
 /* update crosshair-attached object because crosshair coords likely changed */
 void pcb_hidlib_adjust_attached_objects(void);
 
+/* Suspend the crosshair: save all crosshair states in a newly allocated
+   and returned temp buffer, then reset the crosshair to initial state;
+   the returned buffer is used to restore the crosshair states later on.
+   Used in the get location loop. */
+void *pcb_hidlib_crosshair_suspend(void);
+void pcb_hidlib_crosshair_restore(void *susp_data);
+
 /* The whole default menu file embedded in the executable; NULL if not present */
 extern const char *pcb_hidlib_default_embedded_menu;
 
