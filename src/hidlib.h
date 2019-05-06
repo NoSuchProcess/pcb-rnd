@@ -50,6 +50,9 @@ void pcb_hidlib_adjust_attached_objects(void);
 void *pcb_hidlib_crosshair_suspend(void);
 void pcb_hidlib_crosshair_restore(void *susp_data);
 
+/* Move the crosshair to an absolute x;y coord on the board and update the GUI */
+void pcb_hidlib_crosshair_move_to(pcb_coord_t abs_x, pcb_coord_t abs_y);
+
 /* The whole default menu file embedded in the executable; NULL if not present */
 extern const char *pcb_hidlib_default_embedded_menu;
 

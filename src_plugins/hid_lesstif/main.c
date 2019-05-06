@@ -908,7 +908,7 @@ static void zoom_win(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t
 
 	lesstif_pan_fixup();
 	if (setch)
-		pcb_crosshair_move_absolute((x1+x2)/2, (y1+y2)/2);
+		pcb_hidlib_crosshair_move_to((x1+x2)/2, (y1+y2)/2);
 }
 
 void zoom_by(double factor, pcb_coord_t x, pcb_coord_t y)
