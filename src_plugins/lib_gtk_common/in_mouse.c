@@ -213,7 +213,7 @@ static gboolean run_get_location_loop(pcb_gtk_mouse_t *ctx, const gchar * messag
 	g_signal_handler_disconnect(ctx->top_window, key_handler1);
 	g_signal_handler_disconnect(ctx->top_window, key_handler2);
 
-	ctx->com->interface_input_signals_connect();	/* return to normal */
+	ctx->com->interface_input_signals_connect(); /* return to normal */
 	ctx->com->interface_set_sensitive(TRUE);
 
 	pcb_notify_crosshair_change(pcb_false);
