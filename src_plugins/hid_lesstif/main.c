@@ -1361,39 +1361,6 @@ static void work_area_first_expose(Widget work_area, void *me, XmDrawingAreaCall
 	lesstif_invalidate_all(ltf_hidlib);
 }
 
-static Widget make_message(const char *name, Widget left, int resizeable)
-{
-	Widget w, f;
-	stdarg_n = 0;
-	if (left) {
-		stdarg(XmNleftAttachment, XmATTACH_WIDGET);
-		stdarg(XmNleftWidget, XtParent(left));
-	}
-	else {
-		stdarg(XmNleftAttachment, XmATTACH_FORM);
-	}
-	stdarg(XmNtopAttachment, XmATTACH_FORM);
-	stdarg(XmNbottomAttachment, XmATTACH_FORM);
-	stdarg(XmNshadowType, XmSHADOW_IN);
-	stdarg(XmNshadowThickness, 1);
-	stdarg(XmNalignment, XmALIGNMENT_CENTER);
-	stdarg(XmNmarginWidth, 4);
-	stdarg(XmNmarginHeight, 1);
-	if (!resizeable)
-		stdarg(XmNresizePolicy, XmRESIZE_GROW);
-	f = XmCreateForm(messages, XmStrCast(name), stdarg_args, stdarg_n);
-	XtManageChild(f);
-	stdarg_n = 0;
-	stdarg(XmNtopAttachment, XmATTACH_FORM);
-	stdarg(XmNbottomAttachment, XmATTACH_FORM);
-	stdarg(XmNleftAttachment, XmATTACH_FORM);
-	stdarg(XmNrightAttachment, XmATTACH_FORM);
-	w = XmCreateLabel(f, XmStrCast(name), stdarg_args, stdarg_n);
-	XtManageChild(w);
-	return w;
-}
-
-
 static unsigned short int lesstif_translate_key(const char *desc, int len)
 {
 	KeySym key;
@@ -1972,68 +1939,6 @@ static void draw_grid()
 		points[0].y = vy;
 		XDrawPoints(display, pixmap, grid_gc, points, n, CoordModePrevious);
 	}
-}
-
-static void mark_delta_to_widget(pcb_coord_t dx, pcb_coord_t dy, Widget w)
-{
-	char *buf;
-	double g = pcb_coord_to_unit(pcbhl_conf.editor.grid_unit, ltf_hidlib->grid);
-	int prec;
-	XmString ms;
-
-	/* Integer-sized grid? */
-	if (((int) (g * 10000 + 0.5) % 10000) == 0)
-		prec = 0;
-	else
-		prec = pcbhl_conf.editor.grid_unit->default_prec;
-
-	if (dx == 0 && dy == 0)
-		buf = pcb_strdup_printf("%m+%+.*mS, %+.*mS", UUNIT, prec, dx, prec, dy);
-	else {
-		pcb_angle_t angle = atan2(dy, -dx) * 180 / M_PI;
-		pcb_coord_t dist = pcb_distance(0, 0, dx, dy);
-
-		buf = pcb_strdup_printf("%m+%+.*mS, %+.*mS (%.*mS, %.2f\260)", UUNIT, prec, dx, prec, dy, prec, dist, angle);
-	}
-
-	ms = XmStringCreatePCB(buf);
-	stdarg_n = 0;
-	stdarg(XmNlabelString, ms);
-	XtSetValues(w, stdarg_args, stdarg_n);
-	free(buf);
-}
-
-static int cursor_pos_to_widget(pcb_coord_t x, pcb_coord_t y, Widget w, int prev_state)
-{
-	int this_state = prev_state;
-	char *buf = NULL;
-	const char *msg = "";
-	double g = pcb_coord_to_unit(pcbhl_conf.editor.grid_unit, ltf_hidlib->grid);
-	XmString ms;
-	int prec;
-
-	/* Determine necessary precision (and state) based
-	 * on the user's grid setting */
-	if (((int) (g * 10000 + 0.5) % 10000) == 0) {
-		prec = 0;
-		this_state = pcbhl_conf.editor.grid_unit->allow;
-	}
-	else {
-		prec = pcbhl_conf.editor.grid_unit->default_prec;
-		this_state = -pcbhl_conf.editor.grid_unit->allow;
-	}
-
-	if (x >= 0) {
-		buf = pcb_strdup_printf("%m+%.*mS, %.*mS", UUNIT, prec, x, prec, y);
-		msg = buf;
-	}
-
-	ms = XmStringCreatePCB(msg);
-	stdarg_n = 0;
-	stdarg(XmNlabelString, ms);
-	XtSetValues(w, stdarg_args, stdarg_n);
-	free(buf);
-	return this_state;
 }
 
 static Boolean idle_proc(XtPointer dummy)
