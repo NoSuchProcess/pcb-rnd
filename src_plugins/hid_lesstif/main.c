@@ -350,11 +350,6 @@ static inline pcb_coord_t Py(int y)
 	return y * view_zoom + view_top_y;
 }
 
-static inline pcb_coord_t Pz(int z)
-{
-	return z * view_zoom;
-}
-
 void lesstif_coords_to_pcb(int vx, int vy, pcb_coord_t * px, pcb_coord_t * py)
 {
 	*px = Px(vx);
