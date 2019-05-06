@@ -54,8 +54,7 @@ static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_MAY_CONVARG(2, FGW_STR, DoWindows, b = argv[2].val.str);
 
 	if (b != NULL) {
-		char c = tolower(b[0]);
-		if ((c == 'n') || (c == 'f') || (c == '0'))
+		if ((*b == 'n') || (*b == 'f') || (*b == 'N') || (*b == 'F') || (*b == '0'))
 			raise = FALSE;
 	}
 
