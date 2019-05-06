@@ -267,7 +267,7 @@ static GtkWidget *frame_scroll(GtkWidget *parent, pcb_hatt_compflags_t flags, Gt
 		parent = gtkc_hbox_new(FALSE, 0);
 		gtk_container_add(GTK_CONTAINER(fr), parent);
 		if (wltop != NULL) {
-			*wltop = parent;
+			*wltop = fr;
 			topped = 1; /* remember the outmost parent */
 		}
 	}
@@ -278,7 +278,7 @@ static GtkWidget *frame_scroll(GtkWidget *parent, pcb_hatt_compflags_t flags, Gt
 		parent = gtkc_hbox_new(FALSE, 0);
 		gtkc_scrolled_window_add_with_viewport(fr, parent);
 		if ((wltop != NULL) && (!topped))
-			*wltop = parent;
+			*wltop = fr;
 	}
 	return parent;
 }
