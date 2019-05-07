@@ -32,10 +32,6 @@
 #include "event.h"
 #include "error.h"
 
-#include "dlg_log.h"
-
-static const char *search_cookie = "dlg_search";
-
 #define MAX_ROW 8
 #define MAX_COL 4
 
@@ -43,6 +39,13 @@ static const char *search_cookie = "dlg_search";
 
 /* for debugging: */
 #define NEW_EXPR_LAB pcb_strdup_printf("%d:%d", row, col)
+
+#include "dlg_search_tab.h"
+
+typedef struct {
+	const expr_wizard_t *expr;
+	pcb_hid_attr_val_t right;
+} search_expr_t;
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
@@ -54,7 +57,10 @@ typedef struct{
 	int wand[MAX_ROW]; /* before the current row */
 	int wnew_or[MAX_ROW], wnew_and;
 	int visible[MAX_ROW][MAX_COL];
+	search_expr_t expr[MAX_ROW][MAX_COL];
 } search_ctx_t;
+
+#include "dlg_search_edit.c"
 
 static void search_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
@@ -126,6 +132,7 @@ static void search_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	if (rc_lookup(ctx, ctx->wexpr_edit, attr, &row, &col) != 0)
 		return;
 	printf("edit at %d %d\n", row, col);
+	srchedit_window_create(&(ctx->expr[row][col]));
 }
 
 
