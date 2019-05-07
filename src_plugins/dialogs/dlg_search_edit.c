@@ -240,9 +240,10 @@ static void srchedit_window_create(search_expr_t *expr)
 	srch_expr_set_ops(ctx, op_tab); /* just to get the initial tree widget width */
 	pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wright[RIGHT_CONST], 0); /* just to get something harmless display on the right side after open */
 
-TODO("do this only if not cancelled");
-	*expr = ctx->se;
+	if (PCB_DAD_RUN(ctx->dlg) == 0)
+		*expr = ctx->se;
 
+	PCB_DAD_FREE(ctx->dlg);
 }
 
 
