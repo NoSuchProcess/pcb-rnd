@@ -92,6 +92,43 @@ static void update_vis(search_ctx_t *ctx)
 	}
 }
 
+/* look up row and col for a widget attr in a [row][col] widget idx array; returns 0 on success */
+static int rc_lookup(search_ctx_t *ctx, int w[MAX_ROW][MAX_COL], pcb_hid_attribute_t *attr, int *row, int *col)
+{
+	int r, c, idx = attr - ctx->dlg;
+	for(r = 0; r < MAX_ROW; r++) {
+		for(c = 0; c < MAX_COL; c++) {
+			if (w[r][c] == idx) {
+				*row = r;
+				*col = c;
+				return 0;
+			}
+		}
+	}
+	return -1;
+}
+
+static void search_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	search_ctx_t *ctx = caller_data;
+	int row, col;
+
+	if (rc_lookup(ctx, ctx->wexpr_del, attr, &row, &col) != 0)
+		return;
+	printf("del at %d %d\n", row, col);
+}
+
+static void search_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	search_ctx_t *ctx = caller_data;
+	int row, col;
+
+	if (rc_lookup(ctx, ctx->wexpr_edit, attr, &row, &col) != 0)
+		return;
+	printf("edit at %d %d\n", row, col);
+}
+
+
 static const char *icon_del[] = {
 "5 5 2 1",
 " 	c None",
@@ -162,9 +199,11 @@ static void search_window_create(void)
 								PCB_DAD_PICBUTTON(ctx->dlg, icon_del);
 									PCB_DAD_HELP(ctx->dlg, "Remove expression");
 									ctx->wexpr_del[row][col] = PCB_DAD_CURRENT(ctx->dlg);
+									PCB_DAD_CHANGE_CB(ctx->dlg, search_del_cb);
 								PCB_DAD_PICBUTTON(ctx->dlg, icon_edit);
 									PCB_DAD_HELP(ctx->dlg, "Edit expression");
 									ctx->wexpr_edit[row][col] = PCB_DAD_CURRENT(ctx->dlg);
+									PCB_DAD_CHANGE_CB(ctx->dlg, search_edit_cb);
 							PCB_DAD_END(ctx->dlg);
 						PCB_DAD_END(ctx->dlg);
 					}
