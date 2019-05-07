@@ -344,6 +344,7 @@ void pcb_layer_vis_init(void)
 	}
 
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, layer_vis_grp_defaults, NULL, layer_vis_cookie);
+	pcb_event_bind(PCB_EVENT_GUI_INIT, layer_vis_grp_defaults, NULL, layer_vis_cookie);
 }
 
 void pcb_layer_vis_uninit(void)
