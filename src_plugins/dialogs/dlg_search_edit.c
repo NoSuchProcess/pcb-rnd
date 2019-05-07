@@ -34,9 +34,10 @@
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
-	search_expr_t *expr;
-	int wleft, wop;
+	search_expr_t se;
+	int wleft, wop, wright[RIGHT_max];
 	const expr_wizard_op_t *last_op;
+	right_type last_rtype;
 } srchedit_ctx_t;
 
 static srchedit_ctx_t srchedit_ctx;
@@ -110,6 +111,54 @@ static void srch_expr_set_ops(srchedit_ctx_t *ctx, const expr_wizard_op_t *op)
 	ctx->last_op = op;
 }
 
+static void srch_expr_fill_in_right_const(srchedit_ctx_t *ctx, const search_expr_t *s)
+{
+	pcb_hid_tree_t *tree;
+	pcb_hid_attribute_t *attr;
+	char *cell[2];
+	const char **o;
+
+	attr = &ctx->dlg[ctx->wright[RIGHT_CONST]];
+	tree = (pcb_hid_tree_t *)attr->enumerations;
+
+	/* remove existing items */
+	pcb_dad_tree_clear(tree);
+
+	/* add all items */
+	cell[1] = NULL;
+	for(o = right_const_tab[s->expr->rtype].ops; *o != NULL; o++) {
+		cell[0] = pcb_strdup_printf(*o);
+		pcb_dad_tree_append(attr, NULL, cell);
+	}
+
+	/* set cursor to last known value */
+	if ((s != NULL) && (s->right.str_value != NULL))
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[RIGHT_CONST], &s->right);
+}
+
+static void srch_expr_fill_in_right(srchedit_ctx_t *ctx, const search_expr_t *s)
+{
+	int n;
+
+	if (s->expr->rtype == ctx->last_rtype)
+		return;
+
+	for(n = 0; n < RIGHT_max; n++)
+		pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wright[n], 1);
+
+	switch(s->expr->rtype) {
+		case RIGHT_STR:
+		case RIGHT_INT:
+		case RIGHT_DOUBLE:
+		case RIGHT_COORD: break;
+		case RIGHT_CONST: srch_expr_fill_in_right_const(ctx, s); break;
+		case RIGHT_max: break;
+	}
+
+	pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], 0);
+	ctx->last_rtype = s->expr->rtype;
+}
+
 static void srch_expr_left_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
@@ -123,8 +172,9 @@ static void srch_expr_left_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hi
 	if (e->left_var == NULL) /* category */
 		return;
 
-	ctx->expr->expr = e;
+	ctx->se.expr = e;
 	srch_expr_set_ops(ctx, e->op);
+	srch_expr_fill_in_right(ctx, &ctx->se);
 }
 
 
@@ -133,7 +183,7 @@ static void srchedit_window_create(search_expr_t *expr)
 	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", 1}, {"OK", 0}, {NULL, 0}};
 	srchedit_ctx_t *ctx = &srchedit_ctx;
 
-	ctx->expr = expr;
+	ctx->se = *expr;
 
 	PCB_DAD_BEGIN_HBOX(ctx->dlg);
 		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
@@ -153,7 +203,33 @@ static void srchedit_window_create(search_expr_t *expr)
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+
+			PCB_DAD_STRING(ctx->dlg);
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_HIDE);
+				ctx->wright[RIGHT_STR] = PCB_DAD_CURRENT(ctx->dlg);
+
+			PCB_DAD_INTEGER(ctx->dlg, "");
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_HIDE);
+				ctx->wright[RIGHT_INT] = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_MINMAX(ctx->dlg, -(1UL<<31), (1UL<<31));
+
+			PCB_DAD_REAL(ctx->dlg, "");
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_HIDE);
+				ctx->wright[RIGHT_DOUBLE] = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_MINMAX(ctx->dlg, -(1UL<<31), (1UL<<31));
+
+			PCB_DAD_COORD(ctx->dlg, "");
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_HIDE);
+				ctx->wright[RIGHT_COORD] = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_MINMAX(ctx->dlg, -PCB_MAX_COORD, PCB_MAX_COORD);
+
 			PCB_DAD_TREE(ctx->dlg, 1, 0, NULL);
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_HIDE);
+				ctx->wright[RIGHT_CONST] = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
+			PCB_DAD_BEGIN_VBOX(ctx->dlg);
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_END(ctx->dlg);
 			PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);
@@ -162,6 +238,11 @@ static void srchedit_window_create(search_expr_t *expr)
 	PCB_DAD_NEW("search_expr", ctx->dlg, "pcb-rnd search expression", ctx, pcb_true, srchedit_close_cb);
 	fill_in_left(ctx);
 	srch_expr_set_ops(ctx, op_tab); /* just to get the initial tree widget width */
+	pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wright[RIGHT_CONST], 0); /* just to get something harmless display on the right side after open */
+
+TODO("do this only if not cancelled");
+	*expr = ctx->se;
+
 }
 
 

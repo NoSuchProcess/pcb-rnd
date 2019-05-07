@@ -32,7 +32,8 @@ typedef enum {
 	RIGHT_INT,
 	RIGHT_DOUBLE,
 	RIGHT_COORD,
-	RIGHT_CONST
+	RIGHT_CONST,
+	RIGHT_max
 } right_type;
 
 typedef enum {
