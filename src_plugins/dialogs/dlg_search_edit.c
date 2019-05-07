@@ -35,7 +35,8 @@
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	search_expr_t *expr;
-	int wleft;
+	int wleft, wop;
+	const expr_wizard_op_t *last_op;
 } srchedit_ctx_t;
 
 static srchedit_ctx_t srchedit_ctx;
@@ -70,6 +71,63 @@ static void fill_in_left(srchedit_ctx_t *ctx)
 	}
 }
 
+static void srch_expr_set_ops(srchedit_ctx_t *ctx, const expr_wizard_op_t *op)
+{
+	pcb_hid_tree_t *tree;
+	pcb_hid_attribute_t *attr;
+	pcb_hid_row_t *r;
+	char *cell[2], *cursor_path = NULL;
+	const char **o;
+
+	if (op == ctx->last_op)
+		return;
+
+	attr = &ctx->dlg[ctx->wop];
+	tree = (pcb_hid_tree_t *)attr->enumerations;
+
+	/* remember cursor */
+	r = pcb_dad_tree_get_selected(attr);
+	if (r != NULL)
+		cursor_path = pcb_strdup(r->cell[0]);
+
+	/* remove existing items */
+	pcb_dad_tree_clear(tree);
+
+	/* add all items */
+	cell[1] = NULL;
+	for(o = op->ops; *o != NULL; o++) {
+		cell[0] = pcb_strdup_printf(*o);
+		pcb_dad_tree_append(attr, NULL, cell);
+	}
+
+	/* restore cursor */
+	if (cursor_path != NULL) {
+		pcb_hid_attr_val_t hv;
+		hv.str_value = cursor_path;
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wop, &hv);
+		free(cursor_path);
+	}
+	ctx->last_op = op;
+}
+
+static void srch_expr_left_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+{
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	srchedit_ctx_t *ctx = tree->user_ctx;
+	const expr_wizard_t *e;
+
+	if (row == NULL)
+		return;
+
+	e = row->user_data;
+	if (e->left_var == NULL) /* category */
+		return;
+
+	ctx->expr->expr = e;
+	srch_expr_set_ops(ctx, e->op);
+}
+
+
 static void srchedit_window_create(search_expr_t *expr)
 {
 	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", 1}, {"OK", 0}, {NULL, 0}};
@@ -84,20 +142,26 @@ static void srchedit_window_create(search_expr_t *expr)
 			PCB_DAD_TREE(ctx->dlg, 1, 1, NULL);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_SCROLL);
 				ctx->wleft = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, srch_expr_left_cb);
+				PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_TREE(ctx->dlg, 0, 1, NULL);
+			PCB_DAD_TREE(ctx->dlg, 1, 0, NULL);
+				ctx->wop = PCB_DAD_CURRENT(ctx->dlg);
+/*				PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, srch_expr_op_cb);*/
+				PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
-			PCB_DAD_TREE(ctx->dlg, 0, 1, NULL);
+			PCB_DAD_TREE(ctx->dlg, 1, 0, NULL);
 			PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);
 
-	PCB_DAD_DEFSIZE(ctx->dlg, 300, 300);
-	PCB_DAD_NEW("search", ctx->dlg, "pcb-rnd search", ctx, pcb_true, srchedit_close_cb);
+	PCB_DAD_DEFSIZE(ctx->dlg, 450, 450);
+	PCB_DAD_NEW("search_expr", ctx->dlg, "pcb-rnd search expression", ctx, pcb_true, srchedit_close_cb);
 	fill_in_left(ctx);
+	srch_expr_set_ops(ctx, op_tab); /* just to get the initial tree widget width */
 }
 
 
