@@ -160,6 +160,7 @@ static const char *icon_edit[] = {
 
 static void search_window_create(void)
 {
+	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	static const char *acts[] = { "select", "unselect", NULL };
 	search_ctx_t *ctx = calloc(sizeof(search_ctx_t), 1);
 	int row, col;
@@ -224,9 +225,10 @@ static void search_window_create(void)
 			PCB_DAD_BUTTON(ctx->dlg, "append AND");
 				ctx->wnew_and = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
+		PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 	PCB_DAD_END(ctx->dlg);
 
-	PCB_DAD_DEFSIZE(ctx->dlg, 300, 300);
+	PCB_DAD_DEFSIZE(ctx->dlg, 300, 350);
 	PCB_DAD_NEW("search", ctx->dlg, "pcb-rnd search", ctx, pcb_false, search_close_cb);
 
 	ctx->visible[0][0] = 1;
