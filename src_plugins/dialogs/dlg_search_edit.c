@@ -47,6 +47,31 @@ static void srchedit_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 /*	srchedit_ctx_t *ctx = caller_data;*/
 }
 
+/* Set the right side of the expression from the non-enum value of an widget attr */
+static void set_right(srchedit_ctx_t *ctx, pcb_hid_attribute_t *attr)
+{
+	free(ctx->se.right);
+	ctx->se.right = NULL;
+
+	switch(ctx->se.expr->rtype) {
+		case RIGHT_STR:
+			ctx->se.right = pcb_strdup(attr->default_val.str_value);
+			break;
+		case RIGHT_INT:
+			ctx->se.right = pcb_strdup_printf("%d", attr->default_val.int_value);
+			break;
+		case RIGHT_DOUBLE:
+			ctx->se.right = pcb_strdup_printf("%f", attr->default_val.real_value);
+			break;
+		case RIGHT_COORD:
+			ctx->se.right = pcb_strdup_printf("%$mm", attr->default_val.coord_value);
+			break;
+		case RIGHT_CONST:
+		case RIGHT_max:
+			break;
+	}
+}
+
 static void srch_expr_set_ops(srchedit_ctx_t *ctx, const expr_wizard_op_t *op, int click)
 {
 	pcb_hid_tree_t *tree;
@@ -123,7 +148,7 @@ static void srch_expr_fill_in_right_const(srchedit_ctx_t *ctx, const search_expr
 
 static void srch_expr_fill_in_right(srchedit_ctx_t *ctx, const search_expr_t *s)
 {
-	int n;
+	int n, empty = 0;
 	pcb_hid_attr_val_t hv;
 
 	if (s->expr->rtype == ctx->last_rtype)
@@ -133,8 +158,10 @@ static void srch_expr_fill_in_right(srchedit_ctx_t *ctx, const search_expr_t *s)
 		pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wright[n], 1);
 
 	hv.str_value = ctx->se.right;
-	if (hv.str_value == NULL)
+	if (hv.str_value == NULL) {
 		hv.str_value = "";
+		empty = 1;
+	}
 
 	switch(s->expr->rtype) {
 		case RIGHT_STR:
@@ -143,14 +170,20 @@ static void srch_expr_fill_in_right(srchedit_ctx_t *ctx, const search_expr_t *s)
 		case RIGHT_INT:
 			hv.int_value = strtol(hv.str_value, NULL, 10);
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
+			if (empty)
+				set_right(ctx, &ctx->dlg[ctx->wright[s->expr->rtype]]);
 			break;
 		case RIGHT_DOUBLE:
 			hv.real_value = strtod(hv.str_value, NULL);
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
+			if (empty)
+				set_right(ctx, &ctx->dlg[ctx->wright[s->expr->rtype]]);
 			break;
 		case RIGHT_COORD:
 			hv.coord_value = pcb_get_value_ex(hv.str_value, NULL, NULL, NULL, "mm", NULL);
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
+			if (empty)
+				set_right(ctx, &ctx->dlg[ctx->wright[s->expr->rtype]]);
 			break;
 		case RIGHT_CONST: srch_expr_fill_in_right_const(ctx, s); break;
 		case RIGHT_max: break;
@@ -233,26 +266,8 @@ static int fill_in_left(srchedit_ctx_t *ctx)
 static void srchexpr_right_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	srchedit_ctx_t *ctx = caller_data;
-	free(ctx->se.right);
-	ctx->se.right = NULL;
 
-	switch(ctx->se.expr->rtype) {
-		case RIGHT_STR:
-			ctx->se.right = pcb_strdup(attr->default_val.str_value);
-			break;
-		case RIGHT_INT:
-			ctx->se.right = pcb_strdup_printf("%d", attr->default_val.int_value);
-			break;
-		case RIGHT_DOUBLE:
-			ctx->se.right = pcb_strdup_printf("%f", attr->default_val.real_value);
-			break;
-		case RIGHT_COORD:
-			ctx->se.right = pcb_strdup_printf("%$mm", attr->default_val.coord_value);
-			break;
-		case RIGHT_CONST:
-		case RIGHT_max:
-			break;
-	}
+	set_right(ctx, attr);
 }
 
 static void srch_expr_right_table_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
