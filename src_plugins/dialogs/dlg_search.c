@@ -117,6 +117,19 @@ static int rc_lookup(search_ctx_t *ctx, int w[MAX_ROW][MAX_COL], pcb_hid_attribu
 	return -1;
 }
 
+/* look up row for a widget attr in a [row] widget idx array; returns 0 on success */
+static int r_lookup(search_ctx_t *ctx, int w[MAX_ROW], pcb_hid_attribute_t *attr, int *row)
+{
+	int r, idx = attr - ctx->dlg;
+	for(r = 0; r < MAX_ROW; r++) {
+		if (w[r] == idx) {
+			*row = r;
+			return 0;
+		}
+	}
+	return -1;
+}
+
 static void search_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	search_ctx_t *ctx = caller_data;
@@ -155,6 +168,29 @@ static void search_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wexpr_lab[row][col], &hv);
 		gds_uninit(&buf);
 	}
+}
+
+static void search_append_col_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	search_ctx_t *ctx = caller_data;
+	int row, col;
+
+	if (r_lookup(ctx, ctx->wnew_or, attr, &row) != 0)
+		return;
+
+	for(col = 0; col < MAX_COL; col++) {
+		if (!ctx->visible[row][col]) {
+			ctx->visible[row][col] = 1;
+			update_vis(ctx);
+			return;
+		}
+	}
+	pcb_message(PCB_MSG_ERROR, "Too many expressions in the row, can not add more\n");
+}
+
+static void search_append_row_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+
 }
 
 
@@ -241,11 +277,13 @@ static void search_window_create(void)
 					PCB_DAD_BUTTON(ctx->dlg, "append OR");
 						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_HIDE);
 						ctx->wnew_or[row] = PCB_DAD_CURRENT(ctx->dlg);
+						PCB_DAD_CHANGE_CB(ctx->dlg, search_append_col_cb);
 				PCB_DAD_END(ctx->dlg);
 			}
 			vspacer(ctx);
 			PCB_DAD_BUTTON(ctx->dlg, "append AND");
 				ctx->wnew_and = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_CHANGE_CB(ctx->dlg, search_append_row_cb);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
 			PCB_DAD_BUTTON(ctx->dlg, "Apply");
