@@ -136,28 +136,6 @@ static void free_expr(search_expr_t *e)
 	memset(e, 0, sizeof(search_expr_t));
 }
 
-static void redraw_expr(search_ctx_t *ctx, int row, int col);
-
-static void search_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
-{
-	search_ctx_t *ctx = caller_data;
-	int row, col;
-
-	if (rc_lookup(ctx, ctx->wexpr_del, attr, &row, &col) != 0)
-		return;
-
-	free_expr(&(ctx->expr[row][col]));
-	for(;col < MAX_COL-1; col++) {
-		if (!ctx->visible[row][col+1]) {
-			ctx->visible[row][col] = 0;
-			memset(&ctx->expr[row][col], 0, sizeof(search_expr_t));
-			break;
-		}
-		ctx->expr[row][col] = ctx->expr[row][col+1];
-		redraw_expr(ctx, row, col);
-	}
-	update_vis(ctx);
-}
 
 static void append_expr(gds_t *dst, search_expr_t *e)
 {
@@ -179,6 +157,27 @@ static void redraw_expr(search_ctx_t *ctx, int row, int col)
 	hv.str_value = buf.array;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wexpr_lab[row][col], &hv);
 	gds_uninit(&buf);
+}
+
+static void search_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	search_ctx_t *ctx = caller_data;
+	int row, col;
+
+	if (rc_lookup(ctx, ctx->wexpr_del, attr, &row, &col) != 0)
+		return;
+
+	free_expr(&(ctx->expr[row][col]));
+	for(;col < MAX_COL-1; col++) {
+		if (!ctx->visible[row][col+1]) {
+			ctx->visible[row][col] = 0;
+			memset(&ctx->expr[row][col], 0, sizeof(search_expr_t));
+			break;
+		}
+		ctx->expr[row][col] = ctx->expr[row][col+1];
+		redraw_expr(ctx, row, col);
+	}
+	update_vis(ctx);
 }
 
 static void search_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
