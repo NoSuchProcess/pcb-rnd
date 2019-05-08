@@ -45,7 +45,7 @@
 typedef struct {
 	const expr_wizard_t *expr;
 	const char *op;
-	pcb_hid_attr_val_t right;
+	char *right;
 } search_expr_t;
 
 typedef struct{

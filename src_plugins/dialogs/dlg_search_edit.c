@@ -114,13 +114,17 @@ static void srch_expr_fill_in_right_const(srchedit_ctx_t *ctx, const search_expr
 	}
 
 	/* set cursor to last known value */
-	if ((s != NULL) && (s->right.str_value != NULL))
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[RIGHT_CONST], &s->right);
+	if ((s != NULL) && (s->right != NULL)) {
+		pcb_hid_attr_val_t hv;
+		hv.str_value = s->right;
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[RIGHT_CONST], &hv);
+	}
 }
 
 static void srch_expr_fill_in_right(srchedit_ctx_t *ctx, const search_expr_t *s)
 {
 	int n;
+	pcb_hid_attr_val_t hv;
 
 	if (s->expr->rtype == ctx->last_rtype)
 		return;
@@ -132,7 +136,10 @@ static void srch_expr_fill_in_right(srchedit_ctx_t *ctx, const search_expr_t *s)
 		case RIGHT_STR:
 		case RIGHT_INT:
 		case RIGHT_DOUBLE:
-		case RIGHT_COORD: break;
+		case RIGHT_COORD:
+			hv.str_value = ctx->se.right;
+			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
+			break;
 		case RIGHT_CONST: srch_expr_fill_in_right_const(ctx, s); break;
 		case RIGHT_max: break;
 	}
@@ -211,6 +218,42 @@ static int fill_in_left(srchedit_ctx_t *ctx)
 	return 0;
 }
 
+static void srchexpr_right_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	srchedit_ctx_t *ctx = caller_data;
+	free(ctx->se.right);
+	ctx->se.right = NULL;
+
+	switch(ctx->se.expr->rtype) {
+		case RIGHT_STR:
+			ctx->se.right = pcb_strdup(attr->default_val.str_value);
+			break;
+		case RIGHT_INT:
+			ctx->se.right = pcb_strdup_printf("%d", attr->default_val.int_value);
+			break;
+		case RIGHT_DOUBLE:
+			ctx->se.right = pcb_strdup_printf("%f", attr->default_val.real_value);
+			break;
+		case RIGHT_COORD:
+			ctx->se.right = pcb_strdup_printf("%$mm", attr->default_val.coord_value);
+			break;
+		case RIGHT_CONST:
+		case RIGHT_max:
+			break;
+	}
+}
+
+static void srch_expr_right_table_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+{
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	srchedit_ctx_t *ctx = tree->user_ctx;
+
+	free(ctx->se.right);
+	ctx->se.right = NULL;
+	if (row != NULL)
+		ctx->se.right = pcb_strdup(row->cell[0]);
+}
+
 static void srchedit_window_create(search_expr_t *expr)
 {
 	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", 1}, {"OK", 0}, {NULL, 0}};
@@ -244,26 +287,32 @@ static void srchedit_window_create(search_expr_t *expr)
 			PCB_DAD_STRING(ctx->dlg);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_HIDE);
 				ctx->wright[RIGHT_STR] = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_CHANGE_CB(ctx->dlg, srchexpr_right_cb);
 
 			PCB_DAD_INTEGER(ctx->dlg, "");
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_HIDE);
 				ctx->wright[RIGHT_INT] = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_MINMAX(ctx->dlg, -(1UL<<31), (1UL<<31));
+				PCB_DAD_CHANGE_CB(ctx->dlg, srchexpr_right_cb);
 
 			PCB_DAD_REAL(ctx->dlg, "");
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_HIDE);
 				ctx->wright[RIGHT_DOUBLE] = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_MINMAX(ctx->dlg, -(1UL<<31), (1UL<<31));
+				PCB_DAD_CHANGE_CB(ctx->dlg, srchexpr_right_cb);
 
 			PCB_DAD_COORD(ctx->dlg, "");
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_HIDE);
 				ctx->wright[RIGHT_COORD] = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_MINMAX(ctx->dlg, -PCB_MAX_COORD, PCB_MAX_COORD);
+				PCB_DAD_CHANGE_CB(ctx->dlg, srchexpr_right_cb);
 
 			PCB_DAD_TREE(ctx->dlg, 1, 0, NULL);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_HIDE);
 				ctx->wright[RIGHT_CONST] = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, srch_expr_right_table_cb);
 				PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
+
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_END(ctx->dlg);
