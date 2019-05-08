@@ -52,7 +52,7 @@ static void fill_in_left(srchedit_ctx_t *ctx)
 {
 	const expr_wizard_t *t;
 	pcb_hid_attribute_t *attr;
-	pcb_hid_row_t *r, *parent = NULL;
+	pcb_hid_row_t *r, *parent = NULL, *cur = NULL;
 	char *cell[2];
 
 	attr = &ctx->dlg[ctx->wleft];
@@ -69,7 +69,12 @@ static void fill_in_left(srchedit_ctx_t *ctx)
 		r->user_data = (void *)t;
 		if (t->left_var == NULL)
 			parent = r;
+		if (t == ctx->se.expr)
+			cur = r;
 	}
+
+	if (cur != NULL)
+		pcb_dad_tree_jumpto(attr, cur);
 }
 
 static void srch_expr_set_ops(srchedit_ctx_t *ctx, const expr_wizard_op_t *op)
