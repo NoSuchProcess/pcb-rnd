@@ -273,6 +273,8 @@ static int srchedit_window(search_expr_t *expr)
 	int res;
 
 	ctx->se = *expr;
+	if (ctx->se.right != NULL)
+		ctx->se.right = pcb_strdup(ctx->se.right);
 
 	/* clear all cache fields so a second window open won't inhibit refreshes */
 	ctx->last_op = NULL;
@@ -342,8 +344,12 @@ static int srchedit_window(search_expr_t *expr)
 	}
 
 	res = PCB_DAD_RUN(ctx->dlg);
-	if (res == 0)
+	if (res == 0) {
+		free(expr->right);
 		*expr = ctx->se;
+	}
+	else
+		free(ctx->se.right);
 
 	PCB_DAD_FREE(ctx->dlg);
 	return res;
