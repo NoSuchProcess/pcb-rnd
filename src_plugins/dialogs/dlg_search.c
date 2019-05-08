@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <genvector/gds_char.h>
+
 #include "actions.h"
 #include "conf_hid.h"
 #include "hid_dad.h"
@@ -125,15 +127,34 @@ static void search_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	printf("del at %d %d\n", row, col);
 }
 
+static void append_expr(gds_t *dst, search_expr_t *e)
+{
+	gds_append_str(dst, e->expr->left_var);
+	gds_append(dst, '\n');
+	gds_append_str(dst, e->op);
+	gds_append(dst, '\n');
+	gds_append_str(dst, e->right);
+}
+
 static void search_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	search_ctx_t *ctx = caller_data;
 	int row, col;
+	gds_t buf;
+	search_expr_t *e;
+	pcb_hid_attr_val_t hv;
 
 	if (rc_lookup(ctx, ctx->wexpr_edit, attr, &row, &col) != 0)
 		return;
-	printf("edit at %d %d\n", row, col);
-	srchedit_window_create(&(ctx->expr[row][col]));
+
+	e = &(ctx->expr[row][col]);
+	srchedit_window_create(e);
+
+	gds_init(&buf);
+	append_expr(&buf, e);
+	hv.str_value = buf.array;
+	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wexpr_lab[row][col], &hv);
+	gds_uninit(&buf);
 }
 
 
