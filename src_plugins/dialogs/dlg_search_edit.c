@@ -132,12 +132,24 @@ static void srch_expr_fill_in_right(srchedit_ctx_t *ctx, const search_expr_t *s)
 	for(n = 0; n < RIGHT_max; n++)
 		pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wright[n], 1);
 
+	hv.str_value = ctx->se.right;
+	if (hv.str_value == NULL)
+		hv.str_value = "";
+
 	switch(s->expr->rtype) {
 		case RIGHT_STR:
+			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
+			break;
 		case RIGHT_INT:
+			hv.int_value = strtol(hv.str_value, NULL, 10);
+			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
+			break;
 		case RIGHT_DOUBLE:
+			hv.real_value = strtod(hv.str_value, NULL);
+			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
+			break;
 		case RIGHT_COORD:
-			hv.str_value = ctx->se.right;
+			hv.coord_value = pcb_get_value_ex(hv.str_value, NULL, NULL, NULL, "mm", NULL);
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
 			break;
 		case RIGHT_CONST: srch_expr_fill_in_right_const(ctx, s); break;
@@ -292,7 +304,7 @@ static void srchedit_window_create(search_expr_t *expr)
 			PCB_DAD_INTEGER(ctx->dlg, "");
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_HIDE);
 				ctx->wright[RIGHT_INT] = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_MINMAX(ctx->dlg, -(1UL<<31), (1UL<<31));
+				PCB_DAD_MINMAX(ctx->dlg, -(1UL<<30), (1UL<<30));
 				PCB_DAD_CHANGE_CB(ctx->dlg, srchexpr_right_cb);
 
 			PCB_DAD_REAL(ctx->dlg, "");
