@@ -247,7 +247,12 @@ static void search_window_create(void)
 			PCB_DAD_BUTTON(ctx->dlg, "append AND");
 				ctx->wnew_and = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
-		PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
+		PCB_DAD_BEGIN_HBOX(ctx->dlg);
+			PCB_DAD_BUTTON(ctx->dlg, "Apply");
+				PCB_DAD_HELP(ctx->dlg, "Execute the search expression\nusing the selected action");
+			hspacer(ctx);
+			PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
+		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);
 
 	PCB_DAD_DEFSIZE(ctx->dlg, 300, 350);
