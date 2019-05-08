@@ -130,6 +130,14 @@ static int r_lookup(search_ctx_t *ctx, int w[MAX_ROW], pcb_hid_attribute_t *attr
 	return -1;
 }
 
+static void free_expr(search_expr_t *e)
+{
+	free(e->right);
+	memset(e, 0, sizeof(search_expr_t));
+}
+
+static void redraw_expr(search_ctx_t *ctx, int row, int col);
+
 static void search_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	search_ctx_t *ctx = caller_data;
@@ -137,7 +145,18 @@ static void search_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 
 	if (rc_lookup(ctx, ctx->wexpr_del, attr, &row, &col) != 0)
 		return;
-	printf("del at %d %d\n", row, col);
+
+	free_expr(&(ctx->expr[row][col]));
+	for(;col < MAX_COL-1; col++) {
+		if (!ctx->visible[row][col+1]) {
+			ctx->visible[row][col] = 0;
+			memset(&ctx->expr[row][col], 0, sizeof(search_expr_t));
+			break;
+		}
+		ctx->expr[row][col] = ctx->expr[row][col+1];
+		redraw_expr(ctx, row, col);
+	}
+	update_vis(ctx);
 }
 
 static void append_expr(gds_t *dst, search_expr_t *e)
@@ -149,25 +168,31 @@ static void append_expr(gds_t *dst, search_expr_t *e)
 	gds_append_str(dst, e->right);
 }
 
+static void redraw_expr(search_ctx_t *ctx, int row, int col)
+{
+	pcb_hid_attr_val_t hv;
+	gds_t buf;
+	search_expr_t *e = &(ctx->expr[row][col]);
+
+	gds_init(&buf);
+	append_expr(&buf, e);
+	hv.str_value = buf.array;
+	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wexpr_lab[row][col], &hv);
+	gds_uninit(&buf);
+}
+
 static void search_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	search_ctx_t *ctx = caller_data;
 	int row, col;
-	gds_t buf;
 	search_expr_t *e;
-	pcb_hid_attr_val_t hv;
 
 	if (rc_lookup(ctx, ctx->wexpr_edit, attr, &row, &col) != 0)
 		return;
 
 	e = &(ctx->expr[row][col]);
-	if (srchedit_window(e) == 0) {
-		gds_init(&buf);
-		append_expr(&buf, e);
-		hv.str_value = buf.array;
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wexpr_lab[row][col], &hv);
-		gds_uninit(&buf);
-	}
+	if (srchedit_window(e) == 0)
+		redraw_expr(ctx, row, col);
 }
 
 static void search_append_col_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
