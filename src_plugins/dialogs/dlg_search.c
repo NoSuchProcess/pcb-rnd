@@ -190,9 +190,18 @@ static void search_append_col_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 
 static void search_append_row_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
+	search_ctx_t *ctx = caller_data;
+	int row;
 
+	for(row = 0; row < MAX_ROW; row++) {
+		if (!ctx->visible[row][0]) {
+			ctx->visible[row][0] = 1;
+			update_vis(ctx);
+			return;
+		}
+	}
+	pcb_message(PCB_MSG_ERROR, "Too many expression rows, can not add more\n");
 }
-
 
 static const char *icon_del[] = {
 "5 5 2 1",
