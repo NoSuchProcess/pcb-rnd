@@ -148,13 +148,13 @@ static void search_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 		return;
 
 	e = &(ctx->expr[row][col]);
-	srchedit_window_create(e);
-
-	gds_init(&buf);
-	append_expr(&buf, e);
-	hv.str_value = buf.array;
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wexpr_lab[row][col], &hv);
-	gds_uninit(&buf);
+	if (srchedit_window(e) == 0) {
+		gds_init(&buf);
+		append_expr(&buf, e);
+		hv.str_value = buf.array;
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wexpr_lab[row][col], &hv);
+		gds_uninit(&buf);
+	}
 }
 
 

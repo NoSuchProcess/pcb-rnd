@@ -266,10 +266,11 @@ static void srch_expr_right_table_cb(pcb_hid_attribute_t *attrib, void *hid_ctx,
 		ctx->se.right = pcb_strdup(row->cell[0]);
 }
 
-static void srchedit_window_create(search_expr_t *expr)
+static int srchedit_window(search_expr_t *expr)
 {
 	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", 1}, {"OK", 0}, {NULL, 0}};
 	srchedit_ctx_t *ctx = &srchedit_ctx;
+	int res;
 
 	ctx->se = *expr;
 
@@ -340,10 +341,12 @@ static void srchedit_window_create(search_expr_t *expr)
 		pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wright[RIGHT_CONST], 0); /* just to get something harmless display on the right side after open */
 	}
 
-	if (PCB_DAD_RUN(ctx->dlg) == 0)
+	res = PCB_DAD_RUN(ctx->dlg);
+	if (res == 0)
 		*expr = ctx->se;
 
 	PCB_DAD_FREE(ctx->dlg);
+	return res;
 }
 
 
