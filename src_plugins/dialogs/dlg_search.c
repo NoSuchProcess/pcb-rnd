@@ -374,8 +374,6 @@ static void search_window_create(void)
 	PCB_DAD_NEW("search", ctx->dlg, "pcb-rnd search", ctx, pcb_false, search_close_cb);
 
 	ctx->visible[0][0] = 1;
-	ctx->visible[0][1] = 1;
-	ctx->visible[1][0] = 1;
 	update_vis(ctx);
 	search_recompile(ctx);
 }
