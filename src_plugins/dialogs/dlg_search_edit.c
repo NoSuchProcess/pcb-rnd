@@ -47,36 +47,6 @@ static void srchedit_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 /*	srchedit_ctx_t *ctx = caller_data;*/
 }
 
-/* the table on the left is static, needs to be filled in only once */
-static void fill_in_left(srchedit_ctx_t *ctx)
-{
-	const expr_wizard_t *t;
-	pcb_hid_attribute_t *attr;
-	pcb_hid_row_t *r, *parent = NULL, *cur = NULL;
-	char *cell[2];
-
-	attr = &ctx->dlg[ctx->wleft];
-
-	cell[1] = NULL;
-	for(t = expr_tab; t->left_desc != NULL; t++) {
-		if (t->left_var == NULL)
-			parent = NULL;
-		cell[0] = pcb_strdup(t->left_desc);
-		if (parent != NULL)
-			r = pcb_dad_tree_append_under(attr, parent, cell);
-		else
-			r = pcb_dad_tree_append(attr, NULL, cell);
-		r->user_data = (void *)t;
-		if (t->left_var == NULL)
-			parent = r;
-		if (t == ctx->se.expr)
-			cur = r;
-	}
-
-	if (cur != NULL)
-		pcb_dad_tree_jumpto(attr, cur);
-}
-
 static void srch_expr_set_ops(srchedit_ctx_t *ctx, const expr_wizard_op_t *op)
 {
 	pcb_hid_tree_t *tree;
@@ -182,6 +152,35 @@ static void srch_expr_left_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hi
 	srch_expr_fill_in_right(ctx, &ctx->se);
 }
 
+/* the table on the left is static, needs to be filled in only once */
+static void fill_in_left(srchedit_ctx_t *ctx)
+{
+	const expr_wizard_t *t;
+	pcb_hid_attribute_t *attr;
+	pcb_hid_row_t *r, *parent = NULL, *cur = NULL;
+	char *cell[2];
+
+	attr = &ctx->dlg[ctx->wleft];
+
+	cell[1] = NULL;
+	for(t = expr_tab; t->left_desc != NULL; t++) {
+		if (t->left_var == NULL)
+			parent = NULL;
+		cell[0] = pcb_strdup(t->left_desc);
+		if (parent != NULL)
+			r = pcb_dad_tree_append_under(attr, parent, cell);
+		else
+			r = pcb_dad_tree_append(attr, NULL, cell);
+		r->user_data = (void *)t;
+		if (t->left_var == NULL)
+			parent = r;
+		if (t == ctx->se.expr)
+			cur = r;
+	}
+
+	if (cur != NULL)
+		pcb_dad_tree_jumpto(attr, cur);
+}
 
 static void srchedit_window_create(search_expr_t *expr)
 {
