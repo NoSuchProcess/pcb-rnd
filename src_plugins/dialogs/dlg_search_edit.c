@@ -47,11 +47,11 @@ static void srchedit_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 /*	srchedit_ctx_t *ctx = caller_data;*/
 }
 
-static void srch_expr_set_ops(srchedit_ctx_t *ctx, const expr_wizard_op_t *op)
+static void srch_expr_set_ops(srchedit_ctx_t *ctx, const expr_wizard_op_t *op, int click)
 {
 	pcb_hid_tree_t *tree;
 	pcb_hid_attribute_t *attr;
-	pcb_hid_row_t *r;
+	pcb_hid_row_t *r, *cur = NULL;
 	char *cell[2], *cursor_path = NULL;
 	const char **o;
 
@@ -62,9 +62,11 @@ static void srch_expr_set_ops(srchedit_ctx_t *ctx, const expr_wizard_op_t *op)
 	tree = (pcb_hid_tree_t *)attr->enumerations;
 
 	/* remember cursor */
-	r = pcb_dad_tree_get_selected(attr);
-	if (r != NULL)
-		cursor_path = pcb_strdup(r->cell[0]);
+	if (click) {
+		r = pcb_dad_tree_get_selected(attr);
+		if (r != NULL)
+			cursor_path = pcb_strdup(r->cell[0]);
+	}
 
 	/* remove existing items */
 	pcb_dad_tree_clear(tree);
@@ -73,7 +75,10 @@ static void srch_expr_set_ops(srchedit_ctx_t *ctx, const expr_wizard_op_t *op)
 	cell[1] = NULL;
 	for(o = op->ops; *o != NULL; o++) {
 		cell[0] = pcb_strdup_printf(*o);
-		pcb_dad_tree_append(attr, NULL, cell);
+		r = pcb_dad_tree_append(attr, NULL, cell);
+		r->user_data = *o;
+		if ((!click) && (ctx->se.op == *o))
+			cur = r;
 	}
 
 	/* restore cursor */
@@ -83,6 +88,8 @@ static void srch_expr_set_ops(srchedit_ctx_t *ctx, const expr_wizard_op_t *op)
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wop, &hv);
 		free(cursor_path);
 	}
+	if (cur != NULL)
+		pcb_dad_tree_jumpto(attr, cur);
 	ctx->last_op = op;
 }
 
@@ -148,12 +155,24 @@ static void srch_expr_left_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hi
 		return;
 
 	ctx->se.expr = e;
-	srch_expr_set_ops(ctx, e->op);
+	srch_expr_set_ops(ctx, e->op, 1);
 	srch_expr_fill_in_right(ctx, &ctx->se);
 }
 
-/* the table on the left is static, needs to be filled in only once */
-static void fill_in_left(srchedit_ctx_t *ctx)
+static void srch_expr_op_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+{
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	srchedit_ctx_t *ctx = tree->user_ctx;
+
+	if (row != NULL)
+		ctx->se.op = row->user_data;
+	else
+		ctx->se.op = NULL;
+}
+
+/* the table on the left is static, needs to be filled in only once;
+   returns 1 if filled in op and right, else 0 */
+static int fill_in_left(srchedit_ctx_t *ctx)
 {
 	const expr_wizard_t *t;
 	pcb_hid_attribute_t *attr;
@@ -180,9 +199,16 @@ static void fill_in_left(srchedit_ctx_t *ctx)
 
 	if (cur != NULL) {
 		pcb_dad_tree_jumpto(attr, cur);
-		srch_expr_set_ops(ctx, ctx->se.expr->op);
+
+		/* clear all cache fields so a second window open won't inhibit refreshes */
+		ctx->last_op = NULL;
+		ctx->last_rtype = RIGHT_max;
+
+		srch_expr_set_ops(ctx, ctx->se.expr->op, 0);
 		srch_expr_fill_in_right(ctx, &ctx->se);
+		return 1;
 	}
+	return 0;
 }
 
 static void srchedit_window_create(search_expr_t *expr)
@@ -190,11 +216,11 @@ static void srchedit_window_create(search_expr_t *expr)
 	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", 1}, {"OK", 0}, {NULL, 0}};
 	srchedit_ctx_t *ctx = &srchedit_ctx;
 
+	ctx->se = *expr;
+
 	/* clear all cache fields so a second window open won't inhibit refreshes */
 	ctx->last_op = NULL;
 	ctx->last_rtype = RIGHT_max;
-
-	ctx->se = *expr;
 
 	PCB_DAD_BEGIN_HBOX(ctx->dlg);
 		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
@@ -209,7 +235,7 @@ static void srchedit_window_create(search_expr_t *expr)
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_TREE(ctx->dlg, 1, 0, NULL);
 				ctx->wop = PCB_DAD_CURRENT(ctx->dlg);
-/*				PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, srch_expr_op_cb);*/
+				PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, srch_expr_op_cb);
 				PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
@@ -248,9 +274,10 @@ static void srchedit_window_create(search_expr_t *expr)
 	PCB_DAD_DEFSIZE(ctx->dlg, 450, 450);
 	PCB_DAD_NEW("search_expr", ctx->dlg, "pcb-rnd search expression", ctx, pcb_true, srchedit_close_cb);
 
-	srch_expr_set_ops(ctx, op_tab); /* just to get the initial tree widget width */
-	pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wright[RIGHT_CONST], 0); /* just to get something harmless display on the right side after open */
-	fill_in_left(ctx); /* may change the other two if expression is non-empty */
+	if (fill_in_left(ctx) != 1) {
+		srch_expr_set_ops(ctx, op_tab, 1); /* just to get the initial tree widget width */
+		pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wright[RIGHT_CONST], 0); /* just to get something harmless display on the right side after open */
+	}
 
 	if (PCB_DAD_RUN(ctx->dlg) == 0)
 		*expr = ctx->se;
