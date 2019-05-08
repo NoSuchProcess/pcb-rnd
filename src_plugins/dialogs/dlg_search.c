@@ -37,10 +37,10 @@
 #define MAX_ROW 8
 #define MAX_COL 4
 
-/*#define NEW_EXPR_LAB "<edit me>"*/
+#define NEW_EXPR_LAB "<edit me>"
 
 /* for debugging: */
-#define NEW_EXPR_LAB pcb_strdup_printf("%d:%d", row, col)
+/*#define NEW_EXPR_LAB pcb_strdup_printf("%d:%d", row, col)*/
 
 #include "dlg_search_tab.h"
 
