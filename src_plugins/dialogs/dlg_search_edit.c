@@ -357,6 +357,8 @@ static int srchedit_window(search_expr_t *expr)
 	if (res == 0) {
 		free(expr->right);
 		*expr = ctx->se;
+		if (ctx->se.op != NULL)
+			expr->valid = 1;
 	}
 	else
 		free(ctx->se.right);

@@ -45,6 +45,7 @@
 #include "dlg_search_tab.h"
 
 typedef struct {
+	int valid;
 	const expr_wizard_t *expr;
 	const char *op;
 	char *right;
@@ -152,11 +153,17 @@ static void redraw_expr(search_ctx_t *ctx, int row, int col)
 	gds_t buf;
 	search_expr_t *e = &(ctx->expr[row][col]);
 
-	gds_init(&buf);
-	append_expr(&buf, e);
-	hv.str_value = buf.array;
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wexpr_lab[row][col], &hv);
-	gds_uninit(&buf);
+	if (e->valid) {
+		gds_init(&buf);
+		append_expr(&buf, e);
+		hv.str_value = buf.array;
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wexpr_lab[row][col], &hv);
+		gds_uninit(&buf);
+	}
+	else {
+		hv.str_value = NEW_EXPR_LAB;
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wexpr_lab[row][col], &hv);
+	}
 }
 
 static void search_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -205,6 +212,7 @@ static void search_append_col_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 	for(col = 0; col < MAX_COL; col++) {
 		if (!ctx->visible[row][col]) {
 			ctx->visible[row][col] = 1;
+			redraw_expr(ctx, row, col);
 			update_vis(ctx);
 			return;
 		}
@@ -220,6 +228,7 @@ static void search_append_row_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 	for(row = 0; row < MAX_ROW; row++) {
 		if (!ctx->visible[row][0]) {
 			ctx->visible[row][0] = 1;
+			redraw_expr(ctx, row, 0);
 			update_vis(ctx);
 			return;
 		}
