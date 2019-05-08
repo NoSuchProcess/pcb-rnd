@@ -53,6 +53,7 @@ typedef struct {
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
+	int wexpr_str;
 	int wrowbox[MAX_ROW];
 	int wexpr[MAX_ROW][MAX_COL]; /* expression framed box */
 	int wexpr_lab[MAX_ROW][MAX_COL]; /* the label within the expression box */
@@ -137,13 +138,12 @@ static void free_expr(search_expr_t *e)
 	memset(e, 0, sizeof(search_expr_t));
 }
 
-
-static void append_expr(gds_t *dst, search_expr_t *e)
+static void append_expr(gds_t *dst, search_expr_t *e, int sepchar)
 {
 	gds_append_str(dst, e->expr->left_var);
-	gds_append(dst, '\n');
+	gds_append(dst, sepchar);
 	gds_append_str(dst, e->op);
-	gds_append(dst, '\n');
+	gds_append(dst, sepchar);
 	gds_append_str(dst, e->right);
 }
 
@@ -155,7 +155,7 @@ static void redraw_expr(search_ctx_t *ctx, int row, int col)
 
 	if (e->valid) {
 		gds_init(&buf);
-		append_expr(&buf, e);
+		append_expr(&buf, e, '\n');
 		hv.str_value = buf.array;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wexpr_lab[row][col], &hv);
 		gds_uninit(&buf);
@@ -164,6 +164,35 @@ static void redraw_expr(search_ctx_t *ctx, int row, int col)
 		hv.str_value = NEW_EXPR_LAB;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wexpr_lab[row][col], &hv);
 	}
+}
+
+static void search_recompile(search_ctx_t *ctx)
+{
+	pcb_hid_attr_val_t hv;
+	gds_t buf;
+	int row, col;
+
+	gds_init(&buf);
+	for(row = 0; row < MAX_ROW; row++) {
+		if (!ctx->visible[row][0] || !ctx->expr[row][0].valid)
+			continue;
+		if (row > 0)
+			gds_append_str(&buf, " && ");
+		gds_append(&buf, '(');
+		for(col = 0; col < MAX_COL; col++) {
+			if (!ctx->visible[row][col] || !ctx->expr[row][col].valid)
+				continue;
+			if (col > 0)
+				gds_append_str(&buf, " || ");
+			gds_append(&buf, '(');
+			append_expr(&buf, &(ctx->expr[row][col]), ' ');
+			gds_append(&buf, ')');
+		}
+		gds_append(&buf, ')');
+	}
+	hv.str_value = buf.array;
+	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wexpr_str, &hv);
+	gds_uninit(&buf);
 }
 
 static void search_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -185,6 +214,7 @@ static void search_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 		redraw_expr(ctx, row, col);
 	}
 	update_vis(ctx);
+	search_recompile(ctx);
 }
 
 static void search_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -197,8 +227,10 @@ static void search_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 		return;
 
 	e = &(ctx->expr[row][col]);
-	if (srchedit_window(e) == 0)
+	if (srchedit_window(e) == 0) {
 		redraw_expr(ctx, row, col);
+		search_recompile(ctx);
+	}
 }
 
 static void search_append_col_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -214,6 +246,7 @@ static void search_append_col_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 			ctx->visible[row][col] = 1;
 			redraw_expr(ctx, row, col);
 			update_vis(ctx);
+			search_recompile(ctx);
 			return;
 		}
 	}
@@ -230,6 +263,7 @@ static void search_append_row_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 			ctx->visible[row][0] = 1;
 			redraw_expr(ctx, row, 0);
 			update_vis(ctx);
+			search_recompile(ctx);
 			return;
 		}
 	}
@@ -269,6 +303,7 @@ static void search_window_create(void)
 		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_LABEL(ctx->dlg, "Query expression:");
 		PCB_DAD_STRING(ctx->dlg);
+			ctx->wexpr_str = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Action on the results:");
 			PCB_DAD_ENUM(ctx->dlg, acts);
@@ -342,6 +377,7 @@ static void search_window_create(void)
 	ctx->visible[0][1] = 1;
 	ctx->visible[1][0] = 1;
 	update_vis(ctx);
+	search_recompile(ctx);
 }
 
 
