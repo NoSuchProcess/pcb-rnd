@@ -178,14 +178,21 @@ static void fill_in_left(srchedit_ctx_t *ctx)
 			cur = r;
 	}
 
-	if (cur != NULL)
+	if (cur != NULL) {
 		pcb_dad_tree_jumpto(attr, cur);
+		srch_expr_set_ops(ctx, ctx->se.expr->op);
+		srch_expr_fill_in_right(ctx, &ctx->se);
+	}
 }
 
 static void srchedit_window_create(search_expr_t *expr)
 {
 	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", 1}, {"OK", 0}, {NULL, 0}};
 	srchedit_ctx_t *ctx = &srchedit_ctx;
+
+	/* clear all cache fields so a second window open won't inhibit refreshes */
+	ctx->last_op = NULL;
+	ctx->last_rtype = RIGHT_max;
 
 	ctx->se = *expr;
 
@@ -240,9 +247,10 @@ static void srchedit_window_create(search_expr_t *expr)
 
 	PCB_DAD_DEFSIZE(ctx->dlg, 450, 450);
 	PCB_DAD_NEW("search_expr", ctx->dlg, "pcb-rnd search expression", ctx, pcb_true, srchedit_close_cb);
-	fill_in_left(ctx);
+
 	srch_expr_set_ops(ctx, op_tab); /* just to get the initial tree widget width */
 	pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wright[RIGHT_CONST], 0); /* just to get something harmless display on the right side after open */
+	fill_in_left(ctx); /* may change the other two if expression is non-empty */
 
 	if (PCB_DAD_RUN(ctx->dlg) == 0)
 		*expr = ctx->se;
