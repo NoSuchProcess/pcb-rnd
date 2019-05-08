@@ -175,7 +175,7 @@ ha:lht_tree_doc { ha:comm {
 							ha:hdia       = { valtype=coord;   desc={hole diameter; 0 means no hole }}
 							ha:htop       = { valtype=integer; desc={hole start: copper layer index from the top (positive) or bottom (negative) copper layer (0 means top copper layer)}}
 							ha:hbottom    = { valtype=integer; desc={hole start: copper layer index from the bottom (positive) or top (negative) copper layer (0 means bottom copper layer)}}
-							ha:hplated    = { valtype=integer; desc={0=unplated hole; 1=plated hole}}
+							ha:hplated    = { valtype=integer; desc={0=hole and/or slot is unplated; 1=hole and/or slot is plated}}
 							ha:name       = { valtype=string; ver={>=5} desc={optional user assigned prototype name}}
 							ha:shape {
 								type=li

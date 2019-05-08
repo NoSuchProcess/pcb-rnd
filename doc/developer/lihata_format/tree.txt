@@ -413,7 +413,7 @@ ha:data                              Layers and global objects of the board
    hdia                 coord        hole diameter; 0 means no hole
    htop                 integer      hole start: copper layer index from the top (positive) or bottom (negative) copper layer (0 means top copper layer)
    hbottom              integer      hole start: copper layer index from the bottom (positive) or top (negative) copper layer (0 means bottom copper layer)
-   plated               integer      0=unplated hole; 1=plated hole
+   hplated              integer      0=hole and/or slot is unplated; 1=hole and/or slot is plated
    name                 string   >=5 optional user assigned prototype name
    li:shape                          shape per layer type definition
     ha:ps_shape_v4                   shape on a specific layer type (specified by layer_mask and combining), as specifie in lihata board v4; shape is either ps_poly, ps_line or ps_circ (only one of these will present per layer type); shape coords are

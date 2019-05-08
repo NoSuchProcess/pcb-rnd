@@ -13,8 +13,8 @@
 <g id="node1" class="node">
 <title>/lht_tree_doc/comm/data</title>
 <g id="a_node1"><a xlink:href="tree.html#/lht_tree_doc/comm/data" xlink:title=" Layers and global objects of the board ">
-<ellipse fill="none" stroke="#000000" cx="8190.1838" cy="-1734.8231" rx="39.6962" ry="27.6545"/>
-<text text-anchor="middle" x="8190.1838" y="-1739.1231" font-family="Times,serif" font-size="14.00" fill="#000000">ha:data</text>
+<ellipse fill="none" stroke="#000000" cx="8189.1838" cy="-1734.8231" rx="39.6962" ry="27.6545"/>
+<text text-anchor="middle" x="8189.1838" y="-1739.1231" font-family="Times,serif" font-size="14.00" fill="#000000">ha:data</text>
 </a>
 </g>
 </g>
@@ -30,39 +30,39 @@
 <!-- /lht_tree_doc/comm/data&#45;&gt;/lht_tree_doc/comm/data/children/objects -->
 <g id="edge1" class="edge">
 <title>/lht_tree_doc/comm/data&#45;&gt;/lht_tree_doc/comm/data/children/objects</title>
-<path fill="none" stroke="#000000" d="M8150.3735,-1734.2191C7629.4051,-1726.3148 2160.3419,-1643.3363 1540.3057,-1633.9289"/>
-<polygon fill="#000000" stroke="#000000" points="1540.3194,-1630.4288 1530.2675,-1633.7766 1540.2132,-1637.428 1540.3194,-1630.4288"/>
+<path fill="none" stroke="#000000" d="M8149.3794,-1734.2191C7628.4887,-1726.3148 2160.2409,-1643.3363 1540.2972,-1633.9289"/>
+<polygon fill="#000000" stroke="#000000" points="1540.3124,-1630.4288 1530.2604,-1633.7766 1540.2061,-1637.428 1540.3124,-1630.4288"/>
 </g>
 <!-- /lht_tree_doc/comm/data/children/layers -->
 <g id="node58" class="node">
 <title>/lht_tree_doc/comm/data/children/layers</title>
 <g id="a_node58"><a xlink:href="tree.html#/lht_tree_doc/comm/data/children/layers" xlink:title="ordered list of layers; v1 required the order to be top&#45;bottom physically; v1 also required silk layers to be at the end (same resrtictions as in the old .pcb format; only real (non&#45;bound) layers have attributes)">
-<ellipse fill="none" stroke="#000000" cx="4982.1838" cy="-1633.0622" rx="42.3529" ry="27.6545"/>
-<text text-anchor="middle" x="4982.1838" y="-1637.3622" font-family="Times,serif" font-size="14.00" fill="#000000">li:layers</text>
+<ellipse fill="none" stroke="#000000" cx="5083.1838" cy="-1633.0622" rx="42.3529" ry="27.6545"/>
+<text text-anchor="middle" x="5083.1838" y="-1637.3622" font-family="Times,serif" font-size="14.00" fill="#000000">li:layers</text>
 </a>
 </g>
 </g>
 <!-- /lht_tree_doc/comm/data&#45;&gt;/lht_tree_doc/comm/data/children/layers -->
 <g id="edge79" class="edge">
 <title>/lht_tree_doc/comm/data&#45;&gt;/lht_tree_doc/comm/data/children/layers</title>
-<path fill="none" stroke="#000000" d="M8150.4923,-1733.5641C7812.4992,-1722.8426 5420.5762,-1646.9684 5034.6879,-1634.7277"/>
-<polygon fill="#000000" stroke="#000000" points="5034.7443,-1631.2278 5024.6383,-1634.4089 5034.5223,-1638.2243 5034.7443,-1631.2278"/>
+<path fill="none" stroke="#000000" d="M8149.3464,-1733.5179C7817.4947,-1722.6456 5515.0019,-1647.2097 5135.95,-1634.791"/>
+<polygon fill="#000000" stroke="#000000" points="5135.9198,-1631.2882 5125.8106,-1634.4588 5135.6906,-1638.2844 5135.9198,-1631.2882"/>
 </g>
 <!-- /lht_tree_doc/comm/data/children/padstack_prototypes -->
 <g id="node180" class="node">
 <title>/lht_tree_doc/comm/data/children/padstack_prototypes</title>
 <g id="a_node180"><a xlink:href="tree.html#/lht_tree_doc/comm/data/children/padstack_prototypes" xlink:title="li:padstack_prototypes\n\n&gt;=4">
-<ellipse fill="none" stroke="#000000" cx="7843.1838" cy="-1633.0622" rx="98.0761" ry="38.3684"/>
-<text text-anchor="middle" x="7843.1838" y="-1644.8622" font-family="Times,serif" font-size="14.00" fill="#000000">li:padstack_prototypes</text>
-<text text-anchor="middle" x="7843.1838" y="-1613.8622" font-family="Times,serif" font-size="14.00" fill="#000000">&gt;=4</text>
+<ellipse fill="none" stroke="#000000" cx="7841.1838" cy="-1633.0622" rx="98.0761" ry="38.3684"/>
+<text text-anchor="middle" x="7841.1838" y="-1644.8622" font-family="Times,serif" font-size="14.00" fill="#000000">li:padstack_prototypes</text>
+<text text-anchor="middle" x="7841.1838" y="-1613.8622" font-family="Times,serif" font-size="14.00" fill="#000000">&gt;=4</text>
 </a>
 </g>
 </g>
 <!-- /lht_tree_doc/comm/data&#45;&gt;/lht_tree_doc/comm/data/children/padstack_prototypes -->
 <g id="edge243" class="edge">
 <title>/lht_tree_doc/comm/data&#45;&gt;/lht_tree_doc/comm/data/children/padstack_prototypes</title>
-<path fill="none" stroke="#000000" d="M8153.3772,-1724.0293C8101.0687,-1708.6893 8003.616,-1680.1104 7931.8501,-1659.0644"/>
-<polygon fill="#000000" stroke="#000000" points="7932.4822,-1655.6025 7921.9014,-1656.1469 7930.5123,-1662.3196 7932.4822,-1655.6025"/>
+<path fill="none" stroke="#000000" d="M8152.5994,-1724.1253C8100.1823,-1708.7976 8002.0863,-1680.1127 7929.9483,-1659.0184"/>
+<polygon fill="#000000" stroke="#000000" points="7930.5295,-1655.5418 7919.949,-1656.0945 7928.5648,-1662.2605 7930.5295,-1655.5418"/>
 </g>
 <!-- dup40_/lht_tree_doc/roots/pcb&#45;rnd&#45;subcircuit&#45;v*/children/subc.ID -->
 <g id="node218" class="node">
@@ -77,8 +77,8 @@
 <!-- /lht_tree_doc/comm/data&#45;&gt;dup40_/lht_tree_doc/roots/pcb&#45;rnd&#45;subcircuit&#45;v*/children/subc.ID -->
 <g id="edge291" class="edge">
 <title>/lht_tree_doc/comm/data&#45;&gt;dup40_/lht_tree_doc/roots/pcb&#45;rnd&#45;subcircuit&#45;v*/children/subc.ID</title>
-<path fill="none" stroke="#000000" d="M8206.7456,-1709.6687C8213.3539,-1699.6319 8221.1555,-1687.7827 8228.6224,-1676.4418"/>
-<polygon fill="#000000" stroke="#000000" points="8231.666,-1678.1838 8234.2419,-1667.9068 8225.8194,-1674.3343 8231.666,-1678.1838"/>
+<path fill="none" stroke="#000000" d="M8205.9928,-1709.6687C8212.6997,-1699.6319 8220.6177,-1687.7827 8228.1961,-1676.4418"/>
+<polygon fill="#000000" stroke="#000000" points="8231.2535,-1678.1659 8233.8994,-1667.9068 8225.4333,-1674.2767 8231.2535,-1678.1659"/>
 </g>
 <!-- /lht_tree_doc/comm/data/children/element.ID -->
 <g id="node231" class="node">
@@ -93,23 +93,23 @@
 <!-- /lht_tree_doc/comm/data&#45;&gt;/lht_tree_doc/comm/data/children/element.ID -->
 <g id="edge310" class="edge">
 <title>/lht_tree_doc/comm/data&#45;&gt;/lht_tree_doc/comm/data/children/element.ID</title>
-<path fill="none" stroke="#000000" d="M8228.5815,-1727.4228C8315.8864,-1710.5966 8530.5129,-1669.2318 8644.4111,-1647.2803"/>
-<polygon fill="#000000" stroke="#000000" points="8645.2854,-1650.6763 8654.4423,-1645.347 8643.9606,-1643.8028 8645.2854,-1650.6763"/>
+<path fill="none" stroke="#000000" d="M8227.6543,-1727.4228C8315.1245,-1710.5966 8530.1574,-1669.2318 8644.2714,-1647.2803"/>
+<polygon fill="#000000" stroke="#000000" points="8645.1628,-1650.6731 8654.3216,-1645.347 8643.8404,-1643.7991 8645.1628,-1650.6731"/>
 </g>
 <!-- /lht_tree_doc/comm/data/children/rat.ID -->
 <g id="node303" class="node">
 <title>/lht_tree_doc/comm/data/children/rat.ID</title>
 <g id="a_node303"><a xlink:href="tree.html#/lht_tree_doc/comm/data/children/rat.ID" xlink:title="global rat line">
-<ellipse fill="none" stroke="#000000" cx="10739.1838" cy="-1633.0622" rx="45.9239" ry="27.6545"/>
-<text text-anchor="middle" x="10739.1838" y="-1637.3622" font-family="Times,serif" font-size="14.00" fill="#000000">ha:rat.ID</text>
+<ellipse fill="none" stroke="#000000" cx="10730.1838" cy="-1633.0622" rx="45.9239" ry="27.6545"/>
+<text text-anchor="middle" x="10730.1838" y="-1637.3622" font-family="Times,serif" font-size="14.00" fill="#000000">ha:rat.ID</text>
 </a>
 </g>
 </g>
 <!-- /lht_tree_doc/comm/data&#45;&gt;/lht_tree_doc/comm/data/children/rat.ID -->
 <g id="edge416" class="edge">
 <title>/lht_tree_doc/comm/data&#45;&gt;/lht_tree_doc/comm/data/children/rat.ID</title>
-<path fill="none" stroke="#000000" d="M8229.9663,-1733.2349C8522.4569,-1721.5581 10338.4686,-1649.0595 10682.8447,-1635.3114"/>
-<polygon fill="#000000" stroke="#000000" points="10683.2184,-1638.7993 10693.0708,-1634.9031 10682.9392,-1631.8049 10683.2184,-1638.7993"/>
+<path fill="none" stroke="#000000" d="M8228.8414,-1733.2349C8520.4141,-1721.5581 10330.7263,-1649.0595 10674.0215,-1635.3114"/>
+<polygon fill="#000000" stroke="#000000" points="10674.3637,-1638.8006 10684.2156,-1634.9031 10674.0835,-1631.8062 10674.3637,-1638.8006"/>
 </g>
 <!-- /lht_tree_doc/comm/data/children/objects/children/padstack_ref.ID -->
 <g id="node3" class="node">
@@ -983,17 +983,17 @@
 <g id="node57" class="node">
 <title>dup23_/lht_tree_doc/comm/flags_pinvia/children/via</title>
 <g id="a_node57"><a xlink:href="tree.html#/lht_tree_doc/comm/flags_pinvia/children/via" xlink:title="object is a via">
-<ellipse fill="none" stroke="#000000" cx="2205.1838" cy="-116.6102" rx="27" ry="26.7407"/>
-<text text-anchor="middle" x="2205.1838" y="-120.4102" font-family="Times,serif" font-size="14.00" fill="#000000">via</text>
-<text text-anchor="middle" x="2205.1838" y="-105.4102" font-family="Times,serif" font-size="14.00" fill="#000000">flag</text>
+<ellipse fill="none" stroke="#000000" cx="2206.1838" cy="-116.6102" rx="27" ry="26.7407"/>
+<text text-anchor="middle" x="2206.1838" y="-120.4102" font-family="Times,serif" font-size="14.00" fill="#000000">via</text>
+<text text-anchor="middle" x="2206.1838" y="-105.4102" font-family="Times,serif" font-size="14.00" fill="#000000">flag</text>
 </a>
 </g>
 </g>
 <!-- dup23_/lht_tree_doc/comm/flags_pinvia&#45;&gt;dup23_/lht_tree_doc/comm/flags_pinvia/children/via -->
 <g id="edge77" class="edge">
 <title>dup23_/lht_tree_doc/comm/flags_pinvia&#45;&gt;dup23_/lht_tree_doc/comm/flags_pinvia/children/via</title>
-<path fill="none" stroke="#000000" d="M2010.212,-1386.1919C2022.0263,-1380.5561 2034.9542,-1374.7867 2047.1838,-1370.1434 2101.2328,-1349.6221 2128.1618,-1371.6198 2172.1838,-1334.1434 2220.5783,-1292.9445 2233.1838,-1268.3614 2233.1838,-1204.8053 2233.1838,-1204.8053 2233.1838,-1204.8053 2233.1838,-296.0904 2233.1838,-246.0032 2222.4067,-188.983 2214.2247,-152.9106"/>
-<polygon fill="#000000" stroke="#000000" points="2217.5635,-151.8154 2211.8905,-142.8674 2210.7453,-153.4002 2217.5635,-151.8154"/>
+<path fill="none" stroke="#000000" d="M2010.212,-1386.1919C2022.0263,-1380.5561 2034.9542,-1374.7867 2047.1838,-1370.1434 2101.2328,-1349.6221 2128.1618,-1371.6198 2172.1838,-1334.1434 2220.5783,-1292.9445 2233.1838,-1268.3614 2233.1838,-1204.8053 2233.1838,-1204.8053 2233.1838,-1204.8053 2233.1838,-296.0904 2233.1838,-246.0449 2222.7916,-189.0147 2214.9018,-152.9287"/>
+<polygon fill="#000000" stroke="#000000" points="2218.2525,-151.8743 2212.6509,-142.8813 2211.4218,-153.4046 2218.2525,-151.8743"/>
 </g>
 <!-- dup23_/lht_tree_doc/comm/flags_pinvia/children/found&#45;&gt;dup23_/lht_tree_doc/comm/flags_pinvia/children/hole -->
 <!-- dup23_/lht_tree_doc/comm/flags_pinvia/children/hole&#45;&gt;dup23_/lht_tree_doc/comm/flags_pinvia/children/clearline -->
@@ -1020,8 +1020,8 @@
 <!-- /lht_tree_doc/comm/data/children/layers&#45;&gt;/lht_tree_doc/comm/data/children/layers/children/NAME -->
 <g id="edge80" class="edge">
 <title>/lht_tree_doc/comm/data/children/layers&#45;&gt;/lht_tree_doc/comm/data/children/layers/children/NAME</title>
-<path fill="none" stroke="#000000" d="M4939.7644,-1631.0761C4652.0816,-1617.6069 2988.2137,-1539.7049 2644.3534,-1523.6054"/>
-<polygon fill="#000000" stroke="#000000" points="2644.4835,-1520.1078 2634.3308,-1523.1362 2644.1561,-1527.1001 2644.4835,-1520.1078"/>
+<path fill="none" stroke="#000000" d="M5040.8236,-1631.159C4745.7336,-1617.9009 2998.4142,-1539.3955 2644.6308,-1523.5003"/>
+<polygon fill="#000000" stroke="#000000" points="2644.7202,-1520.0009 2634.5731,-1523.0485 2644.4059,-1526.9939 2644.7202,-1520.0009"/>
 </g>
 <!-- /lht_tree_doc/comm/data/children/layers/children/NAME/children/lid -->
 <g id="node60" class="node">
@@ -1357,17 +1357,17 @@
 <g id="node78" class="node">
 <title>dup25_/lht_tree_doc/comm/combining/children/sub</title>
 <g id="a_node78"><a xlink:href="tree.html#/lht_tree_doc/comm/combining/children/sub" xlink:title="draw in negative">
-<ellipse fill="none" stroke="#000000" cx="2751.1838" cy="-1306.5662" rx="27" ry="26.7407"/>
-<text text-anchor="middle" x="2751.1838" y="-1310.3662" font-family="Times,serif" font-size="14.00" fill="#000000">sub</text>
-<text text-anchor="middle" x="2751.1838" y="-1295.3662" font-family="Times,serif" font-size="14.00" fill="#000000">flag</text>
+<ellipse fill="none" stroke="#000000" cx="2752.1838" cy="-1306.5662" rx="27" ry="26.7407"/>
+<text text-anchor="middle" x="2752.1838" y="-1310.3662" font-family="Times,serif" font-size="14.00" fill="#000000">sub</text>
+<text text-anchor="middle" x="2752.1838" y="-1295.3662" font-family="Times,serif" font-size="14.00" fill="#000000">flag</text>
 </a>
 </g>
 </g>
 <!-- /lht_tree_doc/comm/data/children/layers/children/NAME/children/combining&#45;&gt;dup25_/lht_tree_doc/comm/combining/children/sub -->
 <g id="edge108" class="edge">
 <title>/lht_tree_doc/comm/data/children/layers/children/NAME/children/combining&#45;&gt;dup25_/lht_tree_doc/comm/combining/children/sub</title>
-<path fill="none" stroke="#000000" d="M2778.6598,-1371.5891C2774.4379,-1361.5979 2769.8821,-1350.8163 2765.7172,-1340.9602"/>
-<polygon fill="#000000" stroke="#000000" points="2768.826,-1339.325 2761.7096,-1331.476 2762.3781,-1342.0497 2768.826,-1339.325"/>
+<path fill="none" stroke="#000000" d="M2779.0208,-1371.5891C2774.8971,-1361.5979 2770.4472,-1350.8163 2766.3793,-1340.9602"/>
+<polygon fill="#000000" stroke="#000000" points="2769.5153,-1339.3843 2762.4648,-1331.476 2763.0448,-1342.055 2769.5153,-1339.3843"/>
 </g>
 <!-- dup25_/lht_tree_doc/comm/combining/children/auto -->
 <g id="node79" class="node">
@@ -1382,8 +1382,8 @@
 <!-- /lht_tree_doc/comm/data/children/layers/children/NAME/children/combining&#45;&gt;dup25_/lht_tree_doc/comm/combining/children/auto -->
 <g id="edge109" class="edge">
 <title>/lht_tree_doc/comm/data/children/layers/children/NAME/children/combining&#45;&gt;dup25_/lht_tree_doc/comm/combining/children/auto</title>
-<path fill="none" stroke="#000000" d="M2795.9409,-1370.1145C2796.2145,-1344.0547 2794.7572,-1308.9674 2787.1838,-1278.989 2783.5982,-1264.7961 2777.2487,-1250.0399 2770.9332,-1237.4613"/>
-<polygon fill="#000000" stroke="#000000" points="2773.8873,-1235.557 2766.1566,-1228.3123 2767.6821,-1238.7967 2773.8873,-1235.557"/>
+<path fill="none" stroke="#000000" d="M2796.4148,-1370.0991C2796.9685,-1344.0325 2795.803,-1308.9434 2788.1838,-1278.989 2784.5561,-1264.7273 2778.0371,-1249.9575 2771.5337,-1237.3874"/>
+<polygon fill="#000000" stroke="#000000" points="2774.4351,-1235.3932 2766.6117,-1228.2486 2768.2721,-1238.7125 2774.4351,-1235.3932"/>
 </g>
 <!-- dup25_/lht_tree_doc/comm/combining/children/sub&#45;&gt;dup25_/lht_tree_doc/comm/combining/children/auto -->
 <!-- dup26_/lht_tree_doc/comm/attributes/children/attrib&#45;key -->
@@ -2978,96 +2978,96 @@
 <g id="node181" class="node">
 <title>/lht_tree_doc/comm/data/children/padstack_prototypes/children/unused</title>
 <g id="a_node181"><a xlink:href="tree.html#/lht_tree_doc/comm/data/children/padstack_prototypes/children/unused" xlink:title="placeholder for marking unused slot to keep slot indices for early lihata v4 ">
-<ellipse fill="none" stroke="#000000" cx="7697.1838" cy="-1520.6947" rx="38.7821" ry="26.7407"/>
-<text text-anchor="middle" x="7697.1838" y="-1524.4947" font-family="Times,serif" font-size="14.00" fill="#000000">unused</text>
-<text text-anchor="middle" x="7697.1838" y="-1509.4947" font-family="Times,serif" font-size="14.00" fill="#000000">none</text>
+<ellipse fill="none" stroke="#000000" cx="7695.1838" cy="-1520.6947" rx="38.7821" ry="26.7407"/>
+<text text-anchor="middle" x="7695.1838" y="-1524.4947" font-family="Times,serif" font-size="14.00" fill="#000000">unused</text>
+<text text-anchor="middle" x="7695.1838" y="-1509.4947" font-family="Times,serif" font-size="14.00" fill="#000000">none</text>
 </a>
 </g>
 </g>
 <!-- /lht_tree_doc/comm/data/children/padstack_prototypes&#45;&gt;/lht_tree_doc/comm/data/children/padstack_prototypes/children/unused -->
 <g id="edge244" class="edge">
 <title>/lht_tree_doc/comm/data/children/padstack_prototypes&#45;&gt;/lht_tree_doc/comm/data/children/padstack_prototypes/children/unused</title>
-<path fill="none" stroke="#000000" d="M7797.6351,-1598.9402C7781.0559,-1586.4262 7762.2102,-1572.0919 7745.1838,-1558.8784 7740.4952,-1555.2398 7735.573,-1551.3757 7730.7411,-1547.5567"/>
-<polygon fill="#000000" stroke="#000000" points="7732.7617,-1544.6921 7722.7519,-1541.22 7728.4117,-1550.1764 7732.7617,-1544.6921"/>
+<path fill="none" stroke="#000000" d="M7795.6351,-1598.9402C7779.0559,-1586.4262 7760.2102,-1572.0919 7743.1838,-1558.8784 7738.4952,-1555.2398 7733.573,-1551.3757 7728.7411,-1547.5567"/>
+<polygon fill="#000000" stroke="#000000" points="7730.7617,-1544.6921 7720.7519,-1541.22 7726.4117,-1550.1764 7730.7617,-1544.6921"/>
 </g>
 <!-- /lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID -->
 <g id="node182" class="node">
 <title>/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID</title>
 <g id="a_node182"><a xlink:href="tree.html#/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID" xlink:title="padstack prototype specification, as introduced in lihata board v4">
-<ellipse fill="none" stroke="#000000" cx="7843.1838" cy="-1520.6947" rx="89.191" ry="27.6545"/>
-<text text-anchor="middle" x="7843.1838" y="-1524.9947" font-family="Times,serif" font-size="14.00" fill="#000000">ha:ps_proto_v4.PID</text>
+<ellipse fill="none" stroke="#000000" cx="7841.1838" cy="-1520.6947" rx="89.191" ry="27.6545"/>
+<text text-anchor="middle" x="7841.1838" y="-1524.9947" font-family="Times,serif" font-size="14.00" fill="#000000">ha:ps_proto_v4.PID</text>
 </a>
 </g>
 </g>
 <!-- /lht_tree_doc/comm/data/children/padstack_prototypes&#45;&gt;/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID -->
 <g id="edge245" class="edge">
 <title>/lht_tree_doc/comm/data/children/padstack_prototypes&#45;&gt;/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID</title>
-<path fill="none" stroke="#000000" d="M7843.1838,-1594.7059C7843.1838,-1583.1208 7843.1838,-1570.4075 7843.1838,-1558.8364"/>
-<polygon fill="#000000" stroke="#000000" points="7846.6839,-1558.5961 7843.1838,-1548.5961 7839.6839,-1558.5961 7846.6839,-1558.5961"/>
+<path fill="none" stroke="#000000" d="M7841.1838,-1594.7059C7841.1838,-1583.1208 7841.1838,-1570.4075 7841.1838,-1558.8364"/>
+<polygon fill="#000000" stroke="#000000" points="7844.6839,-1558.5961 7841.1838,-1548.5961 7837.6839,-1558.5961 7844.6839,-1558.5961"/>
 </g>
 <!-- /lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/hdia -->
 <g id="node183" class="node">
 <title>/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/hdia</title>
 <g id="a_node183"><a xlink:href="tree.html#/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/hdia" xlink:title="hole diameter; 0 means no hole ">
-<ellipse fill="none" stroke="#000000" cx="7554.1838" cy="-1408.3271" rx="33.4697" ry="26.7407"/>
-<text text-anchor="middle" x="7554.1838" y="-1412.1271" font-family="Times,serif" font-size="14.00" fill="#000000">hdia</text>
-<text text-anchor="middle" x="7554.1838" y="-1397.1271" font-family="Times,serif" font-size="14.00" fill="#000000">coord</text>
+<ellipse fill="none" stroke="#000000" cx="7551.1838" cy="-1408.3271" rx="33.4697" ry="26.7407"/>
+<text text-anchor="middle" x="7551.1838" y="-1412.1271" font-family="Times,serif" font-size="14.00" fill="#000000">hdia</text>
+<text text-anchor="middle" x="7551.1838" y="-1397.1271" font-family="Times,serif" font-size="14.00" fill="#000000">coord</text>
 </a>
 </g>
 </g>
 <!-- /lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID&#45;&gt;/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/hdia -->
 <g id="edge246" class="edge">
 <title>/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID&#45;&gt;/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/hdia</title>
-<path fill="none" stroke="#000000" d="M7789.9865,-1498.4695C7775.5843,-1492.8653 7759.9044,-1487.134 7745.1838,-1482.5109 7680.1861,-1462.098 7656.3765,-1478.4204 7596.1838,-1446.5109 7591.1773,-1443.8569 7586.301,-1440.4687 7581.7489,-1436.8102"/>
-<polygon fill="#000000" stroke="#000000" points="7583.7919,-1433.9487 7573.9473,-1430.0328 7579.2012,-1439.2332 7583.7919,-1433.9487"/>
+<path fill="none" stroke="#000000" d="M7787.9912,-1498.4544C7773.589,-1492.8503 7757.9079,-1487.1228 7743.1838,-1482.5109 7677.7582,-1462.0184 7653.7827,-1478.5767 7593.1838,-1446.5109 7588.1753,-1443.8607 7583.2979,-1440.4747 7578.7453,-1436.817"/>
+<polygon fill="#000000" stroke="#000000" points="7580.7882,-1433.9555 7570.9433,-1430.0403 7576.1978,-1439.2403 7580.7882,-1433.9555"/>
 </g>
 <!-- /lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/htop -->
 <g id="node184" class="node">
 <title>/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/htop</title>
 <g id="a_node184"><a xlink:href="tree.html#/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/htop" xlink:title="hole start: copper layer index from the top (positive) or bottom (negative) copper layer (0 means top copper layer)">
-<ellipse fill="none" stroke="#000000" cx="7643.1838" cy="-1408.3271" rx="38.3684" ry="26.7407"/>
-<text text-anchor="middle" x="7643.1838" y="-1412.1271" font-family="Times,serif" font-size="14.00" fill="#000000">htop</text>
-<text text-anchor="middle" x="7643.1838" y="-1397.1271" font-family="Times,serif" font-size="14.00" fill="#000000">integer</text>
+<ellipse fill="none" stroke="#000000" cx="7640.1838" cy="-1408.3271" rx="38.3684" ry="26.7407"/>
+<text text-anchor="middle" x="7640.1838" y="-1412.1271" font-family="Times,serif" font-size="14.00" fill="#000000">htop</text>
+<text text-anchor="middle" x="7640.1838" y="-1397.1271" font-family="Times,serif" font-size="14.00" fill="#000000">integer</text>
 </a>
 </g>
 </g>
 <!-- /lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID&#45;&gt;/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/htop -->
 <g id="edge247" class="edge">
 <title>/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID&#45;&gt;/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/htop</title>
-<path fill="none" stroke="#000000" d="M7789.8793,-1498.504C7759.7121,-1485.0576 7721.8104,-1466.643 7690.1838,-1446.5109 7685.184,-1443.3283 7680.107,-1439.6956 7675.2293,-1435.9656"/>
-<polygon fill="#000000" stroke="#000000" points="7677.2714,-1433.1183 7667.2574,-1429.6584 7672.9281,-1438.6079 7677.2714,-1433.1183"/>
+<path fill="none" stroke="#000000" d="M7787.5207,-1498.5543C7757.153,-1485.1241 7719.0036,-1466.709 7687.1838,-1446.5109 7682.1799,-1443.3346 7677.1007,-1439.7056 7672.2219,-1435.9772"/>
+<polygon fill="#000000" stroke="#000000" points="7674.2637,-1433.1297 7664.2493,-1429.6713 7669.9212,-1438.62 7674.2637,-1433.1297"/>
 </g>
 <!-- /lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/hbottom -->
 <g id="node185" class="node">
 <title>/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/hbottom</title>
 <g id="a_node185"><a xlink:href="tree.html#/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/hbottom" xlink:title="hole start: copper layer index from the bottom (positive) or top (negative) copper layer (0 means bottom copper layer)">
-<ellipse fill="none" stroke="#000000" cx="7743.1838" cy="-1408.3271" rx="43.6818" ry="26.7407"/>
-<text text-anchor="middle" x="7743.1838" y="-1412.1271" font-family="Times,serif" font-size="14.00" fill="#000000">hbottom</text>
-<text text-anchor="middle" x="7743.1838" y="-1397.1271" font-family="Times,serif" font-size="14.00" fill="#000000">integer</text>
+<ellipse fill="none" stroke="#000000" cx="7740.1838" cy="-1408.3271" rx="43.6818" ry="26.7407"/>
+<text text-anchor="middle" x="7740.1838" y="-1412.1271" font-family="Times,serif" font-size="14.00" fill="#000000">hbottom</text>
+<text text-anchor="middle" x="7740.1838" y="-1397.1271" font-family="Times,serif" font-size="14.00" fill="#000000">integer</text>
 </a>
 </g>
 </g>
 <!-- /lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID&#45;&gt;/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/hbottom -->
 <g id="edge248" class="edge">
 <title>/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID&#45;&gt;/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/hbottom</title>
-<path fill="none" stroke="#000000" d="M7819.4852,-1494.0651C7804.9603,-1477.7439 7786.2957,-1456.771 7771.0624,-1439.6537"/>
-<polygon fill="#000000" stroke="#000000" points="7773.5946,-1437.2343 7764.332,-1432.0909 7768.3654,-1441.8879 7773.5946,-1437.2343"/>
+<path fill="none" stroke="#000000" d="M7817.2482,-1494.0651C7802.5781,-1477.7439 7783.7269,-1456.771 7768.3412,-1439.6537"/>
+<polygon fill="#000000" stroke="#000000" points="7770.8314,-1437.1884 7761.5435,-1432.0909 7765.6253,-1441.8678 7770.8314,-1437.1884"/>
 </g>
-<!-- /lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/plated -->
+<!-- /lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/hplated -->
 <g id="node186" class="node">
-<title>/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/plated</title>
-<g id="a_node186"><a xlink:href="tree.html#/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/plated" xlink:title="0=unplated hole; 1=plated hole">
-<ellipse fill="none" stroke="#000000" cx="7843.1838" cy="-1408.3271" rx="38.3684" ry="26.7407"/>
-<text text-anchor="middle" x="7843.1838" y="-1412.1271" font-family="Times,serif" font-size="14.00" fill="#000000">plated</text>
-<text text-anchor="middle" x="7843.1838" y="-1397.1271" font-family="Times,serif" font-size="14.00" fill="#000000">integer</text>
+<title>/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/hplated</title>
+<g id="a_node186"><a xlink:href="tree.html#/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/hplated" xlink:title="0=hole and/or slot is unplated; 1=hole and/or slot is plated">
+<ellipse fill="none" stroke="#000000" cx="7841.1838" cy="-1408.3271" rx="39.6962" ry="26.7407"/>
+<text text-anchor="middle" x="7841.1838" y="-1412.1271" font-family="Times,serif" font-size="14.00" fill="#000000">hplated</text>
+<text text-anchor="middle" x="7841.1838" y="-1397.1271" font-family="Times,serif" font-size="14.00" fill="#000000">integer</text>
 </a>
 </g>
 </g>
-<!-- /lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID&#45;&gt;/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/plated -->
+<!-- /lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID&#45;&gt;/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/hplated -->
 <g id="edge249" class="edge">
-<title>/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID&#45;&gt;/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/plated</title>
-<path fill="none" stroke="#000000" d="M7843.1838,-1492.9184C7843.1838,-1478.6611 7843.1838,-1461.0917 7843.1838,-1445.666"/>
-<polygon fill="#000000" stroke="#000000" points="7846.6839,-1445.3961 7843.1838,-1435.3961 7839.6839,-1445.3962 7846.6839,-1445.3961"/>
+<title>/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID&#45;&gt;/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/hplated</title>
+<path fill="none" stroke="#000000" d="M7841.1838,-1492.9184C7841.1838,-1478.6611 7841.1838,-1461.0917 7841.1838,-1445.666"/>
+<polygon fill="#000000" stroke="#000000" points="7844.6839,-1445.3961 7841.1838,-1435.3961 7837.6839,-1445.3962 7844.6839,-1445.3961"/>
 </g>
 <!-- /lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/name -->
 <g id="node187" class="node">
@@ -3083,8 +3083,8 @@
 <!-- /lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID&#45;&gt;/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/name -->
 <g id="edge250" class="edge">
 <title>/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID&#45;&gt;/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/name</title>
-<path fill="none" stroke="#000000" d="M7864.5015,-1493.7798C7876.1502,-1479.0727 7890.7392,-1460.6532 7903.3869,-1444.6848"/>
-<polygon fill="#000000" stroke="#000000" points="7906.3328,-1446.6025 7909.798,-1436.5904 7900.8455,-1442.2563 7906.3328,-1446.6025"/>
+<path fill="none" stroke="#000000" d="M7862.9805,-1493.7798C7874.9805,-1478.9621 7890.0324,-1460.376 7903.0311,-1444.325"/>
+<polygon fill="#000000" stroke="#000000" points="7906.0409,-1446.1698 7909.6145,-1436.1958 7900.601,-1441.7644 7906.0409,-1446.1698"/>
 </g>
 <!-- /lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/shape -->
 <g id="node188" class="node">
@@ -3098,8 +3098,8 @@
 <!-- /lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID&#45;&gt;/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/shape -->
 <g id="edge251" class="edge">
 <title>/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID&#45;&gt;/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/shape</title>
-<path fill="none" stroke="#000000" d="M7888.5899,-1496.8386C7914.1981,-1482.9273 7946.5093,-1464.6014 7974.1838,-1446.5109 7979.4089,-1443.0953 7984.8088,-1439.3299 7990.0526,-1435.5349"/>
-<polygon fill="#000000" stroke="#000000" points="7992.1423,-1438.3427 7998.1167,-1429.593 7987.9899,-1432.7073 7992.1423,-1438.3427"/>
+<path fill="none" stroke="#000000" d="M7887.3161,-1496.9298C7913.3257,-1483.0475 7946.1297,-1464.7203 7974.1838,-1446.5109 7979.4199,-1443.1122 7984.826,-1439.3563 7990.0727,-1435.5657"/>
+<polygon fill="#000000" stroke="#000000" points="7992.1611,-1438.3745 7998.139,-1429.6271 7988.0109,-1432.7374 7992.1611,-1438.3745"/>
 </g>
 <!-- /lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID/children/shape/children/ps_shape_v4 -->
 <g id="node189" class="node">
@@ -4922,112 +4922,112 @@
 <g id="node304" class="node">
 <title>/lht_tree_doc/comm/data/children/rat.ID/children/x1</title>
 <g id="a_node304"><a xlink:href="tree.html#/lht_tree_doc/comm/data/children/rat.ID/children/x1" xlink:title="line first endpoint, horizontal offset ">
-<ellipse fill="none" stroke="#000000" cx="10487.1838" cy="-1520.6947" rx="33.4697" ry="26.7407"/>
-<text text-anchor="middle" x="10487.1838" y="-1524.4947" font-family="Times,serif" font-size="14.00" fill="#000000">x1</text>
-<text text-anchor="middle" x="10487.1838" y="-1509.4947" font-family="Times,serif" font-size="14.00" fill="#000000">coord</text>
+<ellipse fill="none" stroke="#000000" cx="10478.1838" cy="-1520.6947" rx="33.4697" ry="26.7407"/>
+<text text-anchor="middle" x="10478.1838" y="-1524.4947" font-family="Times,serif" font-size="14.00" fill="#000000">x1</text>
+<text text-anchor="middle" x="10478.1838" y="-1509.4947" font-family="Times,serif" font-size="14.00" fill="#000000">coord</text>
 </a>
 </g>
 </g>
 <!-- /lht_tree_doc/comm/data/children/rat.ID&#45;&gt;/lht_tree_doc/comm/data/children/rat.ID/children/x1 -->
 <g id="edge417" class="edge">
 <title>/lht_tree_doc/comm/data/children/rat.ID&#45;&gt;/lht_tree_doc/comm/data/children/rat.ID/children/x1</title>
-<path fill="none" stroke="#000000" d="M10695.9657,-1623.1909C10651.9032,-1611.9233 10582.6198,-1590.8157 10529.1838,-1558.8784 10524.4256,-1556.0346 10519.7307,-1552.597 10515.3009,-1548.9639"/>
-<polygon fill="#000000" stroke="#000000" points="10517.4948,-1546.2331 10507.6574,-1542.2991 10512.8943,-1551.5091 10517.4948,-1546.2331"/>
+<path fill="none" stroke="#000000" d="M10686.9657,-1623.1909C10642.9032,-1611.9233 10573.6198,-1590.8157 10520.1838,-1558.8784 10515.4256,-1556.0346 10510.7307,-1552.597 10506.3009,-1548.9639"/>
+<polygon fill="#000000" stroke="#000000" points="10508.4948,-1546.2331 10498.6574,-1542.2991 10503.8943,-1551.5091 10508.4948,-1546.2331"/>
 </g>
 <!-- /lht_tree_doc/comm/data/children/rat.ID/children/y1 -->
 <g id="node305" class="node">
 <title>/lht_tree_doc/comm/data/children/rat.ID/children/y1</title>
 <g id="a_node305"><a xlink:href="tree.html#/lht_tree_doc/comm/data/children/rat.ID/children/y1" xlink:title="line first endpoint, vertical offset ">
-<ellipse fill="none" stroke="#000000" cx="10571.1838" cy="-1520.6947" rx="33.4697" ry="26.7407"/>
-<text text-anchor="middle" x="10571.1838" y="-1524.4947" font-family="Times,serif" font-size="14.00" fill="#000000">y1</text>
-<text text-anchor="middle" x="10571.1838" y="-1509.4947" font-family="Times,serif" font-size="14.00" fill="#000000">coord</text>
+<ellipse fill="none" stroke="#000000" cx="10562.1838" cy="-1520.6947" rx="33.4697" ry="26.7407"/>
+<text text-anchor="middle" x="10562.1838" y="-1524.4947" font-family="Times,serif" font-size="14.00" fill="#000000">y1</text>
+<text text-anchor="middle" x="10562.1838" y="-1509.4947" font-family="Times,serif" font-size="14.00" fill="#000000">coord</text>
 </a>
 </g>
 </g>
 <!-- /lht_tree_doc/comm/data/children/rat.ID&#45;&gt;/lht_tree_doc/comm/data/children/rat.ID/children/y1 -->
 <g id="edge418" class="edge">
 <title>/lht_tree_doc/comm/data/children/rat.ID&#45;&gt;/lht_tree_doc/comm/data/children/rat.ID/children/y1</title>
-<path fill="none" stroke="#000000" d="M10704.2897,-1615.0463C10678.2992,-1601.0343 10642.4086,-1580.4102 10613.1838,-1558.8784 10608.9293,-1555.7438 10604.6142,-1552.247 10600.4508,-1548.6773"/>
-<polygon fill="#000000" stroke="#000000" points="10602.4927,-1545.8103 10592.6867,-1541.7986 10597.8507,-1551.0498 10602.4927,-1545.8103"/>
+<path fill="none" stroke="#000000" d="M10695.2897,-1615.0463C10669.2992,-1601.0343 10633.4086,-1580.4102 10604.1838,-1558.8784 10599.9293,-1555.7438 10595.6142,-1552.247 10591.4508,-1548.6773"/>
+<polygon fill="#000000" stroke="#000000" points="10593.4927,-1545.8103 10583.6867,-1541.7986 10588.8507,-1551.0498 10593.4927,-1545.8103"/>
 </g>
 <!-- /lht_tree_doc/comm/data/children/rat.ID/children/x2 -->
 <g id="node306" class="node">
 <title>/lht_tree_doc/comm/data/children/rat.ID/children/x2</title>
 <g id="a_node306"><a xlink:href="tree.html#/lht_tree_doc/comm/data/children/rat.ID/children/x2" xlink:title="line second endpoint, horizontal offset ">
-<ellipse fill="none" stroke="#000000" cx="10655.1838" cy="-1520.6947" rx="33.4697" ry="26.7407"/>
-<text text-anchor="middle" x="10655.1838" y="-1524.4947" font-family="Times,serif" font-size="14.00" fill="#000000">x2</text>
-<text text-anchor="middle" x="10655.1838" y="-1509.4947" font-family="Times,serif" font-size="14.00" fill="#000000">coord</text>
+<ellipse fill="none" stroke="#000000" cx="10646.1838" cy="-1520.6947" rx="33.4697" ry="26.7407"/>
+<text text-anchor="middle" x="10646.1838" y="-1524.4947" font-family="Times,serif" font-size="14.00" fill="#000000">x2</text>
+<text text-anchor="middle" x="10646.1838" y="-1509.4947" font-family="Times,serif" font-size="14.00" fill="#000000">coord</text>
 </a>
 </g>
 </g>
 <!-- /lht_tree_doc/comm/data/children/rat.ID&#45;&gt;/lht_tree_doc/comm/data/children/rat.ID/children/x2 -->
 <g id="edge419" class="edge">
 <title>/lht_tree_doc/comm/data/children/rat.ID&#45;&gt;/lht_tree_doc/comm/data/children/rat.ID/children/x2</title>
-<path fill="none" stroke="#000000" d="M10720.3325,-1607.8447C10708.0281,-1591.385 10691.869,-1569.7688 10678.7225,-1552.1826"/>
-<polygon fill="#000000" stroke="#000000" points="10681.3316,-1549.8272 10672.5409,-1543.9134 10675.725,-1554.0184 10681.3316,-1549.8272"/>
+<path fill="none" stroke="#000000" d="M10711.3325,-1607.8447C10699.0281,-1591.385 10682.869,-1569.7688 10669.7225,-1552.1826"/>
+<polygon fill="#000000" stroke="#000000" points="10672.3316,-1549.8272 10663.5409,-1543.9134 10666.725,-1554.0184 10672.3316,-1549.8272"/>
 </g>
 <!-- /lht_tree_doc/comm/data/children/rat.ID/children/y2 -->
 <g id="node307" class="node">
 <title>/lht_tree_doc/comm/data/children/rat.ID/children/y2</title>
 <g id="a_node307"><a xlink:href="tree.html#/lht_tree_doc/comm/data/children/rat.ID/children/y2" xlink:title="line second endpoint, vertical offset ">
-<ellipse fill="none" stroke="#000000" cx="10739.1838" cy="-1520.6947" rx="33.4697" ry="26.7407"/>
-<text text-anchor="middle" x="10739.1838" y="-1524.4947" font-family="Times,serif" font-size="14.00" fill="#000000">y2</text>
-<text text-anchor="middle" x="10739.1838" y="-1509.4947" font-family="Times,serif" font-size="14.00" fill="#000000">coord</text>
+<ellipse fill="none" stroke="#000000" cx="10730.1838" cy="-1520.6947" rx="33.4697" ry="26.7407"/>
+<text text-anchor="middle" x="10730.1838" y="-1524.4947" font-family="Times,serif" font-size="14.00" fill="#000000">y2</text>
+<text text-anchor="middle" x="10730.1838" y="-1509.4947" font-family="Times,serif" font-size="14.00" fill="#000000">coord</text>
 </a>
 </g>
 </g>
 <!-- /lht_tree_doc/comm/data/children/rat.ID&#45;&gt;/lht_tree_doc/comm/data/children/rat.ID/children/y2 -->
 <g id="edge420" class="edge">
 <title>/lht_tree_doc/comm/data/children/rat.ID&#45;&gt;/lht_tree_doc/comm/data/children/rat.ID/children/y2</title>
-<path fill="none" stroke="#000000" d="M10739.1838,-1605.2859C10739.1838,-1591.0286 10739.1838,-1573.4593 10739.1838,-1558.0335"/>
-<polygon fill="#000000" stroke="#000000" points="10742.6839,-1557.7636 10739.1838,-1547.7637 10735.6839,-1557.7637 10742.6839,-1557.7636"/>
+<path fill="none" stroke="#000000" d="M10730.1838,-1605.2859C10730.1838,-1591.0286 10730.1838,-1573.4593 10730.1838,-1558.0335"/>
+<polygon fill="#000000" stroke="#000000" points="10733.6839,-1557.7636 10730.1838,-1547.7637 10726.6839,-1557.7637 10733.6839,-1557.7636"/>
 </g>
 <!-- /lht_tree_doc/comm/data/children/rat.ID/children/lgrp1 -->
 <g id="node308" class="node">
 <title>/lht_tree_doc/comm/data/children/rat.ID/children/lgrp1</title>
 <g id="a_node308"><a xlink:href="tree.html#/lht_tree_doc/comm/data/children/rat.ID/children/lgrp1" xlink:title="first endpoint&#39;s layer group ID ">
-<ellipse fill="none" stroke="#000000" cx="10828.1838" cy="-1520.6947" rx="38.3684" ry="26.7407"/>
-<text text-anchor="middle" x="10828.1838" y="-1524.4947" font-family="Times,serif" font-size="14.00" fill="#000000">lgrp1</text>
-<text text-anchor="middle" x="10828.1838" y="-1509.4947" font-family="Times,serif" font-size="14.00" fill="#000000">integer</text>
+<ellipse fill="none" stroke="#000000" cx="10819.1838" cy="-1520.6947" rx="38.3684" ry="26.7407"/>
+<text text-anchor="middle" x="10819.1838" y="-1524.4947" font-family="Times,serif" font-size="14.00" fill="#000000">lgrp1</text>
+<text text-anchor="middle" x="10819.1838" y="-1509.4947" font-family="Times,serif" font-size="14.00" fill="#000000">integer</text>
 </a>
 </g>
 </g>
 <!-- /lht_tree_doc/comm/data/children/rat.ID&#45;&gt;/lht_tree_doc/comm/data/children/rat.ID/children/lgrp1 -->
 <g id="edge421" class="edge">
 <title>/lht_tree_doc/comm/data/children/rat.ID&#45;&gt;/lht_tree_doc/comm/data/children/rat.ID/children/lgrp1</title>
-<path fill="none" stroke="#000000" d="M10758.9358,-1608.1242C10771.8746,-1591.7882 10788.9063,-1570.2847 10802.8407,-1552.6917"/>
-<polygon fill="#000000" stroke="#000000" points="10805.9357,-1554.4212 10809.4009,-1544.4091 10800.4484,-1550.075 10805.9357,-1554.4212"/>
+<path fill="none" stroke="#000000" d="M10749.9358,-1608.1242C10762.8746,-1591.7882 10779.9063,-1570.2847 10793.8407,-1552.6917"/>
+<polygon fill="#000000" stroke="#000000" points="10796.9357,-1554.4212 10800.4009,-1544.4091 10791.4484,-1550.075 10796.9357,-1554.4212"/>
 </g>
 <!-- /lht_tree_doc/comm/data/children/rat.ID/children/lgrp2 -->
 <g id="node309" class="node">
 <title>/lht_tree_doc/comm/data/children/rat.ID/children/lgrp2</title>
 <g id="a_node309"><a xlink:href="tree.html#/lht_tree_doc/comm/data/children/rat.ID/children/lgrp2" xlink:title="second endpoint&#39;s layer group ID ">
-<ellipse fill="none" stroke="#000000" cx="10922.1838" cy="-1520.6947" rx="38.3684" ry="26.7407"/>
-<text text-anchor="middle" x="10922.1838" y="-1524.4947" font-family="Times,serif" font-size="14.00" fill="#000000">lgrp2</text>
-<text text-anchor="middle" x="10922.1838" y="-1509.4947" font-family="Times,serif" font-size="14.00" fill="#000000">integer</text>
+<ellipse fill="none" stroke="#000000" cx="10913.1838" cy="-1520.6947" rx="38.3684" ry="26.7407"/>
+<text text-anchor="middle" x="10913.1838" y="-1524.4947" font-family="Times,serif" font-size="14.00" fill="#000000">lgrp2</text>
+<text text-anchor="middle" x="10913.1838" y="-1509.4947" font-family="Times,serif" font-size="14.00" fill="#000000">integer</text>
 </a>
 </g>
 </g>
 <!-- /lht_tree_doc/comm/data/children/rat.ID&#45;&gt;/lht_tree_doc/comm/data/children/rat.ID/children/lgrp2 -->
 <g id="edge422" class="edge">
 <title>/lht_tree_doc/comm/data/children/rat.ID&#45;&gt;/lht_tree_doc/comm/data/children/rat.ID/children/lgrp2</title>
-<path fill="none" stroke="#000000" d="M10775.1602,-1615.7136C10803.1954,-1601.6603 10842.6846,-1580.6767 10875.1838,-1558.8784 10880.1059,-1555.577 10885.1394,-1551.8779 10889.9966,-1548.1164"/>
-<polygon fill="#000000" stroke="#000000" points="10892.3068,-1550.751 10897.9535,-1541.7863 10887.9488,-1545.273 10892.3068,-1550.751"/>
+<path fill="none" stroke="#000000" d="M10766.1602,-1615.7136C10794.1954,-1601.6603 10833.6846,-1580.6767 10866.1838,-1558.8784 10871.1059,-1555.577 10876.1394,-1551.8779 10880.9966,-1548.1164"/>
+<polygon fill="#000000" stroke="#000000" points="10883.3068,-1550.751 10888.9535,-1541.7863 10878.9488,-1545.273 10883.3068,-1550.751"/>
 </g>
 <!-- dup49_/lht_tree_doc/comm/attributes -->
 <g id="node310" class="node">
 <title>dup49_/lht_tree_doc/comm/attributes</title>
 <g id="a_node310"><a xlink:href="tree.html#/lht_tree_doc/comm/attributes" xlink:title=" a hash of attribute key=value pairs ">
-<ellipse fill="none" stroke="#000000" cx="11037.1838" cy="-1520.6947" rx="58.8803" ry="27.6545"/>
-<text text-anchor="middle" x="11037.1838" y="-1524.9947" font-family="Times,serif" font-size="14.00" fill="#000000">ha:attributes</text>
+<ellipse fill="none" stroke="#000000" cx="11028.1838" cy="-1520.6947" rx="58.8803" ry="27.6545"/>
+<text text-anchor="middle" x="11028.1838" y="-1524.9947" font-family="Times,serif" font-size="14.00" fill="#000000">ha:attributes</text>
 </a>
 </g>
 </g>
 <!-- /lht_tree_doc/comm/data/children/rat.ID&#45;&gt;dup49_/lht_tree_doc/comm/attributes -->
 <g id="edge423" class="edge">
 <title>/lht_tree_doc/comm/data/children/rat.ID&#45;&gt;dup49_/lht_tree_doc/comm/attributes</title>
-<path fill="none" stroke="#000000" d="M10781.661,-1622.1096C10828.5354,-1609.3965 10905.7441,-1586.5891 10969.1838,-1558.8784 10976.6864,-1555.6013 10984.4386,-1551.7419 10991.9039,-1547.7581"/>
-<polygon fill="#000000" stroke="#000000" points="10994.0802,-1550.5566 11001.1662,-1542.6801 10990.715,-1544.4185 10994.0802,-1550.5566"/>
+<path fill="none" stroke="#000000" d="M10772.661,-1622.1096C10819.5354,-1609.3965 10896.7441,-1586.5891 10960.1838,-1558.8784 10967.6864,-1555.6013 10975.4386,-1551.7419 10982.9039,-1547.7581"/>
+<polygon fill="#000000" stroke="#000000" points="10985.0802,-1550.5566 10992.1662,-1542.6801 10981.715,-1544.4185 10985.0802,-1550.5566"/>
 </g>
 <!-- dup50_/lht_tree_doc/comm/flags_line -->
 <g id="node312" class="node">
@@ -5041,24 +5041,24 @@
 <!-- /lht_tree_doc/comm/data/children/rat.ID&#45;&gt;dup50_/lht_tree_doc/comm/flags_line -->
 <g id="edge425" class="edge">
 <title>/lht_tree_doc/comm/data/children/rat.ID&#45;&gt;dup50_/lht_tree_doc/comm/flags_line</title>
-<path fill="none" stroke="#000000" d="M10784.1308,-1627.0208C10927.3536,-1607.7701 11372.464,-1547.9424 11524.0357,-1527.5695"/>
-<polygon fill="#000000" stroke="#000000" points="11524.5669,-1531.0297 11534.0115,-1526.2287 11523.6344,-1524.0921 11524.5669,-1531.0297"/>
+<path fill="none" stroke="#000000" d="M10775.3159,-1627.0606C10919.9091,-1607.8327 11371.1103,-1547.8322 11523.9609,-1527.5062"/>
+<polygon fill="#000000" stroke="#000000" points="11524.5658,-1530.9567 11534.0172,-1526.169 11523.643,-1524.0178 11524.5658,-1530.9567"/>
 </g>
 <!-- dup49_/lht_tree_doc/comm/attributes/children/attrib&#45;key -->
 <g id="node311" class="node">
 <title>dup49_/lht_tree_doc/comm/attributes/children/attrib&#45;key</title>
 <g id="a_node311"><a xlink:href="tree.html#/lht_tree_doc/comm/attributes/children/attrib-key" xlink:title="attribute value">
-<ellipse fill="none" stroke="#000000" cx="11037.1838" cy="-1408.3271" rx="48.5816" ry="26.7407"/>
-<text text-anchor="middle" x="11037.1838" y="-1412.1271" font-family="Times,serif" font-size="14.00" fill="#000000">attrib&#45;key</text>
-<text text-anchor="middle" x="11037.1838" y="-1397.1271" font-family="Times,serif" font-size="14.00" fill="#000000">string</text>
+<ellipse fill="none" stroke="#000000" cx="11028.1838" cy="-1408.3271" rx="48.5816" ry="26.7407"/>
+<text text-anchor="middle" x="11028.1838" y="-1412.1271" font-family="Times,serif" font-size="14.00" fill="#000000">attrib&#45;key</text>
+<text text-anchor="middle" x="11028.1838" y="-1397.1271" font-family="Times,serif" font-size="14.00" fill="#000000">string</text>
 </a>
 </g>
 </g>
 <!-- dup49_/lht_tree_doc/comm/attributes&#45;&gt;dup49_/lht_tree_doc/comm/attributes/children/attrib&#45;key -->
 <g id="edge424" class="edge">
 <title>dup49_/lht_tree_doc/comm/attributes&#45;&gt;dup49_/lht_tree_doc/comm/attributes/children/attrib&#45;key</title>
-<path fill="none" stroke="#000000" d="M11037.1838,-1492.9184C11037.1838,-1478.6611 11037.1838,-1461.0917 11037.1838,-1445.666"/>
-<polygon fill="#000000" stroke="#000000" points="11040.6839,-1445.3961 11037.1838,-1435.3961 11033.6839,-1445.3962 11040.6839,-1445.3961"/>
+<path fill="none" stroke="#000000" d="M11028.1838,-1492.9184C11028.1838,-1478.6611 11028.1838,-1461.0917 11028.1838,-1445.666"/>
+<polygon fill="#000000" stroke="#000000" points="11031.6839,-1445.3961 11028.1838,-1435.3961 11024.6839,-1445.3962 11031.6839,-1445.3961"/>
 </g>
 <!-- dup50_/lht_tree_doc/comm/flags_line/children/found -->
 <g id="node313" class="node">
