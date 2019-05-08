@@ -167,7 +167,7 @@ ha:lht_tree_doc { ha:comm {
 				type=li
 				ver = {>=4}
 				li:children {
-					ha:unused          = { valtype=none;  desc={placeholder for markign uunsed slot to keep slot indices for early lihata v4 }}
+					ha:unused          = { valtype=none;  desc={placeholder for marking unused slot to keep slot indices for early lihata v4 }}
 					ha:ps_proto_v4.PID {
 						type=ha
 						desc={padstack prototype specification, as introduced in lihata board v4}

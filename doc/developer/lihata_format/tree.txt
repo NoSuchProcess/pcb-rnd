@@ -408,7 +408,7 @@ ha:data                              Layers and global objects of the board
       dyntext           flag         For text: dynamic string (substitute %patterns%)
       floater           flag         subc part can be moved after subc placing
  li:padstack_prototypes          >=4
-  unused                none         placeholder for markign uunsed slot to keep slot indices for early lihata v4
+  unused                none         placeholder for marking unused slot to keep slot indices for early lihata v4
   ha:ps_proto_v4.PID                 padstack prototype specification, as introduced in lihata board v4
    hdia                 coord        hole diameter; 0 means no hole
    htop                 integer      hole start: copper layer index from the top (positive) or bottom (negative) copper layer (0 means top copper layer)
