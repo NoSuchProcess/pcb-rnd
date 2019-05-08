@@ -42,11 +42,6 @@ typedef struct{
 
 static srchedit_ctx_t srchedit_ctx;
 
-static void srchedit_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
-{
-/*	srchedit_ctx_t *ctx = caller_data;*/
-}
-
 /* Set the right side of the expression from the non-enum value of an widget attr */
 static void set_right(srchedit_ctx_t *ctx, pcb_hid_attribute_t *attr)
 {
@@ -351,7 +346,7 @@ static int srchedit_window(search_expr_t *expr)
 	PCB_DAD_END(ctx->dlg);
 
 	PCB_DAD_DEFSIZE(ctx->dlg, 450, 450);
-	PCB_DAD_NEW("search_expr", ctx->dlg, "pcb-rnd search expression", ctx, pcb_true, srchedit_close_cb);
+	PCB_DAD_NEW("search_expr", ctx->dlg, "pcb-rnd search expression", ctx, pcb_true, NULL);
 
 	if (fill_in_left(ctx) != 1) {
 		srch_expr_set_ops(ctx, op_tab, 1); /* just to get the initial tree widget width */
