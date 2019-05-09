@@ -213,7 +213,7 @@ TODO("subc TODO")
 			PCB_PIN_LOOP(element);
 			{
 				if (strcmp(pin->Number, pname) == 0) {
-					pcb_hidlib_crosshair_move_to(pin->X, pin->Y);
+					pcb_hidlib_crosshair_move_to(pin->X, pin->Y, 0);
 					free(ename);
 					return;
 				}

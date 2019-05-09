@@ -505,7 +505,7 @@ static void ltf_mod_key(XKeyEvent *e, int set, int mainloop)
 	pcb_notify_crosshair_change(pcb_false);
 	if (panning)
 		Pan(2, e->x, e->y);
-	pcb_event_move_crosshair(Px(e->x), Py(e->y));
+	pcb_hidlib_crosshair_move_to(Px(e->x), Py(e->y), 1);
 	pcb_hidlib_adjust_attached_objects();
 	pcb_notify_crosshair_change(pcb_true);
 	in_move_event = 0;
@@ -903,7 +903,7 @@ static void zoom_win(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t
 
 	lesstif_pan_fixup();
 	if (setch)
-		pcb_hidlib_crosshair_move_to((x1+x2)/2, (y1+y2)/2);
+		pcb_hidlib_crosshair_move_to((x1+x2)/2, (y1+y2)/2, 0);
 }
 
 void zoom_by(double factor, pcb_coord_t x, pcb_coord_t y)
@@ -1058,7 +1058,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 			in_move_event = 1;
 			if (panning)
 				Pan(2, pos_x, pos_y);
-			pcb_event_move_crosshair(Px(pos_x), Py(pos_y));
+			pcb_hidlib_crosshair_move_to(Px(pos_x), Py(pos_y), 1);
 			in_move_event = 0;
 		}
 		break;
@@ -1075,7 +1075,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 	case EnterNotify:
 		crosshair_in_window = 1;
 		in_move_event = 1;
-		pcb_event_move_crosshair(Px(e->xcrossing.x), Py(e->xcrossing.y));
+		pcb_hidlib_crosshair_move_to(Px(e->xcrossing.x), Py(e->xcrossing.y), 1);
 		ShowCrosshair(pcb_true);
 		in_move_event = 0;
 		need_redraw = 1;

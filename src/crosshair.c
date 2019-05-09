@@ -1120,7 +1120,7 @@ void pcb_crosshair_set_local_ref(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing)
 	}
 }
 
-void pcb_event_move_crosshair(pcb_coord_t ev_x, pcb_coord_t ev_y)
+static void pcb_event_move_crosshair(pcb_coord_t ev_x, pcb_coord_t ev_y)
 {
 	if (pcb_mid_stroke)
 		pcb_stub_stroke_record(ev_x, ev_y);
@@ -1166,9 +1166,13 @@ void pcb_hidlib_crosshair_restore(void *susp_data)
 }
 
 
-void pcb_hidlib_crosshair_move_to(pcb_coord_t abs_x, pcb_coord_t abs_y)
+void pcb_hidlib_crosshair_move_to(pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot)
 {
-	pcb_notify_crosshair_change(pcb_false);
-	pcb_crosshair_move_absolute(abs_x, abs_y);
-	pcb_notify_crosshair_change(pcb_true);
+	if (!mouse_mot) {
+		pcb_notify_crosshair_change(pcb_false);
+		pcb_crosshair_move_absolute(abs_x, abs_y);
+		pcb_notify_crosshair_change(pcb_true);
+	}
+	else
+		pcb_event_move_crosshair(abs_x, abs_y);
 }

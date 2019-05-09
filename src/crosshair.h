@@ -107,11 +107,6 @@ void pcb_center_display(pcb_coord_t X, pcb_coord_t Y);
 void pcb_crosshair_range_to_buffer(void);
 void pcb_crosshair_set_local_ref(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing);
 
-
-/* Event handler to set the cursor according to the X pointer position
-   called from inside main.c */
-void pcb_event_move_crosshair(pcb_coord_t ev_x, pcb_coord_t ev_y);
-
 /*** utility for plugins ***/
 void pcb_xordraw_attached_line(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t);
 void pcb_xordraw_poly(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, int dash_last);

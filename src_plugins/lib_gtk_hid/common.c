@@ -42,7 +42,7 @@ void ghid_note_event_location(GdkEventButton *ev)
 
 	pcb_gtk_coords_event2pcb(&gport->view, event_x, event_y, &gport->view.pcb_x, &gport->view.pcb_y);
 
-	pcb_event_move_crosshair(gport->view.pcb_x, gport->view.pcb_y);
+	pcb_hidlib_crosshair_move_to(gport->view.pcb_x, gport->view.pcb_y, 1);
 }
 
 static void kbd_input_signals_connect(int idx, void *obj)
