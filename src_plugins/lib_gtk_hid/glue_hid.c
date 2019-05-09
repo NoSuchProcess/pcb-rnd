@@ -139,7 +139,7 @@ static void ghdi_gui_inited(int main, int conf)
 	if (im && ic && first) {
 		first = 0;
 		pcb_event(ghidgui->common.hidlib, PCB_EVENT_GUI_INIT, NULL);
-		pcb_actionl("zoom", NULL);
+		pcb_gtk_zoom_view_win_side(&gport->view, 0, 0, ghidgui->common.hidlib->size_x, ghidgui->common.hidlib->size_y, 0);
 	}
 }
 
