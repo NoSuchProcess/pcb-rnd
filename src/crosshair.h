@@ -78,8 +78,6 @@ typedef struct {                         /* holds crosshair, cursor and crosshai
 	long int *drags;
 	int drags_len, drags_current;
 	pcb_coord_t dragx, dragy;              /* the point where drag started */
-
-	unsigned click_cmd_entry_active:1;     /* true if the command entry was active during a mosue click while actions are executed */
 } pcb_crosshair_t;
 
 

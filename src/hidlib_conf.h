@@ -41,6 +41,10 @@ enum pcb_crosshair_shape_e {
 
 typedef struct {
 
+	struct {
+		CFT_BOOLEAN click_cmd_entry_active;/* true if the command line is active when the user click - this gives the command interpreter a chance to capture the click and use the coords */
+	} temp;
+
 	const struct {                       /* rc */
 		CFT_INTEGER verbose;
 		CFT_INTEGER quiet;                 /* print only errors on stderr */

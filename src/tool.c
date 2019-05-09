@@ -416,7 +416,7 @@ static void default_tool_unreg(void)
 /*** old helpers ***/
 void pcb_release_mode(pcb_hidlib_t *hidlib)
 {
-	if (pcb_crosshair.click_cmd_entry_active && (pcb_cli_mouse(0) == 0))
+	if (pcbhl_conf.temp.click_cmd_entry_active && (pcb_cli_mouse(0) == 0))
 		return;
 
 	pcb_tool_release_mode(hidlib);
@@ -429,7 +429,7 @@ void pcb_release_mode(pcb_hidlib_t *hidlib)
 
 void pcb_notify_mode(pcb_hidlib_t *hidlib)
 {
-	if (pcb_crosshair.click_cmd_entry_active && (pcb_cli_mouse(1) == 0))
+	if (pcbhl_conf.temp.click_cmd_entry_active && (pcb_cli_mouse(1) == 0))
 		return;
 
 	if (conf_core.temp.rat_warn)
