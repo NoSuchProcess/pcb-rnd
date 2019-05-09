@@ -404,11 +404,13 @@ static void calc_dialog_deps(void)
 		hook_custom_arg("buildin-draw_csect", NULL);
 		hook_custom_arg("buildin-draw_fontsel", NULL);
 		hook_custom_arg("buildin-dialogs", NULL);
+		hook_custom_arg("buildin-lib_hid_pcbui", NULL);
 	}
 	else if (plugin) {
 		hook_custom_arg("plugin-draw_csect", NULL);
 		hook_custom_arg("plugin-draw_fontsel", NULL);
 		hook_custom_arg("plugin-dialogs", NULL);
+		hook_custom_arg("plugin-lib_hid_pcbui", NULL);
 	}
 }
 
