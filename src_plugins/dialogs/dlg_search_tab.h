@@ -94,7 +94,7 @@ static expr_wizard_op_t right_const_tab[] = {
 };
 
 static const expr_wizard_t expr_tab[] = {
-	{"@.id",              "object ID",        &op_tab[OPS_ANY], RIGHT_INT, NULL},
+	{"@.ID",              "object ID",        &op_tab[OPS_ANY], RIGHT_INT, NULL},
 	{"@.type",            "object type",      &op_tab[OPS_EQ],  RIGHT_CONST, &right_const_tab[RC_OBJTYPE]},
 
 	{NULL,                "bounding box",     NULL,             0, NULL},
