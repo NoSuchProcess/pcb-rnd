@@ -53,7 +53,7 @@ typedef struct {
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
-	int wexpr_str;
+	int wexpr_str, wwizard;
 	int wrowbox[MAX_ROW];
 	int wexpr[MAX_ROW][MAX_COL]; /* expression framed box */
 	int wexpr_lab[MAX_ROW][MAX_COL]; /* the label within the expression box */
@@ -64,6 +64,8 @@ typedef struct{
 	int visible[MAX_ROW][MAX_COL];
 	search_expr_t expr[MAX_ROW][MAX_COL];
 } search_ctx_t;
+
+#define WIZ(ctx) (ctx->dlg[ctx->wwizard].default_val.int_value)
 
 #include "dlg_search_edit.c"
 
@@ -88,7 +90,9 @@ static void vspacer(search_ctx_t *ctx)
 
 static void update_vis(search_ctx_t *ctx)
 {
-	int c, r;
+	int c, r, wen;
+
+	wen = WIZ(ctx);
 
 	for(r = 0; r < MAX_ROW; r++) {
 		pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wrowbox[r],!ctx->visible[r][0]);
@@ -96,11 +100,16 @@ static void update_vis(search_ctx_t *ctx)
 			pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wexpr[r][c], !ctx->visible[r][c]);
 			if (c > 0)
 				pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wor[r][c], !((ctx->visible[r][c-1] && ctx->visible[r][c])));
+			pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wexpr_del[r][c], wen);
+			pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wexpr_edit[r][c], wen);
 		}
 		pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wnew_or[r], !ctx->visible[r][0]);
 		if (r > 0)
 			pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wand[r], !((ctx->visible[r-1][0] && ctx->visible[r][0])));
+		pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wnew_or[r], wen);
 	}
+	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wnew_and, wen);
+	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wexpr_str, !wen);
 }
 
 /* look up row and col for a widget attr in a [row][col] widget idx array; returns 0 on success */
@@ -233,6 +242,14 @@ static void search_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	}
 }
 
+static void search_enable_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	search_ctx_t *ctx = caller_data;
+	if (WIZ(ctx))
+		search_recompile(ctx); /* overwrite the edit box just in case the user had something custom in it */
+	update_vis(ctx);
+}
+
 static void search_append_col_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	search_ctx_t *ctx = caller_data;
@@ -313,6 +330,9 @@ static void search_window_create(void)
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				PCB_DAD_LABEL(ctx->dlg, "Enable the wizard:");
 				PCB_DAD_BOOL(ctx->dlg, "");
+					ctx->wwizard = PCB_DAD_CURRENT(ctx->dlg);
+					PCB_DAD_DEFAULT_NUM(ctx->dlg, 1);
+					PCB_DAD_CHANGE_CB(ctx->dlg, search_enable_cb);
 			PCB_DAD_END(ctx->dlg);
 			for(row = 0; row < MAX_ROW; row++) {
 				if (row > 0) {
