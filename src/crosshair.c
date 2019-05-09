@@ -1058,9 +1058,6 @@ void pcb_crosshair_init(void)
 	pcb_hid_set_line_cap(pcb_crosshair.GC, pcb_cap_round);
 	pcb_hid_set_line_width(pcb_crosshair.GC, 1);
 
-	/* set initial shape */
-	pcb_crosshair.shape = pcb_ch_shape_basic;
-
 	/* set default limits */
 	pcb_crosshair.MinX = pcb_crosshair.MinY = 0;
 	pcb_crosshair.MaxX = PCB->hidlib.size_x;

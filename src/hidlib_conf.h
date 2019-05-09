@@ -30,6 +30,13 @@
 #include "conf.h"
 #include "color.h"
 
+enum pcb_crosshair_shape_e {
+	pcb_ch_shape_basic       = 0,    /*  4-ray */
+	pcb_ch_shape_union_jack  = 1,    /*  8-ray */
+	pcb_ch_shape_dozen       = 2,    /* 12-ray */
+	pcb_ch_shape_NUM
+};
+
 /* to @conf_gen.sh: begin hidlib */
 
 typedef struct {
@@ -79,6 +86,7 @@ typedef struct {
 		CFT_BOOLEAN draw_grid;             /* draw grid points */
 		CFT_BOOLEAN auto_place;            /* force placement of GUI windows (dialogs), trying to override the window manager */
 		CFT_BOOLEAN fullscreen;            /* hide widgets to make more room for the drawing */
+		CFT_INTEGER crosshair_shape_idx;   /* crosshair shape as defined in pcb_crosshair_shape_e */
 
 		const struct {
 			CFT_BOOLEAN flip_x;              /* view: flip the board along the X (horizontal) axis */

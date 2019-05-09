@@ -669,7 +669,7 @@ static void pcb_gl_draw_crosshair(pcb_hidlib_t *hidlib, GLint x, GLint y, GLint 
 		pcb_gl_draw_slanted_cross(hidlib, x, y, z);
 	if (prev == pcb_ch_shape_dozen)
 		pcb_gl_draw_dozen_cross(hidlib, x, y, z);
-	prev = pcb_crosshair.shape;
+	prev = pcbhl_conf.editor.crosshair_shape_idx;
 }
 
 static void ghid_gl_show_crosshair(pcb_hidlib_t *hidlib, gboolean paint_new_location)

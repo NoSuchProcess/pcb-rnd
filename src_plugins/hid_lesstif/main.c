@@ -1170,9 +1170,9 @@ static void draw_dozen_cross(GC xor_gc, int x, int y, int view_width, int view_h
 static void draw_crosshair(GC xor_gc, int x, int y, int view_width, int view_height)
 {
 	draw_right_cross(xor_gc, x, y, view_width, view_height);
-	if (pcb_crosshair.shape == pcb_ch_shape_union_jack)
+	if (pcbhl_conf.editor.crosshair_shape_idx == pcb_ch_shape_union_jack)
 		draw_slanted_cross(xor_gc, x, y, view_width, view_height);
-	if (pcb_crosshair.shape == pcb_ch_shape_dozen)
+	if (pcbhl_conf.editor.crosshair_shape_idx == pcb_ch_shape_dozen)
 		draw_dozen_cross(xor_gc, x, y, view_width, view_height);
 }
 

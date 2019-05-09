@@ -161,9 +161,9 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		case F_CycleCrosshair:
 			pcb_notify_crosshair_change(pcb_false);
-			pcb_crosshair.shape = CrosshairShapeIncrement(pcb_crosshair.shape);
-			if (pcb_ch_shape_NUM == pcb_crosshair.shape)
-				pcb_crosshair.shape = pcb_ch_shape_basic;
+			conf_setf(CFR_CLI, "editor/crosshair_shape_idx", 0, "%d", CrosshairShapeIncrement(pcbhl_conf.editor.crosshair_shape_idx));
+			if (pcb_ch_shape_NUM == pcbhl_conf.editor.crosshair_shape_idx)
+				conf_set(CFR_CLI, "editor/crosshair_shape_idx", 0, "0", POL_OVERWRITE);
 			pcb_notify_crosshair_change(pcb_true);
 			break;
 

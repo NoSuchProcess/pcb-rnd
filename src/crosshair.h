@@ -58,13 +58,6 @@ typedef struct {
 	pcb_coord_t X, Y;
 } pcb_mark_t;
 
-enum pcb_crosshair_shape_e {
-	pcb_ch_shape_basic = 0,     /*  4-ray */
-	pcb_ch_shape_union_jack,    /*  8-ray */
-	pcb_ch_shape_dozen,         /* 12-ray */
-	pcb_ch_shape_NUM
-};
-
 typedef struct {                         /* holds crosshair, cursor and crosshair-attachment information */
 	pcb_hid_gc_t GC;                       /* GC for cursor drawing */
 	pcb_hid_gc_t AttachGC;                 /* and for displaying buffer contents */
@@ -77,7 +70,6 @@ typedef struct {                         /* holds crosshair, cursor and crosshai
 	int AttachedPolygon_pts;               /* number of valid points ever seen for this poly */
 	pcb_attached_object_t AttachedObject;  /* data of attached objects */
 	pcb_route_t Route;                     /* Calculated line route in LINE or MOVE(LINE) mode */ 
-	enum pcb_crosshair_shape_e shape;      /* shape of crosshair */
 	vtop_t onpoint_objs;
 	vtop_t old_onpoint_objs;
 	pcb_pstk_t *snapped_pstk;
