@@ -37,6 +37,8 @@
 #define MAX_ROW 8
 #define MAX_COL 4
 
+static const char *search_acts[] = { "select", "unselect", NULL };
+
 #define NEW_EXPR_LAB "<edit me>"
 
 /* for debugging: */
@@ -53,7 +55,7 @@ typedef struct {
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
-	int wexpr_str, wwizard;
+	int wexpr_str, wwizard, wact;
 	int wrowbox[MAX_ROW];
 	int wexpr[MAX_ROW][MAX_COL]; /* expression framed box */
 	int wexpr_lab[MAX_ROW][MAX_COL]; /* the label within the expression box */
@@ -287,6 +289,14 @@ static void search_append_row_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 	pcb_message(PCB_MSG_ERROR, "Too many expression rows, can not add more\n");
 }
 
+static void search_apply_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	search_ctx_t *ctx = caller_data;
+	if (ctx->dlg[ctx->wexpr_str].default_val.str_value != NULL)
+		pcb_actionl("query", search_acts[ctx->dlg[ctx->wact].default_val.int_value], ctx->dlg[ctx->wexpr_str].default_val.str_value, NULL);
+}
+
+
 static const char *icon_del[] = {
 "5 5 2 1",
 " 	c None",
@@ -312,7 +322,6 @@ static const char *icon_edit[] = {
 static void search_window_create(void)
 {
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
-	static const char *acts[] = { "select", "unselect", NULL };
 	search_ctx_t *ctx = calloc(sizeof(search_ctx_t), 1);
 	int row, col;
 
@@ -323,7 +332,8 @@ static void search_window_create(void)
 			ctx->wexpr_str = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Action on the results:");
-			PCB_DAD_ENUM(ctx->dlg, acts);
+			PCB_DAD_ENUM(ctx->dlg, search_acts);
+				ctx->wact = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME | PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
@@ -384,6 +394,7 @@ static void search_window_create(void)
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
 			PCB_DAD_BUTTON(ctx->dlg, "Apply");
+				PCB_DAD_CHANGE_CB(ctx->dlg, search_apply_cb);
 				PCB_DAD_HELP(ctx->dlg, "Execute the search expression\nusing the selected action");
 			hspacer(ctx);
 			PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
