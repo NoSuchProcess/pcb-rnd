@@ -36,7 +36,6 @@
 #include "compat_misc.h"
 
 #include "../src_plugins/lib_gtk_common/dlg_library.h"
-#include "../src_plugins/lib_gtk_common/dlg_search.h"
 
 static const char *ghid_act_cookie = "gtk HID actions";
 
@@ -76,7 +75,7 @@ static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_message(PCB_MSG_ERROR, "Please use the new drc action instead\n");
 	}
 	else if (strcmp(a, "7") == 0 || pcb_strcasecmp(a, "Search") == 0) {
-		ghid_search_window_show(gport->top_window, raise);
+		pcb_actionl("SearchDialog", NULL);
 	}
 	else {
 		PCB_ACT_FAIL(DoWindows);
