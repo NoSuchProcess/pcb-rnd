@@ -71,9 +71,20 @@ typedef struct{
 
 #include "dlg_search_edit.c"
 
+static void free_expr(search_expr_t *e)
+{
+	free(e->right);
+	memset(e, 0, sizeof(search_expr_t));
+}
+
 static void search_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
+	int r, c;
 	search_ctx_t *ctx = caller_data;
+	for(r = 0; r < MAX_ROW; r++)
+		for(c = 0; c < MAX_COL; c++)
+			free_expr(&ctx->expr[r][c]);
+	free(ctx);
 }
 
 static void hspacer(search_ctx_t *ctx)
@@ -141,12 +152,6 @@ static int r_lookup(search_ctx_t *ctx, int w[MAX_ROW], pcb_hid_attribute_t *attr
 		}
 	}
 	return -1;
-}
-
-static void free_expr(search_expr_t *e)
-{
-	free(e->right);
-	memset(e, 0, sizeof(search_expr_t));
 }
 
 static void append_expr(gds_t *dst, search_expr_t *e, int sepchar)
