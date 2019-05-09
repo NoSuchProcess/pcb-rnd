@@ -96,7 +96,7 @@ static void srch_expr_set_ops(srchedit_ctx_t *ctx, const expr_wizard_op_t *op, i
 	for(o = op->ops; *o != NULL; o++) {
 		cell[0] = pcb_strdup_printf(*o);
 		r = pcb_dad_tree_append(attr, NULL, cell);
-		r->user_data = *o;
+		r->user_data = (void *)(*o); /* will be casted back to const char * only */
 		if ((!click) && (ctx->se.op == *o))
 			cur = r;
 	}
