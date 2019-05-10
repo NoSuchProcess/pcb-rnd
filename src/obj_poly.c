@@ -39,6 +39,7 @@
 #include "rotate.h"
 #include "search.h"
 #include "hid_inlines.h"
+#include "hid_draw_helpers.h"
 
 #include "conf_core.h"
 
@@ -1207,9 +1208,9 @@ void pcb_poly_draw_(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_term_g
 		polygon = trpoly;
 	}
 
-	if ((pcb_gui->thindraw_pcb_polygon != NULL) && (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw))
+	if ((conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw))
 	{
-		pcb_gui->thindraw_pcb_polygon(pcb_draw_out.fgGC, polygon, info->drawn_area);
+		pcb_dhlp_thindraw_pcb_polygon(pcb_draw_out.fgGC, polygon, info->drawn_area);
 	}
 	else {
 		if ((allow_term_gfx) && pcb_draw_term_need_gfx(polygon) && pcb_draw_term_hid_permission()) {
@@ -1235,11 +1236,11 @@ TODO("subc: check if x;y is within the poly, but use a cheaper method than the o
 	}
 
 	/* If checking planes, thin-draw any pieces which have been clipped away */
-	if (pcb_gui->thindraw_pcb_polygon != NULL && conf_core.editor.check_planes && !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, polygon)) {
+	if (conf_core.editor.check_planes && !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, polygon)) {
 		pcb_poly_t poly = *polygon;
 
 		for (poly.Clipped = polygon->Clipped->f; poly.Clipped != polygon->Clipped; poly.Clipped = poly.Clipped->f)
-			pcb_gui->thindraw_pcb_polygon(pcb_draw_out.fgGC, &poly, info->drawn_area);
+			pcb_dhlp_thindraw_pcb_polygon(pcb_draw_out.fgGC, &poly, info->drawn_area);
 	}
 
 	if (polygon->term != NULL) {
