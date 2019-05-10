@@ -36,6 +36,7 @@
 #include "event.h"
 #include "layer.h"
 #include "layer_grp.h"
+#include "layer_ui.h"
 #include "hidlib_conf.h"
 
 #include "layersel.h"
@@ -115,7 +116,7 @@ static void layersel_create_global(layersel_ctx_t *ls, pcb_board_t *pcb)
 	}
 }
 
-/* hardwired/virtual: typically Non-editable groups */
+/* hardwired/virtual: typically Non-editable layers (no group) */
 static void layersel_create_virtual(layersel_ctx_t *ls, pcb_board_t *pcb)
 {
 	const pcb_menu_layers_t *ml;
@@ -123,6 +124,23 @@ static void layersel_create_virtual(layersel_ctx_t *ls, pcb_board_t *pcb)
 	layersel_begin_grp(ls, "Virtual");
 	for(ml = pcb_menu_layers; ml->name != NULL; ml++)
 		layersel_create_layer(ls, ml->name);
+	layersel_end_grp(ls);
+}
+
+/* user-interface layers (no group) */
+static void layersel_create_ui(layersel_ctx_t *ls, pcb_board_t *pcb)
+{
+		int n;
+
+	if (vtp0_len(&pcb_uilayers) <= 0)
+		return;
+
+	layersel_begin_grp(ls, "UI");
+	for(n = 0; n < vtp0_len(&pcb_uilayers); n++) {
+		pcb_layer_t *ly = pcb_uilayers.array[n];
+		if ((ly != NULL) && (ly->name != NULL))
+			layersel_create_layer(ls, ly->name);
+	}
 	layersel_end_grp(ls);
 }
 
@@ -142,6 +160,7 @@ static void layersel_docked_create(layersel_ctx_t *ls, pcb_board_t *pcb)
 		layersel_create_global(&layersel, pcb);
 		hsep(&layersel);
 		layersel_create_virtual(&layersel, pcb);
+		layersel_create_ui(&layersel, pcb);
 	PCB_DAD_END(ls->sub.dlg);
 }
 
