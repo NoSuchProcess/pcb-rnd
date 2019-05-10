@@ -34,6 +34,7 @@
 #include "hid_dad.h"
 
 #include "board.h"
+#include "data.h"
 #include "event.h"
 #include "layer.h"
 #include "layer_grp.h"
@@ -147,7 +148,9 @@ static void layersel_create_layer(layersel_ctx_t *ls, ls_layer_t *lys, const cha
 
 	PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
 		PCB_DAD_PICTURE(ls->sub.dlg, lys->on.xpm);
+			lys->wvis_on = PCB_DAD_CURRENT(ls->sub.dlg);
 		PCB_DAD_PICTURE(ls->sub.dlg, lys->off.xpm);
+			lys->wvis_off = PCB_DAD_CURRENT(ls->sub.dlg);
 		PCB_DAD_LABEL(ls->sub.dlg, name);
 	PCB_DAD_END(ls->sub.dlg);
 }
@@ -268,6 +271,40 @@ static void layersel_docked_create(layersel_ctx_t *ls, pcb_board_t *pcb)
 	PCB_DAD_END(ls->sub.dlg);
 }
 
+static void layersel_update_vis(layersel_ctx_t *ls, pcb_board_t *pcb)
+{
+	pcb_layer_t *ly = pcb->Data->Layer;
+	ls_layer_t **lys = ls->real_layer.array;
+	const pcb_menu_layers_t *ml;
+	pcb_cardinal_t n;
+
+	if (lys == NULL)
+		return;
+
+	for(n = 0; n < pcb->Data->LayerN; n++,ly++,lys++) {
+		if (*lys == NULL)
+			continue;
+		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lys)->wvis_on, !ly->meta.real.vis);
+		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lys)->wvis_off, !!ly->meta.real.vis);
+	}
+
+
+	lys = ls->menu_layer.array;
+	for(ml = pcb_menu_layers; ml->name != NULL; ml++,lys++) {
+		if (*lys == NULL)
+			continue;
+		pcb_bool *b = (pcb_bool *)((char *)PCB + ml->vis_offs);
+		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lys)->wvis_on, !(*b));
+		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lys)->wvis_off, !!(*b));
+	}
+
+	lys = ls->ui_layer.array;
+	for(n = 0; n < vtp0_len(&pcb_uilayers); n++,lys++) {
+		pcb_layer_t *ly = pcb_uilayers.array[n];
+		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lys)->wvis_on, !ly->meta.real.vis);
+		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lys)->wvis_off, !!ly->meta.real.vis);
+	}
+}
 
 void pcb_layersel_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
@@ -275,18 +312,18 @@ void pcb_layersel_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, p
 		layersel_docked_create(&layersel, PCB);
 		if (pcb_hid_dock_enter(&layersel.sub, PCB_HID_DOCK_LEFT, "layersel") == 0) {
 			layersel.sub_inited = 1;
-/*			layersel_pcb2dlg(&layersel, PCB);*/
+			layersel_update_vis(&layersel, PCB);
 		}
 	}
 }
 
 void pcb_layersel_vis_chg_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
-/*	layersel_pcb2dlg(&layersel, PCB);*/
+	layersel_update_vis(&layersel, PCB);
 }
 
 void pcb_layersel_stack_chg_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 TODO("rebuild the whole widget");
-/*	layersel_pcb2dlg(&layersel, PCB);*/
+	layersel_update_vis(&layersel, PCB);
 }
