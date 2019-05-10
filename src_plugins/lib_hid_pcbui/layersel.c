@@ -48,6 +48,52 @@ typedef struct {
 
 static layersel_ctx_t layersel;
 
+typedef struct {
+	char buf[32][20];
+	const char *xpm[32];
+} gen_xpm_t;
+
+typedef struct {
+	int wvis_on, wvis_off, wlab;
+	gen_xpm_t on, off;
+} ls_layer_t;
+
+/* draw a visibility box: filled or partially filled with layer color */
+static void layer_vis_box(gen_xpm_t *dst, int filled, const pcb_color_t *color, int brd, int hatch)
+{
+	int width = 16, height = 16, max_height = 16;
+	char *p;
+	unsigned int w, line = 0, n;
+
+	strcpy(dst->buf[line++], "16 16 4 1");
+	strcpy(dst->buf[line++], ".	c None");
+	strcpy(dst->buf[line++], "u	c None");
+	pcb_sprintf(dst->buf[line++], "b	c #000000");
+	pcb_sprintf(dst->buf[line++], "c	c #%02X%02X%02X", color->r, color->g, color->b);
+
+	while (height--) {
+		w = width;
+		p = dst->buf[line++];
+		while (w--) {
+			if ((height < brd) || (height >= max_height-brd) || (w < brd) || (w >= width-brd))
+				*p = 'b'; /* frame */
+			else if ((hatch) && (((w - height) % 4) == 0))
+				*p = '.';
+			else if ((width-w+5 < height) || (filled))
+				*p = 'c'; /* layer color fill (full or up-left triangle) */
+			else
+				*p = 'u'; /* the unfilled part when triangle should be transparent */
+			p++;
+		}
+		*p = '\0';
+	}
+
+	for(n=0; n < line; n++) {
+		dst->xpm[n] = dst->buf[n];
+/*		printf("  \"%s\"\n", dst->xpm[n]);*/
+	}
+}
+
 static void layersel_begin_grp(layersel_ctx_t *ls, const char *name)
 {
 	PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
@@ -70,9 +116,15 @@ static void layersel_end_grp(layersel_ctx_t *ls)
 	PCB_DAD_END(ls->sub.dlg);
 }
 
-static void layersel_create_layer(layersel_ctx_t *ls, const char *name)
+static void layersel_create_layer(layersel_ctx_t *ls, const char *name, const pcb_color_t *color, int brd, int hatch)
 {
+	static ls_layer_t tmp;
+
+	layer_vis_box(&tmp.on, 1, color, brd, hatch);
+	layer_vis_box(&tmp.off, 0, color, brd, hatch);
+
 	PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
+		PCB_DAD_PICTURE(ls->sub.dlg, tmp.on.xpm);
 		PCB_DAD_LABEL(ls->sub.dlg, name);
 	PCB_DAD_END(ls->sub.dlg);
 }
@@ -85,8 +137,22 @@ static void layersel_create_grp(layersel_ctx_t *ls, pcb_board_t *pcb, pcb_layerg
 	for(n = 0; n < g->len; n++) {
 		pcb_layer_t *ly = pcb_get_layer(pcb->Data, g->lid[n]);
 		assert(ly != NULL);
-		if (ly != NULL)
-			layersel_create_layer(ls, ly->name);
+		if (ly != NULL) {
+			int brd = (((ly != NULL) && (ly->comb & PCB_LYC_SUB)) ? 2 : 1);
+			int hatch = (((ly != NULL) && (ly->comb & PCB_LYC_AUTO)) ? 1 : 0);
+			const pcb_color_t *clr = &ly->meta.real.color;
+
+/*			static pcb_color_t clr_invalid;
+			static int clr_invalid_inited = 0;
+			if (ly == NULL)
+				clr = &clr_invalid;
+			if (!clr_invalid_inited) {
+				pcb_color_load_str(&clr_invalid, "#aaaa00");
+				clr_invalid_inited = 1;
+			}
+*/
+			layersel_create_layer(ls, ly->name, clr, brd, hatch);
+		}
 	}
 	layersel_end_grp(ls);
 }
@@ -124,7 +190,7 @@ static void layersel_create_virtual(layersel_ctx_t *ls, pcb_board_t *pcb)
 
 	layersel_begin_grp(ls, "Virtual");
 	for(ml = pcb_menu_layers; ml->name != NULL; ml++)
-		layersel_create_layer(ls, ml->name);
+		layersel_create_layer(ls, ml->name, ml->force_color, 1, 0);
 	layersel_end_grp(ls);
 }
 
@@ -140,7 +206,7 @@ static void layersel_create_ui(layersel_ctx_t *ls, pcb_board_t *pcb)
 	for(n = 0; n < vtp0_len(&pcb_uilayers); n++) {
 		pcb_layer_t *ly = pcb_uilayers.array[n];
 		if ((ly != NULL) && (ly->name != NULL))
-			layersel_create_layer(ls, ly->name);
+			layersel_create_layer(ls, ly->name, &ly->meta.real.color, 1, 0);
 	}
 	layersel_end_grp(ls);
 }
