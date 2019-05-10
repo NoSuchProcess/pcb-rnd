@@ -889,8 +889,8 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 
 	ghid_gl_invalidate_current_gc();
 
-	pcb_draw_attached(0);
-	pcb_draw_mark(0);
+	pcbhl_draw_attached(hidlib, 0);
+	pcbhl_draw_marks(hidlib, 0);
 	drawgl_flush();
 
 	ghid_gl_show_crosshair(hidlib, TRUE);

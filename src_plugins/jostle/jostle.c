@@ -44,8 +44,6 @@ double pcb_vect_dist2(pcb_vector_t v1, pcb_vector_t v2);
         t = (a)[1], (a)[1] = (b)[1], (b)[1] = t; \
 }
 
-/*{if (!pcb_marked.status && side==NORTHWEST) { pcb_draw_mark(pcb_true); pcb_marked.status = True; pcb_marked.X = p[0]; pcb_marked.Y = p[1]; pcb_draw_mark(False);} }*/
-
 enum {
 	JNORTH,
 	JNORTHEAST,

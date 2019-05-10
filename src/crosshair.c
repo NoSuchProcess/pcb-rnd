@@ -469,10 +469,7 @@ void pcb_xordraw_movecopy(void)
 		pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icc", 0, dx, dy );
 }
 
-/* ---------------------------------------------------------------------------
- * draws additional stuff that follows the crosshair
- */
-void pcb_draw_attached(pcb_bool inhibit_drawing_mode)
+void pcbhl_draw_attached(pcb_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
 {
 	if (!inhibit_drawing_mode) {
 		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, 1, NULL);
@@ -497,7 +494,7 @@ void pcb_draw_attached(pcb_bool inhibit_drawing_mode)
 }
 
 
-void pcb_draw_mark(pcb_bool inhibit_drawing_mode)
+void pcbhl_draw_marks(pcb_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
 {
 	pcb_coord_t ms = conf_core.appearance.mark_size;
 

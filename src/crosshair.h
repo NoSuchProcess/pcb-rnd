@@ -93,8 +93,6 @@ extern pcb_mark_t pcb_marked;
 
 void pcb_notify_crosshair_change(pcb_bool changes_complete);
 void pcb_notify_mark_change(pcb_bool changes_complete);
-void pcb_draw_attached(pcb_bool inhibit_drawing_mode);
-void pcb_draw_mark(pcb_bool inhibit_drawing_mode);
 void pcb_crosshair_move_relative(pcb_coord_t, pcb_coord_t);
 pcb_bool pcb_crosshair_move_absolute(pcb_coord_t, pcb_coord_t);
 void pcb_crosshair_set_range(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t);

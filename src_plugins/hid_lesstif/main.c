@@ -1065,8 +1065,8 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 	case LeaveNotify:
 		crosshair_in_window = 0;
 		if (crosshair_on)
-			pcb_draw_attached(1);
-		pcb_draw_mark(1);
+			pcbhl_draw_attached(ltf_hidlib, 1);
+		pcbhl_draw_marks(ltf_hidlib, 1);
 		ShowCrosshair(pcb_false);
 		need_idle_proc();
 		break;
@@ -2017,8 +2017,8 @@ static Boolean idle_proc(XtPointer dummy)
 		pixmap = window;
 		need_redraw = 0;
 		if (crosshair_on) {
-			pcb_draw_attached(1);
-			pcb_draw_mark(1);
+			pcbhl_draw_attached(ltf_hidlib, 1);
+			pcbhl_draw_marks(ltf_hidlib, 1);
 		}
 	}
 
@@ -2195,7 +2195,7 @@ static void lesstif_notify_crosshair_change(pcb_hidlib_t *hidlib, pcb_bool chang
 	if (invalidate_depth == 0 && crosshair_on) {
 		save_pixmap = pixmap;
 		pixmap = window;
-		pcb_draw_attached(1);
+		pcbhl_draw_attached(hidlib, 1);
 		pixmap = save_pixmap;
 	}
 
@@ -2225,7 +2225,7 @@ static void lesstif_notify_mark_change(pcb_hidlib_t *hidlib, pcb_bool changes_co
 	if (invalidate_depth == 0 && crosshair_on) {
 		save_pixmap = pixmap;
 		pixmap = window;
-		pcb_draw_mark(1);
+		pcbhl_draw_marks(hidlib, 1);
 		pixmap = save_pixmap;
 	}
 
