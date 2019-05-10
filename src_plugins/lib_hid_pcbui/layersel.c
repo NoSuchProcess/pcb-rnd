@@ -42,6 +42,11 @@
 
 #include "layersel.h"
 
+static const char *grpsep[] = { /* 8 pixel high transparent for spacing */
+	"1 8 1 1",
+	".	c None",
+	".",".",".",".",".",".",".","."
+};
 
 typedef struct {
 	char buf[32][20];
@@ -121,6 +126,7 @@ static void layersel_begin_grp(layersel_ctx_t *ls, const char *name)
 
 		/* layer list box */
 		PCB_DAD_BEGIN_VBOX(ls->sub.dlg);
+			PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_TIGHT);
 }
 
 static void layersel_end_grp(layersel_ctx_t *ls)
@@ -175,11 +181,19 @@ static void layersel_create_stack(layersel_ctx_t *ls, pcb_board_t *pcb)
 {
 	pcb_layergrp_id_t gid;
 	pcb_layergrp_t *g;
+	pcb_cardinal_t created = 0;
 
 	for(gid = 0, g = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,g++) {
 		if (!(PCB_LAYER_IN_STACK(g->ltype)) || (g->ltype & PCB_LYT_SUBSTRATE))
 			continue;
+		if (created > 0) {
+			PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
+				PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_PICTURE(ls->sub.dlg, grpsep);
+			PCB_DAD_END(ls->sub.dlg);
+		}
 		layersel_create_grp(ls, pcb, g, gid);
+		created++;
 	}
 }
 
