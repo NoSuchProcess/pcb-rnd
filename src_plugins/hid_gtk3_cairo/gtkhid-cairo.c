@@ -206,7 +206,7 @@ static void end_subcomposite(void)
 	priv->cr = priv->cr_target;
 }
 
-static int ghid_cairo_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
+static int ghid_cairo_set_layer_group(pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
 	/* draw anything */
 	return 1;
@@ -393,7 +393,7 @@ static void ghid_cairo_draw_grid_local_(pcb_coord_t cx, pcb_coord_t cy, int radi
 static int grid_local_have_old = 0, grid_local_old_r = 0;
 static pcb_coord_t grid_local_old_x, grid_local_old_y;
 
-static void ghid_cairo_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy)
+static void ghid_cairo_draw_grid_local(pcb_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy)
 {
 	if (grid_local_have_old) {
 		ghid_cairo_draw_grid_local_(grid_local_old_x, grid_local_old_y, grid_local_old_r);
@@ -417,7 +417,7 @@ static void ghid_cairo_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy)
 	grid_local_old_r = conf_hid_gtk.plugins.hid_gtk.local_grid.radius;
 }
 
-static void ghid_cairo_draw_grid(void)
+static void ghid_cairo_draw_grid(pcb_hidlib_t *hidlib)
 {
 	render_priv_t *priv = gport->render_priv;
 	cairo_t *cr = priv->cr_target;
@@ -450,7 +450,7 @@ TODO("gtk3: deal with gc")
 	gdk_cairo_set_source_rgba(cr, &priv->grid_color);
 
 	if (conf_hid_gtk.plugins.hid_gtk.local_grid.enable) {
-		ghid_cairo_draw_grid_local(grid_local_old_x, grid_local_old_y);
+		ghid_cairo_draw_grid_local(hidlib, grid_local_old_x, grid_local_old_y);
 		cairo_restore(cr);
 		return;
 	}
@@ -1007,7 +1007,7 @@ static void erase_with_background_color(cairo_t * cr, GdkRGBA * bg_color)
 	cairo_paint_with_alpha(cr, 1.0);
 }
 
-static void redraw_region(GdkRectangle * rect)
+static void redraw_region(pcb_hidlib_t *hidlib, GdkRectangle *rect)
 {
 	int eleft, eright, etop, ebottom;
 	pcb_hid_expose_ctx_t ctx;
@@ -1092,7 +1092,7 @@ static void redraw_region(GdkRectangle * rect)
 	ghid_cairo_draw_bg_image();
 
 	pcb_hid_expose_all(pcb_gui, &ctx, NULL);
-	ghid_cairo_draw_grid();
+	ghid_cairo_draw_grid(hidlib);
 
 	/* Draws "GUI" information on top of design */
 	priv->cr = priv->cr_drawing_area;
@@ -1106,7 +1106,7 @@ static void redraw_region(GdkRectangle * rect)
 	ghid_cairo_screen_update();
 }
 
-static void ghid_cairo_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
+static void ghid_cairo_invalidate_lr(pcb_hidlib_t *hidlib, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
 {
 	int dleft, dright, dtop, dbottom;
 	int minx, maxx, miny, maxy;
@@ -1127,17 +1127,17 @@ static void ghid_cairo_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_co
 	rect.width = maxx - minx;
 	rect.height = maxy - miny;
 
-	redraw_region(&rect);
+	redraw_region(hidlib, &rect);
 }
 
-static void ghid_cairo_invalidate_all()
+static void ghid_cairo_invalidate_all(pcb_hidlib_t *hidlib)
 {
 	if (ghidgui && ghidgui->topwin.menu.menu_bar) {
-		redraw_region(NULL);
+		redraw_region(hidlib, NULL);
 	}
 }
 
-static void ghid_cairo_notify_crosshair_change(pcb_bool changes_complete)
+static void ghid_cairo_notify_crosshair_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
 {
 	render_priv_t *priv = gport->render_priv;
 
@@ -1153,12 +1153,12 @@ static void ghid_cairo_notify_crosshair_change(pcb_bool changes_complete)
 
 	if (changes_complete && gport->drawing_area != NULL && priv->attached_invalidate_depth <= 0) {
 		/* Queues a GTK redraw when changes are complete */
-		ghid_cairo_invalidate_all();
+		ghid_cairo_invalidate_all(hidlib);
 		priv->attached_invalidate_depth = 0;
 	}
 }
 
-static void ghid_cairo_notify_mark_change(pcb_bool changes_complete)
+static void ghid_cairo_notify_mark_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
 {
 	render_priv_t *priv = gport->render_priv;
 
@@ -1176,7 +1176,7 @@ static void ghid_cairo_notify_mark_change(pcb_bool changes_complete)
 		   As we know the mark will have been shown already, we must
 		   repaint the entire view to be sure not to leave an artefact.
 		 */
-		ghid_cairo_invalidate_all();
+		ghid_cairo_invalidate_all(hidlib);
 		return;
 	}
 
