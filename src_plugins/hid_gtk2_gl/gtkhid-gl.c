@@ -519,7 +519,7 @@ static void ghid_gl_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t *poly, const pc
 {
 	USE_GC(gc);
 
-	hidgl_fill_pcb_polygon(poly->Clipped, clip_box, gport->view.coord_per_px);
+	hidgl_fill_pcb_polygon(poly->Clipped, clip_box, gport->view.coord_per_px, PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, poly));
 }
 
 static void ghid_gl_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t *poly, const pcb_box_t *clip_box)

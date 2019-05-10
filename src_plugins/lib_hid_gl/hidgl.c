@@ -715,13 +715,12 @@ static pcb_r_dir_t do_hole(const pcb_box_t *b, void *cl)
 }
 
 
-void hidgl_fill_pcb_polygon(pcb_polyarea_t *poly, const pcb_box_t *clip_box, double scale)
+void hidgl_fill_pcb_polygon(pcb_polyarea_t *poly, const pcb_box_t *clip_box, double scale, int fullpoly)
 {
 	int vertex_count = 0;
 	pcb_pline_t *contour;
 	struct do_hole_info info;
 	pcb_polyarea_t *p_area;
-	const int fullpoly = PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, poly);
 
 	info.scale = scale;
 	global_scale = scale;
