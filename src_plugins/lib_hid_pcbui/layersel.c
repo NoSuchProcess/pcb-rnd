@@ -53,6 +53,7 @@ static void layersel_begin_grp(layersel_ctx_t *ls, const char *name)
 	PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
 		/* vertical group name */
 		PCB_DAD_LABEL(ls->sub.dlg, name);
+			PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_TIGHT | PCB_HATF_TEXT_VERTICAL | PCB_HATF_TEXT_TRUNCATED);
 		
 		/* vert sep */
 		PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
