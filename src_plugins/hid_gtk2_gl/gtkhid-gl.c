@@ -522,18 +522,6 @@ static void ghid_gl_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polyarea_t *poly, cons
 	hidgl_fill_pcb_polygon(poly, clip_box, gport->view.coord_per_px, fullpoly);
 }
 
-static void ghid_gl_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t *poly, const pcb_box_t *clip_box)
-{
-	pcb_dhlp_thindraw_pcb_polygon(gc, poly, clip_box);
-	/* Disable thindraw poly filling until it is fixed. The poly fill overwrites lines and
-	 * arcs that are drawn underneath.
-	 * 
-	 ghid_gl_set_alpha_mult(gc, 0.25);
-	 ghid_gl_fill_pcb_polygon(gc, poly, clip_box);
-	 ghid_gl_set_alpha_mult(gc, 1.0);
-	 */
-}
-
 static void ghid_gl_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	USE_GC(gc);
@@ -723,7 +711,6 @@ static void ghid_gl_init_renderer(int *argc, char ***argv, void *vport)
 	/* Setup HID function pointers specific to the GL renderer */
 	gtk2_gl_hid.end_layer = ghid_gl_end_layer;
 	gtk2_gl_hid.fill_pcb_polygon = ghid_gl_fill_pcb_polygon;
-	gtk2_gl_hid.thindraw_pcb_polygon = ghid_gl_thindraw_pcb_polygon;
 }
 
 static void ghid_gl_shutdown_renderer(void *p)

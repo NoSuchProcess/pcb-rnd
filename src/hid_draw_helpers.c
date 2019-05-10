@@ -224,7 +224,6 @@ void pcb_dhlp_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t * poly, const pcb
 
 void pcb_dhlp_draw_helpers_init(pcb_hid_t * hid)
 {
-TODO("Remove this: nogui should leave these NULL");
+TODO("Remove this: nogui should leave this NULL");
 	hid->fill_pcb_polygon      = NULL;
-	hid->thindraw_pcb_polygon  = pcb_dhlp_thindraw_pcb_polygon;
 }

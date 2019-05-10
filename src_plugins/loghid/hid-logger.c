@@ -190,12 +190,6 @@ static void log_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polyarea_t *poly, const pc
 	delegatee_->fill_pcb_polygon(gc, poly, clip_box, fullpoly);
 }
 
-static void log_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t *poly, const pcb_box_t *clip_box)
-{
-	pcb_fprintf(out_, "thindraw_pcb_polygon(gc, poly->PointN=%d, ...)\n", poly->PointN);
-	delegatee_->thindraw_pcb_polygon(gc, poly, clip_box);
-}
-
 static void log_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	pcb_fprintf(out_, "fill_rect(gc, %mm, %mm, %mm, %mm)\n", x1, y1, x2, y2);
@@ -251,7 +245,6 @@ void create_log_hid(FILE *log_out, pcb_hid_t *loghid, pcb_hid_t *delegatee)
 	REGISTER_IF_NOT_NULL(fill_polygon);
 	REGISTER_IF_NOT_NULL(fill_polygon_offs);
 	REGISTER_IF_NOT_NULL(fill_pcb_polygon);
-	REGISTER_IF_NOT_NULL(thindraw_pcb_polygon);
 	REGISTER_IF_NOT_NULL(fill_rect);
 	REGISTER_IF_NOT_NULL(beep);
 
