@@ -715,7 +715,7 @@ static pcb_r_dir_t do_hole(const pcb_box_t *b, void *cl)
 }
 
 
-void hidgl_fill_pcb_polygon(pcb_poly_t *poly, const pcb_box_t *clip_box, double scale)
+void hidgl_fill_pcb_polygon(pcb_polyarea_t *poly, const pcb_box_t *clip_box, double scale)
 {
 	int vertex_count = 0;
 	pcb_pline_t *contour;
@@ -726,8 +726,8 @@ void hidgl_fill_pcb_polygon(pcb_poly_t *poly, const pcb_box_t *clip_box, double 
 	info.scale = scale;
 	global_scale = scale;
 
-	if (poly->Clipped == NULL) {
-		fprintf(stderr, "hidgl_fill_pcb_polygon: poly->Clipped == NULL\n");
+	if (poly == NULL) {
+		fprintf(stderr, "hidgl_fill_pcb_polygon: polyarea == NULL\n");
 		return;
 	}
 
@@ -735,12 +735,12 @@ void hidgl_fill_pcb_polygon(pcb_poly_t *poly, const pcb_box_t *clip_box, double 
 
 	/* Walk the polygon structure, counting vertices */
 	/* This gives an upper bound on the amount of storage required */
-	p_area = poly->Clipped;
+	p_area = poly;
 	do {
 		for(contour = p_area->contours; contour != NULL; contour = contour->next)
 			vertex_count = MAX(vertex_count, contour->Count);
 		p_area = p_area->f;
-	} while(fullpoly && (p_area != poly->Clipped));
+	} while(fullpoly && (p_area != poly));
 
 	/* Allocate a vertex buffer */
 	info.vertices = malloc(sizeof(GLdouble) * vertex_count * 3);
@@ -756,7 +756,7 @@ void hidgl_fill_pcb_polygon(pcb_poly_t *poly, const pcb_box_t *clip_box, double 
 	 * of the island's cutouts are drawn to the stencil buffer as a '1'. Then the island
 	 * is drawn and areas where the stencil is set to a '1' are masked and not drawn.
 	 */
-	p_area = poly->Clipped;
+	p_area = poly;
 	do {
 
 		/* Create a MASK (stencil). All following drawing will affect the mask only */
@@ -779,7 +779,7 @@ void hidgl_fill_pcb_polygon(pcb_poly_t *poly, const pcb_box_t *clip_box, double 
 		drawgl_flush();
 
 		p_area = p_area->f;
-	} while(fullpoly && (p_area != poly->Clipped));
+	} while(fullpoly && (p_area != poly));
 
 	gluDeleteTess(info.tobj);
 	myFreeCombined();
