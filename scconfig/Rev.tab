@@ -1,3 +1,4 @@
+25354	configure	hidlib: rewrite the gtk-only layer selector using generic DAD
 25350	configure	hidlib: polygon vs. HID API cleanup
 25331	configure	new, DAD-based search dialog
 25261	configure	hidlib: various lesstif fixes

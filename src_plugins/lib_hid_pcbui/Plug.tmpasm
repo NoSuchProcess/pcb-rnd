@@ -6,6 +6,7 @@ put /local/pcb/mod/OBJS [@
   $(PLUGDIR)/lib_hid_pcbui/toolbar.o
   $(PLUGDIR)/lib_hid_pcbui/status.o
   $(PLUGDIR)/lib_hid_pcbui/act.o
+  $(PLUGDIR)/lib_hid_pcbui/layersel.o
 @]
 
 switch /local/pcb/lib_hid_pcbui/controls

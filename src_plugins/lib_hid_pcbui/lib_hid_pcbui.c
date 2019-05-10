@@ -32,6 +32,7 @@
 #include "event.h"
 
 #include "layer_menu.h"
+#include "layersel.h"
 #include "routest.h"
 #include "toolbar.h"
 #include "status.h"
@@ -52,6 +53,7 @@ static const char *status_rd_cookie = "lib_hid_pcbui/status/readouts";
 static const char *rendering_cookie = "lib_hid_pcbui/rendering";
 static const char *infobar_cookie = "lib_hid_pcbui/infobar";
 static const char *title_cookie = "lib_hid_pcbui/title";
+static const char *layersel_cookie = "lib_hid_pcbui/layersel";
 
 static pcb_action_t rst_action_list[] = {
 	{"AdjustStyle", pcb_act_AdjustStyle, pcb_acth_AdjustStyle, pcb_acts_AdjustStyle}
@@ -91,6 +93,7 @@ void pplg_uninit_lib_hid_pcbui(void)
 	pcb_event_unbind_allcookie(rendering_cookie);
 	pcb_event_unbind_allcookie(infobar_cookie);
 	pcb_event_unbind_allcookie(title_cookie);
+	pcb_event_unbind_allcookie(layersel_cookie);
 	conf_hid_unreg(rst_cookie);
 	conf_hid_unreg(toolbar_cookie);
 	conf_hid_unreg(status_cookie);
@@ -142,9 +145,12 @@ TODO("padstack: remove some paths when route style has proto")
 
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, pcb_layer_menu_update_ev, NULL, layer_cookie);
 	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, pcb_layer_menu_update_ev, NULL, layer_cookie);
+	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, pcb_layersel_stack_chg_ev, NULL, layersel_cookie);
 	pcb_event_bind(PCB_EVENT_LAYERVIS_CHANGED, pcb_layer_menu_vis_update_ev, NULL, layer_cookie);
+	pcb_event_bind(PCB_EVENT_LAYERVIS_CHANGED, pcb_layersel_vis_chg_ev, NULL, layersel_cookie);
 	pcb_event_bind(PCB_EVENT_ROUTE_STYLES_CHANGED, pcb_rst_update_ev, NULL, rst_cookie);
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, pcb_rst_update_ev, NULL, rst_cookie);
+	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_layersel_gui_init_ev, NULL, layersel_cookie);
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_rst_gui_init_ev, NULL, rst_cookie);
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_toolbar_gui_init_ev, NULL, toolbar_cookie);
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_status_gui_init_ev, NULL, status_cookie);
