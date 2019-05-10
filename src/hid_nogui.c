@@ -159,11 +159,6 @@ static void nogui_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, p
 	CRASH("fill_polygon");
 }
 
-static void nogui_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polyarea_t *poly, const pcb_box_t *clip_box, int fullpoly)
-{
-	CRASH("fill_pcb_polygon");
-}
-
 static void nogui_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	CRASH("fill_rect");
@@ -498,7 +493,7 @@ void pcb_hid_nogui_init(pcb_hid_t * hid)
 	hid->draw_rect = nogui_draw_rect;
 	hid->fill_circle = nogui_fill_circle;
 	hid->fill_polygon = nogui_fill_polygon;
-	hid->fill_pcb_polygon = nogui_fill_pcb_polygon;
+	hid->fill_pcb_polygon = NULL;
 	hid->fill_rect = nogui_fill_rect;
 	hid->calibrate = nogui_calibrate;
 	hid->shift_is_pressed = nogui_shift_is_pressed;

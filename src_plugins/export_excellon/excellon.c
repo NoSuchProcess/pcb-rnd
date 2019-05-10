@@ -480,7 +480,6 @@ int pplg_init_export_excellon(void)
 	memset(&excellon_hid, 0, sizeof(excellon_hid));
 
 	pcb_hid_nogui_init(&excellon_hid);
-	pcb_dhlp_draw_helpers_init(&excellon_hid);
 
 	excellon_hid.struct_size = sizeof(excellon_hid);
 	excellon_hid.name = "excellon";

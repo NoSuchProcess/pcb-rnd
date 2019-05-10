@@ -563,7 +563,6 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	memset(dst, 0, sizeof(pcb_hid_t));
 
 	pcb_hid_nogui_init(dst);
-	pcb_dhlp_draw_helpers_init(dst);
 
 	dst->struct_size = sizeof(pcb_hid_t);
 	dst->gui = 1;

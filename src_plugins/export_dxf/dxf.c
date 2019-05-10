@@ -536,7 +536,6 @@ int pplg_init_export_dxf(void)
 	memset(&dxf_hid, 0, sizeof(pcb_hid_t));
 
 	pcb_hid_nogui_init(&dxf_hid);
-	pcb_dhlp_draw_helpers_init(&dxf_hid);
 
 	dxf_hid.struct_size = sizeof(pcb_hid_t);
 	dxf_hid.name = "dxf";

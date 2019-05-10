@@ -221,9 +221,3 @@ void pcb_dhlp_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t * poly, const pcb
 	thindraw_contour(gc, poly->Clipped->contours);
 	pcb_poly_holes(poly, clip_box, thindraw_hole_cb, gc);
 }
-
-void pcb_dhlp_draw_helpers_init(pcb_hid_t * hid)
-{
-TODO("Remove this: nogui should leave this NULL");
-	hid->fill_pcb_polygon      = NULL;
-}

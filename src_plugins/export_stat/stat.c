@@ -401,7 +401,6 @@ int pplg_init_export_stat(void)
 	memset(&stat_hid, 0, sizeof(pcb_hid_t));
 
 	pcb_hid_nogui_init(&stat_hid);
-	pcb_dhlp_draw_helpers_init(&stat_hid);
 
 	stat_hid.struct_size = sizeof(pcb_hid_t);
 	stat_hid.name = "stat";

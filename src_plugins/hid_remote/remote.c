@@ -391,7 +391,6 @@ int pplg_init_hid_remote(void)
 	memset(&remote_hid, 0, sizeof(pcb_hid_t));
 
 	pcb_hid_nogui_init(&remote_hid);
-	pcb_dhlp_draw_helpers_init(&remote_hid);
 
 	remote_hid.struct_size = sizeof(pcb_hid_t);
 	remote_hid.name = "remote";

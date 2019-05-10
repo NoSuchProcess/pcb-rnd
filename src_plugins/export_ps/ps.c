@@ -1514,7 +1514,6 @@ int pplg_init_export_ps(void)
 	memset(&ps_hid, 0, sizeof(pcb_hid_t));
 
 	pcb_hid_nogui_init(&ps_hid);
-	pcb_dhlp_draw_helpers_init(&ps_hid);
 	ps_ps_init(&ps_hid);
 
 	ps_hid.struct_size = sizeof(pcb_hid_t);

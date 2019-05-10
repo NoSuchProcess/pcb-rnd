@@ -374,7 +374,6 @@ int pplg_init_export_fidocadj(void)
 	memset(&fidocadj_hid, 0, sizeof(pcb_hid_t));
 
 	pcb_hid_nogui_init(&fidocadj_hid);
-	pcb_dhlp_draw_helpers_init(&fidocadj_hid);
 
 	fidocadj_hid.struct_size = sizeof(pcb_hid_t);
 	fidocadj_hid.name = "fidocadj";

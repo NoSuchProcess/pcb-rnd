@@ -372,7 +372,6 @@ int pplg_init_hid_batch(void)
 	memset(&batch_hid, 0, sizeof(pcb_hid_t));
 
 	pcb_hid_nogui_init(&batch_hid);
-	pcb_dhlp_draw_helpers_init(&batch_hid);
 
 	batch_hid.struct_size = sizeof(pcb_hid_t);
 	batch_hid.name = "batch";
