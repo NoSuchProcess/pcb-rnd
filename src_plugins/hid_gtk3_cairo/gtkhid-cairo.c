@@ -1293,7 +1293,7 @@ static void draw_crosshair(cairo_t * xor_gc, gint x, gint y)
 		draw_slanted_cross(xor_gc, x, y);
 	if (prev == pcb_ch_shape_dozen)
 		draw_dozen_cross(xor_gc, x, y);
-	prev = pcb_crosshair.shape;
+	prev = pcbhl_conf.editor.crosshair_shape_idx;
 }
 
 static void show_crosshair(gboolean paint_new_location)
