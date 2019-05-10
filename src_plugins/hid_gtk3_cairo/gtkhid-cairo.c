@@ -35,7 +35,6 @@
 #include "data.h"
 #include "layer.h"
 #include "grid.h"
-#include "hid_draw_helpers.h"
 #include "hid_attrib.h"
 #include "hid_color.h"
 #include "funchash_core.h"

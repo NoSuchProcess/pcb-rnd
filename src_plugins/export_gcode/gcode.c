@@ -63,7 +63,6 @@
 #include "hid.h"
 #include <gd.h>
 #include "hid_nogui.h"
-#include "hid_draw_helpers.h"
 #include "gcode.h"
 #include "bitmap.h"
 #include "curve.h"

@@ -31,7 +31,6 @@
 
 #include "hid.h"
 #include "hid_nogui.h"
-#include "hid_draw_helpers.h"
 #include "hid_cfg.h"
 #include "lesstif.h"
 #include "hid_cfg_input.h"

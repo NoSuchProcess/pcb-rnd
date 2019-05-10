@@ -53,7 +53,6 @@
 
 #include "hid.h"
 #include "hid_nogui.h"
-#include "hid_draw_helpers.h"
 #include "png.h"
 
 /* the gd library which makes this all so easy */

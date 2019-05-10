@@ -58,7 +58,6 @@
 
 #include "hid.h"
 #include "hid_nogui.h"
-#include "hid_draw_helpers.h"
 
 #include "hid_init.h"
 #include "hid_attrib.h"

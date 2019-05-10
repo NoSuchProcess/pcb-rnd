@@ -4,7 +4,6 @@
 
 #include "crosshair.h"
 #include "draw.h"
-#include "hid_draw_helpers.h"
 #include "hid_attrib.h"
 #include "hid_color.h"
 #include "hidlib_conf.h"
@@ -23,7 +22,6 @@
 #include "../src_plugins/lib_hid_gl/draw_gl.h"
 #include <gtk/gtkgl.h>
 #include "../src_plugins/lib_hid_gl/hidgl.h"
-#include "hid_draw_helpers.h"
 #include "../src_plugins/lib_hid_gl/stencil_gl.h"
 
 #include "../src_plugins/lib_gtk_common/hid_gtk_conf.h"

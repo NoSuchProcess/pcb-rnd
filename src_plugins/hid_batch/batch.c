@@ -16,7 +16,6 @@
 #include "conf_core.h"
 #include "hidlib_conf.h"
 
-#include "hid_draw_helpers.h"
 #include "hid_nogui.h"
 #include "actions.h"
 #include "hid_init.h"

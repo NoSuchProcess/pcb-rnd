@@ -50,7 +50,6 @@
 #include "hid_cam.h"
 #include "hid_attrib.h"
 #include "hid_init.h"
-#include "hid_draw_helpers.h"
 #include "../src_plugins/lib_polyhelp/topoly.h"
 #include "mesh.h"
 
