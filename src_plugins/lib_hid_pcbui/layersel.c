@@ -84,6 +84,11 @@ static ls_layer_t *lys_get(layersel_ctx_t *ls, vtp0_t *vt, size_t idx, int alloc
 	return *res;
 }
 
+static void layer_vis_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	printf("layer vis!\n");
+}
+
 /* draw a visibility box: filled or partially filled with layer color */
 static void layer_vis_box(gen_xpm_t *dst, int filled, const pcb_color_t *color, int brd, int hatch)
 {
@@ -149,9 +154,12 @@ static void layersel_create_layer(layersel_ctx_t *ls, ls_layer_t *lys, const cha
 	PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
 		PCB_DAD_PICTURE(ls->sub.dlg, lys->on.xpm);
 			lys->wvis_on = PCB_DAD_CURRENT(ls->sub.dlg);
+			PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_vis_cb);
 		PCB_DAD_PICTURE(ls->sub.dlg, lys->off.xpm);
 			lys->wvis_off = PCB_DAD_CURRENT(ls->sub.dlg);
+			PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_vis_cb);
 		PCB_DAD_LABEL(ls->sub.dlg, name);
+			PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_vis_cb);
 	PCB_DAD_END(ls->sub.dlg);
 }
 
