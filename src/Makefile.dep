@@ -718,22 +718,22 @@
  ../src_plugins/dialogs/dlg_pref_conf.c misc_util.h \
  ../src_plugins/dialogs/dlg_pref_confedit.c
 ../src_plugins/dialogs/dlg_search.o: ../src_plugins/dialogs/dlg_search.c \
- ../config.h actions.h hid.h ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h error.h global_typedefs.h \
- pcb_bool.h unit.h attrib.h layer.h globalconst.h color.h \
+ ../config.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h data_parent.h \
+ ../src_3rd/genvector/genvector_undef.h actions.h hid.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h error.h global_typedefs.h pcb_bool.h unit.h \
+ attrib.h layer.h globalconst.h color.h obj_common.h flag.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
- ../src_3rd/genvector/gds_char.h ../src_3rd/libfungw/fungw.h \
- ../src_3rd/genht/htpp.h conf_hid.h conf.h pcb-printf.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
- hid_dad.h compat_misc.h hid_attrib.h event.h hidlib.h error.h \
- ../src_plugins/dialogs/dlg_search_tab.h \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h conf_hid.h conf.h \
+ pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
+ list_conf.h hid_dad.h compat_misc.h hid_attrib.h event.h hidlib.h \
+ error.h ../src_plugins/dialogs/dlg_search_tab.h \
  ../src_plugins/dialogs/dlg_search_edit.c hid_dad_tree.h hid_dad.h \
  ../src_3rd/genht/hash.h
 ../src_plugins/dialogs/dlg_view.o: ../src_plugins/dialogs/dlg_view.c \
@@ -1000,8 +1000,7 @@
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h compat_misc.h \
  compat_fs.h misc_util.h funchash_core.h funchash.h funchash_core_list.h \
- rtree.h hid.h hid_attrib.h hid_nogui.h hid_draw_helpers.h hid_init.h \
- hid_cam.h hid_attrib.h
+ rtree.h hid.h hid_attrib.h hid_nogui.h hid_init.h hid_cam.h hid_attrib.h
 ../src_plugins/export_bom/bom.o: ../src_plugins/export_bom/bom.c \
  ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h unit.h \
  pcb-printf.h ../src_3rd/genvector/gds_char.h \
@@ -1051,9 +1050,8 @@
  vtpadstack_t.h error.h buffer.h change.h draw.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h pcb-printf.h polygon.h \
  compat_misc.h layer.h safe_fs.h conf.h pcb-printf.h \
- ../src_3rd/liblihata/lihata.h list_conf.h netlist2.h hid.h \
- hid_draw_helpers.h hid_nogui.h actions.h hid_init.h \
- ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/liblihata/lihata.h list_conf.h netlist2.h hid.h hid_nogui.h \
+ actions.h hid_init.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h hid_attrib.h hid_cam.h hid_attrib.h plugins.h \
  ../src_3rd/puplug/error.h obj_line.h obj_pstk_inlines.h data.h thermal.h \
@@ -1085,8 +1083,8 @@
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h pcb-printf.h compat_misc.h \
  ../src_plugins/export_dxf/lht_template.h safe_fs.h funchash_core.h \
- funchash.h funchash_core_list.h hid.h hid_nogui.h hid_draw_helpers.h \
- hid_init.h hid_attrib.h hid_color.h hid_cam.h hid_attrib.h \
+ funchash.h funchash_core_list.h hid.h hid_nogui.h hid_init.h \
+ hid_attrib.h hid_color.h hid_cam.h hid_attrib.h \
  ../src_plugins/export_dxf/dxf_draw.c dolists.h
 ../src_plugins/export_dxf/dxf_templ_lht.o: \
  ../src_plugins/export_dxf/dxf_templ_lht.c
@@ -1122,9 +1120,8 @@
  hid_attrib.h hid_cam.h hid_attrib.h hid_init.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h hid_nogui.h hid_draw_helpers.h plugins.h \
- ../src_3rd/puplug/error.h funchash_core.h funchash.h \
- funchash_core_list.h conf_core.h \
+ ../src_3rd/puplug/libs.h hid_nogui.h plugins.h ../src_3rd/puplug/error.h \
+ funchash_core.h funchash.h funchash_core_list.h conf_core.h \
  ../src_plugins/export_excellon/excellon_conf.h conf.h \
  ../src_plugins/export_excellon/excellon.h \
  ../src_plugins/export_excellon/aperture.h \
@@ -1154,8 +1151,8 @@
  plugins.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h pcb-printf.h \
- compat_misc.h plug_io.h safe_fs.h hid.h hid_nogui.h hid_draw_helpers.h \
- hid_init.h hid_attrib.h hid_color.h hid_cam.h hid_attrib.h \
+ compat_misc.h plug_io.h safe_fs.h hid.h hid_nogui.h hid_init.h \
+ hid_attrib.h hid_color.h hid_cam.h hid_attrib.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h dolists.h
 ../src_plugins/export_gcode/curve.o: ../src_plugins/export_gcode/curve.c \
  ../config.h ../src_plugins/export_gcode/potracelib.h \
@@ -1194,7 +1191,7 @@
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h hid_cam.h \
  hid_attrib.h layer.h layer_vis.h compat_misc.h safe_fs.h hid.h \
- hid_nogui.h hid_draw_helpers.h ../src_plugins/export_gcode/gcode.h \
+ hid_nogui.h ../src_plugins/export_gcode/gcode.h \
  ../src_plugins/export_gcode/bitmap.h \
  ../src_plugins/export_gcode/potracelib.h \
  ../src_plugins/export_gcode/curve.h \
@@ -1238,8 +1235,8 @@
  ../src_3rd/liblihata/lihata.h list_conf.h macro.h funchash_core.h \
  funchash.h funchash_core_list.h \
  ../src_plugins/export_gerber/gerber_conf.h conf.h hid.h hid_nogui.h \
- hid_draw_helpers.h hid_init.h hid_attrib.h hid_inlines.h conf_core.h \
- hidlib_conf.h ../src_plugins/export_excellon/aperture.h \
+ hid_init.h hid_attrib.h hid_inlines.h conf_core.h hidlib_conf.h \
+ ../src_plugins/export_excellon/aperture.h \
  ../src_plugins/export_excellon/excellon.h \
  ../src_plugins/export_excellon/aperture.h \
  ../src_plugins/export_gerber/gerber_conf_fields.h
@@ -1350,7 +1347,7 @@
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h safe_fs.h layer_vis.h obj_subc_parent.h \
  obj_pstk_inlines.h thermal.h hid.h actions.h hid_nogui.h hid_cam.h \
- hid_attrib.h hid_attrib.h hid_init.h hid_draw_helpers.h \
+ hid_attrib.h hid_attrib.h hid_init.h \
  ../src_plugins/lib_polyhelp/topoly.h obj_common.h \
  ../src_plugins/export_openems/mesh.h layer.h vtc0.h vtr0.h \
  ../src_plugins/export_openems/excitation.c hid_dad.h compat_misc.h \
@@ -1406,8 +1403,8 @@
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h safe_fs.h \
  obj_pstk_inlines.h data.h thermal.h funchash_core.h funchash.h \
- funchash_core_list.h hid.h hid_nogui.h hid_draw_helpers.h hid_init.h \
- actions.h hid_attrib.h hid_color.h hid_cam.h hid_attrib.h \
+ funchash_core_list.h hid.h hid_nogui.h hid_init.h actions.h hid_attrib.h \
+ hid_color.h hid_cam.h hid_attrib.h \
  ../src_plugins/export_openscad/scad_draw.c \
  ../src_plugins/export_openscad/../lib_polyhelp/topoly.h obj_common.h \
  plug_io.h ../src_plugins/export_openscad/scad_models.c dolists.h
@@ -1437,8 +1434,8 @@
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h safe_fs.h \
  funchash_core.h funchash.h funchash_core_list.h hid.h hid_nogui.h \
- hid_draw_helpers.h ../src_plugins/export_png/png.h hid_init.h \
- hid_attrib.h hid_color.h hid_cam.h hid_attrib.h dolists.h
+ ../src_plugins/export_png/png.h hid_init.h hid_attrib.h hid_color.h \
+ hid_cam.h hid_attrib.h dolists.h
 ../src_plugins/export_ps/eps.o: ../src_plugins/export_ps/eps.c \
  ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h unit.h \
  pcb-printf.h ../src_3rd/genvector/gds_char.h \
@@ -1461,7 +1458,7 @@
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h layer.h \
- layer_vis.h pcb-printf.h safe_fs.h hid.h hid_nogui.h hid_draw_helpers.h \
+ layer_vis.h pcb-printf.h safe_fs.h hid.h hid_nogui.h \
  ../src_plugins/export_ps/ps.h hid_init.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h hid_attrib.h \
@@ -1493,9 +1490,9 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h hid_cam.h \
  hid_attrib.h safe_fs.h conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h \
  list_conf.h funchash_core.h funchash.h funchash_core_list.h layer_vis.h \
- hid.h hid_nogui.h hid_draw_helpers.h ../src_plugins/export_ps/ps.h \
- hid_init.h hid_attrib.h actions.h conf_core.h compat_misc.h stub_draw.h \
- draw.h ../src_plugins/lib_compat_help/media.h dolists.h
+ hid.h hid_nogui.h ../src_plugins/export_ps/ps.h hid_init.h hid_attrib.h \
+ actions.h conf_core.h compat_misc.h stub_draw.h draw.h \
+ ../src_plugins/lib_compat_help/media.h dolists.h
 ../src_plugins/export_stat/stat.o: ../src_plugins/export_stat/stat.c \
  ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h unit.h \
  pcb-printf.h ../src_3rd/genvector/gds_char.h \
@@ -1522,8 +1519,8 @@
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h pcb-printf.h \
  compat_misc.h plug_io.h safe_fs.h obj_pstk_inlines.h thermal.h hid.h \
- hid_nogui.h hid_draw_helpers.h hid_init.h hid_attrib.h hid_color.h \
- hid_cam.h hid_attrib.h dolists.h
+ hid_nogui.h hid_init.h hid_attrib.h hid_color.h hid_cam.h hid_attrib.h \
+ dolists.h
 ../src_plugins/export_svg/svg.o: ../src_plugins/export_svg/svg.c \
  ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h unit.h \
  pcb-printf.h ../src_3rd/genvector/gds_char.h \
@@ -1551,8 +1548,7 @@
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h safe_fs.h \
  funchash_core.h funchash.h funchash_core_list.h hid.h hid_nogui.h \
- hid_draw_helpers.h hid_init.h hid_attrib.h hid_color.h hid_cam.h \
- hid_attrib.h dolists.h
+ hid_init.h hid_attrib.h hid_color.h hid_cam.h hid_attrib.h dolists.h
 ../src_plugins/export_test/export_test.o: \
  ../src_plugins/export_test/export_test.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
@@ -1892,8 +1888,7 @@
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h compat_misc.h event.h conf_core.h conf.h \
  pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h hidlib_conf.h \
- hid_draw_helpers.h hid_nogui.h actions.h hid_init.h hid_attrib.h \
- dolists.h
+ hid_nogui.h actions.h hid_init.h hid_attrib.h dolists.h
 ../src_plugins/hid_gtk2_gdk/gtkhid-gdk.o: \
  ../src_plugins/hid_gtk2_gdk/gtkhid-gdk.c ../config.h hidlib_conf.h \
  conf.h global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
@@ -1909,9 +1904,8 @@
  obj_line.h obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h \
  obj_text.h font.h ../src_3rd/genht/htip.h box.h math_helper.h \
  misc_util.h route.h draw.h grid.h board.h vtroutestyle.h layer_grp.h \
- rats_patch.h hidlib.h hid_draw_helpers.h hid_attrib.h hid_color.h \
- funchash_core.h funchash.h funchash_core_list.h \
- ../src_plugins/lib_gtk_hid/gui.h hid.h \
+ rats_patch.h hidlib.h hid_attrib.h hid_color.h funchash_core.h \
+ funchash.h funchash_core_list.h ../src_plugins/lib_gtk_hid/gui.h hid.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h \
  ../src_3rd/genht/htpp.h hid_cfg.h ../src_plugins/lib_gtk_common/glue.h \
@@ -1979,12 +1973,11 @@
  ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
- ../src_3rd/genvector/gds_char.h route.h draw.h hid_draw_helpers.h \
- hid_attrib.h hid_color.h hidlib_conf.h conf.h pcb-printf.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
- funchash_core.h funchash.h funchash_core_list.h \
- ../src_plugins/lib_hid_common/clip.h global_typedefs.h \
- ../src_plugins/lib_gtk_common/hid_gtk_conf.h conf.h \
+ ../src_3rd/genvector/gds_char.h route.h draw.h hid_attrib.h hid_color.h \
+ hidlib_conf.h conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/genvector/vtp0.h list_conf.h funchash_core.h funchash.h \
+ funchash_core_list.h ../src_plugins/lib_hid_common/clip.h \
+ global_typedefs.h ../src_plugins/lib_gtk_common/hid_gtk_conf.h conf.h \
  ../src_plugins/lib_gtk_common/lib_gtk_config.h hid.h event.h hidlib.h \
  conf_hid.h ../src_plugins/lib_gtk_hid/gui.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h pcb_bool.h \
@@ -2063,8 +2056,8 @@
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h layer.h grid.h \
- board.h vtroutestyle.h rats_patch.h hidlib.h hid_draw_helpers.h \
- hid_attrib.h hid_color.h funchash_core.h funchash.h funchash_core_list.h \
+ board.h vtroutestyle.h rats_patch.h hidlib.h hid_attrib.h hid_color.h \
+ funchash_core.h funchash.h funchash_core_list.h \
  ../src_plugins/lib_gtk_hid/gui.h hid.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h hid_cfg.h \
@@ -2244,11 +2237,11 @@
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h macro.h safe_fs.h \
  funchash_core.h funchash.h funchash_core_list.h hid.h hid_nogui.h \
- hid_draw_helpers.h hid_cfg.h ../src_plugins/hid_lesstif/lesstif.h \
- hid_cfg_input.h hid_cfg.h board.h vtroutestyle.h rats_patch.h board.h \
- hid_attrib.h hid_init.h hid_color.h hid_dad.h compat_misc.h hid_attrib.h \
- actions.h ../src_plugins/hid_lesstif/ltf_stdarg.h color.h grid.h \
- misc_util.h compat_misc.h layer_vis.h tool.h \
+ hid_cfg.h ../src_plugins/hid_lesstif/lesstif.h hid_cfg_input.h hid_cfg.h \
+ board.h vtroutestyle.h rats_patch.h board.h hid_attrib.h hid_init.h \
+ hid_color.h hid_dad.h compat_misc.h hid_attrib.h actions.h \
+ ../src_plugins/hid_lesstif/ltf_stdarg.h color.h grid.h misc_util.h \
+ compat_misc.h layer_vis.h tool.h \
  ../src_plugins/hid_lesstif/dlg_fileselect.h global_typedefs.h \
  ../src_plugins/hid_lesstif/FillBox.h \
  ../src_plugins/lib_hid_common/clip.h ../src_plugins/lib_hid_pcbui/util.h \
@@ -2371,8 +2364,8 @@
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h compat_misc.h \
  funchash_core.h funchash.h funchash_core_list.h event.h \
- ../src_plugins/hid_remote/proto.h hid_draw_helpers.h hid_nogui.h \
- actions.h hid_init.h dolists.h
+ ../src_plugins/hid_remote/proto.h hid_nogui.h actions.h hid_init.h \
+ dolists.h
 ../src_plugins/import_calay/calay.o: ../src_plugins/import_calay/calay.c \
  ../config.h board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
@@ -3056,8 +3049,8 @@
  ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
- ../src_3rd/genvector/gds_char.h hid_draw_helpers.h hid_nogui.h actions.h \
- hid.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h hid_init.h \
+ ../src_3rd/genvector/gds_char.h hid_nogui.h actions.h hid.h \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h hid_init.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h hid_attrib.h plugins.h \
@@ -3984,27 +3977,6 @@
  ../src_plugins/lib_gtk_common/glue.h conf.h \
  ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/dlg_attribute.h
-../src_plugins/lib_gtk_common/dlg_search.o: \
- ../src_plugins/lib_gtk_common/dlg_search.c ../config.h \
-   ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h compat_misc.h actions.h hid.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
- ../src_3rd/genht/ht.h error.h global_typedefs.h pcb_bool.h unit.h \
- attrib.h layer.h globalconst.h color.h obj_common.h flag.h data_parent.h \
- obj_arc_list.h obj_arc.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h polyarea.h \
- obj_text_list.h obj_text.h font.h ../src_3rd/genht/htip.h box.h \
- math_helper.h misc_util.h ../src_3rd/libfungw/fungw.h \
- ../src_3rd/genht/htpp.h board.h vtroutestyle.h layer_grp.h rats_patch.h \
- board.h hidlib.h misc_util.h pcb-printf.h hidlib_conf.h conf.h \
- pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
- list_conf.h ../src_plugins/lib_gtk_common/win_place.h global_typedefs.h \
- ../src_plugins/lib_gtk_common/wt_coord_entry.h unit.h \
- ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/dlg_search_tab.h
 ../src_plugins/lib_gtk_common/dlg_topwin.o: \
  ../src_plugins/lib_gtk_common/dlg_topwin.c ../config.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h \
@@ -4322,8 +4294,7 @@
  ../src_plugins/lib_gtk_common/glue.h event.h hidlib.h \
  ../src_plugins/lib_gtk_hid/render.h ../src_plugins/lib_gtk_hid/actions.h \
  search.h ../src/actions.h ../src/hid.h ../src_3rd/libfungw/fungw.h \
- compat_misc.h ../src_plugins/lib_gtk_common/dlg_library.h \
-   dolists.h
+ compat_misc.h ../src_plugins/lib_gtk_common/dlg_library.h dolists.h
 ../src_plugins/lib_gtk_hid/common.o: ../src_plugins/lib_gtk_hid/common.c \
  ../config.h crosshair.h vtonpoint.h global_typedefs.h pcb_bool.h unit.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -4471,8 +4442,8 @@
  ../src_plugins/lib_gtk_hid/render.h ../src_plugins/lib_gtk_hid/actions.h \
  ../src/actions.h ../src/hid.h ../src_3rd/libfungw/fungw.h \
  ../src_plugins/lib_gtk_hid/common.h hid_nogui.h hid_attrib.h \
- hid_draw_helpers.h ../src_plugins/lib_gtk_hid/coord_conv.h compat_misc.h \
- hidlib_conf.h ../src_plugins/lib_gtk_common/in_keyboard.h \
+ ../src_plugins/lib_gtk_hid/coord_conv.h compat_misc.h hidlib_conf.h \
+ ../src_plugins/lib_gtk_common/in_keyboard.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h \
  ../src_plugins/lib_gtk_common/bu_dwg_tooltip.h \
  ../src_plugins/lib_gtk_common/ui_crosshair.h \
@@ -4637,13 +4608,13 @@
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h color.h crosshair.h vtonpoint.h hid.h \
- error.h attrib.h layer.h globalconst.h obj_common.h flag.h data_parent.h \
+ ../src_3rd/genlist/gendlist.h color.h grid.h board.h vtroutestyle.h \
+ attrib.h layer.h globalconst.h obj_common.h flag.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h \
  obj_line.h obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h \
  obj_text.h font.h ../src_3rd/genht/htip.h box.h math_helper.h \
- misc_util.h route.h grid.h board.h vtroutestyle.h layer_grp.h \
- rats_patch.h hidlib.h hid.h ../src_plugins/lib_hid_gl/hidgl.h rtree.h \
+ misc_util.h layer_grp.h rats_patch.h hidlib.h hid.h error.h \
+ ../src_plugins/lib_hid_gl/hidgl.h rtree.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h \
  ../src_plugins/lib_hid_gl/draw_gl.c \
  ../src_plugins/lib_hid_gl/stencil_gl.h \
@@ -6689,8 +6660,9 @@ hid_cfg_input.o: hid_cfg_input.c ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
- box.h math_helper.h misc_util.h hid_cfg_action.h compat_misc.h event.h \
- hidlib.h crosshair.h vtonpoint.h route.h
+ box.h math_helper.h misc_util.h hid_cfg_action.h hidlib_conf.h conf.h \
+ pcb-printf.h ../src_3rd/genvector/vtp0.h list_conf.h compat_misc.h \
+ event.h hidlib.h crosshair.h vtonpoint.h route.h
 hid_color.o: hid_color.c ../config.h hid_color.h hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
@@ -7249,10 +7221,10 @@ obj_poly.o: obj_poly.c ../config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
- polygon_offs.h rotate.h compat_misc.h search.h hid_inlines.h conf_core.h \
- conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h \
- obj_poly_op.h operation.h obj_poly_draw.h draw.h obj_subc_parent.h \
- obj_hash.h
+ polygon_offs.h rotate.h compat_misc.h search.h hid_inlines.h \
+ hid_draw_helpers.h conf_core.h conf.h pcb-printf.h \
+ ../src_3rd/liblihata/lihata.h list_conf.h obj_poly_op.h operation.h \
+ obj_poly_draw.h draw.h obj_subc_parent.h obj_hash.h
 obj_poly_list.o: obj_poly_list.c obj_poly_list.h obj_poly.h ../config.h \
  ../src_3rd/genlist/gendlist.h obj_common.h flag.h globalconst.h attrib.h \
  global_typedefs.h pcb_bool.h unit.h data_parent.h polyarea.h \
