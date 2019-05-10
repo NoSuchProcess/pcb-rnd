@@ -114,10 +114,8 @@ static void layer_vis_box(gen_xpm_t *dst, int filled, const pcb_color_t *color, 
 		*p = '\0';
 	}
 
-	for(n=0; n < line; n++) {
+	for(n=0; n < line; n++)
 		dst->xpm[n] = dst->buf[n];
-/*		printf("  \"%s\"\n", dst->xpm[n]);*/
-	}
 }
 
 static void layersel_begin_grp(layersel_ctx_t *ls, const char *name)
@@ -171,15 +169,6 @@ static void layersel_create_grp(layersel_ctx_t *ls, pcb_board_t *pcb, pcb_layerg
 			const pcb_color_t *clr = &ly->meta.real.color;
 			ls_layer_t *lys = lys_get(ls, &ls->real_layer, g->lid[n], 1);
 
-/*			static pcb_color_t clr_invalid;
-			static int clr_invalid_inited = 0;
-			if (ly == NULL)
-				clr = &clr_invalid;
-			if (!clr_invalid_inited) {
-				pcb_color_load_str(&clr_invalid, "#aaaa00");
-				clr_invalid_inited = 1;
-			}
-*/
 			lys->ly = ly;
 			layersel_create_layer(ls, lys, ly->name, clr, brd, hatch);
 		}
