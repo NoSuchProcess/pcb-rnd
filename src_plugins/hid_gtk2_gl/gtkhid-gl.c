@@ -797,7 +797,7 @@ static void pcb_gl_draw_expose_init(pcb_hid_t *hid, int w, int h, int xr, int yr
 	   we can't use the hidgl polygon drawing routine */
 	/* TODO: We could use the GLU tessellator though */
 	if (stencilgl_bit_count() == 0)
-		hid->fill_pcb_polygon = pcb_dhlp_fill_pcb_polygon;
+		hid->fill_pcb_polygon = NULL;
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
