@@ -1211,7 +1211,7 @@ int coord_comp(const void *c1_, const void *c2_)
 	return *c1 < *c2;
 }
 
-static void ps_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t * poly, const pcb_box_t * clip_box)
+static void ps_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polyarea_t *poly, const pcb_box_t *clip_box, int fullpoly)
 {
 	/* Ignore clip_box, just draw everything */
 
@@ -1222,7 +1222,7 @@ static void ps_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t * poly, const pcb_bo
 
 	use_gc(gc);
 
-	pl = poly->Clipped->contours;
+	pl = poly->contours;
 	len = 0;
 
 	do {

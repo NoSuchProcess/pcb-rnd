@@ -1181,6 +1181,14 @@ static pcb_poly_t *pcb_poly_draw_tr(pcb_draw_info_t *info, pcb_poly_t *polygon)
 	return np;
 }
 
+static void pcb_poly_draw_filled(pcb_hid_gc_t gc, pcb_poly_t *poly, const pcb_box_t *clip_box)
+{
+	if (pcb_gui->fill_pcb_polygon == NULL)
+		pcb_dhlp_fill_pcb_polygon(gc, poly, clip_box); /* no direct poly rendering support, pass on simplified x;y */
+	else
+		pcb_gui->fill_pcb_polygon(gc, poly->Clipped, clip_box, PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, poly)); /* direct polyarea rendering */
+}
+
 void pcb_poly_draw_(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_term_gfx)
 {
 	pcb_poly_t *trpoly = NULL;
@@ -1207,7 +1215,7 @@ void pcb_poly_draw_(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_term_g
 		if ((allow_term_gfx) && pcb_draw_term_need_gfx(polygon) && pcb_draw_term_hid_permission()) {
 			pcb_vnode_t *n, *head;
 			int i;
-			pcb_gui->fill_pcb_polygon(pcb_draw_out.active_padGC, polygon, info->drawn_area);
+			pcb_poly_draw_filled(pcb_draw_out.active_padGC, polygon, info->drawn_area);
 			head = &polygon->Clipped->contours->head;
 			pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
 			for(n = head, i = 0; (n != head) || (i == 0); n = n->next, i++) {
@@ -1223,7 +1231,7 @@ TODO("subc: check if x;y is within the poly, but use a cheaper method than the o
 			}
 		}
 		else
-			pcb_gui->fill_pcb_polygon(pcb_draw_out.fgGC, polygon, info->drawn_area);
+			pcb_poly_draw_filled(pcb_draw_out.fgGC, polygon, info->drawn_area);
 	}
 
 	/* If checking planes, thin-draw any pieces which have been clipped away */

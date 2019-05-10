@@ -184,10 +184,10 @@ static void log_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x,
 	delegatee_->fill_polygon_offs(gc, n_coords, x, y, dx, dy);
 }
 
-static void log_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t *poly, const pcb_box_t *clip_box)
+static void log_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polyarea_t *poly, const pcb_box_t *clip_box, int fullpoly)
 {
-	pcb_fprintf(out_, "fill_pcb_polygon(gc, poly->PointN=%d, ...)\n", poly->PointN);
-	delegatee_->fill_pcb_polygon(gc, poly, clip_box);
+	pcb_fprintf(out_, "fill_pcb_polygon(gc, ...)\n");
+	delegatee_->fill_pcb_polygon(gc, poly, clip_box, fullpoly);
 }
 
 static void log_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t *poly, const pcb_box_t *clip_box)

@@ -515,11 +515,11 @@ static void ghid_gl_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t
 	hidgl_fill_polygon_offs(n_coords, x, y, dx, dy);
 }
 
-static void ghid_gl_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t *poly, const pcb_box_t *clip_box)
+static void ghid_gl_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polyarea_t *poly, const pcb_box_t *clip_box, int fullpoly)
 {
 	USE_GC(gc);
 
-	hidgl_fill_pcb_polygon(poly->Clipped, clip_box, gport->view.coord_per_px, PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, poly));
+	hidgl_fill_pcb_polygon(poly, clip_box, gport->view.coord_per_px, fullpoly);
 }
 
 static void ghid_gl_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t *poly, const pcb_box_t *clip_box)
