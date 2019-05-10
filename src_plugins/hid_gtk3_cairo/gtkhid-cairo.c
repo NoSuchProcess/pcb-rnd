@@ -32,8 +32,7 @@
 #include <stdio.h>
 
 #include "crosshair.h"
-#include "data.h"
-#include "layer.h"
+#include "draw.h"
 #include "grid.h"
 #include "hid_attrib.h"
 #include "hid_color.h"
@@ -1090,13 +1089,18 @@ static void redraw_region(pcb_hidlib_t *hidlib, GdkRectangle *rect)
 
 	ghid_cairo_draw_bg_image(hidlib);
 
-	pcb_hid_expose_all(pcb_gui, &ctx, NULL);
+	pcb_hid_expose_all(&gtk3_cairo_hid, &ctx, NULL);
 	ghid_cairo_draw_grid(hidlib);
 
 	/* Draws "GUI" information on top of design */
 	priv->cr = priv->cr_drawing_area;
-	pcb_draw_attached(0);
-	pcb_draw_mark(0);
+	/* In some cases we are called with the crosshair still off */
+	if (priv->attached_invalidate_depth == 0)
+		pcbhl_draw_attached(hidlib, 0);
+
+	/* In some cases we are called with the mark still off */
+	if (priv->mark_invalidate_depth == 0)
+		pcbhl_draw_marks(hidlib, 0);
 
 	priv->clip = pcb_false;
 
@@ -1180,7 +1184,7 @@ static void ghid_cairo_notify_mark_change(pcb_hidlib_t *hidlib, pcb_bool changes
 	}
 
 	if (priv->mark_invalidate_depth == 0)
-		pcb_draw_mark(0);
+		pcbhl_draw_marks(hidlib, 0);
 
 	if (!changes_complete) {
 		priv->mark_invalidate_depth++;
