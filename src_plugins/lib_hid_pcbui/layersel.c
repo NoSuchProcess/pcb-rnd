@@ -53,26 +53,31 @@ typedef struct {
 	const char *xpm[32];
 } gen_xpm_t;
 
+typedef struct layersel_ctx_s layersel_ctx_t;
+
 typedef struct {
 	int wvis_on, wvis_off, wlab;
 	gen_xpm_t on, off;
+	layersel_ctx_t *ls;
 } ls_layer_t;
 
-typedef struct {
+struct layersel_ctx_s {
 	pcb_hid_dad_subdialog_t sub;
 	int sub_inited;
 	vtp0_t real_layer, menu_layer, ui_layer;
-} layersel_ctx_t;
+};
 
 static layersel_ctx_t layersel;
 
-static ls_layer_t *lys_get(vtp0_t *vt, size_t idx, int alloc)
+static ls_layer_t *lys_get(layersel_ctx_t *ls, vtp0_t *vt, size_t idx, int alloc)
 {
 	ls_layer_t **res = vtp0_get(vt, idx, alloc);
 	if (res == NULL)
 		return NULL;
-	if ((*res == NULL) && alloc)
+	if ((*res == NULL) && alloc) {
 		*res = calloc(sizeof(ls_layer_t), 1);
+		(*res)->ls = ls;
+	}
 	return *res;
 }
 
@@ -159,7 +164,7 @@ static void layersel_create_grp(layersel_ctx_t *ls, pcb_board_t *pcb, pcb_layerg
 			int brd = (((ly != NULL) && (ly->comb & PCB_LYC_SUB)) ? 2 : 1);
 			int hatch = (((ly != NULL) && (ly->comb & PCB_LYC_AUTO)) ? 1 : 0);
 			const pcb_color_t *clr = &ly->meta.real.color;
-			ls_layer_t *lys = lys_get(&ls->real_layer, g->lid[n], 1);
+			ls_layer_t *lys = lys_get(ls, &ls->real_layer, g->lid[n], 1);
 
 /*			static pcb_color_t clr_invalid;
 			static int clr_invalid_inited = 0;
@@ -218,7 +223,7 @@ static void layersel_create_virtual(layersel_ctx_t *ls, pcb_board_t *pcb)
 
 	layersel_begin_grp(ls, "Virtual");
 	for(n = 0, ml = pcb_menu_layers; ml->name != NULL; n++,ml++) {
-		ls_layer_t *lys = lys_get(&ls->menu_layer, n, 1);
+		ls_layer_t *lys = lys_get(ls, &ls->menu_layer, n, 1);
 		layersel_create_layer(ls, lys, ml->name, ml->force_color, 1, 0);
 	}
 	layersel_end_grp(ls);
@@ -236,7 +241,7 @@ static void layersel_create_ui(layersel_ctx_t *ls, pcb_board_t *pcb)
 	for(n = 0; n < vtp0_len(&pcb_uilayers); n++) {
 		pcb_layer_t *ly = pcb_uilayers.array[n];
 		if ((ly != NULL) && (ly->name != NULL)) {
-			ls_layer_t *lys = lys_get(&ls->ui_layer, n, 1);
+			ls_layer_t *lys = lys_get(ls, &ls->ui_layer, n, 1);
 			layersel_create_layer(ls, lys, ly->name, &ly->meta.real.color, 1, 0);
 		}
 	}
