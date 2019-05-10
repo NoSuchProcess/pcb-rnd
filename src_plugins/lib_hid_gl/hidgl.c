@@ -34,7 +34,6 @@
 #include <math.h>
 #include <assert.h>
 
-#include "crosshair.h"
 #include "grid.h"
 #include "hid.h"
 #include "hidgl.h"
