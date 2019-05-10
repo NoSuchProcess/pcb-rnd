@@ -47,41 +47,101 @@ typedef struct {
 
 static layersel_ctx_t layersel;
 
-static void layersel_create_real(layersel_ctx_t *ls, pcb_board_t *pcb)
+static void layersel_begin_grp(layersel_ctx_t *ls, const char *name)
+{
+	PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
+		/* vertical group name */
+		PCB_DAD_LABEL(ls->sub.dlg, name);
+		
+		/* vert sep */
+		PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
+			PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_TIGHT | PCB_HATF_FRAME);
+		PCB_DAD_END(ls->sub.dlg);
+
+		/* layer list box */
+		PCB_DAD_BEGIN_VBOX(ls->sub.dlg);
+}
+
+static void layersel_end_grp(layersel_ctx_t *ls)
+{
+		PCB_DAD_END(ls->sub.dlg);
+	PCB_DAD_END(ls->sub.dlg);
+}
+
+static void layersel_create_layer(layersel_ctx_t *ls, const char *name)
+{
+	PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
+		PCB_DAD_LABEL(ls->sub.dlg, name);
+	PCB_DAD_END(ls->sub.dlg);
+}
+
+static void layersel_create_grp(layersel_ctx_t *ls, pcb_board_t *pcb, pcb_layergrp_t *g, pcb_layergrp_id_t gid)
+{
+	pcb_cardinal_t n;
+
+	layersel_begin_grp(ls, g->name);
+	for(n = 0; n < g->len; n++) {
+		pcb_layer_t *ly = pcb_get_layer(pcb->Data, g->lid[n]);
+		assert(ly != NULL);
+		if (ly != NULL)
+			layersel_create_layer(ls, ly->name);
+	}
+	layersel_end_grp(ls);
+}
+
+/* Editable layer groups that are part of the stack */
+static void layersel_create_stack(layersel_ctx_t *ls, pcb_board_t *pcb)
 {
 	pcb_layergrp_id_t gid;
 	pcb_layergrp_t *g;
-	pcb_cardinal_t n;
 
 	for(gid = 0, g = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,g++) {
 		if (!(PCB_LAYER_IN_STACK(g->ltype)) || (g->ltype & PCB_LYT_SUBSTRATE))
 			continue;
-		PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
-			/* vertical group name */
-			PCB_DAD_LABEL(ls->sub.dlg, "grp");
-			
-			/* vert sep */
-			PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
-				PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_TIGHT | PCB_HATF_FRAME);
-			PCB_DAD_END(ls->sub.dlg);
-
-			PCB_DAD_BEGIN_VBOX(ls->sub.dlg);
-				for(n = 0; n < g->len; n++) {
-					pcb_layer_t *ly = pcb_get_layer(pcb->Data, g->lid[n]);
-					PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
-						PCB_DAD_LABEL(ls->sub.dlg, ly->name);
-					PCB_DAD_END(ls->sub.dlg);
-				}
-			PCB_DAD_END(ls->sub.dlg);
-		PCB_DAD_END(ls->sub.dlg);
+		layersel_create_grp(ls, pcb, g, gid);
 	}
+}
+
+/* Editable layer groups that are not part of the stack */
+static void layersel_create_global(layersel_ctx_t *ls, pcb_board_t *pcb)
+{
+	pcb_layergrp_id_t gid;
+	pcb_layergrp_t *g;
+
+	for(gid = 0, g = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,g++) {
+		if (PCB_LAYER_IN_STACK(g->ltype))
+			continue;
+		layersel_create_grp(ls, pcb, g, gid);
+	}
+}
+
+/* hardwired/virtual: typically Non-editable groups */
+static void layersel_create_virtual(layersel_ctx_t *ls, pcb_board_t *pcb)
+{
+	const pcb_menu_layers_t *ml;
+
+	layersel_begin_grp(ls, "Virtual");
+	for(ml = pcb_menu_layers; ml->name != NULL; ml++)
+		layersel_create_layer(ls, ml->name);
+	layersel_end_grp(ls);
+}
+
+static void hsep(layersel_ctx_t *ls)
+{
+	PCB_DAD_BEGIN_VBOX(ls->sub.dlg);
+		PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_TIGHT | PCB_HATF_FRAME);
+	PCB_DAD_END(ls->sub.dlg);
 }
 
 static void layersel_docked_create(layersel_ctx_t *ls, pcb_board_t *pcb)
 {
 	PCB_DAD_BEGIN_VBOX(ls->sub.dlg);
 		PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_EXPFILL | PCB_HATF_TIGHT /*| PCB_HATF_SCROLL*/);
-		layersel_create_real(&layersel, pcb);
+		layersel_create_stack(&layersel, pcb);
+		hsep(&layersel);
+		layersel_create_global(&layersel, pcb);
+		hsep(&layersel);
+		layersel_create_virtual(&layersel, pcb);
 	PCB_DAD_END(ls->sub.dlg);
 }
 
