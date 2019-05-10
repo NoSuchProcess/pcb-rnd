@@ -39,7 +39,6 @@
 #include "rotate.h"
 #include "search.h"
 #include "hid_inlines.h"
-#include "hid_draw_helpers.h"
 
 #include "conf_core.h"
 
@@ -56,6 +55,8 @@
 
 #define	STEP_POLYGONPOINT	10
 #define	STEP_POLYGONHOLEINDEX	10
+
+#include "obj_poly_draw_helper.c"
 
 /*** allocation ***/
 

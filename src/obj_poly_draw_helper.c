@@ -176,7 +176,7 @@ static int should_compute_no_holes(pcb_poly_t * poly, const pcb_box_t * clip_box
 
 #undef BOUNDS_INSIDE_CLIP_THRESHOLD
 
-void pcb_dhlp_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t * poly, const pcb_box_t * clip_box)
+static void pcb_dhlp_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t * poly, const pcb_box_t * clip_box)
 {
 	if (!poly->NoHolesValid) {
 		/* If enough of the polygon is on-screen, compute the entire
@@ -216,7 +216,7 @@ static int thindraw_hole_cb(pcb_pline_t * pl, void *user_data)
 	return 0;
 }
 
-void pcb_dhlp_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t * poly, const pcb_box_t * clip_box)
+static void pcb_dhlp_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t * poly, const pcb_box_t * clip_box)
 {
 	thindraw_contour(gc, poly->Clipped->contours);
 	pcb_poly_holes(poly, clip_box, thindraw_hole_cb, gc);

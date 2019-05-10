@@ -144,7 +144,6 @@ append /local/pcb/OBJS [@
 	gui_act.o
 	heap.o
 	hid_cam.o
-	hid_draw_helpers.o
 	hidlib_pcb.o
 	ht_subc.o
 	idpath.o

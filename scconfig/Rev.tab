@@ -1,3 +1,4 @@
+25350	configure	hidlib: polygon vs. HID API cleanup
 25331	configure	new, DAD-based search dialog
 25261	configure	hidlib: various lesstif fixes
 25255	configure	split the tool API and default menus to hidlib doesn't depend on core

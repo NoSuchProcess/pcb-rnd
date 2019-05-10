@@ -7222,7 +7222,7 @@ obj_poly.o: obj_poly.c ../config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
  polygon_offs.h rotate.h compat_misc.h search.h hid_inlines.h \
- hid_draw_helpers.h conf_core.h conf.h pcb-printf.h \
+ conf_core.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h list_conf.h obj_poly_op.h operation.h \
  obj_poly_draw.h draw.h obj_subc_parent.h obj_hash.h
 obj_poly_list.o: obj_poly_list.c obj_poly_list.h obj_poly.h ../config.h \
