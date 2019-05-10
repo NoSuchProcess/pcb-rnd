@@ -60,6 +60,8 @@ typedef struct {
 	int wvis_on, wvis_off, wlab;
 	gen_xpm_t on, off;
 	layersel_ctx_t *ls;
+	pcb_layer_t *ly;
+	const pcb_menu_layers_t *ml;
 } ls_layer_t;
 
 struct layersel_ctx_s {
@@ -178,6 +180,7 @@ static void layersel_create_grp(layersel_ctx_t *ls, pcb_board_t *pcb, pcb_layerg
 				clr_invalid_inited = 1;
 			}
 */
+			lys->ly = ly;
 			layersel_create_layer(ls, lys, ly->name, clr, brd, hatch);
 		}
 	}
@@ -236,6 +239,7 @@ static void layersel_create_virtual(layersel_ctx_t *ls, pcb_board_t *pcb)
 	layersel_begin_grp(ls, "Virtual");
 	for(n = 0, ml = pcb_menu_layers; ml->name != NULL; n++,ml++) {
 		ls_layer_t *lys = lys_get(ls, &ls->menu_layer, n, 1);
+		lys->ml = ml;
 		layersel_create_layer(ls, lys, ml->name, ml->force_color, 1, 0);
 	}
 	layersel_end_grp(ls);
@@ -254,6 +258,7 @@ static void layersel_create_ui(layersel_ctx_t *ls, pcb_board_t *pcb)
 		pcb_layer_t *ly = pcb_uilayers.array[n];
 		if ((ly != NULL) && (ly->name != NULL)) {
 			ls_layer_t *lys = lys_get(ls, &ls->ui_layer, n, 1);
+			lys->ly = ly;
 			layersel_create_layer(ls, lys, ly->name, &ly->meta.real.color, 1, 0);
 		}
 	}
