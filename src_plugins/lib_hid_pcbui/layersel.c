@@ -54,6 +54,8 @@ static void layersel_create_real(layersel_ctx_t *ls, pcb_board_t *pcb)
 	pcb_cardinal_t n;
 
 	for(gid = 0, g = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,g++) {
+		if (!(PCB_LAYER_IN_STACK(g->ltype)) || (g->ltype & PCB_LYT_SUBSTRATE))
+			continue;
 		PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
 			/* vertical group name */
 			PCB_DAD_LABEL(ls->sub.dlg, "grp");
