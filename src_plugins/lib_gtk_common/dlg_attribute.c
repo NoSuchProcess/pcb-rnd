@@ -429,7 +429,23 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				break;
 
 			case PCB_HATT_LABEL:
-				ctx->wl[j] = widget = gtk_label_new(ctx->attrs[j].name);
+				if (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TEXT_TRUNCATED) {
+					widget = gtkc_trunctext_new(ctx->attrs[j].name);
+					if (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TEXT_VERTICAL) {
+						gtk_misc_set_alignment(GTK_MISC(widget), 0, 1);
+						gtk_widget_set_size_request(widget, 16, 1);
+					}
+					else {
+						gtk_misc_set_alignment(GTK_MISC(widget), 1, 0);
+						gtk_widget_set_size_request(widget, 1, 16);
+					}
+				}
+				else
+					widget = gtk_label_new(ctx->attrs[j].name);
+				if (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TEXT_VERTICAL)
+					gtk_label_set_angle(GTK_LABEL(widget), 90);
+
+				ctx->wl[j] = widget;
 				ctx->wltop[j] = wrap_bind_click(widget, G_CALLBACK(label_click_cb), &(ctx->attrs[j]));
 
 				g_object_set_data(G_OBJECT(widget), PCB_OBJ_PROP, ctx);
