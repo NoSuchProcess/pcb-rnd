@@ -402,7 +402,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	gtk_box_pack_start(GTK_BOX(hbox_middle), tw->left_toolbar, FALSE, FALSE, 0);
 
 	tw->dockbox[PCB_HID_DOCK_LEFT] = gtkc_vbox_new(FALSE, 8);
-	gtk_box_pack_end(GTK_BOX(GTK_BOX(tw->left_toolbar)), tw->dockbox[PCB_HID_DOCK_LEFT], FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(GTK_BOX(tw->left_toolbar)), tw->dockbox[PCB_HID_DOCK_LEFT], TRUE, TRUE, 0);
 
 	/* -- main content */
 	tw->vbox_middle = gtkc_vbox_new(FALSE, 0);
