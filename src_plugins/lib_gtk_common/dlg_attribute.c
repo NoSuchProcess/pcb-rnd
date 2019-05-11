@@ -982,14 +982,16 @@ int ghid_attr_dlg_widget_state(void *hid_ctx, int idx, int enabled)
 
 	gtk_widget_set_sensitive(ctx->wl[idx], enabled);
 
-	if (ctx->attrs[idx].pcb_hatt_flags & PCB_HATF_TOGGLE) {
-		switch(ctx->attrs[idx].type) {
-			case PCB_HATT_PICBUTTON:
-			case PCB_HATT_BUTTON:
+	switch(ctx->attrs[idx].type) {
+		case PCB_HATT_LABEL:
+			pcb_gtk_set_selected(ctx->wltop[idx], (enabled == 2));
+			break;
+		case PCB_HATT_PICBUTTON:
+		case PCB_HATT_BUTTON:
+			if (ctx->attrs[idx].pcb_hatt_flags & PCB_HATF_TOGGLE)
 				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ctx->wl[idx]), (enabled == 2));
-				break;
-			default:;
-		}
+			break;
+		default:;
 	}
 
 	return 0;

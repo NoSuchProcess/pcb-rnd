@@ -421,7 +421,7 @@ struct pcb_hid_s {
 
 
 	/* Disable or enable a widget of an active attribute dialog; if enabled is
-	   2, the widget is put to its second enabled mode (pressed state for buttons) */
+	   2, the widget is put to its second enabled mode (pressed state for buttons, highlight on label) */
 	int (*attr_dlg_widget_state)(void *hid_ctx, int idx, int enabled);
 
 	/* hide or show a widget of an active attribute dialog */
