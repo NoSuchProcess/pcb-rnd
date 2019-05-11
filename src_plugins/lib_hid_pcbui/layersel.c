@@ -62,6 +62,7 @@ typedef struct {
 	layersel_ctx_t *ls;
 	pcb_layer_t *ly;
 	const pcb_menu_layers_t *ml;
+	unsigned grp_vis:1;
 } ls_layer_t;
 
 struct layersel_ctx_s {
@@ -86,7 +87,27 @@ static ls_layer_t *lys_get(layersel_ctx_t *ls, vtp0_t *vt, size_t idx, int alloc
 
 static void layer_vis_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	printf("layer vis!\n");
+	ls_layer_t *lys = attr->user_data;
+	pcb_bool *vis;
+
+	if (lys->ly != NULL)
+		vis = &lys->ly->meta.real.vis;
+	else if (lys->ml != NULL)
+		vis = (pcb_bool *)((char *)PCB + lys->ml->vis_offs);
+	else
+		return;
+
+	if (lys->grp_vis) {
+		pcb_layer_id_t lid = lys->ly - PCB->Data->Layer;
+		pcb_layervis_change_group_vis(lid, !*vis, 1);
+	}
+	else {
+		*vis = !(*vis);
+		pcb_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_on, !(*vis));
+		pcb_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_off, !!(*vis));
+	}
+
+	pcb_hid_redraw(PCB);
 }
 
 /* draw a visibility box: filled or partially filled with layer color */
@@ -154,11 +175,14 @@ static void layersel_create_layer(layersel_ctx_t *ls, ls_layer_t *lys, const cha
 	PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
 		PCB_DAD_PICTURE(ls->sub.dlg, lys->on.xpm);
 			lys->wvis_on = PCB_DAD_CURRENT(ls->sub.dlg);
+			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
 			PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_vis_cb);
 		PCB_DAD_PICTURE(ls->sub.dlg, lys->off.xpm);
 			lys->wvis_off = PCB_DAD_CURRENT(ls->sub.dlg);
+			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
 			PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_vis_cb);
 		PCB_DAD_LABEL(ls->sub.dlg, name);
+			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
 			PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_vis_cb);
 	PCB_DAD_END(ls->sub.dlg);
 }
@@ -178,6 +202,7 @@ static void layersel_create_grp(layersel_ctx_t *ls, pcb_board_t *pcb, pcb_layerg
 			ls_layer_t *lys = lys_get(ls, &ls->real_layer, g->lid[n], 1);
 
 			lys->ly = ly;
+			lys->grp_vis = 1;
 			layersel_create_layer(ls, lys, ly->name, clr, brd, hatch);
 		}
 	}
@@ -237,6 +262,7 @@ static void layersel_create_virtual(layersel_ctx_t *ls, pcb_board_t *pcb)
 	for(n = 0, ml = pcb_menu_layers; ml->name != NULL; n++,ml++) {
 		ls_layer_t *lys = lys_get(ls, &ls->menu_layer, n, 1);
 		lys->ml = ml;
+		lys->grp_vis = 0;
 		layersel_create_layer(ls, lys, ml->name, ml->force_color, 1, 0);
 	}
 	layersel_end_grp(ls);
@@ -256,6 +282,7 @@ static void layersel_create_ui(layersel_ctx_t *ls, pcb_board_t *pcb)
 		if ((ly != NULL) && (ly->name != NULL)) {
 			ls_layer_t *lys = lys_get(ls, &ls->ui_layer, n, 1);
 			lys->ly = ly;
+			lys->grp_vis = 0;
 			layersel_create_layer(ls, lys, ly->name, &ly->meta.real.color, 1, 0);
 		}
 	}
