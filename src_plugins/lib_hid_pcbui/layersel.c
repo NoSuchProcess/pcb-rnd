@@ -143,8 +143,50 @@ static void layer_sel_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	locked_layersel(lys->ls, lys->wlab);
 }
 
+/* Select the first visible layer (physically) below the one turned off or
+   reenable the original if all are off; this how we ensure the CURRENT layer
+   is visible and avoid drawing on inivisible layers */
+static void ensure_visible_current(layersel_ctx_t *ls)
+{
+	pcb_layer_id_t lid;
+	pcb_layergrp_id_t gid;
+	pcb_layer_t *l;
+	ls_layer_t *lys;
+
+	/* At the moment the layer selector displays only board layers which are always real */
+	assert(!CURRENT->is_bound);
+
+	/* look for the next one to enable, group-vise */
+	for(gid = CURRENT->meta.real.grp + 1; gid != CURRENT->meta.real.grp; gid++) {
+		pcb_layergrp_t *g;
+		if (gid >= pcb_max_group(PCB))
+			gid = 0;
+		g = &PCB->LayerGroups.grp[gid];
+		if (g->len < 1)
+			continue;
+		l = PCB->Data->Layer + g->lid[0];
+		if (l->meta.real.vis)
+			goto change_selection;
+	}
+
+	/* fallback: all off; turn the current one back on */
+	l = CURRENT;
+
+	change_selection:;
+	lid = pcb_layer_id(PCB->Data, l);
+	pcb_layervis_change_group_vis(lid, 1, 1);
+
+	lys = lys_get(ls, &ls->real_layer, lid, 0);
+	if (lys != 0)
+		locked_layersel(lys->ls, lys->wlab);
+	else
+		locked_layersel(lys->ls, 0);
+}
+
+
 static void layer_vis_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
+	pcb_layer_t *ly;
 	ls_layer_t *lys = attr->user_data;
 	pcb_bool *vis;
 
@@ -154,8 +196,6 @@ static void layer_vis_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 		vis = (pcb_bool *)((char *)PCB + lys->ml->vis_offs);
 	else
 		return;
-
-TODO("if current got invis, move selection to stack(0)");
 
 	if (lys->grp_vis) {
 		pcb_layer_id_t lid = lys->ly - PCB->Data->Layer;
@@ -167,6 +207,11 @@ TODO("if current got invis, move selection to stack(0)");
 		pcb_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_off, !!(*vis));
 		locked_layervis_ev(lys->ls);
 	}
+
+	ly = LAYER_ON_STACK(0);
+	if ((ly != NULL) && (!ly->meta.real.vis)) /* currently selected layer lost visible state - choose another */
+		ensure_visible_current(lys->ls);
+
 	pcb_hid_redraw(PCB);
 }
 
