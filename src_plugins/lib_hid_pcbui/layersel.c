@@ -246,8 +246,8 @@ static void layer_vis_box(gen_xpm_t *dst, int filled, const pcb_color_t *color, 
 	pcb_snprintf(dst->buf[line++], 20, "%d 16 4 1", width);
 	strcpy(dst->buf[line++], ".	c None");
 	strcpy(dst->buf[line++], "u	c None");
-	pcb_sprintf(dst->buf[line++], "b	c #000000");
-	pcb_sprintf(dst->buf[line++], "c	c #%02X%02X%02X", color->r, color->g, color->b);
+	strcpy(dst->buf[line++], "b	c #000000");
+	pcb_snprintf(dst->buf[line++], 20, "c	c #%02X%02X%02X", color->r, color->g, color->b);
 
 	while (height--) {
 		w = width;
