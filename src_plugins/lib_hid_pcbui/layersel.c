@@ -197,7 +197,6 @@ static void ensure_visible_current(layersel_ctx_t *ls)
 
 static void layer_vis_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_layer_t *ly;
 	ls_layer_t *lys = attr->user_data;
 	pcb_bool *vis;
 
