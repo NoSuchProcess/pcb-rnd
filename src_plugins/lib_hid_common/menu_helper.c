@@ -243,12 +243,15 @@ int pcb_hid_cfg_remove_menu_cookie(pcb_hid_cfg_t *hr, const char *cookie, int (*
 
 int pcb_hid_cfg_remove_menu(pcb_hid_cfg_t *hr, const char *path, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
 {
-	lht_node_t *nd = pcb_hid_cfg_get_menu_at(hr, NULL, path, NULL, NULL);
+	if (hr != NULL) {
+		lht_node_t *nd = pcb_hid_cfg_get_menu_at(hr, NULL, path, NULL, NULL);
 
-	if (nd == NULL)
-		return pcb_hid_cfg_remove_menu_cookie(hr, path, gui_remove, ctx, 0, hr->doc->root);
-	else
-		return pcb_hid_cfg_remove_menu_node(hr, nd, gui_remove, ctx);
+		if (nd == NULL)
+			return pcb_hid_cfg_remove_menu_cookie(hr, path, gui_remove, ctx, 0, hr->doc->root);
+		else
+			return pcb_hid_cfg_remove_menu_node(hr, nd, gui_remove, ctx);
+	}
+	return 0;
 }
 
 typedef struct {
