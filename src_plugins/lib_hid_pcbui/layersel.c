@@ -438,6 +438,7 @@ static void layersel_docked_create(layersel_ctx_t *ls, pcb_board_t *pcb)
 		layersel_create_global(&layersel, pcb);
 		hsep(&layersel);
 		layersel_create_virtual(&layersel, pcb);
+		layersel_add_grpsep(ls);
 		layersel_create_ui(&layersel, pcb);
 	PCB_DAD_END(ls->sub.dlg);
 	ls->w_last_sel = 0;
