@@ -289,10 +289,27 @@ static void group_right_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pcb_actionl("Popup", "group", NULL);
 }
 
+static void group_sync_core(pcb_board_t *pcb, ls_group_t *lgs, int update_from_core)
+{
+	pcb_layergrp_t *g;
+
+	if (lgs->gid < 0)
+		return;
+	g = pcb_get_layergrp(pcb, lgs->gid);
+	if (g == NULL)
+		return;
+
+	if (update_from_core)
+		lgs->is_open = g->open;
+	else
+		g->open = lgs->is_open;
+}
+
 static void group_open_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	ls_group_t *lgs = attr->user_data;
 	lgs->is_open = !lgs->is_open;
+	group_sync_core(PCB, lgs, 0);
 
 	pcb_gui->attr_dlg_widget_hide(lgs->ls->sub.dlg_hid_ctx, lgs->wopen, lgs->is_open);
 	pcb_gui->attr_dlg_widget_hide(lgs->ls->sub.dlg_hid_ctx, lgs->wclosed, !lgs->is_open);
@@ -628,6 +645,7 @@ static void layersel_update_vis(layersel_ctx_t *ls, pcb_board_t *pcb)
 		if (*lgs == NULL)
 			continue;
 
+		group_sync_core(pcb, lgs, 1);
 		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lgs)->wopen, (*lgs)->is_open);
 		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lgs)->wclosed, !(*lgs)->is_open);
 	}
