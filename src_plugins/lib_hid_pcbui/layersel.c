@@ -455,6 +455,12 @@ static void layersel_update_vis(layersel_ctx_t *ls, pcb_board_t *pcb)
 		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lys)->wvis_off, !!ly->meta.real.vis);
 	}
 
+	{ /* if CURRENT is not selected, select it */
+		ls_layer_t *lys = lys_get(ls, &ls->real_layer, pcb_layer_id(PCB->Data, CURRENT), 0);
+		if ((lys != NULL) && (lys->wlab != ls->w_last_sel))
+			locked_layersel(ls, lys->wlab);
+	}
+
 	ensure_visible_current(ls);
 }
 
