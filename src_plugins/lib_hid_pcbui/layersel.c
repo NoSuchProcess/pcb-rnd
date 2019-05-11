@@ -270,7 +270,7 @@ static void layer_vis_box(gen_xpm_t *dst, int filled, const pcb_color_t *color, 
 		dst->xpm[n] = dst->buf[n];
 }
 
-static void layersel_begin_grp(layersel_ctx_t *ls, const char *name, void *right_click_ctx)
+static void layersel_begin_grp_open(layersel_ctx_t *ls, const char *name, void *right_click_ctx)
 {
 	PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
 		/* vertical group name */
@@ -291,13 +291,13 @@ static void layersel_begin_grp(layersel_ctx_t *ls, const char *name, void *right
 			PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_TIGHT);
 }
 
-static void layersel_end_grp(layersel_ctx_t *ls)
+static void layersel_end_grp_open(layersel_ctx_t *ls)
 {
 		PCB_DAD_END(ls->sub.dlg);
 	PCB_DAD_END(ls->sub.dlg);
 }
 
-static void layersel_create_layer(layersel_ctx_t *ls, ls_layer_t *lys, const char *name, const pcb_color_t *color, int brd, int hatch)
+static void layersel_create_layer_open(layersel_ctx_t *ls, ls_layer_t *lys, const char *name, const pcb_color_t *color, int brd, int hatch)
 {
 	layer_vis_box(&lys->on, 1, color, brd, hatch, 16);
 	layer_vis_box(&lys->off, 0, color, brd, hatch, 16);
@@ -319,11 +319,11 @@ static void layersel_create_layer(layersel_ctx_t *ls, ls_layer_t *lys, const cha
 	PCB_DAD_END(ls->sub.dlg);
 }
 
-static void layersel_create_grp(layersel_ctx_t *ls, pcb_board_t *pcb, pcb_layergrp_t *g, pcb_layergrp_id_t gid)
+static void layersel_create_grp_open(layersel_ctx_t *ls, pcb_board_t *pcb, pcb_layergrp_t *g, pcb_layergrp_id_t gid)
 {
 	pcb_cardinal_t n;
 
-	layersel_begin_grp(ls, g->name, g);
+	layersel_begin_grp_open(ls, g->name, g);
 	for(n = 0; n < g->len; n++) {
 		pcb_layer_t *ly = pcb_get_layer(pcb->Data, g->lid[n]);
 		assert(ly != NULL);
@@ -335,10 +335,10 @@ static void layersel_create_grp(layersel_ctx_t *ls, pcb_board_t *pcb, pcb_layerg
 
 			lys->ly = ly;
 			lys->grp_vis = 1;
-			layersel_create_layer(ls, lys, ly->name, clr, brd, hatch);
+			layersel_create_layer_open(ls, lys, ly->name, clr, brd, hatch);
 		}
 	}
-	layersel_end_grp(ls);
+	layersel_end_grp_open(ls);
 }
 
 static void layersel_add_grpsep(layersel_ctx_t *ls)
@@ -362,7 +362,7 @@ static void layersel_create_stack(layersel_ctx_t *ls, pcb_board_t *pcb)
 			continue;
 		if (created > 0)
 			layersel_add_grpsep(ls);
-		layersel_create_grp(ls, pcb, g, gid);
+		layersel_create_grp_open(ls, pcb, g, gid);
 		created++;
 	}
 }
@@ -379,7 +379,7 @@ static void layersel_create_global(layersel_ctx_t *ls, pcb_board_t *pcb)
 			continue;
 		if (created > 0)
 			layersel_add_grpsep(ls);
-		layersel_create_grp(ls, pcb, g, gid);
+		layersel_create_grp_open(ls, pcb, g, gid);
 		created++;
 	}
 }
@@ -390,14 +390,14 @@ static void layersel_create_virtual(layersel_ctx_t *ls, pcb_board_t *pcb)
 	const pcb_menu_layers_t *ml;
 	int n;
 
-	layersel_begin_grp(ls, "Virtual", NULL);
+	layersel_begin_grp_open(ls, "Virtual", NULL);
 	for(n = 0, ml = pcb_menu_layers; ml->name != NULL; n++,ml++) {
 		ls_layer_t *lys = lys_get(ls, &ls->menu_layer, n, 1);
 		lys->ml = ml;
 		lys->grp_vis = 0;
-		layersel_create_layer(ls, lys, ml->name, ml->force_color, 1, 0);
+		layersel_create_layer_open(ls, lys, ml->name, ml->force_color, 1, 0);
 	}
-	layersel_end_grp(ls);
+	layersel_end_grp_open(ls);
 }
 
 /* user-interface layers (no group) */
@@ -408,17 +408,17 @@ static void layersel_create_ui(layersel_ctx_t *ls, pcb_board_t *pcb)
 	if (vtp0_len(&pcb_uilayers) <= 0)
 		return;
 
-	layersel_begin_grp(ls, "UI", NULL);
+	layersel_begin_grp_open(ls, "UI", NULL);
 	for(n = 0; n < vtp0_len(&pcb_uilayers); n++) {
 		pcb_layer_t *ly = pcb_uilayers.array[n];
 		if ((ly != NULL) && (ly->name != NULL)) {
 			ls_layer_t *lys = lys_get(ls, &ls->ui_layer, n, 1);
 			lys->ly = ly;
 			lys->grp_vis = 0;
-			layersel_create_layer(ls, lys, ly->name, &ly->meta.real.color, 1, 0);
+			layersel_create_layer_open(ls, lys, ly->name, &ly->meta.real.color, 1, 0);
 		}
 	}
-	layersel_end_grp(ls);
+	layersel_end_grp_open(ls);
 }
 
 static void hsep(layersel_ctx_t *ls)
