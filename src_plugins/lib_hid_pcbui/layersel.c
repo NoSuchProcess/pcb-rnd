@@ -160,7 +160,7 @@ static void ensure_visible_current(layersel_ctx_t *ls)
 
 	ly = LAYER_ON_STACK(0);
 	if ((ly == NULL) || (ly->meta.real.vis))
-		return
+		return;
 
 	/* currently selected layer lost visible state - choose another */
 
@@ -464,9 +464,10 @@ static void layersel_update_vis(layersel_ctx_t *ls, pcb_board_t *pcb)
 
 	lys = ls->menu_layer.array;
 	for(ml = pcb_menu_layers; ml->name != NULL; ml++,lys++) {
+		pcb_bool *b;
 		if (*lys == NULL)
 			continue;
-		pcb_bool *b = (pcb_bool *)((char *)PCB + ml->vis_offs);
+		b = (pcb_bool *)((char *)PCB + ml->vis_offs);
 		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lys)->wvis_on, !(*b));
 		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lys)->wvis_off, !!(*b));
 	}
