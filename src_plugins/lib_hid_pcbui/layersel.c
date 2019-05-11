@@ -625,7 +625,6 @@ static void layersel_update_vis(layersel_ctx_t *ls, pcb_board_t *pcb)
 
 	/* update group open/close hides */
 	for(n = 0; n < vtp0_len(&ls->group); n++,lgs++) {
-		pcb_layergrp_t *g;
 		if (*lgs == NULL)
 			continue;
 
