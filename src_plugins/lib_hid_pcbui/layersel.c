@@ -114,7 +114,7 @@ static ls_group_t *lgs_get_(layersel_ctx_t *ls, size_t gid, int alloc)
 	if ((*res == NULL) && alloc) {
 		*res = calloc(sizeof(ls_group_t), 1);
 		(*res)->ls = ls;
-
+		(*res)->is_open = 1;
 	}
 	return *res;
 }
