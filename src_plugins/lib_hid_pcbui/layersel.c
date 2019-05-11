@@ -645,7 +645,7 @@ static void layersel_update_vis(layersel_ctx_t *ls, pcb_board_t *pcb)
 		if (*lgs == NULL)
 			continue;
 
-		group_sync_core(pcb, lgs, 1);
+		group_sync_core(pcb, *lgs, 1);
 		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lgs)->wopen, (*lgs)->is_open);
 		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lgs)->wclosed, !(*lgs)->is_open);
 	}
