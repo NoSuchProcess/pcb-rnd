@@ -110,10 +110,9 @@ static void locked_layervis_ev(layersel_ctx_t *ls)
 	ls->lock_vis--;
 }
 
-static void layer_sel_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void layer_select(ls_layer_t *lys)
 {
 	pcb_bool *vis = NULL;
-	ls_layer_t *lys = attr->user_data;
 
 	if (lys->ly != NULL) {
 		if (lys->grp_vis) {
@@ -141,6 +140,11 @@ static void layer_sel_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 		locked_layervis_ev(lys->ls);
 	}
 	locked_layersel(lys->ls, lys->wlab);
+}
+
+static void layer_sel_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	layer_select(attr->user_data);
 }
 
 /* Select the first visible layer (physically) below the one turned off or
@@ -220,6 +224,19 @@ static void layer_vis_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	pcb_hid_redraw(PCB);
 }
 
+static void layer_right_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	layer_select(attr->user_data);
+	pcb_actionl("Popup", "layer", NULL);
+}
+
+extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
+static void group_right_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_actd_EditGroup_gid = pcb_layergrp_id(PCB, attr->user_data);
+	pcb_actionl("Popup", "group", NULL);
+}
+
 /* draw a visibility box: filled or partially filled with layer color */
 static void layer_vis_box(gen_xpm_t *dst, int filled, const pcb_color_t *color, int brd, int hatch)
 {
@@ -254,13 +271,17 @@ static void layer_vis_box(gen_xpm_t *dst, int filled, const pcb_color_t *color, 
 		dst->xpm[n] = dst->buf[n];
 }
 
-static void layersel_begin_grp(layersel_ctx_t *ls, const char *name)
+static void layersel_begin_grp(layersel_ctx_t *ls, const char *name, void *right_click_ctx)
 {
 	PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
 		/* vertical group name */
 		PCB_DAD_LABEL(ls->sub.dlg, name);
 			PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_TIGHT | PCB_HATF_TEXT_VERTICAL | PCB_HATF_TEXT_TRUNCATED);
-		
+			if (right_click_ctx != NULL) {
+				PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, right_click_ctx);
+				PCB_DAD_RIGHT_CB(ls->sub.dlg, group_right_cb);
+			}
+
 		/* vert sep */
 		PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
 			PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_TIGHT | PCB_HATF_FRAME);
@@ -295,6 +316,7 @@ static void layersel_create_layer(layersel_ctx_t *ls, ls_layer_t *lys, const cha
 			lys->wlab = PCB_DAD_CURRENT(ls->sub.dlg);
 			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
 			PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_sel_cb);
+			PCB_DAD_RIGHT_CB(ls->sub.dlg, layer_right_cb);
 	PCB_DAD_END(ls->sub.dlg);
 }
 
@@ -302,7 +324,7 @@ static void layersel_create_grp(layersel_ctx_t *ls, pcb_board_t *pcb, pcb_layerg
 {
 	pcb_cardinal_t n;
 
-	layersel_begin_grp(ls, g->name);
+	layersel_begin_grp(ls, g->name, g);
 	for(n = 0; n < g->len; n++) {
 		pcb_layer_t *ly = pcb_get_layer(pcb->Data, g->lid[n]);
 		assert(ly != NULL);
@@ -369,7 +391,7 @@ static void layersel_create_virtual(layersel_ctx_t *ls, pcb_board_t *pcb)
 	const pcb_menu_layers_t *ml;
 	int n;
 
-	layersel_begin_grp(ls, "Virtual");
+	layersel_begin_grp(ls, "Virtual", NULL);
 	for(n = 0, ml = pcb_menu_layers; ml->name != NULL; n++,ml++) {
 		ls_layer_t *lys = lys_get(ls, &ls->menu_layer, n, 1);
 		lys->ml = ml;
@@ -387,7 +409,7 @@ static void layersel_create_ui(layersel_ctx_t *ls, pcb_board_t *pcb)
 	if (vtp0_len(&pcb_uilayers) <= 0)
 		return;
 
-	layersel_begin_grp(ls, "UI");
+	layersel_begin_grp(ls, "UI", NULL);
 	for(n = 0; n < vtp0_len(&pcb_uilayers); n++) {
 		pcb_layer_t *ly = pcb_uilayers.array[n];
 		if ((ly != NULL) && (ly->name != NULL)) {
