@@ -128,20 +128,22 @@ TODO("TODO make these configurable:")
 	return prv;
 }
 
-static GtkWidget *ghid_picture_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent, int j)
+static GtkWidget *ghid_picture_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent, int j, GCallback click_cb, void *click_ctx)
 {
-	GtkWidget *bparent, *pic;
+	GtkWidget *bparent, *pic, *evb;
 	GdkPixbuf *pixbuf;
 	bparent = frame_scroll(parent, attr->pcb_hatt_flags, &ctx->wltop[j]);
 	int expfill = (attr->pcb_hatt_flags & PCB_HATF_EXPFILL);
 
 	pixbuf = gdk_pixbuf_new_from_xpm_data(attr->enumerations);
 	pic = gtk_image_new_from_pixbuf(pixbuf);
-	
-	gtk_box_pack_start(GTK_BOX(bparent), pic, expfill, expfill, 0);
+	evb = wrap_bind_click(pic, click_cb, attr);
+	g_object_set_data(G_OBJECT(evb), PCB_OBJ_PROP, click_ctx);
+
+	gtk_box_pack_start(GTK_BOX(bparent), evb, expfill, expfill, 0);
 	gtk_widget_set_tooltip_text(pic, attr->help_text);
 
-	return pic;
+	return evb;
 }
 
 

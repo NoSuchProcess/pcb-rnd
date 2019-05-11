@@ -570,7 +570,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				break;
 
 			case PCB_HATT_PICTURE:
-				ctx->wl[j] = ghid_picture_create(ctx, &ctx->attrs[j], parent, j);
+				ctx->wl[j] = ghid_picture_create(ctx, &ctx->attrs[j], parent, j, G_CALLBACK(label_click_cb), ctx);
 				break;
 
 			case PCB_HATT_PICBUTTON:
