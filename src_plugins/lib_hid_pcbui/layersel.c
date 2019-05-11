@@ -67,12 +67,28 @@ typedef struct {
 	unsigned grp_vis:1;
 } ls_layer_t;
 
+/* virtual group GIDs */
+typedef enum {
+	LGS_invlaid = -1,
+	LGS_VIRTUAL = 0,
+	LGS_UI = 1,
+	LGS_max
+} virt_grp_id_t;
+
+typedef struct {
+	int wopen, wclosed;
+	layersel_ctx_t *ls;
+	pcb_layergrp_id_t gid;
+	virt_grp_id_t vid;
+} ls_group_t;
+
 struct layersel_ctx_s {
 	pcb_hid_dad_subdialog_t sub;
 	int sub_inited;
 	int lock_vis, lock_sel;
 	int w_last_sel;
-	vtp0_t real_layer, menu_layer, ui_layer;
+	vtp0_t real_layer, menu_layer, ui_layer; /* -> ls_layer_t */
+	vtp0_t group; /* -> ls_group_t */
 };
 
 static layersel_ctx_t layersel;
@@ -87,6 +103,35 @@ static ls_layer_t *lys_get(layersel_ctx_t *ls, vtp0_t *vt, size_t idx, int alloc
 		(*res)->ls = ls;
 	}
 	return *res;
+}
+
+static ls_group_t *lgs_get_(layersel_ctx_t *ls, size_t gid, int alloc)
+{
+	ls_group_t **res = (ls_group_t **)vtp0_get(&ls->group, gid, alloc);
+	if (res == NULL)
+		return NULL;
+	if ((*res == NULL) && alloc) {
+		*res = calloc(sizeof(ls_group_t), 1);
+		(*res)->ls = ls;
+
+	}
+	return *res;
+}
+
+static ls_group_t *lgs_get_real(layersel_ctx_t *ls, pcb_layergrp_id_t gid, int alloc)
+{
+	ls_group_t *lgs = lgs_get_(ls, gid+LGS_max, alloc);
+	lgs->gid = gid;
+	lgs->vid = -1;
+	return lgs;
+}
+
+static ls_group_t *lgs_get_virt(layersel_ctx_t *ls, virt_grp_id_t vid, int alloc)
+{
+	ls_group_t *lgs = lgs_get_(ls, vid, alloc);
+	lgs->gid = -1;
+	lgs->vid = vid;
+	return lgs;
 }
 
 static void locked_layersel(layersel_ctx_t *ls, int wid)
@@ -232,7 +277,10 @@ static void layer_right_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
 static void group_right_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_actd_EditGroup_gid = pcb_layergrp_id(PCB, attr->user_data);
+	ls_group_t *grp = attr->user_data;
+	if (grp->gid < 0)
+		return;
+	pcb_actd_EditGroup_gid = grp->gid;
 	pcb_actionl("Popup", "group", NULL);
 }
 
@@ -276,10 +324,8 @@ static void layersel_begin_grp_open(layersel_ctx_t *ls, const char *name, void *
 		/* vertical group name */
 		PCB_DAD_LABEL(ls->sub.dlg, name);
 			PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_TIGHT | PCB_HATF_TEXT_VERTICAL | PCB_HATF_TEXT_TRUNCATED);
-			if (right_click_ctx != NULL) {
-				PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, right_click_ctx);
-				PCB_DAD_RIGHT_CB(ls->sub.dlg, group_right_cb);
-			}
+			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, right_click_ctx);
+			PCB_DAD_RIGHT_CB(ls->sub.dlg, group_right_cb);
 
 		/* vert sep */
 		PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
@@ -319,11 +365,11 @@ static void layersel_create_layer_open(layersel_ctx_t *ls, ls_layer_t *lys, cons
 	PCB_DAD_END(ls->sub.dlg);
 }
 
-static void layersel_create_grp_open(layersel_ctx_t *ls, pcb_board_t *pcb, pcb_layergrp_t *g, pcb_layergrp_id_t gid)
+static void layersel_create_grp_open(layersel_ctx_t *ls, pcb_board_t *pcb, pcb_layergrp_t *g, ls_group_t *lgs)
 {
 	pcb_cardinal_t n;
 
-	layersel_begin_grp_open(ls, g->name, g);
+	layersel_begin_grp_open(ls, g->name, lgs);
 	for(n = 0; n < g->len; n++) {
 		pcb_layer_t *ly = pcb_get_layer(pcb->Data, g->lid[n]);
 		assert(ly != NULL);
@@ -358,11 +404,14 @@ static void layersel_create_stack(layersel_ctx_t *ls, pcb_board_t *pcb)
 	pcb_cardinal_t created = 0;
 
 	for(gid = 0, g = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,g++) {
+		ls_group_t *lgs;
+
 		if (!(PCB_LAYER_IN_STACK(g->ltype)) || (g->ltype & PCB_LYT_SUBSTRATE))
 			continue;
 		if (created > 0)
 			layersel_add_grpsep(ls);
-		layersel_create_grp_open(ls, pcb, g, gid);
+		lgs = lgs_get_real(ls, gid, 1);
+		layersel_create_grp_open(ls, pcb, g, lgs);
 		created++;
 	}
 }
@@ -375,11 +424,14 @@ static void layersel_create_global(layersel_ctx_t *ls, pcb_board_t *pcb)
 	pcb_cardinal_t created = 0;
 
 	for(gid = 0, g = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,g++) {
+		ls_group_t *lgs;
+		
 		if (PCB_LAYER_IN_STACK(g->ltype))
 			continue;
 		if (created > 0)
 			layersel_add_grpsep(ls);
-		layersel_create_grp_open(ls, pcb, g, gid);
+		lgs = lgs_get_real(ls, gid, 1);
+		layersel_create_grp_open(ls, pcb, g, lgs);
 		created++;
 	}
 }
@@ -389,8 +441,9 @@ static void layersel_create_virtual(layersel_ctx_t *ls, pcb_board_t *pcb)
 {
 	const pcb_menu_layers_t *ml;
 	int n;
+	ls_group_t *lgs = lgs_get_virt(ls, LGS_VIRTUAL, 1);
 
-	layersel_begin_grp_open(ls, "Virtual", NULL);
+	layersel_begin_grp_open(ls, "Virtual", lgs);
 	for(n = 0, ml = pcb_menu_layers; ml->name != NULL; n++,ml++) {
 		ls_layer_t *lys = lys_get(ls, &ls->menu_layer, n, 1);
 		lys->ml = ml;
@@ -403,12 +456,13 @@ static void layersel_create_virtual(layersel_ctx_t *ls, pcb_board_t *pcb)
 /* user-interface layers (no group) */
 static void layersel_create_ui(layersel_ctx_t *ls, pcb_board_t *pcb)
 {
-		int n;
+	ls_group_t *lgs = lgs_get_virt(ls, LGS_UI, 1);
+	int n;
 
 	if (vtp0_len(&pcb_uilayers) <= 0)
 		return;
 
-	layersel_begin_grp_open(ls, "UI", NULL);
+	layersel_begin_grp_open(ls, "UI", lgs);
 	for(n = 0; n < vtp0_len(&pcb_uilayers); n++) {
 		pcb_layer_t *ly = pcb_uilayers.array[n];
 		if ((ly != NULL) && (ly->name != NULL)) {
