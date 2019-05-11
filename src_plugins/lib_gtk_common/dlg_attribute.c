@@ -76,6 +76,12 @@ typedef struct {
 			dst->change_cb(ctx, ctx->caller_data, dst); \
 	} while(0) \
 
+#define right_cb(ctx, dst) \
+	do { \
+		if (dst->right_cb != NULL) \
+			dst->right_cb(ctx, ctx->caller_data, dst); \
+	} while(0) \
+
 #define enter_cb(ctx, dst) \
 	do { \
 		if (dst->enter_cb != NULL) \
@@ -211,11 +217,17 @@ static void label_click_cb(GtkButton *evbox, GdkEvent *event, pcb_hid_attribute_
 {
 	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(evbox), PCB_OBJ_PROP);
 
-	dst->changed = 1;
-	if (ctx->inhibit_valchg)
-		return;
-
-	change_cb(ctx, dst);
+	switch(event->button.button) {
+		case 1:
+			dst->changed = 1;
+			if (ctx->inhibit_valchg)
+				return;
+			change_cb(ctx, dst);
+			break;
+		case 3:
+			right_cb(ctx, dst);
+			break;
+	}
 }
 
 static void color_changed_cb(GtkColorButton *button, pcb_hid_attribute_t *dst)
