@@ -148,10 +148,17 @@ static void layer_sel_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
    is visible and avoid drawing on inivisible layers */
 static void ensure_visible_current(layersel_ctx_t *ls)
 {
+	pcb_layer_t *ly;
 	pcb_layer_id_t lid;
 	pcb_layergrp_id_t gid;
 	pcb_layer_t *l;
 	ls_layer_t *lys;
+
+	ly = LAYER_ON_STACK(0);
+	if ((ly == NULL) || (ly->meta.real.vis))
+		return
+
+	/* currently selected layer lost visible state - choose another */
 
 	/* At the moment the layer selector displays only board layers which are always real */
 	assert(!CURRENT->is_bound);
@@ -208,9 +215,7 @@ static void layer_vis_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 		locked_layervis_ev(lys->ls);
 	}
 
-	ly = LAYER_ON_STACK(0);
-	if ((ly != NULL) && (!ly->meta.real.vis)) /* currently selected layer lost visible state - choose another */
-		ensure_visible_current(lys->ls);
+	ensure_visible_current(lys->ls);
 
 	pcb_hid_redraw(PCB);
 }
@@ -449,6 +454,8 @@ static void layersel_update_vis(layersel_ctx_t *ls, pcb_board_t *pcb)
 		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lys)->wvis_on, !ly->meta.real.vis);
 		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lys)->wvis_off, !!ly->meta.real.vis);
 	}
+
+	ensure_visible_current(ls);
 }
 
 void pcb_layersel_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
