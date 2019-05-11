@@ -79,7 +79,7 @@ static layersel_ctx_t layersel;
 
 static ls_layer_t *lys_get(layersel_ctx_t *ls, vtp0_t *vt, size_t idx, int alloc)
 {
-	ls_layer_t **res = vtp0_get(vt, idx, alloc);
+	ls_layer_t **res = (ls_layer_t **)vtp0_get(vt, idx, alloc);
 	if (res == NULL)
 		return NULL;
 	if ((*res == NULL) && alloc) {
@@ -447,7 +447,7 @@ static void layersel_docked_create(layersel_ctx_t *ls, pcb_board_t *pcb)
 static void layersel_update_vis(layersel_ctx_t *ls, pcb_board_t *pcb)
 {
 	pcb_layer_t *ly = pcb->Data->Layer;
-	ls_layer_t **lys = ls->real_layer.array;
+	ls_layer_t **lys = (ls_layer_t **)ls->real_layer.array;
 	const pcb_menu_layers_t *ml;
 	pcb_cardinal_t n;
 
@@ -462,7 +462,7 @@ static void layersel_update_vis(layersel_ctx_t *ls, pcb_board_t *pcb)
 	}
 
 
-	lys = ls->menu_layer.array;
+	lys = (ls_layer_t **)ls->menu_layer.array;
 	for(ml = pcb_menu_layers; ml->name != NULL; ml++,lys++) {
 		pcb_bool *b;
 		if (*lys == NULL)
@@ -472,7 +472,7 @@ static void layersel_update_vis(layersel_ctx_t *ls, pcb_board_t *pcb)
 		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lys)->wvis_off, !!(*b));
 	}
 
-	lys = ls->ui_layer.array;
+	lys = (ls_layer_t **)ls->ui_layer.array;
 	for(n = 0; n < vtp0_len(&pcb_uilayers); n++,lys++) {
 		pcb_layer_t *ly = pcb_uilayers.array[n];
 		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lys)->wvis_on, !ly->meta.real.vis);
