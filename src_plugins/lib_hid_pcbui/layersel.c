@@ -70,6 +70,7 @@ typedef struct {
 struct layersel_ctx_s {
 	pcb_hid_dad_subdialog_t sub;
 	int sub_inited;
+	int lock_vis;
 	vtp0_t real_layer, menu_layer, ui_layer;
 };
 
@@ -86,6 +87,14 @@ static ls_layer_t *lys_get(layersel_ctx_t *ls, vtp0_t *vt, size_t idx, int alloc
 	}
 	return *res;
 }
+
+static void locked_layervis_ev(layersel_ctx_t *ls)
+{
+	ls->lock_vis++;
+	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
+	ls->lock_vis--;
+}
+
 
 static void layer_sel_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
@@ -115,7 +124,7 @@ static void layer_sel_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	if (vis != NULL) {
 		pcb_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_on, !(*vis));
 		pcb_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_off, !!(*vis));
-TODO("lock and emit layer vis change event");
+		locked_layervis_ev(lys->ls);
 	}
 }
 
@@ -141,7 +150,7 @@ TODO("if current got invis, move selection to stack(0)");
 		*vis = !(*vis);
 		pcb_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_on, !(*vis));
 		pcb_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_off, !!(*vis));
-TODO("lock and emit layer vis change event");
+		locked_layervis_ev(lys->ls);
 	}
 	pcb_hid_redraw(PCB);
 }
@@ -393,6 +402,8 @@ void pcb_layersel_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, p
 
 void pcb_layersel_vis_chg_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
+	if (layersel.lock_vis > 0)
+		return;
 	layersel_update_vis(&layersel, PCB);
 }
 
