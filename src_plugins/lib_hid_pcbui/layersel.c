@@ -156,6 +156,14 @@ static void locked_layervis_ev(layersel_ctx_t *ls)
 	ls->lock_vis--;
 }
 
+static void lys_update_vis(ls_layer_t *lys, pcb_bool_t vis)
+{
+	pcb_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_on_open, !vis);
+	pcb_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_on_closed, !vis);
+	pcb_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_off_open, !!vis);
+	pcb_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_off_closed, !!vis);
+}
+
 static void layer_select(ls_layer_t *lys)
 {
 	pcb_bool *vis = NULL;
@@ -181,10 +189,7 @@ static void layer_select(ls_layer_t *lys)
 	pcb_hid_redraw(PCB);
 
 	if (vis != NULL) {
-		pcb_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_on_open, !(*vis));
-		pcb_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_on_closed, !(*vis));
-		pcb_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_off_open, !!(*vis));
-		pcb_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_off_closed, !!(*vis));
+		lys_update_vis(lys, *vis);
 		locked_layervis_ev(lys->ls);
 	}
 	locked_layersel(lys->ls, lys->wlab);
@@ -261,10 +266,7 @@ static void layer_vis_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	}
 	else {
 		*vis = !(*vis);
-		pcb_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_on_open, !(*vis));
-		pcb_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_on_closed, !(*vis));
-		pcb_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_off_open, !!(*vis));
-		pcb_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_off_closed, !!(*vis));
+		lys_update_vis(lys, *vis);
 		locked_layervis_ev(lys->ls);
 	}
 
@@ -612,10 +614,7 @@ static void layersel_update_vis(layersel_ctx_t *ls, pcb_board_t *pcb)
 	for(n = 0; n < pcb->Data->LayerN; n++,ly++,lys++) {
 		if (*lys == NULL)
 			continue;
-		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lys)->wvis_on_open, !ly->meta.real.vis);
-		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lys)->wvis_on_closed, !ly->meta.real.vis);
-		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lys)->wvis_off_open, !!ly->meta.real.vis);
-		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lys)->wvis_off_closed, !!ly->meta.real.vis);
+		lys_update_vis(*lys, ly->meta.real.vis);
 	}
 
 
@@ -625,19 +624,13 @@ static void layersel_update_vis(layersel_ctx_t *ls, pcb_board_t *pcb)
 		if (*lys == NULL)
 			continue;
 		b = (pcb_bool *)((char *)PCB + ml->vis_offs);
-		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lys)->wvis_on_open, !(*b));
-		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lys)->wvis_on_closed, !(*b));
-		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lys)->wvis_off_open, !!(*b));
-		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lys)->wvis_off_closed, !!(*b));
+		lys_update_vis(*lys, *b);
 	}
 
 	lys = (ls_layer_t **)ls->ui_layer.array;
 	for(n = 0; n < vtp0_len(&pcb_uilayers); n++,lys++) {
 		pcb_layer_t *ly = pcb_uilayers.array[n];
-		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lys)->wvis_on_open, !ly->meta.real.vis);
-		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lys)->wvis_on_closed, !ly->meta.real.vis);
-		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lys)->wvis_off_open, !!ly->meta.real.vis);
-		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lys)->wvis_off_closed, !!ly->meta.real.vis);
+		lys_update_vis(*lys, ly->meta.real.vis);
 	}
 
 	/* update group open/close hides */
