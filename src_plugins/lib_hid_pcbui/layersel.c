@@ -33,12 +33,14 @@
 #include "hid_cfg.h"
 #include "hid_dad.h"
 
+#include "actions.h"
 #include "board.h"
 #include "data.h"
 #include "event.h"
 #include "layer.h"
 #include "layer_grp.h"
 #include "layer_ui.h"
+#include "layer_vis.h"
 #include "hidlib_conf.h"
 
 #include "layersel.h"
@@ -85,6 +87,38 @@ static ls_layer_t *lys_get(layersel_ctx_t *ls, vtp0_t *vt, size_t idx, int alloc
 	return *res;
 }
 
+static void layer_sel_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_bool *vis = NULL;
+	ls_layer_t *lys = attr->user_data;
+
+	if (lys->ly != NULL) {
+		if (lys->grp_vis) {
+			pcb_layer_id_t lid = lys->ly - PCB->Data->Layer;
+			pcb_layervis_change_group_vis(lid, 1, 1);
+		}
+		else {
+			vis = &lys->ly->meta.real.vis;
+			*vis = 1;
+		}
+	}
+	else if (lys->ml != NULL) {
+		vis = (pcb_bool *)((char *)PCB + lys->ml->vis_offs);
+		*vis = 1;
+		pcb_actionl("SelectLayer", lys->ml->select_name, NULL);
+	}
+	else
+		return;
+
+	pcb_hid_redraw(PCB);
+
+	if (vis != NULL) {
+		pcb_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_on, !(*vis));
+		pcb_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_off, !!(*vis));
+TODO("lock and emit layer vis change event");
+	}
+}
+
 static void layer_vis_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	ls_layer_t *lys = attr->user_data;
@@ -97,6 +131,8 @@ static void layer_vis_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	else
 		return;
 
+TODO("if current got invis, move selection to stack(0)");
+
 	if (lys->grp_vis) {
 		pcb_layer_id_t lid = lys->ly - PCB->Data->Layer;
 		pcb_layervis_change_group_vis(lid, !*vis, 1);
@@ -105,8 +141,8 @@ static void layer_vis_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 		*vis = !(*vis);
 		pcb_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_on, !(*vis));
 		pcb_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_off, !!(*vis));
+TODO("lock and emit layer vis change event");
 	}
-
 	pcb_hid_redraw(PCB);
 }
 
@@ -183,7 +219,7 @@ static void layersel_create_layer(layersel_ctx_t *ls, ls_layer_t *lys, const cha
 			PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_vis_cb);
 		PCB_DAD_LABEL(ls->sub.dlg, name);
 			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
-			PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_vis_cb);
+			PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_sel_cb);
 	PCB_DAD_END(ls->sub.dlg);
 }
 
