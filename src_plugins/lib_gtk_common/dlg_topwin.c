@@ -82,6 +82,7 @@ int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub, pc
 {
 	docked_t *docked;
 	GtkWidget *hvbox;
+	int expfill = 0;
 
 	docked = calloc(sizeof(docked_t), 1);
 	docked->where = where;
@@ -98,7 +99,10 @@ int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub, pc
 	else
 		docked->frame = hvbox;
 
-	gtk_box_pack_end(GTK_BOX(tw->dockbox[where]), docked->frame, TRUE, TRUE, 0);
+	if (PCB_HATT_IS_COMPOSITE(sub->dlg[0].type))
+		expfill = (sub->dlg[0].pcb_hatt_flags & PCB_HATF_EXPFILL);
+
+	gtk_box_pack_end(GTK_BOX(tw->dockbox[where]), docked->frame, expfill, expfill, 0);
 	gtk_widget_show_all(docked->frame);
 
 	sub->parent_poke = pcb_gtk_dock_poke;
