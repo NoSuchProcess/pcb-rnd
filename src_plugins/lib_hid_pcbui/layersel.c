@@ -289,6 +289,15 @@ static void group_right_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pcb_actionl("Popup", "group", NULL);
 }
 
+static void group_open_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	ls_group_t *lgs = attr->user_data;
+	lgs->is_open = !lgs->is_open;
+
+	pcb_gui->attr_dlg_widget_hide(lgs->ls->sub.dlg_hid_ctx, lgs->wopen, lgs->is_open);
+	pcb_gui->attr_dlg_widget_hide(lgs->ls->sub.dlg_hid_ctx, lgs->wclosed, !lgs->is_open);
+}
+
 /* draw a visibility box: filled or partially filled with layer color */
 static void layer_vis_box(gen_xpm_t *dst, int filled, const pcb_color_t *color, int brd, int hatch, int width)
 {
@@ -333,6 +342,7 @@ static void layersel_begin_grp_open(layersel_ctx_t *ls, const char *name, ls_gro
 			PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_TIGHT | PCB_HATF_TEXT_VERTICAL | PCB_HATF_TEXT_TRUNCATED);
 			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lsg);
 			PCB_DAD_RIGHT_CB(ls->sub.dlg, group_right_cb);
+			PCB_DAD_CHANGE_CB(ls->sub.dlg, group_open_cb);
 
 		/* vert sep */
 		PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
@@ -357,6 +367,7 @@ static void layersel_begin_grp_closed(layersel_ctx_t *ls, const char *name, ls_g
 		PCB_DAD_LABEL(ls->sub.dlg, name);
 			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lsg);
 			PCB_DAD_RIGHT_CB(ls->sub.dlg, group_right_cb);
+			PCB_DAD_CHANGE_CB(ls->sub.dlg, group_open_cb);
 
 		/* vert sep */
 		PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
