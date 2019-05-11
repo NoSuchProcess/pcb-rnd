@@ -70,7 +70,8 @@ typedef struct {
 struct layersel_ctx_s {
 	pcb_hid_dad_subdialog_t sub;
 	int sub_inited;
-	int lock_vis;
+	int lock_vis, lock_sel;
+	int w_last_sel;
 	vtp0_t real_layer, menu_layer, ui_layer;
 };
 
@@ -88,13 +89,26 @@ static ls_layer_t *lys_get(layersel_ctx_t *ls, vtp0_t *vt, size_t idx, int alloc
 	return *res;
 }
 
+static void locked_layersel(layersel_ctx_t *ls, int wid)
+{
+	if (ls->lock_sel > 0)
+		return;
+
+	ls->lock_sel = 1;
+	if (ls->w_last_sel != 0)
+		pcb_gui->attr_dlg_widget_state(ls->sub.dlg_hid_ctx, ls->w_last_sel, 1);
+	ls->w_last_sel = wid;
+	if (ls->w_last_sel != 0)
+		pcb_gui->attr_dlg_widget_state(ls->sub.dlg_hid_ctx, ls->w_last_sel, 2);
+	ls->lock_sel = 0;
+}
+
 static void locked_layervis_ev(layersel_ctx_t *ls)
 {
 	ls->lock_vis++;
 	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	ls->lock_vis--;
 }
-
 
 static void layer_sel_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
@@ -126,6 +140,7 @@ static void layer_sel_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 		pcb_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_off, !!(*vis));
 		locked_layervis_ev(lys->ls);
 	}
+	locked_layersel(lys->ls, lys->wlab);
 }
 
 static void layer_vis_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -227,6 +242,7 @@ static void layersel_create_layer(layersel_ctx_t *ls, ls_layer_t *lys, const cha
 			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
 			PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_vis_cb);
 		PCB_DAD_LABEL(ls->sub.dlg, name);
+			lys->wlab = PCB_DAD_CURRENT(ls->sub.dlg);
 			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
 			PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_sel_cb);
 	PCB_DAD_END(ls->sub.dlg);
@@ -352,6 +368,7 @@ static void layersel_docked_create(layersel_ctx_t *ls, pcb_board_t *pcb)
 		layersel_create_virtual(&layersel, pcb);
 		layersel_create_ui(&layersel, pcb);
 	PCB_DAD_END(ls->sub.dlg);
+	ls->w_last_sel = 0;
 }
 
 static void layersel_update_vis(layersel_ctx_t *ls, pcb_board_t *pcb)
