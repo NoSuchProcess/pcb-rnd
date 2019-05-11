@@ -27,7 +27,6 @@ put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/win_place.o
   $(PLUGDIR)/lib_gtk_common/wt_accel_label.o
   $(PLUGDIR)/lib_gtk_common/wt_coord_entry.o
-  $(PLUGDIR)/lib_gtk_common/wt_layersel.o
   $(PLUGDIR)/lib_gtk_common/wt_preview.o
 @]
 

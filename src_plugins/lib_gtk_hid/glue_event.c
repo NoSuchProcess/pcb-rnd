@@ -14,7 +14,5 @@ static void ghid_Busy(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event
 
 void glue_event_init(const char *cookie)
 {
-	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, ghid_LayersChanged, NULL, cookie);
-	pcb_event_bind(PCB_EVENT_LAYERVIS_CHANGED, ghid_LayervisChanged, NULL, cookie);
 	pcb_event_bind(PCB_EVENT_BUSY, ghid_Busy, NULL, cookie);
 }

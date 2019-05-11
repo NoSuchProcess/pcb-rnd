@@ -5,7 +5,6 @@
 #include "gui.h"
 #include "common.h"
 
-#include "../src_plugins/lib_gtk_common/wt_layersel.h"
 #include "../src_plugins/lib_gtk_common/dlg_topwin.h"
 #include "../src_plugins/lib_gtk_common/in_keyboard.h"
 #include "../src_plugins/lib_gtk_common/hid_gtk_conf.h"
@@ -77,14 +76,12 @@ void ghid_interface_input_signals_connect(void)
 	ghidgui->button_press_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_press_event", G_CALLBACK(ghid_port_button_press_cb), &gport->mouse);
 	ghidgui->button_release_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_release_event", G_CALLBACK(ghid_port_button_release_cb), &gport->mouse);
 	kbd_input_signals_connect(0, gport->drawing_area);
-	kbd_input_signals_connect(1, ghidgui->topwin.layer_selector);
 	kbd_input_signals_connect(3, ghidgui->topwin.left_toolbar);
 }
 
 void ghid_interface_input_signals_disconnect(void)
 {
 	kbd_input_signals_disconnect(0, gport->drawing_area);
-	kbd_input_signals_disconnect(1, ghidgui->topwin.layer_selector);
 	kbd_input_signals_disconnect(3, ghidgui->topwin.left_toolbar);
 
 	if (ghidgui->button_press_handler != 0)
@@ -146,23 +143,4 @@ int ghid_mod1_is_pressed()
 #else
 	return (mask & GDK_MOD1_MASK) ? TRUE : FALSE;
 #endif
-}
-
-void ghid_LayersChanged(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
-{
-	if (!ghidgui || !ghidgui->topwin.active || ghidgui->common.hidlib == NULL || ghidgui->topwin.layersel.running)
-		return;
-
-	pcb_gtk_tw_layer_buttons_update(&ghidgui->topwin);
-
-	return;
-}
-
-void ghid_LayervisChanged(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
-{
-	if (!ghidgui || !ghidgui->topwin.active || ghidgui->common.hidlib == NULL || ghidgui->topwin.layersel.running)
-		return;
-
-	pcb_gtk_tw_layer_vis_update(&ghidgui->topwin);
-	return;
 }

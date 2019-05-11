@@ -187,8 +187,6 @@ TODO(": move this to render init")
 
 	ghid_interface_input_signals_connect();
 
-	pcb_gtk_tw_layer_buttons_update(&ghidgui->topwin);
-
 	if (conf_hid_gtk.plugins.hid_gtk.listen)
 		pcb_gtk_create_listener();
 

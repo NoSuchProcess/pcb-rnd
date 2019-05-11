@@ -11,7 +11,6 @@
 #include "bu_menu.h"
 #include "glue.h"
 #include "bu_command.h"
-#include "wt_layersel.h"
 
 typedef struct {
 	/* util/builder states */
@@ -36,7 +35,6 @@ typedef struct {
 	gboolean adjustment_changed_holdoff;
 	gboolean small_label_markup;
 	int active; /* 0 before init finishes */
-	pcb_gtk_layersel_t layersel;
 
 	/* docking */
 	GtkWidget *dockbox[PCB_HID_DOCK_max];

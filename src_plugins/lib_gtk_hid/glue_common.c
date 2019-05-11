@@ -19,11 +19,6 @@ static void ghid_port_ranges_scale(void)
 	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);
 }
 
-static void ghid_layer_buttons_update(void)
-{
-	pcb_gtk_tw_layer_buttons_update(&ghidgui->topwin);
-}
-
 static void ghid_port_ranges_changed(void)
 {
 	GtkAdjustment *h_adj, *v_adj;
@@ -98,11 +93,6 @@ static void ghid_mode_cursor_main(void)
 }
 
 /*** misc ***/
-static void LayersChanged_cb(void)
-{
-	ghid_LayersChanged(ghidgui->common.hidlib, 0, 0, 0);
-}
-
 static void ghid_load_bg_image(void)
 {
 	GError *err = NULL;
@@ -139,8 +129,6 @@ void ghid_glue_common_init(void)
 	ghidgui->common.pan_common = ghid_pan_common;
 	ghidgui->common.port_ranges_scale = ghid_port_ranges_scale;
 
-	ghidgui->common.layer_buttons_update = ghid_layer_buttons_update;
-	ghidgui->common.LayersChanged = LayersChanged_cb;
 	ghidgui->common.command_entry_is_active = ghid_command_entry_is_active;
 	ghidgui->common.load_bg_image = ghid_load_bg_image;
 	ghidgui->common.main_destroy = ghid_main_destroy;

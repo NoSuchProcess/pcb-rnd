@@ -58,7 +58,6 @@
 #include "util_listener.h"
 #include "in_mouse.h"
 #include "in_keyboard.h"
-#include "wt_layersel.h"
 #include "lib_gtk_config.h"
 #include "hid_gtk_conf.h"
 #include "win_place.h"
@@ -181,16 +180,6 @@ void ghid_install_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw)
 void ghid_remove_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw)
 {
 	gtk_window_remove_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(tw->menu.menu_bar)));
-}
-
-void pcb_gtk_tw_layer_buttons_update(pcb_gtk_topwin_t *tw)
-{
-	pcb_gtk_layersel_update(tw->com, &tw->layersel);
-}
-
-void pcb_gtk_tw_layer_vis_update(pcb_gtk_topwin_t *tw)
-{
-	pcb_gtk_layersel_vis_update(&tw->layersel);
 }
 
 /*** Top window ***/
@@ -388,9 +377,6 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	tw->menubar_toolbar_vbox = gtkc_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(tw->menu_hbox), tw->menubar_toolbar_vbox, FALSE, FALSE, 0);
 
-	/* Build layer menus */
-	tw->layer_selector = pcb_gtk_layersel_build(tw->com, &tw->layersel);
-
 	/* Build main menu */
 	tw->menu.menu_bar = ghid_load_menus(&tw->menu, tw->com->hidlib, &tw->ghid_cfg);
 	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), tw->menu.menu_bar, FALSE, FALSE, 0);
@@ -415,7 +401,6 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	tw->left_toolbar = gtkc_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_middle), tw->left_toolbar, FALSE, FALSE, 0);
 
-	gtk_box_pack_start(GTK_BOX(tw->left_toolbar), tw->layer_selector, TRUE, TRUE, 0);
 	tw->dockbox[PCB_HID_DOCK_LEFT] = gtkc_vbox_new(FALSE, 8);
 	gtk_box_pack_end(GTK_BOX(GTK_BOX(tw->left_toolbar)), tw->dockbox[PCB_HID_DOCK_LEFT], FALSE, FALSE, 0);
 
