@@ -302,6 +302,7 @@ void pcb_main_uninit(void)
 	pcb_strflg_uninit_layerlist();
 
 	gui_support_plugins(0);
+	pcb_gui = NULL;
 	pcb_hidlib_uninit(); /* plugin unload */
 
 	if (PCB != NULL) {
