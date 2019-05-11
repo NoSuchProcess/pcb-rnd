@@ -27,7 +27,8 @@
  *
  */
 
-/* This file written by Bill Wilson for the PCB Gtk port. */
+/* This file was originally written by Bill Wilson for the PCB Gtk port
+   then got reworked heavily by Tibor 'Igor2' Palinkas for pcb-rnd DAD */
 
 #include "config.h"
 #include "hidlib_conf.h"
