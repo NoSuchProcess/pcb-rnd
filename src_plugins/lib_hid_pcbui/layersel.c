@@ -237,13 +237,13 @@ static void group_right_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 }
 
 /* draw a visibility box: filled or partially filled with layer color */
-static void layer_vis_box(gen_xpm_t *dst, int filled, const pcb_color_t *color, int brd, int hatch)
+static void layer_vis_box(gen_xpm_t *dst, int filled, const pcb_color_t *color, int brd, int hatch, int width)
 {
-	int width = 16, height = 16, max_height = 16;
+	int height = 16, max_height = 16;
 	char *p;
 	unsigned int w, line = 0, n;
 
-	strcpy(dst->buf[line++], "16 16 4 1");
+	pcb_snprintf(dst->buf[line++], 20, "%d 16 4 1", width);
 	strcpy(dst->buf[line++], ".	c None");
 	strcpy(dst->buf[line++], "u	c None");
 	pcb_sprintf(dst->buf[line++], "b	c #000000");
@@ -299,8 +299,8 @@ static void layersel_end_grp(layersel_ctx_t *ls)
 
 static void layersel_create_layer(layersel_ctx_t *ls, ls_layer_t *lys, const char *name, const pcb_color_t *color, int brd, int hatch)
 {
-	layer_vis_box(&lys->on, 1, color, brd, hatch);
-	layer_vis_box(&lys->off, 0, color, brd, hatch);
+	layer_vis_box(&lys->on, 1, color, brd, hatch, 16);
+	layer_vis_box(&lys->off, 0, color, brd, hatch, 16);
 
 	PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
 		PCB_DAD_PICTURE(ls->sub.dlg, lys->on.xpm);
