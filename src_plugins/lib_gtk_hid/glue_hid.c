@@ -282,7 +282,7 @@ static void ghid_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
 {
 	int offset_x, offset_y;
 
-	if (gport->drawing_area == NULL)
+	if ((gport->drawing_area == NULL) || (ghidgui->common.hidlib == NULL))
 		return;
 
 	ghidgui->common.draw_grid_local(ghidgui->common.hidlib, x, y);
