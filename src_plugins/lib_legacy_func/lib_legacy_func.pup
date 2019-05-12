@@ -1,5 +1,0 @@
-$class lib
-$short legacy functions
-$long Random collection of old/obsolete (legacy) functions. 3rd party plugins may depend on them. This module implements C functions and variables and does not register actions or flags.
-$state works
-default buildin

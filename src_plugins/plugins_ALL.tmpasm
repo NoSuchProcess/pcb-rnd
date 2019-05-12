@@ -81,7 +81,6 @@ include {../src_plugins/lib_gtk_hid/Plug.tmpasm}
 include {../src_plugins/lib_hid_common/Plug.tmpasm}
 include {../src_plugins/lib_hid_gl/Plug.tmpasm}
 include {../src_plugins/lib_hid_pcbui/Plug.tmpasm}
-include {../src_plugins/lib_legacy_func/Plug.tmpasm}
 include {../src_plugins/lib_netmap/Plug.tmpasm}
 include {../src_plugins/lib_polyhelp/Plug.tmpasm}
 include {../src_plugins/lib_vfs/Plug.tmpasm}
