@@ -65,7 +65,7 @@ typedef struct pcb_tool_cursor_s {
 #define PCB_TOOL_CURSOR_XBM(pixel, mask)  { NULL, pixel, mask }
 
 typedef enum pcb_tool_flags_e {
-	PCB_TLF_AUTO_TOOLBAR          /* automatically insert in the toolbar if the menu file didn't do it */
+	PCB_TLF_AUTO_TOOLBAR = 1      /* automatically insert in the toolbar if the menu file didn't do it */
 } pcb_tool_flags_t;
 
 typedef struct pcb_tool_s {
