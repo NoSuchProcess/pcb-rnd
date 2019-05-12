@@ -47,15 +47,12 @@ typedef struct pcb_gtk_common_s {
 	void (*shutdown_renderer)(void *port);
 
 	/* execute events */
-	void (*LayersChanged)(void);
-
 	void (*main_destroy)(void *gport);
 
 	pcb_bool (*map_color_string)(const char *color_string, pcb_gtk_color_t * color);
 	const gchar *(*get_color_name)(pcb_gtk_color_t * color);
 
 	void (*set_special_colors)(conf_native_t *cfg);
-	void (*layer_buttons_update)(void);
 
 	int (*command_entry_is_active)(void);
 } pcb_gtk_common_t;

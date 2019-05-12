@@ -46,7 +46,6 @@ void ghid_install_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw);
 void ghid_remove_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw);
 void ghid_create_pcb_widgets(pcb_gtk_topwin_t *tw, GtkWidget *in_top_window);
 void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw);
-void pcb_gtk_tw_layer_buttons_update(pcb_gtk_topwin_t *tw);
 void pcb_gtk_tw_layer_vis_update(pcb_gtk_topwin_t *tw);
 
 void pcb_gtk_tw_interface_set_sensitive(pcb_gtk_topwin_t *tw, gboolean sensitive);
