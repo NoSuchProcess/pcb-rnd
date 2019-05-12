@@ -535,6 +535,8 @@ int main(int argc, char *argv[])
 
 		next_arg:;
 	}
+	pcb_tool_init(); /* init before the plugins so that the static tools have the lowest index */
+
 	pcb_hidlib_init2(pup_buildins);
 	pcb_actions_init_pcb_only();
 
@@ -556,7 +558,6 @@ int main(int argc, char *argv[])
 	atexit(pcb_emergency_save);
 
 	pcb_text_init();
-	pcb_tool_init();
 
 	if (pcb_pup.err_stack != NULL) {
 		pcb_message(PCB_MSG_ERROR, "Some of the static linked buildins could not be loaded:\n");
