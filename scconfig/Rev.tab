@@ -1,3 +1,4 @@
+25418	configure	remove obsolete menufiles from the install
 25402	configure	hidlib: rewrite the gtk-only layer selector using generic DAD
 25350	configure	hidlib: polygon vs. HID API cleanup
 25331	configure	new, DAD-based search dialog
