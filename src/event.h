@@ -43,6 +43,7 @@ typedef enum {
 
 	PCB_EVENT_BOARD_CHANGED,          /* called after the board being edited got _replaced_ (used to be the PCBChanged action) */
 	PCB_EVENT_BOARD_META_CHANGED,     /* called if the metadata of the board has changed */
+	PCB_EVENT_BOARD_FN_CHANGED,       /* called after the file name of the board has changed */
 	PCB_EVENT_ROUTE_STYLES_CHANGED,   /* called after any route style change (used to be the RouteStylesChanged action) */
 	PCB_EVENT_NETLIST_CHANGED,        /* called after any netlist change (used to be the NetlistChanged action) */
 	PCB_EVENT_LAYERS_CHANGED,         /* called after layers or layer groups change (used to be the LayersChanged action) */

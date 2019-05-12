@@ -39,6 +39,7 @@
 #include "command.h"
 #include "data.h"
 #include "error.h"
+#include "event.h"
 #include "plug_io.h"
 #include "plugins.h"
 #include "actions.h"
@@ -176,8 +177,7 @@ static fgw_error_t pcb_act_SaveLayout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_board_set_changed_flag(pcb_false);
 			free(PCB->hidlib.filename);
 			PCB->hidlib.filename = pcb_strdup(filename);
-			if (pcb_gui->notify_filename_changed != NULL)
-				pcb_gui->notify_filename_changed();
+			pcb_event(&PCB->hidlib, PCB_EVENT_BOARD_FN_CHANGED, NULL);
 		}
 	}
 

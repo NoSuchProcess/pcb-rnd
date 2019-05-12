@@ -43,6 +43,7 @@
 #include "plug_import.h"
 #include "remove.h"
 #include "draw.h"
+#include "event.h"
 #include "find.h"
 #include "search.h"
 #include "actions.h"
@@ -208,8 +209,7 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 			if (pcb_save_pcb(PCB->hidlib.filename, NULL) == 0)
 				pcb_board_set_changed_flag(pcb_false);
-			if (pcb_gui->notify_filename_changed != NULL)
-				pcb_gui->notify_filename_changed();
+			pcb_event(&PCB->hidlib, PCB_EVENT_BOARD_FN_CHANGED, NULL);
 			return 0;
 
 		case F_LayoutAs:
@@ -217,8 +217,7 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_board_set_changed_flag(pcb_false);
 				free(PCB->hidlib.filename);
 				PCB->hidlib.filename = pcb_strdup(name);
-				if (pcb_gui->notify_filename_changed != NULL)
-					pcb_gui->notify_filename_changed();
+				pcb_event(&PCB->hidlib, PCB_EVENT_BOARD_FN_CHANGED, NULL);
 			}
 			return 0;
 
