@@ -121,7 +121,7 @@ pcb_bool pcb_tool_move_undo_act(void)
 }
 
 pcb_tool_t pcb_tool_move = {
-	"move", NULL, 100, NULL, PCB_TOOL_CURSOR_NAMED("crosshair"),
+	"move", NULL, 100, NULL, PCB_TOOL_CURSOR_NAMED("crosshair"), 0,
 	NULL,
 	pcb_tool_move_uninit,
 	pcb_tool_move_notify_mode,

@@ -136,7 +136,7 @@ static const char *via_icon[] = {
 };
 
 pcb_tool_t pcb_tool_via = {
-	"via", NULL, 100, via_icon, PCB_TOOL_CURSOR_NAMED(NULL),
+	"via", NULL, 100, via_icon, PCB_TOOL_CURSOR_NAMED(NULL), 0,
 	NULL,
 	NULL,
 	pcb_tool_via_notify_mode,

@@ -435,7 +435,7 @@ static char *ddraft_xpm[] = {
 "                     "};
 
 static pcb_tool_t tool_ddraft = {
-	"ddraft", NULL, 1000, ddraft_xpm, PCB_TOOL_CURSOR_NAMED(NULL),
+	"ddraft", NULL, 1000, ddraft_xpm, PCB_TOOL_CURSOR_NAMED(NULL), PCB_TLF_AUTO_TOOLBAR,
 	NULL,
 	NULL,
 	NULL,

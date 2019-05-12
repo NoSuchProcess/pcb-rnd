@@ -64,12 +64,17 @@ typedef struct pcb_tool_cursor_s {
 #define PCB_TOOL_CURSOR_NAMED(name)       { name, NULL, NULL }
 #define PCB_TOOL_CURSOR_XBM(pixel, mask)  { NULL, pixel, mask }
 
+typedef enum pcb_tool_flags_e {
+	PCB_TLF_AUTO_TOOLBAR          /* automatically insert in the toolbar if the menu file didn't do it */
+} pcb_tool_flags_t;
+
 typedef struct pcb_tool_s {
 	const char *name;             /* textual name of the tool */
 	const char *cookie;           /* plugin cookie _pointer_ of the registrar (comparision is pointer based, not strcmp) */
 	unsigned int priority;        /* lower values are higher priorities; escaping mode will try to select the highest prio tool */
 	const char **icon;            /* XPM for the tool buttons */
 	pcb_tool_cursor_t cursor;     /* name of the mouse cursor to switch to when the tool is activated */
+	pcb_tool_flags_t flags;
 
 	/* tool implementation */
 	void     (*init)(void);

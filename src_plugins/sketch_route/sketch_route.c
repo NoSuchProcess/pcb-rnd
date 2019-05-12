@@ -1095,7 +1095,7 @@ pcb_bool tool_skline_undo_act(void)
 }
 
 static pcb_tool_t tool_skline = {
-	"skline", NULL, 100, NULL, PCB_TOOL_CURSOR_NAMED(NULL),
+	"skline", NULL, 100, NULL, PCB_TOOL_CURSOR_NAMED(NULL), 0,
 	tool_skline_init,
 	tool_skline_uninit,
 	tool_skline_notify_mode,

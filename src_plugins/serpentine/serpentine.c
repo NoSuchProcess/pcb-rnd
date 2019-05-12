@@ -408,7 +408,7 @@ pcb_bool tool_serpentine_undo_act()
 }
 
 static pcb_tool_t tool_serpentine = {
-	"serpentine", NULL, 100, NULL, PCB_TOOL_CURSOR_NAMED(NULL),
+	"serpentine", NULL, 100, NULL, PCB_TOOL_CURSOR_NAMED(NULL), 0,
 	tool_serpentine_init,
 	tool_serpentine_uninit,
 	tool_serpentine_notify_mode,

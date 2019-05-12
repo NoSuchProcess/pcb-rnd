@@ -497,7 +497,7 @@ static const char *line_icon[] = {
 
 
 pcb_tool_t pcb_tool_line = {
-	"line", NULL, 100, line_icon, PCB_TOOL_CURSOR_NAMED("pencil"),
+	"line", NULL, 100, line_icon, PCB_TOOL_CURSOR_NAMED("pencil"), 0,
 	pcb_tool_line_init,
 	pcb_tool_line_uninit,
 	pcb_tool_line_notify_mode,

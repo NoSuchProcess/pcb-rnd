@@ -95,7 +95,7 @@ static unsigned char rotateMask_bits[] = {
    0x1f, 0x60, 0x3b, 0x30, 0xe1, 0x3f, 0xc0, 0x0f};
 
 pcb_tool_t pcb_tool_rotate = {
-	"rotate", NULL, 100, rot_icon, PCB_TOOL_CURSOR_XBM(rotateIcon_bits, rotateMask_bits),
+	"rotate", NULL, 100, rot_icon, PCB_TOOL_CURSOR_XBM(rotateIcon_bits, rotateMask_bits), 0,
 	NULL,
 	NULL,
 	pcb_tool_rotate_notify_mode,

@@ -115,7 +115,7 @@ pcb_bool pcb_tool_copy_undo_act(void)
 }
 
 pcb_tool_t pcb_tool_copy = {
-	"copy", NULL, 100, NULL, PCB_TOOL_CURSOR_NAMED("crosshair"),
+	"copy", NULL, 100, NULL, PCB_TOOL_CURSOR_NAMED("crosshair"), 0,
 	NULL,
 	pcb_tool_copy_uninit,
 	pcb_tool_copy_notify_mode,
