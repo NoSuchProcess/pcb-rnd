@@ -406,8 +406,36 @@ static pcb_action_t ddraft_action_list[] = {
 
 PCB_REGISTER_ACTIONS(ddraft_action_list, ddraft_cookie)
 
+/* XPM */
+static char *ddraft_xpm[] = {
+"21 21 3 1",
+" 	c None",
+".	c #000000",
+"+	c #6EA5D7",
+"                     ",
+"                     ",
+"             .       ",
+"            .        ",
+"           .+        ",
+"          .  +       ",
+"         .    +      ",
+"        .     +      ",
+"       .       +     ",
+"      .        +     ",
+"     .++++++++++     ",
+"                     ",
+"      ...  ....      ",
+"     .   . .   .     ",
+"         . .    .    ",
+"        .  .    .    ",
+"       .   .    .    ",
+"      .    .    .    ",
+"     .     .   .     ",
+"     ..... ....      ",
+"                     "};
+
 static pcb_tool_t tool_ddraft = {
-	"ddraft", NULL, 1000, NULL, PCB_TOOL_CURSOR_NAMED(NULL),
+	"ddraft", NULL, 1000, ddraft_xpm, PCB_TOOL_CURSOR_NAMED(NULL),
 	NULL,
 	NULL,
 	NULL,
