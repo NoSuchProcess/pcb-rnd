@@ -1094,8 +1094,36 @@ pcb_bool tool_skline_undo_act(void)
 	return pcb_false;
 }
 
+/* XPM */
+static const char *skroute_xpm[] = {
+"21 21 3 1",
+" 	c None",
+".	c #000000",
+"+	c #6EA5D7",
+"                     ",
+"                     ",
+"         +      +    ",
+"        +........+   ",
+"        .+      +.   ",
+"       .          .+ ",
+"      .           +.+",
+"     .             + ",
+"    .                ",
+"  +.                 ",
+" +.+                 ",
+"  +                  ",
+" ...  .  . ...  .....",
+".   . .  . .  .   .  ",
+".     .  . .  .   .  ",
+" ..   . .  ...    .  ",
+"  ..  ..   .  .   .  ",
+"    . . .  .   .  .  ",
+".   . .  . .   .  .  ",
+" ...  .  . .   .  .  ",
+"                     "};
+
 static pcb_tool_t tool_skline = {
-	"skline", NULL, 100, NULL, PCB_TOOL_CURSOR_NAMED(NULL), 0,
+	"skline", NULL, 100, skroute_xpm, PCB_TOOL_CURSOR_NAMED(NULL), PCB_TLF_AUTO_TOOLBAR,
 	tool_skline_init,
 	tool_skline_uninit,
 	tool_skline_notify_mode,
