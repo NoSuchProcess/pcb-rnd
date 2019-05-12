@@ -86,3 +86,11 @@ static void pcb_infobar_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int a
 		infobar_tick(infobar_timer);
 }
 
+static void pcb_infobar_fn_chg_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	if ((PCB != NULL) && (PCB->hidlib.filename != NULL)) {
+		last_date = pcb_file_mtime(NULL, PCB->hidlib.filename);
+		pcb_actionl("InfoBarFileChanged", "close");
+	}
+}
+

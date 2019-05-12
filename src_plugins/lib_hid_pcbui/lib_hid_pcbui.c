@@ -159,6 +159,7 @@ TODO("padstack: remove some paths when route style has proto")
 	pcb_event_bind(PCB_EVENT_USER_INPUT_KEY, pcb_status_st_update_ev, NULL, status_cookie);
 	pcb_event_bind(PCB_EVENT_CROSSHAIR_MOVE, pcb_status_rd_update_ev, NULL, status_cookie);
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, pcb_infobar_brdchg_ev, NULL, infobar_cookie);
+	pcb_event_bind(PCB_EVENT_BOARD_FN_CHANGED, pcb_infobar_fn_chg_ev, NULL, infobar_cookie);
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_infobar_gui_init_ev, NULL, infobar_cookie);
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_title_gui_init_ev, NULL, title_cookie);
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, pcb_title_board_changed_ev, NULL, title_cookie);
