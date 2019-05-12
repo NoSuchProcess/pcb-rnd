@@ -1079,6 +1079,7 @@ void pcb_gtk_dad_fixcolor(void *hid_ctx, const GdkColor *color)
 		switch(ctx->attrs[n].type) {
 			case PCB_HATT_BUTTON:
 			case PCB_HATT_LABEL:
+			case PCB_HATT_PICTURE:
 				gtk_widget_modify_bg(ctx->wltop[n], GTK_STATE_NORMAL, color);
 			default:;
 		}
