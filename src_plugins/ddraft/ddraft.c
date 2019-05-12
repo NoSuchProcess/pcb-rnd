@@ -407,7 +407,7 @@ static pcb_action_t ddraft_action_list[] = {
 PCB_REGISTER_ACTIONS(ddraft_action_list, ddraft_cookie)
 
 /* XPM */
-static char *ddraft_xpm[] = {
+static const char *ddraft_xpm[] = {
 "21 21 3 1",
 " 	c None",
 ".	c #000000",
