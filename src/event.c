@@ -40,6 +40,7 @@ static const char *pcb_fgw_evnames[] = {
 	"pcbev_save_post",
 	"pcbev_load_pre",
 	"pcbev_load_post",
+	"pcbeb_new_tool",
 	"pcbev_board_changed",
 	"pcbev_board_meta_changed",
 	"pcbev_route_styles_changed",

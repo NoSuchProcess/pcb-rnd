@@ -39,6 +39,8 @@ typedef enum {
 	PCB_EVENT_LOAD_PRE,               /* called before loading a new design */
 	PCB_EVENT_LOAD_POST,              /* called after loading a new design, whether it was successful or not */
 
+	PCB_EVENT_TOOL_REG,               /* called after a new tool has been registered; arg is (pcb_tool_t *) of the new tool */
+
 	PCB_EVENT_BOARD_CHANGED,          /* called after the board being edited got _replaced_ (used to be the PCBChanged action) */
 	PCB_EVENT_BOARD_META_CHANGED,     /* called if the metadata of the board has changed */
 	PCB_EVENT_ROUTE_STYLES_CHANGED,   /* called after any route style change (used to be the RouteStylesChanged action) */

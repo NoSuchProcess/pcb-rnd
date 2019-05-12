@@ -79,6 +79,7 @@ int pcb_tool_reg(pcb_tool_t *tool, const char *cookie)
 	vtp0_append(&pcb_tools, (void *)tool);
 	if (pcb_gui != NULL)
 		pcb_gui->reg_mouse_cursor(NULL, id, tool->cursor.name, tool->cursor.pixel, tool->cursor.mask);
+	pcb_event(&PCB->hidlib, PCB_EVENT_TOOL_REG, "p", tool);
 	return 0;
 }
 
