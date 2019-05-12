@@ -422,11 +422,7 @@ pcblib_DATA= \
 	default_font \
 	default2.lht \
 	default4.lht \
-	pcb-menu-default.lht \
-	pcb-menu-lesstif.lht \
-	pcb-menu-gtk.lht \
-	pcb-menu-mkey.lht
-
+	pcb-menu-default.lht
 
 EXTRA_DIST= \
 	default_font \
@@ -478,8 +474,6 @@ install_all:
 	$(SCCBOX) $(HOW) "default4.lht" "$(DATADIR)/default4.lht"
 	$(SCCBOX) $(HOW) "pcb-conf.lht" "$(DATADIR)/pcb-conf.lht"
 	$(SCCBOX) $(HOW) "pcb-menu-default.lht" "$(DATADIR)/pcb-menu-default.lht"
-	$(SCCBOX) $(HOW) "pcb-menu-lesstif.lht" "$(DATADIR)/pcb-menu-lesstif.lht"
-	$(SCCBOX) $(HOW) "pcb-menu-gtk.lht" "$(DATADIR)/pcb-menu-gtk.lht"
 	$(SCCBOX) $(HOW) "default_font" "$(DATADIR)/default_font"@/local/pcb/rules/install_@
 
 install:
