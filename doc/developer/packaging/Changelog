@@ -6,6 +6,11 @@ How to get a release candidate tarball in /tmp:
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
 
 
+TODO:
+	$(SCCBOX) $(HOW) "pcb-menu-lesstif.lht" "$(DATADIR)/pcb-menu-lesstif.lht"
+	$(SCCBOX) $(HOW) "pcb-menu-gtk.lht" "$(DATADIR)/pcb-menu-gtk.lht"
+
+
 Packaging changes between 2.1.1 and 2.1.2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 A. changes that probably don't need action
