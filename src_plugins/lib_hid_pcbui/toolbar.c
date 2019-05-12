@@ -114,6 +114,20 @@ static void toolbar_create_static(pcb_hid_cfg_t *cfg)
 	}
 }
 
+static void toolbar_create_dyn_all(void)
+{
+	pcb_tool_t **t;
+	pcb_toolid_t tid;
+	for(tid = 0, t = (pcb_tool_t **)pcb_tools.array; tid < pcb_tools.used; tid++,t++) {
+		int *wid = (long)vti0_get(&toolbar.tid2wid, tid, 0);
+		if (((*t)->flags & PCB_TLF_AUTO_TOOLBAR) == 0)
+			continue; /* static or inivisible */
+		if ((wid != NULL) && (*wid != 0))
+			continue; /* already has an icon */
+		toolbar_create_tool(tid, *t);
+	}
+}
+
 static void toolbar_docked_create(pcb_hid_cfg_t *cfg)
 {
 	toolbar.tid2wid.used = 0;
@@ -122,6 +136,7 @@ static void toolbar_docked_create(pcb_hid_cfg_t *cfg)
 		PCB_DAD_COMPFLAG(toolbar.sub.dlg, PCB_HATF_EXPFILL | PCB_HATF_TIGHT);
 
 		toolbar_create_static(cfg);
+		toolbar_create_dyn_all();
 
 	/* eat up remaining space in the middle before displaying the dynamic tools */
 		PCB_DAD_BEGIN_HBOX(toolbar.sub.dlg);
