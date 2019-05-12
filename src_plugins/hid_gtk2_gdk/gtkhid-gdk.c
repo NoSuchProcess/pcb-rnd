@@ -450,9 +450,11 @@ static void set_special_grid_color(void)
 
           /* The color grid is combined with background color */
 	map_color_string(pcbhl_conf.appearance.color.grid.str, &priv->grid_color);
-	priv->grid_color.red = (priv->grid_color.red ^ priv->bg_color.red) & 0xFF;
-	priv->grid_color.green = (priv->grid_color.green ^ priv->bg_color.green) & 0xFF;
-	priv->grid_color.blue = (priv->grid_color.blue ^ priv->bg_color.blue) & 0xFF;
+	priv->grid_color.red = (priv->grid_color.red ^ priv->bg_color.red) & 0xffff;
+	priv->grid_color.green = (priv->grid_color.green ^ priv->bg_color.green) & 0xffff;
+	priv->grid_color.blue = (priv->grid_color.blue ^ priv->bg_color.blue) & 0xffff;
+
+	gdk_color_alloc(gtk_widget_get_colormap(gport->top_window), &priv->grid_color);
 
 	if (priv->grid_gc)
 		gdk_gc_set_foreground(priv->grid_gc, &priv->grid_color);
