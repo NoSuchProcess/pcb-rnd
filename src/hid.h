@@ -323,9 +323,7 @@ struct pcb_hid_s {
 	void (*fill_pcb_polygon)(pcb_hid_gc_t gc, pcb_polyarea_t *poly, const pcb_box_t *clip_box, int fullpoly);
 
 
-	/* This is for the printer.  If you call this for the GUI, xval_ and
-	   yval_ are ignored, and a dialog pops up to lead you through the
-	   calibration procedure.  For the printer, if xval_ and yval_ are
+	/* This is for the printer. If xval_ and yval_ are
 	   zero, a calibration page is printed with instructions for
 	   calibrating your printer.  After calibrating, nonzero xval_ and
 	   yval_ are passed according to the instructions.  Metric is nonzero
