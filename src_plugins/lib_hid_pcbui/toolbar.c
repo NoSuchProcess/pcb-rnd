@@ -77,18 +77,18 @@ static void toolbar_select_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 
 static void toolbar_create_tool(pcb_toolid_t tid, pcb_tool_t *tool)
 {
-			int wid;
+	int wid;
 
-			if (tool->icon != NULL)
-				PCB_DAD_PICBUTTON(toolbar.sub.dlg, tool->icon);
-			else
-				PCB_DAD_BUTTON(toolbar.sub.dlg, tool->name);
-			PCB_DAD_CHANGE_CB(toolbar.sub.dlg, toolbar_select_cb);
-			PCB_DAD_COMPFLAG(toolbar.sub.dlg, PCB_HATF_TIGHT | PCB_HATF_TOGGLE);
-			PCB_DAD_HELP(toolbar.sub.dlg, "TODO: tooltip");
-			wid = PCB_DAD_CURRENT(toolbar.sub.dlg);
-			toolbar.sub.dlg[wid].user_data = (void *)tid;
-			vti0_set(&toolbar.tid2wid, tid, wid);
+	if (tool->icon != NULL)
+		PCB_DAD_PICBUTTON(toolbar.sub.dlg, tool->icon);
+	else
+		PCB_DAD_BUTTON(toolbar.sub.dlg, tool->name);
+	PCB_DAD_CHANGE_CB(toolbar.sub.dlg, toolbar_select_cb);
+	PCB_DAD_COMPFLAG(toolbar.sub.dlg, PCB_HATF_TIGHT | PCB_HATF_TOGGLE);
+	PCB_DAD_HELP(toolbar.sub.dlg, "TODO: tooltip");
+	wid = PCB_DAD_CURRENT(toolbar.sub.dlg);
+	toolbar.sub.dlg[wid].user_data = (void *)tid;
+	vti0_set(&toolbar.tid2wid, tid, wid);
 }
 
 static void toolbar_create_static(pcb_hid_cfg_t *cfg)
@@ -150,14 +150,14 @@ static void toolbar_docked_create(pcb_hid_cfg_t *cfg)
 
 static void toolbar_create(void)
 {
-		pcb_hid_cfg_t *cfg = pcb_gui->get_menu_cfg();
-		if (cfg == NULL)
-			return;
-		toolbar_docked_create(cfg);
-		if (pcb_hid_dock_enter(&toolbar.sub, PCB_HID_DOCK_TOP_LEFT, "Toolbar") == 0) {
-			toolbar.sub_inited = 1;
-			toolbar_pcb2dlg();
-		}
+	pcb_hid_cfg_t *cfg = pcb_gui->get_menu_cfg();
+	if (cfg == NULL)
+		return;
+	toolbar_docked_create(cfg);
+	if (pcb_hid_dock_enter(&toolbar.sub, PCB_HID_DOCK_TOP_LEFT, "Toolbar") == 0) {
+		toolbar.sub_inited = 1;
+		toolbar_pcb2dlg();
+	}
 }
 
 void pcb_toolbar_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
