@@ -119,7 +119,7 @@ static void toolbar_create_dyn_all(void)
 	pcb_tool_t **t;
 	pcb_toolid_t tid;
 	for(tid = 0, t = (pcb_tool_t **)pcb_tools.array; tid < pcb_tools.used; tid++,t++) {
-		int *wid = (long)vti0_get(&toolbar.tid2wid, tid, 0);
+		int *wid = vti0_get(&toolbar.tid2wid, tid, 0);
 		if (((*t)->flags & PCB_TLF_AUTO_TOOLBAR) == 0)
 			continue; /* static or inivisible */
 		if ((wid != NULL) && (*wid != 0))
@@ -148,10 +148,8 @@ static void toolbar_docked_create(pcb_hid_cfg_t *cfg)
 	PCB_DAD_END(toolbar.sub.dlg);
 }
 
-
-void pcb_toolbar_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void toolbar_create(void)
 {
-	if ((PCB_HAVE_GUI_ATTR_DLG) && (pcb_gui->get_menu_cfg != NULL)) {
 		pcb_hid_cfg_t *cfg = pcb_gui->get_menu_cfg();
 		if (cfg == NULL)
 			return;
@@ -159,6 +157,27 @@ void pcb_toolbar_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pc
 		if (pcb_hid_dock_enter(&toolbar.sub, PCB_HID_DOCK_TOP_LEFT, "Toolbar") == 0) {
 			toolbar.sub_inited = 1;
 			toolbar_pcb2dlg();
+		}
+}
+
+void pcb_toolbar_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	if ((PCB_HAVE_GUI_ATTR_DLG) && (pcb_gui->get_menu_cfg != NULL))
+		toolbar_create();
+}
+
+void pcb_toolbar_reg_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	if ((toolbar.sub_inited) && (argv[1].type == PCB_EVARG_PTR)) {
+		pcb_tool_t *tool = argv[1].d.p;
+		pcb_toolid_t tid = pcb_tool_lookup(tool->name);
+		if ((tool->flags & PCB_TLF_AUTO_TOOLBAR) != 0) {
+			int *wid = vti0_get(&toolbar.tid2wid, tid, 0);
+			if ((wid != NULL) && (*wid != 0))
+				return;
+			pcb_hid_dock_leave(&toolbar.sub);
+			toolbar.sub_inited = 0;
+			toolbar_create();
 		}
 	}
 }
