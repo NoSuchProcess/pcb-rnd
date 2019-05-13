@@ -130,6 +130,7 @@ static pcb_text_t *dtext_bg(pcb_hid_gc_t gc, int x, int y, int scale, int dir, c
 static void dline(int x1, int y1, int x2, int y2, float thick)
 {
 	pcb_line_t l;
+	memset(&l, 0, sizeof(l));
 	l.Point1.X = PCB_MM_TO_COORD(x1);
 	l.Point1.Y = PCB_MM_TO_COORD(y1);
 	l.Point2.X = PCB_MM_TO_COORD(x2);
@@ -144,6 +145,7 @@ static void dline(int x1, int y1, int x2, int y2, float thick)
 static void dline_(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, float thick)
 {
 	pcb_line_t l;
+	memset(&l, 0, sizeof(l));
 	l.Point1.X = x1;
 	l.Point1.Y = y1;
 	l.Point2.X = x2;
