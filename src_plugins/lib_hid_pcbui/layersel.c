@@ -535,22 +535,26 @@ static void layersel_create_layer_closed(layersel_ctx_t *ls, ls_layer_t *lys, co
 			lys->wvis_on_closed = PCB_DAD_CURRENT(ls->sub.dlg);
 			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
 			PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_vis_cb);
+			PCB_DAD_HELP(ls->sub.dlg, name);
 		PCB_DAD_PICTURE(ls->sub.dlg, lys->off_closed.xpm);
 			lys->wvis_off_closed = PCB_DAD_CURRENT(ls->sub.dlg);
 			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
 			PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_vis_cb);
+			PCB_DAD_HELP(ls->sub.dlg, name);
 		PCB_DAD_PICTURE(ls->sub.dlg, closed_grp_layer_unsel);
 			if (selected)
 				PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_HIDE);
 			lys->wunsel_closed = PCB_DAD_CURRENT(ls->sub.dlg);
 			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
 			PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_sel_cb);
+			PCB_DAD_HELP(ls->sub.dlg, name);
 		PCB_DAD_PICTURE(ls->sub.dlg, closed_grp_layer_sel);
 			if (!selected)
 				PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_HIDE);
 			lys->wsel_closed = PCB_DAD_CURRENT(ls->sub.dlg);
 			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
 			PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_sel_cb);
+			PCB_DAD_HELP(ls->sub.dlg, name);
 	PCB_DAD_END(ls->sub.dlg);
 }
 
