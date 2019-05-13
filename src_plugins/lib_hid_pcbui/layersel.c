@@ -80,6 +80,39 @@ static const char *closed_grp_layer_sel[] = { /* layer unselected icon in a clos
 	"xx......xx"
 };
 
+static char *all_open_xpm[] = {
+"10 10 2 1",
+" 	c None",
+"@	c #0000A5",
+"    @@    ",
+"    @@    ",
+"    @@    ",
+"    @@    ",
+" @@@@@@@@ ",
+" @@@@@@@@ ",
+"    @@    ",
+"    @@    ",
+"    @@    ",
+"    @@    ",
+};
+
+static char *all_closed_xpm[] = {
+"10 10 2 1",
+" 	c None",
+"@	c #0000A5",
+"          ",
+"          ",
+"          ",
+"          ",
+" @@@@@@@@ ",
+" @@@@@@@@ ",
+"          ",
+"          ",
+"          ",
+"          ",
+};
+
+
 typedef struct {
 	char buf[32][20];
 	const char *xpm[32];
@@ -238,6 +271,53 @@ static void layer_sel_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	layer_select(attr->user_data);
 }
 
+static void group_sync_core(pcb_board_t *pcb, ls_group_t *lgs, int update_from_core)
+{
+	pcb_layergrp_t *g;
+
+	if (lgs->gid < 0)
+		return;
+	g = pcb_get_layergrp(pcb, lgs->gid);
+	if (g == NULL)
+		return;
+
+	if (update_from_core)
+		lgs->is_open = g->open;
+	else
+		g->open = lgs->is_open;
+}
+
+static group_open_close_update(ls_group_t *lgs)
+{
+	group_sync_core(PCB, lgs, 0);
+
+	pcb_gui->attr_dlg_widget_hide(lgs->ls->sub.dlg_hid_ctx, lgs->wopen, !lgs->is_open);
+	pcb_gui->attr_dlg_widget_hide(lgs->ls->sub.dlg_hid_ctx, lgs->wclosed, lgs->is_open);
+}
+
+static void all_open_close(int is_open)
+{
+	int n;
+	for(n = 0; n < layersel.group.used; n++) {
+		ls_group_t *lgs = layersel.group.array[n];
+		if ((lgs != NULL) && (lgs->is_open != is_open)) {
+			lgs->is_open = is_open;
+			group_open_close_update(lgs);
+		}
+		
+	}
+}
+
+static void all_open_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	all_open_close(1);
+}
+
+static void all_close_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	all_open_close(0);
+}
+
 /* Select the first visible layer (physically) below the one turned off or
    reenable the original if all are off; this how we ensure the CURRENT layer
    is visible and avoid drawing on inivisible layers */
@@ -329,30 +409,13 @@ static void group_right_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pcb_actionl("Popup", "group", NULL);
 }
 
-static void group_sync_core(pcb_board_t *pcb, ls_group_t *lgs, int update_from_core)
-{
-	pcb_layergrp_t *g;
-
-	if (lgs->gid < 0)
-		return;
-	g = pcb_get_layergrp(pcb, lgs->gid);
-	if (g == NULL)
-		return;
-
-	if (update_from_core)
-		lgs->is_open = g->open;
-	else
-		g->open = lgs->is_open;
-}
 
 static void group_open_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	ls_group_t *lgs = attr->user_data;
 	lgs->is_open = !lgs->is_open;
-	group_sync_core(PCB, lgs, 0);
 
-	pcb_gui->attr_dlg_widget_hide(lgs->ls->sub.dlg_hid_ctx, lgs->wopen, !lgs->is_open);
-	pcb_gui->attr_dlg_widget_hide(lgs->ls->sub.dlg_hid_ctx, lgs->wclosed, lgs->is_open);
+	group_open_close_update(lgs);
 }
 
 /* draw a visibility box: filled or partially filled with layer color */
@@ -646,6 +709,18 @@ static void layersel_docked_create(layersel_ctx_t *ls, pcb_board_t *pcb)
 		layersel_create_virtual(&layersel, pcb);
 		layersel_add_grpsep(ls);
 		layersel_create_ui(&layersel, pcb);
+		layersel_add_grpsep(ls);
+		PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
+			PCB_DAD_PICBUTTON(ls->sub.dlg, all_open_xpm);
+				PCB_DAD_HELP(ls->sub.dlg, "expand/open all layer groups\nso that layer names are\ndisplayed, one layer per row");
+				PCB_DAD_CHANGE_CB(ls->sub.dlg, all_open_cb);
+			PCB_DAD_PICBUTTON(ls->sub.dlg, all_closed_xpm);
+				PCB_DAD_HELP(ls->sub.dlg, "collapse/close all layer groups\nso that layer names are\nnot displayed,\neach row is a layer group");
+				PCB_DAD_CHANGE_CB(ls->sub.dlg, all_close_cb);
+			PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
+				PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_END(ls->sub.dlg);
+		PCB_DAD_END(ls->sub.dlg);
 	PCB_DAD_END(ls->sub.dlg);
 	ls->w_last_sel = 0;
 }
