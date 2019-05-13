@@ -587,7 +587,7 @@ static void gerber_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 	has_outline = pcb_has_explicit_outline(PCB);
 
 	i = strlen(fnbase);
-	filename = (char *) realloc(filename, i + SUFF_LEN);
+	filename = (char *) realloc(filename, i + SUFF_LEN + 1); /* +1 for the terminator \0 */
 	strcpy(filename, fnbase);
 	strcat(filename, ".");
 	filesuff = filename + strlen(filename);
