@@ -51,6 +51,35 @@ static const char *grpsep[] = { /* 8 pixel high transparent for spacing */
 	".",".",".",".",".",".",".","."
 };
 
+static const char *closed_grp_layer_unsel[] = { /* layer unselected icon in a closed layer group */
+	"10 8 2 1",
+	".	c None",
+	"x	c #000000",
+	"..........",
+	"xx......xx",
+	"x........x",
+	"..........",
+	"..........",
+	"..........",
+	"x........x",
+	"xx......xx"
+};
+
+static const char *closed_grp_layer_sel[] = { /* layer unselected icon in a closed layer group */
+	"10 8 3 1",
+	".	c None",
+	"x	c #000000",
+	"o	c #555555",
+	"..........",
+	"xx......xx",
+	"x..oooo..x",
+	"..oooooo..",
+	"..oooooo..",
+	"..oooooo..",
+	"x..oooo..x",
+	"xx......xx"
+};
+
 typedef struct {
 	char buf[32][20];
 	const char *xpm[32];
@@ -60,6 +89,7 @@ typedef struct layersel_ctx_s layersel_ctx_t;
 
 typedef struct {
 	int wvis_on_open, wvis_off_open, wvis_on_closed, wvis_off_closed, wlab;
+	int wunsel_closed, wsel_closed;
 	gen_xpm_t on_open, off_open, on_closed, off_closed;
 	layersel_ctx_t *ls;
 	pcb_layer_t *ly;
@@ -87,7 +117,7 @@ struct layersel_ctx_s {
 	pcb_hid_dad_subdialog_t sub;
 	int sub_inited;
 	int lock_vis, lock_sel;
-	int w_last_sel;
+	int w_last_sel, w_last_sel_closed, w_last_unsel_closed;
 	vtp0_t real_layer, menu_layer, ui_layer; /* -> ls_layer_t */
 	vtp0_t group; /* -> ls_group_t */
 };
@@ -135,17 +165,25 @@ static ls_group_t *lgs_get_virt(layersel_ctx_t *ls, virt_grp_id_t vid, int alloc
 	return lgs;
 }
 
-static void locked_layersel(layersel_ctx_t *ls, int wid)
+static void locked_layersel(layersel_ctx_t *ls, int wid, int wid_unsel_closed, int wid_sel_closed)
 {
 	if (ls->lock_sel > 0)
 		return;
 
 	ls->lock_sel = 1;
-	if (ls->w_last_sel != 0)
+	if (ls->w_last_sel != 0) {
 		pcb_gui->attr_dlg_widget_state(ls->sub.dlg_hid_ctx, ls->w_last_sel, 1);
+		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, ls->w_last_unsel_closed, 0);
+		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, ls->w_last_sel_closed, 1);
+	}
 	ls->w_last_sel = wid;
-	if (ls->w_last_sel != 0)
+	ls->w_last_sel_closed = wid_sel_closed;
+	ls->w_last_unsel_closed = wid_unsel_closed;
+	if (ls->w_last_sel != 0) {
 		pcb_gui->attr_dlg_widget_state(ls->sub.dlg_hid_ctx, ls->w_last_sel, 2);
+		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, ls->w_last_unsel_closed, 1);
+		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, ls->w_last_sel_closed, 0);
+	}
 	ls->lock_sel = 0;
 }
 
@@ -192,7 +230,7 @@ static void layer_select(ls_layer_t *lys)
 		lys_update_vis(lys, *vis);
 		locked_layervis_ev(lys->ls);
 	}
-	locked_layersel(lys->ls, lys->wlab);
+	locked_layersel(lys->ls, lys->wlab, lys->wunsel_closed, lys->wsel_closed);
 }
 
 static void layer_sel_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -242,9 +280,9 @@ static void ensure_visible_current(layersel_ctx_t *ls)
 
 	lys = lys_get(ls, &ls->real_layer, lid, 0);
 	if (lys != 0)
-		locked_layersel(lys->ls, lys->wlab);
+		locked_layersel(lys->ls, lys->wlab, lys->wunsel_closed, lys->wsel_closed);
 	else
-		locked_layersel(lys->ls, 0);
+		locked_layersel(lys->ls, 0, 0, 0);
 }
 
 
@@ -423,12 +461,13 @@ static void layersel_create_layer_open(layersel_ctx_t *ls, ls_layer_t *lys, cons
 	PCB_DAD_END(ls->sub.dlg);
 }
 
-static void layersel_create_layer_closed(layersel_ctx_t *ls, ls_layer_t *lys, const char *name, const pcb_color_t *color, int brd, int hatch)
+static void layersel_create_layer_closed(layersel_ctx_t *ls, ls_layer_t *lys, const char *name, const pcb_color_t *color, int brd, int hatch, int selected)
 {
 	layer_vis_box(&lys->on_closed, 1, color, brd, hatch, 10, 10, 0);
 	layer_vis_box(&lys->off_closed, 0, color, brd, hatch, 10, 10, 0);
 
-	PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
+	PCB_DAD_BEGIN_VBOX(ls->sub.dlg);
+		PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_TIGHT);
 		PCB_DAD_PICTURE(ls->sub.dlg, lys->on_closed.xpm);
 			lys->wvis_on_closed = PCB_DAD_CURRENT(ls->sub.dlg);
 			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
@@ -437,6 +476,18 @@ static void layersel_create_layer_closed(layersel_ctx_t *ls, ls_layer_t *lys, co
 			lys->wvis_off_closed = PCB_DAD_CURRENT(ls->sub.dlg);
 			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
 			PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_vis_cb);
+		PCB_DAD_PICTURE(ls->sub.dlg, closed_grp_layer_unsel);
+			if (selected)
+				PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_HIDE);
+			lys->wunsel_closed = PCB_DAD_CURRENT(ls->sub.dlg);
+			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
+			PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_sel_cb);
+		PCB_DAD_PICTURE(ls->sub.dlg, closed_grp_layer_sel);
+			if (!selected)
+				PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_HIDE);
+			lys->wsel_closed = PCB_DAD_CURRENT(ls->sub.dlg);
+			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
+			PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_sel_cb);
 	PCB_DAD_END(ls->sub.dlg);
 }
 
@@ -462,7 +513,7 @@ static void layersel_create_grp(layersel_ctx_t *ls, pcb_board_t *pcb, pcb_layerg
 			if (is_open)
 				layersel_create_layer_open(ls, lys, ly->name, clr, brd, hatch);
 			else
-				layersel_create_layer_closed(ls, lys, ly->name, clr, brd, hatch);
+				layersel_create_layer_closed(ls, lys, ly->name, clr, brd, hatch, (ly == CURRENT));
 		}
 	}
 	if (is_open)
@@ -541,7 +592,7 @@ static void layersel_create_virtual(layersel_ctx_t *ls, pcb_board_t *pcb)
 	layersel_begin_grp_closed(ls, "Virtual", lgs);
 	for(n = 0, ml = pcb_menu_layers; ml->name != NULL; n++,ml++) {
 		ls_layer_t *lys = lys_get(ls, &ls->menu_layer, n, 0);
-		layersel_create_layer_closed(ls, lys, ml->name, ml->force_color, 1, 0);
+		layersel_create_layer_closed(ls, lys, ml->name, ml->force_color, 1, 0, 0);
 	}
 	layersel_end_grp_closed(ls);
 }
@@ -571,7 +622,7 @@ static void layersel_create_ui(layersel_ctx_t *ls, pcb_board_t *pcb)
 		pcb_layer_t *ly = pcb_uilayers.array[n];
 		if ((ly != NULL) && (ly->name != NULL)) {
 			ls_layer_t *lys = lys_get(ls, &ls->ui_layer, n, 0);
-			layersel_create_layer_closed(ls, lys, ly->name, &ly->meta.real.color, 1, 0);
+			layersel_create_layer_closed(ls, lys, ly->name, &ly->meta.real.color, 1, 0, 0);
 		}
 	}
 	layersel_end_grp_closed(ls);
@@ -645,7 +696,7 @@ static void layersel_update_vis(layersel_ctx_t *ls, pcb_board_t *pcb)
 	{ /* if CURRENT is not selected, select it */
 		ls_layer_t *lys = lys_get(ls, &ls->real_layer, pcb_layer_id(PCB->Data, CURRENT), 0);
 		if ((lys != NULL) && (lys->wlab != ls->w_last_sel))
-			locked_layersel(ls, lys->wlab);
+			locked_layersel(ls, lys->wlab, lys->wunsel_closed, lys->wsel_closed);
 	}
 
 	ensure_visible_current(ls);
