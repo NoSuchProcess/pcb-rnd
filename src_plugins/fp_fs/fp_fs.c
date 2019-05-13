@@ -144,6 +144,7 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 	l = strlen(new_subdir);
 	memcpy(fn, new_subdir, l);
 	fn[l] = PCB_DIR_SEPARATOR_C;
+	fn[l+1] = '\0';
 	fn_end = fn + l + 1;
 
 	/* First try opening the directory specified by path */
