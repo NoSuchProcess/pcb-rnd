@@ -212,12 +212,12 @@ fgw_error_t pcb_act_gui_FallbackColorPick(fgw_arg_t *res, int argc, fgw_arg_t *a
 static void ifb_file_chg_reload_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pcb_revert_pcb();
-	pcb_actionl("InfoBarFileChanged", "close");
+	pcb_actionl("InfoBarFileChanged", "close", NULL);
 }
 
 static void ifb_file_chg_close_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_actionl("InfoBarFileChanged", "close");
+	pcb_actionl("InfoBarFileChanged", "close", NULL);
 }
 
 const char pcb_acts_InfoBarFileChanged[] = "InfoBarFileChanged(open|close)\n";
