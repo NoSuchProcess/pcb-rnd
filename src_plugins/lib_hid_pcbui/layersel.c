@@ -552,10 +552,9 @@ static void layersel_create_ui(layersel_ctx_t *ls, pcb_board_t *pcb)
 	ls_group_t *lgs = lgs_get_virt(ls, LGS_UI, 1);
 	int n;
 
-	if (vtp0_len(&pcb_uilayers) <= 0)
-		return;
-
 	layersel_begin_grp_open(ls, "UI", lgs);
+	if (vtp0_len(&pcb_uilayers) == 0)
+		lgs->is_open = 0;
 	for(n = 0; n < vtp0_len(&pcb_uilayers); n++) {
 		pcb_layer_t *ly = pcb_uilayers.array[n];
 		if ((ly != NULL) && (ly->name != NULL)) {
