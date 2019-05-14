@@ -93,7 +93,7 @@ static const char *closed_grp_layer_nosel[] = { /* layer unselected icon in a cl
 	".........."
 };
 
-static char *all_open_xpm[] = {
+static const char *all_open_xpm[] = {
 "10 10 3 1",
 " 	c None",
 "@	c #6EA5D7",
@@ -110,7 +110,7 @@ static char *all_open_xpm[] = {
 "   ++++   ",
 };
 
-static char *all_closed_xpm[] = {
+static const char *all_closed_xpm[] = {
 "10 10 3 1",
 " 	c None",
 "@	c #6EA5D7",
