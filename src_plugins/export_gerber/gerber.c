@@ -264,7 +264,7 @@ Print file names and aperture counts on stdout.
 	{"copy-outline", "Copy outline onto other layers",
 	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, copy_outline_names, 0},
 #define HA_copy_outline 3
-	{"name-style", "Naming style for individual gerber files",
+	{"name-style", "DEPRECATED: Naming style for individual gerber files - please use the CAM export instead",
 	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, name_style_names, 0},
 #define HA_name_style 4
 	{"cross-sect", "Export the cross section layer",
@@ -628,12 +628,41 @@ static void gerber_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 		pcb_hid_restore_layer_ons(save_ons);
 	conf_update(NULL, -1); /* resotre forced sets */
 
-	if (!gerber_cam.active) {
+	if ((!gerber_cam.active) && (name_style != NAME_STYLE_PCB_RND)) {
 		int purpi;
 		const pcb_virt_layer_t *vl;
 
 		maybe_close_f(f);
 		f = NULL;
+
+		pcb_message(PCB_MSG_ERROR,
+			"\n"
+			"**************************************************\n"
+			"* Gerber direct export: please stop using gerber  \n"
+			"* name styles and switch to CAM export.           \n"
+			"* Gerber name styles will be removed soon.        \n"
+			"**************************************************\n"
+			"\n"
+			);
+
+		pcb_message(PCB_MSG_ERROR,
+			"\n"
+			"***********************************************************\n"
+			"* Gerber direct export: exporting excellon drill files as  \n"
+			"* well. Writing excellon while doing a gerber export will  \n"
+			"* be removed soon, please switch to CAM export if          \n"
+			"* you want both gerbers and excellon drill files.          \n"
+			"***********************************************************\n"
+			"\n"
+			);
+
+		pcb_message(PCB_MSG_ERROR,
+			"Hints:\n"
+			"For direct gerber-only export please use the pcb-rnd name-style.\n"
+			"For more info please read:\n"
+			"http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=cam_switch\n"
+			);
+
 
 		pagecount++;
 		purpi = F_pdrill;
