@@ -134,10 +134,9 @@ pcb_bool pcb_tool_insert_undo_act(void)
 /* XPM */
 static const char *ins_icon[] = {
 /* columns rows colors chars-per-pixel */
-"21 21 4 1",
-"  c black",
-". c #7A8584",
-"X c gray100",
+"21 21 3 1",
+"  c #000000",
+". c #6EA5D7",
 "o c None",
 /* pixels */
 "oooooo...oooooooooooo",

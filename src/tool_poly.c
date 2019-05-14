@@ -148,10 +148,9 @@ pcb_bool pcb_tool_poly_redo_act(void)
 /* XPM */
 static const char *poly_icon[] = {
 /* columns rows colors chars-per-pixel */
-"21 21 4 1",
+"21 21 3 1",
 "  c black",
 ". c #6EA5D7",
-"X c gray100",
 "o c None",
 /* pixels */
 "ooooooooooo.ooooooooo",

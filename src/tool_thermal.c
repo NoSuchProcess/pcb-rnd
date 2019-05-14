@@ -104,10 +104,9 @@ void pcb_tool_thermal_notify_mode(void)
 /* XPM */
 static const char *thrm_icon[] = {
 /* columns rows colors chars-per-pixel */
-"21 21 4 1",
-"  c black",
-". c #69E1B0",
-"X c gray100",
+"21 21 3 1",
+"  c #000000",
+". c #6EA5D7",
 "o c None",
 /* pixels */
 "ooooooooooooooooooooo",

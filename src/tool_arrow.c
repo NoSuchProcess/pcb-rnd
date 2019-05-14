@@ -218,10 +218,9 @@ void pcb_tool_arrow_adjust_attached_objects(void)
 /* XPM */
 static const char *arrow_icon[] = {
 /* columns rows colors chars-per-pixel */
-"21 21 4 1",
-"  c black",
+"21 21 3 1",
+"  c #000000",
 ". c #6EA5D7",
-"X c gray100",
 "o c None",
 /* pixels */
 "oo .. ooooooooooooooo",

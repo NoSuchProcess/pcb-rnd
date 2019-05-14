@@ -53,7 +53,7 @@ static const char *rot_icon[] = {
 /* columns rows colors chars-per-pixel */
 "21 21 4 1",
 "  c black",
-". c #4E85b7",
+". c #6EA5D7",
 "X c gray100",
 "o c None",
 /* pixels */

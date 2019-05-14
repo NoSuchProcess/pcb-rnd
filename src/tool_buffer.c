@@ -94,10 +94,9 @@ void pcb_tool_buffer_draw_attached(void)
 /* XPM */
 static const char *buf_icon[] = {
 /* columns rows colors chars-per-pixel */
-"21 21 4 1",
-"  c black",
-". c #D0C7AD",
-"X c gray100",
+"21 21 3 1",
+"  c #000000",
+". c #7A8584",
 "o c None",
 /* pixels */
 "oooooooo  oo  ooooooo",

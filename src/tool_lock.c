@@ -77,9 +77,8 @@ void pcb_tool_lock_notify_mode(void)
 /* XPM */
 static const char *lock_icon[] = {
 /* columns rows colors chars-per-pixel */
-"21 21 3 1",
+"21 21 2 1",
 "  c black",
-". c gray100",
 "X c None",
 /* pixels */
 "XXXXXXXX     XXXXXXXX",

@@ -465,11 +465,10 @@ pcb_bool pcb_tool_line_redo_act(void)
 /* XPM */
 static const char *line_icon[] = {
 /* columns rows colors chars-per-pixel */
-"21 21 5 1",
-"  c black",
+"21 21 4 1",
+"  c #000000",
 ". c #7A8584",
-"X c #4E85b7",
-"o c gray100",
+"X c #6EA5D7",
 "O c None",
 /* pixels */
 "OOOOOOOOOOOOOOOOOOOOO",

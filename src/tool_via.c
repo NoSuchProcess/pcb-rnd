@@ -106,10 +106,9 @@ TODO("pstk: replace this when route style has a prototype")
 /* XPM */
 static const char *via_icon[] = {
 /* columns rows colors chars-per-pixel */
-"21 21 4 1",
-"  c black",
+"21 21 3 1",
+"  c #000000",
 ". c #7A8584",
-"X c gray100",
 "o c None",
 /* pixels */
 "ooooooooooooooooooooo",
