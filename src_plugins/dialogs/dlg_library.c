@@ -195,8 +195,11 @@ static void pcb_dlg_library(void)
 				PCB_DAD_BEGIN_HBOX(library_ctx.dlg);
 					PCB_DAD_STRING(library_ctx.dlg);
 						PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL);
+						PCB_DAD_HELP(library_ctx.dlg, "filter: display only footprints matching this text\n(if empty: display all)");
 					PCB_DAD_PICBUTTON(library_ctx.dlg, xpm_edit_param);
+						PCB_DAD_HELP(library_ctx.dlg, "open GUI to edit the parameters\nof a parametric footprint");
 					PCB_DAD_PICBUTTON(library_ctx.dlg, xpm_refresh);
+						PCB_DAD_HELP(library_ctx.dlg, "reload and refresh the current\nmain tree of the library");
 				PCB_DAD_END(library_ctx.dlg);
 			PCB_DAD_END(library_ctx.dlg);
 
