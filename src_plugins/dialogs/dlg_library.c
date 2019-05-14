@@ -25,19 +25,80 @@
  */
 
 #include "config.h"
+
+#include <genht/htsp.h>
+#include <genht/hash.h>
+
 #include "actions.h"
 #include "board.h"
+#include "draw.h"
+#include "obj_subc.h"
+
 #include "hid.h"
 #include "hid_dad.h"
 #include "hid_init.h"
+
 #include "dlg_library.h"
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
+	pcb_subc_t *sc;
 } library_ctx_t;
 
 library_ctx_t library_ctx;
+
+/* XPM */
+static const char *xpm_edit_param[] = {
+"16 16 4 1",
+"@ c #000000",
+"* c #7A8584",
+"+ c #6EA5D7",
+"  c None",
+"                ",
+"  @*        *@  ",
+" *@ ++++++++ @* ",
+" @* +      + *@ ",
+" @  + @@@@ +  @ ",
+"*@  +      +  @*",
+"@*  + @@*  +  *@",
+"@   +      +   @",
+"@   + @ @*@+   @",
+"@*  +      +  *@",
+"*@  +   @@ +  @*",
+" @  + @@@@ +  @ ",
+" @* +      + *@ ",
+" *@ ++++++++ @* ",
+"  @*        *@  ",
+"                "
+};
+
+
+/* XPM */
+static const char *xpm_refresh[] = {
+"16 16 4 1",
+"@ c #000000",
+"* c #7A8584",
+"+ c #6EA5D7",
+"  c None",
+"   @            ",
+"   @@*@@@@      ",
+"   @@@*   @@    ",
+"   @@@@     @   ",
+"            *@  ",
+"             @  ",
+" *           *@ ",
+" @            @ ",
+" @            @ ",
+" @*           * ",
+"  @             ",
+"  @*            ",
+"   @     @@@@   ",
+"    @@   *@@@   ",
+"      @@@@*@@   ",
+"            @   ",
+};
+
 
 static void library_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
@@ -45,6 +106,22 @@ static void library_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 
 	PCB_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(library_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
+}
+
+static void library_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
+{
+	library_ctx_t *ctx = prv->user_ctx;
+	int orig_po = pcb_draw_force_termlab;
+	if (ctx->sc != NULL) {
+		pcb_draw_force_termlab = pcb_false;
+		pcb_subc_draw_preview(ctx->sc, &e->view);
+		pcb_draw_force_termlab = orig_po;
+	}
+}
+
+static pcb_bool library_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
+{
+	return pcb_false;
 }
 
 static void pcb_dlg_library(void)
@@ -57,6 +134,31 @@ static void pcb_dlg_library(void)
 
 	PCB_DAD_BEGIN_VBOX(library_ctx.dlg);
 		PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_BEGIN_HPANE(library_ctx.dlg);
+			/* left */
+			PCB_DAD_BEGIN_VBOX(library_ctx.dlg);
+				PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_TREE(library_ctx.dlg, 1, 1, NULL);
+				PCB_DAD_BEGIN_HBOX(library_ctx.dlg);
+					PCB_DAD_STRING(library_ctx.dlg);
+						PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_PICBUTTON(library_ctx.dlg, xpm_edit_param);
+					PCB_DAD_PICBUTTON(library_ctx.dlg, xpm_refresh);
+				PCB_DAD_END(library_ctx.dlg);
+			PCB_DAD_END(library_ctx.dlg);
+
+			/* right */
+			PCB_DAD_BEGIN_VPANE(library_ctx.dlg);
+				PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_FRAME);
+				/* right top */
+				PCB_DAD_PREVIEW(library_ctx.dlg, library_expose, library_mouse, NULL, NULL /*bbox*/, 200, 200, &library_ctx);
+				/* right bottom */
+				TODO("rich text label");
+				PCB_DAD_LABEL(library_ctx.dlg, "tags...");
+			PCB_DAD_END(library_ctx.dlg);
+		PCB_DAD_END(library_ctx.dlg);
+
+		/* bottom */
 		PCB_DAD_BUTTON_CLOSES(library_ctx.dlg, clbtn);
 	PCB_DAD_END(library_ctx.dlg);
 
