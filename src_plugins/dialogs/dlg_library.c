@@ -33,15 +33,19 @@
 #include "board.h"
 #include "draw.h"
 #include "obj_subc.h"
+#include "plug_footprint.h"
 
 #include "hid.h"
 #include "hid_dad.h"
+#include "hid_dad_tree.h"
 #include "hid_init.h"
 
 #include "dlg_library.h"
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
+	int wtree;
+
 	int active; /* already open - allow only one instance */
 	pcb_subc_t *sc;
 } library_ctx_t;
@@ -107,6 +111,55 @@ static void library_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	memset(ctx, 0, sizeof(library_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
+static void create_lib_tree_model_recurse(pcb_hid_attribute_t *attr, pcb_fplibrary_t *parent_lib, pcb_hid_row_t *parent_row)
+{
+	char *cell[2];
+	pcb_fplibrary_t *l;
+	int n;
+
+	cell[1] = NULL;
+	for(l = parent_lib->data.dir.children.array, n = 0; n < parent_lib->data.dir.children.used; l++, n++) {
+		pcb_hid_row_t *row;
+
+		cell[0] = pcb_strdup(l->name);
+		row = pcb_dad_tree_append_under(attr, parent_row, cell);
+		row->user_data = l;
+		if (l->type == LIB_DIR)
+			create_lib_tree_model_recurse(attr, l, row);
+	}
+}
+
+
+static void library_lib2dlg(library_ctx_t *ctx)
+{
+	pcb_hid_attribute_t *attr;
+	pcb_hid_tree_t *tree;
+	pcb_hid_row_t *r;
+	char *cell[3], *cursor_path = NULL;
+
+	attr = &ctx->dlg[ctx->wtree];
+	tree = (pcb_hid_tree_t *)attr->enumerations;
+
+	/* remember cursor */
+	r = pcb_dad_tree_get_selected(attr);
+	if (r != NULL)
+		cursor_path = pcb_strdup(r->cell[0]);
+
+	/* remove existing items */
+	pcb_dad_tree_clear(tree);
+
+	/* add all items recursively */
+	create_lib_tree_model_recurse(attr, &pcb_library, NULL);
+
+	/* restore cursor */
+	if (cursor_path != NULL) {
+		pcb_hid_attr_val_t hv;
+		hv.str_value = cursor_path;
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtree, &hv);
+		free(cursor_path);
+	}
+}
+
 static void library_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
 	library_ctx_t *ctx = prv->user_ctx;
@@ -137,6 +190,8 @@ static void pcb_dlg_library(void)
 			PCB_DAD_BEGIN_VBOX(library_ctx.dlg);
 				PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL);
 				PCB_DAD_TREE(library_ctx.dlg, 1, 1, NULL);
+					PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+					library_ctx.wtree = PCB_DAD_CURRENT(library_ctx.dlg);
 				PCB_DAD_BEGIN_HBOX(library_ctx.dlg);
 					PCB_DAD_STRING(library_ctx.dlg);
 						PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL);
@@ -164,6 +219,8 @@ static void pcb_dlg_library(void)
 	library_ctx.active = 1;
 
 	PCB_DAD_NEW("library", library_ctx.dlg, "pcb-rnd Footprint Library", &library_ctx, pcb_false, library_close_cb);
+
+	library_lib2dlg(&library_ctx);
 }
 
 const char pcb_acts_LibraryDialog[] = "libraryDialog()\n";
