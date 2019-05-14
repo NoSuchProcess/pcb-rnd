@@ -302,7 +302,7 @@ static void group_sync_core(pcb_board_t *pcb, ls_group_t *lgs, int update_from_c
 		g->open = lgs->is_open;
 }
 
-static group_open_close_update(ls_group_t *lgs)
+static void group_open_close_update(ls_group_t *lgs)
 {
 	group_sync_core(PCB, lgs, 0);
 
