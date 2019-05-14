@@ -10,6 +10,7 @@ put /local/pcb/mod/OBJS [@
  $(PLUGDIR)/dialogs/dlg_layer_binding.o
  $(PLUGDIR)/dialogs/dlg_layer_flags.o
  $(PLUGDIR)/dialogs/dlg_lib_pstk.o
+ $(PLUGDIR)/dialogs/dlg_library.o
  $(PLUGDIR)/dialogs/dlg_loadsave.o
  $(PLUGDIR)/dialogs/dlg_log.o
  $(PLUGDIR)/dialogs/dlg_padstack.o

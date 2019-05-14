@@ -49,6 +49,7 @@ extern const conf_dialogs_t dialogs_conf;
 #include "dlg_layer_binding.h"
 #include "dlg_layer_flags.h"
 #include "dlg_lib_pstk.h"
+#include "dlg_library.h"
 #include "dlg_loadsave.h"
 #include "dlg_log.h"
 #include "dlg_padstack.h"
@@ -92,6 +93,7 @@ pcb_action_t dialogs_action_list[] = {
 	{"Save", pcb_act_Save, pcb_acth_Save, pcb_acts_Save},
 	{"ImportGUI", pcb_act_ImportGUI, pcb_acth_ImportGUI, pcb_acts_ImportGUI},
 	{"LogDialog", pcb_act_LogDialog, pcb_acth_LogDialog, pcb_acts_LogDialog},
+	{"LibraryDialog", pcb_act_LibraryDialog, pcb_acth_LibraryDialog, pcb_acts_LibraryDialog},
 	{"SearchDialog", pcb_act_SearchDialog, pcb_acth_SearchDialog, pcb_acts_SearchDialog},
 	{"InfoBarFileChanged", pcb_act_InfoBarFileChanged, pcb_acth_InfoBarFileChanged, pcb_acts_InfoBarFileChanged},
 
