@@ -148,7 +148,7 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 	fn_end = fn + l + 1;
 
 	/* First try opening the directory specified by path */
-	if ((subdirobj = pcb_opendir(new_subdir)) == NULL) {
+	if ((subdirobj = pcb_opendir(&PCB->hidlib, new_subdir)) == NULL) {
 		pcb_opendir_error_message(new_subdir);
 		if (chdir(olddir))
 			pcb_chdir_error_message(olddir);

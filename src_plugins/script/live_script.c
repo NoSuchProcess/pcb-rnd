@@ -102,7 +102,7 @@ static int lvs_list_langs(live_script_t *lvs)
 		char fn[PCB_PATH_MAX*2], *fn_end;
 		int dirlen;
 		struct dirent *de;
-		DIR *d = pcb_opendir(*path);
+		DIR *d = pcb_opendir(&PCB->hidlib, *path);
 
 		if (d == NULL)
 			continue;
