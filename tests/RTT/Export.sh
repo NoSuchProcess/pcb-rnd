@@ -69,6 +69,9 @@ set_fmt_args()
 			fmt_args="--name-style fixed --cross-sect -c plugins/draw_fab/omit_date=1"
 # multifile: do not set ext
 			;;
+		excellon)
+			ext=""
+			;;
 		remote)
 			ext=.remote
 			;;
@@ -125,6 +128,10 @@ move_out()
 			mv $raw_out.*.gbr $final_out.gbr
 			mv $raw_out.*.cnc $final_out.gbr 2>/dev/null
 			;;
+		excellon)
+			mkdir -p $final_out.exc
+			mv $raw_out.*.cnc $final_out.exc 2>/dev/null
+			;;
 		nelma)
 			mv $raw_out $final_out
 			# do not test the pngs for now
@@ -180,6 +187,13 @@ cmp_fmt()
 				diff -u "$n" "$out.gbr/$bn"
 			done
 			;;
+		excellon)
+			for n in `ls $ref.exc/*.cnc 2>/dev/null`
+			do
+				bn=`basename $n`
+				diff -u "$n" "$out.exc/$bn"
+			done
+			;;
 		ps)
 			zcat "$ref.gz" > "$ref"
 			zcat "$out.gz" > "$out"
@@ -198,6 +212,7 @@ stderr_filter()
 	local common="Couldn't find default.pcb\|No preferred unit format info available for\|has no font information, using default font\|Log produced after failed export\|Exporting empty board\|[*][*][*] Exporting:\|^.pcb-rnd:stderr.[ \t]*$"
 	case "$fmt" in
 		gerber) grep -v "Can't export polygon as G85 slot\|please use lines for slotting\|$common" ;;
+		excellon) grep -v "Excellon: can not export [a-z]* (some features may be missing from the export)\|$common" ;;
 		svg) grep -v "Can't draw elliptical arc on svg\|$common";;
 		*) grep -v "$common";;
 	esac
