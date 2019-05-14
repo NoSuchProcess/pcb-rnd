@@ -1,0 +1,15 @@
+G04 start of page 7 for group 0 layer_idx 10 *
+G04 Title: (unknown), top_paste *
+G04 Creator: <version>
+G04 CreationDate: <date>
+G04 For: TEST *
+G04 Format: Gerber/RS-274X *
+G04 PCB-Dimensions: 50000 50000 *
+G04 PCB-Coordinate-Origin: lower left *
+%MOIN*%
+%FSLAX25Y25*%
+%LNTOP_PASTE_NONE_0*%
+%ADD33C,0.0200*%
+G54D33*X7500Y35000D02*Y47500D01*
+X10000Y35000D02*Y47500D01*
+M02*

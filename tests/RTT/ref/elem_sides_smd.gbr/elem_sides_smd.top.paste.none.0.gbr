@@ -1,0 +1,25 @@
+G04 start of page 8 for group 0 layer_idx 11 *
+G04 Title: smd elements on both sides, top_paste *
+G04 Creator: <version>
+G04 CreationDate: <date>
+G04 For: TEST *
+G04 Format: Gerber/RS-274X *
+G04 PCB-Dimensions: 50000 50000 *
+G04 PCB-Coordinate-Origin: lower left *
+%MOIN*%
+%FSLAX25Y25*%
+%LNTOP_PASTE_NONE_0*%
+%ADD19C,0.0001*%
+G54D19*G36*
+X19154Y41240D02*X14036D01*
+Y33760D01*
+X19154D01*
+Y41240D01*
+G37*
+G36*
+X30964D02*X25846D01*
+Y33760D01*
+X30964D01*
+Y41240D01*
+G37*
+M02*

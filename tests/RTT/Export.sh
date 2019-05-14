@@ -66,7 +66,7 @@ set_fmt_args()
 			ext=.png
 			;;
 		gerber)
-			fmt_args="--name-style fixed --cross-sect -c plugins/draw_fab/omit_date=1"
+			fmt_args="--name-style pcb-rnd --cross-sect -c plugins/draw_fab/omit_date=1"
 # multifile: do not set ext
 			;;
 		excellon)
@@ -126,7 +126,6 @@ move_out()
 		gerber)
 			mkdir -p $final_out.gbr
 			mv $raw_out.*.gbr $final_out.gbr
-			mv $raw_out.*.cnc $final_out.gbr 2>/dev/null
 			;;
 		excellon)
 			mkdir -p $final_out.exc
@@ -181,7 +180,7 @@ cmp_fmt()
 			fi
 			;;
 		gerber)
-			for n in `ls $ref.gbr/*.gbr $ref.gbr/*.cnc 2>/dev/null`
+			for n in `ls $ref.gbr/*.gbr 2>/dev/null`
 			do
 				bn=`basename $n`
 				diff -u "$n" "$out.gbr/$bn"

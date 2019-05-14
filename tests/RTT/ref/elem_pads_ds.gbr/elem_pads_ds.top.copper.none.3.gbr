@@ -1,0 +1,14 @@
+G04 start of page 2 for group 3 layer_idx 0 *
+G04 Title: element with pads on both sides, top_copper *
+G04 Creator: <version>
+G04 CreationDate: <date>
+G04 For: TEST *
+G04 Format: Gerber/RS-274X *
+G04 PCB-Dimensions: 50000 50000 *
+G04 PCB-Coordinate-Origin: lower left *
+%MOIN*%
+%FSLAX25Y25*%
+%LNTOP_COPPER_NONE_3*%
+%ADD11C,0.0100*%
+G54D11*X17500Y35000D02*X25000D01*
+M02*

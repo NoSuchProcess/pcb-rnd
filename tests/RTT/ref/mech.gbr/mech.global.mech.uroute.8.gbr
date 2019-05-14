@@ -1,0 +1,13 @@
+G04 start of page 9 for group 8 layer_idx 11 *
+G04 Title: (unknown), global-mech *
+G04 Creator: <version>
+G04 CreationDate: <date>
+G04 For: TEST *
+G04 Format: Gerber/RS-274X *
+G04 PCB-Dimensions: 50000 50000 *
+G04 PCB-Coordinate-Origin: lower left *
+%MOIN*%
+%FSLAX25Y25*%
+%LNGLOBAL_MECH_UROUTE_8*%
+%ADD26C,0.0100*%
+M30

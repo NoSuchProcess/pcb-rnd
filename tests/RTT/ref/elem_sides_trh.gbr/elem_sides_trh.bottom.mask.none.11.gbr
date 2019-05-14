@@ -1,0 +1,28 @@
+G04 start of page 8 for group 11 layer_idx 10 *
+G04 Title: thru-hole elements on both sides, bottom_mask *
+G04 Creator: <version>
+G04 CreationDate: <date>
+G04 For: TEST *
+G04 Format: Gerber/RS-274X *
+G04 PCB-Dimensions: 50000 50000 *
+G04 PCB-Coordinate-Origin: lower left *
+%MOIN*%
+%FSLAX25Y25*%
+%LNBOTTOM_MASK_NONE_11*%
+%ADD28C,0.0860*%
+%ADD27C,0.0001*%
+G54D27*G36*
+X5700Y39300D02*X14300D01*
+Y30700D01*
+X5700D01*
+Y39300D01*
+G37*
+G54D28*X40000Y35000D03*
+G54D27*G36*
+X5700Y10700D02*X14300D01*
+Y19300D01*
+X5700D01*
+Y10700D01*
+G37*
+G54D28*X40000Y15000D03*
+M02*

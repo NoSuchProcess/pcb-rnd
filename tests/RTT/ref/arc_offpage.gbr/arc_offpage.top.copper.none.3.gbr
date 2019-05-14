@@ -1,0 +1,15 @@
+G04 start of page 2 for group 3 layer_idx 0 *
+G04 Title: Arcs with some parts off the page, top_copper *
+G04 Creator: <version>
+G04 CreationDate: <date>
+G04 For: TEST *
+G04 Format: Gerber/RS-274X *
+G04 PCB-Dimensions: 50000 50000 *
+G04 PCB-Coordinate-Origin: lower left *
+%MOIN*%
+%FSLAX25Y25*%
+%LNTOP_COPPER_NONE_3*%
+%ADD11C,0.0100*%
+G54D11*X-5000Y45000D02*G75*G03X15000Y45000I10000J0D01*G01*
+Y45000D02*G75*G03X11428Y52660I-10000J0D01*G01*
+M02*
