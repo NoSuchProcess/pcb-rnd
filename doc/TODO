@@ -52,8 +52,7 @@
 	- FEATURE: make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file (for support for plugged vias/filled vias) [report: Vuokko]
 	- FEATURE: invent a generic API for both the drill attrib config table
 	- CLEANUP: unify how output files are accessed/checked: confirmation on overwrite
-	- CLEANUP: later: remove the gerber->drill dep and ask users to use the CAM instead
-	- CLEANUP: later: remove the hackish gerber layer suffix in favor of CAM [report: Ade]
+	- CLEANUP: in ~2020: remove the hackish gerber layer suffix and auto-excellon in favor of CAM [report: Ade]
 - FEATURE: lesstif DAD support for toggle buttons [report: Igor2]
 - FEATURE: data model: object minimal clearance value from the polygon side; final clearance should be MAX(obj->Clearance, poly->Clearance); kicad example: 1 line, 2 polygons with 2 different clearance values - see CUCP#38 provided by Karl [report: Igor2]
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
