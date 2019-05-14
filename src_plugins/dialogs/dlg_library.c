@@ -99,7 +99,6 @@ static const char *xpm_refresh[] = {
 "            @   ",
 };
 
-
 static void library_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	library_ctx_t *ctx = caller_data;
@@ -131,7 +130,6 @@ static void pcb_dlg_library(void)
 	if (library_ctx.active)
 		return; /* do not open another */
 
-
 	PCB_DAD_BEGIN_VBOX(library_ctx.dlg);
 		PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_BEGIN_HPANE(library_ctx.dlg);
@@ -151,7 +149,7 @@ static void pcb_dlg_library(void)
 			PCB_DAD_BEGIN_VPANE(library_ctx.dlg);
 				PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_FRAME);
 				/* right top */
-				PCB_DAD_PREVIEW(library_ctx.dlg, library_expose, library_mouse, NULL, NULL /*bbox*/, 200, 200, &library_ctx);
+				PCB_DAD_PREVIEW(library_ctx.dlg, library_expose, library_mouse, NULL, NULL, 200, 200, &library_ctx);
 				/* right bottom */
 				TODO("rich text label");
 				PCB_DAD_LABEL(library_ctx.dlg, "tags...");
