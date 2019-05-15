@@ -230,7 +230,7 @@ static void pcb_dlg_library(void)
 	if (library_ctx.active)
 		return; /* do not open another */
 
-	library_ctx.prev_pcb = pcb_board_new(1);
+	library_ctx.prev_pcb = pcb_board_new_(1);
 
 	PCB_DAD_BEGIN_VBOX(library_ctx.dlg);
 		PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL);
