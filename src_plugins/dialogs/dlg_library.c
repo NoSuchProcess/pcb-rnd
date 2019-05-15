@@ -167,28 +167,37 @@ static void library_lib2dlg(library_ctx_t *ctx)
 	}
 }
 
+static void library_update_preview(library_ctx_t *ctx, pcb_subc_t *sc)
+{
+	pcb_box_t bbox;
+
+TODO("free the previous ctx->sc");
+
+	if (sc != NULL) {
+		ctx->sc = pcb_subc_dup_at(NULL, &ctx->data, sc, 0, 0, 1);
+		pcb_data_bbox(&bbox, ctx->sc->data, 0);
+		pcb_dad_preview_zoomto(&ctx->dlg[ctx->wpreview], &bbox);
+	}
+	else
+		ctx->sc = NULL;
+}
+
 static void library_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	pcb_hid_attr_val_t hv;
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
 	library_ctx_t *ctx = tree->user_ctx;
 
-	ctx->sc = NULL;
+
+	library_update_preview(ctx, NULL);
 	if (row != NULL) {
 		pcb_fplibrary_t *l = row->user_data;
-		if (l != NULL) {
+		if ((l != NULL) && (l->type == LIB_FOOTPRINT)) {
 			if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, l->data.fp.loc_info, NULL)) {
 				pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
 
-				if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0) {
-					pcb_subc_t *sc = pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc);
-					if (sc != NULL) {
-						pcb_box_t bbox;
-						ctx->sc = pcb_subc_dup_at(NULL, &ctx->data, sc, 0, 0, 1);
-						pcb_data_bbox(&bbox, ctx->sc->data, 0);
-						pcb_dad_preview_zoomto(&ctx->dlg[ctx->wpreview], &bbox);
-					}
-				}
+				if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0)
+					library_update_preview(ctx, pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc));
 			}
 		}
 	}
