@@ -1775,6 +1775,7 @@ void pcb_subc_draw_preview(const pcb_subc_t *sc, const pcb_box_t *drawn_area)
 	info.objcb.pstk.shape_mask = PCB_LYT_COPPER | PCB_LYT_TOP;
 	info.objcb.pstk.holetype = PCB_PHOLE_UNPLATED | PCB_PHOLE_PLATED;
 
+	if (sc->data->padstack_tree != NULL)
 	for(o = pcb_rtree_first(&it, sc->data->padstack_tree, (pcb_rtree_box_t *)drawn_area); o != NULL; o = pcb_rtree_next(&it)) {
 		if (pcb_obj_is_under(o, sc->data)) {
 			pcb_pstk_draw_callback((pcb_box_t *)o, &info);
@@ -1791,6 +1792,7 @@ void pcb_subc_draw_preview(const pcb_subc_t *sc, const pcb_box_t *drawn_area)
 	}
 
 	/* padstack mark goes on top */
+	if (sc->data->padstack_tree != NULL)
 	for(o = pcb_rtree_first(&it, sc->data->padstack_tree, (pcb_rtree_box_t *)drawn_area); o != NULL; o = pcb_rtree_next(&it)) {
 		if (pcb_obj_is_under(o, sc->data)) {
 			pcb_pstk_draw_mark_callback((pcb_box_t *)o, &info);
