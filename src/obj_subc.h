@@ -162,7 +162,6 @@ pcb_bool pcb_subc_find_aux_point(pcb_subc_t *sc, const char *role, pcb_coord_t *
 
 
 pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, pcb_coord_t dx, pcb_coord_t dy, pcb_bool keep_ids);
-extern pcb_board_t *pcb_subc_dup_with_binding; /* if used as the first argument of pcb_subc_dup_at(): assume off-board, off-buffer and just bind all dst layers to src */
 
 /* Replace dst with a copy of src in place (preserving location and orientation
    and attributes. If add_undo is true, add the old subc del and the new subc
