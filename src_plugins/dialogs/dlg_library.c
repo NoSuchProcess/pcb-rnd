@@ -31,9 +31,12 @@
 
 #include "actions.h"
 #include "board.h"
+#include "buffer.h"
+#include "conf_core.h"
 #include "draw.h"
 #include "obj_subc.h"
 #include "plug_footprint.h"
+#include "tool.h"
 
 #include "hid.h"
 #include "hid_dad.h"
@@ -44,7 +47,7 @@
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
-	int wtree;
+	int wtree, wpreview;
 
 	int active; /* already open - allow only one instance */
 	pcb_subc_t *sc;
@@ -160,6 +163,36 @@ static void library_lib2dlg(library_ctx_t *ctx)
 	}
 }
 
+static void library_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+{
+	pcb_hid_attr_val_t hv;
+	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	library_ctx_t *ctx = tree->user_ctx;
+
+	ctx->sc = NULL;
+	if (row != NULL) {
+		pcb_fplibrary_t *l = row->user_data;
+		if (l != NULL) {
+			if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, l->data.fp.loc_info, NULL)) {
+				pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
+
+				if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0) {
+					ctx->sc = pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc);
+					if (ctx->sc != NULL) {
+						pcb_box_t bbox;
+						pcb_data_bbox(&bbox, ctx->sc->data, 0);
+						pcb_dad_preview_zoomto(&ctx->dlg[ctx->wpreview], &bbox);
+					}
+				}
+			}
+		}
+	}
+
+
+	hv.str_value = NULL;
+	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wpreview, &hv);
+}
+
 static void library_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
 	library_ctx_t *ctx = prv->user_ctx;
@@ -191,6 +224,8 @@ static void pcb_dlg_library(void)
 				PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL);
 				PCB_DAD_TREE(library_ctx.dlg, 1, 1, NULL);
 					PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+					PCB_DAD_TREE_SET_CB(library_ctx.dlg, selected_cb, library_select);
+					PCB_DAD_TREE_SET_CB(library_ctx.dlg, ctx, &library_ctx);
 					library_ctx.wtree = PCB_DAD_CURRENT(library_ctx.dlg);
 				PCB_DAD_BEGIN_HBOX(library_ctx.dlg);
 					PCB_DAD_STRING(library_ctx.dlg);
@@ -208,6 +243,8 @@ static void pcb_dlg_library(void)
 				PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_FRAME);
 				/* right top */
 				PCB_DAD_PREVIEW(library_ctx.dlg, library_expose, library_mouse, NULL, NULL, 200, 200, &library_ctx);
+					library_ctx.wpreview = PCB_DAD_CURRENT(library_ctx.dlg);
+
 				/* right bottom */
 				TODO("rich text label");
 				PCB_DAD_LABEL(library_ctx.dlg, "tags...");
