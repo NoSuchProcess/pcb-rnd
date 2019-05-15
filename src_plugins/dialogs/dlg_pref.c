@@ -267,6 +267,7 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 	PCB_DAD_BEGIN_VBOX(pref_ctx.dlg);
 		PCB_DAD_COMPFLAG(pref_ctx.dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_BEGIN_TABBED(pref_ctx.dlg, tabs);
+			PCB_DAD_COMPFLAG(pref_ctx.dlg, PCB_HATF_EXPFILL);
 			pref_ctx.wtab = PCB_DAD_CURRENT(pref_ctx.dlg);
 			PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* General */
 				pcb_dlg_pref_general_create(&pref_ctx);
