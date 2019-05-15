@@ -225,7 +225,7 @@ s;f;	pcb-menu-default.lht	Flip(SelectedElements) 	Move selected subcircuits to o
 s;i;	pcb-menu-default.lht	Select(Invert) 	Invert selection
 s;l;	pcb-menu-default.lht	MoveToCurrentLayer(Selected) 	Move selected objects to current layer
 s;r;	pcb-menu-default.lht	RemoveSelected() 	Remove selected objects
-s;s;	pcb-menu-default.lht	DoWindows(search) 	Advanced search and select
+s;s;	pcb-menu-default.lht	SearchDialog() 	Advanced search and select
 s;u;a;	pcb-menu-default.lht	Unselect(All) 	Unselect all objects
 s;u;c;	pcb-menu-default.lht	Unselect(Connection) 	unselect all connected objects
 space	pcb-menu-default.lht	Mode(Arrow)	Arrow
