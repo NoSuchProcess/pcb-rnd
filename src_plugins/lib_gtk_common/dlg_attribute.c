@@ -431,7 +431,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					else
 						gtk_notebook_set_tab_pos(GTK_NOTEBOOK(widget), GTK_POS_TOP);
 
-					gtk_box_pack_start(GTK_BOX(parent), widget, TRUE, TRUE, 0);
+					gtk_box_pack_start(GTK_BOX(parent), widget, expfill, expfill, 0);
 					g_signal_connect(G_OBJECT(widget), "switch-page", G_CALLBACK(notebook_changed_cb), &(ctx->attrs[j]));
 					g_object_set_data(G_OBJECT(widget), PCB_OBJ_PROP, ctx);
 					j = ghid_attr_dlg_add(ctx, widget, &ts, j+1);
