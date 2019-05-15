@@ -277,10 +277,12 @@ static void ltf_tree_set(lesstif_attr_dlg_t *ctx, int idx, const char *val)
 	tt_entry_t *e;
 
 	if (val == NULL) {
-		/* remove the cursor */
-		if (lt->cursor != NULL)
-			lt->cursor->flags.is_selected = 0;
-		REDRAW();
+		if (lt != NULL) {
+			/* remove the cursor */
+			if (lt->cursor != NULL)
+				lt->cursor->flags.is_selected = 0;
+			REDRAW();
+		}
 		return;
 	}
 
