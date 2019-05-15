@@ -53,7 +53,7 @@ typedef struct{
 	int active; /* already open - allow only one instance */
 
 	pcb_subc_t *sc;
-	pcb_data_t data; /* sc must be in here so buffer changes don't ruin it */
+	pcb_board_t *prev_pcb; /* sc must be in here so buffer changes don't ruin it */
 } library_ctx_t;
 
 library_ctx_t library_ctx;
@@ -113,7 +113,7 @@ static void library_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	library_ctx_t *ctx = caller_data;
 
-	pcb_data_uninit(&ctx->data);
+	pcb_board_free(ctx->prev_pcb);
 	PCB_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(library_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
@@ -172,12 +172,12 @@ static void library_update_preview(library_ctx_t *ctx, pcb_subc_t *sc)
 	pcb_box_t bbox;
 
 	if (ctx->sc != NULL) {
-		pcb_subc_free(ctx->sc);
+		pcb_subc_remove(ctx->sc);
 		ctx->sc = NULL;
 	}
 
 	if (sc != NULL) {
-		ctx->sc = pcb_subc_dup_at(pcb_subc_dup_with_binding, &ctx->data, sc, 0, 0, 1);
+		ctx->sc = pcb_subc_dup_at(ctx->prev_pcb, ctx->prev_pcb->Data, sc, 0, 0, 1);
 		pcb_data_bbox(&bbox, ctx->sc->data, 0);
 		pcb_dad_preview_zoomto(&ctx->dlg[ctx->wpreview], &bbox);
 	}
@@ -230,8 +230,7 @@ static void pcb_dlg_library(void)
 	if (library_ctx.active)
 		return; /* do not open another */
 
-	pcb_data_init(&library_ctx.data);
-	pcb_data_bind_board_layers(PCB, &library_ctx.data, 0);
+	library_ctx.prev_pcb = pcb_board_new(1);
 
 	PCB_DAD_BEGIN_VBOX(library_ctx.dlg);
 		PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL);
