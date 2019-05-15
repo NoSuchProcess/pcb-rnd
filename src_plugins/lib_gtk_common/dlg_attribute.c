@@ -627,13 +627,13 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				break;
 			case PCB_HATT_BUTTON:
 				hbox = gtkc_hbox_new(FALSE, 4);
-				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
+				gtk_box_pack_start(GTK_BOX(parent), hbox, expfill, expfill, 0);
 
 				if (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TOGGLE)
 					ctx->wl[j] = gtk_toggle_button_new_with_label(ctx->attrs[j].default_val.str_value);
 				else
 					ctx->wl[j] = gtk_button_new_with_label(ctx->attrs[j].default_val.str_value);
-				gtk_box_pack_start(GTK_BOX(hbox), ctx->wl[j], FALSE, FALSE, 0);
+				gtk_box_pack_start(GTK_BOX(hbox), ctx->wl[j], expfill, expfill, 0);
 
 				gtk_widget_set_tooltip_text(ctx->wl[j], ctx->attrs[j].help_text);
 				g_signal_connect(G_OBJECT(ctx->wl[j]), "clicked", G_CALLBACK(button_changed_cb), &(ctx->attrs[j]));
