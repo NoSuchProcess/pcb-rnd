@@ -174,7 +174,8 @@ static void library_update_preview(library_ctx_t *ctx, pcb_subc_t *sc)
 TODO("free the previous ctx->sc");
 
 	if (sc != NULL) {
-		ctx->sc = pcb_subc_dup_at(NULL, &ctx->data, sc, 0, 0, 1);
+		ctx->sc = pcb_subc_dup_at(pcb_subc_dup_with_binding, &ctx->data, sc, 0, 0, 1);
+		ctx->sc = sc;
 		pcb_data_bbox(&bbox, ctx->sc->data, 0);
 		pcb_dad_preview_zoomto(&ctx->dlg[ctx->wpreview], &bbox);
 	}
@@ -195,7 +196,6 @@ static void library_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 		if ((l != NULL) && (l->type == LIB_FOOTPRINT)) {
 			if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, l->data.fp.loc_info, NULL)) {
 				pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
-
 				if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0)
 					library_update_preview(ctx, pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc));
 			}
@@ -231,6 +231,7 @@ static void pcb_dlg_library(void)
 		return; /* do not open another */
 
 	pcb_data_init(&library_ctx.data);
+	pcb_data_bind_board_layers(PCB, &library_ctx.data, 0);
 
 	PCB_DAD_BEGIN_VBOX(library_ctx.dlg);
 		PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL);
