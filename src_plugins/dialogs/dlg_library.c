@@ -33,6 +33,7 @@
 #include "board.h"
 #include "buffer.h"
 #include "conf_core.h"
+#include "data.h"
 #include "draw.h"
 #include "obj_subc.h"
 #include "plug_footprint.h"
@@ -50,7 +51,9 @@ typedef struct{
 	int wtree, wpreview;
 
 	int active; /* already open - allow only one instance */
+
 	pcb_subc_t *sc;
+	pcb_data_t data; /* sc must be in here so buffer changes don't ruin it */
 } library_ctx_t;
 
 library_ctx_t library_ctx;
@@ -110,6 +113,7 @@ static void library_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	library_ctx_t *ctx = caller_data;
 
+	pcb_data_uninit(&ctx->data);
 	PCB_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(library_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
@@ -177,9 +181,10 @@ static void library_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 				pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
 
 				if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0) {
-					ctx->sc = pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc);
-					if (ctx->sc != NULL) {
+					pcb_subc_t *sc = pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc);
+					if (sc != NULL) {
 						pcb_box_t bbox;
+						ctx->sc = pcb_subc_dup_at(NULL, &ctx->data, sc, 0, 0, 1);
 						pcb_data_bbox(&bbox, ctx->sc->data, 0);
 						pcb_dad_preview_zoomto(&ctx->dlg[ctx->wpreview], &bbox);
 					}
@@ -215,6 +220,8 @@ static void pcb_dlg_library(void)
 
 	if (library_ctx.active)
 		return; /* do not open another */
+
+	pcb_data_init(&library_ctx.data);
 
 	PCB_DAD_BEGIN_VBOX(library_ctx.dlg);
 		PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL);
