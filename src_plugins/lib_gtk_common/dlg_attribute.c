@@ -413,7 +413,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					ts.val.table.col = 0;
 					ts.val.table.row = 0;
 					tbl = gtkc_table_static(ts.val.table.rows, ts.val.table.cols, 1);
-					gtk_box_pack_start(GTK_BOX(bparent), tbl, FALSE, FALSE, ((ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TIGHT) ? 0 : 4));
+					gtk_box_pack_start(GTK_BOX(bparent), tbl, expfill, expfill, ((ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TIGHT) ? 0 : 4));
 					ctx->wl[j] = tbl;
 					j = ghid_attr_dlg_add(ctx, tbl, &ts, j+1);
 				}
