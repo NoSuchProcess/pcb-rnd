@@ -60,6 +60,9 @@
 
 #define SUBC_AUX_NAME "subc-aux"
 
+static pcb_board_t pcb_subc_dup_with_binding_;
+pcb_board_t *pcb_subc_dup_with_binding = &pcb_subc_dup_with_binding_;
+
 void pcb_subc_reg(pcb_data_t *data, pcb_subc_t *subc)
 {
 	pcb_subclist_append(&data->subc, subc);
@@ -786,7 +789,15 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 		/* bind layer/resolve layers */
 		dl->is_bound = 1;
 		dl->type = PCB_OBJ_LAYER;
-		if ((pcb != NULL) && (pcb == src_pcb)) {
+		if (pcb == pcb_subc_dup_with_binding) {
+			/* copying from board custom data with layer binding */
+			memcpy(&dl->meta.bound, &sl->meta.bound, sizeof(sl->meta.bound));
+
+			dl->meta.bound.real = sl;
+			dl->name = pcb_strdup(sl->name);
+			dl->comb = sl->comb;
+		}
+		else if ((pcb != NULL) && (pcb == src_pcb)) {
 			/* copy within the same board */
 			memcpy(&dl->meta.bound, &sl->meta.bound, sizeof(sl->meta.bound));
 			dl->name = pcb_strdup(sl->name);
@@ -861,7 +872,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 	sc->data->LayerN = src->data->LayerN;
 
 	/* bind the via rtree so that vias added in this subc show up on the board */
-	if (pcb != NULL) {
+	if ((pcb != NULL) && (pcb != pcb_subc_dup_with_binding)) {
 		if (pcb->Data->padstack_tree == NULL)
 			pcb->Data->padstack_tree = pcb_r_create_tree();
 		sc->data->padstack_tree = pcb->Data->padstack_tree;
