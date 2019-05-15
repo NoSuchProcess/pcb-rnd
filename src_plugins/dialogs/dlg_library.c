@@ -171,16 +171,16 @@ static void library_update_preview(library_ctx_t *ctx, pcb_subc_t *sc)
 {
 	pcb_box_t bbox;
 
-TODO("free the previous ctx->sc");
+	if (ctx->sc != NULL) {
+		pcb_subc_free(ctx->sc);
+		ctx->sc = NULL;
+	}
 
 	if (sc != NULL) {
 		ctx->sc = pcb_subc_dup_at(pcb_subc_dup_with_binding, &ctx->data, sc, 0, 0, 1);
-		ctx->sc = sc;
 		pcb_data_bbox(&bbox, ctx->sc->data, 0);
 		pcb_dad_preview_zoomto(&ctx->dlg[ctx->wpreview], &bbox);
 	}
-	else
-		ctx->sc = NULL;
 }
 
 static void library_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
