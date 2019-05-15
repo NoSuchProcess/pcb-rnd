@@ -550,11 +550,11 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 			case PCB_HATT_ENUM:
 				ctx->wltop[j] = hbox = gtkc_hbox_new(FALSE, 4);
-				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
+				gtk_box_pack_start(GTK_BOX(parent), hbox, expfill, expfill, 0);
 
 				combo = gtkc_combo_box_text_new();
 				gtk_widget_set_tooltip_text(combo, ctx->attrs[j].help_text);
-				gtk_box_pack_start(GTK_BOX(hbox), combo, FALSE, FALSE, 0);
+				gtk_box_pack_start(GTK_BOX(hbox), combo, expfill, expfill, 0);
 				g_object_set_data(G_OBJECT(combo), PCB_OBJ_PROP, ctx);
 				ctx->wl[j] = combo;
 
@@ -608,11 +608,11 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				n = pcb_get_n_units();
 
 				ctx->wltop[j] = hbox = gtkc_hbox_new(FALSE, 4);
-				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
+				gtk_box_pack_start(GTK_BOX(parent), hbox, expfill, expfill, 0);
 
 				combo = gtkc_combo_box_text_new();
 				gtk_widget_set_tooltip_text(combo, ctx->attrs[j].help_text);
-				gtk_box_pack_start(GTK_BOX(hbox), combo, FALSE, FALSE, 0);
+				gtk_box_pack_start(GTK_BOX(hbox), combo, expfill, expfill, 0);
 				g_signal_connect(G_OBJECT(combo), "changed", G_CALLBACK(enum_changed_cb), &(ctx->attrs[j]));
 				g_object_set_data(G_OBJECT(combo), PCB_OBJ_PROP, ctx);
 				ctx->wl[j] = combo;
