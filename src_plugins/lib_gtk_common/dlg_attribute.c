@@ -475,7 +475,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 			case PCB_HATT_INTEGER:
 				ctx->wltop[j] = hbox = gtkc_hbox_new(FALSE, 4);
-				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
+				gtk_box_pack_start(GTK_BOX(parent), hbox, expfill, expfill, 0);
 
 				/*
 				 * FIXME
@@ -492,11 +492,11 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 			case PCB_HATT_COORD:
 				ctx->wltop[j] = hbox = gtkc_hbox_new(FALSE, 4);
-				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
+				gtk_box_pack_start(GTK_BOX(parent), hbox, expfill, expfill, 0);
 
 				entry = pcb_gtk_coord_entry_new(ctx->attrs[j].min_val, ctx->attrs[j].max_val,
 																				ctx->attrs[j].default_val.coord_value, pcbhl_conf.editor.grid_unit, CE_SMALL);
-				gtk_box_pack_start(GTK_BOX(hbox), entry, FALSE, FALSE, 0);
+				gtk_box_pack_start(GTK_BOX(hbox), entry, expfill, expfill, 0);
 				g_object_set_data(G_OBJECT(entry), PCB_OBJ_PROP, ctx);
 				ctx->wl[j] = entry;
 
@@ -508,7 +508,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 			case PCB_HATT_REAL:
 				ctx->wltop[j] = hbox = gtkc_hbox_new(FALSE, 4);
-				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
+				gtk_box_pack_start(GTK_BOX(parent), hbox, expfill, expfill, 0);
 
 				/*
 				 * FIXME
