@@ -377,12 +377,13 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 		else
 			parent = real_parent;
 
+		expfill = (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_EXPFILL);
+
 		/* create the actual widget from attrs */
 		switch (ctx->attrs[j].type) {
 			case PCB_HATT_BEGIN_HBOX:
 				bparent = frame_scroll(parent, ctx->attrs[j].pcb_hatt_flags, &ctx->wltop[j]);
 				hbox = gtkc_hbox_new(FALSE, ((ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TIGHT) ? 0 : 4));
-				expfill = (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_EXPFILL);
 				gtk_box_pack_start(GTK_BOX(bparent), hbox, expfill, expfill, 0);
 				ctx->wl[j] = hbox;
 				j = ghid_attr_dlg_add(ctx, hbox, NULL, j+1);
@@ -525,10 +526,10 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 			case PCB_HATT_STRING:
 				ctx->wltop[j] = hbox = gtkc_hbox_new(FALSE, 4);
-				gtk_box_pack_start(GTK_BOX(parent), hbox, FALSE, FALSE, 0);
+				gtk_box_pack_start(GTK_BOX(parent), hbox, expfill, expfill, 0);
 
 				entry = gtk_entry_new();
-				gtk_box_pack_start(GTK_BOX(hbox), entry, FALSE, FALSE, 0);
+				gtk_box_pack_start(GTK_BOX(hbox), entry, expfill, expfill, 0);
 				g_object_set_data(G_OBJECT(entry), PCB_OBJ_PROP, ctx);
 				ctx->wl[j] = entry;
 
