@@ -282,7 +282,7 @@ static void netlist_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	/* draw the board */
 	memset(&xform, 0, sizeof(xform));
 	xform.layer_faded = 1;
-	pcb_hid_expose_all(pcb_gui, e, &xform);
+	pcbhl_expose_main(pcb_gui, e, &xform);
 
 	if (net != NULL) {/* restore object color */
 		for(n = 0, p = netlist_color_save.array; n < netlist_color_save.used; n+=2,p+=2) {

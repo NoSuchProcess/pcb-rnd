@@ -170,8 +170,6 @@ typedef enum {
 extern int pcb_dock_is_vert[PCB_HID_DOCK_max];    /* 1 if a new dock box (parent of a new sub-DAD) should be a vbox, 0 if hbox */
 extern int pcb_dock_has_frame[PCB_HID_DOCK_max];  /* 1 if a new dock box (parent of a new sub-DAD) should be framed */
 
-typedef struct pcb_hid_s pcb_hid_t;
-
 /* This is the main HID structure.  */
 struct pcb_hid_s {
 	/* The size of this structure.  We use this as a compatibility
@@ -569,9 +567,6 @@ struct pcb_hid_s {
 
    Do *not* assume that the hid that is passed is the GUI hid.  This
    callback is also used for printing and exporting. */
-
-typedef struct pcb_hid_expose_ctx_s pcb_hid_expose_ctx_t;
-
 typedef void (*pcb_hid_expose_cb_t)(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e);
 
 struct pcb_hid_expose_ctx_s {

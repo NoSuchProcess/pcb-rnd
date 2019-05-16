@@ -242,7 +242,7 @@ static void view_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	pcb_draw_force_termlab = 1;
 	memset(&xform, 0, sizeof(xform));
 	xform.layer_faded = 1;
-	pcb_hid_expose_all(pcb_gui, e, &xform);
+	pcbhl_expose_main(pcb_gui, e, &xform);
 	pcb_draw_force_termlab = old_termlab;
 
 	/* restore object color */

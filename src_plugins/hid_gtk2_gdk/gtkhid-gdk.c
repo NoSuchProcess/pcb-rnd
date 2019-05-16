@@ -1097,7 +1097,7 @@ static void redraw_region(pcb_hidlib_t *hidlib, GdkRectangle *rect)
 
 	ghid_gdk_draw_bg_image(hidlib);
 
-	pcb_hid_expose_all(&gtk2_gdk_hid, &ctx, NULL);
+	pcbhl_expose_main(&gtk2_gdk_hid, &ctx, NULL);
 	ghid_gdk_draw_grid(hidlib);
 
 	/* In some cases we are called with the crosshair still off */

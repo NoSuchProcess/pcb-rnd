@@ -323,7 +323,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t *options)
 		eps_print_header(f, pcb_hid_export_fn(filename));
 
 	ctx.view = *bounds;
-	pcb_hid_expose_all(&eps_hid, &ctx, NULL);
+	pcbhl_expose_main(&eps_hid, &ctx, NULL);
 
 	eps_print_footer(f);
 

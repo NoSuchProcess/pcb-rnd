@@ -64,4 +64,12 @@ void pcbhl_draw_marks(pcb_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode);
 /* Draw any mark following the crosshair on XOR overlay; if inhibit_drawing_mode is true, do not call ->set_drawing_mode */
 void pcbhl_draw_attached(pcb_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode);
 
+/* Main expose: draw the design in the top window
+   (pcb-rnd: all layers with all flags (no .content is used) */
+void pcbhl_expose_main(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *region, pcb_xform_t *xform_caller);
+
+/* Preview expose: generic, dialog based, used in preview widgets */
+void pcbhl_expose_preview(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e);
+
+
 #endif

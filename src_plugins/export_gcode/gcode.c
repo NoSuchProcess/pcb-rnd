@@ -353,7 +353,7 @@ void gcode_start_png_export()
 	lastbrush = (gdImagePtr) ((void *) -1);
 	lastcolor = -1;
 
-	pcb_hid_expose_all(&gcode_hid, &ctx, NULL);
+	pcbhl_expose_main(&gcode_hid, &ctx, NULL);
 }
 
 static void gcode_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)

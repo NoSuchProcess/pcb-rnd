@@ -608,7 +608,7 @@ static double ltf_benchmark(void)
 	time(&start);
 	do {
 		XFillRectangle(display, pixmap, bg_gc, 0, 0, view_width, view_height);
-		pcb_hid_expose_all(&lesstif_hid, &ctx, NULL);
+		pcbhl_expose_main(&lesstif_hid, &ctx, NULL);
 		XSync(display, 0);
 		time(&end);
 		i++;
@@ -2008,7 +2008,7 @@ static Boolean idle_proc(XtPointer dummy)
 			}
 		}
 		DrawBackgroundImage();
-		pcb_hid_expose_all(&lesstif_hid, &ctx, NULL);
+		pcbhl_expose_main(&lesstif_hid, &ctx, NULL);
 		lesstif_drawing_mode = PCB_HID_COMP_POSITIVE;
 		draw_grid();
 		show_crosshair(0);					/* To keep the drawn / not drawn info correct */

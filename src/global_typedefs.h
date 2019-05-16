@@ -81,6 +81,10 @@ typedef struct pcb_hid_dad_subdialog_s pcb_hid_dad_subdialog_t;
 
 typedef struct pcb_event_arg_s pcb_event_arg_t;
 
+typedef struct pcb_hid_expose_ctx_s pcb_hid_expose_ctx_t;
+typedef struct pcb_hid_s pcb_hid_t;
+typedef struct pcb_xform_s pcb_xform_t;
+
 #include "pcb_bool.h"
 
 #include "unit.h"

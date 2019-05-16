@@ -613,12 +613,12 @@ static void gerber_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 	lastgroup = -1;
 	layer_list_idx = 0;
 	finding_apertures = 1;
-	pcb_hid_expose_all(&gerber_hid, &ctx, NULL);
+	pcbhl_expose_main(&gerber_hid, &ctx, NULL);
 
 	lastgroup = -2;
 	layer_list_idx = 0;
 	finding_apertures = 0;
-	pcb_hid_expose_all(&gerber_hid, &ctx, NULL);
+	pcbhl_expose_main(&gerber_hid, &ctx, NULL);
 
 	memcpy(pcb_layer_stack, saved_layer_stack, sizeof(pcb_layer_stack));
 

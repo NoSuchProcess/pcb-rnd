@@ -989,7 +989,7 @@ static void expose_end(pcb_output_t *save)
 	pcb_gui = pcb_draw_out.hid;
 }
 
-void pcb_hid_expose_all(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx, pcb_xform_t *xform_caller)
+void pcbhl_expose_main(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx, pcb_xform_t *xform_caller)
 {
 	if (!pcb_draw_inhibit) {
 		pcb_output_t save;
@@ -1006,7 +1006,7 @@ void pcb_hid_expose_all(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx, pcb_xf
 	}
 }
 
-void pcb_hid_expose_generic(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
+void pcbhl_expose_preview(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 {
 	pcb_output_t save;
 	expose_begin(&save, hid);

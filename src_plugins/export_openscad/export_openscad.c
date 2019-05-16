@@ -158,7 +158,7 @@ void openscad_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 /*		conf_force_set_bool(conf_core.editor.check_planes, 0);*/
 	conf_force_set_bool(conf_core.editor.show_solder_side, 0);
 
-	pcb_hid_expose_all(&openscad_hid, &ctx, NULL);
+	pcbhl_expose_main(&openscad_hid, &ctx, NULL);
 
 	conf_update(NULL, -1); /* restore forced sets */
 }

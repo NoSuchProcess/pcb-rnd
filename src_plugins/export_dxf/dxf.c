@@ -235,7 +235,7 @@ void dxf_hid_export_to_file(dxf_ctx_t *ctx, pcb_hid_attr_val_t * options)
 	dxf_ctx.drill_fill = options[HA_drill_fill].int_value;
 	dxf_ctx.drill_contour = options[HA_drill_contour].int_value;
 
-	pcb_hid_expose_all(&dxf_hid, &hectx, NULL);
+	pcbhl_expose_main(&dxf_hid, &hectx, NULL);
 
 	conf_update(NULL, -1); /* restore forced sets */
 }

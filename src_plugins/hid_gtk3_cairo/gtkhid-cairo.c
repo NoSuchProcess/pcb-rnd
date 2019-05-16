@@ -1089,7 +1089,7 @@ static void redraw_region(pcb_hidlib_t *hidlib, GdkRectangle *rect)
 
 	ghid_cairo_draw_bg_image(hidlib);
 
-	pcb_hid_expose_all(&gtk3_cairo_hid, &ctx, NULL);
+	pcbhl_expose_main(&gtk3_cairo_hid, &ctx, NULL);
 	ghid_cairo_draw_grid(hidlib);
 
 	/* Draws "GUI" information on top of design */

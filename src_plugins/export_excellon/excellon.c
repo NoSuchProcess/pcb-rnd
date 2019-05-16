@@ -244,11 +244,11 @@ static void excellon_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options
 
 	lastwidth = -1;
 	finding_apertures = 1;
-	pcb_hid_expose_all(&excellon_hid, &ctx, NULL);
+	pcbhl_expose_main(&excellon_hid, &ctx, NULL);
 
 	lastwidth = -1;
 	finding_apertures = 0;
-	pcb_hid_expose_all(&excellon_hid, &ctx, NULL);
+	pcbhl_expose_main(&excellon_hid, &ctx, NULL);
 	conf_update(NULL, -1); /* resotre forced sets */
 
 
