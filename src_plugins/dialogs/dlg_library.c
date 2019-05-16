@@ -198,6 +198,7 @@ static void library_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 				pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
 				if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0)
 					library_update_preview(ctx, pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc));
+				pcb_gui->invalidate_all(&PCB->hidlib);
 			}
 		}
 	}
