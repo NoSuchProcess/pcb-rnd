@@ -142,7 +142,7 @@ static void library_lib2dlg(library_ctx_t *ctx)
 	pcb_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
 	pcb_hid_row_t *r;
-	char *cell[3], *cursor_path = NULL;
+	char *cursor_path = NULL;
 
 	attr = &ctx->dlg[ctx->wtree];
 	tree = (pcb_hid_tree_t *)attr->enumerations;
