@@ -805,7 +805,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 				if (!(dl->meta.bound.type & PCB_LYT_VIRTUAL)) {
 					const char *name = dl->name;
 					if (name == NULL) name = "<anonymous>";
-					pcb_message(PCB_MSG_WARNING, "Couldn't bind a layer %s of subcircuit while placing it\n", name);
+					pcb_message(PCB_MSG_WARNING, "Couldn't bind layer %s of subcircuit while placing it\n", name);
 				}
 			}
 			else
