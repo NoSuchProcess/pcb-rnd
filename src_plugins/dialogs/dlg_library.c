@@ -227,11 +227,17 @@ static pcb_bool library_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *pr
 static void pcb_dlg_library(void)
 {
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	const pcb_dflgmap_t *g;
+	int n;
 
 	if (library_ctx.active)
 		return; /* do not open another */
 
 	library_ctx.prev_pcb = pcb_board_new_(1);
+
+	for(g = pcb_dflgmap, n = 0; g->name != NULL; g++,n++)
+		pcb_layergrp_set_dflgly(library_ctx.prev_pcb, &(library_ctx.prev_pcb->LayerGroups.grp[n]), g, g->name, g->name);
+	library_ctx.prev_pcb->LayerGroups.len = n;
 
 	PCB_DAD_BEGIN_VBOX(library_ctx.dlg);
 		PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL);
