@@ -28,6 +28,7 @@
 
 #include <genht/htsp.h>
 #include <genht/hash.h>
+#include <genvector/gds_char.h>
 
 #include "actions.h"
 #include "board.h"
@@ -48,7 +49,7 @@
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
-	int wtree, wpreview;
+	int wtree, wpreview, wtags;
 
 	int active; /* already open - allow only one instance */
 
@@ -167,20 +168,47 @@ static void library_lib2dlg(library_ctx_t *ctx)
 	}
 }
 
-static void library_update_preview(library_ctx_t *ctx, pcb_subc_t *sc)
+static void library_update_preview(library_ctx_t *ctx, pcb_subc_t *sc, pcb_fplibrary_t *l)
 {
 	pcb_box_t bbox;
+	pcb_hid_attr_val_t hv;
+	gds_t tmp;
 
 	if (ctx->sc != NULL) {
 		pcb_subc_remove(ctx->sc);
 		ctx->sc = NULL;
 	}
 
+	gds_init(&tmp);
 	if (sc != NULL) {
 		ctx->sc = pcb_subc_dup_at(ctx->prev_pcb, ctx->prev_pcb->Data, sc, 0, 0, 1);
 		pcb_data_bbox(&bbox, ctx->sc->data, 0);
 		pcb_dad_preview_zoomto(&ctx->dlg[ctx->wpreview], &bbox);
 	}
+
+	if (l != NULL) {
+		void **t;
+
+TODO("Use rich text for this with explicit wrap marks\n");
+		/* update tags */
+		for (t = l->data.fp.tags; ((t != NULL) && (*t != NULL)); t++) {
+			const char *name = pcb_fp_tagname(*t);
+			if (name != NULL) {
+				gds_append_str(&tmp, "\n  ");
+				gds_append_str(&tmp, name);
+			}
+		}
+		gds_append_str(&tmp, "\nLocation:\n ");
+		gds_append_str(&tmp, l->data.fp.loc_info);
+		gds_append_str(&tmp, "\n");
+
+		hv.str_value = tmp.array;
+	}
+	else
+		hv.str_value = "";
+
+	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtags, &hv);
+	gds_uninit(&tmp);
 }
 
 static void library_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
@@ -190,14 +218,14 @@ static void library_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 	library_ctx_t *ctx = tree->user_ctx;
 
 
-	library_update_preview(ctx, NULL);
+	library_update_preview(ctx, NULL, NULL);
 	if (row != NULL) {
 		pcb_fplibrary_t *l = row->user_data;
 		if ((l != NULL) && (l->type == LIB_FOOTPRINT)) {
 			if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, l->data.fp.loc_info, NULL)) {
 				pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
 				if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0)
-					library_update_preview(ctx, pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc));
+					library_update_preview(ctx, pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc), l);
 				pcb_gui->invalidate_all(&PCB->hidlib);
 			}
 		}
@@ -296,7 +324,8 @@ static void pcb_dlg_library(void)
 
 				/* right bottom */
 				TODO("rich text label");
-				PCB_DAD_LABEL(library_ctx.dlg, "tags...");
+				PCB_DAD_LABEL(library_ctx.dlg, "");
+					library_ctx.wtags = PCB_DAD_CURRENT(library_ctx.dlg);
 			PCB_DAD_END(library_ctx.dlg);
 		PCB_DAD_END(library_ctx.dlg);
 
