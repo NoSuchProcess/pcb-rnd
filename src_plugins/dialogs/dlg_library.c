@@ -59,6 +59,8 @@ typedef struct{
 
 library_ctx_t library_ctx;
 
+#include "dlg_library_param.c"
+
 /* XPM */
 static const char *xpm_edit_param[] = {
 "16 16 4 1",
