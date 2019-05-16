@@ -219,6 +219,31 @@ static void library_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	}
 }
 
+static void library_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
+{
+	library_ctx_t *ctx = caller_data;
+	pcb_hid_attribute_t *attr;
+	pcb_hid_tree_t *tree;
+	const char *text;
+	int have_filter_text;
+
+	attr = &ctx->dlg[ctx->wtree];
+	tree = (pcb_hid_tree_t *)attr->enumerations;
+	text = attr_inp->default_val.str_value;
+	have_filter_text = (*text != '\0');
+
+	/* hide or unhide everything */
+	pcb_dad_tree_hide_all(tree, &tree->rows, have_filter_text);
+
+	if (have_filter_text) /* unhide hits and all their parents */
+		pcb_dad_tree_unhide_filter(tree, &tree->rows, 0, text);
+
+	pcb_dad_tree_expcoll(attr, NULL, 1, 1);
+	pcb_dad_tree_update_hide(attr);
+}
+
+
+
 static pcb_bool library_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
 {
 	return pcb_false;
@@ -254,6 +279,7 @@ static void pcb_dlg_library(void)
 					PCB_DAD_STRING(library_ctx.dlg);
 						PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL);
 						PCB_DAD_HELP(library_ctx.dlg, "filter: display only footprints matching this text\n(if empty: display all)");
+						PCB_DAD_CHANGE_CB(library_ctx.dlg, library_filter_cb);
 					PCB_DAD_PICBUTTON(library_ctx.dlg, xpm_edit_param);
 						PCB_DAD_HELP(library_ctx.dlg, "open GUI to edit the parameters\nof a parametric footprint");
 					PCB_DAD_PICBUTTON(library_ctx.dlg, xpm_refresh);
