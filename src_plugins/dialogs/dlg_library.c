@@ -55,6 +55,12 @@ typedef struct{
 
 	pcb_subc_t *sc;
 	pcb_board_t *prev_pcb; /* sc must be in here so buffer changes don't ruin it */
+
+
+ /* for the parametric */
+	int pactive; /* already open - allow only one instance */
+	PCB_DAD_DECL_NOINIT(pdlg)
+	pcb_fplibrary_t *last_l;
 } library_ctx_t;
 
 library_ctx_t library_ctx;
