@@ -382,6 +382,8 @@ static int library_param_fillin(library_ctx_t *ctx, pcb_fplibrary_t *l)
 
 static void library_param_open(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 {
+	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+
 	PCB_DAD_BEGIN_VBOX(library_ctx.pdlg);
 		PCB_DAD_COMPFLAG(library_ctx.pdlg, PCB_HATF_EXPFILL);
 		PCB_DAD_LABEL(library_ctx.pdlg, "n/a");
@@ -390,6 +392,7 @@ static void library_param_open(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 			PCB_DAD_COMPFLAG(library_ctx.pdlg, PCB_HATF_EXPFILL);
 			library_param_build(ctx, l, f);
 		PCB_DAD_END(library_ctx.pdlg);
+		PCB_DAD_BUTTON_CLOSES(library_ctx.pdlg, clbtn);
 	PCB_DAD_END(library_ctx.pdlg);
 }
 
