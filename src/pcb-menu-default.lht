@@ -549,7 +549,7 @@ ha:{
 
 		ha:Window {
 			li:submenu {
-				ha:Library        = { a={<Key>w;<Key>l}; action=DoWindows(Library) }
+				ha:Library        = { a={<Key>w;<Key>l}; action=LibraryDialog() }
 				ha:Message Log    = { a={<Key>w;<Key>m}; action=LogDialog() }
 				ha:DRC Check      = { a={<Key>w;<Key>d}; action=DRC() }
 				ha:Netlist        = { a={<Key>w;<Key>n}; action=DoWindows(Netlist) }

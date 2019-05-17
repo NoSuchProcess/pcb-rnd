@@ -49,6 +49,9 @@
 
 #include "dlg_library.h"
 
+TODO("Remove:")
+#include "brave.h"
+
 #define MAX_PARAMS 128
 
 typedef struct{
@@ -614,6 +617,9 @@ const char pcb_acts_LibraryDialog[] = "libraryDialog()\n";
 const char pcb_acth_LibraryDialog[] = "Open the library dialog.";
 fgw_error_t pcb_act_LibraryDialog(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
-	pcb_dlg_library();
+	if (pcb_brave & PCB_BRAVE_OLD_LIBWIN)
+		pcb_actionl("dowindows", "Library", NULL);
+	else
+		pcb_dlg_library();
 	return 0;
 }

@@ -5,6 +5,7 @@ typedef enum { /* bitfield */
 	PCB_BRAVE_NOXOR = 1,
 	PCB_BRAVE_CLIPBATCH = 2,
 	PCB_BRAVE_LESSTIF_TREETABLE = 4,
+	PCB_BRAVE_OLD_LIBWIN = 8,
 	PCB_BRAVE_max
 } pcb_brave_t;
 
