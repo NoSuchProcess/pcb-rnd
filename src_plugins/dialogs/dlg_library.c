@@ -457,7 +457,6 @@ static pcb_hid_row_t *find_fp_prefix(library_ctx_t *ctx, const char *name, int n
 {
 	pcb_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
-	pcb_hid_row_t *r;
 
 	attr = &ctx->dlg[ctx->wtree];
 	tree = (pcb_hid_tree_t *)attr->enumerations;
@@ -470,7 +469,6 @@ static void library_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 {
 	library_ctx_t *ctx = caller_data;
 	pcb_hid_attribute_t *attr;
-	pcb_hid_tree_t *tree;
 	pcb_hid_row_t *r, *rnew;
 	const char *otext = ctx->dlg[ctx->wfilt].default_val.str_value;
 	char *name, *sep;
@@ -484,7 +482,6 @@ static void library_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 
 
 	attr = &ctx->dlg[ctx->wtree];
-	tree = (pcb_hid_tree_t *)attr->enumerations;
 	r = pcb_dad_tree_get_selected(attr);
 
 	if ((r == NULL) || (pcb_strncasecmp(name, r->cell[0], namelen) != 0)) {
