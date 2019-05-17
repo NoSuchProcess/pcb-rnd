@@ -67,7 +67,8 @@ typedef struct{
 	char *example, *help_params;
 	htsi_t param_names;     /* param_name -> param_idx */
 	int pwid[MAX_PARAMS];   /* param_idx -> widget_idx (for the input field widget) */
-	int num_params;
+	int num_params, first_optional;
+	gds_t descr;
 } library_ctx_t;
 
 library_ctx_t library_ctx;

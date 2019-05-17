@@ -31,9 +31,20 @@
 static void close()
 {
 	library_ctx_t *ctx;
+
+	gds_uninit(&ctx->descr);
 	free(ctx->help_params);
 	htsi_uninit(&ctx->param_names);
 }
+
+#define colsplit() \
+do { \
+	col = strchr(col, ':'); \
+	if (col != NULL) { \
+		*col = '\0'; \
+		col++; \
+	} \
+} while(0)
 
 static void set_attr(library_ctx_t *ctx, int pidx, char *val)
 {
@@ -71,14 +82,69 @@ static void set_attr(library_ctx_t *ctx, int pidx, char *val)
 	pcb_gui->attr_dlg_set_value(ctx->pdlg_hid_ctx, ctx->pwid[pidx], &hv);
 }
 
+#define pre_append() \
+do { \
+	if (help_def != NULL) { \
+		if (help != NULL) { \
+			char *tmp = pcb_concat(help, help_def, NULL); \
+			free(help); \
+			free(help_def); \
+			help = tmp; \
+		} \
+		else \
+			help = help_def; \
+		help_def = NULL; \
+	} \
+} while(0)
+
+#define post_append() \
+do { \
+	vtp0_uninit(&curr_enum); \
+	free(name); name = NULL; \
+	free(help); help = NULL; \
+	curr_type = PCB_HATT_END; \
+	curr = -1; \
+	vtp0_init(&curr_enum); \
+	curr_type = PCB_HATT_END; \
+} while(0)
+
+#define append() \
+do { \
+	if (curr_type == PCB_HATT_END) \
+		break; \
+	pre_append(); \
+	PCB_DAD_LABEL(library_ctx.pdlg, name); \
+		PCB_DAD_HELP(library_ctx.pdlg, help); \
+	switch(curr_type) { \
+		case PCB_HATT_COORD: \
+			PCB_DAD_COORD(library_ctx.pdlg, ""); \
+				PCB_DAD_MINMAX(library_ctx.pdlg, 0, PCB_MM_TO_COORD(512)); \
+			break; \
+		case PCB_HATT_ENUM: \
+			PCB_DAD_ENUM(library_ctx.pdlg, (const char **)curr_enum.array); \
+			vtp0_init(&curr_enum); \
+			break; \
+		default: \
+			PCB_DAD_LABEL(library_ctx.pdlg, "internal error: invalid type"); \
+	} \
+	PCB_DAD_HELP(library_ctx.pdlg, help); \
+	post_append(); \
+} while(0)
 
 static void library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 {
 	char *sres, line[1024];
-	char *descr = NULL;
+	char *name = NULL, *help = NULL, *help_def = NULL;
+	vtp0_t curr_enum;
+	int curr;
+	pcb_hids_t curr_type = PCB_HATT_END;
+
+	curr = -1;
 
 	free(ctx->example);
 	ctx->example = NULL;
+
+	vtp0_init(&curr_enum);
 
 	while(fgets(line, sizeof(line), f) != NULL) {
 		char *end, *col, *arg, *cmd = line;
@@ -103,52 +169,53 @@ static void library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 		}
 		col = cmd;
 
-#if 0
 		/* parse */
 		if (strcmp(cmd, "desc") == 0) {
-			append_strdup(descr, arg, "\n");
+			gds_append_str(&ctx->descr, arg);
+			gds_append(&ctx->descr, '\n');
 		}
 		else if (strcmp(cmd, "params") == 0) {
 			free(ctx->help_params);
 			ctx->help_params = pcb_strdup(arg);
 		}
 		else if (strcmp(cmd, "example") == 0) {
+			free(ctx->example);
 			ctx->example = pcb_strdup(arg);
 		}
 		else if (strncmp(cmd, "optional:", 9) == 0) {
-			if (ctx.first_optional < 0)
-				ctx.first_optional = ctx->num_params-1;
+			if (ctx->first_optional < 0)
+				ctx->first_optional = ctx->num_params-1;
 		}
 		else if (strncmp(cmd, "param:", 6) == 0) {
+			append();
 			colsplit();
-			curr = append(col, &ctx);
-			curr->help_text = pcb_strdup(arg);
-			if (cb != NULL)
-				curr->change_cb = attr_change_cb;
+			curr = ctx->num_params;
+			ctx->num_params++;
+			free(name);
+			free(help);
+			name = pcb_strdup(col);
+			help = pcb_strdup(arg);
 		}
 		else if (strncmp(cmd, "default:", 6) == 0) {
-			char *nstr;
-			nstr = pcb_strdup_printf("%s\n(default: %s)", curr->help_text, arg);
-			free((char *)curr->help_text);
-			curr->help_text = nstr;
+			free(help_def);
+			help_def = pcb_strdup(arg);
 		}
 		else if (strncmp(cmd, "dim:", 4) == 0) {
-			curr->type = PCB_HATT_COORD;
-			curr->min_val = 0;
-			curr->max_val = PCB_MM_TO_COORD(512);
+			curr_type = PCB_HATT_COORD;
 		}
 		else if (strncmp(cmd, "enum:", 5) == 0) {
 			char *evl;
-			curr->type = PCB_HATT_ENUM;
+
+			curr_type = PCB_HATT_ENUM;
 			colsplit(); colsplit();
 			if (arg != NULL)
 				evl = pcb_strdup_printf("%s (%s)", col, arg);
 			else
 				evl = pcb_strdup(col);
-			append_enum(curr, evl);
+			vtp0_append(&curr_enum, evl);
 		}
-#endif
 	}
+	append();
 	pcb_pclose(f);
 }
 
@@ -326,5 +393,7 @@ TODO("if active: close if new l differs\n");
 	ctx->last_l = l;
 
 	htsi_init(&ctx->param_names, strhash, strkeyeq);
+	gds_init(&ctx->descr);
+	ctx->first_optional = -1;
 }
 
