@@ -502,6 +502,34 @@ static void library_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	free(name);
 }
 
+static void library_refresh_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
+{
+	library_ctx_t *ctx = caller_data;
+	pcb_hid_row_t *r = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wtree]));
+	pcb_fplibrary_t *l;
+	char *oname;
+
+	if (r == NULL)
+		return;
+
+	l = r->user_data;
+	if ((l == NULL) || (l->parent == NULL))
+		return;
+
+	while((l->parent != NULL) && (l->parent->parent != NULL)) l = l->parent;
+
+	oname = pcb_strdup(l->name); /* need to save the name because refresh invalidates l */
+
+	if (pcb_fp_rehash(&PCB->hidlib, l) == 0) {
+		pcb_message(PCB_MSG_INFO, "Refreshed library '%s'\n", oname);
+		library_lib2dlg(&library_ctx);
+	}
+	else
+		pcb_message(PCB_MSG_ERROR, "Failed to refresh library '%s'\n", oname);
+
+	free(oname);
+}
+
 
 static pcb_bool library_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
 {
@@ -546,6 +574,7 @@ static void pcb_dlg_library(void)
 						library_ctx.wedit = PCB_DAD_CURRENT(library_ctx.dlg);
 					PCB_DAD_PICBUTTON(library_ctx.dlg, xpm_refresh);
 						PCB_DAD_HELP(library_ctx.dlg, "reload and refresh the current\nmain tree of the library");
+						PCB_DAD_CHANGE_CB(library_ctx.dlg, library_refresh_cb);
 				PCB_DAD_END(library_ctx.dlg);
 			PCB_DAD_END(library_ctx.dlg);
 
