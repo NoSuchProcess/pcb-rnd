@@ -36,6 +36,7 @@ static void library_param_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 
 	gds_uninit(&ctx->descr);
 	free(ctx->help_params);
+	ctx->help_params = NULL;
 
 	for(e = htsi_first(&ctx->param_names); e != NULL; e = htsi_next(&ctx->param_names, e))
 		free(e->key);
