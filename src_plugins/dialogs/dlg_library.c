@@ -52,7 +52,7 @@
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
-	int wtree, wpreview, wtags, wfilt, wpend;
+	int wtree, wpreview, wtags, wfilt, wpend, wedit;
 
 	int active; /* already open - allow only one instance */
 
@@ -340,13 +340,77 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pcb_dad_tree_update_hide(attr);
 
 	/* parametric footprints need to be refreshed on edit */
-	if (strchr(otext, ')') != NULL) {
+	if (strchr(otext, ')') != NULL)
 		timed_update_preview(ctx, 1);
-	}
+
+	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wedit, (strchr(otext, '(') != NULL));
 
 	free(text);
 }
 
+static pcb_hid_row_t *find_fp_prefix_(pcb_hid_tree_t *tree, gdl_list_t *rowlist, const char *name, int namelen)
+{
+	pcb_hid_row_t *r, *pr;
+
+	for(r = gdl_first(rowlist); r != NULL; r = gdl_next(rowlist, r)) {
+		if (pcb_strncasecmp(r->cell[0], name, namelen) == 0)
+			return r;
+		pr = find_fp_prefix_(tree, &r->children, name, namelen);
+		if (pr != NULL)
+			return pr;
+	}
+	return NULL;
+}
+
+static pcb_hid_row_t *find_fp_prefix(library_ctx_t *ctx, const char *name, int namelen)
+{
+	pcb_hid_attribute_t *attr;
+	pcb_hid_tree_t *tree;
+	pcb_hid_row_t *r;
+
+	attr = &ctx->dlg[ctx->wtree];
+	tree = (pcb_hid_tree_t *)attr->enumerations;
+
+	return find_fp_prefix_(tree, &tree->rows, name, namelen);
+}
+
+
+static void library_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
+{
+	library_ctx_t *ctx = caller_data;
+	pcb_hid_attribute_t *attr;
+	pcb_hid_tree_t *tree;
+	pcb_hid_row_t *r, *rnew;
+	const char *otext = ctx->dlg[ctx->wfilt].default_val.str_value;
+	char *name, *sep;
+	int namelen;
+
+	name = pcb_strdup(otext);
+	sep = strchr(name, '(');
+	if (sep != NULL)
+		*sep = '\0';
+	namelen = strlen(name);
+
+
+	attr = &ctx->dlg[ctx->wtree];
+	tree = (pcb_hid_tree_t *)attr->enumerations;
+	r = pcb_dad_tree_get_selected(attr);
+
+	if ((r == NULL) || (pcb_strncasecmp(name, r->cell[0], namelen) != 0)) {
+		/* no selection or wrong selection: go find the right one */
+		rnew = find_fp_prefix(ctx, name, namelen);
+	}
+
+	if (rnew != NULL) {
+		if (r != rnew)
+			pcb_dad_tree_jumpto(attr, rnew);
+		library_param_dialog(ctx, rnew->user_data);
+	}
+	else
+		pcb_message(PCB_MSG_ERROR, "No such parametric footprint: '%s'\n", name);
+
+	free(name);
+}
 
 
 static pcb_bool library_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
@@ -388,6 +452,8 @@ static void pcb_dlg_library(void)
 						library_ctx.wfilt = PCB_DAD_CURRENT(library_ctx.dlg);
 					PCB_DAD_PICBUTTON(library_ctx.dlg, xpm_edit_param);
 						PCB_DAD_HELP(library_ctx.dlg, "open GUI to edit the parameters\nof a parametric footprint");
+						PCB_DAD_CHANGE_CB(library_ctx.dlg, library_edit_cb);
+						library_ctx.wedit = PCB_DAD_CURRENT(library_ctx.dlg);
 					PCB_DAD_PICBUTTON(library_ctx.dlg, xpm_refresh);
 						PCB_DAD_HELP(library_ctx.dlg, "reload and refresh the current\nmain tree of the library");
 				PCB_DAD_END(library_ctx.dlg);
@@ -422,6 +488,7 @@ static void pcb_dlg_library(void)
 	PCB_DAD_NEW("library", library_ctx.dlg, "pcb-rnd Footprint Library", &library_ctx, pcb_false, library_close_cb);
 
 	library_lib2dlg(&library_ctx);
+	pcb_gui->attr_dlg_widget_state(library_ctx.dlg_hid_ctx, library_ctx.wedit, 0);
 }
 
 const char pcb_acts_LibraryDialog[] = "libraryDialog()\n";
