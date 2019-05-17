@@ -30,6 +30,7 @@
 #include <genht/htsi.h>
 #include <genht/hash.h>
 #include <genvector/gds_char.h>
+#include <genregex/regex_sei.h>
 
 #include "actions.h"
 #include "board.h"
@@ -317,6 +318,20 @@ static void library_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	}
 }
 
+static void library_tree_unhide(pcb_hid_tree_t *tree, gdl_list_t *rowlist, re_sei_t *preg)
+{
+	pcb_hid_row_t *r, *pr;
+
+	for(r = gdl_first(rowlist); r != NULL; r = gdl_next(rowlist, r)) {
+		if (re_sei_exec(preg, r->cell[0])) {
+			pcb_dad_tree_hide_all(tree, &r->children, 0); /* if this is a node with children, show all children */
+			for(pr = r; pr != NULL; pr = pcb_dad_tree_parent_row(tree, pr)) /* also show all parents so it is visible */
+				pr->hide = 0;
+		}
+		library_tree_unhide(tree, &r->children, preg);
+	}
+}
+
 static void library_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
 {
 	library_ctx_t *ctx = caller_data;
@@ -339,8 +354,11 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	/* hide or unhide everything */
 	pcb_dad_tree_hide_all(tree, &tree->rows, have_filter_text);
 
-	if (have_filter_text) /* unhide hits and all their parents */
-		pcb_dad_tree_unhide_filter(tree, &tree->rows, 0, text);
+	if (have_filter_text) { /* unhide hits and all their parents */
+		re_sei_t *regex = re_sei_comp(text);
+		library_tree_unhide(tree, &tree->rows, regex);
+		re_sei_free(regex);
+	}
 
 	pcb_dad_tree_expcoll(attr, NULL, 1, 1);
 	pcb_dad_tree_update_hide(attr);
