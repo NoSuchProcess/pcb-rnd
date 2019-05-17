@@ -17,7 +17,7 @@
 - CLEANUP: library window DAD-ification: remove pcb_act_LibraryShow()
 	- FEATURE: library window: allow long tags and long location text to split
 	- BUG: double check parametric footprint edit window: bug_files/parametric.txt [report: Piotr]
-	- CLEANUP: remove pcb_attribute_dialog() and the label argument from the DAD API [report: igor2]
+- CLEANUP: remove pcb_attribute_dialog() and the label argument from the DAD API [report: igor2]
 - CLEANUP: think over how to handle subc selection: selecting all parts automatically is bad for propedit; bug_files/subcsel.bug [report: Wojciech]
 	- BUG: adding attribute works on subc parts but deleting attribute stops after deleiting it from a subc; bug_files/subcsel.bug [report: Wojciech]
 - CLEANUP: DAD close sequence: TODO#51: there are three sources to trigger hid_ctx (caller's free on modal, close button free and window destroy callback); requre the user to always call free last and add bits to track what frees are already called and free(ctx) last; test in 4 situations: (modal,nonmodal)*(close_buttons,wmclose) [report: Igor2]
