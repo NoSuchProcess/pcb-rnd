@@ -401,12 +401,14 @@ static void pcb_dlg_library(void)
 					library_ctx.wpreview = PCB_DAD_CURRENT(library_ctx.dlg);
 
 				/* right bottom */
-				PCB_DAD_LABEL(library_ctx.dlg, "Pending refresh...");
-					PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_HIDE);
-					library_ctx.wpend = PCB_DAD_CURRENT(library_ctx.dlg);
-				TODO("rich text label");
-				PCB_DAD_LABEL(library_ctx.dlg, "");
-					library_ctx.wtags = PCB_DAD_CURRENT(library_ctx.dlg);
+				PCB_DAD_BEGIN_VBOX(library_ctx.dlg);
+					PCB_DAD_LABEL(library_ctx.dlg, "Pending refresh...");
+						PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_HIDE);
+						library_ctx.wpend = PCB_DAD_CURRENT(library_ctx.dlg);
+					TODO("rich text label");
+					PCB_DAD_LABEL(library_ctx.dlg, "");
+						library_ctx.wtags = PCB_DAD_CURRENT(library_ctx.dlg);
+				PCB_DAD_END(library_ctx.dlg);
 			PCB_DAD_END(library_ctx.dlg);
 		PCB_DAD_END(library_ctx.dlg);
 
