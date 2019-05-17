@@ -239,6 +239,71 @@ static void library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 	append();
 }
 
+static char *gen_cmd(library_ctx_t *ctx)
+{
+	int n, pushed = 0;
+	gds_t sres;
+	char *tmp;
+
+	memset(&sres, 0, sizeof(sres));
+
+	gds_append_str(&sres, ctx->last_l->name);
+
+	/* cut original name at "(" */
+	tmp = strchr(sres.array, '(');
+	if (tmp != NULL)
+		gds_truncate(&sres, tmp - sres.array);
+
+	gds_append_str(&sres, "(");
+
+	for(n = 0; n < ctx->num_params; n++) {
+		char *desc, buff[128];
+		const char *val;
+		pcb_hid_attribute_t *a = &ctx->pdlg[ctx->pwid[n]];
+
+		if (!a->changed)
+			continue;
+
+		switch(a->type) {
+			case PCB_HATT_LABEL:
+			case PCB_HATT_BEGIN_TABLE:
+			case PCB_HATT_END:
+				continue;
+			case PCB_HATT_ENUM:
+				val = a->enumerations[a->default_val.int_value];
+				if (val != NULL) {
+					desc = strstr((char *)val, " (");
+					if (desc != NULL)
+						*desc = '\0';
+				}
+				break;
+			case PCB_HATT_STRING:
+				val = a->default_val.str_value;
+				break;
+			case PCB_HATT_COORD:
+				val = buff;
+				pcb_snprintf(buff, sizeof(buff), "%$$mH", a->default_val.coord_value);
+				break;
+			default:;
+		}
+
+		if (val == NULL)
+			continue;
+
+		if (pushed)
+			gds_append_str(&sres, ", ");
+
+		if ((n == pushed) && (n < ctx->first_optional))
+			gds_append_str(&sres, val); /* positional */
+		else
+			pcb_append_printf(&sres, "%s=%s", a->name, val);
+		pushed++;
+	}
+
+	gds_append_str(&sres, ")");
+	return sres.array;
+}
+
 static int param_split(char *buf, char *argv[], int amax)
 {
 	int n;
