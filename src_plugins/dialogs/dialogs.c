@@ -110,6 +110,7 @@ int pplg_check_ver_dialogs(int ver_needed) { return 0; }
 
 void pplg_uninit_dialogs(void)
 {
+	pcb_dlg_library_uninit();
 	pcb_dlg_netlist_uninit();
 	pcb_dlg_undo_uninit();
 	pcb_dlg_pstklib_uninit();
@@ -137,6 +138,7 @@ int pplg_init_dialogs(void)
 	pcb_dlg_netlist_init();
 	pcb_view_dlg_init();
 	pcb_dlg_fontsel_init();
+	pcb_dlg_library_init();
 
 	return 0;
 }

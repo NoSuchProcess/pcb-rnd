@@ -38,6 +38,7 @@
 #include "conf_core.h"
 #include "data.h"
 #include "draw.h"
+#include "event.h"
 #include "obj_subc.h"
 #include "plug_footprint.h"
 #include "tool.h"
@@ -51,6 +52,8 @@
 
 TODO("Remove:")
 #include "brave.h"
+
+static const char *library_cookie = "dlg_library";
 
 #define MAX_PARAMS 128
 
@@ -524,10 +527,8 @@ static void library_refresh_cb(void *hid_ctx, void *caller_data, pcb_hid_attribu
 
 	oname = pcb_strdup(l->name); /* need to save the name because refresh invalidates l */
 
-	if (pcb_fp_rehash(&PCB->hidlib, l) == 0) {
+	if (pcb_fp_rehash(&PCB->hidlib, l) == 0)
 		pcb_message(PCB_MSG_INFO, "Refreshed library '%s'\n", oname);
-		library_lib2dlg(&library_ctx);
-	}
 	else
 		pcb_message(PCB_MSG_ERROR, "Failed to refresh library '%s'\n", oname);
 
@@ -623,4 +624,21 @@ fgw_error_t pcb_act_LibraryDialog(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	else
 		pcb_dlg_library();
 	return 0;
+}
+
+static void library_changed_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+{
+printf("d1 %d\n", library_ctx.active);
+	if (library_ctx.active)
+		library_lib2dlg(&library_ctx);
+}
+
+void pcb_dlg_library_uninit(void)
+{
+	pcb_event_unbind_allcookie(library_cookie);
+}
+
+void pcb_dlg_library_init(void)
+{
+	pcb_event_bind(PCB_EVENT_LIBRARY_CHANGED, library_changed_ev, NULL, library_cookie);
 }
