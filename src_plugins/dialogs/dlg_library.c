@@ -52,13 +52,15 @@
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
-	int wtree, wpreview, wtags, wfilt;
+	int wtree, wpreview, wtags, wfilt, wpend;
 
 	int active; /* already open - allow only one instance */
 
 	pcb_subc_t *sc;
 	pcb_board_t *prev_pcb; /* sc must be in here so buffer changes don't ruin it */
 
+	pcb_hidval_t timer;
+	int timer_active;
 
  /* for the parametric */
 	int pactive; /* already open - allow only one instance */
@@ -127,10 +129,45 @@ static const char *xpm_refresh[] = {
 "            @   ",
 };
 
+static void library_update_preview(library_ctx_t *ctx, pcb_subc_t *sc, pcb_fplibrary_t *l);
+
+static void timed_update_preview_cb(pcb_hidval_t user_data)
+{
+	library_ctx_t *ctx = user_data.ptr;
+	const char *otext = ctx->dlg[ctx->wfilt].default_val.str_value;
+
+	if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, otext, NULL)) {
+		pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
+		if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0)
+			library_update_preview(ctx, pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc), NULL);
+		pcb_gui->invalidate_all(&PCB->hidlib);
+	}
+	ctx->timer_active = 0;
+	pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wpend, 1);
+}
+
+static void timed_update_preview(library_ctx_t *ctx, int active)
+{
+	if (ctx->timer_active) {
+		pcb_gui->stop_timer(ctx->timer);
+		ctx->timer_active = 0;
+		pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wpend, 1);
+	}
+
+	if (active) {
+		pcb_hidval_t user_data;
+		user_data.ptr = ctx;
+		ctx->timer = pcb_gui->add_timer(timed_update_preview_cb, 500, user_data);
+		ctx->timer_active = 1;
+		pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wpend, 0);
+	}
+}
+
 static void library_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	library_ctx_t *ctx = caller_data;
 
+	timed_update_preview(ctx, 0);
 	pcb_board_free(ctx->prev_pcb);
 	PCB_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(library_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
@@ -235,6 +272,7 @@ static void library_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 	library_ctx_t *ctx = tree->user_ctx;
 	int close_param = 1;
 
+	timed_update_preview(ctx, 0);
 
 	library_update_preview(ctx, NULL, NULL);
 	if (row != NULL) {
@@ -304,12 +342,7 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 
 	/* parametric footprints need to be refreshed on edit */
 	if (strchr(otext, ')') != NULL) {
-		if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, otext, NULL)) {
-			pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
-			if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0)
-				library_update_preview(ctx, pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc), NULL);
-			pcb_gui->invalidate_all(&PCB->hidlib);
-		}
+		timed_update_preview(ctx, 1);
 	}
 
 	free(text);
@@ -369,6 +402,9 @@ static void pcb_dlg_library(void)
 					library_ctx.wpreview = PCB_DAD_CURRENT(library_ctx.dlg);
 
 				/* right bottom */
+				PCB_DAD_LABEL(library_ctx.dlg, "Pending refresh...");
+					PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_HIDE);
+					library_ctx.wpend = PCB_DAD_CURRENT(library_ctx.dlg);
 				TODO("rich text label");
 				PCB_DAD_LABEL(library_ctx.dlg, "");
 					library_ctx.wtags = PCB_DAD_CURRENT(library_ctx.dlg);
