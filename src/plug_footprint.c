@@ -456,7 +456,9 @@ int pcb_fp_rehash(pcb_hidlib_t *hidlib, pcb_fplibrary_t *l)
 
 	if (l == NULL) {
 		pcb_fp_free_children(&pcb_library);
-		return pcb_fp_read_lib_all();
+		res = pcb_fp_read_lib_all();
+		pcb_event(hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);
+		return res;
 	}
 	if (l->type != LIB_DIR)
 		return -1;
