@@ -32,9 +32,13 @@
 static void library_param_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	library_ctx_t *ctx = caller_data;
+	htsi_entry_t *e;
 
 	gds_uninit(&ctx->descr);
 	free(ctx->help_params);
+
+	for(e = htsi_first(&ctx->param_names); e != NULL; e = htsi_next(&ctx->param_names, e))
+		free(e->key);
 	htsi_uninit(&ctx->param_names);
 }
 
@@ -110,6 +114,11 @@ do { \
 
 #define append() \
 do { \
+	if (curr >= MAX_PARAMS) { \
+		if (curr == MAX_PARAMS) \
+			pcb_message(PCB_MSG_ERROR, "too many parameters, displaying only the first %d\n", MAX_PARAMS); \
+		break; \
+	} \
 	if (curr_type == PCB_HATT_END) \
 		break; \
 	pre_append(); \
@@ -118,19 +127,23 @@ do { \
 	switch(curr_type) { \
 		case PCB_HATT_COORD: \
 			PCB_DAD_COORD(library_ctx.pdlg, ""); \
+				ctx->pwid[curr] = PCB_DAD_CURRENT(library_ctx.pdlg); \
 				PCB_DAD_MINMAX(library_ctx.pdlg, 0, PCB_MM_TO_COORD(512)); \
 			break; \
 		case PCB_HATT_STRING: \
 			PCB_DAD_STRING(library_ctx.pdlg); \
+				ctx->pwid[curr] = PCB_DAD_CURRENT(library_ctx.pdlg); \
 			break; \
 		case PCB_HATT_ENUM: \
 			PCB_DAD_ENUM(library_ctx.pdlg, (const char **)curr_enum.array); \
+				ctx->pwid[curr] = PCB_DAD_CURRENT(library_ctx.pdlg); \
 			vtp0_init(&curr_enum); \
 			break; \
 		default: \
 			PCB_DAD_LABEL(library_ctx.pdlg, "internal error: invalid type"); \
 	} \
 	PCB_DAD_HELP(library_ctx.pdlg, pcb_strdup(help)); \
+	htsi_set(&ctx->param_names, pcb_strdup(name), curr); \
 	post_append(); \
 } while(0)
 
