@@ -232,24 +232,34 @@ static void library_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 	pcb_hid_attr_val_t hv;
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
 	library_ctx_t *ctx = tree->user_ctx;
+	int close_param = 1;
 
 
 	library_update_preview(ctx, NULL, NULL);
 	if (row != NULL) {
 		pcb_fplibrary_t *l = row->user_data;
 		if ((l != NULL) && (l->type == LIB_FOOTPRINT)) {
-			if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, l->data.fp.loc_info, NULL)) {
-				pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
-				if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0)
-					library_update_preview(ctx, pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc), l);
-				pcb_gui->invalidate_all(&PCB->hidlib);
+			if (l->data.fp.type == PCB_FP_PARAMETRIC) {
+				library_param_dialog(ctx, l);
+				close_param = 0;
+			}
+			else {
+				if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, l->data.fp.loc_info, NULL)) {
+					pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
+					if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0)
+						library_update_preview(ctx, pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc), l);
+					pcb_gui->invalidate_all(&PCB->hidlib);
+				}
 			}
 		}
 	}
 
+	if (close_param)
+		library_param_dialog(ctx, NULL);
 
 	hv.str_value = NULL;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wpreview, &hv);
+
 }
 
 static void library_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)

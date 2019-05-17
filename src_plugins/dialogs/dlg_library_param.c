@@ -28,9 +28,10 @@
 
 #include "safe_fs.h"
 
-static void close()
+
+static void library_param_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
-	library_ctx_t *ctx;
+	library_ctx_t *ctx = caller_data;
 
 	gds_uninit(&ctx->descr);
 	free(ctx->help_params);
@@ -216,7 +217,6 @@ static void library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 		}
 	}
 	append();
-	pcb_pclose(f);
 }
 
 static int param_split(char *buf, char *argv[], int amax)
@@ -380,7 +380,11 @@ static void library_param_dialog(library_ctx_t *ctx, pcb_fplibrary_t *l)
 
 	if (ctx->last_l != l) {
 TODO("if active: close if new l differs\n");
+		ctx->last_l = l;
 	}
+
+	if (l == NULL)
+		return;
 
 	cmd = pcb_strdup_printf("%s --help", l->data.fp.loc_info);
 	f = pcb_popen(NULL, cmd, "r");
@@ -390,10 +394,14 @@ TODO("if active: close if new l differs\n");
 		return;
 	}
 
-	ctx->last_l = l;
-
 	htsi_init(&ctx->param_names, strhash, strkeyeq);
 	gds_init(&ctx->descr);
 	ctx->first_optional = -1;
+
+
+	library_param_open(ctx, l, f);
+	pcb_pclose(f);
+
+	PCB_DAD_NEW("lib_param", library_ctx.pdlg, "pcb-rnd parametric footprint", ctx, pcb_false, library_param_close_cb);
 }
 
