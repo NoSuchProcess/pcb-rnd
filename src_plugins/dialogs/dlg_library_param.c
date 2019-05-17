@@ -151,7 +151,7 @@ do { \
 
 static void library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 {
-	char *sres, line[1024];
+	char line[1024];
 	char *name = NULL, *help = NULL, *help_def = NULL;
 	vtp0_t curr_enum;
 	int curr;
@@ -365,7 +365,6 @@ static void load_params(library_ctx_t *ctx, char *user_params)
 	/* iterate and assign default values and mark them changed to get them back */
 	for(posi = n = 0; n < argc_in; n++) {
 		char *key, *val, *sep;
-		pcb_hid_attribute_t *a;
 		htsi_entry_t *e;
 		int pidx;
 
@@ -469,8 +468,6 @@ static void library_param_dialog(library_ctx_t *ctx, pcb_fplibrary_t *l)
 {
 	FILE *f;
 	char *cmd;
-	int n, dirty = 0;
-
 
 	if (ctx->last_l != l) {
 		if (ctx->pactive)
