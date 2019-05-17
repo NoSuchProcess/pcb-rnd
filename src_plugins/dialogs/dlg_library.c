@@ -27,6 +27,7 @@
 #include "config.h"
 
 #include <genht/htsp.h>
+#include <genht/htsi.h>
 #include <genht/hash.h>
 #include <genvector/gds_char.h>
 
@@ -47,9 +48,11 @@
 
 #include "dlg_library.h"
 
+#define MAX_PARAMS 128
+
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
-	int wtree, wpreview, wtags;
+	int wtree, wpreview, wtags, wfilt;
 
 	int active; /* already open - allow only one instance */
 
@@ -61,6 +64,10 @@ typedef struct{
 	int pactive; /* already open - allow only one instance */
 	PCB_DAD_DECL_NOINIT(pdlg)
 	pcb_fplibrary_t *last_l;
+	char *example, *help_params;
+	htsi_t param_names;     /* param_name -> param_idx */
+	int pwid[MAX_PARAMS];   /* param_idx -> widget_idx (for the input field widget) */
+	int num_params;
 } library_ctx_t;
 
 library_ctx_t library_ctx;
@@ -316,6 +323,7 @@ static void pcb_dlg_library(void)
 						PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL);
 						PCB_DAD_HELP(library_ctx.dlg, "filter: display only footprints matching this text\n(if empty: display all)");
 						PCB_DAD_CHANGE_CB(library_ctx.dlg, library_filter_cb);
+						library_ctx.wfilt = PCB_DAD_CURRENT(library_ctx.dlg);
 					PCB_DAD_PICBUTTON(library_ctx.dlg, xpm_edit_param);
 						PCB_DAD_HELP(library_ctx.dlg, "open GUI to edit the parameters\nof a parametric footprint");
 					PCB_DAD_PICBUTTON(library_ctx.dlg, xpm_refresh);
