@@ -326,29 +326,5 @@ TODO("if active: close if new l differs\n");
 	ctx->last_l = l;
 
 	htsi_init(&ctx->param_names, strhash, strkeyeq);
-
-#if 0
-
-	/* make a snapshot to res so that callback gen_cmd() works from live data */
-	for(n = 0; n < ctx->num_params; n++)
-		res[n] = attrs[n].default_val;
-
-	if (dirty) /* had to replace the filter text, make it effective */
-		attr_change_cb(NULL, NULL, &attrs[0]);
-
-	if (pcb_attribute_dialog("lib_param", attrs, numattr, res, descr, NULL) == 0)
-		sres = gen_cmd(entry->name, attrs, res, numattr, ctx.first_optional);
-	else
-		sres = NULL; /* cancel */
-
-	/* clean up */
-	for(n = 0; n < ctx->num_params; n++)
-		free_attr(&attrs[n]);
-	free(descr);
-	free(params);
-	free(example);
-
-	return sres;
-#endif
 }
 
