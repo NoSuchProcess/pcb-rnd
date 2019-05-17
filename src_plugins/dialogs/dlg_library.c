@@ -431,7 +431,7 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pcb_dad_tree_update_hide(attr);
 
 	/* parametric footprints need to be refreshed on edit */
-	if (strchr(otext, ')') != NULL)
+	if (is_para)
 		timed_update_preview(ctx, 1);
 
 	update_edit_button(ctx);
