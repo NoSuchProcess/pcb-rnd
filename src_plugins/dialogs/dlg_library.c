@@ -318,17 +318,45 @@ static void library_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	}
 }
 
-static void library_tree_unhide(pcb_hid_tree_t *tree, gdl_list_t *rowlist, re_sei_t *preg)
+static int tag_match(pcb_fplibrary_t *l, vtp0_t *taglist)
+{
+	size_t n;
+
+	if (taglist->used == 0)
+		return 1;
+
+	if (l->data.fp.tags == NULL)
+		return 0;
+
+	for(n = 0; n < taglist->used; n++) {
+		void **t;
+		const void *need = pcb_fp_tag((const char *)taglist->array[n], 0);
+		int found = 0;
+		for(t = l->data.fp.tags, found = 0; *t != NULL; t++) {
+			if (*t == need) {
+				found = 1;
+				break;
+			}
+		}
+		
+		if (!found)
+			return 0;
+	}
+
+	return 1;
+}
+
+static void library_tree_unhide(pcb_hid_tree_t *tree, gdl_list_t *rowlist, re_sei_t *preg, vtp0_t *taglist)
 {
 	pcb_hid_row_t *r, *pr;
 
 	for(r = gdl_first(rowlist); r != NULL; r = gdl_next(rowlist, r)) {
-		if (re_sei_exec(preg, r->cell[0])) {
+		if (((preg == NULL) || (re_sei_exec(preg, r->cell[0]))) && tag_match(r->user_data, taglist)) {
 			pcb_dad_tree_hide_all(tree, &r->children, 0); /* if this is a node with children, show all children */
 			for(pr = r; pr != NULL; pr = pcb_dad_tree_parent_row(tree, pr)) /* also show all parents so it is visible */
 				pr->hide = 0;
 		}
-		library_tree_unhide(tree, &r->children, preg);
+		library_tree_unhide(tree, &r->children, preg, taglist);
 	}
 }
 
@@ -339,13 +367,15 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pcb_hid_tree_t *tree;
 	const char *otext;
 	char *text, *sep;
-	int have_filter_text;
+	int have_filter_text, is_para;
 
 	attr = &ctx->dlg[ctx->wtree];
 	tree = (pcb_hid_tree_t *)attr->enumerations;
 	otext = attr_inp->default_val.str_value;
 	text = pcb_strdup(otext);
 	have_filter_text = (*text != '\0');
+
+	is_para = (strchr(otext, '(') != NULL);
 
 	sep = strpbrk(text, " ()\t\r\n");
 	if (sep != NULL)
@@ -355,9 +385,46 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pcb_dad_tree_hide_all(tree, &tree->rows, have_filter_text);
 
 	if (have_filter_text) { /* unhide hits and all their parents */
-		re_sei_t *regex = re_sei_comp(text);
-		library_tree_unhide(tree, &tree->rows, regex);
-		re_sei_free(regex);
+		char *tag, *next, *tags = NULL;
+		vtp0_t taglist;
+		re_sei_t *regex = NULL;
+
+		if (!is_para) {
+			tags = strchr(otext, ' ');
+			if (tags != NULL) {
+				*tags = '\0';
+				tags++;
+				while(isspace(*tags))
+					tags++;
+				if (*tags == '\0')
+					tags = NULL;
+			}
+		}
+
+		vtp0_init(&taglist);
+		if (tags != NULL) {
+			tags = pcb_strdup(tags);
+			for (tag = tags; tag != NULL; tag = next) {
+				next = strpbrk(tag, " \t\r\n");
+				if (next != NULL) {
+					*next = '\0';
+					next++;
+					while (isspace(*next))
+						next++;
+				}
+				vtp0_append(&taglist, tag);
+			}
+		}
+
+		if ((text != NULL) && (*text != '\0'))
+			regex = re_sei_comp(text);
+
+		library_tree_unhide(tree, &tree->rows, regex, &taglist);
+
+		if (regex != NULL)
+			re_sei_free(regex);
+		vtp0_uninit(&taglist);
+		free(tags);
 	}
 
 	pcb_dad_tree_expcoll(attr, NULL, 1, 1);
