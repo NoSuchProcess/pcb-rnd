@@ -304,12 +304,10 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 
 	/* parametric footprints need to be refreshed on edit */
 	if (strchr(otext, ')') != NULL) {
-		pcb_fplibrary_t *l = pcb_fp_lib_search(&pcb_library, text);
-pcb_trace("l=%p otext='%s' text='%s'\n", l, otext, text);
-		if ((l != NULL) && (pcb_buffer_load_footprint(PCB_PASTEBUFFER, otext, NULL))) {
+		if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, otext, NULL)) {
 			pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
 			if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0)
-				library_update_preview(ctx, pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc), l);
+				library_update_preview(ctx, pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc), NULL);
 			pcb_gui->invalidate_all(&PCB->hidlib);
 		}
 	}
