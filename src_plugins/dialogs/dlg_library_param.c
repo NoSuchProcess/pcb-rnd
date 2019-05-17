@@ -217,6 +217,8 @@ static void library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 		}
 		else if (strncmp(cmd, "default:", 6) == 0) {
 			free(help_def);
+			if (arg == NULL)
+				arg = "";
 			help_def = pcb_strdup(arg);
 		}
 		else if (strncmp(cmd, "dim:", 4) == 0) {
