@@ -129,7 +129,48 @@ static const char *xpm_refresh[] = {
 "            @   ",
 };
 
-static void library_update_preview(library_ctx_t *ctx, pcb_subc_t *sc, pcb_fplibrary_t *l);
+static void library_update_preview(library_ctx_t *ctx, pcb_subc_t *sc, pcb_fplibrary_t *l)
+{
+	pcb_box_t bbox;
+	pcb_hid_attr_val_t hv;
+	gds_t tmp;
+
+	if (ctx->sc != NULL) {
+		pcb_subc_remove(ctx->sc);
+		ctx->sc = NULL;
+	}
+
+	gds_init(&tmp);
+	if (sc != NULL) {
+		ctx->sc = pcb_subc_dup_at(ctx->prev_pcb, ctx->prev_pcb->Data, sc, 0, 0, 1);
+		pcb_data_bbox(&bbox, ctx->sc->data, 0);
+		pcb_dad_preview_zoomto(&ctx->dlg[ctx->wpreview], &bbox);
+	}
+
+	if (l != NULL) {
+		void **t;
+
+TODO("Use rich text for this with explicit wrap marks\n");
+		/* update tags */
+		for (t = l->data.fp.tags; ((t != NULL) && (*t != NULL)); t++) {
+			const char *name = pcb_fp_tagname(*t);
+			if (name != NULL) {
+				gds_append_str(&tmp, "\n  ");
+				gds_append_str(&tmp, name);
+			}
+		}
+		gds_append_str(&tmp, "\nLocation:\n ");
+		gds_append_str(&tmp, l->data.fp.loc_info);
+		gds_append_str(&tmp, "\n");
+
+		hv.str_value = tmp.array;
+	}
+	else
+		hv.str_value = "";
+
+	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtags, &hv);
+	gds_uninit(&tmp);
+}
 
 static void timed_update_preview_cb(pcb_hidval_t user_data)
 {
@@ -220,49 +261,6 @@ static void library_lib2dlg(library_ctx_t *ctx)
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtree, &hv);
 		free(cursor_path);
 	}
-}
-
-static void library_update_preview(library_ctx_t *ctx, pcb_subc_t *sc, pcb_fplibrary_t *l)
-{
-	pcb_box_t bbox;
-	pcb_hid_attr_val_t hv;
-	gds_t tmp;
-
-	if (ctx->sc != NULL) {
-		pcb_subc_remove(ctx->sc);
-		ctx->sc = NULL;
-	}
-
-	gds_init(&tmp);
-	if (sc != NULL) {
-		ctx->sc = pcb_subc_dup_at(ctx->prev_pcb, ctx->prev_pcb->Data, sc, 0, 0, 1);
-		pcb_data_bbox(&bbox, ctx->sc->data, 0);
-		pcb_dad_preview_zoomto(&ctx->dlg[ctx->wpreview], &bbox);
-	}
-
-	if (l != NULL) {
-		void **t;
-
-TODO("Use rich text for this with explicit wrap marks\n");
-		/* update tags */
-		for (t = l->data.fp.tags; ((t != NULL) && (*t != NULL)); t++) {
-			const char *name = pcb_fp_tagname(*t);
-			if (name != NULL) {
-				gds_append_str(&tmp, "\n  ");
-				gds_append_str(&tmp, name);
-			}
-		}
-		gds_append_str(&tmp, "\nLocation:\n ");
-		gds_append_str(&tmp, l->data.fp.loc_info);
-		gds_append_str(&tmp, "\n");
-
-		hv.str_value = tmp.array;
-	}
-	else
-		hv.str_value = "";
-
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtags, &hv);
-	gds_uninit(&tmp);
 }
 
 static void library_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
