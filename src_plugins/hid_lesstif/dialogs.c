@@ -290,7 +290,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 		/* Add content */
 		stdarg_n = 0;
 		stdarg(XmNalignment, XmALIGNMENT_END);
-		if (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_EXPFILL)
+		if ((ctx->attrs[i].pcb_hatt_flags & PCB_HATF_EXPFILL) || (ctx->attrs[i].type == PCB_HATT_BEGIN_HPANE) || (ctx->attrs[i].type == PCB_HATT_BEGIN_VPANE))
 			stdarg(PxmNfillBoxFill, 1);
 		stdarg(XmNuserData, ctx);
 
