@@ -203,6 +203,12 @@ static void timed_update_preview(library_ctx_t *ctx, int active)
 	}
 }
 
+static void update_edit_button(library_ctx_t *ctx)
+{
+	const char *otext = ctx->dlg[ctx->wfilt].default_val.str_value;
+	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wedit, !ctx->pactive && (strchr(otext, '(') != NULL));
+}
+
 #include "dlg_library_param.c"
 
 static void library_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
@@ -343,7 +349,7 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	if (strchr(otext, ')') != NULL)
 		timed_update_preview(ctx, 1);
 
-	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wedit, (strchr(otext, '(') != NULL));
+	update_edit_button(ctx);
 
 	free(text);
 }
@@ -400,6 +406,8 @@ static void library_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 		/* no selection or wrong selection: go find the right one */
 		rnew = find_fp_prefix(ctx, name, namelen);
 	}
+	else
+		rnew = r;
 
 	if (rnew != NULL) {
 		if (r != rnew)

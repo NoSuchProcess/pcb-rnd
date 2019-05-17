@@ -42,6 +42,8 @@ static void library_param_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 		free(e->key);
 	htsi_uninit(&ctx->param_names);
 	PCB_DAD_FREE(ctx->pdlg);
+	ctx->pactive = 0;
+	update_edit_button(ctx);
 }
 
 #define colsplit() \
@@ -491,6 +493,7 @@ static void library_param_dialog(library_ctx_t *ctx, pcb_fplibrary_t *l)
 			PCB_DAD_FREE(ctx->pdlg);
 		ctx->pactive = 0;
 		ctx->last_l = l;
+		update_edit_button(ctx);
 	}
 
 	if (l == NULL)
@@ -515,6 +518,7 @@ static void library_param_dialog(library_ctx_t *ctx, pcb_fplibrary_t *l)
 
 	PCB_DAD_NEW("lib_param", library_ctx.pdlg, "pcb-rnd parametric footprint", ctx, pcb_false, library_param_close_cb);
 
+	update_edit_button(ctx);
 	library_param_fillin(ctx, l);
 }
 
