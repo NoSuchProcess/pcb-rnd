@@ -40,6 +40,7 @@ static void library_param_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	for(e = htsi_first(&ctx->param_names); e != NULL; e = htsi_next(&ctx->param_names, e))
 		free(e->key);
 	htsi_uninit(&ctx->param_names);
+	PCB_DAD_FREE(ctx->pdlg);
 }
 
 #define colsplit() \
@@ -404,7 +405,9 @@ static void library_param_dialog(library_ctx_t *ctx, pcb_fplibrary_t *l)
 
 
 	if (ctx->last_l != l) {
-TODO("if active: close if new l differs\n");
+		if (ctx->pactive)
+			PCB_DAD_FREE(ctx->pdlg);
+		ctx->pactive = 0;
 		ctx->last_l = l;
 	}
 
@@ -424,6 +427,7 @@ TODO("if active: close if new l differs\n");
 	ctx->first_optional = -1;
 
 
+	ctx->pactive = 1;
 	library_param_open(ctx, l, f);
 	pcb_pclose(f);
 
