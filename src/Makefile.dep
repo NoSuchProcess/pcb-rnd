@@ -618,10 +618,11 @@
  ../src_plugins/dialogs/dlg_lib_pstk.h
 ../src_plugins/dialogs/dlg_library.o: \
  ../src_plugins/dialogs/dlg_library.c ../config.h ../src_3rd/genht/htsp.h \
- ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/htsi.h ../src_3rd/genht/hash.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h actions.h hid.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/genvector/genvector_undef.h ../src_3rd/genregex/regex_sei.h \
+ ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h actions.h \
+ hid.h ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h error.h global_typedefs.h pcb_bool.h \
  unit.h attrib.h layer.h globalconst.h color.h obj_common.h flag.h \
  data_parent.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
@@ -643,7 +644,7 @@
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_plugins/dialogs/dlg_library.h \
- ../src_plugins/dialogs/dlg_library_param.c
+ ../src_plugins/dialogs/dlg_library_param.c safe_fs.h
 ../src_plugins/dialogs/dlg_loadsave.o: \
  ../src_plugins/dialogs/dlg_loadsave.c ../config.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
