@@ -373,6 +373,10 @@ static int library_param_fillin(library_ctx_t *ctx, pcb_fplibrary_t *l)
 			load_params(ctx, prm+1);
 	}
 
+	hv.str_value = ctx->descr.array;
+	if (hv.str_value == NULL)
+		hv.str_value = "";
+	pcb_gui->attr_dlg_set_value(ctx->pdlg_hid_ctx, ctx->pwdesc, &hv);
 	return dirty;
 }
 
@@ -380,6 +384,8 @@ static void library_param_open(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 {
 	PCB_DAD_BEGIN_VBOX(library_ctx.pdlg);
 		PCB_DAD_COMPFLAG(library_ctx.pdlg, PCB_HATF_EXPFILL);
+		PCB_DAD_LABEL(library_ctx.pdlg, "n/a");
+			ctx->pwdesc = PCB_DAD_CURRENT(library_ctx.pdlg);
 		PCB_DAD_BEGIN_TABLE(library_ctx.pdlg, 2);
 			PCB_DAD_COMPFLAG(library_ctx.pdlg, PCB_HATF_EXPFILL);
 			library_param_build(ctx, l, f);

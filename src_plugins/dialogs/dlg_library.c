@@ -62,6 +62,7 @@ typedef struct{
 
  /* for the parametric */
 	int pactive; /* already open - allow only one instance */
+	int pwdesc;
 	PCB_DAD_DECL_NOINIT(pdlg)
 	pcb_fplibrary_t *last_l;
 	char *example, *help_params;
