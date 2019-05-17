@@ -152,7 +152,8 @@ do { \
 			PCB_DAD_LABEL(library_ctx.pdlg, "internal error: invalid type"); \
 	} \
 	PCB_DAD_HELP(library_ctx.pdlg, pcb_strdup(help)); \
-	htsi_set(&ctx->param_names, pcb_strdup(name), curr); \
+	ctx->pnames[curr] = pcb_strdup(name); \
+	htsi_set(&ctx->param_names, ctx->pnames[curr], curr); \
 	post_append(); \
 } while(0)
 
@@ -303,7 +304,7 @@ static char *gen_cmd(library_ctx_t *ctx)
 		if ((n == pushed) && (n < ctx->first_optional))
 			gds_append_str(&sres, val); /* positional */
 		else
-			pcb_append_printf(&sres, "%s=%s", a->name, val);
+			pcb_append_printf(&sres, "%s=%s", ctx->pnames[n], val);
 		pushed++;
 	}
 
