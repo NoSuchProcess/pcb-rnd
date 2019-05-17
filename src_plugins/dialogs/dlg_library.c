@@ -76,7 +76,6 @@ typedef struct{
 
 library_ctx_t library_ctx;
 
-#include "dlg_library_param.c"
 
 /* XPM */
 static const char *xpm_edit_param[] = {
@@ -203,6 +202,8 @@ static void timed_update_preview(library_ctx_t *ctx, int active)
 		pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wpend, 0);
 	}
 }
+
+#include "dlg_library_param.c"
 
 static void library_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {

@@ -89,6 +89,8 @@ static void set_attr(library_ctx_t *ctx, int pidx, char *val)
 	pcb_gui->attr_dlg_set_value(ctx->pdlg_hid_ctx, ctx->pwid[pidx], &hv);
 }
 
+static void library_param_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp);
+
 #define pre_append() \
 do { \
 	if (help_def != NULL) { \
@@ -131,14 +133,17 @@ do { \
 			PCB_DAD_COORD(library_ctx.pdlg, ""); \
 				ctx->pwid[curr] = PCB_DAD_CURRENT(library_ctx.pdlg); \
 				PCB_DAD_MINMAX(library_ctx.pdlg, 0, PCB_MM_TO_COORD(512)); \
+				PCB_DAD_CHANGE_CB(library_ctx.pdlg, library_param_cb); \
 			break; \
 		case PCB_HATT_STRING: \
 			PCB_DAD_STRING(library_ctx.pdlg); \
 				ctx->pwid[curr] = PCB_DAD_CURRENT(library_ctx.pdlg); \
+				PCB_DAD_CHANGE_CB(library_ctx.pdlg, library_param_cb); \
 			break; \
 		case PCB_HATT_ENUM: \
 			PCB_DAD_ENUM(library_ctx.pdlg, (const char **)curr_enum.array); \
 				ctx->pwid[curr] = PCB_DAD_CURRENT(library_ctx.pdlg); \
+				PCB_DAD_CHANGE_CB(library_ctx.pdlg, library_param_cb); \
 			vtp0_init(&curr_enum); \
 			break; \
 		default: \
@@ -302,6 +307,18 @@ static char *gen_cmd(library_ctx_t *ctx)
 
 	gds_append_str(&sres, ")");
 	return sres.array;
+}
+
+static void library_param_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
+{
+	library_ctx_t *ctx = caller_data;
+	char *cmd = gen_cmd(ctx);
+	pcb_hid_attr_val_t hv;
+
+	hv.str_value = cmd;
+	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wfilt, &hv);
+	free(cmd);
+	timed_update_preview(ctx, 1);
 }
 
 static int param_split(char *buf, char *argv[], int amax)
