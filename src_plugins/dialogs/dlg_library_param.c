@@ -87,7 +87,7 @@ static void set_attr(library_ctx_t *ctx, int pidx, char *val)
 do { \
 	if (help_def != NULL) { \
 		if (help != NULL) { \
-			char *tmp = pcb_concat(help, help_def, NULL); \
+			char *tmp = pcb_concat(help, "\nDefault: ", help_def, NULL); \
 			free(help); \
 			free(help_def); \
 			help = tmp; \
@@ -115,7 +115,7 @@ do { \
 		break; \
 	pre_append(); \
 	PCB_DAD_LABEL(library_ctx.pdlg, name); \
-		PCB_DAD_HELP(library_ctx.pdlg, help); \
+		PCB_DAD_HELP(library_ctx.pdlg, pcb_strdup(help)); \
 	switch(curr_type) { \
 		case PCB_HATT_COORD: \
 			PCB_DAD_COORD(library_ctx.pdlg, ""); \
@@ -128,7 +128,7 @@ do { \
 		default: \
 			PCB_DAD_LABEL(library_ctx.pdlg, "internal error: invalid type"); \
 	} \
-	PCB_DAD_HELP(library_ctx.pdlg, help); \
+	PCB_DAD_HELP(library_ctx.pdlg, pcb_strdup(help)); \
 	post_append(); \
 } while(0)
 
