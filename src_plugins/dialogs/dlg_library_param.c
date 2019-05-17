@@ -106,7 +106,6 @@ do { \
 	curr_type = PCB_HATT_END; \
 	curr = -1; \
 	vtp0_init(&curr_enum); \
-	curr_type = PCB_HATT_END; \
 } while(0)
 
 #define append() \
@@ -120,6 +119,9 @@ do { \
 		case PCB_HATT_COORD: \
 			PCB_DAD_COORD(library_ctx.pdlg, ""); \
 				PCB_DAD_MINMAX(library_ctx.pdlg, 0, PCB_MM_TO_COORD(512)); \
+			break; \
+		case PCB_HATT_STRING: \
+			PCB_DAD_STRING(library_ctx.pdlg); \
 			break; \
 		case PCB_HATT_ENUM: \
 			PCB_DAD_ENUM(library_ctx.pdlg, (const char **)curr_enum.array); \
@@ -196,6 +198,7 @@ static void library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 			free(help);
 			name = pcb_strdup(col);
 			help = pcb_strdup(arg);
+			curr_type = PCB_HATT_STRING; /* assume string until a dim or enum overrides that */
 		}
 		else if (strncmp(cmd, "default:", 6) == 0) {
 			free(help_def);
@@ -403,5 +406,7 @@ TODO("if active: close if new l differs\n");
 	pcb_pclose(f);
 
 	PCB_DAD_NEW("lib_param", library_ctx.pdlg, "pcb-rnd parametric footprint", ctx, pcb_false, library_param_close_cb);
+
+	library_param_fillin(ctx, l);
 }
 
