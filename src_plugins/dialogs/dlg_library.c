@@ -279,13 +279,19 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	library_ctx_t *ctx = caller_data;
 	pcb_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
-	const char *text;
+	const char *otext;
+	char *text, *sep;
 	int have_filter_text;
 
 	attr = &ctx->dlg[ctx->wtree];
 	tree = (pcb_hid_tree_t *)attr->enumerations;
-	text = attr_inp->default_val.str_value;
+	otext = attr_inp->default_val.str_value;
+	text = pcb_strdup(otext);
 	have_filter_text = (*text != '\0');
+
+	sep = strpbrk(text, " ()\t\r\n");
+	if (sep != NULL)
+		*sep = '\0';
 
 	/* hide or unhide everything */
 	pcb_dad_tree_hide_all(tree, &tree->rows, have_filter_text);
@@ -295,6 +301,20 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 
 	pcb_dad_tree_expcoll(attr, NULL, 1, 1);
 	pcb_dad_tree_update_hide(attr);
+
+	/* parametric footprints need to be refreshed on edit */
+	if (strchr(otext, ')') != NULL) {
+		pcb_fplibrary_t *l = pcb_fp_lib_search(&pcb_library, text);
+pcb_trace("l=%p otext='%s' text='%s'\n", l, otext, text);
+		if ((l != NULL) && (pcb_buffer_load_footprint(PCB_PASTEBUFFER, otext, NULL))) {
+			pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
+			if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0)
+				library_update_preview(ctx, pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc), l);
+			pcb_gui->invalidate_all(&PCB->hidlib);
+		}
+	}
+
+	free(text);
 }
 
 
