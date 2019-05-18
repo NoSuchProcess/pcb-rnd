@@ -145,6 +145,8 @@ static inline void ghid_gdk_draw_grid_global(pcb_hidlib_t *hidlib)
 	y2 = pcb_grid_fit(MIN(hidlib->size_y, SIDE_Y(&gport->view, gport->view.y0 + gport->view.height - 1)), hidlib->grid, hidlib->grid_oy);
 
 	grd = hidlib->grid;
+	if (grd <= 0)
+		grd = 1;
 
 	if (Vz(grd) < conf_hid_gtk.plugins.hid_gtk.global_grid.min_dist_px) {
 		if (!conf_hid_gtk.plugins.hid_gtk.global_grid.sparse)
