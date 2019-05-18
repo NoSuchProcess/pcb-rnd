@@ -4,7 +4,7 @@
 - BUG: check if ps export respects the fullpoly flag [report: Igor2]
 - DOC: tutorial: index
 + CLEANUP: Vuokko's list of warnings on OpenBSD: bug_files/warn-obsd-r24746.log [report: Vuokko]
-- CLEANUP: add the thin line draw optimization to the filled poly optimization, including hole, in hid_draw_helper (search for last_x); make this configurable for both (exporters shall not optimize!); remove the similar optimization from hidgl triangulation and gdk and lesstif [report: Ade, Peter]
++ CLEANUP: add the thin line draw optimization to the filled poly optimization, including hole, in hid_draw_helper (search for last_x); make this configurable for both (exporters shall not optimize!); remove the similar optimization from hidgl triangulation and gdk and lesstif [report: Ade, Peter]
 - CLEANUP/BUG: The 'As Drawn' polygon contour is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
 	-> need a new rtree that holds the polygons that have ->clipped == NULL for this purpose
 - CLEANUP: DAD: centralize the coordinate input spinbox: hid_dad_spin
