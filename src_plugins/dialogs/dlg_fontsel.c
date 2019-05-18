@@ -45,6 +45,8 @@ typedef struct{
 	unsigned alloced:1;
 
 	pcb_idpath_t *txt_id;
+	void *last_fobj;
+	pcb_font_id_t last_fid;
 	gdl_elem_t link;
 } fontsel_ctx_t;
 
@@ -77,9 +79,13 @@ void fontsel_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_
 		pcb_text_t *txt = (pcb_text_t *)pcb_idpath2obj(ctx->pcb->Data, ctx->txt_id);
 		if (txt != NULL)
 			pcb_stub_draw_fontsel(gc, e, txt);
+		ctx->last_fobj = txt;
+		ctx->last_fid = txt->fid;
 	}
-	else
+	else {
 		pcb_stub_draw_fontsel(gc, e, NULL);
+		ctx->last_fobj = NULL;
+	}
 }
 
 pcb_bool fontsel_mouse_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
@@ -230,8 +236,7 @@ static void fontsel_mchanged_ev(pcb_hidlib_t *hidlib, void *user_data, int argc,
 		fontsel_preview_update(&fontsel_brd);
 
 	for(c = gdl_first(&fontsels); c != NULL; c = gdl_next(&fontsels, c))
-		fontsel_preview_update(c->dlg_hid_ctx);
-
+		fontsel_preview_update(c);
 }
 
 static void fontsel_bchanged_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
@@ -246,12 +251,38 @@ static void fontsel_bchanged_ev(pcb_hidlib_t *hidlib, void *user_data, int argc,
 		next = gdl_next(&fontsels, c);
 		pcb_hid_dad_close(c->dlg_hid_ctx, &retovr, 0);
 	}
-
 }
 
+static int fontsel_timer_active = 0;
+static pcb_hidval_t fontsel_timer;
+
+static void fontsel_timer_cb(pcb_hidval_t user_data)
+{
+	fontsel_ctx_t *c;
+
+	for(c = gdl_first(&fontsels); c != NULL; c = gdl_next(&fontsels, c)) {
+		pcb_text_t *txt;
+
+		if (c->txt_id == NULL)
+			continue;
+
+		txt = (pcb_text_t *)pcb_idpath2obj(c->pcb->Data, c->txt_id);
+		if ((txt != c->last_fobj) || (txt != NULL && (txt->fid != c->last_fid)))
+			fontsel_preview_update(c);
+	}
+	fontsel_timer = pcb_gui->add_timer(fontsel_timer_cb, 500, fontsel_timer);
+}
+
+static void fontsel_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	fontsel_timer_cb(fontsel_timer);
+	fontsel_timer_active = 1;
+}
 
 void pcb_dlg_fontsel_uninit(void)
 {
+	if (fontsel_timer_active)
+		pcb_gui->stop_timer(fontsel_timer);
 	pcb_event_unbind_allcookie(fontsel_cookie);
 }
 
@@ -260,5 +291,6 @@ void pcb_dlg_fontsel_init(void)
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, fontsel_bchanged_ev, NULL, fontsel_cookie);
 	pcb_event_bind(PCB_EVENT_BOARD_META_CHANGED, fontsel_mchanged_ev, NULL, fontsel_cookie);
 	pcb_event_bind(PCB_EVENT_FONT_CHANGED, fontsel_mchanged_ev, NULL, fontsel_cookie);
+	pcb_event_bind(PCB_EVENT_GUI_INIT, fontsel_gui_init_ev, NULL, fontsel_cookie);
 }
 
