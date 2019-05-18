@@ -281,7 +281,7 @@ static void fontsel_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc,
 
 void pcb_dlg_fontsel_uninit(void)
 {
-	if (fontsel_timer_active)
+	if ((fontsel_timer_active) && (pcb_gui != NULL) && (pcb_gui->stop_timer != NULL))
 		pcb_gui->stop_timer(fontsel_timer);
 	pcb_event_unbind_allcookie(fontsel_cookie);
 }
