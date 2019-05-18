@@ -8,10 +8,10 @@
 </g>
 <g id="layer_3_top">
 <!--normal-->
- <polygon points="0.6350,0.6350 3.1750,0.6350 0.6350,3.1750 " stroke-width="0.010" stroke="#8b2323" fill="#8b2323"/>
- <polygon points="0.6350,3.8100 3.8100,0.6350 3.8100,3.8100 " stroke-width="0.010" stroke="#8b2323" fill="#8b2323"/>
- <polygon points="4.4450,3.8100 7.6200,0.6350 10.7950,3.8100 " stroke-width="0.010" stroke="#8b2323" fill="#8b2323"/>
- <polygon points="0.6350,4.4450 7.6200,5.0800 1.2700,8.8900 " stroke-width="0.010" stroke="#8b2323" fill="#8b2323"/>
+ <polygon points="3.1750,0.6350 0.6350,3.1750 0.6350,0.6350 " stroke-width="0.010" stroke="#8b2323" fill="#8b2323"/>
+ <polygon points="3.8100,0.6350 3.8100,3.8100 0.6350,3.8100 " stroke-width="0.010" stroke="#8b2323" fill="#8b2323"/>
+ <polygon points="7.6200,0.6350 10.7950,3.8100 4.4450,3.8100 " stroke-width="0.010" stroke="#8b2323" fill="#8b2323"/>
+ <polygon points="7.6200,5.0800 1.2700,8.8900 0.6350,4.4450 " stroke-width="0.010" stroke="#8b2323" fill="#8b2323"/>
 </g>
 <g id="layer_1_topsilk">
 </g>
