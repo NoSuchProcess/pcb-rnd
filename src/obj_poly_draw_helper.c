@@ -37,6 +37,37 @@
 static pcb_coord_t *fc_x = NULL, *fc_y = NULL;
 static size_t fc_alloced = 0;
 
+
+/* call this before the loop */
+#define vert_opt_begin() \
+	{ \
+		last_x = pl->head.point[0]; \
+		last_y = pl->head.point[1]; \
+		v = pl->head.next; \
+		mindist = pcb_gui->coord_per_pix * 2; \
+
+/* call this before drawing the next vertex */
+#define vert_opt_loop1(vx, vy, skip_stmt) \
+		this_x = vx; \
+		this_y = vy; \
+		if ((PCB_ABS(this_x - last_x) < mindist) && (PCB_ABS(this_y - last_y) < mindist)) { \
+			next_x = v->next->point[0]; \
+			next_y = v->next->point[1]; \
+			if ((PCB_ABS(this_x - next_x) < mindist) && (PCB_ABS(this_y - next_y) < mindist)) \
+				{ skip_stmt; } \
+		} \
+
+/* call this after drawing the next vertex */
+#define vert_opt_loop2() \
+		last_x = this_x; \
+		last_y = this_y; \
+
+
+/* call this after the loop */
+#define vert_opt_end() \
+	}
+
+
 static void fill_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 {
 	size_t n, i = 0;
@@ -60,6 +91,7 @@ static void fill_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 	pcb_gui->fill_polygon(gc, n, fc_x, fc_y);
 }
 
+
 static void thindraw_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 {
 	pcb_vnode_t *v;
@@ -79,29 +111,14 @@ static void thindraw_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 	if (pl->head.next == NULL)
 		return;
 
-	last_x = pl->head.point[0];
-	last_y = pl->head.point[1];
-	v = pl->head.next;
-	mindist = pcb_gui->coord_per_pix * 2;
-
+	vert_opt_begin();
 	do {
-		this_x = v->point[0];
-		this_y = v->point[1];
-
-		if ((PCB_ABS(this_x - last_x) < mindist) && (PCB_ABS(this_y - last_y) < mindist)) {
-			next_x = v->next->point[0];
-			next_y = v->next->point[1];
-			if ((PCB_ABS(this_x - next_x) < mindist) && (PCB_ABS(this_y - next_y) < mindist))
-				continue;
-		}
-
+		vert_opt_loop1(v->point[0], v->point[1], continue);
 		pcb_gui->draw_line(gc, last_x, last_y, this_x, this_y);
-		/* pcb_gui->fill_circle (gc, this_x, this_y, 30); */
-
-		last_x = this_x;
-		last_y = this_y;
+		vert_opt_loop2();
 	}
 	while ((v = v->next) != pl->head.next);
+	vert_opt_end();
 }
 
 static void fill_contour_cb(pcb_pline_t * pl, void *user_data)
