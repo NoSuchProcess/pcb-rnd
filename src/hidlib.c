@@ -39,6 +39,23 @@ static void hidlib_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, 
 	pcb_gui->set_mouse_cursor(hidlib, pcbhl_conf.editor.mode); /* make sure the mouse cursor is set up now that it is registered */
 }
 
+void pcbhl_log_print_uninit_errs(const char *title)
+{
+	pcb_logline_t *n, *from = pcb_log_find_first_unseen();
+	int printed = 0;
+
+	for(n = from; n != NULL; n = n->next) {
+		if ((n->level >= PCB_MSG_INFO) || pcbhl_conf.rc.verbose) {
+			if (!printed)
+				fprintf(stderr, "*** %s:\n", title);
+			fprintf(stderr, "%s", n->str);
+			printed = 1;
+		}
+	}
+	if (printed)
+		fprintf(stderr, "\n\n");
+}
+
 
 void pcb_hidlib_event_uninit(void)
 {

@@ -38,6 +38,10 @@ struct pcb_hidlib_s {
 void pcb_hidlib_event_uninit(void);
 void pcb_hidlib_event_init(void);
 
+/* print pending log messages to stderr after gui uninit */
+void pcbhl_log_print_uninit_errs(const char *title);
+
+
 /*** The following API is implemented by the host application ***/
 
 /* update crosshair-attached object because crosshair coords likely changed */

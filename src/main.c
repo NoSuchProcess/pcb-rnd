@@ -248,23 +248,6 @@ void pcb_set_hid_name(const char *new_hid_name)
 
 static char **hid_argv_orig;
 
-static void log_print_uninit_errs(const char *title)
-{
-	pcb_logline_t *n, *from = pcb_log_find_first_unseen();
-	int printed = 0;
-
-	for(n = from; n != NULL; n = n->next) {
-		if ((n->level >= PCB_MSG_INFO) || pcbhl_conf.rc.verbose) {
-			if (!printed)
-				fprintf(stderr, "*** %s:\n", title);
-			fprintf(stderr, "%s", n->str);
-			printed = 1;
-		}
-	}
-	if (printed)
-		fprintf(stderr, "\n\n");
-}
-
 static void gui_support_plugins(int load)
 {
 	static int loaded = 0;
@@ -332,7 +315,7 @@ void pcb_main_uninit(void)
 	pcb_tool_uninit();
 	pcb_poly_uninit();
 
-	log_print_uninit_errs("Log produced during uninitialization");
+	pcbhl_log_print_uninit_errs("Log produced during uninitialization");
 	pcb_log_uninit();
 }
 
@@ -634,7 +617,7 @@ int main(int argc, char *argv[])
 		int res = pcb_parse_command(main_action, pcb_true);
 		if ((res != 0) && (main_action_hint != NULL))
 			pcb_message(PCB_MSG_ERROR, "\nHint: %s\n", main_action_hint);
-		log_print_uninit_errs("main_action parse error");
+		pcbhl_log_print_uninit_errs("main_action parse error");
 		pcb_main_uninit();
 		exit(res);
 	}
@@ -643,7 +626,7 @@ int main(int argc, char *argv[])
 		gui_support_plugins(1);
 
 	if (gui_parse_arguments(autopick_gui, &hid_argc, &hid_argv) != 0) {
-		log_print_uninit_errs("Export plugin argument parse error");
+		pcbhl_log_print_uninit_errs("Export plugin argument parse error");
 		pcb_main_uninit();
 		exit(1);
 	}
@@ -653,7 +636,7 @@ int main(int argc, char *argv[])
 
 	if (PCB == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can't create an empty layout, exiting\n");
-		log_print_uninit_errs("Initialization");
+		pcbhl_log_print_uninit_errs("Initialization");
 		exit(1);
 	}
 
@@ -675,7 +658,7 @@ int main(int argc, char *argv[])
 		if (pcb_load_pcb(command_line_pcb, NULL, pcb_true, 0) != 0) {
 			if (we_are_exporting) {
 				pcb_message(PCB_MSG_ERROR, "Can not load file '%s' (specified on command line) for exporting or printing\n", command_line_pcb);
-				log_print_uninit_errs("Export load error");
+				pcbhl_log_print_uninit_errs("Export load error");
 				exit(1);
 			}
 			/* keep filename if load failed: file might not exist, save it by that name */
@@ -705,7 +688,7 @@ int main(int argc, char *argv[])
 		if (pcb_gui->set_hidlib != NULL)
 			pcb_gui->set_hidlib(&PCB->hidlib);
 		pcb_gui->do_export(&PCB->hidlib, 0);
-		log_print_uninit_errs("Exporting");
+		pcbhl_log_print_uninit_errs("Exporting");
 		pcb_main_uninit();
 		exit(0);
 	}
