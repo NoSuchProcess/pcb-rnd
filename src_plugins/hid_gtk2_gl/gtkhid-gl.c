@@ -513,13 +513,6 @@ static void ghid_gl_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t
 	hidgl_fill_polygon_offs(n_coords, x, y, dx, dy);
 }
 
-static void ghid_gl_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polyarea_t *poly, const pcb_box_t *clip_box, int fullpoly)
-{
-	USE_GC(gc);
-
-	hidgl_fill_pcb_polygon(poly, clip_box, gport->view.coord_per_px, fullpoly);
-}
-
 static void ghid_gl_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	USE_GC(gc);
@@ -708,7 +701,6 @@ static void ghid_gl_init_renderer(int *argc, char ***argv, void *vport)
 
 	/* Setup HID function pointers specific to the GL renderer */
 	gtk2_gl_hid.end_layer = ghid_gl_end_layer;
-	gtk2_gl_hid.fill_pcb_polygon = ghid_gl_fill_pcb_polygon;
 }
 
 static void ghid_gl_shutdown_renderer(void *p)
@@ -792,12 +784,6 @@ static void ghid_gl_screen_update(void)
 static void pcb_gl_draw_expose_init(pcb_hid_t *hid, int w, int h, int xr, int yr, int wr, int hr, pcb_gl_color_t *bg_c)
 {
 	hidgl_init();
-
-	/* If we don't have any stencil bits available,
-	   we can't use the hidgl polygon drawing routine */
-	/* TODO: We could use the GLU tessellator though */
-	if (stencilgl_bit_count() == 0)
-		hid->fill_pcb_polygon = NULL;
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
