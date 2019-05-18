@@ -1329,3 +1329,8 @@ void pcb_poly_invalidate_draw(pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
 	pcb_draw_invalidate(Polygon);
 }
+
+void pcb_poly_uninit(void)
+{
+	pcb_dhlp_uninit();
+}

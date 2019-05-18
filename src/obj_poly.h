@@ -95,6 +95,10 @@ void pcb_add_poly_on_layer(pcb_layer_t *Layer, pcb_poly_t *polygon);
 
 double pcb_poly_area(const pcb_poly_t *poly);
 
+/* called from main.c to free some caches */
+void pcb_poly_uninit(void);
+
+
 /*** helpers for iterating over countours */
 
 /*** Polygon helpers on the clopped polygon ***/

@@ -34,24 +34,30 @@
 #include "obj_poly.h"
 #include "hid_inlines.h"
 
+static pcb_coord_t *fc_x = NULL, *fc_y = NULL;
+static size_t fc_alloced = 0;
+
 static void fill_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 {
-	pcb_coord_t *x, *y, n, i = 0;
+	size_t n, i = 0;
 	pcb_vnode_t *v;
 
 	n = pl->Count;
-	x = (pcb_coord_t *) malloc(n * sizeof(*x));
-	y = (pcb_coord_t *) malloc(n * sizeof(*y));
 
-	for (v = &pl->head; i < n; v = v->next) {
-		x[i] = v->point[0];
-		y[i++] = v->point[1];
+	if (n > fc_alloced) {
+		free(fc_x);
+		free(fc_y);
+		fc_x = (pcb_coord_t *) malloc(n * sizeof(pcb_coord_t));
+		fc_y = (pcb_coord_t *) malloc(n * sizeof(pcb_coord_t));
+		fc_alloced = n;
 	}
 
-	pcb_gui->fill_polygon(gc, n, x, y);
+	for (v = &pl->head; i < n; v = v->next) {
+		fc_x[i] = v->point[0];
+		fc_y[i++] = v->point[1];
+	}
 
-	free(x);
-	free(y);
+	pcb_gui->fill_polygon(gc, n, fc_x, fc_y);
 }
 
 static void thindraw_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
@@ -220,4 +226,12 @@ static void pcb_dhlp_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t * poly, co
 {
 	thindraw_contour(gc, poly->Clipped->contours);
 	pcb_poly_holes(poly, clip_box, thindraw_hole_cb, gc);
+}
+
+static void pcb_dhlp_uninit(void)
+{
+	free(fc_x);
+	free(fc_y);
+	fc_x = fc_y = NULL;
+	fc_alloced= 0;
 }

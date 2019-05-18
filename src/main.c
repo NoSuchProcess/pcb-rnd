@@ -286,6 +286,8 @@ static void gui_support_plugins(int load)
 	}
 }
 
+extern void pcb_poly_uninit(void);
+
 void pcb_main_uninit(void)
 {
 	if (pcb_log_last != NULL)
@@ -328,6 +330,7 @@ void pcb_main_uninit(void)
 	pcb_fp_uninit();
 	pcb_fp_host_uninit();
 	pcb_tool_uninit();
+	pcb_poly_uninit();
 
 	log_print_uninit_errs("Log produced during uninitialization");
 	pcb_log_uninit();
