@@ -41,16 +41,17 @@ static size_t fc_alloced = 0;
 /* call this before the loop */
 #define vert_opt_begin() \
 	{ \
+		pcb_coord_t last_x, last_y, this_x, this_y, next_x, next_y, mindist; \
 		last_x = pl->head.point[0]; \
 		last_y = pl->head.point[1]; \
 		v = pl->head.next; \
 		mindist = pcb_gui->coord_per_pix * 2; \
 
 /* call this before drawing the next vertex */
-#define vert_opt_loop1(vx, vy, skip_stmt) \
-		this_x = vx; \
-		this_y = vy; \
-		if ((PCB_ABS(this_x - last_x) < mindist) && (PCB_ABS(this_y - last_y) < mindist)) { \
+#define vert_opt_loop1(v, force, skip_stmt) \
+		this_x = v->point[0]; \
+		this_y = v->point[1]; \
+		if ((!force) && (PCB_ABS(this_x - last_x) < mindist) && (PCB_ABS(this_y - last_y) < mindist)) { \
 			next_x = v->next->point[0]; \
 			next_y = v->next->point[1]; \
 			if ((PCB_ABS(this_x - next_x) < mindist) && (PCB_ABS(this_y - next_y) < mindist)) \
@@ -72,6 +73,7 @@ static void fill_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 {
 	size_t n, i = 0;
 	pcb_vnode_t *v;
+	int first = 1;
 
 	n = pl->Count;
 
@@ -83,19 +85,29 @@ static void fill_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 		fc_alloced = n;
 	}
 
-	for (v = &pl->head; i < n; v = v->next) {
-		fc_x[i] = v->point[0];
-		fc_y[i++] = v->point[1];
+	vert_opt_begin();
+	do {
+		vert_opt_loop1(v, first, continue);
+		if (pcb_gui->gui)
+			first = 0; /* if gui, turn on optimization and start to omit vertices */
+		fc_x[i] = this_x;
+		fc_y[i++] = this_y;
+		vert_opt_loop2();
 	}
+	while ((v = v->next) != pl->head.next);
 
-	pcb_gui->fill_polygon(gc, n, fc_x, fc_y);
+	if (i < 3)
+		pcb_gui->draw_line(gc, last_x, last_y, this_x, this_y);
+	else
+		pcb_gui->fill_polygon(gc, i, fc_x, fc_y);
+
+	vert_opt_end();
 }
 
 
 static void thindraw_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 {
 	pcb_vnode_t *v;
-	pcb_coord_t last_x, last_y, this_x, this_y, next_x, next_y, mindist;
 
 
 	pcb_hid_set_line_width(gc, 0);
@@ -113,7 +125,7 @@ static void thindraw_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 
 	vert_opt_begin();
 	do {
-		vert_opt_loop1(v->point[0], v->point[1], continue);
+		vert_opt_loop1(v, 0, continue);
 		pcb_gui->draw_line(gc, last_x, last_y, this_x, this_y);
 		vert_opt_loop2();
 	}
