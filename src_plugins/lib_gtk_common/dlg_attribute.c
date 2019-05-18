@@ -439,7 +439,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				break;
 
 			case PCB_HATT_BEGIN_COMPOUND:
-				j = ghid_attr_dlg_add(ctx, parent, tb_st, j+1);
+				j = ghid_attr_dlg_add(ctx, parent, NULL, j+1);
 				break;
 
 			case PCB_HATT_LABEL:
