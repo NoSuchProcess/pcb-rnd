@@ -29,6 +29,9 @@
 
 pcb_hid_t *pcb_gui = NULL;
 
+const char *pcbhl_menu_file_paths[] = { "./", "~/.pcb-rnd/", PCBSHAREDIR "/", NULL };
+const char *pcbhl_menu_name_fmt = "pcb-menu-%s.lht";
+
 const char *pcb_hidlib_default_embedded_menu = "";
 
 int pcb_color_load_str(pcb_color_t *dst, const char *src)
