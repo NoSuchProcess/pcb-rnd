@@ -622,9 +622,6 @@ int main(int argc, char *argv[])
 	if (!pcb_gui)
 		exit(1);
 
-	if (PCB_HAVE_GUI_ATTR_DLG)
-		gui_support_plugins(1);
-
 /* Initialize actions only when the gui is already known so only the right
    one is registered (there can be only one GUI). */
 #include "generated_lists.h"
@@ -641,6 +638,9 @@ int main(int argc, char *argv[])
 		pcb_main_uninit();
 		exit(res);
 	}
+
+	if (PCB_HAVE_GUI_ATTR_DLG)
+		gui_support_plugins(1);
 
 	if (gui_parse_arguments(autopick_gui, &hid_argc, &hid_argv) != 0) {
 		log_print_uninit_errs("Export plugin argument parse error");
