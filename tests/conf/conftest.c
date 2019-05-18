@@ -15,6 +15,8 @@ conf_hid_id_t hid_id;
 const char *hid_cookie = "conftest cookie";
 pcb_hid_t *pcb_gui = NULL;
 const char *pcb_hidlib_default_embedded_menu = "";
+const char *pcbhl_menu_file_paths[] = { "./", "~/.pcb-rnd/", PCBSHAREDIR "/", NULL };
+const char *pcbhl_menu_name_fmt = "pcb-menu-%s.lht";
 
 void pcb_message(enum pcb_message_level level, const char *Format, ...)
 {
