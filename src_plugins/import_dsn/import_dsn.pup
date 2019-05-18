@@ -7,4 +7,5 @@ $fmt-feature-r import wires and vias from specctra .dsn
 $package auto
 default buildin
 dep lib_compat_help
+dep lib_gensexpr
 autoload 1
