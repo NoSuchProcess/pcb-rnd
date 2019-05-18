@@ -33,6 +33,7 @@ then
 	append /local/pcb/HIDLIB_PLG              /local/pcb/mod
 	append /local/pcb/OBJS_HIDLIB_PLG         ?/local/pcb/mod/OBJS
 	append /local/pcb/OBJS_C99_HIDLIB_PLG     ?/local/pcb/mod/OBJS_C99
+	append /local/pcb/buildin_hidlib_pups     [@@/local/pcb/mod@=@/local/pcb/mod@/@/local/pcb/mod@.pup@] {\n}
 end
 
 include /local/pcb/tmpasm/common_enabled
