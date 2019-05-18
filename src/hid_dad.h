@@ -34,6 +34,8 @@
 #include "pcb-printf.h"
 #include "global_typedefs.h"
 
+#include "hid_dad_spin.h"
+
 #include <genlist/gendlist.h>
 
 /*** Helpers for building dynamic attribute dialogs (DAD) ***/
@@ -183,9 +185,16 @@ do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_UNIT); \
 } while(0)
 
+#include "brave.h"
+
 #define PCB_DAD_COORD(table, label) \
 do { \
-	PCB_DAD_ALLOC(table, PCB_HATT_COORD); \
+	if (pcb_brave & PCB_BRAVE_OLD_SPINBOX) { \
+		PCB_DAD_ALLOC(table, PCB_HATT_COORD); \
+	} \
+	else {\
+		PCB_DAD_SPIN_COORD(table); \
+	} \
 	PCB_DAD_SET_ATTR_FIELD(table, name, label); \
 } while(0)
 

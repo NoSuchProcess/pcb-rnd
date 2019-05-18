@@ -26,6 +26,9 @@
 
 /* Compound DAD widget for numeric value entry, creating a spinbox */
 
+#ifndef PCB_HID_DAD_SPIN_H
+#define PCB_HID_DAD_SPIN_H
+
 #include <genlist/gendlist.h>
 
 typedef struct {
@@ -127,3 +130,5 @@ int pcb_dad_spin_widget_hide(pcb_hid_attribute_t *end, void *hid_ctx, int idx, p
 int pcb_dad_spin_set_value(pcb_hid_attribute_t *end, void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
 
 extern gdl_list_t pcb_dad_coord_spins; /* list of all active coord spinboxes */
+
+#endif
