@@ -224,8 +224,14 @@ fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static void fontsel_mchanged_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
+	fontsel_ctx_t *c, *next;
+
 	if (fontsel_brd.active)
 		fontsel_preview_update(&fontsel_brd);
+
+	for(c = gdl_first(&fontsels); c != NULL; c = gdl_next(&fontsels, c))
+		fontsel_preview_update(c->dlg_hid_ctx);
+
 }
 
 static void fontsel_bchanged_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
@@ -253,5 +259,6 @@ void pcb_dlg_fontsel_init(void)
 {
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, fontsel_bchanged_ev, NULL, fontsel_cookie);
 	pcb_event_bind(PCB_EVENT_BOARD_META_CHANGED, fontsel_mchanged_ev, NULL, fontsel_cookie);
+	pcb_event_bind(PCB_EVENT_FONT_CHANGED, fontsel_mchanged_ev, NULL, fontsel_cookie);
 }
 
