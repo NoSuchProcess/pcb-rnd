@@ -48,6 +48,7 @@ void pcb_paths_resolve(pcb_hidlib_t *hidlib, const char **in, char **out, int nu
 do { \
 	int __numpath__; \
 	for(__numpath__ = 0; in[__numpath__] != NULL; __numpath__++) ; \
+	__numpath__++; \
 	if (__numpath__ > 0) { \
 		out = malloc(sizeof(char *) * __numpath__); \
 		pcb_paths_resolve(hidlib, in, out, __numpath__, extra_room, quiet); \
