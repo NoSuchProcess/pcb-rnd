@@ -145,16 +145,15 @@ pcb_hid_cfg_t *pcb_hid_cfg_load(pcb_hidlib_t *hidlib, const char *fn, int exact_
 
 	if (!exact_fn) {
 		/* try different paths to find the menu file inventing its exact name */
-		static const char *hid_cfg_paths_in[] = { "./", "~/.pcb-rnd/", PCBSHAREDIR "/", NULL };
 		char **paths = NULL, **p;
 		int fn_len = strlen(fn);
 
 		doc = NULL;
-		pcb_paths_resolve_all(hidlib, hid_cfg_paths_in, paths, fn_len+32, pcb_false);
+		pcb_paths_resolve_all(hidlib, pcbhl_menu_file_paths, paths, fn_len+32, pcb_false);
 		for(p = paths; *p != NULL; p++) {
 			if (doc == NULL) {
 				char *end = *p + strlen(*p);
-				sprintf(end, "pcb-menu-%s.lht", fn);
+				sprintf(end, pcbhl_menu_name_fmt, fn);
 				doc = pcb_hid_cfg_load_lht(hidlib, *p);
 				if (doc != NULL)
 					pcb_file_loaded_set_at("menu", "HID main", *p, "main menu system");

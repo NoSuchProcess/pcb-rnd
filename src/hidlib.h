@@ -76,4 +76,11 @@ void pcbhl_expose_main(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *region, pcb_x
 void pcbhl_expose_preview(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e);
 
 
+/* NULL terminated list of paths where the menu file should be looked at for */
+extern const char *pcbhl_menu_file_paths[];
+
+/* printf format string for the menu file name; may contain one %s that
+   will be substituted with "default" or the HID's short name. */
+extern const char *pcbhl_menu_name_fmt;
+
 #endif

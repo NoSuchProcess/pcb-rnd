@@ -46,7 +46,8 @@ void pcb_paths_resolve(pcb_hidlib_t *hidlib, const char **in, char **out, int nu
 /* Resolve all paths from a char *in[] into a freshly allocated char **out */
 #define pcb_paths_resolve_all(hidlib, in, out, extra_room, quiet) \
 do { \
-	int __numpath__ = sizeof(in) / sizeof(char *); \
+	int __numpath__; \
+	for(__numpath__ = 0; in[__numpath__] != NULL; __numpath__++) ; \
 	if (__numpath__ > 0) { \
 		out = malloc(sizeof(char *) * __numpath__); \
 		pcb_paths_resolve(hidlib, in, out, __numpath__, extra_room, quiet); \

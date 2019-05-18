@@ -77,6 +77,9 @@ static const char *EXPERIMENTAL = NULL;
 #include "hid_init.h"
 #include "compat_misc.h"
 
+const char *pcbhl_menu_file_paths[] = { "./", "~/.pcb-rnd/", PCBSHAREDIR "/", NULL };
+const char *pcbhl_menu_name_fmt = "pcb-menu-%s.lht";
+
 /* ----------------------------------------------------------------------
  * initialize signal and error handlers
  */
