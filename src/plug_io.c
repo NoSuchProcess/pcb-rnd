@@ -531,9 +531,12 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		/* geda/pcb compatibility: use attribute PCB::grid::unit as unit, if present */
 		unit_suffix = pcb_attrib_get(PCB, "PCB::grid::unit");
 		if (unit_suffix && *unit_suffix) {
-			const pcb_unit_t *new_unit = get_unit_struct(unit_suffix);
-			if (new_unit)
-				conf_set(settings_dest, "editor/grid_unit", -1, unit_suffix, POL_OVERWRITE);
+			lht_node_t *nat = conf_lht_get_at(CFR_DESIGN, "editor/grid_unit", 0);
+			if (nat == NULL) {
+				const pcb_unit_t *new_unit = get_unit_struct(unit_suffix);
+				if (new_unit)
+					conf_set(settings_dest, "editor/grid_unit", -1, unit_suffix, POL_OVERWRITE);
+			}
 		}
 
 		pcb_ratspatch_make_edited(PCB);
