@@ -3,16 +3,7 @@ HID API simplification: DAD
 - blockers:
 	- implementing a list/tree/table "widget" for lesstif
 	- implementing and testing the PCB_HATT_TREE in lesstif
-	- implement and test a new text/log entry HATT (API not yet specified) in lesstif
-	- implement and test a new text/log entry HATT (API not yet specified) in gtk
-
-- DAD conversion:
-	- rewriting the route style dialog as DAD
-	- write a DAD based confirm window for fallback
-	- rewrite the user input window as DAD
-	- rewrite the log dialog (depends on the text/log HATT)
-	(- rewrite the pinout dialog as DAD (depends on a preview HATT, which is a bigger chunk))
-	- rewrite the report dialog as DAD
+	- lesstif fillbox bug
 
 HID API simplification: actions
 
