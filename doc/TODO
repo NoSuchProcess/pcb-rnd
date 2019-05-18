@@ -7,7 +7,7 @@
 + CLEANUP: add the thin line draw optimization to the filled poly optimization, including hole, in hid_draw_helper (search for last_x); make this configurable for both (exporters shall not optimize!); remove the similar optimization from hidgl triangulation and gdk and lesstif [report: Ade, Peter]
 - CLEANUP/BUG: The 'As Drawn' polygon contour is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
 	-> need a new rtree that holds the polygons that have ->clipped == NULL for this purpose
-- CLEANUP: DAD: centralize the coordinate input spinbox: hid_dad_spin
+- CLEANUP: (TESTING) DAD: centralize the coordinate input spinbox: hid_dad_spin 
 	- remove per hid implementation, get DAD macros to build spinboxes (maybe in brave mode first)
 	- hid_dad_spin.[ch]: bind conf change on conf_core.editor.grid_unit, call pcb_dad_spin_widget_state() to get them updated:
 		- drc & size: doesn't update on mil/mm change in top win -> need a list of spinboxes to update on conf change [report: Ade]
