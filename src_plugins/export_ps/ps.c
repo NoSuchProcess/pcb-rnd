@@ -1210,36 +1210,6 @@ int coord_comp(const void *c1_, const void *c2_)
 	return *c1 < *c2;
 }
 
-static void ps_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polyarea_t *poly, const pcb_box_t *clip_box, int fullpoly)
-{
-	/* Ignore clip_box, just draw everything */
-
-	pcb_vnode_t *v;
-	pcb_pline_t *pl;
-	const char *op;
-	int len;
-
-	use_gc(gc);
-
-	pl = poly->contours;
-	len = 0;
-
-	do {
-		v = pl->head.next;
-		op = "moveto";
-		do {
-			pcb_fprintf(global.f, "%mi %mi %s\n", v->point[0], v->point[1], op);
-			op = "lineto";
-			len++;
-		}
-		while ((v = v->next) != pl->head.next);
-		len++;
-	}
-	while ((pl = pl->next) != NULL);
-
-	fprintf(global.f, "fill\n");
-}
-
 static void ps_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	use_gc(gc);
@@ -1474,7 +1444,6 @@ void ps_ps_init(pcb_hid_t * hid)
 	hid->fill_circle = ps_fill_circle;
 	hid->fill_polygon_offs = ps_fill_polygon_offs;
 	hid->fill_polygon = ps_fill_polygon;
-	hid->fill_pcb_polygon = ps_fill_pcb_polygon;
 	hid->fill_rect = ps_fill_rect;
 	hid->calibrate = ps_calibrate;
 	hid->set_crosshair = ps_set_crosshair;
