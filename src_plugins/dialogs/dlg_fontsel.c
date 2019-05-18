@@ -230,7 +230,7 @@ fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static void fontsel_mchanged_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	fontsel_ctx_t *c, *next;
+	fontsel_ctx_t *c;
 
 	if (fontsel_brd.active)
 		fontsel_preview_update(&fontsel_brd);
