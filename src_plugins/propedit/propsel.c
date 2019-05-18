@@ -177,6 +177,7 @@ static void map_arc(pcb_propedit_t *ctx, pcb_arc_t *arc)
 static void map_text(pcb_propedit_t *ctx, pcb_text_t *text)
 {
 	map_add_prop(ctx, "p/text/scale", int, text->Scale);
+	map_add_prop(ctx, "p/text/fid", int, text->fid);
 	map_add_prop(ctx, "p/text/rotation",  pcb_angle_t, text->rot);
 	map_add_prop(ctx, "p/text/thickness", pcb_coord_t, text->thickness);
 	map_add_prop(ctx, "p/text/string", String, text->TextString);
@@ -457,6 +458,11 @@ static void set_text(pcb_propset_ctx_t *st, pcb_text_t *text)
 	if (strncmp(st->name, "p/text/", 7) == 0) {
 		if (st->c_valid && (strcmp(pn, "scale") == 0) &&
 		    pcb_chg_obj_size(PCB_OBJ_TEXT, text->parent.layer, text, text, PCB_MIL_TO_COORD(st->c), st->c_absolute)) DONE;
+
+		if (st->c_valid && (strcmp(pn, "fid") == 0)) {
+			pcb_text_set_font(text, st->c);
+			DONE;
+		}
 
 		if ((strcmp(pn, "string") == 0) &&
 		    (old = pcb_chg_obj_name(PCB_OBJ_TEXT, text->parent.layer, text, NULL, pcb_strdup(st->s)))) {
