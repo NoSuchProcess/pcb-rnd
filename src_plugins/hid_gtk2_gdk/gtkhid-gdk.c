@@ -175,6 +175,8 @@ static inline void ghid_gdk_draw_grid_global(pcb_hidlib_t *hidlib)
 
 
 	n = (x2 - x1) / grd + 1;
+	if (n <= 0)
+		n = 1;
 	if (n > npoints) {
 		npoints = n + 10;
 		points = (GdkPoint *) realloc(points, npoints * sizeof(GdkPoint));
