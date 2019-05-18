@@ -159,7 +159,7 @@ static void pcb_dlg_fontsel(pcb_board_t *pcb, int modal, int global, pcb_text_t 
 		for(c = gdl_first(&fontsels); c != NULL; c = gdl_next(&fontsels, c)) {
 			pcb_text_t *txt = (pcb_text_t *)pcb_idpath2obj(c->pcb->Data, c->txt_id);
 			if (txt == txt_obj) {
-				pcb_message(PCB_MSG_ERROR, "There is already anm active fontedit dialog for that object,\nnot going to open a second dialog.\n");
+				pcb_message(PCB_MSG_ERROR, "There is already an active fontedit dialog for that object,\nnot going to open a second dialog.\n");
 				return;
 			}
 		}
