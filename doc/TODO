@@ -30,7 +30,7 @@
 - CLEANUP: lesstif DAD support for top window docks [report: Igor2]
 - BUG: query(select, '(@.plated == 1)') does not select the padstack when using bug_files/query_plated_slot.lht [report: Alain]
 + BUG: grid size and mm unit are not reloaded when using bug_files/query_plated_slot.lht. I do expect to be in mm unit (not mil) and grid=0.1mm  -> NOTE: you will need to save it first because that specific file does not contain grid config [report: Alain]
-- BUG: pcb-rnd --help   should not start the GUI, so should not load any dialog/widget stuff [report: Alain]
++ BUG: pcb-rnd --help   should not start the GUI, so should not load any dialog/widget stuff [report: Alain]
 
 2. For later releases ===============================================================================
 - CLEANUP: color:
