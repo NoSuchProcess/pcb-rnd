@@ -493,7 +493,6 @@ void pcb_hid_nogui_init(pcb_hid_t * hid)
 	hid->draw_rect = nogui_draw_rect;
 	hid->fill_circle = nogui_fill_circle;
 	hid->fill_polygon = nogui_fill_polygon;
-	hid->fill_pcb_polygon = NULL;
 	hid->fill_rect = nogui_fill_rect;
 	hid->calibrate = nogui_calibrate;
 	hid->shift_is_pressed = nogui_shift_is_pressed;

@@ -317,10 +317,6 @@ struct pcb_hid_s {
 	void (*fill_polygon_offs)(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy);
 	void (*fill_rect)(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
 
-	/* OPTIONAL drawing function: when NULL, fill_polygon is called */
-	void (*fill_pcb_polygon)(pcb_hid_gc_t gc, pcb_polyarea_t *poly, const pcb_box_t *clip_box, int fullpoly);
-
-
 	/* This is for the printer. If xval_ and yval_ are
 	   zero, a calibration page is printed with instructions for
 	   calibrating your printer.  After calibrating, nonzero xval_ and
