@@ -448,7 +448,6 @@ int main(int argc, char *argv[])
 	pcb_netlist_geo_init();
 	pcb_minuid_init();
 	pcb_hidlib_init1(conf_core_init);
-	pcb_color_init();
 	pcb_layer_vis_init();
 	pcb_brave_init();
 
