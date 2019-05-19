@@ -48,7 +48,6 @@ static const char *wplc_cookie = "lib_hid_common/window_placement";
 extern void pcb_dad_spin_update_global_coords(void);
 static void grid_unit_chg_ev(conf_native_t *cfg, int arr_idx)
 {
-pcb_trace("uchg!\n");
 	pcb_dad_spin_update_global_coords();
 }
 
