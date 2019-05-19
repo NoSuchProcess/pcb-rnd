@@ -104,7 +104,7 @@
 	- menu file fixup on punctuation in lesstif
 - FEATURE: extedit: when editing subc with pcb, save configuration and load it in the external pcb-rnd so that grid sizes and other settings are preserved [report: jg]
 - FEATURE: undo on new layer from right-click menu in gtk layersel doesn't work
-- FEATURE: gtk layersel: consider to provide a config setting for making open-group-name horizontal [report: istankovic]
+- FEATURE: layersel: consider to provide a config setting for making open-group-name horizontal [report: istankovic]
 - FEATURE: preview widget: allow to handle keys both in gtk and lesstif
 - FEATURE: no-export attribute: cache a no-export attribute in a bitfield (e.g. flags like no-export for vector outputs, pixel outputs); exporter should set the bits in HID; core rendring should decide what to draw; use case: poly clearance to emulate keep-away on outline, and replace the old zero-width line trick [report: karl]
 - CLEANUP: fp_fs_search: kill anything that gets ':' separated string as path list, get a config list instead
