@@ -186,7 +186,7 @@ void pcb_obj_add_attribs(void *obj, const pcb_attribute_list_t *src);
 	PCB_ANY_OBJ_FIELDS; \
 	const char           *term; \
 	const char           *extobj; \
-	unsigned int         extobj_idx; \
+	int                  extobj_idx; \
 	void                 *ratconn; \
 	unsigned char        thermal; \
 	unsigned char        intconn, intnoconn; \
