@@ -586,20 +586,16 @@ static const char *net_name_found(pcb_board_t *pcb)
 
 		for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
 			htsp_entry_t *e;
+			pcb_net_term_t *t;
 
 			if (o->term == NULL)
 				continue;
 			if (!PCB_FLAG_TEST(PCB_FLAG_FOUND, o))
 				continue;
 
-TODO("netlist: core probably has a _get() function for this");
-			for(e = htsp_first(&PCB->netlist[PCB_NETLIST_EDITED]); e != NULL; e = htsp_next(&PCB->netlist[PCB_NETLIST_EDITED], e)) {
-				pcb_net_term_t *t;
-				pcb_net_t *net = e->value;
-				for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t))
-					if ((strcmp(subc->refdes, t->refdes) == 0) && (strcmp(o->term, t->term) == 0))
-						return net->name;
-			}
+			t = pcb_net_find_by_refdes_term(&PCB->netlist[PCB_NETLIST_EDITED], subc->refdes, o->term);
+			if ((t != NULL) && (t->parent.net != NULL))
+				return t->parent.net->name;
 		}
 	}
 	PCB_END_LOOP;
