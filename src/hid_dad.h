@@ -495,7 +495,6 @@ do { \
 		case PCB_HATT_INTEGER: \
 		case PCB_HATT_BOOL: \
 		case PCB_HATT_ENUM: \
-		case PCB_HATT_UNIT: \
 		case PCB_HATT_BEGIN_TABBED: \
 			table[table ## _len - 1].field.int_value = (int)val; \
 			break; \
@@ -513,6 +512,7 @@ do { \
 		case PCB_HATT_BUTTON: \
 		case PCB_HATT_TREE: \
 		case PCB_HATT_COLOR: \
+		case PCB_HATT_UNIT: \
 			assert(!"please use the _PTR() variant instead of the _NUM() variant"); \
 			break; \
 		case PCB_HATT_BEGIN_HBOX: \
@@ -544,7 +544,6 @@ do { \
 		case PCB_HATT_INTEGER: \
 		case PCB_HATT_BOOL: \
 		case PCB_HATT_ENUM: \
-		case PCB_HATT_UNIT: \
 		case PCB_HATT_BEGIN_TABBED: \
 		case PCB_HATT_COORD: \
 		case PCB_HATT_REAL: \
@@ -552,6 +551,19 @@ do { \
 		case PCB_HATT_BEGIN_HPANE: \
 		case PCB_HATT_BEGIN_VPANE: \
 			assert(!"please use the _NUM() variant instead of the _PTR() variant"); \
+			break; \
+		case PCB_HATT_UNIT: \
+			{ \
+				int __n__, __v__ = pcb_get_n_units(); \
+				if (val != NULL) { \
+					for(__n__ = 0; __n__ < __v__; __n__++) { \
+						if (&pcb_units[__n__] == (pcb_unit_t *)(val)) { \
+							table[table ## _len - 1].field.int_value = __n__; \
+							break; \
+						} \
+					} \
+				} \
+			} \
 			break; \
 		case PCB_HATT_STRING: \
 		case PCB_HATT_TEXT: \

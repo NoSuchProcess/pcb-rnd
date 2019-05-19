@@ -136,10 +136,13 @@ static void spin_unit_dialog(void *spin_hid_ctx, pcb_hid_dad_spin_t *spin, pcb_h
 {
 	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
 	spin_unit_t ctx;
+	const pcb_unit_t *def_unit;
 	int dlgfail;
 
 	memset(&ctx, 0, sizeof(ctx));
 	ctx.end = end;
+
+	def_unit = spin->unit == NULL ? pcbhl_conf.editor.grid_unit : spin->unit;
 
 	PCB_DAD_BEGIN_VBOX(ctx.dlg);
 		PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_EXPFILL);
@@ -158,6 +161,7 @@ static void spin_unit_dialog(void *spin_hid_ctx, pcb_hid_dad_spin_t *spin, pcb_h
 			PCB_DAD_UNIT(ctx.dlg);
 				ctx.wunit = PCB_DAD_CURRENT(ctx.dlg);
 				PCB_DAD_HELP(ctx.dlg, "Convert value to this unit and rewrite\nthe text entry field with the converted value.");
+				PCB_DAD_DEFAULT_PTR(ctx.dlg, def_unit);
 				PCB_DAD_CHANGE_CB(ctx.dlg, spin_unit_chg_cb);
 
 			PCB_DAD_LABEL(ctx.dlg, "Use the global");
