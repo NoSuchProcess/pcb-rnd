@@ -505,6 +505,7 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (argc == 1) {
 		pcb_cli_enter("ddraft", "ddraft");
+		pcb_tool_select_by_id(&PCB->hidlib, pcb_ddraft_tool);
 		PCB_ACT_IRES(0);
 		return 0;
 	}

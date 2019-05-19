@@ -435,7 +435,7 @@ static const char *ddraft_xpm[] = {
 "                     "};
 
 static pcb_tool_t tool_ddraft = {
-	"ddraft", NULL, 1000, ddraft_xpm, PCB_TOOL_CURSOR_NAMED(NULL), 0,
+	"ddraft", NULL, 1000, ddraft_xpm, PCB_TOOL_CURSOR_NAMED(NULL), 1,
 	NULL,
 	NULL,
 	NULL,
@@ -445,6 +445,24 @@ static pcb_tool_t tool_ddraft = {
 	NULL,
 	pcb_false
 };
+
+
+static void mode_confchg(conf_native_t *cfg, int arr_idx)
+{
+	static int ddraft_tool_selected = 0;
+
+	if (pcbhl_conf.editor.mode == pcb_ddraft_tool) {
+		if (!ddraft_tool_selected) {
+			ddraft_tool_selected = 1;
+			pcb_cli_enter("ddraft", "ddraft");
+			pcb_gui->open_command();
+		}
+	}
+	else if (ddraft_tool_selected) {
+		pcb_cli_leave();
+		ddraft_tool_selected = 0;
+	}
+}
 
 int pplg_check_ver_ddraft(int ver_needed) { return 0; }
 
@@ -456,8 +474,8 @@ void pplg_uninit_ddraft(void)
 	pcb_tool_unreg_by_cookie(ddraft_cookie);
 }
 
-
-static const conf_hid_callbacks_t conf_cbs = { NULL, cons_gui_confchg, NULL, NULL };
+static const conf_hid_callbacks_t conf_cbs_adl = { NULL, cons_gui_confchg, NULL, NULL };
+static const conf_hid_callbacks_t conf_cbs_mode = { NULL, mode_confchg, NULL, NULL };
 
 #include "dolists.h"
 int pplg_init_ddraft(void)
@@ -474,8 +492,10 @@ int pplg_init_ddraft(void)
 	pcb_ddraft_tool = pcb_tool_lookup(tool_ddraft.name);
 
 
-	cn = conf_get_field("editor/all_direction_lines");
 	confid = conf_hid_reg(ddraft_cookie, NULL);
-	conf_hid_set_cb(cn, confid, &conf_cbs);
+	cn = conf_get_field("editor/all_direction_lines");
+	conf_hid_set_cb(cn, confid, &conf_cbs_adl);
+	cn = conf_get_field("editor/mode");
+	conf_hid_set_cb(cn, confid, &conf_cbs_mode);
 	return 0;
 }
