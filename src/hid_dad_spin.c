@@ -221,7 +221,9 @@ static double get_step(pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end, pcb_h
 			break;
 		case PCB_DAD_SPIN_COORD:
 			if (spin->unit == NULL) {
-				pcb_bool succ = pcb_get_value_unit(str->default_val.str_value, NULL, 0, &v, &unit);
+				pcb_bool succ = 0;
+				if (str->default_val.str_value != NULL)
+					succ = pcb_get_value_unit(str->default_val.str_value, NULL, 0, &v, &unit);
 				if (!succ) {
 					v = end->default_val.coord_value;
 					unit = pcbhl_conf.editor.grid_unit;
