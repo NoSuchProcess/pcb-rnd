@@ -44,6 +44,8 @@ typedef enum pcb_subc_cached_s {
 
 struct pcb_subc_s {
 	PCB_ANY_PRIMITIVE_FIELDS;
+	const char *extobj;
+	int extobj_idx;
 	minuid_bin_t uid;
 	pcb_data_t *data;
 	htsp_t terminals;

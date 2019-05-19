@@ -29,7 +29,7 @@
 
 #include <genvector/vtp0.h>
 
-#include "obj_common.h"
+#include "obj_subc.h"
 #include "draw.h"
 
 
@@ -38,7 +38,7 @@ typedef struct pcb_extobj_s pcb_extobj_t;
 struct pcb_extobj_s {
 	/* static data - filled in by the extobj code */
 	const char *name;
-	void (*draw)(pcb_draw_info_t *info, pcb_any_obj_t *obj);
+	void (*draw)(pcb_draw_info_t *info, pcb_subc_t *obj);
 
 	/* dynamic data - filled in by core */
 	int idx;
@@ -56,7 +56,7 @@ int pcb_extobj_lookup_idx(const char *name);
 extern int pcb_extobj_invalid; /* this changes upon each new extobj reg, forcing the caches to be invalidated eventually */
 extern vtp0_t pcb_extobj_i2o;  /* extobj_idx -> (pcb_ext_obj_t *) */
 
-PCB_INLINE pcb_extobj_t *pcb_extobj_get(pcb_any_obj_t *obj)
+PCB_INLINE pcb_extobj_t *pcb_extobj_get(pcb_subc_t *obj)
 {
 	pcb_extobj_t **eo;
 
