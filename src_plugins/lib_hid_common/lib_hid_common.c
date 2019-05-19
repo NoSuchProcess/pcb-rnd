@@ -45,6 +45,13 @@ static const char *grid_cookie = "lib_hid_common/grid";
 static const char *lead_cookie = "lib_hid_common/user_lead";
 static const char *wplc_cookie = "lib_hid_common/window_placement";
 
+extern void pcb_dad_spin_update_global_coords(void);
+static void grid_unit_chg_ev(conf_native_t *cfg, int arr_idx)
+{
+pcb_trace("uchg!\n");
+	pcb_dad_spin_update_global_coords();
+}
+
 int pplg_check_ver_lib_hid_common(int ver_needed) { return 0; }
 
 static conf_hid_id_t conf_id;
@@ -63,7 +70,7 @@ void pplg_uninit_lib_hid_common(void)
 
 int pplg_init_lib_hid_common(void)
 {
-	static conf_hid_callbacks_t ccb;
+	static conf_hid_callbacks_t ccb, ccbu;
 	conf_native_t *nat;
 
 	PCB_API_CHK_VER;
@@ -81,12 +88,18 @@ int pplg_init_lib_hid_common(void)
 	pcb_event_bind(PCB_EVENT_DAD_NEW_GEO, pcb_dialog_resize, NULL, wplc_cookie);
 
 	conf_id = conf_hid_reg(grid_cookie, NULL);
+
 	memset(&ccb, 0, sizeof(ccb));
 	ccb.val_change_post = pcb_grid_update_conf;
 	nat = conf_get_field("editor/grids");
-
 	if (nat != NULL)
 		conf_hid_set_cb(nat, conf_id, &ccb);
+
+	memset(&ccbu, 0, sizeof(ccbu));
+	ccbu.val_change_post = grid_unit_chg_ev;
+	nat = conf_get_field("editor/grid_unit");
+	if (nat != NULL)
+		conf_hid_set_cb(nat, conf_id, &ccbu);
 
 	return 0;
 }
