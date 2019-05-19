@@ -297,9 +297,9 @@ static void group_sync_core(pcb_board_t *pcb, ls_group_t *lgs, int update_from_c
 		return;
 
 	if (update_from_core)
-		lgs->is_open = g->open;
+		lgs->is_open = !!g->open;
 	else
-		g->open = lgs->is_open;
+		g->open = !!lgs->is_open;
 }
 
 static void group_open_close_update(ls_group_t *lgs)
@@ -307,7 +307,7 @@ static void group_open_close_update(ls_group_t *lgs)
 	group_sync_core(PCB, lgs, 0);
 
 	pcb_gui->attr_dlg_widget_hide(lgs->ls->sub.dlg_hid_ctx, lgs->wopen, !lgs->is_open);
-	pcb_gui->attr_dlg_widget_hide(lgs->ls->sub.dlg_hid_ctx, lgs->wclosed, lgs->is_open);
+	pcb_gui->attr_dlg_widget_hide(lgs->ls->sub.dlg_hid_ctx, lgs->wclosed, !!lgs->is_open);
 }
 
 static void all_open_close(int is_open)
