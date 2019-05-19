@@ -551,7 +551,7 @@ do { \
 		case PCB_HATT_PROGRESS: \
 		case PCB_HATT_BEGIN_HPANE: \
 		case PCB_HATT_BEGIN_VPANE: \
-			assert(!"please use the _PTR() variant instead of the _NUM() variant"); \
+			assert(!"please use the _NUM() variant instead of the _PTR() variant"); \
 			break; \
 		case PCB_HATT_STRING: \
 		case PCB_HATT_TEXT: \
