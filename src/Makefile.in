@@ -141,6 +141,7 @@ append /local/pcb/OBJS [@
 	data.o
 	draw.o
 	drc.o
+	extobj.o
 	font.o
 	font_act.o
 	file_act.o

@@ -71,6 +71,7 @@ static const char *EXPERIMENTAL = NULL;
 #include "tool.h"
 #include "color.h"
 #include "netlist2.h"
+#include "extobj.h"
 
 #include "actions.h"
 #include "actions_pcb.h"
@@ -311,6 +312,7 @@ void pcb_main_uninit(void)
 	pcb_cli_uninit();
 	pcb_dynflag_uninit();
 
+	pcb_extobj_uninit();
 	pcb_import_uninit();
 	pcb_io_uninit();
 	pcb_fp_uninit();
@@ -447,6 +449,7 @@ int main(int argc, char *argv[])
 	/* Minimal conf setup before we do anything else */
 	pcb_netlist_geo_init();
 	pcb_minuid_init();
+	pcb_extobj_init();
 	pcb_hidlib_init1(conf_core_init);
 	pcb_layer_vis_init();
 	pcb_brave_init();

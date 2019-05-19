@@ -155,6 +155,9 @@ void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, co
 		if (inv != NULL)
 			pcb_message(PCB_MSG_ERROR, "Invalid character '%c' in terminal name (term attribute) '%s'\n", *inv, obj->term);
 	}
+	else if (strcmp(name, "extobj") == 0) {
+		obj->extobj = value;
+	}
 	else if (strcmp(name, "intconn") == 0) {
 		long cid = 0;
 		if (value != NULL) {
