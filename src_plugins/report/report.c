@@ -585,7 +585,6 @@ static const char *net_name_found(pcb_board_t *pcb)
 			continue;
 
 		for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
-			htsp_entry_t *e;
 			pcb_net_term_t *t;
 
 			if (o->term == NULL)
