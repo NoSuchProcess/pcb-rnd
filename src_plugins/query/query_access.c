@@ -641,7 +641,7 @@ static int field_pstk(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 		case query_fields_rotation:  PCB_QRY_RET_DBL(res, p->rot);
 		case query_fields_xmirror:   PCB_QRY_RET_INT(res, p->xmirror);
 		case query_fields_smirror:   PCB_QRY_RET_INT(res, p->smirror);
-		case query_fields_plated:    PCB_QRY_RET_INT(res, (proto->hdia > 0) && proto->hplated);
+		case query_fields_plated:    PCB_QRY_RET_INT(res, PCB_PSTK_PROTO_PLATES(proto));
 		case query_fields_hole:      PCB_QRY_RET_INT(res, proto->hdia);
 		case query_fields_area:      PCB_QRY_RET_DBL(res, (double)(p->BoundingBox.Y2 - p->BoundingBox.Y1) * (double)(p->BoundingBox.X2 - p->BoundingBox.X1));
 		default:;
