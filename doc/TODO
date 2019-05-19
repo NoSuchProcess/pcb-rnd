@@ -4,8 +4,6 @@
 - DOC: tutorial: index
 + CLEANUP: Vuokko's list of warnings on OpenBSD: bug_files/warn-obsd-r24746.log [report: Vuokko]
 + CLEANUP: add the thin line draw optimization to the filled poly optimization, including hole, in hid_draw_helper (search for last_x); make this configurable for both (exporters shall not optimize!); remove the similar optimization from hidgl triangulation and gdk and lesstif [report: Ade, Peter]
-- CLEANUP/BUG: The 'As Drawn' polygon contour is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
-	-> need a new rtree that holds the polygons that have ->clipped == NULL for this purpose
 - CLEANUP: (TESTING) DAD: centralize the coordinate input spinbox: hid_dad_spin 
 	- remove per hid implementation, get DAD macros to build spinboxes (maybe in brave mode first)
 	- hid_dad_spin.[ch]: bind conf change on conf_core.editor.grid_unit, call pcb_dad_spin_widget_state() to get them updated:
@@ -17,8 +15,6 @@
 	- FEATURE: library window: allow long tags and long location text to split
 	- BUG: double check parametric footprint edit window: bug_files/parametric.txt [report: Piotr]
 - CLEANUP: remove pcb_attribute_dialog() and the label argument from the DAD API [report: igor2]
-- CLEANUP: think over how to handle subc selection: selecting all parts automatically is bad for propedit; bug_files/subcsel.bug [report: Wojciech]
-	- BUG: adding attribute works on subc parts but deleting attribute stops after deleiting it from a subc; bug_files/subcsel.bug [report: Wojciech]
 - CLEANUP: DAD close sequence: TODO#51: there are three sources to trigger hid_ctx (caller's free on modal, close button free and window destroy callback); requre the user to always call free last and add bits to track what frees are already called and free(ctx) last; test in 4 situations: (modal,nonmodal)*(close_buttons,wmclose) [report: Igor2]
 - CLEANUP: find.c rewrite:
 	- CLEANUP: a new "report(NetLength)" should not care about netlists but depend on find.c only
@@ -27,12 +23,16 @@
 - CLEANUP: (TT) propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
-- CLEANUP: lesstif DAD support for top window docks [report: Igor2]
 - BUG: query(select, '(@.plated == 1)') does not select the padstack when using bug_files/query_plated_slot.lht [report: Alain]
 + BUG: grid size and mm unit are not reloaded when using bug_files/query_plated_slot.lht. I do expect to be in mm unit (not mil) and grid=0.1mm  -> NOTE: you will need to save it first because that specific file does not contain grid config [report: Alain]
 + BUG: pcb-rnd --help   should not start the GUI, so should not load any dialog/widget stuff [report: Alain]
 
 2. For later releases ===============================================================================
+- CLEANUP/BUG: The 'As Drawn' polygon contour is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
+	-> need a new rtree that holds the polygons that have ->clipped == NULL for this purpose
+- CLEANUP: think over how to handle subc selection: selecting all parts automatically is bad for propedit; bug_files/subcsel.bug [report: Wojciech]
+	- BUG: adding attribute works on subc parts but deleting attribute stops after deleiting it from a subc; bug_files/subcsel.bug [report: Wojciech]
+- CLEANUP: lesstif DAD support for top window docks [report: Igor2]
 - CLEANUP: color:
 	- remove per hid, non-backup-lib custom color structs
 	- COLOR_TO_STR should not use sprintf - remove stdio.h
