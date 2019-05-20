@@ -75,16 +75,6 @@ static void help1(void)
 	printf(" --all=disable              disable all plugins (compile core only)\n");
 	printf(" --force-all=plugin         enable even broken plugins for dynamic load\n");
 	printf(" --force-all=buildin        enable even broken plugins for static link\n");
-
-	for(a = main_argument_table; a->arg != NULL; a++) {
-		if (a->help != NULL) {
-			char tmp[64];
-			sprintf(tmp, "%s=str", a->arg);
-			printf(" --%-24s %s\n", tmp, a->help);
-		}
-	}
-
-
 }
 
 static void help2(void)
@@ -173,8 +163,11 @@ int hook_custom_arg(const char *key, const char *value)
 	}
 	else if (strcmp(key, "help") == 0) {
 		help1();
+		printf("\nplugin control:\n");
 		arg_auto_print_options(stdout, " ", "                         ", disable_libs);
 		help2();
+		printf("\n");
+		help_default_args(stdout, "");
 		exit(0);
 	}
 
