@@ -40,6 +40,15 @@ rstdlg_ctx_t rstdlg_ctx;
 static void rstdlg_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	rstdlg_ctx_t *ctx = caller_data;
+
+	{ /* can be safely removed when route style switches over to padstacks */
+		pcb_route_style_t *rst = vtroutestyle_get(&PCB->RouteStyle, ctx->curr, 0);
+		if (rst->Diameter <= rst->Hole) {
+			pcb_message(PCB_MSG_ERROR, "had to increase the via ring diameter - can not be smaller than the hole");
+			rst->Diameter = rst->Hole+PCB_MIL_TO_COORD(1);
+		}
+	}
+
 	PCB_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(rstdlg_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
