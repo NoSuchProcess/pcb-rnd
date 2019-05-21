@@ -271,7 +271,7 @@ static char *gen_cmd(library_ctx_t *ctx)
 		const char *val;
 		pcb_hid_attribute_t *a = &ctx->pdlg[ctx->pwid[n]];
 
-		if (!a->changed)
+		if ((!a->changed) || (a->empty))
 			continue;
 
 		switch(a->type) {
