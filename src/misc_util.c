@@ -68,7 +68,10 @@ double pcb_get_value(const char *val, const char *units, pcb_bool * absolute, pc
 pcb_bool pcb_get_value_unit(const char *val, pcb_bool *absolute, int unit_strict, double *val_out, const pcb_unit_t **unit_out)
 {
 	int ul, ulo = 0;
-	const char *start = val;
+	const char *start;
+
+	while(isspace(*val)) val++;
+	start = val;
 
 	if ((*start == '-') || (*start == '+')) {
 		start++;
