@@ -200,7 +200,8 @@ struct pcb_hid_attribute_s {
 	void *value;
 
 	/* dynamic API */
-	int changed; /* 0 for initial values, 1 on user change */
+	unsigned changed:1; /* 0 for initial values, 1 on user change */
+	unsigned empty:1;   /* set to 1 by the widget implementation if the textual value is empty, where applicable */
 	void (*change_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr); /* called upon value change by the user */
 	void (*right_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr); /* called upon right click by the user */
 	void (*enter_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);  /* called upon the user pressed enter in a widget that handles keys */

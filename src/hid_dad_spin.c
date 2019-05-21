@@ -27,6 +27,9 @@
 /* Compound DAD widget for numeric value entry, creating a spinbox */
 
 #include "config.h"
+
+#include <ctype.h>
+
 #include "hid_attrib.h"
 #include "hid_dad.h"
 #include "hid_dad_spin.h"
@@ -82,7 +85,17 @@ const char *pcb_hid_dad_spin_warn[] = {
 
 static void spin_changed(void *hid_ctx, void *caller_data, pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end)
 {
+	char *s;
+	pcb_hid_attribute_t *str = end - spin->cmp.wend + spin->wstr;
+
 	end->changed = 1;
+
+	/* determine whether textual input is empty and indicate that in the compound end widget */
+	s = str->default_val.str_value;
+	if (s == NULL) s = "";
+	while(isspace(*s)) s++;
+	end->empty = (*s == '\0');
+
 	if (end->change_cb != NULL)
 		end->change_cb(hid_ctx, caller_data, end);
 }
