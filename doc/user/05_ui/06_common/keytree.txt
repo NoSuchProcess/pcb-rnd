@@ -270,7 +270,7 @@ v;t;t	pcb-menu-default.lht	Display(TermID, "%a.term%")	term
 w;a	pcb-menu-default.lht	About() 	About...
 w;d	pcb-menu-default.lht	DRC() 	DRC Check
 w;f	pcb-menu-default.lht	FontSel() 	Font selector
-w;l	pcb-menu-default.lht	DoWindows(Library) 	Library
+w;l	pcb-menu-default.lht	LibraryDialog() 	Library
 w;m	pcb-menu-default.lht	LogDialog() 	Message Log
 w;n	pcb-menu-default.lht	DoWindows(Netlist) 	Netlist
 w;p	pcb-menu-default.lht	Display(Pinout) 	Pinout
