@@ -918,6 +918,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	double xz, yz, vw, vh;
 	double xr, yr, wr, hr;
 	pcb_coord_t ox1 = ctx->view.X1, oy1 = ctx->view.Y1, ox2 = ctx->view.X2, oy2 = ctx->view.Y2;
+	pcb_coord_t save_cpp;
 	pcb_gl_color_t bg_c;
 
 	vw = ctx->view.X2 - ctx->view.X1;
@@ -926,6 +927,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	save_view = gport->view;
 	save_width = gport->view.canvas_width;
 	save_height = gport->view.canvas_height;
+	save_cpp = pcb_gui->coord_per_pix;
 
 	/* Setup zoom factor for drawing routines */
 
@@ -999,6 +1001,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	glScalef((pcbhl_conf.editor.view.flip_x ? -1. : 1.) / gport->view.coord_per_px, (pcbhl_conf.editor.view.flip_y ? -1. : 1.) / gport->view.coord_per_px, 1);
 	glTranslatef(pcbhl_conf.editor.view.flip_x ? gport->view.x0 - hidlib->size_x : -gport->view.x0, pcbhl_conf.editor.view.flip_y ? gport->view.y0 - hidlib->size_y : -gport->view.y0, 0);
 
+	pcb_gui->coord_per_pix = gport->view.coord_per_px;
 	expcall(&gtk2_gl_hid, ctx);
 
 	drawgl_flush();
@@ -1018,6 +1021,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	ctx->view.X2 = ox2;
 	ctx->view.Y1 = oy1;
 	ctx->view.Y2 = oy2;
+	pcb_gui->coord_per_pix = save_cpp;
 	gport->view = save_view;
 	gport->view.canvas_width = save_width;
 	gport->view.canvas_height = save_height;

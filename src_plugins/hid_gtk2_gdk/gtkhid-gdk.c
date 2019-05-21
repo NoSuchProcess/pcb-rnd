@@ -1450,6 +1450,7 @@ static gboolean ghid_gdk_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev
 	double xz, yz, vw, vh;
 	render_priv_t *priv = gport->render_priv;
 	pcb_coord_t ox1 = ctx->view.X1, oy1 = ctx->view.Y1, ox2 = ctx->view.X2, oy2 = ctx->view.Y2;
+	pcb_coord_t save_cpp;
 
 	vw = ctx->view.X2 - ctx->view.X1;
 	vh = ctx->view.Y2 - ctx->view.Y1;
@@ -1460,6 +1461,7 @@ static gboolean ghid_gdk_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev
 	save_view = gport->view;
 	save_width = gport->view.canvas_width;
 	save_height = gport->view.canvas_height;
+	save_cpp = pcb_gui->coord_per_pix;
 
 	gtk_widget_get_allocation(widget, &allocation);
 	xz = vw / (double)allocation.width;
@@ -1483,11 +1485,14 @@ static gboolean ghid_gdk_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev
 	PCB_GTK_PREVIEW_TUNE_EXTENT(ctx, allocation);
 
 	/* call the drawing routine */
+	pcb_gui->coord_per_pix = gport->view.coord_per_px;
 	expcall(&gtk2_gdk_hid, ctx);
 
 	/* restore the original context and priv */
 	ctx->view.X1 = ox1; ctx->view.X2 = ox2; ctx->view.Y1 = oy1; ctx->view.Y2 = oy2;
 	priv->out_pixel = priv->base_pixel = save_drawable;
+
+	pcb_gui->coord_per_pix = save_cpp;
 	gport->view = save_view;
 	gport->view.canvas_width = save_width;
 	gport->view.canvas_height = save_height;
