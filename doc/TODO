@@ -24,6 +24,7 @@
 - BUG: unplated padtsakcs shall not connect layers; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
 - BUG: bug_files/rat_shortest.lht: because of "don't add non-manhattan lines" part [report: pstuge]
 - BUG: compound DAD widgets (e.g. spinbox): help/tooltip is lost (example: route style edit) [report: Igor2]
+- BUG: bug_files/flip.lht - turn off visibility of _both_ top and bottom silk layer -> {s f} on the subc will do nothing [report: Igor2]
 
 2. For later releases ===============================================================================
 - CLEANUP/BUG: The 'As Drawn' polygon contour is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
