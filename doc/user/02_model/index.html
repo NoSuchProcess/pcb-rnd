@@ -352,6 +352,24 @@ Compared to subcircuits as footprint, a non-footprint subcircuit will not have
 a refdes attribute and will not have terminals. It will also have the
 nonetlist flag set.
 
+<h5> 2.4.5.3 Subcircuits aux layer </h5>
+<p>
+A subcircuit needs to have an <i>aux layer</i>. The name of this layer
+is <i>subc-aux</i>, with type VIRTUAL and MISC, and is on top, bottom or intern.
+It hosts three objects placed when the subc was first created:
+<ul>
+	<li> a zero length line at the <i>origin</i> of the subc, with attribute <i>subc-role=origin</i>
+	<li> an 1mm long horizontal line in the positive x direction from the <i>origin</i>, with attribute <i>subc-role=x</i>
+	<li> an 1mm long vertical line in the positive y direction from the <i>origin</i>, with attribute <i>subc-role=y</i>
+</ul>
+<p>
+These objects specify the neutral state of the subcircuit. If the subcircuit
+goes through any transformation (rotation, translation/move, mirroring, etc.),
+these objects are also transformed (just like any other object in the subc).
+Looking at the current state of these objects and the location flag of the 
+aux layer, the code can work out the net result of all transformations the
+subc suffered since creation.
+
 <h4> 2.4.6. Pad stacks </h4> <a id="padstack">
 <p>
 A pad stack is a generic pin/pad/via object that may contain any combination
