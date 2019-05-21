@@ -121,24 +121,6 @@ static int bgred, bggreen, bgblue;
 
 static GC arc1_gc, arc2_gc;
 
-typedef struct PreviewData {
-	struct PreviewData *prev, *next;
-	Widget form;
-	Window window;
-	pcb_coord_t left, right, top, bottom;	/* PCB extents of item */
-	pcb_coord_t x, y;										/* PCB coordinates of upper right corner of window */
-	double zoom;									/* PCB units per screen pixel */
-	int v_width, v_height;				/* pixels */
-
-	pcb_hid_expose_ctx_t ctx;
-	pcb_bool (*mouse_ev)(void *widget, void *draw_data, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y);
-	void (*pre_close)(struct PreviewData *pd);
-	pcb_hid_expose_t overlay_draw;
-	unsigned pan:1;
-	int pan_ox, pan_oy;
-	pcb_coord_t pan_opx, pan_opy;
-} PreviewData;
-
 static pcb_coord_t crosshair_x = 0, crosshair_y = 0;
 static int in_move_event = 0, crosshair_in_window = 1;
 
