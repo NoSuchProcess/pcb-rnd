@@ -214,7 +214,7 @@ static void timed_update_preview(library_ctx_t *ctx, int active)
 static void update_edit_button(library_ctx_t *ctx)
 {
 	const char *otext = ctx->dlg[ctx->wfilt].default_val.str_value;
-	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wedit, !ctx->pactive && (strchr(otext, '(') != NULL));
+	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wedit, !ctx->pactive && (otext != NULL) && (strchr(otext, '(') != NULL));
 }
 
 #include "dlg_library_param.c"
