@@ -82,6 +82,7 @@ static void set_attr(library_ctx_t *ctx, int pidx, char *val)
 			hv.str_value = val;
 			break;
 		case PCB_HATT_COORD:
+		case PCB_HATT_END: /* compound widget for the spinbox! */
 			hv.coord_value = pcb_get_value_ex(val, NULL, NULL, NULL, "mil", NULL);
 			break;
 		default:
@@ -132,6 +133,7 @@ do { \
 		PCB_DAD_HELP(library_ctx.pdlg, pcb_strdup(help)); \
 	switch(curr_type) { \
 		case PCB_HATT_COORD: \
+		case PCB_HATT_END: \
 			PCB_DAD_COORD(library_ctx.pdlg, ""); \
 				ctx->pwid[curr] = PCB_DAD_CURRENT(library_ctx.pdlg); \
 				PCB_DAD_MINMAX(library_ctx.pdlg, 0, PCB_MM_TO_COORD(512)); \
@@ -275,7 +277,6 @@ static char *gen_cmd(library_ctx_t *ctx)
 		switch(a->type) {
 			case PCB_HATT_LABEL:
 			case PCB_HATT_BEGIN_TABLE:
-			case PCB_HATT_END:
 				continue;
 			case PCB_HATT_ENUM:
 				val = a->enumerations[a->default_val.int_value];
@@ -289,6 +290,7 @@ static char *gen_cmd(library_ctx_t *ctx)
 				val = a->default_val.str_value;
 				break;
 			case PCB_HATT_COORD:
+			case PCB_HATT_END:
 				val = buff;
 				pcb_snprintf(buff, sizeof(buff), "%$$mH", a->default_val.coord_value);
 				break;
