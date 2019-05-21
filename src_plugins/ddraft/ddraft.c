@@ -440,6 +440,7 @@ static pcb_tool_t tool_ddraft = {
 	NULL,
 	NULL,
 	NULL,
+	NULL,
 	ddraft_tool_draw_attached,
 	NULL,
 	NULL,
