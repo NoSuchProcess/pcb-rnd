@@ -9,6 +9,7 @@ How to get a release candidate tarball in /tmp:
 TODO:
 	$(SCCBOX) $(HOW) "pcb-menu-lesstif.lht" "$(DATADIR)/pcb-menu-lesstif.lht"
 	$(SCCBOX) $(HOW) "pcb-menu-gtk.lht" "$(DATADIR)/pcb-menu-gtk.lht"
+	fast89_poly2tri is with the MIT license
 
 
 Packaging changes between 2.1.1 and 2.1.2
