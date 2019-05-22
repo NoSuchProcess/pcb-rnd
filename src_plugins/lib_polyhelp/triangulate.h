@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-typedef uint8_t fp2t_u8_t;
+typedef unsigned char fp2t_u8_t;
 typedef long fp2t_i32_t;
 typedef int fp2t_b32_t;
 typedef unsigned long fp2t_u32_t;
