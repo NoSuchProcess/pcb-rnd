@@ -451,6 +451,17 @@ int pcb_dad_spin_set_value(pcb_hid_attribute_t *end, void *hid_ctx, int idx, con
 	return 0;
 }
 
+void pcb_dad_spin_set_help(pcb_hid_attribute_t *end, const char *help)
+{
+	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)end->enumerations;
+	pcb_hid_attribute_t *str = end - spin->cmp.wend + spin->wstr;
+
+	if ((spin->hid_ctx == NULL) || (*spin->hid_ctx == NULL)) /* while building */
+		str->help_text = help;
+	else if (pcb_gui->attr_dlg_set_help != NULL) /* when the dialog is already running */
+		pcb_gui->attr_dlg_set_help(*spin->hid_ctx, spin->wstr, help);
+}
+
 void pcb_dad_spin_update_global_coords(void)
 {
 	pcb_hid_dad_spin_t *spin;

@@ -104,6 +104,7 @@ do { \
 	spin->cmp.widget_state = pcb_dad_spin_widget_state; \
 	spin->cmp.widget_hide = pcb_dad_spin_widget_hide; \
 	spin->cmp.set_value = pcb_dad_spin_set_value; \
+	spin->cmp.set_help = pcb_dad_spin_set_help; \
 	spin->type = typ; \
 	spin->attrs = &table; \
 	spin->hid_ctx = &table ## _hid_ctx; \
@@ -128,6 +129,7 @@ void pcb_dad_spin_set_num(pcb_hid_attribute_t *attr, long l, double d, pcb_coord
 int pcb_dad_spin_widget_state(pcb_hid_attribute_t *end, void *hid_ctx, int idx, pcb_bool enabled);
 int pcb_dad_spin_widget_hide(pcb_hid_attribute_t *end, void *hid_ctx, int idx, pcb_bool hide);
 int pcb_dad_spin_set_value(pcb_hid_attribute_t *end, void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
+void pcb_dad_spin_set_help(pcb_hid_attribute_t *end, const char *help);
 
 extern gdl_list_t pcb_dad_coord_spins; /* list of all active coord spinboxes */
 
