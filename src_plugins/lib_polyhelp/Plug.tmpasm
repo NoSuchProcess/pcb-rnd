@@ -2,6 +2,7 @@ put /local/pcb/mod {lib_polyhelp}
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/lib_polyhelp/polyhelp.o
 	$(PLUGDIR)/lib_polyhelp/topoly.o
+	$(PLUGDIR)/lib_polyhelp/triangulate.o
 @]
 
 switch /local/pcb/lib_polyhelp/controls
