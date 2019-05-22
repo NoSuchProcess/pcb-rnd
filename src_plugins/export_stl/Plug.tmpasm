@@ -1,0 +1,8 @@
+put /local/pcb/mod {export_stl}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/export_stl/export_stl.o @]
+
+switch /local/pcb/export_stl/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end
