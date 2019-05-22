@@ -354,7 +354,21 @@ do { \
 #define PCB_DAD_CHANGE_CB(table, cb)     PCB_DAD_SET_ATTR_FIELD(table, change_cb, cb)
 #define PCB_DAD_RIGHT_CB(table, cb)      PCB_DAD_SET_ATTR_FIELD(table, right_cb, cb)
 #define PCB_DAD_ENTER_CB(table, cb)      PCB_DAD_SET_ATTR_FIELD(table, enter_cb, cb)
-#define PCB_DAD_HELP(table, val)         PCB_DAD_SET_ATTR_FIELD(table, help_text, val)
+
+#define PCB_DAD_HELP(table, val) \
+	do { \
+		switch(table[table ## _len - 1].type) { \
+			case PCB_HATT_END: \
+				{ \
+					pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)table[table ## _len - 1].enumerations; \
+					if ((cmp != NULL) && (cmp->set_help != NULL)) \
+						cmp->set_help(&table[table ## _len - 1], (val)); \
+				} \
+				break; \
+			default: \
+				PCB_DAD_SET_ATTR_FIELD(table, help_text, val); \
+		} \
+	} while(0)
 
 #define PCB_DAD_DEFAULT_PTR(table, val) \
 	do {\

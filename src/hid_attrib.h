@@ -174,6 +174,7 @@ typedef struct {
 	int (*set_value)(pcb_hid_attribute_t *end, void *hid_ctx, int idx, const pcb_hid_attr_val_t *val); /* set value runtime */
 	void (*set_val_num)(pcb_hid_attribute_t *attr, long l, double d, pcb_coord_t c); /* set value during creation; attr is the END */
 	void (*set_val_ptr)(pcb_hid_attribute_t *attr, void *ptr); /* set value during creation; attr is the END */
+	void (*set_help)(pcb_hid_attribute_t *attr, const char *text); /* set the tooltip help; attr is the END */
 	void (*set_field_num)(pcb_hid_attribute_t *attr, const char *fieldname, long l, double d, pcb_coord_t c); /* set value during creation; attr is the END */
 	void (*set_field_ptr)(pcb_hid_attribute_t *attr, const char *fieldname, void *ptr); /* set value during creation; attr is the END */
 	void (*free)(pcb_hid_attribute_t *attrib); /* called by DAD on free'ing the PCB_HATT_BEGIN_COMPOUND and PCB_HATT_END_COMPOUND widget */
