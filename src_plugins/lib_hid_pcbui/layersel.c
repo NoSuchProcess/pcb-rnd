@@ -584,11 +584,12 @@ static void layersel_create_layer_closed(layersel_ctx_t *ls, ls_layer_t *lys, co
 static void layersel_create_grp(layersel_ctx_t *ls, pcb_board_t *pcb, pcb_layergrp_t *g, ls_group_t *lgs, int is_open)
 {
 	pcb_cardinal_t n;
+	const char *gname = g->name == NULL ? "" : g->name;
 
 	if (is_open)
-		layersel_begin_grp_open(ls, g->name, lgs);
+		layersel_begin_grp_open(ls, gname, lgs);
 	else
-		layersel_begin_grp_closed(ls, g->name, lgs);
+		layersel_begin_grp_closed(ls, gname, lgs);
 	for(n = 0; n < g->len; n++) {
 		pcb_layer_t *ly = pcb_get_layer(pcb->Data, g->lid[n]);
 		assert(ly != NULL);
