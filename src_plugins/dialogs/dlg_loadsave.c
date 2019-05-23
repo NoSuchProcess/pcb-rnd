@@ -36,8 +36,11 @@
 #include "conf_core.h"
 #include "hidlib_conf.h"
 #include "plug_io.h"
+#include "../src_plugins/lib_hid_common/dialogs_conf.h"
 
 #include "dlg_loadsave.h"
+
+extern const conf_dialogs_t dialogs_conf;
 
 extern fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv);
 extern fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv);
@@ -240,7 +243,7 @@ static void setup_fmt_sub(save_t *save)
 			PCB_DAD_BOOL(save->fmtsub->dlg, "");
 				save->wguess = PCB_DAD_CURRENT(save->fmtsub->dlg);
 				PCB_DAD_CHANGE_CB(save->fmtsub->dlg, guess_chg);
-				PCB_DAD_DEFAULT_NUM(save->fmtsub->dlg, 1);
+				PCB_DAD_DEFAULT_NUM(save->fmtsub->dlg, !!dialogs_conf.plugins.dialogs.file_select_dialog.save_as_format_guess);
 				PCB_DAD_HELP(save->fmtsub->dlg, guess_help);
 			PCB_DAD_LABEL(save->fmtsub->dlg, "(guess failed)");
 				PCB_DAD_COMPFLAG(save->fmtsub->dlg, PCB_HATF_HIDE);

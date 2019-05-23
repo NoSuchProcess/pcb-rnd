@@ -22,6 +22,9 @@ typedef struct {
 					CFT_INTEGER height;
 				} example_template;
 			} window_geometry;
+			const struct {
+				CFT_BOOLEAN save_as_format_guess; /* enable format guessing by default in the 'save as' dialog */
+			} file_select_dialog;
 		} dialogs;
 
 		const struct {
