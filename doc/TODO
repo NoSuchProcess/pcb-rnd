@@ -30,7 +30,7 @@
 - BUG: bug_files/rat_shortest.lht: because of "don't add non-manhattan lines" part [report: pstuge]
 - BUG: bug_files/flip.lht - turn off visibility of _both_ top and bottom silk layer -> {s f} on the subc will do nothing [report: Igor2]
 - BUG: lesstif clip_set() doesn't seem to affect the X clipboard
-- BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
++ BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - BUG: find.c: bug_files/find_slotcop.lht: plated slot should connect to any copper layer object it is going thru ml2571 [report: Igor2]
 - BUG: pref: set role to user, add new library path -> it is saved in board! [report: aron]
