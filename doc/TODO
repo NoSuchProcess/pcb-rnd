@@ -177,6 +177,7 @@
 - FEATURE: holes should be drawn below silk and mask - this could be a config setting
 - BUG: I/O bugs:
 	- kicad:
+		- BUG: kicad_mod (clearance 0.25) is not processed (see priv mail from Erik on 22 may) [report: Erik]
 		- BUG: parser does not process trapezoidal pad definitions [report: erich]
 		- BUG: parser not parsing obround pad rotation, rot, (at x y rot), see work/bug_files/obround-rotation.kicad_pcb [report: erich]
 	- eagle:
