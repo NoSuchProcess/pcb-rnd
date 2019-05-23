@@ -51,6 +51,10 @@
 	- about box: if not high enough, hbox/vbox/tab gets confused [report: Igor2]
 	- 0 room allocated under HPANE: pstklib(), netlistdialog(), propedit(), BrowseScripts, preferences dialog config tab
 	- preferences dialog: library, layers tabs are unusable [report: Igor2]
+- io_kicad:
+	- BUG: kicad_mod (clearance 0.25) is not processed (see priv mail from Erik on 22 may) [report: Erik]
+	- BUG: parser does not process trapezoidal pad definitions [report: erich]
+	- BUG: parser not parsing obround pad rotation, rot, (at x y rot), see work/bug_files/obround-rotation.kicad_pcb [report: erich]
 
 2. For later releases ===============================================================================
 - CLEANUP/BUG: The 'As Drawn' polygon contour is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
@@ -176,10 +180,6 @@
 		- get a common inhibit function for batch processing that turn on draw, poly clip and pcb_subc_part_changed inhibit
 - FEATURE: holes should be drawn below silk and mask - this could be a config setting
 - BUG: I/O bugs:
-	- kicad:
-		- BUG: kicad_mod (clearance 0.25) is not processed (see priv mail from Erik on 22 may) [report: Erik]
-		- BUG: parser does not process trapezoidal pad definitions [report: erich]
-		- BUG: parser not parsing obround pad rotation, rot, (at x y rot), see work/bug_files/obround-rotation.kicad_pcb [report: erich]
 	- eagle:
 		- BUG: eagle binary library load fails with assert when pad dimension == 0, drill != zero. Bug arises from uninitiliased st.ms_width minimum feature width DRC value. This does not manifest in XML load as it initiliased to default value of 10mil before the DRC block is read, and updated if specified in the DRC block. There is no DRC block in an eagle binary library, so a decision has to be made wrt to where a default minimum feature size is to be referred to, so that the pad/hole reading code can apply it when pad dimension is not specified at line 824 in read.c. If dimension is not present, but drill is, read.c correctly applies the DRC derived rv_pad_top at line 818 dia = eagle_get_attrc(st, subtree, "diameter", drill * (1.0+st->rv_pad_top*2.0)); Planned changes to rectangle parsing to geenrate copper rectangles, not four lines, will alter +/- eliminate the need for the rectangle read routine to have ms_width available pre DRC read. See bug_files/e-motoren.lbr. [report: Erich]
 		- BUG: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png. Seems 180 and 270ccw rotation are rendered as upright an 90ccw rotation. Hmm. [erich]
