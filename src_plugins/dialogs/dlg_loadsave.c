@@ -115,7 +115,7 @@ static void fmt_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	char *bn, *fn, *s;
 	const char *ext;
 	pcb_event_arg_t res, argv[4];
-	int selection = attr->default_val.int_value;;
+	int selection = attr->default_val.int_value;
 	pcb_hid_attr_val_t hv;
 
 	if ((save->avail == NULL) || (save->avail->extension == NULL) || save->fmt_chg_lock)
