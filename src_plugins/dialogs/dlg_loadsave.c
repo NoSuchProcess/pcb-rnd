@@ -105,6 +105,7 @@ typedef struct {
 	pcb_hidval_t timer;
 	char last_ext[32];
 	unsigned fmt_chg_lock:1;
+	unsigned timer_active:1;
 } save_t;
 
 static void fmt_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -202,14 +203,17 @@ static void save_guess_format(save_t *save, const char *ext)
 static void save_timer(pcb_hidval_t user_data)
 {
 	save_t *save = user_data.ptr;
+
+	if ((save->fmtsub == NULL) || (save->avail == NULL) || (save->avail->extension == NULL)) {
+		save->timer_active = 0;
+		return; /* do not even restart the timer */
+	}
+
 	save->timer = pcb_gui->add_timer(save_timer, 300, user_data);
 
 	if ((save->fmtsub->parent_poke != NULL) && (save->fmtsub->dlg_hid_ctx != NULL) && (save->fmtsub->dlg[save->wguess].default_val.int_value)) {
 		pcb_event_arg_t res;
 		char *end;
-
-		if ((save->avail == NULL) || (save->avail->extension == NULL))
-			return;
 
 		save->fmtsub->parent_poke(save->fmtsub, "get_path", &res, 0, NULL);
 		end = strrchr(res.d.s, '.');
@@ -385,9 +389,11 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	
 	timer_ctx.ptr = &save;
+	save.timer_active = 1;
 	save.timer = pcb_gui->add_timer(save_timer, 300, timer_ctx);
 	final_name = pcb_gui->fileselect(prompt, NULL, name_in, NULL, NULL, "board", PCB_HID_FSD_MAY_NOT_EXIST, fmtsub);
-	pcb_gui->stop_timer(save.timer);
+	if (save.timer_active)
+		pcb_gui->stop_timer(save.timer);
 	free(name_in);
 
 	if (final_name == NULL) { /* cancel */
