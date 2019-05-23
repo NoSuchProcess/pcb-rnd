@@ -38,8 +38,11 @@
 
 #include "lib_hid_common.h"
 #include "dialogs_conf.h"
+#include "../src_plugins/lib_hid_common/conf_internal.c"
 
 const conf_dialogs_t dialogs_conf;
+#define DIALOGS_CONF_FN "dialogs.conf"
+
 
 static const char *grid_cookie = "lib_hid_common/grid";
 static const char *lead_cookie = "lib_hid_common/user_lead";
@@ -57,6 +60,7 @@ static conf_hid_id_t conf_id;
 
 void pplg_uninit_lib_hid_common(void)
 {
+	conf_unreg_file(DIALOGS_CONF_FN, dialogs_conf_internal);
 	pcb_clihist_save();
 	pcb_clihist_uninit();
 	pcb_event_unbind_allcookie(grid_cookie);
@@ -77,6 +81,8 @@ int pplg_init_lib_hid_common(void)
 	conf_reg_field(dialogs_conf, field,isarray,type_name,cpath,cname,desc,flags);
 /*#include "lib_hid_common_conf_fields.h"*/
 #include "dialogs_conf_fields.h"
+
+	conf_reg_file(DIALOGS_CONF_FN, dialogs_conf_internal);
 
 	pcb_dialog_place_init();
 

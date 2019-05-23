@@ -12,7 +12,7 @@ put /local/pcb/mod/OBJS [@
 # own dialogs plugin
 put /local/pcb/mod/CONFFILE {dialogs.conf}
 put /local/pcb/mod/CONF {$(PLUGDIR)/lib_hid_common/dialogs_conf.h}
-
+put /local/pcb/mod/CONFVAR {dialogs_conf_internal}
 
 switch /local/pcb/lib_hid_common/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
