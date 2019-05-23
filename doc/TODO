@@ -19,8 +19,12 @@
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
 	- CLEANUP: after the attribute dialog, remove the label argument from the DAD API [report: igor2]
 + FEATURE: grid size change should be undoable? -> no, see http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=undoability [report:Evan]
+- FEATURE: 'save as' dialog:
+	- FEATURE: there should be an "auto" or "guess by extension" option in the save dialog format
+	- FEATURE: format specific subdialogs
 - FEATURE: scripting: example script that tents/untents all/selected/object vias [report: keantoken]
 - FEATURE: lesstif DAD support for toggle buttons [report: Igor2]
+- FEATURE: preferences: grid list edit on the sizes tab
 + BUG: query(select, '(@.plated == 1)') does not select the padstack when using bug_files/query_plated_slot.lht [report: Alain]
 + BUG: grid size and mm unit are not reloaded when using bug_files/query_plated_slot.lht. I do expect to be in mm unit (not mil) and grid=0.1mm  -> NOTE: you will need to save it first because that specific file does not contain grid config [report: Alain]
 + BUG: pcb-rnd --help   should not start the GUI, so should not load any dialog/widget stuff [report: Alain]
@@ -245,12 +249,10 @@ FEATURES
 - BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> rewrite search.c to be a 'script' config) bug_files/farsilk.lht [report: Ade]
 - BUG: RTT/arc_sizes.lht - unable to move arcs which have different width and height [report: Ade] - rewrite pcb_is_point_on_arc() elliptical case at the bottom
 - FEATURE: padstack label smarter print: in case of full overlap of a bottom and top "pad", arrange other-side labels to avoid overlaps [report: al3x]
-- FEATURE: preferences: grid list edit on the sizes tab
 - improve locking:
 	- FEATURE: consider a move-only lock?
 	- BUG: when thermal and some other operations are applied on a locked element, indicate it
 - BUG: rubberband_orig: draw a 90 deg arc, a 45 deg line that ends in the endpoints of the arc; enable rubber band, move the arc: only one endpoint of the line is moved [fixing:Ade]
-- FEATURE: "save as" dialog: there should be an "auto" or "guess by extension" option in the save dialog format
 - CLEANUP: insert drag&drop strangeness (mainline too):
 	insert should just insert a new point and stop there, not starting a drag&drop
 	move; the new point should be marked somehow (e.g. green-find one half of the
@@ -259,8 +261,7 @@ FEATURES
 - FEATURE: display net names on pins, vias (and maybe tracks?) when zoomed in enough
 - FEATURE: DRC should warn for thin poly hair
 - CLEANUP: win32 port {large}
-	- clean up central Makefile.in rules:
-		- remove cat, sed, grep where possible, use scconfig instead
+	- clean up central Makefile.in rules: remove cat, sed, grep where possible, use scconfig instead
 - BUG: arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
 	-> AttachForCopy() calls SetCrosshairRange() that then sets crosshair max* which
 	- similar with lines: bug_files/dwgarea.lht; grabbing the lines for move will force them to fall within the drawing area [report: pstuge]
@@ -274,6 +275,4 @@ FEATURES
 	- stop at the first junction (anywhere where more than 2 objects are connected)
 	- stop at polygons
 	- display the number of vias and net trace length along the found objects
-- CLEANUP: core lib splitup:
-	- gsch2pcb: generalize plugin/buildin loading for external tools, check if gsch2pcb can work from plugins
 - FEATURE: revise the importer; http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=make_import ; should work without an existing file [report: TwisteR]
