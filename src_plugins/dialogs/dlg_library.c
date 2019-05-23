@@ -50,9 +50,6 @@
 
 #include "dlg_library.h"
 
-TODO("Remove:")
-#include "brave.h"
-
 static const char *library_cookie = "dlg_library";
 
 #define MAX_PARAMS 128
@@ -619,10 +616,7 @@ const char pcb_acts_LibraryDialog[] = "libraryDialog()\n";
 const char pcb_acth_LibraryDialog[] = "Open the library dialog.";
 fgw_error_t pcb_act_LibraryDialog(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
-	if (pcb_brave & PCB_BRAVE_OLD_LIBWIN)
-		pcb_actionl("dowindows", "Library", NULL);
-	else
-		pcb_dlg_library();
+	pcb_dlg_library();
 	return 0;
 }
 
