@@ -218,6 +218,13 @@ static void save_timer(pcb_hidval_t user_data)
 
 static void setup_fmt_sub(save_t *save)
 {
+	const char *guess_help =
+		"allow guessing format from the file name:\n"
+		"when enabled, the format is automatically determined\n"
+		"from the file name after an edit to the file name\n"
+		"(guessing will NOT change the initial format selection\n"
+		"when the dialog box is fresh open)";
+
 	PCB_DAD_BEGIN_VBOX(save->fmtsub->dlg);
 		PCB_DAD_BEGIN_HBOX(save->fmtsub->dlg);
 			PCB_DAD_LABEL(save->fmtsub->dlg, "File format:");
@@ -228,11 +235,12 @@ static void setup_fmt_sub(save_t *save)
 		PCB_DAD_END(save->fmtsub->dlg);
 		PCB_DAD_BEGIN_HBOX(save->fmtsub->dlg);
 			PCB_DAD_LABEL(save->fmtsub->dlg, "Guess format:");
-				PCB_DAD_HELP(save->fmtsub->dlg, "allow guessing format from the file name");
+				PCB_DAD_HELP(save->fmtsub->dlg, guess_help);
 			PCB_DAD_BOOL(save->fmtsub->dlg, "");
 				save->wguess = PCB_DAD_CURRENT(save->fmtsub->dlg);
 				PCB_DAD_CHANGE_CB(save->fmtsub->dlg, guess_chg);
 				PCB_DAD_DEFAULT_NUM(save->fmtsub->dlg, 1);
+				PCB_DAD_HELP(save->fmtsub->dlg, guess_help);
 		PCB_DAD_END(save->fmtsub->dlg);
 	PCB_DAD_END(save->fmtsub->dlg);
 }
