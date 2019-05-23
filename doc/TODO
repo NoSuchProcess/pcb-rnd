@@ -113,8 +113,6 @@
 - CLEANUP: Mark
 	- see pool node mark_cleanup
 	- mark bug - ortho shouldn't use it, it should use last point (crosshair.X2); make sure nothing else abuses it [James]
-- unravel the undo code
-	- FEATURE: maybe other conf settings too?
 - res/menu:
 	- FEATURE: load/swap menus (TODO#1)
 	- CLEANUP: search for vendor in the hid plugins, there should be no trace of it (vendor should register its in submenus with anchors)
