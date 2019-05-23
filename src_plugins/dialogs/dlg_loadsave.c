@@ -97,8 +97,11 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 typedef struct {
 	pcb_hid_dad_subdialog_t *fmtsub;
 	pcb_io_formats_t *avail;
-	int pick;
+	int wfmt, wguess;
+	int pick, num_fmts;
 	pcb_hidval_t timer;
+	char last_ext[32];
+	unsigned fmt_chg_lock:1;
 } save_t;
 
 static void fmt_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -110,7 +113,7 @@ static void fmt_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	pcb_event_arg_t res, argv[4];
 	int selection = attr->default_val.int_value;;
 
-	if ((save->avail == NULL) || (save->avail->extension == NULL))
+	if ((save->avail == NULL) || (save->avail->extension == NULL) || save->fmt_chg_lock)
 		return;
 
 	if (fmtsub->parent_poke(fmtsub, "get_path", &res, 0, NULL) != 0)
@@ -149,24 +152,47 @@ static void fmt_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	save->pick = selection;
 }
 
+static void save_guess_format(save_t *save, const char *ext)
+{
+	int n;
+
+	if (strcmp(ext, save->last_ext) == 0)
+		return;
+
+	strncpy(save->last_ext, ext, sizeof(save->last_ext));
+
+	pcb_trace("guess for '%s'\n", ext);
+	for(n = 0; n < save->num_fmts; n++) {
+		if (strcmp(save->avail->extension[n], ext) == 0) {
+			pcb_hid_attr_val_t hv;
+			save->fmt_chg_lock = 1;
+			hv.int_value = n;
+			pcb_gui->attr_dlg_set_value(save->fmtsub->dlg_hid_ctx, save->wfmt, &hv);
+			save->fmt_chg_lock = 0;
+			return;
+		}
+	}
+}
+
 static void save_timer(pcb_hidval_t user_data)
 {
 	save_t *save = user_data.ptr;
 	save->timer = pcb_gui->add_timer(save_timer, 300, user_data);
 
-	if (save->fmtsub->parent_poke != NULL) {
+	if ((save->fmtsub->parent_poke != NULL) && (save->fmtsub->dlg_hid_ctx != NULL) && (save->fmtsub->dlg[save->wguess].default_val.int_value)) {
 		pcb_event_arg_t res;
 		char *end;
+
+		if ((save->avail == NULL) || (save->avail->extension == NULL))
+			return;
+
 		save->fmtsub->parent_poke(save->fmtsub, "get_path", &res, 0, NULL);
 		end = strrchr(res.d.s, '.');
 		if (end != NULL)
-			pcb_trace("save tick '%s'\n", end);
-		else
-			pcb_trace("save tick (nope 2)\n");
+			save_guess_format(save, end);
+
 		free((char *)res.d.s);
 	}
-	else
-		pcb_trace("save tick (nope 1)\n");
 }
 
 static void setup_fmt_sub(save_t *save)
@@ -175,6 +201,7 @@ static void setup_fmt_sub(save_t *save)
 		PCB_DAD_BEGIN_HBOX(save->fmtsub->dlg);
 			PCB_DAD_LABEL(save->fmtsub->dlg, "File format:");
 			PCB_DAD_ENUM(save->fmtsub->dlg, (const char **)save->avail->digest);
+				save->wfmt = PCB_DAD_CURRENT(save->fmtsub->dlg);
 				PCB_DAD_DEFAULT_NUM(save->fmtsub->dlg, save->pick);
 				PCB_DAD_CHANGE_CB(save->fmtsub->dlg, fmt_chg);
 		PCB_DAD_END(save->fmtsub->dlg);
@@ -182,6 +209,7 @@ static void setup_fmt_sub(save_t *save)
 			PCB_DAD_LABEL(save->fmtsub->dlg, "Guess format:");
 				PCB_DAD_HELP(save->fmtsub->dlg, "allow guessing format from the file name");
 			PCB_DAD_BOOL(save->fmtsub->dlg, "");
+				save->wguess = PCB_DAD_CURRENT(save->fmtsub->dlg);
 		PCB_DAD_END(save->fmtsub->dlg);
 	PCB_DAD_END(save->fmtsub->dlg);
 }
@@ -208,6 +236,8 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return PCB_ACT_CALL_C(pcb_act_SaveTo, res, argc, argv);
 
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, Save, function = argv[1].val.str);
+
+	memset(&save, 0, sizeof(save));
 
 	if (pcb_strcasecmp(function, "Layout") == 0)
 		if (PCB->hidlib.filename != NULL)
@@ -283,6 +313,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			fmtsub = &fmtsub_local;
 			memset(&fmtsub_local, 0, sizeof(fmtsub_local));
 			save.avail = &avail;
+			save.num_fmts = num_fmts;
 			save.fmtsub = fmtsub;
 			save.pick = fmt;
 			fmtsub->sub_ctx = &save;
@@ -302,6 +333,18 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else
 			name_in = pcb_strdup(PCB->hidlib.filename);
 	}
+
+
+	{
+		/* save initial extension so the timer doesn't immedaitely overwrite the
+		   original format with a guess - important when the format is known
+		   but doesn't match the name and guessing is enabled */
+		const char *end;
+		end = strrchr(name_in, '.');
+		if (end != NULL)
+			strncpy(save.last_ext, end, sizeof(save.last_ext));
+	}
+	
 	timer_ctx.ptr = &save;
 	save.timer = pcb_gui->add_timer(save_timer, 300, timer_ctx);
 	final_name = pcb_gui->fileselect(prompt, NULL, name_in, NULL, NULL, "board", PCB_HID_FSD_MAY_NOT_EXIST, fmtsub);
