@@ -98,6 +98,7 @@ typedef struct {
 	pcb_hid_dad_subdialog_t *fmtsub;
 	pcb_io_formats_t *avail;
 	int pick;
+	pcb_hidval_t timer;
 } save_t;
 
 static void fmt_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -148,6 +149,25 @@ static void fmt_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	save->pick = selection;
 }
 
+static void save_timer(pcb_hidval_t user_data)
+{
+	save_t *save = user_data.ptr;
+	save->timer = pcb_gui->add_timer(save_timer, 300, user_data);
+
+	if (save->fmtsub->parent_poke != NULL) {
+		pcb_event_arg_t res;
+		char *end;
+		save->fmtsub->parent_poke(save->fmtsub, "get_path", &res, 0, NULL);
+		end = strrchr(res.d.s, '.');
+		if (end != NULL)
+			pcb_trace("save tick '%s'\n", end);
+		else
+			pcb_trace("save tick (nope 2)\n");
+		free((char *)res.d.s);
+	}
+	else
+		pcb_trace("save tick (nope 1)\n");
+}
 
 static void setup_fmt_sub(save_t *save)
 {
@@ -157,6 +177,11 @@ static void setup_fmt_sub(save_t *save)
 			PCB_DAD_ENUM(save->fmtsub->dlg, (const char **)save->avail->digest);
 				PCB_DAD_DEFAULT_NUM(save->fmtsub->dlg, save->pick);
 				PCB_DAD_CHANGE_CB(save->fmtsub->dlg, fmt_chg);
+		PCB_DAD_END(save->fmtsub->dlg);
+		PCB_DAD_BEGIN_HBOX(save->fmtsub->dlg);
+			PCB_DAD_LABEL(save->fmtsub->dlg, "Guess format:");
+				PCB_DAD_HELP(save->fmtsub->dlg, "allow guessing format from the file name");
+			PCB_DAD_BOOL(save->fmtsub->dlg, "");
 		PCB_DAD_END(save->fmtsub->dlg);
 	PCB_DAD_END(save->fmtsub->dlg);
 }
@@ -175,6 +200,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char **extensions_param = NULL;
 	int fmt, *fmt_param = NULL;
 	save_t save;
+	pcb_hidval_t timer_ctx;
 
 	if (cwd == NULL) cwd = dup_cwd();
 
@@ -276,7 +302,10 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else
 			name_in = pcb_strdup(PCB->hidlib.filename);
 	}
+	timer_ctx.ptr = &save;
+	save.timer = pcb_gui->add_timer(save_timer, 300, timer_ctx);
 	final_name = pcb_gui->fileselect(prompt, NULL, name_in, NULL, NULL, "board", PCB_HID_FSD_MAY_NOT_EXIST, fmtsub);
+	pcb_gui->stop_timer(save.timer);
 	free(name_in);
 
 	if (final_name == NULL) { /* cancel */
