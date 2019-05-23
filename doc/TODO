@@ -18,6 +18,7 @@
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
 	- CLEANUP: after the attribute dialog, remove the label argument from the DAD API [report: igor2]
++ FEATURE: grid size change should be undoable? -> no, see http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=undoability [report:Evan]
 + BUG: query(select, '(@.plated == 1)') does not select the padstack when using bug_files/query_plated_slot.lht [report: Alain]
 + BUG: grid size and mm unit are not reloaded when using bug_files/query_plated_slot.lht. I do expect to be in mm unit (not mil) and grid=0.1mm  -> NOTE: you will need to save it first because that specific file does not contain grid config [report: Alain]
 + BUG: pcb-rnd --help   should not start the GUI, so should not load any dialog/widget stuff [report: Alain]
@@ -113,7 +114,6 @@
 	- see pool node mark_cleanup
 	- mark bug - ortho shouldn't use it, it should use last point (crosshair.X2); make sure nothing else abuses it [James]
 - unravel the undo code
-	- FEATURE: grid size change should be undoable? [report:Evan]
 	- FEATURE: maybe other conf settings too?
 - res/menu:
 	- FEATURE: load/swap menus (TODO#1)
