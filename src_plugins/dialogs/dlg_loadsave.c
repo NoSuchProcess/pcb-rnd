@@ -97,7 +97,7 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 typedef struct {
 	pcb_hid_dad_subdialog_t *fmtsub;
 	pcb_io_formats_t *avail;
-	int wfmt, wguess;
+	int wfmt, wguess, wguess_err;
 	int pick, num_fmts;
 	pcb_hidval_t timer;
 	char last_ext[32];
@@ -182,7 +182,6 @@ static void save_guess_format(save_t *save, const char *ext)
 
 	strncpy(save->last_ext, ext, sizeof(save->last_ext));
 
-	pcb_trace("guess for '%s'\n", ext);
 	for(n = 0; n < save->num_fmts; n++) {
 		if (strcmp(save->avail->extension[n], ext) == 0) {
 			pcb_hid_attr_val_t hv;
@@ -190,9 +189,11 @@ static void save_guess_format(save_t *save, const char *ext)
 			hv.int_value = n;
 			pcb_gui->attr_dlg_set_value(save->fmtsub->dlg_hid_ctx, save->wfmt, &hv);
 			save->fmt_chg_lock = 0;
+			pcb_gui->attr_dlg_widget_hide(save->fmtsub->dlg_hid_ctx, save->wguess_err, 1);
 			return;
 		}
 	}
+	pcb_gui->attr_dlg_widget_hide(save->fmtsub->dlg_hid_ctx, save->wguess_err, 0);
 }
 
 static void save_timer(pcb_hidval_t user_data)
@@ -241,6 +242,10 @@ static void setup_fmt_sub(save_t *save)
 				PCB_DAD_CHANGE_CB(save->fmtsub->dlg, guess_chg);
 				PCB_DAD_DEFAULT_NUM(save->fmtsub->dlg, 1);
 				PCB_DAD_HELP(save->fmtsub->dlg, guess_help);
+			PCB_DAD_LABEL(save->fmtsub->dlg, "(guess failed)");
+				PCB_DAD_COMPFLAG(save->fmtsub->dlg, PCB_HATF_HIDE);
+				PCB_DAD_HELP(save->fmtsub->dlg, "This file name is not naturally connected to\nany file format; file format\nis left on what was last selected/recognized");
+				save->wguess_err = PCB_DAD_CURRENT(save->fmtsub->dlg);
 		PCB_DAD_END(save->fmtsub->dlg);
 	PCB_DAD_END(save->fmtsub->dlg);
 }
