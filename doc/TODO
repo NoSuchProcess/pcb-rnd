@@ -19,12 +19,36 @@
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
 	- CLEANUP: after the attribute dialog, remove the label argument from the DAD API [report: igor2]
 + FEATURE: grid size change should be undoable? -> no, see http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=undoability [report:Evan]
+- FEATURE: scripting: example script that tents/untents all/selected/object vias [report: keantoken]
+- FEATURE: lesstif DAD support for toggle buttons [report: Igor2]
 + BUG: query(select, '(@.plated == 1)') does not select the padstack when using bug_files/query_plated_slot.lht [report: Alain]
 + BUG: grid size and mm unit are not reloaded when using bug_files/query_plated_slot.lht. I do expect to be in mm unit (not mil) and grid=0.1mm  -> NOTE: you will need to save it first because that specific file does not contain grid config [report: Alain]
 + BUG: pcb-rnd --help   should not start the GUI, so should not load any dialog/widget stuff [report: Alain]
 - BUG: unplated padtsacks shall not connect layers; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
 - BUG: bug_files/rat_shortest.lht: because of "don't add non-manhattan lines" part [report: pstuge]
 - BUG: bug_files/flip.lht - turn off visibility of _both_ top and bottom silk layer -> {s f} on the subc will do nothing [report: Igor2]
+- BUG: lesstif clip_set() doesn't seem to affect the X clipboard
+- BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
+- BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
+- BUG: find.c: bug_files/find_slotcop.lht: plated slot should connect to any copper layer object it is going thru ml2571 [report: Igor2]
+- BUG: pref: set role to user, add new library path -> it is saved in board! [report: aron]
+- BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
+- BUG: wandering lesstif window (window placement bug): using icewm, open the property editor, close, open, close, open: it's displaced by decoration [report: Igor2]
+- BUG: io_pcb hole clearance import: Peter's report: "bug: .fp/.pcb import..." ml2933 [report: Peter]
+- BUG: bug_files/bug_silk.lht: swap board, far-side color applies only to the first silk because it's not done by group but by layer [report: Peter]
+- BUG: bug_files/bug_silk.lht: while top copper layer is active, selecting/moving/deleting ojects on the bug-silk layer (diagonal line) doesn't work properly [report: Igor2]
+- BUG: bug_files/drc-pstk.lht: via-line "too close" is missed [report: Peter]
+- BUG: direct gerber export (with which naming style?) results in empty drill gbrs ml=2928 [report: Peter]
+- BUG: png export: the no-plating mark should not be drawn on png unless 'as-shown' is enabled ml=2931 [report: Peter]
+- BUG: bug_files/warn.lht: load, click to somewhere to remove the warning (orange): object flag cleared but the board is not marked as changed [report: Peter]
+- BUG: bug_files/macrofab_rot/: rotation (and coords?) is off on xy for macrofab [report: celem]
+- BUG: bug_files/cam_layer_bug.lht: after cam export (from gui) the mask and paste layers are visible but the layer selector is not updated  - r24366 supposed to fix this [report: keantoken]
+- BUG: undo: clear rats, optimize rats, delete 1 rat then undo - it should undo the rat deletion but it undos optimization
+- BUG: lesstif hbox/vbox allocation issues: test with bug_files/ltf_fillbox/ patches applied, with the fontsel action; opening it multiple times will randomly show or hide the button
+	- fontsel() -> no buttons (if the preview has no extfill, they appear!) [report: Igor2]
+	- about box: if not high enough, hbox/vbox/tab gets confused [report: Igor2]
+	- 0 room allocated under HPANE: pstklib(), netlistdialog(), propedit(), BrowseScripts, preferences dialog config tab
+	- preferences dialog: library, layers tabs are unusable [report: Igor2]
 
 2. For later releases ===============================================================================
 - CLEANUP/BUG: The 'As Drawn' polygon contour is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
@@ -50,8 +74,6 @@
 	- FEATURE: invent a generic API for both the drill attrib config table
 	- CLEANUP: unify how output files are accessed/checked: confirmation on overwrite
 	- CLEANUP: in ~2020: remove the hackish gerber layer suffix and auto-excellon in favor of CAM [report: Ade]
-- FEATURE: lesstif DAD support for toggle buttons [report: Igor2]
-
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
 - FEATURE: (TT) route style upgrade to prototypes:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
@@ -176,29 +198,6 @@
 		- padstacks
 		- new outline/mech layers and slots
 		- new doc layers
-- FEATURE: scripting: example script that tents/untents all/selected/object vias [report: keantoken]
-- BUG: lesstif clip_set() doesn't seem to affect the X clipboard
-- BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
-- BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
-- BUG: find.c: bug_files/find_slotcop.lht: plated slot should connect to any copper layer object it is going thru ml2571 [report: Igor2]
-- BUG: pref: set role to user, add new library path -> it is saved in board! [report: aron]
-- BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
-- BUG: wandering lesstif window (window placement bug): using icewm, open the property editor, close, open, close, open: it's displaced by decoration [report: Igor2]
-- BUG: io_pcb hole clearance import: Peter's report: "bug: .fp/.pcb import..." ml2933 [report: Peter]
-- BUG: bug_files/bug_silk.lht: swap board, far-side color applies only to the first silk because it's not done by group but by layer [report: Peter]
-- BUG: bug_files/bug_silk.lht: while top copper layer is active, selecting/moving/deleting ojects on the bug-silk layer (diagonal line) doesn't work properly [report: Igor2]
-- BUG: bug_files/drc-pstk.lht: via-line "too close" is missed [report: Peter]
-- BUG: direct gerber export (with which naming style?) results in empty drill gbrs ml=2928 [report: Peter]
-- BUG: png export: the no-plating mark should not be drawn on png unless 'as-shown' is enabled ml=2931 [report: Peter]
-- BUG: bug_files/warn.lht: load, click to somewhere to remove the warning (orange): object flag cleared but the board is not marked as changed [report: Peter]
-- BUG: bug_files/macrofab_rot/: rotation (and coords?) is off on xy for macrofab [report: celem]
-- BUG: bug_files/cam_layer_bug.lht: after cam export (from gui) the mask and paste layers are visible but the layer selector is not updated  - r24366 supposed to fix this [report: keantoken]
-- BUG: undo: clear rats, optimize rats, delete 1 rat then undo - it should undo the rat deletion but it undos optimization
-- BUG: lesstif hbox/vbox allocation issues: test with bug_files/ltf_fillbox/ patches applied, with the fontsel action; opening it multiple times will randomly show or hide the button
-	- fontsel() -> no buttons (if the preview has no extfill, they appear!) [report: Igor2]
-	- about box: if not high enough, hbox/vbox/tab gets confused [report: Igor2]
-	- 0 room allocated under HPANE: pstklib(), netlistdialog(), propedit(), BrowseScripts, preferences dialog config tab
-	- preferences dialog: library, layers tabs are unusable [report: Igor2]
 
 3. Long term ===============================================================================
 - BUG: draw a large padstack poly (as a subc term); put some vias (padtsacks) on top of it; with gdk and gl, after the 6th via some via rings will disappear [report: James]
