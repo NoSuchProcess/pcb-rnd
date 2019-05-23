@@ -190,6 +190,7 @@ char *pcb_gtk_fileselect(pcb_gtk_common_t *com, const char *title, const char *d
 		sub->parent_poke = pcb_gtk_fsd_poke;
 
 		pctx.hid_ctx = ghid_attr_sub_new(com, subbox, sub->dlg, sub->dlg_len, sub);
+		sub->dlg_hid_ctx = pctx.hid_ctx;
 
 		gtk_widget_show_all(subbox);
 		gtk_file_chooser_set_extra_widget(GTK_FILE_CHOOSER(pctx.dialog), subbox);

@@ -150,6 +150,7 @@ char *pcb_ltf_fileselect(const char *title, const char *descr, const char *defau
 		sub->parent_poke = pcb_ltf_fsd_poke;
 
 		pctx.hid_ctx = lesstif_attr_sub_new(subbox, sub->dlg, sub->dlg_len, sub);
+		sub->dlg_hid_ctx = pctx.hid_ctx;
 		XtManageChild(subbox);
 	}
 
