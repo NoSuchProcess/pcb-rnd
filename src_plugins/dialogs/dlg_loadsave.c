@@ -112,12 +112,18 @@ static void fmt_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	const char *ext;
 	pcb_event_arg_t res, argv[4];
 	int selection = attr->default_val.int_value;;
+	pcb_hid_attr_val_t hv;
 
 	if ((save->avail == NULL) || (save->avail->extension == NULL) || save->fmt_chg_lock)
 		return;
 
 	if (fmtsub->parent_poke(fmtsub, "get_path", &res, 0, NULL) != 0)
 		return;
+
+	/* turn off guessing becuase the user explicitly selected a format */
+	hv.int_value = 0;
+	pcb_gui->attr_dlg_set_value(save->fmtsub->dlg_hid_ctx, save->wguess, &hv);
+
 	fn = (char *)res.d.s;
 
 	/* find and truncate extension */
@@ -151,6 +157,21 @@ static void fmt_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	/* remember the selection for the save action */
 	save->pick = selection;
 }
+
+static void guess_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_hid_dad_subdialog_t *fmtsub = caller_data;
+	save_t *save = fmtsub->sub_ctx;
+
+	if (save->fmtsub->dlg[save->wguess].default_val.int_value) {
+		/* when guess is activated, make sure to recalculate the guess whatever
+		   the format or the last file name was - this closes out all corner cases
+		   with initial format mismatching the file name and multiple formats for
+		   an ext */
+		save->last_ext[0] = '\0';
+	}
+}
+
 
 static void save_guess_format(save_t *save, const char *ext)
 {
@@ -210,6 +231,7 @@ static void setup_fmt_sub(save_t *save)
 				PCB_DAD_HELP(save->fmtsub->dlg, "allow guessing format from the file name");
 			PCB_DAD_BOOL(save->fmtsub->dlg, "");
 				save->wguess = PCB_DAD_CURRENT(save->fmtsub->dlg);
+				PCB_DAD_CHANGE_CB(save->fmtsub->dlg, guess_chg);
 		PCB_DAD_END(save->fmtsub->dlg);
 	PCB_DAD_END(save->fmtsub->dlg);
 }
