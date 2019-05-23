@@ -14,8 +14,6 @@ put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/dlg_attribute.o
   $(PLUGDIR)/lib_gtk_common/dlg_attributes.o
   $(PLUGDIR)/lib_gtk_common/dlg_fileselect.o
-  $(PLUGDIR)/lib_gtk_common/dlg_library.o
-  $(PLUGDIR)/lib_gtk_common/dlg_library_param.o
   $(PLUGDIR)/lib_gtk_common/dlg_topwin.o
   $(PLUGDIR)/lib_gtk_common/in_keyboard.o
   $(PLUGDIR)/lib_gtk_common/in_mouse.o

@@ -35,8 +35,6 @@
 #include "../src/actions.h"
 #include "compat_misc.h"
 
-#include "../src_plugins/lib_gtk_common/dlg_library.h"
-
 static const char *ghid_act_cookie = "gtk HID actions";
 
 static const char pcb_acts_DoWindows[] =
@@ -46,21 +44,14 @@ static const char pcb_acth_DoWindows[] = "Open various GUI windows. With false, 
 /* DOC: dowindows.html */
 static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *a = "", *b = NULL;
-	gboolean raise = TRUE;
+	const char *a = "";
 
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, DoWindows, a = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, DoWindows, b = argv[2].val.str);
-
-	if (b != NULL) {
-		if ((*b == 'n') || (*b == 'f') || (*b == 'N') || (*b == 'F') || (*b == '0'))
-			raise = FALSE;
-	}
 
 	if (strcmp(a, "1") == 0 || pcb_strcasecmp(a, "Layout") == 0) {
 	}
 	else if (strcmp(a, "2") == 0 || pcb_strcasecmp(a, "Library") == 0) {
-		pcb_gtk_library_show(&ghidgui->common, raise);
+		pcb_message(PCB_MSG_ERROR, "Please use the new LibraryDialog() action instead\n");
 	}
 	else if (strcmp(a, "3") == 0 || pcb_strcasecmp(a, "Log") == 0) {
 		pcb_actionl("LogDialog", NULL);
