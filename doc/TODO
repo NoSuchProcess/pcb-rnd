@@ -50,7 +50,7 @@
 	- CLEANUP: unify how output files are accessed/checked: confirmation on overwrite
 	- CLEANUP: in ~2020: remove the hackish gerber layer suffix and auto-excellon in favor of CAM [report: Ade]
 - FEATURE: lesstif DAD support for toggle buttons [report: Igor2]
-- FEATURE: data model: object minimal clearance value from the polygon side; final clearance should be MAX(obj->Clearance, poly->Clearance); kicad example: 1 line, 2 polygons with 2 different clearance values - see CUCP#38 provided by Karl [report: Igor2]
+
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
 - FEATURE: (TT) route style upgrade to prototypes:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
@@ -224,6 +224,7 @@
 	- CLEANUP: check if we want to keep vendor name
 	- FEATURE: vendor: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
 - FEATURE: lihata v7
+	- FEATURE: data model: object minimal clearance value from the polygon side; final clearance should be MAX(obj->Clearance, poly->Clearance); kicad example: 1 line, 2 polygons with 2 different clearance values - see CUCP#38 provided by Karl [report: Igor2]
 	- remove via geometry from route style
 	- remove netlist net ->style, should be a plain attribute (but keep the dedicated field in old versions)
 	- save and load rat anchor object idpath
