@@ -112,7 +112,7 @@
 		- if worked: allow padstack xor draw to draw all shapes on all layers
 - opengl:
 	- BUG: heavy swapd +/- crash with radeon AMD GL driver, fixed by exporting LIBGL_ALWAYS_SOFTWARE=t GALLIUM_DRIVER=llvmpipe [report: erich] 
-	- BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
+	+ BUG: --gui gtk2_gl pcb-rnd library preview pane is black (  doWindows(library) ) [report: Miloh] 
 - export_dsn/new io_dsn (with King Kevin and celem):
 	- missing global padstack (via) export:
 		- FEATURE: need to think over and check the spec for how to do this with no-hole padstacks
