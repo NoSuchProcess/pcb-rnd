@@ -111,6 +111,15 @@ typedef struct {
 	unsigned inited:1;
 } save_t;
 
+static void update_opts(save_t *save)
+{
+	pcb_hid_attr_val_t hv;
+	int selection = save->fmtsub->dlg[save->wfmt].default_val.int_value;
+
+	hv.int_value = save->opt_tab[selection];
+	pcb_gui->attr_dlg_set_value(save->fmtsub->dlg_hid_ctx, save->wopts, &hv);
+}
+
 static void fmt_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pcb_hid_dad_subdialog_t *fmtsub = caller_data;
@@ -165,8 +174,7 @@ static void fmt_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	save->pick = selection;
 
 	/* set the tab for format specific settings */
-	hv.int_value = save->opt_tab[selection];
-	pcb_gui->attr_dlg_set_value(save->fmtsub->dlg_hid_ctx, save->wopts, &hv);
+	update_opts(save);
 }
 
 static void guess_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -200,6 +208,7 @@ static void save_guess_format(save_t *save, const char *ext)
 			hv.int_value = n;
 			pcb_gui->attr_dlg_set_value(save->fmtsub->dlg_hid_ctx, save->wfmt, &hv);
 			save->fmt_chg_lock = 0;
+			update_opts(save);
 			pcb_gui->attr_dlg_widget_hide(save->fmtsub->dlg_hid_ctx, save->wguess_err, 1);
 			return;
 		}
@@ -217,11 +226,7 @@ static void save_timer(pcb_hidval_t user_data)
 	}
 
 	if (!save->inited) {
-		pcb_hid_attr_val_t hv;
-		int selection = save->fmtsub->dlg[save->wfmt].default_val.int_value;
-
-		hv.int_value = save->opt_tab[selection];
-		pcb_gui->attr_dlg_set_value(save->fmtsub->dlg_hid_ctx, save->wopts, &hv);
+		update_opts(save);
 		save->inited = 1;
 	}
 
