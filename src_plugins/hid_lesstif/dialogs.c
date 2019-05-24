@@ -103,9 +103,7 @@ static void dialog_callback_ok_value(Widget w, void *v, void *cbs)
 	pcb_ltf_ok = (int) (size_t) v;
 }
 
-#define DAD_CLOSED 4242
-
-int pcb_ltf_wait_for_dialog(Widget w)
+int pcb_ltf_wait_for_dialog_noclose(Widget w)
 {
 	pcb_ltf_ok = -1;
 	XtManageChild(w);
@@ -119,6 +117,12 @@ int pcb_ltf_wait_for_dialog(Widget w)
 		XtAppNextEvent(app_context, &e);
 		XtDispatchEvent(&e);
 	}
+	return pcb_ltf_ok;
+}
+
+int pcb_ltf_wait_for_dialog(Widget w)
+{
+	pcb_ltf_wait_for_dialog_noclose(w);
 	if ((pcb_ltf_ok != DAD_CLOSED) && (XtIsManaged(w)))
 		XtUnmanageChild(w);
 	return pcb_ltf_ok;

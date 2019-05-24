@@ -223,6 +223,12 @@ char *pcb_gtk_fileselect(pcb_gtk_common_t *com, const char *title, const char *d
 			path = NULL;
 
 		update_history(hi, path);
+		if ((pctx.active) && (sub != NULL) && (sub->on_close != NULL))
+			sub->on_close(sub, pcb_true);
+	}
+	else {
+		if ((pctx.active) && (sub != NULL) && (sub->on_close != NULL))
+			sub->on_close(sub, pcb_false);
 	}
 	
 	if (pctx.active) {

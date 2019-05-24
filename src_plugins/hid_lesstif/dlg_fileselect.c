@@ -177,10 +177,19 @@ char *pcb_ltf_fileselect(const char *title, const char *descr, const char *defau
 	if (default_file != 0)
 		pcb_ltf_set_fn(&pctx, 1, default_file);
 
-	if (pcb_ltf_wait_for_dialog(pctx.dialog))
+	if (pcb_ltf_wait_for_dialog_noclose(pctx.dialog)) {
 		res = pcb_ltf_get_path(&pctx);
-	else
+		if ((sub != NULL) && (sub->on_close != NULL))
+			sub->on_close(sub, pcb_true);
+	}
+	else {
 		res = NULL;
+		if ((sub != NULL) && (sub->on_close != NULL))
+			sub->on_close(sub, pcb_false);
+	}
+
+	if ((pcb_ltf_ok != DAD_CLOSED) && (XtIsManaged(pctx.dialog)))
+		XtUnmanageChild(pctx.dialog);
 
 	if (xms_load != NULL) XmStringFree(xms_load);
 	if (xms_ext != NULL) XmStringFree(xms_ext);
