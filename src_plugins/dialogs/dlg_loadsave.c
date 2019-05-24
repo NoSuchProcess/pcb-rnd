@@ -108,6 +108,7 @@ typedef struct {
 	char last_ext[32];
 	unsigned fmt_chg_lock:1;
 	unsigned timer_active:1;
+	unsigned inited:1;
 } save_t;
 
 static void fmt_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -215,6 +216,15 @@ static void save_timer(pcb_hidval_t user_data)
 		return; /* do not even restart the timer */
 	}
 
+	if (!save->inited) {
+		pcb_hid_attr_val_t hv;
+		int selection = save->fmtsub->dlg[save->wfmt].default_val.int_value;
+
+		hv.int_value = save->opt_tab[selection];
+		pcb_gui->attr_dlg_set_value(save->fmtsub->dlg_hid_ctx, save->wopts, &hv);
+		save->inited = 1;
+	}
+
 	save->timer = pcb_gui->add_timer(save_timer, 300, user_data);
 
 	if ((save->fmtsub->parent_poke != NULL) && (save->fmtsub->dlg_hid_ctx != NULL) && (save->fmtsub->dlg[save->wguess].default_val.int_value)) {
@@ -272,7 +282,7 @@ static void setup_fmt_tabs(save_t *save, pcb_plug_iot_t save_type)
 
 	PCB_DAD_BEGIN_TABBED(save->fmtsub->dlg, save->fmt_tab_names);
 		save->wopts = PCB_DAD_CURRENT(save->fmtsub->dlg);
-		PCB_DAD_DEFAULT_NUM(save->fmtsub->dlg, save->opt_tab[0]);
+/*	pre-creation tab switch not yet supported:	PCB_DAD_DEFAULT_NUM(save->fmtsub->dlg, save->opt_tab[0]);*/
 
 		/* the no-options tab */
 		PCB_DAD_BEGIN_VBOX(save->fmtsub->dlg);
@@ -462,7 +472,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	
 	timer_ctx.ptr = &save;
 	save.timer_active = 1;
-	save.timer = pcb_gui->add_timer(save_timer, 300, timer_ctx);
+	save.timer = pcb_gui->add_timer(save_timer, 300, timer_ctx); /* the timer needs to run at least once, to get some initialization done that can be done only after fmtsub got created */
 	final_name = pcb_gui->fileselect(prompt, NULL, name_in, NULL, NULL, "board", PCB_HID_FSD_MAY_NOT_EXIST, fmtsub);
 	if (save.timer_active)
 		pcb_gui->stop_timer(save.timer);
