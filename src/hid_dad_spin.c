@@ -85,7 +85,7 @@ const char *pcb_hid_dad_spin_warn[] = {
 
 static void spin_changed(void *hid_ctx, void *caller_data, pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end)
 {
-	char *s;
+	const char *s;
 	pcb_hid_attribute_t *str = end - spin->cmp.wend + spin->wstr;
 
 	end->changed = 1;
