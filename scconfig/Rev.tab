@@ -1,3 +1,4 @@
+25666	configure	hidlib: make gtk2-gl part of the hidlib
 25664	configure	remove the gtk-only, old library window
 25652	configure	lib_hid_common: internal conf image for the file selection dialog upgrade
 25634	configure	infra for an stl export plugin
