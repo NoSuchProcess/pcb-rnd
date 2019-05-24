@@ -100,6 +100,8 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 typedef struct {
 	pcb_hid_dad_subdialog_t *fmtsub;
 	pcb_io_formats_t *avail;
+	int *exp_tab; /* exporter tab index for each avail[]; 0 means no tab */
+	const char **fmt_tab_names;
 	int wfmt, wguess, wguess_err;
 	int pick, num_fmts;
 	pcb_hidval_t timer;
@@ -224,7 +226,68 @@ static void save_timer(pcb_hidval_t user_data)
 	}
 }
 
-static void setup_fmt_sub(save_t *save)
+static void setup_fmt_tabs(save_t *save, pcb_plug_iot_t save_type)
+{
+	int n, i, tabs;
+
+	save->exp_tab = calloc(sizeof(int), save->num_fmts);
+	for(n = 0, tabs = 0; n < save->num_fmts; n++) {
+		const pcb_plug_io_t *plug = save->avail->plug[n];
+		if (plug->save_as_subd_init != NULL) {
+			int link = -1;
+			
+			/* check if init() matches an already existing tab's and link them if so */
+			for(i = 0; i < n; i++) {
+				const pcb_plug_io_t *old_plug = save->avail->plug[i];
+				if (plug->save_as_subd_init == old_plug->save_as_subd_init) {
+					link = save->exp_tab[i];
+					break;
+				}
+			}
+
+			if (link < 0) {
+				save->exp_tab[n] = tabs+1;
+				tabs++;
+			}
+			else
+				save->exp_tab[n] = link;
+		}
+	}
+
+	/* tab 0 is for the no-option tab (most plugs will use that) */
+	save->fmt_tab_names = calloc(tabs+2, sizeof(char *));
+	save->fmt_tab_names[0] = "no-opt";
+
+	/* fill in rest of the tabs - not visible, only for debugging */
+	for(n = 0; n < save->num_fmts; n++) {
+		const pcb_plug_io_t *plug = save->avail->plug[n];
+		if ((plug->save_as_subd_init != NULL) && (save->exp_tab[n] >= 0))
+			save->fmt_tab_names[save->exp_tab[n]] = plug->description;
+	}
+	save->fmt_tab_names[tabs+1] = NULL;
+
+	PCB_DAD_BEGIN_TABBED(save->fmtsub->dlg, save->fmt_tab_names);
+
+		/* the no-options tab */
+		PCB_DAD_BEGIN_VBOX(save->fmtsub->dlg);
+		PCB_DAD_END(save->fmtsub->dlg);
+
+		/* all other tabs, filled in by the plug code */
+		for(n = 1; n < tabs+1; n++) {
+			for(i = 0; i < save->num_fmts; i++) {
+				if (save->exp_tab[i] == n) {
+					const pcb_plug_io_t *plug = save->avail->plug[i];
+					PCB_DAD_BEGIN_VBOX(save->fmtsub->dlg);
+						plug->save_as_subd_init(plug, save->fmtsub, save_type);
+					PCB_DAD_END(save->fmtsub->dlg);
+					break;
+				}
+			}
+		}
+	PCB_DAD_END(save->fmtsub->dlg);
+}
+
+static void setup_fmt_sub(save_t *save, pcb_plug_iot_t save_type)
 {
 	const char *guess_help =
 		"allow guessing format from the file name:\n"
@@ -254,6 +317,9 @@ static void setup_fmt_sub(save_t *save)
 				PCB_DAD_HELP(save->fmtsub->dlg, "This file name is not naturally connected to\nany file format; file format\nis left on what was last selected/recognized");
 				save->wguess_err = PCB_DAD_CURRENT(save->fmtsub->dlg);
 		PCB_DAD_END(save->fmtsub->dlg);
+
+
+		setup_fmt_tabs(save, save_type);
 	PCB_DAD_END(save->fmtsub->dlg);
 }
 
@@ -360,7 +426,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			save.fmtsub = fmtsub;
 			save.pick = fmt;
 			fmtsub->sub_ctx = &save;
-			setup_fmt_sub(&save);
+			setup_fmt_sub(&save, PCB_IOT_PCB);
 		}
 		else {
 			pcb_message(PCB_MSG_ERROR, "Error: no IO plugin avaialble for saving a buffer.");
@@ -395,6 +461,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (save.timer_active)
 		pcb_gui->stop_timer(save.timer);
 	free(name_in);
+	free(save.fmt_tab_names);
 
 	if (final_name == NULL) { /* cancel */
 		pcb_io_list_free(&avail);
