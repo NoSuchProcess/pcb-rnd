@@ -150,3 +150,38 @@ PCB_INLINE XtGeometryResult PxmReplyToQueryGeometry(Widget widget, XtWidgetGeome
 	_XmAppUnlock(app);
 	return XtGeometryAlmost;
 }
+
+/************************************************************************
+ *
+ *  PxmRedisplayWidget
+ *
+ *    Call the expose method of the passed widget with a fake
+ *    event corresponding to its entire area.
+ *
+ ************************************************************************/
+PCB_INLINE void PxmRedisplayWidget(Widget widget)
+{
+	XExposeEvent xev;
+	Region region;
+
+	xev.type = Expose;
+	/* is this better than 0 ? shouldn't make much difference
+	   unless the expose method is very tricky... */
+	xev.serial = LastKnownRequestProcessed(XtDisplay(widget));
+	xev.send_event = False;
+	xev.display = XtDisplay(widget);
+	xev.window = XtWindowOfObject(widget); /* work with gadget too */
+	xev.x = 0;
+	xev.y = 0;
+	xev.width = widget->core.width;
+	xev.height = widget->core.height;
+	xev.count = 0;
+
+	region = XCreateRegion();
+	XtAddExposureToRegion((XEvent *) & xev, region);
+
+	if (widget->core.widget_class->core_class.expose)
+		(*(widget->core.widget_class->core_class.expose))(widget, (XEvent *) & xev, region);
+
+	XDestroyRegion(region);
+}

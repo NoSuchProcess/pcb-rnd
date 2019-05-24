@@ -343,9 +343,6 @@ static void Resize(Widget w)
 		Layout(w, NULL);
 }
 
-
-
-
 /****************************************************************************
  *
  *  Redisplay:
@@ -358,7 +355,15 @@ static void Redisplay(Widget w, XEvent *event, Region region)
 	PxmRedisplayGadgets(w, event, region);
 }
 
+static void force_redisplay(Widget wid)
+{
+	PxmPagesWidget gw = (PxmPagesWidget) wid;
+	Cardinal i;
 
+	for(i = 0; i < gw->composite.num_children; i++)
+		if (i == gw->pages.at)
+			PxmRedisplayWidget(gw->composite.children[i]);
+}
 
 /*****************************************************************************
  *
@@ -376,6 +381,7 @@ static Boolean SetValues(Widget old_w, Widget request_w, Widget new_w, ArgList a
 
 	if (cw->pages.at != nw->pages.at) {
 		Layout(new_w, NULL);
+		force_redisplay(new_w);
 		return 0;
 	}
 
