@@ -281,12 +281,13 @@ static void setup_fmt_tabs(save_t *save, pcb_plug_iot_t save_type)
 	save->fmt_tab_names[tabs+1] = NULL;
 
 	PCB_DAD_BEGIN_TABBED(save->fmtsub->dlg, save->fmt_tab_names);
+		PCB_DAD_COMPFLAG(save->fmtsub->dlg, PCB_HATF_HIDE_TABLAB);
 		save->wopts = PCB_DAD_CURRENT(save->fmtsub->dlg);
 /*	pre-creation tab switch not yet supported:	PCB_DAD_DEFAULT_NUM(save->fmtsub->dlg, save->opt_tab[0]);*/
 
 		/* the no-options tab */
-		PCB_DAD_BEGIN_VBOX(save->fmtsub->dlg);
-		PCB_DAD_END(save->fmtsub->dlg);
+		PCB_DAD_LABEL(save->fmtsub->dlg, "(no format options)");
+			PCB_DAD_HELP(save->fmtsub->dlg, "Some formats offer format-specific options\nwhich are normally displayed here.\nThe currently selected format does\nnot offer any options.");
 
 		/* all other tabs, filled in by the plug code */
 		for(n = 1; n < tabs+1; n++) {
