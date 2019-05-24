@@ -260,11 +260,8 @@ static void save_on_close(pcb_hid_dad_subdialog_t *sub, pcb_bool ok)
 			if ((seen[n] == 0) && (save->opt_tab[i] == n)) {
 				const pcb_plug_io_t *plug = save->avail->plug[i];
 				seen[n] = 1;
-				if (plug->save_as_subd_uninit != NULL) {
-					int apply = (ok && (n == tab_selection));
-					TODO("must pass on apply");
-					plug->save_as_subd_uninit(plug, save->fmt_plug_data[n], sub);
-				}
+				if (plug->save_as_subd_uninit != NULL)
+					plug->save_as_subd_uninit(plug, save->fmt_plug_data[n], sub, (ok && (n == tab_selection)));
 			}
 		}
 	}

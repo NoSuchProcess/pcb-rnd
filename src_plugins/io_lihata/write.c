@@ -1752,17 +1752,20 @@ void *io_lihata_save_as_subd_init(const pcb_plug_io_t *ctx, pcb_hid_dad_subdialo
 	return save;
 }
 
-void io_lihata_save_as_subd_uninit(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_hid_dad_subdialog_t *sub)
+void io_lihata_save_as_subd_uninit(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_hid_dad_subdialog_t *sub, pcb_bool apply)
 {
 	io_lihata_save_t *save = plg_ctx;
-	int omit_font = !!sub->dlg[save->womit_font].default_val.int_value;
-	int omit_config = !!sub->dlg[save->womit_config].default_val.int_value;
 
-	if (omit_font != !!conf_io_lihata.plugins.io_lihata.omit_font)
-		conf_setf(CFR_CLI, "plugins/io_lihata/omit_font", 0, "%d", omit_font);
+	if (apply) {
+		int omit_font = !!sub->dlg[save->womit_font].default_val.int_value;
+		int omit_config = !!sub->dlg[save->womit_config].default_val.int_value;
 
-	if (omit_config != !!conf_io_lihata.plugins.io_lihata.omit_config)
-		conf_setf(CFR_CLI, "plugins/io_lihata/omit_config", 0, "%d", omit_config);
+		if (omit_font != !!conf_io_lihata.plugins.io_lihata.omit_font)
+			conf_setf(CFR_CLI, "plugins/io_lihata/omit_font", 0, "%d", omit_font);
+
+		if (omit_config != !!conf_io_lihata.plugins.io_lihata.omit_config)
+			conf_setf(CFR_CLI, "plugins/io_lihata/omit_config", 0, "%d", omit_config);
+	}
 
 	free(save);
 }

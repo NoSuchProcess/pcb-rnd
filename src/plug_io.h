@@ -98,9 +98,10 @@ struct pcb_plug_io_s {
 	   subdialog; init() returns an plugin-allocated context that is then
 	   passed to uninit at the end. Note: save_as_subd_init() shall be
 	   unique; if multiple pcb_plug_io_t structs share the same init(),
-	   only one, shared format-setting-tab is created for them */
+	   only one, shared format-setting-tab is created for them. If apply is
+	   true, the dialog box was closed with okay on this format selected. */
 	void *(*save_as_subd_init)(const pcb_plug_io_t *ctx, pcb_hid_dad_subdialog_t *sub, pcb_plug_iot_t type);
-	void (*save_as_subd_uninit)(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_hid_dad_subdialog_t *sub);
+	void (*save_as_subd_uninit)(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_hid_dad_subdialog_t *sub, pcb_bool apply);
 	void (*save_as_fmt_changed)(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_hid_dad_subdialog_t *sub);
 
 	const char *default_fmt;
