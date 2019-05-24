@@ -1194,6 +1194,9 @@ static lht_node_t *build_fontkit(pcb_fontkit_t *fk)
 {
 	lht_node_t *ndt, *frt;
 
+	if (conf_io_lihata.plugins.io_lihata.omit_font)
+		return dummy_node("font");
+
 	frt = lht_dom_node_alloc(LHT_HASH, "font");
 
 	/* write the default font first - it's always there */
@@ -1394,6 +1397,10 @@ static lht_node_t *build_conf()
 {
 	const char **s, *del_paths[] = { "editor/mode", NULL };
 	lht_node_t *res, *n;
+
+	if (conf_io_lihata.plugins.io_lihata.omit_config)
+		return dummy_node("pcb-rnd-conf-v1");
+
 	if ((conf_main_root[CFR_DESIGN] == NULL) || (conf_main_root[CFR_DESIGN]->root == NULL) || (conf_main_root[CFR_DESIGN]->root->type != LHT_LIST))
 		return lht_dom_node_alloc(LHT_LIST, "pcb-rnd-conf-v1");
 
