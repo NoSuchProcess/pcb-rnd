@@ -380,6 +380,7 @@ static Boolean SetValues(Widget old_w, Widget request_w, Widget new_w, ArgList a
 	PxmPagesWidgetClass gwc = (PxmPagesWidgetClass) XtClass(new_w);
 
 	if (cw->pages.at != nw->pages.at) {
+		CalcSize(new_w, 0, &new_w->core.width, &new_w->core.height);
 		Layout(new_w, NULL);
 		force_redisplay(new_w);
 		return 0;
