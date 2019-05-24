@@ -12,7 +12,7 @@ typedef int fp2t_bxx_t;
 typedef size_t fp2t_imm_t;
 typedef size_t fp2t_umm_t;
 
-#define FP2T_INTERNAL extern
+#define FP2T_APIFUNC
 #include "../src_3rd/fast89-poly2tri/fast89_poly2tri.h"
 
 #endif
