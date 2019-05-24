@@ -24,6 +24,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include "plug_io.h"
+
 int io_lihata_write_pcb_v1(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency);
 int io_lihata_write_pcb_v2(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency);
 int io_lihata_write_pcb_v3(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency);
@@ -34,3 +36,6 @@ int io_lihata_write_font(pcb_plug_io_t *ctx, pcb_font_t *font, const char *Filen
 int io_lihata_write_buffer(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff, pcb_bool elem_only);
 int io_lihata_write_element(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *dt);
 
+void *io_lihata_save_as_subd_init(const pcb_plug_io_t *ctx, pcb_hid_dad_subdialog_t *sub, pcb_plug_iot_t type);
+void io_lihata_save_as_subd_uninit(const pcb_plug_io_t *ctx, void *exp_ctx, pcb_hid_dad_subdialog_t *sub);
+void io_lihata_save_as_fmt_changed(const pcb_plug_io_t *ctx, void *exp_ctx, pcb_hid_dad_subdialog_t *sub);

@@ -54,6 +54,7 @@
 #include "thermal.h"
 #include "funchash_core.h"
 #include "netlist2.h"
+#include "hid_dad.h"
 
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 
@@ -1635,6 +1636,17 @@ int io_lihata_write_font(pcb_plug_io_t *ctx, pcb_font_t *font, const char *Filen
 	return res;
 }
 
+static int plug2ver(pcb_plug_io_t *ctx)
+{
+	if (ctx == &plug_io_lihata_v1) return 1;
+	if (ctx == &plug_io_lihata_v2) return 2;
+	if (ctx == &plug_io_lihata_v3) return 3;
+	if (ctx == &plug_io_lihata_v4) return 4;
+	if (ctx == &plug_io_lihata_v5) return 5;
+	if (ctx == &plug_io_lihata_v6) return 6;
+	return 0;
+}
+
 static int io_lihata_dump_1st_subc(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *data, int enforce1)
 {
 	int res;
@@ -1655,15 +1667,9 @@ static int io_lihata_dump_1st_subc(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *data
 	doc = lht_dom_init();
 
 	/* determine version */
-	wrver = 1;
-	if (ctx == &plug_io_lihata_v3)
-		wrver = 3;
-	else if (ctx == &plug_io_lihata_v4)
-		wrver = 4;
-	else if (ctx == &plug_io_lihata_v5)
-		wrver = 5;
-	else if (ctx == &plug_io_lihata_v6)
-		wrver = 6;
+	wrver = plug2ver(ctx);
+	if (wrver < 3)
+		wrver = 1;
 
 	/* bump version if features require */
 	sc = pcb_subclist_first(&data->subc);
@@ -1710,3 +1716,40 @@ int io_lihata_write_element(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *dt)
 {
 	return io_lihata_dump_1st_subc(ctx, f, dt, 1);
 }
+
+typedef struct {
+	int womit_font, womit_cfg;
+	int ver;
+} io_lihata_save_t;
+
+void *io_lihata_save_as_subd_init(const pcb_plug_io_t *ctx, pcb_hid_dad_subdialog_t *sub, pcb_plug_iot_t type)
+{
+	io_lihata_save_t *save = calloc(sizeof(io_lihata_save_t), 1);
+
+	if (type == PCB_IOT_PCB) {
+		PCB_DAD_BEGIN_HBOX(sub->dlg);
+			PCB_DAD_LABEL(sub->dlg, "Omit font");
+				PCB_DAD_HELP(sub->dlg, "Do not save the font subtree\nWARNING: this will make the board depend on\nthe default font available on systems\nwhere it is loaded; if multiple fonts\nare used, all will be displayed using the default");
+			PCB_DAD_BOOL(sub->dlg, "");
+		PCB_DAD_END(sub->dlg);
+		PCB_DAD_BEGIN_HBOX(sub->dlg);
+			PCB_DAD_LABEL(sub->dlg, "Omit config");
+				PCB_DAD_HELP(sub->dlg, "Do not save the config subtree\nWARNING: this will lose all DESIGN role\nconfig setting in the resulting file");
+			PCB_DAD_BOOL(sub->dlg, "");
+		PCB_DAD_END(sub->dlg);
+	}
+	return save;
+}
+
+void io_lihata_save_as_subd_uninit(const pcb_plug_io_t *ctx, void *exp_ctx, pcb_hid_dad_subdialog_t *sub)
+{
+	io_lihata_save_t *save = exp_ctx;
+	free(save);
+}
+
+void io_lihata_save_as_fmt_changed(const pcb_plug_io_t *ctx, void *exp_ctx, pcb_hid_dad_subdialog_t *sub)
+{
+	io_lihata_save_t *save = exp_ctx;
+	save->ver = plug2ver(ctx);
+}
+
