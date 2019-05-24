@@ -94,6 +94,15 @@ struct pcb_plug_io_s {
 	/* Attempt to write the font to file. Return 0 on success. */
 	int (*write_font)(pcb_plug_io_t *ctx, pcb_font_t *font, const char *Filename);
 
+	/* OPTIONAL: save-as subdialog; sub is the parent's, already initialized
+	   subdialog; init() returns an exporter-allocated context that is then
+	   passed to uninit at the end. Note: save_as_subd_init() shall be
+	   unique; if multiple pcb_plug_io_t structs share the same init(),
+	   only one, shared format-setting-tab is created for them */
+	void *(*save_as_subd_init)(const pcb_plug_io_t *ctx, pcb_hid_dad_subdialog_t *sub, pcb_plug_iot_t type);
+	void (*save_as_subd_uninit)(const pcb_plug_io_t *ctx, void *exp_ctx, pcb_hid_dad_subdialog_t *sub);
+	void (*save_as_fmt_changed)(const pcb_plug_io_t *ctx, void *exp_ctx, pcb_hid_dad_subdialog_t *sub);
+
 	const char *default_fmt;
 	const char *description;
 	const char *default_extension; /* used to generate save-as filename */
