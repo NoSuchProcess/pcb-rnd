@@ -137,6 +137,9 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v4.default_extension = ".lht";
 	plug_io_lihata_v4.fp_extension = ".lht";
 	plug_io_lihata_v4.mime_type = "application/x-pcbrnd-board";
+	plug_io_lihata_v4.save_as_subd_init = io_lihata_save_as_subd_init;
+	plug_io_lihata_v4.save_as_subd_uninit = io_lihata_save_as_subd_uninit;
+	plug_io_lihata_v4.save_as_fmt_changed = io_lihata_save_as_fmt_changed;
 
 	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v4);
 
@@ -156,6 +159,9 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v3.default_extension = ".lht";
 	plug_io_lihata_v3.fp_extension = ".lht";
 	plug_io_lihata_v3.mime_type = "application/x-pcbrnd-board";
+	plug_io_lihata_v3.save_as_subd_init = io_lihata_save_as_subd_init;
+	plug_io_lihata_v3.save_as_subd_uninit = io_lihata_save_as_subd_uninit;
+	plug_io_lihata_v3.save_as_fmt_changed = io_lihata_save_as_fmt_changed;
 
 	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v3);
 
@@ -175,6 +181,9 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v2.default_extension = ".lht";
 	plug_io_lihata_v2.fp_extension = ".lht";
 	plug_io_lihata_v2.mime_type = "application/x-pcbrnd-board";
+	plug_io_lihata_v2.save_as_subd_init = io_lihata_save_as_subd_init;
+	plug_io_lihata_v2.save_as_subd_uninit = io_lihata_save_as_subd_uninit;
+	plug_io_lihata_v2.save_as_fmt_changed = io_lihata_save_as_fmt_changed;
 
 	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v2);
 
@@ -194,6 +203,9 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v1.default_extension = ".lht";
 	plug_io_lihata_v1.fp_extension = ".lht";
 	plug_io_lihata_v1.mime_type = "application/x-pcbrnd-board";
+	plug_io_lihata_v1.save_as_subd_init = io_lihata_save_as_subd_init;
+	plug_io_lihata_v1.save_as_subd_uninit = io_lihata_save_as_subd_uninit;
+	plug_io_lihata_v1.save_as_fmt_changed = io_lihata_save_as_fmt_changed;
 
 	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v1);
 
