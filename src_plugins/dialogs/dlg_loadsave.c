@@ -102,7 +102,7 @@ typedef struct {
 	pcb_io_formats_t *avail;
 	int *exp_tab; /* exporter tab index for each avail[]; 0 means no tab */
 	const char **fmt_tab_names;
-	int wfmt, wguess, wguess_err;
+	int wfmt, wguess, wguess_err, wopts;
 	int pick, num_fmts;
 	pcb_hidval_t timer;
 	char last_ext[32];
@@ -162,6 +162,10 @@ static void fmt_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 
 	/* remember the selection for the save action */
 	save->pick = selection;
+
+	/* set the tab for format specific settings */
+	hv.int_value = save->exp_tab[selection];
+	pcb_gui->attr_dlg_set_value(save->fmtsub->dlg_hid_ctx, save->wopts, &hv);
 }
 
 static void guess_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -267,6 +271,8 @@ static void setup_fmt_tabs(save_t *save, pcb_plug_iot_t save_type)
 	save->fmt_tab_names[tabs+1] = NULL;
 
 	PCB_DAD_BEGIN_TABBED(save->fmtsub->dlg, save->fmt_tab_names);
+		save->wopts = PCB_DAD_CURRENT(save->fmtsub->dlg);
+		PCB_DAD_DEFAULT_NUM(save->fmtsub->dlg, save->exp_tab[0]);
 
 		/* the no-options tab */
 		PCB_DAD_BEGIN_VBOX(save->fmtsub->dlg);
