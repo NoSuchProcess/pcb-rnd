@@ -1741,15 +1741,15 @@ void *io_lihata_save_as_subd_init(const pcb_plug_io_t *ctx, pcb_hid_dad_subdialo
 	return save;
 }
 
-void io_lihata_save_as_subd_uninit(const pcb_plug_io_t *ctx, void *exp_ctx, pcb_hid_dad_subdialog_t *sub)
+void io_lihata_save_as_subd_uninit(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_hid_dad_subdialog_t *sub)
 {
-	io_lihata_save_t *save = exp_ctx;
+	io_lihata_save_t *save = plg_ctx;
 	free(save);
 }
 
-void io_lihata_save_as_fmt_changed(const pcb_plug_io_t *ctx, void *exp_ctx, pcb_hid_dad_subdialog_t *sub)
+void io_lihata_save_as_fmt_changed(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_hid_dad_subdialog_t *sub)
 {
-	io_lihata_save_t *save = exp_ctx;
+	io_lihata_save_t *save = plg_ctx;
 	save->ver = plug2ver(ctx);
 }
 

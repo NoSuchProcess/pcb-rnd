@@ -100,7 +100,7 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 typedef struct {
 	pcb_hid_dad_subdialog_t *fmtsub;
 	pcb_io_formats_t *avail;
-	int *exp_tab; /* exporter tab index for each avail[]; 0 means no tab */
+	int *opt_tab; /* plugion options tab index for each avail[]; 0 means "no options" (the first tab) */
 	const char **fmt_tab_names;
 	int wfmt, wguess, wguess_err, wopts;
 	int pick, num_fmts;
@@ -164,7 +164,7 @@ static void fmt_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	save->pick = selection;
 
 	/* set the tab for format specific settings */
-	hv.int_value = save->exp_tab[selection];
+	hv.int_value = save->opt_tab[selection];
 	pcb_gui->attr_dlg_set_value(save->fmtsub->dlg_hid_ctx, save->wopts, &hv);
 }
 
@@ -234,7 +234,7 @@ static void setup_fmt_tabs(save_t *save, pcb_plug_iot_t save_type)
 {
 	int n, i, tabs;
 
-	save->exp_tab = calloc(sizeof(int), save->num_fmts);
+	save->opt_tab = calloc(sizeof(int), save->num_fmts);
 	for(n = 0, tabs = 0; n < save->num_fmts; n++) {
 		const pcb_plug_io_t *plug = save->avail->plug[n];
 		if (plug->save_as_subd_init != NULL) {
@@ -244,17 +244,17 @@ static void setup_fmt_tabs(save_t *save, pcb_plug_iot_t save_type)
 			for(i = 0; i < n; i++) {
 				const pcb_plug_io_t *old_plug = save->avail->plug[i];
 				if (plug->save_as_subd_init == old_plug->save_as_subd_init) {
-					link = save->exp_tab[i];
+					link = save->opt_tab[i];
 					break;
 				}
 			}
 
 			if (link < 0) {
-				save->exp_tab[n] = tabs+1;
+				save->opt_tab[n] = tabs+1;
 				tabs++;
 			}
 			else
-				save->exp_tab[n] = link;
+				save->opt_tab[n] = link;
 		}
 	}
 
@@ -265,14 +265,14 @@ static void setup_fmt_tabs(save_t *save, pcb_plug_iot_t save_type)
 	/* fill in rest of the tabs - not visible, only for debugging */
 	for(n = 0; n < save->num_fmts; n++) {
 		const pcb_plug_io_t *plug = save->avail->plug[n];
-		if ((plug->save_as_subd_init != NULL) && (save->exp_tab[n] >= 0))
-			save->fmt_tab_names[save->exp_tab[n]] = plug->description;
+		if ((plug->save_as_subd_init != NULL) && (save->opt_tab[n] >= 0))
+			save->fmt_tab_names[save->opt_tab[n]] = plug->description;
 	}
 	save->fmt_tab_names[tabs+1] = NULL;
 
 	PCB_DAD_BEGIN_TABBED(save->fmtsub->dlg, save->fmt_tab_names);
 		save->wopts = PCB_DAD_CURRENT(save->fmtsub->dlg);
-		PCB_DAD_DEFAULT_NUM(save->fmtsub->dlg, save->exp_tab[0]);
+		PCB_DAD_DEFAULT_NUM(save->fmtsub->dlg, save->opt_tab[0]);
 
 		/* the no-options tab */
 		PCB_DAD_BEGIN_VBOX(save->fmtsub->dlg);
@@ -281,7 +281,7 @@ static void setup_fmt_tabs(save_t *save, pcb_plug_iot_t save_type)
 		/* all other tabs, filled in by the plug code */
 		for(n = 1; n < tabs+1; n++) {
 			for(i = 0; i < save->num_fmts; i++) {
-				if (save->exp_tab[i] == n) {
+				if (save->opt_tab[i] == n) {
 					const pcb_plug_io_t *plug = save->avail->plug[i];
 					PCB_DAD_BEGIN_VBOX(save->fmtsub->dlg);
 						plug->save_as_subd_init(plug, save->fmtsub, save_type);
