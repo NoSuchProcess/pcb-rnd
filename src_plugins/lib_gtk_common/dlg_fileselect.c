@@ -98,9 +98,13 @@ static int pcb_gtk_fsd_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, pcb_e
 
 	if (strcmp(cmd, "get_path") == 0) {
 		gchar *gp = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(pctx->dialog));
-		res->type = PCB_EVARG_STR;
-		res->d.s = pcb_strdup(gp);
-		g_free(gp);
+			res->type = PCB_EVARG_STR;
+		if (gp != NULL) {
+			res->d.s = pcb_strdup(gp);
+			g_free(gp);
+		}
+		else
+			res->d.s = pcb_strdup("");
 		return 0;
 	}
 
