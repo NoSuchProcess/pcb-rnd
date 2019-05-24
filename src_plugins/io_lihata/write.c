@@ -1222,6 +1222,9 @@ static lht_node_t *build_styles(vtroutestyle_t *styles)
 	lht_node_t *stl, *sn;
 	int n;
 
+	if (conf_io_lihata.plugins.io_lihata.omit_styles)
+		return dummy_node("styles");
+
 	stl = lht_dom_node_alloc(LHT_LIST, "styles");
 	for(n = 0; n < vtroutestyle_len(styles); n++) {
 		pcb_route_style_t *s = styles->array + n;
@@ -1725,7 +1728,7 @@ int io_lihata_write_element(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *dt)
 }
 
 typedef struct {
-	int womit_font, womit_config;
+	int womit_font, womit_config, womit_styles;
 	int ver;
 } io_lihata_save_t;
 
@@ -1748,6 +1751,13 @@ void *io_lihata_save_as_subd_init(const pcb_plug_io_t *ctx, pcb_hid_dad_subdialo
 				PCB_DAD_DEFAULT_NUM(sub->dlg, !!conf_io_lihata.plugins.io_lihata.omit_config);
 				save->womit_config = PCB_DAD_CURRENT(sub->dlg);
 		PCB_DAD_END(sub->dlg);
+		PCB_DAD_BEGIN_HBOX(sub->dlg);
+			PCB_DAD_LABEL(sub->dlg, "Omit styles");
+				PCB_DAD_HELP(sub->dlg, "Do not save the routing style subtree\nThe resulting file will have no\nrouting styles");
+			PCB_DAD_BOOL(sub->dlg, "");
+				PCB_DAD_DEFAULT_NUM(sub->dlg, !!conf_io_lihata.plugins.io_lihata.omit_styles);
+				save->womit_styles = PCB_DAD_CURRENT(sub->dlg);
+		PCB_DAD_END(sub->dlg);
 	}
 	return save;
 }
@@ -1759,12 +1769,16 @@ void io_lihata_save_as_subd_uninit(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_
 	if (apply) {
 		int omit_font = !!sub->dlg[save->womit_font].default_val.int_value;
 		int omit_config = !!sub->dlg[save->womit_config].default_val.int_value;
+		int omit_styles = !!sub->dlg[save->womit_styles].default_val.int_value;
 
 		if (omit_font != !!conf_io_lihata.plugins.io_lihata.omit_font)
 			conf_setf(CFR_CLI, "plugins/io_lihata/omit_font", 0, "%d", omit_font);
 
 		if (omit_config != !!conf_io_lihata.plugins.io_lihata.omit_config)
 			conf_setf(CFR_CLI, "plugins/io_lihata/omit_config", 0, "%d", omit_config);
+
+		if (omit_styles != !!conf_io_lihata.plugins.io_lihata.omit_styles)
+			conf_setf(CFR_CLI, "plugins/io_lihata/omit_styles", 0, "%d", omit_styles);
 	}
 
 	free(save);
