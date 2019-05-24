@@ -19,7 +19,6 @@
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
 	- CLEANUP: after the attribute dialog, remove the label argument from the DAD API [report: igor2]
 + FEATURE: grid size change should be undoable? -> no, see http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=undoability [report:Evan]
-- FEATURE: 'save as' dialog: format specific subdialogs
 - FEATURE: scripting: example script that tents/untents all/selected/object vias [report: keantoken]
 - FEATURE: lesstif DAD support for toggle buttons [report: Igor2]
 - FEATURE: preferences: grid list edit on the sizes tab
