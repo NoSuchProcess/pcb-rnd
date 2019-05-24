@@ -1718,7 +1718,7 @@ int io_lihata_write_element(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *dt)
 }
 
 typedef struct {
-	int womit_font, womit_cfg;
+	int womit_font, womit_config;
 	int ver;
 } io_lihata_save_t;
 
@@ -1731,11 +1731,15 @@ void *io_lihata_save_as_subd_init(const pcb_plug_io_t *ctx, pcb_hid_dad_subdialo
 			PCB_DAD_LABEL(sub->dlg, "Omit font");
 				PCB_DAD_HELP(sub->dlg, "Do not save the font subtree\nWARNING: this will make the board depend on\nthe default font available on systems\nwhere it is loaded; if multiple fonts\nare used, all will be displayed using the default");
 			PCB_DAD_BOOL(sub->dlg, "");
+				PCB_DAD_DEFAULT_NUM(sub->dlg, !!conf_io_lihata.plugins.io_lihata.omit_font);
+				save->womit_font = PCB_DAD_CURRENT(sub->dlg);
 		PCB_DAD_END(sub->dlg);
 		PCB_DAD_BEGIN_HBOX(sub->dlg);
 			PCB_DAD_LABEL(sub->dlg, "Omit config");
 				PCB_DAD_HELP(sub->dlg, "Do not save the config subtree\nWARNING: this will lose all DESIGN role\nconfig setting in the resulting file");
 			PCB_DAD_BOOL(sub->dlg, "");
+				PCB_DAD_DEFAULT_NUM(sub->dlg, !!conf_io_lihata.plugins.io_lihata.omit_config);
+				save->womit_config = PCB_DAD_CURRENT(sub->dlg);
 		PCB_DAD_END(sub->dlg);
 	}
 	return save;
@@ -1744,6 +1748,15 @@ void *io_lihata_save_as_subd_init(const pcb_plug_io_t *ctx, pcb_hid_dad_subdialo
 void io_lihata_save_as_subd_uninit(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_hid_dad_subdialog_t *sub)
 {
 	io_lihata_save_t *save = plg_ctx;
+	int omit_font = !!sub->dlg[save->womit_font].default_val.int_value;
+	int omit_config = !!sub->dlg[save->womit_config].default_val.int_value;
+
+	if (omit_font != !!conf_io_lihata.plugins.io_lihata.omit_font)
+		conf_setf(CFR_CLI, "plugins/io_lihata/omit_font", 0, "%d", omit_font);
+
+	if (omit_config != !!conf_io_lihata.plugins.io_lihata.omit_config)
+		conf_setf(CFR_CLI, "plugins/io_lihata/omit_config", 0, "%d", omit_config);
+
 	free(save);
 }
 
