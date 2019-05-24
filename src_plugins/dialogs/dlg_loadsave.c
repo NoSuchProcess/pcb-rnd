@@ -102,6 +102,8 @@ typedef struct {
 	pcb_io_formats_t *avail;
 	int *opt_tab; /* plugion options tab index for each avail[]; 0 means "no options" (the first tab) */
 	const char **fmt_tab_names;
+	void **fmt_plug_data;
+	int tabs; /* number of option tabs, including the dummy 0th tab */
 	int wfmt, wguess, wguess_err, wopts;
 	int pick, num_fmts;
 	pcb_hidval_t timer;
@@ -245,6 +247,31 @@ static void save_timer(pcb_hidval_t user_data)
 	}
 }
 
+static void save_on_close(pcb_hid_dad_subdialog_t *sub, pcb_bool ok)
+{
+	save_t *save = sub->sub_ctx;
+	int n, i, tabs;
+	char *seen;
+	int tab_selection = save->opt_tab[save->fmtsub->dlg[save->wfmt].default_val.int_value];
+
+	seen = calloc(1, save->tabs);
+	for(n = 1; n < save->tabs; n++) {
+		for(i = 0; i < save->num_fmts; i++) {
+			if ((seen[n] == 0) && (save->opt_tab[i] == n)) {
+				const pcb_plug_io_t *plug = save->avail->plug[i];
+				seen[n] = 1;
+				if (plug->save_as_subd_uninit != NULL) {
+					int apply = (ok && (n == tab_selection));
+					TODO("must pass on apply");
+					plug->save_as_subd_uninit(plug, save->fmt_plug_data[n], sub);
+				}
+			}
+		}
+	}
+	free(seen);
+}
+
+
 static void setup_fmt_tabs(save_t *save, pcb_plug_iot_t save_type)
 {
 	int n, i, tabs;
@@ -275,6 +302,7 @@ static void setup_fmt_tabs(save_t *save, pcb_plug_iot_t save_type)
 
 	/* tab 0 is for the no-option tab (most plugs will use that) */
 	save->fmt_tab_names = calloc(tabs+2, sizeof(char *));
+	save->fmt_plug_data = calloc(tabs+2, sizeof(void *));
 	save->fmt_tab_names[0] = "no-opt";
 
 	/* fill in rest of the tabs - not visible, only for debugging */
@@ -300,12 +328,13 @@ static void setup_fmt_tabs(save_t *save, pcb_plug_iot_t save_type)
 				if (save->opt_tab[i] == n) {
 					const pcb_plug_io_t *plug = save->avail->plug[i];
 					PCB_DAD_BEGIN_VBOX(save->fmtsub->dlg);
-						plug->save_as_subd_init(plug, save->fmtsub, save_type);
+						save->fmt_plug_data[n] = plug->save_as_subd_init(plug, save->fmtsub, save_type);
 					PCB_DAD_END(save->fmtsub->dlg);
 					break;
 				}
 			}
 		}
+		save->tabs = tabs+1;
 	PCB_DAD_END(save->fmtsub->dlg);
 }
 
@@ -447,6 +476,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			save.num_fmts = num_fmts;
 			save.fmtsub = fmtsub;
 			save.pick = fmt;
+			fmtsub->on_close = save_on_close;
 			fmtsub->sub_ctx = &save;
 			setup_fmt_sub(&save, PCB_IOT_PCB);
 		}
@@ -484,6 +514,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_gui->stop_timer(save.timer);
 	free(name_in);
 	free(save.fmt_tab_names);
+	free(save.fmt_plug_data);
 
 	if (final_name == NULL) { /* cancel */
 		pcb_io_list_free(&avail);
