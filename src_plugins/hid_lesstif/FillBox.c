@@ -368,7 +368,6 @@ static void Destroy(Widget wid)
 static void Resize(Widget w)
 {
 	PxmFillBoxWidgetClass gwc = (PxmFillBoxWidgetClass) XtClass(w);
-
 	/* Configure the children by calling Layout. */
 	if (gwc->fillBox_class.layout)
 		(*(gwc->fillBox_class.layout)) (w, NULL);
@@ -387,8 +386,13 @@ static void Resize(Widget w)
  ***************************************************************************/
 static void Redisplay(Widget w, XEvent *event, Region region)
 {
-	/* Pass exposure event down to gadget children. */
-	PxmRedisplayGadgets(w, event, region);
+	PxmFillBoxWidget gw = (PxmFillBoxWidget)w;
+	int i;
+
+	for(i = 0; i < gw->composite.num_children; i++) {
+		PxmFillBoxWidget cw = gw->composite.children[i];
+		PxmRedisplayWidget(gw->composite.children[i]);
+	}
 }
 
 
@@ -601,6 +605,10 @@ static XtGeometryResult GeometryManager(Widget w, /* instigator */
 		parentRequest.request_mode |= XtCWQueryOnly;
 	result = XtMakeGeometryRequest((Widget) gw, &parentRequest, NULL);
 
+	if ((request->width == parentRequest.width) && (request->height == parentRequest.height))
+		result = XtGeometryYes;
+
+
 	/*  Turn XtGeometryAlmost into XtGeometryNo. */
 	if (result == XtGeometryAlmost)
 		result = XtGeometryNo;
@@ -613,6 +621,7 @@ static XtGeometryResult GeometryManager(Widget w, /* instigator */
 	}
 	else {
 		/* result == XtGeometryYes and this wasn't just a query */
+		XtResizeWindow(gw);
 		if (gwc->fillBox_class.layout)
 			(*(gwc->fillBox_class.layout)) ((Widget) gw, w);
 		else
@@ -723,16 +732,23 @@ static void Layout(Widget wid, Widget instigator)
 	PxmFillBoxWidget gw = (PxmFillBoxWidget) wid;
 	Dimension mw = gw->fillBox.margin_width;
 	Dimension mh = gw->fillBox.margin_height;
-	Dimension TotalWidthOfFillBoxWidget = gw->core.width;
-	Dimension TotalHeightOfFillBoxWidget = gw->core.height;
+	Dimension TotalWidthOfFillBoxWidget;
+	Dimension TotalHeightOfFillBoxWidget;
 	long AvailWidthForChildren, AvailHeightForChildren;
 	long pos, extra = 0, total = 0, wextra = 0;
 	unsigned int i;
 	int numfills, vert = gw->fillBox.vertical;
 
+	for(i = 0; i < gw->composite.num_children; i++) {
+		Widget ic = gw->composite.children[i];
+		XtWidgetGeometry reply;
+		XtQueryGeometry(ic, NULL, &reply);
+	}
+
+	TotalWidthOfFillBoxWidget = gw->core.width;
+	TotalHeightOfFillBoxWidget = gw->core.height;
 	AvailWidthForChildren = (long)TotalWidthOfFillBoxWidget - 2 * (long)mw;
 	AvailHeightForChildren = (long)TotalHeightOfFillBoxWidget - 2 * (long)mh;
-
 
 	/* calculate the extra space we need to allocate and reset width/height of each widget temporarily */
 	total = 0;
@@ -753,7 +769,7 @@ static void Layout(Widget wid, Widget instigator)
 		ch = (reply.request_mode & CWHeight) ? reply.height : ic->core.height;
 		ic->core.width = cw;
 		ic->core.height = ch;
-
+		XtResizeWindow(ic);
 		if (vert)
 			total += ch + 2*cb;
 		else
@@ -834,6 +850,7 @@ static void Layout(Widget wid, Widget instigator)
 			ic->core.width = ChildsActualWidth;
 			ic->core.height = ChildsActualHeight;
 			ic->core.border_width = cb;
+			XtResizeWindow(ic);
 		}
 
 		if (vert)
