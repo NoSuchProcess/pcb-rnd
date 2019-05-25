@@ -250,7 +250,7 @@ static void save_timer(pcb_hidval_t user_data)
 static void save_on_close(pcb_hid_dad_subdialog_t *sub, pcb_bool ok)
 {
 	save_t *save = sub->sub_ctx;
-	int n, i, tabs;
+	int n, i;
 	char *seen;
 	int tab_selection = save->opt_tab[save->fmtsub->dlg[save->wfmt].default_val.int_value];
 
