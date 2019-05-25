@@ -1,7 +1,6 @@
 #include "xincludes.h"
 
 #include "config.h"
-#include "conf_core.h"
 #include "hidlib_conf.h"
 
 #include <stdio.h>
@@ -28,7 +27,6 @@
 #include "misc_util.h"
 #include "search.h"
 #include "change.h"
-#include "conf_core.h"
 
 #include "plug_io.h"
 
