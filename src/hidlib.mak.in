@@ -1,8 +1,10 @@
 put /local/pcb/CFLAGS_HIDLIB_STATIC_ {}
 append /local/pcb/CFLAGS_HIDLIB_STATIC_ ?/local/pcb/CFLAGS_HIDLIB_STATIC
-put /local/pcb/LDFLAGS_HIDLIB_STATIC_ { -lm }
+put /local/pcb/LDFLAGS_HIDLIB_STATIC_ {}
 append /local/pcb/LDFLAGS_HIDLIB_STATIC_ ?/local/pcb/LDFLAGS_HIDLIB_STATIC
 put /local/pcb/LIBS_3RD_HIDLIB /local/pcb/LIBS_3RD
+
+append /local/pcb/LDFLAGS_HIDLIB_STATIC_ [@ -lm @?/target/libs/ldl@ @]
 
 uniq /local/pcb/LIBS_3RD_HIDLIB
 uniq /local/pcb/CFLAGS_HIDLIB_STATIC_
