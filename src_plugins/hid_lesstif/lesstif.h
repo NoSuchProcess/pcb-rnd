@@ -58,7 +58,7 @@ char *pcb_ltf_fileselect(const char *title, const char *descr, const char *defau
 
 extern int pcb_ltf_ok;
 int pcb_ltf_wait_for_dialog(Widget w);
-
+int pcb_ltf_wait_for_dialog_noclose(Widget w);
 
 #ifndef XtRPCBCoord
 #define XtRPCBCoord	"PCBCoord"
