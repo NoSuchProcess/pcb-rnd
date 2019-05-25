@@ -858,8 +858,8 @@ static void CalcSize(Widget wid, Widget instigator, Dimension *TotalWidthOfFillB
 	PxmFillBoxWidget gw = (PxmFillBoxWidget) wid;
 	Dimension mw = gw->fillBox.margin_width;
 	Dimension mh = gw->fillBox.margin_height;
-	Dimension maxWidth = 1;
-	Dimension maxHeight = 1;
+	Dimension maxWidth = 0;
+	Dimension maxHeight = 0;
 	unsigned int i;
 	int vert = gw->fillBox.vertical;
 
@@ -898,8 +898,8 @@ static void CalcSize(Widget wid, Widget instigator, Dimension *TotalWidthOfFillB
 		}
 	}
 
-	*TotalWidthOfFillBoxWidget = maxWidth + 2*mw;
-	*TotalHeightOfFillBoxWidget = maxHeight + 2*mh;
+	*TotalWidthOfFillBoxWidget = Max(maxWidth + 2*mw, 1);
+	*TotalHeightOfFillBoxWidget = Max(maxHeight + 2*mh, 1);
 }
 
 
