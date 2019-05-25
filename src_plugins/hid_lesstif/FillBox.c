@@ -389,10 +389,8 @@ static void Redisplay(Widget w, XEvent *event, Region region)
 	PxmFillBoxWidget gw = (PxmFillBoxWidget)w;
 	int i;
 
-	for(i = 0; i < gw->composite.num_children; i++) {
-		PxmFillBoxWidget cw = gw->composite.children[i];
+	for(i = 0; i < gw->composite.num_children; i++)
 		PxmRedisplayWidget(gw->composite.children[i]);
-	}
 }
 
 
