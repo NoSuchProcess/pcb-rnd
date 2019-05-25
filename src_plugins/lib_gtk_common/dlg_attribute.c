@@ -854,6 +854,7 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, const char *id, pcb_hid_attribute
 	pcb_event(com->hidlib, PCB_EVENT_DAD_NEW_DIALOG, "psp", ctx, ctx->id, plc);
 
 	ctx->dialog = gtk_dialog_new();
+	gtk_window_set_transient_for(GTK_WINDOW(ctx->dialog), GTK_WINDOW(com->top_window));
 
 	gtk_window_set_title(GTK_WINDOW(ctx->dialog), title);
 	gtk_window_set_role(GTK_WINDOW(ctx->dialog), id);
