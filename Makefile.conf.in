@@ -19,6 +19,11 @@ SCCBOX=$(ROOT)/scconfig/sccbox
 EXE=@/target/sys/ext_exe@
 PCB_RND_HOST_CC=@/host/cc/cc@
 
+# hidlib installation directories
+HL_LIBDIR=$(Install_root)@/local/prefix@/@/local/libarchdir@
+HL_INCDIR=$(Install_root)@/local/prefix@/include/pcb-rnd
+
+
 # The installation directoried to be used from within binaries (with
 # install_root/DESTDIR removed)
 LIBDIR_INSTALLED=@/local/prefix@/lib/pcb-rnd

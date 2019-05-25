@@ -70,6 +70,7 @@ static void help1(void)
 	printf(" --dot_pcb_pcb=path         .pcb-rnd config path under $HOME/\n");
 	printf(" --workaround-gtk-ctrl      enable GTK control key query workaround\n");
 	printf(" --man1dir=path             change installation path of man1 files (under prefix)\n");
+	printf(" --libarchdir=relpath       relative path under prefix for arch-lib-dir (e.g. lib64)\n");
 	printf(" --all=plugin               enable all working plugins for dynamic load\n");
 	printf(" --all=buildin              enable all working plugins for static link\n");
 	printf(" --all=disable              disable all plugins (compile core only)\n");
@@ -145,6 +146,10 @@ int hook_custom_arg(const char *key, const char *value)
 	}
 	if (strcmp(key, "man1dir") == 0) {
 		put("/local/man1dir", value);
+		return 1;
+	}
+	if (strcmp(key, "libarchdir") == 0) {
+		put("/local/libarchdir", value);
 		return 1;
 	}
 	if (strncmp(key, "workaround-", 11) == 0) {
@@ -287,6 +292,7 @@ int hook_postinit()
 	put("/local/prefix", "/usr/local");
 	put("/local/man1dir", "/share/man/man1");
 	put("/local/man1dir", "/share/man/man1");
+	put("/local/libarchdir", "lib");
 	put("/local/pcb/hid_gtk3_cairo/controls", sfalse); /* enable gtk3 only when explicitly requested */
 
 #undef plugin_def
