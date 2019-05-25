@@ -34,6 +34,9 @@ then
 	append /local/pcb/OBJS_HIDLIB_PLG         ?/local/pcb/mod/OBJS
 	append /local/pcb/OBJS_C99_HIDLIB_PLG     ?/local/pcb/mod/OBJS_C99
 	append /local/pcb/buildin_hidlib_pups     [@@/local/pcb/mod@=@/local/pcb/mod@/@/local/pcb/mod@.pup@] {\n}
+
+	append /local/pcb/LDFLAGS_HIDLIB_STATIC   /local/pcb/mod/LDFLAGS
+	append /local/pcb/CFLAGS_HIDLIB_STATIC    /local/pcb/mod/CFLAGS
 end
 
 include /local/pcb/tmpasm/common_enabled

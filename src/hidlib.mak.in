@@ -1,0 +1,28 @@
+put /local/pcb/CFLAGS_HIDLIB_STATIC_ {}
+append /local/pcb/CFLAGS_HIDLIB_STATIC_ ?/local/pcb/CFLAGS_HIDLIB_STATIC
+put /local/pcb/LDFLAGS_HIDLIB_STATIC_ {}
+append /local/pcb/LDFLAGS_HIDLIB_STATIC_ ?/local/pcb/LDFLAGS_HIDLIB_STATIC
+put /local/pcb/LIBS_3RD_HIDLIB /local/pcb/LIBS_3RD
+
+uniq /local/pcb/LIBS_3RD_HIDLIB
+uniq /local/pcb/CFLAGS_HIDLIB_STATIC_
+uniq /local/pcb/LDFLAGS_HIDLIB_STATIC_
+
+gsub /local/pcb/LIBS_3RD_HIDLIB {[.][.]/src_3rd/} {$(HIDLIB_ROOT)/src_3rd/}
+gsub /local/pcb/CFLAGS_HIDLIB_STATIC_ {[.][.]/src_3rd/} {$(HIDLIB_ROOT)/src_3rd/}
+
+print [@
+
+#
+# Auto-generated Makefile for inclusion for hidlib users.
+#
+# The user's Makefile needs to, in this order:
+#  - set up $(HIDLIB_ROOT)
+#  - include this file
+#  - use the variables declared in this file for compilation and linking
+#
+
+CFLAGS_HIDLIB=@?/local/pcb/CFLAGS_HIDLIB_STATIC_@
+LDFLAGS_HIDLIB=@?/local/pcb/LDFLAGS_HIDLIB_STATIC_@ @/local/pcb/LIBS_3RD_HIDLIB@
+
+@]

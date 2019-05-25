@@ -942,6 +942,8 @@ int hook_generate()
 
 	printf("Generating pcb/Makefile (%d)\n", generr |= tmpasm("../src", "Makefile.in", "Makefile"));
 
+	printf("Generating pcb/hidlib.mak (%d)\n", generr |= tmpasm("../src", "hidlib.mak.in", "hidlib.mak"));
+
 	printf("Generating util/gsch2pcb-rnd/Makefile (%d)\n", generr |= tmpasm("../util", "gsch2pcb-rnd/Makefile.in", "gsch2pcb-rnd/Makefile"));
 
 	printf("Generating config.h (%d)\n", generr |= tmpasm("..", "config.h.in", "config.h"));
