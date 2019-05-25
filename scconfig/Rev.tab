@@ -1,4 +1,4 @@
-25694	configure	hidlib: generate hidlib.h for external project use
+25701	configure	hidlib: generate hidlib.h for external project use
 25666	configure	hidlib: make gtk2-gl part of the hidlib
 25664	configure	remove the gtk-only, old library window
 25652	configure	lib_hid_common: internal conf image for the file selection dialog upgrade
