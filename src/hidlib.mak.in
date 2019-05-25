@@ -22,7 +22,7 @@ print [@
 #  - use the variables declared in this file for compilation and linking
 #
 
-CFLAGS_HIDLIB=@?/local/pcb/CFLAGS_HIDLIB_STATIC_@
+CFLAGS_HIDLIB=@?/local/pcb/CFLAGS_HIDLIB_STATIC_@ -I$(HIDLIB_ROOT)/src -I$(HIDLIB_ROOT)/src_3rd -I$(HIDLIB_ROOT)
 LDFLAGS_HIDLIB=@?/local/pcb/LDFLAGS_HIDLIB_STATIC_@ @/local/pcb/LIBS_3RD_HIDLIB@
 
 @]
