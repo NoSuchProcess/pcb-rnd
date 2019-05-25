@@ -34,7 +34,6 @@ static int ltf_pane_create(lesstif_attr_dlg_t *ctx, int j, Widget parent, int is
 {
 	Widget pane;
 
-	stdarg_n = 0;
 	stdarg(XmNorientation, (ishor ? XmHORIZONTAL : XmVERTICAL));
 	stdarg(XmNallowResize, 1);
 	ctx->wl[j] = pane = XmCreatePanedWindow(parent, "pane", stdarg_args, stdarg_n);
