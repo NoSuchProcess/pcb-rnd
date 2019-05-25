@@ -619,7 +619,7 @@ static XtGeometryResult GeometryManager(Widget w, /* instigator */
 	}
 	else {
 		/* result == XtGeometryYes and this wasn't just a query */
-		XtResizeWindow(gw);
+		XtResizeWindow(w);
 		if (gwc->fillBox_class.layout)
 			(*(gwc->fillBox_class.layout)) ((Widget) gw, w);
 		else
