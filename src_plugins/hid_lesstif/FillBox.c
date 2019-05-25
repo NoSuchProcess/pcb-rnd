@@ -795,12 +795,12 @@ static void Layout(Widget wid, Widget instigator)
 		if (vert) {
 			ChildsStartingX = mw+cb;
 			ChildsStartingY = pos+cb;
-			ChildsActualWidth = AvailWidthForChildren;
+			ChildsActualWidth = Max(AvailWidthForChildren, ChildsActualWidth);
 		}
 		else {
 			ChildsStartingX = pos+cb;
 			ChildsStartingY = mh+cb;
-			ChildsActualHeight = AvailHeightForChildren;
+			ChildsActualHeight = Max(AvailHeightForChildren, ChildsActualHeight);
 		}
 
 		if (gmf) {
