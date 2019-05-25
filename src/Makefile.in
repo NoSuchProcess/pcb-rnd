@@ -257,6 +257,12 @@ put /local/pcb/LIBS /local/pcb/LIBS_3RD
 put /local/pcb/OBJS_UTIL [@
 @]
 
+# build a list of header files to be installed with the hidlib
+put /local/pcb/HDRS_HIDLIB /local/pcb/OBJS_HIDLIB
+uniq /local/pcb/HDRS_HIDLIB
+gsub /local/pcb/HDRS_HIDLIB {.o } {.h }
+
+
 # main: action registrations
 put /local/pcb/ACTION_REG_SRC  {
 	buffer.c brave.c change_act.c conf_act.c file_act.c drc.c error.c
@@ -481,7 +487,7 @@ clean: $(CLEANRULES)
 distclean: FORCE
 	$(SCCBOX) rm -f -q  $(DISTCLEANFILES)
 
-install_all:
+install_pcbrnd:
 	$(SCCBOX) mkdir -p "$(BINDIR)" "$(DATADIR)" "$(LIBDIR)" "$(LIBDIR)/plugins"
 	$(SCCBOX) $(HOW) "pcb-rnd" "$(BINDIR)/pcb-rnd"
 	$(SCCBOX) $(HOW) "default2.lht" "$(DATADIR)/default2.lht"
@@ -490,14 +496,38 @@ install_all:
 	$(SCCBOX) $(HOW) "pcb-menu-default.lht" "$(DATADIR)/pcb-menu-default.lht"
 	$(SCCBOX) $(HOW) "default_font" "$(DATADIR)/default_font"@/local/pcb/rules/install_@
 
+install_hidlib:
+	$(SCCBOX) mkdir -p "$(HL_LIBDIR)" "$(HL_INCDIR)/core" "$(HL_INCDIR)/src_3rd/liblihata" "$(HL_INCDIR)/src_3rd/puplug" "$(HL_INCDIR)/src_3rd/fungw" "$(HL_INCDIR)/src_3rd/genvector" "$(HL_INCDIR)/src_3rd/genregex"
+	$(SCCBOX) $(HOW) "hidlib.a" "$(HL_LIBDIR)/hidlib.a"
+@]
+
+# dynamic part of install_pcbrnd: hidlib headers
+foreach /local/h in /local/pcb/HDRS_HIDLIB
+	put /local/hd /local/h
+	switch /local/h
+		case {^../}
+			sub /local/hd {^[.][.]/} {}
+			end
+		default
+			sub /local/hd {^} {core/}
+			end
+	end
+	print [@	$(SCCBOX) $(HOW) "@/local/h@" "$(HL_INCDIR)/@/local/hd@"@] {\n}
+end
+
+print [@
+
 install:
-	$(MAKE) install_all HOW="install -f"
+	$(MAKE) install_pcbrnd HOW="install -f"
+#	$(MAKE) install_hidlib HOW="install -f"
 
 linstall:
-	$(MAKE) install_all HOW="linstall -f"
+	$(MAKE) install_pcbrnd HOW="linstall -f"
+#	$(MAKE) install_hidlib HOW="linstall -f"
 
 uninstall:
-	$(MAKE) install_all HOW="uninstall"
+	$(MAKE) install_pcbrnd HOW="uninstall"
+#	$(MAKE) install_hidlib HOW="uninstall"
 
 map_plugins:
 	cd ../src_plugins && ./map_plugins.sh
