@@ -30,17 +30,6 @@
 #include "Pages.h"
 #include "brave.h"
 
-static int ltf_pane_create(lesstif_attr_dlg_t *ctx, int j, Widget parent, int ishor)
-{
-	Widget pane;
-
-	stdarg(XmNorientation, (ishor ? XmHORIZONTAL : XmVERTICAL));
-	stdarg(XmNallowResize, 1);
-	ctx->wl[j] = pane = XmCreatePanedWindow(parent, "pane", stdarg_args, stdarg_n);
-	XtManageChild(pane);
-
-	return attribute_dialog_add(ctx, pane, j+1);
-}
 
 static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_rows, int want_frame, int want_scroll)
 {
@@ -95,6 +84,18 @@ static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_
 			abort();
 	}
 	return cnt;
+}
+
+static int ltf_pane_create(lesstif_attr_dlg_t *ctx, int j, Widget parent, int ishor)
+{
+	Widget pane;
+
+	stdarg(XmNorientation, (ishor ? XmHORIZONTAL : XmVERTICAL));
+	stdarg(XmNallowResize, 1);
+	ctx->wl[j] = pane = XmCreatePanedWindow(parent, "pane", stdarg_args, stdarg_n);
+	XtManageChild(pane);
+
+	return attribute_dialog_add(ctx, pane, j+1);
 }
 
 typedef struct ltf_tab_s ltf_tab_t;
