@@ -262,6 +262,10 @@ put /local/pcb/HDRS_HIDLIB /local/pcb/OBJS_HIDLIB
 uniq /local/pcb/HDRS_HIDLIB
 gsub /local/pcb/HDRS_HIDLIB {.o } {.h }
 
+# corner case: some headers are not derived from the objects
+sub /local/pcb/HDRS_HIDLIB {hid_dlg.h } {}
+append /local/pcb/HDRS_HIDLIB {hid.h }
+
 
 # main: action registrations
 put /local/pcb/ACTION_REG_SRC  {
