@@ -6433,7 +6433,7 @@ draw.o: draw.c ../config.h conf_core.h conf.h global_typedefs.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h event.h \
  rotate.h compat_misc.h stub_draw.h layer_ui.h hid_inlines.h \
- layer_inlines.h funchash_core.h funchash.h funchash_core_list.h \
+ funchash_core.h funchash.h funchash_core_list.h \
  obj_pstk_draw.h obj_line_draw.h obj_arc_draw.h obj_rat_draw.h \
  obj_poly_draw.h obj_text_draw.h obj_subc_parent.h draw_composite.c \
  draw_ly_spec.c

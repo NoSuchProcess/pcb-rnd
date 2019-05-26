@@ -41,7 +41,6 @@
 #include "stub_draw.h"
 #include "layer_ui.h"
 #include "hid_inlines.h"
-#include "layer_inlines.h"
 #include "funchash_core.h"
 
 #include "obj_pstk_draw.h"
