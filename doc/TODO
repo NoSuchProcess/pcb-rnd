@@ -45,9 +45,9 @@
 - BUG: bug_files/cam_layer_bug.lht: after cam export (from gui) the mask and paste layers are visible but the layer selector is not updated  - r24366 supposed to fix this [report: keantoken]
 - BUG: undo: clear rats, optimize rats, delete 1 rat then undo - it should undo the rat deletion but it undos optimization
 - BUG: lesstif hbox/vbox allocation issues: test with bug_files/ltf_fillbox/ patches applied, with the fontsel action; opening it multiple times will randomly show or hide the button
-	- fontsel() -> no buttons (if the preview has no extfill, they appear!) [report: Igor2]
-	- about box: if not high enough, hbox/vbox/tab gets confused [report: Igor2]
-	- 0 room allocated under HPANE: pstklib(), netlistdialog(), propedit(), BrowseScripts, preferences dialog config tab
+	- hvbox: fontsel, about dialog: resize to smaller doesn't re-layout
+	- tabbed: redisplay bug in the about box
+	- re-test HPANE: pstklib(), netlistdialog(), propedit(), BrowseScripts, preferences dialog config tab
 	- preferences dialog: library, layers tabs are unusable [report: Igor2]
 - io_kicad:
 	- BUG: kicad_mod (clearance 0.25) is not processed (see priv mail from Erik on 22 may) [report: Erik]
