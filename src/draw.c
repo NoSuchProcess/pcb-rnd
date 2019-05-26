@@ -309,8 +309,9 @@ static void draw_pins_and_pads(pcb_draw_info_t *info, pcb_layergrp_id_t componen
 
 static void draw_everything(pcb_draw_info_t *info)
 {
-	pcb_layer_t *backsilk;
-	pcb_color_t old_silk_color;
+	pcb_layergrp_id_t backsilk_gid;
+	pcb_layergrp_t *backsilk_grp;
+	pcb_color_t old_silk_color[PCB_MAX_LAYERGRP];
 	int i, ngroups;
 	pcb_layergrp_id_t component, solder, gid, side_copper_grp;
 	/* This is the list of layer groups we will draw.  */
@@ -319,10 +320,17 @@ static void draw_everything(pcb_draw_info_t *info)
 	pcb_layergrp_id_t drawn_groups[PCB_MAX_LAYERGRP];
 	pcb_bool paste_empty;
 
-	backsilk = pcb_layer_silk_back(PCB);
-	if (backsilk != NULL) {
-		old_silk_color = backsilk->meta.real.color;
-		backsilk->meta.real.color = conf_core.appearance.color.invisible_objects;
+	backsilk_gid = ((!conf_core.editor.show_solder_side) ? pcb_layergrp_get_bottom_silk() : pcb_layergrp_get_top_silk());
+	backsilk_grp = pcb_get_layergrp(PCB, backsilk_gid);
+	if (backsilk_grp != NULL) {
+		pcb_cardinal_t n;
+		for(n = 0; n < backsilk_grp->len; n++) {
+			pcb_layer_t *ly = pcb_get_layer(PCB->Data, backsilk_grp->lid[n]);
+			if (ly != NULL) {
+				old_silk_color[n] = ly->meta.real.color;
+				ly->meta.real.color = conf_core.appearance.color.invisible_objects;
+			}
+		}
 	}
 
 	pcb_gui->render_burst(PCB_HID_BURST_START, info->drawn_area);
@@ -464,9 +472,14 @@ static void draw_everything(pcb_draw_info_t *info)
 		draw_xor_marks(info);
 
 	finish:;
-	pcb_gui->render_burst(PCB_HID_BURST_END, info->drawn_area);
-	if (backsilk != NULL)
-		backsilk->meta.real.color = old_silk_color;
+	if (backsilk_grp != NULL) {
+		pcb_cardinal_t n;
+		for(n = 0; n < backsilk_grp->len; n++) {
+			pcb_layer_t *ly = pcb_get_layer(PCB->Data, backsilk_grp->lid[n]);
+			if (ly != NULL)
+				ly->meta.real.color = old_silk_color[n];
+		}
+	}
 }
 
 static void pcb_draw_pstks(pcb_draw_info_t *info, pcb_layergrp_id_t group, int is_current, pcb_layer_combining_t comb)
