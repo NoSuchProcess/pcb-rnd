@@ -633,6 +633,43 @@ TODO("textrot: incompatibility warning")
 	}
 }
 
+static pcb_layer_id_t pcb_layer_get_cached(pcb_board_t *pcb, pcb_layer_id_t *cache, unsigned int loc, unsigned int typ)
+{
+	pcb_layergrp_t *g;
+
+	if (*cache < pcb->Data->LayerN) { /* check if the cache is still pointing to the right layer */
+		pcb_layergrp_id_t gid = pcb->Data->Layer[*cache].meta.real.grp;
+		if ((gid >= 0) && (gid < pcb->LayerGroups.len)) {
+			g = &(pcb->LayerGroups.grp[gid]);
+			if ((g->ltype & loc) && (g->ltype & typ) && (g->lid[0] == *cache))
+				return *cache;
+		}
+	}
+
+	/* nope: need to resolve it again */
+	g = pcb_get_grp(&pcb->LayerGroups, loc, typ);
+	if ((g == NULL) || (g->len == 0)) {
+		*cache = -1;
+		return -1;
+	}
+	*cache = g->lid[0];
+	return *cache;
+}
+
+static pcb_layer_id_t pcb_layer_get_bottom_silk(void)
+{
+	static pcb_layer_id_t cache = -1;
+	pcb_layer_id_t id = pcb_layer_get_cached(PCB, &cache, PCB_LYT_BOTTOM, PCB_LYT_SILK);
+	return id;
+}
+
+static pcb_layer_id_t pcb_layer_get_top_silk(void)
+{
+	static pcb_layer_id_t cache = -1;
+	pcb_layer_id_t id = pcb_layer_get_cached(PCB, &cache, PCB_LYT_TOP, PCB_LYT_SILK);
+	return id;
+}
+
 static void LayersFixup(void)
 {
 	pcb_layer_id_t bs, ts;

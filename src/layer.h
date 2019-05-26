@@ -166,10 +166,6 @@ typedef enum {
 	PCB_COMPONENT_SIDE = 1
 } pcb_side_t;
 
-/* Cached lookup of the first silk layer in the bottom or top group */
-pcb_layer_id_t pcb_layer_get_bottom_silk(void);
-pcb_layer_id_t pcb_layer_get_top_silk(void);
-
 /* Return the board the layer is under */
 #define pcb_layer_get_top(layer) pcb_data_get_top((layer)->parent.data)
 
