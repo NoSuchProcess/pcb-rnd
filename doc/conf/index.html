@@ -5,37 +5,7 @@
 	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
 </head>
 <body>
-<H1> The new config system in pcb-rnd </H1>
-<H2> Why, what was wrong with the old one? </H2>
-The old config system had several limitations that would have been
-hard to fix keeping the original design:
-<ul>
-	<li> config settings were specified in a flat list - no <a href="groups.html"> grouping </a>
-	<li> the core had a rather static system - HIDs or plugins couldn't extend it, thus they had <a href="noextend.html"> to invent their own </a> config files
-	<li> ... this led to a variety of configuration formats; using one format not always because it was better suited for the task, but for historical reasons
-	<li> ... this also led to a collection of config files - again not always split by boundaries of settings, but often by arbitrary boundaries of code
-	<li> the old system didn't support lists or arrays well
-	<li> it didn't have a coherent concept of how settings from different <a href="sources.html"> sources </a> would override each other
-	<li> ... this resulted in the rigid structure that most of the settings could come from only one place (e.g. if it's an user setting, the design won't be able to override it)
-</ul>
-
-<H2> What the new system offers </H2>
-<ul>
-	<li> unified format: <a href="http://repo.hu/projects/lihata"> lihata </a> ...
-	<li> ... more future proof: generic markup language - easier to extend without having to worry about breaking the syntax
-	<li> ... the configuration is represented in a tree, grouped by the nature of settings
-	<li> ... there are <a href="lists.html">arrays and lists</a>
-	<li> ... a config file can overwrite a list or <a href="lists.html">prepend/append</a> to it (e.g. design-level config prepending an extra library path keeping system set paths as well)
-	<li> there are different <a href="sources.html"> sources </a> of configuration, e.g. system-wise, user-wise, project-wise, etc.
-	<li> the user has the power to change default config <a href="prio.html">priority per setting</a>; e.g. normally design config overrides user config, but it's possible to mark a setting from user config so strong that it overrides even the setting read from the board file
-	<li> the way settings are stored is flexible and extensible so that a plugin can define their subtree of settings
-	<li> ... since the API even makes it easier to access such settings (vs. parsing your own config file), plugins will tend to use the unified config format/system instead of inventing their own
-	<li> ... the GUI (gtk's preferences dialog) thus can automatically handle the new settings
-	<li> ... plugins don't have to implement actions to set/toggle/query their settings for the menu system, there are generic config set/toggle/query actions the menu config can use
-	<li> ... plugins also get the multi-source, <a href="prio.html">priority-based config mechanism</a>
-	<li> ... which also means plugin settings can be automatically saved as user setting, project setting or even design setting
-	<li> all these are true for all kind of settings, be them GUI preferences, paths, layer colors, grid settings; there should be no exception
-</ul>
+<H1> The config system in pcb-rnd </H1>
 
 <H2> How to get started </H2>
 <ul>
@@ -43,41 +13,8 @@ hard to fix keeping the original design:
 	<li> If you are an programmer, read the <a href="index_user.html">user documentation</a> and the <a href="index_prog.html">programmer documentation</a>
 	<li> If you are a plugin programmer, there's a <a href="plugin_chk.html"> plugin programmer's conf checklist </a> that summarizes what to do
 	<li> In any case, these links may help: <a href="syntax.html">syntax</a>, <a href="sources.html">config files</a>, <a href="prio.html">priority handling</a>
+	<li> if you were familiar with the old "settings" system, please read <a href="history.html"> why pcb-rnd switched </a>
 </ul>
-
-
-<H2> But isn't this more complicated for the user? </H2>
-Hopefully not much. There are a few extra features, like
-multiple <a href="sources.html"> sources </a> with levels that did not
-exist in pcb and <a href="lists.html">lists with prepend/append</a>. Some of these
-features present in other software so users should be comfortable with the ideas.
-The learning curve is probably compensated by the more orthogonal system.
-The syntax is also geared for simplicity and easy use with text editors.
-Finally, the new preferences dialog in the GTK HID and config actions help
-the user to explore how settings got used from all the config sources. There's
-an intended layering in complexity: simple things can be done easily without
-having to understand the whole system.
-<p>
-All in all, the extra features the user needs to learn is comparable with
-the old customs that he/she can forget.
-
-<H2> And did it make the code more complicated? </H2>
-The size of the code did not change much after the initial config rewrite.
-The new system has new features, some of which brought in a few hundred lines of
-code, but a similar amount of old code could be removed. What came in is
-infrastructure, what had to go was a bunch of repetitive config parsing,
-boolean-setting-accessor-action code. This means on the long run, the more
-settings are added, the more the new system pays back.
-<p>
-Read access, which is far the most common way to use the config in the
-code (e.g. if (setting == true) { }) is very similar to the old Settings
-system. Write access needs to go through a function call API, but this
-is usually a single call per setting (instead of directly modifying a
-variable).
-<p>
-For plugin programmers, the new system makes life much easier as they can
-plug their settings in.
-
 
 </body>
 </html>
