@@ -1133,6 +1133,33 @@ static int pcb_search_obj_by_loc_layer(unsigned long Type, void **Result1, void 
 	return 0;
 }
 
+static int pcb_search_obj_by_loc_group(unsigned long Type, void **Result1, void **Result2, void **Result3, unsigned long req_flag, const pcb_layergrp_t *grp, int HigherAvail, double HigherBound, int objst)
+{
+	pcb_cardinal_t n;
+	for(n = 0; n < grp->len; n++) {
+		int found;
+		pcb_layer_t *oldly, *layer = pcb_get_layer(PCB->Data, grp->lid[n]);
+		if (layer == NULL)
+			continue;
+		oldly = SearchLayer;
+		SearchLayer = layer;
+		found = pcb_search_obj_by_loc_layer(Type, Result1, Result2, Result3, req_flag, layer, HigherAvail, HigherBound, objst);
+		SearchLayer = oldly;
+		if (found != 0)
+			return found;
+	}
+	return 0;
+}
+
+static int pcb_search_obj_by_loc_group_id(unsigned long Type, void **Result1, void **Result2, void **Result3, unsigned long req_flag, const pcb_layergrp_id_t gid, int HigherAvail, double HigherBound, int objst)
+{
+	pcb_layergrp_t *grp = pcb_get_layergrp(PCB, gid);
+	if (grp == NULL)
+		return 0;
+	return pcb_search_obj_by_loc_group(Type, Result1, Result2, Result3, req_flag, grp, HigherAvail, HigherBound, objst);
+}
+
+
 /* ---------------------------------------------------------------------------
  * searches for any kind of object or for a set of object types
  * the calling routine passes two pointers to allocated memory for storing
@@ -1158,7 +1185,6 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 	double HigherBound = 0;
 	int HigherAvail = PCB_OBJ_VOID;
 	int objst = Type & (PCB_OBJ_LOCKED | PCB_OBJ_SUBC_PART);
-	pcb_layer_id_t front_silk_id, back_silk_id;
 
 	/* setup variables used by local functions */
 	PosX = X;
@@ -1219,35 +1245,36 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 		HigherAvail = PCB_OBJ_SUBC;
 	}
 
-	front_silk_id = conf_core.editor.show_solder_side ? pcb_layer_get_bottom_silk() : pcb_layer_get_top_silk();
-	back_silk_id = conf_core.editor.show_solder_side ? pcb_layer_get_top_silk() : pcb_layer_get_bottom_silk();
-
-	for (i = -1; i < pcb_max_layer + 1; i++) {
+	{ /* search the front silk layer first */
 		int found;
-		if (pcb_layer_flags(PCB, i) & PCB_LYT_SILK) /* special order: silks are i=-1 and i=max+1, if we meet them elsewhere, skip */
-			continue;
+		pcb_layergrp_id_t front_silk_id = conf_core.editor.show_solder_side ? pcb_layergrp_get_bottom_silk() : pcb_layergrp_get_top_silk();
+		found = pcb_search_obj_by_loc_group_id(Type, Result1, Result2, Result3, req_flag, front_silk_id, HigherAvail, HigherBound, objst);
+		if (found > 0)
+			return found;
+	}
 
-		if (i < 0) {
-			if (front_silk_id < 0)
-				continue;
-			SearchLayer = &PCB->Data->Layer[front_silk_id];
-		}
-		else if (i < pcb_max_layer) {
-			SearchLayer = LAYER_ON_STACK(i);
-		}
-		else {
-			if (back_silk_id < 0)
-				continue;
-			SearchLayer = &PCB->Data->Layer[back_silk_id];
-			if (!PCB->InvisibleObjectsOn)
-				continue;
-		}
+	for(i = 0; i < pcb_max_layer; i++) {
+		int found;
+		if (pcb_layer_flags(PCB, i) & PCB_LYT_SILK) /* special order: silks are searched before/after this loop, if we meet them elsewhere, skip */
+			continue;
+		SearchLayer = LAYER_ON_STACK(i);
+
 		found = pcb_search_obj_by_loc_layer(Type, Result1, Result2, Result3, req_flag, SearchLayer, HigherAvail, HigherBound, objst);
 		if (found < 0)
 			break;
 		if (found != 0)
 			return found;
 	}
+
+	if (PCB->InvisibleObjectsOn) { /* search the back silk layer last, unless it's invisible */
+		int found;
+		pcb_layergrp_id_t back_silk_id = conf_core.editor.show_solder_side ? pcb_layergrp_get_top_silk() : pcb_layergrp_get_bottom_silk();
+		found = pcb_search_obj_by_loc_group_id(Type, Result1, Result2, Result3, req_flag, back_silk_id, HigherAvail, HigherBound, objst);
+		if (found > 0)
+			return found;
+	}
+
+
 	/* return any previously found objects */
 	if (HigherAvail & PCB_OBJ_PSTK) {
 		*Result1 = r1;
