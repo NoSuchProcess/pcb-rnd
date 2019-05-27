@@ -146,7 +146,7 @@ static pcb_pstk_t *pcb_pstk_new_compat_via_(pcb_data_t *data, long int id, pcb_c
 	pcb_pstk_tshape_t tshp;
 	int n;
 
-	if (hole_clearance_hack) {
+	if (hole_clearance_hack && !plated) {
 		/* in PCB hole means unplated with clearance; emulate this by placing a
 		   zero diameter copper circle on all layers and set clearance large
 		   enough to cover the hole too */
