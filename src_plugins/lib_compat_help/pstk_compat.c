@@ -137,7 +137,7 @@ static void compat_shape_free(pcb_pstk_shape_t *shp)
 		free(shp->data.poly.x);
 }
 
-pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, long int id, pcb_coord_t x, pcb_coord_t y, pcb_coord_t drill_dia, pcb_coord_t pad_dia, pcb_coord_t clearance, pcb_coord_t mask, pcb_pstk_compshape_t cshape, pcb_bool plated)
+static pcb_pstk_t *pcb_pstk_new_compat_via_(pcb_data_t *data, long int id, pcb_coord_t x, pcb_coord_t y, pcb_coord_t drill_dia, pcb_coord_t pad_dia, pcb_coord_t clearance, pcb_coord_t mask, pcb_pstk_compshape_t cshape, pcb_bool plated, pcb_bool hole_clearance_hack)
 {
 	pcb_pstk_proto_t proto;
 	pcb_pstk_shape_t shape[5]; /* max number of shapes: 3 coppers, 2 masks */
@@ -146,8 +146,16 @@ pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, long int id, pcb_coord_t x
 	pcb_pstk_tshape_t tshp;
 	int n;
 
+	if (hole_clearance_hack) {
+		/* in PCB hole means unplated with clearance; emulate this by placing a
+		   zero diameter copper circle on all layers and set clearance large
+		   enough to cover the hole too */
+		clearance = pcb_round((double)clearance + (double)drill_dia/2.0);
+		pad_dia = 0.0;
+	}
+
 	/* for plated vias, positive pad is required */
-	if (plated)
+	if (plated && !hole_clearance_hack)
 		assert(pad_dia > drill_dia);
 
 	assert(drill_dia > 0);
@@ -163,7 +171,7 @@ pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, long int id, pcb_coord_t x
 	proto.tr.alloced = proto.tr.used = 1; /* has the canonical form only */
 	proto.tr.array = &tshp;
 
-	if (plated) {
+	if (plated || hole_clearance_hack) {
 		tshp.len = 3 + (mask > 0 ? 2 : 0);
 
 		/* we need to generate the shape only once as it's the same on all */
@@ -208,6 +216,12 @@ pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, long int id, pcb_coord_t x
 
 	return pcb_pstk_new(data, -1, pid, x, y, clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
 }
+
+pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, long int id, pcb_coord_t x, pcb_coord_t y, pcb_coord_t drill_dia, pcb_coord_t pad_dia, pcb_coord_t clearance, pcb_coord_t mask, pcb_pstk_compshape_t cshape, pcb_bool plated)
+{
+	return pcb_pstk_new_compat_via_(data, id, x, y, drill_dia, pad_dia, clearance, mask, cshape, plated, 0);
+}
+
 
 static pcb_pstk_compshape_t get_old_shape_square(pcb_coord_t *dia, const pcb_pstk_shape_t *shp)
 {
@@ -761,7 +775,7 @@ pcb_pstk_t *pcb_old_via_new(pcb_data_t *data, long int id, pcb_coord_t X, pcb_co
 	else
 		shp = PCB_PSTK_COMPAT_ROUND;
 
-	p = pcb_pstk_new_compat_via(data, id, X, Y, DrillingHole, Thickness, Clearance/2, Mask, shp, !(Flags.f & PCB_FLAG_HOLE));
+	p = pcb_pstk_new_compat_via_(data, id, X, Y, DrillingHole, Thickness, Clearance/2, Mask, shp, !(Flags.f & PCB_FLAG_HOLE), 1);
 	p->Flags.f |= Flags.f & PCB_PSTK_VIA_COMPAT_FLAGS;
 	for(n = 0; n < sizeof(Flags.t) / sizeof(Flags.t[0]); n++) {
 		int nt = PCB_THERMAL_ON, t = ((Flags.t[n/2] >> (4 * (n % 2))) & 0xf);
