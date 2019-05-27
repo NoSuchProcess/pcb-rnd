@@ -308,6 +308,8 @@ void pcb_dad_spin_up_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 	pcb_hid_attribute_t *str = attr - spin->wup + spin->wstr;
 	pcb_hid_attribute_t *end = attr - spin->wup + spin->cmp.wend;
 
+	pcb_dad_spin_txt_enter_cb(hid_ctx, caller_data, str); /* fix up missing unit */
+
 	do_step(hid_ctx, spin, str, end, get_step(spin, end, str));
 	spin_changed(hid_ctx, caller_data, spin, end);
 }
@@ -317,6 +319,8 @@ void pcb_dad_spin_down_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)attr->user_data;
 	pcb_hid_attribute_t *str = attr - spin->wdown + spin->wstr;
 	pcb_hid_attribute_t *end = attr - spin->wdown + spin->cmp.wend;
+
+	pcb_dad_spin_txt_enter_cb(hid_ctx, caller_data, str); /* fix up missing unit */
 
 	do_step(hid_ctx, spin, str, end, -get_step(spin, end, str));
 	spin_changed(hid_ctx, caller_data, spin, end);
