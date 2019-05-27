@@ -53,6 +53,9 @@
 	- BUG: parser not parsing obround pad rotation, rot, (at x y rot), see work/bug_files/obround-rotation.kicad_pcb [report: erich]
 
 2. For later releases ===============================================================================
+- CLEANUP: rewrite parametric footprints to use tEDAx (or lihata)
+	- add "global" option for paste/mask tuning
+	- update fp2anim so the web page works again
 - CLEANUP/BUG: The 'As Drawn' polygon contour is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
 	-> need a new rtree that holds the polygons that have ->clipped == NULL for this purpose
 - CLEANUP: think over how to handle subc selection: selecting all parts automatically is bad for propedit; bug_files/subcsel.bug [report: Wojciech]
