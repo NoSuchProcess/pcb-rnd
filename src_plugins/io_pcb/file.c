@@ -638,7 +638,7 @@ static pcb_layer_id_t pcb_layer_get_cached(pcb_board_t *pcb, unsigned int loc, u
 	pcb_layergrp_t *g = pcb_get_grp(&pcb->LayerGroups, loc, typ);
 	if ((g == NULL) || (g->len == 0))
 		return -1;
-	if (g->len > 0)
+	if (g->len > 1)
 		pcb_io_incompat_save(PCB->Data, NULL, "layer", "Multiple silk layers per side not supported by gEDA/PCB", "Merge your silk layers into one layer per group; if there are negative silk layers: layer compositing is not supported by gEDA/PCB");
 	return g->lid[0];
 }
