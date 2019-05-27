@@ -392,7 +392,6 @@ void pcb_dad_spin_txt_enter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribu
 				pcb_hid_attr_val_t hv;
 				char *tmp;
 
-				pcb_trace("APPEND unit!\n");
 				changed = 1;
 				tmp = pcb_concat(str->default_val.str_value, pcbhl_conf.editor.grid_unit->suffix, NULL);
 				hv.str_value = tmp;
