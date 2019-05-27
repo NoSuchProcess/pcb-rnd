@@ -611,6 +611,7 @@ typedef struct {
 //  //  gdk_gc_set_foreground(priv->grid_gc, &gport->grid_color);
 //}
 
+/* Assign "identified" colors to background, offlimits and grid cached structures */
 static void ghid_cairo_set_special_colors(conf_native_t * cfg)
 {
 	render_priv_t *priv = gport->render_priv;
@@ -628,7 +629,6 @@ static void ghid_cairo_set_special_colors(conf_native_t * cfg)
 	}
 	else if (((CFT_COLOR *) cfg->val.color == &pcbhl_conf.appearance.color.grid) /*&& priv->grid_gc */ ) {
 		if (map_color_string(cfg->val.color[0].str, &priv->grid_color)) {
-			conf_setf(CFR_DESIGN, "appearance/color/grid", -1, "%s", get_color_name(&priv->grid_color));
 			//set_special_grid_color();
 		}
 	}
