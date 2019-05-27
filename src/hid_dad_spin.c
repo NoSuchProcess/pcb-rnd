@@ -322,7 +322,7 @@ void pcb_dad_spin_down_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	spin_changed(hid_ctx, caller_data, spin, end);
 }
 
-void pcb_dad_spin_txt_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+void pcb_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)attr->user_data;
 	pcb_hid_attribute_t *str = attr;
@@ -366,6 +366,54 @@ void pcb_dad_spin_txt_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 
 	spin_warn(hid_ctx, spin, end, warn);
 	spin_changed(hid_ctx, caller_data, spin, end);
+}
+
+void pcb_dad_spin_txt_enter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)attr->user_data;
+	pcb_hid_attribute_t *str = attr;
+	pcb_hid_attribute_t *end = attr - spin->wstr + spin->cmp.wend;
+	char *ends, *warn = NULL;
+	int changed = 0;
+	double d;
+	pcb_bool succ, absolute;
+	const pcb_unit_t *unit;
+
+	if (spin->set_writeback_lock)
+		return;
+
+	switch(spin->type) {
+		case PCB_DAD_SPIN_COORD:
+			succ = pcb_get_value_unit(str->default_val.str_value, &absolute, 0, &d, &unit);
+			if (succ)
+				break;
+			strtod(str->default_val.str_value, &ends);
+			if (*ends == '\0') {
+				pcb_hid_attr_val_t hv;
+				char *tmp;
+
+				pcb_trace("APPEND unit!\n");
+				changed = 1;
+				tmp = pcb_concat(str->default_val.str_value, pcbhl_conf.editor.grid_unit->suffix, NULL);
+				hv.str_value = tmp;
+				spin->set_writeback_lock++;
+				pcb_gui->attr_dlg_set_value(hid_ctx, spin->wstr, &hv);
+				spin->set_writeback_lock--;
+				succ = pcb_get_value_unit(str->default_val.str_value, &absolute, 0, &d, &unit);
+				if (succ)
+					end->default_val.coord_value = d;
+				free(tmp);
+			}
+			break;
+		default:
+			/* don't do anything extra for the rest */
+			break;
+	}
+
+	if (changed) {
+		spin_warn(hid_ctx, spin, end, warn);
+		spin_changed(hid_ctx, caller_data, spin, end);
+	}
 }
 
 void pcb_dad_spin_unit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)

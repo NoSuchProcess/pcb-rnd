@@ -67,7 +67,8 @@ do { \
 			spin->wall = PCB_DAD_CURRENT(table); \
 			PCB_DAD_COMPFLAG(table, PCB_HATF_TIGHT); \
 			PCB_DAD_STRING(table); \
-				PCB_DAD_CHANGE_CB(table, pcb_dad_spin_txt_cb); \
+				PCB_DAD_ENTER_CB(table, pcb_dad_spin_txt_enter_cb); \
+				PCB_DAD_CHANGE_CB(table, pcb_dad_spin_txt_change_cb); \
 				PCB_DAD_SET_ATTR_FIELD(table, user_data, (const char **)spin); \
 				spin->wstr = PCB_DAD_CURRENT(table); \
 			PCB_DAD_BEGIN_VBOX(table); \
@@ -121,7 +122,8 @@ extern const char *pcb_hid_dad_spin_warn[];
 
 void pcb_dad_spin_up_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 void pcb_dad_spin_down_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
-void pcb_dad_spin_txt_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+void pcb_dad_spin_txt_enter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+void pcb_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 void pcb_dad_spin_unit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 
 void pcb_dad_spin_free(pcb_hid_attribute_t *attrib);
