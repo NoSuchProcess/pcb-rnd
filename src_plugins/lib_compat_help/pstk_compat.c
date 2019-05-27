@@ -430,6 +430,10 @@ pcb_bool pcb_pstk_export_compat_via(pcb_pstk_t *ps, pcb_coord_t *x, pcb_coord_t 
 	*cshape = old_shape[0];
 	*plated = proto->hplated;
 
+	/* clerance workaround for copper smaller than hole; inverse of r25735 */
+	if (*pad_dia < *drill_dia)
+		*clearance -= (*drill_dia - *pad_dia)/2;
+
 	return pcb_true;
 }
 
