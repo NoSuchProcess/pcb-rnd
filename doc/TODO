@@ -21,7 +21,6 @@
 + FEATURE: grid size change should be undoable? -> no, see http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=undoability [report:Evan]
 - FEATURE: scripting: example script that tents/untents all/selected/object vias [report: keantoken]
 - FEATURE: lesstif DAD support for toggle buttons [report: Igor2]
-+ BUG: query(select, '(@.plated == 1)') does not select the padstack when using bug_files/query_plated_slot.lht [report: Alain]
 + BUG: grid size and mm unit are not reloaded when using bug_files/query_plated_slot.lht. I do expect to be in mm unit (not mil) and grid=0.1mm  -> NOTE: you will need to save it first because that specific file does not contain grid config [report: Alain]
 + BUG: pcb-rnd --help   should not start the GUI, so should not load any dialog/widget stuff [report: Alain]
 - BUG: unplated padtsacks shall not connect layers; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
