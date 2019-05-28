@@ -126,7 +126,7 @@
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h actions.h compat_misc.h obj_subc.h \
  pcb-printf.h hid_dad.h compat_misc.h hid_attrib.h pcb-printf.h \
- hid_dad_spin.h brave.h hid_dad_tree.h hid_dad.h search.h draw.h select.h \
+ hid_dad_spin.h hid_dad_tree.h hid_dad.h search.h draw.h select.h \
  operation.h ../src_plugins/asm/asm_conf.h conf.h \
  ../src_3rd/liblihata/lihata.h list_conf.h conf.h \
  ../src_plugins/asm/conf_internal.c dolists.h \
@@ -275,7 +275,7 @@
  ../src_plugins/cam/cam_compile.c ../src_plugins/cam/cam_compile.h \
  layer_vis.h event.h ../src_3rd/genvector/genvector_impl.c \
  ../src_plugins/cam/cam_gui.c hid_dad.h compat_misc.h hid_dad_spin.h \
- brave.h hid_dad_tree.h hid_dad.h ../src_3rd/genht/hash.h dolists.h \
+ hid_dad_tree.h hid_dad.h ../src_3rd/genht/hash.h dolists.h \
  ../src_plugins/cam/cam_conf_fields.h
 ../src_plugins/ddraft/centgeo.o: ../src_plugins/ddraft/centgeo.c \
  ../config.h ../src_plugins/ddraft/centgeo.h obj_line.h \
@@ -321,9 +321,8 @@
  vtc0.h ../src_plugins/ddraft/trim.c undo_old.h \
  ../src_plugins/ddraft/constraint.c crosshair.h tool.h \
  ../src_plugins/ddraft/constraint_gui.c hid_dad.h compat_misc.h \
- hid_attrib.h hid_dad_spin.h brave.h ../src_plugins/ddraft/cli.c \
- hid_inlines.h compat_misc.h hidlib_conf.h \
- ../src_plugins/ddraft/cli_line.c dolists.h
+ hid_attrib.h hid_dad_spin.h ../src_plugins/ddraft/cli.c hid_inlines.h \
+ compat_misc.h hidlib_conf.h ../src_plugins/ddraft/cli_line.c dolists.h
 ../src_plugins/ddraft/fields_sphash.o: \
  ../src_plugins/ddraft/fields_sphash.c
 ../src_plugins/diag/diag.o: ../src_plugins/diag/diag.c ../config.h \
@@ -353,7 +352,7 @@
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h error.h event.h \
  ../src_plugins/diag/integrity.h hid.h hid_attrib.h hid_dad.h \
- compat_misc.h hid_attrib.h hid_dad_spin.h brave.h search.h macro.h \
+ compat_misc.h hid_attrib.h hid_dad_spin.h search.h macro.h \
  funchash_core.h funchash.h funchash_core_list.h find.h dolists.h \
  ../src_plugins/diag/diag_conf_fields.h
 ../src_plugins/diag/diag_conf.o: ../src_plugins/diag/diag_conf.c \
@@ -401,8 +400,8 @@
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/libfungw/fungw.h \
  ../src_3rd/genht/htpp.h compat_misc.h hid_dad.h compat_misc.h \
- hid_attrib.h pcb-printf.h hid_dad_spin.h brave.h hid_dad_tree.h \
- hid_dad.h error.h ../src_plugins/dialogs/act_dad.h
+ hid_attrib.h pcb-printf.h hid_dad_spin.h hid_dad_tree.h hid_dad.h \
+ error.h ../src_plugins/dialogs/act_dad.h
 ../src_plugins/dialogs/dialogs.o: ../src_plugins/dialogs/dialogs.c \
  ../config.h hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
@@ -417,7 +416,7 @@
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
  ../src_3rd/genvector/gds_char.h hid_attrib.h hid.h actions.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h hid_dad.h \
- compat_misc.h hid_attrib.h pcb-printf.h hid_dad_spin.h brave.h plugins.h \
+ compat_misc.h hid_attrib.h pcb-printf.h hid_dad_spin.h plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h funchash_core.h \
@@ -472,7 +471,7 @@
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h build_run.h \
  file_loaded.h hid_dad.h compat_misc.h hid_attrib.h pcb-printf.h \
- hid_dad_spin.h brave.h pcb-printf.h ../src_plugins/dialogs/dlg_about.h
+ hid_dad_spin.h pcb-printf.h ../src_plugins/dialogs/dlg_about.h
 ../src_plugins/dialogs/dlg_comm_m.o: ../src_plugins/dialogs/dlg_comm_m.c \
  ../config.h actions.h hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
@@ -488,7 +487,7 @@
  ../src_3rd/genvector/gds_char.h ../src_3rd/libfungw/fungw.h \
  ../src_3rd/genht/htpp.h board.h vtroutestyle.h layer_grp.h rats_patch.h \
  board.h hidlib.h hid_dad.h compat_misc.h hid_attrib.h pcb-printf.h \
- hid_dad_spin.h brave.h ../src_plugins/dialogs/xpm.h \
+ hid_dad_spin.h ../src_plugins/dialogs/xpm.h \
  ../src_plugins/dialogs/dlg_comm_m.h plug_io.h conf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h
 ../src_plugins/dialogs/dlg_export.o: ../src_plugins/dialogs/dlg_export.c \
@@ -506,7 +505,7 @@
  ../src_3rd/genvector/gds_char.h ../src_3rd/libfungw/fungw.h \
  ../src_3rd/genht/htpp.h board.h vtroutestyle.h layer_grp.h rats_patch.h \
  board.h hidlib.h hid.h hid_dad.h compat_misc.h hid_attrib.h pcb-printf.h \
- hid_dad_spin.h brave.h hid_init.h ../src_3rd/puplug/puplug.h \
+ hid_dad_spin.h hid_init.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_plugins/dialogs/dlg_export.h
@@ -525,7 +524,7 @@
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/libfungw/fungw.h \
  ../src_3rd/genht/htpp.h hid_dad.h compat_misc.h hid_attrib.h \
- pcb-printf.h hid_dad_spin.h brave.h flag.h flag_str.h change.h board.h \
+ pcb-printf.h hid_dad_spin.h flag.h flag_str.h change.h board.h \
  vtroutestyle.h layer_grp.h rats_patch.h hidlib.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h search.h funchash_core.h \
  funchash.h funchash_core_list.h ../src_plugins/dialogs/dlg_flag_edit.h
@@ -546,9 +545,8 @@
  ../src_3rd/genht/htpp.h board.h vtroutestyle.h layer_grp.h rats_patch.h \
  board.h hidlib.h change.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
- event.h hid_dad.h compat_misc.h hid_attrib.h hid_dad_spin.h brave.h \
- stub_draw.h draw.h idpath.h search.h \
- ../src_plugins/dialogs/dlg_fontsel.h
+ event.h hid_dad.h compat_misc.h hid_attrib.h hid_dad_spin.h stub_draw.h \
+ draw.h idpath.h search.h ../src_plugins/dialogs/dlg_fontsel.h
 ../src_plugins/dialogs/dlg_layer_binding.o: \
  ../src_plugins/dialogs/dlg_layer_binding.c ../config.h actions.h hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
@@ -572,8 +570,8 @@
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h event.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h list_conf.h compat_misc.h hid_dad.h \
- compat_misc.h hid_attrib.h hid_dad_spin.h brave.h funchash_core.h \
- funchash.h funchash_core_list.h obj_subc.h search.h \
+ compat_misc.h hid_attrib.h hid_dad_spin.h funchash_core.h funchash.h \
+ funchash_core_list.h obj_subc.h search.h \
  ../src_plugins/dialogs/dlg_layer_binding.h
 ../src_plugins/dialogs/dlg_layer_flags.o: \
  ../src_plugins/dialogs/dlg_layer_flags.c ../config.h board.h \
@@ -590,7 +588,7 @@
  rats_patch.h board.h hidlib.h actions.h hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h error.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h event.h hid_dad.h \
- compat_misc.h hid_attrib.h pcb-printf.h hid_dad_spin.h brave.h \
+ compat_misc.h hid_attrib.h pcb-printf.h hid_dad_spin.h \
  ../src_plugins/dialogs/dlg_layer_binding.h \
  ../src_plugins/dialogs/dlg_layer_flags.h
 ../src_plugins/dialogs/dlg_lib_pstk.o: \
@@ -614,10 +612,10 @@
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h obj_subc.h vtpadstack.h hid_inlines.h hid_dad.h \
- compat_misc.h hid_attrib.h pcb-printf.h hid_dad_spin.h brave.h \
- hid_dad_tree.h hid_dad.h obj_pstk.h obj_pstk_inlines.h board.h \
- vtroutestyle.h rats_patch.h hidlib.h data.h thermal.h obj_text_draw.h \
- draw.h obj_pstk_draw.h undo_old.h select.h operation.h search.h \
+ compat_misc.h hid_attrib.h pcb-printf.h hid_dad_spin.h hid_dad_tree.h \
+ hid_dad.h obj_pstk.h obj_pstk_inlines.h board.h vtroutestyle.h \
+ rats_patch.h hidlib.h data.h thermal.h obj_text_draw.h draw.h \
+ obj_pstk_draw.h undo_old.h select.h operation.h search.h \
  ../src_plugins/dialogs/dlg_padstack.h \
  ../src_plugins/dialogs/dlg_lib_pstk.h
 ../src_plugins/dialogs/dlg_library.o: \
@@ -644,7 +642,7 @@
  ../src_3rd/genht/ht.h obj_pstk_list.h obj_pstk.h vtpadstack.h \
  obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h event.h obj_subc.h \
  plug_footprint.h vtlibrary.h data.h tool.h hid.h hid_dad.h compat_misc.h \
- hid_attrib.h hid_dad_spin.h brave.h hid_dad_tree.h hid_dad.h hid_init.h \
+ hid_attrib.h hid_dad_spin.h hid_dad_tree.h hid_dad.h hid_init.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_plugins/dialogs/dlg_library.h \
@@ -670,7 +668,7 @@
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h event.h hid_dad.h compat_misc.h hid_attrib.h pcb-printf.h \
- hid_dad_spin.h brave.h compat_fs.h conf_core.h conf.h \
+ hid_dad_spin.h compat_fs.h conf_core.h conf.h \
  ../src_3rd/liblihata/lihata.h list_conf.h hidlib_conf.h plug_io.h \
  ../src_plugins/lib_hid_common/dialogs_conf.h conf.h \
  ../src_plugins/dialogs/dlg_loadsave.h
@@ -689,8 +687,8 @@
  ../src_3rd/genvector/gds_char.h ../src_3rd/libfungw/fungw.h \
  ../src_3rd/genht/htpp.h conf_hid.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
- hid_dad.h compat_misc.h hid_attrib.h hid_dad_spin.h brave.h event.h \
- hidlib.h error.h ../src_plugins/dialogs/dlg_log.h
+ hid_dad.h compat_misc.h hid_attrib.h hid_dad_spin.h event.h hidlib.h \
+ error.h ../src_plugins/dialogs/dlg_log.h
 ../src_plugins/dialogs/dlg_padstack.o: \
  ../src_plugins/dialogs/dlg_padstack.c ../config.h actions.h hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
@@ -706,7 +704,7 @@
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/libfungw/fungw.h \
  ../src_3rd/genht/htpp.h hid_dad.h compat_misc.h hid_attrib.h \
- pcb-printf.h hid_dad_spin.h brave.h funchash_core.h funchash.h \
+ pcb-printf.h hid_dad_spin.h funchash_core.h funchash.h \
  funchash_core_list.h obj_pstk.h ../src_3rd/genvector/vtp0.h \
  obj_pstk_shape.h polygon.h rtree.h ../src_3rd/genrtree/genrtree_api.h \
  rtree2_compat.h vtpadstack_t.h obj_pstk_op.h operation.h \
@@ -735,7 +733,7 @@
  pcb-printf.h error.h event.h hidlib.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf.h conf_hid.h hid_dad.h compat_misc.h hid_attrib.h hid_dad_spin.h \
- brave.h hid_dad_tree.h hid_dad.h ../src_3rd/genht/hash.h \
+ hid_dad_tree.h hid_dad.h ../src_3rd/genht/hash.h \
  ../src_plugins/dialogs/dlg_pref.h \
  ../src_plugins/dialogs/dlg_pref_sizes.h \
  ../src_plugins/dialogs/dlg_pref_board.h \
@@ -770,8 +768,8 @@
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h conf_hid.h conf.h \
  pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
- list_conf.h hid_dad.h compat_misc.h hid_attrib.h hid_dad_spin.h brave.h \
- event.h hidlib.h error.h ../src_plugins/dialogs/dlg_search_tab.h \
+ list_conf.h hid_dad.h compat_misc.h hid_attrib.h hid_dad_spin.h event.h \
+ hidlib.h error.h ../src_plugins/dialogs/dlg_search_tab.h \
  ../src_plugins/dialogs/dlg_search_edit.c hid_dad_tree.h hid_dad.h \
  ../src_3rd/genht/hash.h
 ../src_plugins/dialogs/dlg_view.o: ../src_plugins/dialogs/dlg_view.c \
@@ -791,9 +789,9 @@
  board.h hidlib.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  hidlib_conf.h view.h idpath.h draw.h drc.h view.h event.h hid_inlines.h \
- hid_dad.h compat_misc.h hid_attrib.h hid_dad_spin.h brave.h \
- hid_dad_tree.h hid_dad.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
- safe_fs.h misc_util.h
+ hid_dad.h compat_misc.h hid_attrib.h hid_dad_spin.h hid_dad_tree.h \
+ hid_dad.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h safe_fs.h \
+ misc_util.h
 ../src_plugins/dialogs/xpm.o: ../src_plugins/dialogs/xpm.c ../config.h \
  ../src_plugins/dialogs/xpm/question.xpm \
  ../src_plugins/dialogs/xpm/warning.xpm
@@ -1390,7 +1388,7 @@
  ../src_plugins/lib_polyhelp/topoly.h obj_common.h \
  ../src_plugins/export_openems/mesh.h layer.h vtc0.h vtr0.h \
  ../src_plugins/export_openems/excitation.c hid_dad.h compat_misc.h \
- hid_dad_spin.h brave.h event.h dolists.h
+ hid_dad_spin.h event.h dolists.h
 ../src_plugins/export_openems/mesh.o: \
  ../src_plugins/export_openems/mesh.c ../config.h \
  ../src_plugins/export_openems/mesh.h layer.h globalconst.h \
@@ -1413,8 +1411,8 @@
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h hid_dad.h \
- compat_misc.h hid_attrib.h pcb-printf.h hid_dad_spin.h brave.h event.h \
- safe_fs.h conf.h ../src_3rd/liblihata/lihata.h list_conf.h
+ compat_misc.h hid_attrib.h pcb-printf.h hid_dad_spin.h event.h safe_fs.h \
+ conf.h ../src_3rd/liblihata/lihata.h list_conf.h
 ../src_plugins/export_openscad/export_openscad.o: \
  ../src_plugins/export_openscad/export_openscad.c ../config.h conf_core.h \
  conf.h global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
@@ -1730,7 +1728,7 @@
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
  ../src_3rd/genvector/gds_char.h hid_attrib.h hid.h actions.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h hid_dad.h \
- compat_misc.h hid_attrib.h pcb-printf.h hid_dad_spin.h brave.h plugins.h \
+ compat_misc.h hid_attrib.h pcb-printf.h hid_dad_spin.h plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h board.h \
@@ -1968,7 +1966,7 @@
  ../src_3rd/genht/htpp.h hid_cfg.h ../src_plugins/lib_gtk_common/glue.h \
  conf.h ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
- compat_misc.h hid_attrib.h hid_dad_spin.h brave.h \
+ compat_misc.h hid_attrib.h hid_dad_spin.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
@@ -2006,7 +2004,7 @@
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h \
  ../src_3rd/genht/htpp.h hid_cfg.h ../src_plugins/lib_gtk_common/glue.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
- compat_misc.h hid_attrib.h hid_dad_spin.h brave.h \
+ compat_misc.h hid_attrib.h hid_dad_spin.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
@@ -2042,7 +2040,7 @@
  ../src_3rd/genht/htpp.h hid_cfg.h ../src_plugins/lib_gtk_common/glue.h \
  ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
- compat_misc.h hid_attrib.h hid_dad_spin.h brave.h \
+ compat_misc.h hid_attrib.h hid_dad_spin.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
@@ -2081,7 +2079,7 @@
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h \
  ../src_3rd/genht/htpp.h hid_cfg.h ../src_plugins/lib_gtk_common/glue.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
- compat_misc.h hid_attrib.h hid_dad_spin.h brave.h \
+ compat_misc.h hid_attrib.h hid_dad_spin.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
@@ -2114,7 +2112,7 @@
  ../src_3rd/genht/htpp.h hid_cfg.h ../src_plugins/lib_gtk_common/glue.h \
  conf.h ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
- compat_misc.h hid_attrib.h hid_dad_spin.h brave.h \
+ compat_misc.h hid_attrib.h hid_dad_spin.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
@@ -2152,7 +2150,7 @@
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h \
  ../src_3rd/genht/htpp.h hid_cfg.h ../src_plugins/lib_gtk_common/glue.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
- compat_misc.h hid_attrib.h hid_dad_spin.h brave.h \
+ compat_misc.h hid_attrib.h hid_dad_spin.h \
  ../src_plugins/lib_gtk_common/bu_menu.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
@@ -2210,7 +2208,7 @@
  ../src_plugins/hid_lesstif/Pages.h brave.h \
  ../src_plugins/hid_lesstif/dlg_attr_tree.c \
  ../src_plugins/hid_lesstif/xm_tree_table_widget.h hid_dad_tree.h \
- hid_attrib.h hid_dad.h compat_misc.h hid_dad_spin.h brave.h
+ hid_attrib.h hid_dad.h compat_misc.h hid_dad_spin.h
 ../src_plugins/hid_lesstif/dlg_fileselect.o: \
  ../src_plugins/hid_lesstif/dlg_fileselect.c ../config.h \
  ../src_plugins/hid_lesstif/xincludes.h \
@@ -2228,7 +2226,7 @@
  box.h math_helper.h misc_util.h ../src_3rd/genvector/gds_char.h board.h \
  vtroutestyle.h layer_grp.h rats_patch.h board.h hidlib.h \
  ../src_plugins/hid_lesstif/ltf_stdarg.h color.h hid.h hid_dad.h \
- compat_misc.h hid_attrib.h pcb-printf.h hid_dad_spin.h brave.h event.h \
+ compat_misc.h hid_attrib.h pcb-printf.h hid_dad_spin.h event.h \
  ../src_plugins/hid_lesstif/dlg_fileselect.h global_typedefs.h
 ../src_plugins/hid_lesstif/library.o: \
  ../src_plugins/hid_lesstif/library.c \
@@ -2289,7 +2287,7 @@
  funchash_core.h funchash.h funchash_core_list.h hid.h hid_nogui.h \
  hid_cfg.h ../src_plugins/hid_lesstif/lesstif.h hid_cfg_input.h hid_cfg.h \
  board.h vtroutestyle.h rats_patch.h board.h hid_attrib.h hid_init.h \
- hid_color.h hid_dad.h compat_misc.h hid_attrib.h hid_dad_spin.h brave.h \
+ hid_color.h hid_dad.h compat_misc.h hid_attrib.h hid_dad_spin.h \
  actions.h ../src_plugins/hid_lesstif/ltf_stdarg.h color.h grid.h \
  misc_util.h compat_misc.h layer_vis.h tool.h \
  ../src_plugins/hid_lesstif/dlg_fileselect.h global_typedefs.h \
@@ -3433,8 +3431,7 @@
  conf.h ../src_plugins/io_lihata/lht_conf.h paths.h obj_subc_list.h \
  pcb_minuid.h safe_fs.h thermal.h funchash_core.h funchash.h \
  funchash_core_list.h netlist2.h hid_dad.h compat_misc.h hid_attrib.h \
- hid_dad_spin.h brave.h ../src_plugins/lib_compat_help/pstk_compat.h \
- obj_pstk.h
+ hid_dad_spin.h ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h
 ../src_plugins/io_lihata/write_style.o: \
  ../src_plugins/io_lihata/write_style.c ../config.h \
  ../src_plugins/io_lihata/write_style.h ../src_3rd/liblhtpers/lhtpers.h \
@@ -3892,10 +3889,6 @@
  ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/wt_accel_label.h \
  ../src_plugins/lib_hid_common/menu_helper.h
-../src_plugins/lib_gtk_common/bu_spin_button.o: \
- ../src_plugins/lib_gtk_common/bu_spin_button.c ../config.h \
-   \
- ../src_plugins/lib_gtk_common/compat.h
 ../src_plugins/lib_gtk_common/dlg_attribute.o: \
  ../src_plugins/lib_gtk_common/dlg_attribute.c ../config.h hidlib_conf.h \
  conf.h global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
@@ -3914,14 +3907,11 @@
  ../src_plugins/lib_gtk_common/glue.h conf.h \
  ../src_plugins/lib_gtk_common/compat.h pcb-printf.h hid_attrib.h hid.h \
  hid_dad_tree.h hid_attrib.h hid_dad.h compat_misc.h hid_dad_spin.h \
- brave.h ../src_3rd/genht/hash.h hid_init.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/genht/hash.h hid_init.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h misc_util.h \
- compat_misc.h event.h hidlib.h \
-   \
-   unit.h \
- ../src_plugins/lib_gtk_common/win_place.h global_typedefs.h \
- ../src_plugins/lib_gtk_common/dlg_attr_tree.c \
+ compat_misc.h event.h hidlib.h ../src_plugins/lib_gtk_common/win_place.h \
+ global_typedefs.h ../src_plugins/lib_gtk_common/dlg_attr_tree.c \
  ../src_plugins/lib_gtk_common/dlg_attr_misc.c \
  ../src_plugins/lib_gtk_common/wt_preview.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h pcb_bool.h \
@@ -3948,8 +3938,7 @@
  hid_init.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h misc_util.h compat_misc.h \
- ../src_plugins/lib_gtk_common/compat.h \
-   unit.h
+ ../src_plugins/lib_gtk_common/compat.h
 ../src_plugins/lib_gtk_common/dlg_fileselect.o: \
  ../src_plugins/lib_gtk_common/dlg_fileselect.c ../config.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h \
@@ -3964,7 +3953,7 @@
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
  ../src_3rd/genvector/gds_char.h hid_dad.h compat_misc.h hid_attrib.h \
- hid.h pcb-printf.h hid_dad_spin.h brave.h compat_misc.h \
+ hid.h pcb-printf.h hid_dad_spin.h compat_misc.h \
  ../src_plugins/lib_gtk_common/compat.h event.h hidlib.h safe_fs.h conf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_plugins/lib_gtk_common/dlg_attribute.h \
@@ -3984,11 +3973,10 @@
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
  ../src_3rd/genvector/gds_char.h hid_dad.h compat_misc.h hid_attrib.h \
- pcb-printf.h hid_dad_spin.h brave.h \
- ../src_plugins/lib_gtk_common/bu_menu.h conf.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
- conf.h hid_cfg_input.h ../src_3rd/genht/htpp.h hid_cfg.h conf_hid.h \
- ../src_plugins/lib_gtk_common/glue.h hid.h \
+ pcb-printf.h hid_dad_spin.h ../src_plugins/lib_gtk_common/bu_menu.h \
+ conf.h ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
+ list_conf.h conf.h hid_cfg_input.h ../src_3rd/genht/htpp.h hid_cfg.h \
+ conf_hid.h ../src_plugins/lib_gtk_common/glue.h hid.h \
  ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/bu_command.h pcb_bool.h conf_core.h \
  hidlib.h hidlib_conf.h board.h vtroutestyle.h layer_grp.h rats_patch.h \
@@ -4200,11 +4188,6 @@
  ../src_plugins/lib_gtk_common/wt_accel_label.c ../config.h \
  ../src_plugins/lib_gtk_common/wt_accel_label.h \
  ../src_plugins/lib_gtk_common/compat.h
-../src_plugins/lib_gtk_common/wt_coord_entry.o: \
- ../src_plugins/lib_gtk_common/wt_coord_entry.c ../config.h \
-   unit.h pcb-printf.h \
- ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h unit.h
 ../src_plugins/lib_gtk_common/wt_preview.o: \
  ../src_plugins/lib_gtk_common/wt_preview.c ../config.h hidlib_conf.h \
  conf.h global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
@@ -4254,7 +4237,7 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf.h ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
- compat_misc.h hid_attrib.h hid_dad_spin.h brave.h \
+ compat_misc.h hid_attrib.h hid_dad_spin.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
@@ -4282,7 +4265,7 @@
  ../src_3rd/genvector/vtp0.h list_conf.h conf.h \
  ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
- compat_misc.h hid_attrib.h hid_dad_spin.h brave.h \
+ compat_misc.h hid_attrib.h hid_dad_spin.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
@@ -4313,7 +4296,7 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf.h ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
- compat_misc.h hid_attrib.h hid_dad_spin.h brave.h \
+ compat_misc.h hid_attrib.h hid_dad_spin.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
@@ -4342,7 +4325,7 @@
  ../src_plugins/lib_gtk_common/glue.h \
  ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
- compat_misc.h hid_attrib.h hid_dad_spin.h brave.h \
+ compat_misc.h hid_attrib.h hid_dad_spin.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
@@ -4364,11 +4347,10 @@
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
  ../src_3rd/genvector/gds_char.h hid_dad.h compat_misc.h hid_attrib.h \
- pcb-printf.h hid_dad_spin.h brave.h \
- ../src_plugins/lib_gtk_common/bu_menu.h conf.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
- conf.h hid_cfg_input.h ../src_3rd/genht/htpp.h hid_cfg.h conf_hid.h \
- ../src_plugins/lib_gtk_common/glue.h hid.h \
+ pcb-printf.h hid_dad_spin.h ../src_plugins/lib_gtk_common/bu_menu.h \
+ conf.h ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
+ list_conf.h conf.h hid_cfg_input.h ../src_3rd/genht/htpp.h hid_cfg.h \
+ conf_hid.h ../src_plugins/lib_gtk_common/glue.h hid.h \
  ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/bu_command.h pcb_bool.h \
  ../src_plugins/lib_gtk_hid/gui.h \
@@ -4400,7 +4382,7 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf.h ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
- compat_misc.h hid_attrib.h hid_dad_spin.h brave.h \
+ compat_misc.h hid_attrib.h hid_dad_spin.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
@@ -4452,7 +4434,7 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf.h ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
- compat_misc.h hid_attrib.h hid_dad_spin.h brave.h \
+ compat_misc.h hid_attrib.h hid_dad_spin.h \
  ../src_plugins/lib_gtk_common/bu_menu.h conf_hid.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
@@ -4658,7 +4640,7 @@
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
  ../src_3rd/genvector/gds_char.h hid_cfg.h hid.h hid_dad.h compat_misc.h \
- hid_attrib.h pcb-printf.h hid_dad_spin.h brave.h actions.h \
+ hid_attrib.h pcb-printf.h hid_dad_spin.h actions.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h board.h \
  vtroutestyle.h layer_grp.h rats_patch.h board.h hidlib.h data.h \
  crosshair.h vtonpoint.h route.h buffer.h obj_rat_list.h obj_rat.h \
@@ -4720,9 +4702,8 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genvector/vtp0.h list_conf.h conf.h conf_core.h route_style.h \
  event.h hid.h error.h hid_cfg.h hid.h hid_dad.h compat_misc.h \
- hid_attrib.h hid_dad_spin.h brave.h \
- ../src_plugins/lib_hid_pcbui/routest.h actions.h \
- ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
+ hid_attrib.h hid_dad_spin.h ../src_plugins/lib_hid_pcbui/routest.h \
+ actions.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
  ../src_plugins/lib_hid_pcbui/routest_dlg.c hid_dad_tree.h hid_dad.h \
  ../src_3rd/genht/hash.h
 ../src_plugins/lib_hid_pcbui/status.o: \
@@ -4739,11 +4720,10 @@
  rats_patch.h board.h hidlib.h hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h error.h \
  hid_cfg_input.h ../src_3rd/genht/htpp.h hid_cfg.h hid.h hid_dad.h \
- compat_misc.h hid_attrib.h pcb-printf.h hid_dad_spin.h brave.h \
- conf_core.h conf.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/genvector/vtp0.h list_conf.h hidlib_conf.h crosshair.h \
- vtonpoint.h route.h layer.h search.h find.h obj_subc.h \
- ../src_3rd/libminuid/libminuid.h rtree.h \
+ compat_misc.h hid_attrib.h pcb-printf.h hid_dad_spin.h conf_core.h \
+ conf.h ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
+ list_conf.h hidlib_conf.h crosshair.h vtonpoint.h route.h layer.h \
+ search.h find.h obj_subc.h ../src_3rd/libminuid/libminuid.h rtree.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h obj_subc_parent.h \
  data.h crosshair.h buffer.h ../src_3rd/libfungw/fungw.h obj_rat_list.h \
  obj_rat.h idpath.h obj_subc_list.h obj_subc.h ht_subc.h \
@@ -4764,8 +4744,8 @@
  obj_text_list.h obj_text.h font.h ../src_3rd/genht/htip.h box.h \
  math_helper.h misc_util.h ../src_3rd/genvector/gds_char.h hid_cfg.h \
  hid.h hid_dad.h compat_misc.h hid_attrib.h pcb-printf.h hid_dad_spin.h \
- brave.h tool.h ../src_3rd/genvector/vtp0.h board.h vtroutestyle.h \
- layer_grp.h rats_patch.h board.h hidlib.h hidlib_conf.h conf.h \
+ tool.h ../src_3rd/genvector/vtp0.h board.h vtroutestyle.h layer_grp.h \
+ rats_patch.h board.h hidlib.h hidlib_conf.h conf.h \
  ../src_3rd/liblihata/lihata.h list_conf.h \
  ../src_plugins/lib_hid_pcbui/toolbar.h event.h conf.h
 ../src_plugins/lib_netmap/netmap.o: ../src_plugins/lib_netmap/netmap.c \
@@ -4832,7 +4812,7 @@
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h obj_text_list.h obj_text.h font.h \
- ../src_3rd/genht/htip.h box.h pcb-printf.h hid_dad_spin.h brave.h \
+ ../src_3rd/genht/htip.h box.h pcb-printf.h hid_dad_spin.h \
  ../src_plugins/lib_polyhelp/topoly.h board.h vtroutestyle.h layer_grp.h \
  rats_patch.h board.h hidlib.h obj_common.h ../src_3rd/libfungw/fungw.h \
  ../src_3rd/genht/htpp.h data.h crosshair.h vtonpoint.h route.h buffer.h \
@@ -5132,9 +5112,9 @@
  actions.h hid.h ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h error.h ../src_3rd/libfungw/fungw.h \
  ../src_3rd/genht/htpp.h hid_dad.h compat_misc.h hid_attrib.h \
- pcb-printf.h hid_dad_spin.h brave.h hid_dad_tree.h hid_dad.h conf_hid.h \
- conf.h ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
- list_conf.h ../src_plugins/propedit/props.h global_typedefs.h \
+ pcb-printf.h hid_dad_spin.h hid_dad_tree.h hid_dad.h conf_hid.h conf.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
+ ../src_plugins/propedit/props.h global_typedefs.h \
  ../src_3rd/genvector/vtl0.h idpath.h color.h ../src_3rd/genht/ht.h \
  ../src_plugins/propedit/propsel.h
 ../src_plugins/propedit/propedit.o: ../src_plugins/propedit/propedit.c \
@@ -5489,7 +5469,7 @@
  ../src_3rd/puplug/error.h actions.h misc_util.h \
  ../src_plugins/report/report_conf.h conf.h compat_misc.h layer.h \
  obj_term.h obj_pstk.h obj_pstk_inlines.h thermal.h obj_subc_parent.h \
- hid_dad.h compat_misc.h hid_attrib.h hid_dad_spin.h brave.h netlist2.h \
+ hid_dad.h compat_misc.h hid_attrib.h hid_dad_spin.h netlist2.h \
  ../src_3rd/genregex/regex_sei.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h dolists.h \
  ../src_plugins/report/report_conf_fields.h
@@ -5551,7 +5531,7 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h hid_cfg.h hid_dad.h compat_misc.h hid_attrib.h \
- pcb-printf.h hid_dad_spin.h brave.h safe_fs.h conf.h \
+ pcb-printf.h hid_dad_spin.h safe_fs.h conf.h \
  ../src_3rd/liblihata/lihata.h list_conf.h safe_fs_dir.h compat_inc.h \
  compat_fs.h event.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
  ../src_plugins/script/script.h ../src_plugins/script/live_script.h
@@ -5578,8 +5558,8 @@
  pcb-printf.h globalconst.h ../src_plugins/script/script.h \
  ../src_plugins/script/c_script.c fptr_cast.h hidlib_conf.h \
  ../src_plugins/script/timer.c ../src_plugins/script/script_act.c \
- hid_dad.h compat_misc.h hid_attrib.h hid_dad_spin.h brave.h \
- hid_dad_tree.h hid_dad.h ../src_plugins/script/live_script.h dolists.h
+ hid_dad.h compat_misc.h hid_attrib.h hid_dad_spin.h hid_dad_tree.h \
+ hid_dad.h ../src_plugins/script/live_script.h dolists.h
 ../src_plugins/serpentine/serpentine.o: \
  ../src_plugins/serpentine/serpentine.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
@@ -5663,7 +5643,7 @@
  conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h error.h \
  event.h math_helper.h obj_poly.h obj_poly_draw.h draw.h rotate.h \
  compat_misc.h tool.h ../src_plugins/shape/shape_dialog.c hid_dad.h \
- hid_attrib.h hid_dad_spin.h brave.h dolists.h
+ hid_attrib.h hid_dad_spin.h dolists.h
 ../src_plugins/sketch_route/cdt/cdt.o: \
  ../src_plugins/sketch_route/cdt/cdt.c \
  ../src_plugins/sketch_route/cdt/cdt.h \
@@ -6413,7 +6393,7 @@ error.o: error.c ../config.h actions.h hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h event.h hidlib.h hid_dad.h compat_misc.h hid_attrib.h \
- pcb-printf.h hid_dad_spin.h brave.h safe_fs.h conf.h \
+ pcb-printf.h hid_dad_spin.h safe_fs.h conf.h \
  ../src_3rd/liblihata/lihata.h list_conf.h funchash_core.h funchash.h \
  funchash_core_list.h hidlib_conf.h
 event.o: event.c ../config.h event.h unit.h global_typedefs.h pcb_bool.h \
@@ -6684,8 +6664,8 @@ hid_dad_spin.o: hid_dad_spin.c ../config.h hid_attrib.h hid.h \
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
  ../src_3rd/genvector/gds_char.h hid_dad.h compat_misc.h pcb-printf.h \
- hid_dad_spin.h brave.h hidlib_conf.h conf.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h
+ hid_dad_spin.h hidlib_conf.h conf.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/genvector/vtp0.h list_conf.h
 hid_dad_tree.o: hid_dad_tree.c ../config.h hid_dad_tree.h hid_attrib.h \
  hid.h ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
@@ -6699,7 +6679,7 @@ hid_dad_tree.o: hid_dad_tree.c ../config.h hid_dad_tree.h hid_attrib.h \
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
  ../src_3rd/genvector/gds_char.h hid_dad.h compat_misc.h pcb-printf.h \
- hid_dad_spin.h brave.h ../src_3rd/genht/hash.h
+ hid_dad_spin.h ../src_3rd/genht/hash.h
 hid_dlg.o: hid_dlg.c ../config.h actions.h hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
@@ -6714,7 +6694,7 @@ hid_dlg.o: hid_dlg.c ../config.h actions.h hid.h \
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/libfungw/fungw.h \
  ../src_3rd/genht/htpp.h event.h hidlib.h hid_dad.h compat_misc.h \
- hid_attrib.h pcb-printf.h hid_dad_spin.h brave.h hid_nogui.h
+ hid_attrib.h pcb-printf.h hid_dad_spin.h hid_nogui.h
 hid_init.o: hid_init.c ../config.h hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h error.h global_typedefs.h \
