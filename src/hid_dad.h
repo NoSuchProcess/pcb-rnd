@@ -170,13 +170,13 @@ do { \
 
 #define PCB_DAD_INTEGER(table, label) \
 do { \
-	PCB_DAD_ALLOC(table, PCB_HATT_INTEGER); \
+	PCB_DAD_SPIN_INT(table); \
 	PCB_DAD_SET_ATTR_FIELD(table, name, label); \
 } while(0)
 
 #define PCB_DAD_REAL(table, label) \
 do { \
-	PCB_DAD_ALLOC(table, PCB_HATT_REAL); \
+	PCB_DAD_SPIN_DOUBLE(table); \
 	PCB_DAD_SET_ATTR_FIELD(table, name, label); \
 } while(0)
 
