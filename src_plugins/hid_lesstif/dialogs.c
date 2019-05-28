@@ -689,8 +689,8 @@ void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_att
 	/* don't expect screens larger than 800x600 */
 	if (ctx->minw > 750)
 		ctx->minw = 750;
-	if (ctx->minw > 550)
-		ctx->minw = 550;
+	if (ctx->minh > 550)
+		ctx->minh = 550;
 
 	/* set top form's minimum width/height to content request */
 	stdarg_n = 0;
