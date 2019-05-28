@@ -39,7 +39,6 @@
 #include "compat_misc.h"
 
 #include "compat.h"
-#include "wt_coord_entry.h"
 
 typedef struct {
 	GtkWidget *del;

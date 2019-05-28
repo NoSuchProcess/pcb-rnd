@@ -3919,7 +3919,7 @@
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h misc_util.h \
  compat_misc.h event.h hidlib.h \
  ../src_plugins/lib_gtk_common/bu_spin_button.h \
- ../src_plugins/lib_gtk_common/wt_coord_entry.h unit.h \
+   unit.h \
  ../src_plugins/lib_gtk_common/win_place.h global_typedefs.h \
  ../src_plugins/lib_gtk_common/dlg_attr_tree.c \
  ../src_plugins/lib_gtk_common/dlg_attr_misc.c \
@@ -3949,7 +3949,7 @@
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h misc_util.h compat_misc.h \
  ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/wt_coord_entry.h unit.h
+   unit.h
 ../src_plugins/lib_gtk_common/dlg_fileselect.o: \
  ../src_plugins/lib_gtk_common/dlg_fileselect.c ../config.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h \
@@ -4202,7 +4202,7 @@
  ../src_plugins/lib_gtk_common/compat.h
 ../src_plugins/lib_gtk_common/wt_coord_entry.o: \
  ../src_plugins/lib_gtk_common/wt_coord_entry.c ../config.h \
- ../src_plugins/lib_gtk_common/wt_coord_entry.h unit.h pcb-printf.h \
+   unit.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h unit.h
 ../src_plugins/lib_gtk_common/wt_preview.o: \

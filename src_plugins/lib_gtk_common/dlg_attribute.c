@@ -45,7 +45,6 @@
 
 #include "compat.h"
 #include "bu_spin_button.h"
-#include "wt_coord_entry.h"
 #include "win_place.h"
 
 #define PCB_OBJ_PROP "pcb-rnd_context"
@@ -111,35 +110,6 @@ static void intspinner_changed_cb(GtkSpinButton *spin_button, gpointer user_data
 		return;
 	dst->default_val.int_value = gtk_spin_button_get_value(spin_button);
 	change_cb(ctx, dst);
-}
-
-static void coordentry_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
-{
-	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(entry), PCB_OBJ_PROP);
-	const char *s;
-	pcb_coord_t crd;
-	double crdd;
-	const pcb_unit_t *u;
-	pcb_bool succ;
-
-	s = gtk_entry_get_text(entry);
-	succ = pcb_get_value_unit(s, NULL, 1, &crdd, &u);
-
-	if (!succ)
-		return;
-
-	dst->changed = 1;
-
-	if (ctx->inhibit_valchg)
-		return;
-
-	crd = crdd;
-	pcb_gtk_coord_entry_set_unit(GHID_COORD_ENTRY(entry), u);
-
-	if ((dst->default_val.coord_value != crd) && (crd >= dst->min_val) && (crd <= dst->max_val)) {
-		dst->default_val.coord_value = crd;
-		change_cb(ctx, dst);
-	}
 }
 
 static void dblspinner_changed_cb(GtkSpinButton *spin_button, gpointer user_data)
@@ -491,37 +461,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				break;
 
 			case PCB_HATT_COORD:
-				ctx->wltop[j] = hbox = gtkc_hbox_new(FALSE, 4);
-				gtk_box_pack_start(GTK_BOX(parent), hbox, expfill, expfill, 0);
-
-				entry = pcb_gtk_coord_entry_new(ctx->attrs[j].min_val, ctx->attrs[j].max_val,
-																				ctx->attrs[j].default_val.coord_value, pcbhl_conf.editor.grid_unit, CE_SMALL);
-				gtk_box_pack_start(GTK_BOX(hbox), entry, expfill, expfill, 0);
-				g_object_set_data(G_OBJECT(entry), PCB_OBJ_PROP, ctx);
-				ctx->wl[j] = entry;
-
-				if (ctx->attrs[j].default_val.str_value != NULL)
-					gtk_entry_set_text(GTK_ENTRY(entry), ctx->attrs[j].default_val.str_value);
-				gtk_widget_set_tooltip_text(entry, ctx->attrs[j].help_text);
-				g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(coordentry_changed_cb), &(ctx->attrs[j]));
-				break;
-
-			case PCB_HATT_REAL:
-				ctx->wltop[j] = hbox = gtkc_hbox_new(FALSE, 4);
-				gtk_box_pack_start(GTK_BOX(parent), hbox, expfill, expfill, 0);
-
-				/*
-				 * FIXME
-				 * need to pick the "digits" and step size argument more
-				 * intelligently
-				 */
-				ghid_spin_button(hbox, &widget, ctx->attrs[j].default_val.real_value,
-												 ctx->attrs[j].min_val, ctx->attrs[j].max_val, 0.01, 0.01, 3,
-												 0, dblspinner_changed_cb, &(ctx->attrs[j]), FALSE, NULL);
-
-				gtk_widget_set_tooltip_text(widget, ctx->attrs[j].help_text);
-				g_object_set_data(G_OBJECT(widget), PCB_OBJ_PROP, ctx);
-				ctx->wl[j] = widget;
+				ctx->wl[j] = gtk_label_new("ERROR: COORD entry");
 				break;
 
 			case PCB_HATT_STRING:
@@ -664,6 +604,7 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 		case PCB_HATT_BEGIN_TABLE:
 		case PCB_HATT_PICBUTTON:
 		case PCB_HATT_PICTURE:
+		case PCB_HATT_COORD:
 		case PCB_HATT_BEGIN_COMPOUND:
 			goto error;
 
@@ -726,14 +667,6 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 			}
 			break;
 
-		case PCB_HATT_COORD:
-			{
-				pcb_coord_t crd = pcb_gtk_coord_entry_get_value(GHID_COORD_ENTRY(ctx->wl[idx]));
-				if (crd == val->coord_value)
-					goto nochg;
-				pcb_gtk_coord_entry_set_value(GHID_COORD_ENTRY(ctx->wl[idx]), val->coord_value);
-			}
-			break;
 
 		case PCB_HATT_REAL:
 			{
