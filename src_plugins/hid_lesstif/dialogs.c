@@ -171,18 +171,6 @@ static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
 				ctx->results[widx].str_value = ctx->attrs[widx].default_val.str_value;
 			}
 			return; /* can't rely on central copy because of the allocation */
-		case PCB_HATT_INTEGER:
-			cp = XmTextGetString(ctx->wl[widx]);
-			sscanf(cp, "%d", &ctx->attrs[widx].default_val.int_value);
-			break;
-		case PCB_HATT_COORD:
-			cp = XmTextGetString(ctx->wl[widx]);
-			ctx->attrs[widx].default_val.coord_value = pcb_get_value(cp, NULL, NULL, NULL);
-			break;
-		case PCB_HATT_REAL:
-			cp = XmTextGetString(ctx->wl[widx]);
-			sscanf(cp, "%lg", &ctx->results[widx].real_value);
-			break;
 		case PCB_HATT_ENUM:
 			{
 				const char **uptr;
@@ -398,30 +386,15 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 			XtAddCallback(ctx->wl[i], XmNvalueChangedCallback, valchg, ctx->wl[i]);
 			XtAddCallback(ctx->wl[i], XmNactivateCallback, activated, ctx->wl[i]);
 			break;
+
 		case PCB_HATT_INTEGER:
-			stdarg(XmNcolumns, 13);
-			stdarg(XmNresizeWidth, True);
-			sprintf(buf, "%d", ctx->results[i].int_value);
-			stdarg(XmNvalue, buf);
-			ctx->wl[i] = XmCreateTextField(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
-			XtAddCallback(ctx->wl[i], XmNvalueChangedCallback, valchg, ctx->wl[i]);
-			break;
 		case PCB_HATT_COORD:
-			stdarg(XmNcolumns, 13);
-			stdarg(XmNresizeWidth, True);
-			pcb_snprintf(buf, sizeof(buf), "%$mS", ctx->results[i].coord_value);
-			stdarg(XmNvalue, buf);
-			ctx->wl[i] = XmCreateTextField(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
-			XtAddCallback(ctx->wl[i], XmNvalueChangedCallback, valchg, ctx->wl[i]);
-			break;
 		case PCB_HATT_REAL:
-			stdarg(XmNcolumns, 16);
-			stdarg(XmNresizeWidth, True);
-			pcb_snprintf(buf, sizeof(buf), "%g", ctx->results[i].real_value);
-			stdarg(XmNvalue, buf);
-			ctx->wl[i] = XmCreateTextField(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
-			XtAddCallback(ctx->wl[i], XmNvalueChangedCallback, valchg, ctx->wl[i]);
+			stdarg_n = 0;
+			stdarg(XmNalignment, XmALIGNMENT_BEGINNING);
+			ctx->wl[i] = XmCreateLabel(parent, XmStrCast("ERROR: old spin widget"), stdarg_args, stdarg_n);
 			break;
+
 		case PCB_HATT_PROGRESS:
 			ctx->wl[i] = ltf_progress_create(ctx, parent);
 			break;
@@ -528,17 +501,9 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 			copied = 1;
 			break;
 		case PCB_HATT_INTEGER:
-			sprintf(buf, "%d", val->int_value);
-			XtVaSetValues(ctx->wl[idx], XmNvalue, XmStrCast(buf), NULL);
-			break;
 		case PCB_HATT_COORD:
-			pcb_snprintf(buf, sizeof(buf), "%$mS", val->coord_value);
-			XtVaSetValues(ctx->wl[idx], XmNvalue, XmStrCast(buf), NULL);
-			break;
 		case PCB_HATT_REAL:
-			pcb_snprintf(buf, sizeof(buf), "%g", val->real_value);
-			XtVaSetValues(ctx->wl[idx], XmNvalue, XmStrCast(buf), NULL);
-			break;
+			goto err;
 		case PCB_HATT_PROGRESS:
 			ltf_progress_set(ctx, idx, val->real_value);
 			break;
