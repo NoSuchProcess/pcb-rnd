@@ -57,6 +57,8 @@ void pcb_ltf_winplace(Display *dsp, Window w, const char *id, int defx, int defy
 				XMoveWindow(dsp, w, plc[0], plc[1]);
 		}
 	}
+	else if ((defx > 0) && (defy > 0))
+		XResizeWindow(dsp, w, defx, defy);
 }
 
 static void ltf_winplace_cfg(Display *dsp, Window win, void *ctx, const char *id)
@@ -610,7 +612,7 @@ static void ltf_attr_config_cb(Widget shell, XtPointer data, XEvent *xevent, cha
 	win = XtWindow(shell);
 	dsp = XtDisplay(shell);
 
-	ltf_winplace_cfg(dsp, XtWindow(XtParent(XtParent(ctx->dialog))), ctx, ctx->id);
+	ltf_winplace_cfg(dsp, XtWindow(ctx->dialog), ctx, ctx->id);
 }
 
 static void ltf_initial_wstates(lesstif_attr_dlg_t *ctx)
@@ -656,7 +658,6 @@ void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_att
 	topform = XmCreateFormDialog(mainwind, XmStrCast(title), stdarg_args, stdarg_n);
 	XtManageChild(topform);
 
-	pcb_ltf_winplace(XtDisplay(topform), XtWindow(XtParent(topform)), id, defx, defy);
 
 	ctx->dialog = XtParent(topform);
 	XtAddCallback(topform, XmNunmapCallback, ltf_attr_destroy_cb, ctx);
@@ -700,6 +701,9 @@ void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_att
 
 	if (!modal)
 		XtManageChild(ctx->dialog);
+
+	XtRealizeWidget(ctx->dialog);
+	pcb_ltf_winplace(XtDisplay(topform), XtWindow(XtParent(topform)), id, defx, defy);
 
 	ltf_initial_wstates(ctx);
 
