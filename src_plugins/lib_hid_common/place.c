@@ -311,6 +311,9 @@ void pcb_dialog_place_init(void)
 	htsw_init(&wingeo, strhash, strkeyeq);
 	pcb_event_bind(PCB_EVENT_SAVE_PRE, place_save_pre, NULL, place_cookie);
 	pcb_event_bind(PCB_EVENT_LOAD_POST, place_load_post, NULL, place_cookie);
+	pcb_wplc_load(CFR_INTERNAL);
+	pcb_wplc_load(CFR_ENV);
 	pcb_wplc_load(CFR_SYSTEM);
 	pcb_wplc_load(CFR_USER);
+	pcb_wplc_load(CFR_CLI);
 }
