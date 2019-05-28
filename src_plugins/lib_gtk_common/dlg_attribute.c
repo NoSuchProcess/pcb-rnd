@@ -44,7 +44,6 @@
 #include "event.h"
 
 #include "compat.h"
-#include "bu_spin_button.h"
 #include "win_place.h"
 
 #define PCB_OBJ_PROP "pcb-rnd_context"
@@ -97,31 +96,6 @@ static void set_flag_cb(GtkToggleButton *button, gpointer user_data)
 		return;
 
 	dst->default_val.int_value = gtk_toggle_button_get_active(button);
-	change_cb(ctx, dst);
-}
-
-static void intspinner_changed_cb(GtkSpinButton *spin_button, gpointer user_data)
-{
-	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(spin_button), PCB_OBJ_PROP);
-	pcb_hid_attribute_t *dst = user_data;
-
-	dst->changed = 1;
-	if (ctx->inhibit_valchg)
-		return;
-	dst->default_val.int_value = gtk_spin_button_get_value(spin_button);
-	change_cb(ctx, dst);
-}
-
-static void dblspinner_changed_cb(GtkSpinButton *spin_button, gpointer user_data)
-{
-	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(spin_button), PCB_OBJ_PROP);
-	pcb_hid_attribute_t *dst = user_data;
-
-	dst->changed = 1;
-	if (ctx->inhibit_valchg)
-		return;
-
-	dst->default_val.real_value = gtk_spin_button_get_value(spin_button);
 	change_cb(ctx, dst);
 }
 
@@ -444,20 +418,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				break;
 
 			case PCB_HATT_INTEGER:
-				ctx->wltop[j] = hbox = gtkc_hbox_new(FALSE, 4);
-				gtk_box_pack_start(GTK_BOX(parent), hbox, expfill, expfill, 0);
-
-				/*
-				 * FIXME
-				 * need to pick the "digits" argument based on min/max
-				 * values
-				 */
-				ghid_spin_button(hbox, &widget, ctx->attrs[j].default_val.int_value,
-												 ctx->attrs[j].min_val, ctx->attrs[j].max_val, 1.0, 1.0, 0, 0,
-												 intspinner_changed_cb, &(ctx->attrs[j]), FALSE, NULL);
-				gtk_widget_set_tooltip_text(widget, ctx->attrs[j].help_text);
-				g_object_set_data(G_OBJECT(widget), PCB_OBJ_PROP, ctx);
-				ctx->wl[j] = widget;
+				ctx->wl[j] = gtk_label_new("ERROR: INTEGER entry");
 				break;
 
 			case PCB_HATT_COORD:
@@ -605,6 +566,8 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 		case PCB_HATT_PICBUTTON:
 		case PCB_HATT_PICTURE:
 		case PCB_HATT_COORD:
+		case PCB_HATT_REAL:
+		case PCB_HATT_INTEGER:
 		case PCB_HATT_BEGIN_COMPOUND:
 			goto error;
 
@@ -658,24 +621,7 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 			}
 			break;
 
-		case PCB_HATT_INTEGER:
-			{
-				double d = gtk_spin_button_get_value(GTK_SPIN_BUTTON(ctx->wl[idx]));
-				if (val->int_value == (int)d)
-					goto nochg;
-				gtk_spin_button_set_value(GTK_SPIN_BUTTON(ctx->wl[idx]), val->int_value);
-			}
-			break;
 
-
-		case PCB_HATT_REAL:
-			{
-				double d = gtk_spin_button_get_value(GTK_SPIN_BUTTON(ctx->wl[idx]));
-				if (val->real_value == d)
-					goto nochg;
-				gtk_spin_button_set_value(GTK_SPIN_BUTTON(ctx->wl[idx]), val->real_value);
-			}
-			break;
 
 		case PCB_HATT_STRING:
 			{
