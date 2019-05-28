@@ -2,6 +2,7 @@
 
 1. For the upcoming release ===============================================================================
 - DOC: tutorial: index
+- DOC: the feature doc for scripting in the user manual needs a section for live scripting
 + CLEANUP: Vuokko's list of warnings on OpenBSD: bug_files/warn-obsd-r24746.log [report: Vuokko]
 + CLEANUP: add the thin line draw optimization to the filled poly optimization, including hole, in hid_draw_helper (search for last_x); make this configurable for both (exporters shall not optimize!); remove the similar optimization from hidgl triangulation and gdk and lesstif [report: Ade, Peter]
 - CLEANUP: (TESTING) DAD: centralize the coordinate input spinbox: hid_dad_spin 
