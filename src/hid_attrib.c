@@ -315,6 +315,7 @@ int pcb_hid_attrdlg_num_children(pcb_hid_attribute_t *attrs, int start_from, int
 			case PCB_HATT_BEGIN_TABLE:
 			case PCB_HATT_BEGIN_HBOX:
 			case PCB_HATT_BEGIN_VBOX:
+			case PCB_HATT_BEGIN_COMPOUND:
 				level++;
 				break;
 			default:
