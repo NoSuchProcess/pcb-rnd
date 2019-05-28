@@ -866,6 +866,8 @@ void *ghid_attr_dlg_new(pcb_gtk_common_t *com, const char *id, pcb_hid_attribute
 		if ((plc[0] >= 0) && (plc[1] >= 0))
 			gtk_window_move(GTK_WINDOW(ctx->dialog), plc[0], plc[1]);
 	}
+	else if ((defx > 0) && (defy > 0))
+		gtk_window_resize(GTK_WINDOW(ctx->dialog), defx, defy);
 
 	g_signal_connect(ctx->dialog, "configure_event", G_CALLBACK(ghid_attr_dlg_configure_event_cb), ctx);
 	ctx->destroy_handler = g_signal_connect(ctx->dialog, "destroy", G_CALLBACK(ghid_attr_dlg_destroy_event_cb), ctx);
