@@ -327,6 +327,9 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 
 			ctx->wl[i] = w;
 
+			/* tables are implemented using RowColumn which works only if all rows
+			   are filled in with the predefined number of widgets (numcol). If the
+			   called didn't do that, the table needs to be filled up with placeholders */
 			i = attribute_dialog_add(ctx, w, i+1);
 			while((len % numcol) != 0) {
 				Widget pad;
