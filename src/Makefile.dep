@@ -3894,7 +3894,7 @@
  ../src_plugins/lib_hid_common/menu_helper.h
 ../src_plugins/lib_gtk_common/bu_spin_button.o: \
  ../src_plugins/lib_gtk_common/bu_spin_button.c ../config.h \
- ../src_plugins/lib_gtk_common/bu_spin_button.h \
+   \
  ../src_plugins/lib_gtk_common/compat.h
 ../src_plugins/lib_gtk_common/dlg_attribute.o: \
  ../src_plugins/lib_gtk_common/dlg_attribute.c ../config.h hidlib_conf.h \
@@ -3918,7 +3918,7 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h misc_util.h \
  compat_misc.h event.h hidlib.h \
- ../src_plugins/lib_gtk_common/bu_spin_button.h \
+   \
    unit.h \
  ../src_plugins/lib_gtk_common/win_place.h global_typedefs.h \
  ../src_plugins/lib_gtk_common/dlg_attr_tree.c \
