@@ -478,6 +478,7 @@ static void layersel_begin_grp_open(layersel_ctx_t *ls, const char *name, ls_gro
 			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lsg);
 			PCB_DAD_RIGHT_CB(ls->sub.dlg, group_right_cb);
 			PCB_DAD_CHANGE_CB(ls->sub.dlg, group_open_cb);
+			PCB_DAD_HELP(ls->sub.dlg, name);
 
 		/* vert sep */
 		PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
