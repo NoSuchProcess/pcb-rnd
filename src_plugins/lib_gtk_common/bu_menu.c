@@ -58,7 +58,7 @@ struct _GHidMainMenuClass {
 	GtkMenuBarClass parent_class;
 };
 
-static GtkWidget *gtk_menu_or_checkmenu_item_new(const char *label, const char *accel_label, int check)
+static GtkWidget *pcb_gtk_menu_item_new(const char *label, const char *accel_label, int check)
 {
 	GtkWidget *w;
 	GtkWidget *hbox = gtkc_hbox_new(FALSE, 0);
@@ -77,16 +77,6 @@ static GtkWidget *gtk_menu_or_checkmenu_item_new(const char *label, const char *
 	gtk_container_add(GTK_CONTAINER(w), GTK_WIDGET(hbox));
 
 	return w;
-}
-
-static GtkWidget *pcb_gtk_menu_item_new(const char *label, const char *accel_label)
-{
-	return gtk_menu_or_checkmenu_item_new(label, accel_label, FALSE);
-}
-
-static GtkWidget *pcb_gtk_checkmenu_item_new(const char *label, const char *accel_label)
-{
-	return gtk_menu_or_checkmenu_item_new(label, accel_label, TRUE);
 }
 
 /* LHT HANDLER */
@@ -204,7 +194,7 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 		}
 		else {
 			/* NORMAL ITEM */
-			GtkWidget *item = pcb_gtk_menu_item_new(menu_label, accel);
+			GtkWidget *item = pcb_gtk_menu_item_new(menu_label, accel, FALSE);
 			accel = NULL;
 			ins_menu(item, shell, ins_after);
 			sub_res->user_data = handle_alloc(item, item, NULL);
@@ -223,7 +213,7 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 
 	/* By now this runs only for toggle items. */
 	if (action) {
-		GtkWidget *item = pcb_gtk_checkmenu_item_new(menu_label, accel);
+		GtkWidget *item = pcb_gtk_menu_item_new(menu_label, accel, TRUE);
 
 		g_signal_connect(G_OBJECT(action), "activate", menu->action_cb, (gpointer) n_action);
 		g_object_set_data(G_OBJECT(action), "resource", (gpointer) sub_res);
