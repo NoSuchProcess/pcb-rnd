@@ -60,7 +60,6 @@ do { \
 	unit->cmp.set_value = pcb_dad_unit_set_value; \
 	unit->cmp.set_help = pcb_dad_unit_set_help; \
 	unit->family = family_; \
-	unit->attrs = &table; \
 	unit->hid_ctx = &table ## _hid_ctx; \
 } while(0)
 
