@@ -5,6 +5,5 @@ wt_*: custom widgets, cell renderers for gtk - must work in both gtk2 and gtk3
 dlg_*: dialog boxes, preferably one per file
 bu_*: builders, building a part of a bigger gui portion
 in_*: input handling (gtk-specific)
-win_*: windowing related utils
 
 Any of these may depend on glib.

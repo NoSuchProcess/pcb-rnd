@@ -21,7 +21,6 @@ put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/util_listener.o
   $(PLUGDIR)/lib_gtk_common/util_timer.o
   $(PLUGDIR)/lib_gtk_common/util_watch.o
-  $(PLUGDIR)/lib_gtk_common/win_place.o
   $(PLUGDIR)/lib_gtk_common/wt_accel_label.o
   $(PLUGDIR)/lib_gtk_common/wt_preview.o
 @]

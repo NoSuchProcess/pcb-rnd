@@ -44,7 +44,6 @@
 #include "event.h"
 
 #include "compat.h"
-#include "win_place.h"
 
 #define PCB_OBJ_PROP "pcb-rnd_context"
 
@@ -964,4 +963,19 @@ void pcb_gtk_dad_fixcolor(void *hid_ctx, const GdkColor *color)
 			default:;
 		}
 	}
+}
+
+int pcb_gtk_winplace_cfg(pcb_hidlib_t *hidlib, GtkWidget *widget, void *ctx, const char *id)
+{
+	GtkAllocation allocation;
+
+	gtk_widget_get_allocation(widget, &allocation);
+
+	/* For whatever reason, get_allocation doesn't set these. Gtk. */
+	gtk_window_get_position(GTK_WINDOW(widget), &allocation.x, &allocation.y);
+
+	pcb_event(hidlib, PCB_EVENT_DAD_NEW_GEO, "psiiii", ctx, id,
+		(int)allocation.x, (int)allocation.y, (int)allocation.width, (int)allocation.height);
+
+	return 0;
 }

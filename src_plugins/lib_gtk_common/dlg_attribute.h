@@ -20,3 +20,7 @@ void *ghid_attr_sub_new(pcb_gtk_common_t *com, GtkWidget *parent_box, pcb_hid_at
 
 /* Fix up background color of various widgets - useful if the host dialog's background color is not the default */
 void pcb_gtk_dad_fixcolor(void *hid_ctx, const GdkColor *color);
+
+/* Report new window coords to the central window placement code
+   emitting an event */
+int pcb_gtk_winplace_cfg(pcb_hidlib_t *hidlib, GtkWidget *widget, void *ctx, const char *id);

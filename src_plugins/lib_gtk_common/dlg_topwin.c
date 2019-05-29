@@ -60,7 +60,6 @@
 #include "in_keyboard.h"
 #include "lib_gtk_config.h"
 #include "hid_gtk_conf.h"
-#include "win_place.h"
 
 /*** docking code (dynamic parts) ***/
 static int pcb_gtk_dock_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, pcb_event_arg_t *res, int argc, pcb_event_arg_t *argv)

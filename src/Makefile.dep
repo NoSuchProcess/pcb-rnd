@@ -3910,7 +3910,7 @@
  ../src_3rd/genht/hash.h hid_init.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h misc_util.h \
- compat_misc.h event.h hidlib.h ../src_plugins/lib_gtk_common/win_place.h \
+ compat_misc.h event.h hidlib.h   \
  global_typedefs.h ../src_plugins/lib_gtk_common/dlg_attr_tree.c \
  ../src_plugins/lib_gtk_common/dlg_attr_misc.c \
  ../src_plugins/lib_gtk_common/wt_preview.h \
@@ -3989,7 +3989,7 @@
  ../src_plugins/lib_gtk_common/ui_zoompan.h \
  ../src_plugins/lib_gtk_common/lib_gtk_config.h event.h \
  ../src_plugins/lib_gtk_common/hid_gtk_conf.h \
- ../src_plugins/lib_gtk_common/win_place.h global_typedefs.h
+   global_typedefs.h
 ../src_plugins/lib_gtk_common/in_keyboard.o: \
  ../src_plugins/lib_gtk_common/in_keyboard.c ../config.h \
  ../src_plugins/lib_gtk_common/in_keyboard.h hid_cfg_input.h \
@@ -4175,7 +4175,7 @@
  ../src_3rd/genht/htpp.h hid_cfg.h hid.h
 ../src_plugins/lib_gtk_common/win_place.o: \
  ../src_plugins/lib_gtk_common/win_place.c ../config.h \
- ../src_plugins/lib_gtk_common/win_place.h global_typedefs.h pcb_bool.h \
+   global_typedefs.h pcb_bool.h \
  unit.h hidlib_conf.h conf.h global_typedefs.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
@@ -4358,7 +4358,7 @@
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/glue.h ../src_plugins/lib_gtk_hid/render.h \
- tool.h ../src_plugins/lib_gtk_common/win_place.h global_typedefs.h \
+ tool.h   global_typedefs.h \
  ../src_plugins/lib_gtk_common/hid_gtk_conf.h \
  ../src_plugins/lib_gtk_common/lib_gtk_config.h
 ../src_plugins/lib_gtk_hid/glue_hid.o: \
@@ -4401,7 +4401,7 @@
  ../src_plugins/lib_gtk_common/util_listener.h \
  ../src_plugins/lib_gtk_common/util_timer.h \
  ../src_plugins/lib_gtk_common/util_watch.h \
- ../src_plugins/lib_gtk_common/win_place.h \
+   \
  ../src_plugins/lib_gtk_common/hid_gtk_conf.h \
  ../src_plugins/lib_gtk_common/lib_gtk_config.h \
  ../src_plugins/lib_hid_common/menu_helper.h
