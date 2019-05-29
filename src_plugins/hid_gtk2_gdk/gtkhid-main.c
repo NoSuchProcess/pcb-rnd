@@ -8,7 +8,6 @@
 #include "../src_plugins/lib_gtk_hid/glue_common.h"
 #include "../src_plugins/lib_gtk_hid/glue_hid.h"
 #include "../src_plugins/lib_gtk_hid/glue_conf.h"
-#include "../src_plugins/lib_gtk_hid/glue_event.h"
 #include "../src_plugins/lib_gtk_hid/glue_win32.h"
 #include "../src_plugins/lib_gtk_hid/common.h"
 #include "../src_plugins/lib_gtk_hid/render.h"
@@ -52,8 +51,6 @@ int pplg_init_hid_gtk2_gdk(void)
 	ghid_conf_regs(ghid_cookie);
 
 	pcb_hid_register_hid(&gtk2_gdk_hid);
-
-	glue_event_init(ghid_cookie);
 
 	return 0;
 }

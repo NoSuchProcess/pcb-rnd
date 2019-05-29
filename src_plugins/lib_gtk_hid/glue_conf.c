@@ -29,7 +29,6 @@
 
 #include "config.h"
 #include "glue_conf.h"
-#include "glue_event.h"
 #include "conf.h"
 #include "gui.h"
 

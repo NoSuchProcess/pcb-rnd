@@ -2012,7 +2012,7 @@
  ../src_plugins/lib_gtk_hid/glue_common.h \
  ../src_plugins/lib_gtk_hid/glue_hid.h \
  ../src_plugins/lib_gtk_hid/glue_conf.h \
- ../src_plugins/lib_gtk_hid/glue_event.h \
+   \
  ../src_plugins/lib_gtk_hid/glue_win32.h \
  ../src_plugins/lib_gtk_hid/common.h ../src_plugins/lib_gtk_hid/render.h
 ../src_plugins/hid_gtk2_gl/gtkhid-gl.o: \
@@ -2087,7 +2087,7 @@
  ../src_plugins/lib_gtk_hid/glue_common.h \
  ../src_plugins/lib_gtk_hid/glue_hid.h \
  ../src_plugins/lib_gtk_hid/glue_conf.h \
- ../src_plugins/lib_gtk_hid/glue_event.h \
+   \
  ../src_plugins/lib_gtk_hid/glue_win32.h \
  ../src_plugins/lib_gtk_hid/common.h ../src_plugins/lib_gtk_hid/render.h
 ../src_plugins/hid_gtk3_cairo/gtkhid-cairo.o: \
@@ -2158,7 +2158,7 @@
  ../src_plugins/lib_gtk_hid/glue_common.h \
  ../src_plugins/lib_gtk_hid/glue_hid.h \
  ../src_plugins/lib_gtk_hid/glue_conf.h \
- ../src_plugins/lib_gtk_hid/glue_event.h \
+   \
  ../src_plugins/lib_gtk_hid/glue_win32.h \
  ../src_plugins/lib_gtk_hid/common.h ../src_plugins/lib_gtk_hid/render.h
 ../src_plugins/hid_lesstif/FillBox.o: \
@@ -4313,7 +4313,7 @@
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_plugins/lib_gtk_hid/glue_event.h \
+ ../src_3rd/genlist/gendlist.h   \
  ../src_plugins/lib_gtk_hid/gui.h hid.h error.h attrib.h layer.h \
  globalconst.h color.h obj_common.h flag.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \

@@ -370,6 +370,7 @@ static const char *cur_clip()
 	return "\\_";
 }
 
+/* Called from the core when it's busy doing something and we need to indicate that to the user.  */
 static void ltf_busy(pcb_hidlib_t *hidlib, pcb_bool busy)
 {
 	static Cursor busy_cursor = 0;
@@ -387,12 +388,6 @@ static void ltf_busy(pcb_hidlib_t *hidlib, pcb_bool busy)
 		need_idle_proc(); /* restores the cursor */
 }
 
-/* Called from the core when it's busy doing something and we need to
-   indicate that to the user.  */
-static void LesstifBusy(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
-{
-	ltf_busy(hidlib, 1);
-}
 
 /* ---------------------------------------------------------------------- */
 
@@ -3136,7 +3131,6 @@ int pplg_init_hid_lesstif(void)
 
 	pcb_event_bind(PCB_EVENT_NETLIST_CHANGED, LesstifNetlistChanged, NULL, lesstif_cookie);
 	pcb_event_bind(PCB_EVENT_LIBRARY_CHANGED, LesstifLibraryChanged, NULL, lesstif_cookie);
-	pcb_event_bind(PCB_EVENT_BUSY, LesstifBusy, NULL, lesstif_cookie);
 
 	pcb_hid_register_hid(&lesstif_hid);
 	if (lesstif_conf_id < 0)
