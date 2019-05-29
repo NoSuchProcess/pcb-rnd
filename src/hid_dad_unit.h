@@ -49,6 +49,7 @@ do { \
 		pcb_dad_unit_init(); \
 		PCB_DAD_ENUM(table, pcb_dad_unit_enum); \
 			PCB_DAD_CHANGE_CB(table, pcb_dad_unit_change_cb); \
+			PCB_DAD_SET_ATTR_FIELD(table, user_data, (const char **)unit); \
 			unit->wenum = PCB_DAD_CURRENT(table); \
 	PCB_DAD_END(table); \
 		PCB_DAD_SET_ATTR_FIELD(table, enumerations, (const char **)unit); \
