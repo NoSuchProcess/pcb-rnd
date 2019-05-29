@@ -256,10 +256,6 @@ int gtkhid_parse_arguments(int *argc, char ***argv)
 	}
 #endif
 
-	/* Threads aren't used in PCB, but this call would go here.
-	 */
-	/* g_thread_init (NULL); */
-
 	conf_parse_arguments("plugins/hid_gtk/", argc, argv);
 
 	if (!gtk_init_check(argc, argv)) {
