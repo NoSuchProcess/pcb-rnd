@@ -41,7 +41,7 @@ typedef struct {
 /*** implementation ***/
 
 
-#define PCB_DAD_UNIT_NEW(table, family) \
+#define PCB_DAD_UNIT_NEW(table, family_) \
 do { \
 	pcb_hid_dad_unit_t *unit = calloc(sizeof(pcb_hid_dad_unit_t), 1); \
 	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_COMPOUND); \
@@ -59,7 +59,7 @@ do { \
 	unit->cmp.widget_hide = pcb_dad_unit_widget_hide; \
 	unit->cmp.set_value = pcb_dad_unit_set_value; \
 	unit->cmp.set_help = pcb_dad_unit_set_help; \
-	unit->family = family; \
+	unit->family = family_; \
 	unit->attrs = &table; \
 	unit->hid_ctx = &table ## _hid_ctx; \
 } while(0)
