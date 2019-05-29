@@ -34,7 +34,7 @@
 #include "wt_accel_label.h"
 #include "compat.h"
 
-static GtkWidget *gtk_menu_or_checkmenu_item_new(int check, const char *label, const char *accel_label)
+static GtkWidget *gtk_menu_or_checkmenu_item_new(const char *label, const char *accel_label, int check)
 {
 	GtkWidget *w;
 	GtkWidget *hbox = gtkc_hbox_new(FALSE, 0);
@@ -57,10 +57,10 @@ static GtkWidget *gtk_menu_or_checkmenu_item_new(int check, const char *label, c
 
 GtkWidget *pcb_gtk_menu_item_new(const char *label, const char *accel_label)
 {
-	return gtk_menu_or_checkmenu_item_new(FALSE, label, accel_label);
+	return gtk_menu_or_checkmenu_item_new(label, accel_label, FALSE);
 }
 
 GtkWidget *pcb_gtk_checkmenu_item_new(const char *label, const char *accel_label)
 {
-	return gtk_menu_or_checkmenu_item_new(TRUE, label, accel_label);
+	return gtk_menu_or_checkmenu_item_new(label, accel_label, TRUE);
 }
