@@ -5,19 +5,11 @@
 - DOC: the feature doc for scripting in the user manual needs a section for live scripting
 + CLEANUP: Vuokko's list of warnings on OpenBSD: bug_files/warn-obsd-r24746.log [report: Vuokko]
 + CLEANUP: add the thin line draw optimization to the filled poly optimization, including hole, in hid_draw_helper (search for last_x); make this configurable for both (exporters shall not optimize!); remove the similar optimization from hidgl triangulation and gdk and lesstif [report: Ade, Peter]
-- CLEANUP: (TESTING) DAD: centralize the coordinate input spinbox: hid_dad_spin 
-	+ drc & size: doesn't update on mil/mm change in top win -> need a list of spinboxes to update on conf change [report: Ade]
-	- make the central unit infra more flexible so plugins can register new units
-	- make sure we don't crash when grid or config references non-existing unit or unit that has no conversion field set up yet
-	- propedit: relative modifications +x mils, #degrees broke [report: Igor2]
-- CLEANUP: library window DAD-ification: remove pcb_act_LibraryShow()
-	- FEATURE: library window: allow long tags and long location text to split
-	+ BUG: double check parametric footprint edit window: bug_files/parametric.txt [report: Piotr]
++ drc & size: doesn't update on mil/mm change in top win -> need a list of spinboxes to update on conf change [report: Ade]
+- propedit: relative modifications +x mils, #degrees broke [report: Igor2]
++ BUG: double check parametric footprint edit window: bug_files/parametric.txt [report: Piotr]
+- FEATURE: library window: allow long tags and long location text to split: rich text widget
 - CLEANUP: DAD close sequence: TODO("#51.*"): there are three sources to trigger hid_ctx (caller's free on modal, close button free and window destroy callback); requre the user to always call free last and add bits to track what frees are already called and free(ctx) last; test in 4 situations: (modal,nonmodal)*(close_buttons,wmclose) [report: Igor2]
-- CLEANUP: (TT) propedit revamp:
-	- test under lesstif
-	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
-	- CLEANUP: after the attribute dialog, remove the label argument from the DAD API [report: igor2]
 + FEATURE: grid size change should be undoable? -> no, see http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=undoability [report:Evan]
 - FEATURE: scripting: example script that tents/untents all/selected/object vias [report: keantoken]
 - FEATURE: lesstif DAD support for toggle buttons [report: Igor2]
@@ -54,6 +46,14 @@
 - CLEANUP: rewrite parametric footprints to use tEDAx (or lihata)
 	- add "global" option for paste/mask tuning
 	- update fp2anim so the web page works again
+- CLEANUP: (TESTING) DAD: centralize the coordinate input spinbox: hid_dad_spin 
+	- make the central unit infra more flexible so plugins can register new units
+	- make sure we don't crash when grid or config references non-existing unit or unit that has no conversion field set up yet
+- CLEANUP: (TT) propedit revamp:
+	- test under lesstif
+	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
+	- CLEANUP: after the attribute dialog, remove the label argument from the DAD API [report: igor2]
+	- CLEANUP: remove attrib.o from the hidlib objects
 - CLEANUP/BUG: The 'As Drawn' polygon contour is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
 	-> need a new rtree that holds the polygons that have ->clipped == NULL for this purpose
 - CLEANUP: think over how to handle subc selection: selecting all parts automatically is bad for propedit; bug_files/subcsel.bug [report: Wojciech]
