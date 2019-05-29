@@ -29,21 +29,6 @@
 #include "hidlib_conf.h"
 #include "event.h"
 
-TODO("DAD: the only legitimate user is top window, move this code there once all other gtk-only dialogs are gone");
-void pcb_gtk_winplace(pcb_hidlib_t *hidlib, GtkWidget *dialog, const char *id)
-{
-	int plc[4] = {-1, -1, -1, -1};
-
-	pcb_event(hidlib, PCB_EVENT_DAD_NEW_DIALOG, "psp", NULL, id, plc);
-
-	if (pcbhl_conf.editor.auto_place) {
-		if ((plc[2] > 0) && (plc[3] > 0))
-			gtk_window_resize(GTK_WINDOW(dialog), plc[2], plc[3]);
-		if ((plc[0] >= 0) && (plc[1] >= 0))
-			gtk_window_move(GTK_WINDOW(dialog), plc[0], plc[1]);
-	}
-}
-
 gint pcb_gtk_winplace_cfg(pcb_hidlib_t *hidlib, GtkWidget *widget, void *ctx, const char *id)
 {
 	GtkAllocation allocation;

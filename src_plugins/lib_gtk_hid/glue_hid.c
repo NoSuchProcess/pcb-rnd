@@ -213,6 +213,20 @@ static void ghid_do_exit(pcb_hid_t * hid)
 	gtk_main_quit();
 }
 
+static void pcb_gtk_topwinplace(pcb_hidlib_t *hidlib, GtkWidget *dialog, const char *id)
+{
+	int plc[4] = {-1, -1, -1, -1};
+
+	pcb_event(hidlib, PCB_EVENT_DAD_NEW_DIALOG, "psp", NULL, id, plc);
+
+	if (pcbhl_conf.editor.auto_place) {
+		if ((plc[2] > 0) && (plc[3] > 0))
+			gtk_window_resize(GTK_WINDOW(dialog), plc[2], plc[3]);
+		if ((plc[0] >= 0) && (plc[1] >= 0))
+			gtk_window_move(GTK_WINDOW(dialog), plc[0], plc[1]);
+	}
+}
+
 	/* Create top level window for routines that will need top_window
 	   |  before ghid_create_pcb_widgets() is called.
 	 */
@@ -263,7 +277,7 @@ int gtkhid_parse_arguments(int *argc, char ***argv)
 	ghidgui->topwin.com = &ghidgui->common;
 	ghidgui->common.top_window = window = gport->top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
-	pcb_gtk_winplace(ghidgui->common.hidlib, window, "top");
+	pcb_gtk_topwinplace(ghidgui->common.hidlib, window, "top");
 	gtk_window_set_title(GTK_WINDOW(window), "pcb-rnd");
 
 	gtk_widget_show_all(gport->top_window);
