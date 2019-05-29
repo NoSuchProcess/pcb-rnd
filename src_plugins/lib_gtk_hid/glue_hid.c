@@ -246,14 +246,6 @@ int gtkhid_parse_arguments(int *argc, char ***argv)
 
 #endif
 
-#if defined (DEBUG)
-	{
-		int i;
-		for (i = 0; i < *argc; i++)
-			printf("ghid_parse_arguments():  *argv[%d] = \"%s\"\n", i, (*argv)[i]);
-	}
-#endif
-
 	conf_parse_arguments("plugins/hid_gtk/", argc, argv);
 
 	if (!gtk_init_check(argc, argv)) {
