@@ -4242,7 +4242,7 @@
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/glue.h event.h hidlib.h \
- ../src_plugins/lib_gtk_hid/render.h ../src_plugins/lib_gtk_hid/actions.h \
+ ../src_plugins/lib_gtk_hid/render.h   \
  search.h ../src/actions.h ../src/hid.h ../src_3rd/libfungw/fungw.h \
  compat_misc.h dolists.h
 ../src_plugins/lib_gtk_hid/common.o: ../src_plugins/lib_gtk_hid/common.c \
@@ -4387,7 +4387,7 @@
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/glue.h event.h hidlib.h \
- ../src_plugins/lib_gtk_hid/render.h ../src_plugins/lib_gtk_hid/actions.h \
+ ../src_plugins/lib_gtk_hid/render.h   \
  ../src/actions.h ../src/hid.h ../src_3rd/libfungw/fungw.h \
  ../src_plugins/lib_gtk_hid/common.h hid_nogui.h hid_attrib.h \
  ../src_plugins/lib_gtk_hid/coord_conv.h compat_misc.h hidlib_conf.h \

@@ -5,7 +5,6 @@
 
 #include "gui.h"
 #include "actions.h"
-#include "../src/actions.h"
 #include "glue_hid.h"
 #include "render.h"
 #include "common.h"
@@ -32,13 +31,11 @@ extern pcb_hid_cfg_keys_t ghid_keymap;
 void gtkhid_begin(pcb_hidlib_t *hidlib)
 {
 	ghidgui->common.hidlib = hidlib;
-	pcb_gtk_action_reg();
 	ghidgui->hid_active = 1;
 }
 
 void gtkhid_end(void)
 {
-	pcb_gtk_action_unreg();
 	ghidgui->hid_active = 0;
 }
 
