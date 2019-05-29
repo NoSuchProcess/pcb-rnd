@@ -2,16 +2,9 @@
 
 #include <stdlib.h>
 
-#include "error.h"
-#include "pcb-printf.h"
 #include "plugins.h"
 #include "hid_init.h"
 
-#include "../src_plugins/lib_gtk_common/glue.h"
-#include "../src_plugins/lib_gtk_common/lib_gtk_config.h"
-#include "../src_plugins/lib_gtk_common/hid_gtk_conf.h"
-
-#include "../src_plugins/lib_gtk_hid/gui.h"
 #include "../src_plugins/lib_gtk_hid/glue_common.h"
 #include "../src_plugins/lib_gtk_hid/glue_hid.h"
 #include "../src_plugins/lib_gtk_hid/glue_conf.h"
