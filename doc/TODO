@@ -10,6 +10,7 @@
 + BUG: double check parametric footprint edit window: bug_files/parametric.txt [report: Piotr]
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
 - CLEANUP: DAD close sequence: TODO("#51.*"): there are three sources to trigger hid_ctx (caller's free on modal, close button free and window destroy callback); requre the user to always call free last and add bits to track what frees are already called and free(ctx) last; test in 4 situations: (modal,nonmodal)*(close_buttons,wmclose) [report: Igor2]
+- FEATURE: switch over to a new, dad version of HATT_UNIT
 + FEATURE: grid size change should be undoable? -> no, see http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=undoability [report:Evan]
 - FEATURE: scripting: example script that tents/untents all/selected/object vias [report: keantoken]
 - FEATURE: lesstif DAD support for toggle buttons [report: Igor2]
