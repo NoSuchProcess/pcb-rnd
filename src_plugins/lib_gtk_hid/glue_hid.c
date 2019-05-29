@@ -227,9 +227,7 @@ static void pcb_gtk_topwinplace(pcb_hidlib_t *hidlib, GtkWidget *dialog, const c
 	}
 }
 
-	/* Create top level window for routines that will need top_window
-	   |  before ghid_create_pcb_widgets() is called.
-	 */
+/* Create top level window for routines that will need top_window before ghid_create_pcb_widgets() is called. */
 int gtkhid_parse_arguments(int *argc, char ***argv)
 {
 	GtkWidget *window;
