@@ -109,7 +109,7 @@ static void Debugpcb_polyarea_t(pcb_polyarea_t * s, char *color)
 		}
 	} while ((p = p->f) != s);
 /*	ddraw->flush_debug_draw();*/
-/*	pcb_event(&PCB->hidlib, PCB_EVENT_BUSY, NULL);*/
+/*	pcb_hid_busy(PCB, 1); */
 /*	sleep(3);
 	ddraw->finish_debug_draw();*/
 }

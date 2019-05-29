@@ -44,7 +44,7 @@ static const char autoplace_help[] = "Auto-place selected components.";
 /* DOC: autoplaceselected */
 static fgw_error_t pcb_act_AutoPlaceSelected(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_event(&PCB->hidlib, PCB_EVENT_BUSY, NULL);
+	pcb_hid_busy(PCB, 1);
 	if (pcb_hid_message_box("question", "Autoplace start", "Auto-placement can NOT be undone.\nDo you want to continue anyway?", "no", 0, "yes", 1, NULL) == 1) {
 		if (AutoPlaceSelected())
 			pcb_board_set_changed_flag(pcb_true);

@@ -109,7 +109,7 @@ static const char apply_vendor_help[] = "Applies the currently loaded vendor dri
 /* DOC: applyvendor.html */
 fgw_error_t pcb_act_ApplyVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_event(&PCB->hidlib, PCB_EVENT_BUSY, NULL);
+	pcb_hid_busy(PCB, 1);
 	apply_vendor_map();
 	PCB_ACT_IRES(0);
 	return 0;

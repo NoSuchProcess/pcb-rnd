@@ -623,4 +623,6 @@ void pcb_hid_dock_leave(pcb_hid_dad_subdialog_t *sub);
 
 #define pcb_hid_redraw(pcb) pcb_gui->invalidate_all(&pcb->hidlib)
 
+#define pcb_hid_busy(pcb, is_busy) pcb_event(&pcb->hidlib, PCB_EVENT_BUSY, NULL)
+
 #endif
