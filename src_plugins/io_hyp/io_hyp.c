@@ -105,6 +105,7 @@ TODO(": rewrite this - this is very unpcb-rnd")
 
 	pcb_hid_busy(PCB, 1);
 	retval = hyp_parse(PCB->Data, fname, debug);
+	pcb_hid_busy(PCB, 0);
 
 	/* notify GUI */
 	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);

@@ -49,6 +49,7 @@ static fgw_error_t pcb_act_AutoPlaceSelected(fgw_arg_t *res, int argc, fgw_arg_t
 		if (AutoPlaceSelected())
 			pcb_board_set_changed_flag(pcb_true);
 	}
+	pcb_hid_busy(PCB, 0);
 	PCB_ACT_IRES(0);
 	return 0;
 }

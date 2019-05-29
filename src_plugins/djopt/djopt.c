@@ -2489,6 +2489,7 @@ static fgw_error_t pcb_act_DJopt(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (PCB_NSTRCMP(arg, "splitlines") == 0) {
 		if (canonicalize_lines())
 			pcb_undo_inc_serial();
+		pcb_hid_busy(PCB, 0);
 		return 0;
 	}
 
@@ -2550,6 +2551,7 @@ static fgw_error_t pcb_act_DJopt(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		saved += miter();
 	else {
 		printf("unknown command: %s\n", arg);
+		pcb_hid_busy(PCB, 0);
 		return 1;
 	}
 
@@ -2559,6 +2561,7 @@ static fgw_error_t pcb_act_DJopt(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (saved)
 		pcb_undo_inc_serial();
 
+	pcb_hid_busy(PCB, 0);
 	PCB_ACT_IRES(0);
 	return 0;
 }

@@ -64,6 +64,7 @@ static fgw_error_t pcb_act_AutoRoute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			PCB_ACT_FAIL(AutoRoute);
 			return 1;
 	}
+	pcb_hid_busy(PCB, 0);
 	PCB_ACT_IRES(0);
 	return 0;
 }
