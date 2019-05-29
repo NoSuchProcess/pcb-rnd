@@ -279,11 +279,10 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_tb_t *tb_st, int start_from)
 {
-	int j, i, n, expfill;
+	int j, i, expfill;
 	GtkWidget *combo, *widget, *entry, *vbox1, *hbox, *bparent, *parent, *tbl;
 
 	for (j = start_from; j < ctx->n_attrs; j++) {
-		const pcb_unit_t *unit_list;
 		if (ctx->attrs[j].help_text == ATTR_UNDOCUMENTED)
 			continue;
 		if (ctx->attrs[j].type == PCB_HATT_END)
