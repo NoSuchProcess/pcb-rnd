@@ -53,6 +53,21 @@ void pcb_dad_unit_set_num(pcb_hid_attribute_t *attr, long l, double unused1, pcb
 	enu->default_val.int_value = l;
 }
 
+int pcb_dad_unit_set_val_ptr(pcb_hid_attribute_t *end, void *val_)
+{
+	const pcb_unit_t *val = val_;
+	int __n__, __v__ = pcb_get_n_units();
+	if (val != NULL) {
+		for(__n__ = 0; __n__ < __v__; __n__++) {
+			if (&pcb_units[__n__] == val) {
+				end->default_val.int_value = __n__;
+				return 0;
+			}
+		}
+	}
+	return -1;
+}
+
 int pcb_dad_unit_widget_state(pcb_hid_attribute_t *end, void *hid_ctx, int idx, pcb_bool enabled)
 {
 	pcb_hid_dad_unit_t *unit = (pcb_hid_dad_unit_t *)end->enumerations;
