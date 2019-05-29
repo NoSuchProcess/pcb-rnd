@@ -370,19 +370,28 @@ static const char *cur_clip()
 	return "\\_";
 }
 
-/* Called from the core when it's busy doing something and we need to
-   indicate that to the user.  */
-static void LesstifBusy(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void ltf_busy(pcb_hidlib_t *hidlib, pcb_bool busy)
 {
 	static Cursor busy_cursor = 0;
 	if (!lesstif_active)
 		return;
-	if (busy_cursor == 0)
-		busy_cursor = XCreateFontCursor(display, XC_watch);
-	XDefineCursor(display, window, busy_cursor);
-	XFlush(display);
-	old_cursor_mode = -1;
-	return;
+
+	if (busy) {
+		if (busy_cursor == 0)
+			busy_cursor = XCreateFontCursor(display, XC_watch);
+		XDefineCursor(display, window, busy_cursor);
+		XFlush(display);
+		old_cursor_mode = -1;
+	}
+	else
+		need_idle_proc(); /* restores the cursor */
+}
+
+/* Called from the core when it's busy doing something and we need to
+   indicate that to the user.  */
+static void LesstifBusy(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	ltf_busy(hidlib, 1);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -3119,6 +3128,7 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.set_mouse_cursor = ltf_set_mouse_cursor;
 	lesstif_hid.set_top_title = ltf_set_top_title;
 	lesstif_hid.dock_enter = ltf_dock_enter;
+	lesstif_hid.busy = ltf_busy;
 
 	lesstif_hid.set_hidlib = ltf_set_hidlib;
 

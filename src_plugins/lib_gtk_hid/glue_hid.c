@@ -552,6 +552,17 @@ static void ghid_set_top_title(pcb_hidlib_t *hidlib, const char *title)
 	pcb_gtk_tw_set_title(&ghidgui->topwin, title);
 }
 
+static void ghid_busy(pcb_hidlib_t *hidlib, pcb_bool busy)
+{
+	if ((gport == NULL) || (!ghidgui->hid_active))
+		return;
+	if (busy)
+		ghid_watch_cursor(&gport->mouse);
+	else
+		ghid_restore_cursor(&gport->mouse);
+}
+
+
 void ghid_glue_hid_init(pcb_hid_t *dst)
 {
 	memset(dst, 0, sizeof(pcb_hid_t));
@@ -621,6 +632,7 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->reg_mouse_cursor = ghid_reg_mouse_cursor;
 	dst->set_mouse_cursor = ghid_set_mouse_cursor;
 	dst->set_top_title = ghid_set_top_title;
+	dst->busy = ghid_busy;
 
 	dst->set_hidlib = ghid_set_hidlib;
 
