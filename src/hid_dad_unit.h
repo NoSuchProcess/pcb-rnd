@@ -71,7 +71,7 @@ void pcb_dad_unit_set_num(pcb_hid_attribute_t *attr, long l, double unused1, pcb
 int pcb_dad_unit_widget_state(pcb_hid_attribute_t *end, void *hid_ctx, int idx, pcb_bool enabled);
 int pcb_dad_unit_widget_hide(pcb_hid_attribute_t *end, void *hid_ctx, int idx, pcb_bool hide);
 int pcb_dad_unit_set_value(pcb_hid_attribute_t *end, void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
-int pcb_dad_unit_set_val_ptr(pcb_hid_attribute_t *end, void *val);
+void pcb_dad_unit_set_val_ptr(pcb_hid_attribute_t *end, void *val);
 void pcb_dad_unit_set_help(pcb_hid_attribute_t *end, const char *help);
 void pcb_dad_unit_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 
