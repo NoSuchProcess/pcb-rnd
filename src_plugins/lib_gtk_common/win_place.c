@@ -29,7 +29,7 @@
 #include "hidlib_conf.h"
 #include "event.h"
 
-gint pcb_gtk_winplace_cfg(pcb_hidlib_t *hidlib, GtkWidget *widget, void *ctx, const char *id)
+int pcb_gtk_winplace_cfg(pcb_hidlib_t *hidlib, GtkWidget *widget, void *ctx, const char *id)
 {
 	GtkAllocation allocation;
 

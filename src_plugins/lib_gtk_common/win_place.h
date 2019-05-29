@@ -6,6 +6,6 @@
 
 /* Report new window coords to the central window placement code
    emitting an event */
-gint pcb_gtk_winplace_cfg(pcb_hidlib_t *hidlib, GtkWidget *widget, void *ctx, const char *id);
+int pcb_gtk_winplace_cfg(pcb_hidlib_t *hidlib, GtkWidget *widget, void *ctx, const char *id);
 
 #endif
