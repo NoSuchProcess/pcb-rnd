@@ -505,7 +505,7 @@
  ../src_3rd/genvector/gds_char.h ../src_3rd/libfungw/fungw.h \
  ../src_3rd/genht/htpp.h board.h vtroutestyle.h layer_grp.h rats_patch.h \
  board.h hidlib.h hid.h hid_dad.h compat_misc.h hid_attrib.h pcb-printf.h \
- hid_dad_spin.h hid_init.h ../src_3rd/puplug/puplug.h \
+ hid_dad_spin.h hid_dad_unit.h hid_init.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_plugins/dialogs/dlg_export.h
@@ -752,7 +752,7 @@
  ../src_plugins/dialogs/dlg_pref_win.c hidlib_conf.h \
  ../src_plugins/lib_hid_common/dialogs_conf.h \
  ../src_plugins/dialogs/dlg_pref_conf.c misc_util.h \
- ../src_plugins/dialogs/dlg_pref_confedit.c
+ ../src_plugins/dialogs/dlg_pref_confedit.c hid_dad_unit.h
 ../src_plugins/dialogs/dlg_search.o: ../src_plugins/dialogs/dlg_search.c \
  ../config.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -6577,8 +6577,8 @@ hid_dad_spin.o: hid_dad_spin.c ../config.h hid_attrib.h hid.h \
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
  ../src_3rd/genvector/gds_char.h hid_dad.h compat_misc.h pcb-printf.h \
- hid_dad_spin.h hidlib_conf.h conf.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/genvector/vtp0.h list_conf.h
+ hid_dad_spin.h hid_dad_unit.h hidlib_conf.h conf.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h
 hid_dad_tree.o: hid_dad_tree.c ../config.h hid_dad_tree.h hid_attrib.h \
  hid.h ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
@@ -6593,6 +6593,20 @@ hid_dad_tree.o: hid_dad_tree.c ../config.h hid_dad_tree.h hid_attrib.h \
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
  ../src_3rd/genvector/gds_char.h hid_dad.h compat_misc.h pcb-printf.h \
  hid_dad_spin.h ../src_3rd/genht/hash.h
+hid_dad_unit.o: hid_dad_unit.c ../config.h hid_attrib.h hid.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h error.h global_typedefs.h pcb_bool.h unit.h \
+ attrib.h layer.h globalconst.h color.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h data_parent.h \
+ obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
+ obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
+ ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
+ ../src_3rd/genvector/gds_char.h hid_dad.h compat_misc.h pcb-printf.h \
+ hid_dad_spin.h hid_dad_unit.h
 hid_dlg.o: hid_dlg.c ../config.h actions.h hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
@@ -6624,9 +6638,9 @@ hid_init.o: hid_init.c ../config.h hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h actions.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h hid_attrib.h \
- hid_init.h compat_misc.h compat_inc.h file_loaded.h hidlib_conf.h conf.h \
- pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
- list_conf.h
+ hid_init.h hid_dad_unit.h compat_misc.h compat_inc.h file_loaded.h \
+ hidlib_conf.h conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/genvector/vtp0.h list_conf.h
 hid_nogui.o: hid_nogui.c ../config.h actions.h hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
