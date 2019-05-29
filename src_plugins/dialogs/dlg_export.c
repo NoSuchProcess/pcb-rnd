@@ -174,7 +174,26 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 					export_ctx.exp_attr[n] = exp_attr = malloc(sizeof(int) * numa);
 					for(i = 0; i < numa; i++) {
 						PCB_DAD_BEGIN_HBOX(export_ctx.dlg)
-							PCB_DAD_DUP_ATTR(export_ctx.dlg, attrs+i);
+							/* hid attributes are atomic while DAD widgets may be compound */
+							switch(attrs[i].type) {
+								case PCB_HATT_COORD:
+									PCB_DAD_COORD(export_ctx.dlg, attrs[i].name);
+									PCB_DAD_MINMAX(export_ctx.dlg, attrs[i].min_val, attrs[i].max_val);
+									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, attrs[i].default_val.coord_value);
+									break;
+								case PCB_HATT_INTEGER:
+									PCB_DAD_INTEGER(export_ctx.dlg, attrs[i].name);
+									PCB_DAD_MINMAX(export_ctx.dlg, attrs[i].min_val, attrs[i].max_val);
+									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, attrs[i].default_val.int_value);
+									break;
+								case PCB_HATT_REAL:
+									PCB_DAD_REAL(export_ctx.dlg, attrs[i].name);
+									PCB_DAD_MINMAX(export_ctx.dlg, attrs[i].min_val, attrs[i].max_val);
+									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, attrs[i].default_val.real_value);
+									break;
+								default:
+									PCB_DAD_DUP_ATTR(export_ctx.dlg, attrs+i);
+							}
 							exp_attr[i] = PCB_DAD_CURRENT(export_ctx.dlg);
 							if (attrs[i].name != NULL)
 								PCB_DAD_LABEL(export_ctx.dlg, attrs[i].name);
