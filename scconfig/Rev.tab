@@ -1,4 +1,4 @@
-25781	congigure	hidlib: remove unused parts of the gtk HID
+25783	congigure	hidlib: remove unused parts of the gtk HID
 25758	configure	compound DAD widgets, for DAD based spinboxes: remove old, gtk-only coord entry
 25701	configure	hidlib: generate hidlib.h for external project use
 25666	configure	hidlib: make gtk2-gl part of the hidlib

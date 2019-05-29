@@ -16,7 +16,6 @@
 
 #include "bu_menu.h"
 #include "in_keyboard.h"
-#include "wt_accel_label.h"
 
 #include "../src_plugins/lib_hid_common/menu_helper.h"
 
@@ -58,6 +57,37 @@ struct _GHidMainMenu {
 struct _GHidMainMenuClass {
 	GtkMenuBarClass parent_class;
 };
+
+static GtkWidget *gtk_menu_or_checkmenu_item_new(const char *label, const char *accel_label, int check)
+{
+	GtkWidget *w;
+	GtkWidget *hbox = gtkc_hbox_new(FALSE, 0);
+	GtkWidget *spring = gtkc_hbox_new(FALSE, 0);
+	GtkWidget *l = gtk_label_new(label);
+	GtkWidget *accel = gtk_label_new(accel_label);
+
+	if (check)
+		w = gtk_check_menu_item_new();
+	else
+		w = gtk_menu_item_new();
+	gtk_box_pack_start(GTK_BOX(hbox), l, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), spring, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), accel, FALSE, FALSE, 0);
+
+	gtk_container_add(GTK_CONTAINER(w), GTK_WIDGET(hbox));
+
+	return w;
+}
+
+static GtkWidget *pcb_gtk_menu_item_new(const char *label, const char *accel_label)
+{
+	return gtk_menu_or_checkmenu_item_new(label, accel_label, FALSE);
+}
+
+static GtkWidget *pcb_gtk_checkmenu_item_new(const char *label, const char *accel_label)
+{
+	return gtk_menu_or_checkmenu_item_new(label, accel_label, TRUE);
+}
 
 /* LHT HANDLER */
 
