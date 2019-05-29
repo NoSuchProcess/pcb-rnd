@@ -22,8 +22,7 @@
 extern pcb_hid_t gtk2_gdk_hid;
 static void ghid_gdk_screen_update(void);
 
-/* Sets priv->u_gc to the "right" GC to use (wrt mask or window)
-*/
+/* Sets priv->u_gc to the "right" GC to use (wrt mask or window) */
 #define USE_GC(gc)        if (!use_gc(gc, 1)) return
 #define USE_GC_NOPEN(gc)  if (!use_gc(gc, 0)) return
 
@@ -65,7 +64,7 @@ typedef struct hid_gc_s {
 	gint sketch_seq;
 } hid_gc_s;
 
-static const gchar *get_color_name(pcb_gtk_color_t * color)
+static const gchar *get_color_name(pcb_gtk_color_t *color)
 {
 	static char tmp[16];
 
@@ -77,7 +76,7 @@ static const gchar *get_color_name(pcb_gtk_color_t * color)
 }
 
 /* Returns TRUE only if color_string has been allocated to color. */
-static pcb_bool map_color_string(const char *color_string, pcb_gtk_color_t * color)
+static pcb_bool map_color_string(const char *color_string, pcb_gtk_color_t *color)
 {
 	static GdkColormap *colormap = NULL;
 	pcb_bool parsed;
@@ -445,14 +444,13 @@ typedef struct {
 } ColorCache;
 
 
-	/* Config helper functions for when the user changes color preferences.
-	   |  set_special colors used in the gtkhid.
-	 */
+/* Config helper functions for when the user changes color preferences.
+   set_special colors used in the gtkhid. */
 static void set_special_grid_color(void)
 {
 	render_priv_t *priv = gport->render_priv;
 
-          /* The color grid is combined with background color */
+	/* The color grid is combined with background color */
 	map_color_string(pcbhl_conf.appearance.color.grid.str, &priv->grid_color);
 	priv->grid_color.red = (priv->grid_color.red ^ priv->bg_color.red) & 0xffff;
 	priv->grid_color.green = (priv->grid_color.green ^ priv->bg_color.green) & 0xffff;
@@ -862,7 +860,7 @@ static int poly_is_aligned_rect(pcb_box_t *b, int n_coords, pcb_coord_t *x, pcb_
 }
 
 /* Intentional code duplication for performance */
-static void ghid_gdk_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
+static void ghid_gdk_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
 {
 	pcb_box_t b;
 	static GdkPoint *points = 0;
@@ -1167,10 +1165,9 @@ static void ghid_gdk_notify_crosshair_change(pcb_hidlib_t *hidlib, pcb_bool chan
 	if (priv->attached_invalidate_depth < 0) {
 		priv->attached_invalidate_depth = 0;
 		/* A mismatch of changes_complete == pcb_false and == pcb_true notifications
-		 * is not expected to occur, but we will try to handle it gracefully.
-		 * As we know the crosshair will have been shown already, we must
-		 * repaint the entire view to be sure not to leave an artaefact.
-		 */
+		   is not expected to occur, but we will try to handle it gracefully.
+		   As we know the crosshair will have been shown already, we must
+		   repaint the entire view to be sure not to leave an artaefact. */
 		ghid_gdk_invalidate_all(hidlib);
 		return;
 	}
@@ -1201,10 +1198,9 @@ static void ghid_gdk_notify_mark_change(pcb_hidlib_t *hidlib, pcb_bool changes_c
 	if (priv->mark_invalidate_depth < 0) {
 		priv->mark_invalidate_depth = 0;
 		/* A mismatch of changes_complete == pcb_false and == pcb_true notifications
-		 * is not expected to occur, but we will try to handle it gracefully.
-		 * As we know the mark will have been shown already, we must
-		 * repaint the entire view to be sure not to leave an artaefact.
-		 */
+		   is not expected to occur, but we will try to handle it gracefully.
+		   As we know the mark will have been shown already, we must
+		   repaint the entire view to be sure not to leave an artaefact. */
 		ghid_gdk_invalidate_all(hidlib);
 		return;
 	}
@@ -1221,7 +1217,7 @@ static void ghid_gdk_notify_mark_change(pcb_hidlib_t *hidlib, pcb_bool changes_c
 	}
 }
 
-static void draw_right_cross(GdkGC * xor_gc, gint x, gint y)
+static void draw_right_cross(GdkGC *xor_gc, gint x, gint y)
 {
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 
@@ -1229,7 +1225,7 @@ static void draw_right_cross(GdkGC * xor_gc, gint x, gint y)
 	gdk_draw_line(window, xor_gc, 0, y, gport->view.canvas_width, y);
 }
 
-static void draw_slanted_cross(GdkGC * xor_gc, gint x, gint y)
+static void draw_slanted_cross(GdkGC *xor_gc, gint x, gint y)
 {
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 	gint x0, y0, x1, y1;
@@ -1255,7 +1251,7 @@ static void draw_slanted_cross(GdkGC * xor_gc, gint x, gint y)
 	gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
 }
 
-static void draw_dozen_cross(GdkGC * xor_gc, gint x, gint y)
+static void draw_dozen_cross(GdkGC *xor_gc, gint x, gint y)
 {
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 	gint x0, y0, x1, y1;
@@ -1302,7 +1298,7 @@ static void draw_dozen_cross(GdkGC * xor_gc, gint x, gint y)
 	gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
 }
 
-static void draw_crosshair(GdkGC * xor_gc, gint x, gint y)
+static void draw_crosshair(GdkGC *xor_gc, gint x, gint y)
 {
 	static enum pcb_crosshair_shape_e prev = pcb_ch_shape_basic;
 
@@ -1369,7 +1365,7 @@ static void ghid_gdk_shutdown_renderer(void *vport)
 	port->render_priv = NULL;
 }
 
-static void ghid_gdk_init_drawing_widget(GtkWidget * widget, void * port)
+static void ghid_gdk_init_drawing_widget(GtkWidget *widget, void *port)
 {
 }
 
@@ -1382,8 +1378,7 @@ static void ghid_gdk_drawing_area_configure_hook(void *vport)
 	if (priv->base_pixel)
 		gdk_pixmap_unref(priv->base_pixel);
 
-	priv->base_pixel = gdk_pixmap_new(gtk_widget_get_window(gport->drawing_area),
-                                gport->view.canvas_width, gport->view.canvas_height, -1);
+	priv->base_pixel = gdk_pixmap_new(gtk_widget_get_window(gport->drawing_area), gport->view.canvas_width, gport->view.canvas_height, -1);
 	priv->out_pixel = priv->base_pixel;
 	gport->drawing_allowed = pcb_true;
 
@@ -1424,23 +1419,23 @@ static void ghid_gdk_screen_update(void)
 	show_crosshair(TRUE);
 }
 
-static gboolean ghid_gdk_drawing_area_expose_cb(GtkWidget * widget, pcb_gtk_expose_t *ev, void *vport)
+static gboolean ghid_gdk_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose_t *ev, void *vport)
 {
 	GHidPort *port = vport;
 	render_priv_t *priv = port->render_priv;
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 
 	gdk_draw_drawable(window, priv->bg_gc, priv->base_pixel,
-										ev->area.x, ev->area.y, ev->area.x, ev->area.y, ev->area.width, ev->area.height);
+		ev->area.x, ev->area.y, ev->area.x, ev->area.y, ev->area.width, ev->area.height);
 	show_crosshair(TRUE);
 	return FALSE;
 }
 
-static void ghid_gdk_port_drawing_realize_cb(GtkWidget * widget, gpointer data)
+static void ghid_gdk_port_drawing_realize_cb(GtkWidget *widget, gpointer data)
 {
 }
 
-static gboolean ghid_gdk_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev, pcb_hid_expose_t expcall, pcb_hid_expose_ctx_t *ctx)
+static gboolean ghid_gdk_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, pcb_hid_expose_t expcall, pcb_hid_expose_ctx_t *ctx)
 {
 	GdkWindow *window = gtk_widget_get_window(widget);
 	GdkDrawable *save_drawable;
@@ -1455,8 +1450,7 @@ static gboolean ghid_gdk_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *ev
 	vw = ctx->view.X2 - ctx->view.X1;
 	vh = ctx->view.Y2 - ctx->view.Y1;
 
-	/* Setup drawable and zoom factor for drawing routines
-	 */
+	/* Setup drawable and zoom factor for drawing routines */
 	save_drawable = priv->base_pixel;
 	save_view = gport->view;
 	save_width = gport->view.canvas_width;
