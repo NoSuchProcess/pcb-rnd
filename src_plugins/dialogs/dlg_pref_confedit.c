@@ -26,6 +26,8 @@
 
 /* Preferences dialog, conf tree tab -> edit conf node (input side) popup */
 
+#include "hid_dad_unit.h"
+
 #define is_read_only_(role) ((role == CFR_INTERNAL) || (role == CFR_SYSTEM) || (role == CFR_DEFAULTPCB))
 #define is_read_only(ctx)   is_read_only_(ctx->role)
 
@@ -303,7 +305,7 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 					b[0] = PCB_DAD_CURRENT(ctx->dlg);
 				break;
 			case CFN_UNIT:
-				PCB_DAD_UNIT(ctx->dlg);
+				PCB_DAD_UNIT(ctx->dlg, 0);
 					ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
 				break;

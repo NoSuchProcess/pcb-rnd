@@ -33,6 +33,7 @@
 #include "hid_attrib.h"
 #include "hid_dad.h"
 #include "hid_dad_spin.h"
+#include "hid_dad_unit.h"
 #include "pcb-printf.h"
 #include "compat_misc.h"
 #include "hidlib_conf.h"
@@ -172,7 +173,7 @@ static void spin_unit_dialog(void *spin_hid_ctx, pcb_hid_dad_spin_t *spin, pcb_h
 
 		PCB_DAD_BEGIN_TABLE(ctx.dlg, 2);
 			PCB_DAD_LABEL(ctx.dlg, "Preferred unit");
-			PCB_DAD_UNIT(ctx.dlg);
+			PCB_DAD_UNIT(ctx.dlg, 0);
 				ctx.wunit = PCB_DAD_CURRENT(ctx.dlg);
 				PCB_DAD_HELP(ctx.dlg, "Convert value to this unit and rewrite\nthe text entry field with the converted value.");
 				PCB_DAD_DEFAULT_PTR(ctx.dlg, def_unit);

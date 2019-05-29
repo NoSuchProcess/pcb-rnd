@@ -29,6 +29,7 @@
 #include "board.h"
 #include "hid.h"
 #include "hid_dad.h"
+#include "hid_dad_unit.h"
 #include "hid_init.h"
 #include "dlg_export.h"
 
@@ -190,6 +191,10 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 									PCB_DAD_REAL(export_ctx.dlg, attrs[i].name);
 									PCB_DAD_MINMAX(export_ctx.dlg, attrs[i].min_val, attrs[i].max_val);
 									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, attrs[i].default_val.real_value);
+									break;
+								case PCB_HATT_UNIT:
+									PCB_DAD_UNIT(export_ctx.dlg, 0);
+									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, attrs[i].default_val.int_value);
 									break;
 								default:
 									PCB_DAD_DUP_ATTR(export_ctx.dlg, attrs+i);
