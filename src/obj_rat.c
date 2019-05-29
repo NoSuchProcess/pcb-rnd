@@ -352,8 +352,8 @@ void *pcb_ratop_add_to_buffer(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 		pcb_flag_mask(Rat->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg),
 		NULL, NULL);
 
-	res->anchor[0] = pcb_idpath_dup(Rat->anchor[0]);
-	res->anchor[1] = pcb_idpath_dup(Rat->anchor[1]);
+	res->anchor[0] = Rat->anchor[0] == NULL ? NULL : pcb_idpath_dup(Rat->anchor[0]);
+	res->anchor[1] = Rat->anchor[1] == NULL ? NULL : pcb_idpath_dup(Rat->anchor[1]);
 	return res;
 }
 
