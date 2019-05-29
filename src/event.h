@@ -56,7 +56,7 @@ typedef enum {
 
 	PCB_EVENT_NEW_PSTK,               /* called when a new padstack is created */
 
-	PCB_EVENT_BUSY,                   /* called before CPU-intensive task begins */
+	PCB_EVENT_BUSY,                   /* called before/after CPU-intensive task begins; argument is an integer: 1 is before, 0 is after */
 	PCB_EVENT_LOG_APPEND,             /* called after a new log line is appended; arg is a pointer to the log line */
 	PCB_EVENT_LOG_CLEAR,              /* called after a clear; args: two pointers; unsigned long "from" and "to" */
 
