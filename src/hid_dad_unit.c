@@ -45,12 +45,12 @@ void pcb_dad_unit_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 		end->change_cb(hid_ctx, caller_data, end);
 }
 
-void pcb_dad_unit_set_num(pcb_hid_attribute_t *attr, int uidx)
+void pcb_dad_unit_set_num(pcb_hid_attribute_t *attr, long l, double unused1, pcb_coord_t unused2)
 {
 	pcb_hid_dad_unit_t *unit = (pcb_hid_dad_unit_t *)attr->enumerations;
 	pcb_hid_attribute_t *enu = attr - unit->cmp.wend + unit->wenum;
 
-	enu->default_val.int_value = uidx;
+	enu->default_val.int_value = l;
 }
 
 int pcb_dad_unit_widget_state(pcb_hid_attribute_t *end, void *hid_ctx, int idx, pcb_bool enabled)
