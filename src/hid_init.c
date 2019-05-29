@@ -41,6 +41,7 @@
 #include "actions.h"
 #include "hid_attrib.h"
 #include "hid_init.h"
+#include "hid_dad_unit.h"
 #include "misc_util.h"
 #include "compat_misc.h"
 #include "compat_inc.h"
@@ -315,4 +316,5 @@ void pcb_hidlib_uninit(void)
 	conf_uninit();
 	pcb_plugin_uninit();
 	pcb_actions_uninit();
+	pcb_dad_unit_uninit();
 }

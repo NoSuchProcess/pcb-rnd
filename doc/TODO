@@ -48,8 +48,9 @@
 - CLEANUP: rewrite parametric footprints to use tEDAx (or lihata)
 	- add "global" option for paste/mask tuning
 	- update fp2anim so the web page works again
-- CLEANUP: (TESTING) DAD: centralize the coordinate input spinbox: hid_dad_spin 
+- CLEANUP: (TESTING) DAD: centralize the unit input: hid_dad_unit 
 	- make the central unit infra more flexible so plugins can register new units
+	- make HATT_UNIT remember a unit index (int) plus a family (int)
 	- make sure we don't crash when grid or config references non-existing unit or unit that has no conversion field set up yet
 - CLEANUP: (TT) propedit revamp:
 	- test under lesstif
