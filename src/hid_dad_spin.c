@@ -378,7 +378,8 @@ void pcb_dad_spin_txt_enter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)attr->user_data;
 	pcb_hid_attribute_t *str = attr;
 	pcb_hid_attribute_t *end = attr - spin->wstr + spin->cmp.wend;
-	char *tmp, *ends, *warn = NULL;
+	const char *inval;
+	char *ends, *warn = NULL;
 	int changed = 0;
 	double d;
 	pcb_bool succ, absolute;
@@ -389,19 +390,19 @@ void pcb_dad_spin_txt_enter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribu
 
 	switch(spin->type) {
 		case PCB_DAD_SPIN_COORD:
-			tmp = str->default_val.str_value;
-			while(isspace(*tmp)) tmp++;
-			if (*tmp == '\0')
-				tmp = "0";
-			succ = pcb_get_value_unit(tmp, &absolute, 0, &d, &unit);
+			inval = str->default_val.str_value;
+			while(isspace(*inval)) inval++;
+			if (*inval == '\0')
+				inval = "0";
+			succ = pcb_get_value_unit(inval, &absolute, 0, &d, &unit);
 			if (succ)
 				break;
-			strtod(tmp, &ends);
+			strtod(inval, &ends);
 			if (*ends == '\0') {
 				pcb_hid_attr_val_t hv;
+				char *tmp = pcb_concat(inval, " ", pcbhl_conf.editor.grid_unit->suffix, NULL);
 
 				changed = 1;
-				tmp = pcb_concat(tmp, " ", pcbhl_conf.editor.grid_unit->suffix, NULL);
 				hv.str_value = tmp;
 				spin->set_writeback_lock++;
 				pcb_gui->attr_dlg_set_value(hid_ctx, spin->wstr, &hv);
