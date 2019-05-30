@@ -193,6 +193,7 @@ static void pcb_dlg_fontsel(pcb_board_t *pcb, int modal, int global, pcb_text_t 
 	PCB_DAD_END(ctx->dlg);
 
 	ctx->active = 1;
+	PCB_DAD_DEFSIZE(ctx->dlg, 250, 200);
 	PCB_DAD_NEW("fontsel", ctx->dlg, "Font selection", ctx, modal, fontsel_close_cb);
 }
 
