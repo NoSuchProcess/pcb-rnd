@@ -67,7 +67,7 @@ do { \
 			spin->wall = PCB_DAD_CURRENT(table); \
 			PCB_DAD_COMPFLAG(table, PCB_HATF_TIGHT); \
 			PCB_DAD_STRING(table); \
-				PCB_DAD_DEFAULT_PTR(table, ""); \
+				PCB_DAD_DEFAULT_PTR(table, pcb_strdup("")); \
 				PCB_DAD_ENTER_CB(table, pcb_dad_spin_txt_enter_cb); \
 				PCB_DAD_CHANGE_CB(table, pcb_dad_spin_txt_change_cb); \
 				PCB_DAD_SET_ATTR_FIELD(table, user_data, (const char **)spin); \
