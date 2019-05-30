@@ -186,14 +186,9 @@ static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 		pd->y2 = PCB_MM_TO_COORD(100);
 	}
 
-	stdarg_n = 0;
 	stdarg(XmNwidth, prv->min_sizex_px);
 	stdarg(XmNheight, prv->min_sizey_px);
 	stdarg(XmNresizePolicy, XmRESIZE_GROW);
-	stdarg(XmNleftAttachment, XmATTACH_FORM);
-	stdarg(XmNrightAttachment, XmATTACH_FORM);
-	stdarg(XmNtopAttachment, XmATTACH_FORM);
-	stdarg(XmNbottomAttachment, XmATTACH_FORM);
 	stdarg(XmNuserData, pd);
 	pw = XmCreateDrawingArea(parent, XmStrCast("dad_preview"), stdarg_args, stdarg_n);
 	XtManageChild(pw);
