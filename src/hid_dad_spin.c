@@ -401,7 +401,7 @@ void pcb_dad_spin_txt_enter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribu
 				pcb_hid_attr_val_t hv;
 
 				changed = 1;
-				tmp = pcb_concat(tmp, pcbhl_conf.editor.grid_unit->suffix, NULL);
+				tmp = pcb_concat(tmp, " ", pcbhl_conf.editor.grid_unit->suffix, NULL);
 				hv.str_value = tmp;
 				spin->set_writeback_lock++;
 				pcb_gui->attr_dlg_set_value(hid_ctx, spin->wstr, &hv);
