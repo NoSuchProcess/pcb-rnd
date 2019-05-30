@@ -188,7 +188,7 @@ static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 
 	stdarg(XmNwidth, prv->min_sizex_px);
 	stdarg(XmNheight, prv->min_sizey_px);
-	stdarg(XmNresizePolicy, XmRESIZE_GROW);
+	stdarg(XmNresizePolicy, XmRESIZE_ANY);
 	stdarg(XmNuserData, pd);
 	pw = XmCreateDrawingArea(parent, XmStrCast("dad_preview"), stdarg_args, stdarg_n);
 	XtManageChild(pw);
