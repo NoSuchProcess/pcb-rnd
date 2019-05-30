@@ -95,7 +95,7 @@ static void toolbar_create_static(pcb_hid_cfg_t *cfg)
 {
 	const lht_node_t *t, *ts = pcb_hid_cfg_get_menu(cfg, "/toolbar_static");
 
-	if ((ts != NULL) || (ts->type != LHT_LIST)) {
+	if ((ts != NULL) && (ts->type != LHT_LIST)) {
 		for(t = ts->data.list.first; t != NULL; t = t->next) {
 			pcb_toolid_t tid = pcb_tool_lookup(t->name);
 			pcb_tool_t **tool;
