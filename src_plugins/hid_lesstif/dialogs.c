@@ -153,8 +153,6 @@ typedef struct {
 
 static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
 {
-	char *cp;
-
 	if (ctx->attrs[widx].help_text == ATTR_UNDOCUMENTED)
 		return;
 
@@ -270,7 +268,6 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 		empty = XmStringCreatePCB(" ");
 
 	for (i = start_from; i < ctx->n_attrs; i++) {
-		char buf[30];
 		Widget w;
 
 		if (ctx->attrs[i].type == PCB_HATT_END)
@@ -459,7 +456,6 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 
 static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val)
 {
-	char buf[30];
 	int save, n, copied = 0;
 
 	save = ctx->inhibit_valchg;
@@ -570,14 +566,12 @@ static void ltf_attr_destroy_cb(Widget w, void *v, void *cbs)
 static void ltf_attr_config_cb(Widget shell, XtPointer data, XEvent *xevent, char *dummy)
 {
 	lesstif_attr_dlg_t *ctx = data;
-	Window win;
 	Display *dsp;
 	XConfigureEvent *cevent = (XConfigureEvent *)xevent;
 
 	if (cevent->type != ConfigureNotify)
 		return;
 
-	win = XtWindow(shell);
 	dsp = XtDisplay(shell);
 
 	ltf_winplace_cfg(dsp, XtWindow(ctx->dialog), ctx, ctx->id);
