@@ -34,11 +34,13 @@
 #include "query.h"
 #include "query_y.h"
 #include "query_exec.h"
+#include "query_access.h"
 #include "draw.h"
 #include "select.h"
 #include "board.h"
 #include "macro.h"
 #include "idpath.h"
+#include "compat_misc.h"
 
 static const char pcb_acts_query[] =
 	"query(dump, expr) - dry run: compile and dump an expression\n"
@@ -228,8 +230,122 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static pcb_qry_node_t *field_comp(const char *fields)
+{
+	char fname[64], *fno;
+	const char *s;
+	int len = 1, flen = 0, idx = 0;
+	pcb_qry_node_t *res;
+
+	if (*fields == '.') fields++;
+	if (*fields == '\0')
+		return NULL;
+
+	for(s = fields; *s != '\0'; s++) {
+		if (*s == '.') {
+			len++;
+			if (len > 16)
+				return NULL; /* too many fields chained */
+			if (flen >= sizeof(fname))
+				return NULL; /* field name segment too long */
+			flen = 0;
+		}
+		else
+			flen++;
+	}
+
+	res = calloc(sizeof(pcb_qry_node_t), len);
+	fno = fname;
+	for(s = fields;; s++) {
+		if ((*s == '.') || (*s == '\0')) {
+			*fno = '\0';
+			if (idx > 0)
+				res[idx-1].next = &res[idx];
+			res[idx].type = PCBQ_FIELD;
+			res[idx].precomp.fld = query_fields_sphash(fname);
+/*pcb_trace("[%d/%d] '%s' -> %d\n", idx, len, fname, res[idx].precomp.fld);*/
+			if (res[idx].precomp.fld < 0) {
+				free(res);
+				return NULL;
+			}
+			fno = fname;
+			if (*s == '\0')
+				break;
+			idx++;
+		}
+		else
+			*fno++ = *s;
+	}
+
+	return res;
+}
+
+static void val2fgw(fgw_arg_t *dst, pcb_qry_val_t *src)
+{
+	switch(src->type) {
+		case PCBQ_VT_COORD:
+			dst->type = FGW_COORD_;
+			fgw_coord(dst) = src->data.crd;
+			break;
+		case PCBQ_VT_DOUBLE:
+			dst->type = FGW_DOUBLE;
+			dst->val.nat_double = src->data.dbl;
+			break;
+		case PCBQ_VT_STRING:
+			dst->type = FGW_STR | FGW_DYN;
+			dst->val.str = pcb_strdup(src->data.str);
+			break;
+		case PCBQ_VT_VOID:
+		case PCBQ_VT_OBJ:
+		case PCBQ_VT_LST:
+		default:;
+			break;
+	}
+}
+
+static const char pcb_acts_QueryObj[] = "QueryObj(idpath, [fieldname|fieldID])\n";
+static const char pcb_acth_QueryObj[] = "Return the value of a field of an object, addressed by the object's idpath and the field's name or precompiled ID. Returns NIL on error.";
+static fgw_error_t pcb_act_QueryObj(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_idpath_t *idp;
+	pcb_qry_node_t *fld = NULL;
+	pcb_qry_val_t obj;
+	pcb_qry_val_t val;
+
+	PCB_ACT_CONVARG(1, FGW_IDPATH, QueryObj, idp = fgw_idpath(&argv[1]));
+
+	if ((argv[2].type & FGW_STR) == FGW_STR) {
+		const char *field;
+		PCB_ACT_CONVARG(2, FGW_STR, QueryObj, field = argv[2].val.str);
+		fld = field_comp(field);
+	}
+	else if ((argv[2].type & FGW_PTR) == FGW_PTR) {
+		TODO("not yet supported");
+		return -1;
+	}
+
+	if (!fgw_ptr_in_domain(&pcb_fgw, &argv[1], PCB_PTR_DOMAIN_IDPATH))
+		return FGW_ERR_PTR_DOMAIN;
+
+	obj.type = PCBQ_VT_OBJ;
+	obj.data.obj = pcb_idpath2obj(PCB->Data, idp);
+	if (obj.data.obj == NULL)
+		goto err;
+	if (pcb_qry_obj_field(&obj, fld, &val) != 0)
+		goto err;
+
+	val2fgw(res, &val);
+	return 0;
+
+	err:;
+		res->type = FGW_PTR;
+		res->val.ptr_void = NULL;
+		return 0;
+}
+
 pcb_action_t query_action_list[] = {
-	{"query", pcb_act_query, pcb_acth_query, pcb_acts_query}
+	{"query", pcb_act_query, pcb_acth_query, pcb_acts_query},
+	{"QueryObj", pcb_act_QueryObj, pcb_acth_QueryObj, pcb_acts_QueryObj}
 };
 
 PCB_REGISTER_ACTIONS(query_action_list, NULL)
