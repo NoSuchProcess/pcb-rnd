@@ -33,6 +33,8 @@
 #include "plugins.h"
 #include "misc_util.h"
 
+#include "act_idpath.c"
+
 static const char pcb_acts_GetValue[] = "GetValue(input, units, relative, default_unit)";
 static const char pcb_acth_GetValue[] = "Convert a coordinate value. Returns an unitless double or FGW_ERR_ARG_CONV. The 3rd parameter controls whether to require relative coordinates (+- prefix). Wraps pcb_get_value_ex().";
 static fgw_error_t pcb_act_GetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
