@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -230,6 +230,8 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char *PTR_DOMAIN_PCFIELD = "ptr_domain_query_precompiled_field";
+
 static pcb_qry_node_t *field_comp(const char *fields)
 {
 	char fname[64], *fno;
@@ -303,7 +305,7 @@ static void val2fgw(fgw_arg_t *dst, pcb_qry_val_t *src)
 	}
 }
 
-static const char pcb_acts_QueryObj[] = "QueryObj(idpath, [fieldname|fieldID])\n";
+static const char pcb_acts_QueryObj[] = "QueryObj(idpath, [.fieldname|fieldID])";
 static const char pcb_acth_QueryObj[] = "Return the value of a field of an object, addressed by the object's idpath and the field's name or precompiled ID. Returns NIL on error.";
 static fgw_error_t pcb_act_QueryObj(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -311,21 +313,32 @@ static fgw_error_t pcb_act_QueryObj(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_qry_node_t *fld = NULL;
 	pcb_qry_val_t obj;
 	pcb_qry_val_t val;
+	int free_fld = 0;
 
 	PCB_ACT_CONVARG(1, FGW_IDPATH, QueryObj, idp = fgw_idpath(&argv[1]));
 
 	if ((argv[2].type & FGW_STR) == FGW_STR) {
 		const char *field;
 		PCB_ACT_CONVARG(2, FGW_STR, QueryObj, field = argv[2].val.str);
+		if (field == NULL)
+			goto err;
+		if (*field != '.')
+			goto id;
 		fld = field_comp(field);
+		free_fld = 1;
 	}
 	else if ((argv[2].type & FGW_PTR) == FGW_PTR) {
-		TODO("not yet supported");
-		return -1;
+		id:;
+		PCB_ACT_CONVARG(2, FGW_PTR, QueryObj, fld = argv[2].val.ptr_void);
+		if (!fgw_ptr_in_domain(&pcb_fgw, &argv[2], PTR_DOMAIN_PCFIELD))
+			return FGW_ERR_PTR_DOMAIN;
 	}
 
-	if (!fgw_ptr_in_domain(&pcb_fgw, &argv[1], PCB_PTR_DOMAIN_IDPATH))
+	if ((fld == NULL) || (!fgw_ptr_in_domain(&pcb_fgw, &argv[1], PCB_PTR_DOMAIN_IDPATH))) {
+		if (free_fld)
+			free(fld);
 		return FGW_ERR_PTR_DOMAIN;
+	}
 
 	obj.type = PCBQ_VT_OBJ;
 	obj.data.obj = pcb_idpath2obj(PCB->Data, idp);
@@ -334,18 +347,55 @@ static fgw_error_t pcb_act_QueryObj(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (pcb_qry_obj_field(&obj, fld, &val) != 0)
 		goto err;
 
+	if (free_fld)
+		free(fld);
+
 	val2fgw(res, &val);
 	return 0;
 
 	err:;
+		if (free_fld)
+			free(fld);
 		res->type = FGW_PTR;
 		res->val.ptr_void = NULL;
 		return 0;
 }
 
+static const char pcb_acts_QueryCompileField[] =
+	"QueryCompileField(compile, fieldname)\n"
+	"QueryCompileField(free, fieldID)";
+static const char pcb_acth_QueryCompileField[] = "With \"compile\": precompiles textual field name to field ID; with \"free\": frees the memory allocated for a previously precompiled fieldID.";
+static fgw_error_t pcb_act_QueryCompileField(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *cmd, *fname;
+	pcb_qry_node_t *fld;
+
+	PCB_ACT_CONVARG(1, FGW_STR, QueryCompileField, cmd = argv[1].val.str);
+	switch(*cmd) {
+		case 'c': /* compile */
+			PCB_ACT_CONVARG(2, FGW_STR, QueryCompileField, fname = argv[2].val.str);
+			fld = field_comp(fname);
+			fgw_ptr_reg(&pcb_fgw, res, PTR_DOMAIN_PCFIELD, FGW_PTR | FGW_STRUCT, fld);
+			return 0;
+		case 'f': /* free */
+			if (!fgw_ptr_in_domain(&pcb_fgw, &argv[2], PTR_DOMAIN_PCFIELD))
+				return FGW_ERR_PTR_DOMAIN;
+			PCB_ACT_CONVARG(2, FGW_PTR, QueryCompileField, fld = argv[2].val.ptr_void);
+			fgw_ptr_unreg(&pcb_fgw, &argv[2], PTR_DOMAIN_PCFIELD);
+			free(fld);
+			break;
+		default:
+			return FGW_ERR_ARG_CONV;
+	}
+	res->type = FGW_PTR;
+	res->val.ptr_void = fld;
+	return 0;
+}
+
 pcb_action_t query_action_list[] = {
 	{"query", pcb_act_query, pcb_acth_query, pcb_acts_query},
-	{"QueryObj", pcb_act_QueryObj, pcb_acth_QueryObj, pcb_acts_QueryObj}
+	{"QueryObj", pcb_act_QueryObj, pcb_acth_QueryObj, pcb_acts_QueryObj},
+	{"QueryCompileField", pcb_act_QueryCompileField, pcb_acth_QueryCompileField, pcb_acts_QueryCompileField}
 };
 
 PCB_REGISTER_ACTIONS(query_action_list, NULL)
