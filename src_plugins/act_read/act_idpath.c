@@ -77,7 +77,7 @@ static fgw_error_t pcb_act_IDPList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				res->val.ptr_struct = NULL;
 				return 0;
 			}
-			fgw_ptr_reg(&pcb_fgw, res, PCB_PTR_DOMAIN_IDPATH, FGW_PTR, idp);
+			fgw_ptr_reg(&pcb_fgw, res, PCB_PTR_DOMAIN_IDPATH, FGW_PTR | FGW_STRUCT, idp);
 			return 0;
 
 		case act_read_keywords_pop:
@@ -87,7 +87,7 @@ static fgw_error_t pcb_act_IDPList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				res->val.ptr_struct = NULL;
 				return 0;
 			}
-			fgw_ptr_reg(&pcb_fgw, res, PCB_PTR_DOMAIN_IDPATH, FGW_PTR, idp);
+			fgw_ptr_reg(&pcb_fgw, res, PCB_PTR_DOMAIN_IDPATH, FGW_PTR | FGW_STRUCT, idp);
 			pcb_idpath_list_remove(idp);
 			return 0;
 
