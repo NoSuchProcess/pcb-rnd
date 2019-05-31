@@ -36,7 +36,6 @@ static fgw_error_t pcb_act_IDPList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		case act_read_keywords_length:
 			PCB_ACT_IRES(pcb_idpath_list_length(list));
-printf("LEN: %ld\n", res->val.nat_long);
 			return 0;
 
 		case act_read_keywords_free:
