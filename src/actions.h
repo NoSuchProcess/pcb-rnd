@@ -27,9 +27,7 @@ typedef enum {
 	FGW_COORDS_,
 	FGW_LAYERID_,
 	FGW_LAYER_,
-	FGW_DATA_,
-	FGW_IDPATH_,
-	FGW_IDPATH_LIST_
+	FGW_DATA_
 } pcb_fgw_types_e;
 #define fgw_keyword(arg) ((arg)->val.nat_int)
 #define fgw_coord(arg) (*(pcb_coord_t *)(&((arg)->val.custom.c)))
@@ -45,8 +43,8 @@ typedef enum {
 #define FGW_LAYERID  ((fgw_type_t)FGW_LAYERID_)
 #define FGW_LAYER  ((fgw_type_t)FGW_LAYER_)
 #define FGW_DATA  ((fgw_type_t)FGW_DATA_)
-#define FGW_IDPATH  ((fgw_type_t)FGW_IDPATH_)
-#define FGW_IDPATH_LIST  ((fgw_type_t)FGW_IDPATH_)
+#define FGW_IDPATH  (FGW_PTR)
+#define FGW_IDPATH_LIST  (FGW_PTR)
 
 extern const char *PCB_PTR_DOMAIN_IDPATH;
 extern const char *PCB_PTR_DOMAIN_IDPATH_LIST;
