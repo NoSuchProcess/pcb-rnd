@@ -44,6 +44,9 @@
 
 const pcb_action_t *pcb_current_action = NULL;
 
+const char *PCB_PTR_DOMAIN_IDPATH = "pcb_fgw_ptr_domain_idpath";
+const char *PCB_PTR_DOMAIN_IDPATH_LIST = "pcb_fgw_ptr_domain_idpath_list";
+
 fgw_ctx_t pcb_fgw;
 fgw_obj_t *pcb_fgw_obj;
 
