@@ -90,7 +90,10 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h misc_util.h \
+ ../src_plugins/act_read/keywords_sphash.h \
  ../src_plugins/act_read/act_idpath.c dolists.h
+../src_plugins/act_read/keywords_sphash.o: \
+ ../src_plugins/act_read/keywords_sphash.c
 ../src_plugins/ar_cpcb/ar_cpcb.o: ../src_plugins/ar_cpcb/ar_cpcb.c \
  ../config.h ../src_3rd/gensexpr/gsxl.h \
  ../src_3rd/gensexpr/gensexpr_impl.h ../src_3rd/gensexpr/gsx_parse.h \
