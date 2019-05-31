@@ -4,6 +4,7 @@ clear
 dup
 free
 get
+length
 pop
 push
 prepend
