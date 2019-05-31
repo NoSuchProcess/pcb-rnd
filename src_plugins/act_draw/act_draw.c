@@ -43,32 +43,6 @@
 
 static const char *PTR_DOMAIN_POLY = "fgw_ptr_domain_poly";
 
-static const char pcb_acts_GetValue[] = "GetValue(input, units, relative, default_unit)";
-static const char pcb_acth_GetValue[] = "Convert a coordinate value. Returns an unitless double or FGW_ERR_ARG_CONV. The 3rd parameter controls whether to require relative coordinates (+- prefix). Wraps pcb_get_value_ex().";
-static fgw_error_t pcb_act_GetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	const char *input, *units, *def_unit;
-	int relative, a;
-	double v;
-	pcb_bool success;
-
-	PCB_ACT_CONVARG(1, FGW_STR, GetValue, input = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_STR, GetValue, units = argv[2].val.str);
-	PCB_ACT_CONVARG(3, FGW_INT, GetValue, relative = argv[3].val.nat_int);
-	PCB_ACT_CONVARG(4, FGW_STR, GetValue, def_unit = argv[1].val.str);
-
-	if (*units == '\0')
-		units = NULL;
-
-	v = pcb_get_value_ex(input, units, &a, NULL, def_unit, &success);
-	if (!success || (relative && a))
-		return FGW_ERR_ARG_CONV;
-
-	res->type = FGW_DOUBLE;
-	res->val.nat_double = v;
-	return 0;
-}
-
 static int flg_error(const char *msg)
 {
 	pcb_message(PCB_MSG_ERROR, "act_draw flag conversion error: %s\n", msg);
@@ -442,7 +416,6 @@ static fgw_error_t pcb_act_PolyNewEnd(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 pcb_action_t act_draw_action_list[] = {
-	{"GetValue", pcb_act_GetValue, pcb_acth_GetValue, pcb_acts_GetValue},
 	{"LineNew", pcb_act_LineNew, pcb_acth_LineNew, pcb_acts_LineNew},
 	{"ArcNew", pcb_act_ArcNew, pcb_acth_ArcNew, pcb_acts_ArcNew},
 	{"TextNew", pcb_act_TextNew, pcb_acth_TextNew, pcb_acts_TextNew},
