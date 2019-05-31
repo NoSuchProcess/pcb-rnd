@@ -30,6 +30,7 @@
 #include "config.h"
 
 #include "actions.h"
+#include "plugins.h"
 #include "misc_util.h"
 
 static const char pcb_acts_GetValue[] = "GetValue(input, units, relative, default_unit)";
