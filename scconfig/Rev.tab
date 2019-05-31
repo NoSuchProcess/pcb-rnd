@@ -1,3 +1,4 @@
+25817	configure	new plugin for data access actions
 25789	configure	centralize the unit selector widget in a DAD compound
 25783	congigure	hidlib: remove unused parts of the gtk HID
 25758	configure	compound DAD widgets, for DAD based spinboxes: remove old, gtk-only coord entry

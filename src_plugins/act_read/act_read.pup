@@ -1,0 +1,7 @@
+$class feature
+$short action wrappers for data access
+$long Data access related API as actions
+$state works
+$package (core)
+default buildin
+autoload 1

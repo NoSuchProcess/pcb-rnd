@@ -1,0 +1,10 @@
+put /local/pcb/mod {act_read}
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/act_read/act_read.o
+@]
+
+switch /local/pcb/act_read/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end
