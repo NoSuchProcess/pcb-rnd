@@ -4,6 +4,8 @@ clear
 dup
 free
 get
+pop
+push
 prepend
 print
 remove

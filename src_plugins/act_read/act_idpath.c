@@ -3,8 +3,8 @@
 static const char pcb_acts_IDPList[] =
 	"IDPList(alloc)\n"
 	"IDPList(free|clear|print|dup, list)\n"
-	"IDPList(get|remove, list, idx)\n"
-	"IDPList(prepend|append, list, idpath)"
+	"IDPList(get|pop|remove, list, idx)\n"
+	"IDPList(prepend|append|push, list, idpath)"
 	;
 static const char pcb_acth_IDPList[] = "Basic idpath list manipulation.";
 static fgw_error_t pcb_act_IDPList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -43,13 +43,14 @@ static fgw_error_t pcb_act_IDPList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return 0;
 
 		case act_read_keywords_append:
+		case act_read_keywords_push:
 		case act_read_keywords_prepend:
 			PCB_ACT_CONVARG(3, FGW_IDPATH, IDPList, idp = fgw_idpath(&argv[3]));
 			if (!fgw_ptr_in_domain(&pcb_fgw, &argv[3], PCB_PTR_DOMAIN_IDPATH))
 				return FGW_ERR_PTR_DOMAIN;
 			if (cmd == act_read_keywords_append)
 				pcb_idpath_list_append(list, idp);
-			else
+			else /* prepend or push */
 				pcb_idpath_list_insert(list, idp);
 			PCB_ACT_IRES(0);
 			return 0;
@@ -74,6 +75,17 @@ static fgw_error_t pcb_act_IDPList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				return 0;
 			}
 			fgw_ptr_reg(&pcb_fgw, res, PCB_PTR_DOMAIN_IDPATH, FGW_PTR, idp);
+			return 0;
+
+		case act_read_keywords_pop:
+			idp = pcb_idpath_list_first(list);
+			if (idp == NULL) {
+				res->type = FGW_PTR;
+				res->val.ptr_struct = NULL;
+				return 0;
+			}
+			fgw_ptr_reg(&pcb_fgw, res, PCB_PTR_DOMAIN_IDPATH, FGW_PTR, idp);
+			pcb_idpath_list_remove(idp);
 			return 0;
 
 		case act_read_keywords_print:
