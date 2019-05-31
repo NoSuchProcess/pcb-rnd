@@ -38,9 +38,11 @@
 #include "select.h"
 #include "board.h"
 #include "macro.h"
+#include "idpath.h"
 
 static const char pcb_acts_query[] =
 	"query(dump, expr) - dry run: compile and dump an expression\n"
+	"query(append, idplist, expr) - compile and run expr and append the idpath of resulting objects on idplist\n"
 	;
 static const char pcb_acth_query[] = "Perform various queries on PCB data.";
 
@@ -102,6 +104,20 @@ static void select_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current
 	}
 }
 
+static void append_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
+{
+	pcb_idpath_list_t *list = user_ctx;
+	pcb_idpath_t *idp;
+
+	if (!pcb_qry_is_true(res))
+		return;
+	if (!PCB_OBJ_IS_CLASS(current->type, PCB_OBJ_CLASS_OBJ))
+		return;
+
+	idp = pcb_obj2idpath(current);
+	pcb_idpath_list_append(list, idp);
+}
+
 static int run_script(const char *script, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
 {
 	pcb_qry_node_t *prg = NULL;
@@ -134,6 +150,8 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (strcmp(cmd, "dump") == 0) {
 		pcb_qry_node_t *prg = NULL;
+
+		PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
 		printf("Script dump: '%s'\n", arg);
 		pcb_qry_set_input(arg);
 		qry_parse(&prg);
@@ -145,6 +163,8 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (strcmp(cmd, "eval") == 0) {
 		int errs;
 		eval_stat_t st;
+
+		PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
 
 		memset(&st, 0, sizeof(st));
 		printf("Script eval: '%s'\n", arg);
@@ -160,6 +180,9 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (strcmp(cmd, "select") == 0) {
 		sel.how = PCB_CHGFLG_SET;
+
+		PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
+
 		if (run_script(arg, select_cb, &sel) < 0)
 			printf("Failed to run the query\n");
 		if (sel.cnt > 0) {
@@ -172,6 +195,9 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (strcmp(cmd, "unselect") == 0) {
 		sel.how = PCB_CHGFLG_CLEAR;
+
+		PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
+
 		if (run_script(arg, select_cb, &sel) < 0)
 			printf("Failed to run the query\n");
 		if (sel.cnt > 0) {
@@ -179,6 +205,22 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_hid_redraw(PCB);
 		}
 		PCB_ACT_IRES(0);
+		return 0;
+	}
+
+	if (strcmp(cmd, "append") == 0) {
+		pcb_idpath_list_t *list;
+
+		PCB_ACT_CONVARG(2, FGW_IDPATH_LIST, query, list = fgw_idpath_list(&argv[2]));
+		PCB_ACT_MAY_CONVARG(3, FGW_STR, query, arg = argv[3].val.str);
+
+		if (!fgw_ptr_in_domain(&pcb_fgw, &argv[2], PCB_PTR_DOMAIN_IDPATH_LIST))
+			return FGW_ERR_PTR_DOMAIN;
+
+		if (run_script(arg, append_cb, list) < 0)
+			PCB_ACT_IRES(1);
+		else
+			PCB_ACT_IRES(0);
 		return 0;
 	}
 
