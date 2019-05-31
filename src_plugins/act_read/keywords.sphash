@@ -1,5 +1,7 @@
 alloc
 append
+clear
+dup
 free
 get
 prepend

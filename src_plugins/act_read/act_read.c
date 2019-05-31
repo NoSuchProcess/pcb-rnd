@@ -32,6 +32,7 @@
 #include "actions.h"
 #include "plugins.h"
 #include "misc_util.h"
+#include "idpath.h"
 
 #include "keywords_sphash.h"
 
@@ -80,6 +81,7 @@ static int flg_error(const char *msg)
 
 pcb_action_t act_read_action_list[] = {
 	{"GetValue", pcb_act_GetValue, pcb_acth_GetValue, pcb_acts_GetValue},
+	{"IDPList", pcb_act_IDPList, pcb_acth_IDPList, pcb_acts_IDPList}
 };
 
 static const char *act_read_cookie = "act_read";
