@@ -124,57 +124,6 @@ static int layer_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 	abort();
 }
 
-pcb_data_t *pcb_data_by_name(pcb_board_t *pcb, const char **name)
-{
-	if (name == NULL)
-		return NULL;
-
-	if (pcb_strncasecmp(*name, "pcb", 3) == 0) {
-		(*name) += 3;
-		if (**name == '/')
-			(*name)++;
-		return pcb->Data;
-	}
-	else if (pcb_strncasecmp(*name, "buffer#", 7) == 0) {
-		char *end;
-		long idx = strtol((*name)+7, &end, 10);
-		if ((*end == '\0') && (idx >= 0) && (idx < PCB_MAX_BUFFER)) {
-			*name = end;
-			if (**name == '/')
-				(*name)++;
-			return pcb_buffers[idx].Data;
-		}
-	}
-	else if (pcb_strncasecmp(*name, "buffer", 6) == 0) {
-		(*name) += 6;
-		if (**name == '/')
-			(*name)++;
-		return PCB_PASTEBUFFER->Data;
-	}
-	return NULL;
-}
-
-const char *pcb_data_to_name(pcb_board_t *pcb, pcb_data_t *data, char *buf, int buf_len)
-{
-	int n;
-
-	assert(buf_len > 15);
-	if (buf_len < 16)
-		return NULL;
-
-	if (data == pcb->Data)
-		return "pcb";
-
-	for(n = 0; n < PCB_MAX_BUFFER; n++) {
-		if (data == pcb_buffers[n].Data) {
-			pcb_sprintf(buf, "buffer#%d", n);
-			return buf;
-		}
-	}
-
-	return NULL;
-}
-
 static int data_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 {
 	if (target == FGW_DATA) { /* convert to data */

@@ -226,4 +226,9 @@ unsigned long pcb_data_clear_flag(pcb_data_t *data, unsigned long flag, int redr
 /* Clear the given dyflag bit from all objects under data */
 void pcb_data_dynflag_clear(pcb_data_t *data, pcb_dynf_t dynf);
 
+
+pcb_data_t *pcb_data_by_name(pcb_board_t *pcb, const char **name);
+
+const char *pcb_data_to_name(pcb_board_t *pcb, pcb_data_t *data, char *buf, int buf_len);
+
 #endif

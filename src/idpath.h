@@ -34,6 +34,7 @@
 typedef struct pcb_idpath_s {
 	int len;
 	gdl_elem_t link;  /* may be part of an idpath list */
+	int data_addr;    /* 0 means unknown, 1 means PCB, 2+ means buffer idx (-2) */
 	long int id[1];   /* the struct is allocated to be sizeof(long int) * len */
 } pcb_idpath_t;
 
