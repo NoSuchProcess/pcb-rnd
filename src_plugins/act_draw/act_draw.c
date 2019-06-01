@@ -429,6 +429,7 @@ pcb_action_t act_draw_action_list[] = {
 	{"PolyNew", pcb_act_PolyNew, pcb_acth_PolyNew, pcb_acts_PolyNew},
 	{"PolyNewPoints", pcb_act_PolyNewPoints, pcb_acth_PolyNewPoints, pcb_acts_PolyNewPoints},
 	{"PolyNewEnd", pcb_act_PolyNewEnd, pcb_acth_PolyNewEnd, pcb_acts_PolyNewEnd},
+	{"PstkProtoTmp", pcb_act_PstkProtoTmp, pcb_acth_PstkProtoTmp, pcb_acts_PstkProtoTmp}
 };
 
 static const char *act_draw_cookie = "act_draw";

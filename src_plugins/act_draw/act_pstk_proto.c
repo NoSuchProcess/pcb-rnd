@@ -29,9 +29,13 @@
 
 /* included from act_draw.c */
 
+#include "obj_pstk_inlines.h"
+
+static const char *PCB_PTR_DOMAIN_PSTK_RPOTO = "fgw_ptr_domain_pstk_proto";
+
 static const char pcb_acts_PstkProtoTmp[] =
 	"PstkProto([noundo,] new)\n"
-	"PstkProto([noundo,] dup, data, proto_id)\n"
+	"PstkProto([noundo,] dup, data, src_proto_id)\n"
 	"PstkProto([noundo,] insert, data, proto)\n"
 	"PstkProto([noundo,] insert_dup, data, proto)\n"
 	"PstkProto([noundo,] free, proto)";
@@ -39,6 +43,9 @@ static const char pcb_acth_PstkProtoTmp[] = "Allocate, insert or free a temporar
 static fgw_error_t pcb_act_PstkProtoTmp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char *cmd;
+	pcb_pstk_proto_t *proto, *src;
+	pcb_data_t *data;
+	long src_id;
 	DRAWOPTARG;
 
 	res->type = FGW_PTR | FGW_STRUCT;
@@ -48,7 +55,25 @@ static fgw_error_t pcb_act_PstkProtoTmp(fgw_arg_t *res, int argc, fgw_arg_t *arg
 
 	switch(act_draw_keywords_sphash(cmd)) {
 		case act_draw_keywords_new:
+			proto = calloc(sizeof(pcb_pstk_proto_t), 1);
+			fgw_ptr_reg(&pcb_fgw, res, PCB_PTR_DOMAIN_PSTK_RPOTO, FGW_PTR | FGW_STRUCT, proto);
+			res->val.ptr_void = proto;
+			return 0;
+
 		case act_draw_keywords_dup:
+			PCB_ACT_CONVARG(2+ao, FGW_DATA, PstkProtoTmp, data = fgw_data(&argv[2+ao]));
+			PCB_ACT_CONVARG(3+ao, FGW_LONG, PstkProtoTmp, src_id = argv[3+ao].val.nat_long);
+			if (data == NULL)
+				return 0;
+			src = pcb_pstk_get_proto_(data, src_id);
+			if (src == NULL)
+				return 0;
+			proto = calloc(sizeof(pcb_pstk_proto_t), 1);
+			fgw_ptr_reg(&pcb_fgw, res, PCB_PTR_DOMAIN_PSTK_RPOTO, FGW_PTR | FGW_STRUCT, proto);
+			pcb_pstk_proto_copy(proto, src);
+			res->val.ptr_void = proto;
+			return 0;
+
 		case act_draw_keywords_insert:
 		case act_draw_keywords_insert_dup:
 		case act_draw_keywords_free:
