@@ -117,6 +117,13 @@ int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub, pc
 	if (pcb_dock_color[where] != NULL)
 		pcb_gtk_dad_fixcolor(sub->dlg_hid_ctx, pcb_dock_color[where]);
 
+	/* workaround: the left dock is in a pane that should be adjusted to the default x size of newcomers if narrower */
+	if ((where == PCB_HID_DOCK_LEFT) && (sub->dlg_defx > 0)) {
+		int curr = gtk_paned_get_position(GTK_PANED(tw->hpaned_middle));
+		if (curr < sub->dlg_defx)
+			gtk_paned_set_position(GTK_PANED(tw->hpaned_middle), sub->dlg_defx);
+	}
+
 	return 0;
 }
 
@@ -358,7 +365,7 @@ void ghid_topwin_hide_status(void *ctx, int show)
    before this is called. */
 static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 {
-	GtkWidget *vbox_main, *hpaned_middle, *hbox, *hboxi, *evb;
+	GtkWidget *vbox_main, *hbox, *hboxi, *evb;
 	GtkWidget *hbox_scroll, *fullscreen_btn;
 	GtkWidget *resize_grip_vbox;
 	GtkWidget *resize_grip;
@@ -396,8 +403,8 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	tw->dockbox[PCB_HID_DOCK_TOP_RIGHT] = gtkc_vbox_new(FALSE, 8);
 	gtk_box_pack_end(GTK_BOX(GTK_BOX(tw->position_hbox)), tw->dockbox[PCB_HID_DOCK_TOP_RIGHT], FALSE, FALSE, 0);
 
-	hpaned_middle = gtkc_hpaned_new();
-	gtk_box_pack_start(GTK_BOX(vbox_main), hpaned_middle, TRUE, TRUE, 0);
+	tw->hpaned_middle = gtkc_hpaned_new();
+	gtk_box_pack_start(GTK_BOX(vbox_main), tw->hpaned_middle, TRUE, TRUE, 0);
 
 	fix_topbar_theming(tw); /* Must be called after toolbar is created */
 
@@ -405,14 +412,14 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	/* This box will be made insensitive when the gui needs
 	 * a modal button GetLocation button press. */
 	tw->left_toolbar = gtkc_vbox_new(FALSE, 0);
-	gtk_paned_pack1(GTK_PANED(hpaned_middle), tw->left_toolbar, FALSE, FALSE);
+	gtk_paned_pack1(GTK_PANED(tw->hpaned_middle), tw->left_toolbar, FALSE, FALSE);
 
 	tw->dockbox[PCB_HID_DOCK_LEFT] = gtkc_vbox_new(FALSE, 8);
 	gtk_box_pack_start(GTK_BOX(GTK_BOX(tw->left_toolbar)), tw->dockbox[PCB_HID_DOCK_LEFT], TRUE, TRUE, 0);
 
 	/* -- main content */
 	tw->vbox_middle = gtkc_vbox_new(FALSE, 0);
-	gtk_paned_pack2(GTK_PANED(hpaned_middle), tw->vbox_middle, TRUE, FALSE);
+	gtk_paned_pack2(GTK_PANED(tw->hpaned_middle), tw->vbox_middle, TRUE, FALSE);
 
 
 	/* -- The PCB layout output drawing area */

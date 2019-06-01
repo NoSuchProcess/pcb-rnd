@@ -26,7 +26,7 @@ typedef struct {
 	GtkWidget *top_hbox, *top_bar_background, *menu_hbox, *position_hbox, *menubar_toolbar_vbox;
 	GtkWidget *left_toolbar;
 	GtkWidget *layer_selector;
-	GtkWidget *vbox_middle;
+	GtkWidget *vbox_middle, *hpaned_middle;
 
 	GtkWidget *h_range, *v_range;
 	GObject *h_adjustment, *v_adjustment;
