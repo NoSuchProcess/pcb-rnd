@@ -36,6 +36,7 @@
 
 #include <assert.h>
 
+#include "board.h"
 #include "data.h"
 #include "layer.h"
 
@@ -158,6 +159,22 @@ static pcb_any_obj_t *idpath2obj(pcb_data_t *data, const pcb_idpath_t *path, int
 
 pcb_any_obj_t *pcb_idpath2obj_in(pcb_data_t *data, const pcb_idpath_t *path)
 {
+	return idpath2obj(data, path, 0);
+}
+
+pcb_any_obj_t *pcb_idpath2obj(pcb_board_t *pcb, const pcb_idpath_t *path)
+{
+	pcb_data_t *data;
+	if (path->data_addr == 1) {
+		if (pcb == NULL)
+			return NULL;
+		data = pcb->Data;
+	}
+	if ((path->data_addr >= 2) && (path->data_addr < PCB_MAX_BUFFER+2))
+		data = pcb_buffers[path->data_addr - 2].Data;
+	else
+		return NULL;
+	
 	return idpath2obj(data, path, 0);
 }
 

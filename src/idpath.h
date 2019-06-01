@@ -63,6 +63,10 @@ pcb_any_obj_t *pcb_idpath2obj_in(pcb_data_t *data, const pcb_idpath_t *path);
 pcb_idpath_t *pcb_idpath_dup(const pcb_idpath_t *path);
 void pcb_idpath_destroy(pcb_idpath_t *path);
 
+/* Look up self contained path; Refuse unknown root, if pcb is NULL, refuse
+pcb root. Always has access to the buffers. Returns NULL on error. */
+pcb_any_obj_t *pcb_idpath2obj(pcb_board_t *pcb, const pcb_idpath_t *path);
+
 void pcb_idpath_list_clear(pcb_idpath_list_t *lst);
 
 #endif
