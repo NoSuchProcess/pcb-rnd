@@ -302,8 +302,14 @@ static void val2fgw(fgw_arg_t *dst, pcb_qry_val_t *src)
 			dst->val.nat_double = src->data.dbl;
 			break;
 		case PCBQ_VT_STRING:
-			dst->type = FGW_STR | FGW_DYN;
-			dst->val.str = pcb_strdup(src->data.str);
+			if (src->data.str != NULL) {
+				dst->type = FGW_STR | FGW_DYN;
+				dst->val.str = pcb_strdup(src->data.str);
+			}
+			else {
+				dst->type = FGW_PTR;
+				dst->val.ptr_void = NULL;
+			}
 			break;
 		case PCBQ_VT_VOID:
 		case PCBQ_VT_OBJ:
