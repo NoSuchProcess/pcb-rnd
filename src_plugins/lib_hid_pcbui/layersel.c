@@ -730,7 +730,7 @@ static void hsep(layersel_ctx_t *ls)
 static void layersel_docked_create(layersel_ctx_t *ls, pcb_board_t *pcb)
 {
 	PCB_DAD_BEGIN_VBOX(ls->sub.dlg);
-		PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_EXPFILL | PCB_HATF_TIGHT /*| PCB_HATF_SCROLL*/);
+		PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_EXPFILL | PCB_HATF_TIGHT | PCB_HATF_SCROLL);
 		layersel_create_stack(&layersel, pcb);
 		hsep(&layersel);
 		layersel_create_global(&layersel, pcb);
@@ -751,6 +751,7 @@ static void layersel_docked_create(layersel_ctx_t *ls, pcb_board_t *pcb)
 			PCB_DAD_END(ls->sub.dlg);
 		PCB_DAD_END(ls->sub.dlg);
 	PCB_DAD_END(ls->sub.dlg);
+	PCB_DAD_MINSIZE(ls->sub.dlg, 180, 100);
 	ls->w_last_sel = 0;
 }
 
