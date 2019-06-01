@@ -48,7 +48,7 @@ int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 
 	if (strncmp(cmd, "object", 6) == 0) {
 		if (cmd[6] == ':') {
-			idp = pcb_str2idpath(cmd+7);
+			idp = pcb_str2idpath(pe->pcb, cmd+7);
 			if (idp == NULL) {
 				if (!quiet)
 					pcb_message(PCB_MSG_ERROR, "Failed to convert object ID: '%s'\n", cmd+7);

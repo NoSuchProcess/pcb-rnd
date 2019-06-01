@@ -118,7 +118,7 @@ pcb_idpath_t *pcb_obj2idpath(pcb_any_obj_t *obj)
 	return idp;
 }
 
-pcb_idpath_t *pcb_str2idpath(const char *str)
+pcb_idpath_t *pcb_str2idpath(pcb_board_t *pcb, const char *str)
 {
 	const char *s;
 	char *next;
@@ -127,7 +127,7 @@ pcb_idpath_t *pcb_str2idpath(const char *str)
 
 	for(s = str; *s == '/'; s++)
 
-	data_addr = pcb_data_addr_by_name(PCB, &s);
+	data_addr = pcb_data_addr_by_name(pcb, &s);
 
 	for(; *s != '\0'; s++) {
 		if ((s[0] == '/') && (s[1] != '/') && (s[1] != '\0'))
