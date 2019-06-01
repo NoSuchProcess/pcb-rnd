@@ -148,6 +148,12 @@ static int data_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 				return 0;
 			}
 		}
+		if (FGW_BASE_TYPE(arg->type) == FGW_PTR | FGW_STRUCT) {
+TODO("Dangerous: rather support subc's data with IDPATH");
+			arg->val.ptr_void = arg->val.ptr_void;
+			arg->type = FGW_DATA;
+			return 0;
+		}
 		arg->type = FGW_INVALID;
 		return -1;
 	}
@@ -165,8 +171,9 @@ static int data_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 				return 0;
 			}
 		}
-		arg->type = FGW_INVALID;
-		return -1;
+TODO("Dangerous: rather support subc's data with IDPATH");
+		arg->type = FGW_PTR | FGW_DYN;
+		return 0;
 	}
 	fprintf(stderr, "Neither side of the conversion is data\n");
 	abort();
