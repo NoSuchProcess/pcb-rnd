@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
  *
  *  This module, dialogs, was written and is Copyright (C) 2017 by Tibor Palinkas
  *  this module is also subject to the GNU GPL as described below
@@ -55,6 +55,8 @@ static int flg_error(const char *msg)
 		noundo = 1; \
 		ao++; \
 	}
+
+#include "act_pstk_proto.c"
 
 static const char pcb_acts_LineNew[] = "LineNew([noundo,] data, layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags)";
 static const char pcb_acth_LineNew[] = "Create a pcb line segment on a layer. For now data must be \"pcb\". Returns the ID of the new object or 0 on error.";
