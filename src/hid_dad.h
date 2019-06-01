@@ -47,6 +47,7 @@
 	int table ## _alloced = 0; \
 	void *table ## _hid_ctx = NULL; \
 	int table ## _defx = 0, table ## _defy = 0; \
+	int table ## _minx = 0, table ## _miny = 0; \
 	pcb_dad_retovr_t *table ## _ret_override;
 
 #define PCB_DAD_DECL_NOINIT(table) \
@@ -57,6 +58,7 @@
 	int table ## _alloced; \
 	void *table ## _hid_ctx; \
 	int table ## _defx, table ## _defy; \
+	int table ## _minx, table ## _miny; \
 	pcb_dad_retovr_t *table ## _ret_override;
 
 /* Free all resources allocated by DAD macros for table */
@@ -97,6 +99,14 @@ do { \
 do { \
 	table ## _defx = width; \
 	table ## _defy = height; \
+} while(0)
+
+/* Sets the minimum window size (that is only a hint) - NOTE: must be called
+   before PCB_DAD_NEW() */
+#define PCB_DAD_MINSIZE(table, width, height) \
+do { \
+	table ## _minx = width; \
+	table ## _miny = height; \
 } while(0)
 
 #define PCB_DAD_RUN(table) pcb_hid_dad_run(table ## _hid_ctx, table ## _ret_override)
