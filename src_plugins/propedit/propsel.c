@@ -269,7 +269,7 @@ void pcb_propsel_map_core(pcb_propedit_t *ctx)
 		map_layergrp(ctx, pcb_get_layergrp(ctx->pcb, ctx->layergrps.array[n]));
 
 	for(idp = pcb_idpath_list_first(&ctx->objs); idp != NULL; idp = pcb_idpath_list_next(idp))
-		map_any(ctx, pcb_idpath2obj(ctx->data, idp));
+		map_any(ctx, pcb_idpath2obj_in(ctx->data, idp));
 
 	if (ctx->selection) {
 		pcb_any_obj_t *o;
@@ -614,7 +614,7 @@ int pcb_propsel_set(pcb_propedit_t *ctx, const char *prop, pcb_propset_ctx_t *sc
 		set_layergrp(sctx, pcb_get_layergrp(ctx->pcb, ctx->layergrps.array[n]));
 
 	for(idp = pcb_idpath_list_first(&ctx->objs); idp != NULL; idp = pcb_idpath_list_next(idp))
-		set_any(sctx, pcb_idpath2obj(ctx->data, idp));
+		set_any(sctx, pcb_idpath2obj_in(ctx->data, idp));
 
 	if (ctx->selection) {
 		pcb_any_obj_t *o;
@@ -709,7 +709,7 @@ int pcb_propsel_del(pcb_propedit_t *ctx, const char *key)
 		del_cnt += del_layergrp(ctx, pcb_get_layergrp(ctx->pcb, ctx->layergrps.array[n]), key);
 
 	for(idp = pcb_idpath_list_first(&ctx->objs); idp != NULL; idp = pcb_idpath_list_next(idp))
-		del_cnt += del_any(ctx, pcb_idpath2obj(ctx->data, idp), key);
+		del_cnt += del_any(ctx, pcb_idpath2obj_in(ctx->data, idp), key);
 
 	if (ctx->selection) {
 		pcb_any_obj_t *o;

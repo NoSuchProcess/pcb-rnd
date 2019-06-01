@@ -76,7 +76,7 @@ void fontsel_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_
 	fontsel_ctx_t *ctx = prv->user_ctx;
 
 	if (ctx->txt_id != NULL) {
-		pcb_text_t *txt = (pcb_text_t *)pcb_idpath2obj(ctx->pcb->Data, ctx->txt_id);
+		pcb_text_t *txt = (pcb_text_t *)pcb_idpath2obj_in(ctx->pcb->Data, ctx->txt_id);
 		if (txt != NULL)
 			pcb_stub_draw_fontsel(gc, e, txt);
 		ctx->last_fobj = txt;
@@ -93,7 +93,7 @@ pcb_bool fontsel_mouse_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, p
 	fontsel_ctx_t *ctx = prv->user_ctx;
 
 	if (ctx->txt_id != NULL) {
-		pcb_text_t *txt = (pcb_text_t *)pcb_idpath2obj(ctx->pcb->Data, ctx->txt_id);
+		pcb_text_t *txt = (pcb_text_t *)pcb_idpath2obj_in(ctx->pcb->Data, ctx->txt_id);
 		if (txt == NULL)
 			return 0;
 		return pcb_stub_draw_fontsel_mouse_ev(kind, x, y, txt);
@@ -157,7 +157,7 @@ static void pcb_dlg_fontsel(pcb_board_t *pcb, int modal, int global, pcb_text_t 
 	}
 	else {
 		for(c = gdl_first(&fontsels); c != NULL; c = gdl_next(&fontsels, c)) {
-			pcb_text_t *txt = (pcb_text_t *)pcb_idpath2obj(c->pcb->Data, c->txt_id);
+			pcb_text_t *txt = (pcb_text_t *)pcb_idpath2obj_in(c->pcb->Data, c->txt_id);
 			if (txt == txt_obj) {
 				pcb_message(PCB_MSG_ERROR, "There is already an active fontedit dialog for that object,\nnot going to open a second dialog.\n");
 				return;
@@ -267,7 +267,7 @@ static void fontsel_timer_cb(pcb_hidval_t user_data)
 		if (c->txt_id == NULL)
 			continue;
 
-		txt = (pcb_text_t *)pcb_idpath2obj(c->pcb->Data, c->txt_id);
+		txt = (pcb_text_t *)pcb_idpath2obj_in(c->pcb->Data, c->txt_id);
 		if ((txt != c->last_fobj) || (txt != NULL && (txt->fid != c->last_fid)))
 			fontsel_preview_update(c);
 	}

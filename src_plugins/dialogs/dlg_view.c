@@ -225,7 +225,7 @@ static void view_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	for(g = 0; g < 2; g++) {
 		pcb_idpath_t *i;
 		for(i = pcb_idpath_list_first(&v->objs[g]); i != NULL; i = pcb_idpath_list_next(i)) {
-			pcb_any_obj_t *obj = pcb_idpath2obj(ctx->pcb->Data, i);
+			pcb_any_obj_t *obj = pcb_idpath2obj_in(ctx->pcb->Data, i);
 			if ((obj != NULL) && (obj->type & PCB_OBJ_CLASS_REAL)) {
 				vtp0_append(&view_color_save, obj);
 				if (obj->override_color != NULL)
@@ -507,7 +507,7 @@ static void view_select_obj(view_ctx_t *ctx, pcb_view_t *v)
 		return;
 
 	for(i = pcb_idpath_list_first(&v->objs[0]); i != NULL; i = pcb_idpath_list_next(i)) {
-		pcb_any_obj_t *obj = pcb_idpath2obj(ctx->pcb->Data, i);
+		pcb_any_obj_t *obj = pcb_idpath2obj_in(ctx->pcb->Data, i);
 		if ((obj != NULL) && (obj->type & PCB_OBJ_CLASS_REAL)) {
 			pcb_undo_add_obj_to_flag((void *)obj);
 			pcb_draw_obj(obj);

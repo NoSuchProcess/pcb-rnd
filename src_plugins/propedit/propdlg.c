@@ -177,7 +177,7 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 
 		inv = 0;
 		for(idp = pcb_idpath_list_first(&ctx->pe.objs); idp != NULL; idp = pcb_idpath_list_next(idp)) {
-			pcb_any_obj_t *o = pcb_idpath2obj(ctx->pe.data, idp);
+			pcb_any_obj_t *o = pcb_idpath2obj_in(ctx->pe.data, idp);
 			if (o != NULL)
 				pcb_append_printf(&scope, "%s #%ld, ", pcb_obj_type_name(o->type), o->ID);
 			else

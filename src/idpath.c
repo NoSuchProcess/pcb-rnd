@@ -156,7 +156,7 @@ static pcb_any_obj_t *idpath2obj(pcb_data_t *data, const pcb_idpath_t *path, int
 	}
 }
 
-pcb_any_obj_t *pcb_idpath2obj(pcb_data_t *data, const pcb_idpath_t *path)
+pcb_any_obj_t *pcb_idpath2obj_in(pcb_data_t *data, const pcb_idpath_t *path)
 {
 	return idpath2obj(data, path, 0);
 }

@@ -171,7 +171,7 @@ void pcb_view_set_bbox_by_objs(pcb_data_t *data, pcb_view_t *v)
 	/* special case: single objet in group A, use the center */
 	if (pcb_idpath_list_length(&v->objs[0]) == 1) {
 		idp = pcb_idpath_list_first(&v->objs[0]);
-		obj = pcb_idpath2obj(data, idp);
+		obj = pcb_idpath2obj_in(data, idp);
 		if (obj != NULL) {
 			v->have_bbox = 1;
 			pcb_obj_center(obj, &v->x, &v->y);
@@ -185,7 +185,7 @@ void pcb_view_set_bbox_by_objs(pcb_data_t *data, pcb_view_t *v)
 	b.X2 = b.Y2 = -PCB_MAX_COORD;
 	for(g = 0; g < 2; g++) {
 		for(idp = pcb_idpath_list_first(&v->objs[g]); idp != NULL; idp = pcb_idpath_list_next(idp)) {
-			obj = pcb_idpath2obj(data, idp);
+			obj = pcb_idpath2obj_in(data, idp);
 			if (obj != NULL) {
 				v->have_bbox = 1;
 				pcb_box_bump_box(&b, &obj->BoundingBox);

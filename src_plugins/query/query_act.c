@@ -359,7 +359,7 @@ static fgw_error_t pcb_act_QueryObj(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	obj.type = PCBQ_VT_OBJ;
-	obj.data.obj = pcb_idpath2obj(PCB->Data, idp);
+	obj.data.obj = pcb_idpath2obj_in(PCB->Data, idp);
 	if (obj.data.obj == NULL)
 		goto err;
 	if (pcb_qry_obj_field(&obj, fld, &val) != 0)

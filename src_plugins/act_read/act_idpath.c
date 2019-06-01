@@ -178,7 +178,7 @@ static fgw_error_t pcb_act_GetParentData(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	if ((idp == NULL) || !fgw_ptr_in_domain(&pcb_fgw, &argv[iidx], PCB_PTR_DOMAIN_IDPATH))
 		return FGW_ERR_PTR_DOMAIN;
 
-	obj = pcb_idpath2obj(root_data, idp);
+	obj = pcb_idpath2obj_in(root_data, idp);
 	if (obj == NULL)
 		return 0;
 
