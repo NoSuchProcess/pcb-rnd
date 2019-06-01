@@ -644,6 +644,7 @@ static int field_pstk(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 		case query_fields_plated:    PCB_QRY_RET_INT(res, PCB_PSTK_PROTO_PLATES(proto));
 		case query_fields_hole:      PCB_QRY_RET_INT(res, proto->hdia);
 		case query_fields_area:      PCB_QRY_RET_DBL(res, (double)(p->BoundingBox.Y2 - p->BoundingBox.Y1) * (double)(p->BoundingBox.X2 - p->BoundingBox.X1));
+		case query_fields_proto:     PCB_QRY_RET_INT(res, p->proto);
 		default:;
 	}
 
