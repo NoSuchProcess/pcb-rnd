@@ -50,7 +50,7 @@
  obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_plugins/acompnet/meshgraph.h rtree.h box.h error.h layer.h \
  route.h
-../src_plugins/act_draw/act_draw.o: ../src_plugins/act_draw/act_draw.c \
+../src_plugins/act_draw/act_draw.o: ../src_plugins/act_draw/act_draw.c ../src_plugins/act_draw/keywords_sphash.h \
  ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h unit.h \
  pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \

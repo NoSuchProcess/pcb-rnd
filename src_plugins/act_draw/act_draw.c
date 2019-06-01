@@ -41,6 +41,8 @@
 #include "plugins.h"
 #include "undo.h"
 
+#include "keywords_sphash.h"
+
 static const char *PTR_DOMAIN_POLY = "fgw_ptr_domain_poly";
 
 static int flg_error(const char *msg)

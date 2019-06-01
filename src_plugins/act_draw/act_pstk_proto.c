@@ -38,5 +38,23 @@ static const char pcb_acts_PstkProtoTmp[] =
 static const char pcb_acth_PstkProtoTmp[] = "Allocate, insert or free a temporary padstack prototype";
 static fgw_error_t pcb_act_PstkProtoTmp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	return -1;
+	char *cmd;
+	DRAWOPTARG;
+
+	res->type = FGW_PTR | FGW_STRUCT;
+	res->val.ptr_void = NULL;
+
+	PCB_ACT_CONVARG(1+ao, FGW_STR, PstkProtoTmp, cmd = argv[1+ao].val.str);
+
+	switch(act_draw_keywords_sphash(cmd)) {
+		case act_draw_keywords_new:
+		case act_draw_keywords_dup:
+		case act_draw_keywords_insert:
+		case act_draw_keywords_insert_dup:
+		case act_draw_keywords_free:
+		case act_draw_keywords_SPHASH_INVALID:
+			break;
+	}
+
+	return 0;
 }

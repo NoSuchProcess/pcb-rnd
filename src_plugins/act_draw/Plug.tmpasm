@@ -1,7 +1,9 @@
 put /local/pcb/mod {act_draw}
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/act_draw/act_draw.o
+	$(PLUGDIR)/act_draw/keywords_sphash.o
 @]
+put /local/pcb/mod/SPHASH  {$(PLUGDIR)/act_draw/keywords.sphash}
 
 switch /local/pcb/act_draw/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
