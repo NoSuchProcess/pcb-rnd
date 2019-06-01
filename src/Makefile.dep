@@ -50,7 +50,7 @@
  obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_plugins/acompnet/meshgraph.h rtree.h box.h error.h layer.h \
  route.h
-../src_plugins/act_draw/act_draw.o: ../src_plugins/act_draw/act_draw.c ../src_plugins/act_draw/keywords_sphash.h \
+../src_plugins/act_draw/act_draw.o: ../src_plugins/act_draw/act_draw.c \
  ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h unit.h \
  pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -72,24 +72,30 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
- dolists.h
+ ../src_plugins/act_draw/keywords_sphash.h \
+ ../src_plugins/act_draw/act_pstk_proto.c dolists.h
+../src_plugins/act_draw/keywords_sphash.o: \
+ ../src_plugins/act_draw/keywords_sphash.c
 ../src_plugins/act_read/act_read.o: ../src_plugins/act_read/act_read.c \
- ../config.h actions.h hid.h ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h error.h global_typedefs.h \
- pcb_bool.h unit.h attrib.h layer.h globalconst.h color.h \
+ ../config.h board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
+ global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h data_parent.h \
- obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
- obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
- ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
- ../src_3rd/genvector/gds_char.h ../src_3rd/libfungw/fungw.h \
+ ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h color.h \
+ obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h polyarea.h \
+ obj_text_list.h obj_text.h font.h ../src_3rd/genht/htip.h box.h \
+ math_helper.h misc_util.h ../src_3rd/genvector/gds_char.h layer_grp.h \
+ rats_patch.h board.h hidlib.h data_parent.h actions.h hid.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h error.h ../src_3rd/libfungw/fungw.h \
  ../src_3rd/genht/htpp.h plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/error.h misc_util.h \
+ ../src_3rd/puplug/error.h misc_util.h idpath.h obj_subc.h \
+ ../src_3rd/libminuid/libminuid.h rtree.h \
+ ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h \
  ../src_plugins/act_read/keywords_sphash.h \
  ../src_plugins/act_read/act_idpath.c dolists.h
 ../src_plugins/act_read/keywords_sphash.o: \
@@ -5245,9 +5251,9 @@
  ../src_3rd/genregex/regex_se.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
  obj_common.h layer.h flag_str.h ../src_plugins/query/query_y.h \
- ../src_plugins/query/query_exec.h draw.h select.h operation.h board.h \
- vtroutestyle.h layer_grp.h rats_patch.h board.h hidlib.h macro.h \
- dolists.h
+ ../src_plugins/query/query_exec.h ../src_plugins/query/query_access.h \
+ draw.h select.h operation.h board.h vtroutestyle.h layer_grp.h \
+ rats_patch.h board.h hidlib.h macro.h idpath.h compat_misc.h dolists.h
 ../src_plugins/query/query_exec.o: ../src_plugins/query/query_exec.c \
  ../config.h data.h globalconst.h global_typedefs.h pcb_bool.h unit.h \
  layer.h attrib.h color.h ../src_3rd/genvector/genvector_impl.h \
