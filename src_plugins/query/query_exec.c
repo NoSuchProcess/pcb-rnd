@@ -125,9 +125,15 @@ static int promote(pcb_qry_val_t *a, pcb_qry_val_t *b)
 		case PCBQ_VT_LST:   return -1;
 		case PCBQ_VT_COORD:
 			if (b->type == PCBQ_VT_DOUBLE)  PCB_QRY_RET_DBL(a, a->data.crd);
+			if (b->type == PCBQ_VT_LONG)    PCB_QRY_RET_COORD(b, b->data.lng);
+			return -1;
+		case PCBQ_VT_LONG:
+			if (b->type == PCBQ_VT_DOUBLE)  PCB_QRY_RET_DBL(a, a->data.lng);
+			if (b->type == PCBQ_VT_COORD)   PCB_QRY_RET_DBL(a, a->data.lng);
 			return -1;
 		case PCBQ_VT_DOUBLE:
 			if (b->type == PCBQ_VT_COORD)  PCB_QRY_RET_DBL(b, b->data.crd);
+			if (b->type == PCBQ_VT_LONG)   PCB_QRY_RET_DBL(b, b->data.lng);
 			return -1;
 		case PCBQ_VT_STRING:
 		case PCBQ_VT_VOID:
@@ -141,6 +147,9 @@ static const char *op2str(char *buff, int buff_size, pcb_qry_val_t *val)
 	switch(val->type) {
 		case PCBQ_VT_COORD:
 			pcb_snprintf(buff, buff_size, "%mI", val->data.crd);
+			return buff;
+		case PCBQ_VT_LONG:
+			pcb_snprintf(buff, buff_size, "%ld", val->data.lng);
 			return buff;
 		case PCBQ_VT_DOUBLE:
 			pcb_snprintf(buff, buff_size, "%f", val->data.crd);
@@ -161,6 +170,7 @@ int pcb_qry_is_true(pcb_qry_val_t *val)
 		case PCBQ_VT_OBJ:      return val->data.obj->type != PCB_OBJ_VOID;
 		case PCBQ_VT_LST:      return vtp0_len(&val->data.lst) > 0;
 		case PCBQ_VT_COORD:    return val->data.crd;
+		case PCBQ_VT_LONG:     return val->data.lng;
 		case PCBQ_VT_DOUBLE:   return val->data.dbl;
 		case PCBQ_VT_STRING:   return (val->data.str != NULL) && (*val->data.str != '\0');
 	}
@@ -283,6 +293,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 				case PCBQ_VT_OBJ:      PCB_QRY_RET_INT(res, ((o1.data.obj) == (o2.data.obj)));
 				case PCBQ_VT_LST:      PCB_QRY_RET_INT(res, pcb_qry_list_cmp(&o1, &o2));
 				case PCBQ_VT_COORD:    PCB_QRY_RET_INT(res, o1.data.crd == o2.data.crd);
+				case PCBQ_VT_LONG:     PCB_QRY_RET_INT(res, o1.data.lng == o2.data.lng);
 				case PCBQ_VT_DOUBLE:   PCB_QRY_RET_INT(res, o1.data.dbl == o2.data.dbl);
 				case PCBQ_VT_STRING:
 					load_strings_null();
@@ -303,6 +314,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 				case PCBQ_VT_OBJ:      PCB_QRY_RET_INT(res, ((o1.data.obj) != (o2.data.obj)));
 				case PCBQ_VT_LST:      PCB_QRY_RET_INT(res, !pcb_qry_list_cmp(&o1, &o2));
 				case PCBQ_VT_COORD:    PCB_QRY_RET_INT(res, o1.data.crd != o2.data.crd);
+				case PCBQ_VT_LONG:     PCB_QRY_RET_INT(res, o1.data.lng != o2.data.lng);
 				case PCBQ_VT_DOUBLE:   PCB_QRY_RET_INT(res, o1.data.dbl != o2.data.dbl);
 				case PCBQ_VT_STRING:
 					load_strings_null();
@@ -321,6 +333,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			switch(o1.type) {
 				case PCBQ_VT_VOID:     PCB_QRY_RET_INV(res);
 				case PCBQ_VT_COORD:    PCB_QRY_RET_INT(res, o1.data.crd >= o2.data.crd);
+				case PCBQ_VT_LONG:     PCB_QRY_RET_INT(res, o1.data.lng >= o2.data.lng);
 				case PCBQ_VT_DOUBLE:   PCB_QRY_RET_INT(res, o1.data.dbl >= o2.data.dbl);
 				case PCBQ_VT_STRING:
 					load_strings_empty();
@@ -336,6 +349,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			switch(o1.type) {
 				case PCBQ_VT_VOID:     PCB_QRY_RET_INV(res);
 				case PCBQ_VT_COORD:    PCB_QRY_RET_INT(res, o1.data.crd <= o2.data.crd);
+				case PCBQ_VT_LONG:     PCB_QRY_RET_INT(res, o1.data.lng <= o2.data.lng);
 				case PCBQ_VT_DOUBLE:   PCB_QRY_RET_INT(res, o1.data.dbl <= o2.data.dbl);
 				case PCBQ_VT_STRING:
 					load_strings_empty();
@@ -351,6 +365,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			switch(o1.type) {
 				case PCBQ_VT_VOID:     PCB_QRY_RET_INV(res);
 				case PCBQ_VT_COORD:    PCB_QRY_RET_INT(res, o1.data.crd > o2.data.crd);
+				case PCBQ_VT_LONG:     PCB_QRY_RET_INT(res, o1.data.lng > o2.data.lng);
 				case PCBQ_VT_DOUBLE:   PCB_QRY_RET_INT(res, o1.data.dbl > o2.data.dbl);
 				case PCBQ_VT_STRING:
 					load_strings_empty();
@@ -365,6 +380,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			switch(o1.type) {
 				case PCBQ_VT_VOID:     PCB_QRY_RET_INV(res);
 				case PCBQ_VT_COORD:    PCB_QRY_RET_INT(res, o1.data.crd < o2.data.crd);
+				case PCBQ_VT_LONG:     PCB_QRY_RET_INT(res, o1.data.lng < o2.data.lng);
 				case PCBQ_VT_DOUBLE:   PCB_QRY_RET_INT(res, o1.data.dbl < o2.data.dbl);
 				case PCBQ_VT_STRING:
 					load_strings_empty();
@@ -380,6 +396,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			switch(o1.type) {
 				case PCBQ_VT_VOID:     PCB_QRY_RET_INV(res);
 				case PCBQ_VT_COORD:    PCB_QRY_RET_INT(res, o1.data.crd + o2.data.crd);
+				case PCBQ_VT_LONG:     PCB_QRY_RET_INT(res, o1.data.lng + o2.data.lng);
 				case PCBQ_VT_DOUBLE:   PCB_QRY_RET_DBL(res, o1.data.dbl + o2.data.dbl);
 				default:               return -1;
 			}
@@ -392,6 +409,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			switch(o1.type) {
 				case PCBQ_VT_VOID:     PCB_QRY_RET_INV(res);
 				case PCBQ_VT_COORD:    PCB_QRY_RET_INT(res, o1.data.crd - o2.data.crd);
+				case PCBQ_VT_LONG:     PCB_QRY_RET_INT(res, o1.data.lng - o2.data.lng);
 				case PCBQ_VT_DOUBLE:   PCB_QRY_RET_DBL(res, o1.data.dbl - o2.data.dbl);
 				default:               return -1;
 			}
@@ -404,6 +422,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			switch(o1.type) {
 				case PCBQ_VT_VOID:     PCB_QRY_RET_INV(res);
 				case PCBQ_VT_COORD:    PCB_QRY_RET_INT(res, o1.data.crd * o2.data.crd);
+				case PCBQ_VT_LONG:     PCB_QRY_RET_INT(res, o1.data.lng * o2.data.lng);
 				case PCBQ_VT_DOUBLE:   PCB_QRY_RET_DBL(res, o1.data.dbl * o2.data.dbl);
 				default:               return -1;
 			}
@@ -416,6 +435,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			switch(o1.type) {
 				case PCBQ_VT_VOID:     PCB_QRY_RET_INV(res);
 				case PCBQ_VT_COORD:    PCB_QRY_RET_INT(res, o1.data.crd / o2.data.crd);
+				case PCBQ_VT_LONG:     PCB_QRY_RET_INT(res, o1.data.lng / o2.data.lng);
 				case PCBQ_VT_DOUBLE:   PCB_QRY_RET_DBL(res, o1.data.dbl / o2.data.dbl);
 				default:               return -1;
 			}

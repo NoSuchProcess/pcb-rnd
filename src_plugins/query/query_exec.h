@@ -54,8 +54,8 @@ int pcb_qry_it_next(pcb_qry_exec_t *ctx);
 /* Helper macros: load value o and return 0 */
 #define PCB_QRY_RET_INT(o, value) \
 do { \
-	o->type = PCBQ_VT_COORD; \
-	o->data.crd = value; \
+	o->type = PCBQ_VT_LONG; \
+	o->data.lng = value; \
 	return 0; \
 } while(0)
 
@@ -63,6 +63,13 @@ do { \
 do { \
 	o->type = PCBQ_VT_DOUBLE; \
 	o->data.dbl = value; \
+	return 0; \
+} while(0)
+
+#define PCB_QRY_RET_COORD(o, value) \
+do { \
+	o->type = PCBQ_VT_COORD; \
+	o->data.crd = value; \
 	return 0; \
 } while(0)
 

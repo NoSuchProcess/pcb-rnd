@@ -84,6 +84,7 @@ char *pcb_query_sprint_val(pcb_qry_val_t *val)
 	switch(val->type) {
 		case PCBQ_VT_VOID:   return pcb_strdup("<void>");
 		case PCBQ_VT_COORD:  return pcb_strdup_printf("%mI=%$mH", val->data.crd, val->data.crd);
+		case PCBQ_VT_LONG:   return pcb_strdup_printf("%ld", val->data.lng, val->data.lng);
 		case PCBQ_VT_DOUBLE: return pcb_strdup_printf("%f", val->data.dbl);
 		case PCBQ_VT_STRING: return pcb_strdup_printf("\"%s\"", val->data.str);
 		case PCBQ_VT_OBJ:    return pcb_strdup("<obj>");

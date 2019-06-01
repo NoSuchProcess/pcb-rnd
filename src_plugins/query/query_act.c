@@ -297,6 +297,10 @@ static void val2fgw(fgw_arg_t *dst, pcb_qry_val_t *src)
 			dst->type = FGW_COORD_;
 			fgw_coord(dst) = src->data.crd;
 			break;
+		case PCBQ_VT_LONG:
+			dst->type = FGW_LONG;
+			dst->val.nat_long = src->data.lng;
+			break;
 		case PCBQ_VT_DOUBLE:
 			dst->type = FGW_DOUBLE;
 			dst->val.nat_double = src->data.dbl;
