@@ -266,10 +266,8 @@ static pcb_qry_node_t *field_comp(const char *fields)
 			res[idx].type = PCBQ_FIELD;
 			res[idx].precomp.fld = query_fields_sphash(fname);
 /*pcb_trace("[%d/%d] '%s' -> %d\n", idx, len, fname, res[idx].precomp.fld);*/
-			if (res[idx].precomp.fld < 0) {
-				free(res);
-				return NULL;
-			}
+			if (res[idx].precomp.fld < 0) /* if compilation failed, this will need to be evaluated run-time, save as string */
+				res[idx].data.str = pcb_strdup(fname);
 			fno = fname;
 			if (*s == '\0')
 				break;
@@ -281,6 +279,16 @@ static pcb_qry_node_t *field_comp(const char *fields)
 
 	return res;
 }
+
+static void field_free(pcb_qry_node_t *fld)
+{
+	pcb_qry_node_t *f;
+	for(f = fld; f != NULL; f = f->next)
+		if (f->data.str != NULL)
+			free((char *)f->data.str);
+	free(fld);
+}
+
 
 static void val2fgw(fgw_arg_t *dst, pcb_qry_val_t *src)
 {
@@ -336,7 +344,7 @@ static fgw_error_t pcb_act_QueryObj(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if ((fld == NULL) || (!fgw_ptr_in_domain(&pcb_fgw, &argv[1], PCB_PTR_DOMAIN_IDPATH))) {
 		if (free_fld)
-			free(fld);
+			field_free(fld);
 		return FGW_ERR_PTR_DOMAIN;
 	}
 
@@ -348,14 +356,14 @@ static fgw_error_t pcb_act_QueryObj(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		goto err;
 
 	if (free_fld)
-		free(fld);
+		field_free(fld);
 
 	val2fgw(res, &val);
 	return 0;
 
 	err:;
 		if (free_fld)
-			free(fld);
+			field_free(fld);
 		res->type = FGW_PTR;
 		res->val.ptr_void = NULL;
 		return 0;
@@ -382,7 +390,7 @@ static fgw_error_t pcb_act_QueryCompileField(fgw_arg_t *res, int argc, fgw_arg_t
 				return FGW_ERR_PTR_DOMAIN;
 			PCB_ACT_CONVARG(2, FGW_PTR, QueryCompileField, fld = argv[2].val.ptr_void);
 			fgw_ptr_unreg(&pcb_fgw, &argv[2], PTR_DOMAIN_PCFIELD);
-			free(fld);
+			field_free(fld);
 			break;
 		default:
 			return FGW_ERR_ARG_CONV;
