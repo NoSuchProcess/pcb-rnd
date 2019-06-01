@@ -922,7 +922,7 @@ void pcb_data_dynflag_clear(pcb_data_t *data, pcb_dynf_t dynf)
 	}
 }
 
-pcb_data_t *pcb_data_by_name(pcb_board_t *pcb, const char **name)
+static pcb_data_t *pcb_data_by_name_(pcb_board_t *pcb, const char **name, int *addr)
 {
 	if (name == NULL)
 		return NULL;
@@ -931,6 +931,7 @@ pcb_data_t *pcb_data_by_name(pcb_board_t *pcb, const char **name)
 		(*name) += 3;
 		if (**name == '/')
 			(*name)++;
+		*addr = 1;
 		return pcb->Data;
 	}
 	else if (pcb_strncasecmp(*name, "buffer#", 7) == 0) {
@@ -940,6 +941,7 @@ pcb_data_t *pcb_data_by_name(pcb_board_t *pcb, const char **name)
 			*name = end;
 			if (**name == '/')
 				(*name)++;
+			*addr = idx+2;
 			return pcb_buffers[idx].Data;
 		}
 	}
@@ -947,9 +949,24 @@ pcb_data_t *pcb_data_by_name(pcb_board_t *pcb, const char **name)
 		(*name) += 6;
 		if (**name == '/')
 			(*name)++;
+		*addr = conf_core.editor.buffer_number+2;
 		return PCB_PASTEBUFFER->Data;
 	}
+	*addr = 0;
 	return NULL;
+}
+
+pcb_data_t *pcb_data_by_name(pcb_board_t *pcb, const char **name)
+{
+	int dummy;
+	return pcb_data_by_name_(pcb, name, &dummy);
+}
+
+int pcb_data_addr_by_name(pcb_board_t *pcb, const char **name)
+{
+	int dummy;
+	pcb_data_by_name_(pcb, name, &dummy);
+	return dummy;
 }
 
 const char *pcb_data_to_name(pcb_board_t *pcb, pcb_data_t *data, char *buf, int buf_len)

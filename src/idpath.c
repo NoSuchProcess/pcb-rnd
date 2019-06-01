@@ -43,6 +43,7 @@
 static int idpath_map(pcb_idpath_t *idp, pcb_any_obj_t *obj, int level, int *numlevels)
 {
 	pcb_data_t *data;
+	int n;
 
 	if (numlevels != 0)
 		(*numlevels)++;
@@ -76,6 +77,12 @@ static int idpath_map(pcb_idpath_t *idp, pcb_any_obj_t *obj, int level, int *num
 				case PCB_PARENT_NET:
 					return -1;
 				case PCB_PARENT_BOARD:
+					for(n = 0; n < PCB_MAX_BUFFER; n++) {
+						if (data == pcb_buffers[n].Data) {
+							idp->data_addr =n+2;
+							return 0;
+						}
+					}
 					return 0;
 				case PCB_PARENT_SUBC: /* recurse */
 					return idpath_map(idp, (pcb_any_obj_t *)data->parent.subc, level-1, numlevels);
@@ -115,16 +122,20 @@ pcb_idpath_t *pcb_str2idpath(const char *str)
 {
 	const char *s;
 	char *next;
-	int n, len = 1;
+	int data_addr, n, len = 1;
 	pcb_idpath_t *idp;
 
 	for(s = str; *s == '/'; s++)
+
+	data_addr = pcb_data_addr_by_name(PCB, &s);
+
 	for(; *s != '\0'; s++) {
 		if ((s[0] == '/') && (s[1] != '/') && (s[1] != '\0'))
 			len++;
 	}
 
 	idp = pcb_idpath_alloc(len);
+	idp->data_addr = data_addr;
 
 	for(s = str, n = 0; *s != '\0'; s++,n++) {
 		while(*s == '/') s++;

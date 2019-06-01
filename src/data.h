@@ -229,6 +229,12 @@ void pcb_data_dynflag_clear(pcb_data_t *data, pcb_dynf_t dynf);
 /* Convert name to data, return NULL if not found */
 pcb_data_t *pcb_data_by_name(pcb_board_t *pcb, const char **name);
 
+
+/* Convert name to data address, return 0 if not found; 1 is pcb's data,
+   2+ are buffer+2 */
+int pcb_data_addr_by_name(pcb_board_t *pcb, const char **name);
+
+
 /* Convert data to name; either returns a static srting or fills in
    buf with dynamic data and returns buf. Buf needs to be at least 16
    bytes long. Returns NULL if data is not the pcb or a buffer. */
