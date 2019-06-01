@@ -29,10 +29,13 @@
 
 #include "config.h"
 
+#include "board.h"
+#include "data_parent.h"
 #include "actions.h"
 #include "plugins.h"
 #include "misc_util.h"
 #include "idpath.h"
+#include "obj_subc.h"
 
 #include "keywords_sphash.h"
 
@@ -82,7 +85,8 @@ static int flg_error(const char *msg)
 pcb_action_t act_read_action_list[] = {
 	{"GetValue", pcb_act_GetValue, pcb_acth_GetValue, pcb_acts_GetValue},
 	{"IDPList", pcb_act_IDPList, pcb_acth_IDPList, pcb_acts_IDPList},
-	{"IDP", pcb_act_IDP, pcb_acth_IDP, pcb_acts_IDP}
+	{"IDP", pcb_act_IDP, pcb_acth_IDP, pcb_acts_IDP},
+	{"GetParentData", pcb_act_GetParentData, pcb_acth_GetParentData, pcb_acts_GetParentData}
 };
 
 static const char *act_read_cookie = "act_read";

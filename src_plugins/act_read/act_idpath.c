@@ -121,6 +121,7 @@ static fgw_error_t pcb_act_IDPList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return 0;
 
 		case act_read_keywords_print:
+TODO("print");
 			break;
 	}
 
@@ -149,8 +150,57 @@ static fgw_error_t pcb_act_IDP(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return 0;
 
 		case act_read_keywords_print:
+TODO("print");
 			break;
 	}
 
 	return -1;
+}
+
+static const char pcb_acts_GetParentData[] = "GetParentData([root_data,] idpath)\n";
+static const char pcb_acth_GetParentData[] = "Return the closest upstream pcb_data_t * parent of an object";
+static fgw_error_t pcb_act_GetParentData(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_idpath_t *idp;
+	pcb_data_t *root_data = PCB->Data;
+	int iidx = 1;
+	pcb_any_obj_t *obj;
+
+	res->type = FGW_PTR | FGW_STRUCT;
+	res->val.ptr_void = NULL;
+
+	if (argc > 2) {
+		PCB_ACT_CONVARG(1, FGW_DATA, GetParentData, root_data = fgw_data(&argv[1]));
+		iidx++;
+	}
+
+	PCB_ACT_CONVARG(iidx, FGW_IDPATH, IDPList, idp = fgw_idpath(&argv[iidx]));
+	if ((idp == NULL) || !fgw_ptr_in_domain(&pcb_fgw, &argv[iidx], PCB_PTR_DOMAIN_IDPATH))
+		return FGW_ERR_PTR_DOMAIN;
+
+	obj = pcb_idpath2obj(root_data, idp);
+	if (obj == NULL)
+		return 0;
+
+	switch(obj->parent_type) {
+		case PCB_PARENT_LAYER:
+			assert(obj->parent.layer != NULL);
+			assert(obj->parent.layer->parent_type == PCB_PARENT_DATA);
+			res->val.ptr_void = obj->parent.layer->parent.data;
+			break;
+		case PCB_PARENT_SUBC:
+			assert(obj->parent.subc != NULL);
+			assert(obj->parent.subc->parent_type == PCB_PARENT_DATA);
+			res->val.ptr_void = obj->parent.subc->parent.data;
+			break;
+		case PCB_PARENT_DATA:
+			res->val.ptr_void = obj->parent.data;
+			break;
+		case PCB_PARENT_BOARD:
+		case PCB_PARENT_NET:
+		case PCB_PARENT_UI:
+		case PCB_PARENT_INVALID:
+			break;
+	}
+	return 0;
 }
