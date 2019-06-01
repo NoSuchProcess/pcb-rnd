@@ -751,7 +751,8 @@ static void layersel_docked_create(layersel_ctx_t *ls, pcb_board_t *pcb)
 			PCB_DAD_END(ls->sub.dlg);
 		PCB_DAD_END(ls->sub.dlg);
 	PCB_DAD_END(ls->sub.dlg);
-	PCB_DAD_MINSIZE(ls->sub.dlg, 180, 100);
+	PCB_DAD_DEFSIZE(ls->sub.dlg, 180, 200);
+	PCB_DAD_MINSIZE(ls->sub.dlg, 100, 100);
 	ls->w_last_sel = 0;
 }
 
