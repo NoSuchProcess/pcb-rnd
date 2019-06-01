@@ -145,7 +145,7 @@ TODO("Dangerous: rather support subc's data with IDPATH");
 		arg->type = FGW_INVALID;
 		return -1;
 	}
-	if (arg->type == FGW_DATA) { /* convert from layer */
+	if (arg->type == FGW_DATA) { /* convert from data */
 		char buf[32];
 		const char *name = pcb_data_to_name(PCB, arg->val.ptr_void, buf, sizeof(buf));
 
