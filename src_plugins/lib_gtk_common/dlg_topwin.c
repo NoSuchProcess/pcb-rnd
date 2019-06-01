@@ -101,6 +101,9 @@ int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub, pc
 	if (PCB_HATT_IS_COMPOSITE(sub->dlg[0].type))
 		expfill = (sub->dlg[0].pcb_hatt_flags & PCB_HATF_EXPFILL);
 
+	if ((sub->dlg_minx > 0) && (sub->dlg_miny > 0))
+		gtk_widget_set_size_request(docked->frame, sub->dlg_minx, sub->dlg_miny);
+
 	gtk_box_pack_end(GTK_BOX(tw->dockbox[where]), docked->frame, expfill, expfill, 0);
 	gtk_widget_show_all(docked->frame);
 
