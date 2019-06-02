@@ -44,6 +44,7 @@
 	- BUG: kicad_mod (clearance 0.25) is not processed (see priv mail from Erik on 22 may) [report: Erik]
 	- BUG: parser does not process trapezoidal pad definitions [report: erich]
 	- BUG: parser not parsing obround pad rotation, rot, (at x y rot), see work/bug_files/obround-rotation.kicad_pcb [report: erich]
+- BUG: toolbar tips not loading (using recent svn, plain config, running from svn dir) [report: Miloh]
 
 2. For later releases ===============================================================================
 - CLEANUP: rewrite parametric footprints to use tEDAx (or lihata)
