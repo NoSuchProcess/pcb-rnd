@@ -85,6 +85,12 @@ typedef struct pcb_hid_expose_ctx_s pcb_hid_expose_ctx_t;
 typedef struct pcb_hid_s pcb_hid_t;
 typedef struct pcb_xform_s pcb_xform_t;
 
+/* This graphics context is an opaque pointer defined by the HID.  GCs
+   are HID-specific; attempts to use one HID's GC for a different HID
+   will result in a fatal error.  The first field must be:
+   pcb_core_gc_t core_gc; */
+typedef struct hid_gc_s *pcb_hid_gc_t;
+
 #include "pcb_bool.h"
 
 #include "unit.h"

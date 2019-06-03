@@ -76,12 +76,6 @@ typedef struct {
 	int faded;             /* as set by set_draw_faded */
 } pcb_core_gc_t;
 
-/* This graphics context is an opaque pointer defined by the HID.  GCs
-   are HID-specific; attempts to use one HID's GC for a different HID
-   will result in a fatal error.  The first field must be:
-   pcb_core_gc_t core_gc; */
-typedef struct hid_gc_s *pcb_hid_gc_t;
-
 
 #define PCB_HIDCONCAT(a,b) a##b
 
