@@ -4,7 +4,6 @@
 - DOC: tutorial: index
 - DOC: the feature doc for scripting in the user manual needs a section for live scripting
 - BUG: advanced search hide composite (value) fails [report: Igor2]
-+ BUG: new layersel needs a scrollbar for small screen - requires respecting docked subdialog minial size [report: keantoken, Alain]
 + CLEANUP: Vuokko's list of warnings on OpenBSD: bug_files/warn-obsd-r24746.log [report: Vuokko]
 + CLEANUP: add the thin line draw optimization to the filled poly optimization, including hole, in hid_draw_helper (search for last_x); make this configurable for both (exporters shall not optimize!); remove the similar optimization from hidgl triangulation and gdk and lesstif [report: Ade, Peter]
 + drc & size: doesn't update on mil/mm change in top win -> need a list of spinboxes to update on conf change [report: Ade]
