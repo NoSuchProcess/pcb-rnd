@@ -511,6 +511,7 @@ static int ghid_open_popup(const char *menupath)
 
 	gtk_widget_grab_focus(ghid_port.drawing_area);
 	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time());
+	gtk_window_set_transient_for(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menu))), GTK_WINDOW(gtk_widget_get_toplevel(ghid_port.drawing_area)));
 	return 0;
 }
 
