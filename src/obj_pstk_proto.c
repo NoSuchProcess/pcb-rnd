@@ -305,7 +305,7 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 				goto quit;
 			}
 		}
-		if ((ts->shape[n].layer_mask & PCB_LYT_COPPER) && (ts->shape[n].layer_mask & PCB_LYT_INTERN) && (has_hole) && (!has_slot)) {
+		if ((ts->shape[n].layer_mask & PCB_LYT_COPPER) && (ts->shape[n].layer_mask & PCB_LYT_INTERN) && (!has_hole) && (!has_slot)) {
 			if (!quiet)
 				pcb_message(PCB_MSG_ERROR, "Padstack conversion: can not have internal copper shape if there is no hole\n");
 			goto quit;
