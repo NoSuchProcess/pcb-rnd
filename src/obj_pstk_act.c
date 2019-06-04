@@ -93,11 +93,13 @@ fgw_error_t pcb_act_padstackconvert(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_pstk_new(PCB_PASTEBUFFER->Data, -1, pid, 0, 0, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
 		pcb_set_buffer_bbox(PCB_PASTEBUFFER);
 		PCB_PASTEBUFFER->X = PCB_PASTEBUFFER->Y = 0;
+		PCB_ACT_IRES(0);
 	}
-	else
+	else {
 		pcb_message(PCB_MSG_ERROR, "(failed to convert to padstack)\n", pid);
+		PCB_ACT_IRES(1);
+	}
 
-	PCB_ACT_IRES(0);
 	return 0;
 }
 
