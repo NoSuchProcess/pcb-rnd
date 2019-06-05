@@ -587,6 +587,9 @@ static pcb_polyarea_t *ArcPolyNoIntersect(pcb_coord_t cx, pcb_coord_t cy, pcb_co
 	return np;
 }
 
+TODO("remove this proto in the move")
+pcb_polyarea_t *pcb_poly_from_line(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thick, pcb_bool square);
+
 #define MIN_CLEARANCE_BEFORE_BISECT 10.
 pcb_polyarea_t *pcb_poly_from_arc(pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t astart, pcb_angle_t adelta, pcb_coord_t thick)
 {
@@ -600,20 +603,16 @@ pcb_polyarea_t *pcb_poly_from_arc(pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t wi
 	/* corner case: can't even calculate the end cap properly because radius
 	   is so small that there's no inner arc of the clearance */
 	if ((width - half <= 0) || (height - half <= 0)) {
-		pcb_line_t lin = {0};
+		pcb_coord_t lx1, ly1;
 		pcb_polyarea_t *tmp_arc, *tmp1, *tmp2, *res, *ends;
 
 		tmp_arc = ArcPolyNoIntersect(cx, cy, width, height, astart, adelta, thick, 0);
 
-		pcb_arc_get_endpt(cx, cy, width, height, astart, adelta, 0, &lin.Point1.X, &lin.Point1.Y);
-		lin.Point2.X = lin.Point1.X;
-		lin.Point2.Y = lin.Point1.Y;
-		tmp1 = pcb_poly_from_pcb_line(&lin, thick);
+		pcb_arc_get_endpt(cx, cy, width, height, astart, adelta, 0, &lx1, &ly1);
+		tmp1 = pcb_poly_from_line(lx1, ly1, lx1, ly1, thick, 0);
 
-		pcb_arc_get_endpt(cx, cy, width, height, astart, adelta, 1, &lin.Point1.X, &lin.Point1.Y);
-		lin.Point2.X = lin.Point1.X;
-		lin.Point2.Y = lin.Point1.Y;
-		tmp2 = pcb_poly_from_pcb_line(&lin, thick);
+		pcb_arc_get_endpt(cx, cy, width, height, astart, adelta, 1, &lx1, &ly1);
+		tmp2 = pcb_poly_from_line(lx1, ly1, lx1, ly1, thick, 0);
 
 		pcb_polyarea_boolean_free(tmp1, tmp2, &ends, PCB_PBO_UNITE);
 		pcb_polyarea_boolean_free(ends, tmp_arc, &res, PCB_PBO_UNITE);
