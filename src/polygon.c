@@ -588,7 +588,7 @@ static pcb_polyarea_t *ArcPolyNoIntersect(pcb_arc_t * a, pcb_coord_t thick, int 
 }
 
 #define MIN_CLEARANCE_BEFORE_BISECT 10.
-pcb_polyarea_t *pcb_poly_from_arc(pcb_arc_t * a, pcb_coord_t thick)
+pcb_polyarea_t *pcb_poly_from_pcb_arc(pcb_arc_t * a, pcb_coord_t thick)
 {
 	double delta;
 	pcb_arc_t seg1, seg2;
@@ -609,12 +609,12 @@ pcb_polyarea_t *pcb_poly_from_arc(pcb_arc_t * a, pcb_coord_t thick)
 		pcb_arc_get_end(a, 0, &lin.Point1.X, &lin.Point1.Y);
 		lin.Point2.X = lin.Point1.X;
 		lin.Point2.Y = lin.Point1.Y;
-		tmp1 = pcb_poly_from_line(&lin, thick);
+		tmp1 = pcb_poly_from_pcb_line(&lin, thick);
 
 		pcb_arc_get_end(a, 1, &lin.Point1.X, &lin.Point1.Y);
 		lin.Point2.X = lin.Point1.X;
 		lin.Point2.Y = lin.Point1.Y;
-		tmp2 = pcb_poly_from_line(&lin, thick);
+		tmp2 = pcb_poly_from_pcb_line(&lin, thick);
 
 		pcb_polyarea_boolean_free(tmp1, tmp2, &ends, PCB_PBO_UNITE);
 		pcb_polyarea_boolean_free(ends, tmp_arc, &res, PCB_PBO_UNITE);
@@ -641,7 +641,7 @@ pcb_polyarea_t *pcb_poly_from_arc(pcb_arc_t * a, pcb_coord_t thick)
 	return ArcPolyNoIntersect(a, thick, 1);
 }
 
-pcb_polyarea_t *pcb_poly_from_line(pcb_line_t * L, pcb_coord_t thick)
+pcb_polyarea_t *pcb_poly_from_pcb_line(pcb_line_t * L, pcb_coord_t thick)
 {
 	pcb_pline_t *contour = NULL;
 	pcb_polyarea_t *np = NULL;
@@ -767,7 +767,7 @@ static pcb_polyarea_t *line_clearance_poly(pcb_cardinal_t layernum, pcb_board_t 
 {
 	if (line->thermal & PCB_THERMAL_ON)
 		return pcb_thermal_area_line(pcb, line, layernum);
-	return pcb_poly_from_line(line, line->Thickness + line->Clearance);
+	return pcb_poly_from_pcb_line(line, line->Thickness + line->Clearance);
 }
 
 static int SubtractLine(pcb_line_t * line, pcb_poly_t * p)
@@ -787,7 +787,7 @@ static int SubtractArc(pcb_arc_t * arc, pcb_poly_t * p)
 
 	if (!PCB_NONPOLY_HAS_CLEARANCE(arc))
 		return 0;
-	if (!(np = pcb_poly_from_arc(arc, arc->Thickness + arc->Clearance)))
+	if (!(np = pcb_poly_from_pcb_arc(arc, arc->Thickness + arc->Clearance)))
 		return -1;
 	return Subtract(np, p, pcb_true);
 }
@@ -914,7 +914,7 @@ static pcb_polyarea_t *poly_sub_callback_line(pcb_coord_t x1, pcb_coord_t y1, pc
 	lin.Point2.Y = y2;
 	lin.Clearance = width;
 
-	return pcb_poly_from_line(&lin, width);
+	return pcb_poly_from_pcb_line(&lin, width);
 }
 
 #define pa_append(src) \

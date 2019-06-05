@@ -1779,3 +1779,5 @@ pcb_hid_register_action -> pcb_register_action
 pcb_hid_register_actions -> pcb_register_actions
 pcb_hid_actions_uninit -> pcb_actions_uninit
 pcb_hid_actions_init -> pcb_actions_init
+pcb_poly_from_arc -> pcb_poly_from_pcb_arc
+pcb_poly_from_line -> pcb_poly_from_pcb_line

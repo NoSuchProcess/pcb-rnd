@@ -113,7 +113,7 @@ static pcb_polyarea_t *pa_line_at(double x1, double y1, double x2, double y2, pc
 		ltmp.Flags = pcb_no_flags();
 	ltmp.Point1.X = pcb_round(x1); ltmp.Point1.Y = pcb_round(y1);
 	ltmp.Point2.X = pcb_round(x2); ltmp.Point2.Y = pcb_round(y2);
-	return pcb_poly_from_line(&ltmp, clr);
+	return pcb_poly_from_pcb_line(&ltmp, clr);
 }
 
 /* generate a round-cap arc polygon knowing the center and endpoints */
@@ -146,7 +146,7 @@ static pcb_polyarea_t *pa_arc_at(double cx, double cy, double r, double e1x, dou
 		atmp.Delta = 360-ea+sa;
 	}
 	atmp.Width = atmp.Height = r;
-	return pcb_poly_from_arc(&atmp, clr);
+	return pcb_poly_from_pcb_arc(&atmp, clr);
 }
 
 pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_layer_id_t lid)
@@ -359,7 +359,7 @@ TODO("thermal TODO")
 			}
 			return pc;
 		case PCB_THERMAL_SHARP:
-			pa = pcb_poly_from_line(line, line->Thickness + line->Clearance);
+			pa = pcb_poly_from_pcb_line(line, line->Thickness + line->Clearance);
 			th = line->Thickness/2 < clr ? line->Thickness/2 : clr;
 			clrth *= 2;
 			if (line->thermal & PCB_THERMAL_DIAGONAL) {

@@ -127,23 +127,23 @@ pcb_polyarea_t *ThermPoly_(pcb_board_t *pcb, pcb_coord_t cx, pcb_coord_t cy, pcb
 		a.Flags = pcb_no_flags();
 		a.Delta = 90 - (a.Clearance * (1. + 2. * pcb->ThermScale) * 180) / (M_PI * a.Width);
 		a.StartAngle = 90 - a.Delta / 2 + (style == 4 ? 0 : 45);
-		pa = pcb_poly_from_arc(&a, a.Clearance);
+		pa = pcb_poly_from_pcb_arc(&a, a.Clearance);
 		if (!pa)
 			return NULL;
 		a.StartAngle += 90;
-		arc = pcb_poly_from_arc(&a, a.Clearance);
+		arc = pcb_poly_from_pcb_arc(&a, a.Clearance);
 		if (!arc)
 			return NULL;
 		pa->f = arc;
 		arc->b = pa;
 		a.StartAngle += 90;
-		arc = pcb_poly_from_arc(&a, a.Clearance);
+		arc = pcb_poly_from_pcb_arc(&a, a.Clearance);
 		if (!arc)
 			return NULL;
 		pa->f->f = arc;
 		arc->b = pa->f;
 		a.StartAngle += 90;
-		arc = pcb_poly_from_arc(&a, a.Clearance);
+		arc = pcb_poly_from_pcb_arc(&a, a.Clearance);
 		if (!arc)
 			return NULL;
 		pa->b = arc;

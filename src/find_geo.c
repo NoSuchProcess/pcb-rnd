@@ -586,7 +586,7 @@ pcb_bool pcb_isc_arc_poly(pcb_arc_t *Arc, pcb_poly_t *Polygon)
 			&& Box->Y1 <= Polygon->Clipped->contours->ymax + Bloat && Box->Y2 >= Polygon->Clipped->contours->ymin - Bloat) {
 		pcb_polyarea_t *ap;
 
-		if (!(ap = pcb_poly_from_arc(Arc, Arc->Thickness + Bloat)))
+		if (!(ap = pcb_poly_from_pcb_arc(Arc, Arc->Thickness + Bloat)))
 			return pcb_false;							/* error */
 		return pcb_poly_isects_poly(ap, Polygon, pcb_true);
 	}
@@ -603,7 +603,7 @@ pcb_bool pcb_isc_arc_polyarea(pcb_arc_t *Arc, pcb_polyarea_t *pa)
 			&& (Box->Y1 <= pa->contours->ymax + Bloat) && (Box->Y2 >= pa->contours->ymin - Bloat)) {
 		pcb_polyarea_t *arcp;
 
-		if (!(arcp = pcb_poly_from_arc(Arc, Arc->Thickness + Bloat)))
+		if (!(arcp = pcb_poly_from_pcb_arc(Arc, Arc->Thickness + Bloat)))
 			return pcb_false; /* error */
 		res = pcb_polyarea_touching(arcp, pa);
 		pcb_polyarea_free(&arcp);
@@ -643,7 +643,7 @@ pcb_bool pcb_isc_line_poly(pcb_line_t *Line, pcb_poly_t *Polygon)
 	if (Box->X1 <= Polygon->Clipped->contours->xmax + Bloat
 			&& Box->X2 >= Polygon->Clipped->contours->xmin - Bloat
 			&& Box->Y1 <= Polygon->Clipped->contours->ymax + Bloat && Box->Y2 >= Polygon->Clipped->contours->ymin - Bloat) {
-		if (!(lp = pcb_poly_from_line(Line, Line->Thickness + Bloat)))
+		if (!(lp = pcb_poly_from_pcb_line(Line, Line->Thickness + Bloat)))
 			return pcb_false;							/* error */
 		return pcb_poly_isects_poly(lp, Polygon, pcb_true);
 	}
