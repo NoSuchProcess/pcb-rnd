@@ -641,61 +641,66 @@ pcb_polyarea_t *pcb_poly_from_pcb_arc(pcb_arc_t * a, pcb_coord_t thick)
 	return ArcPolyNoIntersect(a, thick, 1);
 }
 
-pcb_polyarea_t *pcb_poly_from_pcb_line(pcb_line_t * L, pcb_coord_t thick)
+pcb_polyarea_t *pcb_poly_from_line(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thick, pcb_bool square)
 {
 	pcb_pline_t *contour = NULL;
 	pcb_polyarea_t *np = NULL;
 	pcb_vector_t v;
 	double d, dx, dy;
 	long half;
-	pcb_line_t _l = *L, *l = &_l;
 
 	if (thick <= 0)
 		return NULL;
 	half = (thick + 1) / 2;
-	d = sqrt(PCB_SQUARE(l->Point1.X - l->Point2.X) + PCB_SQUARE(l->Point1.Y - l->Point2.Y));
-	if (!PCB_FLAG_TEST(PCB_FLAG_SQUARE, l))
+	d = sqrt(PCB_SQUARE(x1 - x2) + PCB_SQUARE(y1 - y2));
+	if (!square)
 		if (d == 0)									/* line is a point */
-			return pcb_poly_from_circle(l->Point1.X, l->Point1.Y, half);
+			return pcb_poly_from_circle(x1, y1, half);
 	if (d != 0) {
 		d = half / d;
-		dx = (l->Point1.Y - l->Point2.Y) * d;
-		dy = (l->Point2.X - l->Point1.X) * d;
+		dx = (y1 - y2) * d;
+		dy = (x2 - x1) * d;
 	}
 	else {
 		dx = half;
 		dy = 0;
 	}
-	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, l)) {	/* take into account the ends */
-		l->Point1.X -= dy;
-		l->Point1.Y += dx;
-		l->Point2.X += dy;
-		l->Point2.Y -= dx;
+	if (square) {	/* take into account the ends */
+		x1 -= dy;
+		y1 += dx;
+		x2 += dy;
+		y2 -= dx;
 	}
-	v[0] = l->Point1.X - dx;
-	v[1] = l->Point1.Y - dy;
+	v[0] = x1 - dx;
+	v[1] = y1 - dy;
 	if ((contour = pcb_poly_contour_new(v)) == NULL)
 		return 0;
-	v[0] = l->Point2.X - dx;
-	v[1] = l->Point2.Y - dy;
-	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, l))
+	v[0] = x2 - dx;
+	v[1] = y2 - dy;
+	if (square)
 		pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	else
-		pcb_poly_frac_circle(contour, l->Point2.X, l->Point2.Y, v, 2);
-	v[0] = l->Point2.X + dx;
-	v[1] = l->Point2.Y + dy;
+		pcb_poly_frac_circle(contour, x2, y2, v, 2);
+	v[0] = x2 + dx;
+	v[1] = y2 + dy;
 	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
-	v[0] = l->Point1.X + dx;
-	v[1] = l->Point1.Y + dy;
-	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, l))
+	v[0] = x1 + dx;
+	v[1] = y1 + dy;
+	if (square)
 		pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	else
-		pcb_poly_frac_circle(contour, l->Point1.X, l->Point1.Y, v, 2);
+		pcb_poly_frac_circle(contour, x1, y1, v, 2);
 	/* now we have the line contour */
 	if (!(np = pcb_poly_from_contour(contour)))
 		return NULL;
 	return np;
 }
+
+pcb_polyarea_t *pcb_poly_from_pcb_line(pcb_line_t *L, pcb_coord_t thick)
+{
+	return pcb_poly_from_line(L->Point1.X, L->Point1.Y, L->Point2.X, L->Point2.Y, thick, PCB_FLAG_TEST(PCB_FLAG_SQUARE, L));
+}
+
 
 /* clear np1 from the polygon - should be inline with -O3 */
 static int Subtract(pcb_polyarea_t * np1, pcb_poly_t * p, pcb_bool fnp)
