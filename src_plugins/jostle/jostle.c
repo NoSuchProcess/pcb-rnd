@@ -24,6 +24,7 @@
 #include "rtree.h"
 #include "undo.h"
 #include "polygon.h"
+#include "polygon1_gen.h"
 #include "remove.h"
 #include "error.h"
 #include "pcb-printf.h"

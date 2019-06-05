@@ -31,35 +31,11 @@
 #include "pstk_compat.h"
 #include "obj_pstk_inlines.h"
 #include "compat_misc.h"
+#include "polygon1_gen.h"
 
 #include "plug_io.h"
 
 #define sqr(o) ((double)(o)*(double)(o))
-
-/* set up x and y multiplier for an octa poly, depending on square pin style */
-void pcb_poly_square_pin_factors(int style, double *xm, double *ym)
-{
-	int i;
-	const double factor = 2.0;
-
-	/* reset multipliers */
-	for (i = 0; i < 8; i++) {
-		xm[i] = 1;
-		ym[i] = 1;
-	}
-
-	style--;
-	if (style & 1)
-		xm[0] = xm[1] = xm[6] = xm[7] = factor;
-	if (style & 2)
-		xm[2] = xm[3] = xm[4] = xm[5] = factor;
-	if (style & 4)
-		ym[4] = ym[5] = ym[6] = ym[7] = factor;
-	if (style & 8)
-		ym[0] = ym[1] = ym[2] = ym[3] = factor;
-}
-
-
 
 /* emulate old pcb-rnd "pin shape" feature */
 static void octa_shape(pcb_pstk_poly_t *dst, pcb_coord_t x0, pcb_coord_t y0, pcb_coord_t radius, int style)
