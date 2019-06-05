@@ -175,19 +175,6 @@ void pcb_arc_bbox(pcb_arc_t *Arc)
 	Arc->bbox_naked  = pcb_arc_bbox_(Arc, 1);
 }
 
-
-void pcb_arc_get_endpt(pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t astart, pcb_angle_t adelta, int which, pcb_coord_t *x, pcb_coord_t *y)
-{
-	if (which == 0) {
-		*x = pcb_round((double)cx - (double)width * cos(astart * PCB_M180));
-		*y = pcb_round((double)cy + (double)height * sin(astart * PCB_M180));
-	}
-	else {
-		*x = pcb_round((double)cx - (double)width * cos((astart + adelta) * PCB_M180));
-		*y = pcb_round((double)cy + (double)height * sin((astart + adelta) * PCB_M180));
-	}
-}
-
 void pcb_arc_get_end(pcb_arc_t *arc, int which, pcb_coord_t *x, pcb_coord_t *y)
 {
 	pcb_arc_get_endpt(arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta, which, x, y);

@@ -122,9 +122,7 @@ pcb_bool pcb_polyarea_contour_check(pcb_pline_t * a);
 pcb_bool pcb_polyarea_contour_inside(pcb_polyarea_t * c, pcb_vector_t v0);
 pcb_bool pcb_polyarea_touching(pcb_polyarea_t * p1, pcb_polyarea_t * p2);
 
-/**********************************************************************/
-
-/* tools for clipping */
+/*** tools for clipping ***/
 
 /* checks whether point lies within contour
 independently of its orientation */
@@ -161,5 +159,27 @@ void pcb_polyarea_bbox(pcb_polyarea_t * p, pcb_box_t * b);
 
 /* Move each point of pa1 by dx and dy */
 void pcb_polyarea_move(pcb_polyarea_t *pa1, pcb_coord_t dx, pcb_coord_t dy);
+
+/*** Tools for building polygons for common object shapes ***/
+
+
+#ifndef M_PI
+#define M_PI  3.14159265358979323846
+#endif
+double pcb_round(double x); /* from math_helper.h */
+
+/* Calculate an endpoint of an arc and return the result in *x;*y */
+PCB_INLINE void pcb_arc_get_endpt(pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t astart, pcb_angle_t adelta, int which, pcb_coord_t *x, pcb_coord_t *y)
+{
+	if (which == 0) {
+		*x = pcb_round((double)cx - (double)width * cos(astart * (M_PI/180.0)));
+		*y = pcb_round((double)cy + (double)height * sin(astart * (M_PI/180.0)));
+	}
+	else {
+		*x = pcb_round((double)cx - (double)width * cos((astart + adelta) * (M_PI/180.0)));
+		*y = pcb_round((double)cy + (double)height * sin((astart + adelta) * (M_PI/180.0)));
+	}
+}
+
 
 #endif /* PCB_POLYAREA_H */
