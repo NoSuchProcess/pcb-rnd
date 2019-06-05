@@ -500,7 +500,7 @@ pcb_polyarea_t *RoundRect(pcb_coord_t x1, pcb_coord_t x2, pcb_coord_t y1, pcb_co
 }
 
 #define ARC_ANGLE 5
-static pcb_polyarea_t *ArcPolyNoIntersect(pcb_arc_t * a, pcb_coord_t thick, int end_caps)
+static pcb_polyarea_t *ArcPolyNoIntersect(pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t astart, pcb_angle_t adelta, pcb_coord_t thick, int end_caps)
 {
 	pcb_pline_t *contour = NULL;
 	pcb_polyarea_t *np = NULL;
@@ -514,61 +514,61 @@ static pcb_polyarea_t *ArcPolyNoIntersect(pcb_arc_t * a, pcb_coord_t thick, int 
 
 	if (thick <= 0)
 		return NULL;
-	if (a->Delta < 0) {
-		a->StartAngle += a->Delta;
-		a->Delta = -a->Delta;
+	if (adelta < 0) {
+		astart += adelta;
+		adelta = -adelta;
 	}
 	half = (thick + 1) / 2;
 
-	pcb_arc_get_end(a, 0, &ends.X1, &ends.Y1);
-	pcb_arc_get_end(a, 1, &ends.X2, &ends.Y2);
+	pcb_arc_get_endpt(cx, cy, width, height, astart, adelta, 0, &ends.X1, &ends.Y1);
+	pcb_arc_get_endpt(cx, cy, width, height, astart, adelta, 1, &ends.X2, &ends.Y2);
 
 	/* start with inner radius */
-	rx = MAX(a->Width - half, 0);
-	ry = MAX(a->Height - half, 0);
+	rx = MAX(width - half, 0);
+	ry = MAX(height - half, 0);
 	segs = 1;
 	if (thick > 0)
-		segs = MAX(segs, a->Delta * M_PI / 360 *
+		segs = MAX(segs, adelta * M_PI / 360 *
 							 sqrt(sqrt((double) rx * rx + (double) ry * ry) / PCB_POLY_ARC_MAX_DEVIATION / 2 / thick));
-	segs = MAX(segs, a->Delta / ARC_ANGLE);
+	segs = MAX(segs, adelta / ARC_ANGLE);
 
-	ang = a->StartAngle;
-	da = (1.0 * a->Delta) / segs;
+	ang = astart;
+	da = (1.0 * adelta) / segs;
 	radius_adj = (M_PI * da / 360) * (M_PI * da / 360) / 2;
-	v[0] = a->X - rx * cos(ang * PCB_M180);
-	v[1] = a->Y + ry * sin(ang * PCB_M180);
+	v[0] = cx - rx * cos(ang * PCB_M180);
+	v[1] = cy + ry * sin(ang * PCB_M180);
 	if ((contour = pcb_poly_contour_new(v)) == NULL)
 		return 0;
 	for (i = 0; i < segs - 1; i++) {
 		ang += da;
-		v[0] = a->X - rx * cos(ang * PCB_M180);
-		v[1] = a->Y + ry * sin(ang * PCB_M180);
+		v[0] = cx - rx * cos(ang * PCB_M180);
+		v[1] = cy + ry * sin(ang * PCB_M180);
 		pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	}
 	/* find last point */
-	ang = a->StartAngle + a->Delta;
-	v[0] = a->X - rx * cos(ang * PCB_M180) * (1 - radius_adj);
-	v[1] = a->Y + ry * sin(ang * PCB_M180) * (1 - radius_adj);
+	ang = astart + adelta;
+	v[0] = cx - rx * cos(ang * PCB_M180) * (1 - radius_adj);
+	v[1] = cy + ry * sin(ang * PCB_M180) * (1 - radius_adj);
 
 	/* add the round cap at the end */
 	if (end_caps)
 		pcb_poly_frac_circle(contour, ends.X2, ends.Y2, v, 2);
 
 	/* and now do the outer arc (going backwards) */
-	rx = (a->Width + half) * (1 + radius_adj);
-	ry = (a->Width + half) * (1 + radius_adj);
+	rx = (width + half) * (1 + radius_adj);
+	ry = (width + half) * (1 + radius_adj);
 	da = -da;
 	for (i = 0; i < segs; i++) {
-		v[0] = a->X - rx * cos(ang * PCB_M180);
-		v[1] = a->Y + ry * sin(ang * PCB_M180);
+		v[0] = cx - rx * cos(ang * PCB_M180);
+		v[1] = cy + ry * sin(ang * PCB_M180);
 		pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 		ang += da;
 	}
 
 	/* explicitly draw the last point if the manhattan-distance is large enough */
-	ang = a->StartAngle;
-	v2[0] = a->X - rx * cos(ang * PCB_M180) * (1 - radius_adj);
-	v2[1] = a->Y + ry * sin(ang * PCB_M180) * (1 - radius_adj);
+	ang = astart;
+	v2[0] = cx - rx * cos(ang * PCB_M180) * (1 - radius_adj);
+	v2[1] = cy + ry * sin(ang * PCB_M180) * (1 - radius_adj);
 	edx = (v[0] - v2[0]);
 	edy = (v[1] - v2[1]);
 	if (edx < 0) edx = -edx;
@@ -588,30 +588,29 @@ static pcb_polyarea_t *ArcPolyNoIntersect(pcb_arc_t * a, pcb_coord_t thick, int 
 }
 
 #define MIN_CLEARANCE_BEFORE_BISECT 10.
-pcb_polyarea_t *pcb_poly_from_pcb_arc(pcb_arc_t * a, pcb_coord_t thick)
+pcb_polyarea_t *pcb_poly_from_arc(pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t astart, pcb_angle_t adelta, pcb_coord_t thick)
 {
 	double delta;
-	pcb_arc_t seg1, seg2;
 	pcb_coord_t half;
 
-	delta = (a->Delta < 0) ? -a->Delta : a->Delta;
+	delta = (adelta < 0) ? -adelta : adelta;
 
 	half = (thick + 1) / 2;
 
 	/* corner case: can't even calculate the end cap properly because radius
 	   is so small that there's no inner arc of the clearance */
-	if ((a->Width - half <= 0) || (a->Height - half <= 0)) {
+	if ((width - half <= 0) || (height - half <= 0)) {
 		pcb_line_t lin = {0};
 		pcb_polyarea_t *tmp_arc, *tmp1, *tmp2, *res, *ends;
 
-		tmp_arc = ArcPolyNoIntersect(a, thick, 0);
+		tmp_arc = ArcPolyNoIntersect(cx, cy, width, height, astart, adelta, thick, 0);
 
-		pcb_arc_get_end(a, 0, &lin.Point1.X, &lin.Point1.Y);
+		pcb_arc_get_endpt(cx, cy, width, height, astart, adelta, 0, &lin.Point1.X, &lin.Point1.Y);
 		lin.Point2.X = lin.Point1.X;
 		lin.Point2.Y = lin.Point1.Y;
 		tmp1 = pcb_poly_from_pcb_line(&lin, thick);
 
-		pcb_arc_get_end(a, 1, &lin.Point1.X, &lin.Point1.Y);
+		pcb_arc_get_endpt(cx, cy, width, height, astart, adelta, 1, &lin.Point1.X, &lin.Point1.Y);
 		lin.Point2.X = lin.Point1.X;
 		lin.Point2.Y = lin.Point1.Y;
 		tmp2 = pcb_poly_from_pcb_line(&lin, thick);
@@ -623,22 +622,17 @@ pcb_polyarea_t *pcb_poly_from_pcb_arc(pcb_arc_t * a, pcb_coord_t thick)
 
 	/* If the arc segment would self-intersect, we need to construct it as the union of
 	   two non-intersecting segments */
-	if (2 * M_PI * a->Width * (1. - (double) delta / 360.) - thick < MIN_CLEARANCE_BEFORE_BISECT) {
+	if (2 * M_PI * width * (1. - (double) delta / 360.) - thick < MIN_CLEARANCE_BEFORE_BISECT) {
 		pcb_polyarea_t *tmp1, *tmp2, *res;
-		int half_delta = a->Delta / 2;
+		int half_delta = adelta / 2;
 
-		seg1 = seg2 = *a;
-		seg1.Delta = half_delta;
-		seg2.Delta -= half_delta;
-		seg2.StartAngle += half_delta;
-
-		tmp1 = ArcPolyNoIntersect(&seg1, thick, 1);
-		tmp2 = ArcPolyNoIntersect(&seg2, thick, 1);
+		tmp1 = ArcPolyNoIntersect(cx, cy, width, height, astart, half_delta, thick, 1);
+		tmp2 = ArcPolyNoIntersect(cx, cy, width, height, astart+half_delta, adelta-half_delta, thick, 1);
 		pcb_polyarea_boolean_free(tmp1, tmp2, &res, PCB_PBO_UNITE);
 		return res;
 	}
 
-	return ArcPolyNoIntersect(a, thick, 1);
+	return ArcPolyNoIntersect(cx, cy, width, height, astart, adelta, thick, 1);
 }
 
 pcb_polyarea_t *pcb_poly_from_line(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thick, pcb_bool square)
@@ -699,6 +693,11 @@ pcb_polyarea_t *pcb_poly_from_line(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x
 pcb_polyarea_t *pcb_poly_from_pcb_line(pcb_line_t *L, pcb_coord_t thick)
 {
 	return pcb_poly_from_line(L->Point1.X, L->Point1.Y, L->Point2.X, L->Point2.Y, thick, PCB_FLAG_TEST(PCB_FLAG_SQUARE, L));
+}
+
+pcb_polyarea_t *pcb_poly_from_pcb_arc(pcb_arc_t *a, pcb_coord_t thick)
+{
+	return pcb_poly_from_arc(a->X, a->Y, a->Width, a->Height, a->StartAngle, a->Delta, thick);
 }
 
 
