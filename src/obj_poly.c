@@ -35,6 +35,7 @@
 #include "data.h"
 #include "undo.h"
 #include "polygon.h"
+#include "polygon1_gen.h"
 #include "polygon_offs.h"
 #include "rotate.h"
 #include "search.h"

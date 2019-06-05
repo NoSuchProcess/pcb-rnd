@@ -198,6 +198,7 @@ append /local/pcb/OBJS [@
 	plug_footprint_act.o
 	polygon.o
 	polygon1.o
+	polygon1_gen.o
 	polygon_act.o
 	rats_act.o
 	rats_patch.o

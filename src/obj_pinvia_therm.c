@@ -38,6 +38,7 @@
 
 #include "board.h"
 #include "polygon.h"
+#include "polygon1_gen.h"
 #include "obj_pinvia_therm.h"
 
 static pcb_polyarea_t *pcb_pa_diag_line(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t l, pcb_coord_t w, pcb_bool rt)

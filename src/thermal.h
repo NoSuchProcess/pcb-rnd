@@ -29,6 +29,7 @@
 
 #include "obj_common.h"
 #include "layer.h"
+#include "polygon1_gen.h"
 
 typedef enum pcb_thermal_e {
 	/* bit 0 and 1: shape */
