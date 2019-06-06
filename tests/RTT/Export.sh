@@ -208,7 +208,7 @@ cmp_fmt()
 # Remove known, expected error messages
 stderr_filter()
 {
-	local common="Couldn't find default.pcb\|No preferred unit format info available for\|has no font information, using default font\|Log produced after failed export\|Exporting empty board\|[*][*][*] Exporting:\|^.pcb-rnd:stderr.[ \t]*$"
+	local common="Couldn't find default.pcb\|No preferred unit format info available for\|has no font information, using default font\|Log produced after failed export\|Exporting empty board\|[*][*][*] Exporting:\|^.pcb-rnd:stderr.[ \t]*$\|Warning: footprint library list"
 	case "$fmt" in
 		gerber) grep -v "Can't export polygon as G85 slot\|please use lines for slotting\|$common" ;;
 		excellon) grep -v "Excellon: can not export [a-z]* (some features may be missing from the export)\|$common" ;;
