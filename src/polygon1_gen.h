@@ -21,7 +21,8 @@ pcb_polyarea_t *pcb_poly_from_line(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x
 pcb_polyarea_t *pcb_poly_from_arc(pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t astart, pcb_angle_t adelta, pcb_coord_t thick);
 
 /* Slice up a polyarea-with-holes into a set of polygon islands with no
-   holes, within the clip area. If the clip area is all-zero, do not clip. */
+   holes, within the clip area. If the clip area is all-zero, do not clip.
+   Free's main_contour. */
 void pcb_polyarea_no_holes_dicer(pcb_polyarea_t *main_contour, pcb_coord_t clipX1, pcb_coord_t clipY1, pcb_coord_t clipX2, pcb_coord_t clipY2, void (*emit)(pcb_pline_t *, void *), void *user_data);
 
 #endif
