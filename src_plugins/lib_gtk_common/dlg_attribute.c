@@ -405,6 +405,8 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 				ctx->wl[j] = widget;
 				ctx->wltop[j] = wrap_bind_click(widget, G_CALLBACK(label_click_cb), &(ctx->attrs[j]));
+TODO("Design a DAD attribute to hold the 'layersel' string. Hard-code the string in <layersel.c>");
+				gtkc_widget_selectable(ctx->wltop[j], "layersel");
 
 				g_object_set_data(G_OBJECT(widget), PCB_OBJ_PROP, ctx);
 				g_object_set_data(G_OBJECT(ctx->wltop[j]), PCB_OBJ_PROP, ctx);
