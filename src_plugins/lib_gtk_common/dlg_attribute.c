@@ -266,6 +266,7 @@ static GtkWidget *wrap_bind_click(GtkWidget *w, GCallback cb, void *cb_data)
 	GtkWidget *event_box = gtk_event_box_new();
 	gtk_container_add(GTK_CONTAINER(event_box), w);
 	g_signal_connect(event_box, "button-press-event", G_CALLBACK(cb), cb_data);
+	gtkc_widget_selectable(event_box, "box_selectable");
 
 	return event_box;
 }
@@ -405,8 +406,6 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 				ctx->wl[j] = widget;
 				ctx->wltop[j] = wrap_bind_click(widget, G_CALLBACK(label_click_cb), &(ctx->attrs[j]));
-TODO("Design a DAD attribute to hold the 'layersel' string. Hard-code the string in <layersel.c>");
-				gtkc_widget_selectable(ctx->wltop[j], "layersel");
 
 				g_object_set_data(G_OBJECT(widget), PCB_OBJ_PROP, ctx);
 				g_object_set_data(G_OBJECT(ctx->wltop[j]), PCB_OBJ_PROP, ctx);
