@@ -266,7 +266,6 @@ static GtkWidget *wrap_bind_click(GtkWidget *w, GCallback cb, void *cb_data)
 	GtkWidget *event_box = gtk_event_box_new();
 	gtk_container_add(GTK_CONTAINER(event_box), w);
 	g_signal_connect(event_box, "button-press-event", G_CALLBACK(cb), cb_data);
-	gtkc_widget_selectable(event_box, "box_selectable");
 
 	return event_box;
 }
