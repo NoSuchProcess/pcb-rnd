@@ -70,6 +70,20 @@ pcb_polyarea_t *pcb_poly_from_contour(pcb_pline_t * contour)
 	return p;
 }
 
+pcb_polyarea_t *pcb_poly_from_contour_autoinv(pcb_pline_t *contour)
+{
+	pcb_polyarea_t *p;
+	pcb_poly_contour_pre(contour, pcb_true);
+	if (contour->Flags.orient != PCB_PLF_DIR)
+		pcb_poly_contour_inv(contour);
+	if (!(p = pcb_polyarea_create()))
+		return NULL;
+	pcb_polyarea_contour_include(p, contour);
+	assert(pcb_poly_valid(p));
+	return p;
+}
+
+
 #define ARC_ANGLE 5
 static pcb_polyarea_t *ArcPolyNoIntersect(pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t astart, pcb_angle_t adelta, pcb_coord_t thick, int end_caps)
 {

@@ -7,6 +7,8 @@
 void pcb_poly_square_pin_factors(int style, double *xm, double *ym);
 
 pcb_polyarea_t *pcb_poly_from_contour(pcb_pline_t *pl);
+pcb_polyarea_t *pcb_poly_from_contour_autoinv(pcb_pline_t *pl);
+
 void pcb_poly_frac_circle(pcb_pline_t *, pcb_coord_t, pcb_coord_t, pcb_vector_t, int);
 pcb_polyarea_t *pcb_poly_from_octagon(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius, int style);
 pcb_polyarea_t *pcb_poly_from_rect(pcb_coord_t x1, pcb_coord_t x2, pcb_coord_t y1, pcb_coord_t y2);
