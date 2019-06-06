@@ -1551,13 +1551,10 @@ static void r_NoHolesPolygonDicer(pcb_polyarea_t * pa, void (*emit) (pcb_pline_t
 	}
 }
 
-void pcb_poly_no_holes_dicer(pcb_poly_t *p, const pcb_box_t * clip, void (*emit) (pcb_pline_t *, void *), void *user_data)
+void pcb_polyarea_no_holes_dicer(pcb_polyarea_t *main_contour, const pcb_box_t *clip, void (*emit)(pcb_pline_t *, void *), void *user_data)
 {
-	pcb_polyarea_t *main_contour, *cur, *next;
+	pcb_polyarea_t *cur, *next;
 
-	main_contour = pcb_polyarea_create();
-	/* copy the main poly only */
-	pcb_polyarea_copy1(main_contour, p->Clipped);
 	/* clip to the bounding box */
 	if (clip) {
 		pcb_polyarea_t *cbox = pcb_poly_from_rect(clip->X1, clip->X2, clip->Y1, clip->Y2);
@@ -1576,6 +1573,17 @@ void pcb_poly_no_holes_dicer(pcb_poly_t *p, const pcb_box_t * clip, void (*emit)
 		/* NB: The pcb_polyarea_t was freed by its use in the recursive dicer */
 	}
 	while ((cur = next) != main_contour);
+}
+
+void pcb_poly_no_holes_dicer(pcb_poly_t *p, const pcb_box_t *clip, void (*emit)(pcb_pline_t *, void *), void *user_data)
+{
+	pcb_polyarea_t *main_contour;
+
+	main_contour = pcb_polyarea_create();
+	/* copy the main poly only */
+	pcb_polyarea_copy1(main_contour, p->Clipped);
+
+	pcb_polyarea_no_holes_dicer(main_contour, clip, emit, user_data);
 }
 
 /* make a polygon split into multiple parts into multiple polygons */
