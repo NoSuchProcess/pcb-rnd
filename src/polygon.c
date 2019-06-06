@@ -1504,77 +1504,6 @@ pcb_bool pcb_poly_is_rect_in_p(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, p
 	return pcb_poly_isects_poly(s, p, pcb_true);
 }
 
-TODO(": this should be in polygon1.c")
-/* NB: This function will free the passed pcb_polyarea_t.
- *     It must only be passed a single pcb_polyarea_t (pa->f == pa->b == pa)
- */
-static void r_NoHolesPolygonDicer(pcb_polyarea_t * pa, void (*emit) (pcb_pline_t *, void *), void *user_data)
-{
-	pcb_pline_t *p = pa->contours;
-
-	if (!pa->contours->next) {		/* no holes */
-		pa->contours = NULL;				/* The callback now owns the contour */
-		/* Don't bother removing it from the pcb_polyarea_t's rtree
-		   since we're going to free the pcb_polyarea_t below anyway */
-		emit(p, user_data);
-		pcb_polyarea_free(&pa);
-		return;
-	}
-	else {
-		pcb_polyarea_t *poly2, *left, *right;
-
-		/* make a rectangle of the left region slicing through the middle of the first hole */
-		poly2 = pcb_poly_from_rect(p->xmin, (p->next->xmin + p->next->xmax) / 2, p->ymin, p->ymax);
-		pcb_polyarea_and_subtract_free(pa, poly2, &left, &right);
-		if (left) {
-			pcb_polyarea_t *cur, *next;
-			cur = left;
-			do {
-				next = cur->f;
-				cur->f = cur->b = cur;	/* Detach this polygon piece */
-				r_NoHolesPolygonDicer(cur, emit, user_data);
-				/* NB: The pcb_polyarea_t was freed by its use in the recursive dicer */
-			}
-			while ((cur = next) != left);
-		}
-		if (right) {
-			pcb_polyarea_t *cur, *next;
-			cur = right;
-			do {
-				next = cur->f;
-				cur->f = cur->b = cur;	/* Detach this polygon piece */
-				r_NoHolesPolygonDicer(cur, emit, user_data);
-				/* NB: The pcb_polyarea_t was freed by its use in the recursive dicer */
-			}
-			while ((cur = next) != right);
-		}
-	}
-}
-
-void pcb_polyarea_no_holes_dicer(pcb_polyarea_t *main_contour, const pcb_box_t *clip, void (*emit)(pcb_pline_t *, void *), void *user_data)
-{
-	pcb_polyarea_t *cur, *next;
-
-	/* clip to the bounding box */
-	if (clip) {
-		pcb_polyarea_t *cbox = pcb_poly_from_rect(clip->X1, clip->X2, clip->Y1, clip->Y2);
-		pcb_polyarea_boolean_free(main_contour, cbox, &main_contour, PCB_PBO_ISECT);
-	}
-	if (main_contour == NULL)
-		return;
-	/* Now dice it up.
-	 * NB: Could be more than one piece (because of the clip above)
-	 */
-	cur = main_contour;
-	do {
-		next = cur->f;
-		cur->f = cur->b = cur;			/* Detach this polygon piece */
-		r_NoHolesPolygonDicer(cur, emit, user_data);
-		/* NB: The pcb_polyarea_t was freed by its use in the recursive dicer */
-	}
-	while ((cur = next) != main_contour);
-}
-
 void pcb_poly_no_holes_dicer(pcb_poly_t *p, const pcb_box_t *clip, void (*emit)(pcb_pline_t *, void *), void *user_data)
 {
 	pcb_polyarea_t *main_contour;
@@ -1583,7 +1512,10 @@ void pcb_poly_no_holes_dicer(pcb_poly_t *p, const pcb_box_t *clip, void (*emit)(
 	/* copy the main poly only */
 	pcb_polyarea_copy1(main_contour, p->Clipped);
 
-	pcb_polyarea_no_holes_dicer(main_contour, clip, emit, user_data);
+	if (clip == NULL)
+		pcb_polyarea_no_holes_dicer(main_contour, 0, 0, 0, 0, emit, user_data);
+	else
+		pcb_polyarea_no_holes_dicer(main_contour, clip->X1, clip->X2, clip->Y1, clip->Y2, emit, user_data);
 }
 
 /* make a polygon split into multiple parts into multiple polygons */
