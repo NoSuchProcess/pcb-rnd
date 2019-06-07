@@ -269,7 +269,7 @@ extern const char dxf_templ_default_arr[];
 static void dxf_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 {
 	const char *filename;
-	int save_ons[PCB_MAX_LAYER + 2];
+	int save_ons[PCB_MAX_LAYER];
 	int i;
 	const char *fn;
 	char *errmsg;

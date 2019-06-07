@@ -208,7 +208,7 @@ static fgw_error_t pcb_act_DumpLayers(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	printf("Max: theoretical=%d current_board=%d\n", PCB_MAX_LAYER+2, pcb_max_layer);
+	printf("Max: theoretical=%d current_board=%d\n", PCB_MAX_LAYER, pcb_max_layer);
 	used = pcb_layer_list_any(PCB, PCB_LYT_ANYTHING | PCB_LYT_ANYWHERE | PCB_LYT_VIRTUAL, arr, sizeof(arr)/sizeof(arr[0]));
 	for(n = 0; n < used; n++) {
 		pcb_layer_id_t layer_id = arr[n];

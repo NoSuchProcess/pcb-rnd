@@ -139,7 +139,7 @@ static int last_color_r, last_color_g, last_color_b, last_cap;
 #define PHOTO_FLIP_Y	2
 
 static int photo_mode, photo_flip;
-static gdImagePtr photo_copper[PCB_MAX_LAYER + 2];
+static gdImagePtr photo_copper[PCB_MAX_LAYER];
 static gdImagePtr photo_silk, photo_mask, photo_drill, *photo_im;
 static gdImagePtr photo_outline;
 static int photo_groups[PCB_MAX_LAYERGRP + 2], photo_ngroups;
@@ -989,7 +989,7 @@ static void png_free_cache(void)
 
 static void png_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 {
-	int save_ons[PCB_MAX_LAYER + 2];
+	int save_ons[PCB_MAX_LAYER];
 	int i;
 	pcb_box_t tmp, *bbox;
 	int w, h;
@@ -1196,7 +1196,7 @@ static void png_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 		gdImageDestroy(photo_outline);
 		photo_outline = NULL;
 	}
-	for(i = 0; i < PCB_MAX_LAYER + 2; i++) {
+	for(i = 0; i < PCB_MAX_LAYER; i++) {
 		if (photo_copper[i] != NULL) {
 			gdImageDestroy(photo_copper[i]);
 			photo_copper[i] = NULL;

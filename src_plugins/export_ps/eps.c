@@ -335,7 +335,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t *options)
 static void eps_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 {
 	int i;
-	int save_ons[PCB_MAX_LAYER + 2];
+	int save_ons[PCB_MAX_LAYER];
 
 	if (!options) {
 		eps_get_export_options(0);

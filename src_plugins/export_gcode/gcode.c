@@ -358,7 +358,7 @@ void gcode_start_png_export()
 
 static void gcode_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 {
-	int save_ons[PCB_MAX_LAYER + 2];
+	int save_ons[PCB_MAX_LAYER];
 	int i, idx;
 	time_t t;
 	const pcb_unit_t *unit;

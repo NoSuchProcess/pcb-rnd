@@ -123,7 +123,7 @@ static int cam_exec_inst(cam_ctx_t *ctx, pcb_cam_code_t *code)
 static int cam_exec(cam_ctx_t *ctx)
 {
 	int res = 0, n, have_gui;
-	int save_l_ons[PCB_MAX_LAYER + 2], save_g_ons[PCB_MAX_LAYERGRP];
+	int save_l_ons[PCB_MAX_LAYER], save_g_ons[PCB_MAX_LAYERGRP];
 	
 	have_gui = (pcb_gui != NULL) && pcb_gui->gui;
 	if (have_gui) {
