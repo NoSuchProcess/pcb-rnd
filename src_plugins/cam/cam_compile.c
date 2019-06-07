@@ -26,11 +26,14 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include "data.h"
+
 #define GVT_DONT_UNDEF
 #include "cam_compile.h"
 #include "layer_vis.h"
 #include "event.h"
 #include <genvector/genvector_impl.c>
+
 
 /* mkdir -p on arg - changes the string in arg */
 static int prefix_mkdir(char *arg, char **filename)
@@ -122,7 +125,7 @@ static int cam_exec_inst(cam_ctx_t *ctx, pcb_cam_code_t *code)
 
 static int cam_exec(cam_ctx_t *ctx)
 {
-	int res = 0, n, have_gui;
+	int res = 0, n, have_gui, currly = INDEXOFCURRENT;
 	int save_l_ons[PCB_MAX_LAYER], save_g_ons[PCB_MAX_LAYERGRP];
 	
 	have_gui = (pcb_gui != NULL) && pcb_gui->gui;
@@ -141,6 +144,7 @@ static int cam_exec(cam_ctx_t *ctx)
 	if (have_gui) {
 		pcb_hid_restore_layer_ons(save_l_ons);
 		pcb_hid_restore_layergrp_ons(save_g_ons);
+		pcb_layervis_change_group_vis(currly, 1, 1);
 		pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	}
 	return res;
