@@ -125,7 +125,7 @@ static int cam_exec(cam_ctx_t *ctx)
 	int res = 0, n, save_ons[PCB_MAX_LAYER + 2], have_gui;
 	
 	have_gui = (pcb_gui != NULL) && pcb_gui->gui;
-	if (have_gui) {
+	if (have_gui)
 		pcb_hid_save_and_show_layer_ons(save_ons);
 
 	for(n = 0; n < ctx->code.used; n++) {
