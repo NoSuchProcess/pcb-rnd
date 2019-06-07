@@ -33,7 +33,6 @@
 - BUG: bug_files/warn.lht: load, click to somewhere to remove the warning (orange): object flag cleared but the board is not marked as changed [report: Peter]
 - BUG: bug_files/macrofab_rot/: rotation (and coords?) is off on xy for macrofab [report: celem]
 + BUG: bug_files/cam_layer_bug.lht: after cam export (from gui) the mask and paste layers are visible but the layer selector is not updated  - als fixed for direct export [report: keantoken]
-- BUG: undo: clear rats, optimize rats, delete 1 rat then undo - it should undo the rat deletion but it undos optimization
 - BUG: lesstif hbox/vbox allocation issues: test with bug_files/ltf_fillbox/ patches applied, with the fontsel action; opening it multiple times will randomly show or hide the button
 	- hvbox: fontsel, about dialog: resize to smaller doesn't re-layout
 	- tabbed: redisplay bug in the about box
