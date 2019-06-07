@@ -1830,7 +1830,7 @@ static int parse_data_pstk_protos(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t 
 				return iolht_error(pr, "Invalid padstack proto ID '%s' (syntax)\n", sid);
 			if (pid >= dst->ps_protos.used)
 				pcb_vtpadstack_proto_enlarge(&dst->ps_protos, pid);
-			res = parse_data_pstk_proto(pcb, dst->ps_protos.array + pid, pr, subc_parent, prver);
+			res = parse_data_pstk_proto(pcb, dst->ps_protos.array + pid, pr, dst, prver);
 			if (res != 0)
 				return iolht_error(pr, "Invalid padstack proto definition\n");
 		}
