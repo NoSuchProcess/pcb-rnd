@@ -27,6 +27,9 @@
 #include "config.h"
 #include "actions.h"
 #include "board.h"
+#include "data.h"
+#include "layer_vis.h"
+#include "event.h"
 #include "hid.h"
 #include "hid_dad.h"
 #include "hid_dad_unit.h"
@@ -69,6 +72,15 @@ static void export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 {
 	export_ctx_t *export_ctx = caller_data;
 	int h, wid;
+	int have_gui, currly = INDEXOFCURRENT;
+	int save_l_ons[PCB_MAX_LAYER], save_g_ons[PCB_MAX_LAYERGRP];
+	
+	have_gui = (pcb_gui != NULL) && pcb_gui->gui;
+	if (have_gui) {
+		pcb_hid_save_and_show_layer_ons(save_l_ons);
+		pcb_hid_save_and_show_layergrp_ons(save_g_ons);
+	}
+
 	wid = attr - export_ctx->dlg;
 	for(h = 0; h < export_ctx->len; h++) {
 		if (export_ctx->button[h] == wid) {
@@ -76,11 +88,19 @@ static void export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 			export_ctx->hid[h]->do_export(&PCB->hidlib, results);
 			free(results);
 			pcb_message(PCB_MSG_INFO, "Export done using exporter: %s\n", export_ctx->hid[h]->name);
-			return;
+			goto done;
 		}
 	}
 
 	pcb_message(PCB_MSG_ERROR, "Internal error: can not find which exporter to call\n");
+	done:;
+
+	if (have_gui) {
+		pcb_hid_restore_layer_ons(save_l_ons);
+		pcb_hid_restore_layergrp_ons(save_g_ons);
+		pcb_layervis_change_group_vis(currly, 1, 1);
+		pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
+	}
 }
 
 /* copy back the attribute values from the DAD dialog to exporter dialog so
