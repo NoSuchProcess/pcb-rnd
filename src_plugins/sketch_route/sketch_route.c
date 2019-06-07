@@ -1123,7 +1123,8 @@ static const char *skroute_xpm[] = {
 "                     "};
 
 static pcb_tool_t tool_skline = {
-	"skline", NULL, 100, skroute_xpm, PCB_TOOL_CURSOR_NAMED(NULL), PCB_TLF_AUTO_TOOLBAR,
+	"skline", "convert a free-hand sketch of a route to traces",
+	NULL, 100, skroute_xpm, PCB_TOOL_CURSOR_NAMED(NULL), PCB_TLF_AUTO_TOOLBAR,
 	tool_skline_init,
 	tool_skline_uninit,
 	tool_skline_notify_mode,

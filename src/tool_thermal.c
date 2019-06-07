@@ -133,7 +133,7 @@ static const char *thrm_icon[] = {
 };
 
 pcb_tool_t pcb_tool_thermal = {
-	"thermal", NULL, 100, thrm_icon, PCB_TOOL_CURSOR_NAMED("iron_cross"), 0,
+	"thermal", NULL, NULL, 100, thrm_icon, PCB_TOOL_CURSOR_NAMED("iron_cross"), 0,
 	NULL,
 	NULL,
 	pcb_tool_thermal_notify_mode,

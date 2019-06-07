@@ -435,7 +435,8 @@ static const char *ddraft_xpm[] = {
 "                     "};
 
 static pcb_tool_t tool_ddraft = {
-	"ddraft", NULL, 1000, ddraft_xpm, PCB_TOOL_CURSOR_NAMED(NULL), 1,
+	"ddraft", "2 dimensional drafting",
+	NULL, 1000, ddraft_xpm, PCB_TOOL_CURSOR_NAMED(NULL), 1,
 	NULL,
 	NULL,
 	NULL,

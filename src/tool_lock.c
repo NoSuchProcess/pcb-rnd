@@ -118,7 +118,7 @@ static unsigned char lockMask_bits[] = {
    0xfe, 0x7f, 0xfe, 0x7f, 0xfe, 0x7f, 0xfe, 0x7f};
 
 pcb_tool_t pcb_tool_lock = {
-	"lock", NULL, 100, lock_icon, PCB_TOOL_CURSOR_XBM(lockIcon_bits, lockMask_bits), 0,
+	"lock", NULL, NULL, 100, lock_icon, PCB_TOOL_CURSOR_XBM(lockIcon_bits, lockMask_bits), 0,
 	NULL,
 	NULL,
 	pcb_tool_lock_notify_mode,
