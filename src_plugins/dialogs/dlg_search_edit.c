@@ -146,7 +146,8 @@ static void srch_expr_fill_in_right(srchedit_ctx_t *ctx, const search_expr_t *s)
 	int n, empty = 0;
 	pcb_hid_attr_val_t hv;
 
-	if (s->expr->rtype == ctx->last_rtype)
+	/* don't recalc if the same type; except for const, because there the same type means different set of values for each expr */
+	if ((s->expr->rtype == ctx->last_rtype) && (s->expr->rtype != RIGHT_CONST))
 		return;
 
 	for(n = 0; n < RIGHT_max; n++)
