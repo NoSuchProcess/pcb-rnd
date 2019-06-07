@@ -468,7 +468,7 @@ ha:{
 						ha:Erase rats nest                       = { a={<key>c;<key>e;}; action=DeleteRats(AllRats) }
 						-
 						ha:Select shortest rat                   = { a={<key>c;<key>s;}; action=AddRats(Close) }
-						ha:AddRats to selected pins              = { li:action={Atomic(Save); DeleteRats(AllRats); Atomic(Restore); AddRats(SelectedRats); Atomic(Block)} }
+						ha:AddRats to selected pins              = { li:action={Atomic(Save); DeleteRats(AllRats); Atomic(Restore); AddRats(SelectedRats); Atomic(Close)} }
 						ha:AddRats Selected                      = { action=AddRats(SelectedRats) }
 						ha:Add All Rats                          = { action=AddRats(AllRats) }
 					}
