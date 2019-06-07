@@ -694,6 +694,8 @@ static int ghid_attr_dlg_widget_hide_(attr_dlg_t *ctx, int idx, pcb_bool hide)
 	}
 
 	w = (ctx->wltop[idx] != NULL) ? ctx->wltop[idx] : ctx->wl[idx];
+	if (w == NULL)
+		return -1;
 
 	if (hide)
 		gtk_widget_hide(w);
@@ -901,7 +903,7 @@ int ghid_attr_dlg_widget_hide(void *hid_ctx, int idx, pcb_bool hide)
 {
 	attr_dlg_t *ctx = hid_ctx;
 
-	if ((idx < 0) || (idx >= ctx->n_attrs) || (ctx->wl[idx] == NULL))
+	if ((idx < 0) || (idx >= ctx->n_attrs))
 		return -1;
 
 	return ghid_attr_dlg_widget_hide_(ctx, idx, hide);
