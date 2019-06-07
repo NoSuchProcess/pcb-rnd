@@ -122,21 +122,24 @@ static int cam_exec_inst(cam_ctx_t *ctx, pcb_cam_code_t *code)
 
 static int cam_exec(cam_ctx_t *ctx)
 {
-	int n, save_ons[PCB_MAX_LAYER + 2], have_gui;
+	int res = 0, n, save_ons[PCB_MAX_LAYER + 2], have_gui;
 	
 	have_gui = (pcb_gui != NULL) && pcb_gui->gui;
-	if (have_gui)
+	if (have_gui) {
 		pcb_hid_save_and_show_layer_ons(save_ons);
 
-	for(n = 0; n < ctx->code.used; n++)
-		if (cam_exec_inst(ctx, &ctx->code.array[n]) != 0)
-			return 1;
+	for(n = 0; n < ctx->code.used; n++) {
+		if (cam_exec_inst(ctx, &ctx->code.array[n]) != 0) {
+			res = 1;
+			break;
+		}
+	}
 
 	if (have_gui) {
 		pcb_hid_restore_layer_ons(save_ons);
 		pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	}
-	return 0;
+	return res;
 }
 
 static int cam_compile_line(cam_ctx_t *ctx, char *cmd, char *arg, pcb_cam_code_t *code)
