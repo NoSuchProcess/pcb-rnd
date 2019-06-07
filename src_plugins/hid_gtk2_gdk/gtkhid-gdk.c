@@ -1021,7 +1021,7 @@ static void ghid_gdk_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 		y1 = y2;
 		y2 = yy;
 	}
-	USE_GC(gc);
+	USE_GC_NOPEN(gc);
 	gdk_draw_rectangle(priv->out_pixel, priv->pixel_gc, TRUE, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
 
 	if (priv->out_clip != NULL)
