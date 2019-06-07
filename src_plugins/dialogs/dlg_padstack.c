@@ -193,8 +193,16 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 
 static void pse_changed(pse_t *pse)
 {
+	pcb_data_t *pdt;
+
 	if (pse->change_cb != NULL)
 		pse->change_cb(pse);
+
+	/* if the padstack is within a subc, parent subc bbox needs to be recalculated because any pstk geometry change may have changed that too */
+	assert(pse->ps->parent_type == PCB_PARENT_DATA);
+	pdt = pse->ps->parent.data;
+	if (pdt->parent_type == PCB_PARENT_SUBC)
+		pcb_subc_bbox(pdt->parent.subc);
 }
 
 static void pse_chg_protoid(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
