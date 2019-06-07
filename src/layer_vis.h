@@ -50,13 +50,16 @@ void pcb_layervis_restore_stack(void);
 /* Return the last used layer (or if none, any layer) that matches target type */
 pcb_layer_id_t pcb_layer_vis_last_lyt(pcb_layer_type_t target);
 
-/* Use this to temporarily enable all layers, so that they can be
+/* Use this to temporarily make all layers visible, so that they can be
    exported even if they're not currently visible.  save_array must be
-   PCB_MAX_LAYER+2 big. */
+   PCB_MAX_LAYER+2 (or PCB_MAX_LAYERGRP) big. Groups are only saved, not
+   set visible */
 void pcb_hid_save_and_show_layer_ons(int *save_array);
+void pcb_hid_save_and_show_layergrp_ons(int *save_array);
 
 /* Use this to restore them.  */
 void pcb_hid_restore_layer_ons(int *save_array);
+void pcb_hid_restore_layergrp_ons(int *save_array);
 
 /* (un)init config watches and events to keep layers in sync */
 void pcb_layer_vis_init(void);

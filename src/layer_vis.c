@@ -321,11 +321,25 @@ void pcb_hid_save_and_show_layer_ons(int *save_array)
 	}
 }
 
+void pcb_hid_save_and_show_layergrp_ons(int *save_array)
+{
+	pcb_layergrp_id_t i;
+	for (i = 0; i < PCB->LayerGroups.len; i++)
+		save_array[i] = PCB->LayerGroups.grp[i].vis;
+}
+
 void pcb_hid_restore_layer_ons(int *save_array)
 {
 	int i;
 	for (i = 0; i < pcb_max_layer; i++)
 		PCB->Data->Layer[i].meta.real.vis = save_array[i];
+}
+
+void pcb_hid_restore_layergrp_ons(int *save_array)
+{
+	pcb_layergrp_id_t i;
+	for (i = 0; i < PCB->LayerGroups.len; i++)
+		PCB->LayerGroups.grp[i].vis = save_array[i];
 }
 
 static const char *layer_vis_cookie = "core_layer_vis";
