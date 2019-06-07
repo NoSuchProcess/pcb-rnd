@@ -128,7 +128,7 @@ static void srch_expr_fill_in_right_const(srchedit_ctx_t *ctx, const search_expr
 
 	/* add all items */
 	cell[1] = NULL;
-	for(o = right_const_tab[s->expr->rtype].ops; *o != NULL; o++) {
+	for(o = s->expr->right_const->ops; *o != NULL; o++) {
 		cell[0] = pcb_strdup_printf(*o);
 		pcb_dad_tree_append(attr, NULL, cell);
 	}
