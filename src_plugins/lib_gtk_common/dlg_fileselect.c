@@ -74,7 +74,7 @@ static void update_history(file_history_t *hi, const char *path)
 	}
 
 	/* else move everything down and insert in front */
-	shift_history(hi, 0, MAX_HIST);
+	shift_history(hi, 0, MAX_HIST-1);
 	hi->fn[0] = pcb_strdup(path);
 }
 
