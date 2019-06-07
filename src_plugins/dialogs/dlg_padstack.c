@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -191,7 +191,7 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 
 }
 
-static void pse_change_callback(pse_t *pse)
+static void pse_changed(pse_t *pse)
 {
 	if (pse->change_cb != NULL)
 		pse->change_cb(pse);
@@ -218,7 +218,7 @@ static void pse_chg_protoid(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	pse_ps2dlg(hid_ctx, pse); /* to get the button text updated with proto name */
 	lock--;
 
-	pse_change_callback(pse);
+	pse_changed(pse);
 	pcb_gui->invalidate_all(&PCB->hidlib);
 }
 
@@ -236,7 +236,7 @@ static void pse_chg_protodup(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	proto_id = pcb_pstk_proto_insert_forcedup(pse->ps->parent.data, proto, 0);
 	pcb_pstk_change_instance(pse->ps, &proto_id, NULL, NULL, NULL, NULL);
 	pse_ps2dlg(hid_ctx, pse);
-	pse_change_callback(pse);
+	pse_changed(pse);
 	pcb_gui->invalidate_all(&PCB->hidlib);
 }
 
@@ -259,7 +259,7 @@ static void pse_chg_instance(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	pse_ps2dlg(hid_ctx, pse); /* to get calculated text fields updated */
 	lock--;
 
-	pse_change_callback(pse);
+	pse_changed(pse);
 	pcb_gui->invalidate_all(&PCB->hidlib);
 }
 
@@ -288,7 +288,7 @@ static void pse_chg_prname(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pse_ps2dlg(hid_ctx, pse); /* to get calculated text fields updated */
 	lock--;
 
-	pse_change_callback(pse);
+	pse_changed(pse);
 	pcb_gui->invalidate_all(&PCB->hidlib);
 }
 
@@ -313,7 +313,7 @@ static void pse_chg_hole(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	pse_ps2dlg(hid_ctx, pse); /* to get calculated text fields updated */
 	lock--;
 
-	pse_change_callback(pse);
+	pse_changed(pse);
 	pcb_gui->invalidate_all(&PCB->hidlib);
 }
 
@@ -360,7 +360,7 @@ static void pse_chg_proto_clr(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pse_ps2dlg(hid_ctx, pse); /* to get calculated text fields updated */
 	lock--;
 
-	pse_change_callback(pse);
+	pse_changed(pse);
 	pcb_gui->invalidate_all(&PCB->hidlib);
 }
 
@@ -372,7 +372,7 @@ static void pse_shape_del(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 
 	pse_ps2dlg(pse->parent_hid_ctx, pse);
 
-	pse_change_callback(pse);
+	pse_changed(pse);
 	pcb_gui->invalidate_all(&PCB->hidlib);
 }
 
@@ -384,7 +384,7 @@ static void pse_shape_hshadow(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pcb_pstk_shape_add_hshadow(proto, pcb_proto_layers[pse->editing_shape].mask, pcb_proto_layers[pse->editing_shape].comb);
 	pse_ps2dlg(pse->parent_hid_ctx, pse);
 
-	pse_change_callback(pse);
+	pse_changed(pse);
 	pcb_gui->invalidate_all(&PCB->hidlib);
 }
 
@@ -430,7 +430,7 @@ static void pse_shape_auto(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pcb_pstk_shape_derive(proto, dst_idx, src_idx, pcb_proto_layers[pse->editing_shape].auto_bloat, pcb_proto_layers[pse->editing_shape].mask, pcb_proto_layers[pse->editing_shape].comb);
 
 	pse_ps2dlg(pse->parent_hid_ctx, pse);
-	pse_change_callback(pse);
+	pse_changed(pse);
 	pcb_gui->invalidate_all(&PCB->hidlib);
 }
 
@@ -464,7 +464,7 @@ static void pse_shape_copy(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pcb_pstk_shape_derive(proto, dst_idx, src_idx, 0, pcb_proto_layers[pse->editing_shape].mask, pcb_proto_layers[pse->editing_shape].comb);
 
 	pse_ps2dlg(pse->parent_hid_ctx, pse);
-	pse_change_callback(pse);
+	pse_changed(pse);
 	pcb_gui->invalidate_all(&PCB->hidlib);
 }
 
@@ -498,7 +498,7 @@ static void pse_shape_swap(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pcb_pstk_shape_swap_layer(proto, dst_idx, src_idx);
 
 	pse_ps2dlg(pse->parent_hid_ctx, pse);
-	pse_change_callback(pse);
+	pse_changed(pse);
 	pcb_gui->invalidate_all(&PCB->hidlib);
 }
 
@@ -526,7 +526,7 @@ static void pse_shape_bloat(void *hid_ctx, void *caller_data, pcb_coord_t sign)
 	pcb_pstk_proto_update(proto);
 
 	pse_ps2dlg(pse->parent_hid_ctx, pse);
-	pse_change_callback(pse);
+	pse_changed(pse);
 	pcb_gui->invalidate_all(&PCB->hidlib);
 }
 
@@ -621,7 +621,7 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 
 	pse->shape_chg = NULL;
 	PCB_DAD_FREE(dlg);
-	pse_change_callback(pse);
+	pse_changed(pse);
 	pcb_gui->invalidate_all(&PCB->hidlib);
 }
 
@@ -724,7 +724,7 @@ static void pse_gen(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 
 	pse_ps2dlg(hid_ctx, pse);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->tab, int_value, 1); /* switch to the prototype view where the new attributes are visible */
-	pse_change_callback(pse);
+	pse_changed(pse);
 	pcb_gui->invalidate_all(&PCB->hidlib);
 }
 
