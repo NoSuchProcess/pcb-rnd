@@ -688,7 +688,7 @@ static int ghid_attr_dlg_widget_hide_(attr_dlg_t *ctx, int idx, pcb_bool hide)
 	if (ctx->attrs[idx].type == PCB_HATT_END) {
 		pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)ctx->attrs[idx].enumerations;
 		if ((cmp != NULL) && (cmp->widget_hide != NULL))
-			cmp->widget_hide(&ctx->attrs[idx], ctx, idx, hide);
+			return cmp->widget_hide(&ctx->attrs[idx], ctx, idx, hide);
 		else
 			return -1;
 	}
