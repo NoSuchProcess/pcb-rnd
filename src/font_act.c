@@ -64,9 +64,20 @@ fgw_error_t pcb_act_load_font_from(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		fid = -1; /* auto-allocate a new ID */
 
 	if (!fname || !*fname) {
+		static const char *flt_lht[]   = {"*.lht", NULL};
+		static const char *flt_pcb[]   = {"*.font", "*.pcb_font", NULL};
+		static const char *flt_fonts[] = {"*.lht", "*.font", "*.pcb_font", NULL};
+		static const char *flt_any[] = {"*", "*.*", NULL};
+		const pcb_hid_fsd_filter_t flt[] = {
+			{"any font",            NULL, flt_fonts},
+			{"lihata pcb-rnd font", NULL, flt_lht},
+			{"gEDA pcb font",       NULL, flt_pcb},
+			{"all",                 NULL, flt_any},
+			{NULL, NULL,NULL}
+		};
 		fname = pcb_gui->fileselect(
 			"Load PCB font file...", "Picks a PCB font file to load.\n",
-			default_file, ".font", NULL, "pcbfont", PCB_HID_FSD_READ, NULL);
+			default_file, ".font", flt, "pcbfont", PCB_HID_FSD_READ, NULL);
 		if (fname == NULL)
 			return 0; /* cancel */
 		if (default_file != NULL) {
