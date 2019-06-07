@@ -677,12 +677,38 @@ static gint ghid_attr_dlg_destroy_event_cb(GtkWidget *widget, gpointer data)
 	return 0;
 }
 
+/* Hide (or show) a widget by idx - no check performed on idx range */
+static int ghid_attr_dlg_widget_hide_(attr_dlg_t *ctx, int idx, pcb_bool hide)
+{
+	GtkWidget *w;
+
+	if (ctx->attrs[idx].type == PCB_HATT_BEGIN_COMPOUND)
+		return -1;
+
+	if (ctx->attrs[idx].type == PCB_HATT_END) {
+		pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)ctx->attrs[idx].enumerations;
+		if ((cmp != NULL) && (cmp->widget_hide != NULL))
+			cmp->widget_hide(&ctx->attrs[idx], ctx, idx, hide);
+		else
+			return -1;
+	}
+
+	w = (ctx->wltop[idx] != NULL) ? ctx->wltop[idx] : ctx->wl[idx];
+
+	if (hide)
+		gtk_widget_hide(w);
+	else
+		gtk_widget_show(w);
+
+	return 0;
+}
+
 static void ghid_initial_wstates(attr_dlg_t *ctx)
 {
 	int n;
 	for(n = 0; n < ctx->n_attrs; n++)
 		if (ctx->attrs[n].pcb_hatt_flags & PCB_HATF_HIDE)
-			gtk_widget_hide(ctx->wltop[n] != NULL ? ctx->wltop[n] : ctx->wl[n]);
+			ghid_attr_dlg_widget_hide_(ctx, n, 1);
 }
 
 void *ghid_attr_dlg_new(pcb_gtk_common_t *com, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy)
@@ -870,33 +896,15 @@ int ghid_attr_dlg_widget_state(void *hid_ctx, int idx, int enabled)
 	return 0;
 }
 
+
 int ghid_attr_dlg_widget_hide(void *hid_ctx, int idx, pcb_bool hide)
 {
-	GtkWidget *w;
 	attr_dlg_t *ctx = hid_ctx;
 
 	if ((idx < 0) || (idx >= ctx->n_attrs) || (ctx->wl[idx] == NULL))
 		return -1;
 
-	if (ctx->attrs[idx].type == PCB_HATT_BEGIN_COMPOUND)
-		return -1;
-
-	if (ctx->attrs[idx].type == PCB_HATT_END) {
-		pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)ctx->attrs[idx].enumerations;
-		if ((cmp != NULL) && (cmp->widget_hide != NULL))
-			cmp->widget_hide(&ctx->attrs[idx], ctx, idx, hide);
-		else
-			return -1;
-	}
-
-	w = (ctx->wltop[idx] != NULL) ? ctx->wltop[idx] : ctx->wl[idx];
-
-	if (hide)
-		gtk_widget_hide(w);
-	else
-		gtk_widget_show(w);
-
-	return 0;
+	return ghid_attr_dlg_widget_hide_(ctx, idx, hide);
 }
 
 int ghid_attr_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val)
