@@ -297,6 +297,7 @@ static int cam_gui(const char *arg)
 						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 						header_label(ctx, "CAM job script");
 						PCB_DAD_BEGIN_TABBED(ctx->dlg, script_tabs);
+							PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 
 							PCB_DAD_TREE(ctx->dlg, 3, 0, digest_hdr);
 								PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
