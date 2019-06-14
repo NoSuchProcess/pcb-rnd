@@ -1077,6 +1077,14 @@ void pcb_pstk_proto_grow(pcb_pstk_proto_t *proto, pcb_bool is_absolute, pcb_coor
 	pcb_pstk_proto_update(proto);
 }
 
+int pcb_pstk_alloc_shape_idx(pcb_pstk_proto_t *proto, int tr_idx)
+{
+	int d = proto->tr.array[tr_idx].len;
+	proto->tr.array[tr_idx].len++;
+	proto->tr.array[tr_idx].shape = realloc(proto->tr.array[tr_idx].shape, proto->tr.array[tr_idx].len * sizeof(proto->tr.array[tr_idx].shape[0]));
+	return d;
+}
+
 void pcb_pstk_shape_derive(pcb_pstk_proto_t *proto, int dst_idx, int src_idx, pcb_coord_t bloat, pcb_layer_type_t mask, pcb_layer_combining_t comb)
 {
 	int n;
@@ -1084,12 +1092,8 @@ void pcb_pstk_shape_derive(pcb_pstk_proto_t *proto, int dst_idx, int src_idx, pc
 	/* do the same copy on all shapes of all transformed variants */
 	for(n = 0; n < proto->tr.used; n++) {
 		int d = dst_idx;
-		if (d < 0) {
-			d = proto->tr.array[n].len;
-			proto->tr.array[n].len++;
-			proto->tr.array[n].shape = realloc(proto->tr.array[n].shape, proto->tr.array[n].len * sizeof(proto->tr.array[n].shape[0]));
-			
-		}
+		if (d < 0)
+			d = pcb_pstk_alloc_shape_idx(proto, n);
 		else
 			pcb_pstk_shape_free(&proto->tr.array[n].shape[d]);
 		pcb_pstk_shape_copy(&proto->tr.array[n].shape[d], &proto->tr.array[n].shape[src_idx]);

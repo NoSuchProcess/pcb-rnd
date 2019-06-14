@@ -267,6 +267,10 @@ pcb_cardinal_t *pcb_pstk_proto_used_all(pcb_data_t *data, pcb_cardinal_t *len_ou
 /* Remove a prototype: free all fields and mark it unused */
 void pcb_pstk_proto_del(pcb_data_t *data, pcb_cardinal_t proto_id);
 
+/* allocate a new shape in proto:tr_idx and return the shape index -
+   clal this for all transformed shapes! */
+int pcb_pstk_alloc_shape_idx(pcb_pstk_proto_t *proto, int tr_idx);
+
 /*** layer info ***/
 typedef struct pcb_proto_layer_s {
 	const char *name;
