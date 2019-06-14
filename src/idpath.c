@@ -78,12 +78,19 @@ static int idpath_map(pcb_idpath_t *idp, pcb_any_obj_t *obj, int level, int *num
 				case PCB_PARENT_NET:
 					return -1;
 				case PCB_PARENT_BOARD:
+					if (idp == NULL)
+						return 0;
+					if (data == PCB->Data) {
+						idp->data_addr = 1;
+						return 0;
+					}
 					for(n = 0; n < PCB_MAX_BUFFER; n++) {
 						if (data == pcb_buffers[n].Data) {
-							idp->data_addr =n+2;
+							idp->data_addr = n+2;
 							return 0;
 						}
 					}
+					/* not the board, not any buffer -> unknown */
 					return 0;
 				case PCB_PARENT_SUBC: /* recurse */
 					return idpath_map(idp, (pcb_any_obj_t *)data->parent.subc, level-1, numlevels);
