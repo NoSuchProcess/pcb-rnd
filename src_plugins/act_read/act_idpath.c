@@ -150,8 +150,9 @@ static fgw_error_t pcb_act_IDP(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return 0;
 
 		case act_read_keywords_print:
-TODO("print");
-			break;
+			res->type = FGW_STR | FGW_DYN;
+			res->val.str = pcb_idpath2str(idp, 0);
+			return 0;
 	}
 
 	return -1;
