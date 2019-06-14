@@ -123,6 +123,16 @@ int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 	return 0;
 }
 
+/* pair of prop_scope_add() - uninits the scope */
+static void prop_scope_finish(pcb_propedit_t *pe)
+{
+	pcb_idpath_t *idp;
+
+	/* need to remove idpaths from the scope list, else it won't be possible
+	   to add them again */
+	while((idp = pcb_idpath_list_first(&pe->objs)) != NULL)
+		pcb_idpath_list_remove(idp);
+}
 
 extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
 
@@ -147,6 +157,8 @@ fgw_error_t pcb_act_propset(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	PCB_ACT_IRES(pcb_propsel_set_str(&ctx, name, val));
+
+	prop_scope_finish(&ctx);
 	pcb_props_uninit(&ctx);
 	return 0;
 }
@@ -203,6 +215,7 @@ fgw_error_t pcb_act_propprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	free(sorted);
 
+	prop_scope_finish(&ctx);
 	pcb_props_uninit(&ctx);
 	PCB_ACT_IRES(0);
 	return 0;
