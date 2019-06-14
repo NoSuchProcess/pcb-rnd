@@ -35,17 +35,36 @@ static const char *PCB_PTR_DOMAIN_PSTK_PROTO = "fgw_ptr_domain_pstk_proto";
 
 static const char pcb_acts_PstkProtoTmp[] =
 	"PstkProto([noundo,] new)\n"
+	"PstkProto([noundo,] dup, idpath)\n"
 	"PstkProto([noundo,] dup, data, src_proto_id)\n"
 	"PstkProto([noundo,] insert, idpath|data, proto)\n"
 	"PstkProto([noundo,] insert_dup, idpath|data, proto)\n"
 	"PstkProto([noundo,] free, proto)";
 static const char pcb_acth_PstkProtoTmp[] = "Allocate, insert or free a temporary padstack prototype";
+
+static int get_obj_and_data_from_idp(int argc, fgw_arg_t *argv, int aidx, pcb_any_obj_t **obj_out, pcb_data_t **data_out)
+{
+	pcb_any_obj_t *obj;
+	pcb_idpath_t *idp;
+
+	PCB_ACT_CONVARG(aidx, FGW_IDPATH, PstkProtoTmp, idp = fgw_idpath(&argv[aidx]));
+	if ((idp == NULL) || !fgw_ptr_in_domain(&pcb_fgw, &argv[aidx], PCB_PTR_DOMAIN_IDPATH))
+		return FGW_ERR_PTR_DOMAIN;
+	obj = pcb_idpath2obj(PCB, idp);
+	if ((obj == NULL) || (obj->type != PCB_OBJ_PSTK) || (obj->parent_type != PCB_PARENT_DATA))
+		return -1;
+	*obj_out = obj;
+	*data_out = obj->parent.data;
+	return 0;
+}
+
 static fgw_error_t pcb_act_PstkProtoTmp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char *cmd;
 	int cmdi;
 	pcb_pstk_proto_t *proto, *src;
 	pcb_data_t *data;
+	pcb_any_obj_t *obj;
 	long src_id;
 	DRAWOPTARG;
 
@@ -65,11 +84,20 @@ static fgw_error_t pcb_act_PstkProtoTmp(fgw_arg_t *res, int argc, fgw_arg_t *arg
 			return 0;
 
 		case act_draw_keywords_dup:
-			PCB_ACT_CONVARG(2+ao, FGW_DATA, PstkProtoTmp, data = fgw_data(&argv[2+ao]));
-			PCB_ACT_CONVARG(3+ao, FGW_LONG, PstkProtoTmp, src_id = argv[3+ao].val.nat_long);
-			if (data == NULL)
-				return 0;
-			src = pcb_pstk_get_proto_(data, src_id);
+			if (argc < 4) {
+				if (get_obj_and_data_from_idp(argc, argv, 2+ao, &obj, &data) != 0) {
+					PCB_ACT_IRES(-1);
+					return 0;
+				}
+				src = pcb_pstk_get_proto(obj);
+			}
+			else {
+				PCB_ACT_CONVARG(2+ao, FGW_DATA, PstkProtoTmp, data = fgw_data(&argv[2+ao]));
+				PCB_ACT_CONVARG(3+ao, FGW_LONG, PstkProtoTmp, src_id = argv[3+ao].val.nat_long);
+				if (data == NULL)
+					return 0;
+				src = pcb_pstk_get_proto_(data, src_id);
+			}
 			if (src == NULL)
 				return 0;
 			proto = calloc(sizeof(pcb_pstk_proto_t), 1);
@@ -80,20 +108,11 @@ static fgw_error_t pcb_act_PstkProtoTmp(fgw_arg_t *res, int argc, fgw_arg_t *arg
 
 		case act_draw_keywords_insert:
 		case act_draw_keywords_insert_dup:
-			{
-				if (argc < 3)
-					PCB_ACT_FAIL(PstkProtoTmp);
-				pcb_any_obj_t *obj;
-				pcb_idpath_t *idp;
-				PCB_ACT_CONVARG(2+ao, FGW_IDPATH, PstkProtoTmp, idp = fgw_idpath(&argv[2+ao]));
-				if ((idp == NULL) || !fgw_ptr_in_domain(&pcb_fgw, &argv[2+ao], PCB_PTR_DOMAIN_IDPATH))
-					return FGW_ERR_PTR_DOMAIN;
-				obj = pcb_idpath2obj(PCB, idp);
-				if ((obj == NULL) || (obj->type != PCB_OBJ_PSTK) || (obj->parent_type != PCB_PARENT_DATA)) {
-					PCB_ACT_IRES(-1);
-					return 0;
-				}
-				data = obj->parent.data;
+			if (argc < 3)
+				PCB_ACT_FAIL(PstkProtoTmp);
+			if (get_obj_and_data_from_idp(argc, argv, 2+ao, &obj, &data) != 0) {
+				PCB_ACT_IRES(-1);
+				return 0;
 			}
 			PCB_ACT_CONVARG(3+ao, FGW_PTR, PstkProtoTmp, proto = argv[3+ao].val.ptr_void);
 			if (!fgw_ptr_in_domain(&pcb_fgw, &argv[3+ao], PCB_PTR_DOMAIN_PSTK_PROTO) || (proto == NULL)) {
