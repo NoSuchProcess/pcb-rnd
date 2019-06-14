@@ -234,6 +234,9 @@ pcb_data_t *pcb_data_by_name(pcb_board_t *pcb, const char **name);
    2+ are buffer+2 */
 int pcb_data_addr_by_name(pcb_board_t *pcb, const char **name);
 
+/* Render data name in buf, which must be at least 16 bytes long. Returns buf. */
+char *pcb_data_name_by_addr(int addr, char *buf);
+
 
 /* Convert data to name; either returns a static srting or fills in
    buf with dynamic data and returns buf. Buf needs to be at least 16

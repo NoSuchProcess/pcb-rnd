@@ -956,6 +956,14 @@ static pcb_data_t *pcb_data_by_name_(pcb_board_t *pcb, const char **name, int *a
 	return NULL;
 }
 
+char *pcb_data_name_by_addr(int addr, char *buf)
+{
+	if (addr == 0) *buf = '\0';
+	else if (addr == 1) strcpy(buf, "pcb");
+	else pcb_snprintf(buf, 16, "buffer#%d", addr-2);
+	return buf;
+}
+
 pcb_data_t *pcb_data_by_name(pcb_board_t *pcb, const char **name)
 {
 	int dummy;
