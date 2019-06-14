@@ -59,6 +59,7 @@ pcb_idpath_t *pcb_idpath_alloc(int len);
 
 pcb_idpath_t *pcb_obj2idpath(pcb_any_obj_t *obj);
 pcb_idpath_t *pcb_str2idpath(pcb_board_t *pcb, const char *str); /* slash separated list of ids */
+char *pcb_idpath2str(const pcb_idpath_t *idp, pcb_bool relative);
 pcb_any_obj_t *pcb_idpath2obj_in(pcb_data_t *data, const pcb_idpath_t *path);
 pcb_idpath_t *pcb_idpath_dup(const pcb_idpath_t *path);
 void pcb_idpath_destroy(pcb_idpath_t *path);
