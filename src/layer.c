@@ -1075,7 +1075,7 @@ int pcb_layer_typecomb_str2bits(const char *str, pcb_layer_type_t *lyt, pcb_laye
 
 
 		for(nt = pcb_layer_type_names; nt->name != NULL; nt++) {
-			if (pcb_strncasecmp(nc->name, curr, len) == 0) {
+			if (pcb_strncasecmp(nt->name, curr, len) == 0) {
 				*lyt |= nt->type;
 				goto done;
 			}
