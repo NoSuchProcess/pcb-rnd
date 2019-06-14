@@ -1054,6 +1054,54 @@ pcb_layer_combining_t pcb_layer_comb_str2bit(const char *name)
 	return 0;
 }
 
+
+int pcb_layer_typecomb_str2bits(const char *str, pcb_layer_type_t *lyt, pcb_layer_combining_t *lyc, pcb_bool allow_implicit_lyc)
+{
+	const char *curr, *next;
+	int res = 0, got_lyc = 0;
+
+	*lyt = 0;
+	*lyc = 0;
+	for(curr = str; curr != NULL; curr = next) {
+		const pcb_layer_type_name_t *nc;
+		const pcb_layer_type_name_t *nt;
+
+		size_t len;
+		while((*curr != '\0') && !isalnum(*curr)) curr++;
+		if (*curr == '\0')
+			break;
+		for(next = curr; isalpha(*next); next++) ;
+		len = next - curr;
+
+
+		for(nt = pcb_layer_type_names; nt->name != NULL; nt++) {
+			if (pcb_strncasecmp(nc->name, curr, len) == 0) {
+				*lyt |= nt->type;
+				goto done;
+			}
+		}
+
+		for(nc = pcb_layer_comb_names; nc->name != NULL; nc++) {
+			if (pcb_strncasecmp(nc->name, curr, len) == 0) {
+				got_lyc = 1;
+				*lyc |= nc->type;
+				goto done;
+			}
+		}
+
+		res = -1; /* not found in either */
+
+		done:;
+	}
+
+	if (allow_implicit_lyc && !got_lyc) {
+		if (*lyt & PCB_LYT_MASK) *lyc = PCB_LYC_SUB | PCB_LYC_AUTO;
+		if (*lyt & PCB_LYT_PASTE) *lyc = PCB_LYC_AUTO;
+	}
+
+	return res;
+}
+
 void pcb_layer_auto_fixup(pcb_board_t *pcb)
 {
 	pcb_layer_id_t n;

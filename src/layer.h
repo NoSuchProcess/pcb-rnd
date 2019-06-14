@@ -238,6 +238,12 @@ int pcb_layer_comb_map(pcb_layer_combining_t type, void *ctx, void (*cb)(void *c
 pcb_layer_type_t pcb_layer_type_str2bit(const char *name);
 pcb_layer_combining_t pcb_layer_comb_str2bit(const char *name);
 
+/* Convert a list of types/combs from string to bits. Returns 0 on success.
+   The string is separated by any non-alpha character and is case insensitive.
+   If allow_implicit_lyc is true, improvise the value of *lyc using *lyt if
+   no comb flag was explicitly specified in the string. */
+int pcb_layer_typecomb_str2bits(const char *str, pcb_layer_type_t *lyt, pcb_layer_combining_t *lyc, pcb_bool allow_implicit_lyc);
+
 /* return the name of a type bit; type should have only one bit set */
 const char *pcb_layer_type_bit2str(pcb_layer_type_t type);
 
