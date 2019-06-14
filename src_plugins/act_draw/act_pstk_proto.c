@@ -77,9 +77,77 @@ static fgw_error_t pcb_act_PstkProtoTmp(fgw_arg_t *res, int argc, fgw_arg_t *arg
 		case act_draw_keywords_insert:
 		case act_draw_keywords_insert_dup:
 		case act_draw_keywords_free:
+			TODO("implement these");
 		case act_draw_keywords_SPHASH_INVALID:
 			break;
+
+		default:
+			return FGW_ERR_ARG_CONV;
 	}
 
 	return 0;
+}
+
+static const char pcb_acts_PstkProtoEdit[] =
+	"PstkProto([noundo,] proto, remove, layer_type\n"
+	"PstkProto([noundo,] proto, copy, dst_layer_type, src_layer_type)\n"
+	;
+static const char pcb_acth_PstkProtoEdit[] = "Edit a padstack prototype specified by its pointer.";
+static fgw_error_t pcb_act_PstkProtoEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *cmd, *tmp;
+	pcb_pstk_proto_t *proto;
+	pcb_layer_type_t slyt, dlyt;
+	pcb_layer_combining_t slyc, dlyc;
+	int src_idx, dst_idx, n;
+	pcb_pstk_tshape_t *ts;
+	DRAWOPTARG;
+
+	PCB_ACT_CONVARG(1+ao, FGW_STR, PstkProtoEdit, cmd = argv[1+ao].val.str);
+	PCB_ACT_CONVARG(2+ao, FGW_PTR, PstkProtoEdit, proto = argv[2+ao].val.ptr_void);
+
+	if (!fgw_ptr_in_domain(&pcb_fgw, &argv[2+ao], PTR_DOMAIN_POLY)) {
+		pcb_message(PCB_MSG_ERROR, "PstkProtoEdit: invalid proto pointer\n");
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+	ts = &proto->tr.array[0];
+
+	switch(act_draw_keywords_sphash(cmd)) {
+		case act_draw_keywords_remove:
+			PCB_ACT_CONVARG(3+ao, FGW_STR, PstkProtoEdit, tmp = argv[3+ao].val.str);
+			if (pcb_layer_typecomb_str2bits(tmp, &dlyt, &dlyc, 1) != 0)
+				return FGW_ERR_ARG_CONV;
+			pcb_pstk_proto_del_shape(proto, dlyt, dlyc);
+			break;
+
+		case act_draw_keywords_copy:
+			PCB_ACT_CONVARG(3+ao, FGW_STR, PstkProtoEdit, tmp = argv[3+ao].val.str);
+			if (pcb_layer_typecomb_str2bits(tmp, &dlyt, &dlyc, 1) != 0)
+				return FGW_ERR_ARG_CONV;
+			PCB_ACT_CONVARG(4+ao, FGW_STR, PstkProtoEdit, tmp = argv[4+ao].val.str);
+			if (pcb_layer_typecomb_str2bits(tmp, &slyt, &slyc, 1) != 0)
+				return FGW_ERR_ARG_CONV;
+
+			src_idx = pcb_pstk_get_shape_idx(ts, slyt, slyc);
+			if (src_idx < 0) {
+				PCB_ACT_IRES(-1);
+				return 0;
+			}
+			dst_idx = pcb_pstk_get_shape_idx(ts, dlyt, dlyc);
+			for(n = 0; n < proto->tr.used; n++) {
+				if (dst_idx < 0)
+					dst_idx = pcb_pstk_alloc_shape_idx(proto, n);
+				else
+					pcb_pstk_shape_free(&proto->tr.array[n].shape[dst_idx]);
+				pcb_pstk_shape_copy(&proto->tr.array[n].shape[dst_idx], &proto->tr.array[n].shape[src_idx]);
+				proto->tr.array[n].shape[dst_idx].layer_mask = dlyt;
+				proto->tr.array[n].shape[dst_idx].comb = dlyc;
+			}
+			pcb_pstk_proto_update(proto);
+			break;
+
+		default:
+			return FGW_ERR_ARG_CONV;
+	}
 }

@@ -3,3 +3,5 @@ dup
 insert
 insert_dup
 free
+copy
+remove
