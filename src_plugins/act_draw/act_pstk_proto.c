@@ -36,13 +36,14 @@ static const char *PCB_PTR_DOMAIN_PSTK_PROTO = "fgw_ptr_domain_pstk_proto";
 static const char pcb_acts_PstkProtoTmp[] =
 	"PstkProto([noundo,] new)\n"
 	"PstkProto([noundo,] dup, data, src_proto_id)\n"
-	"PstkProto([noundo,] insert, data, proto)\n"
-	"PstkProto([noundo,] insert_dup, data, proto)\n"
+	"PstkProto([noundo,] insert, idpath|data, proto)\n"
+	"PstkProto([noundo,] insert_dup, idpath|data, proto)\n"
 	"PstkProto([noundo,] free, proto)";
 static const char pcb_acth_PstkProtoTmp[] = "Allocate, insert or free a temporary padstack prototype";
 static fgw_error_t pcb_act_PstkProtoTmp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char *cmd;
+	int cmdi;
 	pcb_pstk_proto_t *proto, *src;
 	pcb_data_t *data;
 	long src_id;
@@ -53,7 +54,8 @@ static fgw_error_t pcb_act_PstkProtoTmp(fgw_arg_t *res, int argc, fgw_arg_t *arg
 
 	PCB_ACT_CONVARG(1+ao, FGW_STR, PstkProtoTmp, cmd = argv[1+ao].val.str);
 
-	switch(act_draw_keywords_sphash(cmd)) {
+	cmdi = act_draw_keywords_sphash(cmd);
+	switch(cmdi) {
 		case act_draw_keywords_new:
 			proto = calloc(sizeof(pcb_pstk_proto_t), 1);
 			fgw_ptr_reg(&pcb_fgw, res, PCB_PTR_DOMAIN_PSTK_PROTO, FGW_PTR | FGW_STRUCT, proto);
@@ -78,11 +80,38 @@ static fgw_error_t pcb_act_PstkProtoTmp(fgw_arg_t *res, int argc, fgw_arg_t *arg
 
 		case act_draw_keywords_insert:
 		case act_draw_keywords_insert_dup:
-		case act_draw_keywords_free:
-			TODO("implement these");
-		case act_draw_keywords_SPHASH_INVALID:
-			break;
+			{
+				if (argc < 3)
+					PCB_ACT_FAIL(PstkProtoTmp);
+				pcb_any_obj_t *obj;
+				pcb_idpath_t *idp;
+				PCB_ACT_CONVARG(2+ao, FGW_IDPATH, PstkProtoTmp, idp = fgw_idpath(&argv[2+ao]));
+				if ((idp == NULL) || !fgw_ptr_in_domain(&pcb_fgw, &argv[2+ao], PCB_PTR_DOMAIN_IDPATH))
+					return FGW_ERR_PTR_DOMAIN;
+				obj = pcb_idpath2obj(PCB, idp);
+				if ((obj == NULL) || (obj->type != PCB_OBJ_PSTK) || (obj->parent_type != PCB_PARENT_DATA)) {
+					PCB_ACT_IRES(-1);
+					return 0;
+				}
+				data = obj->parent.data;
+			}
+			PCB_ACT_CONVARG(3+ao, FGW_PTR, PstkProtoTmp, proto = argv[3+ao].val.ptr_void);
+			if (!fgw_ptr_in_domain(&pcb_fgw, &argv[3+ao], PCB_PTR_DOMAIN_PSTK_PROTO) || (proto == NULL)) {
+				pcb_message(PCB_MSG_ERROR, "PstkProtoTmp: invalid proto pointer\n");
+				PCB_ACT_IRES(-1);
+				return 0;
+			}
+			res->type = FGW_LONG;
+			if (cmdi == act_draw_keywords_insert_dup)
+				res->val.nat_long = pcb_pstk_proto_insert_forcedup(data, proto, 1);
+			else
+				res->val.nat_long = pcb_pstk_proto_insert_dup(data, proto, 1);
+			return 0;
 
+		case act_draw_keywords_free:
+			TODO("implement this");
+
+		case act_draw_keywords_SPHASH_INVALID:
 		default:
 			return FGW_ERR_ARG_CONV;
 	}
