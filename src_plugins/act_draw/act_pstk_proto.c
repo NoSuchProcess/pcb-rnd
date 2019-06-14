@@ -58,6 +58,8 @@ static fgw_error_t pcb_act_PstkProtoTmp(fgw_arg_t *res, int argc, fgw_arg_t *arg
 			proto = calloc(sizeof(pcb_pstk_proto_t), 1);
 			fgw_ptr_reg(&pcb_fgw, res, PCB_PTR_DOMAIN_PSTK_PROTO, FGW_PTR | FGW_STRUCT, proto);
 			res->val.ptr_void = proto;
+			pcb_vtpadstack_tshape_init(&proto->tr);
+			pcb_vtpadstack_tshape_alloc_append(&proto->tr, 1);
 			return 0;
 
 		case act_draw_keywords_dup:
