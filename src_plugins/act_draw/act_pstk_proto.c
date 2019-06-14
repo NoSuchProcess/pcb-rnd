@@ -31,7 +31,7 @@
 
 #include "obj_pstk_inlines.h"
 
-static const char *PCB_PTR_DOMAIN_PSTK_RPOTO = "fgw_ptr_domain_pstk_proto";
+static const char *PCB_PTR_DOMAIN_PSTK_PROTO = "fgw_ptr_domain_pstk_proto";
 
 static const char pcb_acts_PstkProtoTmp[] =
 	"PstkProto([noundo,] new)\n"
@@ -56,7 +56,7 @@ static fgw_error_t pcb_act_PstkProtoTmp(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	switch(act_draw_keywords_sphash(cmd)) {
 		case act_draw_keywords_new:
 			proto = calloc(sizeof(pcb_pstk_proto_t), 1);
-			fgw_ptr_reg(&pcb_fgw, res, PCB_PTR_DOMAIN_PSTK_RPOTO, FGW_PTR | FGW_STRUCT, proto);
+			fgw_ptr_reg(&pcb_fgw, res, PCB_PTR_DOMAIN_PSTK_PROTO, FGW_PTR | FGW_STRUCT, proto);
 			res->val.ptr_void = proto;
 			return 0;
 
@@ -69,7 +69,7 @@ static fgw_error_t pcb_act_PstkProtoTmp(fgw_arg_t *res, int argc, fgw_arg_t *arg
 			if (src == NULL)
 				return 0;
 			proto = calloc(sizeof(pcb_pstk_proto_t), 1);
-			fgw_ptr_reg(&pcb_fgw, res, PCB_PTR_DOMAIN_PSTK_RPOTO, FGW_PTR | FGW_STRUCT, proto);
+			fgw_ptr_reg(&pcb_fgw, res, PCB_PTR_DOMAIN_PSTK_PROTO, FGW_PTR | FGW_STRUCT, proto);
 			pcb_pstk_proto_copy(proto, src);
 			res->val.ptr_void = proto;
 			return 0;
@@ -106,7 +106,7 @@ static fgw_error_t pcb_act_PstkProtoEdit(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	PCB_ACT_CONVARG(1+ao, FGW_PTR, PstkProtoEdit, proto = argv[1+ao].val.ptr_void);
 	PCB_ACT_CONVARG(2+ao, FGW_STR, PstkProtoEdit, cmd = argv[2+ao].val.str);
 
-	if (!fgw_ptr_in_domain(&pcb_fgw, &argv[1+ao], PCB_PTR_DOMAIN_PSTK_RPOTO) || (proto == NULL)) {
+	if (!fgw_ptr_in_domain(&pcb_fgw, &argv[1+ao], PCB_PTR_DOMAIN_PSTK_PROTO) || (proto == NULL)) {
 		pcb_message(PCB_MSG_ERROR, "PstkProtoEdit: invalid proto pointer\n");
 		PCB_ACT_IRES(-1);
 		return 0;
