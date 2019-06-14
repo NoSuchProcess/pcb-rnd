@@ -1089,6 +1089,12 @@ int pcb_layer_typecomb_str2bits(const char *str, pcb_layer_type_t *lyt, pcb_laye
 			}
 		}
 
+		if ((pcb_strncasecmp("pos", curr, len) == 0) || (pcb_strncasecmp("add", curr, len) == 0)) {
+			got_lyc = 1;
+			*lyc &= ~PCB_LYC_SUB;
+			goto done;
+		}
+
 		res = -1; /* not found in either */
 
 		done:;
