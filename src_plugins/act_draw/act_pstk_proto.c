@@ -103,10 +103,10 @@ static fgw_error_t pcb_act_PstkProtoEdit(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	pcb_pstk_tshape_t *ts;
 	DRAWOPTARG;
 
-	PCB_ACT_CONVARG(1+ao, FGW_STR, PstkProtoEdit, cmd = argv[1+ao].val.str);
-	PCB_ACT_CONVARG(2+ao, FGW_PTR, PstkProtoEdit, proto = argv[2+ao].val.ptr_void);
+	PCB_ACT_CONVARG(1+ao, FGW_PTR, PstkProtoEdit, proto = argv[1+ao].val.ptr_void);
+	PCB_ACT_CONVARG(2+ao, FGW_STR, PstkProtoEdit, cmd = argv[2+ao].val.str);
 
-	if (!fgw_ptr_in_domain(&pcb_fgw, &argv[2+ao], PTR_DOMAIN_POLY)) {
+	if (!fgw_ptr_in_domain(&pcb_fgw, &argv[1+ao], PCB_PTR_DOMAIN_PSTK_RPOTO) || (proto == NULL)) {
 		pcb_message(PCB_MSG_ERROR, "PstkProtoEdit: invalid proto pointer\n");
 		PCB_ACT_IRES(-1);
 		return 0;
