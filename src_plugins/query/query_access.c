@@ -550,49 +550,7 @@ TODO("TODO")
 static struct pcb_qry_lytc_s field_pstk_lyt(pcb_pstk_t *ps, const char *where)
 {
 	struct pcb_qry_lytc_s lytc;
-	const char *start, *next;
-	int got_pol = 0;
-
-	lytc.lyt = 0;
-	lytc.lyc = 0;
-
-	start = next = where;
-	for(;;) {
-		int len;
-		next = strchr(start, '_');
-		if (next == 0)
-			len = strlen(start);
-		else
-			len = next - start;
-
-		if (strncmp(start, "top", len) == 0) lytc.lyt |= PCB_LYT_TOP;
-		else if (strncmp(start, "bottom", len) == 0) lytc.lyt |= PCB_LYT_BOTTOM;
-		else if (strncmp(start, "intern", len) == 0) lytc.lyt |= PCB_LYT_INTERN;
-		else if (strncmp(start, "copper", len) == 0) lytc.lyt |= PCB_LYT_COPPER;
-		else if (strncmp(start, "silk", len) == 0) lytc.lyt |= PCB_LYT_SILK;
-		else if (strncmp(start, "mask", len) == 0) lytc.lyt |= PCB_LYT_MASK;
-		else if (strncmp(start, "paste", len) == 0) lytc.lyt |= PCB_LYT_PASTE;
-		else if (strncmp(start, "mech", len) == 0) lytc.lyt |= PCB_LYT_MECH;
-		else if (strncmp(start, "auto", len) == 0) { lytc.lyc |= PCB_LYC_AUTO; got_pol = 1; }
-		else if (strncmp(start, "sub", len) == 0) { lytc.lyc |= PCB_LYC_SUB; got_pol = 1; }
-		else if (strncmp(start, "neg", len) == 0) { lytc.lyc |= PCB_LYC_SUB; got_pol = 1; }
-		else if (strncmp(start, "add", len) == 0) { got_pol = 1; }
-		else if (strncmp(start, "pos", len) == 0) { got_pol = 1; }
-		else {
-			lytc.lyt = 0;
-			return lytc;
-		};
-
-		if (next == NULL)
-			break;
-		start = next+1;
-	}
-
-	/* implicit polarity (shorthand) */
-	if (!got_pol) {
-		if (lytc.lyt & PCB_LYT_MASK) lytc.lyc = PCB_LYC_SUB | PCB_LYC_AUTO;
-		if (lytc.lyt & PCB_LYT_PASTE) lytc.lyc = PCB_LYC_AUTO;
-	}
+	pcb_layer_typecomb_str2bits(where, &lytc.lyt, &lytc.lyc, 1);
 	return lytc;
 }
 
