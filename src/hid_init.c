@@ -387,7 +387,7 @@ void pcb_fix_locale(void)
 	setlocale(LC_ALL, "C");
 }
 
-int pcbhl_main_arg_match(const char *in, const char *shrt, const char *lng)
+static int pcbhl_main_arg_match(const char *in, const char *shrt, const char *lng)
 {
 	return ((shrt != NULL) && (strcmp(in, shrt) == 0)) || ((lng != NULL) && (strcmp(in, lng) == 0));
 }
@@ -407,7 +407,6 @@ void pcbhl_main_args_uninit(pcbhl_main_args_t *ga)
 	free(ga->hid_argv_orig);
 }
 
-/* Returns 0 if arg is not consumed, 1 if consimed */
 int pcbhl_main_args_add(pcbhl_main_args_t *ga, char *cmd, char *arg)
 {
 	const char **cs;
@@ -475,7 +474,6 @@ int pcbhl_main_args_add(pcbhl_main_args_t *ga, char *cmd, char *arg)
 	return 0;
 }
 
-/* returns 1 on error (the application should exit) */
 int pcbhl_main_args_setup1(pcbhl_main_args_t *ga)
 {
 	int n;

@@ -90,7 +90,20 @@ void pcb_hidlib_init1(void (*conf_core_init)(void)); /* before CLI argument pars
 void pcb_hidlib_init2(const pup_buildin_t *buildins); /* after CLI argument parsing */
 void pcb_hidlib_uninit(void);
 
-int pcbhl_main_arg_match(const char *in, const char *shrt, const char *lng);
+/* optional: hidlib aspects of main() */
+void pcbhl_main_args_init(pcbhl_main_args_t *ga, int argc, const char **action_args);
+void pcbhl_main_args_uninit(pcbhl_main_args_t *ga);
+
+/* Parse the next argument using the next two argv[]s. Returns 0 if arg is
+   not consumed, 1 if consimed. */
+int pcbhl_main_args_add(pcbhl_main_args_t *ga, char *cmd, char *arg);
+
+/* returns non-zero on error (the application should exit); exitval is the
+   desired exit value of the executable when setup2 fails. */
+int pcbhl_main_args_setup1(pcbhl_main_args_t *ga);
+int pcbhl_main_args_setup2(pcbhl_main_args_t *ga, int *exitval);
+
+/*int pcbhl_main_arg_match(const char *in, const char *shrt, const char *lng);*/
 
 /* parse arguments using the gui; if fails and fallback is enabled, try the next gui */
 int pcb_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[]);
