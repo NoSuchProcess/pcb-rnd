@@ -73,6 +73,8 @@ FILE *pcb_fopen_fn(pcb_hidlib_t *hidlib, const char *path, const char *mode, cha
 	}
 
 	path_exp = pcb_build_fn(hidlib, path);
+	if (path_exp == NULL)
+		return NULL;
 
 	CHECK("fopen", "access", path_exp, mode, goto err);
 	CHECK("fopen", "fopen", path_exp, mode, goto err);
