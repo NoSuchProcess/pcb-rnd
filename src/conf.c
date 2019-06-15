@@ -43,12 +43,10 @@
 #include "compat_misc.h"
 #include "safe_fs.h"
 #include "file_loaded.h"
-
-#define CONF_USER_DIR "~/" DOT_PCB_RND
+#include "hidlib.h"
 
 /* conf list node's name */
 const char *conf_list_name = "pcb-rnd-conf-v1";
-static const char *conf_user_fn = CONF_USER_DIR "/pcb-conf.lht";
 static const char *flcat = "conf";
 
 /* plugin config files and interns */
@@ -431,7 +429,7 @@ int conf_get_policy_prio(lht_node_t *node, conf_policy_t *gpolicy, long *gprio)
 
 const char *conf_get_user_conf_name()
 {
-	return conf_user_fn;
+	return pcphl_conf_user_path;
 }
 
 const char *conf_get_project_conf_name(const char *project_fn, const char *pcb_fn, const char **try)
@@ -1178,8 +1176,8 @@ void conf_load_all(const char *project_fn, const char *pcb_fn)
 	conf_load_as(CFR_INTERNAL, conf_internal, 1);
 
 	/* load config files */
-	conf_load_as(CFR_SYSTEM, PCBSHAREDIR "/pcb-conf.lht", 0);
-	conf_load_as(CFR_USER, conf_user_fn, 0);
+	conf_load_as(CFR_SYSTEM, pcbhl_conf_sys_path, 0);
+	conf_load_as(CFR_USER, pcphl_conf_user_path, 0);
 	pc = conf_get_project_conf_name(project_fn, pcb_fn, &try);
 	if (pc != NULL)
 		conf_load_as(CFR_PROJECT, pc, 0);
@@ -1189,7 +1187,7 @@ void conf_load_all(const char *project_fn, const char *pcb_fn)
 	   this is needed so if the user makes config changes from the GUI things
 	   get saved. */
 	if (conf_main_root[CFR_USER] == NULL)
-		conf_reset(CFR_USER, conf_user_fn);
+		conf_reset(CFR_USER, pcphl_conf_user_path);
 
 	conf_in_production = 1;
 }
@@ -1197,8 +1195,8 @@ void conf_load_all(const char *project_fn, const char *pcb_fn)
 void conf_load_extra(const char *project_fn, const char *pcb_fn)
 {
 	int cnt;
-	cnt = conf_load_plug_files(CFR_SYSTEM, PCBSHAREDIR);
-	cnt += conf_load_plug_files(CFR_USER, CONF_USER_DIR);
+	cnt = conf_load_plug_files(CFR_SYSTEM, pcbhl_conf_sysdir_path);
+	cnt += conf_load_plug_files(CFR_USER, pcbhl_conf_userdir_path);
 	cnt += conf_load_plug_interns(CFR_INTERNAL);
 	if (cnt > 0)
 		conf_merge_all(NULL);
@@ -1773,7 +1771,7 @@ int conf_save_file(pcb_hidlib_t *hidlib, const char *project_fn, const char *pcb
 	if (fn == NULL) {
 		switch(role) {
 			case CFR_USER:
-				fn = conf_user_fn;
+				fn = pcphl_conf_user_path;
 				break;
 			case CFR_PROJECT:
 				fn = conf_get_project_conf_name(project_fn, pcb_fn, &try);

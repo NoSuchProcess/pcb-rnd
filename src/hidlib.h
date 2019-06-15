@@ -83,5 +83,12 @@ extern const char *pcbhl_menu_file_paths[];
    will be substituted with "default" or the HID's short name. */
 extern const char *pcbhl_menu_name_fmt;
 
+/* path to the user's config directory and main config file (CFR_USER) */
+extern const char *pcbhl_conf_userdir_path;
+extern const char *pcphl_conf_user_path;
+
+/* path to the system (installed) config directory and main config file (CFR_SYSTEM) */
+extern const char *pcbhl_conf_sysdir_path;
+extern const char *pcbhl_conf_sys_path;
 
 #endif
