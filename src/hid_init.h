@@ -64,8 +64,18 @@ extern pcb_plugin_dir_t *pcb_plugin_dir_first, *pcb_plugin_dir_last;
 const char *pcb_hid_export_fn(const char *filename);
 
 
+/*** main(), initialize ***/
+
+/* call this before anything, to switch locale to "C" permanently */
+void pcb_fix_locale(void);
+
 void pcb_hidlib_init1(void (*conf_core_init)(void)); /* before CLI argument parsing; conf_core_init should conf_reg() at least the hidlib related nodes */
 void pcb_hidlib_init2(const pup_buildin_t *buildins); /* after CLI argument parsing */
 void pcb_hidlib_uninit(void);
+
+int pcb_main_arg_match(const char *in, const char *shrt, const char *lng);
+
+/* parse arguments using the gui; if fails and fallback is enabled, try the next gui */
+int pcb_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[]);
 
 #endif

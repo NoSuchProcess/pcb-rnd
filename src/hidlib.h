@@ -83,14 +83,5 @@ extern const char *pcbhl_menu_file_paths[];
    will be substituted with "default" or the HID's short name. */
 extern const char *pcbhl_menu_name_fmt;
 
-/*** main(), initialize ***/
-
-/* parse arguments using the gui; if fails and fallback is enabled, try the next gui */
-int pcb_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[]);
-
-void pcb_fix_locale(void);
-
-int pcb_main_arg_match(const char *in, const char *shrt, const char *lng);
-
 
 #endif
