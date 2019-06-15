@@ -18,6 +18,12 @@ const char *pcb_hidlib_default_embedded_menu = "";
 const char *pcbhl_menu_file_paths[] = { "./", "~/.pcb-rnd/", PCBSHAREDIR "/", NULL };
 const char *pcbhl_menu_name_fmt = "pcb-menu-%s.lht";
 
+#define CONF_USER_DIR "~/" DOT_PCB_RND
+const char *pcbhl_conf_userdir_path = CONF_USER_DIR;
+const char *pcphl_conf_user_path = CONF_USER_DIR "/pcb-conf.lht";
+const char *pcbhl_conf_sysdir_path = PCBSHAREDIR;
+const char *pcbhl_conf_sys_path = PCBSHAREDIR "/pcb-conf.lht";
+
 void pcb_message(enum pcb_message_level level, const char *Format, ...)
 {
 	va_list args;
