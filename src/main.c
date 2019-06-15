@@ -77,6 +77,182 @@ static const char *EXPERIMENTAL = NULL;
 #include "hid_init.h"
 #include "compat_misc.h"
 
+typedef struct {
+	enum {
+		DO_SOMETHING,
+		DO_PRINT,
+		DO_EXPORT,
+		DO_GUI
+	} do_what;
+	int hid_argc;
+	const char *main_action, *main_action_hint;
+	vtp0_t plugin_cli_conf;
+	char **hid_argv_orig, **hid_argv;
+	const char *hid_name;
+	const char **action_args;
+	int autopick_gui;
+} pcbhl_main_args_t;
+
+void pcbhl_main_args_init(pcbhl_main_args_t *ga, int argc, const char **action_args)
+{
+	memset(ga, 0, sizeof(pcbhl_main_args_t));
+	ga->hid_argv_orig = ga->hid_argv = calloc(sizeof(char *), argc);
+	vtp0_init(&ga->plugin_cli_conf);
+	ga->action_args = action_args;
+	ga->autopick_gui = -1;
+}
+
+void pcbhl_main_args_uninit(pcbhl_main_args_t *ga)
+{
+	vtp0_uninit(&ga->plugin_cli_conf);
+	free(ga->hid_argv_orig);
+}
+
+/* Returns 0 if arg is not consumed, 1 if consimed */
+int pcbhl_main_args_add(pcbhl_main_args_t *ga, char *cmd, char *arg)
+{
+	const char **cs;
+	char *orig_cmd = cmd;
+
+	if (*cmd == '-') {
+		cmd++;
+		if ((strcmp(cmd, "?") == 0) || (strcmp(cmd, "h") == 0) || (strcmp(cmd, "-help") == 0)) {
+			if (arg != NULL) {
+			/* memory leak, but who cares for --help? */
+				ga->main_action = pcb_strdup_printf("PrintUsage(%s)", arg);
+				return 1;
+			}
+			ga->main_action = "PrintUsage()";
+			return 0;
+		}
+
+		if ((strcmp(cmd, "g") == 0) || (strcmp(cmd, "-gui") == 0) || (strcmp(cmd, "-hid") == 0)) {
+			ga->do_what = DO_GUI;
+			ga->hid_name = arg;
+			return 1;
+		}
+		if ((strcmp(cmd, "x") == 0) || (strcmp(cmd, "-export") == 0)) {
+			ga->do_what = DO_EXPORT;
+			ga->hid_name = arg;
+			return 1;
+		}
+		if ((strcmp(cmd, "p") == 0) || (strcmp(cmd, "-print") == 0)) {
+			ga->do_what = DO_PRINT;
+			return 0;
+		}
+
+		for(cs = ga->action_args; cs[2] != NULL; cs += PCBHL_ACTION_ARGS_WIDTH) {
+			if (pcb_main_arg_match(cmd, cs[0], cs[1])) {
+				if (ga->main_action == NULL) {
+					ga->main_action = cs[2];
+					ga->main_action_hint = cs[4];
+				}
+				else
+					fprintf(stderr, "Warning: can't execute multiple command line actions, ignoring %s\n", orig_cmd);
+				return 0;
+			}
+		}
+		if (pcb_main_arg_match(cmd, "c", "-conf")) {
+			const char *why;
+			if (strncmp(arg, "plugins/", 8)  == 0) {
+				/* plugins are not yet loaded or initialized so their configs are
+				   unavailable. Store these settings until plugins are up. This
+				   should not happen to non-plugin config items as those might
+				   affect how plugins are searched/loaded. */
+				const void **a = (const void **)vtp0_alloc_append(&ga->plugin_cli_conf, 1);
+				*a = arg;
+			}
+			else {
+				if (conf_set_from_cli(NULL, arg, NULL, &why) != 0) {
+					fprintf(stderr, "Error: failed to set config %s: %s\n", arg, why);
+					exit(1);
+				}
+			}
+			return 1;
+		}
+	}
+	/* didn't handle argument, save it for the HID */
+	ga->hid_argv[ga->hid_argc++] = orig_cmd;
+	return 0;
+}
+
+/* returns 1 on error (the application should exit) */
+int pcbhl_main_args_setup1(pcbhl_main_args_t *ga)
+{
+	int n;
+	/* Now that plugins are already initialized, apply plugin config items */
+	for(n = 0; n < vtp0_len(&ga->plugin_cli_conf); n++) {
+		const char *why, *arg = ga->plugin_cli_conf.array[n];
+		if (conf_set_from_cli(NULL, arg, NULL, &why) != 0) {
+			fprintf(stderr, "Error: failed to set config %s: %s\n", arg, why);
+			return 1;
+		}
+	}
+	vtp0_uninit(&ga->plugin_cli_conf);
+
+	/* Export pcb from command line if requested.  */
+	switch(ga->do_what) {
+		case DO_PRINT:   pcb_exporter = pcb_gui = pcb_hid_find_printer(); break;
+		case DO_EXPORT:  pcb_exporter = pcb_gui = pcb_hid_find_exporter(ga->hid_name); break;
+		case DO_GUI:
+			pcb_gui = pcb_hid_find_gui(ga->hid_name);
+			if (pcb_gui == NULL) {
+				pcb_message(PCB_MSG_ERROR, "Can't find the gui (%s) requested.\n", ga->hid_name);
+				return 1;
+			}
+			break;
+		default: {
+			const char *g;
+			conf_listitem_t *i;
+
+			pcb_gui = NULL;
+			conf_loop_list_str(&pcbhl_conf.rc.preferred_gui, i, g, ga->autopick_gui) {
+				pcb_gui = pcb_hid_find_gui(g);
+				if (pcb_gui != NULL)
+					break;
+			}
+
+			/* try anything */
+			if (pcb_gui == NULL) {
+				pcb_message(PCB_MSG_WARNING, "Warning: can't find any of the preferred GUIs, falling back to anything available...\nYou may want to check if the plugin is loaded, try --dump-plugins and --dump-plugindirs\n");
+				pcb_gui = pcb_hid_find_gui(NULL);
+			}
+		}
+	}
+
+	/* Exit with error if GUI failed to start. */
+	if (!pcb_gui)
+		return 1;
+
+	return 0;
+}
+
+int pcbhl_main_args_setup2(pcbhl_main_args_t *ga, int *exitval)
+{
+	*exitval = 0;
+
+	/* plugins may have installed their new fields, reinterpret the config
+	   (memory lht -> memory bin) to get the new fields */
+	conf_update(NULL, -1);
+
+	if (ga->main_action != NULL) {
+		int res = pcb_parse_command(ga->main_action, pcb_true);
+		if ((res != 0) && (ga->main_action_hint != NULL))
+			pcb_message(PCB_MSG_ERROR, "\nHint: %s\n", ga->main_action_hint);
+		pcbhl_log_print_uninit_errs("main_action parse error");
+		*exitval = res;
+		return 1;
+	}
+
+
+	if (pcb_gui_parse_arguments(ga->autopick_gui, &ga->hid_argc, &ga->hid_argv) != 0) {
+		pcbhl_log_print_uninit_errs("Export plugin argument parse error");
+		return 1;
+	}
+
+	return 0;
+}
+
 const char *pcbhl_menu_file_paths[] = { "./", "~/.pcb-rnd/", PCBSHAREDIR "/", NULL };
 const char *pcbhl_menu_name_fmt = "pcb-menu-%s.lht";
 
@@ -240,16 +416,7 @@ static void InitPaths(char *argv0)
  * main program
  */
 
-static const char *hid_name = NULL;
-void pcb_set_hid_name(const char *new_hid_name)
-{
-	hid_name = new_hid_name;
-}
-
-
 #include "dolists.h"
-
-static char **hid_argv_orig;
 
 static void gui_support_plugins(int load)
 {
@@ -305,7 +472,6 @@ void pcb_main_uninit(void)
 	PCB = NULL;
 
 	pcb_funchash_uninit();
-	free(hid_argv_orig);
 	pcb_file_loaded_uninit();
 	pcb_uilayer_uninit();
 	pcb_cli_uninit();
@@ -324,7 +490,6 @@ void pcb_main_uninit(void)
 }
 
 /* action table number of columns for a single action */
-const int PCB_ACTION_ARGS_WIDTH = 5;
 const char *pcb_action_args[] = {
 /*short, -long, action, help, hint-on-error */
 	NULL, "-show-actions",    "PrintActions()",     "Print all available actions (human readable) and exit",   NULL,
@@ -349,23 +514,15 @@ void print_pup_err(pup_err_stack_t *entry, char *string)
 
 int main(int argc, char *argv[])
 {
-	enum {
-		DO_SOMETHING,
-		DO_PRINT,
-		DO_EXPORT,
-		DO_GUI
-	} do_what = DO_SOMETHING;
-	int n, hid_argc = 0;
-	char *cmd, *arg, **hid_argv, **sp;
-	const char **cs;
-	const char *main_action = NULL, *main_action_hint = NULL;
-	char *command_line_pcb = NULL;
-	vtp0_t plugin_cli_conf;
-	int autopick_gui = -1;
+	int n;
+	char **sp, *command_line_pcb = NULL;
+
+	pcbhl_main_args_t ga;
 
 	pcb_fix_locale();
 
-	hid_argv_orig = hid_argv = calloc(sizeof(char *), argc);
+	pcbhl_main_args_init(&ga, argc, pcb_action_args);
+
 	/* init application:
 	 * - make program name available for error handlers
 	 * - initialize infrastructure (e.g. the conf system)
@@ -373,7 +530,6 @@ int main(int argc, char *argv[])
 	 * - create an empty PCB with default symbols
 	 * - register 'call on exit()' function
 	 */
-
 
 	/* Minimal conf setup before we do anything else */
 	pcb_netlist_geo_init();
@@ -383,77 +539,10 @@ int main(int argc, char *argv[])
 	pcb_layer_vis_init();
 	pcb_brave_init();
 
-	vtp0_init(&plugin_cli_conf);
-
 	/* process arguments */
 	for(n = 1; n < argc; n++) {
-		cmd = argv[n];
-		arg = argv[n+1];
-		if (*cmd == '-') {
-			cmd++;
-			if ((strcmp(cmd, "?") == 0) || (strcmp(cmd, "h") == 0) || (strcmp(cmd, "-help") == 0)) {
-				if (arg != NULL) {
-					/* memory leak, but who cares for --help? */
-					main_action = pcb_strdup_printf("PrintUsage(%s)", arg);
-					n++;
-				}
-				else
-					main_action = "PrintUsage()";
-				goto next_arg;
-			}
-			if ((strcmp(cmd, "g") == 0) || (strcmp(cmd, "-gui") == 0) || (strcmp(cmd, "-hid") == 0)) {
-				do_what = DO_GUI;
-				hid_name = arg;
-				n++;
-				goto next_arg;
-			}
-			if ((strcmp(cmd, "x") == 0) || (strcmp(cmd, "-export") == 0)) {
-				do_what = DO_EXPORT;
-				hid_name = arg;
-				n++;
-				goto next_arg;
-			}
-			if ((strcmp(cmd, "p") == 0) || (strcmp(cmd, "-print") == 0)) {
-				do_what = DO_PRINT;
-				goto next_arg;
-			}
-
-			for(cs = pcb_action_args; cs[2] != NULL; cs += PCB_ACTION_ARGS_WIDTH) {
-				if (pcb_main_arg_match(cmd, cs[0], cs[1])) {
-					if (main_action == NULL) {
-						main_action = cs[2];
-						main_action_hint = cs[4];
-					}
-					else
-						fprintf(stderr, "Warning: can't execute multiple command line actions, ignoring %s\n", argv[n]);
-					goto next_arg;
-				}
-			}
-			if (pcb_main_arg_match(cmd, "c", "-conf")) {
-				const char *why;
-				n++; /* eat up arg */
-				if (strncmp(arg, "plugins/", 8)  == 0) {
-					/* plugins are not yet loaded or initialized so their configs are
-					   unavailable. Store these settings until plugins are up. This
-					   should not happen to non-plugin config items as those might
-					   affect how plugins are searched/loaded. */
-					void **a = vtp0_alloc_append(&plugin_cli_conf, 1);
-					*a = arg;
-				}
-				else {
-					if (conf_set_from_cli(NULL, arg, NULL, &why) != 0) {
-						fprintf(stderr, "Error: failed to set config %s: %s\n", arg, why);
-						exit(1);
-					}
-				}
-				goto next_arg;
-			}
-		}
-
-		/* didn't handle argument, save it for the HID */
-		hid_argv[hid_argc++] = argv[n];
-
-		next_arg:;
+		/* optionally: handle extra arguments, not processed by the hidlib, here */
+		n += pcbhl_main_args_add(&ga, argv[n], argv[n+1]);
 	}
 	pcb_tool_init(); /* init before the plugins so that the static tools have the lowest index */
 
@@ -493,77 +582,24 @@ int main(int argc, char *argv[])
 		pup_err_stack_process_str(&pcb_pup, print_pup_err);
 	}
 
-	{ /* Now that plugins are already initialized, apply plugin config items */
-		int n;
-		for(n = 0; n < vtp0_len(&plugin_cli_conf); n++) {
-			const char *why, *arg = plugin_cli_conf.array[n];
-			if (conf_set_from_cli(NULL, arg, NULL, &why) != 0) {
-				fprintf(stderr, "Error: failed to set config %s: %s\n", arg, why);
-				exit(1);
-			}
-		}
-		vtp0_uninit(&plugin_cli_conf);
-	}
-
-	/* Export pcb from command line if requested.  */
-	switch(do_what) {
-		case DO_PRINT:   pcb_exporter = pcb_gui = pcb_hid_find_printer(); break;
-		case DO_EXPORT:  pcb_exporter = pcb_gui = pcb_hid_find_exporter(hid_name); break;
-		case DO_GUI:
-			pcb_gui = pcb_hid_find_gui(hid_name);
-			if (pcb_gui == NULL) {
-				pcb_message(PCB_MSG_ERROR, "Can't find the gui (%s) requested.\n", hid_name);
-				exit(1);
-			}
-			break;
-		default: {
-			const char *g;
-			conf_listitem_t *i;
-
-			pcb_gui = NULL;
-			conf_loop_list_str(&pcbhl_conf.rc.preferred_gui, i, g, autopick_gui) {
-				pcb_gui = pcb_hid_find_gui(g);
-				if (pcb_gui != NULL)
-					break;
-			}
-
-			/* try anything */
-			if (pcb_gui == NULL) {
-				pcb_message(PCB_MSG_WARNING, "Warning: can't find any of the preferred GUIs, falling back to anything available...\nYou may want to check if the plugin is loaded, try --dump-plugins and --dump-plugindirs\n");
-				pcb_gui = pcb_hid_find_gui(NULL);
-			}
-		}
-	}
-
-	/* Exit with error if GUI failed to start. */
-	if (!pcb_gui)
+	if (pcbhl_main_args_setup1(&ga) != 0) {
+		pcb_main_uninit();
+		pcbhl_main_args_uninit(&ga);
 		exit(1);
+	}
 
 /* Initialize actions only when the gui is already known so only the right
    one is registered (there can be only one GUI). */
 #include "generated_lists.h"
 
-	/* plugins may have installed their new fields, reinterpret the config
-	   (memory lht -> memory bin) to get the new fields */
-	conf_update(NULL, -1);
-
-	if (main_action != NULL) {
-		int res = pcb_parse_command(main_action, pcb_true);
-		if ((res != 0) && (main_action_hint != NULL))
-			pcb_message(PCB_MSG_ERROR, "\nHint: %s\n", main_action_hint);
-		pcbhl_log_print_uninit_errs("main_action parse error");
+	if (pcbhl_main_args_setup2(&ga, &n) != 0) {
 		pcb_main_uninit();
-		exit(res);
+		pcbhl_main_args_uninit(&ga);
+		exit(n);
 	}
 
 	if (PCB_HAVE_GUI_ATTR_DLG)
 		gui_support_plugins(1);
-
-	if (pcb_gui_parse_arguments(autopick_gui, &hid_argc, &hid_argv) != 0) {
-		pcbhl_log_print_uninit_errs("Export plugin argument parse error");
-		pcb_main_uninit();
-		exit(1);
-	}
 
 	/* Create a new PCB object in memory */
 	PCB = pcb_board_new(0);
@@ -576,8 +612,6 @@ int main(int argc, char *argv[])
 
 	/* Add silk layers to newly created PCB */
 	pcb_board_new_postproc(PCB, 1);
-	if (hid_argc > 0)
-		command_line_pcb = hid_argv[0];
 
 	pcb_layervis_reset_stack();
 
@@ -588,6 +622,8 @@ int main(int argc, char *argv[])
 
 	pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_ARROW);
 
+	if (ga.hid_argc > 0)
+		command_line_pcb = ga.hid_argv[0];
 	if (command_line_pcb) {
 		if (pcb_load_pcb(command_line_pcb, NULL, pcb_true, 0) != 0) {
 			if (we_are_exporting) {
@@ -624,6 +660,7 @@ int main(int argc, char *argv[])
 		pcb_gui->do_export(&PCB->hidlib, 0);
 		pcbhl_log_print_uninit_errs("Exporting");
 		pcb_main_uninit();
+		pcbhl_main_args_uninit(&ga);
 		exit(0);
 	}
 
@@ -647,7 +684,7 @@ int main(int argc, char *argv[])
 		pcb_next_gui = NULL;
 		if (pcb_gui != NULL) {
 			/* init the next GUI */
-			pcb_gui->parse_arguments(&hid_argc, &hid_argv);
+			pcb_gui->parse_arguments(&ga.hid_argc, &ga.hid_argv);
 			if (pcb_gui->gui)
 				pcb_crosshair_init();
 			pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_ARROW);
@@ -656,6 +693,6 @@ int main(int argc, char *argv[])
 	} while(pcb_gui != NULL);
 
 	pcb_main_uninit();
-
+	pcbhl_main_args_uninit(&ga);
 	return 0;
 }

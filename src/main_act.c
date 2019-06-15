@@ -55,6 +55,7 @@
 #include "safe_fs.h"
 #include "flag_str.h"
 #include "obj_common.h"
+#include "hid_init.h"
 
 static const char pcb_acts_PrintActions[] = "PrintActions()";
 static const char pcb_acth_PrintActions[] = "Print all actions available.";
@@ -111,7 +112,7 @@ extern const char *pcb_action_args[];
 extern const int PCB_ACTION_ARGS_WIDTH;
 static int help_main(void) {
 	const char **cs;
-	for(cs = pcb_action_args; cs[2] != NULL; cs += PCB_ACTION_ARGS_WIDTH) {
+	for(cs = pcb_action_args; cs[2] != NULL; cs += PCBHL_ACTION_ARGS_WIDTH) {
 		fprintf(stderr, "%s [", Progname);
 		if (cs[0] != NULL)
 			fprintf(stderr, "-%s", cs[0]);

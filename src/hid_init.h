@@ -4,6 +4,8 @@
 #include <puplug/puplug.h>
 #include "hid.h"
 
+#define PCBHL_ACTION_ARGS_WIDTH 5
+
 /* NULL terminated list of all static HID structures.  Built by
    hid_register_hid, used by hid_find_*() and pcb_hid_enumerate().  The
    order in this list is the same as the order of hid_register_hid
