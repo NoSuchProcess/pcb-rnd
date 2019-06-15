@@ -2,6 +2,7 @@
 #define PCB_HID_INIT_H
 
 #include <puplug/puplug.h>
+#include <genvector/vtp0.h>
 #include "hid.h"
 
 #define PCBHL_ACTION_ARGS_WIDTH 5
@@ -66,6 +67,22 @@ const char *pcb_hid_export_fn(const char *filename);
 
 /*** main(), initialize ***/
 
+typedef struct {
+	enum {
+		DO_SOMETHING,
+		DO_PRINT,
+		DO_EXPORT,
+		DO_GUI
+	} do_what;
+	int hid_argc;
+	const char *main_action, *main_action_hint;
+	vtp0_t plugin_cli_conf;
+	char **hid_argv_orig, **hid_argv;
+	const char *hid_name;
+	const char **action_args;
+	int autopick_gui;
+} pcbhl_main_args_t;
+
 /* call this before anything, to switch locale to "C" permanently */
 void pcb_fix_locale(void);
 
@@ -73,7 +90,7 @@ void pcb_hidlib_init1(void (*conf_core_init)(void)); /* before CLI argument pars
 void pcb_hidlib_init2(const pup_buildin_t *buildins); /* after CLI argument parsing */
 void pcb_hidlib_uninit(void);
 
-int pcb_main_arg_match(const char *in, const char *shrt, const char *lng);
+int pcbhl_main_arg_match(const char *in, const char *shrt, const char *lng);
 
 /* parse arguments using the gui; if fails and fallback is enabled, try the next gui */
 int pcb_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[]);
