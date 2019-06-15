@@ -3,12 +3,15 @@ Requirements:
     Some Linux distributions already have this packaged, please check your
     repositries (and install the development version)
     NOTE: version 1.0.1 is too old, please get a newer one (e.g. svn version)
- 2. download and install fungw - svn://repo.hu/fungw/trunk
- 3. at the moment fungw must be installed as root, into /usr/local/ or /usr (TODO)
+ 2. optional, but strongly recommended:
+    install libmawk - svn://repo.hu/libmawk/trunk
+    (Many of the example scripts are written in awk)
+ 3. download and install fungw - svn://repo.hu/fungw/trunk
+ 4. at the moment fungw must be installed as root, into /usr/local/ or /usr (TODO)
     during configuration, make sure all relevant scripting languages are found
- 4. (re)configure and (re)compile pcb-rnd so that it uses the system-installed
+ 5. (re)configure and (re)compile pcb-rnd so that it uses the system-installed
     version of fungw instead of the local, no-script version; make sure the
     "script" plugin is compiled (as builtin or plugin)
- 5. later on if a new scripting language is required, reconfigure,
+ 6. later on if a new scripting language is required, reconfigure,
     recompile and reinstall fungw - no pcb-rnd recompilation is needed as
     long as the system-installed fungw version is not upgraded
