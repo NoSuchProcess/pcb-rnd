@@ -53,6 +53,12 @@
 
 static const char *want_method_default = "import";
 
+#define CONF_USER_DIR "~/" DOT_PCB_RND
+const char *pcbhl_conf_userdir_path = CONF_USER_DIR;
+const char *pcphl_conf_user_path = CONF_USER_DIR "/pcb-conf.lht";
+const char *pcbhl_conf_sysdir_path = PCBSHAREDIR;
+const char *pcbhl_conf_sys_path = PCBSHAREDIR "/pcb-conf.lht";
+
 gdl_list_t pcb_element_list; /* initialized to 0 */
 gadl_list_t schematics, extra_gnetlist_arg_list, extra_gnetlist_list;
 
