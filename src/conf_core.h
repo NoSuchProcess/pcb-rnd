@@ -87,7 +87,6 @@ typedef struct {
 	const struct {                       /* rc */
 		CFT_REAL file_changed_interval;    /* how often to check if the file has changed on the disk (in seconds); 0 or negative means no check at all */
 		CFT_INTEGER backup_interval;       /* time between two backups in seconds; 0 means disabled (no backups) */
-		CFT_BOOLEAN hid_fallback;          /* if there is no explicitly specified HID (--gui) and the preferred GUI fails, automatically fall back on other HIDs, eventually running in batch mode */
 		CFT_STRING brave;                  /* brave mode flags: when non-empty, enable various experimental (unstable) features - useful for testers */
 		CFT_STRING font_command;           /* file name template; if not empty, run this command and read its output for loading the font; %f is the file name  */
 		CFT_STRING file_command;           /* file name template; if not empty, run this command and read its output for loading a pcb file; %f is the file name, %p is the conf setting rc.file_path */
@@ -109,8 +108,6 @@ typedef struct {
 		CFT_STRING action_string;          /* PCB Actions string to execute on startup */
 		CFT_STRING rat_path;
 		CFT_STRING rat_command;            /* file name template; if not empty, run this command and read its output for loading a rats; %f is the file name, %p is the rc.rat_path conf setting */
-
-		CFT_LIST preferred_gui;            /* if set, try GUI HIDs in this order when no GUI is explicitly selected */
 
 		CFT_STRING save_final_fallback_fmt;/* when a new file is created (by running pcb-rnd with the file name) there won't be a known format; pcb-rnd will guess from the file name (extension) but eventhat may fail. This format is the final fallback that'll be used if no other guessing mechanism worked. The user can override this by save as. */
 		CFT_STRING save_fp_fmt;            /* when saving a buffer element/subcircuit, prefer this format by default */

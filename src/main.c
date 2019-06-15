@@ -38,7 +38,6 @@ static const char *EXPERIMENTAL = NULL;
 #include <signal.h>
 #include <sys/stat.h>
 #include <time.h>								/* Seed for srand() */
-#include <locale.h>
 #include <libminuid/libminuid.h>
 
 #include "board.h"
@@ -324,11 +323,6 @@ void pcb_main_uninit(void)
 	pcb_log_uninit();
 }
 
-static int arg_match(const char *in, const char *shrt, const char *lng)
-{
-	return ((shrt != NULL) && (strcmp(in, shrt) == 0)) || ((lng != NULL) && (strcmp(in, lng) == 0));
-}
-
 /* action table number of columns for a single action */
 const int PCB_ACTION_ARGS_WIDTH = 5;
 const char *pcb_action_args[] = {
@@ -349,71 +343,6 @@ const char *pcb_action_args[] = {
 void print_pup_err(pup_err_stack_t *entry, char *string)
 {
 	pcb_message(PCB_MSG_ERROR, "puplug: %s\n", string);
-}
-
-/* parse arguments using the gui; if fails and fallback is enabled, try the next gui */
-int gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[])
-{
-	conf_listitem_t *apg = NULL;
-
-	if ((autopick_gui >= 0) && (conf_core.rc.hid_fallback)) { /* start from the GUI we are initializing first */
-		int n;
-		const char *g;
-
-		conf_loop_list_str(&conf_core.rc.preferred_gui, apg, g, n) {
-			if (n == autopick_gui)
-				break;
-		}
-	}
-
-	for(;;) {
-		int res;
-		if (pcb_gui->get_export_options != NULL)
-			pcb_gui->get_export_options(NULL);
-		res = pcb_gui->parse_arguments(hid_argc, hid_argv);
-		if (res == 0)
-			break; /* HID accepted, don't try anything else */
-		if (res < 0) {
-			pcb_message(PCB_MSG_ERROR, "Failed to initialize HID %s (unrecoverable, have to give up)\n", pcb_gui->name);
-			return -1;
-		}
-		fprintf(stderr, "Failed to initialize HID %s (recoverable)\n", pcb_gui->name);
-		if (apg == NULL) {
-			if (conf_core.rc.hid_fallback) {
-				ran_out_of_hids:;
-				pcb_message(PCB_MSG_ERROR, "Tried all available HIDs, all failed, giving up.\n");
-			}
-			else
-				pcb_message(PCB_MSG_ERROR, "Not trying any other hid as fallback because rc/hid_fallback is disabled.\n");
-			return -1;
-		}
-
-		/* falling back to the next HID */
-		do {
-			int n;
-			const char *g;
-
-			apg = conf_list_next_str(apg, &g, &n);
-			if (apg == NULL)
-				goto ran_out_of_hids;
-			pcb_gui = pcb_hid_find_gui(g);
-		} while(pcb_gui == NULL);
-	}
-	return 0;
-}
-
-void pcb_fix_locale(void)
-{
-	static const char *lcs[] = { "LANG", "LC_NUMERIC", "LC_ALL", NULL };
-	const char **lc;
-
-	/* some Xlib calls tend ot hardwire setenv() to "" or NULL so a simple
-	   setlocale() won't do the trick on GUI. Also set all related env var
-	   to "C" so a setlocale(LC_ALL, "") will also do the right thing. */
-	for(lc = lcs; *lc != NULL; lc++)
-		pcb_setenv(*lc, "C", 1);
-
-	setlocale(LC_ALL, "C");
 }
 
 #define we_are_exporting (pcb_gui->printer || pcb_gui->exporter)
@@ -490,7 +419,7 @@ int main(int argc, char *argv[])
 			}
 
 			for(cs = pcb_action_args; cs[2] != NULL; cs += PCB_ACTION_ARGS_WIDTH) {
-				if (arg_match(cmd, cs[0], cs[1])) {
+				if (pcb_main_arg_match(cmd, cs[0], cs[1])) {
 					if (main_action == NULL) {
 						main_action = cs[2];
 						main_action_hint = cs[4];
@@ -500,7 +429,7 @@ int main(int argc, char *argv[])
 					goto next_arg;
 				}
 			}
-			if (arg_match(cmd, "c", "-conf")) {
+			if (pcb_main_arg_match(cmd, "c", "-conf")) {
 				const char *why;
 				n++; /* eat up arg */
 				if (strncmp(arg, "plugins/", 8)  == 0) {
@@ -592,7 +521,7 @@ int main(int argc, char *argv[])
 			conf_listitem_t *i;
 
 			pcb_gui = NULL;
-			conf_loop_list_str(&conf_core.rc.preferred_gui, i, g, autopick_gui) {
+			conf_loop_list_str(&pcbhl_conf.rc.preferred_gui, i, g, autopick_gui) {
 				pcb_gui = pcb_hid_find_gui(g);
 				if (pcb_gui != NULL)
 					break;
@@ -630,7 +559,7 @@ int main(int argc, char *argv[])
 	if (PCB_HAVE_GUI_ATTR_DLG)
 		gui_support_plugins(1);
 
-	if (gui_parse_arguments(autopick_gui, &hid_argc, &hid_argv) != 0) {
+	if (pcb_gui_parse_arguments(autopick_gui, &hid_argc, &hid_argv) != 0) {
 		pcbhl_log_print_uninit_errs("Export plugin argument parse error");
 		pcb_main_uninit();
 		exit(1);

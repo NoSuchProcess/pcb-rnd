@@ -207,7 +207,7 @@ pcb_any_obj_t *pcb_idpath2obj(pcb_board_t *pcb, const pcb_idpath_t *path)
 			return NULL;
 		data = pcb->Data;
 	}
-	if ((path->data_addr >= 2) && (path->data_addr < PCB_MAX_BUFFER+2))
+	else if ((path->data_addr >= 2) && (path->data_addr < PCB_MAX_BUFFER+2))
 		data = pcb_buffers[path->data_addr - 2].Data;
 	else
 		return NULL;
