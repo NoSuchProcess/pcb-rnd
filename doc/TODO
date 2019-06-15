@@ -8,7 +8,6 @@
 + drc & size: doesn't update on mil/mm change in top win -> need a list of spinboxes to update on conf change [report: Ade]
 + BUG: double check parametric footprint edit window: bug_files/parametric.txt [report: Piotr]
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
-- CLEANUP: DAD close sequence: TODO("#51.*"): there are three sources to trigger hid_ctx (caller's free on modal, close button free and window destroy callback); requre the user to always call free last and add bits to track what frees are already called and free(ctx) last; test in 4 situations: (modal,nonmodal)*(close_buttons,wmclose) [report: Igor2]
 + FEATURE: grid size change should be undoable? -> no, see http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=undoability [report:Evan]
 - FEATURE: scripting: example script that tents/untents all/selected/object vias [report: keantoken]
 - FEATURE: edakrill script for growing line thickness keeping the line on one side (side alignment) [report: keantoken]
@@ -47,6 +46,7 @@
 + FEATURE: toolbar tooltips [report: Miloh]
 
 2. For later releases ===============================================================================
+- CLEANUP: DAD close sequence: TODO("#51.*"): there are three sources to trigger hid_ctx (caller's free on modal, close button free and window destroy callback); requre the user to always call free last and add bits to track what frees are already called and free(ctx) last; test in 4 situations: (modal,nonmodal)*(close_buttons,wmclose) [report: Igor2]
 - CLEANUP: rewrite parametric footprints to use tEDAx (or lihata)
 	- add "global" option for paste/mask tuning
 	- update fp2anim so the web page works again
