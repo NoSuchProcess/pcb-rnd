@@ -103,9 +103,19 @@ int pcbhl_main_args_add(pcbhl_main_args_t *ga, char *cmd, char *arg);
 int pcbhl_main_args_setup1(pcbhl_main_args_t *ga);
 int pcbhl_main_args_setup2(pcbhl_main_args_t *ga, int *exitval);
 
-/*int pcbhl_main_arg_match(const char *in, const char *shrt, const char *lng);*/
+/* if -x was specified, do the export and return 1 (the caller should
+   exit); else return 0 */
+int pcbhl_main_exported(pcbhl_main_args_t *ga, pcb_hidlib_t *hidlib, pcb_bool is_empty);
+
+/* launches the GUI or CLI; after it returns, if pcb_gui is not NULL, the user
+   has selected another GUI to switch to. */
+void pcbhl_mainloop_interactive(pcbhl_main_args_t *ga, pcb_hidlib_t *hidlib);
 
 /* parse arguments using the gui; if fails and fallback is enabled, try the next gui */
 int pcb_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[]);
+
+/* true if main() is called for printing or exporting (no interactive HID
+   shall be invoked) */
+#define pcbhl_main_exporting (pcb_gui->printer || pcb_gui->exporter)
 
 #endif

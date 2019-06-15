@@ -334,8 +334,6 @@ void print_pup_err(pup_err_stack_t *entry, char *string)
 	pcb_message(PCB_MSG_ERROR, "puplug: %s\n", string);
 }
 
-#define we_are_exporting (pcb_gui->printer || pcb_gui->exporter)
-
 int main(int argc, char *argv[])
 {
 	int n;
@@ -450,7 +448,7 @@ int main(int argc, char *argv[])
 		command_line_pcb = ga.hid_argv[0];
 	if (command_line_pcb) {
 		if (pcb_load_pcb(command_line_pcb, NULL, pcb_true, 0) != 0) {
-			if (we_are_exporting) {
+			if (pcbhl_main_exporting) {
 				pcb_message(PCB_MSG_ERROR, "Can not load file '%s' (specified on command line) for exporting or printing\n", command_line_pcb);
 				pcbhl_log_print_uninit_errs("Export load error");
 				exit(1);
@@ -476,13 +474,7 @@ int main(int argc, char *argv[])
 		pcb_parse_actions(conf_core.rc.action_string);
 	}
 
-	if (we_are_exporting) {
-		if (pcb_data_is_empty(PCB->Data))
-			pcb_message(PCB_MSG_WARNING, "Exporting empty board (nothing loaded or drawn).\n");
-		if (pcb_gui->set_hidlib != NULL)
-			pcb_gui->set_hidlib(&PCB->hidlib);
-		pcb_gui->do_export(&PCB->hidlib, 0);
-		pcbhl_log_print_uninit_errs("Exporting");
+	if (pcbhl_main_exported(&ga, &PCB->hidlib, pcb_data_is_empty(PCB->Data))) {
 		pcb_main_uninit();
 		pcbhl_main_args_uninit(&ga);
 		exit(0);
@@ -492,6 +484,8 @@ int main(int argc, char *argv[])
 
 	/* main loop */
 	do {
+		if (PCB_HAVE_GUI_ATTR_DLG)
+			gui_support_plugins(1);
 		if (EXPERIMENTAL != NULL) {
 			pcb_message(PCB_MSG_ERROR, "******************************** IMPORTANT ********************************\n");
 			pcb_message(PCB_MSG_ERROR, "This revision of pcb-rnd is experimental, unstable, do NOT attempt to use\n");
@@ -499,21 +493,10 @@ int main(int argc, char *argv[])
 			pcb_message(PCB_MSG_ERROR, "%s\n", EXPERIMENTAL);
 			pcb_message(PCB_MSG_ERROR, "******************************** IMPORTANT ********************************\n");
 		}
-		if (pcb_gui->set_hidlib != NULL)
-			pcb_gui->set_hidlib(&PCB->hidlib);
-		pcb_gui->do_export(&PCB->hidlib, 0);
-		pcb_gui = pcb_next_gui;
-		if (PCB_HAVE_GUI_ATTR_DLG)
-			gui_support_plugins(1);
-		pcb_next_gui = NULL;
-		if (pcb_gui != NULL) {
-			/* init the next GUI */
-			pcb_gui->parse_arguments(&ga.hid_argc, &ga.hid_argv);
-			if (pcb_gui->gui)
-				pcb_crosshair_init();
-			pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_ARROW);
-			pcb_event(&PCB->hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);
-		}
+		pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_ARROW);
+		pcb_event(&PCB->hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);
+		pcb_crosshair_init();
+		pcbhl_mainloop_interactive(&ga, &PCB->hidlib);
 	} while(pcb_gui != NULL);
 
 	pcb_main_uninit();
