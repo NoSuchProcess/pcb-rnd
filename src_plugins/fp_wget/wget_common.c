@@ -33,15 +33,16 @@
 #include "safe_fs.h"
 #include "globalconst.h"
 
+#include "../src_plugins/lib_wget/lib_wget.h"
+
+int fp_wget_offline = 0;
+
 enum {
 	FCTX_INVALID = 0,
 	FCTX_POPEN,
 	FCTX_FOPEN,
 	FCTX_NOP
 };
-
-const char *wget_cmd = "wget -U 'pcb-rnd-fp_wget'";
-int fp_wget_offline = 0;
 
 static int mkdirp(const char *dir)
 {
@@ -53,39 +54,13 @@ static int mkdirp(const char *dir)
 	return pcb_system(NULL, buff);
 }
 
-static char *pcb_wget_command(const char *url, const char *ofn, int update)
-{
-	const char *upds = update ? "-c" : "";
-	return pcb_strdup_printf("%s -O '%s' %s '%s'", wget_cmd, ofn, upds, url);
-}
-
-int pcb_wget_disk(const char *url, const char *ofn, int update)
-{
-	int res;
-	char *cmd = pcb_wget_command(url, ofn, update);
-
-	res = pcb_system(NULL, cmd);
-	free(cmd);
-	return res;
-}
-
-FILE *pcb_wget_popen(const char *url, int update)
-{
-	FILE *f;
-	char *cmd = pcb_wget_command(url, "-", update);
-
-	f = pcb_popen(NULL, cmd, "rb");
-	free(cmd);
-	return f;
-}
-
 int fp_wget_open(const char *url, const char *cache_path, FILE **f, int *fctx, fp_get_mode mode)
 {
 	char *cmd;
-	int wl = strlen(wget_cmd), ul = strlen(url), cl = strlen(cache_path);
+	int ul = strlen(url), cl = strlen(cache_path);
 	int update = (mode & FP_WGET_UPDATE);
 
-	cmd = malloc(wl+ul*2+cl+32);
+	cmd = malloc(ul*2+cl+32);
 	*fctx = FCTX_INVALID;
 
 	if (cache_path == NULL) {

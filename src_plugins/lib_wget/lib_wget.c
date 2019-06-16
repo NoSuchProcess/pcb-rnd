@@ -30,6 +30,35 @@
 
 #include "pcb-printf.h"
 #include "plugins.h"
+#include "safe_fs.h"
+
+const char *wget_cmd = "wget -U 'pcb-rnd-fp_wget'";
+
+static char *pcb_wget_command(const char *url, const char *ofn, int update)
+{
+	const char *upds = update ? "-c" : "";
+	return pcb_strdup_printf("%s -O '%s' %s '%s'", wget_cmd, ofn, upds, url);
+}
+
+int pcb_wget_disk(const char *url, const char *ofn, int update)
+{
+	int res;
+	char *cmd = pcb_wget_command(url, ofn, update);
+
+	res = pcb_system(NULL, cmd);
+	free(cmd);
+	return res;
+}
+
+FILE *pcb_wget_popen(const char *url, int update)
+{
+	FILE *f;
+	char *cmd = pcb_wget_command(url, "-", update);
+
+	f = pcb_popen(NULL, cmd, "rb");
+	free(cmd);
+	return f;
+}
 
 
 

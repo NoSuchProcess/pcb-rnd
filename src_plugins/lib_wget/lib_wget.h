@@ -24,3 +24,16 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#ifndef PCB_LIB_WGET
+#define PCB_LIB_WGET
+
+/* download the document at url to a local file ofn; if update is non-zero,
+   try to continue the download or update the file */
+int pcb_wget_disk(const char *url, const char *ofn, int update);
+
+
+/* download and stream the document at url; if update is non-zero,
+   try to continue the download or update the file */
+FILE *pcb_wget_popen(const char *url, int update);
+
+#endif
