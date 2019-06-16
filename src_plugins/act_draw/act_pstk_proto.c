@@ -195,9 +195,13 @@ static fgw_error_t pcb_act_PstkProtoEdit(fgw_arg_t *res, int argc, fgw_arg_t *ar
 				proto->tr.array[n].shape[dst_idx].comb = dlyc;
 			}
 			pcb_pstk_proto_update(proto);
-			break;
+			PCB_ACT_IRES(0);
+			return 0;
 
 		default:
 			return FGW_ERR_ARG_CONV;
 	}
+
+	PCB_ACT_IRES(-1);
+	return 0;
 }
