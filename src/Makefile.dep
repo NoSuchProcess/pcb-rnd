@@ -1924,7 +1924,8 @@
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h globalconst.h
+ ../src_3rd/genlist/gendlist.h globalconst.h \
+ ../src_plugins/lib_wget/lib_wget.h
 ../src_plugins/hid_batch/batch.o: ../src_plugins/hid_batch/batch.c \
  ../config.h board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
@@ -4870,7 +4871,14 @@
  ../src_3rd/genvector/genvector_undef.h unit.h plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h safe_fs.h \
+ global_typedefs.h pcb_bool.h conf.h pcb-printf.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
+ ../src_3rd/genvector/vtp0.h list_conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h
 ../src_plugins/loghid/hid-logger.o: ../src_plugins/loghid/hid-logger.c \
  ../config.h ../src_plugins/loghid/hid-logger.h hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
