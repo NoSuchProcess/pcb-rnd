@@ -510,6 +510,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				}
 				break;
 			case PCB_HATT_INTEGER:
+			case PCB_HATT_ENUM:
 				res->type = FGW_INT;
 				res->val.nat_int = dad->dlg[wid].default_val.int_value;
 				break;
