@@ -1,0 +1,10 @@
+put /local/pcb/mod {order}
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/order/order.o
+@]
+
+switch /local/pcb/order/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

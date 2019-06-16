@@ -91,6 +91,8 @@ include {../src_plugins/loghid/Plug.tmpasm}
 include {../src_plugins/millpath/Plug.tmpasm}
 include {../src_plugins/mincut/Plug.tmpasm}
 include {../src_plugins/oldactions/Plug.tmpasm}
+include {../src_plugins/order/Plug.tmpasm}
+include {../src_plugins/order_pcbway/Plug.tmpasm}
 include {../src_plugins/polycombine/Plug.tmpasm}
 include {../src_plugins/polystitch/Plug.tmpasm}
 include {../src_plugins/propedit/Plug.tmpasm}
