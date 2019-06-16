@@ -86,6 +86,7 @@ include {../src_plugins/lib_hid_pcbui/Plug.tmpasm}
 include {../src_plugins/lib_netmap/Plug.tmpasm}
 include {../src_plugins/lib_polyhelp/Plug.tmpasm}
 include {../src_plugins/lib_vfs/Plug.tmpasm}
+include {../src_plugins/lib_wget/Plug.tmpasm}
 include {../src_plugins/loghid/Plug.tmpasm}
 include {../src_plugins/millpath/Plug.tmpasm}
 include {../src_plugins/mincut/Plug.tmpasm}

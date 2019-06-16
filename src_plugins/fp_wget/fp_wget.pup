@@ -5,4 +5,5 @@ $state works
 $package cloud
 default buildin
 dep fp_fs
+dep lib_wget
 autoload 1
