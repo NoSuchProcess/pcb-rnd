@@ -5,7 +5,6 @@
 <tr><th>node name <th> type <td> flags <td> description
 <tr><td> file_changed_interval <td><a href="CFN_REAL.html"> real </a><td> 0 <td> how often to check if the file has changed on the disk (in seconds); 0 or negative means no check at all
 <tr><td> backup_interval <td><a href="CFN_INTEGER.html"> integer </a><td> 0 <td> time between two backups in seconds; 0 means disabled (no backups)
-<tr><td> hid_fallback <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> if there is no explicitly specified HID (--gui) and the preferred GUI fails, automatically fall back on other HIDs, eventually running in batch mode
 <tr><td> brave <td><a href="CFN_STRING.html"> string </a><td> 0 <td> brave mode flags: when non-empty, enable various experimental (unstable) features - useful for testers
 <tr><td> font_command <td><a href="CFN_STRING.html"> string </a><td> 0 <td> file name template; if not empty, run this command and read its output for loading the font; %f is the file name
 <tr><td> file_command <td><a href="CFN_STRING.html"> string </a><td> 0 <td> file name template; if not empty, run this command and read its output for loading a pcb file; %f is the file name, %p is the conf setting rc.file_path
@@ -24,7 +23,6 @@
 <tr><td> action_string <td><a href="CFN_STRING.html"> string </a><td> 0 <td> PCB Actions string to execute on startup
 <tr><td> rat_path <td><a href="CFN_STRING.html"> string </a><td> 0 <td> <rat_path>
 <tr><td> rat_command <td><a href="CFN_STRING.html"> string </a><td> 0 <td> file name template; if not empty, run this command and read its output for loading a rats; %f is the file name, %p is the rc.rat_path conf setting
-<tr><td> preferred_gui <td><a href="CFN_LIST.html"> list </a><td> 0 <td> if set, try GUI HIDs in this order when no GUI is explicitly selected
 <tr><td> save_final_fallback_fmt <td><a href="CFN_STRING.html"> string </a><td> 0 <td> when a new file is created (by running pcb-rnd with the file name) there won't be a known format; pcb-rnd will guess from the file name (extension) but eventhat may fail. This format is the final fallback that'll be used if no other guessing mechanism worked. The user can override this by save as.
 <tr><td> save_fp_fmt <td><a href="CFN_STRING.html"> string </a><td> 0 <td> when saving a buffer element/subcircuit, prefer this format by default
 <tr><td> have_regex <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> whether we have regex compiled in
@@ -35,4 +33,6 @@
 <tr><td> cli_backend <td><a href="CFN_STRING.html"> string </a><td> 0 <td> [hidlib] command parser action
 <tr><td> export_basename <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> [hidlib] if an exported file contains the source file name, remove path from it, keeping the basename only
 <tr><td> menu_file <td><a href="CFN_STRING.html"> string </a><td> 0 <td> [hidlib] where to load the default menu file from. If empty/unset, fall back to the legacy 'per hid ow menu file' setup. If contains slash, take it as a full path, if no slash, do a normal menu search for pcb-menu-NAME.lht
+<tr><td> preferred_gui <td><a href="CFN_LIST.html"> list </a><td> 0 <td> [hidlib] if set, try GUI HIDs in this order when no GUI is explicitly selected
+<tr><td> hid_fallback <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> [hidlib] if there is no explicitly specified HID (--gui) and the preferred GUI fails, automatically fall back on other HIDs, eventually running in batch mode
 </table></body></html>
