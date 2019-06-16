@@ -31,6 +31,7 @@
 #include "wget_common.h"
 #include "compat_misc.h"
 #include "safe_fs.h"
+#include "globalconst.h"
 
 enum {
 	FCTX_INVALID = 0,
@@ -44,9 +45,11 @@ int fp_wget_offline = 0;
 
 static int mkdirp(const char *dir)
 {
-/* TODO */
-	char buff[8192];
-	sprintf(buff, "mkdir -p '%s'", dir);
+	int len;
+	char buff[PCB_PATH_MAX+32];
+	len = pcb_snprintf(buff, sizeof(buff), "mkdir -p '%s'", dir);
+	if (len >= sizeof(buff)-1)
+		return -1;
 	return pcb_system(NULL, buff);
 }
 
