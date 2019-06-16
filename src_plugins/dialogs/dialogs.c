@@ -42,16 +42,15 @@ extern const conf_dialogs_t dialogs_conf;
 /* include them all for static inlines */
 #include "dlg_test.c"
 #include "dlg_about.h"
-#include "dlg_comm_m.h"
 #include "dlg_export.h"
 #include "dlg_flag_edit.h"
 #include "dlg_fontsel.h"
+#include "dlg_infobar.h"
 #include "dlg_layer_binding.h"
 #include "dlg_layer_flags.h"
 #include "dlg_lib_pstk.h"
 #include "dlg_library.h"
 #include "dlg_loadsave.h"
-#include "dlg_log.h"
 #include "dlg_padstack.h"
 #include "dlg_pinout.c"
 #include "dlg_search.h"
@@ -62,10 +61,7 @@ extern const conf_dialogs_t dialogs_conf;
 
 #include "dlg_view.h"
 #include "dlg_pref.h"
-#include "act_dad.h"
 
-
-static const char pcb_acth_gui[] = "Intenal: GUI frontend action. Do not use directly.";
 
 pcb_action_t dialogs_action_list[] = {
 	{"dlg_test", pcb_act_dlg_test, dlg_test_help, dlg_test_syntax},
@@ -83,7 +79,6 @@ pcb_action_t dialogs_action_list[] = {
 	{"UndoDialog", pcb_act_UndoDialog, pcb_acth_UndoDialog, pcb_acts_UndoDialog},
 	{"NetlistDialog", pcb_act_NetlistDialog, pcb_acth_NetlistDialog, pcb_acts_NetlistDialog},
 	{"ManagePlugins", pcb_act_ManagePlugins, pcb_acth_ManagePlugins, pcb_acts_ManagePlugins},
-	{"dad", pcb_act_dad, pcb_acth_dad, pcb_acts_dad},
 	{"DrcDialog", pcb_act_DrcDialog, pcb_acth_DrcDialog, pcb_acts_DrcDialog},
 	{"IOIncompatListDialog", pcb_act_IOIncompatListDialog, pcb_acth_IOIncompatListDialog, pcb_acts_IOIncompatListDialog},
 	{"ViewList", pcb_act_ViewList, pcb_acth_ViewList, pcb_acts_ViewList},
@@ -92,14 +87,9 @@ pcb_action_t dialogs_action_list[] = {
 	{"Load", pcb_act_Load, pcb_acth_Load, pcb_acts_Load},
 	{"Save", pcb_act_Save, pcb_acth_Save, pcb_acts_Save},
 	{"ImportGUI", pcb_act_ImportGUI, pcb_acth_ImportGUI, pcb_acts_ImportGUI},
-	{"LogDialog", pcb_act_LogDialog, pcb_acth_LogDialog, pcb_acts_LogDialog},
 	{"LibraryDialog", pcb_act_LibraryDialog, pcb_acth_LibraryDialog, pcb_acts_LibraryDialog},
 	{"SearchDialog", pcb_act_SearchDialog, pcb_acth_SearchDialog, pcb_acts_SearchDialog},
-	{"InfoBarFileChanged", pcb_act_InfoBarFileChanged, pcb_acth_InfoBarFileChanged, pcb_acts_InfoBarFileChanged},
-
-	{"gui_PromptFor", pcb_act_gui_PromptFor, pcb_acth_gui, NULL},
-	{"gui_MessageBox", pcb_act_gui_MessageBox, pcb_acth_gui, NULL},
-	{"gui_FallbackColorPick", pcb_act_gui_FallbackColorPick, pcb_acth_gui, NULL}
+	{"InfoBarFileChanged", pcb_act_InfoBarFileChanged, pcb_acth_InfoBarFileChanged, pcb_acts_InfoBarFileChanged}
 };
 
 static const char *dialogs_cookie = "dialogs plugin";
@@ -115,12 +105,10 @@ void pplg_uninit_dialogs(void)
 	pcb_dlg_undo_uninit();
 	pcb_dlg_pstklib_uninit();
 	pcb_dlg_pref_uninit();
-	pcb_act_dad_uninit();
 	pcb_remove_actions_by_cookie(dialogs_cookie);
 	pcb_view_dlg_uninit();
 	pcb_dlg_fontsel_uninit();
 	conf_unreg_fields("plugins/dialogs/");
-	pcb_dlg_log_uninit();
 }
 
 #include "dolists.h"
@@ -129,9 +117,7 @@ int pplg_init_dialogs(void)
 {
 	PCB_API_CHK_VER;
 
-	pcb_dlg_log_init();
 	PCB_REGISTER_ACTIONS(dialogs_action_list, dialogs_cookie)
-	pcb_act_dad_init();
 	pcb_dlg_pref_init();
 	pcb_dlg_pstklib_init();
 	pcb_dlg_undo_init();

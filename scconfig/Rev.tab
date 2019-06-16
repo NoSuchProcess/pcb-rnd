@@ -1,3 +1,4 @@
+26253	configure	hidlib: move hidlib-common dialogs from the dialogs plugin to lib_hid_common so other hidlib apps can benefit from them
 26000	configure	hildib: separate polygon generator funtions so they can be reused by hidlib apps
 25853	configure	new plugin for data access actions
 25789	configure	centralize the unit selector widget in a DAD compound

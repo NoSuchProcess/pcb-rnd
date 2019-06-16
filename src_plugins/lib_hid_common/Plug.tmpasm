@@ -6,6 +6,10 @@ put /local/pcb/mod/OBJS [@
   $(PLUGDIR)/lib_hid_common/cli_history.o
   $(PLUGDIR)/lib_hid_common/place.o
   $(PLUGDIR)/lib_hid_common/menu_helper.o
+  $(PLUGDIR)/lib_hid_common/act_dad.o
+  $(PLUGDIR)/lib_hid_common/dlg_comm_m.o
+  $(PLUGDIR)/lib_hid_common/dlg_log.o
+  $(PLUGDIR)/lib_hid_common/xpm.o
 @]
 
 # dialog config is here because of hidlib: each hidlib user shall have its

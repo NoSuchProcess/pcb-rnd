@@ -1,23 +1,20 @@
 put /local/pcb/mod {dialogs}
 put /local/pcb/mod/OBJS [@
  $(PLUGDIR)/dialogs/dialogs.o
- $(PLUGDIR)/dialogs/act_dad.o
  $(PLUGDIR)/dialogs/dlg_about.o
- $(PLUGDIR)/dialogs/dlg_comm_m.o
  $(PLUGDIR)/dialogs/dlg_export.o
  $(PLUGDIR)/dialogs/dlg_flag_edit.o
  $(PLUGDIR)/dialogs/dlg_fontsel.o
  $(PLUGDIR)/dialogs/dlg_layer_binding.o
  $(PLUGDIR)/dialogs/dlg_layer_flags.o
+ $(PLUGDIR)/dialogs/dlg_infobar.o
  $(PLUGDIR)/dialogs/dlg_lib_pstk.o
  $(PLUGDIR)/dialogs/dlg_library.o
  $(PLUGDIR)/dialogs/dlg_loadsave.o
- $(PLUGDIR)/dialogs/dlg_log.o
  $(PLUGDIR)/dialogs/dlg_padstack.o
  $(PLUGDIR)/dialogs/dlg_pref.o
  $(PLUGDIR)/dialogs/dlg_search.o
  $(PLUGDIR)/dialogs/dlg_view.o
- $(PLUGDIR)/dialogs/xpm.o
 @]
 
 switch /local/pcb/dialogs/controls

@@ -31,6 +31,7 @@
 #include "conf_hid.h"
 #include "event.h"
 
+#include "actions.h"
 #include "grid_menu.h"
 #include "cli_history.h"
 #include "lead_user.h"
@@ -38,6 +39,9 @@
 
 #include "lib_hid_common.h"
 #include "dialogs_conf.h"
+#include "dlg_comm_m.h"
+#include "dlg_log.h"
+#include "act_dad.h"
 #include "../src_plugins/lib_hid_common/conf_internal.c"
 
 const conf_dialogs_t dialogs_conf;
@@ -54,6 +58,21 @@ static void grid_unit_chg_ev(conf_native_t *cfg, int arr_idx)
 	pcb_dad_spin_update_global_coords();
 }
 
+static const char pcb_acth_gui[] = "Intenal: GUI frontend action. Do not use directly.";
+
+pcb_action_t hid_common_action_list[] = {
+	{"dad", pcb_act_dad, pcb_acth_dad, pcb_acts_dad},
+	{"LogDialog", pcb_act_LogDialog, pcb_acth_LogDialog, pcb_acts_LogDialog},
+	{"gui_PromptFor", pcb_act_gui_PromptFor, pcb_acth_gui, NULL},
+	{"gui_MessageBox", pcb_act_gui_MessageBox, pcb_acth_gui, NULL},
+	{"gui_FallbackColorPick", pcb_act_gui_FallbackColorPick, pcb_acth_gui, NULL},
+};
+
+static const char *hid_common_cookie = "lib_hid_common plugin";
+
+PCB_REGISTER_ACTIONS(hid_common_action_list, hid_common_cookie)
+
+
 int pplg_check_ver_lib_hid_common(int ver_needed) { return 0; }
 
 static conf_hid_id_t conf_id;
@@ -68,8 +87,12 @@ void pplg_uninit_lib_hid_common(void)
 	pcb_event_unbind_allcookie(wplc_cookie);
 	conf_hid_unreg(grid_cookie);
 	pcb_dialog_place_uninit();
+	pcb_act_dad_uninit();
 	conf_unreg_fields("plugins/lib_hid_common/");
+	pcb_dlg_log_uninit();
 }
+
+#include "dolists.h"
 
 int pplg_init_lib_hid_common(void)
 {
@@ -81,6 +104,10 @@ int pplg_init_lib_hid_common(void)
 	conf_reg_field(dialogs_conf, field,isarray,type_name,cpath,cname,desc,flags);
 /*#include "lib_hid_common_conf_fields.h"*/
 #include "dialogs_conf_fields.h"
+
+	pcb_dlg_log_init();
+	PCB_REGISTER_ACTIONS(hid_common_action_list, hid_common_cookie)
+	pcb_act_dad_init();
 
 	conf_reg_file(DIALOGS_CONF_FN, dialogs_conf_internal);
 

@@ -438,7 +438,7 @@
  ../src_3rd/genvector/gds_char.h ../src_3rd/libfungw/fungw.h \
  ../src_3rd/genht/htpp.h compat_misc.h hid_dad.h compat_misc.h \
  hid_attrib.h pcb-printf.h hid_dad_spin.h hid_dad_tree.h hid_dad.h \
- error.h ../src_plugins/dialogs/act_dad.h
+ error.h ../src_plugins/lib_hid_common/act_dad.h
 ../src_plugins/dialogs/dialogs.o: ../src_plugins/dialogs/dialogs.c \
  ../config.h hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
@@ -463,7 +463,7 @@
  conf.h ../src_plugins/dialogs/dlg_test.c board.h vtroutestyle.h \
  layer_grp.h rats_patch.h board.h hidlib.h obj_text.h hid_dad_tree.h \
  hid_dad.h ../src_3rd/genht/hash.h hid_dad_spin.h \
- ../src_plugins/dialogs/dlg_about.h ../src_plugins/dialogs/dlg_comm_m.h \
+ ../src_plugins/dialogs/dlg_about.h ../src_plugins/lib_hid_common/dlg_comm_m.h \
  ../src_plugins/dialogs/dlg_export.h \
  ../src_plugins/dialogs/dlg_flag_edit.h \
  ../src_plugins/dialogs/dlg_fontsel.h \
@@ -471,7 +471,7 @@
  ../src_plugins/dialogs/dlg_layer_flags.h \
  ../src_plugins/dialogs/dlg_lib_pstk.h \
  ../src_plugins/dialogs/dlg_library.h \
- ../src_plugins/dialogs/dlg_loadsave.h ../src_plugins/dialogs/dlg_log.h \
+ ../src_plugins/dialogs/dlg_loadsave.h ../src_plugins/lib_hid_common/dlg_log.h \
  ../src_plugins/dialogs/dlg_padstack.h obj_pstk.h obj_pstk_shape.h \
  polygon.h rtree.h ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h \
  vtpadstack_t.h ../src_plugins/dialogs/dlg_pinout.c build_run.h \
@@ -491,7 +491,7 @@
  ../src_plugins/dialogs/dlg_pref_lib.h \
  ../src_plugins/dialogs/dlg_pref_color.h \
  ../src_plugins/dialogs/dlg_pref_win.h \
- ../src_plugins/dialogs/dlg_pref_conf.h ../src_plugins/dialogs/act_dad.h \
+ ../src_plugins/dialogs/dlg_pref_conf.h ../src_plugins/lib_hid_common/act_dad.h \
  dolists.h
 ../src_plugins/dialogs/dlg_about.o: ../src_plugins/dialogs/dlg_about.c \
  ../config.h ../src_3rd/genvector/gds_char.h \
@@ -525,7 +525,7 @@
  ../src_3rd/genht/htpp.h board.h vtroutestyle.h layer_grp.h rats_patch.h \
  board.h hidlib.h hid_dad.h compat_misc.h hid_attrib.h pcb-printf.h \
  hid_dad_spin.h ../src_plugins/dialogs/xpm.h \
- ../src_plugins/dialogs/dlg_comm_m.h plug_io.h conf.h \
+ ../src_plugins/lib_hid_common/dlg_comm_m.h plug_io.h conf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h
 ../src_plugins/dialogs/dlg_export.o: ../src_plugins/dialogs/dlg_export.c \
  ../config.h actions.h hid.h ../src_3rd/liblihata/dom.h \
@@ -731,7 +731,7 @@
  ../src_3rd/genht/htpp.h conf_hid.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  hid_dad.h compat_misc.h hid_attrib.h hid_dad_spin.h event.h hidlib.h \
- error.h ../src_plugins/dialogs/dlg_log.h
+ error.h ../src_plugins/lib_hid_common/dlg_log.h
 ../src_plugins/dialogs/dlg_padstack.o: \
  ../src_plugins/dialogs/dlg_padstack.c ../config.h actions.h hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
