@@ -53,26 +53,46 @@ static int mkdirp(const char *dir)
 	return pcb_system(NULL, buff);
 }
 
+static char *pcb_wget_command(const char *url, const char *ofn, int update)
+{
+	const char *upds = update ? "-c" : "";
+	return pcb_strdup_printf("%s -O '%s' %s '%s'", wget_cmd, ofn, upds, url);
+}
+
+int pcb_wget_disk(const char *url, const char *ofn, int update)
+{
+	int res;
+	char *cmd = pcb_wget_command(url, ofn, update);
+
+	res = pcb_system(NULL, cmd);
+	free(cmd);
+	return res;
+}
+
+FILE *pcb_wget_popen(const char *url, int update)
+{
+	FILE *f;
+	char *cmd = pcb_wget_command(url, "-", update);
+
+	f = pcb_popen(NULL, cmd, "rb");
+	free(cmd);
+	return f;
+}
+
 int fp_wget_open(const char *url, const char *cache_path, FILE **f, int *fctx, fp_get_mode mode)
 {
 	char *cmd;
-	const char *upds;
 	int wl = strlen(wget_cmd), ul = strlen(url), cl = strlen(cache_path);
-	cmd = malloc(wl+ul*2+cl+32);
+	int update = (mode & FP_WGET_UPDATE);
 
+	cmd = malloc(wl+ul*2+cl+32);
 	*fctx = FCTX_INVALID;
 
-	if (mode & FP_WGET_UPDATE)
-		upds = "-c";
-	else
-		upds = "";
-
 	if (cache_path == NULL) {
-		sprintf(cmd, "%s -O - %s '%s'", wget_cmd, upds, url);
 		if (f == NULL)
 			goto error;
 		if (!fp_wget_offline)
-			*f = pcb_popen(NULL, cmd, "r");
+			*f = pcb_wget_popen(url, update);
 		if (*f == NULL)
 			goto error;
 		*fctx = FCTX_POPEN;
@@ -98,12 +118,11 @@ int fp_wget_open(const char *url, const char *cache_path, FILE **f, int *fctx, f
 
 		if ((!fp_wget_offline) && !(mode & FP_WGET_OFFLINE)) {
 			int res;
-			sprintf(cmd, "%s -O '%s/%s' %s '%s'", wget_cmd, cache_path, cdir, upds, url);
-			res = pcb_system(NULL, cmd);
+			sprintf(cmd, "%s/%s", cache_path, cdir);
+			res = pcb_wget_disk(url, cmd, update);
 /*			pcb_trace("------res=%d\n", res); */
 			if ((res != 0) && (res != 768)) { /* some versions of wget will return error on -c if the file doesn't need update; try to guess whether it's really an error */
 				/* when wget fails, a 0-long file might be left there - remove it so it won't block new downloads */
-				sprintf(cmd, "%s/%s", cache_path, cdir);
 				pcb_remove(NULL, cmd);
 			}
 		}
