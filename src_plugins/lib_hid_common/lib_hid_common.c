@@ -87,6 +87,7 @@ void pplg_uninit_lib_hid_common(void)
 	pcb_event_unbind_allcookie(wplc_cookie);
 	conf_hid_unreg(grid_cookie);
 	pcb_dialog_place_uninit();
+	pcb_remove_actions_by_cookie(hid_common_cookie);
 	pcb_act_dad_uninit();
 	conf_unreg_fields("plugins/lib_hid_common/");
 	pcb_dlg_log_uninit();
