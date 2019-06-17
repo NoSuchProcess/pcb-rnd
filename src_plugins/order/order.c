@@ -32,10 +32,13 @@
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "hid_dad.h"
+#include "event.h"
 
 #include "order.h"
 
 static const char *order_cookie = "order plugin";
+
+#define ANCH "@feature_plugins"
 
 vtp0_t pcb_order_imps;
 
@@ -71,12 +74,36 @@ static pcb_action_t order_action_list[] = {
 
 PCB_REGISTER_ACTIONS(order_action_list, order_cookie)
 
+static void order_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, char *path)
+{
+	char *end = path + strlen(path);
+	pcb_menu_prop_t props;
+	char act[256];
+
+	memset(&props, 0,sizeof(props));
+	props.action = act;
+	props.cookie = ANCH;
+
+	/* prepare for appending the strings at the end of the path, "under" the anchor */
+	*end = '/';
+	end++;
+
+	strcpy(end, "Order PCB"); strcpy(act, "OrderPCB(gui)");
+	pcb_gui->create_menu(path, &props);
+}
+
+
+static void order_menu_init(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	pcb_hid_cfg_map_anchor_menus(ANCH, order_install_menu, NULL);
+}
 
 int pplg_check_ver_order(int ver_needed) { return 0; }
 
 void pplg_uninit_order(void)
 {
 	pcb_remove_actions_by_cookie(order_cookie);
+	pcb_event_unbind_allcookie(order_cookie);
 }
 
 #include "dolists.h"
@@ -85,5 +112,6 @@ int pplg_init_order(void)
 {
 	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(order_action_list, order_cookie)
+	pcb_event_bind(PCB_EVENT_GUI_INIT, order_menu_init, NULL, order_cookie);
 	return 0;
 }
