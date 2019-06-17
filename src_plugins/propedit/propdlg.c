@@ -216,6 +216,7 @@ static void prop_valedit_update(propdlg_t *ctx, pcb_props_t *p, pcb_propval_t *p
 		case PCB_PROPT_BOOL:
 			if (!ctx->dlg[ctx->wabs[p->type]].default_val.int_value)
 				return;
+		default: break;
 	}
 
 
