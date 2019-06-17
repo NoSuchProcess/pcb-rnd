@@ -509,7 +509,8 @@ static void set_pstk(pcb_propset_ctx_t *st, pcb_pstk_t *ps)
 
 	if (set_common(st, (pcb_any_obj_t *)ps)) return;
 
-	ca = i = (st->c != 0);
+	ca = st->c;
+	i = (st->c != 0);
 	proto = pcb_pstk_get_proto(ps);
 
 	if (strncmp(st->name, "p/padstack/", 11) == 0) {
@@ -529,7 +530,7 @@ static void set_pstk(pcb_propset_ctx_t *st, pcb_pstk_t *ps)
 		if (st->c_valid && (strcmp(pn, "smirror") == 0) &&
 		    (pcb_pstk_change_instance(ps, NULL, NULL, NULL, NULL, &i) == 0)) DONE;
 		if (st->c_valid && (strcmp(pn, "proto") == 0) &&
-		    (pcb_pstk_change_instance(ps, &st->c, NULL, NULL, NULL, NULL) == 0)) DONE;
+		    (pcb_pstk_change_instance(ps, &ca, NULL, NULL, NULL, NULL) == 0)) DONE;
 		if (st->c_valid && (strcmp(pn, "hole") == 0) &&
 		    (pcb_pstk_proto_change_hole(proto, NULL, &st->c, NULL, NULL) == 0)) DONE;
 		if (st->c_valid && (strcmp(pn, "plated") == 0) &&
