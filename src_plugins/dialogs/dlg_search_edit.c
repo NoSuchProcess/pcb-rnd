@@ -318,13 +318,13 @@ static int srchedit_window(search_expr_t *expr)
 			PCB_DAD_INTEGER(ctx->dlg, "");
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_HIDE);
 				ctx->wright[RIGHT_INT] = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_MINMAX(ctx->dlg, -(1UL<<30), (1UL<<30));
+				PCB_DAD_MINMAX(ctx->dlg, -(1L<<30), (1L<<30));
 				PCB_DAD_CHANGE_CB(ctx->dlg, srchexpr_right_cb);
 
 			PCB_DAD_REAL(ctx->dlg, "");
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_HIDE);
 				ctx->wright[RIGHT_DOUBLE] = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_MINMAX(ctx->dlg, -(1UL<<31), (1UL<<31));
+				PCB_DAD_MINMAX(ctx->dlg, -(1L<<30), (1L<<30));
 				PCB_DAD_CHANGE_CB(ctx->dlg, srchexpr_right_cb);
 
 			PCB_DAD_COORD(ctx->dlg, "");
