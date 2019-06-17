@@ -111,7 +111,7 @@ int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 		pe->selection = 1;
 	else {
 		char *end;
-		pcb_idpath_t *idp = strtol(cmd, &end, 0);
+		pcb_idpath_t *idp = (void *)strtol(cmd, &end, 0);
 		if ((*end == '\0') && (idp != NULL) && (htpp_get(&pcb_fgw.ptr_tbl, idp) == PCB_PTR_DOMAIN_IDPATH)) {
 			pcb_idpath_list_append(&pe->objs, idp);
 			return 0;
