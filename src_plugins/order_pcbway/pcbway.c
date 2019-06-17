@@ -30,7 +30,13 @@
 
 #include "pcb-printf.h"
 #include "plugins.h"
+#include "../src_plugins/order/order.h"
 
+static pcb_order_imp_t pcbway = {
+	"PCBWay",
+	NULL,
+	NULL
+};
 
 int pplg_check_ver_order_pcbway(int ver_needed) { return 0; }
 
@@ -41,5 +47,6 @@ void pplg_uninit_order_pcbway(void)
 int pplg_init_order_pcbway(void)
 {
 	PCB_API_CHK_VER;
+	pcb_order_reg(&pcbway);
 	return 0;
 }
