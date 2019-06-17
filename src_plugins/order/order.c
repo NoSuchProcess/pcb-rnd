@@ -82,6 +82,8 @@ static void order_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, 
 
 	memset(&props, 0,sizeof(props));
 	props.action = act;
+	props.tip = "Order your PCB from a fab\nusing a dialog box";
+	props.accel = "<Key>f;<Key>x;<Key>o";
 	props.cookie = ANCH;
 
 	/* prepare for appending the strings at the end of the path, "under" the anchor */
