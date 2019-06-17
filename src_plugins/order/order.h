@@ -27,11 +27,18 @@
 #ifndef PCB_ORDER_H
 #define PCB_ORDER_H
 
+#include <genvector/vtp0.h>
+
 /* order implementation - registered by an order plugin */
 typedef struct pcb_order_imp_s pcb_order_imp_t;
 struct pcb_order_imp_s {
+	const char *name;
 	int (*enabled)(pcb_order_imp_t *imp);          /* returns 1 if the plugin is enabled */
 	void (*populate_dad)(pcb_order_imp_t *imp);
 };
+
+extern vtp0_t pcb_order_imps; /* of (pcb_order_imp_t *) items */
+
+void pcb_order_reg(const pcb_order_imp_t *imp);
 
 #endif

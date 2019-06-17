@@ -31,14 +31,36 @@
 #include "actions.h"
 #include "pcb-printf.h"
 #include "plugins.h"
+#include "hid_dad.h"
+
+#include "order.h"
 
 static const char *order_cookie = "order plugin";
 
-static const char pcb_acts_OrderPCB[] = "orderPCB()";
+vtp0_t pcb_order_imps;
+
+void pcb_order_reg(const pcb_order_imp_t *imp)
+{
+	vtp0_append(&pcb_order_imps, (void *)imp);
+}
+
+
+#include "order_dlg.c"
+
+static const char pcb_acts_OrderPCB[] = "orderPCB([gui])";
 static const char pcb_acth_OrderPCB[] = "Order the board from a fab";
 fgw_error_t pcb_act_OrderPCB(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_message(PCB_MSG_ERROR, "OrderPCB() not yet implemented\n");
+	const char *cmd = "gui";
+
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, OrderPCB, cmd = argv[1].val.str);
+
+	if (strcmp(cmd, "gui") == 0) {
+		PCB_ACT_IRES(order_dialog());
+		return 0;
+	}
+	
+	pcb_message(PCB_MSG_ERROR, "CLI version of OrderPCB() not yet implemented\n");
 	PCB_ACT_IRES(-1);
 	return 0;
 }
