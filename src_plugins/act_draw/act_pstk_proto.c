@@ -89,7 +89,7 @@ static fgw_error_t pcb_act_PstkProtoTmp(fgw_arg_t *res, int argc, fgw_arg_t *arg
 					PCB_ACT_IRES(-1);
 					return 0;
 				}
-				src = pcb_pstk_get_proto(obj);
+				src = pcb_pstk_get_proto((pcb_pstk_t *)obj);
 			}
 			else {
 				PCB_ACT_CONVARG(2+ao, FGW_DATA, PstkProtoTmp, data = fgw_data(&argv[2+ao]));
