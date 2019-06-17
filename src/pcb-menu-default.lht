@@ -536,6 +536,12 @@ ha:{
 	
 		ha:Plugins {
 			li:submenu {
+				ha:feature plugins   = {
+					# submenu dedicated for feature plugins to register their menu items
+					li:submenu {
+						@feature_plugins
+					}
+				}
 				ha:script            = {
 					# submenu dedicated for user scripts to register their menu items
 					li:submenu {
