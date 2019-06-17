@@ -27,4 +27,14 @@ pcb_polyarea_t *pcb_poly_from_arc(pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t wi
    Free's main_contour. */
 void pcb_polyarea_no_holes_dicer(pcb_polyarea_t *main_contour, pcb_coord_t clipX1, pcb_coord_t clipY1, pcb_coord_t clipX2, pcb_coord_t clipY2, void (*emit)(pcb_pline_t *, void *), void *user_data);
 
+/* Add vertices in a fractional-circle starting from v centered at X, Y and
+   going counter-clockwise. Does not include the first point. Last argument is:
+   1 for a full circle
+   2 for a half circle
+   4 for a quarter circle */
+void pcb_poly_frac_circle(pcb_pline_t * c, pcb_coord_t X, pcb_coord_t Y, pcb_vector_t v, int range);
+
+/* same but adds the last vertex */
+void pcb_poly_frac_circle_end(pcb_pline_t * c, pcb_coord_t X, pcb_coord_t Y, pcb_vector_t v, int range);
+
 #endif
