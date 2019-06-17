@@ -90,7 +90,7 @@ do { \
 		PCB_DAD_ALLOC_RESULT(table); \
 	table ## _ret_override = calloc(sizeof(pcb_dad_retovr_t), 1); \
 	table ## _append_lock = 1; \
-	table ## _hid_ctx = pcb_gui->attr_dlg_new(id, table, table ## _len, table ## _result, title, caller_data, modal, ev_cb, table ## _defx, table ## _defy); \
+	table ## _hid_ctx = pcb_gui->attr_dlg_new(id, table, table ## _len, table ## _result, title, caller_data, modal, ev_cb, table ## _defx, table ## _defy, table ## _minx, table ## _miny); \
 } while(0)
 
 /* Sets the default window size (that is only a hint) - NOTE: must be called

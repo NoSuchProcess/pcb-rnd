@@ -396,7 +396,7 @@ struct pcb_hid_s {
 	   for window placement) and is strdup'd. If defx and defy are larger than 0,
 	   they are hints for the default (starting) window size - can be overridden
 	   by window placement. Returns opaque hid_ctx. */
-	void *(*attr_dlg_new)(const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy);
+	void *(*attr_dlg_new)(const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
 	int (*attr_dlg_run)(void *hid_ctx);
 	void (*attr_dlg_raise)(void *hid_ctx); /* raise the window to top */
 	void (*attr_dlg_free)(void *hid_ctx); /* results_ is avalibale after this call */
@@ -613,7 +613,7 @@ int pcb_hid_progress(long so_far, long total, const char *message);
 /* non-zero if DAD dialogs are available currently */
 #define PCB_HAVE_GUI_ATTR_DLG \
 	((pcb_gui != NULL) && (pcb_gui->gui) && (pcb_gui->attr_dlg_new != NULL) && (pcb_gui->attr_dlg_new != pcb_nogui_attr_dlg_new))
-void *pcb_nogui_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy);
+void *pcb_nogui_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
 
 int pcb_hid_dock_enter(pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id);
 void pcb_hid_dock_leave(pcb_hid_dad_subdialog_t *sub);

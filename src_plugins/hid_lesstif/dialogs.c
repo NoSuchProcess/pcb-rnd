@@ -585,7 +585,7 @@ static void ltf_initial_wstates(lesstif_attr_dlg_t *ctx)
 			XtUnmanageChild(ctx->wltop[n]);
 }
 
-void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy)
+void *lesstif_attr_dlg_new(const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
 	Widget topform, main_tbl;
 	int i;
