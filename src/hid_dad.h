@@ -122,7 +122,7 @@ do { \
 	table ## _ret_override->dont_free++; \
 	table ## _ret_override->valid = 0; \
 	table ## _append_lock = 1; \
-	__ok__ = pcb_attribute_dialog_(id,table, table ## _len, table ## _result, title, caller_data, (void **)&(table ## _ret_override), table ## _defx, table ## _defy, &table ## _hid_ctx); \
+	__ok__ = pcb_attribute_dialog_(id,table, table ## _len, table ## _result, title, caller_data, (void **)&(table ## _ret_override), table ## _defx, table ## _defy, table ## _minx, table ## _miny, &table ## _hid_ctx); \
 	failed = (__ok__ == 0) ? -1 : 0; \
 	if (table ## _ret_override->valid) \
 		failed = table ## _ret_override->value; \
