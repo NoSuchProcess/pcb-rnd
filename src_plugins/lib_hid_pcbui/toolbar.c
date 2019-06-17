@@ -67,12 +67,12 @@ static void toolbar_pcb2dlg()
 
 static void toolbar_select_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	int tid;
+	ptrdiff_t tid;
 
 	if (toolbar.lock)
 		return;
 
-	tid = (int)attr->user_data;
+	tid = (ptrdiff_t)attr->user_data;
 	pcb_tool_select_by_id(&PCB->hidlib, tid);
 }
 
@@ -93,7 +93,7 @@ static void toolbar_create_tool(pcb_toolid_t tid, pcb_tool_t *tool, const char *
 	if (help != NULL)
 		PCB_DAD_HELP(toolbar.sub.dlg, help);
 	wid = PCB_DAD_CURRENT(toolbar.sub.dlg);
-	toolbar.sub.dlg[wid].user_data = (void *)tid;
+	toolbar.sub.dlg[wid].user_data = (void *)(ptrdiff_t)tid;
 	vti0_set(&toolbar.tid2wid, tid, wid);
 }
 
