@@ -28,18 +28,40 @@
 
 #include <stdio.h>
 
+#include "actions.h"
 #include "pcb-printf.h"
 #include "plugins.h"
+
+static const char *order_cookie = "order plugin";
+
+static const char pcb_acts_OrderPCB[] = "orderPCB()";
+static const char pcb_acth_OrderPCB[] = "Order the board from a fab";
+fgw_error_t pcb_act_OrderPCB(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_message(PCB_MSG_ERROR, "OrderPCB() not yet implemented\n");
+	PCB_ACT_IRES(-1);
+	return 0;
+}
+
+static pcb_action_t order_action_list[] = {
+	{"OrderPCB", pcb_act_OrderPCB, pcb_acth_OrderPCB, pcb_acts_OrderPCB}
+};
+
+PCB_REGISTER_ACTIONS(order_action_list, order_cookie)
 
 
 int pplg_check_ver_order(int ver_needed) { return 0; }
 
 void pplg_uninit_order(void)
 {
+	pcb_remove_actions_by_cookie(order_cookie);
 }
+
+#include "dolists.h"
 
 int pplg_init_order(void)
 {
 	PCB_API_CHK_VER;
+	PCB_REGISTER_ACTIONS(order_action_list, order_cookie)
 	return 0;
 }

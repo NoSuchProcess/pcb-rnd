@@ -5,3 +5,4 @@ $state WIP
 $package cloud
 dep order
 default disable
+autoload 1
