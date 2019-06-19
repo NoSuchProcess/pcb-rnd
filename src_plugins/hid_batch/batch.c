@@ -67,12 +67,12 @@ static void ev_pcb_changed(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_
 {
 	if (prompt != NULL)
 		free(prompt);
-	if (PCB && PCB->hidlib.filename) {
-		prompt = strrchr(PCB->hidlib.filename, '/');
+	if ((hidlib != NULL) && (hidlib->filename != NULL)) {
+		prompt = strrchr(hidlib->filename, '/');
 		if (prompt)
 			prompt++;
 		else
-			prompt = PCB->hidlib.filename;
+			prompt = hidlib->filename;
 		if (prompt != NULL)
 			prompt = pcb_strdup(prompt);
 	}
