@@ -47,6 +47,7 @@
 report: Miloh]
 - BUG:  lesstif gui, config with debug, open and place subc from part lib {w l}, then edit refdes {e r}, closing edit window with window exit button instead of 'OK' causes segfault [report: miloh]
 - BUG: gtk2_gdk gui, open library window and close it, gtk segfault on second closure [report: miloh]
+- BUG: gdk/gl, can not select rats layer for drawing [report: miloh]
 
 2. For later releases ===============================================================================
 - CLEANUP: DAD close sequence: TODO("#51.*"): there are three sources to trigger hid_ctx (caller's free on modal, close button free and window destroy callback); requre the user to always call free last and add bits to track what frees are already called and free(ctx) last; test in 4 situations: (modal,nonmodal)*(close_buttons,wmclose) [report: Igor2]
