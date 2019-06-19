@@ -49,6 +49,7 @@ report: Miloh]
 - BUG: gtk2_gdk gui, open library window and close it, gtk segfault on second closure [report: miloh]
 - BUG: gdk/gl, can not select rats layer for drawing, bisected result: last_good=25453 first_bad=25454 [report: miloh]
 - BUG: when using netlist window and viewing a net, main window animation frames are visible in netlist circuit window [report: miloh] 
+- BUG: gtk2_gl issue. view in netlist window circuit view clips or goes black when changing selected net (repro. w/ doc/tutorials/15_no_sch/step3.lht and open netlist view {w n} [report: miloh]
 
 2. For later releases ===============================================================================
 - CLEANUP: DAD close sequence: TODO("#51.*"): there are three sources to trigger hid_ctx (caller's free on modal, close button free and window destroy callback); requre the user to always call free last and add bits to track what frees are already called and free(ctx) last; test in 4 situations: (modal,nonmodal)*(close_buttons,wmclose) [report: Igor2]
