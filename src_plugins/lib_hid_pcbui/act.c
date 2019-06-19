@@ -228,7 +228,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	x = pcb_crosshair.X;
 	y = pcb_crosshair.Y;
 
-	pcb_gui->view_get(&vb);
+	pcb_gui->view_get(&PCB->hidlib, &vb);
 	xcent = (double)(vb.X1 + vb.X2)/2.0;
 	ycent = (double)(vb.Y1 + vb.Y2)/2.0;
 	xoffs = xcent - x;

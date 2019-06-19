@@ -974,7 +974,7 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	extra_units_y[0].scale = PCB->hidlib.grid;
 	extra_units_y[2].scale = PCB->hidlib.size_y;
 
-	pcb_gui->view_get(&vbx);
+	pcb_gui->view_get(&PCB->hidlib, &vbx);
 	view_width = vbx.X2 - vbx.X1;
 	view_height = vbx.Y2 - vbx.Y1;
 

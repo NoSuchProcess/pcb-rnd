@@ -334,7 +334,7 @@ static void batch_pan_mode(pcb_coord_t x, pcb_coord_t y, pcb_bool mode)
 {
 }
 
-static void batch_view_get(pcb_box_t *viewbox)
+static void batch_view_get(pcb_hidlib_t *hidlib, pcb_box_t *viewbox)
 {
 	viewbox->X1 = 0;
 	viewbox->Y1 = 0;

@@ -482,7 +482,7 @@ static void ghid_pan_mode(pcb_coord_t x, pcb_coord_t y, pcb_bool mode)
 	gport->view.panning = mode;
 }
 
-static void ghid_view_get(pcb_box_t *viewbox)
+static void ghid_view_get(pcb_hidlib_t *hidlib, pcb_box_t *viewbox)
 {
 	viewbox->X1 = gport->view.x0;
 	viewbox->Y1 = gport->view.y0;
