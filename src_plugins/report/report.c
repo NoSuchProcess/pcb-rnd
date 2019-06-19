@@ -802,9 +802,30 @@ static fgw_error_t pcb_act_Report(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_FAIL(Report);
 }
 
+static fgw_error_t pcb_act_info(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	int i, j;
+	if (!PCB || !PCB->Data || !PCB->hidlib.filename) {
+		printf("No PCB loaded.\n");
+		return 0;
+	}
+	printf("Filename: %s\n", PCB->hidlib.filename);
+	pcb_printf("Size: %ml x %ml mils, %mm x %mm mm\n", PCB->hidlib.size_x, PCB->hidlib.size_y, PCB->hidlib.size_x, PCB->hidlib.size_y);
+	for (i = 0; i < PCB_MAX_LAYER; i++) {
+		pcb_layergrp_id_t lg = pcb_layer_get_group(PCB, i);
+		unsigned int gflg = pcb_layergrp_flags(PCB, lg);
+		for (j = 0; j < PCB_MAX_LAYER; j++)
+			putchar(j == lg ? '#' : '-');
+		printf(" %c %s\n", (gflg & PCB_LYT_TOP) ? 'c' : (gflg & PCB_LYT_BOTTOM) ? 's' : '-', PCB->Data->Layer[i].name);
+	}
+	PCB_ACT_IRES(0);
+	return 0;
+}
+
 pcb_action_t report_action_list[] = {
 	{"ReportObject", pcb_act_report_dialog, pcb_acth_reportdialog, pcb_acts_reportdialog},
-	{"Report", pcb_act_Report, pcb_acth_Report, pcb_acts_Report}
+	{"Report", pcb_act_Report, pcb_acth_Report, pcb_acts_Report},
+	{"Info", pcb_act_info}
 };
 
 static const char *report_cookie = "report plugin";

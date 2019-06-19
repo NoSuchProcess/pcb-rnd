@@ -119,29 +119,8 @@ static fgw_error_t pcb_act_help(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static fgw_error_t pcb_act_info(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	int i, j;
-	if (!PCB || !PCB->Data || !PCB->hidlib.filename) {
-		printf("No PCB loaded.\n");
-		return 0;
-	}
-	printf("Filename: %s\n", PCB->hidlib.filename);
-	pcb_printf("Size: %ml x %ml mils, %mm x %mm mm\n", PCB->hidlib.size_x, PCB->hidlib.size_y, PCB->hidlib.size_x, PCB->hidlib.size_y);
-	for (i = 0; i < PCB_MAX_LAYER; i++) {
-		pcb_layergrp_id_t lg = pcb_layer_get_group(PCB, i);
-		unsigned int gflg = pcb_layergrp_flags(PCB, lg);
-		for (j = 0; j < PCB_MAX_LAYER; j++)
-			putchar(j == lg ? '#' : '-');
-		printf(" %c %s\n", (gflg & PCB_LYT_TOP) ? 'c' : (gflg & PCB_LYT_BOTTOM) ? 's' : '-', PCB->Data->Layer[i].name);
-	}
-	PCB_ACT_IRES(0);
-	return 0;
-}
-
 pcb_action_t batch_action_list[] = {
 	{"Help", pcb_act_help},
-	{"Info", pcb_act_info}
 };
 
 PCB_REGISTER_ACTIONS(batch_action_list, batch_cookie)
