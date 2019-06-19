@@ -338,8 +338,8 @@ static void batch_view_get(pcb_hidlib_t *hidlib, pcb_box_t *viewbox)
 {
 	viewbox->X1 = 0;
 	viewbox->Y1 = 0;
-	viewbox->X2 = PCB->hidlib.size_x;
-	viewbox->Y2 = PCB->hidlib.size_y;
+	viewbox->X2 = hidlib->size_x;
+	viewbox->Y2 = hidlib->size_y;
 }
 
 static void batch_open_command(void)
