@@ -65,12 +65,12 @@ FILE *pcb_fopen_fn(pcb_hidlib_t *hidlib, const char *path, const char *mode, cha
 	FILE *f;
 	char *path_exp;
 
+	if (fn_out != NULL)
+		*fn_out = NULL;
+
 	/* skip expensive path building for empty paths that are going to fail anyway */
-	if ((path == NULL) || (*path == '\0')) {
-		if (fn_out != NULL)
-			*fn_out = NULL;
+	if ((path == NULL) || (*path == '\0'))
 		return NULL;
-	}
 
 	path_exp = pcb_build_fn(hidlib, path);
 	if (path_exp == NULL)
