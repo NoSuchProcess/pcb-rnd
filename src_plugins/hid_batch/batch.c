@@ -55,7 +55,6 @@ static char *prompt = NULL;
 
 static void uninit_batch(void)
 {
-	pcb_remove_actions_by_cookie(batch_cookie);
 	pcb_event_unbind_allcookie(batch_cookie);
 	if (prompt != NULL) {
 		free(prompt);
@@ -111,19 +110,6 @@ static void log_import(void)
 	for(n = pcb_log_first; n != NULL; n = n->next)
 		log_append(n);
 }
-
-static fgw_error_t pcb_act_help(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	pcb_print_actions();
-	PCB_ACT_IRES(0);
-	return 0;
-}
-
-pcb_action_t batch_action_list[] = {
-	{"Help", pcb_act_help},
-};
-
-PCB_REGISTER_ACTIONS(batch_action_list, batch_cookie)
 
 extern int isatty();
 
@@ -408,13 +394,11 @@ int pplg_init_hid_batch(void)
 
 static void batch_begin(void)
 {
-	PCB_REGISTER_ACTIONS(batch_action_list, batch_cookie)
 	batch_active = 1;
 }
 
 static void batch_end(void)
 {
-	pcb_remove_actions_by_cookie(batch_cookie);
 	batch_active = 0;
 }
 

@@ -1784,6 +1784,15 @@ static fgw_error_t pcb_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_Help[] = "Help()";
+static const char pcb_acth_Help[] = "On-line action help";
+static fgw_error_t pcb_act_Help(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_print_actions();
+	PCB_ACT_IRES(0);
+	return 0;
+}
+
 pcb_action_t gui_action_list[] = {
 	{"Display", pcb_act_Display, pcb_acth_Display, pcb_acts_Display},
 	{"CycleDrag", pcb_act_CycleDrag, pcb_acth_CycleDrag, pcb_acts_CycleDrag},
@@ -1812,7 +1821,8 @@ pcb_action_t gui_action_list[] = {
 	{"GetXY", pcb_act_GetXY, pcb_acth_GetXY, pcb_acts_GetXY},
 	{"BoardFlip", pcb_act_boardflip, pcb_acth_boardflip, pcb_acts_boardflip},
 	{"ClipInhibit", pcb_act_ClipInhibit, pcb_acth_ClipInhibit, pcb_acts_ClipInhibit},
-	{"Benchmark", pcb_act_Benchmark, pcb_acth_Benchmark, pcb_acts_Benchmark}
+	{"Benchmark", pcb_act_Benchmark, pcb_acth_Benchmark, pcb_acts_Benchmark},
+	{"Help", pcb_act_Help, pcb_acth_Help, pcb_acts_Help}
 };
 
 PCB_REGISTER_ACTIONS(gui_action_list, NULL)
