@@ -2131,4 +2131,13 @@ int pcb_conf_resolve_all(pcb_conf_resolve_t *res)
 	return cnt;
 }
 
+void pcb_conf_ro(const char *path)
+{
+	conf_native_t *n = conf_get_field(path);
+	if (n != NULL) {
+		n->used = 1;
+		n->random_flags.read_only = 1;
+	}
+}
+
 #include "conf_regfile.c"

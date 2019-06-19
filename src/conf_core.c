@@ -18,23 +18,6 @@ do { \
 		*((type *)(&var)) = max; \
 }	while(0)
 
-static char *get_homedir(void)
-{
-	char *homedir = getenv("HOME");
-	if (homedir == NULL)
-		homedir = getenv("USERPROFILE");
-	return homedir;
-}
-
-void pcb_conf_ro(const char *path)
-{
-	conf_native_t *n = conf_get_field(path);
-	if (n != NULL) {
-		n->used = 1;
-		n->random_flags.read_only = 1;
-	}
-}
-
 static void conf_core_postproc(void)
 {
 	conf_clamp_to(CFT_COORD, conf_core.design.line_thickness, PCB_MIN_LINESIZE, PCB_MAX_LINESIZE, PCB_MIL_TO_COORD(10));
@@ -47,7 +30,6 @@ static void conf_core_postproc(void)
 	conf_force_set_str(conf_core.rc.path.lib, PCBLIBDIR);       pcb_conf_ro("rc/path/lib");
 	conf_force_set_str(conf_core.rc.path.bin, BINDIR);          pcb_conf_ro("rc/path/bin");
 	conf_force_set_str(conf_core.rc.path.share, PCBSHAREDIR);   pcb_conf_ro("rc/path/share");
-	conf_force_set_str(pcbhl_conf.rc.path.home, get_homedir()); pcb_conf_ro("rc/path/home");
 }
 
 void conf_core_init()

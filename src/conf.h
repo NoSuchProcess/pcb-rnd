@@ -279,6 +279,9 @@ int conf_print_native_field(conf_pfn pfn, void *ctx, int verbose, confitem_t *va
    usually the number of bytes printed. */
 int conf_print_native(conf_pfn pfn, void *ctx, const char * prefix, int verbose, conf_native_t *node);
 
+/* Mark a path read-only */
+void pcb_conf_ro(const char *path);
+
 
 /****** utility ******/
 

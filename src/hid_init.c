@@ -277,6 +277,14 @@ const char *pcb_hid_export_fn(const char *filename)
 extern void pcb_hid_dlg_uninit(void);
 extern void pcb_hid_dlg_init(void);
 
+static char *get_homedir(void)
+{
+	char *homedir = getenv("HOME");
+	if (homedir == NULL)
+		homedir = getenv("USERPROFILE");
+	return homedir;
+}
+
 void pcb_hidlib_init1(void (*conf_core_init)(void))
 {
 	pcb_events_init();
@@ -284,6 +292,7 @@ void pcb_hidlib_init1(void (*conf_core_init)(void))
 	conf_init();
 	conf_core_init();
 	pcb_hidlib_conf_init();
+	conf_force_set_str(pcbhl_conf.rc.path.home, get_homedir()); pcb_conf_ro("rc/path/home");
 	pcb_hidlib_event_init();
 	pcb_hid_dlg_init();
 	pcb_hid_init();

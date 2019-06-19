@@ -196,5 +196,4 @@ typedef struct {
 
 extern conf_core_t conf_core;
 void conf_core_init();
-void pcb_conf_ro(const char *path);
 #endif
