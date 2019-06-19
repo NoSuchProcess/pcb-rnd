@@ -1,8 +1,11 @@
+#include "config.h"
+
 #include <stdlib.h>
 #include "glue_win32.h"
 
 void ghid_win32_init(void)
 {
+TODO("Should not use PCB_PACKAGE but pcbhl_app_*");
 #ifdef WIN32
 	char *tmps;
 	char *share_dir;

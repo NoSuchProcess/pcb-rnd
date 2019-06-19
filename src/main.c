@@ -85,6 +85,10 @@ const char *pcbhl_conf_userdir_path = CONF_USER_DIR;
 const char *pcphl_conf_user_path = CONF_USER_DIR "/pcb-conf.lht";
 const char *pcbhl_conf_sysdir_path = PCBSHAREDIR;
 const char *pcbhl_conf_sys_path = PCBSHAREDIR "/pcb-conf.lht";
+const char *pcbhl_app_package = PCB_PACKAGE;
+const char *pcbhl_app_version = PCB_VERSION;
+const char *pcbhl_app_url = "http://repo.hu/projects/pcb-rnd";
+
 
 /* ----------------------------------------------------------------------
  * initialize signal and error handlers

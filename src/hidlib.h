@@ -91,4 +91,9 @@ extern const char *pcphl_conf_user_path;
 extern const char *pcbhl_conf_sysdir_path;
 extern const char *pcbhl_conf_sys_path;
 
+/* application information (to be displayed on the UI) */
+extern const char *pcbhl_app_package;
+extern const char *pcbhl_app_version;
+extern const char *pcbhl_app_url;
+
 #endif

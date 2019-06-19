@@ -130,8 +130,8 @@ static void batch_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 	log_import();
 
 	if ((interactive) && (!pcbhl_conf.rc.quiet)) {
-		printf("Entering %s version %s batch mode.\n", PCB_PACKAGE, PCB_VERSION);
-		printf("See http://repo.hu/projects/pcb-rnd for project information\n");
+		printf("Entering %s version %s batch mode.\n", pcbhl_app_package, pcbhl_app_version);
+		printf("See %s for project information\n", pcbhl_app_url);
 	}
 
 	batch_stay = 1;

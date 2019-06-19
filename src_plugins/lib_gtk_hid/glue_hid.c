@@ -232,6 +232,7 @@ int gtkhid_parse_arguments(int *argc, char ***argv)
 	GtkWidget *window;
 
 	/* on windows we need to figure out the installation directory */
+TODO("This needs to be done centrally, and should not use PCB_PACKAGE but pcbhl_app_*")
 #ifdef WIN32
 	char *tmps;
 	char *libdir;
