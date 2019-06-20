@@ -16,7 +16,6 @@
 - BUG: pspanelize cam job fails [report: Igor2]
 - BUG: message log: when opens, even if scroll-to-bottom is set, it is not scrolling down automatically [report: keantoken]
 - BUG: press 'enter' in propedit right side value for string or coord - it should be taken as 'apply' [report: keantoken]
-+ BUG: pcb-rnd --help   should not start the GUI, so should not load any dialog/widget stuff [report: Alain]
 - BUG: unplated padtsacks shall not connect layers; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
 - BUG: bug_files/rat_shortest.lht: because of "don't add non-manhattan lines" part [report: pstuge]
 - BUG: lesstif clip_set() doesn't seem to affect the X clipboard
