@@ -24,6 +24,11 @@ const char *pcphl_conf_user_path = CONF_USER_DIR "/pcb-conf.lht";
 const char *pcbhl_conf_sysdir_path = PCBSHAREDIR;
 const char *pcbhl_conf_sys_path = PCBSHAREDIR "/pcb-conf.lht";
 
+void pcbhl_conf_postproc(void)
+{
+}
+
+
 void pcb_message(enum pcb_message_level level, const char *Format, ...)
 {
 	va_list args;
