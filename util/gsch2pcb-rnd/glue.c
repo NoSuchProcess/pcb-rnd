@@ -23,6 +23,7 @@
 #include "../src/event.h"
 #include "../src/plugins.h"
 #include "../src/hid.h"
+#include "../src/hidlib_conf.h"
 #include "gsch2pcb_rnd_conf.h"
 
 /* glue for pcb-rnd core */
@@ -33,6 +34,19 @@ const char *pcbhl_menu_file_paths[] = { "./", "~/.pcb-rnd/", PCBSHAREDIR "/", NU
 const char *pcbhl_menu_name_fmt = "pcb-menu-%s.lht";
 
 const char *pcb_hidlib_default_embedded_menu = "";
+
+static char *get_homedir(void)
+{
+	char *homedir = getenv("HOME");
+	if (homedir == NULL)
+		homedir = getenv("USERPROFILE");
+	return homedir;
+}
+
+void pcbhl_conf_postproc(void)
+{
+	conf_force_set_str(pcbhl_conf.rc.path.home, get_homedir()); pcb_conf_ro("rc/path/home");
+}
 
 int pcb_color_load_str(pcb_color_t *dst, const char *src)
 {
