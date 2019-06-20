@@ -55,6 +55,7 @@ static htsi_t conf_interns;
 static int conf_files_inited = 0;
 
 void (*pcb_conf_core_postproc)(void) = NULL;
+extern void pcbhl_conf_postproc(void);
 
 int conf_in_production = 0;
 
@@ -1056,6 +1057,7 @@ void conf_update(const char *path, int arr_idx)
 	conf_merge_all(path);
 	if (pcb_conf_core_postproc != NULL)
 		pcb_conf_core_postproc();
+	pcbhl_conf_postproc();
 
 	if (path == NULL) {
 		htsp_entry_t *e;

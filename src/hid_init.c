@@ -285,14 +285,19 @@ static char *get_homedir(void)
 	return homedir;
 }
 
+void pcbhl_conf_postproc(void)
+{
+	conf_force_set_str(pcbhl_conf.rc.path.home, get_homedir()); pcb_conf_ro("rc/path/home");
+}
+
 void pcb_hidlib_init1(void (*conf_core_init)(void))
 {
 	pcb_events_init();
 	pcb_file_loaded_init();
 	conf_init();
 	conf_core_init();
+	pcbhl_conf_postproc();
 	pcb_hidlib_conf_init();
-	conf_force_set_str(pcbhl_conf.rc.path.home, get_homedir()); pcb_conf_ro("rc/path/home");
 	pcb_hidlib_event_init();
 	pcb_hid_dlg_init();
 	pcb_hid_init();
