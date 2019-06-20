@@ -43,8 +43,6 @@
 	- BUG: kicad_mod (clearance 0.25) is not processed (see priv mail from Erik on 22 may) [report: Erik]
 	- BUG: parser does not process trapezoidal pad definitions [report: erich]
 	- BUG: parser not parsing obround pad rotation, rot, (at x y rot), see work/bug_files/obround-rotation.kicad_pcb [report: erich]
-+ FEATURE: toolbar tooltips [
-report: Miloh]
 - BUG:  lesstif gui, config with debug, open and place subc from part lib {w l}, then edit refdes {e r}, closing edit window with window exit button instead of 'OK' causes segfault [report: miloh]
 - BUG: gtk2_gdk gui, open library window and close it, gtk segfault on second closure [report: miloh]
 - BUG: gdk/gl, can not select rats layer for drawing, bisected result: last_good=25453 first_bad=25454 [report: miloh]
