@@ -265,6 +265,16 @@ This action allows making multiple-action bindings into an atomic operation that
 <i>Block</i>
 , which checks to see if the deletions or additions actually did anything.  If not, the serial number is set to the saved number, as there's nothing to undo.  If something did happen, the serial number is incremented so that these actions are counted as a single undo step. 
 <p>
+ An alternative mechanism is freeze/unfreeze for the case restoring between every two actions is not possible or not practical. The sequence is 
+<i>Save</i>
+, 
+<i>Freeze</i>
+, call actions, 
+<i>UnFreeze</i>
+, 
+<i>Block</i>
+. 
+<p>
  Arguments: 
 <p>
  
@@ -293,7 +303,19 @@ This action allows making multiple-action bindings into an atomic operation that
 <th>
  Block  
 <td>
- Does a Restore if there was nothing to undo, else does a Close. 
+ Does a Restore if there was nothing to undo, else does a Close.   
+<tr>
+
+<th>
+ Freeze  
+<td>
+ Make sure no subsequent actions will bump the undo serial   
+<tr>
+
+<th>
+ UnFreeze or Thaw  
+<td>
+ Allow subsequent actions to bump the undo serial again 
 </table>
  
 </dd></dl>
@@ -2089,13 +2111,51 @@ The "mark" is a small X-shaped target on the display which is treated like a sec
 <p>
 <table border=0 cellspacing=10 class=actsum>
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-message(message)
+message([ERROR|WARNING|INFO|DEBUG,] message)
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
 Writes a message to the log window.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
 </table>
 <p>
 This action displays a message to the log window.  This action is primarily provided for use by scripts and external programs which may interface with pcb-rnd. If multiple arguments are given, each one is sent to the log window followed by a newline. 
+<p>
+ If there are 2 or more arguments and the first argument matches, in a case sensitive manner, one of the below keywords, the message is registered on the specified error level. Else the PCB_MSG_INFO error level is used. 
+<p>
+ 
+<table border=1>
+ 
+<tr>
+
+<th>
+first argument
+<th>
+erro level 
+<tr>
+
+<td>
+ERROR         
+<td>
+ PCB_MSG_ERROR 
+<tr>
+
+<td>
+WARNING       
+<td>
+ PCB_MSG_WARNING 
+<tr>
+
+<td>
+INFO          
+<td>
+ PCB_MSG_INFO 
+<tr>
+
+<td>
+DEBUG         
+<td>
+ PCB_MSG_DEBUG 
+</table>
+  
 </dd></dl>
 
 <h2 id="mincleargap">MinClearGap</h2>
@@ -2810,13 +2870,16 @@ The polygon under the cursor (based on closest-corner) is stitched together with
  Use with pstoedit conversions where there's a "hole" in the shape - select the hole. 
 </dd></dl>
 
-<h2 id="popup">popup</h2>
+<h2 id="popup">Popup</h2>
 <dl><dd>
 <p>
 <table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+Popup(MenuName, [obj-type])
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Bring up the popup menu specified by MenuName, optionally modified with the object type under the cursor.
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+lib_hid_pcbui/actions
 </table>
 <p>
 Pops up the specified menu. The menu must have been defined in the popups subtree in the menu lht file. If the second argument is specified, the menu name is modified by runtime data: 

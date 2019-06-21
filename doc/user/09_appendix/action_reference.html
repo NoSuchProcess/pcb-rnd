@@ -11,8 +11,9 @@
 <p>
 <h2> Action Reference</h2>
 <table border=1>
-<caption>\n <b>
-This is pcb-rnd 2.1.2 (svn r25015) an interactive printed circuit board editor ,  Revision: 25071
+<caption>
+ <b>
+This is pcb-rnd 2.1.2 (svn r26253) an interactive printed circuit board editor ,  Revision: 26357
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -97,6 +98,7 @@ This is pcb-rnd 2.1.2 (svn r25015) an interactive printed circuit board editor ,
 <tr><td>Export</td><td>Export the current layout, e.g. Export(png, --dpi, 600)</td><td>Export(exporter, [exporter-args])</td><td></td>
 <tr><td>ExportGUI</td><td>Open the export dialog.</td><td>ExportGUI()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#exportoldconn">ExportOldConn</a></td><td>Export galvanic connection data in an old, custom file format.</td><td>ExportOldConn(AllConnections|AllUnusedPins|ElementConnections,filename)</td><td>export_oldconn HID</td>
+<tr><td>ExportSTL</td><td>Export a three dimensional triangulated surface model in stl</td><td>ExportSTL()</td><td>export_stl HID</td>
 <tr><td>ExportScadPoly</td><td>exports all selected polygons to an openscad script; only the outmost contour of each poly is exported</td><td>ScadExportPoly(filename)</td><td>openscad HID</td>
 <tr><td>ExportcpcbTo</td><td>Dumps the current board in c-pcb format.</td><td>ExportcpcbTo(filename)</td><td>cpcb plugin</td>
 <tr><td>FlagEdit</td><td>Change the layer binding.</td><td>FlagEdit(object)</td><td>dialogs plugin</td>
@@ -106,20 +108,27 @@ This is pcb-rnd 2.1.2 (svn r25015) an interactive printed circuit board editor ,
 <tr><td>Fontsel</td><td>Open the font selection dialog</td><td>Fontsel()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#freerotatebuffer">FreeRotateBuffer</a></td><td>Rotates the current paste buffer contents by the specified angle.  The<br>angle is given in degrees.  If no angle is given, the user is prompted<br>for one.</td><td>FreeRotateBuffer([Angle])</td><td></td>
 <tr><td>FullScreen</td><td>Hide widgets to get edit area full screen</td><td>FullScreen(on|off|toggle)</td><td></td>
+<tr><td>GetParentData</td><td>Return the closest upstream pcb_data_t * parent of an object</td><td>GetParentData([root_data,] idpath)</td><td>act_read</td>
 <tr><td>GetStyle</td><td>Return integer index (>=0) of the currently active style or -1 if no style is selected (== custom style)</td><td>GetStyle()</td><td></td>
-<tr><td>GetValue</td><td>Convert a coordinate value. Returns an unitless double or FGW_ERR_ARG_CONV. The 3rd parameter controls whether to require relative coordinates (+- prefix). Wraps pcb_get_value_ex().</td><td>GetValue(input, units, relative, default_unit)</td><td>act_draw</td>
+<tr><td>GetValue</td><td>Convert a coordinate value. Returns an unitless double or FGW_ERR_ARG_CONV. The 3rd parameter controls whether to require relative coordinates (+- prefix). Wraps pcb_get_value_ex().</td><td>GetValue(input, units, relative, default_unit)</td><td>act_read</td>
 <tr><td><a href="action_details.html#getxy">GetXY</a></td><td>Get a coordinate.</td><td>GetXY()</td><td></td>
 <tr><td>GlobalPuller</td><td>Pull all traces tight.</td><td>pcb_act_GlobalPuller([Found|Selected])</td><td>puller plugin</td>
 <tr><td>Grid</td><td>Set the grid.</td><td>grid(set, [name:]size[@offs][!unit])<br>grid(+|up)<br>grid(-|down)<br>grid(#N)<br>grid(idx, N)</td><td></td>
 <tr><td>GroupPropGui</td><td>Change group flags and properties</td><td>GroupPropGui(groupid)</td><td>dialogs plugin</td>
+<tr><td>Help</td><td>On-line action help</td><td>Help()</td><td></td>
+<tr><td>IDP</td><td>Basic idpath manipulation.</td><td>IDP([print|free], idpath)</td><td>act_read</td>
+<tr><td>IDPList</td><td>Basic idpath list manipulation.</td><td>IDPList(alloc)<br>IDPList(free|clear|print|dup|length, list)<br>IDPList(get|pop|remove, list, idx)<br>IDPList(prepend|append|push, list, idpath)</td><td>act_read</td>
 <tr><td>IOIncompatList</td><td>Present the format incompatibilities of the last save to file operation.</td><td>IOIncompatList([list|simple])</td><td></td>
 <tr><td>IOIncompatListDialog</td><td>Present the format incompatibilities of the last save to file operation in a GUI dialog.</td><td>IOIncompatListDialog([list|simple])</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#import">Import</a></td><td>Import schematics.</td><td>Import()<br>Import([gnetlist|make[,source,source,...]])<br>Import(setnewpoint[,(mark|center|X,Y)])<br>Import(setdisperse,D,units)</td><td>import_sch plugin</td>
 <tr><td><a href="action_details.html#importgui">ImportGUI</a></td><td>Asks user which schematics to import into PCB.</td><td>ImportGUI()</td><td>dialogs plugin</td>
 <tr><td>ImportcpcbFrom</td><td>Loads the auto-routed tracks from the specified c-pcb output.</td><td>ImportcpcbFrom(filename)</td><td>cpcb plugin</td>
+<tr><td>Info</td><td></td><td></td><td>report plugin</td>
+<tr><td>InfoBarFileChanged</td><td>Present the "file changed" warning info bar with buttons to reload or cancel</td><td>InfoBarFileChanged(open|close)</td><td>dialogs plugin</td>
 <tr><td>LayerBinding</td><td>Change the layer binding.</td><td>LayerBinding(object)<br>LayerBinding(selected)<br>LayerBinding(buffer)</td><td>dialogs plugin</td>
 <tr><td>LayerPropGui</td><td>Change layer flags and properties</td><td>LayerPropGui(layerid)</td><td>dialogs plugin</td>
 <tr><td>LibraryChanged</td><td>Tells the GUI that the libraries have changed.</td><td>LibraryChanged()</td><td>oldactions plugin</td>
+<tr><td>LibraryDialog</td><td>Open the library dialog.</td><td>libraryDialog()</td><td>dialogs plugin</td>
 <tr><td>LineNew</td><td>Create a pcb line segment on a layer. For now data must be "pcb". Returns the ID of the new object or 0 on error.</td><td>LineNew([noundo,] data, layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags)</td><td>act_draw</td>
 <tr><td>ListRotations</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#listscripts">ListScripts</a></td><td>List fungw scripts, optionally filtered wiht regex pat.</td><td>ListScripts([pat])</td><td>script plugin</td>
@@ -144,10 +153,10 @@ This is pcb-rnd 2.1.2 (svn r25015) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#loadvendorfrom">LoadVendorFrom</a></td><td>Loads the specified vendor lihata file.</td><td>LoadVendorFrom(filename)</td><td>vendor drill mapping</td>
 <tr><td>LoadhypFrom</td><td>Loads the specified Hyperlynx file.</td><td>LoadhypFrom(filename[, "debug"]...)</td><td>hyp importer</td>
 <tr><td>Log</td><td>Manages the central, in-memory log.</td><td>Log(clear, [fromID, [toID])<br>Log(export, [filename, [text|lihata])</td><td></td>
-<tr><td>LogDialog</td><td>Open the log dialog.</td><td>LogDialog()</td><td>dialogs plugin</td>
+<tr><td>LogDialog</td><td>Open the log dialog.</td><td>LogDialog()</td><td>lib_hid_common plugin</td>
 <tr><td>ManagePlugins</td><td>Manage plugins dialog.</td><td>ManagePlugins()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#markcrosshair">MarkCrosshair</a></td><td>Set/Reset the pcb_crosshair mark.</td><td>MarkCrosshair()<br>MarkCrosshair(Center)</td><td></td>
-<tr><td><a href="action_details.html#message">Message</a></td><td>Writes a message to the log window.</td><td>message(message)</td><td></td>
+<tr><td><a href="action_details.html#message">Message</a></td><td>Writes a message to the log window.</td><td>message([ERROR|WARNING|INFO|DEBUG,] message)</td><td></td>
 <tr><td>MessageBox</td><td>Open a modal message dialog box with title and label. If icon string is not empty, display the named icon on the left. Present one or more window close buttons with different text and return value.</td><td>MessageBox(icon, title, label, button_txt, button_retval, ...)</td><td></td>
 <tr><td><a href="action_details.html#mincleargap">MinClearGap</a></td><td>Ensures that polygons are a minimum distance from objects.</td><td>MinClearGap(delta)<br>MinClearGap(Selected, delta)</td><td></td>
 <tr><td>MinMaskGap</td><td></td><td></td><td>oldactions plugin</td>
@@ -164,6 +173,7 @@ This is pcb-rnd 2.1.2 (svn r25015) an interactive printed circuit board editor ,
 <tr><td>Oneliner</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td><a href="action_details.html#openemsexcitation">OpenemsExcitation</a></td><td>Select which openEMS excitation method should be exported and manipulate the associated parameters. When invoked without arguments a dialog box with the same functionality is presented.</td><td>OpenemsExcitation([interactive])<br>OpenemsExcitation(select, excitationname)<br>OpenemsExcitation(set, [excitationnme], paramname, paramval)<br>OpenemsExcitation(get, [excitationnme], paramname)</td><td>openems HID</td>
 <tr><td>OptAutoOnly</td><td>Toggles the optimize-only-autorouted flag.</td><td>OptAutoOnly()</td><td>oldactions plugin</td>
+<tr><td>OrderPCB</td><td>Order the board from a fab</td><td>orderPCB([gui])</td><td>order plugin</td>
 <tr><td>PCBChanged</td><td>Tells the GUI that the whole PCB has changed. The optional "revert"parameter can be used as a hint to the GUI that the same design is beingreloaded, and that it might keep some viewport settings</td><td>PCBChanged([revert])</td><td>oldactions plugin</td>
 <tr><td>PadstackBreakup</td><td>Break up a padstack into one non-padstack object per layer type (the hole is ignored)</td><td>PadstackBreakup(buffer|selected|objet)</td><td></td>
 <tr><td>PadstackConvert</td><td>Convert selection or current buffer to padstack</td><td>PadstackConvert(buffer|selected, [originx, originy])</td><td></td>
@@ -182,6 +192,7 @@ This is pcb-rnd 2.1.2 (svn r25015) an interactive printed circuit board editor ,
 <tr><td>PolyOffs</td><td>replicate the outer contour of the selected polygon(s) with growing or shrinking them by offset; the new polygon is drawn on the current layer</td><td>PolyOffs(offset)</td><td>lib_polyhelp</td>
 <tr><td><a href="action_details.html#polystitch">PolyStitch</a></td><td></td><td></td><td>polystitch plugin</td>
 <tr><td><a href="action_details.html#polygon">Polygon</a></td><td>Some polygon related stuff.</td><td>Polygon(Close|CloseHole|PreviousPoint)</td><td></td>
+<tr><td><a href="action_details.html#popup">Popup</a></td><td>Bring up the popup menu specified by MenuName, optionally modified with the object type under the cursor.</td><td>Popup(MenuName, [obj-type])</td><td>lib_hid_pcbui/actions</td>
 <tr><td>Preferences</td><td>Present the preferences dialog, optionally opening the tab requested.</td><td>Preferences([tabname])</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#print">Print</a></td><td>Present the print export dialog for printing the layout from the GUI.</td><td>Print()</td><td></td>
 <tr><td>PrintActions</td><td>Print all actions available.</td><td>PrintActions()</td><td></td>
@@ -194,9 +205,14 @@ This is pcb-rnd 2.1.2 (svn r25015) an interactive printed circuit board editor ,
 <tr><td>PrintVersion</td><td>Print version.</td><td>PrintVersion()</td><td></td>
 <tr><td><a href="action_details.html#promptfor">PromptFor</a></td><td>Prompt for a string. Returns the string (or NULL on cancel)</td><td>PromptFor([message[,default[,title]]])</td><td></td>
 <tr><td>PstkNew</td><td>Create a padstack. For now data must be "pcb". glob_clearance=0 turns off global clearance. Returns the ID of the new object or 0 on error.</td><td>PstkNew([noundo,] data, protoID, x, y, glob_clearance, flags)</td><td>act_draw</td>
+<tr><td>PstkProtoEdit</td><td>Edit a padstack prototype specified by its pointer.</td><td>PstkProto([noundo,] proto, remove, layer_type<br>PstkProto([noundo,] proto, copy, dst_layer_type, src_layer_type)</td><td>act_draw</td>
+<tr><td>PstkProtoTmp</td><td>Allocate, insert or free a temporary padstack prototype</td><td>PstkProto([noundo,] new)<br>PstkProto([noundo,] dup, idpath)<br>PstkProto([noundo,] dup, data, src_proto_id)<br>PstkProto([noundo,] insert, idpath|data, proto)<br>PstkProto([noundo,] insert_dup, idpath|data, proto)<br>PstkProto([noundo,] free, proto)</td><td>act_draw</td>
 <tr><td><a href="action_details.html#puller">Puller</a></td><td>Pull an arc-line junction tight.</td><td>pcb_act_Puller()</td><td>puller plugin</td>
+<tr><td>QueryCompileField</td><td>With "compile": precompiles textual field name to field ID; with "free": frees the memory allocated for a previously precompiled fieldID.</td><td>QueryCompileField(compile, fieldname)<br>QueryCompileField(free, fieldID)</td><td></td>
+<tr><td>QueryObj</td><td>Return the value of a field of an object, addressed by the object's idpath and the field's name or precompiled ID. Returns NIL on error.</td><td>QueryObj(idpath, [.fieldname|fieldID])</td><td></td>
 <tr><td><a href="action_details.html#quit">Quit</a></td><td>Quits the application after confirming.</td><td>Quit()</td><td></td>
 <tr><td><a href="action_details.html#redo">Redo</a></td><td>Redo recent "undo" operations.</td><td>redo()</td><td></td>
+<tr><td>Redraw</td><td>Redraw the entire screen</td><td>Redraw()</td><td></td>
 <tr><td><a href="action_details.html#reloadscript">ReloadScript</a></td><td>Reload a fungw script</td><td>ReloadScript(id)</td><td>script plugin</td>
 <tr><td>RemoveMenu</td><td>Recursively removes a new menu, popup (only path specified) or submenu. </td><td>RemoveMenu(path|cookie)</td><td></td>
 <tr><td>RemoveSelected</td><td>Removes any selected objects.</td><td>pcb_remove_selected()</td><td></td>
@@ -219,6 +235,7 @@ This is pcb-rnd 2.1.2 (svn r25015) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#scriptcookie">ScriptCookie</a></td><td>Return a cookie specific to the current script instance during script initialization</td><td>ScriptCookie()</td><td>script plugin</td>
 <tr><td><a href="action_details.html#scriptpersistency">ScriptPersistency</a></td><td>Read or remove script persistency data savd on preunload</td><td>ScriptPersistency(read|remove)</td><td>script plugin</td>
 <tr><td><a href="action_details.html#scroll">Scroll</a></td><td>Scroll the viewport.</td><td>Scroll(up|down|left|right, [pixels])</td><td>lib_hid_pcbui/actions</td>
+<tr><td>SearchDialog</td><td>Open the log dialog.</td><td>SearchDialog()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#select">Select</a></td><td>Toggles or sets the selection.</td><td>Select(Object|ToggleObject)<br>Select(All|Block|Connection|Invert)<br>Select(Convert)</td><td></td>
 <tr><td><a href="action_details.html#selectlayer">SelectLayer</a></td><td>Select which layer is the current layer.</td><td>SelectLayer(1..MAXLAYER|Silk|Rats)</td><td></td>
 <tr><td><a href="action_details.html#setflag">SetFlag</a></td><td>Sets flags on objects.</td><td>SetFlag(Object|Selected|SelectedObjects, flag)<br>SetFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>SetFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>SetFlag(SelectedElements, flag)<br>flag = thermal | join</td><td></td>
@@ -261,7 +278,7 @@ This is pcb-rnd 2.1.2 (svn r25015) an interactive printed circuit board editor ,
 <tr><td>constraint</td><td>Configure or remove a drawing constraint</td><td>constraint(type, off)<br>constraint(type, value, [value...])</td><td>ddraft plugin</td>
 <tr><td>cpcb</td><td>Executed external autorouter cpcb to route the board or parts of the board</td><td>cpcb(board|selected, [command])</td><td>cpcb plugin</td>
 <tr><td>d1</td><td>debug action for development</td><td>d1()</td><td>diag plugin</td>
-<tr><td>dad</td><td>Manipulate Dynamic Attribute Dialogs</td><td>dad(dlgname, new) - create new dialog<br>dad(dlgname, label, text) - append a label widget<br>dad(dlgname, button, text) - append a button widget<br>dad(dlgname, button_closes, label, retval, ...) - standard close buttons<br>dad(dlgname, enum, choices) - append an enum (combo box) widget; choices is a tab separated list<br>dad(dlgname, bool, [label]) - append an checkbox widget (default off)<br>dad(dlgname, integer|real|coord, min, max, [label]) - append an input field<br>dad(dlgname, string) - append a single line text input field<br>dad(dlgname, progress) - append a progress bar (set to 0)<br>dad(dlgname, tree, cols, istree, [header]) - append tree-table widget; header is like enum values<br>dad(dlgname, tree_append, row, cells) - append after row (0 means last item of the root); cells is like enum values; returns a row pointer<br>dad(dlgname, tree_append_under, row, cells) - append at the end of the list under row (0 means last item of the root); cells is like enum values; returns a row pointer<br>dad(dlgname, tree_insert, row, cells) - insert before row (0 means first item of the root); cells is like enum values; returns a row pointer<br>dad(dlgname, begin_hbox) - begin horizontal box<br>dad(dlgname, begin_vbox) - begin vertical box<br>dad(dlgname, begin_hpane) - begin horizontal paned box<br>dad(dlgname, begin_vpane) - begin vertical paned box<br>dad(dlgname, begin_table, cols) - begin table layout box<br>dad(dlgname, begin_tabbed, tabnames) - begin a view with tabs; tabnames are like choices in an enum; must have as many children widgets as many names it has<br>dad(dlgname, end) - end the last begin<br>dad(dlgname, flags, flg1, flg2, ...) - change the flags of the last created widget<br>dad(dlgname, onchange, action) - set the action to be called on widget change<br>dad(dlgname, run, title) - present dlgname as a non-modal dialog<br>dad(dlgname, run_modal, title) - present dlgname as a modal dialog<br>dad(dlgname, exists) - returns wheter the named dialog exists (0 or 1)<br>dad(dlgname, set, widgetID, val) - changes the value of a widget in a running dialog <br>dad(dlgname, get, widgetID, [unit]) - return the current value of a widget</td><td>dialogs plugin</td>
+<tr><td>dad</td><td>Manipulate Dynamic Attribute Dialogs</td><td>dad(dlgname, new) - create new dialog<br>dad(dlgname, label, text) - append a label widget<br>dad(dlgname, button, text) - append a button widget<br>dad(dlgname, button_closes, label, retval, ...) - standard close buttons<br>dad(dlgname, enum, choices) - append an enum (combo box) widget; choices is a tab separated list<br>dad(dlgname, bool, [label]) - append an checkbox widget (default off)<br>dad(dlgname, integer|real|coord, min, max, [label]) - append an input field<br>dad(dlgname, string) - append a single line text input field<br>dad(dlgname, progress) - append a progress bar (set to 0)<br>dad(dlgname, tree, cols, istree, [header]) - append tree-table widget; header is like enum values<br>dad(dlgname, tree_append, row, cells) - append after row (0 means last item of the root); cells is like enum values; returns a row pointer<br>dad(dlgname, tree_append_under, row, cells) - append at the end of the list under row (0 means last item of the root); cells is like enum values; returns a row pointer<br>dad(dlgname, tree_insert, row, cells) - insert before row (0 means first item of the root); cells is like enum values; returns a row pointer<br>dad(dlgname, begin_hbox) - begin horizontal box<br>dad(dlgname, begin_vbox) - begin vertical box<br>dad(dlgname, begin_hpane) - begin horizontal paned box<br>dad(dlgname, begin_vpane) - begin vertical paned box<br>dad(dlgname, begin_table, cols) - begin table layout box<br>dad(dlgname, begin_tabbed, tabnames) - begin a view with tabs; tabnames are like choices in an enum; must have as many children widgets as many names it has<br>dad(dlgname, end) - end the last begin<br>dad(dlgname, flags, flg1, flg2, ...) - change the flags of the last created widget<br>dad(dlgname, onchange, action) - set the action to be called on widget change<br>dad(dlgname, run, title) - present dlgname as a non-modal dialog<br>dad(dlgname, run_modal, title) - present dlgname as a modal dialog<br>dad(dlgname, exists) - returns wheter the named dialog exists (0 or 1)<br>dad(dlgname, set, widgetID, val) - changes the value of a widget in a running dialog <br>dad(dlgname, get, widgetID, [unit]) - return the current value of a widget</td><td>lib_hid_common plugin</td>
 <tr><td>ddraft</td><td>Enter 2d drafting CLI mode or execute command</td><td>ddraft([command])</td><td>ddraft plugin</td>
 <tr><td><a href="action_details.html#distribute">distribute</a></td><td>Distribute subcircuits</td><td>Distribute(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td><td>distalign plugin</td>
 <tr><td><a href="action_details.html#distributetext">distributetext</a></td><td>Distribute Text Elements</td><td>DistributeText(Y, [Lefts/Rights/Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td><td>distaligntext plugin</td>
@@ -279,9 +296,9 @@ This is pcb-rnd 2.1.2 (svn r25015) an interactive printed circuit board editor ,
 <tr><td>find2perf</td><td>Measure the peformance of find2.c</td><td>find2perf()</td><td>diag plugin</td>
 <tr><td>forcecolor</td><td>change selected objects' color to #RRGGBB, reset if does not start with '#'</td><td>forcecolor(#RRGGBB)</td><td>diag plugin</td>
 <tr><td>fp_rehash</td><td>Flush the library index; rescan all library search paths and rebuild the library index. Useful if there are changes in the library during a pcb-rnd session.</td><td>fp_rehash()</td><td></td>
-<tr><td>gui_FallbackColorPick</td><td>Intenal: GUI frontend action. Do not use directly.</td><td></td><td>dialogs plugin</td>
-<tr><td>gui_MessageBox</td><td>Intenal: GUI frontend action. Do not use directly.</td><td></td><td>dialogs plugin</td>
-<tr><td>gui_PromptFor</td><td>Intenal: GUI frontend action. Do not use directly.</td><td></td><td>dialogs plugin</td>
+<tr><td>gui_FallbackColorPick</td><td>Intenal: GUI frontend action. Do not use directly.</td><td></td><td>lib_hid_common plugin</td>
+<tr><td>gui_MessageBox</td><td>Intenal: GUI frontend action. Do not use directly.</td><td></td><td>lib_hid_common plugin</td>
+<tr><td>gui_PromptFor</td><td>Intenal: GUI frontend action. Do not use directly.</td><td></td><td>lib_hid_common plugin</td>
 <tr><td>h</td><td>Print a help message for commands.</td><td>h</td><td>shand_cmd plugin</td>
 <tr><td>integrity</td><td>perform integrirty check on the current board and generate errors if needed</td><td>integrity()</td><td>diag plugin</td>
 <tr><td>javascript</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
@@ -309,7 +326,7 @@ This is pcb-rnd 2.1.2 (svn r25015) an interactive printed circuit board editor ,
 <tr><td>python</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>q!</td><td>Quits the application without confirming.</td><td>q!</td><td>shand_cmd plugin</td>
 <tr><td><a href="action_details.html#q">q</a></td><td>Quits the application after confirming.</td><td>q</td><td>shand_cmd plugin</td>
-<tr><td>query</td><td>Perform various queries on PCB data.</td><td>query(dump, expr) - dry run: compile and dump an expression</td><td></td>
+<tr><td>query</td><td>Perform various queries on PCB data.</td><td>query(dump, expr) - dry run: compile and dump an expression<br>query(append, idplist, expr) - compile and run expr and append the idpath of resulting objects on idplist</td><td></td>
 <tr><td>regpoly</td><td>Generate regular polygon. Where is x;y and radius is either r or rx;ry. Rotation is in degrees.</td><td>regpoly([where,] corners, radius [,rotation])</td><td>shape plugin</td>
 <tr><td><a href="action_details.html#rn">rn</a></td><td>Reads netlist.</td><td>rn [name]</td><td>shand_cmd plugin</td>
 <tr><td>roundrect</td><td>Generate a rectangle with round corners</td><td>roundrect([where,] width[;height] [,rx[;ry] [,rotation [,cornstyle [,roundness]]]])</td><td>shape plugin</td>
