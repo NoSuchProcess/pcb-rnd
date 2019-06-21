@@ -74,6 +74,13 @@ fgw_error_t pcb_act_Atomic(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (pcb_bumped)
 			pcb_undo_inc_serial();
 		break;
+	case F_Freeze:
+		pcb_undo_freeze_serial();
+		break;
+	case F_UnFreeze:
+	case F_Thaw:
+		pcb_undo_unfreeze_serial();
+		break;
 	default:
 		pcb_message(PCB_MSG_ERROR, "Invalid argument for Atomic()\n");
 		PCB_ACT_IRES(-1);
