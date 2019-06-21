@@ -35,11 +35,18 @@
 
 static const char *guess_lang(const char *ext);
 
-static int perma_load(const char *id, const char *path_in, const char *lang)
+static int perma_load(const char *dir, const char *id, const char *path_in, const char *lang)
 {
-	char spath[PCB_PATH_MAX];
-	pcb_trace("perma load: %s::%s::%s::\n", id, path_in, lang);
-	return 0;
+	char spath[PCB_PATH_MAX], *path;
+
+	if (!pcb_is_path_abs(path_in)) {
+		path = spath;
+		pcb_snprintf(spath, sizeof(spath), "%s%c%s", dir, PCB_DIR_SEPARATOR_C, path_in);
+	}
+	else
+		path = path_in;
+
+	return pcb_script_load(id, path, lang);
 }
 
 static void perma_script_load_conf(const char *dir)
@@ -99,7 +106,7 @@ static void perma_script_load_conf(const char *dir)
 			lang = guess_lang(tmp+1);
 		}
 
-		if (perma_load(id, path_in, lang) == 0)
+		if (perma_load(dir, id, path_in, lang) == 0)
 			succ++;
 		else
 			pcb_message(PCB_MSG_ERROR, "failed to load script '%s' in '%s'\n", n->name, path);
