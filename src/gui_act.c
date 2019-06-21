@@ -1803,6 +1803,15 @@ static fgw_error_t pcb_act_Help(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_Redraw[] = "Redraw()";
+static const char pcb_acth_Redraw[] = "Redraw the entire screen";
+static fgw_error_t pcb_act_Redraw(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_gui->invalidate_all(&PCB->hidlib);
+	PCB_ACT_IRES(0);
+	return 0;
+}
+
 pcb_action_t gui_action_list[] = {
 	{"Display", pcb_act_Display, pcb_acth_Display, pcb_acts_Display},
 	{"CycleDrag", pcb_act_CycleDrag, pcb_acth_CycleDrag, pcb_acts_CycleDrag},
@@ -1832,7 +1841,8 @@ pcb_action_t gui_action_list[] = {
 	{"BoardFlip", pcb_act_boardflip, pcb_acth_boardflip, pcb_acts_boardflip},
 	{"ClipInhibit", pcb_act_ClipInhibit, pcb_acth_ClipInhibit, pcb_acts_ClipInhibit},
 	{"Benchmark", pcb_act_Benchmark, pcb_acth_Benchmark, pcb_acts_Benchmark},
-	{"Help", pcb_act_Help, pcb_acth_Help, pcb_acts_Help}
+	{"Help", pcb_act_Help, pcb_acth_Help, pcb_acts_Help},
+	{"Redraw", pcb_act_Redraw, pcb_acth_Redraw, pcb_acts_Redraw}
 };
 
 PCB_REGISTER_ACTIONS(gui_action_list, NULL)
