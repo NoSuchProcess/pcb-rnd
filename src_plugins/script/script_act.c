@@ -200,7 +200,7 @@ static void btn_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 
 	PCB_DAD_AUTORUN("script_load", idlang.dlg, "load script", NULL, failed);
 
-	if ((!failed) && (pcb_script_load(idlang.dlg_result[idlang.wid].str_value, fn, idlang.dlg_result[idlang.wlang].str_value) == 0))
+	if ((!failed) && (pcb_script_load(idlang.dlg[idlang.wid].default_val.str_value, fn, idlang.dlg[idlang.wlang].default_val.str_value) == 0))
 		script_dlg_s2d(ctx);
 
 	PCB_DAD_FREE(idlang.dlg);
