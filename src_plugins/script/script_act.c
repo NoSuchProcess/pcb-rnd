@@ -32,6 +32,30 @@
 #include "hid_dad_tree.h"
 #include "live_script.h"
 
+
+TODO("This should be in fungw")
+static const char *guess_lang(const char *ext)
+{
+	const char **s, *tr[] = {
+		"awk",         "mawk",
+		"ruby",        "mruby",
+		"py",          "python",
+		"js",          "duktape",
+		"javascript",  "duktape",
+		"stt",         "estutter",
+		NULL, NULL
+	};
+
+	/* translate short name to long name */
+	for(s = tr; *s != NULL; s += 2) {
+		if (strcmp(*s, ext) == 0) {
+			s++;
+			return *s;
+		}
+	}
+	return ext;
+}
+
 /*** dialog box ***/
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
@@ -371,15 +395,6 @@ static const char pcb_acts_Oneliner[] = "Oneliner(lang, script)";
 static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *first = NULL, *lang = argv[0].val.func->name, *scr = NULL;
-	const char **s, *tr[] = {
-		"awk",         "mawk",
-		"ruby",        "mruby",
-		"py",          "python",
-		"js",          "duktape",
-		"javascript",  "duktape",
-		"stt",         "estutter",
-		NULL, NULL
-	};
 
 	if (strcmp(lang, "oneliner") == 0) {
 		/* call to oneliner(lang, script) */
@@ -407,14 +422,7 @@ static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	/* translate short name to long name */
-	for(s = tr; *s != NULL; s += 2) {
-		if (strcmp(*s, lang) == 0) {
-			s++;
-			lang = *s;
-			break;
-		}
-	}
+	lang = guess_lang(lang);
 
 	if (scr == NULL) {
 		PCB_ACT_IRES(pcb_cli_enter(lang, lang));
