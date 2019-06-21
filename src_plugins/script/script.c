@@ -238,6 +238,13 @@ int pcb_script_unload(const char *id, const char *preunload)
 	return 0;
 }
 
+static char *script_fn(const char *fn)
+{
+	if (*fn != '~')
+		return pcb_strdup(fn);
+	return pcb_strdup_printf("%s%c%s", pcbhl_conf.rc.path.home, PCB_DIR_SEPARATOR_C, fn+1);
+}
+
 int pcb_script_load(const char *id, const char *fn, const char *lang)
 {
 	char name[PCB_PATH_MAX];
@@ -277,7 +284,7 @@ TODO(": guess")
 	s = calloc(1, sizeof(script_t));
 	s->pup = pup;
 	s->id = pcb_strdup(id);
-	s->fn = pcb_strdup(fn);
+	s->fn = script_fn(fn);
 	s->lang = pcb_strdup(lang);
 
 	old_id = script_persistency_id;
