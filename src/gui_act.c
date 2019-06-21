@@ -648,21 +648,31 @@ static fgw_error_t pcb_act_CycleDrag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 /* -------------------------------------------------------------------------- */
 
-static const char pcb_acts_Message[] = "message(message)";
+static const char pcb_acts_Message[] = "message([ERROR|WARNING|INFO|DEBUG,] message)";
 static const char pcb_acth_Message[] = "Writes a message to the log window.";
 /* DOC: message.html */
 static fgw_error_t pcb_act_Message(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	int i;
+	int i, how = PCB_MSG_INFO;
 
 	if (argc < 2)
 		PCB_ACT_FAIL(Message);
 
+	i = 1;
+	if (argc > 2) {
+		const char *hows;
+		PCB_ACT_MAY_CONVARG(i, FGW_STR, Message, hows = argv[i].val.str);
+		if (strcmp(hows, "ERROR") == 0)        { i++; how = PCB_MSG_ERROR; }
+		else if (strcmp(hows, "WARNING") == 0) { i++; how = PCB_MSG_WARNING; }
+		else if (strcmp(hows, "INFO") == 0)    { i++; how = PCB_MSG_INFO; }
+		else if (strcmp(hows, "DEBUG") == 0)   { i++; how = PCB_MSG_DEBUG; }
+	}
+
 	PCB_ACT_IRES(0);
-	for (i = 1; i < argc; i++) {
+	for(; i < argc; i++) {
 		PCB_ACT_MAY_CONVARG(i, FGW_STR, Message, ;);
-		pcb_message(PCB_MSG_INFO, argv[i].val.str);
-		pcb_message(PCB_MSG_INFO, "\n");
+		pcb_message(how, argv[i].val.str);
+		pcb_message(how, "\n");
 	}
 
 	return 0;
