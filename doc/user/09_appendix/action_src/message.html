@@ -2,3 +2,16 @@ This action displays a message to the log window.  This action is primarily
 provided for use by scripts and external programs which may interface with
 pcb-rnd. If multiple arguments are given, each one is sent to the log window
 followed by a newline.
+<p>
+If there are 2 or more arguments and the first argument matches, in a case
+sensitive manner, one of the below keywords, the message is registered on
+the specified error level. Else the PCB_MSG_INFO error level is used.
+<p>
+<table border=1>
+<tr><th>first argument<th>erro level
+<tr><td>ERROR         <td> PCB_MSG_ERROR
+<tr><td>WARNING       <td> PCB_MSG_WARNING
+<tr><td>INFO          <td> PCB_MSG_INFO
+<tr><td>DEBUG         <td> PCB_MSG_DEBUG
+</table>
+
