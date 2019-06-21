@@ -40,6 +40,30 @@ is invoked from the menu system or by running action
 <pre>
 	BrowseScripts()
 </pre>
+<p>
+Stored scripts also can be made permanent, which means they are always loaded
+automatically on startup. pcb-rnd loads scripts.lht from the user config
+dir (typically ~/.pcb-rnd/) and from the system config dir (typically
+/usr/share/pcb-rnd/). This file has the list of scripts to load under
+its root <i>li:pcb-rnd-perma-script-v1</i>. Each script is a hash node,
+node name is the ID of the script.
+<p>
+The has nodes have two text children: path and lang. Node <i>path</i>
+sepcifies the path to the script file to load; if relative, it is
+relative to scripts.lht. Node <i>lang</i> is optional and specifies
+the scripting language engine to load for the script - when not specified, a
+guess is made based on <i>path</i>.
+<p>
+For example the user may place foo.awk in ~/.pcb-rnd/scripts/foo.awk and
+write the following ~/.pcb-rnd/scripts.lht:
+<pre>
+li:pcb-rnd-perma-script-v1 {
+	ha:bar { path=scripts/foo.awk; lang=mawk; }
+}
+</pre>
+<p>
+which will then load ~/.pcb-rnd/scripts/foo.awk using the mawk scripting
+engine with the script id <i>bar</i>.
 
 <H2> 1.2. Oneliners </H2>
 <p>
