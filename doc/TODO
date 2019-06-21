@@ -9,7 +9,7 @@
 + BUG: double check parametric footprint edit window: bug_files/parametric.txt [report: Piotr]
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
 + FEATURE: grid size change should be undoable? -> no, see http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=undoability [report:Evan]
-- FEATURE: scripting: example script that tents/untents all/selected/object vias [report: keantoken]
++ FEATURE: scripting: example script that tents/untents all/selected/object vias [report: keantoken]
 - FEATURE: edakrill script for growing line thickness keeping the line on one side (side alignment) [report: keantoken]
 - FEATURE: lesstif DAD support for toggle buttons [report: Igor2]
 - BUG: layer selector GUI gets new random layers on board import with Dave's confidental example board [report: Igor2]
