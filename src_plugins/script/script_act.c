@@ -216,7 +216,7 @@ static void btn_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 				idlang.wlang = PCB_DAD_CURRENT(idlang.dlg);
 				tmp = strrchr(fn, '.');
 				if (tmp != NULL)
-					idlang.dlg[idlang.wlang].default_val.str_value = pcb_strdup(tmp+1);
+					idlang.dlg[idlang.wlang].default_val.str_value = pcb_strdup(guess_lang(tmp+1));
 		PCB_DAD_END(idlang.dlg);
 		PCB_DAD_BUTTON_CLOSES(idlang.dlg, clbtn);
 	PCB_DAD_END(idlang.dlg);
