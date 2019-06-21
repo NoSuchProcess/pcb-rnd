@@ -10,6 +10,11 @@ number is set to the saved number, as there's nothing to undo.  If
 something did happen, the serial number is incremented so that these
 actions are counted as a single undo step.
 <p>
+An alternative mechanism is freeze/unfreeze for the case restoring between
+every two actions is not possible or not practical. The sequence is
+<arg>Save</arg>, <arg>Freeze</arg>, call actions, <arg>UnFreeze</arg>,
+<arg>Block</arg>.
+<p>
 Arguments:
 <p>
 <table border=1 cellspacing=0>
@@ -24,4 +29,10 @@ Arguments:
 
 	<tr><th> Block
 	<td> Does a Restore if there was nothing to undo, else does a Close.
+
+	<tr><th> Freeze
+	<td> Make sure no subsequent actions will bump the undo serial
+
+	<tr><th> UnFreeze or Thaw
+	<td> Allow subsequent actions to bump the undo serial again
 </table>
