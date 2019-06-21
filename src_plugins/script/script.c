@@ -377,6 +377,7 @@ int script_oneliner(const char *lang, const char *src)
 }
 
 #include "timer.c"
+#include "perma.c"
 #include "script_act.c"
 
 char *script_cookie = "script plugin";
@@ -411,5 +412,6 @@ int pplg_init_script(void)
 	htsp_init(&scripts, strhash, strkeyeq);
 	pup_init(&script_pup);
 	pcb_live_script_init();
+	perma_script_init();
 	return 0;
 }
