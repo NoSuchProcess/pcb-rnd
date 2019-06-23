@@ -448,7 +448,8 @@ static pcb_hid_row_t *find_fp_prefix_(pcb_hid_tree_t *tree, gdl_list_t *rowlist,
 	pcb_hid_row_t *r, *pr;
 
 	for(r = gdl_first(rowlist); r != NULL; r = gdl_next(rowlist, r)) {
-		if (pcb_strncasecmp(r->cell[0], name, namelen) == 0)
+		pcb_fplibrary_t *l = r->user_data;
+		if ((pcb_strncasecmp(r->cell[0], name, namelen) == 0) && (l->type == LIB_FOOTPRINT) && (l->data.fp.type == PCB_FP_PARAMETRIC))
 			return r;
 		pr = find_fp_prefix_(tree, &r->children, name, namelen);
 		if (pr != NULL)
