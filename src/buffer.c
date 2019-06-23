@@ -206,7 +206,10 @@ fgw_error_t pcb_act_LoadFootprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const char *Filename, const char *fmt)
 {
-	pcb_board_t *newPCB = pcb_board_new_(pcb_false);
+	pcb_board_t *orig, *newPCB = pcb_board_new_(pcb_false);
+
+	orig = PCB;
+	PCB = newPCB;
 
 	/* new data isn't added to the undo list */
 	if (!pcb_parse_pcb(newPCB, Filename, fmt, CFR_invalid, 0)) {
@@ -222,6 +225,7 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 		pcb_data_binding_update(pcb, Buffer->Data);
 		pcb_board_remove(newPCB);
 		Buffer->from_outside = 1;
+		PCB = orig;
 		pcb_event(&newPCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL); /* undo the events generated on load */
 		return pcb_true;
 	}
@@ -230,6 +234,7 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 	pcb_board_remove(newPCB);
 	if (Buffer->Data != NULL)
 		PCB_CLEAR_PARENT(Buffer->Data);
+	PCB = orig;
 	pcb_event(&pcb->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL); /* undo the events generated on load */
 	Buffer->from_outside = 0;
 	return pcb_false;
