@@ -433,8 +433,10 @@ void pcb_notify_mode(pcb_hidlib_t *hidlib)
 	if (pcbhl_conf.temp.click_cmd_entry_active && (pcb_cli_mouse(1) == 0))
 		return;
 
-	if (conf_core.temp.rat_warn)
-		pcb_data_clear_flag(PCB->Data, PCB_FLAG_WARN, 1, 0);
+	if (conf_core.temp.rat_warn) {
+		if (pcb_data_clear_flag(PCB->Data, PCB_FLAG_WARN, 1, 0) > 0)
+			pcb_board_set_changed_flag(pcb_true);
+	}
 	pcb_tool_notify_mode();
 	pcb_draw();
 }
