@@ -309,10 +309,11 @@ void pcb_dad_spin_up_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 	pcb_hid_attribute_t *str = attr - spin->wup + spin->wstr;
 	pcb_hid_attribute_t *end = attr - spin->wup + spin->cmp.wend;
 
-	pcb_dad_spin_txt_enter_cb(hid_ctx, caller_data, str); /* fix up missing unit */
+	pcb_dad_spin_txt_enter_cb_dry(hid_ctx, caller_data, str); /* fix up missing unit */
 
 	do_step(hid_ctx, spin, str, end, get_step(spin, end, str));
 	spin_changed(hid_ctx, caller_data, spin, end);
+	pcb_dad_spin_txt_enter_call_users(hid_ctx, end);
 }
 
 void pcb_dad_spin_down_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -321,10 +322,11 @@ void pcb_dad_spin_down_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	pcb_hid_attribute_t *str = attr - spin->wdown + spin->wstr;
 	pcb_hid_attribute_t *end = attr - spin->wdown + spin->cmp.wend;
 
-	pcb_dad_spin_txt_enter_cb(hid_ctx, caller_data, str); /* fix up missing unit */
+	pcb_dad_spin_txt_enter_cb_dry(hid_ctx, caller_data, str); /* fix up missing unit */
 
 	do_step(hid_ctx, spin, str, end, -get_step(spin, end, str));
 	spin_changed(hid_ctx, caller_data, spin, end);
+	pcb_dad_spin_txt_enter_call_users(hid_ctx, end);
 }
 
 void pcb_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -373,7 +375,7 @@ void pcb_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 	spin_changed(hid_ctx, caller_data, spin, end);
 }
 
-void pcb_dad_spin_txt_enter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+void pcb_dad_spin_txt_enter_cb_dry(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)attr->user_data;
 	pcb_hid_attribute_t *str = attr;
@@ -423,6 +425,26 @@ void pcb_dad_spin_txt_enter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribu
 		spin_changed(hid_ctx, caller_data, spin, end);
 	}
 }
+
+void pcb_dad_spin_txt_enter_call_users(void *hid_ctx, pcb_hid_attribute_t *end)
+{
+	struct {
+		void *caller_data;
+	} *hc = hid_ctx;
+
+	if (end->enter_cb != NULL)
+		end->enter_cb(hid_ctx, hc->caller_data, end);
+}
+
+void pcb_dad_spin_txt_enter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)attr->user_data;
+	pcb_hid_attribute_t *end = attr - spin->wstr + spin->cmp.wend;
+
+	pcb_dad_spin_txt_enter_cb_dry(hid_ctx, caller_data, attr);
+	pcb_dad_spin_txt_enter_call_users(hid_ctx, end);
+}
+
 
 void pcb_dad_spin_unit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
