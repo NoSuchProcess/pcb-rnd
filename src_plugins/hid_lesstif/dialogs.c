@@ -540,6 +540,16 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 	return -1;
 }
 
+static void readres_all(lesstif_attr_dlg_t *ctx)
+{
+	int i;
+
+	for (i = 0; i < ctx->n_attrs; i++) {
+		attribute_dialog_readres(ctx, i);
+		free(ctx->btn[i]);
+	}
+}
+
 static void ltf_attr_destroy_cb(Widget w, void *v, void *cbs)
 {
 	lesstif_attr_dlg_t *ctx = v;
@@ -554,12 +564,9 @@ static void ltf_attr_destroy_cb(Widget w, void *v, void *cbs)
 	}
 	if (!ctx->widget_destroyed) {
 		ctx->widget_destroyed = 1;
+		readres_all(ctx);
 		XtUnmanageChild(w);
 		XtDestroyWidget(w);
-		free(ctx->wl);
-		free(ctx->wltop);
-		free(ctx->id);
-		free(ctx);
 	}
 }
 
@@ -714,7 +721,6 @@ void lesstif_attr_dlg_raise(void *hid_ctx)
 void lesstif_attr_dlg_free(void *hid_ctx)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
-	int i;
 
 	if (ctx->set_ok)
 		pcb_ltf_ok = DAD_CLOSED;
@@ -723,10 +729,8 @@ void lesstif_attr_dlg_free(void *hid_ctx)
 		return;
 
 	ctx->already_closing = 1;
-	for (i = 0; i < ctx->n_attrs; i++) {
-		attribute_dialog_readres(ctx, i);
-		free(ctx->btn[i]);
-	}
+	if (!ctx->widget_destroyed)
+		readres_all(ctx);
 
 	if ((!ctx->close_cb_called) && (ctx->close_cb != NULL)) {
 		ctx->close_cb_called = 1;
