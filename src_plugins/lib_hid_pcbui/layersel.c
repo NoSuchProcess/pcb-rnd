@@ -677,14 +677,14 @@ static void layersel_create_virtual(layersel_ctx_t *ls, pcb_board_t *pcb)
 		ls_layer_t *lys = lys_get(ls, &ls->menu_layer, n, 1);
 		lys->ml = ml;
 		lys->grp_vis = 0;
-		layersel_create_layer_open(ls, lys, ml->name, ml->force_color, 1, 0, 0);
+		layersel_create_layer_open(ls, lys, ml->name, ml->force_color, 1, 0, (ml->sel_offs != 0));
 	}
 	layersel_end_grp_open(ls);
 
 	layersel_begin_grp_closed(ls, "Virtual", lgs);
 	for(n = 0, ml = pcb_menu_layers; ml->name != NULL; n++,ml++) {
 		ls_layer_t *lys = lys_get(ls, &ls->menu_layer, n, 0);
-		layersel_create_layer_closed(ls, lys, ml->name, ml->force_color, 1, 0, 0, 0);
+		layersel_create_layer_closed(ls, lys, ml->name, ml->force_color, 1, 0, 0, (ml->sel_offs != 0));
 	}
 	layersel_end_grp_closed(ls);
 }
