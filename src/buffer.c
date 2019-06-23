@@ -210,6 +210,7 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 
 	orig = PCB;
 	PCB = newPCB;
+	pcb_layergrp_inhibit_inc();
 
 	/* new data isn't added to the undo list */
 	if (!pcb_parse_pcb(newPCB, Filename, fmt, CFR_invalid, 0)) {
@@ -226,7 +227,7 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 		pcb_board_remove(newPCB);
 		Buffer->from_outside = 1;
 		PCB = orig;
-		pcb_event(&newPCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL); /* undo the events generated on load */
+		pcb_layergrp_inhibit_dec();
 		return pcb_true;
 	}
 
@@ -235,7 +236,7 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 	if (Buffer->Data != NULL)
 		PCB_CLEAR_PARENT(Buffer->Data);
 	PCB = orig;
-	pcb_event(&pcb->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL); /* undo the events generated on load */
+	pcb_layergrp_inhibit_dec();
 	Buffer->from_outside = 0;
 	return pcb_false;
 }
