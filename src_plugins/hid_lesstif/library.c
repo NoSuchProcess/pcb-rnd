@@ -119,8 +119,12 @@ static void lib_dfs(pcb_fplibrary_t *parent, int level)
 		vtp0_append(&picks, parent);
 		len = strlen(parent->name);
 		s = malloc(len+level+1);
-		for(n = 0; n < level-1; n++) s[n] = ' ';
-		strcpy(s+level-1, parent->name);
+		if (level > 0) {
+			for(n = 0; n < level-1; n++) s[n] = ' ';
+			strcpy(s+level-1, parent->name);
+		}
+		else
+			strcpy(s, parent->name);
 		vtp0_append(&pick_names, s);
 	}
 
