@@ -48,13 +48,13 @@
 #define PCB_OBJ_PROP "pcb-rnd_context"
 
 typedef struct {
+	void *caller_data; /* WARNING: for now, this must be the first field (see core spinbox enter_cb) */
 	pcb_gtk_common_t *com;
 	pcb_hid_attribute_t *attrs;
 	pcb_hid_attr_val_t *results;
 	GtkWidget **wl;     /* content widget */
 	GtkWidget **wltop;  /* the parent widget, which is different from wl if reparenting (extra boxes, e.g. for framing or scrolling) was needed */
 	int n_attrs;
-	void *caller_data;
 	GtkWidget *dialog;
 	int rc, close_cb_called;
 	pcb_hid_attr_val_t property[PCB_HATP_max];

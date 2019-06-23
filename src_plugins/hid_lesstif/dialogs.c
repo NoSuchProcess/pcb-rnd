@@ -131,13 +131,13 @@ int pcb_ltf_wait_for_dialog(Widget w)
 /* ------------------------------------------------------------ */
 
 typedef struct {
+	void *caller_data; /* WARNING: for now, this must be the first field (see core spinbox enter_cb) */
 	pcb_hid_attribute_t *attrs;
 	int n_attrs, actual_nattrs;
 	Widget *wl;   /* content widget */
 	Widget *wltop;/* the parent widget, which is different from wl if reparenting (extra boxes, e.g. for framing or scrolling) was needed */
 	Widget **btn; /* enum value buttons */
 	pcb_hid_attr_val_t *results;
-	void *caller_data;
 	Widget dialog;
 	pcb_hid_attr_val_t property[PCB_HATP_max];
 	Dimension minw, minh;
