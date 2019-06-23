@@ -84,7 +84,7 @@ static void gerber_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, 
 
 static int verbose;
 static int all_layers;
-static int is_mask, was_drill;
+static int is_mask, was_drill, allow_gerb_drill = 1;
 static int is_drill, is_plated;
 static pcb_composite_op_t gerber_drawing_mode, drawing_mode_issued;
 static int flash_drills, line_slots;
@@ -973,7 +973,7 @@ static void use_gc(pcb_hid_gc_t gc, int radius)
 					/* remove this else part once excellon is removed: when exporting
 					   drill in gerber, we shall always use the above code and generate
 					   G54 */
-					if (!is_drill)
+					if (!is_drill || allow_gerb_drill)
 						fprintf(f, "G54D%d*", aptr->dCode);
 				}
 			}
@@ -1051,7 +1051,8 @@ static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 			   is complete: excellon should do new_pending, not gerber */
 			if (!finding_apertures)
 				pcb_drill_new_pending(is_plated ? &pdrills : &udrills, x1, y1, x2, y2, dia*2);
-			return;
+			if (!allow_gerb_drill || finding_apertures)
+				return;
 		}
 		else {
 			if (finding_apertures)
@@ -1234,7 +1235,8 @@ static void gerber_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, 
 			/* This is the old, excellon-in-gerber behavior - remove this once the split
 			   is complete: excellon should do new_pending, not gerber */
 			pcb_drill_new_pending(is_plated ? &pdrills : &udrills, cx, cy, cx, cy, radius * 2);
-			return;
+			if (!allow_gerb_drill || finding_apertures)
+				return;
 		}
 		else {
 			if (finding_apertures)
