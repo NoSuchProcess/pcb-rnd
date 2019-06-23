@@ -49,6 +49,7 @@
 - BUG: gtk2_gl issue. view in netlist window circuit view clips or goes black when changing selected net (repro. w/ doc/tutorials/15_no_sch/step3.lht and open netlist view {w n} [report: miloh]
 - BUG: thermal not on undo stack. reproduce: new layout, place via, place poly around via, use thermal tool on via, {u u } undo shows thermal isn't undoable [report: miloh]
 - BUG: segfault when opening gui editor from library window. New layout, {w l } 'conn(1,2)' click on gui param editor [report: miloh] 
+- BUG: rat draw undo not stacking correctly -- repro: draw a rat, { u u } undo, then { c r } redraws it [report: miloh]
 
 2. For later releases ===============================================================================
 - CLEANUP: DAD close sequence: TODO("#51.*"): there are three sources to trigger hid_ctx (caller's free on modal, close button free and window destroy callback); requre the user to always call free last and add bits to track what frees are already called and free(ctx) last; test in 4 situations: (modal,nonmodal)*(close_buttons,wmclose) [report: Igor2]
