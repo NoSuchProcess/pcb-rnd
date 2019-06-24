@@ -7,6 +7,8 @@ Requirements:
     install libmawk - svn://repo.hu/libmawk/trunk
     (Many of the example scripts are written in awk)
     At least version 1.0.2 is required.
+    At the moment libmawk must be installed as root into /usr
+      e.g. './configure --prefix=/usr'
  3. download and install fungw - svn://repo.hu/fungw/trunk
  4. at the moment fungw must be installed as root, into /usr/local/ or /usr (TODO)
     during configuration, make sure all relevant scripting languages are found
