@@ -252,7 +252,7 @@ void pcb_xordraw_movecopy(void)
 
 	case PCB_OBJ_PSTK:
 		{
-			pcb_pstk_t *ps = (pcb_pstk_t *) pcb_crosshair.AttachedObject.Ptr1;
+			pcb_pstk_t *ps = (pcb_pstk_t *) pcb_crosshair.AttachedObject.Ptr2;
 			thindraw_moved_ps(ps, dx, dy);
 			break;
 		}
