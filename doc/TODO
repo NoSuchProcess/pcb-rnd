@@ -12,7 +12,6 @@
 + FEATURE: scripting: example script that tents/untents all/selected/object vias [report: keantoken]
 - FEATURE: edakrill script for growing line thickness keeping the line on one side (side alignment) [report: keantoken]
 - FEATURE: lesstif DAD support for toggle buttons [report: Igor2]
-- BUG: {m k s} padstack edit on new subc crash [report: Igor2]
 - BUG: pspanelize cam job fails [report: Igor2]
 + BUG: message log: when opens, even if scroll-to-bottom is set, it is not scrolling down automatically [report: keantoken]
 + BUG: press 'enter' in propedit right side value for string or coord - it should be taken as 'apply' [report: keantoken]
