@@ -627,6 +627,8 @@ static int tedax_parse_fp(pcb_data_t *data, FILE *fn, int multi, const char *blk
 			return -1;
 		found++;
 	} while(multi);
+	if (found == 0)
+		return -1;
 	return 0;
 }
 
