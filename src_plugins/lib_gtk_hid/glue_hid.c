@@ -382,7 +382,7 @@ static const char *ghid_command_entry(const char *ovr, int *cursor)
 
 static int ghid_clip_set(pcb_hid_clipfmt_t format, const void *data, size_t len)
 {
-	GtkClipboard *cbrd = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
+	GtkClipboard *cbrd = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 
 	switch(format) {
 		case PCB_HID_CLIPFMT_TEXT:
@@ -396,7 +396,7 @@ static int ghid_clip_set(pcb_hid_clipfmt_t format, const void *data, size_t len)
 
 int ghid_clip_get(pcb_hid_clipfmt_t *format, void **data, size_t *len)
 {
-	GtkClipboard *cbrd = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
+	GtkClipboard *cbrd = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 
 	if (gtk_clipboard_wait_is_text_available(cbrd)) {
 		gchar *txt = gtk_clipboard_wait_for_text(cbrd);
