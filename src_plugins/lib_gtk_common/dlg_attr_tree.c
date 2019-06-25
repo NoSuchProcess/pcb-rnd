@@ -507,3 +507,12 @@ static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, pcb_hid_attribute_t *a
 	g_object_set_data(G_OBJECT(view), PCB_OBJ_PROP, ctx);
 	return view;
 }
+
+static void ghid_tree_pre_free(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, int j)
+{
+	GtkWidget *tt = ctx->wl[j];
+	/* make sure the model filter functions are not called back in an async call
+	   when we already free'd attr */
+	gtk_tree_view_set_model(GTK_TREE_VIEW(tt), NULL);
+}
+

@@ -817,6 +817,7 @@ void ghid_attr_dlg_raise(void *hid_ctx)
 
 void ghid_attr_dlg_free(void *hid_ctx)
 {
+	int i;
 	attr_dlg_t *ctx = hid_ctx;
 
 	/* make sure there are no nested ghid_attr_dlg_free() calls */
@@ -833,8 +834,14 @@ void ghid_attr_dlg_free(void *hid_ctx)
 			ctx->close_cb(ctx->caller_data, PCB_HID_ATTR_EV_CODECLOSE);
 	}
 
+	for(i = 0; i < ctx->n_attrs; i++) {
+		switch(ctx->attrs[i].type) {
+			case PCB_HATT_TREE: ghid_tree_pre_free(ctx, &ctx->attrs[i], i); break;
+			default: break;
+		}
+	}
+
 	if (ctx->rc == 0) { /* copy over the results */
-		int i;
 		for (i = 0; i < ctx->n_attrs; i++) {
 			ctx->results[i] = ctx->attrs[i].default_val;
 			if (PCB_HAT_IS_STR(ctx->attrs[i].type) && (ctx->results[i].str_value))
