@@ -806,7 +806,7 @@ pcb_bool_t pcb_isc_pstk_line(pcb_pstk_t *ps, pcb_line_t *line)
 			tmp.Point2.Y = line->Point2.Y;
 			tmp.Thickness = line->Thickness;
 			tmp.Flags = pcb_no_flags();
-			return pcb_is_point_in_line(shape->data.circ.x + ps->x, shape->data.circ.y + ps->y, shape->data.circ.dia/2, &tmp);
+			return pcb_is_point_in_line(shape->data.circ.x + ps->x, shape->data.circ.y + ps->y, shape->data.circ.dia/2 + Bloat, &tmp);
 		}
 		case PCB_PSSH_HSHADOW:
 			return 0; /* non-object won't intersect */
