@@ -293,8 +293,22 @@ static void lib_btn_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
 	char *cell[4];
 
-	if (r == NULL)
-		return;
+	if (r == NULL) {
+		pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+
+		switch(pos) {
+			case 0: /* replace */
+				pcb_message(PCB_MSG_ERROR, "need to select a library path row first\n");
+				return;
+
+			case -1: /* before */
+				r = gdl_first(&tree->rows);
+				break;
+			case +1: /* after */
+				r = gdl_last(&tree->rows);
+				break;
+		}
+	}
 
 	cell[0] = pcb_strdup("");
 	cell[1] = pcb_strdup("");
