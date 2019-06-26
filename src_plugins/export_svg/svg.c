@@ -175,9 +175,13 @@ Flip board, look at it from the bottom side
 	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_flip 3
 
+	{"as-shown", "Render similar to as shown on screen (display overlays)",
+	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_as_shown 4
+
 	{"cam", "CAM instruction",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0}
-#define HA_cam 4
+#define HA_cam 5
 };
 
 #define NUM_OPTIONS (sizeof(svg_attribute_list)/sizeof(svg_attribute_list[0]))
@@ -210,6 +214,7 @@ void svg_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	pcb_hid_expose_ctx_t ctx;
+	pcb_xform_t *xform = NULL, xform_tmp;
 
 	ctx.view.X1 = 0;
 	ctx.view.Y1 = 0;
@@ -250,7 +255,15 @@ void svg_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	gds_init(&sbright);
 	gds_init(&sdark);
 	gds_init(&snormal);
-	pcbhl_expose_main(&svg_hid, &ctx, NULL);
+
+	if (options[HA_as_shown].int_value) {
+		/* disable (exporter default) hiding overlay in as_shown */
+		memset(&xform_tmp, 0, sizeof(xform_tmp));
+		xform = &xform_tmp;
+		xform_tmp.omit_overlay = 0;
+	}
+
+	pcbhl_expose_main(&svg_hid, &ctx, xform);
 
 	conf_update(NULL, -1); /* restore forced sets */
 }
