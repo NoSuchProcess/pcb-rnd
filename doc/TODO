@@ -45,6 +45,7 @@
 - BUG: gtk2_gl issue. view in netlist window circuit view clips or goes black when changing selected net (repro. w/ doc/tutorials/15_no_sch/step3.lht and open netlist view {w n} [report: miloh]
 + BUG: loading tEDAx netlist as layout causes memory leak-like behavior, reproduce: open pcb-rnd, load layout file { f o }, load doc/tutorials/16_tdx_netlist/7805.tdx (yes, user error/accident in loading tEDAx netlist as layout here) after this pcb-rnd spins core/cpu to 100%, doesn't respond to user input [report: miloh]
 / BUG: autoplace plugin is very non-deterministic with simple component input, it doesn't even converge [report: miloh] -> this is not a bug: autoplace is not trying to provide the optimal solution but a good enough solution and uses rand() for doing random tries - this is all by design
+/ CLEANUP: unify gui invocation options: pcb-rnd --help gtk_[gdk|gl] and pcb-rnd --help lesstif both show and use different input methods [report:miloh] -> can not unify: colormap is lesstif-specific, having multiple versions/renderings is gtk-specific
 
 2. For later releases ===============================================================================
 - CLEANUP: DAD close sequence: TODO("#51.*"): there are three sources to trigger hid_ctx (caller's free on modal, close button free and window destroy callback); requre the user to always call free last and add bits to track what frees are already called and free(ctx) last; test in 4 situations: (modal,nonmodal)*(close_buttons,wmclose) [report: Igor2]
@@ -271,7 +272,6 @@ FEATURES
 	limits the arc to move freely. Problem: this is not arc-specific, this happens with any buffer copy! going for no-design-limit is probably better
 	- similar issue: can't move outline lines to coord 0;0 because of line width.[report: pstuge]
 - FEATURE: while drawing a line, the temporary outline should reflect the layer color
-- CLEANUP: unify gui invocation options: pcb-rnd --help gtk_[gdk|gl] and pcb-rnd --help lesstif both show and use different input methods [report:miloh]
 - FEATURE: trace length calculator:
 	- click a line or arc or via
 	- start a search in two directions mapping lines, arcs and vias connected (green-highlight them, marking them found)
