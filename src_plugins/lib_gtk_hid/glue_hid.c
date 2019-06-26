@@ -370,7 +370,6 @@ static int ghid_usage(const char *topic)
 	fprintf(stderr, "\nInvocation:\n");
 	fprintf(stderr, "  pcb-rnd --gui gtk2_gdk [options]\n");
 	fprintf(stderr, "  pcb-rnd --gui gtk2_gl [options]\n");
-	fprintf(stderr, "  pcb-rnd --gui gtk3_cairo [options]\n");
 	fprintf(stderr, "  (depending on which gtk plugin(s) are compiled and installed)\n");
 	return 0;
 }
