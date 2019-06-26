@@ -13,13 +13,13 @@
 <g id="layer_10_bottom">
 <!--normal-->
  <line x1="0.6350" y1="3.1750" x2="12.0650" y2="3.1750" stroke-width="0.5080" stroke="#3a5fcd" stroke-linecap="round"/>
- <circle cx="6.3500" cy="1.9050" r="1.0999" stroke-width="0.5080" fill="#aaaaaa" stroke="none"/>
+ <circle cx="6.3500" cy="1.9050" r="1.0999" stroke-width="0.0000" fill="#aaaaaa" stroke="none"/>
  <circle cx="6.3500" cy="1.9050" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
 </g>
 <g id="layer_3_top">
 <!--normal-->
  <line x1="0.6350" y1="3.8100" x2="12.0650" y2="3.8100" stroke-width="0.5080" stroke="#8b2323" stroke-linecap="round"/>
- <circle cx="6.3500" cy="1.9050" r="1.0999" stroke-width="0.5080" fill="#7f7f7f" stroke="none"/>
+ <circle cx="6.3500" cy="1.9050" r="1.0999" stroke-width="0.0000" fill="#7f7f7f" stroke="none"/>
  <circle cx="6.3500" cy="1.9050" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
 </g>
 <g id="layer_1_topsilk">
