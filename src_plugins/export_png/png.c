@@ -882,6 +882,7 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	pcb_box_t tmp, region;
 	pcb_hid_expose_ctx_t ctx;
+	pcb_xform_t *xform = NULL, xform_tmp;
 
 	f = the_file;
 
@@ -957,8 +958,15 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 		}
 	}
 
+	if (as_shown) {
+		/* disable (exporter default) hiding overlay in as_shown */
+		memset(&xform_tmp, 0, sizeof(xform_tmp));
+		xform = &xform_tmp;
+		xform_tmp.omit_overlay = 0;
+	}
+
 	ctx.view = *bounds;
-	pcbhl_expose_main(&png_hid, &ctx, NULL);
+	pcbhl_expose_main(&png_hid, &ctx, xform);
 
 	memcpy(pcb_layer_stack, saved_layer_stack, sizeof(pcb_layer_stack));
 	conf_update(NULL, -1); /* restore forced sets */
