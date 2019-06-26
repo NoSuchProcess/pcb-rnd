@@ -151,6 +151,9 @@ static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	}
 
 	conf_update("rc/library_search_paths", -1);
+	conf_makedirty(ctx->role); /* low level lht_dom_node_alloc() wouldn't make user config to be saved! */
+	if (ctx->role == CFR_DESIGN)
+		pcb_board_set_changed_flag(1);
 
 	ctx->lib.lock--;
 }
