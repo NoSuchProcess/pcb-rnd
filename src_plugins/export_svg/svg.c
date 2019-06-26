@@ -556,7 +556,7 @@ static void svg_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 
 static void svg_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 {
-	gc->width = width;
+	gc->width = width < PCB_MM_TO_COORD(0.01) ? PCB_MM_TO_COORD(0.01) : width;
 }
 
 static void indent(gds_t *s)
