@@ -48,6 +48,7 @@
 / CLEANUP: unify gui invocation options: pcb-rnd --help gtk_[gdk|gl] and pcb-rnd --help lesstif both show and use different input methods [report:miloh] -> can not unify: colormap is lesstif-specific, having multiple versions/renderings is gtk-specific
 
 2. For later releases ===============================================================================
+- CLEANUP: remove next_gui and SwitchHID()
 - CLEANUP: DAD close sequence: TODO("#51.*"): there are three sources to trigger hid_ctx (caller's free on modal, close button free and window destroy callback); requre the user to always call free last and add bits to track what frees are already called and free(ctx) last; test in 4 situations: (modal,nonmodal)*(close_buttons,wmclose) [report: Igor2]
 - CLEANUP: rewrite parametric footprints to use tEDAx (or lihata)
 	- add "global" option for paste/mask tuning
@@ -233,9 +234,6 @@
 
 Lesstif:
 	- implement/enable local grid in lesstif (menu option is disabled)
-
-GTK2:
-	- next_gui: keep them open, hide
 
 FEATURES
 - BUILD: menuconfig and a config file for scconfig
