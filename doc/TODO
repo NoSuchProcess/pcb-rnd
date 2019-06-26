@@ -211,7 +211,6 @@
 - BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
 - FEATURE: "thermal recipe" so a padstack thermal can be put in a padstack or subc and it is change with the layer binding [report: jg]
 - CLEANUP: layer group rewrite: remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic
-- FEATURE: io_pcb: new, optional "layer tag" field in mainline's file format
 - FEATURE: layer binding dialog: manual layer binding (reuse csect?)
 - CLEANUP: reduce
 		- export_bom: rewrite the string list code using htsp and/or lists
@@ -276,3 +275,4 @@ FEATURES
 	- stop at polygons
 	- display the number of vias and net trace length along the found objects
 - FEATURE: revise the importer; http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=make_import ; should work without an existing file [report: TwisteR]
+- FEATURE: io_pcb: new, optional "layer tag" field in mainline's file format
