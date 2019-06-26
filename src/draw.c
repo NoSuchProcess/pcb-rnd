@@ -77,6 +77,7 @@ static void pcb_draw_pstk_marks(pcb_draw_info_t *info);
 static void pcb_draw_pstk_labels(pcb_draw_info_t *info);
 static void pcb_draw_pstk_holes(pcb_draw_info_t *info, pcb_layergrp_id_t group, pcb_pstk_draw_hole_t holetype);
 static void pcb_draw_ppv(pcb_draw_info_t *info, pcb_layergrp_id_t group);
+static void xform_setup(pcb_draw_info_t *info, pcb_xform_t *dst, const pcb_layer_t *Layer);
 
 /* In draw_ly_spec.c: */
 static void pcb_draw_paste(pcb_draw_info_t *info, int side);
@@ -507,12 +508,18 @@ static void pcb_draw_pstk_labels(pcb_draw_info_t *info)
 
 static void pcb_draw_pstk_holes(pcb_draw_info_t *info, pcb_layergrp_id_t group, pcb_pstk_draw_hole_t holetype)
 {
+	pcb_xform_t tmp;
+
+
 	if (!PCB->hole_on)
 		return;
 
+	xform_setup(info, &tmp, NULL);
 	info->objcb.pstk.gid = group;
 	info->objcb.pstk.holetype = holetype;
 	pcb_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_hole_callback, info, NULL);
+	info->xform = NULL;
+	info->layer = NULL;
 }
 
 static void pcb_draw_pstk_slots(pcb_draw_info_t *info, pcb_layergrp_id_t group, pcb_pstk_draw_hole_t holetype)
@@ -1006,6 +1013,7 @@ void pcbhl_expose_main(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx, pcb_xfo
 	if (!pcb_draw_inhibit) {
 		pcb_output_t save;
 		pcb_draw_info_t info;
+		pcb_xform_t xform_main_exp;
 
 		expose_begin(&save, hid);
 		info.pcb = PCB;
@@ -1013,6 +1021,16 @@ void pcbhl_expose_main(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx, pcb_xfo
 		info.xform_caller = xform_caller;
 		info.xform = info.xform_exporter = NULL;
 		info.layer = NULL;
+
+		if ((hid->exporter) && (xform_caller == NULL)) {
+			/* exporters without xform should automatically inherit the default xform for exporting, which differs from what GUI does */
+			memset(&xform_main_exp, 0, sizeof(xform_main_exp));
+			info.xform = info.xform_exporter = &xform_main_exp;
+
+			xform_main_exp.omit_overlay = 1; /* normally exporters shouldn't draw overlays */
+			info.xform_caller = &xform_main_exp;
+		}
+
 		draw_everything(&info);
 		expose_end(&save);
 	}

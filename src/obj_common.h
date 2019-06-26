@@ -96,11 +96,11 @@ struct pcb_box_s {  /* a bounding box */
 typedef double pcb_xform_mx_t[9];
 #define PCB_XFORM_MX_IDENT {1,0,0,   0,1,0,   0,0,1}
 
-struct pcb_xform_s {   /* generic object transformation */
+struct pcb_xform_s {   /* generic object transformation; all-zero means no transformation */
 	pcb_coord_t bloat;           /* if non-zero, bloat (positive) or shrink (negative) by this value */
 
 	unsigned layer_faded:1;      /* draw layer colors faded */
-
+	unsigned omit_overlay:1;     /* do not draw overlays (which are useful on screen but normally omitted on exports, except if --as-shown is specified */
 	/* WARNING: After adding new fields, make sure to update pcb_xform_add() and pcb_xform_is_nop() below */
 };
 
@@ -112,8 +112,13 @@ struct pcb_xform_s {   /* generic object transformation */
 		const pcb_xform_t *__src__ = src; \
 		__dst__->bloat += __src__->bloat; \
 		__dst__->layer_faded |= __src__->layer_faded; \
+		__dst__->omit_overlay |= __src__->omit_overlay; \
 	} while(0)
-#define pcb_xform_is_nop(src) (((src)->bloat == 0) && ((src)->layer_faded == 0))
+#define pcb_xform_is_nop(src) (((src)->bloat == 0) && ((src)->layer_faded == 0) && ((src)->omit_overlay == 0))
+
+/* Returns true if overlay drawing should be omitted */
+#define pcb_xform_omit_overlay(info) \
+	((info != NULL) && (info->xform != NULL) && (info->xform->omit_overlay != 0))
 
 /* Standard 2d matrix transformation using mx as pcb_xform_mx_t */
 #define pcb_xform_x(mx, x_in, y_in) ((double)(x_in) * mx[0] + (double)(y_in) * mx[1] + mx[2])

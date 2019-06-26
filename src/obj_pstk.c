@@ -657,7 +657,7 @@ pcb_r_dir_t pcb_pstk_draw_hole_callback(const pcb_box_t *b, void *cl)
 
 	/* indicate unplated holes with an arc; unplated holes are more rare
 	   than plated holes, thus unplated holes are indicated */
-	if (!proto->hplated) {
+	if (!proto->hplated && !pcb_xform_omit_overlay(info)) {
 		pcb_coord_t r = proto->hdia / 2;
 		r -= r/8; /* +12.5% */
 		pcb_gui->set_color(pcb_draw_out.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ? &conf_core.appearance.color.selected : &conf_core.appearance.color.subc);
