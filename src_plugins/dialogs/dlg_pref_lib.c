@@ -70,6 +70,13 @@ static void pref_lib_conf2dlg_pre(conf_native_t *cfg, int arr_idx)
 	}
 }
 
+static const char *pref_node_src(lht_node_t *nd)
+{
+	if (nd->file_name != NULL)
+		return nd->file_name;
+	return conf_role_name(conf_lookup_role(nd));
+}
+
 /* Current libraries from config to dialog box: after the change, fill
    in all widget rows from the conf */
 static void pref_lib_conf2dlg_post(conf_native_t *cfg, int arr_idx)
@@ -92,7 +99,7 @@ static void pref_lib_conf2dlg_post(conf_native_t *cfg, int arr_idx)
 		cell[0] = pcb_strdup(i->payload);
 		pcb_path_resolve(&PCB->hidlib, cell[0], &tmp, 0, pcb_false);
 		cell[1] = pcb_strdup(tmp == NULL ? "" : tmp);
-		cell[2] = pcb_strdup((i->prop.src->file_name == NULL ? SRC_BRD : i->prop.src->file_name));
+		cell[2] = pcb_strdup(pref_node_src(i->prop.src));
 		cell[3] = NULL;
 		pcb_dad_tree_append(attr, NULL, cell);
 	}
@@ -147,7 +154,7 @@ static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		nd->data.text.value = pcb_strdup(r->cell[0]);
 		nd->doc = m->doc;
 		lht_dom_list_append(lst, nd);
-		pcb_dad_tree_modify_cell(attr, r, 2, pcb_strdup(SRC_BRD));
+		pcb_dad_tree_modify_cell(attr, r, 2, pcb_strdup(pref_node_src(nd)));
 	}
 
 	conf_update("rc/library_search_paths", -1);
