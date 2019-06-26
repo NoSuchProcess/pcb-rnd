@@ -208,9 +208,6 @@
 		- new doc layers
 
 3. Long term ===============================================================================
-- BUG: draw a large padstack poly (as a subc term); put some vias (padtsacks) on top of it; with gdk and gl, after the 6th via some via rings will disappear [report: James]
-	-> reason: order of padstack shape rendering is random
-	-> we should probably render large objects first then smaller ones
 - BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
 - FEATURE: "thermal recipe" so a padstack thermal can be put in a padstack or subc and it is change with the layer binding [report: jg]
 - CLEANUP: layer group rewrite: remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic
