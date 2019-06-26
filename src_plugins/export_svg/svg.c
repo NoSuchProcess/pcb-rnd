@@ -805,7 +805,7 @@ static void draw_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pc
 static void svg_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
 	TRX(cx); TRY(cy);
-	draw_fill_circle(gc, cx, cy, radius, gc->width);
+	draw_fill_circle(gc, cx, cy, radius, 0);
 }
 
 static void draw_poly(gds_t *s, pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y, pcb_coord_t dx, pcb_coord_t dy, const char *clr)
