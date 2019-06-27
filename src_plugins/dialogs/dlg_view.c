@@ -627,7 +627,7 @@ static void pcb_dlg_view_full(const char *id, view_ctx_t *ctx, const char *title
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 				PCB_DAD_PREVIEW(ctx->dlg, view_expose_cb, view_mouse_cb, NULL, NULL, 100, 100, ctx);
 					ctx->wprev = PCB_DAD_CURRENT(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_PRV_BOARD);
 				PCB_DAD_LABEL(ctx->dlg, "(description)");
 					ctx->wdescription = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_LABEL(ctx->dlg, "(measure)");
@@ -670,7 +670,7 @@ static void pcb_dlg_view_simplified(const char *id, view_ctx_t *ctx, const char 
 			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_PREVIEW(ctx->dlg, view_expose_cb, view_mouse_cb, NULL, NULL, 100, 100, ctx);
 				ctx->wprev = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_PRV_BOARD);
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
 				PCB_DAD_LABEL(ctx->dlg, "(description)");
 					ctx->wdescription = PCB_DAD_CURRENT(ctx->dlg);

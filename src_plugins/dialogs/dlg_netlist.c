@@ -339,7 +339,7 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 					PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* right-top */
 						PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL);
 						PCB_DAD_PREVIEW(netlist_ctx.dlg, netlist_expose, netlist_mouse, NULL, &netlist_ctx.bb_prv, 100, 100, &netlist_ctx);
-							PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL);
+							PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_PRV_BOARD);
 							netlist_ctx.wprev = PCB_DAD_CURRENT(netlist_ctx.dlg);
 					PCB_DAD_END(netlist_ctx.dlg);
 					PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* right-bottom */
