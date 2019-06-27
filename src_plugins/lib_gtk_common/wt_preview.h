@@ -98,4 +98,8 @@ GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widge
 
 void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const pcb_box_t *data_view);
 
+/* invalidate (redraw) all preview widgets whose current view overlaps with
+   the screen box; if screen is NULL, redraw all */
+void pcb_gtk_preview_invalidate(pcb_gtk_common_t *com, const pcb_box_t *screen);
+
 #endif /* PCB_GTK_WT_REVIEW_H */
