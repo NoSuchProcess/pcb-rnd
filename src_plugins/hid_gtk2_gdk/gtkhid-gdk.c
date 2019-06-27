@@ -1138,6 +1138,7 @@ static void ghid_gdk_invalidate_lr(pcb_hidlib_t *hidlib, pcb_coord_t left, pcb_c
 	rect.height = maxy - miny;
 
 	redraw_region(hidlib, &rect);
+	pcb_gtk_previews_invalidate_lr(minx, maxx, miny, maxy);
 	ghid_gdk_screen_update();
 }
 
@@ -1146,6 +1147,7 @@ static void ghid_gdk_invalidate_all(pcb_hidlib_t *hidlib)
 {
 	if (ghidgui && ghidgui->topwin.menu.menu_bar) {
 		redraw_region(hidlib, NULL);
+		pcb_gtk_previews_invalidate_all();
 		ghid_gdk_screen_update();
 	}
 }
