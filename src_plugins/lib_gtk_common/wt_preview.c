@@ -478,6 +478,16 @@ GType pcb_gtk_preview_get_type()
 	return ghid_preview_type;
 }
 
+static gint preview_destroy_cb(GtkWidget *widget, gpointer data)
+{
+	pcb_gtk_common_t *com = data;
+	pcb_gtk_preview_t *prv = PCB_GTK_PREVIEW(widget);
+
+	gdl_remove(&com->previews, prv, link);
+	return 0;
+}
+
+
 GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget,
 																			pcb_gtk_preview_expose_t expose, pcb_hid_expose_t dialog_draw, pcb_gtk_preview_config_t config, void *draw_data)
 {
@@ -516,12 +526,15 @@ TODO(": maybe expose these through the object API so the caller can set it up?")
 	g_signal_connect(G_OBJECT(prv), "scroll_event", G_CALLBACK(preview_scroll_cb), NULL);
 	g_signal_connect(G_OBJECT(prv), "configure_event", G_CALLBACK(preview_configure_event_cb), NULL);
 	g_signal_connect(G_OBJECT(prv), "motion_notify_event", G_CALLBACK(preview_motion_cb), NULL);
+	g_signal_connect(G_OBJECT(prv), "destroy", G_CALLBACK(preview_destroy_cb), com);
+
 
 /*
 	g_signal_connect(G_OBJECT(prv), "key_press_event", G_CALLBACK(preview_key_press_cb), NULL);
 	g_signal_connect(G_OBJECT(prv), "key_release_event", G_CALLBACK(preview_key_release_cb), NULL);
 */
 
+	gdl_insert(&com->previews, prv, link);
 	return GTK_WIDGET(prv);
 }
 

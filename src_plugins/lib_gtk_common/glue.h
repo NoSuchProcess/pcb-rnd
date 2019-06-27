@@ -4,6 +4,7 @@
 #include <gtk/gtk.h>
 #include "hid.h"
 #include "conf.h"
+#include <genlist/gendlist.h>
 
 #include "compat.h"
 
@@ -55,6 +56,9 @@ typedef struct pcb_gtk_common_s {
 	void (*set_special_colors)(conf_native_t *cfg);
 
 	int (*command_entry_is_active)(void);
+
+	/* all widget lists */
+	gdl_list_t previews;
 } pcb_gtk_common_t;
 
 #endif

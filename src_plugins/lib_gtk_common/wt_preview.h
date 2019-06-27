@@ -36,6 +36,7 @@
 #define PCB_GTK_WT_REVIEW_H
 
 #include <gtk/gtk.h>
+#include <genlist/gendlist.h>
 #include "hid.h"
 #include "ui_zoompan.h"
 #include "glue.h"
@@ -84,6 +85,7 @@ struct pcb_gtk_preview_s {
 	pcb_any_obj_t *obj; /* object being displayed in the preview */
 
 	pcb_gtk_common_t *com;
+	gdl_elem_t link; /* in the list of all previews in ->com->previews */
 };
 
 GType pcb_gtk_preview_get_type(void);
