@@ -828,19 +828,19 @@ void ghid_attr_dlg_free(void *hid_ctx)
 	/* make sure we are not called again from the destroy signal */
 	g_signal_handler_disconnect(ctx->dialog, ctx->destroy_handler);
 
-	if (!ctx->close_cb_called) {
-		ctx->close_cb_called = 1;
-		if (ctx->close_cb != NULL)
-			ctx->close_cb(ctx->caller_data, PCB_HID_ATTR_EV_CODECLOSE);
-	}
-
 	for(i = 0; i < ctx->n_attrs; i++) {
 		switch(ctx->attrs[i].type) {
 			case PCB_HATT_TREE: ghid_tree_pre_free(ctx, &ctx->attrs[i], i); break;
 			case PCB_HATT_BUTTON: g_signal_handlers_block_by_func(G_OBJECT(ctx->wl[i]), G_CALLBACK(button_changed_cb), &(ctx->attrs[i])); break;
-			case PCB_HATT_PREVIEW: pcb_gtk_preview_del(&ctx->com, PCB_GTK_PREVIEW(ctx->wl[i]));
+			case PCB_HATT_PREVIEW: pcb_gtk_preview_del(ctx->com, PCB_GTK_PREVIEW(ctx->wl[i]));
 			default: break;
 		}
+	}
+
+	if (!ctx->close_cb_called) {
+		ctx->close_cb_called = 1;
+		if (ctx->close_cb != NULL)
+			ctx->close_cb(ctx->caller_data, PCB_HID_ATTR_EV_CODECLOSE);
 	}
 
 	if (ctx->rc == 0) { /* copy over the results */
