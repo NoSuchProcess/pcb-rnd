@@ -522,13 +522,16 @@ static void ghid_gl_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, p
 
 void ghid_gl_invalidate_all(pcb_hidlib_t *hidlib)
 {
-	if (ghidgui && ghidgui->topwin.menu.menu_bar)
+	if (ghidgui && ghidgui->topwin.menu.menu_bar) {
 		ghid_draw_area_update(gport, NULL);
+		pcb_gtk_previews_invalidate_all();
+	}
 }
 
 void ghid_gl_invalidate_lr(pcb_hidlib_t *hidlib, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
 {
 	ghid_gl_invalidate_all(hidlib);
+	pcb_gtk_previews_invalidate_all();
 }
 
 static void ghid_gl_notify_crosshair_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
