@@ -483,7 +483,7 @@ static gint preview_destroy_cb(GtkWidget *widget, gpointer data)
 	pcb_gtk_common_t *com = data;
 	pcb_gtk_preview_t *prv = PCB_GTK_PREVIEW(widget);
 
-	gdl_remove(&com->previews, prv, link);
+	pcb_gtk_preview_del(com, prv);
 	return 0;
 }
 
@@ -583,4 +583,10 @@ void pcb_gtk_preview_invalidate(pcb_gtk_common_t *com, const pcb_box_t *screen)
 			prv->redrawing = 0;
 		}
 	}
+}
+
+void pcb_gtk_preview_del(pcb_gtk_common_t *com, pcb_gtk_preview_t *prv)
+{
+	if (prv->link.parent == &com->previews)
+		gdl_remove(&com->previews, prv, link);
 }

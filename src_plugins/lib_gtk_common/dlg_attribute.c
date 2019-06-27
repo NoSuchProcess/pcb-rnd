@@ -838,6 +838,7 @@ void ghid_attr_dlg_free(void *hid_ctx)
 		switch(ctx->attrs[i].type) {
 			case PCB_HATT_TREE: ghid_tree_pre_free(ctx, &ctx->attrs[i], i); break;
 			case PCB_HATT_BUTTON: g_signal_handlers_block_by_func(G_OBJECT(ctx->wl[i]), G_CALLBACK(button_changed_cb), &(ctx->attrs[i])); break;
+			case PCB_HATT_PREVIEW: pcb_gtk_preview_del(&ctx->com, PCB_GTK_PREVIEW(ctx->wl[i]));
 			default: break;
 		}
 	}
