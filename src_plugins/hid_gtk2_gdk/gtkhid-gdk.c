@@ -1116,6 +1116,7 @@ static void redraw_region(pcb_hidlib_t *hidlib, GdkRectangle *rect)
 	gdk_gc_set_clip_mask(priv->bg_gc, NULL);
 }
 
+static int preview_lock = 0;
 static void ghid_gdk_invalidate_lr(pcb_hidlib_t *hidlib, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
 {
 	int dleft, dright, dtop, dbottom;
@@ -1138,7 +1139,12 @@ static void ghid_gdk_invalidate_lr(pcb_hidlib_t *hidlib, pcb_coord_t left, pcb_c
 	rect.height = maxy - miny;
 
 	redraw_region(hidlib, &rect);
-	pcb_gtk_previews_invalidate_lr(minx, maxx, miny, maxy);
+	if (!preview_lock) {
+		preview_lock++;
+		pcb_gtk_previews_invalidate_lr(minx, maxx, miny, maxy);
+		preview_lock--;
+	}
+
 	ghid_gdk_screen_update();
 }
 
@@ -1147,7 +1153,11 @@ static void ghid_gdk_invalidate_all(pcb_hidlib_t *hidlib)
 {
 	if (ghidgui && ghidgui->topwin.menu.menu_bar) {
 		redraw_region(hidlib, NULL);
-		pcb_gtk_previews_invalidate_all();
+		if (!preview_lock) {
+			preview_lock++;
+			pcb_gtk_previews_invalidate_all();
+			preview_lock--;
+		}
 		ghid_gdk_screen_update();
 	}
 }
