@@ -564,6 +564,7 @@ void pcb_gtk_preview_invalidate(pcb_gtk_common_t *com, const pcb_box_t *screen)
 	pcb_gtk_preview_t *prv;
 
 	for(prv = gdl_first(&com->previews); prv != NULL; prv = prv->link.next) {
+		if (!prv->redraw_with_board) continue;
 		if (screen != NULL) {
 			pcb_box_t pb;
 			pb.X1 = prv->view.x0;

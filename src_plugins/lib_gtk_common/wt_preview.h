@@ -86,6 +86,7 @@ struct pcb_gtk_preview_s {
 
 	pcb_gtk_common_t *com;
 	gdl_elem_t link; /* in the list of all previews in ->com->previews */
+	unsigned redraw_with_board:1;
 };
 
 GType pcb_gtk_preview_get_type(void);
