@@ -564,17 +564,23 @@ void pcb_gtk_preview_invalidate(pcb_gtk_common_t *com, const pcb_box_t *screen)
 	pcb_gtk_preview_t *prv;
 
 	for(prv = gdl_first(&com->previews); prv != NULL; prv = prv->link.next) {
-		if (!prv->redraw_with_board) continue;
+		if (!prv->redraw_with_board || prv->redrawing) continue;
 		if (screen != NULL) {
 			pcb_box_t pb;
 			pb.X1 = prv->view.x0;
 			pb.Y1 = prv->view.y0;
 			pb.X2 = prv->view.x0 + prv->view.width;
 			pb.Y2 = prv->view.y0 + prv->view.height;
-			if (pcb_box_intersect(screen, &pb))
+			if (pcb_box_intersect(screen, &pb)) {
+				prv->redrawing = 1;
 				ghid_preview_expose(GTK_WIDGET(prv), &dummy);
+				prv->redrawing = 0;
+			}
 		}
-		else
+		else {
+			prv->redrawing = 1;
 			ghid_preview_expose(GTK_WIDGET(prv), &dummy);
+			prv->redrawing = 0;
+		}
 	}
 }
