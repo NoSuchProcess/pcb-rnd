@@ -2,6 +2,8 @@
 #include <gtk/gtk.h>
 #include "gui.h"
 #include "render.h"
+#include "../src_plugins/lib_gtk_common/wt_preview.h"
+
 
 void ghid_draw_area_update(GHidPort *port, GdkRectangle *rect)
 {
@@ -12,3 +14,17 @@ void ghid_drawing_area_configure_hook(void *out)
 {
 	ghidgui->common.drawing_area_configure_hook(out);
 }
+
+void pcb_gtk_previews_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
+{
+	pcb_box_t screen;
+	screen.X1 = left; screen.X2 = right;
+	screen.Y1 = top; screen.Y1 = bottom;
+	pcb_gtk_preview_invalidate(&ghidgui->common, &screen);
+}
+
+void pcb_gtk_previews_invalidate_all(void)
+{
+	pcb_gtk_preview_invalidate(&ghidgui->common, NULL);
+}
+

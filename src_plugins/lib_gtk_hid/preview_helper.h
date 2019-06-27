@@ -26,4 +26,8 @@ do { \
 	} \
 } while(0)
 
+/* Redraw all previews intersecting the specified screenbox (in case of lr) */
+void pcb_gtk_previews_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom);
+void pcb_gtk_previews_invalidate_all(void);
+
 #endif
