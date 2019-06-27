@@ -153,6 +153,11 @@ static void ltf_preview_input_callback(Widget w, XtPointer pd_, XmDrawingAreaCal
 		pcb_ltf_preview_redraw(pd);
 }
 
+static void ltf_preview_destroy(Widget w, XtPointer pd_, XmDrawingAreaCallbackStruct *cbs)
+{
+	pcb_ltf_preview_t *pd = pd_;
+	pcb_ltf_preview_del(pd);
+}
 
 static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
 {
@@ -199,10 +204,12 @@ static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 	XtAddCallback(pw, XmNexposeCallback, (XtCallbackProc)pcb_ltf_preview_callback, (XtPointer)pd);
 	XtAddCallback(pw, XmNresizeCallback, (XtCallbackProc)pcb_ltf_preview_callback, (XtPointer)pd);
 	XtAddCallback(pw, XmNinputCallback, (XtCallbackProc)ltf_preview_input_callback, (XtPointer)pd);
+	XtAddCallback(pw, XmNdestroyCallback, (XtCallbackProc)ltf_preview_destroy, (XtPointer)pd);
 	XtAddEventHandler(pw, PointerMotionMask | PointerMotionHintMask | EnterWindowMask | LeaveWindowMask, 0, ltf_preview_motion_callback, (XtPointer)pd);
 
 
 	XtManageChild(pw);
+	pcb_ltf_preview_add(pd);
 	return pw;
 }
 

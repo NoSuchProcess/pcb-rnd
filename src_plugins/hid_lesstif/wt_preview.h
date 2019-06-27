@@ -1,3 +1,5 @@
+#include <genlist/gendlist.h>
+
 typedef struct pcb_ltf_preview_s {
 	void *hid_ctx;
 	pcb_hid_attribute_t *attr;
@@ -20,6 +22,7 @@ typedef struct pcb_ltf_preview_s {
 	unsigned expose_lock:1;
 	int pan_ox, pan_oy;
 	pcb_coord_t pan_opx, pan_opy;
+	gdl_elem_t link; /* in the list of all previews in ltf_previews */
 } pcb_ltf_preview_t;
 
 void pcb_ltf_preview_callback(Widget da, pcb_ltf_preview_t *pd, XmDrawingAreaCallbackStruct *cbs);
@@ -35,3 +38,10 @@ void pcb_ltf_preview_redraw(pcb_ltf_preview_t *pd);
 /* Convert widget pixel px;py back to preview render coordinates */
 void pcb_ltf_preview_getxy(pcb_ltf_preview_t *pd, int px, int py, pcb_coord_t *dst_x, pcb_coord_t *dst_y);
 
+/* invalidate (redraw) all preview widgets whose current view overlaps with
+   the screen box; if screen is NULL, redraw all */
+void pcb_ltf_preview_invalidate(const pcb_box_t *screen);
+
+
+void pcb_ltf_preview_add(pcb_ltf_preview_t *prv);
+void pcb_ltf_preview_del(pcb_ltf_preview_t *prv);

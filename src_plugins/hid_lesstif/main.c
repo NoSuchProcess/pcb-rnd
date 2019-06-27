@@ -2006,6 +2006,8 @@ static Boolean idle_proc(XtPointer dummy)
 			pcbhl_draw_attached(ltf_hidlib, 1);
 			pcbhl_draw_marks(ltf_hidlib, 1);
 		}
+
+		pcb_ltf_preview_invalidate(NULL);
 	}
 
 	{

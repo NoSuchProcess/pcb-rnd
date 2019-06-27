@@ -27,6 +27,8 @@
 #include "wt_preview.h"
 #include "hid_attrib.h"
 
+static gdl_list_t ltf_previews;
+
 static int widget_depth(Widget w) {
 	Arg args[1];
 	int depth;
@@ -165,4 +167,33 @@ void pcb_ltf_preview_callback(Widget da, pcb_ltf_preview_t *pd, XmDrawingAreaCal
 	if ((reason == XmCR_RESIZE) || (pd->resized == 0))
 		pcb_ltf_preview_zoom_update(pd);
 	pcb_ltf_preview_redraw(pd);
+}
+
+void pcb_ltf_preview_invalidate(const pcb_box_t *screen)
+{
+	pcb_ltf_preview_t *prv;
+
+	for(prv = gdl_first(&ltf_previews); prv != NULL; prv = prv->link.next) {
+		if (screen != NULL) {
+			pcb_box_t pb;
+			pb.X1 = prv->x1;
+			pb.Y1 = prv->y1;
+			pb.X2 = prv->x2;
+			pb.Y2 = prv->y2;
+			if (pcb_box_intersect(screen, &pb))
+				pcb_ltf_preview_redraw(prv);
+		}
+		else
+			pcb_ltf_preview_redraw(prv);
+	}
+}
+
+void pcb_ltf_preview_add(pcb_ltf_preview_t *prv)
+{
+	gdl_insert(&ltf_previews, prv, link);
+}
+
+void pcb_ltf_preview_del(pcb_ltf_preview_t *prv)
+{
+	gdl_remove(&ltf_previews, prv, link);
 }
