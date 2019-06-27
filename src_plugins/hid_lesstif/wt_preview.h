@@ -20,6 +20,7 @@ typedef struct pcb_ltf_preview_s {
 	unsigned resized:1;
 	unsigned pan:1;
 	unsigned expose_lock:1;
+	unsigned redraw_with_board:1;
 	int pan_ox, pan_oy;
 	pcb_coord_t pan_opx, pan_opy;
 	gdl_elem_t link; /* in the list of all previews in ltf_previews */

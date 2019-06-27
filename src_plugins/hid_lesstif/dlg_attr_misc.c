@@ -200,6 +200,7 @@ static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 
 	pd->window = XtWindow(pw);
 	pd->pw = pw;
+	pd->redraw_with_board = !!(attr->hatt_flags & PCB_HATF_PRV_BOARD);
 
 	XtAddCallback(pw, XmNexposeCallback, (XtCallbackProc)pcb_ltf_preview_callback, (XtPointer)pd);
 	XtAddCallback(pw, XmNresizeCallback, (XtCallbackProc)pcb_ltf_preview_callback, (XtPointer)pd);
