@@ -750,6 +750,19 @@ static int kicad_parse_setup(read_state_t *st, gsxl_node_t *subtree)
 }
 
 
+static char *fp_text_subst(char *text, pcb_flag_t *flg)
+{
+	if (strcmp(text, "%R") == 0) {
+		flg->f |= PCB_FLAG_DYNTEXT;
+		return "%a.parent.refdes%";
+	}
+	if (strcmp(text, "%V") == 0) {
+		flg->f |= PCB_FLAG_DYNTEXT;
+		return "%a.parent.value%";
+	}
+	return text;
+}
+
 /* kicad_pcb/gr_text and fp_text */
 static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *text, pcb_subc_t *subc, double mod_rot)
 {
@@ -764,6 +777,10 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 	unsigned direction;
 	pcb_flag_t flg = pcb_flag_make(0); /* start with something bland here */
 	pcb_layer_t *ly;
+
+	/* fix up text for kicad's %R and %V */
+	if (subc != NULL)
+		text = fp_text_subst(text, &flg);
 
 	for(n = subtree, i = 0; n != NULL; n = n->next, i++) {
 		if (n->str == NULL)
@@ -869,6 +886,9 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 		txt.thickness = thickness;
 		txt.TextString = text;
 		txt.Flags = flg;
+		txt.parent_type = PCB_PARENT_LAYER;
+		txt.parent.layer = ly;
+
 		pcb_text_bbox(pcb_font(PCB, 0, 1), &txt);
 		tw = txt.bbox_naked.X2 - txt.bbox_naked.X1;
 		th = txt.bbox_naked.Y2 - txt.bbox_naked.Y1;
