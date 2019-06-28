@@ -1511,6 +1511,7 @@ TODO("CUCP#51: may need to add paste too");
 		return pcb_pstk_new_from_shape(subc->data, X, Y, drill, plated, clearance, sh);
 	}
 
+TODO("CUCP#64: trapezoid");
 	kicad_error(subtree, "unsupported pad shape '%s'.", pad_shape);
 	return NULL;
 
