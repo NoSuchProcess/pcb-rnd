@@ -2268,6 +2268,9 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	if (subc == NULL)
 		return kicad_error(subtree, "unable to create incomplete subc.");
 
+	if ((mod_name != NULL) && (*mod_name != '\0') && (pcb_attribute_get(&subc->Attributes, "footprint") == NULL))
+		pcb_attribute_put(&subc->Attributes, "footprint", mod_name);
+
 	pcb_subc_bbox(subc);
 	if (st->pcb != NULL) {
 		if (st->pcb->Data->subc_tree == NULL)
