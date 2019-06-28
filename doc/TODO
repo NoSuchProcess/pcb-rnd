@@ -40,6 +40,7 @@
 - BUG: gtk2_gl issue. view in netlist window circuit view clips or goes black when changing selected net (repro. w/ doc/tutorials/15_no_sch/step3.lht and open netlist view {w n} [report: miloh]
 - CLEANUP: unify gui invocation options: pcb-rnd --help gtk_[gdk|gl] and pcb-rnd --help lesstif both show and use different input methods [report:miloh] -> can not unify: colormap is lesstif-specific, having multiple versions/renderings is gtk-specific
 - BUG: The padstackedit dialog is larger than 1024x768 and can not be made any smaller [report: Ade]
+- BUG: Replacing a subc by shift-leftclick deletes the old subc but doesn't place the new one. Recipe: Place a subc. Load a new subc to the buffer. Position the buffer subc over the existing subc and press shift-leftclick. Result=old subc is removed, not replaced. [report: Ade]
 
 2. For later releases ===============================================================================
 - CLEANUP: remove next_gui and SwitchHID()
