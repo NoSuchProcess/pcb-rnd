@@ -560,7 +560,6 @@ static void get_ptr(pcb_gtk_preview_t *preview, pcb_coord_t *cx, pcb_coord_t *cy
 
 void pcb_gtk_preview_invalidate(pcb_gtk_common_t *com, const pcb_box_t *screen)
 {
-	pcb_gtk_expose_t dummy;
 	pcb_gtk_preview_t *prv;
 
 	for(prv = gdl_first(&com->previews); prv != NULL; prv = prv->link.next) {
@@ -573,13 +572,13 @@ void pcb_gtk_preview_invalidate(pcb_gtk_common_t *com, const pcb_box_t *screen)
 			pb.Y2 = prv->view.y0 + prv->view.height;
 			if (pcb_box_intersect(screen, &pb)) {
 				prv->redrawing = 1;
-				ghid_preview_expose(GTK_WIDGET(prv), &dummy);
+				ghid_preview_expose(GTK_WIDGET(prv), NULL);
 				prv->redrawing = 0;
 			}
 		}
 		else {
 			prv->redrawing = 1;
-			ghid_preview_expose(GTK_WIDGET(prv), &dummy);
+			ghid_preview_expose(GTK_WIDGET(prv), NULL);
 			prv->redrawing = 0;
 		}
 	}
