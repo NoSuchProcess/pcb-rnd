@@ -1824,7 +1824,7 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 	   - module clearance
 	   - zone clearance (from the board)?
 	*/
-	TODO("Not sure where this should be coming from (the ultimate fallback, bottom item above");
+	TODO("CUCP#65 Not sure where this should be coming from (the ultimate fallback, bottom item above");
 	clearance = 0;
 
 	/* overwrite with module clearance if present */
