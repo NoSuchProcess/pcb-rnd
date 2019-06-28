@@ -1923,19 +1923,19 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 			kicad_warning(m, "Ignoring pad %s for now", m->str);
 		}
 		else if (strcmp("clearance", m->str) == 0) {
-			TODO("CUCP#58");
-			kicad_warning(m, "Ignoring pad %s for now", m->str);
+			SEEN_NO_DUP(feature_tally, 7);
+			PARSE_COORD(clearance, m, m->children, "module pad clearance");
 		}
 		else if (strcmp("primitives", m->str) == 0) {
 			TODO("CUCP#48");
 			kicad_warning(m, "Ignoring pad %s for now", m->str);
 		}
 		else if (strcmp("roundrect_rratio", m->str) == 0) {
-			SEEN_NO_DUP(feature_tally, 7);
+			SEEN_NO_DUP(feature_tally, 8);
 			PARSE_DOUBLE(shape_arg, m, m->children, "module pad roundrect_rratio");
 		}
 		else if (strcmp("options", m->str) == 0) {
-			SEEN_NO_DUP(feature_tally, 8);
+			SEEN_NO_DUP(feature_tally, 9);
 			if (kicad_parse_pad_options(st, m->children) != 0)
 				return -1;
 		}
