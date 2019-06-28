@@ -1678,7 +1678,7 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 	Y += moduleY;
 
 	if (throughHole) {
-		required = BV(0) | BV(1) | BV(5);
+		required = BV(0) | BV(1);
 		if ((*featureTally & required) != required)
 			return kicad_error(subtree, "malformed module pad/pin definition.");
 		if ((*featureTally & BV(3)) == 0)
@@ -1902,6 +1902,8 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 	kicad_padly_t layers = {0};
 	double shape_arg = 0.0;
 	double rot = 0.0;
+
+	sx = sy = PCB_MIL_TO_COORD(60); /* CUCP#63: default size matching pcbnew/class_pad.cpp */
 
 	/* Kicad clearance hierarchy (top overrides bottom):
 	   - pad clearance
