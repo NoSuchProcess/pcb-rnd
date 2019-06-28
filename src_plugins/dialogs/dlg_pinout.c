@@ -177,8 +177,10 @@ static fgw_error_t pcb_act_Pinout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	void *r1, *r2, *r3;
 	pcb_coord_t x, y;
+	pcb_objtype_t type;
+
 	pcb_hid_get_coords("Click on a subcircuit", &x, &y, 0);
-	pcb_objtype_t type = pcb_search_obj_by_location(PCB_OBJ_SUBC, &r1, &r2, &r3, x, y, 1);
+	type = pcb_search_obj_by_location(PCB_OBJ_SUBC, &r1, &r2, &r3, x, y, 1);
 	if (type == PCB_OBJ_SUBC) {
 		pcb_subc_t *sc = r2;
 		pcb_dlg_pinout(PCB, PCB->Data, sc);
