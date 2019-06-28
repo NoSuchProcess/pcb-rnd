@@ -1633,6 +1633,11 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 		if ((ps->rot == 360.0) || (ps->rot == -360.0))
 			ps->rot = 0;
 
+		/* force re-render the prototype */
+		ps->protoi = -1;
+		pcb_pstk_get_tshape(ps);
+		pcb_pstk_bbox(ps);
+
 		pcb_pstk_post(ps);
 	}
 
