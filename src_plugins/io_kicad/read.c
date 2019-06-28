@@ -2107,7 +2107,6 @@ static int kicad_parse_fp_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 		return kicad_error(subtree, "missing layer subtree in fp_poly");
 
 	poly = pcb_poly_new(ly, 0, flags);
-TODO("CUCP#61: does this work well with rotation/mirror?");
 	if (kicad_parse_poly_pts(st, npts, poly, modx, mody) < 0)
 		return -1;
 
