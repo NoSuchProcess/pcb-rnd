@@ -1819,8 +1819,15 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 	kicad_padly_t layers = {0};
 	double shape_arg = 0.0;
 
-TODO("this should be coming from the s-expr file preferences part pool/io_kicad (CUCP#39)")
-	clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
+	/* Kicad clearance hierarchy (top overrides bottom):
+	   - pad clearance
+	   - module clearance
+	   - zone clearance (from the board)?
+	*/
+	TODO("Not sure where this should be coming from (the ultimate fallback, bottom item above");
+	clearance = 0;
+
+	/* overwrite with module clearance if present */
 	if (mod_clr >= 0)
 		clearance = mod_clr;
 
