@@ -1805,7 +1805,7 @@ static int kicad_parse_pad_options(read_state_t *st, gsxl_node_t *subtree)
 	return 0;
 }
 
-static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, unsigned long *tally, pcb_coord_t moduleX, pcb_coord_t moduleY, unsigned int moduleRotation, int *moduleEmpty)
+static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, unsigned long *tally, pcb_coord_t moduleX, pcb_coord_t moduleY, unsigned int moduleRotation, pcb_coord_t mod_clr, int *moduleEmpty)
 {
 	gsxl_node_t *m;
 	pcb_coord_t x, y, drillx, drilly, sx, sy, clearance;
@@ -1821,6 +1821,8 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 
 TODO("this should be coming from the s-expr file preferences part pool/io_kicad (CUCP#39)")
 	clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
+	if (mod_clr >= 0)
+		clearance = mod_clr;
 
 	if (n->children != 0 && n->children->str != NULL) {
 		pin_name = n->children->str;
@@ -2022,7 +2024,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	int on_bottom = 0, found_refdes = 0, module_empty = 1, module_defined = 0, i;
 	double mod_rot = 0;
 	unsigned long tally = 0;
-	pcb_coord_t mod_x = 0, mod_y = 0;
+	pcb_coord_t mod_x = 0, mod_y = 0, mod_clr = -1;
 	char *mod_name;
 	pcb_subc_t *subc = NULL;
 
@@ -2117,6 +2119,9 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				}
 			}
 		}
+		else if (strcmp("clearance", n->str) == 0) {
+			PARSE_COORD(mod_clr, n, n->children, "module pad clearance");
+		}
 		else if (strcmp("model", n->str) == 0) {
 			TODO("save this as attribute");
 		}
@@ -2139,7 +2144,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			ignore_value_nodup(n, tally, 11, "unexpected empty/NULL module model node");
 		}
 		else if (strcmp("pad", n->str) == 0) {
-			if (kicad_parse_pad(st, n, subc, &tally, mod_x, mod_y, mod_rot, &module_empty) != 0)
+			if (kicad_parse_pad(st, n, subc, &tally, mod_x, mod_y, mod_rot, mod_clr, &module_empty) != 0)
 				return -1;
 		}
 		else if (strcmp("fp_line", n->str) == 0) {
