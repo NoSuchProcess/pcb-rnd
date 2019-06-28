@@ -1619,7 +1619,7 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 	*moduleEmpty = 0;
 
 	pad_rot -= st->subc_rot;
-	if (pad_rot != 0) {
+	if (pad_rot != 0.0) {
 		pcb_pstk_pre(ps);
 
 		if (ps->xmirror)
@@ -1813,11 +1813,11 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 	char *pin_name = NULL, *pad_shape = NULL;
 	unsigned long feature_tally = 0;
 	int through_hole = 0, plated = 0, definite_clearance = 0;
-	unsigned int pad_rot = 0;
 	pcb_layer_type_t smd_side;
 	double paste_ratio = 0;
 	kicad_padly_t layers = {0};
 	double shape_arg = 0.0;
+	double rot = 0.0;
 
 	/* Kicad clearance hierarchy (top overrides bottom):
 	   - pad clearance
@@ -1857,12 +1857,11 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 		if (m->str == NULL)
 			return kicad_error(m, "empty parameter in pad description");
 		if (strcmp("at", m->str) == 0) {
-			double rot = 0.0;
+
 			SEEN_NO_DUP(feature_tally, 1);
 			PARSE_COORD(x, m, m->children, "module pad X");
 			PARSE_COORD(y, m, m->children->next, "module pad Y");
 			PARSE_DOUBLE(rot, NULL, m->children->next->next, "module pad rotation");
-			pad_rot = (int)rot;
 		}
 		else if (strcmp("layers", m->str) == 0) {
 			SEEN_NO_DUP(feature_tally, 2);
@@ -1951,7 +1950,7 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 			kicad_warning(n, "Couldn't determine pad clearance, using 0.25mm");
 			clearance = PCB_MM_TO_COORD(0.25);
 		}
-		if (kicad_make_pad(st, n, subc, netname, through_hole, plated, moduleX, moduleY, x, y, sx, sy, pad_rot, moduleRotation, clearance, paste_ratio, drillx, drilly, pin_name, pad_shape, &feature_tally, moduleEmpty, smd_side, &layers, shape_arg) != 0)
+		if (kicad_make_pad(st, n, subc, netname, through_hole, plated, moduleX, moduleY, x, y, sx, sy, rot, moduleRotation, clearance, paste_ratio, drillx, drilly, pin_name, pad_shape, &feature_tally, moduleEmpty, smd_side, &layers, shape_arg) != 0)
 			return -1;
 	}
 
