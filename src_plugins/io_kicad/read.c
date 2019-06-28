@@ -929,6 +929,88 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 	return kicad_error(subtree, "failed to create text: missing text string");
 }
 
+/* kicad_pcb/target */
+static int kicad_parse_target(read_state_t *st, gsxl_node_t *subtree)
+{
+	unsigned long tally = 0, required;
+	pcb_coord_t x, y, thick = PCB_MM_TO_COORD(0.15);
+	double size = 5.0;
+	pcb_layer_t *ly = NULL;
+	pcb_subc_t *subc;
+	gsxl_node_t *n, *lyn;
+	pcb_flag_t flg = pcb_flag_make(0);
+	int is_plus = 1;
+
+
+	for(n = subtree; n != NULL; n = n->next) {
+		if (strcmp("plus", n->str) == 0) {
+			SEEN_NO_DUP(tally, 0);
+		}
+		else if (strcmp("x", n->str) == 0) {
+			SEEN_NO_DUP(tally, 0);
+			is_plus = 0;
+		}
+		else if (strcmp("at", n->str) == 0) {
+			SEEN_NO_DUP(tally, 1);
+			PARSE_COORD(x, n, n->children, "target X");
+			PARSE_COORD(y, n, n->children->next, "target Y");
+		}
+		else if (strcmp("size", n->str) == 0) {
+			SEEN_NO_DUP(tally, 2);
+			PARSE_DOUBLE(size, n, n->children, "target size");
+		}
+		else if (strcmp("width", n->str) == 0) {
+			SEEN_NO_DUP(tally, 3);
+			PARSE_COORD(thick, n, n->children, "target width");
+		}
+		else if (strcmp("layer", n->str) == 0) {
+			SEEN_NO_DUP(tally, 4);
+			lyn = n->children;
+		}
+	}
+
+	required = BV(1) | BV(4);
+	if ((tally & required) != required)
+		return kicad_error(subtree, "failed to create target: missing fields");
+
+	if (!(required & BV(0)))
+		kicad_warning(subtree, "missing \"plus\" or \"x\" in target - assuming plus target graphics may not look like expected");
+
+	/* create a subc at the given coords */
+	subc = pcb_subc_new();
+	pcb_subc_create_aux(subc, x, y, 0.0, 0);
+	if (st->pcb != NULL) {
+		pcb_subc_reg(st->pcb->Data, subc);
+		pcb_subc_bind_globals(st->pcb, subc);
+	}
+
+	PARSE_LAYER(ly, lyn, subc, "target");
+
+	/* draw the target within the subc */
+	if (is_plus) {
+		pcb_line_new(ly, x-PCB_MM_TO_COORD(size/2), y, x+PCB_MM_TO_COORD(size/2), y, thick, 0, flg);
+		pcb_line_new(ly, x, y-PCB_MM_TO_COORD(size/2), x, y+PCB_MM_TO_COORD(size/2), thick, 0, flg);
+	}
+	else {
+		pcb_line_new(ly, x-PCB_MM_TO_COORD(size/2), y-PCB_MM_TO_COORD(size/2), x+PCB_MM_TO_COORD(size/2), y+PCB_MM_TO_COORD(size/2), thick, 0, flg);
+		pcb_line_new(ly, x+PCB_MM_TO_COORD(size/2), y-PCB_MM_TO_COORD(size/2), x-PCB_MM_TO_COORD(size/2), y+PCB_MM_TO_COORD(size/2), thick, 0, flg);
+	}
+	pcb_arc_new(ly, x, y, PCB_MM_TO_COORD(size*0.325), PCB_MM_TO_COORD(size*0.325), 0,360, thick, 0, flg, 0);
+
+	/* finish registration of the subc */
+	pcb_subc_bbox(subc);
+	if (st->pcb != NULL) {
+		if (st->pcb->Data->subc_tree == NULL)
+			st->pcb->Data->subc_tree = pcb_r_create_tree();
+		pcb_r_insert_entry(st->pcb->Data->subc_tree, (pcb_box_t *)subc);
+		pcb_subc_rebind(st->pcb, subc);
+	}
+	else
+		pcb_subc_reg(st->fp_data, subc);
+
+	return 0;
+}
+
 /* kicad_pcb/gr_line or fp_line */
 static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_flag_values_t flag, int is_seg)
 {
@@ -2334,14 +2416,12 @@ static int kicad_parse_pcb(read_state_t *st)
 		{"gr_arc", kicad_parse_gr_arc},
 		{"gr_circle", kicad_parse_gr_arc},
 		{"gr_text", kicad_parse_gr_text},
-		{"target", kicad_parse_nop},
+		{"target", kicad_parse_target},
 		{"via", kicad_parse_via},
 		{"segment", kicad_parse_segment},
 		{"zone", kicad_parse_zone}, /* polygonal zones */
 		{NULL, NULL}
 	};
-
- TODO("CUCP#62 the target object above ^^^ is ignored")
 
 	/* require the root node to be kicad_pcb */
 	if ((st->dom.root->str == NULL) || (strcmp(st->dom.root->str, "kicad_pcb") != 0))
