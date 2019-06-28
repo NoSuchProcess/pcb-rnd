@@ -1681,11 +1681,8 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 		required = BV(0) | BV(1) | BV(5);
 		if ((*featureTally & required) != required)
 			return kicad_error(subtree, "malformed module pad/pin definition.");
-		if ((*featureTally & BV(3)) == 0) {
-			kicad_error(subtree, "pad error: thru hole without hole diameter, improvising 0.5mm drill");
-			TODO("CUCP#63");
-			drillx = drilly = PCB_MM_TO_COORD(0.5);
-		}
+		if ((*featureTally & BV(3)) == 0)
+			drillx = drilly = PCB_MIL_TO_COORD(30); /* CUCP#63: default size is hardwired in pcbnew/class_pad.cpp */
 		ps = kicad_make_pad_thr(st, subtree, subc, X, Y, padXsize, padYsize, clearance, paste_ratio, drillx, drilly, pad_shape, plated, layers, shape_arg);
 	}
 	else {
