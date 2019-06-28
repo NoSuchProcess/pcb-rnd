@@ -1812,7 +1812,7 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 	const char *netname = NULL;
 	char *pin_name = NULL, *pad_shape = NULL;
 	unsigned long feature_tally = 0;
-	int through_hole = 0, plated = 0;
+	int through_hole = 0, plated = 0, definite_clearance = 0;
 	unsigned int pad_rot = 0;
 	pcb_layer_type_t smd_side;
 	double paste_ratio = 0;
@@ -1828,8 +1828,10 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 	clearance = 0;
 
 	/* overwrite with module clearance if present */
-	if (mod_clr >= 0)
+	if (mod_clr >= 0) {
 		clearance = mod_clr;
+		definite_clearance = 1;
+	}
 
 	if (n->children != 0 && n->children->str != NULL) {
 		pin_name = n->children->str;
@@ -1925,6 +1927,7 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 		else if (strcmp("clearance", m->str) == 0) {
 			SEEN_NO_DUP(feature_tally, 7);
 			PARSE_COORD(clearance, m, m->children, "module pad clearance");
+			definite_clearance = 1;
 		}
 		else if (strcmp("primitives", m->str) == 0) {
 			TODO("CUCP#48");
@@ -1943,9 +1946,14 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 			return kicad_error(m, "Unknown pad argument: %s", m->str);
 	}
 
-	if (subc != NULL)
+	if (subc != NULL) {
+		if (!definite_clearance) {
+			kicad_warning(n, "Couldn't determine pad clearance, using 0.25mm");
+			clearance = PCB_MM_TO_COORD(0.25);
+		}
 		if (kicad_make_pad(st, n, subc, netname, through_hole, plated, moduleX, moduleY, x, y, sx, sy, pad_rot, moduleRotation, clearance, paste_ratio, drillx, drilly, pin_name, pad_shape, &feature_tally, moduleEmpty, smd_side, &layers, shape_arg) != 0)
 			return -1;
+	}
 
 	return 0;
 }
