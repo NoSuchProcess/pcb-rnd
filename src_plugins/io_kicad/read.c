@@ -2022,7 +2022,7 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 		}
 		else if (strcmp("solder_mask_margin", m->str) == 0) {
 			SEEN_NO_DUP(feature_tally, 10);
-			PARSE_COORD(mask, m, m->children, "module pad mask");
+			PARSE_COORD(mask, m, m->children, "module pad mask margin");
 		}
 		else if (strcmp("solder_mask_margin_ratio", m->str) == 0) {
 			SEEN_NO_DUP(feature_tally, 10);
