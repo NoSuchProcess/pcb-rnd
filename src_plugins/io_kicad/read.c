@@ -1669,8 +1669,8 @@ static pcb_pstk_t *kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pc
 	if (strcmp(pad_shape, "rect") == 0) {
 		pcb_pstk_shape_t sh[9];
 		memset(sh, 0, sizeof(sh));
-		if (LYSHT(TOP, MASK))      {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+mask*2);}
-		if (LYSHT(BOTTOM, MASK))   {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+mask*2);}
+		if (LYSHT(TOP, MASK))      {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[len++], padXsize+mask*2, padYsize+mask*2);}
+		if (LYSHT(BOTTOM, MASK))   {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[len++], padXsize+mask*2, padYsize+mask*2);}
 		if (LYSHT(TOP, PASTE))     {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_PASTE; sh[len].comb = PCB_LYC_AUTO; pcb_shape_rect(&sh[len++], padXsize * paste_ratio + paste*2, padYsize * paste_ratio + paste*2);}
 		if (LYSHT(BOTTOM, PASTE))  {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_PASTE; sh[len].comb = PCB_LYC_AUTO; pcb_shape_rect(&sh[len++], padXsize * paste_ratio + paste*2, padYsize * paste_ratio + paste*2);}
 		if (LYSHT(TOP, COPPER))    {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_COPPER; pcb_shape_rect(&sh[len++], padXsize, padYsize);}
@@ -1684,8 +1684,8 @@ static pcb_pstk_t *kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pc
 	else if ((strcmp(pad_shape, "oval") == 0) || (strcmp(pad_shape, "circle") == 0)) {
 		pcb_pstk_shape_t sh[9];
 		memset(sh, 0, sizeof(sh));
-		if (LYSHT(TOP, MASK))      {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_oval(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+st->pad_to_mask_clearance*2);}
-		if (LYSHT(BOTTOM, MASK))   {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_oval(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+st->pad_to_mask_clearance*2);}
+		if (LYSHT(TOP, MASK))      {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_oval(&sh[len++], padXsize + mask * 2, padYsize + mask * 2);}
+		if (LYSHT(BOTTOM, MASK))   {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_oval(&sh[len++], padXsize + mask * 2, padYsize + mask * 2);}
 		if (LYSHT(TOP, PASTE))     {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_PASTE; sh[len].comb = PCB_LYC_AUTO; pcb_shape_oval(&sh[len++], padXsize * paste_ratio + paste*2, padYsize * paste_ratio + paste*2);}
 		if (LYSHT(BOTTOM, PASTE))  {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_PASTE; sh[len].comb = PCB_LYC_AUTO; pcb_shape_oval(&sh[len++], padXsize * paste_ratio + paste*2, padYsize * paste_ratio + paste*2);}
 		if (LYSHT(TOP, COPPER))    {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_COPPER; pcb_shape_oval(&sh[len++], padXsize, padYsize);}
@@ -1705,8 +1705,8 @@ static pcb_pstk_t *kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pc
 		}
 
 		memset(sh, 0, sizeof(sh));
-		if (LYSHT(TOP, MASK))      {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+mask*2, shape_arg);}
-		if (LYSHT(BOTTOM, MASK))   {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+mask*2, shape_arg);}
+		if (LYSHT(TOP, MASK))      {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize+mask*2, padYsize+mask*2, shape_arg);}
+		if (LYSHT(BOTTOM, MASK))   {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize+mask*2, padYsize+mask*2, shape_arg);}
 		if (LYSHT(TOP, PASTE))     {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_PASTE; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize * paste_ratio + paste*2, padYsize * paste_ratio + paste*2, shape_arg);}
 		if (LYSHT(BOTTOM, PASTE))  {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_PASTE; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize * paste_ratio + paste*2, padYsize * paste_ratio + paste*2, shape_arg);}
 		if (LYSHT(TOP, COPPER))    {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_COPPER; pcb_shape_roundrect(&sh[len++], padXsize, padYsize, shape_arg);}
@@ -1772,7 +1772,7 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 		}
 
 		memset(sh, 0, sizeof(sh));
-		if (LYSHS(side, MASK))      {sh[len].layer_mask = side | PCB_LYT_MASK;   sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+mask*2, shape_arg);}
+		if (LYSHS(side, MASK))      {sh[len].layer_mask = side | PCB_LYT_MASK;   sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize+mask*2, padYsize+mask*2, shape_arg);}
 		if (LYSHS(side, PASTE))     {sh[len].layer_mask = side | PCB_LYT_PASTE;  sh[len].comb = PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize * paste_ratio + paste*2, padYsize * paste_ratio + paste*2, shape_arg);}
 		if (LYSHS(side, COPPER))    {sh[len].layer_mask = side | PCB_LYT_COPPER; pcb_shape_roundrect(&sh[len++], padXsize, padYsize, shape_arg);}
 		if (len == 0) goto no_layer;
