@@ -1535,11 +1535,52 @@ static void save_zone_connect(read_state_t *st, pcb_pstk_t *ps, int zone_connect
 static void exec_zone_connect(read_state_t *st)
 {
 	zone_connect_t *zc, *next;
+	htpp_t poly_upd;
+	htpp_entry_t *e;
+
+	htpp_init(&poly_upd, ptrhash, ptrkeyeq);
 
 	for(zc = st->zc_head; zc != NULL; zc = next) {
+		pcb_layer_id_t lid;
+		pcb_layer_t *ly;
+
+		/* search all layers for polygons */
+		for(lid = 0, ly = st->pcb->Data->Layer; lid < st->pcb->Data->LayerN; lid++,ly++) {
+			pcb_rtree_it_t it;
+			pcb_poly_t *p;
+
+			if (ly->polygon_tree == NULL) continue;
+
+			/* use rtree to search for polys that are near the padstack */
+			for(p = pcb_rtree_first(&it, ly->polygon_tree, &zc->ps->BoundingBox); p != NULL; p = pcb_rtree_next(&it)) {
+				const char *pnet;
+				pnet = htpp_get(&st->poly2net, p);
+				if (strcmp(pnet, zc->netname) == 0) {
+					unsigned char *th = pcb_pstk_get_thermal(zc->ps, lid, 1);
+
+					switch(zc->style) {
+						case 1: (*th) |= PCB_THERMAL_ON | PCB_THERMAL_ROUND; break;
+						case 2: (*th) |= PCB_THERMAL_ON | PCB_THERMAL_SOLID; break;
+						case 3: (*th) |= PCB_THERMAL_ON | PCB_THERMAL_ROUND | PCB_THERMAL_DIAGONAL; break;
+					}
+					htpp_set(&poly_upd, p, p);
+					pcb_trace("CONN lid=%ld p=%p in %s style=%d\n", lid, p, pnet, zc->style);
+				}
+			}
+		}
+
 		next = zc->next;
 		free(zc);
 	}
+
+	/* assume many pins in a poly: it is cheaper to reclip affected polys once,
+	   at the end, than to reclip on each padstack thermal installation in
+	   the above loop */
+	for(e = htpp_first(&poly_upd); e != NULL; e = e = htpp_next(&poly_upd, e)) {
+		pcb_poly_t *p = e->key;
+		pcb_poly_init_clip(p->parent.layer->parent.data, p->parent.layer, p);
+	}
+	htpp_uninit(&poly_upd);
 }
 
 void pcb_shape_roundrect(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height, double roundness)
