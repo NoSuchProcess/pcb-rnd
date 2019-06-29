@@ -1666,7 +1666,10 @@ static pcb_pstk_t *kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pc
 	if (!slot)
 		drill = drillx;
 
-	if (strcmp(pad_shape, "rect") == 0) {
+	if ((strcmp(pad_shape, "rect") == 0) || (strcmp(pad_shape, "custom") == 0)) {
+		/* "custom" pads always have a rectangular shape too; keep the rectangle as
+		   padstack and add the custom shapes as heavy terminal together with the
+		   padstack */
 		pcb_pstk_shape_t sh[9];
 		memset(sh, 0, sizeof(sh));
 		if (LYSHT(TOP, MASK))      {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[len++], padXsize+mask*2, padYsize+mask*2);}
@@ -1743,7 +1746,8 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 
 	paste_ratio = 1.0 + (2.0 * paste_ratio);
 
-	if (strcmp(pad_shape, "rect") == 0) {
+	if ((strcmp(pad_shape, "rect") == 0) || (strcmp(pad_shape, "custom") == 0)) {
+		/* "custom" pads: see comment in kicad_make_pad_thr() */
 		pcb_pstk_shape_t sh[4];
 		memset(sh, 0, sizeof(sh));
 		if (LYSHS(side, MASK))      {sh[len].layer_mask = side | PCB_LYT_MASK;   sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[len++], padXsize+mask*2, padYsize+mask*2);}
