@@ -1078,6 +1078,7 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 	pcb_coord_t x1, y1, x2, y2, thickness, clearance;
 	pcb_flag_t flg = pcb_flag_make(flag);
 	pcb_layer_t *ly = NULL;
+	pcb_line_t *line;
 
 	TODO("apply poly clearance as in pool/io_kicad (CUCP#39)");
 	clearance = thickness = 1; /* start with sane default of one nanometre */
@@ -1165,7 +1166,9 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 			y2 += sy;
 		}
 	}
-	pcb_line_new(ly, x1, y1, x2, y2, thickness, clearance, flg);
+	line = pcb_line_new(ly, x1, y1, x2, y2, thickness, clearance, flg);
+	if (st->primitive_term != NULL)
+		pcb_attribute_put(&line->Attributes, "term", st->primitive_term);
 	return 0;
 }
 
@@ -1184,6 +1187,7 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 	pcb_angle_t end_angle = 0.0, delta = 360.0; /* these defaults allow a gr_circle to be parsed, which does not specify (angle XXX) */
 	pcb_flag_t flg = pcb_flag_make(0); /* start with something bland here */
 	pcb_layer_t *ly = NULL;
+	pcb_arc_t *arc;
 
 	TODO("apply poly clearance as in pool/io_kicad (CUCP#39)");
 	if (subc == NULL)
@@ -1275,7 +1279,9 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 				cy += sy;
 			}
 		}
-		pcb_arc_new(ly, cx, cy, width, height, start_angle, delta, thickness, clearance, flg, pcb_true);
+		arc = pcb_arc_new(ly, cx, cy, width, height, start_angle, delta, thickness, clearance, flg, pcb_true);
+		if (st->primitive_term != NULL)
+			pcb_attribute_put(&arc->Attributes, "term", st->primitive_term);
 	}
 
 	return 0;
