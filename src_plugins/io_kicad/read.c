@@ -1103,6 +1103,8 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 		else if (strcmp("layer", n->str) == 0) {
 			SEEN_NO_DUP(tally, 2);
 			PARSE_LAYER(ly, n->children, subc, "line");
+			if (st->primitive_ly != NULL)
+				return kicad_error(n, "line in this context shall not have layer specified");
 		}
 		else if (strcmp("width", n->str) == 0) {
 			SEEN_NO_DUP(tally, 3);
@@ -1141,7 +1143,12 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 	}
 
 	/* need start, end, layer, thickness at a minimum */
-	required = BV(0) | BV(1) | BV(2); /* | BV(3); now have 1nm default width, i.e. for edge cut */
+	required = BV(0) | BV(1); /* | BV(3); now have 1nm default width, i.e. for edge cut */
+	if (st->primitive_ly == NULL)
+		required |= BV(2);
+	else
+		ly = st->primitive_ly;
+
 	if ((tally & required) != required)
 		return kicad_error(subtree, "failed to create line: missing fields");
 
@@ -1201,6 +1208,8 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 		else if (strcmp("layer", n->str) == 0) {
 			SEEN_NO_DUP(tally, 2);
 			PARSE_LAYER(ly, n->children, subc, "arc");
+			if (st->primitive_ly != NULL)
+				return kicad_error(n, "arc in this context shall not have layer specified");
 		}
 		else if (strcmp("width", n->str) == 0) {
 			SEEN_NO_DUP(tally, 3);
@@ -1220,7 +1229,12 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 	}
 
  /* need start, end, layer, thickness at a minimum */
-	required = BV(0) | BV(1) | BV(2) | BV(3); /* | BV(4); not needed for circles */
+	required = BV(0) | BV(1) | BV(3); /* | BV(4); not needed for circles */
+	if (st->primitive_ly == NULL)
+		required |= BV(2);
+	else
+		ly = st->primitive_ly;
+
 	if ((tally & required) != required)
 		return kicad_error(subtree, "unexpected empty/NULL node in arc.");
 
@@ -2023,6 +2037,14 @@ static int kicad_parse_pad_options(read_state_t *st, gsxl_node_t *subtree)
 	return 0;
 }
 
+static int kicad_parse_gr_poly(read_state_t *st, gsxl_node_t *subtree)
+{
+	TODO("CUCP#48");
+	kicad_warning(subtree, "Ignoring gr_poly in custom pad for now");
+	return 0;
+}
+
+
 /* Parse a primitives subtree found in custom pads - create heavy terminal on each target layer */
 static int kicad_parse_primitives_(read_state_t *st, gsxl_node_t *primitives)
 {
@@ -2031,6 +2053,8 @@ static int kicad_parse_primitives_(read_state_t *st, gsxl_node_t *primitives)
 		{"gr_arc", kicad_parse_gr_arc},
 		{"gr_circle", kicad_parse_gr_arc},
 		{"gr_text", kicad_parse_gr_text},
+		{"gr_poly", kicad_parse_gr_poly},
+		{NULL, NULL}
 	};
 	return kicad_foreach_dispatch(st, primitives, disp);
 }
