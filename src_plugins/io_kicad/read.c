@@ -1912,7 +1912,7 @@ static int kicad_parse_pad_options(read_state_t *st, gsxl_node_t *subtree)
 	return 0;
 }
 
-static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, unsigned long *tally, pcb_coord_t moduleX, pcb_coord_t moduleY, unsigned int moduleRotation, pcb_coord_t mod_clr, pcb_coord_t mod_mask, pcb_coord_t mod_paste, int *moduleEmpty)
+static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, unsigned long *tally, pcb_coord_t moduleX, pcb_coord_t moduleY, unsigned int moduleRotation, pcb_coord_t mod_clr, pcb_coord_t mod_mask, pcb_coord_t mod_paste, double mod_paste_ratio, int *moduleEmpty)
 {
 	gsxl_node_t *m;
 	pcb_coord_t x, y, drillx, drilly, sx, sy, clearance, mask = st->pad_to_mask_clearance*2, paste = 0;
@@ -1921,7 +1921,7 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 	unsigned long feature_tally = 0;
 	int through_hole = 0, plated = 0, definite_clearance = 0;
 	pcb_layer_type_t smd_side;
-	double paste_ratio = 0;
+	double paste_ratio = mod_paste_ratio;
 	kicad_padly_t layers = {0};
 	double shape_arg = 0.0;
 	double rot = 0.0;
@@ -2153,7 +2153,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	gsxl_node_t *n, *p;
 	pcb_layer_id_t lid = 0;
 	int on_bottom = 0, found_refdes = 0, module_empty = 1, module_defined = 0, i;
-	double mod_rot = 0;
+	double mod_rot = 0, mod_paste_ratio = 0;
 	unsigned long tally = 0;
 	pcb_coord_t mod_x = 0, mod_y = 0, mod_clr = UNSPECIFIED, mod_mask = UNSPECIFIED, mod_paste = UNSPECIFIED;
 	char *mod_name;
@@ -2280,11 +2280,15 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			PARSE_COORD(mod_paste, n, n->children, "module pad solder_paste_margin");
 			SEEN_NO_DUP(tally, 13);
 		}
+		else if (strcmp("solder_paste_ratio", n->str) == 0) {
+			PARSE_DOUBLE(mod_paste_ratio, n, n->children, "module pad solder_paste_ratio");
+			SEEN_NO_DUP(tally, 14);
+		}
 		else if (strcmp("path", n->str) == 0) {
 			ignore_value_nodup(n, tally, 11, "unexpected empty/NULL module model node");
 		}
 		else if (strcmp("pad", n->str) == 0) {
-			if (kicad_parse_pad(st, n, subc, &tally, mod_x, mod_y, mod_rot, mod_clr, mod_mask, mod_paste, &module_empty) != 0)
+			if (kicad_parse_pad(st, n, subc, &tally, mod_x, mod_y, mod_rot, mod_clr, mod_mask, mod_paste, mod_paste_ratio, &module_empty) != 0)
 				return -1;
 		}
 		else if (strcmp("fp_line", n->str) == 0) {
