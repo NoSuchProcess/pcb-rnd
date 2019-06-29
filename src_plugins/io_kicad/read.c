@@ -80,6 +80,15 @@ typedef enum {
 	DIM_max
 } kicad_dim_prio_t;
 
+/* delayed zone connect */
+typedef struct zone_connect_s zone_connect_t;
+struct zone_connect_s {
+	pcb_pstk_t *ps;
+	const char *netname;
+	int style;
+	zone_connect_t *next;
+};
+
 typedef struct {
 	pcb_board_t *pcb;
 	pcb_data_t *fp_data;
@@ -100,6 +109,9 @@ typedef struct {
 
 	/* setup */
 	pcb_coord_t pad_to_mask_clearance;
+
+	/* delayed actions */
+	zone_connect_t *zc_head;
 } read_state_t;
 
 typedef struct {
@@ -1509,12 +1521,22 @@ static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree)
    because the polygons may not exist yet */
 static void save_zone_connect(read_state_t *st, pcb_pstk_t *ps, int zone_connect, const char *netname)
 {
-	TODO("Zone connect: remember and handle later");
+	zone_connect_t *zc = malloc(sizeof(zone_connect_t));
+	zc->ps = ps;
+	zc->style = zone_connect;
+	zc->netname = netname; /* it is safe to remember without strdup since it is a tree allocation */
+	zc->next = st->zc_head;
+	st->zc_head = zc;
 }
 
 static void exec_zone_connect(read_state_t *st)
 {
+	zone_connect_t *zc, *next;
 
+	for(zc = st->zc_head; zc != NULL; zc = next) {
+		next = zc->next;
+		free(zc);
+	}
 }
 
 void pcb_shape_roundrect(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height, double roundness)
