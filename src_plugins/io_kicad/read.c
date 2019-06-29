@@ -70,6 +70,9 @@
    use global PCB */
 #define PCB_FOR_FP (st->pcb == NULL ? PCB : st->pcb)
 
+/* when a coord value is not specified in the file */
+#define UNSPECIFIED PCB_MAX_COORD
+
 typedef enum {
 	DIM_PAGE,
 	DIM_AREA,
@@ -1935,12 +1938,12 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 	mask = 0;
 
 	/* overwrite with module clearance if present */
-	if (mod_clr >= 0) {
+	if (mod_clr != UNSPECIFIED) {
 		clearance = mod_clr;
 		definite_clearance = 1;
 	}
 
-	if (mod_mask >= 0)
+	if (mod_mask  != UNSPECIFIED)
 		mask = mod_mask;
 
 	if (n->children != 0 && n->children->str != NULL) {
@@ -2147,7 +2150,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	int on_bottom = 0, found_refdes = 0, module_empty = 1, module_defined = 0, i;
 	double mod_rot = 0;
 	unsigned long tally = 0;
-	pcb_coord_t mod_x = 0, mod_y = 0, mod_clr = -1, mod_mask = -1;
+	pcb_coord_t mod_x = 0, mod_y = 0, mod_clr = UNSPECIFIED, mod_mask = UNSPECIFIED;
 	char *mod_name;
 	pcb_subc_t *subc = NULL;
 
