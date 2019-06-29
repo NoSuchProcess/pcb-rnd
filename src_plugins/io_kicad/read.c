@@ -634,6 +634,24 @@ do { \
 		return kicad_error(missnode, "Missing child node for " errmsg); \
 } while(0) \
 
+/* Convert the string value of node to int and store it in res. On conversion
+   error report error on node using errmsg. If node == NULL: report error
+   on missnode, or ignore the problem if missnode is NULL. */
+#define PARSE_INT(res, missnode, node, errmsg) \
+do { \
+	gsxl_node_t *__node__ = (node); \
+	if ((__node__ != NULL) && (__node__->str != NULL)) { \
+		char *__end__; \
+		double __val__ = strtol(__node__->str, &__end__, 10); \
+		if (*__end__ != 0) \
+			return kicad_error(node, "Invalid numeric (integer) " errmsg); \
+		else \
+			(res) = __val__; \
+	} \
+	else if (missnode != NULL) \
+		return kicad_error(missnode, "Missing child node for " errmsg); \
+} while(0) \
+
 /* same as PARSE_DOUBLE() but res is a pcb_coord_t, input string is in mm */
 #define PARSE_COORD(res, missnode, node, errmsg) \
 do { \
@@ -1487,6 +1505,18 @@ static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree)
 	return 0;
 }
 
+/* Make a list of zone connects - these connections can not be made immediately
+   because the polygons may not exist yet */
+static void save_zone_connect(read_state_t *st, pcb_pstk_t *ps, int zone_connect, const char *netname)
+{
+	TODO("Zone connect: remember and handle later");
+}
+
+static void exec_zone_connect(read_state_t *st)
+{
+
+}
+
 void pcb_shape_roundrect(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height, double roundness)
 {
 	pcb_pstk_poly_t *dst = &shape->data.poly;
@@ -1689,7 +1719,7 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 #undef LYSHT
 #undef LYSHS
 
-static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, const char *netname, int throughHole, int plated, pcb_coord_t moduleX, pcb_coord_t moduleY, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, double pad_rot, unsigned int moduleRotation, pcb_coord_t clearance, pcb_coord_t mask, pcb_coord_t paste, double paste_ratio, pcb_coord_t drillx, pcb_coord_t drilly, const char *pin_name, const char *pad_shape, unsigned long *featureTally, int *moduleEmpty, pcb_layer_type_t smd_side, kicad_padly_t *layers, double shape_arg)
+static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, const char *netname, int throughHole, int plated, pcb_coord_t moduleX, pcb_coord_t moduleY, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, double pad_rot, unsigned int moduleRotation, pcb_coord_t clearance, pcb_coord_t mask, pcb_coord_t paste, double paste_ratio, int zone_connect, pcb_coord_t drillx, pcb_coord_t drilly, const char *pin_name, const char *pad_shape, unsigned long *featureTally, int *moduleEmpty, pcb_layer_type_t smd_side, kicad_padly_t *layers, double shape_arg)
 {
 	pcb_pstk_t *ps;
 	unsigned long required;
@@ -1717,6 +1747,9 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 
 	if (ps == NULL)
 		return kicad_error(subtree, "failed to created padstack");
+
+	if (zone_connect != 0)
+		save_zone_connect(st, ps, zone_connect, netname);
 
 	*moduleEmpty = 0;
 
@@ -1912,14 +1945,14 @@ static int kicad_parse_pad_options(read_state_t *st, gsxl_node_t *subtree)
 	return 0;
 }
 
-static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, unsigned long *tally, pcb_coord_t moduleX, pcb_coord_t moduleY, unsigned int moduleRotation, pcb_coord_t mod_clr, pcb_coord_t mod_mask, pcb_coord_t mod_paste, double mod_paste_ratio, int *moduleEmpty)
+static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, unsigned long *tally, pcb_coord_t moduleX, pcb_coord_t moduleY, unsigned int moduleRotation, pcb_coord_t mod_clr, pcb_coord_t mod_mask, pcb_coord_t mod_paste, double mod_paste_ratio, int mod_zone_connect, int *moduleEmpty)
 {
 	gsxl_node_t *m;
 	pcb_coord_t x, y, drillx, drilly, sx, sy, clearance, mask = st->pad_to_mask_clearance*2, paste = 0;
 	const char *netname = NULL;
 	char *pin_name = NULL, *pad_shape = NULL;
 	unsigned long feature_tally = 0;
-	int through_hole = 0, plated = 0, definite_clearance = 0;
+	int through_hole = 0, plated = 0, definite_clearance = 0, zone_connect = mod_zone_connect;
 	pcb_layer_type_t smd_side;
 	double paste_ratio = mod_paste_ratio;
 	kicad_padly_t layers = {0};
@@ -2037,10 +2070,6 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 			SEEN_NO_DUP(feature_tally, 6);
 			PARSE_DOUBLE(paste_ratio, m, m->children, "module pad solder mask ratio");
 		}
-		else if (strcmp("zone_connect", m->str) == 0) {
-			TODO("CUCP#57");
-			kicad_warning(m, "Ignoring pad %s for now", m->str);
-		}
 		else if (strcmp("clearance", m->str) == 0) {
 			SEEN_NO_DUP(feature_tally, 7);
 			PARSE_COORD(clearance, m, m->children, "module pad clearance");
@@ -2059,6 +2088,10 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 			if (kicad_parse_pad_options(st, m->children) != 0)
 				return -1;
 		}
+		else if (strcmp("zone_connect", m->str) == 0) {
+			SEEN_NO_DUP(feature_tally, 10);
+			PARSE_DOUBLE(zone_connect, m, m->children, "module pad zone_connect");
+		}
 		else
 			return kicad_error(m, "Unknown pad argument: %s", m->str);
 	}
@@ -2068,7 +2101,7 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 			kicad_warning(n, "Couldn't determine pad clearance, using 0.25mm");
 			clearance = PCB_MM_TO_COORD(0.25);
 		}
-		if (kicad_make_pad(st, n, subc, netname, through_hole, plated, moduleX, moduleY, x, y, sx, sy, rot, moduleRotation, clearance, mask, paste, paste_ratio, drillx, drilly, pin_name, pad_shape, &feature_tally, moduleEmpty, smd_side, &layers, shape_arg) != 0)
+		if (kicad_make_pad(st, n, subc, netname, through_hole, plated, moduleX, moduleY, x, y, sx, sy, rot, moduleRotation, clearance, mask, paste, paste_ratio, zone_connect, drillx, drilly, pin_name, pad_shape, &feature_tally, moduleEmpty, smd_side, &layers, shape_arg) != 0)
 			return -1;
 	}
 
@@ -2153,6 +2186,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	gsxl_node_t *n, *p;
 	pcb_layer_id_t lid = 0;
 	int on_bottom = 0, found_refdes = 0, module_empty = 1, module_defined = 0, i;
+	int mod_zone_connect = 0;
 	double mod_rot = 0, mod_paste_ratio = 0;
 	unsigned long tally = 0;
 	pcb_coord_t mod_x = 0, mod_y = 0, mod_clr = UNSPECIFIED, mod_mask = UNSPECIFIED, mod_paste = UNSPECIFIED;
@@ -2284,11 +2318,15 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			PARSE_DOUBLE(mod_paste_ratio, n, n->children, "module pad solder_paste_ratio");
 			SEEN_NO_DUP(tally, 14);
 		}
+		else if (strcmp("zone_connect", n->str) == 0) {
+			PARSE_INT(mod_zone_connect, n, n->children, "module pad zone_connect");
+			SEEN_NO_DUP(tally, 15);
+		}
 		else if (strcmp("path", n->str) == 0) {
 			ignore_value_nodup(n, tally, 11, "unexpected empty/NULL module model node");
 		}
 		else if (strcmp("pad", n->str) == 0) {
-			if (kicad_parse_pad(st, n, subc, &tally, mod_x, mod_y, mod_rot, mod_clr, mod_mask, mod_paste, mod_paste_ratio, &module_empty) != 0)
+			if (kicad_parse_pad(st, n, subc, &tally, mod_x, mod_y, mod_rot, mod_clr, mod_mask, mod_paste, mod_paste_ratio, mod_zone_connect, &module_empty) != 0)
 				return -1;
 		}
 		else if (strcmp("fp_line", n->str) == 0) {
@@ -2556,6 +2594,8 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 	}
 	else
 		readres = -1;
+
+	exec_zone_connect(&st);
 
 	/* clean up */
 	gsxl_uninit(&st.dom);
