@@ -103,6 +103,7 @@ typedef struct {
 	vtp0_t intern_copper; /* temporary storage of internal copper layers */
 	double subc_rot; /* for padstacks know the final parent subc rotation in advance to compensate (this depends on the fact that the rotation appears earlier in the file than any pad) */
 	pcb_subc_t *last_sc;
+	const char *primitive_term; /* for gr_ objects: if not NULL, set the term attribute */
 
 	pcb_coord_t width[DIM_max];
 	pcb_coord_t height[DIM_max];
@@ -2021,6 +2022,31 @@ static int kicad_parse_pad_options(read_state_t *st, gsxl_node_t *subtree)
 	return 0;
 }
 
+/* Parse a primitives subtree found in custom pads */
+static int kicad_parse_primitives(read_state_t *st, gsxl_node_t *primitives, const char *term)
+{
+	int res;
+	const char *old_term;
+	static const dispatch_t disp[] = {
+		{"gr_line", kicad_parse_gr_line},
+		{"gr_arc", kicad_parse_gr_arc},
+		{"gr_circle", kicad_parse_gr_arc},
+		{"gr_text", kicad_parse_gr_text},
+	};
+
+	TODO("CUCP#48");
+	kicad_warning(primitives, "Ignoring pad %s for now", term);
+
+	old_term = st->primitive_term;
+	st->primitive_term = term;
+	res = kicad_foreach_dispatch(st, primitives, disp);
+	st->primitive_term = old_term;
+	
+	return res;
+}
+
+
+
 static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, unsigned long *tally, pcb_coord_t moduleX, pcb_coord_t moduleY, unsigned int moduleRotation, pcb_coord_t mod_clr, pcb_coord_t mod_mask, pcb_coord_t mod_paste, double mod_paste_ratio, int mod_zone_connect, int *moduleEmpty)
 {
 	gsxl_node_t *m;
@@ -2152,8 +2178,8 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 			definite_clearance = 1;
 		}
 		else if (strcmp("primitives", m->str) == 0) {
-			TODO("CUCP#48");
-			kicad_warning(m, "Ignoring pad %s for now", m->str);
+			if (kicad_parse_primitives(st, m->children, pin_name) != 0)
+				return -1;
 		}
 		else if (strcmp("roundrect_rratio", m->str) == 0) {
 			SEEN_NO_DUP(feature_tally, 8);
