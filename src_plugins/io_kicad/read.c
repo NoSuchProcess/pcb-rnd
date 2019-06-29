@@ -1552,7 +1552,7 @@ static void kicad_slot_shape(pcb_pstk_shape_t *shape, pcb_coord_t sx, pcb_coord_
 /* check if shape is wanted on a given layer - SMD version */
 #define LYSHS(loc, typ) ((layers->want[loc] & (PCB_LYT_ ## typ)))
 
-static pcb_pstk_t *kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, pcb_coord_t clearance, double paste_ratio, pcb_coord_t drillx, pcb_coord_t drilly, const char *pad_shape, int plated, kicad_padly_t *layers, double shape_arg)
+static pcb_pstk_t *kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, pcb_coord_t clearance, pcb_coord_t mask, double paste_ratio, pcb_coord_t drillx, pcb_coord_t drilly, const char *pad_shape, int plated, kicad_padly_t *layers, double shape_arg)
 {
 	int len = 0, slot = (drillx != drilly);
 	pcb_coord_t drill = 0;
@@ -1570,8 +1570,8 @@ TODO("CUCP#51: may need to add paste too");
 	if (strcmp(pad_shape, "rect") == 0) {
 		pcb_pstk_shape_t sh[7];
 		memset(sh, 0, sizeof(sh));
-		if (LYSHT(TOP, MASK))      {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+st->pad_to_mask_clearance*2);}
-		if (LYSHT(BOTTOM, MASK))   {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+st->pad_to_mask_clearance*2);}
+		if (LYSHT(TOP, MASK))      {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+mask*2);}
+		if (LYSHT(BOTTOM, MASK))   {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+mask*2);}
 		if (LYSHT(TOP, COPPER))    {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_COPPER; pcb_shape_rect(&sh[len++], padXsize, padYsize);}
 		if (LYSHT(BOTTOM, COPPER)) {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER; pcb_shape_rect(&sh[len++], padXsize, padYsize);}
 		if (LYSHT(INTERN, COPPER)) {sh[len].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER; pcb_shape_rect(&sh[len++], padXsize, padYsize);}
@@ -1602,8 +1602,8 @@ TODO("CUCP#51: may need to add paste too");
 		}
 
 		memset(sh, 0, sizeof(sh));
-		if (LYSHT(TOP, MASK))      {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+st->pad_to_mask_clearance*2, shape_arg);}
-		if (LYSHT(BOTTOM, MASK))   {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+st->pad_to_mask_clearance*2, shape_arg);}
+		if (LYSHT(TOP, MASK))      {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+mask*2, shape_arg);}
+		if (LYSHT(BOTTOM, MASK))   {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+mask*2, shape_arg);}
 		if (LYSHT(TOP, COPPER))    {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_COPPER; pcb_shape_roundrect(&sh[len++], padXsize, padYsize, shape_arg);}
 		if (LYSHT(BOTTOM, COPPER)) {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER; pcb_shape_roundrect(&sh[len++], padXsize, padYsize, shape_arg);}
 		if (LYSHT(INTERN, COPPER)) {sh[len].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER; pcb_shape_roundrect(&sh[len++], padXsize, padYsize, shape_arg);}
@@ -1622,7 +1622,7 @@ TODO("CUCP#64: trapezoid");
 	return NULL;
 }
 
-static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, pcb_coord_t clearance, double paste_ratio, const char *pad_shape, pcb_layer_type_t side, kicad_padly_t *layers, double shape_arg)
+static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, pcb_coord_t clearance, pcb_coord_t mask, double paste_ratio, const char *pad_shape, pcb_layer_type_t side, kicad_padly_t *layers, double shape_arg)
 {
 	int len = 0;
 
@@ -1641,7 +1641,7 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 	if (strcmp(pad_shape, "rect") == 0) {
 		pcb_pstk_shape_t sh[4];
 		memset(sh, 0, sizeof(sh));
-		if (LYSHS(side, MASK))      {sh[len].layer_mask = side | PCB_LYT_MASK;   sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+st->pad_to_mask_clearance*2);}
+		if (LYSHS(side, MASK))      {sh[len].layer_mask = side | PCB_LYT_MASK;   sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[len++], padXsize+mask*2, padYsize+mask*2);}
 		if (LYSHS(side, PASTE))     {sh[len].layer_mask = side | PCB_LYT_PASTE;  sh[len].comb = PCB_LYC_AUTO; pcb_shape_rect(&sh[len++], padXsize * paste_ratio, padYsize * paste_ratio);}
 		if (LYSHS(side, COPPER))    {sh[len].layer_mask = side | PCB_LYT_COPPER; pcb_shape_rect(&sh[len++], padXsize, padYsize);}
 		if (len == 0) goto no_layer;
@@ -1651,7 +1651,7 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 	else if ((strcmp(pad_shape, "oval") == 0) || (strcmp(pad_shape, "circle") == 0)) {
 		pcb_pstk_shape_t sh[4];
 		memset(sh, 0, sizeof(sh));
-		if (LYSHS(side, MASK))      {sh[len].layer_mask = side | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_oval(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+st->pad_to_mask_clearance*2);}
+		if (LYSHS(side, MASK))      {sh[len].layer_mask = side | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_oval(&sh[len++], padXsize+mask*2, padYsize+mask*2);}
 		if (LYSHS(side, PASTE))     {sh[len].layer_mask = side | PCB_LYT_PASTE; sh[len].comb = PCB_LYC_AUTO; pcb_shape_oval(&sh[len++], padXsize * paste_ratio, padYsize * paste_ratio);}
 		if (LYSHS(side, COPPER))    {sh[len].layer_mask = side | PCB_LYT_COPPER; pcb_shape_oval(&sh[len++], padXsize, padYsize);}
 		if (len == 0) goto no_layer;
@@ -1667,7 +1667,7 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 		}
 
 		memset(sh, 0, sizeof(sh));
-		if (LYSHS(side, MASK))      {sh[len].layer_mask = side | PCB_LYT_MASK;   sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+st->pad_to_mask_clearance*2, shape_arg);}
+		if (LYSHS(side, MASK))      {sh[len].layer_mask = side | PCB_LYT_MASK;   sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+mask*2, shape_arg);}
 		if (LYSHS(side, PASTE))     {sh[len].layer_mask = side | PCB_LYT_PASTE;  sh[len].comb = PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize * paste_ratio, padYsize * paste_ratio, shape_arg);}
 		if (LYSHS(side, COPPER))    {sh[len].layer_mask = side | PCB_LYT_COPPER; pcb_shape_roundrect(&sh[len++], padXsize, padYsize, shape_arg);}
 		if (len == 0) goto no_layer;
@@ -1686,7 +1686,7 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 #undef LYSHT
 #undef LYSHS
 
-static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, const char *netname, int throughHole, int plated, pcb_coord_t moduleX, pcb_coord_t moduleY, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, double pad_rot, unsigned int moduleRotation, pcb_coord_t clearance, double paste_ratio, pcb_coord_t drillx, pcb_coord_t drilly, const char *pin_name, const char *pad_shape, unsigned long *featureTally, int *moduleEmpty, pcb_layer_type_t smd_side, kicad_padly_t *layers, double shape_arg)
+static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, const char *netname, int throughHole, int plated, pcb_coord_t moduleX, pcb_coord_t moduleY, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, double pad_rot, unsigned int moduleRotation, pcb_coord_t clearance, pcb_coord_t mask, double paste_ratio, pcb_coord_t drillx, pcb_coord_t drilly, const char *pin_name, const char *pad_shape, unsigned long *featureTally, int *moduleEmpty, pcb_layer_type_t smd_side, kicad_padly_t *layers, double shape_arg)
 {
 	pcb_pstk_t *ps;
 	unsigned long required;
@@ -1703,13 +1703,13 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 			return kicad_error(subtree, "malformed module pad/pin definition.");
 		if ((*featureTally & BV(3)) == 0)
 			drillx = drilly = PCB_MIL_TO_COORD(30); /* CUCP#63: default size is hardwired in pcbnew/class_pad.cpp */
-		ps = kicad_make_pad_thr(st, subtree, subc, X, Y, padXsize, padYsize, clearance, paste_ratio, drillx, drilly, pad_shape, plated, layers, shape_arg);
+		ps = kicad_make_pad_thr(st, subtree, subc, X, Y, padXsize, padYsize, clearance, mask, paste_ratio, drillx, drilly, pad_shape, plated, layers, shape_arg);
 	}
 	else {
 		required = BV(0) | BV(1) | BV(2) | BV(5);
 		if ((*featureTally & required) != required)
 			return kicad_error(subtree, "error parsing incomplete module definition.");
-		ps = kicad_make_pad_smd(st, subtree, subc, X, Y, padXsize, padYsize, clearance, paste_ratio, pad_shape, smd_side, layers, shape_arg);
+		ps = kicad_make_pad_smd(st, subtree, subc, X, Y, padXsize, padYsize, clearance, mask, paste_ratio, pad_shape, smd_side, layers, shape_arg);
 	}
 
 	if (ps == NULL)
@@ -1912,7 +1912,7 @@ static int kicad_parse_pad_options(read_state_t *st, gsxl_node_t *subtree)
 static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, unsigned long *tally, pcb_coord_t moduleX, pcb_coord_t moduleY, unsigned int moduleRotation, pcb_coord_t mod_clr, pcb_coord_t mod_mask, int *moduleEmpty)
 {
 	gsxl_node_t *m;
-	pcb_coord_t x, y, drillx, drilly, sx, sy, clearance;
+	pcb_coord_t x, y, drillx, drilly, sx, sy, clearance, mask = st->pad_to_mask_clearance*2;
 	const char *netname = NULL;
 	char *pin_name = NULL, *pad_shape = NULL;
 	unsigned long feature_tally = 0;
@@ -1932,12 +1932,16 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 	*/
 	TODO("CUCP#65 Not sure where this should be coming from (the ultimate fallback, bottom item above");
 	clearance = 0;
+	mask = 0;
 
 	/* overwrite with module clearance if present */
 	if (mod_clr >= 0) {
 		clearance = mod_clr;
 		definite_clearance = 1;
 	}
+
+	if (mod_mask >= 0)
+		mask = mod_mask;
 
 	if (n->children != 0 && n->children->str != NULL) {
 		pin_name = n->children->str;
@@ -2056,7 +2060,7 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 			kicad_warning(n, "Couldn't determine pad clearance, using 0.25mm");
 			clearance = PCB_MM_TO_COORD(0.25);
 		}
-		if (kicad_make_pad(st, n, subc, netname, through_hole, plated, moduleX, moduleY, x, y, sx, sy, rot, moduleRotation, clearance, paste_ratio, drillx, drilly, pin_name, pad_shape, &feature_tally, moduleEmpty, smd_side, &layers, shape_arg) != 0)
+		if (kicad_make_pad(st, n, subc, netname, through_hole, plated, moduleX, moduleY, x, y, sx, sy, rot, moduleRotation, clearance, mask, paste_ratio, drillx, drilly, pin_name, pad_shape, &feature_tally, moduleEmpty, smd_side, &layers, shape_arg) != 0)
 			return -1;
 	}
 
