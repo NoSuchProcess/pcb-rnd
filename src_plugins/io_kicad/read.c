@@ -1661,16 +1661,18 @@ static pcb_pstk_t *kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pc
 		return NULL;
 	}
 
+	paste_ratio = 1.0 + (2.0 * paste_ratio);
+
 	if (!slot)
 		drill = drillx;
 
-TODO("CUCP#51: may need to add paste too");
-
 	if (strcmp(pad_shape, "rect") == 0) {
-		pcb_pstk_shape_t sh[7];
+		pcb_pstk_shape_t sh[9];
 		memset(sh, 0, sizeof(sh));
 		if (LYSHT(TOP, MASK))      {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+mask*2);}
 		if (LYSHT(BOTTOM, MASK))   {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+mask*2);}
+		if (LYSHT(TOP, PASTE))     {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_PASTE; sh[len].comb = PCB_LYC_AUTO; pcb_shape_rect(&sh[len++], padXsize * paste_ratio + paste*2, padYsize * paste_ratio + paste*2);}
+		if (LYSHT(BOTTOM, PASTE))  {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_PASTE; sh[len].comb = PCB_LYC_AUTO; pcb_shape_rect(&sh[len++], padXsize * paste_ratio + paste*2, padYsize * paste_ratio + paste*2);}
 		if (LYSHT(TOP, COPPER))    {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_COPPER; pcb_shape_rect(&sh[len++], padXsize, padYsize);}
 		if (LYSHT(BOTTOM, COPPER)) {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER; pcb_shape_rect(&sh[len++], padXsize, padYsize);}
 		if (LYSHT(INTERN, COPPER)) {sh[len].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER; pcb_shape_rect(&sh[len++], padXsize, padYsize);}
@@ -1680,10 +1682,12 @@ TODO("CUCP#51: may need to add paste too");
 		return pcb_pstk_new_from_shape(subc->data, X, Y, drill, plated, clearance, sh);
 	}
 	else if ((strcmp(pad_shape, "oval") == 0) || (strcmp(pad_shape, "circle") == 0)) {
-		pcb_pstk_shape_t sh[7];
+		pcb_pstk_shape_t sh[9];
 		memset(sh, 0, sizeof(sh));
 		if (LYSHT(TOP, MASK))      {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_oval(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+st->pad_to_mask_clearance*2);}
 		if (LYSHT(BOTTOM, MASK))   {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_oval(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+st->pad_to_mask_clearance*2);}
+		if (LYSHT(TOP, PASTE))     {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_PASTE; sh[len].comb = PCB_LYC_AUTO; pcb_shape_oval(&sh[len++], padXsize * paste_ratio + paste*2, padYsize * paste_ratio + paste*2);}
+		if (LYSHT(BOTTOM, PASTE))  {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_PASTE; sh[len].comb = PCB_LYC_AUTO; pcb_shape_oval(&sh[len++], padXsize * paste_ratio + paste*2, padYsize * paste_ratio + paste*2);}
 		if (LYSHT(TOP, COPPER))    {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_COPPER; pcb_shape_oval(&sh[len++], padXsize, padYsize);}
 		if (LYSHT(BOTTOM, COPPER)) {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER; pcb_shape_oval(&sh[len++], padXsize, padYsize);}
 		if (LYSHT(INTERN, COPPER)) {sh[len].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER; pcb_shape_oval(&sh[len++], padXsize, padYsize);}
@@ -1693,7 +1697,7 @@ TODO("CUCP#51: may need to add paste too");
 		return pcb_pstk_new_from_shape(subc->data, X, Y, drill, plated, clearance, sh);
 	}
 	else if (strcmp(pad_shape, "roundrect") == 0) {
-		pcb_pstk_shape_t sh[7];
+		pcb_pstk_shape_t sh[9];
 
 		if ((shape_arg <= 0.0) || (shape_arg > 0.5)) {
 			kicad_error(subtree, "Round rectangle ratio %f out of range: must be >0 and <=0.5", shape_arg);
@@ -1703,6 +1707,8 @@ TODO("CUCP#51: may need to add paste too");
 		memset(sh, 0, sizeof(sh));
 		if (LYSHT(TOP, MASK))      {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+mask*2, shape_arg);}
 		if (LYSHT(BOTTOM, MASK))   {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize+st->pad_to_mask_clearance*2, padYsize+mask*2, shape_arg);}
+		if (LYSHT(TOP, PASTE))     {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_PASTE; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize * paste_ratio + paste*2, padYsize * paste_ratio + paste*2, shape_arg);}
+		if (LYSHT(BOTTOM, PASTE))  {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_PASTE; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_roundrect(&sh[len++], padXsize * paste_ratio + paste*2, padYsize * paste_ratio + paste*2, shape_arg);}
 		if (LYSHT(TOP, COPPER))    {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_COPPER; pcb_shape_roundrect(&sh[len++], padXsize, padYsize, shape_arg);}
 		if (LYSHT(BOTTOM, COPPER)) {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER; pcb_shape_roundrect(&sh[len++], padXsize, padYsize, shape_arg);}
 		if (LYSHT(INTERN, COPPER)) {sh[len].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER; pcb_shape_roundrect(&sh[len++], padXsize, padYsize, shape_arg);}
