@@ -2252,7 +2252,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	gsxl_node_t *n, *p;
 	pcb_layer_id_t lid = 0;
 	int on_bottom = 0, found_refdes = 0, module_empty = 1, module_defined = 0, i;
-	int mod_zone_connect = 0;
+	int mod_zone_connect = 1; /* default seems to be connect; see CUCP#57, case labeled "-1" */
 	double mod_rot = 0, mod_paste_ratio = 0;
 	unsigned long tally = 0;
 	pcb_coord_t mod_x = 0, mod_y = 0, mod_clr = UNSPECIFIED, mod_mask = UNSPECIFIED, mod_paste = UNSPECIFIED;
