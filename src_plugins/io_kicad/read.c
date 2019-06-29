@@ -105,6 +105,7 @@ typedef struct {
 	pcb_subc_t *last_sc;
 	const char *primitive_term; /* for gr_ objects: if not NULL, set the term attribute */
 	pcb_layer_t *primitive_ly;  /* for gr_ objects: if not NULL, use this layer and expect no layer specified in the file */
+	pcb_subc_t *primitive_subc; /* for gr_ objects: if not NULL, object is being added under this subc (apply offs) */
 
 	pcb_coord_t width[DIM_max];
 	pcb_coord_t height[DIM_max];
@@ -1152,6 +1153,9 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 	if ((tally & required) != required)
 		return kicad_error(subtree, "failed to create line: missing fields");
 
+	if (st->primitive_subc != NULL)
+		subc = st->primitive_subc;
+
 	if (subc != NULL) {
 		pcb_coord_t sx, sy;
 		if (pcb_subc_get_origin(subc, &sx, &sy) == 0) {
@@ -1260,6 +1264,9 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 			if (start_angle < 0.0)
 				start_angle += 360.0;
 		}
+
+		if (st->primitive_subc != NULL)
+			subc = st->primitive_subc;
 
 		if (subc != NULL) {
 			pcb_coord_t sx, sy;
@@ -2063,16 +2070,16 @@ static int kicad_parse_primitives(read_state_t *st, gsxl_node_t *primitives, pcb
 {
 	int res, warned = 0;
 	const char *old_term;
+	pcb_subc_t *old_subc;
 	pcb_layer_t *old_ly;
 	pcb_layer_id_t loc, *typ;
 	pcb_layer_id_t ltypes[] = { PCB_LYT_COPPER, PCB_LYT_SILK, PCB_LYT_MASK, PCB_LYT_PASTE, 0};
 
-	TODO("CUCP#48");
-	kicad_warning(primitives, "Ignoring pad %s for now", term);
-
+	old_subc = st->primitive_subc;
 	old_ly = st->primitive_ly;
 	old_term = st->primitive_term;
 	st->primitive_term = term;
+	st->primitive_subc = subc;
 
 	for(loc = PCB_LYT_TOP; loc <= PCB_LYT_INTERN; loc++) {
 		for(typ = ltypes; *typ != 0; typ++) {
@@ -2094,6 +2101,7 @@ static int kicad_parse_primitives(read_state_t *st, gsxl_node_t *primitives, pcb
 
 	st->primitive_term = old_term;
 	st->primitive_ly = old_ly;
+	st->primitive_subc = old_subc;
 	return res;
 }
 
