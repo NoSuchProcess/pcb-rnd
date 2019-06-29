@@ -2059,12 +2059,12 @@ static int kicad_parse_primitives_(read_state_t *st, gsxl_node_t *primitives)
 	return kicad_foreach_dispatch(st, primitives, disp);
 }
 
-static int kicad_parse_primitives(read_state_t *st, gsxl_node_t *primitives, const char *term, const kicad_padly_t *layers)
+static int kicad_parse_primitives(read_state_t *st, gsxl_node_t *primitives, pcb_subc_t *subc, const char *term, const kicad_padly_t *layers)
 {
 	int res, warned = 0;
 	const char *old_term;
 	pcb_layer_t *old_ly;
-	pcb_layer_id_t loc, *typ, lid;
+	pcb_layer_id_t loc, *typ;
 	pcb_layer_id_t ltypes[] = { PCB_LYT_COPPER, PCB_LYT_SILK, PCB_LYT_MASK, PCB_LYT_PASTE, 0};
 
 	TODO("CUCP#48");
@@ -2077,13 +2077,16 @@ static int kicad_parse_primitives(read_state_t *st, gsxl_node_t *primitives, con
 	for(loc = PCB_LYT_TOP; loc <= PCB_LYT_INTERN; loc++) {
 		for(typ = ltypes; *typ != 0; typ++) {
 			if (layers->want[loc] & (*typ)) {
-				if (pcb_layer_list(st->pcb, loc | *typ, &lid, 1) == 1) {
-					st->primitive_ly = &st->pcb->Data->Layer[lid];
+				pcb_layer_combining_t comb = 0;
+				if ((*typ) & (PCB_LYT_PASTE | PCB_LYT_MASK | PCB_LYT_SILK)) comb |= PCB_LYC_AUTO;
+				if ((*typ) & (PCB_LYT_MASK)) comb |= PCB_LYC_SUB;
+				st->primitive_ly = pcb_subc_get_layer(subc, loc | *typ, comb, 1, "pad", pcb_false);
+				if (st->primitive_ly != NULL) {
 					res = kicad_parse_primitives_(st, primitives);
-				}
-				if (!warned && ((*typ) & PCB_LYT_INTERN)) {
-					warned = 1;
-					kicad_warning(primitives, "custom pad shape on internal copper layer: creating it only on one layer\n");
+					if (!warned && ((*typ) & PCB_LYT_INTERN)) {
+						warned = 1;
+						kicad_warning(primitives, "custom pad shape on internal copper layer: creating it only on one layer\n");
+					}
 				}
 			}
 		}
@@ -2226,7 +2229,7 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 			definite_clearance = 1;
 		}
 		else if (strcmp("primitives", m->str) == 0) {
-			if (kicad_parse_primitives(st, m->children, pin_name, &layers) != 0)
+			if (kicad_parse_primitives(st, m->children, subc, pin_name, &layers) != 0)
 				return -1;
 		}
 		else if (strcmp("roundrect_rratio", m->str) == 0) {
