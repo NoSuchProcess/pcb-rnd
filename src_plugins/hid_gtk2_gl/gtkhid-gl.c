@@ -285,6 +285,9 @@ void ghid_gl_set_special_colors(conf_native_t *cfg)
 		if (map_color_string(cfg->val.color[0].str, &priv->bg_color))
 			set_special_grid_color();
 	}
+	else if ((CFT_COLOR *)cfg->val.color == &pcbhl_conf.appearance.color.off_limit) {
+		map_color_string(cfg->val.color[0].str, &priv->offlimits_color);
+	}
 	else if (((CFT_COLOR *) cfg->val.color == &pcbhl_conf.appearance.color.grid)) {
 		if (map_color_string(cfg->val.color[0].str, &priv->grid_color))
 			set_special_grid_color();
