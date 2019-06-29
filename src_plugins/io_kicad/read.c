@@ -2007,7 +2007,7 @@ static int kicad_parse_pad_options(read_state_t *st, gsxl_node_t *subtree)
 			else
 				return kicad_error(n, "unknwon clearance option argument %s", n->children->str);
 		}
-		if (strcmp(n->str, "anchor") == 0) {
+		else if (strcmp(n->str, "anchor") == 0) {
 			TODO("CUCP#60");
 			kicad_warning(n, "ignoring pad anchor for now");
 		}
