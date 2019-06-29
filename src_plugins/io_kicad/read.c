@@ -33,6 +33,7 @@
 #include <math.h>
 #include <gensexpr/gsxl.h>
 #include <genht/htsi.h>
+#include <genht/htpp.h>
 #include <genvector/vtp0.h>
 
 #include "compat_misc.h"
@@ -112,6 +113,8 @@ typedef struct {
 
 	/* delayed actions */
 	zone_connect_t *zc_head;
+	htpp_t poly2net;
+	unsigned poly2net_inited:1;
 } read_state_t;
 
 typedef struct {
@@ -2406,6 +2409,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 	pcb_poly_t *polygon = NULL;
 	pcb_flag_t flags = pcb_flag_make(PCB_FLAG_CLEARPOLY);
 	pcb_layer_t *ly = NULL;
+	char *net_name = NULL;
 
 	for(n = subtree; n != NULL; n = n->next) {
 		if (n->str == NULL)
@@ -2414,7 +2418,8 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 			ignore_value_nodup(n, tally, 0, "unexpected zone net null node.");
 		}
 		else if (strcmp("net_name", n->str) == 0) {
-			ignore_value_nodup(n, tally, 1, "unexpected zone net_name null node.");
+			SEEN_NO_DUP(tally, 1);
+			net_name = n->children->str;
 		}
 		else if (strcmp("tstamp", n->str) == 0) {
 			ignore_value_nodup(n, tally, 2, "unexpected zone tstamp null node.");
@@ -2496,6 +2501,9 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 	if (polygon != NULL) {
 		pcb_add_poly_on_layer(ly, polygon);
 		pcb_poly_init_clip(st->pcb->Data, ly, polygon);
+
+		if (st->poly2net_inited)
+			htpp_set(&st->poly2net, polygon, net_name);
 	}
 	return 0;
 }
@@ -2588,6 +2596,8 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 	st.Filename = Filename;
 	st.settings_dest = settings_dest;
 	htsi_init(&st.layer_k2i, strhash, strkeyeq);
+	htpp_init(&st.poly2net, ptrhash, ptrkeyeq);
+	st.poly2net_inited = 1;
 
 	/* A0 */
 	st.width[DIM_FALLBACK] = PCB_MM_TO_COORD(1189.0);
@@ -2618,6 +2628,7 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 		readres = -1;
 
 	exec_zone_connect(&st);
+	htpp_uninit(&st.poly2net);
 
 	/* clean up */
 	gsxl_uninit(&st.dom);
