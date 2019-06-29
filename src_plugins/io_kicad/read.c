@@ -2017,14 +2017,16 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 			PARSE_COORD(sy, m, m->children->next, "module pad size Y");
 		}
 		else if (strcmp("solder_mask_margin", m->str) == 0) {
-			TODO("CUCP#54");
-			kicad_warning(m, "Ignoring pad %s for now", m->str);
+			SEEN_NO_DUP(feature_tally, 10);
+			PARSE_COORD(mask, m, m->children, "module pad mask");
 		}
 		else if (strcmp("solder_mask_margin_ratio", m->str) == 0) {
+			SEEN_NO_DUP(feature_tally, 10);
 			TODO("CUCP#56");
 			kicad_warning(m, "Ignoring pad %s for now", m->str);
 		}
 		else if (strcmp("solder_paste_margin", m->str) == 0) {
+			SEEN_NO_DUP(feature_tally, 6);
 			TODO("CUCP#55");
 			kicad_warning(m, "Ignoring pad %s for now", m->str);
 		}
