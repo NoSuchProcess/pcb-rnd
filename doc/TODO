@@ -41,7 +41,7 @@
 - CLEANUP: unify gui invocation option printout: pcb-rnd --help gtk_[gdk|gl] and pcb-rnd --help lesstif should use the same style printing options (even tho options will never be the same) [report:miloh]
 - BUG: The padstackedit dialog is larger than 1024x768 and can not be made any smaller [report: Ade]
 - BUG: Replacing a subc by shift-leftclick deletes the old subc but doesn't place the new one. Recipe: Place a subc. Load a new subc to the buffer. Position the buffer subc over the existing subc and press shift-leftclick. Result=old subc is removed, not replaced. [report: Ade]
-- BUG: gl HID bug: changing background color from preferences won't update internal color cache [report: Ade, Dave]
++ BUG: gl HID bug: changing background color from preferences won't update internal color cache [report: Ade, Dave]
 
 2. For later releases ===============================================================================
 - CLEANUP: remove next_gui and SwitchHID()
