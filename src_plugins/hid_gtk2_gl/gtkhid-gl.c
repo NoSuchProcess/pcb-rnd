@@ -282,8 +282,7 @@ void ghid_gl_set_special_colors(conf_native_t *cfg)
 	render_priv_t *priv = gport->render_priv;
 
 	if (((CFT_COLOR *) cfg->val.color == &pcbhl_conf.appearance.color.background)) {
-		if (map_color_string(cfg->val.color[0].str, &priv->bg_color))
-			set_special_grid_color();
+		map_color_string(cfg->val.color[0].str, &priv->bg_color);
 	}
 	else if ((CFT_COLOR *)cfg->val.color == &pcbhl_conf.appearance.color.off_limit) {
 		map_color_string(cfg->val.color[0].str, &priv->offlimits_color);
