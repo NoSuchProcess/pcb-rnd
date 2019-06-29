@@ -104,6 +104,7 @@ typedef struct {
 	double subc_rot; /* for padstacks know the final parent subc rotation in advance to compensate (this depends on the fact that the rotation appears earlier in the file than any pad) */
 	pcb_subc_t *last_sc;
 	const char *primitive_term; /* for gr_ objects: if not NULL, set the term attribute */
+	pcb_layer_t *primitive_ly;  /* for gr_ objects: if not NULL, use this layer and expect no layer specified in the file */
 
 	pcb_coord_t width[DIM_max];
 	pcb_coord_t height[DIM_max];
@@ -2022,29 +2023,52 @@ static int kicad_parse_pad_options(read_state_t *st, gsxl_node_t *subtree)
 	return 0;
 }
 
-/* Parse a primitives subtree found in custom pads */
-static int kicad_parse_primitives(read_state_t *st, gsxl_node_t *primitives, const char *term)
+/* Parse a primitives subtree found in custom pads - create heavy terminal on each target layer */
+static int kicad_parse_primitives_(read_state_t *st, gsxl_node_t *primitives)
 {
-	int res;
-	const char *old_term;
 	static const dispatch_t disp[] = {
 		{"gr_line", kicad_parse_gr_line},
 		{"gr_arc", kicad_parse_gr_arc},
 		{"gr_circle", kicad_parse_gr_arc},
 		{"gr_text", kicad_parse_gr_text},
 	};
+	return kicad_foreach_dispatch(st, primitives, disp);
+}
+
+static int kicad_parse_primitives(read_state_t *st, gsxl_node_t *primitives, const char *term, const kicad_padly_t *layers)
+{
+	int res, warned = 0;
+	const char *old_term;
+	pcb_layer_t *old_ly;
+	pcb_layer_id_t loc, *typ, lid;
+	pcb_layer_id_t ltypes[] = { PCB_LYT_COPPER, PCB_LYT_SILK, PCB_LYT_MASK, PCB_LYT_PASTE, 0};
 
 	TODO("CUCP#48");
 	kicad_warning(primitives, "Ignoring pad %s for now", term);
 
+	old_ly = st->primitive_ly;
 	old_term = st->primitive_term;
 	st->primitive_term = term;
-	res = kicad_foreach_dispatch(st, primitives, disp);
+
+	for(loc = PCB_LYT_TOP; loc <= PCB_LYT_INTERN; loc++) {
+		for(typ = ltypes; *typ != 0; typ++) {
+			if (layers->want[loc] & (*typ)) {
+				if (pcb_layer_list(st->pcb, loc | *typ, &lid, 1) == 1) {
+					st->primitive_ly = &st->pcb->Data->Layer[lid];
+					res = kicad_parse_primitives_(st, primitives);
+				}
+				if (!warned && ((*typ) & PCB_LYT_INTERN)) {
+					warned = 1;
+					kicad_warning(primitives, "custom pad shape on internal copper layer: creating it only on one layer\n");
+				}
+			}
+		}
+	}
+
 	st->primitive_term = old_term;
-	
+	st->primitive_ly = old_ly;
 	return res;
 }
-
 
 
 static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, unsigned long *tally, pcb_coord_t moduleX, pcb_coord_t moduleY, unsigned int moduleRotation, pcb_coord_t mod_clr, pcb_coord_t mod_mask, pcb_coord_t mod_paste, double mod_paste_ratio, int mod_zone_connect, int *moduleEmpty)
@@ -2178,7 +2202,7 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 			definite_clearance = 1;
 		}
 		else if (strcmp("primitives", m->str) == 0) {
-			if (kicad_parse_primitives(st, m->children, pin_name) != 0)
+			if (kicad_parse_primitives(st, m->children, pin_name, &layers) != 0)
 				return -1;
 		}
 		else if (strcmp("roundrect_rratio", m->str) == 0) {
