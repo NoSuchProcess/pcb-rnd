@@ -230,7 +230,7 @@
 	- remove via geometry from route style
 	- remove netlist net ->style, should be a plain attribute (but keep the dedicated field in old versions)
 	- save and load rat anchor object idpath
-	- poly side clearance when it is introduced in the data model3
+	- poly side clearance value (complements object's clearance) when it is introduced in the data model
 
 Lesstif:
 	- implement/enable local grid in lesstif (menu option is disabled)
