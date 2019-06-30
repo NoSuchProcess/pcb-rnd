@@ -2050,11 +2050,14 @@ static int kicad_parse_pad_options(read_state_t *st, gsxl_node_t *subtree)
 	return 0;
 }
 
+TODO("eliminate this forward declaration by reordering the code")
+static int kicad_parse_any_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t modx, pcb_coord_t mody);
+
 static int kicad_parse_gr_poly(read_state_t *st, gsxl_node_t *subtree)
 {
-	TODO("CUCP#48");
-	kicad_warning(subtree, "Ignoring gr_poly in custom pad for now");
-	return 0;
+	pcb_coord_t sx = 0, sy = 0;
+	pcb_subc_get_origin(st->primitive_subc, &sx, &sy);
+	return kicad_parse_any_poly(st, subtree, st->primitive_subc, sx, sy);
 }
 
 
@@ -2297,7 +2300,7 @@ static int kicad_parse_poly_pts(read_state_t *st, gsxl_node_t *subtree, pcb_poly
 	return 0;
 }
 
-static int kicad_parse_fp_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t modx, pcb_coord_t mody)
+static int kicad_parse_any_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t modx, pcb_coord_t mody)
 {
 	gsxl_node_t *n, *npts = NULL;
 	pcb_layer_t *ly = NULL;
@@ -2314,6 +2317,8 @@ static int kicad_parse_fp_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 		else if (strcmp(n->str, "layer") == 0) {
 			SEEN_NO_DUP(tally, 2);
 			PARSE_LAYER(ly, n->children, subc, "line");
+			if (st->primitive_ly != NULL)
+				return kicad_error(n, "poly in this context shall not have layer specified");
 		}
 		else if (strcmp(n->str, "status") == 0) {
 			SEEN_NO_DUP(tally, 3);
@@ -2334,9 +2339,12 @@ static int kicad_parse_fp_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 	}
 
 	if (npts == NULL)
-		return kicad_error(subtree, "missing pts subtree in fp_poly");
+		return kicad_error(subtree, "missing pts subtree in fp_poly or gr_poly");
+
+	if (st->primitive_ly != NULL)
+		ly = st->primitive_ly;
 	if (ly == NULL)
-		return kicad_error(subtree, "missing layer subtree in fp_poly");
+		return kicad_error(subtree, "missing layer subtree in fp_poly or gr_poly");
 
 	poly = pcb_poly_new(ly, 0, flags);
 	if (kicad_parse_poly_pts(st, npts, poly, modx, mody) < 0)
@@ -2345,8 +2353,17 @@ static int kicad_parse_fp_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 	pcb_add_poly_on_layer(ly, poly);
 	pcb_poly_init_clip(subc->data, ly, poly);
 
+	if (st->primitive_term != NULL)
+		pcb_attribute_put(&poly->Attributes, "term", st->primitive_term);
+
 	return 0;
 }
+
+static int kicad_parse_fp_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t modx, pcb_coord_t mody)
+{
+	return kicad_parse_any_poly(st, subtree, subc, modx, mody);
+}
+
 
 static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 {
