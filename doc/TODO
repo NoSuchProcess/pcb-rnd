@@ -11,7 +11,6 @@
 + FEATURE: grid size change should be undoable? -> no, see http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=undoability [report:Evan]
 + FEATURE: scripting: example script that tents/untents all/selected/object vias [report: keantoken]
 - FEATURE: edakrill script for growing line thickness keeping the line on one side (side alignment) [report: keantoken]
-- FEATURE: lesstif DAD support for toggle buttons [report: Igor2]
 - BUG: pspanelize cam job fails [report: Igor2]
 + BUG: message log: when opens, even if scroll-to-bottom is set, it is not scrolling down automatically [report: keantoken]
 + BUG: press 'enter' in propedit right side value for string or coord - it should be taken as 'apply' [report: keantoken]
@@ -38,12 +37,12 @@
 + BUG: io_kicad: kicad_mod (clearance 0.25) is not processed (see priv mail from Erik on 22 may) [report: Erik]
 + BUG: io_kicad: parser not parsing obround pad rotation, rot, (at x y rot), see work/bug_files/obround-rotation.kicad_pcb [report: erich]
 - BUG: gtk2_gl issue. view in netlist window circuit view clips or goes black when changing selected net (repro. w/ doc/tutorials/15_no_sch/step3.lht and open netlist view {w n} [report: miloh]
-- CLEANUP: unify gui invocation option printout: pcb-rnd --help gtk_[gdk|gl] and pcb-rnd --help lesstif should use the same style printing options (even tho options will never be the same) [report:miloh]
 - BUG: The padstackedit dialog is larger than 1024x768 and can not be made any smaller [report: Ade]
 - BUG: Replacing a subc by shift-leftclick deletes the old subc but doesn't place the new one. Recipe: Place a subc. Load a new subc to the buffer. Position the buffer subc over the existing subc and press shift-leftclick. Result=old subc is removed, not replaced. [report: Ade]
 + BUG: gl HID bug: changing background color from preferences won't update internal color cache [report: Ade, Dave]
 
 2. For later releases ===============================================================================
+- CLEANUP: unify gui invocation option printout: pcb-rnd --help gtk_[gdk|gl] and pcb-rnd --help lesstif should use the same style printing options (even tho options will never be the same) [report:miloh]
 - CLEANUP: remove next_gui and SwitchHID()
 - CLEANUP: DAD close sequence: TODO("#51.*"): there are three sources to trigger hid_ctx (caller's free on modal, close button free and window destroy callback); requre the user to always call free last and add bits to track what frees are already called and free(ctx) last; test in 4 situations: (modal,nonmodal)*(close_buttons,wmclose) [report: Igor2]
 - CLEANUP: rewrite parametric footprints to use tEDAx (or lihata)
@@ -84,6 +83,7 @@
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
 - FEATURE: thermal to undo stack. reproduce: new layout, place via, place poly around via, use thermal tool on via, {u u } undo shows thermal isn't undoable [report: miloh]
 - BUG: rat draw undo not stacking correctly -- repro: draw a rat, { u u } undo, then { c r } redraws it [report: miloh]
+- FEATURE: lesstif DAD support for toggle buttons [report: Igor2]
 - FEATURE: (TT) route style upgrade to prototypes:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
 	- BUG: padstack doesn't show drc xor shape while moving - because the whole drawing is a cheat for old vias [report: igor2]
