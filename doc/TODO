@@ -42,7 +42,6 @@
 - BUG: The padstackedit dialog is larger than 1024x768 and can not be made any smaller [report: Ade]
 - BUG: Replacing a subc by shift-leftclick deletes the old subc but doesn't place the new one. Recipe: Place a subc. Load a new subc to the buffer. Position the buffer subc over the existing subc and press shift-leftclick. Result=old subc is removed, not replaced. [report: Ade]
 + BUG: gl HID bug: changing background color from preferences won't update internal color cache [report: Ade, Dave]
-- BUG: execute pcb-rnd ./brokenfile - brokenfile is a file with a few random characters; after the load errors, the reload banner appears [report: Igor2]
 
 2. For later releases ===============================================================================
 - CLEANUP: remove next_gui and SwitchHID()
