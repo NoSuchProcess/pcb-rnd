@@ -1581,7 +1581,7 @@ static void exec_zone_connect(read_state_t *st)
 			if (ly->polygon_tree == NULL) continue;
 
 			/* use rtree to search for polys that are near the padstack */
-			for(p = pcb_rtree_first(&it, ly->polygon_tree, &zc->ps->BoundingBox); p != NULL; p = pcb_rtree_next(&it)) {
+			for(p = pcb_rtree_first(&it, ly->polygon_tree, (const pcb_rtree_box_t *)&zc->ps->BoundingBox); p != NULL; p = pcb_rtree_next(&it)) {
 				const char *pnet;
 				pnet = htpp_get(&st->poly2net, p);
 				if (strcmp(pnet, zc->netname) == 0) {
