@@ -82,6 +82,7 @@ static void pcb_infobar_update_conf(conf_native_t *cfg, int arr_idx)
 static void pcb_infobar_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	infobar_gui_inited = 1;
+	pcb_infobar_brdchg_ev(hidlib, NULL, 0, NULL); /* this may have happened ebfore plugin init if file was specified on the CLI and is already loaded - pick up file data from memory */
 	if (!infobar_timer_active)
 		infobar_tick(infobar_timer);
 }
