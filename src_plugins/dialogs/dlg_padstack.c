@@ -815,7 +815,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 
 					PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
 					PCB_DAD_LABEL(dlg, "Pad geometry per layer type:");
-					PCB_DAD_BEGIN_TABLE(dlg, 5);
+					PCB_DAD_BEGIN_TABLE(dlg, 4);
 						PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
 						for(n = 0; n < pcb_proto_num_layers; n++) {
 							const char *layname = pcb_proto_layers[n].name;
@@ -826,17 +826,28 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 								layname = layname_tmp = pcb_strdup_printf("(%s)", pcb_proto_layers[n].name);
 								help = "No board layer available for this layer type.\nThis shape will not show on the board\nuntil the corresponding layer in the matching layer group type is created.";
 							}
+
+							/* col 1 */
 							PCB_DAD_LABEL(dlg, layname);
 								if (help != NULL)
 									PCB_DAD_HELP(dlg, help);
-							PCB_DAD_LABEL(dlg, "-");
-								pse->proto_shape[n] = PCB_DAD_CURRENT(dlg);
-							PCB_DAD_LABEL(dlg, "-");
-								pse->proto_info[n] = PCB_DAD_CURRENT(dlg);
+
+							/* col 2 */
+							PCB_DAD_BEGIN_HBOX(dlg);
+								PCB_DAD_LABEL(dlg, "-");
+									pse->proto_shape[n] = PCB_DAD_CURRENT(dlg);
+								PCB_DAD_LABEL(dlg, "    ");
+								PCB_DAD_LABEL(dlg, "-");
+									pse->proto_info[n] = PCB_DAD_CURRENT(dlg);
+							PCB_DAD_END(dlg);
+
+							/* col 3 */
 							PCB_DAD_BUTTON(dlg, "change...");
 								pse->proto_change[n] = PCB_DAD_CURRENT(dlg);
 								PCB_DAD_CHANGE_CB(dlg, pse_chg_shape);
 								PCB_DAD_HELP(dlg, "Change the shape on this layer type");
+
+							/* col 4 */
 							PCB_DAD_COORD(dlg, "");
 								pse->proto_clr[n] = PCB_DAD_CURRENT(dlg);
 								PCB_DAD_MINVAL(dlg, 1);
