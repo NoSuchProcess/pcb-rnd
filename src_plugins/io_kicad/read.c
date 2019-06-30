@@ -1605,7 +1605,7 @@ static void exec_zone_connect(read_state_t *st)
 	/* assume many pins in a poly: it is cheaper to reclip affected polys once,
 	   at the end, than to reclip on each padstack thermal installation in
 	   the above loop */
-	for(e = htpp_first(&poly_upd); e != NULL; e = e = htpp_next(&poly_upd, e)) {
+	for(e = htpp_first(&poly_upd); e != NULL; e = htpp_next(&poly_upd, e)) {
 		pcb_poly_t *p = e->key;
 		pcb_poly_init_clip(p->parent.layer->parent.data, p->parent.layer, p);
 	}
