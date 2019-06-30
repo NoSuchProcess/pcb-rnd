@@ -2331,8 +2331,10 @@ static int kicad_parse_any_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 		else if (strcmp(n->str, "width") == 0) {
 			SEEN_NO_DUP(tally, 5);
 			PARSE_COORD(width, n, n->children, "fp_poly width");
-			if (width != 0)
+			if (width != 0) {
+				TODO("need a core function for bloating the poly up but remember the original size?");
 				kicad_warning(n, "Ignoring non-zero fp_poly width");
+			}
 		}
 		else
 			return kicad_error(subtree, "Invalid fp_poly child: %s", n->str);
