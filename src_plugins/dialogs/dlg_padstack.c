@@ -797,7 +797,22 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 			/* Tab 1: prototype */
 			PCB_DAD_BEGIN_VBOX(dlg);
 				PCB_DAD_BEGIN_VBOX(dlg);
-					PCB_DAD_LABEL(dlg, "Settings that affect all padstacks with the same prototype");
+
+					PCB_DAD_BEGIN_HBOX(dlg);
+						PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
+						PCB_DAD_LABEL(dlg, "Settings that affect all padstacks with the same prototype");
+						PCB_DAD_BEGIN_VBOX(dlg);
+							PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
+						PCB_DAD_END(dlg);
+						PCB_DAD_BEGIN_HBOX(dlg);
+							PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
+							PCB_DAD_LABEL(dlg, "Prototype name:");
+							PCB_DAD_STRING(dlg);
+								PCB_DAD_CHANGE_CB(dlg, pse_chg_prname);
+								pse->prname = PCB_DAD_CURRENT(dlg);
+						PCB_DAD_END(dlg);
+					PCB_DAD_END(dlg);
+
 					PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
 					PCB_DAD_LABEL(dlg, "Pad geometry per layer type:");
 					PCB_DAD_BEGIN_TABLE(dlg, 5);
@@ -830,14 +845,6 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 								PCB_DAD_HELP(dlg, "local, per layer type clearance\n(only when global padstack clearance is 0)");
 							free(layname_tmp);
 						}
-					PCB_DAD_END(dlg);
-
-					PCB_DAD_BEGIN_HBOX(dlg);
-						PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
-						PCB_DAD_LABEL(dlg, "Prototype name:");
-						PCB_DAD_STRING(dlg);
-							PCB_DAD_CHANGE_CB(dlg, pse_chg_prname);
-							pse->prname = PCB_DAD_CURRENT(dlg);
 					PCB_DAD_END(dlg);
 
 					PCB_DAD_LABEL(dlg, "Hole properties:");
