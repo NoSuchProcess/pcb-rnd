@@ -851,16 +851,11 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 							PCB_DAD_MINVAL(dlg, 0);
 							PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
 							PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
-						PCB_DAD_LABEL(dlg, ""); /* dummy */
-						PCB_DAD_LABEL(dlg, ""); /* dummy */
-
 						PCB_DAD_LABEL(dlg, "Hole/slot plating:");
 						PCB_DAD_BOOL(dlg, "");
 							pse->hplated = PCB_DAD_CURRENT(dlg);
 							PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
 							PCB_DAD_HELP(dlg, "A plated hole galvanically connects layers");
-						PCB_DAD_LABEL(dlg, ""); /* dummy */
-						PCB_DAD_LABEL(dlg, ""); /* dummy */
 
 						PCB_DAD_LABEL(dlg, "Hole/slot top:");
 						PCB_DAD_INTEGER(dlg, "");
