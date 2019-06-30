@@ -2614,9 +2614,18 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 
 			SEEN_NO_DUP(tally, 10);
 			PARSE_LAYER(ly, n->children, NULL, "zone polygon");
+			if (ly == NULL) {
+				TODO("CUCP#49");
+				kicad_error(n->children, "multi-layer zones are not yet supported - polygon omitted");
+				return 0;
+			}
 			polygon = pcb_poly_new(ly, 0, flags);
+			if (polygon == NULL)
+				return kicad_error(n->children, "Failed to create polygon");
 		}
 		else if (strcmp("polygon", n->str) == 0) {
+			if (polygon == NULL)
+				return kicad_error(n->children, "Failed to create polygon, can not add points");
 			if (kicad_parse_poly_pts(st, n->children, polygon, 0, 0) < 0)
 				return -1;
 		}
