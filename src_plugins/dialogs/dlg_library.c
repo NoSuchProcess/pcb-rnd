@@ -140,7 +140,9 @@ static void library_update_preview(library_ctx_t *ctx, pcb_subc_t *sc, pcb_fplib
 	gds_t tmp;
 
 	if (ctx->sc != NULL) {
+		pcb_undo_freeze_add();
 		pcb_subc_remove(ctx->sc);
+		pcb_undo_unfreeze_add();
 		ctx->sc = NULL;
 	}
 
