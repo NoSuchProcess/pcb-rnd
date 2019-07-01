@@ -488,7 +488,7 @@ FORCE:
 DISTCLEANFILES = Makefile.depgen core_lists.h buildin.c compat_inc.h hidlib_conf_fields.h conf_core_fields.h conf_internal.c generated_lists.h defpcb_internal.c pcb_menu_default.c ../src_plugins/.builtin.pups @/local/pcb/DISTCLEANFILES@
 
 clean: $(CLEANRULES)
-	$(SCCBOX) rm -f -q  pcb-rnd $(OBJS) $(OBJS_C99) $(CLEANFILES)
+	$(SCCBOX) rm -f -q  pcb-rnd hidlib.a $(OBJS) $(OBJS_C99) $(OBJS_HIDLIB_ONLY) $(CLEANFILES)
 
 distclean: FORCE
 	$(SCCBOX) rm -f -q  $(DISTCLEANFILES)
