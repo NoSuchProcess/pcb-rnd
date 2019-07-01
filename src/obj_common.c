@@ -348,3 +348,27 @@ void pcb_xform_mx_mirrorx(pcb_xform_mx_t mx)
 {
 	pcb_xform_mx_scale(mx, 0, -1);
 }
+
+void pcb_obj_pre(pcb_any_obj_t *o)
+{
+	switch(o->type) {
+		case PCB_OBJ_LINE: pcb_line_pre((pcb_line_t *)o); break;
+		case PCB_OBJ_TEXT: pcb_text_pre((pcb_text_t *)o); break;
+		case PCB_OBJ_POLY: pcb_poly_pre((pcb_poly_t *)o); break;
+		case PCB_OBJ_ARC:  pcb_arc_pre((pcb_arc_t *)o); break;
+		case PCB_OBJ_PSTK: pcb_pstk_pre((pcb_pstk_t *)o); break;
+		default: break;
+	}
+}
+
+void pcb_obj_post(pcb_any_obj_t *o)
+{
+	switch(o->type) {
+		case PCB_OBJ_LINE: pcb_line_post((pcb_line_t *)o); break;
+		case PCB_OBJ_TEXT: pcb_text_post((pcb_text_t *)o); break;
+		case PCB_OBJ_POLY: pcb_poly_post((pcb_poly_t *)o); break;
+		case PCB_OBJ_ARC:  pcb_arc_post((pcb_arc_t *)o); break;
+		case PCB_OBJ_PSTK: pcb_pstk_post((pcb_pstk_t *)o); break;
+		default: break;
+	}
+}

@@ -230,6 +230,11 @@ const char *pcb_obj_id_invalid(const char *id);
 /* Fix an ID in place (replace anything invalid with '_'); returns id */
 char *pcb_obj_id_fix(char *id);
 
+/* switch() on o->type and call the right implementation */
+void pcb_obj_pre(pcb_any_obj_t *o);
+void pcb_obj_post(pcb_any_obj_t *o);
+
+
 #define pcb_obj_id_reg(data, obj) \
 	do { \
 		pcb_any_obj_t *__obj__ = (pcb_any_obj_t *)(obj); \
