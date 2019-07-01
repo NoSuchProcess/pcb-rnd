@@ -113,6 +113,23 @@ script states (e.g. variables) preserved between lines entered. Actions
 defined in one-liners are also discarded after the one-liner finished. For
 such use cases, stored script shall be written.
 
+<H2> 1.3. Live Scripting </H2>
+<p>
+Action LiveScript() pops up the Live Scripting window. The script
+entered here can be executed, saved or loaded.
+<p>
+The main use case is experimenting with board edit (object generation)
+sctipts: pcb-rnd keeps track of board edits execution may have done and
+can undo them. The re-run button combines "undo the effects of the
+previous run and run the new version of the script" into a single click.
+<p>
+Using the persistent mode allows developers to debug, fix and finalize
+a script that is intended to be used as a stored script. This mode allows
+the script to register actions.
+<p>
+A <a href="http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=live_script">
+Live Scripting Tutorial</a> is available in the knowledge pool.
+
 
 <H1> Scripting - Developer Intro </H1>
 <p>
