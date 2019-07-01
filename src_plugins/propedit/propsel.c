@@ -306,7 +306,11 @@ static int set_common(pcb_propset_ctx_t *st, pcb_any_obj_t *obj)
 	const pcb_flag_bits_t *i = pcb_strflg_name(st->name + 8, obj->type);
 
 	if (i != NULL) {
+		if (i->mask & PCB_FLAG_CLEARLINE)
+			pcb_obj_pre(obj);
 		pcb_flag_change(st->pcb, st->c ? PCB_CHGFLG_SET : PCB_CHGFLG_CLEAR, i->mask, obj->type, obj->parent.any, obj, obj);
+		if (i->mask & PCB_FLAG_CLEARLINE)
+			pcb_obj_post(obj);
 		DONE1;
 	}
 
