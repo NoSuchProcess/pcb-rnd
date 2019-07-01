@@ -82,7 +82,7 @@ function flush_sd()
 	next
 }
 
-' | sort -u | awk -v "asrc=$asrc" '
+' | sort -fu | awk -v "asrc=$asrc" '
 # insert links around actions where applicable
 	BEGIN {
 		q = "\""

@@ -13,25 +13,32 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.1.2 (svn r26253) an interactive printed circuit board editor ,  Revision: 26357
+This is pcb-rnd 2.1.2 (svn r26253) an interactive printed circuit board editor ,  Revision: 26553
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
+<tr><td>acompnet</td><td>Attempt to auto-complete the current network</td><td>acompnet()</td><td>acompnet plugin</td>
 <tr><td><a href="action_details.html#addrats">AddRats</a></td><td>Add one or more rat lines to the board.</td><td>AddRats(AllRats|SelectedRats|Close)</td><td></td>
 <tr><td><a href="action_details.html#addtimer">AddTimer</a></td><td>Add a new timer</td><td>AddTimer(action, period, [repeat], [userdata])</td><td>script plugin</td>
 <tr><td><a href="action_details.html#adjuststyle">AdjustStyle</a></td><td>Open the dialog box for editing the route styles.</td><td>AdjustStyle([routestyle_idx])</td><td>lib_hid_pcbui/route_style</td>
+<tr><td><a href="action_details.html#align">align</a></td><td>Align subcircuits</td><td>Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distalign plugin</td>
+<tr><td><a href="action_details.html#aligntext">aligntext</a></td><td>Align Text Elements</td><td>AlignText(X/Y, [Lefts/Rights/Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distaligntext plugin</td>
 <tr><td><a href="action_details.html#applyvendor">ApplyVendor</a></td><td>Applies the currently loaded vendor drill table to the current design.</td><td>ApplyVendor()</td><td>vendor drill mapping</td>
 <tr><td>ArcNew</td><td>Create a pcb arc segment on a layer. For now data must be "pcb". Returns the ID of the new object or 0 on error.</td><td>ArcNew([noundo,] data, layer, centx, centy, radiusx, radiusy, start_ang, delta_ang, thickness, clearance, flags)</td><td>act_draw</td>
+<tr><td>asm</td><td>Interactive assembly assistant</td><td>asm()</td><td>asm plugin</td>
 <tr><td><a href="action_details.html#atomic">Atomic</a></td><td>Save or restore the undo serial number.</td><td>Atomic(Save|Restore|Close|Block)</td><td></td>
 <tr><td><a href="action_details.html#attributes">Attributes</a></td><td>Let the user edit the attributes of the layout, current or given<br>layer, or selected subcircuit.</td><td>Attributes(Layout|Layer|Element|Subc)<br>Attributes(Layer,layername)</td><td></td>
+<tr><td>autocrop</td><td>Autocrops the board dimensions to (extants + a margin of 1 grid), keeping the move and board size grid aligned</td><td>autocrop()</td><td>autocrop plugin</td>
 <tr><td><a href="action_details.html#autoplaceselected">AutoPlaceSelected</a></td><td>Auto-place selected components.</td><td>AutoPlaceSelected()</td><td>autoplace plugin</td>
 <tr><td><a href="action_details.html#autoroute">AutoRoute</a></td><td>Auto-route some or all rat lines.</td><td>AutoRoute(AllRats|SelectedRats)</td><td>autoroute plugin</td>
+<tr><td>awk</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>Backup</td><td>Backup the current layout - save using the same method that the timed backup function uses</td><td>Backup()</td><td></td>
 <tr><td>Bell</td><td>Attempt to produce audible notification (e.g. beep the speaker).</td><td>Bell()</td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#benchmark">Benchmark</a></td><td>Benchmark the GUI speed.</td><td>Benchmark()</td><td></td>
 <tr><td><a href="action_details.html#boardflip">BoardFlip</a></td><td>Mirror the board over the x axis, optionally mirroring sides as well.</td><td>BoardFlip([sides])</td><td></td>
 <tr><td>Brave</td><td>Changes brave settings.</td><td>Brave()<br>Brave(setting, on|off)</td><td></td>
 <tr><td>BrowseScripts</td><td>Present a dialog box for browsing scripts</td><td>BrowseScripts()</td><td>script plugin</td>
+<tr><td>cam</td><td>Export jobs for feeding cam processes</td><td>cam(exec, script, [options])<br>cam(call, jobname, [options])<br>cam([gui])</td><td>cam exporter</td>
 <tr><td><a href="action_details.html#center">Center</a></td><td>Moves the pointer to the center of the window.</td><td>Center()</td><td>lib_hid_pcbui/actions</td>
 <tr><td>ChangeAngle</td><td>Changes the start angle, delta angle or both angles of an arc.</td><td>ChangeAngle(Object, start|delta|both, delta)<br>ChangeAngle(SelectedObjects|Selected, start|delta|both, delta)<br>ChangeAngle(SelectedArcs, start|delta|both, delta)</td><td></td>
 <tr><td><a href="action_details.html#changeclearsize">ChangeClearSize</a></td><td>Changes the clearance size of objects.</td><td>ChangeClearSize(Object, delta|style)<br>ChangeClearSize(SelectedPins|SelectedPads|SelectedVias, delta|style)<br>ChangeClearSize(SelectedLines|SelectedArcs, delta|style)<br>ChangeClearSize(Selected|SelectedObjects, delta|style)</td><td></td>
@@ -57,33 +64,54 @@ This is pcb-rnd 2.1.2 (svn r26253) an interactive printed circuit board editor ,
 <tr><td>ChkSubcID</td><td>Return 1 if currently shown subc ID matches the requested pattern</td><td>ChkSubcID(pattern)</td><td></td>
 <tr><td>ChkTermID</td><td>Return 1 if currently shown term ID matches the requested pattern</td><td>ChkTermID(pattern)</td><td></td>
 <tr><td><a href="action_details.html#chkview">ChkView</a></td><td>Return 1 if layerid is visible.</td><td>ChkView(layerid)</td><td></td>
+<tr><td>circle</td><td>Generate a filled circle (zero length round cap line)</td><td>circle([where,] diameter)</td><td>shape plugin</td>
+<tr><td><a href="action_details.html#claimnet">claimnet</a></td><td>Claim existing connections and create a new net</td><td>ClaimNet(object|selected|found,[netname])</td><td></td>
 <tr><td>ClearOctagon</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td>ClearSquare</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td>ClipInhibit</td><td>ClipInhibit Feature Template.</td><td>ClipInhibit([on|off|check])</td><td></td>
+<tr><td>cli_MessageBox</td><td>Intenal: CLI frontend action. Do not use directly.</td><td></td><td></td>
+<tr><td>cli_PromptFor</td><td>Intenal: CLI frontend action. Do not use directly.</td><td></td><td></td>
 <tr><td><a href="action_details.html#clrflag">ClrFlag</a></td><td>Clears flags on objects.</td><td>ClrFlag(Object|Selected|SelectedObjects, flag)<br>ClrFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>ClrFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>ClrFlag(SelectedElements, flag)<br>flag = thermal | join</td><td></td>
 <tr><td><a href="action_details.html#command">Command</a></td><td>Displays the command line input in the status area.</td><td>Command()</td><td>lib_hid_pcbui/actions</td>
+<tr><td>conf</td><td>Perform various operations on the configuration tree.</td><td>conf(set, path, value, [role], [policy]) - change a config setting to an absolute value<br>conf(delta, path, value, [role], [policy]) - change a config setting by a delta value (numerics-only)<br>conf(toggle, path, [role]) - invert boolean value of a flag; if no role given, overwrite the highest prio config<br>conf(reset, role) - reset the in-memory lihata of a role<br>conf(iseq, path, value) - returns whether the value of a conf item matches value (for menu checked's)</td><td></td>
 <tr><td><a href="action_details.html#connection">Connection</a></td><td>Searches connections of the object at the cursor position.</td><td>Connection(Find|ResetLinesAndPolygons|ResetPinsAndVias|Reset)</td><td></td>
+<tr><td>constraint</td><td>Configure or remove a drawing constraint</td><td>constraint(type, off)<br>constraint(type, value, [value...])</td><td>ddraft plugin</td>
+<tr><td>cpcb</td><td>Executed external autorouter cpcb to route the board or parts of the board</td><td>cpcb(board|selected, [command])</td><td>cpcb plugin</td>
 <tr><td>CreateMenu</td><td>Creates a new menu, popup (only path specified) or submenu (at least path and action are specified)</td><td>CreateMenu(path)<br>CreateMenu(path, action, tooltip, cookie)</td><td></td>
 <tr><td>CreateText</td><td>Create a new text object</td><td>CreateText(layer, fontID, X, Y, direction, scale, text)</td><td></td>
 <tr><td><a href="action_details.html#cursor">Cursor</a></td><td>Move the cursor.</td><td>Cursor(Type,DeltaUp,DeltaRight,Units)</td><td></td>
 <tr><td><a href="action_details.html#cycledrag">CycleDrag</a></td><td>Cycle through which object is being dragged</td><td>CycleDrag()</td><td></td>
-<tr><td><a href="action_details.html#drc">DRC</a></td><td>Invoke the DRC check. Results are presented as the argument requests.</td><td>DRC([list|simple|print|log|dump])</td><td></td>
+<tr><td>d1</td><td>debug action for development</td><td>d1()</td><td>diag plugin</td>
+<tr><td>dad</td><td>Manipulate Dynamic Attribute Dialogs</td><td>dad(dlgname, new) - create new dialog<br>dad(dlgname, label, text) - append a label widget<br>dad(dlgname, button, text) - append a button widget<br>dad(dlgname, button_closes, label, retval, ...) - standard close buttons<br>dad(dlgname, enum, choices) - append an enum (combo box) widget; choices is a tab separated list<br>dad(dlgname, bool, [label]) - append an checkbox widget (default off)<br>dad(dlgname, integer|real|coord, min, max, [label]) - append an input field<br>dad(dlgname, string) - append a single line text input field<br>dad(dlgname, progress) - append a progress bar (set to 0)<br>dad(dlgname, tree, cols, istree, [header]) - append tree-table widget; header is like enum values<br>dad(dlgname, tree_append, row, cells) - append after row (0 means last item of the root); cells is like enum values; returns a row pointer<br>dad(dlgname, tree_append_under, row, cells) - append at the end of the list under row (0 means last item of the root); cells is like enum values; returns a row pointer<br>dad(dlgname, tree_insert, row, cells) - insert before row (0 means first item of the root); cells is like enum values; returns a row pointer<br>dad(dlgname, begin_hbox) - begin horizontal box<br>dad(dlgname, begin_vbox) - begin vertical box<br>dad(dlgname, begin_hpane) - begin horizontal paned box<br>dad(dlgname, begin_vpane) - begin vertical paned box<br>dad(dlgname, begin_table, cols) - begin table layout box<br>dad(dlgname, begin_tabbed, tabnames) - begin a view with tabs; tabnames are like choices in an enum; must have as many children widgets as many names it has<br>dad(dlgname, end) - end the last begin<br>dad(dlgname, flags, flg1, flg2, ...) - change the flags of the last created widget<br>dad(dlgname, onchange, action) - set the action to be called on widget change<br>dad(dlgname, run, title) - present dlgname as a non-modal dialog<br>dad(dlgname, run_modal, title) - present dlgname as a modal dialog<br>dad(dlgname, exists) - returns wheter the named dialog exists (0 or 1)<br>dad(dlgname, set, widgetID, val) - changes the value of a widget in a running dialog <br>dad(dlgname, get, widgetID, [unit]) - return the current value of a widget</td><td>lib_hid_common plugin</td>
+<tr><td>ddraft</td><td>Enter 2d drafting CLI mode or execute command</td><td>ddraft([command])</td><td>ddraft plugin</td>
 <tr><td>Debug</td><td>Debug action.</td><td>Debug(...)</td><td>oldactions plugin</td>
 <tr><td>DebugXY</td><td>Debug action, with coordinates</td><td>DebugXY(...)</td><td>oldactions plugin</td>
-<tr><td>DelGroup</td><td>Remove a layer group; if the first argument is not specified, the current group is removed</td><td>DelGroup([@group])</td><td></td>
 <tr><td>Delete</td><td>Delete stuff.</td><td>Delete(Object|Selected)<br>Delete(AllRats|SelectedRats)</td><td></td>
 <tr><td>DeleteRats</td><td>Delete rat lines.</td><td>DeleteRats(AllRats|Selected|SelectedRats)</td><td></td>
+<tr><td>DelGroup</td><td>Remove a layer group; if the first argument is not specified, the current group is removed</td><td>DelGroup([@group])</td><td></td>
 <tr><td>DescribeLocation</td><td>Return a string constant (valud until the next call) containing a short description at x;y (object, net, etc.)</td><td>DescribeLocation(x, y)</td><td>lib_hid_pcbui/status</td>
 <tr><td>DisableVendor</td><td>Disables automatic drill size mapping.</td><td>DisableVendor()</td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#disperseelements">DisperseElements</a></td><td>Disperses subcircuits.</td><td>DisperseElements(All|Selected)</td><td></td>
 <tr><td><a href="action_details.html#display">Display</a></td><td>Several display-related actions.</td><td>Display(SubcID, template)<br>Display(Grid|Redraw|Pinout|PinOrPadName)<br>Display(CycleClip|CycleCrosshair|ToggleAllDirections|ToggleStartDirection)<br>Display(ToggleGrid|ToggleRubberBandMode|ToggleUniqueNames)<br>Display(ToggleName|ToggleClearLine|ToggleFullPoly|ToggleSnapPin)<br>Display(ToggleSnapOffGridLine|ToggleHighlightOnPoint|ToggleCheckPlanes)<br>Display(ToggleThindraw|ToggleThindrawPoly|ToggleOrthoMove|ToggleLocalRef)<br>Display(ToggleLiveRoute|ToggleShowDRC|ToggleAutoDRC|LockNames|OnlyNames)</td><td></td>
+<tr><td><a href="action_details.html#distribute">distribute</a></td><td>Distribute subcircuits</td><td>Distribute(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td><td>distalign plugin</td>
+<tr><td><a href="action_details.html#distributetext">distributetext</a></td><td>Distribute Text Elements</td><td>DistributeText(Y, [Lefts/Rights/Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td><td>distaligntext plugin</td>
+<tr><td><a href="action_details.html#djopt">djopt</a></td><td>Perform various optimizations on the current board.</td><td>djopt(debumpify|unjaggy|simple|vianudge|viatrim|orthopull)<br>djopt(auto) - all of the above<br>djopt(miter)</td><td>djopt</td>
+<tr><td>dlg_test</td><td>test the attribute dialog</td><td>dlg_test()</td><td>dialogs plugin</td>
+<tr><td><a href="action_details.html#drc">DRC</a></td><td>Invoke the DRC check. Results are presented as the argument requests.</td><td>DRC([list|simple|print|log|dump])</td><td></td>
 <tr><td>DrcDialog</td><td>Execute drc checks and invoke a view list dialog box for presenting the results</td><td>DrcDialog([list|simple])</td><td>dialogs plugin</td>
 <tr><td>DumpActions</td><td>Dump all actions available.</td><td>DumpActions()</td><td></td>
+<tr><td>dumpconf</td><td>Perform various operations on the configuration tree.</td><td>dumpconf(native, [verbose], [prefix]) - dump the native (binary) config tree to stdout<br>dumpconf(lihata, role, [prefix]) - dump in-memory lihata representation of a config tree</td><td>diag plugin</td>
 <tr><td>DumpCsect</td><td>Print the cross-section of the board (layer stack)</td><td>DumpCsect()</td><td>draw_csect</td>
+<tr><td>dumpdata</td><td>Dump an aspect of the data</td><td>dumpdata()</td><td>diag plugin</td>
+<tr><td>dumpflags</td><td>dump flags, optionally using the format string provided by the user</td><td>dumpflags([fmt])</td><td>diag plugin</td>
+<tr><td>dumpfonts</td><td>Print info about fonts</td><td>dumpfonts()</td><td>diag plugin</td>
+<tr><td>dumpids</td><td>Dump the ID hash</td><td>DumpIDs()</td><td>diag plugin</td>
+<tr><td>dumplayers</td><td>Print info about each layer</td><td>dumplayers([all])</td><td>diag plugin</td>
 <tr><td>DumpLibrary</td><td>Display the entire contents of the libraries.</td><td>DumpLibrary()</td><td>oldactions plugin</td>
 <tr><td>DumpObjFlags</td><td>Print a script processable digest of all flags, per object type</td><td>DumpObjFlags()</td><td></td>
 <tr><td>DumpPluginDirs</td><td>Print plugins directories in a format digestable by scripts.</td><td>DumpPluginDirs()</td><td></td>
 <tr><td>DumpPlugins</td><td>Print plugins loaded in a format digestable by scripts.</td><td>DumpPlugins()</td><td></td>
+<tr><td>dumpundo</td><td>Print info about fonts</td><td>dumpfonts()</td><td>diag plugin</td>
 <tr><td>DumpVersion</td><td>Dump version in script readable format.</td><td>DumpVersion()</td><td></td>
 <tr><td>DupGroup</td><td>Duplicate a layer group; if the first argument is not specified, the current group is duplicated</td><td>DupGroup([@group])</td><td></td>
 <tr><td>EditGroup</td><td>Change a property or attribute of a layer group. If the first argument starts with @, it is taken as the group name to manipulate, else the action uses the current layer's group. Without arguments or if only a layer name is specified, interactive runs editing.</td><td>Editgroup([@group], [name=text|type=+bit|type=-bit])]<br>Editlayer([@layer], attrib, key=value)</td><td></td>
@@ -91,21 +119,26 @@ This is pcb-rnd 2.1.2 (svn r26253) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#elementlist">ElementList</a></td><td>Adds the given element if it doesn't already exist.</td><td>ElementList(Start|Done|Need,<refdes>,<footprint>,<value>)</td><td></td>
 <tr><td><a href="action_details.html#elementsetattr">ElementSetAttr</a></td><td>Sets or clears an element-specific attribute.</td><td>ElementSetAttr(refdes,name[,value])</td><td></td>
 <tr><td>EnableVendor</td><td>Enables automatic drill size mapping.</td><td>EnableVendor()</td><td>oldactions plugin</td>
+<tr><td>estutter</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>EvalConf</td><td>Perform various operations on the configuration tree.</td><td>EvalConf(path) - evaluate a config path in different config sources to figure how it ended up in the native database</td><td>diag plugin</td>
 <tr><td>ExecCommand</td><td>Run shell command</td><td>System(shell_cmd)</td><td></td>
 <tr><td><a href="action_details.html#executefile">ExecuteFile</a></td><td>Run actions from the given file.</td><td>ExecuteFile(filename)</td><td></td>
 <tr><td>ExpFeatTmp</td><td>Experimental Feature Template.</td><td>ExpFeatTmp(...)</td><td>experimental features plugin</td>
 <tr><td>Export</td><td>Export the current layout, e.g. Export(png, --dpi, 600)</td><td>Export(exporter, [exporter-args])</td><td></td>
+<tr><td>ExportcpcbTo</td><td>Dumps the current board in c-pcb format.</td><td>ExportcpcbTo(filename)</td><td>cpcb plugin</td>
 <tr><td>ExportGUI</td><td>Open the export dialog.</td><td>ExportGUI()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#exportoldconn">ExportOldConn</a></td><td>Export galvanic connection data in an old, custom file format.</td><td>ExportOldConn(AllConnections|AllUnusedPins|ElementConnections,filename)</td><td>export_oldconn HID</td>
-<tr><td>ExportSTL</td><td>Export a three dimensional triangulated surface model in stl</td><td>ExportSTL()</td><td>export_stl HID</td>
 <tr><td>ExportScadPoly</td><td>exports all selected polygons to an openscad script; only the outmost contour of each poly is exported</td><td>ScadExportPoly(filename)</td><td>openscad HID</td>
-<tr><td>ExportcpcbTo</td><td>Dumps the current board in c-pcb format.</td><td>ExportcpcbTo(filename)</td><td>cpcb plugin</td>
+<tr><td>ExportSTL</td><td>Export a three dimensional triangulated surface model in stl</td><td>ExportSTL()</td><td>export_stl HID</td>
+<tr><td>extedit</td><td>extedit(object|selected|buffer, [interactive|method])</td><td>Invoke an external program to edit a specific part of the current board.</td><td>extedit plugin</td>
+<tr><td>find2perf</td><td>Measure the peformance of find2.c</td><td>find2perf()</td><td>diag plugin</td>
 <tr><td>FlagEdit</td><td>Change the layer binding.</td><td>FlagEdit(object)</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#flip">Flip</a></td><td>Flip a subcircuit to the opposite side of the board.</td><td>Flip(Object|Selected)</td><td></td>
 <tr><td>FontEdit</td><td>Convert the current font to a PCB for editing.</td><td>FontEdit()</td><td>fontmode plugin</td>
 <tr><td>FontSave</td><td>Convert the current PCB back to a font.</td><td>FontSave()</td><td>fontmode plugin</td>
 <tr><td>Fontsel</td><td>Open the font selection dialog</td><td>Fontsel()</td><td>dialogs plugin</td>
+<tr><td>forcecolor</td><td>change selected objects' color to #RRGGBB, reset if does not start with '#'</td><td>forcecolor(#RRGGBB)</td><td>diag plugin</td>
+<tr><td>fp_rehash</td><td>Flush the library index; rescan all library search paths and rebuild the library index. Useful if there are changes in the library during a pcb-rnd session.</td><td>fp_rehash()</td><td></td>
 <tr><td><a href="action_details.html#freerotatebuffer">FreeRotateBuffer</a></td><td>Rotates the current paste buffer contents by the specified angle.  The<br>angle is given in degrees.  If no angle is given, the user is prompted<br>for one.</td><td>FreeRotateBuffer([Angle])</td><td></td>
 <tr><td>FullScreen</td><td>Hide widgets to get edit area full screen</td><td>FullScreen(on|off|toggle)</td><td></td>
 <tr><td>GetParentData</td><td>Return the closest upstream pcb_data_t * parent of an object</td><td>GetParentData([root_data,] idpath)</td><td>act_read</td>
@@ -115,18 +148,28 @@ This is pcb-rnd 2.1.2 (svn r26253) an interactive printed circuit board editor ,
 <tr><td>GlobalPuller</td><td>Pull all traces tight.</td><td>pcb_act_GlobalPuller([Found|Selected])</td><td>puller plugin</td>
 <tr><td>Grid</td><td>Set the grid.</td><td>grid(set, [name:]size[@offs][!unit])<br>grid(+|up)<br>grid(-|down)<br>grid(#N)<br>grid(idx, N)</td><td></td>
 <tr><td>GroupPropGui</td><td>Change group flags and properties</td><td>GroupPropGui(groupid)</td><td>dialogs plugin</td>
+<tr><td>gui_FallbackColorPick</td><td>Intenal: GUI frontend action. Do not use directly.</td><td></td><td>lib_hid_common plugin</td>
+<tr><td>gui_MessageBox</td><td>Intenal: GUI frontend action. Do not use directly.</td><td></td><td>lib_hid_common plugin</td>
+<tr><td>gui_PromptFor</td><td>Intenal: GUI frontend action. Do not use directly.</td><td></td><td>lib_hid_common plugin</td>
+<tr><td>h</td><td>Print a help message for commands.</td><td>h</td><td>shand_cmd plugin</td>
 <tr><td>Help</td><td>On-line action help</td><td>Help()</td><td></td>
 <tr><td>IDP</td><td>Basic idpath manipulation.</td><td>IDP([print|free], idpath)</td><td>act_read</td>
 <tr><td>IDPList</td><td>Basic idpath list manipulation.</td><td>IDPList(alloc)<br>IDPList(free|clear|print|dup|length, list)<br>IDPList(get|pop|remove, list, idx)<br>IDPList(prepend|append|push, list, idpath)</td><td>act_read</td>
-<tr><td>IOIncompatList</td><td>Present the format incompatibilities of the last save to file operation.</td><td>IOIncompatList([list|simple])</td><td></td>
-<tr><td>IOIncompatListDialog</td><td>Present the format incompatibilities of the last save to file operation in a GUI dialog.</td><td>IOIncompatListDialog([list|simple])</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#import">Import</a></td><td>Import schematics.</td><td>Import()<br>Import([gnetlist|make[,source,source,...]])<br>Import(setnewpoint[,(mark|center|X,Y)])<br>Import(setdisperse,D,units)</td><td>import_sch plugin</td>
-<tr><td><a href="action_details.html#importgui">ImportGUI</a></td><td>Asks user which schematics to import into PCB.</td><td>ImportGUI()</td><td>dialogs plugin</td>
 <tr><td>ImportcpcbFrom</td><td>Loads the auto-routed tracks from the specified c-pcb output.</td><td>ImportcpcbFrom(filename)</td><td>cpcb plugin</td>
+<tr><td><a href="action_details.html#importgui">ImportGUI</a></td><td>Asks user which schematics to import into PCB.</td><td>ImportGUI()</td><td>dialogs plugin</td>
 <tr><td>Info</td><td></td><td></td><td>report plugin</td>
 <tr><td>InfoBarFileChanged</td><td>Present the "file changed" warning info bar with buttons to reload or cancel</td><td>InfoBarFileChanged(open|close)</td><td>dialogs plugin</td>
+<tr><td>integrity</td><td>perform integrirty check on the current board and generate errors if needed</td><td>integrity()</td><td>diag plugin</td>
+<tr><td>IOIncompatList</td><td>Present the format incompatibilities of the last save to file operation.</td><td>IOIncompatList([list|simple])</td><td></td>
+<tr><td>IOIncompatListDialog</td><td>Present the format incompatibilities of the last save to file operation in a GUI dialog.</td><td>IOIncompatListDialog([list|simple])</td><td>dialogs plugin</td>
+<tr><td>javascript</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
+<tr><td>jostle</td><td>Make room by moving wires away.</td><td>Jostle(diameter)</td><td>jostle plugin</td>
+<tr><td>js</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
+<tr><td><a href="action_details.html#l">l</a></td><td>Loads layout data.</td><td>l [name] [format]</td><td>shand_cmd plugin</td>
 <tr><td>LayerBinding</td><td>Change the layer binding.</td><td>LayerBinding(object)<br>LayerBinding(selected)<br>LayerBinding(buffer)</td><td>dialogs plugin</td>
 <tr><td>LayerPropGui</td><td>Change layer flags and properties</td><td>LayerPropGui(layerid)</td><td>dialogs plugin</td>
+<tr><td><a href="action_details.html#le">le</a></td><td>Loads an element (subcircuit, footprint) into the current buffer.</td><td>le [name]</td><td>shand_cmd plugin</td>
 <tr><td>LibraryChanged</td><td>Tells the GUI that the libraries have changed.</td><td>LibraryChanged()</td><td>oldactions plugin</td>
 <tr><td>LibraryDialog</td><td>Open the library dialog.</td><td>libraryDialog()</td><td>dialogs plugin</td>
 <tr><td>LineNew</td><td>Create a pcb line segment on a layer. For now data must be "pcb". Returns the ID of the new object or 0 on error.</td><td>LineNew([noundo,] data, layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags)</td><td>act_draw</td>
@@ -142,6 +185,7 @@ This is pcb-rnd 2.1.2 (svn r26253) an interactive printed circuit board editor ,
 <tr><td>LoadFpcbnlFrom</td><td>Loads the specified freepcb netlist.</td><td>LoadFpcbnlFrom(filename)</td><td>fpcb_nl importer</td>
 <tr><td><a href="action_details.html#loadfrom">LoadFrom</a></td><td>Load layout data from a file.</td><td>LoadFrom(Layout|LayoutToBuffer|SubcToBuffer|Netlist|Revert,filename[,format])</td><td></td>
 <tr><td>LoadHpglFrom</td><td>Loads the specified hpgl plot file to the current buffer</td><td>LoadHpglFrom(filename)</td><td>hpgl importer</td>
+<tr><td>LoadhypFrom</td><td>Loads the specified Hyperlynx file.</td><td>LoadhypFrom(filename[, "debug"]...)</td><td>hyp importer</td>
 <tr><td>LoadIpc356From</td><td>Loads the specified IPC356-D netlist</td><td>LoadIpc356From(filename, [nonet], [nopad], [nosubc])</td><td>ipcd356 importer</td>
 <tr><td>LoadLtspiceFrom</td><td>Loads the specified ltspice .net and .asc file - the netlist must be mentor netlist.</td><td>LoadLtspiceFrom(filename)</td><td>ltspice importer</td>
 <tr><td>LoadMentorFrom</td><td>Loads the specified Mentor Graphics Design Capture schematics flat .edf file.</td><td>LoadMentorFrom(filename)</td><td>mentor_sch importer</td>
@@ -151,13 +195,17 @@ This is pcb-rnd 2.1.2 (svn r26253) an interactive printed circuit board editor ,
 <tr><td>LoadTinycadFrom</td><td>Loads the specified tinycad .net file - the netlist must be tinycad netlist output.</td><td>LoadTinycadFrom(filename)</td><td>tinycad importer</td>
 <tr><td>LoadTtfGlyphs</td><td>Loads glyphs from an outline ttf in the specified source range, optionally remapping them to dstchars range in the pcb-rnd font</td><td>LoadTtfGlyphs(filename, srcglyps, [dstchars])</td><td>ttf importer</td>
 <tr><td><a href="action_details.html#loadvendorfrom">LoadVendorFrom</a></td><td>Loads the specified vendor lihata file.</td><td>LoadVendorFrom(filename)</td><td>vendor drill mapping</td>
-<tr><td>LoadhypFrom</td><td>Loads the specified Hyperlynx file.</td><td>LoadhypFrom(filename[, "debug"]...)</td><td>hyp importer</td>
 <tr><td>Log</td><td>Manages the central, in-memory log.</td><td>Log(clear, [fromID, [toID])<br>Log(export, [filename, [text|lihata])</td><td></td>
 <tr><td>LogDialog</td><td>Open the log dialog.</td><td>LogDialog()</td><td>lib_hid_common plugin</td>
+<tr><td>lua</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
+<tr><td><a href="action_details.html#m">m</a></td><td>Loads a layout into the current buffer.</td><td>m [name]</td><td>shand_cmd plugin</td>
 <tr><td>ManagePlugins</td><td>Manage plugins dialog.</td><td>ManagePlugins()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#markcrosshair">MarkCrosshair</a></td><td>Set/Reset the pcb_crosshair mark.</td><td>MarkCrosshair()<br>MarkCrosshair(Center)</td><td></td>
+<tr><td>mawk</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
+<tr><td>mesh</td><td>generate a mesh for simulation</td><td>mesh()</td><td>openems HID</td>
 <tr><td><a href="action_details.html#message">Message</a></td><td>Writes a message to the log window.</td><td>message([ERROR|WARNING|INFO|DEBUG,] message)</td><td></td>
 <tr><td>MessageBox</td><td>Open a modal message dialog box with title and label. If icon string is not empty, display the named icon on the left. Present one or more window close buttons with different text and return value.</td><td>MessageBox(icon, title, label, button_txt, button_retval, ...)</td><td></td>
+<tr><td>mill</td><td>Calculate toolpath for milling away copper</td><td>mill()</td><td>millpath plugin</td>
 <tr><td><a href="action_details.html#mincleargap">MinClearGap</a></td><td>Ensures that polygons are a minimum distance from objects.</td><td>MinClearGap(delta)<br>MinClearGap(Selected, delta)</td><td></td>
 <tr><td>MinMaskGap</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#mode">Mode</a></td><td>Change or use the tool mode.</td><td>Mode(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)<br>Mode(Polygon|Rectangle|Remove|Rotate|Text|Thermal|Via)<br>Mode(Notify|Release|Cancel|Stroke)<br>Mode(Save|Restore)</td><td></td>
@@ -165,6 +213,9 @@ This is pcb-rnd 2.1.2 (svn r26253) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#movelayer">MoveLayer</a></td><td>Moves/Creates/Deletes Layers.</td><td>MoveLayer(old,new)<br>MoveLayer(lid,group,gid)</td><td></td>
 <tr><td><a href="action_details.html#moveobject">MoveObject</a></td><td>Moves the object under the crosshair.</td><td>pcb_move_obj(X,Y,[units])</td><td></td>
 <tr><td><a href="action_details.html#movetocurrentlayer">MoveToCurrentLayer</a></td><td>Moves objects to the current layer.</td><td>MoveToCurrentLayer(Object|SelectedObjects)</td><td></td>
+<tr><td>mruby</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
+<tr><td>net</td><td>Perform various actions on netlists.</td><td>Net(find|select|rats|norats||ripup|addrats|clear[,net[,pin]])<br>Net(freeze|thaw|forcethaw)<br>Net(swap)<br>Net(add,net,pin)Net([rename|merge],srcnet,dstnet)</td><td></td>
+<tr><td><a href="action_details.html#netlist">netlist</a></td><td>Perform various actions on netlists.</td><td>Net(find|select|rats|norats||ripup|addrats|clear[,net[,pin]])<br>Net(freeze|thaw|forcethaw)<br>Net(swap)<br>Net(add,net,pin)Net([rename|merge],srcnet,dstnet)</td><td></td>
 <tr><td>NetlistChanged</td><td>Tells the GUI that the netlist has changed.</td><td>NetlistChanged()</td><td>oldactions plugin</td>
 <tr><td>NetlistDialog</td><td>Open the netlist dialog.</td><td>NetlistDialog()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#new">New</a></td><td>Starts a new layout.</td><td>New([name])</td><td></td>
@@ -174,15 +225,19 @@ This is pcb-rnd 2.1.2 (svn r26253) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#openemsexcitation">OpenemsExcitation</a></td><td>Select which openEMS excitation method should be exported and manipulate the associated parameters. When invoked without arguments a dialog box with the same functionality is presented.</td><td>OpenemsExcitation([interactive])<br>OpenemsExcitation(select, excitationname)<br>OpenemsExcitation(set, [excitationnme], paramname, paramval)<br>OpenemsExcitation(get, [excitationnme], paramname)</td><td>openems HID</td>
 <tr><td>OptAutoOnly</td><td>Toggles the optimize-only-autorouted flag.</td><td>OptAutoOnly()</td><td>oldactions plugin</td>
 <tr><td>OrderPCB</td><td>Order the board from a fab</td><td>orderPCB([gui])</td><td>order plugin</td>
-<tr><td>PCBChanged</td><td>Tells the GUI that the whole PCB has changed. The optional "revert"parameter can be used as a hint to the GUI that the same design is beingreloaded, and that it might keep some viewport settings</td><td>PCBChanged([revert])</td><td>oldactions plugin</td>
 <tr><td>PadstackBreakup</td><td>Break up a padstack into one non-padstack object per layer type (the hole is ignored)</td><td>PadstackBreakup(buffer|selected|objet)</td><td></td>
 <tr><td>PadstackConvert</td><td>Convert selection or current buffer to padstack</td><td>PadstackConvert(buffer|selected, [originx, originy])</td><td></td>
 <tr><td>PadstackEdit</td><td>interactive pad stack editor</td><td>PadstackEdit(object, [tab])</td><td>dialogs plugin</td>
 <tr><td>PadstackPlace</td><td>Place a pad stack (either proto_id, or if not specified, the default for style)</td><td>PadstackPlace([proto_id|default], [x, y])</td><td></td>
 <tr><td><a href="action_details.html#pan">Pan</a></td><td>Start or stop panning (Mode = 1 to start, 0 to stop)</td><td>Pan(Mode)</td><td>lib_hid_pcbui/actions</td>
+<tr><td>paral</td><td>Draw a line perpendicular to another line</td><td>perp()</td><td>ddraft plugin</td>
 <tr><td><a href="action_details.html#pastebuffer">PasteBuffer</a></td><td>Various operations on the paste buffer.</td><td>PasteBuffer(AddSelected|Clear|1..PCB_MAX_BUFFER)<br>PasteBuffer(Rotate, 1..3)<br>PasteBuffer(Convert|Restore|Mirror)<br>PasteBuffer(ToLayout, X, Y, units)<br>PasteBuffer(ToLayout, crosshair)<br>PasteBuffer(Save, Filename, [format], [force])<br>PasteBuffer(Push)<br>PasteBuffer(Pop)</td><td></td>
+<tr><td>PCBChanged</td><td>Tells the GUI that the whole PCB has changed. The optional "revert"parameter can be used as a hint to the GUI that the same design is beingreloaded, and that it might keep some viewport settings</td><td>PCBChanged([revert])</td><td>oldactions plugin</td>
+<tr><td>perl</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
+<tr><td>perp</td><td>Draw a line perpendicular to another line</td><td>perp()</td><td>ddraft plugin</td>
 <tr><td>Pinout</td><td>Present the subcircuit pinout box</td><td>Pinout()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#polycombine">PolyCombine</a></td><td></td><td></td><td>polycombine plugin</td>
+<tr><td><a href="action_details.html#polygon">Polygon</a></td><td>Some polygon related stuff.</td><td>Polygon(Close|CloseHole|PreviousPoint)</td><td></td>
 <tr><td>PolyHatch</td><td>hatch the selected polygon(s) with lines of the current style; lines are drawn on the current layer; flags are h:horizontal, v:vertical, c:contour, p:poly</td><td>PolyHatch([spacing], [hvcp])<br>PolyHatch(interactive)</td><td>lib_polyhelp</td>
 <tr><td>PolyNew</td><td>Create an empty polygon. For now data must be "pcb". Use PolyNewPoint to add points. Returns a polygon pointer valid until PolyNewEnd() is called.</td><td>PolyNew([noundo,] data, layer, ptlist, clearance, flags)</td><td>act_draw</td>
 <tr><td>PolyNewEnd</td><td>Close and place a polygon started by PolyNew. Returns the ID of the new object or 0 on error.</td><td>PolyNewEnd([noundo,] data, layer, poly)</td><td>act_draw</td>
@@ -191,7 +246,6 @@ This is pcb-rnd 2.1.2 (svn r26253) an interactive printed circuit board editor ,
 <tr><td>PolyNewPoints</td><td>Add a list of points to a polygon created by PolyNew. Returns 0 on success.</td><td>PolyNewPoints([noundo,] poly, ptlist)</td><td>act_draw</td>
 <tr><td>PolyOffs</td><td>replicate the outer contour of the selected polygon(s) with growing or shrinking them by offset; the new polygon is drawn on the current layer</td><td>PolyOffs(offset)</td><td>lib_polyhelp</td>
 <tr><td><a href="action_details.html#polystitch">PolyStitch</a></td><td></td><td></td><td>polystitch plugin</td>
-<tr><td><a href="action_details.html#polygon">Polygon</a></td><td>Some polygon related stuff.</td><td>Polygon(Close|CloseHole|PreviousPoint)</td><td></td>
 <tr><td><a href="action_details.html#popup">Popup</a></td><td>Bring up the popup menu specified by MenuName, optionally modified with the object type under the cursor.</td><td>Popup(MenuName, [obj-type])</td><td>lib_hid_pcbui/actions</td>
 <tr><td>Preferences</td><td>Present the preferences dialog, optionally opening the tab requested.</td><td>Preferences([tabname])</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#print">Print</a></td><td>Present the print export dialog for printing the layout from the GUI.</td><td>Print()</td><td></td>
@@ -204,15 +258,26 @@ This is pcb-rnd 2.1.2 (svn r26253) an interactive printed circuit board editor ,
 <tr><td>PrintUsage</td><td>Print command line arguments of pcb-rnd or a plugin loaded.</td><td>PrintUsage()<br>PrintUsage(plugin)</td><td></td>
 <tr><td>PrintVersion</td><td>Print version.</td><td>PrintVersion()</td><td></td>
 <tr><td><a href="action_details.html#promptfor">PromptFor</a></td><td>Prompt for a string. Returns the string (or NULL on cancel)</td><td>PromptFor([message[,default[,title]]])</td><td></td>
+<tr><td>propedit</td><td></td><td>propedit(object[:id]|layer[:id]|layergrp[:id]|pcb|selection|selected)</td><td>propedit</td>
+<tr><td>propprint</td><td>Print a property map of objects matching the scope. Scope is documented at PropEdit().</td><td>PropPrint([scope])</td><td>propedit</td>
+<tr><td>propset</td><td>Change the named property of all selected objects to/by value. Scope is documented at PropEdit().</td><td>propset([scope], name, value)</td><td>propedit</td>
+<tr><td>pscalib</td><td></td><td></td><td>ps HID</td>
+<tr><td>pstklib</td><td>Present the padstack library dialog on board padstacks or the padstacks of a subcircuit</td><td>pstklib([board|subcid|object])</td><td>dialogs plugin</td>
 <tr><td>PstkNew</td><td>Create a padstack. For now data must be "pcb". glob_clearance=0 turns off global clearance. Returns the ID of the new object or 0 on error.</td><td>PstkNew([noundo,] data, protoID, x, y, glob_clearance, flags)</td><td>act_draw</td>
 <tr><td>PstkProtoEdit</td><td>Edit a padstack prototype specified by its pointer.</td><td>PstkProto([noundo,] proto, remove, layer_type<br>PstkProto([noundo,] proto, copy, dst_layer_type, src_layer_type)</td><td>act_draw</td>
 <tr><td>PstkProtoTmp</td><td>Allocate, insert or free a temporary padstack prototype</td><td>PstkProto([noundo,] new)<br>PstkProto([noundo,] dup, idpath)<br>PstkProto([noundo,] dup, data, src_proto_id)<br>PstkProto([noundo,] insert, idpath|data, proto)<br>PstkProto([noundo,] insert_dup, idpath|data, proto)<br>PstkProto([noundo,] free, proto)</td><td>act_draw</td>
 <tr><td><a href="action_details.html#puller">Puller</a></td><td>Pull an arc-line junction tight.</td><td>pcb_act_Puller()</td><td>puller plugin</td>
+<tr><td>py</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
+<tr><td>python</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
+<tr><td>q!</td><td>Quits the application without confirming.</td><td>q!</td><td>shand_cmd plugin</td>
+<tr><td><a href="action_details.html#q">q</a></td><td>Quits the application after confirming.</td><td>q</td><td>shand_cmd plugin</td>
+<tr><td>query</td><td>Perform various queries on PCB data.</td><td>query(dump, expr) - dry run: compile and dump an expression<br>query(append, idplist, expr) - compile and run expr and append the idpath of resulting objects on idplist</td><td></td>
 <tr><td>QueryCompileField</td><td>With "compile": precompiles textual field name to field ID; with "free": frees the memory allocated for a previously precompiled fieldID.</td><td>QueryCompileField(compile, fieldname)<br>QueryCompileField(free, fieldID)</td><td></td>
 <tr><td>QueryObj</td><td>Return the value of a field of an object, addressed by the object's idpath and the field's name or precompiled ID. Returns NIL on error.</td><td>QueryObj(idpath, [.fieldname|fieldID])</td><td></td>
 <tr><td><a href="action_details.html#quit">Quit</a></td><td>Quits the application after confirming.</td><td>Quit()</td><td></td>
 <tr><td><a href="action_details.html#redo">Redo</a></td><td>Redo recent "undo" operations.</td><td>redo()</td><td></td>
 <tr><td>Redraw</td><td>Redraw the entire screen</td><td>Redraw()</td><td></td>
+<tr><td>regpoly</td><td>Generate regular polygon. Where is x;y and radius is either r or rx;ry. Rotation is in degrees.</td><td>regpoly([where,] corners, radius [,rotation])</td><td>shape plugin</td>
 <tr><td><a href="action_details.html#reloadscript">ReloadScript</a></td><td>Reload a fungw script</td><td>ReloadScript(id)</td><td>script plugin</td>
 <tr><td>RemoveMenu</td><td>Recursively removes a new menu, popup (only path specified) or submenu. </td><td>RemoveMenu(path|cookie)</td><td></td>
 <tr><td>RemoveSelected</td><td>Removes any selected objects.</td><td>pcb_remove_selected()</td><td></td>
@@ -223,9 +288,13 @@ This is pcb-rnd 2.1.2 (svn r26253) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#report">Report</a></td><td>Produce various report.</td><td>Report(Object|DrillReport|FoundPins|NetLength|NetLengthTo|AllNetLengths|[,name])</td><td>report plugin</td>
 <tr><td>ReportObject</td><td>Report on the object under the crosshair</td><td>ReportObject()</td><td>report plugin</td>
 <tr><td><a href="action_details.html#ripup">RipUp</a></td><td>Ripup auto-routed tracks</td><td>RipUp(All|Selected|Element)</td><td></td>
+<tr><td><a href="action_details.html#rn">rn</a></td><td>Reads netlist.</td><td>rn [name]</td><td>shand_cmd plugin</td>
 <tr><td><a href="action_details.html#rotate90">Rotate90</a></td><td>Rotates the object under the crosshair by 90 degree steps.</td><td>pcb_move_obj(steps)</td><td></td>
+<tr><td>roundrect</td><td>Generate a rectangle with round corners</td><td>roundrect([where,] width[;height] [,rx[;ry] [,rotation [,cornstyle [,roundness]]]])</td><td>shape plugin</td>
 <tr><td>RouteStyle</td><td>Copies the indicated routing style into the current pen.</td><td>RouteStyle(style_id|style_name)</td><td></td>
 <tr><td>RouteStylesChanged</td><td>Tells the GUI that the routing styles have changed.</td><td>RouteStylesChanged()</td><td>oldactions plugin</td>
+<tr><td>ruby</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
+<tr><td><a href="action_details.html#s">s</a></td><td>Saves layout data.</td><td>s [name]<br>w [name]</td><td>shand_cmd plugin</td>
 <tr><td><a href="action_details.html#save">Save</a></td><td>Save layout data to a user-selected file.</td><td>Save()<br>Save(Layout|LayoutAs)<br>Save(AllConnections|AllUnusedPins|ElementConnections)<br>Save(PasteBuffer)</td><td>dialogs plugin</td>
 <tr><td>SaveFontTo</td><td>Save PCB font to a file</td><td>SaveFontTo([file, id])</td><td></td>
 <tr><td>SavePatch</td><td>Save netlist patch for back annotation.</td><td>SavePatch(filename)</td><td></td>
@@ -245,107 +314,38 @@ This is pcb-rnd 2.1.2 (svn r26253) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#setthermal">SetThermal</a></td><td>Set the thermal (on the current layer) of padstacks to the given style.<br>Style = 0 means no thermal.<br>Style = 1 has diagonal fingers with sharp edges.<br>Style = 2 has horizontal and vertical fingers with sharp edges.<br>Style = 3 is a solid connection to the plane.<br>Style = 4 has diagonal fingers with rounded edges.<br>Style = 5 has horizontal and vertical fingers with rounded edges.</td><td>SetThermal(Object|SelectedPins|SelectedVias|Selected, Style)</td><td></td>
 <tr><td><a href="action_details.html#setunits">SetUnits</a></td><td>Set the default measurement units.</td><td>SetUnits(mm|mil)</td><td></td>
 <tr><td><a href="action_details.html#setvalue">SetValue</a></td><td>Change various board-wide values and sizes.</td><td>SetValue(Grid|Line|LineSize|Text|TextScale, delta)</td><td></td>
-<tr><td>StatusSetText</td><td>Replace status printout with text temporarily; turn status printout back on if text is not provided.</td><td>StatusSetText([text])</td><td>lib_hid_pcbui/status</td>
-<tr><td><a href="action_details.html#swapsides">SwapSides</a></td><td>Swaps the side of the board you're looking at.</td><td>SwapSides(|v|h|r, [S])</td><td>lib_hid_pcbui/actions</td>
-<tr><td>SwitchHID</td><td>Switch to another HID.</td><td>SwitchHID(lesstif|gtk|batch)</td><td></td>
-<tr><td>System</td><td>Run shell command</td><td>System(shell_cmd)</td><td></td>
-<tr><td>Teardrops</td><td></td><td></td><td>teardrops plugin</td>
-<tr><td>TextNew</td><td>Create a pcb text on a layer. For now data must be "pcb". Font id 0 is the default font. Thickness 0 means default, calculated thickness. Scale=100 is the original font size. Returns the ID of the new object or 0 on error.</td><td>TextNew([noundo,] data, layer, fontID, x, y, rot, scale, thickness, test_string, flags)</td><td>act_draw</td>
-<tr><td>ToPoly</td><td>convert a closed loop of lines and arcs into a polygon</td><td>ToPoly()<br>ToPoly(outline)</td><td>lib_polyhelp</td>
-<tr><td>ToggleHideName</td><td></td><td></td><td>oldactions plugin</td>
-<tr><td>ToggleVendor</td><td>Toggles the state of automatic drill size mapping.</td><td>ToggleVendor()</td><td>oldactions plugin</td>
-<tr><td><a href="action_details.html#toggleview">ToggleView</a></td><td>Toggle the visibility of the specified layer or layer group.</td><td>ToggleView(1..MAXLAYER)<br>ToggleView(layername)<br>ToggleView(Silk|Rats|Pins|Vias|BackSide)<br>ToggleView(All, Open|Vis, Set|Clear|Toggle)</td><td></td>
-<tr><td><a href="action_details.html#undo">Undo</a></td><td>Undo recent changes.</td><td>undo()<br>undo(ClearList)</td><td></td>
-<tr><td>UndoDialog</td><td>Open the undo dialog.</td><td>UndoDialog()</td><td>dialogs plugin</td>
-<tr><td><a href="action_details.html#unloadscript">UnloadScript</a></td><td>Unload a fungw script</td><td>UnloadScript(id)</td><td>script plugin</td>
-<tr><td>UnloadVendor</td><td>Unloads the current vendor drill mapping table.</td><td>UnloadVendor()</td><td>vendor drill mapping</td>
-<tr><td><a href="action_details.html#unselect">Unselect</a></td><td>Unselects the object at the pointer location or the specified objects.</td><td>Unselect(All|Block|Connection)</td><td></td>
-<tr><td>ViewList</td><td>Present a new empty view list</td><td>viewlist([name, [winid]])</td><td>dialogs plugin</td>
-<tr><td><a href="action_details.html#zoom">Zoom</a></td><td>GUI zoom</td><td>Zoom()<br>Zoom([+|-|=]factor)<br>Zoom(x1, y1, x2, y2)<br>Zoom(selected)<br>Zoom(?)<br>Zoom(get)<br>Zoom(found)</td><td>lib_hid_pcbui/actions</td>
-<tr><td>ZoomTo</td><td>GUI zoom</td><td>Zoom()<br>Zoom([+|-|=]factor)<br>Zoom(x1, y1, x2, y2)<br>Zoom(selected)<br>Zoom(?)<br>Zoom(get)<br>Zoom(found)</td><td>lib_hid_pcbui/actions</td>
-<tr><td>acompnet</td><td>Attempt to auto-complete the current network</td><td>acompnet()</td><td>acompnet plugin</td>
-<tr><td><a href="action_details.html#align">align</a></td><td>Align subcircuits</td><td>Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distalign plugin</td>
-<tr><td><a href="action_details.html#aligntext">aligntext</a></td><td>Align Text Elements</td><td>AlignText(X/Y, [Lefts/Rights/Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distaligntext plugin</td>
-<tr><td>asm</td><td>Interactive assembly assistant</td><td>asm()</td><td>asm plugin</td>
-<tr><td>autocrop</td><td>Autocrops the board dimensions to (extants + a margin of 1 grid), keeping the move and board size grid aligned</td><td>autocrop()</td><td>autocrop plugin</td>
-<tr><td>awk</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
-<tr><td>cam</td><td>Export jobs for feeding cam processes</td><td>cam(exec, script, [options])<br>cam(call, jobname, [options])<br>cam([gui])</td><td>cam exporter</td>
-<tr><td>circle</td><td>Generate a filled circle (zero length round cap line)</td><td>circle([where,] diameter)</td><td>shape plugin</td>
-<tr><td><a href="action_details.html#claimnet">claimnet</a></td><td>Claim existing connections and create a new net</td><td>ClaimNet(object|selected|found,[netname])</td><td></td>
-<tr><td>cli_MessageBox</td><td>Intenal: CLI frontend action. Do not use directly.</td><td></td><td></td>
-<tr><td>cli_PromptFor</td><td>Intenal: CLI frontend action. Do not use directly.</td><td></td><td></td>
-<tr><td>conf</td><td>Perform various operations on the configuration tree.</td><td>conf(set, path, value, [role], [policy]) - change a config setting to an absolute value<br>conf(delta, path, value, [role], [policy]) - change a config setting by a delta value (numerics-only)<br>conf(toggle, path, [role]) - invert boolean value of a flag; if no role given, overwrite the highest prio config<br>conf(reset, role) - reset the in-memory lihata of a role<br>conf(iseq, path, value) - returns whether the value of a conf item matches value (for menu checked's)</td><td></td>
-<tr><td>constraint</td><td>Configure or remove a drawing constraint</td><td>constraint(type, off)<br>constraint(type, value, [value...])</td><td>ddraft plugin</td>
-<tr><td>cpcb</td><td>Executed external autorouter cpcb to route the board or parts of the board</td><td>cpcb(board|selected, [command])</td><td>cpcb plugin</td>
-<tr><td>d1</td><td>debug action for development</td><td>d1()</td><td>diag plugin</td>
-<tr><td>dad</td><td>Manipulate Dynamic Attribute Dialogs</td><td>dad(dlgname, new) - create new dialog<br>dad(dlgname, label, text) - append a label widget<br>dad(dlgname, button, text) - append a button widget<br>dad(dlgname, button_closes, label, retval, ...) - standard close buttons<br>dad(dlgname, enum, choices) - append an enum (combo box) widget; choices is a tab separated list<br>dad(dlgname, bool, [label]) - append an checkbox widget (default off)<br>dad(dlgname, integer|real|coord, min, max, [label]) - append an input field<br>dad(dlgname, string) - append a single line text input field<br>dad(dlgname, progress) - append a progress bar (set to 0)<br>dad(dlgname, tree, cols, istree, [header]) - append tree-table widget; header is like enum values<br>dad(dlgname, tree_append, row, cells) - append after row (0 means last item of the root); cells is like enum values; returns a row pointer<br>dad(dlgname, tree_append_under, row, cells) - append at the end of the list under row (0 means last item of the root); cells is like enum values; returns a row pointer<br>dad(dlgname, tree_insert, row, cells) - insert before row (0 means first item of the root); cells is like enum values; returns a row pointer<br>dad(dlgname, begin_hbox) - begin horizontal box<br>dad(dlgname, begin_vbox) - begin vertical box<br>dad(dlgname, begin_hpane) - begin horizontal paned box<br>dad(dlgname, begin_vpane) - begin vertical paned box<br>dad(dlgname, begin_table, cols) - begin table layout box<br>dad(dlgname, begin_tabbed, tabnames) - begin a view with tabs; tabnames are like choices in an enum; must have as many children widgets as many names it has<br>dad(dlgname, end) - end the last begin<br>dad(dlgname, flags, flg1, flg2, ...) - change the flags of the last created widget<br>dad(dlgname, onchange, action) - set the action to be called on widget change<br>dad(dlgname, run, title) - present dlgname as a non-modal dialog<br>dad(dlgname, run_modal, title) - present dlgname as a modal dialog<br>dad(dlgname, exists) - returns wheter the named dialog exists (0 or 1)<br>dad(dlgname, set, widgetID, val) - changes the value of a widget in a running dialog <br>dad(dlgname, get, widgetID, [unit]) - return the current value of a widget</td><td>lib_hid_common plugin</td>
-<tr><td>ddraft</td><td>Enter 2d drafting CLI mode or execute command</td><td>ddraft([command])</td><td>ddraft plugin</td>
-<tr><td><a href="action_details.html#distribute">distribute</a></td><td>Distribute subcircuits</td><td>Distribute(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td><td>distalign plugin</td>
-<tr><td><a href="action_details.html#distributetext">distributetext</a></td><td>Distribute Text Elements</td><td>DistributeText(Y, [Lefts/Rights/Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td><td>distaligntext plugin</td>
-<tr><td><a href="action_details.html#djopt">djopt</a></td><td>Perform various optimizations on the current board.</td><td>djopt(debumpify|unjaggy|simple|vianudge|viatrim|orthopull)<br>djopt(auto) - all of the above<br>djopt(miter)</td><td>djopt</td>
-<tr><td>dlg_test</td><td>test the attribute dialog</td><td>dlg_test()</td><td>dialogs plugin</td>
-<tr><td>dumpconf</td><td>Perform various operations on the configuration tree.</td><td>dumpconf(native, [verbose], [prefix]) - dump the native (binary) config tree to stdout<br>dumpconf(lihata, role, [prefix]) - dump in-memory lihata representation of a config tree</td><td>diag plugin</td>
-<tr><td>dumpdata</td><td>Dump an aspect of the data</td><td>dumpdata()</td><td>diag plugin</td>
-<tr><td>dumpflags</td><td>dump flags, optionally using the format string provided by the user</td><td>dumpflags([fmt])</td><td>diag plugin</td>
-<tr><td>dumpfonts</td><td>Print info about fonts</td><td>dumpfonts()</td><td>diag plugin</td>
-<tr><td>dumpids</td><td>Dump the ID hash</td><td>DumpIDs()</td><td>diag plugin</td>
-<tr><td>dumplayers</td><td>Print info about each layer</td><td>dumplayers([all])</td><td>diag plugin</td>
-<tr><td>dumpundo</td><td>Print info about fonts</td><td>dumpfonts()</td><td>diag plugin</td>
-<tr><td>estutter</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
-<tr><td>extedit</td><td>extedit(object|selected|buffer, [interactive|method])</td><td>Invoke an external program to edit a specific part of the current board.</td><td>extedit plugin</td>
-<tr><td>find2perf</td><td>Measure the peformance of find2.c</td><td>find2perf()</td><td>diag plugin</td>
-<tr><td>forcecolor</td><td>change selected objects' color to #RRGGBB, reset if does not start with '#'</td><td>forcecolor(#RRGGBB)</td><td>diag plugin</td>
-<tr><td>fp_rehash</td><td>Flush the library index; rescan all library search paths and rebuild the library index. Useful if there are changes in the library during a pcb-rnd session.</td><td>fp_rehash()</td><td></td>
-<tr><td>gui_FallbackColorPick</td><td>Intenal: GUI frontend action. Do not use directly.</td><td></td><td>lib_hid_common plugin</td>
-<tr><td>gui_MessageBox</td><td>Intenal: GUI frontend action. Do not use directly.</td><td></td><td>lib_hid_common plugin</td>
-<tr><td>gui_PromptFor</td><td>Intenal: GUI frontend action. Do not use directly.</td><td></td><td>lib_hid_common plugin</td>
-<tr><td>h</td><td>Print a help message for commands.</td><td>h</td><td>shand_cmd plugin</td>
-<tr><td>integrity</td><td>perform integrirty check on the current board and generate errors if needed</td><td>integrity()</td><td>diag plugin</td>
-<tr><td>javascript</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
-<tr><td>jostle</td><td>Make room by moving wires away.</td><td>Jostle(diameter)</td><td>jostle plugin</td>
-<tr><td>js</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
-<tr><td><a href="action_details.html#l">l</a></td><td>Loads layout data.</td><td>l [name] [format]</td><td>shand_cmd plugin</td>
-<tr><td><a href="action_details.html#le">le</a></td><td>Loads an element (subcircuit, footprint) into the current buffer.</td><td>le [name]</td><td>shand_cmd plugin</td>
-<tr><td>lua</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
-<tr><td><a href="action_details.html#m">m</a></td><td>Loads a layout into the current buffer.</td><td>m [name]</td><td>shand_cmd plugin</td>
-<tr><td>mawk</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
-<tr><td>mesh</td><td>generate a mesh for simulation</td><td>mesh()</td><td>openems HID</td>
-<tr><td>mill</td><td>Calculate toolpath for milling away copper</td><td>mill()</td><td>millpath plugin</td>
-<tr><td>mruby</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
-<tr><td>net</td><td>Perform various actions on netlists.</td><td>Net(find|select|rats|norats||ripup|addrats|clear[,net[,pin]])<br>Net(freeze|thaw|forcethaw)<br>Net(swap)<br>Net(add,net,pin)Net([rename|merge],srcnet,dstnet)</td><td></td>
-<tr><td><a href="action_details.html#netlist">netlist</a></td><td>Perform various actions on netlists.</td><td>Net(find|select|rats|norats||ripup|addrats|clear[,net[,pin]])<br>Net(freeze|thaw|forcethaw)<br>Net(swap)<br>Net(add,net,pin)Net([rename|merge],srcnet,dstnet)</td><td></td>
-<tr><td>paral</td><td>Draw a line perpendicular to another line</td><td>perp()</td><td>ddraft plugin</td>
-<tr><td>perl</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
-<tr><td>perp</td><td>Draw a line perpendicular to another line</td><td>perp()</td><td>ddraft plugin</td>
-<tr><td>propedit</td><td></td><td>propedit(object[:id]|layer[:id]|layergrp[:id]|pcb|selection|selected)</td><td>propedit</td>
-<tr><td>propprint</td><td>Print a property map of objects matching the scope. Scope is documented at PropEdit().</td><td>PropPrint([scope])</td><td>propedit</td>
-<tr><td>propset</td><td>Change the named property of all selected objects to/by value. Scope is documented at PropEdit().</td><td>propset([scope], name, value)</td><td>propedit</td>
-<tr><td>pscalib</td><td></td><td></td><td>ps HID</td>
-<tr><td>pstklib</td><td>Present the padstack library dialog on board padstacks or the padstacks of a subcircuit</td><td>pstklib([board|subcid|object])</td><td>dialogs plugin</td>
-<tr><td>py</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
-<tr><td>python</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
-<tr><td>q!</td><td>Quits the application without confirming.</td><td>q!</td><td>shand_cmd plugin</td>
-<tr><td><a href="action_details.html#q">q</a></td><td>Quits the application after confirming.</td><td>q</td><td>shand_cmd plugin</td>
-<tr><td>query</td><td>Perform various queries on PCB data.</td><td>query(dump, expr) - dry run: compile and dump an expression<br>query(append, idplist, expr) - compile and run expr and append the idpath of resulting objects on idplist</td><td></td>
-<tr><td>regpoly</td><td>Generate regular polygon. Where is x;y and radius is either r or rx;ry. Rotation is in degrees.</td><td>regpoly([where,] corners, radius [,rotation])</td><td>shape plugin</td>
-<tr><td><a href="action_details.html#rn">rn</a></td><td>Reads netlist.</td><td>rn [name]</td><td>shand_cmd plugin</td>
-<tr><td>roundrect</td><td>Generate a rectangle with round corners</td><td>roundrect([where,] width[;height] [,rx[;ry] [,rotation [,cornstyle [,roundness]]]])</td><td>shape plugin</td>
-<tr><td>ruby</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
-<tr><td><a href="action_details.html#s">s</a></td><td>Saves layout data.</td><td>s [name]<br>w [name]</td><td>shand_cmd plugin</td>
 <tr><td>shape</td><td>Interactive shape generator.</td><td>shape()</td><td>shape plugin</td>
 <tr><td>skline</td><td>Tool for drawing sketch lines</td><td>skline()</td><td>sketch_route plugin</td>
 <tr><td>skretriangulate</td><td>Reconstruct CDT on all layer groups</td><td>skretriangulate()</td><td>sketch_route plugin</td>
 <tr><td>sktransform</td><td>Transform sketch to geometrical wiring</td><td>sktransform(rect|oct|alldir)</td><td>sketch_route plugin</td>
 <tr><td><a href="action_details.html#smartdisperse">smartdisperse</a></td><td>Disperse subcircuits into clusters, by netlist connections</td><td>SmartDisperse([All|Selected])</td><td>smartdisperse plugin</td>
 <tr><td>split</td><td>Use one or more objects as cutting edge and trim or split other objects. First argument is the cutting edge</td><td>trim([selected|found|object], [selected|found|object])<br>split([selected|found|object], [selected|found|object])</td><td>ddraft plugin</td>
+<tr><td>StatusSetText</td><td>Replace status printout with text temporarily; turn status printout back on if text is not provided.</td><td>StatusSetText([text])</td><td>lib_hid_pcbui/status</td>
 <tr><td>stroke</td><td>Various gesture recognition related functions</td><td>stroke(gesture, seq)</td><td>stroke plugin</td>
 <tr><td>stt</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>subc</td><td>Various operations on subc</td><td>subc(hash, [board|selected])<br>subc(loose, on|off|toggle|check)</td><td></td>
+<tr><td><a href="action_details.html#swapsides">SwapSides</a></td><td>Swaps the side of the board you're looking at.</td><td>SwapSides(|v|h|r, [S])</td><td>lib_hid_pcbui/actions</td>
+<tr><td>SwitchHID</td><td>Switch to another HID.</td><td>SwitchHID(lesstif|gtk|batch)</td><td></td>
+<tr><td>System</td><td>Run shell command</td><td>System(shell_cmd)</td><td></td>
 <tr><td>tang</td><td>Draw a line to be tangential to a circle</td><td>tang()</td><td>ddraft plugin</td>
 <tr><td>tcl</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
+<tr><td>Teardrops</td><td></td><td></td><td>teardrops plugin</td>
+<tr><td>TextNew</td><td>Create a pcb text on a layer. For now data must be "pcb". Font id 0 is the default font. Thickness 0 means default, calculated thickness. Scale=100 is the original font size. Returns the ID of the new object or 0 on error.</td><td>TextNew([noundo,] data, layer, fontID, x, y, rot, scale, thickness, test_string, flags)</td><td>act_draw</td>
+<tr><td>ToggleHideName</td><td></td><td></td><td>oldactions plugin</td>
+<tr><td>ToggleVendor</td><td>Toggles the state of automatic drill size mapping.</td><td>ToggleVendor()</td><td>oldactions plugin</td>
+<tr><td><a href="action_details.html#toggleview">ToggleView</a></td><td>Toggle the visibility of the specified layer or layer group.</td><td>ToggleView(1..MAXLAYER)<br>ToggleView(layername)<br>ToggleView(Silk|Rats|Pins|Vias|BackSide)<br>ToggleView(All, Open|Vis, Set|Clear|Toggle)</td><td></td>
+<tr><td>ToPoly</td><td>convert a closed loop of lines and arcs into a polygon</td><td>ToPoly()<br>ToPoly(outline)</td><td>lib_polyhelp</td>
 <tr><td>trim</td><td>Use one or more objects as cutting edge and trim or split other objects. First argument is the cutting edge</td><td>trim([selected|found|object], [selected|found|object])<br>split([selected|found|object], [selected|found|object])</td><td>ddraft plugin</td>
+<tr><td><a href="action_details.html#undo">Undo</a></td><td>Undo recent changes.</td><td>undo()<br>undo(ClearList)</td><td></td>
+<tr><td>UndoDialog</td><td>Open the undo dialog.</td><td>UndoDialog()</td><td>dialogs plugin</td>
+<tr><td><a href="action_details.html#unloadscript">UnloadScript</a></td><td>Unload a fungw script</td><td>UnloadScript(id)</td><td>script plugin</td>
+<tr><td>UnloadVendor</td><td>Unloads the current vendor drill mapping table.</td><td>UnloadVendor()</td><td>vendor drill mapping</td>
+<tr><td><a href="action_details.html#unselect">Unselect</a></td><td>Unselects the object at the pointer location or the specified objects.</td><td>Unselect(All|Block|Connection)</td><td></td>
+<tr><td>ViewList</td><td>Present a new empty view list</td><td>viewlist([name, [winid]])</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#w">w</a></td><td>Saves layout data.</td><td>s [name]<br>w [name]</td><td>shand_cmd plugin</td>
 <tr><td><a href="action_details.html#wq">wq</a></td><td>Saves the layout data and quits.</td><td>wq</td><td>shand_cmd plugin</td>
+<tr><td><a href="action_details.html#zoom">Zoom</a></td><td>GUI zoom</td><td>Zoom()<br>Zoom([+|-|=]factor)<br>Zoom(x1, y1, x2, y2)<br>Zoom(selected)<br>Zoom(?)<br>Zoom(get)<br>Zoom(found)</td><td>lib_hid_pcbui/actions</td>
+<tr><td>ZoomTo</td><td>GUI zoom</td><td>Zoom()<br>Zoom([+|-|=]factor)<br>Zoom(x1, y1, x2, y2)<br>Zoom(selected)<br>Zoom(?)<br>Zoom(get)<br>Zoom(found)</td><td>lib_hid_pcbui/actions</td>
 </table>
 </body>
 </html>
