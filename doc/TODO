@@ -5,7 +5,6 @@
 + CLEANUP: add the thin line draw optimization to the filled poly optimization, including hole, in hid_draw_helper (search for last_x); make this configurable for both (exporters shall not optimize!); remove the similar optimization from hidgl triangulation and gdk and lesstif [report: Ade, Peter]
 + drc & size: doesn't update on mil/mm change in top win -> need a list of spinboxes to update on conf change [report: Ade]
 + BUG: double check parametric footprint edit window: bug_files/parametric.txt [report: Piotr]
-- FEATURE: library window: allow long tags and long location text to split: rich text widget
 + FEATURE: grid size change should be undoable? -> no, see http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=undoability [report:Evan]
 + FEATURE: scripting: example script that tents/untents all/selected/object vias [report: keantoken]
 - FEATURE: edakrill script for growing line thickness keeping the line on one side (side alignment) [report: keantoken]
@@ -78,6 +77,7 @@
 	- FEATURE: invent a generic API for both the drill attrib config table
 	- CLEANUP: unify how output files are accessed/checked: confirmation on overwrite
 	- CLEANUP: in ~2020: remove the hackish gerber layer suffix and auto-excellon in favor of CAM [report: Ade]
+- FEATURE: library window: allow long tags and long location text to split: rich text widget
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
 - FEATURE: thermal to undo stack. reproduce: new layout, place via, place poly around via, use thermal tool on via, {u u } undo shows thermal isn't undoable [report: miloh]
 - BUG: rat draw undo not stacking correctly -- repro: draw a rat, { u u } undo, then { c r } redraws it [report: miloh]
