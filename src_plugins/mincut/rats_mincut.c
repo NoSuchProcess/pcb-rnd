@@ -229,7 +229,7 @@ static int proc_short(pcb_any_obj_t *term, pcb_net_t *Snet, pcb_net_t *Tnet)
 		pcb_any_obj_t *o = (pcb_any_obj_t *)n->to;
 		if (o->term != NULL) {
 			pcb_subc_t *sc = pcb_obj_parent_subc(o);
-			if (sc != NULL) {
+			if ((sc != NULL) && !PCB_FLAG_TEST(PCB_FLAG_NONETLIST, sc)) {
 				if ((sc->refdes != NULL) && (o->term != NULL)) {
 					pcb_net_term_t *t = pcb_net_find_by_refdes_term(&PCB->netlist[PCB_NETLIST_EDITED], sc->refdes, o->term);
 					if (t != NULL) {
