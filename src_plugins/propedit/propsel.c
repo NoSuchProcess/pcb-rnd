@@ -650,6 +650,8 @@ int pcb_propsel_set_str(pcb_propedit_t *ctx, const char *prop, const char *value
 	if ((prop[0] != 'a') && (prop[0] != 'p'))
 		return 0;
 
+	if (value == NULL)
+		value = "";
 	sctx.s = value;
 	start = value;
 	while(isspace(*start)) start++;
