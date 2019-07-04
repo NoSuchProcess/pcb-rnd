@@ -834,9 +834,8 @@ pcb_bool_t pcb_isc_pstk_line(pcb_pstk_t *ps, pcb_line_t *line)
 }
 
 
-PCB_INLINE pcb_bool_t pcb_isc_pstk_arc(pcb_pstk_t *ps, pcb_arc_t *arc)
+PCB_INLINE pcb_bool_t pcb_isc_pstk_arc_shp(pcb_pstk_t *ps, pcb_arc_t *arc, pcb_pstk_shape_t *shape)
 {
-	pcb_pstk_shape_t *shape = pcb_pstk_shape_at(PCB, ps, arc->parent.layer);
 	if (shape == NULL) return pcb_false;
 	switch(shape->shape) {
 		case PCB_PSSH_POLY:
@@ -872,6 +871,26 @@ PCB_INLINE pcb_bool_t pcb_isc_pstk_arc(pcb_pstk_t *ps, pcb_arc_t *arc)
 	}
 	return pcb_false;
 }
+
+PCB_INLINE pcb_bool_t pcb_isc_pstk_arc(pcb_pstk_t *ps, pcb_arc_t *arc)
+{
+	pcb_pstk_shape_t *shape;
+	pcb_pstk_proto_t *proto;
+
+	shape = pcb_pstk_shape_at(PCB, ps, arc->parent.layer);
+	if (pcb_isc_pstk_arc_shp(ps, arc, shape))
+		return pcb_true;
+
+	proto = pcb_pstk_get_proto(ps);
+	if (proto->hplated) {
+		shape = pcb_pstk_shape_mech_at(PCB, ps, arc->parent.layer);
+		if (pcb_isc_pstk_arc_shp(ps, arc, shape))
+			return pcb_true;
+	}
+
+	return pcb_false;
+}
+
 
 PCB_INLINE pcb_polyarea_t *pcb_pstk_shp_poly2area(pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
 {
