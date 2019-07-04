@@ -278,6 +278,7 @@ static unsigned long pcb_find_exec(pcb_find_t *ctx)
 				int li;
 				pcb_layer_t *l;
 				if ((!ctx->stay_layergrp) || (ctx->start_layergrp == NULL)) {
+					pcb_pstk_proto_t *proto = pcb_pstk_get_proto((const pcb_pstk_t *)curr);
 					for(li = 0, l = ctx->data->Layer; li < ctx->data->LayerN; li++,l++) {
 						if (!ctx->allow_noncopper) {
 							/* skip anything that's not on a copper layer */
@@ -287,6 +288,11 @@ static unsigned long pcb_find_exec(pcb_find_t *ctx)
 						}
 						if (pcb_pstk_shape_at_(ctx->pcb, (pcb_pstk_t *)curr, l, 0))
 							pcb_find_on_layer(ctx, l, curr, sb, ctype);
+						else if (proto->hplated) { /* consider plated slots */
+							pcb_layer_t *rl = pcb_layer_get_real(l);
+							if (pcb_pstk_bb_drills(ctx->pcb, (const pcb_pstk_t *)curr, rl->meta.real.grp, NULL))
+								pcb_find_on_layer(ctx, l, curr, sb, ctype);
+						}
 					}
 				}
 				else {
