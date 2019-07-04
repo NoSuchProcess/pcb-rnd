@@ -5,7 +5,6 @@
 + CLEANUP: Vuokko's list of warnings on OpenBSD: bug_files/warn-obsd-r24746.log [report: Vuokko]
 + CLEANUP: add the thin line draw optimization to the filled poly optimization, including hole, in hid_draw_helper (search for last_x); make this configurable for both (exporters shall not optimize!); remove the similar optimization from hidgl triangulation and gdk and lesstif [report: Ade, Peter]
 + BUG: double check parametric footprint edit window: bug_files/parametric.txt [report: Piotr]
-+ FEATURE: grid size change should be undoable? -> no, see http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=undoability [report:Evan]
 + FEATURE: scripting: example script that tents/untents all/selected/object vias [report: keantoken]
 - BUG: pspanelize cam job fails [report: Igor2]
 + BUG: message log: when opens, even if scroll-to-bottom is set, it is not scrolling down automatically [report: keantoken]
