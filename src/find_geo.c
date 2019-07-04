@@ -782,10 +782,10 @@ PCB_INLINE pcb_bool_t pcb_isc_line_polyline(pcb_pline_t *pl, pcb_coord_t x1, pcb
 		pcb_line.Flags = shape_line.square ? pcb_flag_make(PCB_FLAG_SQUARE) : pcb_no_flags(); \
 	} while(0)
 
-pcb_bool_t pcb_isc_pstk_line(pcb_pstk_t *ps, pcb_line_t *line)
+static pcb_bool_t pcb_isc_pstk_line_shp(pcb_pstk_t *ps, pcb_line_t *line, pcb_pstk_shape_t *shape)
 {
-	pcb_pstk_shape_t *shape = pcb_pstk_shape_at(PCB, ps, line->parent.layer);
 	if (shape == NULL) return pcb_false;
+
 	switch(shape->shape) {
 		case PCB_PSSH_POLY:
 			if (shape->data.poly.pa == NULL)
@@ -811,6 +811,25 @@ pcb_bool_t pcb_isc_pstk_line(pcb_pstk_t *ps, pcb_line_t *line)
 		case PCB_PSSH_HSHADOW:
 			return 0; /* non-object won't intersect */
 	}
+	return pcb_false;
+}
+
+pcb_bool_t pcb_isc_pstk_line(pcb_pstk_t *ps, pcb_line_t *line)
+{
+	pcb_pstk_shape_t *shape;
+	pcb_pstk_proto_t *proto;
+
+	shape = pcb_pstk_shape_at(PCB, ps, line->parent.layer);
+	if (pcb_isc_pstk_line_shp(ps, line, shape))
+		return pcb_true;
+
+	proto = pcb_pstk_get_proto(ps);
+	if (proto->hplated) {
+		shape = pcb_pstk_shape_mech_at(PCB, ps, line->parent.layer);
+		if (pcb_isc_pstk_line_shp(ps, line, shape))
+			return pcb_true;
+	}
+
 	return pcb_false;
 }
 
