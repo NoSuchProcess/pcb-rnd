@@ -279,6 +279,29 @@ PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_gid(pcb_board_t *pcb, pcb_pstk_t *ps
 	return pcb_pstk_shape(ps, grp->ltype, comb);
 }
 
+/* Returns the mech shape (slot) if it affects grp */
+PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_mech_gid(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layergrp_id_t grp)
+{
+	pcb_pstk_tshape_t *ts;
+	pcb_pstk_proto_t *proto;
+
+	if (!pcb_pstk_bb_drills(pcb, ps, grp, &proto))
+		return NULL; /* span: blind/buried, not reaching grp */
+
+	if (proto->mech_idx < 0)
+		return NULL; /* no mech shape -> no slot */
+
+	ts = pcb_pstk_get_tshape(ps);
+	return ts->shape + proto->mech_idx;
+}
+
+/* Returns the mech shape (slot) if it affects layer */
+PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_mech_at(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t *layer)
+{
+	layer = pcb_layer_get_real(layer);
+	return pcb_pstk_shape_mech_gid(pcb, ps, layer->meta.real.grp);
+}
+
 /* Return the shape of the hshadow, if it is not the same as the forbidden
    shape. The forbidden shape should be the shape that triggers the lookup.
    tmpshp should be a local temporary shape where the circular shape for a
