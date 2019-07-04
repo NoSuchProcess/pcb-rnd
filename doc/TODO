@@ -10,7 +10,6 @@
 - BUG: pspanelize cam job fails [report: Igor2]
 + BUG: message log: when opens, even if scroll-to-bottom is set, it is not scrolling down automatically [report: keantoken]
 + BUG: press 'enter' in propedit right side value for string or coord - it should be taken as 'apply' [report: keantoken]
-+ BUG: open gl polygon rendering: white line between just-touching polygons, may need a line clearance too; bug_files/gl_poly.lht [report: keantoken, Ade]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
 - BUG: wandering lesstif window (window placement bug): using icewm, open the property editor, close, open, close, open: it's displaced by decoration [report: Igor2]
