@@ -1,35 +1,34 @@
 0. old, still waiting for ack
-
-1. For the upcoming release ===============================================================================
 + FEATURE: script for checking broken plugin deps [report: Alain] -> trunk/util/plug_dep_test.sh
 + CLEANUP: Vuokko's list of warnings on OpenBSD: bug_files/warn-obsd-r24746.log [report: Vuokko]
 + CLEANUP: add the thin line draw optimization to the filled poly optimization, including hole, in hid_draw_helper (search for last_x); make this configurable for both (exporters shall not optimize!); remove the similar optimization from hidgl triangulation and gdk and lesstif [report: Ade, Peter]
 + BUG: double check parametric footprint edit window: bug_files/parametric.txt [report: Piotr]
 + FEATURE: scripting: example script that tents/untents all/selected/object vias [report: keantoken]
-- BUG: pspanelize cam job fails [report: Igor2]
 + BUG: message log: when opens, even if scroll-to-bottom is set, it is not scrolling down automatically [report: keantoken]
 + BUG: press 'enter' in propedit right side value for string or coord - it should be taken as 'apply' [report: keantoken]
-- BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
-- BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
-- BUG: wandering lesstif window (window placement bug): using icewm, open the property editor, close, open, close, open: it's displaced by decoration [report: Igor2]
 + BUG: io_pcb hole clearance import: Peter's report: "bug: .fp/.pcb import..." ml2933 [report: Peter]
 + BUG: bug_files/bug_silk.lht: swap board, far-side color applies only to the first silk because it's not done by group but by layer [report: Peter]
 + BUG: bug_files/drc-pstk.lht: via-line "too close" is missed [report: Peter]
 + BUG: direct gerber export (with which naming style?) results in empty drill gbrs ml=2928 [report: Peter]
 + BUG: png export: the no-plating mark should not be drawn on png unless 'as-shown' is enabled ml=2931 [report: Peter]
 + BUG: bug_files/warn.lht: load, click to somewhere to remove the warning (orange): object flag cleared but the board is not marked as changed [report: Peter]
-- BUG: bug_files/macrofab_rot/: rotation (and coords?) is off on xy for macrofab [report: celem]
 + BUG: bug_files/cam_layer_bug.lht: after cam export (from gui) the mask and paste layers are visible but the layer selector is not updated  - als fixed for direct export [report: keantoken]
++ BUG: io_kicad: kicad_mod (clearance 0.25) is not processed (see priv mail from Erik on 22 may) [report: Erik]
++ BUG: io_kicad: parser not parsing obround pad rotation, rot, (at x y rot), see work/bug_files/obround-rotation.kicad_pcb [report: erich]
++ BUG: gl HID bug: changing background color from preferences won't update internal color cache [report: Ade, Dave]
+
+1. For the upcoming release ===============================================================================
+- BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
+- BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
+- BUG: wandering lesstif window (window placement bug): using icewm, open the property editor, close, open, close, open: it's displaced by decoration [report: Igor2]
+- BUG: bug_files/macrofab_rot/: rotation (and coords?) is off on xy for macrofab [report: celem]
 - BUG: lesstif hbox/vbox allocation issues: test with bug_files/ltf_fillbox/ patches applied, with the fontsel action; opening it multiple times will randomly show or hide the button
 	- hvbox: fontsel, about dialog: resize to smaller doesn't re-layout
 	- tabbed: redisplay bug in the about box
 	- re-test HPANE: pstklib(), netlistdialog(), propedit(), BrowseScripts, preferences dialog config tab
 	- preferences dialog: library, layers tabs are unusable [report: Igor2]
-+ BUG: io_kicad: kicad_mod (clearance 0.25) is not processed (see priv mail from Erik on 22 may) [report: Erik]
-+ BUG: io_kicad: parser not parsing obround pad rotation, rot, (at x y rot), see work/bug_files/obround-rotation.kicad_pcb [report: erich]
 - BUG: gtk2_gl issue. view in netlist window circuit view clips or goes black when changing selected net (repro. w/ doc/tutorials/15_no_sch/step3.lht and open netlist view {w n} [report: miloh]
 - BUG: Replacing a subc by shift-leftclick deletes the old subc but doesn't place the new one. Recipe: Place a subc. Load a new subc to the buffer. Position the buffer subc over the existing subc and press shift-leftclick. Result=old subc is removed, not replaced. [report: Ade]
-+ BUG: gl HID bug: changing background color from preferences won't update internal color cache [report: Ade, Dave]
 
 2. For later releases ===============================================================================
 - CLEANUP: unify gui invocation option printout: pcb-rnd --help gtk_[gdk|gl] and pcb-rnd --help lesstif should use the same style printing options (even tho options will never be the same) [report:miloh]
