@@ -37,6 +37,9 @@ extern pcb_hidlib_t *ltf_hidlib;
 #define COMPONENT_SIDE_NAME "(top)"
 #define SOLDER_SIDE_NAME "(bottom)"
 
+static int wplc_hack = 0;
+static int wplc_hackx = 0, wplc_hacky = 0;
+
 void pcb_ltf_winplace(Display *dsp, Window w, const char *id, int defx, int defy)
 {
 	int plc[4] = {-1, -1, -1, -1};
@@ -61,22 +64,64 @@ void pcb_ltf_winplace(Display *dsp, Window w, const char *id, int defx, int defy
 		XResizeWindow(dsp, w, defx, defy);
 }
 
+static void get_win_xy(Display *dsp, Window win, int *x, int *y)
+{
+	Window rw, cw;
+
+	rw = DefaultRootWindow(dsp);
+	*x = *y = -1;
+	XTranslateCoordinates(dsp, win, rw, 0, 0, x, y, &cw);
+}
+
+
 static void ltf_winplace_cfg(Display *dsp, Window win, void *ctx, const char *id)
 {
 	
 	Window rw;
-	int x = -1, y = -1;
+	int x = 1, y = 1, x2, y2, tmp;
 	unsigned int w, h, brd, depth;
+	int plc[4] = {-1, -1, -1, -1};
 
-#if 0
-	Window cw;
-	rw = DefaultRootWindow(dsp);
-	XTranslateCoordinates(dsp, win, rw, 0, 0, &x, &y, &cw);
-	printf("plc1: %s: %d %d\n", id, x, y);
-#endif
+	get_win_xy(dsp, win, &x, &y);
 
-	XGetGeometry(dsp, win, &rw, &x, &y, &w, &h, &brd, &depth);
-	pcb_event(ltf_hidlib, PCB_EVENT_DAD_NEW_GEO, "psiiii", ctx, id, (int)x, (int)y, (int)w, (int)h);
+	switch(wplc_hack) {
+		case 0: /* place the window on the "same spot" just to see where it ends up */
+			wplc_hack = 1;
+			wplc_hackx = x;
+			wplc_hacky = y;
+			XMoveWindow(dsp, win, x, y);
+			return;
+		case 1: /* learn where the "same spot" placement ended up and calculate a delta */
+			wplc_hack = 2;
+			x2 = wplc_hackx;
+			y2 = wplc_hacky;
+
+			wplc_hackx = x - wplc_hackx;
+			wplc_hacky = y - wplc_hacky;
+
+			/* restore the original window position (either what the code wants or
+			   what we learned from the GUI */
+			pcb_event(ltf_hidlib, PCB_EVENT_DAD_NEW_DIALOG, "psp", NULL, id, plc);
+			if ((plc[0] >= 0) && (plc[1] >= 0)) {
+				x = plc[0];
+				y = plc[1];
+			}
+			else {
+				x = x2 - wplc_hackx;
+				y = y2 - wplc_hacky;
+			}
+			XMoveWindow(dsp, win, x, y);
+			return;
+		default: break;
+	}
+
+	
+	if (wplc_hack == 2) { /* normal placement - we already know the offsets */
+		XGetGeometry(dsp, win, &rw, &tmp, &tmp, &w, &h, &brd, &depth);
+		x -= wplc_hackx;
+		y -= wplc_hacky;
+		pcb_event(ltf_hidlib, PCB_EVENT_DAD_NEW_GEO, "psiiii", ctx, id, (int)x, (int)y, (int)w, (int)h);
+	}
 }
 
 
