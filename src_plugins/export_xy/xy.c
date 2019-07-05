@@ -225,8 +225,7 @@ static void calc_pad_bbox_(subst_ctx_t *ctx, pcb_coord_t *pw, pcb_coord_t *ph, p
 					if (!(pcb_layer_flags_(ly) & PCB_LYT_COPPER))
 						continue;
 				}
-TODO(": we should have the copper bbox only, but this bbox includes the clearance!")
-				pcb_box_bump_box(&box, &o->BoundingBox);
+				pcb_box_bump_box(&box, &o->bbox_naked);
 			}
 		}
 	}
