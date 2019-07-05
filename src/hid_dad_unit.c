@@ -51,6 +51,7 @@ void pcb_dad_unit_set_num(pcb_hid_attribute_t *attr, long l, double unused1, pcb
 	pcb_hid_attribute_t *enu = attr - unit->cmp.wend + unit->wenum;
 
 	enu->default_val.int_value = l;
+	attr->default_val.int_value = l;
 }
 
 void pcb_dad_unit_set_val_ptr(pcb_hid_attribute_t *end, void *val_)
