@@ -19,7 +19,7 @@
 
 1. For the upcoming release ===============================================================================
 - BUG: wandering lesstif window (window placement bug): using icewm, open the property editor, close, open, close, open: it's displaced by decoration [report: Igor2]
-- BUG: bug_files/macrofab_rot/: rotation (and coords?) is off on xy for macrofab [report: celem]
++ BUG: bug_files/macrofab_rot/: rotation (and coords?) is off on xy for macrofab [report: celem]
 - BUG: lesstif hbox/vbox allocation issues: test with bug_files/ltf_fillbox/ patches applied, with the fontsel action; opening it multiple times will randomly show or hide the button
 	- hvbox: fontsel, about dialog: resize to smaller doesn't re-layout
 	- tabbed: redisplay bug in the about box
