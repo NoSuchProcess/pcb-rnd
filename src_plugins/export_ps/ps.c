@@ -763,17 +763,18 @@ static int ps_set_layer_group(pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, con
 	}
 
 	if (ps_cam.active)
-		newpage = ps_cam.fn_changed;
+		newpage = ps_cam.fn_changed || (global.pagecount == 1);
 	else
 		newpage = (group < 0 || group != lastgroup);
 	if ((global.pagecount > 1) && global.single_page)
 		newpage = 0;
+
 	if (newpage) {
 		double boffset;
 		int mirror_this = 0;
 		lastgroup = group;
 
-		if (global.pagecount != 0) {
+		if ((!ps_cam.active) && (global.pagecount != 0)) {
 			pcb_fprintf(global.f, "showpage\n");
 		}
 		global.pagecount++;
