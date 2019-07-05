@@ -82,7 +82,7 @@ awk '
 # error on another plugin that is now disabled)
 test_plug_()
 {
-	make clean > PDT.$1.log 2>&1 && \
+	rm src/*.a src/*.o src_plugins/*/*.o util/*.o util/*/*.o > PDT.$1.log 2>&1
 	./configure $conf --import=config.cache.golden --all=disable --buildin-$1 >> PDT.$1.log  2>&1 && \
 	compile $1
 }
