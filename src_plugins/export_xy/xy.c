@@ -168,6 +168,7 @@ typedef struct {
 	pcb_subc_t *subc;
 	pcb_coord_t pad_cx, pad_cy;
 	pcb_coord_t pad_w, pad_h;
+	pcb_coord_t prpad_cx, prpad_cy;
 	pcb_coord_t prpad_w, prpad_h;
 	pcb_cardinal_t count;
 	pcb_coord_t ox, oy;
@@ -497,6 +498,16 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			pcb_append_printf(s, "%m+%mN", xy_unit->allow, ctx->pad_cy);
 			return 0;
 		}
+		if (strncmp(*input, "padcx_prerot%", 13) == 0) {
+			*input += 13;
+			pcb_append_printf(s, "%m+%mN", xy_unit->allow, ctx->prpad_cx);
+			return 0;
+		}
+		if (strncmp(*input, "padcy_prerot%", 13) == 0) {
+			*input += 13;
+			pcb_append_printf(s, "%m+%mN", xy_unit->allow, ctx->prpad_cy);
+			return 0;
+		}
 		if (strncmp(*input, "rot%", 4) == 0) {
 			*input += 4;
 			pcb_append_printf(s, "%g", ctx->theta);
@@ -705,7 +716,7 @@ static int PrintXY(const template_t *templ, const char *format_name)
 
 TODO("padstack: do not depend on this, just use the normal bbox and rotate that back")
 		calc_pad_bbox(&ctx, 0, &ctx.pad_w, &ctx.pad_h, &ctx.pad_cx, &ctx.pad_cy);
-		calc_pad_bbox(&ctx, 1, &ctx.prpad_w, &ctx.prpad_h, &ctx.pad_cx, &ctx.pad_cy);
+		calc_pad_bbox(&ctx, 1, &ctx.prpad_w, &ctx.prpad_h, &ctx.prpad_cx, &ctx.prpad_cy);
 		xy_translate(&ctx, &ctx.pad_cx, &ctx.pad_cy);
 
 		fprintf_templ(fp, &ctx, templ->subc);
