@@ -18,8 +18,6 @@
 + BUG: gl HID bug: changing background color from preferences won't update internal color cache [report: Ade, Dave]
 
 1. For the upcoming release ===============================================================================
-- BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
-- BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
 - BUG: wandering lesstif window (window placement bug): using icewm, open the property editor, close, open, close, open: it's displaced by decoration [report: Igor2]
 - BUG: bug_files/macrofab_rot/: rotation (and coords?) is off on xy for macrofab [report: celem]
 - BUG: lesstif hbox/vbox allocation issues: test with bug_files/ltf_fillbox/ patches applied, with the fontsel action; opening it multiple times will randomly show or hide the button
@@ -196,6 +194,8 @@
 		- new doc layers
 - BUG: bug_files/rat_shortest.lht: because of "don't add non-manhattan lines" part [report: pstuge]
 - BUG: find.c: unplated padtsacks shall not connect layers; bug_files/unplated1.lht; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
+- BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
+- BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - asm() dialog
 	- FEATURE: Add a button to clear the done status from a component. [report: Ade]
 	- FEATURE: Show the status message on a group when minimized to indicate whether the groups components are done, not done or partially done. [report: Ade]
