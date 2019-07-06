@@ -64,7 +64,7 @@ static void eval_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 		return;
 	}
 
-	if (res->type != PCBQ_VT_COORD) {
+	if ((res->type != PCBQ_VT_COORD) && (res->type != PCBQ_VT_LONG)) {
 		st->trues++;
 		resv = pcb_query_sprint_val(res);
 		printf(" %s\n", resv);
