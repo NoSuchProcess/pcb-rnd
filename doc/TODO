@@ -79,6 +79,7 @@
 	- CLEANUP: remove PCB_MIN_PINORVIA* PCB_DEFAULT_DRILLINGHOLE macros - nothing should use them anymore
 	- add text font, update the pool node text_edit [report: Igor2]
 - BUG: autorouter broke on polygons: bug_files/ara.lht, {a r a}, bisect; broke before r14572 [report: Igor2]
+- FEATURE: connection check separator in log: bug_files/connreq.txt [report: keantoken]
 - FEATURE: fontsel: ttf import?
 - FEATURE: tedax etest save (board save too)
 - FEATURE/BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
