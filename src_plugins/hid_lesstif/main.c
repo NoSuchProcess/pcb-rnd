@@ -46,6 +46,7 @@
 #include "layer_vis.h"
 #include "tool.h"
 
+#include "wt_preview.h"
 #include "dlg_fileselect.h"
 
 #include "FillBox.h"

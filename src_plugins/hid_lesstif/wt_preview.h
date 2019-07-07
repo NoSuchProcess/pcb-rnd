@@ -1,3 +1,5 @@
+#ifndef PCB_LTF_PREVIEW_H
+#define PCB_LTF_PREVIEW_H
 #include <genlist/gendlist.h>
 
 typedef struct pcb_ltf_preview_s {
@@ -46,3 +48,4 @@ void pcb_ltf_preview_invalidate(const pcb_box_t *screen);
 
 void pcb_ltf_preview_add(pcb_ltf_preview_t *prv);
 void pcb_ltf_preview_del(pcb_ltf_preview_t *prv);
+#endif
