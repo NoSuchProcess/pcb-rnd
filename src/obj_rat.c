@@ -307,13 +307,15 @@ pcb_any_obj_t *pcb_rat_anchor_guess(pcb_rat_t *rat, int end, pcb_bool update)
 	/* (relatively) cheap thest if existing anchor is valid */
 	if (*path != NULL) {
 		ao = pcb_idpath2obj_in(data, *path);
-		switch(ao->type) {
-			case PCB_OBJ_LINE: if (rat_meets_line((pcb_line_t *)ao, x, y, gid)) return ao; break;
-			case PCB_OBJ_ARC:  if (rat_meets_arc((pcb_arc_t *)ao, x, y, gid)) return ao; break;
-			case PCB_OBJ_POLY: if (rat_meets_poly((pcb_poly_t *)ao, x, y, gid)) return ao; break;
-			case PCB_OBJ_PSTK: if (rat_meets_pstk(data, (pcb_pstk_t *)ao, x, y, gid)) return ao; break;
-			TODO("find through text")
-			default: break;
+		if (ao != NULL) {
+			switch(ao->type) {
+				case PCB_OBJ_LINE: if (rat_meets_line((pcb_line_t *)ao, x, y, gid)) return ao; break;
+				case PCB_OBJ_ARC:  if (rat_meets_arc((pcb_arc_t *)ao, x, y, gid)) return ao; break;
+				case PCB_OBJ_POLY: if (rat_meets_poly((pcb_poly_t *)ao, x, y, gid)) return ao; break;
+				case PCB_OBJ_PSTK: if (rat_meets_pstk(data, (pcb_pstk_t *)ao, x, y, gid)) return ao; break;
+				TODO("find through text")
+				default: break;
+			}
 		}
 	}
 
