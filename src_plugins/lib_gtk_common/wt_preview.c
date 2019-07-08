@@ -506,8 +506,8 @@ TODO(": maybe expose these through the object API so the caller can set it up?")
 	prv->view.width = PCB_MM_TO_COORD(110);
 	prv->view.height = PCB_MM_TO_COORD(110);
 	prv->view.use_max_pcb = 0;
-	prv->view.max_width = PCB_MM_TO_COORD(110);
-	prv->view.max_height = PCB_MM_TO_COORD(110);
+	prv->view.max_width = PCB_MAX_COORD;
+	prv->view.max_height = PCB_MAX_COORD;
 	prv->view.coord_per_px = PCB_MM_TO_COORD(0.25);
 	prv->view.com = com;
 
