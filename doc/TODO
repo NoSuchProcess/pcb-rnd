@@ -15,7 +15,6 @@
 
 1. For the upcoming release ===============================================================================
 + BUG: bug_files/macrofab_rot/: rotation (and coords?) is off on xy for macrofab [report: celem]
-- BUG: gtk2_gl issue. view in netlist window circuit view clips or goes black when changing selected net (repro. w/ doc/tutorials/15_no_sch/step3.lht and open netlist view {w n} [report: miloh]
 + BUG: Replacing a subc by shift-leftclick deletes the old subc but doesn't place the new one. Recipe: Place a subc. Load a new subc to the buffer. Position the buffer subc over the existing subc and press shift-leftclick. Result=old subc is removed, not replaced. [report: Ade]
 
 2. For later releases ===============================================================================
@@ -194,6 +193,7 @@
 - BUG: find.c: unplated padtsacks shall not connect layers; bug_files/unplated1.lht; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
 - BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
+- BUG: gtk2_gl issue. view in netlist window circuit view clips or goes black when changing selected net (repro. w/ doc/tutorials/15_no_sch/step3.lht and open netlist view {w n} [report: miloh]
 - asm() dialog
 	- FEATURE: Add a button to clear the done status from a component. [report: Ade]
 	- FEATURE: Show the status message on a group when minimized to indicate whether the groups components are done, not done or partially done. [report: Ade]
