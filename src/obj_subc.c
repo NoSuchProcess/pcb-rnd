@@ -1918,7 +1918,7 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 {
 	pcb_data_t *data = dst->parent.data;
 	pcb_subc_t *placed;
-	pcb_coord_t ox, oy;
+	pcb_coord_t ox, oy, osx, osy;
 	double rot = 0;
 	long int target_id;
 	int dst_on_bottom = 0, src_on_bottom = 0;
@@ -1941,9 +1941,14 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 		pcb_subc_get_rotation(dst, &rot);
 		pcb_subc_get_side(dst, &dst_on_bottom);
 	}
-	
 
-	placed = pcb_subc_dup_at(pcb, data, src, ox, oy, 0);
+	if (pcb_subc_get_origin(src, &osx, &osy) != 0) {
+		osx = (dst->BoundingBox.X1 + dst->BoundingBox.X2) / 2;
+		osy = (dst->BoundingBox.Y1 + dst->BoundingBox.Y2) / 2;
+	}
+
+
+	placed = pcb_subc_dup_at(pcb, data, src, ox - osx, oy - osy, 0);
 	pcb_subc_get_side(placed, &src_on_bottom);
 
 	{ /* copy attributes */
