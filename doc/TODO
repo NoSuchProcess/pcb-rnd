@@ -1,6 +1,5 @@
 0. old, still waiting for ack
 + FEATURE: script for checking broken plugin deps [report: Alain] -> trunk/util/plug_dep_test.sh
-+ CLEANUP: Vuokko's list of warnings on OpenBSD: bug_files/warn-obsd-r24746.log [report: Vuokko]
 + CLEANUP: add the thin line draw optimization to the filled poly optimization, including hole, in hid_draw_helper (search for last_x); make this configurable for both (exporters shall not optimize!); remove the similar optimization from hidgl triangulation and gdk and lesstif [report: Ade, Peter]
 + BUG: double check parametric footprint edit window: bug_files/parametric.txt [report: Piotr]
 + BUG: press 'enter' in propedit right side value for string or coord - it should be taken as 'apply' [report: keantoken]
@@ -23,6 +22,7 @@
 - CLEANUP: unify gui invocation option printout: pcb-rnd --help gtk_[gdk|gl] and pcb-rnd --help lesstif should use the same style printing options (even tho options will never be the same) [report:miloh]
 - CLEANUP: remove next_gui and SwitchHID()
 - CLEANUP: DAD close sequence: TODO("#51.*"): there are three sources to trigger hid_ctx (caller's free on modal, close button free and window destroy callback); requre the user to always call free last and add bits to track what frees are already called and free(ctx) last; test in 4 situations: (modal,nonmodal)*(close_buttons,wmclose) [report: Igor2]
+- CLEANUP: Vuokko's list of warnings on OpenBSD: bug_files/warn-obsd-r26600.log [report: Vuokko]
 - CLEANUP: rewrite parametric footprints to use tEDAx (or lihata)
 	- add "global" option for paste/mask tuning
 	- update fp2anim so the web page works again
