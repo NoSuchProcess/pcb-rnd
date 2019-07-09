@@ -11,7 +11,6 @@
 + BUG: bug_files/warn.lht: load, click to somewhere to remove the warning (orange): object flag cleared but the board is not marked as changed [report: Peter]
 + BUG: io_kicad: kicad_mod (clearance 0.25) is not processed (see priv mail from Erik on 22 may) [report: Erik]
 + BUG: io_kicad: parser not parsing obround pad rotation, rot, (at x y rot), see work/bug_files/obround-rotation.kicad_pcb [report: erich]
-+ BUG: gl HID bug: changing background color from preferences won't update internal color cache [report: Ade, Dave]
 
 1. For the upcoming release ===============================================================================
 + BUG: bug_files/macrofab_rot/: rotation (and coords?) is off on xy for macrofab [report: celem]
