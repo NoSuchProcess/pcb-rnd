@@ -189,6 +189,7 @@
 	- re-test HPANE: pstklib(), netlistdialog(), propedit(), BrowseScripts, preferences dialog config tab
 	- preferences dialog: library, layers tabs are unusable [report: Igor2]
 - FEATURE/BUG: old gtk doesn't have GDK_Key_* but GDK_* (e.g. GDK_Tab); detect this in scconfig, use a wrapper macro in gtk code [report: Ade]
+- BUG: rat anchor(?) bug: bug_files/anchor.lht - move the right trim subc - the internal rat conn will break; happens after {c r} too. [report: keantoken]
 - BUG: bug_files/rat_shortest.lht: because of "don't add non-manhattan lines" part [report: pstuge]
 - BUG: find.c: unplated padtsacks shall not connect layers; bug_files/unplated1.lht; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
 - BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
