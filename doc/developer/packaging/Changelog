@@ -1,15 +1,34 @@
 How to get a release candidate tarball in /tmp:
 
-  ver=2.1.2
+  ver=2.1.3
   cd /tmp
   svn export svn://repo.hu/pcb-rnd/trunk pcb-rnd-$ver
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
 
+Packaging changes between 2.1.2 and 2.1.3
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A. changes that probably don't need action
 
-TODO:
-	$(SCCBOX) $(HOW) "pcb-menu-lesstif.lht" "$(DATADIR)/pcb-menu-lesstif.lht"
-	$(SCCBOX) $(HOW) "pcb-menu-gtk.lht" "$(DATADIR)/pcb-menu-gtk.lht"
-	fast89_poly2tri is with the MIT license
+1. removed old menu files pcb-menu-lesstif.lht and pcb-menu-gtk.lht from
+   the installation (used to install in $PREFIX/share/pcb-rnd)
+
+2. new plugin in package pcb-rnd-export: export_excellon (split
+   off from export_gerber)
+
+3. new plugin in package pcb-rnd-lib-gui: lib_hid_pcbui (for the hidlib split)
+
+4. new plugin in package pcb-rnd-core: act_read (new actions for accessing
+   board data)
+
+5. new plugin in package pcb-rnd-cloud: lib_wget (split off from fp_wget
+   to be reused in the board ordering plugins later)
+
+
+B. changes that probably DO need action
+
+1. If you need to maintain a copyright file: there is a new piece of
+   minilib included in the source now in src_3rd/fast89_poly2tri; it's
+   distributed under a MIT license.
 
 
 Packaging changes between 2.1.1 and 2.1.2
