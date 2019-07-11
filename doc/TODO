@@ -1,5 +1,4 @@
 0. old, still waiting for ack
-+ CLEANUP: add the thin line draw optimization to the filled poly optimization, including hole, in hid_draw_helper (search for last_x); make this configurable for both (exporters shall not optimize!); remove the similar optimization from hidgl triangulation and gdk and lesstif [report: Ade, Peter]
 + BUG: double check parametric footprint edit window: bug_files/parametric.txt [report: Piotr]
 + BUG: press 'enter' in propedit right side value for string or coord - it should be taken as 'apply' [report: keantoken]
 + BUG: io_pcb hole clearance import: Peter's report: "bug: .fp/.pcb import..." ml2933 [report: Peter]
