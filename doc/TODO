@@ -3,6 +3,7 @@
 1. For the upcoming release ===============================================================================
 
 2. For later releases ===============================================================================
+- FEATURE: scripting: add fawk and fbas in the plugin, write rosetta code for them
 - CLEANUP: unify gui invocation option printout: pcb-rnd --help gtk_[gdk|gl] and pcb-rnd --help lesstif should use the same style printing options (even tho options will never be the same) [report:miloh]
 - CLEANUP: remove next_gui and SwitchHID()
 - CLEANUP: DAD close sequence: TODO("#51.*"): there are three sources to trigger hid_ctx (caller's free on modal, close button free and window destroy callback); requre the user to always call free last and add bits to track what frees are already called and free(ctx) last; test in 4 situations: (modal,nonmodal)*(close_buttons,wmclose) [report: Igor2]
