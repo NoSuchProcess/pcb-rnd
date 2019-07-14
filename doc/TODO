@@ -1,13 +1,4 @@
 0. old, still waiting for ack
-+ BUG: double check parametric footprint edit window: bug_files/parametric.txt [report: Piotr]
-+ BUG: press 'enter' in propedit right side value for string or coord - it should be taken as 'apply' [report: keantoken]
-+ BUG: io_pcb hole clearance import: Peter's report: "bug: .fp/.pcb import..." ml2933 [report: Peter]
-+ BUG: bug_files/bug_silk.lht: swap board, far-side color applies only to the first silk because it's not done by group but by layer [report: Peter]
-+ BUG: bug_files/drc-pstk.lht: via-line "too close" is missed [report: Peter]
-+ BUG: direct gerber export (with which naming style?) results in empty drill gbrs ml=2928 [report: Peter]
-+ BUG: png export: the no-plating mark should not be drawn on png unless 'as-shown' is enabled ml=2931 [report: Peter]
-+ BUG: bug_files/warn.lht: load, click to somewhere to remove the warning (orange): object flag cleared but the board is not marked as changed [report: Peter]
-+ BUG: io_kicad: kicad_mod (clearance 0.25) is not processed (see priv mail from Erik on 22 may) [report: Erik]
 
 1. For the upcoming release ===============================================================================
 
