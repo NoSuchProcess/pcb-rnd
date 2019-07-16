@@ -1,3 +1,545 @@
+pcb-rnd 2.1.3 (r26629)
+~~~~~~~~~~~~~~~~~~~~~~
+	[act_draw]
+		-Fix: creating a new padstack proto should allocate the 0th transformed shape (every valid proto shall have that)
+		-Move: GetValue() moved to the act_read plugin
+		-Add: PstkProtoTmp() dup subcommand from an existing padstack, using idpath
+		-Add: PstkProtoEdit() action
+
+	[act_read]
+		-Add: new plugin for data access actions (idpath lists, parent data)
+
+	[cam]
+		-Fix: restore layer visibility even if execution of the cam script failed
+		-Fix: save/restore all layer group visibility while exporting to cam (it is not enough to save and restore layer vis)
+		-Fix: save and restore current layer selection during the cam export process
+		-Fix: JLCPCB cam config should include mech layers (proute & uroute) in the excellon drill file
+		-Fix: cam export GUI: missing EXPFILL on the top right tab
+		-Add: PCBWay gerber export job
+
+	[conf]
+		-Cleanup: core (in plugins and core) shall use anonymous structs to avoid namespace pollution
+		-Move: pcb_conf_ro() from conf_core to conf.[ch] for hidlib apps
+		-Change: mark editor.save_last_command as OBSOLETE
+		-Add: mass conf_native_t resolver for use cases when conf_core dependency is not permitted (e.g. hidlib)
+		-Add: config node for centralized file changed check interval
+
+	[core]
+		-Fix: pcb-printf used abs instead of fabs for double
+		-Fix: do not uninit PCB before plugins are uninite'd - PCB = NULL means hidlib = NULL which is fatal for many calls
+		-Fix: set pcb_gui to NULL before unloading all plugins to avoid dangling pointer pointing to plugin internals that are already unloaded
+		-Fix: obj subc preview draw doesn't crash if there is no padstack in the subc
+		-Fix: generate a library changed event if all libraries got refreshed/reloaded
+		-Fix: do not use board attribute PCB::grid::unit if there's a design config available
+		-Fix: off-by-one allocation bug in path resolver
+		-Fix: pcb_get_value_unit() accepts leading whitespace
+		-Fix: locale: set all LC_* and LANG env vars to C so subsequent setlocale() calls from Xlib or wherever won't mess with our "C" locale policy
+		-Fix: search.c bug on selecting second silk layer objects - simplify the search logic by doing the silk searches outside of the copper loops
+		-Fix: draw silk coloring for "far side" shall not depend on layer IDs but groups, because there may be multiple silk layers in each group
+		-Fix: don't crash on rat move to buffer if anchor is NULL
+		-Fix: move back pcb_poly_square_pin_factors() from lib_compat_help to core, to resolve an invalid core->plugin dependency
+		-Fix: {c r} menu item undo sequence: make sure serial is increased at the end so the next undoable block is not merged with rat optimizing
+		-Fix: add-rats-to-selected-pins: do not accidentally merge with the next undo block, increase serial
+		-Fix: don't fopen() file name NULL
+		-Fix: hide PCB for the time a board is imported into the paste buffer so the layer stackup is not messed up
+		-Fix: removing the warn flag is board change because this flag is saved
+		-Fix: find_geo: circle padstack shape vs. line: do not ignore Bloat, that breaks DRC
+		-Fix: crash on crosshair draw attached padstack in loose subc mode: use ptr2 for the padstack pointer, ptr1 might be the parent subc
+		-Fix: don't draw unplated hole indication on export (by setting up a dedicated omit-overlay bit in xform for default exporting)
+		-Fix: replace footprint (shift-click place): adjust for source subcircuit origin offset
+		-Fix: fopen_fn always initializes the return file name (to NULL, on all error branches)
+		-Del: obsolete menu files (old lesstif and gtk variants)
+		-Cleanup: pcb_layer_to_file_name() dest should be gds_t to avoid potential buffer overflow
+		-Cleanup: remove hid_flag.[ch] - merge the function into a menu related hid_cfg.[ch]
+		-Cleanup: remove PCB_MODE_NO - redundant with PCB_MODE_ARROW
+		-Cleanup: remove excess mode change to the arrow tool between other tools
+		-Cleanup: remove layer_inlines.h with the front/back silk layer getter - callers should use groups, not layers (because of the wrong assumption of only one layer per group)
+		-Cleanup: code duplication in composite draw finish
+		-Rename: pcb_poly_from_line/pcb_poly_from_arc to pcb_poly_from_pcb_line/pcb_poly_from_pcb_arc to make room for a non-pcb-object based variant that will be needed by other hidlib apps
+		-Del: do not set attribute PCB::grid::unit on load - it was a geda/pcb compatibility hack; we are not to preserve units across alien formats anyway
+		-Optimize: save a few malloc()'s by caching the allocations of x;y arrays for poly coord lists
+		-Optimization: do not refresh the layer selector, rather inhibit group changes during board import to buffer
+		-Move: old layer based top/bottom silk lookup to io_pcb, the only code that needs this for compatibility
+		-Split: data <-> string conversion so that it can be generalized and reused (n data.[ch])
+		-Split: complex pcb object to polygon converter from the abstract stroked object converters, for hidlib reuse
+		-Split: poly dicer main call so that the low level variant has no pcb struct dependency (hidlib)
+		-Add: safe_fs wrapping around opendir/readdir/closedir and unlink()
+		-Add: safe_fs access for file mtime
+		-Add: event on every input key press (the status line printout needs it)
+		-Add: event on crosshair move
+		-Add: poly contour vertex optimization for filled polygons and thin draw from the central draw helper
+		-Add: plug_io API: optional save_as subdialog builder
+		-Add: temporary any-ptr support on FGW_DATA for subc data
+		-Add: pcb_idpath2obj() for self contained paths (original version renamed to pcb_idpath2obj_in())
+		-Add: auto-inverting polyong contour-to-area helper for the cases when building the shape can result in CW and would be expensive to change on the caller side
+		-Add: font selector: font file name patterns for the file selector dialog for different types of fonts
+		-Add: functions for saving and restoring layer group visibility
+		-Add: idpath to string converter
+		-Add: menu anchor for feature plugins
+		-Add: optional first argument for error level in the Message() action
+		-Add: Redraw() action for redrawing the screen (invalidate_all), useful for scripts
+		-Add: generic obj _pre() and _post() that works on any primitive
+
+	[DAD]
+		-Fix: unify the default meaning of dialog fail; 0 means success, any other value is just a different kind of failure by default (ret_override can override this, but it should obey the same principle because of wm-close or esc-close)
+		-Fix: gtk implementation: picture shouldn't imply extfill
+		-Fix: new spinbox: coord entry doesn't crash if initial value is NULL and up/down pressed
+		-Fix: spinbox: if value changes for any reason, mark the attribute changed
+		-Fix: spinbox: up/down button fix up missing unit
+		-Fix: num_children() call should enter a new level for COMPOUND widgets
+		-Fix: new coord spin box: do not crash on empty (use "", not NULL as default value)
+		-Fix: coord spin box: enter on empty should print 0 before the unit
+		-Fix: spinbox: strdup the initial empty value to avoid free() on read-only string
+		-Fix: when setting unit value, besides setting the new value on the enum attr, also set it on the end attr because the caller will query from there
+		-Del: HATT_PATH: no user - just use HATT_STRING
+		-Change: use the new, composite spinbox for coords by default, provide a brave option to go back
+		-Change: switch over to using the new DAD spinbox for REAL and INTEGER
+		-Add: HATF for vertical and truncated text
+		-Add: gtk support for vertical text and truncated text
+		-Add: gtk: second state of text is background selection
+		-Add: infra for delivering right clicks
+		-Add: gtk implementation of right click callback on labels and pictures
+		-Add: arrange a global DAD coord spin box widget update when grid unit changes
+		-Add: coord spinbox: pick up original unit for the unit selector dialog
+		-Add: attributes have an "empty" field which should indicate if the textual entry is empty
+		-Add: support for set_help callback in compound widgets
+		-Add: subdialog API: on_close() callback - called when the parent dialog box is being closed
+		-Add: spinbox: pressing enter on a coord number without unit should append the currently selected unit
+		-Del: brave setting for the new coord spinbox - always use it
+		-Add: DAD-compound unit selector (replaces HATT_UNIT)
+		-Add: coord spinbox: also place a space between the numeric and the newly appended unit when enter is pressed
+		-Add: support for dialog box minimum size (mostly for the docked dialogs)
+		-Add: spin box calls user provided enter_cb on enter and up/down button
+		-Add: new HATF for indicating if a preview widget is showing the board (needs extra updates on board draw)
+		-Add: extend the API for toggle buttons: PCB_HATF_TOGGLE and widget state is 3 level
+
+	[ddraft]
+		-Fix: have to convert coords to doubel for fabs() (can't use abs() because coord may be longer than long)
+		-Add: toolbar icon
+
+	[diag]
+		-Add: integrity checks for subc origin, rotation and side
+
+	[dialogs]
+		-Fix: enable preferences dialog tabbed to grow
+		-Fix: fontsel: update all open fontsel dialogs if board fonts change
+		-Fix: export dialog hid attribute copy to DAD widget: need to use 'rich' copy because of compound widgets (there are less atomic widgets than hid attributes)
+		-Fix: set reasonable default size for the fontsel dialog
+		-Fix: parent subc bbox needs to be updated if any of it's padstacks change geometry
+		-Fix: direct export does all the layer(grp) save/restore the cam exporter does too, so there is no visible change on the GUI after export
+		-Fix: preferences: when saving library paths, the code uses low level lht calls so do extra steps to make the conf subtree dirty and board changed
+		-Fix: preferences: indicate the source of newly created library path conf nodes properly
+		-Fix: preferences: if no library path selected, insert before and insert after will use the first and last rows respectively
+		-Fix: pinout: don't use crosshair coords, use getxy (for proper operation from menu invocation)
+		-Fix: various chanegs to the layout of the padstack editor dialog to get it small enough for our 800x600 target
+		-Fix: removing subc from library dialog preview shouldn't modify the undo list
+		-Fix: when pinout() doesn't find a subcircuit, print an error message
+		-Change: library parameter edit dialog for parametric footprints is non-modal
+		-Add: InfoBarFileChanged() action for maintaining a info bar for file changed
+		-Add: DAD based advanced search box
+		-Add: save as: (hidden tabbed) subdialog for format specific settings when saving a board
+		-Add: temporary workaround for DoWindows removal: NetlistDialog() chain-calls the old action for lesstif
+		-Add: mark netlist dialog and view dialog previews with PCB_HATF_PRV_BOARD so they get proper screen updates on board redraws
+		-Add: rewrite the library dialog from scratch, using DAD
+		-Add: library window: timed refresh of the preview while the user is typing
+
+	[doc]
+		-Fix: lihata format doc typos
+		-Fix: typo in compiosite rendering devel doc: RESET should not be called between composite sub layers
+		-Fix: action reference appendix: sort in case insensitive way because the user looking for an action will not know if it's upper or lowercase
+		-Cleanup: tutorial: rename 7805 to 17_sch, so it plugs in to the modular tutorial setup
+		-Update: AdjustStyle() action doc for the new argument list
+		-Update: Scroll() action's second argument changed meaning
+		-Update: explain what the Command() action really does
+		-Split: move historical aspects (regarding to the transition from the old setting system to the conf system) to history.html to keep main index smaller and more relevant for the new-comers
+		-Add: install all tutorials that are in usable state plus allow cross-links
+		-Add: action: Zoom() with no argument is zoom to extent
+		-Add: SwapSides(): mention that v flip tries to keep location
+		-Add: automatic [hidlib] tagging for conf nodes that are part of the hidlib
+		-Add: hidlib: recommendation on pcb_hidlib_t vs. design struct
+		-Add: hidlib: note on icon colors
+		-Add: data model: document the subc aux layer
+		-Add: developer: extend composite layer draw doc with hints on what starts or ends a composite layer rendering
+		-Add: scripting installation howto: recommend to install libmawk because awk is the default language of the example scripts
+		-Add: simple index for tutorials
+		-Add: document Atomic() freeze and unfreeze and the usage sequence
+		-Add: scripting: document the syntax of permanent user script
+		-Add: mention live scripting in the scirpting section of the user manual
+
+	[draw_csect]
+		-Fix: uninitialized line object fields on simplified line drawing
+
+	[export_excellon]
+		-Split: excellon drill/cnc export from gerber to a separate plugin
+		-Add: export otpion for coordinate formats, with support only for the original format
+		-Add: excellon support for um and 10um metric resolutions
+
+	[export_gerber]
+		-Fix: buffer overrun on file suffix generation
+		-Fix: drill gerbers: don't stop after printing apertures, print the flashes for drills
+		-Cleanup: make coord format table static (namespace pollution)
+		-Add: very loud error when using direct gerber exporting with deprecated name styles and implied excellon export
+
+	[export_png]
+		-Add: --as-shown enables unplated hole indication
+
+	[export_ps]
+		-Fix: drill herlper spinbox: set the max value so it is enabled
+		-Fix: make sure there is only one, fully initialized page in cam mode
+		-Cleanup: remove ps_fill_pcb_polygon(), rely on the core-processed polygon drawing mechanism
+		-Add: eps --as-shown enables unplated hole inidication
+
+	[export_svg]
+		-Fix: never draw with stroke thinner than 0.01mm, that's invisible on the output
+		-Fix: draw filled circle with stroke==0 for diameter accuracy
+		-Add: new export flag --as-shown: enable rendering unplated hole indicator
+
+	[export_xy]
+		-Fix: macrofab seems to require negative rotation angle
+		-Fix: properly separate prerot and rotated by-pad centroid calculation
+		-Fix: use the naked bbox of copper pads for calculating subc pad bbox
+
+	[extobj]
+		-Add: basic infrastructure
+		-Add: infra for registering, unregistering and looking up extended objects
+		-Change: only subcircuits can be extended objects
+
+	[find.c]
+		-Fix: padstack connections: handle raw plated slot connection (with no copper shape around the plating)
+
+	[fp_fs]
+		-Fix: potential invalid memory read because of string not properly terminated
+		-Del: unistd.h is not needed anymore
+
+	[fp_wget]
+		-Fix: safe mkdir temp dir buffer handling
+		-Split: separate executing wget from the cache logic so it can be moved into a separate plugin in the next step
+
+	[file selection dialog]
+		-Fix: subdialog's hid_ctx must be set from the file selection dialog implementation in gtk and lesstif
+		-Add: when enabled, guess file format from the file name and recalculate the file name; but initially don't change the detected file format
+		-Add: make it explicit on the GUI when file format guess fails
+		-Add: make save as format guess default value configurable
+
+	[gl]
+		-Fix: immediately apply (update internal cache) any change of the background color
+		-Cleanup: remove PCB and some core header dependency from low level gl render
+		-Del: pcb-poly draw - rely on the core poly converter so the HID API won't need to have polyarea
+		-Del: excess update of the grid color on background color change
+		-Del: Removed the use of GL_SCISSOR. The expected performance gain is less than 20% and fixing it would reduce this drastically.
+		-Update: Don't restrict the drawing area to the expose region now that GL_SCISSOR isn't being used.
+
+	[gsch2pcb-rnd]
+		-Update: glue for the new hidlib API on menu and conf core home dir setting
+
+	[gtk]
+		-Fix: DAD: hide() works on boxes where there's no wltop only wl
+		-Fix: DAD: click on label is delivered as change_cb
+		-Fix: update mouse cursor shape if conf node editor/mode changes
+		-Fix: if command entry is visible in non-full-screen then the user switches to full-screen, keep the command entry visible
+		-Fix: zoom/pan: rounding errors
+		-Fix: get_coords loop shall not save undo serial or change undo states in any way
+		-Fix: frame/scroll box hide/show parent widget should be the outmost wrapper to make sure the whole widget tree disappears
+		-Fix: more robust initialization sequence: emit the GUI_INIT event only if both the top window is already configured and the main loop entered (fixes a possible race condition)
+		-Fix: do not call the Zoom() action in initialization because that would draw the crosshair before the first render which would confuse the composite draw code
+		-Fix: get truncated text alignment correctly, after rotation, and don't overwrite it with center-align which should be applied to non-truncated text only
+		-Fix: gdk rendering: grid color update should properly register the new color - fixes unwanted grid color change after 'new board'
+		-Fix: respect DAD expfill on STRING input, PICBUTTON, TABLE, TABBED, combo box input fields, BUTTON
+		-Fix: gdk rendering shouldn't crash with div by zero if grid is 0
+		-Fix: set preview coord-per-pix so preview widget LoD optimization doesn't depend on main drawing area board zoom level
+		-Fix: fsd race condition: when poke called with no file name set yet, do not crash but return empty string
+		-Fix: respect default DAD window size even if placement is disabled
+		-Fix: file selector history shift off-by-one buffer overrun bug
+		-Fix: gdk rendering: don't require a pen for drawing a rectangle - fixes negative composite layer base fill assert on unitialized cap style
+		-Fix: DAD compound widget hide: once the dedicated callback function handled the hide, do not try to hide wl[] or wltop[] (they are potentially NULL anyway)
+		-Fix: don't limit preview size to 110*110 mm (fixes library preview for arts with large origins)
+		-Cleanup: command line doesn't need to force-update the top window titlebar, it's done automatically via events
+		-Cleanup: rename ghid_zoom_view_abs() to pcb_gtk_zoom_view_abs() for API naming conventions
+		-Cleanup: set_layer_group shouldn't special case ASSY and  csect, the normal layer logic handles that properly
+		-Cleanup: the HID does not need to force-select the arrow tool on startup
+		-Del: gtk-only route style infra - switched over to the central, docked, DAD based system
+		-Del: pcb_gtk_zoom_view_fit() for code simplification: the same effect can be achieved with using the window zoom code
+		-Del: empty action SaveWindowGeometry
+		-Del: in_popup state: nothing uses this state
+		-Del: gtk-only spinboxes: special DAD code for INTEGER and REAL widgets: they are handled by the DAD spinbox code in core
+		-Del: old, gtk-only HATT_UNIT implementation: use the DAD compound implementation instead
+		-Del: DoWindows() action - all dialogs got moved to the dialogs plugin already
+		-Change: use the CLIPBOARD selection for the clipboard API - this means the ctrl+c-ctrl+v clipboard on X, not the middle button selection clipboard. Rationale: there's really no selection involved, but explicit user action (clicks, buttons) on setting up clipboard data
+		-Add: top window DAD subwindow docks
+		-Add: support for toggle buttons
+		-Add: publish the API pcb_gtk_zoom_view_abs() - the centralzied Zoom() action needs it
+		-Add: gtk-side implementation of the new zoom/pan HID API
+		-Add: implement the new mouse cursor API, remove the old (and remove bu_icons.*)
+		-Add: DAD picture widget should react on clicks
+		-Add: transient-for call to mark DAD dialogs relation to the top window
+		-Add: collect all preview widgets in a linked list so all PCB_HATF_PRV_BOARDs can be updated onm board redraw
+
+	[hid]
+		-Fix: misleading API doc - calibrate() on a GUI HID should do nothing
+		-Fix: whatever code sets hid BUSY, should unset it once it has finished its job
+		-Fix: pcb_attribute_dialog_() passes on minimum x and y dimensions of the dialog box
+		-Del: ->get_view_size() - use the more generic ->view_get() instead
+		-Del: file save notify API: the HID doesn't need to know that (the local gtk implementation of file watch was using it last)
+		-Del: API fill_pcb_polygon - use only the pcb-independent (hidlib) poly API
+		-Move: menu checkbox function from core to lib_hid_common's new menu helper (part of the hidlib but not gsch2pcb-rnd or tests)
+		-Move: menu code needed only by GUI HIDs from core to lib_hid_common
+		-Add: API for top window docking
+		-Add: call to expose the HID's menu config struct so plugins can read the menu
+		-Add: API to expose HID key state
+		-Add: extend the API with zoom/pan calls
+		-Add: API for getting the current view box
+		-Add: API for changing the mouse cursor
+		-Add: do_export() delivers a context pointer (pcb_hidlib_t *) to cut dependency on PCB
+		-Add: API for top widnow title set
+		-Add: API: wrapper macro for entering the BUSY mode
+		-Add: function based hid->busy() so the HIDs don't need to bind the event
+		-Add: pcb_hid_busy() calls the HID's optional busy handler and emits the event only as a side effect
+		-Add: extend the api so that minimum x and y size fo DAD dialgos are passed to real dialog boxes too, not only docked boxes
+
+	[hid_gtk2_gl]
+		-Fix: remove PCB (board) dependency, use hidlib only
+
+	[lesstif]
+		-Fix: set_hidlib(NULL) should change the window title to "unknown"
+		-Fix: suspend and restore crosshair for the get location loop
+		-Fix: wrong return value for the attr dlg set help text call
+		-Fix: don't crash when removing non-existing table-tree cursor
+		-Fix: paned view should always EXPFILL
+		-Fix: allow paned widget to resize
+		-Fix: wm-close crash on DAD dialogs - it's always the caller who free's ctx
+		-Fix: hackish, but portable workaround in window placement for WM decoration (aka wandering window problem)
+		-Fix: relative pan should not change the mouse cursor
+		-Fix: set preview coord-per-pix so preview widget LoD optimization doesn't depend on main drawing area board zoom level
+		-Fix: tabbed widget forces a redisplay on tab page change
+		-Fix: FillBox: require (back-push) box minor size to accomodate largest widget
+		-Fix: FillBox: make sure all children widgets are resized using Xt so their window geometry is in sync
+		-Fix: publish no-close version of dialog box waiter function to avoid implicit declaration
+		-Fix: respect default DAD window size even if placement is disabled
+		-Fix: preview widget: do not bind sides to the form, just allow the parent to set fillbox growth bit
+		-Fix: preview widget should also shrink, not just grow
+		-Fix: memory handling bug in library window: writing 1 byte before the buffer on level 0
+		-Cleanup: set_layer_group shouldn't special case ASSY, the normal layer logic handles that properly
+		-Cleanup: remove stdarg.[ch] to ltf_stdarg.[ch] to avoid naming clash with libc's
+		-Del: styles dialog - replaced by the DAD implementation (the old one was segfaulting for releases already)
+		-Del: do not watch for grid unit change - not used
+		-Del: zoom_toggle(); was Zoom(toggle) but it was not in use
+		-Del: old attribute type code for REAL, INTEGER and COORD: handled by DAD now
+		-Del: do not bind the BUSY event, depend on the explicit hid call
+		-Change: disable the thumb-pan mode: most probably nobody used this in the past 10 years, it is not worth reimplementing it in other HIDs
+		-Add: somewhat working popup context menu
+		-Add: BOTTOM dock box, docked status bar subdialog
+		-Add: redraw all PCB_HATF_PRV_BOARD previews as well on top window redraw
+		-Add: lesstif-side implementtion of the new zoom/pan HID API
+		-Add: replace old local top window title code with the central callback
+
+	[hidlib]
+		-Fix: HIDs shouldn't depend on the dialogs plugin
+		-Fix: rounding errors made vertical flip jumpy in the new centralized SwapSides action
+		-Fix: throw an error if hidlib essential conf resolvement fails (hidlib users need to provide a minimal set of config)
+		-Fix: move grid related helper calls to hidlib, replace pcb_board_t with pcb_hidlib_t in those grid calls
+		-Fix: gtk: don't call board changed for zooming to extend, rather call the zoom() action to decouple from core
+		-Fix: batch HID doesn't depend on PCB
+		-Fix: message log scrolls to bottom right after open (depending on the checkbox)
+		-Cleanup: gtk zoom/pan code doesn't depend on PCB
+		-Cleanup: gtk top window: do not depend on PCB's hidlib but use topwin->common->hidlib
+		-Cleanup: gtk: don't depend on PCB for drawing scrollbar
+		-Cleanup: gtk's coord conv inlines do not depend on PCB anymore
+		-Cleanup: centralize the Zoom(), Pan(), Center(), Scroll(), SwapSides(), Command(), Popup() actions
+		-Cleanup: centralize set_layer_group() and get the GUI HIDs just draw (gl not yet finished)
+		-Cleanup: remove GUI_SYNC event - not needed anymore
+		-Cleanup: lead_user shouldn't depend on draw.h (which is not part of the hidlib)
+		-Cleanup: cut the default menu file tie between HID plugins and core and hidlib
+		-Cleanup: remove pcb_event_move_crosshair() from the API, use only one hidlib call for moving the crosshair and pass a parameter about whether it's from the mouse
+		-Cleanup: HID API passes on polyarea and a full flag instead of pcb_poly_t (cutting dependency to the PCB-specific poly API) - the HID draw helper will be pcb-rnd-only code
+		-Cleanup: API CHANGE: direct call from poly draw code to hid_draw_helper's thin draw poly - obsoletes HID API's thin draw pcb poly call; remove the thindraw poly HID API: done from core
+		-Cleanup: do not include hid_draw_helpers.h, it's core-only, remove illegal dependency between gl low level and draw helpers
+		-Cleanup: move hid_draw_helpers to obj_poly_draw_helper as it's doing poly-specific things only and has nothing to do with the HID API
+		-Cleanup: replace HID API's notify_filename_changed() with an event - the HID doesn't need to get this
+		-Cleanup: unify toolbar icon colors to comply with the reduced color set
+		-Cleanup: move the two expose (draw main and draw preview) calls into the hidlib, as these are essential API in the HID->core direction
+		-Cleanup: menu file shouldn't use DoWindows, that action is going to be removed
+		-Move: window placement code and config from dialogs to lib_hid_common
+		-Move: default dialogs.conf from dialogs/ to lib_hid_common/ (for reusing placement)
+		-Move: grid from pcb_board_t to pcb_hidlib_t - any display will need a grid
+		-Move: pcb_board_t's MaxWidth and MaxHeight to hidlib size_x and size_y - this is really the drawing area extents
+		-Move: board's Filename and Name to hidlib filename and name
+		-Move: after-gui-uninit delayed print of log messages from main to hidlib (a generic app may need it)
+		-Move: essential common GUI features, including the log window, the fallback color picker, the common dialog xpms, are moved from dialogs to lib_hid_common so other hidlib apps can benefit
+		-Move: Info() action from batch to report plugin: HIDs should not have actions and the feature this action implement is not CLI-specific
+		-Move: Help() action from batch to core: all UIs will need this action and HIDs shouldn't have their own actions anyway
+		-Split: move PCB-related sections of lib_hid_common out to a new plugin lib_hid_pcbui so that hidlib won't have these (avoiding PCB-dependency)
+		-Split: conf_core: generic settings are moved to hidlib's own conf that will be the same for other hidlib apps as well
+		-Split: separate main() into reusable functions that will be part of the hidlib
+		-Workaround: use the old library window in lesstif until the tree table widget and/or hbox/vbox sizing is fixed
+		-Change: lib_hid_common is explicitly for GUI hids (metadata/description update)
+		-Change: GUI HIDs don't depend on lib_hid_pcbui because they need to work with other applications as well - main.c force-loads that plugin when needed
+		-Change: decouple gtk from conf_core and PCB
+		-Change: grids.o is part of the hidlib: grid is part of the hildib and this file contains the low level utils
+		-Add: decouple actions.c, conf_hid.c, hid_dad_spin.c, hid_init.c, hid_nogui.c, error.c, hid_cfg.c, paths.c from conf_core
+		-Add: generalize conf_core_postproc call, do not include a direct call to conf_core's implementation in hidlib
+		-Add: decouple grid menu code from conf_core
+		-Add: optional set_hidlib() call in the HID API so HIDs don't need to rely on events
+		-Add: replace PCB->hidlib refs with a local cache using set_hidlib()
+		-Add: API CHANGE: pass (hidlibt *) as first argument to all events
+		-Add: API CHANGE: (pcb_hidlib_t *) as first arg in: invalidate API, crosshair refresh API, set layer group API, tool API, safe_fs
+		-Add: GUI xordraw overlay event shall have the GC as an argument so the plugin won't depend on draw.h
+		-Add: hidlib->pcb glue layer with adjust attached obj; HIDs call adjust attached objects through the hidlib
+		-Add: generalize the (static) marks and (moving) attached objects draw callback API
+		-Add: rewrite the layer selector: dockable subdialog for a DAD based layer selector
+		-Add: abstract menu file name format string and path list
+		-Add: hid's view_get() should get a hidlib parameter so plugins won't need to depend on PCB
+		-Add: publish host application name, version and url as variables so hidlib doesn't need to hardwire pcb-rnd's compile time
+
+	[io_autotrax]
+		-Fix: layer array write beyond bounds
+		-Fix: wrong empty string comparison
+
+	[io_kicad]
+		-Fix: do not ignore pad local clearance
+		-Fix: do not convert pad rotation degrees to integer
+		-Fix: when rotating padstack, make sure the new transformed shape is calculated
+		-Fix: CUCP#63: default hole size matching kicad source; default pad size matching kicad's hardwired; do not require pad size spec in the file
+		-Fix: don't ignore module name on load - use it as footprint attribute in case there was no footprint text prividing the name
+		-Fix: CUCP#52: interpret %V and %R in module fp_text
+		-Fix: allow negative "mask clearance" and copper clearance values
+		-Fix: zone_connect default is 1, not 0, as shown by the leftmost test case of CUCP#57
+		-Fix: CUCP#51: thru-hole padstacks can use paste too
+		-Fix: use the local mask geometry for padstacks, when available, instead of always using the global
+		-Fix: missing else caused early error exit on complex pad subtrees
+		-Fix: accept custom pad shape as rect
+		-Fix: do not crash on multi-layer zones but throw error for unfinished feature
+		-Add: parse module global clearance
+		-Add: explicit warning for the case when pad clearance is a guesswork
+		-Add: support for the target primitive
+		-Add: parse module solder_mask_margin
+		-Add: calculate pad mask using the module "mask clearance" setting as well
+		-Add: parse per pad "mask margin"
+		-Add: CUCP#55: support for paste_margin and module solder_paste_ratio
+		-Add: parse zone_connect and create thermals on pads to sorrunding polygons
+		-Add: custom pad heavy terminal: prepare for forced pad layers, iterate over all wanted layers to create the primitive on each
+		-Add: gr_line and gr_arc respects forced layers (for custom pad primitive)
+		-Add: support for gr_poly custom pad primitive (CUCP#48)
+
+	[io_lihata]
+		-Fix: register padstack prototype parent as subc->data when loaded for subc
+		-Add: save_as subdialog options for boards to omit: font, conf, routing styles
+		-Add: mark the config settings for omitting the font and config [dangerous] because it may ruin the portability of the resulting file
+
+	[io_pcb]
+		-Del: simplify the silk layer lookup code by removing the local cache - this piece of code will not run too often anyway
+		-Add: io compatibility warning on multiple silk layers per group - gEDA/PCB does not support such "fancy" features
+
+	[io_tedax]
+		-Fix: return error if zero footprints could be loaded because that's an error in most contexts
+
+	[jostle]
+		-Fix: don't set and leave the HID in BUSY state
+		-Del: unistd.h not needed
+
+	[layer]
+		-Cleanup: remove excess array allocation (+2) - it was still a leftover from the broken layer model of PCB with silk being special
+		-Cleanup: use the layer id type for iterating over layers in visibility save/restore, don't assume int is wide enough
+		-Add: conversion function that convertas lyc and lyt at once from a single string
+
+	[lib_compat_help]
+		-Fix: pcb-compatibility pstk loader: work around hole with clearance with zero size copper circle; only on non-plated holes, leave plated vias/pins alone
+
+	[lib_hid_common]
+		-Fix: grid menu installation bug (chicken-egg problem on a native conf lookup)
+		-Fix: don't crash if there's no menu system to remove from
+		-Add: load window placement from all central config, not only system and user
+
+	[lib_hid_pcbui]
+		-Add: create and sync top window route style subdialog
+		-Add: toolbar: create the docked subwindow on gui init
+		-Add: toolbar: create toolbar pic buttons using the "toolbar_static" menu subtree
+		-Add: toolbar: create dynamic tools in the toolbar after init; re-create the toolbar if a new dynamic tool is registered that needs a toolbar icon
+		-Add: create and sync top window status bar subdialog
+		-Add: create and sync top window overhead readouts subdialog
+		-Add: centralized code for file-change-on-disk detection (timer based)
+		-Add: update top window title on change
+
+	[lib_legacy_func]
+		-Del: the whole plugin - old plugins won't compile with pcb-rnd anyway because of the large scale API changes
+
+	[lib_wget]
+		-Move: low level wget code from fp_wget to lib_wget
+
+	[mincut]
+		-Fix: don't crash when subc with NULL refdes is causing a short
+		-Fix: when nonetlist is set, ignore the subc (don't use it as S or T)
+
+	[propedit]
+		-Fix: don't crash if the del button is pressed while no attribute is selected
+		-Fix: propedit() with no argument should work on selection
+		-Fix: do not overwrite the input field with the absolute value if the user is working with a relative value, so multiple increments/decrements are possible
+		-Fix: execute obj pre/post on clear flag change to get the sorrunding polygon reclipped
+		-Fix: don't crash if attribute is added without value; don't add the new property if key is empty
+		-Add: expose the text/fid (font id) field
+		-Add: propset() accepts idpath as scope for easy property changes from scripts
+		-Add: propedit dialog: enter pressed on a value (bottom right) should have the same effect as 'apply'
+
+	[pstk]
+		-Fix: padstack conversion action should return error when the conversion failed
+		-Fix: padstack convert typo: internal copper shape needs a hole or a slot, not a slot
+		-Add: inline helper for accessing the mech shape ("slot") at a given layer
+
+	[query]
+		-Fix: publish qry_error() API and finalize the 2 argument setup
+		-Fix: use the central macro for deciding if a padtsack is plated or not (fixes missing plated slots for @.plated)
+		-Fix: when precompiling fields for an object field query, do not assume field names only, accept (and remember) strings that will need to be converted run-time (e.g. layer type names)
+		-Fix: obj field query: don't crash if result is NULL string
+		-Fix: query(eval) uses type long for boolean
+		-Split: coord from integer type: integers should not be confused with coords because coord has a unit
+		-Del: don't implement layer type/comb conversion locally, use the centralized call of core for this
+		-Add: query(append, list, expr) to produce a script processable idpath list of objects
+		-Add: QueryObj(): generic object field access
+		-Add: support precompiled field names
+		-Add: expose padstack's proto ID
+
+	[rat]
+		-Fix: anchor guess doesn't segfault if anchor oject is not found (got deleted meanwhile)
+
+	[report]
+		-Cleanup: simplify the code: use netlist2's lookup function instead of a local implementation
+
+	[rtt]
+		-Change: replace the old, fixed-name-style gerber+excellon with the new pcb-rnd-name-style gerber-only for the tests
+		-Add: direct test of the excellon exporter
+
+	[scconfig]
+		-Fix: invalid regex for comment removal in gen_conf directive parser
+		-Fix: generate export_vfs_fuse header only if the plugin is enabled
+		-Del: GETTEXT domain from config.h: we don't do any NLS
+		-Add: rewrite gen_conf.sh logics so it works upside down, from trailing struct variable names instead of struct type names; this allows the code using anonymous struct type names and avoid polluting the global namespace
+		-Add: use the new scconfig generic help function to generate that section of the help and make help sections more clearly separated
+
+	[script]
+		-Fix: dialog box code: use the new DAD API for accessing results when loading a script
+		-Fix: resolve ~ to home dir in script file name when loading a script (low level)
+		-Add: fgw custom types for idpath and idpath_list
+		-Add: guess language from file name in the GUI load dialog
+		-Add: permanent user script load: load the scripts after parsing scripts.lht
+
+	[subc]
+		-Fix: flipping selected subcircuits shouldn't depend on silk visibility - it was an old leftover from the times when there was no subcircuit virtual layer and silk was associated with elements
+
+	[tool]
+		-Fix: initialize static tools before plugin init because plugins may also register tools from their init
+		-Add: optional icon (XPM) to the tool struct
+		-Add: copy tool icons from gtk to core - will be shared among all HIDs
+		-Add: infra for defining a custom mouse cursor for a tool
+		-Add: extend the tool struct with flags - add a flag for auto-toolbar placement
+		-Add: event on registering a new tool: the toolbar may be already running when a plugin providing a new tool is loaded
+
+	[undo]
+		-Add: Atomic(): freeze and unfreeze for easier scripting
+
+	[util]
+		-Add: devhelper script for testing plugin dependency correctness
+
+
+
 pcb-rnd 2.1.2 (r24805)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[act_draw]

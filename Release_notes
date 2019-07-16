@@ -1,34 +1,33 @@
-pcb-rnd 2.1.2
+pcb-rnd 2.1.3
 ~~~~~~~~~~~~~
 
-This release of pcb-rnd focuses on code cleanup and fixin bugs. The three
-major cleanups are the full netlist code rewrite, introduction of
-CAM jobs which will long term replace the more limited gerber name
-styles, and refactoring the KiCad file read code for more proper operation.
+This release of pcb-rnd focuses on the hidlib effort. Hidlib is a reusable
+library that contains the HID plugins of pcb-rnd and a few essential
+infrastructural parts of core (the action infra, the tool infra, compatibility
+and safe FS infra, units and pcb-printf).
+
+Using the hidlib it will be possible to easily write 3rd party applications
+that share the basic infrastructure and HID plugins with pcb-rnd.
 
 Feature highlight:
 
-1. CAM jobs from the command line with -x and from the GUI with the
-   cam export dialog using {f c}
+1. hidlib: removed all custom dialogs from the gtk HID and reimplemented them
+   in the dialogs plugin.
 
-2. live scripting: dialog box with a script editor for real time
-   development and experimentation with scripting
+2. hidlib: the common-for-all-HIDs lib plugin got split, the PCB-related
+   parts moved out because they are not used in 3rd party applications.
 
-3. almost complete KiCad load support for files generated with version 4
-   or older
+3. hidlib: toolbar generalization; the toolbar is loaded from the menu file
+   and plugins can register new tools with custom toolbar icon and
+   mouse cursor shape.
 
-4. optional gerber drill files
+4. hidlib: top window of both gtk and lesstif HIDs are built using docked
+   DAD dialogs; this affects the toolbar, the overhead readouts, the layer
+   selector, the rotuing style widget and the bottom status line.
 
-5. option to directly export in the excellon format, without any gerber
+4. io_kicad: version 4 files are loaded almost flawlessly; started to load
+   version 5 files, most common features should work without problem.
 
-6. full netlist code rewrite: support for network mapping, renaming, merging
+5. File selection dialog: per format detailed options on 'save as'.
 
-7. actions and GUI for starting a board without a netlist and build
-   the netlist from within pcb-rnd
-
-8. new netlist dialog with enhanced functionality (same code for all HIDs)
-
-9. new log window with enhanced functionality (same code for all HIDs);
-   log is persistent (messages before GUI startup are not lost);
-   export log to file button/action
-
+6. More board data access and manipulation actions, mainly for scripting.
