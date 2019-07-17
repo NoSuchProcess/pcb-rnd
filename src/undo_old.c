@@ -365,15 +365,13 @@ static pcb_bool UndoChange2ndSize(UndoListTypePtr Entry)
  */
 static pcb_bool UndoChangeRot(UndoListTypePtr Entry)
 {
-	void *ptr1, *ptr2, *ptr3, *ptr1e;
+	void *ptr1, *ptr2, *ptr3;
 	int type;
 	double swap;
 	pcb_bool ret = pcb_false;
 
 	/* lookup entry by ID */
 	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
-	ptr1e = ptr1;
-
 
 	if (pcb_undo_and_draw)
 		pcb_draw_obj((pcb_any_obj_t *)ptr2);
