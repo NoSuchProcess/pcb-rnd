@@ -92,6 +92,7 @@ static void ltf_tt_insert_row(ltf_tree_t *lt, pcb_hid_row_t *new_row)
 	}
 }
 
+extern void xm_extent_prediction(XmTreeTableWidget w);
 
 static void ltf_tree_insert_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *new_row)
 {
@@ -99,7 +100,7 @@ static void ltf_tree_insert_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb
 	ltf_tree_t *lt = ht->hid_wdata;
 
 	ltf_tt_insert_row(lt, new_row);
-	xm_extent_prediction(lt->w);
+	xm_extent_prediction((XmTreeTableWidget)lt->w);
 	REDRAW();
 }
 
@@ -140,7 +141,7 @@ static void ltf_tree_remove_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb
 
 /*	gdl_remove(&lt->model, e, gdl_linkfield);*/
 	delete_tt_entry(&lt->model, e);
-	xm_extent_prediction(lt->w);
+	xm_extent_prediction((XmTreeTableWidget)lt->w);
 	REDRAW();
 
 	if (changed)
