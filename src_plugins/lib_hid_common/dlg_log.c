@@ -192,7 +192,6 @@ static void log_append_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 
 	if (log_ctx.active) {
 		pcb_hid_attribute_t *atxt = &log_ctx.dlg[log_ctx.wtxt];
-		pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
 
 		log_append(&log_ctx, atxt, line);
 		maybe_scroll_to_bottom();
