@@ -149,7 +149,7 @@ do { \
 static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 {
 	char tmp[128];
-	char *end, *sep, *s = strchr(line, ' '), *next; /* skip the instruction */
+	char *sep, *s = strchr(line, ' '), *next; /* skip the instruction */
 	int i;
 	pcb_bool succ;
 
