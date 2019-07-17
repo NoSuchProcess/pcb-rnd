@@ -744,7 +744,7 @@ static int mesh_vis_z(pcb_mesh_t *mesh)
 {
 	int n;
 	pcb_layergrp_id_t gid;
-	pcb_coord_t x0 = PCB->hidlib.size_x/15, y0 = PCB->hidlib.size_y/3, y = y0, y2;
+	pcb_coord_t y0 = PCB->hidlib.size_y/3, y = y0, y2;
 	pcb_coord_t xl = PCB->hidlib.size_x/5; /* board left */
 	pcb_coord_t xr = PCB->hidlib.size_x/5*3; /* board right */
 	pcb_coord_t spen = PCB_MM_TO_COORD(0.3), cpen = PCB_MM_TO_COORD(0.2), mpen = PCB_MM_TO_COORD(0.03);
