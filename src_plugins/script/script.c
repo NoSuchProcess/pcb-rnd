@@ -268,8 +268,8 @@ TODO(": guess")
 		const char *engname = lang;
 
 		TODO("move this to fungw");
-		if (strcmp(engname, "fbas") == NULL) engname = "fawk";
-		else if (strcmp(engname, "fpas") == NULL) engname = "fawk";
+		if (strcmp(engname, "fbas") == 0) engname = "fawk";
+		else if (strcmp(engname, "fpas") == 0) engname = "fawk";
 
 		pcb_snprintf(name, sizeof(name), "fungw_%s", engname);
 
