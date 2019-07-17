@@ -51,15 +51,6 @@ static pcb_hid_attribute_t *export_test_get_export_options(int *n)
 	return export_test_options;
 }
 
-
-/*
- * If fp is not NULL then print out the bill of materials contained in
- * export_test.  Either way, free all memory which has been allocated for export_test.
- */
-static void print_and_free(FILE * fp, /*export_testList*/ void * export_test)
-{
-}
-
 static int Printexport_test(void)
 {
 	return 0;
