@@ -37,7 +37,8 @@ static const char *guess_lang(const char *ext);
 
 static int perma_load(const char *dir, const char *id, const char *path_in, const char *lang)
 {
-	char spath[PCB_PATH_MAX], *path;
+	char spath[PCB_PATH_MAX];
+	const char *path;
 
 	if (!pcb_is_path_abs(path_in)) {
 		path = spath;
