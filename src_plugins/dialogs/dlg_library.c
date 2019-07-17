@@ -42,6 +42,7 @@
 #include "obj_subc.h"
 #include "plug_footprint.h"
 #include "tool.h"
+#include "undo.h"
 
 #include "hid.h"
 #include "hid_dad.h"
