@@ -132,7 +132,7 @@ static void fmt_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	int selection = attr->default_val.int_value;
 	pcb_hid_attr_val_t hv;
 
-	if ((save->avail == NULL) || (save->avail->extension == NULL) || save->fmt_chg_lock)
+	if ((save->avail == NULL) || save->fmt_chg_lock)
 		return;
 
 	if (fmtsub->parent_poke(fmtsub, "get_path", &res, 0, NULL) != 0)
@@ -222,7 +222,7 @@ static void save_timer(pcb_hidval_t user_data)
 {
 	save_t *save = user_data.ptr;
 
-	if ((save->fmtsub == NULL) || (save->avail == NULL) || (save->avail->extension == NULL)) {
+	if ((save->fmtsub == NULL) || (save->avail == NULL)) {
 		save->timer_active = 0;
 		return; /* do not even restart the timer */
 	}
