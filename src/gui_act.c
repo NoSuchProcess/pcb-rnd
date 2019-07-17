@@ -899,34 +899,6 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* --------------------------------------------------------------------------- */
-
-static const char pcb_acts_SwitchHID[] = "SwitchHID(lesstif|gtk|batch)";
-static const char pcb_acth_SwitchHID[] = "Switch to another HID.";
-static fgw_error_t pcb_act_SwitchHID(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	pcb_hid_t *ng;
-	int chg;
-
-	PCB_ACT_CONVARG(1, FGW_STR, SwitchHID, ;);
-	ng = pcb_hid_find_gui(argv[1].val.str);
-	if (ng == NULL) {
-		pcb_message(PCB_MSG_ERROR, "No such HID.");
-		PCB_ACT_IRES(-1);
-		return 0;
-	}
-
-	pcb_next_gui = ng;
-	chg = PCB->Changed;
-	pcb_quit_app();
-	PCB->Changed = chg;
-
-	PCB_ACT_IRES(0);
-	return 0;
-}
-
-
-/* --------------------------------------------------------------------------- */
 
 /* This action is provided for CLI convenience */
 static const char pcb_acts_FullScreen[] = "FullScreen(on|off|toggle)\n";
@@ -1825,7 +1797,6 @@ pcb_action_t gui_action_list[] = {
 	{"RemoveMenu", pcb_act_RemoveMenu, pcb_acth_RemoveMenu, pcb_acts_RemoveMenu},
 	{"SelectLayer", pcb_act_SelectLayer, pcb_acth_selectlayer, pcb_acts_selectlayer},
 	{"ChkLayer", pcb_act_ChkLayer, pcb_acth_chklayer, pcb_acts_chklayer},
-	{"SwitchHID", pcb_act_SwitchHID, pcb_acth_SwitchHID, pcb_acts_SwitchHID},
 	{"ToggleView", pcb_act_ToggleView, pcb_acth_toggleview, pcb_acts_toggleview},
 	{"ChkView", pcb_act_ChkView, pcb_acth_chkview, pcb_acts_chkview},
 	{"Cursor", pcb_act_Cursor, pcb_acth_Cursor, pcb_acts_Cursor},
