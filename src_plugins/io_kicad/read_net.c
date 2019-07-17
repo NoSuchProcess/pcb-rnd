@@ -127,7 +127,7 @@ static int eeschema_parse_net(gsxl_dom_t *dom)
 	pcb_actionl("Netlist", "Clear", NULL);
 
 	for(net = nets->children; net != NULL; net = net->next) {
-		const char *netname = NULL, *code = NULL, *name = NULL, *footprint = NULL;
+		const char *netname = NULL, *code = NULL, *name = NULL;
 		char refpin[256];
 
 		if (strcmp(net->str, "net") != 0)
