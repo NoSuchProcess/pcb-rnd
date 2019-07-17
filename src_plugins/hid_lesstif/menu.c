@@ -581,7 +581,7 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 
 			for(n = mr->data.list.first; n != NULL; n = n->next) {
 				menu_data_t *md;
-				Widget pmw, sh;
+				Widget pmw;
 				lht_node_t *i;
 
 				md = calloc(sizeof(menu_data_t), 1);
