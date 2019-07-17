@@ -2286,12 +2286,12 @@
  hid_color.h hid_dad.h compat_misc.h hid_attrib.h hid_dad_spin.h \
  actions.h ../src_plugins/hid_lesstif/ltf_stdarg.h color.h grid.h \
  misc_util.h compat_misc.h layer_vis.h tool.h \
+ ../src_plugins/hid_lesstif/wt_preview.h \
  ../src_plugins/hid_lesstif/dlg_fileselect.h global_typedefs.h \
  ../src_plugins/hid_lesstif/FillBox.h \
  ../src_plugins/lib_hid_common/clip.h ../src_plugins/lib_hid_pcbui/util.h \
  ../src_plugins/lib_hid_common/cli_history.h \
- ../src_plugins/hid_lesstif/wt_preview.c \
- ../src_plugins/hid_lesstif/wt_preview.h dolists.h
+ ../src_plugins/hid_lesstif/wt_preview.c dolists.h
 ../src_plugins/hid_lesstif/menu.o: ../src_plugins/hid_lesstif/menu.c \
  ../src_plugins/hid_lesstif/xincludes.h ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
@@ -3193,7 +3193,7 @@
 ../src_plugins/io_kicad/read.o: ../src_plugins/io_kicad/read.c \
  ../config.h ../src_3rd/gensexpr/gsxl.h \
  ../src_3rd/gensexpr/gensexpr_impl.h ../src_3rd/gensexpr/gsx_parse.h \
- ../src_3rd/genht/htsi.h ../src_3rd/genht/ht.h \
+ ../src_3rd/genht/htsi.h ../src_3rd/genht/ht.h ../src_3rd/genht/htpp.h \
  ../src_3rd/genvector/vtp0.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h compat_misc.h board.h \
  ../src_3rd/genht/htsp.h global_typedefs.h pcb_bool.h unit.h \
@@ -3208,9 +3208,8 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h list_conf.h \
  error.h data.h crosshair.h vtonpoint.h hid.h error.h route.h buffer.h \
- ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h obj_rat_list.h \
- obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
- ../src_3rd/libminuid/libminuid.h rtree.h \
+ ../src_3rd/libfungw/fungw.h obj_rat_list.h obj_rat.h idpath.h \
+ obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h rtree.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
@@ -4327,7 +4326,7 @@
  ../src_plugins/lib_gtk_common/lib_gtk_config.h \
  ../src_plugins/lib_hid_common/menu_helper.h
 ../src_plugins/lib_gtk_hid/glue_win32.o: \
- ../src_plugins/lib_gtk_hid/glue_win32.c \
+ ../src_plugins/lib_gtk_hid/glue_win32.c ../config.h \
  ../src_plugins/lib_gtk_hid/glue_win32.h
 ../src_plugins/lib_gtk_hid/lib_gtk_hid.o: \
  ../src_plugins/lib_gtk_hid/lib_gtk_hid.c ../config.h plugins.h \
@@ -4360,7 +4359,9 @@
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/glue.h event.h hidlib.h \
- ../src_plugins/lib_gtk_hid/render.h
+ ../src_plugins/lib_gtk_hid/render.h \
+ ../src_plugins/lib_gtk_common/wt_preview.h \
+ ../src_plugins/lib_gtk_common/ui_zoompan.h
 ../src_plugins/lib_hid_common/act_dad.o: \
  ../src_plugins/lib_hid_common/act_dad.c ../config.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h \
@@ -5063,7 +5064,7 @@
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h hid_dad.h \
- compat_misc.h hid_attrib.h pcb-printf.h hid_dad_spin.h \
+ compat_misc.h hid_attrib.h pcb-printf.h hid_dad_spin.h event.h hidlib.h \
  ../src_plugins/order/order.h ../src_3rd/genvector/vtp0.h \
  ../src_plugins/order/order_dlg.c dolists.h
 ../src_plugins/order_pcbway/pcbway.o: \
@@ -5589,9 +5590,10 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  pcb-printf.h globalconst.h ../src_plugins/script/script.h \
  ../src_plugins/script/c_script.c fptr_cast.h hidlib_conf.h \
- ../src_plugins/script/timer.c ../src_plugins/script/script_act.c \
- hid_dad.h compat_misc.h hid_attrib.h hid_dad_spin.h hid_dad_tree.h \
- hid_dad.h ../src_plugins/script/live_script.h dolists.h
+ ../src_plugins/script/timer.c ../src_plugins/script/perma.c hidlib.h \
+ ../src_plugins/script/script_act.c hid_dad.h compat_misc.h hid_attrib.h \
+ hid_dad_spin.h hid_dad_tree.h hid_dad.h \
+ ../src_plugins/script/live_script.h dolists.h
 ../src_plugins/serpentine/serpentine.o: \
  ../src_plugins/serpentine/serpentine.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
