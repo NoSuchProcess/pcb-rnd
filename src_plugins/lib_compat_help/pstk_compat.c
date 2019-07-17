@@ -389,10 +389,10 @@ pcb_bool pcb_pstk_export_compat_via(pcb_pstk_t *ps, pcb_coord_t *x, pcb_coord_t 
 
 	/* all copper sizes must be the same, all mask sizes must be the same */
 	for(n = 0; n < tshp->len; n++) {
-		if ((tshp->shape[n].layer_mask & PCB_LYT_COPPER) && (fabs(old_dia[n] - old_dia[coppern]) > 10))
+		if ((tshp->shape[n].layer_mask & PCB_LYT_COPPER) && (PCB_ABS(old_dia[n] - old_dia[coppern]) > 10))
 			return pcb_false;
 		if (maskn >= 0)
-			if ((tshp->shape[n].layer_mask & PCB_LYT_MASK) && (fabs(old_dia[n] - old_dia[maskn]) > 10))
+			if ((tshp->shape[n].layer_mask & PCB_LYT_MASK) && (PCB_ABS(old_dia[n] - old_dia[maskn]) > 10))
 				return pcb_false;
 	}
 
