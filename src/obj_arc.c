@@ -893,7 +893,6 @@ void pcb_arc_middle(const pcb_arc_t *arc, pcb_coord_t *x, pcb_coord_t *y)
 void pcb_arc_name_invalidate_draw(pcb_arc_t *arc)
 {
 	if (arc->term != NULL) {
-		pcb_text_t text;
 		pcb_coord_t x0, y0;
 		pcb_bool_t vert;
 
