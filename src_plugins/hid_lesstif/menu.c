@@ -596,7 +596,7 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 
 				i = pcb_hid_cfg_menu_field(n, PCB_MF_SUBMENU, NULL);
 				for(i = i->data.list.first; i != NULL; i = i->next)
-					add_node_to_menu(pmw, NULL, i, callback, 1);
+					add_node_to_menu(pmw, NULL, i, (XtCallbackProc)callback, 1);
 
 				XtManageChild(md->sub);
 				XtManageChild(pmw);
