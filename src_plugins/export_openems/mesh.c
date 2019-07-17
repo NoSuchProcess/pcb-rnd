@@ -35,6 +35,7 @@
 #include "hid_dad.h"
 #include "event.h"
 #include "safe_fs.h"
+#include "pcb-printf.h"
 
 static pcb_mesh_t mesh;
 static const char *mesh_ui_cookie = "mesh ui layer cookie";
