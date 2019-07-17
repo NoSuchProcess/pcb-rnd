@@ -142,7 +142,6 @@ static void chk_subc(const char *whose, pcb_subc_t *subc)
 	pcb_pstk_t *ps;
 	pcb_coord_t dummy;
 	double dummy2;
-	int dummy3;
 
 	chk_layers("subc", subc->data, PCB_PARENT_SUBC, subc, 0);
 	chk_subc_cache(subc);
