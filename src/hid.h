@@ -574,9 +574,6 @@ typedef void (*pcb_hid_expose_t)(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx
    main. hid_expose_callback also temporarily set it for drawing. */
 extern pcb_hid_t *pcb_gui;
 
-/* When not NULL, auto-start the next GUI after the current one quits */
-extern pcb_hid_t *pcb_next_gui;
-
 /* This is either NULL or points to the current HID that is being called to
    do the exporting. The GUI HIDs set and unset this var.*/
 extern pcb_hid_t *pcb_exporter;

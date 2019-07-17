@@ -63,7 +63,6 @@ pcb_hid_t **pcb_hid_list = 0;
 int pcb_hid_num_hids = 0;
 
 pcb_hid_t *pcb_gui = NULL;
-pcb_hid_t *pcb_next_gui = NULL;
 pcb_hid_t *pcb_exporter = NULL;
 
 int pcb_pixel_slop = 1;
@@ -583,8 +582,6 @@ void pcbhl_mainloop_interactive(pcbhl_main_args_t *ga, pcb_hidlib_t *hidlib)
 	if (pcb_gui->set_hidlib != NULL)
 		pcb_gui->set_hidlib(hidlib);
 	pcb_gui->do_export(hidlib, 0);
-	pcb_gui = pcb_next_gui;
-	pcb_next_gui = NULL;
 	if (pcb_gui != NULL) {
 		/* init the next GUI */
 		pcb_gui->parse_arguments(&ga->hid_argc, &ga->hid_argv);

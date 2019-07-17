@@ -493,21 +493,19 @@ int main(int argc, char *argv[])
 	pcb_enable_autosave();
 
 	/* main loop */
-	do {
-		if (PCB_HAVE_GUI_ATTR_DLG)
-			gui_support_plugins(1);
-		if (EXPERIMENTAL != NULL) {
-			pcb_message(PCB_MSG_ERROR, "******************************** IMPORTANT ********************************\n");
-			pcb_message(PCB_MSG_ERROR, "This revision of pcb-rnd is experimental, unstable, do NOT attempt to use\n");
-			pcb_message(PCB_MSG_ERROR, "it for production. The reason for this state is:\n");
-			pcb_message(PCB_MSG_ERROR, "%s\n", EXPERIMENTAL);
-			pcb_message(PCB_MSG_ERROR, "******************************** IMPORTANT ********************************\n");
-		}
-		pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_ARROW);
-		pcb_event(&PCB->hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);
-		pcb_crosshair_init();
-		pcbhl_mainloop_interactive(&ga, &PCB->hidlib);
-	} while(pcb_gui != NULL);
+	if (PCB_HAVE_GUI_ATTR_DLG)
+		gui_support_plugins(1);
+	if (EXPERIMENTAL != NULL) {
+		pcb_message(PCB_MSG_ERROR, "******************************** IMPORTANT ********************************\n");
+		pcb_message(PCB_MSG_ERROR, "This revision of pcb-rnd is experimental, unstable, do NOT attempt to use\n");
+		pcb_message(PCB_MSG_ERROR, "it for production. The reason for this state is:\n");
+		pcb_message(PCB_MSG_ERROR, "%s\n", EXPERIMENTAL);
+		pcb_message(PCB_MSG_ERROR, "******************************** IMPORTANT ********************************\n");
+	}
+	pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_ARROW);
+	pcb_event(&PCB->hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);
+	pcb_crosshair_init();
+	pcbhl_mainloop_interactive(&ga, &PCB->hidlib);
 
 	pcb_main_uninit();
 	pcbhl_main_args_uninit(&ga);
