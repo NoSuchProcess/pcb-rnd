@@ -334,7 +334,8 @@ static void reset_event_data_row_ptr(XmTreeTablePart *tp)
 	tp->event_data.user_data = tp->user_data;
 	tp->event_data.current_row = 0;
 	tp->event_data.current_cell = 0;
-	tp->event_data.event = ett_none;
+	tp->event_data.event = NULL;
+	tp->event_data.type = ett_none;
 }
 
 static void on_mouse_action(ett_x11_event_t ett_event, Widget aw, XEvent *event, String *params, Cardinal *num_params)
