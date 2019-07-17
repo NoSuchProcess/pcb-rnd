@@ -1010,7 +1010,6 @@ static void ia_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 
 static void ia_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	int n;
 	mesh_layer_reset();
 	mesh.layer = CURRENT;
 
