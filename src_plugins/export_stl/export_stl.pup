@@ -4,6 +4,6 @@ $long Export stl (triangulated surface)
 $state WIP
 $fmt-native no
 $fmt-feature-w export a three dimensional triangulated surface model in stl
-$package export-extra
+#$package export-extra
 default disable
 autoload 1

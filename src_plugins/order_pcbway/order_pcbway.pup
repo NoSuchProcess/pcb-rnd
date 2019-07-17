@@ -2,7 +2,7 @@ $class feature
 $short board ordering from PCBWay
 $long order from PCBWay through the Internet
 $state WIP
-$package cloud
+#$package cloud
 dep order
 default disable
 autoload 1
