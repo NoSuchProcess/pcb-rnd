@@ -38,6 +38,8 @@ static const char *guess_lang(const char *ext)
 {
 	const char **s, *tr[] = {
 		"awk",         "mawk",
+		"bas",         "fbas",
+		"pas",         "fpas",
 		"ruby",        "mruby",
 		"py",          "python",
 		"js",          "duktape",
@@ -452,6 +454,11 @@ static pcb_action_t script_action_list[] = {
 	/* script shorthands */
 	{"awk",         pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
 	{"mawk",        pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
+	{"fawk",        pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
+	{"fpas",        pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
+	{"pas",         pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
+	{"fbas",        pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
+	{"bas",         pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
 	{"lua",         pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
 	{"tcl",         pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
 	{"javascript",  pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},

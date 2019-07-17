@@ -265,7 +265,13 @@ TODO(": guess")
 	}
 
 	if (strcmp(lang, "c") != 0) {
-		pcb_snprintf(name, sizeof(name), "fungw_%s", lang);
+		const char *engname = lang;
+
+		TODO("move this to fungw");
+		if (strcmp(engname, "fbas") == NULL) engname = "fawk";
+		else if (strcmp(engname, "fpas") == NULL) engname = "fawk";
+
+		pcb_snprintf(name, sizeof(name), "fungw_%s", engname);
 
 		old_id = script_persistency_id;
 		script_persistency_id = id;
@@ -351,6 +357,22 @@ static void oneliner_boilerplate(FILE *f, const char *lang, int pre)
 			fputs("BEGIN {\n", f);
 		else
 			fputs("}\n", f);
+	}
+	else if (strcmp(lang, "fawk") == 0) {
+		if (pre)
+			fputs("function main(ARGS) {\n", f);
+		else
+			fputs("}\n", f);
+	}
+	else if (strcmp(lang, "fpas") == 0) {
+		if (pre)
+			fputs("function main(ARGS);\nbegin\n", f);
+		else
+			fputs("end;\n", f);
+	}
+	else if (strcmp(lang, "fbas") == 0) {
+		if (!pre)
+			fputs("\n", f);
 	}
 }
 
