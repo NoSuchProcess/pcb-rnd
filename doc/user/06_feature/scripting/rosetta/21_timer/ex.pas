@@ -1,4 +1,4 @@
-function timer_cb(now, remain, ud);
+function timer_cb(now; remain; ud);
 begin
 	message('timer_cb: ' @ now @ ' ' @ remain @ ' ' @ ud @ '\n');
 	timer_cb := 0;
