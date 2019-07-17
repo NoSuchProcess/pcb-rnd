@@ -110,8 +110,6 @@
 - res/menu:
 	- FEATURE: load/swap menus (TODO#1)
 	- CLEANUP: search for vendor in the hid plugins, there should be no trace of it (vendor should register its in submenus with anchors)
-	- CLEANUP: re-add dynamic menus after a gui change:
-		- provide hooks and let plugins deal with a re-add as they may be added anywhere
 	- FEATURE: fungw: auto-remove menus by cookie (TODO#2)
 	- FEATURE: load new res on the fly (replace the menu system):
 		- low level reload code (re-add the dynamic menus too!)
