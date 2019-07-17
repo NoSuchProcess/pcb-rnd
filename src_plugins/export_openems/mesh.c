@@ -985,8 +985,6 @@ static void ia_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 {
 	char *fname = NULL;
 	FILE *f;
-	gds_t tmp;
-
 
 	fname = pcb_gui->fileselect("Load mesh settings...",
 															"Picks file for loading mesh settings from.\n",
