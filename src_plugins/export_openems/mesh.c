@@ -339,6 +339,7 @@ static int mesh_gen_obj(pcb_mesh_t *mesh, pcb_layer_t *layer, pcb_mesh_dir_t dir
 			switch(dir) {
 				case PCB_MESH_HORIZONTAL: mesh_add_edge(mesh, dir, ps->y); break;
 				case PCB_MESH_VERTICAL:   mesh_add_edge(mesh, dir, ps->x); break;
+				default: break;
 			}
 		}
 	}
