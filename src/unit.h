@@ -32,16 +32,16 @@
  *
  */
 
-#ifndef	PCB_UNIT_H
-#define	PCB_UNIT_H
+#ifndef PCB_UNIT_H
+#define PCB_UNIT_H
 
 #include "config.h"
 
-/* typedef ... pcb_coord_t;				pcb base unit, typedef'd in config.h */
-typedef double pcb_angle_t;						/* degrees */
+/* typedef ... pcb_coord_t; pcb base unit, typedef'd in config.h */
+typedef double pcb_angle_t; /* degrees */
 
 enum pcb_allow_e {
-	PCB_UNIT_NO_PRINT = 0,									/* suffixes we can read but not print (i.e., "inch") */
+	PCB_UNIT_NO_PRINT = 0, /* suffixes we can read but not print (i.e., "inch") */
 	PCB_UNIT_ALLOW_NM = 1,
 	PCB_UNIT_ALLOW_UM = 2,
 	PCB_UNIT_ALLOW_MM = 4,
@@ -78,9 +78,9 @@ enum pcb_family_e { PCB_UNIT_METRIC, PCB_UNIT_IMPERIAL };
 enum pcb_suffix_e { PCB_UNIT_NO_SUFFIX, PCB_UNIT_SUFFIX, PCB_UNIT_FILE_MODE };
 
 struct pcb_unit_s {
-	int index;										/* Index into Unit[] list */
+	int index; /* Index into Unit[] list */
 	const char *suffix;
-	const char *in_suffix;				/* internationalized suffix */
+	const char *in_suffix; /* internationalized suffix */
 	char printf_code;
 	double scale_factor;
 	enum pcb_family_e family;
@@ -125,17 +125,17 @@ pcb_angle_t pcb_normalize_angle(pcb_angle_t a);
 void pcb_units_init(void);
 
 /* PCB/physical unit conversions */
-#define PCB_COORD_TO_MIL(n)	((n) / 25400.0)
-#define PCB_MIL_TO_COORD(n)	((n) * 25400.0)
-#define PCB_COORD_TO_MM(n)	((n) / 1000000.0)
-#define PCB_MM_TO_COORD(n)	((n) * 1000000.0)
-#define PCB_COORD_TO_INCH(n)	(PCB_COORD_TO_MIL(n) / 1000.0)
-#define PCB_INCH_TO_COORD(n)	(PCB_MIL_TO_COORD(n) * 1000.0)
-#define PCB_COORD_TO_DECIMIL(n)    (PCB_COORD_TO_MIL(n) * 10.0)
-#define PCB_DECIMIL_TO_COORD(n)    (PCB_MIL_TO_COORD(n) / 10.0)
+#define PCB_COORD_TO_MIL(n)      ((n) / 25400.0)
+#define PCB_MIL_TO_COORD(n)      ((n) * 25400.0)
+#define PCB_COORD_TO_MM(n)       ((n) / 1000000.0)
+#define PCB_MM_TO_COORD(n)       ((n) * 1000000.0)
+#define PCB_COORD_TO_INCH(n)     (PCB_COORD_TO_MIL(n) / 1000.0)
+#define PCB_INCH_TO_COORD(n)     (PCB_MIL_TO_COORD(n) * 1000.0)
+#define PCB_COORD_TO_DECIMIL(n)  (PCB_COORD_TO_MIL(n) * 10.0)
+#define PCB_DECIMIL_TO_COORD(n)  (PCB_MIL_TO_COORD(n) / 10.0)
 
-#define	PCB_SWAP_ANGLE(a)		(-(a))
-#define	PCB_SWAP_DELTA(d)		(-(d))
+#define PCB_SWAP_ANGLE(a)        (-(a))
+#define PCB_SWAP_DELTA(d)        (-(d))
 
 PCB_INLINE pcb_coord_t pcb_coord_abs(pcb_coord_t c)
 {

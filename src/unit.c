@@ -135,8 +135,7 @@ double pcb_coord_to_unit(const pcb_unit_t * unit, pcb_coord_t x)
 	double base;
 	if (unit == NULL)
 		return -1;
-	base = unit->family == PCB_UNIT_METRIC ? PCB_COORD_TO_MM(1)
-		: PCB_COORD_TO_MIL(1);
+	base = unit->family == PCB_UNIT_METRIC ? PCB_COORD_TO_MM(1) : PCB_COORD_TO_MIL(1);
 	return x * unit->scale_factor * base;
 }
 
