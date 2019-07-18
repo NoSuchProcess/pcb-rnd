@@ -131,8 +131,6 @@ void pcb_units_init(void);
 #define PCB_MM_TO_COORD(n)       ((n) * 1000000.0)
 #define PCB_COORD_TO_INCH(n)     (PCB_COORD_TO_MIL(n) / 1000.0)
 #define PCB_INCH_TO_COORD(n)     (PCB_MIL_TO_COORD(n) * 1000.0)
-#define PCB_COORD_TO_DECIMIL(n)  (PCB_COORD_TO_MIL(n) * 10.0)
-#define PCB_DECIMIL_TO_COORD(n)  (PCB_MIL_TO_COORD(n) / 10.0)
 
 #define PCB_SWAP_ANGLE(a)        (-(a))
 #define PCB_SWAP_DELTA(d)        (-(d))
