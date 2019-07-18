@@ -41,17 +41,17 @@
 /* Should be kept in order of smallest scale_factor to largest -- the code
    uses this ordering for finding the best scale to use for a group of units */
 pcb_unit_t pcb_units[] = {
-	{0, "km", NULL, 'k', 0.000001, PCB_UNIT_METRIC, PCB_UNIT_ALLOW_KM, 5, {""}},
-	{0, "m", NULL, 'f', 0.001, PCB_UNIT_METRIC, PCB_UNIT_ALLOW_M, 5, {""}},
-	{0, "cm", NULL, 'e', 0.1, PCB_UNIT_METRIC, PCB_UNIT_ALLOW_CM, 5, {""}},
-	{0, "mm", NULL, 'm', 1, PCB_UNIT_METRIC, PCB_UNIT_ALLOW_MM, 4, {""}},
-	{0, "um", NULL, 'u', 1000, PCB_UNIT_METRIC, PCB_UNIT_ALLOW_UM, 2, {""}},
-	{0, "du", NULL, 'd', 10000, PCB_UNIT_METRIC, PCB_UNIT_ALLOW_DU, 2, {""}},  /* eagle bin decimicron */
-	{0, "nm", NULL, 'n', 1000000, PCB_UNIT_METRIC, PCB_UNIT_ALLOW_NM, 0, {""}},
-	{0, "in", NULL, 'i', 0.001, PCB_UNIT_IMPERIAL, PCB_UNIT_ALLOW_IN, 5, {"inch"}},
-	{0, "mil", NULL, 'l', 1, PCB_UNIT_IMPERIAL, PCB_UNIT_ALLOW_MIL, 2, {""}},
-	{0, "dmil", NULL, 'k', 10, PCB_UNIT_IMPERIAL, PCB_UNIT_ALLOW_DMIL, 1, {""}},/* kicad legacy decimil unit */
-	{0, "cmil", NULL, 'c', 100, PCB_UNIT_IMPERIAL, PCB_UNIT_ALLOW_CMIL, 0, {"pcb"}}
+	{0, "km",   NULL, 'k', 0.000001, PCB_UNIT_METRIC,   PCB_UNIT_ALLOW_KM, 5, {""}},
+	{0, "m",    NULL, 'f', 0.001,    PCB_UNIT_METRIC,   PCB_UNIT_ALLOW_M, 5, {""}},
+	{0, "cm",   NULL, 'e', 0.1,      PCB_UNIT_METRIC,   PCB_UNIT_ALLOW_CM, 5, {""}},
+	{0, "mm",   NULL, 'm', 1,        PCB_UNIT_METRIC,   PCB_UNIT_ALLOW_MM, 4, {""}},
+	{0, "um",   NULL, 'u', 1000,     PCB_UNIT_METRIC,   PCB_UNIT_ALLOW_UM, 2, {""}},
+	{0, "du",   NULL, 'd', 10000,    PCB_UNIT_METRIC,   PCB_UNIT_ALLOW_DU, 2, {""}},  /* eagle bin decimicron */
+	{0, "nm",   NULL, 'n', 1000000,  PCB_UNIT_METRIC,   PCB_UNIT_ALLOW_NM, 0, {""}},
+	{0, "in",   NULL, 'i', 0.001,    PCB_UNIT_IMPERIAL, PCB_UNIT_ALLOW_IN, 5, {"inch"}},
+	{0, "mil",  NULL, 'l', 1,        PCB_UNIT_IMPERIAL, PCB_UNIT_ALLOW_MIL, 2, {""}},
+	{0, "dmil", NULL, 'k', 10,       PCB_UNIT_IMPERIAL, PCB_UNIT_ALLOW_DMIL, 1, {""}},/* kicad legacy decimil unit */
+	{0, "cmil", NULL, 'c', 100,      PCB_UNIT_IMPERIAL, PCB_UNIT_ALLOW_CMIL, 0, {"pcb"}}
 };
 
 #define N_UNITS ((int) (sizeof pcb_units / sizeof pcb_units[0]))
