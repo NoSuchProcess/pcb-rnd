@@ -57,7 +57,7 @@ void pcb_dad_unit_set_num(pcb_hid_attribute_t *attr, long l, double unused1, pcb
 void pcb_dad_unit_set_val_ptr(pcb_hid_attribute_t *end, void *val_)
 {
 	const pcb_unit_t *val = val_;
-	int __n__, __v__ = pcb_get_n_units();
+	int __n__, __v__ = pcb_get_n_units(1);
 	if (val != NULL) {
 		for(__n__ = 0; __n__ < __v__; __n__++) {
 			if (&pcb_units[__n__] == val) {
@@ -109,7 +109,7 @@ void pcb_dad_unit_init(void)
 	if (pcb_dad_unit_enum != NULL)
 		return;
 
-	len = pcb_get_n_units();
+	len = pcb_get_n_units(0);
 	pcb_dad_unit_enum = malloc(sizeof(char *) * (len+1));
 	for(n = 0; n < len; n++)
 		pcb_dad_unit_enum[n] = pcb_units[n].suffix;

@@ -566,7 +566,7 @@ do { \
 			break; \
 		case PCB_HATT_UNIT: \
 			{ \
-				int __n__, __v__ = pcb_get_n_units(); \
+				int __n__, __v__ = pcb_get_n_units(0); \
 				if (val != NULL) { \
 					for(__n__ = 0; __n__ < __v__; __n__++) { \
 						if (&pcb_units[__n__] == (pcb_unit_t *)(val)) { \

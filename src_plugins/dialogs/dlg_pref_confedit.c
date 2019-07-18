@@ -132,7 +132,7 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 		case CFN_REAL:    sprintf(buf, "%f", attr->default_val.real_value); break;
 		case CFN_COORD:   pcb_snprintf(buf, sizeof(buf), "%.08$mH", attr->default_val.coord_value); break;
 		case CFN_UNIT:
-			if ((attr->default_val.int_value < 0) || (attr->default_val.int_value >= pcb_get_n_units()))
+			if ((attr->default_val.int_value < 0) || (attr->default_val.int_value >= pcb_get_n_units(0)))
 				return;
 			val = pcb_units[attr->default_val.int_value].suffix;
 			break;

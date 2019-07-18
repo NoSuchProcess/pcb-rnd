@@ -136,7 +136,7 @@ static void spin_unit_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	const pcb_unit_t *unit;
 	int unum = su->dlg[su->wunit].default_val.int_value;
 
-	if ((!su->dlg[su->wglob].default_val.int_value) && (unum >= 0) && (unum < pcb_get_n_units()))
+	if ((!su->dlg[su->wglob].default_val.int_value) && (unum >= 0) && (unum < pcb_get_n_units(0)))
 		unit = &pcb_units[unum];
 	else
 		unit = pcbhl_conf.editor.grid_unit;
@@ -208,7 +208,7 @@ static void spin_unit_dialog(void *spin_hid_ctx, pcb_hid_dad_spin_t *spin, pcb_h
 		pcb_hid_attr_val_t hv;
 		int unum = ctx.dlg[ctx.wunit].default_val.int_value;
 
-		if ((!ctx.dlg[ctx.wglob].default_val.int_value) && (unum >= 0) && (unum < pcb_get_n_units()))
+		if ((!ctx.dlg[ctx.wglob].default_val.int_value) && (unum >= 0) && (unum < pcb_get_n_units(0)))
 				spin->unit = &pcb_units[unum];
 			else
 				spin->unit = NULL;
