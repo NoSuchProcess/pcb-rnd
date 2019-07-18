@@ -233,7 +233,7 @@ static void status_rd_pcb2dlg(void)
 	if (status.last_unit != pcbhl_conf.editor.grid_unit) {
 		status.lock++;
 		status.last_unit = pcbhl_conf.editor.grid_unit;
-		hv.str_value = pcbhl_conf.editor.grid_unit->in_suffix;
+		hv.str_value = pcbhl_conf.editor.grid_unit->suffix;
 		pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrdunit, &hv);
 		status.lock--;
 	}

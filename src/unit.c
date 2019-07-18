@@ -59,10 +59,8 @@ pcb_unit_t pcb_units[] = {
 void pcb_units_init(void)
 {
 	int i;
-	for (i = 0; i < N_UNITS; ++i) {
+	for (i = 0; i < N_UNITS; ++i)
 		pcb_units[i].index = i;
-		pcb_units[i].in_suffix = pcb_units[i].suffix;
-	}
 }
 
 const pcb_unit_t *get_unit_struct_(const char *suffix, int strict)

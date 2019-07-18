@@ -320,7 +320,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 #endif
 			Polygon = (pcb_poly_t *) ptr2;
 
-			aunit = pcbhl_conf.editor.grid_unit->in_suffix;
+			aunit = pcbhl_conf.editor.grid_unit->suffix;
 			if (aunit[1] == 'm')
 				u = PCB_MM_TO_COORD(1);
 			else

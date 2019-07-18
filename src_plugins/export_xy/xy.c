@@ -359,7 +359,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 	}
 	if (strncmp(*input, "suffix%", 7) == 0) {
 		*input += 7;
-		gds_append_str(s, xy_unit->in_suffix);
+		gds_append_str(s, xy_unit->suffix);
 		return 0;
 	}
 	if (strncmp(*input, "boardw%", 7) == 0) {
