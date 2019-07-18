@@ -46,9 +46,8 @@
 #define PCB_MIL_TO_COORD5(a,b,c,d,e)	PCB_MIL_TO_COORD (a), PCB_MIL_TO_COORD (b), PCB_MIL_TO_COORD (c),	\
                                		PCB_MIL_TO_COORD (d), PCB_MIL_TO_COORD (e)
 
-/* These should be kept in order of smallest scale_factor
- * to largest -- the code uses this ordering when finding
- * the best scale to use for a group of measures */
+/* Should be kept in order of smallest scale_factor to largest -- the code
+   uses this ordering for finding the best scale to use for a group of units */
 pcb_unit_t pcb_units[] = {
 	{0, "km", NULL, 'k', 0.000001, PCB_UNIT_METRIC, PCB_UNIT_ALLOW_KM, 5, {""}},
 	{0, "m", NULL, 'f', 0.001, PCB_UNIT_METRIC, PCB_UNIT_ALLOW_M, 5, {""}},
