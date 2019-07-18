@@ -47,7 +47,6 @@
  *   %mu    output a measure in um
  *   %mM    output a measure in scaled (mm/um) metric
  *   %ml    output a measure in mil
- *   %mk    output a measure in decimil (kicad legacy format)
  *   %mL    output a measure in scaled (mil/in) imperial
  *   %ms    output a measure in most natural mm/mil units
  *   %mS    output a measure in most natural scaled units
@@ -63,11 +62,14 @@
  *   %m+    accepts an e_allow parameter that masks all subsequent
  *          "natural" (N/S/D/3/.../9) specifiers to only use certain
  *          units
- *   %mr    output a measure in a unit readable by parse_l.l
- *          (outputs in centimil without units - compatibility with mainline)
  *   %ma    output an angle in degrees (expects degrees)
- *   %mA    output an angle in decidegrees (degrees x 10) for kicad legacy
  *   %mf    output an a double (same as %f, expect it understands the .0n modifier)
+ *
+ * Exotic formats, DO NOT USE:
+ *   %mr    output a measure in a unit readable by io_pcb parse_l.l
+ *          (outputs in centimil without units - compatibility with mainline)
+ *   %mk    output a measure in decimil (kicad legacy format)
+ *   %mA    output an angle in decidegrees (degrees x 10) for kicad legacy
  *
  * These accept the usual printf modifiers for %f, as well as
  *     $    output a unit suffix after the measure (with space between measure and unit)
