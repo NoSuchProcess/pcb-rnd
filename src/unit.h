@@ -86,14 +86,7 @@ struct pcb_unit_s {
 	enum pcb_family_e family;
 	enum pcb_allow_e allow;
 	int default_prec;
-	/* used for gui spinboxes */
-	double step_tiny;
-	double step_small;
-	double step_medium;
-	double step_large;
-	double step_huge;
-	/* aliases -- right now we only need 1 ("inch"->"in"), add as needed */
-	const char *alias[1];
+	const char *alias[1]; /* aliases -- right now we only need 1 ("inch"->"in"), add as needed */
 };
 
 typedef struct pcb_unit_s pcb_unit_t;
