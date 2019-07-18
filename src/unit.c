@@ -38,14 +38,6 @@
 #include "compat_misc.h"
 #include "unit.h"
 
-/* Helper macros for tables */
-#define PCB_MM_TO_COORD3(a,b,c)		PCB_MM_TO_COORD (a), PCB_MM_TO_COORD (b), PCB_MM_TO_COORD (c)
-#define PCB_MIL_TO_COORD3(a,b,c)		PCB_MIL_TO_COORD (a), PCB_MIL_TO_COORD (b), PCB_MIL_TO_COORD (c)
-#define PCB_MM_TO_COORD5(a,b,c,d,e)		PCB_MM_TO_COORD (a), PCB_MM_TO_COORD (b), PCB_MM_TO_COORD (c),	\
-                              		PCB_MM_TO_COORD (d), PCB_MM_TO_COORD (e)
-#define PCB_MIL_TO_COORD5(a,b,c,d,e)	PCB_MIL_TO_COORD (a), PCB_MIL_TO_COORD (b), PCB_MIL_TO_COORD (c),	\
-                               		PCB_MIL_TO_COORD (d), PCB_MIL_TO_COORD (e)
-
 /* Should be kept in order of smallest scale_factor to largest -- the code
    uses this ordering for finding the best scale to use for a group of units */
 pcb_unit_t pcb_units[] = {
