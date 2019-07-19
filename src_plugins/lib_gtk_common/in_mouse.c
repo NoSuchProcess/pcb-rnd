@@ -46,6 +46,7 @@
 #include <genvector/genvector_impl.c>
 
 #include "in_keyboard.h"
+#include "glue_common.h"
 
 pcb_hid_cfg_mouse_t ghid_mouse;
 int ghid_wheel_zoom = 0;
@@ -152,7 +153,7 @@ static gboolean loop_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev
 {
 	if (g_main_loop_is_running(lctx->loop))
 		g_main_loop_quit(lctx->loop);
-	lctx->com->note_event_location(ev);
+	pcb_gtk_note_event_location(ev);
 	return TRUE;
 }
 
@@ -265,7 +266,7 @@ gboolean ghid_port_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev, 
 	if (ev->type != GDK_BUTTON_PRESS)
 		return TRUE;
 
-	ctx->common.note_event_location(ev);
+	pcb_gtk_note_event_location(ev);
 	state = (GdkModifierType) (ev->state);
 	mk = ghid_modifier_keys_state(drawing_area, &state);
 
@@ -286,7 +287,7 @@ gboolean ghid_port_button_release_cb(GtkWidget *drawing_area, GdkEventButton *ev
 	GdkModifierType state;
 	pcb_gtk_t *ctx = data;
 
-	ctx->common.note_event_location(ev);
+	pcb_gtk_note_event_location(ev);
 	state = (GdkModifierType) (ev->state);
 	mk = ghid_modifier_keys_state(drawing_area, &state);
 

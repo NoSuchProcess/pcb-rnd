@@ -60,6 +60,7 @@
 #include "in_keyboard.h"
 #include "lib_gtk_config.h"
 #include "hid_gtk_conf.h"
+#include "glue_common.h"
 
 /*** docking code (dynamic parts) ***/
 static int pcb_gtk_dock_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, pcb_event_arg_t *res, int argc, pcb_event_arg_t *argv)
@@ -176,7 +177,7 @@ gboolean ghid_port_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, pcb
 	gint ksym = kev->keyval;
 
 	if (ghid_is_modifier_key_sym(ksym))
-		ghidgui->common.note_event_location(NULL);
+		pcb_gtk_note_event_location(NULL);
 
 	pcb_hidlib_adjust_attached_objects();
 	ghidgui->common.invalidate_all(ghidgui->common.hidlib);

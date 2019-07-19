@@ -310,7 +310,7 @@ void pcb_gtk_previews_invalidate_all(void)
 }
 
 
-void ghid_note_event_location(GdkEventButton *ev)
+void pcb_gtk_note_event_location(GdkEventButton *ev)
 {
 	gint event_x, event_y;
 
@@ -341,7 +341,6 @@ void ghid_glue_common_init(const char *cookie)
 
 	/* Set up the glue struct to lib_gtk_common */
 	ghidgui->common.gport = &ghid_port;
-	ghidgui->common.note_event_location = ghid_note_event_location;
 	ghidgui->common.interface_input_signals_disconnect = ghid_interface_input_signals_disconnect;
 	ghidgui->common.interface_input_signals_connect = ghid_interface_input_signals_connect;
 	ghidgui->common.interface_set_sensitive = ghid_interface_set_sensitive;

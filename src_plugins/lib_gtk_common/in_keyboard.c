@@ -36,6 +36,7 @@
 
 #include "event.h"
 #include "compat_misc.h"
+#include "glue_common.h"
 
 pcb_hid_cfg_keys_t ghid_keymap;
 GdkModifierType pcb_gtk_glob_mask;
@@ -84,8 +85,6 @@ ModifierKeysState ghid_modifier_keys_state(GtkWidget *drawing_area, GdkModifierT
 
 gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpointer data)
 {
-	pcb_gtk_view_t *view = data;
-
 	if (ghid_is_modifier_key_sym(kev->keyval))
 		return FALSE;
 
@@ -98,7 +97,7 @@ gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpoin
 		GdkKeymapKey *keys;
 		gint n_entries;
 
-		view->com->note_event_location(NULL);
+		pcb_gtk_note_event_location(NULL);
 
 		pcb_gtk_glob_mask = state;
 

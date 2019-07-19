@@ -106,7 +106,7 @@ static gint ghid_port_window_motion_cb(GtkWidget * widget, GdkEventMotion * ev, 
 		return FALSE;
 	}
 	x_prev = y_prev = -1;
-	ghid_note_event_location((GdkEventButton *) ev);
+	pcb_gtk_note_event_location((GdkEventButton *)ev);
 
 	pcb_gtk_dwg_tooltip_queue(out->drawing_area, (GSourceFunc)check_object_tooltips, out);
 

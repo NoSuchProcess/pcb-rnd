@@ -30,7 +30,6 @@ typedef struct pcb_gtk_common_s {
 	void (*draw_grid_local)(pcb_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy);
 
 	/* UI */
-	void (*note_event_location)(GdkEventButton *ev); /* remove */
 	void (*interface_input_signals_disconnect)(void); /* remove */
 	void (*interface_input_signals_connect)(void); /* remove */
 	void (*interface_set_sensitive)(gboolean sensitive); /* remove */
