@@ -230,6 +230,7 @@ static void pcb_gtk_topwinplace(pcb_hidlib_t *hidlib, GtkWidget *dialog, const c
 /* Create top level window for routines that will need top_window before ghid_create_pcb_widgets() is called. */
 int gtkhid_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
+	pcb_gtk_t *ctx = hid->hid_data;
 	GtkWidget *window;
 
 	/* on windows we need to figure out the installation directory */
@@ -259,12 +260,12 @@ TODO("This needs to be done centrally, and should not use PCB_PACKAGE but pcbhl_
 	gport->view.coord_per_px = 300.0;
 	pcb_pixel_slop = 300;
 
-	ghidgui->common.init_renderer(argc, argv, gport);
+	ctx->common.init_renderer(argc, argv, gport);
 
-	ghidgui->topwin.com = &ghidgui->common;
-	ghidgui->common.top_window = window = gport->top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	ctx->topwin.com = &ctx->common;
+	ctx->common.top_window = window = gport->top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
-	pcb_gtk_topwinplace(ghidgui->common.hidlib, window, "top");
+	pcb_gtk_topwinplace(ctx->common.hidlib, window, "top");
 	gtk_window_set_title(GTK_WINDOW(window), "pcb-rnd");
 
 	gtk_widget_show_all(gport->top_window);
