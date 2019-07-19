@@ -25,7 +25,6 @@ put /local/pcb/mod/OBJS_C99 [@
 
 	$(PLUGDIR)/lib_gtk_common/glue_common.o
 	$(PLUGDIR)/lib_gtk_common/glue_hid.o
-	$(PLUGDIR)/lib_gtk_common/common.o
 @]
 
 switch /local/pcb/hid_gtk3_cairo/controls

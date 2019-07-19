@@ -6,7 +6,6 @@
 #include "gui.h"
 #include "actions.h"
 #include "glue_hid.h"
-#include "common.h"
 #include "hid_nogui.h"
 #include "hid_attrib.h"
 #include "coord_conv.h"

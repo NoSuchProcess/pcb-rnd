@@ -33,12 +33,15 @@
 
 #include "conf.h"
 #include "gui.h"
-#include "common.h"
 #include "hidlib.h"
 #include "dlg_topwin.h"
 #include "hid_gtk_conf.h"
 #include "in_keyboard.h"
 #include "wt_preview.h"
+
+GhidGui _ghidgui, *ghidgui = &_ghidgui;
+GHidPort ghid_port, *gport;
+
 
 static void ghid_interface_set_sensitive(gboolean sensitive);
 
