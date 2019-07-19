@@ -5,9 +5,9 @@
 #include "gui.h"
 #include "common.h"
 
-#include "../src_plugins/lib_gtk_common/dlg_topwin.h"
-#include "../src_plugins/lib_gtk_common/in_keyboard.h"
-#include "../src_plugins/lib_gtk_common/hid_gtk_conf.h"
+#include "dlg_topwin.h"
+#include "in_keyboard.h"
+#include "hid_gtk_conf.h"
 
 GhidGui _ghidgui, *ghidgui = &_ghidgui;
 GHidPort ghid_port, *gport;

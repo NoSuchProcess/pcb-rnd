@@ -36,8 +36,8 @@
 #include "render.h"
 #include "common.h"
 #include "hidlib.h"
-#include "../src_plugins/lib_gtk_common/dlg_topwin.h"
-#include "../src_plugins/lib_gtk_common/hid_gtk_conf.h"
+#include "dlg_topwin.h"
+#include "hid_gtk_conf.h"
 
 static void ghid_interface_set_sensitive(gboolean sensitive);
 

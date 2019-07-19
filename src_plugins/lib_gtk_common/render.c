@@ -2,7 +2,7 @@
 #include <gtk/gtk.h>
 #include "gui.h"
 #include "render.h"
-#include "../src_plugins/lib_gtk_common/wt_preview.h"
+#include "wt_preview.h"
 
 
 void ghid_draw_area_update(GHidPort *port, GdkRectangle *rect)
