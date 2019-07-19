@@ -689,4 +689,6 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->key_state = &ghid_keymap;
 
 	dst->usage = ghid_usage;
+
+	dst->hid_data = ghidgui;
 }

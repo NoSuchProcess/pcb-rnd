@@ -545,6 +545,9 @@ struct pcb_hid_s {
 
 	/* OPTIONAL: override the mouse cursor to indicate busy state */
 	void (*busy)(pcb_hidlib_t *hidlib, pcb_bool busy);
+
+	/* this field is used by that HID implementation to store its data */
+	void *hid_data;
 };
 
 /* One of these functions (in the common code) will be called whenever the GUI
