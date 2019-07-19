@@ -31,7 +31,6 @@
 #define PCB_LIB_GTK_COMMON_UI_ZOOMPAN_H
 
 #include "pcb_bool.h"
-#include "in_mouse.h"
 #include "glue.h"
 
 #define SIDE_X_(hidlib, x)      ((pcbhl_conf.editor.view.flip_x ? hidlib->size_x - (x) : (x)))
@@ -69,6 +68,8 @@ typedef struct {
 
 	pcb_gtk_common_t *com;
 } pcb_gtk_view_t;
+
+#include "in_mouse.h"
 
 /* take coord_per_px and validate it against other view parameters. Return
     coord_per_px or the clamped value if it was too small or too large. */

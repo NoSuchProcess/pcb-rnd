@@ -3,38 +3,11 @@
 
 #include "hid_cfg_input.h"
 #include "glue.h"
+#include "gui.h"
 
 #include <gtk/gtk.h>
 #include <gdk/gdkevents.h>
 
-
-typedef struct {
-	GdkCursorType shape;
-	GdkCursor *X_cursor;
-	GdkPixbuf *pb;
-} ghid_cursor_t;
-
-#define GVT(x) vtmc_ ## x
-#define GVT_ELEM_TYPE ghid_cursor_t
-#define GVT_SIZE_TYPE int
-#define GVT_DOUBLING_THRS 256
-#define GVT_START_SIZE 8
-#define GVT_FUNC
-#define GVT_SET_NEW_BYTES_TO 0
-
-#include <genvector/genvector_impl.h>
-#define GVT_REALLOC(vect, ptr, size)  realloc(ptr, size)
-#define GVT_FREE(vect, ptr)           free(ptr)
-#include <genvector/genvector_undef.h>
-
-typedef struct pcb_gtk_mouse_s {
-	GtkWidget *drawing_area, *top_window;
-	GdkCursor *X_cursor;          /* used X cursor */
-	GdkCursorType X_cursor_shape; /* and its shape */
-	vtmc_t cursor;
-	int last_cursor_idx; /* tool index of the tool last selected */
-	pcb_gtk_common_t *com;
-} pcb_gtk_mouse_t;
 
 extern pcb_hid_cfg_mouse_t ghid_mouse;
 extern int ghid_wheel_zoom;

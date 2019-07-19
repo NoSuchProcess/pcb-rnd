@@ -158,15 +158,15 @@ static void gtkhid_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_
 	/* assume pcb_gui is us */
 	pcb_gui->hid_cfg = ctx->topwin.ghid_cfg;
 
-	gport->mouse.drawing_area = ctx->topwin.drawing_area;
+	gport->mouse->drawing_area = ctx->topwin.drawing_area;
 	gport->drawing_area = ctx->topwin.drawing_area;
-	gport->mouse.top_window = ctx->common.top_window;
+	gport->mouse->top_window = ctx->common.top_window;
 
 TODO(": move this to render init")
 	/* Mouse and key events will need to be intercepted when PCB needs a
 	   |  location from the user.
 	 */
-	g_signal_connect(G_OBJECT(gport->drawing_area), "scroll_event", G_CALLBACK(ghid_port_window_mouse_scroll_cb), &gport->mouse);
+	g_signal_connect(G_OBJECT(gport->drawing_area), "scroll_event", G_CALLBACK(ghid_port_window_mouse_scroll_cb), gport->mouse);
 	g_signal_connect(G_OBJECT(gport->drawing_area), "motion_notify_event", G_CALLBACK(ghid_port_window_motion_cb), gport);
 	g_signal_connect(G_OBJECT(gport->drawing_area), "configure_event", G_CALLBACK(ghid_port_drawing_area_configure_event_cb), gport);
 	g_signal_connect(G_OBJECT(gport->drawing_area), "enter_notify_event", G_CALLBACK(ghid_port_window_enter_cb), gport);
@@ -282,7 +282,7 @@ static void ghid_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
 
 static void ghid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)
 {
-	pcb_gtk_get_coords(&gport->mouse, &gport->view, msg, x, y, force);
+	pcb_gtk_get_coords(gport->mouse, &gport->view, msg, x, y, force);
 }
 
 pcb_hidval_t ghid_add_timer(void (*func) (pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
@@ -322,7 +322,7 @@ static void PointCursor(pcb_bool grabbed)
 	if (!ghidgui)
 		return;
 
-	ghid_point_cursor(&gport->mouse, grabbed);
+	ghid_point_cursor(gport->mouse, grabbed);
 }
 
 /* Create a new menu by path */
@@ -532,12 +532,12 @@ static void ghid_set_hidlib(pcb_hidlib_t *hidlib)
 
 static void ghid_reg_mouse_cursor(pcb_hidlib_t *hidlib, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
 {
-	ghid_port_reg_mouse_cursor(&gport->mouse, idx, name, pixel, mask);
+	ghid_port_reg_mouse_cursor(gport->mouse, idx, name, pixel, mask);
 }
 
 static void ghid_set_mouse_cursor(pcb_hidlib_t *hidlib, int idx)
 {
-	ghid_port_set_mouse_cursor(&gport->mouse, idx);
+	ghid_port_set_mouse_cursor(gport->mouse, idx);
 }
 
 static void ghid_set_top_title(pcb_hidlib_t *hidlib, const char *title)
@@ -550,9 +550,9 @@ static void ghid_busy(pcb_hidlib_t *hidlib, pcb_bool busy)
 	if ((gport == NULL) || (!ghidgui->hid_active))
 		return;
 	if (busy)
-		ghid_watch_cursor(&gport->mouse);
+		ghid_watch_cursor(gport->mouse);
 	else
-		ghid_restore_cursor(&gport->mouse);
+		ghid_restore_cursor(gport->mouse);
 }
 
 static int ghid_shift_is_pressed()

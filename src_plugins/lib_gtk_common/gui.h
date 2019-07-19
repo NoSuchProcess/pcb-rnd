@@ -32,15 +32,44 @@
 
 typedef struct pcb_gtk_port_s  pcb_gtk_port_t;
 typedef struct pcb_gtk_s pcb_gtk_t;
+typedef struct pcb_gtk_mouse_s pcb_gtk_mouse_t;
 extern pcb_gtk_t _ghidgui, *ghidgui;
 
 #include <gtk/gtk.h>
 
-/* needed for a type in pcb_gtk_t - DO NOT ADD .h files that are not requred for the structs! */
-#include "../src_plugins/lib_gtk_common/ui_zoompan.h"
-#include "../src_plugins/lib_gtk_common/dlg_topwin.h"
-#include "../src_plugins/lib_gtk_common/in_mouse.h"
 #include "../src_plugins/lib_gtk_common/glue.h"
+#include "../src_plugins/lib_gtk_common/ui_zoompan.h"
+
+typedef struct {
+	GdkCursorType shape;
+	GdkCursor *X_cursor;
+	GdkPixbuf *pb;
+} ghid_cursor_t;
+
+#define GVT(x) vtmc_ ## x
+#define GVT_ELEM_TYPE ghid_cursor_t
+#define GVT_SIZE_TYPE int
+#define GVT_DOUBLING_THRS 256
+#define GVT_START_SIZE 8
+#define GVT_FUNC
+#define GVT_SET_NEW_BYTES_TO 0
+
+#include <genvector/genvector_impl.h>
+#define GVT_REALLOC(vect, ptr, size)  realloc(ptr, size)
+#define GVT_FREE(vect, ptr)           free(ptr)
+#include <genvector/genvector_undef.h>
+
+struct pcb_gtk_mouse_s {
+	GtkWidget *drawing_area, *top_window;
+	GdkCursor *X_cursor;          /* used X cursor */
+	GdkCursorType X_cursor_shape; /* and its shape */
+	vtmc_t cursor;
+	int last_cursor_idx; /* tool index of the tool last selected */
+	pcb_gtk_common_t *com;
+};
+
+/* needed for a type in pcb_gtk_t - DO NOT ADD .h files that are not requred for the structs! */
+#include "../src_plugins/lib_gtk_common/dlg_topwin.h"
 
 #include "event.h"
 #include "conf_hid.h"
@@ -59,6 +88,8 @@ struct pcb_gtk_s {
 	int gui_is_up; /*1 if all parts of the gui is up and running */
 
 	gulong button_press_handler, button_release_handler, key_press_handler[5], key_release_handler[5];
+
+	pcb_gtk_mouse_t mouse;
 };
 
 /* The output viewport */
@@ -70,7 +101,7 @@ struct pcb_gtk_port_s {
 
 	struct render_priv_s *render_priv;
 
-	pcb_gtk_mouse_t mouse;
+	pcb_gtk_mouse_t *mouse;
 
 	pcb_gtk_view_t view;
 };
