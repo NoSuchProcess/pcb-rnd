@@ -14,6 +14,8 @@ const char *ghid_cookie = "gtk2 hid, gdk";
 
 pcb_hid_t gtk2_gdk_hid;
 
+extern void ghid_gdk_install(pcb_gtk_common_t *common, pcb_hid_t *hid);
+
 int gtk2_gdk_parse_arguments(int *argc, char ***argv)
 {
 	ghid_gdk_install(&ghidgui->common, NULL);

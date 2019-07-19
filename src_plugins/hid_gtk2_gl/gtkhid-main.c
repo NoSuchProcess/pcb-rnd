@@ -31,6 +31,8 @@ void pplg_uninit_hid_gtk2_gl(void)
 	drawgl_uninit();
 }
 
+extern void ghid_gl_install(pcb_gtk_common_t *common, pcb_hid_t *hid);
+
 int pplg_init_hid_gtk2_gl(void)
 {
 	PCB_API_CHK_VER;
