@@ -26,8 +26,6 @@
 
 extern pcb_hid_cfg_keys_t ghid_keymap;
 
-static inline void ghid_screen_update(void) { ghidgui->common.screen_update(); }
-
 static gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev, void * out_)
 {
 	pcb_gtk_port_t *out = out_;
@@ -54,7 +52,7 @@ static gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev,
 	 * and moves the pointer to the viewport without the pointer going over
 	 * the edge of the viewport */
 	if (force_update || (ev->mode == GDK_CROSSING_UNGRAB && ev->detail == GDK_NOTIFY_NONLINEAR)) {
-		ghid_screen_update();
+		ghidgui->common.screen_update();
 	}
 	return FALSE;
 }
@@ -78,7 +76,7 @@ static gint ghid_port_window_leave_cb(GtkWidget * widget, GdkEventCrossing * ev,
 
 	out->view.has_entered = FALSE;
 
-	ghid_screen_update();
+	ghidgui->common.screen_update();
 
 	return FALSE;
 }
