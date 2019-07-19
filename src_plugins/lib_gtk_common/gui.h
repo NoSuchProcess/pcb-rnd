@@ -44,7 +44,6 @@ extern GhidGui _ghidgui, *ghidgui;
 
 #include "event.h"
 #include "conf_hid.h"
-#include "render.h"
 #include "pcb_bool.h"
 
 struct GhidGui_s {

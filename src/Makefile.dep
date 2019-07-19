@@ -1980,7 +1980,7 @@
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/glue.h event.h \
- ../src_plugins/lib_gtk_common/render.h \
+   \
  ../src_plugins/lib_gtk_common/gui.h \
  ../src_plugins/lib_gtk_common/coord_conv.h compat_misc.h \
  ../src_plugins/lib_gtk_common/preview_helper.h \
@@ -2015,13 +2015,13 @@
  ../src_plugins/lib_gtk_common/glue.h \
  ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/bu_command.h pcb_bool.h \
- ../src_plugins/lib_gtk_common/render.h \
+   \
  ../src_plugins/lib_gtk_common/gui.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/glue.h \
- ../src_plugins/lib_gtk_common/render.h
+  
 ../src_plugins/hid_gtk2_gl/gtkhid-gl.o: \
  ../src_plugins/hid_gtk2_gl/gtkhid-gl.c ../config.h crosshair.h \
  vtonpoint.h global_typedefs.h pcb_bool.h unit.h \
@@ -2052,10 +2052,10 @@
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/glue.h \
- ../src_plugins/lib_gtk_common/render.h \
+   \
  ../src_plugins/lib_gtk_common/gui.h \
  ../src_plugins/lib_gtk_common/coord_conv.h compat_misc.h \
- ../src_plugins/lib_gtk_common/render.h \
+   \
  ../src_plugins/lib_gtk_common/preview_helper.h \
  ../src_plugins/lib_hid_gl/opengl.h ../src_plugins/lib_hid_gl/draw_gl.h \
  ../src_plugins/lib_hid_gl/opengl.h ../src_plugins/lib_hid_gl/hidgl.h \
@@ -2089,13 +2089,13 @@
  ../src_plugins/lib_gtk_common/glue.h \
  ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/bu_command.h pcb_bool.h \
- ../src_plugins/lib_gtk_common/render.h \
+   \
  ../src_plugins/lib_gtk_common/gui.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/glue.h \
- ../src_plugins/lib_gtk_common/render.h
+  
 ../src_plugins/hid_gtk3_cairo/gtkhid-cairo.o: \
  ../src_plugins/hid_gtk3_cairo/gtkhid-cairo.c ../config.h hidlib_conf.h \
  conf.h global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
@@ -2123,7 +2123,7 @@
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/glue.h event.h \
- ../src_plugins/lib_gtk_common/render.h \
+   \
  ../src_plugins/lib_gtk_common/gui.h \
  ../src_plugins/lib_gtk_common/coord_conv.h compat_misc.h \
  ../src_plugins/lib_gtk_common/preview_helper.h \
@@ -2158,13 +2158,13 @@
  ../src_plugins/lib_gtk_common/glue.h \
  ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/bu_command.h pcb_bool.h \
- ../src_plugins/lib_gtk_common/render.h \
+   \
  ../src_plugins/lib_gtk_common/gui.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/glue.h \
- ../src_plugins/lib_gtk_common/render.h
+  
 ../src_plugins/hid_lesstif/FillBox.o: \
  ../src_plugins/hid_lesstif/FillBox.c ../config.h \
  ../src_plugins/hid_lesstif/FillBoxP.h \
@@ -3922,7 +3922,7 @@
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/glue.h event.h hidlib.h \
- ../src_plugins/lib_gtk_common/render.h \
+   \
  ../src_plugins/lib_gtk_common/common.h \
  ../src_plugins/lib_gtk_common/in_keyboard.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h \
@@ -4055,7 +4055,7 @@
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/glue.h event.h hidlib.h \
- ../src_plugins/lib_gtk_common/render.h \
+   \
  ../src_plugins/lib_gtk_common/common.h hidlib.h \
  ../src_plugins/lib_gtk_common/hid_gtk_conf.h
 ../src_plugins/lib_gtk_common/glue_hid.o: \
@@ -4085,7 +4085,7 @@
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/glue.h event.h hidlib.h \
- ../src_plugins/lib_gtk_common/render.h actions.h \
+   actions.h \
  ../src_3rd/libfungw/fungw.h ../src_plugins/lib_gtk_common/common.h \
  hid_nogui.h hid_attrib.h ../src_plugins/lib_gtk_common/coord_conv.h \
  compat_misc.h hidlib_conf.h ../src_plugins/lib_gtk_common/in_keyboard.h \
@@ -4215,7 +4215,7 @@
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/glue.h event.h hidlib.h \
- ../src_plugins/lib_gtk_common/render.h \
+   \
  ../src_plugins/lib_gtk_common/wt_preview.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h
 ../src_plugins/lib_gtk_common/ui_crosshair.o: \

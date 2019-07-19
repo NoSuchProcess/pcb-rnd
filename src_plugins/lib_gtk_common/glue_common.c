@@ -33,7 +33,6 @@
 
 #include "conf.h"
 #include "gui.h"
-#include "render.h"
 #include "common.h"
 #include "hidlib.h"
 #include "dlg_topwin.h"
@@ -242,6 +241,11 @@ static void ghid_main_destroy(void *port)
 {
 	ghidgui->common.shutdown_renderer(port);
 	gtk_main_quit();
+}
+
+void ghid_draw_area_update(GHidPort *port, GdkRectangle *rect)
+{
+	gdk_window_invalidate_rect(gtk_widget_get_window(port->drawing_area), rect, FALSE);
 }
 
 /*** init ***/

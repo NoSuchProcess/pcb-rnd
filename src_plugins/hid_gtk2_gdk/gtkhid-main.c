@@ -8,7 +8,6 @@
 #include "../src_plugins/lib_gtk_common/glue_common.h"
 #include "../src_plugins/lib_gtk_common/glue_hid.h"
 #include "../src_plugins/lib_gtk_common/common.h"
-#include "../src_plugins/lib_gtk_common/render.h"
 
 const char *ghid_cookie = "gtk2 hid, gdk";
 
