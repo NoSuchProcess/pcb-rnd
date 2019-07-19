@@ -215,10 +215,10 @@ void pcb_gtk_pan_view_rel(pcb_gtk_view_t *v, pcb_coord_t dx, pcb_coord_t dy)
 	pcb_gtk_pan_common(v);
 }
 
-void pcb_gtk_get_coords(pcb_gtk_mouse_t *mouse, pcb_gtk_view_t *vw, const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)
+void pcb_gtk_get_coords(pcb_gtk_t *ctx, pcb_gtk_view_t *vw, const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)
 {
 	if ((force || !vw->has_entered) && msg)
-		if (!ghid_get_user_xy(mouse, msg))
+		if (!ghid_get_user_xy(ctx, msg))
 			return;
 	if (vw->has_entered) {
 		*x = vw->pcb_x;

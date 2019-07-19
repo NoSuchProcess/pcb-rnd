@@ -282,7 +282,7 @@ static void ghid_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
 
 static void ghid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)
 {
-	pcb_gtk_get_coords(gport->mouse, &gport->view, msg, x, y, force);
+	pcb_gtk_get_coords(ghidgui, &gport->view, msg, x, y, force);
 }
 
 pcb_hidval_t ghid_add_timer(void (*func) (pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
@@ -322,7 +322,7 @@ static void PointCursor(pcb_bool grabbed)
 	if (!ghidgui)
 		return;
 
-	ghid_point_cursor(gport->mouse, grabbed);
+	ghid_point_cursor(ghidgui, grabbed);
 }
 
 /* Create a new menu by path */
@@ -532,12 +532,12 @@ static void ghid_set_hidlib(pcb_hidlib_t *hidlib)
 
 static void ghid_reg_mouse_cursor(pcb_hidlib_t *hidlib, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
 {
-	ghid_port_reg_mouse_cursor(gport->mouse, idx, name, pixel, mask);
+	ghid_port_reg_mouse_cursor(ghidgui, idx, name, pixel, mask);
 }
 
 static void ghid_set_mouse_cursor(pcb_hidlib_t *hidlib, int idx)
 {
-	ghid_port_set_mouse_cursor(gport->mouse, idx);
+	ghid_port_set_mouse_cursor(ghidgui, idx);
 }
 
 static void ghid_set_top_title(pcb_hidlib_t *hidlib, const char *title)
@@ -550,9 +550,9 @@ static void ghid_busy(pcb_hidlib_t *hidlib, pcb_bool busy)
 	if ((gport == NULL) || (!ghidgui->hid_active))
 		return;
 	if (busy)
-		ghid_watch_cursor(gport->mouse);
+		ghid_watch_cursor(ghidgui);
 	else
-		ghid_restore_cursor(gport->mouse);
+		ghid_restore_cursor(ghidgui);
 }
 
 static int ghid_shift_is_pressed()

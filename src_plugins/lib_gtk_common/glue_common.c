@@ -238,7 +238,7 @@ static void ghid_port_button_release_main(void)
 
 static void ghid_mode_cursor_main(void)
 {
-	ghid_mode_cursor(gport->mouse);
+	ghid_mode_cursor(ghidgui);
 }
 
 static void kbd_input_signals_connect(int idx, void *obj)
@@ -268,8 +268,8 @@ static void kbd_input_signals_disconnect(int idx, void *obj)
    by new signal handlers or the command_combo_box entry. */
 void ghid_interface_input_signals_connect(void)
 {
-	ghidgui->button_press_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_press_event", G_CALLBACK(ghid_port_button_press_cb), gport->mouse);
-	ghidgui->button_release_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_release_event", G_CALLBACK(ghid_port_button_release_cb), gport->mouse);
+	ghidgui->button_press_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_press_event", G_CALLBACK(ghid_port_button_press_cb), ghidgui);
+	ghidgui->button_release_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_release_event", G_CALLBACK(ghid_port_button_release_cb), ghidgui);
 	kbd_input_signals_connect(0, gport->drawing_area);
 	kbd_input_signals_connect(3, ghidgui->topwin.left_toolbar);
 }
