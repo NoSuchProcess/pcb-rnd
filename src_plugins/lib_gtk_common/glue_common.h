@@ -9,9 +9,6 @@ void ghid_glue_common_uninit(const char *cookie);
 
 void ghid_draw_area_update(GHidPort *out, GdkRectangle *rect);
 
-void pcb_gtk_tw_ranges_scale(pcb_gtk_topwin_t *tw);
-void ghid_note_event_location(GdkEventButton *ev);
-
 /* make sure the context is set to draw the whole widget size, which might
    be slightly larger than the original request */
 #define PCB_GTK_PREVIEW_TUNE_EXTENT(ctx, allocation) \
@@ -40,3 +37,10 @@ do { \
 /* Redraw all previews intersecting the specified screenbox (in case of lr) */
 void pcb_gtk_previews_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom);
 void pcb_gtk_previews_invalidate_all(void);
+
+/*** Internal calls, hid implementations won't need these ***/
+void pcb_gtk_tw_ranges_scale(pcb_gtk_topwin_t *tw);
+void ghid_note_event_location(GdkEventButton *ev);
+
+void ghid_interface_input_signals_connect(void);
+void ghid_interface_input_signals_disconnect(void);
