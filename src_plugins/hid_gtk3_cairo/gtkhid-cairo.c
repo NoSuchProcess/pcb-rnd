@@ -40,7 +40,6 @@
 
 #include "../src_plugins/lib_gtk_common/gui.h"
 #include "../src_plugins/lib_gtk_common/coord_conv.h"
-#include "../src_plugins/lib_gtk_common/preview_helper.h"
 
 #include "../src_plugins/lib_gtk_common/hid_gtk_conf.h"
 #include "../src_plugins/lib_gtk_common/lib_gtk_config.h"

@@ -7,9 +7,6 @@
 
 #include "../src_plugins/lib_gtk_common/glue_common.h"
 #include "../src_plugins/lib_gtk_common/glue_hid.h"
-#include "../src_plugins/lib_gtk_common/glue_win32.h"
-#include "../src_plugins/lib_gtk_common/common.h"
-#include "../src_plugins/lib_gtk_common/render.h"
 
 const char *ghid_cairo_cookie = "gtk3 hid, cairo";
 const char *ghid_cairo_menu_cookie = "gtk3 hid menu, cairo";
