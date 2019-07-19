@@ -152,6 +152,8 @@ static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, Gd
 
 void gtkhid_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 {
+	pcb_gtk_t *ctx = hid->hid_data;
+
 	gtkhid_begin(hidlib);
 
 	pcb_hid_cfg_keys_init(&ghid_keymap);
@@ -160,14 +162,14 @@ void gtkhid_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *
 	ghid_keymap.auto_chr = 1;
 	ghid_keymap.auto_tr = hid_cfg_key_default_trans;
 
-	ghid_create_pcb_widgets(&ghidgui->topwin, gport->top_window);
+	ghid_create_pcb_widgets(&ctx->topwin, gport->top_window);
 
 	/* assume pcb_gui is us */
-	pcb_gui->hid_cfg = ghidgui->topwin.ghid_cfg;
+	pcb_gui->hid_cfg = ctx->topwin.ghid_cfg;
 
-	gport->mouse.drawing_area = ghidgui->topwin.drawing_area;
-	gport->drawing_area = ghidgui->topwin.drawing_area;
-	gport->mouse.top_window = ghidgui->common.top_window;
+	gport->mouse.drawing_area = ctx->topwin.drawing_area;
+	gport->drawing_area = ctx->topwin.drawing_area;
+	gport->mouse.top_window = ctx->common.top_window;
 
 TODO(": move this to render init")
 	/* Mouse and key events will need to be intercepted when PCB needs a
@@ -184,7 +186,7 @@ TODO(": move this to render init")
 	if (conf_hid_gtk.plugins.hid_gtk.listen)
 		pcb_gtk_create_listener();
 
-	ghidgui->gui_is_up = 1;
+	ctx->gui_is_up = 1;
 
 	ghdi_gui_inited(1, 0);
 
@@ -197,8 +199,9 @@ TODO(": move this to render init")
 	pcb_hid_cfg_keys_uninit(&ghid_keymap);
 	gtkhid_end();
 
-	ghidgui->gui_is_up = 0;
-	pcb_gui->hid_cfg = NULL;
+	ctx->gui_is_up = 0;
+	hid->hid_cfg = NULL;
+	hid->hid_data = NULL;
 }
 
 static void ghid_do_exit(pcb_hid_t * hid)
