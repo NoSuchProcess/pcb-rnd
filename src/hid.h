@@ -247,7 +247,7 @@ struct pcb_hid_s {
 	   The HID should remove all arguments, leaving any possible file
 	   names behind. Returns 0 on success, positive for recoverable errors
 	   (no change in argc or argv) and negative for unrecoverable errors.  */
-	int (*parse_arguments)(int *argc, char ***argv);
+	int (*parse_arguments)(pcb_hid_t *hid, int *argc, char ***argv);
 
 	/* This may be called to ask the GUI to force a redraw of a given area */
 	void (*invalidate_lr)(pcb_hidlib_t *hidlib, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom);

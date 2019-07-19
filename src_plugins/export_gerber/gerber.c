@@ -55,7 +55,7 @@ static pcb_cam_t gerber_cam;
 
 static pcb_hid_attribute_t *gerber_get_export_options(int *n);
 static void gerber_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options);
-static int gerber_parse_arguments(int *argc, char ***argv);
+static int gerber_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv);
 static pcb_hid_gc_t gerber_make_gc(void);
 static void gerber_destroy_gc(pcb_hid_gc_t gc);
 static void gerber_set_color(pcb_hid_gc_t gc, const pcb_color_t *name);
@@ -690,7 +690,7 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_
 	f = NULL;
 }
 
-static int gerber_parse_arguments(int *argc, char ***argv)
+static int gerber_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(gerber_options, NUM_OPTIONS, gerber_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);

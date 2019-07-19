@@ -227,7 +227,7 @@ static int export_cam_usage(const char *topic)
 static char *cam_export_job;
 static cam_ctx_t cam_export_ctx;
 static int cam_export_has_outfile;
-static int export_cam_parse_arguments(int *argc, char ***argv)
+static int export_cam_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
 	int d, s, oargc;
 	if (*argc < 1) {

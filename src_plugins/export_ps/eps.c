@@ -32,7 +32,7 @@
 /*----------------------------------------------------------------------------*/
 static pcb_hid_attribute_t *eps_get_export_options(int *n);
 static void eps_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options);
-static int eps_parse_arguments(int *argc, char ***argv);
+static int eps_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv);
 static int eps_set_layer_group(pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform);
 static pcb_hid_gc_t eps_make_gc(void);
 static void eps_destroy_gc(pcb_hid_gc_t gc);
@@ -380,7 +380,7 @@ static void eps_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val
 		pcb_message(PCB_MSG_ERROR, "eps cam export for '%s' failed to produce any content\n", options[HA_cam].str_value);
 }
 
-static int eps_parse_arguments(int *argc, char ***argv)
+static int eps_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(eps_attribute_list, sizeof(eps_attribute_list) / sizeof(eps_attribute_list[0]), ps_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);

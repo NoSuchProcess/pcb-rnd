@@ -302,7 +302,7 @@ do { \
 
 static char **fuse_ret_argv;
 static int fuse_ret_argc = 0;
-static int export_vfs_fuse_parse_arguments(int *argc, char ***argv)
+static int export_vfs_fuse_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
 	int n, in_argc = *argc;
 	char **in_argv = *argv;

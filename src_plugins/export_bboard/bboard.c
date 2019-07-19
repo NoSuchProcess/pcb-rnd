@@ -579,7 +579,7 @@ TODO(": remove x1;y1;x2;y2")
 
 }
 
-static int bboard_parse_arguments(int *argc, char ***argv)
+static int bboard_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
 	return pcb_hid_parse_command_line(argc, argv);
 }

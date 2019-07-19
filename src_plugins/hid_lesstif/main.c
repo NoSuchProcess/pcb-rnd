@@ -1619,7 +1619,7 @@ static void lesstif_err_msg(String name, String type, String class, String dflt,
 	longjmp(lesstif_err_jmp, 1);
 }
 
-static int lesstif_parse_arguments(int *argc, char ***argv)
+static int lesstif_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
 	Atom close_atom;
 	pcb_hid_attr_node_t *ha;

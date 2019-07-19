@@ -282,7 +282,7 @@ static void excellon_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_att
 }
 
 
-static int excellon_parse_arguments(int *argc, char ***argv)
+static int excellon_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(excellon_options, NUM_OPTIONS, excellon_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);

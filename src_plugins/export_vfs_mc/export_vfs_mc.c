@@ -135,7 +135,7 @@ static int export_vfs_mc_usage(const char *topic)
 }
 
 
-static int export_vfs_mc_parse_arguments(int *argc, char ***argv)
+static int export_vfs_mc_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(export_vfs_mc_options, sizeof(export_vfs_mc_options) / sizeof(export_vfs_mc_options[0]), export_vfs_mc_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);

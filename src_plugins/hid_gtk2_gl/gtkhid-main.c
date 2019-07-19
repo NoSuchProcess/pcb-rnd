@@ -15,7 +15,7 @@ const char *ghid_gl_cookie = "gtk2 hid, gl";
 
 pcb_hid_t gtk2_gl_hid;
 
-int gtk2_gl_parse_arguments(int *argc, char ***argv)
+int gtk2_gl_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
 	ghid_glue_common_uninit(ghid_cookie);
 }

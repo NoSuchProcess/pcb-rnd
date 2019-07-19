@@ -86,7 +86,7 @@ static int export_test_usage(const char *topic)
 }
 
 
-static int export_test_parse_arguments(int *argc, char ***argv)
+static int export_test_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(export_test_options, sizeof(export_test_options) / sizeof(export_test_options[0]), export_test_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);

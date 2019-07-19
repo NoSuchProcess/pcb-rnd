@@ -66,7 +66,7 @@ static void nogui_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_v
 	CRASH("do_export");
 }
 
-static int nogui_parse_arguments(int *argc, char ***argv)
+static int nogui_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
 	CRASH("parse_arguments");
 }

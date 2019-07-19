@@ -348,7 +348,7 @@ static void openscad_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_att
 	f = NULL;
 }
 
-static int openscad_parse_arguments(int *argc, char ***argv)
+static int openscad_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(openscad_attribute_list, sizeof(openscad_attribute_list) / sizeof(openscad_attribute_list[0]), openscad_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);

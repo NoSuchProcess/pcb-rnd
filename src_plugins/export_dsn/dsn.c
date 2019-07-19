@@ -588,7 +588,7 @@ static void dsn_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val
 	PrintSPECCTRA();
 }
 
-static int dsn_parse_arguments(int *argc, char ***argv)
+static int dsn_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
 	return pcb_hid_parse_command_line(argc, argv);
 }

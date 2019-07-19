@@ -354,7 +354,7 @@ int pcb_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[])
 		int res;
 		if (pcb_gui->get_export_options != NULL)
 			pcb_gui->get_export_options(NULL);
-		res = pcb_gui->parse_arguments(hid_argc, hid_argv);
+		res = pcb_gui->parse_arguments(pcb_gui, hid_argc, hid_argv);
 		if (res == 0)
 			break; /* HID accepted, don't try anything else */
 		if (res < 0) {
@@ -584,7 +584,7 @@ void pcbhl_mainloop_interactive(pcbhl_main_args_t *ga, pcb_hidlib_t *hidlib)
 	pcb_gui->do_export(pcb_gui, hidlib, 0);
 	if (pcb_gui != NULL) {
 		/* init the next GUI */
-		pcb_gui->parse_arguments(&ga->hid_argc, &ga->hid_argv);
+		pcb_gui->parse_arguments(pcb_gui, &ga->hid_argc, &ga->hid_argv);
 	}
 }
 

@@ -340,7 +340,7 @@ static void dxf_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val
 		pcb_message(PCB_MSG_ERROR, "dxf cam export for '%s' failed to produce any content\n", options[HA_cam].str_value);
 }
 
-static int dxf_parse_arguments(int *argc, char ***argv)
+static int dxf_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(dxf_attribute_list, sizeof(dxf_attribute_list) / sizeof(dxf_attribute_list[0]), dxf_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);

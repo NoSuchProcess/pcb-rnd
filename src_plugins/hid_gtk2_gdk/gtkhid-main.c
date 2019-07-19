@@ -14,10 +14,10 @@ pcb_hid_t gtk2_gdk_hid;
 
 extern void ghid_gdk_install(pcb_gtk_common_t *common, pcb_hid_t *hid);
 
-int gtk2_gdk_parse_arguments(int *argc, char ***argv)
+int gtk2_gdk_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
 	ghid_gdk_install(&ghidgui->common, NULL);
-	return gtkhid_parse_arguments(argc, argv);
+	return gtkhid_parse_arguments(hid, argc, argv);
 }
 
 int pplg_check_ver_hid_gtk2_gdk(int ver_needed) { return 0; }

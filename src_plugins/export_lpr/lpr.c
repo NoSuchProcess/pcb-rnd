@@ -93,7 +93,7 @@ static void lpr_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val
 	pcb_pclose(f);
 }
 
-static int lpr_parse_arguments(int *argc, char ***argv)
+static int lpr_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
 	lpr_get_export_options(0);
 	pcb_hid_register_attributes(lpr_options, num_lpr_options, lpr_cookie, 0);

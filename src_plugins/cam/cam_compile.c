@@ -93,7 +93,7 @@ static int cam_exec_inst(cam_ctx_t *ctx, pcb_cam_code_t *code)
 
 			argc = ctx->argc;
 			argv = ctx->argv;
-			if (ctx->exporter->parse_arguments(&argc, &argv) != 0) {
+			if (ctx->exporter->parse_arguments(ctx->exporter, &argc, &argv) != 0) {
 				pcb_message(PCB_MSG_ERROR, "cam: exporter '%s' refused the arguments\n", code->op.write.arg);
 				return -1;
 			}

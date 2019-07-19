@@ -663,7 +663,7 @@ static void ps_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val_
 		pcb_message(PCB_MSG_ERROR, "eps cam export for '%s' failed to produce any content\n", options[HA_cam].str_value);
 }
 
-static int ps_parse_arguments(int *argc, char ***argv)
+static int ps_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(ps_attribute_list, NUM_OPTIONS, ps_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);

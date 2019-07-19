@@ -289,7 +289,7 @@ static int bom_usage(const char *topic)
 }
 
 
-static int bom_parse_arguments(int *argc, char ***argv)
+static int bom_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(bom_options, sizeof(bom_options) / sizeof(bom_options[0]), bom_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);

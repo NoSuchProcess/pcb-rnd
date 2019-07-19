@@ -156,7 +156,7 @@ static void batch_do_exit(pcb_hid_t *hid)
 	batch_stay = 0;
 }
 
-static int batch_parse_arguments(int *argc, char ***argv)
+static int batch_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
 	return pcb_hid_parse_command_line(argc, argv);
 }

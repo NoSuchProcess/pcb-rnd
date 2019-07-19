@@ -427,7 +427,7 @@ static pcb_hid_attribute_t *ipcd356_get_export_options(int *n)
 	return ipcd356_options;
 }
 
-static int ipcd356_parse_arguments(int *argc, char ***argv)
+static int ipcd356_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
 	return pcb_hid_parse_command_line(argc, argv);
 }

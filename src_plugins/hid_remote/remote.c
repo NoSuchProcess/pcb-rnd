@@ -118,7 +118,7 @@ static void remote_do_exit(pcb_hid_t *hid)
 	remote_stay = 0;
 }
 
-static int remote_parse_arguments(int *argc, char ***argv)
+static int remote_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
 	return pcb_hid_parse_command_line(argc, argv);
 }
