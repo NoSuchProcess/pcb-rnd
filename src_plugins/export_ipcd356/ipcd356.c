@@ -432,7 +432,7 @@ static int ipcd356_parse_arguments(int *argc, char ***argv)
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static void ipcd356_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
+static void ipcd356_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 {
 	int n;
 	const char *fn;

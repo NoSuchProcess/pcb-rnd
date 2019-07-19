@@ -1365,14 +1365,14 @@ static void show_crosshair(gboolean paint_new_location)
 
 static void ghid_gdk_init_renderer(int *argc, char ***argv, void *vport)
 {
-	GHidPort *port = vport;
+	pcb_gtk_port_t *port = vport;
 	/* Init any GC's required */
 	port->render_priv = g_new0(render_priv_t, 1);
 }
 
 static void ghid_gdk_shutdown_renderer(void *vport)
 {
-	GHidPort *port = vport;
+	pcb_gtk_port_t *port = vport;
 	g_free(port->render_priv);
 	port->render_priv = NULL;
 }
@@ -1383,7 +1383,7 @@ static void ghid_gdk_init_drawing_widget(GtkWidget *widget, void *port)
 
 static void ghid_gdk_drawing_area_configure_hook(void *vport)
 {
-	GHidPort *port = vport;
+	pcb_gtk_port_t *port = vport;
 	static int done_once = 0;
 	render_priv_t *priv = port->render_priv;
 
@@ -1433,7 +1433,7 @@ static void ghid_gdk_screen_update(void)
 
 static gboolean ghid_gdk_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose_t *ev, void *vport)
 {
-	GHidPort *port = vport;
+	pcb_gtk_port_t *port = vport;
 	render_priv_t *priv = port->render_priv;
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 

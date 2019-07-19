@@ -568,7 +568,7 @@ static int PrintSPECCTRA(void)
 }
 
 
-static void dsn_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
+static void dsn_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 {
 	int i;
 	if (!options) {

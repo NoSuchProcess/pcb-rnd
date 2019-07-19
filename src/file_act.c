@@ -294,7 +294,7 @@ static fgw_error_t pcb_act_Export(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	a = args;
 	a++;
 	pcb_exporter->parse_arguments(&argc, &a);
-	pcb_exporter->do_export(&PCB->hidlib, NULL);
+	pcb_exporter->do_export(pcb_exporter, &PCB->hidlib, NULL);
 
 	pcb_exporter = NULL;
 	PCB_ACT_IRES(0);

@@ -80,7 +80,7 @@ static const gchar *get_color_name(pcb_gtk_color_t *color)
 static pcb_bool map_color_string(const char *color_string, pcb_gtk_color_t *color)
 {
 	static GdkColormap *colormap = NULL;
-	GHidPort *out = &ghid_port;
+	pcb_gtk_port_t *out = &ghid_port;
 	pcb_bool parsed;
 
 	if (!color || !out->top_window)
@@ -698,7 +698,7 @@ static void ghid_gl_show_crosshair(pcb_hidlib_t *hidlib, gboolean paint_new_loca
 
 static void ghid_gl_init_renderer(int *argc, char ***argv, void *vport)
 {
-	GHidPort *port = vport;
+	pcb_gtk_port_t *port = vport;
 	render_priv_t *priv;
 
 	port->render_priv = priv = g_new0(render_priv_t, 1);
@@ -718,7 +718,7 @@ static void ghid_gl_init_renderer(int *argc, char ***argv, void *vport)
 
 static void ghid_gl_shutdown_renderer(void *p)
 {
-	GHidPort *port = p;
+	pcb_gtk_port_t *port = p;
 
 	g_free(port->render_priv);
 	port->render_priv = NULL;
@@ -726,7 +726,7 @@ static void ghid_gl_shutdown_renderer(void *p)
 
 static void ghid_gl_init_drawing_widget(GtkWidget *widget, void *port_)
 {
-	GHidPort *port = port_;
+	pcb_gtk_port_t *port = port_;
 	render_priv_t *priv = port->render_priv;
 
 	gtk_widget_set_gl_capability(widget, priv->glconfig, NULL, TRUE, GDK_GL_RGBA_TYPE);
@@ -735,7 +735,7 @@ static void ghid_gl_init_drawing_widget(GtkWidget *widget, void *port_)
 static void ghid_gl_drawing_area_configure_hook(void *port)
 {
 	static int done_once = 0;
-	GHidPort *p = port;
+	pcb_gtk_port_t *p = port;
 	render_priv_t *priv = p->render_priv;
 
 	gport->drawing_allowed = pcb_true;
@@ -755,7 +755,7 @@ static void ghid_gl_drawing_area_configure_hook(void *port)
 	}
 }
 
-static gboolean ghid_gl_start_drawing(GHidPort *port)
+static gboolean ghid_gl_start_drawing(pcb_gtk_port_t *port)
 {
 	GtkWidget *widget = port->drawing_area;
 	GdkGLContext *pGlContext = gtk_widget_get_gl_context(widget);
@@ -770,7 +770,7 @@ static gboolean ghid_gl_start_drawing(GHidPort *port)
 	return TRUE;
 }
 
-static void ghid_gl_end_drawing(GHidPort *port)
+static void ghid_gl_end_drawing(pcb_gtk_port_t *port)
 {
 	GtkWidget *widget = port->drawing_area;
 	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
@@ -833,7 +833,7 @@ static void gtk2gl_color(pcb_gl_color_t *gl_c, pcb_gtk_color_t *gtk_c)
 
 static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose_t *ev, void *vport)
 {
-	GHidPort *port = vport;
+	pcb_gtk_port_t *port = vport;
 	pcb_hidlib_t *hidlib = port->view.com->hidlib;
 	render_priv_t *priv = port->render_priv;
 	GtkAllocation allocation;

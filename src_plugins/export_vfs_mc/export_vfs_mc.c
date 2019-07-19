@@ -104,7 +104,7 @@ static void mc_copyin(const char *path)
 	}
 }
 
-static void export_vfs_mc_do_export(pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
+static void export_vfs_mc_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
 {
 	const char *cmd;
 	int i;
