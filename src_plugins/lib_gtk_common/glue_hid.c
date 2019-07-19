@@ -137,7 +137,6 @@ static void ghdi_gui_inited(int main, int conf)
 		pcb_gtk_zoom_view_win_side(&gport->view, 0, 0, ghidgui->common.hidlib->size_x, ghidgui->common.hidlib->size_y, 0);
 	}
 }
-
 static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, void * out)
 {
 	gport->view.canvas_width = ev->width;
@@ -147,7 +146,7 @@ static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, Gd
 	ghdi_gui_inited(0, 1);
 
 	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);
-	ghid_invalidate_all(ghidgui->common.hidlib);
+	pcb_gui->invalidate_all(ghidgui->common.hidlib);
 	return 0;
 }
 
@@ -436,7 +435,7 @@ static double ghid_benchmark(void)
 	gdk_display_sync(display);
 	time(&start);
 	do {
-		ghid_invalidate_all(ghidgui->common.hidlib);
+		pcb_gui->invalidate_all(ghidgui->common.hidlib);
 		gdk_window_process_updates(window, FALSE);
 		time(&end);
 		i++;
