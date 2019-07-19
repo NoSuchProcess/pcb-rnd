@@ -26,17 +26,6 @@
 
 extern pcb_hid_cfg_keys_t ghid_keymap;
 
-void gtkhid_begin(pcb_hidlib_t *hidlib)
-{
-	ghidgui->common.hidlib = hidlib;
-	ghidgui->hid_active = 1;
-}
-
-void gtkhid_end(void)
-{
-	ghidgui->hid_active = 0;
-}
-
 static inline void ghid_screen_update(void) { ghidgui->common.screen_update(); }
 
 static gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev, void * out_)
@@ -154,7 +143,9 @@ void gtkhid_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *
 {
 	pcb_gtk_t *ctx = hid->hid_data;
 
-	gtkhid_begin(hidlib);
+
+	ctx->common.hidlib = hidlib;
+	ctx->hid_active = 1;
 
 	pcb_hid_cfg_keys_init(&ghid_keymap);
 	ghid_keymap.translate_key = ghid_translate_key;
@@ -197,8 +188,8 @@ TODO(": move this to render init")
 
 	gtk_main();
 	pcb_hid_cfg_keys_uninit(&ghid_keymap);
-	gtkhid_end();
 
+	ctx->hid_active = 0;
 	ctx->gui_is_up = 0;
 	hid->hid_cfg = NULL;
 	hid->hid_data = NULL;
