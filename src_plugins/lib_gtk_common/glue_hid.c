@@ -158,9 +158,7 @@ static void gtkhid_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_
 	/* assume pcb_gui is us */
 	pcb_gui->hid_cfg = ctx->topwin.ghid_cfg;
 
-	gport->mouse->drawing_area = ctx->topwin.drawing_area;
 	gport->drawing_area = ctx->topwin.drawing_area;
-	gport->mouse->top_window = ctx->common.top_window;
 
 TODO(": move this to render init")
 	/* Mouse and key events will need to be intercepted when PCB needs a

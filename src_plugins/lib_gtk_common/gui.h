@@ -60,12 +60,10 @@ typedef struct {
 #include <genvector/genvector_undef.h>
 
 struct pcb_gtk_mouse_s {
-	GtkWidget *drawing_area, *top_window;
 	GdkCursor *X_cursor;          /* used X cursor */
 	GdkCursorType X_cursor_shape; /* and its shape */
 	vtmc_t cursor;
 	int last_cursor_idx; /* tool index of the tool last selected */
-	pcb_gtk_common_t *com;
 };
 
 /* needed for a type in pcb_gtk_t - DO NOT ADD .h files that are not requred for the structs! */

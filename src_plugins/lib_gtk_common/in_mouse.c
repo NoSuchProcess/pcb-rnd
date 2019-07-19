@@ -191,10 +191,11 @@ static gboolean run_get_location_loop(pcb_gtk_t *ctx, const gchar * message)
 	ctx->common.interface_set_sensitive(FALSE);
 
 	lctx.got_location = TRUE;   /* Will be unset by hitting most keys */
+
 	button_handler =
-		g_signal_connect(G_OBJECT(ctx->mouse.drawing_area), "button_press_event", G_CALLBACK(loop_button_press_cb), &lctx);
-	key_handler1 = g_signal_connect(G_OBJECT(ctx->mouse.top_window), "key_press_event", G_CALLBACK(loop_key_press_cb), &lctx);
-	key_handler2 = g_signal_connect(G_OBJECT(ctx->mouse.top_window), "key_release_event", G_CALLBACK(loop_key_release_cb), &lctx);
+		g_signal_connect(G_OBJECT(ctx->topwin.drawing_area), "button_press_event", G_CALLBACK(loop_button_press_cb), &lctx);
+	key_handler1 = g_signal_connect(G_OBJECT(ctx->common.top_window), "key_press_event", G_CALLBACK(loop_key_press_cb), &lctx);
+	key_handler2 = g_signal_connect(G_OBJECT(ctx->common.top_window), "key_release_event", G_CALLBACK(loop_key_release_cb), &lctx);
 
 	lctx.loop = g_main_loop_new(NULL, FALSE);
 	lctx.com = &ctx->common;
@@ -202,9 +203,9 @@ static gboolean run_get_location_loop(pcb_gtk_t *ctx, const gchar * message)
 
 	g_main_loop_unref(lctx.loop);
 
-	g_signal_handler_disconnect(ctx->mouse.drawing_area, button_handler);
-	g_signal_handler_disconnect(ctx->mouse.top_window, key_handler1);
-	g_signal_handler_disconnect(ctx->mouse.top_window, key_handler2);
+	g_signal_handler_disconnect(ctx->topwin.drawing_area, button_handler);
+	g_signal_handler_disconnect(ctx->common.top_window, key_handler1);
+	g_signal_handler_disconnect(ctx->common.top_window, key_handler2);
 
 	ctx->common.interface_input_signals_connect(); /* return to normal */
 	ctx->common.interface_set_sensitive(TRUE);
@@ -392,7 +393,7 @@ void ghid_port_reg_mouse_cursor(pcb_gtk_t *ctx, int idx, const char *name, const
 	else {
 		mc->shape = GHID_CURSOR_START + idx;
 		mc->pb = pcb_gtk_cursor_from_xbm_data(pixel, mask, 16, 16);
-		mc->X_cursor = gdk_cursor_new_from_pixbuf(gtk_widget_get_display(ctx->mouse.drawing_area), mc->pb, ICON_X_HOT, ICON_Y_HOT);
+		mc->X_cursor = gdk_cursor_new_from_pixbuf(gtk_widget_get_display(ctx->topwin.drawing_area), mc->pb, ICON_X_HOT, ICON_Y_HOT);
 	}
 }
 
@@ -409,10 +410,10 @@ void ghid_port_set_mouse_cursor(pcb_gtk_t *ctx, int idx)
 		return;
 	}
 
-	if (ctx->mouse.drawing_area == NULL)
+	if (ctx->topwin.drawing_area == NULL)
 		return;
 
-	window = gtk_widget_get_window(ctx->mouse.drawing_area);
+	window = gtk_widget_get_window(ctx->topwin.drawing_area);
 
 	/* check if window exists to prevent from fatal errors */
 	if (window == NULL)

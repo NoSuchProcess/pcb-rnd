@@ -379,7 +379,6 @@ void ghid_glue_common_init(const char *cookie)
 
 	ghid_port.view.com = &ghidgui->common;
 	ghid_port.mouse = &ghidgui->mouse;
-	ghid_port.mouse->com = &ghidgui->common;
 
 	ghid_conf_regs(cookie);
 }
