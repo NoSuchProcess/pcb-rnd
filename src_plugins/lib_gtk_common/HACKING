@@ -5,5 +5,6 @@ wt_*: custom widgets, cell renderers for gtk - must work in both gtk2 and gtk3
 dlg_*: dialog boxes, preferably one per file
 bu_*: builders, building a part of a bigger gui portion
 in_*: input handling (gtk-specific)
+glue_*: glue code that should be used by the HID implementations to interface the HID API or by the gtk code to interface the HID implementation
 
 Any of these may depend on glib.
