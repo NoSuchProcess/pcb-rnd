@@ -582,9 +582,5 @@ void pcbhl_mainloop_interactive(pcbhl_main_args_t *ga, pcb_hidlib_t *hidlib)
 	if (pcb_gui->set_hidlib != NULL)
 		pcb_gui->set_hidlib(hidlib);
 	pcb_gui->do_export(pcb_gui, hidlib, 0);
-	if (pcb_gui != NULL) {
-		/* init the next GUI */
-		pcb_gui->parse_arguments(pcb_gui, &ga->hid_argc, &ga->hid_argv);
-	}
 }
 
