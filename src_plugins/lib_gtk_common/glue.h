@@ -29,9 +29,6 @@ typedef struct pcb_gtk_common_s {
 	void (*init_renderer)(int *argc, char ***argv, void *port);
 	void (*draw_grid_local)(pcb_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy);
 
-	/* UI */
-	void (*port_ranges_changed)(void); /* remove */
-
 	/* screen */
 	void (*mode_cursor_main)(void); /* remove */
 	void (*invalidate_all)(pcb_hidlib_t *hidlib); /* remove? */

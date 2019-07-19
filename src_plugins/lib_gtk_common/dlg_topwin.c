@@ -149,7 +149,7 @@ static void h_adjustment_changed_cb(GtkAdjustment *adj, pcb_gtk_topwin_t *tw)
 	if (tw->adjustment_changed_holdoff)
 		return;
 
-	ghidgui->common.port_ranges_changed();
+	pcb_gtk_port_ranges_changed();
 }
 
 static void v_adjustment_changed_cb(GtkAdjustment *adj, pcb_gtk_topwin_t *tw)
@@ -157,7 +157,7 @@ static void v_adjustment_changed_cb(GtkAdjustment *adj, pcb_gtk_topwin_t *tw)
 	if (tw->adjustment_changed_holdoff)
 		return;
 
-	ghidgui->common.port_ranges_changed();
+	pcb_gtk_port_ranges_changed();
 }
 
 /* Save size of top window changes so PCB can restart at its size at exit. */
