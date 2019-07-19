@@ -630,9 +630,8 @@ int hook_detect_target()
 	}
 
 	if (!need_gtklibs) {
-		report("No gtk support available, disabling lib_gtk_*...\n");
+		report("No gtk support available, disabling lib_gtk_common...\n");
 		hook_custom_arg("disable-lib_gtk_common", NULL);
-		hook_custom_arg("disable-lib_gtk_hid", NULL);
 	}
 
 	if (want_xml2) {

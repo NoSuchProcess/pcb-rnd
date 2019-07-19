@@ -4,5 +4,4 @@ $long GUI: the GTK3 HID, using cairo for rendering
 $state WIP
 default disable-all
 dep lib_gtk_common
-dep lib_gtk_hid
 autoload 1
