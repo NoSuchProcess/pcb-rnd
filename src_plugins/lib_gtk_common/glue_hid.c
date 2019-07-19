@@ -250,8 +250,6 @@ TODO("This needs to be done centrally, and should not use PCB_PACKAGE but pcbhl_
 	pcb_pixel_slop = 300;
 
 	ctx->common.init_renderer(argc, argv, gport);
-
-	ctx->topwin.com = &ctx->common;
 	ctx->common.top_window = window = gport->top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
 	pcb_gtk_topwinplace(ctx->common.hidlib, window, "top");
