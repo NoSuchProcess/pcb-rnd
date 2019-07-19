@@ -42,9 +42,6 @@
 pcb_gtk_t _ghidgui, *ghidgui = &_ghidgui;
 pcb_gtk_port_t ghid_port, *gport;
 
-
-static void ghid_interface_set_sensitive(gboolean sensitive);
-
 /*** win32 workarounds ***/
 
 /* Needed for finding the windows installation directory. Without that
@@ -189,7 +186,7 @@ static void command_post_entry(void)
 #if PCB_GTK_DISABLE_MOUSE_DURING_CMD_ENTRY
 	pcb_gtk_interface_input_signals_connect();
 #endif
-	ghid_interface_set_sensitive(TRUE);
+	pcb_gtk_interface_set_sensitive(TRUE);
 	ghid_install_accel_groups(GTK_WINDOW(gport->top_window), &ghidgui->topwin);
 	gtk_widget_grab_focus(gport->drawing_area);
 }
@@ -200,12 +197,12 @@ static void command_pre_entry(void)
 #if PCB_GTK_DISABLE_MOUSE_DURING_CMD_ENTRY
 	pcb_gtk_interface_input_signals_disconnect();
 #endif
-	ghid_interface_set_sensitive(FALSE);
+	pcb_gtk_interface_set_sensitive(FALSE);
 }
 
 /*** input ***/
 
-static void ghid_interface_set_sensitive(gboolean sensitive)
+void pcb_gtk_interface_set_sensitive(gboolean sensitive)
 {
 	pcb_gtk_tw_interface_set_sensitive(&ghidgui->topwin, sensitive);
 }
@@ -341,7 +338,6 @@ void ghid_glue_common_init(const char *cookie)
 
 	/* Set up the glue struct to lib_gtk_common */
 	ghidgui->common.gport = &ghid_port;
-	ghidgui->common.interface_set_sensitive = ghid_interface_set_sensitive;
 	ghidgui->common.port_button_press_main = ghid_port_button_press_main;
 	ghidgui->common.port_button_release_main = ghid_port_button_release_main;
 	ghidgui->common.mode_cursor_main = ghid_mode_cursor_main;

@@ -44,3 +44,5 @@ void pcb_gtk_note_event_location(GdkEventButton *ev);
 
 void pcb_gtk_interface_input_signals_connect(void);
 void pcb_gtk_interface_input_signals_disconnect(void);
+void pcb_gtk_interface_set_sensitive(gboolean sensitive);
+
