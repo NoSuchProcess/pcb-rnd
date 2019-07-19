@@ -112,11 +112,6 @@ void pcb_gtk_zoom_post(pcb_gtk_view_t *v)
 	v->height = v->canvas_height * v->coord_per_px;
 }
 
-static void ghid_port_ranges_scale(void)
-{
-	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);
-}
-
 /* gport->view.coord_per_px:
  * zoom value is PCB units per screen pixel.  Larger numbers mean zooming
  * out - the largest value means you are looking at the whole board.
@@ -148,7 +143,7 @@ void pcb_gtk_zoom_view_abs(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t 
 
 	v->coord_per_px = new_zoom;
 	pcb_pixel_slop = new_zoom;
-	ghid_port_ranges_scale();
+	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);
 
 	v->x0 = SIDE_X(v, center_x) - xtmp * v->width;
 	v->y0 = SIDE_Y(v, center_y) - ytmp * v->height;
