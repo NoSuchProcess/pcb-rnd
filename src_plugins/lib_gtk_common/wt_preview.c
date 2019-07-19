@@ -73,8 +73,8 @@ static void pcb_gtk_preview_update_x0y0(pcb_gtk_preview_t *preview)
 
 void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const pcb_box_t *data_view)
 {
-	void (*orig)(void) = preview->com->pan_common;
-	preview->com->pan_common = NULL; /* avoid pan logic for the main window */
+	int orig = preview->view.inhibit_pan_common;
+	preview->view.inhibit_pan_common = 1; /* avoid pan logic for the main window */
 
 	preview->view.width = data_view->X2 - data_view->X1;
 	preview->view.height = data_view->Y2 - data_view->Y1;
@@ -86,22 +86,22 @@ void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const pcb_box_t *data_vi
 
 	pcb_gtk_zoom_view_win(&preview->view, data_view->X1, data_view->Y1, data_view->X2, data_view->Y2);
 	pcb_gtk_preview_update_x0y0(preview);
-	preview->com->pan_common = orig;
+	preview->view.inhibit_pan_common = orig;
 }
 
 /* modify the zoom level to coord_per_px (clamped), keeping window cursor
    position wx;wy at perview pcb_coord_t position cx;cy */
 void pcb_gtk_preview_zoom_cursor(pcb_gtk_preview_t *preview, pcb_coord_t cx, pcb_coord_t cy, int wx, int wy, double coord_per_px)
 {
-	void (*orig)(void);
+	int orig;
 
 	coord_per_px = pcb_gtk_clamp_zoom(&preview->view, coord_per_px);
 
 	if (coord_per_px == preview->view.coord_per_px)
 		return;
 
-	orig = preview->com->pan_common;
-	preview->com->pan_common = NULL; /* avoid pan logic for the main window */
+	orig = preview->view.inhibit_pan_common;
+	preview->view.inhibit_pan_common = 1; /* avoid pan logic for the main window */
 	preview->view.coord_per_px = coord_per_px;
 
 	preview->view.width = preview->view.canvas_width * preview->view.coord_per_px;
@@ -116,7 +116,7 @@ void pcb_gtk_preview_zoom_cursor(pcb_gtk_preview_t *preview, pcb_coord_t cx, pcb
 	preview->view.y0 = cy - wy * preview->view.coord_per_px;
 
 	pcb_gtk_preview_update_x0y0(preview);
-	preview->com->pan_common = orig;
+	preview->view.inhibit_pan_common = orig;
 }
 
 void pcb_gtk_preview_zoom_cursor_rel(pcb_gtk_preview_t *preview, pcb_coord_t cx, pcb_coord_t cy, int wx, int wy, double factor)

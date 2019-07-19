@@ -55,6 +55,7 @@ typedef struct {
 	pcb_coord_t width;
 	pcb_coord_t height;
 
+	unsigned inhibit_pan_common:1; /* when 1, do not call pcb_gtk_pan_common() */
 	unsigned use_max_pcb:1;  /* when 1, use PCB->Max*; when 0, use the following two: */
 	pcb_coord_t max_width;
 	pcb_coord_t max_height;
