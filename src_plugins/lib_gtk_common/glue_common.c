@@ -171,7 +171,7 @@ void pcb_gtk_port_ranges_changed(void)
 	pcb_gui->invalidate_all(ghidgui->common.hidlib);
 }
 
-static void ghid_pan_common(void)
+void pcb_gtk_pan_common(void)
 {
 	ghidgui->topwin.adjustment_changed_holdoff = TRUE;
 	gtk_range_set_value(GTK_RANGE(ghidgui->topwin.h_range), gport->view.x0);
@@ -323,7 +323,6 @@ void ghid_glue_common_init(const char *cookie)
 
 	/* Set up the glue struct to lib_gtk_common */
 	ghidgui->common.gport = &ghid_port;
-	ghidgui->common.pan_common = ghid_pan_common;
 
 	ghidgui->common.load_bg_image = ghid_load_bg_image;
 

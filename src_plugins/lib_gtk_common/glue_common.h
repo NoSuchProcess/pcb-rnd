@@ -47,4 +47,5 @@ void pcb_gtk_interface_input_signals_disconnect(void);
 void pcb_gtk_interface_set_sensitive(gboolean sensitive);
 void pcb_gtk_port_ranges_changed(void);
 void pcb_gtk_mode_cursor_main(void);
+void pcb_gtk_pan_common(void);
 

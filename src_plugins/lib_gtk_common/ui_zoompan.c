@@ -57,7 +57,7 @@ double pcb_gtk_clamp_zoom(const pcb_gtk_view_t *vw, double coord_per_px)
 }
 
 
-static void pcb_gtk_pan_common(pcb_gtk_view_t *v)
+static void uiz_pan_common(pcb_gtk_view_t *v)
 {
 	int event_x, event_y;
 
@@ -154,7 +154,7 @@ void pcb_gtk_zoom_view_abs(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t 
 	v->x0 = SIDE_X(v, center_x) - xtmp * v->width;
 	v->y0 = SIDE_Y(v, center_y) - ytmp * v->height;
 
-	pcb_gtk_pan_common(v);
+	uiz_pan_common(v);
 }
 
 
@@ -179,7 +179,7 @@ void pcb_gtk_zoom_view_win(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_coord_t y1, pc
 	v->x0 = x1;
 	v->y0 = y1;
 
-	pcb_gtk_pan_common(v);
+	uiz_pan_common(v);
 }
 
 /* Side-correct version - long term this will be kept and the other is removed */
@@ -197,7 +197,7 @@ void pcb_gtk_zoom_view_win_side(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_coord_t y
 	v->x0 = SIDE_X(v, pcbhl_conf.editor.view.flip_x ? x2 : x1);
 	v->y0 = SIDE_Y(v, pcbhl_conf.editor.view.flip_y ? y2 : y1);
 
-	pcb_gtk_pan_common(v);
+	uiz_pan_common(v);
 	if (setch) {
 		v->pcb_x = (x1+x2)/2;
 		v->pcb_y = (y1+y2)/2;
@@ -210,7 +210,7 @@ void pcb_gtk_pan_view_abs(pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_
 	v->x0 = pcb_round((double)SIDE_X(v, pcb_x) - (double)widget_x * v->coord_per_px);
 	v->y0 = pcb_round((double)SIDE_Y(v, pcb_y) - (double)widget_y * v->coord_per_px);
 
-	pcb_gtk_pan_common(v);
+	uiz_pan_common(v);
 }
 
 void pcb_gtk_pan_view_rel(pcb_gtk_view_t *v, pcb_coord_t dx, pcb_coord_t dy)
@@ -218,7 +218,7 @@ void pcb_gtk_pan_view_rel(pcb_gtk_view_t *v, pcb_coord_t dx, pcb_coord_t dy)
 	v->x0 += dx;
 	v->y0 += dy;
 
-	pcb_gtk_pan_common(v);
+	uiz_pan_common(v);
 }
 
 void pcb_gtk_get_coords(pcb_gtk_t *ctx, pcb_gtk_view_t *vw, const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)

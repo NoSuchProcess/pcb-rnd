@@ -31,7 +31,6 @@ typedef struct pcb_gtk_common_s {
 
 	/* screen */
 	void (*invalidate_all)(pcb_hidlib_t *hidlib); /* remove? */
-	void (*pan_common)(void);  /* remove */
 	void (*screen_update)(void);
 	void (*shutdown_renderer)(void *port);
 
