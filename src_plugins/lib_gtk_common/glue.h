@@ -30,31 +30,31 @@ typedef struct pcb_gtk_common_s {
 	void (*draw_grid_local)(pcb_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy);
 
 	/* UI */
-	void (*note_event_location)(GdkEventButton *ev);
-	void (*interface_input_signals_disconnect)(void);
-	void (*interface_input_signals_connect)(void);
-	void (*interface_set_sensitive)(gboolean sensitive);
-	void (*port_button_press_main)(void);
-	void (*port_button_release_main)(void);
-	void (*port_ranges_changed)(void);
+	void (*note_event_location)(GdkEventButton *ev); /* remove */
+	void (*interface_input_signals_disconnect)(void); /* remove */
+	void (*interface_input_signals_connect)(void); /* remove */
+	void (*interface_set_sensitive)(gboolean sensitive); /* remove */
+	void (*port_button_press_main)(void); /* remove */
+	void (*port_button_release_main)(void);/* remove */
+	void (*port_ranges_changed)(void); /* remove */
 
 	/* screen */
-	void (*mode_cursor_main)(void);
-	void (*invalidate_all)(pcb_hidlib_t *hidlib);
-	void (*pan_common)(void);
-	void (*port_ranges_scale)(void);
+	void (*mode_cursor_main)(void); /* remove */
+	void (*invalidate_all)(pcb_hidlib_t *hidlib); /* remove? */
+	void (*pan_common)(void);  /* remove */
+	void (*port_ranges_scale)(void); /* remove */
 	void (*screen_update)(void);
 	void (*shutdown_renderer)(void *port);
 
 	/* execute events */
-	void (*main_destroy)(void *gport);
+	void (*main_destroy)(void *gport); /* remove */
 
 	pcb_bool (*map_color_string)(const char *color_string, pcb_gtk_color_t * color);
 	const gchar *(*get_color_name)(pcb_gtk_color_t * color);
 
 	void (*set_special_colors)(conf_native_t *cfg);
 
-	int (*command_entry_is_active)(void);
+	int (*command_entry_is_active)(void); /* remove */
 
 	/* all widget lists */
 	gdl_list_t previews;
