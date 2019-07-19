@@ -19,7 +19,7 @@ void pcb_gtk_previews_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coo
 {
 	pcb_box_t screen;
 	screen.X1 = left; screen.X2 = right;
-	screen.Y1 = top; screen.Y1 = bottom;
+	screen.Y1 = top; screen.Y2 = bottom;
 	pcb_gtk_preview_invalidate(&ghidgui->common, &screen);
 }
 
