@@ -1,8 +1,0 @@
-$class lib
-$short hid_gtk generic part
-$long Generic gtk HID implementation, independent of GTK version (2 vs. 3) and rendering engine. Mostly a dispatcher that fills in all the glue to connect the parts. An actual gtk HID implementation may use this lib or replace parts of it or the whole with local implementation.
-$state works
-$package lib-gtk
-default disable-all
-dep lib_hid_common
-

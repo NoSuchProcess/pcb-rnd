@@ -8,12 +8,12 @@
 
 #include "../src_plugins/lib_hid_gl/draw_gl.h"
 
-#include "../src_plugins/lib_gtk_hid/glue_common.h"
-#include "../src_plugins/lib_gtk_hid/glue_hid.h"
-#include "../src_plugins/lib_gtk_hid/glue_conf.h"
-#include "../src_plugins/lib_gtk_hid/glue_win32.h"
-#include "../src_plugins/lib_gtk_hid/common.h"
-#include "../src_plugins/lib_gtk_hid/render.h"
+#include "../src_plugins/lib_gtk_common/glue_common.h"
+#include "../src_plugins/lib_gtk_common/glue_hid.h"
+#include "../src_plugins/lib_gtk_common/glue_conf.h"
+#include "../src_plugins/lib_gtk_common/glue_win32.h"
+#include "../src_plugins/lib_gtk_common/common.h"
+#include "../src_plugins/lib_gtk_common/render.h"
 
 const char *ghid_gl_cookie = "gtk2 hid, gl";
 const char *ghid_gl_menu_cookie = "gtk2 hid menu, gl";

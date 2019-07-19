@@ -5,12 +5,12 @@
 #include "plugins.h"
 #include "hid_init.h"
 
-#include "../src_plugins/lib_gtk_hid/glue_common.h"
-#include "../src_plugins/lib_gtk_hid/glue_hid.h"
-#include "../src_plugins/lib_gtk_hid/glue_conf.h"
-#include "../src_plugins/lib_gtk_hid/glue_win32.h"
-#include "../src_plugins/lib_gtk_hid/common.h"
-#include "../src_plugins/lib_gtk_hid/render.h"
+#include "../src_plugins/lib_gtk_common/glue_common.h"
+#include "../src_plugins/lib_gtk_common/glue_hid.h"
+#include "../src_plugins/lib_gtk_common/glue_conf.h"
+#include "../src_plugins/lib_gtk_common/glue_win32.h"
+#include "../src_plugins/lib_gtk_common/common.h"
+#include "../src_plugins/lib_gtk_common/render.h"
 
 const char *ghid_cookie = "gtk2 hid, gdk";
 const char *ghid_menu_cookie = "gtk2 hid menu, gdk";

@@ -1,6 +1,6 @@
 $class lib
 $short all-hid_gtk common code
-$long hid_gtk* common code (regardless of gtk version or drawing mechanism: for both gtk2 and gtk3 and for both sw rendering and gl)
+$long hid_gtk* common code (regardless of rendering mechanism: for both gdk sw rendering and gl)
 $state works
 $package lib-gtk
 dep lib_hid_common
