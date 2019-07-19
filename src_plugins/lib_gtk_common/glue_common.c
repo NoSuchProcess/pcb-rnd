@@ -39,8 +39,8 @@
 #include "in_keyboard.h"
 #include "wt_preview.h"
 
-GhidGui _ghidgui, *ghidgui = &_ghidgui;
-GHidPort ghid_port, *gport;
+pcb_gtk_t _ghidgui, *ghidgui = &_ghidgui;
+pcb_gtk_port_t ghid_port, *gport;
 
 
 static void ghid_interface_set_sensitive(gboolean sensitive);
@@ -308,7 +308,7 @@ static void ghid_main_destroy(void *port)
 	gtk_main_quit();
 }
 
-void ghid_draw_area_update(GHidPort *port, GdkRectangle *rect)
+void ghid_draw_area_update(pcb_gtk_port_t *port, GdkRectangle *rect)
 {
 	gdk_window_invalidate_rect(gtk_widget_get_window(port->drawing_area), rect, FALSE);
 }

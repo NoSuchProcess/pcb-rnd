@@ -73,7 +73,7 @@ void pcb_gtk_dwg_tooltip_cancel_update(void)
 	tooltip_update_timeout_id = 0;
 }
 
-/* FIXME: If the GHidPort is ever destroyed, we must call
+/* FIXME: If the pcb_gtk_port_t is ever destroyed, we must call
  * pcb_gtk_dwg_tooltip_cancel_update()
  * fire after the data it utilises has been free'd.
  */

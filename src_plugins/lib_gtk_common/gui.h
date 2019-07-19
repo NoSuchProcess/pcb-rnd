@@ -30,13 +30,13 @@
 
 #include "hid.h"
 
-typedef struct GHidPort_s  GHidPort;
-typedef struct GhidGui_s GhidGui;
-extern GhidGui _ghidgui, *ghidgui;
+typedef struct pcb_gtk_port_s  pcb_gtk_port_t;
+typedef struct pcb_gtk_s pcb_gtk_t;
+extern pcb_gtk_t _ghidgui, *ghidgui;
 
 #include <gtk/gtk.h>
 
-/* needed for a type in GhidGui - DO NOT ADD .h files that are not requred for the structs! */
+/* needed for a type in pcb_gtk_t - DO NOT ADD .h files that are not requred for the structs! */
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
 #include "../src_plugins/lib_gtk_common/dlg_topwin.h"
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
@@ -46,7 +46,7 @@ extern GhidGui _ghidgui, *ghidgui;
 #include "conf_hid.h"
 #include "pcb_bool.h"
 
-struct GhidGui_s {
+struct pcb_gtk_s {
 	GtkActionGroup *main_actions;
 
 	pcb_gtk_topwin_t topwin;
@@ -62,7 +62,7 @@ struct GhidGui_s {
 };
 
 /* The output viewport */
-struct GHidPort_s {
+struct pcb_gtk_port_s {
 	GtkWidget *top_window,				/* toplevel widget              */
 	 *drawing_area;								/* and its drawing area */
 
@@ -75,6 +75,6 @@ struct GHidPort_s {
 	pcb_gtk_view_t view;
 };
 
-extern GHidPort ghid_port, *gport;
+extern pcb_gtk_port_t ghid_port, *gport;
 
 #endif /* PCB_HID_GTK_GHID_GUI_H */

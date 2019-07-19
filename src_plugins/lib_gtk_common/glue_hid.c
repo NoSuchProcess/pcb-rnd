@@ -41,7 +41,7 @@ static inline void ghid_screen_update(void) { ghidgui->common.screen_update(); }
 
 static gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev, void * out_)
 {
-	GHidPort *out = out_;
+	pcb_gtk_port_t *out = out_;
 	int force_update = 0;
 
 	/* printf("enter: mode: %d detail: %d\n", ev->mode, ev->detail); */
@@ -72,7 +72,7 @@ static gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev,
 
 static gint ghid_port_window_leave_cb(GtkWidget * widget, GdkEventCrossing * ev, void * out_)
 {
-	GHidPort *out = out_;
+	pcb_gtk_port_t *out = out_;
 
 	/* printf("leave mode: %d detail: %d\n", ev->mode, ev->detail); */
 
@@ -94,14 +94,14 @@ static gint ghid_port_window_leave_cb(GtkWidget * widget, GdkEventCrossing * ev,
 	return FALSE;
 }
 
-static gboolean check_object_tooltips(GHidPort *out)
+static gboolean check_object_tooltips(pcb_gtk_port_t *out)
 {
 	return pcb_gtk_dwg_tooltip_check_object(out->drawing_area, out->view.crosshair_x, out->view.crosshair_y);
 }
 
 static gint ghid_port_window_motion_cb(GtkWidget * widget, GdkEventMotion * ev, void * out_)
 {
-	GHidPort *out = out_;
+	pcb_gtk_port_t *out = out_;
 	gdouble dx, dy;
 	static gint x_prev = -1, y_prev = -1;
 
@@ -563,7 +563,7 @@ static void ghid_busy(pcb_hidlib_t *hidlib, pcb_bool busy)
 static int ghid_shift_is_pressed()
 {
 	GdkModifierType mask;
-	GHidPort *out = &ghid_port;
+	pcb_gtk_port_t *out = &ghid_port;
 
 	if (!ghidgui->gui_is_up)
 		return 0;
@@ -581,7 +581,7 @@ static int ghid_shift_is_pressed()
 static int ghid_control_is_pressed()
 {
 	GdkModifierType mask;
-	GHidPort *out = &ghid_port;
+	pcb_gtk_port_t *out = &ghid_port;
 
 	if (!ghidgui->gui_is_up)
 		return 0;
@@ -599,7 +599,7 @@ static int ghid_control_is_pressed()
 static int ghid_mod1_is_pressed()
 {
 	GdkModifierType mask;
-	GHidPort *out = &ghid_port;
+	pcb_gtk_port_t *out = &ghid_port;
 
 	if (!ghidgui->gui_is_up)
 		return 0;

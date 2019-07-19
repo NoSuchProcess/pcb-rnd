@@ -7,7 +7,7 @@
 void ghid_glue_common_init(const char *cookie);
 void ghid_glue_common_uninit(const char *cookie);
 
-void ghid_draw_area_update(GHidPort *out, GdkRectangle *rect);
+void ghid_draw_area_update(pcb_gtk_port_t *out, GdkRectangle *rect);
 
 /* make sure the context is set to draw the whole widget size, which might
    be slightly larger than the original request */
