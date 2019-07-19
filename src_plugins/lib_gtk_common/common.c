@@ -33,8 +33,8 @@ static void kbd_input_signals_disconnect(int idx, void *obj)
 	/* Connect and disconnect just the signals a g_main_loop() will need.
 	   |  Cursor and motion events still need to be handled by the top level
 	   |  loop, so don't connect/reconnect these.
-	   |  A g_main_loop will be running when PCB wants the user to select a
-	   |  location or if command entry is needed in the status line hbox.
+	   |  A g_main_loop will be running when pcb-rnd wants the user to select a
+	   |  location or if command entry is needed in the status line.
 	   |  During these times normal button/key presses are intercepted, either
 	   |  by new signal handlers or the command_combo_box entry.
 	 */
