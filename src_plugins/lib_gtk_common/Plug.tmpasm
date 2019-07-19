@@ -24,7 +24,6 @@ put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/wt_preview.o
 
 	$(PLUGDIR)/lib_gtk_common/glue_common.o
-	$(PLUGDIR)/lib_gtk_common/glue_conf.o
 	$(PLUGDIR)/lib_gtk_common/glue_hid.o
 	$(PLUGDIR)/lib_gtk_common/glue_win32.o
 	$(PLUGDIR)/lib_gtk_common/common.o

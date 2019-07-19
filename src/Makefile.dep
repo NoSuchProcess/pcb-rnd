@@ -2003,7 +2003,7 @@
  math_helper.h misc_util.h ../src_3rd/genvector/gds_char.h \
  ../src_plugins/lib_gtk_common/glue_common.h hid.h \
  ../src_plugins/lib_gtk_common/glue_hid.h \
- ../src_plugins/lib_gtk_common/glue_conf.h conf.h pcb-printf.h \
+   conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h list_conf.h conf.h \
  ../src_plugins/lib_gtk_common/glue_win32.h \
  ../src_plugins/lib_gtk_common/common.h event.h hidlib.h \
@@ -2075,7 +2075,7 @@
  ../src_plugins/lib_hid_gl/draw_gl.h ../src_plugins/lib_hid_gl/opengl.h \
  ../src_plugins/lib_gtk_common/glue_common.h hid.h \
  ../src_plugins/lib_gtk_common/glue_hid.h \
- ../src_plugins/lib_gtk_common/glue_conf.h conf.h \
+   conf.h \
  ../src_plugins/lib_gtk_common/glue_win32.h \
  ../src_plugins/lib_gtk_common/common.h event.h hidlib.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
@@ -2141,7 +2141,7 @@
  math_helper.h misc_util.h ../src_3rd/genvector/gds_char.h \
  ../src_plugins/lib_gtk_common/glue_common.h hid.h \
  ../src_plugins/lib_gtk_common/glue_hid.h \
- ../src_plugins/lib_gtk_common/glue_conf.h conf.h pcb-printf.h \
+   conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h list_conf.h conf.h \
  ../src_plugins/lib_gtk_common/glue_win32.h \
  ../src_plugins/lib_gtk_common/common.h event.h hidlib.h \
@@ -4258,7 +4258,7 @@
  hidlib.h ../src_plugins/lib_gtk_common/hid_gtk_conf.h
 ../src_plugins/lib_gtk_common/glue_conf.o: \
  ../src_plugins/lib_gtk_common/glue_conf.c ../config.h \
- ../src_plugins/lib_gtk_common/glue_conf.h conf.h global_typedefs.h \
+   conf.h global_typedefs.h \
  pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
