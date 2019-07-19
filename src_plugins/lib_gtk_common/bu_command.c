@@ -119,7 +119,7 @@ static pcb_bool command_keypress_cb(GtkWidget *widget, GdkEventKey *kev, pcb_gtk
 
 static pcb_bool command_keyrelease_cb(GtkWidget *widget, GdkEventKey *kev, pcb_gtk_command_t *ctx)
 {
-	if (ctx->com->command_entry_is_active())
+	if (ctx->command_entry_status_line_active)
 		pcb_cli_edit();
 	return TRUE;
 }
@@ -150,7 +150,7 @@ void ghid_command_combo_box_entry_create(pcb_gtk_command_t *ctx, void (*hide_sta
 
 void ghid_cmd_close(pcb_gtk_command_t *ctx)
 {
-	if (!ctx->com->command_entry_is_active())
+	if (!ctx->command_entry_status_line_active)
 		return;
 
 	if (ctx->ghid_entry_loop && g_main_loop_is_running(ctx->ghid_entry_loop)) /* should always be (the entry is active) */
@@ -244,7 +244,7 @@ void ghid_handle_user_command(pcb_gtk_command_t *ctx, pcb_bool raise)
 
 const char *pcb_gtk_cmd_command_entry(pcb_gtk_command_t *ctx, const char *ovr, int *cursor)
 {
-	if (!ctx->com->command_entry_is_active()) {
+	if (!ctx->command_entry_status_line_active) {
 		if (cursor != NULL)
 			*cursor = -1;
 		return NULL;

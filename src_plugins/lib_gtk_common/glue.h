@@ -54,8 +54,6 @@ typedef struct pcb_gtk_common_s {
 
 	void (*set_special_colors)(conf_native_t *cfg);
 
-	int (*command_entry_is_active)(void); /* remove */
-
 	/* all widget lists */
 	gdl_list_t previews;
 } pcb_gtk_common_t;

@@ -190,11 +190,6 @@ static void ghid_pan_common(void)
 	ghid_port_ranges_changed();
 }
 
-int ghid_command_entry_is_active(void)
-{
-	return ghidgui->topwin.cmd.command_entry_status_line_active;
-}
-
 static void command_post_entry(void)
 {
 #if PCB_GTK_DISABLE_MOUSE_DURING_CMD_ENTRY
@@ -368,7 +363,6 @@ void ghid_glue_common_init(const char *cookie)
 	ghidgui->common.pan_common = ghid_pan_common;
 	ghidgui->common.port_ranges_scale = ghid_port_ranges_scale;
 
-	ghidgui->common.command_entry_is_active = ghid_command_entry_is_active;
 	ghidgui->common.load_bg_image = ghid_load_bg_image;
 	ghidgui->common.main_destroy = ghid_main_destroy;
 	ghidgui->common.port_ranges_changed = ghid_port_ranges_changed;
