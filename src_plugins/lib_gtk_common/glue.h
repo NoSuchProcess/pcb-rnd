@@ -42,7 +42,6 @@ typedef struct pcb_gtk_common_s {
 	void (*mode_cursor_main)(void); /* remove */
 	void (*invalidate_all)(pcb_hidlib_t *hidlib); /* remove? */
 	void (*pan_common)(void);  /* remove */
-	void (*port_ranges_scale)(void); /* remove */
 	void (*screen_update)(void);
 	void (*shutdown_renderer)(void *port);
 

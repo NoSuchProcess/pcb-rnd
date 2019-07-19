@@ -162,12 +162,6 @@ void pcb_gtk_tw_ranges_scale(pcb_gtk_topwin_t *tw)
 	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->v_range)), gport->view.height, ghidgui->common.hidlib->size_y);
 }
 
-
-static void ghid_port_ranges_scale(void)
-{
-	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);
-}
-
 static void ghid_port_ranges_changed(void)
 {
 	GtkAdjustment *h_adj, *v_adj;
@@ -355,7 +349,6 @@ void ghid_glue_common_init(const char *cookie)
 	ghidgui->common.port_button_release_main = ghid_port_button_release_main;
 	ghidgui->common.mode_cursor_main = ghid_mode_cursor_main;
 	ghidgui->common.pan_common = ghid_pan_common;
-	ghidgui->common.port_ranges_scale = ghid_port_ranges_scale;
 
 	ghidgui->common.load_bg_image = ghid_load_bg_image;
 	ghidgui->common.port_ranges_changed = ghid_port_ranges_changed;

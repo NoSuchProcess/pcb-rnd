@@ -108,7 +108,7 @@ int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub, pc
 	gtk_widget_show_all(docked->frame);
 
 	sub->parent_poke = pcb_gtk_dock_poke;
-	sub->dlg_hid_ctx = docked->hid_ctx = ghid_attr_sub_new(tw->com, hvbox, sub->dlg, sub->dlg_len, sub);
+	sub->dlg_hid_ctx = docked->hid_ctx = ghid_attr_sub_new(&ghidgui->common, hvbox, sub->dlg, sub->dlg_len, sub);
 	docked->tw = tw;
 	sub->parent_ctx = docked;
 
@@ -148,7 +148,7 @@ static void h_adjustment_changed_cb(GtkAdjustment *adj, pcb_gtk_topwin_t *tw)
 	if (tw->adjustment_changed_holdoff)
 		return;
 
-	tw->com->port_ranges_changed();
+	ghidgui->common.port_ranges_changed();
 }
 
 static void v_adjustment_changed_cb(GtkAdjustment *adj, pcb_gtk_topwin_t *tw)
@@ -156,14 +156,13 @@ static void v_adjustment_changed_cb(GtkAdjustment *adj, pcb_gtk_topwin_t *tw)
 	if (tw->adjustment_changed_holdoff)
 		return;
 
-	tw->com->port_ranges_changed();
+	ghidgui->common.port_ranges_changed();
 }
 
 /* Save size of top window changes so PCB can restart at its size at exit. */
 static gint top_window_configure_event_cb(GtkWidget *widget, GdkEventConfigure *ev, void *tw_)
 {
-	pcb_gtk_topwin_t *tw = tw_;
-	return pcb_gtk_winplace_cfg(tw->com->hidlib, widget, NULL, "top");
+	return pcb_gtk_winplace_cfg(ghidgui->common.hidlib, widget, NULL, "top");
 }
 
 gboolean ghid_idle_cb(void *topwin)
@@ -177,10 +176,10 @@ gboolean ghid_port_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, pcb
 	gint ksym = kev->keyval;
 
 	if (ghid_is_modifier_key_sym(ksym))
-		tw->com->note_event_location(NULL);
+		ghidgui->common.note_event_location(NULL);
 
 	pcb_hidlib_adjust_attached_objects();
-	tw->com->invalidate_all(tw->com->hidlib);
+	ghidgui->common.invalidate_all(ghidgui->common.hidlib);
 	g_idle_add(ghid_idle_cb, tw);
 	return FALSE;
 }
@@ -326,8 +325,7 @@ static void drawing_area_size_allocate_cb(GtkWidget *widget, GdkRectangle *alloc
 
 static gboolean drawing_area_enter_cb(GtkWidget *w, pcb_gtk_expose_t *p, void *user_data)
 {
-	pcb_gtk_topwin_t *tw = user_data;
-	tw->com->invalidate_all(tw->com->hidlib);
+	ghidgui->common.invalidate_all(ghidgui->common.hidlib);
 	return FALSE;
 }
 
@@ -374,7 +372,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw)
 	GtkWidget *resize_grip_image;
 
 	vbox_main = gtkc_vbox_new(FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(tw->com->top_window), vbox_main);
+	gtk_container_add(GTK_CONTAINER(ghidgui->common.top_window), vbox_main);
 
 	/* -- Top control bar */
 	tw->top_bar_background = gtk_event_box_new();
@@ -392,7 +390,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw)
 	gtk_box_pack_start(GTK_BOX(tw->menu_hbox), tw->menubar_toolbar_vbox, FALSE, FALSE, 0);
 
 	/* Build main menu */
-	tw->menu.menu_bar = ghid_load_menus(&tw->menu, tw->com->hidlib, &tw->ghid_cfg);
+	tw->menu.menu_bar = ghid_load_menus(&tw->menu, ghidgui->common.hidlib, &tw->ghid_cfg);
 	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), tw->menu.menu_bar, FALSE, FALSE, 0);
 
 	tw->dockbox[PCB_HID_DOCK_TOP_LEFT] = gtkc_hbox_new(TRUE, 2);
@@ -443,9 +441,9 @@ static void ghid_build_pcb_top_window(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw)
 	gtk_box_pack_start(GTK_BOX(tw->vbox_middle), hbox, TRUE, TRUE, 0);
 
 	/* drawing area */
-	tw->drawing_area = tw->com->new_drawing_widget(tw->com);
-	g_signal_connect(G_OBJECT(tw->drawing_area), "realize", G_CALLBACK(tw->com->drawing_realize), tw->com->gport);
-	tw->com->init_drawing_widget(tw->drawing_area, tw->com->gport);
+	tw->drawing_area = ghidgui->common.new_drawing_widget(&ghidgui->common);
+	g_signal_connect(G_OBJECT(tw->drawing_area), "realize", G_CALLBACK(ghidgui->common.drawing_realize), ghidgui->common.gport);
+	ghidgui->common.init_drawing_widget(tw->drawing_area, ghidgui->common.gport);
 
 	gtk_widget_add_events(tw->drawing_area,
 		GDK_EXPOSURE_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_ENTER_NOTIFY_MASK
@@ -507,12 +505,12 @@ static void ghid_build_pcb_top_window(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw)
 
 	g_signal_connect(G_OBJECT(tw->drawing_area), "size-allocate", G_CALLBACK(drawing_area_size_allocate_cb), tw);
 	g_signal_connect(G_OBJECT(tw->drawing_area), "enter-notify-event", G_CALLBACK(drawing_area_enter_cb), tw);
-	g_signal_connect(G_OBJECT(tw->com->top_window), "configure_event", G_CALLBACK(top_window_configure_event_cb), tw);
+	g_signal_connect(G_OBJECT(ghidgui->common.top_window), "configure_event", G_CALLBACK(top_window_configure_event_cb), tw);
 
-	g_signal_connect(G_OBJECT(tw->com->top_window), "delete_event", G_CALLBACK(delete_chart_cb), tw->com->gport);
-	g_signal_connect(G_OBJECT(tw->com->top_window), "destroy", G_CALLBACK(destroy_chart_cb), ctx);
+	g_signal_connect(G_OBJECT(ghidgui->common.top_window), "delete_event", G_CALLBACK(delete_chart_cb), ghidgui->common.gport);
+	g_signal_connect(G_OBJECT(ghidgui->common.top_window), "destroy", G_CALLBACK(destroy_chart_cb), ctx);
 
-	gtk_widget_show_all(tw->com->top_window);
+	gtk_widget_show_all(ghidgui->common.top_window);
 
 	ghid_fullscreen_apply(tw);
 	tw->active = 1;
@@ -532,10 +530,10 @@ void pcb_gtk_tw_interface_set_sensitive(pcb_gtk_topwin_t *tw, gboolean sensitive
 
 void ghid_create_pcb_widgets(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw, GtkWidget *in_top_window)
 {
-	tw->com->load_bg_image();
+	ghidgui->common.load_bg_image();
 
 	ghid_build_pcb_top_window(ctx, tw);
-	ghid_install_accel_groups(GTK_WINDOW(tw->com->top_window), tw);
+	ghid_install_accel_groups(GTK_WINDOW(ghidgui->common.top_window), tw);
 	ghid_update_toggle_flags(tw, NULL);
 }
 
@@ -556,5 +554,5 @@ void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw)
 
 void pcb_gtk_tw_set_title(pcb_gtk_topwin_t *tw, const char *title)
 {
-	gtk_window_set_title(GTK_WINDOW(tw->com->top_window), title);
+	gtk_window_set_title(GTK_WINDOW(ghidgui->common.top_window), title);
 }
