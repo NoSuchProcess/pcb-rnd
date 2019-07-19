@@ -207,21 +207,6 @@ void pcb_gtk_interface_set_sensitive(gboolean sensitive)
 	pcb_gtk_tw_interface_set_sensitive(&ghidgui->topwin, sensitive);
 }
 
-static void ghid_port_button_press_main(void)
-{
-	pcb_gui->invalidate_all(ghidgui->common.hidlib);
-	if (!gport->view.panning)
-		g_idle_add(ghid_idle_cb, &ghidgui->topwin);
-}
-
-static void ghid_port_button_release_main(void)
-{
-	pcb_hidlib_adjust_attached_objects();
-	pcb_gui->invalidate_all(ghidgui->common.hidlib);
-
-	g_idle_add(ghid_idle_cb, &ghidgui->topwin);
-}
-
 static void ghid_mode_cursor_main(void)
 {
 	ghid_mode_cursor(ghidgui);
@@ -338,8 +323,6 @@ void ghid_glue_common_init(const char *cookie)
 
 	/* Set up the glue struct to lib_gtk_common */
 	ghidgui->common.gport = &ghid_port;
-	ghidgui->common.port_button_press_main = ghid_port_button_press_main;
-	ghidgui->common.port_button_release_main = ghid_port_button_release_main;
 	ghidgui->common.mode_cursor_main = ghid_mode_cursor_main;
 	ghidgui->common.pan_common = ghid_pan_common;
 
