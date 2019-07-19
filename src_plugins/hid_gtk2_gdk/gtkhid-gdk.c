@@ -1524,7 +1524,6 @@ void ghid_gdk_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 		common->drawing_realize = ghid_gdk_port_drawing_realize_cb;
 		common->drawing_area_expose = ghid_gdk_drawing_area_expose_cb;
 		common->preview_expose = ghid_gdk_preview_expose;
-		common->invalidate_all = ghid_gdk_invalidate_all;
 		common->set_special_colors = ghid_gdk_set_special_colors;
 		common->init_renderer = ghid_gdk_init_renderer;
 		common->screen_update = ghid_gdk_screen_update;

@@ -1037,7 +1037,6 @@ void ghid_gl_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
 		common->drawing_realize = ghid_gl_port_drawing_realize_cb;
 		common->drawing_area_expose = ghid_gl_drawing_area_expose_cb;
 		common->preview_expose = ghid_gl_preview_expose;
-		common->invalidate_all = ghid_gl_invalidate_all;
 		common->set_special_colors = ghid_gl_set_special_colors;
 		common->init_renderer = ghid_gl_init_renderer;
 		common->screen_update = ghid_gl_screen_update;
