@@ -22,6 +22,7 @@
 #include "util_watch.h"
 #include "hid_gtk_conf.h"
 #include "lib_gtk_config.h"
+#include "glue_common.h"
 #include "../src_plugins/lib_hid_common/menu_helper.h"
 
 extern pcb_hid_cfg_keys_t ghid_keymap;

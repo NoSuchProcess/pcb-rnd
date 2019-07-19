@@ -1,10 +1,16 @@
 #include "hid.h"
 #include "gui.h"
 
+#include "../src_plugins/lib_gtk_common/dlg_topwin.h"
+
+
 void ghid_glue_common_init(const char *cookie);
 void ghid_glue_common_uninit(const char *cookie);
 
 void ghid_draw_area_update(GHidPort *out, GdkRectangle *rect);
+
+void pcb_gtk_tw_ranges_scale(pcb_gtk_topwin_t *tw);
+void ghid_note_event_location(GdkEventButton *ev);
 
 /* make sure the context is set to draw the whole widget size, which might
    be slightly larger than the original request */

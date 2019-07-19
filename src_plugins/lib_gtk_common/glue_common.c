@@ -146,6 +146,19 @@ static void ghid_conf_regs(const char *cookie)
 
 /*** drawing widget - output ***/
 
+/* Do scrollbar scaling based on current port drawing area size and
+   overall PCB board size. */
+void pcb_gtk_tw_ranges_scale(pcb_gtk_topwin_t *tw)
+{
+	/* Update the scrollbars with PCB units. So Scale the current drawing area
+	   size in pixels to PCB units and that will be the page size for the Gtk adjustment. */
+	pcb_gtk_zoom_post(&gport->view);
+
+	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->h_range)), gport->view.width, tw->com->hidlib->size_x);
+	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->v_range)), gport->view.height, tw->com->hidlib->size_y);
+}
+
+
 static void ghid_port_ranges_scale(void)
 {
 	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);
@@ -262,6 +275,23 @@ void pcb_gtk_previews_invalidate_all(void)
 	pcb_gtk_preview_invalidate(&ghidgui->common, NULL);
 }
 
+
+void ghid_note_event_location(GdkEventButton *ev)
+{
+	gint event_x, event_y;
+
+	if (!ev) {
+		gdkc_window_get_pointer(ghid_port.drawing_area, &event_x, &event_y, NULL);
+	}
+	else {
+		event_x = ev->x;
+		event_y = ev->y;
+	}
+
+	pcb_gtk_coords_event2pcb(&gport->view, event_x, event_y, &gport->view.pcb_x, &gport->view.pcb_y);
+
+	pcb_hidlib_crosshair_move_to(gport->view.pcb_x, gport->view.pcb_y, 1);
+}
 
 /*** init ***/
 void ghid_glue_common_uninit(const char *cookie)
