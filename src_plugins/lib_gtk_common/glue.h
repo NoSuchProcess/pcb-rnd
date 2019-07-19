@@ -46,9 +46,6 @@ typedef struct pcb_gtk_common_s {
 	void (*screen_update)(void);
 	void (*shutdown_renderer)(void *port);
 
-	/* execute events */
-	void (*main_destroy)(void *gport); /* remove */
-
 	pcb_bool (*map_color_string)(const char *color_string, pcb_gtk_color_t * color);
 	const gchar *(*get_color_name)(pcb_gtk_color_t * color);
 

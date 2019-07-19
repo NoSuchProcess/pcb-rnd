@@ -205,9 +205,10 @@ static gint delete_chart_cb(GtkWidget *widget, GdkEvent *event, void *data)
 	return TRUE;
 }
 
-static void destroy_chart_cb(GtkWidget *widget, pcb_gtk_topwin_t *tw)
+static void destroy_chart_cb(GtkWidget *widget, pcb_gtk_t *ctx)
 {
-	tw->com->main_destroy(tw->com->gport);
+	ctx->common.shutdown_renderer(ctx->common.gport);
+	gtk_main_quit();
 }
 
 static void get_widget_styles(pcb_gtk_topwin_t *tw, GtkStyle **menu_bar_style)
@@ -363,7 +364,7 @@ void ghid_topwin_hide_status(void *ctx, int show)
 
 /* Create the top_window contents.  The config settings should be loaded
    before this is called. */
-static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
+static void ghid_build_pcb_top_window(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw)
 {
 	GtkWidget *vbox_main, *hbox, *hboxi, *evb;
 	GtkWidget *hbox_scroll, *fullscreen_btn;
@@ -509,7 +510,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_topwin_t *tw)
 	g_signal_connect(G_OBJECT(tw->com->top_window), "configure_event", G_CALLBACK(top_window_configure_event_cb), tw);
 
 	g_signal_connect(G_OBJECT(tw->com->top_window), "delete_event", G_CALLBACK(delete_chart_cb), tw->com->gport);
-	g_signal_connect(G_OBJECT(tw->com->top_window), "destroy", G_CALLBACK(destroy_chart_cb), tw);
+	g_signal_connect(G_OBJECT(tw->com->top_window), "destroy", G_CALLBACK(destroy_chart_cb), ctx);
 
 	gtk_widget_show_all(tw->com->top_window);
 
@@ -529,11 +530,11 @@ void pcb_gtk_tw_interface_set_sensitive(pcb_gtk_topwin_t *tw, gboolean sensitive
 	gtk_widget_set_sensitive(tw->menu_hbox, sensitive);
 }
 
-void ghid_create_pcb_widgets(pcb_gtk_topwin_t *tw, GtkWidget *in_top_window)
+void ghid_create_pcb_widgets(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw, GtkWidget *in_top_window)
 {
 	tw->com->load_bg_image();
 
-	ghid_build_pcb_top_window(tw);
+	ghid_build_pcb_top_window(ctx, tw);
 	ghid_install_accel_groups(GTK_WINDOW(tw->com->top_window), tw);
 	ghid_update_toggle_flags(tw, NULL);
 }

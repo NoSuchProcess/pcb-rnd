@@ -153,7 +153,7 @@ static void gtkhid_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_
 	ghid_keymap.auto_chr = 1;
 	ghid_keymap.auto_tr = hid_cfg_key_default_trans;
 
-	ghid_create_pcb_widgets(&ctx->topwin, gport->top_window);
+	ghid_create_pcb_widgets(ctx, &ctx->topwin, gport->top_window);
 
 	/* assume pcb_gui is us */
 	pcb_gui->hid_cfg = ctx->topwin.ghid_cfg;

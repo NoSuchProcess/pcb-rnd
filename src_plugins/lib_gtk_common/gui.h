@@ -33,6 +33,8 @@
 typedef struct pcb_gtk_port_s  pcb_gtk_port_t;
 typedef struct pcb_gtk_s pcb_gtk_t;
 typedef struct pcb_gtk_mouse_s pcb_gtk_mouse_t;
+typedef struct pcb_gtk_topwin_s pcb_gtk_topwin_t;
+
 extern pcb_gtk_t _ghidgui, *ghidgui;
 
 #include <gtk/gtk.h>
@@ -64,6 +66,38 @@ struct pcb_gtk_mouse_s {
 	GdkCursorType X_cursor_shape; /* and its shape */
 	vtmc_t cursor;
 	int last_cursor_idx; /* tool index of the tool last selected */
+};
+
+#include "bu_menu.h"
+#include "bu_command.h"
+
+struct pcb_gtk_topwin_s {
+	/* util/builder states */
+	pcb_gtk_common_t *com;
+	pcb_gtk_menu_ctx_t menu;
+	pcb_hid_cfg_t *ghid_cfg;
+	pcb_gtk_command_t cmd;
+
+	/* own widgets */
+	GtkWidget *drawing_area;
+	GtkWidget *bottom_hbox;
+
+	GtkWidget *top_hbox, *top_bar_background, *menu_hbox, *position_hbox, *menubar_toolbar_vbox;
+	GtkWidget *left_toolbar;
+	GtkWidget *layer_selector;
+	GtkWidget *vbox_middle, *hpaned_middle;
+
+	GtkWidget *h_range, *v_range;
+	GObject *h_adjustment, *v_adjustment;
+
+	/* own internal states */
+	gboolean adjustment_changed_holdoff;
+	gboolean small_label_markup;
+	int active; /* 0 before init finishes */
+
+	/* docking */
+	GtkWidget *dockbox[PCB_HID_DOCK_max];
+	gdl_list_t dock[PCB_HID_DOCK_max];
 };
 
 /* needed for a type in pcb_gtk_t - DO NOT ADD .h files that are not requred for the structs! */

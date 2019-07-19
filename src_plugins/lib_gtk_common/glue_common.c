@@ -297,12 +297,6 @@ static void ghid_load_bg_image(void)
 	}
 }
 
-static void ghid_main_destroy(void *port)
-{
-	ghidgui->common.shutdown_renderer(port);
-	gtk_main_quit();
-}
-
 void ghid_draw_area_update(pcb_gtk_port_t *port, GdkRectangle *rect)
 {
 	gdk_window_invalidate_rect(gtk_widget_get_window(port->drawing_area), rect, FALSE);
@@ -364,7 +358,6 @@ void ghid_glue_common_init(const char *cookie)
 	ghidgui->common.port_ranges_scale = ghid_port_ranges_scale;
 
 	ghidgui->common.load_bg_image = ghid_load_bg_image;
-	ghidgui->common.main_destroy = ghid_main_destroy;
 	ghidgui->common.port_ranges_changed = ghid_port_ranges_changed;
 
 	ghidgui->topwin.cmd.com = &ghidgui->common;
