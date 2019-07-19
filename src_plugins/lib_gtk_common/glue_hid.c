@@ -142,7 +142,7 @@ static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, Gd
 	gport->view.canvas_width = ev->width;
 	gport->view.canvas_height = ev->height;
 
-	ghid_drawing_area_configure_hook(out);
+	ghidgui->common.drawing_area_configure_hook(out);
 	ghdi_gui_inited(0, 1);
 
 	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);

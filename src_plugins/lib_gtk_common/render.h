@@ -9,6 +9,5 @@
 
 /* Utility functions for renderers to call ***/
 void ghid_draw_area_update(GHidPort *out, GdkRectangle *rect);
-void ghid_drawing_area_configure_hook(void *out);
 
 #endif
