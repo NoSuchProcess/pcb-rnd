@@ -16,7 +16,6 @@
 #include "../src_plugins/lib_gtk_common/gui.h"
 #include "../src_plugins/lib_gtk_common/coord_conv.h"
 #include "../src_plugins/lib_gtk_common/glue_common.h"
-#include "../src_plugins/lib_gtk_common/preview_helper.h"
 
 #include "../src_plugins/lib_hid_gl/opengl.h"
 #include "../src_plugins/lib_hid_gl/draw_gl.h"

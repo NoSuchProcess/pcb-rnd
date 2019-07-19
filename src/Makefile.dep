@@ -1983,7 +1983,7 @@
    \
  ../src_plugins/lib_gtk_common/gui.h \
  ../src_plugins/lib_gtk_common/coord_conv.h compat_misc.h \
- ../src_plugins/lib_gtk_common/preview_helper.h \
+  \
  ../src_plugins/lib_gtk_common/hid_gtk_conf.h \
  ../src_plugins/lib_gtk_common/lib_gtk_config.h \
  ../src_plugins/lib_hid_common/clip.h global_typedefs.h
@@ -2056,7 +2056,7 @@
  ../src_plugins/lib_gtk_common/gui.h \
  ../src_plugins/lib_gtk_common/coord_conv.h compat_misc.h \
    \
- ../src_plugins/lib_gtk_common/preview_helper.h \
+  \
  ../src_plugins/lib_hid_gl/opengl.h ../src_plugins/lib_hid_gl/draw_gl.h \
  ../src_plugins/lib_hid_gl/opengl.h ../src_plugins/lib_hid_gl/hidgl.h \
  ../src_plugins/lib_hid_gl/stencil_gl.h
@@ -2126,7 +2126,7 @@
    \
  ../src_plugins/lib_gtk_common/gui.h \
  ../src_plugins/lib_gtk_common/coord_conv.h compat_misc.h \
- ../src_plugins/lib_gtk_common/preview_helper.h \
+  \
  ../src_plugins/lib_gtk_common/hid_gtk_conf.h \
  ../src_plugins/lib_gtk_common/lib_gtk_config.h \
  ../src_plugins/lib_hid_common/clip.h global_typedefs.h
