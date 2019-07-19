@@ -7,7 +7,6 @@
 
 #include "../src_plugins/lib_gtk_common/glue_common.h"
 #include "../src_plugins/lib_gtk_common/glue_hid.h"
-#include "../src_plugins/lib_gtk_common/glue_win32.h"
 #include "../src_plugins/lib_gtk_common/common.h"
 #include "../src_plugins/lib_gtk_common/render.h"
 
@@ -31,7 +30,6 @@ void pplg_uninit_hid_gtk2_gdk(void)
 int pplg_init_hid_gtk2_gdk(void)
 {
 	PCB_API_CHK_VER;
-	ghid_win32_init();
 
 	ghid_glue_hid_init(&gtk2_gdk_hid);
 	ghid_glue_common_init(ghid_cookie);

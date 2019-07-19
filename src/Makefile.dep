@@ -2005,7 +2005,7 @@
  math_helper.h misc_util.h ../src_3rd/genvector/gds_char.h \
  ../src_plugins/lib_gtk_common/glue_common.h hid.h \
  ../src_plugins/lib_gtk_common/glue_hid.h \
- ../src_plugins/lib_gtk_common/glue_win32.h \
+   \
  ../src_plugins/lib_gtk_common/common.h event.h hidlib.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
  compat_misc.h hid_attrib.h pcb-printf.h hid_dad_spin.h \
@@ -2080,7 +2080,7 @@
  ../src_plugins/lib_hid_gl/draw_gl.h ../src_plugins/lib_hid_gl/opengl.h \
  ../src_plugins/lib_gtk_common/glue_common.h hid.h \
  ../src_plugins/lib_gtk_common/glue_hid.h \
- ../src_plugins/lib_gtk_common/glue_win32.h \
+   \
  ../src_plugins/lib_gtk_common/common.h event.h hidlib.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
  compat_misc.h hid_attrib.h hid_dad_spin.h \
@@ -2148,7 +2148,7 @@
  math_helper.h misc_util.h ../src_3rd/genvector/gds_char.h \
  ../src_plugins/lib_gtk_common/glue_common.h hid.h \
  ../src_plugins/lib_gtk_common/glue_hid.h \
- ../src_plugins/lib_gtk_common/glue_win32.h \
+   \
  ../src_plugins/lib_gtk_common/common.h event.h hidlib.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_cfg.h hid_dad.h \
  compat_misc.h hid_attrib.h pcb-printf.h hid_dad_spin.h \
@@ -4103,7 +4103,7 @@
  ../src_plugins/lib_hid_common/menu_helper.h
 ../src_plugins/lib_gtk_common/glue_win32.o: \
  ../src_plugins/lib_gtk_common/glue_win32.c ../config.h \
- ../src_plugins/lib_gtk_common/glue_win32.h
+  
 ../src_plugins/lib_gtk_common/in_keyboard.o: \
  ../src_plugins/lib_gtk_common/in_keyboard.c ../config.h \
  ../src_plugins/lib_gtk_common/in_keyboard.h hid_cfg_input.h \
