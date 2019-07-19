@@ -207,7 +207,7 @@ void pcb_gtk_interface_set_sensitive(gboolean sensitive)
 	pcb_gtk_tw_interface_set_sensitive(&ghidgui->topwin, sensitive);
 }
 
-static void ghid_mode_cursor_main(void)
+void pcb_gtk_mode_cursor_main(void)
 {
 	ghid_mode_cursor(ghidgui);
 }
@@ -323,7 +323,6 @@ void ghid_glue_common_init(const char *cookie)
 
 	/* Set up the glue struct to lib_gtk_common */
 	ghidgui->common.gport = &ghid_port;
-	ghidgui->common.mode_cursor_main = ghid_mode_cursor_main;
 	ghidgui->common.pan_common = ghid_pan_common;
 
 	ghidgui->common.load_bg_image = ghid_load_bg_image;

@@ -29,6 +29,7 @@
 #include "config.h"
 #include "util_watch.h"
 #include "in_mouse.h"
+#include "glue_common.h"
 
 typedef struct {
 	pcb_bool (*func) (pcb_hidval_t, int, unsigned int, pcb_hidval_t);
@@ -60,7 +61,7 @@ static gboolean ghid_watch(GIOChannel * source, GIOCondition condition, gpointer
 	x.ptr = (void *) watch;
 	res = watch->func(x, watch->fd, pcb_condition, watch->user_data);
 
-	watch->com->mode_cursor_main();
+	pcb_gtk_mode_cursor_main();
 
 	return res;
 }

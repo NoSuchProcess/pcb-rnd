@@ -29,6 +29,7 @@
 #include "config.h"
 #include <glib.h>
 #include "util_timer.h"
+#include "glue_common.h"
 
 typedef struct {
 	void (*func) (pcb_hidval_t);
@@ -43,7 +44,7 @@ typedef struct {
 static gboolean ghid_timer(GuiTimer * timer)
 {
 	(*timer->func) (timer->user_data);
-	timer->com->mode_cursor_main();
+	pcb_gtk_mode_cursor_main();
 	return FALSE;									/* Turns timer off */
 }
 

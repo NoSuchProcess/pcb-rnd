@@ -30,7 +30,6 @@ typedef struct pcb_gtk_common_s {
 	void (*draw_grid_local)(pcb_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy);
 
 	/* screen */
-	void (*mode_cursor_main)(void); /* remove */
 	void (*invalidate_all)(pcb_hidlib_t *hidlib); /* remove? */
 	void (*pan_common)(void);  /* remove */
 	void (*screen_update)(void);
