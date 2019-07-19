@@ -170,7 +170,7 @@ TODO(": move this to render init")
 	g_signal_connect(G_OBJECT(gport->drawing_area), "enter_notify_event", G_CALLBACK(ghid_port_window_enter_cb), gport);
 	g_signal_connect(G_OBJECT(gport->drawing_area), "leave_notify_event", G_CALLBACK(ghid_port_window_leave_cb), gport);
 
-	ghid_interface_input_signals_connect();
+	pcb_gtk_interface_input_signals_connect();
 
 	if (conf_hid_gtk.plugins.hid_gtk.listen)
 		pcb_gtk_create_listener();

@@ -187,7 +187,7 @@ static void ghid_pan_common(void)
 static void command_post_entry(void)
 {
 #if PCB_GTK_DISABLE_MOUSE_DURING_CMD_ENTRY
-	ghid_interface_input_signals_connect();
+	pcb_gtk_interface_input_signals_connect();
 #endif
 	ghid_interface_set_sensitive(TRUE);
 	ghid_install_accel_groups(GTK_WINDOW(gport->top_window), &ghidgui->topwin);
@@ -198,7 +198,7 @@ static void command_pre_entry(void)
 {
 	ghid_remove_accel_groups(GTK_WINDOW(gport->top_window), &ghidgui->topwin);
 #if PCB_GTK_DISABLE_MOUSE_DURING_CMD_ENTRY
-	ghid_interface_input_signals_disconnect();
+	pcb_gtk_interface_input_signals_disconnect();
 #endif
 	ghid_interface_set_sensitive(FALSE);
 }
@@ -255,7 +255,7 @@ static void kbd_input_signals_disconnect(int idx, void *obj)
    location or if command entry is needed in the status line.
    During these times normal button/key presses are intercepted, either
    by new signal handlers or the command_combo_box entry. */
-void ghid_interface_input_signals_connect(void)
+void pcb_gtk_interface_input_signals_connect(void)
 {
 	ghidgui->button_press_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_press_event", G_CALLBACK(ghid_port_button_press_cb), ghidgui);
 	ghidgui->button_release_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_release_event", G_CALLBACK(ghid_port_button_release_cb), ghidgui);
@@ -263,7 +263,7 @@ void ghid_interface_input_signals_connect(void)
 	kbd_input_signals_connect(3, ghidgui->topwin.left_toolbar);
 }
 
-void ghid_interface_input_signals_disconnect(void)
+void pcb_gtk_interface_input_signals_disconnect(void)
 {
 	kbd_input_signals_disconnect(0, gport->drawing_area);
 	kbd_input_signals_disconnect(3, ghidgui->topwin.left_toolbar);
@@ -341,8 +341,6 @@ void ghid_glue_common_init(const char *cookie)
 
 	/* Set up the glue struct to lib_gtk_common */
 	ghidgui->common.gport = &ghid_port;
-	ghidgui->common.interface_input_signals_disconnect = ghid_interface_input_signals_disconnect;
-	ghidgui->common.interface_input_signals_connect = ghid_interface_input_signals_connect;
 	ghidgui->common.interface_set_sensitive = ghid_interface_set_sensitive;
 	ghidgui->common.port_button_press_main = ghid_port_button_press_main;
 	ghidgui->common.port_button_release_main = ghid_port_button_release_main;

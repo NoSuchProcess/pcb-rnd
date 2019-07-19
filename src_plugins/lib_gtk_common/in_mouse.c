@@ -188,7 +188,7 @@ static gboolean run_get_location_loop(pcb_gtk_t *ctx, const gchar * message)
 	   control interface insensitive so all the user can do is hit a key
 	   or mouse button in the Output drawing area.
 	 */
-	ctx->common.interface_input_signals_disconnect();
+	pcb_gtk_interface_input_signals_disconnect();
 	ctx->common.interface_set_sensitive(FALSE);
 
 	lctx.got_location = TRUE;   /* Will be unset by hitting most keys */
@@ -208,7 +208,7 @@ static gboolean run_get_location_loop(pcb_gtk_t *ctx, const gchar * message)
 	g_signal_handler_disconnect(ctx->common.top_window, key_handler1);
 	g_signal_handler_disconnect(ctx->common.top_window, key_handler2);
 
-	ctx->common.interface_input_signals_connect(); /* return to normal */
+	pcb_gtk_interface_input_signals_connect(); /* return to normal */
 	ctx->common.interface_set_sensitive(TRUE);
 
 	pcb_hidlib_crosshair_restore(chst);

@@ -42,5 +42,5 @@ void pcb_gtk_previews_invalidate_all(void);
 void pcb_gtk_tw_ranges_scale(pcb_gtk_topwin_t *tw);
 void pcb_gtk_note_event_location(GdkEventButton *ev);
 
-void ghid_interface_input_signals_connect(void);
-void ghid_interface_input_signals_disconnect(void);
+void pcb_gtk_interface_input_signals_connect(void);
+void pcb_gtk_interface_input_signals_disconnect(void);
