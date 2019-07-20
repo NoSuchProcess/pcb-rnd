@@ -104,7 +104,7 @@ void ghid_point_cursor(pcb_gtk_t *ctx, pcb_bool grabbed)
 
 typedef struct {
 	GMainLoop *loop;
-	pcb_gtk_impl_t *com;
+	pcb_gtk_t *gctx;
 	gboolean got_location;
 	gint last_press;
 } loop_ctx_t;
@@ -199,7 +199,7 @@ static gboolean run_get_location_loop(pcb_gtk_t *ctx, const gchar * message)
 	key_handler2 = g_signal_connect(G_OBJECT(ctx->impl.top_window), "key_release_event", G_CALLBACK(loop_key_release_cb), &lctx);
 
 	lctx.loop = g_main_loop_new(NULL, FALSE);
-	lctx.com = &ctx->impl;
+	lctx.gctx = ctx;
 	g_main_loop_run(lctx.loop);
 
 	g_main_loop_unref(lctx.loop);
