@@ -523,12 +523,12 @@ static void ghid_set_hidlib(pcb_hid_t *hid, pcb_hidlib_t *hidlib)
 	pcb_gtk_zoom_view_win_side(&ghidgui->port.view, 0, 0, hidlib->size_x, hidlib->size_y, 0);
 }
 
-static void ghid_reg_mouse_cursor(pcb_hidlib_t *hidlib, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
+static void ghid_reg_mouse_cursor(pcb_hid_t *hid, pcb_hidlib_t *hidlib, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
 {
 	ghid_port_reg_mouse_cursor(ghidgui, idx, name, pixel, mask);
 }
 
-static void ghid_set_mouse_cursor(pcb_hidlib_t *hidlib, int idx)
+static void ghid_set_mouse_cursor(pcb_hid_t *hid, pcb_hidlib_t *hidlib, int idx)
 {
 	ghid_port_set_mouse_cursor(ghidgui, idx);
 }

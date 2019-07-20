@@ -36,7 +36,7 @@ static const char *hidlib_cookie = "hidlib";
 static void hidlib_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_tool_gui_init();
-	pcb_gui->set_mouse_cursor(hidlib, pcbhl_conf.editor.mode); /* make sure the mouse cursor is set up now that it is registered */
+	pcb_gui->set_mouse_cursor(pcb_gui, hidlib, pcbhl_conf.editor.mode); /* make sure the mouse cursor is set up now that it is registered */
 }
 
 void pcbhl_log_print_uninit_errs(const char *title)
