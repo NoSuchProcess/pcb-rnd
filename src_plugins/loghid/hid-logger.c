@@ -48,16 +48,16 @@ static void log_invalidate_all(pcb_hid_t *hid, pcb_hidlib_t *hidlib)
 	delegatee_->invalidate_all(hid, hidlib);
 }
 
-static void log_notify_crosshair_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
+static void log_notify_crosshair_change(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_bool changes_complete)
 {
 	pcb_fprintf(out_, "pcb_notify_crosshair_change(%s)\n", changes_complete ? "true" : "false");
-	delegatee_->notify_crosshair_change(hidlib, changes_complete);
+	delegatee_->notify_crosshair_change(hid, hidlib, changes_complete);
 }
 
-static void log_notify_mark_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
+static void log_notify_mark_change(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_bool changes_complete)
 {
 	pcb_fprintf(out_, "pcb_notify_mark_change(%s)\n", changes_complete ? "true" : "false");
-	delegatee_->notify_mark_change(hidlib, changes_complete);
+	delegatee_->notify_mark_change(hid, hidlib, changes_complete);
 }
 
 static int log_set_layer_group(pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)

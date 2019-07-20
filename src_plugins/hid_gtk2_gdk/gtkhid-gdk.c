@@ -1162,7 +1162,7 @@ static void ghid_gdk_invalidate_all(pcb_hid_t *hid, pcb_hidlib_t *hidlib)
 	}
 }
 
-static void ghid_gdk_notify_crosshair_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
+static void ghid_gdk_notify_crosshair_change(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_bool changes_complete)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 
@@ -1196,7 +1196,7 @@ static void ghid_gdk_notify_crosshair_change(pcb_hidlib_t *hidlib, pcb_bool chan
 	}
 }
 
-static void ghid_gdk_notify_mark_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
+static void ghid_gdk_notify_mark_change(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_bool changes_complete)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 

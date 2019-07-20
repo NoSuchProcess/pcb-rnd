@@ -252,8 +252,8 @@ struct pcb_hid_s {
 	/* This may be called to ask the GUI to force a redraw of a given area */
 	void (*invalidate_lr)(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom);
 	void (*invalidate_all)(pcb_hid_t *hid, pcb_hidlib_t *hidlib);
-	void (*notify_crosshair_change)(pcb_hidlib_t *hidlib, pcb_bool changes_complete);
-	void (*notify_mark_change)(pcb_hidlib_t *hidlib, pcb_bool changes_complete);
+	void (*notify_crosshair_change)(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_bool changes_complete);
+	void (*notify_mark_change)(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_bool changes_complete);
 
 	/* During redraw or print/export cycles, this is called once per layer group
 	   (physical layer); pusrpose/purpi are the extracted purpose field and its

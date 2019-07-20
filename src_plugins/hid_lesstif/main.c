@@ -2158,7 +2158,7 @@ void lesstif_invalidate_all(pcb_hid_t *hid, pcb_hidlib_t *hidlib)
 		lesstif_invalidate_lr(hid, hidlib, 0, hidlib->size_x, 0, hidlib->size_y);
 }
 
-static void lesstif_notify_crosshair_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
+static void lesstif_notify_crosshair_change(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_bool changes_complete)
 {
 	static int invalidate_depth = 0;
 	Pixmap save_pixmap;
@@ -2192,7 +2192,7 @@ static void lesstif_notify_crosshair_change(pcb_hidlib_t *hidlib, pcb_bool chang
 		invalidate_depth++;
 }
 
-static void lesstif_notify_mark_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
+static void lesstif_notify_mark_change(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_bool changes_complete)
 {
 	static int invalidate_depth = 0;
 	Pixmap save_pixmap;

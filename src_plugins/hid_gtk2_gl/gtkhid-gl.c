@@ -544,24 +544,24 @@ void ghid_gl_invalidate_lr(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_coord_t lef
 	}
 }
 
-static void ghid_gl_notify_crosshair_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
+static void ghid_gl_notify_crosshair_change(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_bool changes_complete)
 {
 	/* We sometimes get called before the GUI is up */
 	if (ghidgui->port.drawing_area == NULL)
 		return;
 
 	/* FIXME: We could just invalidate the bounds of the crosshair attached objects? */
-	ghid_gl_invalidate_all(pcb_gui, hidlib);
+	ghid_gl_invalidate_all(hid, hidlib);
 }
 
-static void ghid_gl_notify_mark_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
+static void ghid_gl_notify_mark_change(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_bool changes_complete)
 {
 	/* We sometimes get called before the GUI is up */
 	if (ghidgui->port.drawing_area == NULL)
 		return;
 
 	/* FIXME: We could just invalidate the bounds of the mark? */
-	ghid_gl_invalidate_all(pcb_gui, hidlib);
+	ghid_gl_invalidate_all(hid, hidlib);
 }
 
 static void pcb_gl_draw_right_cross(pcb_hidlib_t *hidlib, GLint x, GLint y, GLint z)
