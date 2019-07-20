@@ -281,7 +281,7 @@ static void ghid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int
 
 pcb_hidval_t ghid_add_timer(void (*func) (pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
 {
-	return pcb_gtk_add_timer(&ghidgui->impl, func, milliseconds, user_data);
+	return pcb_gtk_add_timer(ghidgui, func, milliseconds, user_data);
 }
 
 static pcb_hidval_t ghid_watch_file(int fd, unsigned int condition,
