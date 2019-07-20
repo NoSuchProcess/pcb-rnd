@@ -3,7 +3,7 @@
 
 #include <locale.h>
 
-#include "gui.h"
+#include "pcb_gtk.h"
 #include "actions.h"
 #include "glue_hid.h"
 #include "hid_nogui.h"

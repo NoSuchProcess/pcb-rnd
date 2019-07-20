@@ -39,7 +39,7 @@
 #include <genlist/gendlist.h>
 #include "hid.h"
 #include "ui_zoompan.h"
-#include "gui.h"
+#include "pcb_gtk.h"
 #include "compat.h"
 
 #define PCB_GTK_TYPE_PREVIEW           (pcb_gtk_preview_get_type())

@@ -8,7 +8,7 @@
 #include "hid_cfg.h"
 #include "hid_dad.h"
 
-#include "gui.h"
+#include "pcb_gtk.h"
 #include "bu_menu.h"
 #include "bu_command.h"
 

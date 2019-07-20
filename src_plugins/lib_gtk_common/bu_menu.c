@@ -14,7 +14,7 @@
 #include "hid_cfg.h"
 #include "hid_cfg_action.h"
 
-#include "gui.h"
+#include "pcb_gtk.h"
 #include "bu_menu.h"
 #include "in_keyboard.h"
 

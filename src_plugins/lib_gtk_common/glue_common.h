@@ -1,5 +1,5 @@
 #include "hid.h"
-#include "gui.h"
+#include "pcb_gtk.h"
 
 #include "../src_plugins/lib_gtk_common/dlg_topwin.h"
 

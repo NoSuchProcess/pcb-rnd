@@ -32,7 +32,7 @@
 #include "glue_common.h"
 
 #include "conf.h"
-#include "gui.h"
+#include "pcb_gtk.h"
 #include "hidlib.h"
 #include "dlg_topwin.h"
 #include "hid_gtk_conf.h"

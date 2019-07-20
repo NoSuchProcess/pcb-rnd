@@ -1969,7 +1969,7 @@
  obj_text.h font.h ../src_3rd/genht/htip.h box.h math_helper.h \
  misc_util.h route.h draw.h grid.h board.h vtroutestyle.h layer_grp.h \
  rats_patch.h hidlib.h hid_attrib.h hid_color.h funchash_core.h \
- funchash.h funchash_core_list.h ../src_plugins/lib_gtk_common/gui.h \
+ funchash.h funchash_core_list.h ../src_plugins/lib_gtk_common/pcb_gtk.h \
  hid.h ../src_plugins/lib_gtk_common/ui_zoompan.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h \
  ../src_3rd/genht/htpp.h hid_cfg.h   \
@@ -1981,7 +1981,7 @@
  ../src_plugins/lib_gtk_common/in_mouse.h \
    event.h \
  ../src_plugins/lib_gtk_common/glue_common.h \
- ../src_plugins/lib_gtk_common/gui.h \
+ ../src_plugins/lib_gtk_common/pcb_gtk.h \
  ../src_plugins/lib_gtk_common/coord_conv.h compat_misc.h \
  ../src_plugins/lib_gtk_common/hid_gtk_conf.h \
  ../src_plugins/lib_gtk_common/lib_gtk_config.h \
@@ -2003,7 +2003,7 @@
  obj_text_list.h obj_text.h font.h ../src_3rd/genht/htip.h box.h \
  math_helper.h misc_util.h ../src_3rd/genvector/gds_char.h \
  ../src_plugins/lib_gtk_common/glue_common.h hid.h \
- ../src_plugins/lib_gtk_common/gui.h \
+ ../src_plugins/lib_gtk_common/pcb_gtk.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h \
  ../src_3rd/genht/htpp.h hid_cfg.h   \
@@ -2035,7 +2035,7 @@
  funchash_core_list.h ../src_plugins/lib_hid_common/clip.h \
  global_typedefs.h ../src_plugins/lib_gtk_common/hid_gtk_conf.h conf.h \
  ../src_plugins/lib_gtk_common/lib_gtk_config.h hid.h event.h hidlib.h \
- conf_hid.h ../src_plugins/lib_gtk_common/gui.h \
+ conf_hid.h ../src_plugins/lib_gtk_common/pcb_gtk.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h \
  ../src_3rd/genht/htpp.h hid_cfg.h   \
@@ -2048,7 +2048,7 @@
    \
  ../src_plugins/lib_gtk_common/coord_conv.h compat_misc.h \
  ../src_plugins/lib_gtk_common/glue_common.h \
- ../src_plugins/lib_gtk_common/gui.h ../src_plugins/lib_hid_gl/opengl.h \
+ ../src_plugins/lib_gtk_common/pcb_gtk.h ../src_plugins/lib_hid_gl/opengl.h \
  ../src_plugins/lib_hid_gl/draw_gl.h ../src_plugins/lib_hid_gl/opengl.h \
  ../src_plugins/lib_hid_gl/hidgl.h ../src_plugins/lib_hid_gl/stencil_gl.h
 ../src_plugins/hid_gtk2_gl/gtkhid-main.o: \
@@ -2070,7 +2070,7 @@
  conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h \
  ../src_plugins/lib_hid_gl/draw_gl.h ../src_plugins/lib_hid_gl/opengl.h \
  ../src_plugins/lib_gtk_common/glue_common.h hid.h \
- ../src_plugins/lib_gtk_common/gui.h \
+ ../src_plugins/lib_gtk_common/pcb_gtk.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h \
  ../src_3rd/genht/htpp.h hid_cfg.h   \
@@ -2098,7 +2098,7 @@
  obj_text.h font.h ../src_3rd/genht/htip.h box.h math_helper.h \
  misc_util.h route.h draw.h grid.h board.h vtroutestyle.h layer_grp.h \
  rats_patch.h hidlib.h hid_attrib.h hid_color.h funchash_core.h \
- funchash.h funchash_core_list.h ../src_plugins/lib_gtk_common/gui.h \
+ funchash.h funchash_core_list.h ../src_plugins/lib_gtk_common/pcb_gtk.h \
  hid.h ../src_plugins/lib_gtk_common/ui_zoompan.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h \
  ../src_3rd/genht/htpp.h hid_cfg.h   \
@@ -2130,7 +2130,7 @@
  obj_text_list.h obj_text.h font.h ../src_3rd/genht/htip.h box.h \
  math_helper.h misc_util.h ../src_3rd/genvector/gds_char.h \
  ../src_plugins/lib_gtk_common/glue_common.h hid.h \
- ../src_plugins/lib_gtk_common/gui.h \
+ ../src_plugins/lib_gtk_common/pcb_gtk.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h \
  ../src_3rd/genht/htpp.h hid_cfg.h   \
@@ -3987,7 +3987,7 @@
  ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
- ../src_3rd/genvector/gds_char.h ../src_plugins/lib_gtk_common/gui.h \
+ ../src_3rd/genvector/gds_char.h ../src_plugins/lib_gtk_common/pcb_gtk.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h \
  ../src_3rd/genht/htpp.h hid_cfg.h hid.h \
@@ -4021,7 +4021,7 @@
  ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h \
- ../src_3rd/genvector/gds_char.h ../src_plugins/lib_gtk_common/gui.h \
+ ../src_3rd/genvector/gds_char.h ../src_plugins/lib_gtk_common/pcb_gtk.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h \
  ../src_3rd/genht/htpp.h hid_cfg.h hid.h \

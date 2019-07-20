@@ -10,7 +10,7 @@
 #include "hid_color.h"
 #include "funchash_core.h"
 
-#include "../src_plugins/lib_gtk_common/gui.h"
+#include "../src_plugins/lib_gtk_common/pcb_gtk.h"
 #include "../src_plugins/lib_gtk_common/glue_common.h"
 #include "../src_plugins/lib_gtk_common/coord_conv.h"
 

@@ -2,7 +2,7 @@
 #define PCB_GTK_IN_MOUSE_H
 
 #include "hid_cfg_input.h"
-#include "gui.h"
+#include "pcb_gtk.h"
 
 #include <gtk/gtk.h>
 #include <gdk/gdkevents.h>
