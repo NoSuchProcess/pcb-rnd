@@ -121,7 +121,7 @@ void pcb_arc_ui_move_or_copy_endp(pcb_crosshair_t *ch)
 
 void pcb_arc_ui_move_or_copy(pcb_crosshair_t *ch)
 {
-	if (pcb_gui->shift_is_pressed() || (ch->AttachedObject.radius != 0))
+	if (pcb_gui->shift_is_pressed(pcb_gui) || (ch->AttachedObject.radius != 0))
 		pcb_arc_ui_move_or_copy_endp(ch);
 	else
 		pcb_arc_ui_move_or_copy_angle(ch);

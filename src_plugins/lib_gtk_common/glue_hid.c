@@ -548,7 +548,7 @@ static void ghid_busy(pcb_hidlib_t *hidlib, pcb_bool busy)
 		ghid_restore_cursor(ghidgui);
 }
 
-static int ghid_shift_is_pressed()
+static int ghid_shift_is_pressed(pcb_hid_t *hid)
 {
 	GdkModifierType mask;
 	pcb_gtk_port_t *out = &ghidgui->port;
@@ -566,7 +566,7 @@ static int ghid_shift_is_pressed()
 #endif
 }
 
-static int ghid_control_is_pressed()
+static int ghid_control_is_pressed(pcb_hid_t *hid)
 {
 	GdkModifierType mask;
 	pcb_gtk_port_t *out = &ghidgui->port;
@@ -584,7 +584,7 @@ static int ghid_control_is_pressed()
 #endif
 }
 
-static int ghid_mod1_is_pressed()
+static int ghid_mod1_is_pressed(pcb_hid_t *hid)
 {
 	GdkModifierType mask;
 	pcb_gtk_port_t *out = &ghidgui->port;

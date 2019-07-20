@@ -198,7 +198,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 			gds_t tmp;
 
 #ifndef NDEBUG
-			if (pcb_gui->shift_is_pressed()) {
+			if (pcb_gui->shift_is_pressed(pcb_gui)) {
 				pcb_r_dump_tree(PCB->Data->padstack_tree, 0);
 				PCB_ACT_IRES(0);
 				return 0;
@@ -225,7 +225,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		{
 			pcb_line_t *line;
 #ifndef NDEBUG
-			if (pcb_gui->shift_is_pressed()) {
+			if (pcb_gui->shift_is_pressed(pcb_gui)) {
 				pcb_layer_t *layer = (pcb_layer_t *) ptr1;
 				pcb_r_dump_tree(layer->line_tree, 0);
 				PCB_ACT_IRES(0);
@@ -253,7 +253,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		{
 			pcb_rat_t *line;
 #ifndef NDEBUG
-			if (pcb_gui->shift_is_pressed()) {
+			if (pcb_gui->shift_is_pressed(pcb_gui)) {
 				pcb_r_dump_tree(PCB->Data->rat_tree, 0);
 				PCB_ACT_IRES(0);
 				return 0;
@@ -275,7 +275,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 			pcb_arc_t *Arc;
 			pcb_box_t box;
 #ifndef NDEBUG
-			if (pcb_gui->shift_is_pressed()) {
+			if (pcb_gui->shift_is_pressed(pcb_gui)) {
 				pcb_layer_t *layer = (pcb_layer_t *) ptr1;
 				pcb_r_dump_tree(layer->arc_tree, 0);
 				return 0;
@@ -311,7 +311,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 			double area, u;
 
 #ifndef NDEBUG
-			if (pcb_gui->shift_is_pressed()) {
+			if (pcb_gui->shift_is_pressed(pcb_gui)) {
 				pcb_layer_t *layer = (pcb_layer_t *) ptr1;
 				pcb_r_dump_tree(layer->polygon_tree, 0);
 				PCB_ACT_IRES(0);
@@ -352,7 +352,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		{
 			pcb_subc_t *subc;
 #ifndef NDEBUG
-			if (pcb_gui->shift_is_pressed()) {
+			if (pcb_gui->shift_is_pressed(pcb_gui)) {
 				pcb_r_dump_tree(PCB->Data->subc_tree, 0);
 				PCB_ACT_IRES(0);
 				return 0;
@@ -372,7 +372,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		}
 	case PCB_OBJ_TEXT:
 #ifndef NDEBUG
-		if (pcb_gui->shift_is_pressed()) {
+		if (pcb_gui->shift_is_pressed(pcb_gui)) {
 			pcb_layer_t *layer = (pcb_layer_t *) ptr1;
 			pcb_r_dump_tree(layer->text_tree, 0);
 			PCB_ACT_IRES(0);

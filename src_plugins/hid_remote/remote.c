@@ -303,17 +303,17 @@ static void remote_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
 }
 
-static int remote_shift_is_pressed(void)
+static int remote_shift_is_pressed(pcb_hid_t *hid)
 {
 	return 0;
 }
 
-static int remote_control_is_pressed(void)
+static int remote_control_is_pressed(pcb_hid_t *hid)
 {
 	return 0;
 }
 
-static int remote_mod1_is_pressed(void)
+static int remote_mod1_is_pressed(pcb_hid_t *hid)
 {
 	return 0;
 }

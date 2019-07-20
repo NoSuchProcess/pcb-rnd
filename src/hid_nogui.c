@@ -169,19 +169,19 @@ static void nogui_calibrate(pcb_hid_t *hid, double xval, double yval)
 	CRASH("calibrate");
 }
 
-static int nogui_shift_is_pressed(void)
+static int nogui_shift_is_pressed(pcb_hid_t *hid)
 {
 	/* This is called from pcb_crosshair_grid_fit() when the board is loaded.  */
 	return 0;
 }
 
-static int nogui_control_is_pressed(void)
+static int nogui_control_is_pressed(pcb_hid_t *hid)
 {
 	CRASH("control_is_pressed");
 	return 0;
 }
 
-static int nogui_mod1_is_pressed(void)
+static int nogui_mod1_is_pressed(pcb_hid_t *hid)
 {
 	CRASH("mod1_is_pressed");
 	return 0;

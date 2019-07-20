@@ -57,7 +57,7 @@ void pcb_tool_buffer_uninit(void)
 
 void pcb_tool_buffer_notify_mode(void)
 {
-	if (pcb_gui->shift_is_pressed()) {
+	if (pcb_gui->shift_is_pressed(pcb_gui)) {
 		pcb_actionl("ReplaceFootprint", "object", "@buffer", "dumb", NULL);
 		return;
 	}

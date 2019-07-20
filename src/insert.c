@@ -85,7 +85,7 @@ pcb_point_t *pcb_adjust_insert_point(void)
 	if (pcb_crosshair.AttachedObject.State == PCB_CH_STATE_FIRST)
 		return NULL;
 	pcb_crosshair.AttachedObject.Ptr3 = &InsertedPoint;
-	if (pcb_gui->shift_is_pressed()) {
+	if (pcb_gui->shift_is_pressed(pcb_gui)) {
 		pcb_attached_line_t myline;
 		/* only force 45 degree for nearest point */
 		if (pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, line->Point1.X, line->Point1.Y) <

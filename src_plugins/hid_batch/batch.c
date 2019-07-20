@@ -232,17 +232,17 @@ static void batch_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
 }
 
-static int batch_shift_is_pressed(void)
+static int batch_shift_is_pressed(pcb_hid_t *hid)
 {
 	return 0;
 }
 
-static int batch_control_is_pressed(void)
+static int batch_control_is_pressed(pcb_hid_t *hid)
 {
 	return 0;
 }
 
-static int batch_mod1_is_pressed(void)
+static int batch_mod1_is_pressed(pcb_hid_t *hid)
 {
 	return 0;
 }

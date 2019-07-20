@@ -650,8 +650,8 @@ void *pcb_lineop_move_point_with_route(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb
 												Line->Thickness,
 												Line->Clearance,
 												Line->Flags,
-												pcb_gui->shift_is_pressed(),
-												pcb_gui->control_is_pressed() );
+												pcb_gui->shift_is_pressed(pcb_gui),
+												pcb_gui->control_is_pressed(pcb_gui) );
 		pcb_route_apply_to_line(&route,Layer,Line);
 		pcb_route_destroy(&route);
 	}

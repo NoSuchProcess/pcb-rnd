@@ -327,9 +327,9 @@ struct pcb_hid_s {
 	   HIDs.  */
 
 	/* Temporary */
-	int (*shift_is_pressed)(void);
-	int (*control_is_pressed)(void);
-	int (*mod1_is_pressed)(void);
+	int (*shift_is_pressed)(pcb_hid_t *hid);
+	int (*control_is_pressed)(pcb_hid_t *hid);
+	int (*mod1_is_pressed)(pcb_hid_t *hid);
 
 	void (*get_coords)(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force);
 

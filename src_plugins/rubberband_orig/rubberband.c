@@ -1041,7 +1041,7 @@ static void rbe_move(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_
 			point2.Y += argv[argi2 + 1].d.i;
 
 			pcb_route_init(&route);
-			pcb_route_calculate(PCB, &route, &point1, &point2, pcb_layer_id(PCB->Data, ptr->Layer), ptr->Line->Thickness, ptr->Line->Clearance, ptr->Line->Flags, pcb_gui->shift_is_pressed(), pcb_gui->control_is_pressed());
+			pcb_route_calculate(PCB, &route, &point1, &point2, pcb_layer_id(PCB->Data, ptr->Layer), ptr->Line->Thickness, ptr->Line->Clearance, ptr->Line->Flags, pcb_gui->shift_is_pressed(pcb_gui), pcb_gui->control_is_pressed(pcb_gui));
 			pcb_route_apply_to_line(&route, ptr->Layer, ptr->Line);
 			pcb_route_destroy(&route);
 		}
@@ -1180,7 +1180,7 @@ static void rbe_draw(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_
 				pcb_route_calculate(PCB,
 														&route,
 														ptr->delta_index[0] < 0 ? &point1 : &point2,
-														ptr->delta_index[0] < 0 ? &point2 : &point1, pcb_layer_id(PCB->Data, ptr->Layer), ptr->Line->Thickness, ptr->Line->Clearance, ptr->Line->Flags, pcb_gui->shift_is_pressed(), pcb_gui->control_is_pressed());
+														ptr->delta_index[0] < 0 ? &point2 : &point1, pcb_layer_id(PCB->Data, ptr->Layer), ptr->Line->Thickness, ptr->Line->Clearance, ptr->Line->Flags, pcb_gui->shift_is_pressed(pcb_gui), pcb_gui->control_is_pressed(pcb_gui));
 				pcb_route_draw(&route, pcb_crosshair.GC);
 				if (conf_core.editor.show_drc)
 					pcb_route_draw_drc(&route, pcb_crosshair.GC);
@@ -1404,7 +1404,7 @@ static void calculate_route_rubber_arc_point_move(pcb_rb_arc_t *arcptr, int end,
 	pcb_route_add_arc(route, &center, arc.StartAngle, arc.Delta, arc.Width, layerid);
 
 	if ((dx != 0) || (dy != 0))
-		pcb_route_calculate_to(route, &endpoint, pcb_gui->shift_is_pressed(), pcb_gui->control_is_pressed());
+		pcb_route_calculate_to(route, &endpoint, pcb_gui->shift_is_pressed(pcb_gui), pcb_gui->control_is_pressed(pcb_gui));
 }
 
 

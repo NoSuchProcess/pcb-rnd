@@ -132,7 +132,7 @@ void pcb_tool_arc_notify_mode(void)
 
 void pcb_tool_arc_adjust_attached_objects(void)
 {
-	pcb_crosshair.AttachedBox.otherway = pcb_gui->shift_is_pressed();
+	pcb_crosshair.AttachedBox.otherway = pcb_gui->shift_is_pressed(pcb_gui);
 }
 
 void pcb_tool_arc_draw_attached(void)

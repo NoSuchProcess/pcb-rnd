@@ -59,8 +59,8 @@ void pcb_line_adjust_attached(void)
 		&pcb_crosshair.Route, &line->Point1, &line->Point2,
 		pcb_layer_id(PCB->Data, CURRENT),
 		conf_core.design.line_thickness, conf_core.design.clearance * 2,
-		pcb_flag_make(flags), pcb_gui->shift_is_pressed(),
-		pcb_gui->control_is_pressed());
+		pcb_flag_make(flags), pcb_gui->shift_is_pressed(pcb_gui),
+		pcb_gui->control_is_pressed(pcb_gui));
 }
 
 /* directions:
@@ -148,7 +148,7 @@ void pcb_line_adjust_attached_2lines(pcb_bool way)
 		return;
 
 	/* don't draw outline when ctrl key is pressed */
-	if (pcb_gui->control_is_pressed()) {
+	if (pcb_gui->control_is_pressed(pcb_gui)) {
 		line->draw = pcb_false;
 		return;
 	}
@@ -162,7 +162,7 @@ void pcb_line_adjust_attached_2lines(pcb_bool way)
 	}
 
 	/* swap the modes if shift is held down */
-	if (pcb_gui->shift_is_pressed())
+	if (pcb_gui->shift_is_pressed(pcb_gui))
 		way = !way;
 
 	dx = pcb_crosshair.X - line->Point1.X;
@@ -468,7 +468,7 @@ void pcb_line_enforce_drc(void)
 	/* Silence a bogus compiler warning by storing this in a variable */
 	pcb_layer_id_t layer_idx = INDEXOFCURRENT;
 
-	if (pcb_gui->mod1_is_pressed() || pcb_gui->control_is_pressed() || PCB->RatDraw)
+	if (pcb_gui->mod1_is_pressed(pcb_gui) || pcb_gui->control_is_pressed(pcb_gui) || PCB->RatDraw)
 		return;
 
 	if (!(pcb_layer_flags(PCB, layer_idx) & PCB_LYT_COPPER))
@@ -493,7 +493,7 @@ void pcb_line_enforce_drc(void)
 #undef sqr
 	}
 	/* shift<Key> forces the line lookahead path to refract the alternate way */
-	shift = pcb_gui->shift_is_pressed();
+	shift = pcb_gui->shift_is_pressed(pcb_gui);
 
 	if (PCB_XOR(r1 > r2, shift)) {
 		if (conf_core.editor.line_refraction != 0) {

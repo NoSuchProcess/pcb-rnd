@@ -371,8 +371,8 @@ void pcb_xordraw_movecopy(void)
 															line->Thickness,
 															line->Clearance,
 															line->Flags,
-															pcb_gui->shift_is_pressed(),
-															pcb_gui->control_is_pressed() );
+															pcb_gui->shift_is_pressed(pcb_gui),
+															pcb_gui->control_is_pressed(pcb_gui) );
 				pcb_route_draw(&route,pcb_crosshair.GC);
 				if (conf_core.editor.show_drc) 
 					pcb_route_draw_drc(&route,pcb_crosshair.GC);
@@ -763,7 +763,7 @@ static void check_snap_object(struct snap_data *snap_data, pcb_coord_t x, pcb_co
 	}
 
 	sq_dist = crosshair_sq_dist(snap_data->crosshair, x, y);
-	if (sq_dist < snap_data->nearest_sq_dist || (prefer_to_grid && snap_data->nearest_is_grid && !pcb_gui->shift_is_pressed())) {
+	if (sq_dist < snap_data->nearest_sq_dist || (prefer_to_grid && snap_data->nearest_is_grid && !pcb_gui->shift_is_pressed(pcb_gui))) {
 		snap_data->x = x;
 		snap_data->y = y;
 		snap_data->nearest_sq_dist = sq_dist;

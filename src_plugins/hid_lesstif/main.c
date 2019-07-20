@@ -2662,17 +2662,17 @@ static void lesstif_calibrate(pcb_hid_t *hid, double xval, double yval)
 	CRASH("lesstif_calibrate");
 }
 
-static int lesstif_shift_is_pressed(void)
+static int lesstif_shift_is_pressed(pcb_hid_t *hid)
 {
 	return shift_pressed;
 }
 
-static int lesstif_control_is_pressed(void)
+static int lesstif_control_is_pressed(pcb_hid_t *hid)
 {
 	return ctrl_pressed;
 }
 
-static int lesstif_mod1_is_pressed(void)
+static int lesstif_mod1_is_pressed(pcb_hid_t *hid)
 {
 	return alt_pressed;
 }

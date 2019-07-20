@@ -126,7 +126,7 @@ void pcb_tool_polyhole_adjust_attached_objects(void)
 {
 	pcb_attached_line_t *line = &pcb_crosshair.AttachedLine;
 
-	if (pcb_gui->control_is_pressed()) {
+	if (pcb_gui->control_is_pressed(pcb_gui)) {
 		line->draw = pcb_false;
 		return;
 	}

@@ -57,7 +57,7 @@ void pcb_tool_thermal_on_pstk(pcb_pstk_t *ps, unsigned long lid)
 	int cycles = sizeof(cycle) / sizeof(cycle[0]);
 
 	th = pcb_pstk_get_thermal(ps, lid, 1);
-	if (pcb_gui->shift_is_pressed()) {
+	if (pcb_gui->shift_is_pressed(pcb_gui)) {
 		int n, curr = -1;
 		/* cycle through the variants to find the current one */
 		for(n = 0; n < cycles; n++) {

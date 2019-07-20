@@ -335,7 +335,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 void pcb_tool_line_adjust_attached_objects(void)
 {
 	/* don't draw outline when ctrl key is pressed */
-	if (pcb_gui->control_is_pressed()) {
+	if (pcb_gui->control_is_pressed(pcb_gui)) {
 		pcb_crosshair.AttachedLine.draw = pcb_false;
 	}
 	else {
