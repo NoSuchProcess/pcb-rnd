@@ -52,7 +52,7 @@ static gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev,
 	 * and moves the pointer to the viewport without the pointer going over
 	 * the edge of the viewport */
 	if (force_update || (ev->mode == GDK_CROSSING_UNGRAB && ev->detail == GDK_NOTIFY_NONLINEAR)) {
-		ghidgui->common.screen_update();
+		ghidgui->impl.screen_update();
 	}
 	return FALSE;
 }
@@ -76,7 +76,7 @@ static gint ghid_port_window_leave_cb(GtkWidget * widget, GdkEventCrossing * ev,
 
 	out->view.has_entered = FALSE;
 
-	ghidgui->common.screen_update();
+	ghidgui->impl.screen_update();
 
 	return FALSE;
 }
@@ -119,8 +119,8 @@ static void ghdi_gui_inited(int main, int conf)
 
 	if (im && ic && first) {
 		first = 0;
-		pcb_event(ghidgui->common.hidlib, PCB_EVENT_GUI_INIT, NULL);
-		pcb_gtk_zoom_view_win_side(&gport->view, 0, 0, ghidgui->common.hidlib->size_x, ghidgui->common.hidlib->size_y, 0);
+		pcb_event(ghidgui->impl.hidlib, PCB_EVENT_GUI_INIT, NULL);
+		pcb_gtk_zoom_view_win_side(&gport->view, 0, 0, ghidgui->impl.hidlib->size_x, ghidgui->impl.hidlib->size_y, 0);
 	}
 }
 static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, void * out)
@@ -128,11 +128,11 @@ static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, Gd
 	gport->view.canvas_width = ev->width;
 	gport->view.canvas_height = ev->height;
 
-	ghidgui->common.drawing_area_configure_hook(out);
+	ghidgui->impl.drawing_area_configure_hook(out);
 	ghdi_gui_inited(0, 1);
 
 	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);
-	pcb_gui->invalidate_all(ghidgui->common.hidlib);
+	pcb_gui->invalidate_all(ghidgui->impl.hidlib);
 	return 0;
 }
 
@@ -142,7 +142,7 @@ static void gtkhid_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_
 	pcb_gtk_t *ctx = hid->hid_data;
 
 
-	ctx->common.hidlib = hidlib;
+	ctx->impl.hidlib = hidlib;
 	ctx->hid_active = 1;
 
 	pcb_hid_cfg_keys_init(&ghid_keymap);
@@ -247,10 +247,10 @@ TODO("This needs to be done centrally, and should not use PCB_PACKAGE but pcbhl_
 	gport->view.coord_per_px = 300.0;
 	pcb_pixel_slop = 300;
 
-	ctx->common.init_renderer(argc, argv, gport);
-	ctx->common.top_window = window = gport->top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	ctx->impl.init_renderer(argc, argv, gport);
+	ctx->impl.top_window = window = gport->top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
-	pcb_gtk_topwinplace(ctx->common.hidlib, window, "top");
+	pcb_gtk_topwinplace(ctx->impl.hidlib, window, "top");
 	gtk_window_set_title(GTK_WINDOW(window), "pcb-rnd");
 
 	gtk_widget_show_all(gport->top_window);
@@ -266,10 +266,10 @@ static void ghid_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
 {
 	int offset_x, offset_y;
 
-	if ((gport->drawing_area == NULL) || (ghidgui->common.hidlib == NULL))
+	if ((gport->drawing_area == NULL) || (ghidgui->impl.hidlib == NULL))
 		return;
 
-	ghidgui->common.draw_grid_local(ghidgui->common.hidlib, x, y);
+	ghidgui->impl.draw_grid_local(ghidgui->impl.hidlib, x, y);
 	gdk_window_get_origin(gtk_widget_get_window(gport->drawing_area), &offset_x, &offset_y);
 	pcb_gtk_crosshair_set(x, y, action, offset_x, offset_y, &gport->view);
 }
@@ -281,24 +281,24 @@ static void ghid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int
 
 pcb_hidval_t ghid_add_timer(void (*func) (pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
 {
-	return pcb_gtk_add_timer(&ghidgui->common, func, milliseconds, user_data);
+	return pcb_gtk_add_timer(&ghidgui->impl, func, milliseconds, user_data);
 }
 
 static pcb_hidval_t ghid_watch_file(int fd, unsigned int condition,
 								pcb_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
 								pcb_hidval_t user_data)
 {
-	return pcb_gtk_watch_file(&ghidgui->common, fd, condition, func, user_data);
+	return pcb_gtk_watch_file(&ghidgui->impl, fd, condition, func, user_data);
 }
 
 static char *ghid_fileselect(const char *title, const char *descr, const char *default_file, const char *default_ext, const pcb_hid_fsd_filter_t *flt, const char *history_tag, pcb_hid_fsd_flags_t flags, pcb_hid_dad_subdialog_t *sub)
 {
-	return pcb_gtk_fileselect(&ghidgui->common, title, descr, default_file, default_ext, flt, history_tag, flags, sub);
+	return pcb_gtk_fileselect(&ghidgui->impl, title, descr, default_file, default_ext, flt, history_tag, flags, sub);
 }
 
 static void *ghid_attr_dlg_new_(const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
-	return ghid_attr_dlg_new(&ghidgui->common, id, attrs, n_attrs, results, title, caller_data, modal, button_cb, defx, defy, minx, miny);
+	return ghid_attr_dlg_new(&ghidgui->impl, id, attrs, n_attrs, results, title, caller_data, modal, button_cb, defx, defy, minx, miny);
 }
 
 static void ghid_beep()
@@ -423,7 +423,7 @@ static double ghid_benchmark(void)
 	gdk_display_sync(display);
 	time(&start);
 	do {
-		pcb_gui->invalidate_all(ghidgui->common.hidlib);
+		pcb_gui->invalidate_all(ghidgui->impl.hidlib);
 		gdk_window_process_updates(window, FALSE);
 		time(&end);
 		i++;
@@ -504,12 +504,12 @@ static int ghid_open_popup(const char *menupath)
 
 static void ghid_set_hidlib(pcb_hidlib_t *hidlib)
 {
-	ghidgui->common.hidlib = hidlib;
+	ghidgui->impl.hidlib = hidlib;
 
 	if (ghidgui == NULL)
 		return;
 
-	ghidgui->common.hidlib = hidlib;
+	ghidgui->impl.hidlib = hidlib;
 
 	if(!ghidgui->hid_active)
 		return;

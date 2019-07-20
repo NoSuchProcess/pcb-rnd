@@ -1018,7 +1018,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	return FALSE;
 }
 
-static GtkWidget *ghid_gl_new_drawing_widget(pcb_gtk_common_t *common)
+static GtkWidget *ghid_gl_new_drawing_widget(pcb_gtk_impl_t *impl)
 {
 	GtkWidget *w = gtk_drawing_area_new();
 
@@ -1028,23 +1028,23 @@ static GtkWidget *ghid_gl_new_drawing_widget(pcb_gtk_common_t *common)
 }
 
 
-void ghid_gl_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
+void ghid_gl_install(pcb_gtk_impl_t *impl, pcb_hid_t *hid)
 {
 
-	if (common != NULL) {
-		common->new_drawing_widget = ghid_gl_new_drawing_widget;
-		common->init_drawing_widget = ghid_gl_init_drawing_widget;
-		common->drawing_realize = ghid_gl_port_drawing_realize_cb;
-		common->drawing_area_expose = ghid_gl_drawing_area_expose_cb;
-		common->preview_expose = ghid_gl_preview_expose;
-		common->set_special_colors = ghid_gl_set_special_colors;
-		common->init_renderer = ghid_gl_init_renderer;
-		common->screen_update = ghid_gl_screen_update;
-		common->draw_grid_local = ghid_gl_draw_grid_local;
-		common->drawing_area_configure_hook = ghid_gl_drawing_area_configure_hook;
-		common->shutdown_renderer = ghid_gl_shutdown_renderer;
-		common->get_color_name = get_color_name;
-		common->map_color_string = map_color_string;
+	if (impl != NULL) {
+		impl->new_drawing_widget = ghid_gl_new_drawing_widget;
+		impl->init_drawing_widget = ghid_gl_init_drawing_widget;
+		impl->drawing_realize = ghid_gl_port_drawing_realize_cb;
+		impl->drawing_area_expose = ghid_gl_drawing_area_expose_cb;
+		impl->preview_expose = ghid_gl_preview_expose;
+		impl->set_special_colors = ghid_gl_set_special_colors;
+		impl->init_renderer = ghid_gl_init_renderer;
+		impl->screen_update = ghid_gl_screen_update;
+		impl->draw_grid_local = ghid_gl_draw_grid_local;
+		impl->drawing_area_configure_hook = ghid_gl_drawing_area_configure_hook;
+		impl->shutdown_renderer = ghid_gl_shutdown_renderer;
+		impl->get_color_name = get_color_name;
+		impl->map_color_string = map_color_string;
 	}
 
 	if (hid != NULL) {

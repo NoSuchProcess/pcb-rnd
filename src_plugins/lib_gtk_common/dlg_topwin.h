@@ -8,10 +8,9 @@
 #include "hid_cfg.h"
 #include "hid_dad.h"
 
-#include "bu_menu.h"
-#include "glue.h"
-#include "bu_command.h"
 #include "gui.h"
+#include "bu_menu.h"
+#include "bu_command.h"
 
 void ghid_update_toggle_flags(pcb_gtk_topwin_t *tw, const char *cookie);
 void ghid_install_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw);

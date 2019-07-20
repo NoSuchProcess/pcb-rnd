@@ -1506,7 +1506,7 @@ static gboolean ghid_gdk_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev,
 	return FALSE;
 }
 
-static GtkWidget *ghid_gdk_new_drawing_widget(pcb_gtk_common_t *common)
+static GtkWidget *ghid_gdk_new_drawing_widget(pcb_gtk_impl_t *common)
 {
 	GtkWidget *w = gtk_drawing_area_new();
 
@@ -1516,22 +1516,22 @@ static GtkWidget *ghid_gdk_new_drawing_widget(pcb_gtk_common_t *common)
 }
 
 
-void ghid_gdk_install(pcb_gtk_common_t *common, pcb_hid_t *hid)
+void ghid_gdk_install(pcb_gtk_impl_t *impl, pcb_hid_t *hid)
 {
-	if (common != NULL) {
-		common->new_drawing_widget = ghid_gdk_new_drawing_widget;
-		common->init_drawing_widget = ghid_gdk_init_drawing_widget;
-		common->drawing_realize = ghid_gdk_port_drawing_realize_cb;
-		common->drawing_area_expose = ghid_gdk_drawing_area_expose_cb;
-		common->preview_expose = ghid_gdk_preview_expose;
-		common->set_special_colors = ghid_gdk_set_special_colors;
-		common->init_renderer = ghid_gdk_init_renderer;
-		common->screen_update = ghid_gdk_screen_update;
-		common->draw_grid_local = ghid_gdk_draw_grid_local;
-		common->drawing_area_configure_hook = ghid_gdk_drawing_area_configure_hook;
-		common->shutdown_renderer = ghid_gdk_shutdown_renderer;
-		common->get_color_name = get_color_name;
-		common->map_color_string = map_color_string;
+	if (impl != NULL) {
+		impl->new_drawing_widget = ghid_gdk_new_drawing_widget;
+		impl->init_drawing_widget = ghid_gdk_init_drawing_widget;
+		impl->drawing_realize = ghid_gdk_port_drawing_realize_cb;
+		impl->drawing_area_expose = ghid_gdk_drawing_area_expose_cb;
+		impl->preview_expose = ghid_gdk_preview_expose;
+		impl->set_special_colors = ghid_gdk_set_special_colors;
+		impl->init_renderer = ghid_gdk_init_renderer;
+		impl->screen_update = ghid_gdk_screen_update;
+		impl->draw_grid_local = ghid_gdk_draw_grid_local;
+		impl->drawing_area_configure_hook = ghid_gdk_drawing_area_configure_hook;
+		impl->shutdown_renderer = ghid_gdk_shutdown_renderer;
+		impl->get_color_name = get_color_name;
+		impl->map_color_string = map_color_string;
 	}
 
 	if (hid != NULL) {

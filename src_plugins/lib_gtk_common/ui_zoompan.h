@@ -31,7 +31,6 @@
 #define PCB_LIB_GTK_COMMON_UI_ZOOMPAN_H
 
 #include "pcb_bool.h"
-#include "glue.h"
 
 #define SIDE_X_(hidlib, x)      ((pcbhl_conf.editor.view.flip_x ? hidlib->size_x - (x) : (x)))
 #define SIDE_Y_(hidlib, y)      ((pcbhl_conf.editor.view.flip_y ? hidlib->size_y - (y) : (y)))
@@ -67,7 +66,7 @@ typedef struct {
 	pcb_coord_t pcb_x, pcb_y;              /* PCB coordinates of the mouse pointer */
 	pcb_coord_t crosshair_x, crosshair_y;  /* PCB coordinates of the crosshair     */
 
-	pcb_gtk_common_t *com;
+	struct pcb_gtk_impl_s *com;
 } pcb_gtk_view_t;
 
 #include "in_mouse.h"

@@ -37,7 +37,7 @@ typedef struct {
 	int fd;
 	GIOChannel *channel;
 	gint id;
-	pcb_gtk_common_t *com;
+	pcb_gtk_impl_t *com;
 } GuiWatch;
 
 	/* We need a wrapper around the hid file watch to pass the correct flags
@@ -66,7 +66,7 @@ static gboolean ghid_watch(GIOChannel * source, GIOCondition condition, gpointer
 	return res;
 }
 
-pcb_hidval_t pcb_gtk_watch_file(pcb_gtk_common_t *com, int fd, unsigned int condition,
+pcb_hidval_t pcb_gtk_watch_file(pcb_gtk_impl_t *com, int fd, unsigned int condition,
 								pcb_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
 								pcb_hidval_t user_data)
 {

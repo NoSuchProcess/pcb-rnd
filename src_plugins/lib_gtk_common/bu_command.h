@@ -4,7 +4,6 @@
 #include <gtk/gtk.h>
 #include <glib.h>
 #include "pcb_bool.h"
-#include "glue.h"
 
 typedef struct pcb_gtk_command_s {
 	GtkWidget *command_combo_box, *prompt_label;
@@ -14,7 +13,7 @@ typedef struct pcb_gtk_command_s {
 	void (*post_entry)(void);
 	void (*pre_entry)(void);
 
-	pcb_gtk_common_t *com;
+	struct pcb_gtk_impl_s *com;
 
 	/* internal */
 	GMainLoop *ghid_entry_loop;

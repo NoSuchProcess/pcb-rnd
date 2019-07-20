@@ -104,7 +104,7 @@ void ghid_point_cursor(pcb_gtk_t *ctx, pcb_bool grabbed)
 
 typedef struct {
 	GMainLoop *loop;
-	pcb_gtk_common_t *com;
+	pcb_gtk_impl_t *com;
 	gboolean got_location;
 	gint last_press;
 } loop_ctx_t;
@@ -195,18 +195,18 @@ static gboolean run_get_location_loop(pcb_gtk_t *ctx, const gchar * message)
 
 	button_handler =
 		g_signal_connect(G_OBJECT(ctx->topwin.drawing_area), "button_press_event", G_CALLBACK(loop_button_press_cb), &lctx);
-	key_handler1 = g_signal_connect(G_OBJECT(ctx->common.top_window), "key_press_event", G_CALLBACK(loop_key_press_cb), &lctx);
-	key_handler2 = g_signal_connect(G_OBJECT(ctx->common.top_window), "key_release_event", G_CALLBACK(loop_key_release_cb), &lctx);
+	key_handler1 = g_signal_connect(G_OBJECT(ctx->impl.top_window), "key_press_event", G_CALLBACK(loop_key_press_cb), &lctx);
+	key_handler2 = g_signal_connect(G_OBJECT(ctx->impl.top_window), "key_release_event", G_CALLBACK(loop_key_release_cb), &lctx);
 
 	lctx.loop = g_main_loop_new(NULL, FALSE);
-	lctx.com = &ctx->common;
+	lctx.com = &ctx->impl;
 	g_main_loop_run(lctx.loop);
 
 	g_main_loop_unref(lctx.loop);
 
 	g_signal_handler_disconnect(ctx->topwin.drawing_area, button_handler);
-	g_signal_handler_disconnect(ctx->common.top_window, key_handler1);
-	g_signal_handler_disconnect(ctx->common.top_window, key_handler2);
+	g_signal_handler_disconnect(ctx->impl.top_window, key_handler1);
+	g_signal_handler_disconnect(ctx->impl.top_window, key_handler2);
 
 	pcb_gtk_interface_input_signals_connect(); /* return to normal */
 	pcb_gtk_interface_set_sensitive(TRUE);
@@ -276,7 +276,7 @@ gboolean ghid_port_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev, 
 
 	hid_cfg_mouse_action(&ghid_mouse, ghid_mouse_button(ev->button) | mk, ctx->topwin.cmd.command_entry_status_line_active);
 
-	pcb_gui->invalidate_all(ctx->common.hidlib);
+	pcb_gui->invalidate_all(ctx->impl.hidlib);
 	if (!gport->view.panning)
 		g_idle_add(ghid_idle_cb, &ctx->topwin);
 
@@ -296,7 +296,7 @@ gboolean ghid_port_button_release_cb(GtkWidget *drawing_area, GdkEventButton *ev
 	hid_cfg_mouse_action(&ghid_mouse, ghid_mouse_button(ev->button) | mk | PCB_M_Release, ctx->topwin.cmd.command_entry_status_line_active);
 
 	pcb_hidlib_adjust_attached_objects();
-	pcb_gui->invalidate_all(ctx->common.hidlib);
+	pcb_gui->invalidate_all(ctx->impl.hidlib);
 	g_idle_add(ghid_idle_cb, &ctx->topwin);
 
 	return TRUE;

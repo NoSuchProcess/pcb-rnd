@@ -109,8 +109,8 @@ static void ghid_confchg_spec_color(conf_native_t *cfg, int arr_idx)
 	if (!ghidgui->hid_active)
 		return;
 
-	if (ghidgui->common.set_special_colors != NULL)
-		ghidgui->common.set_special_colors(cfg);
+	if (ghidgui->impl.set_special_colors != NULL)
+		ghidgui->impl.set_special_colors(cfg);
 }
 
 
@@ -155,8 +155,8 @@ void pcb_gtk_tw_ranges_scale(pcb_gtk_topwin_t *tw)
 	   size in pixels to PCB units and that will be the page size for the Gtk adjustment. */
 	pcb_gtk_zoom_post(&gport->view);
 
-	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->h_range)), gport->view.width, ghidgui->common.hidlib->size_x);
-	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->v_range)), gport->view.height, ghidgui->common.hidlib->size_y);
+	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->h_range)), gport->view.width, ghidgui->impl.hidlib->size_x);
+	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->v_range)), gport->view.height, ghidgui->impl.hidlib->size_y);
 }
 
 void pcb_gtk_port_ranges_changed(void)
@@ -168,7 +168,7 @@ void pcb_gtk_port_ranges_changed(void)
 	gport->view.x0 = gtk_adjustment_get_value(h_adj);
 	gport->view.y0 = gtk_adjustment_get_value(v_adj);
 
-	pcb_gui->invalidate_all(ghidgui->common.hidlib);
+	pcb_gui->invalidate_all(ghidgui->impl.hidlib);
 }
 
 void pcb_gtk_pan_common(void)
@@ -283,12 +283,12 @@ void pcb_gtk_previews_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coo
 	pcb_box_t screen;
 	screen.X1 = left; screen.X2 = right;
 	screen.Y1 = top; screen.Y2 = bottom;
-	pcb_gtk_preview_invalidate(&ghidgui->common, &screen);
+	pcb_gtk_preview_invalidate(&ghidgui->impl, &screen);
 }
 
 void pcb_gtk_previews_invalidate_all(void)
 {
-	pcb_gtk_preview_invalidate(&ghidgui->common, NULL);
+	pcb_gtk_preview_invalidate(&ghidgui->impl, NULL);
 }
 
 
@@ -322,15 +322,15 @@ void ghid_glue_common_init(const char *cookie)
 	ghid_win32_init();
 
 	/* Set up the glue struct to lib_gtk_common */
-	ghidgui->common.gport = &ghid_port;
+	ghidgui->impl.gport = &ghid_port;
 
-	ghidgui->common.load_bg_image = ghid_load_bg_image;
+	ghidgui->impl.load_bg_image = ghid_load_bg_image;
 
-	ghidgui->topwin.cmd.com = &ghidgui->common;
+	ghidgui->topwin.cmd.com = &ghidgui->impl;
 	ghidgui->topwin.cmd.post_entry = command_post_entry;
 	ghidgui->topwin.cmd.pre_entry = command_pre_entry;
 
-	ghid_port.view.com = &ghidgui->common;
+	ghid_port.view.com = &ghidgui->impl;
 	ghid_port.mouse = &ghidgui->mouse;
 
 	ghid_conf_regs(cookie);

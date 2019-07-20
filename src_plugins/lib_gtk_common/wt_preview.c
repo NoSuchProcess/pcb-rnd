@@ -480,7 +480,7 @@ GType pcb_gtk_preview_get_type()
 
 static gint preview_destroy_cb(GtkWidget *widget, gpointer data)
 {
-	pcb_gtk_common_t *com = data;
+	pcb_gtk_impl_t *com = data;
 	pcb_gtk_preview_t *prv = PCB_GTK_PREVIEW(widget);
 
 	pcb_gtk_preview_del(com, prv);
@@ -488,7 +488,7 @@ static gint preview_destroy_cb(GtkWidget *widget, gpointer data)
 }
 
 
-GtkWidget *pcb_gtk_preview_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing_widget_t init_widget,
+GtkWidget *pcb_gtk_preview_new(pcb_gtk_impl_t *com, pcb_gtk_init_drawing_widget_t init_widget,
 																			pcb_gtk_preview_expose_t expose, pcb_hid_expose_t dialog_draw, pcb_gtk_preview_config_t config, void *draw_data)
 {
 	pcb_gtk_preview_t *prv = (pcb_gtk_preview_t *)g_object_new(
@@ -558,7 +558,7 @@ static void get_ptr(pcb_gtk_preview_t *preview, pcb_coord_t *cx, pcb_coord_t *cy
 #undef SIDE_Y
 }
 
-void pcb_gtk_preview_invalidate(pcb_gtk_common_t *com, const pcb_box_t *screen)
+void pcb_gtk_preview_invalidate(pcb_gtk_impl_t *com, const pcb_box_t *screen)
 {
 	pcb_gtk_preview_t *prv;
 
@@ -584,7 +584,7 @@ void pcb_gtk_preview_invalidate(pcb_gtk_common_t *com, const pcb_box_t *screen)
 	}
 }
 
-void pcb_gtk_preview_del(pcb_gtk_common_t *com, pcb_gtk_preview_t *prv)
+void pcb_gtk_preview_del(pcb_gtk_impl_t *com, pcb_gtk_preview_t *prv)
 {
 	if (prv->link.parent == &com->previews)
 		gdl_remove(&com->previews, prv, link);
