@@ -32,7 +32,7 @@
 #include "glue_common.h"
 
 typedef struct pcb_gtk_watch_s {
-	pcb_bool (*func) (pcb_hidval_t, int, unsigned int, pcb_hidval_t);
+	pcb_bool (*func)(pcb_hidval_t, int, unsigned int, pcb_hidval_t);
 	pcb_hidval_t user_data;
 	int fd;
 	GIOChannel *channel;
@@ -40,13 +40,12 @@ typedef struct pcb_gtk_watch_s {
 	pcb_gtk_t *gctx;
 } pcb_gtk_watch_t;
 
-	/* We need a wrapper around the hid file watch to pass the correct flags
-	 */
-static gboolean ghid_watch(GIOChannel * source, GIOCondition condition, gpointer data)
+/* We need a wrapper around the hid file watch to pass the correct flags */
+static gboolean ghid_watch(GIOChannel *source, GIOCondition condition, gpointer data)
 {
 	unsigned int pcb_condition = 0;
 	pcb_hidval_t x;
-	pcb_gtk_watch_t *watch = (pcb_gtk_watch_t *) data;
+	pcb_gtk_watch_t *watch = (pcb_gtk_watch_t *)data;
 	pcb_bool res;
 
 	if (condition & G_IO_IN)
@@ -58,7 +57,7 @@ static gboolean ghid_watch(GIOChannel * source, GIOCondition condition, gpointer
 	if (condition & G_IO_HUP)
 		pcb_condition |= PCB_WATCH_HANGUP;
 
-	x.ptr = (void *) watch;
+	x.ptr = (void *)watch;
 	res = watch->func(x, watch->fd, pcb_condition, watch->user_data);
 
 	pcb_gtk_mode_cursor_main();
@@ -67,8 +66,8 @@ static gboolean ghid_watch(GIOChannel * source, GIOCondition condition, gpointer
 }
 
 pcb_hidval_t pcb_gtk_watch_file(pcb_gtk_t *gctx, int fd, unsigned int condition,
-								pcb_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
-								pcb_hidval_t user_data)
+	pcb_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
+	pcb_hidval_t user_data)
 {
 	pcb_gtk_watch_t *watch = g_new0(pcb_gtk_watch_t, 1);
 	pcb_hidval_t ret;
@@ -96,7 +95,7 @@ pcb_hidval_t pcb_gtk_watch_file(pcb_gtk_t *gctx, int fd, unsigned int condition,
 
 void pcb_gtk_unwatch_file(pcb_hidval_t data)
 {
-	pcb_gtk_watch_t *watch = (pcb_gtk_watch_t *) data.ptr;
+	pcb_gtk_watch_t *watch = (pcb_gtk_watch_t *)data.ptr;
 
 	g_io_channel_shutdown(watch->channel, TRUE, NULL);
 	g_io_channel_unref(watch->channel);
