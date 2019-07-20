@@ -333,7 +333,7 @@ int pcb_attribute_dialog_(const char *id, pcb_hid_attribute_t *attrs, int n_attr
 	if ((pcb_gui == NULL) || (pcb_gui->attr_dlg_new == NULL))
 		return -1;
 
-	hid_ctx = pcb_gui->attr_dlg_new(id, attrs, n_attrs, results, title, caller_data, pcb_true, NULL, defx, defy, minx, miny);
+	hid_ctx = pcb_gui->attr_dlg_new(pcb_gui, id, attrs, n_attrs, results, title, caller_data, pcb_true, NULL, defx, defy, minx, miny);
 	if (hid_ctx_out != NULL)
 		*hid_ctx_out = hid_ctx;
 	rv = pcb_gui->attr_dlg_run(hid_ctx);
