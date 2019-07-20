@@ -407,7 +407,7 @@ extern void LesstifNetlistChanged(pcb_hidlib_t *hidlib, void *user_data, int arg
 extern void LesstifLibraryChanged(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
 
 
-static void ltf_set_hidlib(pcb_hidlib_t *hidlib)
+static void ltf_set_hidlib(pcb_hid_t *hid, pcb_hidlib_t *hidlib)
 {
 	ltf_hidlib = hidlib;
 	if ((work_area == 0) || (hidlib == NULL))

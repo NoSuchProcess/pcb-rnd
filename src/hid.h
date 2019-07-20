@@ -538,7 +538,7 @@ struct pcb_hid_s {
 
 	/* optional: called by core when the global hidlib context changes
 	   (e.g. board changed) */
-	void (*set_hidlib)(pcb_hidlib_t *hidlib);
+	void (*set_hidlib)(pcb_hid_t *hid, pcb_hidlib_t *hidlib);
 
 	/* Change the mouse cursor to a named cursor e.g. after the tool has changed.
 	   The list of cursors names available may depend on the HID. */

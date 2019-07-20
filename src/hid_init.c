@@ -571,7 +571,7 @@ int pcbhl_main_exported(pcbhl_main_args_t *ga, pcb_hidlib_t *hidlib, pcb_bool is
 	if (is_empty)
 		pcb_message(PCB_MSG_WARNING, "Exporting empty board (nothing loaded or drawn).\n");
 	if (pcb_gui->set_hidlib != NULL)
-		pcb_gui->set_hidlib(hidlib);
+		pcb_gui->set_hidlib(pcb_gui, hidlib);
 	pcb_gui->do_export(pcb_gui, hidlib, 0);
 	pcbhl_log_print_uninit_errs("Exporting");
 	return 1;
@@ -580,7 +580,7 @@ int pcbhl_main_exported(pcbhl_main_args_t *ga, pcb_hidlib_t *hidlib, pcb_bool is
 void pcbhl_mainloop_interactive(pcbhl_main_args_t *ga, pcb_hidlib_t *hidlib)
 {
 	if (pcb_gui->set_hidlib != NULL)
-		pcb_gui->set_hidlib(hidlib);
+		pcb_gui->set_hidlib(pcb_gui, hidlib);
 	pcb_gui->do_export(pcb_gui, hidlib, 0);
 }
 

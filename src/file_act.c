@@ -148,7 +148,7 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (PCB->Changed && conf_core.editor.save_in_tmp)
 			pcb_save_in_tmp();
 		if (pcb_gui->set_hidlib != NULL)
-			pcb_gui->set_hidlib(NULL);
+			pcb_gui->set_hidlib(pcb_gui, NULL);
 		pcb_board_remove(PCB);
 		PCB = pcb_board_new(1);
 		pcb_board_new_postproc(PCB, 1);

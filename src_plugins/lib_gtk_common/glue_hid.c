@@ -501,7 +501,7 @@ static int ghid_open_popup(pcb_hid_t *hid, const char *menupath)
 	return 0;
 }
 
-static void ghid_set_hidlib(pcb_hidlib_t *hidlib)
+static void ghid_set_hidlib(pcb_hid_t *hid, pcb_hidlib_t *hidlib)
 {
 	ghidgui->hidlib = hidlib;
 
