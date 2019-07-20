@@ -377,7 +377,7 @@ static void ghid_sketch_setup(render_priv_t *priv)
 	priv->out_clip = priv->sketch_clip;
 }
 
-static void ghid_gdk_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
+static void ghid_gdk_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 
@@ -431,7 +431,7 @@ static void ghid_gdk_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, co
 	curr_drawing_mode = op;
 }
 
-static void ghid_gdk_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
+static void ghid_gdk_render_burst(pcb_hid_t *hid, pcb_burst_op_t op, const pcb_box_t *screen)
 {
 	pcb_gui->coord_per_pix = ghidgui->port.view.coord_per_px;
 }

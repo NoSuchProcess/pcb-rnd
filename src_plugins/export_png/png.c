@@ -1388,7 +1388,7 @@ static void png_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc)
 }
 
 static pcb_composite_op_t drawing_mode;
-static void png_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
+static void png_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
 {
 	static gdImagePtr dst_im;
 	drawing_mode = op;

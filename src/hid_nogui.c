@@ -100,12 +100,12 @@ static void nogui_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc)
 {
 }
 
-static void nogui_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
+static void nogui_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
 {
 	CRASH("set_drawing_mode");
 }
 
-static void nogui_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
+static void nogui_render_burst(pcb_hid_t *hid, pcb_burst_op_t op, const pcb_box_t *screen)
 {
 	/* the HID may decide to ignore this hook */
 }

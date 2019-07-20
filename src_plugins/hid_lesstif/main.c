@@ -2244,12 +2244,12 @@ static void lesstif_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void lesstif_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
+static void lesstif_render_burst(pcb_hid_t *hid, pcb_burst_op_t op, const pcb_box_t *screen)
 {
 	pcb_gui->coord_per_pix = view_zoom;
 }
 
-static void lesstif_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *drw_screen)
+static void lesstif_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *drw_screen)
 {
 	lesstif_drawing_mode = op;
 

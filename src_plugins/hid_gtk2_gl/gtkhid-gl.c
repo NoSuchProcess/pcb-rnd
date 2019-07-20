@@ -60,7 +60,7 @@ typedef struct hid_gc_s {
 	gchar xor;
 } hid_gc_s;
 
-void ghid_gl_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
+void ghid_gl_render_burst(pcb_hid_t *hid, pcb_burst_op_t op, const pcb_box_t *screen)
 {
 	pcb_gui->coord_per_pix = ghidgui->port.view.coord_per_px;
 }

@@ -192,7 +192,7 @@ static void remote_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc)
 }
 
 static const char *drawing_mode_names[] = { "reset", "positive", "negative", "flush"};
-static void remote_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *drw_screen)
+static void remote_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *drw_screen)
 {
 	if ((op >= 0) && (op < sizeof(drawing_mode_names) / sizeof(drawing_mode_names[0])))
 		proto_send_set_drawing_mode(drawing_mode_names[op], direct);

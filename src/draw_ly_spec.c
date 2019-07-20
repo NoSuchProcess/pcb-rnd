@@ -60,9 +60,9 @@ static void pcb_draw_paste(pcb_draw_info_t *info, int side)
 	cctx.invert = 0;
 
 	if ((cctx.grp == NULL) || (cctx.grp->len == 0)) { /* fallback: no layers -> original code: draw a single auto-add */
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
+		pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
+		pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
+		pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 	}
 	else {
 		comp_draw_layer(&cctx, pcb_draw_paste_auto_, &side);
@@ -163,11 +163,11 @@ static void pcb_draw_silk_doc(pcb_draw_info_t *info, pcb_layer_type_t lyt_side, 
 
 		if ((lyt_type & PCB_LYT_SILK) && (pcb_is_silk_old_style(&cctx, lid))) {
 			/* fallback: implicit layer -> original code: draw auto+manual */
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
+			pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
+			pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 			pcb_draw_layer(info, LAYER_PTR(lid));
 			pcb_draw_silk_auto(&cctx, &lyt_side);
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
+			pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 		}
 		else {
 			comp_draw_layer(&cctx, pcb_draw_silk_auto, &lyt_side);
@@ -248,13 +248,13 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 
 		if (pcb_layer_gui_set_layer(gid, g, (numobj == 0), &info->xform_exporter)) {
 			/* boundary does NOT support compisiting, everything is drawn in positive */
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
+			pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
+			pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 			for(n = 0; n < g->len; n++) {
 				pcb_layer_t *ly = LAYER_PTR(g->lid[n]);
 				pcb_draw_layer(info, ly);
 			}
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
+			pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 			pcb_gui->end_layer(pcb_gui);
 		}
 	}
@@ -264,15 +264,15 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 		   We should check for pcb_gui->gui here, but it's kinda cool seeing the
 		   auto-outline magically disappear when you first add something to
 		   the outline layer.  */
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
+		pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
+		pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 
 		pcb_gui->set_color(pcb_draw_out.fgGC, &PCB->Data->Layer[goutl->lid[0]].meta.real.color);
 		pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, conf_core.design.min_wid);
 		pcb_gui->draw_rect(pcb_draw_out.fgGC, 0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
 
-		pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
+		pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 		pcb_gui->end_layer(pcb_gui);
 	}
 
@@ -284,19 +284,19 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 
 	if ((uslot != NULL) && (uslot->meta.real.vis)) {
 		if (pcb_layer_gui_set_glayer(PCB, uslot->meta.real.grp, unplated > 0, &info->xform)) {
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
+			pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
+			pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 			pcb_draw_pstk_slots(info, uslot->meta.real.grp, PCB_PHOLE_UNPLATED | PCB_PHOLE_BB);
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
+			pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 			pcb_gui->end_layer(pcb_gui);
 		}
 	}
 	if ((pslot != NULL) && (pslot->meta.real.vis)) {
 		if (pcb_layer_gui_set_glayer(PCB, pslot->meta.real.grp, plated > 0, &info->xform)) {
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
+			pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
+			pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 			pcb_draw_pstk_slots(info, pslot->meta.real.grp, PCB_PHOLE_PLATED | PCB_PHOLE_BB);
-			pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
+			pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 			pcb_gui->end_layer(pcb_gui);
 		}
 	}
@@ -307,10 +307,10 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 
 static void pcb_draw_rats(const pcb_box_t *drawn_area)
 {
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
+	pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
+	pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
 	pcb_r_search(PCB->Data->rat_tree, drawn_area, NULL, pcb_rat_draw_callback, NULL, NULL);
-	pcb_gui->set_drawing_mode(PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
+	pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
 }
 
 static void pcb_draw_assembly(pcb_draw_info_t *info, pcb_layer_type_t lyt_side)
