@@ -531,7 +531,7 @@ static void ghid_set_mouse_cursor(pcb_hid_t *hid, int idx)
 	ghid_port_set_mouse_cursor(ghidgui, idx);
 }
 
-static void ghid_set_top_title(pcb_hid_t *hid, pcb_hidlib_t *hidlib, const char *title)
+static void ghid_set_top_title(pcb_hid_t *hid, const char *title)
 {
 	pcb_gtk_tw_set_title(&ghidgui->topwin, title);
 }

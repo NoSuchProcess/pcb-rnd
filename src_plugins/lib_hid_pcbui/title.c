@@ -53,7 +53,7 @@ static void update_title(void)
 
 	title_buf.used = 0;
 	pcb_append_printf(&title_buf, "%s%s (%s) - %s - pcb-rnd", PCB->Changed ? "*" : "", name, filename, PCB->is_footprint ? "footprint" : "board");
-	pcb_gui->set_top_title(pcb_gui, &PCB->hidlib, title_buf.array);
+	pcb_gui->set_top_title(pcb_gui, title_buf.array);
 }
 
 static void pcb_title_board_changed_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])

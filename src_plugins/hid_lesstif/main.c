@@ -3007,7 +3007,7 @@ static void ltf_set_mouse_cursor(pcb_hid_t *hid, int idx)
 {
 }
 
-static void ltf_set_top_title(pcb_hid_t *hid, pcb_hidlib_t *hidlib, const char *title)
+static void ltf_set_top_title(pcb_hid_t *hid, const char *title)
 {
 	stdarg_n = 0;
 	stdarg(XmNtitle, title);
