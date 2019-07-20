@@ -248,7 +248,7 @@ TODO("This needs to be done centrally, and should not use PCB_PACKAGE but pcbhl_
 	pcb_pixel_slop = 300;
 
 	ctx->impl.init_renderer(argc, argv, gport);
-	ctx->impl.top_window = window = gport->top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	ctx->wtop_window = window = gport->top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
 	pcb_gtk_topwinplace(ctx->hidlib, window, "top");
 	gtk_window_set_title(GTK_WINDOW(window), "pcb-rnd");

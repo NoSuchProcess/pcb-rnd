@@ -48,7 +48,6 @@ extern pcb_gtk_t _ghidgui, *ghidgui;
    without linker errors. */
 struct pcb_gtk_impl_s {
 	void *gport;      /* Opaque pointer back to the HID's internal struct - used when common calls a HID function */
-	GtkWidget *top_window;
 
 	/* rendering */
 	void (*drawing_realize)(GtkWidget *w, void *gport);
@@ -143,6 +142,7 @@ struct pcb_gtk_s {
 
 	pcb_hidlib_t *hidlib;
 
+	GtkWidget *wtop_window;
 	GtkActionGroup *main_actions;
 
 	pcb_gtk_topwin_t topwin;

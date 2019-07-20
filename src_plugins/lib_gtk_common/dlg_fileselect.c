@@ -118,7 +118,7 @@ static int pcb_gtk_fsd_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, pcb_e
 
 char *pcb_gtk_fileselect(pcb_gtk_t *gctx, const char *title, const char *descr, const char *default_file, const char *default_ext, const pcb_hid_fsd_filter_t *flt, const char *history_tag, pcb_hid_fsd_flags_t flags, pcb_hid_dad_subdialog_t *sub)
 {
-	GtkWidget *top_window = gctx->impl.top_window;
+	GtkWidget *top_window = gctx->wtop_window;
 	gchar *path = NULL, *base = NULL, *res = NULL;
 	char *result;
 	file_history_t *hi;

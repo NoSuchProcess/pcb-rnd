@@ -195,8 +195,8 @@ static gboolean run_get_location_loop(pcb_gtk_t *ctx, const gchar * message)
 
 	button_handler =
 		g_signal_connect(G_OBJECT(ctx->topwin.drawing_area), "button_press_event", G_CALLBACK(loop_button_press_cb), &lctx);
-	key_handler1 = g_signal_connect(G_OBJECT(ctx->impl.top_window), "key_press_event", G_CALLBACK(loop_key_press_cb), &lctx);
-	key_handler2 = g_signal_connect(G_OBJECT(ctx->impl.top_window), "key_release_event", G_CALLBACK(loop_key_release_cb), &lctx);
+	key_handler1 = g_signal_connect(G_OBJECT(ctx->wtop_window), "key_press_event", G_CALLBACK(loop_key_press_cb), &lctx);
+	key_handler2 = g_signal_connect(G_OBJECT(ctx->wtop_window), "key_release_event", G_CALLBACK(loop_key_release_cb), &lctx);
 
 	lctx.loop = g_main_loop_new(NULL, FALSE);
 	lctx.gctx = ctx;
@@ -205,8 +205,8 @@ static gboolean run_get_location_loop(pcb_gtk_t *ctx, const gchar * message)
 	g_main_loop_unref(lctx.loop);
 
 	g_signal_handler_disconnect(ctx->topwin.drawing_area, button_handler);
-	g_signal_handler_disconnect(ctx->impl.top_window, key_handler1);
-	g_signal_handler_disconnect(ctx->impl.top_window, key_handler2);
+	g_signal_handler_disconnect(ctx->wtop_window, key_handler1);
+	g_signal_handler_disconnect(ctx->wtop_window, key_handler2);
 
 	pcb_gtk_interface_input_signals_connect(); /* return to normal */
 	pcb_gtk_interface_set_sensitive(TRUE);

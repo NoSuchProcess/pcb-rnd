@@ -373,7 +373,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw)
 	GtkWidget *resize_grip_image;
 
 	vbox_main = gtkc_vbox_new(FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(ghidgui->impl.top_window), vbox_main);
+	gtk_container_add(GTK_CONTAINER(ghidgui->wtop_window), vbox_main);
 
 	/* -- Top control bar */
 	tw->top_bar_background = gtk_event_box_new();
@@ -506,12 +506,12 @@ static void ghid_build_pcb_top_window(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw)
 
 	g_signal_connect(G_OBJECT(tw->drawing_area), "size-allocate", G_CALLBACK(drawing_area_size_allocate_cb), tw);
 	g_signal_connect(G_OBJECT(tw->drawing_area), "enter-notify-event", G_CALLBACK(drawing_area_enter_cb), tw);
-	g_signal_connect(G_OBJECT(ghidgui->impl.top_window), "configure_event", G_CALLBACK(top_window_configure_event_cb), tw);
+	g_signal_connect(G_OBJECT(ghidgui->wtop_window), "configure_event", G_CALLBACK(top_window_configure_event_cb), tw);
 
-	g_signal_connect(G_OBJECT(ghidgui->impl.top_window), "delete_event", G_CALLBACK(delete_chart_cb), ghidgui->impl.gport);
-	g_signal_connect(G_OBJECT(ghidgui->impl.top_window), "destroy", G_CALLBACK(destroy_chart_cb), ctx);
+	g_signal_connect(G_OBJECT(ghidgui->wtop_window), "delete_event", G_CALLBACK(delete_chart_cb), ghidgui->impl.gport);
+	g_signal_connect(G_OBJECT(ghidgui->wtop_window), "destroy", G_CALLBACK(destroy_chart_cb), ctx);
 
-	gtk_widget_show_all(ghidgui->impl.top_window);
+	gtk_widget_show_all(ghidgui->wtop_window);
 
 	ghid_fullscreen_apply(tw);
 	tw->active = 1;
@@ -534,7 +534,7 @@ void ghid_create_pcb_widgets(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw, GtkWidget *in
 	ghidgui->impl.load_bg_image();
 
 	ghid_build_pcb_top_window(ctx, tw);
-	ghid_install_accel_groups(GTK_WINDOW(ghidgui->impl.top_window), tw);
+	ghid_install_accel_groups(GTK_WINDOW(ghidgui->wtop_window), tw);
 	ghid_update_toggle_flags(tw, NULL);
 }
 
@@ -555,5 +555,5 @@ void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw)
 
 void pcb_gtk_tw_set_title(pcb_gtk_topwin_t *tw, const char *title)
 {
-	gtk_window_set_title(GTK_WINDOW(ghidgui->impl.top_window), title);
+	gtk_window_set_title(GTK_WINDOW(ghidgui->wtop_window), title);
 }
