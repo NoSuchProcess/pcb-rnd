@@ -162,8 +162,8 @@ struct pcb_gtk_s {
 
 /* The output viewport */
 struct pcb_gtk_port_s {
-	GtkWidget *top_window,				/* toplevel widget              */
-	 *drawing_area;								/* and its drawing area */
+	GtkWidget *top_window,        /* toplevel widget */
+	          *drawing_area;      /* and its drawing area */
 
 	pcb_bool drawing_allowed;     /* track if a drawing area is available for rendering */
 
