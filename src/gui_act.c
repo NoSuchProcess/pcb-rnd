@@ -997,7 +997,7 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	pcb_hidlib_crosshair_move_to(pcb_crosshair.X + dx, pcb_crosshair.Y + dy, 1);
-	pcb_gui->set_crosshair(pcb_crosshair.X, pcb_crosshair.Y, pan_warp);
+	pcb_gui->set_crosshair(pcb_gui, pcb_crosshair.X, pcb_crosshair.Y, pan_warp);
 
 	PCB_ACT_IRES(0);
 	return 0;

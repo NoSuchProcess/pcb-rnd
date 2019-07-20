@@ -340,7 +340,7 @@ struct pcb_hid_s {
 	   or mils accordingly.  If cursor_action_ is set, the cursor or
 	   screen may be adjusted so that the cursor and the crosshair are
 	   at the same point on the screen.  */
-	void (*set_crosshair)(pcb_coord_t x, pcb_coord_t y, int cursor_action);
+	void (*set_crosshair)(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int cursor_action);
 #define HID_SC_DO_NOTHING    0
 #define HID_SC_WARP_POINTER  1
 #define HID_SC_PAN_VIEWPORT  2

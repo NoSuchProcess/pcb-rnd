@@ -192,7 +192,7 @@ static void nogui_get_coords(pcb_hid_t *hid, const char *msg, pcb_coord_t *x, pc
 	CRASH("get_coords");
 }
 
-static void nogui_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
+static void nogui_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int action)
 {
 }
 
