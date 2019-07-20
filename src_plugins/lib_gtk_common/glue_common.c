@@ -283,12 +283,12 @@ void pcb_gtk_previews_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coo
 	pcb_box_t screen;
 	screen.X1 = left; screen.X2 = right;
 	screen.Y1 = top; screen.Y2 = bottom;
-	pcb_gtk_preview_invalidate(&ghidgui->impl, &screen);
+	pcb_gtk_preview_invalidate(ghidgui, &screen);
 }
 
 void pcb_gtk_previews_invalidate_all(void)
 {
-	pcb_gtk_preview_invalidate(&ghidgui->impl, NULL);
+	pcb_gtk_preview_invalidate(ghidgui, NULL);
 }
 
 
@@ -329,7 +329,7 @@ void ghid_glue_common_init(const char *cookie)
 	ghidgui->topwin.cmd.post_entry = command_post_entry;
 	ghidgui->topwin.cmd.pre_entry = command_pre_entry;
 
-	ghid_port.view.com = &ghidgui->impl;
+	ghid_port.view.ctx = ghidgui;
 	ghid_port.mouse = &ghidgui->mouse;
 
 	ghid_conf_regs(cookie);

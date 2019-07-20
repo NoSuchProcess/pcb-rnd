@@ -109,7 +109,7 @@ int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub, pc
 	gtk_widget_show_all(docked->frame);
 
 	sub->parent_poke = pcb_gtk_dock_poke;
-	sub->dlg_hid_ctx = docked->hid_ctx = ghid_attr_sub_new(&ghidgui->impl, hvbox, sub->dlg, sub->dlg_len, sub);
+	sub->dlg_hid_ctx = docked->hid_ctx = ghid_attr_sub_new(ghidgui, hvbox, sub->dlg, sub->dlg_len, sub);
 	docked->tw = tw;
 	sub->parent_ctx = docked;
 

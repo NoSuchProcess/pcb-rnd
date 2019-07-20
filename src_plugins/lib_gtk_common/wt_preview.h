@@ -84,8 +84,8 @@ struct pcb_gtk_preview_s {
 
 	pcb_any_obj_t *obj; /* object being displayed in the preview */
 
-	pcb_gtk_impl_t *com;
-	gdl_elem_t link; /* in the list of all previews in ->com->previews */
+	pcb_gtk_t *ctx;
+	gdl_elem_t link; /* in the list of all previews in ->ctx->impl.previews */
 	unsigned redraw_with_board:1;
 	unsigned redrawing:1;
 };
@@ -95,15 +95,15 @@ GType pcb_gtk_preview_get_type(void);
 /* Queries the natural size of a preview widget */
 void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t *preview, int *width, int *height);
 
-GtkWidget *pcb_gtk_preview_new(pcb_gtk_impl_t *com, pcb_gtk_init_drawing_widget_t init_widget,
+GtkWidget *pcb_gtk_preview_new(pcb_gtk_t *ctx, pcb_gtk_init_drawing_widget_t init_widget,
 																			pcb_gtk_preview_expose_t expose, pcb_hid_expose_t dialog_draw, pcb_gtk_preview_config_t config, void *draw_data);
 
 void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const pcb_box_t *data_view);
 
 /* invalidate (redraw) all preview widgets whose current view overlaps with
    the screen box; if screen is NULL, redraw all */
-void pcb_gtk_preview_invalidate(pcb_gtk_impl_t *com, const pcb_box_t *screen);
+void pcb_gtk_preview_invalidate(pcb_gtk_t *ctx, const pcb_box_t *screen);
 
-void pcb_gtk_preview_del(pcb_gtk_impl_t *com, pcb_gtk_preview_t *prv);
+void pcb_gtk_preview_del(pcb_gtk_t *ctx, pcb_gtk_preview_t *prv);
 
 #endif /* PCB_GTK_WT_REVIEW_H */

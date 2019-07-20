@@ -110,7 +110,7 @@ static GtkWidget *ghid_preview_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr
 	hp->hid_zoomto_cb = ghid_preview_zoomto;
 	
 	bparent = frame_scroll(parent, attr->pcb_hatt_flags, &ctx->wltop[j]);
-	prv = pcb_gtk_preview_new(ctx->com, ctx->com->init_drawing_widget, ctx->com->preview_expose, ghid_preview_expose, ghid_preview_config, attr->enumerations);
+	prv = pcb_gtk_preview_new(ctx->gctx, ctx->gctx->impl.init_drawing_widget, ctx->gctx->impl.preview_expose, ghid_preview_expose, ghid_preview_config, attr->enumerations);
 	gtk_box_pack_start(GTK_BOX(bparent), prv, TRUE, TRUE, 0);
 	gtk_widget_set_tooltip_text(prv, attr->help_text);
 	p = (pcb_gtk_preview_t *) prv;
@@ -178,7 +178,7 @@ static GtkWidget *ghid_color_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, 
 
 	bparent = frame_scroll(parent, attr->pcb_hatt_flags, &ctx->wltop[j]);
 
-	ctx->com->map_color_string("#000000", &gclr);
+	ctx->gctx->impl.map_color_string("#000000", &gclr);
 
 	button = gtkc_color_button_new_with_color(&gclr);
 	gtk_color_button_set_title(GTK_COLOR_BUTTON(button), NULL);
@@ -195,7 +195,7 @@ static int ghid_color_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *va
 	pcb_gtk_color_t gclr;
 	GtkWidget *btn = ctx->wl[idx];
 
-	ctx->com->map_color_string(val->clr_value.str, &gclr);
+	ctx->gctx->impl.map_color_string(val->clr_value.str, &gclr);
 	gtkc_color_button_set_color(btn, &gclr);
 
 	return 0;

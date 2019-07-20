@@ -190,7 +190,7 @@ static void ghid_preview_set_property(GObject *object, guint property_id, const 
 		preview->gport = (void *) g_value_get_pointer(value);
 		break;
 	case PROP_COM:
-		preview->com = (void *) g_value_get_pointer(value);
+		preview->ctx = (void *) g_value_get_pointer(value);
 		break;
 	case PROP_INIT_WIDGET:
 		preview->init_drawing_widget = (void *) g_value_get_pointer(value);
@@ -262,7 +262,7 @@ static void ghid_preview_class_init(pcb_gtk_preview_class_t *klass)
 	ghid_preview_parent_class = (GObjectClass *) g_type_class_peek_parent(klass);
 
 	g_object_class_install_property(gobject_class, PROP_GPORT, g_param_spec_pointer("gport", "", "", G_PARAM_WRITABLE));
-	g_object_class_install_property(gobject_class, PROP_COM, g_param_spec_pointer("com", "", "", G_PARAM_WRITABLE));
+	g_object_class_install_property(gobject_class, PROP_COM, g_param_spec_pointer("ctx", "", "", G_PARAM_WRITABLE));
 
 	g_object_class_install_property(gobject_class, PROP_INIT_WIDGET,
 																	g_param_spec_pointer("init-widget", "", "", G_PARAM_WRITABLE));
@@ -480,20 +480,20 @@ GType pcb_gtk_preview_get_type()
 
 static gint preview_destroy_cb(GtkWidget *widget, gpointer data)
 {
-	pcb_gtk_impl_t *com = data;
+	pcb_gtk_t *ctx = data;
 	pcb_gtk_preview_t *prv = PCB_GTK_PREVIEW(widget);
 
-	pcb_gtk_preview_del(com, prv);
+	pcb_gtk_preview_del(ctx, prv);
 	return 0;
 }
 
 
-GtkWidget *pcb_gtk_preview_new(pcb_gtk_impl_t *com, pcb_gtk_init_drawing_widget_t init_widget,
+GtkWidget *pcb_gtk_preview_new(pcb_gtk_t *ctx, pcb_gtk_init_drawing_widget_t init_widget,
 																			pcb_gtk_preview_expose_t expose, pcb_hid_expose_t dialog_draw, pcb_gtk_preview_config_t config, void *draw_data)
 {
 	pcb_gtk_preview_t *prv = (pcb_gtk_preview_t *)g_object_new(
 		PCB_GTK_TYPE_PREVIEW,
-		"com", com, "gport", com->gport, "init-widget", init_widget,
+		"ctx", ctx, "gport", ctx->impl.gport, "init-widget", init_widget,
 		"expose", expose, "dialog_draw", dialog_draw,
 		"config", config, "draw_data", draw_data,
 		"width-request", 50, "height-request", 50,
@@ -509,7 +509,7 @@ TODO(": maybe expose these through the object API so the caller can set it up?")
 	prv->view.max_width = PCB_MAX_COORD;
 	prv->view.max_height = PCB_MAX_COORD;
 	prv->view.coord_per_px = PCB_MM_TO_COORD(0.25);
-	prv->view.com = com;
+	prv->view.ctx = ctx;
 
 	update_expose_data(prv);
 
@@ -526,7 +526,7 @@ TODO(": maybe expose these through the object API so the caller can set it up?")
 	g_signal_connect(G_OBJECT(prv), "scroll_event", G_CALLBACK(preview_scroll_cb), NULL);
 	g_signal_connect(G_OBJECT(prv), "configure_event", G_CALLBACK(preview_configure_event_cb), NULL);
 	g_signal_connect(G_OBJECT(prv), "motion_notify_event", G_CALLBACK(preview_motion_cb), NULL);
-	g_signal_connect(G_OBJECT(prv), "destroy", G_CALLBACK(preview_destroy_cb), com);
+	g_signal_connect(G_OBJECT(prv), "destroy", G_CALLBACK(preview_destroy_cb), ctx);
 
 
 /*
@@ -534,7 +534,7 @@ TODO(": maybe expose these through the object API so the caller can set it up?")
 	g_signal_connect(G_OBJECT(prv), "key_release_event", G_CALLBACK(preview_key_release_cb), NULL);
 */
 
-	gdl_insert(&com->previews, prv, link);
+	gdl_insert(&ctx->impl.previews, prv, link);
 	return GTK_WIDGET(prv);
 }
 
@@ -558,11 +558,11 @@ static void get_ptr(pcb_gtk_preview_t *preview, pcb_coord_t *cx, pcb_coord_t *cy
 #undef SIDE_Y
 }
 
-void pcb_gtk_preview_invalidate(pcb_gtk_impl_t *com, const pcb_box_t *screen)
+void pcb_gtk_preview_invalidate(pcb_gtk_t *ctx, const pcb_box_t *screen)
 {
 	pcb_gtk_preview_t *prv;
 
-	for(prv = gdl_first(&com->previews); prv != NULL; prv = prv->link.next) {
+	for(prv = gdl_first(&ctx->impl.previews); prv != NULL; prv = prv->link.next) {
 		if (!prv->redraw_with_board || prv->redrawing) continue;
 		if (screen != NULL) {
 			pcb_box_t pb;
@@ -584,8 +584,8 @@ void pcb_gtk_preview_invalidate(pcb_gtk_impl_t *com, const pcb_box_t *screen)
 	}
 }
 
-void pcb_gtk_preview_del(pcb_gtk_impl_t *com, pcb_gtk_preview_t *prv)
+void pcb_gtk_preview_del(pcb_gtk_t *ctx, pcb_gtk_preview_t *prv)
 {
-	if (prv->link.parent == &com->previews)
-		gdl_remove(&com->previews, prv, link);
+	if (prv->link.parent == &ctx->impl.previews)
+		gdl_remove(&ctx->impl.previews, prv, link);
 }

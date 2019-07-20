@@ -293,12 +293,12 @@ static pcb_hidval_t ghid_watch_file(int fd, unsigned int condition,
 
 static char *ghid_fileselect(const char *title, const char *descr, const char *default_file, const char *default_ext, const pcb_hid_fsd_filter_t *flt, const char *history_tag, pcb_hid_fsd_flags_t flags, pcb_hid_dad_subdialog_t *sub)
 {
-	return pcb_gtk_fileselect(&ghidgui->impl, title, descr, default_file, default_ext, flt, history_tag, flags, sub);
+	return pcb_gtk_fileselect(ghidgui, title, descr, default_file, default_ext, flt, history_tag, flags, sub);
 }
 
 static void *ghid_attr_dlg_new_(const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
-	return ghid_attr_dlg_new(&ghidgui->impl, id, attrs, n_attrs, results, title, caller_data, modal, button_cb, defx, defy, minx, miny);
+	return ghid_attr_dlg_new(ghidgui, id, attrs, n_attrs, results, title, caller_data, modal, button_cb, defx, defy, minx, miny);
 }
 
 static void ghid_beep()

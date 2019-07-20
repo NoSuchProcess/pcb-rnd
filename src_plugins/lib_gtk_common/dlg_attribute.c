@@ -49,7 +49,7 @@
 
 typedef struct {
 	void *caller_data; /* WARNING: for now, this must be the first field (see core spinbox enter_cb) */
-	pcb_gtk_impl_t *com;
+	pcb_gtk_t *gctx;
 	pcb_hid_attribute_t *attrs;
 	pcb_hid_attr_val_t *results;
 	GtkWidget **wl;     /* content widget */
@@ -184,7 +184,7 @@ static void color_changed_cb(GtkColorButton *button, pcb_hid_attribute_t *dst)
 		return;
 
 	gtkc_color_button_get_color(GTK_WIDGET(button), &clr);
-	str = ctx->com->get_color_name(&clr);
+	str = ctx->gctx->impl.get_color_name(&clr);
 	pcb_color_load_str(&dst->default_val.clr_value, str);
 
 	change_cb(ctx, dst);
@@ -668,7 +668,7 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 static gint ghid_attr_dlg_configure_event_cb(GtkWidget *widget, GdkEventConfigure *ev, gpointer data)
 {
 	attr_dlg_t *ctx = (attr_dlg_t *)data;
-	return pcb_gtk_winplace_cfg(ctx->com->hidlib, widget, ctx, ctx->id);
+	return pcb_gtk_winplace_cfg(ctx->gctx->impl.hidlib, widget, ctx, ctx->id);
 }
 
 static gint ghid_attr_dlg_destroy_event_cb(GtkWidget *widget, gpointer data)
@@ -713,7 +713,7 @@ static void ghid_initial_wstates(attr_dlg_t *ctx)
 			ghid_attr_dlg_widget_hide_(ctx, n, 1);
 }
 
-void *ghid_attr_dlg_new(pcb_gtk_impl_t *com, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+void *ghid_attr_dlg_new(pcb_gtk_t *gctx, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
 	GtkWidget *content_area;
 	GtkWidget *main_vbox;
@@ -726,7 +726,7 @@ void *ghid_attr_dlg_new(pcb_gtk_impl_t *com, const char *id, pcb_hid_attribute_t
 
 	ctx = calloc(sizeof(attr_dlg_t), 1);
 
-	ctx->com = com;
+	ctx->gctx = gctx;
 	ctx->attrs = attrs;
 	ctx->results = results;
 	ctx->n_attrs = n_attrs;
@@ -738,10 +738,10 @@ void *ghid_attr_dlg_new(pcb_gtk_impl_t *com, const char *id, pcb_hid_attribute_t
 	ctx->close_cb = button_cb;
 	ctx->id = pcb_strdup(id);
 
-	pcb_event(com->hidlib, PCB_EVENT_DAD_NEW_DIALOG, "psp", ctx, ctx->id, plc);
+	pcb_event(gctx->impl.hidlib, PCB_EVENT_DAD_NEW_DIALOG, "psp", ctx, ctx->id, plc);
 
 	ctx->dialog = gtk_dialog_new();
-	gtk_window_set_transient_for(GTK_WINDOW(ctx->dialog), GTK_WINDOW(com->top_window));
+	gtk_window_set_transient_for(GTK_WINDOW(ctx->dialog), GTK_WINDOW(gctx->impl.top_window));
 
 	gtk_window_set_title(GTK_WINDOW(ctx->dialog), title);
 	gtk_window_set_role(GTK_WINDOW(ctx->dialog), id);
@@ -772,13 +772,13 @@ void *ghid_attr_dlg_new(pcb_gtk_impl_t *com, const char *id, pcb_hid_attribute_t
 	return ctx;
 }
 
-void *ghid_attr_sub_new(pcb_gtk_impl_t *com, GtkWidget *parent_box, pcb_hid_attribute_t *attrs, int n_attrs, void *caller_data)
+void *ghid_attr_sub_new(pcb_gtk_t *gctx, GtkWidget *parent_box, pcb_hid_attribute_t *attrs, int n_attrs, void *caller_data)
 {
 	attr_dlg_t *ctx;
 
 	ctx = calloc(sizeof(attr_dlg_t), 1);
 
-	ctx->com = com;
+	ctx->gctx = gctx;
 	ctx->attrs = attrs;
 	ctx->n_attrs = n_attrs;
 	ctx->wl = calloc(sizeof(GtkWidget *), n_attrs);
@@ -832,7 +832,7 @@ void ghid_attr_dlg_free(void *hid_ctx)
 		switch(ctx->attrs[i].type) {
 			case PCB_HATT_TREE: ghid_tree_pre_free(ctx, &ctx->attrs[i], i); break;
 			case PCB_HATT_BUTTON: g_signal_handlers_block_by_func(G_OBJECT(ctx->wl[i]), G_CALLBACK(button_changed_cb), &(ctx->attrs[i])); break;
-			case PCB_HATT_PREVIEW: pcb_gtk_preview_del(ctx->com, PCB_GTK_PREVIEW(ctx->wl[i]));
+			case PCB_HATT_PREVIEW: pcb_gtk_preview_del(ctx->gctx, PCB_GTK_PREVIEW(ctx->wl[i]));
 			default: break;
 		}
 	}
