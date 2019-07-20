@@ -80,7 +80,7 @@ static const gchar *get_color_name(pcb_gtk_color_t *color)
 static pcb_bool map_color_string(const char *color_string, pcb_gtk_color_t *color)
 {
 	static GdkColormap *colormap = NULL;
-	pcb_gtk_port_t *out = &ghid_port;
+	pcb_gtk_port_t *out = &ghidgui->port;
 	pcb_bool parsed;
 
 	if (!color || !out->top_window)
@@ -404,6 +404,10 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 
 void ghid_gl_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 {
+	render_priv_t *priv = ghidgui->port.render_priv;
+
+	if (priv == NULL) return;
+
 	if (color == NULL) {
 		fprintf(stderr, "ghid_gl_set_color():  name = NULL, setting to magenta\n");
 		color = pcb_color_magenta;
@@ -834,7 +838,7 @@ static void gtk2gl_color(pcb_gl_color_t *gl_c, pcb_gtk_color_t *gtk_c)
 static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose_t *ev, void *vport)
 {
 	pcb_gtk_port_t *port = vport;
-	pcb_hidlib_t *hidlib = port->view.com->hidlib;
+	pcb_hidlib_t *hidlib = ghidgui->hidlib;
 	render_priv_t *priv = port->render_priv;
 	GtkAllocation allocation;
 	pcb_hid_expose_ctx_t ctx;
@@ -917,7 +921,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
 	GtkAllocation allocation;
 	render_priv_t *priv = ghidgui->port.render_priv;
-	pcb_hidlib_t *hidlib = ghidgui->port.view.com->hidlib;
+	pcb_hidlib_t *hidlib = ghidgui->hidlib;
 	pcb_gtk_view_t save_view;
 	int save_width, save_height;
 	double xz, yz, vw, vh;
