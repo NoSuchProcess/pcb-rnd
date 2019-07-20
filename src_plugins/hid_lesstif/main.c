@@ -2228,7 +2228,7 @@ static int lesstif_set_layer_group(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_lay
 	return 1;
 }
 
-static pcb_hid_gc_t lesstif_make_gc(void)
+static pcb_hid_gc_t lesstif_make_gc(pcb_hid_t *hid)
 {
 	pcb_hid_gc_t rv = (hid_gc_s *) malloc(sizeof(hid_gc_s));
 	memset(rv, 0, sizeof(hid_gc_s));
@@ -2237,7 +2237,7 @@ static pcb_hid_gc_t lesstif_make_gc(void)
 	return rv;
 }
 
-static void lesstif_destroy_gc(pcb_hid_gc_t gc)
+static void lesstif_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc)
 {
 	if (gc->colorname != NULL)
 		free(gc->colorname);

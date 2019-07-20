@@ -584,7 +584,7 @@ static int gcode_set_layer_group(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_layer
 	return 0;
 }
 
-static pcb_hid_gc_t gcode_make_gc(void)
+static pcb_hid_gc_t gcode_make_gc(pcb_hid_t *hid)
 {
 	pcb_hid_gc_t rv = (pcb_hid_gc_t) malloc(sizeof(struct hid_gc_s));
 	rv->me_pointer = &gcode_hid;
@@ -596,7 +596,7 @@ static pcb_hid_gc_t gcode_make_gc(void)
 	return rv;
 }
 
-static void gcode_destroy_gc(pcb_hid_gc_t gc)
+static void gcode_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc)
 {
 	free(gc);
 }

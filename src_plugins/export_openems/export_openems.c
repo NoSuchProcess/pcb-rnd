@@ -696,14 +696,14 @@ static int openems_set_layer_group(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_lay
 	return 0;
 }
 
-static pcb_hid_gc_t openems_make_gc(void)
+static pcb_hid_gc_t openems_make_gc(pcb_hid_t *hid)
 {
 	pcb_hid_gc_t rv = (pcb_hid_gc_t) calloc(sizeof(hid_gc_s), 1);
 	rv->me_pointer = &openems_hid;
 	return rv;
 }
 
-static void openems_destroy_gc(pcb_hid_gc_t gc)
+static void openems_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc)
 {
 	free(gc);
 }

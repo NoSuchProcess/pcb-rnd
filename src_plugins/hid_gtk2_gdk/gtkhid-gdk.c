@@ -101,7 +101,7 @@ static int ghid_gdk_set_layer_group(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_la
 	return 1;
 }
 
-static void ghid_gdk_destroy_gc(pcb_hid_gc_t gc)
+static void ghid_gdk_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc)
 {
 	if (gc->pixel_gc)
 		g_object_unref(gc->pixel_gc);
@@ -110,7 +110,7 @@ static void ghid_gdk_destroy_gc(pcb_hid_gc_t gc)
 	g_free(gc);
 }
 
-static pcb_hid_gc_t ghid_gdk_make_gc(void)
+static pcb_hid_gc_t ghid_gdk_make_gc(pcb_hid_t *hid)
 {
 	pcb_hid_gc_t rv;
 

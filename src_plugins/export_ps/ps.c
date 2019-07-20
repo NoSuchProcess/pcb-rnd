@@ -941,7 +941,7 @@ static int ps_set_layer_group(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_layergrp
 	return 1;
 }
 
-static pcb_hid_gc_t ps_make_gc(void)
+static pcb_hid_gc_t ps_make_gc(pcb_hid_t *hid)
 {
 	pcb_hid_gc_t rv = (pcb_hid_gc_t) calloc(1, sizeof(hid_gc_s));
 	rv->me_pointer = &ps_hid;
@@ -949,7 +949,7 @@ static pcb_hid_gc_t ps_make_gc(void)
 	return rv;
 }
 
-static void ps_destroy_gc(pcb_hid_gc_t gc)
+static void ps_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc)
 {
 	free(gc);
 }

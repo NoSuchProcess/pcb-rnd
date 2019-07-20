@@ -309,13 +309,13 @@ static int excellon_set_layer_group(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_la
 	return 1;
 }
 
-static pcb_hid_gc_t excellon_make_gc(void)
+static pcb_hid_gc_t excellon_make_gc(pcb_hid_t *hid)
 {
 	pcb_hid_gc_t rv = calloc(1, sizeof(*rv));
 	return rv;
 }
 
-static void excellon_destroy_gc(pcb_hid_gc_t gc)
+static void excellon_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc)
 {
 	free(gc);
 }

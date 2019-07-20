@@ -81,22 +81,22 @@ static void nogui_invalidate_all(pcb_hid_t *hid, pcb_hidlib_t *hidlib)
 	CRASH("invalidate_all");
 }
 
-static int nogui_set_layer_group(pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
+static int nogui_set_layer_group(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
 	CRASH("set_layer_group");
 	return 0;
 }
 
-static void nogui_end_layer(void)
+static void nogui_end_layer(pcb_hid_t *hid)
 {
 }
 
-static pcb_hid_gc_t nogui_make_gc(void)
+static pcb_hid_gc_t nogui_make_gc(pcb_hid_t *hid)
 {
 	return 0;
 }
 
-static void nogui_destroy_gc(pcb_hid_gc_t gc)
+static void nogui_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc)
 {
 }
 

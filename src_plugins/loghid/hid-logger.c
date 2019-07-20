@@ -72,16 +72,16 @@ static void log_end_layer(pcb_hid_t *hid)
 	delegatee_->end_layer(hid);
 }
 
-static pcb_hid_gc_t log_make_gc()
+static pcb_hid_gc_t log_make_gc(pcb_hid_t *hid)
 {
 	pcb_fprintf(out_, "make_gc()\n");
-	return delegatee_->make_gc();
+	return delegatee_->make_gc(hid);
 }
 
-static void log_destroy_gc(pcb_hid_gc_t gc)
+static void log_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc)
 {
 	pcb_fprintf(out_, "destroy_gc()\n");
-	delegatee_->destroy_gc(gc);
+	delegatee_->destroy_gc(hid, gc);
 }
 
 static void log_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)

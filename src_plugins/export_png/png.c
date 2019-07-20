@@ -1369,7 +1369,7 @@ static int png_set_layer_group(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_layergr
 }
 
 
-static pcb_hid_gc_t png_make_gc(void)
+static pcb_hid_gc_t png_make_gc(pcb_hid_t *hid)
 {
 	pcb_hid_gc_t rv = (pcb_hid_gc_t) calloc(sizeof(hid_gc_s), 1);
 	rv->me_pointer = &png_hid;
@@ -1382,7 +1382,7 @@ static pcb_hid_gc_t png_make_gc(void)
 	return rv;
 }
 
-static void png_destroy_gc(pcb_hid_gc_t gc)
+static void png_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc)
 {
 	free(gc);
 }

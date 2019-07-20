@@ -159,7 +159,7 @@ typedef struct {
 static hid_gc_s remote_gc[32];
 static remote_gc_cache_t gc_cache[32];
 
-static pcb_hid_gc_t remote_make_gc(void)
+static pcb_hid_gc_t remote_make_gc(pcb_hid_t *hid)
 {
 	int gci = proto_send_make_gc();
 	int max = sizeof(remote_gc) / sizeof(remote_gc[0]);
@@ -184,7 +184,7 @@ static int gc2idx(pcb_hid_gc_t gc)
 	return idx;
 }
 
-static void remote_destroy_gc(pcb_hid_gc_t gc)
+static void remote_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)

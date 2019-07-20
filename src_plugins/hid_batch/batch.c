@@ -174,13 +174,13 @@ static int batch_set_layer_group(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_layer
 	return 0;
 }
 
-static pcb_hid_gc_t batch_make_gc(void)
+static pcb_hid_gc_t batch_make_gc(pcb_hid_t *hid)
 {
 	static pcb_core_gc_t hc;
 	return (pcb_hid_gc_t)&hc;
 }
 
-static void batch_destroy_gc(pcb_hid_gc_t gc)
+static void batch_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc)
 {
 }
 

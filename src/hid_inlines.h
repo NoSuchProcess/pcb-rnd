@@ -33,7 +33,7 @@ PCB_INLINE pcb_hid_gc_t pcb_hid_make_gc(void)
 {
 	pcb_hid_gc_t res;
 	pcb_core_gc_t *hc;
-	res = pcb_gui->make_gc();
+	res = pcb_gui->make_gc(pcb_gui);
 	hc = (pcb_core_gc_t *)res; /* assumes first field is pcb_core_gc_t */
 	hc->width = PCB_MAX_COORD;
 	hc->cap = pcb_cap_invalid;
@@ -44,7 +44,7 @@ PCB_INLINE pcb_hid_gc_t pcb_hid_make_gc(void)
 
 PCB_INLINE void pcb_hid_destroy_gc(pcb_hid_gc_t gc)
 {
-	pcb_gui->destroy_gc(gc);
+	pcb_gui->destroy_gc(pcb_gui, gc);
 }
 
 PCB_INLINE void pcb_hid_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)

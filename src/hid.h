@@ -265,16 +265,16 @@ struct pcb_hid_s {
 	   functions.  In addition to the copper layer groups, you may select virtual
 	   layers. The is_empty argument is a hint - if set, the layer is empty, if
 	   zero it may be non-empty. */
-	int (*set_layer_group)(pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform);
+	int (*set_layer_group)(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform);
 
 	/* Tell the GUI the layer last selected has been finished with. */
-	void (*end_layer)(void);
+	void (*end_layer)(pcb_hid_t *hid);
 
 	/*** Drawing Functions. ***/
 
 	/* Make an empty graphics context.  */
-	pcb_hid_gc_t (*make_gc)(void);
-	void (*destroy_gc)(pcb_hid_gc_t gc);
+	pcb_hid_gc_t (*make_gc)(pcb_hid_t *hid);
+	void (*destroy_gc)(pcb_hid_t *hid, pcb_hid_gc_t gc);
 
 	/* Composite layer drawing: manipulate the sketch canvas and set
 	   positive or negative drawing mode. The canvas covers the screen box. */

@@ -34,8 +34,8 @@ static pcb_hid_attribute_t *eps_get_export_options(pcb_hid_t *hid, int *n);
 static void eps_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options);
 static int eps_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv);
 static int eps_set_layer_group(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform);
-static pcb_hid_gc_t eps_make_gc(void);
-static void eps_destroy_gc(pcb_hid_gc_t gc);
+static pcb_hid_gc_t eps_make_gc(pcb_hid_t *hid);
+static void eps_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc);
 static void eps_set_color(pcb_hid_gc_t gc, const pcb_color_t *name);
 static void eps_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style);
 static void eps_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width);
@@ -452,7 +452,7 @@ static int eps_set_layer_group(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_layergr
 	return 1;
 }
 
-static pcb_hid_gc_t eps_make_gc(void)
+static pcb_hid_gc_t eps_make_gc(pcb_hid_t *hid)
 {
 	pcb_hid_gc_t rv = (pcb_hid_gc_t) malloc(sizeof(hid_gc_s));
 	rv->cap = pcb_cap_round;
@@ -461,7 +461,7 @@ static pcb_hid_gc_t eps_make_gc(void)
 	return rv;
 }
 
-static void eps_destroy_gc(pcb_hid_gc_t gc)
+static void eps_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc)
 {
 	free(gc);
 }
