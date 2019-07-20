@@ -40,7 +40,7 @@ extern int lesstif_pcbxy_to_winxy(int pcbx, int pcby, int *winx, int *winy);
 
 extern void lesstif_need_idle_proc(void);
 extern void lesstif_show_crosshair(int);
-extern void lesstif_invalidate_all(pcb_hidlib_t *hidlib);
+extern void lesstif_invalidate_all(pcb_hid_t *hid, pcb_hidlib_t *hidlib);
 extern void lesstif_coords_to_pcb(int, int, pcb_coord_t *, pcb_coord_t *);
 extern void lesstif_get_xy(const char *msg);
 extern void lesstif_update_widget_flags(const char *cookie);

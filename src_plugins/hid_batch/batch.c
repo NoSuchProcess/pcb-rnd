@@ -161,11 +161,11 @@ static int batch_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static void batch_invalidate_lr(pcb_hidlib_t *hidlib, pcb_coord_t l, pcb_coord_t r, pcb_coord_t t, pcb_coord_t b)
+static void batch_invalidate_lr(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_coord_t l, pcb_coord_t r, pcb_coord_t t, pcb_coord_t b)
 {
 }
 
-static void batch_invalidate_all(pcb_hidlib_t *hidlib)
+static void batch_invalidate_all(pcb_hid_t *hid, pcb_hidlib_t *hidlib)
 {
 }
 

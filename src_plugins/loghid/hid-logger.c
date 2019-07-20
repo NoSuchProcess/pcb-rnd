@@ -36,16 +36,16 @@ static int log_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 	return delegatee_->parse_arguments(delegatee_, argc, argv);
 }
 
-static void log_invalidate_lr(pcb_hidlib_t *hidlib, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
+static void log_invalidate_lr(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
 {
 	pcb_fprintf(out_, "invalidate_lr(%mm, %mm, %mm, %mm)\n", left, right, top, bottom);
-	delegatee_->invalidate_lr(hidlib, left, right, top, bottom);
+	delegatee_->invalidate_lr(hid, hidlib, left, right, top, bottom);
 }
 
-static void log_invalidate_all(pcb_hidlib_t *hidlib)
+static void log_invalidate_all(pcb_hid_t *hid, pcb_hidlib_t *hidlib)
 {
 	pcb_fprintf(out_, "invalidate_all()\n");
-	delegatee_->invalidate_all(hidlib);
+	delegatee_->invalidate_all(hid, hidlib);
 }
 
 static void log_notify_crosshair_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)

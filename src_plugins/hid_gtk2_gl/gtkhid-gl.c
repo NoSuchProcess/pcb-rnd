@@ -522,7 +522,7 @@ static void ghid_gl_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, p
 
 static int preview_lock = 0;
 
-void ghid_gl_invalidate_all(pcb_hidlib_t *hidlib)
+void ghid_gl_invalidate_all(pcb_hid_t *hid, pcb_hidlib_t *hidlib)
 {
 	if (ghidgui && ghidgui->topwin.menu.menu_bar) {
 		ghid_draw_area_update(&ghidgui->port, NULL);
@@ -534,9 +534,9 @@ void ghid_gl_invalidate_all(pcb_hidlib_t *hidlib)
 	}
 }
 
-void ghid_gl_invalidate_lr(pcb_hidlib_t *hidlib, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
+void ghid_gl_invalidate_lr(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
 {
-	ghid_gl_invalidate_all(hidlib);
+	ghid_gl_invalidate_all(hid, hidlib);
 	if (!preview_lock) {
 		preview_lock++;
 		pcb_gtk_previews_invalidate_all();
@@ -551,7 +551,7 @@ static void ghid_gl_notify_crosshair_change(pcb_hidlib_t *hidlib, pcb_bool chang
 		return;
 
 	/* FIXME: We could just invalidate the bounds of the crosshair attached objects? */
-	ghid_gl_invalidate_all(hidlib);
+	ghid_gl_invalidate_all(pcb_gui, hidlib);
 }
 
 static void ghid_gl_notify_mark_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
@@ -561,7 +561,7 @@ static void ghid_gl_notify_mark_change(pcb_hidlib_t *hidlib, pcb_bool changes_co
 		return;
 
 	/* FIXME: We could just invalidate the bounds of the mark? */
-	ghid_gl_invalidate_all(hidlib);
+	ghid_gl_invalidate_all(pcb_gui, hidlib);
 }
 
 static void pcb_gl_draw_right_cross(pcb_hidlib_t *hidlib, GLint x, GLint y, GLint z)

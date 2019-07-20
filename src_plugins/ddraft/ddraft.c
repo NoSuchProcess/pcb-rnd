@@ -107,7 +107,7 @@ static long do_trim_split(vtp0_t *edges, int kwobj, int trim)
 					continue;
 				}
 				res += pcb_trim_split(edges, (pcb_any_obj_t *)ptr2, REMO_INVALID, x, y, trim);
-				pcb_gui->invalidate_all(&PCB->hidlib);
+				pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
 			}
 			break;
 		default:

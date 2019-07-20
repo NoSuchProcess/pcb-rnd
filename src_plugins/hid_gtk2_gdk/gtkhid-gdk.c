@@ -1117,7 +1117,7 @@ static void redraw_region(pcb_hidlib_t *hidlib, GdkRectangle *rect)
 }
 
 static int preview_lock = 0;
-static void ghid_gdk_invalidate_lr(pcb_hidlib_t *hidlib, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
+static void ghid_gdk_invalidate_lr(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
 {
 	int dleft, dright, dtop, dbottom;
 	int minx, maxx, miny, maxy;
@@ -1149,7 +1149,7 @@ static void ghid_gdk_invalidate_lr(pcb_hidlib_t *hidlib, pcb_coord_t left, pcb_c
 }
 
 
-static void ghid_gdk_invalidate_all(pcb_hidlib_t *hidlib)
+static void ghid_gdk_invalidate_all(pcb_hid_t *hid, pcb_hidlib_t *hidlib)
 {
 	if (ghidgui && ghidgui->topwin.menu.menu_bar) {
 		redraw_region(hidlib, NULL);
@@ -1180,7 +1180,7 @@ static void ghid_gdk_notify_crosshair_change(pcb_hidlib_t *hidlib, pcb_bool chan
 		   is not expected to occur, but we will try to handle it gracefully.
 		   As we know the crosshair will have been shown already, we must
 		   repaint the entire view to be sure not to leave an artaefact. */
-		ghid_gdk_invalidate_all(hidlib);
+		ghid_gdk_invalidate_all(pcb_gui, hidlib);
 		return;
 	}
 
@@ -1213,7 +1213,7 @@ static void ghid_gdk_notify_mark_change(pcb_hidlib_t *hidlib, pcb_bool changes_c
 		   is not expected to occur, but we will try to handle it gracefully.
 		   As we know the mark will have been shown already, we must
 		   repaint the entire view to be sure not to leave an artaefact. */
-		ghid_gdk_invalidate_all(hidlib);
+		ghid_gdk_invalidate_all(pcb_gui, hidlib);
 		return;
 	}
 

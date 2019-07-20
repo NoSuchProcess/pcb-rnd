@@ -443,7 +443,7 @@ static int act_replace_footprint(int op, pcb_subc_t *olds, pcb_subc_t *news, cha
 	pcb_undo_restore_serial();
 	if (changed) {
 		pcb_undo_inc_serial();
-		pcb_gui->invalidate_all(&PCB->hidlib);
+		pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
 	}
 	return 0;
 }

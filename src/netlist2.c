@@ -337,7 +337,7 @@ void pcb_net_short_ctx_uninit(pcb_short_ctx_t *sctx)
 		free(e->key);
 	htsp_uninit(&sctx->found);
 	if (sctx->changed) {
-		pcb_gui->invalidate_all(&PCB->hidlib);
+		pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
 		conf_core.temp.rat_warn = pcb_true;
 	}
 }

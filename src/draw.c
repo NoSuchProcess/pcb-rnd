@@ -160,7 +160,7 @@ void pcb_draw(void)
 	if (pcb_draw_inhibit)
 		return;
 	if (pcb_draw_invalidated.X1 <= pcb_draw_invalidated.X2 && pcb_draw_invalidated.Y1 <= pcb_draw_invalidated.Y2)
-		pcb_gui->invalidate_lr(&PCB->hidlib, pcb_draw_invalidated.X1, pcb_draw_invalidated.X2, pcb_draw_invalidated.Y1, pcb_draw_invalidated.Y2);
+		pcb_gui->invalidate_lr(pcb_gui, &PCB->hidlib, pcb_draw_invalidated.X1, pcb_draw_invalidated.X2, pcb_draw_invalidated.Y1, pcb_draw_invalidated.Y2);
 
 	/* shrink the update block */
 	pcb_draw_invalidated.X1 = pcb_draw_invalidated.Y1 = COORD_MAX;

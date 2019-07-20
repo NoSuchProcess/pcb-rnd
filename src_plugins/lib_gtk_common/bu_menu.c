@@ -459,7 +459,7 @@ static void ghid_menu_cb(GtkAction *action, const lht_node_t *node)
 
 	/* GUI updates to reflect the result of the above action */
 	pcb_hidlib_adjust_attached_objects();
-	pcb_gui->invalidate_all(menu->hidlib);
+	pcb_gui->invalidate_all(pcb_gui, menu->hidlib);
 }
 
 

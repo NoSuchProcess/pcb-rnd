@@ -123,12 +123,12 @@ static int remote_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static void remote_invalidate_lr(pcb_hidlib_t *hidlib, pcb_coord_t l, pcb_coord_t r, pcb_coord_t t, pcb_coord_t b)
+static void remote_invalidate_lr(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_coord_t l, pcb_coord_t r, pcb_coord_t t, pcb_coord_t b)
 {
 	proto_send_invalidate(l,r, t, b);
 }
 
-static void remote_invalidate_all(pcb_hidlib_t *hidlib)
+static void remote_invalidate_all(pcb_hid_t *hid, pcb_hidlib_t *hidlib)
 {
 	proto_send_invalidate_all(hidlib);
 }

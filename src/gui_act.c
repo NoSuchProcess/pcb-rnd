@@ -115,7 +115,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else
 			conf_set(CFR_DESIGN, "editor/subc_id", -1, "", POL_OVERWRITE);
 
-		pcb_gui->invalidate_all(&PCB->hidlib); /* doesn't change too often, isn't worth anything more complicated */
+		pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib); /* doesn't change too often, isn't worth anything more complicated */
 		pcb_draw();
 		return 0;
 	}
@@ -126,7 +126,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else
 			conf_set(CFR_DESIGN, "editor/term_id", -1, "", POL_OVERWRITE);
 
-		pcb_gui->invalidate_all(&PCB->hidlib); /* doesn't change too often, isn't worth anything more complicated */
+		pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib); /* doesn't change too often, isn't worth anything more complicated */
 		pcb_draw();
 		return 0;
 	}
@@ -1311,7 +1311,7 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 	if ((pcb_gui != NULL) && (pcb_exporter == NULL))
-		pcb_gui->invalidate_all(&PCB->hidlib);
+		pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
 
 	return 0;
 }
@@ -1364,7 +1364,7 @@ static fgw_error_t pcb_act_DupGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 	if ((pcb_gui != NULL) && (pcb_exporter == NULL))
-		pcb_gui->invalidate_all(&PCB->hidlib);
+		pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
 
 	return 0;
 }
@@ -1409,7 +1409,7 @@ static fgw_error_t pcb_act_SelectLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 	PCB->RatDraw = 0;
 	pcb_layervis_change_group_vis(atoi(name)-1, 1, 1);
-	pcb_gui->invalidate_all(&PCB->hidlib);
+	pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
 	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	return 0;
 }
@@ -1490,7 +1490,7 @@ static fgw_error_t pcb_act_ToggleView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else
 			PCB_ACT_FAIL(toggleview);
 		pcb_layer_vis_change_all(PCB, open, vis);
-		pcb_gui->invalidate_all(&PCB->hidlib);
+		pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
 		pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 		return 0;
 	}
@@ -1502,12 +1502,12 @@ static fgw_error_t pcb_act_ToggleView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if ((pcb_strcasecmp(name, "padstacks") == 0) || (pcb_strcasecmp(name, "vias") == 0) || (pcb_strcasecmp(name, "pins") == 0) || (pcb_strcasecmp(name, "pads") == 0)) {
 		PCB->pstk_on = !PCB->pstk_on;
-		pcb_gui->invalidate_all(&PCB->hidlib);
+		pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
 		pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	}
 	else if (pcb_strcasecmp(name, "BackSide") == 0) {
 		PCB->InvisibleObjectsOn = !PCB->InvisibleObjectsOn;
-		pcb_gui->invalidate_all(&PCB->hidlib);
+		pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
 		pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	}
 	else if (strncmp(name, "ui:", 3) == 0) {
@@ -1518,7 +1518,7 @@ static fgw_error_t pcb_act_ToggleView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return 0;
 		}
 		ly->meta.real.vis = !ly->meta.real.vis;
-		pcb_gui->invalidate_all(&PCB->hidlib);
+		pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
 		pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	}
 	else {
@@ -1526,7 +1526,7 @@ static fgw_error_t pcb_act_ToggleView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		int id = strtol(name, &end, 10) - 1;
 		if (*end == '\0') { /* integer layer */
 			pcb_layervis_change_group_vis(id, -1, 0);
-			pcb_gui->invalidate_all(&PCB->hidlib);
+			pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
 			pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 			return 0;
 		}
@@ -1535,7 +1535,7 @@ static fgw_error_t pcb_act_ToggleView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (ml != NULL) {
 				pcb_bool *v = (pcb_bool *)((char *)PCB + ml->vis_offs);
 				*v = !(*v);
-				pcb_gui->invalidate_all(&PCB->hidlib);
+				pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
 				pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 				return 0;
 			}
@@ -1779,7 +1779,7 @@ static const char pcb_acts_Redraw[] = "Redraw()";
 static const char pcb_acth_Redraw[] = "Redraw the entire screen";
 static fgw_error_t pcb_act_Redraw(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_gui->invalidate_all(&PCB->hidlib);
+	pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
 	PCB_ACT_IRES(0);
 	return 0;
 }

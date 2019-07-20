@@ -468,7 +468,7 @@ TODO(": make this undoable")
 			defer_needs_update = 1;
 		else {
 			/* pcb_undo_inc_serial(); */
-			pcb_gui->invalidate_all(&PCB->hidlib);
+			pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
 		}
 	}
 
