@@ -68,7 +68,7 @@ fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	NOGUI();
 
 	if (argc < 2) {
-		pcb_gui->zoom_win(0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y, 1);
+		pcb_gui->zoom_win(pcb_gui, 0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y, 1);
 		return 0;
 	}
 
@@ -80,7 +80,7 @@ fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_CONVARG(3, FGW_COORD, Zoom, x2 = fgw_coord(&argv[3]));
 		PCB_ACT_CONVARG(4, FGW_COORD, Zoom, y2 = fgw_coord(&argv[4]));
 
-		pcb_gui->zoom_win(x1, y1, x2, y2, 1);
+		pcb_gui->zoom_win(pcb_gui, x1, y1, x2, y2, 1);
 		return 0;
 	}
 
@@ -92,7 +92,7 @@ fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (pcb_strcasecmp(vp, "selected") == 0) {
 		pcb_box_t sb;
 		if (pcb_get_selection_bbox(&sb, PCB->Data) > 0)
-			pcb_gui->zoom_win(sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
+			pcb_gui->zoom_win(pcb_gui, sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
 		else
 			pcb_message(PCB_MSG_ERROR, "Can't zoom to selection: nothing selected\n");
 		return 0;
@@ -101,7 +101,7 @@ fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (pcb_strcasecmp(vp, "found") == 0) {
 		pcb_box_t sb;
 		if (pcb_get_found_bbox(&sb, PCB->Data) > 0)
-			pcb_gui->zoom_win(sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
+			pcb_gui->zoom_win(pcb_gui, sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
 		else
 			pcb_message(PCB_MSG_ERROR, "Can't zoom to 'found': nothing found\n");
 		return 0;
@@ -127,14 +127,14 @@ fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_hid_get_coords("Select zoom center", &x, &y, 0);
 	switch (ovp[0]) {
 	case '-':
-		pcb_gui->zoom(x, y, 1 / v, 1);
+		pcb_gui->zoom(pcb_gui, x, y, 1 / v, 1);
 		break;
 	default:
 	case '+':
-		pcb_gui->zoom(x, y, v, 1);
+		pcb_gui->zoom(pcb_gui, x, y, v, 1);
 		break;
 	case '=':
-		pcb_gui->zoom(x, y, v, 0);
+		pcb_gui->zoom(pcb_gui, x, y, v, 0);
 		break;
 	}
 
@@ -155,7 +155,7 @@ fgw_error_t pcb_act_Pan(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_hid_get_coords("Click on a place to pan", &x, &y, 0);
 
 	PCB_ACT_CONVARG(1, FGW_INT, Pan, mode = argv[1].val.nat_int);
-	pcb_gui->pan_mode(x, y, mode);
+	pcb_gui->pan_mode(pcb_gui, x, y, mode);
 
 	PCB_ACT_IRES(0);
 	return 0;
@@ -174,7 +174,7 @@ fgw_error_t pcb_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (argc != 1)
 		PCB_ACT_FAIL(Center);
 
-	pcb_gui->pan(x, y, 0);
+	pcb_gui->pan(pcb_gui, x, y, 0);
 
 	PCB_ACT_IRES(0);
 	return 0;
@@ -202,7 +202,7 @@ fgw_error_t pcb_act_Scroll(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else
 		PCB_ACT_FAIL(Scroll);
 
-	pcb_gui->pan(dx, dy, 1);
+	pcb_gui->pan(pcb_gui, dx, dy, 1);
 
 	PCB_ACT_IRES(0);
 	return 0;
@@ -228,7 +228,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	x = pcb_crosshair.X;
 	y = pcb_crosshair.Y;
 
-	pcb_gui->view_get(&PCB->hidlib, &vb);
+	pcb_gui->view_get(pcb_gui, &PCB->hidlib, &vb);
 	xcent = (double)(vb.X1 + vb.X2)/2.0;
 	ycent = (double)(vb.Y1 + vb.Y2)/2.0;
 	xoffs = xcent - x;
@@ -296,7 +296,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_draw_inhibit_dec();
 
 /*pcb_trace("-jump-> %mm;%mm -> %mm;%mm\n", x, y, (pcb_coord_t)(x + xoffs), (pcb_coord_t)(y + yoffs));*/
-	pcb_gui->pan(pcb_round(x + xoffs), pcb_round(y + yoffs), 0);
+	pcb_gui->pan(pcb_gui, pcb_round(x + xoffs), pcb_round(y + yoffs), 0);
 	pcb_gui->set_crosshair(pcb_gui, x, y, HID_SC_PAN_VIEWPORT);
 
 	pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);

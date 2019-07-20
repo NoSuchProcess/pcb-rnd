@@ -283,23 +283,23 @@ static void batch_create_menu(pcb_hid_t *hid, const char *menu_path, const pcb_m
 {
 }
 
-static void batch_zoom_win(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_bool set_crosshair)
+static void batch_zoom_win(pcb_hid_t *hid, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_bool set_crosshair)
 {
 }
 
-static void batch_zoom(pcb_coord_t center_x, pcb_coord_t center_y, double factor, int relative)
+static void batch_zoom(pcb_hid_t *hid, pcb_coord_t center_x, pcb_coord_t center_y, double factor, int relative)
 {
 }
 
-static void batch_pan(pcb_coord_t x, pcb_coord_t y, int relative)
+static void batch_pan(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int relative)
 {
 }
 
-static void batch_pan_mode(pcb_coord_t x, pcb_coord_t y, pcb_bool mode)
+static void batch_pan_mode(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, pcb_bool mode)
 {
 }
 
-static void batch_view_get(pcb_hidlib_t *hidlib, pcb_box_t *viewbox)
+static void batch_view_get(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_box_t *viewbox)
 {
 	viewbox->X1 = 0;
 	viewbox->Y1 = 0;

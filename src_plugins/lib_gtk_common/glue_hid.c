@@ -442,12 +442,12 @@ static void ghid_dock_leave(pcb_hid_t *hid, pcb_hid_dad_subdialog_t *sub)
 	pcb_gtk_tw_dock_leave(&ghidgui->topwin, sub);
 }
 
-static void ghid_zoom_win(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_bool set_crosshair)
+static void ghid_zoom_win(pcb_hid_t *hid, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_bool set_crosshair)
 {
 	pcb_gtk_zoom_view_win_side(&ghidgui->port.view, x1, y1, x2, y2, set_crosshair);
 }
 
-static void ghid_zoom(pcb_coord_t center_x, pcb_coord_t center_y, double factor, int relative)
+static void ghid_zoom(pcb_hid_t *hid, pcb_coord_t center_x, pcb_coord_t center_y, double factor, int relative)
 {
 	if (relative)
 		pcb_gtk_zoom_view_rel(&ghidgui->port.view, center_x, center_y, factor);
@@ -455,7 +455,7 @@ static void ghid_zoom(pcb_coord_t center_x, pcb_coord_t center_y, double factor,
 		pcb_gtk_zoom_view_abs(&ghidgui->port.view, center_x, center_y, factor);
 }
 
-static void ghid_pan(pcb_coord_t x, pcb_coord_t y, int relative)
+static void ghid_pan(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int relative)
 {
 	if (relative)
 		pcb_gtk_pan_view_rel(&ghidgui->port.view, x, y);
@@ -463,12 +463,12 @@ static void ghid_pan(pcb_coord_t x, pcb_coord_t y, int relative)
 		pcb_gtk_pan_view_abs(&ghidgui->port.view, x, y, ghidgui->port.view.canvas_width/2.0, ghidgui->port.view.canvas_height/2.0);
 }
 
-static void ghid_pan_mode(pcb_coord_t x, pcb_coord_t y, pcb_bool mode)
+static void ghid_pan_mode(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, pcb_bool mode)
 {
 	ghidgui->port.view.panning = mode;
 }
 
-static void ghid_view_get(pcb_hidlib_t *hidlib, pcb_box_t *viewbox)
+static void ghid_view_get(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_box_t *viewbox)
 {
 	viewbox->X1 = ghidgui->port.view.x0;
 	viewbox->Y1 = ghidgui->port.view.y0;

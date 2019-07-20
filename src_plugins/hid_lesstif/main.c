@@ -286,7 +286,7 @@ static pcb_composite_op_t lesstif_drawing_mode = 0;
 
 static void zoom_max();
 static void zoom_to(double factor, pcb_coord_t x, pcb_coord_t y);
-static void zoom_win(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int setch);
+static void zoom_win(pcb_hid_t *hid, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int setch);
 static void zoom_by(double factor, pcb_coord_t x, pcb_coord_t y);
 static void Pan(int mode, pcb_coord_t x, pcb_coord_t y);
 
@@ -869,7 +869,7 @@ static void zoom_to(double new_zoom, pcb_coord_t x, pcb_coord_t y)
 	lesstif_pan_fixup();
 }
 
-static void zoom_win(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int setch)
+static void zoom_win(pcb_hid_t *hid, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int setch)
 {
 	pcb_coord_t w = x2 - x1, h = y2 - y1;
 	double new_zoom = w / view_width;
@@ -2945,12 +2945,12 @@ static void ltf_clip_free(pcb_hid_t *hid, pcb_hid_clipfmt_t format, void *data, 
 	free(data);
 }
 
-static void ltf_zoom_win(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_bool set_crosshair)
+static void ltf_zoom_win(pcb_hid_t *hid, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_bool set_crosshair)
 {
-	zoom_win(x1, y1, x2, y2, 1);
+	zoom_win(hid, x1, y1, x2, y2, 1);
 }
 
-static void ltf_zoom(pcb_coord_t center_x, pcb_coord_t center_y, double factor, int relative)
+static void ltf_zoom(pcb_hid_t *hid, pcb_coord_t center_x, pcb_coord_t center_y, double factor, int relative)
 {
 	if (relative)
 		zoom_by(factor, Vx(center_x), Vy(center_y));
@@ -2958,7 +2958,7 @@ static void ltf_zoom(pcb_coord_t center_x, pcb_coord_t center_y, double factor, 
 		zoom_to(factor, Vx(center_x), Vy(center_y));
 }
 
-static void ltf_pan(pcb_coord_t x, pcb_coord_t y, int relative)
+static void ltf_pan(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int relative)
 {
 	if (relative) {
 		view_left_x += x;
@@ -2974,13 +2974,13 @@ static void ltf_pan(pcb_coord_t x, pcb_coord_t y, int relative)
 	}
 }
 
-static void ltf_pan_mode(pcb_coord_t x, pcb_coord_t y, pcb_bool mode)
+static void ltf_pan_mode(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, pcb_bool mode)
 {
 	Pan(mode, Vx(x), Vy(y));
 }
 
 
-static void ltf_view_get(pcb_hidlib_t *hidlib, pcb_box_t *viewbox)
+static void ltf_view_get(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_box_t *viewbox)
 {
 	viewbox->X1 = view_left_x;
 	viewbox->Y1 = view_top_y;
