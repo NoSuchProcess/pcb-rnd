@@ -85,7 +85,7 @@ struct pcb_gtk_preview_s {
 	pcb_any_obj_t *obj; /* object being displayed in the preview */
 
 	pcb_gtk_t *ctx;
-	gdl_elem_t link; /* in the list of all previews in ->ctx->impl.previews */
+	gdl_elem_t link; /* in the list of all previews in ->ctx->previews */
 	unsigned redraw_with_board:1;
 	unsigned redrawing:1;
 };

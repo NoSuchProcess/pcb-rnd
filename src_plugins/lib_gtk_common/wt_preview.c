@@ -525,7 +525,7 @@ TODO(": maybe expose these through the object API so the caller can set it up?")
 	g_signal_connect(G_OBJECT(prv), "key_release_event", G_CALLBACK(preview_key_release_cb), NULL);
 */
 
-	gdl_insert(&ctx->impl.previews, prv, link);
+	gdl_insert(&ctx->previews, prv, link);
 	return GTK_WIDGET(prv);
 }
 
@@ -553,7 +553,7 @@ void pcb_gtk_preview_invalidate(pcb_gtk_t *ctx, const pcb_box_t *screen)
 {
 	pcb_gtk_preview_t *prv;
 
-	for(prv = gdl_first(&ctx->impl.previews); prv != NULL; prv = prv->link.next) {
+	for(prv = gdl_first(&ctx->previews); prv != NULL; prv = prv->link.next) {
 		if (!prv->redraw_with_board || prv->redrawing) continue;
 		if (screen != NULL) {
 			pcb_box_t pb;
@@ -577,6 +577,6 @@ void pcb_gtk_preview_invalidate(pcb_gtk_t *ctx, const pcb_box_t *screen)
 
 void pcb_gtk_preview_del(pcb_gtk_t *ctx, pcb_gtk_preview_t *prv)
 {
-	if (prv->link.parent == &ctx->impl.previews)
-		gdl_remove(&ctx->impl.previews, prv, link);
+	if (prv->link.parent == &ctx->previews)
+		gdl_remove(&ctx->previews, prv, link);
 }

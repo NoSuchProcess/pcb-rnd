@@ -70,9 +70,6 @@ struct pcb_gtk_impl_s {
 	const gchar *(*get_color_name)(pcb_gtk_color_t *color);
 
 	void (*set_special_colors)(conf_native_t *cfg);
-
-	/* all widget lists */
-	gdl_list_t previews;
 };
 
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
@@ -159,6 +156,8 @@ struct pcb_gtk_s {
 	gulong button_press_handler, button_release_handler, key_press_handler[5], key_release_handler[5];
 
 	pcb_gtk_mouse_t mouse;
+
+	gdl_list_t previews; /* all widget lists */
 };
 
 /* The output viewport */
