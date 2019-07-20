@@ -435,7 +435,7 @@ struct pcb_hid_s {
 	/* Something to alert the user.  */
 	void (*beep)(pcb_hid_t *hid);
 
-	void (*edit_attributes)(const char *owner, pcb_attribute_list_t *attrlist);
+	void (*edit_attributes)(pcb_hid_t *hid, const char *owner, pcb_attribute_list_t *attrlist);
 
 	/* Creates a new menu and/or submenus
 	 * menu_path is a / separated path to the new menu (parents are silently created).

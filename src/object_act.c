@@ -80,7 +80,7 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	switch(id) {
 	case F_Layout:
 		{
-			pcb_gui->edit_attributes("Layout Attributes", &(PCB->Attributes));
+			pcb_gui->edit_attributes(pcb_gui, "Layout Attributes", &(PCB->Attributes));
 			return 0;
 		}
 
@@ -139,7 +139,7 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			else
 				buf = pcb_strdup("Unnamed Subcircuit's Attributes");
 
-			pcb_gui->edit_attributes(buf, &(s->Attributes));
+			pcb_gui->edit_attributes(pcb_gui, buf, &(s->Attributes));
 			free(buf);
 			break;
 		}

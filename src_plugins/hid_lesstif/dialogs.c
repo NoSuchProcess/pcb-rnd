@@ -1118,7 +1118,7 @@ static void attributes_revert_callback(Widget w, void *v, void *cbs)
 	lesstif_attributes_revert();
 }
 
-void lesstif_attributes_dialog(const char *owner, pcb_attribute_list_t * attrs_list)
+void lesstif_attributes_dialog(pcb_hid_t *hid, const char *owner, pcb_attribute_list_t * attrs_list)
 {
 	Widget bform, sw, b_ok, b_cancel, b_revert, b_new;
 	Widget sep;

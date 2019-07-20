@@ -1161,7 +1161,7 @@ int pcb_layer_gui_set_g_ui(pcb_layer_t *first, int is_empty, pcb_xform_t **xform
 void pcb_layer_edit_attrib(pcb_layer_t *layer)
 {
 	char *buf = pcb_strdup_printf("Layer %s Attributes", layer->name);
-	pcb_gui->edit_attributes(buf, &(layer->Attributes));
+	pcb_gui->edit_attributes(pcb_gui, buf, &(layer->Attributes));
 	free(buf);
 }
 
