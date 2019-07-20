@@ -123,14 +123,14 @@ static int remote_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static void remote_invalidate_lr(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_coord_t l, pcb_coord_t r, pcb_coord_t t, pcb_coord_t b)
+static void remote_invalidate_lr(pcb_hid_t *hid, pcb_coord_t l, pcb_coord_t r, pcb_coord_t t, pcb_coord_t b)
 {
 	proto_send_invalidate(l,r, t, b);
 }
 
-static void remote_invalidate_all(pcb_hid_t *hid, pcb_hidlib_t *hidlib)
+static void remote_invalidate_all(pcb_hid_t *hid)
 {
-	proto_send_invalidate_all(hidlib);
+	proto_send_invalidate_all();
 }
 
 static int remote_set_layer_group(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)

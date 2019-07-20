@@ -188,7 +188,7 @@ static void timed_update_preview_cb(pcb_hidval_t user_data)
 		pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
 		if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0)
 			library_update_preview(ctx, pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc), NULL);
-		pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
+		pcb_gui->invalidate_all(pcb_gui);
 	}
 	ctx->timer_active = 0;
 	pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wpend, 1);
@@ -300,7 +300,7 @@ static void library_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 					pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
 					if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0)
 						library_update_preview(ctx, pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc), l);
-					pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
+					pcb_gui->invalidate_all(pcb_gui);
 				}
 			}
 		}

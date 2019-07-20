@@ -180,7 +180,7 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 	else if (ctx->role == CFR_DESIGN)
 		pcb_board_set_changed_flag(1);
 
-	pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
+	pcb_gui->invalidate_all(pcb_gui);
 }
 
 static void pref_conf_editval_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *trigger_attr)

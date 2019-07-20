@@ -439,7 +439,7 @@ static fgw_error_t pcb_act_Puller(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	pcb_move_obj(PCB_OBJ_LINE_POINT, CURRENT, the_line, &(the_line->Point2), x - the_line->Point2.X, y - the_line->Point2.Y);
 
-	pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
+	pcb_gui->invalidate_all(pcb_gui);
 	pcb_undo_inc_serial();
 
 	PCB_ACT_IRES(0);

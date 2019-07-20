@@ -132,7 +132,7 @@ static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, Gd
 	ghdi_gui_inited(0, 1);
 
 	pcb_gtk_tw_ranges_scale(ghidgui);
-	pcb_gui->invalidate_all(pcb_gui, ghidgui->hidlib);
+	pcb_gui->invalidate_all(pcb_gui);
 	return 0;
 }
 
@@ -420,7 +420,7 @@ static double ghid_benchmark(pcb_hid_t *hid)
 	gdk_display_sync(display);
 	time(&start);
 	do {
-		pcb_gui->invalidate_all(pcb_gui, ghidgui->hidlib);
+		pcb_gui->invalidate_all(pcb_gui);
 		gdk_window_process_updates(window, FALSE);
 		time(&end);
 		i++;

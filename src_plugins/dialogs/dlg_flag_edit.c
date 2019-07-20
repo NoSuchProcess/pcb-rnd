@@ -75,7 +75,7 @@ static void fe_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 	if (clr != 0)
 		pcb_flag_change(ctx->pcb, PCB_CHGFLG_CLEAR, clr, ctx->obj_type, ctx->ptr1, ctx->obj, ctx->obj);
 
-	pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
+	pcb_gui->invalidate_all(pcb_gui);
 }
 
 

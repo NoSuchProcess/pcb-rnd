@@ -50,7 +50,7 @@ static void lead_cb(pcb_hidval_t user_data)
 	step = sin(p) * LEAD_ANIM_AMP - LEAD_ANIM_AMP;
 	p += LEAD_ANIM_SPEED;
 
-	pcb_gui->invalidate_all(pcb_gui, lead_hidlib);
+	pcb_gui->invalidate_all(pcb_gui);
 
 	if (lead)
 		lead_timer = pcb_gui->add_timer(pcb_gui, lead_cb, LEAD_PERIOD_MS, user_data);
@@ -63,7 +63,7 @@ static void pcb_lead_user_to_location(pcb_hidlib_t *hidlib, pcb_coord_t x, pcb_c
 	if (lead) {
 		pcb_gui->stop_timer(pcb_gui, lead_timer);
 		lead = enabled;
-		pcb_gui->invalidate_all(pcb_gui, lead_hidlib);
+		pcb_gui->invalidate_all(pcb_gui);
 	}
 
 	leadx = x;

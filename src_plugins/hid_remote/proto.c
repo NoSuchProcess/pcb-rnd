@@ -95,7 +95,7 @@ void proto_send_invalidate(int l, int r, int t, int b)
 	send_end(&pctx);
 }
 
-void proto_send_invalidate_all(pcb_hidlib_t *hidlib)
+void proto_send_invalidate_all(void)
 {
 	send_begin(&pctx, "inval");
 	send_open(&pctx, 0, 1);

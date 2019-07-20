@@ -228,11 +228,11 @@ static void lb_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 	lb_dialog2data(hid_ctx, ctx);
 	if (ctx->subc != NULL) {
 		if (pcb_subc_rebind(ctx->pcb, ctx->subc) > 0)
-			pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
+			pcb_gui->invalidate_all(pcb_gui);
 	}
 	else { /* buffer */
 		pcb_data_binding_update(ctx->pcb, ctx->data);
-		pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
+		pcb_gui->invalidate_all(pcb_gui);
 	}
 	lb_data2dialog(hid_ctx, ctx); /* update disables */
 }

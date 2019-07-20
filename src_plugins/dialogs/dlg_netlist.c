@@ -227,7 +227,7 @@ static void netlist_button_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		pcb_message(PCB_MSG_ERROR, "Internal error: netlist_button_cb() called from an invalid widget\n");
 		return;
 	}
-	pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
+	pcb_gui->invalidate_all(pcb_gui);
 }
 
 static void netlist_claim_obj_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)

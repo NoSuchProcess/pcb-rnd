@@ -1398,7 +1398,7 @@ static void pcb_text_font_chg(pcb_hidlib_t *hidlib, void *user_data, int argc, p
 		return;
 
 	if (pcb_text_font_chg_data(PCB->Data, argv[1].d.i))
-		pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib); /* can't just redraw the text, as the old text may have been bigger, before the change! */
+		pcb_gui->invalidate_all(pcb_gui); /* can't just redraw the text, as the old text may have been bigger, before the change! */
 
 	pcb_trace("font change %d\n", argv[1].d.i);
 }

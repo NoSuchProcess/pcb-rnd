@@ -36,28 +36,28 @@ static int log_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 	return delegatee_->parse_arguments(delegatee_, argc, argv);
 }
 
-static void log_invalidate_lr(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
+static void log_invalidate_lr(pcb_hid_t *hid, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
 {
 	pcb_fprintf(out_, "invalidate_lr(%mm, %mm, %mm, %mm)\n", left, right, top, bottom);
-	delegatee_->invalidate_lr(hid, hidlib, left, right, top, bottom);
+	delegatee_->invalidate_lr(hid, left, right, top, bottom);
 }
 
-static void log_invalidate_all(pcb_hid_t *hid, pcb_hidlib_t *hidlib)
+static void log_invalidate_all(pcb_hid_t *hid)
 {
 	pcb_fprintf(out_, "invalidate_all()\n");
-	delegatee_->invalidate_all(hid, hidlib);
+	delegatee_->invalidate_all(hid);
 }
 
-static void log_notify_crosshair_change(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_bool changes_complete)
+static void log_notify_crosshair_change(pcb_hid_t *hid, pcb_bool changes_complete)
 {
 	pcb_fprintf(out_, "pcb_notify_crosshair_change(%s)\n", changes_complete ? "true" : "false");
-	delegatee_->notify_crosshair_change(hid, hidlib, changes_complete);
+	delegatee_->notify_crosshair_change(hid, changes_complete);
 }
 
-static void log_notify_mark_change(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_bool changes_complete)
+static void log_notify_mark_change(pcb_hid_t *hid, pcb_bool changes_complete)
 {
 	pcb_fprintf(out_, "pcb_notify_mark_change(%s)\n", changes_complete ? "true" : "false");
-	delegatee_->notify_mark_change(hid, hidlib, changes_complete);
+	delegatee_->notify_mark_change(hid, changes_complete);
 }
 
 static int log_set_layer_group(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)

@@ -402,7 +402,7 @@ static void pstklib_proto_switch(void *hid_ctx, void *caller_data, pcb_hid_attri
 			pcb_pstk_change_instance(ps, &to_pid, NULL, NULL, NULL, NULL);
 	}
 
-	pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
+	pcb_gui->invalidate_all(pcb_gui);
 }
 
 
@@ -445,7 +445,7 @@ static void pstklib_proto_select(void *hid_ctx, void *caller_data, pcb_hid_attri
 
 	if (changed) {
 		pcb_board_set_changed_flag(pcb_true);
-		pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
+		pcb_gui->invalidate_all(pcb_gui);
 	}
 }
 

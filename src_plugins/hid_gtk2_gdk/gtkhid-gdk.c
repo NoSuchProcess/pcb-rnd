@@ -1117,8 +1117,9 @@ static void redraw_region(pcb_hidlib_t *hidlib, GdkRectangle *rect)
 }
 
 static int preview_lock = 0;
-static void ghid_gdk_invalidate_lr(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
+static void ghid_gdk_invalidate_lr(pcb_hid_t *hid, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
 {
+	pcb_hidlib_t *hidlib = ghidgui->hidlib;
 	int dleft, dright, dtop, dbottom;
 	int minx, maxx, miny, maxy;
 	GdkRectangle rect;
@@ -1149,8 +1150,9 @@ static void ghid_gdk_invalidate_lr(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_coo
 }
 
 
-static void ghid_gdk_invalidate_all(pcb_hid_t *hid, pcb_hidlib_t *hidlib)
+static void ghid_gdk_invalidate_all(pcb_hid_t *hid)
 {
+	pcb_hidlib_t *hidlib = ghidgui->hidlib;
 	if (ghidgui && ghidgui->topwin.menu.menu_bar) {
 		redraw_region(hidlib, NULL);
 		if (!preview_lock) {
@@ -1162,8 +1164,9 @@ static void ghid_gdk_invalidate_all(pcb_hid_t *hid, pcb_hidlib_t *hidlib)
 	}
 }
 
-static void ghid_gdk_notify_crosshair_change(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_bool changes_complete)
+static void ghid_gdk_notify_crosshair_change(pcb_hid_t *hid, pcb_bool changes_complete)
 {
+	pcb_hidlib_t *hidlib = ghidgui->hidlib;
 	render_priv_t *priv = ghidgui->port.render_priv;
 
 	/* We sometimes get called before the GUI is up */
@@ -1180,7 +1183,7 @@ static void ghid_gdk_notify_crosshair_change(pcb_hid_t *hid, pcb_hidlib_t *hidli
 		   is not expected to occur, but we will try to handle it gracefully.
 		   As we know the crosshair will have been shown already, we must
 		   repaint the entire view to be sure not to leave an artaefact. */
-		ghid_gdk_invalidate_all(pcb_gui, hidlib);
+		ghid_gdk_invalidate_all(pcb_gui);
 		return;
 	}
 
@@ -1196,8 +1199,9 @@ static void ghid_gdk_notify_crosshair_change(pcb_hid_t *hid, pcb_hidlib_t *hidli
 	}
 }
 
-static void ghid_gdk_notify_mark_change(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_bool changes_complete)
+static void ghid_gdk_notify_mark_change(pcb_hid_t *hid, pcb_bool changes_complete)
 {
+	pcb_hidlib_t *hidlib = ghidgui->hidlib;
 	render_priv_t *priv = ghidgui->port.render_priv;
 
 	/* We sometimes get called before the GUI is up */
@@ -1213,7 +1217,7 @@ static void ghid_gdk_notify_mark_change(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pc
 		   is not expected to occur, but we will try to handle it gracefully.
 		   As we know the mark will have been shown already, we must
 		   repaint the entire view to be sure not to leave an artaefact. */
-		ghid_gdk_invalidate_all(pcb_gui, hidlib);
+		ghid_gdk_invalidate_all(pcb_gui);
 		return;
 	}
 

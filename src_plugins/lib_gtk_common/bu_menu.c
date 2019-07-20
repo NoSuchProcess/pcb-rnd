@@ -448,18 +448,14 @@ void menu_toggle_update_cb(GtkAction *act, const char *tflag, const char *aflag)
    executed. */
 static void ghid_menu_cb(GtkAction *action, const lht_node_t *node)
 {
-	pcb_gtk_menu_ctx_t *menu;
-
 	if (action == NULL || node == NULL)
 		return;
-
-	menu = node->doc->root->user_data;
 
 	pcb_hid_cfg_action(node);
 
 	/* GUI updates to reflect the result of the above action */
 	pcb_hidlib_adjust_attached_objects();
-	pcb_gui->invalidate_all(pcb_gui, menu->hidlib);
+	pcb_gui->invalidate_all(pcb_gui);
 }
 
 

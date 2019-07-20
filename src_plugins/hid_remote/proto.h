@@ -30,7 +30,7 @@ void remote_proto_send_unit();
 void remote_proto_send_brddim(pcb_coord_t w, pcb_coord_t h);
 int remote_proto_send_ready();
 void proto_send_invalidate(int l, int r, int t, int b);
-void proto_send_invalidate_all(pcb_hidlib_t *hidlib);
+void proto_send_invalidate_all(void);
 
 int pcb_remote_new_layer_group(const char *name, pcb_layergrp_id_t idx, unsigned int flags);
 int pcb_remote_new_layer(const char *name, pcb_layer_id_t idx, unsigned int group);

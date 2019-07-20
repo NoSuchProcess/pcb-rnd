@@ -258,7 +258,7 @@ static fgw_error_t pcb_act_teardrops(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		check_pstk((pcb_pstk_t *)b);
 	pcb_r_end(&it);
 
-	pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
+	pcb_gui->invalidate_all(pcb_gui);
 
 	if (new_arcs)
 		pcb_undo_inc_serial();

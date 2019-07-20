@@ -532,7 +532,7 @@ void pcbhl_draw_marks(pcb_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
 void pcb_notify_crosshair_change(pcb_bool changes_complete)
 {
 	if (pcb_gui->notify_crosshair_change)
-		pcb_gui->notify_crosshair_change(pcb_gui, &PCB->hidlib, changes_complete);
+		pcb_gui->notify_crosshair_change(pcb_gui, changes_complete);
 	pcb_event(&PCB->hidlib, PCB_EVENT_CROSSHAIR_MOVE, "i", (int)changes_complete, NULL);
 }
 
@@ -554,7 +554,7 @@ void pcb_notify_crosshair_change(pcb_bool changes_complete)
 void pcb_notify_mark_change(pcb_bool changes_complete)
 {
 	if (pcb_gui->notify_mark_change)
-		pcb_gui->notify_mark_change(pcb_gui, &PCB->hidlib, changes_complete);
+		pcb_gui->notify_mark_change(pcb_gui, changes_complete);
 }
 
 
