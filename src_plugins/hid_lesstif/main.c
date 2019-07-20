@@ -179,7 +179,7 @@ static int ltf_dock_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, pcb_even
 	return -1;
 }
 
-static int ltf_dock_enter(pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id)
+static int ltf_dock_enter(pcb_hid_t *hid, pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id)
 {
 	docked_t *docked;
 	Widget hvbox;

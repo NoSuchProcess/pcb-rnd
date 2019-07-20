@@ -352,13 +352,13 @@ int pcb_hid_dock_enter(pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const
 {
 	if ((pcb_gui == NULL) || (pcb_gui->dock_enter == NULL))
 		return -1;
-	return pcb_gui->dock_enter(sub, where, id);
+	return pcb_gui->dock_enter(pcb_gui, sub, where, id);
 }
 
 void pcb_hid_dock_leave(pcb_hid_dad_subdialog_t *sub)
 {
 	if ((pcb_gui == NULL) || (pcb_gui->dock_leave == NULL))
 		return;
-	pcb_gui->dock_leave(sub);
+	pcb_gui->dock_leave(pcb_gui, sub);
 }
 

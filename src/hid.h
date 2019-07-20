@@ -429,8 +429,8 @@ struct pcb_hid_s {
 	/* top window docking: enter a new docked part by registering a
 	   new subdialog or leave (remove a docked part) from a subdialog. Return 0
 	   on success. */
-	int (*dock_enter)(pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id);
-	void (*dock_leave)(pcb_hid_dad_subdialog_t *sub);
+	int (*dock_enter)(pcb_hid_t *hid, pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id);
+	void (*dock_leave)(pcb_hid_t *hid, pcb_hid_dad_subdialog_t *sub);
 
 	/* Something to alert the user.  */
 	void (*beep)(void);
