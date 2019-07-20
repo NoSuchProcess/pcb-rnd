@@ -178,7 +178,7 @@ fgw_error_t pcb_act_PrintUsage(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		for (i = 0; hl[i]; i++) {
 			if ((hl[i]->usage != NULL) && (strcmp(topic, hl[i]->name) == 0)) {
 				PCB_ACT_MAY_CONVARG(2, FGW_STR, PrintUsage, subt = argv[2].val.str);
-				PCB_ACT_IRES(hl[i]->usage(subt));
+				PCB_ACT_IRES(hl[i]->usage(hl[i], subt));
 				return 0;
 			}
 		}

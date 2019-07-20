@@ -1338,7 +1338,7 @@ static void gerber_calibrate(pcb_hid_t *hid, double xval, double yval)
 	CRASH("gerber_calibrate");
 }
 
-static int gerber_usage(const char *topic)
+static int gerber_usage(pcb_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\ngerber exporter command line arguments:\n\n");
 	pcb_hid_usage(gerber_options, sizeof(gerber_options) / sizeof(gerber_options[0]));

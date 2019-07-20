@@ -280,7 +280,7 @@ static void bom_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val
 	PrintBOM();
 }
 
-static int bom_usage(const char *topic)
+static int bom_usage(pcb_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nbom exporter command line arguments:\n\n");
 	pcb_hid_usage(bom_options, sizeof(bom_options) / sizeof(bom_options[0]));

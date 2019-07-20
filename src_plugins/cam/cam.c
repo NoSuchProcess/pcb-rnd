@@ -213,7 +213,7 @@ static pcb_hid_attribute_t *export_cam_get_export_options(pcb_hid_t *hid, int *n
 	return 0;
 }
 
-static int export_cam_usage(const char *topic)
+static int export_cam_usage(pcb_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nThe cam exporter shorthand:\n\n");
 	fprintf(stderr, "\nUsage: pcb-rnd -x cam jobname [cam-opts] [pcb-rnd-options] filename");

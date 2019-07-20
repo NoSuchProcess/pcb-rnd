@@ -816,7 +816,7 @@ static void openems_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, 
 {
 }
 
-static int openems_usage(const char *topic)
+static int openems_usage(pcb_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nopenems exporter command line arguments:\n\n");
 	pcb_hid_usage(openems_attribute_list, sizeof(openems_attribute_list) / sizeof(openems_attribute_list[0]));

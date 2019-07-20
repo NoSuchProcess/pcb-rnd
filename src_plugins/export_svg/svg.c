@@ -857,7 +857,7 @@ static void svg_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int 
 {
 }
 
-static int svg_usage(const char *topic)
+static int svg_usage(pcb_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nsvg exporter command line arguments:\n\n");
 	pcb_hid_usage(svg_attribute_list, sizeof(svg_attribute_list) / sizeof(svg_attribute_list[0]));

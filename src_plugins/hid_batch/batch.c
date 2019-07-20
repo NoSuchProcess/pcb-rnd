@@ -41,7 +41,7 @@ static pcb_hid_attribute_t *batch_get_export_options(pcb_hid_t *hid, int *n_ret)
 	return NULL;
 }
 
-static int batch_usage(const char *topic)
+static int batch_usage(pcb_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nbatch GUI command line arguments: none\n\n");
 	fprintf(stderr, "\nInvocation: pcb-rnd --gui batch [options]\n");

@@ -670,7 +670,7 @@ static void eps_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int 
 {
 }
 
-static int eps_usage(const char *topic)
+static int eps_usage(pcb_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\neps exporter command line arguments:\n\n");
 	pcb_hid_usage(eps_attribute_list, sizeof(eps_attribute_list) / sizeof(eps_attribute_list[0]));

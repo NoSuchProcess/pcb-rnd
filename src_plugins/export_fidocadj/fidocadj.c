@@ -349,7 +349,7 @@ static int fidocadj_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static int fidocadj_usage(const char *topic)
+static int fidocadj_usage(pcb_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nfidocadj exporter command line arguments:\n\n");
 	pcb_hid_usage(fidocadj_attribute_list, sizeof(fidocadj_attribute_list) / sizeof(fidocadj_attribute_list[0]));

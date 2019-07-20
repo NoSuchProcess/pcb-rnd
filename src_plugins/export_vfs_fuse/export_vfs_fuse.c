@@ -275,7 +275,7 @@ static void export_vfs_fuse_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_
 		fprintf(stderr, "fuse_main() returned error.\n");
 }
 
-static int export_vfs_fuse_usage(const char *topic)
+static int export_vfs_fuse_usage(pcb_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nexport_vfs_fuse exporter command line arguments are plain fuse aguments.\n\n");
 	fprintf(stderr, "\nUsage: pcb-rnd [pcb-rnd-options] [-o fuse-options] foo.pcb mountpoint\n\n");

@@ -107,7 +107,7 @@ static void lpr_calibrate(pcb_hid_t *hid, double xval, double yval)
 
 static pcb_hid_t lpr_hid;
 
-static int lpr_usage(const char *topic)
+static int lpr_usage(pcb_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nlpr exporter command line arguments:\n\n");
 	pcb_hid_usage(base_lpr_options, sizeof(base_lpr_options) / sizeof(base_lpr_options[0]));

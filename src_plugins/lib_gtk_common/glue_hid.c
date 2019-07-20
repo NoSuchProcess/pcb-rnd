@@ -349,7 +349,7 @@ pcb_hid_cfg_t *ghid_get_menu_cfg(pcb_hid_t *hid)
 	return ghidgui->topwin.ghid_cfg;
 }
 
-static int ghid_usage(const char *topic)
+static int ghid_usage(pcb_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nGTK GUI command line arguments:\n\n");
 	conf_usage("plugins/hid_gtk", pcb_hid_usage_option);

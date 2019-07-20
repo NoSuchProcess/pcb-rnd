@@ -511,7 +511,7 @@ static void dxf_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int 
 {
 }
 
-static int dxf_usage(const char *topic)
+static int dxf_usage(pcb_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\ndxf exporter command line arguments:\n\n");
 	pcb_hid_usage(dxf_attribute_list, sizeof(dxf_attribute_list) / sizeof(dxf_attribute_list[0]));

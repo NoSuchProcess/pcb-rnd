@@ -445,7 +445,7 @@ static void excellon_calibrate(pcb_hid_t *hid, double xval, double yval)
 	pcb_message(PCB_MSG_ERROR, "Excellon internal error: can not calibrate()\n");
 }
 
-static int excellon_usage(const char *topic)
+static int excellon_usage(pcb_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nexcellon exporter command line arguments:\n\n");
 	pcb_hid_usage(excellon_options, sizeof(excellon_options) / sizeof(excellon_options[0]));

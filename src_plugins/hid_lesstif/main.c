@@ -2842,7 +2842,7 @@ static void lesstif_beep(pcb_hid_t *hid)
 	fflush(stdout);
 }
 
-static int lesstif_usage(const char *topic)
+static int lesstif_usage(pcb_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nLesstif GUI command line arguments:\n\n");
 	pcb_hid_usage(lesstif_attribute_list, sizeof(lesstif_attribute_list) / sizeof(lesstif_attribute_list[0]));

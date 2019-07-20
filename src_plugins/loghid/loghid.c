@@ -89,7 +89,7 @@ static int loghid_parse_arguments_exp(pcb_hid_t *hid, int *argc, char ***argv)
 }
 
 
-static int loghid_usage(const char *topic)
+static int loghid_usage(pcb_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nloghid command line arguments:\n\n");
 	pcb_hid_usage(loghid_attribute_list, NUM_OPTIONS);

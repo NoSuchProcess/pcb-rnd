@@ -1455,7 +1455,7 @@ void ps_ps_init(pcb_hid_t * hid)
 	ps_inited = 1;
 }
 
-static int ps_usage(const char *topic)
+static int ps_usage(pcb_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nps exporter command line arguments:\n\n");
 	pcb_hid_usage(ps_attribute_list, sizeof(ps_attribute_list) / sizeof(ps_attribute_list[0]));

@@ -77,7 +77,7 @@ TODO(": set some FILE *fp to stdout")
 	Printexport_test();
 }
 
-static int export_test_usage(const char *topic)
+static int export_test_usage(pcb_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nexport_test exporter command line arguments:\n\n");
 	pcb_hid_usage(export_test_options, sizeof(export_test_options) / sizeof(export_test_options[0]));

@@ -1904,7 +1904,7 @@ static void png_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int 
 {
 }
 
-static int png_usage(const char *topic)
+static int png_usage(pcb_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\npng exporter command line arguments:\n\n");
 	pcb_hid_usage(png_attribute_list, sizeof(png_attribute_list) / sizeof(png_attribute_list[0]));

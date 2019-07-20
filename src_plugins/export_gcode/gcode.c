@@ -874,7 +874,7 @@ static void gcode_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, in
 {
 }
 
-static int gcode_usage(const char *topic)
+static int gcode_usage(pcb_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\ngcode exporter command line arguments:\n\n");
 	pcb_hid_usage(gcode_attribute_list, sizeof(gcode_attribute_list) / sizeof(gcode_attribute_list[0]));

@@ -126,7 +126,7 @@ static void export_vfs_mc_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hi
 	}
 }
 
-static int export_vfs_mc_usage(const char *topic)
+static int export_vfs_mc_usage(pcb_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nexport_vfs_mc exporter command line arguments:\n\n");
 	pcb_hid_usage(export_vfs_mc_options, sizeof(export_vfs_mc_options) / sizeof(export_vfs_mc_options[0]));

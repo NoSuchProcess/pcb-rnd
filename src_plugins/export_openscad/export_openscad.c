@@ -583,7 +583,7 @@ static void openscad_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y,
 {
 }
 
-static int openscad_usage(const char *topic)
+static int openscad_usage(pcb_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nopenscad exporter command line arguments:\n\n");
 	pcb_hid_usage(openscad_attribute_list, sizeof(openscad_attribute_list) / sizeof(openscad_attribute_list[0]));

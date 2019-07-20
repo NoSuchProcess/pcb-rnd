@@ -825,7 +825,7 @@ static void xy_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val_
 	PrintXY(&templ, options[HA_format].str_value);
 }
 
-static int xy_usage(const char *topic)
+static int xy_usage(pcb_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nXY exporter command line arguments:\n\n");
 	pcb_hid_usage(xy_options, sizeof(xy_options) / sizeof(xy_options[0]));

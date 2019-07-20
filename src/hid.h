@@ -471,7 +471,7 @@ struct pcb_hid_s {
 	     string  print summary for the topic in string
 	   Return 0 on success.
 	*/
-	int (*usage)(const char *subtopic);
+	int (*usage)(pcb_hid_t *hid, const char *subtopic);
 
 
 	/* Optional: change cursor to indicate if an object is grabbed (or not) */

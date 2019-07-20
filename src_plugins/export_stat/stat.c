@@ -372,7 +372,7 @@ static int stat_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static int stat_usage(const char *topic)
+static int stat_usage(pcb_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nstat exporter command line arguments:\n\n");
 	pcb_hid_usage(stat_attribute_list, sizeof(stat_attribute_list) / sizeof(stat_attribute_list[0]));
