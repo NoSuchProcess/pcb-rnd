@@ -17,7 +17,7 @@ pcb_hid_t gtk2_gl_hid;
 
 int gtk2_gl_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
-	ghid_glue_common_uninit(ghid_cookie);
+	ghid_glue_common_uninit(ghid_gl_cookie);
 }
 
 int pplg_check_ver_hid_gtk2_gl(int ver_needed) { return 0; }
