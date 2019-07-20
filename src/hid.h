@@ -220,6 +220,10 @@ struct pcb_hid_s {
 	   (e.g. draw progress bar while loading a command line file) */
 	unsigned allow_dad_before_init:1;
 
+	/* called by core when the global hidlib context changes (e.g. board changed)
+	   The HID should store the hidlib pointer for knowing drawing area dimensions */
+	void (*set_hidlib)(pcb_hid_t *hid, pcb_hidlib_t *hidlib);
+
 	/* Returns a set of resources describing options the export or print
 	   HID supports.  In GUI mode, the print/export dialogs use this to
 	   set up the selectable options.  In command line mode, these are
@@ -536,9 +540,6 @@ struct pcb_hid_s {
 	   Return 0 on success. */
 	int (*open_popup)(pcb_hid_t *hid, const char *menupath);
 
-	/* optional: called by core when the global hidlib context changes
-	   (e.g. board changed) */
-	void (*set_hidlib)(pcb_hid_t *hid, pcb_hidlib_t *hidlib);
 
 	/* Change the mouse cursor to a named cursor e.g. after the tool has changed.
 	   The list of cursors names available may depend on the HID. */
