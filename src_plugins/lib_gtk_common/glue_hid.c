@@ -300,7 +300,7 @@ static void *ghid_attr_dlg_new_(pcb_hid_t *hid, const char *id, pcb_hid_attribut
 	return ghid_attr_dlg_new(ghidgui, id, attrs, n_attrs, results, title, caller_data, modal, button_cb, defx, defy, minx, miny);
 }
 
-static void ghid_beep()
+static void ghid_beep(pcb_hid_t *hid)
 {
 	gdk_beep();
 }

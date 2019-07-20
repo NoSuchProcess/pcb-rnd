@@ -370,7 +370,7 @@ static void nogui_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, cons
 	CRASH("attr_dlg_dlg_property");
 }
 
-static void nogui_beep(void)
+static void nogui_beep(pcb_hid_t *hid)
 {
 	putchar(7);
 	fflush(stdout);

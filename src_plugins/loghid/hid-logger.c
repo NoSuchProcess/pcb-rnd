@@ -190,10 +190,10 @@ static void log_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 	delegatee_->fill_rect(gc, x1, y1, x2, y2);
 }
 
-static void log_beep()
+static void log_beep(pcb_hid_t *hid)
 {
 	pcb_fprintf(out_, "beep();   BEEEP   .... BEEEEEEEP\n");
-	delegatee_->beep();
+	delegatee_->beep(hid);
 }
 
 void create_log_hid(FILE *log_out, pcb_hid_t *loghid, pcb_hid_t *delegatee)

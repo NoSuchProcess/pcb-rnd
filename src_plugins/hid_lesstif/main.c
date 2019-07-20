@@ -2836,7 +2836,7 @@ extern void lesstif_attr_dlg_set_help(void *hid_ctx, int idx, const char *val);
 
 #include "wt_preview.c"
 
-static void lesstif_beep(void)
+static void lesstif_beep(pcb_hid_t *hid)
 {
 	putchar(7);
 	fflush(stdout);

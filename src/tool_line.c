@@ -106,7 +106,7 @@ static void notify_line(void)
 	case PCB_CH_STATE_FIRST:						/* first point */
 TODO("subc: this should work on heavy terminals too!")
 		if (PCB->RatDraw && pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &ptr1, &ptr1, &ptr1) == PCB_OBJ_VOID) {
-			pcb_gui->beep();
+			pcb_gui->beep(pcb_gui);
 			break;
 		}
 		if (conf_core.editor.auto_drc) {

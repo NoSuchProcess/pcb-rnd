@@ -433,7 +433,7 @@ struct pcb_hid_s {
 	void (*dock_leave)(pcb_hid_t *hid, pcb_hid_dad_subdialog_t *sub);
 
 	/* Something to alert the user.  */
-	void (*beep)(void);
+	void (*beep)(pcb_hid_t *hid);
 
 	void (*edit_attributes)(const char *owner, pcb_attribute_list_t *attrlist);
 

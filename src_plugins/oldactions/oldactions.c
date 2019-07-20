@@ -127,7 +127,7 @@ static const char pcb_acth_Bell[] = "Attempt to produce audible notification (e.
 
 static fgw_error_t pcb_act_Bell(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_gui->beep();
+	pcb_gui->beep(pcb_gui);
 	PCB_ACT_IRES(0);
 	return 0;
 }
