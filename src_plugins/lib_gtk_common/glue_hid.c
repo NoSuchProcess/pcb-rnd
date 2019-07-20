@@ -466,7 +466,7 @@ static void ghid_pan_mode(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, pcb_bool
 	ghidgui->port.view.panning = mode;
 }
 
-static void ghid_view_get(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_box_t *viewbox)
+static void ghid_view_get(pcb_hid_t *hid, pcb_box_t *viewbox)
 {
 	viewbox->X1 = ghidgui->port.view.x0;
 	viewbox->Y1 = ghidgui->port.view.y0;

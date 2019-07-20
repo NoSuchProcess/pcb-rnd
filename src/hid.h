@@ -530,7 +530,7 @@ struct pcb_hid_s {
 	void (*pan_mode)(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, pcb_bool mode);
 
 	/* Load viewbox with the extents of visible pixels translated to board coords */
-	void (*view_get)(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_box_t *viewbox);
+	void (*view_get)(pcb_hid_t *hid, pcb_box_t *viewbox);
 
 	/*** misc GUI ***/
 	/* Open the command line */

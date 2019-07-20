@@ -2980,7 +2980,7 @@ static void ltf_pan_mode(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, pcb_bool 
 }
 
 
-static void ltf_view_get(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_box_t *viewbox)
+static void ltf_view_get(pcb_hid_t *hid, pcb_box_t *viewbox)
 {
 	viewbox->X1 = view_left_x;
 	viewbox->Y1 = view_top_y;
