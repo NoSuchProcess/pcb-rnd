@@ -89,7 +89,7 @@ TODO("layer: remove this temporary hack for virtual layers")
 
 /* ----------------------------------------------------------------------------- */
 static int remote_stay;
-static void remote_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
+static void remote_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 {
 	pcb_hid_expose_ctx_t ctx;
 

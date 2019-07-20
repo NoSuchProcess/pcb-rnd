@@ -356,7 +356,7 @@ void gcode_start_png_export()
 	pcbhl_expose_main(&gcode_hid, &ctx, NULL);
 }
 
-static void gcode_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
+static void gcode_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 {
 	int save_ons[PCB_MAX_LAYER];
 	int i, idx;

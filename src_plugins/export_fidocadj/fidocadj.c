@@ -163,7 +163,7 @@ static void write_custom_subc(FILE *f, pcb_subc_t *sc)
 	free(msg);
 }
 
-static void fidocadj_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
+static void fidocadj_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 {
 	FILE *f;
 	const char *filename, *libfile;

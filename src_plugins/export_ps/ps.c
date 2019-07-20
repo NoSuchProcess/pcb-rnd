@@ -607,7 +607,7 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	conf_update(NULL, -1); /* restore forced sets */
 }
 
-static void ps_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
+static void ps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 {
 	FILE *fh;
 	int save_ons[PCB_MAX_LAYER];

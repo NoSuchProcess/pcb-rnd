@@ -235,7 +235,7 @@ struct pcb_hid_s {
 	   the choices made from the options returned from
 	   get_export_options.  Call with options_ == NULL to start the
 	   primary GUI (create a main window, print, export, etc)  */
-	void (*do_export)(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options);
+	void (*do_export)(pcb_hid_t *hid, pcb_hid_attr_val_t *options);
 
 	/* uninit a GUI hid */
 	void (*uninit)(pcb_hid_t *hid);

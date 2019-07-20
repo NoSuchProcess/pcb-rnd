@@ -137,12 +137,10 @@ static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, Gd
 }
 
 
-static void gtkhid_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
+static void gtkhid_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 {
 	pcb_gtk_t *ctx = hid->hid_data;
 
-
-	ctx->hidlib = hidlib;
 	ctx->hid_active = 1;
 
 	pcb_hid_cfg_keys_init(&ghid_keymap);

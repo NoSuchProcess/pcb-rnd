@@ -66,7 +66,7 @@ static pcb_hid_attribute_t *lpr_get_export_options(pcb_hid_t *hid, int *n)
 	return lpr_options;
 }
 
-static void lpr_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options)
+static void lpr_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 {
 	FILE *f;
 	int i;
