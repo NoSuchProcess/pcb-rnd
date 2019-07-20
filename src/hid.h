@@ -492,15 +492,15 @@ struct pcb_hid_s {
 
 	/*** clipboard handling for GUI HIDs ***/
 	/* Place format/data/len on the clipboard; return 0 on success */
-	int (*clip_set)(pcb_hid_clipfmt_t format, const void *data, size_t len);
+	int (*clip_set)(pcb_hid_t *hid, pcb_hid_clipfmt_t format, const void *data, size_t len);
 
 	/* retrieve format/data/len from the clipboard; return 0 on success;
 	   data is a copy of the data, modifiable by the caller */
-	int (*clip_get)(pcb_hid_clipfmt_t *format, void **data, size_t *len);
+	int (*clip_get)(pcb_hid_t *hid, pcb_hid_clipfmt_t *format, void **data, size_t *len);
 
 	/* release the data from the last clip_get(); clip_get() and clip_free() should
 	   be called in pair */
-	void (*clip_free)(pcb_hid_clipfmt_t format, void *data, size_t len);
+	void (*clip_free)(pcb_hid_t *hid, pcb_hid_clipfmt_t format, void *data, size_t len);
 
 	/* run redraw-benchmark and return an FPS value (optional) */
 	double (*benchmark)(void);

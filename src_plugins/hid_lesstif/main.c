@@ -2887,7 +2887,7 @@ static void lesstif_conf_regs(const char *cookie)
 
 #include <Xm/CutPaste.h>
 
-static int ltf_clip_set(pcb_hid_clipfmt_t format, const void *data, size_t len)
+static int ltf_clip_set(pcb_hid_t *hid, pcb_hid_clipfmt_t format, const void *data, size_t len)
 {
 	static long cnt = 0;
 	long item_id, data_id;
@@ -2910,7 +2910,7 @@ static int ltf_clip_set(pcb_hid_clipfmt_t format, const void *data, size_t len)
 	return 0;
 }
 
-static int ltf_clip_get(pcb_hid_clipfmt_t *format, void **data, size_t *len)
+static int ltf_clip_get(pcb_hid_t *hid, pcb_hid_clipfmt_t *format, void **data, size_t *len)
 {
 	int res;
 	gds_t tmp;
@@ -2940,7 +2940,7 @@ static int ltf_clip_get(pcb_hid_clipfmt_t *format, void **data, size_t *len)
 	return 0;
 }
 
-static void ltf_clip_free(pcb_hid_clipfmt_t format, void *data, size_t len)
+static void ltf_clip_free(pcb_hid_t *hid, pcb_hid_clipfmt_t format, void *data, size_t len)
 {
 	free(data);
 }

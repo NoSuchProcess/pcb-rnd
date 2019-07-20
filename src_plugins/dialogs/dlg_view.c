@@ -380,7 +380,7 @@ static void view_copy_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 		}
 	}
 	pcb_view_save_list_end(&tmp, NULL);
-	pcb_gui->clip_set(PCB_HID_CLIPFMT_TEXT, tmp.array, tmp.used+1);
+	pcb_gui->clip_set(pcb_gui, PCB_HID_CLIPFMT_TEXT, tmp.array, tmp.used+1);
 	gds_uninit(&tmp);
 	if (cut)
 		view2dlg_list(ctx);
@@ -406,16 +406,16 @@ static void view_paste_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		vt = pcb_view_by_uid(ctx->lst, r->user_data2.lng);
 	}
 
-	if (pcb_gui->clip_get(&cformat, &cdata, &clen) != 0)
+	if (pcb_gui->clip_get(pcb_gui, &cformat, &cdata, &clen) != 0)
 		return;
 
 	if (cformat != PCB_HID_CLIPFMT_TEXT) {
-		pcb_gui->clip_free(cformat, cdata, clen);
+		pcb_gui->clip_free(pcb_gui, cformat, cdata, clen);
 		return;
 	}
 
 	load_ctx = pcb_view_load_start_str(cdata);
-	pcb_gui->clip_free(cformat, cdata, clen);
+	pcb_gui->clip_free(pcb_gui, cformat, cdata, clen);
 	if (load_ctx == NULL)
 		return;
 

@@ -365,7 +365,7 @@ static const char *ghid_command_entry(pcb_hid_t *hid, const char *ovr, int *curs
 	return pcb_gtk_cmd_command_entry(&ghidgui->topwin.cmd, ovr, cursor);
 }
 
-static int ghid_clip_set(pcb_hid_clipfmt_t format, const void *data, size_t len)
+static int ghid_clip_set(pcb_hid_t *hid, pcb_hid_clipfmt_t format, const void *data, size_t len)
 {
 	GtkClipboard *cbrd = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 
@@ -379,7 +379,7 @@ static int ghid_clip_set(pcb_hid_clipfmt_t format, const void *data, size_t len)
 
 
 
-int ghid_clip_get(pcb_hid_clipfmt_t *format, void **data, size_t *len)
+int ghid_clip_get(pcb_hid_t *hid, pcb_hid_clipfmt_t *format, void **data, size_t *len)
 {
 	GtkClipboard *cbrd = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 
@@ -394,7 +394,7 @@ int ghid_clip_get(pcb_hid_clipfmt_t *format, void **data, size_t *len)
 	return -1;
 }
 
-void ghid_clip_free(pcb_hid_clipfmt_t format, void *data, size_t len)
+void ghid_clip_free(pcb_hid_t *hid, pcb_hid_clipfmt_t format, void *data, size_t len)
 {
 	switch(format) {
 		case PCB_HID_CLIPFMT_TEXT:
