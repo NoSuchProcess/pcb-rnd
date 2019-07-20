@@ -75,7 +75,7 @@ static void rst_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, ch
 		sprintf(act, "RouteStyle(%d)", idx+1); /* for historical reasons this action counts from 1 */
 		sprintf(chk, "ChkRst(%d)", idx);
 		strcpy(end, PCB->RouteStyle.array[idx].name);
-		pcb_gui->create_menu(path, &props);
+		pcb_gui->create_menu(pcb_gui, path, &props);
 	}
 }
 
@@ -220,7 +220,7 @@ void pcb_rst_update_conf(conf_native_t *cfg, int arr_idx)
 {
 	if ((PCB != NULL) && (pcb_gui != NULL)) {
 		if (pcb_gui->update_menu_checkbox != NULL)
-			pcb_gui->update_menu_checkbox(NULL);
+			pcb_gui->update_menu_checkbox(pcb_gui, NULL);
 		if (rst.sub_inited)
 			rst_force_update_chk_and_dlg();
 	}

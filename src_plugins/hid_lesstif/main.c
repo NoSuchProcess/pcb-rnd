@@ -2128,7 +2128,7 @@ static Boolean idle_proc(XtPointer dummy)
 	}
 
 TODO(": remove this, update-on should handle all cases")
-	lesstif_update_widget_flags(NULL);
+	lesstif_update_widget_flags(NULL, NULL);
 
 	show_crosshair(1);
 	idle_proc_set = 0;
@@ -3014,10 +3014,10 @@ static void ltf_set_top_title(pcb_hidlib_t *hidlib, const char *title)
 	XtSetValues(appwidget, stdarg_args, stdarg_n);
 }
 
-void lesstif_create_menu(const char *menu, const pcb_menu_prop_t *props);
-int lesstif_remove_menu(const char *menu);
-int lesstif_remove_menu_node(lht_node_t *node);
-pcb_hid_cfg_t *lesstif_get_menu_cfg(void);
+void lesstif_create_menu(pcb_hid_t *hid, const char *menu, const pcb_menu_prop_t *props);
+int lesstif_remove_menu(pcb_hid_t *hid, const char *menu);
+int lesstif_remove_menu_node(pcb_hid_t *hid, lht_node_t *node);
+pcb_hid_cfg_t *lesstif_get_menu_cfg(pcb_hid_t *hid);
 int ltf_open_popup(const char *menupath);
 
 int pplg_check_ver_hid_lesstif(int version_we_need) { return 0; }

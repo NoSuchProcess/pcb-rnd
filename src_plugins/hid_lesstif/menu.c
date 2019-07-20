@@ -92,7 +92,8 @@ static int del_widget_flag(int idx)
 	return 0;
 }
 
-void lesstif_update_widget_flags(const char *cookie)
+/* WARNING: when call originaltes from the lesstif hid, hid==NULL for now */
+void lesstif_update_widget_flags(pcb_hid_t *hid, const char *cookie)
 {
 	int i;
 	for (i = 0; i < n_wflags; i++) {
@@ -387,7 +388,7 @@ static void set_ins_after(Widget menu, lht_node_t *ins_after)
 
 static void lesstif_confchg_checkbox(conf_native_t *cfg, int arr_idx)
 {
-	lesstif_update_widget_flags(NULL);
+	lesstif_update_widget_flags(NULL, NULL);
 }
 
 static void add_res2menu_named(Widget menu, lht_node_t *ins_after, lht_node_t *node, XtCallbackProc callback, int level)
@@ -640,22 +641,22 @@ static int lesstif_create_menu_widget(void *ctx, const char *path, const char *n
 }
 
 
-void lesstif_create_menu(const char *menu_path, const pcb_menu_prop_t *props)
+void lesstif_create_menu(pcb_hid_t *hid, const char *menu_path, const pcb_menu_prop_t *props)
 {
 	pcb_hid_cfg_create_menu(lesstif_cfg, menu_path, props, lesstif_create_menu_widget, NULL);
 }
 
-int lesstif_remove_menu(const char *menu_path)
+int lesstif_remove_menu(pcb_hid_t *hid, const char *menu_path)
 {
 	return pcb_hid_cfg_remove_menu(lesstif_cfg, menu_path, del_menu, NULL);
 }
 
-int lesstif_remove_menu_node(lht_node_t *node)
+int lesstif_remove_menu_node(pcb_hid_t *hid, lht_node_t *node)
 {
 	return pcb_hid_cfg_remove_menu_node(lesstif_cfg, node, del_menu, NULL);
 }
 
-pcb_hid_cfg_t *lesstif_get_menu_cfg(void)
+pcb_hid_cfg_t *lesstif_get_menu_cfg(pcb_hid_t *hid)
 {
 	return lesstif_cfg;
 }

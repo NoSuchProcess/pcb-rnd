@@ -319,30 +319,30 @@ static void PointCursor(pcb_bool grabbed)
 }
 
 /* Create a new menu by path */
-static int ghid_remove_menu(const char *menu_path)
+static int ghid_remove_menu(pcb_hid_t *hid, const char *menu_path)
 {
 	if (ghidgui->topwin.ghid_cfg == NULL)
 		return -1;
 	return pcb_hid_cfg_remove_menu(ghidgui->topwin.ghid_cfg, menu_path, ghid_remove_menu_widget, ghidgui->topwin.menu.menu_bar);
 }
 
-static int ghid_remove_menu_node(lht_node_t *node)
+static int ghid_remove_menu_node(pcb_hid_t *hid, lht_node_t *node)
 {
 	return pcb_hid_cfg_remove_menu_node(ghidgui->topwin.ghid_cfg, node, ghid_remove_menu_widget, ghidgui->topwin.menu.menu_bar);
 }
 
-static void ghid_create_menu(const char *menu_path, const pcb_menu_prop_t *props)
+static void ghid_create_menu(pcb_hid_t *hid, const char *menu_path, const pcb_menu_prop_t *props)
 {
 	pcb_hid_cfg_create_menu(ghidgui->topwin.ghid_cfg, menu_path, props, ghid_create_menu_widget, &ghidgui->topwin.menu);
 }
 
-static void ghid_update_menu_checkbox(const char *cookie)
+static void ghid_update_menu_checkbox(pcb_hid_t *hid, const char *cookie)
 {
 	if (ghidgui->hid_active)
 		ghid_update_toggle_flags(&ghidgui->topwin, cookie);
 }
 
-pcb_hid_cfg_t *ghid_get_menu_cfg(void)
+pcb_hid_cfg_t *ghid_get_menu_cfg(pcb_hid_t *hid)
 {
 	if (!ghidgui->hid_active)
 		return NULL;

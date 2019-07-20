@@ -436,7 +436,7 @@ int pcb_hid_cfg_del_anchor_menus(lht_node_t *node, const char *cookie)
 			break;
 
 		nxt = node->next;
-		pcb_gui->remove_menu_node(node);
+		pcb_gui->remove_menu_node(pcb_gui, node);
 	}
 	return 0;
 }

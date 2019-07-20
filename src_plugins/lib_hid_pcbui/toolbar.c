@@ -166,7 +166,7 @@ static void toolbar_docked_create(pcb_hid_cfg_t *cfg)
 
 static void toolbar_create(void)
 {
-	pcb_hid_cfg_t *cfg = pcb_gui->get_menu_cfg();
+	pcb_hid_cfg_t *cfg = pcb_gui->get_menu_cfg(pcb_gui);
 	if (cfg == NULL)
 		return;
 	toolbar_docked_create(cfg);

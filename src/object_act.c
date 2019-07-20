@@ -936,7 +936,7 @@ static fgw_error_t pcb_act_subc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 			/* have to manually trigger the update as it is not a conf item */
 			if ((pcb_gui != NULL) && (pcb_gui->update_menu_checkbox != NULL))
-				pcb_gui->update_menu_checkbox(NULL);
+				pcb_gui->update_menu_checkbox(pcb_gui, NULL);
 			return 0;
 		case F_Hash:
 			{

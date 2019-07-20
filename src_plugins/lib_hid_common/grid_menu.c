@@ -80,7 +80,7 @@ static void grid_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, c
 		sprintf(act, "grid(#%d)", idx);
 		sprintf(chk, "conf(iseq, editor/grids_idx, %d)", idx);
 		strcpy(end, li->val.string[0]);
-		pcb_gui->create_menu(path, &props);
+		pcb_gui->create_menu(pcb_gui, path, &props);
 	}
 
 }

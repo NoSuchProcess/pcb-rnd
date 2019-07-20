@@ -445,21 +445,21 @@ struct pcb_hid_s {
 	 * and remove menu items that are no longer needed.
 	 * If action is NULL, the menu may get submenus.
 	 */
-	void (*create_menu)(const char *menu_path, const pcb_menu_prop_t *props);
+	void (*create_menu)(pcb_hid_t *hid, const char *menu_path, const pcb_menu_prop_t *props);
 
 	/* Removes a menu recursively */
-	int (*remove_menu)(const char *menu_path);
-	int (*remove_menu_node)(lht_node_t *nd);
+	int (*remove_menu)(pcb_hid_t *hid, const char *menu_path);
+	int (*remove_menu_node)(pcb_hid_t *hid, lht_node_t *nd);
 
 	/* At the moment HIDs load the menu file. Some plugin code, like the toolbar
 	   code needs to traverse the menu tree too. This call exposes the
 	   HID-internal menu struct */
-	pcb_hid_cfg_t *(*get_menu_cfg)(void);
+	pcb_hid_cfg_t *(*get_menu_cfg)(pcb_hid_t *hid);
 
 	/* Update the state of all checkboxed menus whose luhata
 	   node cookie matches cookie (or all checkboxed menus globally if cookie
 	   is NULL) */
-	void (*update_menu_checkbox)(const char *cookie);
+	void (*update_menu_checkbox)(pcb_hid_t *hid, const char *cookie);
 
 	/* Pointer to the hid's configuration - useful for plugins and core wanting to install menus at anchors */
 	pcb_hid_cfg_t *hid_cfg;

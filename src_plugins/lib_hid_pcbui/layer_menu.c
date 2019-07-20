@@ -80,12 +80,12 @@ static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node
 			sprintf(chk, "ChkView(ui:%d)", idx);
 
 			pcb_snprintf(end, len_avail, "  %s", ly->name);
-			pcb_gui->create_menu(path, &props);
+			pcb_gui->create_menu(pcb_gui, path, &props);
 		}
 
 		props.checked = NULL;
 		pcb_snprintf(end, len_avail, "[UI]");
-		pcb_gui->create_menu(path, &props);
+		pcb_gui->create_menu(pcb_gui, path, &props);
 	}
 
 	/* menu-only virtual layers; have to go reverse to keep order because this will insert items */
@@ -104,12 +104,12 @@ static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node
 			sprintf(chk, "ChkLayer(%s)", ml->abbrev);
 		}
 		pcb_snprintf(end, len_avail, "  %s", ml->name);
-		pcb_gui->create_menu(path, &props);
+		pcb_gui->create_menu(pcb_gui, path, &props);
 	}
 
 	props.checked = NULL;
 	pcb_snprintf(end, len_avail, "[virtual]");
-	pcb_gui->create_menu(path, &props);
+	pcb_gui->create_menu(pcb_gui, path, &props);
 
 
 	/* have to go reverse to keep order because this will insert items */
@@ -121,7 +121,7 @@ static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node
 		props.checked = NULL;
 		*act = '\0';
 		*chk = '\0';
-		pcb_gui->create_menu(path, &props);
+		pcb_gui->create_menu(pcb_gui, path, &props);
 
 		for(gid = pcb_max_group(PCB)-1; gid >= 0; gid--) {
 			pcb_layergrp_t *g = &PCB->LayerGroups.grp[gid];
@@ -150,14 +150,14 @@ static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node
 					sprintf(chk, "ChkLayer(%ld)", lid+1);
 				}
 				pcb_snprintf(end, len_avail, "  %s", l->name);
-				pcb_gui->create_menu(path, &props);
+				pcb_gui->create_menu(pcb_gui, path, &props);
 			}
 
 			props.foreground = NULL;
 			props.background = NULL;
 			props.checked = NULL;
 			pcb_snprintf(end, len_avail, "[%s]", g->name);
-			pcb_gui->create_menu(path, &props);
+			pcb_gui->create_menu(pcb_gui, path, &props);
 		}
 	}
 
@@ -184,12 +184,12 @@ void pcb_layer_menu_update_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, p
 {
 	layer_install_menu();
 	if ((pcb_gui != NULL) && (pcb_gui->update_menu_checkbox != NULL))
-		pcb_gui->update_menu_checkbox(NULL);
+		pcb_gui->update_menu_checkbox(pcb_gui, NULL);
 }
 
 void pcb_layer_menu_vis_update_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if ((pcb_gui != NULL) && (pcb_gui->update_menu_checkbox != NULL))
-		pcb_gui->update_menu_checkbox(NULL);
+		pcb_gui->update_menu_checkbox(pcb_gui, NULL);
 }
 

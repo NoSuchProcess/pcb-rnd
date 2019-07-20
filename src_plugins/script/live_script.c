@@ -491,10 +491,10 @@ static void lvs_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, ch
 	end++;
 
 	strcpy(end, "Open live script dialog...."); strcpy(act, "LiveScript(new)"); 
-	pcb_gui->create_menu(path, &props);
+	pcb_gui->create_menu(pcb_gui, path, &props);
 
 /*	strcpy(end, "Load live script...."); strcpy(act, "LiveScript(load)");
-	pcb_gui->create_menu(path, &props);*/
+	pcb_gui->create_menu(pcb_gui, path, &props);*/
 }
 
 
@@ -518,7 +518,7 @@ void pcb_live_script_uninit(void)
 	}
 	htsp_uninit(&pcb_live_scripts);
 	if ((pcb_gui != NULL) && (pcb_gui->remove_menu != NULL))
-		pcb_gui->remove_menu(lvs_cookie);
+		pcb_gui->remove_menu(pcb_gui, lvs_cookie);
 	pcb_event_unbind_allcookie(lvs_cookie);
 }
 

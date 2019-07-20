@@ -402,7 +402,7 @@ int pcb_nogui_progress(long so_far, long total, const char *message)
 	return 0;
 }
 
-static void nogui_create_menu(const char *menu_path, const pcb_menu_prop_t *props)
+static void nogui_create_menu(pcb_hid_t *hid, const char *menu_path, const pcb_menu_prop_t *props)
 {
 }
 

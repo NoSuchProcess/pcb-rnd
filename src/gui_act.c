@@ -793,7 +793,7 @@ static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		props.tip = (argc > 3) ? argv[3].val.str : NULL;
 		props.cookie = (argc > 4) ? argv[4].val.str : NULL;
 
-		pcb_gui->create_menu(argv[1].val.str, &props);
+		pcb_gui->create_menu(pcb_gui, argv[1].val.str, &props);
 
 		PCB_ACT_IRES(0);
 		return 0;
@@ -821,7 +821,7 @@ static fgw_error_t pcb_act_RemoveMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	PCB_ACT_CONVARG(1, FGW_STR, RemoveMenu, ;);
-	if (pcb_gui->remove_menu(argv[1].val.str) != 0) {
+	if (pcb_gui->remove_menu(pcb_gui, argv[1].val.str) != 0) {
 		pcb_message(PCB_MSG_ERROR, "failed to remove some of the menu items\n");
 		PCB_ACT_IRES(-1);
 	}
