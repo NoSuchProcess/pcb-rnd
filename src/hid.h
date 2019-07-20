@@ -74,6 +74,7 @@ typedef struct {
 	pcb_cap_style_t cap;   /* as set by set_line_cap */
 	int xor;               /* as set by set_draw_xor */
 	int faded;             /* as set by set_draw_faded */
+	pcb_hid_t *hid;        /* the HID that owns this gc */
 } pcb_core_gc_t;
 
 

@@ -39,6 +39,7 @@ PCB_INLINE pcb_hid_gc_t pcb_hid_make_gc(void)
 	hc->cap = pcb_cap_invalid;
 	hc->xor = 0;
 	hc->faded = 0;
+	hc->hid = pcb_gui;
 	return res;
 }
 
