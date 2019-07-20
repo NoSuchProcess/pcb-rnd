@@ -326,7 +326,6 @@ void ghid_glue_common_init(const char *cookie)
 
 	ghidgui->impl.load_bg_image = ghid_load_bg_image;
 
-	ghidgui->topwin.cmd.com = &ghidgui->impl;
 	ghidgui->topwin.cmd.post_entry = command_post_entry;
 	ghidgui->topwin.cmd.pre_entry = command_pre_entry;
 

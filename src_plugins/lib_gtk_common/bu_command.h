@@ -13,8 +13,6 @@ typedef struct pcb_gtk_command_s {
 	void (*post_entry)(void);
 	void (*pre_entry)(void);
 
-	struct pcb_gtk_impl_s *com;
-
 	/* internal */
 	GMainLoop *ghid_entry_loop;
 	gchar *command_entered;
