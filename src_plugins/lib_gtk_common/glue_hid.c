@@ -360,7 +360,7 @@ static int ghid_usage(pcb_hid_t *hid, const char *topic)
 	return 0;
 }
 
-static const char *ghid_command_entry(const char *ovr, int *cursor)
+static const char *ghid_command_entry(pcb_hid_t *hid, const char *ovr, int *cursor)
 {
 	return pcb_gtk_cmd_command_entry(&ghidgui->topwin.cmd, ovr, cursor);
 }

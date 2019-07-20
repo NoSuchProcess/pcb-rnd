@@ -549,7 +549,7 @@ static void command_event_handler(Widget w, XtPointer p, XEvent * e, Boolean * c
 }
 
 
-static const char *lesstif_command_entry(const char *ovr, int *cursor)
+static const char *lesstif_command_entry(pcb_hid_t *hid, const char *ovr, int *cursor)
 {
 	if (!cmd_is_active) {
 		if (cursor != NULL)

@@ -488,7 +488,7 @@ struct pcb_hid_s {
 	   If ovr is NULL:
 	    - if cursor is not NULL, load the value with the cursor (or -1 if not supported)
 	   Return the current command entry content in a read-only string */
-	const char *(*command_entry)(const char *ovr, int *cursor);
+	const char *(*command_entry)(pcb_hid_t *hid, const char *ovr, int *cursor);
 
 	/*** clipboard handling for GUI HIDs ***/
 	/* Place format/data/len on the clipboard; return 0 on success */

@@ -91,7 +91,7 @@ PCB_INLINE const char *pcb_hid_command_entry(const char *ovr, int *cursor)
 			*cursor = -1;
 		return NULL;
 	}
-	return pcb_gui->command_entry(ovr, cursor);
+	return pcb_gui->command_entry(pcb_gui, ovr, cursor);
 }
 
 
