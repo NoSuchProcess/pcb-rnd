@@ -288,7 +288,7 @@ static pcb_hidval_t ghid_watch_file(int fd, unsigned int condition,
 								pcb_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
 								pcb_hidval_t user_data)
 {
-	return pcb_gtk_watch_file(&ghidgui->impl, fd, condition, func, user_data);
+	return pcb_gtk_watch_file(ghidgui, fd, condition, func, user_data);
 }
 
 static char *ghid_fileselect(const char *title, const char *descr, const char *default_file, const char *default_ext, const pcb_hid_fsd_filter_t *flt, const char *history_tag, pcb_hid_fsd_flags_t flags, pcb_hid_dad_subdialog_t *sub)
