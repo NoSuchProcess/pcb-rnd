@@ -135,6 +135,7 @@ static void end_subcomposite(void)
 
 int ghid_gl_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
+	pcb_hidlib_t *hidlib = ghidgui->hidlib;
 	render_priv_t *priv = ghidgui->port.render_priv;
 
 	glMatrixMode(GL_MODELVIEW);
