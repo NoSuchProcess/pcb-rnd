@@ -323,8 +323,7 @@ struct pcb_hid_s {
 	void (*calibrate)(pcb_hid_t *hid, double xval, double yval);
 
 
-	/* GUI layout functions.  Not used or defined for print/export
-	   HIDs.  */
+	/*** GUI layout functions.  Not used or defined for print/export HIDs. ***/
 
 	/* Temporary */
 	int (*shift_is_pressed)(pcb_hid_t *hid);
@@ -342,9 +341,9 @@ struct pcb_hid_s {
 	   screen may be adjusted so that the cursor and the crosshair are
 	   at the same point on the screen.  */
 	void (*set_crosshair)(pcb_coord_t x, pcb_coord_t y, int cursor_action);
-#define HID_SC_DO_NOTHING	0
-#define HID_SC_WARP_POINTER	1
-#define HID_SC_PAN_VIEWPORT	2
+#define HID_SC_DO_NOTHING    0
+#define HID_SC_WARP_POINTER  1
+#define HID_SC_PAN_VIEWPORT  2
 
 	/* Causes func to be called at some point in the future.  Timers are
 	   only good for *one* call; if you want it to repeat, add another
