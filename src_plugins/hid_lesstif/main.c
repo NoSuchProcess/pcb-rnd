@@ -2998,12 +2998,12 @@ static void ltf_open_command(pcb_hid_t *hid)
 	cmd_is_active = 1;
 }
 
-static void ltf_reg_mouse_cursor(pcb_hid_t *hid, pcb_hidlib_t *hidlib, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
+static void ltf_reg_mouse_cursor(pcb_hid_t *hid, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
 {
 
 }
 
-static void ltf_set_mouse_cursor(pcb_hid_t *hid, pcb_hidlib_t *hidlib, int idx)
+static void ltf_set_mouse_cursor(pcb_hid_t *hid, int idx)
 {
 }
 

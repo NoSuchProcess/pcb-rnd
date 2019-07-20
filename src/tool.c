@@ -78,7 +78,7 @@ int pcb_tool_reg(pcb_tool_t *tool, const char *cookie)
 	id = pcb_tools.used;
 	vtp0_append(&pcb_tools, (void *)tool);
 	if (pcb_gui != NULL)
-		pcb_gui->reg_mouse_cursor(pcb_gui, NULL, id, tool->cursor.name, tool->cursor.pixel, tool->cursor.mask);
+		pcb_gui->reg_mouse_cursor(pcb_gui, id, tool->cursor.name, tool->cursor.pixel, tool->cursor.mask);
 	pcb_event(&PCB->hidlib, PCB_EVENT_TOOL_REG, "p", tool);
 	return 0;
 }
@@ -149,7 +149,7 @@ int pcb_tool_select_by_id(pcb_hidlib_t *hidlib, pcb_toolid_t id)
 	pcb_crosshair_move_relative(0, 0);
 	pcb_notify_crosshair_change(pcb_true);
 	if (pcb_gui != NULL)
-		pcb_gui->set_mouse_cursor(pcb_gui, hidlib, id);
+		pcb_gui->set_mouse_cursor(pcb_gui, id);
 	return 0;
 }
 
@@ -198,7 +198,7 @@ void pcb_tool_gui_init(void)
 
 	for(n = 0, tool = (pcb_tool_t **)pcb_tools.array; n < pcb_tools.used; n++,tool++)
 		if (*tool != NULL)
-			pcb_gui->reg_mouse_cursor(pcb_gui, NULL, n, (*tool)->cursor.name, (*tool)->cursor.pixel, (*tool)->cursor.mask);
+			pcb_gui->reg_mouse_cursor(pcb_gui, n, (*tool)->cursor.name, (*tool)->cursor.pixel, (*tool)->cursor.mask);
 }
 
 /**** current tool function wrappers ****/
