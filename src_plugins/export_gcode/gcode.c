@@ -553,7 +553,7 @@ static void gcode_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 /* *** PNG export (slightly modified code from PNG export HID) ************* */
 
-static int gcode_set_layer_group(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
+static int gcode_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
 	if (flags & PCB_LYT_UI)
 		return 0;

@@ -60,10 +60,10 @@ static void log_notify_mark_change(pcb_hid_t *hid, pcb_bool changes_complete)
 	delegatee_->notify_mark_change(hid, changes_complete);
 }
 
-static int log_set_layer_group(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
+static int log_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
 	pcb_fprintf(out_, "set_layer(group=%ld, layer=%ld, flags=%lx, empty=%s, xform=%p)\n", group, layer, flags, is_empty ? "true" : "false", xform);
-	return delegatee_->set_layer_group(hid, hidlib, group, purpose, purpi, layer, flags, is_empty, xform);
+	return delegatee_->set_layer_group(hid, group, purpose, purpi, layer, flags, is_empty, xform);
 }
 
 static void log_end_layer(pcb_hid_t *hid)
