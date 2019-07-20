@@ -404,10 +404,6 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 
 void ghid_gl_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 {
-	render_priv_t *priv = ghidgui->port.render_priv;
-
-	if (priv == NULL) return;
-
 	if (color == NULL) {
 		fprintf(stderr, "ghid_gl_set_color():  name = NULL, setting to magenta\n");
 		color = pcb_color_magenta;
