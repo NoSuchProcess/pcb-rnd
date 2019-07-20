@@ -285,6 +285,9 @@ struct pcb_hid_s {
 	   A GUI hid should set the coord_per_pix value here for proper optimization. */
 	void (*render_burst)(pcb_burst_op_t op, const pcb_box_t *screen);
 
+	/*** gc vs. pcb_hid_t *: pcb_core_gc_t contains ->hid, so these calls don't
+	     need to get it as first arg. ***/
+
 	/* Sets a color. Can be one of the special colors like pcb_color_drill.
 	   (Always use the drill color to draw holes and slots).
 	   You may assume this is cheap enough to call inside the redraw
