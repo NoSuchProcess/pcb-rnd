@@ -350,19 +350,19 @@ struct pcb_hid_s {
 	   timer during the callback for the first.  user_data_ can be
 	   anything, it's just passed to func.  Times are not guaranteed to
 	   be accurate.  */
-	pcb_hidval_t (*add_timer)(void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data);
+	pcb_hidval_t (*add_timer)(pcb_hid_t *hid, void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data);
 	/* Use this to stop a timer that hasn't triggered yet. */
-	void (*stop_timer)(pcb_hidval_t timer);
+	void (*stop_timer)(pcb_hid_t *hid, pcb_hidval_t timer);
 
 	/* Causes func_ to be called when some condition occurs on the file
 	   descriptor passed. Conditions include data for reading, writing,
 	   hangup, and errors. user_data_ can be anything, it's just passed
 	   to func. If the watch function returns pcb_true, the watch is kept, else
 	   it is removed. */
-	pcb_hidval_t (*watch_file)(int fd, unsigned int condition, pcb_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data);
+	pcb_hidval_t (*watch_file)(pcb_hid_t *hid, int fd, unsigned int condition, pcb_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data);
 
 	/* Use this to stop a file watch; must not be called from within a GUI callback! */
-	void (*unwatch_file) (pcb_hidval_t watch);
+	void (*unwatch_file)(pcb_hid_t *hid, pcb_hidval_t watch);
 
 	/* title may be used as a dialog box title.  Ignored if NULL.
 	 *

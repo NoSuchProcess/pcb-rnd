@@ -720,7 +720,7 @@ static void backup_cb(pcb_hidval_t data)
 	backup_timer.ptr = NULL;
 	pcb_backup();
 	if (conf_core.rc.backup_interval > 0 && pcb_gui->add_timer)
-		backup_timer = pcb_gui->add_timer(backup_cb, 1000 * conf_core.rc.backup_interval, data);
+		backup_timer = pcb_gui->add_timer(pcb_gui, backup_cb, 1000 * conf_core.rc.backup_interval, data);
 }
 
 void pcb_enable_autosave(void)
@@ -731,12 +731,12 @@ void pcb_enable_autosave(void)
 
 	/* If we already have a timer going, then cancel it out */
 	if (backup_timer.ptr != NULL && pcb_gui->stop_timer)
-		pcb_gui->stop_timer(backup_timer);
+		pcb_gui->stop_timer(pcb_gui, backup_timer);
 
 	backup_timer.ptr = NULL;
 	/* Start up a new timer */
 	if (conf_core.rc.backup_interval > 0 && pcb_gui->add_timer)
-		backup_timer = pcb_gui->add_timer(backup_cb, 1000 * conf_core.rc.backup_interval, x);
+		backup_timer = pcb_gui->add_timer(pcb_gui, backup_cb, 1000 * conf_core.rc.backup_interval, x);
 }
 
 /* Saves the board in a backup file using the name configured in

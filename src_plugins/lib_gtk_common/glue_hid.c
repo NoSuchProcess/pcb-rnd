@@ -261,7 +261,7 @@ static void ghid_calibrate(pcb_hid_t *hid, double xval, double yval)
 	printf("ghid_calibrate() -- not implemented\n");
 }
 
-static void ghid_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
+static void ghid_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int action)
 {
 	int offset_x, offset_y;
 
@@ -278,12 +278,12 @@ static void ghid_get_coords(pcb_hid_t *hid, const char *msg, pcb_coord_t *x, pcb
 	pcb_gtk_get_coords(ghidgui, &ghidgui->port.view, msg, x, y, force);
 }
 
-pcb_hidval_t ghid_add_timer(void (*func) (pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
+pcb_hidval_t ghid_add_timer(pcb_hid_t *hid, void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
 {
 	return pcb_gtk_add_timer(ghidgui, func, milliseconds, user_data);
 }
 
-static pcb_hidval_t ghid_watch_file(int fd, unsigned int condition,
+static pcb_hidval_t ghid_watch_file(pcb_hid_t *hid, int fd, unsigned int condition,
 								pcb_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
 								pcb_hidval_t user_data)
 {

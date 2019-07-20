@@ -60,7 +60,7 @@ pcb_hidval_t pcb_gtk_add_timer(struct pcb_gtk_s *gctx, void (*func)(pcb_hidval_t
 	return ret;
 }
 
-void ghid_stop_timer(pcb_hidval_t timer)
+void ghid_stop_timer(pcb_hid_t *hid, pcb_hidval_t timer)
 {
 	void *ptr = timer.ptr;
 

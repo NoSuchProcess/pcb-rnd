@@ -131,7 +131,7 @@ void pcb_tool_arrow_notify_mode(void)
 
 	pcb_tool_note.Click = pcb_true;
 	/* do something after click time */
-	pcb_gui->add_timer(click_timer_cb, conf_core.editor.click_time, hv);
+	pcb_gui->add_timer(pcb_gui, click_timer_cb, conf_core.editor.click_time, hv);
 
 	/* see if we clicked on something already selected
 	 * (pcb_tool_note.Moving) or clicked on a MOVE_TYPE

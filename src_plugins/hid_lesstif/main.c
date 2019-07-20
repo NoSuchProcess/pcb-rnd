@@ -2679,7 +2679,7 @@ static int lesstif_mod1_is_pressed(pcb_hid_t *hid)
 
 extern void lesstif_get_coords(pcb_hid_t *hid, const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force);
 
-static void lesstif_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
+static void lesstif_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int action)
 {
 	if (crosshair_x != x || crosshair_y != y) {
 		lesstif_show_crosshair(0);
@@ -2734,7 +2734,7 @@ static void lesstif_timer_cb(XtPointer * p, XtIntervalId * id)
 	free(ts);
 }
 
-static pcb_hidval_t lesstif_add_timer(void (*func) (pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
+static pcb_hidval_t lesstif_add_timer(pcb_hid_t *hid, void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
 {
 	TimerStruct *t;
 	pcb_hidval_t rv;
@@ -2746,7 +2746,7 @@ static pcb_hidval_t lesstif_add_timer(void (*func) (pcb_hidval_t user_data), uns
 	return rv;
 }
 
-static void lesstif_stop_timer(pcb_hidval_t hv)
+static void lesstif_stop_timer(pcb_hid_t *hid, pcb_hidval_t hv)
 {
 	TimerStruct *ts = (TimerStruct *) hv.ptr;
 	XtRemoveTimeOut(ts->id);
@@ -2761,7 +2761,7 @@ typedef struct {
 	XtInputId id;
 } WatchStruct;
 
-void lesstif_unwatch_file(pcb_hidval_t data)
+void lesstif_unwatch_file(pcb_hid_t *hid, pcb_hidval_t data)
 {
 	WatchStruct *watch = (WatchStruct *) data.ptr;
 	XtRemoveInput(watch->id);
@@ -2794,11 +2794,11 @@ static void lesstif_watch_cb(XtPointer client_data, int *fid, XtInputId *id)
 
 	x.ptr = (void *) watch;
 	if (!watch->func(x, watch->fd, pcb_condition, watch->user_data))
-		lesstif_unwatch_file(x);
+		lesstif_unwatch_file(pcb_gui, x);
 	return;
 }
 
-pcb_hidval_t lesstif_watch_file(int fd, unsigned int condition, pcb_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data)
+pcb_hidval_t lesstif_watch_file(pcb_hid_t *hid, int fd, unsigned int condition, pcb_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data)
 {
 	WatchStruct *watch = (WatchStruct *)malloc(sizeof(WatchStruct));
 	pcb_hidval_t ret;

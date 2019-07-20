@@ -197,7 +197,7 @@ static void timed_update_preview_cb(pcb_hidval_t user_data)
 static void timed_update_preview(library_ctx_t *ctx, int active)
 {
 	if (ctx->timer_active) {
-		pcb_gui->stop_timer(ctx->timer);
+		pcb_gui->stop_timer(pcb_gui, ctx->timer);
 		ctx->timer_active = 0;
 		pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wpend, 1);
 	}
@@ -205,7 +205,7 @@ static void timed_update_preview(library_ctx_t *ctx, int active)
 	if (active) {
 		pcb_hidval_t user_data;
 		user_data.ptr = ctx;
-		ctx->timer = pcb_gui->add_timer(timed_update_preview_cb, 500, user_data);
+		ctx->timer = pcb_gui->add_timer(pcb_gui, timed_update_preview_cb, 500, user_data);
 		ctx->timer_active = 1;
 		pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wpend, 0);
 	}

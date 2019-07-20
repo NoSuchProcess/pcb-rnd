@@ -232,7 +232,7 @@ static void save_timer(pcb_hidval_t user_data)
 		save->inited = 1;
 	}
 
-	save->timer = pcb_gui->add_timer(save_timer, 300, user_data);
+	save->timer = pcb_gui->add_timer(pcb_gui, save_timer, 300, user_data);
 
 	if ((save->fmtsub->parent_poke != NULL) && (save->fmtsub->dlg_hid_ctx != NULL) && (save->fmtsub->dlg[save->wguess].default_val.int_value)) {
 		pcb_event_arg_t res;
@@ -505,10 +505,10 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	
 	timer_ctx.ptr = &save;
 	save.timer_active = 1;
-	save.timer = pcb_gui->add_timer(save_timer, 300, timer_ctx); /* the timer needs to run at least once, to get some initialization done that can be done only after fmtsub got created */
+	save.timer = pcb_gui->add_timer(pcb_gui, save_timer, 300, timer_ctx); /* the timer needs to run at least once, to get some initialization done that can be done only after fmtsub got created */
 	final_name = pcb_gui->fileselect(prompt, NULL, name_in, NULL, NULL, "board", PCB_HID_FSD_MAY_NOT_EXIST, fmtsub);
 	if (save.timer_active)
-		pcb_gui->stop_timer(save.timer);
+		pcb_gui->stop_timer(pcb_gui, save.timer);
 	free(name_in);
 	free(save.fmt_tab_names);
 	free(save.fmt_plug_data);

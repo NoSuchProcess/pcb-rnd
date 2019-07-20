@@ -271,7 +271,7 @@ static void fontsel_timer_cb(pcb_hidval_t user_data)
 		if ((txt != c->last_fobj) || (txt != NULL && (txt->fid != c->last_fid)))
 			fontsel_preview_update(c);
 	}
-	fontsel_timer = pcb_gui->add_timer(fontsel_timer_cb, 500, fontsel_timer);
+	fontsel_timer = pcb_gui->add_timer(pcb_gui, fontsel_timer_cb, 500, fontsel_timer);
 }
 
 static void fontsel_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
@@ -283,7 +283,7 @@ static void fontsel_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc,
 void pcb_dlg_fontsel_uninit(void)
 {
 	if ((fontsel_timer_active) && (pcb_gui != NULL) && (pcb_gui->stop_timer != NULL))
-		pcb_gui->stop_timer(fontsel_timer);
+		pcb_gui->stop_timer(pcb_gui, fontsel_timer);
 	pcb_event_unbind_allcookie(fontsel_cookie);
 }
 

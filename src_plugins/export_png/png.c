@@ -1900,7 +1900,7 @@ static void png_calibrate(pcb_hid_t *hid, double xval, double yval)
 	CRASH("png_calibrate");
 }
 
-static void png_set_crosshair(pcb_coord_t x, pcb_coord_t y, int a)
+static void png_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int a)
 {
 }
 

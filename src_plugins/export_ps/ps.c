@@ -1401,7 +1401,7 @@ static void ps_calibrate(pcb_hid_t *hid, double xval, double yval)
 	ps_calibrate_1(hid, xval, yval, 0);
 }
 
-static void ps_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
+static void ps_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int action)
 {
 }
 

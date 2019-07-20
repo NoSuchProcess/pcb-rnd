@@ -322,23 +322,23 @@ static void remote_get_coords(pcb_hid_t *hid, const char *msg, pcb_coord_t *x, p
 {
 }
 
-static void remote_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
+static void remote_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int action)
 {
 }
 
-static pcb_hidval_t remote_add_timer(void (*func) (pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
+static pcb_hidval_t remote_add_timer(pcb_hid_t *hid, void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
 {
 	pcb_hidval_t rv;
 	rv.lval = 0;
 	return rv;
 }
 
-static void remote_stop_timer(pcb_hidval_t timer)
+static void remote_stop_timer(pcb_hid_t *hid, pcb_hidval_t timer)
 {
 }
 
 pcb_hidval_t
-remote_watch_file(int fd, unsigned int condition, pcb_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
+remote_watch_file(pcb_hid_t *hid, int fd, unsigned int condition, pcb_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
 								 pcb_hidval_t user_data)
 {
 	pcb_hidval_t ret;
@@ -346,7 +346,7 @@ remote_watch_file(int fd, unsigned int condition, pcb_bool (*func)(pcb_hidval_t 
 	return ret;
 }
 
-void remote_unwatch_file(pcb_hidval_t data)
+void remote_unwatch_file(pcb_hid_t *hid, pcb_hidval_t data)
 {
 }
 

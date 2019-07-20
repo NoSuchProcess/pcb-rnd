@@ -93,7 +93,7 @@ pcb_hidval_t pcb_gtk_watch_file(pcb_gtk_t *gctx, int fd, unsigned int condition,
 	return ret;
 }
 
-void pcb_gtk_unwatch_file(pcb_hidval_t data)
+void pcb_gtk_unwatch_file(pcb_hid_t *hid, pcb_hidval_t data)
 {
 	pcb_gtk_watch_t *watch = (pcb_gtk_watch_t *)data.ptr;
 

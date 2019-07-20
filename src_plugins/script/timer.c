@@ -110,7 +110,7 @@ static void start_timer(void)
 {
 	static pcb_hidval_t hv;
 	timer_running = 1;
-	pcb_gui->add_timer(timer_cb, 100, hv);
+	pcb_gui->add_timer(pcb_gui, timer_cb, 100, hv);
 }
 
 

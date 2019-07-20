@@ -196,7 +196,7 @@ static void nogui_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, in
 {
 }
 
-static pcb_hidval_t nogui_add_timer(void (*func) (pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
+static pcb_hidval_t nogui_add_timer(pcb_hid_t *hid, void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
 {
 	pcb_hidval_t rv;
 	CRASH("add_timer");
@@ -204,12 +204,12 @@ static pcb_hidval_t nogui_add_timer(void (*func) (pcb_hidval_t user_data), unsig
 	return rv;
 }
 
-static void nogui_stop_timer(pcb_hidval_t timer)
+static void nogui_stop_timer(pcb_hid_t *hid, pcb_hidval_t timer)
 {
 	CRASH("stop_timer");
 }
 
-static pcb_hidval_t nogui_watch_file(int fd, unsigned int condition, pcb_bool (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data)
+static pcb_hidval_t nogui_watch_file(pcb_hid_t *hid, int fd, unsigned int condition, pcb_bool (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data)
 {
 	pcb_hidval_t rv;
 	CRASH("watch_file");
@@ -217,7 +217,7 @@ static pcb_hidval_t nogui_watch_file(int fd, unsigned int condition, pcb_bool (*
 	return rv;
 }
 
-static void nogui_unwatch_file(pcb_hidval_t watch)
+static void nogui_unwatch_file(pcb_hid_t *hid, pcb_hidval_t watch)
 {
 	CRASH("unwatch_file");
 }

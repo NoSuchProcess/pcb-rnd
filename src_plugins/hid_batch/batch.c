@@ -251,23 +251,23 @@ static void batch_get_coords(pcb_hid_t *hid, const char *msg, pcb_coord_t *x, pc
 {
 }
 
-static void batch_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
+static void batch_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int action)
 {
 }
 
-static pcb_hidval_t batch_add_timer(void (*func) (pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
+static pcb_hidval_t batch_add_timer(pcb_hid_t *hid, void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
 {
 	pcb_hidval_t rv;
 	rv.lval = 0;
 	return rv;
 }
 
-static void batch_stop_timer(pcb_hidval_t timer)
+static void batch_stop_timer(pcb_hid_t *hid, pcb_hidval_t timer)
 {
 }
 
 pcb_hidval_t
-batch_watch_file(int fd, unsigned int condition, pcb_bool (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
+batch_watch_file(pcb_hid_t *hid, int fd, unsigned int condition, pcb_bool (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
 								 pcb_hidval_t user_data)
 {
 	pcb_hidval_t ret;
@@ -275,7 +275,7 @@ batch_watch_file(int fd, unsigned int condition, pcb_bool (*func) (pcb_hidval_t 
 	return ret;
 }
 
-void batch_unwatch_file(pcb_hidval_t data)
+void batch_unwatch_file(pcb_hid_t *hid, pcb_hidval_t data)
 {
 }
 

@@ -453,7 +453,7 @@ static int excellon_usage(const char *topic)
 	return 0;
 }
 
-static void excellon_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
+static void excellon_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int action)
 {
 }
 

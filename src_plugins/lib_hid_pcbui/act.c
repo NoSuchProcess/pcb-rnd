@@ -297,7 +297,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 /*pcb_trace("-jump-> %mm;%mm -> %mm;%mm\n", x, y, (pcb_coord_t)(x + xoffs), (pcb_coord_t)(y + yoffs));*/
 	pcb_gui->pan(pcb_round(x + xoffs), pcb_round(y + yoffs), 0);
-	pcb_gui->set_crosshair(x, y, HID_SC_PAN_VIEWPORT);
+	pcb_gui->set_crosshair(pcb_gui, x, y, HID_SC_PAN_VIEWPORT);
 
 	pcb_gui->invalidate_all(pcb_gui, &PCB->hidlib);
 

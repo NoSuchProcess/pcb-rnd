@@ -172,7 +172,7 @@ static int pcb_gui_progress(long so_far, long total, const char *message)
 		if (active) {
 			pcb_gui->attr_dlg_set_value(ctx.dlg_hid_ctx, wp, &val);
 			if (!have_timer) {
-				timer = pcb_gui->add_timer(progress_refresh_cb, REFRESH_RATE, timer);
+				timer = pcb_gui->add_timer(pcb_gui, progress_refresh_cb, REFRESH_RATE, timer);
 				have_timer = 1;
 			}
 			pcb_hid_iterate(pcb_gui);
@@ -191,7 +191,7 @@ static int pcb_gui_progress(long so_far, long total, const char *message)
 	if (so_far == 0 && total == 0 && message == NULL) {
 		if (active) {
 			if (have_timer) {
-				pcb_gui->stop_timer(timer);
+				pcb_gui->stop_timer(pcb_gui, timer);
 				have_timer = 0;
 			}
 			if (!closing) {
@@ -228,7 +228,7 @@ static int pcb_gui_progress(long so_far, long total, const char *message)
 		active = 1;
 		cancelled = 0;
 
-		timer = pcb_gui->add_timer(progress_refresh_cb, REFRESH_RATE, timer);
+		timer = pcb_gui->add_timer(pcb_gui, progress_refresh_cb, REFRESH_RATE, timer);
 		have_timer = 1;
 		closing = 0;
 	}

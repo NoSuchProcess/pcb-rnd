@@ -132,7 +132,7 @@ static void invoke(extedit_method_t *mth, const char *fn)
 			ctx.stay = 1;
 			ctx.fc = fc;
 			hd.ptr = &ctx;
-			ctx.wid = pcb_gui->watch_file(fd, PCB_WATCH_READABLE | PCB_WATCH_HANGUP, extedit_fd_watch, hd);
+			ctx.wid = pcb_gui->watch_file(pcb_gui, fd, PCB_WATCH_READABLE | PCB_WATCH_HANGUP, extedit_fd_watch, hd);
 			while(ctx.stay) {
 				if (pcb_gui != NULL) {
 					n++;

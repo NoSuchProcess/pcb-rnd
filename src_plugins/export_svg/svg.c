@@ -853,7 +853,7 @@ static void svg_calibrate(pcb_hid_t *hid, double xval, double yval)
 	return;
 }
 
-static void svg_set_crosshair(pcb_coord_t x, pcb_coord_t y, int a)
+static void svg_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int a)
 {
 }
 
