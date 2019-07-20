@@ -394,7 +394,7 @@ static void ltf_busy(pcb_hidlib_t *hidlib, pcb_bool busy)
 
 /* Local actions.  */
 
-static void PointCursor(pcb_bool grabbed)
+static void PointCursor(pcb_hid_t *hid, pcb_bool grabbed)
 {
 	if (grabbed > 0)
 		over_point = 1;

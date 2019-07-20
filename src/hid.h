@@ -475,7 +475,7 @@ struct pcb_hid_s {
 
 
 	/* Optional: change cursor to indicate if an object is grabbed (or not) */
-	void (*point_cursor)(pcb_bool grabbed);
+	void (*point_cursor)(pcb_hid_t *hid, pcb_bool grabbed);
 
 	/* Optional: when non-zero, the core renderer may decide to draw cheaper
 	   (simplified) approximation of some objects that would end up being too

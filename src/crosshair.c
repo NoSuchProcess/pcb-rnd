@@ -967,11 +967,11 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_LINE_POINT, &ptr1, &ptr2, &ptr3);
 		if (ans == PCB_OBJ_VOID) {
 			if ((pcb_gui != NULL) && (pcb_gui->point_cursor != NULL))
-				pcb_gui->point_cursor(pcb_false);
+				pcb_gui->point_cursor(pcb_gui, pcb_false);
 		}
 		else if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_line_t *) ptr2)) {
 			if ((pcb_gui != NULL) && (pcb_gui->point_cursor != NULL))
-				pcb_gui->point_cursor(pcb_true);
+				pcb_gui->point_cursor(pcb_gui, pcb_true);
 		}
 	}
 

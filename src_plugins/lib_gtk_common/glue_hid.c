@@ -310,7 +310,7 @@ static void ghid_attributes(pcb_hid_t *hid, const char *owner, pcb_attribute_lis
 	pcb_gtk_dlg_attributes(ghidgui->port.top_window, owner, attrs);
 }
 
-static void PointCursor(pcb_bool grabbed)
+static void PointCursor(pcb_hid_t *hid, pcb_bool grabbed)
 {
 	if (!ghidgui)
 		return;
