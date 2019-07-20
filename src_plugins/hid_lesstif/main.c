@@ -372,7 +372,7 @@ static const char *cur_clip()
 }
 
 /* Called from the core when it's busy doing something and we need to indicate that to the user.  */
-static void ltf_busy(pcb_hidlib_t *hidlib, pcb_bool busy)
+static void ltf_busy(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_bool busy)
 {
 	static Cursor busy_cursor = 0;
 	if (!lesstif_active)
@@ -3007,7 +3007,7 @@ static void ltf_set_mouse_cursor(pcb_hid_t *hid, pcb_hidlib_t *hidlib, int idx)
 {
 }
 
-static void ltf_set_top_title(pcb_hidlib_t *hidlib, const char *title)
+static void ltf_set_top_title(pcb_hid_t *hid, pcb_hidlib_t *hidlib, const char *title)
 {
 	stdarg_n = 0;
 	stdarg(XmNtitle, title);

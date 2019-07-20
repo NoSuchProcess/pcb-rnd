@@ -466,7 +466,7 @@ static void nogui_set_mouse_cursor(pcb_hid_t *hid, pcb_hidlib_t *hidlib, int idx
 {
 }
 
-static void nogui_set_top_title(pcb_hidlib_t *hidlib, const char *title)
+static void nogui_set_top_title(pcb_hid_t *hid, pcb_hidlib_t *hidlib, const char *title)
 {
 }
 

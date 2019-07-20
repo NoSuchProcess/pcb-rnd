@@ -546,10 +546,10 @@ struct pcb_hid_s {
 	void (*set_mouse_cursor)(pcb_hid_t *hid, pcb_hidlib_t *hidlib, int idx);
 
 	/* change top window title any time the after the GUI_INIT event */
-	void (*set_top_title)(pcb_hidlib_t *hidlib, const char *title);
+	void (*set_top_title)(pcb_hid_t *hid, pcb_hidlib_t *hidlib, const char *title);
 
 	/* OPTIONAL: override the mouse cursor to indicate busy state */
-	void (*busy)(pcb_hidlib_t *hidlib, pcb_bool busy);
+	void (*busy)(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_bool busy);
 
 	/* this field is used by that HID implementation to store its data */
 	void *hid_data;
@@ -629,7 +629,7 @@ void pcb_hid_dock_leave(pcb_hid_dad_subdialog_t *sub);
 do { \
 	pcb_event(&pcb->hidlib, PCB_EVENT_BUSY, "i", is_busy, NULL); \
 	if ((pcb_gui != NULL) && (pcb_gui->busy != NULL)) \
-		pcb_gui->busy(&pcb->hidlib, is_busy); \
+		pcb_gui->busy(pcb_gui, &pcb->hidlib, is_busy); \
 } while(0)
 
 #endif

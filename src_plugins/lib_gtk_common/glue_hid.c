@@ -533,12 +533,12 @@ static void ghid_set_mouse_cursor(pcb_hid_t *hid, pcb_hidlib_t *hidlib, int idx)
 	ghid_port_set_mouse_cursor(ghidgui, idx);
 }
 
-static void ghid_set_top_title(pcb_hidlib_t *hidlib, const char *title)
+static void ghid_set_top_title(pcb_hid_t *hid, pcb_hidlib_t *hidlib, const char *title)
 {
 	pcb_gtk_tw_set_title(&ghidgui->topwin, title);
 }
 
-static void ghid_busy(pcb_hidlib_t *hidlib, pcb_bool busy)
+static void ghid_busy(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_bool busy)
 {
 	if ((ghidgui == NULL) || (!ghidgui->hid_active))
 		return;
