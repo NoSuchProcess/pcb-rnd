@@ -29,7 +29,7 @@
 extern pcb_hid_t gtk2_gl_hid;
 
 static pcb_hid_gc_t current_gc = NULL;
-/* Sets gport->u_gc to the "right" GC to use (wrt mask or window)
+/* Sets ghidgui->port.u_gc to the "right" GC to use (wrt mask or window)
 */
 #define USE_GC(gc) if (!use_gc(gc)) return
 
@@ -62,7 +62,7 @@ typedef struct hid_gc_s {
 
 void ghid_gl_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
 {
-	pcb_gui->coord_per_pix = gport->view.coord_per_px;
+	pcb_gui->coord_per_pix = ghidgui->port.view.coord_per_px;
 }
 
 static const gchar *get_color_name(pcb_gtk_color_t *color)
@@ -100,7 +100,7 @@ static pcb_bool map_color_string(const char *color_string, pcb_gtk_color_t *colo
 #if 0
 static void start_subcomposite(void)
 {
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 	int stencil_bit;
 
 	/* Flush out any existing geometry to be rendered */
@@ -118,7 +118,7 @@ static void start_subcomposite(void)
 
 static void end_subcomposite(void)
 {
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 
 	/* Flush out any existing geometry to be rendered */
 	hidgl_flush_triangles();
@@ -135,14 +135,14 @@ static void end_subcomposite(void)
 
 int ghid_gl_set_layer_group(pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glTranslatef(0.0f, 0.0f, -Z_NEAR);
 
-	glScalef((pcbhl_conf.editor.view.flip_x ? -1. : 1.) / gport->view.coord_per_px, (pcbhl_conf.editor.view.flip_y ? -1. : 1.) / gport->view.coord_per_px, ((pcbhl_conf.editor.view.flip_x == pcbhl_conf.editor.view.flip_y) ? 1. : -1.) / gport->view.coord_per_px);
-	glTranslatef(pcbhl_conf.editor.view.flip_x ? gport->view.x0 - hidlib->size_x : -gport->view.x0, pcbhl_conf.editor.view.flip_y ? gport->view.y0 - hidlib->size_y : -gport->view.y0, 0);
+	glScalef((pcbhl_conf.editor.view.flip_x ? -1. : 1.) / ghidgui->port.view.coord_per_px, (pcbhl_conf.editor.view.flip_y ? -1. : 1.) / ghidgui->port.view.coord_per_px, ((pcbhl_conf.editor.view.flip_x == pcbhl_conf.editor.view.flip_y) ? 1. : -1.) / ghidgui->port.view.coord_per_px);
+	glTranslatef(pcbhl_conf.editor.view.flip_x ? ghidgui->port.view.x0 - hidlib->size_x : -ghidgui->port.view.x0, pcbhl_conf.editor.view.flip_y ? ghidgui->port.view.y0 - hidlib->size_y : -ghidgui->port.view.y0, 0);
 
 	/* Put the renderer into a good state so that any drawing is done in standard mode */
 
@@ -187,7 +187,7 @@ void ghid_gl_draw_grid_local(pcb_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t c
 
 static void ghid_gl_draw_grid(pcb_hidlib_t *hidlib, pcb_box_t *drawn_area)
 {
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 
 	if ((Vz(hidlib->grid) < PCB_MIN_GRID_DISTANCE) || (!pcbhl_conf.editor.draw_grid))
 		return;
@@ -269,7 +269,7 @@ static void ghid_gl_draw_bg_image(pcb_hidlib_t *hidlib)
 	 */
 static void set_special_grid_color(void)
 {
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 
 	priv->grid_color.red ^= priv->bg_color.red;
 	priv->grid_color.green ^= priv->bg_color.green;
@@ -278,7 +278,7 @@ static void set_special_grid_color(void)
 
 void ghid_gl_set_special_colors(conf_native_t *cfg)
 {
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 
 	if (((CFT_COLOR *) cfg->val.color == &pcbhl_conf.appearance.color.background)) {
 		map_color_string(cfg->val.color[0].str, &priv->bg_color);
@@ -304,7 +304,7 @@ typedef struct {
 
 static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 {
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 	static void *cache = NULL;
 	static GdkColormap *colormap = NULL;
 	pcb_hidval_t cval;
@@ -324,7 +324,7 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 	priv->current_alpha_mult = gc->alpha_mult;
 
 	if (colormap == NULL)
-		colormap = gtk_widget_get_colormap(gport->top_window);
+		colormap = gtk_widget_get_colormap(ghidgui->port.top_window);
 	TODO("color: Do not depend on manual strcmp here - use pcb_color_is_drill()");
 	if (pcb_color_is_drill(gc->pcolor)) {
 		r = priv->offlimits_color.red / 65535.;
@@ -425,7 +425,7 @@ void ghid_gl_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 
 void ghid_gl_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 {
-	gc->width = width < 0 ? (-width) * gport->view.coord_per_px : width;
+	gc->width = width < 0 ? (-width) * ghidgui->port.view.coord_per_px : width;
 }
 
 
@@ -473,14 +473,14 @@ static void ghid_gl_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, p
 {
 	USE_GC(gc);
 
-	hidgl_draw_line(gc->core_gc.cap, gc->width, x1, y1, x2, y2, gport->view.coord_per_px);
+	hidgl_draw_line(gc->core_gc.cap, gc->width, x1, y1, x2, y2, ghidgui->port.view.coord_per_px);
 }
 
 static void ghid_gl_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t xradius, pcb_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	USE_GC(gc);
 
-	hidgl_draw_arc(gc->width, cx, cy, xradius, yradius, start_angle, delta_angle, gport->view.coord_per_px);
+	hidgl_draw_arc(gc->width, cx, cy, xradius, yradius, start_angle, delta_angle, ghidgui->port.view.coord_per_px);
 }
 
 static void ghid_gl_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
@@ -495,7 +495,7 @@ static void ghid_gl_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy,
 {
 	USE_GC(gc);
 
-	hidgl_fill_circle(cx, cy, radius, gport->view.coord_per_px);
+	hidgl_fill_circle(cx, cy, radius, ghidgui->port.view.coord_per_px);
 }
 
 
@@ -525,7 +525,7 @@ static int preview_lock = 0;
 void ghid_gl_invalidate_all(pcb_hidlib_t *hidlib)
 {
 	if (ghidgui && ghidgui->topwin.menu.menu_bar) {
-		ghid_draw_area_update(gport, NULL);
+		ghid_draw_area_update(&ghidgui->port, NULL);
 		if (!preview_lock) {
 			preview_lock++;
 			pcb_gtk_previews_invalidate_all();
@@ -547,7 +547,7 @@ void ghid_gl_invalidate_lr(pcb_hidlib_t *hidlib, pcb_coord_t left, pcb_coord_t r
 static void ghid_gl_notify_crosshair_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
 {
 	/* We sometimes get called before the GUI is up */
-	if (gport->drawing_area == NULL)
+	if (ghidgui->port.drawing_area == NULL)
 		return;
 
 	/* FIXME: We could just invalidate the bounds of the crosshair attached objects? */
@@ -557,7 +557,7 @@ static void ghid_gl_notify_crosshair_change(pcb_hidlib_t *hidlib, pcb_bool chang
 static void ghid_gl_notify_mark_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
 {
 	/* We sometimes get called before the GUI is up */
-	if (gport->drawing_area == NULL)
+	if (ghidgui->port.drawing_area == NULL)
 		return;
 
 	/* FIXME: We could just invalidate the bounds of the mark? */
@@ -653,7 +653,7 @@ static void pcb_gl_draw_crosshair(pcb_hidlib_t *hidlib, GLint x, GLint y, GLint 
 {
 	static enum pcb_crosshair_shape_e prev = pcb_ch_shape_basic;
 
-	if (gport->view.crosshair_x < 0 || !ghidgui->topwin.active || !gport->view.has_entered)
+	if (ghidgui->port.view.crosshair_x < 0 || !ghidgui->topwin.active || !ghidgui->port.view.has_entered)
 		return;
 
 	pcb_gl_draw_right_cross(hidlib, x, y, z);
@@ -678,8 +678,8 @@ static void ghid_gl_show_crosshair(pcb_hidlib_t *hidlib, gboolean paint_new_loca
 		/* FIXME: when CrossColor changed from config */
 		map_color_string(pcbhl_conf.appearance.color.cross.str, &cross_color);
 	}
-	x = gport->view.crosshair_x;
-	y = gport->view.crosshair_y;
+	x = ghidgui->port.view.crosshair_x;
+	y = ghidgui->port.view.crosshair_y;
 	z = 0;
 
 	glEnable(GL_COLOR_LOGIC_OP);
@@ -738,7 +738,7 @@ static void ghid_gl_drawing_area_configure_hook(void *port)
 	pcb_gtk_port_t *p = port;
 	render_priv_t *priv = p->render_priv;
 
-	gport->drawing_allowed = pcb_true;
+	ghidgui->port.drawing_allowed = pcb_true;
 
 	if (!done_once) {
 		if (!map_color_string(pcbhl_conf.appearance.color.background.str, &priv->bg_color))
@@ -916,8 +916,8 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	GdkGLContext *pGlContext = gtk_widget_get_gl_context(widget);
 	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
 	GtkAllocation allocation;
-	render_priv_t *priv = gport->render_priv;
-	pcb_hidlib_t *hidlib = gport->view.com->hidlib;
+	render_priv_t *priv = ghidgui->port.render_priv;
+	pcb_hidlib_t *hidlib = ghidgui->port.view.com->hidlib;
 	pcb_gtk_view_t save_view;
 	int save_width, save_height;
 	double xz, yz, vw, vh;
@@ -928,9 +928,9 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	vw = ctx->view.X2 - ctx->view.X1;
 	vh = ctx->view.Y2 - ctx->view.Y1;
 
-	save_view = gport->view;
-	save_width = gport->view.canvas_width;
-	save_height = gport->view.canvas_height;
+	save_view = ghidgui->port.view;
+	save_width = ghidgui->port.view.canvas_width;
+	save_height = ghidgui->port.view.canvas_height;
 	save_cpp = pcb_gui->coord_per_pix;
 
 	/* Setup zoom factor for drawing routines */
@@ -940,16 +940,16 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	yz = vh / (double)allocation.height;
 
 	if (xz > yz)
-		gport->view.coord_per_px = xz;
+		ghidgui->port.view.coord_per_px = xz;
 	else
-		gport->view.coord_per_px = yz;
+		ghidgui->port.view.coord_per_px = yz;
 
-	gport->view.canvas_width = allocation.width;
-	gport->view.canvas_height = allocation.height;
-	gport->view.width = allocation.width * gport->view.coord_per_px;
-	gport->view.height = allocation.height * gport->view.coord_per_px;
-	gport->view.x0 = (vw - gport->view.width) / 2 + ctx->view.X1;
-	gport->view.y0 = (vh - gport->view.height) / 2 + ctx->view.Y1;
+	ghidgui->port.view.canvas_width = allocation.width;
+	ghidgui->port.view.canvas_height = allocation.height;
+	ghidgui->port.view.width = allocation.width * ghidgui->port.view.coord_per_px;
+	ghidgui->port.view.height = allocation.height * ghidgui->port.view.coord_per_px;
+	ghidgui->port.view.x0 = (vw - ghidgui->port.view.width) / 2 + ctx->view.X1;
+	ghidgui->port.view.y0 = (vh - ghidgui->port.view.height) / 2 + ctx->view.Y1;
 
 	PCB_GTK_PREVIEW_TUNE_EXTENT(ctx, allocation);
 
@@ -957,7 +957,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	if (!gdk_gl_drawable_gl_begin(pGlDrawable, pGlContext)) {
 		return FALSE;
 	}
-	gport->render_priv->in_context = pcb_true;
+	ghidgui->port.render_priv->in_context = pcb_true;
 
 	gtk2gl_color(&bg_c, &priv->bg_color);
 
@@ -987,10 +987,10 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	/* call the drawing routine */
 	ghid_gl_invalidate_current_gc();
 	glPushMatrix();
-	glScalef((pcbhl_conf.editor.view.flip_x ? -1. : 1.) / gport->view.coord_per_px, (pcbhl_conf.editor.view.flip_y ? -1. : 1.) / gport->view.coord_per_px, 1);
-	glTranslatef(pcbhl_conf.editor.view.flip_x ? gport->view.x0 - hidlib->size_x : -gport->view.x0, pcbhl_conf.editor.view.flip_y ? gport->view.y0 - hidlib->size_y : -gport->view.y0, 0);
+	glScalef((pcbhl_conf.editor.view.flip_x ? -1. : 1.) / ghidgui->port.view.coord_per_px, (pcbhl_conf.editor.view.flip_y ? -1. : 1.) / ghidgui->port.view.coord_per_px, 1);
+	glTranslatef(pcbhl_conf.editor.view.flip_x ? ghidgui->port.view.x0 - hidlib->size_x : -ghidgui->port.view.x0, pcbhl_conf.editor.view.flip_y ? ghidgui->port.view.y0 - hidlib->size_y : -ghidgui->port.view.y0, 0);
 
-	pcb_gui->coord_per_pix = gport->view.coord_per_px;
+	pcb_gui->coord_per_pix = ghidgui->port.view.coord_per_px;
 	expcall(&gtk2_gl_hid, ctx);
 
 	drawgl_flush();
@@ -1002,7 +1002,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 		glFlush();
 
 	/* end drawing to current GL-context */
-	gport->render_priv->in_context = pcb_false;
+	ghidgui->port.render_priv->in_context = pcb_false;
 	gdk_gl_drawable_gl_end(pGlDrawable);
 
 	/* restore the original context and priv */
@@ -1011,9 +1011,9 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	ctx->view.Y1 = oy1;
 	ctx->view.Y2 = oy2;
 	pcb_gui->coord_per_pix = save_cpp;
-	gport->view = save_view;
-	gport->view.canvas_width = save_width;
-	gport->view.canvas_height = save_height;
+	ghidgui->port.view = save_view;
+	ghidgui->port.view.canvas_width = save_width;
+	ghidgui->port.view.canvas_height = save_height;
 
 	return FALSE;
 }
@@ -1022,7 +1022,7 @@ static GtkWidget *ghid_gl_new_drawing_widget(pcb_gtk_impl_t *impl)
 {
 	GtkWidget *w = gtk_drawing_area_new();
 
-	g_signal_connect(G_OBJECT(w), "expose_event", G_CALLBACK(common->drawing_area_expose), common->gport);
+	g_signal_connect(G_OBJECT(w), "expose_event", G_CALLBACK(impl->drawing_area_expose), impl->gport);
 
 	return w;
 }

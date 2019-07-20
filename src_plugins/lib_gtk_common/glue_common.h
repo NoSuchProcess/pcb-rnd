@@ -39,7 +39,7 @@ void pcb_gtk_previews_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coo
 void pcb_gtk_previews_invalidate_all(void);
 
 /*** Internal calls, hid implementations won't need these ***/
-void pcb_gtk_tw_ranges_scale(pcb_gtk_topwin_t *tw);
+void pcb_gtk_tw_ranges_scale(pcb_gtk_t *ctx);
 void pcb_gtk_note_event_location(GdkEventButton *ev);
 
 void pcb_gtk_interface_input_signals_connect(void);

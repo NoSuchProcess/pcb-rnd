@@ -95,10 +95,10 @@ static gint ghid_port_window_motion_cb(GtkWidget * widget, GdkEventMotion * ev, 
 	gdk_event_request_motions(ev);
 
 	if (out->view.panning) {
-		dx = gport->view.coord_per_px * (x_prev - ev->x);
-		dy = gport->view.coord_per_px * (y_prev - ev->y);
+		dx = ghidgui->port.view.coord_per_px * (x_prev - ev->x);
+		dy = ghidgui->port.view.coord_per_px * (y_prev - ev->y);
 		if (x_prev > 0)
-			pcb_gtk_pan_view_rel(&gport->view, dx, dy);
+			pcb_gtk_pan_view_rel(&ghidgui->port.view, dx, dy);
 		x_prev = ev->x;
 		y_prev = ev->y;
 		return FALSE;
@@ -120,18 +120,18 @@ static void ghdi_gui_inited(int main, int conf)
 	if (im && ic && first) {
 		first = 0;
 		pcb_event(ghidgui->hidlib, PCB_EVENT_GUI_INIT, NULL);
-		pcb_gtk_zoom_view_win_side(&gport->view, 0, 0, ghidgui->hidlib->size_x, ghidgui->hidlib->size_y, 0);
+		pcb_gtk_zoom_view_win_side(&ghidgui->port.view, 0, 0, ghidgui->hidlib->size_x, ghidgui->hidlib->size_y, 0);
 	}
 }
 static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, void * out)
 {
-	gport->view.canvas_width = ev->width;
-	gport->view.canvas_height = ev->height;
+	ghidgui->port.view.canvas_width = ev->width;
+	ghidgui->port.view.canvas_height = ev->height;
 
 	ghidgui->impl.drawing_area_configure_hook(out);
 	ghdi_gui_inited(0, 1);
 
-	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);
+	pcb_gtk_tw_ranges_scale(ghidgui);
 	pcb_gui->invalidate_all(ghidgui->hidlib);
 	return 0;
 }
@@ -151,22 +151,22 @@ static void gtkhid_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_
 	ghid_keymap.auto_chr = 1;
 	ghid_keymap.auto_tr = hid_cfg_key_default_trans;
 
-	ghid_create_pcb_widgets(ctx, &ctx->topwin, gport->top_window);
+	ghid_create_pcb_widgets(ctx, &ctx->topwin, ghidgui->port.top_window);
 
 	/* assume pcb_gui is us */
 	pcb_gui->hid_cfg = ctx->topwin.ghid_cfg;
 
-	gport->drawing_area = ctx->topwin.drawing_area;
+	ghidgui->port.drawing_area = ctx->topwin.drawing_area;
 
 TODO(": move this to render init")
 	/* Mouse and key events will need to be intercepted when PCB needs a
 	   |  location from the user.
 	 */
-	g_signal_connect(G_OBJECT(gport->drawing_area), "scroll_event", G_CALLBACK(ghid_port_window_mouse_scroll_cb), gport->mouse);
-	g_signal_connect(G_OBJECT(gport->drawing_area), "motion_notify_event", G_CALLBACK(ghid_port_window_motion_cb), gport);
-	g_signal_connect(G_OBJECT(gport->drawing_area), "configure_event", G_CALLBACK(ghid_port_drawing_area_configure_event_cb), gport);
-	g_signal_connect(G_OBJECT(gport->drawing_area), "enter_notify_event", G_CALLBACK(ghid_port_window_enter_cb), gport);
-	g_signal_connect(G_OBJECT(gport->drawing_area), "leave_notify_event", G_CALLBACK(ghid_port_window_leave_cb), gport);
+	g_signal_connect(G_OBJECT(ghidgui->port.drawing_area), "scroll_event", G_CALLBACK(ghid_port_window_mouse_scroll_cb), ghidgui->port.mouse);
+	g_signal_connect(G_OBJECT(ghidgui->port.drawing_area), "motion_notify_event", G_CALLBACK(ghid_port_window_motion_cb), &ghidgui->port);
+	g_signal_connect(G_OBJECT(ghidgui->port.drawing_area), "configure_event", G_CALLBACK(ghid_port_drawing_area_configure_event_cb), &ghidgui->port);
+	g_signal_connect(G_OBJECT(ghidgui->port.drawing_area), "enter_notify_event", G_CALLBACK(ghid_port_window_enter_cb), &ghidgui->port);
+	g_signal_connect(G_OBJECT(ghidgui->port.drawing_area), "leave_notify_event", G_CALLBACK(ghid_port_window_leave_cb), &ghidgui->port);
 
 	pcb_gtk_interface_input_signals_connect();
 
@@ -180,7 +180,7 @@ TODO(": move this to render init")
 	/* Make sure drawing area has keyboard focus so that keys are handled
 	   while the mouse cursor is over the top window or children widgets,
 	   before first entering the drawing area */
-	gtk_widget_grab_focus(gport->drawing_area);
+	gtk_widget_grab_focus(ghidgui->port.drawing_area);
 
 	gtk_main();
 	pcb_hid_cfg_keys_uninit(&ghid_keymap);
@@ -242,18 +242,17 @@ TODO("This needs to be done centrally, and should not use PCB_PACKAGE but pcbhl_
 		return 1; /* recoverable error - try another HID */
 	}
 
-	gport = &ghid_port;
-	gport->view.use_max_pcb = 1;
-	gport->view.coord_per_px = 300.0;
+	ghidgui->port.view.use_max_pcb = 1;
+	ghidgui->port.view.coord_per_px = 300.0;
 	pcb_pixel_slop = 300;
 
-	ctx->impl.init_renderer(argc, argv, gport);
-	ctx->wtop_window = window = gport->top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	ctx->impl.init_renderer(argc, argv, &ghidgui->port);
+	ctx->wtop_window = window = ghidgui->port.top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
 	pcb_gtk_topwinplace(ctx->hidlib, window, "top");
 	gtk_window_set_title(GTK_WINDOW(window), "pcb-rnd");
 
-	gtk_widget_show_all(gport->top_window);
+	gtk_widget_show_all(ghidgui->port.top_window);
 	return 0;
 }
 
@@ -266,17 +265,17 @@ static void ghid_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
 {
 	int offset_x, offset_y;
 
-	if ((gport->drawing_area == NULL) || (ghidgui->hidlib == NULL))
+	if ((ghidgui->port.drawing_area == NULL) || (ghidgui->hidlib == NULL))
 		return;
 
 	ghidgui->impl.draw_grid_local(ghidgui->hidlib, x, y);
-	gdk_window_get_origin(gtk_widget_get_window(gport->drawing_area), &offset_x, &offset_y);
-	pcb_gtk_crosshair_set(x, y, action, offset_x, offset_y, &gport->view);
+	gdk_window_get_origin(gtk_widget_get_window(ghidgui->port.drawing_area), &offset_x, &offset_y);
+	pcb_gtk_crosshair_set(x, y, action, offset_x, offset_y, &ghidgui->port.view);
 }
 
 static void ghid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)
 {
-	pcb_gtk_get_coords(ghidgui, &gport->view, msg, x, y, force);
+	pcb_gtk_get_coords(ghidgui, &ghidgui->port.view, msg, x, y, force);
 }
 
 pcb_hidval_t ghid_add_timer(void (*func) (pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
@@ -308,7 +307,7 @@ static void ghid_beep()
 
 static void ghid_attributes(const char *owner, pcb_attribute_list_t * attrs)
 {
-	pcb_gtk_dlg_attributes(ghid_port.top_window, owner, attrs);
+	pcb_gtk_dlg_attributes(ghidgui->port.top_window, owner, attrs);
 }
 
 static void PointCursor(pcb_bool grabbed)
@@ -417,8 +416,8 @@ static double ghid_benchmark(void)
 	GdkDisplay *display;
 	GdkWindow *window;
 
-	window = gtk_widget_get_window(gport->drawing_area);
-	display = gtk_widget_get_display(gport->drawing_area);
+	window = gtk_widget_get_window(ghidgui->port.drawing_area);
+	display = gtk_widget_get_display(ghidgui->port.drawing_area);
 
 	gdk_display_sync(display);
 	time(&start);
@@ -445,36 +444,36 @@ static void ghid_dock_leave(pcb_hid_dad_subdialog_t *sub)
 
 static void ghid_zoom_win(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_bool set_crosshair)
 {
-	pcb_gtk_zoom_view_win_side(&gport->view, x1, y1, x2, y2, set_crosshair);
+	pcb_gtk_zoom_view_win_side(&ghidgui->port.view, x1, y1, x2, y2, set_crosshair);
 }
 
 static void ghid_zoom(pcb_coord_t center_x, pcb_coord_t center_y, double factor, int relative)
 {
 	if (relative)
-		pcb_gtk_zoom_view_rel(&gport->view, center_x, center_y, factor);
+		pcb_gtk_zoom_view_rel(&ghidgui->port.view, center_x, center_y, factor);
 	else
-		pcb_gtk_zoom_view_abs(&gport->view, center_x, center_y, factor);
+		pcb_gtk_zoom_view_abs(&ghidgui->port.view, center_x, center_y, factor);
 }
 
 static void ghid_pan(pcb_coord_t x, pcb_coord_t y, int relative)
 {
 	if (relative)
-		pcb_gtk_pan_view_rel(&gport->view, x, y);
+		pcb_gtk_pan_view_rel(&ghidgui->port.view, x, y);
 	else
-		pcb_gtk_pan_view_abs(&gport->view, x, y, gport->view.canvas_width/2.0, gport->view.canvas_height/2.0);
+		pcb_gtk_pan_view_abs(&ghidgui->port.view, x, y, ghidgui->port.view.canvas_width/2.0, ghidgui->port.view.canvas_height/2.0);
 }
 
 static void ghid_pan_mode(pcb_coord_t x, pcb_coord_t y, pcb_bool mode)
 {
-	gport->view.panning = mode;
+	ghidgui->port.view.panning = mode;
 }
 
 static void ghid_view_get(pcb_hidlib_t *hidlib, pcb_box_t *viewbox)
 {
-	viewbox->X1 = gport->view.x0;
-	viewbox->Y1 = gport->view.y0;
-	viewbox->X2 = pcb_round((double)gport->view.x0 + (double)gport->view.canvas_width * gport->view.coord_per_px);
-	viewbox->Y2 = pcb_round((double)gport->view.y0 + (double)gport->view.canvas_height * gport->view.coord_per_px);
+	viewbox->X1 = ghidgui->port.view.x0;
+	viewbox->Y1 = ghidgui->port.view.y0;
+	viewbox->X2 = pcb_round((double)ghidgui->port.view.x0 + (double)ghidgui->port.view.canvas_width * ghidgui->port.view.coord_per_px);
+	viewbox->Y2 = pcb_round((double)ghidgui->port.view.y0 + (double)ghidgui->port.view.canvas_height * ghidgui->port.view.coord_per_px);
 }
 
 static void ghid_open_command(void)
@@ -496,9 +495,9 @@ static int ghid_open_popup(const char *menupath)
 		return 1;
 	}
 
-	gtk_widget_grab_focus(ghid_port.drawing_area);
+	gtk_widget_grab_focus(ghidgui->port.drawing_area);
 	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time());
-	gtk_window_set_transient_for(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menu))), GTK_WINDOW(gtk_widget_get_toplevel(ghid_port.drawing_area)));
+	gtk_window_set_transient_for(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menu))), GTK_WINDOW(gtk_widget_get_toplevel(ghidgui->port.drawing_area)));
 	return 0;
 }
 
@@ -517,11 +516,11 @@ static void ghid_set_hidlib(pcb_hidlib_t *hidlib)
 	if (hidlib == NULL)
 		return;
 
-	if (!gport->drawing_allowed)
+	if (!ghidgui->port.drawing_allowed)
 		return;
 
-	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);
-	pcb_gtk_zoom_view_win_side(&gport->view, 0, 0, hidlib->size_x, hidlib->size_y, 0);
+	pcb_gtk_tw_ranges_scale(ghidgui);
+	pcb_gtk_zoom_view_win_side(&ghidgui->port.view, 0, 0, hidlib->size_x, hidlib->size_y, 0);
 }
 
 static void ghid_reg_mouse_cursor(pcb_hidlib_t *hidlib, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
@@ -541,7 +540,7 @@ static void ghid_set_top_title(pcb_hidlib_t *hidlib, const char *title)
 
 static void ghid_busy(pcb_hidlib_t *hidlib, pcb_bool busy)
 {
-	if ((gport == NULL) || (!ghidgui->hid_active))
+	if ((ghidgui == NULL) || (!ghidgui->hid_active))
 		return;
 	if (busy)
 		ghid_watch_cursor(ghidgui);
@@ -552,7 +551,7 @@ static void ghid_busy(pcb_hidlib_t *hidlib, pcb_bool busy)
 static int ghid_shift_is_pressed()
 {
 	GdkModifierType mask;
-	pcb_gtk_port_t *out = &ghid_port;
+	pcb_gtk_port_t *out = &ghidgui->port;
 
 	if (!ghidgui->gui_is_up)
 		return 0;
@@ -570,7 +569,7 @@ static int ghid_shift_is_pressed()
 static int ghid_control_is_pressed()
 {
 	GdkModifierType mask;
-	pcb_gtk_port_t *out = &ghid_port;
+	pcb_gtk_port_t *out = &ghidgui->port;
 
 	if (!ghidgui->gui_is_up)
 		return 0;
@@ -588,7 +587,7 @@ static int ghid_control_is_pressed()
 static int ghid_mod1_is_pressed()
 {
 	GdkModifierType mask;
-	pcb_gtk_port_t *out = &ghid_port;
+	pcb_gtk_port_t *out = &ghidgui->port;
 
 	if (!ghidgui->gui_is_up)
 		return 0;

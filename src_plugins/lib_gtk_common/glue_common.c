@@ -40,7 +40,6 @@
 #include "wt_preview.h"
 
 pcb_gtk_t _ghidgui, *ghidgui = &_ghidgui;
-pcb_gtk_port_t ghid_port, *gport;
 
 /*** win32 workarounds ***/
 
@@ -149,14 +148,17 @@ static void ghid_conf_regs(const char *cookie)
 
 /* Do scrollbar scaling based on current port drawing area size and
    overall PCB board size. */
-void pcb_gtk_tw_ranges_scale(pcb_gtk_topwin_t *tw)
+void pcb_gtk_tw_ranges_scale(pcb_gtk_t *ctx)
 {
+	pcb_gtk_topwin_t *tw = &ctx->topwin;
+	pcb_gtk_view_t *view = &ctx->port.view;
+
 	/* Update the scrollbars with PCB units. So Scale the current drawing area
 	   size in pixels to PCB units and that will be the page size for the Gtk adjustment. */
-	pcb_gtk_zoom_post(&gport->view);
+	pcb_gtk_zoom_post(view);
 
-	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->h_range)), gport->view.width, ghidgui->hidlib->size_x);
-	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->v_range)), gport->view.height, ghidgui->hidlib->size_y);
+	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->h_range)), view->width, ghidgui->hidlib->size_x);
+	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->v_range)), view->height, ghidgui->hidlib->size_y);
 }
 
 void pcb_gtk_port_ranges_changed(void)
@@ -165,8 +167,8 @@ void pcb_gtk_port_ranges_changed(void)
 
 	h_adj = gtk_range_get_adjustment(GTK_RANGE(ghidgui->topwin.h_range));
 	v_adj = gtk_range_get_adjustment(GTK_RANGE(ghidgui->topwin.v_range));
-	gport->view.x0 = gtk_adjustment_get_value(h_adj);
-	gport->view.y0 = gtk_adjustment_get_value(v_adj);
+	ghidgui->port.view.x0 = gtk_adjustment_get_value(h_adj);
+	ghidgui->port.view.y0 = gtk_adjustment_get_value(v_adj);
 
 	pcb_gui->invalidate_all(ghidgui->hidlib);
 }
@@ -174,8 +176,8 @@ void pcb_gtk_port_ranges_changed(void)
 void pcb_gtk_pan_common(void)
 {
 	ghidgui->topwin.adjustment_changed_holdoff = TRUE;
-	gtk_range_set_value(GTK_RANGE(ghidgui->topwin.h_range), gport->view.x0);
-	gtk_range_set_value(GTK_RANGE(ghidgui->topwin.v_range), gport->view.y0);
+	gtk_range_set_value(GTK_RANGE(ghidgui->topwin.h_range), ghidgui->port.view.x0);
+	gtk_range_set_value(GTK_RANGE(ghidgui->topwin.v_range), ghidgui->port.view.y0);
 	ghidgui->topwin.adjustment_changed_holdoff = FALSE;
 
 	pcb_gtk_port_ranges_changed();
@@ -187,13 +189,13 @@ static void command_post_entry(void)
 	pcb_gtk_interface_input_signals_connect();
 #endif
 	pcb_gtk_interface_set_sensitive(TRUE);
-	ghid_install_accel_groups(GTK_WINDOW(gport->top_window), &ghidgui->topwin);
-	gtk_widget_grab_focus(gport->drawing_area);
+	ghid_install_accel_groups(GTK_WINDOW(ghidgui->port.top_window), &ghidgui->topwin);
+	gtk_widget_grab_focus(ghidgui->port.drawing_area);
 }
 
 static void command_pre_entry(void)
 {
-	ghid_remove_accel_groups(GTK_WINDOW(gport->top_window), &ghidgui->topwin);
+	ghid_remove_accel_groups(GTK_WINDOW(ghidgui->port.top_window), &ghidgui->topwin);
 #if PCB_GTK_DISABLE_MOUSE_DURING_CMD_ENTRY
 	pcb_gtk_interface_input_signals_disconnect();
 #endif
@@ -214,7 +216,7 @@ void pcb_gtk_mode_cursor_main(void)
 
 static void kbd_input_signals_connect(int idx, void *obj)
 {
-	ghidgui->key_press_handler[idx] = g_signal_connect(G_OBJECT(obj), "key_press_event", G_CALLBACK(ghid_port_key_press_cb), &ghid_port.view);
+	ghidgui->key_press_handler[idx] = g_signal_connect(G_OBJECT(obj), "key_press_event", G_CALLBACK(ghid_port_key_press_cb), &ghidgui->port.view);
 	ghidgui->key_release_handler[idx] = g_signal_connect(G_OBJECT(obj), "key_release_event", G_CALLBACK(ghid_port_key_release_cb), &ghidgui->topwin);
 }
 
@@ -239,22 +241,22 @@ static void kbd_input_signals_disconnect(int idx, void *obj)
    by new signal handlers or the command_combo_box entry. */
 void pcb_gtk_interface_input_signals_connect(void)
 {
-	ghidgui->button_press_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_press_event", G_CALLBACK(ghid_port_button_press_cb), ghidgui);
-	ghidgui->button_release_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_release_event", G_CALLBACK(ghid_port_button_release_cb), ghidgui);
-	kbd_input_signals_connect(0, gport->drawing_area);
+	ghidgui->button_press_handler = g_signal_connect(G_OBJECT(ghidgui->port.drawing_area), "button_press_event", G_CALLBACK(ghid_port_button_press_cb), ghidgui);
+	ghidgui->button_release_handler = g_signal_connect(G_OBJECT(ghidgui->port.drawing_area), "button_release_event", G_CALLBACK(ghid_port_button_release_cb), ghidgui);
+	kbd_input_signals_connect(0, ghidgui->port.drawing_area);
 	kbd_input_signals_connect(3, ghidgui->topwin.left_toolbar);
 }
 
 void pcb_gtk_interface_input_signals_disconnect(void)
 {
-	kbd_input_signals_disconnect(0, gport->drawing_area);
+	kbd_input_signals_disconnect(0, ghidgui->port.drawing_area);
 	kbd_input_signals_disconnect(3, ghidgui->topwin.left_toolbar);
 
 	if (ghidgui->button_press_handler != 0)
-		g_signal_handler_disconnect(G_OBJECT(gport->drawing_area), ghidgui->button_press_handler);
+		g_signal_handler_disconnect(G_OBJECT(ghidgui->port.drawing_area), ghidgui->button_press_handler);
 
 	if (ghidgui->button_release_handler != 0)
-		g_signal_handler_disconnect(gport->drawing_area, ghidgui->button_release_handler);
+		g_signal_handler_disconnect(ghidgui->port.drawing_area, ghidgui->button_release_handler);
 
 	ghidgui->button_press_handler = ghidgui->button_release_handler = 0;
 }
@@ -297,16 +299,16 @@ void pcb_gtk_note_event_location(GdkEventButton *ev)
 	gint event_x, event_y;
 
 	if (!ev) {
-		gdkc_window_get_pointer(ghid_port.drawing_area, &event_x, &event_y, NULL);
+		gdkc_window_get_pointer(ghidgui->port.drawing_area, &event_x, &event_y, NULL);
 	}
 	else {
 		event_x = ev->x;
 		event_y = ev->y;
 	}
 
-	pcb_gtk_coords_event2pcb(&gport->view, event_x, event_y, &gport->view.pcb_x, &gport->view.pcb_y);
+	pcb_gtk_coords_event2pcb(&ghidgui->port.view, event_x, event_y, &ghidgui->port.view.pcb_x, &ghidgui->port.view.pcb_y);
 
-	pcb_hidlib_crosshair_move_to(gport->view.pcb_x, gport->view.pcb_y, 1);
+	pcb_hidlib_crosshair_move_to(ghidgui->port.view.pcb_x, ghidgui->port.view.pcb_y, 1);
 }
 
 /*** init ***/
@@ -322,15 +324,15 @@ void ghid_glue_common_init(const char *cookie)
 	ghid_win32_init();
 
 	/* Set up the glue struct to lib_gtk_common */
-	ghidgui->impl.gport = &ghid_port;
+	ghidgui->impl.gport = &ghidgui->port;
 
 	ghidgui->impl.load_bg_image = ghid_load_bg_image;
 
 	ghidgui->topwin.cmd.post_entry = command_post_entry;
 	ghidgui->topwin.cmd.pre_entry = command_pre_entry;
 
-	ghid_port.view.ctx = ghidgui;
-	ghid_port.mouse = &ghidgui->mouse;
+	ghidgui->port.view.ctx = ghidgui;
+	ghidgui->port.mouse = &ghidgui->mouse;
 
 	ghid_conf_regs(cookie);
 }

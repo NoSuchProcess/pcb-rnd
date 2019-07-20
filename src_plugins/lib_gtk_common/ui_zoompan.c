@@ -143,7 +143,7 @@ void pcb_gtk_zoom_view_abs(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t 
 
 	v->coord_per_px = new_zoom;
 	pcb_pixel_slop = new_zoom;
-	pcb_gtk_tw_ranges_scale(&ghidgui->topwin);
+	pcb_gtk_tw_ranges_scale(ghidgui);
 
 	v->x0 = SIDE_X(v, center_x) - xtmp * v->width;
 	v->y0 = SIDE_Y(v, center_y) - ytmp * v->height;

@@ -277,7 +277,7 @@ gboolean ghid_port_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev, 
 	hid_cfg_mouse_action(&ghid_mouse, ghid_mouse_button(ev->button) | mk, ctx->topwin.cmd.command_entry_status_line_active);
 
 	pcb_gui->invalidate_all(ctx->hidlib);
-	if (!gport->view.panning)
+	if (!ctx->port.view.panning)
 		g_idle_add(ghid_idle_cb, &ctx->topwin);
 
 	return TRUE;

@@ -137,8 +137,23 @@ struct pcb_gtk_topwin_s {
 #include "conf_hid.h"
 #include "pcb_bool.h"
 
+/* The output viewport */
+struct pcb_gtk_port_s {
+	GtkWidget *top_window,        /* toplevel widget */
+	          *drawing_area;      /* and its drawing area */
+
+	pcb_bool drawing_allowed;     /* track if a drawing area is available for rendering */
+
+	struct render_priv_s *render_priv;
+
+	pcb_gtk_mouse_t *mouse;
+
+	pcb_gtk_view_t view;
+};
+
 struct pcb_gtk_s {
 	pcb_gtk_impl_t impl;
+	pcb_gtk_port_t port;
 
 	pcb_hidlib_t *hidlib;
 
@@ -159,21 +174,5 @@ struct pcb_gtk_s {
 
 	gdl_list_t previews; /* all widget lists */
 };
-
-/* The output viewport */
-struct pcb_gtk_port_s {
-	GtkWidget *top_window,        /* toplevel widget */
-	          *drawing_area;      /* and its drawing area */
-
-	pcb_bool drawing_allowed;     /* track if a drawing area is available for rendering */
-
-	struct render_priv_s *render_priv;
-
-	pcb_gtk_mouse_t *mouse;
-
-	pcb_gtk_view_t view;
-};
-
-extern pcb_gtk_port_t ghid_port, *gport;
 
 #endif /* PCB_HID_GTK_GHID_GUI_H */
