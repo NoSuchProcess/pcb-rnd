@@ -1756,7 +1756,7 @@ static fgw_error_t pcb_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	double fps = 0;
 
 	if ((pcb_gui != NULL) && (pcb_gui->benchmark != NULL)) {
-		fps = pcb_gui->benchmark();
+		fps = pcb_gui->benchmark(pcb_gui);
 		pcb_message(PCB_MSG_INFO, "%f redraws per second\n", fps);
 	}
 	else

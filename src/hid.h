@@ -503,7 +503,7 @@ struct pcb_hid_s {
 	void (*clip_free)(pcb_hid_t *hid, pcb_hid_clipfmt_t format, void *data, size_t len);
 
 	/* run redraw-benchmark and return an FPS value (optional) */
-	double (*benchmark)(void);
+	double (*benchmark)(pcb_hid_t *hid);
 
 	/* (pcb_hid_cfg_keys_t *): key state */
 	void *key_state;

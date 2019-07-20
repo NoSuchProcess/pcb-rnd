@@ -409,7 +409,7 @@ static void ghid_iterate(pcb_hid_t *hid)
 		gtk_main_iteration_do(0);
 }
 
-static double ghid_benchmark(void)
+static double ghid_benchmark(pcb_hid_t *hid)
 {
 	int i = 0;
 	time_t start, end;

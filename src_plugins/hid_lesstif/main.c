@@ -574,7 +574,7 @@ static const char *lesstif_command_entry(pcb_hid_t *hid, const char *ovr, int *c
 	return XmTextGetString(m_cmd);
 }
 
-static double ltf_benchmark(void)
+static double ltf_benchmark(pcb_hid_t *hid)
 {
 	int i = 0;
 	time_t start, end;
