@@ -32,23 +32,22 @@
 #include "glue_common.h"
 
 typedef struct {
-	void (*func) (pcb_hidval_t);
+	void (*func)(pcb_hidval_t);
 	guint id;
 	pcb_hidval_t user_data;
 	pcb_gtk_t *gctx;
 } GuiTimer;
 
-	/* We need a wrapper around the hid timer because a gtk timer needs
-	   |  to return FALSE else the timer will be restarted.
-	 */
-static gboolean ghid_timer(GuiTimer * timer)
+/* We need a wrapper around the hid timer because a gtk timer needs
+   to return FALSE else the timer will be restarted. */
+static gboolean ghid_timer(GuiTimer *timer)
 {
-	(*timer->func) (timer->user_data);
+	(*timer->func)(timer->user_data);
 	pcb_gtk_mode_cursor_main();
-	return FALSE;									/* Turns timer off */
+	return FALSE;  /* Turns timer off */
 }
 
-pcb_hidval_t pcb_gtk_add_timer(struct pcb_gtk_s *gctx, void (*func) (pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
+pcb_hidval_t pcb_gtk_add_timer(struct pcb_gtk_s *gctx, void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
 {
 	GuiTimer *timer = g_new0(GuiTimer, 1);
 	pcb_hidval_t ret;
@@ -57,7 +56,7 @@ pcb_hidval_t pcb_gtk_add_timer(struct pcb_gtk_s *gctx, void (*func) (pcb_hidval_
 	timer->user_data = user_data;
 	timer->gctx = gctx;
 	timer->id = g_timeout_add(milliseconds, (GSourceFunc) ghid_timer, timer);
-	ret.ptr = (void *) timer;
+	ret.ptr = (void *)timer;
 	return ret;
 }
 
@@ -65,6 +64,6 @@ void ghid_stop_timer(pcb_hidval_t timer)
 {
 	void *ptr = timer.ptr;
 
-	g_source_remove(((GuiTimer *) ptr)->id);
+	g_source_remove(((GuiTimer *)ptr)->id);
 	g_free(ptr);
 }
