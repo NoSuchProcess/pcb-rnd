@@ -31,14 +31,14 @@
 #include "in_mouse.h"
 #include "glue_common.h"
 
-typedef struct {
+typedef struct pcb_gtk_watch_s {
 	pcb_bool (*func) (pcb_hidval_t, int, unsigned int, pcb_hidval_t);
 	pcb_hidval_t user_data;
 	int fd;
 	GIOChannel *channel;
 	gint id;
 	pcb_gtk_t *gctx;
-} GuiWatch;
+} pcb_gtk_watch_t;
 
 	/* We need a wrapper around the hid file watch to pass the correct flags
 	 */
@@ -46,7 +46,7 @@ static gboolean ghid_watch(GIOChannel * source, GIOCondition condition, gpointer
 {
 	unsigned int pcb_condition = 0;
 	pcb_hidval_t x;
-	GuiWatch *watch = (GuiWatch *) data;
+	pcb_gtk_watch_t *watch = (pcb_gtk_watch_t *) data;
 	pcb_bool res;
 
 	if (condition & G_IO_IN)
@@ -70,7 +70,7 @@ pcb_hidval_t pcb_gtk_watch_file(pcb_gtk_t *gctx, int fd, unsigned int condition,
 								pcb_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
 								pcb_hidval_t user_data)
 {
-	GuiWatch *watch = g_new0(GuiWatch, 1);
+	pcb_gtk_watch_t *watch = g_new0(pcb_gtk_watch_t, 1);
 	pcb_hidval_t ret;
 	unsigned int glib_condition = 0;
 
@@ -96,7 +96,7 @@ pcb_hidval_t pcb_gtk_watch_file(pcb_gtk_t *gctx, int fd, unsigned int condition,
 
 void pcb_gtk_unwatch_file(pcb_hidval_t data)
 {
-	GuiWatch *watch = (GuiWatch *) data.ptr;
+	pcb_gtk_watch_t *watch = (pcb_gtk_watch_t *) data.ptr;
 
 	g_io_channel_shutdown(watch->channel, TRUE, NULL);
 	g_io_channel_unref(watch->channel);
