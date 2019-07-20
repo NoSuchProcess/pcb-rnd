@@ -96,7 +96,7 @@ GType pcb_gtk_preview_get_type(void);
 void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t *preview, int *width, int *height);
 
 GtkWidget *pcb_gtk_preview_new(pcb_gtk_t *ctx, pcb_gtk_init_drawing_widget_t init_widget,
-																			pcb_gtk_preview_expose_t expose, pcb_hid_expose_t dialog_draw, pcb_gtk_preview_config_t config, void *draw_data);
+	pcb_gtk_preview_expose_t expose, pcb_hid_expose_t dialog_draw, pcb_gtk_preview_config_t config, void *draw_data);
 
 void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const pcb_box_t *data_view);
 

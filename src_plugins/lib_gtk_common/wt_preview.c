@@ -29,9 +29,8 @@
  */
 
 /* This file copied and modified by Peter Clifton, starting from
- * gui-pinout-window.c, written by Bill Wilson for the PCB Gtk port
- * then got a major refactoring by Tibor 'Igor2' Palinkas and Alain in pcb-rnd
- */
+   gui-pinout-window.c, written by Bill Wilson for the PCB Gtk port,
+   then got a major refactoring by Tibor 'Igor2' Palinkas and Alain in pcb-rnd */
 
 #include "config.h"
 #include "hidlib_conf.h"
@@ -263,19 +262,11 @@ static void ghid_preview_class_init(pcb_gtk_preview_class_t *klass)
 
 	g_object_class_install_property(gobject_class, PROP_GPORT, g_param_spec_pointer("gport", "", "", G_PARAM_WRITABLE));
 	g_object_class_install_property(gobject_class, PROP_COM, g_param_spec_pointer("ctx", "", "", G_PARAM_WRITABLE));
-
-	g_object_class_install_property(gobject_class, PROP_INIT_WIDGET,
-																	g_param_spec_pointer("init-widget", "", "", G_PARAM_WRITABLE));
-
+	g_object_class_install_property(gobject_class, PROP_INIT_WIDGET, g_param_spec_pointer("init-widget", "", "", G_PARAM_WRITABLE));
 	g_object_class_install_property(gobject_class, PROP_EXPOSE, g_param_spec_pointer("expose", "", "", G_PARAM_WRITABLE));
-
 	g_object_class_install_property(gobject_class, PROP_DIALOG_DRAW, g_param_spec_pointer("dialog_draw", "", "", G_PARAM_WRITABLE));
-
-	g_object_class_install_property(gobject_class, PROP_DRAW_DATA,
-																	g_param_spec_pointer("draw_data", "", "", G_PARAM_WRITABLE));
-
-	g_object_class_install_property(gobject_class, PROP_CONFIG,
-																	g_param_spec_pointer("config", "", "", G_PARAM_WRITABLE));
+	g_object_class_install_property(gobject_class, PROP_DRAW_DATA, g_param_spec_pointer("draw_data", "", "", G_PARAM_WRITABLE));
+	g_object_class_install_property(gobject_class, PROP_CONFIG, g_param_spec_pointer("config", "", "", G_PARAM_WRITABLE));
 }
 
 static void update_expose_data(pcb_gtk_preview_t *prv)
@@ -461,14 +452,14 @@ GType pcb_gtk_preview_get_type()
 	if (!ghid_preview_type) {
 		static const GTypeInfo ghid_preview_info = {
 			sizeof(pcb_gtk_preview_class_t),
-			NULL,											/* base_init */
-			NULL,											/* base_finalize */
+			NULL, /* base_init */
+			NULL, /* base_finalize */
 			(GClassInitFunc) ghid_preview_class_init,
-			NULL,											/* class_finalize */
-			NULL,											/* class_data */
+			NULL, /* class_finalize */
+			NULL, /* class_data */
 			sizeof(pcb_gtk_preview_t),
-			0,												/* n_preallocs */
-			NULL,											/* instance_init */
+			0,    /* n_preallocs */
+			NULL, /* instance_init */
 		};
 
 		ghid_preview_type =
@@ -516,9 +507,9 @@ TODO(": maybe expose these through the object API so the caller can set it up?")
 	prv->init_drawing_widget(GTK_WIDGET(prv), prv->gport);
 
 	gtk_widget_add_events(GTK_WIDGET(prv), GDK_EXPOSURE_MASK | GDK_SCROLL_MASK
-												| GDK_LEAVE_NOTIFY_MASK | GDK_ENTER_NOTIFY_MASK | GDK_BUTTON_RELEASE_MASK
-												| GDK_BUTTON_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_KEY_PRESS_MASK
-												| GDK_FOCUS_CHANGE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK);
+		| GDK_LEAVE_NOTIFY_MASK | GDK_ENTER_NOTIFY_MASK | GDK_BUTTON_RELEASE_MASK
+		| GDK_BUTTON_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_KEY_PRESS_MASK
+		| GDK_FOCUS_CHANGE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK);
 
 
 	g_signal_connect(G_OBJECT(prv), "button_press_event", G_CALLBACK(preview_button_press_cb), NULL);
