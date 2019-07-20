@@ -273,7 +273,7 @@ static void ghid_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
 	pcb_gtk_crosshair_set(x, y, action, offset_x, offset_y, &ghidgui->port.view);
 }
 
-static void ghid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)
+static void ghid_get_coords(pcb_hid_t *hid, const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)
 {
 	pcb_gtk_get_coords(ghidgui, &ghidgui->port.view, msg, x, y, force);
 }

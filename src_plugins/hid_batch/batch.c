@@ -247,7 +247,7 @@ static int batch_mod1_is_pressed(pcb_hid_t *hid)
 	return 0;
 }
 
-static void batch_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)
+static void batch_get_coords(pcb_hid_t *hid, const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)
 {
 }
 

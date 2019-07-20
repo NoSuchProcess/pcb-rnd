@@ -356,7 +356,7 @@ void pcb_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int for
 		*y = 0;
 	}
 	else
-		pcb_gui->get_coords(msg, x, y, force);
+		pcb_gui->get_coords(pcb_gui, msg, x, y, force);
 }
 
 static int hid_parse_actionstring(const char *rstr, char require_parens)

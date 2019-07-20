@@ -170,7 +170,7 @@ void lesstif_get_xy(const char *message)
 	pcb_hidlib_crosshair_restore(chst);
 }
 
-void lesstif_get_coords(const char *msg, pcb_coord_t *px, pcb_coord_t *py, int force)
+void lesstif_get_coords(pcb_hid_t *hid, const char *msg, pcb_coord_t *px, pcb_coord_t *py, int force)
 {
 	if ((force || !have_xy) && msg) {
 		if (force) {

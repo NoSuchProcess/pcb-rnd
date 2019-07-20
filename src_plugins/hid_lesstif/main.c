@@ -2677,7 +2677,7 @@ static int lesstif_mod1_is_pressed(pcb_hid_t *hid)
 	return alt_pressed;
 }
 
-extern void lesstif_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force);
+extern void lesstif_get_coords(pcb_hid_t *hid, const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force);
 
 static void lesstif_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
 {
