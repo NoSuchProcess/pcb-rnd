@@ -1329,7 +1329,7 @@ static int guess(double val, double close_to, double *calib)
 	return 1;
 }
 
-void ps_calibrate_1(double xval, double yval, int use_command)
+void ps_calibrate_1(pcb_hid_t *hid, double xval, double yval, int use_command)
 {
 	pcb_hid_attr_val_t vals[3];
 	FILE *ps_cal_file;
@@ -1396,18 +1396,20 @@ void ps_calibrate_1(double xval, double yval, int use_command)
 		fclose(ps_cal_file);
 }
 
-static void ps_calibrate(double xval, double yval)
+static void ps_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
-	ps_calibrate_1(xval, yval, 0);
+	ps_calibrate_1(hid, xval, yval, 0);
 }
 
 static void ps_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action)
 {
 }
 
+pcb_hid_t ps_hid;
+
 static fgw_error_t pcb_act_PSCalib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	ps_calibrate(0.0, 0.0);
+	ps_calibrate(&ps_hid, 0.0, 0.0);
 	return 0;
 }
 
@@ -1420,7 +1422,6 @@ PCB_REGISTER_ACTIONS(hidps_action_list, ps_cookie)
 
 #include "dolists.h"
 
-pcb_hid_t ps_hid;
 static int ps_inited = 0;
 void ps_ps_init(pcb_hid_t * hid)
 {

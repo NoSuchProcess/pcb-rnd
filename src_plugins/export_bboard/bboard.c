@@ -585,7 +585,7 @@ static int bboard_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 }
 
 
-static void bboard_calibrate(double xval, double yval)
+static void bboard_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
 	fprintf(stderr, "HID error: pcb called unimplemented breaboard function bboard_calibrate.\n");
 	abort();

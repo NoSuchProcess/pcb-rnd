@@ -865,7 +865,7 @@ static void gcode_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pc
 }
 
 
-static void gcode_calibrate(double xval, double yval)
+static void gcode_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
 	CRASH("gcode_calibrate");
 }

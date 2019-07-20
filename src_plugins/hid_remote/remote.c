@@ -299,7 +299,7 @@ static void remote_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 		proto_send_draw_rect(idx, x1, y1, x2, y2, 1);
 }
 
-static void remote_calibrate(double xval, double yval)
+static void remote_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
 }
 

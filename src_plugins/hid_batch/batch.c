@@ -228,7 +228,7 @@ static void batch_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb
 {
 }
 
-static void batch_calibrate(double xval, double yval)
+static void batch_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
 }
 

@@ -806,7 +806,7 @@ static void openems_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, p
 }
 
 
-static void openems_calibrate(double xval, double yval)
+static void openems_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
 	pcb_message(PCB_MSG_ERROR, "openems_calibrate() not implemented");
 	return;

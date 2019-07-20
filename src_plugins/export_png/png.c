@@ -1895,7 +1895,7 @@ static void png_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_
 }
 
 
-static void png_calibrate(double xval, double yval)
+static void png_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
 	CRASH("png_calibrate");
 }

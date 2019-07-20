@@ -501,7 +501,7 @@ static void dxf_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 	fix_rect_coords();
 }
 
-static void dxf_calibrate(double xval, double yval)
+static void dxf_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
 	pcb_message(PCB_MSG_ERROR, "dxf_calibrate() not implemented");
 	return;

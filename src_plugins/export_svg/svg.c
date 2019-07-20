@@ -847,7 +847,7 @@ static void svg_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_
 }
 
 
-static void svg_calibrate(double xval, double yval)
+static void svg_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
 	pcb_message(PCB_MSG_ERROR, "svg_calibrate() not implemented");
 	return;

@@ -2657,7 +2657,7 @@ static void lesstif_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, p
 		XFillRectangle(display, mask_bitmap, mask_gc, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
 }
 
-static void lesstif_calibrate(double xval, double yval)
+static void lesstif_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
 	CRASH("lesstif_calibrate");
 }

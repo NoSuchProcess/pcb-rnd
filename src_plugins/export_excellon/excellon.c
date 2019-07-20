@@ -440,7 +440,7 @@ static void excellon_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 	excellon_fill_polygon(gc, 0, NULL, NULL);
 }
 
-static void excellon_calibrate(double xval, double yval)
+static void excellon_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
 	pcb_message(PCB_MSG_ERROR, "Excellon internal error: can not calibrate()\n");
 }

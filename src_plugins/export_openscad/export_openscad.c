@@ -573,7 +573,7 @@ static void openscad_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x,
 	openscad_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
 }
 
-static void openscad_calibrate(double xval, double yval)
+static void openscad_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
 	pcb_message(PCB_MSG_ERROR, "openscad_calibrate() not implemented");
 	return;

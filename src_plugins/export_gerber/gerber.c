@@ -67,7 +67,7 @@ static void gerber_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb
 static void gerber_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
 static void gerber_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius);
 static void gerber_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
-static void gerber_calibrate(double xval, double yval);
+static void gerber_calibrate(pcb_hid_t *hid, double xval, double yval);
 static void gerber_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action);
 static void gerber_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy);
 static void gerber_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y);
@@ -1333,7 +1333,7 @@ static void gerber_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 	gerber_fill_polygon(gc, 5, x, y);
 }
 
-static void gerber_calibrate(double xval, double yval)
+static void gerber_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
 	CRASH("gerber_calibrate");
 }

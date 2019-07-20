@@ -47,7 +47,7 @@ static void eps_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 static void eps_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius);
 static void eps_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y);
 static void eps_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy);
-static void eps_calibrate(double xval, double yval);
+static void eps_calibrate(pcb_hid_t *hid, double xval, double yval);
 static void eps_set_crosshair(pcb_coord_t x, pcb_coord_t y, int action);
 /*----------------------------------------------------------------------------*/
 
@@ -661,7 +661,7 @@ static void eps_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 	pcb_fprintf(f, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
 }
 
-static void eps_calibrate(double xval, double yval)
+static void eps_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
 	CRASH("eps_calibrate");
 }

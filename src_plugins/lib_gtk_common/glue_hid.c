@@ -256,7 +256,7 @@ TODO("This needs to be done centrally, and should not use PCB_PACKAGE but pcbhl_
 	return 0;
 }
 
-static void ghid_calibrate(double xval, double yval)
+static void ghid_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
 	printf("ghid_calibrate() -- not implemented\n");
 }

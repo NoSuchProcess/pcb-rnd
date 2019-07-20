@@ -100,9 +100,9 @@ static int lpr_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static void lpr_calibrate(double xval, double yval)
+static void lpr_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
-	ps_calibrate_1(xval, yval, 1);
+	ps_calibrate_1(hid, xval, yval, 1);
 }
 
 static pcb_hid_t lpr_hid;

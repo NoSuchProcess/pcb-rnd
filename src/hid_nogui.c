@@ -164,7 +164,7 @@ static void nogui_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb
 	CRASH("fill_rect");
 }
 
-static void nogui_calibrate(double xval, double yval)
+static void nogui_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
 	CRASH("calibrate");
 }

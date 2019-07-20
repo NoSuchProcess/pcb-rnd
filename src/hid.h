@@ -320,7 +320,7 @@ struct pcb_hid_s {
 	   calibrating your printer.  After calibrating, nonzero xval_ and
 	   yval_ are passed according to the instructions.  Metric is nonzero
 	   if the user prefers metric units, else inches are used. */
-	void (*calibrate)(double xval, double yval);
+	void (*calibrate)(pcb_hid_t *hid, double xval, double yval);
 
 
 	/* GUI layout functions.  Not used or defined for print/export
