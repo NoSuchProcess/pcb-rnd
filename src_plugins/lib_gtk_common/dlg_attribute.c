@@ -668,7 +668,7 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 static gint ghid_attr_dlg_configure_event_cb(GtkWidget *widget, GdkEventConfigure *ev, gpointer data)
 {
 	attr_dlg_t *ctx = (attr_dlg_t *)data;
-	return pcb_gtk_winplace_cfg(ctx->gctx->impl.hidlib, widget, ctx, ctx->id);
+	return pcb_gtk_winplace_cfg(ctx->gctx->hidlib, widget, ctx, ctx->id);
 }
 
 static gint ghid_attr_dlg_destroy_event_cb(GtkWidget *widget, gpointer data)
@@ -738,7 +738,7 @@ void *ghid_attr_dlg_new(pcb_gtk_t *gctx, const char *id, pcb_hid_attribute_t *at
 	ctx->close_cb = button_cb;
 	ctx->id = pcb_strdup(id);
 
-	pcb_event(gctx->impl.hidlib, PCB_EVENT_DAD_NEW_DIALOG, "psp", ctx, ctx->id, plc);
+	pcb_event(gctx->hidlib, PCB_EVENT_DAD_NEW_DIALOG, "psp", ctx, ctx->id, plc);
 
 	ctx->dialog = gtk_dialog_new();
 	gtk_window_set_transient_for(GTK_WINDOW(ctx->dialog), GTK_WINDOW(gctx->impl.top_window));

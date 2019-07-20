@@ -163,7 +163,7 @@ static void v_adjustment_changed_cb(GtkAdjustment *adj, pcb_gtk_topwin_t *tw)
 /* Save size of top window changes so PCB can restart at its size at exit. */
 static gint top_window_configure_event_cb(GtkWidget *widget, GdkEventConfigure *ev, void *tw_)
 {
-	return pcb_gtk_winplace_cfg(ghidgui->impl.hidlib, widget, NULL, "top");
+	return pcb_gtk_winplace_cfg(ghidgui->hidlib, widget, NULL, "top");
 }
 
 gboolean ghid_idle_cb(void *topwin)
@@ -180,7 +180,7 @@ gboolean ghid_port_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, pcb
 		pcb_gtk_note_event_location(NULL);
 
 	pcb_hidlib_adjust_attached_objects();
-	pcb_gui->invalidate_all(ghidgui->impl.hidlib);
+	pcb_gui->invalidate_all(ghidgui->hidlib);
 	g_idle_add(ghid_idle_cb, tw);
 	return FALSE;
 }
@@ -326,7 +326,7 @@ static void drawing_area_size_allocate_cb(GtkWidget *widget, GdkRectangle *alloc
 
 static gboolean drawing_area_enter_cb(GtkWidget *w, pcb_gtk_expose_t *p, void *user_data)
 {
-	pcb_gui->invalidate_all(ghidgui->impl.hidlib);
+	pcb_gui->invalidate_all(ghidgui->hidlib);
 	return FALSE;
 }
 
@@ -391,7 +391,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw)
 	gtk_box_pack_start(GTK_BOX(tw->menu_hbox), tw->menubar_toolbar_vbox, FALSE, FALSE, 0);
 
 	/* Build main menu */
-	tw->menu.menu_bar = ghid_load_menus(&tw->menu, ghidgui->impl.hidlib, &tw->ghid_cfg);
+	tw->menu.menu_bar = ghid_load_menus(&tw->menu, ghidgui->hidlib, &tw->ghid_cfg);
 	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), tw->menu.menu_bar, FALSE, FALSE, 0);
 
 	tw->dockbox[PCB_HID_DOCK_TOP_LEFT] = gtkc_hbox_new(TRUE, 2);

@@ -47,7 +47,6 @@ extern pcb_gtk_t _ghidgui, *ghidgui;
    back reference to the HID. This lets multiple HIDs use gtk_common code
    without linker errors. */
 struct pcb_gtk_impl_s {
-	pcb_hidlib_t *hidlib;
 	void *gport;      /* Opaque pointer back to the HID's internal struct - used when common calls a HID function */
 	GtkWidget *top_window;
 
@@ -144,6 +143,8 @@ struct pcb_gtk_topwin_s {
 
 struct pcb_gtk_s {
 	pcb_gtk_impl_t impl;
+
+	pcb_hidlib_t *hidlib;
 
 	GtkActionGroup *main_actions;
 

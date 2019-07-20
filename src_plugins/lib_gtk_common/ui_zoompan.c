@@ -70,8 +70,8 @@ static void uiz_pan_common(pcb_gtk_view_t *v)
 	v->y0 = MAX(-v->height, v->y0);
 
 	if (v->use_max_pcb) {
-		v->x0 = MIN(v->x0, v->ctx->impl.hidlib->size_x);
-		v->y0 = MIN(v->y0, v->ctx->impl.hidlib->size_y);
+		v->x0 = MIN(v->x0, v->ctx->hidlib->size_x);
+		v->y0 = MIN(v->y0, v->ctx->hidlib->size_y);
 	}
 	else {
 		assert(v->max_width > 0);

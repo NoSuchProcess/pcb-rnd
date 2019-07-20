@@ -140,7 +140,7 @@ char *pcb_gtk_fileselect(pcb_gtk_t *gctx, const char *title, const char *descr, 
 	}
 
 	if ((default_file != NULL) && (*default_file != '\0')) {
-		if (pcb_is_dir(gctx->impl.hidlib, default_file)) {
+		if (pcb_is_dir(gctx->hidlib, default_file)) {
 			path = g_strdup(default_file);
 			base = NULL;
 		}

@@ -34,8 +34,8 @@
 
 #define SIDE_X_(hidlib, x)      ((pcbhl_conf.editor.view.flip_x ? hidlib->size_x - (x) : (x)))
 #define SIDE_Y_(hidlib, y)      ((pcbhl_conf.editor.view.flip_y ? hidlib->size_y - (y) : (y)))
-#define SIDE_X(v, x)            SIDE_X_((v)->ctx->impl.hidlib, (x))
-#define SIDE_Y(v, y)            SIDE_Y_((v)->ctx->impl.hidlib, (y))
+#define SIDE_X(v, x)            SIDE_X_((v)->ctx->hidlib, (x))
+#define SIDE_Y(v, y)            SIDE_Y_((v)->ctx->hidlib, (y))
 
 #define DRAW_X(view, x)         (gint)((SIDE_X((view), x) - (view)->x0) / (view)->coord_per_px)
 #define DRAW_Y(view, y)         (gint)((SIDE_Y((view), y) - (view)->y0) / (view)->coord_per_px)
@@ -43,8 +43,8 @@
 #define EVENT_TO_PCB_X_(hidlib, view, x) (pcb_coord_t)pcb_round(SIDE_X_((hidlib), (double)(x) * (view)->coord_per_px + (double)(view)->x0))
 #define EVENT_TO_PCB_Y_(hidlib, view, y) (pcb_coord_t)pcb_round(SIDE_Y_((hidlib), (double)(y) * (view)->coord_per_px + (double)(view)->y0))
 
-#define EVENT_TO_PCB_X(view, x)  EVENT_TO_PCB_X_((view)->ctx->impl.hidlib, view, (x))
-#define EVENT_TO_PCB_Y(view, y)  EVENT_TO_PCB_Y_((view)->ctx->impl.hidlib, view, (y))
+#define EVENT_TO_PCB_X(view, x)  EVENT_TO_PCB_X_((view)->ctx->hidlib, view, (x))
+#define EVENT_TO_PCB_Y(view, y)  EVENT_TO_PCB_Y_((view)->ctx->hidlib, view, (y))
 
 typedef struct {
 	double coord_per_px;     /* Zoom level described as PCB units per screen pixel */
