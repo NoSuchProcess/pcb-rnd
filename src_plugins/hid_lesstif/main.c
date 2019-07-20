@@ -2988,7 +2988,7 @@ static void ltf_view_get(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_box_t *viewbo
 	viewbox->Y2 = pcb_round(view_top_y + view_height * view_zoom);
 }
 
-static void ltf_open_command(void)
+static void ltf_open_command(pcb_hid_t *hid)
 {
 	pcb_clihist_init();
 	pcb_clihist_reset();
@@ -3018,7 +3018,7 @@ void lesstif_create_menu(pcb_hid_t *hid, const char *menu, const pcb_menu_prop_t
 int lesstif_remove_menu(pcb_hid_t *hid, const char *menu);
 int lesstif_remove_menu_node(pcb_hid_t *hid, lht_node_t *node);
 pcb_hid_cfg_t *lesstif_get_menu_cfg(pcb_hid_t *hid);
-int ltf_open_popup(const char *menupath);
+int ltf_open_popup(pcb_hid_t *hid, const char *menupath);
 
 int pplg_check_ver_hid_lesstif(int version_we_need) { return 0; }
 

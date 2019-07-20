@@ -476,12 +476,12 @@ static void ghid_view_get(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_box_t *viewb
 	viewbox->Y2 = pcb_round((double)ghidgui->port.view.y0 + (double)ghidgui->port.view.canvas_height * ghidgui->port.view.coord_per_px);
 }
 
-static void ghid_open_command(void)
+static void ghid_open_command(pcb_hid_t *hid)
 {
 	ghid_handle_user_command(&ghidgui->topwin.cmd, TRUE);
 }
 
-static int ghid_open_popup(const char *menupath)
+static int ghid_open_popup(pcb_hid_t *hid, const char *menupath)
 {
 	GtkWidget *menu = NULL;
 	lht_node_t *menu_node = pcb_hid_cfg_get_menu(ghidgui->topwin.ghid_cfg, menupath);

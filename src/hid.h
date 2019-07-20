@@ -530,11 +530,11 @@ struct pcb_hid_s {
 
 	/*** misc GUI ***/
 	/* Open the command line */
-	void (*open_command)(void);
+	void (*open_command)(pcb_hid_t *hid);
 
 	/* Open a popup menu addressed by full menu path (starting with "/popups/").
 	   Return 0 on success. */
-	int (*open_popup)(const char *menupath);
+	int (*open_popup)(pcb_hid_t *hid, const char *menupath);
 
 	/* optional: called by core when the global hidlib context changes
 	   (e.g. board changed) */

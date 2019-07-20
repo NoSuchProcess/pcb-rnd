@@ -307,12 +307,12 @@ static void batch_view_get(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_box_t *view
 	viewbox->Y2 = hidlib->size_y;
 }
 
-static void batch_open_command(void)
+static void batch_open_command(pcb_hid_t *hid)
 {
 
 }
 
-static int batch_open_popup(const char *menupath)
+static int batch_open_popup(pcb_hid_t *hid, const char *menupath)
 {
 	return 1;
 }

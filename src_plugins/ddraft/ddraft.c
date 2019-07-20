@@ -457,7 +457,7 @@ static void mode_confchg(conf_native_t *cfg, int arr_idx)
 		if (!ddraft_tool_selected) {
 			ddraft_tool_selected = 1;
 			pcb_cli_enter("ddraft", "ddraft");
-			pcb_gui->open_command();
+			pcb_gui->open_command(pcb_gui);
 		}
 	}
 	else if (ddraft_tool_selected) {

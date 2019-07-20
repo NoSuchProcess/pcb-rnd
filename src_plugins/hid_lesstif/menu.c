@@ -616,7 +616,7 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 	return mb;
 }
 
-int ltf_open_popup(const char *menupath)
+int ltf_open_popup(pcb_hid_t *hid, const char *menupath)
 {
 	menu_data_t *md;
 	lht_node_t *menu_node = pcb_hid_cfg_get_menu(lesstif_cfg, menupath);

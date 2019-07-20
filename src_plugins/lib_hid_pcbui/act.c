@@ -311,7 +311,7 @@ const char pcb_acth_Command[] = "Displays the command line input in the status a
 fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	NOGUI();
-	pcb_gui->open_command();
+	pcb_gui->open_command(pcb_gui);
 	PCB_ACT_IRES(0);
 	return 0;
 }
@@ -373,9 +373,9 @@ fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (*name != '\0')
-		r = pcb_gui->open_popup(name);
+		r = pcb_gui->open_popup(pcb_gui, name);
 	if ((r != 0) && (*name2 != '\0'))
-		r = pcb_gui->open_popup(name2);
+		r = pcb_gui->open_popup(pcb_gui, name2);
 
 	PCB_ACT_IRES(r);
 	return 0;
