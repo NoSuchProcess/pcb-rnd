@@ -53,7 +53,7 @@ conf_gerber_t conf_gerber;
 
 static pcb_cam_t gerber_cam;
 
-static pcb_hid_attribute_t *gerber_get_export_options(int *n);
+static pcb_hid_attribute_t *gerber_get_export_options(pcb_hid_t *hid, int *n);
 static void gerber_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options);
 static int gerber_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv);
 static pcb_hid_gc_t gerber_make_gc(void);
@@ -284,7 +284,7 @@ Print file names and aperture counts on stdout.
 
 static pcb_hid_attr_val_t gerber_values[NUM_OPTIONS];
 
-static pcb_hid_attribute_t *gerber_get_export_options(int *n)
+static pcb_hid_attribute_t *gerber_get_export_options(pcb_hid_t *hid, int *n)
 {
 	if ((PCB != NULL)  && (gerber_options[HA_gerberfile].default_val.str_value == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &gerber_options[HA_gerberfile], "");
@@ -554,7 +554,7 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_
 	drawing_mode_issued = PCB_HID_COMP_POSITIVE;
 
 	if (!options) {
-		gerber_get_export_options(NULL);
+		gerber_get_export_options(hid, NULL);
 		for (i = 0; i < NUM_OPTIONS; i++)
 			gerber_values[i] = gerber_options[i].default_val;
 		options = gerber_values;

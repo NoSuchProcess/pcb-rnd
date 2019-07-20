@@ -157,7 +157,7 @@ PCB_REGISTER_ATTRIBUTES(openems_attribute_list, openems_cookie)
 
 static pcb_hid_attr_val_t openems_values[NUM_OPTIONS];
 
-static pcb_hid_attribute_t *openems_get_export_options(int *n)
+static pcb_hid_attribute_t *openems_get_export_options(pcb_hid_t *hid, int *n)
 {
 	const char *suffix = ".m";
 	pcb_mesh_t *mesh = pcb_mesh_get(MESH_NAME);
@@ -639,7 +639,7 @@ static void openems_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr
 	FILE *fsim;
 
 	if (!options) {
-		openems_get_export_options(0);
+		openems_get_export_options(hid, 0);
 		for (i = 0; i < NUM_OPTIONS; i++)
 			openems_values[i] = openems_attribute_list[i].default_val;
 		options = openems_values;

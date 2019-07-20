@@ -43,7 +43,7 @@ static pcb_hid_attribute_t *lpr_options = 0;
 static int num_lpr_options = 0;
 static pcb_hid_attr_val_t *lpr_values;
 
-static pcb_hid_attribute_t *lpr_get_export_options(int *n)
+static pcb_hid_attribute_t *lpr_get_export_options(pcb_hid_t *hid, int *n)
 {
 	/*
 	 * We initialize the default value in this manner because the GUI
@@ -55,7 +55,7 @@ static pcb_hid_attribute_t *lpr_get_export_options(int *n)
 	}
 
 	if (lpr_options == 0) {
-		pcb_hid_attribute_t *ps_opts = ps_hid.get_export_options(&num_lpr_options);
+		pcb_hid_attribute_t *ps_opts = ps_hid.get_export_options(&ps_hid, &num_lpr_options);
 		lpr_options = (pcb_hid_attribute_t *) calloc(num_lpr_options, sizeof(pcb_hid_attribute_t));
 		memcpy(lpr_options, ps_opts, num_lpr_options * sizeof(pcb_hid_attribute_t));
 		memcpy(lpr_options, base_lpr_options, sizeof(base_lpr_options));
@@ -73,7 +73,7 @@ static void lpr_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val
 	const char *filename;
 
 	if (!options) {
-		lpr_get_export_options(0);
+		lpr_get_export_options(hid, 0);
 		for (i = 0; i < num_lpr_options; i++)
 			lpr_values[i] = lpr_options[i].default_val;
 		options = lpr_values;
@@ -95,7 +95,7 @@ static void lpr_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val
 
 static int lpr_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
-	lpr_get_export_options(0);
+	lpr_get_export_options(hid, 0);
 	pcb_hid_register_attributes(lpr_options, num_lpr_options, lpr_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }

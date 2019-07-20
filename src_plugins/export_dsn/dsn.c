@@ -105,7 +105,7 @@ static pcb_hid_attr_val_t dsn_values[NUM_OPTIONS];
 
 static const char *dsn_filename;
 
-static pcb_hid_attribute_t *dsn_get_export_options(int *n)
+static pcb_hid_attribute_t *dsn_get_export_options(pcb_hid_t *hid, int *n)
 {
 	if ((PCB != NULL)  && (dsn_options[HA_dsnfile].default_val.str_value == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &dsn_options[HA_dsnfile], ".dsn");
@@ -572,7 +572,7 @@ static void dsn_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val
 {
 	int i;
 	if (!options) {
-		dsn_get_export_options(0);
+		dsn_get_export_options(hid, 0);
 		for (i = 0; i < NUM_OPTIONS; i++)
 			dsn_values[i] = dsn_options[i].default_val;
 		options = dsn_values;

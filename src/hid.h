@@ -224,7 +224,7 @@ struct pcb_hid_s {
 	   set up the selectable options.  In command line mode, these are
 	   used to interpret command line options.  If n_ret_ is non-NULL,
 	   the number of attributes is stored there.  */
-	pcb_hid_attribute_t *(*get_export_options)(int *n_ret);
+	pcb_hid_attribute_t *(*get_export_options)(pcb_hid_t *hid, int *n_ret);
 
 	/* Exports (or print) the current PCB.  The options given represent
 	   the choices made from the options returned from

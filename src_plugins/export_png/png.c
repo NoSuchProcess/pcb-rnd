@@ -485,7 +485,7 @@ static const char *get_file_suffix(void)
 	return result;
 }
 
-static pcb_hid_attribute_t *png_get_export_options(int *n)
+static pcb_hid_attribute_t *png_get_export_options(pcb_hid_t *hid, int *n)
 {
 	const char *suffix = get_file_suffix();
 
@@ -1006,7 +1006,7 @@ static void png_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val
 	png_free_cache();
 
 	if (!options) {
-		png_get_export_options(0);
+		png_get_export_options(hid, 0);
 		for (i = 0; i < NUM_OPTIONS; i++)
 			png_values[i] = png_attribute_list[i].default_val;
 		options = png_values;

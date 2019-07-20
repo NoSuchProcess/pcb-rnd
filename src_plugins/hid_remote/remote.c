@@ -31,7 +31,7 @@ typedef struct hid_gc_s {
 	int nop;
 } hid_gc_s;
 
-static pcb_hid_attribute_t *remote_get_export_options(int *n_ret)
+static pcb_hid_attribute_t *remote_get_export_options(pcb_hid_t *hid, int *n_ret)
 {
 	if (n_ret != NULL)
 		*n_ret = 0;

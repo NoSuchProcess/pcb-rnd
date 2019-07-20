@@ -353,7 +353,7 @@ int pcb_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[])
 	for(;;) {
 		int res;
 		if (pcb_gui->get_export_options != NULL)
-			pcb_gui->get_export_options(NULL);
+			pcb_gui->get_export_options(pcb_gui, NULL);
 		res = pcb_gui->parse_arguments(pcb_gui, hid_argc, hid_argv);
 		if (res == 0)
 			break; /* HID accepted, don't try anything else */

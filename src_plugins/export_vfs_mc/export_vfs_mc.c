@@ -40,7 +40,7 @@ PCB_REGISTER_ATTRIBUTES(export_vfs_mc_options, export_vfs_mc_cookie)
 
 static pcb_hid_attr_val_t export_vfs_mc_values[NUM_OPTIONS];
 
-static pcb_hid_attribute_t *export_vfs_mc_get_export_options(int *n)
+static pcb_hid_attribute_t *export_vfs_mc_get_export_options(pcb_hid_t *hid, int *n)
 {
 	if (n)
 		*n = NUM_OPTIONS;
@@ -110,7 +110,7 @@ static void export_vfs_mc_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hi
 	int i;
 
 	if (!options) {
-		export_vfs_mc_get_export_options(0);
+		export_vfs_mc_get_export_options(hid, 0);
 		for (i = 0; i < NUM_OPTIONS; i++)
 			export_vfs_mc_values[i] = export_vfs_mc_options[i].default_val;
 		options = export_vfs_mc_values;

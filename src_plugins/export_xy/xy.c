@@ -96,7 +96,7 @@ static void free_fmts(void)
 	}
 }
 
-static pcb_hid_attribute_t *xy_get_export_options(int *n)
+static pcb_hid_attribute_t *xy_get_export_options(pcb_hid_t *hid, int *n)
 {
 	static int last_unit_value = -1;
 	conf_listitem_t *li;
@@ -797,7 +797,7 @@ static void xy_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val_
 	gather_templates();
 
 	if (!options) {
-		xy_get_export_options(0);
+		xy_get_export_options(hid, 0);
 		for (i = 0; i < NUM_OPTIONS; i++)
 			xy_values[i] = xy_options[i].default_val;
 		options = xy_values;

@@ -102,7 +102,7 @@ static int loghid_usage(const char *topic)
 
 PCB_REGISTER_ATTRIBUTES(loghid_attribute_list, loghid_cookie)
 
-static pcb_hid_attribute_t *loghid_get_export_options(int *n)
+static pcb_hid_attribute_t *loghid_get_export_options(pcb_hid_t *hid, int *n)
 {
 /*	loghid_attribute_list[HA_psfile] = pcb_strdup("default?");*/
 

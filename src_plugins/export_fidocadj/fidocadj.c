@@ -84,7 +84,7 @@ PCB_REGISTER_ATTRIBUTES(fidocadj_attribute_list, fidocadj_cookie)
 
 static pcb_hid_attr_val_t fidocadj_values[NUM_OPTIONS];
 
-static pcb_hid_attribute_t *fidocadj_get_export_options(int *n)
+static pcb_hid_attribute_t *fidocadj_get_export_options(pcb_hid_t *hid, int *n)
 {
 	const char *suffix = ".fcd";
 
@@ -172,7 +172,7 @@ static void fidocadj_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_att
 	htsi_t lib_names; /* hash of names found in the library, if have_lib is 1 */
 
 	if (!options) {
-		fidocadj_get_export_options(0);
+		fidocadj_get_export_options(hid, 0);
 		for (n = 0; n < NUM_OPTIONS; n++)
 			fidocadj_values[n] = fidocadj_attribute_list[n].default_val;
 		options = fidocadj_values;

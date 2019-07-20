@@ -30,7 +30,7 @@
 /*----------------------------------------------------------------------------*/
 /* Function prototypes                                                        */
 /*----------------------------------------------------------------------------*/
-static pcb_hid_attribute_t *eps_get_export_options(int *n);
+static pcb_hid_attribute_t *eps_get_export_options(pcb_hid_t *hid, int *n);
 static void eps_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val_t *options);
 static int eps_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv);
 static int eps_set_layer_group(pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform);
@@ -145,7 +145,7 @@ PCB_REGISTER_ATTRIBUTES(eps_attribute_list, ps_cookie)
 
 static pcb_hid_attr_val_t eps_values[NUM_OPTIONS];
 
-static pcb_hid_attribute_t *eps_get_export_options(int *n)
+static pcb_hid_attribute_t *eps_get_export_options(pcb_hid_t *hid, int *n)
 {
 	if ((PCB != NULL)  && (eps_attribute_list[HA_psfile].default_val.str_value == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &eps_attribute_list[HA_psfile], ".eps");
@@ -346,7 +346,7 @@ static void eps_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val
 	int save_ons[PCB_MAX_LAYER];
 
 	if (!options) {
-		eps_get_export_options(0);
+		eps_get_export_options(hid, 0);
 		for (i = 0; i < NUM_OPTIONS; i++)
 			eps_values[i] = eps_attribute_list[i].default_val;
 		options = eps_values;

@@ -208,7 +208,7 @@ static pcb_action_t cam_action_list[] = {
 PCB_REGISTER_ACTIONS(cam_action_list, cam_cookie)
 
 
-static pcb_hid_attribute_t *export_cam_get_export_options(int *n)
+static pcb_hid_attribute_t *export_cam_get_export_options(pcb_hid_t *hid, int *n)
 {
 	return 0;
 }

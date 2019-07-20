@@ -158,7 +158,7 @@ pcb_coord_t bboard_scale_coord(pcb_coord_t x)
 * Export filter implementation starts here
 ********************************************/
 
-static pcb_hid_attribute_t *bboard_get_export_options(int *n)
+static pcb_hid_attribute_t *bboard_get_export_options(pcb_hid_t *hid, int *n)
 {
 	if ((PCB != NULL)  && (bboard_options[HA_bboardfile].default_val.str_value == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &bboard_options[HA_bboardfile], ".png");
@@ -493,7 +493,7 @@ static void bboard_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_
 	pcb_layergrp_id_t gtop, gbottom;
 
 	if (!options) {
-		bboard_get_export_options(0);
+		bboard_get_export_options(hid, 0);
 		for (i = 0; i < NUM_OPTIONS; i++)
 			bboard_values[i] = bboard_options[i].default_val;
 		options = bboard_values;

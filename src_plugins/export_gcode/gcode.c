@@ -234,7 +234,7 @@ static int gcode_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static pcb_hid_attribute_t *gcode_get_export_options(int *n)
+static pcb_hid_attribute_t *gcode_get_export_options(pcb_hid_t *hid, int *n)
 {
 	static int last_unit_value = -1;
 
@@ -382,7 +382,7 @@ static void gcode_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_v
 	};
 
 	if (!options) {
-		gcode_get_export_options(0);
+		gcode_get_export_options(hid, 0);
 		for (i = 0; i < NUM_OPTIONS; i++) {
 			gcode_values[i] = gcode_attribute_list[i].default_val;
 		}

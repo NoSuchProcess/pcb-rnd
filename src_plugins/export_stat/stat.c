@@ -109,7 +109,7 @@ PCB_REGISTER_ATTRIBUTES(stat_attribute_list, stat_cookie)
 
 static pcb_hid_attr_val_t stat_values[NUM_OPTIONS];
 
-static pcb_hid_attribute_t *stat_get_export_options(int *n)
+static pcb_hid_attribute_t *stat_get_export_options(pcb_hid_t *hid, int *n)
 {
 	const char *suffix = ".stat.lht";
 
@@ -143,7 +143,7 @@ static void stat_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_va
 	memset(group_not_empty, 0, sizeof(group_not_empty));
 
 	if (!options) {
-		stat_get_export_options(0);
+		stat_get_export_options(hid, 0);
 		for (i = 0; i < NUM_OPTIONS; i++)
 			stat_values[i] = stat_attribute_list[i].default_val;
 		options = stat_values;

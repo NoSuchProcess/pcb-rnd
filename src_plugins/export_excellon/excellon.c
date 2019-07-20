@@ -190,7 +190,7 @@ excellon output file prefix. Can include a path.
 
 static pcb_hid_attr_val_t excellon_values[NUM_OPTIONS];
 
-static pcb_hid_attribute_t *excellon_get_export_options(int *n)
+static pcb_hid_attribute_t *excellon_get_export_options(pcb_hid_t *hid, int *n)
 {
 	if ((PCB != NULL)  && (excellon_options[HA_excellonfile].default_val.str_value == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &excellon_options[HA_excellonfile], "");
@@ -217,7 +217,7 @@ static void excellon_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_att
 	memset(&warn, 0, sizeof(warn));
 
 	if (!options) {
-		excellon_get_export_options(NULL);
+		excellon_get_export_options(hid, NULL);
 		for (i = 0; i < NUM_OPTIONS; i++)
 			excellon_values[i] = excellon_options[i].default_val;
 		options = excellon_values;

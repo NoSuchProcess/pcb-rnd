@@ -127,7 +127,7 @@ PCB_REGISTER_ATTRIBUTES(openscad_attribute_list, openscad_cookie)
 
 static pcb_hid_attr_val_t openscad_values[NUM_OPTIONS];
 
-static pcb_hid_attribute_t *openscad_get_export_options(int *n)
+static pcb_hid_attribute_t *openscad_get_export_options(pcb_hid_t *hid, int *n)
 {
 	const char *suffix = ".scad";
 
@@ -299,7 +299,7 @@ static void openscad_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_att
 	int i;
 
 	if (!options) {
-		openscad_get_export_options(0);
+		openscad_get_export_options(hid, 0);
 		for (i = 0; i < NUM_OPTIONS; i++)
 			openscad_values[i] = openscad_attribute_list[i].default_val;
 		options = openscad_values;

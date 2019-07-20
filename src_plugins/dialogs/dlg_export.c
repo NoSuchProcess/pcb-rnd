@@ -182,7 +182,7 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 			export_ctx.tabs = PCB_DAD_CURRENT(export_ctx.dlg);
 			for(n = 0; n < export_ctx.len; n++) {
 				int numa;
-				pcb_hid_attribute_t *attrs = export_ctx.hid[n]->get_export_options(&numa);
+				pcb_hid_attribute_t *attrs = export_ctx.hid[n]->get_export_options(export_ctx.hid[n], &numa);
 				export_ctx.numa[n] = numa;
 				export_ctx.ea[n] = attrs;
 				if (numa < 1) {

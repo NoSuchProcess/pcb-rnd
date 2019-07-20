@@ -340,7 +340,7 @@ static struct {
 	pcb_composite_op_t drawing_mode;
 } global;
 
-static pcb_hid_attribute_t *ps_get_export_options(int *n)
+static pcb_hid_attribute_t *ps_get_export_options(pcb_hid_t *hid, int *n)
 {
 	if ((PCB != NULL) && (ps_attribute_list[HA_psfile].default_val.str_value == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &ps_attribute_list[HA_psfile], ".ps");
@@ -614,7 +614,7 @@ static void ps_do_export(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_hid_attr_val_
 	int i;
 
 	if (!options) {
-		ps_get_export_options(0);
+		ps_get_export_options(hid, 0);
 		for (i = 0; i < NUM_OPTIONS; i++)
 			global.ps_values[i] = ps_attribute_list[i].default_val;
 		options = global.ps_values;
