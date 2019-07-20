@@ -536,7 +536,7 @@ static void ghid_set_top_title(pcb_hid_t *hid, const char *title)
 	pcb_gtk_tw_set_title(&ghidgui->topwin, title);
 }
 
-static void ghid_busy(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_bool busy)
+static void ghid_busy(pcb_hid_t *hid, pcb_bool busy)
 {
 	if ((ghidgui == NULL) || (!ghidgui->hid_active))
 		return;

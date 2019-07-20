@@ -372,7 +372,7 @@ static const char *cur_clip()
 }
 
 /* Called from the core when it's busy doing something and we need to indicate that to the user.  */
-static void ltf_busy(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_bool busy)
+static void ltf_busy(pcb_hid_t *hid, pcb_bool busy)
 {
 	static Cursor busy_cursor = 0;
 	if (!lesstif_active)
