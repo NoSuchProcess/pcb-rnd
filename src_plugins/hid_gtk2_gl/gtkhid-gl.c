@@ -133,7 +133,7 @@ static void end_subcomposite(void)
 }
 #endif
 
-int ghid_gl_set_layer_group(pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
+int ghid_gl_set_layer_group(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 
@@ -155,7 +155,7 @@ int ghid_gl_set_layer_group(pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const
 	return 1;
 }
 
-static void ghid_gl_end_layer(void)
+static void ghid_gl_end_layer(pcb_hid_t *hid)
 {
 	drawgl_flush();
 	drawgl_reset();

@@ -31,9 +31,9 @@
 #include "funchash_core.h"
 #include "layer.h"
 
-static int (*gui_set_layer_group)(pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform);
+static int (*gui_set_layer_group)(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform);
 
-static int common_set_layer_group(pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
+static int common_set_layer_group(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
 	int idx = group;
 	if (idx >= 0 && idx < pcb_max_group(PCB)) {
@@ -77,17 +77,17 @@ static int common_set_layer_group(pcb_hidlib_t *hidlib, pcb_layergrp_id_t group,
 	return 0;
 }
 
-static int pcbui_set_layer_group(pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
+static int pcbui_set_layer_group(pcb_hid_t *hid, pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
 	int res;
 
-	res = gui_set_layer_group(hidlib, group, purpose, purpi, layer, flags, is_empty, xform);
+	res = gui_set_layer_group(hid, hidlib, group, purpose, purpi, layer, flags, is_empty, xform);
 
 	/* if the HID doesn't want it, don't even bother running the above heuristics */
 	if (res == 0)
 		return 0;
 
-	return common_set_layer_group(hidlib, group, purpose, purpi, layer, flags, is_empty, xform);
+	return common_set_layer_group(hid, hidlib, group, purpose, purpi, layer, flags, is_empty, xform);
 }
 
 static void pcb_rendering_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
