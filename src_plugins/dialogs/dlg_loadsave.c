@@ -71,13 +71,13 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, Load, function = argv[1].val.str);
 
 	if (pcb_strcasecmp(function, "Netlist") == 0)
-		name = pcb_gui->fileselect("Load netlist file", "Import netlist from file", last_netlist, ".net", NULL, "netlist", PCB_HID_FSD_READ, NULL);
+		name = pcb_gui->fileselect(pcb_gui, "Load netlist file", "Import netlist from file", last_netlist, ".net", NULL, "netlist", PCB_HID_FSD_READ, NULL);
 	else if ((pcb_strcasecmp(function, "FootprintToBuffer") == 0) || (pcb_strcasecmp(function, "ElementToBuffer") == 0))
-		name = pcb_gui->fileselect("Load footprint to buffer", "Import footprint from file", last_footprint, NULL, NULL, "footprint", PCB_HID_FSD_READ, NULL);
+		name = pcb_gui->fileselect(pcb_gui, "Load footprint to buffer", "Import footprint from file", last_footprint, NULL, NULL, "footprint", PCB_HID_FSD_READ, NULL);
 	else if (pcb_strcasecmp(function, "LayoutToBuffer") == 0)
-		name = pcb_gui->fileselect("Load layout to buffer", "load layout (board) to buffer", last_layout, NULL, NULL, "board", PCB_HID_FSD_READ, NULL);
+		name = pcb_gui->fileselect(pcb_gui, "Load layout to buffer", "load layout (board) to buffer", last_layout, NULL, NULL, "board", PCB_HID_FSD_READ, NULL);
 	else if (pcb_strcasecmp(function, "Layout") == 0)
-		name = pcb_gui->fileselect("Load layout file", "load layout (board) as board to edit", last_layout, NULL, NULL, "board", PCB_HID_FSD_READ, NULL);
+		name = pcb_gui->fileselect(pcb_gui, "Load layout file", "load layout (board) as board to edit", last_layout, NULL, NULL, "board", PCB_HID_FSD_READ, NULL);
 	else {
 		pcb_message(PCB_MSG_ERROR, "Invalid subcommand for Load(): '%s'\n", function);
 		PCB_ACT_IRES(1);
@@ -506,7 +506,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	timer_ctx.ptr = &save;
 	save.timer_active = 1;
 	save.timer = pcb_gui->add_timer(pcb_gui, save_timer, 300, timer_ctx); /* the timer needs to run at least once, to get some initialization done that can be done only after fmtsub got created */
-	final_name = pcb_gui->fileselect(prompt, NULL, name_in, NULL, NULL, "board", PCB_HID_FSD_MAY_NOT_EXIST, fmtsub);
+	final_name = pcb_gui->fileselect(pcb_gui, prompt, NULL, name_in, NULL, NULL, "board", PCB_HID_FSD_MAY_NOT_EXIST, fmtsub);
 	if (save.timer_active)
 		pcb_gui->stop_timer(pcb_gui, save.timer);
 	free(name_in);
@@ -563,7 +563,7 @@ fgw_error_t pcb_act_ImportGUI(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (lock)
 		return 1;
 
-	name = pcb_gui->fileselect("Load schematics", "Import netlist and footprints from schematics", cwd, NULL, NULL, "schematics", PCB_HID_FSD_MAY_NOT_EXIST, NULL);
+	name = pcb_gui->fileselect(pcb_gui, "Load schematics", "Import netlist and footprints from schematics", cwd, NULL, NULL, "schematics", PCB_HID_FSD_MAY_NOT_EXIST, NULL);
 	if (name != NULL) {
 		pcb_attrib_put(PCB, "import::src0", name);
 		free(name);

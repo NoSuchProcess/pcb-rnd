@@ -334,7 +334,7 @@ static int live_load(live_script_t *lvs, const char *fn)
 
 	if (fn == NULL) {
 		const char *default_ext = live_default_ext(lvs);
-		fn = pcb_gui->fileselect(
+		fn = pcb_gui->fileselect(pcb_gui,
 			"Load live script", "Load the a live script from file",
 			lvs->fn, default_ext, pcb_hid_fsd_filter_any, "live_script", PCB_HID_FSD_READ, NULL);
 		if (fn == NULL)
@@ -380,7 +380,7 @@ static int live_save(live_script_t *lvs, const char *fn)
 		if (lvs->fn == NULL)
 			lvs->fn = pcb_concat(lvs->name, ".", default_ext, NULL);
 
-		fn = pcb_gui->fileselect(
+		fn = pcb_gui->fileselect(pcb_gui,
 			"Save live script", "Save the source of a live script",
 			lvs->fn, default_ext, pcb_hid_fsd_filter_any, "live_script", 0, NULL);
 		if (fn == NULL)

@@ -179,7 +179,7 @@ fgw_error_t pcb_act_LoadtinycadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadtinycadFrom, fname = argv[1].val.str);
 
 	if (!fname || !*fname) {
-		fname = pcb_gui->fileselect("Load tinycad netlist file...",
+		fname = pcb_gui->fileselect(pcb_gui, "Load tinycad netlist file...",
 																"Picks a tinycad netlist file to load.\n",
 																default_file, ".net", NULL, "tinycad", PCB_HID_FSD_READ, NULL);
 		if (fname == NULL)

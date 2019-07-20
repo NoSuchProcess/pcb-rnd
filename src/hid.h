@@ -388,7 +388,7 @@ struct pcb_hid_s {
 	 *  get_path       returns the current full path in res as an strdup'd string (caller needs to free it)
 	 *  set_file_name  replaces the file name portion of the current path from arg[0].d.s
 	 */
-	char *(*fileselect)(const char *title, const char *descr, const char *default_file, const char *default_ext, const pcb_hid_fsd_filter_t *flt, const char *history_tag, pcb_hid_fsd_flags_t flags, pcb_hid_dad_subdialog_t *sub);
+	char *(*fileselect)(pcb_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const pcb_hid_fsd_filter_t *flt, const char *history_tag, pcb_hid_fsd_flags_t flags, pcb_hid_dad_subdialog_t *sub);
 
 	/* A generic dialog to ask for a set of attributes. If n_attrs_ is
 	   zero, attrs_(.name) must be NULL terminated. attr_dlg_run returns

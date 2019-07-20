@@ -101,7 +101,7 @@ static void pref_win_file_now_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 {
 	char *fname;
 
-	fname = pcb_gui->fileselect("Save window geometry to...",
+	fname = pcb_gui->fileselect(pcb_gui, "Save window geometry to...",
 		"Pick a file for saving window geometry to.\n",
 		"win_geo.lht", ".lht", NULL, "wingeo", PCB_HID_FSD_MAY_NOT_EXIST, NULL);
 

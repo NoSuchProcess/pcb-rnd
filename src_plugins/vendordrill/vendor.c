@@ -145,7 +145,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadVendorFrom, fname = argv[1].val.str);
 
 	if (!fname || !*fname) {
-		fname = pcb_gui->fileselect("Load Vendor Resource File...",
+		fname = pcb_gui->fileselect(pcb_gui, "Load Vendor Resource File...",
 														"Picks a vendor resource file to load.\n"
 															"This file can contain drc settings for a\n"
 															"particular vendor as well as a list of\n"

@@ -170,7 +170,7 @@ fgw_error_t pcb_act_LoadFpcbnlFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadFpcbnlFrom, fname = argv[1].val.str);
 
 	if (!fname || !*fname) {
-		fname = pcb_gui->fileselect(
+		fname = pcb_gui->fileselect(pcb_gui,
 			"Load freepcb netlist...", "Picks a freepcb netlist file to load.\n",
 			default_file, ".net", NULL, "freepcb", PCB_HID_FSD_READ, NULL);
 		if (fname == NULL)

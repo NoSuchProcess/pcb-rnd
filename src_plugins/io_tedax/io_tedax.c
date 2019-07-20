@@ -112,7 +112,7 @@ static fgw_error_t pcb_act_Savetedax(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 do { \
 	static char *default_file = NULL; \
 	if ((fname == NULL) || (*fname == '\0')) { \
-		fname = pcb_gui->fileselect("Load tedax " #type " file...", \
+		fname = pcb_gui->fileselect(pcb_gui, "Load tedax " #type " file...", \
 																"Picks a tedax " #type " file to load.\n", \
 																default_file, ".tdx", NULL, "tedax-" #type, PCB_HID_FSD_READ, NULL); \
 		if (fname == NULL) \

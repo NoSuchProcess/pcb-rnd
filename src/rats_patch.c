@@ -506,7 +506,7 @@ static fgw_error_t pcb_act_SavePatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else
 			default_file = pcb_strdup("unnamed.bap");
 
-		fn = pcb_gui->fileselect("Save netlist patch as ...",
+		fn = pcb_gui->fileselect(pcb_gui, "Save netlist patch as ...",
 			"Choose a file to save netlist patch to\n"
 			"for back annotation\n", default_file, ".bap", NULL, "patch", 0, NULL);
 

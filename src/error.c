@@ -231,7 +231,7 @@ static fgw_error_t pcb_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				memset(&fmtsub, 0, sizeof(fmtsub));
 				PCB_DAD_ENUM(fmtsub.dlg, fmts);
 					wfmt = PCB_DAD_CURRENT(fmtsub.dlg);
-				fn = pcb_gui->fileselect("Export log", NULL, "log.txt", NULL, NULL, "log", PCB_HID_FSD_MAY_NOT_EXIST, &fmtsub);
+				fn = pcb_gui->fileselect(pcb_gui, "Export log", NULL, "log.txt", NULL, NULL, "log", PCB_HID_FSD_MAY_NOT_EXIST, &fmtsub);
 				if (fn != NULL) {
 					ret = pcb_log_export(NULL, fn, (fmtsub.dlg[wfmt].default_val.int_value == 1));
 					if (ret != 0)

@@ -439,7 +439,7 @@ static void view_save_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	char *fn;
 	FILE *f;
 
-	fn = pcb_gui->fileselect("Save view list", "Save all views from the list", "view.lht", "lht", NULL, "view", 0, NULL);
+	fn = pcb_gui->fileselect(pcb_gui, "Save view list", "Save all views from the list", "view.lht", "lht", NULL, "view", 0, NULL);
 	if (fn == NULL)
 		return;
 
@@ -468,7 +468,7 @@ static void view_load_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	FILE *f;
 	void *load_ctx;
 
-	fn = pcb_gui->fileselect("Load view list", "Load all views from the list", "view.lht", "lht", NULL, "view", PCB_HID_FSD_READ, NULL);
+	fn = pcb_gui->fileselect(pcb_gui, "Load view list", "Load all views from the list", "view.lht", "lht", NULL, "view", PCB_HID_FSD_READ, NULL);
 	if (fn == NULL)
 		return;
 

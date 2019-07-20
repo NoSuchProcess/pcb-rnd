@@ -219,7 +219,7 @@ fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadDsnFrom, fname = argv[1].val.str);
 
 	if ((fname == NULL) || (*fname == '\0')) {
-		fname = pcb_gui->fileselect(
+		fname = pcb_gui->fileselect(pcb_gui,
 			"Load a routed dsn or ses file...",
 			"Select dsn or ses file to load.\nThe file could be generated using the tool downloaded from freeroute.net\n",
 			NULL, /* default file name */
