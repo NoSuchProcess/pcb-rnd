@@ -22,7 +22,8 @@ PCB_RND_VER=@/local/version@
 
 # hidlib installation directories
 HL_LIBDIR=$(Install_root)@/local/prefix@/@/local/libarchdir@
-HL_INCDIR=$(Install_root)@/local/prefix@/include/pcb-rnd
+HL_SHAREDIR=$(Install_root)@/local/prefix@/share/librnd
+HL_INCDIR=$(Install_root)@/local/prefix@/include/librnd
 
 
 # The installation directoried to be used from within binaries (with
