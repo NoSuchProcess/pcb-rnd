@@ -563,6 +563,7 @@ sub /local/pcb/HDRS_HIDLIB {polygon1.h } {}
 append /local/pcb/HDRS_HIDLIB {hid.h polyarea.h }
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/liblihata/dom_[^ ]*.h } {}
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/liblihata/tree_[^ ]*.h } {}
+append /local/pcb/HDRS_3RDLIB {../src_3rd/genvector/genvector_impl.h ../src_3rd/genvector/genvector_undef.h }
 
 # dynamic part of install_pcbrnd: hidlib headers
 foreach /local/h in /local/pcb/HDRS_HIDLIB
