@@ -536,7 +536,7 @@ install_pcbrnd:
 	$(SCCBOX) $(HOW) "default_font" "$(DATADIR)/default_font"@/local/pcb/rules/install_@
 
 install_librnd: librnd
-	$(SCCBOX) mkdir -p "$(HL_LIBDIR)" "$(HL_INCDIR)/core" "$(HL_INCDIR)/src_3rd/liblihata" "$(HL_INCDIR)/src_3rd/liblhtpers" "$(HL_INCDIR)/src_3rd/puplug" "$(HL_INCDIR)/src_3rd/fungw" "$(HL_INCDIR)/src_3rd/genvector" "$(HL_INCDIR)/src_3rd/genregex" "$(HL_INCDIR)/src_3rd/genrtree" "$(HL_SHAREDIR)"
+	$(SCCBOX) mkdir -p "$(HL_LIBDIR)" "$(HL_INCDIR)/core" "$(HL_INCDIR)/src_3rd/liblihata" "$(HL_INCDIR)/src_3rd/liblhtpers" "$(HL_INCDIR)/src_3rd/puplug" "$(HL_INCDIR)/src_3rd/fungw" "$(HL_INCDIR)/src_3rd/genvector" "$(HL_INCDIR)/src_3rd/genregex" "$(HL_INCDIR)/src_3rd/genrtree"  "$(HL_INCDIR)/src_3rd/genlist" "$(HL_SHAREDIR)"
 	$(SCCBOX) $(HOW) "librnd-hid.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER)"
 	$(SCCBOX) $(HOW) "librnd-hid.a" "$(HL_LIBDIR)/librnd-hid.a"
 	$(SCCBOX) $(HOW) "librnd-3rd.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-3rd.so.$(PCB_RND_VER)"
@@ -565,6 +565,7 @@ gsub /local/pcb/HDRS_3RDLIB {../src_3rd/liblihata/dom_[^ ]*.h } {}
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/liblihata/tree_[^ ]*.h } {}
 append /local/pcb/HDRS_3RDLIB {../src_3rd/genvector/genvector_impl.h ../src_3rd/genvector/genvector_undef.h }
 append /local/pcb/HDRS_3RDLIB {../src_3rd/genrtree/genrtree_api.h }
+append /local/pcb/HDRS_3RDLIB {../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gendlist.h }
 
 # dynamic part of install_pcbrnd: hidlib headers
 foreach /local/h in /local/pcb/HDRS_HIDLIB
