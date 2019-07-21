@@ -15,8 +15,8 @@ uniq /local/pcb/LIBS_3RD_HIDLIB
 uniq /local/pcb/CFLAGS_HIDLIB_STATIC_
 uniq /local/pcb/LDFLAGS_HIDLIB_STATIC_
 
-gsub /local/pcb/LIBS_3RD_HIDLIB {[.][.]/src_3rd/} {$(HIDLIB_ROOT)/src_3rd/}
-gsub /local/pcb/CFLAGS_HIDLIB_STATIC_ {[.][.]/src_3rd/} {$(HIDLIB_ROOT)/src_3rd/}
+gsub /local/pcb/LIBS_3RD_HIDLIB {[.][.]/src_3rd/} {$(LIBRND_ROOT)/src_3rd/}
+gsub /local/pcb/CFLAGS_HIDLIB_STATIC_ {[.][.]/src_3rd/} {$(LIBRND_ROOT)/src_3rd/}
 
 print [@
 
@@ -24,12 +24,12 @@ print [@
 # Auto-generated Makefile for inclusion for librnd users.
 #
 # The user's Makefile needs to, in this order:
-#  - set up $(HIDLIB_ROOT)
+#  - set up $(LIBRND_ROOT)
 #  - include this file
 #  - use the variables declared in this file for compilation and linking
 #
 
-CFLAGS_HIDLIB=@?/local/pcb/CFLAGS_HIDLIB_STATIC_@ -I$(HIDLIB_ROOT)/src -I$(HIDLIB_ROOT)/src_3rd -I$(HIDLIB_ROOT)
+CFLAGS_HIDLIB=@?/local/pcb/CFLAGS_HIDLIB_STATIC_@ -I$(LIBRND_ROOT)/usr/include/librnd/core -I$(LIBRND_ROOT)/usr/include/librnd/src_3rd -I$(LIBRND_ROOT)/usr/include/librnd
 LDFLAGS_HIDLIB=@/local/pcb/LIBS_3RD_HIDLIB@ @?/local/pcb/LDFLAGS_HIDLIB_STATIC_@
 
 @]
