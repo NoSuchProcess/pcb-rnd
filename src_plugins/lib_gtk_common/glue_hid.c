@@ -81,7 +81,7 @@ static gboolean check_object_tooltips(pcb_gtk_port_t *out)
 	return pcb_gtk_dwg_tooltip_check_object(out->drawing_area, out->view.crosshair_x, out->view.crosshair_y);
 }
 
-static gint ghid_port_window_motion_cb(GtkWidget * widget, GdkEventMotion * ev, void * out_)
+static gint ghid_port_window_motion_cb(GtkWidget *widget, GdkEventMotion *ev, void *out_)
 {
 	pcb_gtk_port_t *out = out_;
 	gdouble dx, dy;
