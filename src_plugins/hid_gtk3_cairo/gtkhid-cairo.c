@@ -66,7 +66,7 @@ typedef struct render_priv_s {
 	cairo_t *cr;													/* pointer to current drawing context             */
 	cairo_t *cr_target;										/* pointer to destination widget drawing context  */
 
-	cairo_surface_t *surf_da;							/* cairo surface connected to gport->drawing_area */
+	cairo_surface_t *surf_da;							/* cairo surface connected to  port->drawing_area */
 	cairo_t *cr_drawing_area;							/* cairo context created from surf_da             */
 
 	cairo_surface_t *surf_layer;					/* cairo surface for temporary layer composition  */
@@ -161,7 +161,7 @@ static void cr_destroy_surf_and_context(cairo_surface_t ** psurf, cairo_t ** pcr
 /* First, frees previous surface and context, then creates new ones, similar to drawing_area. */
 static void cr_create_similar_surface_and_context(cairo_surface_t ** psurf, cairo_t ** pcr, void *vport)
 {
-	GHidPort *port = vport;
+	pcb_gtk_port_t *port = vport;
 	cairo_surface_t *surface;
 	cairo_t *cr;
 
@@ -179,7 +179,7 @@ static void cr_create_similar_surface_and_context(cairo_surface_t ** psurf, cair
 /* Creates or reuses a context to render a single layer group with "union" type of shape rendering. */
 static void start_subcomposite(void)
 {
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 	cairo_t *cr;
 
 	if (priv->surf_layer == NULL)
@@ -196,7 +196,7 @@ static void start_subcomposite(void)
 /* Applies the layer composited so far, to the target, using translucency. */
 static void end_subcomposite(void)
 {
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 
 	cairo_set_operator(priv->cr_target, CAIRO_OPERATOR_OVER);
 	cairo_set_source_surface(priv->cr_target, priv->surf_layer, 0, 0);
@@ -333,7 +333,7 @@ static inline void ghid_cairo_draw_grid_global(pcb_hidlib_t *hidlib, cairo_t *cr
 
 static void ghid_cairo_draw_grid_local_(pcb_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy, int radius)
 {
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 	cairo_t *cr = priv->cr_target;
 	static GdkPoint *points_base = NULL;
 	static GdkPoint *points_abs = NULL;
@@ -417,7 +417,7 @@ static void ghid_cairo_draw_grid_local(pcb_hidlib_t *hidlib, pcb_coord_t cx, pcb
 
 static void ghid_cairo_draw_grid(pcb_hidlib_t *hidlib)
 {
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 	cairo_t *cr = priv->cr_target;
 
 	if (cr == NULL)
@@ -464,7 +464,7 @@ static void ghid_cairo_draw_bg_image(pcb_hidlib_t *hidlib)
 	GdkInterpType interp_type;
 	gint src_x, src_y, dst_x, dst_y, w, h, w_src, h_src;
 	static gint w_scaled, h_scaled;
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 
 	if (!ghidgui->bg_pixbuf)
 		return;
@@ -523,7 +523,7 @@ static void ghid_cairo_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
 /* Drawing modes usually cycle from RESET to (POSITIVE | NEGATIVE) to FLUSH. screen is not used in this HID. */
 static void ghid_cairo_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
 {
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 
 	if (!priv->cr) {
 		//abort();
@@ -613,7 +613,7 @@ typedef struct {
 /* Assign "identified" colors to background, offlimits and grid cached structures */
 static void ghid_cairo_set_special_colors(conf_native_t * cfg)
 {
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 
 	if (((CFT_COLOR *) cfg->val.color == &pcbhl_conf.appearance.color.background) /*&& priv->bg_gc */ ) {
 		if (map_color_string(cfg->val.color[0].str, &priv->bg_color)) {
@@ -637,7 +637,7 @@ static void ghid_cairo_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 {
 	static void *cache = 0;
 	pcb_hidval_t cval;
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 	const char *name = color->str;
 
 	if (name == NULL) {
@@ -733,7 +733,7 @@ static void ghid_cairo_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 
 static void ghid_cairo_set_draw_xor(pcb_hid_gc_t gc, int xor_mask)
 {
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 
 	priv->xor_mode = (xor_mask) ? 1 : 0;
 	//gc->xor_mask = xor_mask;
@@ -745,7 +745,7 @@ static void ghid_cairo_set_draw_xor(pcb_hid_gc_t gc, int xor_mask)
 
 static int use_gc(pcb_hid_gc_t gc)
 {
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 	cairo_t *cr = priv->cr;
 	//GdkWindow *window = gtk_widget_get_window(gport->top_window);
 
@@ -793,7 +793,7 @@ static int use_gc(pcb_hid_gc_t gc)
 static void ghid_cairo_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	double dx1, dy1, dx2, dy2;
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 
 	dx1 = Vx((double) x1);
 	dy1 = Vy((double) y1);
@@ -818,7 +818,7 @@ static void ghid_cairo_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy,
 																pcb_coord_t xradius, pcb_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	double w, h, radius, angle1, angle2;
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 
 	w = gport->view.canvas_width * gport->view.coord_per_px;
 	h = gport->view.canvas_height * gport->view.coord_per_px;
@@ -869,7 +869,7 @@ TODO("gtk3: this will draw an arc of a circle, not an ellipse! Explore matrix tr
 static void cr_draw_rect(pcb_hid_gc_t gc, int fill, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	gint w, h, lw;
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 
 	if (priv->cr == NULL)
 		return;
@@ -930,7 +930,7 @@ static void ghid_cairo_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1
 static void ghid_cairo_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
 	gint w, h, vr;
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 
 	if (priv->cr == NULL)
 		return;
@@ -953,7 +953,7 @@ static void ghid_cairo_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t 
 static void ghid_cairo_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
 	int i;
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 	cairo_t *cr = priv->cr;
 	int _x, _y;
 
@@ -976,7 +976,7 @@ static void ghid_cairo_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *
 static void ghid_cairo_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
 {
 	int i;
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 	cairo_t *cr = priv->cr;
 	int _x, _y;
 
@@ -1008,7 +1008,7 @@ static void redraw_region(pcb_hidlib_t *hidlib, GdkRectangle *rect)
 {
 	int eleft, eright, etop, ebottom;
 	pcb_hid_expose_ctx_t ctx;
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 
 	if (priv->cr_drawing_area == NULL)
 	  return;
@@ -1141,7 +1141,7 @@ static void ghid_cairo_invalidate_all(pcb_hidlib_t *hidlib)
 
 static void ghid_cairo_notify_crosshair_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
 {
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 
 	/* We sometimes get called before the GUI is up */
 	if (gport->drawing_area == NULL)
@@ -1162,7 +1162,7 @@ static void ghid_cairo_notify_crosshair_change(pcb_hidlib_t *hidlib, pcb_bool ch
 
 static void ghid_cairo_notify_mark_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
 {
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 
 	/* We sometimes get called before the GUI is up */
 	if (gport->drawing_area == NULL)
@@ -1300,7 +1300,7 @@ static void draw_crosshair(cairo_t * xor_gc, gint x, gint y)
 
 static void show_crosshair(gboolean paint_new_location)
 {
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 	//GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 	//GtkStyle *style = gtk_widget_get_style(gport->drawing_area);
 	gint x, y;
@@ -1349,7 +1349,7 @@ TODO("gtk3:FIXME: when CrossColor changed from config")
 
 static void ghid_cairo_init_renderer(int *argc, char ***argv, void *vport)
 {
-	GHidPort *port = vport;
+	pcb_gtk_port_t *port = vport;
 
 	/* Init any GC's required */
 	port->render_priv = g_new0(render_priv_t, 1);
@@ -1360,7 +1360,7 @@ static void ghid_cairo_init_renderer(int *argc, char ***argv, void *vport)
 
 static void ghid_cairo_shutdown_renderer(void *vport)
 {
-	GHidPort *port = vport;
+	pcb_gtk_port_t *port = vport;
 	render_priv_t *priv = port->render_priv;
 
 	cairo_surface_destroy(priv->surf_da);
@@ -1380,7 +1380,7 @@ static void ghid_cairo_init_drawing_widget(GtkWidget * widget, void *vport)
 /* Callback function only applied to drawing_area, after some resizing or initialisation. */
 static void ghid_cairo_drawing_area_configure_hook(void *vport)
 {
-	GHidPort *port = vport;
+	pcb_gtk_port_t *port = vport;
 	static int done_once = 0;
 	render_priv_t *priv = port->render_priv;
 	cairo_t *cr;
@@ -1422,7 +1422,7 @@ static void ghid_cairo_drawing_area_configure_hook(void *vport)
 /* GtkDrawingArea -> GtkWidget "draw" signal Call-Back function */
 static gboolean ghid_cairo_drawing_area_expose_cb(GtkWidget * widget, pcb_gtk_expose_t * p, void *vport)
 {
-	GHidPort *port = vport;
+	pcb_gtk_port_t *port = vport;
 	render_priv_t *priv = port->render_priv;
 	//GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 
@@ -1440,7 +1440,7 @@ static gboolean ghid_cairo_drawing_area_expose_cb(GtkWidget * widget, pcb_gtk_ex
 
 static void ghid_cairo_screen_update(void)
 {
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 	//GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 
 	if (priv->cr == NULL)
@@ -1464,7 +1464,7 @@ static gboolean ghid_cairo_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *
 	pcb_gtk_view_t save_view;
 	int save_width, save_height;
 	double xz, yz, vw, vh;
-	render_priv_t *priv = gport->render_priv;
+	render_priv_t *priv = ghidgui->port.render_priv;
 	pcb_coord_t ox1 = ctx->view.X1, oy1 = ctx->view.Y1, ox2 = ctx->view.X2, oy2 = ctx->view.Y2;
 
 	vw = ctx->view.X2 - ctx->view.X1;
