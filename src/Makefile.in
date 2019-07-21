@@ -402,9 +402,20 @@ all_exe: pcb-rnd$(EXE) @/local/pcb/all@
 pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS) $(LIBS_3RD)
 	$(CC) $(OBJS) $(OBJS_C99) -o pcb-rnd$(EXE) $(LIBS_PRE) $(LDFLAGS) $(LIBS)
 
+
+OBJS_HIDLIB_ALL = $(OBJS_HIDLIB_PLG) $(OBJS_C99_HIDLIB_PLG) $(OBJS_HIDLIB) $(OBJS_HIDLIB_ONLY) $(OBJS_C99_HIDLIB)
+DEPS_HIDLIB_ALL = $(OBJS_HIDLIB_ALL) $(EXEDEPS) $(LIBS_3RD) buildin.hidlib.h
+
 # temporary, for testig
-hidlib.a: $(OBJS_HIDLIB) $(OBJS_HIDLIB_ONLY) $(OBJS_C99_HIDLIB) $(OBJS_HIDLIB_PLG) $(OBJS_C99_HIDLIB_PLG) $(EXEDEPS) $(LIBS_3RD) buildin.hidlib.h
-	$(AR) rvu hidlib.a $(OBJS_HIDLIB_PLG) $(OBJS_C99_HIDLIB_PLG) $(OBJS_HIDLIB) $(OBJS_HIDLIB_ONLY) $(OBJS_C99_HIDLIB)
+librnd-hidlib.a: $(DEPS_HIDLIB_ALL)
+	$(AR) rvu librnd-hidlib.a $(OBJS_HIDLIB_ALL)
+
+librnd-hidlib.so.$(PCB_RND_VER): $(DEPS_HIDLIB_ALL)
+	$(CC) $(LDFLAGS) -shared @cc/ldflags_dynlib@ -o librnd-hidlib.so.$(PCB_RND_VER) $(OBJS_HIDLIB_ALL)
+
+HIDLIB_CLEAN_FILES=librnd-hidlib.so.$(PCB_RND_VER) librnd-hidlib.a
+
+librnd: $(HIDLIB_CLEAN_FILES)
 
 $(SPHASH_PATH)/sphash: $(SPHASH_PATH)/sphash.c
 	$(CC) -o pcb-rnd$(EXE) $(SPHASH_PATH)/sphash.c -o $(SPHASH_PATH)/sphash
@@ -488,7 +499,7 @@ FORCE:
 DISTCLEANFILES = Makefile.depgen core_lists.h buildin.c compat_inc.h hidlib_conf_fields.h conf_core_fields.h conf_internal.c generated_lists.h defpcb_internal.c pcb_menu_default.c ../src_plugins/.builtin.pups ../src_plugins/.builtin.hidlib.pups hidlib.mak @/local/pcb/DISTCLEANFILES@
 
 clean: $(CLEANRULES)
-	$(SCCBOX) rm -f -q  pcb-rnd hidlib.a $(OBJS) $(OBJS_C99) $(OBJS_HIDLIB_ONLY) $(CLEANFILES)
+	$(SCCBOX) rm -f -q  pcb-rnd $(HIDLIB_CLEAN_FILES) $(OBJS) $(OBJS_C99) $(OBJS_HIDLIB_ONLY) $(CLEANFILES)
 
 distclean: FORCE
 	$(SCCBOX) rm -f -q  $(DISTCLEANFILES)
@@ -502,9 +513,9 @@ install_pcbrnd:
 	$(SCCBOX) $(HOW) "pcb-menu-default.lht" "$(DATADIR)/pcb-menu-default.lht"
 	$(SCCBOX) $(HOW) "default_font" "$(DATADIR)/default_font"@/local/pcb/rules/install_@
 
-install_hidlib:
+install_librnd: librnd
 	$(SCCBOX) mkdir -p "$(HL_LIBDIR)" "$(HL_INCDIR)/core" "$(HL_INCDIR)/src_3rd/liblihata" "$(HL_INCDIR)/src_3rd/puplug" "$(HL_INCDIR)/src_3rd/fungw" "$(HL_INCDIR)/src_3rd/genvector" "$(HL_INCDIR)/src_3rd/genregex"
-	$(SCCBOX) $(HOW) "hidlib.a" "$(HL_LIBDIR)/hidlib.a"
+	$(SCCBOX) $(HOW) "librnd-hidlib.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-hidlib.so.$(PCB_RND_VER)"
 @]
 
 # dynamic part of install_pcbrnd: hidlib headers

@@ -18,6 +18,7 @@ MKDIR=@/host/fstools/mkdir@
 SCCBOX=$(ROOT)/scconfig/sccbox
 EXE=@/target/sys/ext_exe@
 PCB_RND_HOST_CC=@/host/cc/cc@
+PCB_RND_VER=@/local/version@
 
 # hidlib installation directories
 HL_LIBDIR=$(Install_root)@/local/prefix@/@/local/libarchdir@
