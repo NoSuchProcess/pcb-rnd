@@ -363,7 +363,8 @@ static int ghid_usage(pcb_hid_t *hid, const char *topic)
 
 static const char *ghid_command_entry(pcb_hid_t *hid, const char *ovr, int *cursor)
 {
-	return pcb_gtk_cmd_command_entry(&ghidgui->topwin.cmd, ovr, cursor);
+	pcb_gtk_t *gctx = hid->hid_data;
+	return pcb_gtk_cmd_command_entry(&gctx->topwin.cmd, ovr, cursor);
 }
 
 static int ghid_clip_set(pcb_hid_t *hid, pcb_hid_clipfmt_t format, const void *data, size_t len)
@@ -412,13 +413,14 @@ static void ghid_iterate(pcb_hid_t *hid)
 
 static double ghid_benchmark(pcb_hid_t *hid)
 {
+	pcb_gtk_t *gctx = hid->hid_data;
 	int i = 0;
 	time_t start, end;
 	GdkDisplay *display;
 	GdkWindow *window;
 
-	window = gtk_widget_get_window(ghidgui->port.drawing_area);
-	display = gtk_widget_get_display(ghidgui->port.drawing_area);
+	window = gtk_widget_get_window(gctx->port.drawing_area);
+	display = gtk_widget_get_display(gctx->port.drawing_area);
 
 	gdk_display_sync(display);
 	time(&start);
@@ -435,57 +437,66 @@ static double ghid_benchmark(pcb_hid_t *hid)
 
 static int ghid_dock_enter(pcb_hid_t *hid, pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id)
 {
-	return pcb_gtk_tw_dock_enter(&ghidgui->topwin, sub, where, id);
+	pcb_gtk_t *gctx = hid->hid_data;
+	return pcb_gtk_tw_dock_enter(&gctx->topwin, sub, where, id);
 }
 
 static void ghid_dock_leave(pcb_hid_t *hid, pcb_hid_dad_subdialog_t *sub)
 {
-	pcb_gtk_tw_dock_leave(&ghidgui->topwin, sub);
+	pcb_gtk_t *gctx = hid->hid_data;
+	pcb_gtk_tw_dock_leave(&gctx->topwin, sub);
 }
 
 static void ghid_zoom_win(pcb_hid_t *hid, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_bool set_crosshair)
 {
-	pcb_gtk_zoom_view_win_side(&ghidgui->port.view, x1, y1, x2, y2, set_crosshair);
+	pcb_gtk_t *gctx = hid->hid_data;
+	pcb_gtk_zoom_view_win_side(&gctx->port.view, x1, y1, x2, y2, set_crosshair);
 }
 
 static void ghid_zoom(pcb_hid_t *hid, pcb_coord_t center_x, pcb_coord_t center_y, double factor, int relative)
 {
+	pcb_gtk_t *gctx = hid->hid_data;
 	if (relative)
-		pcb_gtk_zoom_view_rel(&ghidgui->port.view, center_x, center_y, factor);
+		pcb_gtk_zoom_view_rel(&gctx->port.view, center_x, center_y, factor);
 	else
-		pcb_gtk_zoom_view_abs(&ghidgui->port.view, center_x, center_y, factor);
+		pcb_gtk_zoom_view_abs(&gctx->port.view, center_x, center_y, factor);
 }
 
 static void ghid_pan(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int relative)
 {
+	pcb_gtk_t *gctx = hid->hid_data;
 	if (relative)
-		pcb_gtk_pan_view_rel(&ghidgui->port.view, x, y);
+		pcb_gtk_pan_view_rel(&gctx->port.view, x, y);
 	else
-		pcb_gtk_pan_view_abs(&ghidgui->port.view, x, y, ghidgui->port.view.canvas_width/2.0, ghidgui->port.view.canvas_height/2.0);
+		pcb_gtk_pan_view_abs(&gctx->port.view, x, y, gctx->port.view.canvas_width/2.0, gctx->port.view.canvas_height/2.0);
 }
 
 static void ghid_pan_mode(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, pcb_bool mode)
 {
-	ghidgui->port.view.panning = mode;
+	pcb_gtk_t *gctx = hid->hid_data;
+	gctx->port.view.panning = mode;
 }
 
 static void ghid_view_get(pcb_hid_t *hid, pcb_box_t *viewbox)
 {
-	viewbox->X1 = ghidgui->port.view.x0;
-	viewbox->Y1 = ghidgui->port.view.y0;
-	viewbox->X2 = pcb_round((double)ghidgui->port.view.x0 + (double)ghidgui->port.view.canvas_width * ghidgui->port.view.coord_per_px);
-	viewbox->Y2 = pcb_round((double)ghidgui->port.view.y0 + (double)ghidgui->port.view.canvas_height * ghidgui->port.view.coord_per_px);
+	pcb_gtk_t *gctx = hid->hid_data;
+	viewbox->X1 = gctx->port.view.x0;
+	viewbox->Y1 = gctx->port.view.y0;
+	viewbox->X2 = pcb_round((double)gctx->port.view.x0 + (double)gctx->port.view.canvas_width * gctx->port.view.coord_per_px);
+	viewbox->Y2 = pcb_round((double)gctx->port.view.y0 + (double)gctx->port.view.canvas_height * gctx->port.view.coord_per_px);
 }
 
 static void ghid_open_command(pcb_hid_t *hid)
 {
-	ghid_handle_user_command(&ghidgui->topwin.cmd, TRUE);
+	pcb_gtk_t *gctx = hid->hid_data;
+	ghid_handle_user_command(&gctx->topwin.cmd, TRUE);
 }
 
 static int ghid_open_popup(pcb_hid_t *hid, const char *menupath)
 {
+	pcb_gtk_t *gctx = hid->hid_data;
 	GtkWidget *menu = NULL;
-	lht_node_t *menu_node = pcb_hid_cfg_get_menu(ghidgui->topwin.ghid_cfg, menupath);
+	lht_node_t *menu_node = pcb_hid_cfg_get_menu(gctx->topwin.ghid_cfg, menupath);
 
 	if (menu_node == NULL)
 		return 1;
@@ -496,65 +507,68 @@ static int ghid_open_popup(pcb_hid_t *hid, const char *menupath)
 		return 1;
 	}
 
-	gtk_widget_grab_focus(ghidgui->port.drawing_area);
+	gtk_widget_grab_focus(gctx->port.drawing_area);
 	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time());
-	gtk_window_set_transient_for(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menu))), GTK_WINDOW(gtk_widget_get_toplevel(ghidgui->port.drawing_area)));
+	gtk_window_set_transient_for(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menu))), GTK_WINDOW(gtk_widget_get_toplevel(gctx->port.drawing_area)));
 	return 0;
 }
 
 static void ghid_set_hidlib(pcb_hid_t *hid, pcb_hidlib_t *hidlib)
 {
-	ghidgui->hidlib = hidlib;
+	pcb_gtk_t *gctx = hid->hid_data;
 
-	if (ghidgui == NULL)
+	if (gctx == NULL)
 		return;
 
-	ghidgui->hidlib = hidlib;
+	gctx->hidlib = hidlib;
 
-	if(!ghidgui->hid_active)
+	if(!gctx->hid_active)
 		return;
 
 	if (hidlib == NULL)
 		return;
 
-	if (!ghidgui->port.drawing_allowed)
+	if (!gctx->port.drawing_allowed)
 		return;
 
-	pcb_gtk_tw_ranges_scale(ghidgui);
-	pcb_gtk_zoom_view_win_side(&ghidgui->port.view, 0, 0, hidlib->size_x, hidlib->size_y, 0);
+	pcb_gtk_tw_ranges_scale(gctx);
+	pcb_gtk_zoom_view_win_side(&gctx->port.view, 0, 0, hidlib->size_x, hidlib->size_y, 0);
 }
 
 static void ghid_reg_mouse_cursor(pcb_hid_t *hid, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
 {
-	ghid_port_reg_mouse_cursor(ghidgui, idx, name, pixel, mask);
+	ghid_port_reg_mouse_cursor((pcb_gtk_t *)hid->hid_data, idx, name, pixel, mask);
 }
 
 static void ghid_set_mouse_cursor(pcb_hid_t *hid, int idx)
 {
-	ghid_port_set_mouse_cursor(ghidgui, idx);
+	ghid_port_set_mouse_cursor((pcb_gtk_t *)hid->hid_data, idx);
 }
 
 static void ghid_set_top_title(pcb_hid_t *hid, const char *title)
 {
-	pcb_gtk_tw_set_title(&ghidgui->topwin, title);
+	pcb_gtk_t *gctx = hid->hid_data;
+	pcb_gtk_tw_set_title(&gctx->topwin, title);
 }
 
 static void ghid_busy(pcb_hid_t *hid, pcb_bool busy)
 {
-	if ((ghidgui == NULL) || (!ghidgui->hid_active))
+	pcb_gtk_t *gctx = hid->hid_data;
+	if ((gctx == NULL) || (!gctx->hid_active))
 		return;
 	if (busy)
-		ghid_watch_cursor(ghidgui);
+		ghid_watch_cursor(gctx);
 	else
-		ghid_restore_cursor(ghidgui);
+		ghid_restore_cursor(gctx);
 }
 
 static int ghid_shift_is_pressed(pcb_hid_t *hid)
 {
+	pcb_gtk_t *gctx = hid->hid_data;
 	GdkModifierType mask;
 	pcb_gtk_port_t *out = &ghidgui->port;
 
-	if (!ghidgui->gui_is_up)
+	if (!gctx->gui_is_up)
 		return 0;
 
 	gdkc_window_get_pointer(out->drawing_area, NULL, NULL, &mask);
@@ -569,10 +583,11 @@ static int ghid_shift_is_pressed(pcb_hid_t *hid)
 
 static int ghid_control_is_pressed(pcb_hid_t *hid)
 {
+	pcb_gtk_t *gctx = hid->hid_data;
 	GdkModifierType mask;
-	pcb_gtk_port_t *out = &ghidgui->port;
+	pcb_gtk_port_t *out = &gctx->port;
 
-	if (!ghidgui->gui_is_up)
+	if (!gctx->gui_is_up)
 		return 0;
 
 	gdkc_window_get_pointer(out->drawing_area, NULL, NULL, &mask);
@@ -587,10 +602,11 @@ static int ghid_control_is_pressed(pcb_hid_t *hid)
 
 static int ghid_mod1_is_pressed(pcb_hid_t *hid)
 {
+	pcb_gtk_t *gctx = hid->hid_data;
 	GdkModifierType mask;
-	pcb_gtk_port_t *out = &ghidgui->port;
+	pcb_gtk_port_t *out = &gctx->port;
 
-	if (!ghidgui->gui_is_up)
+	if (!gctx->gui_is_up)
 		return 0;
 
 	gdkc_window_get_pointer(out->drawing_area, NULL, NULL, &mask);
