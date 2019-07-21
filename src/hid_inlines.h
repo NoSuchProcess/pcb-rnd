@@ -28,6 +28,7 @@
 #define PCB_HID_INLINES
 
 #include "hid.h"
+#include "globalconst.h"
 
 PCB_INLINE pcb_hid_gc_t pcb_hid_make_gc(void)
 {
