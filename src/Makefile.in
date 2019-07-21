@@ -560,7 +560,7 @@ gsub /local/pcb/HDRS_3RDLIB {.o } {.h }
 # rndlib: corner case: some headers are not derived from the objects
 sub /local/pcb/HDRS_HIDLIB {hid_dlg.h } {}
 sub /local/pcb/HDRS_HIDLIB {polygon1.h } {}
-append /local/pcb/HDRS_HIDLIB {hid.h polyarea.h global_typedefs.h globalconst.h box.h math_helper.h }
+append /local/pcb/HDRS_HIDLIB {hid.h polyarea.h global_typedefs.h globalconst.h box.h math_helper.h buildin.hidlib.h hid_inlines.h dolists.h }
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/liblihata/dom_[^ ]*.h } {}
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/liblihata/tree_[^ ]*.h } {}
 append /local/pcb/HDRS_3RDLIB {../src_3rd/genvector/genvector_impl.h ../src_3rd/genvector/genvector_undef.h }
