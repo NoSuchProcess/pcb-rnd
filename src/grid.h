@@ -32,7 +32,7 @@
 
 #include <genvector/gds_char.h>
 #include "pcb_bool.h"
-#include "board.h"
+#include "global_typedefs.h"
 #include "unit.h"
 
 /* String packed syntax (bracket means optional):
