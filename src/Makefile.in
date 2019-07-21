@@ -415,21 +415,21 @@ pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS) $(LIBS_3RD)
 OBJS_HIDLIB_ALL = $(OBJS_HIDLIB_PLG) $(OBJS_C99_HIDLIB_PLG) $(OBJS_HIDLIB) $(OBJS_HIDLIB_ONLY) $(OBJS_C99_HIDLIB)
 DEPS_HIDLIB_ALL = $(OBJS_HIDLIB_ALL) $(EXEDEPS) $(LIBS_3RD) buildin.hidlib.h
 
-librnd-hidlib.a: $(DEPS_HIDLIB_ALL)
-	$(AR) rvu librnd-hidlib.a $(OBJS_HIDLIB_ALL)
+librnd-hid.a: $(DEPS_HIDLIB_ALL)
+	$(AR) rvu librnd-hid.a $(OBJS_HIDLIB_ALL)
 
-librnd-3rdlib.a: $(OBJS_3RDLIB)
-	$(AR) rvu librnd-3rdlib.a $(OBJS_3RDLIB)
+librnd-3rd.a: $(OBJS_3RDLIB)
+	$(AR) rvu librnd-3rd.a $(OBJS_3RDLIB)
 
-librnd-hidlib.so.$(PCB_RND_VER): $(DEPS_HIDLIB_ALL)
-	$(CC) $(LDFLAGS) -shared @cc/ldflags_dynlib@ -o librnd-hidlib.so.$(PCB_RND_VER) $(OBJS_HIDLIB_ALL)
+librnd-hid.so.$(PCB_RND_VER): $(DEPS_HIDLIB_ALL)
+	$(CC) $(LDFLAGS) -shared @cc/ldflags_dynlib@ -o librnd-hid.so.$(PCB_RND_VER) $(OBJS_HIDLIB_ALL)
 
-librnd-3rdlib.so.$(PCB_RND_VER): $(OBJS_3RDLIB)
-	$(CC) $(LDFLAGS) -shared @cc/ldflags_dynlib@ -o librnd-3rdlib.so.$(PCB_RND_VER) $(OBJS_3RDLIB)
+librnd-3rd.so.$(PCB_RND_VER): $(OBJS_3RDLIB)
+	$(CC) $(LDFLAGS) -shared @cc/ldflags_dynlib@ -o librnd-3rd.so.$(PCB_RND_VER) $(OBJS_3RDLIB)
 
 HIDLIB_CLEAN_FILES=\
-	librnd-hidlib.so.$(PCB_RND_VER) librnd-hidlib.a \
-	librnd-3rdlib.so.$(PCB_RND_VER) librnd-3rdlib.a
+	librnd-hid.so.$(PCB_RND_VER) librnd-hid.a \
+	librnd-3rd.so.$(PCB_RND_VER) librnd-3rd.a
 
 librnd: $(HIDLIB_CLEAN_FILES)
 
@@ -533,7 +533,7 @@ install_pcbrnd:
 
 install_librnd: librnd
 	$(SCCBOX) mkdir -p "$(HL_LIBDIR)" "$(HL_INCDIR)/core" "$(HL_INCDIR)/src_3rd/liblihata" "$(HL_INCDIR)/src_3rd/puplug" "$(HL_INCDIR)/src_3rd/fungw" "$(HL_INCDIR)/src_3rd/genvector" "$(HL_INCDIR)/src_3rd/genregex"
-	$(SCCBOX) $(HOW) "librnd-hidlib.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-hidlib.so.$(PCB_RND_VER)"
+	$(SCCBOX) $(HOW) "librnd-hid.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER)"
 @]
 
 # dynamic part of install_pcbrnd: hidlib headers
