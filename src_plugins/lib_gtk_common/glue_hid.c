@@ -132,9 +132,9 @@ static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget *widget, Gdk
 
 static void gtkhid_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 {
-	pcb_gtk_t *ctx = hid->hid_data;
+	pcb_gtk_t *gctx = hid->hid_data;
 
-	ctx->hid_active = 1;
+	gctx->hid_active = 1;
 
 	pcb_hid_cfg_keys_init(&ghid_keymap);
 	ghid_keymap.translate_key = ghid_translate_key;
@@ -142,40 +142,40 @@ static void gtkhid_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	ghid_keymap.auto_chr = 1;
 	ghid_keymap.auto_tr = hid_cfg_key_default_trans;
 
-	ghid_create_pcb_widgets(ctx, &ctx->topwin, ghidgui->port.top_window);
+	ghid_create_pcb_widgets(gctx, &gctx->topwin, gctx->port.top_window);
 
 	/* assume pcb_gui is us */
-	pcb_gui->hid_cfg = ctx->topwin.ghid_cfg;
+	pcb_gui->hid_cfg = gctx->topwin.ghid_cfg;
 
-	ghidgui->port.drawing_area = ctx->topwin.drawing_area;
+	gctx->port.drawing_area = gctx->topwin.drawing_area;
 
 TODO(": move this to render init")
 	/* Mouse and key events will need to be intercepted when PCB needs a location from the user. */
-	g_signal_connect(G_OBJECT(ghidgui->port.drawing_area), "scroll_event", G_CALLBACK(ghid_port_window_mouse_scroll_cb), ghidgui->port.mouse);
-	g_signal_connect(G_OBJECT(ghidgui->port.drawing_area), "motion_notify_event", G_CALLBACK(ghid_port_window_motion_cb), &ghidgui->port);
-	g_signal_connect(G_OBJECT(ghidgui->port.drawing_area), "configure_event", G_CALLBACK(ghid_port_drawing_area_configure_event_cb), &ghidgui->port);
-	g_signal_connect(G_OBJECT(ghidgui->port.drawing_area), "enter_notify_event", G_CALLBACK(ghid_port_window_enter_cb), &ghidgui->port);
-	g_signal_connect(G_OBJECT(ghidgui->port.drawing_area), "leave_notify_event", G_CALLBACK(ghid_port_window_leave_cb), &ghidgui->port);
+	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "scroll_event", G_CALLBACK(ghid_port_window_mouse_scroll_cb), gctx->port.mouse);
+	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "motion_notify_event", G_CALLBACK(ghid_port_window_motion_cb), &gctx->port);
+	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "configure_event", G_CALLBACK(ghid_port_drawing_area_configure_event_cb), &gctx->port);
+	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "enter_notify_event", G_CALLBACK(ghid_port_window_enter_cb), &gctx->port);
+	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "leave_notify_event", G_CALLBACK(ghid_port_window_leave_cb), &gctx->port);
 
 	pcb_gtk_interface_input_signals_connect();
 
 	if (conf_hid_gtk.plugins.hid_gtk.listen)
 		pcb_gtk_create_listener();
 
-	ctx->gui_is_up = 1;
+	gctx->gui_is_up = 1;
 
-	ghid_gui_inited(ghidgui, 1, 0);
+	ghid_gui_inited(gctx, 1, 0);
 
 	/* Make sure drawing area has keyboard focus so that keys are handled
 	   while the mouse cursor is over the top window or children widgets,
 	   before first entering the drawing area */
-	gtk_widget_grab_focus(ghidgui->port.drawing_area);
+	gtk_widget_grab_focus(gctx->port.drawing_area);
 
 	gtk_main();
 	pcb_hid_cfg_keys_uninit(&ghid_keymap);
 
-	ctx->hid_active = 0;
-	ctx->gui_is_up = 0;
+	gctx->hid_active = 0;
+	gctx->gui_is_up = 0;
 	hid->hid_cfg = NULL;
 	hid->hid_data = NULL;
 }
