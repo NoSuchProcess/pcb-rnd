@@ -571,7 +571,7 @@ static int ghid_shift_is_pressed(pcb_hid_t *hid)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
 	GdkModifierType mask;
-	pcb_gtk_port_t *out = &ghidgui->port;
+	pcb_gtk_port_t *out = &gctx->port;
 
 	if (!gctx->gui_is_up)
 		return 0;
