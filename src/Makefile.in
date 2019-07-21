@@ -538,6 +538,11 @@ install_pcbrnd:
 install_librnd: librnd
 	$(SCCBOX) mkdir -p "$(HL_LIBDIR)" "$(HL_INCDIR)/core" "$(HL_INCDIR)/src_3rd/liblihata" "$(HL_INCDIR)/src_3rd/liblhtpers" "$(HL_INCDIR)/src_3rd/puplug" "$(HL_INCDIR)/src_3rd/fungw" "$(HL_INCDIR)/src_3rd/genvector" "$(HL_INCDIR)/src_3rd/genregex"
 	$(SCCBOX) $(HOW) "librnd-hid.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER)"
+	$(SCCBOX) $(HOW) "librnd-hid.a" "$(HL_LIBDIR)/librnd-hid.a"
+	$(SCCBOX) $(HOW) "librnd-3rd.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-3rd.so.$(PCB_RND_VER)"
+	$(SCCBOX) $(HOW) "librnd-3rd.a" "$(HL_LIBDIR)/librnd-3rd.a"
+	$(SCCBOX) $(HOW) "librnd-poly.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-poly.so.$(PCB_RND_VER)"
+	$(SCCBOX) $(HOW) "librnd-poly.a" "$(HL_LIBDIR)/librnd-poly.a"
 @]
 
 # rndlib: build a list of header files to be installed with the hidlib
