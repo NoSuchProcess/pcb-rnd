@@ -16,7 +16,7 @@ extern void ghid_cairo_install(pcb_gtk_impl_t *impl, pcb_hid_t *hid);
 
 int gtk3_cairo_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
-	ghid_glue_common_init(ghid_cookie);
+	ghid_glue_common_init(ghid_cairo_cookie);
 	ghid_cairo_install(&ghidgui->impl, hid);
 	return gtkhid_parse_arguments(hid, argc, argv);
 }
@@ -25,7 +25,7 @@ int pplg_check_ver_hid_gtk3_cairo(int ver_needed) { return 0; }
 
 void pplg_uninit_hid_gtk3_cairo(void)
 {
-	ghid_glue_common_uninit(ghid_cookie);
+	ghid_glue_common_uninit(ghid_cairo_cookie);
 }
 
 int pplg_init_hid_gtk3_cairo(void)
