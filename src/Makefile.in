@@ -569,7 +569,12 @@ append /local/pcb/HDRS_3RDLIB {../src_3rd/genvector/genvector_impl.h ../src_3rd/
 append /local/pcb/HDRS_3RDLIB {../src_3rd/genrtree/genrtree_api.h ../src_3rd/genrtree/genrtree_impl.h ../src_3rd/genrtree/genrtree_search.h ../src_3rd/genrtree/genrtree_delete.h ../src_3rd/genrtree/genrtree_debug.h }
 append /local/pcb/HDRS_3RDLIB {../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gendlist.h }
 
+if ?libs/script/fungw/presents
+then
+else
+# when there is no fungw installed, we go with local genht and that needs a few extras too
 append /local/pcb/HDRS_3RDLIB {../src_3rd/genht/ht.h }
+end
 
 # dynamic part of install_pcbrnd: hidlib headers
 foreach /local/h in /local/pcb/HDRS_HIDLIB
