@@ -600,15 +600,15 @@ print [@
 
 install:
 	$(MAKE) install_pcbrnd HOW="install -f"
-#	$(MAKE) install_librnd HOW="install -f"
+	$(MAKE) install_librnd HOW="install -f"
 
 linstall:
 	$(MAKE) install_pcbrnd HOW="linstall -f"
-#	$(MAKE) install_librnd HOW="linstall -f"
+	$(MAKE) install_librnd HOW="linstall -f"
 
 uninstall:
 	$(MAKE) install_pcbrnd HOW="uninstall"
-#	$(MAKE) install_librnd HOW="uninstall"
+	$(MAKE) install_librnd HOW="uninstall"
 
 map_plugins:
 	cd ../src_plugins && ./map_plugins.sh
