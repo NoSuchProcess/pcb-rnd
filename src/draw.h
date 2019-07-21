@@ -31,6 +31,7 @@
 
 #include "config.h"
 #include "hid.h"
+#include "layer.h"
 
 /* holds information about output window */
 typedef struct {

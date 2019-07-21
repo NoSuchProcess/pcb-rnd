@@ -4,6 +4,7 @@
 #include "config.h"
 #include "hid-logger.h"
 #include "pcb-printf.h"
+#include "color.h"
 
 #define ENUM_LOG_TEXT(e) case e: txt = #e; break
 

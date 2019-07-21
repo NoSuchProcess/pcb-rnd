@@ -1,6 +1,7 @@
 #ifndef PCB_HID_ATTRIB_H
 #define PCB_HID_ATTRIB_H
 
+#include <genlist/gendlist.h>
 #include "hid.h"
 #include "color.h"
 

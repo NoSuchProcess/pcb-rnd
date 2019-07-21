@@ -8,7 +8,7 @@
 #include "error.h"
 #include "global_typedefs.h"
 #include "attrib.h"
-#include "layer.h"
+#include "box.h"
 
 /* attribute dialog properties */
 typedef enum pcb_hat_property_e {
