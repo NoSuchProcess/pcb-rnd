@@ -1526,23 +1526,23 @@ static GtkWidget *ghid_cairo_new_drawing_widget(pcb_gtk_common_t *common)
 }
 
 
-void ghid_cairo_install(pcb_gtk_common_t * common, pcb_hid_t * hid)
+void ghid_cairo_install(pcb_gtk_impl_t *impl, pcb_hid_t *hid)
 {
-	if (common != NULL) {
-		common->new_drawing_widget = ghid_cairo_new_drawing_widget;
-		common->init_drawing_widget = ghid_cairo_init_drawing_widget;
-		common->drawing_realize = ghid_cairo_port_drawing_realize_cb;
-		common->drawing_area_expose = ghid_cairo_drawing_area_expose_cb;
-		common->preview_expose = ghid_cairo_preview_expose;
-		common->invalidate_all = ghid_cairo_invalidate_all;
-		common->set_special_colors = ghid_cairo_set_special_colors;
-		common->init_renderer = ghid_cairo_init_renderer;
-		common->screen_update = ghid_cairo_screen_update;
-		common->draw_grid_local = ghid_cairo_draw_grid_local;
-		common->drawing_area_configure_hook = ghid_cairo_drawing_area_configure_hook;
-		common->shutdown_renderer = ghid_cairo_shutdown_renderer;
-		common->get_color_name = get_color_name;
-		common->map_color_string = map_color_string;
+	if (impl != NULL) {
+		impl->new_drawing_widget = ghid_cairo_new_drawing_widget;
+		impl->init_drawing_widget = ghid_cairo_init_drawing_widget;
+		impl->drawing_realize = ghid_cairo_port_drawing_realize_cb;
+		impl->drawing_area_expose = ghid_cairo_drawing_area_expose_cb;
+		impl->preview_expose = ghid_cairo_preview_expose;
+		//impl->invalidate_all = ghid_cairo_invalidate_all;
+		impl->set_special_colors = ghid_cairo_set_special_colors;
+		impl->init_renderer = ghid_cairo_init_renderer;
+		impl->screen_update = ghid_cairo_screen_update;
+		impl->draw_grid_local = ghid_cairo_draw_grid_local;
+		impl->drawing_area_configure_hook = ghid_cairo_drawing_area_configure_hook;
+		impl->shutdown_renderer = ghid_cairo_shutdown_renderer;
+		impl->get_color_name = get_color_name;
+		impl->map_color_string = map_color_string;
 	}
 
 	if (hid != NULL) {
@@ -1551,7 +1551,7 @@ void ghid_cairo_install(pcb_gtk_common_t * common, pcb_hid_t * hid)
 		hid->notify_crosshair_change = ghid_cairo_notify_crosshair_change;
 		hid->notify_mark_change = ghid_cairo_notify_mark_change;
 		hid->set_layer_group = ghid_cairo_set_layer_group;
-		hid->end_layer = ghid_cairo_end_layer_group;
+		//hid->end_layer = ghid_cairo_end_layer_group;
 		hid->make_gc = ghid_cairo_make_gc;
 		hid->destroy_gc = ghid_cairo_destroy_gc;
 		hid->render_burst = ghid_cairo_render_burst;

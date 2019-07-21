@@ -12,7 +12,7 @@ const char *ghid_cairo_cookie = "gtk3 hid, cairo";
 
 pcb_hid_t gtk3_cairo_hid;
 
-void ghid_cairo_install(pcb_gtk_common_t * common, pcb_hid_t * hid);
+extern void ghid_cairo_install(pcb_gtk_impl_t *impl, pcb_hid_t *hid);
 
 int gtk3_cairo_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
