@@ -1,3 +1,4 @@
+26835	configure	hidlib: split hidlib into modular rndlib
 26716	configure	gtk: merge lib_gtk_hid into lib_gtk_common
 26299	configuew	hidlib: include the batch HID in hidlib
 26262	configure	order: move wget to lib_wget for reuse, add order plugins
