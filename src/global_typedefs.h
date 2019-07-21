@@ -29,6 +29,11 @@
 #define GLOBAL_TYPEDEFS_H
 #include "config.h"
 
+struct pcb_box_s {        /* a bounding box */
+	pcb_coord_t X1, Y1;     /* upper left */
+	pcb_coord_t X2, Y2;     /* and lower right corner */
+};
+
 typedef struct pcb_hidlib_s pcb_hidlib_t;
 typedef struct pcb_board_s pcb_board_t;
 typedef struct pcb_data_s pcb_data_t;

@@ -88,11 +88,6 @@ struct pcb_point_s {    /* a line/polygon point */
 	long int ID;
 };
 
-struct pcb_box_s {  /* a bounding box */
-	pcb_coord_t X1, Y1;     /* upper left */
-	pcb_coord_t X2, Y2;     /* and lower right corner */
-};
-
 typedef double pcb_xform_mx_t[9];
 #define PCB_XFORM_MX_IDENT {1,0,0,   0,1,0,   0,0,1}
 
