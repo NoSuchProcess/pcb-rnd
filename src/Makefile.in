@@ -98,6 +98,13 @@ append /local/pcb/OBJS_HIDLIB [@
 	vtc0.o
 @]
 
+put /local/pcb/OBJS_POLYLIB [@
+	polygon1.o
+	polygon1_gen.o
+	heap.o
+	rtree.o
+@]
+
 append /local/pcb/OBJS_3RDLIB [@
 	../src_3rd/liblihata/parser.o
 	../src_3rd/liblihata/dom.o
@@ -131,6 +138,7 @@ append /local/pcb/OBJS_HIDLIB_ONLY [@
 put /local/pcb/OBJS_C99 /local/pcb/OBJS_C99_HIDLIB
 put /local/pcb/OBJS /local/pcb/OBJS_HIDLIB
 append /local/pcb/OBJS /local/pcb/OBJS_3RDLIB
+append /local/pcb/OBJS /local/pcb/OBJS_POLYLIB
 append /local/pcb/OBJS [@
 	actions_pcb.o
 	board.o
@@ -155,7 +163,6 @@ append /local/pcb/OBJS [@
 	flag.o
 	flag_str.o
 	gui_act.o
-	heap.o
 	hid_cam.o
 	hidlib_pcb.o
 	ht_subc.o
@@ -202,8 +209,6 @@ append /local/pcb/OBJS [@
 	plug_footprint.o
 	plug_footprint_act.o
 	polygon.o
-	polygon1.o
-	polygon1_gen.o
 	polygon_act.o
 	rats_act.o
 	rats_patch.o
@@ -212,7 +217,6 @@ append /local/pcb/OBJS [@
 	rotate.o
 	route.o
 	route_style.o
-	rtree.o
 	search.o
 	select.o
 	select_act.o
@@ -325,6 +329,7 @@ order /local/pcb/LDFLAGS {-lXm} {before} {-lXt}
 uniq /local/pcb/OBJS
 uniq /local/pcb/OBJS_C99
 uniq /local/pcb/OBJS_3RDLIB
+uniq /local/pcb/OBJS_POLYLIB
 uniq /local/pcb/OBJS_HIDLIB
 uniq /local/pcb/OBJS_HIDLIB_ONLY
 uniq /local/pcb/OBJS_C99_HIDLIB
@@ -345,6 +350,7 @@ uniq /local/pcb/all
 put /local/pcb/SRCS /local/pcb/OBJS 
 append /local/pcb/SRCS ?/local/pcb/OBJS_C99
 append /local/pcb/SRCS ?/local/pcb/OBJS_3RDLIB
+append /local/pcb/SRCS ?/local/pcb/OBJS_POLYLIB
 append /local/pcb/SRCS ?/local/pcb/OBJS_HIDLIB
 append /local/pcb/SRCS ?/local/pcb/OBJS_HIDLIB_ONLY
 gsub /local/pcb/SRCS {.o } {.c }
@@ -369,6 +375,7 @@ SRC_3RD_DIR=$(ROOT)/src_3rd
 @?/local/pcb/TOPVARS@
 OBJS=@/local/pcb/OBJS@
 OBJS_C99=@/local/pcb/OBJS_C99@
+OBJS_POLYLIB=@/local/pcb/OBJS_POLYLIB@
 OBJS_3RDLIB=@/local/pcb/OBJS_3RDLIB@
 OBJS_HIDLIB=@/local/pcb/OBJS_HIDLIB@
 OBJS_HIDLIB_ONLY=@/local/pcb/OBJS_HIDLIB_ONLY@
@@ -421,15 +428,22 @@ librnd-hid.a: $(DEPS_HIDLIB_ALL)
 librnd-3rd.a: $(OBJS_3RDLIB)
 	$(AR) rvu librnd-3rd.a $(OBJS_3RDLIB)
 
+librnd-poly.a: $(OBJS_POLYLIB)
+	$(AR) rvu librnd-poly.a $(OBJS_POLYLIB)
+
 librnd-hid.so.$(PCB_RND_VER): $(DEPS_HIDLIB_ALL)
 	$(CC) $(LDFLAGS) -shared @cc/ldflags_dynlib@ -o librnd-hid.so.$(PCB_RND_VER) $(OBJS_HIDLIB_ALL)
 
 librnd-3rd.so.$(PCB_RND_VER): $(OBJS_3RDLIB)
 	$(CC) $(LDFLAGS) -shared @cc/ldflags_dynlib@ -o librnd-3rd.so.$(PCB_RND_VER) $(OBJS_3RDLIB)
 
+librnd-poly.so.$(PCB_RND_VER): $(OBJS_POLYLIB)
+	$(CC) $(LDFLAGS) -shared @cc/ldflags_dynlib@ -o librnd-poly.so.$(PCB_RND_VER) $(OBJS_POLYLIB)
+
 HIDLIB_CLEAN_FILES=\
 	librnd-hid.so.$(PCB_RND_VER) librnd-hid.a \
-	librnd-3rd.so.$(PCB_RND_VER) librnd-3rd.a
+	librnd-3rd.so.$(PCB_RND_VER) librnd-3rd.a \
+	librnd-poly.so.$(PCB_RND_VER) librnd-poly.a
 
 librnd: $(HIDLIB_CLEAN_FILES)
 
