@@ -26,9 +26,10 @@
 
 extern pcb_hid_cfg_keys_t ghid_keymap;
 
-static gint ghid_port_window_enter_cb(GtkWidget *widget, GdkEventCrossing *ev, void *out_)
+static gint ghid_port_window_enter_cb(GtkWidget *widget, GdkEventCrossing *ev, void *ctx_)
 {
-	pcb_gtk_port_t *out = out_;
+	pcb_gtk_t *gctx = ctx_;
+	pcb_gtk_port_t *out = &gctx->port;
 	int force_update = 0;
 
 	/* printf("enter: mode: %d detail: %d\n", ev->mode, ev->detail); */
@@ -38,7 +39,7 @@ static gint ghid_port_window_enter_cb(GtkWidget *widget, GdkEventCrossing *ev, v
 	if (ev->mode != GDK_CROSSING_NORMAL && ev->detail != GDK_NOTIFY_NONLINEAR)
 		return FALSE;
 
-	if (!ghidgui->topwin.cmd.command_entry_status_line_active) {
+	if (!gctx->topwin.cmd.command_entry_status_line_active) {
 		out->view.has_entered = TRUE;
 		force_update = 1; /* force a redraw for the crosshair */
 		gtk_widget_grab_focus(out->drawing_area); /* Make sure drawing area has keyboard focus when we are in it. */
@@ -49,13 +50,14 @@ static gint ghid_port_window_enter_cb(GtkWidget *widget, GdkEventCrossing *ev, v
 	   and moves the pointer to the viewport without the pointer going over
 	   the edge of the viewport */
 	if (force_update || (ev->mode == GDK_CROSSING_UNGRAB && ev->detail == GDK_NOTIFY_NONLINEAR))
-		ghidgui->impl.screen_update();
+		gctx->impl.screen_update();
 	return FALSE;
 }
 
-static gint ghid_port_window_leave_cb(GtkWidget *widget, GdkEventCrossing *ev, void *out_)
+static gint ghid_port_window_leave_cb(GtkWidget *widget, GdkEventCrossing *ev, void *ctx_)
 {
-	pcb_gtk_port_t *out = out_;
+	pcb_gtk_t *gctx = ctx_;
+	pcb_gtk_port_t *out = &gctx->port;
 
 	/* printf("leave mode: %d detail: %d\n", ev->mode, ev->detail); */
 
@@ -68,7 +70,7 @@ static gint ghid_port_window_leave_cb(GtkWidget *widget, GdkEventCrossing *ev, v
 
 	out->view.has_entered = FALSE;
 
-	ghidgui->impl.screen_update();
+	gctx->impl.screen_update();
 
 	return FALSE;
 }
@@ -78,19 +80,20 @@ static gboolean check_object_tooltips(pcb_gtk_port_t *out)
 	return pcb_gtk_dwg_tooltip_check_object(out->drawing_area, out->view.crosshair_x, out->view.crosshair_y);
 }
 
-static gint ghid_port_window_motion_cb(GtkWidget *widget, GdkEventMotion *ev, void *out_)
+static gint ghid_port_window_motion_cb(GtkWidget *widget, GdkEventMotion *ev, void *ctx_)
 {
-	pcb_gtk_port_t *out = out_;
+	pcb_gtk_t *gctx = ctx_;
+	pcb_gtk_port_t *out = &gctx->port;
 	gdouble dx, dy;
 	static gint x_prev = -1, y_prev = -1;
 
 	gdk_event_request_motions(ev);
 
 	if (out->view.panning) {
-		dx = ghidgui->port.view.coord_per_px * (x_prev - ev->x);
-		dy = ghidgui->port.view.coord_per_px * (y_prev - ev->y);
+		dx = gctx->port.view.coord_per_px * (x_prev - ev->x);
+		dy = gctx->port.view.coord_per_px * (y_prev - ev->y);
 		if (x_prev > 0)
-			pcb_gtk_pan_view_rel(&ghidgui->port.view, dx, dy);
+			pcb_gtk_pan_view_rel(&gctx->port.view, dx, dy);
 		x_prev = ev->x;
 		y_prev = ev->y;
 		return FALSE;
@@ -116,15 +119,17 @@ static void ghid_gui_inited(pcb_gtk_t *gctx, int main, int conf)
 	}
 }
 
-static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget *widget, GdkEventConfigure *ev, void *out)
+static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget *widget, GdkEventConfigure *ev, void *ctx_)
 {
-	ghidgui->port.view.canvas_width = ev->width;
-	ghidgui->port.view.canvas_height = ev->height;
+	pcb_gtk_t *gctx = ctx_;
+	pcb_gtk_port_t *out = &gctx->port;
+	gctx->port.view.canvas_width = ev->width;
+	gctx->port.view.canvas_height = ev->height;
 
-	ghidgui->impl.drawing_area_configure_hook(out);
-	ghid_gui_inited(ghidgui, 0, 1);
+	gctx->impl.drawing_area_configure_hook(out);
+	ghid_gui_inited(gctx, 0, 1);
 
-	pcb_gtk_tw_ranges_scale(ghidgui);
+	pcb_gtk_tw_ranges_scale(gctx);
 	pcb_gui->invalidate_all(pcb_gui);
 	return 0;
 }
@@ -152,10 +157,10 @@ static void gtkhid_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 TODO(": move this to render init")
 	/* Mouse and key events will need to be intercepted when PCB needs a location from the user. */
 	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "scroll_event", G_CALLBACK(ghid_port_window_mouse_scroll_cb), gctx->port.mouse);
-	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "motion_notify_event", G_CALLBACK(ghid_port_window_motion_cb), &gctx->port);
-	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "configure_event", G_CALLBACK(ghid_port_drawing_area_configure_event_cb), &gctx->port);
-	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "enter_notify_event", G_CALLBACK(ghid_port_window_enter_cb), &gctx->port);
-	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "leave_notify_event", G_CALLBACK(ghid_port_window_leave_cb), &gctx->port);
+	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "motion_notify_event", G_CALLBACK(ghid_port_window_motion_cb), gctx);
+	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "configure_event", G_CALLBACK(ghid_port_drawing_area_configure_event_cb), gctx);
+	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "enter_notify_event", G_CALLBACK(ghid_port_window_enter_cb), gctx);
+	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "leave_notify_event", G_CALLBACK(ghid_port_window_leave_cb), gctx);
 
 	pcb_gtk_interface_input_signals_connect();
 
@@ -310,7 +315,7 @@ static void PointCursor(pcb_hid_t *hid, pcb_bool grabbed)
 	if (gctx == NULL)
 		return;
 
-	ghid_point_cursor(ghidgui, grabbed);
+	ghid_point_cursor(gctx, grabbed);
 }
 
 /* Create a new menu by path */
