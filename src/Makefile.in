@@ -544,6 +544,7 @@ install_librnd: librnd
 	$(SCCBOX) $(HOW) "librnd-poly.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-poly.so.$(PCB_RND_VER)"
 	$(SCCBOX) $(HOW) "librnd-poly.a" "$(HL_LIBDIR)/librnd-poly.a"
 	$(SCCBOX) $(HOW) "librnd.mak" "$(HL_SHAREDIR)/librnd.mak"
+	$(SCCBOX) $(HOW) "../config.h" "$(HL_INCDIR)/core/config.h"
 	cd ../src_3rd/puplug && $(MAKE) install_hdr_ MKDR="../$(SCCBOX) mkdir -p" INST="../$(SCCBOX) $(HOW)" INCDIR="$(HL_INCDIR)/src_3rd/puplug"
 @]
 
