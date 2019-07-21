@@ -14,11 +14,11 @@ pcb_hid_t gtk3_cairo_hid;
 
 void ghid_cairo_install(pcb_gtk_common_t * common, pcb_hid_t * hid);
 
-int gtk3_cairo_parse_arguments(int *argc, char ***argv)
+int gtk3_cairo_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
 	ghid_glue_common_init(ghid_cookie);
-	ghid_cairo_install(&ghidgui->common, NULL);
-	return gtkhid_parse_arguments(argc, argv);
+	ghid_cairo_install(&ghidgui->impl, hid);
+	return gtkhid_parse_arguments(hid, argc, argv);
 }
 
 int pplg_check_ver_hid_gtk3_cairo(int ver_needed) { return 0; }
