@@ -26,7 +26,7 @@
 
 extern pcb_hid_cfg_keys_t ghid_keymap;
 
-static gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev, void * out_)
+static gint ghid_port_window_enter_cb(GtkWidget *widget, GdkEventCrossing *ev, void *out_)
 {
 	pcb_gtk_port_t *out = out_;
 	int force_update = 0;
@@ -35,25 +35,21 @@ static gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev,
 
 	/* See comment in ghid_port_window_leave_cb() */
 
-	if (ev->mode != GDK_CROSSING_NORMAL && ev->detail != GDK_NOTIFY_NONLINEAR) {
+	if (ev->mode != GDK_CROSSING_NORMAL && ev->detail != GDK_NOTIFY_NONLINEAR)
 		return FALSE;
-	}
 
 	if (!ghidgui->topwin.cmd.command_entry_status_line_active) {
 		out->view.has_entered = TRUE;
 		force_update = 1; /* force a redraw for the crosshair */
-		/* Make sure drawing area has keyboard focus when we are in it.
-		 */
-		gtk_widget_grab_focus(out->drawing_area);
+		gtk_widget_grab_focus(out->drawing_area); /* Make sure drawing area has keyboard focus when we are in it. */
 	}
 
 	/* Following expression is true if a you open a menu from the menu bar,
 	 * move the mouse to the viewport and click on it. This closes the menu
 	 * and moves the pointer to the viewport without the pointer going over
 	 * the edge of the viewport */
-	if (force_update || (ev->mode == GDK_CROSSING_UNGRAB && ev->detail == GDK_NOTIFY_NONLINEAR)) {
+	if (force_update || (ev->mode == GDK_CROSSING_UNGRAB && ev->detail == GDK_NOTIFY_NONLINEAR))
 		ghidgui->impl.screen_update();
-	}
 	return FALSE;
 }
 
@@ -70,9 +66,8 @@ static gint ghid_port_window_leave_cb(GtkWidget * widget, GdkEventCrossing * ev,
 	 * See http://bugzilla.gnome.org/show_bug.cgi?id=102209
 	 */
 
-	if (ev->mode != GDK_CROSSING_NORMAL) {
+	if (ev->mode != GDK_CROSSING_NORMAL)
 		return FALSE;
-	}
 
 	out->view.has_entered = FALSE;
 
@@ -157,9 +152,7 @@ static void gtkhid_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	ghidgui->port.drawing_area = ctx->topwin.drawing_area;
 
 TODO(": move this to render init")
-	/* Mouse and key events will need to be intercepted when PCB needs a
-	   |  location from the user.
-	 */
+	/* Mouse and key events will need to be intercepted when PCB needs a location from the user. */
 	g_signal_connect(G_OBJECT(ghidgui->port.drawing_area), "scroll_event", G_CALLBACK(ghid_port_window_mouse_scroll_cb), ghidgui->port.mouse);
 	g_signal_connect(G_OBJECT(ghidgui->port.drawing_area), "motion_notify_event", G_CALLBACK(ghid_port_window_motion_cb), &ghidgui->port);
 	g_signal_connect(G_OBJECT(ghidgui->port.drawing_area), "configure_event", G_CALLBACK(ghid_port_drawing_area_configure_event_cb), &ghidgui->port);
@@ -282,8 +275,7 @@ pcb_hidval_t ghid_add_timer(pcb_hid_t *hid, void (*func)(pcb_hidval_t user_data)
 }
 
 static pcb_hidval_t ghid_watch_file(pcb_hid_t *hid, int fd, unsigned int condition,
-								pcb_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
-								pcb_hidval_t user_data)
+	pcb_bool (*func)(pcb_hidval_t, int, unsigned int, pcb_hidval_t), pcb_hidval_t user_data)
 {
 	return pcb_gtk_watch_file(ghidgui, fd, condition, func, user_data);
 }
