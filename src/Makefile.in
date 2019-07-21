@@ -7,6 +7,7 @@ append /local/pcb/LDFLAGS cc/ldflags
 append /local/pcb/LDFLAGS cc/rdynamic
 append /local/pcb/LDFLAGS ?/local/pcb/cflags_profile
 put /local/pcb/DEPCFLAGS {}
+put /local/pcb/OBJS_3RDLIB {}
 put /local/pcb/OBJS_HIDLIB {}
 put /local/pcb/OBJS_HIDLIB_ONLY {}
 put /local/pcb/OBJS_C99_HIDLIB_PLG {}
@@ -19,7 +20,7 @@ then
 	append /local/pcb/LDFLAGS libs/script/fungw/ldflags
 else
 # no system installed fungw means we need to use local genht
-	append /local/pcb/OBJS_HIDLIB [@
+	append /local/pcb/OBJS_3RDLIB [@
 	../src_3rd/genht/hash.o
 	../src_3rd/genht/htsp.o
 	../src_3rd/genht/htss.o
@@ -29,7 +30,7 @@ else
 	../src_3rd/genht/htpp.o
 	@]
 # local compilation of fungw objects
-	append /local/pcb/OBJS_HIDLIB [@
+	append /local/pcb/OBJS_3RDLIB [@
 	../src_3rd/libfungw/fungw.o
 	../src_3rd/libfungw/fungw_conv.o
 	../src_3rd/libfungw/fungw_ptr.o
@@ -95,6 +96,9 @@ append /local/pcb/OBJS_HIDLIB [@
 	safe_fs.o
 	unit.o
 	vtc0.o
+@]
+
+append /local/pcb/OBJS_3RDLIB [@
 	../src_3rd/liblihata/parser.o
 	../src_3rd/liblihata/dom.o
 	../src_3rd/liblihata/dom_list.o
@@ -126,6 +130,7 @@ append /local/pcb/OBJS_HIDLIB_ONLY [@
 
 put /local/pcb/OBJS_C99 /local/pcb/OBJS_C99_HIDLIB
 put /local/pcb/OBJS /local/pcb/OBJS_HIDLIB
+append /local/pcb/OBJS /local/pcb/OBJS_3RDLIB
 append /local/pcb/OBJS [@
 	actions_pcb.o
 	board.o
@@ -319,6 +324,7 @@ order /local/pcb/LDFLAGS {-lXm} {before} {-lXt}
 # Clean up variables
 uniq /local/pcb/OBJS
 uniq /local/pcb/OBJS_C99
+uniq /local/pcb/OBJS_3RDLIB
 uniq /local/pcb/OBJS_HIDLIB
 uniq /local/pcb/OBJS_HIDLIB_ONLY
 uniq /local/pcb/OBJS_C99_HIDLIB
@@ -338,6 +344,7 @@ uniq /local/pcb/CLEANRULES
 uniq /local/pcb/all
 put /local/pcb/SRCS /local/pcb/OBJS 
 append /local/pcb/SRCS ?/local/pcb/OBJS_C99
+append /local/pcb/SRCS ?/local/pcb/OBJS_3RDLIB
 append /local/pcb/SRCS ?/local/pcb/OBJS_HIDLIB
 append /local/pcb/SRCS ?/local/pcb/OBJS_HIDLIB_ONLY
 gsub /local/pcb/SRCS {.o } {.c }
@@ -362,6 +369,7 @@ SRC_3RD_DIR=$(ROOT)/src_3rd
 @?/local/pcb/TOPVARS@
 OBJS=@/local/pcb/OBJS@
 OBJS_C99=@/local/pcb/OBJS_C99@
+OBJS_3RDLIB=@/local/pcb/OBJS_3RDLIB@
 OBJS_HIDLIB=@/local/pcb/OBJS_HIDLIB@
 OBJS_HIDLIB_ONLY=@/local/pcb/OBJS_HIDLIB_ONLY@
 OBJS_C99_HIDLIB=@/local/pcb/OBJS_C99_HIDLIB@
@@ -410,10 +418,18 @@ DEPS_HIDLIB_ALL = $(OBJS_HIDLIB_ALL) $(EXEDEPS) $(LIBS_3RD) buildin.hidlib.h
 librnd-hidlib.a: $(DEPS_HIDLIB_ALL)
 	$(AR) rvu librnd-hidlib.a $(OBJS_HIDLIB_ALL)
 
+librnd-3rdlib.a: $(OBJS_3RDLIB)
+	$(AR) rvu librnd-3rdlib.a $(OBJS_3RDLIB)
+
 librnd-hidlib.so.$(PCB_RND_VER): $(DEPS_HIDLIB_ALL)
 	$(CC) $(LDFLAGS) -shared @cc/ldflags_dynlib@ -o librnd-hidlib.so.$(PCB_RND_VER) $(OBJS_HIDLIB_ALL)
 
-HIDLIB_CLEAN_FILES=librnd-hidlib.so.$(PCB_RND_VER) librnd-hidlib.a
+librnd-3rdlib.so.$(PCB_RND_VER): $(OBJS_3RDLIB)
+	$(CC) $(LDFLAGS) -shared @cc/ldflags_dynlib@ -o librnd-3rdlib.so.$(PCB_RND_VER) $(OBJS_3RDLIB)
+
+HIDLIB_CLEAN_FILES=\
+	librnd-hidlib.so.$(PCB_RND_VER) librnd-hidlib.a \
+	librnd-3rdlib.so.$(PCB_RND_VER) librnd-3rdlib.a
 
 librnd: $(HIDLIB_CLEAN_FILES)
 
