@@ -564,7 +564,7 @@ append /local/pcb/HDRS_HIDLIB {hid.h polyarea.h global_typedefs.h globalconst.h 
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/liblihata/dom_[^ ]*.h } {}
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/liblihata/tree_[^ ]*.h } {}
 append /local/pcb/HDRS_3RDLIB {../src_3rd/genvector/genvector_impl.h ../src_3rd/genvector/genvector_undef.h }
-append /local/pcb/HDRS_3RDLIB {../src_3rd/genrtree/genrtree_api.h }
+append /local/pcb/HDRS_3RDLIB {../src_3rd/genrtree/genrtree_api.h ../src_3rd/genrtree/genrtree_impl.h ../src_3rd/genrtree/genrtree_search.h ../src_3rd/genrtree/genrtree_delete.h ../src_3rd/genrtree/genrtree_debug.h }
 append /local/pcb/HDRS_3RDLIB {../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gendlist.h }
 
 # dynamic part of install_pcbrnd: hidlib headers
