@@ -182,9 +182,11 @@ TODO(": move this to render init")
 
 static void ghid_do_exit(pcb_hid_t *hid)
 {
+	pcb_gtk_t *gctx = hid->hid_data;
+
 	/* Need to force-close the command entry first because it has its own main
 	   loop that'd block the exit until the user closes the entry */
-	ghid_cmd_close(&ghidgui->topwin.cmd);
+	ghid_cmd_close(&gctx->topwin.cmd);
 
 	gtk_main_quit();
 }
@@ -206,7 +208,7 @@ static void pcb_gtk_topwinplace(pcb_hidlib_t *hidlib, GtkWidget *dialog, const c
 /* Create top level window for routines that will need top_window before ghid_create_pcb_widgets() is called. */
 int gtkhid_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
-	pcb_gtk_t *ctx = hid->hid_data;
+	pcb_gtk_t *gctx = hid->hid_data;
 	GtkWidget *window;
 
 	/* on windows we need to figure out the installation directory */
@@ -231,17 +233,17 @@ TODO("This needs to be done centrally, and should not use PCB_PACKAGE but pcbhl_
 		return 1; /* recoverable error - try another HID */
 	}
 
-	ghidgui->port.view.use_max_pcb = 1;
-	ghidgui->port.view.coord_per_px = 300.0;
+	gctx->port.view.use_max_pcb = 1;
+	gctx->port.view.coord_per_px = 300.0;
 	pcb_pixel_slop = 300;
 
-	ctx->impl.init_renderer(argc, argv, &ghidgui->port);
-	ctx->wtop_window = window = ghidgui->port.top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gctx->impl.init_renderer(argc, argv, &gctx->port);
+	gctx->wtop_window = window = gctx->port.top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
-	pcb_gtk_topwinplace(ctx->hidlib, window, "top");
+	pcb_gtk_topwinplace(gctx->hidlib, window, "top");
 	gtk_window_set_title(GTK_WINDOW(window), "pcb-rnd");
 
-	gtk_widget_show_all(ghidgui->port.top_window);
+	gtk_widget_show_all(gctx->port.top_window);
 	return 0;
 }
 
@@ -252,40 +254,42 @@ static void ghid_calibrate(pcb_hid_t *hid, double xval, double yval)
 
 static void ghid_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int action)
 {
+	pcb_gtk_t *gctx = hid->hid_data;
 	int offset_x, offset_y;
 
-	if ((ghidgui->port.drawing_area == NULL) || (ghidgui->hidlib == NULL))
+	if ((gctx->port.drawing_area == NULL) || (gctx->hidlib == NULL))
 		return;
 
-	ghidgui->impl.draw_grid_local(ghidgui->hidlib, x, y);
-	gdk_window_get_origin(gtk_widget_get_window(ghidgui->port.drawing_area), &offset_x, &offset_y);
-	pcb_gtk_crosshair_set(x, y, action, offset_x, offset_y, &ghidgui->port.view);
+	gctx->impl.draw_grid_local(gctx->hidlib, x, y);
+	gdk_window_get_origin(gtk_widget_get_window(gctx->port.drawing_area), &offset_x, &offset_y);
+	pcb_gtk_crosshair_set(x, y, action, offset_x, offset_y, &gctx->port.view);
 }
 
 static void ghid_get_coords(pcb_hid_t *hid, const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)
 {
-	pcb_gtk_get_coords(ghidgui, &ghidgui->port.view, msg, x, y, force);
+	pcb_gtk_t *gctx = hid->hid_data;
+	pcb_gtk_get_coords(gctx, &gctx->port.view, msg, x, y, force);
 }
 
 pcb_hidval_t ghid_add_timer(pcb_hid_t *hid, void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
 {
-	return pcb_gtk_add_timer(ghidgui, func, milliseconds, user_data);
+	return pcb_gtk_add_timer((pcb_gtk_t *)hid->hid_data, func, milliseconds, user_data);
 }
 
 static pcb_hidval_t ghid_watch_file(pcb_hid_t *hid, int fd, unsigned int condition,
 	pcb_bool (*func)(pcb_hidval_t, int, unsigned int, pcb_hidval_t), pcb_hidval_t user_data)
 {
-	return pcb_gtk_watch_file(ghidgui, fd, condition, func, user_data);
+	return pcb_gtk_watch_file((pcb_gtk_t *)hid->hid_data, fd, condition, func, user_data);
 }
 
 static char *ghid_fileselect(pcb_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const pcb_hid_fsd_filter_t *flt, const char *history_tag, pcb_hid_fsd_flags_t flags, pcb_hid_dad_subdialog_t *sub)
 {
-	return pcb_gtk_fileselect(ghidgui, title, descr, default_file, default_ext, flt, history_tag, flags, sub);
+	return pcb_gtk_fileselect((pcb_gtk_t *)hid->hid_data, title, descr, default_file, default_ext, flt, history_tag, flags, sub);
 }
 
 static void *ghid_attr_dlg_new_(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
-	return ghid_attr_dlg_new(ghidgui, id, attrs, n_attrs, results, title, caller_data, modal, button_cb, defx, defy, minx, miny);
+	return ghid_attr_dlg_new((pcb_gtk_t *)hid->hid_data, id, attrs, n_attrs, results, title, caller_data, modal, button_cb, defx, defy, minx, miny);
 }
 
 static void ghid_beep(pcb_hid_t *hid)
@@ -295,12 +299,15 @@ static void ghid_beep(pcb_hid_t *hid)
 
 static void ghid_attributes(pcb_hid_t *hid, const char *owner, pcb_attribute_list_t *attrs)
 {
-	pcb_gtk_dlg_attributes(ghidgui->port.top_window, owner, attrs);
+	pcb_gtk_t *gctx = hid->hid_data;
+	pcb_gtk_dlg_attributes(gctx->port.top_window, owner, attrs);
 }
 
 static void PointCursor(pcb_hid_t *hid, pcb_bool grabbed)
 {
-	if (!ghidgui)
+	pcb_gtk_t *gctx = hid->hid_data;
+
+	if (gctx == NULL)
 		return;
 
 	ghid_point_cursor(ghidgui, grabbed);
@@ -309,32 +316,38 @@ static void PointCursor(pcb_hid_t *hid, pcb_bool grabbed)
 /* Create a new menu by path */
 static int ghid_remove_menu(pcb_hid_t *hid, const char *menu_path)
 {
-	if (ghidgui->topwin.ghid_cfg == NULL)
+	pcb_gtk_t *gctx = hid->hid_data;
+
+	if (gctx->topwin.ghid_cfg == NULL)
 		return -1;
-	return pcb_hid_cfg_remove_menu(ghidgui->topwin.ghid_cfg, menu_path, ghid_remove_menu_widget, ghidgui->topwin.menu.menu_bar);
+	return pcb_hid_cfg_remove_menu(gctx->topwin.ghid_cfg, menu_path, ghid_remove_menu_widget, gctx->topwin.menu.menu_bar);
 }
 
 static int ghid_remove_menu_node(pcb_hid_t *hid, lht_node_t *node)
 {
-	return pcb_hid_cfg_remove_menu_node(ghidgui->topwin.ghid_cfg, node, ghid_remove_menu_widget, ghidgui->topwin.menu.menu_bar);
+	pcb_gtk_t *gctx = hid->hid_data;
+	return pcb_hid_cfg_remove_menu_node(gctx->topwin.ghid_cfg, node, ghid_remove_menu_widget, gctx->topwin.menu.menu_bar);
 }
 
 static void ghid_create_menu(pcb_hid_t *hid, const char *menu_path, const pcb_menu_prop_t *props)
 {
-	pcb_hid_cfg_create_menu(ghidgui->topwin.ghid_cfg, menu_path, props, ghid_create_menu_widget, &ghidgui->topwin.menu);
+	pcb_gtk_t *gctx = hid->hid_data;
+	pcb_hid_cfg_create_menu(gctx->topwin.ghid_cfg, menu_path, props, ghid_create_menu_widget, &gctx->topwin.menu);
 }
 
 static void ghid_update_menu_checkbox(pcb_hid_t *hid, const char *cookie)
 {
-	if (ghidgui->hid_active)
-		ghid_update_toggle_flags(&ghidgui->topwin, cookie);
+	pcb_gtk_t *gctx = hid->hid_data;
+	if (gctx->hid_active)
+		ghid_update_toggle_flags(&gctx->topwin, cookie);
 }
 
 pcb_hid_cfg_t *ghid_get_menu_cfg(pcb_hid_t *hid)
 {
-	if (!ghidgui->hid_active)
+	pcb_gtk_t *gctx = hid->hid_data;
+	if (!gctx->hid_active)
 		return NULL;
-	return ghidgui->topwin.ghid_cfg;
+	return gctx->topwin.ghid_cfg;
 }
 
 static int ghid_usage(pcb_hid_t *hid, const char *topic)
