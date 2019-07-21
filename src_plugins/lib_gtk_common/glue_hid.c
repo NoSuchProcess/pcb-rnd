@@ -118,6 +118,7 @@ static void ghdi_gui_inited(int main, int conf)
 		pcb_gtk_zoom_view_win_side(&ghidgui->port.view, 0, 0, ghidgui->hidlib->size_x, ghidgui->hidlib->size_y, 0);
 	}
 }
+
 static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, void * out)
 {
 	ghidgui->port.view.canvas_width = ev->width;
