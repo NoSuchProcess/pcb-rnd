@@ -45,27 +45,24 @@ static gint ghid_port_window_enter_cb(GtkWidget *widget, GdkEventCrossing *ev, v
 	}
 
 	/* Following expression is true if a you open a menu from the menu bar,
-	 * move the mouse to the viewport and click on it. This closes the menu
-	 * and moves the pointer to the viewport without the pointer going over
-	 * the edge of the viewport */
+	   move the mouse to the viewport and click on it. This closes the menu
+	   and moves the pointer to the viewport without the pointer going over
+	   the edge of the viewport */
 	if (force_update || (ev->mode == GDK_CROSSING_UNGRAB && ev->detail == GDK_NOTIFY_NONLINEAR))
 		ghidgui->impl.screen_update();
 	return FALSE;
 }
 
-static gint ghid_port_window_leave_cb(GtkWidget * widget, GdkEventCrossing * ev, void * out_)
+static gint ghid_port_window_leave_cb(GtkWidget *widget, GdkEventCrossing *ev, void *out_)
 {
 	pcb_gtk_port_t *out = out_;
 
 	/* printf("leave mode: %d detail: %d\n", ev->mode, ev->detail); */
 
 	/* Window leave events can also be triggered because of focus grabs. Some
-	 * X applications occasionally grab the focus and so trigger this function.
-	 * At least GNOME's window manager is known to do this on every mouse click.
-	 *
-	 * See http://bugzilla.gnome.org/show_bug.cgi?id=102209
-	 */
-
+	   X applications occasionally grab the focus and so trigger this function.
+	   At least GNOME's window manager is known to do this on every mouse click.
+	   See http://bugzilla.gnome.org/show_bug.cgi?id=102209 */
 	if (ev->mode != GDK_CROSSING_NORMAL)
 		return FALSE;
 
@@ -119,7 +116,7 @@ static void ghid_gui_inited(pcb_gtk_t *gctx, int main, int conf)
 	}
 }
 
-static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, void * out)
+static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget *widget, GdkEventConfigure *ev, void *out)
 {
 	ghidgui->port.view.canvas_width = ev->width;
 	ghidgui->port.view.canvas_height = ev->height;
@@ -183,7 +180,7 @@ TODO(": move this to render init")
 	hid->hid_data = NULL;
 }
 
-static void ghid_do_exit(pcb_hid_t * hid)
+static void ghid_do_exit(pcb_hid_t *hid)
 {
 	/* Need to force-close the command entry first because it has its own main
 	   loop that'd block the exit until the user closes the entry */
@@ -296,7 +293,7 @@ static void ghid_beep(pcb_hid_t *hid)
 	gdk_beep();
 }
 
-static void ghid_attributes(pcb_hid_t *hid, const char *owner, pcb_attribute_list_t * attrs)
+static void ghid_attributes(pcb_hid_t *hid, const char *owner, pcb_attribute_list_t *attrs)
 {
 	pcb_gtk_dlg_attributes(ghidgui->port.top_window, owner, attrs);
 }
