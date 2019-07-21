@@ -402,11 +402,11 @@ all_exe: pcb-rnd$(EXE) @/local/pcb/all@
 pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS) $(LIBS_3RD)
 	$(CC) $(OBJS) $(OBJS_C99) -o pcb-rnd$(EXE) $(LIBS_PRE) $(LDFLAGS) $(LIBS)
 
+### librnd, hidlib ####
 
 OBJS_HIDLIB_ALL = $(OBJS_HIDLIB_PLG) $(OBJS_C99_HIDLIB_PLG) $(OBJS_HIDLIB) $(OBJS_HIDLIB_ONLY) $(OBJS_C99_HIDLIB)
 DEPS_HIDLIB_ALL = $(OBJS_HIDLIB_ALL) $(EXEDEPS) $(LIBS_3RD) buildin.hidlib.h
 
-# temporary, for testig
 librnd-hidlib.a: $(DEPS_HIDLIB_ALL)
 	$(AR) rvu librnd-hidlib.a $(OBJS_HIDLIB_ALL)
 
@@ -416,6 +416,8 @@ librnd-hidlib.so.$(PCB_RND_VER): $(DEPS_HIDLIB_ALL)
 HIDLIB_CLEAN_FILES=librnd-hidlib.so.$(PCB_RND_VER) librnd-hidlib.a
 
 librnd: $(HIDLIB_CLEAN_FILES)
+
+### pcb-rnd infra ###
 
 $(SPHASH_PATH)/sphash: $(SPHASH_PATH)/sphash.c
 	$(CC) -o pcb-rnd$(EXE) $(SPHASH_PATH)/sphash.c -o $(SPHASH_PATH)/sphash
