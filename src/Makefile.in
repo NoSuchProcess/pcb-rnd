@@ -122,6 +122,7 @@ append /local/pcb/OBJS_3RDLIB [@
 	../src_3rd/liblhtpers/lhtpers.o
 	../src_3rd/genvector/gds_char.o
 	../src_3rd/genvector/vtp0.o
+	../src_3rd/genvector/vtd0.o
 	../src_3rd/genvector/vts0.o
 	../src_3rd/genvector/vti0.o
 	../src_3rd/genvector/vtl0.o
