@@ -106,7 +106,7 @@ static gint ghid_port_window_motion_cb(GtkWidget *widget, GdkEventMotion *ev, vo
 	return FALSE;
 }
 
-static void ghdi_gui_inited(int main, int conf)
+static void ghdi_gui_inited(pcb_gtk_t *gctx, int main, int conf)
 {
 	static int im = 0, ic = 0, first = 1;
 	if (main) im = 1;
@@ -114,8 +114,8 @@ static void ghdi_gui_inited(int main, int conf)
 
 	if (im && ic && first) {
 		first = 0;
-		pcb_event(ghidgui->hidlib, PCB_EVENT_GUI_INIT, NULL);
-		pcb_gtk_zoom_view_win_side(&ghidgui->port.view, 0, 0, ghidgui->hidlib->size_x, ghidgui->hidlib->size_y, 0);
+		pcb_event(gctx->hidlib, PCB_EVENT_GUI_INIT, NULL);
+		pcb_gtk_zoom_view_win_side(&gctx->port.view, 0, 0, gctx->hidlib->size_x, gctx->hidlib->size_y, 0);
 	}
 }
 
@@ -125,7 +125,7 @@ static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, Gd
 	ghidgui->port.view.canvas_height = ev->height;
 
 	ghidgui->impl.drawing_area_configure_hook(out);
-	ghdi_gui_inited(0, 1);
+	ghdi_gui_inited(ghidgui, 0, 1);
 
 	pcb_gtk_tw_ranges_scale(ghidgui);
 	pcb_gui->invalidate_all(pcb_gui);
@@ -167,7 +167,7 @@ TODO(": move this to render init")
 
 	ctx->gui_is_up = 1;
 
-	ghdi_gui_inited(1, 0);
+	ghdi_gui_inited(ghidgui, 1, 0);
 
 	/* Make sure drawing area has keyboard focus so that keys are handled
 	   while the mouse cursor is over the top window or children widgets,
