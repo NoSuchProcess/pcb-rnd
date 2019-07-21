@@ -148,17 +148,17 @@ static void ghid_conf_regs(const char *cookie)
 
 /* Do scrollbar scaling based on current port drawing area size and
    overall PCB board size. */
-void pcb_gtk_tw_ranges_scale(pcb_gtk_t *ctx)
+void pcb_gtk_tw_ranges_scale(pcb_gtk_t *gctx)
 {
-	pcb_gtk_topwin_t *tw = &ctx->topwin;
-	pcb_gtk_view_t *view = &ctx->port.view;
+	pcb_gtk_topwin_t *tw = &gctx->topwin;
+	pcb_gtk_view_t *view = &gctx->port.view;
 
 	/* Update the scrollbars with PCB units. So Scale the current drawing area
 	   size in pixels to PCB units and that will be the page size for the Gtk adjustment. */
 	pcb_gtk_zoom_post(view);
 
-	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->h_range)), view->width, ghidgui->hidlib->size_x);
-	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->v_range)), view->height, ghidgui->hidlib->size_y);
+	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->h_range)), view->width, gctx->hidlib->size_x);
+	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->v_range)), view->height, gctx->hidlib->size_y);
 }
 
 void pcb_gtk_port_ranges_changed(void)
