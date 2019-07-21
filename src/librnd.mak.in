@@ -2,7 +2,6 @@ put /local/pcb/CFLAGS_HIDLIB_STATIC_ {}
 append /local/pcb/CFLAGS_HIDLIB_STATIC_ ?/local/pcb/CFLAGS_HIDLIB_STATIC
 put /local/pcb/LDFLAGS_HIDLIB_STATIC_ {}
 append /local/pcb/LDFLAGS_HIDLIB_STATIC_ ?/local/pcb/LDFLAGS_HIDLIB_STATIC
-put /local/pcb/LIBS_3RD_HIDLIB /local/pcb/LIBS_3RD
 
 append /local/pcb/LDFLAGS_HIDLIB_STATIC_ [@ -lm @?/target/libs/ldl@ @]
 if ?libs/script/fungw/presents
@@ -11,11 +10,9 @@ then
 	append /local/pcb/LDFLAGS_HIDLIB_STATIC_ libs/script/fungw/ldflags
 end
 
-uniq /local/pcb/LIBS_3RD_HIDLIB
 uniq /local/pcb/CFLAGS_HIDLIB_STATIC_
 uniq /local/pcb/LDFLAGS_HIDLIB_STATIC_
 
-gsub /local/pcb/LIBS_3RD_HIDLIB {[.][.]/src_3rd/} {$(LIBRND_ROOT)/src_3rd/}
 gsub /local/pcb/CFLAGS_HIDLIB_STATIC_ {[.][.]/src_3rd/} {$(LIBRND_ROOT)/src_3rd/}
 
 print [@
@@ -30,6 +27,6 @@ print [@
 #
 
 CFLAGS_HIDLIB=@?/local/pcb/CFLAGS_HIDLIB_STATIC_@ -I$(LIBRND_ROOT)/include/librnd/core -I$(LIBRND_ROOT)/include/librnd/src_3rd -I$(LIBRND_ROOT)/include/librnd
-LDFLAGS_HIDLIB=@/local/pcb/LIBS_3RD_HIDLIB@ @?/local/pcb/LDFLAGS_HIDLIB_STATIC_@
+LDFLAGS_HIDLIB=@?/local/pcb/LDFLAGS_HIDLIB_STATIC_@
 
 @]
