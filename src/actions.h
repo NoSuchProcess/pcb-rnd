@@ -2,6 +2,7 @@
 #define PCB_ACTIONS_H
 
 #include "hid.h"
+#include <string.h>
 #include <libfungw/fungw.h>
 
 #define PCB_ACTION_NAME_MAX 128
