@@ -18,7 +18,7 @@ Documentation policy:
 	  action doc to just repeat the syntax description. Please explore
 	  what the action does, all aspects, all use cases; see if the syntax
 	  help string already covers everything and the action is trivial to use;
-	  if so, the action does nto need any more documentation
+	  if so, the action does not need any more documentation
 
 	- after creating the html doc, please add a
 	  /* DOC: actname.html */
@@ -28,7 +28,7 @@ Documentation policy:
 	  behind the action, how to use it, what it is for
 
 	- it should not tell much about what bigger scheme it fits in (that's
-	  even higher level, plugin doc; but should cross link relevan sibling
+	  even higher level, plugin doc; but should cross link relevant sibling
 	  actions)
 
 	- it should not repeat low level info (e.g. enumerate possible arguments
