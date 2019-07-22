@@ -1191,7 +1191,7 @@ static void ghid_cairo_notify_mark_change(pcb_hidlib_t *hidlib, pcb_bool changes
 	}
 	else if (ghidgui->port.drawing_area != NULL) {
 		/* Queue a GTK expose when changes are complete */
-		ghid_draw_area_update(ghidgui->port, NULL);
+		ghid_draw_area_update(&ghidgui->port, NULL);
 	}
 }
 
