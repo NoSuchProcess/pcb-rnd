@@ -183,7 +183,7 @@ static void start_subcomposite(void)
 	cairo_t *cr;
 
 	if (priv->surf_layer == NULL)
-		cr_create_similar_surface_and_context(&priv->surf_layer, &priv->cr_layer, ghidgui->port);
+		cr_create_similar_surface_and_context(&priv->surf_layer, &priv->cr_layer, &ghidgui->port);
 	cr = priv->cr_layer;
 	cairo_save(cr);
 	cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
@@ -1238,48 +1238,48 @@ static void draw_dozen_cross(cairo_t * xor_gc, gint x, gint y)
 	gint x0, y0, x1, y1;
 	gdouble tan60 = sqrt(3);
 
-	x0 = x + (gport->view.canvas_height - y) / tan60;
-	x0 = MAX(0, MIN(x0, gport->view.canvas_width));
+	x0 = x + (ghidgui->port.view.canvas_height - y) / tan60;
+	x0 = MAX(0, MIN(x0, ghidgui->port.view.canvas_width));
 	x1 = x - y / tan60;
-	x1 = MAX(0, MIN(x1, gport->view.canvas_width));
-	y0 = y + (gport->view.canvas_width - x) * tan60;
-	y0 = MAX(0, MIN(y0, gport->view.canvas_height));
+	x1 = MAX(0, MIN(x1, ghidgui->port.view.canvas_width));
+	y0 = y + (ghidgui->port.view.canvas_width - x) * tan60;
+	y0 = MAX(0, MIN(y0, ghidgui->port.view.canvas_height));
 	y1 = y - x * tan60;
-	y1 = MAX(0, MIN(y1, gport->view.canvas_height));
-	cr_draw_line(gport->render_priv->cr, FALSE, x0, y0, x1, y1);
+	y1 = MAX(0, MIN(y1, ghidgui->port.view.canvas_height));
+	cr_draw_line(ghidgui->port.render_priv->cr, FALSE, x0, y0, x1, y1);
 	//gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
 
-	x0 = x + (gport->view.canvas_height - y) * tan60;
-	x0 = MAX(0, MIN(x0, gport->view.canvas_width));
+	x0 = x + (ghidgui->port.view.canvas_height - y) * tan60;
+	x0 = MAX(0, MIN(x0, ghidgui->port.view.canvas_width));
 	x1 = x - y * tan60;
-	x1 = MAX(0, MIN(x1, gport->view.canvas_width));
-	y0 = y + (gport->view.canvas_width - x) / tan60;
-	y0 = MAX(0, MIN(y0, gport->view.canvas_height));
+	x1 = MAX(0, MIN(x1, ghidgui->port.view.canvas_width));
+	y0 = y + (ghidgui->port.view.canvas_width - x) / tan60;
+	y0 = MAX(0, MIN(y0, ghidgui->port.view.canvas_height));
 	y1 = y - x / tan60;
-	y1 = MAX(0, MIN(y1, gport->view.canvas_height));
-	cr_draw_line(gport->render_priv->cr, FALSE, x0, y0, x1, y1);
+	y1 = MAX(0, MIN(y1, ghidgui->port.view.canvas_height));
+	cr_draw_line(ghidgui->port.render_priv->cr, FALSE, x0, y0, x1, y1);
 	//gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
 
-	x0 = x - (gport->view.canvas_height - y) / tan60;
-	x0 = MAX(0, MIN(x0, gport->view.canvas_width));
+	x0 = x - (ghidgui->port.view.canvas_height - y) / tan60;
+	x0 = MAX(0, MIN(x0, ghidgui->port.view.canvas_width));
 	x1 = x + y / tan60;
-	x1 = MAX(0, MIN(x1, gport->view.canvas_width));
+	x1 = MAX(0, MIN(x1, ghidgui->port.view.canvas_width));
 	y0 = y + x * tan60;
-	y0 = MAX(0, MIN(y0, gport->view.canvas_height));
-	y1 = y - (gport->view.canvas_width - x) * tan60;
-	y1 = MAX(0, MIN(y1, gport->view.canvas_height));
-	cr_draw_line(gport->render_priv->cr, FALSE, x0, y0, x1, y1);
+	y0 = MAX(0, MIN(y0, ghidgui->port.view.canvas_height));
+	y1 = y - (ghidgui->port.view.canvas_width - x) * tan60;
+	y1 = MAX(0, MIN(y1, ghidgui->port.view.canvas_height));
+	cr_draw_line(ghidgui->port.render_priv->cr, FALSE, x0, y0, x1, y1);
 	//gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
 
-	x0 = x - (gport->view.canvas_height - y) * tan60;
-	x0 = MAX(0, MIN(x0, gport->view.canvas_width));
+	x0 = x - (ghidgui->port.view.canvas_height - y) * tan60;
+	x0 = MAX(0, MIN(x0, ghidgui->port.view.canvas_width));
 	x1 = x + y * tan60;
-	x1 = MAX(0, MIN(x1, gport->view.canvas_width));
+	x1 = MAX(0, MIN(x1, ghidgui->port.view.canvas_width));
 	y0 = y + x / tan60;
-	y0 = MAX(0, MIN(y0, gport->view.canvas_height));
-	y1 = y - (gport->view.canvas_width - x) / tan60;
-	y1 = MAX(0, MIN(y1, gport->view.canvas_height));
-	cr_draw_line(gport->render_priv->cr, FALSE, x0, y0, x1, y1);
+	y0 = MAX(0, MIN(y0, ghidgui->port.view.canvas_height));
+	y1 = y - (ghidgui->port.view.canvas_width - x) / tan60;
+	y1 = MAX(0, MIN(y1, ghidgui->port.view.canvas_height));
+	cr_draw_line(ghidgui->port.render_priv->cr, FALSE, x0, y0, x1, y1);
 	//gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
 }
 
@@ -1287,7 +1287,7 @@ static void draw_crosshair(cairo_t * xor_gc, gint x, gint y)
 {
 	static enum pcb_crosshair_shape_e prev = pcb_ch_shape_basic;
 
-	if (gport->view.crosshair_x < 0 || !ghidgui->topwin.active || !gport->view.has_entered)
+	if (ghidgui->port.view.crosshair_x < 0 || !ghidgui->topwin.active || !ghidgui->port.view.has_entered)
 		return;
 
 	draw_right_cross(xor_gc, x, y);
@@ -1309,7 +1309,7 @@ static void show_crosshair(gboolean paint_new_location)
 	//static GdkColor cross_color;
 	cairo_t *cr;
 
-	if (gport->view.crosshair_x < 0 || !ghidgui->topwin.active || !gport->view.has_entered) {
+	if (ghidgui->port.view.crosshair_x < 0 || !ghidgui->topwin.active || !ghidgui->port.view.has_entered) {
 		x_prev = y_prev = -1; /* if leaving the drawing area, invalidate last known coord to make sure we redraw on reenter, even on the same coords */
 		return;
 	}
@@ -1330,8 +1330,8 @@ TODO("gtk3: when CrossColor changed from config")
 TODO("gtk3:FIXME: when CrossColor changed from config")
 	//  map_color_string(pcbhl_conf.appearance.color.cross, &cross_color);
 	//}
-	x = Vx(gport->view.crosshair_x);
-	y = Vy(gport->view.crosshair_y);
+	x = Vx(ghidgui->port.view.crosshair_x);
+	y = Vy(ghidgui->port.view.crosshair_y);
 
 	//gdk_gc_set_foreground(xor_gc, &cross_color);
 
@@ -1385,7 +1385,7 @@ static void ghid_cairo_drawing_area_configure_hook(void *vport)
 	render_priv_t *priv = port->render_priv;
 	cairo_t *cr;
 
-	gport->drawing_allowed = pcb_true;
+	ghidgui->port.drawing_allowed = pcb_true;
 
 	if (!done_once) {
 		//priv->bg_gc = gdk_gc_new(port->drawable);
@@ -1448,7 +1448,7 @@ static void ghid_cairo_screen_update(void)
 
 	//gdk_draw_drawable(window, priv->bg_gc, gport->pixmap, 0, 0, 0, 0, gport->view.canvas_width, gport->view.canvas_height);
 	//show_crosshair(TRUE);
-	gtk_widget_queue_draw(gport->drawing_area);
+	gtk_widget_queue_draw(ghidgui->port.drawing_area);
 }
 
 static void ghid_cairo_port_drawing_realize_cb(GtkWidget * widget, gpointer data)
@@ -1473,25 +1473,25 @@ static gboolean ghid_cairo_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *
 	/* Setup drawable and zoom factor for drawing routines
 	 */
 	//save_drawable = gport->drawable;
-	save_view = gport->view;
-	save_width = gport->view.canvas_width;
-	save_height = gport->view.canvas_height;
+	save_view = ghidgui->port.view;
+	save_width  = ghidgui->port.view.canvas_width;
+	save_height = ghidgui->port.view.canvas_height;
 
 	gtk_widget_get_allocation(widget, &allocation);
 	xz = vw / (double) allocation.width;
 	yz = vh / (double) allocation.height;
 	if (xz > yz)
-		gport->view.coord_per_px = xz;
+		ghidgui->port.view.coord_per_px = xz;
 	else
-		gport->view.coord_per_px = yz;
+		ghidgui->port.view.coord_per_px = yz;
 
 	//gport->drawable = window;
-	gport->view.canvas_width = allocation.width;
-	gport->view.canvas_height = allocation.height;
-	gport->view.width = allocation.width * gport->view.coord_per_px;
-	gport->view.height = allocation.height * gport->view.coord_per_px;
-	gport->view.x0 = (vw - gport->view.width) / 2 + ctx->view.X1;
-	gport->view.y0 = (vh - gport->view.height) / 2 + ctx->view.Y1;
+	ghidgui->port.view.canvas_width  = allocation.width;
+	ghidgui->port.view.canvas_height = allocation.height;
+	ghidgui->port.view.width  = allocation.width  * ghidgui->port.view.coord_per_px;
+	ghidgui->port.view.height = allocation.height * ghidgui->port.view.coord_per_px;
+	ghidgui->port.view.x0 = (vw - ghidgui->port.view.width)  / 2 + ctx->view.X1;
+	ghidgui->port.view.y0 = (vh - ghidgui->port.view.height) / 2 + ctx->view.Y1;
 
 	PCB_GTK_PREVIEW_TUNE_EXTENT(ctx, allocation);
 
@@ -1509,14 +1509,14 @@ static gboolean ghid_cairo_preview_expose(GtkWidget * widget, pcb_gtk_expose_t *
 
 	/* restore the original context and priv */
 	ctx->view.X1 = ox1; ctx->view.X2 = ox2; ctx->view.Y1 = oy1; ctx->view.Y2 = oy2;
-	gport->view = save_view;
-	gport->view.canvas_width = save_width;
-	gport->view.canvas_height = save_height;
+	ghidgui->port.view = save_view;
+	ghidgui->port.view.canvas_width  = save_width;
+	ghidgui->port.view.canvas_height = save_height;
 
 	return FALSE;
 }
 
-static GtkWidget *ghid_cairo_new_drawing_widget(pcb_gtk_common_t *common)
+static GtkWidget *ghid_cairo_new_drawing_widget(pcb_gtk_impl_t *common)
 {
 	GtkWidget *w = gtk_drawing_area_new();
 
