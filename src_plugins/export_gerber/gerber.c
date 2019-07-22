@@ -52,9 +52,6 @@ conf_gerber_t conf_gerber;
 
 static pcb_cam_t gerber_cam;
 
-static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
-static void gerber_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y);
-
 /* These are for films */
 #define gerberX(pcb, x) ((pcb_coord_t) (x))
 #define gerberY(pcb, y) ((pcb_coord_t) ((pcb)->hidlib.size_y - (y)))
@@ -1007,12 +1004,65 @@ TODO("gerber: remove this dead code");
 #endif
 }
 
-static void gerber_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void gerber_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
 {
-	gerber_draw_line(gc, x1, y1, x1, y2);
-	gerber_draw_line(gc, x1, y1, x2, y1);
-	gerber_draw_line(gc, x1, y2, x2, y2);
-	gerber_draw_line(gc, x2, y1, x2, y2);
+	pcb_bool m = pcb_false;
+	int i;
+	int firstTime = 1;
+	pcb_coord_t startX = 0, startY = 0;
+
+	if (line_slots) {
+		pcb_message(PCB_MSG_ERROR, "Can't export polygon as G85 slot in excellon cnc files;\nplease use lines for slotting if you export gerber\n");
+		return;
+	}
+
+	if (is_mask && (gerber_drawing_mode != PCB_HID_COMP_POSITIVE) && (gerber_drawing_mode != PCB_HID_COMP_POSITIVE_XOR) && (gerber_drawing_mode != PCB_HID_COMP_NEGATIVE))
+		return;
+
+	use_gc(gc, 10 * 100);
+	if (!f)
+		return;
+	fprintf(f, "G36*\r\n");
+	for (i = 0; i < n_coords; i++) {
+		if (x[i]+dx != lastX) {
+			m = pcb_true;
+			lastX = x[i]+dx;
+			pcb_fprintf(f, "X%[4]", gerberX(PCB, lastX));
+		}
+		if (y[i]+dy != lastY) {
+			m = pcb_true;
+			lastY = y[i]+dy;
+			pcb_fprintf(f, "Y%[4]", gerberY(PCB, lastY));
+		}
+		if (firstTime) {
+			firstTime = 0;
+			startX = x[i]+dx;
+			startY = y[i]+dy;
+			if (m)
+				fprintf(f, "D02*");
+		}
+		else if (m)
+			fprintf(f, "D01*\r\n");
+		m = pcb_false;
+	}
+	if (startX != lastX) {
+		m = pcb_true;
+		lastX = startX;
+		pcb_fprintf(f, "X%[4]", gerberX(PCB, startX));
+	}
+	if (startY != lastY) {
+		m = pcb_true;
+		lastY = startY;
+		pcb_fprintf(f, "Y%[4]", gerberY(PCB, lastY));
+	}
+	if (m)
+		fprintf(f, "D01*\r\n");
+	fprintf(f, "G37*\r\n");
+}
+
+static void gerber_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
+{
+	gerber_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
 }
 
 static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
@@ -1095,7 +1145,14 @@ static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 		}
 		fprintf(f, "D01*\r\n");
 	}
+}
 
+static void gerber_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+{
+	gerber_draw_line(gc, x1, y1, x1, y2);
+	gerber_draw_line(gc, x1, y1, x2, y1);
+	gerber_draw_line(gc, x1, y2, x2, y2);
+	gerber_draw_line(gc, x2, y1, x2, y2);
 }
 
 static void gerber_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
@@ -1234,68 +1291,6 @@ static void gerber_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, 
 	}
 	fprintf(f, "D03*\r\n");
 }
-
-static void gerber_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
-{
-	pcb_bool m = pcb_false;
-	int i;
-	int firstTime = 1;
-	pcb_coord_t startX = 0, startY = 0;
-
-	if (line_slots) {
-		pcb_message(PCB_MSG_ERROR, "Can't export polygon as G85 slot in excellon cnc files;\nplease use lines for slotting if you export gerber\n");
-		return;
-	}
-
-	if (is_mask && (gerber_drawing_mode != PCB_HID_COMP_POSITIVE) && (gerber_drawing_mode != PCB_HID_COMP_POSITIVE_XOR) && (gerber_drawing_mode != PCB_HID_COMP_NEGATIVE))
-		return;
-
-	use_gc(gc, 10 * 100);
-	if (!f)
-		return;
-	fprintf(f, "G36*\r\n");
-	for (i = 0; i < n_coords; i++) {
-		if (x[i]+dx != lastX) {
-			m = pcb_true;
-			lastX = x[i]+dx;
-			pcb_fprintf(f, "X%[4]", gerberX(PCB, lastX));
-		}
-		if (y[i]+dy != lastY) {
-			m = pcb_true;
-			lastY = y[i]+dy;
-			pcb_fprintf(f, "Y%[4]", gerberY(PCB, lastY));
-		}
-		if (firstTime) {
-			firstTime = 0;
-			startX = x[i]+dx;
-			startY = y[i]+dy;
-			if (m)
-				fprintf(f, "D02*");
-		}
-		else if (m)
-			fprintf(f, "D01*\r\n");
-		m = pcb_false;
-	}
-	if (startX != lastX) {
-		m = pcb_true;
-		lastX = startX;
-		pcb_fprintf(f, "X%[4]", gerberX(PCB, startX));
-	}
-	if (startY != lastY) {
-		m = pcb_true;
-		lastY = startY;
-		pcb_fprintf(f, "Y%[4]", gerberY(PCB, lastY));
-	}
-	if (m)
-		fprintf(f, "D01*\r\n");
-	fprintf(f, "G37*\r\n");
-}
-
-static void gerber_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
-{
-	gerber_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
-}
-
 
 static void gerber_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
