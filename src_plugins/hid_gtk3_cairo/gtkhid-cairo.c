@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
- *  pcb-rnd Copyright (C) 2017,2018 Alain Vigne
+ *  pcb-rnd Copyright (C) 2017-2019 Alain Vigne
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
