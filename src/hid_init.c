@@ -303,7 +303,7 @@ void pcb_hidlib_init1(void (*conf_core_init)(void))
 	pcb_color_init();
 }
 
-void pcb_hidlib_init2(const pup_buildin_t *buildins)
+void pcb_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_buildins)
 {
 	pcb_actions_init();
 
@@ -312,6 +312,8 @@ void pcb_hidlib_init2(const pup_buildin_t *buildins)
 	pup_init(&pcb_pup);
 	pcb_pup.error_stack_enable = 1;
 	pup_buildin_load(&pcb_pup, buildins);
+	if (local_buildins != NULL)
+		pup_buildin_load(&pcb_pup, local_buildins);
 	pup_autoload_dir(&pcb_pup, NULL, NULL);
 
 	conf_load_extra(NULL, NULL);

@@ -117,7 +117,7 @@ typedef struct {
 void pcb_fix_locale(void);
 
 void pcb_hidlib_init1(void (*conf_core_init)(void)); /* before CLI argument parsing; conf_core_init should conf_reg() at least the hidlib related nodes */
-void pcb_hidlib_init2(const pup_buildin_t *buildins); /* after CLI argument parsing */
+void pcb_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_buildins); /* after CLI argument parsing */
 void pcb_hidlib_uninit(void);
 
 /* optional: hidlib aspects of main() */

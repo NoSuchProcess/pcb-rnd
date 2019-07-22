@@ -378,7 +378,7 @@ int main(int argc, char *argv[])
 	}
 	pcb_tool_init(); /* init before the plugins so that the static tools have the lowest index */
 
-	pcb_hidlib_init2(pup_buildins);
+	pcb_hidlib_init2(pup_buildins, NULL);
 	pcb_actions_init_pcb_only();
 
 	setbuf(stdout, 0);
