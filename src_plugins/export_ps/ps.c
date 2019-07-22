@@ -1,10 +1,10 @@
 #include "config.h"
 
 #include <stdio.h>
-#include <stdarg.h>							/* not used */
+#include <stdarg.h> /* not used */
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>							/* not used */
+#include <assert.h> /* not used */
 #include <time.h>
 
 #include "math_helper.h"

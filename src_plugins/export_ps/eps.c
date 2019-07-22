@@ -35,7 +35,6 @@ typedef struct hid_gc_s {
 	pcb_coord_t width;
 	int color;
 	int erase;
-
 } hid_gc_s;
 
 static pcb_hid_t eps_hid;
