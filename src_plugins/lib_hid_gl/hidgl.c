@@ -38,6 +38,7 @@
 #include "hid.h"
 #include "hidgl.h"
 #include "rtree.h"
+#include "hidlib.h"
 
 #include "draw_gl.c"
 
