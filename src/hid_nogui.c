@@ -96,7 +96,7 @@ static pcb_hid_gc_t nogui_make_gc(pcb_hid_t *hid)
 	return 0;
 }
 
-static void nogui_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc)
+static void nogui_destroy_gc(pcb_hid_gc_t gc)
 {
 }
 

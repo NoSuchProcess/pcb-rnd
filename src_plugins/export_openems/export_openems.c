@@ -703,7 +703,7 @@ static pcb_hid_gc_t openems_make_gc(pcb_hid_t *hid)
 	return rv;
 }
 
-static void openems_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc)
+static void openems_destroy_gc(pcb_hid_gc_t gc)
 {
 	free(gc);
 }

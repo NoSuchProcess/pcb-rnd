@@ -162,7 +162,7 @@ static void ghid_gl_end_layer(pcb_hid_t *hid)
 	drawgl_reset();
 }
 
-void ghid_gl_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc)
+void ghid_gl_destroy_gc(pcb_hid_gc_t gc)
 {
 	g_free(gc);
 }

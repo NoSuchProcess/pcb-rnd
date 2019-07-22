@@ -46,7 +46,7 @@ PCB_INLINE pcb_hid_gc_t pcb_hid_make_gc(void)
 
 PCB_INLINE void pcb_hid_destroy_gc(pcb_hid_gc_t gc)
 {
-	pcb_gui->destroy_gc(pcb_gui, gc);
+	pcb_gui->destroy_gc(gc);
 }
 
 PCB_INLINE void pcb_hid_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)

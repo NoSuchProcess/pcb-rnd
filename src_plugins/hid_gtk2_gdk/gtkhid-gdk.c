@@ -101,7 +101,7 @@ static int ghid_gdk_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, con
 	return 1;
 }
 
-static void ghid_gdk_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc)
+static void ghid_gdk_destroy_gc(pcb_hid_gc_t gc)
 {
 	if (gc->pixel_gc)
 		g_object_unref(gc->pixel_gc);

@@ -279,7 +279,7 @@ struct pcb_hid_s {
 
 	/* Make an empty graphics context.  */
 	pcb_hid_gc_t (*make_gc)(pcb_hid_t *hid);
-	void (*destroy_gc)(pcb_hid_t *hid, pcb_hid_gc_t gc);
+	void (*destroy_gc)(pcb_hid_gc_t gc);
 
 	/* Composite layer drawing: manipulate the sketch canvas and set
 	   positive or negative drawing mode. The canvas covers the screen box. */

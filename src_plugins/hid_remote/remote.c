@@ -184,7 +184,7 @@ static int gc2idx(pcb_hid_gc_t gc)
 	return idx;
 }
 
-static void remote_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc)
+static void remote_destroy_gc(pcb_hid_gc_t gc)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)

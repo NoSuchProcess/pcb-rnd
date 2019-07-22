@@ -2237,7 +2237,7 @@ static pcb_hid_gc_t lesstif_make_gc(pcb_hid_t *hid)
 	return rv;
 }
 
-static void lesstif_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc)
+static void lesstif_destroy_gc(pcb_hid_gc_t gc)
 {
 	if (gc->colorname != NULL)
 		free(gc->colorname);

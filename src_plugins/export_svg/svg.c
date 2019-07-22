@@ -474,7 +474,7 @@ static pcb_hid_gc_t svg_make_gc(pcb_hid_t *hid)
 	return rv;
 }
 
-static void svg_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc)
+static void svg_destroy_gc(pcb_hid_gc_t gc)
 {
 	free(gc);
 }

@@ -79,10 +79,10 @@ static pcb_hid_gc_t log_make_gc(pcb_hid_t *hid)
 	return delegatee_->make_gc(hid);
 }
 
-static void log_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc)
+static void log_destroy_gc(pcb_hid_gc_t gc)
 {
 	pcb_fprintf(out_, "destroy_gc()\n");
-	delegatee_->destroy_gc(hid, gc);
+	delegatee_->destroy_gc(gc);
 }
 
 static void log_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)

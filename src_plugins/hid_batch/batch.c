@@ -180,7 +180,7 @@ static pcb_hid_gc_t batch_make_gc(pcb_hid_t *hid)
 	return (pcb_hid_gc_t)&hc;
 }
 
-static void batch_destroy_gc(pcb_hid_t *hid, pcb_hid_gc_t gc)
+static void batch_destroy_gc(pcb_hid_gc_t gc)
 {
 }
 
