@@ -28,5 +28,6 @@ print [@
 
 CFLAGS_LIBRND=@?/local/pcb/CFLAGS_HIDLIB_STATIC_@ -I$(LIBRND_ROOT)/include/librnd/core -I$(LIBRND_ROOT)/include/librnd/src_3rd -I$(LIBRND_ROOT)/include/librnd
 LDFLAGS_LIBRND=@?/local/pcb/LDFLAGS_HIDLIB_STATIC_@
+PUPLUG=$(LIBRND_ROOT)/lib/librnd/puplug
 
 @]
