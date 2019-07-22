@@ -27,30 +27,6 @@
 
 #define CRASH(func) fprintf(stderr, "HID error: pcb called unimplemented EPS function %s.\n", func); abort()
 
-/*----------------------------------------------------------------------------*/
-/* Function prototypes                                                        */
-/*----------------------------------------------------------------------------*/
-static pcb_hid_attribute_t *eps_get_export_options(pcb_hid_t *hid, int *n);
-static void eps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options);
-static int eps_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv);
-static int eps_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform);
-static pcb_hid_gc_t eps_make_gc(pcb_hid_t *hid);
-static void eps_destroy_gc(pcb_hid_gc_t gc);
-static void eps_set_color(pcb_hid_gc_t gc, const pcb_color_t *name);
-static void eps_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style);
-static void eps_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width);
-static void eps_set_draw_xor(pcb_hid_gc_t gc, int _xor);
-static void eps_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
-static void eps_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
-static void eps_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle);
-static void eps_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
-static void eps_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius);
-static void eps_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y);
-static void eps_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy);
-static void eps_calibrate(pcb_hid_t *hid, double xval, double yval);
-static void eps_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int action);
-/*----------------------------------------------------------------------------*/
-
 static pcb_cam_t eps_cam;
 
 typedef struct hid_gc_s {
