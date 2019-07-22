@@ -52,28 +52,8 @@ conf_gerber_t conf_gerber;
 
 static pcb_cam_t gerber_cam;
 
-static pcb_hid_attribute_t *gerber_get_export_options(pcb_hid_t *hid, int *n);
-static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options);
-static int gerber_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv);
-static pcb_hid_gc_t gerber_make_gc(pcb_hid_t *hid);
-static void gerber_destroy_gc(pcb_hid_gc_t gc);
-static void gerber_set_color(pcb_hid_gc_t gc, const pcb_color_t *name);
-static void gerber_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style);
-static void gerber_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width);
-static void gerber_set_draw_xor(pcb_hid_gc_t gc, int _xor);
 static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
-static void gerber_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle);
-static void gerber_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
-static void gerber_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius);
-static void gerber_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
-static void gerber_calibrate(pcb_hid_t *hid, double xval, double yval);
-static void gerber_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int action);
-static void gerber_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy);
 static void gerber_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y);
-
-/*----------------------------------------------------------------------------*/
-/* Utility routines                                                           */
-/*----------------------------------------------------------------------------*/
 
 /* These are for films */
 #define gerberX(pcb, x) ((pcb_coord_t) (x))
