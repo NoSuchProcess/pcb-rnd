@@ -26,7 +26,7 @@ print [@
 #  - use the variables declared in this file for compilation and linking
 #
 
-CFLAGS_HIDLIB=@?/local/pcb/CFLAGS_HIDLIB_STATIC_@ -I$(LIBRND_ROOT)/include/librnd/core -I$(LIBRND_ROOT)/include/librnd/src_3rd -I$(LIBRND_ROOT)/include/librnd
-LDFLAGS_HIDLIB=@?/local/pcb/LDFLAGS_HIDLIB_STATIC_@
+CFLAGS_LIBRND=@?/local/pcb/CFLAGS_HIDLIB_STATIC_@ -I$(LIBRND_ROOT)/include/librnd/core -I$(LIBRND_ROOT)/include/librnd/src_3rd -I$(LIBRND_ROOT)/include/librnd
+LDFLAGS_LIBRND=@?/local/pcb/LDFLAGS_HIDLIB_STATIC_@
 
 @]
