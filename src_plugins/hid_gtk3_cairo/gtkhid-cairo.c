@@ -211,7 +211,7 @@ static int ghid_cairo_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, c
 	return 1;
 }
 
-static void ghid_cairo_end_layer_group(void)
+static void ghid_cairo_end_layer_group(pcb_hid_t *hid)
 {
 	end_subcomposite();
 }
@@ -1571,7 +1571,7 @@ void ghid_cairo_install(pcb_gtk_impl_t *impl, pcb_hid_t *hid)
 		hid->notify_crosshair_change = ghid_cairo_notify_crosshair_change;
 		hid->notify_mark_change = ghid_cairo_notify_mark_change;
 		hid->set_layer_group = ghid_cairo_set_layer_group;
-		//hid->end_layer = ghid_cairo_end_layer_group;
+		hid->end_layer = ghid_cairo_end_layer_group;
 		hid->make_gc = ghid_cairo_make_gc;
 		hid->destroy_gc = ghid_cairo_destroy_gc;
 		hid->render_burst = ghid_cairo_render_burst;
