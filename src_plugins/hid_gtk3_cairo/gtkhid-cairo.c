@@ -1109,6 +1109,7 @@ static void redraw_region(pcb_hidlib_t *hidlib, GdkRectangle *rect)
 	ghid_cairo_screen_update();
 }
 
+static int preview_lock = 0;
 static void ghid_cairo_invalidate_lr(pcb_hid_t *hid, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
 {
 	pcb_hidlib_t *hidlib = ghidgui->hidlib;
@@ -1132,6 +1133,13 @@ static void ghid_cairo_invalidate_lr(pcb_hid_t *hid, pcb_coord_t left, pcb_coord
 	rect.height = maxy - miny;
 
 	redraw_region(hidlib, &rect);
+	if (!preview_lock) {
+		preview_lock++;
+		pcb_gtk_previews_invalidate_lr(minx, maxx, miny, maxy);
+		preview_lock--;
+	}
+
+	ghid_cairo_screen_update();
 }
 
 static void ghid_cairo_invalidate_all(pcb_hid_t *hid)
@@ -1140,6 +1148,12 @@ static void ghid_cairo_invalidate_all(pcb_hid_t *hid)
 
 	if (ghidgui && ghidgui->topwin.menu.menu_bar) {
 		redraw_region(hidlib, NULL);
+		if (!preview_lock) {
+			preview_lock++;
+			pcb_gtk_previews_invalidate_all();
+			preview_lock--;
+		}
+		ghid_cairo_screen_update();
 	}
 }
 
