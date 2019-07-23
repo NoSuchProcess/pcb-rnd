@@ -205,7 +205,7 @@ static void end_subcomposite(void)
 	priv->cr = priv->cr_target;
 }
 
-static int ghid_cairo_set_layer_group(pcb_hidlib_t *hidlib, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
+static int ghid_cairo_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
 	/* draw anything */
 	return 1;
@@ -226,7 +226,7 @@ static void ghid_cairo_destroy_gc(pcb_hid_gc_t gc)
 /* called from pcb_hid_t->make_gc() . Use only this to hold pointers, do not
    own references, avoid costly memory allocation that needs to be destroyed with
    ghid_cairo_destroy_gc(). */
-static pcb_hid_gc_t ghid_cairo_make_gc(void)
+static pcb_hid_gc_t ghid_cairo_make_gc(pcb_hid_t *hid)
 {
 	pcb_hid_gc_t rv;
 
@@ -516,13 +516,13 @@ static void ghid_cairo_draw_bg_image(pcb_hidlib_t *hidlib)
 	}
 }
 
-static void ghid_cairo_render_burst(pcb_burst_op_t op, const pcb_box_t *screen)
+static void ghid_cairo_render_burst(pcb_hid_t *hid, pcb_burst_op_t op, const pcb_box_t *screen)
 {
 	pcb_gui->coord_per_pix = ghidgui->port.view.coord_per_px;
 }
 
 /* Drawing modes usually cycle from RESET to (POSITIVE | NEGATIVE) to FLUSH. screen is not used in this HID. */
-static void ghid_cairo_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
+static void ghid_cairo_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 
@@ -1109,8 +1109,9 @@ static void redraw_region(pcb_hidlib_t *hidlib, GdkRectangle *rect)
 	ghid_cairo_screen_update();
 }
 
-static void ghid_cairo_invalidate_lr(pcb_hidlib_t *hidlib, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
+static void ghid_cairo_invalidate_lr(pcb_hid_t *hid, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
 {
+	pcb_hidlib_t *hidlib = ghidgui->hidlib;
 	int dleft, dright, dtop, dbottom;
 	int minx, maxx, miny, maxy;
 	GdkRectangle rect;
@@ -1133,15 +1134,18 @@ static void ghid_cairo_invalidate_lr(pcb_hidlib_t *hidlib, pcb_coord_t left, pcb
 	redraw_region(hidlib, &rect);
 }
 
-static void ghid_cairo_invalidate_all(pcb_hidlib_t *hidlib)
+static void ghid_cairo_invalidate_all(pcb_hid_t *hid)
 {
+	pcb_hidlib_t *hidlib = ghidgui->hidlib;
+
 	if (ghidgui && ghidgui->topwin.menu.menu_bar) {
 		redraw_region(hidlib, NULL);
 	}
 }
 
-static void ghid_cairo_notify_crosshair_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
+static void ghid_cairo_notify_crosshair_change(pcb_hid_t *hid, pcb_bool changes_complete)
 {
+	pcb_hidlib_t *hidlib = ghidgui->hidlib;
 	render_priv_t *priv = ghidgui->port.render_priv;
 
 	/* We sometimes get called before the GUI is up */
@@ -1156,13 +1160,14 @@ static void ghid_cairo_notify_crosshair_change(pcb_hidlib_t *hidlib, pcb_bool ch
 
 	if (changes_complete && ghidgui->port.drawing_area != NULL && priv->attached_invalidate_depth <= 0) {
 		/* Queues a GTK redraw when changes are complete */
-		ghid_cairo_invalidate_all(hidlib);
+		ghid_cairo_invalidate_all(pcb_gui);
 		priv->attached_invalidate_depth = 0;
 	}
 }
 
-static void ghid_cairo_notify_mark_change(pcb_hidlib_t *hidlib, pcb_bool changes_complete)
+static void ghid_cairo_notify_mark_change(pcb_hid_t *hid, pcb_bool changes_complete)
 {
+	pcb_hidlib_t *hidlib = ghidgui->hidlib;
 	render_priv_t *priv = ghidgui->port.render_priv;
 
 	/* We sometimes get called before the GUI is up */
@@ -1179,7 +1184,7 @@ static void ghid_cairo_notify_mark_change(pcb_hidlib_t *hidlib, pcb_bool changes
 		   As we know the mark will have been shown already, we must
 		   repaint the entire view to be sure not to leave an artefact.
 		 */
-		ghid_cairo_invalidate_all(hidlib);
+		ghid_cairo_invalidate_all(pcb_gui);
 		return;
 	}
 
