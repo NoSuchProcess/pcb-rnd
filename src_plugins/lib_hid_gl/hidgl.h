@@ -41,7 +41,7 @@ void hidgl_fill_polygon_offs(int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_c
 void hidgl_fill_pcb_polygon(pcb_polyarea_t *poly, const pcb_box_t *clip_box, double scale, int fullpoly);
 void hidgl_fill_rect(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
 void hidgl_init(void);
-void hidgl_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen);
+void hidgl_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen);
 
 
 #endif /* PCB_HID_COMMON_HIDGL_H  */

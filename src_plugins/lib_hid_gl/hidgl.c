@@ -135,7 +135,7 @@ static inline void mode_flush(pcb_bool direct, pcb_bool xor_mode, const pcb_box_
 	comp_stencil_bit = 0;
 }
 
-void hidgl_set_drawing_mode(pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
+void hidgl_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
 {
 	pcb_bool xor_mode = (composite_op == PCB_HID_COMP_POSITIVE_XOR ? pcb_true : pcb_false);
 
