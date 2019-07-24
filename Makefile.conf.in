@@ -19,6 +19,7 @@ SCCBOX=$(ROOT)/scconfig/sccbox
 EXE=@/target/sys/ext_exe@
 PCB_RND_HOST_CC=@/host/cc/cc@
 PCB_RND_VER=@/local/version@
+PCB_RND_VER_MAJOR=@/local/version_major@
 
 # hidlib installation directories
 HL_LIBDIR=$(Install_root)@/local/prefix@/@/local/libarchdir@

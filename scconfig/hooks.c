@@ -918,10 +918,10 @@ static void print_sum_cfg_val(const char *node, const char *desc)
 /* Runs after detection hooks, should generate the output (Makefiles, etc.) */
 int hook_generate()
 {
-	char *next, *rev = "non-svn", *curr, *tmp;
+	char *next, *rev = "non-svn", *curr, *tmp, *sep;
 	int generr = 0;
 	int res = 0;
-	char apiver[32];
+	char apiver[32], version_major[32];
 	long r = 0;
 	int v1, v2, v3;
 
@@ -939,9 +939,15 @@ int hook_generate()
 	v3 = atoi(next+1);
 	sprintf(apiver, "%01d%01d%02d%05ld", v1, v2, v3, r);
 
+	strcpy(version_major, version);
+	sep = strchr(version_major, '.');
+	if (sep != NULL)
+		*sep = '\0';
+
 	logprintf(0, "scconfig generate version info: version='%s' rev='%s'\n", version, rev);
 	put("/local/revision", rev);
 	put("/local/version",  version);
+	put("/local/version_major",  version_major);
 	put("/local/apiver", apiver);
 	put("/local/pup/sccbox", "../../scconfig/sccbox");
 

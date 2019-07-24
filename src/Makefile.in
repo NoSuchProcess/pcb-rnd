@@ -412,6 +412,24 @@ pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS) $(LIBS_3RD)
 
 OBJS_HIDLIB_ALL = $(OBJS_HIDLIB_PLG) $(OBJS_C99_HIDLIB_PLG) $(OBJS_HIDLIB) $(OBJS_HIDLIB_ONLY) $(OBJS_C99_HIDLIB)
 DEPS_HIDLIB_ALL = $(OBJS_HIDLIB_ALL) $(EXEDEPS) $(LIBS_3RD) buildin.hidlib.h
+@]
+
+switch cc/soname
+	case {} print [@
+SONAME_HID=
+SONAME_3RD=
+SONAME_POLY=
+@]
+	end;
+	default print [@
+SONAME_HID=@cc/soname@librnd-hid.so.$(PCB_RND_VER_MAJOR)
+SONAME_3RD=@cc/soname@librnd-3rd.so.$(PCB_RND_VER_MAJOR)
+SONAME_POLY=@cc/soname@librnd-poly.so.$(PCB_RND_VER_MAJOR)
+@]
+	end;
+end
+
+print [@
 
 librnd-hid.a: $(DEPS_HIDLIB_ALL)
 	$(AR) rvu librnd-hid.a $(OBJS_HIDLIB_ALL)
@@ -423,13 +441,13 @@ librnd-poly.a: $(OBJS_POLYLIB)
 	$(AR) rvu librnd-poly.a $(OBJS_POLYLIB)
 
 librnd-hid.so.$(PCB_RND_VER): $(DEPS_HIDLIB_ALL)
-	$(CC) $(LDFLAGS) -shared @cc/ldflags_dynlib@ -o librnd-hid.so.$(PCB_RND_VER) $(OBJS_HIDLIB_ALL)
+	$(CC) $(LDFLAGS) -shared @cc/ldflags_dynlib@ $(SONAME_HID) -o librnd-hid.so.$(PCB_RND_VER) $(OBJS_HIDLIB_ALL)
 
 librnd-3rd.so.$(PCB_RND_VER): $(OBJS_3RDLIB)
-	$(CC) $(LDFLAGS) -shared @cc/ldflags_dynlib@ -o librnd-3rd.so.$(PCB_RND_VER) $(OBJS_3RDLIB)
+	$(CC) $(LDFLAGS) -shared @cc/ldflags_dynlib@ $(SONAME_3RD) -o librnd-3rd.so.$(PCB_RND_VER) $(OBJS_3RDLIB)
 
 librnd-poly.so.$(PCB_RND_VER): $(OBJS_POLYLIB)
-	$(CC) $(LDFLAGS) -shared @cc/ldflags_dynlib@ -o librnd-poly.so.$(PCB_RND_VER) $(OBJS_POLYLIB)
+	$(CC) $(LDFLAGS) -shared @cc/ldflags_dynlib@ $(SONAME_POLY) -o librnd-poly.so.$(PCB_RND_VER) $(OBJS_POLYLIB)
 
 HIDLIB_CLEAN_FILES=\
 	librnd-hid.so.$(PCB_RND_VER) librnd-hid.a \
