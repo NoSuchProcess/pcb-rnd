@@ -3,7 +3,6 @@
 1. For the upcoming release ===============================================================================
 + CLEANUP: Vuokko's list of warnings on OpenBSD: bug_files/warn-obsd-r26600.log [report: Vuokko]
 - BUG: use left-click zoom on gtk2_gdk - xor draw stops working [report: Igor2]
-+ BUG: svn head r26893 configure with debug, asserts when opening 7805.lht from tutorial [report: miloh]
 - DOC: finish DAD doc (doc/developer/dad/: e.g. run.html is missing) [report: Alain]
 
 2. For later releases ===============================================================================
