@@ -3,9 +3,8 @@
 1. For the upcoming release ===============================================================================
 + CLEANUP: Vuokko's list of warnings on OpenBSD: bug_files/warn-obsd-r26600.log [report: Vuokko]
 - CLEANUP: (TESTING) DAD: centralize the unit input: hid_dad_unit
-	- make the central unit infra more flexible so plugins can register new units
+	- make a frequency family of units for openems
 	- make HATT_UNIT remember a unit index (int) plus a family (int)
-	- make sure we don't crash when grid or config references non-existing unit or unit that has no conversion field set up yet
 - CLEANUP: unify gui invocation option printout: pcb-rnd --help gtk_[gdk|gl] and pcb-rnd --help lesstif should use the same style printing options (even tho options will never be the same) [report:miloh]
 - CLEANUP:
 	- DAD close sequence: TODO("#51.*"): there are three sources to trigger hid_ctx (caller's free on modal, close button free and window destroy callback); requre the user to always call free last and add bits to track what frees are already called and free(ctx) last; test in 4 situations: (modal,nonmodal)*(close_buttons,wmclose) [report: Igor2]
