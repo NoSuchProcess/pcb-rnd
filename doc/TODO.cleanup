@@ -1,4 +1,3 @@
 - rename:
 	- conf_*
 	- netlist2.h netlist.h
-- pcb-rnd: remove dad result & rethink static export tables, rename default_val to val
