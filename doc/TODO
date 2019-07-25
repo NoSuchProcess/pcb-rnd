@@ -10,6 +10,13 @@
 	- DAD close sequence: TODO("#51.*"): there are three sources to trigger hid_ctx (caller's free on modal, close button free and window destroy callback); requre the user to always call free last and add bits to track what frees are already called and free(ctx) last; test in 4 situations: (modal,nonmodal)*(close_buttons,wmclose) [report: Igor2]
 	- crash with 2.1.2 on: {i c p} library tab, insert before, click help, close -> crash ml=3162 [report: James]
 - CLEANUP: remove dad result & rethink static export tables, rename default_val to val
+- CLEANUP: color:
+	- remove per hid, non-backup-lib custom color structs
+	- COLOR_TO_STR should not use sprintf - remove stdio.h
+	- rewrite lesstif conv so it wouldn't use the string version anymore
+	- rewrite gtk conv so it wouldn't use the string version anymore
+	- remove src/hid_color.[ch] and src/color_cache.[ch]
+	- remove pcb_color_t ->str, convert only when really needed
 - BUG: use left-click zoom on gtk2_gdk - xor draw stops working [report: Igor2]
 - DOC: finish DAD doc (doc/developer/dad/: e.g. run.html is missing) [report: Alain]
 
@@ -27,13 +34,6 @@
 - CLEANUP: think over how to handle subc selection: selecting all parts automatically is bad for propedit; bug_files/subcsel.bug [report: Wojciech]
 	- BUG: adding attribute works on subc parts but deleting attribute stops after deleiting it from a subc; bug_files/subcsel.bug [report: Wojciech]
 - CLEANUP: lesstif DAD support for top window docks [report: Igor2]
-- CLEANUP: color:
-	- remove per hid, non-backup-lib custom color structs
-	- COLOR_TO_STR should not use sprintf - remove stdio.h
-	- rewrite lesstif conv so it wouldn't use the string version anymore
-	- rewrite gtk conv so it wouldn't use the string version anymore
-	- remove src/hid_color.[ch] and src/color_cache.[ch]
-	- remove pcb_color_t ->str, convert only when really needed
 - CLEANUP: layer order from data
 	- central code for building a list of layer groups ordered by draw from front to back (omit disabled/invisible layers)
 	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
@@ -55,6 +55,13 @@
 	- png exports selection (even in not-as-shown), others don't
 	- extend png hid attribs with a flag for this, maybe do the same for others
 	- document the decision in "hacking"
+- CLEANUP: rewrite layer undo; take it out from old_undo; layer del breaks on undo: can't save where it was added before. Consider the whole layer move and -1 business obsolete and rather add a separate insert and remove call?
+	- BUG: add new layer in main window, pcb-rnd issues pcb_warning yet action is placed on undo stack [report: Miloh]
+- CLEANUP: parent subc update:
+	- inhibit mechanism to speed things up:
+		- under inhibit, pcb_subc_part_changed(ps) should mark subcircuits dirty
+		- when inhibit drops to zero, revisit all subcircuits that are dirty
+		- get a common inhibit function for batch processing that turn on draw, poly clip and pcb_subc_part_changed inhibit
 - FEATURE: edakrill script for growing line thickness keeping the line on one side (side alignment) [report: keantoken]
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
@@ -139,13 +146,6 @@
 		- eval speed (a simple @ with a lot of constants in an expr)
 		- geo speed
 		- regex and string cmp match speed vs. select by name
-- CLEANUP: rewrite layer undo; take it out from old_undo; layer del breaks on undo: can't save where it was added before. Consider the whole layer move and -1 business obsolete and rather add a separate insert and remove call?
-	- BUG: add new layer in main window, pcb-rnd issues pcb_warning yet action is placed on undo stack [report: Miloh]
-- CLEANUP: parent subc update:
-	- inhibit mechanism to speed things up:
-		- under inhibit, pcb_subc_part_changed(ps) should mark subcircuits dirty
-		- when inhibit drops to zero, revisit all subcircuits that are dirty
-		- get a common inhibit function for batch processing that turn on draw, poly clip and pcb_subc_part_changed inhibit
 - FEATURE: holes should be drawn below silk and mask - this could be a config setting
 - BUG: I/O bugs:
 	- eagle:
@@ -203,19 +203,15 @@
 - vendor drill plugin:
 	- CLEANUP: check if we want to keep vendor name
 	- FEATURE: vendor: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
+- FEATURE: lesstif: implement/enable local grid in lesstif (menu option is disabled)
 - FEATURE: lihata v7
 	- FEATURE: data model: object minimal clearance value from the polygon side; final clearance should be MAX(obj->Clearance, poly->Clearance); kicad example: 1 line, 2 polygons with 2 different clearance values - see CUCP#38 provided by Karl [report: Igor2]
 	- remove via geometry from route style
 	- remove netlist net ->style, should be a plain attribute (but keep the dedicated field in old versions)
 	- save and load rat anchor object idpath
 	- poly side clearance value (complements object's clearance) when it is introduced in the data model
-
-Lesstif:
-	- implement/enable local grid in lesstif (menu option is disabled)
-
-FEATURES
-- BUILD: menuconfig and a config file for scconfig
-- menu item for export of multiple selected layout elements to discrete .fp files
+- FEATURE: scconfig: menuconfig and a config file for scconfig
+- FEATURE: menu item for export of multiple selected layout elements to discrete .fp files
 
 4. Low prio ===============================================================================
 - FEATURE: footprint in-place replacement should match up floaters to keep their coords, as documented in ML/2304 [report: gpaubert]
