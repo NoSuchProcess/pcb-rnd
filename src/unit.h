@@ -56,8 +56,14 @@ enum pcb_allow_e {
 
 	PCB_UNIT_ALLOW_DMIL = 8192, /* for kicad legacy decimil units */
 
+	PCB_UNIT_ALLOW_HZ = 16384,
+	PCB_UNIT_ALLOW_KHZ = 32768,
+	PCB_UNIT_ALLOW_MHZ = 65536,
+	PCB_UNIT_ALLOW_GHZ = 131072,
+
 	PCB_UNIT_ALLOW_METRIC = PCB_UNIT_ALLOW_NM  | PCB_UNIT_ALLOW_UM | PCB_UNIT_ALLOW_MM | PCB_UNIT_ALLOW_CM | PCB_UNIT_ALLOW_M | PCB_UNIT_ALLOW_KM,
 	PCB_UNIT_ALLOW_IMPERIAL = PCB_UNIT_ALLOW_DMIL | PCB_UNIT_ALLOW_CMIL | PCB_UNIT_ALLOW_MIL | PCB_UNIT_ALLOW_IN,
+	PCB_UNIT_ALLOW_FREQ = PCB_UNIT_ALLOW_HZ | PCB_UNIT_ALLOW_KHZ | PCB_UNIT_ALLOW_MHZ | PCB_UNIT_ALLOW_GHZ,
 
 	/* DO NOT USE - this is all units allowed in %mr and io_pcb old format */
 	PCB_UNIT_ALLOW_READABLE = PCB_UNIT_ALLOW_CMIL,
@@ -71,7 +77,13 @@ enum pcb_allow_e {
 	PCB_UNIT_ALLOW_ALL = ~0
 };
 
-enum pcb_family_e { PCB_UNIT_METRIC, PCB_UNIT_IMPERIAL };
+/* bitfield */
+typedef enum pcb_family_e {
+	PCB_UNIT_METRIC   = 1,
+	PCB_UNIT_IMPERIAL = 2,
+	PCB_UNIT_FREQ     = 4
+} pcb_family_t;
+
 enum pcb_suffix_e { PCB_UNIT_NO_SUFFIX, PCB_UNIT_SUFFIX, PCB_UNIT_FILE_MODE };
 
 struct pcb_unit_s {

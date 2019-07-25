@@ -48,10 +48,16 @@ pcb_unit_t pcb_units[] = {
 	{"um",   'u', 1000,     PCB_UNIT_METRIC,   PCB_UNIT_ALLOW_UM, 2},
 	{"du",   'd', 10000,    PCB_UNIT_METRIC,   PCB_UNIT_ALLOW_DU, 2},  /* eagle bin decimicron */
 	{"nm",   'n', 1000000,  PCB_UNIT_METRIC,   PCB_UNIT_ALLOW_NM, 0},
+
 	{"in",   'i', 0.001,    PCB_UNIT_IMPERIAL, PCB_UNIT_ALLOW_IN, 5},
 	{"mil",  'l', 1,        PCB_UNIT_IMPERIAL, PCB_UNIT_ALLOW_MIL, 2},
 	{"dmil", 'k', 10,       PCB_UNIT_IMPERIAL, PCB_UNIT_ALLOW_DMIL, 1},/* kicad legacy decimil unit */
 	{"cmil", 'c', 100,      PCB_UNIT_IMPERIAL, PCB_UNIT_ALLOW_CMIL, 0},
+
+	{"Hz",   0/*'z'*/, 1,        PCB_UNIT_FREQ,     PCB_UNIT_ALLOW_HZ, 3},
+	{"kHz",  0/*'Z'*/, 1,        PCB_UNIT_FREQ,     PCB_UNIT_ALLOW_KHZ, 6},
+	{"MHz",  0/*'M'*/, 1,        PCB_UNIT_FREQ,     PCB_UNIT_ALLOW_MHZ, 6},
+	{"GHz",  0/*'G'*/, 1,        PCB_UNIT_FREQ,     PCB_UNIT_ALLOW_GHZ, 6},
 
 	/* aliases - must be a block at the end */
 	{"inch",  0,  0.001,    PCB_UNIT_IMPERIAL, PCB_UNIT_ALLOW_IN, 5},

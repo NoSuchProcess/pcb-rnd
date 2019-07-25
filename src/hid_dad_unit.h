@@ -34,7 +34,7 @@
 typedef struct {
 	pcb_hid_compound_t cmp;
 	void **hid_ctx;
-	int family; /* to be used later, when the unit system supports unit family */
+	pcb_family_t family; /* to be used later, when the unit system supports unit family */
 	int wenum;
 } pcb_hid_dad_unit_t;
 
