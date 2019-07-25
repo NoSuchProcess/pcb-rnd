@@ -989,7 +989,8 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 			continue;
 		}
 
-		pcb_message(PCB_MSG_ERROR, "Failed to create layer from recipe %s\n", ly->name);
+		if (!((ly->meta.bound.type & PCB_LYT_DOC) || (ly->meta.bound.type & PCB_LYT_MECH))) /* doc layers are created later */
+			pcb_message(PCB_MSG_ERROR, "Failed to create layer from recipe %s\n", ly->name);
 	}
 
 	if (want_intern > existing_intern) {
