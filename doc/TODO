@@ -2,21 +2,21 @@
 
 1. For the upcoming release ===============================================================================
 + CLEANUP: Vuokko's list of warnings on OpenBSD: bug_files/warn-obsd-r26600.log [report: Vuokko]
-- BUG: use left-click zoom on gtk2_gdk - xor draw stops working [report: Igor2]
-- DOC: finish DAD doc (doc/developer/dad/: e.g. run.html is missing) [report: Alain]
-
-2. For later releases ===============================================================================
+- CLEANUP: (TESTING) DAD: centralize the unit input: hid_dad_unit
+	- make the central unit infra more flexible so plugins can register new units
+	- make HATT_UNIT remember a unit index (int) plus a family (int)
+	- make sure we don't crash when grid or config references non-existing unit or unit that has no conversion field set up yet
 - CLEANUP: unify gui invocation option printout: pcb-rnd --help gtk_[gdk|gl] and pcb-rnd --help lesstif should use the same style printing options (even tho options will never be the same) [report:miloh]
 - CLEANUP:
 	- DAD close sequence: TODO("#51.*"): there are three sources to trigger hid_ctx (caller's free on modal, close button free and window destroy callback); requre the user to always call free last and add bits to track what frees are already called and free(ctx) last; test in 4 situations: (modal,nonmodal)*(close_buttons,wmclose) [report: Igor2]
 	- crash with 2.1.2 on: {i c p} library tab, insert before, click help, close -> crash ml=3162 [report: James]
+- BUG: use left-click zoom on gtk2_gdk - xor draw stops working [report: Igor2]
+- DOC: finish DAD doc (doc/developer/dad/: e.g. run.html is missing) [report: Alain]
+
+2. For later releases ===============================================================================
 - CLEANUP: rewrite parametric footprints to use tEDAx (or lihata)
 	- add "global" option for paste/mask tuning
 	- update fp2anim so the web page works again
-- CLEANUP: (TESTING) DAD: centralize the unit input: hid_dad_unit 
-	- make the central unit infra more flexible so plugins can register new units
-	- make HATT_UNIT remember a unit index (int) plus a family (int)
-	- make sure we don't crash when grid or config references non-existing unit or unit that has no conversion field set up yet
 - CLEANUP: (TT) propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
@@ -45,6 +45,16 @@
 	- FEATURE: invent a generic API for both the drill attrib config table
 	- CLEANUP: unify how output files are accessed/checked: confirmation on overwrite
 	- CLEANUP: in ~2020: remove the hackish gerber layer suffix and auto-excellon in favor of CAM [report: Ade]
+- CLEANUP: move import_sch to import_sch_old and start a new, generic plugin
+- CLEANUP/FEATURE: boardflip doesn't function properly with undo -- repro: open pcb-rnd, place 1206, boardflip(), { u u } removes placed part instead of boardflip   [report: Miloh]
+- CLEANUP: fp_fs_search: kill anything that gets ':' separated string as path list, get a config list instead
+- CLEANUP: Mark
+	- see pool node mark_cleanup
+	- mark bug - ortho shouldn't use it, it should use last point (crosshair.X2); make sure nothing else abuses it [James]
+- CLENAUP: decide about exporter policy:
+	- png exports selection (even in not-as-shown), others don't
+	- extend png hid attribs with a flag for this, maybe do the same for others
+	- document the decision in "hacking"
 - FEATURE: edakrill script for growing line thickness keeping the line on one side (side alignment) [report: keantoken]
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
@@ -73,8 +83,6 @@
 - feature plugins:
 	- FEATURE: autocrop doesnt undo (new layout, add some -maskmanaul content, autocrop(), & undo: gui view shifts, board size unchanged [report: Miloh]
 	- BUG: distalign pcb_crosshair option doesn't work as a reference point  [report:Miloh]
-- CLEANUP: move import_sch to import_sch_old and start a new, generic plugin
-- CLEANUP/FEATURE: boardflip doesn't function properly with undo -- repro: open pcb-rnd, place 1206, boardflip(), { u u } removes placed part instead of boardflip   [report: Miloh]
 - FEATURE: padstack bbox:
 	- per layer: keep a bbox per transformed shape per prototype, then getting the bbox of a padstack ref on a specific layer is looking up the shape, then 4 integer additions [report: Wojciech]
 	- when calculating overall padstack bbox, ignore layers that are not present? but then a layer change would require a recalc (but this is true for subcs too!) [report: Wojciech]
@@ -107,10 +115,6 @@
 - FEATURE: layersel: consider to provide a config setting for making open-group-name horizontal [report: istankovic]
 - FEATURE: preview widget: allow to handle keys both in gtk and lesstif
 - FEATURE: no-export attribute: cache a no-export attribute in a bitfield (e.g. flags like no-export for vector outputs, pixel outputs); exporter should set the bits in HID; core rendring should decide what to draw; use case: poly clearance to emulate keep-away on outline, and replace the old zero-width line trick [report: karl]
-- CLEANUP: fp_fs_search: kill anything that gets ':' separated string as path list, get a config list instead
-- CLEANUP: Mark
-	- see pool node mark_cleanup
-	- mark bug - ortho shouldn't use it, it should use last point (crosshair.X2); make sure nothing else abuses it [James]
 - res/menu:
 	- FEATURE: load/swap menus (TODO#1)
 	- CLEANUP: search for vendor in the hid plugins, there should be no trace of it (vendor should register its in submenus with anchors)
@@ -119,10 +123,6 @@
 		- low level reload code (re-add the dynamic menus too!)
 		- action to reload if file name is known
 		- gui load dialog with tags listed
-- CLENAUP: decide about exporter policy:
-	- png exports selection (even in not-as-shown), others don't
-	- extend png hid attribs with a flag for this, maybe do the same for others
-	- document the decision in "hacking"
 - FEATURE: project specific menus from extra lihata files - maybe from project.lht
 - BUG: Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
