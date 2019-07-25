@@ -343,6 +343,7 @@ static void ensure_visible_current(layersel_ctx_t *ls)
 	pcb_layergrp_id_t gid;
 	pcb_layer_t *l;
 	ls_layer_t *lys;
+	int repeat = 0;
 
 	ly = LAYER_ON_STACK(0);
 	if ((ly == NULL) || (ly->meta.real.vis))
@@ -356,8 +357,12 @@ static void ensure_visible_current(layersel_ctx_t *ls)
 	/* look for the next one to enable, group-vise */
 	for(gid = CURRENT->meta.real.grp + 1; gid != CURRENT->meta.real.grp; gid++) {
 		pcb_layergrp_t *g;
-		if (gid >= pcb_max_group(PCB))
+		if (gid >= pcb_max_group(PCB)) {
 			gid = 0;
+			repeat++;
+			if (repeat > 1)
+				break; /* failed to find one */
+		}
 		g = &PCB->LayerGroups.grp[gid];
 		if (g->len < 1)
 			continue;
