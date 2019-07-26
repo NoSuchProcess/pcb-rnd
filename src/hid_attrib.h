@@ -34,7 +34,7 @@ typedef enum pcb_hatt_compflags_e {
 	PCB_HATF_PRV_BOARD   = 2048/* indicates that a preview widget is showing a section of the board so it needs to be redrawn when the board is redrawn */
 } pcb_hatt_compflags_t;
 
-typedef enum pcb_hids_e {
+typedef enum pcb_hid_attr_type_e {
 	/* atomic entry types */
 	PCB_HATT_LABEL,
 	PCB_HATT_INTEGER,
