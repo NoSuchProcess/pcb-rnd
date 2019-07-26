@@ -442,19 +442,6 @@ In photo-realistic mode, export the silk screen as this colour. Parameter
 	{"cam", "CAM instruction",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_cam 17
-
-	{"ben-mode", ATTR_UNDOCUMENTED,
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_ben_mode 11
-
-	{"ben-flip-x", ATTR_UNDOCUMENTED,
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_ben_flip_x 12
-
-	{"ben-flip-y", ATTR_UNDOCUMENTED,
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0}
-#define HA_ben_flip_y 13
-
 };
 
 #define NUM_OPTIONS (sizeof(png_attribute_list)/sizeof(png_attribute_list[0]))
@@ -1014,16 +1001,16 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	pcb_cam_begin(PCB, &png_cam, options[HA_cam].str_value, png_attribute_list, NUM_OPTIONS, options);
 
-	if (options[HA_photo_mode].int_value || options[HA_ben_mode].int_value) {
+	if (options[HA_photo_mode].int_value) {
 		photo_mode = 1;
 		options[HA_mono].int_value = 1;
 		options[HA_as_shown].int_value = 0;
 		memset(photo_copper, 0, sizeof(photo_copper));
 		photo_silk = photo_mask = photo_drill = 0;
 		photo_outline = 0;
-		if (options[HA_photo_flip_x].int_value || options[HA_ben_flip_x].int_value)
+		if (options[HA_photo_flip_x].int_value)
 			photo_flip = PHOTO_FLIP_X;
-		else if (options[HA_photo_flip_y].int_value || options[HA_ben_flip_y].int_value)
+		else if (options[HA_photo_flip_y].int_value)
 			photo_flip = PHOTO_FLIP_Y;
 		else
 			photo_flip = 0;
