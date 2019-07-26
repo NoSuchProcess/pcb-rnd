@@ -33,6 +33,8 @@
 #include "compat_misc.h"
 #include "macro.h"
 
+pcb_hid_attr_node_t *hid_attr_nodes = 0;
+
 void pcb_export_register_opts(pcb_export_opt_t *a, int n, const char *cookie, int copy)
 {
 	pcb_hid_attr_node_t *ha;
