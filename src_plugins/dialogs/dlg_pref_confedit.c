@@ -128,7 +128,7 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 	switch(ctx->nat->type) {
 		case CFN_STRING:  val = attr->val.str_value; break;
 		case CFN_BOOLEAN:
-		case CFN_INTEGER: sprintf(buf, "%d", attr->val.lng); break;
+		case CFN_INTEGER: sprintf(buf, "%ld", attr->val.lng); break;
 		case CFN_REAL:    sprintf(buf, "%f", attr->val.real_value); break;
 		case CFN_COORD:   pcb_snprintf(buf, sizeof(buf), "%.08$mH", attr->val.coord_value); break;
 		case CFN_UNIT:

@@ -320,7 +320,7 @@ static void pcb_act_spin_upd(void *hid_ctx, void *caller_data, pcb_hid_attribute
 
 	hv.str_value = tmp;
 
-	sprintf(tmp, "%d", ctx->dlg[ctx->wspin_int].val.lng);
+	sprintf(tmp, "%ld", ctx->dlg[ctx->wspin_int].val.lng);
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_int, &hv);
 	sprintf(tmp, "%f", ctx->dlg[ctx->wspin_double].val.real_value);
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_double, &hv);
@@ -332,7 +332,7 @@ static void pcb_act_spin_upd(void *hid_ctx, void *caller_data, pcb_hid_attribute
 static void cb_tab_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	test_t *ctx = caller_data;
-	printf("Tab switch to %d!\n", ctx->dlg[ctx->wtab].val.lng);
+	printf("Tab switch to %ld!\n", ctx->dlg[ctx->wtab].val.lng);
 }
 
 static void cb_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)

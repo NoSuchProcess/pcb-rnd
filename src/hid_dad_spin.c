@@ -284,7 +284,7 @@ static void do_step(void *hid_ctx, pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t
 		case PCB_DAD_SPIN_INT:
 			end->val.lng += step;
 			SPIN_CLAMP(end->val.lng);
-			sprintf(buf, "%d", end->val.lng);
+			sprintf(buf, "%ld", end->val.lng);
 			break;
 		case PCB_DAD_SPIN_DOUBLE:
 			end->val.real_value += step;

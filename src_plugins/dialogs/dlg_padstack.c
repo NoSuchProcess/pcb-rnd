@@ -252,16 +252,20 @@ static void pse_chg_instance(void *hid_ctx, void *caller_data, pcb_hid_attribute
 {
 	pse_t *pse = caller_data;
 	static int lock = 0;
+	int xm, sm;
 
 	if (lock != 0)
 		return;
 
+	xm = pse->attrs[pse->xmirror].val.lng;
+	sm = pse->attrs[pse->smirror].val.lng;
 	pcb_pstk_change_instance(pse->ps,
 		NULL,
 		&pse->attrs[pse->clearance].val.coord_value,
 		&pse->attrs[pse->rot].val.real_value,
-		&pse->attrs[pse->xmirror].val.lng,
-		&pse->attrs[pse->smirror].val.lng);
+		&xm, &sm);
+	pse->attrs[pse->xmirror].val.lng = xm;
+	pse->attrs[pse->smirror].val.lng = sm;
 
 	lock++;
 	pse_ps2dlg(hid_ctx, pse); /* to get calculated text fields updated */
@@ -310,11 +314,11 @@ static void pse_chg_hole(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 		return;
 
 	if (proto != NULL) {
-		pcb_pstk_proto_change_hole(proto,
-			&pse->attrs[pse->hplated].val.lng,
-			&pse->attrs[pse->hdia].val.coord_value,
-			&pse->attrs[pse->htop_val].val.lng,
-			&pse->attrs[pse->hbot_val].val.lng);
+		int hp = pse->attrs[pse->hplated].val.lng, ht = pse->attrs[pse->htop_val].val.lng, hb = pse->attrs[pse->hbot_val].val.lng;
+		pcb_pstk_proto_change_hole(proto, &hp, &pse->attrs[pse->hdia].val.coord_value, &ht, &hb);
+		pse->attrs[pse->hplated].val.lng = hp;
+		pse->attrs[pse->htop_val].val.lng = ht;
+		pse->attrs[pse->hbot_val].val.lng = hb;
 	}
 
 	lock++;

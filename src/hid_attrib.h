@@ -10,7 +10,7 @@
    str_value to the enumeration string.  PCB_HATT_LABEL just shows the
    default str_value. */
 struct pcb_hid_attr_val_s {
-	int lng;
+	long lng;
 	const char *str_value;
 	double real_value;
 	pcb_coord_t coord_value;
