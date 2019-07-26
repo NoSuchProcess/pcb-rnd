@@ -1723,7 +1723,7 @@ static int lesstif_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 				r->resource_type = XmStrCast(XtRPCBCoord);
 				r->default_type = XmStrCast(XtRPCBCoord);
 				r->resource_size = sizeof(pcb_coord_t);
-				r->default_addr = &(a->default_val.coord_value);
+				r->default_addr = &(a->default_val.crd);
 				rcount++;
 				break;
 			case PCB_HATT_REAL:
@@ -1804,7 +1804,7 @@ static int lesstif_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 				if (a->value)
 					*(pcb_coord_t *) a->value = v->c;
 				else
-					a->default_val.coord_value = v->c;
+					a->default_val.crd = v->c;
 				rcount++;
 				break;
 			case PCB_HATT_BOOL:

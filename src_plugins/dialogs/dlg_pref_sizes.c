@@ -36,8 +36,8 @@ static void pref_sizes_brd2dlg(pref_ctx_t *ctx)
 {
 	if (ctx->sizes.lock)
 		return;
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->sizes.wwidth, coord_value, PCB->hidlib.size_x);
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->sizes.wheight, coord_value, PCB->hidlib.size_y);
+	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->sizes.wwidth, crd, PCB->hidlib.size_x);
+	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->sizes.wheight, crd, PCB->hidlib.size_y);
 }
 
 /* Dialog box to actual board size */
@@ -46,8 +46,8 @@ static void pref_sizes_dlg2brd(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	pref_ctx_t *ctx = caller_data;
 
 	ctx->sizes.lock++;
-	if ((PCB->hidlib.size_x != ctx->dlg[ctx->sizes.wwidth].val.coord_value) || (PCB->hidlib.size_y != ctx->dlg[ctx->sizes.wheight].val.coord_value))
-		pcb_board_resize(ctx->dlg[ctx->sizes.wwidth].val.coord_value, ctx->dlg[ctx->sizes.wheight].val.coord_value);
+	if ((PCB->hidlib.size_x != ctx->dlg[ctx->sizes.wwidth].val.crd) || (PCB->hidlib.size_y != ctx->dlg[ctx->sizes.wheight].val.crd))
+		pcb_board_resize(ctx->dlg[ctx->sizes.wwidth].val.crd, ctx->dlg[ctx->sizes.wheight].val.crd);
 	ctx->sizes.lock--;
 }
 

@@ -458,7 +458,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		switch(dad->dlg[wid].type) {
 			case PCB_HATT_COORD:
 				PCB_ACT_CONVARG(4, FGW_COORD, dad, c = fgw_coord(&argv[4]));
-				PCB_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, coord_value, c);
+				PCB_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, crd, c);
 				break;
 			case PCB_HATT_REAL:
 			case PCB_HATT_PROGRESS:
@@ -502,11 +502,11 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 						return FGW_ERR_NOT_FOUND;
 					}
 					res->type = FGW_DOUBLE;
-					res->val.nat_double = pcb_coord_to_unit(u, dad->dlg[wid].val.coord_value);
+					res->val.nat_double = pcb_coord_to_unit(u, dad->dlg[wid].val.crd);
 				}
 				else {
 					res->type = FGW_COORD;
-					fgw_coord(res) = dad->dlg[wid].val.coord_value;
+					fgw_coord(res) = dad->dlg[wid].val.crd;
 				}
 				break;
 			case PCB_HATT_INTEGER:

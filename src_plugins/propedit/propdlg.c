@@ -223,7 +223,7 @@ static void prop_valedit_update(propdlg_t *ctx, pcb_props_t *p, pcb_propval_t *p
 	memset(&hv, 0, sizeof(hv));
 	switch(p->type) {
 		case PCB_PROPT_STRING: hv.str = pcb_strdup(pv->string == NULL ? "" : pv->string); break;
-		case PCB_PROPT_COORD:  hv.coord_value = pv->coord; break;
+		case PCB_PROPT_COORD:  hv.crd = pv->coord; break;
 		case PCB_PROPT_ANGLE:  hv.dbl = pv->angle; break;
 		case PCB_PROPT_BOOL:
 		case PCB_PROPT_INT:    hv.lng = pv->i; break;
@@ -322,7 +322,7 @@ static void prop_data_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 			sctx.s = ctx->dlg[ctx->wedit[p->type]].val.str;
 			break;
 		case PCB_PROPT_COORD:
-			sctx.c = ctx->dlg[ctx->wedit[p->type]].val.coord_value;
+			sctx.c = ctx->dlg[ctx->wedit[p->type]].val.crd;
 			sctx.c_absolute = ctx->dlg[ctx->wabs[p->type]].val.lng;
 			sctx.c_valid = 1;
 			break;

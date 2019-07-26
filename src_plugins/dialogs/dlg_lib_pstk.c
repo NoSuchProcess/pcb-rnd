@@ -182,7 +182,7 @@ static void pstklib_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	x2 = ctx->drawbox.X2;
 	y2 = ctx->drawbox.Y2;
 
-	grid = ctx->dlg[ctx->wgrid].val.coord_value;
+	grid = ctx->dlg[ctx->wgrid].val.crd;
 	for(x = 0; x < x2; x += grid)
 		pcb_gui->draw_line(gc, x, y1, x, y2);
 	for(x = -grid; x > x1; x -= grid)

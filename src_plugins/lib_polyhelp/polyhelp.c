@@ -408,7 +408,7 @@ static int polyhatch_gui(pcb_coord_t *period, pcb_cpoly_hatchdir_t *dir, pcb_fla
 		return -1;
 	}
 
-	*period = dlg[wspc].val.coord_value;
+	*period = dlg[wspc].val.crd;
 	if (dlg[wcont].val.lng) *want_contour = 1;
 
 	*dir = 0;

@@ -305,7 +305,7 @@ static void pcb_act_spin_reset(void *hid_ctx, void *caller_data, pcb_hid_attribu
 
 	hv.lng = 42;
 	hv.dbl = 42.0;
-	hv.coord_value = PCB_MM_TO_COORD(42);
+	hv.crd = PCB_MM_TO_COORD(42);
 
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspin_int, &hv);
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspin_double, &hv);
@@ -324,7 +324,7 @@ static void pcb_act_spin_upd(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_int, &hv);
 	sprintf(tmp, "%f", ctx->dlg[ctx->wspin_double].val.dbl);
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_double, &hv);
-	pcb_snprintf(tmp, sizeof(tmp), "%mm\n%ml", ctx->dlg[ctx->wspin_coord].val.coord_value, ctx->dlg[ctx->wspin_coord].val.coord_value);
+	pcb_snprintf(tmp, sizeof(tmp), "%mm\n%ml", ctx->dlg[ctx->wspin_coord].val.crd, ctx->dlg[ctx->wspin_coord].val.crd);
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_coord, &hv);
 }
 

@@ -141,7 +141,7 @@ static void spin_unit_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	else
 		unit = pcbhl_conf.editor.grid_unit;
 
-	pcb_snprintf(su->buf, sizeof(su->buf), "%$m*", unit->suffix, su->end->val.coord_value);
+	pcb_snprintf(su->buf, sizeof(su->buf), "%$m*", unit->suffix, su->end->val.crd);
 	hv.str = su->buf;
 	pcb_gui->attr_dlg_set_value(hid_ctx, su->wout, &hv);
 	hv.lng = 0;
@@ -246,13 +246,13 @@ static double get_step(pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end, pcb_h
 				if (str->val.str != NULL)
 					succ = pcb_get_value_unit(str->val.str, NULL, 0, &v, &unit);
 				if (!succ) {
-					v = end->val.coord_value;
+					v = end->val.crd;
 					unit = pcbhl_conf.editor.grid_unit;
 				}
 			}
 			else
 				unit = spin->unit;
-			v = pcb_coord_to_unit(unit, end->val.coord_value);
+			v = pcb_coord_to_unit(unit, end->val.crd);
 			step = pow(10, floor(log10(fabs(v)) - 1.0));
 			if (step <= 0.0)
 				step = 1;
@@ -292,9 +292,9 @@ static void do_step(void *hid_ctx, pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t
 			sprintf(buf, "%f", end->val.dbl);
 			break;
 		case PCB_DAD_SPIN_COORD:
-			end->val.coord_value += step;
-			SPIN_CLAMP(end->val.coord_value);
-			gen_str_coord(spin, end->val.coord_value, buf, sizeof(buf));
+			end->val.crd += step;
+			SPIN_CLAMP(end->val.crd);
+			gen_str_coord(spin, end->val.crd, buf, sizeof(buf));
 			break;
 	}
 
@@ -368,7 +368,7 @@ void pcb_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 				warn = "Invalid coord value or unit - result is truncated";
 			if (!spin->no_unit_chg)
 				spin->unit = unit;
-			end->val.coord_value = d;
+			end->val.crd = d;
 			break;
 		default: pcb_trace("INTERNAL ERROR: spin_set_num\n");
 	}
@@ -413,7 +413,7 @@ void pcb_dad_spin_txt_enter_cb_dry(void *hid_ctx, void *caller_data, pcb_hid_att
 				spin->set_writeback_lock--;
 				succ = pcb_get_value_unit(str->val.str, &absolute, 0, &d, &unit);
 				if (succ)
-					end->val.coord_value = d;
+					end->val.crd = d;
 				free(tmp);
 			}
 			break;
@@ -473,7 +473,7 @@ void pcb_dad_spin_set_num(pcb_hid_attribute_t *attr, long l, double d, pcb_coord
 			str->val.str = pcb_strdup_printf("%f", d);
 			break;
 		case PCB_DAD_SPIN_COORD:
-			attr->val.coord_value = c;
+			attr->val.crd = c;
 			spin->unit = NULL;
 			free((char *)str->val.str);
 			str->val.str = gen_str_coord(spin, c, NULL, 0);
@@ -522,9 +522,9 @@ int pcb_dad_spin_set_value(pcb_hid_attribute_t *end, void *hid_ctx, int idx, con
 			end->val.dbl = val->dbl;
 			break;
 		case PCB_DAD_SPIN_COORD:
-			if (val->coord_value == end->val.coord_value)
+			if (val->crd == end->val.crd)
 				return 0;
-			end->val.coord_value = val->coord_value;
+			end->val.crd = val->crd;
 			break;
 	}
 	do_step(hid_ctx, spin, str, end, 0); /* cheap conversion + error checks */

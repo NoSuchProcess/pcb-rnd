@@ -166,8 +166,8 @@ static pcb_export_opt_t *openems_get_export_options(pcb_hid_t *hid, int *n)
 		pcb_derive_default_filename(PCB->hidlib.filename, &openems_attribute_list[HA_openemsfile], suffix);
 
 	if (mesh != NULL) {
-		openems_attribute_list[HA_def_substrate_thick].default_val.coord_value = mesh->def_subs_thick;
-		openems_attribute_list[HA_def_copper_thick].default_val.coord_value = mesh->def_copper_thick;
+		openems_attribute_list[HA_def_substrate_thick].default_val.crd = mesh->def_subs_thick;
+		openems_attribute_list[HA_def_copper_thick].default_val.crd = mesh->def_copper_thick;
 	}
 
 TODO(": when export dialogs change into DAD, this hack to convert the strings to allocated ones will not be needed anymore")
@@ -252,7 +252,7 @@ TODO(": try openems::attr first - make a new core call for prefixed get, this wi
 	if (is_str)
 		pcb_fprintf(ctx->f, "%s", ctx->options[opt].str);
 	else
-		pcb_fprintf(ctx->f, "%mm", ctx->options[opt].coord_value);
+		pcb_fprintf(ctx->f, "%mm", ctx->options[opt].crd);
 }
 
 static void openems_write_layers(wctx_t *ctx)

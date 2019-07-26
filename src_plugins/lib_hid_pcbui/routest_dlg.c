@@ -76,22 +76,22 @@ static void rstdlg_pcb2dlg(int rst_idx)
 	hv.str = rst->name;
 	pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wname, &hv);
 
-	hv.coord_value = rst->Thick;
+	hv.crd = rst->Thick;
 	pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wlineth, &hv);
 
-	hv.coord_value = rst->textt;
+	hv.crd = rst->textt;
 	pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wtxtth, &hv);
 
-	hv.coord_value = rst->texts;
+	hv.crd = rst->texts;
 	pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wtxtscale, &hv);
 
-	hv.coord_value = rst->Clearance;
+	hv.crd = rst->Clearance;
 	pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wclr, &hv);
 
-	hv.coord_value = rst->Hole;
+	hv.crd = rst->Hole;
 	pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wviahole, &hv);
 
-	hv.coord_value = rst->Diameter;
+	hv.crd = rst->Diameter;
 	pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wviaring, &hv);
 
 	pcb_dad_tree_clear(tree);
@@ -132,17 +132,17 @@ TODO("This change is not undoable");
 		strncpy(rst->name, s, sizeof(rst->name));
 	}
 	else if (idx == rstdlg_ctx.wlineth)
-		rst->Thick = attr->val.coord_value;
+		rst->Thick = attr->val.crd;
 	else if (idx == rstdlg_ctx.wtxtth)
-		rst->textt = attr->val.coord_value;
+		rst->textt = attr->val.crd;
 	else if (idx == rstdlg_ctx.wtxtscale)
-		rst->texts = attr->val.coord_value;
+		rst->texts = attr->val.crd;
 	else if (idx == rstdlg_ctx.wclr)
-		rst->Clearance = attr->val.coord_value;
+		rst->Clearance = attr->val.crd;
 	else if (idx == rstdlg_ctx.wviahole)
-		rst->Hole = attr->val.coord_value;
+		rst->Hole = attr->val.crd;
 	else if (idx == rstdlg_ctx.wviaring)
-		rst->Diameter = attr->val.coord_value;
+		rst->Diameter = attr->val.crd;
 	else {
 		pcb_message(PCB_MSG_ERROR, "Internal error: route style field does not exist");
 		return;

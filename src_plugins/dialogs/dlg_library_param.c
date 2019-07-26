@@ -83,7 +83,7 @@ static void set_attr(library_ctx_t *ctx, int pidx, char *val)
 			break;
 		case PCB_HATT_COORD:
 		case PCB_HATT_END: /* compound widget for the spinbox! */
-			hv.coord_value = pcb_get_value_ex(val, NULL, NULL, NULL, "mil", NULL);
+			hv.crd = pcb_get_value_ex(val, NULL, NULL, NULL, "mil", NULL);
 			break;
 		default:
 			assert(!"set_attr() can't set non-data field!\n");
@@ -292,7 +292,7 @@ static char *gen_cmd(library_ctx_t *ctx)
 			case PCB_HATT_COORD:
 			case PCB_HATT_END:
 				val = buff;
-				pcb_snprintf(buff, sizeof(buff), "%$$mH", a->val.coord_value);
+				pcb_snprintf(buff, sizeof(buff), "%$$mH", a->val.crd);
 				break;
 			default:;
 		}

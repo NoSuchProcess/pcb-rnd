@@ -530,7 +530,7 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 
 	global.f = the_file;
 	global.drill_helper = options[HA_drillhelper].lng;
-	global.drill_helper_size = options[HA_drillhelpersize].coord_value;
+	global.drill_helper_size = options[HA_drillhelpersize].crd;
 	global.align_marks = options[HA_alignmarks].lng;
 	global.outline = options[HA_outline].lng;
 	global.mirror = options[HA_mirror].lng;

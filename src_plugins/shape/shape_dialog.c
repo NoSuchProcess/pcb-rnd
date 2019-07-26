@@ -50,7 +50,7 @@ static void shp_chg_regpoly(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	/* elliptical logics */
 	if (!shp->dlg[shp->pell].val.lng) {
 		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->pry, pcb_false);
-		PCB_DAD_SET_VALUE(hid_ctx, shp->pry, coord_value, shp->dlg[shp->prx].val.coord_value);
+		PCB_DAD_SET_VALUE(hid_ctx, shp->pry, crd, shp->dlg[shp->prx].val.crd);
 	}
 	else
 		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->pry, pcb_true);
@@ -58,9 +58,9 @@ static void shp_chg_regpoly(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	del_obj(shp);
 	shp->obj = (pcb_any_obj_t *)regpoly_place(
 		shp->data, shp->layer, shp->dlg[shp->corners].val.lng,
-		shp->dlg[shp->prx].val.coord_value, shp->dlg[shp->pry].val.coord_value,
+		shp->dlg[shp->prx].val.crd, shp->dlg[shp->pry].val.crd,
 		shp->dlg[shp->prot].val.dbl,
-		shp->dlg[shp->pcx].val.coord_value, shp->dlg[shp->pcy].val.coord_value);
+		shp->dlg[shp->pcx].val.crd, shp->dlg[shp->pcy].val.crd);
 }
 
 static void shp_chg_roundrect(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -72,7 +72,7 @@ static void shp_chg_roundrect(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	/* elliptical logics */
 	if (!shp->dlg[shp->rell].val.lng) {
 		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->ry, pcb_false);
-		PCB_DAD_SET_VALUE(hid_ctx, shp->ry, coord_value, shp->dlg[shp->rx].val.coord_value);
+		PCB_DAD_SET_VALUE(hid_ctx, shp->ry, crd, shp->dlg[shp->rx].val.crd);
 	}
 	else
 		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->ry, pcb_true);
@@ -80,7 +80,7 @@ static void shp_chg_roundrect(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	/* rectangular logics */
 	if (!shp->dlg[shp->rrect].val.lng) {
 		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->h, pcb_false);
-		PCB_DAD_SET_VALUE(hid_ctx, shp->h, coord_value, shp->dlg[shp->w].val.coord_value);
+		PCB_DAD_SET_VALUE(hid_ctx, shp->h, crd, shp->dlg[shp->w].val.crd);
 	}
 	else
 		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->h, pcb_true);
@@ -91,17 +91,17 @@ static void shp_chg_roundrect(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	del_obj(shp);
 	shp->obj = (pcb_any_obj_t *)roundrect_place(
 		shp->data, shp->layer,
-		shp->dlg[shp->w].val.coord_value, shp->dlg[shp->h].val.coord_value,
-		shp->dlg[shp->rx].val.coord_value, shp->dlg[shp->ry].val.coord_value,
+		shp->dlg[shp->w].val.crd, shp->dlg[shp->h].val.crd,
+		shp->dlg[shp->rx].val.crd, shp->dlg[shp->ry].val.crd,
 		shp->dlg[shp->rrot].val.dbl,
-		shp->dlg[shp->rcx].val.coord_value, shp->dlg[shp->rcy].val.coord_value,
+		shp->dlg[shp->rcx].val.crd, shp->dlg[shp->rcy].val.crd,
 		corner, shp->dlg[shp->rres].val.dbl);
 }
 
 static void shp_chg_circle(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	ctx_t *shp = caller_data;
-	pcb_coord_t dia = shp->dlg[shp->dia].val.coord_value;
+	pcb_coord_t dia = shp->dlg[shp->dia].val.crd;
 
 	if ((dia < 1) || (dia > (PCB->hidlib.size_x + PCB->hidlib.size_y)/4)) {
 		pcb_message(PCB_MSG_ERROR, "Invalid diameter.\n");
@@ -111,7 +111,7 @@ static void shp_chg_circle(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	shp->obj = (pcb_any_obj_t *)circle_place(
 		shp->data, shp->layer,
 		dia,
-		shp->dlg[shp->ccx].val.coord_value, shp->dlg[shp->ccy].val.coord_value);
+		shp->dlg[shp->ccx].val.crd, shp->dlg[shp->ccy].val.crd);
 }
 
 
@@ -382,7 +382,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, pc
 	PCB_DAD_END(shp->dlg);
 
 	PCB_DAD_NEW("shape", shp->dlg, "dlg_shape", shp, modal, shp_close_cb);
-	PCB_DAD_SET_VALUE(shp->dlg_hid_ctx, shp->dia, coord_value, PCB_MM_TO_COORD(25.4)); /* suppress a runtime warning on invalid dia (zero) */
+	PCB_DAD_SET_VALUE(shp->dlg_hid_ctx, shp->dia, crd, PCB_MM_TO_COORD(25.4)); /* suppress a runtime warning on invalid dia (zero) */
 	shp_chg_circle(shp->dlg_hid_ctx, shp, NULL);
 	shp_chg_roundrect(shp->dlg_hid_ctx, shp, NULL);
 	shp_chg_regpoly(shp->dlg_hid_ctx, shp, NULL); /* has to be the last */

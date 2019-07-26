@@ -84,7 +84,7 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 		prn = proto->name;
 	pcb_snprintf(tmp, sizeof(tmp), "#%ld:%d (%s)", (long int)pse->ps->proto, pse->ps->protoi, prn);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->proto_id, str, tmp);
-	PCB_DAD_SET_VALUE(hid_ctx, pse->clearance, coord_value, pse->ps->Clearance);
+	PCB_DAD_SET_VALUE(hid_ctx, pse->clearance, crd, pse->ps->Clearance);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->rot, dbl, pse->ps->rot);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->xmirror, lng, pse->ps->xmirror);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->smirror, lng, pse->ps->smirror);
@@ -126,12 +126,12 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 					strcpy(tmp, "<unknown>");
 			}
 			PCB_DAD_SET_VALUE(hid_ctx, pse->proto_info[n], str, tmp);
-			PCB_DAD_SET_VALUE(hid_ctx, pse->proto_clr[n], coord_value, shape->clearance);
+			PCB_DAD_SET_VALUE(hid_ctx, pse->proto_clr[n], crd, shape->clearance);
 		}
 		else {
 			PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str, "");
 			PCB_DAD_SET_VALUE(hid_ctx, pse->proto_info[n], str, "");
-			PCB_DAD_SET_VALUE(hid_ctx, pse->proto_clr[n], coord_value, 0);
+			PCB_DAD_SET_VALUE(hid_ctx, pse->proto_clr[n], crd, 0);
 		}
 	}
 
@@ -170,7 +170,7 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 	free((char *)pse->attrs[pse->prname].val.str);
 	pse->attrs[pse->prname].val.str = NULL;
 	PCB_DAD_SET_VALUE(hid_ctx, pse->prname, str, pcb_strdup(proto->name == NULL ? "" : proto->name));
-	PCB_DAD_SET_VALUE(hid_ctx, pse->hdia, coord_value, proto->hdia);
+	PCB_DAD_SET_VALUE(hid_ctx, pse->hdia, crd, proto->hdia);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->hplated, lng, proto->hplated);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->htop_val, lng, proto->htop);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->hbot_val, lng, proto->hbottom);
@@ -261,7 +261,7 @@ static void pse_chg_instance(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	sm = pse->attrs[pse->smirror].val.lng;
 	pcb_pstk_change_instance(pse->ps,
 		NULL,
-		&pse->attrs[pse->clearance].val.coord_value,
+		&pse->attrs[pse->clearance].val.crd,
 		&pse->attrs[pse->rot].val.dbl,
 		&xm, &sm);
 	pse->attrs[pse->xmirror].val.lng = xm;
@@ -315,7 +315,7 @@ static void pse_chg_hole(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 
 	if (proto != NULL) {
 		int hp = pse->attrs[pse->hplated].val.lng, ht = pse->attrs[pse->htop_val].val.lng, hb = pse->attrs[pse->hbot_val].val.lng;
-		pcb_pstk_proto_change_hole(proto, &hp, &pse->attrs[pse->hdia].val.coord_value, &ht, &hb);
+		pcb_pstk_proto_change_hole(proto, &hp, &pse->attrs[pse->hdia].val.crd, &ht, &hb);
 		pse->attrs[pse->hplated].val.lng = hp;
 		pse->attrs[pse->htop_val].val.lng = ht;
 		pse->attrs[pse->hbot_val].val.lng = hb;
@@ -361,7 +361,7 @@ static void pse_chg_proto_clr(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		pcb_pstkop_clip(&ctx, pse->ps);
 
 		for(n = 0; n < proto->tr.used; n++)
-			pcb_pstk_shape_clr_grow(&proto->tr.array[n].shape[sidx], pcb_true, pse->attrs[pse->proto_clr[idx]].val.coord_value);
+			pcb_pstk_shape_clr_grow(&proto->tr.array[n].shape[sidx], pcb_true, pse->attrs[pse->proto_clr[idx]].val.crd);
 
 		ctx.clip.clear = 1;
 		ctx.clip.restore = 0;
@@ -521,7 +521,7 @@ static void pse_shape_bloat(void *hid_ctx, void *caller_data, pcb_coord_t sign)
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
 	pcb_pstk_tshape_t *ts = &proto->tr.array[0];
 	int n, dst_idx = pcb_pstk_get_shape_idx(ts, pcb_proto_layers[pse->editing_shape].mask, pcb_proto_layers[pse->editing_shape].comb);
-	pcb_coord_t bloat = pse->shape_chg[pse->amount].val.coord_value;
+	pcb_coord_t bloat = pse->shape_chg[pse->amount].val.crd;
 
 	if (bloat <= 0)
 		return;
@@ -695,7 +695,7 @@ static void pse_gen(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	int shape = pse->attrs[pse->gen_shp].val.lng;
 	int expose = pse->attrs[pse->gen_expose].val.lng;
 	int paste = pse->attrs[pse->gen_paste].val.lng;
-	pcb_coord_t size = pse->attrs[pse->gen_size].val.coord_value;
+	pcb_coord_t size = pse->attrs[pse->gen_size].val.crd;
 	pcb_layer_type_t lyt = sides_lyt[sides];
 	pcb_pstk_tshape_t *ts;
 	pcb_cardinal_t pid;
@@ -718,7 +718,7 @@ static void pse_gen(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 		if (lyt & PCB_LYT_BOTTOM) pse_drv_shape(&proto, ts, PCB_LYT_BOTTOM, paste);
 	}
 
-	proto.hdia = pse->attrs[pse->gen_drill].val.coord_value;
+	proto.hdia = pse->attrs[pse->gen_drill].val.crd;
 	proto.hplated = 1;
 
 	pcb_pstk_proto_update(&proto);

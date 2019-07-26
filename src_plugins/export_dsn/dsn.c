@@ -581,10 +581,10 @@ static void dsn_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (!dsn_filename)
 		dsn_filename = "pcb-out.dsn";
 
-	trackwidth = options[HA_trackwidth].coord_value;
-	clearance = options[HA_clearance].coord_value;
-	viawidth = options[HA_viawidth].coord_value;
-	viadrill = options[HA_viadrill].coord_value;
+	trackwidth = options[HA_trackwidth].crd;
+	clearance = options[HA_clearance].crd;
+	viawidth = options[HA_viawidth].crd;
+	viadrill = options[HA_viadrill].crd;
 	PrintSPECCTRA();
 }
 

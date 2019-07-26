@@ -200,7 +200,7 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 								case PCB_HATT_COORD:
 									PCB_DAD_COORD(export_ctx.dlg, opts[i].name);
 									PCB_DAD_MINMAX(export_ctx.dlg, opts[i].min_val, opts[i].max_val);
-									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.coord_value);
+									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.crd);
 									break;
 								case PCB_HATT_INTEGER:
 									PCB_DAD_INTEGER(export_ctx.dlg, opts[i].name);

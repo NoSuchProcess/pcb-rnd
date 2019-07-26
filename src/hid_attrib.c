@@ -133,7 +133,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 				break;
 			case PCB_HATT_COORD:
 				if (a->value)
-					*(pcb_coord_t *) a->value = a->default_val.coord_value;
+					*(pcb_coord_t *) a->value = a->default_val.crd;
 				break;
 			case PCB_HATT_BOOL:
 				if (a->value)
@@ -190,7 +190,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 						if (a->value)
 							*(pcb_coord_t *) a->value = pcb_get_value((*argv)[1], NULL, NULL, NULL);
 						else
-							a->default_val.coord_value = pcb_get_value((*argv)[1], NULL, NULL, NULL);
+							a->default_val.crd = pcb_get_value((*argv)[1], NULL, NULL, NULL);
 						(*argc)--;
 						(*argv)++;
 						break;

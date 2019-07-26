@@ -62,7 +62,7 @@ void pcb_pref_conf2dlg_item(conf_native_t *cn, pref_confitem_t *item)
 {
 	switch(cn->type) {
 		case CFN_COORD:
-			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, coord_value, cn->val.coord[0]);
+			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, crd, cn->val.coord[0]);
 			break;
 		case CFN_BOOLEAN:
 		case CFN_INTEGER:
@@ -89,8 +89,8 @@ void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_confitem_t *item, pcb_hid_attr
 	ctx->conf_lock = item;
 	switch(cn->type) {
 		case CFN_COORD:
-			if (cn->val.coord[0] != attr->val.coord_value)
-				conf_setf(ctx->role, item->confpath, -1, "%.8$mm", attr->val.coord_value);
+			if (cn->val.coord[0] != attr->val.crd)
+				conf_setf(ctx->role, item->confpath, -1, "%.8$mm", attr->val.crd);
 			break;
 		case CFN_BOOLEAN:
 		case CFN_INTEGER:

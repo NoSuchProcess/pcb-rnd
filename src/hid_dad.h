@@ -483,7 +483,7 @@ do { \
 			table[table ## _len - 1].field.lng = (int)val; \
 			break; \
 		case PCB_HATT_COORD: \
-			table[table ## _len - 1].field.coord_value = (pcb_coord_t)val; \
+			table[table ## _len - 1].field.crd = (pcb_coord_t)val; \
 			break; \
 		case PCB_HATT_REAL: \
 		case PCB_HATT_PROGRESS: \
@@ -525,7 +525,7 @@ do { \
 			table[table ## _len - 1].field.lng = (int)val_; \
 			break; \
 		case PCB_HATT_COORD: \
-			table[table ## _len - 1].field.coord_value = (pcb_coord_t)val_; \
+			table[table ## _len - 1].field.crd = (pcb_coord_t)val_; \
 			break; \
 		case PCB_HATT_REAL: \
 		case PCB_HATT_PROGRESS: \
