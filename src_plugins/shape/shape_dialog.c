@@ -48,7 +48,7 @@ static void shp_chg_regpoly(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	ctx_t *shp = caller_data;
 
 	/* elliptical logics */
-	if (!shp->dlg[shp->pell].val.int_value) {
+	if (!shp->dlg[shp->pell].val.lng) {
 		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->pry, pcb_false);
 		PCB_DAD_SET_VALUE(hid_ctx, shp->pry, coord_value, shp->dlg[shp->prx].val.coord_value);
 	}
@@ -57,7 +57,7 @@ static void shp_chg_regpoly(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 
 	del_obj(shp);
 	shp->obj = (pcb_any_obj_t *)regpoly_place(
-		shp->data, shp->layer, shp->dlg[shp->corners].val.int_value,
+		shp->data, shp->layer, shp->dlg[shp->corners].val.lng,
 		shp->dlg[shp->prx].val.coord_value, shp->dlg[shp->pry].val.coord_value,
 		shp->dlg[shp->prot].val.real_value,
 		shp->dlg[shp->pcx].val.coord_value, shp->dlg[shp->pcy].val.coord_value);
@@ -70,7 +70,7 @@ static void shp_chg_roundrect(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	int n;
 
 	/* elliptical logics */
-	if (!shp->dlg[shp->rell].val.int_value) {
+	if (!shp->dlg[shp->rell].val.lng) {
 		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->ry, pcb_false);
 		PCB_DAD_SET_VALUE(hid_ctx, shp->ry, coord_value, shp->dlg[shp->rx].val.coord_value);
 	}
@@ -78,7 +78,7 @@ static void shp_chg_roundrect(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->ry, pcb_true);
 
 	/* rectangular logics */
-	if (!shp->dlg[shp->rrect].val.int_value) {
+	if (!shp->dlg[shp->rrect].val.lng) {
 		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->h, pcb_false);
 		PCB_DAD_SET_VALUE(hid_ctx, shp->h, coord_value, shp->dlg[shp->w].val.coord_value);
 	}
@@ -86,7 +86,7 @@ static void shp_chg_roundrect(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->h, pcb_true);
 
 	for(n = 0; n < 4; n++)
-		corner[n] = shp->dlg[shp->corner[n]].val.int_value;
+		corner[n] = shp->dlg[shp->corner[n]].val.lng;
 
 	del_obj(shp);
 	shp->obj = (pcb_any_obj_t *)roundrect_place(
@@ -124,7 +124,7 @@ static void shape_layer_chg(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb
 		return;
 
 	hid_ctx = shape_active->dlg_hid_ctx;
-	tab = shape_active->dlg[shape_active->tab].val.int_value;
+	tab = shape_active->dlg[shape_active->tab].val.lng;
 	switch(tab) {
 		case 0: shp_chg_regpoly(hid_ctx, shape_active, NULL); break;
 		case 1: shp_chg_roundrect(hid_ctx, shape_active, NULL); break;

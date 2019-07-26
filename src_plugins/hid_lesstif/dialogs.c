@@ -200,7 +200,7 @@ static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
 {
 	switch(ctx->attrs[widx].type) {
 		case PCB_HATT_BOOL:
-			ctx->attrs[widx].val.int_value = XmToggleButtonGetState(ctx->wl[widx]);
+			ctx->attrs[widx].val.lng = XmToggleButtonGetState(ctx->wl[widx]);
 			break;
 		case PCB_HATT_STRING:
 			free((char *)ctx->attrs[widx].val.str_value);
@@ -222,7 +222,7 @@ static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
 				stdarg_n = 0;
 				stdarg(XmNuserData, &uptr);
 				XtGetValues(btn, stdarg_args, stdarg_n);
-				ctx->attrs[widx].val.int_value = uptr - ctx->attrs[widx].enumerations;
+				ctx->attrs[widx].val.lng = uptr - ctx->attrs[widx].enumerations;
 			}
 			break;
 		default:
@@ -410,7 +410,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 			break;
 		case PCB_HATT_BOOL:
 			stdarg(XmNlabelString, empty);
-			stdarg(XmNset, ctx->results[i].int_value);
+			stdarg(XmNset, ctx->results[i].lng);
 			ctx->wl[i] = XmCreateToggleButton(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
 			XtAddCallback(ctx->wl[i], XmNvalueChangedCallback, valchg, ctx->wl[i]);
 			break;
@@ -461,7 +461,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 					btn = XmCreatePushButton(submenu, XmStrCast("menubutton"), stdarg_args, stdarg_n);
 					XtManageChild(btn);
 					XmStringFree(label);
-					if (sn == ctx->attrs[i].val.int_value)
+					if (sn == ctx->attrs[i].val.lng)
 						default_button = btn;
 					XtAddCallback(btn, XmNactivateCallback, valchg, ctx->wl[i]);
 					(ctx->btn[i])[sn] = btn;
@@ -515,7 +515,7 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 			}
 			break;
 		case PCB_HATT_BEGIN_TABBED:
-			ltf_tabbed_set(ctx->wl[idx], val->int_value);
+			ltf_tabbed_set(ctx->wl[idx], val->lng);
 			break;
 		case PCB_HATT_BEGIN_HPANE:
 		case PCB_HATT_BEGIN_VPANE:
@@ -528,7 +528,7 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 			XtVaSetValues(ctx->wl[idx], XmNlabelString, XmStringCreatePCB(val->str_value), NULL);
 			break;
 		case PCB_HATT_BOOL:
-			XtVaSetValues(ctx->wl[idx], XmNset, val->int_value, NULL);
+			XtVaSetValues(ctx->wl[idx], XmNset, val->lng, NULL);
 			break;
 		case PCB_HATT_STRING:
 			XtVaSetValues(ctx->wl[idx], XmNvalue, XmStrCast(val->str_value), NULL);
@@ -556,7 +556,7 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 			break;
 		case PCB_HATT_ENUM:
 			for (n = 0; ctx->attrs[idx].enumerations[n]; n++) {
-				if (n == val->int_value) {
+				if (n == val->lng) {
 					stdarg_n = 0;
 					stdarg(XmNmenuHistory, (ctx->btn[idx])[n]);
 					XtSetValues(ctx->wl[idx], stdarg_args, stdarg_n);

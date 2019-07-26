@@ -537,7 +537,7 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	}
 
 	/* set up the coord format */
-	i = options[HA_coord_format].int_value;
+	i = options[HA_coord_format].lng;
 	if ((i < 0) || (i >= NUM_COORD_FORMATS)) {
 		pcb_message(PCB_MSG_ERROR, "Invalid coordinate format (out of bounds)\n");
 		return;
@@ -552,13 +552,13 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (!fnbase)
 		fnbase = "pcb-out";
 
-	verbose = options[HA_verbose].int_value || pcbhl_conf.rc.verbose;
-	all_layers = options[HA_all_layers].int_value;
+	verbose = options[HA_verbose].lng || pcbhl_conf.rc.verbose;
+	all_layers = options[HA_all_layers].lng;
 
-	copy_outline_mode = options[HA_copy_outline].int_value;
-	name_style = options[HA_name_style].int_value;
+	copy_outline_mode = options[HA_copy_outline].lng;
+	name_style = options[HA_name_style].lng;
 
-	want_cross_sect = options[HA_cross_sect].int_value;
+	want_cross_sect = options[HA_cross_sect].lng;
 
 	has_outline = pcb_has_explicit_outline(PCB);
 

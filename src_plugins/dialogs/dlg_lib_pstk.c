@@ -169,7 +169,7 @@ static void pstklib_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 
 	/* draw the shapes */
 	for(n = 0; n < pcb_proto_num_layers; n++)
-		layers[n] = !!ctx->dlg[ctx->wlayerv[n]].val.int_value + !!ctx->dlg[ctx->wlayerc[n]].val.int_value;
+		layers[n] = !!ctx->dlg[ctx->wlayerv[n]].val.lng + !!ctx->dlg[ctx->wlayerc[n]].val.lng;
 
 	pcb_pstk_draw_preview(PCB, &ps, layers, 0, 0, &e->view);
 
@@ -248,12 +248,12 @@ static void pstklib_update_layerc(void *hid_ctx, void *caller_data, pcb_hid_attr
 
 	for(n = 0; n < pcb_proto_num_layers; n++) {
 		if (ctx->wlayerc[n] == widx) {
-			hv.int_value = 1;
+			hv.lng = 1;
 			idx = n;
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlayerv[n], &hv); /* current must be visible as well */
 		}
 		else
-			hv.int_value = 0;
+			hv.lng = 0;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlayerc[n], &hv);
 	}
 	if (idx < 0)

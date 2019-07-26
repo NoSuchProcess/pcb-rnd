@@ -66,7 +66,7 @@ void pcb_pref_conf2dlg_item(conf_native_t *cn, pref_confitem_t *item)
 			break;
 		case CFN_BOOLEAN:
 		case CFN_INTEGER:
-			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, int_value, cn->val.integer[0]);
+			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, lng, cn->val.integer[0]);
 			break;
 		case CFN_REAL:
 			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, real_value, cn->val.real[0]);
@@ -94,8 +94,8 @@ void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_confitem_t *item, pcb_hid_attr
 			break;
 		case CFN_BOOLEAN:
 		case CFN_INTEGER:
-			if (cn->val.integer[0] != attr->val.int_value)
-				conf_setf(ctx->role, item->confpath, -1, "%d", attr->val.int_value);
+			if (cn->val.integer[0] != attr->val.lng)
+				conf_setf(ctx->role, item->confpath, -1, "%d", attr->val.lng);
 			break;
 		case CFN_REAL:
 			if (cn->val.real[0] != attr->val.real_value)
@@ -208,7 +208,7 @@ void pcb_pref_conflist_remove(pref_ctx_t *ctx, pref_confitem_t *list)
 static void pref_role_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
-	ctx->role = roles[attr->val.int_value];
+	ctx->role = roles[attr->val.lng];
 }
 
 static void pref_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
@@ -260,7 +260,7 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 
 	if (pref_ctx.active) {
 		if (target_tab >= 0)
-			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wtab, int_value, target_tab);
+			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wtab, lng, target_tab);
 		return;
 	}
 
@@ -319,7 +319,7 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 
 	PCB_DAD_NEW("preferences", pref_ctx.dlg, "pcb-rnd preferences", &pref_ctx, pcb_false, pref_close_cb);
 
-	PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wrole, int_value, 2);
+	PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wrole, lng, 2);
 	pref_ctx.role = CFR_DESIGN;
 
 	pcb_dlg_pref_lib_open(&pref_ctx);
@@ -327,7 +327,7 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 	pcb_dlg_pref_win_open(&pref_ctx);
 	pcb_dlg_pref_conf_open(&pref_ctx, (target_tab == sizeof(tabs)/sizeof(tabs[0]) - 2) ? tabarg : NULL);
 	if (target_tab >= 0)
-		PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wtab, int_value, target_tab);
+		PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wtab, lng, target_tab);
 }
 
 static void pref_ev_board_changed(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])

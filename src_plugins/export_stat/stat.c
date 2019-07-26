@@ -165,9 +165,9 @@ static void stat_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	fprintf(f, "ha:pcb-rnd-board-stats-v2 {\n");
 	fprintf(f, "	ha:meta {\n");
 	fprintf(f, "		date={%s}\n", buff);
-	fprintf(f, "		built=%d\n", options[HA_built].int_value);
-	fprintf(f, "		lht_built=%s\n", (options[HA_lht_built].int_value ? "yes" : "no"));
-	fprintf(f, "		orig_rnd=%s\n", (options[HA_orig].int_value ? "yes" : "no"));
+	fprintf(f, "		built=%d\n", options[HA_built].lng);
+	fprintf(f, "		lht_built=%s\n", (options[HA_lht_built].lng ? "yes" : "no"));
+	fprintf(f, "		orig_rnd=%s\n", (options[HA_orig].lng ? "yes" : "no"));
 	fprintf(f, "		first_ver=%s\n", options[HA_first_ver].str_value);
 	fprintf(f, "		curr_ver=%s\n", PCB_VERSION);
 #ifdef PCB_REVISION

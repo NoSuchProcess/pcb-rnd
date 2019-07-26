@@ -178,7 +178,7 @@ void cons_gui_confchg(conf_native_t *cfg, int arr_idx)
 		return;
 
 	cnstgui_ctx.inhibit_confchg++;
-	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.alldir, int_value, conf_core.editor.all_direction_lines);
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.alldir, lng, conf_core.editor.all_direction_lines);
 	cnstgui_ctx.inhibit_confchg--;
 }
 
@@ -189,7 +189,7 @@ static void set_alldir(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 		return;
 
 	cnstgui_ctx.inhibit_confchg++;
-	nv = (cnstgui_ctx.dlg[cnstgui_ctx.alldir].val.int_value) ? "1" : "0";
+	nv = (cnstgui_ctx.dlg[cnstgui_ctx.alldir].val.lng) ? "1" : "0";
 	conf_set(CFR_DESIGN, "editor/all_direction_lines", -1, nv, POL_OVERWRITE);
 	cnstgui_ctx.inhibit_confchg--;
 }

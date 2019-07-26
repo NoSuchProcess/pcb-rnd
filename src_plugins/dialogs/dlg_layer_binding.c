@@ -70,7 +70,7 @@ int pcb_ly_type2enum(pcb_layer_type_t type)
 
 static void set_ly_type(void *hid_ctx, int wid, pcb_layer_type_t type)
 {
-	PCB_DAD_SET_VALUE(hid_ctx, wid, int_value, pcb_ly_type2enum(type));
+	PCB_DAD_SET_VALUE(hid_ctx, wid, lng, pcb_ly_type2enum(type));
 }
 
 void pcb_get_ly_type_(int combo_type, pcb_layer_type_t *type)
@@ -148,14 +148,14 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 			PCB_DAD_SET_VALUE(hid_ctx, w->purpose, str_value, pcb_strdup(purp));
 		}
 
-		PCB_DAD_SET_VALUE(hid_ctx, w->comp, int_value, layer->comb);
+		PCB_DAD_SET_VALUE(hid_ctx, w->comp, lng, layer->comb);
 
 		set_ly_type(hid_ctx, w->type, layer->meta.bound.type);
 
 		/* disable side for non-sided */
 		if (PCB_LAYER_SIDED(layer->meta.bound.type)) {
 			/* side & offset */
-			PCB_DAD_SET_VALUE(hid_ctx, w->side, int_value, !!(layer->meta.bound.type & PCB_LYT_BOTTOM));
+			PCB_DAD_SET_VALUE(hid_ctx, w->side, lng, !!(layer->meta.bound.type & PCB_LYT_BOTTOM));
 			pcb_gui->attr_dlg_widget_state(hid_ctx, w->side, 1);
 		}
 		else
@@ -163,10 +163,10 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 
 		ofs = layer->meta.bound.stack_offs;
 		if (ofs < 0) {
-			PCB_DAD_SET_VALUE(hid_ctx, w->side, int_value, 1);
+			PCB_DAD_SET_VALUE(hid_ctx, w->side, lng, 1);
 			ofs = -layer->meta.bound.stack_offs;
 		}
-		PCB_DAD_SET_VALUE(hid_ctx, w->offs, int_value, ofs);
+		PCB_DAD_SET_VALUE(hid_ctx, w->offs, lng, ofs);
 
 		/* enable offset only for copper */
 		enable = (layer->meta.bound.type & PCB_LYT_COPPER);
@@ -178,7 +178,7 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 			lid = pcb_layer_id(PCB->Data, layer->meta.bound.real);
 		else
 			lid = ctx->no_layer;
-		PCB_DAD_SET_VALUE(hid_ctx, w->layer, int_value, lid);
+		PCB_DAD_SET_VALUE(hid_ctx, w->layer, lng, lid);
 		pcb_gui->attr_dlg_widget_state(hid_ctx, w->layer, 0);
 	}
 }
@@ -205,8 +205,8 @@ static void lb_dialog2data(void *hid_ctx, lb_ctx_t *ctx)
 				layer->meta.bound.purpose = pcb_strdup(purp);
 		}
 
-		layer->comb = ctx->attrs[w->comp].val.int_value;
-		get_ly_type(ctx->attrs[w->type].val.int_value, ctx->attrs[w->side].val.int_value, ctx->attrs[w->offs].val.int_value, &layer->meta.bound.type, &layer->meta.bound.stack_offs);
+		layer->comb = ctx->attrs[w->comp].val.lng;
+		get_ly_type(ctx->attrs[w->type].val.lng, ctx->attrs[w->side].val.lng, ctx->attrs[w->offs].val.lng, &layer->meta.bound.type, &layer->meta.bound.stack_offs);
 
 		/* enforce some sanity rules */
 		if (layer->meta.bound.type & PCB_LYT_BOUNDARY) {

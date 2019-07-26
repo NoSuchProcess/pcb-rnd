@@ -254,7 +254,7 @@ static void excellon_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	if (excellon_cam.active) {
 		fn = excellon_cam.fn;
-		pcb_drill_export_excellon(PCB, &pdrills, conf_excellon.plugins.export_excellon.plated_g85_slot, options[HA_excellonfile_coordfmt].int_value, fn);
+		pcb_drill_export_excellon(PCB, &pdrills, conf_excellon.plugins.export_excellon.plated_g85_slot, options[HA_excellonfile_coordfmt].lng, fn);
 	}
 	else {
 		if (options[HA_excellonfile_plated].str_value == NULL) {
@@ -263,7 +263,7 @@ static void excellon_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		}
 		else
 			fn = options[HA_excellonfile_plated].str_value;
-		pcb_drill_export_excellon(PCB, &pdrills, conf_excellon.plugins.export_excellon.plated_g85_slot, options[HA_excellonfile_coordfmt].int_value, fn);
+		pcb_drill_export_excellon(PCB, &pdrills, conf_excellon.plugins.export_excellon.plated_g85_slot, options[HA_excellonfile_coordfmt].lng, fn);
 
 		if (options[HA_excellonfile_unplated].str_value == NULL) {
 			strcpy(filesuff, ".unplated.cnc");
@@ -271,7 +271,7 @@ static void excellon_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		}
 		else
 			fn = options[HA_excellonfile_unplated].str_value;
-		pcb_drill_export_excellon(PCB, &udrills, conf_excellon.plugins.export_excellon.unplated_g85_slot, options[HA_excellonfile_coordfmt].int_value, fn);
+		pcb_drill_export_excellon(PCB, &udrills, conf_excellon.plugins.export_excellon.unplated_g85_slot, options[HA_excellonfile_coordfmt].lng, fn);
 	}
 
 	if (pcb_cam_end(&excellon_cam) == 0)

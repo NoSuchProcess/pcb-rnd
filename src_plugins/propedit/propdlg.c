@@ -214,7 +214,7 @@ static void prop_valedit_update(propdlg_t *ctx, pcb_props_t *p, pcb_propval_t *p
 		case PCB_PROPT_ANGLE:
 		case PCB_PROPT_INT:
 		case PCB_PROPT_BOOL:
-			if (!ctx->dlg[ctx->wabs[p->type]].val.int_value)
+			if (!ctx->dlg[ctx->wabs[p->type]].val.lng)
 				return;
 		default: break;
 	}
@@ -226,7 +226,7 @@ static void prop_valedit_update(propdlg_t *ctx, pcb_props_t *p, pcb_propval_t *p
 		case PCB_PROPT_COORD:  hv.coord_value = pv->coord; break;
 		case PCB_PROPT_ANGLE:  hv.real_value = pv->angle; break;
 		case PCB_PROPT_BOOL:
-		case PCB_PROPT_INT:    hv.int_value = pv->i; break;
+		case PCB_PROPT_INT:    hv.lng = pv->i; break;
 		case PCB_PROPT_COLOR:  hv.clr_value = pv->clr; break;
 		case PCB_PROPT_invalid:
 		case PCB_PROPT_max: return;
@@ -258,7 +258,7 @@ static void prop_vals_update(propdlg_t *ctx, pcb_props_t *p)
 	pcb_dad_tree_clear(tree);
 
 	if (p == NULL) { /* deselect or not found */
-		hv.int_value = 0;
+		hv.lng = 0;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtype, &hv);
 		return;
 	}
@@ -279,7 +279,7 @@ static void prop_vals_update(propdlg_t *ctx, pcb_props_t *p)
 		r->user_data = pvs[n].val;
 	}
 
-	hv.int_value = p->type;
+	hv.lng = p->type;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtype, &hv);
 
 	prop_valedit_update(ctx, p, pvs[0].val);
@@ -323,22 +323,22 @@ static void prop_data_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 			break;
 		case PCB_PROPT_COORD:
 			sctx.c = ctx->dlg[ctx->wedit[p->type]].val.coord_value;
-			sctx.c_absolute = ctx->dlg[ctx->wabs[p->type]].val.int_value;
+			sctx.c_absolute = ctx->dlg[ctx->wabs[p->type]].val.lng;
 			sctx.c_valid = 1;
 			break;
 		case PCB_PROPT_ANGLE:
 			sctx.d = ctx->dlg[ctx->wedit[p->type]].val.real_value;
-			sctx.d_absolute = ctx->dlg[ctx->wabs[p->type]].val.int_value;
+			sctx.d_absolute = ctx->dlg[ctx->wabs[p->type]].val.lng;
 			sctx.d_valid = 1;
 			break;
 		case PCB_PROPT_INT:
-			sctx.c = ctx->dlg[ctx->wedit[p->type]].val.int_value;
-			sctx.c_absolute = ctx->dlg[ctx->wabs[p->type]].val.int_value;
+			sctx.c = ctx->dlg[ctx->wedit[p->type]].val.lng;
+			sctx.c_absolute = ctx->dlg[ctx->wabs[p->type]].val.lng;
 			sctx.c_valid = 1;
 			break;
 		case PCB_PROPT_BOOL:
-			sctx.c = ctx->dlg[ctx->wedit[p->type]].val.int_value;
-			sctx.c_absolute = ctx->dlg[ctx->wabs[p->type]].val.int_value;
+			sctx.c = ctx->dlg[ctx->wedit[p->type]].val.lng;
+			sctx.c_absolute = ctx->dlg[ctx->wabs[p->type]].val.lng;
 			sctx.c_valid = 1;
 			break;
 		case PCB_PROPT_COLOR:
@@ -618,7 +618,7 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 	gdl_append(&propdlgs, ctx, link);
 
 	/* default all abs */
-	hv.int_value = 1;
+	hv.lng = 1;
 	for(n = 0; n < PCB_PROPT_max; n++)
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wabs[n], &hv);
 }

@@ -455,7 +455,7 @@ static const char *get_file_suffix(void)
 	const char *result = NULL;
 	const char *fmt;
 
-	fmt = filetypes[png_attribute_list[HA_filetype].default_val.int_value];
+	fmt = filetypes[png_attribute_list[HA_filetype].default_val.lng];
 
 	if (fmt == NULL) { /* Do nothing */ }
 	else if (strcmp(fmt, FMT_gif) == 0)
@@ -736,7 +736,7 @@ static void png_foot(void)
 						rgb(&cop, 220, 145, 230);
 					else {
 
-						if (png_options[HA_photo_plating].int_value == PLATING_GOLD) {
+						if (png_options[HA_photo_plating].lng == PLATING_GOLD) {
 							/* ENIG */
 							rgb(&cop, 185, 146, 52);
 
@@ -744,7 +744,7 @@ static void png_foot(void)
 							if (cc == TOP_SHADOW)
 								blend(&cop, 0.7, &cop, &white);
 						}
-						else if (png_options[HA_photo_plating].int_value == PLATING_TIN) {
+						else if (png_options[HA_photo_plating].lng == PLATING_TIN) {
 							/* tinned */
 							rgb(&cop, 140, 150, 160);
 
@@ -754,7 +754,7 @@ static void png_foot(void)
 							cop.g += r;
 							cop.b += r;
 						}
-						else if (png_options[HA_photo_plating].int_value == PLATING_SILVER) {
+						else if (png_options[HA_photo_plating].lng == PLATING_SILVER) {
 							/* silver */
 							rgb(&cop, 192, 192, 185);
 
@@ -762,7 +762,7 @@ static void png_foot(void)
 							if (cc == TOP_SHADOW)
 								blend(&cop, 0.7, &cop, &white);
 						}
-						else if (png_options[HA_photo_plating].int_value == PLATING_COPPER) {
+						else if (png_options[HA_photo_plating].lng == PLATING_COPPER) {
 							/* copper */
 							rgb(&cop, 184, 115, 51);
 
@@ -794,7 +794,7 @@ static void png_foot(void)
 					transparent = 1;
 				}
 				else if (silk) {
-					silk_colour = silk_colours[png_options[HA_photo_silk_colour].int_value];
+					silk_colour = silk_colours[png_options[HA_photo_silk_colour].lng];
 					blend(&p, 1.0, &silk_colour, &silk_colour);
 
 					if (silk == TOP_SHADOW)
@@ -804,7 +804,7 @@ static void png_foot(void)
 				}
 				else if (mask) {
 					p = cop;
-					mask_colour = mask_colours[png_options[HA_photo_mask_colour].int_value];
+					mask_colour = mask_colours[png_options[HA_photo_mask_colour].lng];
 					multiply(&p, &p, &mask_colour);
 					add(&p, 1, &p, 0.2, &mask_colour);
 					if (mask == TOP_SHADOW)
@@ -815,7 +815,7 @@ static void png_foot(void)
 				else
 					p = cop;
 
-				if (png_options[HA_use_alpha].int_value) {
+				if (png_options[HA_use_alpha].lng) {
 
 					cc = (transparent) ? gdImageColorResolveAlpha(im, 0, 0, 0, 127) : gdImageColorResolveAlpha(im, p.r, p.g, p.b, 0);
 
@@ -835,7 +835,7 @@ static void png_foot(void)
 	}
 
 	/* actually write out the image */
-	fmt = filetypes[png_options[HA_filetype].int_value];
+	fmt = filetypes[png_options[HA_filetype].lng];
 
 	if (fmt == NULL)
 		format_error = pcb_true;
@@ -879,15 +879,15 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	region.Y2 = PCB->hidlib.size_y;
 
 	png_options = options;
-	if (options[HA_only_visible].int_value)
+	if (options[HA_only_visible].lng)
 		bounds = pcb_data_bbox(&tmp, PCB->Data, pcb_false);
 	else
 		bounds = &region;
 
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 
-	as_shown = options[HA_as_shown].int_value;
-	if (!options[HA_as_shown].int_value) {
+	as_shown = options[HA_as_shown].lng;
+	if (!options[HA_as_shown].lng) {
 		conf_force_set_bool(conf_core.editor.thin_draw, 0);
 		conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
 /*		conf_force_set_bool(conf_core.editor.check_planes, 0);*/
@@ -933,7 +933,7 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 		}
 	}
 
-	in_mono = options[HA_mono].int_value;
+	in_mono = options[HA_mono].lng;
 	png_head();
 
 	if (!photo_mode && conf_core.editor.show_solder_side) {
@@ -1001,16 +1001,16 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	pcb_cam_begin(PCB, &png_cam, options[HA_cam].str_value, png_attribute_list, NUM_OPTIONS, options);
 
-	if (options[HA_photo_mode].int_value) {
+	if (options[HA_photo_mode].lng) {
 		photo_mode = 1;
-		options[HA_mono].int_value = 1;
-		options[HA_as_shown].int_value = 0;
+		options[HA_mono].lng = 1;
+		options[HA_as_shown].lng = 0;
 		memset(photo_copper, 0, sizeof(photo_copper));
 		photo_silk = photo_mask = photo_drill = 0;
 		photo_outline = 0;
-		if (options[HA_photo_flip_x].int_value)
+		if (options[HA_photo_flip_x].lng)
 			photo_flip = PHOTO_FLIP_X;
-		else if (options[HA_photo_flip_y].int_value)
+		else if (options[HA_photo_flip_y].lng)
 			photo_flip = PHOTO_FLIP_Y;
 		else
 			photo_flip = 0;
@@ -1023,7 +1023,7 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		filename = "pcb-out.png";
 
 	/* figure out width and height of the board */
-	if (options[HA_only_visible].int_value) {
+	if (options[HA_only_visible].lng) {
 		bbox = pcb_data_bbox(&tmp, PCB->Data, pcb_false);
 		x_shift = bbox->X1;
 		y_shift = bbox->Y1;
@@ -1042,30 +1042,30 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	 * fit in our specified PNG file size
 	 */
 	xmax = ymax = dpi = 0;
-	if (options[HA_dpi].int_value != 0) {
-		dpi = options[HA_dpi].int_value;
+	if (options[HA_dpi].lng != 0) {
+		dpi = options[HA_dpi].lng;
 		if (dpi < 0) {
 			fprintf(stderr, "ERROR:  dpi may not be < 0\n");
 			return;
 		}
 	}
 
-	if (options[HA_xmax].int_value > 0) {
-		xmax = options[HA_xmax].int_value;
+	if (options[HA_xmax].lng > 0) {
+		xmax = options[HA_xmax].lng;
 		dpi = 0;
 	}
 
-	if (options[HA_ymax].int_value > 0) {
-		ymax = options[HA_ymax].int_value;
+	if (options[HA_ymax].lng > 0) {
+		ymax = options[HA_ymax].lng;
 		dpi = 0;
 	}
 
-	if (options[HA_xymax].int_value > 0) {
+	if (options[HA_xymax].lng > 0) {
 		dpi = 0;
-		if (options[HA_xymax].int_value < xmax || xmax == 0)
-			xmax = options[HA_xymax].int_value;
-		if (options[HA_xymax].int_value < ymax || ymax == 0)
-			ymax = options[HA_xymax].int_value;
+		if (options[HA_xymax].lng < xmax || xmax == 0)
+			xmax = options[HA_xymax].lng;
+		if (options[HA_xymax].lng < ymax || ymax == 0)
+			ymax = options[HA_xymax].lng;
 	}
 
 	if (xmax < 0 || ymax < 0) {
@@ -1121,7 +1121,7 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	white = (color_struct *) malloc(sizeof(color_struct));
 	white->r = white->g = white->b = 255;
-	if (options[HA_use_alpha].int_value)
+	if (options[HA_use_alpha].lng)
 		white->a = 127;
 	else
 		white->a = 0;
@@ -1152,12 +1152,12 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	png_hid.force_compositing = !!photo_mode;
 
-	if ((!png_cam.active) && (!options[HA_as_shown].int_value))
+	if ((!png_cam.active) && (!options[HA_as_shown].lng))
 		pcb_hid_save_and_show_layer_ons(save_ons);
 
 	png_hid_export_to_file(f, options);
 
-	if ((!png_cam.active) && (!options[HA_as_shown].int_value))
+	if ((!png_cam.active) && (!options[HA_as_shown].lng))
 		pcb_hid_restore_layer_ons(save_ons);
 
 	png_foot();

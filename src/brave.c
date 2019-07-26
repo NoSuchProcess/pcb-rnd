@@ -142,9 +142,9 @@ static void brave2dlg(void *hid_ctx)
 
 	for(d = desc, len=0; d->name != NULL; d++,len++) {
 		if (pcb_brave & d->bit)
-			PCB_DAD_SET_VALUE(hid_ctx, d->widget, int_value, 1);
+			PCB_DAD_SET_VALUE(hid_ctx, d->widget, lng, 1);
 		else
-			PCB_DAD_SET_VALUE(hid_ctx, d->widget, int_value, 0);
+			PCB_DAD_SET_VALUE(hid_ctx, d->widget, lng, 0);
 	}
 }
 
@@ -153,7 +153,7 @@ static void dlg2brave(pcb_hid_attribute_t *attrs)
 {
 	desc_t *d;
 	for(d = desc; d->name != NULL; d++)
-		brave_set(d->bit, attrs[d->widget].val.int_value);
+		brave_set(d->bit, attrs[d->widget].val.lng);
 }
 
 /* If a checkbox changes, do the conversion forth and back to ensure sync */

@@ -66,8 +66,8 @@ fgw_error_t pcb_act_LayerPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	
 
 	dlg[wname].val.str_value = pcb_strdup(ly->name);
-	dlg[wsub].val.int_value = ly->comb & PCB_LYC_SUB;
-	dlg[wauto].val.int_value = ly->comb & PCB_LYC_AUTO;
+	dlg[wsub].val.lng = ly->comb & PCB_LYC_SUB;
+	dlg[wauto].val.lng = ly->comb & PCB_LYC_AUTO;
 
 	PCB_DAD_AUTORUN("layer_prop", dlg, "Properties of a logical layer", NULL, failed);
 
@@ -77,8 +77,8 @@ fgw_error_t pcb_act_LayerPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			ar |= pcb_layer_rename_(ly, (char *)dlg[wname].val.str_value);
 			pcb_board_set_changed_flag(pcb_true);
 		}
-		if (dlg[wsub].val.int_value) comb |= PCB_LYC_SUB;
-		if (dlg[wauto].val.int_value) comb |= PCB_LYC_AUTO;
+		if (dlg[wsub].val.lng) comb |= PCB_LYC_SUB;
+		if (dlg[wauto].val.lng) comb |= PCB_LYC_AUTO;
 		if (ly->comb != comb) {
 			ly->comb = comb;
 			pcb_board_set_changed_flag(pcb_true);
@@ -144,23 +144,23 @@ fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 
 	dlg[wname].val.str_value = pcb_strdup(g->name);
-	dlg[wtype].val.int_value = orig_type = pcb_ly_type2enum(g->ltype);
+	dlg[wtype].val.lng = orig_type = pcb_ly_type2enum(g->ltype);
 	dlg[wpurp].val.str_value = pcb_strdup(g->purpose == NULL ? "" : g->purpose);
 	if (!omit_loc)
-		dlg[wloc].val.int_value = def_loc;
+		dlg[wloc].val.lng = def_loc;
 
 	if (!omit_loc) {
 		pcb_layer_type_t loc = g->ltype & PCB_LYT_ANYWHERE;
-		dlg[wloc].val.int_value = 3;
+		dlg[wloc].val.lng = 3;
 		if (loc != 0) {
 			for(n = 0; ltypes[n] != NULL; n++) {
 				if ((loc & ltype_bits[n]) == loc) {
-					dlg[wloc].val.int_value = n;
+					dlg[wloc].val.lng = n;
 					break;
 				}
 			}
 		}
-		orig_loc = dlg[wloc].val.int_value;
+		orig_loc = dlg[wloc].val.lng;
 	}
 
 	PCB_DAD_AUTORUN("layer_grp_prop", dlg, "Edit the properties of a layer group (physical layer)", NULL, failed);
@@ -171,19 +171,19 @@ fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_board_set_changed_flag(pcb_true);
 		}
 
-		if (dlg[wtype].val.int_value != orig_type) {
+		if (dlg[wtype].val.lng != orig_type) {
 			pcb_layer_type_t lyt = 0;
-			pcb_get_ly_type_(dlg[wtype].val.int_value, &lyt);
+			pcb_get_ly_type_(dlg[wtype].val.lng, &lyt);
 			g->ltype &= ~PCB_LYT_ANYTHING;
 			g->ltype |= lyt;
 			changed = 1;
 		}
 
-		if ((!omit_loc) && (dlg[wloc].val.int_value != orig_loc)) {
+		if ((!omit_loc) && (dlg[wloc].val.lng != orig_loc)) {
 			if (PCB_LAYER_SIDED(g->ltype)) {
 				g->ltype &= ~PCB_LYT_ANYWHERE;
-				if (dlg[wloc].val.int_value >= 0)
-					g->ltype |= ltype_bits[dlg[wloc].val.int_value];
+				if (dlg[wloc].val.lng >= 0)
+					g->ltype |= ltype_bits[dlg[wloc].val.lng];
 				changed = 1;
 			}
 			else

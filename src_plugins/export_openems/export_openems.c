@@ -205,7 +205,7 @@ static void openems_write_tunables(wctx_t *ctx)
 
 	fprintf(ctx->f, "%%%% base_priority and offset: chassis for the board to sit in.\n");
 	fprintf(ctx->f, "%% base priority: if the board displaces the model of the chassis or the other way around.\n");
-	fprintf(ctx->f, "base_priority=%d;\n", ctx->options[HA_base_prio].int_value);
+	fprintf(ctx->f, "base_priority=%d;\n", ctx->options[HA_base_prio].lng);
 	fprintf(ctx->f, "\n");
 	fprintf(ctx->f, "%% offset on the whole layout to locate it relative to the simulation origin\n");
 	pcb_fprintf(ctx->f, "offset.x = %mm;\n", -ctx->ox);
@@ -222,7 +222,7 @@ static void openems_write_tunables(wctx_t *ctx)
 	fprintf(ctx->f, "\n");
 
 	fprintf(ctx->f, "%% how many points should be used to describe the round end of traces.\n");
-	fprintf(ctx->f, "kludge.segments = %d;\n", ctx->options[HA_segments].int_value);
+	fprintf(ctx->f, "kludge.segments = %d;\n", ctx->options[HA_segments].lng);
 	fprintf(ctx->f, "\n");
 
 	fprintf(ctx->f, "\n");

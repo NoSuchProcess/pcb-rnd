@@ -134,9 +134,9 @@ static void spin_unit_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	pcb_hid_attr_val_t hv;
 	spin_unit_t *su = (spin_unit_t *)caller_data;
 	const pcb_unit_t *unit;
-	int unum = su->dlg[su->wunit].val.int_value;
+	int unum = su->dlg[su->wunit].val.lng;
 
-	if ((!su->dlg[su->wglob].val.int_value) && (unum >= 0) && (unum < pcb_get_n_units(0)))
+	if ((!su->dlg[su->wglob].val.lng) && (unum >= 0) && (unum < pcb_get_n_units(0)))
 		unit = &pcb_units[unum];
 	else
 		unit = pcbhl_conf.editor.grid_unit;
@@ -144,7 +144,7 @@ static void spin_unit_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	pcb_snprintf(su->buf, sizeof(su->buf), "%$m*", unit->suffix, su->end->val.coord_value);
 	hv.str_value = su->buf;
 	pcb_gui->attr_dlg_set_value(hid_ctx, su->wout, &hv);
-	hv.int_value = 0;
+	hv.lng = 0;
 	pcb_gui->attr_dlg_set_value(hid_ctx, su->wglob, &hv);
 	su->valid = 1;
 }
@@ -208,14 +208,14 @@ static void spin_unit_dialog(void *spin_hid_ctx, pcb_hid_dad_spin_t *spin, pcb_h
 	PCB_DAD_AUTORUN("unit", ctx.dlg, "spinbox coord unit change", &ctx, dlgfail);
 	if ((dlgfail == 0) && (ctx.valid)) {
 		pcb_hid_attr_val_t hv;
-		int unum = ctx.dlg[ctx.wunit].val.int_value;
+		int unum = ctx.dlg[ctx.wunit].val.lng;
 
-		if ((!ctx.dlg[ctx.wglob].val.int_value) && (unum >= 0) && (unum < pcb_get_n_units(0)))
+		if ((!ctx.dlg[ctx.wglob].val.lng) && (unum >= 0) && (unum < pcb_get_n_units(0)))
 				spin->unit = &pcb_units[unum];
 			else
 				spin->unit = NULL;
 
-		spin->no_unit_chg = ctx.dlg[ctx.wstick].val.int_value;
+		spin->no_unit_chg = ctx.dlg[ctx.wstick].val.lng;
 		hv.str_value = pcb_strdup(ctx.buf);
 		pcb_gui->attr_dlg_set_value(spin_hid_ctx, spin->wstr, &hv);
 	}
@@ -233,7 +233,7 @@ static double get_step(pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end, pcb_h
 
 	switch(spin->type) {
 		case PCB_DAD_SPIN_INT:
-			step = pow(10, floor(log10(fabs((double)end->val.int_value)) - 1.0));
+			step = pow(10, floor(log10(fabs((double)end->val.lng)) - 1.0));
 			if (step < 1)
 				step = 1;
 			break;
@@ -282,9 +282,9 @@ static void do_step(void *hid_ctx, pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t
 
 	switch(spin->type) {
 		case PCB_DAD_SPIN_INT:
-			end->val.int_value += step;
-			SPIN_CLAMP(end->val.int_value);
-			sprintf(buf, "%d", end->val.int_value);
+			end->val.lng += step;
+			SPIN_CLAMP(end->val.lng);
+			sprintf(buf, "%d", end->val.lng);
 			break;
 		case PCB_DAD_SPIN_DOUBLE:
 			end->val.real_value += step;
@@ -351,7 +351,7 @@ void pcb_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 			SPIN_CLAMP(l);
 			if (*ends != '\0')
 				warn = "Invalid integer - result is truncated";
-			end->val.int_value = l;
+			end->val.lng = l;
 			break;
 		case PCB_DAD_SPIN_DOUBLE:
 			d = strtod(str->val.str_value, &ends);
@@ -463,7 +463,7 @@ void pcb_dad_spin_set_num(pcb_hid_attribute_t *attr, long l, double d, pcb_coord
 
 	switch(spin->type) {
 		case PCB_DAD_SPIN_INT:
-			attr->val.int_value = l;
+			attr->val.lng = l;
 			free((char *)str->val.str_value);
 			str->val.str_value = pcb_strdup_printf("%ld", l);
 			break;
@@ -512,9 +512,9 @@ int pcb_dad_spin_set_value(pcb_hid_attribute_t *end, void *hid_ctx, int idx, con
 	/* do not modify the text field if the value is the same */
 	switch(spin->type) {
 		case PCB_DAD_SPIN_INT:
-			if (val->int_value == end->val.int_value)
+			if (val->lng == end->val.lng)
 				return 0;
-			end->val.int_value = val->int_value;
+			end->val.lng = val->lng;
 			break;
 		case PCB_DAD_SPIN_DOUBLE:
 			if (val->real_value == end->val.real_value)

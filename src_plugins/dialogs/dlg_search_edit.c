@@ -53,7 +53,7 @@ static void set_right(srchedit_ctx_t *ctx, pcb_hid_attribute_t *attr)
 			ctx->se.right = pcb_strdup(attr->val.str_value);
 			break;
 		case RIGHT_INT:
-			ctx->se.right = pcb_strdup_printf("%d", attr->val.int_value);
+			ctx->se.right = pcb_strdup_printf("%d", attr->val.lng);
 			break;
 		case RIGHT_DOUBLE:
 			ctx->se.right = pcb_strdup_printf("%f", attr->val.real_value);
@@ -164,7 +164,7 @@ static void srch_expr_fill_in_right(srchedit_ctx_t *ctx, const search_expr_t *s)
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
 			break;
 		case RIGHT_INT:
-			hv.int_value = strtol(hv.str_value, NULL, 10);
+			hv.lng = strtol(hv.str_value, NULL, 10);
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
 			if (empty)
 				set_right(ctx, &ctx->dlg[ctx->wright[s->expr->rtype]]);

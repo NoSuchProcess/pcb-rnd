@@ -73,7 +73,7 @@ static void set_attr(library_ctx_t *ctx, int pidx, char *val)
 				else
 					len = strlen(*s);
 				if ((len == vlen) && (strncmp(*s, val, len) == 0)) {
-					hv.int_value = n;
+					hv.lng = n;
 					break;
 				}
 			}
@@ -279,7 +279,7 @@ static char *gen_cmd(library_ctx_t *ctx)
 			case PCB_HATT_BEGIN_TABLE:
 				continue;
 			case PCB_HATT_ENUM:
-				val = a->enumerations[a->val.int_value];
+				val = a->enumerations[a->val.lng];
 				if (val != NULL) {
 					desc = strstr((char *)val, " (");
 					if (desc != NULL)

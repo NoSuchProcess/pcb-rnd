@@ -217,7 +217,7 @@ do { \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_BUTTON); \
 	table[table ## _len - 1].val.str_value = text; \
-	table[table ## _len - 1].val.int_value = retval; \
+	table[table ## _len - 1].val.lng = retval; \
 	table[table ## _len - 1].enumerations = (const char **)(&table ## _ret_override); \
 	PCB_DAD_CHANGE_CB(table, pcb_hid_dad_close_cb); \
 } while(0)
@@ -480,7 +480,7 @@ do { \
 		case PCB_HATT_ENUM: \
 		case PCB_HATT_UNIT: \
 		case PCB_HATT_BEGIN_TABBED: \
-			table[table ## _len - 1].field.int_value = (int)val; \
+			table[table ## _len - 1].field.lng = (int)val; \
 			break; \
 		case PCB_HATT_COORD: \
 			table[table ## _len - 1].field.coord_value = (pcb_coord_t)val; \
@@ -522,7 +522,7 @@ do { \
 		case PCB_HATT_BOOL: \
 		case PCB_HATT_ENUM: \
 		case PCB_HATT_BEGIN_TABBED: \
-			table[table ## _len - 1].field.int_value = (int)val_; \
+			table[table ## _len - 1].field.lng = (int)val_; \
 			break; \
 		case PCB_HATT_COORD: \
 			table[table ## _len - 1].field.coord_value = (pcb_coord_t)val_; \
@@ -584,7 +584,7 @@ do { \
 				if (val_ != NULL) { \
 					for(__n__ = 0; __n__ < __v__; __n__++) { \
 						if (&pcb_units[__n__] == (pcb_unit_t *)(val_)) { \
-							table[table ## _len - 1].field.int_value = __n__; \
+							table[table ## _len - 1].field.lng = __n__; \
 							break; \
 						} \
 					} \

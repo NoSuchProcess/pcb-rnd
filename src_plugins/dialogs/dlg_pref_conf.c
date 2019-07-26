@@ -207,7 +207,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wdesc, &hv);
 		setup_intree(ctx, NULL, 0);
 
-		hv.int_value = CFN_max;
+		hv.lng = CFN_max;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wnattype, &hv);
 
 		return;
@@ -226,7 +226,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 	setup_intree(ctx, nat, idx);
 
 	/* display native value */
-	hv.int_value = nat->type;
+	hv.lng = nat->type;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wnattype, &hv);
 
 	if (nat->type == CFN_LIST) {

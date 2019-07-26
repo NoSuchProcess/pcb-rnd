@@ -94,7 +94,7 @@ static void set_flag_cb(GtkToggleButton *button, gpointer user_data)
 	if (ctx->inhibit_valchg)
 		return;
 
-	dst->val.int_value = gtk_toggle_button_get_active(button);
+	dst->val.lng = gtk_toggle_button_get_active(button);
 	change_cb(ctx, dst);
 }
 
@@ -125,7 +125,7 @@ static void enum_changed_cb(GtkComboBox *combo_box, pcb_hid_attribute_t *dst)
 	if (ctx->inhibit_valchg)
 		return;
 
-	dst->val.int_value = gtk_combo_box_get_active(combo_box);
+	dst->val.lng = gtk_combo_box_get_active(combo_box);
 	change_cb(ctx, dst);
 }
 
@@ -140,7 +140,7 @@ static void notebook_changed_cb(GtkNotebook *nb, GtkWidget *page, guint page_num
 	/* Gets the index (starting from 0) of the current page in the notebook. If
 	   the notebook has no pages, then -1 will be returned and no call-back occur. */
 	if (gtk_notebook_get_current_page(nb) >= 0) {
-		dst->val.int_value = page_num;
+		dst->val.lng = page_num;
 		change_cb(ctx, dst);
 	}
 }
@@ -439,7 +439,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 			case PCB_HATT_BOOL:
 				/* put this in a check button */
-				widget = chk_btn_new(parent, ctx->attrs[j].val.int_value, set_flag_cb, &(ctx->attrs[j]), NULL);
+				widget = chk_btn_new(parent, ctx->attrs[j].val.lng, set_flag_cb, &(ctx->attrs[j]), NULL);
 				gtk_widget_set_tooltip_text(widget, ctx->attrs[j].help_text);
 				g_object_set_data(G_OBJECT(widget), PCB_OBJ_PROP, ctx);
 				ctx->wl[j] = widget;
@@ -464,7 +464,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					gtkc_combo_box_text_append_text(combo, ctx->attrs[j].enumerations[i]);
 					i++;
 				}
-				gtk_combo_box_set_active(GTK_COMBO_BOX(combo), ctx->attrs[j].val.int_value);
+				gtk_combo_box_set_active(GTK_COMBO_BOX(combo), ctx->attrs[j].val.lng);
 				g_signal_connect(G_OBJECT(combo), "changed", G_CALLBACK(enum_changed_cb), &(ctx->attrs[j]));
 				break;
 
@@ -618,18 +618,18 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 		case PCB_HATT_BOOL:
 			{
 				int chk = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ctx->wl[idx]));
-				if (chk == val->int_value)
+				if (chk == val->lng)
 					goto nochg;
-				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ctx->wl[idx]), val->int_value);
+				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ctx->wl[idx]), val->lng);
 			}
 			break;
 
 		case PCB_HATT_ENUM:
 			{
 				int en = gtk_combo_box_get_active(GTK_COMBO_BOX(ctx->wl[idx]));
-				if (en == val->int_value)
+				if (en == val->lng)
 					goto nochg;
-				gtk_combo_box_set_active(GTK_COMBO_BOX(ctx->wl[idx]), val->int_value);
+				gtk_combo_box_set_active(GTK_COMBO_BOX(ctx->wl[idx]), val->lng);
 			}
 			break;
 
@@ -647,7 +647,7 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 			break;
 
 		case PCB_HATT_BEGIN_TABBED:
-			gtk_notebook_set_current_page(GTK_NOTEBOOK(ctx->wl[idx]), val->int_value);
+			gtk_notebook_set_current_page(GTK_NOTEBOOK(ctx->wl[idx]), val->lng);
 			break;
 	}
 

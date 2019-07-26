@@ -75,7 +75,7 @@ static void ser_int(int save, int widx, const char *attrkey)
 {
 	if (save) {
 		char tmp[128];
-		sprintf(tmp, "%d", exc_ctx.dlg[widx].val.int_value);
+		sprintf(tmp, "%d", exc_ctx.dlg[widx].val.lng);
 		ser_save(tmp, attrkey);
 	}
 	else {
@@ -84,14 +84,14 @@ static void ser_int(int save, int widx, const char *attrkey)
 		const char *orig = ser_load(attrkey);
 
 		if (orig != NULL) {
-			hv.int_value = strtol(orig, &end, 10);
+			hv.lng = strtol(orig, &end, 10);
 			if (*end != '\0') {
 				pcb_message(PCB_MSG_ERROR, "Invalid integer value in board attribute '%s': '%s'\n", attrkey, orig);
-				hv.int_value = 0;
+				hv.lng = 0;
 			}
 		}
 		else
-			hv.int_value = 0;
+			hv.lng = 0;
 
 		pcb_gui->attr_dlg_set_value(exc_ctx.dlg_hid_ctx, widx, &hv);
 	}
@@ -344,7 +344,7 @@ static int load_selector(void)
 static void select_update(int setattr)
 {
 	pcb_hid_attr_val_t hv;
-	hv.int_value = exc_ctx.selected;
+	hv.lng = exc_ctx.selected;
 
 	if ((exc_ctx.selected < 0) || (exc_ctx.selected >= sizeof(excitations)/sizeof(excitations[0]))) {
 		pcb_message(PCB_MSG_ERROR, "Invalid excitation selected\n");
@@ -364,7 +364,7 @@ static void select_update(int setattr)
 
 static void select_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	exc_ctx.selected = attr->val.int_value;
+	exc_ctx.selected = attr->val.lng;
 	select_update(1);
 }
 

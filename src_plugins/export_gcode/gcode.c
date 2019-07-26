@@ -238,12 +238,12 @@ static pcb_export_opt_t *gcode_get_export_options(pcb_hid_t *hid, int *n)
 {
 	static int last_unit_value = -1;
 
-	if (gcode_attribute_list[HA_unit].default_val.int_value == last_unit_value) {
+	if (gcode_attribute_list[HA_unit].default_val.lng == last_unit_value) {
 		if (pcbhl_conf.editor.grid_unit)
-			gcode_attribute_list[HA_unit].default_val.int_value = pcbhl_conf.editor.grid_unit->index;
+			gcode_attribute_list[HA_unit].default_val.lng = pcbhl_conf.editor.grid_unit->index;
 		else
-			gcode_attribute_list[HA_unit].default_val.int_value = get_unit_struct("mil")->index;
-		last_unit_value = gcode_attribute_list[HA_unit].default_val.int_value;
+			gcode_attribute_list[HA_unit].default_val.lng = get_unit_struct("mil")->index;
+		last_unit_value = gcode_attribute_list[HA_unit].default_val.lng;
 	}
 
 	if ((PCB != NULL)  && (gcode_attribute_list[HA_basename].default_val.str_value == NULL))
@@ -392,12 +392,12 @@ static void gcode_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (!gcode_basename) {
 		gcode_basename = "pcb-out";
 	}
-	gcode_dpi = options[HA_dpi].int_value;
+	gcode_dpi = options[HA_dpi].lng;
 	if (gcode_dpi < 0) {
 		fprintf(stderr, "ERROR:  dpi may not be < 0\n");
 		return;
 	}
-	unit = &(pcb_units[options[HA_unit].int_value]);
+	unit = &(pcb_units[options[HA_unit].lng]);
 	metric = (unit->family == PCB_UNIT_METRIC);
 	scale = metric ? 1.0 / pcb_coord_to_unit(unit, PCB_MM_TO_COORD(1.0))
 		: 1.0 / pcb_coord_to_unit(unit, PCB_INCH_TO_COORD(1.0));

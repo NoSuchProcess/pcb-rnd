@@ -229,11 +229,11 @@ void dxf_hid_export_to_file(dxf_ctx_t *ctx, pcb_hid_attr_val_t * options)
 /*		conf_force_set_bool(conf_core.editor.check_planes, 0);*/
 	conf_force_set_bool(conf_core.editor.show_solder_side, 0);
 
-	dxf_ctx.enable_force_thin = options[HA_thin].int_value;
-	dxf_ctx.poly_fill = options[HA_poly_fill].int_value;
-	dxf_ctx.poly_contour = options[HA_poly_contour].int_value;
-	dxf_ctx.drill_fill = options[HA_drill_fill].int_value;
-	dxf_ctx.drill_contour = options[HA_drill_contour].int_value;
+	dxf_ctx.enable_force_thin = options[HA_thin].lng;
+	dxf_ctx.poly_fill = options[HA_poly_fill].lng;
+	dxf_ctx.poly_contour = options[HA_poly_contour].lng;
+	dxf_ctx.drill_fill = options[HA_drill_fill].lng;
+	dxf_ctx.drill_contour = options[HA_drill_contour].lng;
 
 	pcbhl_expose_main(&dxf_hid, &hectx, NULL);
 

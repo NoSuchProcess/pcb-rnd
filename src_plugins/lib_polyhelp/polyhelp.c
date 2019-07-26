@@ -409,13 +409,13 @@ static int polyhatch_gui(pcb_coord_t *period, pcb_cpoly_hatchdir_t *dir, pcb_fla
 	}
 
 	*period = dlg[wspc].val.coord_value;
-	if (dlg[wcont].val.int_value) *want_contour = 1;
+	if (dlg[wcont].val.lng) *want_contour = 1;
 
 	*dir = 0;
-	if (dlg[whor].val.int_value) *dir |= PCB_CPOLY_HATCH_HORIZONTAL;
-	if (dlg[wver].val.int_value) *dir |= PCB_CPOLY_HATCH_VERTICAL;
+	if (dlg[whor].val.lng) *dir |= PCB_CPOLY_HATCH_HORIZONTAL;
+	if (dlg[wver].val.lng) *dir |= PCB_CPOLY_HATCH_VERTICAL;
 
-	*flg = pcb_flag_make(dlg[wclr].val.int_value ? PCB_FLAG_CLEARLINE : 0);
+	*flg = pcb_flag_make(dlg[wclr].val.lng ? PCB_FLAG_CLEARLINE : 0);
 
 	PCB_DAD_FREE(dlg);
 	return 0;

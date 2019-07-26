@@ -158,7 +158,7 @@ static void scad_draw_finish()
 	fprintf(f, "		union() {\n");
 	fprintf(f, "			difference() {\n");
 	fprintf(f, "				pcb_board_main();\n");
-	if (openscad_attribute_list[HA_drill].default_val.int_value)
+	if (openscad_attribute_list[HA_drill].default_val.lng)
 		fprintf(f, "				pcb_drill();\n");
 	fprintf(f, "			}\n");
 	fprintf(f, "		}\n");

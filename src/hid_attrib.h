@@ -6,11 +6,11 @@
 #include "color.h"
 
 /* Used for HID attributes (exporting and printing, mostly).
-   HA_boolean uses int_value, HA_enum sets int_value to the index and
+   HA_boolean uses lng, HA_enum sets lng to the index and
    str_value to the enumeration string.  PCB_HATT_LABEL just shows the
    default str_value. */
 struct pcb_hid_attr_val_s {
-	int int_value;
+	int lng;
 	const char *str_value;
 	double real_value;
 	pcb_coord_t coord_value;

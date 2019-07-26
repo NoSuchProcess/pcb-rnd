@@ -277,7 +277,7 @@ static int live_run(live_script_t *lvs)
 	free(src);
 	fclose(f);
 
-	lang = lvs->lang_engines[lvs->dlg[lvs->wlang].val.int_value];
+	lang = lvs->lang_engines[lvs->dlg[lvs->wlang].val.lng];
 
 	live_stop(lvs);
 
@@ -292,7 +292,7 @@ static int live_run(live_script_t *lvs)
 	pcb_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wrun, 0);
 	pcb_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wstop, 1);
 
-	if (!lvs->dlg[lvs->wpers].val.int_value)
+	if (!lvs->dlg[lvs->wpers].val.lng)
 		live_stop(lvs);
 
 	if ((pcb_num_undo() != numu) && (lvs->undo_pre == pcb_undo_serial()))

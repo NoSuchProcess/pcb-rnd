@@ -66,7 +66,7 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 			break;
 		case CFN_BOOLEAN:
 		case CFN_INTEGER:
-			hv.int_value = atoi(val);
+			hv.lng = atoi(val);
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			break;
 		case CFN_REAL:
@@ -81,9 +81,9 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 			{
 				const pcb_unit_t *u = get_unit_struct(val);
 				if (u != NULL)
-					hv.int_value = u - pcb_units;
+					hv.lng = u - pcb_units;
 				else
-					hv.int_value = -1;
+					hv.lng = -1;
 				pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			}
 			break;
@@ -128,13 +128,13 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 	switch(ctx->nat->type) {
 		case CFN_STRING:  val = attr->val.str_value; break;
 		case CFN_BOOLEAN:
-		case CFN_INTEGER: sprintf(buf, "%d", attr->val.int_value); break;
+		case CFN_INTEGER: sprintf(buf, "%d", attr->val.lng); break;
 		case CFN_REAL:    sprintf(buf, "%f", attr->val.real_value); break;
 		case CFN_COORD:   pcb_snprintf(buf, sizeof(buf), "%.08$mH", attr->val.coord_value); break;
 		case CFN_UNIT:
-			if ((attr->val.int_value < 0) || (attr->val.int_value >= pcb_get_n_units(0)))
+			if ((attr->val.lng < 0) || (attr->val.lng >= pcb_get_n_units(0)))
 				return;
-			val = pcb_units[attr->val.int_value].suffix;
+			val = pcb_units[attr->val.lng].suffix;
 			break;
 		case CFN_COLOR:   val = attr->val.clr_value.str; break;
 		case CFN_LIST:

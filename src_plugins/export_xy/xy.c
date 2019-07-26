@@ -134,12 +134,12 @@ static pcb_export_opt_t *xy_get_export_options(pcb_hid_t *hid, int *n)
 	xy_options[HA_format].enumerations = (const char **)fmt_names.array;
 
 	/* set default unit and filename */
-	if (xy_options[HA_unit].default_val.int_value == last_unit_value) {
+	if (xy_options[HA_unit].default_val.lng == last_unit_value) {
 		if (pcbhl_conf.editor.grid_unit)
-			xy_options[HA_unit].default_val.int_value = pcbhl_conf.editor.grid_unit->index;
+			xy_options[HA_unit].default_val.lng = pcbhl_conf.editor.grid_unit->index;
 		else
-			xy_options[HA_unit].default_val.int_value = get_unit_struct("mil")->index;
-		last_unit_value = xy_options[HA_unit].default_val.int_value;
+			xy_options[HA_unit].default_val.lng = get_unit_struct("mil")->index;
+		last_unit_value = xy_options[HA_unit].default_val.lng;
 	}
 	if ((PCB != NULL)  && (xy_options[HA_xyfile].default_val.str_value == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &xy_options[HA_xyfile], ".xy");
@@ -804,12 +804,12 @@ static void xy_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (!xy_filename)
 		xy_filename = "pcb-out.xy";
 
-	if (options[HA_unit].int_value == -1)
+	if (options[HA_unit].lng == -1)
 		xy_unit = get_unit_struct("mil");
 	else
-		xy_unit = &pcb_units[options[HA_unit].int_value];
+		xy_unit = &pcb_units[options[HA_unit].lng];
 
-	tid = vts0_get(&fmt_ids, options[HA_format].int_value, 0);
+	tid = vts0_get(&fmt_ids, options[HA_format].lng, 0);
 	if ((tid == NULL) || (*tid == NULL)) {
 		pcb_message(PCB_MSG_ERROR, "export_xy: invalid template selected\n");
 		return;

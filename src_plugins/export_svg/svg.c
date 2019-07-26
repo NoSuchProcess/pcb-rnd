@@ -231,13 +231,13 @@ void svg_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 /*		conf_force_set_bool(conf_core.editor.check_planes, 0);*/
 		conf_force_set_bool(conf_core.editor.show_solder_side, 0);
 
-		if (options[HA_photo_mode].int_value) {
+		if (options[HA_photo_mode].lng) {
 			photo_mode = 1;
 		}
 		else
 			photo_mode = 0;
 
-		if (options[HA_flip].int_value) {
+		if (options[HA_flip].lng) {
 			flip = 1;
 			conf_force_set_bool(conf_core.editor.show_solder_side, 1);
 		}
@@ -250,13 +250,13 @@ void svg_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 			0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y, board_color);
 	}
 
-	opacity = options[HA_opacity].int_value;
+	opacity = options[HA_opacity].lng;
 
 	gds_init(&sbright);
 	gds_init(&sdark);
 	gds_init(&snormal);
 
-	if (options[HA_as_shown].int_value) {
+	if (options[HA_as_shown].lng) {
 		/* disable (exporter default) hiding overlay in as_shown */
 		memset(&xform_tmp, 0, sizeof(xform_tmp));
 		xform = &xform_tmp;

@@ -186,7 +186,7 @@ static void eps_print_header(FILE *f, const char *outfn)
 	fprintf(f, "1 dup neg scale\n");
 	fprintf(f, "%g dup scale\n", options_[HA_scale].real_value);
 	pcb_fprintf(f, "%mi %mi translate\n", -bounds->X1, -bounds->Y2);
-	if (options_[HA_as_shown].int_value && conf_core.editor.show_solder_side)
+	if (options_[HA_as_shown].lng && conf_core.editor.show_solder_side)
 		pcb_fprintf(f, "-1 1 scale %mi 0 translate\n", bounds->X1 - bounds->X2);
 
 #define Q (pcb_coord_t) PCB_MIL_TO_COORD(10)
@@ -235,7 +235,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t *options)
 	region.X2 = PCB->hidlib.size_x;
 	region.Y2 = PCB->hidlib.size_y;
 
-	if (options[HA_only_visible].int_value)
+	if (options[HA_only_visible].lng)
 		bounds = pcb_data_bbox(&tmp, PCB->Data, pcb_false);
 	else
 		bounds = &region;
@@ -284,15 +284,15 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t *options)
 	}
 
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
-	as_shown = options[HA_as_shown].int_value;
-	if (!options[HA_as_shown].int_value) {
+	as_shown = options[HA_as_shown].lng;
+	if (!options[HA_as_shown].lng) {
 		qsort(pcb_layer_stack, pcb_max_layer, sizeof(pcb_layer_stack[0]), layer_sort);
 	}
 	linewidth = -1;
 	lastcap = -1;
 	lastcolor = -1;
 
-	in_mono = options[HA_mono].int_value;
+	in_mono = options[HA_mono].lng;
 
 	if (f != NULL)
 		eps_print_header(f, pcb_hid_export_fn(filename));
@@ -342,10 +342,10 @@ static void eps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	else
 		f = NULL;
 
-	if ((!eps_cam.active) && (!options[HA_as_shown].int_value))
+	if ((!eps_cam.active) && (!options[HA_as_shown].lng))
 		pcb_hid_save_and_show_layer_ons(save_ons);
 	eps_hid_export_to_file(f, options);
-	if ((!eps_cam.active) && (!options[HA_as_shown].int_value))
+	if ((!eps_cam.active) && (!options[HA_as_shown].lng))
 		pcb_hid_restore_layer_ons(save_ons);
 
 	fclose(f);

@@ -529,17 +529,17 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	conf_force_set_bool(conf_core.editor.check_planes, 0);
 
 	global.f = the_file;
-	global.drill_helper = options[HA_drillhelper].int_value;
+	global.drill_helper = options[HA_drillhelper].lng;
 	global.drill_helper_size = options[HA_drillhelpersize].coord_value;
-	global.align_marks = options[HA_alignmarks].int_value;
-	global.outline = options[HA_outline].int_value;
-	global.mirror = options[HA_mirror].int_value;
-	global.fillpage = options[HA_fillpage].int_value;
-	global.automirror = options[HA_automirror].int_value;
-	global.incolor = options[HA_color].int_value;
-	global.invert = options[HA_psinvert].int_value;
+	global.align_marks = options[HA_alignmarks].lng;
+	global.outline = options[HA_outline].lng;
+	global.mirror = options[HA_mirror].lng;
+	global.fillpage = options[HA_fillpage].lng;
+	global.automirror = options[HA_automirror].lng;
+	global.incolor = options[HA_color].lng;
+	global.invert = options[HA_psinvert].lng;
 	global.fade_ratio = PCB_CLAMP(options[HA_psfade].real_value, 0, 1);
-	global.media_idx = options[HA_media].int_value;
+	global.media_idx = options[HA_media].lng;
 	global.media_width = pcb_media_data[global.media_idx].width;
 	global.media_height = pcb_media_data[global.media_idx].height;
 	global.ps_width = global.media_width - 2.0 * pcb_media_data[global.media_idx].margin_x;
@@ -547,9 +547,9 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	global.scale_factor = options[HA_scale].real_value;
 	global.calibration_x = options[HA_xcalib].real_value;
 	global.calibration_y = options[HA_ycalib].real_value;
-	global.drillcopper = options[HA_drillcopper].int_value;
-	global.legend = options[HA_legend].int_value;
-	global.single_page = options[HA_single_page].int_value;
+	global.drillcopper = options[HA_drillcopper].lng;
+	global.legend = options[HA_legend].lng;
+	global.single_page = options[HA_single_page].lng;
 
 	if (the_file)
 		ps_start_file(the_file);
@@ -581,7 +581,7 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	global.exps.view.X2 = PCB->hidlib.size_x;
 	global.exps.view.Y2 = PCB->hidlib.size_y;
 
-	if ((!global.multi_file && !global.multi_file_cam) && (options[HA_toc].int_value)) {
+	if ((!global.multi_file && !global.multi_file_cam) && (options[HA_toc].lng)) {
 		/* %%Page DSC requires both a label and an ordinal */
 		fprintf(the_file, "%%%%Page: TableOfContents 1\n");
 		fprintf(the_file, "/Times-Roman findfont 24 scalefont setfont\n");
@@ -627,11 +627,11 @@ static void ps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	/* cam mode shall result in a single file, no matter what other attributes say */
 	if (ps_cam.active) {
-		global.multi_file = options[HA_multifile].int_value;
+		global.multi_file = options[HA_multifile].lng;
 		global.multi_file_cam = (ps_cam.fn_template != NULL); /* template means multiple files potentially */
 	}
 	else {
-		global.multi_file = options[HA_multifile].int_value;
+		global.multi_file = options[HA_multifile].lng;
 		global.multi_file_cam = 0;
 	}
 

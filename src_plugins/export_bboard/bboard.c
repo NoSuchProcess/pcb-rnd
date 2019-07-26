@@ -520,7 +520,7 @@ static void bboard_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 			group_data[pcb_layer_get_group(PCB, i)].draw = 1;
 	}
 
-	bboard_init_board_cairo(PCB->hidlib.size_x, PCB->hidlib.size_y, bboard_bgcolor, options[HA_antialias].int_value);
+	bboard_init_board_cairo(PCB->hidlib.size_x, PCB->hidlib.size_y, bboard_bgcolor, options[HA_antialias].lng);
 
 TODO("subc: rewrite")
 #if 0
@@ -556,7 +556,7 @@ TODO("subc: rewrite")
 		else
 			purpi = grp->purpi;
 
-		if (bboard_validate_layer(flg, purpi, gid, options[HA_skipsolder].int_value)) {
+		if (bboard_validate_layer(flg, purpi, gid, options[HA_skipsolder].lng)) {
 			bboard_get_layer_color(&(PCB->Data->Layer[i]), &clr_r, &clr_g, &clr_b);
 			bboard_set_color_cairo(clr_r, clr_g, clr_b);
 			PCB_LINE_LOOP(&(PCB->Data->Layer[i]));

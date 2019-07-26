@@ -86,8 +86,8 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 	PCB_DAD_SET_VALUE(hid_ctx, pse->proto_id, str_value, tmp);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->clearance, coord_value, pse->ps->Clearance);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->rot, real_value, pse->ps->rot);
-	PCB_DAD_SET_VALUE(hid_ctx, pse->xmirror, int_value, pse->ps->xmirror);
-	PCB_DAD_SET_VALUE(hid_ctx, pse->smirror, int_value, pse->ps->smirror);
+	PCB_DAD_SET_VALUE(hid_ctx, pse->xmirror, lng, pse->ps->xmirror);
+	PCB_DAD_SET_VALUE(hid_ctx, pse->smirror, lng, pse->ps->smirror);
 
 	/* proto - layers */
 	memset(shp_found, 0, sizeof(shp_found));
@@ -171,9 +171,9 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 	pse->attrs[pse->prname].val.str_value = NULL;
 	PCB_DAD_SET_VALUE(hid_ctx, pse->prname, str_value, pcb_strdup(proto->name == NULL ? "" : proto->name));
 	PCB_DAD_SET_VALUE(hid_ctx, pse->hdia, coord_value, proto->hdia);
-	PCB_DAD_SET_VALUE(hid_ctx, pse->hplated, int_value, proto->hplated);
-	PCB_DAD_SET_VALUE(hid_ctx, pse->htop_val, int_value, proto->htop);
-	PCB_DAD_SET_VALUE(hid_ctx, pse->hbot_val, int_value, proto->hbottom);
+	PCB_DAD_SET_VALUE(hid_ctx, pse->hplated, lng, proto->hplated);
+	PCB_DAD_SET_VALUE(hid_ctx, pse->htop_val, lng, proto->htop);
+	PCB_DAD_SET_VALUE(hid_ctx, pse->hbot_val, lng, proto->hbottom);
 
 	if (proto->htop == 0)
 		strcpy(tmp, "top copper group");
@@ -260,8 +260,8 @@ static void pse_chg_instance(void *hid_ctx, void *caller_data, pcb_hid_attribute
 		NULL,
 		&pse->attrs[pse->clearance].val.coord_value,
 		&pse->attrs[pse->rot].val.real_value,
-		&pse->attrs[pse->xmirror].val.int_value,
-		&pse->attrs[pse->smirror].val.int_value);
+		&pse->attrs[pse->xmirror].val.lng,
+		&pse->attrs[pse->smirror].val.lng);
 
 	lock++;
 	pse_ps2dlg(hid_ctx, pse); /* to get calculated text fields updated */
@@ -311,10 +311,10 @@ static void pse_chg_hole(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 
 	if (proto != NULL) {
 		pcb_pstk_proto_change_hole(proto,
-			&pse->attrs[pse->hplated].val.int_value,
+			&pse->attrs[pse->hplated].val.lng,
 			&pse->attrs[pse->hdia].val.coord_value,
-			&pse->attrs[pse->htop_val].val.int_value,
-			&pse->attrs[pse->hbot_val].val.int_value);
+			&pse->attrs[pse->htop_val].val.lng,
+			&pse->attrs[pse->hbot_val].val.lng);
 	}
 
 	lock++;
@@ -447,7 +447,7 @@ static void pse_shape_copy(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pse_t *pse = caller_data;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
 	pcb_pstk_tshape_t *ts = &proto->tr.array[0];
-	int from = pse->shape_chg[pse->copy_from].val.int_value;
+	int from = pse->shape_chg[pse->copy_from].val.lng;
 	int dst_idx;
 	int src_idx;
 
@@ -481,7 +481,7 @@ static void pse_shape_swap(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pse_t *pse = caller_data;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
 	pcb_pstk_tshape_t *ts = &proto->tr.array[0];
-	int from = pse->shape_chg[pse->copy_from].val.int_value;
+	int from = pse->shape_chg[pse->copy_from].val.lng;
 	int dst_idx;
 	int src_idx;
 
@@ -687,10 +687,10 @@ static void pse_gen(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	int err = 0;
 	pse_t *pse = caller_data;
 	pcb_pstk_proto_t proto;
-	int sides = pse->attrs[pse->gen_sides].val.int_value;
-	int shape = pse->attrs[pse->gen_shp].val.int_value;
-	int expose = pse->attrs[pse->gen_expose].val.int_value;
-	int paste = pse->attrs[pse->gen_paste].val.int_value;
+	int sides = pse->attrs[pse->gen_sides].val.lng;
+	int shape = pse->attrs[pse->gen_shp].val.lng;
+	int expose = pse->attrs[pse->gen_expose].val.lng;
+	int paste = pse->attrs[pse->gen_paste].val.lng;
 	pcb_coord_t size = pse->attrs[pse->gen_size].val.coord_value;
 	pcb_layer_type_t lyt = sides_lyt[sides];
 	pcb_pstk_tshape_t *ts;
@@ -731,7 +731,7 @@ static void pse_gen(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	}
 
 	pse_ps2dlg(hid_ctx, pse);
-	PCB_DAD_SET_VALUE(hid_ctx, pse->tab, int_value, 1); /* switch to the prototype view where the new attributes are visible */
+	PCB_DAD_SET_VALUE(hid_ctx, pse->tab, lng, 1); /* switch to the prototype view where the new attributes are visible */
 	pse_changed(pse);
 	pcb_gui->invalidate_all(pcb_gui);
 }
@@ -963,7 +963,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 	pse->attrs = dlg;
 	pse_ps2dlg(dlg_hid_ctx, pse);
 	if (target_tab > 0)
-		PCB_DAD_SET_VALUE(dlg_hid_ctx, pse->tab, int_value, target_tab);
+		PCB_DAD_SET_VALUE(dlg_hid_ctx, pse->tab, lng, target_tab);
 	PCB_DAD_RUN(dlg);
 
 	free((char *)pse->attrs[pse->prname].val.str_value);

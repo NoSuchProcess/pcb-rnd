@@ -129,7 +129,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 				break;
 			case PCB_HATT_INTEGER:
 				if (a->value)
-					*(int *) a->value = a->default_val.int_value;
+					*(int *) a->value = a->default_val.lng;
 				break;
 			case PCB_HATT_COORD:
 				if (a->value)
@@ -137,7 +137,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 				break;
 			case PCB_HATT_BOOL:
 				if (a->value)
-					*(char *) a->value = a->default_val.int_value;
+					*(char *) a->value = a->default_val.lng;
 				break;
 			case PCB_HATT_REAL:
 				if (a->value)
@@ -149,11 +149,11 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 				break;
 			case PCB_HATT_ENUM:
 				if (a->value)
-					*(int *) a->value = a->default_val.int_value;
+					*(int *) a->value = a->default_val.lng;
 				break;
 			case PCB_HATT_UNIT:
 				if (a->value)
-					*(int *) a->value = a->default_val.int_value;
+					*(int *) a->value = a->default_val.lng;
 				break;
 			default:
 				pcb_message(PCB_MSG_ERROR, "Invalid attribute type %d for attribute %s\n", a->type, a->name);
@@ -182,7 +182,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 						if (a->value)
 							*(int *) a->value = strtol((*argv)[1], 0, 0);
 						else
-							a->default_val.int_value = strtol((*argv)[1], 0, 0);
+							a->default_val.lng = strtol((*argv)[1], 0, 0);
 						(*argc)--;
 						(*argv)++;
 						break;
@@ -214,7 +214,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 						if (a->value)
 							*(char *) a->value = bool_val;
 						else
-							a->default_val.int_value = bool_val;
+							a->default_val.lng = bool_val;
 						break;
 					case PCB_HATT_ENUM:
 						ep = (*argv)[1];
@@ -222,7 +222,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 						for (e = 0; a->enumerations[e]; e++)
 							if (strcmp(a->enumerations[e], ep) == 0) {
 								ok = 1;
-								a->default_val.int_value = e;
+								a->default_val.lng = e;
 								a->default_val.str_value = ep;
 								break;
 							}
@@ -239,7 +239,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 							fprintf(stderr, "ERROR:  unit \"%s\" is unknown to pcb (option --%s)\n", (*argv)[1], a->name);
 							exit(1);
 						}
-						a->default_val.int_value = unit->index;
+						a->default_val.lng = unit->index;
 						a->default_val.str_value = unit->suffix;
 						(*argc)--;
 						(*argv)++;

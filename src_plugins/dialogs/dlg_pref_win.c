@@ -38,10 +38,10 @@ extern int pcb_wplc_save_to_file(const char *fn);
 
 static void pref_win_brd2dlg(pref_ctx_t *ctx)
 {
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wmaster, int_value, pcbhl_conf.editor.auto_place);
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wboard, int_value, dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_design);
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wproject, int_value, dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_project);
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wuser, int_value, dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_user);
+	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wmaster, lng, pcbhl_conf.editor.auto_place);
+	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wboard, lng, dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_design);
+	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wproject, lng, dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_project);
+	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wuser, lng, dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_user);
 }
 
 void pcb_dlg_pref_win_open(pref_ctx_t *ctx)
@@ -56,28 +56,28 @@ void pcb_dlg_pref_win_close(pref_ctx_t *ctx)
 static void pref_win_master_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
-	conf_setf(ctx->role, "editor/auto_place", -1, "%d", attr->val.int_value);
+	conf_setf(ctx->role, "editor/auto_place", -1, "%d", attr->val.lng);
 	pref_win_brd2dlg(ctx);
 }
 
 static void pref_win_board_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
-	conf_setf(ctx->role, "plugins/dialogs/auto_save_window_geometry/to_design", -1, "%d", attr->val.int_value);
+	conf_setf(ctx->role, "plugins/dialogs/auto_save_window_geometry/to_design", -1, "%d", attr->val.lng);
 	pref_win_brd2dlg(ctx);
 }
 
 static void pref_win_project_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
-	conf_setf(ctx->role, "plugins/dialogs/auto_save_window_geometry/to_project", -1, "%d", attr->val.int_value);
+	conf_setf(ctx->role, "plugins/dialogs/auto_save_window_geometry/to_project", -1, "%d", attr->val.lng);
 	pref_win_brd2dlg(ctx);
 }
 
 static void pref_win_user_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
-	conf_setf(ctx->role, "plugins/dialogs/auto_save_window_geometry/to_user", -1, "%d", attr->val.int_value);
+	conf_setf(ctx->role, "plugins/dialogs/auto_save_window_geometry/to_user", -1, "%d", attr->val.lng);
 	pref_win_brd2dlg(ctx);
 }
 

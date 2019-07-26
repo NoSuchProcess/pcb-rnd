@@ -234,7 +234,7 @@ static int ltf_tabbed_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_att
 	tctx->at = -1;
 
 	/* make sure one of the pages is shown */
-	if (ltf_tabbed_set_(tctx, ctx->attrs[i].val.int_value) != 0)
+	if (ltf_tabbed_set_(tctx, ctx->attrs[i].val.lng) != 0)
 		ltf_tabbed_set_(tctx, 0);
 
 	return res;

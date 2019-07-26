@@ -327,13 +327,13 @@ static void openscad_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	gds_init(&model_calls);
 	vti0_init(&scad_comp);
 
-	if (openscad_attribute_list[HA_models].default_val.int_value)
+	if (openscad_attribute_list[HA_models].default_val.lng)
 		scad_insert_models();
 
 	openscad_hid_export_to_file(f, options);
 	scad_close_layer_group();
 
-	if (openscad_attribute_list[HA_drill].default_val.int_value)
+	if (openscad_attribute_list[HA_drill].default_val.lng)
 		scad_draw_drills();
 
 	scad_draw_finish();
@@ -372,7 +372,7 @@ static int openscad_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, con
 		return 0;
 
 	if (flags & PCB_LYT_MASK) {
-		if (!openscad_attribute_list[HA_mask].default_val.int_value)
+		if (!openscad_attribute_list[HA_mask].default_val.lng)
 			return 0;
 		if (flags & PCB_LYT_TOP) {
 			scad_new_layer_group("top_mask", +2, "0,0.7,0,0.5");
@@ -385,7 +385,7 @@ static int openscad_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, con
 	}
 
 	if (flags & PCB_LYT_SILK) {
-		if (!openscad_attribute_list[HA_silk].default_val.int_value)
+		if (!openscad_attribute_list[HA_silk].default_val.lng)
 			return 0;
 		if (flags & PCB_LYT_TOP) {
 			scad_new_layer_group("top_silk", +3, "0,0,0");
@@ -398,7 +398,7 @@ static int openscad_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, con
 	}
 
 	if (flags & PCB_LYT_COPPER) {
-		if (!openscad_attribute_list[HA_copper].default_val.int_value)
+		if (!openscad_attribute_list[HA_copper].default_val.lng)
 			return 0;
 		if (flags & PCB_LYT_TOP) {
 			scad_new_layer_group("top_copper", +1, "1,0.4,0.2");

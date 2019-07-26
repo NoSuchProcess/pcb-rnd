@@ -40,8 +40,8 @@ typedef struct {
 
 static void ee_data2dialog(ee_t *ee)
 {
-	PCB_DAD_SET_VALUE(ee->dlg_hid_ctx, ee->wmethod, int_value, ee->mthi);
-	PCB_DAD_SET_VALUE(ee->dlg_hid_ctx, ee->wfmt, int_value, methods[ee->mthi].fmt);
+	PCB_DAD_SET_VALUE(ee->dlg_hid_ctx, ee->wmethod, lng, ee->mthi);
+	PCB_DAD_SET_VALUE(ee->dlg_hid_ctx, ee->wfmt, lng, methods[ee->mthi].fmt);
 	PCB_DAD_SET_VALUE(ee->dlg_hid_ctx, ee->wcmd, str_value, pcb_strdup(methods[ee->mthi].command));
 
 	/* we have only one format, so disable the combo box for selecting it */
@@ -56,7 +56,7 @@ static void ee_chg_method(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	if (lock)
 		return;
 
-	ee->mthi = ee->dlg[ee->wmethod].val.int_value;
+	ee->mthi = ee->dlg[ee->wmethod].val.lng;
 
 	lock = 1;
 	ee_data2dialog(ee);

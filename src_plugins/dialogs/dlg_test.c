@@ -292,7 +292,7 @@ static void pcb_act_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	printf("Chg\n");
 
 	st = !st;
-	val.int_value = (val.int_value + 1) % 3;
+	val.lng = (val.lng + 1) % 3;
 /*	pcb_gui->attr_dlg_widget_state(hid_ctx, attr_idx, st);*/
 
 	pcb_gui->attr_dlg_set_value(hid_ctx, attr_idx, &val);
@@ -303,7 +303,7 @@ static void pcb_act_spin_reset(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	test_t *ctx = caller_data;
 	pcb_hid_attr_val_t hv;
 
-	hv.int_value = 42;
+	hv.lng = 42;
 	hv.real_value = 42.0;
 	hv.coord_value = PCB_MM_TO_COORD(42);
 
@@ -320,7 +320,7 @@ static void pcb_act_spin_upd(void *hid_ctx, void *caller_data, pcb_hid_attribute
 
 	hv.str_value = tmp;
 
-	sprintf(tmp, "%d", ctx->dlg[ctx->wspin_int].val.int_value);
+	sprintf(tmp, "%d", ctx->dlg[ctx->wspin_int].val.lng);
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_int, &hv);
 	sprintf(tmp, "%f", ctx->dlg[ctx->wspin_double].val.real_value);
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_double, &hv);
@@ -332,7 +332,7 @@ static void pcb_act_spin_upd(void *hid_ctx, void *caller_data, pcb_hid_attribute
 static void cb_tab_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	test_t *ctx = caller_data;
-	printf("Tab switch to %d!\n", ctx->dlg[ctx->wtab].val.int_value);
+	printf("Tab switch to %d!\n", ctx->dlg[ctx->wtab].val.lng);
 }
 
 static void cb_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -341,7 +341,7 @@ static void cb_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	test_t *ctx = caller_data;
 
 	printf("Jumping tabs\n");
-	val.int_value = 0;
+	val.lng = 0;
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wtab, &val);
 }
 
@@ -402,7 +402,7 @@ static void cb_ttbl_filt(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	pcb_hid_attribute_t *treea = &ctx->dlg[ctx->tt];
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)treea->enumerations;
 
-	ttbl_filt(&tree->rows, attr->val.int_value);
+	ttbl_filt(&tree->rows, attr->val.lng);
 	pcb_dad_tree_update_hide(treea);
 }
 

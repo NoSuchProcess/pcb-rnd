@@ -467,7 +467,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				break;
 			case PCB_HATT_INTEGER:
 				PCB_ACT_CONVARG(4, FGW_INT, dad, i = argv[4].val.nat_int);
-				PCB_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, int_value, i);
+				PCB_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, lng, i);
 				break;
 			case PCB_HATT_STRING:
 			case PCB_HATT_LABEL:
@@ -512,7 +512,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			case PCB_HATT_INTEGER:
 			case PCB_HATT_ENUM:
 				res->type = FGW_INT;
-				res->val.nat_int = dad->dlg[wid].val.int_value;
+				res->val.nat_int = dad->dlg[wid].val.lng;
 				break;
 			case PCB_HATT_STRING:
 			case PCB_HATT_LABEL:

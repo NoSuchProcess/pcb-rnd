@@ -38,10 +38,10 @@ void pcb_dad_unit_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	pcb_hid_dad_unit_t *unit = (pcb_hid_dad_unit_t *)attr->user_data;
 	pcb_hid_attribute_t *enu = attr;
 	pcb_hid_attribute_t *end = attr - unit->wenum + unit->cmp.wend;
-	const pcb_unit_t *u = get_unit_by_suffix(enu->enumerations[enu->val.int_value]);
+	const pcb_unit_t *u = get_unit_by_suffix(enu->enumerations[enu->val.lng]);
 	int unit_id = u == NULL ? -1 : u - pcb_units;
 
-	end->val.int_value = unit_id;
+	end->val.lng = unit_id;
 	end->changed = 1;
 	if (end->change_cb != NULL)
 		end->change_cb(hid_ctx, caller_data, end);
@@ -56,8 +56,8 @@ void pcb_dad_unit_set_num(pcb_hid_attribute_t *attr, long unit_id, double unused
 
 	for(l = 0; enu->enumerations[l] != NULL; l++) {
 		if (strcmp(target, enu->enumerations[l]) == 0) {
-			enu->val.int_value = l;
-			attr->val.int_value = l;
+			enu->val.lng = l;
+			attr->val.lng = l;
 		}
 	}
 }
@@ -93,7 +93,7 @@ int pcb_dad_unit_set_value(pcb_hid_attribute_t *end, void *hid_ctx, int idx, con
 	pcb_hid_dad_unit_t *unit = (pcb_hid_dad_unit_t *)end->enumerations;
 	if (pcb_gui->attr_dlg_set_value(hid_ctx, unit->wenum, val) != 0)
 		return -1;
-	end->val.int_value = val->int_value;
+	end->val.lng = val->lng;
 	return 0;
 }
 

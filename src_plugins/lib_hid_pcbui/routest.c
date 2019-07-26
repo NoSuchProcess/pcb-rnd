@@ -86,7 +86,7 @@ static void rst_force_update_chk_and_dlg()
 	pcb_hid_attr_val_t hv;
 
 	for(n = 0; n < vtroutestyle_len(&PCB->RouteStyle); n++) {
-		hv.int_value = (n == target);
+		hv.lng = (n == target);
 		pcb_gui->attr_dlg_set_value(rst.sub.dlg_hid_ctx, rst.wchk[n], &hv);
 	}
 	rstdlg_pcb2dlg(target);
@@ -105,8 +105,8 @@ static void rst_update()
 		for(n = 0; n < vtroutestyle_len(&PCB->RouteStyle); n++) {
 			pcb_hid_attr_val_t hv;
 
-			hv.int_value = (n == target);
-			if (rst.sub.dlg[rst.wlab[n]].val.int_value != hv.int_value)
+			hv.lng = (n == target);
+			if (rst.sub.dlg[rst.wlab[n]].val.lng != hv.lng)
 				pcb_gui->attr_dlg_set_value(rst.sub.dlg_hid_ctx, rst.wchk[n], &hv);
 
 			hv.str_value = PCB->RouteStyle.array[n].name;
