@@ -342,7 +342,7 @@ static void dxf_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 static int dxf_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
-	pcb_hid_register_attributes(dxf_attribute_list, sizeof(dxf_attribute_list) / sizeof(dxf_attribute_list[0]), dxf_cookie, 0);
+	pcb_export_register_opts(dxf_attribute_list, sizeof(dxf_attribute_list) / sizeof(dxf_attribute_list[0]), dxf_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 

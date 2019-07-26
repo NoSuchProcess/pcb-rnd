@@ -60,7 +60,7 @@ static int loghid_parse_arguments_real(pcb_hid_t *hid, int *argc, char ***argv, 
 	pcb_hid_t *target, *me;
 	const char *target_name;
 
-	pcb_hid_register_attributes(loghid_attribute_list, NUM_OPTIONS, loghid_cookie, 0);
+	pcb_export_register_opts(loghid_attribute_list, NUM_OPTIONS, loghid_cookie, 0);
 	pcb_hid_parse_command_line(argc, argv);
 
 	target_name = loghid_attribute_list[HA_target_hid].default_val.str;

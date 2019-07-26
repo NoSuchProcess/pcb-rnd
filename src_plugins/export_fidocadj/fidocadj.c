@@ -345,7 +345,7 @@ TODO(": figure how to store side")
 
 static int fidocadj_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
-	pcb_hid_register_attributes(fidocadj_attribute_list, sizeof(fidocadj_attribute_list) / sizeof(fidocadj_attribute_list[0]), fidocadj_cookie, 0);
+	pcb_export_register_opts(fidocadj_attribute_list, sizeof(fidocadj_attribute_list) / sizeof(fidocadj_attribute_list[0]), fidocadj_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 

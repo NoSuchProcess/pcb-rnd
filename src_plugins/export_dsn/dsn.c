@@ -616,7 +616,7 @@ int pplg_init_export_dsn(void)
 	dsn_hid.parse_arguments = dsn_parse_arguments;
 	pcb_hid_register_hid(&dsn_hid);
 
-	pcb_hid_register_attributes(dsn_options, sizeof(dsn_options) / sizeof(dsn_options[0]), dsn_cookie, 0);
+	pcb_export_register_opts(dsn_options, sizeof(dsn_options) / sizeof(dsn_options[0]), dsn_cookie, 0);
 	return 0;
 }
 

@@ -230,7 +230,7 @@ struct drill_struct *sort_drill(struct drill_struct *drill, int n_drill)
 
 static int gcode_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
-	pcb_hid_register_attributes(gcode_attribute_list, sizeof(gcode_attribute_list) / sizeof(gcode_attribute_list[0]), gcode_cookie, 0);
+	pcb_export_register_opts(gcode_attribute_list, sizeof(gcode_attribute_list) / sizeof(gcode_attribute_list[0]), gcode_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 

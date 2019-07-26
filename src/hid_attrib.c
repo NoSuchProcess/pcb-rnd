@@ -35,7 +35,7 @@
 #include "pcb-printf.h"
 #include "macro.h"
 
-void pcb_hid_register_attributes(pcb_export_opt_t *a, int n, const char *cookie, int copy)
+void pcb_export_register_opts(pcb_export_opt_t *a, int n, const char *cookie, int copy)
 {
 	pcb_hid_attr_node_t *ha;
 

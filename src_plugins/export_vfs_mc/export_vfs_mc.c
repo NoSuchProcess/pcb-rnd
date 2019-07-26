@@ -137,7 +137,7 @@ static int export_vfs_mc_usage(pcb_hid_t *hid, const char *topic)
 
 static int export_vfs_mc_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
-	pcb_hid_register_attributes(export_vfs_mc_options, sizeof(export_vfs_mc_options) / sizeof(export_vfs_mc_options[0]), export_vfs_mc_cookie, 0);
+	pcb_export_register_opts(export_vfs_mc_options, sizeof(export_vfs_mc_options) / sizeof(export_vfs_mc_options[0]), export_vfs_mc_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 

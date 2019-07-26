@@ -624,7 +624,7 @@ int pplg_init_export_bboard(void)
 	bboard_hid.set_crosshair = bboard_set_crosshair;
 	pcb_hid_register_hid(&bboard_hid);
 
-	pcb_hid_register_attributes(bboard_options, sizeof(bboard_options) / sizeof(bboard_options[0]), bboard_cookie, 0);
+	pcb_export_register_opts(bboard_options, sizeof(bboard_options) / sizeof(bboard_options[0]), bboard_cookie, 0);
 	return 0;
 }
 

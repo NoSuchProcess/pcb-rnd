@@ -487,6 +487,6 @@ int pplg_init_export_ipcd356(void)
 
 	pcb_hid_register_hid(&ipcd356_hid);
 
-	pcb_hid_register_attributes(ipcd356_options, sizeof(ipcd356_options) / sizeof(ipcd356_options[0]), ipcd356_cookie, 0);
+	pcb_export_register_opts(ipcd356_options, sizeof(ipcd356_options) / sizeof(ipcd356_options[0]), ipcd356_cookie, 0);
 	return 0;
 }

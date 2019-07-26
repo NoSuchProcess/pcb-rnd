@@ -668,7 +668,7 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 static int gerber_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
-	pcb_hid_register_attributes(gerber_options, NUM_OPTIONS, gerber_cookie, 0);
+	pcb_export_register_opts(gerber_options, NUM_OPTIONS, gerber_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 

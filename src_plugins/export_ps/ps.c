@@ -664,7 +664,7 @@ static void ps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 static int ps_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
-	pcb_hid_register_attributes(ps_attribute_list, NUM_OPTIONS, ps_cookie, 0);
+	pcb_export_register_opts(ps_attribute_list, NUM_OPTIONS, ps_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
