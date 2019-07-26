@@ -145,7 +145,7 @@ do { \
 #define PCB_DAD_BEGIN_TABBED(table, tabs) \
 do { \
 	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_TABBED); \
-	PCB_DAD_SET_ATTR_FIELD(table, enumerations, tabs); \
+	PCB_DAD_SET_ATTR_FIELD(table, wdata, tabs); \
 } while(0)
 
 #define PCB_DAD_BEGIN_HBOX(table)      PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_HBOX)
@@ -169,7 +169,7 @@ do { \
 #define PCB_DAD_ENUM(table, choices) \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_ENUM); \
-	PCB_DAD_SET_ATTR_FIELD(table, enumerations, choices); \
+	PCB_DAD_SET_ATTR_FIELD(table, wdata, choices); \
 } while(0)
 
 #define PCB_DAD_BOOL(table, label) \
@@ -204,7 +204,7 @@ do { \
 	pcb_hid_text_t *txt = calloc(sizeof(pcb_hid_text_t), 1); \
 	txt->user_ctx = user_ctx_; \
 	PCB_DAD_ALLOC(table, PCB_HATT_TEXT); \
-	PCB_DAD_SET_ATTR_FIELD(table, enumerations, (const char **)txt); \
+	PCB_DAD_SET_ATTR_FIELD(table, wdata, txt); \
 } while(0)
 
 #define PCB_DAD_BUTTON(table, text) \
@@ -218,7 +218,7 @@ do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_BUTTON); \
 	table[table ## _len - 1].val.str = text; \
 	table[table ## _len - 1].val.lng = retval; \
-	table[table ## _len - 1].enumerations = (const char **)(&table ## _ret_override); \
+	table[table ## _len - 1].wdata = (&table ## _ret_override); \
 	PCB_DAD_CHANGE_CB(table, pcb_hid_dad_close_cb); \
 } while(0)
 
@@ -266,12 +266,12 @@ do { \
 	} \
 	PCB_DAD_ALLOC(table, PCB_HATT_PREVIEW); \
 	prv->attrib = &table[table ## _len-1]; \
-	PCB_DAD_SET_ATTR_FIELD(table, enumerations, (const char **)prv); \
+	PCB_DAD_SET_ATTR_FIELD(table, wdata, prv); \
 } while(0)
 
 #define pcb_dad_preview_zoomto(attr, view) \
 do { \
-	pcb_hid_preview_t *prv = (pcb_hid_preview_t *)((attr)->enumerations); \
+	pcb_hid_preview_t *prv = ((attr)->wdata); \
 	if (prv->hid_zoomto_cb != NULL) \
 		prv->hid_zoomto_cb((attr), prv->hid_wdata, view); \
 } while(0)
@@ -280,13 +280,13 @@ do { \
 #define PCB_DAD_PICTURE(table, xpm) \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_PICTURE); \
-	table[table ## _len - 1].enumerations = xpm; \
+	table[table ## _len - 1].wdata = xpm; \
 } while(0)
 
 #define PCB_DAD_PICBUTTON(table, xpm) \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_PICBUTTON); \
-	table[table ## _len - 1].enumerations = xpm; \
+	table[table ## _len - 1].wdata = xpm; \
 } while(0)
 
 
@@ -316,7 +316,7 @@ do { \
 	tree->hdr = opt_header; \
 	PCB_DAD_SET_ATTR_FIELD(table, pcb_hatt_table_cols, cols); \
 	PCB_DAD_SET_ATTR_FIELD(table, pcb_hatt_flags, first_col_is_tree ? PCB_HATF_TREE_COL : 0); \
-	PCB_DAD_SET_ATTR_FIELD(table, enumerations, (const char **)tree); \
+	PCB_DAD_SET_ATTR_FIELD(table, wdata, tree); \
 } while(0)
 
 #define PCB_DAD_TREE_APPEND(table, row_after, cells) \
@@ -333,7 +333,7 @@ do { \
    can be set */
 #define PCB_DAD_TREE_SET_CB(table, name, func_or_data) \
 do { \
-	pcb_hid_tree_t *__tree__ = (pcb_hid_tree_t *)table[table ## _len-1].enumerations; \
+	pcb_hid_tree_t *__tree__ = table[table ## _len-1].wdata; \
 	__tree__->user_ ## name = func_or_data; \
 } while(0)
 
@@ -354,7 +354,7 @@ do { \
 	table[table ## _len-1].min_val = __opt__->min_val; \
 	table[table ## _len-1].max_val = __opt__->max_val; \
 	table[table ## _len-1].val = __opt__->default_val; \
-	table[table ## _len-1].enumerations = __opt__->enumerations; \
+	table[table ## _len-1].wdata = __opt__->enumerations; \
 	PCB_DAD_UPDATE_INTERNAL(table, table ## _len-1); \
 } while(0)
 
@@ -372,7 +372,7 @@ do { \
 		switch(table[table ## _len - 1].type) { \
 			case PCB_HATT_END: \
 				{ \
-					pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)table[table ## _len - 1].enumerations; \
+					pcb_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
 					if ((cmp != NULL) && (cmp->set_help != NULL)) \
 						cmp->set_help(&table[table ## _len - 1], (val)); \
 				} \
@@ -388,7 +388,7 @@ do { \
 			case PCB_HATT_BEGIN_COMPOUND: \
 			case PCB_HATT_END: \
 				{ \
-					pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)table[table ## _len - 1].enumerations; \
+					pcb_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
 					if ((cmp != NULL) && (cmp->set_val_ptr != NULL)) \
 						cmp->set_val_ptr(&table[table ## _len - 1], (void *)(val_)); \
 					else \
@@ -406,7 +406,7 @@ do { \
 			case PCB_HATT_BEGIN_COMPOUND: \
 			case PCB_HATT_END: \
 				{ \
-					pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)table[table ## _len - 1].enumerations; \
+					pcb_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
 					if ((cmp != NULL) && (cmp->set_val_num != NULL)) \
 						cmp->set_val_num(&table[table ## _len - 1], (long)(val_), (double)(val_), (pcb_coord_t)(val_)); \
 					else \
@@ -436,11 +436,11 @@ do { \
 		pcb_hid_tree_t *__tree__; \
 		switch(table[(widx)].type) { \
 			case PCB_HATT_PREVIEW: \
-				__prv__ = (pcb_hid_preview_t *)table[(widx)].enumerations; \
+				__prv__ = table[(widx)].wdata; \
 				__prv__->attrib = &table[(widx)]; \
 				break; \
 			case PCB_HATT_TREE: \
-				__tree__ = (pcb_hid_tree_t *)table[(widx)].enumerations; \
+				__tree__ = table[(widx)].wdata; \
 				__tree__->attrib = &table[(widx)]; \
 				break; \
 			default: break; \
@@ -551,7 +551,7 @@ do { \
 		case PCB_HATT_BEGIN_COMPOUND: \
 		case PCB_HATT_END: \
 			{ \
-				pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)table[table ## _len - 1].enumerations; \
+				pcb_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
 				if ((cmp != NULL) && (cmp->set_field_num != NULL)) \
 					cmp->set_field_num(&table[table ## _len - 1], #field, (long)(val_), (double)(val_), (pcb_coord_t)(val_)); \
 				else \
@@ -610,7 +610,7 @@ do { \
 		case PCB_HATT_BEGIN_COMPOUND: \
 		case PCB_HATT_END: \
 			{ \
-				pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)table[table ## _len - 1].enumerations; \
+				pcb_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
 				if ((cmp != NULL) && (cmp->set_field_ptr != NULL)) \
 					cmp->set_field_ptr(&table[table ## _len - 1], #field, (void *)(val_)); \
 				else \
@@ -644,7 +644,7 @@ do { \
 			break; \
 		case PCB_HATT_PREVIEW: \
 			{ \
-				pcb_hid_preview_t *prv = (pcb_hid_preview_t *)table[field].enumerations; \
+				pcb_hid_preview_t *prv = table[field].wdata; \
 				if (prv->user_free_cb != NULL) \
 					prv->user_free_cb(&table[field], prv->user_ctx, prv->hid_wdata); \
 				if (prv->hid_free_cb != NULL) \
@@ -654,7 +654,7 @@ do { \
 			break; \
 		case PCB_HATT_TEXT: \
 			{ \
-				pcb_hid_text_t *txt = (pcb_hid_text_t *)table[field].enumerations; \
+				pcb_hid_text_t *txt = table[field].wdata; \
 				if (txt->user_free_cb != NULL) \
 					txt->user_free_cb(&table[field], txt->user_ctx, txt->hid_wdata); \
 				if (txt->hid_free_cb != NULL) \
@@ -665,7 +665,7 @@ do { \
 		case PCB_HATT_BEGIN_COMPOUND: \
 		case PCB_HATT_END: \
 			{ \
-				pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)table[field].enumerations; \
+				pcb_hid_compound_t *cmp = table[field].wdata; \
 				if ((cmp != NULL) && (cmp->free != NULL)) \
 					cmp->free(&table[field]); \
 			} \

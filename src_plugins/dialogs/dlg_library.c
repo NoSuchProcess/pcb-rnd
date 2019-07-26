@@ -256,7 +256,7 @@ static void library_lib2dlg(library_ctx_t *ctx)
 	char *cursor_path = NULL;
 
 	attr = &ctx->dlg[ctx->wtree];
-	tree = (pcb_hid_tree_t *)attr->enumerations;
+	tree = attr->wdata;
 
 	/* remember cursor */
 	r = pcb_dad_tree_get_selected(attr);
@@ -281,7 +281,7 @@ static void library_lib2dlg(library_ctx_t *ctx)
 static void library_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	pcb_hid_attr_val_t hv;
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	pcb_hid_tree_t *tree = attrib->wdata;
 	library_ctx_t *ctx = tree->user_ctx;
 	int close_param = 1;
 
@@ -377,7 +377,7 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	int have_filter_text, is_para;
 
 	attr = &ctx->dlg[ctx->wtree];
-	tree = (pcb_hid_tree_t *)attr->enumerations;
+	tree = attr->wdata;
 	otext = attr_inp->val.str;
 	text = pcb_strdup(otext);
 	have_filter_text = (*text != '\0');
@@ -467,7 +467,7 @@ static pcb_hid_row_t *find_fp_prefix(library_ctx_t *ctx, const char *name, int n
 	pcb_hid_tree_t *tree;
 
 	attr = &ctx->dlg[ctx->wtree];
-	tree = (pcb_hid_tree_t *)attr->enumerations;
+	tree = attr->wdata;
 
 	return find_fp_prefix_(tree, &tree->rows, name, namelen);
 }

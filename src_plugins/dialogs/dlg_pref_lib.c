@@ -56,7 +56,7 @@ static void pref_lib_conf2dlg_pre(conf_native_t *cfg, int arr_idx)
 		return;
 
 	attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
-	tree = (pcb_hid_tree_t *)attr->enumerations;
+	tree = attr->wdata;
 
 	r = pcb_dad_tree_get_selected(attr);
 	if (r != NULL) {
@@ -133,7 +133,7 @@ static void lht_clean_list(lht_node_t * lst)
 static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	pcb_hid_tree_t *tree = attr->wdata;
 	lht_node_t *m, *lst, *nd;
 	pcb_hid_row_t *r;
 
@@ -181,7 +181,7 @@ static void lib_btn_up(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *bt
 {
 	pcb_hid_attribute_t *attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
 	pcb_hid_row_t *prev, *r = pcb_dad_tree_get_selected(attr);
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	pcb_hid_tree_t *tree = attr->wdata;
 	char *cell[4];
 
 	if (r == NULL)
@@ -208,7 +208,7 @@ static void lib_btn_down(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 {
 	pcb_hid_attribute_t *attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
 	pcb_hid_row_t *next, *r = pcb_dad_tree_get_selected(attr);
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	pcb_hid_tree_t *tree = attr->wdata;
 	char *cell[4];
 
 	if (r == NULL)
@@ -294,7 +294,7 @@ static void lib_btn_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	char *cell[4];
 
 	if (r == NULL) {
-		pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+		pcb_hid_tree_t *tree = attr->wdata;
 
 		switch(pos) {
 			case 0: /* replace */
@@ -413,7 +413,7 @@ void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
 		PCB_DAD_TREE(ctx->dlg, 3, 0, hdr);
 			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 			ctx->lib.wlist = PCB_DAD_CURRENT(ctx->dlg);
-			tree = (pcb_hid_tree_t *)ctx->dlg[ctx->lib.wlist].enumerations;
+			tree = ctx->dlg[ctx->lib.wlist].wdata;
 			tree->user_free_cb = pref_lib_row_free;
 	PCB_DAD_END(ctx->dlg);
 

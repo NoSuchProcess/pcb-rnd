@@ -95,7 +95,7 @@ static int pstklib_data2dlg(pstk_lib_ctx_t *ctx)
 		return -1;
 
 	attr = &ctx->dlg[ctx->wlist];
-	tree = (pcb_hid_tree_t *)attr->enumerations;
+	tree = attr->wdata;
 
 	/* remember cursor */
 	r = pcb_dad_tree_get_selected(attr);
@@ -217,7 +217,7 @@ static void pstklib_force_redraw(pstk_lib_ctx_t *ctx, pcb_pstk_t *ps)
 static void pstklib_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	pcb_hid_attr_val_t hv;
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	pcb_hid_tree_t *tree = attrib->wdata;
 	pstk_lib_ctx_t *ctx = tree->user_ctx;
 	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
 	pcb_pstk_t ps;
@@ -276,7 +276,7 @@ static void pstklib_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		return;
 
 	attr = &ctx->dlg[ctx->wlist];
-	tree = (pcb_hid_tree_t *)attr->enumerations;
+	tree = attr->wdata;
 	text = attr_inp->val.str;
 
 	if ((text == NULL) || (*text == '\0')) {

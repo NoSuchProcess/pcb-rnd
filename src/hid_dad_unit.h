@@ -52,7 +52,7 @@ do { \
 			PCB_DAD_SET_ATTR_FIELD(table, user_data, (const char **)unit); \
 			unit->wenum = PCB_DAD_CURRENT(table); \
 	PCB_DAD_END(table); \
-		PCB_DAD_SET_ATTR_FIELD(table, enumerations, (const char **)unit); \
+		PCB_DAD_SET_ATTR_FIELD(table, wdata, unit); \
 		unit->cmp.wend = PCB_DAD_CURRENT(table); \
 	\
 	unit->cmp.set_val_num = pcb_dad_unit_set_num; \

@@ -129,7 +129,7 @@ static void txt_set_text_(GtkTextBuffer *b, unsigned how, const char *txt, long 
 static void txt_set_text(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_text_set_t how, const char *str)
 {
 	attr_dlg_t *ctx = hid_ctx;
-	pcb_hid_text_t *txt = (pcb_hid_text_t *)attrib->enumerations;
+	pcb_hid_text_t *txt = attrib->wdata;
 	dad_txt_t *tctx = txt->hid_wdata;
 	int idx = attrib - ctx->attrs;
 	GtkWidget *wtxt = ctx->wl[idx];
@@ -224,7 +224,7 @@ static GtkWidget *ghid_text_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, G
 {
 	GtkWidget *wtxt;
 	GtkTextBuffer *buffer;
-	pcb_hid_text_t *txt = (pcb_hid_text_t *)attr->enumerations;
+	pcb_hid_text_t *txt = attr->wdata;
 	dad_txt_t *tctx;
 
 

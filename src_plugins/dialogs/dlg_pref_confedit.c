@@ -95,7 +95,7 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 		case CFN_LIST:
 			{
 				pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
-				pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+				pcb_hid_tree_t *tree = attr->wdata;
 			
 				pcb_dad_tree_clear(tree);
 				if (nd->type != LHT_LIST)
@@ -140,7 +140,7 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 		case CFN_LIST:
 			{
 				pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
-				pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+				pcb_hid_tree_t *tree = attr->wdata;
 				pcb_hid_row_t *r;
 				lht_node_t *nd = conf_lht_get_at(ctx->role, ctx->nat->hash_path, 0);
 

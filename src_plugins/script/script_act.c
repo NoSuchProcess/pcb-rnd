@@ -79,7 +79,7 @@ static void script_dlg_s2d_act(script_dlg_t *ctx)
 	script_t *sc;
 
 	attr = &ctx->dlg[ctx->walist];
-	tree = (pcb_hid_tree_t *)attr->enumerations;
+	tree = attr->wdata;
 
 	/* remove existing items */
 	for(r = gdl_first(&tree->rows); r != NULL; r = gdl_first(&tree->rows))
@@ -111,7 +111,7 @@ static void script_dlg_s2d(script_dlg_t *ctx)
 	htsp_entry_t *e;
 
 	attr = &ctx->dlg[ctx->wslist];
-	tree = (pcb_hid_tree_t *)attr->enumerations;
+	tree = attr->wdata;
 
 	/* remember cursor */
 	r = pcb_dad_tree_get_selected(attr);

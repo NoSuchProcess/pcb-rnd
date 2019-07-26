@@ -170,7 +170,7 @@ static int ltf_tabbed_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_att
 	const char **l;
 
 
-	for(l = ctx->attrs[i].enumerations, numtabs = 0; *l != NULL; l++, numtabs++) ;
+	for(l = ctx->attrs[i].wdata, numtabs = 0; *l != NULL; l++, numtabs++) ;
 	tctx = calloc(1, sizeof(ltf_tab_t) + sizeof(ltf_tabbtn_t) * numtabs-1);
 	tctx->len = numtabs;
 
@@ -188,7 +188,7 @@ static int ltf_tabbed_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_att
 		}
 
 		/* create the label buttons */
-		for(n = 0, l = ctx->attrs[i].enumerations; *l != NULL; l++,n++) {
+		for(n = 0, l = ctx->attrs[i].wdata; *l != NULL; l++,n++) {
 			stdarg_n = 0;
 			stdarg(XmNshadowThickness, 1);
 			t = XmCreatePushButton(wtab, (char *)*l, stdarg_args, stdarg_n);

@@ -299,7 +299,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					}
 					break;
 				case TB_TABBED:
-					/* Add a new notebook page with an empty vbox, using tab label present in enumerations. */
+					/* Add a new notebook page with an empty vbox, using tab label present in wdata. */
 					parent = gtkc_vbox_new(FALSE, 4);
 					if (*tb_st->val.tabbed.tablab) {
 						widget = gtk_label_new(*tb_st->val.tabbed.tablab);
@@ -363,7 +363,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				{
 					ghid_attr_tb_t ts;
 					ts.type = TB_TABBED;
-					ts.val.tabbed.tablab = ctx->attrs[j].enumerations;
+					ts.val.tabbed.tablab = ctx->attrs[j].wdata;
 					ctx->wl[j] = widget = gtk_notebook_new();
 					gtk_notebook_set_show_tabs(GTK_NOTEBOOK(widget), !(ctx->attrs[j].pcb_hatt_flags & PCB_HATF_HIDE_TABLAB));
 					if (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_LEFT_TAB)
@@ -459,10 +459,10 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				 * Iterate through each value and add them to the
 				 * combo box
 				 */
-				i = 0;
-				while (ctx->attrs[j].enumerations[i]) {
-					gtkc_combo_box_text_append_text(combo, ctx->attrs[j].enumerations[i]);
-					i++;
+				{
+					const char **vals = ctx->attrs[j].wdata;
+					for(i = 0; vals[i] != NULL; i++)
+						gtkc_combo_box_text_append_text(combo, vals[i]);
 				}
 				gtk_combo_box_set_active(GTK_COMBO_BOX(combo), ctx->attrs[j].val.lng);
 				g_signal_connect(G_OBJECT(combo), "changed", G_CALLBACK(enum_changed_cb), &(ctx->attrs[j]));
@@ -551,7 +551,7 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 
 		case PCB_HATT_END:
 			{
-				pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)ctx->attrs[idx].enumerations;
+				pcb_hid_compound_t *cmp = ctx->attrs[idx].wdata;
 				if ((cmp != NULL) && (cmp->set_value != NULL))
 					cmp->set_value(&ctx->attrs[idx], ctx, idx, val);
 				else
@@ -684,7 +684,7 @@ static int ghid_attr_dlg_widget_hide_(attr_dlg_t *ctx, int idx, pcb_bool hide)
 		return -1;
 
 	if (ctx->attrs[idx].type == PCB_HATT_END) {
-		pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)ctx->attrs[idx].enumerations;
+		pcb_hid_compound_t *cmp = ctx->attrs[idx].wdata;
 		if ((cmp != NULL) && (cmp->widget_hide != NULL))
 			return cmp->widget_hide(&ctx->attrs[idx], ctx, idx, hide);
 		else
@@ -881,7 +881,7 @@ int ghid_attr_dlg_widget_state(void *hid_ctx, int idx, int enabled)
 		return -1;
 
 	if (ctx->attrs[idx].type == PCB_HATT_END) {
-		pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)ctx->attrs[idx].enumerations;
+		pcb_hid_compound_t *cmp = ctx->attrs[idx].wdata;
 		if ((cmp != NULL) && (cmp->widget_state != NULL))
 			cmp->widget_state(&ctx->attrs[idx], ctx, idx, enabled);
 		else

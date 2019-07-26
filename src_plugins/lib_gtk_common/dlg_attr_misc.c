@@ -104,13 +104,13 @@ static GtkWidget *ghid_preview_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr
 {
 	GtkWidget *bparent, *prv;
 	pcb_gtk_preview_t *p;
-	pcb_hid_preview_t *hp = (pcb_hid_preview_t *)attr->enumerations;
+	pcb_hid_preview_t *hp = attr->wdata;
 
 	hp->hid_wdata = ctx;
 	hp->hid_zoomto_cb = ghid_preview_zoomto;
 	
 	bparent = frame_scroll(parent, attr->pcb_hatt_flags, &ctx->wltop[j]);
-	prv = pcb_gtk_preview_new(ctx->gctx, ctx->gctx->impl.init_drawing_widget, ctx->gctx->impl.preview_expose, ghid_preview_expose, ghid_preview_config, attr->enumerations);
+	prv = pcb_gtk_preview_new(ctx->gctx, ctx->gctx->impl.init_drawing_widget, ctx->gctx->impl.preview_expose, ghid_preview_expose, ghid_preview_config, attr->wdata);
 	gtk_box_pack_start(GTK_BOX(bparent), prv, TRUE, TRUE, 0);
 	gtk_widget_set_tooltip_text(prv, attr->help_text);
 	p = (pcb_gtk_preview_t *) prv;
@@ -137,7 +137,7 @@ static GtkWidget *ghid_picture_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr
 	bparent = frame_scroll(parent, attr->pcb_hatt_flags, &ctx->wltop[j]);
 	int expfill = (attr->pcb_hatt_flags & PCB_HATF_EXPFILL);
 
-	pixbuf = gdk_pixbuf_new_from_xpm_data(attr->enumerations);
+	pixbuf = gdk_pixbuf_new_from_xpm_data(attr->wdata);
 	pic = gtk_image_new_from_pixbuf(pixbuf);
 	evb = wrap_bind_click(pic, click_cb, attr);
 	g_object_set_data(G_OBJECT(evb), PCB_OBJ_PROP, click_ctx);
@@ -156,7 +156,7 @@ static GtkWidget *ghid_picbutton_create(attr_dlg_t *ctx, pcb_hid_attribute_t *at
 
 	bparent = frame_scroll(parent, attr->pcb_hatt_flags, &ctx->wltop[j]);
 
-	pixbuf = gdk_pixbuf_new_from_xpm_data(attr->enumerations);
+	pixbuf = gdk_pixbuf_new_from_xpm_data(attr->wdata);
 	img = gtk_image_new_from_pixbuf(pixbuf);
 
 	if (toggle)

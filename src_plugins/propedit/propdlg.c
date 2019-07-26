@@ -70,7 +70,7 @@ static void prop_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 
 	attr = &ctx->dlg[ctx->wtree];
 	attr_inp = &ctx->dlg[ctx->wfilter];
-	tree = (pcb_hid_tree_t *)attr->enumerations;
+	tree = attr->wdata;
 	text = attr_inp->val.str;
 	have_filter_text = (text != NULL) && (*text != '\0');
 
@@ -86,7 +86,7 @@ static void prop_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 static void prop_pcb2dlg(propdlg_t *ctx)
 {
 	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wtree];
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	pcb_hid_tree_t *tree = attr->wdata;
 	pcb_hid_row_t *r;
 	htsp_entry_t *sorted, *e;
 	char *cursor_path = NULL;
@@ -249,7 +249,7 @@ static void prop_vals_update(propdlg_t *ctx, pcb_props_t *p)
 {
 	pcb_hid_attr_val_t hv;
 	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wvals];
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	pcb_hid_tree_t *tree = attr->wdata;
 	htprop_entry_t *e;
 	pvsort_t *pvs;
 	char *cell[3] = {NULL, NULL, NULL};
@@ -289,7 +289,7 @@ static void prop_vals_update(propdlg_t *ctx, pcb_props_t *p)
 
 static void prop_select_node_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	pcb_hid_tree_t *tree = attrib->wdata;
 	propdlg_t *ctx = tree->user_ctx;
 	pcb_props_t *p = NULL;
 

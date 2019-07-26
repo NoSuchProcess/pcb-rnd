@@ -400,7 +400,7 @@ static void cb_ttbl_filt(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 {
 	test_t *ctx = caller_data;
 	pcb_hid_attribute_t *treea = &ctx->dlg[ctx->tt];
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)treea->enumerations;
+	pcb_hid_tree_t *tree = treea->wdata;
 
 	ttbl_filt(&tree->rows, attr->val.lng);
 	pcb_dad_tree_update_hide(treea);
@@ -445,7 +445,7 @@ static void cb_text_replace(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 {
 	test_t *ctx = caller_data;
 	pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
-	pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+	pcb_hid_text_t *txt = atxt->wdata;
 	txt->hid_set_text(atxt, hid_ctx, PCB_HID_TEXT_REPLACE, "Hello\nworld!\n");
 }
 
@@ -453,7 +453,7 @@ static void cb_text_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 {
 	test_t *ctx = caller_data;
 	pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
-	pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+	pcb_hid_text_t *txt = atxt->wdata;
 	txt->hid_set_text(atxt, hid_ctx, PCB_HID_TEXT_INSERT, "ins");
 }
 
@@ -461,7 +461,7 @@ static void cb_text_append(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 {
 	test_t *ctx = caller_data;
 	pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
-	pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+	pcb_hid_text_t *txt = atxt->wdata;
 	txt->hid_set_text(atxt, hid_ctx, PCB_HID_TEXT_APPEND | PCB_HID_TEXT_MARKUP, "app<R>red</R>\n");
 }
 
@@ -469,7 +469,7 @@ static void cb_text_get(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 {
 	test_t *ctx = caller_data;
 	pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
-	pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+	pcb_hid_text_t *txt = atxt->wdata;
 	char *s;
 	s = txt->hid_get_text(atxt, hid_ctx);
 	printf("text: '%s'\n", s);
@@ -479,7 +479,7 @@ static void cb_text_get(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 static void cb_text_edit(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	test_t *ctx = caller_data;
-	pcb_hid_text_t *txt = (pcb_hid_text_t *)attr->enumerations;
+	pcb_hid_text_t *txt = attr->wdata;
 	long x, y, o;
 	char buf[256];
 	pcb_hid_attr_val_t val;
@@ -495,7 +495,7 @@ static void cb_text_offs(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 {
 	test_t *ctx = caller_data;
 	pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
-	pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+	pcb_hid_text_t *txt = atxt->wdata;
 	txt->hid_set_offs(atxt, hid_ctx, txt->hid_get_offs(atxt, hid_ctx) / 2);
 }
 
@@ -503,7 +503,7 @@ static void cb_text_ro(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 {
 	test_t *ctx = caller_data;
 	pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
-	pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+	pcb_hid_text_t *txt = atxt->wdata;
 	ctx->txtro = !ctx->txtro;
 	txt->hid_set_readonly(atxt, hid_ctx, ctx->txtro);
 }

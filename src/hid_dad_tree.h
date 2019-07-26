@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -118,7 +118,7 @@ PCB_INLINE void pcb_dad_tree_build_path(pcb_hid_tree_t *tree, gds_t *path, pcb_h
 /* calculate path of a row and insert it in the tree hash */
 PCB_INLINE void pcb_dad_tree_set_hash(pcb_hid_attribute_t *attr, pcb_hid_row_t *row)
 {
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	pcb_hid_tree_t *tree = attr->wdata;
 	if (attr->pcb_hatt_flags & PCB_HATF_TREE_COL) {
 		gds_t path;
 		gds_init(&path);
@@ -134,7 +134,7 @@ PCB_INLINE void pcb_dad_tree_set_hash(pcb_hid_attribute_t *attr, pcb_hid_row_t *
    end of the list of entries in the root (== at the bottom of the list) */
 PCB_INLINE pcb_hid_row_t *pcb_dad_tree_append(pcb_hid_attribute_t *attr, pcb_hid_row_t *aft, char **cols)
 {
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	pcb_hid_tree_t *tree = attr->wdata;
 	pcb_hid_row_t *nrow = pcb_dad_tree_new_row(cols);
 	gdl_list_t *par; /* the list that is the common parent of aft and the new row */
 
@@ -158,7 +158,7 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_append(pcb_hid_attribute_t *attr, pcb_hid
    beginning of the list of entries in the root (== at the top of the list) */
 PCB_INLINE pcb_hid_row_t *pcb_dad_tree_insert(pcb_hid_attribute_t *attr, pcb_hid_row_t *bfr, char **cols)
 {
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	pcb_hid_tree_t *tree = attr->wdata;
 	pcb_hid_row_t *nrow = pcb_dad_tree_new_row(cols);
 	gdl_list_t *par; /* the list that is the common parent of bfr and the new row */
 
@@ -182,7 +182,7 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_insert(pcb_hid_attribute_t *attr, pcb_hid
    end of the list of entries in the root (== at the bottom of the list) */
 PCB_INLINE pcb_hid_row_t *pcb_dad_tree_append_under(pcb_hid_attribute_t *attr, pcb_hid_row_t *prn, char **cols)
 {
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	pcb_hid_tree_t *tree = attr->wdata;
 	pcb_hid_row_t *nrow = pcb_dad_tree_new_row(cols);
 	gdl_list_t *par; /* the list that is the common parent of aft and the new row */
 
@@ -202,7 +202,7 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_append_under(pcb_hid_attribute_t *attr, p
 
 PCB_INLINE int pcb_dad_tree_remove(pcb_hid_attribute_t *attr, pcb_hid_row_t *row)
 {
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	pcb_hid_tree_t *tree = attr->wdata;
 	pcb_hid_row_t *r, *rn, *par = pcb_dad_tree_parent_row(tree, row);
 	gdl_list_t *lst = (par == NULL) ? &tree->rows : &par->children;
 	int res = 0;
@@ -236,7 +236,7 @@ PCB_INLINE void pcb_dad_tree_clear(pcb_hid_tree_t *tree)
 
 PCB_INLINE pcb_hid_row_t *pcb_dad_tree_get_selected(pcb_hid_attribute_t *attr)
 {
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	pcb_hid_tree_t *tree = attr->wdata;
 
 	assert(attr == tree->attrib);
 
@@ -248,7 +248,7 @@ PCB_INLINE pcb_hid_row_t *pcb_dad_tree_get_selected(pcb_hid_attribute_t *attr)
 
 PCB_INLINE void pcb_dad_tree_update_hide(pcb_hid_attribute_t *attr)
 {
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	pcb_hid_tree_t *tree = attr->wdata;
 
 	assert(attr == tree->attrib);
 
@@ -258,7 +258,7 @@ PCB_INLINE void pcb_dad_tree_update_hide(pcb_hid_attribute_t *attr)
 
 PCB_INLINE int pcb_dad_tree_modify_cell(pcb_hid_attribute_t *attr, pcb_hid_row_t *row, int col, char *new_val)
 {
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	pcb_hid_tree_t *tree = attr->wdata;
 
 	assert(attr == tree->attrib);
 
@@ -284,7 +284,7 @@ PCB_INLINE int pcb_dad_tree_modify_cell(pcb_hid_attribute_t *attr, pcb_hid_row_t
 
 PCB_INLINE void pcb_dad_tree_jumpto(pcb_hid_attribute_t *attr, pcb_hid_row_t *row)
 {
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	pcb_hid_tree_t *tree = attr->wdata;
 
 	assert(attr == tree->attrib);
 
@@ -305,7 +305,7 @@ PCB_INLINE void pcb_dad_tree_expcoll_(pcb_hid_tree_t *tree, pcb_hid_row_t *row, 
 
 PCB_INLINE void pcb_dad_tree_expcoll(pcb_hid_attribute_t *attr, pcb_hid_row_t *row, pcb_bool expanded, pcb_bool recursive)
 {
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	pcb_hid_tree_t *tree = attr->wdata;
 
 	assert(attr == tree->attrib);
 

@@ -91,7 +91,7 @@ static void view2dlg_list(view_ctx_t *ctx)
 	char *cell[3], *cursor_path = NULL;
 
 	attr = &ctx->dlg[ctx->wlist];
-	tree = (pcb_hid_tree_t *)attr->enumerations;
+	tree = attr->wdata;
 
 	/* remember cursor */
 	r = pcb_dad_tree_get_selected(attr);
@@ -192,7 +192,7 @@ void view_simple_show(view_ctx_t *ctx)
 
 static void view_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	pcb_hid_tree_t *tree = attrib->wdata;
 	view_ctx_t *ctx = tree->user_ctx;
 
 	if (row != NULL)

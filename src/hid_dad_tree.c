@@ -32,7 +32,7 @@
 /* recursively free a row list subtree */
 static void pcb_dad_tree_free_rowlist(pcb_hid_attribute_t *attr, gdl_list_t *list)
 {
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	pcb_hid_tree_t *tree = attr->wdata;
 	pcb_hid_row_t *r;
 
 	while((r = gdl_first(list)) != NULL) {
@@ -55,7 +55,7 @@ static void pcb_dad_tree_free_rowlist(pcb_hid_attribute_t *attr, gdl_list_t *lis
 /* Internal: free all rows and caches and the tree itself */
 void pcb_dad_tree_free(pcb_hid_attribute_t *attr)
 {
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	pcb_hid_tree_t *tree = attr->wdata;
 	htsp_uninit(&tree->paths);
 	pcb_dad_tree_free_rowlist(attr, &tree->rows);
 	free(tree);
@@ -96,7 +96,7 @@ void pcb_hid_dad_close(void *hid_ctx, pcb_dad_retovr_t *retovr, int retval)
 
 void pcb_hid_dad_close_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_dad_retovr_t **retovr = (pcb_dad_retovr_t **)attr->enumerations;
+	pcb_dad_retovr_t **retovr = attr->wdata;
 	pcb_hid_dad_close(hid_ctx, *retovr, attr->val.lng);
 }
 

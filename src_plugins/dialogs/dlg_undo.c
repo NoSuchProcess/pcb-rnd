@@ -74,7 +74,7 @@ static void undo_data2dlg(undo_ctx_t *ctx)
 	char *payload, buff[8192], mark[2], ser[64];
 
 	attr = &ctx->dlg[ctx->wlist];
-	tree = (pcb_hid_tree_t *)attr->enumerations;
+	tree = attr->wdata;
 
 	/* remember cursor */
 	r = pcb_dad_tree_get_selected(attr);

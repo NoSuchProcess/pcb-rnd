@@ -289,7 +289,7 @@ static void exc_user_ser(int idx, int save)
 
 	wscript = exc_ctx.exc_data[idx].w[I_SCRIPT];
 	attr = &exc_ctx.dlg[wscript];
-	txt = (pcb_hid_text_t *)attr->enumerations;
+	txt = attr->wdata;
 
 	ser_save(txt->hid_get_text(attr, exc_ctx.dlg_hid_ctx), AEPREFIX "user-defined::script");
 }

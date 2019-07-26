@@ -51,7 +51,7 @@ static void setup_tree(pref_ctx_t *ctx)
 {
 	char *cell[2] = {NULL};
 	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wtree];
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	pcb_hid_tree_t *tree = attr->wdata;
 	htsp_entry_t *e;
 	htsp_entry_t **sorted;
 	int num_paths, n;
@@ -140,7 +140,7 @@ static void setup_intree(pref_ctx_t *ctx, conf_native_t *nat, int idx)
 {
 	conf_role_t n;
 	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wintree];
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+	pcb_hid_tree_t *tree = attr->wdata;
 	pcb_hid_row_t *r;
 
 	pcb_dad_tree_clear(tree);
@@ -232,7 +232,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 	if (nat->type == CFN_LIST) {
 		/* non-default: lists are manually loaded */
 		pcb_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wnatval[CFN_LIST]];
-		pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
+		pcb_hid_tree_t *tree = attr->wdata;
 		conf_listitem_t *n;
 		char *cell[4];
 
@@ -267,7 +267,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 
 static void dlg_conf_select_node_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	pcb_hid_tree_t *tree = attrib->wdata;
 	char *end, *end2;
 	conf_native_t *nat;
 
@@ -320,7 +320,7 @@ static void pcb_pref_dlg_conf_filter_cb(void *hid_ctx, void *caller_data, pcb_hi
 	int have_filter_text;
 
 	attr = &ctx->dlg[ctx->conf.wtree];
-	tree = (pcb_hid_tree_t *)attr->enumerations;
+	tree = attr->wdata;
 	text = attr_inp->val.str;
 	have_filter_text = (*text != '\0');
 

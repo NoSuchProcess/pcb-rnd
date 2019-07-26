@@ -45,22 +45,22 @@ typedef enum pcb_hids_e {
 	PCB_HATT_UNIT,
 	PCB_HATT_COORD,
 	PCB_HATT_BUTTON,              /* push button; default value is the label */
-	PCB_HATT_TREE,                /* tree/list/table view; number of columns: pcb_hatt_table_cols; data is in field 'enumerations' */
+	PCB_HATT_TREE,                /* tree/list/table view; number of columns: pcb_hatt_table_cols; data is in field 'wdata' */
 	PCB_HATT_PROGRESS,            /* progress bar; displays dbl between 0 and 1 */
-	PCB_HATT_PREVIEW,             /* preview/render widget; callbacks in 'enumerations' */
-	PCB_HATT_PICTURE,             /* static picture from xpm - picture data in enumerations */
-	PCB_HATT_PICBUTTON,           /* button with static picture from xpm - picture data in enumerations */
+	PCB_HATT_PREVIEW,             /* preview/render widget; callbacks in 'wdata' */
+	PCB_HATT_PICTURE,             /* static picture from xpm - picture data in wdata */
+	PCB_HATT_PICBUTTON,           /* button with static picture from xpm - picture data in wdata */
 	PCB_HATT_COLOR,               /* color pick (user input: select a color) */
-	PCB_HATT_TEXT,                /* plain text editor; data is in 'enumerations' as pcb_hid_text_t */
+	PCB_HATT_TEXT,                /* plain text editor; data is in 'wdata' as pcb_hid_text_t */
 
 	/* groups (e.g. boxes) */
 	PCB_HATT_BEGIN_HBOX,          /* NOTE: PCB_HATT_IS_COMPOSITE() depends on it */
 	PCB_HATT_BEGIN_VBOX,
 	PCB_HATT_BEGIN_HPANE,         /* horizontal split and offer two vboxes; the split ratio is dbl between 0 and 1, that describes the left side's size */
 	PCB_HATT_BEGIN_VPANE,         /* vertical split and offer two vboxes; the split ratio is dbl between 0 and 1, that describes the left side's size */
-	PCB_HATT_BEGIN_TABLE,         /* min_val is the number of columns */
-	PCB_HATT_BEGIN_TABBED,        /* tabbed view (e.g. notebook); ->enumerations stores the tab names and a NULL; default_val's integer value is the index of the current tab */
-	PCB_HATT_BEGIN_COMPOUND,      /* subtree emulating a single widget; (pcb_hid_compound_t *) stored in END's enumerations */
+	PCB_HATT_BEGIN_TABLE,         /* wdata_aux1 is the number of columns */
+	PCB_HATT_BEGIN_TABBED,        /* tabbed view (e.g. notebook); ->wdata stores the tab names and a NULL; default_val's integer value is the index of the current tab */
+	PCB_HATT_BEGIN_COMPOUND,      /* subtree emulating a single widget; (pcb_hid_compound_t *) stored in END's wdata */
 	PCB_HATT_END          /* close one level of PCB_HATT_* */
 } pcb_hids_t;
 
@@ -71,7 +71,7 @@ typedef enum pcb_hids_e {
 
 /* alternative field names in struct pcb_hid_attribute_s */
 #define pcb_hatt_flags       hatt_flags
-#define pcb_hatt_table_cols  min_val
+#define pcb_hatt_table_cols  wdata_aux1
 
 typedef enum {
 	PCB_HID_TEXT_INSERT,           /* insert at cursor or replace selection */
@@ -191,9 +191,11 @@ struct pcb_hid_attribute_s {
 	double min_val, max_val; /* for integer and real */
 	pcb_hid_attr_val_t val; /* Also actual value for global attributes. */
 
-	/* NULL terminated list of values for a PCB_HATT_ENUM;
-	   Also (ab)used as (pcb_hid_tree_t *) for a PCB_HATT_TREE and for PCB_HATT_PICTURE & PCB_HATT_PICBUTTON */
-	const char **enumerations;
+	/* PCB_HATT_ENUM: const char ** (NULL terminated list of values)
+	   PCB_HATT_PICTURE & PCB_HATT_PICBUTTON: const char **xpm
+	   PCB_HATT_TREE and others: (pcb_hid_*_t *)  */
+	void *wdata; /* main widget data */
+	int wdata_aux1; /* auixiliary widget data - should phase out long term */
 
 	/* dynamic API */
 	unsigned changed:1; /* 0 for initial values, 1 on user change */

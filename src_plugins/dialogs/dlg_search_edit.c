@@ -79,7 +79,7 @@ static void srch_expr_set_ops(srchedit_ctx_t *ctx, const expr_wizard_op_t *op, i
 		return;
 
 	attr = &ctx->dlg[ctx->wop];
-	tree = (pcb_hid_tree_t *)attr->enumerations;
+	tree = attr->wdata;
 
 	/* remember cursor */
 	if (click) {
@@ -121,7 +121,7 @@ static void srch_expr_fill_in_right_const(srchedit_ctx_t *ctx, const search_expr
 	const char **o;
 
 	attr = &ctx->dlg[ctx->wright[RIGHT_CONST]];
-	tree = (pcb_hid_tree_t *)attr->enumerations;
+	tree = attr->wdata;
 
 	/* remove existing items */
 	pcb_dad_tree_clear(tree);
@@ -191,7 +191,7 @@ static void srch_expr_fill_in_right(srchedit_ctx_t *ctx, const search_expr_t *s)
 
 static void srch_expr_left_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	pcb_hid_tree_t *tree = attrib->wdata;
 	srchedit_ctx_t *ctx = tree->user_ctx;
 	const expr_wizard_t *e;
 
@@ -209,7 +209,7 @@ static void srch_expr_left_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hi
 
 static void srch_expr_op_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	pcb_hid_tree_t *tree = attrib->wdata;
 	srchedit_ctx_t *ctx = tree->user_ctx;
 
 	if (row != NULL)
@@ -268,7 +268,7 @@ static void srchexpr_right_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 
 static void srch_expr_right_table_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	pcb_hid_tree_t *tree = attrib->wdata;
 	srchedit_ctx_t *ctx = tree->user_ctx;
 
 	free(ctx->se.right);

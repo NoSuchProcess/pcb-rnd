@@ -121,7 +121,7 @@ static void dad_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 
 static void dad_row_free_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	pcb_hid_tree_t *tree = attrib->wdata;
 	dad_t *dad = tree->user_ctx;
 	fgw_arg_t res;
 	res.type = FGW_PTR | FGW_VOID;

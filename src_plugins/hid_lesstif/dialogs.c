@@ -222,7 +222,7 @@ static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
 				stdarg_n = 0;
 				stdarg(XmNuserData, &uptr);
 				XtGetValues(btn, stdarg_args, stdarg_n);
-				ctx->attrs[widx].val.lng = uptr - ctx->attrs[widx].enumerations;
+				ctx->attrs[widx].val.lng = uptr - (const char **)ctx->attrs[widx].wdata;
 			}
 			break;
 		default:
@@ -439,6 +439,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 				static XmString empty = 0;
 				Widget submenu, default_button = 0;
 				int sn = stdarg_n;
+				const char **vals = ctx->attrs[i].wdata;
 
 				if (empty == 0)
 					empty = XmStringCreatePCB("");
@@ -449,14 +450,14 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 				stdarg(XmNlabelString, empty);
 				stdarg(XmNsubMenuId, submenu);
 				ctx->wl[i] = XmCreateOptionMenu(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
-				for (sn = 0; ctx->attrs[i].enumerations[sn]; sn++);
+				for (sn = 0; vals[sn]; sn++);
 				ctx->btn[i] = calloc(sizeof(Widget), sn);
-				for (sn = 0; ctx->attrs[i].enumerations[sn]; sn++) {
+				for (sn = 0; vals[sn]; sn++) {
 					Widget btn;
 					XmString label;
 					stdarg_n = 0;
-					label = XmStringCreatePCB(ctx->attrs[i].enumerations[sn]);
-					stdarg(XmNuserData, &ctx->attrs[i].enumerations[sn]);
+					label = XmStringCreatePCB(vals[sn]);
+					stdarg(XmNuserData, &vals[sn]);
 					stdarg(XmNlabelString, label);
 					btn = XmCreatePushButton(submenu, XmStrCast("menubutton"), stdarg_args, stdarg_n);
 					XtManageChild(btn);
@@ -507,7 +508,7 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 			goto err;
 		case PCB_HATT_END:
 			{
-				pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)ctx->attrs[idx].enumerations;
+				pcb_hid_compound_t *cmp = ctx->attrs[idx].wdata;
 				if ((cmp != NULL) && (cmp->set_value != NULL))
 					cmp->set_value(&ctx->attrs[idx], ctx, idx, val);
 				else
@@ -555,12 +556,15 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 			ltf_tree_set(ctx, idx, val->str);
 			break;
 		case PCB_HATT_ENUM:
-			for (n = 0; ctx->attrs[idx].enumerations[n]; n++) {
-				if (n == val->lng) {
-					stdarg_n = 0;
-					stdarg(XmNmenuHistory, (ctx->btn[idx])[n]);
-					XtSetValues(ctx->wl[idx], stdarg_args, stdarg_n);
-					goto ok;
+			{
+				const char **vals = ctx->attrs[idx].wdata;
+				for (n = 0; vals[n]; n++) {
+					if (n == val->lng) {
+						stdarg_n = 0;
+						stdarg(XmNmenuHistory, (ctx->btn[idx])[n]);
+						XtSetValues(ctx->wl[idx], stdarg_args, stdarg_n);
+						goto ok;
+					}
 				}
 			}
 			goto err;
@@ -798,7 +802,7 @@ int lesstif_attr_dlg_widget_state(void *hid_ctx, int idx, int enabled)
 		return -1;
 
 	if (ctx->attrs[idx].type == PCB_HATT_END) {
-		pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)ctx->attrs[idx].enumerations;
+		pcb_hid_compound_t *cmp = ctx->attrs[idx].wdata;
 		if ((cmp != NULL) && (cmp->widget_state != NULL))
 			cmp->widget_state(&ctx->attrs[idx], ctx, idx, enabled);
 		else
@@ -819,7 +823,7 @@ int lesstif_attr_dlg_widget_hide(void *hid_ctx, int idx, pcb_bool hide)
 	if (ctx->attrs[idx].type == PCB_HATT_BEGIN_COMPOUND)
 		return -1;
 	if (ctx->attrs[idx].type == PCB_HATT_END) {
-		pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)ctx->attrs[idx].enumerations;
+		pcb_hid_compound_t *cmp = ctx->attrs[idx].wdata;
 		if ((cmp != NULL) && (cmp->widget_hide != NULL))
 			cmp->widget_hide(&ctx->attrs[idx], ctx, idx, hide);
 		else

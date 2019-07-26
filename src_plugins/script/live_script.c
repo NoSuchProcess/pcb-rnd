@@ -258,7 +258,7 @@ static int live_stop(live_script_t *lvs)
 static int live_run(live_script_t *lvs)
 {
 	pcb_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
-	pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+	pcb_hid_text_t *txt = atxt->wdata;
 	FILE *f;
 	char *src, *fn, *lang;
 	int res = 0;
@@ -328,7 +328,7 @@ static int live_undo(live_script_t *lvs)
 static int live_load(live_script_t *lvs, const char *fn)
 {
 	pcb_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
-	pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+	pcb_hid_text_t *txt = atxt->wdata;
 	FILE *f;
 	gds_t tmp;
 
@@ -369,7 +369,7 @@ static int live_load(live_script_t *lvs, const char *fn)
 static int live_save(live_script_t *lvs, const char *fn)
 {
 	pcb_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
-	pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+	pcb_hid_text_t *txt = atxt->wdata;
 	FILE *f;
 	char *src;
 	int res = 0;

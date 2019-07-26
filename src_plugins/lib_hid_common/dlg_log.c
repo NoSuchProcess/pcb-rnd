@@ -54,7 +54,7 @@ static void log_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 
 static void log_append(log_ctx_t *ctx, pcb_hid_attribute_t *atxt, pcb_logline_t *line)
 {
-	pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+	pcb_hid_text_t *txt = atxt->wdata;
 	const char *prefix = NULL;
 	int popup;
 
@@ -121,7 +121,7 @@ static void btn_export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 static void maybe_scroll_to_bottom()
 {
 	pcb_hid_attribute_t *atxt = &log_ctx.dlg[log_ctx.wtxt];
-	pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+	pcb_hid_text_t *txt = atxt->wdata;
 
 	if ((log_ctx.dlg[log_ctx.wscroll].val.lng) && (txt->hid_scroll_to_bottom != NULL))
 		txt->hid_scroll_to_bottom(atxt, log_ctx.dlg_hid_ctx);
@@ -167,7 +167,7 @@ static void log_window_create(void)
 
 	{
 		pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
-		pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+		pcb_hid_text_t *txt = atxt->wdata;
 		txt->hid_set_readonly(atxt, ctx->dlg_hid_ctx, 1);
 	}
 	hv.lng = 1;
@@ -210,7 +210,7 @@ static void log_clear_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_ev
 {
 	if (log_ctx.active) {
 		pcb_hid_attribute_t *atxt = &log_ctx.dlg[log_ctx.wtxt];
-		pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+		pcb_hid_text_t *txt = atxt->wdata;
 
 		txt->hid_set_text(atxt, log_ctx.dlg_hid_ctx, PCB_HID_TEXT_REPLACE, "");
 		log_import(&log_ctx);

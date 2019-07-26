@@ -96,7 +96,7 @@ extern void xm_extent_prediction(XmTreeTableWidget w);
 
 static void ltf_tree_insert_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *new_row)
 {
-	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
+	pcb_hid_tree_t *ht = attrib->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
 
 	ltf_tt_insert_row(lt, new_row);
@@ -106,7 +106,7 @@ static void ltf_tree_insert_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb
 
 static void ltf_tree_modify_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int col)
 {
-	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
+	pcb_hid_tree_t *ht = attrib->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
 
 	/* the caller modifies data strings directly, no need to do anything just flush */
@@ -129,7 +129,7 @@ static void cursor_changed(ltf_tree_t *lt)
 
 static void ltf_tree_remove_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
 {
-	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
+	pcb_hid_tree_t *ht = attrib->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
 	tt_entry_t *e = row->hid_data;
 	int changed = 0;
@@ -150,7 +150,7 @@ static void ltf_tree_remove_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb
 
 static void ltf_tree_free_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
 {
-	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
+	pcb_hid_tree_t *ht = attrib->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
 	tt_entry_t *i;
 
@@ -166,7 +166,7 @@ static void ltf_tree_free_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_h
 
 static pcb_hid_row_t *ltf_tree_get_selected_cb(pcb_hid_attribute_t *attrib, void *hid_wdata)
 {
-	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
+	pcb_hid_tree_t *ht = attrib->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
 
 	if (lt->cursor == NULL)
@@ -231,7 +231,7 @@ static void ltf_tt_jumprel(ltf_tree_t *lt, int dir)
 
 static void ltf_tree_jumpto_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
 {
-	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
+	pcb_hid_tree_t *ht = attrib->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
 	if (row != NULL) {
 		tt_entry_t *e = row->hid_data;
@@ -272,7 +272,7 @@ static void ltf_tree_expcoll(ltf_tree_t *lt, tt_entry_t *e, int expanded)
 static void ltf_tree_set(lesstif_attr_dlg_t *ctx, int idx, const char *val)
 {
 	pcb_hid_attribute_t *attr = &ctx->attrs[idx];
-	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attr->enumerations;
+	pcb_hid_tree_t *ht = attr->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
 	pcb_hid_row_t *r, *row;
 	tt_entry_t *e;
@@ -309,7 +309,7 @@ static void ltf_tree_set(lesstif_attr_dlg_t *ctx, int idx, const char *val)
 
 static void ltf_tree_expcoll_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int expanded)
 {
-	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
+	pcb_hid_tree_t *ht = attrib->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
 	ltf_tree_expcoll(lt, row->hid_data, expanded);
 	REDRAW();
@@ -317,7 +317,7 @@ static void ltf_tree_expcoll_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pc
 
 static void ltf_tree_update_hide_cb(pcb_hid_attribute_t *attrib, void *hid_wdata)
 {
-	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attrib->enumerations;
+	pcb_hid_tree_t *ht = attrib->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
 	tt_entry_t *e;
 	for(e = gdl_first(&lt->model); e != NULL; e = gdl_next(&lt->model, e)) {
@@ -399,7 +399,7 @@ static void ltf_tt_xevent_cb(const tt_table_event_data_t *data)
 
 static Widget ltf_tree_create_(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
 {
-	pcb_hid_tree_t *ht = (pcb_hid_tree_t *)attr->enumerations;
+	pcb_hid_tree_t *ht = attr->wdata;
 	ltf_tree_t *lt = calloc(sizeof(ltf_tree_t), 1);
 	Widget table = xm_create_tree_table_widget_cb(parent, &lt->model, lt, ltf_tt_xevent_cb, NULL, NULL);
 

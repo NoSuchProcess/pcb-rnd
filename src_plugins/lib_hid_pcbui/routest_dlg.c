@@ -66,7 +66,7 @@ static void rstdlg_pcb2dlg(int rst_idx)
 		return;
 
 	attr = &rstdlg_ctx.dlg[rstdlg_ctx.wattr];
-	tree = (pcb_hid_tree_t *)attr->enumerations;
+	tree = attr->wdata;
 
 	if (rst_idx < 0)
 		rst_idx = rstdlg_ctx.curr;

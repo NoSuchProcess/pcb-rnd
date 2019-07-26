@@ -59,7 +59,7 @@ static char *netlist_data2dlg_netlist(netlist_ctx_t *ctx)
 	pcb_net_t **n, **nets;
 
 	attr = &ctx->dlg[ctx->wnetlist];
-	tree = (pcb_hid_tree_t *)attr->enumerations;
+	tree = attr->wdata;
 
 	/* remember cursor */
 	r = pcb_dad_tree_get_selected(attr);
@@ -98,7 +98,7 @@ static void netlist_data2dlg_connlist(netlist_ctx_t *ctx, pcb_net_t *net)
 	pcb_net_term_t *t;
 
 	attr = &ctx->dlg[ctx->wtermlist];
-	tree = (pcb_hid_tree_t *)attr->enumerations;
+	tree = attr->wdata;
 
 	/* remember cursor */
 	if (net != NULL) {
@@ -148,7 +148,7 @@ static void netlist_force_redraw(netlist_ctx_t *ctx)
 
 static void netlist_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	pcb_hid_tree_t *tree = attrib->wdata;
 	netlist_ctx_t *ctx= tree->user_ctx;
 	const char *netname = NULL;
 	pcb_net_t *net = NULL;
@@ -164,7 +164,7 @@ static void netlist_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb
 
 static void termlist_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	pcb_hid_tree_t *tree = attrib->wdata;
 	netlist_ctx_t *ctx= tree->user_ctx;
 	char *refdes, *term;
 	pcb_any_obj_t *obj;

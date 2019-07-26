@@ -75,7 +75,7 @@ static void ltf_preview_expose(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
 	pcb_ltf_preview_t *pd = e->draw_data;
 	pcb_hid_attribute_t *attr = pd->attr;
-	pcb_hid_preview_t *prv = (pcb_hid_preview_t *)attr->enumerations;
+	pcb_hid_preview_t *prv = attr->wdata;
 	prv->user_expose_cb(attr, prv, gc, e);
 }
 
@@ -93,7 +93,7 @@ static void ltf_preview_set(lesstif_attr_dlg_t *ctx, int idx, double val)
 
 static void ltf_preview_zoomto(pcb_hid_attribute_t *attr, void *hid_ctx, const pcb_box_t *view)
 {
-	pcb_hid_preview_t *prv = (pcb_hid_preview_t *)attr->enumerations;
+	pcb_hid_preview_t *prv = attr->wdata;
 	pcb_ltf_preview_t *pd = prv->hid_wdata;
 
 	pd->x1 = view->X1;
@@ -109,7 +109,7 @@ static void ltf_preview_motion_callback(Widget w, XtPointer pd_, XEvent *e, Bool
 {
 	pcb_ltf_preview_t *pd = pd_;
 	pcb_hid_attribute_t *attr = pd->attr;
-	pcb_hid_preview_t *prv = (pcb_hid_preview_t *)attr->enumerations;
+	pcb_hid_preview_t *prv = attr->wdata;
 	pcb_coord_t x, y;
 	Window root, child;
 	unsigned int keys_buttons;
@@ -129,7 +129,7 @@ static void ltf_preview_input_callback(Widget w, XtPointer pd_, XmDrawingAreaCal
 {
 	pcb_ltf_preview_t *pd = pd_;
 	pcb_hid_attribute_t *attr = pd->attr;
-	pcb_hid_preview_t *prv = (pcb_hid_preview_t *)attr->enumerations;
+	pcb_hid_preview_t *prv = attr->wdata;
 	pcb_coord_t x, y;
 	pcb_hid_mouse_ev_t kind = -1;
 
@@ -163,7 +163,7 @@ static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 {
 	Widget pw;
 	pcb_ltf_preview_t *pd;
-	pcb_hid_preview_t *prv = (pcb_hid_preview_t *)attr->enumerations;
+	pcb_hid_preview_t *prv = attr->wdata;
 
 	pd = calloc(1, sizeof(pcb_ltf_preview_t));
 	prv->hid_wdata = pd;
@@ -217,14 +217,14 @@ static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 
 static Widget ltf_picture_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
 {
-	Widget pic = pcb_ltf_xpm_label(display, parent, XmStrCast("dad_picture"), attr->enumerations);
+	Widget pic = pcb_ltf_xpm_label(display, parent, XmStrCast("dad_picture"), attr->wdata);
 	XtManageChild(pic);
 	return pic;
 }
 
 static Widget ltf_picbutton_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
 {
-	Widget pic = pcb_ltf_xpm_button(display, parent, XmStrCast("dad_picture"), attr->enumerations);
+	Widget pic = pcb_ltf_xpm_button(display, parent, XmStrCast("dad_picture"), attr->wdata);
 	XtManageChild(pic);
 	return pic;
 }
@@ -473,7 +473,7 @@ static void ltf_text_scroll_to_bottom(pcb_hid_attribute_t *attrib, void *hid_ctx
 static Widget ltf_text_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
 {
 	Widget wtxt;
-	pcb_hid_text_t *txt = (pcb_hid_text_t *)attr->enumerations;
+	pcb_hid_text_t *txt = attr->wdata;
 
 	stdarg(XmNresizePolicy, XmRESIZE_GROW);
 	stdarg(XmNeditMode, XmMULTI_LINE_EDIT);

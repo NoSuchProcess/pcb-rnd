@@ -48,7 +48,7 @@ static void cam_gui_jobs2dlg(cam_dlg_t *ctx)
 	conf_native_t *cn;
 
 	attr = &ctx->dlg[ctx->wjobs];
-	tree = (pcb_hid_tree_t *)attr->enumerations;
+	tree = attr->wdata;
 
 	/* remember cursor */
 	r = pcb_dad_tree_get_selected(attr);
@@ -88,7 +88,7 @@ static void cam_gui_digest2dlg(cam_dlg_t *ctx)
 	int n;
 
 	attr = &ctx->dlg[ctx->wdigest];
-	tree = (pcb_hid_tree_t *)attr->enumerations;
+	tree = attr->wdata;
 
 	/* remove existing items */
 	pcb_dad_tree_clear(tree);
@@ -141,7 +141,7 @@ static void cam_gui_opts2dlg(cam_dlg_t *ctx)
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprefix, &hv);
 
 	attr = &ctx->dlg[ctx->wopts];
-	tree = (pcb_hid_tree_t *)attr->enumerations;
+	tree = attr->wdata;
 
 	/* remember cursor */
 	r = pcb_dad_tree_get_selected(attr);
@@ -181,7 +181,7 @@ static void cam_gui_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	const char *text;
 
 	attr = &ctx->dlg[ctx->wjobs];
-	tree = (pcb_hid_tree_t *)attr->enumerations;
+	tree = attr->wdata;
 	text = attr_inp->val.str;
 
 	pcb_dad_tree_hide_all(tree, &tree->rows, 1);
@@ -215,13 +215,13 @@ static char *kill_tabs(const char *str_in)
 
 static void cam_job_select_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
-	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attrib->enumerations;
+	pcb_hid_tree_t *tree = attrib->wdata;
 	cam_dlg_t *ctx = tree->user_ctx;
 
 	if (row != NULL) {
 		char *script = kill_tabs(cam_find_job(row->cell[0]));
 		pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
-		pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+		pcb_hid_text_t *txt = atxt->wdata;
 
 		txt->hid_set_text(atxt, hid_ctx, PCB_HID_TEXT_REPLACE, script);
 
@@ -347,7 +347,7 @@ static int cam_gui(const char *arg)
 
 	{ /* set right top text read-only */
 		pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
-		pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
+		pcb_hid_text_t *txt = atxt->wdata;
 		txt->hid_set_readonly(atxt, ctx->dlg_hid_ctx, 1);
 	}
 

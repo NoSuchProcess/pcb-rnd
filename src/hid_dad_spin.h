@@ -62,7 +62,7 @@ do { \
 	pcb_hid_dad_spin_t *spin = calloc(sizeof(pcb_hid_dad_spin_t), 1); \
 	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_COMPOUND); \
 		spin->cmp.wbegin = PCB_DAD_CURRENT(table); \
-		PCB_DAD_SET_ATTR_FIELD(table, enumerations, (const char **)spin); \
+		PCB_DAD_SET_ATTR_FIELD(table, wdata, spin); \
 		PCB_DAD_BEGIN_HBOX(table); \
 			spin->wall = PCB_DAD_CURRENT(table); \
 			PCB_DAD_COMPFLAG(table, PCB_HATF_TIGHT); \
@@ -98,7 +98,7 @@ do { \
 			PCB_DAD_END(table); \
 		PCB_DAD_END(table); \
 	PCB_DAD_END(table); \
-		PCB_DAD_SET_ATTR_FIELD(table, enumerations, (const char **)spin); \
+		PCB_DAD_SET_ATTR_FIELD(table, wdata, spin); \
 		spin->cmp.wend = PCB_DAD_CURRENT(table); \
 	\
 	spin->cmp.free = pcb_dad_spin_free; \
