@@ -80,6 +80,7 @@ append /local/pcb/OBJS_HIDLIB [@
 	hid_cfg_input.o
 	hid_color.o
 	hid_dlg.o
+	hid_dad.o
 	hid_dad_tree.o
 	hid_dad_spin.o
 	hid_dad_unit.o

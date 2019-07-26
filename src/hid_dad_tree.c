@@ -84,35 +84,6 @@ void pcb_dad_tree_unhide_filter(pcb_hid_tree_t *tree, gdl_list_t *rowlist, int c
 	}
 }
 
-
-/*** these shouldn't be in pcb_dad_tree.c, but they are so short that a new
-     file would be overkill ***/
-void pcb_hid_dad_close(void *hid_ctx, pcb_dad_retovr_t *retovr, int retval)
-{
-	retovr->valid = 1;
-	retovr->value = retval;
-	pcb_gui->attr_dlg_free(hid_ctx);
-}
-
-void pcb_hid_dad_close_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
-{
-	pcb_dad_retovr_t **retovr = attr->wdata;
-	pcb_hid_dad_close(hid_ctx, *retovr, attr->val.lng);
-}
-
-int pcb_hid_dad_run(void *hid_ctx, pcb_dad_retovr_t *retovr)
-{
-	int ret;
-
-	retovr->valid = 0;
-	retovr->dont_free++;
-	ret = pcb_gui->attr_dlg_run(hid_ctx);
-	if (retovr->valid)
-		ret = retovr->value;
-	retovr->dont_free--;
-	return ret;
-}
-
 pcb_hid_row_t *pcb_dad_tree_mkdirp(pcb_hid_tree_t *tree, char *path, char **cells)
 {
 	char *cell[2] = {NULL};
