@@ -195,7 +195,7 @@ static int ghid_color_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *va
 	pcb_gtk_color_t gclr;
 	GtkWidget *btn = ctx->wl[idx];
 
-	ctx->gctx->impl.map_color_string(val->clr_value.str, &gclr);
+	ctx->gctx->impl.map_color_string(val->clr.str, &gclr);
 	gtkc_color_button_set_color(btn, &gclr);
 
 	return 0;

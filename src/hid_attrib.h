@@ -14,7 +14,7 @@ struct pcb_hid_attr_val_s {
 	const char *str;
 	double dbl;
 	pcb_coord_t crd;
-	pcb_color_t clr_value;
+	pcb_color_t clr;
 	void (*func)();
 };
 

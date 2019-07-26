@@ -227,7 +227,7 @@ static void prop_valedit_update(propdlg_t *ctx, pcb_props_t *p, pcb_propval_t *p
 		case PCB_PROPT_ANGLE:  hv.dbl = pv->angle; break;
 		case PCB_PROPT_BOOL:
 		case PCB_PROPT_INT:    hv.lng = pv->i; break;
-		case PCB_PROPT_COLOR:  hv.clr_value = pv->clr; break;
+		case PCB_PROPT_COLOR:  hv.clr = pv->clr; break;
 		case PCB_PROPT_invalid:
 		case PCB_PROPT_max: return;
 	}
@@ -342,7 +342,7 @@ static void prop_data_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 			sctx.c_valid = 1;
 			break;
 		case PCB_PROPT_COLOR:
-			sctx.color = ctx->dlg[ctx->wedit[p->type]].val.clr_value;
+			sctx.color = ctx->dlg[ctx->wedit[p->type]].val.clr;
 			sctx.clr_valid = 1;
 			break;
 	}

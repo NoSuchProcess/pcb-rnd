@@ -38,7 +38,7 @@ static void pref_color_brd2dlg(pref_ctx_t *ctx)
 	if (ctx->color.wlayer != NULL) {
 		nat = conf_get_field("appearance/color/layer");
 		for (n = 0; n < nat->used; n++)
-			PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->color.wlayer[n], clr_value, nat->val.color[n]);
+			PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->color.wlayer[n], clr, nat->val.color[n]);
 	}
 
 	for(n = 0; n < ctx->color.ngen; n++) {
@@ -46,7 +46,7 @@ static void pref_color_brd2dlg(pref_ctx_t *ctx)
 		const char *path = ctx->dlg[w].user_data;
 		nat = conf_get_field(path);
 		if (nat != NULL)
-			PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, w, clr_value, nat->val.color[0]);
+			PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, w, clr, nat->val.color[0]);
 	}
 }
 
@@ -73,7 +73,7 @@ static void pref_color_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 {
 	pref_ctx_t *ctx = caller_data;
 	const char *path = attr->user_data;
-	conf_setf(ctx->role, path, -1, "%s", attr->val.clr_value.str);
+	conf_setf(ctx->role, path, -1, "%s", attr->val.clr.str);
 	pcb_gui->invalidate_all(pcb_gui);
 }
 
@@ -81,7 +81,7 @@ static void pref_color_layer_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 {
 	pref_ctx_t *ctx = caller_data;
 	int idx = (int *)attr->user_data - ctx->color.wlayer;
-	conf_setf(ctx->role, "appearance/color/layer", idx, "%s", attr->val.clr_value.str);
+	conf_setf(ctx->role, "appearance/color/layer", idx, "%s", attr->val.clr.str);
 }
 
 

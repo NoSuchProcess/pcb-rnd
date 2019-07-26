@@ -528,7 +528,7 @@ static void cb_color_print(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	test_t *ctx = caller_data;
 
 	printf("currenct color: #%02x%02x%02x\n",
-		ctx->dlg[ctx->wclr].val.clr_value.r, ctx->dlg[ctx->wclr].val.clr_value.g, ctx->dlg[ctx->wclr].val.clr_value.b);
+		ctx->dlg[ctx->wclr].val.clr.r, ctx->dlg[ctx->wclr].val.clr.g, ctx->dlg[ctx->wclr].val.clr.b);
 }
 
 static void cb_color_reset(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -536,7 +536,7 @@ static void cb_color_reset(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	test_t *ctx = caller_data;
 	pcb_hid_attr_val_t val;
 
-	pcb_color_load_str(&val.clr_value, "#005599");
+	pcb_color_load_str(&val.clr, "#005599");
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wclr, &val);
 }
 

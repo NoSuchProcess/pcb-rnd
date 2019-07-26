@@ -498,7 +498,7 @@ do { \
 			table[table ## _len - 1].field.str = (char *)val; \
 			break; \
 		case PCB_HATT_COLOR: \
-			table[table ## _len - 1].field.clr_value = *(pcb_color_t *)val; \
+			table[table ## _len - 1].field.clr = *(pcb_color_t *)val; \
 			break; \
 		case PCB_HATT_BEGIN_HBOX: \
 		case PCB_HATT_BEGIN_VBOX: \
@@ -598,7 +598,7 @@ do { \
 			table[table ## _len - 1].field.str = (char *)val_; \
 			break; \
 		case PCB_HATT_COLOR: \
-			table[table ## _len - 1].field.clr_value = *((pcb_color_t *)val_); \
+			table[table ## _len - 1].field.clr = *((pcb_color_t *)val_); \
 			break; \
 		case PCB_HATT_BEGIN_HBOX: \
 		case PCB_HATT_BEGIN_VBOX: \

@@ -144,7 +144,7 @@ static void color_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	clrpick_t *ctx = caller_data;
 
 	pcb_color_load_int(&ctx->clr, clamp(ctx->dlg[ctx->wr].val.lng), clamp(ctx->dlg[ctx->wg].val.lng), clamp(ctx->dlg[ctx->wb].val.lng), 255);
-	val.clr_value = ctx->clr;
+	val.clr = ctx->clr;
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wclr, &val);
 }
 
@@ -195,7 +195,7 @@ fgw_error_t pcb_act_gui_FallbackColorPick(fgw_arg_t *res, int argc, fgw_arg_t *a
 	pcb_gui->attr_dlg_set_value(ctx.dlg_hid_ctx, ctx.wg, &val);
 	val.lng = ctx.clr.b;
 	pcb_gui->attr_dlg_set_value(ctx.dlg_hid_ctx, ctx.wb, &val);
-	val.clr_value = ctx.clr;
+	val.clr = ctx.clr;
 	pcb_gui->attr_dlg_set_value(ctx.dlg_hid_ctx, ctx.wclr, &val);
 
 	if (PCB_DAD_RUN(ctx.dlg) != 0) {

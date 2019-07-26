@@ -185,7 +185,7 @@ static void color_changed_cb(GtkColorButton *button, pcb_hid_attribute_t *dst)
 
 	gtkc_color_button_get_color(GTK_WIDGET(button), &clr);
 	str = ctx->gctx->impl.get_color_name(&clr);
-	pcb_color_load_str(&dst->val.clr_value, str);
+	pcb_color_load_str(&dst->val.clr, str);
 
 	change_cb(ctx, dst);
 }
