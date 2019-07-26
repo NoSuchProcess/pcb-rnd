@@ -188,8 +188,8 @@ struct pcb_hid_attribute_s {
 	const char *name;
 	const char *help_text;
 	pcb_hids_t type;
-	int min_val, max_val;				/* for integer and real */
-	pcb_hid_attr_val_t default_val;		/* Also actual value for global attributes.  */
+	int min_val, max_val; /* for integer and real */
+	pcb_hid_attr_val_t default_val; /* Also actual value for global attributes. */
 
 	/* NULL terminated list of values for a PCB_HATT_ENUM;
 	   Also (ab)used as (pcb_hid_tree_t *) for a PCB_HATT_TREE and for PCB_HATT_PICTURE & PCB_HATT_PICBUTTON */
@@ -199,7 +199,7 @@ struct pcb_hid_attribute_s {
 	unsigned changed:1; /* 0 for initial values, 1 on user change */
 	unsigned empty:1;   /* set to 1 by the widget implementation if the textual value is empty, where applicable */
 	void (*change_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr); /* called upon value change by the user */
-	void (*right_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr); /* called upon right click by the user */
+	void (*right_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);  /* called upon right click by the user */
 	void (*enter_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);  /* called upon the user pressed enter in a widget that handles keys */
 	void *user_data; /* ignored; the caller is free to use it */
 	unsigned int hatt_flags;
