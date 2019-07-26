@@ -48,7 +48,7 @@ static const char *loghid_cookie = "loghid plugin";
 static pcb_hid_t loghid_gui;
 static pcb_hid_t loghid_exp;
 
-pcb_hid_attribute_t loghid_attribute_list[] = {
+pcb_export_opt_t loghid_attribute_list[] = {
 	{"target-hid", "the real GUI or export HID to relay calls to",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0}
 #define HA_target_hid 0
@@ -102,7 +102,7 @@ static int loghid_usage(pcb_hid_t *hid, const char *topic)
 
 PCB_REGISTER_ATTRIBUTES(loghid_attribute_list, loghid_cookie)
 
-static pcb_hid_attribute_t *loghid_get_export_options(pcb_hid_t *hid, int *n)
+static pcb_export_opt_t *loghid_get_export_options(pcb_hid_t *hid, int *n)
 {
 /*	loghid_attribute_list[HA_psfile] = pcb_strdup("default?");*/
 

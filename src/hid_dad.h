@@ -344,6 +344,21 @@ do { \
 	PCB_DAD_UPDATE_INTERNAL(table, table ## _len-1); \
 } while(0)
 
+#define PCB_DAD_DUP_EXPOPT(table, opt) \
+do { \
+	pcb_export_opt_t *__opt__ = (opt); \
+	PCB_DAD_ALLOC(table, 0); \
+	table[table ## _len-1].name = __opt__->name; \
+	table[table ## _len-1].help_text = __opt__->help_text; \
+	table[table ## _len-1].type = __opt__->type; \
+	table[table ## _len-1].min_val = __opt__->min_val; \
+	table[table ## _len-1].max_val = __opt__->max_val; \
+	table[table ## _len-1].default_val = __opt__->default_val; \
+	table[table ## _len-1].enumerations = __opt__->enumerations; \
+	table[table ## _len-1].value = __opt__->value; \
+	PCB_DAD_UPDATE_INTERNAL(table, table ## _len-1); \
+} while(0)
+
 
 /* Set properties of the current item */
 #define PCB_DAD_MINVAL(table, val)       PCB_DAD_SET_ATTR_FIELD(table, min_val, val)

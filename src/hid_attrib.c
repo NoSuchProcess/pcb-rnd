@@ -73,7 +73,7 @@ pcb_hatt_compflags_t pcb_hid_compflag_name2bit(const char *name)
 	return 0;
 }
 
-void pcb_hid_register_attributes(pcb_hid_attribute_t * a, int n, const char *cookie, int copy)
+void pcb_hid_register_attributes(pcb_export_opt_t *a, int n, const char *cookie, int copy)
 {
 	pcb_hid_attr_node_t *ha;
 
@@ -81,7 +81,7 @@ void pcb_hid_register_attributes(pcb_hid_attribute_t * a, int n, const char *coo
 	ha = malloc(sizeof(pcb_hid_attr_node_t));
 	ha->next = hid_attr_nodes;
 	hid_attr_nodes = ha;
-	ha->attributes = a;
+	ha->opts = a;
 	ha->n = n;
 	ha->cookie = cookie;
 }
@@ -92,7 +92,7 @@ void pcb_hid_attributes_uninit(void)
 	for (ha = hid_attr_nodes; ha; ha = next) {
 		next = ha->next;
 		if (ha->cookie != NULL)
-			fprintf(stderr, "WARNING: attribute %s by %s is not uninited, check your plugins' uninit!\n", ha->attributes->name, ha->cookie);
+			fprintf(stderr, "WARNING: attribute %s by %s is not uninited, check your plugins' uninit!\n", ha->opts->name, ha->cookie);
 		free(ha);
 	}
 	hid_attr_nodes = NULL;
@@ -123,7 +123,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 
 	for (ha = hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
-			pcb_hid_attribute_t *a = ha->attributes + i;
+			pcb_export_opt_t *a = ha->opts + i;
 			switch (a->type) {
 			case PCB_HATT_LABEL:
 				break;
@@ -171,11 +171,11 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 	try_no_arg:
 		for (ha = hid_attr_nodes; ha; ha = ha->next)
 			for (i = 0; i < ha->n; i++)
-				if (strcmp((*argv)[0] + arg_ofs, ha->attributes[i].name) == 0) {
-					pcb_hid_attribute_t *a = ha->attributes + i;
+				if (strcmp((*argv)[0] + arg_ofs, ha->opts[i].name) == 0) {
+					pcb_export_opt_t *a = ha->opts + i;
 					char *ep;
 					const pcb_unit_t *unit;
-					switch (ha->attributes[i].type) {
+					switch (ha->opts[i].type) {
 					case PCB_HATT_LABEL:
 						break;
 					case PCB_HATT_INTEGER:
@@ -288,7 +288,7 @@ void pcb_hid_usage_option(const char *name, const char *help)
 	fprintf(stderr, "%-20s %s\n", name, help);
 }
 
-void pcb_hid_usage(pcb_hid_attribute_t * a, int numa)
+void pcb_hid_usage(pcb_export_opt_t *a, int numa)
 {
 	for (; numa > 0; numa--,a++) {
 		const char *help;

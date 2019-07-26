@@ -47,8 +47,8 @@ typedef struct{
 	const char **tab_name;
 	int **exp_attr;           /* widget IDs of the attributes holding the actual data; outer array is indexed by exporter, inner array is by exporter option index from 0*/
 	int *button;              /* widget ID of the export button for a specific exporter */
-	int *numa;                /* number of exporter attributes */
-	pcb_hid_attribute_t **ea; /* original exporter attribute arrays */
+	int *numo;                /* number of exporter options */
+	pcb_export_opt_t **ea;    /* original export option arrays */
 } export_ctx_t;
 
 export_ctx_t export_ctx;
@@ -56,12 +56,12 @@ export_ctx_t export_ctx;
 static pcb_hid_attr_val_t *get_results(export_ctx_t *export_ctx, int id)
 {
 	pcb_hid_attr_val_t *r;
-	int *exp_attr, n, numa = export_ctx->numa[id];
+	int *exp_attr, n, numo = export_ctx->numo[id];
 
-	r = malloc(sizeof(pcb_hid_attr_val_t) * numa);
+	r = malloc(sizeof(pcb_hid_attr_val_t) * numo);
 
 	exp_attr = export_ctx->exp_attr[id];
-	for(n = 0; n < numa; n++) {
+	for(n = 0; n < numo; n++) {
 		int src = exp_attr[n];
 		memcpy(&r[n], &(export_ctx->dlg[src].default_val), sizeof(pcb_hid_attr_val_t));
 	}
@@ -111,10 +111,10 @@ static void copy_attrs_back(export_ctx_t *ctx)
 
 	for(n = 0; n < ctx->len; n++) {
 		int *exp_attr = export_ctx.exp_attr[n];
-		int numa = export_ctx.numa[n];
-		pcb_hid_attribute_t *attrs = export_ctx.ea[n];
+		int numo = export_ctx.numo[n];
+		pcb_export_opt_t *attrs = export_ctx.ea[n];
 
-		for(i = 0; i < numa; i++)
+		for(i = 0; i < numo; i++)
 			memcpy(&attrs[i].default_val, &ctx->dlg[exp_attr[i]].default_val, sizeof(pcb_hid_attr_val_t));
 	}
 }
@@ -133,7 +133,7 @@ static void export_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 		free(ctx->exp_attr[n]);
 	free(ctx->exp_attr);
 	free(ctx->button);
-	free(ctx->numa);
+	free(ctx->numo);
 	free(ctx->ea);
 	memset(ctx, 0, sizeof(export_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
@@ -162,7 +162,7 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 	export_ctx.hid = malloc(sizeof(pcb_hid_t *) * (export_ctx.len));
 	export_ctx.exp_attr = malloc(sizeof(int *) * (export_ctx.len));
 	export_ctx.button = malloc(sizeof(int) * (export_ctx.len));
-	export_ctx.numa = malloc(sizeof(int) * (export_ctx.len));
+	export_ctx.numo = malloc(sizeof(int) * (export_ctx.len));
 	export_ctx.ea = malloc(sizeof(pcb_hid_attribute_t *) * (export_ctx.len));
 
 	for(i = n = 0; hids[n] != NULL; n++) {
@@ -181,47 +181,47 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 			PCB_DAD_COMPFLAG(export_ctx.dlg, PCB_HATF_LEFT_TAB);
 			export_ctx.tabs = PCB_DAD_CURRENT(export_ctx.dlg);
 			for(n = 0; n < export_ctx.len; n++) {
-				int numa;
-				pcb_hid_attribute_t *attrs = export_ctx.hid[n]->get_export_options(export_ctx.hid[n], &numa);
-				export_ctx.numa[n] = numa;
-				export_ctx.ea[n] = attrs;
-				if (numa < 1) {
+				int numo;
+				pcb_export_opt_t *opts = export_ctx.hid[n]->get_export_options(export_ctx.hid[n], &numo);
+				export_ctx.numo[n] = numo;
+				export_ctx.ea[n] = opts;
+				if (numo < 1) {
 					PCB_DAD_LABEL(export_ctx.dlg, "Exporter unavailable for direct export");
 					continue;
 				}
 				PCB_DAD_BEGIN_VBOX(export_ctx.dlg);
-					if (numa > 12)
+					if (numo > 12)
 						PCB_DAD_COMPFLAG(export_ctx.dlg, PCB_HATF_SCROLL);
-					export_ctx.exp_attr[n] = exp_attr = malloc(sizeof(int) * numa);
-					for(i = 0; i < numa; i++) {
+					export_ctx.exp_attr[n] = exp_attr = malloc(sizeof(int) * numo);
+					for(i = 0; i < numo; i++) {
 						PCB_DAD_BEGIN_HBOX(export_ctx.dlg)
 							/* hid attributes are atomic while DAD widgets may be compound */
-							switch(attrs[i].type) {
+							switch(opts[i].type) {
 								case PCB_HATT_COORD:
-									PCB_DAD_COORD(export_ctx.dlg, attrs[i].name);
-									PCB_DAD_MINMAX(export_ctx.dlg, attrs[i].min_val, attrs[i].max_val);
-									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, attrs[i].default_val.coord_value);
+									PCB_DAD_COORD(export_ctx.dlg, opts[i].name);
+									PCB_DAD_MINMAX(export_ctx.dlg, opts[i].min_val, opts[i].max_val);
+									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.coord_value);
 									break;
 								case PCB_HATT_INTEGER:
-									PCB_DAD_INTEGER(export_ctx.dlg, attrs[i].name);
-									PCB_DAD_MINMAX(export_ctx.dlg, attrs[i].min_val, attrs[i].max_val);
-									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, attrs[i].default_val.int_value);
+									PCB_DAD_INTEGER(export_ctx.dlg, opts[i].name);
+									PCB_DAD_MINMAX(export_ctx.dlg, opts[i].min_val, opts[i].max_val);
+									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.int_value);
 									break;
 								case PCB_HATT_REAL:
-									PCB_DAD_REAL(export_ctx.dlg, attrs[i].name);
-									PCB_DAD_MINMAX(export_ctx.dlg, attrs[i].min_val, attrs[i].max_val);
-									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, attrs[i].default_val.real_value);
+									PCB_DAD_REAL(export_ctx.dlg, opts[i].name);
+									PCB_DAD_MINMAX(export_ctx.dlg, opts[i].min_val, opts[i].max_val);
+									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.real_value);
 									break;
 								case PCB_HATT_UNIT:
 									PCB_DAD_UNIT(export_ctx.dlg, PCB_UNIT_METRIC | PCB_UNIT_IMPERIAL);
-									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, attrs[i].default_val.int_value);
+									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.int_value);
 									break;
 								default:
-									PCB_DAD_DUP_ATTR(export_ctx.dlg, attrs+i);
+									PCB_DAD_DUP_EXPOPT(export_ctx.dlg, &(opts[i]));
 							}
 							exp_attr[i] = PCB_DAD_CURRENT(export_ctx.dlg);
-							if (attrs[i].name != NULL)
-								PCB_DAD_LABEL(export_ctx.dlg, attrs[i].name);
+							if (opts[i].name != NULL)
+								PCB_DAD_LABEL(export_ctx.dlg, opts[i].name);
 						PCB_DAD_END(export_ctx.dlg);
 					}
 					PCB_DAD_LABEL(export_ctx.dlg, " "); /* ugly way of inserting some vertical spacing */

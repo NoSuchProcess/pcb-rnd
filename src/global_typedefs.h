@@ -102,6 +102,10 @@ typedef struct pcb_xform_s pcb_xform_t;
    pcb_core_gc_t core_gc; */
 typedef struct hid_gc_s *pcb_hid_gc_t;
 
+typedef struct pcb_hid_attr_val_s  pcb_hid_attr_val_t;
+typedef struct pcb_hid_attribute_s pcb_hid_attribute_t;
+typedef struct pcb_export_opt_s pcb_export_opt_t;
+
 #include "pcb_bool.h"
 
 #endif

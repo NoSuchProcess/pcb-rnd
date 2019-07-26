@@ -210,7 +210,22 @@ struct pcb_hid_attribute_s {
 	unsigned int hatt_flags;
 };
 
-extern void pcb_hid_register_attributes(pcb_hid_attribute_t *, int, const char *cookie, int copy);
+struct pcb_export_opt_s {
+	const char *name;
+	const char *help_text;
+	pcb_hids_t type;
+	double min_val, max_val;        /* for integer and real */
+	pcb_hid_attr_val_t default_val;
+	const char **enumerations; /* NULL terminated list of values for a PCB_HATT_ENUM */
+
+
+	/* If set, this is used for global attributes (i.e. those set
+	   statically with REGISTER_ATTRIBUTES below) instead of changing
+	   the default_val. */
+	void *value;
+};
+
+extern void pcb_hid_register_attributes(pcb_export_opt_t *, int, const char *cookie, int copy);
 #define PCB_REGISTER_ATTRIBUTES(a, cookie) PCB_HIDCONCAT(void register_,a) ()\
 { pcb_hid_register_attributes(a, sizeof(a)/sizeof(a[0]), cookie, 0); }
 
@@ -222,14 +237,14 @@ void pcb_hid_attributes_uninit(void);
 
 typedef struct pcb_hid_attr_node_s {
 	struct pcb_hid_attr_node_s *next;
-	pcb_hid_attribute_t *attributes;
+	pcb_export_opt_t *opts;
 	int n;
 	const char *cookie;
 } pcb_hid_attr_node_t;
 
 extern pcb_hid_attr_node_t *hid_attr_nodes;
 
-void pcb_hid_usage(pcb_hid_attribute_t * a, int numa);
+void pcb_hid_usage(pcb_export_opt_t *a, int numa);
 void pcb_hid_usage_option(const char *name, const char *help);
 
 /* Count the number of direct children, start_from the first children */

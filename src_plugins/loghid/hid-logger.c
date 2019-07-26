@@ -15,9 +15,9 @@
 static pcb_hid_t *delegatee_ = NULL;
 static FILE *out_ = NULL;
 
-static pcb_hid_attribute_t *log_get_export_options(pcb_hid_t *hid, int *ret)
+static pcb_export_opt_t *log_get_export_options(pcb_hid_t *hid, int *ret)
 {
-	pcb_hid_attribute_t *result = delegatee_->get_export_options(hid, ret);
+	pcb_export_opt_t *result = delegatee_->get_export_options(hid, ret);
 	if (ret != NULL)
 		pcb_fprintf(out_, "get_export_options(ret) -> ret=%d\n", *ret);
 	else

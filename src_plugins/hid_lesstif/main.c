@@ -1638,7 +1638,7 @@ static int lesstif_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 
 	for (ha = hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
-			pcb_export_opt_t *a = ha->attributes + i;
+			pcb_export_opt_t *a = ha->opts + i;
 			switch (a->type) {
 			case PCB_HATT_INTEGER:
 			case PCB_HATT_COORD:
@@ -1674,7 +1674,7 @@ static int lesstif_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 
 	for (ha = hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
-			pcb_export_opt_t *a = ha->attributes + i;
+			pcb_export_opt_t *a = ha->opts + i;
 			XrmOptionDescRec *o = new_options + acount;
 			char *tmpopt, *tmpres;
 			XtResource *r = new_resources + rcount;
@@ -1790,7 +1790,7 @@ static int lesstif_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 	rcount = 0;
 	for (ha = hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
-			pcb_export_opt_t *a = ha->attributes + i;
+			pcb_export_opt_t *a = ha->opts + i;
 			val_union *v = new_values + rcount;
 			switch (a->type) {
 			case PCB_HATT_INTEGER:

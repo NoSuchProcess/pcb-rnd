@@ -1238,7 +1238,7 @@ static void ps_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_co
 	pcb_fprintf(global.f, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
 }
 
-pcb_export_opt_t ps_calib_attribute_list[] = {
+pcb_hid_attribute_t ps_calib_attribute_list[] = {
 	{"lprcommand", "Command to print",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 };
