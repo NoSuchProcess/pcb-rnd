@@ -144,6 +144,8 @@ static void spin_unit_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	pcb_snprintf(su->buf, sizeof(su->buf), "%$m*", unit->suffix, su->end->default_val.coord_value);
 	hv.str_value = su->buf;
 	pcb_gui->attr_dlg_set_value(hid_ctx, su->wout, &hv);
+	hv.int_value = 0;
+	pcb_gui->attr_dlg_set_value(hid_ctx, su->wglob, &hv);
 	su->valid = 1;
 }
 
