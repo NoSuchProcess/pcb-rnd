@@ -195,11 +195,6 @@ struct pcb_hid_attribute_s {
 	   Also (ab)used as (pcb_hid_tree_t *) for a PCB_HATT_TREE and for PCB_HATT_PICTURE & PCB_HATT_PICBUTTON */
 	const char **enumerations;
 
-	/* If set, this is used for global attributes (i.e. those set
-	   statically with REGISTER_ATTRIBUTES below) instead of changing
-	   the default_val. */
-	void *value;
-
 	/* dynamic API */
 	unsigned changed:1; /* 0 for initial values, 1 on user change */
 	unsigned empty:1;   /* set to 1 by the widget implementation if the textual value is empty, where applicable */

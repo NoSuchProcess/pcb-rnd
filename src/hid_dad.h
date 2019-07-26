@@ -355,7 +355,6 @@ do { \
 	table[table ## _len-1].max_val = __opt__->max_val; \
 	table[table ## _len-1].default_val = __opt__->default_val; \
 	table[table ## _len-1].enumerations = __opt__->enumerations; \
-	table[table ## _len-1].value = __opt__->value; \
 	PCB_DAD_UPDATE_INTERNAL(table, table ## _len-1); \
 } while(0)
 
