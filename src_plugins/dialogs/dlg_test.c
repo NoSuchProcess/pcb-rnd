@@ -318,7 +318,7 @@ static void pcb_act_spin_upd(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	pcb_hid_attr_val_t hv;
 	char tmp[256];
 
-	hv.str_value = tmp;
+	hv.str = tmp;
 
 	sprintf(tmp, "%ld", ctx->dlg[ctx->wspin_int].val.lng);
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_int, &hv);
@@ -382,7 +382,7 @@ static void cb_ttbl_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	test_t *ctx = caller_data;
 	pcb_hid_attr_val_t val;
 
-	val.str_value = "two/under_two";
+	val.str = "two/under_two";
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->tt, &val);
 }
 
@@ -410,8 +410,8 @@ static void cb_ttbl_filt(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 static void cb_ttbl_select(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(attr);
-	if (attr->val.str_value != NULL)
-		pcb_trace("tt tbl selected: path=%s row=%p '%s'\n", attr->val.str_value, row, row->cell[0]);
+	if (attr->val.str != NULL)
+		pcb_trace("tt tbl selected: path=%s row=%p '%s'\n", attr->val.str, row, row->cell[0]);
 	else
 		pcb_trace("tt tbl selected: <NONE>\n");
 }
@@ -487,7 +487,7 @@ static void cb_text_edit(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	txt->hid_get_xy(attr, hid_ctx, &x, &y);
 	o = txt->hid_get_offs(attr, hid_ctx);
 	sprintf(buf, "cursor after edit: line %ld col %ld offs %ld", y, x, o);
-	val.str_value = buf;
+	val.str = buf;
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wtxtpos, &val);
 }
 

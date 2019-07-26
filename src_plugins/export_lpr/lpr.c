@@ -50,8 +50,8 @@ static pcb_export_opt_t *lpr_get_export_options(pcb_hid_t *hid, int *n)
 	 * HID's may want to free() this string value and replace it with a
 	 * new one based on how a user fills out a print dialog.
 	 */
-	if (base_lpr_options[HA_lprcommand].default_val.str_value == NULL) {
-		base_lpr_options[HA_lprcommand].default_val.str_value = pcb_strdup("lpr");
+	if (base_lpr_options[HA_lprcommand].default_val.str == NULL) {
+		base_lpr_options[HA_lprcommand].default_val.str = pcb_strdup("lpr");
 	}
 
 	if (lpr_options == 0) {
@@ -79,7 +79,7 @@ static void lpr_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = lpr_values;
 	}
 
-	filename = options[HA_lprcommand].str_value;
+	filename = options[HA_lprcommand].str;
 
 	printf("LPR: open %s\n", filename);
 	f = pcb_popen(NULL, filename, "w");

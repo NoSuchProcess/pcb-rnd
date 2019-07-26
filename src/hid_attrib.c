@@ -145,7 +145,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 				break;
 			case PCB_HATT_STRING:
 				if (a->value)
-					*(const char **) a->value = pcb_strdup(PCB_EMPTY(a->default_val.str_value));
+					*(const char **) a->value = pcb_strdup(PCB_EMPTY(a->default_val.str));
 				break;
 			case PCB_HATT_ENUM:
 				if (a->value)
@@ -206,7 +206,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 						if (a->value)
 							*(char **) a->value = pcb_strdup(PCB_EMPTY((*argv)[1]));
 						else
-							a->default_val.str_value = pcb_strdup(PCB_EMPTY((*argv)[1]));
+							a->default_val.str = pcb_strdup(PCB_EMPTY((*argv)[1]));
 						(*argc)--;
 						(*argv)++;
 						break;
@@ -223,7 +223,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 							if (strcmp(a->enumerations[e], ep) == 0) {
 								ok = 1;
 								a->default_val.lng = e;
-								a->default_val.str_value = ep;
+								a->default_val.str = ep;
 								break;
 							}
 						if (!ok) {
@@ -240,7 +240,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 							exit(1);
 						}
 						a->default_val.lng = unit->index;
-						a->default_val.str_value = unit->suffix;
+						a->default_val.str = unit->suffix;
 						(*argc)--;
 						(*argv)++;
 						break;

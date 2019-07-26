@@ -82,7 +82,7 @@ static char *netlist_data2dlg_netlist(netlist_ctx_t *ctx)
 		/* restore cursor */
 		if (cursor_path != NULL) {
 			pcb_hid_attr_val_t hv;
-			hv.str_value = cursor_path;
+			hv.str = cursor_path;
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnetlist, &hv);
 		}
 	}
@@ -122,7 +122,7 @@ static void netlist_data2dlg_connlist(netlist_ctx_t *ctx, pcb_net_t *net)
 	/* restore cursor */
 	if (cursor_path != NULL) {
 		pcb_hid_attr_val_t hv;
-		hv.str_value = cursor_path;
+		hv.str = cursor_path;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtermlist, &hv);
 		free(cursor_path);
 	}

@@ -66,7 +66,7 @@ typedef struct _BomList {
 
 static pcb_export_opt_t *bom_get_export_options(pcb_hid_t *hid, int *n)
 {
-	if ((PCB != NULL)  && (bom_options[HA_bomfile].default_val.str_value == NULL))
+	if ((PCB != NULL)  && (bom_options[HA_bomfile].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &bom_options[HA_bomfile], ".bom");
 
 	if (n)
@@ -273,7 +273,7 @@ static void bom_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = bom_values;
 	}
 
-	bom_filename = options[HA_bomfile].str_value;
+	bom_filename = options[HA_bomfile].str;
 	if (!bom_filename)
 		bom_filename = "pcb-out.bom";
 

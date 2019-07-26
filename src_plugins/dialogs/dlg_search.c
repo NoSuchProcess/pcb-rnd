@@ -172,12 +172,12 @@ static void redraw_expr(search_ctx_t *ctx, int row, int col)
 	if (e->valid) {
 		gds_init(&buf);
 		append_expr(&buf, e, '\n');
-		hv.str_value = buf.array;
+		hv.str = buf.array;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wexpr_lab[row][col], &hv);
 		gds_uninit(&buf);
 	}
 	else {
-		hv.str_value = NEW_EXPR_LAB;
+		hv.str = NEW_EXPR_LAB;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wexpr_lab[row][col], &hv);
 	}
 }
@@ -206,7 +206,7 @@ static void search_recompile(search_ctx_t *ctx)
 		}
 		gds_append(&buf, ')');
 	}
-	hv.str_value = buf.array;
+	hv.str = buf.array;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wexpr_str, &hv);
 	gds_uninit(&buf);
 }
@@ -297,8 +297,8 @@ static void search_append_row_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 static void search_apply_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	search_ctx_t *ctx = caller_data;
-	if (ctx->dlg[ctx->wexpr_str].val.str_value != NULL)
-		pcb_actionl("query", search_acts[ctx->dlg[ctx->wact].val.lng], ctx->dlg[ctx->wexpr_str].val.str_value, NULL);
+	if (ctx->dlg[ctx->wexpr_str].val.str != NULL)
+		pcb_actionl("query", search_acts[ctx->dlg[ctx->wact].val.lng], ctx->dlg[ctx->wexpr_str].val.str, NULL);
 }
 
 

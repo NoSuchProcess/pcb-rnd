@@ -61,7 +61,7 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 
 	switch(ctx->nat->type) {
 		case CFN_STRING:
-			hv.str_value = val;
+			hv.str = val;
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			break;
 		case CFN_BOOLEAN:
@@ -126,7 +126,7 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 	attr = &ctx->dlg[ctx->wnewval];
 
 	switch(ctx->nat->type) {
-		case CFN_STRING:  val = attr->val.str_value; break;
+		case CFN_STRING:  val = attr->val.str; break;
 		case CFN_BOOLEAN:
 		case CFN_INTEGER: sprintf(buf, "%ld", attr->val.lng); break;
 		case CFN_REAL:    sprintf(buf, "%f", attr->val.real_value); break;

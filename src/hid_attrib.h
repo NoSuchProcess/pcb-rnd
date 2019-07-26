@@ -7,11 +7,11 @@
 
 /* Used for HID attributes (exporting and printing, mostly).
    HA_boolean uses lng, HA_enum sets lng to the index and
-   str_value to the enumeration string.  PCB_HATT_LABEL just shows the
-   default str_value. */
+   str to the enumeration string.  PCB_HATT_LABEL just shows the
+   default str. */
 struct pcb_hid_attr_val_s {
 	long lng;
-	const char *str_value;
+	const char *str;
 	double real_value;
 	pcb_coord_t coord_value;
 	pcb_color_t clr_value;

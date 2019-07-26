@@ -160,10 +160,10 @@ pcb_coord_t bboard_scale_coord(pcb_coord_t x)
 
 static pcb_export_opt_t *bboard_get_export_options(pcb_hid_t *hid, int *n)
 {
-	if ((PCB != NULL)  && (bboard_options[HA_bboardfile].default_val.str_value == NULL))
+	if ((PCB != NULL)  && (bboard_options[HA_bboardfile].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &bboard_options[HA_bboardfile], ".png");
 
-	bboard_options[HA_bgcolor].default_val.str_value = pcb_strdup("#FFFFFF");
+	bboard_options[HA_bgcolor].default_val.str = pcb_strdup("#FFFFFF");
 
 	if (n)
 		*n = NUM_OPTIONS;
@@ -498,11 +498,11 @@ static void bboard_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 			bboard_values[i] = bboard_options[i].default_val;
 		options = bboard_values;
 	}
-	bboard_filename = options[HA_bboardfile].str_value;
+	bboard_filename = options[HA_bboardfile].str;
 	if (!bboard_filename)
 		bboard_filename = "unknown.png";
 
-	bboard_bgcolor = options[HA_bgcolor].str_value;
+	bboard_bgcolor = options[HA_bgcolor].str;
 	if (!bboard_bgcolor)
 		bboard_bgcolor = "FFFFFF";
 

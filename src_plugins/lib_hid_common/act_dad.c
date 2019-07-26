@@ -473,7 +473,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			case PCB_HATT_LABEL:
 			case PCB_HATT_BUTTON:
 				PCB_ACT_CONVARG(4, FGW_STR, dad, txt = argv[4].val.str);
-				PCB_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, str_value, txt);
+				PCB_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, str, txt);
 				break;
 			default:
 				pcb_message(PCB_MSG_ERROR, "Invalid widget type %d - can not change value (set ignored)\n", wid);
@@ -518,7 +518,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			case PCB_HATT_LABEL:
 			case PCB_HATT_BUTTON:
 				res->type = FGW_STR;
-				res->val.str = (char *)dad->dlg[wid].val.str_value;
+				res->val.str = (char *)dad->dlg[wid].val.str;
 				break;
 			default:
 				pcb_message(PCB_MSG_ERROR, "Invalid widget type %d - can not retrieve value (get ignored)\n", wid);

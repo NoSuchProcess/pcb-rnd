@@ -79,7 +79,7 @@ static void set_attr(library_ctx_t *ctx, int pidx, char *val)
 			}
 			break;
 		case PCB_HATT_STRING:
-			hv.str_value = val;
+			hv.str = val;
 			break;
 		case PCB_HATT_COORD:
 		case PCB_HATT_END: /* compound widget for the spinbox! */
@@ -287,7 +287,7 @@ static char *gen_cmd(library_ctx_t *ctx)
 				}
 				break;
 			case PCB_HATT_STRING:
-				val = a->val.str_value;
+				val = a->val.str;
 				break;
 			case PCB_HATT_COORD:
 			case PCB_HATT_END:
@@ -320,7 +320,7 @@ static void library_param_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	char *cmd = gen_cmd(ctx);
 	pcb_hid_attr_val_t hv;
 
-	hv.str_value = cmd;
+	hv.str = cmd;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wfilt, &hv);
 	free(cmd);
 	timed_update_preview(ctx, 1);
@@ -433,13 +433,13 @@ static void load_params(library_ctx_t *ctx, char *user_params)
 static void library_param_fillin(library_ctx_t *ctx, pcb_fplibrary_t *l)
 {
 	pcb_hid_attr_val_t hv;
-	const char *filter_txt = ctx->dlg[ctx->wfilt].val.str_value;
+	const char *filter_txt = ctx->dlg[ctx->wfilt].val.str;
 
 	if (filter_txt == NULL) {
 
 		filter_txt = ctx->example;
 
-		hv.str_value = filter_txt;
+		hv.str = filter_txt;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wfilt, &hv);
 	}
 
@@ -450,7 +450,7 @@ static void library_param_fillin(library_ctx_t *ctx, pcb_fplibrary_t *l)
 		if ((prm == NULL) || (prm[1] == ')')) {
 			if (ctx->example != NULL) {
 				filter_txt = ctx->example;
-				hv.str_value = filter_txt;
+				hv.str = filter_txt;
 				pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wfilt, &hv);
 				prm = strchr(filter_txt, '(');
 			}
@@ -460,9 +460,9 @@ static void library_param_fillin(library_ctx_t *ctx, pcb_fplibrary_t *l)
 			load_params(ctx, prm+1);
 	}
 
-	hv.str_value = ctx->descr.array;
-	if (hv.str_value == NULL)
-		hv.str_value = "";
+	hv.str = ctx->descr.array;
+	if (hv.str == NULL)
+		hv.str = "";
 	pcb_gui->attr_dlg_set_value(ctx->pdlg_hid_ctx, ctx->pwdesc, &hv);
 	timed_update_preview(ctx, 1);
 }

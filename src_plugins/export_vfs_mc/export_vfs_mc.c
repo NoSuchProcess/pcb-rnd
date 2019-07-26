@@ -116,10 +116,10 @@ static void export_vfs_mc_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = export_vfs_mc_values;
 	}
 
-	cmd = options[HA_export_vfs_mc_cmd].str_value;
+	cmd = options[HA_export_vfs_mc_cmd].str;
 	if (strcmp(cmd, "list") == 0) mc_list();
-	else if (strcmp(cmd, "copyout") == 0) mc_copyout(options[HA_export_vfs_mc_qpath].str_value);
-	else if (strcmp(cmd, "copyin") == 0) mc_copyin(options[HA_export_vfs_mc_qpath].str_value);
+	else if (strcmp(cmd, "copyout") == 0) mc_copyout(options[HA_export_vfs_mc_qpath].str);
+	else if (strcmp(cmd, "copyin") == 0) mc_copyin(options[HA_export_vfs_mc_qpath].str);
 	else {
 		fprintf(stderr, "Unknown vfs_mc command: '%s'\n", cmd);
 		exit(1);

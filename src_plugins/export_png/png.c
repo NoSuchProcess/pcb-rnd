@@ -476,7 +476,7 @@ static pcb_export_opt_t *png_get_export_options(pcb_hid_t *hid, int *n)
 {
 	const char *suffix = get_file_suffix();
 
-	if ((PCB != NULL)  && (png_attribute_list[HA_pngfile].default_val.str_value == NULL))
+	if ((PCB != NULL)  && (png_attribute_list[HA_pngfile].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &png_attribute_list[HA_pngfile], suffix);
 
 	if (n)
@@ -999,7 +999,7 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = png_values;
 	}
 
-	pcb_cam_begin(PCB, &png_cam, options[HA_cam].str_value, png_attribute_list, NUM_OPTIONS, options);
+	pcb_cam_begin(PCB, &png_cam, options[HA_cam].str, png_attribute_list, NUM_OPTIONS, options);
 
 	if (options[HA_photo_mode].lng) {
 		photo_mode = 1;
@@ -1018,7 +1018,7 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	else
 		photo_mode = 0;
 
-	filename = options[HA_pngfile].str_value;
+	filename = options[HA_pngfile].str;
 	if (!filename)
 		filename = "pcb-out.png";
 
@@ -1112,7 +1112,7 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	master_im = im;
 
-	parse_bloat(options[HA_bloat].str_value);
+	parse_bloat(options[HA_bloat].str);
 
 	/* 
 	 * Allocate white and black -- the first color allocated
@@ -1202,7 +1202,7 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	free(black);
 
 	if (pcb_cam_end(&png_cam) == 0)
-		pcb_message(PCB_MSG_ERROR, "png cam export for '%s' failed to produce any content\n", options[HA_cam].str_value);
+		pcb_message(PCB_MSG_ERROR, "png cam export for '%s' failed to produce any content\n", options[HA_cam].str);
 }
 
 static int png_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)

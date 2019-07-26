@@ -73,7 +73,7 @@ static void rstdlg_pcb2dlg(int rst_idx)
 
 	rst = vtroutestyle_get(&PCB->RouteStyle, rst_idx, 0);
 
-	hv.str_value = rst->name;
+	hv.str = rst->name;
 	pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wname, &hv);
 
 	hv.coord_value = rst->Thick;
@@ -127,7 +127,7 @@ static void rst_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 TODO("This change is not undoable");
 
 	if (idx == rstdlg_ctx.wname) {
-		const char *s = attr->val.str_value;
+		const char *s = attr->val.str;
 		while(isspace(*s)) s++;
 		strncpy(rst->name, s, sizeof(rst->name));
 	}
@@ -176,8 +176,8 @@ static int rst_edit_attr(char **key, char **val)
 	PCB_DAD_NEW("route_style_attr", dlg, "Edit route style attribute", NULL, pcb_true, NULL);
 	res = PCB_DAD_RUN(dlg);
 	if (res == 0) {
-		*key = pcb_strdup(dlg[wkey].val.str_value);
-		*val = pcb_strdup(dlg[wval].val.str_value);
+		*key = pcb_strdup(dlg[wkey].val.str);
+		*val = pcb_strdup(dlg[wval].val.str);
 	}
 	PCB_DAD_FREE(dlg);
 	return res;

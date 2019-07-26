@@ -131,7 +131,7 @@ static pcb_export_opt_t *openscad_get_export_options(pcb_hid_t *hid, int *n)
 {
 	const char *suffix = ".scad";
 
-	if ((PCB != NULL)  && (openscad_attribute_list[HA_openscadfile].default_val.str_value == NULL))
+	if ((PCB != NULL)  && (openscad_attribute_list[HA_openscadfile].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &openscad_attribute_list[HA_openscadfile], suffix);
 
 	if (n)
@@ -305,7 +305,7 @@ static void openscad_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = openscad_values;
 	}
 
-	filename = options[HA_openscadfile].str_value;
+	filename = options[HA_openscadfile].str;
 	if (!filename)
 		filename = "pcb.openscad";
 

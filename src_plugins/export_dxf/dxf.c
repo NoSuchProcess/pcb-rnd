@@ -204,7 +204,7 @@ static pcb_export_opt_t *dxf_get_export_options(pcb_hid_t *hid, int *n)
 {
 	const char *suffix = ".dxf";
 
-	if ((PCB != NULL)  && (dxf_attribute_list[HA_dxffile].default_val.str_value == NULL))
+	if ((PCB != NULL)  && (dxf_attribute_list[HA_dxffile].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &dxf_attribute_list[HA_dxffile], suffix);
 
 	if (n)
@@ -282,9 +282,9 @@ static void dxf_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = dxf_values;
 	}
 
-	pcb_cam_begin(PCB, &dxf_cam, options[HA_cam].str_value, dxf_attribute_list, NUM_OPTIONS, options);
+	pcb_cam_begin(PCB, &dxf_cam, options[HA_cam].str, dxf_attribute_list, NUM_OPTIONS, options);
 
-	filename = options[HA_dxffile].str_value;
+	filename = options[HA_dxffile].str;
 	if (!filename)
 		filename = "pcb.dxf";
 
@@ -298,7 +298,7 @@ static void dxf_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	else
 		dxf_ctx.f = NULL;
 
-	fn = options[HA_template].str_value;
+	fn = options[HA_template].str;
 	if (fn == NULL) {
 		fn = "<embedded template>";
 		dxf_ctx.temp = lht_dom_load_string(dxf_templ_default_arr, fn, &errmsg);
@@ -337,7 +337,7 @@ static void dxf_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	fclose(dxf_ctx.f);
 
 	if (pcb_cam_end(&dxf_cam) == 0)
-		pcb_message(PCB_MSG_ERROR, "dxf cam export for '%s' failed to produce any content\n", options[HA_cam].str_value);
+		pcb_message(PCB_MSG_ERROR, "dxf cam export for '%s' failed to produce any content\n", options[HA_cam].str);
 }
 
 static int dxf_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)

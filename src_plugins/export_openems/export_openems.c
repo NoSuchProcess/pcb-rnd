@@ -162,7 +162,7 @@ static pcb_export_opt_t *openems_get_export_options(pcb_hid_t *hid, int *n)
 	const char *suffix = ".m";
 	pcb_mesh_t *mesh = pcb_mesh_get(MESH_NAME);
 
-	if ((PCB != NULL)  && (openems_attribute_list[HA_openemsfile].default_val.str_value == NULL))
+	if ((PCB != NULL)  && (openems_attribute_list[HA_openemsfile].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &openems_attribute_list[HA_openemsfile], suffix);
 
 	if (mesh != NULL) {
@@ -171,12 +171,12 @@ static pcb_export_opt_t *openems_get_export_options(pcb_hid_t *hid, int *n)
 	}
 
 TODO(": when export dialogs change into DAD, this hack to convert the strings to allocated ones will not be needed anymore")
-	openems_attribute_list[HA_def_copper_cond].default_val.str_value = pcb_strdup(openems_attribute_list[HA_def_copper_cond].default_val.str_value);
-	openems_attribute_list[HA_def_subst_epsilon].default_val.str_value = pcb_strdup(openems_attribute_list[HA_def_subst_epsilon].default_val.str_value);
-	openems_attribute_list[HA_def_subst_mue].default_val.str_value = pcb_strdup(openems_attribute_list[HA_def_subst_mue].default_val.str_value);
-	openems_attribute_list[HA_def_subst_kappa].default_val.str_value = pcb_strdup(openems_attribute_list[HA_def_subst_kappa].default_val.str_value);
-	openems_attribute_list[HA_def_subst_sigma].default_val.str_value = pcb_strdup(openems_attribute_list[HA_def_subst_sigma].default_val.str_value);
-	openems_attribute_list[HA_void_name].default_val.str_value = pcb_strdup(openems_attribute_list[HA_void_name].default_val.str_value);
+	openems_attribute_list[HA_def_copper_cond].default_val.str = pcb_strdup(openems_attribute_list[HA_def_copper_cond].default_val.str);
+	openems_attribute_list[HA_def_subst_epsilon].default_val.str = pcb_strdup(openems_attribute_list[HA_def_subst_epsilon].default_val.str);
+	openems_attribute_list[HA_def_subst_mue].default_val.str = pcb_strdup(openems_attribute_list[HA_def_subst_mue].default_val.str);
+	openems_attribute_list[HA_def_subst_kappa].default_val.str = pcb_strdup(openems_attribute_list[HA_def_subst_kappa].default_val.str);
+	openems_attribute_list[HA_def_subst_sigma].default_val.str = pcb_strdup(openems_attribute_list[HA_def_subst_sigma].default_val.str);
+	openems_attribute_list[HA_void_name].default_val.str = pcb_strdup(openems_attribute_list[HA_void_name].default_val.str);
 
 	if (n)
 		*n = NUM_OPTIONS;
@@ -214,7 +214,7 @@ static void openems_write_tunables(wctx_t *ctx)
 	fprintf(ctx->f, "\n");
 
 	fprintf(ctx->f, "%% void is the material used for: fill holes, cutouts in substrate, etc\n");
-	fprintf(ctx->f, "void.name = '%s';\n", ctx->options[HA_void_name].str_value);
+	fprintf(ctx->f, "void.name = '%s';\n", ctx->options[HA_void_name].str);
 	fprintf(ctx->f, "void.epsilon = %f;\n", ctx->options[HA_void_epsilon].real_value);
 	fprintf(ctx->f, "void.mue = %f;\n", ctx->options[HA_void_mue].real_value);
 	fprintf(ctx->f, "%% void.kappa = kappa;\n");
@@ -250,7 +250,7 @@ TODO(": try openems::attr first - make a new core call for prefixed get, this wi
 	opt = (grp->ltype & PCB_LYT_COPPER) ? cop_opt : subs_opt;
 	assert(opt >= 0);
 	if (is_str)
-		pcb_fprintf(ctx->f, "%s", ctx->options[opt].str_value);
+		pcb_fprintf(ctx->f, "%s", ctx->options[opt].str);
 	else
 		pcb_fprintf(ctx->f, "%mm", ctx->options[opt].coord_value);
 }
@@ -645,7 +645,7 @@ static void openems_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = openems_values;
 	}
 
-	filename = options[HA_openemsfile].str_value;
+	filename = options[HA_openemsfile].str;
 	if (!filename)
 		filename = "pcb.m";
 

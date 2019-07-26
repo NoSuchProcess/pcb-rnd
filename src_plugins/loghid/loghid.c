@@ -63,7 +63,7 @@ static int loghid_parse_arguments_real(pcb_hid_t *hid, int *argc, char ***argv, 
 	pcb_hid_register_attributes(loghid_attribute_list, NUM_OPTIONS, loghid_cookie, 0);
 	pcb_hid_parse_command_line(argc, argv);
 
-	target_name = loghid_attribute_list[HA_target_hid].default_val.str_value;
+	target_name = loghid_attribute_list[HA_target_hid].default_val.str;
 
 	if (is_gui) {
 		target = pcb_hid_find_gui(target_name);

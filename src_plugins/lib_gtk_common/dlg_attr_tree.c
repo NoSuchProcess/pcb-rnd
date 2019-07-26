@@ -188,9 +188,9 @@ static void ghid_tree_table_cursor(GtkWidget *widget, pcb_hid_attribute_t *attr)
 	if (ctx->inhibit_valchg)
 		return;
 	if (r != NULL)
-		attr->val.str_value = r->path;
+		attr->val.str = r->path;
 	else
-		attr->val.str_value = NULL;
+		attr->val.str = NULL;
 	change_cb(ctx, attr);
 	if (tree->user_selected_cb != NULL)
 		tree->user_selected_cb(attr, ctx, r);
@@ -370,7 +370,7 @@ static int ghid_tree_table_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_
 	GtkTreePath *path;
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)attr->enumerations;
 	pcb_hid_row_t *r;
-	const char *s = val->str_value;
+	const char *s = val->str;
 
 	if ((s == NULL) || (*s == '\0')) {
 TODO("DAD: remove cursor - is it possible with gtk?")

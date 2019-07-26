@@ -121,7 +121,7 @@ static pcb_hid_attr_val_t eps_values[NUM_OPTIONS];
 
 static pcb_export_opt_t *eps_get_export_options(pcb_hid_t *hid, int *n)
 {
-	if ((PCB != NULL)  && (eps_attribute_list[HA_psfile].default_val.str_value == NULL))
+	if ((PCB != NULL)  && (eps_attribute_list[HA_psfile].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &eps_attribute_list[HA_psfile], ".eps");
 
 	if (n)
@@ -326,9 +326,9 @@ static void eps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = eps_values;
 	}
 
-	pcb_cam_begin(PCB, &eps_cam, options[HA_cam].str_value, eps_attribute_list, NUM_OPTIONS, options);
+	pcb_cam_begin(PCB, &eps_cam, options[HA_cam].str, eps_attribute_list, NUM_OPTIONS, options);
 
-	filename = options[HA_psfile].str_value;
+	filename = options[HA_psfile].str;
 	if (!filename)
 		filename = "pcb-out.eps";
 
@@ -351,7 +351,7 @@ static void eps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	fclose(f);
 
 	if (pcb_cam_end(&eps_cam) == 0)
-		pcb_message(PCB_MSG_ERROR, "eps cam export for '%s' failed to produce any content\n", options[HA_cam].str_value);
+		pcb_message(PCB_MSG_ERROR, "eps cam export for '%s' failed to produce any content\n", options[HA_cam].str);
 }
 
 static int eps_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)

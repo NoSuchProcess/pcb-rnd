@@ -122,7 +122,7 @@ static int pstklib_data2dlg(pstk_lib_ctx_t *ctx)
 	/* restore cursor */
 	if (cursor_path != NULL) {
 		pcb_hid_attr_val_t hv;
-		hv.str_value = cursor_path;
+		hv.str = cursor_path;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
 		free(cursor_path);
 	}
@@ -230,7 +230,7 @@ static void pstklib_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 	else
 		ctx->proto_id = PCB_PADSTACK_INVALID;
 
-	hv.str_value = NULL;
+	hv.str = NULL;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
 }
 
@@ -277,7 +277,7 @@ static void pstklib_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 
 	attr = &ctx->dlg[ctx->wlist];
 	tree = (pcb_hid_tree_t *)attr->enumerations;
-	text = attr_inp->val.str_value;
+	text = attr_inp->val.str;
 
 	if ((text == NULL) || (*text == '\0')) {
 		for(r = gdl_first(&tree->rows); r != NULL; r = gdl_next(&tree->rows, r))
@@ -359,7 +359,7 @@ static void pstklib_proto_new_(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	/* make sure the new item appears in the list and is selected */
 	pstklib_data2dlg(ctx);
 	sprintf(tmp, "%u", ctx->proto_id);
-	hv.str_value = tmp;
+	hv.str = tmp;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
 
 	pstklib_proto_edit_common(ctx, data, ctx->proto_id, tab);

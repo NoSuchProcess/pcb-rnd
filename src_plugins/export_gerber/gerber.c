@@ -262,7 +262,7 @@ static pcb_hid_attr_val_t gerber_values[NUM_OPTIONS];
 
 static pcb_export_opt_t *gerber_get_export_options(pcb_hid_t *hid, int *n)
 {
-	if ((PCB != NULL)  && (gerber_options[HA_gerberfile].default_val.str_value == NULL))
+	if ((PCB != NULL)  && (gerber_options[HA_gerberfile].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &gerber_options[HA_gerberfile], "");
 
 	if (n)
@@ -546,9 +546,9 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	pcb_printf_slot[4] = gerber_cfmt->cfmt;
 	pcb_printf_slot[5] = gerber_cfmt->afmt;
 
-	pcb_cam_begin(PCB, &gerber_cam, options[HA_cam].str_value, gerber_options, NUM_OPTIONS, options);
+	pcb_cam_begin(PCB, &gerber_cam, options[HA_cam].str, gerber_options, NUM_OPTIONS, options);
 
-	fnbase = options[HA_gerberfile].str_value;
+	fnbase = options[HA_gerberfile].str;
 	if (!fnbase)
 		fnbase = "pcb-out";
 
@@ -656,7 +656,7 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	}
 
 	if (pcb_cam_end(&gerber_cam) == 0)
-		pcb_message(PCB_MSG_ERROR, "gerber cam export for '%s' failed to produce any content\n", options[HA_cam].str_value);
+		pcb_message(PCB_MSG_ERROR, "gerber cam export for '%s' failed to produce any content\n", options[HA_cam].str);
 
 	pcb_drill_uninit(&pdrills);
 	pcb_drill_uninit(&udrills);

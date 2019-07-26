@@ -192,7 +192,7 @@ static pcb_hid_attr_val_t excellon_values[NUM_OPTIONS];
 
 static pcb_export_opt_t *excellon_get_export_options(pcb_hid_t *hid, int *n)
 {
-	if ((PCB != NULL)  && (excellon_options[HA_excellonfile].default_val.str_value == NULL))
+	if ((PCB != NULL)  && (excellon_options[HA_excellonfile].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &excellon_options[HA_excellonfile], "");
 
 	if (n)
@@ -223,9 +223,9 @@ static void excellon_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = excellon_values;
 	}
 
-	pcb_cam_begin(PCB, &excellon_cam, options[HA_cam].str_value, excellon_options, NUM_OPTIONS, options);
+	pcb_cam_begin(PCB, &excellon_cam, options[HA_cam].str, excellon_options, NUM_OPTIONS, options);
 
-	fnbase = options[HA_excellonfile].str_value;
+	fnbase = options[HA_excellonfile].str;
 	if (!fnbase)
 		fnbase = "pcb-out";
 
@@ -257,25 +257,25 @@ static void excellon_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		pcb_drill_export_excellon(PCB, &pdrills, conf_excellon.plugins.export_excellon.plated_g85_slot, options[HA_excellonfile_coordfmt].lng, fn);
 	}
 	else {
-		if (options[HA_excellonfile_plated].str_value == NULL) {
+		if (options[HA_excellonfile_plated].str == NULL) {
 			strcpy(filesuff, ".plated.cnc");
 			fn = filename;
 		}
 		else
-			fn = options[HA_excellonfile_plated].str_value;
+			fn = options[HA_excellonfile_plated].str;
 		pcb_drill_export_excellon(PCB, &pdrills, conf_excellon.plugins.export_excellon.plated_g85_slot, options[HA_excellonfile_coordfmt].lng, fn);
 
-		if (options[HA_excellonfile_unplated].str_value == NULL) {
+		if (options[HA_excellonfile_unplated].str == NULL) {
 			strcpy(filesuff, ".unplated.cnc");
 			fn = filename;
 		}
 		else
-			fn = options[HA_excellonfile_unplated].str_value;
+			fn = options[HA_excellonfile_unplated].str;
 		pcb_drill_export_excellon(PCB, &udrills, conf_excellon.plugins.export_excellon.unplated_g85_slot, options[HA_excellonfile_coordfmt].lng, fn);
 	}
 
 	if (pcb_cam_end(&excellon_cam) == 0)
-		pcb_message(PCB_MSG_ERROR, "excellon cam export for '%s' failed to produce any content\n", options[HA_cam].str_value);
+		pcb_message(PCB_MSG_ERROR, "excellon cam export for '%s' failed to produce any content\n", options[HA_cam].str);
 
 	pcb_drill_uninit(&pdrills);
 	pcb_drill_uninit(&udrills);

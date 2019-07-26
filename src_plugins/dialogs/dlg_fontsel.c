@@ -112,7 +112,7 @@ static void fontsel_preview_update(fontsel_ctx_t *ctx)
 	if ((ctx == NULL) || (!ctx->active))
 		return;
 
-	hv.str_value = NULL;
+	hv.str = NULL;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
 }
 

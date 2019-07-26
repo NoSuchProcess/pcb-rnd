@@ -83,7 +83,7 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 	if ((proto != NULL) && (proto->name != NULL))
 		prn = proto->name;
 	pcb_snprintf(tmp, sizeof(tmp), "#%ld:%d (%s)", (long int)pse->ps->proto, pse->ps->protoi, prn);
-	PCB_DAD_SET_VALUE(hid_ctx, pse->proto_id, str_value, tmp);
+	PCB_DAD_SET_VALUE(hid_ctx, pse->proto_id, str, tmp);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->clearance, coord_value, pse->ps->Clearance);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->rot, real_value, pse->ps->rot);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->xmirror, lng, pse->ps->xmirror);
@@ -101,10 +101,10 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 			switch(shape->shape) {
 				case PCB_PSSH_HSHADOW:
 					*tmp = '\0';
-					PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str_value, "hshadow");
+					PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str, "hshadow");
 					break;
 				case PCB_PSSH_CIRC:
-					PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str_value, "circle");
+					PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str, "circle");
 					if ((shape->data.circ.x != 0) || (shape->data.circ.y != 0))
 						pcb_snprintf(tmp, sizeof(tmp), "dia=%.06$mm\nat %.06$mm;%.06$mm", shape->data.circ.dia, shape->data.circ.x, shape->data.circ.y);
 					else
@@ -112,25 +112,25 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 					break;
 				case PCB_PSSH_LINE:
 					if (shape->data.line.square)
-						PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str_value, "square line");
+						PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str, "square line");
 					else
-						PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str_value, "round line");
+						PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str, "round line");
 					pcb_snprintf(tmp, sizeof(tmp), "thickness=%.06$mm", shape->data.line.thickness);
 					break;
 				case PCB_PSSH_POLY:
-					PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str_value, "polygon");
+					PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str, "polygon");
 					pcb_snprintf(tmp, sizeof(tmp), "corners=%d", shape->data.poly.len);
 					break;
 				default:
-					PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str_value, "<unknown>");
+					PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str, "<unknown>");
 					strcpy(tmp, "<unknown>");
 			}
-			PCB_DAD_SET_VALUE(hid_ctx, pse->proto_info[n], str_value, tmp);
+			PCB_DAD_SET_VALUE(hid_ctx, pse->proto_info[n], str, tmp);
 			PCB_DAD_SET_VALUE(hid_ctx, pse->proto_clr[n], coord_value, shape->clearance);
 		}
 		else {
-			PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str_value, "");
-			PCB_DAD_SET_VALUE(hid_ctx, pse->proto_info[n], str_value, "");
+			PCB_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str, "");
+			PCB_DAD_SET_VALUE(hid_ctx, pse->proto_info[n], str, "");
 			PCB_DAD_SET_VALUE(hid_ctx, pse->proto_clr[n], coord_value, 0);
 		}
 	}
@@ -165,11 +165,11 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 		}
 		pcb_gui->attr_dlg_widget_state(hid_ctx, pse->hdia, 1);
 	}
-	PCB_DAD_SET_VALUE(hid_ctx, pse->hole_header, str_value, s);
+	PCB_DAD_SET_VALUE(hid_ctx, pse->hole_header, str, s);
 
-	free((char *)pse->attrs[pse->prname].val.str_value);
-	pse->attrs[pse->prname].val.str_value = NULL;
-	PCB_DAD_SET_VALUE(hid_ctx, pse->prname, str_value, pcb_strdup(proto->name == NULL ? "" : proto->name));
+	free((char *)pse->attrs[pse->prname].val.str);
+	pse->attrs[pse->prname].val.str = NULL;
+	PCB_DAD_SET_VALUE(hid_ctx, pse->prname, str, pcb_strdup(proto->name == NULL ? "" : proto->name));
 	PCB_DAD_SET_VALUE(hid_ctx, pse->hdia, coord_value, proto->hdia);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->hplated, lng, proto->hplated);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->htop_val, lng, proto->htop);
@@ -179,15 +179,15 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 		strcpy(tmp, "top copper group");
 	else
 		sprintf(tmp, "%d groups from\nthe %s copper group", proto->htop, proto->htop > 0 ? "top" : "bottom");
-	PCB_DAD_SET_VALUE(hid_ctx, pse->htop_text, str_value, tmp);
-	PCB_DAD_SET_VALUE(hid_ctx, pse->htop_layer, str_value, pse_group_string(pse->pcb, top_grp, tmp, sizeof(tmp)));
+	PCB_DAD_SET_VALUE(hid_ctx, pse->htop_text, str, tmp);
+	PCB_DAD_SET_VALUE(hid_ctx, pse->htop_layer, str, pse_group_string(pse->pcb, top_grp, tmp, sizeof(tmp)));
 
 	if (proto->hbottom == 0)
 		strcpy(tmp, "bottom copper group");
 	else
 		sprintf(tmp, "%d groups from\nthe %s copper group", proto->hbottom, proto->hbottom > 0 ? "bottom" : "top");
-	PCB_DAD_SET_VALUE(hid_ctx, pse->hbot_text, str_value, tmp);
-	PCB_DAD_SET_VALUE(hid_ctx, pse->hbot_layer, str_value, pse_group_string(pse->pcb, bottom_grp, tmp, sizeof(tmp)));
+	PCB_DAD_SET_VALUE(hid_ctx, pse->hbot_text, str, tmp);
+	PCB_DAD_SET_VALUE(hid_ctx, pse->hbot_layer, str, pse_group_string(pse->pcb, bottom_grp, tmp, sizeof(tmp)));
 
 }
 
@@ -280,7 +280,7 @@ static void pse_chg_prname(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	pse_t *pse = caller_data;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
 	static int lock = 0;
-	const char *new_name = pse->attrs[pse->prname].val.str_value;
+	const char *new_name = pse->attrs[pse->prname].val.str;
 
 	if ((lock != 0) || (proto == NULL))
 		return;
@@ -970,7 +970,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 		PCB_DAD_SET_VALUE(dlg_hid_ctx, pse->tab, lng, target_tab);
 	PCB_DAD_RUN(dlg);
 
-	free((char *)pse->attrs[pse->prname].val.str_value);
+	free((char *)pse->attrs[pse->prname].val.str);
 
 	PCB_DAD_FREE(dlg);
 }

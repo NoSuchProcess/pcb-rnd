@@ -160,9 +160,9 @@ char *pcb_derive_default_filename_(const char *pcbfile, const char *suffix)
 
 void pcb_derive_default_filename(const char *pcbfile, pcb_export_opt_t *filename_attrib, const char *suffix)
 {
-	if (filename_attrib->default_val.str_value)
-		free((char *)filename_attrib->default_val.str_value);
-	filename_attrib->default_val.str_value = pcb_derive_default_filename_(pcbfile, suffix);
+	if (filename_attrib->default_val.str)
+		free((char *)filename_attrib->default_val.str);
+	filename_attrib->default_val.str = pcb_derive_default_filename_(pcbfile, suffix);
 }
 
 /* remove leading and trailing whitespace */

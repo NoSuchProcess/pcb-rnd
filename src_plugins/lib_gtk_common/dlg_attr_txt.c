@@ -178,7 +178,7 @@ static void txt_set_text(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_tex
 
 static int ghid_text_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val)
 {
-	txt_set_text(&ctx->attrs[idx], ctx, PCB_HID_TEXT_REPLACE, val->str_value);
+	txt_set_text(&ctx->attrs[idx], ctx, PCB_HID_TEXT_REPLACE, val->str);
 	return 0;
 }
 

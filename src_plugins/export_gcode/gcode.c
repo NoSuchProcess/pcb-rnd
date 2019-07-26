@@ -246,7 +246,7 @@ static pcb_export_opt_t *gcode_get_export_options(pcb_hid_t *hid, int *n)
 		last_unit_value = gcode_attribute_list[HA_unit].default_val.lng;
 	}
 
-	if ((PCB != NULL)  && (gcode_attribute_list[HA_basename].default_val.str_value == NULL))
+	if ((PCB != NULL)  && (gcode_attribute_list[HA_basename].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &gcode_attribute_list[HA_basename], ".gcode");
 	if (n) {
 		*n = NUM_OPTIONS;
@@ -388,7 +388,7 @@ static void gcode_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		}
 		options = gcode_values;
 	}
-	gcode_basename = options[HA_basename].str_value;
+	gcode_basename = options[HA_basename].str;
 	if (!gcode_basename) {
 		gcode_basename = "pcb-out";
 	}

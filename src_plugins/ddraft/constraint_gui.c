@@ -66,7 +66,7 @@ do { \
 		len -= l; \
 		end += l; \
 	} \
-	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.name, str_value, pcb_strdup(buff)); \
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.name, str, pcb_strdup(buff)); \
 } while(0)
 
 #define c2g_float(name) \
@@ -97,7 +97,7 @@ static void cons_changed(void)
 
 #define g2c_array(name, conv) \
 do { \
-	const char *inp = cnstgui_ctx.dlg[cnstgui_ctx.name].val.str_value; \
+	const char *inp = cnstgui_ctx.dlg[cnstgui_ctx.name].val.str; \
 	char *curr, *next; \
 	cons.name ## _len = 0; \
 	if (inp == NULL) break; \
@@ -140,18 +140,18 @@ static void gui2cons(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr
 
 static void reset_line(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.line_angle, str_value, pcb_strdup(""));
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.line_angle, str, pcb_strdup(""));
 	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.line_angle_mod, real_value, 0);
-	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.line_length, str_value, pcb_strdup(""));
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.line_length, str, pcb_strdup(""));
 	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.line_length_mod, coord_value, 0);
 	gui2cons(hid_ctx, caller_data, attr);
 }
 
 static void reset_move(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.move_angle, str_value, pcb_strdup(""));
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.move_angle, str, pcb_strdup(""));
 	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.move_angle_mod, real_value, 0);
-	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.move_length, str_value, pcb_strdup(""));
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.move_length, str, pcb_strdup(""));
 	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.move_length_mod, coord_value, 0);
 	gui2cons(hid_ctx, caller_data, attr);
 }

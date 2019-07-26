@@ -50,7 +50,7 @@ static void set_right(srchedit_ctx_t *ctx, pcb_hid_attribute_t *attr)
 
 	switch(ctx->se.expr->rtype) {
 		case RIGHT_STR:
-			ctx->se.right = pcb_strdup(attr->val.str_value);
+			ctx->se.right = pcb_strdup(attr->val.str);
 			break;
 		case RIGHT_INT:
 			ctx->se.right = pcb_strdup_printf("%d", attr->val.lng);
@@ -104,7 +104,7 @@ static void srch_expr_set_ops(srchedit_ctx_t *ctx, const expr_wizard_op_t *op, i
 	/* restore cursor */
 	if (cursor_path != NULL) {
 		pcb_hid_attr_val_t hv;
-		hv.str_value = cursor_path;
+		hv.str = cursor_path;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wop, &hv);
 		free(cursor_path);
 	}
@@ -136,7 +136,7 @@ static void srch_expr_fill_in_right_const(srchedit_ctx_t *ctx, const search_expr
 	/* set cursor to last known value */
 	if ((s != NULL) && (s->right != NULL)) {
 		pcb_hid_attr_val_t hv;
-		hv.str_value = s->right;
+		hv.str = s->right;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[RIGHT_CONST], &hv);
 	}
 }
@@ -153,9 +153,9 @@ static void srch_expr_fill_in_right(srchedit_ctx_t *ctx, const search_expr_t *s)
 	for(n = 0; n < RIGHT_max; n++)
 		pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wright[n], 1);
 
-	hv.str_value = ctx->se.right;
-	if (hv.str_value == NULL) {
-		hv.str_value = "";
+	hv.str = ctx->se.right;
+	if (hv.str == NULL) {
+		hv.str = "";
 		empty = 1;
 	}
 
@@ -164,19 +164,19 @@ static void srch_expr_fill_in_right(srchedit_ctx_t *ctx, const search_expr_t *s)
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
 			break;
 		case RIGHT_INT:
-			hv.lng = strtol(hv.str_value, NULL, 10);
+			hv.lng = strtol(hv.str, NULL, 10);
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
 			if (empty)
 				set_right(ctx, &ctx->dlg[ctx->wright[s->expr->rtype]]);
 			break;
 		case RIGHT_DOUBLE:
-			hv.real_value = strtod(hv.str_value, NULL);
+			hv.real_value = strtod(hv.str, NULL);
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
 			if (empty)
 				set_right(ctx, &ctx->dlg[ctx->wright[s->expr->rtype]]);
 			break;
 		case RIGHT_COORD:
-			hv.coord_value = pcb_get_value_ex(hv.str_value, NULL, NULL, NULL, "mm", NULL);
+			hv.coord_value = pcb_get_value_ex(hv.str, NULL, NULL, NULL, "mm", NULL);
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
 			if (empty)
 				set_right(ctx, &ctx->dlg[ctx->wright[s->expr->rtype]]);

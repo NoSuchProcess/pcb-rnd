@@ -71,7 +71,7 @@ static void prop_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	attr = &ctx->dlg[ctx->wtree];
 	attr_inp = &ctx->dlg[ctx->wfilter];
 	tree = (pcb_hid_tree_t *)attr->enumerations;
-	text = attr_inp->val.str_value;
+	text = attr_inp->val.str;
 	have_filter_text = (text != NULL) && (*text != '\0');
 
 	/* hide or unhide everything */
@@ -130,7 +130,7 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 	/* restore cursor */
 	if (cursor_path != NULL) {
 		pcb_hid_attr_val_t hv;
-		hv.str_value = cursor_path;
+		hv.str = cursor_path;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtree, &hv);
 		free(cursor_path);
 	}
@@ -188,7 +188,7 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 
 		gds_truncate(&scope, gds_len(&scope)-2);
 
-		hv.str_value = scope.array;
+		hv.str = scope.array;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wscope, &hv);
 	}
 }
@@ -222,7 +222,7 @@ static void prop_valedit_update(propdlg_t *ctx, pcb_props_t *p, pcb_propval_t *p
 
 	memset(&hv, 0, sizeof(hv));
 	switch(p->type) {
-		case PCB_PROPT_STRING: hv.str_value = pcb_strdup(pv->string == NULL ? "" : pv->string); break;
+		case PCB_PROPT_STRING: hv.str = pcb_strdup(pv->string == NULL ? "" : pv->string); break;
 		case PCB_PROPT_COORD:  hv.coord_value = pv->coord; break;
 		case PCB_PROPT_ANGLE:  hv.real_value = pv->angle; break;
 		case PCB_PROPT_BOOL:
@@ -319,7 +319,7 @@ static void prop_data_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 		case PCB_PROPT_max:
 			return;
 		case PCB_PROPT_STRING:
-			sctx.s = ctx->dlg[ctx->wedit[p->type]].val.str_value;
+			sctx.s = ctx->dlg[ctx->wedit[p->type]].val.str;
 			break;
 		case PCB_PROPT_COORD:
 			sctx.c = ctx->dlg[ctx->wedit[p->type]].val.coord_value;
@@ -375,13 +375,13 @@ static void prop_add_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 	PCB_DAD_END(dlg);
 	PCB_DAD_AUTORUN("propedit_add", dlg, "Propedit: add new attribute", NULL, failed);
 
-	key = dlg[wkey].val.str_value;
+	key = dlg[wkey].val.str;
 	if (key == NULL) key = "";
 	while(isspace(*key)) key++;
 
 	if ((failed == 0) && (*key != '\0')) {
 		char *path = pcb_strdup_printf("a/%s", key);
-		pcb_propsel_set_str(&ctx->pe, path, dlg[wval].val.str_value);
+		pcb_propsel_set_str(&ctx->pe, path, dlg[wval].val.str);
 		free(path);
 		prop_refresh(ctx);
 	}

@@ -43,7 +43,7 @@ static const char *export_test_filename;
 
 static pcb_export_opt_t *export_test_get_export_options(pcb_hid_t *hid, int *n)
 {
-	if ((PCB != NULL)  && (export_test_options[HA_export_testfile].default_val.str_value == NULL))
+	if ((PCB != NULL)  && (export_test_options[HA_export_testfile].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &export_test_options[HA_export_testfile], ".export_test");
 
 	if (n)
@@ -67,7 +67,7 @@ static void export_test_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = export_test_values;
 	}
 
-	export_test_filename = options[HA_export_testfile].str_value;
+	export_test_filename = options[HA_export_testfile].str;
 	if (!export_test_filename)
 		export_test_filename = "pcb-out.export_test";
 	else {

@@ -341,7 +341,7 @@ static struct {
 
 static pcb_export_opt_t *ps_get_export_options(pcb_hid_t *hid, int *n)
 {
-	if ((PCB != NULL) && (ps_attribute_list[HA_psfile].default_val.str_value == NULL))
+	if ((PCB != NULL) && (ps_attribute_list[HA_psfile].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &ps_attribute_list[HA_psfile], ".ps");
 
 	if (n)
@@ -619,9 +619,9 @@ static void ps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = global.ps_values;
 	}
 
-	pcb_cam_begin(PCB, &ps_cam, options[HA_cam].str_value, ps_attribute_list, NUM_OPTIONS, options);
+	pcb_cam_begin(PCB, &ps_cam, options[HA_cam].str, ps_attribute_list, NUM_OPTIONS, options);
 
-	global.filename = options[HA_psfile].str_value;
+	global.filename = options[HA_psfile].str;
 	if (!global.filename)
 		global.filename = "pcb-out.ps";
 
@@ -659,7 +659,7 @@ static void ps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	}
 
 	if (pcb_cam_end(&ps_cam) == 0)
-		pcb_message(PCB_MSG_ERROR, "eps cam export for '%s' failed to produce any content\n", options[HA_cam].str_value);
+		pcb_message(PCB_MSG_ERROR, "eps cam export for '%s' failed to produce any content\n", options[HA_cam].str);
 }
 
 static int ps_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
@@ -1354,25 +1354,25 @@ void ps_calibrate_1(pcb_hid_t *hid, double xval, double yval, int use_command)
 		return;
 	}
 
-	if (ps_calib_attribute_list[0].val.str_value == NULL) {
-		ps_calib_attribute_list[0].val.str_value = pcb_strdup("lpr");
+	if (ps_calib_attribute_list[0].val.str == NULL) {
+		ps_calib_attribute_list[0].val.str = pcb_strdup("lpr");
 	}
 
 	if (pcb_attribute_dialog("ps_calibrate", ps_calib_attribute_list, 1, vals, "Print Calibration Page", NULL))
 		return;
 
-	if (vals[0].str_value == NULL)
+	if (vals[0].str == NULL)
 		return;
 
-	if (use_command || strchr(vals[0].str_value, '|')) {
-		const char *cmd = vals[0].str_value;
+	if (use_command || strchr(vals[0].str, '|')) {
+		const char *cmd = vals[0].str;
 		while (*cmd == ' ' || *cmd == '|')
 			cmd++;
 		ps_cal_file = pcb_popen(&PCB->hidlib, cmd, "w");
 		used_popen = 1;
 	}
 	else
-		ps_cal_file = pcb_fopen(&PCB->hidlib, vals[0].str_value, "w");
+		ps_cal_file = pcb_fopen(&PCB->hidlib, vals[0].str, "w");
 
 	for (c = 0; calib_lines[c]; c++)
 		fputs(calib_lines[c], ps_cal_file);

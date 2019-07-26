@@ -141,7 +141,7 @@ static pcb_export_opt_t *xy_get_export_options(pcb_hid_t *hid, int *n)
 			xy_options[HA_unit].default_val.lng = get_unit_struct("mil")->index;
 		last_unit_value = xy_options[HA_unit].default_val.lng;
 	}
-	if ((PCB != NULL)  && (xy_options[HA_xyfile].default_val.str_value == NULL))
+	if ((PCB != NULL)  && (xy_options[HA_xyfile].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &xy_options[HA_xyfile], ".xy");
 
 	if (n)
@@ -800,7 +800,7 @@ static void xy_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = xy_values;
 	}
 
-	xy_filename = options[HA_xyfile].str_value;
+	xy_filename = options[HA_xyfile].str;
 	if (!xy_filename)
 		xy_filename = "pcb-out.xy";
 
@@ -818,7 +818,7 @@ static void xy_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	templ.subc = get_templ(*tid, "subc");
 	templ.term = get_templ(*tid, "term");
 
-	PrintXY(&templ, options[HA_format].str_value);
+	PrintXY(&templ, options[HA_format].str);
 }
 
 static int xy_usage(pcb_hid_t *hid, const char *topic)

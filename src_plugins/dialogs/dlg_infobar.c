@@ -97,11 +97,11 @@ fgw_error_t pcb_act_InfoBarFileChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		}
 
 		/* update labels */
-		hv.str_value = pcb_strdup_printf("The file %s has changed on disk", PCB->hidlib.filename);
+		hv.str = pcb_strdup_printf("The file %s has changed on disk", PCB->hidlib.filename);
 		pcb_gui->attr_dlg_set_value(sub.dlg_hid_ctx, wlab[0], &hv);
-		free((char *)hv.str_value);
+		free((char *)hv.str);
 
-		hv.str_value = (PCB->Changed ? "Do you want to drop your changes and reload the file?" : "Do you want to reload the file?");
+		hv.str = (PCB->Changed ? "Do you want to drop your changes and reload the file?" : "Do you want to reload the file?");
 		pcb_gui->attr_dlg_set_value(sub.dlg_hid_ctx, wlab[1], &hv);
 	}
 	else if (strcmp(cmd, "close") == 0) {

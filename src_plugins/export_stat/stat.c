@@ -113,7 +113,7 @@ static pcb_export_opt_t *stat_get_export_options(pcb_hid_t *hid, int *n)
 {
 	const char *suffix = ".stat.lht";
 
-	if ((PCB != NULL)  && (stat_attribute_list[HA_statfile].default_val.str_value == NULL))
+	if ((PCB != NULL)  && (stat_attribute_list[HA_statfile].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &stat_attribute_list[HA_statfile], suffix);
 
 	if (n)
@@ -149,7 +149,7 @@ static void stat_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = stat_values;
 	}
 
-	filename = options[HA_statfile].str_value;
+	filename = options[HA_statfile].str;
 	if (!filename)
 		filename = "pcb.stat.lht";
 
@@ -168,7 +168,7 @@ static void stat_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	fprintf(f, "		built=%ld\n", options[HA_built].lng);
 	fprintf(f, "		lht_built=%s\n", (options[HA_lht_built].lng ? "yes" : "no"));
 	fprintf(f, "		orig_rnd=%s\n", (options[HA_orig].lng ? "yes" : "no"));
-	fprintf(f, "		first_ver=%s\n", options[HA_first_ver].str_value);
+	fprintf(f, "		first_ver=%s\n", options[HA_first_ver].str);
 	fprintf(f, "		curr_ver=%s\n", PCB_VERSION);
 #ifdef PCB_REVISION
 	fprintf(f, "		curr_rev=%s\n", PCB_REVISION);
@@ -341,8 +341,8 @@ static void stat_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	}
 
 	fprintf(f, "	ha:board {\n");
-	fprintf(f, "		id={%s}\n", options[HA_board_id].str_value == NULL ? "" : options[HA_board_id].str_value);
-	fprintf(f, "		license={%s}\n", options[HA_license].str_value);
+	fprintf(f, "		id={%s}\n", options[HA_board_id].str == NULL ? "" : options[HA_board_id].str);
+	fprintf(f, "		license={%s}\n", options[HA_license].str);
 	fprintf(f, "		format={%s}\n", PCB->Data->loader == NULL ? "unknown" : PCB->Data->loader->description);
 	pcb_fprintf(f, "		width=%$mm\n", width);
 	pcb_fprintf(f, "		height=%$mm\n", height);
@@ -386,10 +386,10 @@ int pplg_check_ver_export_stat(int ver_needed) { return 0; }
 
 void pplg_uninit_export_stat(void)
 {
-	free((char *)stat_attribute_list[HA_first_ver].default_val.str_value);
-	free((char *)stat_attribute_list[HA_license].default_val.str_value);
-	stat_attribute_list[HA_first_ver].default_val.str_value = NULL;
-	stat_attribute_list[HA_license].default_val.str_value = NULL;
+	free((char *)stat_attribute_list[HA_first_ver].default_val.str);
+	free((char *)stat_attribute_list[HA_license].default_val.str);
+	stat_attribute_list[HA_first_ver].default_val.str = NULL;
+	stat_attribute_list[HA_license].default_val.str = NULL;
 	pcb_hid_remove_attributes_by_cookie(stat_cookie);
 }
 
@@ -412,8 +412,8 @@ int pplg_init_export_stat(void)
 
 	stat_hid.usage = stat_usage;
 
-	stat_attribute_list[HA_first_ver].default_val.str_value = pcb_strdup(PCB_VERSION);
-	stat_attribute_list[HA_license].default_val.str_value = pcb_strdup("proprietary/private");
+	stat_attribute_list[HA_first_ver].default_val.str = pcb_strdup(PCB_VERSION);
+	stat_attribute_list[HA_license].default_val.str = pcb_strdup("proprietary/private");
 
 	pcb_hid_register_hid(&stat_hid);
 

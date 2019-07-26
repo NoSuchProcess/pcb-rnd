@@ -72,7 +72,7 @@ void pcb_pref_conf2dlg_item(conf_native_t *cn, pref_confitem_t *item)
 			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, real_value, cn->val.real[0]);
 			break;
 		case CFN_STRING:
-			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, str_value, cn->val.string[0]);
+			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, str, cn->val.string[0]);
 			break;
 		default: pcb_message(PCB_MSG_ERROR, "pcb_pref_conf2dlg_item(): widget type not handled\n");
 	}
@@ -102,8 +102,8 @@ void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_confitem_t *item, pcb_hid_attr
 				conf_setf(ctx->role, item->confpath, -1, "%f", attr->val.real_value);
 			break;
 		case CFN_STRING:
-			if (strcmp(cn->val.string[0], attr->val.str_value) != 0)
-				conf_set(ctx->role, item->confpath, -1, attr->val.str_value, POL_OVERWRITE);
+			if (strcmp(cn->val.string[0], attr->val.str) != 0)
+				conf_set(ctx->role, item->confpath, -1, attr->val.str, POL_OVERWRITE);
 			break;
 		default: pcb_message(PCB_MSG_ERROR, "pcb_pref_dlg2conf_item(): widget type not handled\n");
 	}
@@ -173,7 +173,7 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*ch
 		case CFN_STRING:
 			PCB_DAD_STRING(ctx->dlg);
 				item->wid = PCB_DAD_CURRENT(ctx->dlg);
-				ctx->dlg[item->wid].val.str_value = pcb_strdup(cn->val.string[0]);
+				ctx->dlg[item->wid].val.str = pcb_strdup(cn->val.string[0]);
 				PCB_DAD_HELP(ctx->dlg, cn->description);
 				PCB_DAD_CHANGE_CB(ctx->dlg, change_cb);
 			break;

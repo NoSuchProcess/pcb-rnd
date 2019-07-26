@@ -87,16 +87,16 @@ static pcb_r_dir_t pinout_mouse_search_cb(void *closure, pcb_any_obj_t *obj, voi
 	pcb_hid_attr_val_t val;
 
 	if ((obj->term != NULL) && (pcb_obj_parent_subc(obj) == ctx->tempsc) && (obj->term != NULL)) {
-		val.str_value = obj->term;
+		val.str = obj->term;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_num, &val);
-		val.str_value = pcb_attribute_get(&obj->Attributes, "name");
-		if (val.str_value != NULL)
+		val.str = pcb_attribute_get(&obj->Attributes, "name");
+		if (val.str != NULL)
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_name, &val);
 		if (ctx->pcb != NULL) {
 			{
 				pcb_net_term_t *term = pcb_net_find_by_obj(&ctx->pcb->netlist[PCB_NETLIST_EDITED], obj);
 				if (term != NULL) {
-					val.str_value = term->parent.net->name;
+					val.str = term->parent.net->name;
 					pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_net, &val);
 				}
 			}
@@ -114,7 +114,7 @@ static pcb_bool pinout_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv
 		pcb_box_t b;
 		pcb_hid_attr_val_t val;
 
-		val.str_value = "n/a";
+		val.str = "n/a";
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_num, &val);
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_name, &val);
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_net, &val);

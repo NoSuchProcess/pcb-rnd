@@ -115,10 +115,10 @@ static void get_ly_type(int combo_type, int combo_side, int dlg_offs, pcb_layer_
 
 
 #define layer_name_mismatch(w, layer) \
-((ctx->attrs[w->name].val.str_value == NULL) || (strcmp(layer->name, ctx->attrs[w->name].val.str_value) != 0))
+((ctx->attrs[w->name].val.str == NULL) || (strcmp(layer->name, ctx->attrs[w->name].val.str) != 0))
 
 #define layer_purpose_mismatch(w, layer) \
-((ctx->attrs[w->purpose].val.str_value == NULL) || (layer->meta.bound.purpose == NULL) || (strcmp(layer->meta.bound.purpose, ctx->attrs[w->purpose].val.str_value) != 0))
+((ctx->attrs[w->purpose].val.str == NULL) || (layer->meta.bound.purpose == NULL) || (strcmp(layer->meta.bound.purpose, ctx->attrs[w->purpose].val.str) != 0))
 
 static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 {
@@ -139,13 +139,13 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 
 		/* name and type */
 		if (layer_name_mismatch(w, layer))
-			PCB_DAD_SET_VALUE(hid_ctx, w->name, str_value, pcb_strdup(layer->name));
+			PCB_DAD_SET_VALUE(hid_ctx, w->name, str, pcb_strdup(layer->name));
 
 		if (layer_purpose_mismatch(w, layer)) {
 			char *purp = layer->meta.bound.purpose;
 			if (purp == NULL)
 				purp = "";
-			PCB_DAD_SET_VALUE(hid_ctx, w->purpose, str_value, pcb_strdup(purp));
+			PCB_DAD_SET_VALUE(hid_ctx, w->purpose, str, pcb_strdup(purp));
 		}
 
 		PCB_DAD_SET_VALUE(hid_ctx, w->comp, lng, layer->comb);
@@ -193,11 +193,11 @@ static void lb_dialog2data(void *hid_ctx, lb_ctx_t *ctx)
 
 		if (layer_name_mismatch(w, layer)) {
 			free((char *)layer->name);
-			layer->name = pcb_strdup(ctx->attrs[w->name].val.str_value);
+			layer->name = pcb_strdup(ctx->attrs[w->name].val.str);
 		}
 
 		if (layer_purpose_mismatch(w, layer)) {
-			const char *purp = ctx->attrs[w->purpose].val.str_value;
+			const char *purp = ctx->attrs[w->purpose].val.str;
 			free((char *)layer->meta.bound.purpose);
 			if ((purp == NULL) || (*purp == '\0'))
 				layer->meta.bound.purpose = NULL;

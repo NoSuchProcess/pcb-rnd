@@ -210,13 +210,13 @@ do { \
 #define PCB_DAD_BUTTON(table, text) \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_BUTTON); \
-	table[table ## _len - 1].val.str_value = text; \
+	table[table ## _len - 1].val.str = text; \
 } while(0)
 
 #define PCB_DAD_BUTTON_CLOSE(table, text, retval) \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_BUTTON); \
-	table[table ## _len - 1].val.str_value = text; \
+	table[table ## _len - 1].val.str = text; \
 	table[table ## _len - 1].val.lng = retval; \
 	table[table ## _len - 1].enumerations = (const char **)(&table ## _ret_override); \
 	PCB_DAD_CHANGE_CB(table, pcb_hid_dad_close_cb); \
@@ -495,7 +495,7 @@ do { \
 		case PCB_HATT_TEXT: \
 		case PCB_HATT_BUTTON: \
 		case PCB_HATT_TREE: \
-			table[table ## _len - 1].field.str_value = (char *)val; \
+			table[table ## _len - 1].field.str = (char *)val; \
 			break; \
 		case PCB_HATT_COLOR: \
 			table[table ## _len - 1].field.clr_value = *(pcb_color_t *)val; \
@@ -595,7 +595,7 @@ do { \
 		case PCB_HATT_TEXT: \
 		case PCB_HATT_BUTTON: \
 		case PCB_HATT_TREE: \
-			table[table ## _len - 1].field.str_value = (char *)val_; \
+			table[table ## _len - 1].field.str = (char *)val_; \
 			break; \
 		case PCB_HATT_COLOR: \
 			table[table ## _len - 1].field.clr_value = *((pcb_color_t *)val_); \

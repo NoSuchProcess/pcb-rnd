@@ -135,7 +135,7 @@ static void script_dlg_s2d(script_dlg_t *ctx)
 	/* restore cursor */
 	if (cursor_path != NULL) {
 		pcb_hid_attr_val_t hv;
-		hv.str_value = cursor_path;
+		hv.str = cursor_path;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wslist, &hv);
 		free(cursor_path);
 	}
@@ -206,7 +206,7 @@ static void btn_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 				tmp = strrchr(fn, PCB_DIR_SEPARATOR_C);
 				if (tmp != NULL) {
 					tmp++;
-					idlang.dlg[idlang.wid].val.str_value = tmp = pcb_strdup(tmp);
+					idlang.dlg[idlang.wid].val.str = tmp = pcb_strdup(tmp);
 					tmp = strchr(tmp, '.');
 					if (tmp != NULL)
 						*tmp = '\0';
@@ -218,7 +218,7 @@ static void btn_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 				idlang.wlang = PCB_DAD_CURRENT(idlang.dlg);
 				tmp = strrchr(fn, '.');
 				if (tmp != NULL)
-					idlang.dlg[idlang.wlang].val.str_value = pcb_strdup(guess_lang(tmp+1));
+					idlang.dlg[idlang.wlang].val.str = pcb_strdup(guess_lang(tmp+1));
 		PCB_DAD_END(idlang.dlg);
 		PCB_DAD_BUTTON_CLOSES(idlang.dlg, clbtn);
 	PCB_DAD_END(idlang.dlg);
@@ -226,7 +226,7 @@ static void btn_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 
 	PCB_DAD_AUTORUN("script_load", idlang.dlg, "load script", NULL, failed);
 
-	if ((!failed) && (pcb_script_load(idlang.dlg[idlang.wid].val.str_value, fn, idlang.dlg[idlang.wlang].val.str_value) == 0))
+	if ((!failed) && (pcb_script_load(idlang.dlg[idlang.wid].val.str, fn, idlang.dlg[idlang.wlang].val.str) == 0))
 		script_dlg_s2d(ctx);
 
 	PCB_DAD_FREE(idlang.dlg);

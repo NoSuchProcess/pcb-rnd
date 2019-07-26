@@ -104,7 +104,7 @@ static void pref_lib_conf2dlg_post(conf_native_t *cfg, int arr_idx)
 		pcb_dad_tree_append(attr, NULL, cell);
 	}
 
-	hv.str_value = pref_ctx.lib.cursor_path;
+	hv.str = pref_ctx.lib.cursor_path;
 	if (pcb_gui->attr_dlg_set_value(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wlist, &hv) == 0) {
 		free(pref_ctx.lib.cursor_path);
 		pref_ctx.lib.cursor_path = NULL;
@@ -199,7 +199,7 @@ static void lib_btn_up(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *bt
 		pcb_hid_attr_val_t hv;
 		pcb_dad_tree_insert(attr, prev, cell);
 		pref_lib_dlg2conf(hid_ctx, caller_data, attr);
-		hv.str_value = cell[0];
+		hv.str = cell[0];
 		pcb_gui->attr_dlg_set_value(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wlist, &hv);
 	}
 }
@@ -226,7 +226,7 @@ static void lib_btn_down(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 		pcb_hid_attr_val_t hv;
 		pcb_dad_tree_append(attr, next, cell);
 		pref_lib_dlg2conf(hid_ctx, caller_data, attr);
-		hv.str_value = cell[0];
+		hv.str = cell[0];
 		pcb_gui->attr_dlg_set_value(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wlist, &hv);
 	}
 }
@@ -241,9 +241,9 @@ static void lib_cell_edit_update(void *hid_ctx, void *caller_data, pcb_hid_attri
 	cell_edit_ctx_t *ctx = caller_data;
 	char *tmp;
 
-	pcb_path_resolve(&PCB->hidlib, ctx->dlg[ctx->wpath].val.str_value, &tmp, 0, pcb_true);
+	pcb_path_resolve(&PCB->hidlib, ctx->dlg[ctx->wpath].val.str, &tmp, 0, pcb_true);
 	if (tmp != NULL)
-		PCB_DAD_SET_VALUE(hid_ctx, ctx->wexp, str_value, tmp);
+		PCB_DAD_SET_VALUE(hid_ctx, ctx->wexp, str, tmp);
 }
 
 static int lib_cell_edit(char **cell)
@@ -258,7 +258,7 @@ static int lib_cell_edit(char **cell)
 			PCB_DAD_LABEL(ctx.dlg, "Path:");
 			PCB_DAD_STRING(ctx.dlg);
 				ctx.wpath = PCB_DAD_CURRENT(ctx.dlg);
-				ctx.dlg[ctx.wpath].val.str_value = pcb_strdup(cell[0]);
+				ctx.dlg[ctx.wpath].val.str = pcb_strdup(cell[0]);
 				PCB_DAD_CHANGE_CB(ctx.dlg, lib_cell_edit_update);
 
 			PCB_DAD_LABEL(ctx.dlg, "Expanded\nversion:");
@@ -279,9 +279,9 @@ static int lib_cell_edit(char **cell)
 	}
 
 	free(cell[0]);
-	cell[0] = pcb_strdup(ctx.dlg[ctx.wpath].val.str_value);
+	cell[0] = pcb_strdup(ctx.dlg[ctx.wpath].val.str);
 	free(cell[1]);
-	cell[1] = pcb_strdup(ctx.dlg[ctx.wexp].val.str_value);
+	cell[1] = pcb_strdup(ctx.dlg[ctx.wexp].val.str);
 
 	PCB_DAD_FREE(ctx.dlg);
 	return 0;

@@ -35,9 +35,9 @@
 /* Actual board meta to dialog box */
 static void pref_board_brd2dlg(pref_ctx_t *ctx)
 {
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->board.wname, str_value, PCB_EMPTY(PCB->hidlib.name));
+	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->board.wname, str, PCB_EMPTY(PCB->hidlib.name));
 	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->board.wthermscale, real_value, PCB->ThermScale);
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->board.wtype, str_value, (PCB->is_footprint ? "footprint" : "PCB board"));
+	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->board.wtype, str, (PCB->is_footprint ? "footprint" : "PCB board"));
 }
 
 /* Dialog box to actual board meta */
@@ -48,7 +48,7 @@ static void pref_board_dlg2brd(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	double newtherm;
 	pref_ctx_t *ctx = caller_data;
 
-	newname = PCB_EMPTY(ctx->dlg[ctx->board.wname].val.str_value);
+	newname = PCB_EMPTY(ctx->dlg[ctx->board.wname].val.str);
 	oldname = PCB_EMPTY(PCB->hidlib.name);
 	if (strcmp(oldname, newname) != 0) {
 		free(PCB->hidlib.name);
@@ -85,7 +85,7 @@ void pcb_dlg_pref_board_create(pref_ctx_t *ctx)
 		PCB_DAD_LABEL(ctx->dlg, "Board name");
 		PCB_DAD_STRING(ctx->dlg);
 			ctx->board.wname = PCB_DAD_CURRENT(ctx->dlg);
-			ctx->dlg[ctx->board.wname].val.str_value = pcb_strdup(PCB_EMPTY(PCB->hidlib.name));
+			ctx->dlg[ctx->board.wname].val.str = pcb_strdup(PCB_EMPTY(PCB->hidlib.name));
 			PCB_DAD_CHANGE_CB(ctx->dlg, pref_board_dlg2brd);
 		PCB_DAD_LABEL(ctx->dlg, "Thermal scale");
 		PCB_DAD_REAL(ctx->dlg, "");

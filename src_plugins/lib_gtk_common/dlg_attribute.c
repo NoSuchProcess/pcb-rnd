@@ -106,8 +106,8 @@ static void entry_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
 	if (ctx->inhibit_valchg)
 		return;
 
-	free((char *)dst->val.str_value);
-	dst->val.str_value = pcb_strdup(gtk_entry_get_text(entry));
+	free((char *)dst->val.str);
+	dst->val.str = pcb_strdup(gtk_entry_get_text(entry));
 	change_cb(ctx, dst);
 }
 
@@ -430,8 +430,8 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				g_object_set_data(G_OBJECT(entry), PCB_OBJ_PROP, ctx);
 				ctx->wl[j] = entry;
 
-				if (ctx->attrs[j].val.str_value != NULL)
-					gtk_entry_set_text(GTK_ENTRY(entry), ctx->attrs[j].val.str_value);
+				if (ctx->attrs[j].val.str != NULL)
+					gtk_entry_set_text(GTK_ENTRY(entry), ctx->attrs[j].val.str);
 				gtk_widget_set_tooltip_text(entry, ctx->attrs[j].help_text);
 				g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(entry_changed_cb), &(ctx->attrs[j]));
 				g_signal_connect(G_OBJECT(entry), "activate", G_CALLBACK(entry_activate_cb), &(ctx->attrs[j]));
@@ -509,9 +509,9 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				gtk_box_pack_start(GTK_BOX(parent), hbox, expfill, expfill, 0);
 
 				if (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TOGGLE)
-					ctx->wl[j] = gtk_toggle_button_new_with_label(ctx->attrs[j].val.str_value);
+					ctx->wl[j] = gtk_toggle_button_new_with_label(ctx->attrs[j].val.str);
 				else
-					ctx->wl[j] = gtk_button_new_with_label(ctx->attrs[j].val.str_value);
+					ctx->wl[j] = gtk_button_new_with_label(ctx->attrs[j].val.str);
 				gtk_box_pack_start(GTK_BOX(hbox), ctx->wl[j], expfill, expfill, 0);
 
 				gtk_widget_set_tooltip_text(ctx->wl[j], ctx->attrs[j].help_text);
@@ -593,9 +593,9 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 		case PCB_HATT_LABEL:
 			{
 				const char *txt = gtk_label_get_text(GTK_LABEL(ctx->wl[idx]));
-				if (strcmp(txt, val->str_value) == 0)
+				if (strcmp(txt, val->str) == 0)
 					goto nochg;
-				gtk_label_set_text(GTK_LABEL(ctx->wl[idx]), val->str_value);
+				gtk_label_set_text(GTK_LABEL(ctx->wl[idx]), val->str);
 			}
 			break;
 
@@ -604,13 +604,13 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 		case PCB_HATT_STRING:
 			{
 				const char *nv, *s = gtk_entry_get_text(GTK_ENTRY(ctx->wl[idx]));
-				nv = val->str_value;
+				nv = val->str;
 				if (nv == NULL)
 					nv = "";
 				if (strcmp(s, nv) == 0)
 					goto nochg;
-				gtk_entry_set_text(GTK_ENTRY(ctx->wl[idx]), val->str_value);
-				ctx->attrs[idx].val.str_value = pcb_strdup(val->str_value);
+				gtk_entry_set_text(GTK_ENTRY(ctx->wl[idx]), val->str);
+				ctx->attrs[idx].val.str = pcb_strdup(val->str);
 				*copied = 1;
 			}
 			break;
@@ -640,9 +640,9 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 		case PCB_HATT_BUTTON:
 			{
 				const char *s = gtk_button_get_label(GTK_BUTTON(ctx->wl[idx]));
-				if (strcmp(s, val->str_value) == 0)
+				if (strcmp(s, val->str) == 0)
 					goto nochg;
-				gtk_button_set_label(GTK_BUTTON(ctx->wl[idx]), val->str_value);
+				gtk_button_set_label(GTK_BUTTON(ctx->wl[idx]), val->str);
 			}
 			break;
 
@@ -844,10 +844,10 @@ void ghid_attr_dlg_free(void *hid_ctx)
 	if (ctx->rc == 0) { /* copy over the results */
 		for (i = 0; i < ctx->n_attrs; i++) {
 			ctx->results[i] = ctx->attrs[i].val;
-			if (PCB_HAT_IS_STR(ctx->attrs[i].type) && (ctx->results[i].str_value))
-				ctx->results[i].str_value = pcb_strdup(ctx->results[i].str_value);
+			if (PCB_HAT_IS_STR(ctx->attrs[i].type) && (ctx->results[i].str))
+				ctx->results[i].str = pcb_strdup(ctx->results[i].str);
 			else
-				ctx->results[i].str_value = NULL;
+				ctx->results[i].str = NULL;
 		}
 	}
 

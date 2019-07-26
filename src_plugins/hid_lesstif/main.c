@@ -1737,7 +1737,7 @@ static int lesstif_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 				r->resource_type = XtRString;
 				r->default_type = XtRString;
 				r->resource_size = sizeof(char *);
-				r->default_addr = (char *) a->default_val.str_value;
+				r->default_addr = (char *) a->default_val.str;
 				rcount++;
 				break;
 			case PCB_HATT_BOOL:
@@ -1825,7 +1825,7 @@ static int lesstif_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 				if (a->value)
 					*(char **) a->value = v->s;
 				else
-					a->default_val.str_value = v->s;
+					a->default_val.str = v->s;
 				rcount++;
 				break;
 			default:

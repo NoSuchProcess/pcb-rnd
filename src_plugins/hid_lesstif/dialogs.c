@@ -203,12 +203,12 @@ static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
 			ctx->attrs[widx].val.lng = XmToggleButtonGetState(ctx->wl[widx]);
 			break;
 		case PCB_HATT_STRING:
-			free((char *)ctx->attrs[widx].val.str_value);
-			ctx->attrs[widx].val.str_value = pcb_strdup(XmTextGetString(ctx->wl[widx]));
+			free((char *)ctx->attrs[widx].val.str);
+			ctx->attrs[widx].val.str = pcb_strdup(XmTextGetString(ctx->wl[widx]));
 			if (ctx->results != NULL) {
-				TODO("this is a memory leak at the moment, because ctx->results[widx].str_value may be const char * in some cases; will be gone when result is gone");
-/*				free((char *)ctx->results[widx].str_value);*/
-				ctx->results[widx].str_value = ctx->attrs[widx].val.str_value;
+				TODO("this is a memory leak at the moment, because ctx->results[widx].str may be const char * in some cases; will be gone when result is gone");
+/*				free((char *)ctx->results[widx].str);*/
+				ctx->results[widx].str = ctx->attrs[widx].val.str;
 			}
 			return; /* can't rely on central copy because of the allocation */
 		case PCB_HATT_ENUM:
@@ -417,7 +417,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 		case PCB_HATT_STRING:
 			stdarg(XmNcolumns, 40);
 			stdarg(XmNresizeWidth, True);
-			stdarg(XmNvalue, ctx->results[i].str_value);
+			stdarg(XmNvalue, ctx->results[i].str);
 			ctx->wl[i] = XmCreateTextField(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
 			XtAddCallback(ctx->wl[i], XmNvalueChangedCallback, valchg, ctx->wl[i]);
 			XtAddCallback(ctx->wl[i], XmNactivateCallback, activated, ctx->wl[i]);
@@ -474,7 +474,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 			}
 			break;
 		case PCB_HATT_BUTTON:
-			stdarg(XmNlabelString, XmStringCreatePCB(ctx->attrs[i].val.str_value));
+			stdarg(XmNlabelString, XmStringCreatePCB(ctx->attrs[i].val.str));
 			ctx->wl[i] = XmCreatePushButton(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
 			XtAddCallback(ctx->wl[i], XmNactivateCallback, valchg, ctx->wl[i]);
 			break;
@@ -522,17 +522,17 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 			/* not possible to change the pane with the default motif widget */
 			break;
 		case PCB_HATT_BUTTON:
-			XtVaSetValues(ctx->wl[idx], XmNlabelString, XmStringCreatePCB(val->str_value), NULL);
+			XtVaSetValues(ctx->wl[idx], XmNlabelString, XmStringCreatePCB(val->str), NULL);
 			break;
 		case PCB_HATT_LABEL:
-			XtVaSetValues(ctx->wl[idx], XmNlabelString, XmStringCreatePCB(val->str_value), NULL);
+			XtVaSetValues(ctx->wl[idx], XmNlabelString, XmStringCreatePCB(val->str), NULL);
 			break;
 		case PCB_HATT_BOOL:
 			XtVaSetValues(ctx->wl[idx], XmNset, val->lng, NULL);
 			break;
 		case PCB_HATT_STRING:
-			XtVaSetValues(ctx->wl[idx], XmNvalue, XmStrCast(val->str_value), NULL);
-			ctx->attrs[idx].val.str_value = pcb_strdup(val->str_value);
+			XtVaSetValues(ctx->wl[idx], XmNvalue, XmStrCast(val->str), NULL);
+			ctx->attrs[idx].val.str = pcb_strdup(val->str);
 			copied = 1;
 			break;
 		case PCB_HATT_INTEGER:
@@ -549,10 +549,10 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 			ltf_preview_set(ctx, idx, val->real_value);
 			break;
 		case PCB_HATT_TEXT:
-			ltf_text_set(ctx, idx, val->str_value);
+			ltf_text_set(ctx, idx, val->str);
 			break;
 		case PCB_HATT_TREE:
-			ltf_tree_set(ctx, idx, val->str_value);
+			ltf_tree_set(ctx, idx, val->str);
 			break;
 		case PCB_HATT_ENUM:
 			for (n = 0; ctx->attrs[idx].enumerations[n]; n++) {
@@ -650,10 +650,10 @@ void *lesstif_attr_dlg_new(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *
 
 	for (i = 0; i < n_attrs; i++) {
 		results[i] = attrs[i].val;
-		if (PCB_HAT_IS_STR(attrs[i].type) && (results[i].str_value))
-			results[i].str_value = pcb_strdup(results[i].str_value);
+		if (PCB_HAT_IS_STR(attrs[i].type) && (results[i].str))
+			results[i].str = pcb_strdup(results[i].str);
 		else
-			results[i].str_value = NULL;
+			results[i].str = NULL;
 	}
 
 	ctx->wl = (Widget *) calloc(n_attrs, sizeof(Widget));

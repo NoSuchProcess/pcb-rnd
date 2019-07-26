@@ -88,7 +88,7 @@ static pcb_export_opt_t *fidocadj_get_export_options(pcb_hid_t *hid, int *n)
 {
 	const char *suffix = ".fcd";
 
-	if ((PCB != NULL)  && (fidocadj_attribute_list[HA_fidocadjfile].default_val.str_value == NULL))
+	if ((PCB != NULL)  && (fidocadj_attribute_list[HA_fidocadjfile].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &fidocadj_attribute_list[HA_fidocadjfile], suffix);
 
 	if (n)
@@ -178,7 +178,7 @@ static void fidocadj_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = fidocadj_values;
 	}
 
-	libfile = options[HA_libfile].str_value;
+	libfile = options[HA_libfile].str;
 	if ((libfile != NULL) && (*libfile != '\0')) {
 		htsi_init(&lib_names, strhash, strkeyeq);
 		have_lib = 1;
@@ -188,7 +188,7 @@ static void fidocadj_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	else
 		have_lib = 0;
 
-	filename = options[HA_fidocadjfile].str_value;
+	filename = options[HA_fidocadjfile].str;
 	if (!filename)
 		filename = "pcb-rnd-default.fcd";
 

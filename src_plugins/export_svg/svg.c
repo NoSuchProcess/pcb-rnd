@@ -202,7 +202,7 @@ static pcb_export_opt_t *svg_get_export_options(pcb_hid_t *hid, int *n)
 {
 	const char *suffix = ".svg";
 
-	if ((PCB != NULL)  && (svg_attribute_list[HA_svgfile].default_val.str_value == NULL))
+	if ((PCB != NULL)  && (svg_attribute_list[HA_svgfile].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &svg_attribute_list[HA_svgfile], suffix);
 
 	if (n)
@@ -339,10 +339,10 @@ static void svg_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = svg_values;
 	}
 
-	pcb_cam_begin(PCB, &svg_cam, options[HA_cam].str_value, svg_attribute_list, NUM_OPTIONS, options);
+	pcb_cam_begin(PCB, &svg_cam, options[HA_cam].str, svg_attribute_list, NUM_OPTIONS, options);
 
 	if (svg_cam.fn_template == NULL) {
-		filename = options[HA_svgfile].str_value;
+		filename = options[HA_svgfile].str;
 		if (!filename)
 			filename = "pcb.svg";
 
@@ -369,7 +369,7 @@ static void svg_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	f = NULL;
 
 	if (pcb_cam_end(&svg_cam) == 0)
-		pcb_message(PCB_MSG_ERROR, "svg cam export for '%s' failed to produce any content\n", options[HA_cam].str_value);
+		pcb_message(PCB_MSG_ERROR, "svg cam export for '%s' failed to produce any content\n", options[HA_cam].str);
 }
 
 static int svg_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)

@@ -418,7 +418,7 @@ static pcb_hid_attr_val_t ipcd356_values[NUM_OPTIONS];
 
 static pcb_export_opt_t *ipcd356_get_export_options(pcb_hid_t *hid, int *n)
 {
-	if ((PCB != NULL) && (ipcd356_options[HA_ipcd356_filename].default_val.str_value == NULL))
+	if ((PCB != NULL) && (ipcd356_options[HA_ipcd356_filename].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &ipcd356_options[HA_ipcd356_filename], ".net");
 
 	if (n != NULL)
@@ -447,7 +447,7 @@ static void ipcd356_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = ipcd356_values;
 	}
 
-	fn = options[HA_ipcd356_filename].str_value;
+	fn = options[HA_ipcd356_filename].str;
 	if (fn == NULL)
 		fn = "pcb-rnd-out.net";
 

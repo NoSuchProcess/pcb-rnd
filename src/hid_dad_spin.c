@@ -92,7 +92,7 @@ static void spin_changed(void *hid_ctx, void *caller_data, pcb_hid_dad_spin_t *s
 	end->changed = 1;
 
 	/* determine whether textual input is empty and indicate that in the compound end widget */
-	s = str->val.str_value;
+	s = str->val.str;
 	if (s == NULL) s = "";
 	while(isspace(*s)) s++;
 	end->empty = (*s == '\0');
@@ -142,7 +142,7 @@ static void spin_unit_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 		unit = pcbhl_conf.editor.grid_unit;
 
 	pcb_snprintf(su->buf, sizeof(su->buf), "%$m*", unit->suffix, su->end->val.coord_value);
-	hv.str_value = su->buf;
+	hv.str = su->buf;
 	pcb_gui->attr_dlg_set_value(hid_ctx, su->wout, &hv);
 	hv.lng = 0;
 	pcb_gui->attr_dlg_set_value(hid_ctx, su->wglob, &hv);
@@ -166,7 +166,7 @@ static void spin_unit_dialog(void *spin_hid_ctx, pcb_hid_dad_spin_t *spin, pcb_h
 		PCB_DAD_BEGIN_TABLE(ctx.dlg, 2);
 			PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_FRAME);
 			PCB_DAD_LABEL(ctx.dlg, "Original:");
-			PCB_DAD_LABEL(ctx.dlg, str->val.str_value);
+			PCB_DAD_LABEL(ctx.dlg, str->val.str);
 			PCB_DAD_LABEL(ctx.dlg, "With new unit:");
 			PCB_DAD_LABEL(ctx.dlg, "");
 				ctx.wout = PCB_DAD_CURRENT(ctx.dlg);
@@ -216,7 +216,7 @@ static void spin_unit_dialog(void *spin_hid_ctx, pcb_hid_dad_spin_t *spin, pcb_h
 				spin->unit = NULL;
 
 		spin->no_unit_chg = ctx.dlg[ctx.wstick].val.lng;
-		hv.str_value = pcb_strdup(ctx.buf);
+		hv.str = pcb_strdup(ctx.buf);
 		pcb_gui->attr_dlg_set_value(spin_hid_ctx, spin->wstr, &hv);
 	}
 
@@ -243,8 +243,8 @@ static double get_step(pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end, pcb_h
 		case PCB_DAD_SPIN_COORD:
 			if (spin->unit == NULL) {
 				pcb_bool succ = 0;
-				if (str->val.str_value != NULL)
-					succ = pcb_get_value_unit(str->val.str_value, NULL, 0, &v, &unit);
+				if (str->val.str != NULL)
+					succ = pcb_get_value_unit(str->val.str, NULL, 0, &v, &unit);
 				if (!succ) {
 					v = end->val.coord_value;
 					unit = pcbhl_conf.editor.grid_unit;
@@ -299,7 +299,7 @@ static void do_step(void *hid_ctx, pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t
 	}
 
 	spin_warn(hid_ctx, spin, end, warn);
-	hv.str_value = pcb_strdup(buf);
+	hv.str = pcb_strdup(buf);
 	spin->set_writeback_lock++;
 	pcb_gui->attr_dlg_set_value(hid_ctx, spin->wstr, &hv);
 	spin->set_writeback_lock--;
@@ -347,21 +347,21 @@ void pcb_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 
 	switch(spin->type) {
 		case PCB_DAD_SPIN_INT:
-			l = strtol(str->val.str_value, &ends, 10);
+			l = strtol(str->val.str, &ends, 10);
 			SPIN_CLAMP(l);
 			if (*ends != '\0')
 				warn = "Invalid integer - result is truncated";
 			end->val.lng = l;
 			break;
 		case PCB_DAD_SPIN_DOUBLE:
-			d = strtod(str->val.str_value, &ends);
+			d = strtod(str->val.str, &ends);
 			SPIN_CLAMP(d);
 			if (*ends != '\0')
 				warn = "Invalid numeric - result is truncated";
 			end->val.real_value = d;
 			break;
 		case PCB_DAD_SPIN_COORD:
-			succ = pcb_get_value_unit(str->val.str_value, &absolute, 0, &d, &unit);
+			succ = pcb_get_value_unit(str->val.str, &absolute, 0, &d, &unit);
 			if (succ)
 				SPIN_CLAMP(d);
 			else
@@ -394,7 +394,7 @@ void pcb_dad_spin_txt_enter_cb_dry(void *hid_ctx, void *caller_data, pcb_hid_att
 
 	switch(spin->type) {
 		case PCB_DAD_SPIN_COORD:
-			inval = str->val.str_value;
+			inval = str->val.str;
 			while(isspace(*inval)) inval++;
 			if (*inval == '\0')
 				inval = "0";
@@ -407,11 +407,11 @@ void pcb_dad_spin_txt_enter_cb_dry(void *hid_ctx, void *caller_data, pcb_hid_att
 				char *tmp = pcb_concat(inval, " ", pcbhl_conf.editor.grid_unit->suffix, NULL);
 
 				changed = 1;
-				hv.str_value = tmp;
+				hv.str = tmp;
 				spin->set_writeback_lock++;
 				pcb_gui->attr_dlg_set_value(hid_ctx, spin->wstr, &hv);
 				spin->set_writeback_lock--;
-				succ = pcb_get_value_unit(str->val.str_value, &absolute, 0, &d, &unit);
+				succ = pcb_get_value_unit(str->val.str, &absolute, 0, &d, &unit);
 				if (succ)
 					end->val.coord_value = d;
 				free(tmp);
@@ -464,19 +464,19 @@ void pcb_dad_spin_set_num(pcb_hid_attribute_t *attr, long l, double d, pcb_coord
 	switch(spin->type) {
 		case PCB_DAD_SPIN_INT:
 			attr->val.lng = l;
-			free((char *)str->val.str_value);
-			str->val.str_value = pcb_strdup_printf("%ld", l);
+			free((char *)str->val.str);
+			str->val.str = pcb_strdup_printf("%ld", l);
 			break;
 		case PCB_DAD_SPIN_DOUBLE:
 			attr->val.real_value = d;
-			free((char *)str->val.str_value);
-			str->val.str_value = pcb_strdup_printf("%f", d);
+			free((char *)str->val.str);
+			str->val.str = pcb_strdup_printf("%f", d);
 			break;
 		case PCB_DAD_SPIN_COORD:
 			attr->val.coord_value = c;
 			spin->unit = NULL;
-			free((char *)str->val.str_value);
-			str->val.str_value = gen_str_coord(spin, c, NULL, 0);
+			free((char *)str->val.str);
+			str->val.str = gen_str_coord(spin, c, NULL, 0);
 			break;
 		default: pcb_trace("INTERNAL ERROR: spin_set_num\n");
 	}

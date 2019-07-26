@@ -202,7 +202,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 	ctx->conf.selected_idx = idx;
 
 	if (nat == NULL) {
-		hv.str_value = "";
+		hv.str = "";
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wname, &hv);
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wdesc, &hv);
 		setup_intree(ctx, NULL, 0);
@@ -213,12 +213,12 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 		return;
 	}
 
-	hv.str_value = path == NULL ? "" : path;
+	hv.str = path == NULL ? "" : path;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wname, &hv);
 
 	tmp = pcb_strdup(nat->description);
 	pcb_text_wrap(tmp, DESC_WRAP_WIDTH, '\n', ' ');
-	hv.str_value = tmp;
+	hv.str = tmp;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wdesc, &hv);
 	free(tmp);
 
@@ -249,16 +249,16 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 	}
 
 	/* default: set the value of the given node from hv loaded above */
-	hv.str_value = print_conf_val(nat->type, &nat->val, buf, sizeof(buf));
+	hv.str = print_conf_val(nat->type, &nat->val, buf, sizeof(buf));
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wnatval[nat->type], &hv);
 
 	src = nat->prop[idx].src;
 	if (src != NULL) {
 		rolename = conf_role_name(conf_lookup_role(nat->prop[idx].src));
-		hv.str_value = tmp = pcb_strdup_printf("prio: %d role: %s\nsource: %s:%d.%d", nat->prop[idx].prio, rolename, src->file_name, src->line, src->col);
+		hv.str = tmp = pcb_strdup_printf("prio: %d role: %s\nsource: %s:%d.%d", nat->prop[idx].prio, rolename, src->file_name, src->line, src->col);
 	}
 	else
-		hv.str_value = tmp = pcb_strdup_printf("prio: %d\nsource: <not saved>", nat->prop[idx].prio);
+		hv.str = tmp = pcb_strdup_printf("prio: %d\nsource: <not saved>", nat->prop[idx].prio);
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wsrc[nat->type], &hv);
 	free(tmp);
 
@@ -321,7 +321,7 @@ static void pcb_pref_dlg_conf_filter_cb(void *hid_ctx, void *caller_data, pcb_hi
 
 	attr = &ctx->dlg[ctx->conf.wtree];
 	tree = (pcb_hid_tree_t *)attr->enumerations;
-	text = attr_inp->val.str_value;
+	text = attr_inp->val.str;
 	have_filter_text = (*text != '\0');
 
 	/* hide or unhide everything */
@@ -472,7 +472,7 @@ void pcb_dlg_pref_conf_open(pref_ctx_t *ctx, const char *tabarg)
 
 	if (tabarg != NULL) {
 		pcb_hid_attr_val_t hv;
-		hv.str_value = pcb_strdup(tabarg);
+		hv.str = pcb_strdup(tabarg);
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wfilter, &hv);
 		pcb_pref_dlg_conf_filter_cb(ctx->dlg_hid_ctx, ctx, &ctx->dlg[ctx->conf.wfilter]);
 		pcb_dad_tree_expcoll(&ctx->dlg[ctx->conf.wtree], NULL, 1, 1);

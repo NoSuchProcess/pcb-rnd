@@ -42,7 +42,7 @@ static void ee_data2dialog(ee_t *ee)
 {
 	PCB_DAD_SET_VALUE(ee->dlg_hid_ctx, ee->wmethod, lng, ee->mthi);
 	PCB_DAD_SET_VALUE(ee->dlg_hid_ctx, ee->wfmt, lng, methods[ee->mthi].fmt);
-	PCB_DAD_SET_VALUE(ee->dlg_hid_ctx, ee->wcmd, str_value, pcb_strdup(methods[ee->mthi].command));
+	PCB_DAD_SET_VALUE(ee->dlg_hid_ctx, ee->wcmd, str, pcb_strdup(methods[ee->mthi].command));
 
 	/* we have only one format, so disable the combo box for selecting it */
 	pcb_gui->attr_dlg_widget_state(ee->dlg_hid_ctx, ee->wfmt, pcb_false);
@@ -71,7 +71,7 @@ static void ee_chg_cmd(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 	if (lock)
 		return;
 
-	methods[ee->mthi].command = pcb_strdup(ee->dlg[ee->wcmd].val.str_value);
+	methods[ee->mthi].command = pcb_strdup(ee->dlg[ee->wcmd].val.str);
 
 	lock = 1;
 	ee_data2dialog(ee);

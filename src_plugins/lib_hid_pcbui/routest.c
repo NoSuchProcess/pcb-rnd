@@ -109,8 +109,8 @@ static void rst_update()
 			if (rst.sub.dlg[rst.wlab[n]].val.lng != hv.lng)
 				pcb_gui->attr_dlg_set_value(rst.sub.dlg_hid_ctx, rst.wchk[n], &hv);
 
-			hv.str_value = PCB->RouteStyle.array[n].name;
-			if (strcmp(rst.sub.dlg[rst.wlab[n]].name, hv.str_value) != 0)
+			hv.str = PCB->RouteStyle.array[n].name;
+			if (strcmp(rst.sub.dlg[rst.wlab[n]].name, hv.str) != 0)
 				pcb_gui->attr_dlg_set_value(rst.sub.dlg_hid_ctx, rst.wlab[n], &hv);
 		}
 		if (vtroutestyle_len(&PCB->RouteStyle) != rst.last_len) {

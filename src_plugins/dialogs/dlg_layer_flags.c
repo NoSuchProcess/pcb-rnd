@@ -65,7 +65,7 @@ fgw_error_t pcb_act_LayerPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_DAD_END(dlg);
 	
 
-	dlg[wname].val.str_value = pcb_strdup(ly->name);
+	dlg[wname].val.str = pcb_strdup(ly->name);
 	dlg[wsub].val.lng = ly->comb & PCB_LYC_SUB;
 	dlg[wauto].val.lng = ly->comb & PCB_LYC_AUTO;
 
@@ -73,8 +73,8 @@ fgw_error_t pcb_act_LayerPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (failed == 0) {
 		pcb_layer_combining_t comb = 0;
-		if (strcmp(ly->name, dlg[wname].val.str_value) != 0) {
-			ar |= pcb_layer_rename_(ly, (char *)dlg[wname].val.str_value);
+		if (strcmp(ly->name, dlg[wname].val.str) != 0) {
+			ar |= pcb_layer_rename_(ly, (char *)dlg[wname].val.str);
 			pcb_board_set_changed_flag(pcb_true);
 		}
 		if (dlg[wsub].val.lng) comb |= PCB_LYC_SUB;
@@ -143,9 +143,9 @@ fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_DAD_END(dlg);
 
 
-	dlg[wname].val.str_value = pcb_strdup(g->name);
+	dlg[wname].val.str = pcb_strdup(g->name);
 	dlg[wtype].val.lng = orig_type = pcb_ly_type2enum(g->ltype);
-	dlg[wpurp].val.str_value = pcb_strdup(g->purpose == NULL ? "" : g->purpose);
+	dlg[wpurp].val.str = pcb_strdup(g->purpose == NULL ? "" : g->purpose);
 	if (!omit_loc)
 		dlg[wloc].val.lng = def_loc;
 
@@ -165,9 +165,9 @@ fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	PCB_DAD_AUTORUN("layer_grp_prop", dlg, "Edit the properties of a layer group (physical layer)", NULL, failed);
 	if (failed == 0) {
-		if (strcmp(g->name, dlg[wname].val.str_value) != 0) {
-			ar |= pcb_layergrp_rename_(g, (char *)dlg[wname].val.str_value);
-			dlg[wname].val.str_value = NULL;
+		if (strcmp(g->name, dlg[wname].val.str) != 0) {
+			ar |= pcb_layergrp_rename_(g, (char *)dlg[wname].val.str);
+			dlg[wname].val.str = NULL;
 			pcb_board_set_changed_flag(pcb_true);
 		}
 
@@ -190,17 +190,17 @@ fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_message(PCB_MSG_ERROR, "Ignoring location - for this layer group type it is determined by the stackup\n");
 		}
 
-		if (dlg[wpurp].val.str_value == NULL) {
+		if (dlg[wpurp].val.str == NULL) {
 			if (g->purpose != NULL) {
 				pcb_layergrp_set_purpose__(g, NULL);
 				changed = 1;
 			}
 		}
-		else if ((g->purpose == NULL) || (strcmp(g->purpose, dlg[wpurp].val.str_value) != 0)) {
-			if (*dlg[wpurp].val.str_value == '\0')
+		else if ((g->purpose == NULL) || (strcmp(g->purpose, dlg[wpurp].val.str) != 0)) {
+			if (*dlg[wpurp].val.str == '\0')
 				pcb_layergrp_set_purpose__(g, NULL);
 			else
-				pcb_layergrp_set_purpose__(g, pcb_strdup(dlg[wpurp].val.str_value));
+				pcb_layergrp_set_purpose__(g, pcb_strdup(dlg[wpurp].val.str));
 			changed = 1;
 		}
 

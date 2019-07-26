@@ -130,13 +130,13 @@ static void ser_hz(int save, int widx, const char *attrkey)
 static void ser_str(int save, int widx, const char *attrkey)
 {
 	if (save) {
-		ser_save(exc_ctx.dlg[widx].val.str_value, attrkey);
+		ser_save(exc_ctx.dlg[widx].val.str, attrkey);
 	}
 	else {
 		pcb_hid_attr_val_t hv;
-		hv.str_value = ser_load(attrkey);
-		if (hv.str_value == NULL)
-			hv.str_value = "";
+		hv.str = ser_load(attrkey);
+		if (hv.str == NULL)
+			hv.str = "";
 		pcb_gui->attr_dlg_set_value(exc_ctx.dlg_hid_ctx, widx, &hv);
 	}
 }

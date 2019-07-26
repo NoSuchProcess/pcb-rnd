@@ -170,10 +170,10 @@ TODO("Use rich text for this with explicit wrap marks\n");
 		gds_append_str(&tmp, l->data.fp.loc_info);
 		gds_append_str(&tmp, "\n");
 
-		hv.str_value = tmp.array;
+		hv.str = tmp.array;
 	}
 	else
-		hv.str_value = "";
+		hv.str = "";
 
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtags, &hv);
 	gds_uninit(&tmp);
@@ -182,7 +182,7 @@ TODO("Use rich text for this with explicit wrap marks\n");
 static void timed_update_preview_cb(pcb_hidval_t user_data)
 {
 	library_ctx_t *ctx = user_data.ptr;
-	const char *otext = ctx->dlg[ctx->wfilt].val.str_value;
+	const char *otext = ctx->dlg[ctx->wfilt].val.str;
 
 	if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, otext, NULL)) {
 		pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
@@ -213,7 +213,7 @@ static void timed_update_preview(library_ctx_t *ctx, int active)
 
 static void update_edit_button(library_ctx_t *ctx)
 {
-	const char *otext = ctx->dlg[ctx->wfilt].val.str_value;
+	const char *otext = ctx->dlg[ctx->wfilt].val.str;
 	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wedit, !ctx->pactive && (otext != NULL) && (strchr(otext, '(') != NULL));
 }
 
@@ -272,7 +272,7 @@ static void library_lib2dlg(library_ctx_t *ctx)
 	/* restore cursor */
 	if (cursor_path != NULL) {
 		pcb_hid_attr_val_t hv;
-		hv.str_value = cursor_path;
+		hv.str = cursor_path;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtree, &hv);
 		free(cursor_path);
 	}
@@ -309,7 +309,7 @@ static void library_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 	if (close_param)
 		library_param_dialog(ctx, NULL);
 
-	hv.str_value = NULL;
+	hv.str = NULL;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wpreview, &hv);
 
 }
@@ -378,7 +378,7 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 
 	attr = &ctx->dlg[ctx->wtree];
 	tree = (pcb_hid_tree_t *)attr->enumerations;
-	otext = attr_inp->val.str_value;
+	otext = attr_inp->val.str;
 	text = pcb_strdup(otext);
 	have_filter_text = (*text != '\0');
 
@@ -478,7 +478,7 @@ static void library_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	library_ctx_t *ctx = caller_data;
 	pcb_hid_attribute_t *attr;
 	pcb_hid_row_t *r, *rnew;
-	const char *otext = ctx->dlg[ctx->wfilt].val.str_value;
+	const char *otext = ctx->dlg[ctx->wfilt].val.str;
 	char *name, *sep;
 	int namelen;
 
