@@ -283,8 +283,6 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 	GtkWidget *combo, *widget, *entry, *vbox1, *hbox, *bparent, *parent, *tbl;
 
 	for (j = start_from; j < ctx->n_attrs; j++) {
-		if (ctx->attrs[j].help_text == ATTR_UNDOCUMENTED)
-			continue;
 		if (ctx->attrs[j].type == PCB_HATT_END)
 			break;
 
