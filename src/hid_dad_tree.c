@@ -97,7 +97,7 @@ void pcb_hid_dad_close(void *hid_ctx, pcb_dad_retovr_t *retovr, int retval)
 void pcb_hid_dad_close_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pcb_dad_retovr_t **retovr = (pcb_dad_retovr_t **)attr->enumerations;
-	pcb_hid_dad_close(hid_ctx, *retovr, attr->default_val.int_value);
+	pcb_hid_dad_close(hid_ctx, *retovr, attr->val.int_value);
 }
 
 int pcb_hid_dad_run(void *hid_ctx, pcb_dad_retovr_t *retovr)

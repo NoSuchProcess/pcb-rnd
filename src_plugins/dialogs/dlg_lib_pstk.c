@@ -169,7 +169,7 @@ static void pstklib_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 
 	/* draw the shapes */
 	for(n = 0; n < pcb_proto_num_layers; n++)
-		layers[n] = !!ctx->dlg[ctx->wlayerv[n]].default_val.int_value + !!ctx->dlg[ctx->wlayerc[n]].default_val.int_value;
+		layers[n] = !!ctx->dlg[ctx->wlayerv[n]].val.int_value + !!ctx->dlg[ctx->wlayerc[n]].val.int_value;
 
 	pcb_pstk_draw_preview(PCB, &ps, layers, 0, 0, &e->view);
 
@@ -182,7 +182,7 @@ static void pstklib_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	x2 = ctx->drawbox.X2;
 	y2 = ctx->drawbox.Y2;
 
-	grid = ctx->dlg[ctx->wgrid].default_val.coord_value;
+	grid = ctx->dlg[ctx->wgrid].val.coord_value;
 	for(x = 0; x < x2; x += grid)
 		pcb_gui->draw_line(gc, x, y1, x, y2);
 	for(x = -grid; x > x1; x -= grid)
@@ -277,7 +277,7 @@ static void pstklib_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 
 	attr = &ctx->dlg[ctx->wlist];
 	tree = (pcb_hid_tree_t *)attr->enumerations;
-	text = attr_inp->default_val.str_value;
+	text = attr_inp->val.str_value;
 
 	if ((text == NULL) || (*text == '\0')) {
 		for(r = gdl_first(&tree->rows); r != NULL; r = gdl_next(&tree->rows, r))

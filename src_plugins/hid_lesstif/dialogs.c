@@ -200,15 +200,15 @@ static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
 {
 	switch(ctx->attrs[widx].type) {
 		case PCB_HATT_BOOL:
-			ctx->attrs[widx].default_val.int_value = XmToggleButtonGetState(ctx->wl[widx]);
+			ctx->attrs[widx].val.int_value = XmToggleButtonGetState(ctx->wl[widx]);
 			break;
 		case PCB_HATT_STRING:
-			free((char *)ctx->attrs[widx].default_val.str_value);
-			ctx->attrs[widx].default_val.str_value = pcb_strdup(XmTextGetString(ctx->wl[widx]));
+			free((char *)ctx->attrs[widx].val.str_value);
+			ctx->attrs[widx].val.str_value = pcb_strdup(XmTextGetString(ctx->wl[widx]));
 			if (ctx->results != NULL) {
 				TODO("this is a memory leak at the moment, because ctx->results[widx].str_value may be const char * in some cases; will be gone when result is gone");
 /*				free((char *)ctx->results[widx].str_value);*/
-				ctx->results[widx].str_value = ctx->attrs[widx].default_val.str_value;
+				ctx->results[widx].str_value = ctx->attrs[widx].val.str_value;
 			}
 			return; /* can't rely on central copy because of the allocation */
 		case PCB_HATT_ENUM:
@@ -222,7 +222,7 @@ static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
 				stdarg_n = 0;
 				stdarg(XmNuserData, &uptr);
 				XtGetValues(btn, stdarg_args, stdarg_n);
-				ctx->attrs[widx].default_val.int_value = uptr - ctx->attrs[widx].enumerations;
+				ctx->attrs[widx].val.int_value = uptr - ctx->attrs[widx].enumerations;
 			}
 			break;
 		default:
@@ -230,7 +230,7 @@ static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
 	}
 
 	if (ctx->results != NULL)
-		ctx->results[widx] = ctx->attrs[widx].default_val;
+		ctx->results[widx] = ctx->attrs[widx].val;
 }
 
 static int attr_get_idx(XtPointer dlg_widget_, lesstif_attr_dlg_t **ctx_out)
@@ -461,7 +461,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 					btn = XmCreatePushButton(submenu, XmStrCast("menubutton"), stdarg_args, stdarg_n);
 					XtManageChild(btn);
 					XmStringFree(label);
-					if (sn == ctx->attrs[i].default_val.int_value)
+					if (sn == ctx->attrs[i].val.int_value)
 						default_button = btn;
 					XtAddCallback(btn, XmNactivateCallback, valchg, ctx->wl[i]);
 					(ctx->btn[i])[sn] = btn;
@@ -474,7 +474,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 			}
 			break;
 		case PCB_HATT_BUTTON:
-			stdarg(XmNlabelString, XmStringCreatePCB(ctx->attrs[i].default_val.str_value));
+			stdarg(XmNlabelString, XmStringCreatePCB(ctx->attrs[i].val.str_value));
 			ctx->wl[i] = XmCreatePushButton(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
 			XtAddCallback(ctx->wl[i], XmNactivateCallback, valchg, ctx->wl[i]);
 			break;
@@ -532,7 +532,7 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 			break;
 		case PCB_HATT_STRING:
 			XtVaSetValues(ctx->wl[idx], XmNvalue, XmStrCast(val->str_value), NULL);
-			ctx->attrs[idx].default_val.str_value = pcb_strdup(val->str_value);
+			ctx->attrs[idx].val.str_value = pcb_strdup(val->str_value);
 			copied = 1;
 			break;
 		case PCB_HATT_INTEGER:
@@ -570,7 +570,7 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 
 	ok:;
 	if (!copied)
-		ctx->attrs[idx].default_val = *val;
+		ctx->attrs[idx].val = *val;
 	ctx->inhibit_valchg = save;
 	return 0;
 
@@ -649,7 +649,7 @@ void *lesstif_attr_dlg_new(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *
 	ctx->id = pcb_strdup(id);
 
 	for (i = 0; i < n_attrs; i++) {
-		results[i] = attrs[i].default_val;
+		results[i] = attrs[i].val;
 		if (PCB_HAT_IS_STR(attrs[i].type) && (results[i].str_value))
 			results[i].str_value = pcb_strdup(results[i].str_value);
 		else

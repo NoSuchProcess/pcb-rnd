@@ -106,7 +106,7 @@ static void rst_update()
 			pcb_hid_attr_val_t hv;
 
 			hv.int_value = (n == target);
-			if (rst.sub.dlg[rst.wlab[n]].default_val.int_value != hv.int_value)
+			if (rst.sub.dlg[rst.wlab[n]].val.int_value != hv.int_value)
 				pcb_gui->attr_dlg_set_value(rst.sub.dlg_hid_ctx, rst.wchk[n], &hv);
 
 			hv.str_value = PCB->RouteStyle.array[n].name;

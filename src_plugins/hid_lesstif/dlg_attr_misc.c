@@ -232,7 +232,7 @@ static Widget ltf_picbutton_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_h
 static void ltf_colorbtn_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_color_t *clr)
 {
 	Widget btn = ctx->wl[idx];
-	ctx->attrs[idx].default_val.clr_value = *clr;
+	ctx->attrs[idx].val.clr_value = *clr;
 	pcb_ltf_color_button_recolor(display, btn, clr);
 }
 
@@ -249,7 +249,7 @@ static void ltf_colorbtn_valchg(Widget w, XtPointer dlg_widget_, XtPointer call_
 	if (widx < 0)
 		return;
 
-	clr = &ctx->attrs[widx].default_val.clr_value;
+	clr = &ctx->attrs[widx].val.clr_value;
 
 	argv[0].type = FGW_VOID;
 	argv[1].type = FGW_STR | FGW_DYN;
@@ -273,14 +273,14 @@ static void ltf_colorbtn_valchg(Widget w, XtPointer dlg_widget_, XtPointer call_
 
 	fgw_arg_free(&pcb_fgw, &res);
 	pcb_ltf_color_button_recolor(display, w, &nclr);
-	ctx->attrs[widx].default_val.clr_value = nclr;
+	ctx->attrs[widx].val.clr_value = nclr;
 	valchg(w, dlg_widget_, w);
 }
 
 
 static Widget ltf_colorbtn_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr, int readonly)
 {
-	Widget pic = pcb_ltf_color_button(display, parent, XmStrCast("dad_picture"), &attr->default_val.clr_value);
+	Widget pic = pcb_ltf_color_button(display, parent, XmStrCast("dad_picture"), &attr->val.clr_value);
 	if (!readonly)
 		XtAddCallback(pic, XmNactivateCallback, ltf_colorbtn_valchg, NULL);
 	XtManageChild(pic);

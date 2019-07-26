@@ -75,7 +75,7 @@ static void ser_int(int save, int widx, const char *attrkey)
 {
 	if (save) {
 		char tmp[128];
-		sprintf(tmp, "%d", exc_ctx.dlg[widx].default_val.int_value);
+		sprintf(tmp, "%d", exc_ctx.dlg[widx].val.int_value);
 		ser_save(tmp, attrkey);
 	}
 	else {
@@ -102,7 +102,7 @@ static void ser_hz(int save, int widx, const char *attrkey)
 {
 	if (save) {
 		char tmp[128];
-		sprintf(tmp, "%f Hz", exc_ctx.dlg[widx].default_val.real_value);
+		sprintf(tmp, "%f Hz", exc_ctx.dlg[widx].val.real_value);
 		ser_save(tmp, attrkey);
 	}
 	else {
@@ -130,7 +130,7 @@ static void ser_hz(int save, int widx, const char *attrkey)
 static void ser_str(int save, int widx, const char *attrkey)
 {
 	if (save) {
-		ser_save(exc_ctx.dlg[widx].default_val.str_value, attrkey);
+		ser_save(exc_ctx.dlg[widx].val.str_value, attrkey);
 	}
 	else {
 		pcb_hid_attr_val_t hv;
@@ -364,7 +364,7 @@ static void select_update(int setattr)
 
 static void select_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	exc_ctx.selected = attr->default_val.int_value;
+	exc_ctx.selected = attr->val.int_value;
 	select_update(1);
 }
 

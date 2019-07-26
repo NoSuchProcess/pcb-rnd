@@ -60,7 +60,7 @@ fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_DAD_LABEL(dlg, label);
 		PCB_DAD_STRING(dlg);
 			ws = PCB_DAD_CURRENT(dlg);
-			dlg[ws].default_val.str_value = pcb_strdup(default_str == NULL ? "" : default_str);
+			dlg[ws].val.str_value = pcb_strdup(default_str == NULL ? "" : default_str);
 			PCB_DAD_ENTER_CB(dlg, prompt_enter_cb);
 			dlg[ws].user_data = &dlg_ret_override;
 		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
@@ -73,7 +73,7 @@ fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	res->type = FGW_STR | FGW_DYN;
-	res->val.str = pcb_strdup(dlg[ws].default_val.str_value);
+	res->val.str = pcb_strdup(dlg[ws].val.str_value);
 	PCB_DAD_FREE(dlg);
 
 	return 0;
@@ -143,7 +143,7 @@ static void color_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	pcb_hid_attr_val_t val;
 	clrpick_t *ctx = caller_data;
 
-	pcb_color_load_int(&ctx->clr, clamp(ctx->dlg[ctx->wr].default_val.int_value), clamp(ctx->dlg[ctx->wg].default_val.int_value), clamp(ctx->dlg[ctx->wb].default_val.int_value), 255);
+	pcb_color_load_int(&ctx->clr, clamp(ctx->dlg[ctx->wr].val.int_value), clamp(ctx->dlg[ctx->wg].val.int_value), clamp(ctx->dlg[ctx->wb].val.int_value), 255);
 	val.clr_value = ctx->clr;
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wclr, &val);
 }

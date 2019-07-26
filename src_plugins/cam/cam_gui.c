@@ -136,7 +136,7 @@ static void cam_gui_opts2dlg(cam_dlg_t *ctx)
 	pcb_hid_row_t *r;
 	char *cell[3], *cursor_path = NULL;
 
-	cam_parse_opt_outfile(&ctx->cam, ctx->dlg[ctx->woutfile].default_val.str_value);
+	cam_parse_opt_outfile(&ctx->cam, ctx->dlg[ctx->woutfile].val.str_value);
 	hv.str_value = ctx->cam.prefix == NULL ? "" : ctx->cam.prefix;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprefix, &hv);
 
@@ -182,7 +182,7 @@ static void cam_gui_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 
 	attr = &ctx->dlg[ctx->wjobs];
 	tree = (pcb_hid_tree_t *)attr->enumerations;
-	text = attr_inp->default_val.str_value;
+	text = attr_inp->val.str_value;
 
 	pcb_dad_tree_hide_all(tree, &tree->rows, 1);
 	pcb_dad_tree_unhide_filter(tree, &tree->rows, 0, text);
@@ -196,7 +196,7 @@ static void cam_gui_export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(attr);
 
 	if (row != NULL) {
-		const char *outfile = ctx->dlg[ctx->woutfile].default_val.str_value;
+		const char *outfile = ctx->dlg[ctx->woutfile].val.str_value;
 		char *tmp = pcb_strdup_printf("outfile=%s", outfile);
 		pcb_actionl("cam", "call", row->cell[0], tmp, NULL);
 		free(tmp);

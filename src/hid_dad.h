@@ -210,14 +210,14 @@ do { \
 #define PCB_DAD_BUTTON(table, text) \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_BUTTON); \
-	table[table ## _len - 1].default_val.str_value = text; \
+	table[table ## _len - 1].val.str_value = text; \
 } while(0)
 
 #define PCB_DAD_BUTTON_CLOSE(table, text, retval) \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_BUTTON); \
-	table[table ## _len - 1].default_val.str_value = text; \
-	table[table ## _len - 1].default_val.int_value = retval; \
+	table[table ## _len - 1].val.str_value = text; \
+	table[table ## _len - 1].val.int_value = retval; \
 	table[table ## _len - 1].enumerations = (const char **)(&table ## _ret_override); \
 	PCB_DAD_CHANGE_CB(table, pcb_hid_dad_close_cb); \
 } while(0)
@@ -298,13 +298,13 @@ do { \
 #define PCB_DAD_BEGIN_HPANE(table) \
 do { \
 	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_HPANE); \
-	table[table ## _len - 1].default_val.real_value = 0.5; \
+	table[table ## _len - 1].val.real_value = 0.5; \
 } while(0)
 
 #define PCB_DAD_BEGIN_VPANE(table) \
 do { \
 	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_VPANE); \
-	table[table ## _len - 1].default_val.real_value = 0.5; \
+	table[table ## _len - 1].val.real_value = 0.5; \
 } while(0)
 
 #define PCB_DAD_TREE(table, cols, first_col_is_tree, opt_header) \
@@ -353,7 +353,7 @@ do { \
 	table[table ## _len-1].type = __opt__->type; \
 	table[table ## _len-1].min_val = __opt__->min_val; \
 	table[table ## _len-1].max_val = __opt__->max_val; \
-	table[table ## _len-1].default_val = __opt__->default_val; \
+	table[table ## _len-1].val = __opt__->default_val; \
 	table[table ## _len-1].enumerations = __opt__->enumerations; \
 	PCB_DAD_UPDATE_INTERNAL(table, table ## _len-1); \
 } while(0)
@@ -382,7 +382,7 @@ do { \
 		} \
 	} while(0)
 
-#define PCB_DAD_DEFAULT_PTR(table, val) \
+#define PCB_DAD_DEFAULT_PTR(table, val_) \
 	do {\
 		switch(table[table ## _len - 1].type) { \
 			case PCB_HATT_BEGIN_COMPOUND: \
@@ -390,17 +390,17 @@ do { \
 				{ \
 					pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)table[table ## _len - 1].enumerations; \
 					if ((cmp != NULL) && (cmp->set_val_ptr != NULL)) \
-						cmp->set_val_ptr(&table[table ## _len - 1], (void *)(val)); \
+						cmp->set_val_ptr(&table[table ## _len - 1], (void *)(val_)); \
 					else \
 						assert(0); \
 				} \
 				break; \
 			default: \
-				PCB_DAD_SET_ATTR_FIELD_PTR(table, default_val, val); \
+				PCB_DAD_SET_ATTR_FIELD_PTR(table, val, val_); \
 		} \
 	} while(0)
 
-#define PCB_DAD_DEFAULT_NUM(table, val) \
+#define PCB_DAD_DEFAULT_NUM(table, val_) \
 	do {\
 		switch(table[table ## _len - 1].type) { \
 			case PCB_HATT_BEGIN_COMPOUND: \
@@ -408,22 +408,22 @@ do { \
 				{ \
 					pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)table[table ## _len - 1].enumerations; \
 					if ((cmp != NULL) && (cmp->set_val_num != NULL)) \
-						cmp->set_val_num(&table[table ## _len - 1], (long)(val), (double)(val), (pcb_coord_t)(val)); \
+						cmp->set_val_num(&table[table ## _len - 1], (long)(val_), (double)(val_), (pcb_coord_t)(val_)); \
 					else \
 						assert(0); \
 				} \
 				break; \
 			default: \
-				PCB_DAD_SET_ATTR_FIELD_NUM(table, default_val, val); \
+				PCB_DAD_SET_ATTR_FIELD_NUM(table, val, val_); \
 		} \
 	} while(0);
 
 /* safe way to call gui->attr_dlg_set_value() - resets the unused fields */
-#define PCB_DAD_SET_VALUE(hid_ctx, wid, field, val) \
+#define PCB_DAD_SET_VALUE(hid_ctx, wid, field, val_) \
 	do { \
 		pcb_hid_attr_val_t __val__; \
 		memset(&__val__, 0, sizeof(__val__)); \
-		__val__.field = val; \
+		__val__.field = val_; \
 		pcb_gui->attr_dlg_set_value(hid_ctx, wid, &__val__); \
 	} while(0)
 
@@ -512,7 +512,7 @@ do { \
 	} \
 } while(0)
 
-#define PCB_DAD_SET_ATTR_FIELD_NUM(table, field, val) \
+#define PCB_DAD_SET_ATTR_FIELD_NUM(table, field, val_) \
 do { \
 	switch(table[table ## _len - 1].type) { \
 		case PCB_HATT_LABEL: \
@@ -522,16 +522,16 @@ do { \
 		case PCB_HATT_BOOL: \
 		case PCB_HATT_ENUM: \
 		case PCB_HATT_BEGIN_TABBED: \
-			table[table ## _len - 1].field.int_value = (int)val; \
+			table[table ## _len - 1].field.int_value = (int)val_; \
 			break; \
 		case PCB_HATT_COORD: \
-			table[table ## _len - 1].field.coord_value = (pcb_coord_t)val; \
+			table[table ## _len - 1].field.coord_value = (pcb_coord_t)val_; \
 			break; \
 		case PCB_HATT_REAL: \
 		case PCB_HATT_PROGRESS: \
 		case PCB_HATT_BEGIN_HPANE: \
 		case PCB_HATT_BEGIN_VPANE: \
-			table[table ## _len - 1].field.real_value = (double)val; \
+			table[table ## _len - 1].field.real_value = (double)val_; \
 			break; \
 		case PCB_HATT_STRING: \
 		case PCB_HATT_TEXT: \
@@ -553,7 +553,7 @@ do { \
 			{ \
 				pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)table[table ## _len - 1].enumerations; \
 				if ((cmp != NULL) && (cmp->set_field_num != NULL)) \
-					cmp->set_field_num(&table[table ## _len - 1], #field, (long)(val), (double)(val), (pcb_coord_t)(val)); \
+					cmp->set_field_num(&table[table ## _len - 1], #field, (long)(val_), (double)(val_), (pcb_coord_t)(val_)); \
 				else \
 					assert(0); \
 			} \
@@ -561,7 +561,7 @@ do { \
 	} \
 } while(0)
 
-#define PCB_DAD_SET_ATTR_FIELD_PTR(table, field, val) \
+#define PCB_DAD_SET_ATTR_FIELD_PTR(table, field, val_) \
 do { \
 	switch(table[table ## _len - 1].type) { \
 		case PCB_HATT_LABEL: \
@@ -581,9 +581,9 @@ do { \
 		case PCB_HATT_UNIT: \
 			{ \
 				int __n__, __v__ = pcb_get_n_units(0); \
-				if (val != NULL) { \
+				if (val_ != NULL) { \
 					for(__n__ = 0; __n__ < __v__; __n__++) { \
-						if (&pcb_units[__n__] == (pcb_unit_t *)(val)) { \
+						if (&pcb_units[__n__] == (pcb_unit_t *)(val_)) { \
 							table[table ## _len - 1].field.int_value = __n__; \
 							break; \
 						} \
@@ -595,10 +595,10 @@ do { \
 		case PCB_HATT_TEXT: \
 		case PCB_HATT_BUTTON: \
 		case PCB_HATT_TREE: \
-			table[table ## _len - 1].field.str_value = (char *)val; \
+			table[table ## _len - 1].field.str_value = (char *)val_; \
 			break; \
 		case PCB_HATT_COLOR: \
-			table[table ## _len - 1].field.clr_value = *((pcb_color_t *)val); \
+			table[table ## _len - 1].field.clr_value = *((pcb_color_t *)val_); \
 			break; \
 		case PCB_HATT_BEGIN_HBOX: \
 		case PCB_HATT_BEGIN_VBOX: \
@@ -612,7 +612,7 @@ do { \
 			{ \
 				pcb_hid_compound_t *cmp = (pcb_hid_compound_t *)table[table ## _len - 1].enumerations; \
 				if ((cmp != NULL) && (cmp->set_field_ptr != NULL)) \
-					cmp->set_field_ptr(&table[table ## _len - 1], #field, (void *)(val)); \
+					cmp->set_field_ptr(&table[table ## _len - 1], #field, (void *)(val_)); \
 				else \
 					assert(0); \
 			} \

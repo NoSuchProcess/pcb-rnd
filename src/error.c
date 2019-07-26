@@ -233,7 +233,7 @@ static fgw_error_t pcb_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					wfmt = PCB_DAD_CURRENT(fmtsub.dlg);
 				fn = pcb_gui->fileselect(pcb_gui, "Export log", NULL, "log.txt", NULL, NULL, "log", PCB_HID_FSD_MAY_NOT_EXIST, &fmtsub);
 				if (fn != NULL) {
-					ret = pcb_log_export(NULL, fn, (fmtsub.dlg[wfmt].default_val.int_value == 1));
+					ret = pcb_log_export(NULL, fn, (fmtsub.dlg[wfmt].val.int_value == 1));
 					if (ret != 0)
 						pcb_message(PCB_MSG_ERROR, "Failed to export log to '%s'\n", fn);
 					free(fn);

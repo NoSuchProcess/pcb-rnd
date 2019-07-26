@@ -50,16 +50,16 @@ static void set_right(srchedit_ctx_t *ctx, pcb_hid_attribute_t *attr)
 
 	switch(ctx->se.expr->rtype) {
 		case RIGHT_STR:
-			ctx->se.right = pcb_strdup(attr->default_val.str_value);
+			ctx->se.right = pcb_strdup(attr->val.str_value);
 			break;
 		case RIGHT_INT:
-			ctx->se.right = pcb_strdup_printf("%d", attr->default_val.int_value);
+			ctx->se.right = pcb_strdup_printf("%d", attr->val.int_value);
 			break;
 		case RIGHT_DOUBLE:
-			ctx->se.right = pcb_strdup_printf("%f", attr->default_val.real_value);
+			ctx->se.right = pcb_strdup_printf("%f", attr->val.real_value);
 			break;
 		case RIGHT_COORD:
-			ctx->se.right = pcb_strdup_printf("%$mm", attr->default_val.coord_value);
+			ctx->se.right = pcb_strdup_printf("%$mm", attr->val.coord_value);
 			break;
 		case RIGHT_CONST:
 		case RIGHT_max:

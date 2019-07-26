@@ -86,25 +86,25 @@ TODO("enum lookup");
 static void dlg2mesh(void)
 {
 	int n;
-	mesh.pml = ia.dlg[ia.pml].default_val.int_value;
-	mesh.dens_obj = ia.dlg[ia.dens_obj].default_val.coord_value;
-	mesh.dens_gap = ia.dlg[ia.dens_gap].default_val.coord_value;
-	mesh.min_space = ia.dlg[ia.min_space].default_val.coord_value;
-	mesh.smooth = ia.dlg[ia.smooth].default_val.int_value;
-	mesh.noimpl = ia.dlg[ia.noimpl].default_val.int_value;
-	mesh.hor = ia.dlg[ia.hor].default_val.int_value;
-	mesh.ver = ia.dlg[ia.ver].default_val.int_value;
+	mesh.pml = ia.dlg[ia.pml].val.int_value;
+	mesh.dens_obj = ia.dlg[ia.dens_obj].val.coord_value;
+	mesh.dens_gap = ia.dlg[ia.dens_gap].val.coord_value;
+	mesh.min_space = ia.dlg[ia.min_space].val.coord_value;
+	mesh.smooth = ia.dlg[ia.smooth].val.int_value;
+	mesh.noimpl = ia.dlg[ia.noimpl].val.int_value;
+	mesh.hor = ia.dlg[ia.hor].val.int_value;
+	mesh.ver = ia.dlg[ia.ver].val.int_value;
 TODO("enum lookup");
-	mesh.subslines = ia.dlg[ia.subslines].default_val.int_value;
-	mesh.def_subs_thick = ia.dlg[ia.def_subs_thick].default_val.coord_value;
-	mesh.def_copper_thick = ia.dlg[ia.def_copper_thick].default_val.coord_value;
-	mesh.air_top = ia.dlg[ia.air_top].default_val.int_value;
-	mesh.air_bot = ia.dlg[ia.air_top].default_val.int_value;
-	mesh.dens_air = ia.dlg[ia.dens_air].default_val.coord_value;
-	mesh.smoothz = ia.dlg[ia.smoothz].default_val.int_value;
-	mesh.max_air = ia.dlg[ia.max_air].default_val.coord_value;
+	mesh.subslines = ia.dlg[ia.subslines].val.int_value;
+	mesh.def_subs_thick = ia.dlg[ia.def_subs_thick].val.coord_value;
+	mesh.def_copper_thick = ia.dlg[ia.def_copper_thick].val.coord_value;
+	mesh.air_top = ia.dlg[ia.air_top].val.int_value;
+	mesh.air_bot = ia.dlg[ia.air_top].val.int_value;
+	mesh.dens_air = ia.dlg[ia.dens_air].val.coord_value;
+	mesh.smoothz = ia.dlg[ia.smoothz].val.int_value;
+	mesh.max_air = ia.dlg[ia.max_air].val.coord_value;
 	for(n = 0; n < 6; n++)
-		mesh.bnd[n] = bnds[ia.dlg[ia.bnd[n]].default_val.int_value];
+		mesh.bnd[n] = bnds[ia.dlg[ia.bnd[n]].val.int_value];
 }
 
 #if 1
@@ -117,9 +117,9 @@ TODO("reorder to avoid fwd decl")
 static void mesh_auto_add_smooth(vtc0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_coord_t d1, pcb_coord_t d, pcb_coord_t d2);
 
 #define SAVE_INT(name) \
-	pcb_append_printf(dst, "%s  " #name" = %d\n", prefix, (int)me->dlg[me->name].default_val.int_value);
+	pcb_append_printf(dst, "%s  " #name" = %d\n", prefix, (int)me->dlg[me->name].val.int_value);
 #define SAVE_COORD(name) \
-	pcb_append_printf(dst, "%s  " #name" = %.08$$mm\n", prefix, (pcb_coord_t)me->dlg[me->name].default_val.coord_value);
+	pcb_append_printf(dst, "%s  " #name" = %.08$$mm\n", prefix, (pcb_coord_t)me->dlg[me->name].val.coord_value);
 void pcb_mesh_save(const mesh_dlg_t *me, gds_t *dst, const char *prefix)
 {
 	int n;
@@ -145,7 +145,7 @@ void pcb_mesh_save(const mesh_dlg_t *me, gds_t *dst, const char *prefix)
 	SAVE_COORD(def_copper_thick);
 	pcb_append_printf(dst, "%s  li:boundary = {", prefix);
 	for(n = 0; n < 6; n++) {
-		int bidx = me->dlg[me->bnd[n]].default_val.int_value;
+		int bidx = me->dlg[me->bnd[n]].val.int_value;
 		const char *bs;
 		if ((bidx < 0) || (bidx >= sizeof(bnds) / sizeof(bnds[0])))
 			bs = "invalid";
@@ -157,7 +157,7 @@ void pcb_mesh_save(const mesh_dlg_t *me, gds_t *dst, const char *prefix)
 	gds_append_str(dst, "}\n");
 
 	{
-		int sidx = me->dlg[me->subslines].default_val.int_value;
+		int sidx = me->dlg[me->subslines].val.int_value;
 		const char *bs;
 		if ((sidx < 0) || (sidx >= sizeof(subslines) / sizeof(subslines[0])))
 			bs = "invalid";
@@ -612,7 +612,7 @@ static int mesh_auto_z(pcb_mesh_t *mesh)
 
 	vtc0_truncate(&mesh->line[PCB_MESH_Z].result, 0);
 
-	lns = num_subslines[ia.dlg[ia.subslines].default_val.int_value];
+	lns = num_subslines[ia.dlg[ia.subslines].val.int_value];
 	if (lns != 0) lns++;
 
 	for(gid = 0; gid < PCB->LayerGroups.len; gid++) {
@@ -652,24 +652,24 @@ static int mesh_auto_z(pcb_mesh_t *mesh)
 		}
 	}
 
-	if (ia.dlg[ia.air_top].default_val.int_value) {
-		if (ia.dlg[ia.smoothz].default_val.int_value) {
-			mesh_auto_add_smooth(&mesh->line[PCB_MESH_Z].result, ytop - ia.dlg[ia.max_air].default_val.coord_value, ytop,
-				ia.dlg[ia.dens_air].default_val.coord_value, ia.dlg[ia.dens_air].default_val.coord_value, top_dens);
+	if (ia.dlg[ia.air_top].val.int_value) {
+		if (ia.dlg[ia.smoothz].val.int_value) {
+			mesh_auto_add_smooth(&mesh->line[PCB_MESH_Z].result, ytop - ia.dlg[ia.max_air].val.coord_value, ytop,
+				ia.dlg[ia.dens_air].val.coord_value, ia.dlg[ia.dens_air].val.coord_value, top_dens);
 		}
 		else {
-			for(y = ytop; y > ytop - ia.dlg[ia.max_air].default_val.coord_value ; y -= ia.dlg[ia.dens_air].default_val.coord_value)
+			for(y = ytop; y > ytop - ia.dlg[ia.max_air].val.coord_value ; y -= ia.dlg[ia.dens_air].val.coord_value)
 				mesh_add_result(mesh, PCB_MESH_Z, y);
 		}
 	}
 
-	if (ia.dlg[ia.air_bot].default_val.int_value) {
-		if (ia.dlg[ia.smoothz].default_val.int_value) {
-			mesh_auto_add_smooth(&mesh->line[PCB_MESH_Z].result, ybottom, ybottom + ia.dlg[ia.max_air].default_val.coord_value,
-				bottom_dens, ia.dlg[ia.dens_air].default_val.coord_value, ia.dlg[ia.dens_air].default_val.coord_value);
+	if (ia.dlg[ia.air_bot].val.int_value) {
+		if (ia.dlg[ia.smoothz].val.int_value) {
+			mesh_auto_add_smooth(&mesh->line[PCB_MESH_Z].result, ybottom, ybottom + ia.dlg[ia.max_air].val.coord_value,
+				bottom_dens, ia.dlg[ia.dens_air].val.coord_value, ia.dlg[ia.dens_air].val.coord_value);
 		}
 		else {
-			for(y = ybottom; y < ybottom + ia.dlg[ia.max_air].default_val.coord_value ; y += ia.dlg[ia.dens_air].default_val.coord_value)
+			for(y = ybottom; y < ybottom + ia.dlg[ia.max_air].val.coord_value ; y += ia.dlg[ia.dens_air].val.coord_value)
 				mesh_add_result(mesh, PCB_MESH_Z, y);
 		}
 	}
@@ -1015,9 +1015,9 @@ static void ia_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 
 	dlg2mesh();
 
-	if (ia.dlg[ia.hor].default_val.int_value)
+	if (ia.dlg[ia.hor].val.int_value)
 		mesh_auto(&mesh, PCB_MESH_HORIZONTAL);
-	if (ia.dlg[ia.ver].default_val.int_value)
+	if (ia.dlg[ia.ver].val.int_value)
 		mesh_auto(&mesh, PCB_MESH_VERTICAL);
 
 	mesh_auto_z(&mesh);

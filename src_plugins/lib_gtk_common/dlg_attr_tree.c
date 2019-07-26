@@ -188,9 +188,9 @@ static void ghid_tree_table_cursor(GtkWidget *widget, pcb_hid_attribute_t *attr)
 	if (ctx->inhibit_valchg)
 		return;
 	if (r != NULL)
-		attr->default_val.str_value = r->path;
+		attr->val.str_value = r->path;
 	else
-		attr->default_val.str_value = NULL;
+		attr->val.str_value = NULL;
 	change_cb(ctx, attr);
 	if (tree->user_selected_cb != NULL)
 		tree->user_selected_cb(attr, ctx, r);

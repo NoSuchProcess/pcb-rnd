@@ -63,7 +63,7 @@ static pcb_hid_attr_val_t *get_results(export_ctx_t *export_ctx, int id)
 	exp_attr = export_ctx->exp_attr[id];
 	for(n = 0; n < numo; n++) {
 		int src = exp_attr[n];
-		memcpy(&r[n], &(export_ctx->dlg[src].default_val), sizeof(pcb_hid_attr_val_t));
+		memcpy(&r[n], &(export_ctx->dlg[src].val), sizeof(pcb_hid_attr_val_t));
 	}
 	return r;
 }
@@ -112,10 +112,10 @@ static void copy_attrs_back(export_ctx_t *ctx)
 	for(n = 0; n < ctx->len; n++) {
 		int *exp_attr = export_ctx.exp_attr[n];
 		int numo = export_ctx.numo[n];
-		pcb_export_opt_t *attrs = export_ctx.ea[n];
+		pcb_export_opt_t *opts = export_ctx.ea[n];
 
 		for(i = 0; i < numo; i++)
-			memcpy(&attrs[i].default_val, &ctx->dlg[exp_attr[i]].default_val, sizeof(pcb_hid_attr_val_t));
+			memcpy(&opts[i].default_val, &ctx->dlg[exp_attr[i]].val, sizeof(pcb_hid_attr_val_t));
 	}
 }
 

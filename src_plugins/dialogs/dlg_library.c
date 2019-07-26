@@ -182,7 +182,7 @@ TODO("Use rich text for this with explicit wrap marks\n");
 static void timed_update_preview_cb(pcb_hidval_t user_data)
 {
 	library_ctx_t *ctx = user_data.ptr;
-	const char *otext = ctx->dlg[ctx->wfilt].default_val.str_value;
+	const char *otext = ctx->dlg[ctx->wfilt].val.str_value;
 
 	if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, otext, NULL)) {
 		pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
@@ -213,7 +213,7 @@ static void timed_update_preview(library_ctx_t *ctx, int active)
 
 static void update_edit_button(library_ctx_t *ctx)
 {
-	const char *otext = ctx->dlg[ctx->wfilt].default_val.str_value;
+	const char *otext = ctx->dlg[ctx->wfilt].val.str_value;
 	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wedit, !ctx->pactive && (otext != NULL) && (strchr(otext, '(') != NULL));
 }
 
@@ -378,7 +378,7 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 
 	attr = &ctx->dlg[ctx->wtree];
 	tree = (pcb_hid_tree_t *)attr->enumerations;
-	otext = attr_inp->default_val.str_value;
+	otext = attr_inp->val.str_value;
 	text = pcb_strdup(otext);
 	have_filter_text = (*text != '\0');
 
@@ -478,7 +478,7 @@ static void library_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	library_ctx_t *ctx = caller_data;
 	pcb_hid_attribute_t *attr;
 	pcb_hid_row_t *r, *rnew;
-	const char *otext = ctx->dlg[ctx->wfilt].default_val.str_value;
+	const char *otext = ctx->dlg[ctx->wfilt].val.str_value;
 	char *name, *sep;
 	int namelen;
 

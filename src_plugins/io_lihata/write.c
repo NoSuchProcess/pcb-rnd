@@ -1767,9 +1767,9 @@ void io_lihata_save_as_subd_uninit(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_
 	io_lihata_save_t *save = plg_ctx;
 
 	if (apply) {
-		int omit_font = !!sub->dlg[save->womit_font].default_val.int_value;
-		int omit_config = !!sub->dlg[save->womit_config].default_val.int_value;
-		int omit_styles = !!sub->dlg[save->womit_styles].default_val.int_value;
+		int omit_font = !!sub->dlg[save->womit_font].val.int_value;
+		int omit_config = !!sub->dlg[save->womit_config].val.int_value;
+		int omit_styles = !!sub->dlg[save->womit_styles].val.int_value;
 
 		if (omit_font != !!conf_io_lihata.plugins.io_lihata.omit_font)
 			conf_setf(CFR_CLI, "plugins/io_lihata/omit_font", 0, "%d", omit_font);

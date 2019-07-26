@@ -56,7 +56,7 @@ static void ee_chg_method(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	if (lock)
 		return;
 
-	ee->mthi = ee->dlg[ee->wmethod].default_val.int_value;
+	ee->mthi = ee->dlg[ee->wmethod].val.int_value;
 
 	lock = 1;
 	ee_data2dialog(ee);
@@ -71,7 +71,7 @@ static void ee_chg_cmd(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 	if (lock)
 		return;
 
-	methods[ee->mthi].command = pcb_strdup(ee->dlg[ee->wcmd].default_val.str_value);
+	methods[ee->mthi].command = pcb_strdup(ee->dlg[ee->wcmd].val.str_value);
 
 	lock = 1;
 	ee_data2dialog(ee);

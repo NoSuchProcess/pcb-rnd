@@ -123,7 +123,7 @@ static void maybe_scroll_to_bottom()
 	pcb_hid_attribute_t *atxt = &log_ctx.dlg[log_ctx.wtxt];
 	pcb_hid_text_t *txt = (pcb_hid_text_t *)atxt->enumerations;
 
-	if ((log_ctx.dlg[log_ctx.wscroll].default_val.int_value) && (txt->hid_scroll_to_bottom != NULL))
+	if ((log_ctx.dlg[log_ctx.wscroll].val.int_value) && (txt->hid_scroll_to_bottom != NULL))
 		txt->hid_scroll_to_bottom(atxt, log_ctx.dlg_hid_ctx);
 }
 

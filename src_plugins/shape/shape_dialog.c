@@ -48,19 +48,19 @@ static void shp_chg_regpoly(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	ctx_t *shp = caller_data;
 
 	/* elliptical logics */
-	if (!shp->dlg[shp->pell].default_val.int_value) {
+	if (!shp->dlg[shp->pell].val.int_value) {
 		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->pry, pcb_false);
-		PCB_DAD_SET_VALUE(hid_ctx, shp->pry, coord_value, shp->dlg[shp->prx].default_val.coord_value);
+		PCB_DAD_SET_VALUE(hid_ctx, shp->pry, coord_value, shp->dlg[shp->prx].val.coord_value);
 	}
 	else
 		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->pry, pcb_true);
 
 	del_obj(shp);
 	shp->obj = (pcb_any_obj_t *)regpoly_place(
-		shp->data, shp->layer, shp->dlg[shp->corners].default_val.int_value,
-		shp->dlg[shp->prx].default_val.coord_value, shp->dlg[shp->pry].default_val.coord_value,
-		shp->dlg[shp->prot].default_val.real_value,
-		shp->dlg[shp->pcx].default_val.coord_value, shp->dlg[shp->pcy].default_val.coord_value);
+		shp->data, shp->layer, shp->dlg[shp->corners].val.int_value,
+		shp->dlg[shp->prx].val.coord_value, shp->dlg[shp->pry].val.coord_value,
+		shp->dlg[shp->prot].val.real_value,
+		shp->dlg[shp->pcx].val.coord_value, shp->dlg[shp->pcy].val.coord_value);
 }
 
 static void shp_chg_roundrect(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -70,38 +70,38 @@ static void shp_chg_roundrect(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	int n;
 
 	/* elliptical logics */
-	if (!shp->dlg[shp->rell].default_val.int_value) {
+	if (!shp->dlg[shp->rell].val.int_value) {
 		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->ry, pcb_false);
-		PCB_DAD_SET_VALUE(hid_ctx, shp->ry, coord_value, shp->dlg[shp->rx].default_val.coord_value);
+		PCB_DAD_SET_VALUE(hid_ctx, shp->ry, coord_value, shp->dlg[shp->rx].val.coord_value);
 	}
 	else
 		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->ry, pcb_true);
 
 	/* rectangular logics */
-	if (!shp->dlg[shp->rrect].default_val.int_value) {
+	if (!shp->dlg[shp->rrect].val.int_value) {
 		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->h, pcb_false);
-		PCB_DAD_SET_VALUE(hid_ctx, shp->h, coord_value, shp->dlg[shp->w].default_val.coord_value);
+		PCB_DAD_SET_VALUE(hid_ctx, shp->h, coord_value, shp->dlg[shp->w].val.coord_value);
 	}
 	else
 		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->h, pcb_true);
 
 	for(n = 0; n < 4; n++)
-		corner[n] = shp->dlg[shp->corner[n]].default_val.int_value;
+		corner[n] = shp->dlg[shp->corner[n]].val.int_value;
 
 	del_obj(shp);
 	shp->obj = (pcb_any_obj_t *)roundrect_place(
 		shp->data, shp->layer,
-		shp->dlg[shp->w].default_val.coord_value, shp->dlg[shp->h].default_val.coord_value,
-		shp->dlg[shp->rx].default_val.coord_value, shp->dlg[shp->ry].default_val.coord_value,
-		shp->dlg[shp->rrot].default_val.real_value,
-		shp->dlg[shp->rcx].default_val.coord_value, shp->dlg[shp->rcy].default_val.coord_value,
-		corner, shp->dlg[shp->rres].default_val.real_value);
+		shp->dlg[shp->w].val.coord_value, shp->dlg[shp->h].val.coord_value,
+		shp->dlg[shp->rx].val.coord_value, shp->dlg[shp->ry].val.coord_value,
+		shp->dlg[shp->rrot].val.real_value,
+		shp->dlg[shp->rcx].val.coord_value, shp->dlg[shp->rcy].val.coord_value,
+		corner, shp->dlg[shp->rres].val.real_value);
 }
 
 static void shp_chg_circle(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	ctx_t *shp = caller_data;
-	pcb_coord_t dia = shp->dlg[shp->dia].default_val.coord_value;
+	pcb_coord_t dia = shp->dlg[shp->dia].val.coord_value;
 
 	if ((dia < 1) || (dia > (PCB->hidlib.size_x + PCB->hidlib.size_y)/4)) {
 		pcb_message(PCB_MSG_ERROR, "Invalid diameter.\n");
@@ -111,7 +111,7 @@ static void shp_chg_circle(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	shp->obj = (pcb_any_obj_t *)circle_place(
 		shp->data, shp->layer,
 		dia,
-		shp->dlg[shp->ccx].default_val.coord_value, shp->dlg[shp->ccy].default_val.coord_value);
+		shp->dlg[shp->ccx].val.coord_value, shp->dlg[shp->ccy].val.coord_value);
 }
 
 
@@ -124,7 +124,7 @@ static void shape_layer_chg(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb
 		return;
 
 	hid_ctx = shape_active->dlg_hid_ctx;
-	tab = shape_active->dlg[shape_active->tab].default_val.int_value;
+	tab = shape_active->dlg[shape_active->tab].val.int_value;
 	switch(tab) {
 		case 0: shp_chg_regpoly(hid_ctx, shape_active, NULL); break;
 		case 1: shp_chg_roundrect(hid_ctx, shape_active, NULL); break;

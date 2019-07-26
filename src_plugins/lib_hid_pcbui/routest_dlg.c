@@ -127,22 +127,22 @@ static void rst_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 TODO("This change is not undoable");
 
 	if (idx == rstdlg_ctx.wname) {
-		const char *s = attr->default_val.str_value;
+		const char *s = attr->val.str_value;
 		while(isspace(*s)) s++;
 		strncpy(rst->name, s, sizeof(rst->name));
 	}
 	else if (idx == rstdlg_ctx.wlineth)
-		rst->Thick = attr->default_val.coord_value;
+		rst->Thick = attr->val.coord_value;
 	else if (idx == rstdlg_ctx.wtxtth)
-		rst->textt = attr->default_val.coord_value;
+		rst->textt = attr->val.coord_value;
 	else if (idx == rstdlg_ctx.wtxtscale)
-		rst->texts = attr->default_val.coord_value;
+		rst->texts = attr->val.coord_value;
 	else if (idx == rstdlg_ctx.wclr)
-		rst->Clearance = attr->default_val.coord_value;
+		rst->Clearance = attr->val.coord_value;
 	else if (idx == rstdlg_ctx.wviahole)
-		rst->Hole = attr->default_val.coord_value;
+		rst->Hole = attr->val.coord_value;
 	else if (idx == rstdlg_ctx.wviaring)
-		rst->Diameter = attr->default_val.coord_value;
+		rst->Diameter = attr->val.coord_value;
 	else {
 		pcb_message(PCB_MSG_ERROR, "Internal error: route style field does not exist");
 		return;
@@ -176,8 +176,8 @@ static int rst_edit_attr(char **key, char **val)
 	PCB_DAD_NEW("route_style_attr", dlg, "Edit route style attribute", NULL, pcb_true, NULL);
 	res = PCB_DAD_RUN(dlg);
 	if (res == 0) {
-		*key = pcb_strdup(dlg[wkey].default_val.str_value);
-		*val = pcb_strdup(dlg[wval].default_val.str_value);
+		*key = pcb_strdup(dlg[wkey].val.str_value);
+		*val = pcb_strdup(dlg[wval].val.str_value);
 	}
 	PCB_DAD_FREE(dlg);
 	return res;

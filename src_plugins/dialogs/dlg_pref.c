@@ -89,21 +89,21 @@ void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_confitem_t *item, pcb_hid_attr
 	ctx->conf_lock = item;
 	switch(cn->type) {
 		case CFN_COORD:
-			if (cn->val.coord[0] != attr->default_val.coord_value)
-				conf_setf(ctx->role, item->confpath, -1, "%.8$mm", attr->default_val.coord_value);
+			if (cn->val.coord[0] != attr->val.coord_value)
+				conf_setf(ctx->role, item->confpath, -1, "%.8$mm", attr->val.coord_value);
 			break;
 		case CFN_BOOLEAN:
 		case CFN_INTEGER:
-			if (cn->val.integer[0] != attr->default_val.int_value)
-				conf_setf(ctx->role, item->confpath, -1, "%d", attr->default_val.int_value);
+			if (cn->val.integer[0] != attr->val.int_value)
+				conf_setf(ctx->role, item->confpath, -1, "%d", attr->val.int_value);
 			break;
 		case CFN_REAL:
-			if (cn->val.real[0] != attr->default_val.real_value)
-				conf_setf(ctx->role, item->confpath, -1, "%f", attr->default_val.real_value);
+			if (cn->val.real[0] != attr->val.real_value)
+				conf_setf(ctx->role, item->confpath, -1, "%f", attr->val.real_value);
 			break;
 		case CFN_STRING:
-			if (strcmp(cn->val.string[0], attr->default_val.str_value) != 0)
-				conf_set(ctx->role, item->confpath, -1, attr->default_val.str_value, POL_OVERWRITE);
+			if (strcmp(cn->val.string[0], attr->val.str_value) != 0)
+				conf_set(ctx->role, item->confpath, -1, attr->val.str_value, POL_OVERWRITE);
 			break;
 		default: pcb_message(PCB_MSG_ERROR, "pcb_pref_dlg2conf_item(): widget type not handled\n");
 	}
@@ -166,14 +166,14 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*ch
 			PCB_DAD_REAL(ctx->dlg, "");
 				item->wid = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_MINMAX(ctx->dlg, 0, INT_MAX);
-				ctx->dlg[item->wid].default_val.real_value = cn->val.real[0];
+				ctx->dlg[item->wid].val.real_value = cn->val.real[0];
 				PCB_DAD_HELP(ctx->dlg, cn->description);
 				PCB_DAD_CHANGE_CB(ctx->dlg, change_cb);
 			break;
 		case CFN_STRING:
 			PCB_DAD_STRING(ctx->dlg);
 				item->wid = PCB_DAD_CURRENT(ctx->dlg);
-				ctx->dlg[item->wid].default_val.str_value = pcb_strdup(cn->val.string[0]);
+				ctx->dlg[item->wid].val.str_value = pcb_strdup(cn->val.string[0]);
 				PCB_DAD_HELP(ctx->dlg, cn->description);
 				PCB_DAD_CHANGE_CB(ctx->dlg, change_cb);
 			break;
@@ -208,7 +208,7 @@ void pcb_pref_conflist_remove(pref_ctx_t *ctx, pref_confitem_t *list)
 static void pref_role_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
-	ctx->role = roles[attr->default_val.int_value];
+	ctx->role = roles[attr->val.int_value];
 }
 
 static void pref_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)

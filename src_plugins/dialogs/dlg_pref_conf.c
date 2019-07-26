@@ -321,7 +321,7 @@ static void pcb_pref_dlg_conf_filter_cb(void *hid_ctx, void *caller_data, pcb_hi
 
 	attr = &ctx->dlg[ctx->conf.wtree];
 	tree = (pcb_hid_tree_t *)attr->enumerations;
-	text = attr_inp->default_val.str_value;
+	text = attr_inp->val.str_value;
 	have_filter_text = (*text != '\0');
 
 	/* hide or unhide everything */

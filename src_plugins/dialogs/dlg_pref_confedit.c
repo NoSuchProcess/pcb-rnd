@@ -126,17 +126,17 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 	attr = &ctx->dlg[ctx->wnewval];
 
 	switch(ctx->nat->type) {
-		case CFN_STRING:  val = attr->default_val.str_value; break;
+		case CFN_STRING:  val = attr->val.str_value; break;
 		case CFN_BOOLEAN:
-		case CFN_INTEGER: sprintf(buf, "%d", attr->default_val.int_value); break;
-		case CFN_REAL:    sprintf(buf, "%f", attr->default_val.real_value); break;
-		case CFN_COORD:   pcb_snprintf(buf, sizeof(buf), "%.08$mH", attr->default_val.coord_value); break;
+		case CFN_INTEGER: sprintf(buf, "%d", attr->val.int_value); break;
+		case CFN_REAL:    sprintf(buf, "%f", attr->val.real_value); break;
+		case CFN_COORD:   pcb_snprintf(buf, sizeof(buf), "%.08$mH", attr->val.coord_value); break;
 		case CFN_UNIT:
-			if ((attr->default_val.int_value < 0) || (attr->default_val.int_value >= pcb_get_n_units(0)))
+			if ((attr->val.int_value < 0) || (attr->val.int_value >= pcb_get_n_units(0)))
 				return;
-			val = pcb_units[attr->default_val.int_value].suffix;
+			val = pcb_units[attr->val.int_value].suffix;
 			break;
-		case CFN_COLOR:   val = attr->default_val.clr_value.str; break;
+		case CFN_COLOR:   val = attr->val.clr_value.str; break;
 		case CFN_LIST:
 			{
 				pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];

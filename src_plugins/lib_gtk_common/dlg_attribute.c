@@ -94,7 +94,7 @@ static void set_flag_cb(GtkToggleButton *button, gpointer user_data)
 	if (ctx->inhibit_valchg)
 		return;
 
-	dst->default_val.int_value = gtk_toggle_button_get_active(button);
+	dst->val.int_value = gtk_toggle_button_get_active(button);
 	change_cb(ctx, dst);
 }
 
@@ -106,8 +106,8 @@ static void entry_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
 	if (ctx->inhibit_valchg)
 		return;
 
-	free((char *)dst->default_val.str_value);
-	dst->default_val.str_value = pcb_strdup(gtk_entry_get_text(entry));
+	free((char *)dst->val.str_value);
+	dst->val.str_value = pcb_strdup(gtk_entry_get_text(entry));
 	change_cb(ctx, dst);
 }
 
@@ -125,7 +125,7 @@ static void enum_changed_cb(GtkComboBox *combo_box, pcb_hid_attribute_t *dst)
 	if (ctx->inhibit_valchg)
 		return;
 
-	dst->default_val.int_value = gtk_combo_box_get_active(combo_box);
+	dst->val.int_value = gtk_combo_box_get_active(combo_box);
 	change_cb(ctx, dst);
 }
 
@@ -140,7 +140,7 @@ static void notebook_changed_cb(GtkNotebook *nb, GtkWidget *page, guint page_num
 	/* Gets the index (starting from 0) of the current page in the notebook. If
 	   the notebook has no pages, then -1 will be returned and no call-back occur. */
 	if (gtk_notebook_get_current_page(nb) >= 0) {
-		dst->default_val.int_value = page_num;
+		dst->val.int_value = page_num;
 		change_cb(ctx, dst);
 	}
 }
@@ -185,7 +185,7 @@ static void color_changed_cb(GtkColorButton *button, pcb_hid_attribute_t *dst)
 
 	gtkc_color_button_get_color(GTK_WIDGET(button), &clr);
 	str = ctx->gctx->impl.get_color_name(&clr);
-	pcb_color_load_str(&dst->default_val.clr_value, str);
+	pcb_color_load_str(&dst->val.clr_value, str);
 
 	change_cb(ctx, dst);
 }
@@ -430,8 +430,8 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				g_object_set_data(G_OBJECT(entry), PCB_OBJ_PROP, ctx);
 				ctx->wl[j] = entry;
 
-				if (ctx->attrs[j].default_val.str_value != NULL)
-					gtk_entry_set_text(GTK_ENTRY(entry), ctx->attrs[j].default_val.str_value);
+				if (ctx->attrs[j].val.str_value != NULL)
+					gtk_entry_set_text(GTK_ENTRY(entry), ctx->attrs[j].val.str_value);
 				gtk_widget_set_tooltip_text(entry, ctx->attrs[j].help_text);
 				g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(entry_changed_cb), &(ctx->attrs[j]));
 				g_signal_connect(G_OBJECT(entry), "activate", G_CALLBACK(entry_activate_cb), &(ctx->attrs[j]));
@@ -439,7 +439,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 			case PCB_HATT_BOOL:
 				/* put this in a check button */
-				widget = chk_btn_new(parent, ctx->attrs[j].default_val.int_value, set_flag_cb, &(ctx->attrs[j]), NULL);
+				widget = chk_btn_new(parent, ctx->attrs[j].val.int_value, set_flag_cb, &(ctx->attrs[j]), NULL);
 				gtk_widget_set_tooltip_text(widget, ctx->attrs[j].help_text);
 				g_object_set_data(G_OBJECT(widget), PCB_OBJ_PROP, ctx);
 				ctx->wl[j] = widget;
@@ -464,7 +464,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					gtkc_combo_box_text_append_text(combo, ctx->attrs[j].enumerations[i]);
 					i++;
 				}
-				gtk_combo_box_set_active(GTK_COMBO_BOX(combo), ctx->attrs[j].default_val.int_value);
+				gtk_combo_box_set_active(GTK_COMBO_BOX(combo), ctx->attrs[j].val.int_value);
 				g_signal_connect(G_OBJECT(combo), "changed", G_CALLBACK(enum_changed_cb), &(ctx->attrs[j]));
 				break;
 
@@ -509,9 +509,9 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				gtk_box_pack_start(GTK_BOX(parent), hbox, expfill, expfill, 0);
 
 				if (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TOGGLE)
-					ctx->wl[j] = gtk_toggle_button_new_with_label(ctx->attrs[j].default_val.str_value);
+					ctx->wl[j] = gtk_toggle_button_new_with_label(ctx->attrs[j].val.str_value);
 				else
-					ctx->wl[j] = gtk_button_new_with_label(ctx->attrs[j].default_val.str_value);
+					ctx->wl[j] = gtk_button_new_with_label(ctx->attrs[j].val.str_value);
 				gtk_box_pack_start(GTK_BOX(hbox), ctx->wl[j], expfill, expfill, 0);
 
 				gtk_widget_set_tooltip_text(ctx->wl[j], ctx->attrs[j].help_text);
@@ -610,7 +610,7 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 				if (strcmp(s, nv) == 0)
 					goto nochg;
 				gtk_entry_set_text(GTK_ENTRY(ctx->wl[idx]), val->str_value);
-				ctx->attrs[idx].default_val.str_value = pcb_strdup(val->str_value);
+				ctx->attrs[idx].val.str_value = pcb_strdup(val->str_value);
 				*copied = 1;
 			}
 			break;
@@ -843,7 +843,7 @@ void ghid_attr_dlg_free(void *hid_ctx)
 
 	if (ctx->rc == 0) { /* copy over the results */
 		for (i = 0; i < ctx->n_attrs; i++) {
-			ctx->results[i] = ctx->attrs[i].default_val;
+			ctx->results[i] = ctx->attrs[i].val;
 			if (PCB_HAT_IS_STR(ctx->attrs[i].type) && (ctx->results[i].str_value))
 				ctx->results[i].str_value = pcb_strdup(ctx->results[i].str_value);
 			else
@@ -928,7 +928,7 @@ int ghid_attr_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *va
 
 	if (res == 0) {
 		if (!copied)
-			ctx->attrs[idx].default_val = *val;
+			ctx->attrs[idx].val = *val;
 		return 0;
 	}
 	else if (res == 1)

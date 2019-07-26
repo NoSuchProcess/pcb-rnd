@@ -241,7 +241,7 @@ static void lib_cell_edit_update(void *hid_ctx, void *caller_data, pcb_hid_attri
 	cell_edit_ctx_t *ctx = caller_data;
 	char *tmp;
 
-	pcb_path_resolve(&PCB->hidlib, ctx->dlg[ctx->wpath].default_val.str_value, &tmp, 0, pcb_true);
+	pcb_path_resolve(&PCB->hidlib, ctx->dlg[ctx->wpath].val.str_value, &tmp, 0, pcb_true);
 	if (tmp != NULL)
 		PCB_DAD_SET_VALUE(hid_ctx, ctx->wexp, str_value, tmp);
 }
@@ -258,7 +258,7 @@ static int lib_cell_edit(char **cell)
 			PCB_DAD_LABEL(ctx.dlg, "Path:");
 			PCB_DAD_STRING(ctx.dlg);
 				ctx.wpath = PCB_DAD_CURRENT(ctx.dlg);
-				ctx.dlg[ctx.wpath].default_val.str_value = pcb_strdup(cell[0]);
+				ctx.dlg[ctx.wpath].val.str_value = pcb_strdup(cell[0]);
 				PCB_DAD_CHANGE_CB(ctx.dlg, lib_cell_edit_update);
 
 			PCB_DAD_LABEL(ctx.dlg, "Expanded\nversion:");
@@ -279,9 +279,9 @@ static int lib_cell_edit(char **cell)
 	}
 
 	free(cell[0]);
-	cell[0] = pcb_strdup(ctx.dlg[ctx.wpath].default_val.str_value);
+	cell[0] = pcb_strdup(ctx.dlg[ctx.wpath].val.str_value);
 	free(cell[1]);
-	cell[1] = pcb_strdup(ctx.dlg[ctx.wexp].default_val.str_value);
+	cell[1] = pcb_strdup(ctx.dlg[ctx.wexp].val.str_value);
 
 	PCB_DAD_FREE(ctx.dlg);
 	return 0;

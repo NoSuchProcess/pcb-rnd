@@ -46,8 +46,8 @@ static void pref_sizes_dlg2brd(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	pref_ctx_t *ctx = caller_data;
 
 	ctx->sizes.lock++;
-	if ((PCB->hidlib.size_x != ctx->dlg[ctx->sizes.wwidth].default_val.coord_value) || (PCB->hidlib.size_y != ctx->dlg[ctx->sizes.wheight].default_val.coord_value))
-		pcb_board_resize(ctx->dlg[ctx->sizes.wwidth].default_val.coord_value, ctx->dlg[ctx->sizes.wheight].default_val.coord_value);
+	if ((PCB->hidlib.size_x != ctx->dlg[ctx->sizes.wwidth].val.coord_value) || (PCB->hidlib.size_y != ctx->dlg[ctx->sizes.wheight].val.coord_value))
+		pcb_board_resize(ctx->dlg[ctx->sizes.wwidth].val.coord_value, ctx->dlg[ctx->sizes.wheight].val.coord_value);
 	ctx->sizes.lock--;
 }
 
@@ -77,7 +77,7 @@ static void pref_isle_brd2dlg(conf_native_t *cfg, int arr_idx)
 static void pref_isle_dlg2brd(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
-	double v = ctx->dlg[ctx->sizes.wisle].default_val.real_value * 1000000.0;
+	double v = ctx->dlg[ctx->sizes.wisle].val.real_value * 1000000.0;
 
 	ctx->sizes.lock++;
 	conf_setf(ctx->role, "design/poly_isle_area", -1, "%f", v);
@@ -126,7 +126,7 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 			PCB_DAD_REAL(ctx->dlg, "");
 				ctx->sizes.wisle = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_MINMAX(ctx->dlg, 0, PCB_MAX_COORD);
-				ctx->dlg[ctx->sizes.wisle].default_val.real_value = (conf_core.design.poly_isle_area / 1000000.0);
+				ctx->dlg[ctx->sizes.wisle].val.real_value = (conf_core.design.poly_isle_area / 1000000.0);
 				PCB_DAD_CHANGE_CB(ctx->dlg, pref_isle_dlg2brd);
 		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);

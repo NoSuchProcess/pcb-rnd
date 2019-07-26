@@ -502,23 +502,23 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 						return FGW_ERR_NOT_FOUND;
 					}
 					res->type = FGW_DOUBLE;
-					res->val.nat_double = pcb_coord_to_unit(u, dad->dlg[wid].default_val.coord_value);
+					res->val.nat_double = pcb_coord_to_unit(u, dad->dlg[wid].val.coord_value);
 				}
 				else {
 					res->type = FGW_COORD;
-					fgw_coord(res) = dad->dlg[wid].default_val.coord_value;
+					fgw_coord(res) = dad->dlg[wid].val.coord_value;
 				}
 				break;
 			case PCB_HATT_INTEGER:
 			case PCB_HATT_ENUM:
 				res->type = FGW_INT;
-				res->val.nat_int = dad->dlg[wid].default_val.int_value;
+				res->val.nat_int = dad->dlg[wid].val.int_value;
 				break;
 			case PCB_HATT_STRING:
 			case PCB_HATT_LABEL:
 			case PCB_HATT_BUTTON:
 				res->type = FGW_STR;
-				res->val.str = (char *)dad->dlg[wid].default_val.str_value;
+				res->val.str = (char *)dad->dlg[wid].val.str_value;
 				break;
 			default:
 				pcb_message(PCB_MSG_ERROR, "Invalid widget type %d - can not retrieve value (get ignored)\n", wid);

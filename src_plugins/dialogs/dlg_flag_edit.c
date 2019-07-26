@@ -58,9 +58,9 @@ static void fe_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 
 	for(n = 0; n < ctx->len; n++) {
 		int wid = ctx->wid[n];
-		if ((ctx->attrs[wid].default_val.int_value) && (!PCB_FLAG_TEST(ctx->flag_bit[n], ctx->obj)))
+		if ((ctx->attrs[wid].val.int_value) && (!PCB_FLAG_TEST(ctx->flag_bit[n], ctx->obj)))
 			set |= ctx->flag_bit[n];
-		else if (!(ctx->attrs[wid].default_val.int_value) && PCB_FLAG_TEST(ctx->flag_bit[n], ctx->obj))
+		else if (!(ctx->attrs[wid].val.int_value) && PCB_FLAG_TEST(ctx->flag_bit[n], ctx->obj))
 			clr |= ctx->flag_bit[n];
 	}
 

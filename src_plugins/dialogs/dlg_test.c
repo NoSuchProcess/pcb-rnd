@@ -320,11 +320,11 @@ static void pcb_act_spin_upd(void *hid_ctx, void *caller_data, pcb_hid_attribute
 
 	hv.str_value = tmp;
 
-	sprintf(tmp, "%d", ctx->dlg[ctx->wspin_int].default_val.int_value);
+	sprintf(tmp, "%d", ctx->dlg[ctx->wspin_int].val.int_value);
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_int, &hv);
-	sprintf(tmp, "%f", ctx->dlg[ctx->wspin_double].default_val.real_value);
+	sprintf(tmp, "%f", ctx->dlg[ctx->wspin_double].val.real_value);
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_double, &hv);
-	pcb_snprintf(tmp, sizeof(tmp), "%mm\n%ml", ctx->dlg[ctx->wspin_coord].default_val.coord_value, ctx->dlg[ctx->wspin_coord].default_val.coord_value);
+	pcb_snprintf(tmp, sizeof(tmp), "%mm\n%ml", ctx->dlg[ctx->wspin_coord].val.coord_value, ctx->dlg[ctx->wspin_coord].val.coord_value);
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_coord, &hv);
 }
 
@@ -332,7 +332,7 @@ static void pcb_act_spin_upd(void *hid_ctx, void *caller_data, pcb_hid_attribute
 static void cb_tab_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	test_t *ctx = caller_data;
-	printf("Tab switch to %d!\n", ctx->dlg[ctx->wtab].default_val.int_value);
+	printf("Tab switch to %d!\n", ctx->dlg[ctx->wtab].val.int_value);
 }
 
 static void cb_jump(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -402,7 +402,7 @@ static void cb_ttbl_filt(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	pcb_hid_attribute_t *treea = &ctx->dlg[ctx->tt];
 	pcb_hid_tree_t *tree = (pcb_hid_tree_t *)treea->enumerations;
 
-	ttbl_filt(&tree->rows, attr->default_val.int_value);
+	ttbl_filt(&tree->rows, attr->val.int_value);
 	pcb_dad_tree_update_hide(treea);
 }
 
@@ -410,8 +410,8 @@ static void cb_ttbl_filt(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 static void cb_ttbl_select(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(attr);
-	if (attr->default_val.str_value != NULL)
-		pcb_trace("tt tbl selected: path=%s row=%p '%s'\n", attr->default_val.str_value, row, row->cell[0]);
+	if (attr->val.str_value != NULL)
+		pcb_trace("tt tbl selected: path=%s row=%p '%s'\n", attr->val.str_value, row, row->cell[0]);
 	else
 		pcb_trace("tt tbl selected: <NONE>\n");
 }
@@ -528,7 +528,7 @@ static void cb_color_print(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	test_t *ctx = caller_data;
 
 	printf("currenct color: #%02x%02x%02x\n",
-		ctx->dlg[ctx->wclr].default_val.clr_value.r, ctx->dlg[ctx->wclr].default_val.clr_value.g, ctx->dlg[ctx->wclr].default_val.clr_value.b);
+		ctx->dlg[ctx->wclr].val.clr_value.r, ctx->dlg[ctx->wclr].val.clr_value.g, ctx->dlg[ctx->wclr].val.clr_value.b);
 }
 
 static void cb_color_reset(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)

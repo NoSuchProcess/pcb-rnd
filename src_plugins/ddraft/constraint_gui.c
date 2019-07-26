@@ -97,7 +97,7 @@ static void cons_changed(void)
 
 #define g2c_array(name, conv) \
 do { \
-	const char *inp = cnstgui_ctx.dlg[cnstgui_ctx.name].default_val.str_value; \
+	const char *inp = cnstgui_ctx.dlg[cnstgui_ctx.name].val.str_value; \
 	char *curr, *next; \
 	cons.name ## _len = 0; \
 	if (inp == NULL) break; \
@@ -117,7 +117,7 @@ do { \
 
 #define g2c_scalar(name, valty) \
 do { \
-	cons.name = cnstgui_ctx.dlg[cnstgui_ctx.name].default_val.valty; \
+	cons.name = cnstgui_ctx.dlg[cnstgui_ctx.name].val.valty; \
 } while(0)
 
 
@@ -189,7 +189,7 @@ static void set_alldir(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 		return;
 
 	cnstgui_ctx.inhibit_confchg++;
-	nv = (cnstgui_ctx.dlg[cnstgui_ctx.alldir].default_val.int_value) ? "1" : "0";
+	nv = (cnstgui_ctx.dlg[cnstgui_ctx.alldir].val.int_value) ? "1" : "0";
 	conf_set(CFR_DESIGN, "editor/all_direction_lines", -1, nv, POL_OVERWRITE);
 	cnstgui_ctx.inhibit_confchg--;
 }

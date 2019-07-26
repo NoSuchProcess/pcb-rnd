@@ -116,7 +116,7 @@ typedef struct {
 static void update_opts(save_t *save)
 {
 	pcb_hid_attr_val_t hv;
-	int selection = save->fmtsub->dlg[save->wfmt].default_val.int_value;
+	int selection = save->fmtsub->dlg[save->wfmt].val.int_value;
 
 	hv.int_value = save->opt_tab[selection];
 	pcb_gui->attr_dlg_set_value(save->fmtsub->dlg_hid_ctx, save->wopts, &hv);
@@ -129,7 +129,7 @@ static void fmt_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	char *bn, *fn, *s;
 	const char *ext;
 	pcb_event_arg_t res, argv[4];
-	int selection = attr->default_val.int_value;
+	int selection = attr->val.int_value;
 	pcb_hid_attr_val_t hv;
 
 	if ((save->avail == NULL) || save->fmt_chg_lock)
@@ -184,7 +184,7 @@ static void guess_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 	pcb_hid_dad_subdialog_t *fmtsub = caller_data;
 	save_t *save = fmtsub->sub_ctx;
 
-	if (save->fmtsub->dlg[save->wguess].default_val.int_value) {
+	if (save->fmtsub->dlg[save->wguess].val.int_value) {
 		/* when guess is activated, make sure to recalculate the guess whatever
 		   the format or the last file name was - this closes out all corner cases
 		   with initial format mismatching the file name and multiple formats for
@@ -234,7 +234,7 @@ static void save_timer(pcb_hidval_t user_data)
 
 	save->timer = pcb_gui->add_timer(pcb_gui, save_timer, 300, user_data);
 
-	if ((save->fmtsub->parent_poke != NULL) && (save->fmtsub->dlg_hid_ctx != NULL) && (save->fmtsub->dlg[save->wguess].default_val.int_value)) {
+	if ((save->fmtsub->parent_poke != NULL) && (save->fmtsub->dlg_hid_ctx != NULL) && (save->fmtsub->dlg[save->wguess].val.int_value)) {
 		pcb_event_arg_t res;
 		char *end;
 
@@ -252,7 +252,7 @@ static void save_on_close(pcb_hid_dad_subdialog_t *sub, pcb_bool ok)
 	save_t *save = sub->sub_ctx;
 	int n, i;
 	char *seen;
-	int tab_selection = save->opt_tab[save->fmtsub->dlg[save->wfmt].default_val.int_value];
+	int tab_selection = save->opt_tab[save->fmtsub->dlg[save->wfmt].val.int_value];
 
 	seen = calloc(1, save->tabs);
 	for(n = 1; n < save->tabs; n++) {

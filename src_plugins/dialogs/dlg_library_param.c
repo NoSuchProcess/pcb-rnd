@@ -279,7 +279,7 @@ static char *gen_cmd(library_ctx_t *ctx)
 			case PCB_HATT_BEGIN_TABLE:
 				continue;
 			case PCB_HATT_ENUM:
-				val = a->enumerations[a->default_val.int_value];
+				val = a->enumerations[a->val.int_value];
 				if (val != NULL) {
 					desc = strstr((char *)val, " (");
 					if (desc != NULL)
@@ -287,12 +287,12 @@ static char *gen_cmd(library_ctx_t *ctx)
 				}
 				break;
 			case PCB_HATT_STRING:
-				val = a->default_val.str_value;
+				val = a->val.str_value;
 				break;
 			case PCB_HATT_COORD:
 			case PCB_HATT_END:
 				val = buff;
-				pcb_snprintf(buff, sizeof(buff), "%$$mH", a->default_val.coord_value);
+				pcb_snprintf(buff, sizeof(buff), "%$$mH", a->val.coord_value);
 				break;
 			default:;
 		}
@@ -433,7 +433,7 @@ static void load_params(library_ctx_t *ctx, char *user_params)
 static void library_param_fillin(library_ctx_t *ctx, pcb_fplibrary_t *l)
 {
 	pcb_hid_attr_val_t hv;
-	const char *filter_txt = ctx->dlg[ctx->wfilt].default_val.str_value;
+	const char *filter_txt = ctx->dlg[ctx->wfilt].val.str_value;
 
 	if (filter_txt == NULL) {
 
