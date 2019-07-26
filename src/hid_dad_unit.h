@@ -31,6 +31,8 @@
 
 #include <genlist/gendlist.h>
 
+#include "hid_dad.h"
+
 typedef struct {
 	pcb_hid_compound_t cmp;
 	void **hid_ctx;
