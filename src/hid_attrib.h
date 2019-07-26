@@ -227,10 +227,10 @@ extern void pcb_export_register_opts(pcb_export_opt_t *, int, const char *cookie
 { pcb_export_register_opts(a, sizeof(a)/sizeof(a[0]), cookie, 0); }
 
 /* Remove all attributes registered with the given cookie */
-void pcb_hid_remove_attributes_by_cookie(const char *cookie);
+void pcb_export_remove_opts_by_cookie(const char *cookie);
 
 /* remove all attributes and free the list */
-void pcb_hid_attributes_uninit(void);
+void pcb_export_uninit(void);
 
 typedef struct pcb_hid_attr_node_s {
 	struct pcb_hid_attr_node_s *next;

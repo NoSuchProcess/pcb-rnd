@@ -839,7 +839,7 @@ void pplg_uninit_export_openems(void)
 {
 	pcb_openems_excitation_uninit();
 	pcb_remove_actions_by_cookie(openems_cookie);
-	pcb_hid_remove_attributes_by_cookie(openems_cookie);
+	pcb_export_remove_opts_by_cookie(openems_cookie);
 }
 
 int pplg_init_export_openems(void)

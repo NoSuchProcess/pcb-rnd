@@ -363,7 +363,7 @@ int pplg_check_ver_export_fidocadj(int ver_needed) { return 0; }
 
 void pplg_uninit_export_fidocadj(void)
 {
-	pcb_hid_remove_attributes_by_cookie(fidocadj_cookie);
+	pcb_export_remove_opts_by_cookie(fidocadj_cookie);
 }
 
 int pplg_init_export_fidocadj(void)

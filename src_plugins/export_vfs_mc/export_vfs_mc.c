@@ -147,7 +147,7 @@ int pplg_check_ver_export_vfs_mc(int ver_needed) { return 0; }
 
 void pplg_uninit_export_vfs_mc(void)
 {
-	pcb_hid_remove_attributes_by_cookie(export_vfs_mc_cookie);
+	pcb_export_remove_opts_by_cookie(export_vfs_mc_cookie);
 }
 
 int pplg_init_export_vfs_mc(void)

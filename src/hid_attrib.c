@@ -48,7 +48,7 @@ void pcb_export_register_opts(pcb_export_opt_t *a, int n, const char *cookie, in
 	ha->cookie = cookie;
 }
 
-void pcb_hid_attributes_uninit(void)
+void pcb_export_uninit(void)
 {
 	pcb_hid_attr_node_t *ha, *next;
 	for (ha = hid_attr_nodes; ha; ha = next) {
@@ -60,7 +60,7 @@ void pcb_hid_attributes_uninit(void)
 	hid_attr_nodes = NULL;
 }
 
-void pcb_hid_remove_attributes_by_cookie(const char *cookie)
+void pcb_export_remove_opts_by_cookie(const char *cookie)
 {
 	pcb_hid_attr_node_t *ha, *next, *prev = NULL;
 	for (ha = hid_attr_nodes; ha; ha = next) {

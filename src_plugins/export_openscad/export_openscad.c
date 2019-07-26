@@ -655,7 +655,7 @@ int pplg_check_ver_export_openscad(int ver_needed) { return 0; }
 
 void pplg_uninit_export_openscad(void)
 {
-	pcb_hid_remove_attributes_by_cookie(openscad_cookie);
+	pcb_export_remove_opts_by_cookie(openscad_cookie);
 	pcb_remove_actions_by_cookie(openscad_cookie);
 }
 

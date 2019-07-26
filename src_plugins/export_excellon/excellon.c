@@ -463,7 +463,7 @@ int pplg_check_ver_export_excellon(int ver_needed) { return 0; }
 
 void pplg_uninit_export_excellon(void)
 {
-	pcb_hid_remove_attributes_by_cookie(excellon_cookie);
+	pcb_export_remove_opts_by_cookie(excellon_cookie);
 	free(filename);
 	conf_unreg_fields("plugins/export_excellon/");
 }

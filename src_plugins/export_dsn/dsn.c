@@ -597,7 +597,7 @@ int pplg_check_ver_export_dsn(int ver_needed) { return 0; }
 
 void pplg_uninit_export_dsn(void)
 {
-	pcb_hid_remove_attributes_by_cookie(dsn_cookie);
+	pcb_export_remove_opts_by_cookie(dsn_cookie);
 }
 
 #include "dolists.h"

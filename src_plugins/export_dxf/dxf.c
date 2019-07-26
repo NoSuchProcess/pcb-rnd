@@ -525,7 +525,7 @@ int pplg_check_ver_export_dxf(int ver_needed) { return 0; }
 
 void pplg_uninit_export_dxf(void)
 {
-	pcb_hid_remove_attributes_by_cookie(dxf_cookie);
+	pcb_export_remove_opts_by_cookie(dxf_cookie);
 }
 
 int pplg_init_export_dxf(void)

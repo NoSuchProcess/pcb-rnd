@@ -1465,7 +1465,7 @@ static int ps_usage(pcb_hid_t *hid, const char *topic)
 static void plugin_ps_uninit(void)
 {
 	pcb_remove_actions_by_cookie(ps_cookie);
-	pcb_hid_remove_attributes_by_cookie(ps_cookie);
+	pcb_export_remove_opts_by_cookie(ps_cookie);
 	ps_inited = 0;
 }
 

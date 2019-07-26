@@ -356,7 +356,7 @@ int pplg_check_ver_export_vfs_fuse(int ver_needed) { return 0; }
 
 void pplg_uninit_export_vfs_fuse(void)
 {
-	pcb_hid_remove_attributes_by_cookie(export_vfs_fuse_cookie);
+	pcb_export_remove_opts_by_cookie(export_vfs_fuse_cookie);
 	free(fuse_argv);
 	fuse_argv = NULL;
 	free(fuse_ret_argv);

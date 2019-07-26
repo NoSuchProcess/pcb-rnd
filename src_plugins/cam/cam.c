@@ -288,7 +288,7 @@ void pplg_uninit_cam(void)
 	conf_unreg_file(CAM_CONF_FN, cam_conf_internal);
 	conf_unreg_fields("plugins/cam/");
 	pcb_remove_actions_by_cookie(cam_cookie);
-	pcb_hid_remove_attributes_by_cookie(cam_cookie);
+	pcb_export_remove_opts_by_cookie(cam_cookie);
 }
 
 pcb_hid_t export_cam_hid;
