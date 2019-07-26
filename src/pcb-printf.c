@@ -191,14 +191,14 @@ static int CoordsToString(gds_t *dest, pcb_coord_t coord[], int n_coords, const 
 	/* Set base unit */
 	for (i = 0; i < n_coords; ++i) {
 		switch (family) {
-		case PCB_UNIT_METRIC:
-			value[i] = PCB_COORD_TO_MM(coord[i]);
-			break;
-		case PCB_UNIT_IMPERIAL:
-			value[i] = PCB_COORD_TO_MIL(coord[i]);
-			break;
-		default:
-			value[i] = 0;
+			case PCB_UNIT_METRIC:
+				value[i] = PCB_COORD_TO_MM(coord[i]);
+				break;
+			case PCB_UNIT_IMPERIAL:
+				value[i] = PCB_COORD_TO_MIL(coord[i]);
+				break;
+			default:
+				value[i] = 0;
 		}
 	}
 
