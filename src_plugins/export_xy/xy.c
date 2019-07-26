@@ -70,12 +70,9 @@ Unit of XY dimensions. Defaults to mil.
 	{"xy-unit", "XY units",
 	 PCB_HATT_UNIT, 0, 0, {-1, 0, 0}, NULL, 0},
 #define HA_unit 1
-	{"xy-in-mm", ATTR_UNDOCUMENTED,
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_xymm 2
 	{"format", "file format (template)",
 	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, NULL, 0},
-#define HA_format 3
+#define HA_format 2
 };
 
 #define NUM_OPTIONS (sizeof(xy_options)/sizeof(xy_options[0]))
@@ -808,8 +805,7 @@ static void xy_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		xy_filename = "pcb-out.xy";
 
 	if (options[HA_unit].int_value == -1)
-		xy_unit = options[HA_xymm].int_value ? get_unit_struct("mm")
-			: get_unit_struct("mil");
+		xy_unit = get_unit_struct("mil");
 	else
 		xy_unit = &pcb_units[options[HA_unit].int_value];
 
