@@ -188,7 +188,7 @@ struct pcb_hid_attribute_s {
 	const char *name;
 	const char *help_text;
 	pcb_hids_t type;
-	int min_val, max_val; /* for integer and real */
+	double min_val, max_val; /* for integer and real */
 	pcb_hid_attr_val_t default_val; /* Also actual value for global attributes. */
 
 	/* NULL terminated list of values for a PCB_HATT_ENUM;
