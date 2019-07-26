@@ -6507,8 +6507,7 @@ hid_attrib.o: hid_attrib.c ../config.h hid_attrib.h \
  pcb_bool.h attrib.h box.h math_helper.h obj_common.h flag.h \
  globalconst.h data_parent.h misc_util.h unit.h color.h \
  ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h compat_misc.h pcb-printf.h \
- ../src_3rd/genvector/gds_char.h macro.h
+ ../src_3rd/genvector/genvector_undef.h compat_misc.h macro.h
 hid_cam.o: hid_cam.c ../config.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h board.h global_typedefs.h \
  pcb_bool.h vtroutestyle.h unit.h attrib.h \
