@@ -718,7 +718,6 @@ void *lesstif_attr_dlg_new(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *
 
 void *lesstif_attr_sub_new(Widget parent_box, pcb_hid_attribute_t *attrs, int n_attrs, void *caller_data)
 {
-	int i;
 	lesstif_attr_dlg_t *ctx;
 
 	ctx = calloc(sizeof(lesstif_attr_dlg_t), 1);
