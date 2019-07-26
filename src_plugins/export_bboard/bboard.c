@@ -84,10 +84,10 @@ static struct {
 } group_data[PCB_MAX_LAYERGRP];
 
 
-#define HA_bboardfile 		0
-#define HA_bgcolor	 	1
-#define HA_skipsolder	 	2
-#define HA_antialias 		3
+#define HA_bboardfile  0
+#define HA_bgcolor     1
+#define HA_skipsolder  2
+#define HA_antialias   3
 
 static pcb_hid_attribute_t bboard_options[] = {
 /*
