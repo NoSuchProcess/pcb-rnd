@@ -117,6 +117,9 @@ int pcb_get_n_units(int aliases_too);
 /* Return the idxth unit or NULL (bounds check) */
 const pcb_unit_t *get_unit_by_idx(int idx);
 
+/* Return the unit with (case sensitive) matching suffix */
+const pcb_unit_t *get_unit_by_suffix(const char *suffix);
+
 /* Convert x to the given unit */
 double pcb_coord_to_unit(const pcb_unit_t *unit, pcb_coord_t x);
 

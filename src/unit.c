@@ -133,6 +133,15 @@ const pcb_unit_t *get_unit_by_idx(int idx)
 	return pcb_units + idx;
 }
 
+const pcb_unit_t *get_unit_by_suffix(const char *suffix)
+{
+	int i;
+	for (i = 0; i < N_UNITS; ++i)
+		if (strcmp(pcb_units[i].suffix, suffix) == 0)
+			return &pcb_units[i];
+	return NULL;
+}
+
 int pcb_get_n_units(int aliases_too)
 {
 	static int num_base = -1;
