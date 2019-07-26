@@ -150,7 +150,6 @@ typedef struct {
 /*** Helpers for building dynamic attribute dialogs (DAD) ***/
 #define PCB_DAD_DECL(table) \
 	pcb_hid_attribute_t *table = NULL; \
-	pcb_hid_attr_val_t *table ## _result = NULL; \
 	int table ## _append_lock = 0; \
 	int table ## _len = 0; \
 	int table ## _alloced = 0; \
@@ -161,7 +160,6 @@ typedef struct {
 
 #define PCB_DAD_DECL_NOINIT(table) \
 	pcb_hid_attribute_t *table; \
-	pcb_hid_attr_val_t *table ## _result; \
 	int table ## _append_lock; \
 	int table ## _len; \
 	int table ## _alloced; \
@@ -180,9 +178,7 @@ do { \
 		PCB_DAD_FREE_FIELD(table, __n__); \
 	} \
 	free(table); \
-	free(table ## _result); \
 	table = NULL; \
-	table ## _result = NULL; \
 	table ## _hid_ctx = NULL; \
 	table ## _len = 0; \
 	table ## _alloced = 0; \
@@ -195,11 +191,9 @@ do { \
 
 #define PCB_DAD_NEW(id, table, title, caller_data, modal, ev_cb) \
 do { \
-	if (table ## _result == NULL) \
-		PCB_DAD_ALLOC_RESULT(table); \
 	table ## _ret_override = calloc(sizeof(pcb_dad_retovr_t), 1); \
 	table ## _append_lock = 1; \
-	table ## _hid_ctx = pcb_gui->attr_dlg_new(pcb_gui, id, table, table ## _len, table ## _result, title, caller_data, modal, ev_cb, table ## _defx, table ## _defy, table ## _minx, table ## _miny); \
+	table ## _hid_ctx = pcb_gui->attr_dlg_new(pcb_gui, id, table, table ## _len, title, caller_data, modal, ev_cb, table ## _defx, table ## _defy, table ## _minx, table ## _miny); \
 } while(0)
 
 /* Sets the default window size (that is only a hint) - NOTE: must be called
@@ -225,13 +219,11 @@ do { \
 #define PCB_DAD_AUTORUN(id, table, title, caller_data, failed) \
 do { \
 	int __ok__; \
-	if (table ## _result == NULL) \
-		PCB_DAD_ALLOC_RESULT(table); \
 	table ## _ret_override = calloc(sizeof(pcb_dad_retovr_t), 1); \
 	table ## _ret_override->dont_free++; \
 	table ## _ret_override->valid = 0; \
 	table ## _append_lock = 1; \
-	__ok__ = pcb_attribute_dialog_(id,table, table ## _len, table ## _result, title, caller_data, (void **)&(table ## _ret_override), table ## _defx, table ## _defy, table ## _minx, table ## _miny, &table ## _hid_ctx); \
+	__ok__ = pcb_attribute_dialog_(id,table, table ## _len, title, caller_data, (void **)&(table ## _ret_override), table ## _defx, table ## _defy, table ## _minx, table ## _miny, &table ## _hid_ctx); \
 	failed = (__ok__ == 0) ? -1 : 0; \
 	if (table ## _ret_override->valid) \
 		failed = table ## _ret_override->value; \
@@ -786,12 +778,6 @@ do { \
 		case PCB_HATT_BEGIN_TABBED: \
 			break; \
 	} \
-} while(0)
-
-#define PCB_DAD_ALLOC_RESULT(table) \
-do { \
-	free(table ## _result); \
-	table ## _result = calloc(PCB_DAD_CURRENT(table)+1, sizeof(pcb_hid_attr_val_t)); \
 } while(0)
 
 /* Internal: free all rows and caches and the tree itself */

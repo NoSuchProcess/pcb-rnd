@@ -182,7 +182,6 @@ typedef struct {
 	Widget *wl;   /* content widget */
 	Widget *wltop;/* the parent widget, which is different from wl if reparenting (extra boxes, e.g. for framing or scrolling) was needed */
 	Widget **btn; /* enum value buttons */
-	pcb_hid_attr_val_t *results;
 	Widget dialog;
 	pcb_hid_attr_val_t property[PCB_HATP_max];
 	Dimension minw, minh;
@@ -205,11 +204,6 @@ static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
 		case PCB_HATT_STRING:
 			free((char *)ctx->attrs[widx].val.str);
 			ctx->attrs[widx].val.str = pcb_strdup(XmTextGetString(ctx->wl[widx]));
-			if (ctx->results != NULL) {
-				TODO("this is a memory leak at the moment, because ctx->results[widx].str may be const char * in some cases; will be gone when result is gone");
-/*				free((char *)ctx->results[widx].str);*/
-				ctx->results[widx].str = ctx->attrs[widx].val.str;
-			}
 			return; /* can't rely on central copy because of the allocation */
 		case PCB_HATT_ENUM:
 			{
@@ -228,9 +222,6 @@ static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
 		default:
 			break;
 	}
-
-	if (ctx->results != NULL)
-		ctx->results[widx] = ctx->attrs[widx].val;
 }
 
 static int attr_get_idx(XtPointer dlg_widget_, lesstif_attr_dlg_t **ctx_out)
@@ -410,14 +401,14 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 			break;
 		case PCB_HATT_BOOL:
 			stdarg(XmNlabelString, empty);
-			stdarg(XmNset, ctx->results[i].lng);
+			stdarg(XmNset, ctx->attrs[i].val.lng);
 			ctx->wl[i] = XmCreateToggleButton(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
 			XtAddCallback(ctx->wl[i], XmNvalueChangedCallback, valchg, ctx->wl[i]);
 			break;
 		case PCB_HATT_STRING:
 			stdarg(XmNcolumns, 40);
 			stdarg(XmNresizeWidth, True);
-			stdarg(XmNvalue, ctx->results[i].str);
+			stdarg(XmNvalue, ctx->attrs[i].val.str);
 			ctx->wl[i] = XmCreateTextField(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
 			XtAddCallback(ctx->wl[i], XmNvalueChangedCallback, valchg, ctx->wl[i]);
 			XtAddCallback(ctx->wl[i], XmNactivateCallback, activated, ctx->wl[i]);
@@ -635,15 +626,13 @@ static void ltf_initial_wstates(lesstif_attr_dlg_t *ctx)
 			XtUnmanageChild(ctx->wltop[n]);
 }
 
-void *lesstif_attr_dlg_new(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+void *lesstif_attr_dlg_new(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
 	Widget topform, main_tbl;
-	int i;
 	lesstif_attr_dlg_t *ctx;
 
 	ctx = calloc(sizeof(lesstif_attr_dlg_t), 1);
 	ctx->attrs = attrs;
-	ctx->results = results;
 	ctx->n_attrs = n_attrs;
 	ctx->caller_data = caller_data;
 	ctx->minw = ctx->minh = 32;
@@ -651,14 +640,6 @@ void *lesstif_attr_dlg_new(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *
 	ctx->close_cb_called = 0;
 	ctx->widget_destroyed = 0;
 	ctx->id = pcb_strdup(id);
-
-	for (i = 0; i < n_attrs; i++) {
-		results[i] = attrs[i].val;
-		if (PCB_HAT_IS_STR(attrs[i].type) && (results[i].str))
-			results[i].str = pcb_strdup(results[i].str);
-		else
-			results[i].str = NULL;
-	}
 
 	ctx->wl = (Widget *) calloc(n_attrs, sizeof(Widget));
 	ctx->wltop = (Widget *)calloc(n_attrs, sizeof(Widget));
@@ -728,7 +709,6 @@ void *lesstif_attr_sub_new(Widget parent_box, pcb_hid_attribute_t *attrs, int n_
 	ctx->attrs = attrs;
 	ctx->n_attrs = n_attrs;
 	ctx->caller_data = caller_data;
-	ctx->results = calloc(n_attrs, sizeof(pcb_hid_attr_val_t));
 
 	ctx->wl = (Widget *) calloc(n_attrs, sizeof(Widget));
 	ctx->wltop = (Widget *)calloc(n_attrs, sizeof(Widget));
@@ -846,7 +826,7 @@ int lesstif_attr_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t 
 		return -1;
 
 	if (attribute_dialog_set(ctx, idx, val) == 0) {
-		ctx->results[idx] = *val;
+		ctx->attrs[idx].val = *val;
 		return 0;
 	}
 

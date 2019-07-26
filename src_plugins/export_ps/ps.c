@@ -1330,7 +1330,6 @@ static int guess(double val, double close_to, double *calib)
 
 void ps_calibrate_1(pcb_hid_t *hid, double xval, double yval, int use_command)
 {
-	pcb_hid_attr_val_t vals[3];
 	FILE *ps_cal_file;
 	int used_popen = 0, c;
 
@@ -1358,21 +1357,21 @@ void ps_calibrate_1(pcb_hid_t *hid, double xval, double yval, int use_command)
 		ps_calib_attribute_list[0].val.str = pcb_strdup("lpr");
 	}
 
-	if (pcb_attribute_dialog("ps_calibrate", ps_calib_attribute_list, 1, vals, "Print Calibration Page", NULL))
+	if (pcb_attribute_dialog("ps_calibrate", ps_calib_attribute_list, 1, "Print Calibration Page", NULL))
 		return;
 
-	if (vals[0].str == NULL)
+	if (ps_calib_attribute_list[0].val.str == NULL)
 		return;
 
-	if (use_command || strchr(vals[0].str, '|')) {
-		const char *cmd = vals[0].str;
+	if (use_command || strchr(ps_calib_attribute_list[0].val.str, '|')) {
+		const char *cmd = ps_calib_attribute_list[0].val.str;
 		while (*cmd == ' ' || *cmd == '|')
 			cmd++;
 		ps_cal_file = pcb_popen(&PCB->hidlib, cmd, "w");
 		used_popen = 1;
 	}
 	else
-		ps_cal_file = pcb_fopen(&PCB->hidlib, vals[0].str, "w");
+		ps_cal_file = pcb_fopen(&PCB->hidlib, ps_calib_attribute_list[0].val.str, "w");
 
 	for (c = 0; calib_lines[c]; c++)
 		fputs(calib_lines[c], ps_cal_file);

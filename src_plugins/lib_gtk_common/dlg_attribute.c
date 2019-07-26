@@ -51,7 +51,6 @@ typedef struct {
 	void *caller_data; /* WARNING: for now, this must be the first field (see core spinbox enter_cb) */
 	pcb_gtk_t *gctx;
 	pcb_hid_attribute_t *attrs;
-	pcb_hid_attr_val_t *results;
 	GtkWidget **wl;     /* content widget */
 	GtkWidget **wltop;  /* the parent widget, which is different from wl if reparenting (extra boxes, e.g. for framing or scrolling) was needed */
 	int n_attrs;
@@ -711,7 +710,7 @@ static void ghid_initial_wstates(attr_dlg_t *ctx)
 			ghid_attr_dlg_widget_hide_(ctx, n, 1);
 }
 
-void *ghid_attr_dlg_new(pcb_gtk_t *gctx, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+void *ghid_attr_dlg_new(pcb_gtk_t *gctx, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
 	GtkWidget *content_area;
 	GtkWidget *main_vbox;
@@ -726,7 +725,6 @@ void *ghid_attr_dlg_new(pcb_gtk_t *gctx, const char *id, pcb_hid_attribute_t *at
 
 	ctx->gctx = gctx;
 	ctx->attrs = attrs;
-	ctx->results = results;
 	ctx->n_attrs = n_attrs;
 	ctx->wl = calloc(sizeof(GtkWidget *), n_attrs);
 	ctx->wltop = calloc(sizeof(GtkWidget *), n_attrs);
@@ -839,16 +837,6 @@ void ghid_attr_dlg_free(void *hid_ctx)
 		ctx->close_cb_called = 1;
 		if (ctx->close_cb != NULL)
 			ctx->close_cb(ctx->caller_data, PCB_HID_ATTR_EV_CODECLOSE);
-	}
-
-	if (ctx->rc == 0) { /* copy over the results */
-		for (i = 0; i < ctx->n_attrs; i++) {
-			ctx->results[i] = ctx->attrs[i].val;
-			if (PCB_HAT_IS_STR(ctx->attrs[i].type) && (ctx->results[i].str))
-				ctx->results[i].str = pcb_strdup(ctx->results[i].str);
-			else
-				ctx->results[i].str = NULL;
-		}
 	}
 
 	if (ctx->dialog != NULL)

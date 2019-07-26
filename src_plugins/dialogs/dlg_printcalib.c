@@ -37,8 +37,6 @@ static pcb_hid_attribute_t printer_calibrate_attrs[] = {
 	 PCB_HATT_REAL, 0.5, 25, {0, 0, 1.00}, 0, 0}
 };
 
-static pcb_hid_attr_val_t printer_calibrate_values[3];
-
 const char pcb_acts_PrintCalibrate[] = "PrintCalibrate()";
 const char pcb_acth_PrintCalibrate[] = "Calibrate the printer.";
 /* DOC: printcalibrate.html */
@@ -53,9 +51,9 @@ fgw_error_t pcb_act_PrintCalibrate(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	printer->calibrate(printer, 0.0, 0.0);
 
-	if (pcb_attribute_dialog("printer_calibrate", printer_calibrate_attrs, 3, printer_calibrate_values, "Printer Calibration Values", NULL))
+	if (pcb_attribute_dialog("printer_calibrate", printer_calibrate_attrs, 3, "Printer Calibration Values", NULL))
 		return 1;
-	printer->calibrate(printer, printer_calibrate_values[1].dbl, printer_calibrate_values[2].dbl);
+	printer->calibrate(printer, printer_calibrate_attrs[1].val.dbl, printer_calibrate_attrs[2].val.dbl);
 	PCB_ACT_IRES(0);
 	return 0;
 }
