@@ -35,10 +35,7 @@
 #ifndef PCB_UNIT_H
 #define PCB_UNIT_H
 
-#include "config.h"
-
-/* typedef ... pcb_coord_t; pcb base unit, typedef'd in config.h */
-typedef double pcb_angle_t; /* degrees */
+#include "global_typedefs.h"
 
 enum pcb_allow_e {
 	PCB_UNIT_NO_PRINT = 0, /* suffixes we can read but not print (i.e., "inch") */
@@ -98,7 +95,6 @@ struct pcb_unit_s {
 	int index; /* Index into Unit[] list */
 };
 
-typedef struct pcb_unit_s pcb_unit_t;
 extern pcb_unit_t pcb_units[];
 
 /* Look up a given suffix in the units array. Pluralized units are supported.

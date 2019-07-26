@@ -35,6 +35,12 @@ struct pcb_box_s {        /* a bounding box */
 };
 
 typedef struct pcb_hidlib_s pcb_hidlib_t;
+
+
+/* typedef ... pcb_coord_t; pcb base unit, typedef'd in config.h */
+typedef double pcb_angle_t; /* degrees */
+typedef struct pcb_unit_s pcb_unit_t;
+
 typedef struct pcb_board_s pcb_board_t;
 typedef struct pcb_data_s pcb_data_t;
 typedef struct pcb_layer_stack_s pcb_layer_stack_t;
@@ -97,7 +103,5 @@ typedef struct pcb_xform_s pcb_xform_t;
 typedef struct hid_gc_s *pcb_hid_gc_t;
 
 #include "pcb_bool.h"
-
-#include "unit.h"
 
 #endif

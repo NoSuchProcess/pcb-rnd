@@ -293,7 +293,6 @@ void pcb_hid_usage(pcb_hid_attribute_t * a, int numa)
 	for (; numa > 0; numa--,a++) {
 		const char *help;
 		if (a->help_text == NULL) help = "";
-		else if (a->help_text == ATTR_UNDOCUMENTED) help = "<undocumented>";
 		else help = a->help_text;
 		pcb_hid_usage_option(a->name, help);
 	}

@@ -186,8 +186,6 @@ typedef struct {
 
 struct pcb_hid_attribute_s {
 	const char *name;
-	/* If the help_text is this, usage() won't show this option */
-#define ATTR_UNDOCUMENTED ((char *)(1))
 	const char *help_text;
 	pcb_hids_t type;
 	int min_val, max_val;				/* for integer and real */
