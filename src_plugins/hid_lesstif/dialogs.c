@@ -178,7 +178,7 @@ int pcb_ltf_wait_for_dialog(Widget w)
 typedef struct {
 	void *caller_data; /* WARNING: for now, this must be the first field (see core spinbox enter_cb) */
 	pcb_hid_attribute_t *attrs;
-	int n_attrs, actual_nattrs;
+	int n_attrs;
 	Widget *wl;   /* content widget */
 	Widget *wltop;/* the parent widget, which is different from wl if reparenting (extra boxes, e.g. for framing or scrolling) was needed */
 	Widget **btn; /* enum value buttons */
@@ -198,9 +198,6 @@ typedef struct {
 
 static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
 {
-	if (ctx->attrs[widx].help_text == ATTR_UNDOCUMENTED)
-		return;
-
 	switch(ctx->attrs[widx].type) {
 		case PCB_HATT_BOOL:
 			ctx->attrs[widx].default_val.int_value = XmToggleButtonGetState(ctx->wl[widx]);
@@ -655,8 +652,6 @@ void *lesstif_attr_dlg_new(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *
 	ctx->id = pcb_strdup(id);
 
 	for (i = 0; i < n_attrs; i++) {
-		if (attrs[i].help_text != ATTR_UNDOCUMENTED)
-			ctx->actual_nattrs++;
 		results[i] = attrs[i].default_val;
 		if (PCB_HAT_IS_STR(attrs[i].type) && (results[i].str_value))
 			results[i].str_value = pcb_strdup(results[i].str_value);
@@ -734,11 +729,6 @@ void *lesstif_attr_sub_new(Widget parent_box, pcb_hid_attribute_t *attrs, int n_
 	ctx->n_attrs = n_attrs;
 	ctx->caller_data = caller_data;
 	ctx->results = calloc(n_attrs, sizeof(pcb_hid_attr_val_t));
-
-	for (i = 0; i < n_attrs; i++) {
-		if (attrs[i].help_text != ATTR_UNDOCUMENTED)
-			ctx->actual_nattrs++;
-	}
 
 	ctx->wl = (Widget *) calloc(n_attrs, sizeof(Widget));
 	ctx->wltop = (Widget *)calloc(n_attrs, sizeof(Widget));
