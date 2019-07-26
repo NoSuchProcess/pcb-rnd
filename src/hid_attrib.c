@@ -35,44 +35,6 @@
 #include "pcb-printf.h"
 #include "macro.h"
 
-int pcb_dock_is_vert[PCB_HID_DOCK_max]   = {0, 0, 0, 1, 0, 1}; /* Update this if pcb_hid_dock_t changes */
-int pcb_dock_has_frame[PCB_HID_DOCK_max] = {0, 0, 0, 1, 0, 0}; /* Update this if pcb_hid_dock_t changes */
-
-pcb_hid_attr_node_t *hid_attr_nodes = 0;
-
-typedef struct {
-	pcb_hatt_compflags_t flag;
-	const char *name;
-} comflag_name_t;
-
-static comflag_name_t compflag_names[] = {
-	{PCB_HATF_FRAME,         "frame"},
-	{PCB_HATF_SCROLL,        "scroll"},
-	{PCB_HATF_HIDE_TABLAB,   "hide_tablab"},
-	{PCB_HATF_LEFT_TAB,      "left_tab"},
-	{PCB_HATF_TREE_COL,      "tree_col"},
-	{PCB_HATF_EXPFILL,       "expfill"},
-	{0, NULL}
-};
-
-const char *pcb_hid_compflag_bit2name(pcb_hatt_compflags_t bit)
-{
-	comflag_name_t *n;
-	for(n = compflag_names; n->flag != 0; n++)
-		if (n->flag == bit)
-			return n->name;
-	return NULL;
-}
-
-pcb_hatt_compflags_t pcb_hid_compflag_name2bit(const char *name)
-{
-	comflag_name_t *n;
-	for(n = compflag_names; n->flag != 0; n++)
-		if (strcmp(n->name, name) == 0)
-			return n->flag;
-	return 0;
-}
-
 void pcb_hid_register_attributes(pcb_export_opt_t *a, int n, const char *cookie, int copy)
 {
 	pcb_hid_attr_node_t *ha;
