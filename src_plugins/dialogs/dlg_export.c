@@ -213,7 +213,7 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, attrs[i].default_val.real_value);
 									break;
 								case PCB_HATT_UNIT:
-									PCB_DAD_UNIT(export_ctx.dlg, 0);
+									PCB_DAD_UNIT(export_ctx.dlg, PCB_UNIT_METRIC | PCB_UNIT_IMPERIAL);
 									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, attrs[i].default_val.int_value);
 									break;
 								default:

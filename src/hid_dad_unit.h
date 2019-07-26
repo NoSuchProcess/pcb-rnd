@@ -34,7 +34,7 @@
 typedef struct {
 	pcb_hid_compound_t cmp;
 	void **hid_ctx;
-	pcb_family_t family; /* to be used later, when the unit system supports unit family */
+	pcb_family_t family; /* which families of units are allowed in this spinbox */
 	int wenum;
 } pcb_hid_dad_unit_t;
 
@@ -46,7 +46,7 @@ do { \
 	pcb_hid_dad_unit_t *unit = calloc(sizeof(pcb_hid_dad_unit_t), 1); \
 	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_COMPOUND); \
 		unit->cmp.wbegin = PCB_DAD_CURRENT(table); \
-		pcb_dad_unit_init(); \
+		pcb_dad_unit_init(family_); \
 		PCB_DAD_ENUM(table, pcb_dad_unit_enum); \
 			PCB_DAD_CHANGE_CB(table, pcb_dad_unit_change_cb); \
 			PCB_DAD_SET_ATTR_FIELD(table, user_data, (const char **)unit); \
@@ -75,7 +75,7 @@ void pcb_dad_unit_set_val_ptr(pcb_hid_attribute_t *end, void *val);
 void pcb_dad_unit_set_help(pcb_hid_attribute_t *end, const char *help);
 void pcb_dad_unit_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 
-void pcb_dad_unit_init(void);
+void pcb_dad_unit_init(enum pcb_family_e family);
 void pcb_dad_unit_uninit(void);
 
 #endif

@@ -38,20 +38,28 @@ void pcb_dad_unit_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	pcb_hid_dad_unit_t *unit = (pcb_hid_dad_unit_t *)attr->user_data;
 	pcb_hid_attribute_t *enu = attr;
 	pcb_hid_attribute_t *end = attr - unit->wenum + unit->cmp.wend;
+	const pcb_unit_t *u = get_unit_by_suffix(enu->enumerations[enu->default_val.int_value]);
+	int unit_id = u == NULL ? -1 : u - pcb_units;
 
-	end->default_val.int_value = enu->default_val.int_value;
+	end->default_val.int_value = unit_id;
 	end->changed = 1;
 	if (end->change_cb != NULL)
 		end->change_cb(hid_ctx, caller_data, end);
 }
 
-void pcb_dad_unit_set_num(pcb_hid_attribute_t *attr, long l, double unused1, pcb_coord_t unused2)
+void pcb_dad_unit_set_num(pcb_hid_attribute_t *attr, long unit_id, double unused1, pcb_coord_t unused2)
 {
+	int l;
 	pcb_hid_dad_unit_t *unit = (pcb_hid_dad_unit_t *)attr->enumerations;
 	pcb_hid_attribute_t *enu = attr - unit->cmp.wend + unit->wenum;
+	const char *target = pcb_units[unit_id].suffix;
 
-	enu->default_val.int_value = l;
-	attr->default_val.int_value = l;
+	for(l = 0; enu->enumerations[l] != NULL; l++) {
+		if (strcmp(target, enu->enumerations[l]) == 0) {
+			enu->default_val.int_value = l;
+			attr->default_val.int_value = l;
+		}
+	}
 }
 
 void pcb_dad_unit_set_val_ptr(pcb_hid_attribute_t *end, void *val_)
@@ -61,7 +69,7 @@ void pcb_dad_unit_set_val_ptr(pcb_hid_attribute_t *end, void *val_)
 	if (val != NULL) {
 		for(__n__ = 0; __n__ < __v__; __n__++) {
 			if (&pcb_units[__n__] == val) {
-				end->default_val.int_value = __n__;
+				pcb_dad_unit_set_num(end, __n__, 0, 0);
 				return;
 			}
 		}
@@ -102,17 +110,19 @@ void pcb_dad_unit_set_help(pcb_hid_attribute_t *end, const char *help)
 
 const char **pcb_dad_unit_enum = NULL;
 
-void pcb_dad_unit_init(void)
+void pcb_dad_unit_init(enum pcb_family_e family)
 {
-	int len, n;
+	int len, n, i;
 
 	if (pcb_dad_unit_enum != NULL)
 		return;
 
 	len = pcb_get_n_units(0);
 	pcb_dad_unit_enum = malloc(sizeof(char *) * (len+1));
-	for(n = 0; n < len; n++)
-		pcb_dad_unit_enum[n] = pcb_units[n].suffix;
+	for(n = i = 0; i < len; i++) {
+		if (pcb_units[i].family & family)
+			pcb_dad_unit_enum[n++] = pcb_units[i].suffix;
+	}
 	pcb_dad_unit_enum[n] = NULL;
 }
 
