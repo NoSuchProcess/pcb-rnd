@@ -197,6 +197,8 @@ static int CoordsToString(gds_t *dest, pcb_coord_t coord[], int n_coords, const 
 		case PCB_UNIT_IMPERIAL:
 			value[i] = PCB_COORD_TO_MIL(coord[i]);
 			break;
+		default:
+			value[i] = 0;
 		}
 	}
 
