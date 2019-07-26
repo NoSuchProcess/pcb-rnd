@@ -28,7 +28,7 @@ typedef struct pcb_cam_s {
 	int exported_grps;
 } pcb_cam_t;
 
-int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_hid_attribute_t *attr_tbl, int numa, pcb_hid_attr_val_t *options);
+int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_export_opt_t *attr_tbl, int numa, pcb_hid_attr_val_t *options);
 
 /* Finish cam export, free all memory, mark cam export inactive and report
    the number of layer groups exported */
@@ -86,7 +86,7 @@ char *pcb_layer_to_file_name(gds_t *dest, pcb_layer_id_t lid, unsigned int flags
 
 /* Returns a filename base that can be used to output the layer; if flags is 0,
    look it up. Copies result in dest (which should be at least PCB_DERIVE_FN_SUFF_LEN bytes wide). */
-void pcb_derive_default_filename(const char *pcbfile, pcb_hid_attribute_t * filename_attrib, const char *suffix);
+void pcb_derive_default_filename(const char *pcbfile, pcb_export_opt_t *filename_attrib, const char *suffix);
 
 /* Same as pcb_derive_default_filename() but returns an allocated string
    directly, instead  of manipulating an attribute */

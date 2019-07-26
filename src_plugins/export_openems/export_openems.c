@@ -92,7 +92,7 @@ static wctx_t *ems_ctx;
 
 #define THMAX PCB_MM_TO_COORD(100)
 
-pcb_hid_attribute_t openems_attribute_list[] = {
+pcb_export_opt_t openems_attribute_list[] = {
 	{"outfile", "Graphics output file",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_openemsfile 0
@@ -157,7 +157,7 @@ PCB_REGISTER_ATTRIBUTES(openems_attribute_list, openems_cookie)
 
 static pcb_hid_attr_val_t openems_values[NUM_OPTIONS];
 
-static pcb_hid_attribute_t *openems_get_export_options(pcb_hid_t *hid, int *n)
+static pcb_export_opt_t *openems_get_export_options(pcb_hid_t *hid, int *n)
 {
 	const char *suffix = ".m";
 	pcb_mesh_t *mesh = pcb_mesh_get(MESH_NAME);

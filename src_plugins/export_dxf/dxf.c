@@ -108,7 +108,7 @@ static struct hid_gc_s thin = {
 #include "dxf_draw.c"
 
 
-pcb_hid_attribute_t dxf_attribute_list[] = {
+pcb_export_opt_t dxf_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 /* %start-doc options "93 DXF Options"
@@ -200,7 +200,7 @@ PCB_REGISTER_ATTRIBUTES(dxf_attribute_list, dxf_cookie)
 
 static pcb_hid_attr_val_t dxf_values[NUM_OPTIONS];
 
-static pcb_hid_attribute_t *dxf_get_export_options(pcb_hid_t *hid, int *n)
+static pcb_export_opt_t *dxf_get_export_options(pcb_hid_t *hid, int *n)
 {
 	const char *suffix = ".dxf";
 

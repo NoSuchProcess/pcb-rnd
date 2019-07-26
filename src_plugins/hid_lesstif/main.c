@@ -246,7 +246,7 @@ static int use_private_colormap = 0;
 static int stdin_listen = 0;
 static char *background_image_file = 0;
 
-pcb_hid_attribute_t lesstif_attribute_list[] = {
+pcb_export_opt_t lesstif_attribute_list[] = {
 	{"install", "Install private colormap",
 		PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, &use_private_colormap},
 #define HA_colormap 0
@@ -771,10 +771,10 @@ static void DrawBackgroundImage()
 
 /* ---------------------------------------------------------------------- */
 
-static pcb_hid_attribute_t *lesstif_get_export_options(pcb_hid_t *hid, int *n)
+static pcb_export_opt_t *lesstif_get_export_options(pcb_hid_t *hid, int *n)
 {
 	if (n != NULL)
-		*n = sizeof(lesstif_attribute_list) / sizeof(pcb_hid_attribute_t);
+		*n = sizeof(lesstif_attribute_list) / sizeof(pcb_export_opt_t);
 	return lesstif_attribute_list;
 }
 
@@ -1638,7 +1638,7 @@ static int lesstif_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 
 	for (ha = hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
-			pcb_hid_attribute_t *a = ha->attributes + i;
+			pcb_export_opt_t *a = ha->attributes + i;
 			switch (a->type) {
 			case PCB_HATT_INTEGER:
 			case PCB_HATT_COORD:
@@ -1674,7 +1674,7 @@ static int lesstif_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 
 	for (ha = hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
-			pcb_hid_attribute_t *a = ha->attributes + i;
+			pcb_export_opt_t *a = ha->attributes + i;
 			XrmOptionDescRec *o = new_options + acount;
 			char *tmpopt, *tmpres;
 			XtResource *r = new_resources + rcount;
@@ -1790,7 +1790,7 @@ static int lesstif_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 	rcount = 0;
 	for (ha = hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
-			pcb_hid_attribute_t *a = ha->attributes + i;
+			pcb_export_opt_t *a = ha->attributes + i;
 			val_union *v = new_values + rcount;
 			switch (a->type) {
 			case PCB_HATT_INTEGER:

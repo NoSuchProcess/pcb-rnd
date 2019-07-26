@@ -125,7 +125,7 @@ static struct {
 	/* INNER */  { "#222222", "#111111", "#000000", PCB_MM_TO_COORD(0) }
 };
 
-pcb_hid_attribute_t svg_attribute_list[] = {
+pcb_export_opt_t svg_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 /* %start-doc options "93 SVG Options"
@@ -198,7 +198,7 @@ PCB_REGISTER_ATTRIBUTES(svg_attribute_list, svg_cookie)
 
 static pcb_hid_attr_val_t svg_values[NUM_OPTIONS];
 
-static pcb_hid_attribute_t *svg_get_export_options(pcb_hid_t *hid, int *n)
+static pcb_export_opt_t *svg_get_export_options(pcb_hid_t *hid, int *n)
 {
 	const char *suffix = ".svg";
 

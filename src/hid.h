@@ -27,6 +27,7 @@ typedef enum {
 
 typedef struct pcb_hid_attr_val_s  pcb_hid_attr_val_t;
 typedef struct pcb_hid_attribute_s pcb_hid_attribute_t;
+typedef struct pcb_hid_attribute_s pcb_export_opt_t;
 
 /* Human Interface Device */
 
@@ -229,7 +230,7 @@ struct pcb_hid_s {
 	   set up the selectable options.  In command line mode, these are
 	   used to interpret command line options.  If n_ret_ is non-NULL,
 	   the number of attributes is stored there.  */
-	pcb_hid_attribute_t *(*get_export_options)(pcb_hid_t *hid, int *n_ret);
+	pcb_export_opt_t *(*get_export_options)(pcb_hid_t *hid, int *n_ret);
 
 	/* Exports (or print) the current PCB.  The options given represent
 	   the choices made from the options returned from
@@ -405,7 +406,7 @@ struct pcb_hid_s {
 	   by window placement. Returns opaque hid_ctx.
 	   (Hid_ctx shall save pcb_hid_t so subsequent attr_dlg_*() calls don't have
 	   it as an argument) */
-	void *(*attr_dlg_new)(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
+	void *(*attr_dlg_new)(pcb_hid_t *hid, const char *id, pcb_export_opt_t *attrs, int n_attrs, pcb_hid_attr_val_t *results, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
 	int (*attr_dlg_run)(void *hid_ctx);
 	void (*attr_dlg_raise)(void *hid_ctx); /* raise the window to top */
 	void (*attr_dlg_free)(void *hid_ctx); /* results_ is avalibale after this call */
@@ -619,7 +620,7 @@ int pcb_hid_progress(long so_far, long total, const char *message);
 /* non-zero if DAD dialogs are available currently */
 #define PCB_HAVE_GUI_ATTR_DLG \
 	((pcb_gui != NULL) && (pcb_gui->gui) && (pcb_gui->attr_dlg_new != NULL) && (pcb_gui->attr_dlg_new != pcb_nogui_attr_dlg_new))
-void *pcb_nogui_attr_dlg_new(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
+void *pcb_nogui_attr_dlg_new(pcb_hid_t *hid, const char *id, pcb_export_opt_t *attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
 
 int pcb_hid_dock_enter(pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id);
 void pcb_hid_dock_leave(pcb_hid_dad_subdialog_t *sub);

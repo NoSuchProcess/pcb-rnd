@@ -47,7 +47,7 @@ typedef struct hid_gc_s {
 
 static pcb_cam_t ps_cam;
 
-pcb_hid_attribute_t ps_attribute_list[] = {
+pcb_export_opt_t ps_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 /* %start-doc options "91 Postscript Export"
@@ -339,7 +339,7 @@ static struct {
 	pcb_composite_op_t drawing_mode;
 } global;
 
-static pcb_hid_attribute_t *ps_get_export_options(pcb_hid_t *hid, int *n)
+static pcb_export_opt_t *ps_get_export_options(pcb_hid_t *hid, int *n)
 {
 	if ((PCB != NULL) && (ps_attribute_list[HA_psfile].default_val.str_value == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &ps_attribute_list[HA_psfile], ".ps");
@@ -1238,7 +1238,7 @@ static void ps_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_co
 	pcb_fprintf(global.f, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
 }
 
-pcb_hid_attribute_t ps_calib_attribute_list[] = {
+pcb_export_opt_t ps_calib_attribute_list[] = {
 	{"lprcommand", "Command to print",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 };

@@ -158,7 +158,7 @@ char *pcb_derive_default_filename_(const char *pcbfile, const char *suffix)
 	return buf;
 }
 
-void pcb_derive_default_filename(const char *pcbfile, pcb_hid_attribute_t * filename_attrib, const char *suffix)
+void pcb_derive_default_filename(const char *pcbfile, pcb_export_opt_t *filename_attrib, const char *suffix)
 {
 	if (filename_attrib->default_val.str_value)
 		free((char *)filename_attrib->default_val.str_value);
@@ -318,7 +318,7 @@ static void parse_layer_supplements(char **spk, char **spv, int spc,   char **pu
 	}
 }
 
-int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_hid_attribute_t *attr_tbl, int numa, pcb_hid_attr_val_t *options)
+int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_export_opt_t *attr_tbl, int numa, pcb_hid_attr_val_t *options)
 {
 	char *curr, *next, *purpose;
 

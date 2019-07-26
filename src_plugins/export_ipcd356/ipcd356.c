@@ -396,7 +396,7 @@ TODO("subc: subc-in-subc")
 
 /*** export hid administration and API/glu ***/
 
-static pcb_hid_attribute_t ipcd356_options[] = {
+static pcb_export_opt_t ipcd356_options[] = {
 /* %start-doc options "8 IPC-D-356 Netlist Export"
 @ftable @code
 @item --netlist-file <string>
@@ -416,7 +416,7 @@ Name of the IPC-D-356 Netlist output file.
 
 static pcb_hid_attr_val_t ipcd356_values[NUM_OPTIONS];
 
-static pcb_hid_attribute_t *ipcd356_get_export_options(pcb_hid_t *hid, int *n)
+static pcb_export_opt_t *ipcd356_get_export_options(pcb_hid_t *hid, int *n)
 {
 	if ((PCB != NULL) && (ipcd356_options[HA_ipcd356_filename].default_val.str_value == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &ipcd356_options[HA_ipcd356_filename], ".net");

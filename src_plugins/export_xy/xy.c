@@ -48,7 +48,7 @@ const char *xy_cookie = "XY HID";
 #define MAX_TEMP_NAME_LEN 128
 
 
-static pcb_hid_attribute_t xy_options[] = {
+static pcb_export_opt_t xy_options[] = {
 /* %start-doc options "8 XY Creation"
 @ftable @code
 @item --xyfile <string>
@@ -96,7 +96,7 @@ static void free_fmts(void)
 	}
 }
 
-static pcb_hid_attribute_t *xy_get_export_options(pcb_hid_t *hid, int *n)
+static pcb_export_opt_t *xy_get_export_options(pcb_hid_t *hid, int *n)
 {
 	static int last_unit_value = -1;
 	conf_listitem_t *li;

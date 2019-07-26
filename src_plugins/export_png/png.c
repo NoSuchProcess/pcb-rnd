@@ -237,7 +237,7 @@ static const color_struct silk_colours[] = {
 static const color_struct silk_top_shadow = {0x151515FF, 21, 21, 21, 255};
 static const color_struct silk_bottom_shadow = {0x0E0E0EFF, 14, 14, 14, 255};
 
-pcb_hid_attribute_t png_attribute_list[] = {
+pcb_export_opt_t png_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 /* %start-doc options "93 PNG Options"
@@ -485,7 +485,7 @@ static const char *get_file_suffix(void)
 	return result;
 }
 
-static pcb_hid_attribute_t *png_get_export_options(pcb_hid_t *hid, int *n)
+static pcb_export_opt_t *png_get_export_options(pcb_hid_t *hid, int *n)
 {
 	const char *suffix = get_file_suffix();
 

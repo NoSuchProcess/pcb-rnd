@@ -203,7 +203,7 @@ static const char *coord_format_names[NUM_COORD_FORMATS+1] = {
 	NULL
 };
 
-static pcb_hid_attribute_t gerber_options[] = {
+static pcb_export_opt_t gerber_options[] = {
 
 /* %start-doc options "90 Gerber Export"
 @ftable @code
@@ -260,7 +260,7 @@ Print file names and aperture counts on stdout.
 
 static pcb_hid_attr_val_t gerber_values[NUM_OPTIONS];
 
-static pcb_hid_attribute_t *gerber_get_export_options(pcb_hid_t *hid, int *n)
+static pcb_export_opt_t *gerber_get_export_options(pcb_hid_t *hid, int *n)
 {
 	if ((PCB != NULL)  && (gerber_options[HA_gerberfile].default_val.str_value == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &gerber_options[HA_gerberfile], "");

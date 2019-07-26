@@ -150,7 +150,7 @@ static const char *units[] = {
 	NULL
 };
 
-pcb_hid_attribute_t gcode_attribute_list[] = {
+pcb_export_opt_t gcode_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 	{"basename", "File name prefix",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
@@ -234,7 +234,7 @@ static int gcode_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static pcb_hid_attribute_t *gcode_get_export_options(pcb_hid_t *hid, int *n)
+static pcb_export_opt_t *gcode_get_export_options(pcb_hid_t *hid, int *n)
 {
 	static int last_unit_value = -1;
 

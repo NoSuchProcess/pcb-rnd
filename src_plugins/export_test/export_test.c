@@ -22,7 +22,7 @@
 
 const char *export_test_cookie = "export_test HID";
 
-static pcb_hid_attribute_t export_test_options[] = {
+static pcb_export_opt_t export_test_options[] = {
 /* %start-doc options "8 export_test Creation"
 @ftable @code
 @item --export_testfile <string>
@@ -41,7 +41,7 @@ static pcb_hid_attr_val_t export_test_values[NUM_OPTIONS];
 
 static const char *export_test_filename;
 
-static pcb_hid_attribute_t *export_test_get_export_options(pcb_hid_t *hid, int *n)
+static pcb_export_opt_t *export_test_get_export_options(pcb_hid_t *hid, int *n)
 {
 	if ((PCB != NULL)  && (export_test_options[HA_export_testfile].default_val.str_value == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &export_test_options[HA_export_testfile], ".export_test");

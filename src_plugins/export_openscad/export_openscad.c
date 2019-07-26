@@ -83,7 +83,7 @@ static const char *scad_group_color;
 static int scad_layer_cnt;
 static vti0_t scad_comp;
 
-pcb_hid_attribute_t openscad_attribute_list[] = {
+pcb_export_opt_t openscad_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 /* %start-doc options "93 DXF Options"
@@ -127,7 +127,7 @@ PCB_REGISTER_ATTRIBUTES(openscad_attribute_list, openscad_cookie)
 
 static pcb_hid_attr_val_t openscad_values[NUM_OPTIONS];
 
-static pcb_hid_attribute_t *openscad_get_export_options(pcb_hid_t *hid, int *n)
+static pcb_export_opt_t *openscad_get_export_options(pcb_hid_t *hid, int *n)
 {
 	const char *suffix = ".scad";
 

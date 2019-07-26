@@ -38,7 +38,7 @@ static const char *export_vfs_fuse_cookie = "export_vfs_fuse HID";
 static int pcb_fuse_changed;
 static char fuse_cwd[PCB_PATH_MAX];
 
-static pcb_hid_attribute_t *export_vfs_fuse_get_export_options(pcb_hid_t *hid, int *n)
+static pcb_export_opt_t *export_vfs_fuse_get_export_options(pcb_hid_t *hid, int *n)
 {
 	return 0;
 }

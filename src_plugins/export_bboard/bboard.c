@@ -89,7 +89,7 @@ static struct {
 #define HA_skipsolder  2
 #define HA_antialias   3
 
-static pcb_hid_attribute_t bboard_options[] = {
+static pcb_export_opt_t bboard_options[] = {
 /*
 %start-doc options "Breadboard Export"
 @ftable @code
@@ -158,7 +158,7 @@ pcb_coord_t bboard_scale_coord(pcb_coord_t x)
 * Export filter implementation starts here
 ********************************************/
 
-static pcb_hid_attribute_t *bboard_get_export_options(pcb_hid_t *hid, int *n)
+static pcb_export_opt_t *bboard_get_export_options(pcb_hid_t *hid, int *n)
 {
 	if ((PCB != NULL)  && (bboard_options[HA_bboardfile].default_val.str_value == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &bboard_options[HA_bboardfile], ".png");

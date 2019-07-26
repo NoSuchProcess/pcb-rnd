@@ -66,7 +66,7 @@ static pcb_hid_t fidocadj_hid;
 
 const char *fidocadj_cookie = "fidocadj HID";
 
-pcb_hid_attribute_t fidocadj_attribute_list[] = {
+pcb_export_opt_t fidocadj_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 	{"outfile", "Output file name",
@@ -84,7 +84,7 @@ PCB_REGISTER_ATTRIBUTES(fidocadj_attribute_list, fidocadj_cookie)
 
 static pcb_hid_attr_val_t fidocadj_values[NUM_OPTIONS];
 
-static pcb_hid_attribute_t *fidocadj_get_export_options(pcb_hid_t *hid, int *n)
+static pcb_export_opt_t *fidocadj_get_export_options(pcb_hid_t *hid, int *n)
 {
 	const char *suffix = ".fcd";
 

@@ -78,7 +78,7 @@ static pcb_coord_t viadrill = 25;
 
 static pcb_hid_t dsn_hid;
 
-static pcb_hid_attribute_t dsn_options[] = {
+static pcb_export_opt_t dsn_options[] = {
 	{"dsnfile", "SPECCTRA output file",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_dsnfile 0
@@ -105,7 +105,7 @@ static pcb_hid_attr_val_t dsn_values[NUM_OPTIONS];
 
 static const char *dsn_filename;
 
-static pcb_hid_attribute_t *dsn_get_export_options(pcb_hid_t *hid, int *n)
+static pcb_export_opt_t *dsn_get_export_options(pcb_hid_t *hid, int *n)
 {
 	if ((PCB != NULL)  && (dsn_options[HA_dsnfile].default_val.str_value == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &dsn_options[HA_dsnfile], ".dsn");

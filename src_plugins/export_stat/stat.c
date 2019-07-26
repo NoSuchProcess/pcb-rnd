@@ -69,7 +69,7 @@ static pcb_hid_t stat_hid;
 
 const char *stat_cookie = "stat HID";
 
-pcb_hid_attribute_t stat_attribute_list[] = {
+pcb_export_opt_t stat_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 	{"outfile", "Output file name",
@@ -109,7 +109,7 @@ PCB_REGISTER_ATTRIBUTES(stat_attribute_list, stat_cookie)
 
 static pcb_hid_attr_val_t stat_values[NUM_OPTIONS];
 
-static pcb_hid_attribute_t *stat_get_export_options(pcb_hid_t *hid, int *n)
+static pcb_export_opt_t *stat_get_export_options(pcb_hid_t *hid, int *n)
 {
 	const char *suffix = ".stat.lht";
 

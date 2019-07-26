@@ -25,7 +25,7 @@
 
 const char *bom_cookie = "bom HID";
 
-static pcb_hid_attribute_t bom_options[] = {
+static pcb_export_opt_t bom_options[] = {
 /* %start-doc options "8 BOM Creation"
 @ftable @code
 @item --bomfile <string>
@@ -64,7 +64,7 @@ typedef struct _BomList {
 	struct _BomList *next;
 } BomList;
 
-static pcb_hid_attribute_t *bom_get_export_options(pcb_hid_t *hid, int *n)
+static pcb_export_opt_t *bom_get_export_options(pcb_hid_t *hid, int *n)
 {
 	if ((PCB != NULL)  && (bom_options[HA_bomfile].default_val.str_value == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &bom_options[HA_bomfile], ".bom");

@@ -24,7 +24,7 @@
 
 const char *export_vfs_mc_cookie = "export_vfs_mc HID";
 
-static pcb_hid_attribute_t export_vfs_mc_options[] = {
+static pcb_export_opt_t export_vfs_mc_options[] = {
 	{"cmd", "mc command",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_export_vfs_mc_cmd 0
@@ -40,7 +40,7 @@ PCB_REGISTER_ATTRIBUTES(export_vfs_mc_options, export_vfs_mc_cookie)
 
 static pcb_hid_attr_val_t export_vfs_mc_values[NUM_OPTIONS];
 
-static pcb_hid_attribute_t *export_vfs_mc_get_export_options(pcb_hid_t *hid, int *n)
+static pcb_export_opt_t *export_vfs_mc_get_export_options(pcb_hid_t *hid, int *n)
 {
 	if (n)
 		*n = NUM_OPTIONS;

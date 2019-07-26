@@ -47,7 +47,7 @@ static int print_layer[PCB_MAX_LAYER];
 static int fast_erase = -1;
 static pcb_composite_op_t drawing_mode;
 
-static pcb_hid_attribute_t eps_attribute_list[] = {
+static pcb_export_opt_t eps_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 /* %start-doc options "92 Encapsulated Postscript Export"
@@ -119,7 +119,7 @@ PCB_REGISTER_ATTRIBUTES(eps_attribute_list, ps_cookie)
 
 static pcb_hid_attr_val_t eps_values[NUM_OPTIONS];
 
-static pcb_hid_attribute_t *eps_get_export_options(pcb_hid_t *hid, int *n)
+static pcb_export_opt_t *eps_get_export_options(pcb_hid_t *hid, int *n)
 {
 	if ((PCB != NULL)  && (eps_attribute_list[HA_psfile].default_val.str_value == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &eps_attribute_list[HA_psfile], ".eps");
