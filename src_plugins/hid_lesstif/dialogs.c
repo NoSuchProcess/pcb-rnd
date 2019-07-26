@@ -315,9 +315,6 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 		if (ctx->attrs[i].type == PCB_HATT_END)
 			break;
 
-		if (ctx->attrs[i].help_text == ATTR_UNDOCUMENTED)
-			continue;
-
 		/* Add content */
 		stdarg_n = 0;
 		stdarg(XmNalignment, XmALIGNMENT_END);
