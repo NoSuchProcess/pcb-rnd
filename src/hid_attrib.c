@@ -30,9 +30,7 @@
 
 #include "config.h"
 #include "hid_attrib.h"
-#include "misc_util.h"
 #include "compat_misc.h"
-#include "pcb-printf.h"
 #include "macro.h"
 
 void pcb_export_register_opts(pcb_export_opt_t *a, int n, const char *cookie, int copy)
