@@ -165,7 +165,7 @@ static void library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 	char *name = NULL, *help = NULL, *help_def = NULL;
 	vtp0_t curr_enum;
 	int curr;
-	pcb_hids_t curr_type = PCB_HATT_END;
+	pcb_hid_attr_type_t curr_type = PCB_HATT_END;
 
 	curr = -1;
 

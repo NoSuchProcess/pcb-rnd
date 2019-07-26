@@ -62,7 +62,7 @@ typedef enum pcb_hids_e {
 	PCB_HATT_BEGIN_TABBED,        /* tabbed view (e.g. notebook); ->wdata stores the tab names and a NULL; default_val's integer value is the index of the current tab */
 	PCB_HATT_BEGIN_COMPOUND,      /* subtree emulating a single widget; (pcb_hid_compound_t *) stored in END's wdata */
 	PCB_HATT_END          /* close one level of PCB_HATT_* */
-} pcb_hids_t;
+} pcb_hid_attr_type_t;
 
 #define PCB_HATT_IS_COMPOSITE(type) \
 	(((type) >= PCB_HATT_BEGIN_HBOX) && ((type) < PCB_HATT_END))
@@ -187,7 +187,7 @@ typedef struct {
 struct pcb_hid_attribute_s {
 	const char *name;
 	const char *help_text;
-	pcb_hids_t type;
+	pcb_hid_attr_type_t type;
 	double min_val, max_val; /* for integer and real */
 	pcb_hid_attr_val_t val; /* Also actual value for global attributes. */
 
@@ -210,7 +210,7 @@ struct pcb_hid_attribute_s {
 struct pcb_export_opt_s {
 	const char *name;
 	const char *help_text;
-	pcb_hids_t type;
+	pcb_hid_attr_type_t type;
 	double min_val, max_val;        /* for integer and real */
 	pcb_hid_attr_val_t default_val;
 	const char **enumerations; /* NULL terminated list of values for a PCB_HATT_ENUM */
