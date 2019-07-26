@@ -538,15 +538,15 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	global.automirror = options[HA_automirror].lng;
 	global.incolor = options[HA_color].lng;
 	global.invert = options[HA_psinvert].lng;
-	global.fade_ratio = PCB_CLAMP(options[HA_psfade].real_value, 0, 1);
+	global.fade_ratio = PCB_CLAMP(options[HA_psfade].dbl, 0, 1);
 	global.media_idx = options[HA_media].lng;
 	global.media_width = pcb_media_data[global.media_idx].width;
 	global.media_height = pcb_media_data[global.media_idx].height;
 	global.ps_width = global.media_width - 2.0 * pcb_media_data[global.media_idx].margin_x;
 	global.ps_height = global.media_height - 2.0 * pcb_media_data[global.media_idx].margin_y;
-	global.scale_factor = options[HA_scale].real_value;
-	global.calibration_x = options[HA_xcalib].real_value;
-	global.calibration_y = options[HA_ycalib].real_value;
+	global.scale_factor = options[HA_scale].dbl;
+	global.calibration_x = options[HA_xcalib].dbl;
+	global.calibration_y = options[HA_ycalib].dbl;
 	global.drillcopper = options[HA_drillcopper].lng;
 	global.legend = options[HA_legend].lng;
 	global.single_page = options[HA_single_page].lng;
@@ -1339,7 +1339,7 @@ void ps_calibrate_1(pcb_hid_t *hid, double xval, double yval, int use_command)
 			if (guess(xval, 15, &global.calibration_x))
 				if (guess(xval, 7.5, &global.calibration_x)) {
 					if (xval < 2)
-						ps_attribute_list[HA_xcalib].default_val.real_value = global.calibration_x = xval;
+						ps_attribute_list[HA_xcalib].default_val.dbl = global.calibration_x = xval;
 					else
 						pcb_message(PCB_MSG_ERROR, "X value of %g is too far off.\n" "Expecting it near: 1.0, 4.0, 15.0, 7.5\n", xval);
 				}
@@ -1347,7 +1347,7 @@ void ps_calibrate_1(pcb_hid_t *hid, double xval, double yval, int use_command)
 			if (guess(yval, 20, &global.calibration_y))
 				if (guess(yval, 10, &global.calibration_y)) {
 					if (yval < 2)
-						ps_attribute_list[HA_ycalib].default_val.real_value = global.calibration_y = yval;
+						ps_attribute_list[HA_ycalib].default_val.dbl = global.calibration_y = yval;
 					else
 						pcb_message(PCB_MSG_ERROR, "Y value of %g is too far off.\n" "Expecting it near: 1.0, 4.0, 20.0, 10.0\n", yval);
 				}

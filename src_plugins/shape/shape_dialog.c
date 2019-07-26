@@ -59,7 +59,7 @@ static void shp_chg_regpoly(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	shp->obj = (pcb_any_obj_t *)regpoly_place(
 		shp->data, shp->layer, shp->dlg[shp->corners].val.lng,
 		shp->dlg[shp->prx].val.coord_value, shp->dlg[shp->pry].val.coord_value,
-		shp->dlg[shp->prot].val.real_value,
+		shp->dlg[shp->prot].val.dbl,
 		shp->dlg[shp->pcx].val.coord_value, shp->dlg[shp->pcy].val.coord_value);
 }
 
@@ -93,9 +93,9 @@ static void shp_chg_roundrect(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		shp->data, shp->layer,
 		shp->dlg[shp->w].val.coord_value, shp->dlg[shp->h].val.coord_value,
 		shp->dlg[shp->rx].val.coord_value, shp->dlg[shp->ry].val.coord_value,
-		shp->dlg[shp->rrot].val.real_value,
+		shp->dlg[shp->rrot].val.dbl,
 		shp->dlg[shp->rcx].val.coord_value, shp->dlg[shp->rcy].val.coord_value,
-		corner, shp->dlg[shp->rres].val.real_value);
+		corner, shp->dlg[shp->rres].val.dbl);
 }
 
 static void shp_chg_circle(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)

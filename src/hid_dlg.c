@@ -233,7 +233,7 @@ static int pcb_gui_progress(long so_far, long total, const char *message)
 		closing = 0;
 	}
 
-	val.real_value = (double)so_far / (double)total;
+	val.dbl = (double)so_far / (double)total;
 
 	now = pcb_dtime();
 	if (now >= (last + (REFRESH_RATE / 1000.0))) {

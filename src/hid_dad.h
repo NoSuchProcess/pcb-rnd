@@ -298,13 +298,13 @@ do { \
 #define PCB_DAD_BEGIN_HPANE(table) \
 do { \
 	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_HPANE); \
-	table[table ## _len - 1].val.real_value = 0.5; \
+	table[table ## _len - 1].val.dbl = 0.5; \
 } while(0)
 
 #define PCB_DAD_BEGIN_VPANE(table) \
 do { \
 	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_VPANE); \
-	table[table ## _len - 1].val.real_value = 0.5; \
+	table[table ## _len - 1].val.dbl = 0.5; \
 } while(0)
 
 #define PCB_DAD_TREE(table, cols, first_col_is_tree, opt_header) \
@@ -489,7 +489,7 @@ do { \
 		case PCB_HATT_PROGRESS: \
 		case PCB_HATT_BEGIN_HPANE: \
 		case PCB_HATT_BEGIN_VPANE: \
-			table[table ## _len - 1].field.real_value = (double)val; \
+			table[table ## _len - 1].field.dbl = (double)val; \
 			break; \
 		case PCB_HATT_STRING: \
 		case PCB_HATT_TEXT: \
@@ -531,7 +531,7 @@ do { \
 		case PCB_HATT_PROGRESS: \
 		case PCB_HATT_BEGIN_HPANE: \
 		case PCB_HATT_BEGIN_VPANE: \
-			table[table ## _len - 1].field.real_value = (double)val_; \
+			table[table ## _len - 1].field.dbl = (double)val_; \
 			break; \
 		case PCB_HATT_STRING: \
 		case PCB_HATT_TEXT: \

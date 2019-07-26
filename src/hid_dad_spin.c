@@ -238,7 +238,7 @@ static double get_step(pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end, pcb_h
 				step = 1;
 			break;
 		case PCB_DAD_SPIN_DOUBLE:
-			step = pow(10, floor(log10(fabs((double)end->val.real_value)) - 1.0));
+			step = pow(10, floor(log10(fabs((double)end->val.dbl)) - 1.0));
 			break;
 		case PCB_DAD_SPIN_COORD:
 			if (spin->unit == NULL) {
@@ -287,9 +287,9 @@ static void do_step(void *hid_ctx, pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t
 			sprintf(buf, "%ld", end->val.lng);
 			break;
 		case PCB_DAD_SPIN_DOUBLE:
-			end->val.real_value += step;
-			SPIN_CLAMP(end->val.real_value);
-			sprintf(buf, "%f", end->val.real_value);
+			end->val.dbl += step;
+			SPIN_CLAMP(end->val.dbl);
+			sprintf(buf, "%f", end->val.dbl);
 			break;
 		case PCB_DAD_SPIN_COORD:
 			end->val.coord_value += step;
@@ -358,7 +358,7 @@ void pcb_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 			SPIN_CLAMP(d);
 			if (*ends != '\0')
 				warn = "Invalid numeric - result is truncated";
-			end->val.real_value = d;
+			end->val.dbl = d;
 			break;
 		case PCB_DAD_SPIN_COORD:
 			succ = pcb_get_value_unit(str->val.str, &absolute, 0, &d, &unit);
@@ -468,7 +468,7 @@ void pcb_dad_spin_set_num(pcb_hid_attribute_t *attr, long l, double d, pcb_coord
 			str->val.str = pcb_strdup_printf("%ld", l);
 			break;
 		case PCB_DAD_SPIN_DOUBLE:
-			attr->val.real_value = d;
+			attr->val.dbl = d;
 			free((char *)str->val.str);
 			str->val.str = pcb_strdup_printf("%f", d);
 			break;
@@ -517,9 +517,9 @@ int pcb_dad_spin_set_value(pcb_hid_attribute_t *end, void *hid_ctx, int idx, con
 			end->val.lng = val->lng;
 			break;
 		case PCB_DAD_SPIN_DOUBLE:
-			if (val->real_value == end->val.real_value)
+			if (val->dbl == end->val.dbl)
 				return 0;
-			end->val.real_value = val->real_value;
+			end->val.dbl = val->dbl;
 			break;
 		case PCB_DAD_SPIN_COORD:
 			if (val->coord_value == end->val.coord_value)

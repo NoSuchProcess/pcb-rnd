@@ -33,7 +33,7 @@
 static int ghid_progress_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val)
 {
 	GtkWidget *prg = ctx->wl[idx];
-	double pos = val->real_value;
+	double pos = val->dbl;
 
 	if (pos < 0.0) pos = 0.0;
 	else if (pos > 1.0) pos = 1.0;

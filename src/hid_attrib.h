@@ -12,7 +12,7 @@
 struct pcb_hid_attr_val_s {
 	long lng;
 	const char *str;
-	double real_value;
+	double dbl;
 	pcb_coord_t coord_value;
 	pcb_color_t clr_value;
 	void (*func)();
@@ -46,7 +46,7 @@ typedef enum pcb_hids_e {
 	PCB_HATT_COORD,
 	PCB_HATT_BUTTON,              /* push button; default value is the label */
 	PCB_HATT_TREE,                /* tree/list/table view; number of columns: pcb_hatt_table_cols; data is in field 'enumerations' */
-	PCB_HATT_PROGRESS,            /* progress bar; displays real_value between 0 and 1 */
+	PCB_HATT_PROGRESS,            /* progress bar; displays dbl between 0 and 1 */
 	PCB_HATT_PREVIEW,             /* preview/render widget; callbacks in 'enumerations' */
 	PCB_HATT_PICTURE,             /* static picture from xpm - picture data in enumerations */
 	PCB_HATT_PICBUTTON,           /* button with static picture from xpm - picture data in enumerations */
@@ -56,8 +56,8 @@ typedef enum pcb_hids_e {
 	/* groups (e.g. boxes) */
 	PCB_HATT_BEGIN_HBOX,          /* NOTE: PCB_HATT_IS_COMPOSITE() depends on it */
 	PCB_HATT_BEGIN_VBOX,
-	PCB_HATT_BEGIN_HPANE,         /* horizontal split and offer two vboxes; the split ratio is real_value between 0 and 1, that describes the left side's size */
-	PCB_HATT_BEGIN_VPANE,         /* vertical split and offer two vboxes; the split ratio is real_value between 0 and 1, that describes the left side's size */
+	PCB_HATT_BEGIN_HPANE,         /* horizontal split and offer two vboxes; the split ratio is dbl between 0 and 1, that describes the left side's size */
+	PCB_HATT_BEGIN_VPANE,         /* vertical split and offer two vboxes; the split ratio is dbl between 0 and 1, that describes the left side's size */
 	PCB_HATT_BEGIN_TABLE,         /* min_val is the number of columns */
 	PCB_HATT_BEGIN_TABBED,        /* tabbed view (e.g. notebook); ->enumerations stores the tab names and a NULL; default_val's integer value is the index of the current tab */
 	PCB_HATT_BEGIN_COMPOUND,      /* subtree emulating a single widget; (pcb_hid_compound_t *) stored in END's enumerations */

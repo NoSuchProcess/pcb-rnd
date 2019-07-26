@@ -69,7 +69,7 @@ void pcb_pref_conf2dlg_item(conf_native_t *cn, pref_confitem_t *item)
 			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, lng, cn->val.integer[0]);
 			break;
 		case CFN_REAL:
-			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, real_value, cn->val.real[0]);
+			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, dbl, cn->val.real[0]);
 			break;
 		case CFN_STRING:
 			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, str, cn->val.string[0]);
@@ -98,8 +98,8 @@ void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_confitem_t *item, pcb_hid_attr
 				conf_setf(ctx->role, item->confpath, -1, "%d", attr->val.lng);
 			break;
 		case CFN_REAL:
-			if (cn->val.real[0] != attr->val.real_value)
-				conf_setf(ctx->role, item->confpath, -1, "%f", attr->val.real_value);
+			if (cn->val.real[0] != attr->val.dbl)
+				conf_setf(ctx->role, item->confpath, -1, "%f", attr->val.dbl);
 			break;
 		case CFN_STRING:
 			if (strcmp(cn->val.string[0], attr->val.str) != 0)
@@ -166,7 +166,7 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*ch
 			PCB_DAD_REAL(ctx->dlg, "");
 				item->wid = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_MINMAX(ctx->dlg, 0, INT_MAX);
-				ctx->dlg[item->wid].val.real_value = cn->val.real[0];
+				ctx->dlg[item->wid].val.dbl = cn->val.real[0];
 				PCB_DAD_HELP(ctx->dlg, cn->description);
 				PCB_DAD_CHANGE_CB(ctx->dlg, change_cb);
 			break;

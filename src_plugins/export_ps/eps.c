@@ -172,7 +172,7 @@ static void eps_print_header(FILE *f, const char *outfn)
 
 	fprintf(f, "%%!PS-Adobe-3.0 EPSF-3.0\n");
 
-#define pcb2em(x) 1 + PCB_COORD_TO_INCH (x) * 72.0 * options_[HA_scale].real_value
+#define pcb2em(x) 1 + PCB_COORD_TO_INCH (x) * 72.0 * options_[HA_scale].dbl
 	fprintf(f, "%%%%BoundingBox: 0 0 %f %f\n", pcb2em(bounds->X2 - bounds->X1), pcb2em(bounds->Y2 - bounds->Y1));
 #undef pcb2em
 	fprintf(f, "%%%%Pages: 1\n");
@@ -184,7 +184,7 @@ static void eps_print_header(FILE *f, const char *outfn)
 
 	fprintf(f, "72 72 scale\n");
 	fprintf(f, "1 dup neg scale\n");
-	fprintf(f, "%g dup scale\n", options_[HA_scale].real_value);
+	fprintf(f, "%g dup scale\n", options_[HA_scale].dbl);
 	pcb_fprintf(f, "%mi %mi translate\n", -bounds->X1, -bounds->Y2);
 	if (options_[HA_as_shown].lng && conf_core.editor.show_solder_side)
 		pcb_fprintf(f, "-1 1 scale %mi 0 translate\n", bounds->X1 - bounds->X2);

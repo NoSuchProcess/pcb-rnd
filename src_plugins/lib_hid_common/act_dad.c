@@ -463,7 +463,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			case PCB_HATT_REAL:
 			case PCB_HATT_PROGRESS:
 				PCB_ACT_CONVARG(4, FGW_DOUBLE, dad, d = argv[4].val.nat_double);
-				PCB_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, real_value, d);
+				PCB_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, dbl, d);
 				break;
 			case PCB_HATT_INTEGER:
 				PCB_ACT_CONVARG(4, FGW_INT, dad, i = argv[4].val.nat_int);

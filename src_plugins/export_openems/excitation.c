@@ -102,7 +102,7 @@ static void ser_hz(int save, int widx, const char *attrkey)
 {
 	if (save) {
 		char tmp[128];
-		sprintf(tmp, "%f Hz", exc_ctx.dlg[widx].val.real_value);
+		sprintf(tmp, "%f Hz", exc_ctx.dlg[widx].val.dbl);
 		ser_save(tmp, attrkey);
 	}
 	else {
@@ -111,17 +111,17 @@ static void ser_hz(int save, int widx, const char *attrkey)
 		const char *orig = ser_load(attrkey);
 
 		if (orig != NULL) {
-			hv.real_value = strtod(orig, &end);
+			hv.dbl = strtod(orig, &end);
 			if (*end != '\0') {
 				while(isspace(*end)) end++;
 				if (pcb_strcasecmp(end, "hz") != 0) {
 					pcb_message(PCB_MSG_ERROR, "Invalid real value (Hz) in board attribute '%s': '%s'\n", attrkey, orig);
-					hv.real_value = 0;
+					hv.dbl = 0;
 				}
 			}
 		}
 		else
-			hv.real_value = 0;
+			hv.dbl = 0;
 
 		pcb_gui->attr_dlg_set_value(exc_ctx.dlg_hid_ctx, widx, &hv);
 	}

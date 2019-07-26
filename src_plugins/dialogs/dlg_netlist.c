@@ -420,7 +420,7 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 
 	{
 		pcb_hid_attr_val_t hv;
-		hv.real_value = 0.33;
+		hv.dbl = 0.33;
 		pcb_gui->attr_dlg_set_value(netlist_ctx.dlg_hid_ctx, wvpan, &hv);
 	}
 

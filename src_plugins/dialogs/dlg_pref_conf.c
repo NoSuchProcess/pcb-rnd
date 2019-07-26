@@ -467,7 +467,7 @@ void pcb_dlg_pref_conf_create(pref_ctx_t *ctx)
 void pcb_dlg_pref_conf_open(pref_ctx_t *ctx, const char *tabarg)
 {
 	pcb_hid_attr_val_t hv;
-	hv.real_value = 0.25;
+	hv.dbl = 0.25;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wmainp, &hv);
 
 	if (tabarg != NULL) {

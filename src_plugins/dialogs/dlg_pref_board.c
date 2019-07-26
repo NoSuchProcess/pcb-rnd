@@ -36,7 +36,7 @@
 static void pref_board_brd2dlg(pref_ctx_t *ctx)
 {
 	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->board.wname, str, PCB_EMPTY(PCB->hidlib.name));
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->board.wthermscale, real_value, PCB->ThermScale);
+	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->board.wthermscale, dbl, PCB->ThermScale);
 	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->board.wtype, str, (PCB->is_footprint ? "footprint" : "PCB board"));
 }
 
@@ -56,7 +56,7 @@ static void pref_board_dlg2brd(void *hid_ctx, void *caller_data, pcb_hid_attribu
 		changed = 1;
 	}
 
-	newtherm = ctx->dlg[ctx->board.wthermscale].val.real_value;
+	newtherm = ctx->dlg[ctx->board.wthermscale].val.dbl;
 	if (PCB->ThermScale != newtherm) {
 		PCB->ThermScale = newtherm;
 		changed = 1;
@@ -91,7 +91,7 @@ void pcb_dlg_pref_board_create(pref_ctx_t *ctx)
 		PCB_DAD_REAL(ctx->dlg, "");
 			ctx->board.wthermscale = PCB_DAD_CURRENT(ctx->dlg);
 			PCB_DAD_MINMAX(ctx->dlg, 0.01, 100);
-			ctx->dlg[ctx->board.wthermscale].val.real_value = PCB->ThermScale;
+			ctx->dlg[ctx->board.wthermscale].val.dbl = PCB->ThermScale;
 			PCB_DAD_CHANGE_CB(ctx->dlg, pref_board_dlg2brd);
 		PCB_DAD_LABEL(ctx->dlg, "Type");
 		PCB_DAD_LABEL(ctx->dlg, "");

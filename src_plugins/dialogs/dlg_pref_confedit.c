@@ -70,7 +70,7 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			break;
 		case CFN_REAL:
-			hv.real_value = strtod(val, NULL);
+			hv.dbl = strtod(val, NULL);
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			break;
 		case CFN_COORD:
@@ -129,7 +129,7 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 		case CFN_STRING:  val = attr->val.str; break;
 		case CFN_BOOLEAN:
 		case CFN_INTEGER: sprintf(buf, "%ld", attr->val.lng); break;
-		case CFN_REAL:    sprintf(buf, "%f", attr->val.real_value); break;
+		case CFN_REAL:    sprintf(buf, "%f", attr->val.dbl); break;
 		case CFN_COORD:   pcb_snprintf(buf, sizeof(buf), "%.08$mH", attr->val.coord_value); break;
 		case CFN_UNIT:
 			if ((attr->val.lng < 0) || (attr->val.lng >= pcb_get_n_units(0)))

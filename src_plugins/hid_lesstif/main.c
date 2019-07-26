@@ -1730,7 +1730,7 @@ static int lesstif_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 				r->resource_type = XmStrCast(XtRDouble);
 				r->default_type = XmStrCast(XtRDouble);
 				r->resource_size = sizeof(double);
-				r->default_addr = &(a->default_val.real_value);
+				r->default_addr = &(a->default_val.dbl);
 				rcount++;
 				break;
 			case PCB_HATT_STRING:
@@ -1818,7 +1818,7 @@ static int lesstif_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 				if (a->value)
 					*(double *) a->value = v->f;
 				else
-					a->default_val.real_value = v->f;
+					a->default_val.dbl = v->f;
 				rcount++;
 				break;
 			case PCB_HATT_STRING:

@@ -215,8 +215,8 @@ static void openems_write_tunables(wctx_t *ctx)
 
 	fprintf(ctx->f, "%% void is the material used for: fill holes, cutouts in substrate, etc\n");
 	fprintf(ctx->f, "void.name = '%s';\n", ctx->options[HA_void_name].str);
-	fprintf(ctx->f, "void.epsilon = %f;\n", ctx->options[HA_void_epsilon].real_value);
-	fprintf(ctx->f, "void.mue = %f;\n", ctx->options[HA_void_mue].real_value);
+	fprintf(ctx->f, "void.epsilon = %f;\n", ctx->options[HA_void_epsilon].dbl);
+	fprintf(ctx->f, "void.mue = %f;\n", ctx->options[HA_void_mue].dbl);
 	fprintf(ctx->f, "%% void.kappa = kappa;\n");
 	fprintf(ctx->f, "%% void.sigma = sigma;\n");
 	fprintf(ctx->f, "\n");
@@ -363,7 +363,7 @@ static void openems_vport_write(wctx_t *ctx, pcb_any_obj_t *o, pcb_coord_t x, pc
 {
 	char *end, *s, *safe_name = pcb_strdup(port_name);
 	const char *att;
-	double resistance = ctx->options[HA_def_port_res].real_value;
+	double resistance = ctx->options[HA_def_port_res].dbl;
 	int act = 1;
 
 	ctx->port_id++;

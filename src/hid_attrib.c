@@ -141,7 +141,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 				break;
 			case PCB_HATT_REAL:
 				if (a->value)
-					*(double *) a->value = a->default_val.real_value;
+					*(double *) a->value = a->default_val.dbl;
 				break;
 			case PCB_HATT_STRING:
 				if (a->value)
@@ -198,7 +198,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 						if (a->value)
 							*(double *) a->value = strtod((*argv)[1], 0);
 						else
-							a->default_val.real_value = strtod((*argv)[1], 0);
+							a->default_val.dbl = strtod((*argv)[1], 0);
 						(*argc)--;
 						(*argv)++;
 						break;

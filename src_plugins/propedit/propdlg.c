@@ -224,7 +224,7 @@ static void prop_valedit_update(propdlg_t *ctx, pcb_props_t *p, pcb_propval_t *p
 	switch(p->type) {
 		case PCB_PROPT_STRING: hv.str = pcb_strdup(pv->string == NULL ? "" : pv->string); break;
 		case PCB_PROPT_COORD:  hv.coord_value = pv->coord; break;
-		case PCB_PROPT_ANGLE:  hv.real_value = pv->angle; break;
+		case PCB_PROPT_ANGLE:  hv.dbl = pv->angle; break;
 		case PCB_PROPT_BOOL:
 		case PCB_PROPT_INT:    hv.lng = pv->i; break;
 		case PCB_PROPT_COLOR:  hv.clr_value = pv->clr; break;
@@ -327,7 +327,7 @@ static void prop_data_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 			sctx.c_valid = 1;
 			break;
 		case PCB_PROPT_ANGLE:
-			sctx.d = ctx->dlg[ctx->wedit[p->type]].val.real_value;
+			sctx.d = ctx->dlg[ctx->wedit[p->type]].val.dbl;
 			sctx.d_absolute = ctx->dlg[ctx->wabs[p->type]].val.lng;
 			sctx.d_valid = 1;
 			break;

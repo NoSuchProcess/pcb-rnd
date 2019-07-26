@@ -402,11 +402,11 @@ static void gcode_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	scale = metric ? 1.0 / pcb_coord_to_unit(unit, PCB_MM_TO_COORD(1.0))
 		: 1.0 / pcb_coord_to_unit(unit, PCB_INCH_TO_COORD(1.0));
 
-	gcode_cutdepth = options[HA_cutdepth].real_value * scale;
-	gcode_drilldepth = options[HA_drilldepth].real_value * scale;
-	gcode_safeZ = options[HA_safeZ].real_value * scale;
-	gcode_toolradius = metric ? PCB_MM_TO_COORD(options[HA_toolradius].real_value * scale)
-		: PCB_INCH_TO_COORD(options[HA_toolradius].real_value * scale);
+	gcode_cutdepth = options[HA_cutdepth].dbl * scale;
+	gcode_drilldepth = options[HA_drilldepth].dbl * scale;
+	gcode_safeZ = options[HA_safeZ].dbl * scale;
+	gcode_toolradius = metric ? PCB_MM_TO_COORD(options[HA_toolradius].dbl * scale)
+		: PCB_INCH_TO_COORD(options[HA_toolradius].dbl * scale);
 	gcode_choose_groups();
 
 	for (i = 0; i < PCB_MAX_LAYERGRP; i++) {

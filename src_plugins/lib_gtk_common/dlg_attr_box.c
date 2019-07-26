@@ -30,7 +30,7 @@ static int ghid_pane_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val
 {
 	GtkWidget *pane = ctx->wl[idx];
 	GtkAllocation a;
-	double ratio = val->real_value;
+	double ratio = val->dbl;
 	gint p, minp, maxp;
 
 	if (ratio < 0.0) ratio = 0.0;

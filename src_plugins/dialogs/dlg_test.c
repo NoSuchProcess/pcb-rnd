@@ -304,7 +304,7 @@ static void pcb_act_spin_reset(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	pcb_hid_attr_val_t hv;
 
 	hv.lng = 42;
-	hv.real_value = 42.0;
+	hv.dbl = 42.0;
 	hv.coord_value = PCB_MM_TO_COORD(42);
 
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspin_int, &hv);
@@ -322,7 +322,7 @@ static void pcb_act_spin_upd(void *hid_ctx, void *caller_data, pcb_hid_attribute
 
 	sprintf(tmp, "%ld", ctx->dlg[ctx->wspin_int].val.lng);
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_int, &hv);
-	sprintf(tmp, "%f", ctx->dlg[ctx->wspin_double].val.real_value);
+	sprintf(tmp, "%f", ctx->dlg[ctx->wspin_double].val.dbl);
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_double, &hv);
 	pcb_snprintf(tmp, sizeof(tmp), "%mm\n%ml", ctx->dlg[ctx->wspin_coord].val.coord_value, ctx->dlg[ctx->wspin_coord].val.coord_value);
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_coord, &hv);
@@ -357,7 +357,7 @@ static void cb_ttbl_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	new_row = pcb_dad_tree_insert(treea, row, rowdata);
 	new_row->user_data2.lng = 1;
 
-	val.real_value = (double)ctx->ttctr / 20.0;
+	val.dbl = (double)ctx->ttctr / 20.0;
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wprog, &val);
 }
 
@@ -373,7 +373,7 @@ static void cb_ttbl_append(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	new_row = pcb_dad_tree_append(treea, row, rowdata);
 	new_row->user_data2.lng = 1;
 
-	val.real_value = (double)ctx->ttctr / 20.0;
+	val.dbl = (double)ctx->ttctr / 20.0;
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wprog, &val);
 }
 
@@ -436,7 +436,7 @@ static void cb_pane_set(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 	test_t *ctx = caller_data;
 	pcb_hid_attr_val_t val;
 
-	val.real_value = 0.3;
+	val.dbl = 0.3;
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->whpane, &val);
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wvpane, &val);
 }

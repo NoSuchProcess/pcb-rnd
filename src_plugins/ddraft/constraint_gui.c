@@ -71,7 +71,7 @@ do { \
 
 #define c2g_float(name) \
 do { \
-	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.name, real_value, cons.name); \
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.name, dbl, cons.name); \
 } while(0)
 
 #define c2g_coord(name) \
@@ -128,12 +128,12 @@ static void gui2cons(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr
 	pcb_bool succ;
 
 	g2c_array(line_angle, strtod(curr, &end));
-	g2c_scalar(line_angle_mod, real_value);
+	g2c_scalar(line_angle_mod, dbl);
 	g2c_array(line_length, pcb_get_value(curr, NULL, NULL, &succ));
 	g2c_scalar(line_length_mod, coord_value);
 
 	g2c_array(move_angle, strtod(curr, &end));
-	g2c_scalar(move_angle_mod, real_value);
+	g2c_scalar(move_angle_mod, dbl);
 	g2c_array(move_length, pcb_get_value(curr, NULL, NULL, &succ));
 	g2c_scalar(move_length_mod, coord_value);
 }
@@ -141,7 +141,7 @@ static void gui2cons(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr
 static void reset_line(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.line_angle, str, pcb_strdup(""));
-	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.line_angle_mod, real_value, 0);
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.line_angle_mod, dbl, 0);
 	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.line_length, str, pcb_strdup(""));
 	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.line_length_mod, coord_value, 0);
 	gui2cons(hid_ctx, caller_data, attr);
@@ -150,7 +150,7 @@ static void reset_line(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 static void reset_move(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.move_angle, str, pcb_strdup(""));
-	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.move_angle_mod, real_value, 0);
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.move_angle_mod, dbl, 0);
 	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.move_length, str, pcb_strdup(""));
 	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.move_length_mod, coord_value, 0);
 	gui2cons(hid_ctx, caller_data, attr);

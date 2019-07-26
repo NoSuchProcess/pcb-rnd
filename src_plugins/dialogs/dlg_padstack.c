@@ -85,7 +85,7 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 	pcb_snprintf(tmp, sizeof(tmp), "#%ld:%d (%s)", (long int)pse->ps->proto, pse->ps->protoi, prn);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->proto_id, str, tmp);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->clearance, coord_value, pse->ps->Clearance);
-	PCB_DAD_SET_VALUE(hid_ctx, pse->rot, real_value, pse->ps->rot);
+	PCB_DAD_SET_VALUE(hid_ctx, pse->rot, dbl, pse->ps->rot);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->xmirror, lng, pse->ps->xmirror);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->smirror, lng, pse->ps->smirror);
 
@@ -262,7 +262,7 @@ static void pse_chg_instance(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	pcb_pstk_change_instance(pse->ps,
 		NULL,
 		&pse->attrs[pse->clearance].val.coord_value,
-		&pse->attrs[pse->rot].val.real_value,
+		&pse->attrs[pse->rot].val.dbl,
 		&xm, &sm);
 	pse->attrs[pse->xmirror].val.lng = xm;
 	pse->attrs[pse->smirror].val.lng = sm;

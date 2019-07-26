@@ -210,7 +210,7 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 								case PCB_HATT_REAL:
 									PCB_DAD_REAL(export_ctx.dlg, opts[i].name);
 									PCB_DAD_MINMAX(export_ctx.dlg, opts[i].min_val, opts[i].max_val);
-									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.real_value);
+									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.dbl);
 									break;
 								case PCB_HATT_UNIT:
 									PCB_DAD_UNIT(export_ctx.dlg, PCB_UNIT_METRIC | PCB_UNIT_IMPERIAL);
