@@ -746,6 +746,7 @@ void lesstif_attr_dlg_close(void *hid_ctx)
 	if (!ctx->widget_destroyed) {
 		ctx->widget_destroyed = 1;
 		XtDestroyWidget(ctx->dialog);
+		ltf_attr_destroy_cb(ctx->dialog, ctx, NULL);
 	}
 }
 
