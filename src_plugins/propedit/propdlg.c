@@ -665,7 +665,7 @@ static const char *propdlg_cookie = "propdlg";
 void pcb_propdlg_init(void)
 {
 	static conf_hid_callbacks_t cbs;
-	conf_native_t *n = conf_get_field("editor/grid_unit");
+	conf_native_t *n = pcb_conf_get_field("editor/grid_unit");
 	propdlg_conf_id = conf_hid_reg(propdlg_cookie, NULL);
 
 	if (n != NULL) {

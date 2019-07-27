@@ -229,7 +229,7 @@ static void InitPaths(char *argv0)
 		exit(1);
 	}
 	sprintf(exec_prefix, "%s%s%s", bindir, PCB_DIR_SEPARATOR_S, BINDIR_TO_EXECPREFIX);
-	conf_set(CFR_INTERNAL, "rc/path/exec_prefix", -1, exec_prefix, POL_OVERWRITE);
+	pcb_conf_set(CFR_INTERNAL, "rc/path/exec_prefix", -1, exec_prefix, POL_OVERWRITE);
 
 	/* export the most important paths and data for child processes (e.g. parametric footprints) */
 	se |= pcb_setenv("PCB_RND_VERSION",     PCB_VERSION,           1);

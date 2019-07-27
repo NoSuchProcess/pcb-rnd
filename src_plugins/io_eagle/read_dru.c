@@ -154,7 +154,7 @@ static void bump_up_str(const char *key, const char *val, const char *cpath, pcb
 		return;
 	}
 	if (d > curr_val)
-		conf_set(CFR_DESIGN, "design/min_drill", -1, val, POL_OVERWRITE);
+		pcb_conf_set(CFR_DESIGN, "design/min_drill", -1, val, POL_OVERWRITE);
 }
 
 int io_eagle_read_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
@@ -171,9 +171,9 @@ int io_eagle_read_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	if (f == NULL)
 		return -1;
 
-	conf_set(CFR_DESIGN, "design/bloat", -1, "0", POL_OVERWRITE);
-	conf_set(CFR_DESIGN, "design/min_wid", -1, "0", POL_OVERWRITE);
-	conf_set(CFR_DESIGN, "design/min_drill", -1, "0", POL_OVERWRITE);
+	pcb_conf_set(CFR_DESIGN, "design/bloat", -1, "0", POL_OVERWRITE);
+	pcb_conf_set(CFR_DESIGN, "design/min_wid", -1, "0", POL_OVERWRITE);
+	pcb_conf_set(CFR_DESIGN, "design/min_drill", -1, "0", POL_OVERWRITE);
 
 	memcpy(tmp, prefix, sizeof(prefix));
 

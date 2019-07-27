@@ -423,7 +423,7 @@ static int fpds_inited = 0;
 
 const char *pcb_fp_default_search_path(void)
 {
-	return conf_concat_strlist(&conf_core.rc.library_search_paths, &fpds_paths, &fpds_inited, ':');
+	return pcb_conf_concat_strlist(&conf_core.rc.library_search_paths, &fpds_paths, &fpds_inited, ':');
 }
 
 int pcb_fp_host_uninit(void)

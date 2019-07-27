@@ -837,7 +837,7 @@ int pplg_check_ver_report(int ver_needed) { return 0; }
 void pplg_uninit_report(void)
 {
 	pcb_remove_actions_by_cookie(report_cookie);
-	conf_unreg_fields("plugins/report/");
+	pcb_conf_unreg_fields("plugins/report/");
 }
 
 #include "dolists.h"
@@ -846,7 +846,7 @@ int pplg_init_report(void)
 	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(report_action_list, report_cookie)
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	conf_reg_field(conf_report, field,isarray,type_name,cpath,cname,desc,flags);
+	pcb_conf_reg_field(conf_report, field,isarray,type_name,cpath,cname,desc,flags);
 #include "report_conf_fields.h"
 	return 0;
 }

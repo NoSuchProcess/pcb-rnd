@@ -1395,7 +1395,7 @@ static lht_node_t *build_netlists(pcb_board_t *pcb, pcb_netlist_t *netlists, pcb
 	return nls;
 }
 
-extern lht_doc_t *conf_main_root[CFR_max_alloc];
+extern lht_doc_t *pcb_conf_main_root[CFR_max_alloc];
 static lht_node_t *build_conf()
 {
 	const char **s, *del_paths[] = { "editor/mode", NULL };
@@ -1404,10 +1404,10 @@ static lht_node_t *build_conf()
 	if (conf_io_lihata.plugins.io_lihata.omit_config)
 		return dummy_node("pcb-rnd-conf-v1");
 
-	if ((conf_main_root[CFR_DESIGN] == NULL) || (conf_main_root[CFR_DESIGN]->root == NULL) || (conf_main_root[CFR_DESIGN]->root->type != LHT_LIST))
+	if ((pcb_conf_main_root[CFR_DESIGN] == NULL) || (pcb_conf_main_root[CFR_DESIGN]->root == NULL) || (pcb_conf_main_root[CFR_DESIGN]->root->type != LHT_LIST))
 		return lht_dom_node_alloc(LHT_LIST, "pcb-rnd-conf-v1");
 
-	res = lht_dom_duptree(conf_main_root[CFR_DESIGN]->root);
+	res = lht_dom_duptree(pcb_conf_main_root[CFR_DESIGN]->root);
 
 	for(n = res->data.list.first; n != NULL; n = n->next) {
 		for(s = del_paths; *s != NULL; s++) {
@@ -1772,13 +1772,13 @@ void io_lihata_save_as_subd_uninit(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_
 		int omit_styles = !!sub->dlg[save->womit_styles].val.lng;
 
 		if (omit_font != !!conf_io_lihata.plugins.io_lihata.omit_font)
-			conf_setf(CFR_CLI, "plugins/io_lihata/omit_font", 0, "%d", omit_font);
+			pcb_conf_setf(CFR_CLI, "plugins/io_lihata/omit_font", 0, "%d", omit_font);
 
 		if (omit_config != !!conf_io_lihata.plugins.io_lihata.omit_config)
-			conf_setf(CFR_CLI, "plugins/io_lihata/omit_config", 0, "%d", omit_config);
+			pcb_conf_setf(CFR_CLI, "plugins/io_lihata/omit_config", 0, "%d", omit_config);
 
 		if (omit_styles != !!conf_io_lihata.plugins.io_lihata.omit_styles)
-			conf_setf(CFR_CLI, "plugins/io_lihata/omit_styles", 0, "%d", omit_styles);
+			pcb_conf_setf(CFR_CLI, "plugins/io_lihata/omit_styles", 0, "%d", omit_styles);
 	}
 
 	free(save);

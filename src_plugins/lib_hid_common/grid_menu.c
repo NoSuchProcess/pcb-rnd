@@ -49,7 +49,7 @@ static void grid_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, c
 	char act[256], chk[256];
 	int idx;
 
-	nat = conf_get_field("editor/grids");
+	nat = pcb_conf_get_field("editor/grids");
 	if (nat == NULL)
 		return;
 

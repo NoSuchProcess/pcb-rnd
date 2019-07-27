@@ -506,7 +506,7 @@ static int vfs_conf_printf(void *ctx, const char *fmt, ...)
 
 static int vfs_access_conf(pcb_board_t *pcb, const char *path, gds_t *buff, int wr, int *isdir)
 {
-	conf_native_t *nat = conf_get_field(path);
+	conf_native_t *nat = pcb_conf_get_field(path);
 	if (nat == NULL) {
 		if (isdir != NULL)
 			*isdir = 1;
@@ -520,9 +520,9 @@ static int vfs_access_conf(pcb_board_t *pcb, const char *path, gds_t *buff, int 
 		*isdir = 0;
 
 	if (wr)
-		return conf_set(CFR_DESIGN, path, 0, buff->array, POL_OVERWRITE);
+		return pcb_conf_set(CFR_DESIGN, path, 0, buff->array, POL_OVERWRITE);
 	else
-		conf_print_native((conf_pfn)vfs_conf_printf, buff, NULL, 0, nat);
+		pcb_conf_print_native((conf_pfn)vfs_conf_printf, buff, NULL, 0, nat);
 
 	return 0;
 }

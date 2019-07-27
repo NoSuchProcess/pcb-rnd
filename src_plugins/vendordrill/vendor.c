@@ -98,7 +98,7 @@ static void load_meta_coord(const char *path, pcb_coord_t crd)
 {
 	char tmp[128];
 	pcb_sprintf(tmp, "%$mm", crd);
-	conf_set(CFR_DESIGN, path, -1, tmp, POL_OVERWRITE);
+	pcb_conf_set(CFR_DESIGN, path, -1, tmp, POL_OVERWRITE);
 }
 
 static pcb_bool vendorIsSubcMappable(pcb_subc_t *subc);
@@ -271,7 +271,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_message(PCB_MSG_INFO, "Loaded %d vendor drills from %s\n", n_vendor_drills, fname);
 	pcb_message(PCB_MSG_INFO, "Loaded %d RefDes skips, %d Value skips, %d Descr skips\n", n_refdes, n_value, n_descr);
 
-	conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "0", POL_OVERWRITE);
+	pcb_conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "0", POL_OVERWRITE);
 
 	apply_vendor_map();
 	if (free_fname)
@@ -346,7 +346,7 @@ static void apply_vendor_map(void)
 		/* Update the current Via */
 		if (conf_core.design.via_drilling_hole != vendorDrillMap(conf_core.design.via_drilling_hole)) {
 			changed++;
-			conf_setf(CFR_DESIGN, "design/via_drilling_hole", -1, "%$mm", vendorDrillMap(conf_core.design.via_drilling_hole));
+			pcb_conf_setf(CFR_DESIGN, "design/via_drilling_hole", -1, "%$mm", vendorDrillMap(conf_core.design.via_drilling_hole));
 			pcb_message(PCB_MSG_INFO, "Adjusted active via hole size to be %ml mils\n", conf_core.design.via_drilling_hole);
 		}
 
@@ -662,7 +662,7 @@ void pplg_uninit_vendordrill(void)
 	pcb_event_unbind_allcookie(vendor_cookie);
 	pcb_remove_actions_by_cookie(vendor_cookie);
 	vendor_free_all();
-	conf_unreg_fields("plugins/vendor/");
+	pcb_conf_unreg_fields("plugins/vendor/");
 }
 
 #include "dolists.h"
@@ -670,7 +670,7 @@ int pplg_init_vendordrill(void)
 {
 	PCB_API_CHK_VER;
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	conf_reg_field(conf_vendor, field,isarray,type_name,cpath,cname,desc,flags);
+	pcb_conf_reg_field(conf_vendor, field,isarray,type_name,cpath,cname,desc,flags);
 #include "vendor_conf_fields.h"
 
 	pcb_event_bind(PCB_EVENT_NEW_PSTK, vendor_new_pstk, NULL, vendor_cookie);

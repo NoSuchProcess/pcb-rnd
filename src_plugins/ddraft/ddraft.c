@@ -495,9 +495,9 @@ int pplg_init_ddraft(void)
 
 
 	confid = conf_hid_reg(ddraft_cookie, NULL);
-	cn = conf_get_field("editor/all_direction_lines");
+	cn = pcb_conf_get_field("editor/all_direction_lines");
 	conf_hid_set_cb(cn, confid, &conf_cbs_adl);
-	cn = conf_get_field("editor/mode");
+	cn = pcb_conf_get_field("editor/mode");
 	conf_hid_set_cb(cn, confid, &conf_cbs_mode);
 	return 0;
 }

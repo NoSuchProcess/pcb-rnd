@@ -602,10 +602,10 @@ typedef struct {
 //  red = priv->grid_color.red;
 //  green = priv->grid_color.green;
 //  blue = priv->grid_color.blue;
-//  conf_setf(CFR_DESIGN, "appearance/color/grid", -1, "#%02x%02x%02x", red, green, blue);
+//  pcb_conf_setf(CFR_DESIGN, "appearance/color/grid", -1, "#%02x%02x%02x", red, green, blue);
 //  map_color_string(pcbhl_conf.appearance.color.grid, &priv->grid_color);
 //
-//  config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/grid"), -1);
+//  config_color_button_update(&ghidgui->common, pcb_conf_get_field("appearance/color/grid"), -1);
 //
 //  //if (priv->grid_gc)
 //  //  gdk_gc_set_foreground(priv->grid_gc, &gport->grid_color);

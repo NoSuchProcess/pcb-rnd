@@ -334,7 +334,7 @@ int pplg_check_ver_draw_fab(int ver_needed) { return 0; }
 
 void pplg_uninit_draw_fab(void)
 {
-	conf_unreg_fields("plugins/draw_fab/");
+	pcb_conf_unreg_fields("plugins/draw_fab/");
 }
 
 int pplg_init_draw_fab(void)
@@ -344,7 +344,7 @@ int pplg_init_draw_fab(void)
 	pcb_stub_draw_fab_overhang = DrawFab_overhang;
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	conf_reg_field(conf_draw_fab, field,isarray,type_name,cpath,cname,desc,flags);
+	pcb_conf_reg_field(conf_draw_fab, field,isarray,type_name,cpath,cname,desc,flags);
 #include "draw_fab_conf_fields.h"
 
 

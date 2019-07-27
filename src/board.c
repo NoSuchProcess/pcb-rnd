@@ -84,7 +84,7 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 	for(i = 0; i < PCB_NUM_NETLISTS; i++)
 		pcb_netlist_init(&(ptr->netlist[i]));
 
-	conf_set(CFR_INTERNAL, "design/poly_isle_area", -1, "200000000", POL_OVERWRITE);
+	pcb_conf_set(CFR_INTERNAL, "design/poly_isle_area", -1, "200000000", POL_OVERWRITE);
 
 	ptr->RatDraw = pcb_false;
 

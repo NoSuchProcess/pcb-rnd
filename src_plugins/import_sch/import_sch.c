@@ -385,7 +385,7 @@ int pplg_check_ver_import_sch(int ver_needed) { return 0; }
 void pplg_uninit_import_sch(void)
 {
 	pcb_remove_actions_by_cookie(import_sch_cookie);
-	conf_unreg_fields("plugins/import_sch/");
+	pcb_conf_unreg_fields("plugins/import_sch/");
 }
 
 #include "dolists.h"
@@ -396,17 +396,17 @@ int pplg_init_import_sch(void)
 	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(import_sch_action_list, import_sch_cookie)
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	conf_reg_field(conf_import_sch, field,isarray,type_name,cpath,cname,desc,flags);
+	pcb_conf_reg_field(conf_import_sch, field,isarray,type_name,cpath,cname,desc,flags);
 #include "import_sch_conf_fields.h"
 
 	/* Compatibility: get some settings from the env */
 	tmp = getenv ("PCB_MAKE_PROGRAM");
 	if (tmp != NULL)
-		conf_set(CFR_ENV, "plugins/import_sch/make_program", -1, tmp, POL_OVERWRITE);
+		pcb_conf_set(CFR_ENV, "plugins/import_sch/make_program", -1, tmp, POL_OVERWRITE);
 
 	tmp = getenv ("PCB_GNETLIST");
 	if (tmp != NULL)
-		conf_set(CFR_ENV, "plugins/import_sch/gnetlist_program", -1, tmp, POL_OVERWRITE);
+		pcb_conf_set(CFR_ENV, "plugins/import_sch/gnetlist_program", -1, tmp, POL_OVERWRITE);
 
 	return 0;
 }

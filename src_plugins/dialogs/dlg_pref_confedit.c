@@ -51,7 +51,7 @@ static void pref_conf_edit_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 static void confedit_brd2dlg(confedit_ctx_t *ctx)
 {
 	pcb_hid_attr_val_t hv;
-	lht_node_t *nl, *nd = conf_lht_get_at(ctx->role, ctx->nat->hash_path, 1);
+	lht_node_t *nl, *nd = pcb_conf_lht_get_at(ctx->role, ctx->nat->hash_path, 1);
 	const char *val;
 
 	if (ctx->idx >= ctx->nat->array_size)
@@ -142,7 +142,7 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 				pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
 				pcb_hid_tree_t *tree = attr->wdata;
 				pcb_hid_row_t *r;
-				lht_node_t *nd = conf_lht_get_at(ctx->role, ctx->nat->hash_path, 0);
+				lht_node_t *nd = pcb_conf_lht_get_at(ctx->role, ctx->nat->hash_path, 0);
 
 				if (nd == NULL) {
 					pcb_message(PCB_MSG_ERROR, "Internal error: can't copy back to non-existing list!\n");
@@ -163,8 +163,8 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 					lht_dom_list_append(nd, n);
 					n->data.text.value = pcb_strdup(r->cell[0]);
 				}
-				conf_makedirty(ctx->role);
-				conf_update(ctx->nat->hash_path, ctx->idx);
+				pcb_conf_makedirty(ctx->role);
+				pcb_conf_update(ctx->nat->hash_path, ctx->idx);
 			}
 			return;
 		case CFN_max:
@@ -173,10 +173,10 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 
 	if (val == NULL)
 		val = "";
-	conf_set(ctx->role, ctx->nat->hash_path, ctx->idx,  val, POL_OVERWRITE);
+	pcb_conf_set(ctx->role, ctx->nat->hash_path, ctx->idx,  val, POL_OVERWRITE);
 
 	if ((ctx->role == CFR_USER) || (ctx->role == CFR_PROJECT))
-		conf_save_file(&PCB->hidlib, NULL, (PCB == NULL ? NULL : PCB->hidlib.filename), ctx->role, NULL);
+		pcb_conf_save_file(&PCB->hidlib, NULL, (PCB == NULL ? NULL : PCB->hidlib.filename), ctx->role, NULL);
 	else if (ctx->role == CFR_DESIGN)
 		pcb_board_set_changed_flag(1);
 
@@ -383,5 +383,5 @@ static void pref_conf_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 		return;
 	}
 
-	conf_del(r->user_data2.lng, pctx->conf.selected_nat->hash_path, pctx->conf.selected_idx);
+	pcb_conf_del(r->user_data2.lng, pctx->conf.selected_nat->hash_path, pctx->conf.selected_idx);
 }

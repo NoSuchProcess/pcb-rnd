@@ -290,7 +290,7 @@ int pplg_check_ver_import_mentor_sch(int ver_needed) { return 0; }
 void pplg_uninit_import_mentor_sch(void)
 {
 	pcb_remove_actions_by_cookie(mentor_sch_cookie);
-	conf_unreg_fields("plugins/import_mentor_sch/");
+	pcb_conf_unreg_fields("plugins/import_mentor_sch/");
 }
 
 #include "dolists.h"
@@ -299,7 +299,7 @@ int pplg_init_import_mentor_sch(void)
 	PCB_API_CHK_VER;
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	conf_reg_field(conf_mentor, field,isarray,type_name,cpath,cname,desc,flags);
+	pcb_conf_reg_field(conf_mentor, field,isarray,type_name,cpath,cname,desc,flags);
 #include "mentor_sch_conf_fields.h"
 
 	PCB_REGISTER_ACTIONS(mentor_sch_action_list, mentor_sch_cookie)

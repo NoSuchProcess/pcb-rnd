@@ -80,34 +80,34 @@ void pcb_pref_conf2dlg_item(conf_native_t *cn, pref_confitem_t *item)
 
 void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_confitem_t *item, pcb_hid_attribute_t *attr)
 {
-	pref_confitem_t *old = ctx->conf_lock;
-	conf_native_t *cn = conf_get_field(item->confpath);
+	pref_confitem_t *old = ctx->pcb_conf_lock;
+	conf_native_t *cn = pcb_conf_get_field(item->confpath);
 
 	if (cn == NULL)
 		return;
 
-	ctx->conf_lock = item;
+	ctx->pcb_conf_lock = item;
 	switch(cn->type) {
 		case CFN_COORD:
 			if (cn->val.coord[0] != attr->val.crd)
-				conf_setf(ctx->role, item->confpath, -1, "%.8$mm", attr->val.crd);
+				pcb_conf_setf(ctx->role, item->confpath, -1, "%.8$mm", attr->val.crd);
 			break;
 		case CFN_BOOLEAN:
 		case CFN_INTEGER:
 			if (cn->val.integer[0] != attr->val.lng)
-				conf_setf(ctx->role, item->confpath, -1, "%d", attr->val.lng);
+				pcb_conf_setf(ctx->role, item->confpath, -1, "%d", attr->val.lng);
 			break;
 		case CFN_REAL:
 			if (cn->val.real[0] != attr->val.dbl)
-				conf_setf(ctx->role, item->confpath, -1, "%f", attr->val.dbl);
+				pcb_conf_setf(ctx->role, item->confpath, -1, "%f", attr->val.dbl);
 			break;
 		case CFN_STRING:
 			if (strcmp(cn->val.string[0], attr->val.str) != 0)
-				conf_set(ctx->role, item->confpath, -1, attr->val.str, POL_OVERWRITE);
+				pcb_conf_set(ctx->role, item->confpath, -1, attr->val.str, POL_OVERWRITE);
 			break;
 		default: pcb_message(PCB_MSG_ERROR, "pcb_pref_dlg2conf_item(): widget type not handled\n");
 	}
-	ctx->conf_lock = old;
+	ctx->pcb_conf_lock = old;
 }
 
 pcb_bool pcb_pref_dlg2conf_table(pref_ctx_t *ctx, pref_confitem_t *list, pcb_hid_attribute_t *attr)
@@ -127,7 +127,7 @@ pcb_bool pcb_pref_dlg2conf_table(pref_ctx_t *ctx, pref_confitem_t *list, pcb_hid
 
 void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*change_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr))
 {
-	conf_native_t *cn = conf_get_field(item->confpath);
+	conf_native_t *cn = pcb_conf_get_field(item->confpath);
 
 	if (cn == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Internal error: pcb_pref_create_conf_item(): invalid conf node %s\n", item->confpath);
@@ -198,7 +198,7 @@ void pcb_pref_conflist_remove(pref_ctx_t *ctx, pref_confitem_t *list)
 {
 	pref_confitem_t *c;
 	for(c = list; c->confpath != NULL; c++) {
-		conf_native_t *cn = conf_get_field(c->confpath);
+		conf_native_t *cn = pcb_conf_get_field(c->confpath);
 		c->cnext = NULL;
 		if (cn != NULL)
 			conf_hid_set_data(cn, pref_hid, NULL);
@@ -359,7 +359,7 @@ void pref_conf_changed(conf_native_t *cfg, int arr_idx)
 	pref_confitem_t *i;
 
 	for(i = conf_hid_get_data(cfg, pref_hid); i != NULL; i = i->cnext)
-		if (i != pref_ctx.conf_lock)
+		if (i != pref_ctx.pcb_conf_lock)
 			pcb_pref_conf2dlg_item(cfg, i);
 
 	pcb_pref_dlg_conf_changed_cb(&pref_ctx, cfg, arr_idx);

@@ -627,7 +627,7 @@ void openems_hid_export_to_file(const char *filename, FILE *the_file, FILE *fsim
 	fprintf(wctx.f, "%%%%%% Port(s) on terminals\n");
 	openems_write_testpoints(&wctx, wctx.pcb->Data);
 
-	conf_update(NULL, -1); /* restore forced sets */
+	pcb_conf_update(NULL, -1); /* restore forced sets */
 }
 
 static void openems_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)

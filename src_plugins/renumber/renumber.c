@@ -298,7 +298,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	fclose(out);
 
 	/* restore the unique flag setting */
-	conf_update(NULL, -1);
+	pcb_conf_update(NULL, -1);
 
 	if (changed) {
 		htsp_entry_t *e;

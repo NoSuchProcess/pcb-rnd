@@ -31,7 +31,7 @@ static const char *help[] = {
 	"Change the policy of the first confroot of the current role's in-memory lihata document to pol and merge. Pol is a policy, see: help policies",
 
 	"set", "path value",
-	"Call conf_set() on a given path with the given value, using the current set-role and the current set-policy. See also: help role; help policy.",
+	"Call pcb_conf_set() on a given path with the given value, using the current set-role and the current set-policy. See also: help role; help policy.",
 
 	"watch", "path",
 	"Announce changes of a given path. See also: help unwatch",

@@ -231,7 +231,7 @@ TODO("This needs to be done centrally, and should not use PCB_PACKAGE but pcbhl_
 
 #endif
 
-	conf_parse_arguments("plugins/hid_gtk/", argc, argv);
+	pcb_conf_parse_arguments("plugins/hid_gtk/", argc, argv);
 
 	if (!gtk_init_check(argc, argv)) {
 		fprintf(stderr, "gtk_init_check() fail - maybe $DISPLAY not set or X/GUI not accessible?\n");
@@ -358,7 +358,7 @@ pcb_hid_cfg_t *ghid_get_menu_cfg(pcb_hid_t *hid)
 static int ghid_usage(pcb_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nGTK GUI command line arguments:\n\n");
-	conf_usage("plugins/hid_gtk", pcb_hid_usage_option);
+	pcb_conf_usage("plugins/hid_gtk", pcb_hid_usage_option);
 	fprintf(stderr, "\nInvocation:\n");
 	fprintf(stderr, "  pcb-rnd --gui gtk2_gdk [options]\n");
 	fprintf(stderr, "  pcb-rnd --gui gtk2_gl [options]\n");

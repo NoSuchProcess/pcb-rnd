@@ -1423,7 +1423,7 @@ int pplg_check_ver_rubberband_orig(int ver_needed)
 void pplg_uninit_rubberband_orig(void)
 {
 	pcb_event_unbind_allcookie(rubber_cookie);
-	conf_unreg_fields("plugins/rubberband_orig/");
+	pcb_conf_unreg_fields("plugins/rubberband_orig/");
 }
 
 int pplg_init_rubberband_orig(void)
@@ -1440,7 +1440,7 @@ int pplg_init_rubberband_orig(void)
 	pcb_event_bind(PCB_EVENT_RUBBER_CONSTRAIN_MAIN_LINE, rbe_constrain_main_line, ctx, rubber_cookie);
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	conf_reg_field(conf_rbo, field,isarray,type_name,cpath,cname,desc,flags);
+	pcb_conf_reg_field(conf_rbo, field,isarray,type_name,cpath,cname,desc,flags);
 #include "rubberband_conf_fields.h"
 
 	return 0;

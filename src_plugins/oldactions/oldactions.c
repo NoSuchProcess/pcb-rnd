@@ -48,7 +48,7 @@
 
 static void conf_toggle(conf_role_t role, const char *path)
 {
-	conf_native_t *n = conf_get_field(path);
+	conf_native_t *n = pcb_conf_get_field(path);
 	if (n == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Error: can't find config node %s to toggle\n", path);
 		return;
@@ -58,7 +58,7 @@ static void conf_toggle(conf_role_t role, const char *path)
 		return;
 	}
 
-	conf_set(role, path, -1, n->val.boolean[0] ? "0" : "1", POL_OVERWRITE);
+	pcb_conf_set(role, path, -1, n->val.boolean[0] ? "0" : "1", POL_OVERWRITE);
 }
 
 static const char pcb_acts_DumpLibrary[] = "DumpLibrary()";
@@ -208,7 +208,7 @@ loaded first.
 */
 fgw_error_t pcb_act_EnableVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "1", POL_OVERWRITE);
+	pcb_conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "1", POL_OVERWRITE);
 	PCB_ACT_IRES(0);
 	return 0;
 }
@@ -225,7 +225,7 @@ specified in the currently loaded vendor drill table.
 */
 fgw_error_t pcb_act_DisableVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "0", POL_OVERWRITE);
+	pcb_conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "0", POL_OVERWRITE);
 	PCB_ACT_IRES(0);
 	return 0;
 }

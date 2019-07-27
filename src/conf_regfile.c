@@ -46,7 +46,7 @@ void pcb_conf_files_uninit(void)
 	conf_files_inited = 0;
 }
 
-void conf_reg_file(const char *path, const char *intern)
+void pcb_conf_reg_file(const char *path, const char *intern)
 {
 	htsi_entry_t *e;
 	if (!conf_files_inited) conf_files_init();
@@ -61,9 +61,9 @@ void conf_reg_file(const char *path, const char *intern)
 	else
 		e->value++;
 
-	if (conf_in_production) {
+	if (pcb_conf_in_production) {
 		if (conf_load_plug_interns(CFR_INTERNAL))
-			conf_merge_all(NULL);
+			pcb_conf_merge_all(NULL);
 	}
 }
 
@@ -83,7 +83,7 @@ static void conf_unreg_any(htsi_t *ht, const char *key, int free_key)
 	}
 }
 
-void conf_unreg_file(const char *path, const char *intern)
+void pcb_conf_unreg_file(const char *path, const char *intern)
 {
 	assert(conf_files_inited);
 	if (!conf_files_inited) return;

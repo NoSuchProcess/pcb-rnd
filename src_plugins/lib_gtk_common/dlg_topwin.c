@@ -245,7 +245,7 @@ static void fix_topbar_theming(pcb_gtk_topwin_t *tw)
 
 static void fullscreen_cb(GtkButton *btn, void *data)
 {
-	conf_setf(CFR_DESIGN, "editor/fullscreen", -1, "%d", !pcbhl_conf.editor.fullscreen, POL_OVERWRITE);
+	pcb_conf_setf(CFR_DESIGN, "editor/fullscreen", -1, "%d", !pcbhl_conf.editor.fullscreen, POL_OVERWRITE);
 }
 
 /* XPM */

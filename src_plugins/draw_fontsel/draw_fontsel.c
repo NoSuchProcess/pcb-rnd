@@ -164,7 +164,7 @@ static pcb_bool pcb_mouse_fontsel(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_co
 				if (txt == NULL) {
 					char sval[128];
 					sprintf(sval, "%ld", fid);
-					conf_set(CFR_DESIGN, "design/text_font_id", 0, sval, POL_OVERWRITE);
+					pcb_conf_set(CFR_DESIGN, "design/text_font_id", 0, sval, POL_OVERWRITE);
 				}
 				else {
 					switch(txt->type) {

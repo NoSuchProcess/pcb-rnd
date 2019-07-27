@@ -156,8 +156,8 @@ int pplg_check_ver_stroke(int ver_needed) { return 0; }
 
 int pplg_uninit_stroke(void)
 {
-	conf_unreg_file(STROKE_CONF_FN, stroke_conf_internal);
-	conf_unreg_fields("plugins/stroke/");
+	pcb_conf_unreg_file(STROKE_CONF_FN, stroke_conf_internal);
+	pcb_conf_unreg_fields("plugins/stroke/");
 	pcb_remove_actions_by_cookie(pcb_stroke_cookie);
 	return 0;
 }
@@ -168,10 +168,10 @@ int pplg_init_stroke(void)
 {
 	PCB_API_CHK_VER;
 	stroke_init();
-	conf_reg_file(STROKE_CONF_FN, stroke_conf_internal);
+	pcb_conf_reg_file(STROKE_CONF_FN, stroke_conf_internal);
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	conf_reg_field(conf_stroke, field,isarray,type_name,cpath,cname,desc,flags);
+	pcb_conf_reg_field(conf_stroke, field,isarray,type_name,cpath,cname,desc,flags);
 #include "stroke_conf_fields.h"
 
 	PCB_REGISTER_ACTIONS(stroke_action_list, pcb_stroke_cookie)

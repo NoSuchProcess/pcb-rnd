@@ -602,7 +602,7 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	f = NULL;
 	if (!gerber_cam.active)
 		pcb_hid_restore_layer_ons(save_ons);
-	conf_update(NULL, -1); /* resotre forced sets */
+	pcb_conf_update(NULL, -1); /* resotre forced sets */
 
 	if ((!gerber_cam.active) && (name_style != NAME_STYLE_PCB_RND)) {
 		int purpi;
@@ -1329,7 +1329,7 @@ int pplg_check_ver_export_gerber(int ver_needed) { return 0; }
 void pplg_uninit_export_gerber(void)
 {
 	pcb_export_remove_opts_by_cookie(gerber_cookie);
-	conf_unreg_fields("plugins/export_gerber/");
+	pcb_conf_unreg_fields("plugins/export_gerber/");
 }
 
 int pplg_init_export_gerber(void)
@@ -1337,7 +1337,7 @@ int pplg_init_export_gerber(void)
 	PCB_API_CHK_VER;
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	conf_reg_field(conf_gerber, field,isarray,type_name,cpath,cname,desc,flags);
+	pcb_conf_reg_field(conf_gerber, field,isarray,type_name,cpath,cname,desc,flags);
 #include "gerber_conf_fields.h"
 
 	memset(&gerber_hid, 0, sizeof(gerber_hid));

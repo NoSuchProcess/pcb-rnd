@@ -265,7 +265,7 @@ void svg_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 
 	pcbhl_expose_main(&svg_hid, &ctx, xform);
 
-	conf_update(NULL, -1); /* restore forced sets */
+	pcb_conf_update(NULL, -1); /* restore forced sets */
 }
 
 static void group_close()

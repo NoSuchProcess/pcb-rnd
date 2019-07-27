@@ -190,7 +190,7 @@ static void set_alldir(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 
 	cnstgui_ctx.inhibit_confchg++;
 	nv = (cnstgui_ctx.dlg[cnstgui_ctx.alldir].val.lng) ? "1" : "0";
-	conf_set(CFR_DESIGN, "editor/all_direction_lines", -1, nv, POL_OVERWRITE);
+	pcb_conf_set(CFR_DESIGN, "editor/all_direction_lines", -1, nv, POL_OVERWRITE);
 	cnstgui_ctx.inhibit_confchg--;
 }
 

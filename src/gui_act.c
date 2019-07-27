@@ -111,9 +111,9 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (id == F_SubcID) { /* change the displayed name of subcircuits */
 		if (argc > 1)
-			conf_set(CFR_DESIGN, "editor/subc_id", -1, str_dir, POL_OVERWRITE);
+			pcb_conf_set(CFR_DESIGN, "editor/subc_id", -1, str_dir, POL_OVERWRITE);
 		else
-			conf_set(CFR_DESIGN, "editor/subc_id", -1, "", POL_OVERWRITE);
+			pcb_conf_set(CFR_DESIGN, "editor/subc_id", -1, "", POL_OVERWRITE);
 
 		pcb_gui->invalidate_all(pcb_gui); /* doesn't change too often, isn't worth anything more complicated */
 		pcb_draw();
@@ -122,9 +122,9 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (id == F_TermID) { /* change the displayed name of terminals */
 		if (argc > 1)
-			conf_set(CFR_DESIGN, "editor/term_id", -1, str_dir, POL_OVERWRITE);
+			pcb_conf_set(CFR_DESIGN, "editor/term_id", -1, str_dir, POL_OVERWRITE);
 		else
-			conf_set(CFR_DESIGN, "editor/term_id", -1, "", POL_OVERWRITE);
+			pcb_conf_set(CFR_DESIGN, "editor/term_id", -1, "", POL_OVERWRITE);
 
 		pcb_gui->invalidate_all(pcb_gui); /* doesn't change too often, isn't worth anything more complicated */
 		pcb_draw();
@@ -150,10 +150,10 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_notify_crosshair_change(pcb_false);
 			if (conf_core.editor.all_direction_lines) {
 				conf_toggle_editor(all_direction_lines);
-				conf_setf(CFR_DESIGN,"editor/line_refraction",-1,"%d",0);
+				pcb_conf_setf(CFR_DESIGN,"editor/line_refraction",-1,"%d",0);
 			}
 			else {
-				conf_setf(CFR_DESIGN,"editor/line_refraction",-1,"%d",(conf_core.editor.line_refraction +1) % 3);
+				pcb_conf_setf(CFR_DESIGN,"editor/line_refraction",-1,"%d",(conf_core.editor.line_refraction +1) % 3);
 			}
 			pcb_tool_adjust_attached_objects();
 			pcb_notify_crosshair_change(pcb_true);
@@ -161,9 +161,9 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		case F_CycleCrosshair:
 			pcb_notify_crosshair_change(pcb_false);
-			conf_setf(CFR_CLI, "editor/crosshair_shape_idx", 0, "%d", CrosshairShapeIncrement(pcbhl_conf.editor.crosshair_shape_idx));
+			pcb_conf_setf(CFR_CLI, "editor/crosshair_shape_idx", 0, "%d", CrosshairShapeIncrement(pcbhl_conf.editor.crosshair_shape_idx));
 			if (pcb_ch_shape_NUM == pcbhl_conf.editor.crosshair_shape_idx)
-				conf_set(CFR_CLI, "editor/crosshair_shape_idx", 0, "0", POL_OVERWRITE);
+				pcb_conf_set(CFR_CLI, "editor/crosshair_shape_idx", 0, "0", POL_OVERWRITE);
 			pcb_notify_crosshair_change(pcb_true);
 			break;
 
@@ -913,13 +913,13 @@ static fgw_error_t pcb_act_FullScreen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	switch(id) {
 		case -2:
 		case F_Toggle:
-			conf_setf(CFR_DESIGN, "editor/fullscreen", -1, "%d", !pcbhl_conf.editor.fullscreen, POL_OVERWRITE);
+			pcb_conf_setf(CFR_DESIGN, "editor/fullscreen", -1, "%d", !pcbhl_conf.editor.fullscreen, POL_OVERWRITE);
 			break;
 		case F_On:
-			conf_set(CFR_DESIGN, "editor/fullscreen", -1, "1", POL_OVERWRITE);
+			pcb_conf_set(CFR_DESIGN, "editor/fullscreen", -1, "1", POL_OVERWRITE);
 			break;
 		case F_Off:
-			conf_set(CFR_DESIGN, "editor/fullscreen", -1, "0", POL_OVERWRITE);
+			pcb_conf_set(CFR_DESIGN, "editor/fullscreen", -1, "0", POL_OVERWRITE);
 			break;
 		default:
 			PCB_ACT_FAIL(FullScreen);
@@ -1741,7 +1741,7 @@ static fgw_error_t pcb_act_ClipInhibit(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 	tmp[0] = '0' + !conf_core.temp.clip_inhibit_chg;
 	tmp[1] = '\0';
-	conf_set(CFR_CLI, "temp/clip_inhibit_chg", 0, tmp, POL_OVERWRITE);
+	pcb_conf_set(CFR_CLI, "temp/clip_inhibit_chg", 0, tmp, POL_OVERWRITE);
 
 
 	PCB_ACT_IRES(0);

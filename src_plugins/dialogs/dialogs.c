@@ -108,7 +108,7 @@ void pplg_uninit_dialogs(void)
 	pcb_remove_actions_by_cookie(dialogs_cookie);
 	pcb_view_dlg_uninit();
 	pcb_dlg_fontsel_uninit();
-	conf_unreg_fields("plugins/dialogs/");
+	pcb_conf_unreg_fields("plugins/dialogs/");
 }
 
 #include "dolists.h"

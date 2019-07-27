@@ -237,7 +237,7 @@ void dxf_hid_export_to_file(dxf_ctx_t *ctx, pcb_hid_attr_val_t * options)
 
 	pcbhl_expose_main(&dxf_hid, &hectx, NULL);
 
-	conf_update(NULL, -1); /* restore forced sets */
+	pcb_conf_update(NULL, -1); /* restore forced sets */
 }
 
 int insert_hdr(FILE *f, const char *prefix, char *name, lht_err_t *err)

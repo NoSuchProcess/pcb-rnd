@@ -89,7 +89,7 @@ conf_hid_callbacks_t watch_cbs = {watch_pre, watch_post, NULL, NULL};
 conf_hid_callbacks_t global_cbs = {notify_pre, notify_post, NULL, NULL};
 
 
-extern lht_doc_t *conf_main_root[];
+extern lht_doc_t *pcb_conf_main_root[];
 void cmd_dump(char *arg)
 {
 	if (arg == NULL) {
@@ -105,13 +105,13 @@ void cmd_dump(char *arg)
 		conf_role_t role;
 		arg+=7;
 		while(isspace(*arg)) arg++;
-		role = conf_role_parse(arg);
+		role = pcb_conf_role_parse(arg);
 		if (role == CFR_invalid) {
 			pcb_message(PCB_MSG_ERROR, "Invalid role: '%s'", arg);
 			return;
 		}
-		if (conf_main_root[role] != NULL)
-			lht_dom_export(conf_main_root[role]->root, stdout, "");
+		if (pcb_conf_main_root[role] != NULL)
+			lht_dom_export(pcb_conf_main_root[role]->root, stdout, "");
 		else
 			printf("<empty>\n");
 	}
@@ -128,13 +128,13 @@ void cmd_print(char *arg)
 		pcb_message(PCB_MSG_ERROR, "Need an arg: a native path");
 		return;
 	}
-	node = conf_get_field(arg);
+	node = pcb_conf_get_field(arg);
 	if (node == NULL) {
 		pcb_message(PCB_MSG_ERROR, "No such path: '%s'", arg);
 		return;
 	}
 	gds_init(&s);
-	conf_print_native((conf_pfn)pcb_append_printf, &s, NULL, 0, node);
+	pcb_conf_print_native((conf_pfn)pcb_append_printf, &s, NULL, 0, node);
 	printf("%s='%s'\n", node->hash_path, s.array);
 	gds_uninit(&s);
 }
@@ -151,7 +151,7 @@ void cmd_load(char *arg, int is_text)
 	}
 
 	if (*arg == '*') {
-		conf_load_all(NULL, NULL);
+		pcb_conf_load_all(NULL, NULL);
 		return;
 	}
 
@@ -162,13 +162,13 @@ void cmd_load(char *arg, int is_text)
 	fn++;
 	while(isspace(*fn)) fn++;
 
-	role = conf_role_parse(arg);
+	role = pcb_conf_role_parse(arg);
 	if (role == CFR_invalid) {
 		pcb_message(PCB_MSG_ERROR, "Invalid role: '%s'", arg);
 		return;
 	}
-	printf("Result: %d\n", conf_load_as(role, fn, is_text));
-	conf_update(NULL, -1);
+	printf("Result: %d\n", pcb_conf_load_as(role, fn, is_text));
+	pcb_conf_update(NULL, -1);
 }
 
 conf_policy_t current_policy = POL_OVERWRITE;
@@ -176,7 +176,7 @@ conf_role_t current_role = CFR_DESIGN;
 
 void cmd_policy(char *arg)
 {
-	conf_policy_t np = conf_policy_parse(arg);
+	conf_policy_t np = pcb_conf_policy_parse(arg);
 	if (np == POL_invalid)
 		pcb_message(PCB_MSG_ERROR, "Invalid/unknown policy: '%s'", arg);
 	else
@@ -185,7 +185,7 @@ void cmd_policy(char *arg)
 
 void cmd_role(char *arg)
 {
-	conf_role_t nr = conf_role_parse(arg);
+	conf_role_t nr = pcb_conf_role_parse(arg);
 	if (nr == CFR_invalid)
 		pcb_message(PCB_MSG_ERROR, "Invalid/unknown role: '%s'", arg);
 	else
@@ -202,7 +202,7 @@ void cmd_chprio(char *arg)
 		pcb_message(PCB_MSG_ERROR, "Invalid integer prio: '%s'", arg);
 		return;
 	}
-	first = conf_lht_get_first(current_role, 0);
+	first = pcb_conf_lht_get_first(current_role, 0);
 	if (first != NULL) {
 		char tmp[128];
 		char *end;
@@ -212,7 +212,7 @@ void cmd_chprio(char *arg)
 		sprintf(tmp, "%s-%d", first->name, np);
 		free(first->name);
 		first->name = pcb_strdup(tmp);
-		conf_update(NULL, -1);
+		pcb_conf_update(NULL, -1);
 	}
 }
 
@@ -225,13 +225,13 @@ void cmd_chpolicy(char *arg)
 		pcb_message(PCB_MSG_ERROR, "need a policy", arg);
 		return;
 	}
-	np = conf_policy_parse(arg);
+	np = pcb_conf_policy_parse(arg);
 	if (np == POL_invalid) {
 		pcb_message(PCB_MSG_ERROR, "Invalid integer policy: '%s'", arg);
 		return;
 	}
 
-	first = conf_lht_get_first(current_role, 0);
+	first = pcb_conf_lht_get_first(current_role, 0);
 	if (first != NULL) {
 		char tmp[128];
 		char *end;
@@ -245,7 +245,7 @@ void cmd_chpolicy(char *arg)
 			free(first->name);
 			first->name = pcb_strdup(arg);
 		}
-		conf_update(NULL, -1);
+		pcb_conf_update(NULL, -1);
 	}
 }
 
@@ -264,14 +264,14 @@ void cmd_set(char *arg)
 	val++;
 	while(isspace(*val) || (*val == '=')) val++;
 
-	res = conf_set(current_role, path, -1, val, current_policy);
+	res = pcb_conf_set(current_role, path, -1, val, current_policy);
 	if (res != 0)
 		printf("set error: %d\n", res);
 }
 
 void cmd_watch(char *arg, int add)
 {
-	conf_native_t *n = conf_get_field(arg);
+	conf_native_t *n = pcb_conf_get_field(arg);
 	if (n == NULL) {
 		pcb_message(PCB_MSG_ERROR, "unknown path");
 		return;
@@ -299,22 +299,22 @@ void cmd_echo(char *arg)
 void cmd_reset(char *arg)
 {
 	if (arg == NULL) {
-		conf_reset(current_role, "<cmd_reset current>");
+		pcb_conf_reset(current_role, "<cmd_reset current>");
 	}
 	else if (*arg == '*') {
 		int n;
 		for(n = 0; n < CFR_max_real; n++)
-			conf_reset(n, "<cmd_reset *>");
+			pcb_conf_reset(n, "<cmd_reset *>");
 	}
 	else {
-		conf_role_t role = conf_role_parse(arg);
+		conf_role_t role = pcb_conf_role_parse(arg);
 		if (role == CFR_invalid) {
 			pcb_message(PCB_MSG_ERROR, "Invalid role: '%s'", arg);
 			return;
 		}
-		conf_reset(role, "<cmd_reset role>");
+		pcb_conf_reset(role, "<cmd_reset role>");
 	}
-	conf_update(NULL, -1);
+	pcb_conf_update(NULL, -1);
 }
 
 extern void cmd_help(char *arg);
@@ -363,11 +363,11 @@ int main()
 
 	hid_id = conf_hid_reg(hid_cookie, &global_cbs);
 
-	conf_init();
+	pcb_conf_init();
 	conf_core_init();
 	pcb_hidlib_conf_init();
-	conf_reset(CFR_SYSTEM, "<main>");
-	conf_reset(CFR_USER, "<main>");
+	pcb_conf_reset(CFR_SYSTEM, "<main>");
+	pcb_conf_reset(CFR_USER, "<main>");
 
 	while(getline_cont(stdin)) {
 		char *arg, *cmd = line;
@@ -416,6 +416,6 @@ int main()
 	}
 
 	conf_hid_unreg(hid_cookie);
-	conf_uninit();
+	pcb_conf_uninit();
 	return 0;
 }

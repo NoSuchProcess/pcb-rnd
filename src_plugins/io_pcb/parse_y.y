@@ -188,7 +188,7 @@ parsepcb
 			{
 			  pcb_board_t *pcb_save = PCB;
 			  if ((yy_settings_dest != CFR_invalid) && (layer_group_string != NULL))
-					conf_set(yy_settings_dest, "design/groups", -1, layer_group_string, POL_OVERWRITE);
+					pcb_conf_set(yy_settings_dest, "design/groups", -1, layer_group_string, POL_OVERWRITE);
 			  pcb_board_new_postproc(yyPCB, 0);
 			  if (layer_group_string == NULL) {
 			     if (pcb_layer_improvise(yyPCB, pcb_true) != 0) {
@@ -345,9 +345,9 @@ pcbgridnew
 				yyPCB->hidlib.grid_oy = OU ($5);
 				if (yy_settings_dest != CFR_invalid) {
 					if ($6)
-						conf_set(yy_settings_dest, "editor/draw_grid", -1, "true", POL_OVERWRITE);
+						pcb_conf_set(yy_settings_dest, "editor/draw_grid", -1, "true", POL_OVERWRITE);
 					else
-						conf_set(yy_settings_dest, "editor/draw_grid", -1, "false", POL_OVERWRITE);
+						pcb_conf_set(yy_settings_dest, "editor/draw_grid", -1, "false", POL_OVERWRITE);
 				}
 			}
 		;
@@ -360,9 +360,9 @@ pcbhigrid
 				yyPCB->hidlib.grid_oy = NU ($5);
 				if (yy_settings_dest != CFR_invalid) {
 					if ($6)
-						conf_set(yy_settings_dest, "editor/draw_grid", -1, "true", POL_OVERWRITE);
+						pcb_conf_set(yy_settings_dest, "editor/draw_grid", -1, "true", POL_OVERWRITE);
 					else
-						conf_set(yy_settings_dest, "editor/draw_grid", -1, "false", POL_OVERWRITE);
+						pcb_conf_set(yy_settings_dest, "editor/draw_grid", -1, "false", POL_OVERWRITE);
 				}
 			}
 		;
@@ -1443,12 +1443,12 @@ static void load_meta_coord(const char *path, pcb_coord_t crd)
 {
 	char tmp[128];
 	pcb_sprintf(tmp, "%$mm", crd);
-	conf_set(CFR_DESIGN, path, -1, tmp, POL_OVERWRITE);
+	pcb_conf_set(CFR_DESIGN, path, -1, tmp, POL_OVERWRITE);
 }
 
 static void load_meta_float(const char *path, double val)
 {
 	char tmp[128];
 	pcb_sprintf(tmp, "%f", val);
-	conf_set(CFR_DESIGN, path, -1, tmp, POL_OVERWRITE);
+	pcb_conf_set(CFR_DESIGN, path, -1, tmp, POL_OVERWRITE);
 }

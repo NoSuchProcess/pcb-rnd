@@ -556,9 +556,9 @@ int pcb_cli_enter(const char *backend, const char *prompt)
 	cli_push(pcbhl_conf.rc.cli_backend);
 	cli_push(pcbhl_conf.rc.cli_prompt);
 
-	if (conf_set(CFR_CLI, "rc/cli_backend", 0, backend, POL_OVERWRITE) != 0)
+	if (pcb_conf_set(CFR_CLI, "rc/cli_backend", 0, backend, POL_OVERWRITE) != 0)
 		return -1;
-	return conf_set(CFR_CLI, "rc/cli_prompt", 0, prompt, POL_OVERWRITE);
+	return pcb_conf_set(CFR_CLI, "rc/cli_prompt", 0, prompt, POL_OVERWRITE);
 }
 
 int pcb_cli_leave(void)
@@ -567,15 +567,15 @@ int pcb_cli_leave(void)
 		char *prompt = NULL, *backend = NULL;
 		prompt = cli_pop();
 		backend = cli_pop();
-		conf_set(CFR_CLI, "rc/cli_backend", 0, backend, POL_OVERWRITE);
-		conf_set(CFR_CLI, "rc/cli_prompt", 0, prompt, POL_OVERWRITE);
+		pcb_conf_set(CFR_CLI, "rc/cli_backend", 0, backend, POL_OVERWRITE);
+		pcb_conf_set(CFR_CLI, "rc/cli_prompt", 0, prompt, POL_OVERWRITE);
 		free(prompt);
 		free(backend);
 		return 0;
 	}
 
-	conf_set(CFR_CLI, "rc/cli_backend", 0, "", POL_OVERWRITE);
-	conf_set(CFR_CLI, "rc/cli_prompt", 0, "", POL_OVERWRITE);
+	pcb_conf_set(CFR_CLI, "rc/cli_backend", 0, "", POL_OVERWRITE);
+	pcb_conf_set(CFR_CLI, "rc/cli_prompt", 0, "", POL_OVERWRITE);
 	return -1;
 }
 

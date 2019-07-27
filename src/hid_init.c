@@ -293,7 +293,7 @@ void pcb_hidlib_init1(void (*conf_core_init)(void))
 {
 	pcb_events_init();
 	pcb_file_loaded_init();
-	conf_init();
+	pcb_conf_init();
 	conf_core_init();
 	pcbhl_conf_postproc();
 	pcb_hidlib_conf_init();
@@ -307,7 +307,7 @@ void pcb_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 {
 	pcb_actions_init();
 
-	conf_load_all(NULL, NULL);
+	pcb_conf_load_all(NULL, NULL);
 
 	pup_init(&pcb_pup);
 	pcb_pup.error_stack_enable = 1;
@@ -316,7 +316,7 @@ void pcb_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 		pup_buildin_load(&pcb_pup, local_buildins);
 	pup_autoload_dir(&pcb_pup, NULL, NULL);
 
-	conf_load_extra(NULL, NULL);
+	pcb_conf_load_extra(NULL, NULL);
 	pcb_units_init();
 }
 
@@ -326,12 +326,12 @@ void pcb_hidlib_uninit(void)
 	pcb_hidlib_event_uninit();
 	pcb_hid_dlg_uninit();
 
-	if (conf_isdirty(CFR_USER))
-		conf_save_file(NULL, NULL, NULL, CFR_USER, NULL);
+	if (pcb_conf_isdirty(CFR_USER))
+		pcb_conf_save_file(NULL, NULL, NULL, CFR_USER, NULL);
 
 	pcb_hid_uninit();
 	pcb_events_uninit();
-	conf_uninit();
+	pcb_conf_uninit();
 	pcb_plugin_uninit();
 	pcb_actions_uninit();
 	pcb_dad_unit_uninit();
@@ -379,7 +379,7 @@ int pcb_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[])
 			int n;
 			const char *g;
 
-			apg = conf_list_next_str(apg, &g, &n);
+			apg = pcb_conf_list_next_str(apg, &g, &n);
 			if (apg == NULL)
 				goto ran_out_of_hids;
 			pcb_gui = pcb_hid_find_gui(g);
@@ -476,7 +476,7 @@ int pcbhl_main_args_add(pcbhl_main_args_t *ga, char *cmd, char *arg)
 				*a = arg;
 			}
 			else {
-				if (conf_set_from_cli(NULL, arg, NULL, &why) != 0) {
+				if (pcb_conf_set_from_cli(NULL, arg, NULL, &why) != 0) {
 					fprintf(stderr, "Error: failed to set config %s: %s\n", arg, why);
 					exit(1);
 				}
@@ -495,7 +495,7 @@ int pcbhl_main_args_setup1(pcbhl_main_args_t *ga)
 	/* Now that plugins are already initialized, apply plugin config items */
 	for(n = 0; n < vtp0_len(&ga->plugin_cli_conf); n++) {
 		const char *why, *arg = ga->plugin_cli_conf.array[n];
-		if (conf_set_from_cli(NULL, arg, NULL, &why) != 0) {
+		if (pcb_conf_set_from_cli(NULL, arg, NULL, &why) != 0) {
 			fprintf(stderr, "Error: failed to set config %s: %s\n", arg, why);
 			return 1;
 		}
@@ -545,7 +545,7 @@ int pcbhl_main_args_setup2(pcbhl_main_args_t *ga, int *exitval)
 
 	/* plugins may have installed their new fields, reinterpret the config
 	   (memory lht -> memory bin) to get the new fields */
-	conf_update(NULL, -1);
+	pcb_conf_update(NULL, -1);
 
 	if (ga->main_action != NULL) {
 		int res = pcb_parse_command(ga->main_action, pcb_true);

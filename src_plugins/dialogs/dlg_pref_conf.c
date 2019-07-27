@@ -58,10 +58,10 @@ static void setup_tree(pref_ctx_t *ctx)
 	char path[1024];
 
 	/* alpha sort keys for the more consistend UI */
-	for(e = htsp_first(conf_fields), num_paths = 0; e; e = htsp_next(conf_fields, e))
+	for(e = htsp_first(pcb_conf_fields), num_paths = 0; e; e = htsp_next(pcb_conf_fields, e))
 		num_paths++;
 	sorted = malloc(sizeof(htsp_entry_t *) * num_paths);
-	for(e = htsp_first(conf_fields), n = 0; e; e = htsp_next(conf_fields, e), n++)
+	for(e = htsp_first(pcb_conf_fields), n = 0; e; e = htsp_next(pcb_conf_fields, e), n++)
 		sorted[n] = e;
 	qsort(sorted, num_paths, sizeof(htsp_entry_t *), conf_tree_cmp);
 
@@ -147,17 +147,17 @@ static void setup_intree(pref_ctx_t *ctx, conf_native_t *nat, int idx)
 
 	for(n = 0; n < CFR_max_real; n++) {
 		char *cell[5]= {NULL};
-		cell[0] = pcb_strdup(conf_role_name(n));
+		cell[0] = pcb_strdup(pcb_conf_role_name(n));
 		if (nat != NULL) {
 			lht_node_t *nd;
-			long prio = conf_default_prio[n];
+			long prio = pcb_conf_default_prio[n];
 			conf_policy_t pol = POL_OVERWRITE;
 
-			nd = conf_lht_get_at(n, nat->hash_path, 0);
+			nd = pcb_conf_lht_get_at(n, nat->hash_path, 0);
 			if (nd != NULL) { /* role, prio, policy, value */
-				conf_get_policy_prio(nd, &pol, &prio);
+				pcb_conf_get_policy_prio(nd, &pol, &prio);
 				cell[1] = pcb_strdup_printf("%ld", prio);
-				cell[2] = pcb_strdup(conf_policy_name(pol));
+				cell[2] = pcb_strdup(pcb_conf_policy_name(pol));
 				cell[3] = pcb_strdup(pref_conf_get_val(nd, nat, idx));
 			}
 		}
@@ -193,7 +193,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 	lht_node_t *src;
 
 	if ((path != NULL) && (nat == NULL))
-		nat = conf_get_field(path);
+		nat = pcb_conf_get_field(path);
 
 	if ((path == NULL) && (nat != NULL))
 		path = nat->hash_path;
@@ -238,7 +238,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 
 		pcb_dad_tree_clear(tree);
 		for (n = conflist_first(&nat->val.list[idx]); n != NULL; n = conflist_next(n)) {
-			rolename = conf_role_name(conf_lookup_role(n->prop.src));
+			rolename = pcb_conf_role_name(pcb_conf_lookup_role(n->prop.src));
 			cell[0] = rolename == NULL ? pcb_strdup("") : pcb_strdup(rolename);
 			cell[1] = pcb_strdup_printf("%ld", n->prop.prio);
 			cell[2] = pcb_strdup(print_conf_val(n->type, &n->val, buf, sizeof(buf)));
@@ -254,7 +254,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 
 	src = nat->prop[idx].src;
 	if (src != NULL) {
-		rolename = conf_role_name(conf_lookup_role(nat->prop[idx].src));
+		rolename = pcb_conf_role_name(pcb_conf_lookup_role(nat->prop[idx].src));
 		hv.str = tmp = pcb_strdup_printf("prio: %d role: %s\nsource: %s:%d.%d", nat->prop[idx].prio, rolename, src->file_name, src->line, src->col);
 	}
 	else
@@ -295,7 +295,7 @@ static void dlg_conf_select_node_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, 
 	}
 
 	/* non-array selection */
-	nat = conf_get_field(row->path);
+	nat = pcb_conf_get_field(row->path);
 	if ((nat != NULL) && (nat->array_size > 1)) { /* array head: do not display for now */
 		dlg_conf_select_node((pref_ctx_t *)tree->user_ctx, NULL, NULL, 0);
 		return;

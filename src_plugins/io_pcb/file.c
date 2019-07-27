@@ -239,7 +239,7 @@ static void WritePCBInfoHeader(FILE * FP)
 
 static void conf_update_pcb_flag(pcb_flag_t *dest, const char *hash_path, int binflag)
 {
-	conf_native_t *n = conf_get_field(hash_path);
+	conf_native_t *n = pcb_conf_get_field(hash_path);
 	struct {
 		pcb_flag_t Flags;
 	} *tmp = (void *)dest;

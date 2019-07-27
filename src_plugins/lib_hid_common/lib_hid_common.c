@@ -79,7 +79,7 @@ static conf_hid_id_t conf_id;
 
 void pplg_uninit_lib_hid_common(void)
 {
-	conf_unreg_file(DIALOGS_CONF_FN, dialogs_conf_internal);
+	pcb_conf_unreg_file(DIALOGS_CONF_FN, dialogs_conf_internal);
 	pcb_clihist_save();
 	pcb_clihist_uninit();
 	pcb_event_unbind_allcookie(grid_cookie);
@@ -89,7 +89,7 @@ void pplg_uninit_lib_hid_common(void)
 	pcb_dialog_place_uninit();
 	pcb_remove_actions_by_cookie(hid_common_cookie);
 	pcb_act_dad_uninit();
-	conf_unreg_fields("plugins/lib_hid_common/");
+	pcb_conf_unreg_fields("plugins/lib_hid_common/");
 	pcb_dlg_log_uninit();
 }
 
@@ -102,7 +102,7 @@ int pplg_init_lib_hid_common(void)
 
 	PCB_API_CHK_VER;
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	conf_reg_field(dialogs_conf, field,isarray,type_name,cpath,cname,desc,flags);
+	pcb_conf_reg_field(dialogs_conf, field,isarray,type_name,cpath,cname,desc,flags);
 /*#include "lib_hid_common_conf_fields.h"*/
 #include "dialogs_conf_fields.h"
 
@@ -110,7 +110,7 @@ int pplg_init_lib_hid_common(void)
 	PCB_REGISTER_ACTIONS(hid_common_action_list, hid_common_cookie)
 	pcb_act_dad_init();
 
-	conf_reg_file(DIALOGS_CONF_FN, dialogs_conf_internal);
+	pcb_conf_reg_file(DIALOGS_CONF_FN, dialogs_conf_internal);
 
 	pcb_dialog_place_init();
 
@@ -124,13 +124,13 @@ int pplg_init_lib_hid_common(void)
 
 	memset(&ccb, 0, sizeof(ccb));
 	ccb.val_change_post = pcb_grid_update_conf;
-	nat = conf_get_field("editor/grids");
+	nat = pcb_conf_get_field("editor/grids");
 	if (nat != NULL)
 		conf_hid_set_cb(nat, conf_id, &ccb);
 
 	memset(&ccbu, 0, sizeof(ccbu));
 	ccbu.val_change_post = grid_unit_chg_ev;
-	nat = conf_get_field("editor/grid_unit");
+	nat = pcb_conf_get_field("editor/grid_unit");
 	if (nat != NULL)
 		conf_hid_set_cb(nat, conf_id, &ccbu);
 

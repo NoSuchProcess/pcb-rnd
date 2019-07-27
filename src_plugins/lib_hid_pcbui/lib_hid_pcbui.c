@@ -115,7 +115,7 @@ static conf_hid_id_t install_events(const char *cookie, const char *paths[], con
 	for(rp = paths, n = 0; *rp != NULL; rp++, n++) {
 		memset(&cb[n], 0, sizeof(cb[0]));
 		cb[n].val_change_post = update_cb;
-		nat = conf_get_field(*rp);
+		nat = pcb_conf_get_field(*rp);
 		if (nat != NULL)
 			conf_hid_set_cb(nat, conf_id, &cb[n]);
 	}

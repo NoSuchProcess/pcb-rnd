@@ -356,7 +356,7 @@ int io_pcb_ParseElement(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
    have hardwired flags again in a "don't save these in attributes" list. */
 #define CONF_NO_ATTRIB(path) \
 do { \
-	conf_native_t *n = conf_get_field(path); \
+	conf_native_t *n = pcb_conf_get_field(path); \
 	if (n != NULL) \
 		n->random_flags.io_pcb_no_attrib = 1; \
 } while(0) \
@@ -364,7 +364,7 @@ do { \
 #define CONF_SET(target, path, arr_idx, new_val, pol) \
 do { \
 	CONF_NO_ATTRIB(path); \
-	conf_set(target, path, arr_idx, new_val, pol); \
+	pcb_conf_set(target, path, arr_idx, new_val, pol); \
 } while(0) \
 
 int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest)
@@ -381,7 +381,7 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 	yy_settings_dest = settings_dest;
 
 	if (settings_dest != CFR_invalid)
-		conf_reset(settings_dest, Filename);
+		pcb_conf_reset(settings_dest, Filename);
 
 	io_pcb_preproc_board(PCB);
 
@@ -426,7 +426,7 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 		/* load config nodes not disabled above, from optional attributes */
 		io_pcb_attrib_a2c(Ptr);
 
-		conf_update(NULL, -1);
+		pcb_conf_update(NULL, -1);
 	}
 	if (retval == 0) {
 		/* restore loader so the next save will use the same units */

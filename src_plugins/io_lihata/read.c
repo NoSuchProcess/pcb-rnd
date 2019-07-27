@@ -381,7 +381,7 @@ static int parse_coord_conf(const char *path, lht_node_t *nd)
 	if (parse_coord(&tmp, nd) != 0)
 		return -1;
 
-	conf_set(CFR_DESIGN, path, -1, nd->data.text.value, POL_OVERWRITE);
+	pcb_conf_set(CFR_DESIGN, path, -1, nd->data.text.value, POL_OVERWRITE);
 	return 0;
 }
 
@@ -2212,10 +2212,10 @@ static int parse_netlists(pcb_board_t *pcb, lht_node_t *netlists)
 
 static void parse_conf(pcb_board_t *pcb, lht_node_t *sub)
 {
-	if (conf_insert_tree_as(CFR_DESIGN, sub) != 0)
+	if (pcb_conf_insert_tree_as(CFR_DESIGN, sub) != 0)
 		pcb_message(PCB_MSG_ERROR, "Failed to insert the config subtree '%s' found in %s\n", sub->name, pcb->hidlib.filename);
 	else
-		conf_update(NULL, -1);
+		pcb_conf_update(NULL, -1);
 }
 
 

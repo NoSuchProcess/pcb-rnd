@@ -55,8 +55,8 @@ static const char pcb_acts_DumpConf[] =
 	;
 static const char pcb_acth_DumpConf[] = "Perform various operations on the configuration tree.";
 
-extern lht_doc_t *conf_main_root[];
-extern lht_doc_t *conf_plug_root[];
+extern lht_doc_t *pcb_conf_main_root[];
+extern lht_doc_t *pcb_conf_plug_root[];
 static fgw_error_t pcb_act_DumpConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
@@ -79,19 +79,19 @@ static fgw_error_t pcb_act_DumpConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		const char *srole, *prefix = "";
 		PCB_ACT_CONVARG(2, FGW_STR, DumpConf, srole = argv[2].val.str);
 		PCB_ACT_MAY_CONVARG(3, FGW_STR, DumpConf, prefix = argv[3].val.str);
-		role = conf_role_parse(srole);
+		role = pcb_conf_role_parse(srole);
 		if (role == CFR_invalid) {
 			pcb_message(PCB_MSG_ERROR, "Invalid role: '%s'\n", argv[1]);
 			PCB_ACT_IRES(1);
 			return 0;
 		}
-		if (conf_main_root[role] != NULL) {
+		if (pcb_conf_main_root[role] != NULL) {
 			printf("%s### main\n", prefix);
-			if (conf_main_root[role] != NULL)
-				lht_dom_export(conf_main_root[role]->root, stdout, prefix);
+			if (pcb_conf_main_root[role] != NULL)
+				lht_dom_export(pcb_conf_main_root[role]->root, stdout, prefix);
 			printf("%s### plugin\n", prefix);
-			if (conf_plug_root[role] != NULL)
-				lht_dom_export(conf_plug_root[role]->root, stdout, prefix);
+			if (pcb_conf_plug_root[role] != NULL)
+				lht_dom_export(pcb_conf_plug_root[role]->root, stdout, prefix);
 		}
 		else
 			printf("%s <empty>\n", prefix);
@@ -119,7 +119,7 @@ static fgw_error_t pcb_act_EvalConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	PCB_ACT_CONVARG(1, FGW_STR, EvalConf, path = argv[1].val.str);
 
-	nat = conf_get_field(path);
+	nat = pcb_conf_get_field(path);
 	if (nat == NULL) {
 		pcb_message(PCB_MSG_ERROR, "EvalConf: invalid path %s - no such config setting\n", path);
 		PCB_ACT_IRES(-1);
@@ -129,15 +129,15 @@ static fgw_error_t pcb_act_EvalConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	printf("Conf node %s\n", path);
 	for(role = 0; role < CFR_max_real; role++) {
 		lht_node_t *n;
-		printf(" Role: %s\n", conf_role_name(role));
-		n = conf_lht_get_at(role, path, 0);
+		printf(" Role: %s\n", pcb_conf_role_name(role));
+		n = pcb_conf_lht_get_at(role, path, 0);
 		if (n != NULL) {
 			conf_policy_t pol = -1;
-			long prio = conf_default_prio[role];
+			long prio = pcb_conf_default_prio[role];
 
 
-			if (conf_get_policy_prio(n, &pol, &prio) == 0)
-				printf("  * policy=%s\n  * prio=%ld\n", conf_policy_name(pol), prio);
+			if (pcb_conf_get_policy_prio(n, &pol, &prio) == 0)
+				printf("  * policy=%s\n  * prio=%ld\n", pcb_conf_policy_name(pol), prio);
 
 			if (n->file_name != NULL)
 				printf("  * from=%s:%d.%d\n", n->file_name, n->line, n->col);
@@ -151,7 +151,7 @@ static fgw_error_t pcb_act_EvalConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	printf(" Native:\n");
-	conf_print_native((conf_pfn)pcb_fprintf, stdout, "  ", 1, nat);
+	pcb_conf_print_native((conf_pfn)pcb_fprintf, stdout, "  ", 1, nat);
 
 	PCB_ACT_IRES(0);
 	return 0;
@@ -160,7 +160,7 @@ static fgw_error_t pcb_act_EvalConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static const char pcb_acts_DumpLayers[] = "dumplayers([all])\n";
 static const char pcb_acth_DumpLayers[] = "Print info about each layer";
 
-extern lht_doc_t *conf_main_root[];
+extern lht_doc_t *pcb_conf_main_root[];
 static fgw_error_t pcb_act_DumpLayers(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op = -2, g, n, used;
@@ -524,7 +524,7 @@ int pplg_check_ver_diag(int ver_needed) { return 0; }
 void pplg_uninit_diag(void)
 {
 	pcb_remove_actions_by_cookie(diag_cookie);
-	conf_unreg_fields("plugins/diag/");
+	pcb_conf_unreg_fields("plugins/diag/");
 	pcb_event_unbind_allcookie(diag_cookie);
 }
 
@@ -534,7 +534,7 @@ int pplg_init_diag(void)
 	PCB_API_CHK_VER;
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	conf_reg_field(conf_diag, field,isarray,type_name,cpath,cname,desc,flags);
+	pcb_conf_reg_field(conf_diag, field,isarray,type_name,cpath,cname,desc,flags);
 #include "diag_conf_fields.h"
 
 	pcb_event_bind(PCB_EVENT_USER_INPUT_POST, ev_ui_post, NULL, diag_cookie);

@@ -499,11 +499,11 @@ void pcb_line_enforce_drc(void)
 		if (conf_core.editor.line_refraction != 0) {
 			if (shift) {
 				if (conf_core.editor.line_refraction !=2)
-					conf_setf(CFR_DESIGN, "editor/line_refraction", -1, "%d", 2);
+					pcb_conf_setf(CFR_DESIGN, "editor/line_refraction", -1, "%d", 2);
 			}
 			else{
 				if (conf_core.editor.line_refraction != 1)
-				conf_setf(CFR_DESIGN, "editor/line_refraction", -1, "%d", 1);
+				pcb_conf_setf(CFR_DESIGN, "editor/line_refraction", -1, "%d", 1);
 			}
 		}
 		pcb_crosshair.X = rs.X;
@@ -513,11 +513,11 @@ void pcb_line_enforce_drc(void)
 		if (conf_core.editor.line_refraction !=0) {
 			if (shift) {
 				if (conf_core.editor.line_refraction != 1)
-					conf_setf(CFR_DESIGN, "editor/line_refraction", -1, "%d", 1);
+					pcb_conf_setf(CFR_DESIGN, "editor/line_refraction", -1, "%d", 1);
 			}
 			else {
 				if (conf_core.editor.line_refraction != 2)
-					conf_setf(CFR_DESIGN, "editor/line_refraction", -1, "%d", 2);
+					pcb_conf_setf(CFR_DESIGN, "editor/line_refraction", -1, "%d", 2);
 			}
 		}
 		pcb_crosshair.X = r45.X;

@@ -35,7 +35,7 @@ static void conf_core_postproc(void)
 void conf_core_init()
 {
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	conf_reg_field(conf_core, field,isarray,type_name,cpath,cname,desc,flags);
+	pcb_conf_reg_field(conf_core, field,isarray,type_name,cpath,cname,desc,flags);
 #include "conf_core_fields.h"
 	pcb_conf_core_postproc = conf_core_postproc;
 	conf_core_postproc();

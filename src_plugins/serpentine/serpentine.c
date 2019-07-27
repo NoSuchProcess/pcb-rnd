@@ -449,7 +449,7 @@ void pplg_uninit_serpentine(void)
 {
 	pcb_remove_actions_by_cookie(serpentine_cookie);
 	pcb_tool_unreg_by_cookie(serpentine_cookie);
-	conf_unreg_fields("plugins/serpentine/");
+	pcb_conf_unreg_fields("plugins/serpentine/");
 }
 
 #include "dolists.h"
@@ -458,7 +458,7 @@ int pplg_init_serpentine(void)
 	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(serpentine_action_list, serpentine_cookie)
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	conf_reg_field(conf_serpentine, field,isarray,type_name,cpath,cname,desc,flags);
+	pcb_conf_reg_field(conf_serpentine, field,isarray,type_name,cpath,cname,desc,flags);
 #include "serpentine_conf_fields.h"
 
 	pcb_tool_reg(&tool_serpentine, serpentine_cookie);

@@ -167,9 +167,9 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 			gtk_toggle_action_set_draw_as_radio(GTK_TOGGLE_ACTION(action), ! !strchr(checked, '='));
 
 			if (update_on != NULL)
-				nat = conf_get_field(update_on);
+				nat = pcb_conf_get_field(update_on);
 			else
-				nat = conf_get_field(checked);
+				nat = pcb_conf_get_field(checked);
 
 			if (nat != NULL) {
 				static conf_hid_callbacks_t cbs;

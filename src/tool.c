@@ -139,7 +139,7 @@ int pcb_tool_select_by_id(pcb_hidlib_t *hidlib, pcb_toolid_t id)
 	pcb_tool_next_id = id;
 	uninit_current_tool();
 	sprintf(id_s, "%d", id);
-	conf_set(CFR_DESIGN, "editor/mode", -1, id_s, POL_OVERWRITE);
+	pcb_conf_set(CFR_DESIGN, "editor/mode", -1, id_s, POL_OVERWRITE);
 	init_current_tool();
 
 	recursing = pcb_false;

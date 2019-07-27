@@ -52,7 +52,7 @@ int pcb_hid_get_flag(const char *name)
 
 	cp = strchr(name, '(');
 	if (cp == NULL) {
-		conf_native_t *n = conf_get_field(name);
+		conf_native_t *n = pcb_conf_get_field(name);
 		if (n == NULL)
 			return -1;
 		if ((n->type != CFN_BOOLEAN) || (n->used != 1))
