@@ -3,7 +3,7 @@
 1. For the upcoming release ===============================================================================
 + CLEANUP: Vuokko's list of warnings on OpenBSD: bug_files/warn-obsd-r26600.log [report: Vuokko]
 - CLEANUP: unify gui invocation option printout: pcb-rnd --help gtk_[gdk|gl] and pcb-rnd --help lesstif should use the same style printing options (even tho options will never be the same) [report:miloh]
-- BUG: crash with 2.1.2 on: {i c p} library tab, insert before, click help, close -> crash ml=3162 [report: James]
++ BUG: crash with 2.1.2 on: {i c p} library tab, insert before, click help, close -> crash ml=3162 [report: James]
 - CLEANUP: color:
 	- remove per hid, non-backup-lib custom color structs
 	- COLOR_TO_STR should not use sprintf - remove stdio.h
