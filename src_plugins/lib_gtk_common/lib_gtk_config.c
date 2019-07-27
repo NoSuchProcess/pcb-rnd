@@ -37,11 +37,11 @@
 static const char *lib_gtk_config_cookie = "lib_gtk_config";
 
 conf_hid_id_t ghid_conf_id = -1;
-conf_hid_gtk_t conf_hid_gtk;
+conf_hid_gtk_t pcb_conf_hid_gtk;
 
 void pcb_gtk_conf_uninit(void)
 {
-	conf_hid_unreg(lib_gtk_config_cookie);
+	pcb_conf_hid_unreg(lib_gtk_config_cookie);
 	pcb_conf_unreg_fields("plugins/hid_gtk/");
 }
 
@@ -97,10 +97,10 @@ void pcb_gtk_conf_init(void)
 	int dirty[CFR_max_real] = {0};
 	conf_role_t r;
 
-	ghid_conf_id = conf_hid_reg(lib_gtk_config_cookie, NULL);
+	ghid_conf_id = pcb_conf_hid_reg(lib_gtk_config_cookie, NULL);
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	pcb_conf_reg_field(conf_hid_gtk, field,isarray,type_name,cpath,cname,desc,flags);
+	pcb_conf_reg_field(pcb_conf_hid_gtk, field,isarray,type_name,cpath,cname,desc,flags);
 #include "../src_plugins/lib_gtk_common/hid_gtk_conf_fields.h"
 
 	/* check for legacy win geo settings */

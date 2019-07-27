@@ -94,11 +94,11 @@ void pplg_uninit_lib_hid_pcbui(void)
 	pcb_event_unbind_allcookie(infobar_cookie);
 	pcb_event_unbind_allcookie(title_cookie);
 	pcb_event_unbind_allcookie(layersel_cookie);
-	conf_hid_unreg(rst_cookie);
-	conf_hid_unreg(toolbar_cookie);
-	conf_hid_unreg(status_cookie);
-	conf_hid_unreg(status_rd_cookie);
-	conf_hid_unreg(infobar_cookie);
+	pcb_conf_hid_unreg(rst_cookie);
+	pcb_conf_hid_unreg(toolbar_cookie);
+	pcb_conf_hid_unreg(status_cookie);
+	pcb_conf_hid_unreg(status_rd_cookie);
+	pcb_conf_hid_unreg(infobar_cookie);
 }
 
 #include "dolists.h"
@@ -111,13 +111,13 @@ static conf_hid_id_t install_events(const char *cookie, const char *paths[], con
 	int n;
 	conf_hid_id_t conf_id;
 
-	conf_id = conf_hid_reg(cookie, NULL);
+	conf_id = pcb_conf_hid_reg(cookie, NULL);
 	for(rp = paths, n = 0; *rp != NULL; rp++, n++) {
 		memset(&cb[n], 0, sizeof(cb[0]));
 		cb[n].val_change_post = update_cb;
 		nat = pcb_conf_get_field(*rp);
 		if (nat != NULL)
-			conf_hid_set_cb(nat, conf_id, &cb[n]);
+			pcb_conf_hid_set_cb(nat, conf_id, &cb[n]);
 	}
 
 	return conf_id;

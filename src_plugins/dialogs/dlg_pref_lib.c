@@ -452,6 +452,6 @@ void pcb_dlg_pref_lib_init(pref_ctx_t *ctx)
 		memset(&cbs_spth, 0, sizeof(conf_hid_callbacks_t));
 		cbs_spth.val_change_pre = pref_lib_conf2dlg_pre;
 		cbs_spth.val_change_post = pref_lib_conf2dlg_post;
-		conf_hid_set_cb(cn, pref_hid, &cbs_spth);
+		pcb_conf_hid_set_cb(cn, pref_hid, &cbs_spth);
 	}
 }

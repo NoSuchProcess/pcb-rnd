@@ -666,15 +666,15 @@ void pcb_propdlg_init(void)
 {
 	static conf_hid_callbacks_t cbs;
 	conf_native_t *n = pcb_conf_get_field("editor/grid_unit");
-	propdlg_conf_id = conf_hid_reg(propdlg_cookie, NULL);
+	propdlg_conf_id = pcb_conf_hid_reg(propdlg_cookie, NULL);
 
 	if (n != NULL) {
 		cbs.val_change_post = propdlg_unit_change;
-		conf_hid_set_cb(n, propdlg_conf_id, &cbs);
+		pcb_conf_hid_set_cb(n, propdlg_conf_id, &cbs);
 	}
 }
 
 void pcb_propdlg_uninit(void)
 {
-	conf_hid_unreg(propdlg_cookie);
+	pcb_conf_hid_unreg(propdlg_cookie);
 }

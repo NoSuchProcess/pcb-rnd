@@ -86,7 +86,7 @@ const int pcb_conf_default_prio[] = {
 0, 0, 0, 0, 0, 0, 0, 0, 0 /* make sure the array is addressable until CFR_max_alloc */
 };
 
-extern const char *conf_internal;
+extern const char *pcb_conf_internal;
 
 
 static lht_node_t *conf_lht_get_confroot(lht_node_t *cwd)
@@ -1175,7 +1175,7 @@ void pcb_conf_load_all(const char *project_fn, const char *pcb_fn)
 
 	/* the ultimate fallback: all essential values are built in the executable
 	   on a low priority */
-	pcb_conf_load_as(CFR_INTERNAL, conf_internal, 1);
+	pcb_conf_load_as(CFR_INTERNAL, pcb_conf_internal, 1);
 
 	/* load config files */
 	pcb_conf_load_as(CFR_SYSTEM, pcbhl_conf_sys_path, 0);
@@ -2080,7 +2080,7 @@ void pcb_conf_uninit(void)
 			fprintf(stderr, "pcb-rnd conf ERROR: conf node '%s' is not unregistered\n", e->key);
 	}
 
-	conf_pcb_hid_uninit();
+	pcb_conf_pcb_hid_uninit();
 
 	for(n = 0; n < CFR_max_alloc; n++) {
 		if (pcb_conf_main_root[n] != NULL)

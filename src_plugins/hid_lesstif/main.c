@@ -2876,7 +2876,7 @@ static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*
 	if (n != NULL) {
 		memset(cbs, 0, sizeof(conf_hid_callbacks_t));
 		cbs->val_change_post = func;
-		conf_hid_set_cb(n, lesstif_conf_id, cbs);
+		pcb_conf_hid_set_cb(n, lesstif_conf_id, cbs);
 	}
 }
 
@@ -3027,7 +3027,7 @@ void pplg_uninit_hid_lesstif(void)
 {
 	pcb_export_remove_opts_by_cookie(lesstif_cookie);
 	pcb_event_unbind_allcookie(lesstif_cookie);
-	conf_hid_unreg(lesstif_cookie);
+	pcb_conf_hid_unreg(lesstif_cookie);
 }
 
 int pplg_init_hid_lesstif(void)
@@ -3139,7 +3139,7 @@ int pplg_init_hid_lesstif(void)
 
 	pcb_hid_register_hid(&lesstif_hid);
 	if (lesstif_conf_id < 0)
-		lesstif_conf_id = conf_hid_reg(lesstif_cookie, &ccb);
+		lesstif_conf_id = pcb_conf_hid_reg(lesstif_cookie, &ccb);
 /*	lesstif_conf_regs(lesstif_cookie);*/
 
 	return 0;

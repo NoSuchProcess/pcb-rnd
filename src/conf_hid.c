@@ -10,20 +10,20 @@ typedef struct {
 	conf_hid_id_t id;
 } conf_hid_t;
 
-void *conf_hid_set_data(conf_native_t *cfg, conf_hid_id_t id, void *data)
+void *pcb_conf_hid_set_data(conf_native_t *cfg, conf_hid_id_t id, void *data)
 {
 	void **old = vtp0_get(&cfg->hid_data, id, 0);
 	vtp0_set(&cfg->hid_data, id, data);
 	return old == NULL ? NULL : *old;
 }
 
-void *conf_hid_get_data(conf_native_t *cfg, conf_hid_id_t id)
+void *pcb_conf_hid_get_data(conf_native_t *cfg, conf_hid_id_t id)
 {
 	void **old = vtp0_get(&cfg->hid_data, id, 0);
 	return old == NULL ? NULL : *old;
 }
 
-const conf_hid_callbacks_t *conf_hid_set_cb(conf_native_t *cfg, conf_hid_id_t id, const conf_hid_callbacks_t *cbs)
+const conf_hid_callbacks_t *pcb_conf_hid_set_cb(conf_native_t *cfg, conf_hid_id_t id, const conf_hid_callbacks_t *cbs)
 {
 	void **old;
 	assert(id >= 0);
@@ -42,7 +42,7 @@ static void conf_pcb_hid_init(void)
 		conf_hid_ids = htpp_alloc(ptrhash, ptrkeyeq);
 }
 
-void conf_pcb_hid_uninit(void)
+void pcb_conf_pcb_hid_uninit(void)
 {
 #ifndef NDEBUG
 	if (conf_hid_ids != NULL) {
@@ -58,7 +58,7 @@ void conf_pcb_hid_uninit(void)
 	}
 }
 
-conf_hid_id_t conf_hid_reg(const char *cookie, const conf_hid_callbacks_t *cb)
+conf_hid_id_t pcb_conf_hid_reg(const char *cookie, const conf_hid_callbacks_t *cb)
 {
 	conf_hid_t *h;
 
@@ -76,7 +76,7 @@ conf_hid_id_t conf_hid_reg(const char *cookie, const conf_hid_callbacks_t *cb)
 	return h->id;
 }
 
-void conf_hid_unreg(const char *cookie)
+void pcb_conf_hid_unreg(const char *cookie)
 {
 	htsp_entry_t *e;
 	conf_hid_t *h = htpp_pop(conf_hid_ids, (void *)cookie);
@@ -115,7 +115,7 @@ void conf_hid_unreg(const char *cookie)
 }
 
 typedef void (*cb_t)(conf_native_t *cfg, int arr_idx);
-void conf_hid_global_cb_(conf_native_t *item, int arr_idx, int offs)
+void pcb_conf_hid_global_cb_(conf_native_t *item, int arr_idx, int offs)
 {
 	htpp_entry_t *e;
 	if (conf_hid_ids == NULL)
@@ -133,7 +133,7 @@ void conf_hid_global_cb_(conf_native_t *item, int arr_idx, int offs)
 }
 
 
-void conf_loglevel_props(enum pcb_message_level level, const char **tag, int *popup)
+void pcb_conf_loglevel_props(enum pcb_message_level level, const char **tag, int *popup)
 {
 	*tag = NULL;
 	*popup = 0;

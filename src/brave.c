@@ -285,17 +285,17 @@ PCB_REGISTER_ACTIONS(brave_action_list, NULL)
 void pcb_brave_init(void)
 {
 	conf_native_t *n = pcb_conf_get_field("rc/brave");
-	brave_conf_id = conf_hid_reg(brave_cookie, NULL);
+	brave_conf_id = pcb_conf_hid_reg(brave_cookie, NULL);
 
 	if (n != NULL) {
 		static conf_hid_callbacks_t cbs;
 		memset(&cbs, 0, sizeof(conf_hid_callbacks_t));
 		cbs.val_change_post = brave_conf_chg;
-		conf_hid_set_cb(n, brave_conf_id, &cbs);
+		pcb_conf_hid_set_cb(n, brave_conf_id, &cbs);
 	}
 }
 
 void pcb_brave_uninit(void)
 {
-	conf_hid_unreg(brave_cookie);
+	pcb_conf_hid_unreg(brave_cookie);
 }

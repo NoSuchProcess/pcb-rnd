@@ -85,7 +85,7 @@ void pplg_uninit_lib_hid_common(void)
 	pcb_event_unbind_allcookie(grid_cookie);
 	pcb_event_unbind_allcookie(lead_cookie);
 	pcb_event_unbind_allcookie(wplc_cookie);
-	conf_hid_unreg(grid_cookie);
+	pcb_conf_hid_unreg(grid_cookie);
 	pcb_dialog_place_uninit();
 	pcb_remove_actions_by_cookie(hid_common_cookie);
 	pcb_act_dad_uninit();
@@ -120,19 +120,19 @@ int pplg_init_lib_hid_common(void)
 	pcb_event_bind(PCB_EVENT_DAD_NEW_DIALOG, pcb_dialog_place, NULL, wplc_cookie);
 	pcb_event_bind(PCB_EVENT_DAD_NEW_GEO, pcb_dialog_resize, NULL, wplc_cookie);
 
-	conf_id = conf_hid_reg(grid_cookie, NULL);
+	conf_id = pcb_conf_hid_reg(grid_cookie, NULL);
 
 	memset(&ccb, 0, sizeof(ccb));
 	ccb.val_change_post = pcb_grid_update_conf;
 	nat = pcb_conf_get_field("editor/grids");
 	if (nat != NULL)
-		conf_hid_set_cb(nat, conf_id, &ccb);
+		pcb_conf_hid_set_cb(nat, conf_id, &ccb);
 
 	memset(&ccbu, 0, sizeof(ccbu));
 	ccbu.val_change_post = grid_unit_chg_ev;
 	nat = pcb_conf_get_field("editor/grid_unit");
 	if (nat != NULL)
-		conf_hid_set_cb(nat, conf_id, &ccbu);
+		pcb_conf_hid_set_cb(nat, conf_id, &ccbu);
 
 	return 0;
 }

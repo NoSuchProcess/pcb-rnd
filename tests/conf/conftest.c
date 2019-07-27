@@ -276,7 +276,7 @@ void cmd_watch(char *arg, int add)
 		pcb_message(PCB_MSG_ERROR, "unknown path");
 		return;
 	}
-	conf_hid_set_cb(n, hid_id, (add ? &watch_cbs : NULL));
+	pcb_conf_hid_set_cb(n, hid_id, (add ? &watch_cbs : NULL));
 }
 
 void cmd_notify(char *arg)
@@ -361,7 +361,7 @@ int getline_cont(FILE *f)
 int main()
 {
 
-	hid_id = conf_hid_reg(hid_cookie, &global_cbs);
+	hid_id = pcb_conf_hid_reg(hid_cookie, &global_cbs);
 
 	pcb_conf_init();
 	conf_core_init();
@@ -415,7 +415,7 @@ int main()
 			pcb_message(PCB_MSG_ERROR, "unknown command '%s'", cmd);
 	}
 
-	conf_hid_unreg(hid_cookie);
+	pcb_conf_hid_unreg(hid_cookie);
 	pcb_conf_uninit();
 	return 0;
 }

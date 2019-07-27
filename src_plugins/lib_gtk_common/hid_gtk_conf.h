@@ -70,6 +70,6 @@ typedef struct {
 	} plugins;
 } conf_hid_gtk_t;
 
-extern conf_hid_gtk_t conf_hid_gtk;
+extern conf_hid_gtk_t pcb_conf_hid_gtk;
 
 #endif

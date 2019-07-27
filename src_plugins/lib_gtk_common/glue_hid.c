@@ -164,7 +164,7 @@ TODO(": move this to render init")
 
 	pcb_gtk_interface_input_signals_connect();
 
-	if (conf_hid_gtk.plugins.hid_gtk.listen)
+	if (pcb_conf_hid_gtk.plugins.hid_gtk.listen)
 		pcb_gtk_create_listener();
 
 	gctx->gui_is_up = 1;

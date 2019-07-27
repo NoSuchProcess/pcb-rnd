@@ -497,7 +497,7 @@ TODO(": remove this call")
 						cbs.val_change_post = lesstif_confchg_checkbox;
 						cbs_inited = 1;
 					}
-					conf_hid_set_cb(nat, lesstif_menuconf_id, &cbs);
+					pcb_conf_hid_set_cb(nat, lesstif_menuconf_id, &cbs);
 				}
 				else {
 					if (*uo != '\0')
@@ -665,12 +665,12 @@ static const char *lesstif_menu_cookie = "hid_lesstif_menu";
 void lesstif_init_menu(void)
 {
 	if (lesstif_menuconf_id < 0)
-		lesstif_menuconf_id = conf_hid_reg(lesstif_menu_cookie, NULL);
+		lesstif_menuconf_id = pcb_conf_hid_reg(lesstif_menu_cookie, NULL);
 }
 
 void lesstif_uninit_menu(void)
 {
-	conf_hid_unreg(lesstif_menu_cookie);
+	pcb_conf_hid_unreg(lesstif_menu_cookie);
 	XtDestroyWidget(lesstif_menubar);
 	lesstif_menuconf_id = -1;
 }

@@ -140,6 +140,6 @@ void pcb_dlg_pref_sizes_init(pref_ctx_t *ctx)
 	if (cn != NULL) {
 		memset(&cbs_isle, 0, sizeof(conf_hid_callbacks_t));
 		cbs_isle.val_change_post = pref_isle_brd2dlg;
-		conf_hid_set_cb(cn, pref_hid, &cbs_isle);
+		pcb_conf_hid_set_cb(cn, pref_hid, &cbs_isle);
 	}
 }

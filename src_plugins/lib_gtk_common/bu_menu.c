@@ -179,7 +179,7 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 					cbs.val_change_post = ctx->confchg_checkbox;
 					cbs_inited = 1;
 				}
-				conf_hid_set_cb(nat, ctx->ghid_menuconf_id, &cbs);
+				pcb_conf_hid_set_cb(nat, ctx->ghid_menuconf_id, &cbs);
 			}
 			else {
 				if ((update_on == NULL) || (*update_on != '\0'))

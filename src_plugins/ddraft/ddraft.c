@@ -470,7 +470,7 @@ int pplg_check_ver_ddraft(int ver_needed) { return 0; }
 
 void pplg_uninit_ddraft(void)
 {
-	conf_hid_unreg(ddraft_cookie);
+	pcb_conf_hid_unreg(ddraft_cookie);
 	pcb_event_unbind_allcookie(ddraft_cookie);
 	pcb_remove_actions_by_cookie(ddraft_cookie);
 	pcb_tool_unreg_by_cookie(ddraft_cookie);
@@ -494,10 +494,10 @@ int pplg_init_ddraft(void)
 	pcb_ddraft_tool = pcb_tool_lookup(tool_ddraft.name);
 
 
-	confid = conf_hid_reg(ddraft_cookie, NULL);
+	confid = pcb_conf_hid_reg(ddraft_cookie, NULL);
 	cn = pcb_conf_get_field("editor/all_direction_lines");
-	conf_hid_set_cb(cn, confid, &conf_cbs_adl);
+	pcb_conf_hid_set_cb(cn, confid, &conf_cbs_adl);
 	cn = pcb_conf_get_field("editor/mode");
-	conf_hid_set_cb(cn, confid, &conf_cbs_mode);
+	pcb_conf_hid_set_cb(cn, confid, &conf_cbs_mode);
 	return 0;
 }

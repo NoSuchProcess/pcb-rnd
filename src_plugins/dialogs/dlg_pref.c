@@ -183,8 +183,8 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*ch
 			return;
 	}
 
-	item->cnext = conf_hid_get_data(cn, pref_hid);
-	conf_hid_set_data(cn, pref_hid, item);
+	item->cnext = pcb_conf_hid_get_data(cn, pref_hid);
+	pcb_conf_hid_set_data(cn, pref_hid, item);
 }
 
 void pcb_pref_create_conftable(pref_ctx_t *ctx, pref_confitem_t *list, void (*change_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr))
@@ -201,7 +201,7 @@ void pcb_pref_conflist_remove(pref_ctx_t *ctx, pref_confitem_t *list)
 		conf_native_t *cn = pcb_conf_get_field(c->confpath);
 		c->cnext = NULL;
 		if (cn != NULL)
-			conf_hid_set_data(cn, pref_hid, NULL);
+			pcb_conf_hid_set_data(cn, pref_hid, NULL);
 	}
 }
 
@@ -358,7 +358,7 @@ void pref_conf_changed(conf_native_t *cfg, int arr_idx)
 {
 	pref_confitem_t *i;
 
-	for(i = conf_hid_get_data(cfg, pref_hid); i != NULL; i = i->cnext)
+	for(i = pcb_conf_hid_get_data(cfg, pref_hid); i != NULL; i = i->cnext)
 		if (i != pref_ctx.pcb_conf_lock)
 			pcb_pref_conf2dlg_item(cfg, i);
 
@@ -371,7 +371,7 @@ void pcb_dlg_pref_init(void)
 	pref_conf_cb.val_change_post = pref_conf_changed;
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, pref_ev_board_changed, &pref_ctx, pref_cookie);
 	pcb_event_bind(PCB_EVENT_BOARD_META_CHANGED, pref_ev_board_meta_changed, &pref_ctx, pref_cookie);
-	pref_hid = conf_hid_reg(pref_cookie, &pref_conf_cb);
+	pref_hid = pcb_conf_hid_reg(pref_cookie, &pref_conf_cb);
 	pcb_dlg_pref_sizes_init(&pref_ctx);
 	pcb_dlg_pref_lib_init(&pref_ctx);
 }
@@ -379,7 +379,7 @@ void pcb_dlg_pref_init(void)
 void pcb_dlg_pref_uninit(void)
 {
 	pcb_event_unbind_allcookie(pref_cookie);
-	conf_hid_unreg(pref_cookie);
+	pcb_conf_hid_unreg(pref_cookie);
 }
 
 const char pcb_acts_Preferences[] = "Preferences([tabname])\n";
