@@ -396,7 +396,7 @@ int main(int argc, char ** argv)
 	gadl_list_init(&extra_gnetlist_list, sizeof(char *), NULL, NULL);
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	conf_reg_field(conf_g2pr, field,isarray,type_name,cpath,cname,desc,flags);
+	pcb_conf_reg_field(conf_g2pr, field,isarray,type_name,cpath,cname,desc,flags);
 #include "gsch2pcb_rnd_conf_fields.h"
 
 	get_args(argc, argv);
