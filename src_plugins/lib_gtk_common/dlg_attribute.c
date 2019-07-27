@@ -62,6 +62,7 @@ typedef struct {
 	gulong destroy_handler;
 	unsigned inhibit_valchg:1;
 	unsigned freeing_gui:1;
+	unsigned modal:1;
 } attr_dlg_t;
 
 #define change_cb(ctx, dst) \
@@ -765,6 +766,7 @@ void *ghid_attr_dlg_new(pcb_gtk_t *gctx, const char *id, pcb_hid_attribute_t *at
 	ctx->close_cb_called = 0;
 	ctx->close_cb = button_cb;
 	ctx->id = pcb_strdup(id);
+	ctx->modal = modal;
 
 	pcb_event(gctx->hidlib, PCB_EVENT_DAD_NEW_DIALOG, "psp", ctx, ctx->id, plc);
 
@@ -813,6 +815,7 @@ void *ghid_attr_sub_new(pcb_gtk_t *gctx, GtkWidget *parent_box, pcb_hid_attribut
 	ctx->wltop = calloc(sizeof(GtkWidget *), n_attrs);
 	ctx->caller_data = caller_data;
 	ctx->rc = 1; /* just in case the window is destroyed in an unknown way: take it as cancel */
+	ctx->modal = 0;
 
 	ghid_attr_dlg_add(ctx, parent_box, NULL, 0);
 
@@ -827,6 +830,8 @@ int ghid_attr_dlg_run(void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	GtkResponseType res = gtk_dialog_run(GTK_DIALOG(ctx->dialog));
+	if (!ctx->modal)
+		ghid_attr_dlg_free_gui(ctx);
 	if (res == GTK_RESPONSE_NONE) {
 		/* the close cb destroyed the window; rc is already set */
 	}
