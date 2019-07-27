@@ -1,0 +1,72 @@
+<html>
+<body>
+
+<h1> DAD: Dynamic Attribute Dialogs: closing sequence </h1>
+<p>
+There are two ways a DAD can be closed:
+<ul>
+	<li> GUI close: the widget gets destroyed (e.g. the WM closes the dialog
+	     after the user closes the window)
+	<li> code close: the code decides to close the dialog (e.g. from a
+	     button callback or because of some non-gui async event happened)
+</ul>
+<p>
+There are four sets of structures/allocations associated with a DAD:
+<ul>
+	<li> user data: whatever data the [caller] (the code that created the DAD)
+	     is keeping for the dialog; typically states or the content to be
+	     displayed
+	<li> dad ctx: the widget table created using hid_dad.h, by the [dad] code
+	<li> hid ctx: the data behind hid_ctx maintained by the GUI [HID]
+	<li> widgets: the actual widgets maintained by the GUI [toolkit]
+</ul>
+<p>
+
+There is only one allocation sequence:
+<ol>
+	<li> [caller] allocates the user data
+	<li> [caller] calls [dad] to allocate the dad ctx: PCB_DAD_NEW()
+	<li> [dad] calls [HID] to allocate the hid ctx
+	<li> [HID] calls the [toolkit] to allocate widgets
+	<li> the [caller] calls PCB_DAD_RUN() or PCB_DAD_AUTORUN()
+</ol>
+
+There are many different free sequences possible, the three most
+typical ones are:
+<ul>
+	<li> non-blocking dialog, GUI close, free'd from the close callback
+		<ol>
+			<li> the [toolkit] calls [HID] in a widget destroy callback; the
+			     [HID] free's the wigets and initiates the user callback to the
+			     [caller]
+			<li> from the close callback: the [caller] reads out the results
+			<li> from the close callback: the [caller] calls PCB_DAD_FREE(table),
+			     which frees the dad ctx and the hid ctx
+			<li> from the close callback: the [caller] frees user data
+		</ol>
+	<li> non-blocking dialog, code close, free'd from the close callback
+		<ol>
+			<li> the [caller] reads out the results
+			<li> the [caller] calls PCB_DAD_FREE(table), which frees widgets,
+			     the dad ctx and the hid ctx
+			<li> the [caller] frees user data
+		</ol>
+	<li> blocking dialog, GUI close, free'd from where PCB_DAD_AUTORUN() is called
+		<ol>
+			<li> the [toolkit] calls [HID] in a widget destroy callback; the
+			     [HID] free's the wigets and initiates the user callback to the
+			     [caller]
+			<li> the [caller] reads out the results
+			<li> the [caller] calls PCB_DAD_FREE(table), which frees the dad ctx and
+			     the hid ctx
+			<li> the [caller] frees user data
+		</ol>
+</ul>
+
+<p>
+In other words, one PCB_DAD_NEW() needs to have exactly one PCB_DAD_FREE()
+pair. If PCB_DAD_FREE() is called while the dialog is on (code close),
+the dialog is closed and the callback function is called (unless it is
+already running). The [caller] can access DAD widget states and values
+only between PCB_DAD_NEW() and PCB_DAD_FREE().
+
