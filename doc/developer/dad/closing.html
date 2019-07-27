@@ -51,11 +51,12 @@ typical ones are:
 			     the dad ctx and the hid ctx
 			<li> the [caller] frees user data
 		</ol>
-	<li> blocking dialog, GUI close, free'd from where PCB_DAD_AUTORUN() is called
+	<li> modal (blocking) dialog, GUI close, free'd from where PCB_DAD_RUN() is called
 		<ol>
 			<li> the [toolkit] calls [HID] in a widget destroy callback; the
 			     [HID] free's the wigets and initiates the user callback to the
 			     [caller]
+			<li> PCB_DAD_RUN() returns at the caller
 			<li> the [caller] reads out the results
 			<li> the [caller] calls PCB_DAD_FREE(table), which frees the dad ctx and
 			     the hid ctx
