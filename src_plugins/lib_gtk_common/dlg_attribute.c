@@ -61,7 +61,7 @@ typedef struct {
 	char *id;
 	gulong destroy_handler;
 	unsigned inhibit_valchg:1;
-	unsigned freeing:1;
+	unsigned freeing_gui:1;
 } attr_dlg_t;
 
 #define change_cb(ctx, dst) \
@@ -668,9 +668,41 @@ static gint ghid_attr_dlg_configure_event_cb(GtkWidget *widget, GdkEventConfigur
 	return pcb_gtk_winplace_cfg(ctx->gctx->hidlib, widget, ctx, ctx->id);
 }
 
+/* destroy the GUI widgets but do not free any hid_ctx struct */
+static void ghid_attr_dlg_free_gui(attr_dlg_t *ctx)
+{
+	int i;
+
+	/* make sure there are no nested ghid_attr_dlg_free() calls */
+	if (ctx->freeing_gui)
+		return;
+	ctx->freeing_gui = 1;
+
+	/* make sure we are not called again from the destroy signal */
+	g_signal_handler_disconnect(ctx->dialog, ctx->destroy_handler);
+
+	for(i = 0; i < ctx->n_attrs; i++) {
+		switch(ctx->attrs[i].type) {
+			case PCB_HATT_TREE: ghid_tree_pre_free(ctx, &ctx->attrs[i], i); break;
+			case PCB_HATT_BUTTON: g_signal_handlers_block_by_func(G_OBJECT(ctx->wl[i]), G_CALLBACK(button_changed_cb), &(ctx->attrs[i])); break;
+			case PCB_HATT_PREVIEW: pcb_gtk_preview_del(ctx->gctx, PCB_GTK_PREVIEW(ctx->wl[i]));
+			default: break;
+		}
+	}
+
+	if (!ctx->close_cb_called) {
+		ctx->close_cb_called = 1;
+		if (ctx->close_cb != NULL)
+			ctx->close_cb(ctx->caller_data, PCB_HID_ATTR_EV_CODECLOSE);
+	}
+
+	ctx->dialog = NULL;
+}
+
+
 static gint ghid_attr_dlg_destroy_event_cb(GtkWidget *widget, gpointer data)
 {
-	ghid_attr_dlg_free(data);
+	ghid_attr_dlg_free_gui(data);
 	return 0;
 }
 
@@ -811,44 +843,25 @@ void ghid_attr_dlg_raise(void *hid_ctx)
 	gtk_window_present(GTK_WINDOW(ctx->dialog));
 }
 
-void ghid_attr_dlg_free(void *hid_ctx)
+void ghid_attr_dlg_close(void *hid_ctx)
 {
-	int i;
 	attr_dlg_t *ctx = hid_ctx;
-
-	/* make sure there are no nested ghid_attr_dlg_free() calls */
-	if (ctx->freeing)
-		return;
-	ctx->freeing = 1;
-
-	/* make sure we are not called again from the destroy signal */
-	g_signal_handler_disconnect(ctx->dialog, ctx->destroy_handler);
-
-	for(i = 0; i < ctx->n_attrs; i++) {
-		switch(ctx->attrs[i].type) {
-			case PCB_HATT_TREE: ghid_tree_pre_free(ctx, &ctx->attrs[i], i); break;
-			case PCB_HATT_BUTTON: g_signal_handlers_block_by_func(G_OBJECT(ctx->wl[i]), G_CALLBACK(button_changed_cb), &(ctx->attrs[i])); break;
-			case PCB_HATT_PREVIEW: pcb_gtk_preview_del(ctx->gctx, PCB_GTK_PREVIEW(ctx->wl[i]));
-			default: break;
-		}
-	}
-
-	if (!ctx->close_cb_called) {
-		ctx->close_cb_called = 1;
-		if (ctx->close_cb != NULL)
-			ctx->close_cb(ctx->caller_data, PCB_HID_ATTR_EV_CODECLOSE);
-	}
 
 	if (ctx->dialog != NULL)
 		gtk_widget_destroy(ctx->dialog);
+}
+
+void ghid_attr_dlg_free(void *hid_ctx)
+{
+	attr_dlg_t *ctx = hid_ctx;
+
+	if (ctx->dialog != NULL)
+		gtk_widget_destroy(ctx->dialog);
+
 	free(ctx->id);
 	free(ctx->wl);
 	free(ctx->wltop);
-	ctx->id = NULL;
-	ctx->wl = NULL;
-	ctx->wltop = NULL;
-	ctx->dialog = NULL;
-	TODO("#51: free(ctx);");
+	free(ctx);
 }
 
 void ghid_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const pcb_hid_attr_val_t *val)
