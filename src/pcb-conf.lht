@@ -171,8 +171,8 @@ li:pcb-rnd-conf-v1 {
 				pin_name = {#ff0000}
 				element = {#000000}
 				subc = {#CC0000}
-				subc_nonetlist = {#CC9900}
-				padstackmark = {#CC0000}
+				subc_nonetlist = {#cc9900}
+				padstackmark = {#cc0000}
 				rat = {#b8860b}
 				invisible_objects = {#cccccc}
 				connected = {#00ff00}

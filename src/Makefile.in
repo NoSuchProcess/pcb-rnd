@@ -524,7 +524,7 @@ $(ROOT)/doc/conf/tree/rc.html: hidlib_conf.h conf_core.h
 	cat conf_core.h hidlib_conf.h | AWK=@/host/fstools/awk@ $(ROOT)/scconfig/gen_conf.sh $(ROOT)/doc/conf/tree > /dev/null
 
 conf_internal.c: pcb-conf.lht $(CQUOTE)
-	$(CQUOTE) -n conf_internal < pcb-conf.lht > conf_internal.c
+	$(CQUOTE) -n pcb_conf_internal < pcb-conf.lht > conf_internal.c
 
 defpcb_internal.c: default4.lht
 	$(CQUOTE) -n default_pcb_internal < default4.lht > defpcb_internal.c
