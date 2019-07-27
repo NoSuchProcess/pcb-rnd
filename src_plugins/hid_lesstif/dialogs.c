@@ -189,7 +189,6 @@ typedef struct {
 	char *id;
 	unsigned close_cb_called:1;
 	unsigned already_closing:1;
-	unsigned already_destroying:1;
 	unsigned inhibit_valchg:1;
 	unsigned widget_destroyed:1;
 	unsigned set_ok:1;
@@ -593,7 +592,6 @@ static void ltf_attr_destroy_cb(Widget w, void *v, void *cbs)
 
 	if ((!ctx->close_cb_called) && (ctx->close_cb != NULL)) {
 		ctx->close_cb_called = 1;
-		ctx->already_destroying = 1;
 		ctx->close_cb(ctx->caller_data, PCB_HID_ATTR_EV_WINCLOSE);
 	}
 	if (!ctx->widget_destroyed) {
@@ -601,6 +599,14 @@ static void ltf_attr_destroy_cb(Widget w, void *v, void *cbs)
 		readres_all(ctx);
 		XtUnmanageChild(w);
 		XtDestroyWidget(w);
+
+		if (ctx->set_ok)
+			pcb_ltf_ok = DAD_CLOSED;
+
+		if ((!ctx->close_cb_called) && (ctx->close_cb != NULL)) {
+			ctx->close_cb_called = 1;
+			ctx->close_cb(ctx->caller_data, PCB_HID_ATTR_EV_CODECLOSE);
+		}
 	}
 }
 
@@ -733,35 +739,31 @@ void lesstif_attr_dlg_raise(void *hid_ctx)
 	XRaiseWindow(XtDisplay(ctx->dialog), XtWindow(ctx->dialog));
 }
 
+void lesstif_attr_dlg_close(void *hid_ctx)
+{
+	lesstif_attr_dlg_t *ctx = hid_ctx;
+
+	if (!ctx->widget_destroyed) {
+		ctx->widget_destroyed = 1;
+		XtDestroyWidget(ctx->dialog);
+	}
+}
+
+
 void lesstif_attr_dlg_free(void *hid_ctx)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
 
-	if (ctx->set_ok)
-		pcb_ltf_ok = DAD_CLOSED;
-
 	if (ctx->already_closing)
 		return;
-
 	ctx->already_closing = 1;
-	if (!ctx->widget_destroyed)
-		readres_all(ctx);
 
-	if ((!ctx->close_cb_called) && (ctx->close_cb != NULL)) {
-		ctx->close_cb_called = 1;
-		ctx->close_cb(ctx->caller_data, PCB_HID_ATTR_EV_CODECLOSE);
-	}
+	lesstif_attr_dlg_close(ctx);
 
-	if (!ctx->already_destroying) {
-		if (!ctx->widget_destroyed) {
-			ctx->widget_destroyed = 1;
-			XtDestroyWidget(ctx->dialog);
-		}
-		free(ctx->wl);
-		free(ctx->wltop);
-		free(ctx->id);
-		TODO("#51: free(ctx);");
-	}
+	free(ctx->wl);
+	free(ctx->wltop);
+	free(ctx->id);
+	free(ctx);
 }
 
 void lesstif_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const pcb_hid_attr_val_t *val)

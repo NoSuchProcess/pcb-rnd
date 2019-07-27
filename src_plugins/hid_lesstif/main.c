@@ -2826,6 +2826,7 @@ extern void *lesstif_attr_dlg_new(pcb_hid_t *hid, const char *id, pcb_hid_attrib
 
 extern int lesstif_attr_dlg_run(void *hid_ctx);
 extern void lesstif_attr_dlg_raise(void *hid_ctx);
+extern void lesstif_attr_dlg_close(void *hid_ctx);
 extern void lesstif_attr_dlg_free(void *hid_ctx);
 extern void lesstif_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const pcb_hid_attr_val_t *val);
 extern int lesstif_attr_dlg_widget_state(void *hid_ctx, int idx, int enabled);
@@ -3091,6 +3092,7 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.attr_dlg_new = lesstif_attr_dlg_new;
 	lesstif_hid.attr_dlg_run = lesstif_attr_dlg_run;
 	lesstif_hid.attr_dlg_raise = lesstif_attr_dlg_raise;
+	lesstif_hid.attr_dlg_close = lesstif_attr_dlg_close;
 	lesstif_hid.attr_dlg_free = lesstif_attr_dlg_free;
 	lesstif_hid.attr_dlg_property = lesstif_attr_dlg_property;
 	lesstif_hid.attr_dlg_widget_state = lesstif_attr_dlg_widget_state;
