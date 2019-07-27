@@ -360,6 +360,11 @@ static int nogui_attr_dlg_run(void *hid_ctx)
 	CRASH("attr_dlg_run");
 }
 
+static void nogui_attr_dlg_raise(void *hid_ctx)
+{
+	CRASH("attr_dlg_raise");
+}
+
 static void nogui_attr_dlg_close(void *hid_ctx)
 {
 	CRASH("attr_dlg_close");
@@ -512,6 +517,7 @@ void pcb_hid_nogui_init(pcb_hid_t * hid)
 	hid->fileselect = nogui_fileselect;
 	hid->attr_dlg_new = pcb_nogui_attr_dlg_new;
 	hid->attr_dlg_run = nogui_attr_dlg_run;
+	hid->attr_dlg_raise = nogui_attr_dlg_raise;
 	hid->attr_dlg_close = nogui_attr_dlg_close;
 	hid->attr_dlg_free = nogui_attr_dlg_free;
 	hid->attr_dlg_property = nogui_attr_dlg_property;
