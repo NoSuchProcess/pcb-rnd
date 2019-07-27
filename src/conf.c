@@ -2036,7 +2036,7 @@ int pcb_conf_print_native(conf_pfn pfn, void *ctx, const char * prefix, int verb
 				ret += pfn(ctx, "%s I %s[%d] = ", prefix, node->hash_path, n);
 			ret += pcb_conf_print_native_field(pfn, ctx, verbose, &node->val, node->type, node->prop, n);
 			if (verbose)
-				ret += pfn(ctx, " pcb_conf_rev=%d\n", node->pcb_conf_rev);
+				ret += pfn(ctx, " conf_rev=%d\n", node->pcb_conf_rev);
 			else
 				ret += pfn(ctx, ";");
 		}
@@ -2052,7 +2052,7 @@ int pcb_conf_print_native(conf_pfn pfn, void *ctx, const char * prefix, int verb
 			ret += pfn(ctx, "%s I %s = ", prefix, node->hash_path);
 		ret += pcb_conf_print_native_field(pfn, ctx, verbose, &node->val, node->type, node->prop, 0);
 		if (verbose)
-			ret += pfn(ctx, " pcb_conf_rev=%d\n", node->pcb_conf_rev);
+			ret += pfn(ctx, " conf_rev=%d\n", node->pcb_conf_rev);
 	}
 	return ret;
 }
