@@ -279,9 +279,9 @@ static int lib_cell_edit(char **cell)
 	}
 
 	free(cell[0]);
-	cell[0] = pcb_strdup(ctx.dlg[ctx.wpath].val.str);
+	cell[0] = pcb_strdup(PCB_EMPTY(ctx.dlg[ctx.wpath].val.str));
 	free(cell[1]);
-	cell[1] = pcb_strdup(ctx.dlg[ctx.wexp].val.str);
+	cell[1] = pcb_strdup(PCB_EMPTY(ctx.dlg[ctx.wexp].val.str));
 
 	PCB_DAD_FREE(ctx.dlg);
 	return 0;
