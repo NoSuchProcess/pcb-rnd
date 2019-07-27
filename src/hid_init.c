@@ -340,7 +340,7 @@ void pcb_hidlib_uninit(void)
 /* parse arguments using the gui; if fails and fallback is enabled, try the next gui */
 int pcb_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[])
 {
-	conf_listitem_t *apg = NULL;
+	pcb_conf_listitem_t *apg = NULL;
 
 	if ((autopick_gui >= 0) && (pcbhl_conf.rc.hid_fallback)) { /* start from the GUI we are initializing first */
 		int n;
@@ -515,7 +515,7 @@ int pcbhl_main_args_setup1(pcbhl_main_args_t *ga)
 			break;
 		default: {
 			const char *g;
-			conf_listitem_t *i;
+			pcb_conf_listitem_t *i;
 
 			pcb_gui = NULL;
 			conf_loop_list_str(&pcbhl_conf.rc.preferred_gui, i, g, ga->autopick_gui) {

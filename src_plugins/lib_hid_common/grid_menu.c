@@ -42,8 +42,8 @@ static pcb_conf_resolve_t grids_idx = {"editor.grids_idx", CFN_INTEGER, 0, NULL}
 static void grid_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, char *path)
 {
 	conf_native_t *nat;
-	conflist_t *lst;
-	conf_listitem_t *li;
+	pcb_conflist_t *lst;
+	pcb_conf_listitem_t *li;
 	char *end = path + strlen(path);
 	pcb_menu_prop_t props;
 	char act[256], chk[256];
@@ -75,8 +75,8 @@ static void grid_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, c
 	end++;
 
 	/* have to go reverse to keep order because this will insert items */
-	idx = conflist_length(lst)-1;
-	for(li = conflist_last(lst); li != NULL; li = conflist_prev(li),idx--) {
+	idx = pcb_conflist_length(lst)-1;
+	for(li = pcb_conflist_last(lst); li != NULL; li = pcb_conflist_prev(li),idx--) {
 		sprintf(act, "grid(#%d)", idx);
 		sprintf(chk, "conf(iseq, editor/grids_idx, %d)", idx);
 		strcpy(end, li->val.string[0]);

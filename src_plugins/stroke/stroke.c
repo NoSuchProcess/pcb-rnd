@@ -57,7 +57,7 @@ static pcb_coord_t stroke_first_x, stroke_first_y, stroke_last_x, stroke_last_y;
 
 static int pcb_stroke_exec(const char *seq)
 {
-	conf_listitem_t *item;
+	pcb_conf_listitem_t *item;
 	int idx;
 
 	conf_loop_list(&conf_stroke.plugins.stroke.gestures, item, idx) {

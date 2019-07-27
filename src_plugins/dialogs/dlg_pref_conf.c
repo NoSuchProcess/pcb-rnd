@@ -233,11 +233,11 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 		/* non-default: lists are manually loaded */
 		pcb_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wnatval[CFN_LIST]];
 		pcb_hid_tree_t *tree = attr->wdata;
-		conf_listitem_t *n;
+		pcb_conf_listitem_t *n;
 		char *cell[4];
 
 		pcb_dad_tree_clear(tree);
-		for (n = conflist_first(&nat->val.list[idx]); n != NULL; n = conflist_next(n)) {
+		for (n = pcb_conflist_first(&nat->val.list[idx]); n != NULL; n = pcb_conflist_next(n)) {
 			rolename = pcb_conf_role_name(pcb_conf_lookup_role(n->prop.src));
 			cell[0] = rolename == NULL ? pcb_strdup("") : pcb_strdup(rolename);
 			cell[1] = pcb_strdup_printf("%ld", n->prop.prio);

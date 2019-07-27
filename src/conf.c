@@ -664,7 +664,7 @@ int pcb_conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio
 {
 	lht_node_t *s, *prev;
 	int res = 0;
-	conf_listitem_t *i;
+	pcb_conf_listitem_t *i;
 
 	switch(pol) {
 		case POL_DISABLE:
@@ -679,7 +679,7 @@ int pcb_conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio
 				else
 					prev = NULL;
 				if (s->type == LHT_TEXT) {
-					i = calloc(sizeof(conf_listitem_t), 1);
+					i = calloc(sizeof(pcb_conf_listitem_t), 1);
 					i->name = s->name;
 					i->val.string = &i->payload;
 					i->prop.prio = prio;
@@ -688,7 +688,7 @@ int pcb_conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio
 						free(i);
 						continue;
 					}
-					conflist_insert(dest->val.list, i);
+					pcb_conflist_insert(dest->val.list, i);
 					dest->used |= 1;
 				}
 				else {
@@ -699,15 +699,15 @@ int pcb_conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio
 			break;
 		case POL_OVERWRITE:
 			/* overwrite the whole list: make it empty then append new elements */
-			while((i = conflist_first(dest->val.list)) != NULL) {
-				conflist_remove(i);
+			while((i = pcb_conflist_first(dest->val.list)) != NULL) {
+				pcb_conflist_remove(i);
 				free(i);
 			}
 			/* fall through */
 		case POL_APPEND:
 			for(s = src_lst->data.list.first; s != NULL; s = s->next) {
 				if (s->type == LHT_TEXT) {
-					i = calloc(sizeof(conf_listitem_t), 1);
+					i = calloc(sizeof(pcb_conf_listitem_t), 1);
 					i->name = s->name;
 					i->val.string = &i->payload;
 					i->prop.prio = prio;
@@ -716,7 +716,7 @@ int pcb_conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio
 						free(i);
 						continue;
 					}
-					conflist_append(dest->val.list, i);
+					pcb_conflist_append(dest->val.list, i);
 					dest->used |= 1;
 				}
 				else {
@@ -996,9 +996,9 @@ static void conf_field_clear(conf_native_t *f)
 			case CFN_UNIT:        clr(unit); break;
 			case CFN_COLOR:       clr(color); break;
 			case CFN_LIST:
-				while(conflist_first(f->val.list)) { /* need to free all items of a list before clearing the main struct */
-					conf_listitem_t *i = conflist_first(f->val.list);
-					conflist_remove(i);
+				while(pcb_conflist_first(f->val.list)) { /* need to free all items of a list before clearing the main struct */
+					pcb_conf_listitem_t *i = pcb_conflist_first(f->val.list);
+					pcb_conflist_remove(i);
 					free(i);
 				}
 				clr(list);
@@ -1249,9 +1249,9 @@ void pcb_conf_reg_field_(void *value, int array_size, conf_native_type_t type, c
 void pcb_conf_free_native(conf_native_t *node)
 {
 	if (node->type == CFN_LIST) {
-		while(conflist_first(node->val.list) != NULL) {
-			conf_listitem_t *first = conflist_first(node->val.list);
-			conflist_remove(first);
+		while(pcb_conflist_first(node->val.list) != NULL) {
+			pcb_conf_listitem_t *first = pcb_conflist_first(node->val.list);
+			pcb_conflist_remove(first);
 			free(first);
 		}
 	}
@@ -1702,9 +1702,9 @@ int pcb_conf_replace_subtree(conf_role_t dst_role, const char *dst_path, conf_ro
 
 			gds_init(&s);
 			if (n->type == CFN_LIST) {
-				conf_listitem_t *it;
+				pcb_conf_listitem_t *it;
 				ch = lht_dom_node_alloc(LHT_LIST, name+1);
-				for(it = conflist_first(n->val.list); it != NULL; it = conflist_next(it)) {
+				for(it = pcb_conflist_first(n->val.list); it != NULL; it = pcb_conflist_next(it)) {
 					lht_node_t *txt;
 					txt = lht_dom_node_alloc(LHT_TEXT, "");
 					txt->data.text.value = pcb_strdup(it->payload);
@@ -1853,10 +1853,10 @@ int pcb_conf_export_to_file(pcb_hidlib_t *hidlib, const char *fn, conf_role_t ro
 }
 
 
-conf_listitem_t *pcb_conf_list_first_str(conflist_t *list, const char **item_str, int *idx)
+pcb_conf_listitem_t *pcb_conf_list_first_str(pcb_conflist_t *list, const char **item_str, int *idx)
 {
-	conf_listitem_t *item_li;
-	item_li = conflist_first(list);
+	pcb_conf_listitem_t *item_li;
+	item_li = pcb_conflist_first(list);
 	if (item_li == NULL)
 		return NULL;
 	if (item_li->type == CFN_STRING) {
@@ -1866,9 +1866,9 @@ conf_listitem_t *pcb_conf_list_first_str(conflist_t *list, const char **item_str
 	return pcb_conf_list_next_str(item_li, item_str, idx);
 }
 
-conf_listitem_t *pcb_conf_list_next_str(conf_listitem_t *item_li, const char **item_str, int *idx)
+pcb_conf_listitem_t *pcb_conf_list_next_str(pcb_conf_listitem_t *item_li, const char **item_str, int *idx)
 {
-	while((item_li = conflist_next(item_li)) != NULL) {
+	while((item_li = pcb_conflist_next(item_li)) != NULL) {
 		(*idx)++;
 		if (item_li->type != CFN_STRING)
 			continue;
@@ -1882,10 +1882,10 @@ conf_listitem_t *pcb_conf_list_next_str(conf_listitem_t *item_li, const char **i
 	return item_li;
 }
 
-const char *pcb_conf_concat_strlist(const conflist_t *lst, gds_t *buff, int *inited, char sep)
+const char *pcb_conf_concat_strlist(const pcb_conflist_t *lst, gds_t *buff, int *inited, char sep)
 {
 	int n;
-	conf_listitem_t *ci;
+	pcb_conf_listitem_t *ci;
 
 	if ((inited == NULL) || (!*inited)) {
 		gds_init(buff);
@@ -1895,7 +1895,7 @@ const char *pcb_conf_concat_strlist(const conflist_t *lst, gds_t *buff, int *ini
 	else
 		gds_truncate(buff, 0);
 
-	for (n = 0, ci = conflist_first((conflist_t *)lst); ci != NULL; ci = conflist_next(ci), n++) {
+	for (n = 0, ci = pcb_conflist_first((pcb_conflist_t *)lst); ci != NULL; ci = pcb_conflist_next(ci), n++) {
 		const char *p = ci->val.string[0];
 		if (ci->type != CFN_STRING)
 			continue;
@@ -1993,10 +1993,10 @@ int pcb_conf_print_native_field(conf_pfn pfn, void *ctx, int verbose, confitem_t
 		case CFN_COLOR:   print_str_or_null(pfn, ctx, verbose, val->color[idx].str, val->color[idx].str); break;
 		case CFN_LIST:
 			{
-				conf_listitem_t *n;
-				if (conflist_length(val->list) > 0) {
+				pcb_conf_listitem_t *n;
+				if (pcb_conflist_length(val->list) > 0) {
 					ret += pfn(ctx, "{");
-					for(n = conflist_first(val->list); n != NULL; n = conflist_next(n)) {
+					for(n = pcb_conflist_first(val->list); n != NULL; n = pcb_conflist_next(n)) {
 						pcb_conf_print_native_field(pfn, ctx, verbose, &n->val, n->type, &n->prop, 0);
 						ret += pfn(ctx, ";");
 					}

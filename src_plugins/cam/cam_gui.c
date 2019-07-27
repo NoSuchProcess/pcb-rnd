@@ -61,7 +61,7 @@ static void cam_gui_jobs2dlg(cam_dlg_t *ctx)
 	/* add all new items */
 	cn = pcb_conf_get_field("plugins/cam/jobs");
 	if (cn != NULL) {
-		conf_listitem_t *item;
+		pcb_conf_listitem_t *item;
 		int idx;
 
 		cell[1] = NULL;

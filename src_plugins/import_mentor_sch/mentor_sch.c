@@ -134,7 +134,7 @@ static int parse_netlist_view(gsxl_node_t *view)
 	gsxl_node_t *contents, *n;
 	nethlp_ctx_t nhctx;
 	int idx, res = 0, cnt = 0;
-	conf_listitem_t *item;
+	pcb_conf_listitem_t *item;
 	const char *item_str;
 
 	nethlp_new(&nhctx);

@@ -35,7 +35,7 @@
 #include "unit.h"
 
 typedef union confitem_u confitem_t ;
-typedef struct conf_listitem_s conf_listitem_t;
+typedef struct conf_listitem_s pcb_conf_listitem_t;
 
 #include "list_conf.h"
 
@@ -61,7 +61,7 @@ typedef double        CFT_REAL;
 typedef pcb_coord_t   CFT_COORD;
 typedef pcb_unit_t *  CFT_UNIT;
 typedef pcb_color_t   CFT_COLOR;
-typedef conflist_t    CFT_LIST;
+typedef pcb_conflist_t    CFT_LIST;
 
 typedef enum {
 	CFN_STRING,
@@ -83,7 +83,7 @@ union confitem_u {
 	pcb_coord_t *coord;
 	const pcb_unit_t **unit;
 	pcb_color_t *color;
-	conflist_t *list;
+	pcb_conflist_t *list;
 	void *any;
 };
 
@@ -289,11 +289,11 @@ void pcb_conf_setf(conf_role_t role, const char *path, int idx, const char *fmt,
 
 #define conf_list_foreach_path_first(hidlib, res, conf_list, call) \
 do { \
-	conf_listitem_t *__n__; \
-	const conflist_t *__lst1__ = (conf_list); \
-	conflist_t *__lst__ = (conflist_t *)(__lst1__); \
+	pcb_conf_listitem_t *__n__; \
+	const pcb_conflist_t *__lst1__ = (conf_list); \
+	pcb_conflist_t *__lst__ = (pcb_conflist_t *)(__lst1__); \
 	if (__lst__ != NULL) { \
-		for(__n__ = conflist_first(__lst__); __n__ != NULL; __n__ = conflist_next(__n__)) { \
+		for(__n__ = pcb_conflist_first(__lst__); __n__ != NULL; __n__ = pcb_conflist_next(__n__)) { \
 			char *__path__; \
 			const char **__in__ = __n__->val.string; \
 			if (__in__ == NULL) \
@@ -345,20 +345,20 @@ do { \
 lht_node_t *pcb_conf_lht_get_first(conf_role_t target, int create);
 
 /* loop helper */
-conf_listitem_t *pcb_conf_list_first_str(conflist_t *list, const char **item_str, int *idx);
-conf_listitem_t *pcb_conf_list_next_str(conf_listitem_t *item_li, const char **item_str, int *idx);
+pcb_conf_listitem_t *pcb_conf_list_first_str(pcb_conflist_t *list, const char **item_str, int *idx);
+pcb_conf_listitem_t *pcb_conf_list_next_str(pcb_conf_listitem_t *item_li, const char **item_str, int *idx);
 
-/*conf_listitem_t *item;*/
+/*pcb_conf_listitem_t *item;*/
 #define conf_loop_list(list, item, idx) \
-	for (idx = 0, item = conflist_first((conflist_t *)list); item != NULL; item = conflist_next(item), idx++)
+	for (idx = 0, item = pcb_conflist_first((pcb_conflist_t *)list); item != NULL; item = pcb_conflist_next(item), idx++)
 
-/*conf_listitem_t *item; const char *item_str; */
+/*pcb_conf_listitem_t *item; const char *item_str; */
 #define conf_loop_list_str(list, item_li, item_str, idx) \
-	for (idx = 0, item_li = pcb_conf_list_first_str((conflist_t *)list, &item_str, &idx); \
+	for (idx = 0, item_li = pcb_conf_list_first_str((pcb_conflist_t *)list, &item_str, &idx); \
 		item_li != NULL;\
 		item_li = pcb_conf_list_next_str(item_li, &item_str, &idx))
 
-const char *pcb_conf_concat_strlist(const conflist_t *lst, gds_t *buff, int *inited, char sep);
+const char *pcb_conf_concat_strlist(const pcb_conflist_t *lst, gds_t *buff, int *inited, char sep);
 
 /* Print usage help for all nodes that have the CFF_USAGE flag and whose
    path starts with prefix (if prefix != NULL) */

@@ -35,15 +35,15 @@
 #define TDL_DONT_UNDEF
 #endif
 
-#define TDL(x)      conflist_ ## x
-#define TDL_LIST_T  conflist_t
-#define TDL_LIST_U  conflist_u
-#define TDL_ITEM_T  conf_listitem_t
+#define TDL(x)      pcb_conflist_ ## x
+#define TDL_LIST_T  pcb_conflist_t
+#define TDL_LIST_U  pcb_conflist_u
+#define TDL_ITEM_T  pcb_conf_listitem_t
 #define TDL_FIELD   link
 #define TDL_SIZE_T  size_t
 #define TDL_FUNC
 
-#define conflist_foreach(list, iterator, loop_elem) \
+#define pcb_conflist_foreach(list, iterator, loop_elem) \
 	gdl_foreach_((&((list)->lst)), (iterator), (loop_elem))
 
 

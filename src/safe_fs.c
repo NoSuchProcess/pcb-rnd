@@ -270,11 +270,11 @@ FILE *pcb_fopen_at(pcb_hidlib_t *hidlib, const char *dir, const char *fn, const 
 	return pcb_fopen_at_(hidlib, dir, fn, mode, full_path, recursive);
 }
 
-FILE *pcb_fopen_first(pcb_hidlib_t *hidlib, const conflist_t *paths, const char *fn, const char *mode, char **full_path, int recursive)
+FILE *pcb_fopen_first(pcb_hidlib_t *hidlib, const pcb_conflist_t *paths, const char *fn, const char *mode, char **full_path, int recursive)
 {
 	FILE *res;
 	char *real_fn = pcb_build_fn(hidlib, fn);
-	conf_listitem_t *ci;
+	pcb_conf_listitem_t *ci;
 
 	if (full_path != NULL)
 		*full_path = NULL;
@@ -293,7 +293,7 @@ FILE *pcb_fopen_first(pcb_hidlib_t *hidlib, const conflist_t *paths, const char 
 
 	/* have to search paths */
 	{
-		for (ci = conflist_first((conflist_t *)paths); ci != NULL; ci = conflist_next(ci)) {
+		for (ci = pcb_conflist_first((pcb_conflist_t *)paths); ci != NULL; ci = pcb_conflist_next(ci)) {
 			const char *p = ci->val.string[0];
 			char *real_p;
 			size_t pl;

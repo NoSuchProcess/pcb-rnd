@@ -80,6 +80,6 @@ FILE *pcb_fopen_at(pcb_hidlib_t *hidlib, const char *dir, const char *fn, const 
    (or NULL on failure); the caller needs to call free() on it.
    If recursive is set, all subcirectories under each path is also searched for the file.
    */
-FILE *pcb_fopen_first(pcb_hidlib_t *hidlib, const conflist_t *paths, const char *fn, const char *mode, char **full_path, int recursive);
+FILE *pcb_fopen_first(pcb_hidlib_t *hidlib, const pcb_conflist_t *paths, const char *fn, const char *mode, char **full_path, int recursive);
 
 #endif

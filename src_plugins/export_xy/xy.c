@@ -96,7 +96,7 @@ static void free_fmts(void)
 static pcb_export_opt_t *xy_get_export_options(pcb_hid_t *hid, int *n)
 {
 	static int last_unit_value = -1;
-	conf_listitem_t *li;
+	pcb_conf_listitem_t *li;
 	int idx;
 
 	/* load all formats from the config */
@@ -748,7 +748,7 @@ TODO("padstack: do not depend on this, just use the normal bbox and rotate that 
 
 static void gather_templates(void)
 {
-	conf_listitem_t *i;
+	pcb_conf_listitem_t *i;
 	int n;
 
 	conf_loop_list(&conf_xy.plugins.export_xy.templates, i, n) {
@@ -773,7 +773,7 @@ static void gather_templates(void)
 static const char *get_templ(const char *tid, const char *type)
 {
 	char path[MAX_TEMP_NAME_LEN + 16];
-	conf_listitem_t *li;
+	pcb_conf_listitem_t *li;
 	int idx;
 
 	sprintf(path, "%s.%s", tid, type); /* safe: tid's length is checked before it was put in the vector, type is hardwired in code and is never longer than a few chars */

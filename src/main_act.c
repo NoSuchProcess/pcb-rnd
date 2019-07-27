@@ -235,10 +235,10 @@ fgw_error_t pcb_act_PrintCopyright(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_PrintPaths[] = "PrintPaths()";
 static const char pcb_acth_PrintPaths[] = "Print full paths and search paths.";
-static void print_list(const conflist_t *cl)
+static void print_list(const pcb_conflist_t *cl)
 {
 	int n;
-	conf_listitem_t *ci;
+	pcb_conf_listitem_t *ci;
 	const char *p;
 
 	printf(" ");

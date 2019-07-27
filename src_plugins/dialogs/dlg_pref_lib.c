@@ -81,7 +81,7 @@ static const char *pref_node_src(lht_node_t *nd)
    in all widget rows from the conf */
 static void pref_lib_conf2dlg_post(conf_native_t *cfg, int arr_idx)
 {
-	conf_listitem_t *i;
+	pcb_conf_listitem_t *i;
 	int idx;
 	const char *s;
 	char *cell[4];
