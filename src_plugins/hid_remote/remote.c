@@ -360,6 +360,10 @@ static int remote_attr_dlg_run(void *hid_ctx)
 	return 0;
 }
 
+static void remote_attr_dlg_close(void *hid_ctx)
+{
+}
+
 static void remote_attr_dlg_free(void *hid_ctx)
 {
 }
@@ -430,6 +434,7 @@ int pplg_init_hid_remote(void)
 	remote_hid.unwatch_file = remote_unwatch_file;
 	remote_hid.attr_dlg_new = remote_attr_dlg_new;
 	remote_hid.attr_dlg_run = remote_attr_dlg_run;
+	remote_hid.attr_dlg_close = remote_attr_dlg_close;
 	remote_hid.attr_dlg_free = remote_attr_dlg_free;
 	remote_hid.attr_dlg_property = remote_attr_dlg_property;
 	remote_hid.create_menu = remote_create_menu;
