@@ -55,7 +55,7 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 #include "compat_misc.h"
 #include "layer.h"
 #include "safe_fs.h"
-#include "netlist2.h"
+#include "netlist.h"
 
 #include "hid.h"
 #include "hid_nogui.h"

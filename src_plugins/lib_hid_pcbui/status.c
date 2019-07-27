@@ -40,7 +40,7 @@
 #include "find.h"
 #include "obj_subc.h"
 #include "obj_subc_parent.h"
-#include "netlist2.h"
+#include "netlist.h"
 
 #include "status.h"
 

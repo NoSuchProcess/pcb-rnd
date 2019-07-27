@@ -48,7 +48,7 @@
 #include "board.h"
 #include "data.h"
 #include "data_it.h"
-#include "netlist2.h"
+#include "netlist.h"
 #include "plugins.h"
 #include "pcb-printf.h"
 #include "compat_misc.h"

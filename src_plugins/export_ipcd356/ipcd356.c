@@ -36,7 +36,7 @@
 #include "conf_core.h"
 #include "hidlib_conf.h"
 #include "compat_misc.h"
-#include "netlist2.h"
+#include "netlist.h"
 #include "math_helper.h"
 #include "layer.h"
 #include "obj_arc.h"

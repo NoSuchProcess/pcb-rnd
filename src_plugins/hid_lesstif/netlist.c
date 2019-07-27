@@ -11,7 +11,7 @@
 #include "data.h"
 
 #include "find.h"
-#include "netlist2.h"
+#include "netlist.h"
 #include "select.h"
 #include "undo.h"
 #include "remove.h"

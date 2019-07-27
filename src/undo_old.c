@@ -63,7 +63,7 @@
 #include "flag_str.h"
 #include "conf_core.h"
 #include "compat_misc.h"
-#include "netlist2.h"
+#include "netlist.h"
 
 #include "obj_poly_draw.h"
 #include "obj_subc_parent.h"

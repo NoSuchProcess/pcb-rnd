@@ -69,7 +69,7 @@ static const char *EXPERIMENTAL = NULL;
 #include "pcb_minuid.h"
 #include "tool.h"
 #include "color.h"
-#include "netlist2.h"
+#include "netlist.h"
 #include "extobj.h"
 
 #include "actions.h"

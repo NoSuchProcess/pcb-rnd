@@ -34,7 +34,7 @@
 #include "data.h"
 #include "write.h"
 #include "layer.h"
-#include "netlist2.h"
+#include "netlist.h"
 #include "macro.h"
 #include "obj_pstk_inlines.h"
 

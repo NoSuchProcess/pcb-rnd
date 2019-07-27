@@ -42,7 +42,7 @@
 #include "actions.h"
 #include "conf_core.h"
 #include "compat_misc.h"
-#include "netlist2.h"
+#include "netlist.h"
 #include "safe_fs.h"
 #include "macro.h"
 

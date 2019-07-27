@@ -65,7 +65,7 @@
 #include "obj_pstk_inlines.h"
 #include "obj_subc_parent.h"
 #include "hid_dad.h"
-#include "netlist2.h"
+#include "netlist.h"
 
 #include <genregex/regex_sei.h>
 

@@ -42,7 +42,7 @@
 #include "paths.h"
 #include "safe_fs.h"
 #include "macro.h"
-#include "netlist2.h"
+#include "netlist.h"
 
 static pcb_plug_import_t import_netlist;
 

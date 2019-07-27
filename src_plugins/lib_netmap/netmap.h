@@ -26,7 +26,7 @@
 
 #include <genht/htpp.h>
 #include "board.h"
-#include "netlist2.h"
+#include "netlist.h"
 
 typedef struct dyn_net_s dyn_net_t;
 typedef struct dyn_obj_s dyn_obj_t;

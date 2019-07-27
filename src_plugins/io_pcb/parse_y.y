@@ -48,7 +48,7 @@
 #include "route_style.h"
 #include "compat_misc.h"
 #include "src_plugins/lib_compat_help/pstk_compat.h"
-#include "netlist2.h"
+#include "netlist.h"
 
 /* frame between the groundplane and the copper or mask - noone seems
    to remember what these two are for; changing them may have unforeseen

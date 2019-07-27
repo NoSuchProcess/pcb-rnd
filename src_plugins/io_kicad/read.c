@@ -52,7 +52,7 @@
 #include "rotate.h"
 #include "safe_fs.h"
 #include "attrib.h"
-#include "netlist2.h"
+#include "netlist.h"
 #include "math_helper.h"
 #include "obj_pstk_inlines.h"
 

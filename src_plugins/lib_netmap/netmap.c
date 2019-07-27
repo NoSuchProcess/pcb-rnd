@@ -32,7 +32,7 @@
 #include "netmap.h"
 #include "data.h"
 #include "find.h"
-#include "netlist2.h"
+#include "netlist.h"
 #include "pcb-printf.h"
 #include "plugins.h"
 

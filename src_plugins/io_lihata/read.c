@@ -56,7 +56,7 @@
 #include "plug_footprint.h"
 #include "vtpadstack.h"
 #include "obj_pstk_inlines.h"
-#include "netlist2.h"
+#include "netlist.h"
 
 #include "../src_plugins/lib_compat_help/subc_help.h"
 #include "../src_plugins/lib_compat_help/pstk_compat.h"

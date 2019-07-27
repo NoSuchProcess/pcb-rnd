@@ -31,7 +31,7 @@
 #include "board.h"
 #include "plug_io.h"
 #include "error.h"
-#include "netlist2.h"
+#include "netlist.h"
 #include "data.h"
 #include "write.h"
 #include "layer.h"

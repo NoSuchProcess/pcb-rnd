@@ -43,7 +43,7 @@
 #include "funchash_core.h"
 #include "obj_rat.h"
 #include "actions.h"
-#include "netlist2.h"
+#include "netlist.h"
 #include "draw.h"
 
 #include "obj_rat_draw.h"

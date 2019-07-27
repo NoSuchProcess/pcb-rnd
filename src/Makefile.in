@@ -178,7 +178,7 @@ append /local/pcb/OBJS [@
 	main.o
 	main_act.o
 	move.o
-	netlist2.o
+	netlist.o
 	netlist_act.o
 	object_act.o
 	obj_common.o

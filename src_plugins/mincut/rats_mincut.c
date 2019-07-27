@@ -41,7 +41,7 @@
 #include "search.h"
 #include "undo.h"
 #include "plugins.h"
-#include "netlist2.h"
+#include "netlist.h"
 #include "compat_misc.h"
 #include "obj_common.h"
 #include "obj_subc_parent.h"

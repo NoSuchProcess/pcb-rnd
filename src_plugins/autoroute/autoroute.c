@@ -74,7 +74,7 @@
 #include "find.h"
 #include "heap.h"
 #include "rtree.h"
-#include "netlist2.h"
+#include "netlist.h"
 #include "mtspace.h"
 #include "polygon.h"
 #include "remove.h"

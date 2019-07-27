@@ -39,7 +39,7 @@
 #include "actions.h"
 #include "safe_fs.h"
 #include "obj_subc.h"
-#include "netlist2.h"
+#include "netlist.h"
 
 #include "tnetlist.h"
 #include "parse.h"

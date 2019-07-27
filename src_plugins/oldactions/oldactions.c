@@ -44,7 +44,7 @@
 #include "obj_subc.h"
 #include "macro.h"
 #include "compat_misc.h"
-#include "netlist2.h"
+#include "netlist.h"
 
 static void conf_toggle(conf_role_t role, const char *path)
 {

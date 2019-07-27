@@ -25,7 +25,7 @@
 #include "hid.h"
 #include "rtree.h"
 #include "undo.h"
-#include "netlist2.h"
+#include "netlist.h"
 #include "error.h"
 #include "move.h"
 #include "draw.h"

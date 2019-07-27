@@ -25,7 +25,7 @@
  */
 
 #include "event.h"
-#include "netlist2.h"
+#include "netlist.h"
 #include <genvector/vtp0.h>
 
 const char *dlg_netlist_cookie = "netlist dialog";

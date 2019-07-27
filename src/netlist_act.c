@@ -44,7 +44,7 @@
 #include "plug_io.h"
 #include "actions.h"
 #include "compat_misc.h"
-#include "netlist2.h"
+#include "netlist.h"
 #include "data_it.h"
 #include "find.h"
 #include "obj_term.h"

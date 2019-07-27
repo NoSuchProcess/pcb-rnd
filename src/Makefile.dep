@@ -134,7 +134,7 @@
  ../src_3rd/liblihata/lihata.h list_conf.h conf_core.h obj_pstk_inlines.h \
  data.h thermal.h polygon1_gen.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h \
- ../src_plugins/lib_netmap/netmap.h netlist2.h dolists.h
+ ../src_plugins/lib_netmap/netmap.h netlist.h dolists.h
 ../src_plugins/asm/asm.o: ../src_plugins/asm/asm.c ../config.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/genlist/gendlist.h \
@@ -229,7 +229,7 @@
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h draw.h error.h layer.h intersect.h rtree.h macro.h move.h \
- netlist2.h remove.h rotate.h compat_misc.h obj_rat.h obj_term.h \
+ netlist.h remove.h rotate.h compat_misc.h obj_rat.h obj_term.h \
  obj_pstk_inlines.h data.h thermal.h polygon1_gen.h data_it.h
 ../src_plugins/autoroute/action.o: ../src_plugins/autoroute/action.c \
  ../config.h ../src_plugins/autoroute/autoroute.h board.h \
@@ -272,7 +272,7 @@
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h macro.h \
  ../src_plugins/autoroute/autoroute.h board.h vtroutestyle.h rats_patch.h \
- board.h hidlib.h box.h draw.h error.h find.h heap.h rtree.h netlist2.h \
+ board.h hidlib.h box.h draw.h error.h find.h heap.h rtree.h netlist.h \
  ../src_plugins/autoroute/mtspace.h ../src_plugins/autoroute/vector.h \
  polygon.h remove.h obj_pinvia_therm.h undo.h ../src_3rd/libuundo/uundo.h \
  undo_old.h pcb-printf.h layer.h obj_line_draw.h draw.h obj_pstk_draw.h \
@@ -465,7 +465,7 @@
  buffer.h obj_rat_list.h obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h ht_subc.h ../src_3rd/genht/ht.h \
  obj_pstk_list.h obj_pstk.h vtpadstack.h draw.h obj_term.h rtree.h \
- search.h search_r.h netlist2.h ../src_plugins/dialogs/dlg_search.h \
+ search.h search_r.h netlist.h ../src_plugins/dialogs/dlg_search.h \
  ../src_plugins/dialogs/dlg_undo.c ../src_3rd/libuundo/uundo.h event.h \
  undo.h undo_old.h ../src_plugins/dialogs/dlg_netlist.c \
  ../src_plugins/dialogs/dlg_plugins.c \
@@ -1086,7 +1086,7 @@
  vtpadstack_t.h error.h buffer.h change.h draw.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h pcb-printf.h polygon.h \
  compat_misc.h layer.h safe_fs.h conf.h pcb-printf.h \
- ../src_3rd/liblihata/lihata.h list_conf.h netlist2.h hid.h hid_nogui.h \
+ ../src_3rd/liblihata/lihata.h list_conf.h netlist.h hid.h hid_nogui.h \
  actions.h hid_init.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h hid_attrib.h hid_cam.h hid_attrib.h plugins.h \
@@ -1300,7 +1300,7 @@
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h safe_fs.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h list_conf.h conf_core.h hidlib_conf.h \
- compat_misc.h netlist2.h math_helper.h layer.h obj_arc.h obj_line.h \
+ compat_misc.h netlist.h math_helper.h layer.h obj_arc.h obj_line.h \
  obj_poly.h obj_subc.h obj_pstk.h obj_pstk_inlines.h data.h thermal.h \
  polygon1_gen.h hid.h hid_nogui.h hid_cam.h hid_attrib.h hid_attrib.h \
  hid_init.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
@@ -1556,7 +1556,7 @@
  obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h rtree.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h obj_pstk_list.h obj_pstk.h vtpadstack.h \
- obj_pstk_shape.h polygon.h vtpadstack_t.h data_it.h data.h netlist2.h \
+ obj_pstk_shape.h polygon.h vtpadstack_t.h data_it.h data.h netlist.h \
  plugins.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h pcb-printf.h \
@@ -1713,7 +1713,7 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h compat_misc.h obj_pstk_inlines.h thermal.h \
- polygon1_gen.h obj_subc_op.h operation.h layer.h netlist2.h safe_fs.h \
+ polygon1_gen.h obj_subc_op.h operation.h layer.h netlist.h safe_fs.h \
  macro.h operation.h ../src_plugins/export_xy/xy_conf.h conf.h hid.h \
  hid_nogui.h hid_attrib.h hid_cam.h hid_attrib.h hid_init.h \
  ../src_plugins/lib_compat_help/elem_rot.h \
@@ -2310,7 +2310,7 @@
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h find.h netlist2.h board.h vtroutestyle.h rats_patch.h \
+ vtpadstack_t.h find.h netlist.h board.h vtroutestyle.h rats_patch.h \
  hidlib.h select.h operation.h undo.h ../src_3rd/libuundo/uundo.h \
  undo_old.h remove.h crosshair.h draw.h event.h fptr_cast.h hid.h \
  actions.h ../src_plugins/hid_lesstif/lesstif.h hid_cfg_input.h hid_cfg.h \
@@ -2456,7 +2456,7 @@
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h error.h netlist2.h plugins.h ../src_3rd/puplug/puplug.h \
+ vtpadstack_t.h error.h netlist.h plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h compat_misc.h safe_fs.h conf.h pcb-printf.h \
@@ -2695,7 +2695,7 @@
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h rats_patch.h \
- compat_misc.h paths.h safe_fs.h macro.h netlist2.h
+ compat_misc.h paths.h safe_fs.h macro.h netlist.h
 ../src_plugins/import_sch/import_sch.o: \
  ../src_plugins/import_sch/import_sch.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h pcb-printf.h \
@@ -2853,7 +2853,7 @@
  rats_patch.h board.h hidlib.h plug_io.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- ../src_3rd/genvector/vtp0.h list_conf.h error.h netlist2.h data.h \
+ ../src_3rd/genvector/vtp0.h list_conf.h error.h netlist.h data.h \
  crosshair.h vtonpoint.h hid.h error.h route.h buffer.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h obj_rat_list.h \
  obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
@@ -2903,7 +2903,7 @@
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h plug_io.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h list_conf.h error.h pcb_bool.h safe_fs.h \
- compat_misc.h layer_grp.h conf_core.h math_helper.h actions.h netlist2.h \
+ compat_misc.h layer_grp.h conf_core.h math_helper.h actions.h netlist.h \
  polygon_offs.h ../src_plugins/io_dsn/read.h
 ../src_plugins/io_dsn/write.o: ../src_plugins/io_dsn/write.c ../config.h \
  plug_io.h global_typedefs.h pcb_bool.h conf.h pcb-printf.h \
@@ -2927,7 +2927,7 @@
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h layer.h \
  layer_grp.h ../src_plugins/io_dsn/write.h \
- ../src_plugins/lib_netmap/netmap.h netlist2.h
+ ../src_plugins/lib_netmap/netmap.h netlist.h
 ../src_plugins/io_eagle/eagle_bin.o: ../src_plugins/io_eagle/eagle_bin.c \
  ../config.h ../src_plugins/io_eagle/eagle_bin.h \
  ../src_plugins/io_eagle/egb_tree.h ../src_3rd/genht/htss.h \
@@ -3125,7 +3125,7 @@
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h compat_misc.h \
  polygon.h obj_subc_parent.h data.h obj_pstk_inlines.h thermal.h \
- polygon1_gen.h ../src_plugins/lib_netmap/netmap.h netlist2.h \
+ polygon1_gen.h ../src_plugins/lib_netmap/netmap.h netlist.h \
  funchash_core.h funchash.h funchash_core_list.h ../src_3rd/genht/htpi.h
 ../src_plugins/io_kicad/io_kicad.o: ../src_plugins/io_kicad/io_kicad.c \
  ../config.h plugins.h ../src_3rd/puplug/puplug.h \
@@ -3190,7 +3190,7 @@
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_plugins/io_kicad/read.h layer.h polygon.h plug_footprint.h \
  vtlibrary.h data.h misc_util.h conf_core.h move.h macro.h rotate.h \
- compat_misc.h safe_fs.h attrib.h netlist2.h math_helper.h \
+ compat_misc.h safe_fs.h attrib.h netlist.h math_helper.h \
  obj_pstk_inlines.h thermal.h polygon1_gen.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h \
  ../src_plugins/lib_compat_help/pstk_help.h \
@@ -3249,7 +3249,7 @@
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
- ../src_plugins/io_kicad/write.h layer.h netlist2.h obj_pstk_inlines.h \
+ ../src_plugins/io_kicad/write.h layer.h netlist.h obj_pstk_inlines.h \
  data.h thermal.h polygon1_gen.h funchash_core.h funchash.h \
  funchash_core_list.h ../src_plugins/lib_compat_help/pstk_compat.h \
  obj_pstk.h
@@ -3300,7 +3300,7 @@
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
- ../src_plugins/io_kicad_legacy/write.h layer.h netlist2.h macro.h \
+ ../src_plugins/io_kicad_legacy/write.h layer.h netlist.h macro.h \
  obj_pstk_inlines.h data.h thermal.h polygon1_gen.h \
  ../src_plugins/io_kicad_legacy/../io_kicad/uniq_name.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h
@@ -3372,7 +3372,7 @@
  pcb_minuid.h thermal.h polygon1_gen.h \
  ../src_plugins/io_lihata/io_lihata.h conf.h \
  ../src_plugins/io_lihata/lht_conf.h safe_fs.h plug_footprint.h \
- vtlibrary.h data.h vtpadstack.h obj_pstk_inlines.h thermal.h netlist2.h \
+ vtlibrary.h data.h vtpadstack.h obj_pstk_inlines.h thermal.h netlist.h \
  ../src_plugins/lib_compat_help/subc_help.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h \
  ../src_plugins/lib_compat_help/elem_rot.h
@@ -3406,7 +3406,7 @@
  ../src_3rd/liblhtpers/lhtpers.h ../src_plugins/io_lihata/io_lihata.h \
  conf.h ../src_plugins/io_lihata/lht_conf.h paths.h obj_subc_list.h \
  pcb_minuid.h safe_fs.h thermal.h polygon1_gen.h funchash_core.h \
- funchash.h funchash_core_list.h netlist2.h hid_dad.h compat_misc.h \
+ funchash.h funchash_core_list.h netlist.h hid_dad.h compat_misc.h \
  hid_attrib.h hid_dad_spin.h ../src_plugins/lib_compat_help/pstk_compat.h \
  obj_pstk.h
 ../src_plugins/io_lihata/write_style.o: \
@@ -3490,7 +3490,7 @@
  polygon1_gen.h remove.h flag_str.h compat_fs.h compat_misc.h paths.h \
  rats_patch.h actions.h ../src_plugins/io_pcb/attribs.h route_style.h \
  obj_poly.h thermal.h polygon1_gen.h event.h macro.h funchash_core.h \
- funchash.h funchash_core_list.h netlist2.h \
+ funchash.h funchash_core_list.h netlist.h \
  ../src_plugins/lib_compat_help/layer_compat.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h \
  ../src_plugins/lib_compat_help/subc_help.h obj_subc.h \
@@ -3565,7 +3565,7 @@
  ../src_plugins/io_pcb/file.h plug_io.h ../src_plugins/io_pcb/parse_l.h \
  polygon.h remove.h rtree.h flag_str.h obj_pinvia_therm.h rats_patch.h \
  route_style.h compat_misc.h ../src_plugins/lib_compat_help/pstk_compat.h \
- obj_pstk.h netlist2.h ../src_plugins/io_pcb/parse_y.h
+ obj_pstk.h netlist.h ../src_plugins/io_pcb/parse_y.h
 ../src_plugins/io_tedax/footprint.o: ../src_plugins/io_tedax/footprint.c \
  ../config.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/htip.h ../src_3rd/genht/hash.h \
@@ -3733,7 +3733,7 @@
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h error.h pcb-printf.h compat_misc.h actions.h safe_fs.h \
  conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h obj_subc.h \
- netlist2.h ../src_plugins/io_tedax/tnetlist.h \
+ netlist.h ../src_plugins/io_tedax/tnetlist.h \
  ../src_plugins/io_tedax/parse.h
 ../src_plugins/jostle/jostle.o: ../src_plugins/jostle/jostle.c \
  ../config.h board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
@@ -4629,7 +4629,7 @@
  data.h crosshair.h buffer.h ../src_3rd/libfungw/fungw.h obj_rat_list.h \
  obj_rat.h idpath.h obj_subc_list.h obj_subc.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h netlist2.h \
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h netlist.h \
  ../src_plugins/lib_hid_pcbui/status.h event.h conf.h actions.h
 ../src_plugins/lib_hid_pcbui/toolbar.o: \
  ../src_plugins/lib_hid_pcbui/toolbar.c ../config.h \
@@ -4662,7 +4662,7 @@
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h polyarea.h \
  obj_text_list.h obj_text.h font.h ../src_3rd/genht/htip.h box.h \
  math_helper.h misc_util.h ../src_3rd/genvector/gds_char.h layer_grp.h \
- rats_patch.h board.h hidlib.h netlist2.h ../src_3rd/genvector/vtp0.h \
+ rats_patch.h board.h hidlib.h netlist.h ../src_3rd/genvector/vtp0.h \
  data.h crosshair.h vtonpoint.h hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h error.h \
  route.h buffer.h ../src_3rd/libfungw/fungw.h obj_rat_list.h obj_rat.h \
@@ -4922,7 +4922,7 @@
  undo.h ../src_3rd/libuundo/uundo.h undo_old.h plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h netlist2.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h netlist.h \
  compat_misc.h obj_common.h obj_subc_parent.h data.h \
  ../src_plugins/mincut/pcb-mincut/graph.h \
  ../src_plugins/mincut/pcb-mincut/../../../config.h \
@@ -4957,7 +4957,7 @@
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h actions.h \
  plug_footprint.h vtlibrary.h data.h obj_subc.h macro.h compat_misc.h \
- netlist2.h dolists.h
+ netlist.h dolists.h
 ../src_plugins/order/order.o: ../src_plugins/order/order.c ../config.h \
  actions.h hid.h ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
@@ -5338,7 +5338,7 @@
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h actions.h conf_core.h \
  conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h \
- compat_misc.h netlist2.h safe_fs.h macro.h pcb-printf.h dolists.h
+ compat_misc.h netlist.h safe_fs.h macro.h pcb-printf.h dolists.h
 ../src_plugins/renumber/renumberblock.o: \
  ../src_plugins/renumber/renumberblock.c ../config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h global_typedefs.h \
@@ -5415,7 +5415,7 @@
  ../src_plugins/report/report_conf.h conf.h compat_misc.h layer.h \
  obj_term.h obj_pstk.h obj_pstk_inlines.h thermal.h polygon1_gen.h \
  obj_subc_parent.h hid_dad.h compat_misc.h hid_attrib.h hid_dad_spin.h \
- netlist2.h ../src_3rd/genregex/regex_sei.h \
+ netlist.h ../src_3rd/genregex/regex_sei.h \
  ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h dolists.h \
  ../src_plugins/report/report_conf_fields.h
 ../src_plugins/rubberband_orig/fgeometry.o: \
@@ -5682,7 +5682,7 @@
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h event.h \
  list_common.h obj_line_list.h obj_pstk.h obj_pstk_inlines.h data.h \
  thermal.h polygon1_gen.h obj_subc_parent.h pcb-printf.h search.h tool.h \
- layer_ui.h netlist2.h ../src_plugins/sketch_route/sktypedefs.h \
+ layer_ui.h netlist.h ../src_plugins/sketch_route/sktypedefs.h \
  ../src_plugins/sketch_route/wire.h \
  ../src_plugins/sketch_route/cdt/typedefs.h \
  ../src_plugins/sketch_route/cdt/list/list.h \
@@ -5757,7 +5757,7 @@
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h hid.h rtree.h undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h netlist2.h error.h move.h draw.h plugins.h \
+ undo_old.h netlist.h error.h move.h draw.h plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h actions.h obj_subc.h \
@@ -6040,7 +6040,7 @@ board.o: board.c ../config.h board.h ../src_3rd/genht/htsp.h \
  vtpadstack_t.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h list_conf.h hidlib_conf.h plug_io.h \
  compat_misc.h actions.h paths.h undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h draw.h event.h safe_fs.h tool.h netlist2.h defpcb_internal.c \
+ undo_old.h draw.h event.h safe_fs.h tool.h netlist.h defpcb_internal.c \
  obj_pstk_inlines.h thermal.h polygon1_gen.h
 box.o: box.c ../config.h rotate.h global_typedefs.h pcb_bool.h \
  compat_misc.h box.h math_helper.h obj_common.h flag.h globalconst.h \
@@ -6393,7 +6393,7 @@ file_act.o: file_act.c ../config.h board.h ../src_3rd/genht/htsp.h \
  compat_misc.h hid_init.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h layer_vis.h \
- safe_fs.h tool.h netlist2.h
+ safe_fs.h tool.h netlist.h
 file_loaded.o: file_loaded.c ../config.h ../src_3rd/genht/hash.h \
  file_loaded.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  compat_misc.h
@@ -6857,7 +6857,7 @@ main.o: main.c ../config.h ../src_3rd/libminuid/libminuid.h board.h \
  ../src_3rd/puplug/libs.h build_run.h file_loaded.h flag_str.h plugins.h \
  ../src_3rd/puplug/error.h plug_footprint.h vtlibrary.h plug_import.h \
  event.h funchash.h conf_core.h hidlib_conf.h layer_vis.h layer_ui.h \
- pcb_minuid.h tool.h netlist2.h extobj.h draw.h actions.h actions_pcb.h \
+ pcb_minuid.h tool.h netlist.h extobj.h draw.h actions.h actions_pcb.h \
  hid_init.h compat_misc.h dolists.h generated_lists.h
 main_act.o: main_act.c ../config.h undo.h ../src_3rd/libuundo/uundo.h \
  undo_old.h global_typedefs.h pcb_bool.h change.h board.h \
@@ -6913,7 +6913,7 @@ move.o: move.c ../config.h conf_core.h conf.h global_typedefs.h \
  select.h operation.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
  event.h actions.h compat_misc.h obj_arc_op.h obj_line_op.h obj_text_op.h \
  obj_subc_op.h obj_poly_op.h obj_pstk_op.h obj_rat_op.h
-netlist2.o: netlist2.c ../config.h ../src_3rd/genht/htsp.h \
+netlist.o: netlist.c ../config.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h \
  ../src_3rd/genregex/regex_sei.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h board.h global_typedefs.h pcb_bool.h \
@@ -6937,7 +6937,7 @@ netlist2.o: netlist2.c ../config.h ../src_3rd/genht/htsp.h \
  vtpadstack_t.h data_it.h event.h compat_misc.h find.h obj_term.h \
  conf_core.h conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h \
  list_conf.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h obj_rat_draw.h \
- obj_subc_parent.h search.h remove.h draw.h netlist2.h \
+ obj_subc_parent.h search.h remove.h draw.h netlist.h \
  ../src_3rd/genlist/gentdlist_impl.c netlist_geo.c obj_pstk_inlines.h \
  thermal.h polygon1_gen.h
 netlist_act.o: netlist_act.c ../config.h ../src_3rd/genregex/regex_sei.h \
@@ -6963,7 +6963,7 @@ netlist_act.o: netlist_act.c ../config.h ../src_3rd/genregex/regex_sei.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h data_it.h board.h vtroutestyle.h rats_patch.h hidlib.h \
  plug_io.h conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h \
- actions.h compat_misc.h netlist2.h find.h obj_term.h search.h \
+ actions.h compat_misc.h netlist.h find.h obj_term.h search.h \
  obj_subc_parent.h
 obj_arc.o: obj_arc.c ../config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h global_typedefs.h pcb_bool.h vtroutestyle.h unit.h \
@@ -7581,7 +7581,7 @@ rats_act.o: rats_act.c ../config.h conf_core.h conf.h global_typedefs.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h find.h remove.h funchash_core.h \
- funchash.h funchash_core_list.h actions.h netlist2.h draw.h \
+ funchash.h funchash_core_list.h actions.h netlist.h draw.h \
  obj_rat_draw.h
 rats_patch.o: rats_patch.c rats_patch.h board.h ../config.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h global_typedefs.h \
@@ -7606,7 +7606,7 @@ rats_patch.o: rats_patch.c rats_patch.h board.h ../config.h \
  vtpadstack_t.h move.h compat_misc.h safe_fs.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h list_conf.h funchash_core.h funchash.h \
  funchash_core_list.h search.h undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h conf_core.h netlist2.h
+ undo_old.h conf_core.h netlist.h
 remove.o: remove.c ../config.h conf_core.h conf.h global_typedefs.h \
  pcb_bool.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -7982,7 +7982,7 @@ tool_line.o: tool_line.c ../config.h conf_core.h conf.h global_typedefs.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h \
  draw_wireframe.h find.h search.h tool.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h netlist2.h obj_line_draw.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h netlist.h obj_line_draw.h \
  obj_pstk_draw.h obj_rat_draw.h route_draw.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h
 tool_lock.o: tool_lock.c ../config.h board.h ../src_3rd/genht/htsp.h \
@@ -8242,7 +8242,7 @@ undo_old.o: undo_old.c ../config.h ../src_3rd/libuundo/uundo.h board.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h draw.h move.h insert.h remove.h rotate.h compat_misc.h \
  search.h undo.h undo_old.h flag_str.h conf_core.h conf.h pcb-printf.h \
- ../src_3rd/liblihata/lihata.h list_conf.h netlist2.h obj_poly_draw.h \
+ ../src_3rd/liblihata/lihata.h list_conf.h netlist.h obj_poly_draw.h \
  obj_subc_parent.h brave.h undo_old_str.h
 unit.o: unit.c ../config.h compat_misc.h unit.h global_typedefs.h \
  pcb_bool.h

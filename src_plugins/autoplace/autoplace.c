@@ -60,7 +60,7 @@
 #include "rtree.h"
 #include "macro.h"
 #include "move.h"
-#include "netlist2.h"
+#include "netlist.h"
 #include "remove.h"
 #include "rotate.h"
 #include "obj_rat.h"

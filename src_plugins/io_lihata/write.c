@@ -53,7 +53,7 @@
 #include "safe_fs.h"
 #include "thermal.h"
 #include "funchash_core.h"
-#include "netlist2.h"
+#include "netlist.h"
 #include "hid_dad.h"
 
 #include "src_plugins/lib_compat_help/pstk_compat.h"

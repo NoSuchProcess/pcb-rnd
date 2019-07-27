@@ -44,7 +44,7 @@
 #include "conf_core.h"
 #include "math_helper.h"
 #include "actions.h"
-#include "netlist2.h"
+#include "netlist.h"
 #include "polygon_offs.h"
 
 #include "read.h"

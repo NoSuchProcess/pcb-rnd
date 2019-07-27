@@ -39,7 +39,7 @@
 #include "search.h"
 #include "undo.h"
 #include "conf_core.h"
-#include "netlist2.h"
+#include "netlist.h"
 
 static void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t * n, int do_free);
 

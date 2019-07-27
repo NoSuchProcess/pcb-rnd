@@ -1,3 +1,4 @@
+26976	configure	rename netlist2.[ch] to netlist.[ch]
 26946	configure	hidlib: split DAD from hid_attrib
 26906	configure	hidlib: split hidlib into modular rndlib and install relevant headers
 26716	configure	gtk: merge lib_gtk_hid into lib_gtk_common

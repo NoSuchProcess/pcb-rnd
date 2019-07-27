@@ -30,7 +30,7 @@
 #include "board.h"
 #include "data.h"
 #include "error.h"
-#include "netlist2.h"
+#include "netlist.h"
 #include "plugins.h"
 #include "compat_misc.h"
 #include "safe_fs.h"

@@ -47,7 +47,7 @@
 #include "draw.h"
 
 #define TDL_DONT_UNDEF
-#include "netlist2.h"
+#include "netlist.h"
 #include <genlist/gentdlist_impl.c>
 
 void pcb_net_term_free_fields(pcb_net_term_t *term)
