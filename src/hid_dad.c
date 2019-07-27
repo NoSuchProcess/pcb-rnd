@@ -69,7 +69,7 @@ void pcb_hid_dad_close(void *hid_ctx, pcb_dad_retovr_t *retovr, int retval)
 {
 	retovr->valid = 1;
 	retovr->value = retval;
-	pcb_gui->attr_dlg_free(hid_ctx);
+	pcb_gui->attr_dlg_close(hid_ctx);
 }
 
 void pcb_hid_dad_close_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -130,7 +130,7 @@ int pcb_attribute_dialog_(const char *id, pcb_hid_attribute_t *attrs, int n_attr
 		*hid_ctx_out = hid_ctx;
 	rv = pcb_gui->attr_dlg_run(hid_ctx);
 	if ((retovr == NULL) || (*retovr != 0))
-		pcb_gui->attr_dlg_free(hid_ctx);
+		pcb_gui->attr_dlg_close(hid_ctx);
 
 	return rv ? 0 : 1;
 }

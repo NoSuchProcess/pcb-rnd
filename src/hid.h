@@ -404,6 +404,7 @@ struct pcb_hid_s {
 	void *(*attr_dlg_new)(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
 	int (*attr_dlg_run)(void *hid_ctx);
 	void (*attr_dlg_raise)(void *hid_ctx); /* raise the window to top */
+	void (*attr_dlg_close)(void *hid_ctx); /* close the GUI but do not yet free hid_ctx (results should be available) */
 	void (*attr_dlg_free)(void *hid_ctx);
 
 	/* Set a property of an attribute dialog (typical call is between
