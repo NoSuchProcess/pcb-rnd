@@ -64,8 +64,10 @@ static htsp_t pcb_live_scripts;
 static void lvs_free_langs(live_script_t *lvs)
 {
 	char **s;
-	for(s = lvs->langs; *s != NULL; s++) free(*s);
-	for(s = lvs->lang_engines; *s != NULL; s++) free(*s);
+	if (lvs->langs != NULL)
+		for(s = lvs->langs; *s != NULL; s++) free(*s);
+	if (lvs->lang_engines != NULL)
+		for(s = lvs->lang_engines; *s != NULL; s++) free(*s);
 	free(lvs->langs);
 	free(lvs->lang_engines);
 }
@@ -89,6 +91,7 @@ static void lvs_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	free(lvs);
 }
 
+#ifdef PCB_HAVE_SYS_FUNGW
 static int lvs_list_langs(pcb_hidlib_t *hl, live_script_t *lvs)
 {
 	const char **path;
@@ -151,6 +154,24 @@ static int lvs_list_langs(pcb_hidlib_t *hl, live_script_t *lvs)
 	lvs->lang_engines = (char **)ve.array;
 	return vl.used;
 }
+#else
+static int lvs_list_langs(pcb_hidlib_t *hl, live_script_t *lvs)
+{
+	vtp0_t vl, ve;
+
+	vtp0_init(&vl);
+	vtp0_init(&ve);
+
+	vtp0_append(&vl, pcb_strdup("fawk")); vtp0_append(&ve, pcb_strdup("fawk"));
+	vtp0_append(&vl, pcb_strdup("fbas")); vtp0_append(&ve, pcb_strdup("fbas"));
+	vtp0_append(&vl, pcb_strdup("fpas")); vtp0_append(&ve, pcb_strdup("fpas"));
+
+	lvs->langs = (char **)vl.array;
+	lvs->lang_engines = (char **)ve.array;
+	return vl.used;
+}
+
+#endif
 
 static void lvs_button_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
 {

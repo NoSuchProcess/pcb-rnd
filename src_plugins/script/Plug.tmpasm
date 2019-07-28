@@ -4,6 +4,20 @@ put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/script/live_script.o
 @]
 
+# Fallback scripting: if no system installed fungw is available, static link libfawk
+if /local/pcb/fungw_system
+then
+else
+	append /local/pcb/mod/OBJS [@
+	$(SRC_3RD_DIR)/libfungwbind/fawk/fungw_fawk.o
+	@]
+	append /local/pcb/RULES [@
+
+#$(SRC_3RD_DIR)/libfungwbind/fawk/fungw_fawk.o: $(SRC_3RD_DIR)/libfungwbind/fawk/fungw_fawk.c
+#	$(CC) $(CFLAGS) -c $(SRC_3RD_DIR)/libfungwbind/fawk/fungw_fawk.c -o $(SRC_3RD_DIR)/libfungwbind/fawk/fungw_fawk.o
+#	@]
+end
+
 switch /local/pcb/script/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;

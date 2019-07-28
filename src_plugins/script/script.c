@@ -46,6 +46,11 @@
 
 #include "script.h"
 
+#ifndef PCB_HAVE_SYS_FUNGW
+int pplg_init_fungw_fawk(void);
+int pplg_uninit_fungw_fawk(void);
+#endif
+
 typedef struct {
 	char *id, *fn, *lang;
 	pup_plugin_t *pup;
@@ -139,8 +144,10 @@ static void script_free(script_t *s, const char *preunload, const char *cookie)
 
 	if (s->obj != NULL)
 		fgw_obj_unreg(&pcb_fgw, s->obj);
+#ifdef PCB_HAVE_SYS_FUNGW
 	if (s->pup != NULL)
 		pup_unload(&script_pup, s->pup, NULL);
+#endif
 	free(s->id);
 	free(s->fn);
 	free(s);
@@ -265,6 +272,7 @@ TODO(": guess")
 	}
 
 	if (strcmp(lang, "c") != 0) {
+#ifdef PCB_HAVE_SYS_FUNGW
 		const char *engname = lang;
 
 		TODO("move this to fungw");
@@ -281,6 +289,7 @@ TODO(": guess")
 			pcb_message(PCB_MSG_ERROR, "Can not load script engine %s for language %s\n", name, lang);
 			return -1;
 		}
+#endif
 	}
 	else {
 		lang = "pcb_rnd_c";
@@ -430,6 +439,10 @@ void pplg_uninit_script(void)
 
 	htsp_uninit(&scripts);
 	pup_uninit(&script_pup);
+
+#ifndef PCB_HAVE_SYS_FUNGW
+	pplg_uninit_fungw_fawk();
+#endif
 }
 
 #include "dolists.h"
@@ -437,6 +450,11 @@ int pplg_init_script(void)
 {
 	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(script_action_list, script_cookie);
+
+#ifndef PCB_HAVE_SYS_FUNGW
+	pplg_init_fungw_fawk();
+#endif
+
 	pcb_c_script_init();
 	htsp_init(&scripts, strhash, strkeyeq);
 	pup_init(&script_pup);
