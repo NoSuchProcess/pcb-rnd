@@ -32,7 +32,6 @@
 #include <genht/hash.h>
 
 #include "actions.h"
-#include "board.h"
 #include "plugins.h"
 #include "hid_cfg.h"
 #include "hid_dad.h"
@@ -90,7 +89,7 @@ static void lvs_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	free(lvs);
 }
 
-static int lvs_list_langs(live_script_t *lvs)
+static int lvs_list_langs(pcb_hidlib_t *hl, live_script_t *lvs)
 {
 	const char **path;
 	vtp0_t vl, ve;
@@ -102,7 +101,7 @@ static int lvs_list_langs(live_script_t *lvs)
 		char fn[PCB_PATH_MAX*2], *fn_end;
 		int dirlen;
 		struct dirent *de;
-		DIR *d = pcb_opendir(&PCB->hidlib, *path);
+		DIR *d = pcb_opendir(hl, *path);
 
 		if (d == NULL)
 			continue;
@@ -126,7 +125,7 @@ static int lvs_list_langs(live_script_t *lvs)
 
 			strcpy(fn_end, de->d_name);
 
-			f = pcb_fopen(&PCB->hidlib, fn, "r");
+			f = pcb_fopen(hl, fn, "r");
 			if (f == NULL)
 				continue;
 			while((s = fgets(line, sizeof(line), f)) != NULL) {
@@ -180,7 +179,7 @@ static live_script_t *pcb_dlg_live_script(const char *name)
 	char *title;
 	live_script_t *lvs = calloc(sizeof(live_script_t), 1);
 
-	if (lvs_list_langs(lvs) < 1) {
+	if (lvs_list_langs(NULL, lvs) < 1) {
 		lvs_free_langs(lvs);
 		free(lvs);
 		pcb_message(PCB_MSG_ERROR, "live_script: no scripting language engines found\nPlease compile and install fungw from source, then\nreconfigure and recompile pcb-rnd.\n");
@@ -255,7 +254,7 @@ static int live_stop(live_script_t *lvs)
 	return 0;
 }
 
-static int live_run(live_script_t *lvs)
+static int live_run(pcb_hidlib_t *hl, live_script_t *lvs)
 {
 	pcb_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
 	pcb_hid_text_t *txt = atxt->wdata;
@@ -265,7 +264,7 @@ static int live_run(live_script_t *lvs)
 	long numu;
 
 	fn = pcb_tempfile_name_new("live_script");
-	f = pcb_fopen(&PCB->hidlib, fn, "w");
+	f = pcb_fopen(hl, fn, "w");
 	if (f == NULL) {
 		pcb_tempfile_unlink(fn);
 		pcb_message(PCB_MSG_ERROR, "live_script: can't open temp file for write\n");
@@ -325,7 +324,7 @@ static int live_undo(live_script_t *lvs)
 }
 
 
-static int live_load(live_script_t *lvs, const char *fn)
+static int live_load(pcb_hidlib_t *hl, live_script_t *lvs, const char *fn)
 {
 	pcb_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
 	pcb_hid_text_t *txt = atxt->wdata;
@@ -341,7 +340,7 @@ static int live_load(live_script_t *lvs, const char *fn)
 			return 0;
 	}
 
-	f = pcb_fopen(&PCB->hidlib, fn, "r");
+	f = pcb_fopen(hl, fn, "r");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "live_script: failed to open '%s' for read\n", fn);
 		return -1;
@@ -366,7 +365,7 @@ static int live_load(live_script_t *lvs, const char *fn)
 	return 0;
 }
 
-static int live_save(live_script_t *lvs, const char *fn)
+static int live_save(pcb_hidlib_t *hl, live_script_t *lvs, const char *fn)
 {
 	pcb_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
 	pcb_hid_text_t *txt = atxt->wdata;
@@ -387,7 +386,7 @@ static int live_save(live_script_t *lvs, const char *fn)
 			return 0;
 	}
 
-	f = pcb_fopen(&PCB->hidlib, fn, "w");
+	f = pcb_fopen(hl, fn, "w");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "live_script: failed to open '%s' for write\n", fn);
 		return -1;
@@ -453,16 +452,16 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	PCB_ACT_IRES(0);
 	if (pcb_strcasecmp(cmd, "load") == 0) {
-		PCB_ACT_IRES(live_load(lvs, arg));
+		PCB_ACT_IRES(live_load(NULL, lvs, arg));
 	}
 	else if (pcb_strcasecmp(cmd, "save") == 0) {
-		PCB_ACT_IRES(live_save(lvs, arg));
+		PCB_ACT_IRES(live_save(NULL, lvs, arg));
 	}
 	else if (pcb_strcasecmp(cmd, "undo") == 0) {
 		PCB_ACT_IRES(live_undo(lvs));
 	}
 	else if (pcb_strcasecmp(cmd, "run") == 0) {
-		live_run(lvs);
+		live_run(NULL, lvs);
 	}
 	else if (pcb_strcasecmp(cmd, "stop") == 0) {
 		live_stop(lvs);
@@ -470,7 +469,7 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else if (pcb_strcasecmp(cmd, "rerun") == 0) {
 		live_stop(lvs);
 		live_undo(lvs);
-		live_run(lvs);
+		live_run(NULL, lvs);
 	}
 
 	return 0;
