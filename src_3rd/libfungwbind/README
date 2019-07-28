@@ -1,0 +1,4 @@
+This is the fallback scripting facility: if system installed fungw is not
+found, the local libfungw extern is used and the script plugin will static
+link this one binding. This binding does not have any external dependency
+and provides multiple scripting languages.
