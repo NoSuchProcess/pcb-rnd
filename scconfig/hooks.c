@@ -731,10 +731,13 @@ int hook_detect_target()
 		put("libs/gui/gd/gdImageJpeg/presents", sfalse);
 	}
 
-	if ((!istrue(get("libs/script/fungw/presents"))) && plug_is_enabled("script")) {
-		report_repeat("WARNING: Since there's no system-installed fungw, disabling the script plugin...\n");
-		hook_custom_arg("disable-script", NULL);
+	if (!istrue(get("libs/script/fungw/presents"))) {
+		if (plug_is_enabled("script"))
+			report_repeat("WARNING: Since there's no system-installed fungw, only limited scripting is available using libfawk - if you need more scripting languages, install fungw and reconfigure.\n");
+		put("/local/pcb/fungw_system", sfalse);
 	}
+	else
+		put("/local/pcb/fungw_system", strue);
 
 	/* generic utils for Makefiles */
 	require("sys/ext_exe", 0, 1);

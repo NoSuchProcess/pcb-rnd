@@ -150,6 +150,9 @@ print {\n}
 print_ternary ?signal/names/SIGQUIT/presents    {#define PCB_HAVE_SIGQUIT 1} {/* #undef PCB_HAVE_SIGQUIT */}
 print {\n}
 
+print {\n\n/* Wether fungw is system installed */\n}
+print_ternary /local/pcb/fungw_system {#define PCB_HAVE_SYS_FUNGW 1} {/* #undef PCB_HAVE_SYS_FUNGW */}
+
 print {\n/* Code warnings for TODO, portable (unlike #warning) */}
 if ?cc/pragma_message
 then
