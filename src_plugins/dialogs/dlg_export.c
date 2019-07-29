@@ -178,7 +178,7 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 	PCB_DAD_BEGIN_VBOX(export_ctx.dlg);
 	PCB_DAD_COMPFLAG(export_ctx.dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_BEGIN_TABBED(export_ctx.dlg, export_ctx.tab_name);
-			PCB_DAD_COMPFLAG(export_ctx.dlg, PCB_HATF_LEFT_TAB);
+			PCB_DAD_COMPFLAG(export_ctx.dlg, PCB_HATF_LEFT_TAB|PCB_HATF_EXPFILL);
 			export_ctx.tabs = PCB_DAD_CURRENT(export_ctx.dlg);
 			for(n = 0; n < export_ctx.len; n++) {
 				int numo;
