@@ -1,7 +1,8 @@
 # TODO default compiler flags
-put /local/pcb/CFLAGS cc/cflags
-append /local/pcb/CFLAGS cc/fpic
-append /local/pcb/CFLAGS ?/local/pcb/cflags_profile
+put /local/pcb/CFLAGS_GENERIC cc/cflags
+append /local/pcb/CFLAGS_GENERIC cc/fpic
+append /local/pcb/CFLAGS_GENERIC ?/local/pcb/cflags_profile
+put /local/pcb/CFLAGS /local/pcb/CFLAGS_GENERIC
 append /local/pcb/CFLAGS {-I. -I.. -I../src_3rd -I../src_3rd/liblihata -Iicons -DHAVE_CONFIG_H}
 append /local/pcb/LDFLAGS cc/ldflags
 append /local/pcb/LDFLAGS cc/rdynamic
@@ -329,6 +330,7 @@ uniq /local/pcb/OBJS_HIDLIB_PLG
 uniq /local/pcb/OBJS_C99_HIDLIB_PLG
 uniq /local/pcb/OBJS_UTIL
 uniq /local/pcb/CFLAGS
+uniq /local/pcb/CFLAGS_GENERIC
 uniq /local/pcb/LDFLAGS
 uniq /local/pcb/LIBS
 uniq /local/pcb/LIBS_PRE
@@ -390,14 +392,15 @@ CQUOTE=$(ROOT)/scconfig/cquote
 SPHASH_PATH=$(ROOT)/src_3rd/sphash
 SPHASH=$(SPHASH_PATH)/sphash
 PUPLUG=$(ROOT)/src_3rd/puplug/util/puplug
-LIBMINUID_CFLAGS=@cc/cflags@
+LIBMINUID_CFLAGS=@/local/pcb/CFLAGS_GENERIC@
 LIBMINUID_LDFLAGS=@cc/ldflags@
-GENLIST_CFLAGS=@cc/cflags@
+GENLIST_CFLAGS=@/local/pcb/CFLAGS_GENERIC@
 GENLIST_LDFLAGS=@cc/ldflags@
 
 all:
 	$(MAKE) revcheck
 	$(MAKE) all_exe
+	$(MAKE) librnd
 
 include $(ROOT)/Makefile.conf
 
