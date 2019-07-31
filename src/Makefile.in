@@ -3,7 +3,7 @@ put /local/pcb/CFLAGS_GENERIC cc/cflags
 append /local/pcb/CFLAGS_GENERIC cc/fpic
 append /local/pcb/CFLAGS_GENERIC ?/local/pcb/cflags_profile
 put /local/pcb/CFLAGS /local/pcb/CFLAGS_GENERIC
-append /local/pcb/CFLAGS {-I. -I.. -I../src_3rd -I../src_3rd/liblihata -Iicons }
+append /local/pcb/CFLAGS {-I. -I.. -I../src_3rd -I../src_3rd/liblihata }
 append /local/pcb/LDFLAGS cc/ldflags
 append /local/pcb/LDFLAGS cc/rdynamic
 append /local/pcb/LDFLAGS ?/local/pcb/cflags_profile
