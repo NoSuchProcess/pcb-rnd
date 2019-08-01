@@ -234,6 +234,7 @@ static void lib_btn_down(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	int wpath, wexp;
+	pref_ctx_t *pctx;
 } cell_edit_ctx_t;
 
 static void lib_cell_edit_update(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *btn_attr)
@@ -246,12 +247,13 @@ static void lib_cell_edit_update(void *hid_ctx, void *caller_data, pcb_hid_attri
 		PCB_DAD_SET_VALUE(hid_ctx, ctx->wexp, str, tmp);
 }
 
-static int lib_cell_edit(char **cell)
+static int lib_cell_edit(pref_ctx_t *pctx, char **cell)
 {
 	cell_edit_ctx_t ctx;
 	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
 
 	memset(&ctx, 0, sizeof(ctx));
+	ctx.pctx = pctx;
 
 	PCB_DAD_BEGIN_VBOX(ctx.dlg);
 		PCB_DAD_BEGIN_TABLE(ctx.dlg, 2);
@@ -289,6 +291,7 @@ static int lib_cell_edit(char **cell)
 
 static void lib_btn_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *btn_attr, int pos)
 {
+	pref_ctx_t *ctx = caller_data;
 	pcb_hid_attribute_t *attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
 	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
 	char *cell[4];
@@ -314,7 +317,7 @@ static void lib_btn_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	cell[1] = pcb_strdup("");
 	cell[2] = pcb_strdup(SRC_BRD);
 	cell[3] = NULL;
-	if (lib_cell_edit(cell) != 0) {
+	if (lib_cell_edit(ctx, cell) != 0) {
 		free(cell[0]);
 		free(cell[1]);
 		free(cell[2]);
@@ -393,10 +396,11 @@ static void pref_libhelp_open(pref_libhelp_ctx_t *ctx)
 
 static void libhelp_btn(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pref_ctx_t *ctx = caller_data;
-	if (ctx->lib.help.active)
+	cell_edit_ctx_t *hctx = caller_data;
+
+	if (hctx->pctx->lib.help.active)
 		return;
-	pref_libhelp_open(&ctx->lib.help);
+	pref_libhelp_open(&hctx->pctx->lib.help);
 }
 
 void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
