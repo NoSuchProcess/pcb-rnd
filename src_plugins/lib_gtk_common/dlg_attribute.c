@@ -55,7 +55,7 @@ typedef struct {
 	GtkWidget **wltop;  /* the parent widget, which is different from wl if reparenting (extra boxes, e.g. for framing or scrolling) was needed */
 	int n_attrs;
 	GtkWidget *dialog;
-	int rc, close_cb_called;
+	int close_cb_called;
 	pcb_hid_attr_val_t property[PCB_HATP_max];
 	void (*close_cb)(void *caller_data, pcb_hid_attr_ev_t ev);
 	char *id;
@@ -693,11 +693,11 @@ static void ghid_attr_dlg_free_gui(attr_dlg_t *ctx)
 
 	if (!ctx->close_cb_called) {
 		ctx->close_cb_called = 1;
-		if (ctx->close_cb != NULL)
+		if (ctx->close_cb != NULL) {
 			ctx->close_cb(ctx->caller_data, PCB_HID_ATTR_EV_CODECLOSE);
+			return; /* ctx is invalid now */
+		}
 	}
-
-	ctx->dialog = NULL;
 }
 
 
@@ -762,7 +762,6 @@ void *ghid_attr_dlg_new(pcb_gtk_t *gctx, const char *id, pcb_hid_attribute_t *at
 	ctx->wl = calloc(sizeof(GtkWidget *), n_attrs);
 	ctx->wltop = calloc(sizeof(GtkWidget *), n_attrs);
 	ctx->caller_data = caller_data;
-	ctx->rc = 1; /* just in case the window is destroyed in an unknown way: take it as cancel */
 	ctx->close_cb_called = 0;
 	ctx->close_cb = button_cb;
 	ctx->id = pcb_strdup(id);
@@ -814,7 +813,6 @@ void *ghid_attr_sub_new(pcb_gtk_t *gctx, GtkWidget *parent_box, pcb_hid_attribut
 	ctx->wl = calloc(sizeof(GtkWidget *), n_attrs);
 	ctx->wltop = calloc(sizeof(GtkWidget *), n_attrs);
 	ctx->caller_data = caller_data;
-	ctx->rc = 1; /* just in case the window is destroyed in an unknown way: take it as cancel */
 	ctx->modal = 0;
 
 	ghid_attr_dlg_add(ctx, parent_box, NULL, 0);
@@ -829,17 +827,24 @@ void *ghid_attr_sub_new(pcb_gtk_t *gctx, GtkWidget *parent_box, pcb_hid_attribut
 int ghid_attr_dlg_run(void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;
+	int modal = ctx->modal;
+	GtkWidget *dialog = ctx->dialog;
+
 	GtkResponseType res = gtk_dialog_run(GTK_DIALOG(ctx->dialog));
-	if (!ctx->modal)
-		ghid_attr_dlg_free_gui(ctx);
+
+	/* NOTE: ctx may be invalid by now (user callback free'd it) */
+
 	if (res == GTK_RESPONSE_NONE) {
-		/* the close cb destroyed the window; rc is already set */
+		/* the close cb destroyed the window; real return value should be set by DAD ret override */
+		return -42;
 	}
-	else if (res == GTK_RESPONSE_OK)
-		ctx->rc = 0;
-	else
-		ctx->rc = 1;
-	return ctx->rc;
+
+	if (modal)
+		gtk_widget_destroy(dialog);
+
+	if (res == GTK_RESPONSE_OK)
+		return 0;
+	return 1;
 }
 
 void ghid_attr_dlg_raise(void *hid_ctx)
@@ -860,8 +865,12 @@ void ghid_attr_dlg_free(void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;
 
-	if (ctx->dialog != NULL)
+	if ((ctx->dialog != NULL) && (!ctx->freeing_gui)) {
 		gtk_widget_destroy(ctx->dialog);
+		while(!ctx->freeing_gui) /* wait for the destroy event to get delivered */
+			while(gtk_events_pending())
+				gtk_main_iteration_do(0);
+	}
 
 	free(ctx->id);
 	free(ctx->wl);
