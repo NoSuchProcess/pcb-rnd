@@ -4,6 +4,7 @@
 
 #include "crosshair.h"
 #include "draw.h"
+#include "color_cache.h"
 #include "hid_attrib.h"
 #include "hid_color.h"
 #include "hidlib_conf.h"
@@ -47,6 +48,10 @@ typedef struct render_priv_s {
 	int subcomposite_stencil_bit;
 	char *current_colorname;
 	double current_alpha_mult;
+
+	/* color cache for set_color */
+	pcb_clrcache_t ccache;
+	int ccache_inited;
 } render_priv_t;
 
 
@@ -308,14 +313,11 @@ typedef struct {
 static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
-	static void *cache = NULL;
 	static GdkColormap *colormap = NULL;
-	pcb_hidval_t cval;
-	pcb_gtk_color_cache_t *cc;
 	double r, g, b, a;
 
-	if (gc->pcolor == NULL) {
-		fprintf(stderr, "set_gl_color_for_gc:  gc->colorname = NULL, setting to magenta\n");
+	if (*gc->pcolor->str == '\0') {
+		fprintf(stderr, "set_gl_color_for_gc:  gc->colorname = 0, setting to magenta\n");
 		gc->pcolor = pcb_color_magenta;
 	}
 
@@ -336,15 +338,13 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 		a = pcbhl_conf.appearance.drill_alpha;
 	}
 	else {
-		if (pcb_hid_cache_color(0, gc->pcolor->str, &cval, &cache))
-			cc = (pcb_gtk_color_cache_t *) cval.ptr;
-		else {
-			cc = (pcb_gtk_color_cache_t *) malloc(sizeof(pcb_gtk_color_cache_t));
-			memset(cc, 0, sizeof(*cc));
-			cval.ptr = cc;
-			pcb_hid_cache_color(1, gc->pcolor->str, &cval, &cache);
-		}
+		pcb_gtk_color_cache_t *cc;
 
+		if (!priv->ccache_inited) {
+			pcb_clrcache_init(&priv->ccache, sizeof(pcb_gtk_color_cache_t), NULL);
+			priv->ccache_inited = 1;
+		}
+		cc = pcb_clrcache_get(&priv->ccache, gc->pcolor, 1);
 		if (!cc->color_set) {
 			if (gdk_color_parse(gc->pcolor->str, &cc->color))
 				gdk_color_alloc(colormap, &cc->color);
