@@ -1,0 +1,73 @@
+(Created by G-code exporter)
+(600 dpi)
+(Unit: inch)
+(Board size: 0.50x0.50 inches)#100=0.002000  (safe Z)
+#101=-0.000050  (cutting depth)
+(---------------------------------)
+G17 G20 G90 G64 P0.003 M3 S3000 M7 F1
+G0 Z#100
+(polygon 1)
+G0 X0.165000 Y0.436667    (start point)
+G1 Z#101
+G1 X0.165000 Y0.361667
+G1 X0.218333 Y0.361667
+G1 X0.218333 Y0.436667
+G1 X0.165000 Y0.436667
+G0 Z#100
+(polygon end, distance 0.26)
+(polygon 2)
+G0 X0.283333 Y0.436667    (start point)
+G1 Z#101
+G1 X0.283333 Y0.361667
+G1 X0.336667 Y0.361667
+G1 X0.336667 Y0.436667
+G1 X0.283333 Y0.436667
+G0 Z#100
+(polygon end, distance 0.26)
+(polygon 3)
+G0 X0.216667 Y0.211667    (start point)
+G1 Z#101
+G1 X0.216667 Y0.175000
+G1 X0.233333 Y0.175000
+G1 X0.233333 Y0.211667
+G1 X0.216667 Y0.211667
+G0 Z#100
+(polygon end, distance 0.11)
+(polygon 4)
+G0 X0.243333 Y0.211667    (start point)
+G1 Z#101
+G1 X0.243333 Y0.175000
+G1 X0.260000 Y0.175000
+G1 X0.260000 Y0.211667
+G1 X0.243333 Y0.211667
+G0 Z#100
+(polygon end, distance 0.11)
+(polygon 5)
+G0 X0.268333 Y0.211667    (start point)
+G1 Z#101
+G1 X0.268333 Y0.175000
+G1 X0.283333 Y0.175000
+G1 X0.283333 Y0.211667
+G1 X0.268333 Y0.211667
+G0 Z#100
+(polygon end, distance 0.10)
+(polygon 6)
+G0 X0.216667 Y0.141667    (start point)
+G1 Z#101
+G1 X0.216667 Y0.105000
+G1 X0.233333 Y0.105000
+G1 X0.233333 Y0.141667
+G1 X0.216667 Y0.141667
+G0 Z#100
+(polygon end, distance 0.11)
+(polygon 7)
+G0 X0.268333 Y0.141667    (start point)
+G1 Z#101
+G1 X0.268333 Y0.105000
+G1 X0.283333 Y0.105000
+G1 X0.283333 Y0.141667
+G1 X0.268333 Y0.141667
+G0 Z#100
+(polygon end, distance 0.10)
+(end, total distance 26.42mm = 1.04in)
+M5 M9 M2
