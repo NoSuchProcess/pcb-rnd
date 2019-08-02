@@ -6,7 +6,6 @@
 #include "draw.h"
 #include "color_cache.h"
 #include "hid_attrib.h"
-#include "hid_color.h"
 #include "hidlib_conf.h"
 #include "funchash_core.h"
 

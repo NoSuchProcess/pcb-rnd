@@ -9,7 +9,6 @@
 #include "color.h"
 #include "color_cache.h"
 #include "hid_attrib.h"
-#include "hid_color.h"
 #include "funchash_core.h"
 
 #include "../src_plugins/lib_gtk_common/pcb_gtk.h"
