@@ -50,6 +50,10 @@ typedef struct render_priv_s {
 	GdkDrawable *out_pixel, *out_clip;
 	GdkGC *pixel_gc, *clip_gc;
 	GdkColor clip_color;
+
+	/* color cache for set_color */
+	pcb_clrcache_t ccache;
+	int ccache_inited;
 } render_priv_t;
 
 
@@ -487,15 +491,12 @@ static void ghid_gdk_set_special_colors(conf_native_t *cfg)
 
 static void ghid_gdk_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 {
-	static void *cache = 0;
 	static GdkColormap *colormap = NULL;
 	render_priv_t *priv = ghidgui->port.render_priv;
-	pcb_hidval_t cval;
-	const char *name = color->str;
 
-	if (name == NULL) {
+	if (*color->str == '\0') {
 		fprintf(stderr, "ghid_gdk_set_color():  name = NULL, setting to magenta\n");
-		name = "magenta";
+		color = pcb_color_magenta;
 	}
 
 	gc->pcolor = *color;
@@ -510,20 +511,14 @@ static void ghid_gdk_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 	}
 	else {
 		pcb_gtk_color_cache_t *cc;
-		if (pcb_hid_cache_color(0, name, &cval, &cache))
-			cc = (pcb_gtk_color_cache_t *) cval.ptr;
-		else {
-			cc = (pcb_gtk_color_cache_t *) malloc(sizeof(pcb_gtk_color_cache_t));
-			memset(cc, 0, sizeof(*cc));
-			cval.ptr = cc;
-			pcb_hid_cache_color(1, name, &cval, &cache);
-		}
 
+		if (!priv->ccache_inited) {
+			pcb_clrcache_init(&priv->ccache, sizeof(pcb_gtk_color_cache_t), NULL);
+			priv->ccache_inited = 1;
+		}
+		cc = pcb_clrcache_get(&priv->ccache, color, 1);
 		if (!cc->color_set) {
-			if (gdk_color_parse(name, &cc->color))
-				gdk_color_alloc(colormap, &cc->color);
-			else
-				gdk_color_white(colormap, &cc->color);
+			map_color(color, &cc->color);
 			cc->color_set = 1;
 		}
 		if (gc->xor_mask) {
