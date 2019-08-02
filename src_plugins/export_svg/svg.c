@@ -59,7 +59,6 @@
 
 #include "hid_init.h"
 #include "hid_attrib.h"
-#include "hid_color.h"
 #include "hid_cam.h"
 
 
