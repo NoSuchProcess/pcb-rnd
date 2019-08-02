@@ -349,15 +349,6 @@ Pixel lesstif_parse_color(const pcb_color_t *value)
 	return 0;
 }
 
-Pixel lesstif_parse_color_str(const char *value)
-{
-	XColor color;
-	if (XParseColor(display, lesstif_colormap, value, &color))
-		if (XAllocColor(display, lesstif_colormap, &color))
-			return color.pixel;
-	return 0;
-}
-
 /* ------------------------------------------------------------ */
 
 static const char *cur_clip()
