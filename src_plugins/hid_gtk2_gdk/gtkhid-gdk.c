@@ -7,6 +7,7 @@
 #include "draw.h"
 #include "grid.h"
 #include "color.h"
+#include "color_cache.h"
 #include "hid_attrib.h"
 #include "hid_color.h"
 #include "funchash_core.h"
@@ -443,7 +444,7 @@ typedef struct {
 	GdkColor color;
 	int xor_set;
 	GdkColor xor_color;
-} ColorCache;
+} pcb_gtk_color_cache_t;
 
 
 /* Config helper functions for when the user changes color preferences.
@@ -508,11 +509,11 @@ static void ghid_gdk_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 		gdk_gc_set_foreground(gc->pixel_gc, &priv->offlimits_color);
 	}
 	else {
-		ColorCache *cc;
+		pcb_gtk_color_cache_t *cc;
 		if (pcb_hid_cache_color(0, name, &cval, &cache))
-			cc = (ColorCache *) cval.ptr;
+			cc = (pcb_gtk_color_cache_t *) cval.ptr;
 		else {
-			cc = (ColorCache *) malloc(sizeof(ColorCache));
+			cc = (pcb_gtk_color_cache_t *) malloc(sizeof(pcb_gtk_color_cache_t));
 			memset(cc, 0, sizeof(*cc));
 			cval.ptr = cc;
 			pcb_hid_cache_color(1, name, &cval, &cache);

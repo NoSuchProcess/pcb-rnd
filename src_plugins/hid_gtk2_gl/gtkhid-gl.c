@@ -303,7 +303,7 @@ typedef struct {
 	double red;
 	double green;
 	double blue;
-} ColorCache;
+} pcb_gtk_color_cache_t;
 
 static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 {
@@ -311,7 +311,7 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 	static void *cache = NULL;
 	static GdkColormap *colormap = NULL;
 	pcb_hidval_t cval;
-	ColorCache *cc;
+	pcb_gtk_color_cache_t *cc;
 	double r, g, b, a;
 
 	if (gc->pcolor == NULL) {
@@ -337,9 +337,9 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 	}
 	else {
 		if (pcb_hid_cache_color(0, gc->pcolor->str, &cval, &cache))
-			cc = (ColorCache *) cval.ptr;
+			cc = (pcb_gtk_color_cache_t *) cval.ptr;
 		else {
-			cc = (ColorCache *) malloc(sizeof(ColorCache));
+			cc = (pcb_gtk_color_cache_t *) malloc(sizeof(pcb_gtk_color_cache_t));
 			memset(cc, 0, sizeof(*cc));
 			cval.ptr = cc;
 			pcb_hid_cache_color(1, gc->pcolor->str, &cval, &cache);
