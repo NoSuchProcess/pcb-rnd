@@ -31,13 +31,6 @@
 #include "config.h"
 #include "opengl.h"
 
-typedef struct pcb_gl_color_s {
-	GLfloat red;
-	GLfloat green;
-	GLfloat blue;
-	GLfloat alpha;
-} pcb_gl_color_t;
-
 void drawgl_uninit();
 void drawgl_flush();
 void drawgl_set_colour(GLfloat r, GLfloat g, GLfloat b, GLfloat a);

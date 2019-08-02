@@ -39,9 +39,9 @@ static pcb_coord_t grid_local_x = 0, grid_local_y = 0, grid_local_radius = 0;
 
 typedef struct render_priv_s {
 	GdkGLConfig *glconfig;
-	pcb_gtk_color_t bg_color;
-	pcb_gtk_color_t offlimits_color;
-	pcb_gtk_color_t grid_color;
+	pcb_color_t bg_color;
+	pcb_color_t offlimits_color;
+	pcb_color_t grid_color;
 	pcb_bool trans_lines;
 	pcb_bool in_context;
 	int subcomposite_stencil_bit;
@@ -196,7 +196,7 @@ static void ghid_gl_draw_grid(pcb_hidlib_t *hidlib, pcb_box_t *drawn_area)
 	glEnable(GL_COLOR_LOGIC_OP);
 	glLogicOp(GL_XOR);
 
-	glColor3f(priv->grid_color.red / 65535., priv->grid_color.green / 65535., priv->grid_color.blue / 65535.);
+	glColor3f(priv->grid_color.fr, priv->grid_color.fg, priv->grid_color.fb);
 
 	if (pcb_conf_hid_gtk.plugins.hid_gtk.local_grid.enable)
 		hidgl_draw_local_grid(hidlib, grid_local_x, grid_local_y, grid_local_radius);
@@ -271,10 +271,12 @@ static void ghid_gl_draw_bg_image(pcb_hidlib_t *hidlib)
 static void set_special_grid_color(void)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
+	unsigned r, g, b;
 
-	priv->grid_color.red ^= priv->bg_color.red;
-	priv->grid_color.green ^= priv->bg_color.green;
-	priv->grid_color.blue ^= priv->bg_color.blue;
+	r = priv->grid_color.r ^ priv->bg_color.r;
+	g = priv->grid_color.g ^ priv->bg_color.g;
+	b = priv->grid_color.b ^ priv->bg_color.b;
+	pcb_color_load_int(&priv->grid_color, r, g, b, 255);
 }
 
 void ghid_gl_set_special_colors(conf_native_t *cfg)
@@ -282,14 +284,14 @@ void ghid_gl_set_special_colors(conf_native_t *cfg)
 	render_priv_t *priv = ghidgui->port.render_priv;
 
 	if (((CFT_COLOR *) cfg->val.color == &pcbhl_conf.appearance.color.background)) {
-		map_color(&cfg->val.color[0], &priv->bg_color);
+		priv->bg_color = cfg->val.color[0];
 	}
 	else if ((CFT_COLOR *)cfg->val.color == &pcbhl_conf.appearance.color.off_limit) {
-		map_color(&cfg->val.color[0], &priv->offlimits_color);
+		priv->offlimits_color = cfg->val.color[0];
 	}
-	else if (((CFT_COLOR *) cfg->val.color == &pcbhl_conf.appearance.color.grid)) {
-		if (map_color(&cfg->val.color[0], &priv->grid_color))
-			set_special_grid_color();
+	else if (((CFT_COLOR *)cfg->val.color == &pcbhl_conf.appearance.color.grid)) {
+		priv->grid_color = cfg->val.color[0];
+		set_special_grid_color();
 	}
 }
 
@@ -326,11 +328,11 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 
 	if (colormap == NULL)
 		colormap = gtk_widget_get_colormap(ghidgui->port.top_window);
-	TODO("color: Do not depend on manual strcmp here - use pcb_color_is_drill()");
+
 	if (pcb_color_is_drill(gc->pcolor)) {
-		r = priv->offlimits_color.red / 65535.;
-		g = priv->offlimits_color.green / 65535.;
-		b = priv->offlimits_color.blue / 65535.;
+		r = priv->offlimits_color.fr;
+		g = priv->offlimits_color.fg;
+		b = priv->offlimits_color.fb;
 		a = pcbhl_conf.appearance.drill_alpha;
 	}
 	else {
@@ -355,9 +357,9 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 		}
 		if (gc->xor) {
 			if (!cc->xor_set) {
-				cc->xor_color.red = cc->color.red ^ priv->bg_color.red;
-				cc->xor_color.green = cc->color.green ^ priv->bg_color.green;
-				cc->xor_color.blue = cc->color.blue ^ priv->bg_color.blue;
+				cc->xor_color.red = cc->color.red ^ ((unsigned)priv->bg_color.r << 8);
+				cc->xor_color.green = cc->color.green ^ ((unsigned)priv->bg_color.g << 8);
+				cc->xor_color.blue = cc->color.blue ^ ((unsigned)priv->bg_color.b << 8);
 				gdk_color_alloc(colormap, &cc->xor_color);
 				cc->red = cc->color.red / 65535.;
 				cc->green = cc->color.green / 65535.;
@@ -742,16 +744,10 @@ static void ghid_gl_drawing_area_configure_hook(void *port)
 	ghidgui->port.drawing_allowed = pcb_true;
 
 	if (!done_once) {
-		if (!map_color(&pcbhl_conf.appearance.color.background, &priv->bg_color))
-			map_color(pcb_color_white, &priv->bg_color);
-
-		if (!map_color(&pcbhl_conf.appearance.color.off_limit, &priv->offlimits_color))
-			map_color(pcb_color_white, &priv->offlimits_color);
-
-		if (!map_color(&pcbhl_conf.appearance.color.grid, &priv->grid_color))
-			map_color(pcb_color_blue, &priv->grid_color);
+		priv->bg_color = pcbhl_conf.appearance.color.background;
+		priv->offlimits_color = pcbhl_conf.appearance.color.off_limit;
+		priv->grid_color = pcbhl_conf.appearance.color.grid;
 		set_special_grid_color();
-
 		done_once = 1;
 	}
 }
@@ -795,7 +791,7 @@ static void ghid_gl_screen_update(void)
     (w, h) describes the total area concerned, while (xr, yr, wr, hr) describes area requested by an expose event.
     The color structure holds the wanted solid back-ground color, used to first paint the exposed drawing area.
  */
-static void pcb_gl_draw_expose_init(pcb_hid_t *hid, int w, int h, int xr, int yr, int wr, int hr, pcb_gl_color_t *bg_c)
+static void pcb_gl_draw_expose_init(pcb_hid_t *hid, int w, int h, int xr, int yr, int wr, int hr, pcb_color_t *bg_c)
 {
 	hidgl_init();
 
@@ -812,7 +808,7 @@ static void pcb_gl_draw_expose_init(pcb_hid_t *hid, int w, int h, int xr, int yr
 	glTranslatef(0.0f, 0.0f, -Z_NEAR);
 
 	glEnable(GL_STENCIL_TEST);
-	glClearColor(bg_c->red, bg_c->green, bg_c->blue, 1.);
+	glClearColor(bg_c->fr, bg_c->fg, bg_c->fb, 1.);
 	glStencilMask(~0);
 	glClearStencil(0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -824,14 +820,6 @@ static void pcb_gl_draw_expose_init(pcb_hid_t *hid, int w, int h, int xr, int yr
 	glStencilFunc(GL_ALWAYS, 0, 0);
 }
 
-/* alpha component is not part of GdkColor structure. Can't derive it from GTK2 pcb_gtk_color_t */
-static void gtk2gl_color(pcb_gl_color_t *gl_c, pcb_gtk_color_t *gtk_c)
-{
-	gl_c->red = gtk_c->red / 65535.;
-	gl_c->green = gtk_c->green / 65535.;
-	gl_c->blue = gtk_c->blue / 65535.;
-}
-
 static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose_t *ev, void *vport)
 {
 	pcb_gtk_port_t *port = vport;
@@ -839,7 +827,6 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 	render_priv_t *priv = port->render_priv;
 	GtkAllocation allocation;
 	pcb_hid_expose_ctx_t ctx;
-	pcb_gl_color_t off_c, bg_c;
 
 	gtk_widget_get_allocation(widget, &allocation);
 
@@ -850,16 +837,13 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 	ctx.view.X2 = hidlib->size_x;
 	ctx.view.Y2 = hidlib->size_y;
 
-	gtk2gl_color(&off_c, &priv->offlimits_color);
-	gtk2gl_color(&bg_c, &priv->bg_color);
-
-	pcb_gl_draw_expose_init(&gtk2_gl_hid, allocation.width, allocation.height, ev->area.x, allocation.height - ev->area.height - ev->area.y, ev->area.width, ev->area.height, &off_c);
+	pcb_gl_draw_expose_init(&gtk2_gl_hid, allocation.width, allocation.height, ev->area.x, allocation.height - ev->area.height - ev->area.y, ev->area.width, ev->area.height, &priv->offlimits_color);
 
 	glScalef((pcbhl_conf.editor.view.flip_x ? -1. : 1.) / port->view.coord_per_px, (pcbhl_conf.editor.view.flip_y ? -1. : 1.) / port->view.coord_per_px, ((pcbhl_conf.editor.view.flip_x == pcbhl_conf.editor.view.flip_y) ? 1. : -1.) / port->view.coord_per_px);
 	glTranslatef(pcbhl_conf.editor.view.flip_x ? port->view.x0 - hidlib->size_x : -port->view.x0, pcbhl_conf.editor.view.flip_y ? port->view.y0 - hidlib->size_y : -port->view.y0, 0);
 
 	/* Draw PCB background, before PCB primitives */
-	glColor3f(bg_c.red, bg_c.green, bg_c.blue);
+	glColor3f(priv->bg_color.fr, priv->bg_color.fg, priv->bg_color.fb);
 	glBegin(GL_QUADS);
 	glVertex3i(0, 0, 0);
 	glVertex3i(hidlib->size_x, 0, 0);
@@ -924,7 +908,6 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	double xz, yz, vw, vh;
 	pcb_coord_t ox1 = ctx->view.X1, oy1 = ctx->view.Y1, ox2 = ctx->view.X2, oy2 = ctx->view.Y2;
 	pcb_coord_t save_cpp;
-	pcb_gl_color_t bg_c;
 
 	vw = ctx->view.X2 - ctx->view.X1;
 	vh = ctx->view.Y2 - ctx->view.Y1;
@@ -960,8 +943,6 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	}
 	ghidgui->port.render_priv->in_context = pcb_true;
 
-	gtk2gl_color(&bg_c, &priv->bg_color);
-
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -975,7 +956,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	glTranslatef(0.0f, 0.0f, -Z_NEAR);
 
 	glEnable(GL_STENCIL_TEST);
-	glClearColor(bg_c.red, bg_c.green, bg_c.blue, 1.);
+	glClearColor(priv->bg_color.fr, priv->bg_color.fg, priv->bg_color.fb, 1.);
 	glStencilMask(~0);
 	glClearStencil(0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
