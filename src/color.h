@@ -38,6 +38,7 @@ struct pcb_color_s {
 };
 
 extern const pcb_color_t *pcb_color_black;
+extern const pcb_color_t *pcb_color_white;
 extern const pcb_color_t *pcb_color_cyan;
 extern const pcb_color_t *pcb_color_red;
 extern const pcb_color_t *pcb_color_blue;
