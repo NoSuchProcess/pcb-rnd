@@ -7,8 +7,8 @@
 - BUG: lesstif: copy gtk fixes on DAD close sequence (invalid memory access when close_cb free's ctx)
 - CLEANUP: color:
 	- COLOR_TO_STR should not use sprintf - remove stdio.h
-	- remove src/hid_color.[ch] and src/color_cache.[ch]
-	- remove pcb_color_t ->str, convert only when really needed
+	- remove src/hid_color.[ch] and use src/color_cache.[ch] instead
+	- use ->str only when really needed, do not use it for conversion
 - BUG: use left-click zoom on gtk2_gdk - xor draw stops working [report: Igor2]
 - DOC: finish DAD doc (doc/developer/dad/: e.g. run.html is missing) [report: Alain]
 
