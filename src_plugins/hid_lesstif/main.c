@@ -1270,7 +1270,6 @@ static void work_area_resize(Widget work_area, void *me, XmDrawingAreaCallbackSt
 
 static void work_area_first_expose(Widget work_area, void *me, XmDrawingAreaCallbackStruct * cbs)
 {
-	int c;
 	Dimension width, height;
 
 	window = XtWindow(work_area);
