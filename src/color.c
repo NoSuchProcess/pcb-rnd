@@ -34,7 +34,7 @@
 #include "color.h"
 #include <genvector/genvector_impl.c>
 
-#define PACK_COLOR_(r,g,b,a) ((((unsigned long)(r)) << 24) || (((unsigned long)(g)) << 16) || (((unsigned long)(b)) << 8) || (((unsigned long)(a))))
+#define PACK_COLOR_(r,g,b,a) ((((unsigned long)(r)) << 24) | (((unsigned long)(g)) << 16) | (((unsigned long)(b)) << 8) | (((unsigned long)(a))))
 #define PACK_COLOR(clr) PACK_COLOR_(clr->r, clr->g, clr->b, clr->a)
 #define COLOR_TO_FLOAT(clr) \
 do { \
