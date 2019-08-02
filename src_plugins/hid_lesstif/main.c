@@ -341,9 +341,13 @@ void lesstif_coords_to_pcb(int vx, int vy, pcb_coord_t * px, pcb_coord_t * py)
 Pixel lesstif_parse_color(const pcb_color_t *value)
 {
 	XColor color;
-	if (XParseColor(display, lesstif_colormap, value->str, &color))
-		if (XAllocColor(display, lesstif_colormap, &color))
-			return color.pixel;
+	color.pixel = 0;
+	color.red = (unsigned)value->r << 8;
+	color.green = (unsigned)value->g << 8;
+	color.blue = (unsigned)value->b << 8;
+	color.flags = DoRed | DoBlue | DoGreen;
+	if (XAllocColor(display, lesstif_colormap, &color))
+		return color.pixel;
 	return 0;
 }
 
