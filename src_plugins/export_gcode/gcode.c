@@ -858,6 +858,11 @@ static void gcode_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *
 /*      printf("FillPoly\n"); */
 }
 
+static void gcode_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
+{
+	/* we are dealing with copper only and copper has no compositing */
+}
+
 static void gcode_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
 {
 	gcode_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
@@ -925,6 +930,7 @@ int pplg_init_export_gcode(void)
 	gcode_hid.fill_rect = gcode_fill_rect;
 	gcode_hid.calibrate = gcode_calibrate;
 	gcode_hid.set_crosshair = gcode_set_crosshair;
+	gcode_hid.set_drawing_mode = gcode_set_drawing_mode;
 
 	gcode_hid.usage = gcode_usage;
 
