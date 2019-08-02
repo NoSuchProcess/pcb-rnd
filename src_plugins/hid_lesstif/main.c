@@ -18,6 +18,8 @@
 
 #include "data.h"
 #include "draw.h"
+#include "color.h"
+#include "color_cache.h"
 #include "crosshair.h"
 #include "conf_hid.h"
 #include "layer.h"
@@ -68,6 +70,9 @@ int lesstif_active = 0;
 static int idle_proc_set = 0;
 static int need_redraw = 0;
 
+static pcb_clrcache_t ltf_ccache;
+static int ltf_ccache_inited;
+
 #ifndef XtRDouble
 #define XtRDouble "Double"
 #endif
@@ -80,7 +85,7 @@ typedef struct hid_gc_s {
 	pcb_core_gc_t core_gc;
 	pcb_hid_t *me_pointer;
 	Pixel color;
-	char *colorname;
+	pcb_color_t pcolor;
 	int width;
 	pcb_cap_style_t cap;
 	char xor_set;
@@ -2211,14 +2216,11 @@ static pcb_hid_gc_t lesstif_make_gc(pcb_hid_t *hid)
 	pcb_hid_gc_t rv = (hid_gc_s *) malloc(sizeof(hid_gc_s));
 	memset(rv, 0, sizeof(hid_gc_s));
 	rv->me_pointer = &lesstif_hid;
-	rv->colorname = NULL;
 	return rv;
 }
 
 static void lesstif_destroy_gc(pcb_hid_gc_t gc)
 {
-	if (gc->colorname != NULL)
-		free(gc->colorname);
 	free(gc);
 }
 
@@ -2284,41 +2286,41 @@ static void lesstif_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_
 }
 
 
+typedef struct {
+	Pixel pix;
+} ltf_color_cache_t;
 
 static void lesstif_set_color(pcb_hid_gc_t gc, const pcb_color_t *pcolor)
 {
-	static void *cache = 0;
-	pcb_hidval_t cval;
-	static XColor color, exact_color;
-	const char *name = pcolor->str;
+	ltf_color_cache_t *cc;
 
 	if (!display)
 		return;
-	if (!name)
-		name = "red";
+	if ((pcolor == NULL) || (*pcolor->str == '\0'))
+		pcolor = pcb_color_magenta;
 
-	if (name != gc->colorname) {
-		if (gc->colorname != NULL)
-			free(gc->colorname);
-		gc->colorname = pcb_strdup(name);
+	gc->pcolor = *pcolor;
+
+	if (!ltf_ccache_inited) {
+		pcb_clrcache_init(&ltf_ccache, sizeof(ltf_color_cache_t), NULL);
+		ltf_ccache_inited = 1;
 	}
 
 	if (pcb_color_is_drill(pcolor)) {
 		gc->color = offlimit_color;
 		gc->erase = 0;
 	}
-	else if (pcb_hid_cache_color(0, name, &cval, &cache)) {
-		gc->color = cval.lval;
+	else if ((cc = pcb_clrcache_get(&ltf_ccache, pcolor, 0)) != NULL) {
+		gc->color = cc->pix;
 		gc->erase = 0;
 	}
 	else {
-		if (!XAllocNamedColor(display, lesstif_colormap, name, &color, &exact_color))
-			color.pixel = WhitePixel(display, screen);
+		cc = pcb_clrcache_get(&ltf_ccache, pcolor, 1);
+		cc->pix = lesstif_parse_color(pcolor);
 #if 0
 		printf("lesstif_set_color `%s' %08x rgb/%d/%d/%d\n", name, color.pixel, color.red, color.green, color.blue);
 #endif
-		cval.lval = gc->color = color.pixel;
-		pcb_hid_cache_color(1, name, &cval, &cache);
+		gc->color = cc->pix;
 		gc->erase = 0;
 	}
 	if (autofade) {
@@ -2326,6 +2328,7 @@ static void lesstif_set_color(pcb_hid_gc_t gc, const pcb_color_t *pcolor)
 		if (gc->color == lastcolor)
 			gc->color = lastfade;
 		else {
+			XColor color;
 			lastcolor = gc->color;
 			color.pixel = gc->color;
 
