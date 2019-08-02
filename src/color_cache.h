@@ -80,7 +80,8 @@ PCB_INLINE void pcb_clrcache_uninit(pcb_clrcache_t *cache)
 	htip_entry_t *e;
 
 	for(e = htip_first(&cache->ht); e != NULL; e = htip_next(&cache->ht, e)) {
-		cache->hidfree(cache, e->value);
+		if (cache->hidfree != NULL)
+			cache->hidfree(cache, e->value);
 		free(e->value);
 	}
 	htip_uninit(&cache->ht);
