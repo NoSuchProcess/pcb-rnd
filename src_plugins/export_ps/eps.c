@@ -8,6 +8,7 @@
 
 #include "math_helper.h"
 #include "board.h"
+#include "color.h"
 #include "data.h"
 #include "draw.h"
 #include "layer.h"
@@ -464,9 +465,6 @@ static void eps_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool
 
 static void eps_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 {
-	static void *cache = 0;
-	pcb_hidval_t cval;
-
 	if (drawing_mode == PCB_HID_COMP_NEGATIVE) {
 		gc->color = 0xffffff;
 		gc->erase = 1;
@@ -478,15 +476,10 @@ static void eps_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 		return;
 	}
 	gc->erase = 0;
-	if (pcb_hid_cache_color(0, color->str, &cval, &cache)) {
-		gc->color = cval.lval;
-	}
-	else if (in_mono) {
+	if (in_mono)
 		gc->color = 0;
-	}
-	else if (color->str[0] == '#') {
+	else if (color->str[0] == '#')
 		gc->color = (color->r << 16) + (color->g << 8) + color->b;
-	}
 	else
 		gc->color = 0;
 }
