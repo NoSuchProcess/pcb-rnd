@@ -74,7 +74,6 @@
 
 #include "hid_init.h"
 #include "hid_attrib.h"
-#include "hid_color.h"
 
 
 const char *gcode_cookie = "gcode HID";
