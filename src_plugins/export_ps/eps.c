@@ -21,7 +21,6 @@
 #include "hid_init.h"
 #include "hid_attrib.h"
 #include "hid_cam.h"
-#include "hid_color.h"
 #include "funchash_core.h"
 
 #define CRASH(func) fprintf(stderr, "HID error: pcb called unimplemented EPS function %s.\n", func); abort()
