@@ -1227,10 +1227,8 @@ static void work_area_make_pixmaps(Dimension width, Dimension height)
 		mask_picture = 0;
 	}
 	if (use_xrender) {
-		main_picture = XRenderCreatePicture(display, main_pixmap,
-																				XRenderFindVisualFormat(display, DefaultVisual(display, screen)), 0, 0);
-		mask_picture = XRenderCreatePicture(display, mask_pixmap,
-																				XRenderFindVisualFormat(display, DefaultVisual(display, screen)), 0, 0);
+		main_picture = XRenderCreatePicture(display, main_pixmap, XRenderFindVisualFormat(display, DefaultVisual(display, screen)), 0, 0);
+		mask_picture = XRenderCreatePicture(display, mask_pixmap, XRenderFindVisualFormat(display, DefaultVisual(display, screen)), 0, 0);
 		if (!main_picture || !mask_picture)
 			use_xrender = 0;
 	}
@@ -1312,8 +1310,7 @@ static void work_area_first_expose(Widget work_area, void *me, XmDrawingAreaCall
 
 		pale_pixmap = XCreatePixmap(display, window, 1, 1, 8);
 		pa.repeat = True;
-		pale_picture = XRenderCreatePicture(display, pale_pixmap,
-																				XRenderFindStandardFormat(display, PictStandardA8), CPRepeat, &pa);
+		pale_picture = XRenderCreatePicture(display, pale_pixmap, XRenderFindStandardFormat(display, PictStandardA8), CPRepeat, &pa);
 		if (pale_picture)
 			XRenderFillRectangle(display, PictOpSrc, pale_picture, &a, 0, 0, 1, 1);
 		else
