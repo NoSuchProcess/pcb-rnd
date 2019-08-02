@@ -38,7 +38,6 @@
 #include "hid_cfg_input.h"
 #include "hid_attrib.h"
 #include "hid_init.h"
-#include "hid_color.h"
 #include "hid_dad.h"
 #include "actions.h"
 #include "ltf_stdarg.h"
