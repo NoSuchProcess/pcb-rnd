@@ -31,7 +31,7 @@ typedef struct hid_gc_s {
 	pcb_core_gc_t core_gc;
 	pcb_cap_style_t cap;
 	pcb_coord_t width;
-	int color;
+	unsigned long color;
 	int erase;
 } hid_gc_s;
 
