@@ -120,8 +120,6 @@ static GC my_gc = 0, bg_gc, clip_gc = 0, bset_gc = 0, bclear_gc = 0, mask_gc = 0
 static Pixel bgcolor, offlimit_color, grid_color;
 static int bgred, bggreen, bgblue;
 
-static GC arc1_gc, arc2_gc;
-
 static pcb_coord_t crosshair_x = 0, crosshair_y = 0;
 static int in_move_event = 0, crosshair_in_window = 1;
 
@@ -1280,21 +1278,9 @@ static void work_area_first_expose(Widget work_area, void *me, XmDrawingAreaCall
 {
 	int c;
 	Dimension width, height;
-	static char dashes[] = { 4, 4 };
 
 	window = XtWindow(work_area);
 	my_gc = XCreateGC(display, window, 0, 0);
-
-	arc1_gc = XCreateGC(display, window, 0, 0);
-	c = lesstif_parse_color_str("#804000");
-	XSetForeground(display, arc1_gc, c);
-	arc2_gc = XCreateGC(display, window, 0, 0);
-	c = lesstif_parse_color_str("#004080");
-	XSetForeground(display, arc2_gc, c);
-	XSetLineAttributes(display, arc1_gc, 1, LineOnOffDash, 0, 0);
-	XSetLineAttributes(display, arc2_gc, 1, LineOnOffDash, 0, 0);
-	XSetDashes(display, arc1_gc, 0, dashes, 2);
-	XSetDashes(display, arc2_gc, 0, dashes, 2);
 
 	stdarg_n = 0;
 	stdarg(XtNwidth, &width);
@@ -2502,20 +2488,6 @@ static void lesstif_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pc
 	XDrawArc(display, pixmap, my_gc, cx, cy, width * 2, height * 2, (start_angle + 180) * 64, delta_angle * 64);
 	if (use_mask() && !conf_core.editor.thin_draw)
 		XDrawArc(display, mask_bitmap, mask_gc, cx, cy, width * 2, height * 2, (start_angle + 180) * 64, delta_angle * 64);
-TODO(": make this #if a flag and add it in the gtk hid as well")
-#if 0
-	/* Enable this if you want to see the center and radii of drawn
-	   arcs, for debugging.  */
-	if (conf_core.editor.thin_draw && (delta_angle != 360)) {
-		cx += width;
-		cy += height;
-		XDrawLine(display, pixmap, arc1_gc, cx, cy,
-							cx - width * cos(start_angle * M_PI / 180), cy + width * sin(start_angle * M_PI / 180));
-		XDrawLine(display, pixmap, arc2_gc, cx, cy,
-							cx - width * cos((start_angle + delta_angle) * M_PI / 180),
-							cy + width * sin((start_angle + delta_angle) * M_PI / 180));
-	}
-#endif
 }
 
 static void lesstif_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
