@@ -46,6 +46,7 @@ set_fmt_args()
 		nelma) ext=.nelma.em ;;
 		bom) ext=.bom ;;
 		dsn) ext=.dsn ;;
+		gcode) ext=.gcode;;
 		IPC-D-356) ext=.net;;
 		ps)
 			ext=.ps
@@ -115,6 +116,15 @@ move_out()
 				s@^[(]Created on.*@(Created on date@
 			' $raw_out
 			;;
+		gcode)
+			for n in $raw_out.*.cnc
+			do
+			awk '
+				/^[(] / && (NR < 5) { next } # skip date
+				{ print $0 }
+			' $n > $n.tmp
+			mv $n.tmp $n
+			done
 	esac
 
 # move the output file(s) to their final subdir (for multifile formats) and/or
@@ -139,6 +149,11 @@ move_out()
 		remote|ps)
 			gzip $raw_out
 			mv $raw_out.gz $final_out.gz
+			;;
+		gcode)
+			mkdir -p $final_out
+			mv $raw_out.*.cnc $final_out
+			rm -f ${raw_out%%.gcode}.*.png
 			;;
 		*)
 			# common, single file output
