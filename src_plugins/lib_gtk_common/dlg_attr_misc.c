@@ -178,7 +178,7 @@ static GtkWidget *ghid_color_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, 
 
 	bparent = frame_scroll(parent, attr->pcb_hatt_flags, &ctx->wltop[j]);
 
-	ctx->gctx->impl.map_color_string("#000000", &gclr);
+	ctx->gctx->impl.map_color(pcb_color_black, &gclr);
 
 	button = gtkc_color_button_new_with_color(&gclr);
 	gtk_color_button_set_title(GTK_COLOR_BUTTON(button), NULL);
@@ -195,7 +195,7 @@ static int ghid_color_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *va
 	pcb_gtk_color_t gclr;
 	GtkWidget *btn = ctx->wl[idx];
 
-	ctx->gctx->impl.map_color_string(val->clr.str, &gclr);
+	ctx->gctx->impl.map_color(&val->clr, &gclr);
 	gtkc_color_button_set_color(btn, &gclr);
 
 	return 0;

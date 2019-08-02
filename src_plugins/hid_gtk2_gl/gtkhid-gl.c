@@ -77,23 +77,23 @@ static const gchar *get_color_name(pcb_gtk_color_t *color)
 }
 
 /* Returns TRUE only if color_string has been allocated to color. */
-static pcb_bool map_color_string(const char *color_string, pcb_gtk_color_t *color)
+static pcb_bool map_color(const pcb_color_t *inclr, pcb_gtk_color_t *color)
 {
 	static GdkColormap *colormap = NULL;
-	pcb_gtk_port_t *out = &ghidgui->port;
-	pcb_bool parsed;
 
-	if (!color || !out->top_window)
+	if (!color || !ghidgui->port.top_window)
 		return FALSE;
 	if (colormap == NULL)
-		colormap = gtk_widget_get_colormap(out->top_window);
+		colormap = gtk_widget_get_colormap(ghidgui->port.top_window);
 	if (color->red || color->green || color->blue)
 		gdk_colormap_free_colors(colormap, color, 1);
-	parsed = gdk_color_parse(color_string, color);
-	if (parsed)
-		gdk_color_alloc(colormap, color);
 
-	return parsed;
+	color->red = (unsigned)inclr->r << 8;
+	color->green = (unsigned)inclr->g << 8;
+	color->blue = (unsigned)inclr->b << 8;
+	gdk_color_alloc(colormap, color);
+
+	return TRUE;
 }
 
 
@@ -282,13 +282,13 @@ void ghid_gl_set_special_colors(conf_native_t *cfg)
 	render_priv_t *priv = ghidgui->port.render_priv;
 
 	if (((CFT_COLOR *) cfg->val.color == &pcbhl_conf.appearance.color.background)) {
-		map_color_string(cfg->val.color[0].str, &priv->bg_color);
+		map_color(&cfg->val.color[0], &priv->bg_color);
 	}
 	else if ((CFT_COLOR *)cfg->val.color == &pcbhl_conf.appearance.color.off_limit) {
-		map_color_string(cfg->val.color[0].str, &priv->offlimits_color);
+		map_color(&cfg->val.color[0], &priv->offlimits_color);
 	}
 	else if (((CFT_COLOR *) cfg->val.color == &pcbhl_conf.appearance.color.grid)) {
-		if (map_color_string(cfg->val.color[0].str, &priv->grid_color))
+		if (map_color(&cfg->val.color[0], &priv->grid_color))
 			set_special_grid_color();
 	}
 }
@@ -677,7 +677,7 @@ static void ghid_gl_show_crosshair(pcb_hidlib_t *hidlib, gboolean paint_new_loca
 	if (!done_once) {
 		done_once = 1;
 		/* FIXME: when CrossColor changed from config */
-		map_color_string(pcbhl_conf.appearance.color.cross.str, &cross_color);
+		map_color(&pcbhl_conf.appearance.color.cross, &cross_color);
 	}
 	x = ghidgui->port.view.crosshair_x;
 	y = ghidgui->port.view.crosshair_y;
@@ -742,14 +742,14 @@ static void ghid_gl_drawing_area_configure_hook(void *port)
 	ghidgui->port.drawing_allowed = pcb_true;
 
 	if (!done_once) {
-		if (!map_color_string(pcbhl_conf.appearance.color.background.str, &priv->bg_color))
-			map_color_string("white", &priv->bg_color);
+		if (!map_color(&pcbhl_conf.appearance.color.background, &priv->bg_color))
+			map_color(pcb_color_white, &priv->bg_color);
 
-		if (!map_color_string(pcbhl_conf.appearance.color.off_limit.str, &priv->offlimits_color))
-			map_color_string("white", &priv->offlimits_color);
+		if (!map_color(&pcbhl_conf.appearance.color.off_limit, &priv->offlimits_color))
+			map_color(pcb_color_white, &priv->offlimits_color);
 
-		if (!map_color_string(pcbhl_conf.appearance.color.grid.str, &priv->grid_color))
-			map_color_string("blue", &priv->grid_color);
+		if (!map_color(&pcbhl_conf.appearance.color.grid, &priv->grid_color))
+			map_color(pcb_color_blue, &priv->grid_color);
 		set_special_grid_color();
 
 		done_once = 1;
@@ -1045,7 +1045,7 @@ void ghid_gl_install(pcb_gtk_impl_t *impl, pcb_hid_t *hid)
 		impl->drawing_area_configure_hook = ghid_gl_drawing_area_configure_hook;
 		impl->shutdown_renderer = ghid_gl_shutdown_renderer;
 		impl->get_color_name = get_color_name;
-		impl->map_color_string = map_color_string;
+		impl->map_color = map_color;
 	}
 
 	if (hid != NULL) {

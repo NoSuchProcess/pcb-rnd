@@ -363,10 +363,7 @@ void pcb_dlg_pref_lib_close(pref_ctx_t *ctx)
 
 static void pref_libhelp_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
-	pref_libhelp_ctx_t *ctx = caller_data;
-
-	PCB_DAD_FREE(ctx->dlg);
-	memset(ctx, 0, sizeof(pref_libhelp_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
+/*	pref_libhelp_ctx_t *ctx = caller_data;*/
 }
 
 static void pref_libhelp_open(pref_libhelp_ctx_t *ctx)
@@ -392,6 +389,10 @@ static void pref_libhelp_open(pref_libhelp_ctx_t *ctx)
 
 	ctx->active = 1;
 	PCB_DAD_NEW("pref_lib_path_help", ctx->dlg, "pcb-rnd preferences: library help", ctx, pcb_true, pref_libhelp_close_cb);
+
+	PCB_DAD_RUN(ctx->dlg);
+	PCB_DAD_FREE(ctx->dlg);
+	memset(ctx, 0, sizeof(pref_libhelp_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
 static void libhelp_btn(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
