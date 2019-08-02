@@ -32,6 +32,7 @@
 #include "config.h"
 #include "conf_core.h"
 
+#include <genht/htpp.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
@@ -76,7 +77,8 @@ const char *png_cookie = "png HID";
 static pcb_cam_t png_cam;
 
 static void *color_cache = NULL;
-static void *brush_cache = NULL;
+static htpp_t brush_cache;
+static int brush_cache_inited = 0;
 
 static double bloat = 0;
 static double scale = 1;
@@ -111,8 +113,7 @@ typedef struct hid_gc_s {
 	pcb_core_gc_t core_gc;
 	pcb_hid_t *me_pointer;
 	pcb_cap_style_t cap;
-	int width;
-	unsigned char r, g, b;
+	int width, r, g, b;
 	color_struct *color;
 	gdImagePtr brush;
 	int is_erase;
@@ -960,14 +961,6 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 }
 
 
-
-static void png_brush_free(void **vcache, const char *name, pcb_hidval_t *val)
-{
-	gdImage *brush = (gdImage *)val->ptr;
-	if (brush != NULL)
-		gdImageDestroy(brush);
-}
-
 static void png_color_free(void **vcache, const char *name, pcb_hidval_t *val)
 {
 	color_struct *color = (color_struct *)val->ptr;
@@ -978,8 +971,13 @@ static void png_free_cache(void)
 {
 	if (color_cache)
 		pcb_hid_cache_color_destroy(&color_cache, png_color_free);
-	if (brush_cache != NULL)
-		pcb_hid_cache_color_destroy(&brush_cache, png_brush_free);
+	if (brush_cache_inited) {
+		htpp_entry_t *e;
+		for(e = htpp_first(&brush_cache); e != NULL; e = htpp_next(&brush_cache, e))
+			gdImageDestroy(e->value);
+		htpp_uninit(&brush_cache);
+		brush_cache_inited = 0;
+	}
 }
 
 static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
@@ -1497,124 +1495,131 @@ static void png_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 	;
 }
 
+unsigned brush_hash(const void *kv)
+{
+	const hid_gc_s *k = kv;
+	return ((((unsigned)k->r) << 24) | (((unsigned)k->g) << 16) | (((unsigned)k->b) << 8) | k->cap) + (unsigned)k->width;
+}
+
+int brush_keyeq(const void *av, const void *bv)
+{
+	const hid_gc_s *a = av, *b = bv;
+	if (a->cap != b->cap) return 0;
+	if (a->width != b->width) return 0;
+	if (a->r != b->r) return 0;
+	if (a->g != b->g) return 0;
+	if (a->b != b->b) return 0;
+	return 1;
+}
+
 static int unerase_override = 0;
 static void use_gc(gdImagePtr im, pcb_hid_gc_t gc)
 {
 	int need_brush = 0;
-	unsigned int gc_r = gc->color->r, gc_g = gc->color->g, gc_b = gc->color->b;
+	pcb_hid_gc_t agc;
+	gdImagePtr brp;
 
+	agc = gc;
 	if (unerase_override) {
-		gc_r = -1;
-		gc_g = -1;
-		gc_b = -1;
+		agc->r = -1;
+		agc->g = -1;
+		agc->b = -1;
 	}
 	else {
-		gc_r = gc->color->r;
-		gc_g = gc->color->g;
-		gc_b = gc->color->b;
+		agc->r = gc->color->r;
+		agc->g = gc->color->g;
+		agc->b = gc->color->b;
 	}
 
-	if (gc->me_pointer != &png_hid) {
+	if (agc->me_pointer != &png_hid) {
 		fprintf(stderr, "Fatal: GC from another HID passed to png HID\n");
 		abort();
 	}
 
-	if (linewidth != gc->width) {
+	if (linewidth != agc->width) {
 		/* Make sure the scaling doesn't erase lines completely */
-		if (SCALE(gc->width) == 0 && gc->width > 0)
+		if (SCALE(agc->width) == 0 && agc->width > 0)
 			gdImageSetThickness(im, 1);
 		else
-			gdImageSetThickness(im, SCALE(gc->width + 2 * bloat));
-		linewidth = gc->width;
+			gdImageSetThickness(im, SCALE(agc->width + 2 * bloat));
+		linewidth = agc->width;
 		need_brush = 1;
 	}
 
-	need_brush |= (gc_r != last_color_r) || (gc_g != last_color_g) || (gc_b != last_color_b) || (gc->cap != last_cap);
+	need_brush |= (agc->r != last_color_r) || (agc->g != last_color_g) || (agc->b != last_color_b) || (agc->cap != last_cap);
 
-	if (lastbrush != gc->brush || need_brush) {
-		pcb_hidval_t bval;
-		char name[256];
-		char type;
+	if (lastbrush != agc->brush || need_brush) {
 		int r;
 
-		switch (gc->cap) {
-		case pcb_cap_round:
-			type = 'C';
-			break;
-		case pcb_cap_square:
-			type = 'S';
-			break;
-		default:
-			assert(!"unhandled cap");
-			type = 'C';
-		}
-		if (gc->width)
-			r = SCALE(gc->width + 2 * bloat);
+		if (agc->width)
+			r = SCALE(agc->width + 2 * bloat);
 		else
 			r = 1;
 
 		/* do not allow a brush size that is zero width.  In this case limit to a single pixel. */
-		if (r == 0) {
+		if (r == 0)
 			r = 1;
+
+		last_color_r = agc->r;
+		last_color_g = agc->g;
+		last_color_b = agc->b;
+		last_cap = agc->cap;
+
+		if (!brush_cache_inited) {
+			htpp_init(&brush_cache, brush_hash, brush_keyeq);
+			brush_cache_inited = 1;
 		}
 
-		sprintf(name, "#%.2x%.2x%.2x_%c_%d", gc_r, gc_g, gc_b, type, r);
-
-		last_color_r = gc_r;
-		last_color_g = gc_g;
-		last_color_b = gc_b;
-		last_cap = gc->cap;
-
-		if (pcb_hid_cache_color(0, name, &bval, &brush_cache)) {
-			gc->brush = (gdImagePtr) bval.ptr;
+		if ((brp = htpp_get(&brush_cache, agc)) != NULL) {
+			agc->brush = brp;
 		}
 		else {
 			int bg, fg;
-			gc->brush = gdImageCreate(r, r);
-			if (gc->brush == NULL) {
+			agc->brush = gdImageCreate(r, r);
+			if (agc->brush == NULL) {
 				pcb_message(PCB_MSG_ERROR, "use_gc():  gdImageCreate(%d, %d) returned NULL.  Aborting export.\n", r, r);
 				return;
 			}
 
-			bg = gdImageColorAllocate(gc->brush, 255, 255, 255);
+			bg = gdImageColorAllocate(agc->brush, 255, 255, 255);
 			if (bg == BADC) {
 				pcb_message(PCB_MSG_ERROR, "use_gc():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
 				return;
 			}
 			if (unerase_override)
-				fg = gdImageColorAllocateAlpha(gc->brush, 255, 255, 255, 0);
+				fg = gdImageColorAllocateAlpha(agc->brush, 255, 255, 255, 0);
 			else
-				fg = gdImageColorAllocateAlpha(gc->brush, gc_r, gc_g, gc_b, 0);
+				fg = gdImageColorAllocateAlpha(agc->brush, agc->r, agc->g, agc->b, 0);
 			if (fg == BADC) {
 				pcb_message(PCB_MSG_ERROR, "use_gc():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
 				return;
 			}
-			gdImageColorTransparent(gc->brush, bg);
+			gdImageColorTransparent(agc->brush, bg);
 
 			/*
 			 * if we shrunk to a radius/box width of zero, then just use
 			 * a single pixel to draw with.
 			 */
 			if (r <= 1)
-				gdImageFilledRectangle(gc->brush, 0, 0, 0, 0, fg);
+				gdImageFilledRectangle(agc->brush, 0, 0, 0, 0, fg);
 			else {
-				if (type == 'C') {
-					gdImageFilledEllipse(gc->brush, r / 2, r / 2, r, r, fg);
+				if (agc->cap != pcb_cap_square) {
+					gdImageFilledEllipse(agc->brush, r / 2, r / 2, r, r, fg);
 					/* Make sure the ellipse is the right exact size.  */
-					gdImageSetPixel(gc->brush, 0, r / 2, fg);
-					gdImageSetPixel(gc->brush, r - 1, r / 2, fg);
-					gdImageSetPixel(gc->brush, r / 2, 0, fg);
-					gdImageSetPixel(gc->brush, r / 2, r - 1, fg);
+					gdImageSetPixel(agc->brush, 0, r / 2, fg);
+					gdImageSetPixel(agc->brush, r - 1, r / 2, fg);
+					gdImageSetPixel(agc->brush, r / 2, 0, fg);
+					gdImageSetPixel(agc->brush, r / 2, r - 1, fg);
 				}
 				else
-					gdImageFilledRectangle(gc->brush, 0, 0, r - 1, r - 1, fg);
+					gdImageFilledRectangle(agc->brush, 0, 0, r - 1, r - 1, fg);
 			}
-			bval.ptr = gc->brush;
-			pcb_hid_cache_color(1, name, &bval, &brush_cache);
+			brp = agc->brush;
+			htpp_set(&brush_cache, agc, brp);
 		}
 
-		gdImageSetBrush(im, gc->brush);
-		lastbrush = gc->brush;
+		gdImageSetBrush(im, agc->brush);
+		lastbrush = agc->brush;
 
 	}
 }
