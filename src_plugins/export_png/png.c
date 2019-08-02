@@ -41,6 +41,8 @@
 #include <math.h>
 
 #include "board.h"
+#include "color.h"
+#include "color_cache.h"
 #include "data.h"
 #include "draw.h"
 #include "error.h"
@@ -61,7 +63,6 @@
 
 #include "hid_init.h"
 #include "hid_attrib.h"
-#include "hid_color.h"
 #include "hid_cam.h"
 
 #define PNG_SCALE_HACK1 0
@@ -76,7 +77,8 @@ const char *png_cookie = "png HID";
 
 static pcb_cam_t png_cam;
 
-static void *color_cache = NULL;
+static pcb_clrcache_t color_cache;
+static int color_cache_inited = 0;
 static htpp_t brush_cache;
 static int brush_cache_inited = 0;
 
@@ -961,16 +963,12 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 }
 
 
-static void png_color_free(void **vcache, const char *name, pcb_hidval_t *val)
-{
-	color_struct *color = (color_struct *)val->ptr;
-	free(color);
-}
-
 static void png_free_cache(void)
 {
-	if (color_cache)
-		pcb_hid_cache_color_destroy(&color_cache, png_color_free);
+	if (color_cache_inited) {
+		pcb_clrcache_uninit(&color_cache);
+		color_cache_inited = 0;
+	}
 	if (brush_cache_inited) {
 		htpp_entry_t *e;
 		for(e = htpp_first(&brush_cache); e != NULL; e = htpp_next(&brush_cache, e))
@@ -1437,7 +1435,7 @@ static void png_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool
 
 static void png_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 {
-	pcb_hidval_t cval;
+	color_struct *cc;
 
 	if (im == NULL)
 		return;
@@ -1457,11 +1455,17 @@ static void png_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 		return;
 	}
 
-	if (pcb_hid_cache_color(0, color->str, &cval, &color_cache)) {
-		gc->color = (color_struct *) cval.ptr;
+	if (!color_cache_inited) {
+		pcb_clrcache_init(&color_cache, sizeof(color_struct), NULL);
+		color_cache_inited = 1;
+	}
+
+	if ((cc = pcb_clrcache_get(&color_cache, color, 0)) != NULL) {
+		gc->color = cc;
 	}
 	else if (color->str[0] == '#') {
-		gc->color = (color_struct *) malloc(sizeof(color_struct));
+		cc = pcb_clrcache_get(&color_cache, color, 1);
+		gc->color = cc;
 		gc->color->r = color->r;
 		gc->color->g = color->g;
 		gc->color->b = color->b;
@@ -1470,14 +1474,11 @@ static void png_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 			pcb_message(PCB_MSG_ERROR, "png_set_color():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
 			return;
 		}
-		cval.ptr = gc->color;
-		pcb_hid_cache_color(1, color->str, &cval, &color_cache);
 	}
 	else {
 		fprintf(stderr, "WE SHOULD NOT BE HERE!!!\n");
 		gc->color = black;
 	}
-
 }
 
 static void png_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
