@@ -17,6 +17,7 @@ XY  2>/dev/null
 png
 gerber
 svg 2>/dev/null
+gcode
 '
 
 have=`./Export.sh  --list`
