@@ -49,8 +49,10 @@
 #include <assert.h>
 
 #include <time.h>
+#include <genht/htpp.h>
 
 #include "board.h"
+#include "color.h"
 #include "error.h"
 #include "data.h"
 #include "draw.h"
@@ -87,7 +89,7 @@ struct color_struct {
 	unsigned int r, g, b;
 };
 
-struct hid_gc_s {
+typedef struct hid_gc_s {
 	pcb_core_gc_t core_gc;
 	pcb_hid_t *me_pointer;
 	pcb_cap_style_t cap;
@@ -97,7 +99,7 @@ struct hid_gc_s {
 	int faded;
 	struct color_struct *color;
 	gdImagePtr brush;
-};
+} hid_gc_t;
 
 static struct color_struct *black = NULL, *white = NULL;
 static int linewidth = -1;
@@ -111,6 +113,9 @@ static FILE *gcode_f = NULL, *gcode_f2 = NULL;
 static int is_mask;
 static int is_drill;
 static int is_solder;
+
+static htpp_t brush_cache;
+static int brush_cache_inited = 0;
 
 /*
  * Which groups of layers to export into PNG layer masks. 1 means export, 0
@@ -187,6 +192,17 @@ PCB_REGISTER_ATTRIBUTES(gcode_attribute_list, gcode_cookie)
 		 static pcb_hid_attr_val_t gcode_values[NUM_OPTIONS];
 
 /* *** Utility funcions **************************************************** */
+
+static void gcode_free_cache(void)
+{
+	if (brush_cache_inited) {
+		htpp_entry_t *e;
+		for(e = htpp_first(&brush_cache); e != NULL; e = htpp_next(&brush_cache, e))
+			gdImageDestroy(e->value);
+		htpp_uninit(&brush_cache);
+		brush_cache_inited = 0;
+	}
+}
 
 /* convert from default PCB units to gcode units */
 		 static int pcb_to_gcode(int pcb)
@@ -380,6 +396,8 @@ static void gcode_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		 },
 	};
 
+	gcode_free_cache();
+
 	if (!options) {
 		gcode_get_export_options(hid, 0);
 		for (i = 0; i < NUM_OPTIONS; i++) {
@@ -394,6 +412,7 @@ static void gcode_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	gcode_dpi = options[HA_dpi].lng;
 	if (gcode_dpi < 0) {
 		fprintf(stderr, "ERROR:  dpi may not be < 0\n");
+		gcode_free_cache();
 		return;
 	}
 	unit = &(pcb_units[options[HA_unit].lng]);
@@ -548,6 +567,7 @@ static void gcode_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 			gds_uninit(&tmp_ln);
 		}
 	}
+	gcode_free_cache();
 }
 
 /* *** PNG export (slightly modified code from PNG export HID) ************* */
@@ -636,6 +656,23 @@ static void gcode_set_draw_faded(pcb_hid_gc_t gc, int faded)
 	gc->faded = faded;
 }
 
+static unsigned brush_hash(const void *kv)
+{
+	const hid_gc_t *k = kv;
+	return ((((unsigned)k->r) << 24) | (((unsigned)k->g) << 16) | (((unsigned)k->b) << 8) | k->cap) + (unsigned)k->width;
+}
+
+static int brush_keyeq(const void *av, const void *bv)
+{
+	const hid_gc_t *a = av, *b = bv;
+	if (a->cap != b->cap) return 0;
+	if (a->width != b->width) return 0;
+	if (a->r != b->r) return 0;
+	if (a->g != b->g) return 0;
+	if (a->b != b->b) return 0;
+	return 1;
+}
+
 static void use_gc(pcb_hid_gc_t gc)
 {
 	int need_brush = 0;
@@ -656,34 +693,20 @@ static void use_gc(pcb_hid_gc_t gc)
 		need_brush = 1;
 	}
 	if (lastbrush != gc->brush || need_brush) {
-		static void *bcache = 0;
-		pcb_hidval_t bval;
-		char name[256];
-		char type;
-		int r;
+		gdImagePtr brp;
+		int r = pcb_to_gcode(gc->width);
 
-		switch (gc->cap) {
-		case pcb_cap_round:
-			type = 'C';
-			r = pcb_to_gcode(gc->width / 2 + gcode_toolradius);
-			break;
-		case pcb_cap_square:
-			r = pcb_to_gcode(gc->width + gcode_toolradius * 2);
-			type = 'S';
-			break;
-		default:
-			assert(!"unhandled cap");
-			r = 1;
-			type = 'C';
+		if (!brush_cache_inited) {
+			htpp_init(&brush_cache, brush_hash, brush_keyeq);
+			brush_cache_inited = 1;
 		}
-		sprintf(name, "#%.2x%.2x%.2x_%c_%d", gc->color->r, gc->color->g, gc->color->b, type, r);
 
-		if (pcb_hid_cache_color(0, name, &bval, &bcache)) {
-			gc->brush = (gdImagePtr) bval.ptr;
+		if ((brp = htpp_get(&brush_cache, gc)) != NULL) {
+			gc->brush = brp;
 		}
 		else {
 			int bg, fg;
-			if (type == 'C')
+			if (gc->cap != pcb_cap_square)
 				gc->brush = gdImageCreate(2 * r + 1, 2 * r + 1);
 			else
 				gc->brush = gdImageCreate(r + 1, r + 1);
@@ -698,13 +721,13 @@ static void use_gc(pcb_hid_gc_t gc)
 			if (r == 0)
 				gdImageFilledRectangle(gc->brush, 0, 0, 0, 0, fg);
 			else {
-				if (type == 'C')
+				if (gc->cap != pcb_cap_square)
 					gdImageFilledEllipse(gc->brush, r, r, 2 * r, 2 * r, fg);
 				else
 					gdImageFilledRectangle(gc->brush, 0, 0, r, r, fg);
 			}
-			bval.ptr = gc->brush;
-			pcb_hid_cache_color(1, name, &bval, &bcache);
+			brp = gc->brush;
+			htpp_set(&brush_cache, gc, brp);
 		}
 
 		gdImageSetBrush(gcode_im, gc->brush);
