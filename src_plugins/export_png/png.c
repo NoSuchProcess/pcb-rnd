@@ -1496,13 +1496,13 @@ static void png_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 	;
 }
 
-unsigned brush_hash(const void *kv)
+static unsigned brush_hash(const void *kv)
 {
 	const hid_gc_t *k = kv;
 	return ((((unsigned)k->r) << 24) | (((unsigned)k->g) << 16) | (((unsigned)k->b) << 8) | k->cap) + (unsigned)k->width;
 }
 
-int brush_keyeq(const void *av, const void *bv)
+static int brush_keyeq(const void *av, const void *bv)
 {
 	const hid_gc_t *a = av, *b = bv;
 	if (a->cap != b->cap) return 0;
