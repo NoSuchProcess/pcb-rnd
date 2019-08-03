@@ -1451,7 +1451,7 @@ static void png_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 	}
 	gc->is_erase = 0;
 
-	if (in_mono || (strcmp(color->str, "#000000") == 0)) {
+	if (in_mono || (color->packed == 0)) {
 		gc->color = black;
 		return;
 	}
