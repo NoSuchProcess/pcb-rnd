@@ -45,7 +45,7 @@ typedef struct render_priv_s {
 	pcb_bool trans_lines;
 	pcb_bool in_context;
 	int subcomposite_stencil_bit;
-	char *current_colorname;
+	unsigned long current_color_packed;
 	double current_alpha_mult;
 
 	/* color cache for set_color */
@@ -320,11 +320,10 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 		gc->pcolor = pcb_color_magenta;
 	}
 
-	if (priv->current_colorname != NULL && strcmp(priv->current_colorname, gc->pcolor->str) == 0 && priv->current_alpha_mult == gc->alpha_mult)
+	if ((priv->current_color_packed == gc->pcolor->packed) && (priv->current_alpha_mult == gc->alpha_mult))
 		return;
 
-	free(priv->current_colorname);
-	priv->current_colorname = pcb_strdup(gc->pcolor->str);
+	priv->current_color_packed = gc->pcolor->packed;
 	priv->current_alpha_mult = gc->alpha_mult;
 
 	if (colormap == NULL)
