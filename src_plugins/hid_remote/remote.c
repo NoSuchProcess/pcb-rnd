@@ -152,7 +152,7 @@ TODO("layer: remove this temporary hack for virtual layers")
 }
 
 typedef struct {
-	char color[64];
+	unsigned long int color_packed;
 	pcb_coord_t line_width;
 	char cap;
 } remote_gc_cache_t;
@@ -204,9 +204,9 @@ static void remote_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0) {
-		if (strcmp(gc_cache[idx].color, color->str) != 0) {
+		if (gc_cache[idx].color_packed != color->packed) {
 			proto_send_set_color(idx, color->str);
-			strcpy(gc_cache[idx].color, color->str);
+			gc_cache[idx].color_packed = color->packed;
 		}
 	}
 }
