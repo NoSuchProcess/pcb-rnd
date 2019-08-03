@@ -26,7 +26,6 @@
 
 #include "config.h"
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -44,12 +43,27 @@ do { \
 	clr->fa = (float)clr->a / 255.0; \
 } while(0)
 
+static const char *pcb_color_to_hex = "0123456789abcdef";
+#define COLOR_TO_HEX(val) pcb_color_to_hex[(val) & 0x0F]
+
+#define COLOR_TO_STR_COMP(dst, val) \
+do { \
+	(dst)[0] = COLOR_TO_HEX(val >> 4); \
+	(dst)[1] = COLOR_TO_HEX(val); \
+} while(0)
+
 #define COLOR_TO_STR(clr) \
 do { \
-	if (clr->a == 255) \
-		sprintf(clr->str, "#%02x%02x%02x", clr->r, clr->g, clr->b); \
+	clr->str[0] = '#'; \
+	COLOR_TO_STR_COMP(clr->str+1, clr->r); \
+	COLOR_TO_STR_COMP(clr->str+3, clr->g); \
+	COLOR_TO_STR_COMP(clr->str+5, clr->b); \
+	if (clr->a != 255) { \
+		COLOR_TO_STR_COMP(clr->str+7, clr->a); \
+		clr->str[9] = '\0'; \
+	} \
 	else \
-		sprintf(clr->str, "#%02x%02x%02x%02x", clr->r, clr->g, clr->b, clr->a); \
+		clr->str[7] = '\0'; \
 } while(0)
 
 #define CLAMP01(c) (((c) < 0.0) ? 0.0 : (((c) > 1.0) ? 1.0 : (c)))
