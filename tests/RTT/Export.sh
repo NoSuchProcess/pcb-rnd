@@ -117,7 +117,7 @@ move_out()
 			' $raw_out
 			;;
 		gcode)
-			for n in $raw_out.*.cnc
+			for n in `ls $raw_out.*.cnc 2>/dev/null`
 			do
 			awk '
 				/^[(] / && (NR < 5) { next } # skip date
@@ -152,8 +152,12 @@ move_out()
 			;;
 		gcode)
 			mkdir -p $final_out
-			mv $raw_out.*.cnc $final_out
-			rm -f ${raw_out%%.gcode}.*.png
+			files=`ls $raw_out.*.cnc 2>/dev/null`
+			if test ! -z "$files"
+			then
+				mv $files $final_out
+				rm -f ${raw_out%%.gcode}.*.png
+			fi
 			;;
 		*)
 			# common, single file output
