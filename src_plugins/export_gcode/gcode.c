@@ -896,6 +896,7 @@ int pplg_check_ver_export_gcode(int ver_needed) { return 0; }
 
 void pplg_uninit_export_gcode(void)
 {
+	pcb_export_remove_opts_by_cookie(gcode_cookie);
 }
 
 int pplg_init_export_gcode(void)
