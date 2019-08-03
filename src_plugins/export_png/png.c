@@ -119,7 +119,7 @@ typedef struct hid_gc_s {
 	color_struct *color;
 	gdImagePtr brush;
 	int is_erase;
-} hid_gc_s;
+} hid_gc_t;
 
 static color_struct *black = NULL, *white = NULL;
 static gdImagePtr im = NULL, master_im, comp_im = NULL, erase_im = NULL;
@@ -1354,7 +1354,7 @@ static int png_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const ch
 
 static pcb_hid_gc_t png_make_gc(pcb_hid_t *hid)
 {
-	pcb_hid_gc_t rv = (pcb_hid_gc_t) calloc(sizeof(hid_gc_s), 1);
+	pcb_hid_gc_t rv = (pcb_hid_gc_t) calloc(sizeof(hid_gc_t), 1);
 	rv->me_pointer = &png_hid;
 	rv->cap = pcb_cap_round;
 	rv->width = 1;
@@ -1498,13 +1498,13 @@ static void png_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 
 unsigned brush_hash(const void *kv)
 {
-	const hid_gc_s *k = kv;
+	const hid_gc_t *k = kv;
 	return ((((unsigned)k->r) << 24) | (((unsigned)k->g) << 16) | (((unsigned)k->b) << 8) | k->cap) + (unsigned)k->width;
 }
 
 int brush_keyeq(const void *av, const void *bv)
 {
-	const hid_gc_s *a = av, *b = bv;
+	const hid_gc_t *a = av, *b = bv;
 	if (a->cap != b->cap) return 0;
 	if (a->width != b->width) return 0;
 	if (a->r != b->r) return 0;
