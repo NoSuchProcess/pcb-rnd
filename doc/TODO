@@ -6,6 +6,7 @@
 + BUG: crash with 2.1.2 on: {i c p} library tab, insert before, click help, close -> crash ml=3162 [report: James]
 - BUG: lesstif: copy gtk fixes on DAD close sequence (invalid memory access when close_cb free's ctx)
 - BUG: use left-click zoom on gtk2_gdk - xor draw stops working [report: Igor2]
+- BUG: 'pcb-rnd -x cam gerber:universal' throws excellon errors if there's no unplated hole on the design [report: bdale]
 - DOC: finish DAD doc (doc/developer/dad/: e.g. run.html is missing) [report: Alain]
 
 2. For later releases ===============================================================================
