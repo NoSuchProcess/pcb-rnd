@@ -271,7 +271,7 @@ struct pcb_hid_s {
 
 	/*** Drawing Functions. ***/
 
-	/* Make an empty graphics context.  */
+	/* Make an empty gc (graphics context, which is like a pen).  */
 	pcb_hid_gc_t (*make_gc)(pcb_hid_t *hid);
 	void (*destroy_gc)(pcb_hid_gc_t gc);
 
