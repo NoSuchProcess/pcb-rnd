@@ -68,12 +68,22 @@ void pcbhl_draw_marks(pcb_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode);
 /* Draw any mark following the crosshair on XOR overlay; if inhibit_drawing_mode is true, do not call ->set_drawing_mode */
 void pcbhl_draw_attached(pcb_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode);
 
+/*** One of these two functions will be called whenever (parts of) the screen
+     needs redrawing (on screen, print or export, board or preview). The expose
+     function does the following:
+      - allocate any GCs needed
+      - set drawing mode
+      - cycle through the layers, calling set_layer for each layer to be
+        drawn, and only drawing objects (all or specified) of desired
+        layers. ***/
+
 /* Main expose: draw the design in the top window
    (pcb-rnd: all layers with all flags (no .content is used) */
 void pcbhl_expose_main(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *region, pcb_xform_t *xform_caller);
 
 /* Preview expose: generic, dialog based, used in preview widgets */
 void pcbhl_expose_preview(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e);
+
 
 
 /* NULL terminated list of paths where the menu file should be looked at for */

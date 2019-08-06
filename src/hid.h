@@ -553,19 +553,6 @@ struct pcb_hid_s {
 	void *hid_data;
 };
 
-/* One of these functions (in the common code) will be called whenever the GUI
-   needs to redraw the screen, print the board, or export a layer.
-
-   Each time func is called, it should do the following:
-
-   * allocate any colors needed, via get_color.
-
-   * cycle through the layers, calling set_layer for each layer to be
-     drawn, and only drawing objects (all or specified) of desired
-     layers.
-
-   Do *not* assume that the hid that is passed is the GUI hid.  This
-   callback is also used for printing and exporting. */
 typedef void (*pcb_hid_expose_cb_t)(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e);
 
 struct pcb_hid_expose_ctx_s {
