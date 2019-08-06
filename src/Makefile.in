@@ -444,13 +444,13 @@ librnd-poly.a: $(OBJS_POLYLIB)
 	$(AR) rvu librnd-poly.a $(OBJS_POLYLIB)
 
 librnd-hid.so.$(PCB_RND_VER): $(DEPS_HIDLIB_ALL)
-	$(CC) $(LDFLAGS) @cc/ldflags_dynlib@ $(SONAME_HID) -o librnd-hid.so.$(PCB_RND_VER) $(OBJS_HIDLIB_ALL)
+	$(CC) $(LDFLAGS) @cc/ldflags_dynlib@ @cc/so_undefined@ $(SONAME_HID) -o librnd-hid.so.$(PCB_RND_VER) $(OBJS_HIDLIB_ALL)
 
 librnd-3rd.so.$(PCB_RND_VER): $(OBJS_3RDLIB)
-	$(CC) @cc/ldflags@ @cc/ldflags_dynlib@ $(SONAME_3RD) -o librnd-3rd.so.$(PCB_RND_VER) $(OBJS_3RDLIB) -lm
+	$(CC) @cc/ldflags@ @cc/ldflags_dynlib@ @cc/so_undefined@ $(SONAME_3RD) -o librnd-3rd.so.$(PCB_RND_VER) $(OBJS_3RDLIB) -lm
 
 librnd-poly.so.$(PCB_RND_VER): $(OBJS_POLYLIB)
-	$(CC) @cc/ldflags@ @cc/ldflags_dynlib@ $(SONAME_POLY) -o librnd-poly.so.$(PCB_RND_VER) $(OBJS_POLYLIB) -lm
+	$(CC) @cc/ldflags@ @cc/ldflags_dynlib@ @cc/so_undefined@ $(SONAME_POLY) -o librnd-poly.so.$(PCB_RND_VER) $(OBJS_POLYLIB) -lm
 
 HIDLIB_CLEAN_FILES=\
 	librnd-hid.so.$(PCB_RND_VER) librnd-hid.a \
