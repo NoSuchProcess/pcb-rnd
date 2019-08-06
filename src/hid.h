@@ -43,11 +43,6 @@ flip is activated. All zoom, scaling, panning, and conversions are hidden
 inside the HIDs.
 
 The main structure is pcb_hid_t.
-
-Data structures passed to the HIDs will be copied if the HID needs to
-save them.  Data structures returned from the HIDs must not be freed,
-and may be changed by the HID in response to new information.
-
 */
 
 /* Line end cap styles.  The cap *always* extends beyond the
@@ -225,7 +220,9 @@ struct pcb_hid_s {
 	   HID supports.  In GUI mode, the print/export dialogs use this to
 	   set up the selectable options.  In command line mode, these are
 	   used to interpret command line options.  If n_ret_ is non-NULL,
-	   the number of attributes is stored there.  */
+	   the number of attributes is stored there.
+	   The caller must not free the returned table but may modify the
+	   default values in it. */
 	pcb_export_opt_t *(*get_export_options)(pcb_hid_t *hid, int *n_ret);
 
 	/* Exports (or print) the current PCB.  The options given represent
@@ -365,7 +362,9 @@ struct pcb_hid_s {
 	/* Use this to stop a file watch; must not be called from within a GUI callback! */
 	void (*unwatch_file)(pcb_hid_t *hid, pcb_hidval_t watch);
 
-	/* title may be used as a dialog box title.  Ignored if NULL.
+
+	/* Run the file selection dialog. Return a string the caller needs to free().
+	 * title may be used as a dialog box title.  Ignored if NULL.
 	 *
 	 * descr is a longer help string.  Ignored if NULL.
 	 *
