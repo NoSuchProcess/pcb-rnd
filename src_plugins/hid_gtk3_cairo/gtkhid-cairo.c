@@ -34,6 +34,8 @@
 #include "crosshair.h"
 #include "draw.h"
 #include "grid.h"
+#include "color.h"
+#include "color_cache.h"
 #include "hid_attrib.h"
 #include "funchash_core.h"
 
@@ -120,17 +122,19 @@ static const gchar *get_color_name(pcb_gtk_color_t * color)
 	return tmp;
 }
 
-/* Returns TRUE if color_string has been successfully parsed to color. */
-static pcb_bool map_color_string(const char *color_string, pcb_gtk_color_t * color)
+/* Returns TRUE if inclr has been successfully converted to color. */
+static pcb_bool map_color(const pcb_color_t *inclr, pcb_gtk_color_t *color)
 {
-	pcb_bool parsed;
-
-	if (!color)
+	if (!color || !ghidgui->port.top_window)
 		return FALSE;
 
-	parsed = gdk_rgba_parse(color, color_string);
+	COLOR_TO_FLOAT(inclr);
+	color->red   = inclr->fr;
+	color->green = inclr->fg;
+	color->blue  = inclr->fb;
+	color->alpha = inclr->fa;
 
-	return parsed;
+	return TRUE;
 }
 
 static void cr_draw_line(cairo_t * cr, int fill, double x1, double y1, double x2, double y2)
@@ -616,18 +620,18 @@ static void ghid_cairo_set_special_colors(conf_native_t * cfg)
 	render_priv_t *priv = ghidgui->port.render_priv;
 
 	if (((CFT_COLOR *) cfg->val.color == &pcbhl_conf.appearance.color.background) /*&& priv->bg_gc */ ) {
-		if (map_color_string(cfg->val.color[0].str, &priv->bg_color)) {
+		if (map_color(&cfg->val.color[0], &priv->bg_color)) {
 			//gdk_gc_set_foreground(priv->bg_gc, &priv->bg_color);
 			//set_special_grid_color();
 		}
 	}
 	else if (((CFT_COLOR *) cfg->val.color == &pcbhl_conf.appearance.color.off_limit) /*&& priv->offlimits_gc */ ) {
-		if (map_color_string(cfg->val.color[0].str, &priv->offlimits_color)) {
+		if (map_color(&cfg->val.color[0], &priv->offlimits_color)) {
 			//gdk_gc_set_foreground(priv->offlimits_gc, &priv->offlimits_color);
 		}
 	}
 	else if (((CFT_COLOR *) cfg->val.color == &pcbhl_conf.appearance.color.grid) /*&& priv->grid_gc */ ) {
-		if (map_color_string(cfg->val.color[0].str, &priv->grid_color)) {
+		if (map_color(&cfg->val.color[0], &priv->grid_color)) {
 			//set_special_grid_color();
 		}
 	}
@@ -1334,7 +1338,7 @@ static void show_crosshair(gboolean paint_new_location)
 	}
 
 TODO("gtk3: when CrossColor changed from config")
-	map_color_string(pcbhl_conf.appearance.color.cross.str, &priv->crosshair_color);
+	map_color(&pcbhl_conf.appearance.color.cross, &priv->crosshair_color);
 	//cr = priv->cr_drawing_area;
 	cr = priv->cr;
 	gdk_cairo_set_source_rgba(cr, &priv->crosshair_color);
@@ -1347,7 +1351,7 @@ TODO("gtk3: when CrossColor changed from config")
 	//  gdk_gc_set_clip_origin(xor_gc, 0, 0);
 	//  set_clip(priv, xor_gc);
 TODO("gtk3:FIXME: when CrossColor changed from config")
-	//  map_color_string(pcbhl_conf.appearance.color.cross, &cross_color);
+	//  map_color(&pcbhl_conf.appearance.color.cross, &cross_color);
 	//}
 	x = Vx(ghidgui->port.view.crosshair_x);
 	y = Vy(ghidgui->port.view.crosshair_y);
@@ -1415,14 +1419,14 @@ static void ghid_cairo_drawing_area_configure_hook(void *vport)
 		//gdk_gc_set_foreground(priv->offlimits_gc, &port->offlimits_color);
 		//gdk_gc_set_clip_origin(priv->offlimits_gc, 0, 0);
 
-		if (!map_color_string(pcbhl_conf.appearance.color.background.str, &priv->bg_color))
-			map_color_string("white", &priv->bg_color);
+		if (!map_color(&pcbhl_conf.appearance.color.background, &priv->bg_color))
+			map_color(pcb_color_white, &priv->bg_color);
 
-		if (!map_color_string(pcbhl_conf.appearance.color.off_limit.str, &priv->offlimits_color))
-			map_color_string("white", &priv->offlimits_color);
+		if (!map_color(&pcbhl_conf.appearance.color.off_limit, &priv->offlimits_color))
+			map_color(pcb_color_white, &priv->offlimits_color);
 
-		if (!map_color_string(pcbhl_conf.appearance.color.grid.str, &priv->grid_color))
-			map_color_string("blue", &priv->grid_color);
+		if (!map_color(&pcbhl_conf.appearance.color.grid, &priv->grid_color))
+			map_color(pcb_color_blue, &priv->grid_color);
 		//set_special_grid_color();
 
 		//if (port->mask) {
@@ -1565,7 +1569,7 @@ void ghid_cairo_install(pcb_gtk_impl_t *impl, pcb_hid_t *hid)
 		impl->drawing_area_configure_hook = ghid_cairo_drawing_area_configure_hook;
 		impl->shutdown_renderer = ghid_cairo_shutdown_renderer;
 		impl->get_color_name = get_color_name;
-		impl->map_color_string = map_color_string;
+		impl->map_color = map_color;
 	}
 
 	if (hid != NULL) {
