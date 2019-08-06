@@ -30,18 +30,19 @@ typedef enum {
 
 The way the HID layer works is that you instantiate a HID device
 structure, and invoke functions through its members.  Code in the
-common part of PCB may *not* rely on *anything* other than what's
-defined in this file.  Code in the HID layers *may* rely on data and
-functions in the common code (like, board size and such) but it's
-considered bad form to do so when not needed.
+pcb-rnd core may *not* rely on HID internals (*anything* other than what's
+defined in this file).  Code in the HID layers *may* rely on data and
+functions in hidlib (like, board size and such), but not on anything
+in pcb-rnd core (because other, non-pcb-rnd applications are using the HID
+API as well).
 
-Coordinates are ALWAYS in pcb's internal units (nanometer at the
-moment).  Positive X is right, positive Y is down.  Angles are
-degrees, with 0 being right (positive X) and 90 being up (negative Y).
-All zoom, scaling, panning, and conversions are hidden inside the HID
-layers.
+Coordinates are ALWAYS in pcb's internal units pcb_coord_t. Positive X is
+right, positive Y is down, unless flip is activated.  Angles are
+degrees, with 0 being right (positive X) and 90 being up (negative Y) - unless
+flip is activated. All zoom, scaling, panning, and conversions are hidden
+inside the HIDs.
 
-The main structure is at the end of this file.
+The main structure is pcb_hid_t.
 
 Data structures passed to the HIDs will be copied if the HID needs to
 save them.  Data structures returned from the HIDs must not be freed,
