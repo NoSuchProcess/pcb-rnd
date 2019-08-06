@@ -418,7 +418,7 @@ DEPS_HIDLIB_ALL = $(OBJS_HIDLIB_ALL) $(EXEDEPS) $(LIBS_3RD) buildin.hidlib.h
 @]
 
 switch cc/soname
-	case {} print [@
+	case {^$} print [@
 SONAME_HID=
 SONAME_3RD=
 SONAME_POLY=
