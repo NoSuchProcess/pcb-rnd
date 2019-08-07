@@ -1290,13 +1290,13 @@ static int subc_relocate_globals(pcb_data_t *dst, pcb_data_t *new_parent, pcb_su
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, ps);
 		if ((dst != NULL) && (dst->padstack_tree != NULL))
 			pcb_r_insert_entry(dst->padstack_tree, (pcb_box_t *)ps);
-		if (dst != NULL)
-			ps->proto = pcb_pstk_proto_insert_dup(ps->parent.data, proto, 1);
-		ps->protoi = -1;
 		if ((move_obj) && (dst != NULL)) {
 			pcb_pstk_unreg(ps);
 			pcb_pstk_reg(dst, ps);
 		}
+		if (dst != NULL)
+			ps->proto = pcb_pstk_proto_insert_dup(ps->parent.data, proto, 1);
+		ps->protoi = -1;
 		ps->parent.data = new_parent;
 		if (dst_is_pcb)
 			pcb_poly_clear_from_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
@@ -1412,30 +1412,36 @@ void *pcb_subcop_add_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 /* break buffer subc into pieces */
 pcb_bool pcb_subc_smash_buffer(pcb_buffer_t *buff)
 {
-	pcb_subc_t *subc;
-	int n;
+	pcb_subc_t *subc, *next;
+	int n, bn;
+	long warn = 0;
 
-	if (pcb_subclist_length(&buff->Data->subc) != 1)
-		return pcb_false;
+	for(subc = pcb_subclist_first(&buff->Data->subc); subc != NULL; subc = next) {
+		next = pcb_subclist_next(subc);
 
-	subc = pcb_subclist_first(&buff->Data->subc);
-	pcb_subc_unreg(subc);
+		for(n = 0; n < subc->data->LayerN; n++) {
+			pcb_layer_t *sl = subc->data->Layer + n, *brdl, *dl;
+			brdl = pcb_layer_resolve_binding(PCB, sl);
+			dl = NULL;
+			if (brdl != NULL) {
+				for(bn = 0; bn < buff->Data->LayerN; bn++) {
+					if (buff->Data->Layer[bn].meta.bound.real == brdl) {
+						dl = &buff->Data->Layer[bn];
+						break;
+					}
+				}
+			}
 
-	/* relocate to NULL to get trees detached */
-	for(n = 0; n < subc->data->LayerN; n++) {
-		pcb_layer_t *sl = subc->data->Layer + n;
-		int src_has_real_layer = (sl->meta.bound.real != NULL);
-		subc_relocate_layer_objs(NULL, subc->data, sl, src_has_real_layer, 0, 0);
+			if (dl != NULL)
+				subc_relocate_layer_objs(dl, subc->data, sl, 1, 0, 1);
+			else
+				warn++;
+		}
+		subc_relocate_globals(buff->Data, buff->Data, subc, 0, 1);
+		pcb_subc_free(subc);
 	}
-	subc_relocate_globals(NULL, NULL, subc, 0, 0);
-
-	pcb_data_free(buff->Data);
-	buff->Data = subc->data;
-	buff->Data->parent_type = PCB_PARENT_INVALID;
-	buff->Data->parent.data = NULL;
-
-	subc_set_parent_globals(subc, buff->Data);
-
+	if (warn)
+		pcb_message(PCB_MSG_WARNING, "There are %ld objects that got lost in the smash because they were on unbound subc layers\nThis normally happens if your subcircuits in buffer refer to layers that do not exist on your board.\n", warn);
 	return pcb_true;
 }
 
