@@ -428,7 +428,7 @@ int hook_detect_target()
 	want_gtk    = want_gtk2 | want_gtk3;
 	want_gd     = plug_is_enabled("export_png") || plug_is_enabled("export_gcode");
 	want_stroke = plug_is_enabled("stroke");
-	want_cairo  = plug_is_enabled("export_bboard") | plug_is_enabled("hid_gtk3_cairo");
+	want_cairo  = plug_is_enabled("hid_gtk3_cairo");
 	want_xml2   = plug_is_enabled("io_eagle");
 	want_freetype2 = plug_is_enabled("import_ttf");
 	want_fuse = plug_is_enabled("export_vfs_fuse");
@@ -551,13 +551,8 @@ int hook_detect_target()
 		}
 	}
 
-	if (want_cairo) {
+	if (want_cairo)
 		require("libs/gui/cairo/presents", 0, 0);
-		if (!istrue(get("libs/gui/cairo/presents"))) {
-			report_repeat("WARNING: Since there's no cairo found, disabling the export_bboard plugin...\n");
-			hook_custom_arg("disable-export_bboard", NULL);
-		}
-	}
 
 	if (want_gtk2) {
 		require("libs/gui/gtk2/presents", 0, 0);
