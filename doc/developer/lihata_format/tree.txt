@@ -41,7 +41,9 @@ ha:pcb-rnd-board-v*            The full, self-contained description of a printed
      silk           flag       material: silk
      mask           flag       material: mask
      paste          flag       material: paste
-     outline        flag       "material": router path (board outline, slots, cutouts)
+     outline        flag       "material": router path for board outline; normally for the outer contour, sometimes for biggish inner cutouts as well)
+     mech           flag       "material": various mechanical fabbing instructions, e.g. slots; the purpose field provides more detail about the use
+     doc            flag       "material": documentation, either for the user and for pcb-rnd or both (the purpose field shoudl tell); e.g. assembly documentation for the user, keepout for the user and DRC
      substrate      flag       material: substrate or insulator
     name            string >=6 purpose of layer groups (useful with mechanical/documentation groups
     li:layers                  ordered list of logical layer IDs hosted by this layer group
@@ -301,7 +303,9 @@ ha:data                              Layers and global objects of the board
     silk                flag         material: silk
     mask                flag         material: mask
     paste               flag         material: paste
-    outline             flag         "material": router path (board outline, slots, cutouts)
+    outline             flag         "material": router path for board outline; normally for the outer contour, sometimes for biggish inner cutouts as well)
+    mech                flag         "material": various mechanical fabbing instructions, e.g. slots; the purpose field provides more detail about the use
+    doc                 flag         "material": documentation, either for the user and for pcb-rnd or both (the purpose field shoudl tell); e.g. assembly documentation for the user, keepout for the user and DRC
     substrate           flag         material: substrate or insulator
    purpose              integer  >=6 only in bound layers: match layer group purpose
    combining                     >=2 layer combination (compositing) flags
@@ -427,7 +431,9 @@ ha:data                              Layers and global objects of the board
       silk              flag         material: silk
       mask              flag         material: mask
       paste             flag         material: paste
-      outline           flag         "material": router path (board outline, slots, cutouts)
+      outline           flag         "material": router path for board outline; normally for the outer contour, sometimes for biggish inner cutouts as well)
+      mech              flag         "material": various mechanical fabbing instructions, e.g. slots; the purpose field provides more detail about the use
+      doc               flag         "material": documentation, either for the user and for pcb-rnd or both (the purpose field shoudl tell); e.g. assembly documentation for the user, keepout for the user and DRC
       substrate         flag         material: substrate or insulator
      combining                       layer compositing match
       sub               flag         draw in negative
@@ -573,53 +579,47 @@ li:submenu                     ordered list of menu items for a submenu
 
 Types
 
-+---------------------------------------------------------------+
-|  type  |                     description                      |
-|--------+------------------------------------------------------|
-|angle   |A decimal number without unit, representing an angle  |
-|        |in degree. Can be positive or negative.               |
-|--------+------------------------------------------------------|
-|        |A decimal number with a unit suffix. If the unit      |
-|        |suffix is missing, the coordinate is loaded in the    |
-|        |internal units (which is nanometer as of 2018, but    |
-|        |could change in the future, thus files shall not      |
-|        |depend on it). Depending on the context, coordinates  |
-|coord   |may have a sign (positive or negative).               |
-|        |                                                      |
-|        |Examples:                                             |
-|        |                                                      |
-|        |x=10mil;                                              |
-|        |y=1.5mm;                                              |
-|        |dia=12cm;                                             |
-|--------+------------------------------------------------------|
-|        |A two-column table of coords. First column are X,     |
-|        |second column are Y coordinates.                      |
-|        |                                                      |
-|        |Examples:                                             |
-|        |                                                      |
-|coordtbl|ta:contour {                                          |
-|        | 1mm;   2.1mm;                                        |
-|        | 5mm;   5.2mm;                                        |
-|        | 3.7mm; 12mil;                                        |
-|        |}                                                     |
-|        |ta:foo = { 1mm; 2.1mm;  5mm;   5.2mm;  3.7mm; 12mil; }|
-|--------+------------------------------------------------------|
-|double  |Unitless numeric value in decimal format. Depending on|
-|        |context it is sometimes signed.                       |
-|--------+------------------------------------------------------|
-|flag    |If the flag is set, the value is "1", if the flag is  |
-|        |not set, the whole key=value pair is omitted.         |
-|--------+------------------------------------------------------|
-|integer |Unitless integer value in decimal format. Depending on|
-|        |context it is sometimes signed.                       |
-|--------+------------------------------------------------------|
-|minuid  |An unique ID as generated by libminuid (24 ASCII      |
-|        |characters).                                          |
-|--------+------------------------------------------------------|
-|none    |No value.                                             |
-|--------+------------------------------------------------------|
-|string  |Free form text data                                   |
-+---------------------------------------------------------------+
++--------------------------------------------------------------------------------------------------+
+|  type  |                                       description                                       |
+|--------+-----------------------------------------------------------------------------------------|
+|angle   |A decimal number without unit, representing an angle in degree. Can be positive or       |
+|        |negative.                                                                                |
+|--------+-----------------------------------------------------------------------------------------|
+|        |A decimal number with a unit suffix. If the unit suffix is missing, the coordinate is    |
+|        |loaded in the internal units (which is nanometer as of 2018, but could change in the     |
+|        |future, thus files shall not depend on it). Depending on the context, coordinates may    |
+|        |have a sign (positive or negative).                                                      |
+|coord   |                                                                                         |
+|        |Examples:                                                                                |
+|        |                                                                                         |
+|        |x=10mil;                                                                                 |
+|        |y=1.5mm;                                                                                 |
+|        |dia=12cm;                                                                                |
+|--------+-----------------------------------------------------------------------------------------|
+|        |A two-column table of coords. First column are X, second column are Y coordinates.       |
+|        |                                                                                         |
+|        |Examples:                                                                                |
+|        |                                                                                         |
+|coordtbl|ta:contour {                                                                             |
+|        | 1mm;   2.1mm;                                                                           |
+|        | 5mm;   5.2mm;                                                                           |
+|        | 3.7mm; 12mil;                                                                           |
+|        |}                                                                                        |
+|        |ta:foo = { 1mm; 2.1mm;  5mm;   5.2mm;  3.7mm; 12mil; }                                   |
+|--------+-----------------------------------------------------------------------------------------|
+|double  |Unitless numeric value in decimal format. Depending on context it is sometimes signed.   |
+|--------+-----------------------------------------------------------------------------------------|
+|flag    |If the flag is set, the value is "1", if the flag is not set, the whole key=value pair is|
+|        |omitted.                                                                                 |
+|--------+-----------------------------------------------------------------------------------------|
+|integer |Unitless integer value in decimal format. Depending on context it is sometimes signed.   |
+|--------+-----------------------------------------------------------------------------------------|
+|minuid  |An unique ID as generated by libminuid (24 ASCII characters).                            |
+|--------+-----------------------------------------------------------------------------------------|
+|none    |No value.                                                                                |
+|--------+-----------------------------------------------------------------------------------------|
+|string  |Free form text data                                                                      |
++--------------------------------------------------------------------------------------------------+
 
 Comments
 

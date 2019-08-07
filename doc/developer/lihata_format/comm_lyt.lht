@@ -14,7 +14,9 @@ ha:lht_tree_doc { ha:comm {
 			ha:silk          { valtype=flag; desc={material: silk}}
 			ha:mask          { valtype=flag; desc={material: mask}}
 			ha:paste         { valtype=flag; desc={material: paste}}
-			ha:outline       { valtype=flag; desc={"material": router path (board outline, slots, cutouts) }}
+			ha:outline       { valtype=flag; desc={"material": router path for board outline; normally for the outer contour, sometimes for biggish inner cutouts as well) }}
+			ha:mech          { valtype=flag; desc={"material": various mechanical fabbing instructions, e.g. slots; the purpose field provides more detail about the use }}
+			ha:doc           { valtype=flag; desc={"material": documentation, either for the user and for pcb-rnd or both (the purpose field shoudl tell); e.g. assembly documentation for the user, keepout for the user and DRC }}
 			ha:substrate     { valtype=flag; desc={material: substrate or insulator}}
 
 #			ha:rat           { valtype=flag; desc={(virtual: rat lines)}}
