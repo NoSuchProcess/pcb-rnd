@@ -1176,7 +1176,7 @@ pcb_bool pcb_selected_subc_change_side(void)
 }
 
 
-static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_layer_t *sl, int src_has_real_layer, int dst_is_pcb)
+static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_layer_t *sl, int src_has_real_layer, int dst_is_pcb, int move_obj)
 {
 	pcb_line_t *line;
 	pcb_text_t *text;
@@ -1193,6 +1193,10 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 			chg++;
 		}
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, line);
+		if ((move_obj) && (dl != NULL)) {
+			pcb_line_unreg(line);
+			pcb_line_reg(dl, line);
+		}
 		if ((dl != NULL) && (dl->line_tree != NULL)) {
 			pcb_r_insert_entry(dl->line_tree, (pcb_box_t *)line);
 			chg++;
@@ -1208,6 +1212,10 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 			chg++;
 		}
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, arc);
+		if ((move_obj) && (dl != NULL)) {
+			pcb_arc_unreg(arc);
+			pcb_arc_reg(dl, arc);
+		}
 		if ((dl != NULL) && (dl->arc_tree != NULL)) {
 			pcb_r_insert_entry(dl->arc_tree, (pcb_box_t *)arc);
 			chg++;
@@ -1223,6 +1231,10 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 			chg++;
 		}
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, text);
+		if ((move_obj)  && (dl != NULL)) {
+			pcb_text_unreg(text);
+			pcb_text_reg(dl, text);
+		}
 		if ((dl != NULL) && (dl->text_tree != NULL)) {
 			pcb_r_insert_entry(dl->text_tree, (pcb_box_t *)text);
 			chg++;
@@ -1238,6 +1250,10 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 			chg++;
 		}
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, poly);
+		if ((move_obj) && (dl != NULL)) {
+			pcb_poly_unreg(poly);
+			pcb_poly_reg(dl, poly);
+		}
 		if ((dl != NULL) && (dl->polygon_tree != NULL)) {
 			pcb_r_insert_entry(dl->polygon_tree, (pcb_box_t *)poly);
 			chg++;
@@ -1259,7 +1275,7 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 	return chg;
 }
 
-static int subc_relocate_globals(pcb_data_t *dst, pcb_data_t *new_parent, pcb_subc_t *sc, int dst_is_pcb)
+static int subc_relocate_globals(pcb_data_t *dst, pcb_data_t *new_parent, pcb_subc_t *sc, int dst_is_pcb, int move_obj)
 {
 	pcb_pstk_t *ps;
 	gdl_iterator_t it;
@@ -1277,6 +1293,10 @@ static int subc_relocate_globals(pcb_data_t *dst, pcb_data_t *new_parent, pcb_su
 		if (dst != NULL)
 			ps->proto = pcb_pstk_proto_insert_dup(ps->parent.data, proto, 1);
 		ps->protoi = -1;
+		if ((move_obj) && (dst != NULL)) {
+			pcb_pstk_unreg(ps);
+			pcb_pstk_reg(dst, ps);
+		}
 		ps->parent.data = new_parent;
 		if (dst_is_pcb)
 			pcb_poly_clear_from_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
@@ -1357,10 +1377,10 @@ void *pcb_subcop_move_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 		else
 			dl = ctx->buffer.dst->Layer + n;
 
-		subc_relocate_layer_objs(dl, ctx->buffer.src, sl, src_has_real_layer, dst_is_pcb);
+		subc_relocate_layer_objs(dl, ctx->buffer.src, sl, src_has_real_layer, dst_is_pcb, 0);
 	}
 
-	subc_relocate_globals(ctx->buffer.dst, sc->data, sc, dst_is_pcb);
+	subc_relocate_globals(ctx->buffer.dst, sc->data, sc, dst_is_pcb, 0);
 
 	if (dst_is_pcb) {
 		/* clear all pins/pads at once, at the new location */
@@ -1405,9 +1425,9 @@ pcb_bool pcb_subc_smash_buffer(pcb_buffer_t *buff)
 	for(n = 0; n < subc->data->LayerN; n++) {
 		pcb_layer_t *sl = subc->data->Layer + n;
 		int src_has_real_layer = (sl->meta.bound.real != NULL);
-		subc_relocate_layer_objs(NULL, subc->data, sl, src_has_real_layer, 0);
+		subc_relocate_layer_objs(NULL, subc->data, sl, src_has_real_layer, 0, 0);
 	}
-	subc_relocate_globals(NULL, NULL, subc, 0);
+	subc_relocate_globals(NULL, NULL, subc, 0, 0);
 
 	pcb_data_free(buff->Data);
 	buff->Data = subc->data;
@@ -1447,7 +1467,7 @@ int pcb_subc_rebind(pcb_board_t *pcb, pcb_subc_t *sc)
 			if (dl->polygon_tree == NULL) dl->polygon_tree = pcb_r_create_tree();
 		}
 
-		if (subc_relocate_layer_objs(dl, pcb->Data, sl, src_has_real_layer, 1) > 0)
+		if (subc_relocate_layer_objs(dl, pcb->Data, sl, src_has_real_layer, 1, 0) > 0)
 			chgly++;
 
 		if (dl != NULL)
