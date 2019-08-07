@@ -1,8 +1,0 @@
-$class export
-$short breadboard pcb_exporter
-$long Export breadboard
-$state WIP
-$fmt-native no
-$fmt-feature-w export breadboard assembly drawing in png
-default disable-all
-autoload 1

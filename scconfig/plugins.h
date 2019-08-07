@@ -85,7 +85,6 @@ plugin_def("import_ttf",       "import ttf glyphs",               sbuildin, 1, 0
 plugin_header("\nExport plugins:\n")
 plugin_def("cam",              "cam/job based export",            sbuildin, 1, 0)
 plugin_def("ddraft",           "2D drafting helper",              sbuildin, 1, 0)
-plugin_def("export_bboard",    "breadboard pcb_exporter",         sdisable, 0, 0)
 plugin_def("export_bom",       "bom pcb_exporter",                sbuildin, 1, 0)
 plugin_def("export_dsn",       "specctra .dsn pcb_exporter",      sbuildin, 1, 0)
 plugin_def("export_dxf",       "DXF pcb_exporter",                sbuildin, 1, 0)
