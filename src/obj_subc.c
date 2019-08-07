@@ -1421,6 +1421,10 @@ pcb_bool pcb_subc_smash_buffer(pcb_buffer_t *buff)
 
 		for(n = 0; n < subc->data->LayerN; n++) {
 			pcb_layer_t *sl = subc->data->Layer + n, *brdl, *dl;
+
+			if (strcmp(sl->name, SUBC_AUX_NAME) == 0)
+				continue;
+
 			brdl = pcb_layer_resolve_binding(PCB, sl);
 			dl = NULL;
 			if (brdl != NULL) {
