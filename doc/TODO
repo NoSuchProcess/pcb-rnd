@@ -3,6 +3,8 @@
 1. For the upcoming release ===============================================================================
 + CLEANUP: Vuokko's list of warnings on OpenBSD: bug_files/warn-obsd-r26600.log [report: Vuokko]
 + CLEANUP/feature: pcb_subc_smash_buffer() should really copy data so it can smash multiple subcs and subc objects end up on the layer they were bound to [report: keantoken]
+- BUG: conftest should link to the hidlib .a ; also test all other test programs
+- CLEANUP: unify how output files are accessed/checked: confirmation on overwrite
 - CLEANUP: unify gui invocation option printout: pcb-rnd --help gtk_[gdk|gl] and pcb-rnd --help lesstif should use the same style printing options (even tho options will never be the same) [report:miloh]
 - FEATURE: new breadboard
 	- FEATURE: hidlib: render pixmap
@@ -36,7 +38,6 @@
 - CAM:
 	- FEATURE: make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file (for support for plugged vias/filled vias) [report: Vuokko]
 	- FEATURE: invent a generic API for both the drill attrib config table
-	- CLEANUP: unify how output files are accessed/checked: confirmation on overwrite
 	- CLEANUP: in ~2020: remove the hackish gerber layer suffix and auto-excellon in favor of CAM [report: Ade]
 - CLEANUP: move import_sch to import_sch_old and start a new, generic plugin
 - CLEANUP/FEATURE: boardflip doesn't function properly with undo -- repro: open pcb-rnd, place 1206, boardflip(), { u u } removes placed part instead of boardflip   [report: Miloh]
