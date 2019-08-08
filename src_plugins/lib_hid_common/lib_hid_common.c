@@ -66,6 +66,7 @@ pcb_action_t hid_common_action_list[] = {
 	{"gui_PromptFor", pcb_act_gui_PromptFor, pcb_acth_gui, NULL},
 	{"gui_MessageBox", pcb_act_gui_MessageBox, pcb_acth_gui, NULL},
 	{"gui_FallbackColorPick", pcb_act_gui_FallbackColorPick, pcb_acth_gui, NULL},
+	{"gui_MayOverwriteFile", pcb_act_gui_MayOverwriteFile, pcb_acth_gui, NULL}
 };
 
 static const char *hid_common_cookie = "lib_hid_common plugin";

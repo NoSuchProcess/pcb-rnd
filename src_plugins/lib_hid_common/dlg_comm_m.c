@@ -208,3 +208,48 @@ fgw_error_t pcb_act_gui_FallbackColorPick(fgw_arg_t *res, int argc, fgw_arg_t *a
 	PCB_DAD_FREE(ctx.dlg);
 	return 0;
 }
+
+fgw_error_t pcb_act_gui_MayOverwriteFile(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *fn;
+	const char *pcb_acts_gui_MessageBox = nope;
+	const char **xpm;
+	int n, ret, multi;
+	pcb_hid_dad_buttons_t clbtn_s[] = {{"yes", 1}, {"no", 0}, {NULL, 0}};
+	pcb_hid_dad_buttons_t clbtn_m[] = {{"yes", 1}, {"yes to all", 2}, {"no", 0}, {NULL, 0}};
+
+	if (!PCB_HAVE_GUI_ATTR_DLG) {
+		PCB_ACT_IRES(0); /* no gui means auto-yes (for batch) */
+		return 2;
+	}
+
+	PCB_DAD_DECL(dlg);
+
+	PCB_ACT_CONVARG(1, FGW_STR, gui_MessageBox, fn = argv[1].val.str);
+	PCB_ACT_CONVARG(2, FGW_INT, gui_MessageBox, multi = argv[2].val.nat_int);
+
+	PCB_DAD_BEGIN_VBOX(dlg);
+		/* icon and label */
+		PCB_DAD_BEGIN_HBOX(dlg);
+			xpm = pcp_dlg_xpm_by_name("warning");
+			if (xpm != NULL)
+				PCB_DAD_PICTURE(dlg, xpm);
+			PCB_DAD_BEGIN_HBOX(dlg);
+				PCB_DAD_LABEL(dlg, "File ");
+				PCB_DAD_LABEL(dlg, fn);
+				PCB_DAD_LABEL(dlg, " already exists.");
+			PCB_DAD_END(dlg);
+			PCB_DAD_LABEL(dlg, "Do you want to overwrite that file?");
+		PCB_DAD_END(dlg);
+		if (multi)
+			PCB_DAD_BUTTON_CLOSES(dlg, clbtn_m);
+		else
+			PCB_DAD_BUTTON_CLOSES(dlg, clbtn_s);
+	PCB_DAD_END(dlg);
+
+	res->type = FGW_INT;
+	PCB_DAD_AUTORUN("MayOverwriteFile", dlg, "File overwrite question", NULL, res->val.nat_int);
+	PCB_DAD_FREE(dlg);
+
+	return 0;
+}
