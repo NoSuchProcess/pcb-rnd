@@ -584,6 +584,54 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 	return 1;
 }
 
+/* Write the pcb file, a footprint or a buffer */
+static int pcb_write_file(FILE *fp, pcb_bool thePcb, const char *old_path, const char *new_path, const char *fmt, pcb_bool emergency, pcb_bool elem_only)
+{
+	if (thePcb) {
+		if (PCB->is_footprint)
+			return pcb_write_footprint_data(fp, PCB->Data, fmt);
+		return pcb_write_pcb(fp, old_path, new_path, fmt, emergency);
+	}
+	return pcb_write_buffer(fp, PCB_PASTEBUFFER, fmt, elem_only);
+}
+
+/* writes to pipe using the command defined by conf_core.rc.save_command
+   %f are replaced by the passed filename */
+static int pcb_write_pipe(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool elem_only)
+{
+	FILE *fp;
+	int result;
+	const char *p;
+	static gds_t command;
+	const char *save_cmd;
+
+	if (PCB_EMPTY_STRING_P(conf_core.rc.save_command))
+		return pcb_write_pcb_file(Filename, thePcb, fmt, pcb_false, elem_only);
+
+	save_cmd = conf_core.rc.save_command;
+	/* setup commandline */
+	gds_truncate(&command,0);
+	for (p = save_cmd; *p; p++) {
+		/* copy character if not special or add string to command */
+		if (!(p[0] == '%' && p[1] == 'f'))
+			gds_append(&command, *p);
+		else {
+			gds_append_str(&command, Filename);
+
+			/* skip the character */
+			p++;
+		}
+	}
+	printf("write to pipe \"%s\"\n", command.array);
+	if ((fp = pcb_popen(&PCB->hidlib, command.array, "w")) == NULL) {
+		pcb_popen_error_message(command.array);
+		return (-1);
+	}
+
+	result = pcb_write_file(fp, thePcb, NULL, NULL, fmt, pcb_false, elem_only);
+
+	return (pcb_pclose(fp) ? (-1) : result);
+}
 
 #if !defined(HAS_ATEXIT)
 static char *TMPFilename = NULL;
@@ -763,17 +811,6 @@ void pcb_backup(void)
 	free(filename);
 }
 
-/* Write the pcb file, a footprint or a buffer */
-static int pcb_write_file(FILE *fp, pcb_bool thePcb, const char *old_path, const char *new_path, const char *fmt, pcb_bool emergency, pcb_bool elem_only)
-{
-	if (thePcb) {
-		if (PCB->is_footprint)
-			return pcb_write_footprint_data(fp, PCB->Data, fmt);
-		return pcb_write_pcb(fp, old_path, new_path, fmt, emergency);
-	}
-	return pcb_write_buffer(fp, PCB_PASTEBUFFER, fmt, elem_only);
-}
-
 int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool emergency, pcb_bool elem_only)
 {
 	FILE *fp;
@@ -814,46 +851,6 @@ int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, p
 	}
 	return result;
 }
-
-
-/* writes to pipe using the command defined by conf_core.rc.save_command
- * %f are replaced by the passed filename */
-int pcb_write_pipe(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool elem_only)
-{
-	FILE *fp;
-	int result;
-	const char *p;
-	static gds_t command;
-	const char *save_cmd;
-
-	if (PCB_EMPTY_STRING_P(conf_core.rc.save_command))
-		return pcb_write_pcb_file(Filename, thePcb, fmt, pcb_false, elem_only);
-
-	save_cmd = conf_core.rc.save_command;
-	/* setup commandline */
-	gds_truncate(&command,0);
-	for (p = save_cmd; *p; p++) {
-		/* copy character if not special or add string to command */
-		if (!(p[0] == '%' && p[1] == 'f'))
-			gds_append(&command, *p);
-		else {
-			gds_append_str(&command, Filename);
-
-			/* skip the character */
-			p++;
-		}
-	}
-	printf("write to pipe \"%s\"\n", command.array);
-	if ((fp = pcb_popen(&PCB->hidlib, command.array, "w")) == NULL) {
-		pcb_popen_error_message(command.array);
-		return (-1);
-	}
-
-	result = pcb_write_file(fp, thePcb, NULL, NULL, fmt, pcb_false, elem_only);
-
-	return (pcb_pclose(fp) ? (-1) : result);
-}
-
 
 int pcb_io_list(pcb_io_formats_t *out, pcb_plug_iot_t typ, int wr, int do_digest, pcb_io_list_ext_t ext)
 {
