@@ -25,6 +25,7 @@
 #include "../src/hid.h"
 #include "../src/hidlib_conf.h"
 #include "gsch2pcb_rnd_conf.h"
+#include <libfungw/fungw.h>
 
 /* glue for pcb-rnd core */
 
@@ -92,4 +93,20 @@ int pcb_file_loaded_del_at(const char *catname, const char *name)
 	return 0;
 }
 
+fgw_ctx_t pcb_fgw;
+
+const pcb_action_t *pcb_find_action(const char *name, fgw_func_t **f_out)
+{
+	return NULL;
+}
+
+int pcb_actionl(const char *action_, ...)
+{
+	return -1;
+}
+
+char *pcb_make_action_name(char *out, const char *inp, int inp_len)
+{
+	return inp;
+}
 
