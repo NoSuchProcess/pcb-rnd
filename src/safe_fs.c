@@ -38,6 +38,7 @@
 
 #include "safe_fs.h"
 
+#include "actions.h"
 #include "compat_fs.h"
 #include "compat_misc.h"
 #include "error.h"
@@ -102,8 +103,35 @@ FILE *pcb_fopen(pcb_hidlib_t *hidlib, const char *path, const char *mode)
 	return pcb_fopen_fn(hidlib, path, mode, NULL);
 }
 
+static int can_overwrite(pcb_hidlib_t *hidlib, const char *path, int *all)
+{
+	
+}
+
 FILE *pcb_fopen_askovr(pcb_hidlib_t *hidlib, const char *path, const char *mode, int *all)
 {
+	if (strchr(mode, 'w') != NULL) {
+		/* if the action does not exist, it will return error, which is non-zero, which means the old behavor: just overwrite anything */
+		if (pcb_find_action("gui_MayOverwriteFile", NULL) != NULL) {
+			FILE *f = pcb_fopen(hidlib, path, "r");
+			if (f != NULL) {
+				int res = 0;
+				fclose(f);
+				if (all != NULL)
+					pcb_trace("all in: %d %s\n", *all, path);
+				if (all != NULL)
+					res = *all;
+				if (res != 2)
+					res = pcb_actionl("gui_MayOverwriteFile", path, (all != NULL) ? "1" : "0", NULL);
+				if (res == 0)
+					return NULL;
+				if ((all != NULL) && (res == 2)) /* remember 'overwrite all' for this session */
+					*all = 2;
+				if (all != NULL)
+					pcb_trace("all out: %d %s %d\n", *all, path, res);
+			}
+		}
+	}
 	return pcb_fopen(hidlib, path, mode);
 }
 
