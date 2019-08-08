@@ -214,7 +214,7 @@ fgw_error_t pcb_act_gui_MayOverwriteFile(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	const char *fn;
 	const char *pcb_acts_gui_MayOverwriteFile = nope;
 	const char **xpm;
-	int n, ret, multi;
+	int multi;
 	pcb_hid_dad_buttons_t clbtn_s[] = {{"yes", 1}, {"no", 0}, {NULL, 0}};
 	pcb_hid_dad_buttons_t clbtn_m[] = {{"yes", 1}, {"yes to all", 2}, {"no", 0}, {NULL, 0}};
 
