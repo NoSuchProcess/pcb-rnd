@@ -2,7 +2,7 @@
   *                            COPYRIGHT
   *
   *  pcb-rnd, interactive printed circuit board design
-  *  Copyright (C) 2017 Tibor 'Igor2' Palinkas
+  *  Copyright (C) 2017,2019 Tibor 'Igor2' Palinkas
   *
   *  This program is free software; you can redistribute it and/or modify
   *  it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@
    will also execute checks to avoid unsafe access */
 
 FILE *pcb_fopen(pcb_hidlib_t *hidlib, const char *path, const char *mode);
+FILE *pcb_fopen_askovr(pcb_hidlib_t *hidlib, const char *path, const char *mode, int *all);
 FILE *pcb_popen(pcb_hidlib_t *hidlib, const char *cmd, const char *mode);
 int pcb_pclose(FILE *f);
 int pcb_system(pcb_hidlib_t *hidlib, const char *cmd);
