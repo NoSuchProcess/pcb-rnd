@@ -212,7 +212,7 @@ fgw_error_t pcb_act_gui_FallbackColorPick(fgw_arg_t *res, int argc, fgw_arg_t *a
 fgw_error_t pcb_act_gui_MayOverwriteFile(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *fn;
-	const char *pcb_acts_gui_MessageBox = nope;
+	const char *pcb_acts_gui_MayOverwriteFile = nope;
 	const char **xpm;
 	int n, ret, multi;
 	pcb_hid_dad_buttons_t clbtn_s[] = {{"yes", 1}, {"no", 0}, {NULL, 0}};
@@ -225,8 +225,8 @@ fgw_error_t pcb_act_gui_MayOverwriteFile(fgw_arg_t *res, int argc, fgw_arg_t *ar
 
 	PCB_DAD_DECL(dlg);
 
-	PCB_ACT_CONVARG(1, FGW_STR, gui_MessageBox, fn = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_INT, gui_MessageBox, multi = argv[2].val.nat_int);
+	PCB_ACT_CONVARG(1, FGW_STR, gui_MayOverwriteFile, fn = argv[1].val.str);
+	PCB_ACT_CONVARG(2, FGW_INT, gui_MayOverwriteFile, multi = argv[2].val.nat_int);
 
 	PCB_DAD_BEGIN_VBOX(dlg);
 		/* icon and label */
