@@ -116,7 +116,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	if ((out = pcb_fopen(&PCB->hidlib, name, "w")) == NULL) {
+	if ((out = pcb_fopen_askovr(&PCB->hidlib, name, "w", NULL)) == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Could not open %s\n", name);
 		if (free_name && name)
 			free((char*)name);

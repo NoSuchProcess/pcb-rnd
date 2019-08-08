@@ -469,7 +469,7 @@ static void gcode_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 					BM_PUT(bm, r, c, p);
 				}
 			}
-			gcode_f2 = pcb_fopen(&PCB->hidlib, filename, "wb");
+			gcode_f2 = pcb_fopen_askovr(&PCB->hidlib, filename, "wb", NULL);
 			if (!gcode_f2) {
 				perror(filename);
 				gds_uninit(&tmp_ln);
@@ -517,7 +517,7 @@ static void gcode_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 				d = 0;
 				drill = sort_drill(drill, n_drill);
 				sprintf(filename, "%s.drill.cnc", gcode_basename);
-				gcode_f2 = pcb_fopen(&PCB->hidlib, filename, "wb");
+				gcode_f2 = pcb_fopen_askovr(&PCB->hidlib, filename, "wb", NULL);
 				if (!gcode_f2) {
 					perror(filename);
 					gds_uninit(&tmp_ln);

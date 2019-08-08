@@ -191,7 +191,7 @@ static void fidocadj_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (!filename)
 		filename = "pcb-rnd-default.fcd";
 
-	f = pcb_fopen(&PCB->hidlib, filename, "w");
+	f = pcb_fopen_askovr(&PCB->hidlib, filename, "w", NULL);
 	if (!f) {
 		perror(filename);
 		return;

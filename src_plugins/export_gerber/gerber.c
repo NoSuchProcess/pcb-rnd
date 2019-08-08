@@ -69,6 +69,7 @@ static int name_style;
 static int want_cross_sect;
 static int has_outline;
 static int gerber_debug;
+static int gerber_ovr;
 
 
 static aperture_list_t *layer_aptr_list;
@@ -520,6 +521,8 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	int save_ons[PCB_MAX_LAYER];
 	pcb_hid_expose_ctx_t ctx;
 
+	gerber_ovr = 0;
+
 	conf_force_set_bool(conf_core.editor.thin_draw, 0);
 	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
 	conf_force_set_bool(conf_core.editor.check_planes, 0);
@@ -779,7 +782,7 @@ static int gerber_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const
 		pagecount++;
 		assign_file_suffix(filesuff, group, layer, flags, purpose, purpi, 0, NULL);
 		if (f == NULL) { /* open a new file if we closed the previous (cam mode: only one file) */
-			f = pcb_fopen(&PCB->hidlib, gerber_cam.active ? gerber_cam.fn : filename, "wb"); /* Binary needed to force CR-LF */
+			f = pcb_fopen_askovr(&PCB->hidlib, gerber_cam.active ? gerber_cam.fn : filename, "wb", &gerber_ovr); /* Binary needed to force CR-LF */
 			if (f == NULL) {
 				pcb_message(PCB_MSG_ERROR, "Error:  Could not open %s for writing.\n", filename);
 				return 1;

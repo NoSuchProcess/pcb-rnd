@@ -333,7 +333,7 @@ int tedax_stackup_save(pcb_board_t *pcb, const char *stackid, const char *fn)
 	FILE *f;
 	tedax_stackup_t ctx;
 
-	f = pcb_fopen(&PCB->hidlib, fn, "w");
+	f = pcb_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "tedax_stackup_save(): can't open %s for writing\n", fn);
 		return -1;

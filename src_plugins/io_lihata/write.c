@@ -1625,7 +1625,7 @@ int io_lihata_write_font(pcb_plug_io_t *ctx, pcb_font_t *font, const char *Filen
 	lht_doc_t *doc;
 
 
-	f = pcb_fopen(&PCB->hidlib, Filename, "w");
+	f = pcb_fopen_askovr(&PCB->hidlib, Filename, "w", NULL);
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Failed to open font file %s for write\n", Filename);
 		return -1;

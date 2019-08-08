@@ -89,6 +89,7 @@ typedef struct {
 
 static FILE *f = NULL;
 static wctx_t *ems_ctx;
+static int openems_ovr;
 
 #define THMAX PCB_MM_TO_COORD(100)
 
@@ -638,6 +639,8 @@ static void openems_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	int i, len;
 	FILE *fsim;
 
+	openems_ovr = 0;
+
 	if (!options) {
 		openems_get_export_options(hid, 0);
 		for (i = 0; i < NUM_OPTIONS; i++)
@@ -649,7 +652,7 @@ static void openems_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (!filename)
 		filename = "pcb.m";
 
-	f = pcb_fopen(&PCB->hidlib, filename, "wb");
+	f = pcb_fopen_askovr(&PCB->hidlib, filename, "wb", &openems_ovr);
 	if (!f) {
 		perror(filename);
 		return;
@@ -663,7 +666,7 @@ static void openems_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (strcmp(end, ".m") != 0)
 		end = runfn + len;
 	strcpy(end, ".sim.m");
-	fsim = pcb_fopen(&PCB->hidlib, runfn, "wb");
+	fsim = pcb_fopen_askovr(&PCB->hidlib, runfn, "wb", &openems_ovr);
 	if (fsim == NULL) {
 		perror(runfn);
 		return;

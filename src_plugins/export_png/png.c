@@ -1138,7 +1138,7 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	}
 
 	if (!png_cam.fn_template) {
-		f = pcb_fopen(&PCB->hidlib, png_cam.active ? png_cam.fn : filename, "wb");
+		f = pcb_fopen_askovr(&PCB->hidlib, png_cam.active ? png_cam.fn : filename, "wb", NULL);
 		if (!f) {
 			perror(filename);
 			return;
@@ -1305,7 +1305,7 @@ static int png_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const ch
 			png_foot();
 			fclose(f);
 		}
-		f = pcb_fopen(&PCB->hidlib, png_cam.fn, "wb");
+		f = pcb_fopen_askovr(&PCB->hidlib, png_cam.fn, "wb", NULL);
 		if (!f) {
 			perror(filename);
 			return 0;

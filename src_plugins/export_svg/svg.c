@@ -345,7 +345,7 @@ static void svg_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		if (!filename)
 			filename = "pcb.svg";
 
-		f = pcb_fopen(&PCB->hidlib, svg_cam.active ? svg_cam.fn : filename, "wb");
+		f = pcb_fopen_askovr(&PCB->hidlib, svg_cam.active ? svg_cam.fn : filename, "wb", NULL);
 		if (!f) {
 			perror(filename);
 			return;
@@ -395,7 +395,7 @@ static int svg_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const ch
 			fclose(f);
 		}
 
-		f = pcb_fopen(&PCB->hidlib, svg_cam.fn, "wb");
+		f = pcb_fopen_askovr(&PCB->hidlib, svg_cam.fn, "wb", NULL);
 		if (f == NULL) {
 			perror(svg_cam.fn);
 			return 0;

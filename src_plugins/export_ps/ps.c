@@ -337,6 +337,7 @@ static struct {
 	pcb_bool is_paste;
 
 	pcb_composite_op_t drawing_mode;
+	int ovr_all;
 } global;
 
 static pcb_export_opt_t *ps_get_export_options(pcb_hid_t *hid, int *n)
@@ -500,7 +501,7 @@ static FILE *psopen(const char *base, const char *which)
 		return NULL;
 
 	if (!global.multi_file)
-		return pcb_fopen(&PCB->hidlib, base, "w");
+		return pcb_fopen_askovr(&PCB->hidlib, base, "w", NULL);
 
 	buf = (char *) malloc(strlen(base) + strlen(which) + 5);
 
@@ -513,7 +514,7 @@ static FILE *psopen(const char *base, const char *which)
 	else {
 		sprintf(buf, "%s.%s.ps", base, which);
 	}
-	ps_open_file = pcb_fopen(&PCB->hidlib, buf, "w");
+	ps_open_file = pcb_fopen_askovr(&PCB->hidlib, buf, "w", &global.ovr_all);
 	free(buf);
 	return ps_open_file;
 }
@@ -611,6 +612,8 @@ static void ps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	FILE *fh;
 	int save_ons[PCB_MAX_LAYER];
 	int i;
+
+	global.ovr_all = 0;
 
 	if (!options) {
 		ps_get_export_options(hid, 0);

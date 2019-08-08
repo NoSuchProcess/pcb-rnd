@@ -288,7 +288,7 @@ static void dxf_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		filename = "pcb.dxf";
 
 	if (dxf_cam.fn_template == NULL) {
-		dxf_ctx.f = pcb_fopen(&PCB->hidlib, dxf_cam.active ? dxf_cam.fn : filename, "wb");
+		dxf_ctx.f = pcb_fopen_askovr(&PCB->hidlib, dxf_cam.active ? dxf_cam.fn : filename, "wb", NULL);
 		if (!dxf_ctx.f) {
 			perror(filename);
 			return;
@@ -361,7 +361,7 @@ static int dxf_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const ch
 			fclose(dxf_ctx.f);
 		}
 
-		dxf_ctx.f = pcb_fopen(&PCB->hidlib, dxf_cam.fn, "wb");
+		dxf_ctx.f = pcb_fopen_askovr(&PCB->hidlib, dxf_cam.fn, "wb", NULL);
 		if (!dxf_ctx.f) {
 			perror(dxf_cam.fn);
 			return 0;

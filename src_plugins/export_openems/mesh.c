@@ -968,7 +968,7 @@ static void ia_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 		default_file = pcb_strdup(fname);
 	}
 
-	f = pcb_fopen(&PCB->hidlib, fname, "w");
+	f = pcb_fopen_askovr(&PCB->hidlib, fname, "w", NULL);
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can not open '%s' for write\n", fname);
 		return;

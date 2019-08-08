@@ -256,7 +256,7 @@ int tedax_board_save(pcb_board_t *pcb, const char *fn)
 	int res;
 	FILE *f;
 
-	f = pcb_fopen(&PCB->hidlib, fn, "w");
+	f = pcb_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "tedax_board_save(): can't open %s for writing\n", fn);
 		return -1;
