@@ -132,7 +132,6 @@ static pcb_bool map_color(const pcb_color_t *inclr, pcb_gtk_color_t *color)
 	if (!color || !ghidgui->port.top_window)
 		return FALSE;
 
-	COLOR_TO_FLOAT(inclr);
 	color->red   = inclr->fr;
 	color->green = inclr->fg;
 	color->blue  = inclr->fb;
