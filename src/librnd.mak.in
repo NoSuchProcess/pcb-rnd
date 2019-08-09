@@ -30,4 +30,19 @@ CFLAGS_LIBRND=@?/local/pcb/CFLAGS_HIDLIB_STATIC_@ -I$(LIBRND_ROOT)/include/librn
 LDFLAGS_LIBRND=@?/local/pcb/LDFLAGS_HIDLIB_STATIC_@
 PUPLUG=$(LIBRND_ROOT)/lib/librnd/puplug
 
+# These are extracts of the fungw-specific parts; only needed if the the above
+# are NOT used (partial linking)
 @]
+if ?libs/script/fungw/presents
+then
+print [@
+CFLAGS_LIBRND_FUNGW=@libs/script/fungw/cflags@
+LDFLAGS_LIBRND_FUNGW=@libs/script/fungw/ldflags@
+@]
+else
+print [@
+CFLAGS_LIBRND_FUNGW=
+LDFLAGS_LIBRND_FUNGW=
+@]
+end
+
