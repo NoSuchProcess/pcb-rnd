@@ -5,6 +5,10 @@ How to get a release candidate tarball in /tmp:
   svn export svn://repo.hu/pcb-rnd/trunk pcb-rnd-$ver
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
 
+Packaging changes between 2.1.3 and 2.1.4
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TODO: new license entry for 3rd libulzw
+
 Packaging changes between 2.1.2 and 2.1.3
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 A. changes that probably don't need action
