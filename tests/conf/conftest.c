@@ -28,20 +28,6 @@ void pcbhl_conf_postproc(void)
 {
 }
 
-
-void pcb_message(enum pcb_message_level level, const char *Format, ...)
-{
-	va_list args;
-
-	fprintf(stderr, "Error in line %d: ", lineno);
-
-	va_start(args, Format);
-	vfprintf(stderr, Format, args);
-	va_end(args);
-
-	fprintf(stderr, "\n");
-}
-
 const char *pcb_board_get_filename(void)
 {
 	return "dummy_brd.lht";
