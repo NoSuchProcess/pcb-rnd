@@ -154,27 +154,6 @@ typedef enum {
 	PCB_HID_DOCK_max
 } pcb_hid_dock_t;
 
-struct pcb_pixmap_t {
-	long size;                 /* total size in memory */
-	long sx, sy;               /* x and y dimensions */
-	unsigned char tr, tg, tb;  /* color of the transparent pixel */
-	unsigned int hash;         /* precalculated hash value */
-	unsigned char *p;          /* pixel array in r,g,b rows of sx long each */
-
-	void *hid_data;            /* HID's version of the pixmap */
-
-	/* transformation info */
-	pcb_pixmap_t *neutral;     /* NULL for pixmaps in neutral position; for transformed pixmaps reference back to the 'parent' */
-	pcb_angle_t tr_rot;        /* rotation angle (0 if not transformed) */
-	unsigned xmirror:1;        /* whether the pixmap is mirrored along the x axis (vertical mirror) */
-	unsigned ymirror:1;        /* whether the pixmap is mirrored along the y axis (horizontal mirror) */
-
-	unsigned transp_valid:1;   /* 1 if transparent pixel is available */
-	unsigned hash_valid:1;     /* 1 if the has value has been calculated */
-	unsigned hid_data_valid:1; /* 1 if hid_data is already generated and no data changed since - maintained by core, HIDs don't need to check */
-};
-
-
 extern int pcb_dock_is_vert[PCB_HID_DOCK_max];    /* 1 if a new dock box (parent of a new sub-DAD) should be a vbox, 0 if hbox */
 extern int pcb_dock_has_frame[PCB_HID_DOCK_max];  /* 1 if a new dock box (parent of a new sub-DAD) should be framed */
 
