@@ -64,6 +64,7 @@ put /local/pcb/OBJS_C99_HIDLIB [@
 append /local/pcb/OBJS_HIDLIB [@
 	actions.o
 	attrib.o
+	base64.o
 	color.o
 	conf.o
 	conf_hid.o

@@ -1,7 +1,6 @@
 put /local/pcb/mod {hid_remote}
 append /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/hid_remote/remote.o
-	$(PLUGDIR)/hid_remote/base64.o
 	$(PLUGDIR)/hid_remote/proto.o
 @]
 

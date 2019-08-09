@@ -2341,14 +2341,14 @@
  ../src_plugins/hid_lesstif/xm_tree_table_widget.h \
  ../src_3rd/genlist/gendlist.h
 ../src_plugins/hid_remote/base64.o: ../src_plugins/hid_remote/base64.c \
- ../src_plugins/hid_remote/base64.h
+ ../src/base64.h
 ../src_plugins/hid_remote/proto.o: ../src_plugins/hid_remote/proto.c \
  pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h unit.h global_typedefs.h \
  ../config.h pcb_bool.h ../src_plugins/hid_remote/proto_lowcommon.h \
  ../src_plugins/hid_remote/proto_lowsend.h \
- ../src_plugins/hid_remote/base64.h \
+ ../src/base64.h \
  ../src_plugins/hid_remote/proto_lowparse.h layer.h globalconst.h \
  attrib.h color.h obj_common.h flag.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h \
