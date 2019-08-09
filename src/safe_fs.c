@@ -118,8 +118,6 @@ FILE *pcb_fopen_askovr(pcb_hidlib_t *hidlib, const char *path, const char *mode,
 				int res = 0;
 				fclose(f);
 				if (all != NULL)
-					pcb_trace("all in: %d %s\n", *all, path);
-				if (all != NULL)
 					res = *all;
 				if (res != 2)
 					res = pcb_actionl("gui_MayOverwriteFile", path, (all != NULL) ? "1" : "0", NULL);
@@ -127,8 +125,6 @@ FILE *pcb_fopen_askovr(pcb_hidlib_t *hidlib, const char *path, const char *mode,
 					return NULL;
 				if ((all != NULL) && (res == 2)) /* remember 'overwrite all' for this session */
 					*all = 2;
-				if (all != NULL)
-					pcb_trace("all out: %d %s %d\n", *all, path, res);
 			}
 		}
 	}
