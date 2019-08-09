@@ -564,8 +564,14 @@ struct pcb_hid_expose_ctx_s {
 typedef void (*pcb_hid_expose_t)(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx);
 
 /* This is initially set to a "no-gui" GUI, and later reset by
-   main. hid_expose_callback also temporarily set it for drawing. */
+   main. It is used for on-screen GUI calls, such as dialog boxes */
 extern pcb_hid_t *pcb_gui;
+
+/* This is initially set to a "no-gui" GUI, and later reset by
+   main. hid_expose_callback also temporarily set it for drawing. Normally
+   matches pcb_gui, but is temporarily changed while exporting. It is used
+   for drawing calls, mainly by draw*.c */
+extern pcb_hid_t *pcb_render;
 
 /* This is either NULL or points to the current HID that is being called to
    do the exporting. The GUI HIDs set and unset this var.*/

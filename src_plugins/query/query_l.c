@@ -8,11 +8,17 @@
 
 #define yy_create_buffer qry__create_buffer
 #define yy_delete_buffer qry__delete_buffer
-#define yy_flex_debug qry__flex_debug
+#define yy_scan_buffer qry__scan_buffer
+#define yy_scan_string qry__scan_string
+#define yy_scan_bytes qry__scan_bytes
 #define yy_init_buffer qry__init_buffer
 #define yy_flush_buffer qry__flush_buffer
 #define yy_load_buffer_state qry__load_buffer_state
 #define yy_switch_to_buffer qry__switch_to_buffer
+#define yypush_buffer_state qry_push_buffer_state
+#define yypop_buffer_state qry_pop_buffer_state
+#define yyensure_buffer_stack qry_ensure_buffer_stack
+#define yy_flex_debug qry__flex_debug
 #define yyin qry_in
 #define yyleng qry_leng
 #define yylex qry_lex
@@ -27,10 +33,244 @@
 
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
-#define YY_FLEX_MINOR_VERSION 5
-#define YY_FLEX_SUBMINOR_VERSION 35
+#define YY_FLEX_MINOR_VERSION 6
+#define YY_FLEX_SUBMINOR_VERSION 4
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
+#endif
+
+#ifdef yy_create_buffer
+#define qry__create_buffer_ALREADY_DEFINED
+#else
+#define yy_create_buffer qry__create_buffer
+#endif
+
+#ifdef yy_delete_buffer
+#define qry__delete_buffer_ALREADY_DEFINED
+#else
+#define yy_delete_buffer qry__delete_buffer
+#endif
+
+#ifdef yy_scan_buffer
+#define qry__scan_buffer_ALREADY_DEFINED
+#else
+#define yy_scan_buffer qry__scan_buffer
+#endif
+
+#ifdef yy_scan_string
+#define qry__scan_string_ALREADY_DEFINED
+#else
+#define yy_scan_string qry__scan_string
+#endif
+
+#ifdef yy_scan_bytes
+#define qry__scan_bytes_ALREADY_DEFINED
+#else
+#define yy_scan_bytes qry__scan_bytes
+#endif
+
+#ifdef yy_init_buffer
+#define qry__init_buffer_ALREADY_DEFINED
+#else
+#define yy_init_buffer qry__init_buffer
+#endif
+
+#ifdef yy_flush_buffer
+#define qry__flush_buffer_ALREADY_DEFINED
+#else
+#define yy_flush_buffer qry__flush_buffer
+#endif
+
+#ifdef yy_load_buffer_state
+#define qry__load_buffer_state_ALREADY_DEFINED
+#else
+#define yy_load_buffer_state qry__load_buffer_state
+#endif
+
+#ifdef yy_switch_to_buffer
+#define qry__switch_to_buffer_ALREADY_DEFINED
+#else
+#define yy_switch_to_buffer qry__switch_to_buffer
+#endif
+
+#ifdef yypush_buffer_state
+#define qry_push_buffer_state_ALREADY_DEFINED
+#else
+#define yypush_buffer_state qry_push_buffer_state
+#endif
+
+#ifdef yypop_buffer_state
+#define qry_pop_buffer_state_ALREADY_DEFINED
+#else
+#define yypop_buffer_state qry_pop_buffer_state
+#endif
+
+#ifdef yyensure_buffer_stack
+#define qry_ensure_buffer_stack_ALREADY_DEFINED
+#else
+#define yyensure_buffer_stack qry_ensure_buffer_stack
+#endif
+
+#ifdef yylex
+#define qry_lex_ALREADY_DEFINED
+#else
+#define yylex qry_lex
+#endif
+
+#ifdef yyrestart
+#define qry_restart_ALREADY_DEFINED
+#else
+#define yyrestart qry_restart
+#endif
+
+#ifdef yylex_init
+#define qry_lex_init_ALREADY_DEFINED
+#else
+#define yylex_init qry_lex_init
+#endif
+
+#ifdef yylex_init_extra
+#define qry_lex_init_extra_ALREADY_DEFINED
+#else
+#define yylex_init_extra qry_lex_init_extra
+#endif
+
+#ifdef yylex_destroy
+#define qry_lex_destroy_ALREADY_DEFINED
+#else
+#define yylex_destroy qry_lex_destroy
+#endif
+
+#ifdef yyget_debug
+#define qry_get_debug_ALREADY_DEFINED
+#else
+#define yyget_debug qry_get_debug
+#endif
+
+#ifdef yyset_debug
+#define qry_set_debug_ALREADY_DEFINED
+#else
+#define yyset_debug qry_set_debug
+#endif
+
+#ifdef yyget_extra
+#define qry_get_extra_ALREADY_DEFINED
+#else
+#define yyget_extra qry_get_extra
+#endif
+
+#ifdef yyset_extra
+#define qry_set_extra_ALREADY_DEFINED
+#else
+#define yyset_extra qry_set_extra
+#endif
+
+#ifdef yyget_in
+#define qry_get_in_ALREADY_DEFINED
+#else
+#define yyget_in qry_get_in
+#endif
+
+#ifdef yyset_in
+#define qry_set_in_ALREADY_DEFINED
+#else
+#define yyset_in qry_set_in
+#endif
+
+#ifdef yyget_out
+#define qry_get_out_ALREADY_DEFINED
+#else
+#define yyget_out qry_get_out
+#endif
+
+#ifdef yyset_out
+#define qry_set_out_ALREADY_DEFINED
+#else
+#define yyset_out qry_set_out
+#endif
+
+#ifdef yyget_leng
+#define qry_get_leng_ALREADY_DEFINED
+#else
+#define yyget_leng qry_get_leng
+#endif
+
+#ifdef yyget_text
+#define qry_get_text_ALREADY_DEFINED
+#else
+#define yyget_text qry_get_text
+#endif
+
+#ifdef yyget_lineno
+#define qry_get_lineno_ALREADY_DEFINED
+#else
+#define yyget_lineno qry_get_lineno
+#endif
+
+#ifdef yyset_lineno
+#define qry_set_lineno_ALREADY_DEFINED
+#else
+#define yyset_lineno qry_set_lineno
+#endif
+
+#ifdef yywrap
+#define qry_wrap_ALREADY_DEFINED
+#else
+#define yywrap qry_wrap
+#endif
+
+#ifdef yyalloc
+#define qry_alloc_ALREADY_DEFINED
+#else
+#define yyalloc qry_alloc
+#endif
+
+#ifdef yyrealloc
+#define qry_realloc_ALREADY_DEFINED
+#else
+#define yyrealloc qry_realloc
+#endif
+
+#ifdef yyfree
+#define qry_free_ALREADY_DEFINED
+#else
+#define yyfree qry_free
+#endif
+
+#ifdef yytext
+#define qry_text_ALREADY_DEFINED
+#else
+#define yytext qry_text
+#endif
+
+#ifdef yyleng
+#define qry_leng_ALREADY_DEFINED
+#else
+#define yyleng qry_leng
+#endif
+
+#ifdef yyin
+#define qry_in_ALREADY_DEFINED
+#else
+#define yyin qry_in
+#endif
+
+#ifdef yyout
+#define qry_out_ALREADY_DEFINED
+#else
+#define yyout qry_out
+#endif
+
+#ifdef yy_flex_debug
+#define qry__flex_debug_ALREADY_DEFINED
+#else
+#define yy_flex_debug qry__flex_debug
+#endif
+
+#ifdef yylineno
+#define qry_lineno_ALREADY_DEFINED
+#else
+#define yylineno qry_lineno
 #endif
 
 /* First, we deal with  platform-specific or compiler-specific issues. */
@@ -103,60 +343,48 @@ typedef unsigned int flex_uint32_t;
 #define UINT32_MAX             (4294967295U)
 #endif
 
+#ifndef SIZE_MAX
+#define SIZE_MAX               (~(size_t)0)
+#endif
+
 #endif /* ! C99 */
 
 #endif /* ! FLEXINT_H */
 
-#ifdef __cplusplus
+/* begin standard C++ headers. */
 
-/* The "const" storage-class-modifier is valid. */
-#define YY_USE_CONST
-
-#else	/* ! __cplusplus */
-
-/* C99 requires __STDC__ to be defined as 1. */
-#if defined (__STDC__)
-
-#define YY_USE_CONST
-
-#endif	/* defined (__STDC__) */
-#endif	/* ! __cplusplus */
-
-#ifdef YY_USE_CONST
+/* TODO: this is always defined, so inline it */
 #define yyconst const
+
+#if defined(__GNUC__) && __GNUC__ >= 3
+#define yynoreturn __attribute__((__noreturn__))
 #else
-#define yyconst
+#define yynoreturn
 #endif
 
 /* Returned upon end-of-file. */
 #define YY_NULL 0
 
-/* Promotes a possibly negative, possibly signed char to an unsigned
- * integer for use as an array index.  If the signed char is negative,
- * we want to instead treat it as an 8-bit unsigned char, hence the
- * double cast.
+/* Promotes a possibly negative, possibly signed char to an
+ *   integer in range [0..255] for use as an array index.
  */
-#define YY_SC_TO_UI(c) ((unsigned int) (unsigned char) c)
+#define YY_SC_TO_UI(c) ((YY_CHAR) (c))
 
 /* Enter a start condition.  This macro really ought to take a parameter,
  * but we do it the disgusting crufty way forced on us by the ()-less
  * definition of BEGIN.
  */
 #define BEGIN (yy_start) = 1 + 2 *
-
 /* Translate the current start state into a value that can be later handed
  * to BEGIN to return to the state.  The YYSTATE alias is for lex
  * compatibility.
  */
 #define YY_START (((yy_start) - 1) / 2)
 #define YYSTATE YY_START
-
 /* Action number for EOF rule of a given start state. */
 #define YY_STATE_EOF(state) (YY_END_OF_BUFFER + state + 1)
-
 /* Special action meaning "start processing a new file". */
-#define YY_NEW_FILE qry_restart(qry_in  )
-
+#define YY_NEW_FILE yyrestart( yyin  )
 #define YY_END_OF_BUFFER_CHAR 0
 
 /* Size of default input buffer. */
@@ -181,36 +409,36 @@ typedef unsigned int flex_uint32_t;
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #endif
 
-extern int qry_leng;
+#ifndef YY_TYPEDEF_YY_SIZE_T
+#define YY_TYPEDEF_YY_SIZE_T
+typedef size_t yy_size_t;
+#endif
 
-extern FILE *qry_in, *qry_out;
+extern int yyleng;
+
+extern FILE *yyin, *yyout;
 
 #define EOB_ACT_CONTINUE_SCAN 0
 #define EOB_ACT_END_OF_FILE 1
 #define EOB_ACT_LAST_MATCH 2
-
+    
     #define YY_LESS_LINENO(n)
+    #define YY_LINENO_REWIND_TO(ptr)
     
 /* Return all but the first "n" matched characters back to the input stream. */
 #define yyless(n) \
 	do \
 		{ \
-		/* Undo effects of setting up qry_text. */ \
+		/* Undo effects of setting up yytext. */ \
         int yyless_macro_arg = (n); \
         YY_LESS_LINENO(yyless_macro_arg);\
 		*yy_cp = (yy_hold_char); \
 		YY_RESTORE_YY_MORE_OFFSET \
 		(yy_c_buf_p) = yy_cp = yy_bp + yyless_macro_arg - YY_MORE_ADJ; \
-		YY_DO_BEFORE_ACTION; /* set up qry_text again */ \
+		YY_DO_BEFORE_ACTION; /* set up yytext again */ \
 		} \
 	while ( 0 )
-
 #define unput(c) yyunput( c, (yytext_ptr)  )
-
-#ifndef YY_TYPEDEF_YY_SIZE_T
-#define YY_TYPEDEF_YY_SIZE_T
-typedef size_t yy_size_t;
-#endif
 
 #ifndef YY_STRUCT_YY_BUFFER_STATE
 #define YY_STRUCT_YY_BUFFER_STATE
@@ -224,7 +452,7 @@ struct yy_buffer_state
 	/* Size of input buffer in bytes, not including room for EOB
 	 * characters.
 	 */
-	yy_size_t yy_buf_size;
+	int yy_buf_size;
 
 	/* Number of characters read into yy_ch_buf, not including EOB
 	 * characters.
@@ -252,7 +480,7 @@ struct yy_buffer_state
 
     int yy_bs_lineno; /**< The line count. */
     int yy_bs_column; /**< The column count. */
-    
+
 	/* Whether to try to fill the input buffer when we reach the
 	 * end of it.
 	 */
@@ -269,8 +497,8 @@ struct yy_buffer_state
 	 * possible backing-up.
 	 *
 	 * When we actually see the EOF, we change the status to "new"
-	 * (via qry_restart()), so that the user can continue scanning by
-	 * just pointing qry_in at a new input file.
+	 * (via yyrestart()), so that the user can continue scanning by
+	 * just pointing yyin at a new input file.
 	 */
 #define YY_BUFFER_EOF_PENDING 2
 
@@ -280,7 +508,7 @@ struct yy_buffer_state
 /* Stack of input buffers. */
 static size_t yy_buffer_stack_top = 0; /**< index of top of stack. */
 static size_t yy_buffer_stack_max = 0; /**< capacity of stack. */
-static YY_BUFFER_STATE * yy_buffer_stack = 0; /**< Stack as an array. */
+static YY_BUFFER_STATE * yy_buffer_stack = NULL; /**< Stack as an array. */
 
 /* We provide macros for accessing buffer states in case in the
  * future we want to put the buffer states in a more general
@@ -291,103 +519,98 @@ static YY_BUFFER_STATE * yy_buffer_stack = 0; /**< Stack as an array. */
 #define YY_CURRENT_BUFFER ( (yy_buffer_stack) \
                           ? (yy_buffer_stack)[(yy_buffer_stack_top)] \
                           : NULL)
-
 /* Same as previous macro, but useful when we know that the buffer stack is not
  * NULL or when we need an lvalue. For internal use only.
  */
 #define YY_CURRENT_BUFFER_LVALUE (yy_buffer_stack)[(yy_buffer_stack_top)]
 
-/* yy_hold_char holds the character lost when qry_text is formed. */
+/* yy_hold_char holds the character lost when yytext is formed. */
 static char yy_hold_char;
 static int yy_n_chars;		/* number of characters read into yy_ch_buf */
-int qry_leng;
+int yyleng;
 
 /* Points to current character in buffer. */
-static char *yy_c_buf_p = (char *) 0;
+static char *yy_c_buf_p = NULL;
 static int yy_init = 0;		/* whether we need to initialize */
 static int yy_start = 0;	/* start state number */
 
-/* Flag which is used to allow qry_wrap()'s to do buffer switches
- * instead of setting up a fresh qry_in.  A bit of a hack ...
+/* Flag which is used to allow yywrap()'s to do buffer switches
+ * instead of setting up a fresh yyin.  A bit of a hack ...
  */
 static int yy_did_buffer_switch_on_eof;
 
-void qry_restart (FILE *input_file  );
-void qry__switch_to_buffer (YY_BUFFER_STATE new_buffer  );
-YY_BUFFER_STATE qry__create_buffer (FILE *file,int size  );
-void qry__delete_buffer (YY_BUFFER_STATE b  );
-void qry__flush_buffer (YY_BUFFER_STATE b  );
-void qry_push_buffer_state (YY_BUFFER_STATE new_buffer  );
-void qry_pop_buffer_state (void );
+void yyrestart ( FILE *input_file  );
+void yy_switch_to_buffer ( YY_BUFFER_STATE new_buffer  );
+YY_BUFFER_STATE yy_create_buffer ( FILE *file, int size  );
+void yy_delete_buffer ( YY_BUFFER_STATE b  );
+void yy_flush_buffer ( YY_BUFFER_STATE b  );
+void yypush_buffer_state ( YY_BUFFER_STATE new_buffer  );
+void yypop_buffer_state ( void );
 
-static void qry_ensure_buffer_stack (void );
-static void qry__load_buffer_state (void );
-static void qry__init_buffer (YY_BUFFER_STATE b,FILE *file  );
+static void yyensure_buffer_stack ( void );
+static void yy_load_buffer_state ( void );
+static void yy_init_buffer ( YY_BUFFER_STATE b, FILE *file  );
+#define YY_FLUSH_BUFFER yy_flush_buffer( YY_CURRENT_BUFFER )
 
-#define YY_FLUSH_BUFFER qry__flush_buffer(YY_CURRENT_BUFFER )
+YY_BUFFER_STATE yy_scan_buffer ( char *base, yy_size_t size  );
+YY_BUFFER_STATE yy_scan_string ( const char *yy_str  );
+YY_BUFFER_STATE yy_scan_bytes ( const char *bytes, int len  );
 
-YY_BUFFER_STATE qry__scan_buffer (char *base,yy_size_t size  );
-YY_BUFFER_STATE qry__scan_string (yyconst char *yy_str  );
-YY_BUFFER_STATE qry__scan_bytes (yyconst char *bytes,int len  );
+void *yyalloc ( yy_size_t  );
+void *yyrealloc ( void *, yy_size_t  );
+void yyfree ( void *  );
 
-void *qry_alloc (yy_size_t  );
-void *qry_realloc (void *,yy_size_t  );
-void qry_free (void *  );
-
-#define yy_new_buffer qry__create_buffer
-
+#define yy_new_buffer yy_create_buffer
 #define yy_set_interactive(is_interactive) \
 	{ \
 	if ( ! YY_CURRENT_BUFFER ){ \
-        qry_ensure_buffer_stack (); \
+        yyensure_buffer_stack (); \
 		YY_CURRENT_BUFFER_LVALUE =    \
-            qry__create_buffer(qry_in,YY_BUF_SIZE ); \
+            yy_create_buffer( yyin, YY_BUF_SIZE ); \
 	} \
 	YY_CURRENT_BUFFER_LVALUE->yy_is_interactive = is_interactive; \
 	}
-
 #define yy_set_bol(at_bol) \
 	{ \
 	if ( ! YY_CURRENT_BUFFER ){\
-        qry_ensure_buffer_stack (); \
+        yyensure_buffer_stack (); \
 		YY_CURRENT_BUFFER_LVALUE =    \
-            qry__create_buffer(qry_in,YY_BUF_SIZE ); \
+            yy_create_buffer( yyin, YY_BUF_SIZE ); \
 	} \
 	YY_CURRENT_BUFFER_LVALUE->yy_at_bol = at_bol; \
 	}
-
 #define YY_AT_BOL() (YY_CURRENT_BUFFER_LVALUE->yy_at_bol)
 
 /* Begin user sect3 */
+typedef flex_uint8_t YY_CHAR;
 
-typedef unsigned char YY_CHAR;
-
-FILE *qry_in = (FILE *) 0, *qry_out = (FILE *) 0;
+FILE *yyin = NULL, *yyout = NULL;
 
 typedef int yy_state_type;
 
-extern int qry_lineno;
+extern int yylineno;
+int yylineno = 1;
 
-int qry_lineno = 1;
+extern char *yytext;
+#ifdef yytext_ptr
+#undef yytext_ptr
+#endif
+#define yytext_ptr yytext
 
-extern char *qry_text;
-#define yytext_ptr qry_text
-
-static yy_state_type yy_get_previous_state (void );
-static yy_state_type yy_try_NUL_trans (yy_state_type current_state  );
-static int yy_get_next_buffer (void );
-static void yy_fatal_error (yyconst char msg[]  );
+static yy_state_type yy_get_previous_state ( void );
+static yy_state_type yy_try_NUL_trans ( yy_state_type current_state  );
+static int yy_get_next_buffer ( void );
+static void yynoreturn yy_fatal_error ( const char* msg  );
 
 /* Done after the current pattern has been matched and before the
- * corresponding action - sets up qry_text.
+ * corresponding action - sets up yytext.
  */
 #define YY_DO_BEFORE_ACTION \
 	(yytext_ptr) = yy_bp; \
-	qry_leng = (size_t) (yy_cp - yy_bp); \
+	yyleng = (int) (yy_cp - yy_bp); \
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
-
 #define YY_NUM_RULES 64
 #define YY_END_OF_BUFFER 65
 /* This struct is not used in this scanner,
@@ -397,7 +620,7 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static yyconst flex_int16_t yy_accept[215] =
+static const flex_int16_t yy_accept[215] =
     {   0,
         0,    0,   65,   64,   63,   62,   61,   64,   64,   64,
        61,   61,   57,   61,   64,   61,   60,   60,   60,   60,
@@ -425,7 +648,7 @@ static yyconst flex_int16_t yy_accept[215] =
        11,   12,   21,    0
     } ;
 
-static yyconst flex_int32_t yy_ec[256] =
+static const YY_CHAR yy_ec[256] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    2,    3,
         1,    1,    3,    1,    1,    1,    1,    1,    1,    1,
@@ -457,7 +680,7 @@ static yyconst flex_int32_t yy_ec[256] =
         1,    1,    1,    1,    1
     } ;
 
-static yyconst flex_int32_t yy_meta[56] =
+static const YY_CHAR yy_meta[56] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    2,
         1,    1,    1,    2,    2,    2,    2,    2,    2,    2,
@@ -467,7 +690,7 @@ static yyconst flex_int32_t yy_meta[56] =
         2,    2,    2,    2,    1
     } ;
 
-static yyconst flex_int16_t yy_base[218] =
+static const flex_int16_t yy_base[218] =
     {   0,
         0,    0,  233,  234,  234,  234,  220,  226,  224,  222,
       234,  218,   47,  215,  214,  213,  194,  195,  194,  193,
@@ -495,7 +718,7 @@ static yyconst flex_int16_t yy_base[218] =
         0,    0,    0,  234,  107,  109,   87
     } ;
 
-static yyconst flex_int16_t yy_def[218] =
+static const flex_int16_t yy_def[218] =
     {   0,
       214,    1,  214,  214,  214,  214,  214,  215,  214,  216,
       214,  214,  214,  214,  214,  214,  217,  217,  217,  217,
@@ -523,7 +746,7 @@ static yyconst flex_int16_t yy_def[218] =
       217,  217,  217,    0,  214,  214,  214
     } ;
 
-static yyconst flex_int16_t yy_nxt[290] =
+static const flex_int16_t yy_nxt[290] =
     {   0,
         4,    5,    6,    7,    8,    9,   10,   11,   12,   13,
        14,   15,   16,   17,   18,   19,   20,   21,   22,   21,
@@ -558,7 +781,7 @@ static yyconst flex_int16_t yy_nxt[290] =
       214,  214,  214,  214,  214,  214,  214,  214,  214
     } ;
 
-static yyconst flex_int16_t yy_chk[290] =
+static const flex_int16_t yy_chk[290] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -596,8 +819,8 @@ static yyconst flex_int16_t yy_chk[290] =
 static yy_state_type yy_last_accepting_state;
 static char *yy_last_accepting_cpos;
 
-extern int qry__flex_debug;
-int qry__flex_debug = 0;
+extern int yy_flex_debug;
+int yy_flex_debug = 0;
 
 /* The intent behind this definition is that it'll catch
  * any uses of REJECT which flex missed.
@@ -606,7 +829,7 @@ int qry__flex_debug = 0;
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-char *qry_text;
+char *yytext;
 #line 1 "query_l.l"
 #line 2 "query_l.l"
 /*
@@ -643,7 +866,8 @@ static const char *pcb_qry_program, *pcb_qry_program_ptr;
 static int qry_yy_input(char *buf, int buflen);
 static pcb_qry_node_t *make_constant(char *str, long val);
 #define YY_INPUT(buf, res, buflen) (res = qry_yy_input(buf, buflen))
-#line 647 "query_l.c"
+#line 870 "query_l.c"
+#line 871 "query_l.c"
 
 #define INITIAL 0
 
@@ -659,36 +883,36 @@ static pcb_qry_node_t *make_constant(char *str, long val);
 #define YY_EXTRA_TYPE void *
 #endif
 
-static int yy_init_globals (void );
+static int yy_init_globals ( void );
 
 /* Accessor methods to globals.
    These are made visible to non-reentrant scanners for convenience. */
 
-int qry_lex_destroy (void );
+int yylex_destroy ( void );
 
-int qry_get_debug (void );
+int yyget_debug ( void );
 
-void qry_set_debug (int debug_flag  );
+void yyset_debug ( int debug_flag  );
 
-YY_EXTRA_TYPE qry_get_extra (void );
+YY_EXTRA_TYPE yyget_extra ( void );
 
-void qry_set_extra (YY_EXTRA_TYPE user_defined  );
+void yyset_extra ( YY_EXTRA_TYPE user_defined  );
 
-FILE *qry_get_in (void );
+FILE *yyget_in ( void );
 
-void qry_set_in  (FILE * in_str  );
+void yyset_in  ( FILE * _in_str  );
 
-FILE *qry_get_out (void );
+FILE *yyget_out ( void );
 
-void qry_set_out  (FILE * out_str  );
+void yyset_out  ( FILE * _out_str  );
 
-int qry_get_leng (void );
+			int yyget_leng ( void );
 
-char *qry_get_text (void );
+char *yyget_text ( void );
 
-int qry_get_lineno (void );
+int yyget_lineno ( void );
 
-void qry_set_lineno (int line_number  );
+void yyset_lineno ( int _line_number  );
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -696,28 +920,31 @@ void qry_set_lineno (int line_number  );
 
 #ifndef YY_SKIP_YYWRAP
 #ifdef __cplusplus
-extern "C" int qry_wrap (void );
+extern "C" int yywrap ( void );
 #else
-extern int qry_wrap (void );
+extern int yywrap ( void );
 #endif
 #endif
 
-    static void yyunput (int c,char *buf_ptr  );
+#ifndef YY_NO_UNPUT
     
+    static void yyunput ( int c, char *buf_ptr  );
+    
+#endif
+
 #ifndef yytext_ptr
-static void yy_flex_strncpy (char *,yyconst char *,int );
+static void yy_flex_strncpy ( char *, const char *, int );
 #endif
 
 #ifdef YY_NEED_STRLEN
-static int yy_flex_strlen (yyconst char * );
+static int yy_flex_strlen ( const char * );
 #endif
 
 #ifndef YY_NO_INPUT
-
 #ifdef __cplusplus
-static int yyinput (void );
+static int yyinput ( void );
 #else
-static int input (void );
+static int input ( void );
 #endif
 
 #endif
@@ -737,7 +964,7 @@ static int input (void );
 /* This used to be an fputs(), but since the string might contain NUL's,
  * we now use fwrite().
  */
-#define ECHO do { if (fwrite( qry_text, qry_leng, 1, qry_out )) {} } while (0)
+#define ECHO do { if (fwrite( yytext, (size_t) yyleng, 1, yyout )) {} } while (0)
 #endif
 
 /* Gets input and stuffs it into "buf".  number of characters read, or YY_NULL,
@@ -748,20 +975,20 @@ static int input (void );
 	if ( YY_CURRENT_BUFFER_LVALUE->yy_is_interactive ) \
 		{ \
 		int c = '*'; \
-		size_t n; \
+		int n; \
 		for ( n = 0; n < max_size && \
-			     (c = getc( qry_in )) != EOF && c != '\n'; ++n ) \
+			     (c = getc( yyin )) != EOF && c != '\n'; ++n ) \
 			buf[n] = (char) c; \
 		if ( c == '\n' ) \
 			buf[n++] = (char) c; \
-		if ( c == EOF && ferror( qry_in ) ) \
+		if ( c == EOF && ferror( yyin ) ) \
 			YY_FATAL_ERROR( "input in flex scanner failed" ); \
 		result = n; \
 		} \
 	else \
 		{ \
 		errno=0; \
-		while ( (result = fread(buf, 1, max_size, qry_in))==0 && ferror(qry_in)) \
+		while ( (result = (int) fread(buf, 1, (yy_size_t) max_size, yyin)) == 0 && ferror(yyin)) \
 			{ \
 			if( errno != EINTR) \
 				{ \
@@ -769,7 +996,7 @@ static int input (void );
 				break; \
 				} \
 			errno=0; \
-			clearerr(qry_in); \
+			clearerr(yyin); \
 			} \
 		}\
 \
@@ -802,12 +1029,12 @@ static int input (void );
 #ifndef YY_DECL
 #define YY_DECL_IS_OURS 1
 
-extern int qry_lex (void);
+extern int yylex (void);
 
-#define YY_DECL int qry_lex (void)
+#define YY_DECL int yylex (void)
 #endif /* !YY_DECL */
 
-/* Code executed at the beginning of each rule, after qry_text and qry_leng
+/* Code executed at the beginning of each rule, after yytext and yyleng
  * have been set up.
  */
 #ifndef YY_USER_ACTION
@@ -816,7 +1043,7 @@ extern int qry_lex (void);
 
 /* Code executed at the end of each rule. */
 #ifndef YY_BREAK
-#define YY_BREAK break;
+#define YY_BREAK /*LINTED*/break;
 #endif
 
 #define YY_RULE_SETUP \
@@ -826,14 +1053,10 @@ extern int qry_lex (void);
  */
 YY_DECL
 {
-	register yy_state_type yy_current_state;
-	register char *yy_cp, *yy_bp;
-	register int yy_act;
+	yy_state_type yy_current_state;
+	char *yy_cp, *yy_bp;
+	int yy_act;
     
-#line 40 "query_l.l"
-
-#line 836 "query_l.c"
-
 	if ( !(yy_init) )
 		{
 		(yy_init) = 1;
@@ -845,26 +1068,31 @@ YY_DECL
 		if ( ! (yy_start) )
 			(yy_start) = 1;	/* first start state */
 
-		if ( ! qry_in )
-			qry_in = stdin;
+		if ( ! yyin )
+			yyin = stdin;
 
-		if ( ! qry_out )
-			qry_out = stdout;
+		if ( ! yyout )
+			yyout = stdout;
 
 		if ( ! YY_CURRENT_BUFFER ) {
-			qry_ensure_buffer_stack ();
+			yyensure_buffer_stack ();
 			YY_CURRENT_BUFFER_LVALUE =
-				qry__create_buffer(qry_in,YY_BUF_SIZE );
+				yy_create_buffer( yyin, YY_BUF_SIZE );
 		}
 
-		qry__load_buffer_state( );
+		yy_load_buffer_state(  );
 		}
 
-	while ( 1 )		/* loops until end-of-file is reached */
+	{
+#line 40 "query_l.l"
+
+#line 1090 "query_l.c"
+
+	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
 		yy_cp = (yy_c_buf_p);
 
-		/* Support of qry_text. */
+		/* Support of yytext. */
 		*yy_cp = (yy_hold_char);
 
 		/* yy_bp points to the position in yy_ch_buf of the start of
@@ -876,7 +1104,7 @@ YY_DECL
 yy_match:
 		do
 			{
-			register YY_CHAR yy_c = yy_ec[YY_SC_TO_UI(*yy_cp)];
+			YY_CHAR yy_c = yy_ec[YY_SC_TO_UI(*yy_cp)] ;
 			if ( yy_accept[yy_current_state] )
 				{
 				(yy_last_accepting_state) = yy_current_state;
@@ -886,9 +1114,9 @@ yy_match:
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
 				if ( yy_current_state >= 215 )
-					yy_c = yy_meta[(unsigned int) yy_c];
+					yy_c = yy_meta[yy_c];
 				}
-			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
+			yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 			++yy_cp;
 			}
 		while ( yy_base[yy_current_state] != 234 );
@@ -919,13 +1147,13 @@ case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
 #line 41 "query_l.l"
-{ qry_lval.s = pcb_strdup(qry_text+1); qry_lval.s[strlen(qry_lval.s)-1] = '\0'; return T_QSTR; /*"*/ }
+{ qry_lval.s = pcb_strdup(yytext+1); qry_lval.s[strlen(qry_lval.s)-1] = '\0'; return T_QSTR; /*"*/ }
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
 #line 42 "query_l.l"
-{ qry_lval.s = pcb_strdup(qry_text+1); qry_lval.s[strlen(qry_lval.s)-1] = '\0'; return T_QSTR; }
+{ qry_lval.s = pcb_strdup(yytext+1); qry_lval.s[strlen(qry_lval.s)-1] = '\0'; return T_QSTR; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
@@ -970,167 +1198,167 @@ YY_RULE_SETUP
 case 11:
 YY_RULE_SETUP
 #line 53 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_OBJ_LINE_POINT); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, PCB_OBJ_LINE_POINT); return T_CONST; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 54 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_OBJ_POLY_POINT); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, PCB_OBJ_POLY_POINT); return T_CONST; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 55 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_OBJ_LINE); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, PCB_OBJ_LINE); return T_CONST; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 56 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_OBJ_TEXT); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, PCB_OBJ_TEXT); return T_CONST; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 57 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_OBJ_POLY); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, PCB_OBJ_POLY); return T_CONST; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 58 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_OBJ_ARC); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, PCB_OBJ_ARC); return T_CONST; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 59 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_OBJ_RAT); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, PCB_OBJ_RAT); return T_CONST; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 60 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_OBJ_PSTK); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, PCB_OBJ_PSTK); return T_CONST; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 61 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_OBJ_PSTK); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, PCB_OBJ_PSTK); return T_CONST; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 62 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_OBJ_SUBC); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, PCB_OBJ_SUBC); return T_CONST; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 63 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_OBJ_SUBC); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, PCB_OBJ_SUBC); return T_CONST; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 64 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_OBJ_NET); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, PCB_OBJ_NET); return T_CONST; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 65 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_OBJ_LAYER); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, PCB_OBJ_LAYER); return T_CONST; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 66 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_OBJ_LAYERGRP); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, PCB_OBJ_LAYERGRP); return T_CONST; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 68 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, 1); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, 1); return T_CONST; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 69 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, 1); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, 1); return T_CONST; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 70 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, 1); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, 1); return T_CONST; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
 #line 71 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, 1); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, 1); return T_CONST; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 73 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, 0); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, 0); return T_CONST; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
 #line 74 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, 0); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, 0); return T_CONST; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
 #line 75 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, 0); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, 0); return T_CONST; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 76 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, 0); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, 0); return T_CONST; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
 #line 78 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_LYT_TOP); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, PCB_LYT_TOP); return T_CONST; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
 #line 79 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_LYT_BOTTOM); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, PCB_LYT_BOTTOM); return T_CONST; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
 #line 80 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_LYT_INTERN); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, PCB_LYT_INTERN); return T_CONST; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
 #line 81 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_LYT_INTERN); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, PCB_LYT_INTERN); return T_CONST; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
 #line 82 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_LYT_COPPER); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, PCB_LYT_COPPER); return T_CONST; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
 #line 83 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_LYT_SILK); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, PCB_LYT_SILK); return T_CONST; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
 #line 84 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_LYT_MASK); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, PCB_LYT_MASK); return T_CONST; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
 #line 85 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_LYT_PASTE); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, PCB_LYT_PASTE); return T_CONST; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
 #line 86 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_LYT_MECH); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, PCB_LYT_MECH); return T_CONST; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
 #line 87 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_LYT_DOC); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, PCB_LYT_DOC); return T_CONST; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
 #line 88 "query_l.l"
-{ qry_lval.n = make_constant(qry_text, PCB_LYT_BOUNDARY); return T_CONST; }
+{ qry_lval.n = make_constant(yytext, PCB_LYT_BOUNDARY); return T_CONST; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
@@ -1200,27 +1428,27 @@ YY_RULE_SETUP
 case 57:
 YY_RULE_SETUP
 #line 107 "query_l.l"
-{ qry_lval.c = strtol(qry_text, NULL, 10); return T_INT; }
+{ qry_lval.c = strtol(yytext, NULL, 10); return T_INT; }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
 #line 108 "query_l.l"
-{ qry_lval.d = strtod(qry_text, NULL); return T_DBL; }
+{ qry_lval.d = strtod(yytext, NULL); return T_DBL; }
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
 #line 109 "query_l.l"
-{ qry_lval.d = strtod(qry_text, NULL); return T_DBL; }
+{ qry_lval.d = strtod(yytext, NULL); return T_DBL; }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
 #line 110 "query_l.l"
-{ qry_lval.s = pcb_strdup(qry_text); return T_STR; }
+{ qry_lval.s = pcb_strdup(yytext); return T_STR; }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
 #line 112 "query_l.l"
-{ return *qry_text; }
+{ return *yytext; }
 	YY_BREAK
 case 62:
 /* rule 62 can match eol */
@@ -1238,7 +1466,7 @@ YY_RULE_SETUP
 #line 117 "query_l.l"
 ECHO;
 	YY_BREAK
-#line 1242 "query_l.c"
+#line 1470 "query_l.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1255,15 +1483,15 @@ case YY_STATE_EOF(INITIAL):
 			{
 			/* We're scanning a new file or input source.  It's
 			 * possible that this happened because the user
-			 * just pointed qry_in at a new source and called
-			 * qry_lex().  If so, then we have to assure
+			 * just pointed yyin at a new source and called
+			 * yylex().  If so, then we have to assure
 			 * consistency between YY_CURRENT_BUFFER and our
 			 * globals.  Here is the right place to do so, because
 			 * this is the first action (other than possibly a
 			 * back-up) that will match for the new input source.
 			 */
 			(yy_n_chars) = YY_CURRENT_BUFFER_LVALUE->yy_n_chars;
-			YY_CURRENT_BUFFER_LVALUE->yy_input_file = qry_in;
+			YY_CURRENT_BUFFER_LVALUE->yy_input_file = yyin;
 			YY_CURRENT_BUFFER_LVALUE->yy_buffer_status = YY_BUFFER_NORMAL;
 			}
 
@@ -1316,11 +1544,11 @@ case YY_STATE_EOF(INITIAL):
 				{
 				(yy_did_buffer_switch_on_eof) = 0;
 
-				if ( qry_wrap( ) )
+				if ( yywrap(  ) )
 					{
 					/* Note: because we've taken care in
 					 * yy_get_next_buffer() to have set up
-					 * qry_text, we can now set up
+					 * yytext, we can now set up
 					 * yy_c_buf_p so that if some total
 					 * hoser (like flex itself) wants to
 					 * call the scanner after we return the
@@ -1369,7 +1597,8 @@ case YY_STATE_EOF(INITIAL):
 			"fatal flex scanner internal error--no action found" );
 	} /* end of action switch */
 		} /* end of scanning one token */
-} /* end of qry_lex */
+	} /* end of user's declarations */
+} /* end of yylex */
 
 /* yy_get_next_buffer - try to read in a new buffer
  *
@@ -1380,9 +1609,9 @@ case YY_STATE_EOF(INITIAL):
  */
 static int yy_get_next_buffer (void)
 {
-    	register char *dest = YY_CURRENT_BUFFER_LVALUE->yy_ch_buf;
-	register char *source = (yytext_ptr);
-	register int number_to_move, i;
+    	char *dest = YY_CURRENT_BUFFER_LVALUE->yy_ch_buf;
+	char *source = (yytext_ptr);
+	int number_to_move, i;
 	int ret_val;
 
 	if ( (yy_c_buf_p) > &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[(yy_n_chars) + 1] )
@@ -1411,7 +1640,7 @@ static int yy_get_next_buffer (void)
 	/* Try to read more data. */
 
 	/* First move last chars to start of buffer. */
-	number_to_move = (int) ((yy_c_buf_p) - (yytext_ptr)) - 1;
+	number_to_move = (int) ((yy_c_buf_p) - (yytext_ptr) - 1);
 
 	for ( i = 0; i < number_to_move; ++i )
 		*(dest++) = *(source++);
@@ -1431,7 +1660,7 @@ static int yy_get_next_buffer (void)
 			{ /* Not enough room in the buffer - grow it. */
 
 			/* just a shorter name for the current buffer */
-			YY_BUFFER_STATE b = YY_CURRENT_BUFFER;
+			YY_BUFFER_STATE b = YY_CURRENT_BUFFER_LVALUE;
 
 			int yy_c_buf_p_offset =
 				(int) ((yy_c_buf_p) - b->yy_ch_buf);
@@ -1447,11 +1676,12 @@ static int yy_get_next_buffer (void)
 
 				b->yy_ch_buf = (char *)
 					/* Include room in for 2 EOB chars. */
-					qry_realloc((void *) b->yy_ch_buf,b->yy_buf_size + 2  );
+					yyrealloc( (void *) b->yy_ch_buf,
+							 (yy_size_t) (b->yy_buf_size + 2)  );
 				}
 			else
 				/* Can't grow it, we don't own it. */
-				b->yy_ch_buf = 0;
+				b->yy_ch_buf = NULL;
 
 			if ( ! b->yy_ch_buf )
 				YY_FATAL_ERROR(
@@ -1469,7 +1699,7 @@ static int yy_get_next_buffer (void)
 
 		/* Read in more data. */
 		YY_INPUT( (&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move]),
-			(yy_n_chars), (size_t) num_to_read );
+			(yy_n_chars), num_to_read );
 
 		YY_CURRENT_BUFFER_LVALUE->yy_n_chars = (yy_n_chars);
 		}
@@ -1479,7 +1709,7 @@ static int yy_get_next_buffer (void)
 		if ( number_to_move == YY_MORE_ADJ )
 			{
 			ret_val = EOB_ACT_END_OF_FILE;
-			qry_restart(qry_in  );
+			yyrestart( yyin  );
 			}
 
 		else
@@ -1493,12 +1723,15 @@ static int yy_get_next_buffer (void)
 	else
 		ret_val = EOB_ACT_CONTINUE_SCAN;
 
-	if ((yy_size_t) ((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
+	if (((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
 		/* Extend the array by 50%, plus the number we really need. */
-		yy_size_t new_size = (yy_n_chars) + number_to_move + ((yy_n_chars) >> 1);
-		YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) qry_realloc((void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf,new_size  );
+		int new_size = (yy_n_chars) + number_to_move + ((yy_n_chars) >> 1);
+		YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) yyrealloc(
+			(void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf, (yy_size_t) new_size  );
 		if ( ! YY_CURRENT_BUFFER_LVALUE->yy_ch_buf )
 			YY_FATAL_ERROR( "out of dynamic memory in yy_get_next_buffer()" );
+		/* "- 2" to take care of EOB's */
+		YY_CURRENT_BUFFER_LVALUE->yy_buf_size = (int) (new_size - 2);
 	}
 
 	(yy_n_chars) += number_to_move;
@@ -1514,14 +1747,14 @@ static int yy_get_next_buffer (void)
 
     static yy_state_type yy_get_previous_state (void)
 {
-	register yy_state_type yy_current_state;
-	register char *yy_cp;
+	yy_state_type yy_current_state;
+	char *yy_cp;
     
 	yy_current_state = (yy_start);
 
 	for ( yy_cp = (yytext_ptr) + YY_MORE_ADJ; yy_cp < (yy_c_buf_p); ++yy_cp )
 		{
-		register YY_CHAR yy_c = (*yy_cp ? yy_ec[YY_SC_TO_UI(*yy_cp)] : 1);
+		YY_CHAR yy_c = (*yy_cp ? yy_ec[YY_SC_TO_UI(*yy_cp)] : 1);
 		if ( yy_accept[yy_current_state] )
 			{
 			(yy_last_accepting_state) = yy_current_state;
@@ -1531,9 +1764,9 @@ static int yy_get_next_buffer (void)
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
 			if ( yy_current_state >= 215 )
-				yy_c = yy_meta[(unsigned int) yy_c];
+				yy_c = yy_meta[yy_c];
 			}
-		yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
+		yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 		}
 
 	return yy_current_state;
@@ -1546,10 +1779,10 @@ static int yy_get_next_buffer (void)
  */
     static yy_state_type yy_try_NUL_trans  (yy_state_type yy_current_state )
 {
-	register int yy_is_jam;
-    	register char *yy_cp = (yy_c_buf_p);
+	int yy_is_jam;
+    	char *yy_cp = (yy_c_buf_p);
 
-	register YY_CHAR yy_c = 1;
+	YY_CHAR yy_c = 1;
 	if ( yy_accept[yy_current_state] )
 		{
 		(yy_last_accepting_state) = yy_current_state;
@@ -1559,30 +1792,32 @@ static int yy_get_next_buffer (void)
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
 		if ( yy_current_state >= 215 )
-			yy_c = yy_meta[(unsigned int) yy_c];
+			yy_c = yy_meta[yy_c];
 		}
-	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
+	yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 	yy_is_jam = (yy_current_state == 214);
 
-	return yy_is_jam ? 0 : yy_current_state;
+		return yy_is_jam ? 0 : yy_current_state;
 }
 
-    static void yyunput (int c, register char * yy_bp )
+#ifndef YY_NO_UNPUT
+
+    static void yyunput (int c, char * yy_bp )
 {
-	register char *yy_cp;
+	char *yy_cp;
     
     yy_cp = (yy_c_buf_p);
 
-	/* undo effects of setting up qry_text */
+	/* undo effects of setting up yytext */
 	*yy_cp = (yy_hold_char);
 
 	if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
 		{ /* need to shift things up to make room */
 		/* +2 for EOB chars. */
-		register int number_to_move = (yy_n_chars) + 2;
-		register char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
+		int number_to_move = (yy_n_chars) + 2;
+		char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
 					YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
-		register char *source =
+		char *source =
 				&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move];
 
 		while ( source > YY_CURRENT_BUFFER_LVALUE->yy_ch_buf )
@@ -1591,7 +1826,7 @@ static int yy_get_next_buffer (void)
 		yy_cp += (int) (dest - source);
 		yy_bp += (int) (dest - source);
 		YY_CURRENT_BUFFER_LVALUE->yy_n_chars =
-			(yy_n_chars) = YY_CURRENT_BUFFER_LVALUE->yy_buf_size;
+			(yy_n_chars) = (int) YY_CURRENT_BUFFER_LVALUE->yy_buf_size;
 
 		if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
 			YY_FATAL_ERROR( "flex scanner push-back overflow" );
@@ -1603,6 +1838,8 @@ static int yy_get_next_buffer (void)
 	(yy_hold_char) = *yy_cp;
 	(yy_c_buf_p) = yy_cp;
 }
+
+#endif
 
 #ifndef YY_NO_INPUT
 #ifdef __cplusplus
@@ -1628,7 +1865,7 @@ static int yy_get_next_buffer (void)
 
 		else
 			{ /* need more input */
-			int offset = (yy_c_buf_p) - (yytext_ptr);
+			int offset = (int) ((yy_c_buf_p) - (yytext_ptr));
 			++(yy_c_buf_p);
 
 			switch ( yy_get_next_buffer(  ) )
@@ -1645,14 +1882,14 @@ static int yy_get_next_buffer (void)
 					 */
 
 					/* Reset buffer status. */
-					qry_restart(qry_in );
+					yyrestart( yyin );
 
 					/*FALLTHROUGH*/
 
 				case EOB_ACT_END_OF_FILE:
 					{
-					if ( qry_wrap( ) )
-						return EOF;
+					if ( yywrap(  ) )
+						return 0;
 
 					if ( ! (yy_did_buffer_switch_on_eof) )
 						YY_NEW_FILE;
@@ -1671,7 +1908,7 @@ static int yy_get_next_buffer (void)
 		}
 
 	c = *(unsigned char *) (yy_c_buf_p);	/* cast for 8-bit char's */
-	*(yy_c_buf_p) = '\0';	/* preserve qry_text */
+	*(yy_c_buf_p) = '\0';	/* preserve yytext */
 	(yy_hold_char) = *++(yy_c_buf_p);
 
 	return c;
@@ -1683,32 +1920,32 @@ static int yy_get_next_buffer (void)
  * 
  * @note This function does not reset the start condition to @c INITIAL .
  */
-    void qry_restart  (FILE * input_file )
+    void yyrestart  (FILE * input_file )
 {
     
 	if ( ! YY_CURRENT_BUFFER ){
-        qry_ensure_buffer_stack ();
+        yyensure_buffer_stack ();
 		YY_CURRENT_BUFFER_LVALUE =
-            qry__create_buffer(qry_in,YY_BUF_SIZE );
+            yy_create_buffer( yyin, YY_BUF_SIZE );
 	}
 
-	qry__init_buffer(YY_CURRENT_BUFFER,input_file );
-	qry__load_buffer_state( );
+	yy_init_buffer( YY_CURRENT_BUFFER, input_file );
+	yy_load_buffer_state(  );
 }
 
 /** Switch to a different input buffer.
  * @param new_buffer The new input buffer.
  * 
  */
-    void qry__switch_to_buffer  (YY_BUFFER_STATE  new_buffer )
+    void yy_switch_to_buffer  (YY_BUFFER_STATE  new_buffer )
 {
     
 	/* TODO. We should be able to replace this entire function body
 	 * with
-	 *		qry_pop_buffer_state();
-	 *		qry_push_buffer_state(new_buffer);
+	 *		yypop_buffer_state();
+	 *		yypush_buffer_state(new_buffer);
      */
-	qry_ensure_buffer_stack ();
+	yyensure_buffer_stack ();
 	if ( YY_CURRENT_BUFFER == new_buffer )
 		return;
 
@@ -1721,21 +1958,21 @@ static int yy_get_next_buffer (void)
 		}
 
 	YY_CURRENT_BUFFER_LVALUE = new_buffer;
-	qry__load_buffer_state( );
+	yy_load_buffer_state(  );
 
 	/* We don't actually know whether we did this switch during
-	 * EOF (qry_wrap()) processing, but the only time this flag
-	 * is looked at is after qry_wrap() is called, so it's safe
+	 * EOF (yywrap()) processing, but the only time this flag
+	 * is looked at is after yywrap() is called, so it's safe
 	 * to go ahead and always set it.
 	 */
 	(yy_did_buffer_switch_on_eof) = 1;
 }
 
-static void qry__load_buffer_state  (void)
+static void yy_load_buffer_state  (void)
 {
     	(yy_n_chars) = YY_CURRENT_BUFFER_LVALUE->yy_n_chars;
 	(yytext_ptr) = (yy_c_buf_p) = YY_CURRENT_BUFFER_LVALUE->yy_buf_pos;
-	qry_in = YY_CURRENT_BUFFER_LVALUE->yy_input_file;
+	yyin = YY_CURRENT_BUFFER_LVALUE->yy_input_file;
 	(yy_hold_char) = *(yy_c_buf_p);
 }
 
@@ -1745,35 +1982,35 @@ static void qry__load_buffer_state  (void)
  * 
  * @return the allocated buffer state.
  */
-    YY_BUFFER_STATE qry__create_buffer  (FILE * file, int  size )
+    YY_BUFFER_STATE yy_create_buffer  (FILE * file, int  size )
 {
 	YY_BUFFER_STATE b;
     
-	b = (YY_BUFFER_STATE) qry_alloc(sizeof( struct yy_buffer_state )  );
+	b = (YY_BUFFER_STATE) yyalloc( sizeof( struct yy_buffer_state )  );
 	if ( ! b )
-		YY_FATAL_ERROR( "out of dynamic memory in qry__create_buffer()" );
+		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
 
 	b->yy_buf_size = size;
 
 	/* yy_ch_buf has to be 2 characters longer than the size given because
 	 * we need to put in 2 end-of-buffer characters.
 	 */
-	b->yy_ch_buf = (char *) qry_alloc(b->yy_buf_size + 2  );
+	b->yy_ch_buf = (char *) yyalloc( (yy_size_t) (b->yy_buf_size + 2)  );
 	if ( ! b->yy_ch_buf )
-		YY_FATAL_ERROR( "out of dynamic memory in qry__create_buffer()" );
+		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
 
 	b->yy_is_our_buffer = 1;
 
-	qry__init_buffer(b,file );
+	yy_init_buffer( b, file );
 
 	return b;
 }
 
 /** Destroy the buffer.
- * @param b a buffer created with qry__create_buffer()
+ * @param b a buffer created with yy_create_buffer()
  * 
  */
-    void qry__delete_buffer (YY_BUFFER_STATE  b )
+    void yy_delete_buffer (YY_BUFFER_STATE  b )
 {
     
 	if ( ! b )
@@ -1783,31 +2020,27 @@ static void qry__load_buffer_state  (void)
 		YY_CURRENT_BUFFER_LVALUE = (YY_BUFFER_STATE) 0;
 
 	if ( b->yy_is_our_buffer )
-		qry_free((void *) b->yy_ch_buf  );
+		yyfree( (void *) b->yy_ch_buf  );
 
-	qry_free((void *) b  );
+	yyfree( (void *) b  );
 }
 
-#ifndef __cplusplus
-extern int isatty (int );
-#endif /* __cplusplus */
-    
 /* Initializes or reinitializes a buffer.
  * This function is sometimes called more than once on the same buffer,
- * such as during a qry_restart() or at EOF.
+ * such as during a yyrestart() or at EOF.
  */
-    static void qry__init_buffer  (YY_BUFFER_STATE  b, FILE * file )
+    static void yy_init_buffer  (YY_BUFFER_STATE  b, FILE * file )
 
 {
 	int oerrno = errno;
     
-	qry__flush_buffer(b );
+	yy_flush_buffer( b );
 
 	b->yy_input_file = file;
 	b->yy_fill_buffer = 1;
 
-    /* If b is the current buffer, then qry__init_buffer was _probably_
-     * called from qry_restart() or through yy_get_next_buffer.
+    /* If b is the current buffer, then yy_init_buffer was _probably_
+     * called from yyrestart() or through yy_get_next_buffer.
      * In that case, we don't want to reset the lineno or column.
      */
     if (b != YY_CURRENT_BUFFER){
@@ -1824,7 +2057,7 @@ extern int isatty (int );
  * @param b the buffer state to be flushed, usually @c YY_CURRENT_BUFFER.
  * 
  */
-    void qry__flush_buffer (YY_BUFFER_STATE  b )
+    void yy_flush_buffer (YY_BUFFER_STATE  b )
 {
     	if ( ! b )
 		return;
@@ -1844,7 +2077,7 @@ extern int isatty (int );
 	b->yy_buffer_status = YY_BUFFER_NEW;
 
 	if ( b == YY_CURRENT_BUFFER )
-		qry__load_buffer_state( );
+		yy_load_buffer_state(  );
 }
 
 /** Pushes the new state onto the stack. The new state becomes
@@ -1853,14 +2086,14 @@ extern int isatty (int );
  *  @param new_buffer The new state.
  *  
  */
-void qry_push_buffer_state (YY_BUFFER_STATE new_buffer )
+void yypush_buffer_state (YY_BUFFER_STATE new_buffer )
 {
     	if (new_buffer == NULL)
 		return;
 
-	qry_ensure_buffer_stack();
+	yyensure_buffer_stack();
 
-	/* This block is copied from qry__switch_to_buffer. */
+	/* This block is copied from yy_switch_to_buffer. */
 	if ( YY_CURRENT_BUFFER )
 		{
 		/* Flush out information for old buffer. */
@@ -1874,8 +2107,8 @@ void qry_push_buffer_state (YY_BUFFER_STATE new_buffer )
 		(yy_buffer_stack_top)++;
 	YY_CURRENT_BUFFER_LVALUE = new_buffer;
 
-	/* copied from qry__switch_to_buffer. */
-	qry__load_buffer_state( );
+	/* copied from yy_switch_to_buffer. */
+	yy_load_buffer_state(  );
 	(yy_did_buffer_switch_on_eof) = 1;
 }
 
@@ -1883,18 +2116,18 @@ void qry_push_buffer_state (YY_BUFFER_STATE new_buffer )
  *  The next element becomes the new top.
  *  
  */
-void qry_pop_buffer_state (void)
+void yypop_buffer_state (void)
 {
     	if (!YY_CURRENT_BUFFER)
 		return;
 
-	qry__delete_buffer(YY_CURRENT_BUFFER );
+	yy_delete_buffer(YY_CURRENT_BUFFER );
 	YY_CURRENT_BUFFER_LVALUE = NULL;
 	if ((yy_buffer_stack_top) > 0)
 		--(yy_buffer_stack_top);
 
 	if (YY_CURRENT_BUFFER) {
-		qry__load_buffer_state( );
+		yy_load_buffer_state(  );
 		(yy_did_buffer_switch_on_eof) = 1;
 	}
 }
@@ -1902,9 +2135,9 @@ void qry_pop_buffer_state (void)
 /* Allocates the stack if it does not exist.
  *  Guarantees space for at least one push.
  */
-static void qry_ensure_buffer_stack (void)
+static void yyensure_buffer_stack (void)
 {
-	int num_to_alloc;
+	yy_size_t num_to_alloc;
     
 	if (!(yy_buffer_stack)) {
 
@@ -1912,15 +2145,15 @@ static void qry_ensure_buffer_stack (void)
 		 * scanner will even need a stack. We use 2 instead of 1 to avoid an
 		 * immediate realloc on the next call.
          */
-		num_to_alloc = 1;
-		(yy_buffer_stack) = (struct yy_buffer_state**)qry_alloc
+      num_to_alloc = 1; /* After all that talk, this was set to 1 anyways... */
+		(yy_buffer_stack) = (struct yy_buffer_state**)yyalloc
 								(num_to_alloc * sizeof(struct yy_buffer_state*)
 								);
 		if ( ! (yy_buffer_stack) )
-			YY_FATAL_ERROR( "out of dynamic memory in qry_ensure_buffer_stack()" );
-								  
+			YY_FATAL_ERROR( "out of dynamic memory in yyensure_buffer_stack()" );
+
 		memset((yy_buffer_stack), 0, num_to_alloc * sizeof(struct yy_buffer_state*));
-				
+
 		(yy_buffer_stack_max) = num_to_alloc;
 		(yy_buffer_stack_top) = 0;
 		return;
@@ -1929,15 +2162,15 @@ static void qry_ensure_buffer_stack (void)
 	if ((yy_buffer_stack_top) >= ((yy_buffer_stack_max)) - 1){
 
 		/* Increase the buffer to prepare for a possible push. */
-		int grow_size = 8 /* arbitrary grow size */;
+		yy_size_t grow_size = 8 /* arbitrary grow size */;
 
 		num_to_alloc = (yy_buffer_stack_max) + grow_size;
-		(yy_buffer_stack) = (struct yy_buffer_state**)qry_realloc
+		(yy_buffer_stack) = (struct yy_buffer_state**)yyrealloc
 								((yy_buffer_stack),
 								num_to_alloc * sizeof(struct yy_buffer_state*)
 								);
 		if ( ! (yy_buffer_stack) )
-			YY_FATAL_ERROR( "out of dynamic memory in qry_ensure_buffer_stack()" );
+			YY_FATAL_ERROR( "out of dynamic memory in yyensure_buffer_stack()" );
 
 		/* zero only the new slots.*/
 		memset((yy_buffer_stack) + (yy_buffer_stack_max), 0, grow_size * sizeof(struct yy_buffer_state*));
@@ -1949,9 +2182,9 @@ static void qry_ensure_buffer_stack (void)
  * @param base the character buffer
  * @param size the size in bytes of the character buffer
  * 
- * @return the newly allocated buffer state object. 
+ * @return the newly allocated buffer state object.
  */
-YY_BUFFER_STATE qry__scan_buffer  (char * base, yy_size_t  size )
+YY_BUFFER_STATE yy_scan_buffer  (char * base, yy_size_t  size )
 {
 	YY_BUFFER_STATE b;
     
@@ -1959,49 +2192,49 @@ YY_BUFFER_STATE qry__scan_buffer  (char * base, yy_size_t  size )
 	     base[size-2] != YY_END_OF_BUFFER_CHAR ||
 	     base[size-1] != YY_END_OF_BUFFER_CHAR )
 		/* They forgot to leave room for the EOB's. */
-		return 0;
+		return NULL;
 
-	b = (YY_BUFFER_STATE) qry_alloc(sizeof( struct yy_buffer_state )  );
+	b = (YY_BUFFER_STATE) yyalloc( sizeof( struct yy_buffer_state )  );
 	if ( ! b )
-		YY_FATAL_ERROR( "out of dynamic memory in qry__scan_buffer()" );
+		YY_FATAL_ERROR( "out of dynamic memory in yy_scan_buffer()" );
 
-	b->yy_buf_size = size - 2;	/* "- 2" to take care of EOB's */
+	b->yy_buf_size = (int) (size - 2);	/* "- 2" to take care of EOB's */
 	b->yy_buf_pos = b->yy_ch_buf = base;
 	b->yy_is_our_buffer = 0;
-	b->yy_input_file = 0;
+	b->yy_input_file = NULL;
 	b->yy_n_chars = b->yy_buf_size;
 	b->yy_is_interactive = 0;
 	b->yy_at_bol = 1;
 	b->yy_fill_buffer = 0;
 	b->yy_buffer_status = YY_BUFFER_NEW;
 
-	qry__switch_to_buffer(b  );
+	yy_switch_to_buffer( b  );
 
 	return b;
 }
 
-/** Setup the input buffer state to scan a string. The next call to qry_lex() will
+/** Setup the input buffer state to scan a string. The next call to yylex() will
  * scan from a @e copy of @a str.
  * @param yystr a NUL-terminated string to scan
  * 
  * @return the newly allocated buffer state object.
  * @note If you want to scan bytes that may contain NUL values, then use
- *       qry__scan_bytes() instead.
+ *       yy_scan_bytes() instead.
  */
-YY_BUFFER_STATE qry__scan_string (yyconst char * yystr )
+YY_BUFFER_STATE yy_scan_string (const char * yystr )
 {
     
-	return qry__scan_bytes(yystr,strlen(yystr) );
+	return yy_scan_bytes( yystr, (int) strlen(yystr) );
 }
 
-/** Setup the input buffer state to scan the given bytes. The next call to qry_lex() will
+/** Setup the input buffer state to scan the given bytes. The next call to yylex() will
  * scan from a @e copy of @a bytes.
  * @param yybytes the byte buffer to scan
  * @param _yybytes_len the number of bytes in the buffer pointed to by @a bytes.
  * 
  * @return the newly allocated buffer state object.
  */
-YY_BUFFER_STATE qry__scan_bytes  (yyconst char * yybytes, int  _yybytes_len )
+YY_BUFFER_STATE yy_scan_bytes  (const char * yybytes, int  _yybytes_len )
 {
 	YY_BUFFER_STATE b;
 	char *buf;
@@ -2009,19 +2242,19 @@ YY_BUFFER_STATE qry__scan_bytes  (yyconst char * yybytes, int  _yybytes_len )
 	int i;
     
 	/* Get memory for full buffer, including space for trailing EOB's. */
-	n = _yybytes_len + 2;
-	buf = (char *) qry_alloc(n  );
+	n = (yy_size_t) (_yybytes_len + 2);
+	buf = (char *) yyalloc( n  );
 	if ( ! buf )
-		YY_FATAL_ERROR( "out of dynamic memory in qry__scan_bytes()" );
+		YY_FATAL_ERROR( "out of dynamic memory in yy_scan_bytes()" );
 
 	for ( i = 0; i < _yybytes_len; ++i )
 		buf[i] = yybytes[i];
 
 	buf[_yybytes_len] = buf[_yybytes_len+1] = YY_END_OF_BUFFER_CHAR;
 
-	b = qry__scan_buffer(buf,n );
+	b = yy_scan_buffer( buf, n );
 	if ( ! b )
-		YY_FATAL_ERROR( "bad buffer in qry__scan_bytes()" );
+		YY_FATAL_ERROR( "bad buffer in yy_scan_bytes()" );
 
 	/* It's okay to grow etc. this buffer, and we should throw it
 	 * away when we're done.
@@ -2035,9 +2268,9 @@ YY_BUFFER_STATE qry__scan_bytes  (yyconst char * yybytes, int  _yybytes_len )
 #define YY_EXIT_FAILURE 2
 #endif
 
-static void yy_fatal_error (yyconst char* msg )
+static void yynoreturn yy_fatal_error (const char* msg )
 {
-    	(void) fprintf( stderr, "%s\n", msg );
+			fprintf( stderr, "%s\n", msg );
 	exit( YY_EXIT_FAILURE );
 }
 
@@ -2047,14 +2280,14 @@ static void yy_fatal_error (yyconst char* msg )
 #define yyless(n) \
 	do \
 		{ \
-		/* Undo effects of setting up qry_text. */ \
+		/* Undo effects of setting up yytext. */ \
         int yyless_macro_arg = (n); \
         YY_LESS_LINENO(yyless_macro_arg);\
-		qry_text[qry_leng] = (yy_hold_char); \
-		(yy_c_buf_p) = qry_text + yyless_macro_arg; \
+		yytext[yyleng] = (yy_hold_char); \
+		(yy_c_buf_p) = yytext + yyless_macro_arg; \
 		(yy_hold_char) = *(yy_c_buf_p); \
 		*(yy_c_buf_p) = '\0'; \
-		qry_leng = yyless_macro_arg; \
+		yyleng = yyless_macro_arg; \
 		} \
 	while ( 0 )
 
@@ -2063,126 +2296,126 @@ static void yy_fatal_error (yyconst char* msg )
 /** Get the current line number.
  * 
  */
-int qry_get_lineno  (void)
+int yyget_lineno  (void)
 {
-        
-    return qry_lineno;
+    
+    return yylineno;
 }
 
 /** Get the input stream.
  * 
  */
-FILE *qry_get_in  (void)
+FILE *yyget_in  (void)
 {
-        return qry_in;
+        return yyin;
 }
 
 /** Get the output stream.
  * 
  */
-FILE *qry_get_out  (void)
+FILE *yyget_out  (void)
 {
-        return qry_out;
+        return yyout;
 }
 
 /** Get the length of the current token.
  * 
  */
-int qry_get_leng  (void)
+int yyget_leng  (void)
 {
-        return qry_leng;
+        return yyleng;
 }
 
 /** Get the current token.
  * 
  */
 
-char *qry_get_text  (void)
+char *yyget_text  (void)
 {
-        return qry_text;
+        return yytext;
 }
 
 /** Set the current line number.
- * @param line_number
+ * @param _line_number line number
  * 
  */
-void qry_set_lineno (int  line_number )
+void yyset_lineno (int  _line_number )
 {
     
-    qry_lineno = line_number;
+    yylineno = _line_number;
 }
 
 /** Set the input stream. This does not discard the current
  * input buffer.
- * @param in_str A readable stream.
+ * @param _in_str A readable stream.
  * 
- * @see qry__switch_to_buffer
+ * @see yy_switch_to_buffer
  */
-void qry_set_in (FILE *  in_str )
+void yyset_in (FILE *  _in_str )
 {
-        qry_in = in_str ;
+        yyin = _in_str ;
 }
 
-void qry_set_out (FILE *  out_str )
+void yyset_out (FILE *  _out_str )
 {
-        qry_out = out_str ;
+        yyout = _out_str ;
 }
 
-int qry_get_debug  (void)
+int yyget_debug  (void)
 {
-        return qry__flex_debug;
+        return yy_flex_debug;
 }
 
-void qry_set_debug (int  bdebug )
+void yyset_debug (int  _bdebug )
 {
-        qry__flex_debug = bdebug ;
+        yy_flex_debug = _bdebug ;
 }
 
 static int yy_init_globals (void)
 {
         /* Initialization is the same as for the non-reentrant scanner.
-     * This function is called from qry_lex_destroy(), so don't allocate here.
+     * This function is called from yylex_destroy(), so don't allocate here.
      */
 
-    (yy_buffer_stack) = 0;
+    (yy_buffer_stack) = NULL;
     (yy_buffer_stack_top) = 0;
     (yy_buffer_stack_max) = 0;
-    (yy_c_buf_p) = (char *) 0;
+    (yy_c_buf_p) = NULL;
     (yy_init) = 0;
     (yy_start) = 0;
 
 /* Defined in main.c */
 #ifdef YY_STDINIT
-    qry_in = stdin;
-    qry_out = stdout;
+    yyin = stdin;
+    yyout = stdout;
 #else
-    qry_in = (FILE *) 0;
-    qry_out = (FILE *) 0;
+    yyin = NULL;
+    yyout = NULL;
 #endif
 
     /* For future reference: Set errno on error, since we are called by
-     * qry_lex_init()
+     * yylex_init()
      */
     return 0;
 }
 
-/* qry_lex_destroy is for both reentrant and non-reentrant scanners. */
-int qry_lex_destroy  (void)
+/* yylex_destroy is for both reentrant and non-reentrant scanners. */
+int yylex_destroy  (void)
 {
     
     /* Pop the buffer stack, destroying each element. */
 	while(YY_CURRENT_BUFFER){
-		qry__delete_buffer(YY_CURRENT_BUFFER  );
+		yy_delete_buffer( YY_CURRENT_BUFFER  );
 		YY_CURRENT_BUFFER_LVALUE = NULL;
-		qry_pop_buffer_state();
+		yypop_buffer_state();
 	}
 
 	/* Destroy the stack itself. */
-	qry_free((yy_buffer_stack) );
+	yyfree((yy_buffer_stack) );
 	(yy_buffer_stack) = NULL;
 
     /* Reset the globals. This is important in a non-reentrant scanner so the next time
-     * qry_lex() is called, initialization will occur. */
+     * yylex() is called, initialization will occur. */
     yy_init_globals( );
 
     return 0;
@@ -2193,18 +2426,19 @@ int qry_lex_destroy  (void)
  */
 
 #ifndef yytext_ptr
-static void yy_flex_strncpy (char* s1, yyconst char * s2, int n )
+static void yy_flex_strncpy (char* s1, const char * s2, int n )
 {
-	register int i;
+		
+	int i;
 	for ( i = 0; i < n; ++i )
 		s1[i] = s2[i];
 }
 #endif
 
 #ifdef YY_NEED_STRLEN
-static int yy_flex_strlen (yyconst char * s )
+static int yy_flex_strlen (const char * s )
 {
-	register int n;
+	int n;
 	for ( n = 0; s[n]; ++n )
 		;
 
@@ -2212,13 +2446,14 @@ static int yy_flex_strlen (yyconst char * s )
 }
 #endif
 
-void *qry_alloc (yy_size_t  size )
+void *yyalloc (yy_size_t  size )
 {
-	return (void *) malloc( size );
+			return malloc(size);
 }
 
-void *qry_realloc  (void * ptr, yy_size_t  size )
+void *yyrealloc  (void * ptr, yy_size_t  size )
 {
+		
 	/* The cast to (char *) in the following accommodates both
 	 * implementations that use char* generic pointers, and those
 	 * that use void* generic pointers.  It works with the latter
@@ -2226,18 +2461,17 @@ void *qry_realloc  (void * ptr, yy_size_t  size )
 	 * any pointer type to void*, and deal with argument conversions
 	 * as though doing an assignment.
 	 */
-	return (void *) realloc( (char *) ptr, size );
+	return realloc(ptr, size);
 }
 
-void qry_free (void * ptr )
+void yyfree (void * ptr )
 {
-	free( (char *) ptr );	/* see qry_realloc() for (char *) cast */
+			free( (char *) ptr );	/* see yyrealloc() for (char *) cast */
 }
 
 #define YYTABLES_NAME "yytables"
 
 #line 117 "query_l.l"
-
 
 
 static int qry_yy_input(char *buf, int buflen)

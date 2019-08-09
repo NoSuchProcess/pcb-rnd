@@ -14,8 +14,8 @@
 
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
-#define YY_FLEX_MINOR_VERSION 5
-#define YY_FLEX_SUBMINOR_VERSION 35
+#define YY_FLEX_MINOR_VERSION 6
+#define YY_FLEX_SUBMINOR_VERSION 4
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
 #endif
@@ -24,10 +24,243 @@
 /* %endif */
 
 /* %if-c-only */
-    
+#ifdef yy_create_buffer
+#define hyy_create_buffer_ALREADY_DEFINED
+#else
+#define yy_create_buffer hyy_create_buffer
+#endif
+
+#ifdef yy_delete_buffer
+#define hyy_delete_buffer_ALREADY_DEFINED
+#else
+#define yy_delete_buffer hyy_delete_buffer
+#endif
+
+#ifdef yy_scan_buffer
+#define hyy_scan_buffer_ALREADY_DEFINED
+#else
+#define yy_scan_buffer hyy_scan_buffer
+#endif
+
+#ifdef yy_scan_string
+#define hyy_scan_string_ALREADY_DEFINED
+#else
+#define yy_scan_string hyy_scan_string
+#endif
+
+#ifdef yy_scan_bytes
+#define hyy_scan_bytes_ALREADY_DEFINED
+#else
+#define yy_scan_bytes hyy_scan_bytes
+#endif
+
+#ifdef yy_init_buffer
+#define hyy_init_buffer_ALREADY_DEFINED
+#else
+#define yy_init_buffer hyy_init_buffer
+#endif
+
+#ifdef yy_flush_buffer
+#define hyy_flush_buffer_ALREADY_DEFINED
+#else
+#define yy_flush_buffer hyy_flush_buffer
+#endif
+
+#ifdef yy_load_buffer_state
+#define hyy_load_buffer_state_ALREADY_DEFINED
+#else
+#define yy_load_buffer_state hyy_load_buffer_state
+#endif
+
+#ifdef yy_switch_to_buffer
+#define hyy_switch_to_buffer_ALREADY_DEFINED
+#else
+#define yy_switch_to_buffer hyy_switch_to_buffer
+#endif
+
+#ifdef yypush_buffer_state
+#define hyypush_buffer_state_ALREADY_DEFINED
+#else
+#define yypush_buffer_state hyypush_buffer_state
+#endif
+
+#ifdef yypop_buffer_state
+#define hyypop_buffer_state_ALREADY_DEFINED
+#else
+#define yypop_buffer_state hyypop_buffer_state
+#endif
+
+#ifdef yyensure_buffer_stack
+#define hyyensure_buffer_stack_ALREADY_DEFINED
+#else
+#define yyensure_buffer_stack hyyensure_buffer_stack
+#endif
+
+#ifdef yylex
+#define hyylex_ALREADY_DEFINED
+#else
+#define yylex hyylex
+#endif
+
+#ifdef yyrestart
+#define hyyrestart_ALREADY_DEFINED
+#else
+#define yyrestart hyyrestart
+#endif
+
+#ifdef yylex_init
+#define hyylex_init_ALREADY_DEFINED
+#else
+#define yylex_init hyylex_init
+#endif
+
+#ifdef yylex_init_extra
+#define hyylex_init_extra_ALREADY_DEFINED
+#else
+#define yylex_init_extra hyylex_init_extra
+#endif
+
+#ifdef yylex_destroy
+#define hyylex_destroy_ALREADY_DEFINED
+#else
+#define yylex_destroy hyylex_destroy
+#endif
+
+#ifdef yyget_debug
+#define hyyget_debug_ALREADY_DEFINED
+#else
+#define yyget_debug hyyget_debug
+#endif
+
+#ifdef yyset_debug
+#define hyyset_debug_ALREADY_DEFINED
+#else
+#define yyset_debug hyyset_debug
+#endif
+
+#ifdef yyget_extra
+#define hyyget_extra_ALREADY_DEFINED
+#else
+#define yyget_extra hyyget_extra
+#endif
+
+#ifdef yyset_extra
+#define hyyset_extra_ALREADY_DEFINED
+#else
+#define yyset_extra hyyset_extra
+#endif
+
+#ifdef yyget_in
+#define hyyget_in_ALREADY_DEFINED
+#else
+#define yyget_in hyyget_in
+#endif
+
+#ifdef yyset_in
+#define hyyset_in_ALREADY_DEFINED
+#else
+#define yyset_in hyyset_in
+#endif
+
+#ifdef yyget_out
+#define hyyget_out_ALREADY_DEFINED
+#else
+#define yyget_out hyyget_out
+#endif
+
+#ifdef yyset_out
+#define hyyset_out_ALREADY_DEFINED
+#else
+#define yyset_out hyyset_out
+#endif
+
+#ifdef yyget_leng
+#define hyyget_leng_ALREADY_DEFINED
+#else
+#define yyget_leng hyyget_leng
+#endif
+
+#ifdef yyget_text
+#define hyyget_text_ALREADY_DEFINED
+#else
+#define yyget_text hyyget_text
+#endif
+
+#ifdef yyget_lineno
+#define hyyget_lineno_ALREADY_DEFINED
+#else
+#define yyget_lineno hyyget_lineno
+#endif
+
+#ifdef yyset_lineno
+#define hyyset_lineno_ALREADY_DEFINED
+#else
+#define yyset_lineno hyyset_lineno
+#endif
+
+#ifdef yywrap
+#define hyywrap_ALREADY_DEFINED
+#else
+#define yywrap hyywrap
+#endif
+
 /* %endif */
 
+#ifdef yyalloc
+#define hyyalloc_ALREADY_DEFINED
+#else
+#define yyalloc hyyalloc
+#endif
+
+#ifdef yyrealloc
+#define hyyrealloc_ALREADY_DEFINED
+#else
+#define yyrealloc hyyrealloc
+#endif
+
+#ifdef yyfree
+#define hyyfree_ALREADY_DEFINED
+#else
+#define yyfree hyyfree
+#endif
+
 /* %if-c-only */
+
+#ifdef yytext
+#define hyytext_ALREADY_DEFINED
+#else
+#define yytext hyytext
+#endif
+
+#ifdef yyleng
+#define hyyleng_ALREADY_DEFINED
+#else
+#define yyleng hyyleng
+#endif
+
+#ifdef yyin
+#define hyyin_ALREADY_DEFINED
+#else
+#define yyin hyyin
+#endif
+
+#ifdef yyout
+#define hyyout_ALREADY_DEFINED
+#else
+#define yyout hyyout
+#endif
+
+#ifdef yy_flex_debug
+#define hyy_flex_debug_ALREADY_DEFINED
+#else
+#define yy_flex_debug hyy_flex_debug
+#endif
+
+#ifdef yylineno
+#define hyylineno_ALREADY_DEFINED
+#else
+#define yylineno hyylineno
+#endif
 
 /* %endif */
 
@@ -106,34 +339,27 @@ typedef unsigned int flex_uint32_t;
 #define UINT32_MAX             (4294967295U)
 #endif
 
+#ifndef SIZE_MAX
+#define SIZE_MAX               (~(size_t)0)
+#endif
+
 #endif /* ! C99 */
 
 #endif /* ! FLEXINT_H */
 
 /* %endif */
 
+/* begin standard C++ headers. */
 /* %if-c++-only */
 /* %endif */
 
-#ifdef __cplusplus
-
-/* The "const" storage-class-modifier is valid. */
-#define YY_USE_CONST
-
-#else	/* ! __cplusplus */
-
-/* C99 requires __STDC__ to be defined as 1. */
-#if defined (__STDC__)
-
-#define YY_USE_CONST
-
-#endif	/* defined (__STDC__) */
-#endif	/* ! __cplusplus */
-
-#ifdef YY_USE_CONST
+/* TODO: this is always defined, so inline it */
 #define yyconst const
+
+#if defined(__GNUC__) && __GNUC__ >= 3
+#define yynoreturn __attribute__((__noreturn__))
 #else
-#define yyconst
+#define yynoreturn
 #endif
 
 /* %not-for-header */
@@ -165,20 +391,20 @@ typedef unsigned int flex_uint32_t;
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #endif
 
-/* %if-not-reentrant */
-extern int hyyleng;
-/* %endif */
-
-/* %if-c-only */
-/* %if-not-reentrant */
-extern FILE *hyyin, *hyyout;
-/* %endif */
-/* %endif */
-
 #ifndef YY_TYPEDEF_YY_SIZE_T
 #define YY_TYPEDEF_YY_SIZE_T
 typedef size_t yy_size_t;
 #endif
+
+/* %if-not-reentrant */
+extern int yyleng;
+/* %endif */
+
+/* %if-c-only */
+/* %if-not-reentrant */
+extern FILE *yyin, *yyout;
+/* %endif */
+/* %endif */
 
 #ifndef YY_STRUCT_YY_BUFFER_STATE
 #define YY_STRUCT_YY_BUFFER_STATE
@@ -197,7 +423,7 @@ struct yy_buffer_state
 	/* Size of input buffer in bytes, not including room for EOB
 	 * characters.
 	 */
-	yy_size_t yy_buf_size;
+	int yy_buf_size;
 
 	/* Number of characters read into yy_ch_buf, not including EOB
 	 * characters.
@@ -225,7 +451,7 @@ struct yy_buffer_state
 
     int yy_bs_lineno; /**< The line count. */
     int yy_bs_column; /**< The column count. */
-    
+
 	/* Whether to try to fill the input buffer when we reach the
 	 * end of it.
 	 */
@@ -248,36 +474,39 @@ struct yy_buffer_state
 
 /* %endif */
 
-void hyyrestart (FILE *input_file  );
-void hyy_switch_to_buffer (YY_BUFFER_STATE new_buffer  );
-YY_BUFFER_STATE hyy_create_buffer (FILE *file,int size  );
-void hyy_delete_buffer (YY_BUFFER_STATE b  );
-void hyy_flush_buffer (YY_BUFFER_STATE b  );
-void hyypush_buffer_state (YY_BUFFER_STATE new_buffer  );
-void hyypop_buffer_state (void );
+void yyrestart ( FILE *input_file  );
+void yy_switch_to_buffer ( YY_BUFFER_STATE new_buffer  );
+YY_BUFFER_STATE yy_create_buffer ( FILE *file, int size  );
+void yy_delete_buffer ( YY_BUFFER_STATE b  );
+void yy_flush_buffer ( YY_BUFFER_STATE b  );
+void yypush_buffer_state ( YY_BUFFER_STATE new_buffer  );
+void yypop_buffer_state ( void );
 
-YY_BUFFER_STATE hyy_scan_buffer (char *base,yy_size_t size  );
-YY_BUFFER_STATE hyy_scan_string (yyconst char *yy_str  );
-YY_BUFFER_STATE hyy_scan_bytes (yyconst char *bytes,int len  );
+YY_BUFFER_STATE yy_scan_buffer ( char *base, yy_size_t size  );
+YY_BUFFER_STATE yy_scan_string ( const char *yy_str  );
+YY_BUFFER_STATE yy_scan_bytes ( const char *bytes, int len  );
 
 /* %endif */
 
-void *hyyalloc (yy_size_t  );
-void *hyyrealloc (void *,yy_size_t  );
-void hyyfree (void *  );
+void *yyalloc ( yy_size_t  );
+void *yyrealloc ( void *, yy_size_t  );
+void yyfree ( void *  );
 
-/* %% [1.0] hyytext/hyyin/hyyout/yy_state_type/hyylineno etc. def's & init go here */
+/* %% [1.0] yytext/yyin/yyout/yy_state_type/yylineno etc. def's & init go here */
 /* Begin user sect3 */
 
-#define hyywrap(n) 1
+#define hyywrap() (/*CONSTCOND*/1)
 #define YY_SKIP_YYWRAP
 
 #define FLEX_DEBUG
 
-extern int hyylineno;
+extern int yylineno;
 
-extern char *hyytext;
-#define yytext_ptr hyytext
+extern char *yytext;
+#ifdef yytext_ptr
+#undef yytext_ptr
+#endif
+#define yytext_ptr yytext
 
 /* %if-c-only Standard (non-C++) definition */
 
@@ -321,31 +550,31 @@ extern char *hyytext;
 /* Accessor methods to globals.
    These are made visible to non-reentrant scanners for convenience. */
 
-int hyylex_destroy (void );
+int yylex_destroy ( void );
 
-int hyyget_debug (void );
+int yyget_debug ( void );
 
-void hyyset_debug (int debug_flag  );
+void yyset_debug ( int debug_flag  );
 
-YY_EXTRA_TYPE hyyget_extra (void );
+YY_EXTRA_TYPE yyget_extra ( void );
 
-void hyyset_extra (YY_EXTRA_TYPE user_defined  );
+void yyset_extra ( YY_EXTRA_TYPE user_defined  );
 
-FILE *hyyget_in (void );
+FILE *yyget_in ( void );
 
-void hyyset_in  (FILE * in_str  );
+void yyset_in  ( FILE * _in_str  );
 
-FILE *hyyget_out (void );
+FILE *yyget_out ( void );
 
-void hyyset_out  (FILE * out_str  );
+void yyset_out  ( FILE * _out_str  );
 
-int hyyget_leng (void );
+			int yyget_leng ( void );
 
-char *hyyget_text (void );
+char *yyget_text ( void );
 
-int hyyget_lineno (void );
+int yyget_lineno ( void );
 
-void hyyset_lineno (int line_number  );
+void yyset_lineno ( int _line_number  );
 
 /* %if-bison-bridge */
 /* %endif */
@@ -356,9 +585,9 @@ void hyyset_lineno (int line_number  );
 
 #ifndef YY_SKIP_YYWRAP
 #ifdef __cplusplus
-extern "C" int hyywrap (void );
+extern "C" int yywrap ( void );
 #else
-extern int hyywrap (void );
+extern int yywrap ( void );
 #endif
 #endif
 
@@ -367,11 +596,11 @@ extern int hyywrap (void );
 /* %endif */
 
 #ifndef yytext_ptr
-static void yy_flex_strncpy (char *,yyconst char *,int );
+static void yy_flex_strncpy ( char *, const char *, int );
 #endif
 
 #ifdef YY_NEED_STRLEN
-static int yy_flex_strlen (yyconst char * );
+static int yy_flex_strlen ( const char * );
 #endif
 
 #ifndef YY_NO_INPUT
@@ -412,9 +641,9 @@ static int yy_flex_strlen (yyconst char * );
 #define YY_DECL_IS_OURS 1
 /* %if-c-only Standard (non-C++) definition */
 
-extern int hyylex (void);
+extern int yylex (void);
 
-#define YY_DECL int hyylex (void)
+#define YY_DECL int yylex (void)
 /* %endif */
 /* %if-c++-only C++ definition */
 /* %endif */
@@ -444,9 +673,154 @@ extern int hyylex (void);
 #undef YY_DECL
 #endif
 
-#line 400 "hyp_l.l"
+#ifndef hyy_create_buffer_ALREADY_DEFINED
+#undef yy_create_buffer
+#endif
+#ifndef hyy_delete_buffer_ALREADY_DEFINED
+#undef yy_delete_buffer
+#endif
+#ifndef hyy_scan_buffer_ALREADY_DEFINED
+#undef yy_scan_buffer
+#endif
+#ifndef hyy_scan_string_ALREADY_DEFINED
+#undef yy_scan_string
+#endif
+#ifndef hyy_scan_bytes_ALREADY_DEFINED
+#undef yy_scan_bytes
+#endif
+#ifndef hyy_init_buffer_ALREADY_DEFINED
+#undef yy_init_buffer
+#endif
+#ifndef hyy_flush_buffer_ALREADY_DEFINED
+#undef yy_flush_buffer
+#endif
+#ifndef hyy_load_buffer_state_ALREADY_DEFINED
+#undef yy_load_buffer_state
+#endif
+#ifndef hyy_switch_to_buffer_ALREADY_DEFINED
+#undef yy_switch_to_buffer
+#endif
+#ifndef hyypush_buffer_state_ALREADY_DEFINED
+#undef yypush_buffer_state
+#endif
+#ifndef hyypop_buffer_state_ALREADY_DEFINED
+#undef yypop_buffer_state
+#endif
+#ifndef hyyensure_buffer_stack_ALREADY_DEFINED
+#undef yyensure_buffer_stack
+#endif
+#ifndef hyylex_ALREADY_DEFINED
+#undef yylex
+#endif
+#ifndef hyyrestart_ALREADY_DEFINED
+#undef yyrestart
+#endif
+#ifndef hyylex_init_ALREADY_DEFINED
+#undef yylex_init
+#endif
+#ifndef hyylex_init_extra_ALREADY_DEFINED
+#undef yylex_init_extra
+#endif
+#ifndef hyylex_destroy_ALREADY_DEFINED
+#undef yylex_destroy
+#endif
+#ifndef hyyget_debug_ALREADY_DEFINED
+#undef yyget_debug
+#endif
+#ifndef hyyset_debug_ALREADY_DEFINED
+#undef yyset_debug
+#endif
+#ifndef hyyget_extra_ALREADY_DEFINED
+#undef yyget_extra
+#endif
+#ifndef hyyset_extra_ALREADY_DEFINED
+#undef yyset_extra
+#endif
+#ifndef hyyget_in_ALREADY_DEFINED
+#undef yyget_in
+#endif
+#ifndef hyyset_in_ALREADY_DEFINED
+#undef yyset_in
+#endif
+#ifndef hyyget_out_ALREADY_DEFINED
+#undef yyget_out
+#endif
+#ifndef hyyset_out_ALREADY_DEFINED
+#undef yyset_out
+#endif
+#ifndef hyyget_leng_ALREADY_DEFINED
+#undef yyget_leng
+#endif
+#ifndef hyyget_text_ALREADY_DEFINED
+#undef yyget_text
+#endif
+#ifndef hyyget_lineno_ALREADY_DEFINED
+#undef yyget_lineno
+#endif
+#ifndef hyyset_lineno_ALREADY_DEFINED
+#undef yyset_lineno
+#endif
+#ifndef hyyget_column_ALREADY_DEFINED
+#undef yyget_column
+#endif
+#ifndef hyyset_column_ALREADY_DEFINED
+#undef yyset_column
+#endif
+#ifndef hyywrap_ALREADY_DEFINED
+#undef yywrap
+#endif
+#ifndef hyyget_lval_ALREADY_DEFINED
+#undef yyget_lval
+#endif
+#ifndef hyyset_lval_ALREADY_DEFINED
+#undef yyset_lval
+#endif
+#ifndef hyyget_lloc_ALREADY_DEFINED
+#undef yyget_lloc
+#endif
+#ifndef hyyset_lloc_ALREADY_DEFINED
+#undef yyset_lloc
+#endif
+#ifndef hyyalloc_ALREADY_DEFINED
+#undef yyalloc
+#endif
+#ifndef hyyrealloc_ALREADY_DEFINED
+#undef yyrealloc
+#endif
+#ifndef hyyfree_ALREADY_DEFINED
+#undef yyfree
+#endif
+#ifndef hyytext_ALREADY_DEFINED
+#undef yytext
+#endif
+#ifndef hyyleng_ALREADY_DEFINED
+#undef yyleng
+#endif
+#ifndef hyyin_ALREADY_DEFINED
+#undef yyin
+#endif
+#ifndef hyyout_ALREADY_DEFINED
+#undef yyout
+#endif
+#ifndef hyy_flex_debug_ALREADY_DEFINED
+#undef yy_flex_debug
+#endif
+#ifndef hyylineno_ALREADY_DEFINED
+#undef yylineno
+#endif
+#ifndef hyytables_fload_ALREADY_DEFINED
+#undef yytables_fload
+#endif
+#ifndef hyytables_destroy_ALREADY_DEFINED
+#undef yytables_destroy
+#endif
+#ifndef hyyTABLES_NAME_ALREADY_DEFINED
+#undef yyTABLES_NAME
+#endif
+
+#line 401 "hyp_l.l"
 
 
-#line 451 "hyp_l.h"
+#line 825 "hyp_l.h"
 #undef hyyIN_HEADER
 #endif /* hyyHEADER_H */

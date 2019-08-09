@@ -174,7 +174,7 @@ static void pcb_draw_silk_doc(pcb_draw_info_t *info, pcb_layer_type_t lyt_side, 
 			comp_finish(&cctx);
 		}
 		if (setgrp)
-			pcb_gui->end_layer(pcb_gui);
+			pcb_render->end_layer(pcb_gui);
 	}
 }
 
@@ -255,7 +255,7 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 				pcb_draw_layer(info, ly);
 			}
 			pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
-			pcb_gui->end_layer(pcb_gui);
+			pcb_render->end_layer(pcb_gui);
 		}
 	}
 
@@ -273,7 +273,7 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 		pcb_gui->draw_rect(pcb_draw_out.fgGC, 0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
 
 		pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
-		pcb_gui->end_layer(pcb_gui);
+		pcb_render->end_layer(pcb_gui);
 	}
 
 	/* draw slots */
@@ -288,7 +288,7 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 			pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 			pcb_draw_pstk_slots(info, uslot->meta.real.grp, PCB_PHOLE_UNPLATED | PCB_PHOLE_BB);
 			pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
-			pcb_gui->end_layer(pcb_gui);
+			pcb_render->end_layer(pcb_gui);
 		}
 	}
 	if ((pslot != NULL) && (pslot->meta.real.vis)) {
@@ -297,7 +297,7 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 			pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 			pcb_draw_pstk_slots(info, pslot->meta.real.grp, PCB_PHOLE_PLATED | PCB_PHOLE_BB);
 			pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
-			pcb_gui->end_layer(pcb_gui);
+			pcb_render->end_layer(pcb_gui);
 		}
 	}
 }

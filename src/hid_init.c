@@ -63,6 +63,7 @@ pcb_hid_t **pcb_hid_list = 0;
 int pcb_hid_num_hids = 0;
 
 pcb_hid_t *pcb_gui = NULL;
+pcb_hid_t *pcb_render = NULL;
 pcb_hid_t *pcb_exporter = NULL;
 
 int pcb_pixel_slop = 1;
@@ -74,7 +75,7 @@ void pcb_hid_init()
 	char *tmp;
 
 	/* Setup a "nogui" default HID */
-	pcb_gui = pcb_hid_nogui_get_hid();
+	pcb_render = pcb_gui = pcb_hid_nogui_get_hid();
 
 TODO("make this configurable - add to conf_board_ignores avoid plugin injection")
 	tmp = pcb_concat(pcbhl_conf.rc.path.exec_prefix, PCB_DIR_SEPARATOR_S, "lib", PCB_DIR_SEPARATOR_S, "pcb-rnd", PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL);
@@ -382,7 +383,7 @@ int pcb_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[])
 			apg = pcb_conf_list_next_str(apg, &g, &n);
 			if (apg == NULL)
 				goto ran_out_of_hids;
-			pcb_gui = pcb_hid_find_gui(g);
+			pcb_render = pcb_gui = pcb_hid_find_gui(g);
 		} while(pcb_gui == NULL);
 	}
 	return 0;
@@ -504,10 +505,10 @@ int pcbhl_main_args_setup1(pcbhl_main_args_t *ga)
 
 	/* Export pcb from command line if requested.  */
 	switch(ga->do_what) {
-		case DO_PRINT:   pcb_exporter = pcb_gui = pcb_hid_find_printer(); break;
-		case DO_EXPORT:  pcb_exporter = pcb_gui = pcb_hid_find_exporter(ga->hid_name); break;
+		case DO_PRINT:   pcb_render = pcb_exporter = pcb_gui = pcb_hid_find_printer(); break;
+		case DO_EXPORT:  pcb_render = pcb_exporter = pcb_gui = pcb_hid_find_exporter(ga->hid_name); break;
 		case DO_GUI:
-			pcb_gui = pcb_hid_find_gui(ga->hid_name);
+			pcb_render = pcb_gui = pcb_hid_find_gui(ga->hid_name);
 			if (pcb_gui == NULL) {
 				pcb_message(PCB_MSG_ERROR, "Can't find the gui (%s) requested.\n", ga->hid_name);
 				return 1;
@@ -517,9 +518,9 @@ int pcbhl_main_args_setup1(pcbhl_main_args_t *ga)
 			const char *g;
 			pcb_conf_listitem_t *i;
 
-			pcb_gui = NULL;
+			pcb_render = pcb_gui = NULL;
 			conf_loop_list_str(&pcbhl_conf.rc.preferred_gui, i, g, ga->autopick_gui) {
-				pcb_gui = pcb_hid_find_gui(g);
+				pcb_render = pcb_gui = pcb_hid_find_gui(g);
 				if (pcb_gui != NULL)
 					break;
 			}
@@ -527,7 +528,7 @@ int pcbhl_main_args_setup1(pcbhl_main_args_t *ga)
 			/* try anything */
 			if (pcb_gui == NULL) {
 				pcb_message(PCB_MSG_WARNING, "Warning: can't find any of the preferred GUIs, falling back to anything available...\nYou may want to check if the plugin is loaded, try --dump-plugins and --dump-plugindirs\n");
-				pcb_gui = pcb_hid_find_gui(NULL);
+				pcb_render = pcb_gui = pcb_hid_find_gui(NULL);
 			}
 		}
 	}
