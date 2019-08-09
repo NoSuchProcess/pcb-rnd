@@ -6,37 +6,20 @@ include {../scconfig/template/debug.tmpasm}
 print [@
 ROOT=../..
 PLUGDIR=../../src_plugins
-CFLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@
-LDFLAGS=-lm @/local/pcb/LDFLAGS@
+
+include $(ROOT)/src/librnd.mak
+
+CFLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@ $(CFLAGS_LIBRND_FUNGW)
+LDFLAGS=-lm @/local/pcb/LDFLAGS@ $(LDFLAGS_LIBRND_FUNGW)
 CC=@cc/cc@
+LIB_HIDLIB=\
+	$(ROOT)/src/librnd-hid.a \
+	$(ROOT)/src/librnd-3rd.a
 @]
 
-if ?libs/script/fungw/presents
-then
-	print {HASHOBJ=}
-else
-# no system installed fungw: need local hash objects
-	print {HASHOBJ=../../src_3rd//genht/hash.o ../../src_3rd//genht/htsp.o ../../src_3rd//genht/htpp.o ../../src_3rd//genht/htsi.o}
-end
-
 print [@
-VECTOBJ=../../src_3rd/genvector/gds_char.o ../../src_3rd/genvector/vtp0.o ../../src_3rd/genvector/vts0.o
 LISTOBJ=../../src_3rd/genlist/genadlist.o ../../src_3rd/genlist/genlistalloc.o
 QPARSE=../../src_3rd/qparse/qparse.o
-LHTOBJ= \
-	../../src_3rd/liblihata/parser.o \
-	../../src_3rd/liblihata/dom.o \
-	../../src_3rd/liblihata/dom_list.o \
-	../../src_3rd/liblihata/dom_hash.o \
-	../../src_3rd/liblihata/dom_table.o \
-	../../src_3rd/liblihata/lihata.o \
-	../../src_3rd/liblihata/hash_str.o \
-	../../src_3rd/liblihata/tree.o \
-	../../src_3rd/liblihata/tree_list.o \
-	../../src_3rd/liblihata/tree_hash.o \
-	../../src_3rd/liblihata/tree_table.o \
-	../../src_3rd/liblihata/tree_symlink.o \
-	../../src_3rd/liblihata/tree_path.o
 @]
 
 put /local/pcb/tmpasm/buildin  {../src_plugins/Buildin.tmpasm}
@@ -73,21 +56,19 @@ all:
 revcheck:
 	cd ../../scconfig && ./revtest Rev.stamp < Rev.tab
 
-gsch2pcb-rnd$(EXE): $(OBJS)  $(CONF_OBJS) $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(QPARSE) $(FP_OBJS) $(LHTOBJ)
-	$(CC) $(OBJS) $(CONF_OBJS)  $(FP_OBJS) $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(QPARSE) $(LHTOBJ) -o gsch2pcb-rnd$(EXE) $(LDFLAGS) $(FP_LDFLAGS)
+gsch2pcb-rnd$(EXE): $(OBJS)  $(CONF_OBJS) $(HASHOBJ) $(LISTOBJ) $(QPARSE) $(FP_OBJS) $(LIB_HIDLIB)
+	$(CC) $(OBJS) $(CONF_OBJS)  $(FP_OBJS) $(HASHOBJ) $(LISTOBJ) $(QPARSE) $(LIB_HIDLIB) -o gsch2pcb-rnd$(EXE) $(LDFLAGS) $(FP_LDFLAGS)
 
 gsch2pcb.o: gsch2pcb.c ../../config.h
 	$(CC) -c $(CFLAGS) $(FP_CFLAGS) gsch2pcb.c -o gsch2pcb.o
 
 # TODO: this should be the base lib only
 # run the Makefile in src for the common objects:
-$(HASHOBJ) $(QPARSE) $(LHTOBJ) \
+$(HASHOBJ) $(QPARSE) \
 ../../src_3rd/genvector/gds_char.o ../../src_3rd/genvector/vtp0.o \
 ../../src_3rd/genvector/vts0.o ../../src_3rd/genadlist/genlist.o \
 ../../src_3rd/genlist/genlistalloc.o:
 	cd ../../src && $(MAKE) util_deps
-
-$(LHTOBJ): $(HASHOBJ)
 
 ##### module rules begin #####
 @/local/pcb/RULES@
