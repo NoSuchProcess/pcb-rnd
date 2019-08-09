@@ -1089,17 +1089,17 @@ void pcb_line_draw_(pcb_draw_info_t *info, pcb_line_t *line, int allow_term_gfx)
 		if ((allow_term_gfx) && pcb_draw_term_need_gfx(line) && pcb_draw_term_hid_permission()) {
 			pcb_hid_set_line_cap(pcb_draw_out.active_padGC, pcb_cap_round);
 			pcb_hid_set_line_width(pcb_draw_out.active_padGC, thickness);
-			pcb_gui->draw_line(pcb_draw_out.active_padGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
+			pcb_render->draw_line(pcb_draw_out.active_padGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 			pcb_hid_set_line_width(pcb_draw_out.fgGC, PCB_DRAW_TERM_GFX_WIDTH);
 		}
 		else
 			pcb_hid_set_line_width(pcb_draw_out.fgGC, thickness);
-		pcb_gui->draw_line(pcb_draw_out.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
+		pcb_render->draw_line(pcb_draw_out.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 	}
 	else {
 		if(conf_core.editor.thin_draw) {
 			pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
-			pcb_gui->draw_line(pcb_draw_out.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
+			pcb_render->draw_line(pcb_draw_out.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 		}
 
 		if(conf_core.editor.wireframe_draw) { 

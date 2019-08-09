@@ -87,7 +87,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 static void xor_draw_fake_via(pcb_coord_t x, pcb_coord_t y, pcb_coord_t dia, pcb_coord_t clearance)
 {
 	pcb_coord_t r = (dia/2)+clearance;
-	pcb_gui->draw_arc(pcb_crosshair.GC, x, y, r, r, 0, 360);
+	pcb_render->draw_arc(pcb_crosshair.GC, x, y, r, r, 0, 360);
 }
 
 

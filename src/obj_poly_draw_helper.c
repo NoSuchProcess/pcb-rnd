@@ -97,9 +97,9 @@ static void fill_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 	while ((v = v->next) != pl->head.next);
 
 	if (i < 3)
-		pcb_gui->draw_line(gc, last_x, last_y, this_x, this_y);
+		pcb_render->draw_line(gc, last_x, last_y, this_x, this_y);
 	else
-		pcb_gui->fill_polygon(gc, i, fc_x, fc_y);
+		pcb_render->fill_polygon(gc, i, fc_x, fc_y);
 
 	vert_opt_end();
 }
@@ -115,7 +115,7 @@ static void thindraw_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 
 	/* If the contour is round, use an arc drawing routine. */
 	if (pl->is_round) {
-		pcb_gui->draw_arc(gc, pl->cx, pl->cy, pl->radius, pl->radius, 0, 360);
+		pcb_render->draw_arc(gc, pl->cx, pl->cy, pl->radius, pl->radius, 0, 360);
 		return;
 	}
 
@@ -126,7 +126,7 @@ static void thindraw_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 	vert_opt_begin();
 	do {
 		vert_opt_loop1(v, 0, continue);
-		pcb_gui->draw_line(gc, last_x, last_y, this_x, this_y);
+		pcb_render->draw_line(gc, last_x, last_y, this_x, this_y);
 		vert_opt_loop2();
 	}
 	while ((v = v->next) != pl->head.next);

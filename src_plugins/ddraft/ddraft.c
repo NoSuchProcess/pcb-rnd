@@ -381,7 +381,7 @@ void ddraft_tool_draw_attached(void)
 	pcb_render->set_color(pcb_crosshair.GC, pcb_color_grey33);
 	for(n = 0; n < vtc0_len(&pcb_ddraft_attached.annot_lines); n += 4) {
 		pcb_coord_t *c = &pcb_ddraft_attached.annot_lines.array[n];
-		pcb_gui->draw_line(pcb_crosshair.GC, c[0], c[1], c[2], c[3]);
+		pcb_render->draw_line(pcb_crosshair.GC, c[0], c[1], c[2], c[3]);
 	}
 
 	if (pcb_ddraft_attached.line_valid) {

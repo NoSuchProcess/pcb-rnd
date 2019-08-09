@@ -123,7 +123,7 @@ void pcb_draw_dashed_line(pcb_draw_info_t *info, pcb_hid_gc_t GC, pcb_coord_t x1
 
 	if (len_mnt < minlen*2) {
 		/* line too short, just draw it */
-		pcb_gui->draw_line(GC, x1, y1, x2, y2);
+		pcb_render->draw_line(GC, x1, y1, x2, y2);
 		return;
 	}
 
@@ -138,14 +138,14 @@ void pcb_draw_dashed_line(pcb_draw_info_t *info, pcb_hid_gc_t GC, pcb_coord_t x1
 
 	/* first seg is drawn from x1, y1 with no rounding error due to n-1 == 0 */
 	for(n = 1; n < segs; n+=2)
-		pcb_gui->draw_line(GC,
+		pcb_render->draw_line(GC,
 			x1 + (dx * (double)(n-1) / (double)segs), y1 + (dy * (double)(n-1) / (double)segs),
 			x1 + (dx * (double)n / (double)segs), y1 + (dy * (double)n / (double)segs));
 
 
 	/* make sure the last segment is drawn properly to x2 and y2, don't leave
 	   room for rounding errors */
-	pcb_gui->draw_line(GC,
+	pcb_render->draw_line(GC,
 		x2 - (dx / (double)segs), y2 - (dy / (double)segs),
 		x2, y2);
 }

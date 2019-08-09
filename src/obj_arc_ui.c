@@ -38,8 +38,8 @@
 static void draw_mark(pcb_hid_gc_t gc, const pcb_arc_t *arc)
 {
 	const pcb_coord_t mark = PCB_MM_TO_COORD(0.2);
-	pcb_gui->draw_line(gc, arc->X-mark, arc->Y, arc->X+mark, arc->Y);
-	pcb_gui->draw_line(gc, arc->X, arc->Y-mark, arc->X, arc->Y+mark);
+	pcb_render->draw_line(gc, arc->X-mark, arc->Y, arc->X+mark, arc->Y);
+	pcb_render->draw_line(gc, arc->X, arc->Y-mark, arc->X, arc->Y+mark);
 }
 
 static void pcb_arc_ui_move_or_copy_angle(pcb_crosshair_t *ch)
@@ -94,7 +94,7 @@ static void pcb_arc_ui_move_or_copy_angle(pcb_crosshair_t *ch)
 	ch->AttachedObject.delta_angle = delta;
 	ch->AttachedObject.radius = 0;
 
-	pcb_gui->draw_arc(ch->GC, arc->X, arc->Y, arc->Width, arc->Height, start, delta);
+	pcb_render->draw_arc(ch->GC, arc->X, arc->Y, arc->Width, arc->Height, start, delta);
 	draw_mark(ch->GC, arc);
 }
 
@@ -113,7 +113,7 @@ void pcb_arc_ui_move_or_copy_endp(pcb_crosshair_t *ch)
 
 	ch->AttachedObject.radius = d;
 
-	pcb_gui->draw_arc(ch->GC, arc->X, arc->Y, ch->AttachedObject.radius, ch->AttachedObject.radius, arc->StartAngle, arc->Delta);
+	pcb_render->draw_arc(ch->GC, arc->X, arc->Y, ch->AttachedObject.radius, ch->AttachedObject.radius, arc->StartAngle, arc->Delta);
 
 	draw_mark(ch->GC, &arc2);
 }

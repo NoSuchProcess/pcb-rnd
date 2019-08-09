@@ -99,7 +99,7 @@ void pcb_xordraw_poly(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, int d
 		}
 
 		/* normal contour line */
-		pcb_gui->draw_line(pcb_crosshair.GC,
+		pcb_render->draw_line(pcb_crosshair.GC,
 								 polygon->Points[i].X + dx,
 								 polygon->Points[i].Y + dy, polygon->Points[next].X + dx, polygon->Points[next].Y + dy);
 	}
@@ -121,7 +121,7 @@ void pcb_xordraw_poly_subc(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, 
 		}
 
 		/* normal contour line */
-		pcb_gui->draw_line(pcb_crosshair.GC,
+		pcb_render->draw_line(pcb_crosshair.GC,
 			PCB_CSWAP_X(polygon->Points[i].X, w, mirr) + dx,
 			PCB_CSWAP_Y(polygon->Points[i].Y, h, mirr) + dy,
 			PCB_CSWAP_X(polygon->Points[next].X, w, mirr) + dx,
@@ -234,8 +234,8 @@ void pcb_xordraw_insert_pt_obj(void)
 	pcb_point_t *point = (pcb_point_t *) pcb_crosshair.AttachedObject.Ptr3;
 
 	if (pcb_crosshair.AttachedObject.Type != PCB_OBJ_VOID) {
-		pcb_gui->draw_line(pcb_crosshair.GC, point->X, point->Y, line->Point1.X, line->Point1.Y);
-		pcb_gui->draw_line(pcb_crosshair.GC, point->X, point->Y, line->Point2.X, line->Point2.Y);
+		pcb_render->draw_line(pcb_crosshair.GC, point->X, point->Y, line->Point1.X, line->Point1.Y);
+		pcb_render->draw_line(pcb_crosshair.GC, point->X, point->Y, line->Point2.X, line->Point2.Y);
 	}
 }
 
@@ -440,8 +440,8 @@ void pcb_xordraw_movecopy(void)
 			next = pcb_poly_contour_next_point(polygon, point_idx);
 
 			/* draw the two segments */
-			pcb_gui->draw_line(pcb_crosshair.GC, polygon->Points[prev].X, polygon->Points[prev].Y, point->X + dx, point->Y + dy);
-			pcb_gui->draw_line(pcb_crosshair.GC, point->X + dx, point->Y + dy, polygon->Points[next].X, polygon->Points[next].Y);
+			pcb_render->draw_line(pcb_crosshair.GC, polygon->Points[prev].X, polygon->Points[prev].Y, point->X + dx, point->Y + dy);
+			pcb_render->draw_line(pcb_crosshair.GC, point->X + dx, point->Y + dy, polygon->Points[next].X, polygon->Points[next].Y);
 			break;
 		}
 
@@ -460,7 +460,7 @@ void pcb_xordraw_movecopy(void)
 				pcb_subc_t *sc = data->parent.subc;
 				pcb_coord_t ox, oy;
 				if (pcb_subc_get_origin(sc, &ox, &oy) == 0)
-					pcb_gui->draw_line(pcb_crosshair.GC, ox, oy, pcb_crosshair.X, pcb_crosshair.Y);
+					pcb_render->draw_line(pcb_crosshair.GC, ox, oy, pcb_crosshair.X, pcb_crosshair.Y);
 			}
 		}
 	}
@@ -486,7 +486,7 @@ void pcbhl_draw_attached(pcb_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
 		y1 = pcb_crosshair.AttachedBox.Point1.Y;
 		x2 = pcb_crosshair.AttachedBox.Point2.X;
 		y2 = pcb_crosshair.AttachedBox.Point2.Y;
-		pcb_gui->draw_rect(pcb_crosshair.GC, x1, y1, x2, y2);
+		pcb_render->draw_rect(pcb_crosshair.GC, x1, y1, x2, y2);
 	}
 
 	if (!inhibit_drawing_mode)
@@ -507,8 +507,8 @@ void pcbhl_draw_marks(pcb_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
 		pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, 1, NULL);
 	}
 
-	pcb_gui->draw_line(pcb_crosshair.GC, pcb_marked.X - ms, pcb_marked.Y - ms, pcb_marked.X + ms, pcb_marked.Y + ms);
-	pcb_gui->draw_line(pcb_crosshair.GC, pcb_marked.X + ms, pcb_marked.Y - ms, pcb_marked.X - ms, pcb_marked.Y + ms);
+	pcb_render->draw_line(pcb_crosshair.GC, pcb_marked.X - ms, pcb_marked.Y - ms, pcb_marked.X + ms, pcb_marked.Y + ms);
+	pcb_render->draw_line(pcb_crosshair.GC, pcb_marked.X + ms, pcb_marked.Y - ms, pcb_marked.X - ms, pcb_marked.Y + ms);
 
 	if (!inhibit_drawing_mode)
 		pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, 1, NULL);

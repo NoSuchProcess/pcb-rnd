@@ -1083,7 +1083,7 @@ static void tool_skline_draw_attached(void)
 		for (i = 0; i < vtp0_len(&attached_path.lines); i++) {
 			pcb_point_t *p1 = &((pcb_attached_line_t *) attached_path.lines.array[i])->Point1;
 			pcb_point_t *p2 = &((pcb_attached_line_t *) attached_path.lines.array[i])->Point2;
-			pcb_gui->draw_line(pcb_crosshair.GC, p1->X, p1->Y, p2->X, p2->Y);
+			pcb_render->draw_line(pcb_crosshair.GC, p1->X, p1->Y, p2->X, p2->Y);
 		}
 	}
 }

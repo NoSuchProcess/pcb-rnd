@@ -101,12 +101,12 @@ void pcb_lead_user_draw_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_
 
 /*		pcb_render->set_color(*gc, const pcb_color_t *color);*/
 
-		pcb_gui->draw_line(*gc, x, y, x - ARL, y);
-		pcb_gui->draw_line(*gc, x, y, x, y-ARL);
-		pcb_gui->draw_line(*gc, x - ARL, y, x, y-ARL);
+		pcb_render->draw_line(*gc, x, y, x - ARL, y);
+		pcb_render->draw_line(*gc, x, y, x, y-ARL);
+		pcb_render->draw_line(*gc, x - ARL, y, x, y-ARL);
 
 		pcb_gui->set_line_width(*gc, ARL/4);
-		pcb_gui->draw_line(*gc, x - ARL/2, y - ARL/2, x - LEAD_ARROW_LEN, y - LEAD_ARROW_LEN);
+		pcb_render->draw_line(*gc, x - ARL/2, y - ARL/2, x - LEAD_ARROW_LEN, y - LEAD_ARROW_LEN);
 
 	}
 }

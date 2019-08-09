@@ -184,13 +184,13 @@ static void pstklib_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 
 	grid = ctx->dlg[ctx->wgrid].val.crd;
 	for(x = 0; x < x2; x += grid)
-		pcb_gui->draw_line(gc, x, y1, x, y2);
+		pcb_render->draw_line(gc, x, y1, x, y2);
 	for(x = -grid; x > x1; x -= grid)
-		pcb_gui->draw_line(gc, x, y1, x, y2);
+		pcb_render->draw_line(gc, x, y1, x, y2);
 	for(y = 0; y < y2; y += grid)
-		pcb_gui->draw_line(gc, x1, y, x2, y);
+		pcb_render->draw_line(gc, x1, y, x2, y);
 	for(y = -grid; y > y1; y -= grid)
-		pcb_gui->draw_line(gc, x1, y, x2, y);
+		pcb_render->draw_line(gc, x1, y, x2, y);
 
 	/* draw the mark only */
 	for(n = 0; n < pcb_proto_num_layers; n++)

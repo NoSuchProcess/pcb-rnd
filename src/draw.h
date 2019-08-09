@@ -147,7 +147,7 @@ void pcb_draw_pstk_names(pcb_draw_info_t *info, pcb_layergrp_id_t group, const p
 #define PCB_DRAW_BBOX(obj) \
 	do { \
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, 0); \
-		pcb_gui->draw_rect(pcb_draw_out.fgGC, obj->BoundingBox.X1, obj->BoundingBox.Y1, obj->BoundingBox.X2, obj->BoundingBox.Y2); \
+		pcb_render->draw_rect(pcb_draw_out.fgGC, obj->BoundingBox.X1, obj->BoundingBox.Y1, obj->BoundingBox.X2, obj->BoundingBox.Y2); \
 	} while(0)
 #else
 #define PCB_DRAW_BBOX(obj)

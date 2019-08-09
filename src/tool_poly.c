@@ -116,7 +116,7 @@ void pcb_tool_poly_draw_attached(void)
 {
 	/* draw only if starting point is set */
 	if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
-		pcb_gui->draw_line(pcb_crosshair.GC,
+		pcb_render->draw_line(pcb_crosshair.GC,
 									 pcb_crosshair.AttachedLine.Point1.X,
 									 pcb_crosshair.AttachedLine.Point1.Y, pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y);
 

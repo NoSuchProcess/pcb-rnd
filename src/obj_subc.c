@@ -629,10 +629,10 @@ static void pcb_subc_draw_origin(pcb_hid_gc_t GC, pcb_subc_t *sc, pcb_coord_t DX
 	DX += (origin->Point1.X + origin->Point2.X) / 2;
 	DY += (origin->Point1.Y + origin->Point2.Y) / 2;
 
-	pcb_gui->draw_line(GC, DX - PCB_EMARK_SIZE, DY, DX, DY - PCB_EMARK_SIZE);
-	pcb_gui->draw_line(GC, DX + PCB_EMARK_SIZE, DY, DX, DY - PCB_EMARK_SIZE);
-	pcb_gui->draw_line(GC, DX - PCB_EMARK_SIZE, DY, DX, DY + PCB_EMARK_SIZE);
-	pcb_gui->draw_line(GC, DX + PCB_EMARK_SIZE, DY, DX, DY + PCB_EMARK_SIZE);
+	pcb_render->draw_line(GC, DX - PCB_EMARK_SIZE, DY, DX, DY - PCB_EMARK_SIZE);
+	pcb_render->draw_line(GC, DX + PCB_EMARK_SIZE, DY, DX, DY - PCB_EMARK_SIZE);
+	pcb_render->draw_line(GC, DX - PCB_EMARK_SIZE, DY, DX, DY + PCB_EMARK_SIZE);
+	pcb_render->draw_line(GC, DX + PCB_EMARK_SIZE, DY, DX, DY + PCB_EMARK_SIZE);
 }
 
 void pcb_xordraw_subc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY, int use_curr_side)
@@ -672,7 +672,7 @@ void pcb_xordraw_subc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY, int use_cu
 TODO(": The wireframe arc drawing code cannot draw ellipses yet so draw the elliptical arc with a thin line ")
 				double sa = mirr ? PCB_SWAP_ANGLE(arc->StartAngle) : arc->StartAngle;
 				double da = mirr ? PCB_SWAP_DELTA(arc->Delta) : arc->Delta;
-				pcb_gui->draw_arc(pcb_crosshair.GC, DX + PCB_CSWAP_X(arc->X, w, mirr), DY + PCB_CSWAP_Y(arc->Y, h, mirr), arc->Width, arc->Height, sa, da);
+				pcb_render->draw_arc(pcb_crosshair.GC, DX + PCB_CSWAP_X(arc->X, w, mirr), DY + PCB_CSWAP_Y(arc->Y, h, mirr), arc->Width, arc->Height, sa, da);
 			}
 			else {
 				pcb_arc_t temp_arc;

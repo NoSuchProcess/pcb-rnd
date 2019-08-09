@@ -100,10 +100,10 @@ static void Debugpcb_polyarea_t(pcb_polyarea_t * s, char *color)
 				pcb_render->set_color(ddgc, color ? color : conf_core.appearance.color.connected);
 				pcb_hid_set_line_width(ddgc, 1);
 				for (i = 0; i < n - 1; i++) {
-					pcb_gui->draw_line(ddgc, x[i], y[i], x[i + 1], y[i + 1]);
-					pcb_gui->fill_circle (ddgc, x[i], y[i], 30);
+					pcb_render->draw_line(ddgc, x[i], y[i], x[i + 1], y[i + 1]);
+					pcb_render->fill_circle (ddgc, x[i], y[i], 30);
 				}
-				pcb_gui->draw_line(ddgc, x[n - 1], y[n - 1], x[0], y[0]);
+				pcb_render->draw_line(ddgc, x[n - 1], y[n - 1], x[0], y[0]);
 			}*/
 			free(x);
 			free(y);

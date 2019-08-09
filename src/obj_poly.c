@@ -1116,8 +1116,8 @@ void pcb_poly_draw_annotation(pcb_draw_info_t *info, pcb_poly_t *poly)
 		np = poly->PointN;
 
 	for(n = 1; n < np; n++)
-		pcb_gui->draw_line(pcb_draw_out.fgGC, poly->Points[n-1].X, poly->Points[n-1].Y, poly->Points[n].X, poly->Points[n].Y);
-	pcb_gui->draw_line(pcb_draw_out.fgGC, poly->Points[n-1].X, poly->Points[n-1].Y, poly->Points[0].X, poly->Points[0].Y);
+		pcb_render->draw_line(pcb_draw_out.fgGC, poly->Points[n-1].X, poly->Points[n-1].Y, poly->Points[n].X, poly->Points[n].Y);
+	pcb_render->draw_line(pcb_draw_out.fgGC, poly->Points[n-1].X, poly->Points[n-1].Y, poly->Points[0].X, poly->Points[0].Y);
 }
 
 static void pcb_poly_draw_tr_offs(pcb_poly_it_t *it, pcb_coord_t offs)
@@ -1222,7 +1222,7 @@ TODO("subc: check if x;y is within the poly, but use a cheaper method than the o
 				r = PCB_DRAW_TERM_GFX_WIDTH;
 				pcb_hid_set_line_width(pcb_draw_out.fgGC, r);
 				pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
-				pcb_gui->draw_line(pcb_draw_out.fgGC, x, y, x, y);
+				pcb_render->draw_line(pcb_draw_out.fgGC, x, y, x, y);
 			}
 		}
 		else

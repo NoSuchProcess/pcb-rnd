@@ -664,11 +664,11 @@ void pcb_route_draw_arc(pcb_hid_gc_t GC, pcb_coord_t x, pcb_coord_t y, pcb_angle
 	x2 = x - (cos(PCB_M180 * (start_angle + delta)) * radius);
 	y2 = y + (sin(PCB_M180 * (start_angle + delta)) * radius);
 
-	pcb_gui->draw_arc(GC, x, y, radius + wid, radius + wid, start_angle, delta);
+	pcb_render->draw_arc(GC, x, y, radius + wid, radius + wid, start_angle, delta);
 	if (wid > pcb_pixel_slop) {
-		pcb_gui->draw_arc(GC, x, y, radius - wid, radius - wid, start_angle, delta);
-		pcb_gui->draw_arc(GC, x1, y1, wid, wid, start_angle, -180 * SGN(delta));
-		pcb_gui->draw_arc(GC, x2, y2, wid, wid, start_angle + delta, 180 * SGN(delta));
+		pcb_render->draw_arc(GC, x, y, radius - wid, radius - wid, start_angle, delta);
+		pcb_render->draw_arc(GC, x1, y1, wid, wid, start_angle, -180 * SGN(delta));
+		pcb_render->draw_arc(GC, x2, y2, wid, wid, start_angle + delta, 180 * SGN(delta));
 	}
 
 }

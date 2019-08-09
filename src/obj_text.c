@@ -981,11 +981,11 @@ static void draw_text_poly(pcb_draw_info_t *info, pcb_poly_t *poly, pcb_xform_mx
 	if (xordraw || thindraw) {
 		pcb_hid_gc_t gc = xordraw ? pcb_crosshair.GC : pcb_draw_out.fgGC;
 		for(n = 1, p = poly->Points+1; n < max; n++,p++)
-			pcb_gui->draw_line(gc, xordx + x[n-1], xordy + y[n-1], xordx + x[n], xordy + y[n]);
-		pcb_gui->draw_line(gc, xordx + x[0], xordy + y[0], xordx + x[max-1], xordy + y[max-1]);
+			pcb_render->draw_line(gc, xordx + x[n-1], xordy + y[n-1], xordx + x[n], xordy + y[n]);
+		pcb_render->draw_line(gc, xordx + x[0], xordy + y[0], xordx + x[max-1], xordy + y[max-1]);
 	}
 	else
-		pcb_gui->fill_polygon(pcb_draw_out.fgGC, poly->PointN, x, y);
+		pcb_render->fill_polygon(pcb_draw_out.fgGC, poly->PointN, x, y);
 }
 
 /* Very rough estimation on the full width of the text */
@@ -1036,7 +1036,7 @@ PCB_INLINE void cheap_text_line(pcb_hid_gc_t gc, pcb_xform_mx_t mx, pcb_coord_t 
 	tx2 += xordx;
 	ty2 += xordy;
 
-	pcb_gui->draw_line(gc, tx1, ty1, tx2, ty2);
+	pcb_render->draw_line(gc, tx1, ty1, tx2, ty2);
 }
 
 
@@ -1126,7 +1126,7 @@ static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const
 				if (thickness > 0)
 					newline.Thickness = thickness;
 				if (xordraw)
-					pcb_gui->draw_line(pcb_crosshair.GC, xordx + newline.Point1.X, xordy + newline.Point1.Y, xordx + newline.Point2.X, xordy + newline.Point2.Y);
+					pcb_render->draw_line(pcb_crosshair.GC, xordx + newline.Point1.X, xordy + newline.Point1.Y, xordx + newline.Point2.X, xordy + newline.Point2.Y);
 				else
 					pcb_line_draw_(info, &newline, 0);
 			}
@@ -1149,7 +1149,7 @@ static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const
 				if (thickness > 0)
 					newarc.Thickness = thickness;
 				if (xordraw)
-					pcb_gui->draw_arc(pcb_crosshair.GC, xordx + newarc.X, xordy + newarc.Y, newarc.Width, newarc.Height, newarc.StartAngle, newarc.Delta);
+					pcb_render->draw_arc(pcb_crosshair.GC, xordx + newarc.X, xordy + newarc.Y, newarc.Width, newarc.Height, newarc.StartAngle, newarc.Delta);
 				else
 					pcb_arc_draw_(info, &newarc, 0);
 			}
@@ -1179,20 +1179,20 @@ static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const
 			/* draw move on to next cursor position */
 			if (xordraw || (conf_core.editor.thin_draw || conf_core.editor.wireframe_draw)) {
 				if (xordraw) {
-					pcb_gui->draw_line(pcb_crosshair.GC, px[0] + xordx, py[0] + xordy, px[1] + xordx, py[1] + xordy);
-					pcb_gui->draw_line(pcb_crosshair.GC, px[1] + xordx, py[1] + xordy, px[2] + xordx, py[2] + xordy);
-					pcb_gui->draw_line(pcb_crosshair.GC, px[2] + xordx, py[2] + xordy, px[3] + xordx, py[3] + xordy);
-					pcb_gui->draw_line(pcb_crosshair.GC, px[3] + xordx, py[3] + xordy, px[0] + xordx, py[0] + xordy);
+					pcb_render->draw_line(pcb_crosshair.GC, px[0] + xordx, py[0] + xordy, px[1] + xordx, py[1] + xordy);
+					pcb_render->draw_line(pcb_crosshair.GC, px[1] + xordx, py[1] + xordy, px[2] + xordx, py[2] + xordy);
+					pcb_render->draw_line(pcb_crosshair.GC, px[2] + xordx, py[2] + xordy, px[3] + xordx, py[3] + xordy);
+					pcb_render->draw_line(pcb_crosshair.GC, px[3] + xordx, py[3] + xordy, px[0] + xordx, py[0] + xordy);
 				}
 				else {
-					pcb_gui->draw_line(pcb_draw_out.fgGC, px[0], py[0], px[1], py[1]);
-					pcb_gui->draw_line(pcb_draw_out.fgGC, px[1], py[1], px[2], py[2]);
-					pcb_gui->draw_line(pcb_draw_out.fgGC, px[2], py[2], px[3], py[3]);
-					pcb_gui->draw_line(pcb_draw_out.fgGC, px[3], py[3], px[0], py[0]);
+					pcb_render->draw_line(pcb_draw_out.fgGC, px[0], py[0], px[1], py[1]);
+					pcb_render->draw_line(pcb_draw_out.fgGC, px[1], py[1], px[2], py[2]);
+					pcb_render->draw_line(pcb_draw_out.fgGC, px[2], py[2], px[3], py[3]);
+					pcb_render->draw_line(pcb_draw_out.fgGC, px[3], py[3], px[0], py[0]);
 				}
 			}
 			else {
-				pcb_gui->fill_polygon(pcb_draw_out.fgGC, 4, px, py);
+				pcb_render->fill_polygon(pcb_draw_out.fgGC, 4, px, py);
 			}
 			x += size;
 		}
@@ -1353,10 +1353,10 @@ void pcb_text_draw_xor(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y)
 {
 	DrawTextLowLevel_(NULL, text, 0, 1, x, y, PCB_TXT_TINY_CHEAP);
 	if ((conf_core.appearance.text_host_bbox) && (text->BoundingBox.X1 != text->BoundingBox.X2)) {
-		pcb_gui->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X1, y + text->BoundingBox.Y1, x + text->BoundingBox.X1, y + text->BoundingBox.Y2);
-		pcb_gui->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X1, y + text->BoundingBox.Y1, x + text->BoundingBox.X2, y + text->BoundingBox.Y1);
-		pcb_gui->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X2, y + text->BoundingBox.Y2, x + text->BoundingBox.X1, y + text->BoundingBox.Y2);
-		pcb_gui->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X2, y + text->BoundingBox.Y2, x + text->BoundingBox.X2, y + text->BoundingBox.Y1);
+		pcb_render->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X1, y + text->BoundingBox.Y1, x + text->BoundingBox.X1, y + text->BoundingBox.Y2);
+		pcb_render->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X1, y + text->BoundingBox.Y1, x + text->BoundingBox.X2, y + text->BoundingBox.Y1);
+		pcb_render->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X2, y + text->BoundingBox.Y2, x + text->BoundingBox.X1, y + text->BoundingBox.Y2);
+		pcb_render->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X2, y + text->BoundingBox.Y2, x + text->BoundingBox.X2, y + text->BoundingBox.Y1);
 	}
 }
 
