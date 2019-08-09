@@ -86,6 +86,10 @@ typedef struct render_priv_s {
 	int xor_mode;													/* 1 if drawn in XOR mode, 0 otherwise*/
 	int attached_invalidate_depth;
 	int mark_invalidate_depth;
+
+	/* color cache for set_color */
+	pcb_clrcache_t ccache;
+	int ccache_inited;
 } render_priv_t;
 
 typedef struct hid_gc_s {
@@ -585,10 +589,10 @@ static void ghid_cairo_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, p
 
 typedef struct {
 	int color_set;
-	GdkRGBA color;
+	pcb_gtk_color_t color;
 	int xor_set;
-	GdkRGBA xor_color;
-} ColorCache;
+	pcb_gtk_color_t xor_color;
+} pcb_gtk_color_cache_t;
 
 
 /*  Config helper functions for when the user changes color preferences.
@@ -639,8 +643,6 @@ static void ghid_cairo_set_special_colors(conf_native_t * cfg)
 
 static void ghid_cairo_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 {
-	static void *cache = 0;
-	pcb_hidval_t cval;
 	render_priv_t *priv = ghidgui->port.render_priv;
 	const char *name = color->str;
 
@@ -662,22 +664,15 @@ static void ghid_cairo_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 		//gdk_gc_set_foreground(gc->gc, &gport->offlimits_color);
 	}
 	else {
-		ColorCache *cc;
-		if (pcb_hid_cache_color(0, name, &cval, &cache))
-			cc = (ColorCache *) cval.ptr;
-		else {
-			cc = (ColorCache *) malloc(sizeof(ColorCache));
-			memset(cc, 0, sizeof(*cc));
-			cval.ptr = cc;
-			pcb_hid_cache_color(1, name, &cval, &cache);
-		}
+		pcb_gtk_color_cache_t *cc;
 
+		if (!priv->ccache_inited) {
+			pcb_clrcache_init(&priv->ccache, sizeof(pcb_gtk_color_cache_t), NULL);
+			priv->ccache_inited = 1;
+		}
+		cc = pcb_clrcache_get(&priv->ccache, color, 1);
 		if (!cc->color_set) {
-			if (! gdk_rgba_parse(&cc->color, name))
-				gdk_rgba_parse(&cc->color, "white");
-				//gdk_color_white(gport->colormap, &cc->color);
-			//else
-				//gdk_color_alloc(gport->colormap, &cc->color);
+			map_color(color, &cc->color);
 			cc->color_set = 1;
 		}
 		//if (gc->xor_mask) {
