@@ -35,6 +35,7 @@
 #include "xpm.h"
 #include "dlg_comm_m.h"
 #include "plug_io.h"
+#include "lib_hid_common.h"
 
 static const char nope[] = "Do not use.";
 
@@ -214,13 +215,18 @@ fgw_error_t pcb_act_gui_MayOverwriteFile(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	const char *fn;
 	const char *pcb_acts_gui_MayOverwriteFile = nope;
 	const char **xpm;
-	int multi;
+	int multi, wdontask;
 	pcb_hid_dad_buttons_t clbtn_s[] = {{"yes", 1}, {"no", 0}, {NULL, 0}};
 	pcb_hid_dad_buttons_t clbtn_m[] = {{"yes", 1}, {"yes to all", 2}, {"no", 0}, {NULL, 0}};
 	PCB_DAD_DECL(dlg);
 
 	if (!PCB_HAVE_GUI_ATTR_DLG) {
 		PCB_ACT_IRES(0); /* no gui means auto-yes (for batch) */
+		return 2;
+	}
+
+	if (dialogs_conf.plugins.dialogs.file_overwrite_dialog.dont_ask) {
+		PCB_ACT_IRES(0); /* "don't ask" means yes to all */
 		return 2;
 	}
 
@@ -233,13 +239,24 @@ fgw_error_t pcb_act_gui_MayOverwriteFile(fgw_arg_t *res, int argc, fgw_arg_t *ar
 			xpm = pcp_dlg_xpm_by_name("warning");
 			if (xpm != NULL)
 				PCB_DAD_PICTURE(dlg, xpm);
-			PCB_DAD_BEGIN_HBOX(dlg);
-				PCB_DAD_LABEL(dlg, "File ");
-				PCB_DAD_LABEL(dlg, fn);
-				PCB_DAD_LABEL(dlg, " already exists.");
+
+			PCB_DAD_BEGIN_VBOX(dlg);
+				PCB_DAD_BEGIN_HBOX(dlg);
+					PCB_DAD_LABEL(dlg, "File ");
+					PCB_DAD_LABEL(dlg, fn);
+					PCB_DAD_LABEL(dlg, " already exists.");
+				PCB_DAD_END(dlg);
+
+				PCB_DAD_LABEL(dlg, "Do you want to overwrite that file?");
+
+				PCB_DAD_BEGIN_HBOX(dlg);
+					PCB_DAD_BOOL(dlg, "");
+					wdontask = PCB_DAD_CURRENT(dlg);
+					PCB_DAD_LABEL(dlg, "do not ask, always overwrite");
+				PCB_DAD_END(dlg);
 			PCB_DAD_END(dlg);
-			PCB_DAD_LABEL(dlg, "Do you want to overwrite that file?");
 		PCB_DAD_END(dlg);
+
 		if (multi)
 			PCB_DAD_BUTTON_CLOSES(dlg, clbtn_m);
 		else
@@ -248,6 +265,11 @@ fgw_error_t pcb_act_gui_MayOverwriteFile(fgw_arg_t *res, int argc, fgw_arg_t *ar
 
 	res->type = FGW_INT;
 	PCB_DAD_AUTORUN("MayOverwriteFile", dlg, "File overwrite question", NULL, res->val.nat_int);
+	if (dlg[wdontask].val.lng) {
+		pcb_conf_set(CFR_USER, "plugins/dialogs/file_overwrite_dialog/dont_ask", 0, "1", POL_OVERWRITE);
+		if (pcb_conf_isdirty(CFR_USER))
+			pcb_conf_save_file(&PCB->hidlib, NULL, NULL, CFR_USER, NULL);
+	}
 	PCB_DAD_FREE(dlg);
 
 	return 0;

@@ -25,6 +25,9 @@ typedef struct {
 			const struct {
 				CFT_BOOLEAN save_as_format_guess; /* enable format guessing by default in the 'save as' dialog */
 			} file_select_dialog;
+			const struct {
+				CFT_BOOLEAN dont_ask; /* don't ever ask, just go ahead and overwrite existing files */
+			} file_overwrite_dialog;
 		} dialogs;
 
 		const struct {
