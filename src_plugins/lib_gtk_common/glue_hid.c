@@ -156,7 +156,7 @@ static void gtkhid_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 TODO(": move this to render init")
 	/* Mouse and key events will need to be intercepted when PCB needs a location from the user. */
-	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "scroll_event", G_CALLBACK(ghid_port_window_mouse_scroll_cb), gctx->port.mouse);
+	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "scroll_event", G_CALLBACK(ghid_port_window_mouse_scroll_cb), gctx);
 	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "motion_notify_event", G_CALLBACK(ghid_port_window_motion_cb), gctx);
 	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "configure_event", G_CALLBACK(ghid_port_drawing_area_configure_event_cb), gctx);
 	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "enter_notify_event", G_CALLBACK(ghid_port_window_enter_cb), gctx);
