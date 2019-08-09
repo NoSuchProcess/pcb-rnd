@@ -29,84 +29,11 @@
 
 /* glue for pcb-rnd core */
 
-pcb_hid_t *pcb_gui = NULL;
-
 const char *pcbhl_menu_file_paths[] = { "./", "~/.pcb-rnd/", PCBSHAREDIR "/", NULL };
 const char *pcbhl_menu_name_fmt = "pcb-menu-%s.lht";
 
 const char *pcb_hidlib_default_embedded_menu = "";
 
-static char *get_homedir(void)
-{
-	char *homedir = getenv("HOME");
-	if (homedir == NULL)
-		homedir = getenv("USERPROFILE");
-	return homedir;
-}
+void pcb_tool_gui_init(void) { }
 
-void pcbhl_conf_postproc(void)
-{
-	conf_force_set_str(pcbhl_conf.rc.path.home, get_homedir()); pcb_conf_ro("rc/path/home");
-}
-
-int pcb_color_load_str(pcb_color_t *dst, const char *src)
-{
-	memset(dst, 0, sizeof(pcb_color_t));
-	return 0;
-}
-
-void pcb_message(enum pcb_message_level level, const char *fmt, ...)
-{
-	va_list args;
-	fprintf(stderr, "gsch2pcb-rnd: ");
-	va_start(args, fmt);
-	vfprintf(stderr, fmt, args);
-	va_end(args);
-	fprintf(stderr, "\n");
-}
-
-void pcb_trace(const char *Format, ...)
-{
-#ifndef NDEBUG
-	va_list args;
-	va_start(args, Format);
-	vfprintf(stderr, Format, args);
-	va_end(args);
-#endif
-}
-
-const char *pcb_board_get_filename(void) { return NULL; }
-const char *pcb_board_get_name(void) { return NULL; }
-
-void pcb_event(pcb_hidlib_t *hidlib, pcb_event_id_t ev, const char *fmt, ...)
-{
-
-}
-
-int pcb_file_loaded_set_at(const char *catname, const char *name, const char *path, const char *desc)
-{
-	return 0;
-}
-
-int pcb_file_loaded_del_at(const char *catname, const char *name)
-{
-	return 0;
-}
-
-fgw_ctx_t pcb_fgw;
-
-const pcb_action_t *pcb_find_action(const char *name, fgw_func_t **f_out)
-{
-	return NULL;
-}
-
-int pcb_actionl(const char *action_, ...)
-{
-	return -1;
-}
-
-char *pcb_make_action_name(char *out, const char *inp, int inp_len)
-{
-	return inp;
-}
 
