@@ -253,6 +253,7 @@ fgw_error_t pcb_act_gui_MayOverwriteFile(fgw_arg_t *res, int argc, fgw_arg_t *ar
 					PCB_DAD_BOOL(dlg, "");
 					wdontask = PCB_DAD_CURRENT(dlg);
 					PCB_DAD_LABEL(dlg, "do not ask, always overwrite");
+					PCB_DAD_HELP(dlg, "saved in your user config under plugins/dialogs/file_overwrite_dialog/dont_ask");
 				PCB_DAD_END(dlg);
 			PCB_DAD_END(dlg);
 		PCB_DAD_END(dlg);
