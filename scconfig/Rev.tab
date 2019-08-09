@@ -1,3 +1,4 @@
+27086	configure	hidlib: tests and utils should use hidlib instead of manual object linking from the source tree
 27069	configure	retire the export_bboard plugin in favor of subc pixmaps that are going to be implemented soon
 27041	configure	hidlib: remove hid_color.[ch] in favor of color_cache
 26986	configure	hidlib: fallback scripting with libfawk
