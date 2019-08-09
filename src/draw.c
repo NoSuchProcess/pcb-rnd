@@ -957,13 +957,13 @@ static void pcb_draw_obj_label(pcb_draw_info_t *info, pcb_layergrp_id_t gid, pcb
 static void expose_begin(pcb_output_t *save, pcb_hid_t *hid)
 {
 	memcpy(save, &pcb_draw_out, sizeof(pcb_output_t));
-	save->hid = pcb_gui;
+	save->hid = pcb_render;
 
 	delayed_labels_enabled = pcb_true;
 	vtp0_truncate(&delayed_labels, 0);
 	vtp0_truncate(&delayed_objs, 0);
 
-	pcb_render = pcb_gui = pcb_draw_out.hid = hid;
+	pcb_render = pcb_draw_out.hid = hid;
 	pcb_draw_out.fgGC = pcb_hid_make_gc();
 	pcb_draw_out.padGC = pcb_hid_make_gc();
 	pcb_draw_out.backpadGC = pcb_hid_make_gc();
@@ -1005,7 +1005,7 @@ static void expose_end(pcb_output_t *save)
 	vtp0_truncate(&delayed_objs, 0);
 
 	memcpy(&pcb_draw_out, save, sizeof(pcb_output_t));
-	pcb_render = pcb_gui = pcb_draw_out.hid;
+	pcb_render = pcb_draw_out.hid;
 }
 
 void pcbhl_expose_main(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx, pcb_xform_t *xform_caller)
