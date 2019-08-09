@@ -376,8 +376,8 @@ static fgw_error_t pcb_act_tang(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 void ddraft_tool_draw_attached(void)
 {
 	int n;
-	pcb_gui->set_line_cap(pcb_crosshair.GC, pcb_cap_round);
-	pcb_gui->set_line_width(pcb_crosshair.GC, 1);
+	pcb_render->set_line_cap(pcb_crosshair.GC, pcb_cap_round);
+	pcb_render->set_line_width(pcb_crosshair.GC, 1);
 	pcb_render->set_color(pcb_crosshair.GC, pcb_color_grey33);
 	for(n = 0; n < vtc0_len(&pcb_ddraft_attached.annot_lines); n += 4) {
 		pcb_coord_t *c = &pcb_ddraft_attached.annot_lines.array[n];
