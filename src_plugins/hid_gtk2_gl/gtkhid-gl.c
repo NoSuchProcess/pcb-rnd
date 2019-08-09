@@ -8,6 +8,7 @@
 #include "hid_attrib.h"
 #include "hidlib_conf.h"
 #include "funchash_core.h"
+#include "pixmap.h"
 
 #include "../src_plugins/lib_hid_common/clip.h"
 #include "../src_plugins/lib_gtk_common/hid_gtk_conf.h"

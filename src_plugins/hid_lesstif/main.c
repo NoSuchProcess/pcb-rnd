@@ -5,6 +5,7 @@
 #include "conf_core.h"
 #include "hidlib_conf.h"
 #include "hidlib.h"
+#include "pixmap.h"
 
 #include <stdio.h>
 #include <stdlib.h>
