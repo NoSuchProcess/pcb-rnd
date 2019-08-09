@@ -1103,9 +1103,9 @@ void pcb_poly_draw_annotation(pcb_draw_info_t *info, pcb_poly_t *poly)
 		return;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, poly))
-		pcb_gui->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.selected);
+		pcb_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.selected);
 	else
-		pcb_gui->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.pin_name);
+		pcb_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.pin_name);
 
 	pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
 	pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
@@ -1276,7 +1276,7 @@ static void pcb_poly_draw(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_
 		PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 0);
 	else
 		color = &layer->meta.real.color;
-	pcb_gui->set_color(pcb_draw_out.fgGC, color);
+	pcb_render->set_color(pcb_draw_out.fgGC, color);
 
 	pcb_poly_draw_(info, polygon, allow_term_gfx);
 }

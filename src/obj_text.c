@@ -1281,21 +1281,21 @@ static void pcb_text_draw(pcb_draw_info_t *info, pcb_text_t *text, int allow_ter
 		if (layer->is_bound) {
 			const pcb_color_t *color;
 			PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 1);
-			pcb_gui->set_color(pcb_draw_out.fgGC, color);
+			pcb_render->set_color(pcb_draw_out.fgGC, color);
 		}
 		else
-			pcb_gui->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.selected);
+			pcb_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.selected);
 	}
 	else if (PCB_HAS_COLOROVERRIDE(text)) {
-		pcb_gui->set_color(pcb_draw_out.fgGC, text->override_color);
+		pcb_render->set_color(pcb_draw_out.fgGC, text->override_color);
 	}
 	else if (layer->is_bound) {
 		const pcb_color_t *color;
 		PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 0);
-		pcb_gui->set_color(pcb_draw_out.fgGC, color);
+		pcb_render->set_color(pcb_draw_out.fgGC, color);
 	}
 	else
-		pcb_gui->set_color(pcb_draw_out.fgGC, &layer->meta.real.color);
+		pcb_render->set_color(pcb_draw_out.fgGC, &layer->meta.real.color);
 
 	if ((!layer->is_bound) && (layer->meta.real.grp >= 0))
 		flg = pcb_layergrp_flags(PCB, layer->meta.real.grp);

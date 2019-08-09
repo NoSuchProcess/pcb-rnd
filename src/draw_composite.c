@@ -41,7 +41,7 @@ typedef struct comp_ctx_s {
 
 static void comp_fill_board(comp_ctx_t *ctx)
 {
-	pcb_gui->set_color(pcb_draw_out.fgGC, ctx->color);
+	pcb_render->set_color(pcb_draw_out.fgGC, ctx->color);
 	if (ctx->info->drawn_area == NULL)
 		pcb_gui->fill_rect(pcb_draw_out.fgGC, 0, 0, ctx->info->pcb->hidlib.size_x, ctx->info->pcb->hidlib.size_y);
 	else
@@ -62,7 +62,7 @@ static void comp_start_sub(comp_ctx_t *ctx)
 {
 	if (ctx->thin) {
 		pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->info->drawn_area);
-		pcb_gui->set_color(pcb_draw_out.pmGC, ctx->color);
+		pcb_render->set_color(pcb_draw_out.pmGC, ctx->color);
 		return;
 	}
 

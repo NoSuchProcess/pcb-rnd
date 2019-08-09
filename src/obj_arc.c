@@ -995,7 +995,7 @@ static void pcb_arc_draw(pcb_draw_info_t *info, pcb_arc_t *arc, int allow_term_g
 		pcb_lighten_color(color, &buf, 1.75);
 		color = &buf;
 	}
-	pcb_gui->set_color(pcb_draw_out.fgGC, color);
+	pcb_render->set_color(pcb_draw_out.fgGC, color);
 	pcb_arc_draw_(info, arc, allow_term_gfx);
 }
 

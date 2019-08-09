@@ -76,7 +76,7 @@ static void pinout_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, p
 		bbox.X1 = bbox.Y1 = 0;
 		bbox.X2 = bbox.Y2 = PCB_MM_TO_COORD(10);
 		pcb_dad_preview_zoomto(attrib, &bbox);
-		pcb_gui->set_color(gc, pcb_color_red);
+		pcb_render->set_color(gc, pcb_color_red);
 		pcb_text_draw_string_simple(NULL, tmp, PCB_MM_TO_COORD(1), PCB_MM_TO_COORD(20), 100, 0, 0, 0, 0, 0, 0);
 	}
 }

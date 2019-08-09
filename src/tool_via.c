@@ -97,9 +97,9 @@ TODO("pstk: replace this when route style has a prototype")
 	xor_draw_fake_via(pcb_crosshair.X, pcb_crosshair.Y, conf_core.design.via_thickness, 0);
 	if (conf_core.editor.show_drc) {
 		/* XXX: Naughty cheat - use the mask to draw DRC clearance! */
-		pcb_gui->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
+		pcb_render->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
 		xor_draw_fake_via(pcb_crosshair.X, pcb_crosshair.Y, conf_core.design.via_thickness, conf_core.design.clearance);
-		pcb_gui->set_color(pcb_crosshair.GC, &conf_core.appearance.color.crosshair);
+		pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.crosshair);
 	}
 }
 

@@ -1154,15 +1154,15 @@ static void rbe_draw(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_
 			}
 
 			if (PCB_FLAG_TEST(PCB_FLAG_RAT, ptr->Line)) {
-				pcb_gui->set_color(pcb_crosshair.GC, &conf_core.appearance.color.rat);
+				pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.rat);
 				pcb_draw_wireframe_line(pcb_crosshair.GC, x[0], y[0], x[1], y[1], ptr->Line->Thickness, 0);
 			}
 			else if (direct || (conf_core.editor.move_linepoint_uses_route == 0)) {
-				pcb_gui->set_color(pcb_crosshair.GC, &ptr->Layer->meta.real.color);
+				pcb_render->set_color(pcb_crosshair.GC, &ptr->Layer->meta.real.color);
 				pcb_draw_wireframe_line(pcb_crosshair.GC, x[0], y[0], x[1], y[1], ptr->Line->Thickness, 0);
 				/* Draw the DRC outline if it is enabled */
 				if (conf_core.editor.show_drc) {
-					pcb_gui->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
+					pcb_render->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
 					pcb_draw_wireframe_line(pcb_crosshair.GC, x[0], y[0], x[1], y[1], ptr->Line->Thickness + 2 * (conf_core.design.bloat + 1), 0);
 				}
 			}
@@ -1186,7 +1186,7 @@ static void rbe_draw(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_
 					pcb_route_draw_drc(&route, pcb_crosshair.GC);
 				pcb_route_destroy(&route);
 			}
-			pcb_gui->set_color(pcb_crosshair.GC, &conf_core.appearance.color.crosshair);
+			pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.crosshair);
 		}
 
 		ptr++;

@@ -404,12 +404,12 @@ static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, c
 
 	}
 
-	pcb_gui->set_color(pcb_draw_out.fgGC, color);
+	pcb_render->set_color(pcb_draw_out.fgGC, color);
 }
 
 static void set_ps_annot_color(pcb_hid_gc_t gc, pcb_pstk_t *ps)
 {
-	pcb_gui->set_color(pcb_draw_out.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ?
+	pcb_render->set_color(pcb_draw_out.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ?
 		&conf_core.appearance.color.selected : &conf_core.appearance.color.padstackmark);
 }
 
@@ -660,7 +660,7 @@ pcb_r_dir_t pcb_pstk_draw_hole_callback(const pcb_box_t *b, void *cl)
 	if (!proto->hplated && !pcb_xform_omit_overlay(info)) {
 		pcb_coord_t r = proto->hdia / 2;
 		r -= r/8; /* +12.5% */
-		pcb_gui->set_color(pcb_draw_out.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ? &conf_core.appearance.color.selected : &conf_core.appearance.color.subc);
+		pcb_render->set_color(pcb_draw_out.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ? &conf_core.appearance.color.selected : &conf_core.appearance.color.subc);
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
 		pcb_gui->draw_arc(pcb_draw_out.fgGC, ps->x, ps->y, r, r, 20, 290);
 	}

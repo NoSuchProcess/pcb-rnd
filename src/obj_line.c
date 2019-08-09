@@ -1148,7 +1148,7 @@ static void pcb_line_draw(pcb_draw_info_t *info, pcb_line_t *line, int allow_ter
 		color = &buf;
 	}
 
-	pcb_gui->set_color(pcb_draw_out.fgGC, color);
+	pcb_render->set_color(pcb_draw_out.fgGC, color);
 	pcb_line_draw_(info, line, allow_term_gfx);
 }
 

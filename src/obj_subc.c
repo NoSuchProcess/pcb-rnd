@@ -1706,7 +1706,7 @@ pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
 		freq = 32;
 
 	nnclr = (PCB_FLAG_TEST(PCB_FLAG_NONETLIST, subc)) ? &conf_core.appearance.color.subc_nonetlist : &conf_core.appearance.color.subc;
-	pcb_gui->set_color(pcb_draw_out.fgGC, selected ? &conf_core.appearance.color.selected : nnclr);
+	pcb_render->set_color(pcb_draw_out.fgGC, selected ? &conf_core.appearance.color.selected : nnclr);
 	pcb_subc_draw_origin(pcb_draw_out.fgGC, subc, 0, 0);
 
 	if (freq >= 0) {

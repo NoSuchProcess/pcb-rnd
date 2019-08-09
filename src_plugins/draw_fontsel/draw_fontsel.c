@@ -78,13 +78,13 @@ static void dchkbox(pcb_hid_gc_t gc, int x0, int y0, int checked)
 	int w = 2, h = 2;
 	float th = 0.1, th2 = 0.4;
 
-	pcb_gui->set_color(gc, pcb_color_black);
+	pcb_render->set_color(gc, pcb_color_black);
 	dline(x0, y0, x0+w, y0, th);
 	dline(x0+w, y0, x0+w, y0+h, th);
 	dline(x0+w, y0+h, x0, y0+h, th);
 	dline(x0, y0+h, x0, y0, th);
 	if (checked) {
-		pcb_gui->set_color(gc, pcb_color_red);
+		pcb_render->set_color(gc, pcb_color_red);
 		dline(x0, y0, x0+w, y0+h, th2);
 		dline(x0, y0+h, x0+w, y0, th2);
 	}
@@ -112,7 +112,7 @@ static void pcb_draw_font(pcb_hid_gc_t gc, pcb_font_t *f, int x, int *y, pcb_tex
 
 	dchkbox(gc, x-4, *y, (f->id == target_fid));
 
-	pcb_gui->set_color(gc, pcb_color_black);
+	pcb_render->set_color(gc, pcb_color_black);
 	t = dtext(x, *y, 200, f->id, buf);
 	pcb_text_bbox(pcb_font(PCB, f->id, 1), t);
 

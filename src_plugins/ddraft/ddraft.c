@@ -378,14 +378,14 @@ void ddraft_tool_draw_attached(void)
 	int n;
 	pcb_gui->set_line_cap(pcb_crosshair.GC, pcb_cap_round);
 	pcb_gui->set_line_width(pcb_crosshair.GC, 1);
-	pcb_gui->set_color(pcb_crosshair.GC, pcb_color_grey33);
+	pcb_render->set_color(pcb_crosshair.GC, pcb_color_grey33);
 	for(n = 0; n < vtc0_len(&pcb_ddraft_attached.annot_lines); n += 4) {
 		pcb_coord_t *c = &pcb_ddraft_attached.annot_lines.array[n];
 		pcb_gui->draw_line(pcb_crosshair.GC, c[0], c[1], c[2], c[3]);
 	}
 
 	if (pcb_ddraft_attached.line_valid) {
-		pcb_gui->set_color(pcb_crosshair.GC, &CURRENT->meta.real.color);
+		pcb_render->set_color(pcb_crosshair.GC, &CURRENT->meta.real.color);
 		pcb_draw_wireframe_line(pcb_crosshair.GC,
 			pcb_ddraft_attached.line.Point1.X, pcb_ddraft_attached.line.Point1.Y, pcb_ddraft_attached.line.Point2.X, pcb_ddraft_attached.line.Point2.Y,
 			conf_core.design.line_thickness, 0);

@@ -99,7 +99,7 @@ void pcb_lead_user_draw_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_
 		pcb_gui->set_line_width(*gc, ARL/40);
 		pcb_gui->draw_arc(*gc, leadx, leady, LEAD_CENTER_RAD+step/10, LEAD_CENTER_RAD+step/10, 0, 360);
 
-/*		pcb_gui->set_color(*gc, const pcb_color_t *color);*/
+/*		pcb_render->set_color(*gc, const pcb_color_t *color);*/
 
 		pcb_gui->draw_line(*gc, x, y, x - ARL, y);
 		pcb_gui->draw_line(*gc, x, y, x, y-ARL);

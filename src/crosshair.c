@@ -288,11 +288,11 @@ void pcb_xordraw_movecopy(void)
 			
 			/* Draw the DRC outline if it is enabled */
 			if (conf_core.editor.show_drc) {
-				pcb_gui->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
+				pcb_render->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
 				pcb_draw_wireframe_line(pcb_crosshair.GC,line.Point1.X, line.Point1.Y,
 																line.Point2.X, line.Point2.Y,
 																line.Thickness + 2 * (conf_core.design.bloat + 1), 0);
-				pcb_gui->set_color(pcb_crosshair.GC, &conf_core.appearance.color.crosshair);
+				pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.crosshair);
 			}
 			break;
 		}
@@ -311,10 +311,10 @@ void pcb_xordraw_movecopy(void)
 
 			/* Draw the DRC outline if it is enabled */
 			if (conf_core.editor.show_drc) {
-				pcb_gui->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
+				pcb_render->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
 				arc.Thickness += 2 * (conf_core.design.bloat + 1);
 				pcb_draw_wireframe_arc(pcb_crosshair.GC, &arc, arc.Thickness);
-				pcb_gui->set_color(pcb_crosshair.GC, &conf_core.appearance.color.crosshair);
+				pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.crosshair);
 			}
 			break;
 		}
@@ -354,10 +354,10 @@ void pcb_xordraw_movecopy(void)
 
 				/* Draw the DRC outline if it is enabled */
 				if (conf_core.editor.show_drc) {
-					pcb_gui->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
+					pcb_render->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
 					pcb_draw_wireframe_line(pcb_crosshair.GC,point1->X, point1->Y, point2.X, 
 																	point2.Y,line->Thickness + 2 * (conf_core.design.bloat + 1), 0);
-					pcb_gui->set_color(pcb_crosshair.GC, &conf_core.appearance.color.crosshair);
+					pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.crosshair);
 				}
 			}
 			else {
@@ -409,10 +409,10 @@ void pcb_xordraw_movecopy(void)
 
 			/* Draw the DRC outline if it is enabled */
 			if (conf_core.editor.show_drc) {
-				pcb_gui->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
+				pcb_render->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
 				arc.Thickness += 2 * (conf_core.design.bloat + 1);
 				pcb_draw_wireframe_arc(pcb_crosshair.GC, &arc, arc.Thickness);
-				pcb_gui->set_color(pcb_crosshair.GC, &conf_core.appearance.color.crosshair);
+				pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.crosshair);
 			}
 
 			/* Get the new arc point positions, calculate the movement deltas and send them 
@@ -1050,7 +1050,7 @@ void pcb_crosshair_init(void)
 {
 	pcb_crosshair.GC = pcb_hid_make_gc();
 
-	pcb_gui->set_color(pcb_crosshair.GC, &conf_core.appearance.color.crosshair);
+	pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.crosshair);
 	pcb_hid_set_draw_xor(pcb_crosshair.GC, 1);
 	pcb_hid_set_line_cap(pcb_crosshair.GC, pcb_cap_round);
 	pcb_hid_set_line_width(pcb_crosshair.GC, 1);

@@ -1107,7 +1107,7 @@ void pcb_label_draw(pcb_draw_info_t *info, pcb_coord_t x, pcb_coord_t y, double 
 	mirror = (flip_x ^ flip_y);
 	direction = (vert ? 1 : 0) + (flip_x ? 2 : 0);
 
-	pcb_gui->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.pin_name);
+	pcb_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.pin_name);
 
 	if (pcb_gui->gui)
 		pcb_draw_force_termlab++;
