@@ -50,18 +50,18 @@ static void comp_fill_board(comp_ctx_t *ctx)
 
 static void comp_start_sub_(comp_ctx_t *ctx)
 {
-	pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_NEGATIVE, pcb_draw_out.direct, ctx->info->drawn_area);
+	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_NEGATIVE, pcb_draw_out.direct, ctx->info->drawn_area);
 }
 
 static void comp_start_add_(comp_ctx_t *ctx)
 {
-	pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->info->drawn_area);
+	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->info->drawn_area);
 }
 
 static void comp_start_sub(comp_ctx_t *ctx)
 {
 	if (ctx->thin) {
-		pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->info->drawn_area);
+		pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->info->drawn_area);
 		pcb_gui->set_color(pcb_draw_out.pmGC, ctx->color);
 		return;
 	}
@@ -75,7 +75,7 @@ static void comp_start_sub(comp_ctx_t *ctx)
 static void comp_start_add(comp_ctx_t *ctx)
 {
 	if (ctx->thin) {
-		pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->info->drawn_area);
+		pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->info->drawn_area);
 		return;
 	}
 
@@ -87,12 +87,12 @@ static void comp_start_add(comp_ctx_t *ctx)
 
 static void comp_finish(comp_ctx_t *ctx)
 {
-	pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, ctx->info->drawn_area);
+	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, ctx->info->drawn_area);
 }
 
 static void comp_init(comp_ctx_t *ctx, int negative)
 {
-	pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, pcb_draw_out.direct, ctx->info->drawn_area);
+	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, pcb_draw_out.direct, ctx->info->drawn_area);
 
 	if (ctx->thin)
 		return;
@@ -102,7 +102,7 @@ static void comp_init(comp_ctx_t *ctx, int negative)
 
 	if ((!ctx->thin) && (negative)) {
 		/* drawing the big poly for the negative */
-		pcb_gui->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->info->drawn_area);
+		pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->info->drawn_area);
 		comp_fill_board(ctx);
 	}
 }
