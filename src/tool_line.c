@@ -214,8 +214,8 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 
 		if (conf_core.editor.orthogonal_moves) {
 			/* set the mark to the new starting point so ortho works as expected and we can draw a perpendicular line from here */
-			pcb_marked.X = pcb_crosshair.Route.end_point.X;
-			pcb_marked.Y = pcb_crosshair.Route.end_point.Y;
+			pcb_grabbed.X = pcb_crosshair.Route.end_point.X;
+			pcb_grabbed.Y = pcb_crosshair.Route.end_point.Y;
 		}
 
 		if (ps)
