@@ -698,11 +698,13 @@ static fgw_error_t pcb_act_MarkCrosshair(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		if (pcb_marked.status) {
 			pcb_notify_mark_change(pcb_false);
 			pcb_marked.status = pcb_false;
+			pcb_marked.user_placed = 0;
 			pcb_notify_mark_change(pcb_true);
 		}
 		else {
 			pcb_notify_mark_change(pcb_false);
 			pcb_marked.status = pcb_true;
+			pcb_marked.user_placed = 1;
 			if (conf_core.editor.marker_snaps) {
 				pcb_marked.X = pcb_crosshair.X;
 				pcb_marked.Y = pcb_crosshair.Y;
@@ -722,6 +724,7 @@ static fgw_error_t pcb_act_MarkCrosshair(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		else
 			pcb_hid_get_coords("Click on new mark", &pcb_marked.X, &pcb_marked.Y, 0);
 		pcb_notify_mark_change(pcb_true);
+		pcb_marked.user_placed = 1;
 	}
 	return 0;
 }
