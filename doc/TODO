@@ -13,11 +13,20 @@
 - BUG: 'pcb-rnd -x cam gerber:universal' throws excellon errors if there's no unplated hole on the design [report: bdale]
 - BUG: bug_files/slot1.lht: open as footprint for edit - no mech layers are created so slots won't display [report: cuvoodoo]
 - DOC: finish DAD doc (doc/developer/dad/: e.g. run.html is missing) [report: Alain]
+- FEATURE: no-export attribute: cache a no-export attribute in a bitfield (e.g. flags like no-export for vector outputs, pixel outputs); exporter should set the bits in HID; core rendring should decide what to draw; use case: poly clearance to emulate keep-away on outline, and replace the old zero-width line trick [report: karl]
+- asm() dialog
+	- FEATURE: Add a button to clear the done status from a component. [report: Ade]
+	- FEATURE: Show the status message on a group when minimized to indicate whether the groups components are done, not done or partially done. [report: Ade]
+	- FEATURE: If a component is out of view when selected then pan the view until it is visible. May need to zoom also if a group is selected. [report: Ade]
+- SUBC: element removal:
+	- CLEANUP: convert pcblib to subcircuits:
+		- revise the value attribute - should be empty by default
 
 2. For later releases ===============================================================================
 - CLEANUP: rewrite parametric footprints to use tEDAx (or lihata)
 	- add "global" option for paste/mask tuning
 	- update fp2anim so the web page works again
+	- dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 - CLEANUP: (TT) propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
@@ -97,11 +106,6 @@
 	- padstack
 	- clearing polygon
 	- text
-- SUBC: element removal:
-	- CLEANUP: convert pcblib to subcircuits:
-		- revise the value attribute - should be empty by default
-		- remove old install elements
-		- dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 - FEATURE: key rewrite: (base key swap bug (q<->a, y<->z))
 	- for <char> (punctuation): learn key for non-US users
 	- lesstif code upgrade for the new API
@@ -110,7 +114,6 @@
 - FEATURE: undo on new layer from right-click menu in gtk layersel doesn't work
 - FEATURE: layersel: consider to provide a config setting for making open-group-name horizontal [report: istankovic]
 - FEATURE: preview widget: allow to handle keys both in gtk and lesstif
-- FEATURE: no-export attribute: cache a no-export attribute in a bitfield (e.g. flags like no-export for vector outputs, pixel outputs); exporter should set the bits in HID; core rendring should decide what to draw; use case: poly clearance to emulate keep-away on outline, and replace the old zero-width line trick [report: karl]
 - res/menu:
 	- FEATURE: load/swap menus (TODO#1)
 	- CLEANUP: search for vendor in the hid plugins, there should be no trace of it (vendor should register its in submenus with anchors)
@@ -170,10 +173,6 @@
 - BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - BUG: gtk2_gl issue. view in netlist window circuit view clips or goes black when changing selected net (repro. w/ doc/tutorials/15_no_sch/step3.lht and open netlist view {w n} [report: miloh]
-- asm() dialog
-	- FEATURE: Add a button to clear the done status from a component. [report: Ade]
-	- FEATURE: Show the status message on a group when minimized to indicate whether the groups components are done, not done or partially done. [report: Ade]
-	- FEATURE: If a component is out of view when selected then pan the view until it is visible. May need to zoom also if a group is selected. [report: Ade]
 
 3. Long term ===============================================================================
 - BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
