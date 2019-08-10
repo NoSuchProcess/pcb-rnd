@@ -18,9 +18,6 @@
 	- FEATURE: Add a button to clear the done status from a component. [report: Ade]
 	- FEATURE: Show the status message on a group when minimized to indicate whether the groups components are done, not done or partially done. [report: Ade]
 	- FEATURE: If a component is out of view when selected then pan the view until it is visible. May need to zoom also if a group is selected. [report: Ade]
-- SUBC: element removal:
-	- CLEANUP: convert pcblib to subcircuits:
-		- revise the value attribute - should be empty by default
 
 2. For later releases ===============================================================================
 - CLEANUP: rewrite parametric footprints to use tEDAx (or lihata)
