@@ -26,8 +26,8 @@
  *
  */
 
-#ifndef	PCB_CROSSHAIR_H
-#define	PCB_CROSSHAIR_H
+#ifndef PCB_CROSSHAIR_H
+#define PCB_CROSSHAIR_H
 
 #include "config.h"
 #include "vtonpoint.h"
@@ -81,9 +81,7 @@ typedef struct {                         /* holds crosshair, cursor and crosshai
 } pcb_crosshair_t;
 
 
-/* ---------------------------------------------------------------------------
- * all possible states of an attached object
- */
+/*** all possible states of an attached object ***/
 #define PCB_CH_STATE_FIRST  0  /* initial state */
 #define PCB_CH_STATE_SECOND 1
 #define PCB_CH_STATE_THIRD  2
@@ -113,7 +111,5 @@ void pcb_xordraw_attached_arc(pcb_coord_t thick);
 void pcb_xordraw_buffer(pcb_buffer_t *Buffer);
 void pcb_xordraw_movecopy(void);
 void pcb_xordraw_insert_pt_obj(void);
-
-
 
 #endif
