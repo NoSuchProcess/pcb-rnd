@@ -95,7 +95,7 @@ c;c;	pcb-menu-default.lht	Connection(Reset);Display(Redraw)	Clear\057reset looku
 c;d;	pcb-menu-default.lht	Atomic(Save);Connection(Reset);Atomic(Restore);Unselect(All);Atomic(Restore);Connection(Find);Atomic(Restore);Select(Connection);Atomic(Restore);RemoveSelected();Atomic(Restore);Connection(Reset);Atomic(Restore);Unselect(All);Atomic(Block)	Del\057Remove Connected
 c;e;	pcb-menu-default.lht	DeleteRats(AllRats) 	Erase rats nest
 c;f;	pcb-menu-default.lht	Connection(Reset);Connection(Find)	Find Connections
-c;r;	pcb-menu-default.lht	Atomic(Save);DeleteRats(AllRats);Atomic(Restore);AddRats(AllRats);Atomic(Block)	Optimize rats nest
+c;r;	pcb-menu-default.lht	Atomic(Save);DeleteRats(AllRats);Atomic(Restore);AddRats(AllRats);Atomic(Close)	Optimize rats nest
 c;s;	pcb-menu-default.lht	AddRats(Close) 	Select shortest rat
 delete	pcb-menu-default.lht	Mode(Save);Mode(Remove);Mode(Notify);Mode(Restore)	Remove object
 down	pcb-menu-default.lht	Cursor(Warp,0,-1,grid) 	Step Down
@@ -272,7 +272,7 @@ w;d	pcb-menu-default.lht	DRC() 	DRC Check
 w;f	pcb-menu-default.lht	FontSel() 	Font selector
 w;l	pcb-menu-default.lht	LibraryDialog() 	Library
 w;m	pcb-menu-default.lht	LogDialog() 	Message Log
-w;n	pcb-menu-default.lht	DoWindows(Netlist) 	Netlist
+w;n	pcb-menu-default.lht	NetlistDialog() 	Netlist
 w;p	pcb-menu-default.lht	Display(Pinout) 	Pinout
 y-ctrl	pcb-menu-default.lht	Redo() 	Redo last undone operation
 z-ctrl	pcb-menu-default.lht	Undo() 	Undo last operation
