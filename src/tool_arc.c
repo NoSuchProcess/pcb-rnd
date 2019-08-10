@@ -69,7 +69,8 @@ void pcb_tool_arc_uninit(void)
 	pcb_added_lines = 0;
 	if (pcb_tool_next_id != PCB_MODE_LINE) {
 		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
-		pcb_crosshair_set_local_ref(0, 0, pcb_false);
+		if (!pcb_marked.user_placed)
+			pcb_crosshair_set_local_ref(0, 0, pcb_false);
 	}
 	pcb_notify_crosshair_change(pcb_true);
 }

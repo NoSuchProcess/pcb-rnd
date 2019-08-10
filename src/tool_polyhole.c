@@ -88,6 +88,7 @@ void pcb_tool_polyhole_notify_mode(void)
 			}
 
 			if (conf_core.editor.orthogonal_moves) {
+TODO("mark: remove this");
 				/* set the mark to the new starting point so ortho works */
 				pcb_marked.X = pcb_tool_note.X;
 				pcb_marked.Y = pcb_tool_note.Y;

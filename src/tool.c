@@ -311,7 +311,7 @@ void pcb_tool_attach_for_copy(pcb_coord_t PlaceX, pcb_coord_t PlaceY, pcb_bool d
 	}
 	pcb_crosshair.AttachedObject.X = PlaceX - mx;
 	pcb_crosshair.AttachedObject.Y = PlaceY - my;
-	if (!pcb_marked.status || conf_core.editor.local_ref)
+	if ((!pcb_marked.status || conf_core.editor.local_ref) && !pcb_marked.user_placed)
 		pcb_crosshair_set_local_ref(PlaceX - mx, PlaceY - my, pcb_true);
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
 

@@ -80,7 +80,8 @@ void pcb_tool_move_notify_mode(void)
 		dy = pcb_crosshair.AttachedObject.ty - pcb_crosshair.AttachedObject.Y;
 		if ((dx != 0) || (dy != 0)) {
 			pcb_move_obj_and_rubberband(pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3, dx, dy);
-			pcb_crosshair_set_local_ref(0, 0, pcb_false);
+			if (!pcb_marked.user_placed)
+				pcb_crosshair_set_local_ref(0, 0, pcb_false);
 			pcb_subc_as_board_update(PCB);
 			pcb_board_set_changed_flag(pcb_true);
 		}

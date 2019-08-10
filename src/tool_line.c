@@ -89,7 +89,8 @@ void pcb_tool_line_uninit(void)
 	pcb_route_reset(&pcb_crosshair.Route);
 	if (pcb_tool_next_id != PCB_MODE_ARC) {
 		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
-		pcb_crosshair_set_local_ref(0, 0, pcb_false);
+		if (!pcb_marked.user_placed)
+			pcb_crosshair_set_local_ref(0, 0, pcb_false);
 	}
 	pcb_notify_crosshair_change(pcb_true);
 }
@@ -100,8 +101,8 @@ static void notify_line(void)
 	int type = PCB_OBJ_VOID;
 	void *ptr1, *ptr2, *ptr3;
 
-	if (!pcb_marked.status || conf_core.editor.local_ref)
-		pcb_crosshair_set_local_ref(pcb_crosshair.X, pcb_crosshair.Y, pcb_true);
+	if ((!pcb_marked.status || conf_core.editor.local_ref) && !pcb_marked.user_placed)
+			pcb_crosshair_set_local_ref(pcb_crosshair.X, pcb_crosshair.Y, pcb_true);
 	switch (pcb_crosshair.AttachedLine.State) {
 	case PCB_CH_STATE_FIRST:						/* first point */
 TODO("subc: this should work on heavy terminals too!")
@@ -388,7 +389,8 @@ pcb_bool pcb_tool_line_undo_act(void)
 			pcb_undo(pcb_true);	  /* undo the connection find */
 		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
 		pcb_route_reset(&pcb_crosshair.Route);
-		pcb_crosshair_set_local_ref(0, 0, pcb_false);
+		if (!pcb_marked.user_placed)
+			pcb_crosshair_set_local_ref(0, 0, pcb_false);
 		return pcb_false;
 	}
 	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_THIRD) {
