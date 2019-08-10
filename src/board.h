@@ -58,12 +58,11 @@ enum {
 
 typedef htsp_t pcb_netlist_t;
 
-	/* The pcb_board_t struct holds information about board layout most of which is
-	   |  saved with the layout.  A new PCB layout struct is first initialized
-	   |  with values from the user configurable Settings struct and then reset
-	   |  to the saved layout values when a layout is loaded.
-	   |  This struct is also used for the remove list and for buffer handling
-	 */
+/* The pcb_board_t struct holds information about board layout most of which is
+   saved with the layout.  A new PCB layout struct is first initialized
+   with values from the user configurable Settings struct and then reset
+   to the saved layout values when a layout is loaded.
+   This struct is also used for the remove list and for buffer handling */
 struct pcb_board_s {
 	pcb_hidlib_t hidlib;
 
