@@ -4,6 +4,9 @@
 + CLEANUP: Vuokko's list of warnings on OpenBSD: bug_files/warn-obsd-r26600.log [report: Vuokko]
 + CLEANUP/feature: pcb_subc_smash_buffer() should really copy data so it can smash multiple subcs and subc objects end up on the layer they were bound to [report: keantoken]
 - CLEANUP: unify gui invocation option printout: pcb-rnd --help gtk_[gdk|gl] and pcb-rnd --help lesstif should use the same style printing options (even tho options will never be the same) [report:miloh]
+- CLEANUP: Mark
+	- see pool node mark_cleanup
+	- mark bug - ortho shouldn't use it, it should use last point (crosshair.X2); make sure nothing else abuses it [James]
 - FEATURE: new breadboard
 	- FEATURE: hidlib: render pixmap
 	- FEATURE: optional subc pixmaps from attributes
@@ -33,16 +36,9 @@
 	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
-- CAM:
-	- FEATURE: make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file (for support for plugged vias/filled vias) [report: Vuokko]
-	- FEATURE: invent a generic API for both the drill attrib config table
-	- CLEANUP: in ~2020: remove the hackish gerber layer suffix and auto-excellon in favor of CAM [report: Ade]
 - CLEANUP: move import_sch to import_sch_old and start a new, generic plugin
 - CLEANUP/FEATURE: boardflip doesn't function properly with undo -- repro: open pcb-rnd, place 1206, boardflip(), { u u } removes placed part instead of boardflip   [report: Miloh]
 - CLEANUP: fp_fs_search: kill anything that gets ':' separated string as path list, get a config list instead
-- CLEANUP: Mark
-	- see pool node mark_cleanup
-	- mark bug - ortho shouldn't use it, it should use last point (crosshair.X2); make sure nothing else abuses it [James]
 - CLENAUP: decide about exporter policy:
 	- png exports selection (even in not-as-shown), others don't
 	- extend png hid attribs with a flag for this, maybe do the same for others
@@ -54,6 +50,10 @@
 		- under inhibit, pcb_subc_part_changed(ps) should mark subcircuits dirty
 		- when inhibit drops to zero, revisit all subcircuits that are dirty
 		- get a common inhibit function for batch processing that turn on draw, poly clip and pcb_subc_part_changed inhibit
+- CAM:
+	- FEATURE: make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file (for support for plugged vias/filled vias) [report: Vuokko]
+	- FEATURE: invent a generic API for both the drill attrib config table
+	- CLEANUP: in ~2020: remove the hackish gerber layer suffix and auto-excellon in favor of CAM [report: Ade]
 - FEATURE: edakrill script for growing line thickness keeping the line on one side (side alignment) [report: keantoken]
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
