@@ -497,22 +497,29 @@ void pcbhl_draw_attached(pcb_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
 
 void pcbhl_draw_marks(pcb_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
 {
-	pcb_coord_t ms = conf_core.appearance.mark_size;
+	pcb_coord_t ms = conf_core.appearance.mark_size, ms2 = ms / 2;
 
-	/* Mark is not drawn when it is not set */
-	if (!pcb_marked.status)
-		return;
-
-	if (!inhibit_drawing_mode) {
-		pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, 1, NULL);
-		pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, 1, NULL);
+	if ((pcb_marked.status) || (pcb_grabbed.status)) {
+		if (!inhibit_drawing_mode) {
+			pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, 1, NULL);
+			pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, 1, NULL);
+		}
 	}
 
-	pcb_render->draw_line(pcb_crosshair.GC, pcb_marked.X - ms, pcb_marked.Y - ms, pcb_marked.X + ms, pcb_marked.Y + ms);
-	pcb_render->draw_line(pcb_crosshair.GC, pcb_marked.X + ms, pcb_marked.Y - ms, pcb_marked.X - ms, pcb_marked.Y + ms);
+	if (pcb_marked.status) {
+		pcb_render->draw_line(pcb_crosshair.GC, pcb_marked.X - ms, pcb_marked.Y - ms, pcb_marked.X + ms, pcb_marked.Y + ms);
+		pcb_render->draw_line(pcb_crosshair.GC, pcb_marked.X + ms, pcb_marked.Y - ms, pcb_marked.X - ms, pcb_marked.Y + ms);
+	}
 
-	if (!inhibit_drawing_mode)
-		pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, 1, NULL);
+
+	if (pcb_grabbed.status) {
+		pcb_render->draw_line(pcb_crosshair.GC, pcb_grabbed.X - ms, pcb_grabbed.Y - ms2, pcb_grabbed.X + ms, pcb_grabbed.Y + ms2);
+		pcb_render->draw_line(pcb_crosshair.GC, pcb_grabbed.X + ms2, pcb_grabbed.Y - ms, pcb_grabbed.X - ms2, pcb_grabbed.Y + ms);
+	}
+
+	if ((pcb_marked.status) || (pcb_grabbed.status))
+		if (!inhibit_drawing_mode)
+			pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, 1, NULL);
 }
 
 /* ---------------------------------------------------------------------------

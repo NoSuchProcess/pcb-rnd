@@ -418,6 +418,7 @@ void pcb_release_mode(pcb_hidlib_t *hidlib)
 	if (pcbhl_conf.temp.click_cmd_entry_active && (pcb_cli_mouse(0) == 0))
 		return;
 
+	pcb_grabbed.status = pcb_false;
 	pcb_tool_release_mode(hidlib);
 
 	if (pcb_tool_is_saved)
@@ -433,6 +434,7 @@ void pcb_notify_mode(pcb_hidlib_t *hidlib)
 
 	pcb_grabbed.X = pcb_crosshair.X;
 	pcb_grabbed.Y = pcb_crosshair.Y;
+	pcb_grabbed.status = pcb_true;
 
 	if (conf_core.temp.rat_warn) {
 		if (pcb_data_clear_flag(PCB->Data, PCB_FLAG_WARN, 1, 0) > 0)

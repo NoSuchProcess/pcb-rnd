@@ -91,6 +91,7 @@ void pcb_tool_polyhole_notify_mode(void)
 				/* set the mark to the new starting point so ortho works */
 				pcb_grabbed.X = pcb_tool_note.X;
 				pcb_grabbed.Y = pcb_tool_note.Y;
+				pcb_grabbed.status = pcb_true;
 			}
 
 			/* check if this is the last point of a polygon */
