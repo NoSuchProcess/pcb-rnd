@@ -95,6 +95,7 @@ append /local/pcb/OBJS_HIDLIB [@
 	pcb_bool.o
 	pcb-printf.o
 	plugins.o
+	pixmap.o
 	safe_fs.o
 	unit.o
 	vtc0.o

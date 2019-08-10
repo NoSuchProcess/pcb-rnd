@@ -27,7 +27,9 @@
 #ifndef PCB_HID_PIXMAP_H
 #define PCB_HID_PIXMAP_H
 
-struct pcb_pixmap_t {
+#include "global_typedefs.h"
+
+struct pcb_pixmap_s {
 	long size;                 /* total size in memory */
 	long sx, sy;               /* x and y dimensions */
 	unsigned char tr, tg, tb;  /* color of the transparent pixel */
