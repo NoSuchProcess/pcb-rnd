@@ -65,7 +65,8 @@ typedef struct {
 } point;
 
 pcb_crosshair_t pcb_crosshair;  /* information about cursor settings */
-pcb_mark_t pcb_marked;          /* a cross-hair mark */
+pcb_mark_t pcb_marked;
+pcb_mark_t pcb_grabbed;
 
 static void thindraw_moved_ps(pcb_pstk_t *ps, pcb_coord_t x, pcb_coord_t y)
 {
@@ -866,12 +867,12 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		nearest_grid_y = pcb_grid_fit(pcb_crosshair.Y, PCB->hidlib.grid, PCB->hidlib.grid_oy);
 
 		if (pcb_marked.status && conf_core.editor.orthogonal_moves) {
-			pcb_coord_t dx = pcb_crosshair.X - pcb_marked.X;
-			pcb_coord_t dy = pcb_crosshair.Y - pcb_marked.Y;
+			pcb_coord_t dx = pcb_crosshair.X - pcb_grabbed.X;
+			pcb_coord_t dy = pcb_crosshair.Y - pcb_grabbed.Y;
 			if (PCB_ABS(dx) > PCB_ABS(dy))
-				nearest_grid_y = pcb_marked.Y;
+				nearest_grid_y = pcb_grabbed.Y;
 			else
-				nearest_grid_x = pcb_marked.X;
+				nearest_grid_x = pcb_grabbed.X;
 		}
 
 	}
