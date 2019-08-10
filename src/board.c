@@ -367,3 +367,9 @@ int pcb_board_normalize(pcb_board_t *pcb)
 
 	return chg;
 }
+
+pcb_pixmap_t *pcb_pixmap_insert_or_free(pcb_board_t *pcb, pcb_pixmap_t *pm)
+{
+
+}
+
