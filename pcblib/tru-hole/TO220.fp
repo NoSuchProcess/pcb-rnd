@@ -1,47 +1,678 @@
-##from:pcb
-##for:transistor
-##for:linear
-##for:stabilizer
-##geo:laying
-##ref:http://www.zetex.com/3.0/pdf/TO220.pdf
-	Element(0x00 "Transistor" "" "TO220" 50 570 1 100 0x00)
-(
-# I have been unable to locate the JEDEC drawing.  However, refering
-# to  http://www.zetex.com/3.0/pdf/TO220.pdf which claims to be JEDEC
-# compliant, I see that the pins are rectangular with dimensions:
-#
-# 15-40 mils X 16-20 mils which gives a diagonal of
-# 21.9 to 44.7 mils
-#
-# The pin pitch is 90 to 110 mils.
-#
-# The mounting hole is 139 to 160 mils diameter
-	Pin(100 800 90 60 "1" 0x101)
-	Pin(200 800 90 60 "2" 0x01)
-	Pin(300 800 90 60 "3" 0x01)
-	# Befestigungsbohrung
-	Pin(200 130 150 130 "4" 0x01)
-	# Anschlussdraehte
-	ElementLine(100 800 100 620 30)
-	ElementLine(200 800 200 620 30)
-	ElementLine(300 800 300 620 30)
-	# Gehaeuse
-	ElementLine(  0 620 400 620 20)
-	ElementLine(400 620 400 245 20)
-	ElementLine(400 245   0 245 20)
-	ElementLine(  0 245   0 620 20)
-	# Kuehlfahne mit Kerben
-	ElementLine(  0 245 400 245 20)
-	ElementLine(400 245 400 120 20)
-	ElementLine(400 120 385 120 20)
-	ElementLine(385 120 385  50 20)
-	ElementLine(385  50 400  50 20)
-	ElementLine(400  50 400  10 20)
-	ElementLine(400  10   0  10 20)
-	ElementLine(  0  10   0  50 20)
-	ElementLine(  0  50  15  50 20)
-	ElementLine( 15  50  15 120 20)
-	ElementLine( 15 120   0 120 20)
-	ElementLine(  0 120   0 245 20)
-	Mark(200 800)
-)
+li:pcb-rnd-subcircuit-v6 {
+ ha:subc.5 {
+  ha:attributes {
+   footprint = TO220 Transistor
+  }
+  ha:data {
+   li:padstack_prototypes {
+    ha:ps_proto_v6.0 {
+     htop = 0
+     hdia = 60.0mil
+     li:shape {
+      ha:ps_shape_v4 {
+       clearance = 0.0
+       li:ps_poly {
+        -45.0mil
+        -45.0mil
+        45.0mil
+        -45.0mil
+        45.0mil
+        45.0mil
+        -45.0mil
+        45.0mil
+       }
+       ha:layer_mask {
+        copper = 1
+        top = 1
+       }
+       ha:combining {
+       }
+      }
+      ha:ps_shape_v4 {
+       clearance = 0.0
+       li:ps_poly {
+        -45.0mil
+        -45.0mil
+        45.0mil
+        -45.0mil
+        45.0mil
+        45.0mil
+        -45.0mil
+        45.0mil
+       }
+       ha:layer_mask {
+        bottom = 1
+        copper = 1
+       }
+       ha:combining {
+       }
+      }
+      ha:ps_shape_v4 {
+       clearance = 0.0
+       li:ps_poly {
+        -45.0mil
+        -45.0mil
+        45.0mil
+        -45.0mil
+        45.0mil
+        45.0mil
+        -45.0mil
+        45.0mil
+       }
+       ha:layer_mask {
+        copper = 1
+        intern = 1
+       }
+       ha:combining {
+       }
+      }
+      ha:ps_shape_v4 {
+       clearance = 0.0
+       li:ps_poly {
+        -48.0mil
+        -48.0mil
+        48.0mil
+        -48.0mil
+        48.0mil
+        48.0mil
+        -48.0mil
+        48.0mil
+       }
+       ha:layer_mask {
+        top = 1
+        mask = 1
+       }
+       ha:combining {
+        sub = 1
+        auto = 1
+       }
+      }
+      ha:ps_shape_v4 {
+       clearance = 0.0
+       li:ps_poly {
+        -48.0mil
+        -48.0mil
+        48.0mil
+        -48.0mil
+        48.0mil
+        48.0mil
+        -48.0mil
+        48.0mil
+       }
+       ha:layer_mask {
+        bottom = 1
+        mask = 1
+       }
+       ha:combining {
+        sub = 1
+        auto = 1
+       }
+      }
+     }
+     hbottom = 0
+     hplated = 1
+    }
+    ha:ps_proto_v6.1 {
+     htop = 0
+     hdia = 60.0mil
+     li:shape {
+      ha:ps_shape_v4 {
+       clearance = 0.0
+       ha:ps_circ {
+        x = 0.0
+        y = 0.0
+        dia = 90.0mil
+       }
+       ha:layer_mask {
+        copper = 1
+        top = 1
+       }
+       ha:combining {
+       }
+      }
+      ha:ps_shape_v4 {
+       clearance = 0.0
+       ha:ps_circ {
+        x = 0.0
+        y = 0.0
+        dia = 90.0mil
+       }
+       ha:layer_mask {
+        bottom = 1
+        copper = 1
+       }
+       ha:combining {
+       }
+      }
+      ha:ps_shape_v4 {
+       clearance = 0.0
+       ha:ps_circ {
+        x = 0.0
+        y = 0.0
+        dia = 90.0mil
+       }
+       ha:layer_mask {
+        copper = 1
+        intern = 1
+       }
+       ha:combining {
+       }
+      }
+      ha:ps_shape_v4 {
+       clearance = 0.0
+       ha:ps_circ {
+        x = 0.0
+        y = 0.0
+        dia = 96.0mil
+       }
+       ha:layer_mask {
+        top = 1
+        mask = 1
+       }
+       ha:combining {
+        sub = 1
+        auto = 1
+       }
+      }
+      ha:ps_shape_v4 {
+       clearance = 0.0
+       ha:ps_circ {
+        x = 0.0
+        y = 0.0
+        dia = 96.0mil
+       }
+       ha:layer_mask {
+        bottom = 1
+        mask = 1
+       }
+       ha:combining {
+        sub = 1
+        auto = 1
+       }
+      }
+     }
+     hbottom = 0
+     hplated = 1
+    }
+    ha:ps_proto_v6.2 {
+     htop = 0
+     hdia = 130.0mil
+     li:shape {
+      ha:ps_shape_v4 {
+       clearance = 0.0
+       ha:ps_circ {
+        x = 0.0
+        y = 0.0
+        dia = 150.0mil
+       }
+       ha:layer_mask {
+        copper = 1
+        top = 1
+       }
+       ha:combining {
+       }
+      }
+      ha:ps_shape_v4 {
+       clearance = 0.0
+       ha:ps_circ {
+        x = 0.0
+        y = 0.0
+        dia = 150.0mil
+       }
+       ha:layer_mask {
+        bottom = 1
+        copper = 1
+       }
+       ha:combining {
+       }
+      }
+      ha:ps_shape_v4 {
+       clearance = 0.0
+       ha:ps_circ {
+        x = 0.0
+        y = 0.0
+        dia = 150.0mil
+       }
+       ha:layer_mask {
+        copper = 1
+        intern = 1
+       }
+       ha:combining {
+       }
+      }
+      ha:ps_shape_v4 {
+       clearance = 0.0
+       ha:ps_circ {
+        x = 0.0
+        y = 0.0
+        dia = 156.0mil
+       }
+       ha:layer_mask {
+        top = 1
+        mask = 1
+       }
+       ha:combining {
+        sub = 1
+        auto = 1
+       }
+      }
+      ha:ps_shape_v4 {
+       clearance = 0.0
+       ha:ps_circ {
+        x = 0.0
+        y = 0.0
+        dia = 156.0mil
+       }
+       ha:layer_mask {
+        bottom = 1
+        mask = 1
+       }
+       ha:combining {
+        sub = 1
+        auto = 1
+       }
+      }
+     }
+     hbottom = 0
+     hplated = 1
+    }
+   }
+   li:objects {
+    ha:padstack_ref.7 {
+     smirror = 0
+     ha:attributes {
+      term = 1
+      name = 1
+     }
+     proto = 0
+     xmirror = 0
+     x = 2.794783mm
+     rot = 0.000000
+     y = 20.320783mm
+     li:thermal {
+     }
+     ha:flags {
+      clearline = 1
+     }
+     clearance = 15.0mil
+    }
+    ha:padstack_ref.8 {
+     smirror = 0
+     ha:attributes {
+      term = 2
+      name = 2
+     }
+     proto = 1
+     xmirror = 0
+     x = 5.334783mm
+     rot = 0.000000
+     y = 20.320783mm
+     li:thermal {
+     }
+     ha:flags {
+      clearline = 1
+     }
+     clearance = 15.0mil
+    }
+    ha:padstack_ref.9 {
+     smirror = 0
+     ha:attributes {
+      term = 3
+      name = 3
+     }
+     proto = 1
+     xmirror = 0
+     x = 7.874783mm
+     rot = 0.000000
+     y = 20.320783mm
+     li:thermal {
+     }
+     ha:flags {
+      clearline = 1
+     }
+     clearance = 15.0mil
+    }
+    ha:padstack_ref.10 {
+     smirror = 0
+     ha:attributes {
+      term = 4
+      name = 4
+     }
+     proto = 2
+     xmirror = 0
+     x = 5.334783mm
+     rot = 0.000000
+     y = 3.302783mm
+     li:thermal {
+     }
+     ha:flags {
+      clearline = 1
+     }
+     clearance = 15.0mil
+    }
+   }
+   li:layers {
+    ha:top-silk {
+     lid = 0
+     ha:type {
+      silk = 1
+      top = 1
+     }
+     li:objects {
+      ha:line.11 {
+       clearance = 0.0
+       y2 = 15.748783mm
+       thickness = 30.0mil
+       ha:attributes {
+       }
+       x1 = 2.794783mm
+       x2 = 2.794783mm
+       ha:flags {
+       }
+       y1 = 20.320783mm
+      }
+      ha:line.14 {
+       clearance = 0.0
+       y2 = 15.748783mm
+       thickness = 30.0mil
+       ha:attributes {
+       }
+       x1 = 5.334783mm
+       x2 = 5.334783mm
+       ha:flags {
+       }
+       y1 = 20.320783mm
+      }
+      ha:line.17 {
+       clearance = 0.0
+       y2 = 15.748783mm
+       thickness = 30.0mil
+       ha:attributes {
+       }
+       x1 = 7.874783mm
+       x2 = 7.874783mm
+       ha:flags {
+       }
+       y1 = 20.320783mm
+      }
+      ha:line.20 {
+       clearance = 0.0
+       y2 = 15.748783mm
+       thickness = 20.0mil
+       ha:attributes {
+       }
+       x1 = 0.254783mm
+       x2 = 10.414783mm
+       ha:flags {
+       }
+       y1 = 15.748783mm
+      }
+      ha:line.23 {
+       clearance = 0.0
+       y2 = 6.223783mm
+       thickness = 20.0mil
+       ha:attributes {
+       }
+       x1 = 10.414783mm
+       x2 = 10.414783mm
+       ha:flags {
+       }
+       y1 = 15.748783mm
+      }
+      ha:line.26 {
+       clearance = 0.0
+       y2 = 6.223783mm
+       thickness = 20.0mil
+       ha:attributes {
+       }
+       x1 = 10.414783mm
+       x2 = 0.254783mm
+       ha:flags {
+       }
+       y1 = 6.223783mm
+      }
+      ha:line.29 {
+       clearance = 0.0
+       y2 = 15.748783mm
+       thickness = 20.0mil
+       ha:attributes {
+       }
+       x1 = 0.254783mm
+       x2 = 0.254783mm
+       ha:flags {
+       }
+       y1 = 6.223783mm
+      }
+      ha:line.32 {
+       clearance = 0.0
+       y2 = 6.223783mm
+       thickness = 20.0mil
+       ha:attributes {
+       }
+       x1 = 0.254783mm
+       x2 = 10.414783mm
+       ha:flags {
+       }
+       y1 = 6.223783mm
+      }
+      ha:line.35 {
+       clearance = 0.0
+       y2 = 3.048783mm
+       thickness = 20.0mil
+       ha:attributes {
+       }
+       x1 = 10.414783mm
+       x2 = 10.414783mm
+       ha:flags {
+       }
+       y1 = 6.223783mm
+      }
+      ha:line.38 {
+       clearance = 0.0
+       y2 = 3.048783mm
+       thickness = 20.0mil
+       ha:attributes {
+       }
+       x1 = 10.414783mm
+       x2 = 10.033783mm
+       ha:flags {
+       }
+       y1 = 3.048783mm
+      }
+      ha:line.41 {
+       clearance = 0.0
+       y2 = 1.270783mm
+       thickness = 20.0mil
+       ha:attributes {
+       }
+       x1 = 10.033783mm
+       x2 = 10.033783mm
+       ha:flags {
+       }
+       y1 = 3.048783mm
+      }
+      ha:line.44 {
+       clearance = 0.0
+       y2 = 1.270783mm
+       thickness = 20.0mil
+       ha:attributes {
+       }
+       x1 = 10.033783mm
+       x2 = 10.414783mm
+       ha:flags {
+       }
+       y1 = 1.270783mm
+      }
+      ha:line.47 {
+       clearance = 0.0
+       y2 = 0.254783mm
+       thickness = 20.0mil
+       ha:attributes {
+       }
+       x1 = 10.414783mm
+       x2 = 10.414783mm
+       ha:flags {
+       }
+       y1 = 1.270783mm
+      }
+      ha:line.50 {
+       clearance = 0.0
+       y2 = 0.254783mm
+       thickness = 20.0mil
+       ha:attributes {
+       }
+       x1 = 10.414783mm
+       x2 = 0.254783mm
+       ha:flags {
+       }
+       y1 = 0.254783mm
+      }
+      ha:line.53 {
+       clearance = 0.0
+       y2 = 1.270783mm
+       thickness = 20.0mil
+       ha:attributes {
+       }
+       x1 = 0.254783mm
+       x2 = 0.254783mm
+       ha:flags {
+       }
+       y1 = 0.254783mm
+      }
+      ha:line.56 {
+       clearance = 0.0
+       y2 = 1.270783mm
+       thickness = 20.0mil
+       ha:attributes {
+       }
+       x1 = 0.254783mm
+       x2 = 0.635783mm
+       ha:flags {
+       }
+       y1 = 1.270783mm
+      }
+      ha:line.59 {
+       clearance = 0.0
+       y2 = 3.048783mm
+       thickness = 20.0mil
+       ha:attributes {
+       }
+       x1 = 0.635783mm
+       x2 = 0.635783mm
+       ha:flags {
+       }
+       y1 = 1.270783mm
+      }
+      ha:line.62 {
+       clearance = 0.0
+       y2 = 3.048783mm
+       thickness = 20.0mil
+       ha:attributes {
+       }
+       x1 = 0.635783mm
+       x2 = 0.254783mm
+       ha:flags {
+       }
+       y1 = 3.048783mm
+      }
+      ha:line.65 {
+       clearance = 0.0
+       y2 = 6.223783mm
+       thickness = 20.0mil
+       ha:attributes {
+       }
+       x1 = 0.254783mm
+       x2 = 0.254783mm
+       ha:flags {
+       }
+       y1 = 3.048783mm
+      }
+      ha:text.6 {
+       scale = 100
+       ha:attributes {
+       }
+       x = 1.524783mm
+       y = 14.478783mm
+       rot = 90.000000
+       string = %a.parent.refdes%
+       fid = 0
+       ha:flags {
+        dyntext = 1
+        floater = 1
+       }
+      }
+     }
+     ha:combining {
+     }
+    }
+    ha:subc-aux {
+     lid = 1
+     ha:type {
+      top = 1
+      misc = 1
+      virtual = 1
+     }
+     li:objects {
+      ha:line.68 {
+       clearance = 0.0
+       y2 = 16.066283mm
+       thickness = 0.1mm
+       ha:attributes {
+        subc-role = pnp-origin
+       }
+       x1 = 5.334783mm
+       x2 = 5.334783mm
+       ha:flags {
+       }
+       y1 = 16.066283mm
+      }
+      ha:line.71 {
+       clearance = 0.0
+       y2 = 20.320783mm
+       thickness = 0.1mm
+       ha:attributes {
+        subc-role = origin
+       }
+       x1 = 5.334783mm
+       x2 = 5.334783mm
+       ha:flags {
+       }
+       y1 = 20.320783mm
+      }
+      ha:line.74 {
+       clearance = 0.0
+       y2 = 21.320783mm
+       thickness = 0.1mm
+       ha:attributes {
+        subc-role = x
+       }
+       x1 = 5.334783mm
+       x2 = 5.334783mm
+       ha:flags {
+       }
+       y1 = 20.320783mm
+      }
+      ha:line.77 {
+       clearance = 0.0
+       y2 = 20.320783mm
+       thickness = 0.1mm
+       ha:attributes {
+        subc-role = y
+       }
+       x1 = 5.334783mm
+       x2 = 6.334783mm
+       ha:flags {
+       }
+       y1 = 20.320783mm
+      }
+     }
+     ha:combining {
+     }
+    }
+   }
+  }
+  uid = uOkA89keooMxmh5v+cMAAAAB
+  ha:flags {
+  }
+ }
+}
