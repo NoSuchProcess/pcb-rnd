@@ -66,6 +66,7 @@ static void click_timer_cb(pcb_hidval_t hv)
 		pcb_notify_crosshair_change(pcb_false);
 		pcb_tool_note.Click = pcb_false;
 		if (pcb_tool_note.Moving && !pcb_gui->shift_is_pressed(pcb_gui)) {
+			pcb_grabbed.status = pcb_true;
 			pcb_tool_note.Buffer = conf_core.editor.buffer_number;
 			pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
 			pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
@@ -79,6 +80,7 @@ static void click_timer_cb(pcb_hidval_t hv)
 		else if (pcb_tool_note.Hit && !pcb_gui->shift_is_pressed(pcb_gui)) {
 			pcb_box_t box;
 
+			pcb_grabbed.status = pcb_true;
 			pcb_tool_save(&PCB->hidlib);
 			pcb_tool_is_saved = pcb_true;
 			pcb_tool_select_by_id(&PCB->hidlib, pcb_gui->control_is_pressed(pcb_gui)? PCB_MODE_COPY : PCB_MODE_MOVE);

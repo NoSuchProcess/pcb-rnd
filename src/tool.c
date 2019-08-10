@@ -434,7 +434,6 @@ void pcb_notify_mode(pcb_hidlib_t *hidlib)
 
 	pcb_grabbed.X = pcb_crosshair.X;
 	pcb_grabbed.Y = pcb_crosshair.Y;
-	pcb_grabbed.status = pcb_true;
 
 	if (conf_core.temp.rat_warn) {
 		if (pcb_data_clear_flag(PCB->Data, PCB_FLAG_WARN, 1, 0) > 0)
