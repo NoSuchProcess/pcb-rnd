@@ -56,6 +56,7 @@ typedef struct {              /* currently attached object */
 typedef struct {
 	pcb_bool status;
 	pcb_coord_t X, Y;
+	unsigned user_placed:1;   /* if 1, the user has explicitly placed the mark - do not move it */
 } pcb_mark_t;
 
 typedef struct {                         /* holds crosshair, cursor and crosshair-attachment information */
