@@ -17,6 +17,17 @@ Contact:
 	chat & IRC:  http://repo.hu/projects/pcb-rnd/irc.html
 
 
+pcb-rnd source distribution is organized into:
+  src/            a core program that deals with all of the internal
+                  database procedures
+  src_plugins/    a collection of plugins
+  src_3rd/        third-party minilibs (dependencies, not integral parts)
+  pcblib/         a basic footprint library
+  tests/          automated tests to check whether pcb-rnd works properly
+  util/           utility programs like gsch2pcb-rnd
+
+
+
 Pcb-rnd was forked from gEDA/PCB in 2013, that had the following copyright:
 -------------------------------------------------------------------------
                             COPYRIGHT

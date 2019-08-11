@@ -63,16 +63,3 @@ no subsequent make install is needed after a recompilation if no new
 files appeared (useful for developers):
 
   make linstall
-
-
-
---
-
-pcb-rnd is organized into:
-  src/            a core program that deals with all of the internal
-                  database procedures
-  src_plugins/    a collection of plugins
-  src_3rd/        third-party minilibs (dependencies, not integral parts)
-  pcblib/         a basic footprint library
-  tests/          automated tests to check whether pcb-rnd works properly
-  util/           utility programs like gsch2pcb-rnd
