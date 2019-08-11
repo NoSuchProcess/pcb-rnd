@@ -19,11 +19,12 @@ clean: FORCE
 	cd src_3rd/libminuid && $(MAKE) clean ; true
 	cd src_3rd/libuundo && $(MAKE) clean ; true
 
+# Note: have to distclean utils (and tests) before src because of hidlib deps
 distclean: FORCE
 	$(MAKE) clean ; true
 #	cd doc && $(MAKE) distclean
-	cd src && $(MAKE) distclean
 	cd util/gsch2pcb-rnd && $(MAKE) distclean
+	cd src && $(MAKE) distclean
 	cd src_3rd/genlist && $(MAKE) clean ; true
 	cd src_3rd/genregex && $(MAKE) clean ; true
 	cd src_3rd/genvector && $(MAKE) clean ; true
