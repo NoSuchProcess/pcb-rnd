@@ -607,9 +607,56 @@ static double ltf_benchmark(pcb_hid_t *hid)
 /* ----------------------------------------------------------------------
  * redraws the background image
  */
-static int bg_w, bg_h, bgi_w, bgi_h;
+
+typedef struct {
+	Pixel **img;
+	int w, h;
+
+	/* cache */
+	int w_scaled, h_scaled;
+	XImage *img_scaled;
+} pcb_ltf_pixmap_t;
+
+static void pcb_ltf_draw_pixmap(pcb_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, int ox, int oy)
+{
+	int x, y, w, h;
+	double xscale, yscale;
+	int pcbwidth = ltf_hidlib->size_x / view_zoom;
+	int pcbheight = ltf_hidlib->size_y / view_zoom;
+
+
+	if (!lpm->img_scaled || view_width != lpm->w_scaled || view_height != lpm->h_scaled) {
+		if (lpm->img_scaled)
+			XDestroyImage(lpm->img_scaled);
+		/* Cheat - get the image, which sets up the format too.  */
+		lpm->img_scaled = XGetImage(XtDisplay(work_area), window, 0, 0, view_width, view_height, -1, ZPixmap);
+		lpm->w_scaled = view_width;
+		lpm->h_scaled = view_height;
+	}
+
+	w = MIN(view_width, pcbwidth);
+	h = MIN(view_height, pcbheight);
+
+	xscale = (double) lpm->w / ltf_hidlib->size_x;
+	yscale = (double) lpm->h / ltf_hidlib->size_y;
+
+	for (y = 0; y < h; y++) {
+		int pr = Py(y);
+		int ir = pr * yscale;
+		for (x = 0; x < w; x++) {
+			int pc = Px(x);
+			int ic = pc * xscale;
+			if ((ir < 0) || (ir >= lpm->h) || (ic < 0) || (ic >= lpm->w))
+				XPutPixel(lpm->img_scaled, x, y, 0);
+			else
+				XPutPixel(lpm->img_scaled, x, y, lpm->img[ir][ic]);
+		}
+	}
+	XPutImage(display, main_pixmap, bg_gc, lpm->img_scaled, 0, 0, 0, 0, w, h);
+}
+
+static int bg_w, bg_h;
 static Pixel **bg = 0;
-static XImage *bgi = 0;
 static enum {
 	 PT_unknown,
 	 PT_RGB565,
@@ -730,42 +777,23 @@ void LoadBackgroundImage(char *filename)
 	fclose(f);
 }
 
+
 static void DrawBackgroundImage()
 {
-	int x, y, w, h;
-	double xscale, yscale;
-	int pcbwidth = ltf_hidlib->size_x / view_zoom;
-	int pcbheight = ltf_hidlib->size_y / view_zoom;
+	static pcb_ltf_pixmap_t lpm;
 
 	if (!window || !bg)
 		return;
 
-	if (!bgi || view_width != bgi_w || view_height != bgi_h) {
-		if (bgi)
-			XDestroyImage(bgi);
-		/* Cheat - get the image, which sets up the format too.  */
-		bgi = XGetImage(XtDisplay(work_area), window, 0, 0, view_width, view_height, -1, ZPixmap);
-		bgi_w = view_width;
-		bgi_h = view_height;
+	if (lpm.img == NULL) {
+		lpm.img = bg;
+		lpm.w = bg_w;
+		lpm.h = bg_h;
 	}
 
-	w = MIN(view_width, pcbwidth);
-	h = MIN(view_height, pcbheight);
-
-	xscale = (double) bg_w / ltf_hidlib->size_x;
-	yscale = (double) bg_h / ltf_hidlib->size_y;
-
-	for (y = 0; y < h; y++) {
-		int pr = Py(y);
-		int ir = pr * yscale;
-		for (x = 0; x < w; x++) {
-			int pc = Px(x);
-			int ic = pc * xscale;
-			XPutPixel(bgi, x, y, bg[ir][ic]);
-		}
-	}
-	XPutImage(display, main_pixmap, bg_gc, bgi, 0, 0, 0, 0, w, h);
+	pcb_ltf_draw_pixmap(ltf_hidlib, &lpm, 0, 0);
 }
+
 
 /* ---------------------------------------------------------------------- */
 
