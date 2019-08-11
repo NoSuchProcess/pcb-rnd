@@ -32,8 +32,6 @@
 
 #include "pixmap.h"
 
-static unsigned long pm_next_uid = 0;
-
 static unsigned int pixmap_hash_(const void *key_, int pixels)
 {
 	pcb_pixmap_t *key = (pcb_pixmap_t *)key_;
@@ -51,7 +49,7 @@ static unsigned int pixmap_hash_(const void *key_, int pixels)
 		key->hash_valid = 1;
 	}
 	else
-		i ^= longhash(key->neutral_uid);
+		i ^= longhash(key->neutral_oid);
 	return i;
 }
 
@@ -84,7 +82,7 @@ static int pixmap_eq_(const void *keya_, const void *keyb_, int pixels)
 	if (pixels)
 	 return (memcmp(keya->p, keyb->p, keya->size) == 0);
 	else
-		return (keya->neutral_uid == keyb->neutral_uid);
+		return (keya->neutral_oid == keyb->neutral_oid);
 }
 
 static int pixmap_eq_meta(const void *keya, const void *keyb)

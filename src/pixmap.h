@@ -36,7 +36,7 @@ struct pcb_pixmap_s {
 	unsigned char tr, tg, tb;  /* color of the transparent pixel */
 	unsigned int hash;         /* precalculated hash value */
 	unsigned char *p;          /* pixel array in r,g,b rows of sx long each */
-	unsigned long neutral_uid; /* UID of the pixmap in neutral position */
+	unsigned long neutral_oid; /* UID of the pixmap in neutral position */
 
 	void *hid_data;            /* HID's version of the pixmap */
 
@@ -51,8 +51,8 @@ struct pcb_pixmap_s {
 };
 
 typedef struct pcb_pixmap_hash_s {
-	htpp_t meta;      /* all pixmaps, hashed and compared only by metadata (including natural_uid) - used to look up a specific transformed version */
-	htpp_t pixels;    /* all pixmaps, hashed and compared by the pixels (but not natural_uid) - used to look up a specific pixel array */
+	htpp_t meta;      /* all pixmaps, hashed and compared only by metadata (including natural_oid) - used to look up a specific transformed version */
+	htpp_t pixels;    /* all pixmaps, hashed and compared by the pixels (but not natural_oid) - used to look up a specific pixel array */
 } pcb_pixmap_hash_t;
 
 void pcb_pixmap_hash_init(pcb_pixmap_hash_t *pmhash);
