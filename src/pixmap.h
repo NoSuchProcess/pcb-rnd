@@ -38,6 +38,7 @@ struct pcb_pixmap_s {
 	unsigned int hash;         /* precalculated hash value */
 	unsigned char *p;          /* pixel array in r,g,b rows of sx long each */
 	unsigned long neutral_oid; /* UID of the pixmap in neutral position */
+	unsigned long refco;       /* optional reference counting */
 
 	void *hid_data;            /* HID's version of the pixmap */
 
