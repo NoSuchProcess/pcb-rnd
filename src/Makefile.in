@@ -208,6 +208,7 @@ append /local/pcb/OBJS [@
 	operation.o
 	pcb_menu_default.o
 	pcb_minuid.o
+	pixmap_pcb.o
 	plug_import.o
 	plug_io.o
 	plug_footprint.o

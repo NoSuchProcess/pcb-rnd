@@ -26,7 +26,6 @@
 
 #include "config.h"
 
-#include <genht/htpp.h>
 #include <genht/hash.h>
 #include <string.h>
 
@@ -53,12 +52,12 @@ static unsigned int pixmap_hash_(const void *key_, int pixels)
 	return i;
 }
 
-static unsigned int pixmap_hash_meta(const void *key)
+unsigned int pcb_pixmap_hash_meta(const void *key)
 {
 	return pixmap_hash_(key, 0);
 }
 
-static unsigned int pixmap_hash_pixels(const void *key)
+unsigned int pcb_pixmap_hash_pixels(const void *key)
 {
 	return pixmap_hash_(key, 1);
 }
@@ -85,33 +84,14 @@ static int pixmap_eq_(const void *keya_, const void *keyb_, int pixels)
 		return (keya->neutral_oid == keyb->neutral_oid);
 }
 
-static int pixmap_eq_meta(const void *keya, const void *keyb)
+int pcb_pixmap_eq_meta(const void *keya, const void *keyb)
 {
 	return pixmap_eq_(keya, keyb, 0);
 }
 
-static int pixmap_eq_pixels(const void *keya, const void *keyb)
+int pcb_pixmap_eq_pixels(const void *keya, const void *keyb)
 {
 	return pixmap_eq_(keya, keyb, 1);
 }
 
-
-void pcb_pixmap_hash_init(pcb_pixmap_hash_t *pmhash)
-{
-	htpp_init(&pmhash->meta, pixmap_hash_meta, pixmap_eq_meta);
-	htpp_init(&pmhash->pixels, pixmap_hash_pixels, pixmap_eq_pixels);
-}
-
-void pcb_pixmap_hash_uninit(pcb_pixmap_hash_t *pmhash)
-{
-	htpp_uninit(&pmhash->meta);
-	htpp_uninit(&pmhash->pixels);
-}
-
-pcb_pixmap_t *pcb_pixmap_insert_neutral_or_free(pcb_pixmap_hash_t *pmhash, pcb_pixmap_t *pm)
-{
-	if ((pm->tr_rot != 0) || pm->tr_xmirror || pm->tr_ymirror)
-		return NULL;
-	return NULL;
-}
 
