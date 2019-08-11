@@ -41,7 +41,8 @@ static unsigned int pixmap_hash_(const void *key_, int pixels)
 
 	i = longhash(key->sx);
 	i ^= longhash(key->sy);
-	i ^= longhash((long)(key->tr_rot * 1000.0) + (long)key->tr_xmirror * 2 + key->tr_ymirror);
+	i ^= longhash((long)(key->tr_rot * 1000.0) + (((long)key->tr_xmirror) << 3) + (((long)key->tr_ymirror) << 4));
+	i ^= longhash((long)(key->tr_xscale * 1000.0) + (long)(key->tr_yscale * 1000.0));
 	if (pixels) {
 		i ^= jenhash(key->p, key->size);
 		key->hash = i;
@@ -74,7 +75,7 @@ static int pixmap_eq_(const void *keya_, const void *keyb_, int pixels)
 	}
 	if ((keya->tr_xmirror != keyb->tr_xmirror) || (keya->tr_ymirror != keyb->tr_ymirror))
 		return 0;
-	if (keya->tr_rot != keyb->tr_rot)
+	if ((keya->tr_rot != keyb->tr_rot) || (keya->tr_xscale != keyb->tr_xscale) || (keya->tr_yscale != keyb->tr_yscale))
 		return 0;
 	if ((keya->sx != keyb->sx) || (keya->sy != keyb->sy))
 		return 0;
