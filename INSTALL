@@ -1,4 +1,4 @@
-1. Installation
+1. Configure
 
 Run ./configure.
 
@@ -6,9 +6,42 @@ Run make.
 
 Run make install.
 
-For compile-time options run ./configure --help
+For compile-time options run ./configure --help.
 
-2. Running from source
+Dependencies: almost none. For GUI, install the (-dev or -devel) libs
+Read the summary table and the warnings at the end of ./configure output
+and decide if you need the features missing. If there was no error, only
+warnings, pcb-rnd cab be compiled, even if some dependencies were missing.
+
+Summary of dependencies:
+For users:
+ - mandatory: C compiler
+ - mandatory: make
+ - optional: glib and gtk2 if you are using the GTK GUI
+ - optional: gtkglext if you need opengl rendering
+ - optional: motif or lesstif if you are using the lesstif frontend
+ - optional: gdlib if you are using the png HID
+
+For developers:
+ - flex
+ - bison
+
+NOTE: if you did not install any GUI lib dependency, pcb-rnd will be
+compiled with command line interface only.
+
+./configure will try to static link most plugins and disable ones that
+have missing dependencies. This process can be controlled using configure
+command line switches, see ./configure --help.
+
+
+2. Compiling
+
+Run make.
+
+Optionally also run make test.
+
+
+3. Running from source
 
 cd src && ./pcb-rnd
 
@@ -17,32 +50,8 @@ won't work unless pcb-rnd is installed).
 
 If this doesn't work, please refer to doc/UNIX.txt or doc-rnd/mac.txt
 
---
 
-PCB is organized into:
-  src/            a core program that deals with all of the internal
-                  database procedures
-  src_plugins/    a collection of plugins
-  src_3rd/        third-party minilibs (dependencies, not integral parts)
-  pcblib/         a basic footprint library
-  tests/          automated tests to check whether pcb-rnd works properly
-  util/           utility programs like gsch2pcb-rnd
-
-
-./configure will try to static link most plugins and disable ones that
-have missing dependencies. This process can be controlled using configure
-command line switches, see ./configure --help.
-
-After running ./configure with your selected options, run
-
-  make
-
-to build pcb-rnd.  You can try out the program by running
-
-  cd src
-  ./pcb-rnd
-
-prior to installation (CWD _must_ be src/).
+4. Installation
 
 To install PCB after it has been built run:
 
@@ -55,16 +64,15 @@ files appeared (useful for developers):
 
   make linstall
 
--------- Summary of dependencies --------------------
-For users:
- - C compiler
- - make
- - optional: glib and gtk if you are using the gtk frontend
- - optional: gtkglext if you need opengl rendering
- - optional: motif or lesstif if you are using the lesstif frontend
- - optional: gdlib if you are using the png HID
 
-For developers:
- - flex
- - bison
 
+--
+
+pcb-rnd is organized into:
+  src/            a core program that deals with all of the internal
+                  database procedures
+  src_plugins/    a collection of plugins
+  src_3rd/        third-party minilibs (dependencies, not integral parts)
+  pcblib/         a basic footprint library
+  tests/          automated tests to check whether pcb-rnd works properly
+  util/           utility programs like gsch2pcb-rnd
