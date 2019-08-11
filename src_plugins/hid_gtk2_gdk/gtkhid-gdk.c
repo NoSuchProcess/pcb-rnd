@@ -319,16 +319,11 @@ static void ghid_gdk_draw_grid(pcb_hidlib_t *hidlib)
 }
 
 /* ------------------------------------------------------------ */
-static void ghid_gdk_draw_bg_image(pcb_hidlib_t *hidlib)
+static void ghid_gdk_draw_pixmap(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, int ox, int oy)
 {
-	static GdkPixbuf *pixbuf;
 	GdkInterpType interp_type;
 	gint src_x, src_y, dst_x, dst_y, w, h, w_src, h_src;
-	static gint w_scaled, h_scaled;
 	render_priv_t *priv = ghidgui->port.render_priv;
-
-	if (!ghidgui->bg_pixbuf)
-		return;
 
 	src_x = ghidgui->port.view.x0;
 	src_y = ghidgui->port.view.y0;
@@ -351,25 +346,42 @@ static void ghid_gdk_draw_bg_image(pcb_hidlib_t *hidlib)
 	dst_x = dst_x / ghidgui->port.view.coord_per_px;
 	dst_y = dst_y / ghidgui->port.view.coord_per_px;
 
-	if (w_scaled != w || h_scaled != h) {
-		if (pixbuf)
-			g_object_unref(G_OBJECT(pixbuf));
+	if (gpm->w_scaled != w || gpm->h_scaled != h) {
+		if (gpm->cache.pb != NULL)
+			g_object_unref(G_OBJECT(gpm->cache.pb));
 
-		w_src = gdk_pixbuf_get_width(ghidgui->bg_pixbuf);
-		h_src = gdk_pixbuf_get_height(ghidgui->bg_pixbuf);
+		w_src = gpm->w;
+		h_src = gpm->h;
 		if (w > w_src && h > h_src)
 			interp_type = GDK_INTERP_NEAREST;
 		else
 			interp_type = GDK_INTERP_BILINEAR;
 
-		pixbuf = gdk_pixbuf_scale_simple(ghidgui->bg_pixbuf, w, h, interp_type);
-		w_scaled = w;
-		h_scaled = h;
+		gpm->cache.pb = gdk_pixbuf_scale_simple(gpm->image, w, h, interp_type);
+		gpm->w_scaled = w;
+		gpm->h_scaled = h;
 	}
 
-	if (pixbuf)
-		gdk_pixbuf_render_to_drawable(pixbuf, priv->out_pixel, priv->bg_gc, src_x, src_y, dst_x, dst_y, w - src_x, h - src_y, GDK_RGB_DITHER_NORMAL, 0, 0);
+	if (gpm->cache.pb != NULL)
+		gdk_pixbuf_render_to_drawable(gpm->cache.pb, priv->out_pixel, priv->bg_gc, src_x, src_y, dst_x + ox, dst_y + oy, w - src_x, h - src_y, GDK_RGB_DITHER_NORMAL, 0, 0);
 }
+
+static void ghid_gdk_draw_bg_image(pcb_hidlib_t *hidlib)
+{
+	static pcb_gtk_pixmap_t gpm;
+
+	if (ghidgui->bg_pixbuf == NULL)
+		return;
+
+	if (gpm.image == NULL) {
+		gpm.image = ghidgui->bg_pixbuf;
+		gpm.w = gdk_pixbuf_get_width(gpm.image);
+		gpm.h = gdk_pixbuf_get_height(gpm.image);
+	}
+
+	ghid_gdk_draw_pixmap(hidlib, &gpm, 0, 0);
+}
+
 
 static pcb_composite_op_t curr_drawing_mode;
 
