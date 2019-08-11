@@ -30,13 +30,11 @@
 extern pcb_hid_t gtk2_gl_hid;
 
 static pcb_hid_gc_t current_gc = NULL;
-/* Sets ghidgui->port.u_gc to the "right" GC to use (wrt mask or window)
-*/
+
+/* Sets ghidgui->port.u_gc to the "right" GC to use (wrt mask or window) */
 #define USE_GC(gc) if (!use_gc(gc)) return
 
 static pcb_coord_t grid_local_x = 0, grid_local_y = 0, grid_local_radius = 0;
-
-/*static int cur_mask = -1;*/
 
 typedef struct render_priv_s {
 	GdkGLConfig *glconfig;
@@ -258,10 +256,8 @@ static void ghid_gl_draw_pixmap(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pcb
 		glBindTexture(GL_TEXTURE_2D, texture_handle);
 
 		/* XXX: We should probably determine what the maximum texture supported is,
-		 *      and if our image is larger, shrink it down using GDK pixbuf routines
-		 *      rather than having it fail below.
-		 */
-
+		        and if our image is larger, shrink it down using GDK pixbuf routines
+		        rather than having it fail below. */
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, (n_channels == 4) ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, pixels);
 		gpm->cache.lng = texture_handle;
 	}
@@ -286,9 +282,8 @@ static void ghid_gl_draw_bg_image(pcb_hidlib_t *hidlib)
 }
 
 
-	/* Config helper functions for when the user changes color preferences.
-	   |  set_special colors used in the gtkhid.
-	 */
+/* Config helper functions for when the user changes color preferences.
+   set_special colors used in the gtkhid. */
 static void set_special_grid_color(void)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
@@ -410,11 +405,10 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 
 
 	/* We need to flush the draw buffer when changing colour so that new primitives
-	 * don't get merged. This actually isn't a problem with the colour but due to 
-	 * way that the final render pass iterates through the primitive buffer in 
-	 * reverse order. If the new primitives are merged with previous ones then they
-	 * will be drawn in the wrong order.
-	 */
+	   don't get merged. This actually isn't a problem with the colour but due to 
+	   way that the final render pass iterates through the primitive buffer in 
+	   reverse order. If the new primitives are merged with previous ones then they
+	   will be drawn in the wrong order. */
 	drawgl_flush();
 
 	drawgl_set_colour(r, g, b, a);
@@ -452,7 +446,7 @@ void ghid_gl_set_draw_xor(pcb_hid_gc_t gc, int xor)
 	/* NOT IMPLEMENTED */
 
 	/* Only presently called when setting up a crosshair GC.
-	 * We manage our own drawing model for that anyway. */
+	   We manage our own drawing model for that anyway. */
 }
 
 void ghid_gl_set_draw_faded(pcb_hid_gc_t gc, int faded)
@@ -804,8 +798,7 @@ static void ghid_gl_screen_update(void)
 
 /* Settles background color + inital GL configuration, to allow further drawing in GL area.
     (w, h) describes the total area concerned, while (xr, yr, wr, hr) describes area requested by an expose event.
-    The color structure holds the wanted solid back-ground color, used to first paint the exposed drawing area.
- */
+    The color structure holds the wanted solid back-ground color, used to first paint the exposed drawing area. */
 static void pcb_gl_draw_expose_init(pcb_hid_t *hid, int w, int h, int xr, int yr, int wr, int hr, pcb_color_t *bg_c)
 {
 	hidgl_init();
@@ -894,10 +887,9 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 }
 
 /* This realize callback is used to work around a crash bug in some mesa
- * versions (observed on a machine running the intel i965 driver. It isn't
- * obvious why it helps, but somehow fiddling with the GL context here solves
- * the issue. The problem appears to have been fixed in recent mesa versions.
- */
+   versions (observed on a machine running the intel i965 driver. It isn't
+   obvious why it helps, but somehow fiddling with the GL context here solves
+   the issue. The problem appears to have been fixed in recent mesa versions. */
 static void ghid_gl_port_drawing_realize_cb(GtkWidget *widget, gpointer data)
 {
 	GdkGLContext *glcontext = gtk_widget_get_gl_context(widget);
@@ -912,7 +904,6 @@ static void ghid_gl_port_drawing_realize_cb(GtkWidget *widget, gpointer data)
 
 static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, pcb_hid_expose_t expcall, pcb_hid_expose_ctx_t *ctx)
 {
-/*	GdkWindow *window = gtk_widget_get_window(widget);*/
 	GdkGLContext *pGlContext = gtk_widget_get_gl_context(widget);
 	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
 	GtkAllocation allocation;
@@ -933,7 +924,6 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	save_cpp = pcb_gui->coord_per_pix;
 
 	/* Setup zoom factor for drawing routines */
-
 	gtk_widget_get_allocation(widget, &allocation);
 	xz = vw / (double)allocation.width;
 	yz = vh / (double)allocation.height;
