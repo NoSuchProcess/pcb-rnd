@@ -137,6 +137,18 @@ struct pcb_gtk_topwin_s {
 #include "conf_hid.h"
 #include "pcb_bool.h"
 
+typedef struct pcb_gtk_pixmap_s {
+	GdkPixbuf *image;         /* input image */
+	int w, h;                 /* image dimensions for faster access */
+
+	/* backend/renderer cache */
+	int h_scaled, w_scaled;  /* current scale of the chached image (for gdk) */
+	union {
+		GdkPixbuf *pb;         /* for gdk */
+		unsigned long int lng; /* for opengl */
+	} cache;
+} pcb_gtk_pixmap_t;
+
 /* The output viewport */
 struct pcb_gtk_port_s {
 	GtkWidget *top_window,        /* toplevel widget */
