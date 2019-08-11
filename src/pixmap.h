@@ -44,10 +44,10 @@ struct pcb_pixmap_s {
 
 	/* transformation info */
 	pcb_angle_t tr_rot;        /* rotation angle (0 if not transformed) */
-	unsigned tr_xmirror:1;     /* whether the pixmap is mirrored along the x axis (vertical mirror) */
-	unsigned tr_ymirror:1;     /* whether the pixmap is mirrored along the y axis (horizontal mirror) */
 	double tr_xscale;
 	double tr_yscale;
+	unsigned tr_xmirror:1;     /* whether the pixmap is mirrored along the x axis (vertical mirror) */
+	unsigned tr_ymirror:1;     /* whether the pixmap is mirrored along the y axis (horizontal mirror) */
 
 	unsigned transp_valid:1;   /* 1 if transparent pixel is available */
 	unsigned hash_valid:1;     /* 1 if the has value has been calculated */
