@@ -139,7 +139,8 @@ struct pcb_gtk_topwin_s {
 
 typedef struct pcb_gtk_pixmap_s {
 	GdkPixbuf *image;         /* input image */
-	int w, h;                 /* image dimensions for faster access */
+	int w, h;                 /* source image dimensions for faster access */
+	pcb_coord_t wc, hc;       /* destination image dimensions for faster access */
 
 	/* backend/renderer cache */
 	int h_scaled, w_scaled;  /* current scale of the chached image (for gdk) */

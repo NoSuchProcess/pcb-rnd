@@ -211,8 +211,10 @@ static void ghid_gl_draw_grid(pcb_hidlib_t *hidlib, pcb_box_t *drawn_area)
 	glDisable(GL_COLOR_LOGIC_OP);
 }
 
-void pcb_gl_draw_texture(pcb_hidlib_t *hidlib, GLuint texture_handle)
+static void pcb_gl_draw_texture(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pcb_coord_t ox, pcb_coord_t oy)
 {
+	GLuint texture_handle = gpm->cache.lng;
+
 	glBindTexture(GL_TEXTURE_2D, texture_handle);
 
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
@@ -226,25 +228,21 @@ void pcb_gl_draw_texture(pcb_hidlib_t *hidlib, GLuint texture_handle)
 
 	glBegin(GL_QUADS);
 	glTexCoord2d(0., 0.);
-	glVertex3i(0, 0, 0);
+	glVertex3i(ox, oy, 0);
 	glTexCoord2d(1., 0.);
-	glVertex3i(hidlib->size_x, 0, 0);
+	glVertex3i(gpm->wc+ox, oy, 0);
 	glTexCoord2d(1., 1.);
-	glVertex3i(hidlib->size_x, hidlib->size_y, 0);
+	glVertex3i(gpm->wc+ox, gpm->hc+oy, 0);
 	glTexCoord2d(0., 1.);
-	glVertex3i(0, hidlib->size_y, 0);
+	glVertex3i(ox, gpm->hc+oy, 0);
 	glEnd();
 
 	glDisable(GL_TEXTURE_2D);
 }
 
-static void ghid_gl_draw_bg_image(pcb_hidlib_t *hidlib)
+static void ghid_gl_draw_pixmap(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pcb_coord_t ox, pcb_coord_t oy)
 {
-	static GLuint texture_handle = 0;
-
-	if (!ghidgui->bg_pixbuf)
-		return;
-
+	GLuint texture_handle = gpm->cache.lng;
 	if (texture_handle == 0) {
 		int width = gdk_pixbuf_get_width(ghidgui->bg_pixbuf);
 		int height = gdk_pixbuf_get_height(ghidgui->bg_pixbuf);
@@ -265,10 +263,28 @@ static void ghid_gl_draw_bg_image(pcb_hidlib_t *hidlib)
 		 */
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, (n_channels == 4) ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, pixels);
+		gpm->cache.lng = texture_handle;
 	}
 
-	pcb_gl_draw_texture(hidlib, texture_handle);
+	pcb_gl_draw_texture(hidlib, gpm, ox, oy);
 }
+
+static void ghid_gl_draw_bg_image(pcb_hidlib_t *hidlib)
+{
+	static pcb_gtk_pixmap_t gpm;
+
+	if (ghidgui->bg_pixbuf == NULL)
+		return;
+
+	if (gpm.image == NULL) {
+		gpm.image = ghidgui->bg_pixbuf;
+		gpm.wc = hidlib->size_x;
+		gpm.hc = hidlib->size_y;
+	}
+
+	ghid_gl_draw_pixmap(hidlib, &gpm, 0, 0);
+}
+
 
 	/* Config helper functions for when the user changes color preferences.
 	   |  set_special colors used in the gtkhid.
