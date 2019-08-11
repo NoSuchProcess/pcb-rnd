@@ -41,8 +41,10 @@ static void library_param_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	for(e = htsi_first(&ctx->param_names); e != NULL; e = htsi_next(&ctx->param_names, e))
 		free(e->key);
 	htsi_uninit(&ctx->param_names);
-	PCB_DAD_FREE(ctx->pdlg);
-	ctx->pactive = 0;
+	if (ctx->pactive) {
+		ctx->pactive = 0;
+		PCB_DAD_FREE(ctx->pdlg);
+	}
 	update_edit_button(ctx);
 }
 
@@ -489,12 +491,16 @@ static void library_param_dialog(library_ctx_t *ctx, pcb_fplibrary_t *l)
 	char *cmd;
 
 	if (ctx->last_l != l) {
-		if (ctx->pactive)
+		if (ctx->pactive) {
+			ctx->pactive = 0;
 			PCB_DAD_FREE(ctx->pdlg);
-		ctx->pactive = 0;
-		ctx->last_l = l;
+		}
 		update_edit_button(ctx);
 	}
+	else if (ctx->pactive) /* reopening the same -> nop */
+		return;
+
+	ctx->last_l = l;
 
 	if (l == NULL)
 		return;
