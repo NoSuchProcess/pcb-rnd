@@ -617,12 +617,12 @@ typedef struct {
 	XImage *img_scaled;
 } pcb_ltf_pixmap_t;
 
-static void pcb_ltf_draw_pixmap(pcb_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, int ox, int oy)
+static void pcb_ltf_draw_pixmap(pcb_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, int ox, int oy, pcb_coord_t bw, pcb_coord_t bh)
 {
 	int x, y, w, h;
 	double xscale, yscale;
-	int pcbwidth = ltf_hidlib->size_x / view_zoom;
-	int pcbheight = ltf_hidlib->size_y / view_zoom;
+	int pcbwidth = bw / view_zoom;
+	int pcbheight = bh / view_zoom;
 
 
 	if (!lpm->img_scaled || view_width != lpm->w_scaled || view_height != lpm->h_scaled) {
@@ -637,8 +637,8 @@ static void pcb_ltf_draw_pixmap(pcb_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, int
 	w = MIN(view_width, pcbwidth);
 	h = MIN(view_height, pcbheight);
 
-	xscale = (double) lpm->w / ltf_hidlib->size_x;
-	yscale = (double) lpm->h / ltf_hidlib->size_y;
+	xscale = (double) lpm->w / bw;
+	yscale = (double) lpm->h / bh;
 
 	for (y = 0; y < h; y++) {
 		int pr = Py(y);
@@ -791,7 +791,7 @@ static void DrawBackgroundImage()
 		lpm.h = bg_h;
 	}
 
-	pcb_ltf_draw_pixmap(ltf_hidlib, &lpm, 0, 0);
+	pcb_ltf_draw_pixmap(ltf_hidlib, &lpm, 0, 0, ltf_hidlib->size_x, ltf_hidlib->size_y);
 }
 
 
