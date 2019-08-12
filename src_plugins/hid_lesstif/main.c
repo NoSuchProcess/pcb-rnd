@@ -615,6 +615,7 @@ typedef struct {
 	/* cache */
 	int w_scaled, h_scaled;
 	XImage *img_scaled;
+	char *img_data;
 } pcb_ltf_pixmap_t;
 
 static void pcb_ltf_draw_pixmap(pcb_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t dw, pcb_coord_t dh)
@@ -625,13 +626,24 @@ static void pcb_ltf_draw_pixmap(pcb_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, pcb
 	h = dh / view_zoom;
 
 	if ((w != lpm->w_scaled) || (h != lpm->h_scaled)) {
-		int x, y;
+		int x, y, nret;
 		double xscale, yscale;
+		static int vis_inited = 0;
+		static XVisualInfo vinfot, *vinfo;
+		static Visual *vis;
+
+		if (!vis_inited) {
+			vis = DefaultVisual(display, DefaultScreen(display));
+			vinfot.visualid = XVisualIDFromVisual(vis);
+			vinfo = XGetVisualInfo(display, VisualIDMask, &vinfot, &nret);
+			vis_inited = 1;
+		}
 
 		if (lpm->img_scaled != NULL)
 			XDestroyImage(lpm->img_scaled);
-		/* Cheat - get the image, which sets up the format too.  */
-		lpm->img_scaled = XGetImage(XtDisplay(work_area), window, 0, 0, w, h, -1, ZPixmap);
+
+		lpm->img_data = malloc(w*h*4);
+		lpm->img_scaled = XCreateImage(display, vis, vinfo->depth, ZPixmap, 0, lpm->img_data, w, h, 32, 0);
 		lpm->w_scaled = w;
 		lpm->h_scaled = h;
 
