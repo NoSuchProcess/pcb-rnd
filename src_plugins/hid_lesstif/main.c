@@ -617,42 +617,40 @@ typedef struct {
 	XImage *img_scaled;
 } pcb_ltf_pixmap_t;
 
-static void pcb_ltf_draw_pixmap(pcb_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, int ox, int oy, pcb_coord_t bw, pcb_coord_t bh)
+static void pcb_ltf_draw_pixmap(pcb_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t dw, pcb_coord_t dh)
 {
-	int x, y, w, h;
-	double xscale, yscale;
-	int pcbwidth = bw / view_zoom;
-	int pcbheight = bh / view_zoom;
+	int w, h;
 
+	w = dw / view_zoom;
+	h = dh / view_zoom;
 
-	if (!lpm->img_scaled || view_width != lpm->w_scaled || view_height != lpm->h_scaled) {
-		if (lpm->img_scaled)
+	if ((w != lpm->w_scaled) || (h != lpm->h_scaled)) {
+		int x, y;
+		double xscale, yscale;
+
+		if (lpm->img_scaled != NULL)
 			XDestroyImage(lpm->img_scaled);
 		/* Cheat - get the image, which sets up the format too.  */
-		lpm->img_scaled = XGetImage(XtDisplay(work_area), window, 0, 0, view_width, view_height, -1, ZPixmap);
-		lpm->w_scaled = view_width;
-		lpm->h_scaled = view_height;
-	}
+		lpm->img_scaled = XGetImage(XtDisplay(work_area), window, 0, 0, w, h, -1, ZPixmap);
+		lpm->w_scaled = w;
+		lpm->h_scaled = h;
 
-	w = MIN(view_width, pcbwidth);
-	h = MIN(view_height, pcbheight);
+		xscale = (double) lpm->w / w;
+		yscale = (double) lpm->h / h;
 
-	xscale = (double) lpm->w / bw;
-	yscale = (double) lpm->h / bh;
-
-	for (y = 0; y < h; y++) {
-		int pr = Py(y);
-		int ir = pr * yscale;
-		for (x = 0; x < w; x++) {
-			int pc = Px(x);
-			int ic = pc * xscale;
-			if ((ir < 0) || (ir >= lpm->h) || (ic < 0) || (ic >= lpm->w))
-				XPutPixel(lpm->img_scaled, x, y, 0);
-			else
-				XPutPixel(lpm->img_scaled, x, y, lpm->img[ir][ic]);
+		for (y = 0; y < h; y++) {
+			int ir = y * yscale;
+			for (x = 0; x < w; x++) {
+				int ic = x * xscale;
+				if ((ir < 0) || (ir >= lpm->h) || (ic < 0) || (ic >= lpm->w))
+					XPutPixel(lpm->img_scaled, x, y, 0);
+				else
+					XPutPixel(lpm->img_scaled, x, y, lpm->img[ir][ic]);
+			}
 		}
 	}
-	XPutImage(display, main_pixmap, bg_gc, lpm->img_scaled, 0, 0, 0, 0, w, h);
+
+	XPutImage(display, main_pixmap, bg_gc, lpm->img_scaled, 0, 0, Vx(ox), Vy(ox), w, h);
 }
 
 static int bg_w, bg_h;
