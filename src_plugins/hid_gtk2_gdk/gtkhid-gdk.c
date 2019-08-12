@@ -319,7 +319,7 @@ static void ghid_gdk_draw_grid(pcb_hidlib_t *hidlib)
 }
 
 /* ------------------------------------------------------------ */
-static void ghid_gdk_draw_pixmap(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, int ox, int oy)
+static void ghid_gdk_draw_pixmap(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, int ox, int oy, pcb_coord_t dw, pcb_coord_t dh)
 {
 	GdkInterpType interp_type;
 	gint src_x, src_y, dst_x, dst_y, w, h, w_src, h_src;
@@ -339,8 +339,8 @@ static void ghid_gdk_draw_pixmap(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, in
 		src_y = 0;
 	}
 
-	w = hidlib->size_x / ghidgui->port.view.coord_per_px;
-	h = hidlib->size_y / ghidgui->port.view.coord_per_px;
+	w = dw / ghidgui->port.view.coord_per_px;
+	h = dh / ghidgui->port.view.coord_per_px;
 	src_x = src_x / ghidgui->port.view.coord_per_px;
 	src_y = src_y / ghidgui->port.view.coord_per_px;
 	dst_x = dst_x / ghidgui->port.view.coord_per_px;
@@ -379,7 +379,7 @@ static void ghid_gdk_draw_bg_image(pcb_hidlib_t *hidlib)
 		gpm.h = gdk_pixbuf_get_height(gpm.image);
 	}
 
-	ghid_gdk_draw_pixmap(hidlib, &gpm, 0, 0);
+	ghid_gdk_draw_pixmap(hidlib, &gpm, 0, 0, hidlib->size_x, hidlib->size_y);
 }
 
 
