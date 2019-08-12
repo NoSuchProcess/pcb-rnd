@@ -319,32 +319,19 @@ static void ghid_gdk_draw_grid(pcb_hidlib_t *hidlib)
 }
 
 /* ------------------------------------------------------------ */
-static void ghid_gdk_draw_pixmap(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, int ox, int oy, pcb_coord_t dw, pcb_coord_t dh)
+static void ghid_gdk_draw_pixmap(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t dw, pcb_coord_t dh)
 {
 	GdkInterpType interp_type;
 	gint src_x, src_y, dst_x, dst_y, w, h, w_src, h_src;
 	render_priv_t *priv = ghidgui->port.render_priv;
 
-	src_x = ghidgui->port.view.x0;
-	src_y = ghidgui->port.view.y0;
-	dst_x = 0;
-	dst_y = 0;
-
-	if (src_x < 0) {
-		dst_x = -src_x;
-		src_x = 0;
-	}
-	if (src_y < 0) {
-		dst_y = -src_y;
-		src_y = 0;
-	}
+	src_x = 0;
+	src_y = 0;
+	dst_x = Vx(ox);
+	dst_y = Vy(oy);
 
 	w = dw / ghidgui->port.view.coord_per_px;
 	h = dh / ghidgui->port.view.coord_per_px;
-	src_x = src_x / ghidgui->port.view.coord_per_px;
-	src_y = src_y / ghidgui->port.view.coord_per_px;
-	dst_x = dst_x / ghidgui->port.view.coord_per_px;
-	dst_y = dst_y / ghidgui->port.view.coord_per_px;
 
 	if (gpm->w_scaled != w || gpm->h_scaled != h) {
 		if (gpm->cache.pb != NULL)
@@ -363,7 +350,7 @@ static void ghid_gdk_draw_pixmap(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, in
 	}
 
 	if (gpm->cache.pb != NULL)
-		gdk_pixbuf_render_to_drawable(gpm->cache.pb, priv->out_pixel, priv->bg_gc, src_x, src_y, dst_x + ox, dst_y + oy, w - src_x, h - src_y, GDK_RGB_DITHER_NORMAL, 0, 0);
+		gdk_pixbuf_render_to_drawable(gpm->cache.pb, priv->out_pixel, priv->bg_gc, src_x, src_y, dst_x, dst_y, w - src_x, h - src_y, GDK_RGB_DITHER_NORMAL, 0, 0);
 }
 
 static void ghid_gdk_draw_bg_image(pcb_hidlib_t *hidlib)
