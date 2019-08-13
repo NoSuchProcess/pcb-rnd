@@ -59,7 +59,7 @@ do { \
 	} \
 } while(0)
 
-int pnm_load(pcb_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn)
+static int pnm_load(pcb_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn)
 {
 	FILE *f;
 	char *s, line[1024];
@@ -128,16 +128,22 @@ int pnm_load(pcb_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn)
 	return 0;
 }
 
+static const pcb_pixmap_import_t pxm_pnm_imp = {
+	"pnm",
+	pnm_load
+};
 
 int pplg_check_ver_import_pxm_pnm(int ver_needed) { return 0; }
 
 void pplg_uninit_import_pxm_pnm(void)
 {
+	pcb_pixmap_unreg_import_all(import_pxm_pnm_cookie);
 }
 
 #include "dolists.h"
 int pplg_init_import_pxm_pnm(void)
 {
 	PCB_API_CHK_VER;
+	pcb_pixmap_reg_import(&pxm_pnm_imp, import_pxm_pnm_cookie);
 	return 0;
 }
