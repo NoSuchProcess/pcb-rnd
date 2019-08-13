@@ -106,6 +106,8 @@ static int pnm_load(pcb_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn)
 	switch(type) {
 		case '6':
 			GETLINE;
+			if (atoi(line) != 255)
+				goto error;
 			for(; n>0; n--)
 				ADDPX(pxm, fgetc(f), fgetc(f), fgetc(f), 0);
 			break;
