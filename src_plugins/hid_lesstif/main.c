@@ -609,8 +609,7 @@ static double ltf_benchmark(pcb_hid_t *hid)
  */
 
 typedef struct {
-	Pixel **img;
-	int w, h;
+	const pcb_pixmap_t *pxm;
 
 	/* cache */
 	int w_scaled, h_scaled;
@@ -620,7 +619,7 @@ typedef struct {
 
 static void pcb_ltf_draw_pixmap(pcb_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t dw, pcb_coord_t dh)
 {
-	int w, h;
+	int w, h, sx3;
 
 	w = dw / view_zoom;
 	h = dh / view_zoom;
@@ -631,12 +630,20 @@ static void pcb_ltf_draw_pixmap(pcb_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, pcb
 		static int vis_inited = 0;
 		static XVisualInfo vinfot, *vinfo;
 		static Visual *vis;
+		static enum { CLRSPC_MISC, CLRSPC_RGB565, CLRSPC_RGB888 } color_space;
 
 		if (!vis_inited) {
 			vis = DefaultVisual(display, DefaultScreen(display));
 			vinfot.visualid = XVisualIDFromVisual(vis);
 			vinfo = XGetVisualInfo(display, VisualIDMask, &vinfot, &nret);
 			vis_inited = 1;
+			color_space = CLRSPC_MISC;
+
+			if ((vinfo->class == TrueColor) && (vinfo->depth == 16) && (vinfo->red_mask == 0xf800) && (vinfo->green_mask == 0x07e0) && (vinfo->blue_mask == 0x001f))
+				color_space = CLRSPC_RGB565;
+
+			if ((vinfo->class == TrueColor) && (vinfo->depth == 24) && (vinfo->red_mask == 0xff0000) && (vinfo->green_mask == 0x00ff00) && (vinfo->blue_mask == 0x0000ff))
+				color_space = CLRSPC_RGB888;
 		}
 
 		if (lpm->img_scaled != NULL)
@@ -647,17 +654,43 @@ static void pcb_ltf_draw_pixmap(pcb_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, pcb
 		lpm->w_scaled = w;
 		lpm->h_scaled = h;
 
-		xscale = (double) lpm->w / w;
-		yscale = (double) lpm->h / h;
+		xscale = (double)lpm->pxm->sx / w;
+		yscale = (double)lpm->pxm->sy / h;
 
+		sx3 = lpm->pxm->sx * 3;
 		for (y = 0; y < h; y++) {
+			XColor pix;
+			unsigned char *row;
+			unsigned long pp;
 			int ir = y * yscale;
+			row = lpm->pxm->p + ir * sx3;
+
+			pix.flags = DoRed | DoGreen | DoBlue;
+
 			for (x = 0; x < w; x++) {
 				int ic = x * xscale;
-				if ((ir < 0) || (ir >= lpm->h) || (ic < 0) || (ic >= lpm->w))
+				if ((ir < 0) || (ir >= lpm->pxm->sy) || (ic < 0) || (ic >= lpm->pxm->sx))
 					XPutPixel(lpm->img_scaled, x, y, 0);
-				else
-					XPutPixel(lpm->img_scaled, x, y, lpm->img[ir][ic]);
+				else {
+					ic = ic * 3;
+					switch (color_space) {
+						case CLRSPC_MISC:
+							pix.red = (unsigned int)row[ic] << 8;
+							pix.green = (unsigned int)row[ic+1] << 8;
+							pix.blue = (unsigned int)row[ic+2] << 8;
+							XAllocColor(display, lesstif_colormap, &pix);
+							pp = pix.pixel;
+							break;
+						case CLRSPC_RGB565:
+							pp = (row[ic] >> 3) << 11 | (row[ic+1] >> 2) << 5 | (row[ic+2] >> 3);
+							break;
+						case CLRSPC_RGB888:
+							pp = (row[ic] << 16) | (row[ic+1] << 8) | (row[ic+2]);
+							break;
+					}
+
+					XPutPixel(lpm->img_scaled, x, y, pp);
+				}
 			}
 		}
 	}
@@ -665,145 +698,24 @@ static void pcb_ltf_draw_pixmap(pcb_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, pcb
 	XPutImage(display, main_pixmap, bg_gc, lpm->img_scaled, 0, 0, Vx(ox), Vy(ox), w, h);
 }
 
-static int bg_w, bg_h;
-static Pixel **bg = 0;
-static enum {
-	 PT_unknown,
-	 PT_RGB565,
-	 PT_RGB888
-} pixel_type = PT_unknown;
-
-static void LoadBackgroundFile(FILE *f, char *filename)
-{
-	XVisualInfo vinfot, *vinfo;
-	Visual *vis;
-	int c, r, b;
-	int i, nret;
-	int p[3], rows, cols, maxval;
-
-	if (fgetc(f) != 'P') {
-		printf("bgimage: %s signature not P6\n", filename);
-		return;
-	}
-	if (fgetc(f) != '6') {
-		printf("bgimage: %s signature not P6\n", filename);
-		return;
-	}
-	for (i = 0; i < 3; i++) {
-		do {
-			b = fgetc(f);
-			if (feof(f))
-				return;
-			if (b == '#')
-				while (!feof(f) && b != '\n')
-					b = fgetc(f);
-		} while (!isdigit(b));
-		p[i] = b - '0';
-		while (isdigit(b = fgetc(f)))
-			p[i] = p[i] * 10 + b - '0';
-	}
-	bg_w = cols = p[0];
-	bg_h = rows = p[1];
-	maxval = p[2];
-
-	setbuf(stdout, 0);
-	bg = (Pixel **) malloc(rows * sizeof(Pixel *));
-	if (!bg) {
-		printf("Out of memory loading %s\n", filename);
-		return;
-	}
-	for (i = 0; i < rows; i++) {
-		bg[i] = (Pixel *) malloc(cols * sizeof(Pixel));
-		if (!bg[i]) {
-			printf("Out of memory loading %s\n", filename);
-			while (--i >= 0)
-				free(bg[i]);
-			free(bg);
-			bg = 0;
-			return;
-		}
-	}
-
-	vis = DefaultVisual(display, DefaultScreen(display));
-
-	vinfot.visualid = XVisualIDFromVisual(vis);
-	vinfo = XGetVisualInfo(display, VisualIDMask, &vinfot, &nret);
-
-#if 0
-	/* If you want to support more visuals below, you'll probably need
-	   this. */
-	printf("vinfo: rm %04x gm %04x bm %04x depth %d class %d\n",
-				 vinfo->red_mask, vinfo->green_mask, vinfo->blue_mask, vinfo->depth, vinfo->class);
-#endif
-
-#if !defined(__cplusplus)
-#define c_class class
-#endif
-
-	if (vinfo->c_class == TrueColor
-			&& vinfo->depth == 16 && vinfo->red_mask == 0xf800 && vinfo->green_mask == 0x07e0 && vinfo->blue_mask == 0x001f)
-		pixel_type = PT_RGB565;
-
-	if (vinfo->c_class == TrueColor
-			&& vinfo->depth == 24 && vinfo->red_mask == 0xff0000 && vinfo->green_mask == 0x00ff00 && vinfo->blue_mask == 0x0000ff)
-		pixel_type = PT_RGB888;
-
-	for (r = 0; r < rows; r++) {
-		for (c = 0; c < cols; c++) {
-			XColor pix;
-			unsigned int pr = (unsigned) fgetc(f);
-			unsigned int pg = (unsigned) fgetc(f);
-			unsigned int pb = (unsigned) fgetc(f);
-
-			switch (pixel_type) {
-			case PT_unknown:
-				pix.red = pr * 65535 / maxval;
-				pix.green = pg * 65535 / maxval;
-				pix.blue = pb * 65535 / maxval;
-				pix.flags = DoRed | DoGreen | DoBlue;
-				XAllocColor(display, lesstif_colormap, &pix);
-				bg[r][c] = pix.pixel;
-				break;
-			case PT_RGB565:
-				bg[r][c] = (pr >> 3) << 11 | (pg >> 2) << 5 | (pb >> 3);
-				break;
-			case PT_RGB888:
-				bg[r][c] = (pr << 16) | (pg << 8) | (pb);
-				break;
-			}
-		}
-	}
-}
-
-void LoadBackgroundImage(char *filename)
-{
-	FILE *f = pcb_fopen(ltf_hidlib, filename, "rb");
-	if (!f) {
-		if (PCB_NSTRCMP(filename, "pcb-background.ppm"))
-			perror(filename);
-		return;
-	}
-	LoadBackgroundFile(f, filename);
-	fclose(f);
-}
-
-
+static pcb_pixmap_t ltf_bg_img;
 static void DrawBackgroundImage()
 {
 	static pcb_ltf_pixmap_t lpm;
 
-	if (!window || !bg)
+	if (!window || (ltf_bg_img.p == NULL))
 		return;
 
-	if (lpm.img == NULL) {
-		lpm.img = bg;
-		lpm.w = bg_w;
-		lpm.h = bg_h;
-	}
-
+	if (lpm.pxm == NULL)
+		lpm.pxm = &ltf_bg_img;
 	pcb_ltf_draw_pixmap(ltf_hidlib, &lpm, 0, 0, ltf_hidlib->size_x, ltf_hidlib->size_y);
 }
 
+static void LoadBackgroundImage(const char *fn)
+{
+	if (pcb_pixmap_load(ltf_hidlib, &ltf_bg_img, fn) != 0)
+		pcb_message(PCB_MSG_ERROR, "Failed to load pixmap %s for background image\n", fn);
+}
 
 /* ---------------------------------------------------------------------- */
 
