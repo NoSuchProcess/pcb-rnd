@@ -41,10 +41,8 @@ static const char *import_pxm_pnm_cookie = "import_pxm_pnm";
 #define ADDPX(pxm, r_, g_, b_, transparent) \
 do { \
 	int r = r_, g = g_, b = b_; \
-	if ((r < 0) || (g < 0) || (b < 0)) { \
-		fclose(f); \
-		return -1; \
-	} \
+	if ((r < 0) || (g < 0) || (b < 0)) \
+		goto error; \
 	if (transparent) { \
 		*o++ = pxm->tr; \
 		*o++ = pxm->tg; \
@@ -124,6 +122,12 @@ static int pnm_load(pcb_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn)
 			}
 			break;
 	}
+	fclose(f);
+	return 0;
+
+	error:;
+	free(pxm->p);
+	pxm->p = NULL;
 	fclose(f);
 	return 0;
 }
