@@ -61,6 +61,7 @@ include {../src_plugins/import_ltspice/Plug.tmpasm}
 include {../src_plugins/import_mentor_sch/Plug.tmpasm}
 include {../src_plugins/import_mucs/Plug.tmpasm}
 include {../src_plugins/import_netlist/Plug.tmpasm}
+include {../src_plugins/import_pxm_gd/Plug.tmpasm}
 include {../src_plugins/import_pxm_pnm/Plug.tmpasm}
 include {../src_plugins/import_sch/Plug.tmpasm}
 include {../src_plugins/import_tinycad/Plug.tmpasm}
