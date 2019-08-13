@@ -1,4 +1,4 @@
-27146	configure	hidlib: pixmap support framework: new .c file in the hidlib and pnm loader plugin
+27155	configure	hidlib: pixmap support framework: new .c file in the hidlib and pnm, png, jpeg, gif loader plugin
 27100	configure	hidlib: move base64 to core for reuse in hidlib (mainly for pixmaps)
 27086	configure	hidlib: tests and utils should use hidlib instead of manual object linking from the source tree
 27069	configure	retire the export_bboard plugin in favor of subc pixmaps that are going to be implemented soon
