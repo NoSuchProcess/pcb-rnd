@@ -20,7 +20,7 @@ For users:
  - optional: glib and gtk2 if you are using the GTK GUI
  - optional: gtkglext if you need opengl rendering
  - optional: motif or lesstif if you are using the lesstif frontend
- - optional: gdlib if you are using the png HID
+ - optional: gdlib if you want to export/import to/from png, jpg or gif
 
 For developers:
  - flex

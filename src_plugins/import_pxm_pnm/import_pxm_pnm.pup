@@ -1,0 +1,9 @@
+$class import
+$short import pixmaps from pnm 
+$long Import pnm P4, P5 and P6 into pcb-rnd pixmaps
+$state works
+$fmt-native no
+$fmt-feature-r import pixmap
+$package import-geo
+default buildin
+autoload 1

@@ -1,0 +1,8 @@
+put /local/pcb/mod {import_pxm_pnm}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_pxm_pnm/import_pxm_pnm.o @]
+
+switch /local/pcb/import_pxm_pnm/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end
