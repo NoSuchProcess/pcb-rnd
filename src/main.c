@@ -71,6 +71,7 @@ static const char *EXPERIMENTAL = NULL;
 #include "color.h"
 #include "netlist.h"
 #include "extobj.h"
+#include "pixmap.h"
 
 #include "actions.h"
 #include "actions_pcb.h"
@@ -313,6 +314,7 @@ void pcb_main_uninit(void)
 
 	pcb_extobj_uninit();
 	pcb_import_uninit();
+	 pcb_pixmap_uninit();
 	pcb_io_uninit();
 	pcb_fp_uninit();
 	pcb_fp_host_uninit();

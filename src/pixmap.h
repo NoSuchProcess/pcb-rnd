@@ -31,6 +31,17 @@
 
 #include "global_typedefs.h"
 
+typedef struct pcb_pixmap_import_s pcb_pixmap_import_t;
+
+struct pcb_pixmap_import_s {
+	const char *name;
+	int (*load)(pcb_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn);
+
+	/* filled in by code */
+	pcb_pixmap_import_t *next;
+	const char *cookie;
+};
+
 struct pcb_pixmap_s {
 	long size;                 /* total size of the array in memory (sx*sy*3) */
 	long sx, sy;               /* x and y dimensions */
@@ -53,6 +64,11 @@ struct pcb_pixmap_s {
 	unsigned hash_valid:1;     /* 1 if the has value has been calculated */
 	unsigned hid_data_valid:1; /* 1 if hid_data is already generated and no data changed since - maintained by core, HIDs don't need to check */
 };
+
+void pcb_pixmap_reg_import(const pcb_pixmap_import_t *imp, const char *cookie);
+void pcb_pixmap_unreg_import_all(const char *cookie);
+void pcb_pixmap_uninit(void);
+
 
 unsigned int pcb_pixmap_hash_meta(const void *key);
 unsigned int pcb_pixmap_hash_pixels(const void *key);

@@ -26,10 +26,13 @@
 
 #include "config.h"
 
+#include <stdlib.h>
 #include <genht/hash.h>
 #include <string.h>
 
 #include "pixmap.h"
+
+#include "error.h"
 
 static unsigned int pixmap_hash_(const void *key_, int pixels)
 {
@@ -96,3 +99,41 @@ int pcb_pixmap_eq_pixels(const void *keya, const void *keyb)
 }
 
 
+static pcb_pixmap_import_t *pcb_pixmap_chain;
+
+void pcb_pixmap_reg_import(const pcb_pixmap_import_t *imp, const char *cookie)
+{
+	pcb_pixmap_import_t *i = malloc(sizeof(pcb_pixmap_import_t));
+	memcpy(i, imp, sizeof(pcb_pixmap_import_t));
+	i->cookie = cookie;
+	i->next = pcb_pixmap_chain;
+	pcb_pixmap_chain = i;
+}
+
+static void pcb_pixmap_unreg_(pcb_pixmap_import_t *i, pcb_pixmap_import_t *prev)
+{
+	if (prev == NULL)
+		pcb_pixmap_chain = i->next;
+	else
+		prev->next = i->next;
+	free(i);
+}
+
+void pcb_pixmap_unreg_import_all(const char *cookie)
+{
+	pcb_pixmap_import_t *i, *prev = NULL, *next;
+	for(i = pcb_pixmap_chain; i != NULL; i = next) {
+		next = i->next;
+		if (i->cookie == cookie)
+			pcb_pixmap_unreg_(i, prev);
+		else
+			prev = i;
+	}
+}
+
+void pcb_pixmap_uninit(void)
+{
+	pcb_pixmap_import_t *i;
+	for(i = pcb_pixmap_chain; i != NULL; i = i->next)
+		pcb_message(PCB_MSG_ERROR, "pcb_pixmap_chain is not empty: %s. Fix your plugins!\n", i->cookie);
+}
