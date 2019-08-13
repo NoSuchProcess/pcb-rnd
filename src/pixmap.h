@@ -69,6 +69,7 @@ void pcb_pixmap_reg_import(const pcb_pixmap_import_t *imp, const char *cookie);
 void pcb_pixmap_unreg_import_all(const char *cookie);
 void pcb_pixmap_uninit(void);
 
+int pcb_pixmap_load(pcb_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn);
 
 unsigned int pcb_pixmap_hash_meta(const void *key);
 unsigned int pcb_pixmap_hash_pixels(const void *key);

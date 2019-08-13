@@ -137,3 +137,13 @@ void pcb_pixmap_uninit(void)
 	for(i = pcb_pixmap_chain; i != NULL; i = i->next)
 		pcb_message(PCB_MSG_ERROR, "pcb_pixmap_chain is not empty: %s. Fix your plugins!\n", i->cookie);
 }
+
+int pcb_pixmap_load(pcb_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn)
+{
+	pcb_pixmap_import_t *i;
+	for(i = pcb_pixmap_chain; i != NULL; i = i->next)
+		if (i->load(hidlib, pxm, fn) == 0)
+			return 0;
+	return -1;
+}
+
