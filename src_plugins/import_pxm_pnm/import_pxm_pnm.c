@@ -57,6 +57,13 @@ do { \
 	} \
 } while(0)
 
+#define GETLINE \
+while(fgets(line, sizeof(line) - 1, f) != NULL) { \
+	if (*line == '#') \
+		continue; \
+	break; \
+}
+
 static int pnm_load(pcb_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn)
 {
 	FILE *f;
@@ -68,14 +75,14 @@ static int pnm_load(pcb_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn)
 	if (f == NULL)
 		return -1;
 	
-	fgets(line, sizeof(line) - 1, f);
+	GETLINE;
 	if ((line[0] != 'P') || ((line[1] != '4') && (line[1] != '5') && (line[1] != '6')) || (line[2] != '\n')) {
 		fclose(f);
 		return -1;
 	}
 	type = line[1];
 
-	fgets(line, sizeof(line) - 1, f);
+	GETLINE;
 	s = strchr(line, ' ');
 	if (s == NULL) {
 		fclose(f);
@@ -98,7 +105,7 @@ static int pnm_load(pcb_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn)
 
 	switch(type) {
 		case '6':
-			fgets(line, sizeof(line) - 1, f);
+			GETLINE;
 			for(; n>0; n--)
 				ADDPX(pxm, fgetc(f), fgetc(f), fgetc(f), 0);
 			break;
