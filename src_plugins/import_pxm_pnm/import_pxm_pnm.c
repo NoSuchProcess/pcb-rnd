@@ -101,7 +101,8 @@ static int pnm_load(pcb_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn)
 	pxm->tr = pxm->tg = 127;
 	pxm->tb = 128;
 	n = pxm->sx * pxm->sy;
-	o = pxm->p = malloc(n * 3);
+	pxm->size = n * 3;
+	o = pxm->p = malloc(pxm->size);
 
 	switch(type) {
 		case '6':
