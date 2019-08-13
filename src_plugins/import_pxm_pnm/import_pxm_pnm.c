@@ -69,7 +69,7 @@ static int pnm_load(pcb_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn)
 		return -1;
 	
 	fgets(line, sizeof(line) - 1, f);
-	if ((line[0] != 'P') || ((line[1] != '4') && (line[1] != '5') && (line[1] == '6')) || (line[2] != '\n')) {
+	if ((line[0] != 'P') || ((line[1] != '4') && (line[1] != '5') && (line[1] != '6')) || (line[2] != '\n')) {
 		fclose(f);
 		return -1;
 	}
