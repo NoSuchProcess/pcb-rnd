@@ -121,7 +121,7 @@ static int pixmap_w = 0, pixmap_h = 0;
 Screen *screen_s;
 int screen;
 Colormap lesstif_colormap;
-static GC my_gc = 0, bg_gc, clip_gc = 0, bset_gc = 0, bclear_gc = 0, mask_gc = 0;
+static GC my_gc = 0, bg_gc, clip_gc = 0, pxm_clip_gc = 0, bset_gc = 0, bclear_gc = 0, mask_gc = 0;
 static Pixel bgcolor, offlimit_color, grid_color;
 static int bgred, bggreen, bgblue;
 
@@ -614,12 +614,21 @@ typedef struct {
 	/* cache */
 	int w_scaled, h_scaled;
 	XImage *img_scaled;
+	Pixmap pm_scaled;
+	Pixmap mask_scaled;
 	char *img_data;
+
+#ifdef HAVE_XRENDER
+	Picture p_img_scaled;
+	Picture p_mask_scaled;
+#endif
+	GC mask_gc, img_gc;
+	unsigned inited:1;
 } pcb_ltf_pixmap_t;
 
 static void pcb_ltf_draw_pixmap(pcb_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t dw, pcb_coord_t dh)
 {
-	int w, h, sx3;
+	int w, h, sx3, done = 0;
 
 	w = dw / view_zoom;
 	h = dh / view_zoom;
@@ -631,6 +640,7 @@ static void pcb_ltf_draw_pixmap(pcb_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, pcb
 		static XVisualInfo vinfot, *vinfo;
 		static Visual *vis;
 		static enum { CLRSPC_MISC, CLRSPC_RGB565, CLRSPC_RGB888 } color_space;
+
 
 		if (!vis_inited) {
 			vis = DefaultVisual(display, DefaultScreen(display));
@@ -646,11 +656,24 @@ static void pcb_ltf_draw_pixmap(pcb_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, pcb
 				color_space = CLRSPC_RGB888;
 		}
 
+		if (!lpm->inited) {
+			lpm->img_gc = XCreateGC(display, window, 0, 0);
+			if (lpm->pxm->has_transp)
+				lpm->mask_gc = XCreateGC(display, window, 0, 0);
+			lpm->inited = 1;
+		}
+
 		if (lpm->img_scaled != NULL)
 			XDestroyImage(lpm->img_scaled);
+		if (lpm->mask_scaled != 0)
+			XFreePixmap(display, lpm->mask_scaled);
+		if (lpm->pm_scaled != 0)
+			XFreePixmap(display, lpm->pm_scaled);
 
 		lpm->img_data = malloc(w*h*4);
 		lpm->img_scaled = XCreateImage(display, vis, vinfo->depth, ZPixmap, 0, lpm->img_data, w, h, 32, 0);
+		lpm->mask_scaled = XCreatePixmap(display, window, w, h, 1);
+		lpm->pm_scaled = XCreatePixmap(display, window, w, h, 24);
 		lpm->w_scaled = w;
 		lpm->h_scaled = h;
 
@@ -661,41 +684,95 @@ static void pcb_ltf_draw_pixmap(pcb_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, pcb
 		for (y = 0; y < h; y++) {
 			XColor pix;
 			unsigned char *row;
-			unsigned long pp;
+
 			int ir = y * yscale;
 			row = lpm->pxm->p + ir * sx3;
 
 			pix.flags = DoRed | DoGreen | DoBlue;
 
 			for (x = 0; x < w; x++) {
-				int ic = x * xscale;
+				unsigned long pp;
+				int tr = 0, ic = x * xscale;
+				unsigned int r, g, b;
+
 				if ((ir < 0) || (ir >= lpm->pxm->sy) || (ic < 0) || (ic >= lpm->pxm->sx))
-					XPutPixel(lpm->img_scaled, x, y, 0);
+					tr = 1;
 				else {
 					ic = ic * 3;
-					switch (color_space) {
-						case CLRSPC_MISC:
-							pix.red = (unsigned int)row[ic] << 8;
-							pix.green = (unsigned int)row[ic+1] << 8;
-							pix.blue = (unsigned int)row[ic+2] << 8;
-							XAllocColor(display, lesstif_colormap, &pix);
-							pp = pix.pixel;
-							break;
-						case CLRSPC_RGB565:
-							pp = (row[ic] >> 3) << 11 | (row[ic+1] >> 2) << 5 | (row[ic+2] >> 3);
-							break;
-						case CLRSPC_RGB888:
-							pp = (row[ic] << 16) | (row[ic+1] << 8) | (row[ic+2]);
-							break;
+					r = row[ic]; g = row[ic+1]; b = row[ic+2];
+					if (lpm->pxm->has_transp && (r == lpm->pxm->tr) && (g == lpm->pxm->tg) && (b == lpm->pxm->tb))
+						tr = 1;
+					else {
+						switch (color_space) {
+							case CLRSPC_MISC:
+								pix.red = r << 8;
+								pix.green = g << 8;
+								pix.blue = b << 8;
+								XAllocColor(display, lesstif_colormap, &pix);
+								pp = pix.pixel;
+								break;
+							case CLRSPC_RGB565:
+								pp = (r >> 3) << 11 | (g >> 2) << 5 | (b >> 3);
+								break;
+							case CLRSPC_RGB888:
+								pp = (r << 16) | (g << 8) | (b);
+								break;
+						}
 					}
 
-					XPutPixel(lpm->img_scaled, x, y, pp);
+					if (!tr) {
+						XDrawPoint(display, lpm->mask_scaled, bset_gc, x, y);
+						XPutPixel(lpm->img_scaled, x, y, pp);
+					}
+					else
+						XDrawPoint(display, lpm->mask_scaled, bclear_gc, x, y);
 				}
 			}
+
+			if (lpm->pxm->has_transp) {
+				lpm->pm_scaled = XCreatePixmap(display, window, w, h, 24);
+				XPutImage(display, lpm->pm_scaled, bg_gc, lpm->img_scaled, 0, 0, 0, 0, w, h);
+			}
+			else
+				lpm->pm_scaled = 0;
 		}
+
+#ifdef HAVE_XRENDER
+		if (use_xrender) {
+			if (lpm->p_img_scaled != 0)
+				XRenderFreePicture(display, lpm->p_img_scaled);
+			if (lpm->p_mask_scaled != 0)
+				XRenderFreePicture(display, lpm->p_mask_scaled);
+
+			lpm->p_img_scaled = XRenderCreatePicture(display, lpm->img_scaled, XRenderFindVisualFormat(display, DefaultVisual(display, screen)), 0, 0);
+			if (lpm->pxm->has_transp)
+				lpm->p_mask_scaled = XRenderCreatePicture(display, lpm->mask_scaled, XRenderFindVisualFormat(display, DefaultVisual(display, screen)), 0, 0);
+			else
+				lpm->p_mask_scaled = 0;
+		}
+#endif
 	}
 
-	XPutImage(display, main_pixmap, bg_gc, lpm->img_scaled, 0, 0, Vx(ox), Vy(ox), w, h);
+#ifdef HAVE_XRENDER
+	if (use_xrender) {
+		fprintf(stderr, "clip xrender\n");
+		XRenderPictureAttributes pa;
+		pa.clip_mask = mask_bitmap;
+		XRenderChangePicture(display, lpm->p_img_scaled, CPClipMask, &pa);
+		XRenderComposite(display, PictOpOver, lpm->p_img_scaled, lpm->p_mask_scaled, main_picture, 0, 0, 0, 0, Vx(ox), Vy(ox), w, h);
+		done = 1;
+	}
+#endif
+
+	if (!done) {
+		if (lpm->pxm->has_transp) {
+			XSetClipMask(display, pxm_clip_gc, lpm->mask_scaled);
+			XSetClipOrigin(display, pxm_clip_gc, Vx(ox), Vy(oy));
+			XCopyArea(display, lpm->pm_scaled, main_pixmap, pxm_clip_gc, 0, 0, w, h, Vx(ox), Vy(oy));
+		}
+		else
+			XPutImage(display, main_pixmap, bg_gc, lpm->img_scaled, 0, 0, Vx(ox), Vy(oy), w, h);
+	}
 }
 
 static pcb_pixmap_t ltf_bg_img;
@@ -1264,6 +1341,7 @@ static void work_area_first_expose(Widget work_area, void *me, XmDrawingAreaCall
 #endif /* HAVE_XRENDER */
 
 	clip_gc = XCreateGC(display, window, 0, 0);
+	pxm_clip_gc = XCreateGC(display, window, 0, 0);
 	bset_gc = XCreateGC(display, mask_bitmap, 0, 0);
 	XSetForeground(display, bset_gc, 1);
 	bclear_gc = XCreateGC(display, mask_bitmap, 0, 0);
