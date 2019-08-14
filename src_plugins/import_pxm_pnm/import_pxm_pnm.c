@@ -98,8 +98,10 @@ static int pnm_load(pcb_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn)
 		return -1;
 	}
 
+TODO("Pick up transparent pixel from comment");
 	pxm->tr = pxm->tg = 127;
 	pxm->tb = 128;
+	pxm->has_transp = 0;
 	n = pxm->sx * pxm->sy;
 	pxm->size = n * 3;
 	o = pxm->p = malloc(pxm->size);

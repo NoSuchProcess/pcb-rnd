@@ -57,6 +57,7 @@ static int gd_load(pcb_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn, gdIm
 		pxm->tr = pxm->tg = 127;
 		pxm->tb = 128;
 		pxm->size = pxm->sx * pxm->sy * 3;
+		pxm->has_transp = 0;
 		p = pxm->p = malloc(pxm->size);
 		for(y = 0; y < pxm->sy; y++) {
 			for(x = 0; x < pxm->sx; x++) {
@@ -77,6 +78,7 @@ static int gd_load(pcb_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn, gdIm
 					*p++ = pxm->tr;
 					*p++ = pxm->tg;
 					*p++ = pxm->tb;
+					pxm->has_transp = 1;
 				}
 			}
 		}

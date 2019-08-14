@@ -45,7 +45,7 @@ struct pcb_pixmap_import_s {
 struct pcb_pixmap_s {
 	long size;                 /* total size of the array in memory (sx*sy*3) */
 	long sx, sy;               /* x and y dimensions */
-	unsigned char tr, tg, tb;  /* color of the transparent pixel */
+	unsigned char tr, tg, tb;  /* color of the transparent pixel if has_transp is 1 */
 	unsigned int hash;         /* precalculated hash value */
 	unsigned char *p;          /* pixel array in r,g,b rows of sx long each */
 	unsigned long neutral_oid; /* UID of the pixmap in neutral position */
@@ -60,6 +60,7 @@ struct pcb_pixmap_s {
 	unsigned tr_xmirror:1;     /* whether the pixmap is mirrored along the x axis (vertical mirror) */
 	unsigned tr_ymirror:1;     /* whether the pixmap is mirrored along the y axis (horizontal mirror) */
 
+	unsigned has_transp:1;     /* 1 if the pixmap has any transparent pixels */
 	unsigned transp_valid:1;   /* 1 if transparent pixel is available */
 	unsigned hash_valid:1;     /* 1 if the has value has been calculated */
 	unsigned hid_data_valid:1; /* 1 if hid_data is already generated and no data changed since - maintained by core, HIDs don't need to check */
