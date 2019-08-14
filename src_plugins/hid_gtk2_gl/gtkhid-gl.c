@@ -258,7 +258,7 @@ static void ghid_gl_draw_pixmap(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pcb
 		/* XXX: We should probably determine what the maximum texture supported is,
 		        and if our image is larger, shrink it down using GDK pixbuf routines
 		        rather than having it fail below. */
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, (n_channels == 4) ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, pixels);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, (n_channels == 4) ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, pixels);
 		gpm->cache.lng = texture_handle;
 	}
 
