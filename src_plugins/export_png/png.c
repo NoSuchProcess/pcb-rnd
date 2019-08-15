@@ -139,8 +139,8 @@ static int last_color_r, last_color_g, last_color_b, last_cap;
    drill
 */
 
-#define PHOTO_FLIP_X	1
-#define PHOTO_FLIP_Y	2
+#define PHOTO_FLIP_X 1
+#define PHOTO_FLIP_Y 2
 
 static int photo_mode, photo_flip;
 static gdImagePtr photo_copper[PCB_MAX_LAYER];
@@ -242,7 +242,7 @@ static const color_struct silk_top_shadow = {0x151515FF, 21, 21, 21, 255};
 static const color_struct silk_bottom_shadow = {0x0E0E0EFF, 14, 14, 14, 255};
 
 pcb_export_opt_t png_attribute_list[] = {
-	/* other HIDs expect this to be first.  */
+/* other HIDs expect this to be first.  */
 
 /* %start-doc options "93 PNG Options"
 @ftable @code
@@ -1034,10 +1034,7 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		w = PCB->hidlib.size_x;
 	}
 
-	/*
-	 * figure out the scale factor we need to make the image
-	 * fit in our specified PNG file size
-	 */
+	/* figure out the scale factor to fit in the specified PNG file size */
 	xmax = ymax = dpi = 0;
 	if (options[HA_dpi].lng != 0) {
 		dpi = options[HA_dpi].lng;
@@ -1071,10 +1068,8 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	}
 
 	if (dpi > 0) {
-		/*
-		 * a scale of 1  means 1 pixel is 1 inch
-		 * a scale of 10 means 1 pixel is 10 inches
-		 */
+		/* a scale of 1  means 1 pixel is 1 inch
+		 * a scale of 10 means 1 pixel is 10 inches */
 		scale = PCB_INCH_TO_COORD(1) / dpi;
 		w = pcb_round(w / scale) - PNG_SCALE_HACK1;
 		h = pcb_round(h / scale) - PNG_SCALE_HACK1;
@@ -1111,11 +1106,7 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	parse_bloat(options[HA_bloat].str);
 
-	/* 
-	 * Allocate white and black -- the first color allocated
-	 * becomes the background color
-	 */
-
+	/* Allocate white and black; the first color allocated becomes the background color */
 	white = (color_struct *) malloc(sizeof(color_struct));
 	white->r = white->g = white->b = 255;
 	if (options[HA_use_alpha].lng)
@@ -1598,10 +1589,8 @@ static void use_gc(gdImagePtr im, pcb_hid_gc_t gc)
 			}
 			gdImageColorTransparent(agc->brush, bg);
 
-			/*
-			 * if we shrunk to a radius/box width of zero, then just use
-			 * a single pixel to draw with.
-			 */
+			/* if we shrunk to a radius/box width of zero, then just use
+			   a single pixel to draw with. */
 			if (r <= 1)
 				gdImageFilledRectangle(agc->brush, 0, 0, 0, 0, fg);
 			else {
@@ -1697,11 +1686,9 @@ static void png_draw_line_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t x1, pcb_c
 		gdImageLine(im, SCALE_X(x1) + x1o, SCALE_Y(y1) + y1o, SCALE_X(x2) + x2o, SCALE_Y(y2) + y2o, gdBrushed);
 	}
 	else {
-		/*
-		 * if we are drawing a line with a square end cap and it is
-		 * not purely horizontal or vertical, then we need to draw
-		 * it as a filled polygon.
-		 */
+		/* if we are drawing a line with a square end cap and it is
+		   not purely horizontal or vertical, then we need to draw
+		   it as a filled polygon. */
 		int fg, w = gc->width, dx = x2 - x1, dy = y2 - y1, dwx, dwy;
 		gdPoint p[4];
 		double l = sqrt((double)dx * (double)dx + (double)dy * (double)dy) * 2.0;
@@ -1753,10 +1740,8 @@ static void png_draw_arc_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t cx, pcb_co
 	gdImageSetThickness(im, 0);
 	linewidth = 0;
 
-	/*
-	 * zero angle arcs need special handling as gd will output either
-	 * nothing at all or a full circle when passed delta angle of 0 or 360.
-	 */
+	/* zero angle arcs need special handling as gd will output either
+	   nothing at all or a full circle when passed delta angle of 0 or 360. */
 	if (delta_angle == 0) {
 		pcb_coord_t x = (width * cos(start_angle * M_PI / 180));
 		pcb_coord_t y = (width * sin(start_angle * M_PI / 180));
@@ -1772,10 +1757,8 @@ static void png_draw_arc_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t cx, pcb_co
 		ea = 360;
 	}
 	else {
-		/*
-		 * in gdImageArc, 0 degrees is to the right and +90 degrees is down
-		 * in pcb, 0 degrees is to the left and +90 degrees is down
-		 */
+		/* in gdImageArc, 0 degrees is to the right and +90 degrees is down
+		 * in pcb, 0 degrees is to the left and +90 degrees is down */
 		start_angle = 180 - start_angle;
 		delta_angle = -delta_angle;
 		if (show_solder_side) {
@@ -1791,10 +1774,8 @@ static void png_draw_arc_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t cx, pcb_co
 			ea = start_angle;
 		}
 
-		/*
-		 * make sure we start between 0 and 360 otherwise gd does
-		 * strange things
-		 */
+		/* make sure we start between 0 and 360 otherwise gd does
+		   strange things */
 		sa = pcb_normalize_angle(sa);
 		ea = pcb_normalize_angle(ea);
 	}
@@ -1953,7 +1934,6 @@ int pplg_init_export_png(void)
 
 #ifdef HAVE_SOME_FORMAT
 	pcb_hid_register_hid(&png_hid);
-
 #endif
 	return 0;
 }
