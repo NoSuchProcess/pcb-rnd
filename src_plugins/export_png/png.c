@@ -462,7 +462,7 @@ static void parse_bloat(const char *str)
 	bloat = pcb_get_value_ex(str, NULL, NULL, extra_units, "", NULL);
 }
 
-static void rgb(color_struct * dest, int r, int g, int b)
+static void rgb(color_struct *dest, int r, int g, int b)
 {
 	dest->r = r;
 	dest->g = g;
@@ -524,7 +524,7 @@ static void png_foot(void)
 		fprintf(stderr, "Error:  Invalid graphic file format." "  This is a bug.  Please report it.\n");
 }
 
-void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
+void png_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	pcb_box_t tmp, region;
@@ -681,7 +681,7 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	if (dpi > 0) {
 		/* a scale of 1  means 1 pixel is 1 inch
-		 * a scale of 10 means 1 pixel is 10 inches */
+		   a scale of 10 means 1 pixel is 10 inches */
 		scale = PCB_INCH_TO_COORD(1) / dpi;
 		w = pcb_round(w / scale) - PNG_SCALE_HACK1;
 		h = pcb_round(h / scale) - PNG_SCALE_HACK1;
@@ -1269,7 +1269,7 @@ static void png_draw_arc_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t cx, pcb_co
 	}
 	else {
 		/* in gdImageArc, 0 degrees is to the right and +90 degrees is down
-		 * in pcb, 0 degrees is to the left and +90 degrees is down */
+		   in pcb, 0 degrees is to the left and +90 degrees is down */
 		start_angle = 180 - start_angle;
 		delta_angle = -delta_angle;
 		if (show_solder_side) {
