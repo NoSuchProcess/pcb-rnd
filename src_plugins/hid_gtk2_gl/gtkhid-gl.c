@@ -242,12 +242,12 @@ static void ghid_gl_draw_pixmap(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pcb
 {
 	GLuint texture_handle = gpm->cache.lng;
 	if (texture_handle == 0) {
-		int width = gdk_pixbuf_get_width(ghidgui->bg_pixbuf);
-		int height = gdk_pixbuf_get_height(ghidgui->bg_pixbuf);
-		int rowstride = gdk_pixbuf_get_rowstride(ghidgui->bg_pixbuf);
-		int bits_per_sample = gdk_pixbuf_get_bits_per_sample(ghidgui->bg_pixbuf);
-		int n_channels = gdk_pixbuf_get_n_channels(ghidgui->bg_pixbuf);
-		unsigned char *pixels = gdk_pixbuf_get_pixels(ghidgui->bg_pixbuf);
+		int width = gdk_pixbuf_get_width(gpm->image);
+		int height = gdk_pixbuf_get_height(gpm->image);
+		int rowstride = gdk_pixbuf_get_rowstride(gpm->image);
+		int bits_per_sample = gdk_pixbuf_get_bits_per_sample(gpm->image);
+		int n_channels = gdk_pixbuf_get_n_channels(gpm->image);
+		unsigned char *pixels = gdk_pixbuf_get_pixels(gpm->image);
 
 		g_warn_if_fail(bits_per_sample == 8);
 		g_warn_if_fail(rowstride == width * n_channels);
@@ -269,11 +269,11 @@ static void ghid_gl_draw_bg_image(pcb_hidlib_t *hidlib)
 {
 	static pcb_gtk_pixmap_t gpm;
 
-	if (ghidgui->bg_pixbuf == NULL)
+	if (ghidgui->bg_pixmap.image == NULL)
 		return;
 
 	if (gpm.image == NULL)
-		gpm.image = ghidgui->bg_pixbuf;
+		gpm.image = ghidgui->bg_pixmap.image;
 
 	ghid_gl_draw_pixmap(hidlib, &gpm, 0, 0, hidlib->size_x, hidlib->size_y);
 }

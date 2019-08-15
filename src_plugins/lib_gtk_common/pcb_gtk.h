@@ -138,7 +138,8 @@ struct pcb_gtk_topwin_s {
 #include "pcb_bool.h"
 
 typedef struct pcb_gtk_pixmap_s {
-	GdkPixbuf *image;         /* input image */
+	pcb_pixmap_t *pxm;        /* core-side pixmap (raw input image) */
+	GdkPixbuf *image;         /* input image converted to gdk */
 	int w, h;                 /* source image dimensions in ->image (for faster access) */
 
 	/* backend/renderer cache */
@@ -175,7 +176,7 @@ struct pcb_gtk_s {
 	pcb_gtk_topwin_t topwin;
 	conf_hid_id_t conf_id;
 
-	GdkPixbuf *bg_pixbuf; /* -> renderer */
+	pcb_gtk_pixmap_t bg_pixmap;
 
 	int hid_active; /* 1 if the currently running hid (pcb_gui) is us */
 	int gui_is_up; /*1 if all parts of the gui is up and running */

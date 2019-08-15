@@ -267,7 +267,7 @@ static void ghid_load_bg_image(void)
 	GError *err = NULL;
 
 	if (pcb_conf_hid_gtk.plugins.hid_gtk.bg_image)
-		ghidgui->bg_pixbuf = gdk_pixbuf_new_from_file(pcb_conf_hid_gtk.plugins.hid_gtk.bg_image, &err);
+		ghidgui->bg_pixmap.image = gdk_pixbuf_new_from_file(pcb_conf_hid_gtk.plugins.hid_gtk.bg_image, &err);
 
 	if (err) {
 		g_error("%s", err->message);

@@ -357,11 +357,11 @@ static void ghid_gdk_draw_bg_image(pcb_hidlib_t *hidlib)
 {
 	static pcb_gtk_pixmap_t gpm;
 
-	if (ghidgui->bg_pixbuf == NULL)
+	if (ghidgui->bg_pixmap.image == NULL)
 		return;
 
 	if (gpm.image == NULL) {
-		gpm.image = ghidgui->bg_pixbuf;
+		gpm.image = ghidgui->bg_pixmap.image;
 		gpm.w = gdk_pixbuf_get_width(gpm.image);
 		gpm.h = gdk_pixbuf_get_height(gpm.image);
 	}
