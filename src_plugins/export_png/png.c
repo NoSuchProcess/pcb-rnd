@@ -796,8 +796,6 @@ static int is_mask;
 
 static int png_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
-	doing_outline = 0;
-
 	if (flags & PCB_LYT_UI)
 		return 0;
 
@@ -827,11 +825,6 @@ static int png_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const ch
 
 	if (photo_mode)
 		return png_set_layer_group_photo(group, purpose, purpi, layer, flags, is_empty, xform);
-
-	if (PCB_LAYER_IS_OUTLINE(flags, purpi)) {
-		doing_outline = 1;
-		have_outline = 0;
-	}
 
 	if (as_shown) {
 		if ((flags & PCB_LYT_ANYTHING) == PCB_LYT_SILK) {

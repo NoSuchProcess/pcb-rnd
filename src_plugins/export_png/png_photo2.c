@@ -130,6 +130,13 @@ static int png_set_layer_group_photo(pcb_layergrp_id_t group, const char *purpos
 		return 1;
 	photo_last_grp = group;
 
+	if (PCB_LAYER_IS_OUTLINE(flags, purpi)) {
+		doing_outline = 1;
+		have_outline = 0;
+	}
+	else
+		doing_outline = 0;
+
 	is_photo_drill = (PCB_LAYER_IS_DRILL(flags, purpi) || ((flags & PCB_LYT_MECH) && PCB_LAYER_IS_ROUTE(flags, purpi)));
 		if (((flags & PCB_LYT_ANYTHING) == PCB_LYT_SILK) && (flags & PCB_LYT_TOP)) {
 			if (photo_flip)
