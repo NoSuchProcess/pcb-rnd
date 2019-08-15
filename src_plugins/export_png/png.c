@@ -1177,18 +1177,18 @@ static void png_draw_line_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t x1, pcb_c
 
 	if (NOT_EDGE(x1, y1) || NOT_EDGE(x2, y2))
 		have_outline |= doing_outline;
-	if (doing_outline) {
-		/* Special case - lines drawn along the bottom or right edges
-		   are brought in by a pixel to make sure we have contiguous
-		   outlines.  */
-		if (x1 == PCB->hidlib.size_x && x2 == PCB->hidlib.size_x) {
-			x1o = -1;
-			x2o = -1;
-		}
-		if (y1 == PCB->hidlib.size_y && y2 == PCB->hidlib.size_y) {
-			y1o = -1;
-			y2o = -1;
-		}
+	
+		/* libgd clipping bug - lines drawn along the bottom or right edges
+		   need to be brought in by a pixel to make sure they are not clipped
+		   by libgd - even tho they should be visible because of thickness, they
+		   would not be because the center line is off the image */
+	if (x1 == PCB->hidlib.size_x && x2 == PCB->hidlib.size_x) {
+		x1o = -1;
+		x2o = -1;
+	}
+	if (y1 == PCB->hidlib.size_y && y2 == PCB->hidlib.size_y) {
+		y1o = -1;
+		y2o = -1;
 	}
 
 	gdImageSetThickness(im, 0);
