@@ -337,8 +337,8 @@ static void ghid_gdk_draw_pixmap(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pc
 		if (gpm->cache.pb != NULL)
 			g_object_unref(G_OBJECT(gpm->cache.pb));
 
-		w_src = gpm->w;
-		h_src = gpm->h;
+		w_src = gpm->pxm->sx;
+		h_src = gpm->pxm->sy;
 		if (w > w_src && h > h_src)
 			interp_type = GDK_INTERP_NEAREST;
 		else
@@ -355,18 +355,10 @@ static void ghid_gdk_draw_pixmap(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pc
 
 static void ghid_gdk_draw_bg_image(pcb_hidlib_t *hidlib)
 {
-	static pcb_gtk_pixmap_t gpm;
-
 	if (ghidgui->bg_pixmap.image == NULL)
 		return;
 
-	if (gpm.image == NULL) {
-		gpm.image = ghidgui->bg_pixmap.image;
-		gpm.w = gdk_pixbuf_get_width(gpm.image);
-		gpm.h = gdk_pixbuf_get_height(gpm.image);
-	}
-
-	ghid_gdk_draw_pixmap(hidlib, &gpm, 0, 0, hidlib->size_x, hidlib->size_y);
+	ghid_gdk_draw_pixmap(hidlib, &ghidgui->bg_pixmap, 0, 0, hidlib->size_x, hidlib->size_y);
 }
 
 

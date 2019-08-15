@@ -242,8 +242,8 @@ static void ghid_gl_draw_pixmap(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pcb
 {
 	GLuint texture_handle = gpm->cache.lng;
 	if (texture_handle == 0) {
-		int width = gdk_pixbuf_get_width(gpm->image);
-		int height = gdk_pixbuf_get_height(gpm->image);
+		int width = gpm->pxm->sx;
+		int height = gpm->pxm->sy;
 		int rowstride = gdk_pixbuf_get_rowstride(gpm->image);
 		int bits_per_sample = gdk_pixbuf_get_bits_per_sample(gpm->image);
 		int n_channels = gdk_pixbuf_get_n_channels(gpm->image);
@@ -267,15 +267,10 @@ static void ghid_gl_draw_pixmap(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pcb
 
 static void ghid_gl_draw_bg_image(pcb_hidlib_t *hidlib)
 {
-	static pcb_gtk_pixmap_t gpm;
-
 	if (ghidgui->bg_pixmap.image == NULL)
 		return;
 
-	if (gpm.image == NULL)
-		gpm.image = ghidgui->bg_pixmap.image;
-
-	ghid_gl_draw_pixmap(hidlib, &gpm, 0, 0, hidlib->size_x, hidlib->size_y);
+	ghid_gl_draw_pixmap(hidlib, &ghidgui->bg_pixmap, 0, 0, hidlib->size_x, hidlib->size_y);
 }
 
 

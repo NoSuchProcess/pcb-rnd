@@ -28,6 +28,7 @@
  */
 
 #include "config.h"
+#include "pixmap.h"
 
 #include "glue_common.h"
 
@@ -262,16 +263,49 @@ void pcb_gtk_interface_input_signals_disconnect(void)
 }
 
 /*** misc ***/
+
+/* import a core pixmap into a gdk pixmap */
+static void ghid_init_pixmap_(pcb_gtk_pixmap_t *gpm)
+{
+	int rowstd, nch, x, y;
+	unsigned char *dst, *dst_row, *src = gpm->pxm->p;
+
+	gpm->image = gdk_pixbuf_new(GDK_COLORSPACE_RGB, gpm->pxm->has_transp, 8, gpm->pxm->sx, gpm->pxm->sy);
+	dst_row = gdk_pixbuf_get_pixels(gpm->image);
+	rowstd = gdk_pixbuf_get_rowstride(gpm->image);
+	nch = gdk_pixbuf_get_n_channels(gpm->image);
+	assert((nch == 3) || (nch == 4));
+	for(y = 0; y < gpm->pxm->sy; y++,dst_row += rowstd) {
+		dst = dst_row;
+		for(x = 0; x < gpm->pxm->sx; x++) {
+			dst[0] = src[0];
+			dst[1] = src[1];
+			dst[2] = src[2];
+			if (gpm->pxm->has_transp) {
+				if ((src[0] == gpm->pxm->tr) && (src[1] == gpm->pxm->tg) && (src[2] == gpm->pxm->tb))
+					dst[3] = 0;
+				else
+					dst[3] = 255;
+			}
+			dst += nch;
+			src += 3;
+		}
+	}
+}
+
 static void ghid_load_bg_image(void)
 {
-	GError *err = NULL;
+	static pcb_pixmap_t pxm;
 
-	if (pcb_conf_hid_gtk.plugins.hid_gtk.bg_image)
-		ghidgui->bg_pixmap.image = gdk_pixbuf_new_from_file(pcb_conf_hid_gtk.plugins.hid_gtk.bg_image, &err);
-
-	if (err) {
-		g_error("%s", err->message);
-		g_error_free(err);
+	ghidgui->bg_pixmap.pxm = NULL;
+	ghidgui->bg_pixmap.image = NULL;
+	if (pcb_conf_hid_gtk.plugins.hid_gtk.bg_image != NULL) {
+		if (pcb_pixmap_load(ghidgui->hidlib, &pxm, pcb_conf_hid_gtk.plugins.hid_gtk.bg_image) != 0) {
+			pcb_message(PCB_MSG_ERROR, "Failed to load pixmap %s for background image\n", pcb_conf_hid_gtk.plugins.hid_gtk.bg_image);
+			return;
+		}
+		ghidgui->bg_pixmap.pxm = &pxm;
+		ghid_init_pixmap_(&ghidgui->bg_pixmap.pxm);
 	}
 }
 
