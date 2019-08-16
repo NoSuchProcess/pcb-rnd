@@ -26,6 +26,10 @@
 #@@optional:pad_mask
 #@@dim:pad_mask
 
+#@@param:pad_paste pad's paste line thickness (in mil by default, mm suffix can be used)
+#@@optional:pad_paste
+#@@dim:pad_paste
+
 #@@param:line_thickness silk line thickness (in mil by default, mm suffix can be used)
 #@@optional:line_thickness
 #@@dim:line_thickness
@@ -54,6 +58,8 @@ BEGIN {
 	DEFAULT["pad_clearance", "dim"] = 1
 	DEFAULT["pad_mask"] = mil(30)
 	DEFAULT["pad_mask", "dim"] = 1
+	DEFAULT["pad_paste"] = mil(8)
+	DEFAULT["pad_paste", "dim"] = 1
 
 	DEFAULT["pin_flags"] = "__auto"
 
@@ -244,6 +250,12 @@ function subc_pstk_add_hole(proto, dia, plated,     htop, hbottom    ,s)
 	PROTO[proto] = PROTO[proto] s
 }
 
+function subc_pstk_no_hole(proto   ,s)
+{
+	s = s "     hdia = 0; hplated = 0; htop = 0; hbottom = 0" NL
+	PROTO[proto] = PROTO[proto] s
+}
+
 function subc_pstk_shape_layer(layer     ,s,L,v,n)
 {
 	v = split(layer, L, "-")
@@ -289,6 +301,21 @@ function subc_pstk_add_shape_square(proto, layer, x, y, sx, sy    ,s)
 	PROTO[proto] = PROTO[proto] s
 }
 
+function subc_pstk_add_shape_square_corners(proto, layer, x1, y1, x2, y2    ,s)
+{
+	sx = sx / 2
+	sy = sy / 2
+	s = s "      ha:ps_shape_v4 {" NL
+	s = s "       clearance = 0" NL
+	s = s "       li:ps_poly {" NL
+	s = s "        " unit(x1) ";" unit(y1) ";  " unit(x2) ";" unit(y1) ";" NL
+	s = s "        " unit(x2) ";" unit(y2) ";  " unit(x1) ";" unit(y2) ";" NL
+	s = s "       }" NL
+	s = s subc_pstk_shape_layer(layer)
+	s = s "      }" NL
+	PROTO[proto] = PROTO[proto] s
+}
+
 function subc_proto_create_pin_round(drill_dia, ring_dia, mask_dia      ,proto)
 {
 	proto = subc_proto_alloc()
@@ -326,6 +353,30 @@ function subc_proto_create_pin_square(drill_dia, ring_span, mask_span     ,proto
 	mask_span = either(mask, DEFAULT["pin_mask"])
 	subc_pstk_add_shape_square(proto, "top-mask", x, y, mask_span, mask_span)
 	subc_pstk_add_shape_square(proto, "bottom-mask", x, y, mask_span, mask_span)
+	PROTO[proto] = PROTO[proto] "     }" NL
+
+	return proto
+}
+
+function subc_proto_create_pad_sqline(x1, x2, thick, mask, paste   ,proto,m,p)
+{
+	proto = subc_proto_alloc()
+
+	thick = either(thick, DEFAULT["pad_thickness"])
+
+	subc_pstk_no_hole(proto)
+
+	PROTO_COMMENT[proto] = "# Square smd pad " x2-x1 " * " thick
+	PROTO[proto] = PROTO[proto] "     li:shape {" NL
+
+	subc_pstk_add_shape_square_corners(proto, "top-copper", x1-thick/2, -thick/2, x2+thick/2, thick/2)
+
+	m = (either(mask, DEFAULT["pad_mask"]) - thick) / 2
+	subc_pstk_add_shape_square_corners(proto, "top-mask", x1-thick/2-m, -thick/2-m, x2+thick/2+m, thick/2+m)
+
+	p = (either(paste, DEFAULT["pad_paste"]) - thick) / 2
+	subc_pstk_add_shape_square_corners(proto, "top-paste", x1-thick/2-p, -thick/2-p, x2+thick/2+p, thick/2+p)
+
 	PROTO[proto] = PROTO[proto] "     }" NL
 
 	return proto
