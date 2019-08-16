@@ -66,6 +66,7 @@ BEGIN {
 			x++
 		}
 		ny++;
+		nx++;
 	}
 	else {
 		if ((nx == "") || (ny == ""))
