@@ -93,8 +93,8 @@ function strip(s)
 }
 
 # translate coordinates
-function coord_x(x) { return int(x + offs_x) }
-function coord_y(y) { return int(y + offs_y) }
+function coord_x(x) { return x + offs_x }
+function coord_y(y) { return y + offs_y }
 
 function lht_str(s)
 {
@@ -181,10 +181,14 @@ function subc_begin(footprint, refdes, refdes_x, refdes_y, refdes_dir)
 
 
 	subc_text("top-silk", refdes_x, refdes_y, "%a.parent.refdes%", 100, text_dir, "dyntext = 1;floater=1;")
+	LAYER_TYPE["subc_aux"] = "top-misc-virtual"
+	subc_line("subc_aux", coord_x(0), coord_y(0), coord_x(mm(1)), coord_y(0), unit(mm(0.1)), 0, "", "subc-role = x");
+	subc_line("subc_aux", coord_x(0), coord_y(0), coord_x(0), coord_y(mm(1)), unit(mm(0.1)), 0, "", "subc-role = y");
+	subc_line("subc_aux", coord_x(0), coord_y(0), coord_x(0), coord_y(0), unit(mm(0.1)), 0, "", "subc-role = origin");
 }
 
 # generate subcircuit footers
-function subc_end(     layer,n,v,L)
+function subc_end(     layer,n,v,L,lt)
 {
 	print "  ha:data {"
 	print "   li:padstack_prototypes {"
@@ -205,7 +209,8 @@ function subc_end(     layer,n,v,L)
 # layers and layer objects
 	print "   li:layers {"
 	for(layer in LAYER) {
-		v = split(layer, L, "-")
+		lt = either(LAYER_TYPE[layer], layer)
+		v = split(lt, L, "-")
 		print "    ha:" layer " {"
 		print "     lid = 0"
 		print "     ha:type {"
