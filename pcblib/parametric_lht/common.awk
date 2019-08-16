@@ -64,6 +64,7 @@ BEGIN {
 	offs_x = 0
 	offs_y = 0
 	objid = 1
+	proto_next_id = 0
 
 	pi=3.141592654
 
@@ -106,6 +107,8 @@ function lht_str(s)
 
 function unit(coord)
 {
+	if (coord == "")
+		coord = 0
 	if (base_unit_mm)
 		return coord "mm"
 	return coord "mil"
@@ -184,6 +187,22 @@ function subc_begin(footprint, refdes, refdes_x, refdes_y, refdes_dir)
 function subc_end(     layer,n,v,L)
 {
 	print "  ha:data {"
+	print "   li:padstack_prototypes {"
+	for(n = 0; n < proto_next_id; n++) {
+		if (PROTO_COMMENT[n] != "")
+			print PROTO_COMMENT[n]
+		print "    ha:ps_proto_v6." n " {"
+		print PROTO[n]
+		print "    }"
+	}
+	print "   }"
+
+# global objects (padstack refs)
+	print "   li:objects {"
+	print globals
+	print "   }"
+
+# layers and layer objects
 	print "   li:layers {"
 	for(layer in LAYER) {
 		v = split(layer, L, "-")
@@ -206,27 +225,130 @@ function subc_end(     layer,n,v,L)
 	print "}"
 }
 
-# generate a pin; arguments from ringdia are optional (defaults are in global vars pin_*)
-function subc_pin(x, y,  number, flags,   ringdia, clearance, mask, drill, name)
+function subc_proto_alloc()
 {
-	if (number == "")
-		number = ++pin_number
+	return proto_next_id++
+}
 
-	flags = either(flags, DEFAULT["pin_flags"])
+function subc_pstk_add_hole(proto, dia, plated,     htop, hbottom    ,s)
+{
+	s = s "     hdia = " unit(dia) NL
+	s = s "     hplated = " int(plated) NL
+	s = s "     htop = " int(htop) NL
+	s = s "     hbottom = " int(hbottom) NL
+	PROTO[proto] = PROTO[proto] s
+}
 
-	if (flags == "__auto") {
-		if (number == 1)
-			flags = "square"
-		else
-			flags = ""
-	}
+function subc_pstk_shape_layer(layer     ,s,L,v,n)
+{
+	v = split(layer, L, "-")
+	s = s "       ha:layer_mask {" NL
+	for(n = 1; n <= v; n++)
+		s = s "        " L[n] " = 1" NL
+	s = s "       }" NL
+	s = s "       ha:combining {" NL
+	if (layer ~ "mask")
+	s = s "        sub = 1"  NL
+	if ((layer ~ "mask") || (layer ~ "paste"))
+	s = s "        auto = 1"  NL
+	s = s "       }" NL
+	return s
+}
 
-	if (flags == "none")
-		flags = ""
+function subc_pstk_add_shape_circ(proto, layer, x, y, dia    ,s)
+{
+	s = s "      ha:ps_shape_v4 {" NL
+	s = s "       clearance = 0" NL
+	s = s "       ha:ps_circ {" NL
+	s = s "        x = " unit(x) NL
+	s = s "        y = " unit(y) NL
+	s = s "        dia = " unit(dia) NL
+	s = s "       }" NL
+	s = s subc_pstk_shape_layer(layer)
+	s = s "      }" NL
+	PROTO[proto] = PROTO[proto] s
+}
 
-#	print "	Pin[" coord_x(x), coord_y(y),
-#		int(either(ringdia, DEFAULT["pin_ringdia"])), int(either(clearance, DEFAULT["pin_clearance"])), int(either(mask, DEFAULT["pin_mask"])),
-#		int(either(drill, DEFAULT["pin_drill"])), q name q, q number q, q flags q "]"
+function subc_pstk_add_shape_square(proto, layer, x, y, sx, sy    ,s)
+{
+	sx = sx / 2
+	sy = sy / 2
+	s = s "      ha:ps_shape_v4 {" NL
+	s = s "       clearance = 0" NL
+	s = s "       li:ps_poly {" NL
+	s = s "        " unit(x - sx) ";" unit(y - sy) ";  " unit(x + sx) ";" unit(y - sy) ";" NL
+	s = s "        " unit(x + sx) ";" unit(y + sy) ";  " unit(x - sx) ";" unit(y + sy) ";" NL
+	s = s "       }" NL
+	s = s subc_pstk_shape_layer(layer)
+	s = s "      }" NL
+	PROTO[proto] = PROTO[proto] s
+}
+
+function subc_proto_create_pin_round(drill_dia, ring_dia, mask_dia      ,proto)
+{
+	proto = subc_proto_alloc()
+	subc_pstk_add_hole(proto, either(drill_dia, DEFAULT["pin_drill"]), 1)
+
+	PROTO_COMMENT[proto] = "# Round plated through hole " unit(ring_dia) "/" unit(drill_dia)
+	PROTO[proto] = PROTO[proto] "     li:shape {" NL
+
+	dia = either(dia, DEFAULT["pin_ringdia"])
+	subc_pstk_add_shape_circ(proto, "top-copper", x, y, dia)
+	subc_pstk_add_shape_circ(proto, "intern-copper", x, y, dia)
+	subc_pstk_add_shape_circ(proto, "bottom-copper", x, y, dia)
+
+	mask_dia = either(mask_dia, DEFAULT["pin_mask"])
+	subc_pstk_add_shape_circ(proto, "top-mask", x, y, mask_dia)
+	subc_pstk_add_shape_circ(proto, "bottom-mask", x, y, mask_dia)
+
+	PROTO[proto] = PROTO[proto] "     }" NL
+	return proto
+}
+
+function subc_proto_create_pin_square(drill_dia, ring_span, mask_span     ,proto)
+{
+	proto = subc_proto_alloc()
+	subc_pstk_add_hole(proto, either(drill_dia, DEFAULT["pin_drill"]), 1)
+
+	PROTO_COMMENT[proto] = "# Square plated through hole " unit(ring_dia) "/" unit(drill_dia)
+	PROTO[proto] = PROTO[proto] "     li:shape {" NL
+
+	ring_span = either(ring_span, DEFAULT["pin_ringdia"])
+	subc_pstk_add_shape_square(proto, "top-copper", x, y, ring_span, ring_span)
+	subc_pstk_add_shape_square(proto, "intern-copper", x, y, ring_span, ring_span)
+	subc_pstk_add_shape_square(proto, "bottom-copper", x, y, ring_span, ring_span)
+
+	mask_span = either(mask, DEFAULT["pin_mask"])
+	subc_pstk_add_shape_square(proto, "top-mask", x, y, mask_span, mask_span)
+	subc_pstk_add_shape_square(proto, "bottom-mask", x, y, mask_span, mask_span)
+	PROTO[proto] = PROTO[proto] "     }" NL
+
+	return proto
+}
+
+# generate a padstack reference
+function subc_pstk(proto, x, y, rot, termid, name, clearance,      s)
+{
+	if (termid == "")
+		termid = ++pin_number
+
+	s = s "    ha:padstack_ref." ++objid " {" NL
+	s = s "     proto = " proto NL
+	s = s "     x = " unit(x) NL
+	s = s "     y = " unit(y) NL
+	s = s "     rot = " rot+0 NL
+	s = s "     smirror = 0; xmirror = 0" NL
+	s = s "     clearance = " either(clearance, DEFAULT["pin_clearance"]) NL
+	s = s "     ha:attributes {" NL
+	s = s "      term = " termid NL
+	if (name != "")
+		s = s "      name = 1" NL
+	s = s "     }" NL
+	s = s "     li:thermal { }" NL
+	s = s "     ha:flags { clearline = 1; }" NL
+	s = s "    }" NL
+
+	globals = globals  NL s
 }
 
 # draw element pad

@@ -16,9 +16,12 @@ BEGIN {
 
 	half = mil(50)
 
+	pstk_s = subc_proto_create_pin_square()
+	pstk_r = subc_proto_create_pin_round()
+
 	for(n = 1; n <= P["n"]/2; n++) {
-		subc_pin(0, (n-1) * mil(100), n)
-		subc_pin(spacing, (n-1) * mil(100), P["n"] - n + 1)
+		subc_pstk((n == 1 ? pstk_s : pstk_r), 0, (n-1) * mil(100), 0, n)
+		subc_pstk(pstk_r, spacing, (n-1) * mil(100), 0, P["n"] - n + 1)
 	}
 
 	dip_outline("top-silk", -half, -half, spacing + half , (n-2) * mil(100) + half,  half)
