@@ -4,6 +4,10 @@
 + CLEANUP: Vuokko's list of warnings on OpenBSD: bug_files/warn-obsd-r26600.log [report: Vuokko]
 + CLEANUP/feature: pcb_subc_smash_buffer() should really copy data so it can smash multiple subcs and subc objects end up on the layer they were bound to [report: keantoken]
 - CLEANUP: unify gui invocation option printout: pcb-rnd --help gtk_[gdk|gl] and pcb-rnd --help lesstif should use the same style printing options (even tho options will never be the same) [report:miloh]
+- CLEANUP: rewrite parametric footprints to use tEDAx (or lihata)
+	- add "global" option for paste/mask tuning
+	- update fp2anim so the web page works again
+	- dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 - FEATURE: net attributes GUI [report: Ade]
 	- propedty editor: net scope
 	- button from the netlist dialog
@@ -23,10 +27,6 @@
 	- FEATURE: If a component is out of view when selected then pan the view until it is visible. May need to zoom also if a group is selected. [report: Ade]
 
 2. For later releases ===============================================================================
-- CLEANUP: rewrite parametric footprints to use tEDAx (or lihata)
-	- add "global" option for paste/mask tuning
-	- update fp2anim so the web page works again
-	- dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 - CLEANUP: (TT) propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
