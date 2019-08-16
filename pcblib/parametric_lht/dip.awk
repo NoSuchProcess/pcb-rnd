@@ -12,7 +12,7 @@ BEGIN {
 
 	spacing=parse_dim(P["spacing"])
 
-	subc_begin(P["n"] "*" P["spacing"], "U1_lht", 0, 0)
+	subc_begin(P["n"] "*" P["spacing"], "U1_lht", 0, mil(-100))
 
 	half = mil(50)
 

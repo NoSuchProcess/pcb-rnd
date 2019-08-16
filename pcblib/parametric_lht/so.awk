@@ -22,7 +22,7 @@ BEGIN {
 	offs_x = -(row_spacing/2)
 	offs_y = -int((P["n"]/4-0.5) * pad_spacing)
 
-	subc_begin(P["n"] "*" P["row_spacing"], "U1", 0, 0)
+	subc_begin(P["n"] "*" P["row_spacing"], "U1", -offs_x, mil(-100)-offs_y)
 
 	proto = subc_proto_create_pad_sqline(-ext_bloat, int_bloat, pad_width)
 

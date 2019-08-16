@@ -30,7 +30,7 @@ BEGIN {
 
 	offs_x = +spacing/2
 
-	subc_begin("acy" P["spacing"], "R1_lht", spacing/2-spacing/5, -mil(20), 0)
+	subc_begin("acy" P["spacing"], "R1", -spacing/5, -mil(20), 0)
 
 	proto_s = subc_proto_create_pin_square()
 	proto_r = subc_proto_create_pin_round()
