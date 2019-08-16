@@ -98,10 +98,6 @@ function strip(s)
 	return s
 }
 
-# translate coordinates
-function coord_x(x) { return x + offs_x }
-function coord_y(y) { return y + offs_y }
-
 function lht_str(s)
 {
 	if (s ~ "[^A-Za-z0-9 _-]") {
@@ -188,9 +184,9 @@ function subc_begin(footprint, refdes, refdes_x, refdes_y, refdes_dir)
 
 	subc_text("top-silk", refdes_x, refdes_y, "%a.parent.refdes%", 100, text_dir, "dyntext = 1;floater=1;")
 	LAYER_TYPE["subc_aux"] = "top-misc-virtual"
-	subc_line("subc_aux", coord_x(0), coord_y(0), coord_x(mm(1)), coord_y(0), mm(0.1), 0, "", "subc-role = x");
-	subc_line("subc_aux", coord_x(0), coord_y(0), coord_x(0), coord_y(mm(1)), mm(0.1), 0, "", "subc-role = y");
-	subc_line("subc_aux", coord_x(0), coord_y(0), coord_x(0), coord_y(0), mm(0.1), 0, "", "subc-role = origin");
+	subc_line("subc_aux", -offs_x, -offs_y, -offs_x + mm(1), -offs_y, mm(0.1), 0, "", "subc-role = x");
+	subc_line("subc_aux", -offs_x, -offs_y, -offs_x, -offs_y + mm(1), mm(0.1), 0, "", "subc-role = y");
+	subc_line("subc_aux", -offs_x, -offs_y, -offs_x, -offs_y, mm(0.1), 0, "", "subc-role = origin");
 }
 
 # generate subcircuit footers
@@ -410,7 +406,7 @@ function subc_pstk(proto, x, y, rot, termid, name, clearance,      s)
 # draw element pad
 function subc_pad(x1, y1, x2, y2, thickness,   number, flags,   clearance, mask, name)
 {
-	print "	Pad[", coord_x(x1), coord_y(y1), coord_x(x2), coord_y(y2), int(either(thickness, DEFAULT["pad_thickness"])),
+	print "	Pad[", x1, y1, x2, y2, int(either(thickness, DEFAULT["pad_thickness"])),
 		int(either(clearance, DEFAULT["pad_clearance"])), int(either(mask, DEFAULT["pad_mask"])),
 		q name q, q number q, q flags q "]"
 }
@@ -436,7 +432,7 @@ function subc_pad_rectangle(x1, y1, x2, y2,   number, flags,   clearance, mask, 
 		th = dy
 		cy = (y1+y2)/2
 
-		print "	Pad[", coord_x(x1)+th/2, coord_y(cy), coord_x(x2)-th/2, coord_y(cy), th,
+		print "	Pad[", x1+th/2, cy, x2-th/2, cy, th,
 			int(either(clearance, DEFAULT["pad_clearance"])), int(either(mask, DEFAULT["pad_mask"])),
 			q name q, q number q, q flags q "]"
 	}
@@ -444,7 +440,7 @@ function subc_pad_rectangle(x1, y1, x2, y2,   number, flags,   clearance, mask, 
 		th = dx
 		cx = (x1+x2)/2
 
-		print "	Pad[", coord_x(cx), coord_y(y1)+th/2, coord_x(cx), coord_y(y2)-th/2, th,
+		print "	Pad[", cx, y1+th/2, cx, y2-th/2, th,
 			int(either(clearance, DEFAULT["pad_clearance"])), int(either(mask, DEFAULT["pad_mask"])),
 			q name q, q number q, q flags q "]"
 	}
@@ -462,7 +458,7 @@ function subc_pad_matrix(x1, y1, nx, ny, w, h, ox, oy,     number, flags,   clea
 # draw element pad circle
 function subc_pad_circle(x1, y1, radius,   number,  clearance, mask, name)
 {
-	print "	Pad[", coord_x(x1), coord_y(y1), coord_x(x1), coord_y(y1), int(either(radius, DEFAULT["pad_thickness"])),
+	print "	Pad[", x1, y1, x1, y1, int(either(radius, DEFAULT["pad_thickness"])),
 		int(either(clearance, DEFAULT["pad_clearance"])), int(either(mask, DEFAULT["pad_mask"])),
 		q name q, q number q, q "" q "]"
 }
@@ -835,7 +831,7 @@ function silkmark(style, x, y, half,    step,   S,n,v)
 # if dist starts with a "@", it's the absolute coordinate of the center of the dim line (text base), else it's relative distance from the measured line
 function dimension(x1, y1, x2, y2, dist, name,    value,    vx,vy)
 {
-	print "#dimension", coord_x(x1), coord_y(y1), coord_x(x2), coord_y(y2), dist, name, value
+	print "#dimension", x1, y1, x2, y2, dist, name, value
 }
 
 function help_extract(SEEN, fn, dirn, OVER, IGN,     WANT,tmp,key,val,i,skip)
