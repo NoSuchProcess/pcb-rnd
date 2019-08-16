@@ -1,0 +1,53 @@
+#!/bin/sh
+
+#@@example connector(2, 3, silkmark=external, spacing=100)
+
+#@@purpose Generate pin-array connectors (e.g. headers).
+
+#@@desc Generate thru-hole connectors that consits of an array of
+#@@desc evenly spaced pins, a plain frame and some optional pin marks
+#@@desc on the silk layer.
+
+#@@params nx, ny, spacing, silkmark, eshift, etrunc
+
+#@@param:nx number of pins in the X direction
+#@@param:ny number of pins in the Y direction
+#@@param:spacing spacing between the pins
+#@@dim:spacing
+#@@default:spacing 100 mil
+
+#@@include silkmark.help
+#@@optional:silkmark
+#@@default:silkmark square
+#@@preview_args:silkmark 2,3
+
+#@@param:eshift shift even rows or columns by half spacing (optional; default: don't shift)
+#@@enum:eshift:x shift columns
+#@@enum:eshift:y shift rows
+#@@enum:eshift:none do not shift anything
+#@@default:eshift none
+#@@optional:eshift
+#@@preview_args:eshift 2,3
+
+#@@param:etrunc truncate the last pin of a shifted row or column
+#@@bool:etrunc
+#@@default:etrunc false
+#@@optional:etrunc
+#@@preview_args:etrunc 2,3,eshift=x
+
+#@@param:sequence pin numbering sequence
+#@@enum:sequence:normal increase by y first, then by x
+#@@enum:sequence:pivot increase by x first, then by y
+#@@enum:sequence:zigzag "dip-style" numbering in zig-zag: number odd x rows by y ascending, even x rows by y descending
+#@@preview_args:sequence 2,4
+#@@thumbsize:sequence 3
+#@@thumbnum:sequence 1
+#@@default:sequence normal
+#@@optional:sequence
+
+
+
+#@@include common.awk
+
+awk -f `dirname $0`/common.awk -f `dirname $0`/connector.awk -v "args=$*" -v gen=`basename $0` -v "genfull=$0"
+
