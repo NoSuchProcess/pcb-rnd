@@ -320,10 +320,10 @@ function subc_proto_create_pin_round(drill_dia, ring_dia, mask_dia      ,proto)
 	PROTO_COMMENT[proto] = "# Round plated through hole " unit(ring_dia) "/" unit(drill_dia)
 	PROTO[proto] = PROTO[proto] "     li:shape {" NL
 
-	dia = either(dia, DEFAULT["pin_ringdia"])
-	subc_pstk_add_shape_circ(proto, "top-copper", x, y, dia)
-	subc_pstk_add_shape_circ(proto, "intern-copper", x, y, dia)
-	subc_pstk_add_shape_circ(proto, "bottom-copper", x, y, dia)
+	ring_dia = either(ring_dia, DEFAULT["pin_ringdia"])
+	subc_pstk_add_shape_circ(proto, "top-copper", x, y, ring_dia)
+	subc_pstk_add_shape_circ(proto, "intern-copper", x, y, ring_dia)
+	subc_pstk_add_shape_circ(proto, "bottom-copper", x, y, ring_dia)
 
 	mask_dia = either(mask_dia, DEFAULT["pin_mask"])
 	subc_pstk_add_shape_circ(proto, "top-mask", x, y, mask_dia)
