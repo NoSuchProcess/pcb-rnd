@@ -1,0 +1,56 @@
+#!/bin/sh
+
+#@@example acy(300)
+
+#@@purpose Generate axial lead through-hole component
+
+#@@desc Generate axial lead through-hole component with 2 pins (typical use: resistor)
+#@@params spacing,type,pol,dia
+
+#@@param:spacing spacing between the two pins
+#@@dim:spacing
+
+#@@param:type silk symbol type
+#@@enum:type:block eu-style block resistor symbol
+#@@enum:type:endcap block resistor with caps on the ends
+#@@enum:type:zigzag us-style zigzag resistor symbol
+#@@enum:type:line a single line (e.g. for jumper wires)
+#@@enum:type:standing vertically aligned, body standing on pin 1, pin 2 bent back
+#@@enum:type:coil wavy coil symbol
+#@@enum:type:core wavy coil symbol with a parallel line
+#@@enum:type:core2 wavy coil symbol with two parallel lines
+#@@optional:type
+#@@default:type block
+#@@preview_args:type 300
+
+#@@param:pol how to mark polarity
+#@@enum:pol:none no marking
+#@@enum:pol:sign + and - signs; pin 1 is +
+#@@enum:pol:bar bar next to pin 1
+#@@enum:pol:dot dot next to pin 1
+#@@optional:pol
+#@@default:pol none
+#@@preview_args:pol 300
+
+#@@param:dia body diameter - affects silk size
+#@@dim:dia 
+#@@optional:dia
+#@@default:dia spacing/6
+
+
+#@@param:wiper silk symbol wiper type
+#@@enum:wiper:none no wiper
+#@@enum:wiper:parrow perpendicular arrow, pointing inwards
+#@@enum:wiper:aarrow angled arrow, pointing outwards
+#@@enum:wiper:looparrow arrow starting at pin 2 looping back to point inwards on the body
+#@@enum:wiper:thermistor wiper of a thermistor symbol
+#@@optional:wiper
+#@@default:wiper none
+#@@preview_args:wiper 400
+
+#@@thumbsize 2
+
+#@@include common.awk
+
+awk -f `dirname $0`/common.awk -f `dirname $0`/acy.awk -v "args=$*" -v gen=`basename $0` -v "genfull=$0"
+
