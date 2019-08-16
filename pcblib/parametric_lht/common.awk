@@ -378,6 +378,28 @@ function subc_proto_create_pad_sqline(x1, x2, thick, mask, paste   ,proto,m,p)
 	return proto
 }
 
+function subc_proto_create_pad_circle(dia, mask_dia, paste_dia    ,proto)
+{
+	proto = subc_proto_alloc()
+	subc_pstk_no_hole(proto)
+
+	dia = either(dia, DEFAULT["pad_dia"])
+
+	PROTO_COMMENT[proto] = "# Circular smd pad " unit(dia)
+	PROTO[proto] = PROTO[proto] "     li:shape {" NL
+
+	subc_pstk_add_shape_circ(proto, "top-copper", 0, 0, dia)
+
+	mask_dia = either(mask_dia, DEFAULT["pad_mask_dia"])
+	subc_pstk_add_shape_circ(proto, "top-mask", 0, 0, mask_dia)
+
+	paste_dia = either(mask_dia, DEFAULT["pad_paste_dia"])
+	subc_pstk_add_shape_circ(proto, "top-mask", 0, 0, paste_dia)
+
+	PROTO[proto] = PROTO[proto] "     }" NL
+	return proto
+}
+
 # generate a padstack reference
 function subc_pstk(proto, x, y, rot, termid, name, clearance,      s)
 {
@@ -787,35 +809,35 @@ function silkmark(style, x, y, half,    step,   S,n,v)
 
 	for(n = 1; n <= v; n++) {
 		if (S[n] == "angled") {
-			element_line(x+half, y,  x, y+half)
+			subc_line("top-silk", x+half, y,  x, y+half)
 		}
 		else if (S[n] == "square") {
-			element_line(x, y+step,  x+2*half, y+step)
-			element_line(x+step, y,  x+2*half, y+step)
+			subc_line("top-silk", x, y+step,  x+2*half, y+step)
+			subc_line("top-silk", x+step, y,  x+2*half, y+step)
 		}
 		else if ((S[n] == "external") || (S[n] == "externalx")) {
-			element_line(x, y+half,         x-step+half, y+half/2)
-			element_line(x, y+half,         x-step+half, y+half*1.5)
-			element_line(x-step+half, y+half/2,         x-step+half, y+half*1.5)
+			subc_line("top-silk", x, y+half,         x-step+half, y+half/2)
+			subc_line("top-silk", x, y+half,         x-step+half, y+half*1.5)
+			subc_line("top-silk", x-step+half, y+half/2,         x-step+half, y+half*1.5)
 		}
 		else if (S[n] == "externaly") {
-			element_line(x+half, y,         x-half/2+half, y-step+half)
-			element_line(x+half, y,         x+half/2+half, y-step+half)
-			element_line(x-half/2+half, y-step+half,  x+half/2+half, y-step+half)
+			subc_line("top-silk", x+half, y,         x-half/2+half, y-step+half)
+			subc_line("top-silk", x+half, y,         x+half/2+half, y-step+half)
+			subc_line("top-silk", x-half/2+half, y-step+half,  x+half/2+half, y-step+half)
 		}
 		else if (S[n] == "external45") {
-			element_line(x, y,       x-half, y-half/3)
-			element_line(x, y,       x-half/3, y-half)
-			element_line(x-half, y-half/3, x-half/3, y-half)
+			subc_line("top-silk", x, y,       x-half, y-half/3)
+			subc_line("top-silk", x, y,       x-half/3, y-half)
+			subc_line("top-silk", x-half, y-half/3, x-half/3, y-half)
 		}
 		else if (S[n] == "arc") {
-			element_arc(x, y, step/2, step/2, 180, 270)
+			subc_arc("top-silk", x, y, step/2, 180, 270)
 		}
 		else if (S[n] == "circle") {
-			element_arc(x, y, step/2, step/2, 0, 360)
+			subc_arc("top-silk", x, y, step/2, 0, 360)
 		}
 		else if (S[n] == "dot") {
-			element_arc(x-step/2, y-step/2, step/4, step/4, 0, 360)
+			subc_arc("top-silk", x-step/2, y-step/2, step/4, 0, 360)
 		}
 		else if ((S[n] != "none") && (S[n] != "")) {
 			error("invalid silkmark parameter: " S[n])

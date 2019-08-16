@@ -1,0 +1,74 @@
+#!/bin/sh
+
+# Reference: Microchip Packaging Specification DS00000049BX (en012702.pdf), SSOP
+
+#@@example bga(map=a1:a2:a2:#:b1:!:b3:#:c1:c2:!)
+
+#@@purpose Generate ball grid array
+
+#@@desc Generate a grid of circular pads for BGA chips
+
+#@@params nx,ny,spacing,balldia,silkmark,map,width,height,automap,automap2
+
+#@@param:nx number of pins in the X direction
+#@@optional:nx
+#@@default:nx deduced from the map
+
+#@@param:ny number of pins in the Y direction
+#@@optional:ny
+#@@default:ny deduced from the map
+
+#@@param:spacing spacing between the pins
+#@@dim:spacing
+#@@default:spacing 0.5 mm
+
+#@@param:balldia diameter of a ball
+#@@dim:balldia
+#@@default:spacing 0.35 mm
+
+#@@include silkmark.help
+#@@optional:silkmark
+#@@default:silkmark square
+#@@preview_args:silkmark 3,3
+
+#@@param:map pin name map; a colon separated list of names, from left to right, rows first. If a name is empty or is a hash mark, a new row is started. If a name is a !, the given pin is missing and no pad is generated.
+#@@optional:map
+
+#@@param:width width of the box (silk rectangle x size)
+#@@dim:width
+#@@optional:width
+#@@default:width two columns wider than the array
+
+#@@param:height height of the box (silk rectangle y size)
+#@@dim:height
+#@@optional:height
+#@@default:height two columns higher than the array
+
+
+#@@param:automap assume a regular nx*ny array, automap (autonumber) the pins
+#@@optional:automap
+#@@enum:automap:none do not autonumber pins
+#@@enum:automap:alnum number y rows from A..Z (then AA..AZ) from top to bottom, number x rows from 0..nx left to right
+#@@default:none
+#@@preview_args:automap 3,3
+#@@thumbsize:automap 3
+#@@thumbnum:automap 1
+
+#@@param:automap2 change how automap behaves - multiple values separated by colon are accepted (e.g. automap2=pivot,reversex)
+#@@enum:automap2:pivot swap x and y
+#@@enum:automap2:reversex number x from right to left
+#@@enum:automap2:reversey number y from bottom up
+#@@preview_args:automap2 3,3,automap=alnum
+#@@thumbsize:automap2 3
+#@@thumbnum:automap2 1
+
+#@@param:alphabet the alphabet automap may use for rows; use A..Z if unspecified, else use the letters in this alphabet (in order). List letters without separator, e.g. ABCDEF
+#@@preview_args:automap2 3,3,automap=alnum,alphabet=QDT
+#@@thumbsize:automap2 3
+#@@thumbnum:automap2 1
+
+
+#@@include common.awk
+
+awk -f `dirname $0`/common.awk -f `dirname $0`/bga.awk -v "args=$*" -v gen=`basename $0` -v "genfull=$0"
+
