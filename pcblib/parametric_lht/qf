@@ -1,0 +1,114 @@
+#!/bin/sh
+
+#@@example qf(nx=4,ny=4,cpad_auto=1)
+
+#@@purpose Generate generic *qf* (e.g. tqfp, qfn) packages
+
+#@@desc Generate *qf* (e.g. tqfp, qfn) packages: smd pads around a square; this is the generic implementation, end users may want to use the specific ones, e.g. tqfp(), qfn(), etc.
+#@@params nx,ny,x_spacing,y_spacing,pad_spacing,ext_bloat,int_bloat,width,height,cpad_width,cpad_height,cpad_auto,bodysilk,pinoffs,silkmark
+
+#@@param:nx number of pins along the horizontal sides
+
+#@@param:ny number of pins along the vertical sides
+#@@optional:ny
+#@@default:ny assume ny=nx
+
+#@@param:x_spacing spacing between the two vertical rows of pins
+#@@dim:x_spacing
+#@@optional:x_spacing
+#@@default:x_spacing calculated using nx and pad_spacing
+
+#@@param:y_spacing spacing between the two vertical rows of pins
+#@@dim:y_spacing
+#@@optional:y_spacing
+#@@default:y_spacing calculated using ny and pad_spacing
+
+#@@param:pad_spacing spacing between the centerlines of two adjacent pads (aka pitch)
+#@@dim:pad_spacing
+#@@optional:pad_spacing
+
+#@@param:ext_bloat how much longer the pad should extend outwards from the end-point of the pin
+#@@dim:ext_bloat
+#@@optional:ext_bloat
+#@@default:ext_bloat 0.37 mm
+
+#@@param:int_bloat how much longer the pad should extend inwards from the end-point of the pin
+#@@dim:int_bloat
+#@@optional:int_bloat
+#@@default:int_bloat 0.37 mm
+
+#@@param:width width (horizontal, x axis size) of the box drawn on silk
+#@@dim:width
+#@@optional:width
+#@@default:width calculated from the pad row geometry
+
+#@@param:height height (vertical, y axis size) of the box drawn on silk
+#@@dim:height
+#@@optional:height
+#@@default:height calculated from the pad row geometry
+
+#@@param:cpad_width width (horizontal, x axis size) of the central pad
+#@@dim:cpad_width
+#@@optional:cpad_width
+#@@default:cpad_width empty, no central pad
+
+#@@param:cpad_height height (vertical, y axis size) of the central pad
+#@@dim:cpad_height
+#@@optional:cpad_height
+#@@default:cpad_height empty, no central pad
+
+#@@param:cpad_auto when true, calculate central pad sizes automatically from the pad row geometry
+#@@bool:cpad_auto
+#@@optional:cpad_height
+#@@default:cpad_height false, no central pad
+
+#@@param:cpm_nx central pad paste matrix, number of paste pads in x direction
+#@@optional:cpm_nx
+#@@default:cpm_nx 2
+
+#@@param:cpm_ny central pad paste matrix, number of paste pads in y direction
+#@@optional:cpm_ny
+#@@default:cpm_ny 2
+
+#@@param:cpm_width central pad paste matrix, paste pad width (dimension of each paste rectangle)
+#@@dim:cpm_width
+#@@optional:cpm_width
+#@@default:cpm_width 1mm
+
+#@@param:cpm_height central pad paste matrix, paste pad height (dimension of each paste rectangle)
+#@@dim:cpm_height
+#@@optional:cpm_height
+#@@default:cpm_height 1mm
+
+#@@param:cpad_mask center pad mask; if not specified, use the same gap as for the rows (pad_mask)
+#@@dim:cpad_mask
+#@@optional:cpad_mask
+
+#@@param:rpad_round when true, row pads are round
+#@@bool:rpad_round
+#@@optional:rpad_round
+#@@default:rpad_round false, row pads are square
+
+#@@param:bodysilk how to draw body on the silk layer
+#@@enum:bodysilk:none no drawing
+#@@enum:bodysilk:corners draw the corners, silkmark is outside of the top-left corner
+#@@enum:bodysilk:full draw a full rectanlge, silkmark of the top-left corner
+#@@enum:bodysilk:plcc angled top-left corner, horizontal line on the top
+#@@optional:bodysilk
+#@@default:bodysilk corners
+
+#@@param:pinoffs rotate pins by this amount, CW
+#@@optional:pinoffs
+#@@default:pinoffs 0
+
+#@@include silkmark.help
+#@@optional:silkmark
+#@@default:silkmark square
+#@@preview_args:silkmark 4,4
+
+#@@default:silkmark dot
+#@@include common_subc.awk
+
+
+awk -f `dirname $0`/common_subc.awk -f `dirname $0`/qf.awk -v "args=$*" -v gen=`basename $0` -v "genfull=$0"
+
