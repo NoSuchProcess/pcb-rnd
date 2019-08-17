@@ -265,6 +265,7 @@ function subc_pstk_add_hole(proto, dia, plated,     htop, hbottom    ,s)
 	s = s "     htop = " int(htop) NL
 	s = s "     hbottom = " int(hbottom) NL
 	PROTO[proto] = PROTO[proto] s
+	PROTO_HOLE[proto] = dia
 }
 
 function subc_pstk_no_hole(proto   ,s)
@@ -496,7 +497,7 @@ function subc_pstk(proto, x, y, rot, termid, name, clearance,      s)
 	s = s "     y = " unit(y) NL
 	s = s "     rot = " rot+0 NL
 	s = s "     smirror = 0; xmirror = 0" NL
-	s = s "     clearance = " unit(either(clearance, DEFAULT["pin_clearance"])/2) NL
+	s = s "     clearance = " unit(either(clearance, (PROTO_HOLE[proto] > 0 ? DEFAULT["pin_clearance"] : DEFAULT["pad_clearance"]))/2) NL
 	s = s "     ha:attributes {" NL
 	s = s "      term = " termid NL
 	if (name != "")
