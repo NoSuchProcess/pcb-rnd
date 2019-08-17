@@ -21,6 +21,7 @@
 - BUG: bug_files/slot1.lht: open as footprint for edit - no mech layers are created so slots won't display [report: cuvoodoo]
 - DOC: finish DAD doc (doc/developer/dad/: e.g. run.html is missing) [report: Alain]
 - FEATURE: no-export attribute: cache a no-export attribute in a bitfield (e.g. flags like no-export for vector outputs, pixel outputs); exporter should set the bits in HID; core rendring should decide what to draw; use case: poly clearance to emulate keep-away on outline, and replace the old zero-width line trick [report: karl]
+- FEATURE: configure setting: library window filter shouldn't really filter if there's () in the string [report: pskibinski]
 - asm() dialog
 	- FEATURE: Add a button to clear the done status from a component. [report: Ade]
 	- FEATURE: Show the status message on a group when minimized to indicate whether the groups components are done, not done or partially done. [report: Ade]
