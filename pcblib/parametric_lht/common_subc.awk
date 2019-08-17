@@ -204,10 +204,10 @@ function subc_begin(footprint, refdes, refdes_x, refdes_y, refdes_dir)
 
 
 	subc_text("top-silk", refdes_x, refdes_y, "%a.parent.refdes%", 100, text_dir, "dyntext = 1;floater=1;")
-	LAYER_TYPE["subc_aux"] = "top-misc-virtual"
-	subc_line("subc_aux", -offs_x, -offs_y, -offs_x + mm(1), -offs_y, mm(0.1), 0, "", "subc-role = x");
-	subc_line("subc_aux", -offs_x, -offs_y, -offs_x, -offs_y + mm(1), mm(0.1), 0, "", "subc-role = y");
-	subc_line("subc_aux", -offs_x, -offs_y, -offs_x, -offs_y, mm(0.1), 0, "", "subc-role = origin");
+	LAYER_TYPE["subc-aux"] = "top-misc-virtual"
+	subc_line("subc-aux", -offs_x, -offs_y, -offs_x + mm(1), -offs_y, mm(0.1), 0, "", "subc-role = x");
+	subc_line("subc-aux", -offs_x, -offs_y, -offs_x, -offs_y + mm(1), mm(0.1), 0, "", "subc-role = y");
+	subc_line("subc-aux", -offs_x, -offs_y, -offs_x, -offs_y, mm(0.1), 0, "", "subc-role = origin");
 }
 
 # generate subcircuit footers
