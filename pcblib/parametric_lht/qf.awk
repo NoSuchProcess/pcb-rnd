@@ -140,8 +140,8 @@ BEGIN {
 		x = (-cx + n) * pad_spacing
 		y1 = -y_spacing/2
 		y2 = y_spacing/2
-		subc_pstk(proto, x, y1, 90, pinnum(nx*2+ny*2-n+1))
-		subc_pstk(proto, x, y2, 270, pinnum(n+ny))
+		subc_pstk(proto, x, y1, 270, pinnum(nx*2+ny*2-n+1))
+		subc_pstk(proto, x, y2, 90, pinnum(n+ny))
 	}
 
 
@@ -171,7 +171,7 @@ BEGIN {
 		silkmark(P["silkmark"], -width/2 - wx/2, -height/2+wy*1.5, (wx+wy)/4)
 	}
 	else if (bodysilk == "full") {
-		subc_rectange("top-silk", -width/2, -height/2, width/2, height/2)
+		subc_rectangle("top-silk", -width/2, -height/2, width/2, height/2)
 		silkmark(P["silkmark"], -width/2 + wx*3, -height/2+wy*3, (wx+wy)/2)
 	}
 	else if (bodysilk == "plcc") {
