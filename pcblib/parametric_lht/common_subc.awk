@@ -496,7 +496,7 @@ function subc_pstk(proto, x, y, rot, termid, name, clearance,      s)
 	s = s "     y = " unit(y) NL
 	s = s "     rot = " rot+0 NL
 	s = s "     smirror = 0; xmirror = 0" NL
-	s = s "     clearance = " either(clearance, DEFAULT["pin_clearance"]) NL
+	s = s "     clearance = " unit(either(clearance, DEFAULT["pin_clearance"])/2) NL
 	s = s "     ha:attributes {" NL
 	s = s "      term = " termid NL
 	if (name != "")
