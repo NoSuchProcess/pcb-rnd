@@ -30,6 +30,14 @@
 #@@optional:pad_paste
 #@@dim:pad_paste
 
+#@@param:pad_paste_offs how much bigger (+) or smaller (-) the paste should be compared to copper (in mil by default, mm suffix can be used)
+#@@optional:pad_paste_offs
+#@@dim:pad_paste_offs
+
+#@@param:pad_paste_ratio pad paste should be copper size * this ratio (numbers smaller than 1 mean smaller paste, 1.00 means exactly as big as the copper shape)
+#@@optional:pad_paste_ratio
+#@@dim:pad_paste_ratio
+
 #@@param:line_thickness silk line thickness (in mil by default, mm suffix can be used)
 #@@optional:line_thickness
 #@@dim:line_thickness
@@ -60,6 +68,9 @@ BEGIN {
 	DEFAULT["pad_mask", "dim"] = 1
 	DEFAULT["pad_paste"] = "" # use copper size
 	DEFAULT["pad_paste", "dim"] = 1
+	DEFAULT["pad_paste_offs"] = "" # use copper size
+	DEFAULT["pad_paste_offs", "dim"] = 1
+	DEFAULT["pad_paste_ratio"] = "" # use copper size
 
 	DEFAULT["pin_flags"] = "__auto"
 
@@ -425,12 +436,24 @@ function pad_paste(copper, absval, offsval, ratio)
 		return copper*ratio
 	if (DEFAULT["pad_paste"] != "")
 		return DEFAULT["pad_paste"]
+	if (DEFAULT["pad_paste_offs"] != "")
+		return copper+DEFAULT["pad_paste_offs"]*2
+	if (DEFAULT["pad_paste_ratio"] != "")
+		return copper*DEFAULT["pad_paste_ratio"]
 	return copper
 }
 
 function pad_paste_offs(offsval)
 {
-	return either(offsval, (DEFAULT["pad_paste"]) - DEFAULT["pad_thickness"])
+	if (offsval != "")
+		return offsval
+	if (DEFAULT["pad_paste"] != "")
+		return DEFAULT["pad_paste"] - DEFAULT["pad_thickness"]
+	if (DEFAULT["pad_paste_offs"] != "")
+		return DEFAULT["pad_paste_offs"]
+	if (DEFAULT["pad_paste_ratio"] != "")
+		return DEFAULT["pad_thickness"]*DEFAULT["pad_paste_ratio"] - DEFAULT["pad_thickness"]
+	return 0
 }
 
 function subc_proto_create_pad_sqline(x1, x2, thick, mask, paste   ,proto,m,p)
