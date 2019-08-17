@@ -4,10 +4,9 @@
 + CLEANUP: Vuokko's list of warnings on OpenBSD: bug_files/warn-obsd-r26600.log [report: Vuokko]
 + CLEANUP/feature: pcb_subc_smash_buffer() should really copy data so it can smash multiple subcs and subc objects end up on the layer they were bound to [report: keantoken]
 - CLEANUP: unify gui invocation option printout: pcb-rnd --help gtk_[gdk|gl] and pcb-rnd --help lesstif should use the same style printing options (even tho options will never be the same) [report:miloh]
-- CLEANUP: rewrite parametric footprints to use tEDAx (or lihata)
+- FEATURE: parametric footprints
 	- add "global" option for paste/mask tuning
 	- update fp2anim so the web page works again
-	- dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 - FEATURE: net attributes GUI [report: Ade]
 	- propedty editor: net scope
 	- button from the netlist dialog
@@ -174,6 +173,8 @@
 - BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - BUG: gtk2_gl issue. view in netlist window circuit view clips or goes black when changing selected net (repro. w/ doc/tutorials/15_no_sch/step3.lht and open netlist view {w n} [report: miloh]
+- version 3.0.0:
+	- dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 
 3. Long term ===============================================================================
 - BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
