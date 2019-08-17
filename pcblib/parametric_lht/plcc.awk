@@ -45,7 +45,7 @@ BEGIN {
 
 	S[1] -= 60
 	S[2] -= 60
-	args = args ",nx=" pins ",ny=" pins ",x_spacing=" S[1] "mil,y_spacing=" S[2] "mil,pad_spacing=" pitch "mil,pad_thickness=" pt "mil"
+	args = args ",nx=" pins ",ny=" pins ",x_spacing=" S[1] "mil,y_spacing=" S[2] "mil,pad_spacing=" pitch "mil,pad_thickness=" pt
 
 	args = args ",width=" S[1]-150 " mil,height=" S[2]-150 " mil"
 
