@@ -116,11 +116,10 @@ BEGIN {
 
 	cx = (nx+1)/2
 	cy = (ny+1)/2
-
-	if (rpad_round)
-		proto = subc_proto_create_pad_line(-ext_bloat, int_bloat, pad_width)
-	else
+	if (rpad_round == "square")
 		proto = subc_proto_create_pad_sqline(-ext_bloat, int_bloat, pad_width)
+	else
+		proto = subc_proto_create_pad_line(-ext_bloat, int_bloat, pad_width)
 
 	for(n = 1; n <= ny; n++) {
 		y = (-cy + n) * pad_spacing
