@@ -58,7 +58,7 @@ BEGIN {
 	DEFAULT["pad_clearance", "dim"] = 1
 	DEFAULT["pad_mask"] = mil(30)
 	DEFAULT["pad_mask", "dim"] = 1
-	DEFAULT["pad_paste"] = mil(8)
+	DEFAULT["pad_paste"] = "" # use copper size
 	DEFAULT["pad_paste", "dim"] = 1
 
 	DEFAULT["pin_flags"] = "__auto"
@@ -389,6 +389,24 @@ function subc_proto_create_pin_square(drill_dia, ring_span, mask_span     ,proto
 	return proto
 }
 
+function pad_paste(copper, absval, offsval, ratio)
+{
+	if (absval != "")
+		return absval
+	if (offsval != 0)
+		return copper+offsval
+	if (ratio != 0)
+		return copper*ratio
+	if (DEFAULT["pad_paste"] != "")
+		return DEFAULT["pad_paste"]
+	return copper
+}
+
+function pad_paste_offs(offsval)
+{
+	return either(offsval, (DEFAULT["pad_paste"]) - DEFAULT["pad_thickness"])
+}
+
 function subc_proto_create_pad_sqline(x1, x2, thick, mask, paste   ,proto,m,p)
 {
 	proto = subc_proto_alloc()
@@ -405,7 +423,7 @@ function subc_proto_create_pad_sqline(x1, x2, thick, mask, paste   ,proto,m,p)
 	m = (either(mask, DEFAULT["pad_mask"]) - thick) / 2
 	subc_pstk_add_shape_square_corners(proto, "top-mask", x1-thick/2-m, -thick/2-m, x2+thick/2+m, thick/2+m)
 
-	p = (either(paste, DEFAULT["pad_paste"]) - thick) / 2
+	p = (pad_paste(thick, paste)-thick)/2
 	subc_pstk_add_shape_square_corners(proto, "top-paste", x1-thick/2-p, -thick/2-p, x2+thick/2+p, thick/2+p)
 
 	PROTO[proto] = PROTO[proto] "     }" NL
@@ -426,7 +444,7 @@ function subc_proto_create_pad_line(x1, x2, thick, mask, paste   ,proto,m,p)
 
 	subc_pstk_add_shape_line(proto, "top-copper", x1, 0, x2, 0, thick)
 	subc_pstk_add_shape_line(proto, "top-mask", x1, 0, x2, 0, either(mask, DEFAULT["pad_mask"]))
-	subc_pstk_add_shape_line(proto, "top-paste", x1, 0, x2, 0, either(paste, DEFAULT["pad_paste"]))
+	subc_pstk_add_shape_line(proto, "top-paste", x1, 0, x2, 0, pad_paste(thick, paste))
 
 	PROTO[proto] = PROTO[proto] "     }" NL
 
@@ -453,7 +471,7 @@ function subc_proto_create_pad_rect(w, h, mask_offs, paste_offs   ,proto,m,p)
 	}
 
 	if (paste_offs != "none") {
-		p = (either(paste_offs, (DEFAULT["pad_paste"]) - DEFAULT["pad_thickness"]) / 2)
+		p = pad_paste_offs(paste_offs) / 2
 		subc_pstk_add_shape_square_corners(proto, "top-paste", -w-p, -h-p, +w+p, +h+p)
 	}
 
