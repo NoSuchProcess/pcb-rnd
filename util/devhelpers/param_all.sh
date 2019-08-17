@@ -3,12 +3,9 @@
 # Generate and render parametric footprints with variations of parameters
 # for testing
 
-#fp="$1"
-#shift 1
-#args="$@"
-
-fp=./acy
-args="spacing=400"
+fp="$1"
+shift 1
+args="$@"
 
 $fp --help | awk -F "[: \t]+" -v fp=$fp -v "args=$args" '
 BEGIN { order = 0 }
@@ -49,7 +46,13 @@ function build(param, value,     PV,p,s,cmd,fn)
 	gsub("[^A-Za-z0-9-]", "_", fn)
 	fn = fp "_" fn  ".lht"
 	system(fp " " q s q ">" fn)
-	system("pcb-rnd -x png --dpi 1200 " fn)
+
+	close(cmd)
+	cmd="pcb-rnd --hid batch"
+	print "LoadFrom(Layout, " fn ")" | cmd
+	print "autocrop" | cmd
+	print "export(png, --dpi, 1200)" | cmd
+	close(cmd)
 }
 
 function permute(param   ,n,v,E)
