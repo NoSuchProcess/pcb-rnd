@@ -170,6 +170,27 @@ function subc_arc(layer, cx, cy, r, a_start, a_delta, thick, clr, flags, attribu
 	LAYER[layer] = LAYER[layer] NL s
 }
 
+function subc_rect(layer, x1, y1, x2, y2, clearance, flags, attributes     ,s)
+{
+	w = w/2
+	h = h/2
+	s = s "          ha:polygon." ++objid " {" NL
+	s = s "           clearance=" unit(clearance) NL
+	s = s "           li:geometry {" NL
+	s = s "             ta:contour {" NL
+	s = s "              { " unit(x1) "; " unit(y1) " }" NL
+	s = s "              { " unit(x2) "; " unit(y1) " }" NL
+	s = s "              { " unit(x2) "; " unit(y2) " }" NL
+	s = s "              { " unit(x1) "; " unit(y2) " }" NL
+	s = s "             }" NL
+	s = s "           }" NL
+	s = s "           ha:attributes {" attributes "}" NL
+	s = s "           ha:flags {" flags "}" NL
+	s = s "          }" NL
+
+	LAYER[layer] = LAYER[layer] NL s
+}
+
 # start generating a subcircuit
 function subc_begin(footprint, refdes, refdes_x, refdes_y, refdes_dir)
 {
@@ -312,6 +333,19 @@ function subc_pstk_add_shape_square_corners(proto, layer, x1, y1, x2, y2    ,s)
 	PROTO[proto] = PROTO[proto] s
 }
 
+function subc_pstk_add_shape_line(proto, layer, x1, y1, x2, y2, thick    ,s)
+{
+	s = s "      ha:ps_shape_v4 {" NL
+	s = s "       clearance = 0" NL
+	s = s "       ha:ps_line {" NL
+	s = s "        x1=" unit(x1) "; y1=" unit(y1) "; x2=" unit(x2) "; y2=" unit(y2) ";" NL
+	s = s "        thickness=" unit(thick) "; square=0" NL
+	s = s "       }" NL
+	s = s subc_pstk_shape_layer(layer)
+	s = s "      }" NL
+	PROTO[proto] = PROTO[proto] s
+}
+
 function subc_proto_create_pin_round(drill_dia, ring_dia, mask_dia      ,proto)
 {
 	proto = subc_proto_alloc()
@@ -377,6 +411,56 @@ function subc_proto_create_pad_sqline(x1, x2, thick, mask, paste   ,proto,m,p)
 
 	return proto
 }
+
+function subc_proto_create_pad_line(x1, x2, thick, mask, paste   ,proto,m,p)
+{
+	proto = subc_proto_alloc()
+
+	thick = either(thick, parse_dim(DEFAULT["pad_thickness"]))
+
+	subc_pstk_no_hole(proto)
+
+	PROTO_COMMENT[proto] = "# Square smd pad " x2-x1 " * " thick
+	PROTO[proto] = PROTO[proto] "     li:shape {" NL
+
+	subc_pstk_add_shape_line(proto, "top-copper", x1, 0, x2, 0, thick)
+	subc_pstk_add_shape_line(proto, "top-mask", x1, 0, x2, 0, either(mask, DEFAULT["pad_mask"]))
+	subc_pstk_add_shape_line(proto, "top-paste", x1, 0, x2, 0, either(paste, DEFAULT["pad_paste"]))
+
+	PROTO[proto] = PROTO[proto] "     }" NL
+
+	return proto
+}
+
+function subc_proto_create_pad_rect(w, h, mask_offs, paste_offs   ,proto,m,p)
+{
+	proto = subc_proto_alloc()
+
+	subc_pstk_no_hole(proto)
+
+	PROTO_COMMENT[proto] = "# Square smd pad " w " * " h
+	PROTO[proto] = PROTO[proto] "     li:shape {" NL
+
+	w = w/2
+	h = h/2
+
+	subc_pstk_add_shape_square_corners(proto, "top-copper", -w, -h, +w, +h)
+
+	if (mask_offs != "none") {
+		m = (either(mask_offs, (DEFAULT["pad_mask"]) - DEFAULT["pad_thickness"]) / 2)
+		subc_pstk_add_shape_square_corners(proto, "top-mask", -w-m, -h-m, +w+m, +h+m)
+	}
+
+	if (paste_offs != "none") {
+		p = (either(paste_offs, (DEFAULT["pad_paste"]) - DEFAULT["pad_thickness"]) / 2)
+		subc_pstk_add_shape_square_corners(proto, "top-paste", -w-p, -h-p, +w+p, +h+p)
+	}
+
+	PROTO[proto] = PROTO[proto] "     }" NL
+
+	return proto
+}
+
 
 function subc_proto_create_pad_circle(dia, mask_dia, paste_dia    ,proto)
 {
@@ -466,15 +550,6 @@ function subc_pad_rectangle(x1, y1, x2, y2,   number, flags,   clearance, mask, 
 			int(either(clearance, DEFAULT["pad_clearance"])), int(either(mask, DEFAULT["pad_mask"])),
 			q name q, q number q, q flags q "]"
 	}
-}
-
-# draw a matrix of pads; top-left corner is x1;y1, there are nx*ny pads
-# of w*h size. rows/cols of pads are drawn with ox and oy offset
-function subc_pad_matrix(x1, y1, nx, ny, w, h, ox, oy,     number, flags,   clearance, mask, name,     ix,iy)
-{
-	for(iy = 0; iy < ny; iy++)
-		for(ix = 0; ix < nx; ix++)
-			element_pad_rectangle(x1+ix*ox, y1+iy*oy, x1+ix*ox+w, y1+iy*oy+h, number, flags, clearance, mask, name)
 }
 
 # draw element pad circle
@@ -575,23 +650,23 @@ function subc_rectangle(layer, x1, y1, x2, y2,    omit,  r, thickness   ,tmp,r1,
 # draw a rectangle corners of silk lines, wx and wy long in x and y directions
 # omit sides as requested in omit: NW, NW, SW, SE
 # corners are always sharp
-function element_rectangle_corners(x1, y1, x2, y2, wx, wy,    omit,  thickness   ,tmp)
+function subc_rectangle_corners(layer, x1, y1, x2, y2, wx, wy,    omit,  thickness   ,tmp)
 {
 	if (!(omit ~ "NW")) {
-		element_line(x1, y1,     x1+wx, y1,   thickness)
-		element_line(x1, y1,     x1, y1+wy,   thickness)
+		subc_line(layer, x1, y1,     x1+wx, y1,   thickness)
+		subc_line(layer, x1, y1,     x1, y1+wy,   thickness)
 	}
 	if (!(omit ~ "NE")) {
-		element_line(x2-wx, y1,  x2, y1,    thickness)
-		element_line(x2, y1,     x2, y1+wy, thickness)
+		subc_line(layer, x2-wx, y1,  x2, y1,    thickness)
+		subc_line(layer, x2, y1,     x2, y1+wy, thickness)
 	}
 	if (!(omit ~ "SW")) {
-		element_line(x1, y2,     x1+wx, y2, thickness)
-		element_line(x1, y2-wy,  x1, y2,    thickness)
+		subc_line(layer, x1, y2,     x1+wx, y2, thickness)
+		subc_line(layer, x1, y2-wy,  x1, y2,    thickness)
 	}
 	if (!(omit ~ "SE")) {
-		element_line(x2-wx, y2,  x2, y2,   thickness)
-		element_line(x2, y2-wy,  x2, y2,   thickness)
+		subc_line(layer, x2-wx, y2,  x2, y2,   thickness)
+		subc_line(layer, x2, y2-wy,  x2, y2,   thickness)
 	}
 }
 
