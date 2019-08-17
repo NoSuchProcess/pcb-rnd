@@ -2,7 +2,7 @@
 
 # Reference: Microchip Packaging Specification DS00000049BX (en012702.pdf), SSOP
 
-#@@example bga(map=a1:a2:a2:#:b1:!:b3:#:c1:c2:!)
+#@@example bga(map=a1:a2:a3:#:b1:!:b3:#:c1:c2:!)
 
 #@@purpose Generate ball grid array
 
@@ -68,7 +68,7 @@
 #@@thumbnum:automap2 1
 
 
-#@@include common.awk
+#@@include common_subc.awk
 
-awk -f `dirname $0`/common.awk -f `dirname $0`/bga.awk -v "args=$*" -v gen=`basename $0` -v "genfull=$0"
+awk -f `dirname $0`/common_subc.awk -f `dirname $0`/bga.awk -v "args=$*" -v gen=`basename $0` -v "genfull=$0"
 

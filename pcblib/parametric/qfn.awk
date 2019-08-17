@@ -42,9 +42,6 @@ BEGIN {
 	if (P["cpad_size"] != "")
 		args = args ",cpad_width=" P["cpad_size"] "mm,cpad_height=" P["cpad_size"] "mm"
 
-
-	print "args=" args > "/dev/stderr"
-
 #	qf_globals("pins,size")
 
 }

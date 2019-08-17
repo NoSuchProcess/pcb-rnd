@@ -107,8 +107,8 @@
 #@@preview_args:silkmark 4,4
 
 #@@default:silkmark dot
-#@@include common.awk
+#@@include common_subc.awk
 
 
-awk -f `dirname $0`/common.awk -f `dirname $0`/qf.awk -v "args=$*" -v gen=`basename $0` -v "genfull=$0"
+awk -f `dirname $0`/common_subc.awk -f `dirname $0`/qf.awk -v "args=$*" -v gen=`basename $0` -v "genfull=$0"
 

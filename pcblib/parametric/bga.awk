@@ -66,6 +66,7 @@ BEGIN {
 			x++
 		}
 		ny++;
+		nx++;
 	}
 	else {
 		if ((nx == "") || (ny == ""))
@@ -90,7 +91,9 @@ BEGIN {
 	xo = (nx-1)*step/2
 	yo = (ny-1)*step/2
 
-	element_begin("", "U1", nx "*" ny   ,0,0, 0, -bh)
+	subc_begin(nx "*" ny, "U1", 0, -bh)
+
+	proto = subc_proto_create_pad_circle(balldia)
 
 	for(x = 0; x < nx; x++) {
 		for(y = 0; y < ny; y++) {
@@ -101,7 +104,7 @@ BEGIN {
 				continue
 			if (name == "")
 				name = "NC"
-			element_pad_circle(xx, yy, balldia, name)
+			subc_pstk(proto, xx, yy, 0, name)
 		}
 	}
 
@@ -111,13 +114,12 @@ BEGIN {
 
 	xx = -1 * (bw/2)
 	yy = -1 * (bh/2)
-	element_rectangle(xx, yy, bw/2, bh/2)
+	subc_rectangle("top-silk", xx, yy, bw/2, bh/2)
 
 	dimension(xx, yy, bw/2, yy, bw/2, "width")
 	dimension(bw/2, yy, bw/2, bh/2, +bh/2, "height")
 
 	silkmark(P["silkmark"], xx, yy, half*1.5)
 
-
-	element_end()
+	subc_end()
 }

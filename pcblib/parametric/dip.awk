@@ -1,4 +1,6 @@
 BEGIN {
+	base_unit_mm = 0
+
 	help_auto()
 	set_arg(P, "?spacing", 300)
 
@@ -10,19 +12,21 @@ BEGIN {
 
 	spacing=parse_dim(P["spacing"])
 
-	element_begin("", "U1", P["n"] "*" P["spacing"]    ,0,0, 0, mil(-100))
+	subc_begin(P["n"] "*" P["spacing"], "U1_lht", 0, mil(-100))
 
 	half = mil(50)
 
+	pstk_s = subc_proto_create_pin_square()
+	pstk_r = subc_proto_create_pin_round()
+
 	for(n = 1; n <= P["n"]/2; n++) {
-		element_pin(0, (n-1) * mil(100), n)
-		element_pin(spacing, (n-1) * mil(100), P["n"] - n + 1)
+		subc_pstk((n == 1 ? pstk_s : pstk_r), 0, (n-1) * mil(100), 0, n)
+		subc_pstk(pstk_r, spacing, (n-1) * mil(100), 0, P["n"] - n + 1)
 	}
 
-	dip_outline(-half, -half, spacing + half , (n-2) * mil(100) + half,  half)
-
+	dip_outline("top-silk", -half, -half, spacing + half , (n-2) * mil(100) + half,  half)
 
 	dimension(0, 0, spacing, 0, mil(100), "spacing")
 
-	element_end()
+	subc_end()
 }

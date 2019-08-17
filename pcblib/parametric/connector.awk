@@ -1,4 +1,6 @@
 BEGIN {
+	base_unit_mm = 0
+
 	help_auto()
 	set_arg(P, "?spacing", 100)
 	set_arg(P, "?silkmark", "square")
@@ -25,7 +27,10 @@ BEGIN {
 	if ((eshift != "x") && (eshift != "y") && (eshift != "") && (eshift != "none"))
 		error("eshift must be x or y or none (got: " eshift ")");
 
-	element_begin("", "CONN1", P["nx"] "*" P["ny"]    ,0,0, 0, -step)
+	subc_begin(P["nx"] "*" P["ny"], "CONN1", 0, -step)
+
+	proto_s = subc_proto_create_pin_square()
+	proto_r = subc_proto_create_pin_round()
 
 	for(x = 0; x < P["nx"]; x++) {
 		if ((eshift == "x") && ((x % 2) == 1))
@@ -65,7 +70,7 @@ BEGIN {
 						pinno += x/2-1
 				}
 			}
-			element_pin(x * step + xo, y * step + yo, pinno)
+			subc_pstk(pinno == 1 ? proto_s : proto_r, x * step + xo, y * step + yo, 0, pinno)
 		}
 	}
 
@@ -78,11 +83,11 @@ BEGIN {
 			yo = step/2
 	}
 
-	element_rectangle(-half, -half, P["nx"] * step - half + xo, P["ny"] * step - half + yo)
+	subc_rectangle("top-silk", -half, -half, P["nx"] * step - half + xo, P["ny"] * step - half + yo)
 
 	silkmark(P["silkmark"], -half, -half, half)
 
 	dimension(0, step, step, step, step*2, "spacing")
 
-	element_end()
+	subc_end()
 }

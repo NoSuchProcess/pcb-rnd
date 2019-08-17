@@ -20,5 +20,5 @@
 #@@optional:cpad_size
 #@@default:cpad_size empty, there's no central pad
 
-awk -f `dirname $0`/common.awk -f `dirname $0`/qfp.awk -f `dirname $0`/qf.awk -v "args=$*" -v gen=`basename $0` -v "genfull=$0"
+awk -f `dirname $0`/common_subc.awk -f `dirname $0`/qfp.awk -f `dirname $0`/qf.awk -v "args=$*" -v gen=`basename $0` -v "genfull=$0"
 

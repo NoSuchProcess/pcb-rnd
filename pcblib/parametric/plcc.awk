@@ -6,6 +6,8 @@ function parri(A     ,s,i)
 }
 
 BEGIN {
+	base_unit_mm = 0
+
 	help_auto()
 	PT["50"] = "26mil"
 	set_arg(P, "?pitch", "50")
@@ -43,7 +45,7 @@ BEGIN {
 
 	S[1] -= 60
 	S[2] -= 60
-	args = args ",nx=" pins ",ny=" pins ",x_spacing=" S[1] "mil,y_spacing=" S[2] "mil,pad_spacing=" pitch "mil,pad_thickness=" pt "mil"
+	args = args ",nx=" pins ",ny=" pins ",x_spacing=" S[1] "mil,y_spacing=" S[2] "mil,pad_spacing=" pitch "mil,pad_thickness=" pt
 
 	args = args ",width=" S[1]-150 " mil,height=" S[2]-150 " mil"
 

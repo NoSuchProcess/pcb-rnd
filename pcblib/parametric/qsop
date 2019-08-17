@@ -10,7 +10,7 @@
 #@@desc row spacing
 
 #@@include so
-#@@include common.awk
+#@@include common_subc.awk
 
 #@@over@default:pad_spacing 25 mil
 #@@over@default:row_spacing 213 mil
@@ -30,5 +30,5 @@ defaults='
 ?pad_thickness=16mil
 '
 
-awk -f `dirname $0`/common.awk -f `dirname $0`/so.awk -v "args=$defaults,$*" -v gen=`basename $0` -v "genfull=$0"
+awk -f `dirname $0`/common_subc.awk -f `dirname $0`/so.awk -v "args=$defaults,$*" -v gen=`basename $0` -v "genfull=$0"
 

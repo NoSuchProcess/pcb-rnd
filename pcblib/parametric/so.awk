@@ -1,4 +1,6 @@
 BEGIN {
+	base_unit_mm = 0
+
 	help_auto()
 	set_arg(P, "?row_spacing", 250)
 	set_arg(P, "?pad_spacing", 50)
@@ -20,19 +22,21 @@ BEGIN {
 	offs_x = -(row_spacing/2)
 	offs_y = -int((P["n"]/4-0.5) * pad_spacing)
 
-	element_begin("", "U1", P["n"] "*" P["row_spacing"]    ,0,0, 0, mil(-100))
+	subc_begin(P["n"] "*" P["row_spacing"], "U1", -offs_x, mil(-100)-offs_y)
+
+	proto = subc_proto_create_pad_sqline(-ext_bloat, int_bloat, pad_width)
 
 	for(n = 1; n <= P["n"]/2; n++) {
 		y = (n-1) * pad_spacing
-		element_pad(-ext_bloat, y, int_bloat, y, pad_width, n, "square")
-		element_pad(row_spacing-int_bloat, y,  row_spacing+ext_bloat, y, pad_width,     P["n"] - n + 1, "square")
+		subc_pstk(proto, 0, y, 0, n)
+		subc_pstk(proto, row_spacing, y, 180, P["n"] - n + 1)
 	}
 
 	silk_dist_x = either(parse_dim(P["silk_ext_x"]), pad_spacing/2)
 	silk_dist_y = either(parse_dim(P["silk_ext_y"]), pad_spacing/2)
 	rarc = either(parse_dim(P["rarc"]), pad_spacing/2)
 
-	dip_outline(-silk_dist_x-ext_bloat, -silk_dist_y, row_spacing + silk_dist_x+ext_bloat , (n-2) * pad_spacing + silk_dist_y,  rarc)
+	dip_outline("top-silk", -silk_dist_x-ext_bloat, -silk_dist_y, row_spacing + silk_dist_x+ext_bloat , (n-2) * pad_spacing + silk_dist_y,  rarc)
 
 	left_dim="@" -silk_dist_x-ext_bloat-pad_spacing ";0"
 	dimension(0, 0, 0, pad_spacing, left_dim, "pad_spacing")
@@ -47,5 +51,5 @@ BEGIN {
 
 #	dimension(-silk_dist_x-ext_bloat, -silk_dist_y, row_spacing + silk_dist_x+ext_bloat, -silk_dist_y, pad_spacing*2.5, "<auto>")
 
-	element_end()
+	subc_end()
 }

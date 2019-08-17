@@ -30,6 +30,6 @@
 #@@default:shape circle
 #@@preview_args:shape 3mm,6mm
 
-#@@include common.awk
+#@@include common_subc.awk
 
-awk -f `dirname $0`/common.awk -f `dirname $0`/screw.awk -v "args=$*" -v gen=`basename $0` -v "genfull=$0" -v "genfull=$0"
+awk -f `dirname $0`/common_subc.awk -f `dirname $0`/screw.awk -v "args=$*" -v gen=`basename $0` -v "genfull=$0" -v "genfull=$0"

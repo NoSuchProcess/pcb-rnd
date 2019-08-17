@@ -28,13 +28,13 @@ function shp(r, edges, tx      ,a,x,y,xl,yl,step,x1,y1,x2,y2,tx1,tx2,txs)
 				y2 = sin(a-step/txs)*r*tx1
 				x3 = cos(a-step/2)*r*tx2
 				y3 = sin(a-step/2)*r*tx2
-				element_line(xl, yl, x1, y1)
-				element_line(x, y,   x2, y2)
-				element_line(x3, y3, x1, y1)
-				element_line(x3, y3, x2, y2)
+				subc_line("top-silk", xl, yl, x1, y1)
+				subc_line("top-silk", x, y,   x2, y2)
+				subc_line("top-silk", x3, y3, x1, y1)
+				subc_line("top-silk", x3, y3, x2, y2)
 			}
 			else
-				element_line(xl, yl, x, y)
+				subc_line("top-silk", xl, yl, x, y)
 		}
 		xl = x
 		yl = y
@@ -53,7 +53,7 @@ BEGIN {
 	set_arg(P, "?shape", "circle")
 	proc_args(P, "hole,head,shape,ring", "hole")
 
-	element_begin("", "S1", "screw:" P["hole"] "," P["head"]"," P["shape"]    ,0,0, 0, mil(-100))
+	subc_begin("screw:" P["hole"] "," P["head"]"," P["shape"], "S1", 0, -mil(100), 0)
 
 	if (P["hole"] ~ "^M") {
 		hole = P["hole"]
@@ -99,12 +99,15 @@ BEGIN {
 	if (ring == "")
 		ring = head*0.8
 
-	element_pin(0, 0, 1, "none", ring, "", "", hole)
+
+	proto = subc_proto_create_pin_round(hole, ring)
+	subc_pstk(proto, 0, 0, 0, 1)
+
 
 	shape = ":" P["shape"] ":"
 
 	if (shape ~ ":circle:")
-		element_arc(0, 0, head/2, head/2, 0, 360)
+		subc_arc("top-silk", 0, 0, head/2, 0, 360)
 
 	if (shape ~ ":hex:")
 		shp(head/2, 6, 0)
@@ -119,10 +122,10 @@ BEGIN {
 		shp(head*0.4, 4, 3)
 
 	if (shape ~ ":slot:")
-		element_line(-head/2, 0, head/2, 0)
+		subc_line("top-silk", -head/2, 0, head/2, 0)
 
 	dimension(-head/2, 0, head/2, 0, head*0.7, "head")
 	dimension(-hole/2, 0, hole/2, 0, head*0.6, "hole")
 
-	element_end()
+	subc_end()
 }
