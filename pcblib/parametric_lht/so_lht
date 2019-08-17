@@ -32,9 +32,9 @@
 #@@optional:int_bloat
 #@@default:int_bloat 55 mil
 
-#@@include common.awk
+#@@include common_subc.awk
 
 #@@over@ignore::pin_
 
-awk -f `dirname $0`/common.awk -f `dirname $0`/so.awk -v "args=$*" -v gen=`basename $0` -v "genfull=$0"
+awk -f `dirname $0`/common_subc.awk -f `dirname $0`/so.awk -v "args=$*" -v gen=`basename $0` -v "genfull=$0"
 

@@ -15,7 +15,7 @@
 #@@optional:spacing
 #@@default:spacing 100 mil
 
-#@@include common.awk
+#@@include common_subc.awk
 
-awk -f `dirname $0`/common.awk -f `dirname $0`/dip.awk -v "args=$*" -v gen=`basename $0` -v "genfull=$0"
+awk -f `dirname $0`/common_subc.awk -f `dirname $0`/dip.awk -v "args=$*" -v gen=`basename $0` -v "genfull=$0"
 

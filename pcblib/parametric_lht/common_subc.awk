@@ -983,7 +983,7 @@ function help_extract(SEEN, fn, dirn, OVER, IGN,     WANT,tmp,key,val,i,skip)
 
 function help_print(   SEEN, OVER, dirn, k)
 {
-	print "#@@info-generator pcblib common.awk"
+	print "#@@info-generator pcblib common_subc.awk"
 	dirn = genfull
 	sub("/[^/]*$", "", dirn)
 	help_extract(SEEN, genfull, dirn, OVER)
