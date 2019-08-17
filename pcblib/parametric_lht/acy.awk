@@ -134,13 +134,13 @@ BEGIN {
 	if (P["pol"] == "sign") {
 		size=mil(10)
 
-		offs_y = size*2.2
-		offs_x = DEFAULT["pin_ringdia"]/2+size*1.1
-		subc_line("top-silk", -size, 0, +size, 0)
+		oy = size*2.2-offs_y
+		ox = DEFAULT["pin_ringdia"]/2+size*1.1-offs_x
+		subc_line("top-silk", ox-size, oy, ox+size, oy)
 
-		offs_x = spacing - (DEFAULT["pin_ringdia"]/2+size*1.1)
-		subc_line("top-silk", -size, 0, +size, 0)
-		subc_line("top-silk", 0, -size, 0, +size)
+		ox = spacing - (DEFAULT["pin_ringdia"]/2+size*1.1)-offs_x
+		subc_line("top-silk", ox-size, oy, ox+size, oy)
+		subc_line("top-silk", ox, oy-size, ox, oy+size)
 	}
 	else if (P["pol"] == "bar") {
 		offs=DEFAULT["line_thickness"]
