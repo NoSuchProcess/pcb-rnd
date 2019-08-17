@@ -75,6 +75,26 @@ BEGIN {
 	pi=3.141592654
 
 	NL = "\n"
+
+# minuid
+	for(n = 32; n < 127; n++)
+		ORD[sprintf("%c", n)] = n
+	BASE64 = "ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+}
+
+function minuid_add(SUM, s    ,n,v,c1,c2)
+{
+	v = length(s)
+	for(n = 1; n <= v; n++)
+		SUM[(n-1) % 20] += ORD[substr(s, n, 1)]-32
+}
+
+function minuid_str(SUM, s    ,n)
+{
+	s = "Prm/"
+	for(n = 0; n < 20; n++)
+		s = s substr(BASE64, SUM[n] % 64, 1)
+	return s
 }
 
 # Throw an error and exit
@@ -211,8 +231,13 @@ function subc_begin(footprint, refdes, refdes_x, refdes_y, refdes_dir)
 }
 
 # generate subcircuit footers
-function subc_end(     layer,n,v,L,lt)
+function subc_end(     layer,n,v,L,lt,UID)
 {
+	minuid_add(UID, tolower(gen))
+	for(n in P) {
+		minuid_add(UID, tolower(n))
+		minuid_add(UID, "          " P[n])
+	}
 	print "  ha:data {"
 	print "   li:padstack_prototypes {"
 	for(n = 0; n < proto_next_id; n++) {
@@ -249,6 +274,7 @@ function subc_end(     layer,n,v,L,lt)
 	}
 	print "   }"
 	print "  }"
+	print "  uid = " minuid_str(UID)
 	print " }"
 	print "}"
 }
