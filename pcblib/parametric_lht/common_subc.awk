@@ -560,9 +560,9 @@ function subc_pad_circle(x1, y1, radius,   number,  clearance, mask, name)
 		q name q, q number q, q "" q "]"
 }
 
-function element_arrow(x1, y1, x2, y2,  asize,  thickness   ,vx,vy,nx,ny,len,xb,yb)
+function subc_arrow(layer, x1, y1, x2, y2,  asize,  thickness   ,vx,vy,nx,ny,len,xb,yb)
 {
-	element_line(x1, y1, x2,y2, thickness)
+	subc_line(layer, x1, y1, x2,y2, thickness)
 
 	if (asize == 0)
 		asize = mil(20)
@@ -577,10 +577,10 @@ function element_arrow(x1, y1, x2, y2,  asize,  thickness   ,vx,vy,nx,ny,len,xb,
 		ny = -vx
 		xb = x2 - vx*asize
 		yb = y2 - vy*asize
-#		element_line(x2, y2, xb + 1000, yb + 1000)
-		element_line(x2, y2, xb + nx*asize/2, yb + ny*asize/2)
-		element_line(x2, y2, xb - nx*asize/2, yb - ny*asize/2)
-		element_line(xb - nx*asize/2, yb - ny*asize/2, xb + nx*asize/2, yb + ny*asize/2)
+#		subc_line(layer, x2, y2, xb + 1000, yb + 1000)
+		subc_line(layer, x2, y2, xb + nx*asize/2, yb + ny*asize/2)
+		subc_line(layer, x2, y2, xb - nx*asize/2, yb - ny*asize/2)
+		subc_line(layer, xb - nx*asize/2, yb - ny*asize/2, xb + nx*asize/2, yb + ny*asize/2)
 	}
 }
 

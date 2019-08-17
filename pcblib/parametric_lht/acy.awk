@@ -73,8 +73,8 @@ BEGIN {
 		subc_line("top-silk", sx1+cl2, -y2, sx1+cl1, -y1)
 		subc_line("top-silk", sx2-cl2, -y2, sx2-cl1, -y1)
 
-		element_rectangle(sx1, y1, sx1+cl1, -y1, "right,NE,SE", rarc)
-		element_rectangle(sx2-cl1, y1, sx2, -y1, "left,NW,SW", rarc)
+		subc_rectangle("top-silk", sx1, y1, sx1+cl1, -y1, "right,NE,SE", rarc)
+		subc_rectangle("top-silk", sx2-cl1, y1, sx2, -y1, "left,NW,SW", rarc)
 	}
 	else if (P["type"] ~ "^core") {
 		wave(1, 4)
@@ -114,15 +114,15 @@ BEGIN {
 	}
 	else if (P["wiper"] == "aarrow") {
 		x = len/3
-		element_arrow(-2*x/4, dia*2, +2*x/4, -dia*2-mil(30))
+		subc_arrow("top-silk", -2*x/4, dia*2, +2*x/4, -dia*2-mil(30))
 	}
 	else if (P["wiper"] == "parrow") {
-		element_arrow(0, -dia*2-mil(30), 0, -dia)
+		subc_arrow("top-silk", 0, -dia*2-mil(30), 0, -dia)
 	}
 	else if (P["wiper"] == "looparrow") {
 		y = -dia*2-mil(30)
 		x = sx2+len/8
-		element_arrow(0, y, 0, -dia)
+		subc_arrow("top-silk", 0, y, 0, -dia)
 		subc_line("top-silk", 0, y, x, y)
 		subc_line("top-silk", x, y, x, 0)
 	}
@@ -144,7 +144,7 @@ BEGIN {
 	}
 	else if (P["pol"] == "bar") {
 		offs=DEFAULT["line_thickness"]
-		element_rectangle(-spacing/4-offs, -dia, -spacing/4+offs, +dia,  DEFAULT["line_thickness"]*4)
+		subc_rectangle("top-silk", -spacing/4-offs, -dia, -spacing/4+offs, +dia,  DEFAULT["line_thickness"]*4)
 	}
 	else if (P["pol"] == "dot") {
 		r=2*DEFAULT["line_thickness"]/3
