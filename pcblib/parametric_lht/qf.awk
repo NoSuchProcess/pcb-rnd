@@ -167,7 +167,7 @@ BEGIN {
 
 	bodysilk = P["bodysilk"]
 	if ((bodysilk == "corners") || (bodysilk == "")) {
-		subc_rectange_corners("top-silk", -width/2, -height/2, width/2, height/2, wx, wy)
+		subc_rectangle_corners("top-silk", -width/2, -height/2, width/2, height/2, wx, wy)
 		silkmark(P["silkmark"], -width/2 - wx/2, -height/2+wy*1.5, (wx+wy)/4)
 	}
 	else if (bodysilk == "full") {
