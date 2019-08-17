@@ -1,3 +1,9 @@
+### DO NOT USE THIS FILE ###
+
+# This file is provided only for compatibility with old parametric footprints.
+# New parametric footprints should use common_subc.awk because that uses lihata
+# subcircuits instead of obsolete element format.
+
 #@@param:pin_ringdia pin's copper ring (annulus) outer diameter (in mil by default, mm suffix can be used)
 #@@optional:pin_ringdia
 #@@dim:pin_ringdia
