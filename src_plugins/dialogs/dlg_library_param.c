@@ -119,6 +119,7 @@ do { \
 	curr_type = PCB_HATT_END; \
 	curr = -1; \
 	vtp0_init(&curr_enum); \
+	vtp0_append(&curr_enum, pcb_strdup("")); \
 } while(0)
 
 #define append() \
@@ -150,7 +151,8 @@ do { \
 			PCB_DAD_ENUM(library_ctx.pdlg, (const char **)curr_enum.array); \
 				ctx->pwid[curr] = PCB_DAD_CURRENT(library_ctx.pdlg); \
 				PCB_DAD_CHANGE_CB(library_ctx.pdlg, library_param_cb); \
-			vtp0_init(&curr_enum); \
+				vtp0_init(&curr_enum); \
+				vtp0_append(&curr_enum, pcb_strdup("")); \
 			break; \
 		default: \
 			PCB_DAD_LABEL(library_ctx.pdlg, "internal error: invalid type"); \
@@ -175,6 +177,7 @@ static void library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 	ctx->example = NULL;
 
 	vtp0_init(&curr_enum);
+	vtp0_append(&curr_enum, pcb_strdup(""));
 
 	while(fgets(line, sizeof(line), f) != NULL) {
 		char *end, *col, *arg, *cmd = line;
@@ -288,9 +291,13 @@ static char *gen_cmd(library_ctx_t *ctx)
 			case PCB_HATT_ENUM:
 				val = ((const char **)(a->wdata))[a->val.lng];
 				if (val != NULL) {
-					desc = strstr((char *)val, " (");
-					if (desc != NULL)
-						*desc = '\0';
+					if (*val != '\0') {
+						desc = strstr((char *)val, " (");
+						if (desc != NULL)
+							*desc = '\0';
+					}
+					else
+						val = NULL;
 				}
 				break;
 			case PCB_HATT_STRING:
