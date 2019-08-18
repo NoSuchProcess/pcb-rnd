@@ -1025,6 +1025,34 @@ function silkmark(style, x, y, half,    step,   S,n,v)
 	}
 }
 
+function center_pad_init()
+{
+	cpm_width = parse_dim(P["cpm_width"])
+	cpm_height = parse_dim(P["cpm_height"])
+	cpm_nx = int(P["cpm_nx"])
+	cpm_ny = int(P["cpm_ny"])
+}
+
+function center_pad(cpadid, cpx, cpy)
+{
+	if ((cpad_width != "") && (cpad_height != "")) {
+#		center pad paste matrix
+		if ((cpm_nx > 0) && (cpm_ny > 0)) {
+			ox = (cpad_width - (cpm_nx*cpm_width)) / (cpm_nx - 1)
+			oy = (cpad_height - (cpm_ny*cpm_height)) / (cpm_ny - 1)
+			paste_matrix(cpx-cpad_width/2, xpy-cpad_height/2,   cpm_nx,cpm_ny,  cpm_width,cpm_height,
+			  ox+cpm_width,oy+cpm_height, "", "termid=" cpadid ";", 0)
+		}
+
+#		center pad
+		cpad_proto = subc_proto_create_pad_rect(cpad_width, cpad_height, cpad_mask == "" ? 0 : cpad_mask, "none")
+		subc_pstk(cpad_proto, cpx, cpy, 0, cpadid)
+		dimension(cpx-cpad_width/2, cpy-cpad_height/2, cpx+cpad_width/2, cpy-cpad_height/2, "@0;" (height * -0.6-ext_bloat), "cpad_width")
+		dimension(cpx+cpad_width/2, cpy-cpad_height/2, cpx+cpad_width/2, cpy+cpad_height/2, "@" (width * 0.8+ext_bloat) ";0", "cpad_height")
+	}
+
+}
+
 # output a dimension specification between x1;y1 and x2;y2, text distance at dist
 # for a name,value pair
 # if name is empty, only value is printed
