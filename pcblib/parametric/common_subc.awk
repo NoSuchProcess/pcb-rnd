@@ -26,6 +26,14 @@
 #@@optional:pad_mask
 #@@dim:pad_mask
 
+#@@param:pad_mask_offs how much bigger (+) or smaller (-) the mask opening should be compared to copper (in mil by default, mm suffix can be used)
+#@@optional:pad_mask_offs
+#@@dim:pad_mask_offs
+
+#@@param:pad_mask_ratio pad mask opening should be copper size * this ratio (numbers larger than 1 mean opening with a gap, 1.00 means exactly as big as the copper shape)
+#@@optional:pad_mask_ratio
+#@@dim:pad_mask_ratio
+
 #@@param:pad_paste pad's paste line thickness (in mil by default, mm suffix can be used)
 #@@optional:pad_paste
 #@@dim:pad_paste
@@ -66,6 +74,9 @@ BEGIN {
 	DEFAULT["pad_clearance", "dim"] = 1
 	DEFAULT["pad_mask"] = mil(30)
 	DEFAULT["pad_mask", "dim"] = 1
+	DEFAULT["pad_mask_offs"] = "" # use copper size
+	DEFAULT["pad_mask_offs", "dim"] = 1
+	DEFAULT["pad_mask_ratio"] = "" # use copper size
 	DEFAULT["pad_paste"] = "" # use copper size
 	DEFAULT["pad_paste", "dim"] = 1
 	DEFAULT["pad_paste_offs"] = "" # use copper size
@@ -426,7 +437,7 @@ function subc_proto_create_pin_square(drill_dia, ring_span, mask_span     ,proto
 	return proto
 }
 
-function pad_paste(copper, absval, offsval, ratio)
+function paste_or_mask_abs(copper, absval, offsval, ratio, prefix)
 {
 	if (absval != "")
 		return absval
@@ -434,27 +445,37 @@ function pad_paste(copper, absval, offsval, ratio)
 		return copper+offsval
 	if (ratio != 0)
 		return copper*ratio
-	if (DEFAULT["pad_paste"] != "")
-		return DEFAULT["pad_paste"]
-	if (DEFAULT["pad_paste_offs"] != "")
-		return copper+DEFAULT["pad_paste_offs"]*2
-	if (DEFAULT["pad_paste_ratio"] != "")
-		return copper*DEFAULT["pad_paste_ratio"]
+	if ((DEFAULT[prefix] != "") && (DEFAULT[prefix] != "-"))
+		return DEFAULT[prefix]
+	if (DEFAULT[prefix "_offs"] != "")
+		return copper+DEFAULT[prefix "_offs"]*2
+	if (DEFAULT[prefix "_ratio"] != "")
+		return copper*DEFAULT[prefix "_ratio"]
 	return copper
 }
 
-function pad_paste_offs(offsval)
+function pad_paste(copper, absval, offsval, ratio)
 {
-	if (offsval != "")
-		return offsval
-	if (DEFAULT["pad_paste"] != "")
-		return DEFAULT["pad_paste"] - DEFAULT["pad_thickness"]
-	if (DEFAULT["pad_paste_offs"] != "")
-		return DEFAULT["pad_paste_offs"]
-	if (DEFAULT["pad_paste_ratio"] != "")
-		return DEFAULT["pad_thickness"]*DEFAULT["pad_paste_ratio"] - DEFAULT["pad_thickness"]
-	return 0
+	return paste_or_mask_abs(copper, absval, offsval, ratio, "pad_paste")
 }
+
+function pad_mask(copper, absval, offsval, ratio)
+{
+	return paste_or_mask_abs(copper, absval, offsval, ratio, "pad_mask")
+}
+
+function pad_paste_offs(offsval            ,copper)
+{
+	copper = DEFAULT["pad_thickness"]
+	return paste_or_mask_abs(copper, "", offsval, "", "pad_paste") - copper
+}
+
+function pad_mask_offs(offsval            ,copper)
+{
+	copper = DEFAULT["pad_thickness"]
+	return paste_or_mask_abs(copper, "", offsval, "", "pad_mask") - copper
+}
+
 
 function subc_proto_create_pad_sqline(x1, x2, thick, mask, paste   ,proto,m,p)
 {
@@ -469,7 +490,7 @@ function subc_proto_create_pad_sqline(x1, x2, thick, mask, paste   ,proto,m,p)
 
 	subc_pstk_add_shape_square_corners(proto, "top-copper", x1-thick/2, -thick/2, x2+thick/2, thick/2)
 
-	m = (either(mask, DEFAULT["pad_mask"]) - thick) / 2
+	m = (pad_mask(thick, mask)-thick)/2
 	subc_pstk_add_shape_square_corners(proto, "top-mask", x1-thick/2-m, -thick/2-m, x2+thick/2+m, thick/2+m)
 
 	p = (pad_paste(thick, paste)-thick)/2
@@ -492,7 +513,7 @@ function subc_proto_create_pad_line(x1, x2, thick, mask, paste   ,proto,m,p)
 	PROTO[proto] = PROTO[proto] "     li:shape {" NL
 
 	subc_pstk_add_shape_line(proto, "top-copper", x1, 0, x2, 0, thick)
-	subc_pstk_add_shape_line(proto, "top-mask", x1, 0, x2, 0, either(mask, DEFAULT["pad_mask"]))
+	subc_pstk_add_shape_line(proto, "top-mask", x1, 0, x2, 0, pad_mask(thick, mask))
 	subc_pstk_add_shape_line(proto, "top-paste", x1, 0, x2, 0, pad_paste(thick, paste))
 
 	PROTO[proto] = PROTO[proto] "     }" NL
@@ -515,7 +536,7 @@ function subc_proto_create_pad_rect(w, h, mask_offs, paste_offs   ,proto,m,p)
 	subc_pstk_add_shape_square_corners(proto, "top-copper", -w, -h, +w, +h)
 
 	if (mask_offs != "none") {
-		m = (either(mask_offs, (DEFAULT["pad_mask"]) - DEFAULT["pad_thickness"]) / 2)
+		m = pad_paste_offs(mask_offs) / 2
 		subc_pstk_add_shape_square_corners(proto, "top-mask", -w-m, -h-m, +w+m, +h+m)
 	}
 
