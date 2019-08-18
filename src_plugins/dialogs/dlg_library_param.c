@@ -166,7 +166,7 @@ static void library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 	char line[1024];
 	char *name = NULL, *help = NULL, *help_def = NULL;
 	vtp0_t curr_enum;
-	int curr;
+	int curr, examples = 0;
 	pcb_hid_attr_type_t curr_type = PCB_HATT_END;
 
 	curr = -1;
@@ -201,16 +201,21 @@ static void library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 
 		/* parse */
 		if (strcmp(cmd, "desc") == 0) {
-			gds_append_str(&ctx->descr, arg);
-			gds_append(&ctx->descr, '\n');
+			if (examples < 2) {
+				gds_append_str(&ctx->descr, arg);
+				gds_append(&ctx->descr, '\n');
+			}
 		}
 		else if (strcmp(cmd, "params") == 0) {
 			free(ctx->help_params);
 			ctx->help_params = pcb_strdup(arg);
 		}
 		else if (strcmp(cmd, "example") == 0) {
-			free(ctx->example);
-			ctx->example = pcb_strdup(arg);
+			if (examples == 0) {
+				free(ctx->example);
+				ctx->example = pcb_strdup(arg);
+			}
+			examples++;
 		}
 		else if (strncmp(cmd, "optional:", 9) == 0) {
 			if (ctx->first_optional < 0)

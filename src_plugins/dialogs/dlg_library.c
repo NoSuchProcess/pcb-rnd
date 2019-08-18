@@ -305,6 +305,7 @@ static void library_select_show_param_example(library_ctx_t *ctx, pcb_fplibrary_
 				if (end != NULL)
 					*end = '\0';
 				timed_update_preview_(ctx, arg);
+				break;
 			}
 		}
 	}
