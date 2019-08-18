@@ -179,11 +179,8 @@ TODO("Use rich text for this with explicit wrap marks\n");
 	gds_uninit(&tmp);
 }
 
-static void timed_update_preview_cb(pcb_hidval_t user_data)
+static void timed_update_preview_(library_ctx_t *ctx, const char *otext)
 {
-	library_ctx_t *ctx = user_data.ptr;
-	const char *otext = ctx->dlg[ctx->wfilt].val.str;
-
 	if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, otext, NULL)) {
 		pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
 		if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0)
@@ -192,6 +189,14 @@ static void timed_update_preview_cb(pcb_hidval_t user_data)
 	}
 	ctx->timer_active = 0;
 	pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wpend, 1);
+}
+
+static void timed_update_preview_cb(pcb_hidval_t user_data)
+{
+	library_ctx_t *ctx = user_data.ptr;
+	const char *otext = ctx->dlg[ctx->wfilt].val.str;
+printf("otext='%s'\n", otext);
+	timed_update_preview_(ctx, otext);
 }
 
 static void timed_update_preview(library_ctx_t *ctx, int active)
@@ -278,12 +283,41 @@ static void library_lib2dlg(library_ctx_t *ctx)
 	}
 }
 
+static void library_select_show_param_example(library_ctx_t *ctx, pcb_fplibrary_t *l)
+{
+	char line[1024], *arg, *cmd, *end;
+	FILE *f = library_param_get_help(ctx, l);
+	while(fgets(line, sizeof(line), f) != NULL) {
+		cmd = strchr(line, '@');
+		if ((cmd == NULL) || (cmd[1] != '@'))
+			continue;
+		cmd+=2;
+		arg = strpbrk(cmd, " \t\r\n");
+		if (arg != NULL) {
+			*arg = '\0';
+			arg++;
+			while(isspace(*arg)) arg++;
+		}
+		if (strcmp(cmd, "example") == 0) {
+			printf("example='%s'\n", arg);
+			if ((arg != NULL) && (*arg != '\0')) {
+				end = strpbrk(arg, "\r\n");
+				if (end != NULL)
+					*end = '\0';
+				timed_update_preview_(ctx, arg);
+			}
+		}
+	}
+	pcb_pclose(f);
+}
+
 static void library_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	pcb_hid_attr_val_t hv;
 	pcb_hid_tree_t *tree = attrib->wdata;
 	library_ctx_t *ctx = tree->user_ctx;
 	int close_param = 1;
+	static pcb_fplibrary_t *last = NULL;
 
 	timed_update_preview(ctx, 0);
 
@@ -291,9 +325,14 @@ static void library_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 	if (row != NULL) {
 		pcb_fplibrary_t *l = row->user_data;
 		if ((l != NULL) && (l->type == LIB_FOOTPRINT)) {
-			if (l->data.fp.type == PCB_FP_PARAMETRIC) {
-				library_param_dialog(ctx, l);
-				close_param = 0;
+			if ((l->data.fp.type == PCB_FP_PARAMETRIC)) {
+				if (last != l) { /* first click */
+					library_select_show_param_example(ctx, l);
+				}
+				else { /* second click */
+					library_param_dialog(ctx, l);
+					close_param = 0;
+				}
 			}
 			else {
 				if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, l->data.fp.loc_info, NULL)) {
@@ -304,6 +343,7 @@ static void library_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 				}
 			}
 		}
+		last = l;
 	}
 
 	if (close_param)

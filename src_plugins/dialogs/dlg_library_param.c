@@ -485,10 +485,25 @@ static void library_param_open(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 	PCB_DAD_END(library_ctx.pdlg);
 }
 
-static void library_param_dialog(library_ctx_t *ctx, pcb_fplibrary_t *l)
+static FILE *library_param_get_help(library_ctx_t *ctx, pcb_fplibrary_t *l)
 {
 	FILE *f;
 	char *cmd;
+
+	cmd = pcb_strdup_printf("%s --help", l->data.fp.loc_info);
+	f = pcb_popen(NULL, cmd, "r");
+	free(cmd);
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Can not execute parametric footprint %s\n", l->data.fp.loc_info);
+		return NULL;
+	}
+
+	return f;
+}
+
+static void library_param_dialog(library_ctx_t *ctx, pcb_fplibrary_t *l)
+{
+	FILE *f;
 
 	if (ctx->last_l != l) {
 		if (ctx->pactive) {
@@ -505,13 +520,9 @@ static void library_param_dialog(library_ctx_t *ctx, pcb_fplibrary_t *l)
 	if (l == NULL)
 		return;
 
-	cmd = pcb_strdup_printf("%s --help", l->data.fp.loc_info);
-	f = pcb_popen(NULL, cmd, "r");
-	free(cmd);
-	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Can not execute parametric footprint %s\n", l->data.fp.loc_info);
+	f = library_param_get_help(ctx, l);
+	if (f == NULL)
 		return;
-	}
 
 	htsi_init(&ctx->param_names, strhash, strkeyeq);
 	gds_init(&ctx->descr);
