@@ -4,9 +4,7 @@
 + CLEANUP: Vuokko's list of warnings on OpenBSD: bug_files/warn-obsd-r26600.log [report: Vuokko]
 + CLEANUP/feature: pcb_subc_smash_buffer() should really copy data so it can smash multiple subcs and subc objects end up on the layer they were bound to [report: keantoken]
 - CLEANUP: unify gui invocation option printout: pcb-rnd --help gtk_[gdk|gl] and pcb-rnd --help lesstif should use the same style printing options (even tho options will never be the same) [report:miloh]
-- FEATURE: parametric footprints
-	- add "global" option for paste/mask tuning
-	- update fp2anim so the web page works again
+- FEATURE: parametric footprints: update fp2anim so the web page works again
 - FEATURE: net attributes GUI [report: Ade]
 	- propedty editor: net scope
 	- button from the netlist dialog
