@@ -84,11 +84,7 @@ function qf_globals(pre_args, post_args    ,reqs)
 	else
 		rpad_round = ""
 
-
-	cpm_width = parse_dim(P["cpm_width"])
-	cpm_height = parse_dim(P["cpm_height"])
-	cpm_nx = int(P["cpm_nx"])
-	cpm_ny = int(P["cpm_ny"])
+	center_pad_init()
 }
 
 function pinnum(num)
@@ -105,6 +101,33 @@ function paste_matrix(x1, y1, nx, ny, w, h, ox, oy,    flags, attrbiutes, cleara
 			subc_rect("top-paste", x1+ix*ox, y1+iy*oy, x1+ix*ox+w, y1+iy*oy+h, clearance, flags, attributes)
 }
 
+function center_pad_init()
+{
+	cpm_width = parse_dim(P["cpm_width"])
+	cpm_height = parse_dim(P["cpm_height"])
+	cpm_nx = int(P["cpm_nx"])
+	cpm_ny = int(P["cpm_ny"])
+}
+
+function center_pad(cpadid, cpx, cpy)
+{
+	if ((cpad_width != "") && (cpad_height != "")) {
+#		center pad paste matrix
+		if ((cpm_nx > 0) && (cpm_ny > 0)) {
+			ox = (cpad_width - (cpm_nx*cpm_width)) / (cpm_nx - 1)
+			oy = (cpad_height - (cpm_ny*cpm_height)) / (cpm_ny - 1)
+			paste_matrix(cpx-cpad_width/2, xpy-cpad_height/2,   cpm_nx,cpm_ny,  cpm_width,cpm_height,
+			  ox+cpm_width,oy+cpm_height, "", "termid=" cpadid ";", 0)
+		}
+
+#		center pad
+		cpad_proto = subc_proto_create_pad_rect(cpad_width, cpad_height, cpad_mask, "none")
+		subc_pstk(cpad_proto, cpx, cpy, 0, cpadid)
+		dimension(cpx-cpad_width/2, cpy-cpad_height/2, cpx+cpad_width/2, cpy-cpad_height/2, "@0;" (height * -0.6-ext_bloat), "cpad_width")
+		dimension(cpx+cpad_width/2, cpy-cpad_height/2, cpx+cpad_width/2, cpy+cpad_height/2, "@" (width * 0.8+ext_bloat) ";0", "cpad_height")
+	}
+
+}
 
 BEGIN {
 	base_unit_mm = 0
@@ -144,22 +167,7 @@ BEGIN {
 	}
 
 
-	if ((cpad_width != "") && (cpad_height != "")) {
-		cpadid = 2*nx+2*ny+1
-#		center pad paste matrix
-		if ((cpm_nx > 0) && (cpm_ny > 0)) {
-			ox = (cpad_width - (cpm_nx*cpm_width)) / (cpm_nx - 1)
-			oy = (cpad_height - (cpm_ny*cpm_height)) / (cpm_ny - 1)
-			paste_matrix(-cpad_width/2, -cpad_height/2,   cpm_nx,cpm_ny,  cpm_width,cpm_height,
-			  ox+cpm_width,oy+cpm_height, "", "termid=" cpadid ";", 0)
-		}
-
-#		center pad
-		cpad_proto = subc_proto_create_pad_rect(cpad_width, cpad_height, cpad_mask, "none")
-		subc_pstk(cpad_proto, 0, 0, 0, cpadid)
-		dimension(-cpad_width/2, -cpad_height/2, +cpad_width/2, -cpad_height/2, "@0;" (height * -0.6-ext_bloat), "cpad_width")
-		dimension(cpad_width/2, -cpad_height/2, cpad_width/2, +cpad_height/2, "@" (width * 0.8+ext_bloat) ";0", "cpad_height")
-	}
+	center_pad(2*nx+2*ny+1, 0, 0)
 
 	wx = (width  - nx * pad_spacing) / 3.5
 	wy = (height - ny * pad_spacing) / 3.5
