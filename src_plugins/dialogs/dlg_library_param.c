@@ -449,6 +449,14 @@ static void library_param_fillin(library_ctx_t *ctx, pcb_fplibrary_t *l)
 	pcb_hid_attr_val_t hv;
 	const char *filter_txt = ctx->dlg[ctx->wfilt].val.str;
 
+	if (filter_txt != NULL) {
+		if (strncmp(filter_txt, l->name, strlen(l->name)) != 0) {
+			/* clicked away from the previous parametric, but the filter text is still for that one; replace it */
+			filter_txt = NULL;
+		}
+	}
+
+
 	if (filter_txt == NULL) {
 
 		filter_txt = ctx->example;
