@@ -121,7 +121,7 @@ function center_pad(cpadid, cpx, cpy)
 		}
 
 #		center pad
-		cpad_proto = subc_proto_create_pad_rect(cpad_width, cpad_height, cpad_mask, "none")
+		cpad_proto = subc_proto_create_pad_rect(cpad_width, cpad_height, cpad_mask == "" ? 0 : cpad_mask, "none")
 		subc_pstk(cpad_proto, cpx, cpy, 0, cpadid)
 		dimension(cpx-cpad_width/2, cpy-cpad_height/2, cpx+cpad_width/2, cpy-cpad_height/2, "@0;" (height * -0.6-ext_bloat), "cpad_width")
 		dimension(cpx+cpad_width/2, cpy-cpad_height/2, cpx+cpad_width/2, cpy+cpad_height/2, "@" (width * 0.8+ext_bloat) ";0", "cpad_height")
