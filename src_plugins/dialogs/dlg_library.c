@@ -304,7 +304,6 @@ static void library_select_show_param_example(library_ctx_t *ctx, pcb_fplibrary_
 			while(isspace(*arg)) arg++;
 		}
 		if (strcmp(cmd, "example") == 0) {
-			printf("example='%s'\n", arg);
 			if ((arg != NULL) && (*arg != '\0')) {
 				end = strpbrk(arg, "\r\n");
 				if (end != NULL)
