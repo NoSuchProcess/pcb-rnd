@@ -228,6 +228,11 @@ static void library_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	library_ctx_t *ctx = caller_data;
 
+	if (ctx->pactive) {
+		ctx->pactive = 0;
+		PCB_DAD_FREE(ctx->pdlg);
+	}
+
 	timed_update_preview(ctx, 0);
 	pcb_board_free(ctx->prev_pcb);
 	PCB_DAD_FREE(ctx->dlg);
