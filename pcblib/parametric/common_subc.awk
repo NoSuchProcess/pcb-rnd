@@ -10,6 +10,14 @@
 #@@optional:pin_mask
 #@@dim:pin_mask
 
+#@@param:pin_mask_offs how much bigger (+) or smaller (-) the mask opening should be compared to copper (in mil by default, mm suffix can be used)
+#@@optional:pin_mask_offs
+#@@dim:pin_mask_offs
+
+#@@param:pin_mask_ratio pin mask opening should be copper size * this ratio (numbers larger than 1 mean opening with a gap, 1.00 means exactly as big as the copper shape)
+#@@optional:pin_mask_ratio
+#@@dim:pin_mask_ratio
+
 #@@param:pin_drill copper pin's drill diameter (in mil by default, mm suffix can be used)
 #@@optional:pin_drill
 #@@dim:pin_drill
@@ -61,6 +69,9 @@ BEGIN {
 
 	DEFAULT["pin_mask"] = mil(86)
 	DEFAULT["pin_mask", "dim"] = 1
+	DEFAULT["pin_mask_offs"] = "" # use copper size
+	DEFAULT["pin_mask_offs", "dim"] = 1
+	DEFAULT["pin_mask_ratio"] = "" # use copper size
 
 	DEFAULT["pin_drill"] = mm(1)
 	DEFAULT["pin_drill", "dim"] = 1
@@ -408,7 +419,7 @@ function subc_proto_create_pin_round(drill_dia, ring_dia, mask_dia      ,proto)
 	subc_pstk_add_shape_circ(proto, "intern-copper", x, y, ring_dia)
 	subc_pstk_add_shape_circ(proto, "bottom-copper", x, y, ring_dia)
 
-	mask_dia = either(mask_dia, DEFAULT["pin_mask"])
+	mask_dia = pin_mask(ring_dia, mask_dia)
 	subc_pstk_add_shape_circ(proto, "top-mask", x, y, mask_dia)
 	subc_pstk_add_shape_circ(proto, "bottom-mask", x, y, mask_dia)
 
@@ -429,7 +440,7 @@ function subc_proto_create_pin_square(drill_dia, ring_span, mask_span     ,proto
 	subc_pstk_add_shape_square(proto, "intern-copper", x, y, ring_span, ring_span)
 	subc_pstk_add_shape_square(proto, "bottom-copper", x, y, ring_span, ring_span)
 
-	mask_span = either(mask, DEFAULT["pin_mask"])
+	mask_span = pin_mask(ring_span, mask_dia)
 	subc_pstk_add_shape_square(proto, "top-mask", x, y, mask_span, mask_span)
 	subc_pstk_add_shape_square(proto, "bottom-mask", x, y, mask_span, mask_span)
 	PROTO[proto] = PROTO[proto] "     }" NL
@@ -462,6 +473,11 @@ function pad_paste(copper, absval, offsval, ratio)
 function pad_mask(copper, absval, offsval, ratio)
 {
 	return paste_or_mask_abs(copper, absval, offsval, ratio, "pad_mask")
+}
+
+function pin_mask(copper, absval, offsval, ratio)
+{
+	return paste_or_mask_abs(copper, absval, offsval, ratio, "pin_mask")
 }
 
 function pad_paste_offs(offsval            ,copper)
