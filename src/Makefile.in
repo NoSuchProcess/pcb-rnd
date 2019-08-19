@@ -41,7 +41,7 @@ else
 end
 
 # These files are to be generated before make dep is run
-put /local/pcb/DEPDEPS { hidlib_conf_fields.h conf_core_fields.h conf_internal.c generated_lists.h defpcb_internal.c buildin.c pcb_menu_default.c }
+put /local/pcb/DEPDEPS { hidlib_conf_fields.h conf_core_fields.h conf_internal.c generated_lists.h defpcb_internal.c buildin.c buildin.hidlib.c pcb_menu_default.c }
 
 include {../scconfig/template/debug.tmpasm}
 
@@ -543,7 +543,7 @@ util_deps: $(OBJS) $(OBJS_UTIL) ../src_3rd/genlist/genadlist.o ../src_3rd/genlis
 FORCE:
 
 
-DISTCLEANFILES = Makefile.depgen core_lists.h buildin.c compat_inc.h hidlib_conf_fields.h conf_core_fields.h conf_internal.c generated_lists.h defpcb_internal.c pcb_menu_default.c ../src_plugins/.builtin.pups ../src_plugins/.builtin.hidlib.pups librnd.mak @/local/pcb/DISTCLEANFILES@
+DISTCLEANFILES = Makefile.depgen core_lists.h buildin.c buildin.h buildin.hidlib.c buildin.hidlib.h compat_inc.h hidlib_conf_fields.h conf_core_fields.h conf_internal.c generated_lists.h defpcb_internal.c pcb_menu_default.c ../src_plugins/.builtin.pups ../src_plugins/.builtin.hidlib.pups librnd.mak @/local/pcb/DISTCLEANFILES@
 
 clean: $(CLEANRULES)
 	$(SCCBOX) rm -f -q  pcb-rnd $(HIDLIB_CLEAN_FILES) $(OBJS) $(OBJS_C99) $(OBJS_HIDLIB_ONLY) $(CLEANFILES)
