@@ -784,10 +784,10 @@ ha:{
 						}
 						ha:Documentation (standard) {
 							li:submenu {
-								ha:assy, top side               = { action={ NewGroup(doc, top, assy) } }
-								ha:assy, bottom side            = { action={ NewGroup(doc, bottom, assy) } }
-								ha:fab, top side                = { action={ NewGroup(doc, top, fab) } }
-								ha:fab, bottom side             = { action={ NewGroup(doc, bottom, fab) } }
+								ha:assy, top side               = { action={ NewGroup(doc, top, assy, -, top-assy) } }
+								ha:assy, bottom side            = { action={ NewGroup(doc, bottom, assy, -, bot-assy) } }
+								ha:fab, top side                = { action={ NewGroup(doc, top, fab, -, top-fab) } }
+								ha:fab, bottom side             = { action={ NewGroup(doc, bottom, fab, -, bot-fab) } }
 							}
 						}
 						ha:Documentation (misc) {
