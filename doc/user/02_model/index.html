@@ -134,12 +134,31 @@ subtype. The value is a free form text for user defined groups, but pcb-rnd
 recognizes (and handles specially) the following combinations:
 <p>
 <table border=1>
-	<caption><b>Layer purpose combination recongized </b>
+	<caption><b>Layer purpose combinations recongized </b>
 	<tr><th> main type <th> purpose <th> special meaning
 	<tr><td> boundary  <td> uroute  <td> unplated, routed bounary: routed outline of the board
 	<tr><td> boundary  <td> proute  <td> plated, routed bounary: routed outline of the board with copper plating
 	<tr><td> mech      <td> uroute  <td> unplated, routed inner cutout: unplated slots and small inner cutouts, done with drilling or routing or punch-through
 	<tr><td> mech      <td> proute  <td> plated, routed inner cutout: plated slots and small inner cutouts, done with drilling or routing or punch-through (typical for oval/rectanglar pins)
+</table>
+
+<p>
+The following combinations are conventions many footprints and boards
+would follow:
+<p>
+<table border=1>
+	<caption><b>Layer purpose combinations recommended </b>
+	<tr><th> main type <th> purpose      <th> location      <th> special meaning
+	<tr><td> boundary  <td> cut          <td> (global)      <td> unplated, straight line cuts at board outline
+	<tr><td> boundary  <td> vcut         <td> (global)      <td> unplated, straight line v-cuts (or grooves) at board outline
+	<tr><td> doc       <td> assy         <td> top or bottom <td> assembly drawing (for populating the board)
+	<tr><td> doc       <td> fab          <td> top or bottom <td> fab drawing instructions (for board fabrication)
+	<tr><td> doc       <td> ko.courtyard <td> top or bottom <td> keepout: component body above (or below) the board surface (polygons)
+	<tr><td> doc       <td> ko@<i>lt</i> <td> respectively  <td> keepout: nothing shall be drawn on layer type <i>lt</i> that intersects objects on this layer; <i>lt</i> is <i>location-type</i>, e.g. top-copper, bottom-silk, etc.
+	<tr><td> doc       <td> placement    <td> any           <td> placement helpers, e.g. where board edge should be relative to a connector
+	<tr><td> mech      <td> adhesive     <td> top or bottom <td> adhesive (glue) pattern printed on the board to keep parts in place during reflow
+	<tr><td> mech      <td> finish.gold  <td> top or bottom <td> gold finish (typical for copper fingers intended for slots/connectors/contacts)
+	<tr><td> mech      <td> finish.carbon<td> top or bottom <td> carbon finish (typical for under rubber push buttons)
 </table>
 
 <h3 id="objects"> 2.4. Basic Drawing Objects </h3>
