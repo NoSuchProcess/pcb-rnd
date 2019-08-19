@@ -776,13 +776,33 @@ ha:{
 								ha:Boundary, unplated, vcut     = { action={ NewGroup(boundary, global, uvcut) } }
 							}
 						}
-						ha:Mech (slots, cutouts) {
+						ha:Slots, cutouts, adhesive, finish {
 							li:submenu {
-								ha:Mech, unplated, routed       = { action={ NewGroup(mech, global, uroute, auto) } }
-								ha:Mech, plated, routed         = { action={ NewGroup(mech, global, proute, auto) } }
+								ha:Slot, unplated, routed       = { action={ NewGroup(mech, global, uroute, auto) } }
+								ha:Slot, plated, routed         = { action={ NewGroup(mech, global, proute, auto) } }
+								ha:Adhesive, top side           = { action={ NewGroup(mech, top, adhesive, -, top-adhesive) } }
+								ha:Adhesive, bottom side        = { action={ NewGroup(mech, bot, adhesive, -, bot-adhesive) } }
+								ha:Gold finish, top side        = { action={ NewGroup(mech, top, finish.gold, -, top-gold) } }
+								ha:Gold finish, bottom side     = { action={ NewGroup(mech, bot, finish.gold, -, bot-gold) } }
+								ha:Carbon finish, top side      = { action={ NewGroup(mech, top, finish.carbon, -, top-carbon) } }
+								ha:Carbon finish, bottom side   = { action={ NewGroup(mech, bot, finish.carbon, -, bot-carbon) } }
 							}
 						}
-						ha:Documentation (standard) {
+						ha:Keepouts {
+							li:submenu {
+								ha:Courtyard (comp. body), top    = { action={ NewGroup(doc, top, ko.courtyard, -, top-courtyard) } }
+								ha:Courtyard (comp. body), bottom = { action={ NewGroup(doc, bottom, ko.courtyard, -, bot-courtyard) } }
+								ha:Copper, top side               = { action={ NewGroup(doc, top, ko@top-copper, -, top-copper-ko) } }
+								ha:Copper, bottom side            = { action={ NewGroup(doc, bottom, ko@bottom-copper, -, bot-copper-ko) } }
+								ha:Silk, top side                 = { action={ NewGroup(doc, top, ko@top-silk, -, top-silk-ko) } }
+								ha:Silk, bottom side              = { action={ NewGroup(doc, bottom, ko@bottom-silk, -, bot-silk-ko) } }
+								ha:Mask, top side                 = { action={ NewGroup(doc, top, ko@top-mask, -, top-mask-ko) } }
+								ha:Mask, bottom side              = { action={ NewGroup(doc, bottom, ko@bottom-mask, -, bot-mask-ko) } }
+								ha:Paste, top side                = { action={ NewGroup(doc, top, ko@top-paste, -, top-paste-ko) } }
+								ha:Paste, bottom side             = { action={ NewGroup(doc, bottom, ko@bottom-paste, -, bot-paste-ko) } }
+							}
+						}
+						ha:Fab & assy {
 							li:submenu {
 								ha:assy, top side               = { action={ NewGroup(doc, top, assy, -, top-assy) } }
 								ha:assy, bottom side            = { action={ NewGroup(doc, bottom, assy, -, bot-assy) } }
@@ -790,11 +810,14 @@ ha:{
 								ha:fab, bottom side             = { action={ NewGroup(doc, bottom, fab, -, bot-fab) } }
 							}
 						}
-						ha:Documentation (misc) {
+						ha:Doc, misc {
 							li:submenu {
 								ha:Doc, top side                = { action={ NewGroup(doc, top) } }
 								ha:Doc, bottom side             = { action={ NewGroup(doc, bottom) } }
 								ha:Doc, global                  = { action={ NewGroup(doc, global) } }
+								ha:placement, top side          = { action={ NewGroup(doc, top, placement, -, top-place) } }
+								ha:placement, bottom side       = { action={ NewGroup(doc, bottom, placement, -, bot-place) } }
+								ha:placement, global            = { action={ NewGroup(doc, global, placement, -, place) } }
 							}
 						}
 					}
