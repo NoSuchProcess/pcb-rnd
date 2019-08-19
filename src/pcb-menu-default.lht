@@ -399,7 +399,7 @@ ha:{
 				ha:Select all visible objects      = { a={<key>s; <key>a; <key>a;}; action=Select(All) }
 				ha:Select all connected objects    = { a={<key>s; <key>a; <key>c;}; action=Select(Connection) }
 				ha:Unselect all objects            = { a={<key>s; <key>u; <key>a;}; action=Unselect(All) }
-				ha:unselect all connected objects  = { a={<key>s; <key>u; <key>c;}; action=Unselect(Connection) }
+				ha:Unselect all connected objects  = { a={<key>s; <key>u; <key>c;}; action=Unselect(Connection) }
 				ha:Invert selection                = { a={<key>s; <key>i; }; action=Select(Invert) }
 				-
 				ha:Advanced search and select      = { a={<key>s; <key>s;} action=SearchDialog() }
