@@ -1243,11 +1243,11 @@ static fgw_error_t pcb_act_DelGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_NewGroup[] = "NewGroup(type [,location [, purpose[, auto|sub]]])";
+static const char pcb_acts_NewGroup[] = "NewGroup(type [,location [, purpose[, auto|sub [,name]]]])";
 static const char pcb_acth_NewGroup[] = "Create a new layer group with a single, positive drawn layer in it";
 static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *stype = NULL, *sloc = NULL, *spurp = NULL, *scomb = NULL;
+	const char *stype = NULL, *sloc = NULL, *spurp = NULL, *scomb = NULL, *name = NULL;
 	pcb_layergrp_t *g = NULL;
 	pcb_layer_type_t ltype = 0, lloc = 0;
 
@@ -1255,6 +1255,7 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_MAY_CONVARG(2, FGW_STR, NewGroup, sloc = argv[2].val.str);
 	PCB_ACT_MAY_CONVARG(3, FGW_STR, NewGroup, spurp = argv[3].val.str);
 	PCB_ACT_MAY_CONVARG(4, FGW_STR, NewGroup, scomb = argv[4].val.str);
+	PCB_ACT_MAY_CONVARG(5, FGW_STR, NewGroup, name = argv[5].val.str);
 
 	ltype = pcb_layer_type_str2bit(stype) & PCB_LYT_ANYTHING;
 	if (ltype == 0) {
@@ -1289,7 +1290,10 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_layergrp_set_purpose__(g, pcb_strdup(spurp));
 
 		free(g->name);
-		g->name = pcb_strdup_printf("%s%s%s", sloc == NULL ? "" : sloc, sloc == NULL ? "" : "-", stype);
+		if (name != NULL)
+			g->name = pcb_strdup(name);
+		else
+			g->name = pcb_strdup_printf("%s%s%s", sloc == NULL ? "" : sloc, sloc == NULL ? "" : "-", stype);
 		g->ltype = ltype | lloc;
 		g->vis = 1;
 		g->open = 1;
@@ -1302,6 +1306,10 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (scomb != NULL) {
 				if (strstr(scomb, "auto") != NULL) ly->comb |= PCB_LYC_AUTO;
 				if (strstr(scomb, "sub") != NULL)  ly->comb |= PCB_LYC_SUB;
+			}
+			if (name != NULL) {
+				free(ly->name);
+				ly->name = pcb_strdup(name);
 			}
 		}
 		else
