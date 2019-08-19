@@ -13,6 +13,8 @@ action_entry(pdrill)
 action_entry(udrill)
 action_entry(proute)
 action_entry(uroute)
+action_entry(ucut)
+action_entry(uvcut)
 
 /* Keywords for actions */
 action_entry(Add)

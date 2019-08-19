@@ -101,7 +101,7 @@ typedef enum { /* bitfield */
    means the "perimeter of the board", but could include largish internal
    cutout - the user needs to be explicit about this. Mech layers are NOT
    included, that's the difference compared to routed layers */
-#define PCB_LAYER_IS_OUTLINE(lyt, purpi) (((lyt) & PCB_LYT_BOUNDARY) && (((purpi) == F_proute) || ((purpi) == F_uroute)))
+#define PCB_LAYER_IS_OUTLINE(lyt, purpi) (((lyt) & PCB_LYT_BOUNDARY) && (((purpi) == F_proute) || ((purpi) == F_uroute) || ((purpi) == F_ucut) || ((purpi) == F_uvcut)))
 
 #include "globalconst.h"
 #include "global_typedefs.h"

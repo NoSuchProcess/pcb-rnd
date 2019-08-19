@@ -772,6 +772,8 @@ ha:{
 							li:submenu {
 								ha:Boundary, unplated, routed   = { action={ NewGroup(boundary, global, uroute) } }
 								ha:Boundary, plated, routed     = { action={ NewGroup(boundary, global, proute) } }
+								ha:Boundary, unplated, cut      = { action={ NewGroup(boundary, global, ucut) } }
+								ha:Boundary, unplated, vcut     = { action={ NewGroup(boundary, global, uvcut) } }
 							}
 						}
 						ha:Mech (slots, cutouts) {
@@ -780,7 +782,6 @@ ha:{
 								ha:Mech, plated, routed         = { action={ NewGroup(mech, global, proute, auto) } }
 							}
 						}
-
 						ha:Documentation (misc) {
 							li:submenu {
 								ha:Doc, top side                = { action={ NewGroup(doc, top) } }
