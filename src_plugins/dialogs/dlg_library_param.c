@@ -175,6 +175,7 @@ static void library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 
 	free(ctx->example);
 	ctx->example = NULL;
+	ctx->num_params = 0;
 
 	vtp0_init(&curr_enum);
 	vtp0_append(&curr_enum, pcb_strdup(""));
