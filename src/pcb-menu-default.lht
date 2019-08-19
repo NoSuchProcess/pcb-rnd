@@ -782,6 +782,14 @@ ha:{
 								ha:Mech, plated, routed         = { action={ NewGroup(mech, global, proute, auto) } }
 							}
 						}
+						ha:Documentation (standard) {
+							li:submenu {
+								ha:assy, top side               = { action={ NewGroup(doc, top, assy) } }
+								ha:assy, bottom side            = { action={ NewGroup(doc, bottom, assy) } }
+								ha:fab, top side                = { action={ NewGroup(doc, top, fab) } }
+								ha:fab, bottom side             = { action={ NewGroup(doc, bottom, fab) } }
+							}
+						}
 						ha:Documentation (misc) {
 							li:submenu {
 								ha:Doc, top side                = { action={ NewGroup(doc, top) } }
