@@ -768,13 +768,26 @@ ha:{
 				ha:Duplicate group                  = { action={ DupGroup(@) } }
 				ha:Create new group {
 					li:submenu {
-						ha:Boundary, unplated, routed   = { action={ NewGroup(boundary, global, uroute) } }
-						ha:Boundary, plated, routed     = { action={ NewGroup(boundary, global, proute) } }
-						ha:Mech, unplated, routed       = { action={ NewGroup(mech, global, uroute, auto) } }
-						ha:Mech, plated, routed         = { action={ NewGroup(mech, global, proute, auto) } }
-						ha:Doc, top side                = { action={ NewGroup(doc, top) } }
-						ha:Doc, bottom side             = { action={ NewGroup(doc, bottom) } }
-						ha:Doc, global                  = { action={ NewGroup(doc, global) } }
+						ha:Boundary (board outline) {
+							li:submenu {
+								ha:Boundary, unplated, routed   = { action={ NewGroup(boundary, global, uroute) } }
+								ha:Boundary, plated, routed     = { action={ NewGroup(boundary, global, proute) } }
+							}
+						}
+						ha:Mech (slots, cutouts) {
+							li:submenu {
+								ha:Mech, unplated, routed       = { action={ NewGroup(mech, global, uroute, auto) } }
+								ha:Mech, plated, routed         = { action={ NewGroup(mech, global, proute, auto) } }
+							}
+						}
+
+						ha:Documentation (misc) {
+							li:submenu {
+								ha:Doc, top side                = { action={ NewGroup(doc, top) } }
+								ha:Doc, bottom side             = { action={ NewGroup(doc, bottom) } }
+								ha:Doc, global                  = { action={ NewGroup(doc, global) } }
+							}
+						}
 					}
 				}
 				ha:Remove group                     = { action={ DelGroup(@) } }
