@@ -1,13 +1,28 @@
 How to get a release candidate tarball in /tmp:
 
-  ver=2.1.3
+  ver=2.1.4
   cd /tmp
   svn export svn://repo.hu/pcb-rnd/trunk pcb-rnd-$ver
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
 
 Packaging changes between 2.1.3 and 2.1.4
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TODO: new license entry for 3rd libulzw
+
+(preliminary)
+
+A. changes that probably don't need action
+
+1. removed plugin lib_gtk_hid from pcb-rnd-hid-gtk 
+
+B. changes that probably DO need action
+
+1. copyright update: new minilib in src_3rd: libulzw (new author, BSD license)
+   (In case you need to maintain a copyright file)
+
+2. new plugins: import_pxm_gd import_pxm_pnm in package pcb-rnd-import-geo
+   Note: import_pxm_gd depends on libgd so pcb-rnd-import-geo
+   started to depend on libgd
+
 
 Packaging changes between 2.1.2 and 2.1.3
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

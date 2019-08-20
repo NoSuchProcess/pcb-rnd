@@ -10,7 +10,7 @@
 <tr><th>pcb-rnd-doc<td><td>&nbsp;
 <tr><th>pcb-rnd-export-sim<td> pcb-rnd-core<td> export_openems
 <tr><th>pcb-rnd-lib-gl<td> pcb-rnd-core<td> lib_hid_gl
-<tr><th>pcb-rnd-import-geo<td> pcb-rnd-core<td> import_hpgl import_ttf
+<tr><th>pcb-rnd-import-geo<td> pcb-rnd-core<td> import_hpgl import_pxm_gd import_pxm_pnm import_ttf
 <tr><th>pcb-rnd-hid-gtk2-gl<td> pcb-rnd-core pcb-rnd-lib-gtk pcb-rnd-lib-gl<td> hid_gtk2_gl
 <tr><th>pcb-rnd-import-net<td> pcb-rnd-core pcb-rnd-lib-io<td> import_calay import_edif import_fpcb_nl import_ipcd356 import_ltspice import_mentor_sch import_netlist import_sch import_tinycad
 <tr><th>pcb-rnd<td>pcb-rnd-core pcb-rnd-io-standard pcb-rnd-io-alien pcb-rnd-hid-gtk2-gl pcb-rnd-hid-gtk2-gdk pcb-rnd-export pcb-rnd-export-sim pcb-rnd-export-extra pcb-rnd-auto pcb-rnd-extra pcb-rnd-cloud pcb-rnd-doc<td>&lt;metapackage&gt;
@@ -19,7 +19,7 @@
 <tr><th>pcb-rnd-io-standard<td> pcb-rnd-core pcb-rnd-lib-io<td> io_pcb io_tedax
 <tr><th>pcb-rnd-lib-gui<td> pcb-rnd-core<td> dialogs draw_fontsel lib_hid_common lib_hid_pcbui
 <tr><th>pcb-rnd-core<td><td> act_draw act_read autocrop ddraft draw_csect draw_fab drc_orig extedit fp_board fp_fs hid_batch io_lihata lib_compat_help lib_polyhelp mincut propedit query report rubberband_orig script shape
-<tr><th>pcb-rnd-lib-gtk<td> pcb-rnd-core pcb-rnd-lib-gui<td> lib_gtk_common lib_gtk_hid
+<tr><th>pcb-rnd-lib-gtk<td> pcb-rnd-core pcb-rnd-lib-gui<td> lib_gtk_common
 <tr><th>pcb-rnd-hid-lesstif<td> pcb-rnd-core pcb-rnd-lib-gui<td> hid_lesstif
 <tr><th>pcb-rnd-io-alien<td> pcb-rnd-core pcb-rnd-lib-io<td> io_autotrax io_dsn io_eagle io_hyp io_kicad io_kicad_legacy
 <tr><th>pcb-rnd-cloud<td> pcb-rnd-core<td> fp_wget lib_wget
@@ -35,7 +35,7 @@
 <tr><th>pcb-rnd-doc<td>/usr/share/doc/* <i></i><td>	Documentation for pcb-rnd<td>	 	User manual (html) and manual pages.  
 <tr><th>pcb-rnd-export-sim<td> $P/export_openems.pup $P/export_openems.so <i></i><td>	Export plugins to simulators<td> 	Export the board in formats that can be used for simulation: openems.  
 <tr><th>pcb-rnd-lib-gl<td> $P/lib_hid_gl.pup $P/lib_hid_gl.so <i></i><td>	Support library for rendering with opengl.<td> 
-<tr><th>pcb-rnd-import-geo<td> $P/import_hpgl.pup $P/import_hpgl.so $P/import_ttf.pup $P/import_ttf.so <i></i><td>	Geometry import plugins.<td> 	Import geometry from HPGL plots. HPGL can be produced (plotted) with 	most mechanical cads.  
+<tr><th>pcb-rnd-import-geo<td> $P/import_hpgl.pup $P/import_hpgl.so $P/import_pxm_gd.pup $P/import_pxm_gd.so $P/import_pxm_pnm.pup $P/import_pxm_pnm.so $P/import_ttf.pup $P/import_ttf.so <i></i><td>	Geometry import plugins.<td> 	Import geometry from HPGL plots. HPGL can be produced (plotted) with 	most mechanical cads.  
 <tr><th>pcb-rnd-hid-gtk2-gl<td> $P/hid_gtk2_gl.pup $P/hid_gtk2_gl.so <i></i><td>	GUI: gtk2, opengl<td> 	Hardware accelerated (opengl) rendering on gtk2.  
 <tr><th>pcb-rnd-import-net<td> $P/import_calay.pup $P/import_calay.so $P/import_edif.pup $P/import_edif.so $P/import_fpcb_nl.pup $P/import_fpcb_nl.so $P/import_ipcd356.pup $P/import_ipcd356.so $P/import_ltspice.pup $P/import_ltspice.so $P/import_mentor_sch.pup $P/import_mentor_sch.so $P/import_netlist.pup $P/import_netlist.so $P/import_sch.pup $P/import_sch.so $P/import_tinycad.pup $P/import_tinycad.so <i></i><td>	Netlist/schematics import plugins.<td> 	Import netlist and footprint information from edif, ltspice, mentor graphics, 	gschem and tinycad.  
 <tr><th>pcb-rnd<td> <i></i><td>	Standard installation of pcb-rnd<td> 	Install pcb-rnd core and the most commonly used plugins.  
@@ -44,7 +44,7 @@
 <tr><th>pcb-rnd-io-standard<td> $P/io_pcb.pup $P/io_pcb.so $P/io_tedax.pup $P/io_tedax.so <i></i><td>	Commonly used non-native board and footprint file formats<td> 	Plugins for tEDAx footprint format and the gEDA/PCB file formats 	(footprint and board).  
 <tr><th>pcb-rnd-lib-gui<td> $P/dialogs.pup $P/dialogs.so $P/draw_fontsel.pup $P/draw_fontsel.so $P/lib_hid_common.pup $P/lib_hid_common.so $P/lib_hid_pcbui.pup $P/lib_hid_pcbui.so <i>$C/dialogs.conf</i><td>	Support library for building the GUI.<td> 
 <tr><th>pcb-rnd-core<td> $P/act_draw.pup $P/act_draw.so $P/act_read.pup $P/act_read.so $P/autocrop.pup $P/autocrop.so $P/ddraft.pup $P/ddraft.so $P/draw_csect.pup $P/draw_csect.so $P/draw_fab.pup $P/draw_fab.so $P/drc_orig.pup $P/drc_orig.so $P/extedit.pup $P/extedit.so $P/fp_board.pup $P/fp_board.so $P/fp_fs.pup $P/fp_fs.so $P/hid_batch.pup $P/hid_batch.so $P/io_lihata.pup $P/io_lihata.so $P/lib_compat_help.pup $P/lib_compat_help.so $P/lib_polyhelp.pup $P/lib_polyhelp.so $P/mincut.pup $P/mincut.so $P/propedit.pup $P/propedit.so $P/query.pup $P/query.so $P/report.pup $P/report.so $P/rubberband_orig.pup $P/rubberband_orig.so $P/script.pup $P/script.so $P/shape.pup $P/shape.so <i></i><td>	pcb-rnd executable with the core functionality<td> 	Includes the data model, the most common action commands, the native file 	format and the CLI (batch HID). Does not contain GUI. Can be used in 	headless mode or batch/scripted mode for automated processing.  
-<tr><th>pcb-rnd-lib-gtk<td> $P/lib_gtk_common.pup $P/lib_gtk_common.so $P/lib_gtk_hid.pup $P/lib_gtk_hid.so <i></i><td>	Support library for building the GUI with gtk.<td> 
+<tr><th>pcb-rnd-lib-gtk<td> $P/lib_gtk_common.pup $P/lib_gtk_common.so <i></i><td>	Support library for building the GUI with gtk.<td> 
 <tr><th>pcb-rnd-hid-lesstif<td> $P/hid_lesstif.pup $P/hid_lesstif.so <i></i><td>	GUI: motif/lesstif, software render<td> 	Lightweight GUI and software rendering using the motif (lesstif) toolkit.  
 <tr><th>pcb-rnd-io-alien<td> $P/io_autotrax.pup $P/io_autotrax.so $P/io_dsn.pup $P/io_dsn.so $P/io_eagle.pup $P/io_eagle.so $P/io_hyp.pup $P/io_hyp.so $P/io_kicad.pup $P/io_kicad.so $P/io_kicad_legacy.pup $P/io_kicad_legacy.so <i></i><td>	File format compatibility with other PCB layout designers.<td> 	Load and/or save boards in file formats supported by other 	EDA tools, such as KiCAD, Eagle, protel/autotrax, etc.  
 <tr><th>pcb-rnd-cloud<td> $P/fp_wget.pup $P/fp_wget.so $P/lib_wget.pup $P/lib_wget.so <i>$C/fp_wget.conf</i><td>	Networking plugins.<td> 	'Cloud' footprint access plugin that integrates edakrill and gedasymbols.org.  
@@ -83,10 +83,12 @@
 --plugin-export_fidocadj
 --plugin-export_lpr
 --plugin-export_oldconn
+--plugin-import_pxm_gd
 --plugin-export_stat
 --plugin-io_kicad_legacy
 --plugin-io_eagle
 --plugin-io_tedax
+--plugin-import_pxm_pnm
 --plugin-io_kicad
 --plugin-import_mucs
 --plugin-renumber
@@ -116,7 +118,6 @@
 --plugin-hid_gtk2_gl
 --plugin-import_edif
 --plugin-hid_lesstif
---plugin-lib_gtk_hid
 --plugin-lib_gensexpr
 --plugin-diag
 --plugin-lib_wget
