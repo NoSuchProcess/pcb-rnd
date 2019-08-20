@@ -18,9 +18,9 @@ done
 for n in $proot/*/*.tmpasm
 do
 	sed "s@^@$n @" < $n
-done 
-
-)| awk -v "meta_deps=$meta_deps" '
+done
+cat extra.digest
+) | awk -v "meta_deps=$meta_deps" '
 	BEGIN {
 		gsub(" ", " pcb-rnd-", meta_deps)
 		sub("^", "pcb-rnd-", meta_deps)
@@ -33,6 +33,14 @@ done
 			}
 			LONG[pkg] = LONG[pkg] $0 " "
 		}
+	}
+
+	($1 ~ "@files") {
+		pkg=$2
+		files=$0
+		sub("@files[ \t]*[^ \t]*[ \t]", "", files)
+		IFILES[pkg] = files
+		PKG[pkg] = "<i>n/a</i>"
 	}
 
 	($1 ~ "[.]pup$") {
@@ -56,7 +64,8 @@ done
 	}
 
 	{
-		pkg = "pcb-rnd-" pkg
+		if (!(pkg ~ "^lib"))
+			pkg = "pcb-rnd-" pkg
 	}
 
 	($1 ~ "[.]pup$") && ($2 == "$package") {
@@ -149,6 +158,7 @@ done
 		print "<p>File prefixes:<ul>"
 		print "	<li> $P: plugin install dir (e.g. /usr/lib/pcb-rnd/)"
 		print "	<li> $C: conf dir (e.g. /usr/share/pcb-rnd/)"
+		print "	<li> $PREFIX: installation prefix (e.g. /usr)"
 		print "</ul>"
 
 		print "<h3> ./configure arguments </h3>"

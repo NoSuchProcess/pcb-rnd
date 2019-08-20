@@ -1,0 +1,3 @@
+@files librnd-dev $PREFIX/include/librnd/*
+@files librnd $PREFIX/lib/*.so*
+

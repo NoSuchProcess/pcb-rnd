@@ -103,3 +103,13 @@
 
 @pcb-rnd-lib-io
 	Support library for alien file formats.
+
+@librnd
+	pcb-rnd library, binaries.
+	
+	HID, polygons, infrastructure for 3rd party applications.
+
+@librnd-dev
+	pcb-rnd library, headers.
+
+	HID, polygons, infrastructure for 3rd party applications.
