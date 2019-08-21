@@ -185,12 +185,20 @@ static void draw_everything_holes(pcb_draw_info_t *info, pcb_layergrp_id_t gid)
 
 typedef struct {
 	pcb_layergrp_id_t top_fab, top_assy, bot_assy;
+	int top_fab_enable, top_assy_enable, bot_assy_enable;
 } legacy_vlayer_t;
 
-#define set_vlayer(gid_field, vly_type) \
-	(((lvly_drawn->gid_field >= 0) && pcb_layer_gui_set_glayer(PCB, lvly_drawn->gid_field, 0, &info->xform_exporter)) || \
-	(pcb_layer_gui_set_vlayer(PCB, vly_type, 0, &info->xform_exporter)))
+static int set_vlayer(pcb_draw_info_t *info, pcb_layergrp_id_t gid, int enable, pcb_virtual_layer_t vly_type)
+{
+	if (gid >= 0) { /* has a doc layer */
+		if (!enable)
+			return 0;
+		return pcb_layer_gui_set_glayer(PCB, gid, 0, &info->xform_exporter);
+	}
 
+	/* fall back to the legacy implicit virtual layer mode */
+	return pcb_layer_gui_set_vlayer(PCB, vly_type, 0, &info->xform_exporter);
+}
 
 
 static void draw_virtual_layers(pcb_draw_info_t *info, const legacy_vlayer_t *lvly_drawn)
@@ -199,17 +207,17 @@ static void draw_virtual_layers(pcb_draw_info_t *info, const legacy_vlayer_t *lv
 
 	hid_exp.view = *info->drawn_area;
 
-	if (set_vlayer(top_assy, PCB_VLY_TOP_ASSY)) {
+	if (set_vlayer(info, lvly_drawn->top_assy, lvly_drawn->top_assy_enable, PCB_VLY_TOP_ASSY)) {
 		pcb_draw_assembly(info, PCB_LYT_TOP);
 		pcb_render->end_layer(pcb_gui);
 	}
 
-	if (set_vlayer(bot_assy, PCB_VLY_BOTTOM_ASSY)) {
+	if (set_vlayer(info, lvly_drawn->bot_assy, lvly_drawn->bot_assy_enable, PCB_VLY_BOTTOM_ASSY)) {
 		pcb_draw_assembly(info, PCB_LYT_BOTTOM);
 		pcb_render->end_layer(pcb_gui);
 	}
 
-	if set_vlayer(top_fab, PCB_VLY_FAB) {
+	if (set_vlayer(info, lvly_drawn->top_fab, lvly_drawn->top_fab_enable, PCB_VLY_FAB)) {
 		pcb_stub_draw_fab(info, pcb_draw_out.fgGC, &hid_exp);
 		pcb_render->end_layer(pcb_gui);
 	}
@@ -316,6 +324,16 @@ static void draw_pins_and_pads(pcb_draw_info_t *info, pcb_layergrp_id_t componen
 	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 }
 
+static int has_auto(pcb_layergrp_t *grp)
+{
+	int n;
+	for(n = 0; n < grp->len; n++) {
+		pcb_layer_t *ly = pcb_get_layer(PCB->Data, grp->lid[n]);
+		if (ly->comb & PCB_LYC_AUTO)
+			return 1;
+	}
+	return 0;
+}
 
 static void draw_everything(pcb_draw_info_t *info)
 {
@@ -358,14 +376,20 @@ static void draw_everything(pcb_draw_info_t *info)
 		if (grp != NULL)
 			gflg = grp->ltype;
 
-		if ((gflg & PCB_LYT_DOC) && (grp->purpi == F_fab))
+		if ((gflg & PCB_LYT_DOC) && (grp->purpi == F_fab)) {
 			lvly.top_fab = group;
+			lvly.top_fab_enable = has_auto(grp);
+		}
 
 		if ((gflg & PCB_LYT_DOC) && (grp->purpi == F_assy)) {
-			if (gflg & PCB_LYT_TOP)
+			if (gflg & PCB_LYT_TOP) {
 				lvly.top_assy = group;
-			else if (gflg & PCB_LYT_BOTTOM)
+				lvly.top_assy_enable = has_auto(grp);
+			}
+			else if (gflg & PCB_LYT_BOTTOM) {
 				lvly.bot_assy = group;
+				lvly.bot_assy_enable = has_auto(grp);
+			}
 		}
 
 		if ((gflg & PCB_LYT_SILK) || (gflg & PCB_LYT_DOC) || (gflg & PCB_LYT_MASK) || (gflg & PCB_LYT_PASTE) || (gflg & PCB_LYT_BOUNDARY) || (gflg & PCB_LYT_MECH)) /* do not draw silk, mask, paste and boundary here, they'll be drawn separately */
