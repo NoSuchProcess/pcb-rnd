@@ -806,7 +806,7 @@ ha:{
 							li:submenu {
 								ha:assy, top side               = { action={ NewGroup(doc, top, assy, -, top-assy) } }
 								ha:assy, bottom side            = { action={ NewGroup(doc, bottom, assy, -, bot-assy) } }
-								ha:fab, top side                = { action={ NewGroup(doc, top, fab, auto, top-fab) } }
+								ha:fab, top side                = { action={ NewGroup(doc, top, fab, auto, fab) } }
 							}
 						}
 						ha:Doc, misc {
