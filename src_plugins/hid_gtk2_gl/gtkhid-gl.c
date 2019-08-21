@@ -267,10 +267,8 @@ static void ghid_gl_draw_pixmap(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pcb
 
 static void ghid_gl_draw_bg_image(pcb_hidlib_t *hidlib)
 {
-	if (ghidgui->bg_pixmap.image == NULL)
-		return;
-
-	ghid_gl_draw_pixmap(hidlib, &ghidgui->bg_pixmap, 0, 0, hidlib->size_x, hidlib->size_y);
+	if (ghidgui->bg_pixmap.image != NULL)
+		ghid_gl_draw_pixmap(hidlib, &ghidgui->bg_pixmap, 0, 0, hidlib->size_x, hidlib->size_y);
 }
 
 
