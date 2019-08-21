@@ -184,7 +184,7 @@ static void draw_everything_holes(pcb_draw_info_t *info, pcb_layergrp_id_t gid)
 }
 
 typedef struct {
-	pcb_layergrp_id_t top_fab;
+	pcb_layergrp_id_t top_fab, top_assy, bot_assy;
 } legacy_vlayer_t;
 
 #define set_vlayer(gid_field, vly_type) \
@@ -199,12 +199,12 @@ static void draw_virtual_layers(pcb_draw_info_t *info, const legacy_vlayer_t *lv
 
 	hid_exp.view = *info->drawn_area;
 
-	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_TOP_ASSY, 0, &info->xform_exporter)) {
+	if (set_vlayer(top_assy, PCB_VLY_TOP_ASSY)) {
 		pcb_draw_assembly(info, PCB_LYT_TOP);
 		pcb_render->end_layer(pcb_gui);
 	}
 
-	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_BOTTOM_ASSY, 0, &info->xform_exporter)) {
+	if (set_vlayer(bot_assy, PCB_VLY_BOTTOM_ASSY)) {
 		pcb_draw_assembly(info, PCB_LYT_BOTTOM);
 		pcb_render->end_layer(pcb_gui);
 	}
@@ -348,6 +348,7 @@ static void draw_everything(pcb_draw_info_t *info)
 
 	memset(do_group, 0, sizeof(do_group));
 	lvly.top_fab = -1;
+	lvly.top_assy = lvly.bot_assy = -1;
 	for (ngroups = 0, i = 0; i < pcb_max_layer; i++) {
 		pcb_layer_t *l = LAYER_ON_STACK(i);
 		pcb_layergrp_id_t group = pcb_layer_get_group(PCB, pcb_layer_stack[i]);
@@ -359,6 +360,13 @@ static void draw_everything(pcb_draw_info_t *info)
 
 		if ((gflg & PCB_LYT_DOC) && (grp->purpi == F_fab))
 			lvly.top_fab = group;
+
+		if ((gflg & PCB_LYT_DOC) && (grp->purpi == F_assy)) {
+			if (gflg & PCB_LYT_TOP)
+				lvly.top_assy = group;
+			else if (gflg & PCB_LYT_BOTTOM)
+				lvly.bot_assy = group;
+		}
 
 		if ((gflg & PCB_LYT_SILK) || (gflg & PCB_LYT_DOC) || (gflg & PCB_LYT_MASK) || (gflg & PCB_LYT_PASTE) || (gflg & PCB_LYT_BOUNDARY) || (gflg & PCB_LYT_MECH)) /* do not draw silk, mask, paste and boundary here, they'll be drawn separately */
 			continue;
