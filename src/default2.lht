@@ -58,6 +58,8 @@ ha:pcb-rnd-board-v6 {
      ha:bottom-paste { lid=12; group=9; ha:combining { auto=1; } }
      ha:slot-plated   { lid=13; group=10; ha:combining { auto=1; } }
      ha:slot-unplated { lid=14; group=11; ha:combining { auto=1; } }
+     ha:top-assy     { lid=15; group=12; color={#444444} }
+     ha:bot-assy     { lid=16; group=13; color={#444444}  }
    }
  }
 
@@ -125,6 +127,18 @@ ha:pcb-rnd-board-v6 {
     ha:type { mech=1; }
     purpose = uroute
     li:layers { 14; }
+   }
+   ha:12 {
+    name = top-assy
+    ha:type { top=1; doc=1; }
+    purpose = assy
+    li:layers { 15; }
+   }
+   ha:13 {
+    name = bot-assy
+    ha:type { top=1; doc=1; }
+    purpose = assy
+    li:layers { 16; }
    }
   }
  }
