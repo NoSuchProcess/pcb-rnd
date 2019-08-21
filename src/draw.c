@@ -183,7 +183,17 @@ static void draw_everything_holes(pcb_draw_info_t *info, pcb_layergrp_id_t gid)
 	}
 }
 
-static void draw_virtual_layers(pcb_draw_info_t *info)
+typedef struct {
+	pcb_layergrp_id_t top_fab;
+} legacy_vlayer_t;
+
+#define set_vlayer(gid_field, vly_type) \
+	(((lvly_drawn->gid_field >= 0) && pcb_layer_gui_set_glayer(PCB, lvly_drawn->gid_field, 0, &info->xform_exporter)) || \
+	(pcb_layer_gui_set_vlayer(PCB, vly_type, 0, &info->xform_exporter)))
+
+
+
+static void draw_virtual_layers(pcb_draw_info_t *info, const legacy_vlayer_t *lvly_drawn)
 {
 	pcb_hid_expose_ctx_t hid_exp;
 
@@ -199,7 +209,7 @@ static void draw_virtual_layers(pcb_draw_info_t *info)
 		pcb_render->end_layer(pcb_gui);
 	}
 
-	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_FAB, 0, &info->xform_exporter)) {
+	if set_vlayer(top_fab, PCB_VLY_FAB) {
 		pcb_stub_draw_fab(info, pcb_draw_out.fgGC, &hid_exp);
 		pcb_render->end_layer(pcb_gui);
 	}
@@ -319,6 +329,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	/* This is the reverse of the order in which we draw them.  */
 	pcb_layergrp_id_t drawn_groups[PCB_MAX_LAYERGRP];
 	pcb_bool paste_empty;
+	legacy_vlayer_t lvly;
 
 	backsilk_gid = ((!conf_core.editor.show_solder_side) ? pcb_layergrp_get_bottom_silk() : pcb_layergrp_get_top_silk());
 	backsilk_grp = pcb_get_layergrp(PCB, backsilk_gid);
@@ -336,10 +347,18 @@ static void draw_everything(pcb_draw_info_t *info)
 	pcb_render->render_burst(pcb_gui, PCB_HID_BURST_START, info->drawn_area);
 
 	memset(do_group, 0, sizeof(do_group));
+	lvly.top_fab = -1;
 	for (ngroups = 0, i = 0; i < pcb_max_layer; i++) {
 		pcb_layer_t *l = LAYER_ON_STACK(i);
 		pcb_layergrp_id_t group = pcb_layer_get_group(PCB, pcb_layer_stack[i]);
-		unsigned int gflg = pcb_layergrp_flags(PCB, group);
+		pcb_layergrp_t *grp = pcb_get_layergrp(PCB, group);
+		unsigned int gflg = 0;
+
+		if (grp != NULL)
+			gflg = grp->ltype;
+
+		if ((gflg & PCB_LYT_DOC) && (grp->purpi == F_fab))
+			lvly.top_fab = group;
 
 		if ((gflg & PCB_LYT_SILK) || (gflg & PCB_LYT_DOC) || (gflg & PCB_LYT_MASK) || (gflg & PCB_LYT_PASTE) || (gflg & PCB_LYT_BOUNDARY) || (gflg & PCB_LYT_MECH)) /* do not draw silk, mask, paste and boundary here, they'll be drawn separately */
 			continue;
@@ -461,7 +480,7 @@ static void draw_everything(pcb_draw_info_t *info)
 
 	pcb_draw_boundary_mech(info);
 
-	draw_virtual_layers(info);
+	draw_virtual_layers(info, &lvly);
 	if (pcb_gui->gui) {
 		draw_rats(info->drawn_area);
 		draw_pins_and_pads(info, component, solder);
