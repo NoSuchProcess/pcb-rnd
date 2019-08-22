@@ -329,12 +329,32 @@ pcb_layergrp_t *pcb_layergrp_insert_after(pcb_board_t *pcb, pcb_layergrp_id_t wh
 	return stack->grp+where+1;
 }
 
+static void layergrp_post_change(pcb_attribute_list_t *list, const char *name, const char *value)
+{
+	pcb_layergrp_t *g = (pcb_layergrp_t *)(((char *)list) - offsetof(pcb_layergrp_t, Attributes));
+
+	if (strcmp(name, "init-invis") == 0) {
+		int newv;
+		if ((value == NULL) || (*value == '\0'))
+			return;
+		if ((pcb_strcasecmp(value, "true") == 0) || (pcb_strcasecmp(value, "yes") == 0) || (pcb_strcasecmp(value, "on") == 0) || (strcmp(value, "1") == 0)) newv = 1;
+		else if ((pcb_strcasecmp(value, "false") == 0) || (pcb_strcasecmp(value, "no") == 0) || (pcb_strcasecmp(value, "off") == 0) || (strcmp(value, "0") == 0)) newv = 0;
+		else {
+			pcb_message(PCB_MSG_ERROR, "unrecognized value '%s' of layer group %s's init-invis attribute", value, g->name == NULL ? "" : g->name);
+			return;
+		}
+		g->init_invis = newv;
+	}
+
+}
+
 void pcb_layergrp_setup(pcb_layergrp_t *g, pcb_board_t *parent)
 {
 	g->valid = 1;
 	g->parent_type = PCB_PARENT_BOARD;
 	g->parent.board = parent;
 	g->type = PCB_OBJ_LAYERGRP;
+	g->Attributes.post_change = layergrp_post_change;
 }
 
 static pcb_layergrp_t *pcb_get_grp_new_intern_insert(pcb_board_t *pcb, int room, int bl, int omit_substrate)

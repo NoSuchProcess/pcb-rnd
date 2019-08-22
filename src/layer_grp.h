@@ -53,6 +53,9 @@ struct pcb_layergrp_s {
 
 	/* internal: temporary states */
 	int intern_id;                         /* for the old layer import mechanism */
+
+	/* internal: attribute cache */
+	unsigned init_invis:1;                 /* layer group should be inivisible by default (e.g. after load) */
 };
 
 
