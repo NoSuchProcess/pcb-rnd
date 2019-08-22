@@ -43,24 +43,24 @@ ha:pcb-rnd-board-v6 {
 
  ha:data {
    li:layers {
-     ha:top-sig      { lid=0; group=3; }
-     ha:bottom-sig   { lid=1; group=6; }
-     ha:top-gnd      { lid=2; group=3; }
-     ha:bottom-gnd   { lid=3; group=6; }
-     ha:top-vcc      { lid=4; group=3; }
-     ha:bottom-vcc   { lid=5; group=6; }
-     ha:outline      { lid=6; group=5; }
-     ha:bottom-silk  { lid=7; group=8; ha:combining { auto=1; } }
-     ha:top-silk     { lid=8; group=1; ha:combining { auto=1; } }
-     ha:top-paste    { lid=9; group=0; ha:combining { auto=1; } }
-     ha:top-mask     { lid=10; group=2; ha:combining { sub=1; auto=1; } }
-     ha:bottom-mask  { lid=11; group=7; ha:combining { sub=1; auto=1; } }
-     ha:bottom-paste { lid=12; group=9; ha:combining { auto=1; } }
-     ha:slot-plated   { lid=13; group=10; ha:combining { auto=1; } }
-     ha:slot-unplated { lid=14; group=11; ha:combining { auto=1; } }
-     ha:top-assy     { lid=15; group=12; color={#444444}; }
-     ha:bot-assy     { lid=16; group=13; color={#444444}; }
-     ha:fab          { lid=17; group=14; ha:combining { auto=1; }; color={#222222}; }
+     ha:top-sig         { lid=0; group=3; }
+     ha:bottom-sig      { lid=1; group=6; }
+     ha:top-gnd         { lid=2; group=3; }
+     ha:bottom-gnd      { lid=3; group=6; }
+     ha:top-vcc         { lid=4; group=3; }
+     ha:bottom-vcc      { lid=5; group=6; }
+     ha:outline         { lid=6; group=5; }
+     ha:bottom-silk     { lid=7; group=8; ha:combining { auto=1; } }
+     ha:top-silk        { lid=8; group=1; ha:combining { auto=1; } }
+     ha:top-paste       { lid=9; group=0; ha:combining { auto=1; } }
+     ha:top-mask        { lid=10; group=2; ha:combining { sub=1; auto=1; } }
+     ha:bottom-mask     { lid=11; group=7; ha:combining { sub=1; auto=1; } }
+     ha:bottom-paste    { lid=12; group=9; ha:combining { auto=1; } }
+     ha:slot-plated     { lid=13; group=10; ha:combining { auto=1; } }
+     ha:slot-unplated   { lid=14; group=11; ha:combining { auto=1; } }
+     ha:top-assy        { lid=15; group=12; color={#444444}; }
+     ha:bot-assy        { lid=16; group=13; color={#444444}; }
+     ha:fab             { lid=17; group=14; ha:combining { auto=1; }; color={#222222}; }
    }
  }
 
