@@ -804,8 +804,8 @@ ha:{
 						}
 						ha:Fab & assy {
 							li:submenu {
-								ha:assy, top side               = { action={ NewGroup(doc, top, assy, -, top-assy) } }
-								ha:assy, bottom side            = { action={ NewGroup(doc, bottom, assy, -, bot-assy) } }
+								ha:assy, top side               = { action={ NewGroup(doc, top, assy, -, top-assy, "init-invis=true") } }
+								ha:assy, bottom side            = { action={ NewGroup(doc, bottom, assy, -, bot-assy, "init-invis=true") } }
 								ha:fab, top side                = { action={ NewGroup(doc, top, fab, auto, fab, "init-invis=true") } }
 							}
 						}
