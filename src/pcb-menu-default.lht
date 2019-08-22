@@ -790,23 +790,23 @@ ha:{
 						}
 						ha:Keepouts {
 							li:submenu {
-								ha:Courtyard (comp. body), top    = { action={ NewGroup(doc, top, ko.courtyard, -, top-courtyard) } }
-								ha:Courtyard (comp. body), bottom = { action={ NewGroup(doc, bottom, ko.courtyard, -, bot-courtyard) } }
-								ha:Copper, top side               = { action={ NewGroup(doc, top, ko@top-copper, -, top-copper-ko) } }
-								ha:Copper, bottom side            = { action={ NewGroup(doc, bottom, ko@bottom-copper, -, bot-copper-ko) } }
-								ha:Silk, top side                 = { action={ NewGroup(doc, top, ko@top-silk, -, top-silk-ko) } }
-								ha:Silk, bottom side              = { action={ NewGroup(doc, bottom, ko@bottom-silk, -, bot-silk-ko) } }
-								ha:Mask, top side                 = { action={ NewGroup(doc, top, ko@top-mask, -, top-mask-ko) } }
-								ha:Mask, bottom side              = { action={ NewGroup(doc, bottom, ko@bottom-mask, -, bot-mask-ko) } }
-								ha:Paste, top side                = { action={ NewGroup(doc, top, ko@top-paste, -, top-paste-ko) } }
-								ha:Paste, bottom side             = { action={ NewGroup(doc, bottom, ko@bottom-paste, -, bot-paste-ko) } }
+								ha:Courtyard (comp. body), top    = { action={ NewGroup(doc, top, ko.courtyard, -, top-courtyard, "init-invis=true") } }
+								ha:Courtyard (comp. body), bottom = { action={ NewGroup(doc, bottom, ko.courtyard, -, bot-courtyard, "init-invis=true") } }
+								ha:Copper, top side               = { action={ NewGroup(doc, top, ko@top-copper, -, top-copper-ko, "init-invis=true") } }
+								ha:Copper, bottom side            = { action={ NewGroup(doc, bottom, ko@bottom-copper, -, bot-copper-ko, "init-invis=true") } }
+								ha:Silk, top side                 = { action={ NewGroup(doc, top, ko@top-silk, -, top-silk-ko, "init-invis=true") } }
+								ha:Silk, bottom side              = { action={ NewGroup(doc, bottom, ko@bottom-silk, -, bot-silk-ko, "init-invis=true") } }
+								ha:Mask, top side                 = { action={ NewGroup(doc, top, ko@top-mask, -, top-mask-ko, "init-invis=true") } }
+								ha:Mask, bottom side              = { action={ NewGroup(doc, bottom, ko@bottom-mask, -, bot-mask-ko, "init-invis=true") } }
+								ha:Paste, top side                = { action={ NewGroup(doc, top, ko@top-paste, -, top-paste-ko, "init-invis=true") } }
+								ha:Paste, bottom side             = { action={ NewGroup(doc, bottom, ko@bottom-paste, -, bot-paste-ko, "init-invis=true") } }
 							}
 						}
 						ha:Fab & assy {
 							li:submenu {
 								ha:assy, top side               = { action={ NewGroup(doc, top, assy, -, top-assy) } }
 								ha:assy, bottom side            = { action={ NewGroup(doc, bottom, assy, -, bot-assy) } }
-								ha:fab, top side                = { action={ NewGroup(doc, top, fab, auto, fab) } }
+								ha:fab, top side                = { action={ NewGroup(doc, top, fab, auto, fab, "init-invis=true") } }
 							}
 						}
 						ha:Doc, misc {
@@ -814,9 +814,9 @@ ha:{
 								ha:Doc, top side                = { action={ NewGroup(doc, top) } }
 								ha:Doc, bottom side             = { action={ NewGroup(doc, bottom) } }
 								ha:Doc, global                  = { action={ NewGroup(doc, global) } }
-								ha:placement, top side          = { action={ NewGroup(doc, top, placement, -, top-place) } }
-								ha:placement, bottom side       = { action={ NewGroup(doc, bottom, placement, -, bot-place) } }
-								ha:placement, global            = { action={ NewGroup(doc, global, placement, -, place) } }
+								ha:placement, top side          = { action={ NewGroup(doc, top, placement, -, top-place, "init-invis=true") } }
+								ha:placement, bottom side       = { action={ NewGroup(doc, bottom, placement, -, bot-place, "init-invis=true") } }
+								ha:placement, global            = { action={ NewGroup(doc, global, placement, -, place, "init-invis=true") } }
 							}
 						}
 					}
