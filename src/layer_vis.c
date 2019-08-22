@@ -137,9 +137,14 @@ void pcb_layervis_reset_stack(void)
 
 	assert(PCB->Data->LayerN <= PCB_MAX_LAYER);
 	for (i = 0; i < pcb_max_layer; i++) {
+		pcb_layergrp_t *grp = pcb_get_layergrp(PCB, PCB->Data->Layer[i].meta.real.grp);
+
 		if (!(pcb_layer_flags(PCB, i) & PCB_LYT_SILK))
 			pcb_layer_stack[i] = i;
-		PCB->Data->Layer[i].meta.real.vis = pcb_true;
+		if (grp != NULL)
+			PCB->Data->Layer[i].meta.real.vis = !grp->init_invis;
+		else
+			PCB->Data->Layer[i].meta.real.vis = pcb_true;
 	}
 	PCB->InvisibleObjectsOn = pcb_true;
 	PCB->pstk_on = pcb_true;
