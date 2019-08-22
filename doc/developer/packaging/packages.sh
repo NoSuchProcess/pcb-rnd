@@ -120,7 +120,7 @@ cat extra.digest
 				if (A[n] == "") continue
 				depson = PLUGIN[A[n]]
 				if (depson == "")
-					depson = "!!!" A[n]
+					depson = A[n]
 				add_dep(pkg, depson)
 			}
 		}

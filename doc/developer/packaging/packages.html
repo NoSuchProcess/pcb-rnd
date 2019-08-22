@@ -6,27 +6,27 @@
 <table border=1>
 <tr><th> package <th> depends on (packages) <th> consists of (plugins)
 <tr><th>pcb-rnd-debug<td> pcb-rnd-core<td> diag
-<tr><th>pcb-rnd-export<td> pcb-rnd-core !!!pcb-rnd-lib_compat_help !!!pcb-rnd-lib_polyhelp<td> cam export_bom export_dxf export_excellon export_gcode export_gerber export_openscad export_png export_ps export_stat export_svg export_xy
+<tr><th>pcb-rnd-export<td> pcb-rnd-core pcb-rnd-lib_compat_help pcb-rnd-lib_polyhelp<td> cam export_bom export_dxf export_excellon export_gcode export_gerber export_openscad export_png export_ps export_stat export_svg export_xy
 <tr><th>pcb-rnd-doc<td><td>&nbsp;
-<tr><th>pcb-rnd-export-sim<td> pcb-rnd-core !!!pcb-rnd-lib_polyhelp<td> export_openems
+<tr><th>pcb-rnd-export-sim<td> pcb-rnd-core pcb-rnd-lib_polyhelp<td> export_openems
 <tr><th>pcb-rnd-lib-gl<td> pcb-rnd-core<td> lib_hid_gl
 <tr><th>pcb-rnd-import-geo<td> pcb-rnd-core<td> import_hpgl import_pxm_gd import_pxm_pnm import_ttf
-<tr><th>pcb-rnd-hid-gtk2-gl<td> pcb-rnd-core !!!pcb-rnd-lib_gtk_common !!!pcb-rnd-lib_hid_gl<td> hid_gtk2_gl
-<tr><th>pcb-rnd-import-net<td> pcb-rnd-core !!!pcb-rnd-lib_gensexpr !!!pcb-rnd-lib_compat_help<td> import_calay import_edif import_fpcb_nl import_ipcd356 import_ltspice import_mentor_sch import_netlist import_sch import_tinycad
+<tr><th>pcb-rnd-hid-gtk2-gl<td> pcb-rnd-core pcb-rnd-lib_gtk_common pcb-rnd-lib_hid_gl<td> hid_gtk2_gl
+<tr><th>pcb-rnd-import-net<td> pcb-rnd-core pcb-rnd-lib_gensexpr pcb-rnd-lib_compat_help<td> import_calay import_edif import_fpcb_nl import_ipcd356 import_ltspice import_mentor_sch import_netlist import_sch import_tinycad
 <tr><th>pcb-rnd<td>pcb-rnd-core pcb-rnd-io-standard pcb-rnd-io-alien pcb-rnd-hid-gtk2-gl pcb-rnd-hid-gtk2-gdk pcb-rnd-export pcb-rnd-export-sim pcb-rnd-export-extra pcb-rnd-auto pcb-rnd-extra pcb-rnd-cloud pcb-rnd-doc<td>&lt;metapackage&gt;
 <tr><th>librnd-dev<td> pcb-rnd-core<td><i>n/a</i>
-<tr><th>pcb-rnd-auto<td> pcb-rnd-core !!!pcb-rnd-lib_compat_help !!!pcb-rnd-lib_gensexpr !!!pcb-rnd-lib_netmap<td> ar_cpcb asm autoplace autoroute export_dsn import_dsn import_mucs smartdisperse
+<tr><th>pcb-rnd-auto<td> pcb-rnd-core pcb-rnd-lib_compat_help pcb-rnd-lib_gensexpr pcb-rnd-lib_netmap<td> ar_cpcb asm autoplace autoroute export_dsn import_dsn import_mucs smartdisperse
 <tr><th>pcb-rnd-lib-io<td> pcb-rnd-core<td> lib_gensexpr lib_netmap
-<tr><th>pcb-rnd-io-standard<td> pcb-rnd-core !!!pcb-rnd-lib_compat_help !!!pcb-rnd-lib_netmap<td> io_pcb io_tedax
-<tr><th>pcb-rnd-lib-gui<td> pcb-rnd-core !!!pcb-rnd-lib_hid_common !!!pcb-rnd-lib_hid_pcbui<td> dialogs draw_fontsel lib_hid_common lib_hid_pcbui
-<tr><th>pcb-rnd-core<td> !!!pcb-rnd-lib_compat_help<td> act_draw act_read autocrop ddraft draw_csect draw_fab drc_orig extedit fp_board fp_fs hid_batch io_lihata lib_compat_help lib_polyhelp mincut propedit query report rubberband_orig script shape
-<tr><th>pcb-rnd-lib-gtk<td> pcb-rnd-core !!!pcb-rnd-lib_hid_common<td> lib_gtk_common
-<tr><th>pcb-rnd-hid-lesstif<td> pcb-rnd-core !!!pcb-rnd-lib_hid_common<td> hid_lesstif
-<tr><th>pcb-rnd-io-alien<td> pcb-rnd-core !!!pcb-rnd-lib_polyhelp !!!pcb-rnd-lib_gensexpr !!!pcb-rnd-lib_netmap !!!pcb-rnd-lib_compat_help<td> io_autotrax io_dsn io_eagle io_hyp io_kicad io_kicad_legacy
-<tr><th>pcb-rnd-cloud<td> pcb-rnd-core !!!pcb-rnd-lib_wget<td> fp_wget lib_wget
+<tr><th>pcb-rnd-io-standard<td> pcb-rnd-core pcb-rnd-lib_compat_help pcb-rnd-lib_netmap<td> io_pcb io_tedax
+<tr><th>pcb-rnd-lib-gui<td> pcb-rnd-core pcb-rnd-lib_hid_common pcb-rnd-lib_hid_pcbui<td> dialogs draw_fontsel lib_hid_common lib_hid_pcbui
+<tr><th>pcb-rnd-core<td> pcb-rnd-lib_compat_help<td> act_draw act_read autocrop ddraft draw_csect draw_fab drc_orig extedit fp_board fp_fs hid_batch io_lihata lib_compat_help lib_polyhelp mincut propedit query report rubberband_orig script shape
+<tr><th>pcb-rnd-lib-gtk<td> pcb-rnd-core pcb-rnd-lib_hid_common<td> lib_gtk_common
+<tr><th>pcb-rnd-hid-lesstif<td> pcb-rnd-core pcb-rnd-lib_hid_common<td> hid_lesstif
+<tr><th>pcb-rnd-io-alien<td> pcb-rnd-core pcb-rnd-lib_polyhelp pcb-rnd-lib_gensexpr pcb-rnd-lib_netmap pcb-rnd-lib_compat_help<td> io_autotrax io_dsn io_eagle io_hyp io_kicad io_kicad_legacy
+<tr><th>pcb-rnd-cloud<td> pcb-rnd-core pcb-rnd-lib_wget<td> fp_wget lib_wget
 <tr><th>librnd<td> pcb-rnd-core<td><i>n/a</i>
-<tr><th>pcb-rnd-export-extra<td> pcb-rnd-core !!!pcb-rnd-lib_compat_help pcb-rnd-export<td> export_fidocadj export_ipcd356 export_lpr export_oldconn
-<tr><th>pcb-rnd-hid-gtk2-gdk<td> pcb-rnd-core !!!pcb-rnd-lib_gtk_common<td> hid_gtk2_gdk
+<tr><th>pcb-rnd-export-extra<td> pcb-rnd-core pcb-rnd-lib_compat_help pcb-rnd-export<td> export_fidocadj export_ipcd356 export_lpr export_oldconn
+<tr><th>pcb-rnd-hid-gtk2-gdk<td> pcb-rnd-core pcb-rnd-lib_gtk_common<td> hid_gtk2_gdk
 <tr><th>pcb-rnd-extra<td> pcb-rnd-core<td> distalign distaligntext djopt fontmode jostle polycombine polystitch puller renumber shand_cmd teardrops vendordrill
 </table>
 <h3> Package description and files </h3>
