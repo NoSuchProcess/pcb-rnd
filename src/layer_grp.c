@@ -142,10 +142,7 @@ int pcb_layergrp_del_layer(pcb_board_t *pcb, pcb_layergrp_id_t gid, pcb_layer_id
 static void make_substrate(pcb_board_t *pcb, pcb_layergrp_t *g)
 {
 	g->ltype = PCB_LYT_INTERN | PCB_LYT_SUBSTRATE;
-	g->valid = 1;
-	g->parent_type = PCB_PARENT_BOARD;
-	g->parent.board = pcb;
-	g->type = PCB_OBJ_LAYERGRP;
+	pcb_layergrp_setup(g, pcb);
 }
 
 pcb_layergrp_id_t pcb_layergrp_dup(pcb_board_t *pcb, pcb_layergrp_id_t gid, int auto_substrate)
@@ -173,9 +170,7 @@ pcb_layergrp_id_t pcb_layergrp_dup(pcb_board_t *pcb, pcb_layergrp_id_t gid, int 
 		ng->purpose = pcb_strdup(og->purpose);
 	ng->purpi = og->purpi;
 	ng->valid = ng->open = ng->vis = 1;
-	ng->parent_type = PCB_PARENT_BOARD;
-	ng->parent.board = pcb;
-	ng->type = PCB_OBJ_LAYERGRP;
+	pcb_layergrp_setup(ng, pcb);
 
 	inhibit_notify--;
 	NOTIFY(pcb);
@@ -334,6 +329,14 @@ pcb_layergrp_t *pcb_layergrp_insert_after(pcb_board_t *pcb, pcb_layergrp_id_t wh
 	return stack->grp+where+1;
 }
 
+void pcb_layergrp_setup(pcb_layergrp_t *g, pcb_board_t *parent)
+{
+	g->valid = 1;
+	g->parent_type = PCB_PARENT_BOARD;
+	g->parent.board = parent;
+	g->type = PCB_OBJ_LAYERGRP;
+}
+
 static pcb_layergrp_t *pcb_get_grp_new_intern_insert(pcb_board_t *pcb, int room, int bl, int omit_substrate)
 {
 	pcb_layer_stack_t *stack = &pcb->LayerGroups;
@@ -342,10 +345,7 @@ static pcb_layergrp_t *pcb_get_grp_new_intern_insert(pcb_board_t *pcb, int room,
 
 	stack->grp[bl].name = pcb_strdup("Intern");
 	stack->grp[bl].ltype = PCB_LYT_INTERN | PCB_LYT_COPPER;
-	stack->grp[bl].valid = 1;
-	stack->grp[bl].parent_type = PCB_PARENT_BOARD;
-	stack->grp[bl].parent.board = pcb;
-	stack->grp[bl].type = PCB_OBJ_LAYERGRP;
+	pcb_layergrp_setup(&stack->grp[bl], pcb);
 	bl++;
 	if (!omit_substrate)
 		make_substrate(pcb, &stack->grp[bl]);
@@ -767,10 +767,7 @@ int pcb_layer_add_in_group(pcb_board_t *pcb, pcb_layer_id_t layer_id, pcb_layerg
 #define NEWG(g, flags, gname, pcb) \
 do { \
 	g = &(newg->grp[newg->len]); \
-	g->parent_type = PCB_PARENT_BOARD; \
-	g->parent.board = pcb; \
-	g->type = PCB_OBJ_LAYERGRP; \
-	g->valid = 1; \
+	pcb_layergrp_setup(g, pcb); \
 	if (gname != NULL) \
 		g->name = pcb_strdup(gname); \
 	else \
@@ -922,10 +919,7 @@ void pcb_layergrp_create_missing_substrate(pcb_board_t *pcb)
 			pcb_layergrp_t *ng = pcb_layergrp_insert_after(pcb, g);
 			ng->ltype = PCB_LYT_INTERN | PCB_LYT_SUBSTRATE;
 			ng->name = pcb_strdup("implicit_subst");
-			ng->valid = 1;
-			ng->parent_type = PCB_PARENT_BOARD;
-			ng->parent.board = pcb;
-			ng->type = PCB_OBJ_LAYERGRP;
+			pcb_layergrp_setup(ng, pcb);
 		}
 	}
 }
