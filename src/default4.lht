@@ -157,7 +157,7 @@ ha:pcb-rnd-board-v6 {
    }
    ha:17 {
     name = bot-assy
-    ha:type { top=1; doc=1; }
+    ha:type { bottom=1; doc=1; }
     purpose = assy
     ha:attributes { init-invis=1; }
     li:layers { 16; }
