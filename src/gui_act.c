@@ -1243,11 +1243,11 @@ static fgw_error_t pcb_act_DelGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_NewGroup[] = "NewGroup(type [,location [, purpose[, auto|sub [,name]]]])";
+static const char pcb_acts_NewGroup[] = "NewGroup(type [,location [, purpose[, auto|sub [,name[,grp_attribs]]]])";
 static const char pcb_acth_NewGroup[] = "Create a new layer group with a single, positive drawn layer in it";
 static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *stype = NULL, *sloc = NULL, *spurp = NULL, *scomb = NULL, *name = NULL;
+	const char *stype = NULL, *sloc = NULL, *spurp = NULL, *scomb = NULL, *name = NULL, *attr;
 	pcb_layergrp_t *g = NULL;
 	pcb_layer_type_t ltype = 0, lloc = 0;
 
@@ -1256,6 +1256,7 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_MAY_CONVARG(3, FGW_STR, NewGroup, spurp = argv[3].val.str);
 	PCB_ACT_MAY_CONVARG(4, FGW_STR, NewGroup, scomb = argv[4].val.str);
 	PCB_ACT_MAY_CONVARG(5, FGW_STR, NewGroup, name = argv[5].val.str);
+	PCB_ACT_MAY_CONVARG(6, FGW_STR, NewGroup, attr = argv[6].val.str);
 
 	ltype = pcb_layer_type_str2bit(stype) & PCB_LYT_ANYTHING;
 	if (ltype == 0) {
@@ -1297,6 +1298,28 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		g->ltype = ltype | lloc;
 		g->vis = 1;
 		g->open = 1;
+
+		if (attr != NULL) {
+			char *attrs = pcb_strdup(attr), *curr, *next, *val;
+			for(curr = attrs; curr != NULL; curr = next) {
+				next = strchr(curr, ';');
+				if (next != NULL) {
+					*next = '\0';
+					next++;
+				}
+				while(isspace(*curr)) curr++;
+				val = strchr(curr, '=');
+				if (val != NULL) {
+					*val = '\0';
+					val++;
+				}
+				else
+					val = "";
+				pcb_attribute_put(&g->Attributes, curr, val);
+			}
+			free(attrs);
+		}
+
 		lid = pcb_layer_create(PCB, g - PCB->LayerGroups.grp, stype);
 		if (lid >= 0) {
 			pcb_layer_t *ly;
