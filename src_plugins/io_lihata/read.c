@@ -1593,7 +1593,7 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 			pcb_layergrp_set_purpose__(g, pcb_strdup(prp));
 
 		/* load attributes */
-		nattr= lht_dom_hash_get(grp, "attributes");
+		nattr = lht_dom_hash_get(grp, "attributes");
 		if (nattr != NULL) {
 			if (rdver < 5)
 				iolht_warn(nattr, 3, "Layer groups could not have attributes before lihata v5 - still loading these attributes,\nbut they will be ignored by older versions of pcb-rnd.\n");
