@@ -96,15 +96,12 @@ void pcb_gtk_get_coords(pcb_gtk_t *ctx, pcb_gtk_view_t *vw, const char *msg, pcb
 /* Update adj limits to match the current zoom level */
 static inline void pcb_gtk_zoom_adjustment(GtkAdjustment *adj, pcb_coord_t view_size, pcb_coord_t board_size)
 {
-	gdouble page_size;
-
-	page_size = MIN(view_size, board_size);
-	gtk_adjustment_configure(adj, gtk_adjustment_get_value(adj), /* value */
-		-view_size,              /* lower */
-		board_size + page_size,  /* upper */
-		page_size / 100.0,       /* step_increment */
-		page_size / 10.0,        /* page_increment */
-		page_size);              /* page_size */
+	adj->page_size = MIN(view_size, board_size);
+	adj->lower = -view_size;
+	adj->upper = board_size + adj->page_size;
+	adj->step_increment = adj->page_size / 100.0;
+	adj->page_increment = adj->page_size / 10.0;
+	gtk_signal_emit_by_name (GTK_OBJECT(adj), "changed");
 }
 
 #endif
