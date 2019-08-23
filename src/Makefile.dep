@@ -1450,7 +1450,8 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h safe_fs.h \
  funchash_core.h funchash.h funchash_core_list.h hid.h hid_nogui.h \
  ../src_plugins/export_png/png.h hid_init.h hid_attrib.h hid_cam.h \
- hid_attrib.h dolists.h
+ hid_attrib.h ../src_plugins/export_png/png_photo1.c \
+ ../src_plugins/export_png/png_photo2.c dolists.h
 ../src_plugins/export_ps/eps.o: ../src_plugins/export_ps/eps.c \
  ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
@@ -3980,15 +3981,14 @@
  ../src_plugins/lib_gtk_common/hid_gtk_conf.h \
  ../src_plugins/lib_gtk_common/glue_common.h
 ../src_plugins/lib_gtk_common/glue_common.o: \
- ../src_plugins/lib_gtk_common/glue_common.c ../config.h \
- ../src_plugins/lib_gtk_common/glue_common.h hid.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_plugins/lib_gtk_common/glue_common.c ../config.h pixmap.h \
+ global_typedefs.h pcb_bool.h ../src_plugins/lib_gtk_common/glue_common.h \
+ hid.h ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
- ../src_3rd/genht/ht.h error.h global_typedefs.h pcb_bool.h attrib.h \
- box.h math_helper.h obj_common.h flag.h globalconst.h data_parent.h \
- misc_util.h unit.h ../src_plugins/lib_gtk_common/pcb_gtk.h conf.h \
- pcb-printf.h ../src_3rd/genvector/gds_char.h \
- ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genht/ht.h error.h attrib.h box.h math_helper.h obj_common.h \
+ flag.h globalconst.h data_parent.h misc_util.h unit.h \
+ ../src_plugins/lib_gtk_common/pcb_gtk.h conf.h pcb-printf.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/vtp0.h list_conf.h conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
@@ -5053,7 +5053,7 @@
  ../src_3rd/genht/htpp.h hid_dad.h compat_misc.h hid_attrib.h \
  pcb-printf.h hid_dad_spin.h hid_dad_tree.h hid_dad.h conf_hid.h conf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
- ../src_plugins/propedit/props.h global_typedefs.h \
+ netlist.h ../src_plugins/propedit/props.h global_typedefs.h \
  ../src_3rd/genvector/vtl0.h idpath.h color.h ../src_3rd/genht/ht.h \
  ../src_plugins/propedit/propsel.h
 ../src_plugins/propedit/propedit.o: ../src_plugins/propedit/propedit.c \
@@ -5083,7 +5083,7 @@
  global_typedefs.h ../src_3rd/genvector/vtl0.h idpath.h color.h \
  ../src_plugins/propedit/propsel.h ../src_plugins/propedit/propdlg.h \
  actions.h pcb-printf.h error.h layer.h layer_grp.h search.h crosshair.h \
- dolists.h
+ compat_misc.h dolists.h
 ../src_plugins/propedit/props.o: ../src_plugins/propedit/props.c \
  ../config.h ../src_plugins/propedit/props.h global_typedefs.h pcb_bool.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
@@ -5128,7 +5128,7 @@
  ../src_3rd/libuundo/uundo.h undo_old.h rotate.h compat_misc.h \
  obj_pstk_inlines.h thermal.h polygon1_gen.h pcb-printf.h conf_core.h \
  conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h \
- hidlib_conf.h
+ hidlib_conf.h netlist.h
 ../src_plugins/puller/puller.o: ../src_plugins/puller/puller.c \
  ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
