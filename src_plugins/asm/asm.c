@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *
  *  hand assembly assistant GUI
- *  pcb-rnd Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  pcb-rnd Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
