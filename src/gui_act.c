@@ -1331,7 +1331,7 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				if (strstr(scomb, "sub") != NULL)  ly->comb |= PCB_LYC_SUB;
 			}
 			if (name != NULL) {
-				free(ly->name);
+				free((char *)ly->name);
 				ly->name = pcb_strdup(name);
 			}
 		}
