@@ -39,6 +39,7 @@
 #include "layer_grp.h"
 #include "search.h"
 #include "crosshair.h"
+#include "compat_misc.h"
 
 
 int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
@@ -105,6 +106,14 @@ int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 			vtl0_append(&pe->layers, INDEXOFCURRENT);
 		}
 	}
+	else if (strncmp(cmd, "net:", 4) == 0) {
+		char *name = pcb_strdup(cmd+4);
+		if (!pe->nets_inited) {
+			htsp_init(&pe->nets, strhash, strkeyeq);
+			pe->nets_inited = 1;
+		}
+		htsp_set(&pe->nets, name, name);
+	}
 	else if ((strcmp(cmd, "board") == 0) || (strcmp(cmd, "pcb") == 0))
 		pe->board = 1;
 	else if (strcmp(cmd, "selection") == 0)
@@ -132,6 +141,14 @@ static void prop_scope_finish(pcb_propedit_t *pe)
 	   to add them again */
 	while((idp = pcb_idpath_list_first(&pe->objs)) != NULL)
 		pcb_idpath_list_remove(idp);
+
+	if (pe->nets_inited) {
+		htsp_entry_t *e;
+		for(e = htsp_first(&pe->nets); e != NULL; e = htsp_next(&pe->nets, e))
+			free(e->key);
+		htsp_uninit(&pe->nets);
+		pe->nets_inited = 0;
+	}
 }
 
 extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;

@@ -79,6 +79,7 @@ typedef struct {
 	/* scope */
 	pcb_board_t *pcb;
 	pcb_data_t *data; /* change this after init in case of subc */
+	htsp_t nets;
 
 	/* target objects */
 	pcb_idpath_list_t objs;
@@ -86,6 +87,7 @@ typedef struct {
 	vtl0_t layergrps;          /* layer group IDs */
 	unsigned selection:1;      /* all selected objects on the current pcb */
 	unsigned board:1;          /* run on the board too */
+	unsigned nets_inited:1;    /* whether the ->nets hash is initialized */
 } pcb_propedit_t;
 
 /* A property list (props) is a string->pcb_props_t. Each entry is a named
