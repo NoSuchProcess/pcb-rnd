@@ -13,6 +13,7 @@
 #include "pixmap.h"
 
 #include "../src_plugins/lib_gtk_common/pcb_gtk.h"
+#include "../src_plugins/lib_gtk_common/compat.h"
 #include "../src_plugins/lib_gtk_common/glue_common.h"
 #include "../src_plugins/lib_gtk_common/coord_conv.h"
 
@@ -365,7 +366,7 @@ static pcb_composite_op_t curr_drawing_mode;
 static void ghid_sketch_setup(render_priv_t *priv)
 {
 	if (priv->sketch_pixel == NULL)
-		priv->sketch_pixel = gdk_pixmap_new(gtk_widget_get_window(ghidgui->port.drawing_area), ghidgui->port.view.canvas_width, ghidgui->port.view.canvas_height, -1);
+		priv->sketch_pixel = gdk_pixmap_new(gtkc_widget_get_window(ghidgui->port.drawing_area), ghidgui->port.view.canvas_width, ghidgui->port.view.canvas_height, -1);
 	if (priv->sketch_clip == NULL)
 		priv->sketch_clip = gdk_pixmap_new(0, ghidgui->port.view.canvas_width, ghidgui->port.view.canvas_height, 1);
 
@@ -591,7 +592,7 @@ static void ghid_gdk_set_draw_xor(pcb_hid_gc_t gc, int xor_mask)
 static int use_gc(pcb_hid_gc_t gc, int need_pen)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
-	GdkWindow *window = gtk_widget_get_window(ghidgui->port.top_window);
+	GdkWindow *window = gtkc_widget_get_window(ghidgui->port.top_window);
 	int need_setup = 0;
 
 	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
@@ -1222,7 +1223,7 @@ static void ghid_gdk_notify_mark_change(pcb_hid_t *hid, pcb_bool changes_complet
 
 static void draw_right_cross(GdkGC *xor_gc, gint x, gint y)
 {
-	GdkWindow *window = gtk_widget_get_window(ghidgui->port.drawing_area);
+	GdkWindow *window = gtkc_widget_get_window(ghidgui->port.drawing_area);
 
 	gdk_draw_line(window, xor_gc, x, 0, x, ghidgui->port.view.canvas_height);
 	gdk_draw_line(window, xor_gc, 0, y, ghidgui->port.view.canvas_width, y);
@@ -1230,7 +1231,7 @@ static void draw_right_cross(GdkGC *xor_gc, gint x, gint y)
 
 static void draw_slanted_cross(GdkGC *xor_gc, gint x, gint y)
 {
-	GdkWindow *window = gtk_widget_get_window(ghidgui->port.drawing_area);
+	GdkWindow *window = gtkc_widget_get_window(ghidgui->port.drawing_area);
 	gint x0, y0, x1, y1;
 
 	x0 = x + (ghidgui->port.view.canvas_height - y);
@@ -1256,7 +1257,7 @@ static void draw_slanted_cross(GdkGC *xor_gc, gint x, gint y)
 
 static void draw_dozen_cross(GdkGC *xor_gc, gint x, gint y)
 {
-	GdkWindow *window = gtk_widget_get_window(ghidgui->port.drawing_area);
+	GdkWindow *window = gtkc_widget_get_window(ghidgui->port.drawing_area);
 	gint x0, y0, x1, y1;
 	gdouble tan60 = sqrt(3);
 
@@ -1316,7 +1317,7 @@ static void draw_crosshair(GdkGC *xor_gc, gint x, gint y)
 static void show_crosshair(gboolean paint_new_location)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
-	GdkWindow *window = gtk_widget_get_window(ghidgui->port.drawing_area);
+	GdkWindow *window = gtkc_widget_get_window(ghidgui->port.drawing_area);
 	GtkStyle *style = gtk_widget_get_style(ghidgui->port.drawing_area);
 	gint x, y;
 	static gint x_prev = -1, y_prev = -1;
@@ -1381,7 +1382,7 @@ static void ghid_gdk_drawing_area_configure_hook(void *vport)
 	if (priv->base_pixel)
 		gdk_pixmap_unref(priv->base_pixel);
 
-	priv->base_pixel = gdk_pixmap_new(gtk_widget_get_window(ghidgui->port.drawing_area), ghidgui->port.view.canvas_width, ghidgui->port.view.canvas_height, -1);
+	priv->base_pixel = gdk_pixmap_new(gtkc_widget_get_window(ghidgui->port.drawing_area), ghidgui->port.view.canvas_width, ghidgui->port.view.canvas_height, -1);
 	priv->out_pixel = priv->base_pixel;
 	ghidgui->port.drawing_allowed = pcb_true;
 
@@ -1402,7 +1403,7 @@ static void ghid_gdk_drawing_area_configure_hook(void *vport)
 
 	if (priv->sketch_pixel) {
 		gdk_pixmap_unref(priv->sketch_pixel);
-		priv->sketch_pixel = gdk_pixmap_new(gtk_widget_get_window(ghidgui->port.drawing_area), port->view.canvas_width, port->view.canvas_height, -1);
+		priv->sketch_pixel = gdk_pixmap_new(gtkc_widget_get_window(ghidgui->port.drawing_area), port->view.canvas_width, port->view.canvas_height, -1);
 	}
 	if (priv->sketch_clip) {
 		gdk_pixmap_unref(priv->sketch_clip);
@@ -1413,7 +1414,7 @@ static void ghid_gdk_drawing_area_configure_hook(void *vport)
 static void ghid_gdk_screen_update(void)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
-	GdkWindow *window = gtk_widget_get_window(ghidgui->port.drawing_area);
+	GdkWindow *window = gtkc_widget_get_window(ghidgui->port.drawing_area);
 
 	if (priv->base_pixel == NULL)
 		return;
@@ -1426,7 +1427,7 @@ static gboolean ghid_gdk_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expos
 {
 	pcb_gtk_port_t *port = vport;
 	render_priv_t *priv = port->render_priv;
-	GdkWindow *window = gtk_widget_get_window(ghidgui->port.drawing_area);
+	GdkWindow *window = gtkc_widget_get_window(ghidgui->port.drawing_area);
 
 	gdk_draw_drawable(window, priv->bg_gc, priv->base_pixel,
 		ev->area.x, ev->area.y, ev->area.x, ev->area.y, ev->area.width, ev->area.height);
@@ -1440,7 +1441,7 @@ static void ghid_gdk_port_drawing_realize_cb(GtkWidget *widget, gpointer data)
 
 static gboolean ghid_gdk_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, pcb_hid_expose_t expcall, pcb_hid_expose_ctx_t *ctx)
 {
-	GdkWindow *window = gtk_widget_get_window(widget);
+	GdkWindow *window = gtkc_widget_get_window(widget);
 	GdkDrawable *save_drawable;
 	GtkAllocation allocation;
 	pcb_gtk_view_t save_view;
