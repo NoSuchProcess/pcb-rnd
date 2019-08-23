@@ -25,6 +25,18 @@
 	- FEATURE: Add a button to clear the done status from a component. [report: Ade]
 	- FEATURE: Show the status message on a group when minimized to indicate whether the groups components are done, not done or partially done. [report: Ade]
 	- FEATURE: If a component is out of view when selected then pan the view until it is visible. May need to zoom also if a group is selected. [report: Ade]
+- CAM:
+	- FEATURE: make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file (for support for plugged vias/filled vias) [report: Vuokko]
+	- FEATURE: invent a generic API for both the drill attrib config table
+	- CLEANUP: in ~2020: remove the hackish gerber layer suffix and auto-excellon in favor of CAM [report: Ade]
+- FEATURE: edakrill script for growing line thickness keeping the line on one side (side alignment) [report: keantoken]
+- FEATURE: connection check separator in log: bug_files/connreq.txt [report: keantoken]
+- FEATURE: tedax etest save (board save too)
+- FEATURE: extend the CAM job script syntax so that XY and other non-layer exporters can be called [report: celem]
+- FEATURE: extedit: when editing subc with pcb, save configuration and load it in the external pcb-rnd so that grid sizes and other settings are preserved [report: jg]
+- FEATURE/BUG: old gtk doesn't have GDK_Key_* but GDK_* (e.g. GDK_Tab); detect this in scconfig, use a wrapper macro in gtk code [report: Ade]
+- FEATURE: menu item for export of multiple selected layout elements to discrete .fp files
+
 
 2. For later releases ===============================================================================
 - CLEANUP: (TT) propedit revamp:
@@ -56,11 +68,6 @@
 		- under inhibit, pcb_subc_part_changed(ps) should mark subcircuits dirty
 		- when inhibit drops to zero, revisit all subcircuits that are dirty
 		- get a common inhibit function for batch processing that turn on draw, poly clip and pcb_subc_part_changed inhibit
-- CAM:
-	- FEATURE: make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file (for support for plugged vias/filled vias) [report: Vuokko]
-	- FEATURE: invent a generic API for both the drill attrib config table
-	- CLEANUP: in ~2020: remove the hackish gerber layer suffix and auto-excellon in favor of CAM [report: Ade]
-- FEATURE: edakrill script for growing line thickness keeping the line on one side (side alignment) [report: keantoken]
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
 - FEATURE: thermal to undo stack. reproduce: new layout, place via, place poly around via, use thermal tool on via, {u u } undo shows thermal isn't undoable [report: miloh]
@@ -75,11 +82,8 @@
 	- CLEANUP: remove PCB_MIN_PINORVIA* PCB_DEFAULT_DRILLINGHOLE macros - nothing should use them anymore
 	- add text font, update the pool node text_edit [report: Igor2]
 - BUG: autorouter broke on polygons: bug_files/ara.lht, {a r a}, bisect; broke before r14572 [report: Igor2]
-- FEATURE: connection check separator in log: bug_files/connreq.txt [report: keantoken]
 - FEATURE: fontsel: ttf import?
-- FEATURE: tedax etest save (board save too)
 - FEATURE/BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
-- FEATURE: extend the CAM job script syntax so that XY and other non-layer exporters can be called [report: celem]
 - FEATURE: view list: import sch. shouldn't select elements to be removed but put them on a drc list
 - FEATURE: drc preview: follow board flips (should be a DAD preview flag) [report: Igor2]
 - FEATURE: DOC: new examples
@@ -110,7 +114,6 @@
 	- for <char> (punctuation): learn key for non-US users
 	- lesstif code upgrade for the new API
 	- menu file fixup on punctuation in lesstif
-- FEATURE: extedit: when editing subc with pcb, save configuration and load it in the external pcb-rnd so that grid sizes and other settings are preserved [report: jg]
 - FEATURE: undo on new layer from right-click menu in gtk layersel doesn't work
 - FEATURE: layersel: consider to provide a config setting for making open-group-name horizontal [report: istankovic]
 - FEATURE: preview widget: allow to handle keys both in gtk and lesstif
@@ -166,7 +169,6 @@
 	- tabbed: redisplay bug in the about box
 	- re-test HPANE: pstklib(), netlistdialog(), propedit(), BrowseScripts, preferences dialog config tab
 	- preferences dialog: library, layers tabs are unusable [report: Igor2]
-- FEATURE/BUG: old gtk doesn't have GDK_Key_* but GDK_* (e.g. GDK_Tab); detect this in scconfig, use a wrapper macro in gtk code [report: Ade]
 - BUG: rat anchor(?) bug: bug_files/anchor.lht - move the right trim subc - the internal rat conn will break; happens after {c r} too. [report: keantoken]
 - BUG: bug_files/rat_shortest.lht: because of "don't add non-manhattan lines" part [report: pstuge]
 - BUG: find.c: unplated padtsacks shall not connect layers; bug_files/unplated1.lht; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
@@ -201,7 +203,6 @@
 	- save and load rat anchor object idpath
 	- poly side clearance value (complements object's clearance) when it is introduced in the data model
 - FEATURE: scconfig: menuconfig and a config file for scconfig
-- FEATURE: menu item for export of multiple selected layout elements to discrete .fp files
 
 4. Low prio ===============================================================================
 - FEATURE: footprint in-place replacement should match up floaters to keep their coords, as documented in ML/2304 [report: gpaubert]
