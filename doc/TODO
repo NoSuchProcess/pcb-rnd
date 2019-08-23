@@ -22,7 +22,7 @@
 - FEATURE: no-export attribute: cache a no-export attribute in a bitfield (e.g. flags like no-export for vector outputs, pixel outputs); exporter should set the bits in HID; core rendring should decide what to draw; use case: poly clearance to emulate keep-away on outline, and replace the old zero-width line trick [report: karl]
 - FEATURE: configure setting: library window filter shouldn't really filter if there's () in the string [report: pskibinski]
 - asm() dialog
-	- FEATURE: Add a button to clear the done status from a component. [report: Ade]
+	+ FEATURE: Add a button to clear the done status from a component. [report: Ade]
 	- FEATURE: Show the status message on a group when minimized to indicate whether the groups components are done, not done or partially done. [report: Ade]
 	- FEATURE: If a component is out of view when selected then pan the view until it is visible. May need to zoom also if a group is selected. [report: Ade]
 - CAM:

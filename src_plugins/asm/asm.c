@@ -418,8 +418,11 @@ static void skip(void *hid_ctx, int pick_grp, pcb_hid_row_t *row)
 
 static void done(void *hid_ctx, part_t *part, int done)
 {
-	part->done = 1;
-	pcb_dad_tree_modify_cell(&asm_ctx.dlg[asm_ctx.wtbl], part->row, 5, "yes");
+	part->done = done;
+	if (done)
+		pcb_dad_tree_modify_cell(&asm_ctx.dlg[asm_ctx.wtbl], part->row, 5, "yes");
+	else
+		pcb_dad_tree_modify_cell(&asm_ctx.dlg[asm_ctx.wtbl], part->row, 5, "-");
 }
 
 static void asm_done_part(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -428,6 +431,15 @@ static void asm_done_part(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	if (*(int *)row->user_data)
 		return;
 	done(hid_ctx, row->user_data, 1);
+	skip(hid_ctx, 0, row);
+}
+
+static void asm_undo_part(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
+	if (*(int *)row->user_data)
+		return;
+	done(hid_ctx, row->user_data, 0);
 	skip(hid_ctx, 0, row);
 }
 
@@ -551,6 +563,10 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				asm_ctx.wdonep = PCB_DAD_CURRENT(asm_ctx.dlg);
 				PCB_DAD_HELP(asm_ctx.dlg, "Mark current part done,\ncontinue with the next part");
 				PCB_DAD_CHANGE_CB(asm_ctx.dlg, asm_done_part);
+			PCB_DAD_BUTTON(asm_ctx.dlg, "undo part");
+				asm_ctx.wdonep = PCB_DAD_CURRENT(asm_ctx.dlg);
+				PCB_DAD_HELP(asm_ctx.dlg, "Remove the done mark from the current part,\njump to the next part");
+				PCB_DAD_CHANGE_CB(asm_ctx.dlg, asm_undo_part);
 			PCB_DAD_BUTTON(asm_ctx.dlg, "done group");
 				asm_ctx.wdoneg = PCB_DAD_CURRENT(asm_ctx.dlg);
 				PCB_DAD_HELP(asm_ctx.dlg, "Mark all parts in this group done,\ncontinue with the next group");
