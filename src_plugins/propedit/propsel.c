@@ -157,7 +157,7 @@ static void map_layergrp(pcb_propedit_t *ctx, pcb_layergrp_t *grp)
 
 static void map_net(pcb_propedit_t *ctx, const char *netname)
 {
-	pcb_net_t *net = pcb_net_get(ctx->pcb, &PCB->netlist[PCB_NETLIST_EDITED], netname, 0);
+	pcb_net_t *net = pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_EDITED], netname, 0);
 	if (net == NULL)
 		return;
 	map_attr(ctx, &net->Attributes);
@@ -408,7 +408,7 @@ static void set_layergrp(pcb_propset_ctx_t *st, pcb_layergrp_t *grp)
 
 static void set_net(pcb_propset_ctx_t *st, const char *netname)
 {
-	pcb_net_t *net = pcb_net_get(st->pcb, &PCB->netlist[PCB_NETLIST_EDITED], netname, 0);
+	pcb_net_t *net = pcb_net_get(st->pcb, &st->pcb->netlist[PCB_NETLIST_EDITED], netname, 0);
 	if (net == NULL)
 		return;
 
@@ -732,7 +732,7 @@ static long del_layergrp(void *ctx, pcb_layergrp_t *grp, const char *key)
 
 static long del_net(pcb_propedit_t *ctx, const char *netname, const char *key)
 {
-	pcb_net_t *net = pcb_net_get(ctx->pcb, &PCB->netlist[PCB_NETLIST_EDITED], netname, 0);
+	pcb_net_t *net = pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_EDITED], netname, 0);
 	if ((net == NULL) || (pcb_attribute_get(&net->Attributes, key) == NULL))
 		return 0;
 
