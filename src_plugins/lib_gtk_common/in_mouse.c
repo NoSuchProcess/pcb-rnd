@@ -117,8 +117,7 @@ static gboolean loop_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, loo
 
 
 /*  If user hits a key instead of the mouse button, we'll abort unless
-    it's the enter key (which accepts the current crosshair location).
- */
+    it's the enter key (which accepts the current crosshair location). */
 static gboolean loop_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, loop_ctx_t *lctx)
 {
 	gint ksym = kev->keyval;
@@ -132,12 +131,12 @@ static gboolean loop_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, l
 		return TRUE;
 
 	switch (ksym) {
-	case PCB_GTK_KEY(Return):					/* Accept cursor location */
+	case PCB_GTK_KEY(Return):  /* Accept cursor location */
 		if (g_main_loop_is_running(lctx->loop))
 			g_main_loop_quit(lctx->loop);
 		break;
 
-	default:											/* Abort */
+	default:  /* Abort */
 		lctx->got_location = FALSE;
 		if (g_main_loop_is_running(lctx->loop))
 			g_main_loop_quit(lctx->loop);
@@ -147,8 +146,7 @@ static gboolean loop_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, l
 }
 
 /*  User hit a mouse button in the Output drawing area, so quit the loop
-    and the cursor values when the button was pressed will be used.
- */
+    and the cursor values when the button was pressed will be used. */
 static gboolean loop_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev, loop_ctx_t *lctx)
 {
 	if (g_main_loop_is_running(lctx->loop))
@@ -160,8 +158,7 @@ static gboolean loop_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev
 /*  Run a glib GMainLoop which intercepts key and mouse button events from
     the top level loop.  When a mouse or key is hit in the Output drawing
     area, quit the loop so the top level loop can continue and use the
-    the mouse pointer coordinates at the time of the mouse button event.
- */
+    the mouse pointer coordinates at the time of the mouse button event. */
 static gboolean run_get_location_loop(pcb_gtk_t *ctx, const gchar * message)
 {
 	static int getting_loc = 0;
@@ -171,8 +168,7 @@ static gboolean run_get_location_loop(pcb_gtk_t *ctx, const gchar * message)
 
 	/* Do not enter the loop recursively (ask for coord only once); also don't
 	   ask for coord if the scrollwheel triggered the event, it may cause strange
-	   GUI lockups when done outside of the drawing area
-	 */
+	   GUI lockups when done outside of the drawing area */
 	if ((getting_loc) || (ghid_wheel_zoom))
 		return pcb_false;
 
@@ -186,8 +182,7 @@ static gboolean run_get_location_loop(pcb_gtk_t *ctx, const gchar * message)
 	/*  Stop the top level GMainLoop from getting user input from keyboard
 	   and mouse so we can install our own handlers here.  Also set the
 	   control interface insensitive so all the user can do is hit a key
-	   or mouse button in the Output drawing area.
-	 */
+	   or mouse button in the Output drawing area. */
 	pcb_gtk_interface_input_signals_disconnect();
 	pcb_gtk_interface_set_sensitive(FALSE);
 
@@ -238,8 +233,7 @@ gint ghid_port_window_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, voi
 	/* X11 gtk hard codes buttons 4, 5, 6, 7 as below in
 	 * gtk+/gdk/x11/gdkevents-x11.c:1121, but quartz and windows have
 	 * special mouse scroll events, so this may conflict with a mouse
-	 * who has buttons 4 - 7 that aren't the scroll wheel?
-	 */
+	 * who has buttons 4 - 7 that aren't the scroll wheel? */
 	switch (ev->direction) {
 		case GDK_SCROLL_UP:    button = PCB_MB_SCROLL_UP; break;
 		case GDK_SCROLL_DOWN:  button = PCB_MB_SCROLL_DOWN; break;
