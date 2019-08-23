@@ -677,6 +677,10 @@ pcb_cardinal_t pcb_net_add_all_rats(const pcb_board_t *pcb, pcb_rat_accuracy_t a
 
 	vtp0_init(&subnets);
 
+	if (acc & PCB_RATACC_INFO)
+		pcb_message(PCB_MSG_INFO, "\n--- netlist check ---\n");
+
+
 	pcb_net_short_ctx_init(&sctx, pcb, NULL);
 
 	for(e = htsp_first(&pcb->netlist[PCB_NETLIST_EDITED]); e != NULL; e = htsp_next(&pcb->netlist[PCB_NETLIST_EDITED], e)) {
