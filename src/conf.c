@@ -1652,9 +1652,7 @@ void pcb_conf_usage(const char *prefix, void (*print)(const char *name, const ch
 				char *s, *name = malloc(kl+32);
 				const char *sc;
 				for(sc = n->hash_path + pl; *sc == '/'; sc++) ;
-				name[0] = '-';
-				name[1] = '-';
-				strcpy(name+2, sc);
+				strcpy(name, sc);
 				for(s = name; *s != '\0'; s++)
 					if (*s == '_')
 						*s = '-';

@@ -247,7 +247,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 
 void pcb_hid_usage_option(const char *name, const char *help)
 {
-	fprintf(stderr, "%-20s %s\n", name, help);
+	fprintf(stderr, "--%-20s %s\n", name, help);
 }
 
 void pcb_hid_usage(pcb_export_opt_t *a, int numa)
