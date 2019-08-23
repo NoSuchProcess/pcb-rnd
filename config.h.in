@@ -245,6 +245,10 @@ typedef @/local/pcb/long64@    pcb_long64_t;
    as ~/DOT_PCB_RND/ */
 #define DOT_PCB_RND "@/local/pcb/dot_pcb_rnd@"
 
+/* gtk */
+#define PCB_GTK_KEY(keyname) (@?libs/gui/gtk2/key_prefix@ ## keyname)
+
+
 /* ./configure --workaround requests: */
 @?/local/pcb/workaround_defs@
 

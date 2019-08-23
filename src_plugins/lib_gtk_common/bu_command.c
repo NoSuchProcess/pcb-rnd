@@ -103,13 +103,13 @@ static pcb_bool command_keypress_cb(GtkWidget *widget, GdkEventKey *kev, pcb_gtk
 {
 	gint ksym = kev->keyval;
 
-	if (ksym == GDK_KEY_Tab) {
+	if (ksym == PCB_GTK_KEY(Tab)) {
 		pcb_cli_tab();
 		return TRUE;
 	}
 
 	/* escape key handling */
-	if (ksym == GDK_KEY_Escape) {
+	if (ksym == PCB_GTK_KEY(Escape)) {
 		ghid_cmd_close(ctx);
 		return TRUE;
 	}

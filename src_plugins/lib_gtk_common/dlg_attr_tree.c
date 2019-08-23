@@ -3,7 +3,7 @@
  *
  *  pcb-rnd, interactive printed circuit board design
  *  Copyright (C) 2017 Alain Vigne
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -238,17 +238,17 @@ static gboolean ghid_tree_table_key_press_cb(GtkTreeView *tree_view, GdkEventKey
 	GtkClipboard *clipboard;
 	guint default_mod_mask = gtk_accelerator_get_default_mod_mask();
 
-	arrow_key = ((event->keyval == GDK_KEY_Up) || (event->keyval == GDK_KEY_KP_Up)
-		|| (event->keyval == GDK_KEY_Down) || (event->keyval == GDK_KEY_KP_Down)
-		|| (event->keyval == GDK_KEY_KP_Page_Down) || (event->keyval == GDK_KEY_KP_Page_Up)
-		|| (event->keyval == GDK_KEY_Page_Down) || (event->keyval == GDK_KEY_Page_Up)
-		|| (event->keyval == GDK_KEY_KP_Home) || (event->keyval == GDK_KEY_KP_End)
-		|| (event->keyval == GDK_KEY_Home) || (event->keyval == GDK_KEY_End));
-	enter_key = (event->keyval == GDK_KEY_Return) || (event->keyval == GDK_KEY_KP_Enter);
+	arrow_key = ((event->keyval == PCB_GTK_KEY(Up)) || (event->keyval == PCB_GTK_KEY(KP_Up))
+		|| (event->keyval == PCB_GTK_KEY(Down)) || (event->keyval == PCB_GTK_KEY(KP_Down))
+		|| (event->keyval == PCB_GTK_KEY(KP_Page_Down)) || (event->keyval == PCB_GTK_KEY(KP_Page_Up))
+		|| (event->keyval == PCB_GTK_KEY(Page_Down)) || (event->keyval == PCB_GTK_KEY(Page_Up))
+		|| (event->keyval == PCB_GTK_KEY(KP_Home)) || (event->keyval == PCB_GTK_KEY(KP_End))
+		|| (event->keyval == PCB_GTK_KEY(Home)) || (event->keyval == PCB_GTK_KEY(End)));
+	enter_key = (event->keyval == PCB_GTK_KEY(Return)) || (event->keyval == PCB_GTK_KEY(KP_Enter));
 	key_handled = (enter_key || arrow_key);
 
 	/* Handle ctrl+c and ctrl+C: copy current name to clipboard */
-	if (((event->state & default_mod_mask) == GDK_CONTROL_MASK) && ((event->keyval == GDK_KEY_c) || (event->keyval == GDK_KEY_C))) {
+	if (((event->state & default_mod_mask) == GDK_CONTROL_MASK) && ((event->keyval == PCB_GTK_KEY(c)) || (event->keyval == PCB_GTK_KEY(C)))) {
 		pcb_hid_tree_t *tree = attr->wdata;
 		pcb_hid_row_t *r;
 		const char *cliptext;
