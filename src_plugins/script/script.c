@@ -272,6 +272,8 @@ TODO(": guess")
 	if (strcmp(lang, "c") != 0) {
 #ifdef PCB_HAVE_SYS_FUNGW
 		const char *engname = lang;
+		char name[PCB_PATH_MAX];
+		int st;
 
 		TODO("move this to fungw");
 		if (strcmp(engname, "fbas") == 0) engname = "fawk";
