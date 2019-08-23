@@ -305,7 +305,7 @@ static void ghid_load_bg_image(void)
 			return;
 		}
 		ghidgui->bg_pixmap.pxm = &pxm;
-		ghid_init_pixmap_(&ghidgui->bg_pixmap.pxm);
+		ghid_init_pixmap_(&ghidgui->bg_pixmap);
 	}
 }
 
