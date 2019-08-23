@@ -733,10 +733,11 @@ static long del_layergrp(void *ctx, pcb_layergrp_t *grp, const char *key)
 static long del_net(pcb_propedit_t *ctx, const char *netname, const char *key)
 {
 	pcb_net_t *net = pcb_net_get(ctx->pcb, &PCB->netlist[PCB_NETLIST_EDITED], netname, 0);
-	if (net == NULL)
+	if ((net == NULL) || (pcb_attribute_get(&net->Attributes, key) == NULL))
 		return 0;
 
-	return del_attr(ctx, &net->Attributes, key);
+	pcb_ratspatch_append_optimize(ctx->pcb, RATP_CHANGE_ATTRIB, netname, key, NULL);
+	return 1;
 }
 
 static long del_any(void *ctx, pcb_any_obj_t *o, const char *key)
@@ -771,8 +772,11 @@ int pcb_propsel_del(pcb_propedit_t *ctx, const char *key)
 
 	if (ctx->nets_inited) {
 		htsp_entry_t *e;
+		long old_del_cnt = del_cnt;
 		for(e = htsp_first(&ctx->nets); e != NULL; e = htsp_next(&ctx->nets, e))
 			del_cnt += del_net(ctx, e->key, key);
+		if (old_del_cnt != del_cnt)
+			pcb_ratspatch_make_edited(ctx->pcb);
 	}
 
 	if (ctx->selection) {
