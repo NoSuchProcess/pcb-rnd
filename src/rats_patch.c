@@ -197,6 +197,18 @@ static int rats_patch_apply_conn(pcb_board_t *pcb, pcb_ratspatch_line_t *patch, 
 	return 1;
 }
 
+static int rats_patch_apply_attrib(pcb_board_t *pcb, pcb_ratspatch_line_t *patch, int del)
+{
+	pcb_net_t *net = pcb_net_get(pcb, &pcb->netlist[PCB_NETLIST_EDITED], patch->id, 1);
+	if (net == NULL)
+		return 1;
+	if (del)
+		pcb_attribute_remove(&net->Attributes, patch->arg1.attrib_name);
+	else
+		pcb_attribute_put(&net->Attributes, patch->arg1.attrib_name, patch->arg2.attrib_val);
+	return 0;
+}
+
 int pcb_ratspatch_apply(pcb_board_t *pcb, pcb_ratspatch_line_t * patch)
 {
 	switch (patch->op) {
@@ -205,8 +217,7 @@ int pcb_ratspatch_apply(pcb_board_t *pcb, pcb_ratspatch_line_t * patch)
 	case RATP_DEL_CONN:
 		return rats_patch_apply_conn(pcb, patch, 1);
 	case RATP_CHANGE_ATTRIB:
-TODO("just check wheter it is still valid")
-		break;
+		return rats_patch_apply_attrib(pcb, patch, 0);
 	}
 	return 0;
 }
