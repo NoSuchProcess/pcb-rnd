@@ -35,6 +35,7 @@
 #include "hid_dad.h"
 #include "hid_dad_tree.h"
 #include "conf_hid.h"
+#include "netlist.h"
 
 #include "props.h"
 #include "propsel.h"
@@ -174,6 +175,22 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 		}
 		if (inv > 0)
 			pcb_append_printf(&scope, "%d invalid layer groups, ", inv);
+
+		if (ctx->pe.nets_inited) {
+			htsp_entry_t *e;
+			inv = 0;
+			for(e = htsp_first(&ctx->pe.nets); e != NULL; e = htsp_next(&ctx->pe.nets, e)) {
+				if (pcb_net_get(ctx->pe.pcb, &ctx->pe.pcb->netlist[PCB_NETLIST_EDITED], e->key, 0) != NULL) {
+					gds_append_str(&scope, "net: ");
+					gds_append_str(&scope, e->key);
+					gds_append_str(&scope, ", ");
+				}
+				else
+					inv++;
+			}
+			if (inv > 0)
+				pcb_append_printf(&scope, "%d invalid nets, ", inv);
+		}
 
 		inv = 0;
 		for(idp = pcb_idpath_list_first(&ctx->pe.objs); idp != NULL; idp = pcb_idpath_list_next(idp)) {
