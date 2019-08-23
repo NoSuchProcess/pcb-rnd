@@ -209,15 +209,15 @@ static int rats_patch_apply_attrib(pcb_board_t *pcb, pcb_ratspatch_line_t *patch
 	return 0;
 }
 
-int pcb_ratspatch_apply(pcb_board_t *pcb, pcb_ratspatch_line_t * patch)
+int pcb_ratspatch_apply(pcb_board_t *pcb, pcb_ratspatch_line_t *patch)
 {
 	switch (patch->op) {
-	case RATP_ADD_CONN:
-		return rats_patch_apply_conn(pcb, patch, 0);
-	case RATP_DEL_CONN:
-		return rats_patch_apply_conn(pcb, patch, 1);
-	case RATP_CHANGE_ATTRIB:
-		return rats_patch_apply_attrib(pcb, patch, 0);
+		case RATP_ADD_CONN:
+			return rats_patch_apply_conn(pcb, patch, 0);
+		case RATP_DEL_CONN:
+			return rats_patch_apply_conn(pcb, patch, 1);
+		case RATP_CHANGE_ATTRIB:
+			return rats_patch_apply_attrib(pcb, patch, 0);
 	}
 	return 0;
 }
