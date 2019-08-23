@@ -37,7 +37,7 @@ static int ghid_pane_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val
 	else if (ratio > 1.0) ratio = 1.0;
 
 	g_object_get(G_OBJECT(pane), "min-position", &minp, "max-position", &maxp, NULL);
-	gtk_widget_get_allocation(pane, &a);
+	gtkc_widget_get_allocation(pane, &a);
 	switch(ctx->attrs[idx].type) {
 		case PCB_HATT_BEGIN_HPANE: p = a.width; break;
 		case PCB_HATT_BEGIN_VPANE: p = a.height; break;

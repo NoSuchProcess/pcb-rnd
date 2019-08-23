@@ -982,7 +982,7 @@ int pcb_gtk_winplace_cfg(pcb_hidlib_t *hidlib, GtkWidget *widget, void *ctx, con
 {
 	GtkAllocation allocation;
 
-	gtk_widget_get_allocation(widget, &allocation);
+	gtkc_widget_get_allocation(widget, &allocation);
 
 	/* For whatever reason, get_allocation doesn't set these. Gtk. */
 	gtk_window_get_position(GTK_WINDOW(widget), &allocation.x, &allocation.y);

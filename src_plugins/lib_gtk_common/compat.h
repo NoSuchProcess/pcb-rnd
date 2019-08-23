@@ -31,6 +31,7 @@
 /* Need GTK3 >= 3.20 due to GdkSeat. */
 
 #define gtkc_widget_get_window(w) gtk_widget_get_window(w)
+#define gtkc_widget_get_allocation(w, a) gtk_widget_get_allocation(w, a)
 
 typedef GdkRGBA pcb_gtk_color_t;
 
@@ -178,6 +179,11 @@ static inline void pcb_gtk_set_selected(GtkWidget *widget, int set)
 /* GTK2 */
 
 #define gtkc_widget_get_window(w) (GDK_WINDOW(GTK_WIDGET(w)->window))
+
+#define gtkc_widget_get_allocation(w, a) \
+do { \
+	*(a) = (GTK_WIDGET(w)->allocation); \
+} while(0) \
 
 typedef GdkColor pcb_gtk_color_t;
 

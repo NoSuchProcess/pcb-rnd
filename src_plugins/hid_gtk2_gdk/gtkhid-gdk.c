@@ -1461,7 +1461,7 @@ static gboolean ghid_gdk_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev,
 	save_height = ghidgui->port.view.canvas_height;
 	save_cpp = pcb_gui->coord_per_pix;
 
-	gtk_widget_get_allocation(widget, &allocation);
+	gtkc_widget_get_allocation(widget, &allocation);
 	xz = vw / (double)allocation.width;
 	yz = vh / (double)allocation.height;
 	if (xz > yz)

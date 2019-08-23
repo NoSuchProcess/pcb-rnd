@@ -826,7 +826,7 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 	GtkAllocation allocation;
 	pcb_hid_expose_ctx_t ctx;
 
-	gtk_widget_get_allocation(widget, &allocation);
+	gtkc_widget_get_allocation(widget, &allocation);
 
 	ghid_gl_start_drawing(port);
 
@@ -914,7 +914,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	save_cpp = pcb_gui->coord_per_pix;
 
 	/* Setup zoom factor for drawing routines */
-	gtk_widget_get_allocation(widget, &allocation);
+	gtkc_widget_get_allocation(widget, &allocation);
 	xz = vw / (double)allocation.width;
 	yz = vh / (double)allocation.height;
 
