@@ -2180,7 +2180,7 @@ static int parse_netlist_patch(pcb_board_t *pcb, lht_node_t *patches)
 			nkey = lht_dom_hash_get(np, "key");
 			if ((nkey == NULL) || (nkey->type != LHT_TEXT) || (*nkey->data.text.value == '\0'))
 				return iolht_error(nval, "netlist patch attrib key must be a non-empty string (change_attrib)\n");
-			nval = lht_dom_hash_get(np, "term");
+			nval = lht_dom_hash_get(np, "val");
 			if ((nval == NULL) || (nval->type != LHT_TEXT))
 				return iolht_error(nval, "netlist patch attrib value must be a non-empty string (change_attrib)\n");
 			pcb_ratspatch_append(pcb, RATP_CHANGE_ATTRIB, nnet->data.text.value, nkey->data.text.value, nval->data.text.value);
