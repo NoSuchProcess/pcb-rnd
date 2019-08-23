@@ -455,7 +455,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw)
 	/* This is required to get the drawing_area key-press-event.  Also the
 	 * enter and button press callbacks grab focus to be sure we have it
 	 * when in the drawing_area. */
-	gtk_widget_set_can_focus(tw->drawing_area, TRUE);
+	GTK_WIDGET_SET_FLAGS(tw->drawing_area, GTK_CAN_FOCUS);
 
 	gtk_box_pack_start(GTK_BOX(hbox), tw->drawing_area, TRUE, TRUE, 0);
 
