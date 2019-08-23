@@ -46,7 +46,7 @@ static GtkTreeIter *ghid_tree_table_add(pcb_hid_attribute_t *attr, GtkTreeStore 
 	}
 
 	for(c = 0; c < attr->pcb_hatt_table_cols; c++) {
-		GValue v = G_VALUE_INIT;
+		GValue v = {0};
 		g_value_init(&v, G_TYPE_STRING);
 		if (c < r->cols)
 			g_value_set_string(&v, r->cell[c]);
@@ -57,7 +57,7 @@ static GtkTreeIter *ghid_tree_table_add(pcb_hid_attribute_t *attr, GtkTreeStore 
 
 	/* remember the dad row in the hidden last cell */
 	{
-		GValue v = G_VALUE_INIT;
+		GValue v = {0};
 		g_value_init(&v, G_TYPE_POINTER);
 		g_value_set_pointer(&v, r);
 		gtk_tree_store_set_value(tstore, curr, c, &v);
@@ -127,7 +127,7 @@ static void ghid_tree_table_modify_cb(pcb_hid_attribute_t *attr, void *hid_ctx, 
 	attr_dlg_t *ctx = hid_ctx;
 	GtkTreeIter *iter = row->hid_data;
 	GtkTreeModel *model = ghid_tree_table_get_model(ctx, attr, 0);
-	GValue v = G_VALUE_INIT;
+	GValue v = {0};
 
 	g_value_init(&v, G_TYPE_STRING);
 
