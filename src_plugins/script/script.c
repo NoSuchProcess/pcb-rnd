@@ -254,10 +254,8 @@ static char *script_fn(const char *fn)
 
 int pcb_script_load(const char *id, const char *fn, const char *lang)
 {
-	char name[PCB_PATH_MAX];
 	pup_plugin_t *pup;
 	script_t *s;
-	int st;
 	const char *old_id;
 
 	if (htsp_has(&scripts, id)) {
