@@ -557,6 +557,7 @@ int hook_detect_target()
 	if (want_gtk2) {
 		require("libs/gui/gtk2/presents", 0, 0);
 		if (istrue(get("libs/gui/gtk2/presents"))) {
+			require("libs/gui/gtk2/key_prefix", 0, 1);
 			require("libs/gui/gtk2gl/presents", 0, 0);
 			if (!istrue(get("libs/gui/gtk2gl/presents"))) {
 				report_repeat("WARNING: Since there's no gl support for gtk found, disabling the gl rendering...\n");
