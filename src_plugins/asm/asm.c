@@ -416,6 +416,21 @@ static void skip(void *hid_ctx, int pick_grp, pcb_hid_row_t *row)
 	return;
 }
 
+static void group_progress_update(void *hid_ctx, group_t *grp)
+{
+	long n, done = 0, total = vtp0_len(&grp->parts);
+	char *tmp;
+
+	for(n = 0; n < total; n++) {
+		part_t *p = grp->parts.array[n];
+		if (p->done)
+			done++;
+	}
+
+	tmp = pcb_strdup_printf("%d/%d", done, total);
+	pcb_dad_tree_modify_cell(&asm_ctx.dlg[asm_ctx.wtbl], grp->row, 5, tmp);
+}
+
 static void done(void *hid_ctx, part_t *part, int done)
 {
 	part->done = done;
@@ -423,6 +438,7 @@ static void done(void *hid_ctx, part_t *part, int done)
 		pcb_dad_tree_modify_cell(&asm_ctx.dlg[asm_ctx.wtbl], part->row, 5, "yes");
 	else
 		pcb_dad_tree_modify_cell(&asm_ctx.dlg[asm_ctx.wtbl], part->row, 5, "-");
+	group_progress_update(hid_ctx, part->parent);
 }
 
 static void asm_done_part(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
