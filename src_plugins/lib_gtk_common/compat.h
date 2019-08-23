@@ -32,6 +32,7 @@
 
 #define gtkc_widget_get_window(w) gtk_widget_get_window(w)
 #define gtkc_widget_get_allocation(w, a) gtk_widget_get_allocation(w, a)
+#define gtkc_dialog_get_content_area(d)  gtk_widget_get_content_area(d)
 
 typedef GdkRGBA pcb_gtk_color_t;
 
@@ -184,6 +185,8 @@ static inline void pcb_gtk_set_selected(GtkWidget *widget, int set)
 do { \
 	*(a) = (GTK_WIDGET(w)->allocation); \
 } while(0) \
+
+#define gtkc_dialog_get_content_area(d)  ((d)->vbox)
 
 typedef GdkColor pcb_gtk_color_t;
 

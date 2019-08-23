@@ -160,7 +160,7 @@ void pcb_gtk_dlg_attributes(GtkWidget *top_window, const char *owner, pcb_attrib
 
 	attr_table = gtk_table_new(attrs->Number, 3, 0);
 
-	content_area = gtk_dialog_get_content_area(GTK_DIALOG(attributes_dialog));
+	content_area = gtkc_dialog_get_content_area(GTK_DIALOG(attributes_dialog));
 	gtk_box_pack_start(GTK_BOX(content_area), attr_table, FALSE, FALSE, 0);
 
 	gtk_widget_show(attr_table);

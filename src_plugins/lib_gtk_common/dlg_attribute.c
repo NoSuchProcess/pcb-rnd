@@ -790,7 +790,7 @@ void *ghid_attr_dlg_new(pcb_gtk_t *gctx, const char *id, pcb_hid_attribute_t *at
 
 	main_vbox = gtkc_vbox_new(FALSE, 6);
 	gtk_container_set_border_width(GTK_CONTAINER(main_vbox), 6);
-	content_area = gtk_dialog_get_content_area(GTK_DIALOG(ctx->dialog));
+	content_area = gtkc_dialog_get_content_area(GTK_DIALOG(ctx->dialog));
 	gtk_container_add_with_properties(GTK_CONTAINER(content_area), main_vbox, "expand", TRUE, "fill", TRUE, NULL);
 
 	ghid_attr_dlg_add(ctx, main_vbox, NULL, 0);
