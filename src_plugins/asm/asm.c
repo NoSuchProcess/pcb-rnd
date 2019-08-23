@@ -333,13 +333,21 @@ static void asm_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 static void select_part(part_t *p)
 {
 	void *r1, *r2, *r3;
+	pcb_subc_t *sc;
 	pcb_objtype_t type;
+	pcb_box_t view;
 
 	type = pcb_search_obj_by_id_(PCB->Data, &r1, &r2, &r3, p->id, PCB_OBJ_SUBC);
 	if (type != PCB_OBJ_SUBC)
 		return;
 
-	pcb_subc_select(PCB, (pcb_subc_t *)r2, PCB_CHGFLG_SET, 1);
+	sc = (pcb_subc_t *)r2;
+	pcb_subc_select(PCB, sc, PCB_CHGFLG_SET, 1);
+
+	/* if the part is out of the screen, pan there */
+	pcb_gui->view_get(pcb_gui, &view);
+	if ((view.X2 < sc->BoundingBox.X1) || (view.X1 > sc->BoundingBox.X2) || (view.Y2 < sc->BoundingBox.Y1) || (view.Y1 > sc->BoundingBox.Y2))
+		pcb_gui->pan(pcb_gui, (sc->BoundingBox.X1+sc->BoundingBox.X2)/2, (sc->BoundingBox.Y1+sc->BoundingBox.Y2)/2, 0);
 }
 
 static void asm_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
