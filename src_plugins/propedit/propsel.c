@@ -40,6 +40,7 @@
 #include "pcb-printf.h"
 #include "conf_core.h"
 #include "hidlib_conf.h"
+#include "netlist.h"
 
 /*********** map ***********/
 #define type2field_String string
@@ -152,6 +153,14 @@ static void map_layergrp(pcb_propedit_t *ctx, pcb_layergrp_t *grp)
 	map_add_prop(ctx, "p/layer_group/prop_type", String, pcb_layer_type_bit2str(grp->ltype & PCB_LYT_ANYPROP));
 
 	map_attr(ctx, &grp->Attributes);
+}
+
+static void map_net(pcb_propedit_t *ctx, const char *netname)
+{
+	pcb_net_t *net = pcb_net_get(ctx->pcb, &PCB->netlist[PCB_NETLIST_EDITED], netname, 0);
+	if (net == NULL)
+		return;
+	map_attr(ctx, &net->Attributes);
 }
 
 static void map_line(pcb_propedit_t *ctx, pcb_line_t *line)
@@ -270,6 +279,12 @@ void pcb_propsel_map_core(pcb_propedit_t *ctx)
 
 	for(idp = pcb_idpath_list_first(&ctx->objs); idp != NULL; idp = pcb_idpath_list_next(idp))
 		map_any(ctx, pcb_idpath2obj_in(ctx->data, idp));
+
+	if (ctx->nets_inited) {
+		htsp_entry_t *e;
+		for(e = htsp_first(&ctx->nets); e != NULL; e = htsp_next(&ctx->nets, e))
+			map_net(ctx, e->key);
+	}
 
 	if (ctx->selection) {
 		pcb_any_obj_t *o;
@@ -391,6 +406,17 @@ static void set_layergrp(pcb_propset_ctx_t *st, pcb_layergrp_t *grp)
 	}
 }
 
+static void set_net(pcb_propset_ctx_t *st, const char *netname)
+{
+	pcb_net_t *net = pcb_net_get(st->pcb, &PCB->netlist[PCB_NETLIST_EDITED], netname, 0);
+	if (net == NULL)
+		return;
+
+	if (st->is_attr) {
+		set_attr(st, &net->Attributes);
+		return;
+	}
+}
 
 static void set_line(pcb_propset_ctx_t *st, pcb_line_t *line)
 {
@@ -621,6 +647,12 @@ int pcb_propsel_set(pcb_propedit_t *ctx, const char *prop, pcb_propset_ctx_t *sc
 	for(idp = pcb_idpath_list_first(&ctx->objs); idp != NULL; idp = pcb_idpath_list_next(idp))
 		set_any(sctx, pcb_idpath2obj_in(ctx->data, idp));
 
+	if (ctx->nets_inited) {
+		htsp_entry_t *e;
+		for(e = htsp_first(&ctx->nets); e != NULL; e = htsp_next(&ctx->nets, e))
+			set_net(sctx, e->key);
+	}
+
 	if (ctx->selection) {
 		pcb_any_obj_t *o;
 		pcb_data_it_t it;
@@ -688,6 +720,15 @@ static long del_layergrp(void *ctx, pcb_layergrp_t *grp, const char *key)
 	return del_attr(ctx, &grp->Attributes, key);
 }
 
+static long del_net(pcb_propedit_t *ctx, const char *netname, const char *key)
+{
+	pcb_net_t *net = pcb_net_get(ctx->pcb, &PCB->netlist[PCB_NETLIST_EDITED], netname, 0);
+	if (net == NULL)
+		return;
+
+	return del_attr(ctx, &net->Attributes, key);
+}
+
 static long del_any(void *ctx, pcb_any_obj_t *o, const char *key)
 {
 	return del_attr(ctx, &o->Attributes, key);
@@ -717,6 +758,12 @@ int pcb_propsel_del(pcb_propedit_t *ctx, const char *key)
 
 	for(idp = pcb_idpath_list_first(&ctx->objs); idp != NULL; idp = pcb_idpath_list_next(idp))
 		del_cnt += del_any(ctx, pcb_idpath2obj_in(ctx->data, idp), key);
+
+	if (ctx->nets_inited) {
+		htsp_entry_t *e;
+		for(e = htsp_first(&ctx->nets); e != NULL; e = htsp_next(&ctx->nets, e))
+			del_cnt += del_net(ctx, e->key, key);
+	}
 
 	if (ctx->selection) {
 		pcb_any_obj_t *o;
