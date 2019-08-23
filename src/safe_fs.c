@@ -103,11 +103,6 @@ FILE *pcb_fopen(pcb_hidlib_t *hidlib, const char *path, const char *mode)
 	return pcb_fopen_fn(hidlib, path, mode, NULL);
 }
 
-static int can_overwrite(pcb_hidlib_t *hidlib, const char *path, int *all)
-{
-	
-}
-
 FILE *pcb_fopen_askovr(pcb_hidlib_t *hidlib, const char *path, const char *mode, int *all)
 {
 	if (strchr(mode, 'w') != NULL) {
