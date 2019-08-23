@@ -413,7 +413,14 @@ static void set_net(pcb_propset_ctx_t *st, const char *netname)
 		return;
 
 	if (st->is_attr) {
-		set_attr(st, &net->Attributes);
+		const char *key = st->name+2;
+		const char *orig = pcb_attribute_get(&net->Attributes, key);
+
+		if ((orig != NULL) && (strcmp(orig, st->s) == 0))
+			return;
+
+		st->set_cnt++;
+		pcb_ratspatch_append_optimize(st->pcb, RATP_CHANGE_ATTRIB, netname, key, st->s);
 		return;
 	}
 }
@@ -648,9 +655,12 @@ int pcb_propsel_set(pcb_propedit_t *ctx, const char *prop, pcb_propset_ctx_t *sc
 		set_any(sctx, pcb_idpath2obj_in(ctx->data, idp));
 
 	if (ctx->nets_inited) {
+		long old_set_cnt = sctx->set_cnt;
 		htsp_entry_t *e;
 		for(e = htsp_first(&ctx->nets); e != NULL; e = htsp_next(&ctx->nets, e))
 			set_net(sctx, e->key);
+		if (old_set_cnt != sctx->set_cnt)
+			pcb_ratspatch_make_edited(sctx->pcb);
 	}
 
 	if (ctx->selection) {
@@ -724,7 +734,7 @@ static long del_net(pcb_propedit_t *ctx, const char *netname, const char *key)
 {
 	pcb_net_t *net = pcb_net_get(ctx->pcb, &PCB->netlist[PCB_NETLIST_EDITED], netname, 0);
 	if (net == NULL)
-		return;
+		return 0;
 
 	return del_attr(ctx, &net->Attributes, key);
 }
