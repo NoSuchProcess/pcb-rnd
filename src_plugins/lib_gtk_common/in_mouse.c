@@ -419,7 +419,7 @@ void ghid_port_set_mouse_cursor(pcb_gtk_t *ctx, int idx)
 	if (ctx->topwin.drawing_area == NULL)
 		return;
 
-	window = gtk_widget_get_window(ctx->topwin.drawing_area);
+	window = gtkc_widget_get_window(ctx->topwin.drawing_area);
 
 	/* check if window exists to prevent from fatal errors */
 	if (window == NULL)

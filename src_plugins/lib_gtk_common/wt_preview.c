@@ -182,7 +182,7 @@ static void ghid_preview_finalize(GObject *object)
 static void ghid_preview_set_property(GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
 {
 	pcb_gtk_preview_t *preview = PCB_GTK_PREVIEW(object);
-	GdkWindow *window = gtk_widget_get_window(GTK_WIDGET(preview));
+	GdkWindow *window = gtkc_widget_get_window(GTK_WIDGET(preview));
 
 	switch (property_id) {
 	case PROP_GPORT:

@@ -266,7 +266,7 @@ static void ghid_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int
 		return;
 
 	gctx->impl.draw_grid_local(gctx->hidlib, x, y);
-	gdk_window_get_origin(gtk_widget_get_window(gctx->port.drawing_area), &offset_x, &offset_y);
+	gdk_window_get_origin(gtkc_widget_get_window(gctx->port.drawing_area), &offset_x, &offset_y);
 	pcb_gtk_crosshair_set(x, y, action, offset_x, offset_y, &gctx->port.view);
 }
 
@@ -424,7 +424,7 @@ static double ghid_benchmark(pcb_hid_t *hid)
 	GdkDisplay *display;
 	GdkWindow *window;
 
-	window = gtk_widget_get_window(gctx->port.drawing_area);
+	window = gtkc_widget_get_window(gctx->port.drawing_area);
 	display = gtk_widget_get_display(gctx->port.drawing_area);
 
 	gdk_display_sync(display);

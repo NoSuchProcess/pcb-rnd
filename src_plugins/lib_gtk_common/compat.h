@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017 Tibor Palinkas
+ *  Copyright (C) 2017,2019 Tibor Palinkas
  *  Copyright (C) 2017 Alain Vigne
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -29,6 +29,8 @@
 
 #ifdef PCB_GTK3
 /* Need GTK3 >= 3.20 due to GdkSeat. */
+
+#define gtkc_widget_get_window(w) gtk_widget_get_window(w)
 
 typedef GdkRGBA pcb_gtk_color_t;
 
@@ -116,7 +118,7 @@ static inline void gtkc_scrolled_window_add_with_viewport(GtkWidget *scrolled, G
 
 static inline GdkWindow * gdkc_window_get_pointer(GtkWidget *w, gint *x, gint *y, GdkModifierType *mask)
 {
-	GdkWindow *window = gtk_widget_get_window(w);
+	GdkWindow *window = gtkc_widget_get_window(w);
 	GdkSeat *seat = gdk_display_get_default_seat(gdk_window_get_display(window));
 	GdkDevice *device = gdk_seat_get_pointer(seat);
 
@@ -174,6 +176,8 @@ static inline void pcb_gtk_set_selected(GtkWidget *widget, int set)
 
 #else
 /* GTK2 */
+
+#define gtkc_widget_get_window(w) (GDK_WINDOW(GTK_WIDGET(w)->window))
 
 typedef GdkColor pcb_gtk_color_t;
 
@@ -259,7 +263,7 @@ static inline void gtkc_scrolled_window_add_with_viewport(GtkWidget *scrolled, G
 
 static inline GdkWindow * gdkc_window_get_pointer(GtkWidget *w, gint *x, gint *y, GdkModifierType *mask)
 {
-	return gdk_window_get_pointer(gtk_widget_get_window(w), x, y, mask);
+	return gdk_window_get_pointer(gtkc_widget_get_window(w), x, y, mask);
 }
 
 static inline void gtkc_widget_get_preferred_height(GtkWidget *w, gint *min_size, gint *natural_size)

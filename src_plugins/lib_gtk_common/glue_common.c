@@ -311,7 +311,7 @@ static void ghid_load_bg_image(void)
 
 void ghid_draw_area_update(pcb_gtk_port_t *port, GdkRectangle *rect)
 {
-	gdk_window_invalidate_rect(gtk_widget_get_window(port->drawing_area), rect, FALSE);
+	gdk_window_invalidate_rect(gtkc_widget_get_window(port->drawing_area), rect, FALSE);
 }
 
 void pcb_gtk_previews_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
