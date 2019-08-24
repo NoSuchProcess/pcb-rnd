@@ -654,6 +654,11 @@ int pcb_save_buffer_elements(const char *Filename, const char *fmt)
 	return result;
 }
 
+int pcb_save_buffer(const char *Filename, const char *fmt)
+{
+	return pcb_write_pipe(Filename, pcb_false, fmt, pcb_false);
+}
+
 int pcb_save_pcb(const char *file, const char *fmt)
 {
 	int retcode;
