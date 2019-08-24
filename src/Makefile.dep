@@ -1952,6 +1952,7 @@
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h hid_dad.h compat_misc.h \
  hid_attrib.h hid_dad_spin.h event.h hidlib.h \
+ ../src_plugins/lib_gtk_common/compat.h \
  ../src_plugins/lib_gtk_common/glue_common.h \
  ../src_plugins/lib_gtk_common/coord_conv.h compat_misc.h \
  ../src_plugins/lib_gtk_common/hid_gtk_conf.h \
@@ -6091,7 +6092,7 @@ buffer.o: buffer.c ../config.h conf_core.h conf.h global_typedefs.h \
  ../src_3rd/libuundo/uundo.h undo_old.h funchash_core.h funchash.h \
  funchash_core_list.h obj_arc_op.h obj_line_op.h obj_text_op.h \
  obj_subc_op.h obj_poly_op.h obj_pstk_op.h obj_rat_op.h event.h safe_fs.h \
- actions.h
+ actions.h tool.h
 build_run.o: build_run.c ../config.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h conf_core.h conf.h \
