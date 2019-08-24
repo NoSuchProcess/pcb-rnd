@@ -84,9 +84,6 @@ struct pcb_plug_io_s {
 	/* Write the buffer to a file. Return 0 on success. */
 	int (*write_buffer)(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff);
 
-	/* Write the idxth subcircuit from buffer to a file. Return 0 on success. */
-	int (*write_buffer_subc)(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff, long idx);
-
 	/* Write subcircuit(s) from 'e' to a library file. If subc_idx is -1, write
 	   all subcircuits as a library (if the format allows), else write only
 	   th sucb_idxth subcircuit as a footprint. Return 0 on success. */

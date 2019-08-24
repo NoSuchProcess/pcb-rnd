@@ -267,7 +267,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					goto quit1;
 				}
 
-				if (io_lihata_write_element(plug_io_lihata_default, f, pcb_buffers[bn].Data) != 0) {
+				if (io_lihata_write_element(plug_io_lihata_default, f, pcb_buffers[bn].Data, 0) != 0) {
 					fclose(f);
 					pcb_message(PCB_MSG_ERROR, "Failed to export target objects to lihata footprint.\n");
 					goto quit1;
