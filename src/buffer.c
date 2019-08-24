@@ -859,6 +859,14 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			}
 			break;
 
+		case F_SaveAll:
+			pcb_message(PCB_MSG_ERROR, "PasteBuffer(SaveAll) not yet implemented\n");
+			break;
+
+		case F_LoadAll:
+			pcb_message(PCB_MSG_ERROR, "PasteBuffer(LoadAll) not yet implemented\n");
+			break;
+
 		case F_Save:
 			free_name = pcb_false;
 			if (argc <= 1) {

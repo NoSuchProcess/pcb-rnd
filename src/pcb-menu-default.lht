@@ -441,13 +441,16 @@ ha:{
 				ha:Normalize                  = { a={<key>b;<key>n}; li:action={Mode(PasteBuffer); PasteBuffer(Rotate,1); PasteBuffer(Normalize);} }
 				-
 				ha:Clear buffer                    = { a={<key>b;<key>c;<key>c;}; action=PasteBuffer(Clear) }
+				ha:Save buffer content to file     = { a={<key>b;<key>f;<key>s;}; action=PasteBuffer(SaveAll) }
+				ha:Load buffer content from file   = { a={<key>b;<key>f;<key>l;}; action=PasteBuffer(LoadAll) }
+				-
 				ha:Convert buffer to subcircuit    = { a={<key>b;<key>c;<key>s}; action=PasteBuffer(ConvertSubc) }
 				ha:Convert buffer to padstack      = { a={<key>b;<key>c;<key>p}; li:action={PadstackConvert(buffer); Mode(PasteBuffer);} }
 				ha:Break buffer subcircuits to pieces = { a={<key>b;<key>s;<key>b};  action=PasteBuffer(Restore) }
 				ha:Break buffer padstacks to pieces = { a={<key>b;<key>s;<key>p};  action=PadstackBreakup(buffer) }
 				ha:Save buffer subcircuits to file = { a={<key>b;<key>s;<key>s}; action=Save(PasteBuffer) }
+				-
 				ha:Layer bindings...               = { a={<key>b;<key>b;}; action=LayerBinding(buffer) }
-
 				ha:Buffer selection {
 					li:submenu {
 						ha:Select Buffer \#1 = { checked=ChkBuffer(1); a={<key>b;<Key>1;} action=PasteBuffer(1); update_on={editor/buffer_number} }
