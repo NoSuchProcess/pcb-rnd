@@ -642,7 +642,7 @@ static char *TMPFilename = NULL;
 
 #define F2S(OBJ, TYPE) pcb_strflg_f2s((OBJ)->Flags, TYPE)
 
-int pcb_save_buffer_elements(const char *Filename, const char *fmt)
+int pcb_save_buffer_subcs(const char *Filename, const char *fmt)
 {
 	int result;
 

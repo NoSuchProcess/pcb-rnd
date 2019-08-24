@@ -947,10 +947,10 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				if ((!force) && ((exist = pcb_fopen(&PCB->hidlib, name, "r")))) {
 					fclose(exist);
 					if (pcb_hid_message_box("warning", "Buffer: overwrite file", "File exists!  Ok to overwrite?", "cancel", 0, "yes", 1, NULL) == 1)
-						pcb_save_buffer_elements(name, fmt);
+						pcb_save_buffer_subcs(name, fmt);
 				}
 				else
-					pcb_save_buffer_elements(name, fmt);
+					pcb_save_buffer_subcs(name, fmt);
 
 				if (free_name && name)
 					free((char*)name);

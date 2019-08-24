@@ -223,7 +223,7 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 
 		case F_PasteBuffer:
-			PCB_ACT_IRES(pcb_save_buffer_elements(name, fmt));
+			PCB_ACT_IRES(pcb_save_buffer_subcs(name, fmt));
 			return 0;
 
 		/* shorthand kept only for compatibility reasons - do not use */

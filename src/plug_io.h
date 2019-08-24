@@ -140,7 +140,7 @@ void pcb_save_in_tmp(void);
 void pcb_emergency_save(void);
 void pcb_disable_emergency_save(void);
 int pcb_revert_pcb(void);
-int pcb_save_buffer_elements(const char *, const char *fmt);
+int pcb_save_buffer_subcs(const char *, const char *fmt);
 int pcb_save_buffer(const char *Filename, const char *fmt);
 void pcb_print_quoted_string_(FILE *, const char *); /* without wrapping in "" */
 void pcb_print_quoted_string(FILE *, const char *); /* with wrapping in "" */
