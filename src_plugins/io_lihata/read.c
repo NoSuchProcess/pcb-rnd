@@ -2408,6 +2408,12 @@ int io_lihata_parse_buffer(pcb_plug_io_t *ctx, pcb_buffer_t *buff, const char *f
 		}
 		else
 			res = (parse_data(NULL, buff->Data, datand, &DUMMY_BUFFER_SUBC) == NULL);
+
+		if (res == 0) {
+			lht_node_t *ndx = lht_dom_hash_get(doc->root, "x"), *ndy = lht_dom_hash_get(doc->root, "y");
+			parse_coord(&buff->X, ndx);
+			parse_coord(&buff->Y, ndy);
+		}
 	}
 	else {
 		iolht_error(doc->root, "Error loading '%s': not a pcb-rnd paste buffer\n", filename);

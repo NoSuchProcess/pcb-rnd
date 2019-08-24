@@ -1726,6 +1726,8 @@ int io_lihata_write_buffer(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff)
 	doc->root = lht_dom_node_alloc(LHT_HASH, "pcb-rnd-buffer-v6");
 
 	lht_dom_hash_put(doc->root, build_data(buff->Data));
+	lht_dom_hash_put(doc->root, build_textf("x", CFMT, buff->X));
+	lht_dom_hash_put(doc->root, build_textf("y", CFMT, buff->Y));
 
 	clean_invalid(doc->root); /* remove invalid nodes placed for persistency */
 	res = lht_dom_export(doc->root, f, "");
