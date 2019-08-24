@@ -1723,7 +1723,7 @@ int io_lihata_write_buffer(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff)
 
 	io_lihata_full_tree = 1;
 	doc = lht_dom_init();
-	doc->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-buffer-v6");
+	doc->root = lht_dom_node_alloc(LHT_HASH, "pcb-rnd-buffer-v6");
 
 	lht_dom_list_append(doc->root, build_data(buff->Data));
 
