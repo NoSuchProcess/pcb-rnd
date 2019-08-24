@@ -4,6 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996, 2005 Thomas Nau
+ *  Copyright (C) 2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -56,6 +57,7 @@
 #include "event.h"
 #include "safe_fs.h"
 #include "actions.h"
+#include "tool.h"
 
 static pcb_opfunc_t AddBufferFunctions = {
 	pcb_lineop_add_to_buffer,
@@ -894,7 +896,29 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			break;
 
 		case F_LoadAll:
-			pcb_message(PCB_MSG_ERROR, "PasteBuffer(LoadAll) not yet implemented\n");
+			free_name = pcb_false;
+			if (argc <= 2) {
+				name = pcb_gui->fileselect(pcb_gui, "Load Paste Buffer ...",
+					"Choose a file to load the contents of the\npaste buffer from.\n",
+					default_file, ".lht", NULL, "buffer", PCB_HID_FSD_READ | PCB_HID_FSD_MAY_NOT_EXIST, NULL);
+
+				if (default_file) {
+					free(default_file);
+					default_file = NULL;
+				}
+				if (name && *name)
+					default_file = pcb_strdup(name);
+				free_name = pcb_true;
+			}
+			else
+				name = sbufnum;
+
+			if (pcb_load_buffer(&PCB->hidlib, PCB_PASTEBUFFER, name, NULL) != 0) {
+				pcb_message(PCB_MSG_ERROR, "Failed to load buffer from %s\n", name);
+				PCB_ACT_IRES(-1);
+			}
+			else
+				pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
 			break;
 
 		case F_Save:
