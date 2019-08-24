@@ -287,7 +287,7 @@ static inline void gtkc_widget_add_class_style(GtkWidget *w, const char *css_cla
 
 static inline void pcb_gtk_set_selected(GtkWidget *widget, int set)
 {
-	GtkStateType st = gtk_widget_get_state(widget);
+	GtkStateType st = GTK_WIDGET_STATE(widget);
 	/* race condition... */
 	if (set)
 		gtk_widget_set_state(widget, st | GTK_STATE_SELECTED);
