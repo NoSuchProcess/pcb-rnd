@@ -404,7 +404,7 @@ static int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt, pcb_bo
 	return res;
 }
 
-int pcb_write_footprint_data(FILE *f, pcb_data_t *e, const char *fmt)
+int pcb_write_footprint_data(FILE *f, pcb_data_t *e, const char *fmt, long subc_idx)
 {
 	int res, newfmt = 0;
 	pcb_plug_io_t *p = e->loader;
@@ -415,7 +415,7 @@ int pcb_write_footprint_data(FILE *f, pcb_data_t *e, const char *fmt)
 	}
 
 	if ((p != NULL) && (p->write_footprint != NULL))
-		res = p->write_footprint(p, f, e);
+		res = p->write_footprint(p, f, e, subc_idx);
 
 	if ((res == 0) && (newfmt))
 		e->loader = p;
@@ -602,7 +602,7 @@ static int pcb_write_file(FILE *fp, pcb_bool thePcb, const char *old_path, const
 {
 	if (thePcb) {
 		if (PCB->is_footprint)
-			return pcb_write_footprint_data(fp, PCB->Data, fmt);
+			return pcb_write_footprint_data(fp, PCB->Data, fmt, subc_idx);
 		return pcb_write_pcb(fp, old_path, new_path, fmt, emergency);
 	}
 	return pcb_write_buffer(fp, PCB_PASTEBUFFER, fmt, subc_only, subc_idx);

@@ -274,26 +274,30 @@ int tedax_fp_fsave_subc(pcb_subc_t *subc, const char *fpname, int lyrecipe, FILE
 }
 
 
-int tedax_fp_fsave(pcb_data_t *data, FILE *f)
+int tedax_fp_fsave(pcb_data_t *data, FILE *f, long subc_idx)
 {
 	int res = 0;
+	long cnt = 0;
 
 
 	fprintf(f, "tEDAx v1\n");
 
 	PCB_SUBC_LOOP(data)
 	{
-		const char *fpname = pcb_attribute_get(&subc->Attributes, "tedax::footprint");
-		if (fpname == NULL)
-			fpname = pcb_attribute_get(&subc->Attributes, "visible_footprint");
-		if (fpname == NULL)
-			fpname = pcb_attribute_get(&subc->Attributes, "footprint");
-		if ((fpname == NULL) && (subc->refdes != NULL))
-			fpname = subc->refdes;
-		if (fpname == NULL)
-			fpname = "-";
+		if ((subc_idx == -1) || (subc_idx == cnt)) {
+			const char *fpname = pcb_attribute_get(&subc->Attributes, "tedax::footprint");
+			if (fpname == NULL)
+				fpname = pcb_attribute_get(&subc->Attributes, "visible_footprint");
+			if (fpname == NULL)
+				fpname = pcb_attribute_get(&subc->Attributes, "footprint");
+			if ((fpname == NULL) && (subc->refdes != NULL))
+				fpname = subc->refdes;
+			if (fpname == NULL)
+				fpname = "-";
 
-		res |= tedax_fp_fsave_subc(subc, fpname, 0, f);
+			res |= tedax_fp_fsave_subc(subc, fpname, 0, f);
+		}
+		cnt++;
 	}
 	PCB_END_LOOP;
 
@@ -301,7 +305,7 @@ int tedax_fp_fsave(pcb_data_t *data, FILE *f)
 	return res;
 }
 
-int tedax_fp_save(pcb_data_t *data, const char *fn)
+int tedax_fp_save(pcb_data_t *data, const char *fn, long subc_idx)
 {
 	int res;
 	FILE *f;
@@ -311,7 +315,7 @@ int tedax_fp_save(pcb_data_t *data, const char *fn)
 		pcb_message(PCB_MSG_ERROR, "tedax_fp_save(): can't open %s for writing\n", fn);
 		return -1;
 	}
-	res = tedax_fp_fsave(data, f);
+	res = tedax_fp_fsave(data, f, subc_idx);
 	fclose(f);
 	return res;
 }

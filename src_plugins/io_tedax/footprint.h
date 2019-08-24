@@ -1,8 +1,8 @@
 #include "data.h"
 #include <genht/htsp.h>
 
-int tedax_fp_save(pcb_data_t *data, const char *fn);
-int tedax_fp_fsave(pcb_data_t *data, FILE *f);
+int tedax_fp_save(pcb_data_t *data, const char *fn, long subc_idx);
+int tedax_fp_fsave(pcb_data_t *data, FILE *f, long subc_idx);
 int tedax_fp_load(pcb_data_t *data, const char *fn, int multi, const char *blk_id, int silent);
 
 /* parse a single footprint at current file pos; returns NULL on error */

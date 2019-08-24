@@ -663,9 +663,9 @@ static int write_kicad_legacy_layout_polygons(FILE *FP, pcb_cardinal_t number, p
 	}
 }
 
-int io_kicad_legacy_write_buffer_subc(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buff, long idx)
+int io_kicad_legacy_write_buffer_subc(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buff, long subc_idx)
 {
-	if (idx != 0) {
+	if (subc_idx != 0) {
 		pcb_message(PCB_MSG_ERROR, "Only the first subcircuit can be saved at the moment\n");
 		return -1;
 	}
@@ -681,7 +681,7 @@ TODO(": no hardwiring of dates")
 	io_kicad_legacy_write_subc_index(FP, buff->Data);
 	fputs("$EndINDEX\n", FP);
 
-	pcb_write_footprint_data(FP, buff->Data, "kicadl");
+	pcb_write_footprint_data(FP, buff->Data, "kicadl", subc_idx);
 
 	return 0;
 }
@@ -1041,7 +1041,7 @@ TODO(": se this from io_kicad, do not duplicate the code here")
 	return 0;
 }
 
-int io_kicad_legacy_write_element(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
+int io_kicad_legacy_write_element(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data, long subc_idx)
 {
 	gdl_iterator_t sit;
 	pcb_subc_t *subc;
@@ -1050,8 +1050,10 @@ int io_kicad_legacy_write_element(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data
 
 	unm_init(&group1);
 	subclist_foreach(&Data->subc, &sit, subc) {
-		const char *uname = unm_name(&group1, or_empty(pcb_attribute_get(&subc->Attributes, "footprint")), subc);
-		res |= io_kicad_legacy_write_subc(FP, PCB, subc, 0, 0, uname);
+		if ((subc_idx == -1) || (subc_idx == sit.count)) {
+			const char *uname = unm_name(&group1, or_empty(pcb_attribute_get(&subc->Attributes, "footprint")), subc);
+			res |= io_kicad_legacy_write_subc(FP, PCB, subc, 0, 0, uname);
+		}
 	}
 	unm_uninit(&group1);
 

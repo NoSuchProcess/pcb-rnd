@@ -87,8 +87,10 @@ struct pcb_plug_io_s {
 	/* Write the idxth subcircuit from buffer to a file. Return 0 on success. */
 	int (*write_buffer_subc)(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff, long idx);
 
-	/* Write subcirciots from 'e' to a library file. Return 0 on success. */
-	int (*write_footprint)(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *e);
+	/* Write subcircuit(s) from 'e' to a library file. If subc_idx is -1, write
+	   all subcircuits as a library (if the format allows), else write only
+	   th sucb_idxth subcircuit as a footprint. Return 0 on success. */
+	int (*write_footprint)(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *e, long subc_idx);
 
 	/* Write PCB to f; there's a copy of the file we are going to
 	   "overwrite", named in old_filename and the new file name we are
@@ -126,7 +128,7 @@ extern pcb_plug_io_t *pcb_plug_io_chain;
 int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int load_settings, int ignore_missing);
 int pcb_parse_footprint(pcb_data_t *Ptr, const char *name, const char *fmt);
 int pcb_parse_font(pcb_font_t *Ptr, const char *Filename);
-int pcb_write_footprint_data(FILE *f, pcb_data_t *e, const char *fmt);
+int pcb_write_footprint_data(FILE *f, pcb_data_t *e, const char *fmt, long subc_idx);
 int pcb_write_font(pcb_font_t *Ptr, const char *Filename, const char *fmt);
 
 /********** common function used to be part of file.[ch] and friends **********/

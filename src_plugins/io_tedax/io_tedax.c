@@ -79,7 +79,7 @@ static fgw_error_t pcb_act_Savetedax(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (pcb_strcasecmp(type, "board-footprints") == 0) {
-		PCB_ACT_IRES(tedax_fp_save(PCB->Data, fname));
+		PCB_ACT_IRES(tedax_fp_save(PCB->Data, fname, -1));
 		return 0;
 	}
 
@@ -183,18 +183,18 @@ static int io_tedax_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const cha
 	return tedax_fp_load(Ptr, name, 0, NULL, 0);
 }
 
-static int io_tedax_write_element(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *dt)
+static int io_tedax_write_element(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *dt, long subc_idx)
 {
-	return tedax_fp_fsave(dt, f);
+	return tedax_fp_fsave(dt, f, subc_idx);
 }
 
-static int io_tedax_write_buffer_subc(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff, long idx)
+static int io_tedax_write_buffer_subc(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff, long subc_idx)
 {
-	if (idx != 0) {
+	if (subc_idx != 0) {
 		pcb_message(PCB_MSG_ERROR, "Only the first subcircuit cna be saved at the moment\n");
 		return -1;
 	}
-	return tedax_fp_fsave(buff->Data, f);
+	return tedax_fp_fsave(buff->Data, f, subc_idx);
 }
 
 static int io_tedax_test_parse(pcb_plug_io_t *plug_ctx, pcb_plug_iot_t typ, const char *Filename, FILE *f)

@@ -30,7 +30,7 @@
 #include <stdio.h>
 #include "data.h"
 
-int io_kicad_write_element(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data);
+int io_kicad_write_element(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data, long subc_idx);
 int io_kicad_write_buffer_subc(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buff, long idx);
 int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency);
 

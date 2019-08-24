@@ -672,7 +672,7 @@ TODO(": this should be a safe lookup, merged with kicad_sexpr_layer_to_text()")
 	kicad_print_pstks(ctx, data, ind, dx, dy);
 }
 
-static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, pcb_coord_t dx, pcb_coord_t dy)
+static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, pcb_coord_t dx, pcb_coord_t dy, long subc_idx)
 {
 	gdl_iterator_t sit;
 	pcb_subc_t *subc;
@@ -694,6 +694,9 @@ TODO(": revise this for subc")
 TODO(": get this from data table (see also #1)")
 		int silkLayer = 21; /* hard coded default, 20 is bottom silk */
 		int copperLayer = 15; /* hard coded default, 0 is bottom copper */
+
+		if ((subc_idx >= 0) && (subc_idx != sit.count))
+			continue;
 
 		/* elementlist_dedup_skip(ededup, element);  */
 TODO(": why?")
@@ -788,7 +791,7 @@ TODO(": do not hardwire the drill size here - does kicad support only one size, 
 }
 
 /* writes element data in kicad legacy format for use in a .mod library */
-int io_kicad_write_element(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
+int io_kicad_write_element(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data, long subc_idx)
 {
 	wctx_t wctx;
 
@@ -808,7 +811,7 @@ TODO(": make this initialization a common function with write_kicad_layout()")
 	if (kicad_map_layers(&wctx) != 0)
 		return -1;
 
-	return kicad_print_subcs(&wctx, Data, 0, 0, 0);
+	return kicad_print_subcs(&wctx, Data, 0, 0, 0, subc_idx);
 }
 
 static int write_kicad_equipotential_netlists(FILE *FP, pcb_board_t *Layout, pcb_cardinal_t indentation)
@@ -970,7 +973,7 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, c
 	/* module descriptions come next */
 	fputs("\n", FP);
 
-	kicad_print_subcs(&wctx, PCB->Data, baseSExprIndent, wctx.ox, wctx.oy);
+	kicad_print_subcs(&wctx, PCB->Data, baseSExprIndent, wctx.ox, wctx.oy, -1);
 	kicad_print_data(&wctx, PCB->Data, baseSExprIndent, wctx.ox, wctx.oy);
 
 	kicad_fixup_outline(&wctx, baseSExprIndent);

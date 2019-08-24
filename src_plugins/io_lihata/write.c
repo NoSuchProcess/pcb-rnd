@@ -1657,13 +1657,13 @@ static int plug2ver(const pcb_plug_io_t *ctx)
 	return 0;
 }
 
-static int io_lihata_dump_1st_subc(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *data, int enforce1)
+static int io_lihata_dump_nth_subc(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *data, int enforce1, long subc_idx)
 {
 	int res;
 	lht_doc_t *doc;
 	pcb_subc_t *sc;
 
-	if ((enforce1) && (pcb_subclist_length(&data->subc)) > 1) {
+	if ((subc_idx < 0) && (enforce1) && (pcb_subclist_length(&data->subc)) > 1) {
 		pcb_message(PCB_MSG_ERROR, "Can't save more than one subcircuit from a buffer\n");
 		return -1;
 	}
@@ -1682,7 +1682,14 @@ static int io_lihata_dump_1st_subc(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *data
 		wrver = 1;
 
 	/* bump version if features require */
-	sc = pcb_subclist_first(&data->subc);
+	if (subc_idx == -1)
+		sc = pcb_subclist_first(&data->subc);
+	else
+		sc = pcb_subclist_nth(&data->subc, subc_idx);
+
+	if (sc == NULL)
+		return -1;
+
 TODO("subc: for subc-in-subc this should be recursive")
 	if (padstacklist_first(&sc->data->padstack) != NULL) {
 		if (wrver < 4) {
@@ -1745,12 +1752,12 @@ int io_lihata_write_buffer_subc(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff,
 		return -1;
 	}
 
-	return io_lihata_dump_1st_subc(ctx, f, buff->Data, 1);
+	return io_lihata_dump_nth_subc(ctx, f, buff->Data, 1, idx);
 }
 
-int io_lihata_write_element(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *dt)
+int io_lihata_write_element(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *dt, long subc_idx)
 {
-	return io_lihata_dump_1st_subc(ctx, f, dt, 1);
+	return io_lihata_dump_nth_subc(ctx, f, dt, 1, subc_idx);
 }
 
 typedef struct {

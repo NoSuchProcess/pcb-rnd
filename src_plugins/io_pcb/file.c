@@ -420,7 +420,7 @@ static void WritePCBNetlistPatchData(FILE * FP)
 	}
 }
 
-int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
+int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data, long subc_idx)
 {
 	gdl_iterator_t sit, it;
 	pcb_subc_t *sc;
@@ -435,6 +435,9 @@ int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data)
 		pcb_text_t *trefdes;
 		pcb_pstk_t *ps;
 		pcb_any_obj_t fobj;
+
+		if ((subc_idx != -1) && (subc_idx != sit.count))
+			continue;
 
 		pcb_subc_get_origin(sc, &ox, &oy);
 		trefdes = pcb_subc_get_refdes_text(sc);
@@ -703,7 +706,7 @@ static void WriteLayers(FILE *FP, pcb_data_t *data)
 	}
 }
 
-int io_pcb_WriteBuffer_subc(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buff, long idx)
+int io_pcb_WriteBuffer_subc(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buff, long subc_idx)
 {
 	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
 
@@ -711,12 +714,12 @@ int io_pcb_WriteBuffer_subc(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buff, lo
 		pcb_message(PCB_MSG_ERROR, "Buffer has no subcircuits!\n");
 		return -1;
 	}
-	if (idx != 0) {
+	if (subc_idx != 0) {
 		pcb_message(PCB_MSG_ERROR, "Only the first subcircuit can be saved at the moment\n");
 		return -1;
 	}
 
-	io_pcb_WriteSubcData(ctx, FP, buff->Data);
+	io_pcb_WriteSubcData(ctx, FP, buff->Data, subc_idx);
 
 	return 0;
 }
@@ -733,7 +736,7 @@ int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, con
 	WritePCBFontData(FP);
 	WriteAttributeList(FP, &PCB->Attributes, "", NULL);
 	WriteViaData(FP, PCB->Data);
-	io_pcb_WriteSubcData(ctx, FP, PCB->Data);
+	io_pcb_WriteSubcData(ctx, FP, PCB->Data, -1);
 	WritePCBRatData(FP);
 	WriteLayers(FP, PCB->Data);
 	WritePCBNetlistData(FP);
