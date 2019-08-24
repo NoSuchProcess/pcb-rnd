@@ -382,15 +382,11 @@ static int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt, pcb_bo
 	if (p != NULL) {
 		if (subc_only) {
 			long avail = pcb_subclist_length(&buff->Data->subc);
-			if (subc_idx >= 0) {
-				if (subc_idx >= avail) {
+			if ((subc_idx >= 0) && (subc_idx >= avail)) {
 					pcb_message(PCB_MSG_ERROR, "pcb_write_buffer: subc index out of range");
 					return -1;
-				}
-				
 			}
-/*			else*/
-				res = p->write_buffer_subc(p, f, buff, 0);
+			return p->write_footprint(p, f, buff->Data, subc_idx);
 		}
 		else
 			res = p->write_buffer(p, f, buff);
