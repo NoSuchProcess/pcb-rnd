@@ -714,14 +714,10 @@ int io_pcb_WriteBuffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff, pcb_bo
 		}
 	}
 	else {
-		LayersFixup();
-		WriteViaData(FP, buff->Data);
+		return -1;
 	}
 
 	io_pcb_WriteSubcData(ctx, FP, buff->Data);
-
-	if (!elem_only)
-		WriteLayers(FP, buff->Data);
 
 	return 0;
 }
