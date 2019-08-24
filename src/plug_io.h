@@ -126,7 +126,6 @@ extern pcb_plug_io_t *pcb_plug_io_chain;
 int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int load_settings, int ignore_missing);
 int pcb_parse_footprint(pcb_data_t *Ptr, const char *name, const char *fmt);
 int pcb_parse_font(pcb_font_t *Ptr, const char *Filename);
-int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt, pcb_bool subc_only);
 int pcb_write_footprint_data(FILE *f, pcb_data_t *e, const char *fmt);
 int pcb_write_font(pcb_font_t *Ptr, const char *Filename, const char *fmt);
 
@@ -140,11 +139,11 @@ void pcb_save_in_tmp(void);
 void pcb_emergency_save(void);
 void pcb_disable_emergency_save(void);
 int pcb_revert_pcb(void);
-int pcb_save_buffer_subcs(const char *, const char *fmt);
+int pcb_save_buffer_subcs(const char *, const char *fmt, long subc_idx);
 int pcb_save_buffer(const char *Filename, const char *fmt);
 void pcb_print_quoted_string_(FILE *, const char *); /* without wrapping in "" */
 void pcb_print_quoted_string(FILE *, const char *); /* with wrapping in "" */
-int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool emergency, pcb_bool subc_only);
+int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool emergency, pcb_bool subc_only, long subc_idx);
 void pcb_set_design_dir(const char *fn);
 int pcb_load_buffer(pcb_hidlib_t *hidlib, pcb_buffer_t *buff, const char *fn, const char *fmt);
 
