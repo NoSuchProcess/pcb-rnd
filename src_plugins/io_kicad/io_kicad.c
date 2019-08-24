@@ -79,7 +79,8 @@ int pplg_init_io_kicad(void)
 	io_kicad.parse_pcb = io_kicad_read_pcb;
 	io_kicad.parse_footprint = io_kicad_parse_element;
 	io_kicad.parse_font = NULL;
-	io_kicad.write_buffer = io_kicad_write_buffer;
+	io_kicad.write_buffer = NULL;
+	io_kicad.write_buffer_subc = io_kicad_write_buffer_subc;
 	io_kicad.write_footprint = io_kicad_write_element;
 	io_kicad.write_pcb = io_kicad_write_pcb;
 	io_kicad.default_fmt = "kicad";

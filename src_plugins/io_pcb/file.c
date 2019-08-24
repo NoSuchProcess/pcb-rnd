@@ -703,17 +703,16 @@ static void WriteLayers(FILE *FP, pcb_data_t *data)
 	}
 }
 
-int io_pcb_WriteBuffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff, pcb_bool elem_only)
+int io_pcb_WriteBuffer_subc(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buff, long idx)
 {
 	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
 
-	if (elem_only) {
-		if (pcb_subclist_length(&buff->Data->subc) == 0) {
-			pcb_message(PCB_MSG_ERROR, "Buffer has no subcircuits!\n");
-			return -1;
-		}
+	if (pcb_subclist_length(&buff->Data->subc) == 0) {
+		pcb_message(PCB_MSG_ERROR, "Buffer has no subcircuits!\n");
+		return -1;
 	}
-	else {
+	if (idx != 0) {
+		pcb_message(PCB_MSG_ERROR, "Only the first subcircuit can be saved at the moment\n");
 		return -1;
 	}
 

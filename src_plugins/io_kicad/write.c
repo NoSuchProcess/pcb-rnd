@@ -45,7 +45,7 @@
 static int force_center = 0;
 
 /* writes the buffer to file */
-int io_kicad_write_buffer(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buff, pcb_bool elem_only)
+int io_kicad_write_buffer_subc(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buff, long idx)
 {
 	pcb_message(PCB_MSG_ERROR, "can't save buffer in s-expr yet, please use kicad legacy for this\n");
 	return -1;

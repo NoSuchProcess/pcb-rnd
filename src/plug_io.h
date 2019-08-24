@@ -37,7 +37,8 @@ typedef enum { /* I/O type bitmask; each bit is one thing to save or load, not a
 	PCB_IOT_PCB        = 1,
 	PCB_IOT_FOOTPRINT  = 2,
 	PCB_IOT_FONT       = 4,
-	PCB_IOT_BUFFER     = 8
+	PCB_IOT_BUFFER     = 8,
+	PCB_IOT_BUFFER_SUBC= 16
 } pcb_plug_iot_t;
 
 /**************************** API definition *********************************/
@@ -78,7 +79,10 @@ struct pcb_plug_io_s {
 
 
 	/* Write the buffer to a file. Return 0 on success. */
-	int (*write_buffer)(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff, pcb_bool elem_only);
+	int (*write_buffer)(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff);
+
+	/* Write the idxth subcircuit from buffer to a file. Return 0 on success. */
+	int (*write_buffer_subc)(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff, long idx);
 
 	/* Write element data to a file. Return 0 on success. */
 	int (*write_footprint)(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *e);

@@ -377,10 +377,13 @@ static pcb_plug_io_t *find_writer(pcb_plug_iot_t typ, const char *fmt)
 int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt, pcb_bool elem_only)
 {
 	int res/*, newfmt = 0*/;
-	pcb_plug_io_t *p = find_writer(PCB_IOT_BUFFER, fmt);
+	pcb_plug_io_t *p = find_writer(elem_only ? PCB_IOT_BUFFER_SUBC : PCB_IOT_BUFFER, fmt);
 
 	if (p != NULL) {
-		res = p->write_buffer(p, f, buff, elem_only);
+		if (elem_only)
+			res = p->write_buffer_subc(p, f, buff, 0);
+		else
+			res = p->write_buffer(p, f, buff);
 		/*newfmt = 1;*/
 	}
 

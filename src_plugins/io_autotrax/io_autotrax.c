@@ -79,6 +79,7 @@ int pplg_init_io_autotrax(void)
 	io_autotrax.parse_footprint = NULL;
 	io_autotrax.parse_font = NULL;
 	io_autotrax.write_buffer = NULL;
+	io_autotrax.write_buffer_subc = NULL;
 	io_autotrax.write_footprint = NULL;
 	io_autotrax.write_pcb = io_autotrax_write_pcb;
 	io_autotrax.default_fmt = "Protel autotrax";
