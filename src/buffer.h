@@ -34,13 +34,12 @@
 #include "obj_common.h"
 #include <libfungw/fungw.h>
 
-struct pcb_buffer_s {								/* information about the paste buffer */
-	pcb_coord_t X, Y;										/* offset */
+struct pcb_buffer_s {     /* information about the paste buffer */
+	pcb_coord_t X, Y;       /* offset */
 	pcb_box_t BoundingBox;
 	pcb_box_t bbox_naked;
-	pcb_data_t *Data;							/* data; not all members of pcb_board_t */
-	int from_outside; /* data is coming from outside of the current board (lib, loaded board) */
-	/* are used */
+	pcb_data_t *Data;       /* data; not all members of pcb_board_t */
+	int from_outside;       /* data is coming from outside of the current board (lib, loaded board) */
 };
 
 /* Recalculates the bounding box of the buffer; returns 0 on success */
