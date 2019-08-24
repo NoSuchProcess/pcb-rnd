@@ -1714,8 +1714,26 @@ TODO("subc: for subc-in-subc this should be recursive")
 
 int io_lihata_write_buffer(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff)
 {
-	pcb_message(PCB_MSG_ERROR, "Can't save full buffer (yet), only a single subcircuits from a buffer\n");
-	return -1;
+	int res;
+	lht_doc_t *doc;
+
+	wrver = plug2ver(ctx);
+	if (wrver < 6)
+		wrver = 6;
+
+	io_lihata_full_tree = 1;
+	doc = lht_dom_init();
+	doc->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-buffer-v6");
+
+	lht_dom_list_append(doc->root, build_data(buff->Data));
+
+	clean_invalid(doc->root); /* remove invalid nodes placed for persistency */
+	res = lht_dom_export(doc->root, f, "");
+
+	lht_dom_uninit(doc);
+	io_lihata_full_tree = 0;
+	return res;
+
 }
 
 int io_lihata_write_buffer_subc(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff, long idx)
