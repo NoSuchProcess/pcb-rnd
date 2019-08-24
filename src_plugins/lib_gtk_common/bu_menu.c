@@ -218,8 +218,8 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 
 		g_signal_connect(G_OBJECT(action), "activate", menu->action_cb, (gpointer)n_action);
 		g_object_set_data(G_OBJECT(action), "resource", (gpointer)sub_res);
-		gtk_activatable_set_use_action_appearance(GTK_ACTIVATABLE(item), FALSE);
-		gtk_activatable_set_related_action(GTK_ACTIVATABLE(item), action);
+		g_object_set(item, "use-action-appearance", FALSE, NULL);
+		g_object_set(item, "related-action", action, NULL);
 		ins_menu(item, shell, ins_after);
 		menu->actions = g_list_append(menu->actions, action);
 		sub_res->user_data = handle_alloc(item, item, action);
