@@ -33,6 +33,7 @@
 #define gtkc_widget_get_window(w) gtk_widget_get_window(w)
 #define gtkc_widget_get_allocation(w, a) gtk_widget_get_allocation(w, a)
 #define gtkc_dialog_get_content_area(d)  gtk_widget_get_content_area(d)
+#define gtk_combo_box_entry_new_text()   gtk_combo_box_text_new_with_entry()
 
 typedef GdkRGBA pcb_gtk_color_t;
 
@@ -187,6 +188,7 @@ do { \
 } while(0) \
 
 #define gtkc_dialog_get_content_area(d)  ((d)->vbox)
+#define gtkc_combo_box_entry_new_text()  gtk_combo_box_entry_new_text()
 
 typedef GdkColor pcb_gtk_color_t;
 

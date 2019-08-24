@@ -132,7 +132,7 @@ void ghid_command_combo_box_entry_create(pcb_gtk_command_t *ctx, void (*hide_sta
 {
 	ctx->status_ctx = status_ctx;
 	ctx->hide_status = hide_status;
-	ctx->command_combo_box = gtk_combo_box_text_new_with_entry();
+	ctx->command_combo_box = gtkc_combo_box_entry_new_text();
 	ctx->command_entry = GTK_ENTRY(gtk_bin_get_child(GTK_BIN(ctx->command_combo_box)));
 
 	gtk_entry_set_width_chars(ctx->command_entry, 40);
