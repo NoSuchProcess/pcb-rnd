@@ -922,39 +922,8 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			break;
 
 		case F_Save:
-			free_name = pcb_false;
-			if (argc <= 1) {
-				name = pcb_gui->fileselect(pcb_gui, "Save Paste Subcircuit Buffer As ...",
-					"Choose a file to save subcircuits from the\npaste buffer to.\n",
-					default_file, ".fp", NULL, "footprint", 0, NULL);
-
-				if (default_file) {
-					free(default_file);
-					default_file = NULL;
-				}
-				if (name && *name) {
-					default_file = pcb_strdup(name);
-				}
-				free_name = pcb_true;
-			}
-
-			else
-				name = sbufnum;
-
-			{
-				FILE *exist;
-
-				if ((!force) && ((exist = pcb_fopen(&PCB->hidlib, name, "r")))) {
-					fclose(exist);
-					if (pcb_hid_message_box("warning", "Buffer: overwrite file", "File exists!  Ok to overwrite?", "cancel", 0, "yes", 1, NULL) == 1)
-						pcb_save_buffer_subcs(name, fmt);
-				}
-				else
-					pcb_save_buffer_subcs(name, fmt);
-
-				if (free_name && name)
-					free((char*)name);
-			}
+			name = sbufnum;
+			pcb_save_buffer_subcs(name, fmt);
 			break;
 
 		case F_ToLayout:
