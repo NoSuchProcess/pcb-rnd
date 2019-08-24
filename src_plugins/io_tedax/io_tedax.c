@@ -188,15 +188,6 @@ static int io_tedax_write_element(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *dt, l
 	return tedax_fp_fsave(dt, f, subc_idx);
 }
 
-static int io_tedax_write_buffer_subc(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff, long subc_idx)
-{
-	if (subc_idx != 0) {
-		pcb_message(PCB_MSG_ERROR, "Only the first subcircuit cna be saved at the moment\n");
-		return -1;
-	}
-	return tedax_fp_fsave(buff->Data, f, subc_idx);
-}
-
 static int io_tedax_test_parse(pcb_plug_io_t *plug_ctx, pcb_plug_iot_t typ, const char *Filename, FILE *f)
 {
 	char line[515], *s;
@@ -258,7 +249,6 @@ int pplg_init_io_tedax(void)
 	io_tedax.parse_footprint = io_tedax_parse_element;
 	io_tedax.parse_font = NULL;
 	io_tedax.write_buffer = NULL;
-	io_tedax.write_buffer_subc = io_tedax_write_buffer_subc;
 	io_tedax.write_footprint = io_tedax_write_element;
 	io_tedax.write_pcb = NULL;
 	io_tedax.default_fmt = "tEDAx";
