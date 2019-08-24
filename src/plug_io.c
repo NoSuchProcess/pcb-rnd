@@ -706,6 +706,36 @@ int pcb_revert_pcb(void)
 	return real_load_pcb(PCB->hidlib.filename, NULL, pcb_true, pcb_true, 1);
 }
 
+int pcb_load_buffer(pcb_hidlib_t *hidlib, pcb_buffer_t *buff, const char *fn, const char *fmt)
+{
+	int res = -1, len, n;
+	pcb_find_io_t available[PCB_IO_MAX_FORMATS];
+	int accepts[PCB_IO_MAX_FORMATS]; /* test-parse output */
+	int accept_total = 0;
+	FILE *ft;
+
+	ft = pcb_fopen(hidlib, fn, "r");
+	len = pcb_test_parse_all(ft, fn, fmt, PCB_IOT_BUFFER, available, accepts, &accept_total, sizeof(available)/sizeof(available[0]), 0, 0);
+	if (ft != NULL)
+		fclose(ft);
+	if (len < 0)
+		return -1;
+
+	/* try all plugins that said it could handle the file */
+	for(n = 0; n < len; n++) {
+		if ((available[n].plug->parse_buffer == NULL) || (!accepts[n])) /* can't parse or doesn't want to parse this file */
+			continue;
+		res = available[n].plug->parse_buffer(available[n].plug, buff, fn);
+		if (res == 0)
+			break;
+	}
+
+	plug_io_err(hidlib, res, "load buffer", fn);
+	return res;
+
+}
+
+
 void pcb_print_quoted_string_(FILE * FP, const char *S)
 {
 	const char *start;

@@ -77,6 +77,9 @@ struct pcb_plug_io_s {
 	/* Attempt to load fonts from a file. Return 0 on success. */
 	int (*parse_font)(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename);
 
+	/* Attempt to load a complete buffer from a file. Return 0 on success. */
+	int (*parse_buffer)(pcb_plug_io_t *ctx, pcb_buffer_t *buff, const char *filename);
+
 
 	/* Write the buffer to a file. Return 0 on success. */
 	int (*write_buffer)(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff);
@@ -143,6 +146,7 @@ void pcb_print_quoted_string_(FILE *, const char *); /* without wrapping in "" *
 void pcb_print_quoted_string(FILE *, const char *); /* with wrapping in "" */
 int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool emergency, pcb_bool elem_only);
 void pcb_set_design_dir(const char *fn);
+int pcb_load_buffer(pcb_hidlib_t *hidlib, pcb_buffer_t *buff, const char *fn, const char *fmt);
 
 /********** helpers **********/
 
