@@ -44,13 +44,6 @@
 /* When non-zero, introduce an offset to move the whole board to the center of the page */
 static int force_center = 0;
 
-/* writes the buffer to file */
-int io_kicad_write_buffer_subc(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buff, long idx)
-{
-	pcb_message(PCB_MSG_ERROR, "can't save buffer in s-expr yet, please use kicad legacy for this\n");
-	return -1;
-}
-
 /* if implicit outline needs to be drawn, use lines of this thickness */
 #define KICAD_OUTLINE_THICK (PCB_MIL_TO_COORD(10))
 
