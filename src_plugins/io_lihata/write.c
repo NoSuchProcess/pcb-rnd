@@ -1745,16 +1745,6 @@ int io_lihata_write_buffer(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff)
 
 }
 
-int io_lihata_write_buffer_subc(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff, long idx)
-{
-	if (idx != 0) {
-		pcb_message(PCB_MSG_ERROR, "Only the first subcircuit can be saved at the moment\n");
-		return -1;
-	}
-
-	return io_lihata_dump_nth_subc(ctx, f, buff->Data, 1, idx);
-}
-
 int io_lihata_write_element(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *dt, long subc_idx)
 {
 	return io_lihata_dump_nth_subc(ctx, f, dt, 1, subc_idx);
