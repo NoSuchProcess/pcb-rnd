@@ -2378,6 +2378,41 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 	return res;
 }
 
+int io_lihata_parse_buffer(pcb_plug_io_t *ctx, pcb_buffer_t *buff, const char *filename)
+{
+	int res;
+	char *errmsg = NULL, *realfn;
+	lht_doc_t *doc = NULL;
+
+	realfn = pcb_fopen_check(NULL, filename, "r");
+	if (realfn != NULL)
+		doc = lht_dom_load(realfn, &errmsg);
+	free(realfn);
+
+	if (doc == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Error loading '%s': %s\n", filename, errmsg);
+		free(errmsg);
+		return -1;
+	}
+
+	if ((doc->root->type == LHT_HASH) && (strncmp(doc->root->name, "pcb-rnd-buffer-v", 16) == 0)) {
+		lht_node_t *datand = lht_dom_hash_get(doc->root, "data");
+		if (datand == NULL) {
+			iolht_error(doc->root, "Error loading '%s': buffer has no data\n", filename);
+			res = -1;
+		}
+		else
+			res = parse_data(PCB, buff->Data, datand, 32);
+	}
+	else {
+		iolht_error(doc->root, "Error loading '%s': not a pcb-rnd paste buffer\n", filename);
+		res = -1;
+	}
+
+	lht_dom_uninit(doc);
+	free(errmsg);
+	return res;
+}
 
 
 typedef enum {
@@ -2392,6 +2427,8 @@ void test_parse_ev(lht_parse_t *ctx, lht_event_t ev, lht_node_type_t nt, const c
 	test_parse_t *state = ctx->user_data;
 	if (ev == LHT_OPEN) {
 		if ((nt == LHT_HASH) && (strncmp(name, "pcb-rnd-board-v", 15) == 0))
+			*state = TPS_GOOD;
+		else if ((nt == LHT_HASH) && (strncmp(name, "pcb-rnd-buffer-v", 16) == 0))
 			*state = TPS_GOOD;
 		else if ((nt == LHT_LIST) && (strncmp(name, "pcb-rnd-subcircuit-v", 20) == 0))
 			*state = TPS_GOOD;
