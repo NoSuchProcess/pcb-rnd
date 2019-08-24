@@ -1,0 +1,13 @@
+ha:lht_tree_doc { ha:roots {
+
+	ha:pcb-rnd-buffer-v* {
+		type=li
+		desc={buffer file containing a whole paste buffer with bound layers}
+		ver = {>=6}
+		li:children {
+			ha:x          = { valtype=coord;   desc={buffer origin point, X coordinate}}
+			ha:y          = { valtype=coord;   desc={buffer origin point, Y coordinate}}
+			sy:data       = {/lht_tree_doc/comm/data}
+		}
+	}
+}}

@@ -50,53 +50,53 @@
 <path fill="none" stroke="#000000" d="M172.6811,-733.1446C144.0309,-716.4848 106.3347,-694.5648 78.3783,-678.3084"/>
 <polygon fill="#000000" stroke="#000000" points="80.0717,-675.2444 69.6676,-673.2432 76.5529,-681.2957 80.0717,-675.2444"/>
 </g>
-<!-- dup17_/lht_tree_doc/comm/attributes -->
+<!-- dup18_/lht_tree_doc/comm/attributes -->
 <g id="node4" class="node">
-<title>dup17_/lht_tree_doc/comm/attributes</title>
+<title>dup18_/lht_tree_doc/comm/attributes</title>
 <g id="a_node4"><a xlink:href="tree.html#/lht_tree_doc/comm/attributes" xlink:title=" a hash of attribute key=value pairs ">
 <ellipse fill="none" stroke="#000000" cx="155.598" cy="-655.758" rx="58.8803" ry="27.6545"/>
 <text text-anchor="middle" x="155.598" y="-660.058" font-family="Times,serif" font-size="14.00" fill="#000000">ha:attributes</text>
 </a>
 </g>
 </g>
-<!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;subcircuit&#45;v*/children/subc.ID&#45;&gt;dup17_/lht_tree_doc/comm/attributes -->
+<!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;subcircuit&#45;v*/children/subc.ID&#45;&gt;dup18_/lht_tree_doc/comm/attributes -->
 <g id="edge3" class="edge">
-<title>/lht_tree_doc/roots/pcb&#45;rnd&#45;subcircuit&#45;v*/children/subc.ID&#45;&gt;dup17_/lht_tree_doc/comm/attributes</title>
+<title>/lht_tree_doc/roots/pcb&#45;rnd&#45;subcircuit&#45;v*/children/subc.ID&#45;&gt;dup18_/lht_tree_doc/comm/attributes</title>
 <path fill="none" stroke="#000000" d="M194.1282,-722.2135C188.3693,-712.2807 182.1023,-701.4716 176.3283,-691.5128"/>
 <polygon fill="#000000" stroke="#000000" points="179.2368,-689.5512 171.193,-682.6557 173.181,-693.0623 179.2368,-689.5512"/>
 </g>
-<!-- dup18_/lht_tree_doc/comm/flags_subcircuit -->
+<!-- dup19_/lht_tree_doc/comm/flags_subcircuit -->
 <g id="node6" class="node">
-<title>dup18_/lht_tree_doc/comm/flags_subcircuit</title>
+<title>dup19_/lht_tree_doc/comm/flags_subcircuit</title>
 <g id="a_node6"><a xlink:href="tree.html#/lht_tree_doc/comm/flags_subcircuit" xlink:title="flag bits of a subcircuit">
 <ellipse fill="none" stroke="#000000" cx="273.598" cy="-655.758" rx="41.9398" ry="27.6545"/>
 <text text-anchor="middle" x="273.598" y="-660.058" font-family="Times,serif" font-size="14.00" fill="#000000">ha:flags</text>
 </a>
 </g>
 </g>
-<!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;subcircuit&#45;v*/children/subc.ID&#45;&gt;dup18_/lht_tree_doc/comm/flags_subcircuit -->
+<!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;subcircuit&#45;v*/children/subc.ID&#45;&gt;dup19_/lht_tree_doc/comm/flags_subcircuit -->
 <g id="edge5" class="edge">
-<title>/lht_tree_doc/roots/pcb&#45;rnd&#45;subcircuit&#45;v*/children/subc.ID&#45;&gt;dup18_/lht_tree_doc/comm/flags_subcircuit</title>
+<title>/lht_tree_doc/roots/pcb&#45;rnd&#45;subcircuit&#45;v*/children/subc.ID&#45;&gt;dup19_/lht_tree_doc/comm/flags_subcircuit</title>
 <path fill="none" stroke="#000000" d="M235.0677,-722.2135C241.0399,-711.913 247.5584,-700.67 253.5069,-690.4103"/>
 <polygon fill="#000000" stroke="#000000" points="256.5715,-692.1024 258.5595,-681.6957 250.5158,-688.5913 256.5715,-692.1024"/>
 </g>
-<!-- dup19_/lht_tree_doc/roots/pcb&#45;rnd&#45;subcircuit&#45;v*/children/subc.ID/children/data -->
+<!-- dup20_/lht_tree_doc/roots/pcb&#45;rnd&#45;subcircuit&#45;v*/children/subc.ID/children/data -->
 <g id="node14" class="node">
-<title>dup19_/lht_tree_doc/roots/pcb&#45;rnd&#45;subcircuit&#45;v*/children/subc.ID/children/data</title>
+<title>dup20_/lht_tree_doc/roots/pcb&#45;rnd&#45;subcircuit&#45;v*/children/subc.ID/children/data</title>
 <g id="a_node14"><a xlink:href="data.svg" xlink:title="data &#45;&gt;\n\n\n">
 <text text-anchor="middle" x="361.598" y="-668.058" font-family="Times,serif" font-size="14.00" fill="#000000">data &#45;&gt;</text>
 </a>
 </g>
 </g>
-<!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;subcircuit&#45;v*/children/subc.ID&#45;&gt;dup19_/lht_tree_doc/roots/pcb&#45;rnd&#45;subcircuit&#45;v*/children/subc.ID/children/data -->
+<!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;subcircuit&#45;v*/children/subc.ID&#45;&gt;dup20_/lht_tree_doc/roots/pcb&#45;rnd&#45;subcircuit&#45;v*/children/subc.ID/children/data -->
 <g id="edge19" class="edge">
-<title>/lht_tree_doc/roots/pcb&#45;rnd&#45;subcircuit&#45;v*/children/subc.ID&#45;&gt;dup19_/lht_tree_doc/roots/pcb&#45;rnd&#45;subcircuit&#45;v*/children/subc.ID/children/data</title>
+<title>/lht_tree_doc/roots/pcb&#45;rnd&#45;subcircuit&#45;v*/children/subc.ID&#45;&gt;dup20_/lht_tree_doc/roots/pcb&#45;rnd&#45;subcircuit&#45;v*/children/subc.ID/children/data</title>
 <path fill="none" stroke="#000000" d="M254.1064,-731.5271C275.1923,-717.4916 301.4885,-699.726 324.598,-683.3351 324.7777,-683.2077 324.9578,-683.0798 325.1383,-682.9515"/>
 <polygon fill="#000000" stroke="#000000" points="327.3572,-685.6664 333.4168,-676.9755 323.2601,-679.9906 327.3572,-685.6664"/>
 </g>
-<!-- dup17_/lht_tree_doc/comm/attributes/children/attrib&#45;key -->
+<!-- dup18_/lht_tree_doc/comm/attributes/children/attrib&#45;key -->
 <g id="node5" class="node">
-<title>dup17_/lht_tree_doc/comm/attributes/children/attrib&#45;key</title>
+<title>dup18_/lht_tree_doc/comm/attributes/children/attrib&#45;key</title>
 <g id="a_node5"><a xlink:href="tree.html#/lht_tree_doc/comm/attributes/children/attrib-key" xlink:title="attribute value">
 <ellipse fill="none" stroke="#000000" cx="53.598" cy="-565.3107" rx="48.5816" ry="26.7407"/>
 <text text-anchor="middle" x="53.598" y="-569.1107" font-family="Times,serif" font-size="14.00" fill="#000000">attrib&#45;key</text>
@@ -104,15 +104,15 @@
 </a>
 </g>
 </g>
-<!-- dup17_/lht_tree_doc/comm/attributes&#45;&gt;dup17_/lht_tree_doc/comm/attributes/children/attrib&#45;key -->
+<!-- dup18_/lht_tree_doc/comm/attributes&#45;&gt;dup18_/lht_tree_doc/comm/attributes/children/attrib&#45;key -->
 <g id="edge4" class="edge">
-<title>dup17_/lht_tree_doc/comm/attributes&#45;&gt;dup17_/lht_tree_doc/comm/attributes/children/attrib&#45;key</title>
+<title>dup18_/lht_tree_doc/comm/attributes&#45;&gt;dup18_/lht_tree_doc/comm/attributes/children/attrib&#45;key</title>
 <path fill="none" stroke="#000000" d="M127.9953,-631.2817C115.3694,-620.0858 100.3009,-606.724 87.0374,-594.9628"/>
 <polygon fill="#000000" stroke="#000000" points="89.273,-592.2673 79.4687,-588.2513 84.6287,-597.5047 89.273,-592.2673"/>
 </g>
-<!-- dup18_/lht_tree_doc/comm/flags_subcircuit/children/found -->
+<!-- dup19_/lht_tree_doc/comm/flags_subcircuit/children/found -->
 <g id="node7" class="node">
-<title>dup18_/lht_tree_doc/comm/flags_subcircuit/children/found</title>
+<title>dup19_/lht_tree_doc/comm/flags_subcircuit/children/found</title>
 <g id="a_node7"><a xlink:href="tree.html#/lht_tree_doc/comm/flags_subcircuit/children/found" xlink:title="If set, this object has been found by FindConnection()">
 <ellipse fill="none" stroke="#000000" cx="154.598" cy="-565.3107" rx="33.8824" ry="26.7407"/>
 <text text-anchor="middle" x="154.598" y="-569.1107" font-family="Times,serif" font-size="14.00" fill="#000000">found</text>
@@ -120,15 +120,15 @@
 </a>
 </g>
 </g>
-<!-- dup18_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup18_/lht_tree_doc/comm/flags_subcircuit/children/found -->
+<!-- dup19_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup19_/lht_tree_doc/comm/flags_subcircuit/children/found -->
 <g id="edge6" class="edge">
-<title>dup18_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup18_/lht_tree_doc/comm/flags_subcircuit/children/found</title>
+<title>dup19_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup19_/lht_tree_doc/comm/flags_subcircuit/children/found</title>
 <path fill="none" stroke="#000000" d="M245.9979,-634.7802C228.4929,-621.4753 205.7578,-604.1953 187.3419,-590.1981"/>
 <polygon fill="#000000" stroke="#000000" points="189.2981,-587.2887 179.2188,-584.024 185.0623,-592.8617 189.2981,-587.2887"/>
 </g>
-<!-- dup18_/lht_tree_doc/comm/flags_subcircuit/children/selected -->
+<!-- dup19_/lht_tree_doc/comm/flags_subcircuit/children/selected -->
 <g id="node8" class="node">
-<title>dup18_/lht_tree_doc/comm/flags_subcircuit/children/selected</title>
+<title>dup19_/lht_tree_doc/comm/flags_subcircuit/children/selected</title>
 <g id="a_node8"><a xlink:href="tree.html#/lht_tree_doc/comm/flags_subcircuit/children/selected" xlink:title="Set when the object is selected.">
 <ellipse fill="none" stroke="#000000" cx="184.598" cy="-475.5706" rx="42.3529" ry="26.7407"/>
 <text text-anchor="middle" x="184.598" y="-479.3706" font-family="Times,serif" font-size="14.00" fill="#000000">selected</text>
@@ -136,15 +136,15 @@
 </a>
 </g>
 </g>
-<!-- dup18_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup18_/lht_tree_doc/comm/flags_subcircuit/children/selected -->
+<!-- dup19_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup19_/lht_tree_doc/comm/flags_subcircuit/children/selected -->
 <g id="edge7" class="edge">
-<title>dup18_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup18_/lht_tree_doc/comm/flags_subcircuit/children/selected</title>
+<title>dup19_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup19_/lht_tree_doc/comm/flags_subcircuit/children/selected</title>
 <path fill="none" stroke="#000000" d="M259.7669,-629.5592C253.7896,-618.1228 246.7663,-604.53 240.598,-592.1808 227.0148,-564.9868 212.1406,-533.9513 201.1376,-510.7382"/>
 <polygon fill="#000000" stroke="#000000" points="204.264,-509.1622 196.8237,-501.6195 197.9363,-512.1557 204.264,-509.1622"/>
 </g>
-<!-- dup18_/lht_tree_doc/comm/flags_subcircuit/children/drc -->
+<!-- dup19_/lht_tree_doc/comm/flags_subcircuit/children/drc -->
 <g id="node9" class="node">
-<title>dup18_/lht_tree_doc/comm/flags_subcircuit/children/drc</title>
+<title>dup19_/lht_tree_doc/comm/flags_subcircuit/children/drc</title>
 <g id="a_node9"><a xlink:href="tree.html#/lht_tree_doc/comm/flags_subcircuit/children/drc" xlink:title="Set for objects that fail DRC: flag like FOUND flag for DRC checking.">
 <ellipse fill="none" stroke="#000000" cx="237.598" cy="-385.8305" rx="27" ry="26.7407"/>
 <text text-anchor="middle" x="237.598" y="-389.6305" font-family="Times,serif" font-size="14.00" fill="#000000">drc</text>
@@ -152,15 +152,15 @@
 </a>
 </g>
 </g>
-<!-- dup18_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup18_/lht_tree_doc/comm/flags_subcircuit/children/drc -->
+<!-- dup19_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup19_/lht_tree_doc/comm/flags_subcircuit/children/drc -->
 <g id="edge9" class="edge">
-<title>dup18_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup18_/lht_tree_doc/comm/flags_subcircuit/children/drc</title>
+<title>dup19_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup19_/lht_tree_doc/comm/flags_subcircuit/children/drc</title>
 <path fill="none" stroke="#000000" d="M269.9145,-628.1395C263.3993,-579.2883 249.8418,-477.6346 242.5286,-422.8003"/>
 <polygon fill="#000000" stroke="#000000" points="245.9873,-422.2579 241.196,-412.8084 239.0488,-423.1833 245.9873,-422.2579"/>
 </g>
-<!-- dup18_/lht_tree_doc/comm/flags_subcircuit/children/lock -->
+<!-- dup19_/lht_tree_doc/comm/flags_subcircuit/children/lock -->
 <g id="node10" class="node">
-<title>dup18_/lht_tree_doc/comm/flags_subcircuit/children/lock</title>
+<title>dup19_/lht_tree_doc/comm/flags_subcircuit/children/lock</title>
 <g id="a_node10"><a xlink:href="tree.html#/lht_tree_doc/comm/flags_subcircuit/children/lock" xlink:title="Set for locked objects.">
 <ellipse fill="none" stroke="#000000" cx="274.598" cy="-296.0904" rx="28.0702" ry="26.7407"/>
 <text text-anchor="middle" x="274.598" y="-299.8904" font-family="Times,serif" font-size="14.00" fill="#000000">lock</text>
@@ -168,15 +168,15 @@
 </a>
 </g>
 </g>
-<!-- dup18_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup18_/lht_tree_doc/comm/flags_subcircuit/children/lock -->
+<!-- dup19_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup19_/lht_tree_doc/comm/flags_subcircuit/children/lock -->
 <g id="edge11" class="edge">
-<title>dup18_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup18_/lht_tree_doc/comm/flags_subcircuit/children/lock</title>
+<title>dup19_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup19_/lht_tree_doc/comm/flags_subcircuit/children/lock</title>
 <path fill="none" stroke="#000000" d="M274.1308,-627.9063C274.3187,-616.7931 274.506,-603.8819 274.598,-592.1808 275.3309,-498.9797 275.0256,-389.2715 274.7851,-333.1914"/>
 <polygon fill="#000000" stroke="#000000" points="278.2845,-333.0197 274.7397,-323.0355 271.2846,-333.051 278.2845,-333.0197"/>
 </g>
-<!-- dup18_/lht_tree_doc/comm/flags_subcircuit/children/nonetlist -->
+<!-- dup19_/lht_tree_doc/comm/flags_subcircuit/children/nonetlist -->
 <g id="node11" class="node">
-<title>dup18_/lht_tree_doc/comm/flags_subcircuit/children/nonetlist</title>
+<title>dup19_/lht_tree_doc/comm/flags_subcircuit/children/nonetlist</title>
 <g id="a_node11"><a xlink:href="tree.html#/lht_tree_doc/comm/flags_subcircuit/children/nonetlist" xlink:title="subcircuit is not on the netlist and should not interfere with the netlist ">
 <ellipse fill="none" stroke="#000000" cx="295.598" cy="-206.3503" rx="44.5955" ry="26.7407"/>
 <text text-anchor="middle" x="295.598" y="-210.1503" font-family="Times,serif" font-size="14.00" fill="#000000">nonetlist</text>
@@ -184,15 +184,15 @@
 </a>
 </g>
 </g>
-<!-- dup18_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup18_/lht_tree_doc/comm/flags_subcircuit/children/nonetlist -->
+<!-- dup19_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup19_/lht_tree_doc/comm/flags_subcircuit/children/nonetlist -->
 <g id="edge13" class="edge">
-<title>dup18_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup18_/lht_tree_doc/comm/flags_subcircuit/children/nonetlist</title>
+<title>dup19_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup19_/lht_tree_doc/comm/flags_subcircuit/children/nonetlist</title>
 <path fill="none" stroke="#000000" d="M287.3961,-629.712C304.2654,-595.3861 330.598,-532.6608 330.598,-475.5706 330.598,-475.5706 330.598,-475.5706 330.598,-385.8305 330.598,-335.5542 317.2037,-278.7961 306.9872,-242.8162"/>
 <polygon fill="#000000" stroke="#000000" points="310.2256,-241.4183 304.0705,-232.7948 303.5045,-243.3745 310.2256,-241.4183"/>
 </g>
-<!-- dup18_/lht_tree_doc/comm/flags_subcircuit/children/termname -->
+<!-- dup19_/lht_tree_doc/comm/flags_subcircuit/children/termname -->
 <g id="node12" class="node">
-<title>dup18_/lht_tree_doc/comm/flags_subcircuit/children/termname</title>
+<title>dup19_/lht_tree_doc/comm/flags_subcircuit/children/termname</title>
 <g id="a_node12"><a xlink:href="tree.html#/lht_tree_doc/comm/flags_subcircuit/children/termname" xlink:title="when set the names of pins are shown.">
 <ellipse fill="none" stroke="#000000" cx="327.598" cy="-116.6102" rx="50.8235" ry="26.7407"/>
 <text text-anchor="middle" x="327.598" y="-120.4102" font-family="Times,serif" font-size="14.00" fill="#000000">termname</text>
@@ -200,15 +200,15 @@
 </a>
 </g>
 </g>
-<!-- dup18_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup18_/lht_tree_doc/comm/flags_subcircuit/children/termname -->
+<!-- dup19_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup19_/lht_tree_doc/comm/flags_subcircuit/children/termname -->
 <g id="edge15" class="edge">
-<title>dup18_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup18_/lht_tree_doc/comm/flags_subcircuit/children/termname</title>
+<title>dup19_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup19_/lht_tree_doc/comm/flags_subcircuit/children/termname</title>
 <path fill="none" stroke="#000000" d="M296.3783,-632.4889C306.6519,-621.0538 318.3109,-606.6441 326.598,-592.1808 353.984,-544.3848 368.598,-530.6565 368.598,-475.5706 368.598,-475.5706 368.598,-475.5706 368.598,-296.0904 368.598,-243.5802 362.5416,-230.3701 349.598,-179.4802 347.3613,-170.6862 344.4287,-161.3763 341.4371,-152.6931"/>
 <polygon fill="#000000" stroke="#000000" points="344.7158,-151.4666 338.0684,-143.2167 338.1201,-153.8114 344.7158,-151.4666"/>
 </g>
-<!-- dup18_/lht_tree_doc/comm/flags_subcircuit/children/floater -->
+<!-- dup19_/lht_tree_doc/comm/flags_subcircuit/children/floater -->
 <g id="node13" class="node">
-<title>dup18_/lht_tree_doc/comm/flags_subcircuit/children/floater</title>
+<title>dup19_/lht_tree_doc/comm/flags_subcircuit/children/floater</title>
 <g id="a_node13"><a xlink:href="tree.html#/lht_tree_doc/comm/flags_subcircuit/children/floater" xlink:title="subc part can be moved after subc placing">
 <ellipse fill="none" stroke="#000000" cx="366.598" cy="-26.8701" rx="36.5405" ry="26.7407"/>
 <text text-anchor="middle" x="366.598" y="-30.6701" font-family="Times,serif" font-size="14.00" fill="#000000">floater</text>
@@ -216,17 +216,17 @@
 </a>
 </g>
 </g>
-<!-- dup18_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup18_/lht_tree_doc/comm/flags_subcircuit/children/floater -->
+<!-- dup19_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup19_/lht_tree_doc/comm/flags_subcircuit/children/floater -->
 <g id="edge17" class="edge">
-<title>dup18_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup18_/lht_tree_doc/comm/flags_subcircuit/children/floater</title>
+<title>dup19_/lht_tree_doc/comm/flags_subcircuit&#45;&gt;dup19_/lht_tree_doc/comm/flags_subcircuit/children/floater</title>
 <path fill="none" stroke="#000000" d="M304.7683,-637.0768C321.5675,-625.768 341.6498,-610.0867 355.598,-592.1808 390.3596,-547.5555 406.598,-532.1373 406.598,-475.5706 406.598,-475.5706 406.598,-475.5706 406.598,-206.3503 406.598,-155.4299 391.0697,-98.2873 379.3633,-62.4437"/>
 <polygon fill="#000000" stroke="#000000" points="382.6699,-61.2953 376.179,-52.9216 376.0313,-63.5155 382.6699,-61.2953"/>
 </g>
-<!-- dup18_/lht_tree_doc/comm/flags_subcircuit/children/found&#45;&gt;dup18_/lht_tree_doc/comm/flags_subcircuit/children/selected -->
-<!-- dup18_/lht_tree_doc/comm/flags_subcircuit/children/selected&#45;&gt;dup18_/lht_tree_doc/comm/flags_subcircuit/children/drc -->
-<!-- dup18_/lht_tree_doc/comm/flags_subcircuit/children/drc&#45;&gt;dup18_/lht_tree_doc/comm/flags_subcircuit/children/lock -->
-<!-- dup18_/lht_tree_doc/comm/flags_subcircuit/children/lock&#45;&gt;dup18_/lht_tree_doc/comm/flags_subcircuit/children/nonetlist -->
-<!-- dup18_/lht_tree_doc/comm/flags_subcircuit/children/nonetlist&#45;&gt;dup18_/lht_tree_doc/comm/flags_subcircuit/children/termname -->
-<!-- dup18_/lht_tree_doc/comm/flags_subcircuit/children/termname&#45;&gt;dup18_/lht_tree_doc/comm/flags_subcircuit/children/floater -->
+<!-- dup19_/lht_tree_doc/comm/flags_subcircuit/children/found&#45;&gt;dup19_/lht_tree_doc/comm/flags_subcircuit/children/selected -->
+<!-- dup19_/lht_tree_doc/comm/flags_subcircuit/children/selected&#45;&gt;dup19_/lht_tree_doc/comm/flags_subcircuit/children/drc -->
+<!-- dup19_/lht_tree_doc/comm/flags_subcircuit/children/drc&#45;&gt;dup19_/lht_tree_doc/comm/flags_subcircuit/children/lock -->
+<!-- dup19_/lht_tree_doc/comm/flags_subcircuit/children/lock&#45;&gt;dup19_/lht_tree_doc/comm/flags_subcircuit/children/nonetlist -->
+<!-- dup19_/lht_tree_doc/comm/flags_subcircuit/children/nonetlist&#45;&gt;dup19_/lht_tree_doc/comm/flags_subcircuit/children/termname -->
+<!-- dup19_/lht_tree_doc/comm/flags_subcircuit/children/termname&#45;&gt;dup19_/lht_tree_doc/comm/flags_subcircuit/children/floater -->
 </g>
 </svg>

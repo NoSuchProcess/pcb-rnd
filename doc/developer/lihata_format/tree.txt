@@ -76,6 +76,14 @@ ha:pcb-rnd-board-v*            The full, self-contained description of a printed
  ha:attributes                 a hash of attribute key=value pairs
   attrib-key        string     attribute value
 
+li:pcb-rnd-buffer-v*
+
+type:name             value ver description
+li:pcb-rnd-buffer-v*        >=6 buffer file containing a whole paste buffer with bound layers
+ x                    coord     buffer origin point, X coordinate
+ y                    coord     buffer origin point, Y coordinate
+ ha:data                        Layers and global objects of the board ->
+
 li:pcb-rnd-conf-v1
 
 type:name           value ver description
