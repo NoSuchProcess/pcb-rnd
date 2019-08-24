@@ -663,6 +663,8 @@ static int write_kicad_legacy_layout_polygons(FILE *FP, pcb_cardinal_t number, p
 	}
 }
 
+TODO("write_element won't do the header:");
+#if 0
 int io_kicad_legacy_write_buffer_subc(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buff, long subc_idx)
 {
 	if (subc_idx != 0) {
@@ -685,6 +687,7 @@ TODO(": no hardwiring of dates")
 
 	return 0;
 }
+#endif
 
 int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
 {
