@@ -67,6 +67,8 @@ vtp0_t post_ids, post_thermal_old, post_thermal_heavy;
 static int rdver;
 unsigned long warned, old_model_warned;
 
+static pcb_data_t DUMMY_BUFFER_SUBC;
+
 /* Note: this works because of using str_flag compat_types */
 #define PCB_OBJ_VIA PCB_OBJ_PSTK
 #define PCB_OBJ_PIN PCB_OBJ_PSTK
@@ -917,11 +919,10 @@ static pcb_layer_combining_t parse_comb(pcb_board_t *pcb, lht_node_t *ncmb)
 	return comb;
 }
 
-static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, int layer_id, pcb_data_t *subc_parent)
+static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, int layer_id, int bound, pcb_data_t *subc_parent)
 {
 	lht_node_t *n, *lst, *ncmb, *nvis, *npurp;
 	lht_dom_iterator_t it;
-	int bound = (subc_parent != NULL);
 	pcb_layer_t *ly = &dt->Layer[layer_id];
 
 	if (layer_id >= PCB_MAX_LAYER)
@@ -970,7 +971,8 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 				pcb_layer_link_trees(&dt->Layer[layer_id], dt->Layer[layer_id].meta.bound.real);
 			else if (!(dt->Layer[layer_id].meta.bound.type & PCB_LYT_VIRTUAL))
 				iolht_warn(ncmb, 2, "Can't bind subcircuit layer %s: can't find anything similar on the current board\n", dt->Layer[layer_id].name);
-			dt->padstack_tree = subc_parent->padstack_tree;
+			if (subc_parent != NULL)
+				dt->padstack_tree = subc_parent->padstack_tree;
 		}
 	}
 	else {
@@ -1021,7 +1023,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 	return 0;
 }
 
-static int parse_data_layers(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, pcb_data_t *subc_parent)
+static int parse_data_layers(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, int bound, pcb_data_t *subc_parent)
 {
 	int id;
 	lht_node_t *n;
@@ -1029,7 +1031,7 @@ static int parse_data_layers(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, 
 
 	for(id = 0, n = lht_dom_first(&it, grp); n != NULL; id++, n = lht_dom_next(&it))
 		if (n->type == LHT_HASH)
-			if (parse_data_layer(pcb, dt, n, id, subc_parent) < 0)
+			if (parse_data_layer(pcb, dt, n, id, bound, subc_parent) < 0)
 				return -1;
 
 	return 0;
@@ -1844,6 +1846,9 @@ static pcb_data_t *parse_data(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *nd,
 	lht_node_t *grp;
 	int bound_layers = (subc_parent != NULL);
 
+	if (subc_parent == &DUMMY_BUFFER_SUBC)
+		subc_parent = NULL;
+
 	if ((nd == NULL) || (nd->type != LHT_HASH))
 		return NULL;
 
@@ -1857,7 +1862,7 @@ static pcb_data_t *parse_data(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *nd,
 
 	grp = lht_dom_hash_get(nd, "layers");
 	if ((grp != NULL) && (grp->type == LHT_LIST))
-		parse_data_layers(pcb, dt, grp, subc_parent);
+		parse_data_layers(pcb, dt, grp, bound_layers, subc_parent);
 
 	if (rdver == 1)
 		layer_fixup(pcb);
@@ -2402,7 +2407,7 @@ int io_lihata_parse_buffer(pcb_plug_io_t *ctx, pcb_buffer_t *buff, const char *f
 			res = -1;
 		}
 		else
-			res = parse_data(PCB, buff->Data, datand, 32);
+			res = (parse_data(NULL, buff->Data, datand, &DUMMY_BUFFER_SUBC) == NULL);
 	}
 	else {
 		iolht_error(doc->root, "Error loading '%s': not a pcb-rnd paste buffer\n", filename);
