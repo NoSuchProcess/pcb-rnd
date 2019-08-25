@@ -448,7 +448,13 @@ ha:{
 				ha:Convert buffer to padstack      = { a={<key>b;<key>c;<key>p}; li:action={PadstackConvert(buffer); Mode(PasteBuffer);} }
 				ha:Break buffer subcircuits to pieces = { a={<key>b;<key>s;<key>b};  action=PasteBuffer(Restore) }
 				ha:Break buffer padstacks to pieces = { a={<key>b;<key>s;<key>p};  action=PadstackBreakup(buffer) }
-				ha:Save buffer subcircuits to file = { a={<key>b;<key>s;<key>s}; action=Save(PasteBuffer) }
+				ha:Save buffer subcircuit to file   = { a={<key>b;<key>s;<key>s}; action=Save(PasteBuffer) }
+				ha:Save buffer subcircuits as lib... {
+					li:submenu {
+						ha:in a single lib file          = { a={<key>b;<key>s;<key>l;<key>f}; action=SaveLib(file, buffer) }
+						ha:in multiple footprint files   = { a={<key>b;<key>s;<key>l;<key>d}; action=SaveLib(dir, buffer) }
+					}
+				}
 				-
 				ha:Layer bindings...               = { a={<key>b;<key>b;}; action=LayerBinding(buffer) }
 				ha:Buffer selection {
