@@ -38,6 +38,9 @@ static const char *mentor_cell_cookie = "mentor_cell plugin";
 
 int io_mentor_cell_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
 {
+	if (wr && (typ & PCB_IOT_FOOTPRINT)) /* no footprint write */
+		return 0;
+
 	if (strcmp(ctx->description, fmt) == 0)
 		return 200;
 
