@@ -225,7 +225,16 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 
 		case F_PasteBuffer:
-			PCB_ACT_IRES(pcb_save_buffer_subcs(name, fmt, -1));
+			if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) == 0) {
+				pcb_message(PCB_MSG_ERROR, "Can not save subcircuit: there is no subcircuit in the paste buffer.\n");
+				PCB_ACT_IRES(-1);
+			}
+			else if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) > 1) {
+				pcb_message(PCB_MSG_ERROR, "Can not save subcircuit: there are more than one subcircuits in the paste buffer.\nDid you mean saving a library instead?\n");
+				PCB_ACT_IRES(-1);
+			}
+			else
+				PCB_ACT_IRES(pcb_save_buffer_subcs(name, fmt, 0));
 			return 0;
 
 		/* shorthand kept only for compatibility reasons - do not use */
