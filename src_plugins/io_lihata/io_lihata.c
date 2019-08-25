@@ -91,7 +91,7 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v6.write_footprint = io_lihata_write_element;
 	plug_io_lihata_v6.write_subcs_head = io_lihata_write_subcs_head;
 	plug_io_lihata_v6.write_subcs_subc = io_lihata_write_subcs_subc;
-	plug_io_lihata_v6.write_subcs_tail = io_lihata_write_subcs_subc;
+	plug_io_lihata_v6.write_subcs_tail = io_lihata_write_subcs_tail;
 	plug_io_lihata_v6.write_pcb = io_lihata_write_pcb_v6;
 	plug_io_lihata_v6.default_fmt = "lihata";
 	plug_io_lihata_v6.description = "lihata board v6";
@@ -119,7 +119,7 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v5.write_footprint = io_lihata_write_element;
 	plug_io_lihata_v5.write_subcs_head = io_lihata_write_subcs_head;
 	plug_io_lihata_v5.write_subcs_subc = io_lihata_write_subcs_subc;
-	plug_io_lihata_v5.write_subcs_tail = io_lihata_write_subcs_subc;
+	plug_io_lihata_v5.write_subcs_tail = io_lihata_write_subcs_tail;
 	plug_io_lihata_v5.write_pcb = io_lihata_write_pcb_v5;
 	plug_io_lihata_v5.default_fmt = "lihata";
 	plug_io_lihata_v5.description = "lihata board v5";
@@ -145,7 +145,7 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v4.write_footprint = io_lihata_write_element;
 	plug_io_lihata_v4.write_subcs_head = io_lihata_write_subcs_head;
 	plug_io_lihata_v4.write_subcs_subc = io_lihata_write_subcs_subc;
-	plug_io_lihata_v4.write_subcs_tail = io_lihata_write_subcs_subc;
+	plug_io_lihata_v4.write_subcs_tail = io_lihata_write_subcs_tail;
 	plug_io_lihata_v4.write_pcb = io_lihata_write_pcb_v4;
 	plug_io_lihata_v4.default_fmt = "lihata";
 	plug_io_lihata_v4.description = "lihata board v4";
@@ -171,7 +171,7 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v3.write_footprint = io_lihata_write_element;
 	plug_io_lihata_v3.write_subcs_head = io_lihata_write_subcs_head;
 	plug_io_lihata_v3.write_subcs_subc = io_lihata_write_subcs_subc;
-	plug_io_lihata_v3.write_subcs_tail = io_lihata_write_subcs_subc;
+	plug_io_lihata_v3.write_subcs_tail = io_lihata_write_subcs_tail;
 	plug_io_lihata_v3.write_pcb = io_lihata_write_pcb_v3;
 	plug_io_lihata_v3.default_fmt = "lihata";
 	plug_io_lihata_v3.description = "lihata board v3";
