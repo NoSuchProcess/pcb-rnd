@@ -3325,6 +3325,28 @@ This action is a GUI front-end to the core's
  is called with that filename. 
 </dd></dl>
 
+<h2 id="savelib">SaveLib</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+SaveLib(file|dir, board|buffer, [filename], [fmt])
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Saves all subcircuits to a library file or directory from a board or buffer.
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+</table>
+<p>
+Useful when multiple subcircuits should be saved to be reused as a library. When first argument is 
+<b>
+dir
+</b>
+, each subcircuit is saved in a separate, numbered file. If the first argument is 
+<b>
+file
+</b>
+ and the target file format has library support, all subcircuits are saved in the same file, as a library. 
+</dd></dl>
+
 <h2 id="saveto">SaveTo</h2>
 <dl><dd>
 <p>

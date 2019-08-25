@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.1.3 (svn r27237) an interactive printed circuit board editor ,  Revision: 27358
+This is pcb-rnd 2.1.3 (svn r27237) an interactive printed circuit board editor ,  Revision: 27361
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -303,6 +303,7 @@ This is pcb-rnd 2.1.3 (svn r27237) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#s">s</a></td><td>Saves layout data.</td><td>s [name]<br>w [name]</td><td>shand_cmd plugin</td>
 <tr><td><a href="action_details.html#save">Save</a></td><td>Save layout data to a user-selected file.</td><td>Save()<br>Save(Layout|LayoutAs)<br>Save(AllConnections|AllUnusedPins|ElementConnections)<br>Save(PasteBuffer)</td><td>dialogs plugin</td>
 <tr><td>SaveFontTo</td><td>Save PCB font to a file</td><td>SaveFontTo([file, id])</td><td></td>
+<tr><td><a href="action_details.html#savelib">SaveLib</a></td><td>Saves all subcircuits to a library file or directory from a board or buffer.</td><td>SaveLib(file|dir, board|buffer, [filename], [fmt])</td><td></td>
 <tr><td>SavePatch</td><td>Save netlist patch for back annotation.</td><td>SavePatch(filename)</td><td></td>
 <tr><td>SaveTedax</td><td>Saves the specific type of data in a tEDAx file.</td><td>SaveTedax(netlist|board-footprints|stackup|layer|board|drc, filename)</td><td>tEDAx IO</td>
 <tr><td><a href="action_details.html#saveto">SaveTo</a></td><td>Saves data to a file.</td><td>SaveTo(Layout|LayoutAs,filename,[fmt])<br>SaveTo(PasteBuffer,filename,[fmt])</td><td></td>
