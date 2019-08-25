@@ -89,6 +89,14 @@ struct pcb_plug_io_s {
 	   th sucb_idxth subcircuit as a footprint. Return 0 on success. */
 	int (*write_footprint)(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *e, long subc_idx);
 
+	/* Write subcircuit(s): head, 0 or more subcircuits and tail. udata may be
+	   initialized by head and free'd by tail. If lib is 1, a library of footprints
+	   should be written.
+	   Return 0 on success.*/
+	int (*write_subcs_head)(pcb_plug_io_t *ctx, void **udata, FILE *f, int lib, long num_subcs);
+	int (*write_subcs_subc)(pcb_plug_io_t *ctx, void **udata, FILE *f, pcb_subc_t *subc);
+	int (*write_subcs_tail)(pcb_plug_io_t *ctx, void **udata, FILE *f);
+
 	/* Write PCB to f; there's a copy of the file we are going to
 	   "overwrite", named in old_filename and the new file name we are
 	   using is new_filename. The file names are NULL if we are saving
