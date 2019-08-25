@@ -56,7 +56,6 @@ typedef struct {
 
 extern pcb_plug_io_t *pcb_preferred_io_pcb, *pcb_nanometer_io_pcb, *pcb_centimil_io_pcb;
 
-int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *data, long subc_idx);
 int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, pcb_bool emergency);
 int io_pcb_write_subcs_head(pcb_plug_io_t *ctx, void **udata, FILE *f, int lib, long num_subcs);
 int io_pcb_write_subcs_subc(pcb_plug_io_t *ctx, void **udata, FILE *f, pcb_subc_t *subc);

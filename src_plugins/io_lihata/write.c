@@ -1772,11 +1772,6 @@ int io_lihata_write_buffer(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff)
 
 }
 
-int io_lihata_write_element(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *dt, long subc_idx)
-{
-	return io_lihata_dump_nth_subc(ctx, f, dt, 1, subc_idx);
-}
-
 typedef struct {
 	int womit_font, womit_config, womit_styles;
 	int ver;

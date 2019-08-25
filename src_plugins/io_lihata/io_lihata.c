@@ -88,7 +88,6 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v6.parse_buffer = io_lihata_parse_buffer;
 	plug_io_lihata_v6.write_font = io_lihata_write_font;
 	plug_io_lihata_v6.write_buffer = io_lihata_write_buffer;
-	plug_io_lihata_v6.write_footprint = io_lihata_write_element;
 	plug_io_lihata_v6.write_subcs_head = io_lihata_write_subcs_head;
 	plug_io_lihata_v6.write_subcs_subc = io_lihata_write_subcs_subc;
 	plug_io_lihata_v6.write_subcs_tail = io_lihata_write_subcs_tail;
@@ -116,7 +115,6 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v5.parse_buffer = NULL;
 	plug_io_lihata_v5.write_font = io_lihata_write_font;
 	plug_io_lihata_v5.write_buffer = NULL;
-	plug_io_lihata_v5.write_footprint = io_lihata_write_element;
 	plug_io_lihata_v5.write_subcs_head = io_lihata_write_subcs_head;
 	plug_io_lihata_v5.write_subcs_subc = io_lihata_write_subcs_subc;
 	plug_io_lihata_v5.write_subcs_tail = io_lihata_write_subcs_tail;
@@ -142,7 +140,6 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v4.parse_buffer = NULL;
 	plug_io_lihata_v4.write_font = io_lihata_write_font;
 	plug_io_lihata_v4.write_buffer = NULL;
-	plug_io_lihata_v4.write_footprint = io_lihata_write_element;
 	plug_io_lihata_v4.write_subcs_head = io_lihata_write_subcs_head;
 	plug_io_lihata_v4.write_subcs_subc = io_lihata_write_subcs_subc;
 	plug_io_lihata_v4.write_subcs_tail = io_lihata_write_subcs_tail;
@@ -168,7 +165,6 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v3.parse_buffer = NULL;
 	plug_io_lihata_v3.write_font = io_lihata_write_font;
 	plug_io_lihata_v3.write_buffer = NULL;
-	plug_io_lihata_v3.write_footprint = io_lihata_write_element;
 	plug_io_lihata_v3.write_subcs_head = io_lihata_write_subcs_head;
 	plug_io_lihata_v3.write_subcs_subc = io_lihata_write_subcs_subc;
 	plug_io_lihata_v3.write_subcs_tail = io_lihata_write_subcs_tail;
@@ -194,7 +190,6 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v2.parse_buffer = NULL;
 	plug_io_lihata_v2.write_font = io_lihata_write_font;
 	plug_io_lihata_v2.write_buffer = NULL;
-	plug_io_lihata_v2.write_footprint = NULL;
 	plug_io_lihata_v2.write_pcb = io_lihata_write_pcb_v2;
 	plug_io_lihata_v2.default_fmt = "lihata";
 	plug_io_lihata_v2.description = "lihata board v2";
@@ -217,7 +212,6 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v1.parse_font = NULL;
 	plug_io_lihata_v1.write_font = io_lihata_write_font;
 	plug_io_lihata_v1.write_buffer = NULL;
-	plug_io_lihata_v1.write_footprint = NULL;
 	plug_io_lihata_v1.write_pcb = io_lihata_write_pcb_v1;
 	plug_io_lihata_v1.default_fmt = "lihata";
 	plug_io_lihata_v1.description = "lihata board v1";

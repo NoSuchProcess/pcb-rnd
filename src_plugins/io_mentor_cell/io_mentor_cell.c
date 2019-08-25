@@ -70,7 +70,6 @@ int pplg_init_io_mentor_cell(void)
 	io_mentor_cell.parse_footprint = NULL;
 	io_mentor_cell.parse_font = NULL;
 	io_mentor_cell.write_buffer = NULL;
-	io_mentor_cell.write_footprint = NULL;
 	io_mentor_cell.write_pcb = NULL;
 	io_mentor_cell.default_fmt = "mentor_cell";
 	io_mentor_cell.description = "Mentor graphics cell footprint lib";

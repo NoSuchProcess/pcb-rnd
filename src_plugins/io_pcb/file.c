@@ -543,7 +543,7 @@ TODO("textrot: incompatibility warning")
 		fputs("\n)\n", FP);
 }
 
-int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data, long subc_idx)
+static int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data, long subc_idx)
 {
 	gdl_iterator_t sit;
 	pcb_subc_t *sc;

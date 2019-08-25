@@ -799,30 +799,6 @@ TODO(": do not hardwire the drill size here - does kicad support only one size, 
 	return 0;
 }
 
-/* writes element data in kicad legacy format for use in a .mod library */
-int io_kicad_write_element(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data, long subc_idx)
-{
-	wctx_t wctx;
-
-	if (pcb_subclist_length(&Data->subc) > 1) {
-		pcb_message(PCB_MSG_ERROR, "Can't save multiple modules (footprints) in a single s-experssion mod file\n");
-		return -1;
-	}
-
-TODO(": make this initialization a common function with write_kicad_layout()")
-	pcb_printf_slot[4] = "%{\\()\t\r\n \"}mq";
-
-	wctx.f = FP;
-	wctx.pcb = PCB;
-	wctx.ox = 0;
-	wctx.oy = 0;
-
-	if (kicad_map_layers(&wctx) != 0)
-		return -1;
-
-	return kicad_print_subcs(&wctx, Data, 0, 0, 0, subc_idx);
-}
-
 int io_kicad_write_subcs_head(pcb_plug_io_t *ctx, void **udata, FILE *f, int lib, long num_subcs)
 {
 	if ((lib) || (num_subcs > 1)) {

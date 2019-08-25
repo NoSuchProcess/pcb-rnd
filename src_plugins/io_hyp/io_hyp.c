@@ -176,8 +176,7 @@ int pplg_init_io_hyp(void)
 	io_hyp.parse_pcb = io_hyp_read_pcb;
 /*	io_hyp.parse_footprint = NULL;
 	io_hyp.parse_font = NULL;
-	io_hyp.write_buffer = io_hyp_write_buffer;
-	io_hyp.write_footprint = io_hyp_write_element;*/
+	io_hyp.write_buffer = io_hyp_write_buffer;*/
 	io_hyp.write_pcb = io_hyp_write_pcb;
 	io_hyp.default_fmt = "hyp";
 	io_hyp.description = "hyperlynx";

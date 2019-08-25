@@ -1058,22 +1058,3 @@ TODO(": se this from io_kicad, do not duplicate the code here")
 	}
 	return 0;
 }
-
-int io_kicad_legacy_write_element(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data, long subc_idx)
-{
-	gdl_iterator_t sit;
-	pcb_subc_t *subc;
-	unm_t group1;
-	int res = 0;
-
-	unm_init(&group1);
-	subclist_foreach(&Data->subc, &sit, subc) {
-		if ((subc_idx == -1) || (subc_idx == sit.count)) {
-			const char *uname = unm_name(&group1, or_empty(pcb_attribute_get(&subc->Attributes, "footprint")), subc);
-			res |= io_kicad_legacy_write_subc(FP, PCB, subc, 0, 0, uname);
-		}
-	}
-	unm_uninit(&group1);
-
-	return res;
-}

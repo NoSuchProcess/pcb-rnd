@@ -84,11 +84,6 @@ struct pcb_plug_io_s {
 	/* Write the buffer to a file. Return 0 on success. */
 	int (*write_buffer)(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff);
 
-	/* Write subcircuit(s) from 'e' to a library file. If subc_idx is -1, write
-	   all subcircuits as a library (if the format allows), else write only
-	   th sucb_idxth subcircuit as a footprint. Return 0 on success. */
-	int (*write_footprint)(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *e, long subc_idx);
-
 	/* Write subcircuit(s): head, 0 or more subcircuits and tail. udata may be
 	   initialized by head and free'd by tail. If lib is 1, a library of footprints
 	   should be written.

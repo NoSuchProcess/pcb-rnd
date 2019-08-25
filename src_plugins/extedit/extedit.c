@@ -261,13 +261,22 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	switch(mth->fmt) {
 		case EEF_LIHATA:
 			{
+				int res;
+				void *udata;
+
 				f = pcb_fopen(&PCB->hidlib, tmp_fn, "w");
 				if (f == NULL) {
 					pcb_message(PCB_MSG_ERROR, "Failed to open temporary file\n");
 					goto quit1;
 				}
 
-				if (io_lihata_write_element(plug_io_lihata_default, f, pcb_buffers[bn].Data, 0) != 0) {
+				res = io_lihata_write_subcs_head(plug_io_lihata_default, &udata, f, 0, 1);
+				if (res == 0) {
+					res |= io_lihata_write_subcs_subc(plug_io_lihata_default, &udata, f, pcb_subclist_first(&pcb_buffers[bn].Data->subc));
+					res |= io_lihata_write_subcs_tail(plug_io_lihata_default, &udata, f);
+				}
+
+				if (res != 0) {
 					fclose(f);
 					pcb_message(PCB_MSG_ERROR, "Failed to export target objects to lihata footprint.\n");
 					goto quit1;

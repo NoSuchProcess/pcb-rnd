@@ -75,7 +75,6 @@ int pplg_init_io_pcb(void)
 	io_pcb[0].parse_footprint = io_pcb_ParseElement;
 	io_pcb[0].parse_font = io_pcb_ParseFont;
 	io_pcb[0].write_buffer = NULL;
-	io_pcb[0].write_footprint = io_pcb_WriteSubcData;
 	io_pcb[0].write_subcs_head = io_pcb_write_subcs_head;
 	io_pcb[0].write_subcs_subc = io_pcb_write_subcs_subc;
 	io_pcb[0].write_subcs_tail = io_pcb_write_subcs_tail;
@@ -93,7 +92,6 @@ int pplg_init_io_pcb(void)
 	io_pcb[1].plugin_data = &ctx[1];
 	io_pcb[1].fmt_support_prio = io_pcb_fmt;
 	io_pcb[1].write_buffer = NULL;
-	io_pcb[1].write_footprint = io_pcb_WriteSubcData;
 	io_pcb[1].write_subcs_head = io_pcb_write_subcs_head;
 	io_pcb[1].write_subcs_subc = io_pcb_write_subcs_subc;
 	io_pcb[1].write_subcs_tail = io_pcb_write_subcs_tail;
@@ -111,7 +109,6 @@ int pplg_init_io_pcb(void)
 	io_pcb[2].plugin_data = &ctx[2];
 	io_pcb[2].fmt_support_prio = io_pcb_fmt;
 	io_pcb[2].write_buffer = NULL;
-	io_pcb[2].write_footprint = io_pcb_WriteSubcData;
 	io_pcb[2].write_subcs_head = io_pcb_write_subcs_head;
 	io_pcb[2].write_subcs_subc = io_pcb_write_subcs_subc;
 	io_pcb[2].write_subcs_tail = io_pcb_write_subcs_tail;
