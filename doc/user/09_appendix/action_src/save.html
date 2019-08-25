@@ -2,3 +2,8 @@ This action is a GUI front-end to the core's <act>SaveTo</act> action.
 If you happen to pass a filename then <act>SaveTo</act> is called directly.
 Else, the user is prompted for a filename to save, and then <act>SaveTo</act>
 is called with that filename.
+<p>
+The DialogByPattern mode is intended for scripts and core: it presents a dialog
+box with format selection and listing patterns, but does not perform any
+real file operation just returns a <i>filename*format</i> string.
+
