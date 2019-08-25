@@ -531,7 +531,7 @@ TODO("textrot: incompatibility warning")
 					pcb_io_incompat_save(sc->data, NULL, "element-obj", desc, "only lines and arcs are exported");
 					free(desc);
 				}
-				return;
+				continue;
 			}
 
 			if (!(ly->meta.bound.type & PCB_LYT_VIRTUAL) && (!pcb_layer_is_pure_empty(ly))) {
