@@ -95,7 +95,7 @@ static int tedax_global_subc_fwrite(pcb_placement_t *ctx, FILE *f)
 		int res;
 
 		subc2fpname(fpname, subc);
-		res = tedax_fp_fsave_subc(subc, fpname, 1, f);
+		res = tedax_fp_fsave_subc_(subc, fpname, 1, f);
 		assert(res == 0);
 	}
 	return 0;

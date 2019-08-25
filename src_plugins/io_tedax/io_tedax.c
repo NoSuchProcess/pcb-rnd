@@ -183,9 +183,20 @@ static int io_tedax_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const cha
 	return tedax_fp_load(Ptr, name, 0, NULL, 0);
 }
 
-static int io_tedax_write_element(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *dt, long subc_idx)
+int io_tedax_fp_write_subcs_head(pcb_plug_io_t *ctx, void **udata, FILE *f, int lib, long num_subcs)
 {
-	return tedax_fp_fsave(dt, f, subc_idx);
+	fprintf(f, "tEDAx v1\n");
+	return 0;
+}
+
+int io_tedax_fp_write_subcs_subc(pcb_plug_io_t *ctx, void **udata, FILE *f, pcb_subc_t *subc)
+{
+	return tedax_fp_fsave_subc(subc, f);
+}
+
+int io_tedax_fp_write_subcs_tail(pcb_plug_io_t *ctx, void **udata, FILE *f)
+{
+	return 0;
 }
 
 static int io_tedax_test_parse(pcb_plug_io_t *plug_ctx, pcb_plug_iot_t typ, const char *Filename, FILE *f)
@@ -249,7 +260,9 @@ int pplg_init_io_tedax(void)
 	io_tedax.parse_footprint = io_tedax_parse_element;
 	io_tedax.parse_font = NULL;
 	io_tedax.write_buffer = NULL;
-	io_tedax.write_footprint = io_tedax_write_element;
+	io_tedax.write_subcs_head = io_tedax_fp_write_subcs_head;
+	io_tedax.write_subcs_subc = io_tedax_fp_write_subcs_subc;
+	io_tedax.write_subcs_tail = io_tedax_fp_write_subcs_tail;
 	io_tedax.write_pcb = NULL;
 	io_tedax.default_fmt = "tEDAx";
 	io_tedax.description = "Trivial EDA eXchange format";
