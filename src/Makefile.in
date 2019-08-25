@@ -632,16 +632,24 @@ end
 
 print [@
 
+install_librnd_sy:
+	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER_MAJOR)"
+	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-3rd.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-3rd.so.$(PCB_RND_VER_MAJOR)"
+	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-poly.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-poly.so.$(PCB_RND_VER_MAJOR)"
+
 install:
 	$(MAKE) install_pcbrnd HOW="install -f"
 	$(MAKE) install_librnd HOW="install -f"
+	$(MAKE) install_librnd_sy HOW="linstall -f"
 
 linstall:
 	$(MAKE) install_pcbrnd HOW="linstall -f"
 	$(MAKE) install_librnd HOW="linstall -f"
+	$(MAKE) install_librnd_sy HOW="linstall -f"
 
 uninstall:
 	$(MAKE) install_pcbrnd HOW="uninstall"
+	$(MAKE) install_librnd_sy HOW="uninstall"
 	$(MAKE) install_librnd HOW="uninstall"
 
 map_plugins:
