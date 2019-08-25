@@ -410,7 +410,7 @@ static int pcb_write_data_subcs(pcb_plug_io_t *p, FILE *f, pcb_data_t *data, lon
 static int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt, pcb_bool subc_only, long subc_idx)
 {
 	int res/*, newfmt = 0*/;
-	pcb_plug_io_t *p = pcb_io_find_writer(subc_only ? PCB_IOT_BUFFER_SUBC : PCB_IOT_BUFFER, fmt);
+	pcb_plug_io_t *p = pcb_io_find_writer(subc_only ? PCB_IOT_FOOTPRINT : PCB_IOT_BUFFER, fmt);
 
 	if (p != NULL) {
 		if (subc_only)

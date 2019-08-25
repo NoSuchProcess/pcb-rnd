@@ -309,7 +309,7 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		const char *ending;
 		static char *default_file;
 		pcb_subc_t *subc;
-		pcb_plug_io_t *p = pcb_io_find_writer(PCB_IOT_BUFFER_SUBC, fmt);
+		pcb_plug_io_t *p = pcb_io_find_writer(PCB_IOT_FOOTPRINT, fmt);
 
 
 		if (p == NULL) {

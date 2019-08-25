@@ -37,8 +37,7 @@ typedef enum { /* I/O type bitmask; each bit is one thing to save or load, not a
 	PCB_IOT_PCB        = 1,
 	PCB_IOT_FOOTPRINT  = 2,
 	PCB_IOT_FONT       = 4,
-	PCB_IOT_BUFFER     = 8,
-	PCB_IOT_BUFFER_SUBC= 16
+	PCB_IOT_BUFFER     = 8
 } pcb_plug_iot_t;
 
 /**************************** API definition *********************************/
