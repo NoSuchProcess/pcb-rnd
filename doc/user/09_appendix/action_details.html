@@ -2714,6 +2714,8 @@ PasteBuffer(Convert|Restore|Mirror)
 PasteBuffer(ToLayout, X, Y, units)
 PasteBuffer(ToLayout, crosshair)
 PasteBuffer(Save, Filename, [format], [force])
+PasteBuffer(SaveAll, Filename, [format])
+PasteBuffer(LoadAll, Filename)
 PasteBuffer(Push)
 PasteBuffer(Pop)
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
@@ -2781,7 +2783,19 @@ PCB_MAX_BUFFER
 <th>
  Save  
 <td>
- Saves any elements in the current buffer to the indicated file. If       format is specified, try to use that file format, else use the default.       If force is specified, overwrite target, don't ask.   
+ Saves subcircuits in the current buffer to the indicated file. If       format is specified, try to use that file format, else use the default.       If force is specified, overwrite target, don't ask.   
+<tr>
+
+<th>
+ SaveAll  
+<td>
+ Saves all content of the current buffer to the indicated file. If       format is specified, try to use that file format, else use the default.   
+<tr>
+
+<th>
+ LoadAll  
+<td>
+ Loads a previously saved paste buffer into the current buffer from the       indicated file.   
 <tr>
 
 <th>
