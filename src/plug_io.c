@@ -375,37 +375,37 @@ static pcb_plug_io_t *find_writer(pcb_plug_iot_t typ, const char *fmt)
 
 static int pcb_write_data_subcs(pcb_plug_io_t *p, FILE *f, pcb_data_t *data, long subc_idx)
 {
-			long avail = pcb_subclist_length(&data->subc);
-			void *udata;
-			int res;
+	long avail = pcb_subclist_length(&data->subc);
+	void *udata;
+	int res;
 
-			if ((subc_idx >= 0) && (subc_idx >= avail)) {
-					pcb_message(PCB_MSG_ERROR, "pcb_write_buffer: subc index out of range");
-					return -1;
-			}
-			if (subc_idx < 0) {
-				pcb_subc_t *subc;
-				gdl_iterator_t sit;
+	if ((subc_idx >= 0) && (subc_idx >= avail)) {
+			pcb_message(PCB_MSG_ERROR, "pcb_write_buffer: subc index out of range");
+			return -1;
+	}
+	if (subc_idx < 0) {
+		pcb_subc_t *subc;
+		gdl_iterator_t sit;
 
-				if (p->write_subcs_head(p, &udata, f, (avail > 1), avail) != 0) {
-					pcb_message(PCB_MSG_ERROR, "pcb_write_buffer: failed to write head");
-					return -1;
-				}
-				res = 0;
-				subclist_foreach(&data->subc, &sit, subc)
-					res |= p->write_subcs_subc(p, &udata, f, subc);
-				res |= p->write_subcs_tail(p, &udata, f);
-				return res;
-			}
-			else {
-				if (p->write_subcs_head(p, &udata, f, 0, 1) != 0) {
-					pcb_message(PCB_MSG_ERROR, "pcb_write_buffer: failed to write head");
-					return -1;
-				}
-				res = p->write_subcs_subc(p, &udata, f, pcb_subclist_nth(&data->subc, subc_idx));
-				res |= p->write_subcs_tail(p, &udata, f);
-				return res;
-			}
+		if (p->write_subcs_head(p, &udata, f, (avail > 1), avail) != 0) {
+			pcb_message(PCB_MSG_ERROR, "pcb_write_buffer: failed to write head");
+			return -1;
+		}
+		res = 0;
+		subclist_foreach(&data->subc, &sit, subc)
+			res |= p->write_subcs_subc(p, &udata, f, subc);
+		res |= p->write_subcs_tail(p, &udata, f);
+		return res;
+	}
+	else {
+		if (p->write_subcs_head(p, &udata, f, 0, 1) != 0) {
+			pcb_message(PCB_MSG_ERROR, "pcb_write_buffer: failed to write head");
+			return -1;
+		}
+		res = p->write_subcs_subc(p, &udata, f, pcb_subclist_nth(&data->subc, subc_idx));
+		res |= p->write_subcs_tail(p, &udata, f);
+		return res;
+	}
 }
 
 static int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt, pcb_bool subc_only, long subc_idx)
