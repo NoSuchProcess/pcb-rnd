@@ -253,6 +253,55 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_FAIL(SaveTo);
 }
 
+/* Run the save dialog, either the full version from the dialogs plugin
+(if available) or a simplified version. Return 0 on success and fill in
+name_out and fmt_out. */
+static int save_fmt_dialog(const char *title, const char *descr, char **default_file, const char *history_tag, pcb_hid_fsd_flags_t flags, char **name_out, const char **fmt_out)
+{
+	const fgw_func_t *f = pcb_act_lookup("save");
+
+	*name_out = NULL;
+	*fmt_out = NULL;
+
+	if (f != NULL) { /* has dialogs plugin */
+		fgw_error_t err;
+		fgw_arg_t res, argv[6];
+		char *sep;
+
+		argv[1].type = FGW_STR; argv[1].val.str = "DialogByPattern";
+		argv[2].type = FGW_STR; argv[2].val.str = "footprint";
+		argv[3].type = FGW_STR; argv[3].val.str = "fp";
+		argv[4].type = FGW_STR; argv[4].val.str = descr;
+		argv[5].type = FGW_STR; argv[5].val.str = conf_core.rc.save_fp_fmt;
+		err = pcb_actionv_(f, &res, 5, argv);
+		if ((err != 0) || (res.val.str == NULL)) /* cancel */
+			return -1;
+		if ((res.type & (FGW_STR | FGW_DYN)) != (FGW_STR | FGW_DYN)) {
+			pcb_message(PCB_MSG_ERROR, "Internal error: Save(DialogByPattern) did not return a dynamic string\n");
+			return -1;
+		}
+		*name_out = res.val.str; /* will be free'd by the caller */
+		sep = strchr(res.val.str, '*');
+		if (sep != NULL) {
+			*sep = '\0';
+			*fmt_out = sep+1;
+		}
+		printf("RES2: '%s' '%s'\n", *name_out, *fmt_out);
+	}
+	else { /* fallback to simpler fileselect */
+		char *name = pcb_gui->fileselect(pcb_gui, title, descr, *default_file, "", NULL, history_tag, flags, NULL);
+
+		*name_out = name;
+		if (name == NULL)
+			return -1;
+
+		if (*default_file != NULL)
+			free(*default_file);
+		*default_file = pcb_strdup(name);
+	}
+	return 0;
+}
+
 static const char pcb_acts_SaveLib[] =
 	"SaveLib(file|dir, board|buffer, [filename], [fmt])\n";
 static const char pcb_acth_SaveLib[] = "Saves all subcircuits to a library file or directory from a board or buffer.";
@@ -278,18 +327,15 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		static char *default_file;
 
 		if (fn == NULL) {
-			name = pcb_gui->fileselect(pcb_gui, "Save footprint lib to file ...",
-				"Choose a file to save all subcircuits to.\n",
-				default_file, ".lht", NULL, "save_lib_file", PCB_HID_FSD_MAY_NOT_EXIST, NULL);
+			int sr = save_fmt_dialog("Save footprint lib to file ...", "Choose a file to save all subcircuits to.\n",
+				&default_file, "save_lib_file", PCB_HID_FSD_MAY_NOT_EXIST, &name, &fmt);
+			if (sr != 0) {
+				PCB_ACT_IRES(-1);
+				return 0;
+			}
 		}
 		else
 			name = pcb_strdup(fn);
-
-		if (default_file) {
-			free(default_file);
-			default_file = NULL;
-		}
-		default_file = pcb_strdup(name);
 
 		f = pcb_fopen(&PCB->hidlib, name, "w");
 		if (f == NULL) {
@@ -309,9 +355,21 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		const char *ending;
 		static char *default_file;
 		pcb_subc_t *subc;
-		pcb_plug_io_t *p = pcb_io_find_writer(PCB_IOT_FOOTPRINT, fmt);
+		pcb_plug_io_t *p;
+		
 
+		if (fn == NULL) {
+			int sr = save_fmt_dialog("Save footprint lib to directory ...", "Choose a file name pattern to save all subcircuits to.\n",
+				&default_file, "save_lib_dir", PCB_HID_FSD_IS_TEMPLATE, &name, &fmt);
+			if (sr != 0) {
+				PCB_ACT_IRES(-1);
+				return 0;
+			}
+		}
+		else
+			name = pcb_strdup(fn);
 
+		p = pcb_io_find_writer(PCB_IOT_FOOTPRINT, fmt);
 		if (p == NULL) {
 			if (fmt == NULL)
 				pcb_message(PCB_MSG_ERROR, "Failed to find a plugin that can write subcircuits", fmt);
@@ -320,20 +378,6 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			PCB_ACT_IRES(-1);
 			return 0;
 		}
-
-		if (fn == NULL) {
-			name = pcb_gui->fileselect(pcb_gui, "Save footprint lib to directory ...",
-				"Choose a file name pattern to save all subcircuits to.\n",
-				default_file, ".lht", NULL, "save_lib_dir", PCB_HID_FSD_IS_TEMPLATE, NULL);
-		}
-		else
-			name = pcb_strdup(fn);
-
-		if (default_file) {
-			free(default_file);
-			default_file = NULL;
-		}
-		default_file = pcb_strdup(name);
 
 		sep = strrchr(name, '.');
 		if ((sep != NULL) && (strchr(sep, PCB_DIR_SEPARATOR_C) == NULL)) {
