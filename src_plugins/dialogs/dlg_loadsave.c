@@ -383,7 +383,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *prompt;
 	pcb_io_formats_t avail;
 	const char **extensions_param = NULL;
-	int fmt, *fmt_param = NULL;
+	int num_fmts, fmt, *fmt_param = NULL;
 	save_t save;
 	pcb_hidval_t timer_ctx;
 
@@ -401,9 +401,9 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return pcb_actionl("SaveTo", "Layout", NULL);
 
 	if (pcb_strcasecmp(function, "PasteBuffer") == 0) {
-		int num_fmts, n;
+		int n;
 		prompt = "Save subcircuit as";
-		num_fmts = pcb_io_list(&avail, PCB_IOT_BUFFER, 1, 1, PCB_IOL_EXT_FP);
+		num_fmts = pcb_io_list(&avail, PCB_IOT_FOOTPRINT, 1, 1, PCB_IOL_EXT_FP);
 		if (num_fmts > 0) {
 			const char *default_pattern = conf_core.rc.save_fp_fmt;
 			extensions_param = (const char **)avail.extension;
@@ -440,6 +440,8 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				}
 			}
 
+			fmtsub = &fmtsub_local;
+
 			if (fmt < 0) /* fallback: choose the frist format */
 				fmt = 0;
 
@@ -452,7 +454,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 	else {
-		int num_fmts, n;
+		int n;
 		prompt = "Save layout as";
 		num_fmts = pcb_io_list(&avail, PCB_IOT_PCB, 1, 1, PCB_IOL_EXT_BOARD);
 		if (num_fmts > 0) {
@@ -468,20 +470,23 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				}
 			}
 			fmtsub = &fmtsub_local;
-			memset(&fmtsub_local, 0, sizeof(fmtsub_local));
-			save.avail = &avail;
-			save.num_fmts = num_fmts;
-			save.fmtsub = fmtsub;
-			save.pick = fmt;
-			fmtsub->on_close = save_on_close;
-			fmtsub->sub_ctx = &save;
-			setup_fmt_sub(&save, PCB_IOT_PCB);
 		}
 		else {
 			pcb_message(PCB_MSG_ERROR, "Error: no IO plugin avaialble for saving a buffer.");
 			PCB_ACT_IRES(-1);
 			return 0;
 		}
+	}
+
+	if (fmtsub != NULL) {
+		memset(&fmtsub_local, 0, sizeof(fmtsub_local));
+		save.avail = &avail;
+		save.num_fmts = num_fmts;
+		save.fmtsub = fmtsub;
+		save.pick = fmt;
+		fmtsub->on_close = save_on_close;
+		fmtsub->sub_ctx = &save;
+		setup_fmt_sub(&save, PCB_IOT_PCB);
 	}
 
 	/* construct the input file name and run a file selection dialog to get the final file name */
@@ -523,18 +528,21 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		fprintf(stderr, "Save:  Calling SaveTo(%s, %s)\n", function, final_name);
 
 	if (pcb_strcasecmp(function, "PasteBuffer") == 0) {
-		pcb_actionl("PasteBuffer", "Save", final_name, avail.plug[fmt]->description, "1", NULL);
+		const char *sfmt = avail.plug[fmt]->description;
+		if (fmt_param != NULL)
+			sfmt = avail.plug[save.pick]->description;
+		pcb_actionl("PasteBuffer", "Save", final_name, sfmt, NULL);
 	}
 	else {
 		const char *sfmt = NULL;
+		if (fmt_param != NULL)
+			sfmt = avail.plug[save.pick]->description;
 		/*
 		 * if we got this far and the function is Layout, then
 		 * we really needed it to be a LayoutAs.  Otherwise
 		 * ActionSaveTo() will ignore the new file name we
 		 * just obtained.
 		 */
-		if (fmt_param != NULL)
-			sfmt = avail.plug[save.pick]->description;
 		if (pcb_strcasecmp(function, "Layout") == 0)
 			pcb_actionl("SaveTo", "LayoutAs", final_name, sfmt, NULL);
 		else
