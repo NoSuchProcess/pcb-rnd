@@ -770,6 +770,8 @@ static const char pcb_acts_PasteBuffer[] =
 	"PasteBuffer(ToLayout, X, Y, units)\n"
 	"PasteBuffer(ToLayout, crosshair)\n"
 	"PasteBuffer(Save, Filename, [format], [force])\n"
+	"PasteBuffer(SaveAll, Filename, [format])\n"
+	"PasteBuffer(LoadAll, Filename)\n"
 	"PasteBuffer(Push)\n"
 	"PasteBuffer(Pop)\n"
 	;
