@@ -420,24 +420,17 @@ static void WritePCBNetlistPatchData(FILE * FP)
 	}
 }
 
-int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data, long subc_idx)
+static void io_pcb_print_subc(pcb_plug_io_t *ctx, FILE *FP, pcb_subc_t *sc)
 {
-	gdl_iterator_t sit, it;
-	pcb_subc_t *sc;
-	int l;
 	const char *attr_inhibit[] = {"refdes", "value", "footprint", NULL }; /* these are saved in the header if the element */
+	gdl_iterator_t it;
+	int l;
 
-	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
-
-	subclist_foreach(&Data->subc, &sit, sc) {
 		pcb_coord_t ox, oy, rx = 0, ry = 0;
 		int rdir = 0, rscale = 100, on_bot = 0;
 		pcb_text_t *trefdes;
 		pcb_pstk_t *ps;
 		pcb_any_obj_t fobj;
-
-		if ((subc_idx != -1) && (subc_idx != sit.count))
-			continue;
 
 		pcb_subc_get_origin(sc, &ox, &oy);
 		trefdes = pcb_subc_get_refdes_text(sc);
@@ -538,7 +531,7 @@ TODO("textrot: incompatibility warning")
 					pcb_io_incompat_save(sc->data, NULL, "element-obj", desc, "only lines and arcs are exported");
 					free(desc);
 				}
-				continue;
+				return;
 			}
 
 			if (!(ly->meta.bound.type & PCB_LYT_VIRTUAL) && (!pcb_layer_is_pure_empty(ly))) {
@@ -548,7 +541,38 @@ TODO("textrot: incompatibility warning")
 			}
 		}
 		fputs("\n)\n", FP);
+}
+
+int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data, long subc_idx)
+{
+	gdl_iterator_t sit;
+	pcb_subc_t *sc;
+
+	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
+
+	subclist_foreach(&Data->subc, &sit, sc) {
+		if ((subc_idx != -1) && (subc_idx != sit.count))
+			continue;
+
+		io_pcb_print_subc(ctx, FP, sc);
 	}
+	return 0;
+}
+
+int io_pcb_write_subcs_head(pcb_plug_io_t *ctx, void **udata, FILE *f, int lib, long num_subcs)
+{
+	return 0;
+}
+
+int io_pcb_write_subcs_subc(pcb_plug_io_t *ctx, void **udata, FILE *f, pcb_subc_t *subc)
+{
+	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
+	io_pcb_print_subc(ctx, f, subc);
+	return 0;
+}
+
+int io_pcb_write_subcs_tail(pcb_plug_io_t *ctx, void **udata, FILE *f)
+{
 	return 0;
 }
 
