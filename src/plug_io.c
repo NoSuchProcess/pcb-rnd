@@ -324,8 +324,7 @@ int pcb_find_io(pcb_find_io_t *available, int avail_len, pcb_plug_iot_t typ, int
 	return len;
 }
 
-/* Find the plugin that offers the highest write prio for the format */
-static pcb_plug_io_t *find_writer(pcb_plug_iot_t typ, const char *fmt)
+pcb_plug_io_t *pcb_io_find_writer(pcb_plug_iot_t typ, const char *fmt)
 {
 	pcb_find_io_t available[PCB_IO_MAX_FORMATS];
 	int len;
@@ -411,7 +410,7 @@ static int pcb_write_data_subcs(pcb_plug_io_t *p, FILE *f, pcb_data_t *data, lon
 static int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt, pcb_bool subc_only, long subc_idx)
 {
 	int res/*, newfmt = 0*/;
-	pcb_plug_io_t *p = find_writer(subc_only ? PCB_IOT_BUFFER_SUBC : PCB_IOT_BUFFER, fmt);
+	pcb_plug_io_t *p = pcb_io_find_writer(subc_only ? PCB_IOT_BUFFER_SUBC : PCB_IOT_BUFFER, fmt);
 
 	if (p != NULL) {
 		if (subc_only)
@@ -434,7 +433,7 @@ int pcb_write_footprint_data(FILE *f, pcb_data_t *e, const char *fmt, long subc_
 	pcb_plug_io_t *p = e->loader;
 
 	if ((p == NULL) || ((fmt != NULL) && (*fmt != '\0'))) {
-		p = find_writer(PCB_IOT_FOOTPRINT, fmt);
+		p = pcb_io_find_writer(PCB_IOT_FOOTPRINT, fmt);
 		newfmt = 1;
 	}
 
@@ -451,7 +450,7 @@ int pcb_write_footprint_data(FILE *f, pcb_data_t *e, const char *fmt, long subc_
 int pcb_write_font(pcb_font_t *Ptr, const char *Filename, const char *fmt)
 {
 	int res/*, newfmt = 0*/;
-	pcb_plug_io_t *p = find_writer(PCB_IOT_FONT, fmt);
+	pcb_plug_io_t *p = pcb_io_find_writer(PCB_IOT_FONT, fmt);
 
 	if (p != NULL) {
 		res = p->write_font(p, Ptr, Filename);
@@ -474,7 +473,7 @@ static int pcb_write_pcb(FILE *f, const char *old_filename, const char *new_file
 	pcb_plug_io_t *p = PCB->Data->loader;
 
 	if ((p == NULL) || ((fmt != NULL) && (*fmt != '\0'))) {
-		p = find_writer(PCB_IOT_PCB, fmt);
+		p = pcb_io_find_writer(PCB_IOT_PCB, fmt);
 		newfmt = 1;
 	}
 
