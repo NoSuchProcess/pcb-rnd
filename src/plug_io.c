@@ -373,15 +373,9 @@ static pcb_plug_io_t *find_writer(pcb_plug_iot_t typ, const char *fmt)
 	return available[0].plug;
 }
 
-
-static int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt, pcb_bool subc_only, long subc_idx)
+static int pcb_write_data_subcs(pcb_plug_io_t *p, FILE *f, pcb_data_t *data, long subc_idx)
 {
-	int res/*, newfmt = 0*/;
-	pcb_plug_io_t *p = find_writer(subc_only ? PCB_IOT_BUFFER_SUBC : PCB_IOT_BUFFER, fmt);
-
-	if (p != NULL) {
-		if (subc_only) {
-			long avail = pcb_subclist_length(&buff->Data->subc);
+			long avail = pcb_subclist_length(&data->subc);
 			void *udata;
 			int res;
 
@@ -398,7 +392,7 @@ static int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt, pcb_bo
 					return -1;
 				}
 				res = 0;
-				subclist_foreach(&buff->Data->subc, &sit, subc)
+				subclist_foreach(&data->subc, &sit, subc)
 					res |= p->write_subcs_subc(p, &udata, f, subc);
 				res |= p->write_subcs_tail(p, &udata, f);
 				return res;
@@ -408,11 +402,20 @@ static int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt, pcb_bo
 					pcb_message(PCB_MSG_ERROR, "pcb_write_buffer: failed to write head");
 					return -1;
 				}
-				res = p->write_subcs_subc(p, &udata, f, pcb_subclist_nth(&buff->Data->subc, subc_idx));
+				res = p->write_subcs_subc(p, &udata, f, pcb_subclist_nth(&data->subc, subc_idx));
 				res |= p->write_subcs_tail(p, &udata, f);
 				return res;
 			}
-		}
+}
+
+static int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt, pcb_bool subc_only, long subc_idx)
+{
+	int res/*, newfmt = 0*/;
+	pcb_plug_io_t *p = find_writer(subc_only ? PCB_IOT_BUFFER_SUBC : PCB_IOT_BUFFER, fmt);
+
+	if (p != NULL) {
+		if (subc_only)
+			res = pcb_write_data_subcs(p, f, buff->Data, subc_idx);
 		else
 			res = p->write_buffer(p, f, buff);
 		/*newfmt = 1;*/
@@ -435,8 +438,8 @@ int pcb_write_footprint_data(FILE *f, pcb_data_t *e, const char *fmt, long subc_
 		newfmt = 1;
 	}
 
-	if ((p != NULL) && (p->write_footprint != NULL))
-		res = p->write_footprint(p, f, e, subc_idx);
+	if ((p != NULL) && (p->write_subcs_subc != NULL))
+		res = pcb_write_data_subcs(p, f, e, subc_idx);
 
 	if ((res == 0) && (newfmt))
 		e->loader = p;
