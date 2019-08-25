@@ -3345,6 +3345,10 @@ dir
 file
 </b>
  and the target file format has library support, all subcircuits are saved in the same file, as a library. 
+<p>
+ If a single subcircuit from buffer needs to be saved to be a footprint, use the 
+<a href="#saveto">saveto</a>
+ action with first argument set to PasteBuffer. 
 </dd></dl>
 
 <h2 id="saveto">SaveTo</h2>
@@ -3381,7 +3385,9 @@ Arguments:
 <th>
  PasteBuffer  
 <td>
- Save the subcircuit from the active Buffer to a file. The buffer       needs to contain exactly one subcircuit. This is       the graphical way to create a footprint.   
+ Save the subcircuit from the active Buffer to a file. The buffer       needs to contain exactly one subcircuit. This is       the graphical way to create a footprint. If multiple subcircuits       needs to be saved, use the 
+<a href="#savelib">savelib</a>
+ action.   
 <tr>
 
 <th>
