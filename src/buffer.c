@@ -925,7 +925,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 		case F_Save:
 			name = sbufnum;
-			pcb_save_buffer_subcs(name, fmt, -1);
+			return pcb_actionl("SaveTo", "PasteBuffer", name, fmt, NULL);
 			break;
 
 		case F_ToLayout:
