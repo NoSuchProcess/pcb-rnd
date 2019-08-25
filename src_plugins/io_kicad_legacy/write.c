@@ -54,15 +54,15 @@ static const char *or_empty(const char *s)
 }
 
 /* writes (eventually) de-duplicated list of element names in kicad legacy format module $INDEX */
-static int io_kicad_legacy_write_subc_index(FILE *FP, pcb_data_t *Data)
+static int io_kicad_legacy_write_subc_index(FILE *FP, vtp0_t *subcs)
 {
-	gdl_iterator_t eit;
-	pcb_subc_t *subc;
 	unm_t group1;
+	long n;
 
 	unm_init(&group1);
 
-	subclist_foreach(&Data->subc, &eit, subc) {
+	for(n = 0; n < subcs->used; n++) {
+		pcb_subc_t *subc = subcs->array[n];
 		if (pcb_data_is_empty(subc->data))
 			continue;
 
@@ -663,31 +663,46 @@ static int write_kicad_legacy_layout_polygons(FILE *FP, pcb_cardinal_t number, p
 	}
 }
 
-TODO("write_element won't do the header:");
-#if 0
-int io_kicad_legacy_write_buffer_subc(pcb_plug_io_t *ctx, FILE *FP, pcb_buffer_t *buff, long subc_idx)
+int io_kicad_legacy_write_subcs_head(pcb_plug_io_t *ctx, void **udata, FILE *f, int lib, long num_subcs)
 {
-	if (subc_idx != 0) {
-		pcb_message(PCB_MSG_ERROR, "Only the first subcircuit can be saved at the moment\n");
-		return -1;
-	}
+	vtp0_t *subcs = malloc(sizeof(vtp0_t));
+	vtp0_init(subcs);
 
-	if (pcb_subclist_length(&buff->Data->subc) == 0) {
-		pcb_message(PCB_MSG_ERROR, "Buffer has no subcircuits!\n");
-		return -1;
-	}
-
-TODO(": no hardwiring of dates")
-	fputs("PCBNEW-LibModule-V1	jan 01 jan 2016 00:00:01 CET\n", FP);
-	fputs("$INDEX\n", FP);
-	io_kicad_legacy_write_subc_index(FP, buff->Data);
-	fputs("$EndINDEX\n", FP);
-
-	pcb_write_footprint_data(FP, buff->Data, "kicadl", subc_idx);
-
+	*udata = subcs;
 	return 0;
 }
-#endif
+
+int io_kicad_legacy_write_subcs_subc(pcb_plug_io_t *ctx, void **udata, FILE *f, pcb_subc_t *subc)
+{
+	vtp0_t *subcs = *udata;
+	vtp0_append(subcs, subc);
+	return 0;
+}
+
+int io_kicad_legacy_write_subcs_tail(pcb_plug_io_t *ctx, void **udata, FILE *f)
+{
+	unm_t group1;
+	vtp0_t *subcs = *udata;
+	long n;
+
+TODO("no hardwiring of dates")
+	fputs("PCBNEW-LibModule-V1	jan 01 jan 2016 00:00:01 CET\n", f);
+	fputs("$INDEX\n", f);
+	io_kicad_legacy_write_subc_index(f, subcs);
+	fputs("$EndINDEX\n", f);
+
+	unm_init(&group1);
+	for(n = 0; n < subcs->used; n++) {
+		pcb_subc_t *subc = subcs->array[n];
+		const char *uname = unm_name(&group1, or_empty(pcb_attribute_get(&subc->Attributes, "footprint")), subc);
+		io_kicad_legacy_write_subc(f, PCB, subc, 0, 0, uname);
+	}
+	unm_uninit(&group1);
+
+	vtp0_uninit(subcs);
+	free(subcs);
+	return 0;
+}
 
 int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
 {
