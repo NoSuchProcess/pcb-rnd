@@ -665,43 +665,25 @@ TODO(": this should be a safe lookup, merged with kicad_sexpr_layer_to_text()")
 	kicad_print_pstks(ctx, data, ind, dx, dy);
 }
 
-static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, pcb_coord_t dx, pcb_coord_t dy, long subc_idx)
+static int kicad_print_subc(wctx_t *ctx, pcb_subc_t *subc, pcb_cardinal_t ind, pcb_coord_t dx, pcb_coord_t dy, unm_t *group1)
 {
-	gdl_iterator_t sit;
-	pcb_subc_t *subc;
-	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
+	pcb_coord_t xPos, yPos, sox, soy;
+	int on_bottom;
 	const char *currentElementName;
 	const char *currentElementRef;
 	const char *currentElementVal;
 
-TODO(": revise this for subc")
-/*	elementlist_dedup_initializer(ededup);*/
-
-	/* Now initialize the group with defaults */
-	unm_init(&group1);
-
-	subclist_foreach(&Data->subc, &sit, subc) {
-		pcb_coord_t xPos, yPos, sox, soy;
-		int on_bottom;
-
 TODO(": get this from data table (see also #1)")
-		int silkLayer = 21; /* hard coded default, 20 is bottom silk */
-		int copperLayer = 15; /* hard coded default, 0 is bottom copper */
-
-		if ((subc_idx >= 0) && (subc_idx != sit.count))
-			continue;
-
-		/* elementlist_dedup_skip(ededup, element);  */
-TODO(": why?")
-		/* let's not skip duplicate elements for layout export */
+	int silkLayer = 21; /* hard coded default, 20 is bottom silk */
+	int copperLayer = 15; /* hard coded default, 0 is bottom copper */
 
 		if (pcb_subc_get_origin(subc, &sox, &soy) != 0) {
-			pcb_io_incompat_save(Data, (pcb_any_obj_t *)subc, "subc-place", "Failed to get origin of subcircuit", "fix the missing subc-aux layer");
-			continue;
+			pcb_io_incompat_save(subc->data, (pcb_any_obj_t *)subc, "subc-place", "Failed to get origin of subcircuit", "fix the missing subc-aux layer");
+			return -1;
 		}
 		if (pcb_subc_get_side(subc, &on_bottom) != 0) {
-			pcb_io_incompat_save(Data, (pcb_any_obj_t *)subc, "subc-place", "Failed to get placement side of subcircuit", "fix the missing subc-aux layer");
-			continue;
+			pcb_io_incompat_save(subc->data, (pcb_any_obj_t *)subc, "subc-place", "Failed to get placement side of subcircuit", "fix the missing subc-aux layer");
+			return -1;
 		}
 
 		xPos = sox + dx;
@@ -712,12 +694,19 @@ TODO(": why?")
 			copperLayer = 0;
 		}
 
+		if (group1 != NULL) {
 TODO(": we should probably do unm_name() on the refdes, not on footprint-name?")
 TODO(": the unique name makes no sense if we override it with unknown - if the unique name is NULL, it is more likely a save-incompatibility error")
-		currentElementName = unm_name(&group1, pcb_attribute_get(&subc->Attributes, "footprint"), subc);
-		if (currentElementName == NULL) {
-			currentElementName = "unknown";
+			currentElementName = unm_name(group1, pcb_attribute_get(&subc->Attributes, "footprint"), subc);
+			if (currentElementName == NULL)
+				currentElementName = "unknown";
 		}
+		else {
+			currentElementName = pcb_attribute_get(&subc->Attributes, "footprint");
+			if (currentElementName == NULL)
+				currentElementName = "unknown";
+		}
+
 		currentElementRef = pcb_attribute_get(&subc->Attributes, "refdes");
 		if (currentElementRef == NULL) {
 			currentElementRef = "unknown";
@@ -764,6 +753,33 @@ TODO(": warn for vias")
 TODO(": warn for heavy terminals")
 
 		fprintf(ctx->f, "%*s)\n\n", ind, ""); /*  finish off module */
+
+	return 0;
+}
+
+
+static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, pcb_coord_t dx, pcb_coord_t dy, long subc_idx)
+{
+	gdl_iterator_t sit;
+	pcb_subc_t *subc;
+	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
+
+TODO(": revise this for subc")
+/*	elementlist_dedup_initializer(ededup);*/
+
+	/* Now initialize the group with defaults */
+	unm_init(&group1);
+
+	subclist_foreach(&Data->subc, &sit, subc) {
+
+		if ((subc_idx >= 0) && (subc_idx != sit.count))
+			continue;
+
+		/* elementlist_dedup_skip(ededup, element);  */
+TODO(": why?")
+		/* let's not skip duplicate elements for layout export */
+
+		kicad_print_subc(ctx, subc, ind, dx, dy, &group1);
 	}
 	/* Release unique name utility memory */
 	unm_uninit(&group1);
@@ -806,6 +822,39 @@ TODO(": make this initialization a common function with write_kicad_layout()")
 
 	return kicad_print_subcs(&wctx, Data, 0, 0, 0, subc_idx);
 }
+
+int io_kicad_write_subcs_head(pcb_plug_io_t *ctx, void **udata, FILE *f, int lib, long num_subcs)
+{
+	if ((lib) || (num_subcs > 1)) {
+		pcb_message(PCB_MSG_ERROR, "Can't save a library and/or multiple modules (footprints) in a single s-experssion mod file\n");
+		return -1;
+	}
+	return 0;
+}
+
+int io_kicad_write_subcs_subc(pcb_plug_io_t *ctx, void **udata, FILE *f, pcb_subc_t *subc)
+{
+	wctx_t wctx;
+
+TODO(": make this initialization a common function with write_kicad_layout()")
+	pcb_printf_slot[4] = "%{\\()\t\r\n \"}mq";
+
+	wctx.f = f;
+	wctx.pcb = PCB;
+	wctx.ox = 0;
+	wctx.oy = 0;
+
+	if (kicad_map_layers(&wctx) != 0)
+		return -1;
+
+	return kicad_print_subc(&wctx, subc, 0, 0, 0, NULL);
+}
+
+int io_kicad_write_subcs_tail(pcb_plug_io_t *ctx, void **udata, FILE *f)
+{
+	return 0;
+}
+
 
 static int write_kicad_equipotential_netlists(FILE *FP, pcb_board_t *Layout, pcb_cardinal_t indentation)
 {

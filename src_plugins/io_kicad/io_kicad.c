@@ -81,6 +81,9 @@ int pplg_init_io_kicad(void)
 	io_kicad.parse_font = NULL;
 	io_kicad.write_buffer = NULL;
 	io_kicad.write_footprint = io_kicad_write_element;
+	io_kicad.write_subcs_head = io_kicad_write_subcs_head;
+	io_kicad.write_subcs_subc = io_kicad_write_subcs_subc;
+	io_kicad.write_subcs_tail = io_kicad_write_subcs_tail;
 	io_kicad.write_pcb = io_kicad_write_pcb;
 	io_kicad.default_fmt = "kicad";
 	io_kicad.description = "Kicad, s-expression";
