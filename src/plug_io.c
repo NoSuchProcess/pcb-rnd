@@ -382,11 +382,36 @@ static int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt, pcb_bo
 	if (p != NULL) {
 		if (subc_only) {
 			long avail = pcb_subclist_length(&buff->Data->subc);
+			void *udata;
+			int res;
+
 			if ((subc_idx >= 0) && (subc_idx >= avail)) {
 					pcb_message(PCB_MSG_ERROR, "pcb_write_buffer: subc index out of range");
 					return -1;
 			}
-			return p->write_footprint(p, f, buff->Data, subc_idx);
+			if (subc_idx < 0) {
+				pcb_subc_t *subc;
+				gdl_iterator_t sit;
+
+				if (p->write_subcs_head(p, &udata, f, (avail > 1), avail) != 0) {
+					pcb_message(PCB_MSG_ERROR, "pcb_write_buffer: failed to write head");
+					return -1;
+				}
+				res = 0;
+				subclist_foreach(&buff->Data->subc, &sit, subc)
+					res |= p->write_subcs_subc(p, &udata, f, subc);
+				res |= p->write_subcs_tail(p, &udata, f);
+				return res;
+			}
+			else {
+				if (p->write_subcs_head(p, &udata, f, 0, 1) != 0) {
+					pcb_message(PCB_MSG_ERROR, "pcb_write_buffer: failed to write head");
+					return -1;
+				}
+				res = p->write_subcs_subc(p, &udata, f, pcb_subclist_nth(&buff->Data->subc, subc_idx));
+				res |= p->write_subcs_tail(p, &udata, f);
+				return res;
+			}
 		}
 		else
 			res = p->write_buffer(p, f, buff);
