@@ -5,6 +5,7 @@
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  Copyright (C) 1997, 1998, 1999, 2000, 2001 Harry Eaton
+ *  Copyright (C) 2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -53,6 +54,7 @@
 #include "safe_fs.h"
 #include "tool.h"
 #include "netlist.h"
+#include "plug_io.h"
 
 
 static const char pcb_acts_LoadFrom[] = "LoadFrom(Layout|LayoutToBuffer|SubcToBuffer|Netlist|Revert,filename[,format])";
@@ -242,6 +244,126 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_FAIL(SaveTo);
 }
 
+static const char pcb_acts_SaveLib[] =
+	"SaveLib(file|dir, board|buffer, [filename], [fmt])\n";
+static const char pcb_acth_SaveLib[] = "Saves all subcircuits to a library file or directory from a board or buffer.";
+/* DOC: savelib.html */
+fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *method, *source, *fn = NULL, *fmt = NULL;
+	pcb_data_t *src;
+
+	PCB_ACT_CONVARG(1, FGW_STR, SaveLib, method = argv[1].val.str);
+	PCB_ACT_CONVARG(2, FGW_STR, SaveLib, source = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, SaveLib, fn = argv[3].val.str);
+	PCB_ACT_MAY_CONVARG(4, FGW_STR, SaveLib, fmt = argv[4].val.str);
+
+	if (pcb_strcasecmp(source, "board") == 0) src = PCB->Data;
+	else if (pcb_strcasecmp(source, "buffer") == 0) src = PCB_PASTEBUFFER->Data;
+	else
+		PCB_ACT_FAIL(SaveLib);
+
+	if (pcb_strcasecmp(method, "file") == 0) {
+		char *name;
+		FILE *f;
+		static char *default_file;
+
+		if (fn == NULL) {
+			name = pcb_gui->fileselect(pcb_gui, "Save footprint lib to file ...",
+				"Choose a file to save all subcircuits to.\n",
+				default_file, ".lht", NULL, "save_lib_file", PCB_HID_FSD_MAY_NOT_EXIST, NULL);
+		}
+		else
+			name = pcb_strdup(fn);
+
+		if (default_file) {
+			free(default_file);
+			default_file = NULL;
+		}
+		default_file = pcb_strdup(name);
+
+		f = pcb_fopen(&PCB->hidlib, name, "w");
+		if (f == NULL) {
+			pcb_message(PCB_MSG_ERROR, "Failed to open %s for write\n", name);
+			free(name);
+			PCB_ACT_IRES(-1);
+			return 0;
+		}
+		free(name);
+		PCB_ACT_IRES(pcb_write_footprint_data(f, src, fmt, -1));
+	}
+	else if (pcb_strcasecmp(method, "dir") == 0) {
+		unsigned int ares = 0;
+		void *udata;
+		gdl_iterator_t sit;
+		char *name, *sep;
+		const char *ending;
+		static char *default_file;
+		pcb_subc_t *subc;
+		pcb_plug_io_t *p = pcb_io_find_writer(PCB_IOT_BUFFER_SUBC, fmt);
+
+
+		if (p == NULL) {
+			if (fmt == NULL)
+				pcb_message(PCB_MSG_ERROR, "Failed to find a plugin that can write subcircuits", fmt);
+			else
+				pcb_message(PCB_MSG_ERROR, "Failed to find a plugin for format %s", fmt);
+			PCB_ACT_IRES(-1);
+			return 0;
+		}
+
+		if (fn == NULL) {
+			name = pcb_gui->fileselect(pcb_gui, "Save footprint lib to directory ...",
+				"Choose a file name pattern to save all subcircuits to.\n",
+				default_file, ".lht", NULL, "save_lib_dir", PCB_HID_FSD_IS_TEMPLATE, NULL);
+		}
+		else
+			name = pcb_strdup(fn);
+
+		if (default_file) {
+			free(default_file);
+			default_file = NULL;
+		}
+		default_file = pcb_strdup(name);
+
+		sep = strrchr(name, '.');
+		if ((sep != NULL) && (strchr(sep, PCB_DIR_SEPARATOR_C) == NULL)) {
+			*sep = '\0';
+			ending = sep+1;
+			sep = ".";
+		}
+		else {
+			ending = p->fp_extension;
+			sep = "";
+		}
+
+		subclist_foreach(&src->subc, &sit, subc) {
+			FILE *f;
+			char *fullname = pcb_strdup_printf("%s.%ld%s%s", name, (long)sit.count, sep, ending);
+
+			f = pcb_fopen(&PCB->hidlib, fullname, "w");
+			free(fullname);
+			if (f != NULL) {
+				if (p->write_subcs_head(p, &udata, f, 0, 1) == 0) {
+					ares |= p->write_subcs_subc(p, &udata, f, subc);
+					ares |= p->write_subcs_tail(p, &udata, f);
+				}
+				else ares |= 1;
+			}
+			else ares |= 1;
+		}
+
+		if (ares != 0)
+			pcb_message(PCB_MSG_ERROR, "Some of the subcircuits failed to export\n");
+		PCB_ACT_IRES(ares);
+		free(name);
+	}
+	else
+		PCB_ACT_FAIL(SaveLib);
+
+	return 0;
+}
+
 static const char pcb_acts_Quit[] = "Quit()";
 static const char pcb_acth_Quit[] = "Quits the application after confirming.";
 /* DOC: quit.html */
@@ -317,6 +439,7 @@ pcb_action_t file_action_list[] = {
 	{"New", pcb_act_New, pcb_acth_New, pcb_acts_New},
 	{"Normalize", pcb_act_normalize, pcb_acth_normalize, pcb_acts_normalize},
 	{"SaveTo", pcb_act_SaveTo, pcb_acth_SaveTo, pcb_acts_SaveTo},
+	{"SaveLib", pcb_act_SaveLib, pcb_acth_SaveLib, pcb_acts_SaveLib},
 	{"Quit", pcb_act_Quit, pcb_acth_Quit, pcb_acts_Quit}
 };
 
