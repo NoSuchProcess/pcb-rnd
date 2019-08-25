@@ -1657,20 +1657,10 @@ static int plug2ver(const pcb_plug_io_t *ctx)
 	return 0;
 }
 
-static int io_lihata_dump_nth_subc(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *data, int enforce1, long subc_idx)
+static int io_lihata_dump_subc(pcb_plug_io_t *ctx, FILE *f, pcb_subc_t *sc)
 {
 	int res;
 	lht_doc_t *doc;
-	pcb_subc_t *sc;
-
-	if ((subc_idx < 0) && (enforce1) && (pcb_subclist_length(&data->subc)) > 1) {
-		pcb_message(PCB_MSG_ERROR, "Can't save more than one subcircuit from a buffer\n");
-		return -1;
-	}
-	if (pcb_subclist_length(&data->subc) < 1) {
-		pcb_message(PCB_MSG_ERROR, "there's no subcircuit in the buffer\n");
-		return -1;
-	}
 
 	/* create the doc */
 	io_lihata_full_tree = 1;
@@ -1682,14 +1672,6 @@ static int io_lihata_dump_nth_subc(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *data
 		wrver = 1;
 
 	/* bump version if features require */
-	if (subc_idx == -1)
-		sc = pcb_subclist_first(&data->subc);
-	else
-		sc = pcb_subclist_nth(&data->subc, subc_idx);
-
-	if (sc == NULL)
-		return -1;
-
 TODO("subc: for subc-in-subc this should be recursive")
 	if (padstacklist_first(&sc->data->padstack) != NULL) {
 		if (wrver < 4) {
@@ -1718,6 +1700,50 @@ TODO("subc: for subc-in-subc this should be recursive")
 	io_lihata_full_tree = 0;
 	return res;
 }
+
+
+static int io_lihata_dump_nth_subc(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *data, int enforce1, long subc_idx)
+{
+	pcb_subc_t *sc;
+
+	if ((subc_idx < 0) && (enforce1) && (pcb_subclist_length(&data->subc)) > 1) {
+		pcb_message(PCB_MSG_ERROR, "Can't save more than one subcircuit from a buffer\n");
+		return -1;
+	}
+	if (pcb_subclist_length(&data->subc) < 1) {
+		pcb_message(PCB_MSG_ERROR, "there's no subcircuit in the buffer\n");
+		return -1;
+	}
+
+	if (subc_idx == -1)
+		sc = pcb_subclist_first(&data->subc);
+	else
+		sc = pcb_subclist_nth(&data->subc, subc_idx);
+
+	if (sc == NULL)
+		return -1;
+
+	return io_lihata_dump_subc(ctx, f, sc);
+}
+
+int io_lihata_write_subcs_head(pcb_plug_io_t *ctx, void **udata, FILE *f, int lib, long num_subcs)
+{
+	if ((lib) || (num_subcs != 1)) {
+		pcb_message(PCB_MSG_ERROR, "Only one subcircuit per footprint file can be written in lihata\n");
+		return -1;
+	}
+}
+
+int io_lihata_write_subcs_subc(pcb_plug_io_t *ctx, void **udata, FILE *f, pcb_subc_t *subc)
+{
+	return io_lihata_dump_subc(ctx, f, subc);
+}
+
+int io_lihata_write_subcs_tail(pcb_plug_io_t *ctx, void **udata, FILE *f)
+{
+	return 0;
+}
+
 
 int io_lihata_write_buffer(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff)
 {

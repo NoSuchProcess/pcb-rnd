@@ -35,6 +35,9 @@ int io_lihata_write_pcb_v6(pcb_plug_io_t *ctx, FILE *FP, const char *old_filenam
 int io_lihata_write_font(pcb_plug_io_t *ctx, pcb_font_t *font, const char *Filename);
 int io_lihata_write_buffer(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff);
 int io_lihata_write_element(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *dt, long subc_idx);
+int io_lihata_write_subcs_head(pcb_plug_io_t *ctx, void **udata, FILE *f, int lib, long num_subcs);
+int io_lihata_write_subcs_subc(pcb_plug_io_t *ctx, void **udata, FILE *f, pcb_subc_t *subc);
+int io_lihata_write_subcs_tail(pcb_plug_io_t *ctx, void **udata, FILE *f);
 
 void *io_lihata_save_as_subd_init(const pcb_plug_io_t *ctx, pcb_hid_dad_subdialog_t *sub, pcb_plug_iot_t type);
 void io_lihata_save_as_subd_uninit(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_hid_dad_subdialog_t *sub, pcb_bool apply);
