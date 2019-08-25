@@ -1732,6 +1732,7 @@ int io_lihata_write_subcs_head(pcb_plug_io_t *ctx, void **udata, FILE *f, int li
 		pcb_message(PCB_MSG_ERROR, "Only one subcircuit per footprint file can be written in lihata\n");
 		return -1;
 	}
+	return 0;
 }
 
 int io_lihata_write_subcs_subc(pcb_plug_io_t *ctx, void **udata, FILE *f, pcb_subc_t *subc)
