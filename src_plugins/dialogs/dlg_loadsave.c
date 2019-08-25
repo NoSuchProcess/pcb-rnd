@@ -371,7 +371,12 @@ static void setup_fmt_sub(save_t *save, pcb_plug_iot_t save_type)
 	PCB_DAD_END(save->fmtsub->dlg);
 }
 
-const char pcb_acts_Save[] = "Save()\n" "Save(Layout|LayoutAs)\n" "Save(AllConnections|AllUnusedPins|ElementConnections)\n" "Save(PasteBuffer)";
+const char pcb_acts_Save[] = 
+	"Save()\n"
+	"Save(Layout|LayoutAs)\n"
+	"Save(AllConnections|AllUnusedPins|ElementConnections)\n"
+	"Save(PasteBuffer)\n"
+	"Save(DialogByPattern, pcb|footprint|font|buffer, none|board|fp, prompt, [default_pattern])";
 const char pcb_acth_Save[] = "Save layout data to a user-selected file.";
 /* DOC: save.html */
 fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -386,13 +391,20 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int num_fmts, fmt, *fmt_param = NULL;
 	save_t save;
 	pcb_hidval_t timer_ctx;
+	const char *default_pattern = NULL;
+	pcb_plug_iot_t list_iot;
+	pcb_io_list_ext_t list_ext;
+	int dialog_by_pattern = 0, is_dialog;
 
 	if (cwd == NULL) cwd = dup_cwd();
 
-	if (argc > 2)
-		return PCB_ACT_CALL_C(pcb_act_SaveTo, res, argc, argv);
 
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, Save, function = argv[1].val.str);
+
+	is_dialog = (function != NULL) && (pcb_strncasecmp(function, "Dialog", 6) == 0);
+
+	if ((!is_dialog) && (argc > 2))
+		return PCB_ACT_CALL_C(pcb_act_SaveTo, res, argc, argv);
 
 	memset(&save, 0, sizeof(save));
 
@@ -400,12 +412,42 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (PCB->hidlib.filename != NULL)
 			return pcb_actionl("SaveTo", "Layout", NULL);
 
+	if (is_dialog) {
+		const char *siot, *sext;
+
+		PCB_ACT_CONVARG(2, FGW_STR, Save, siot = argv[2].val.str);
+		PCB_ACT_CONVARG(3, FGW_STR, Save, sext = argv[3].val.str);
+		PCB_ACT_CONVARG(4, FGW_STR, Save, prompt = argv[4].val.str);
+		PCB_ACT_MAY_CONVARG(5, FGW_STR, Save, default_pattern = argv[5].val.str);
+
+		if (pcb_strcasecmp(siot, "pcb") == 0) list_iot = PCB_IOT_PCB;
+		else if (pcb_strcasecmp(siot, "footprint") == 0) list_iot = PCB_IOT_FOOTPRINT;
+		else if (pcb_strcasecmp(siot, "font") == 0) list_iot = PCB_IOT_FONT;
+		else if (pcb_strcasecmp(siot, "buffer") == 0) list_iot = PCB_IOT_BUFFER;
+		else PCB_ACT_FAIL(Save);
+
+		if (pcb_strcasecmp(sext, "none") == 0) list_ext = PCB_IOL_EXT_NONE;
+		else if (pcb_strcasecmp(sext, "board") == 0) list_ext = PCB_IOL_EXT_BOARD;
+		else if (pcb_strcasecmp(sext, "fp") == 0) list_ext = PCB_IOL_EXT_FP;
+		else PCB_ACT_FAIL(Save);
+	}
+
 	if (pcb_strcasecmp(function, "PasteBuffer") == 0) {
-		int n;
-		prompt = "Save subcircuit as";
+		default_pattern = conf_core.rc.save_fp_fmt;
 		num_fmts = pcb_io_list(&avail, PCB_IOT_FOOTPRINT, 1, 1, PCB_IOL_EXT_FP);
+		prompt = "Save subcircuit as";
+		list_iot = PCB_IOT_FOOTPRINT;
+		list_ext = PCB_IOL_EXT_FP;
+		goto list_by_pattern;
+	}
+	else if (pcb_strcasecmp(function, "DialogByPattern") == 0) {
+		int n;
+
+		dialog_by_pattern = 1;
+
+		list_by_pattern:;
+		num_fmts = pcb_io_list(&avail, list_iot, 1, 1, list_ext);
 		if (num_fmts > 0) {
-			const char *default_pattern = conf_core.rc.save_fp_fmt;
 			extensions_param = (const char **)avail.extension;
 			fmt_param = &fmt;
 			fmt = -1;
@@ -518,11 +560,27 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	free(save.fmt_tab_names);
 	free(save.fmt_plug_data);
 
+	/* early return for dialog-by-pattern: don't do anything real, just build a string and return */
+	if (dialog_by_pattern) {
+		const char *sfmt = NULL;
+		if (fmt_param != NULL)
+			sfmt = avail.plug[save.pick]->default_fmt;
+		res->type = FGW_STR | FGW_DYN;
+		if (final_name != NULL)
+			res->val.str = pcb_concat(final_name, "*", sfmt, NULL);
+		else
+			res->val.str = NULL;
+		free(final_name);
+		pcb_io_list_free(&avail);
+		return 0;
+	}
+
 	if (final_name == NULL) { /* cancel */
 		pcb_io_list_free(&avail);
 		PCB_ACT_IRES(1);
 		return 0;
 	}
+
 
 	if (pcbhl_conf.rc.verbose)
 		fprintf(stderr, "Save:  Calling SaveTo(%s, %s)\n", function, final_name);
