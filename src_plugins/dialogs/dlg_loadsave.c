@@ -402,7 +402,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (pcb_strcasecmp(function, "PasteBuffer") == 0) {
 		int num_fmts, n;
-		prompt = "Save element as";
+		prompt = "Save subcircuit as";
 		num_fmts = pcb_io_list(&avail, PCB_IOT_BUFFER, 1, 1, PCB_IOL_EXT_FP);
 		if (num_fmts > 0) {
 			const char *default_pattern = conf_core.rc.save_fp_fmt;
