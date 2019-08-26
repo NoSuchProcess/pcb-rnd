@@ -188,6 +188,8 @@ void pcb_obj_add_attribs(void *obj, const pcb_attribute_list_t *src);
 	void                 *ratconn; \
 	unsigned char        thermal; \
 	unsigned char        intconn, intnoconn; \
+	unsigned int         noexport:1; \
+	unsigned int         noexport_named:1; \
 	const pcb_color_t    *override_color
 
 /* Lines, pads, and rats all use this so they can be cross-cast.  */
@@ -238,6 +240,23 @@ void pcb_obj_post(pcb_any_obj_t *o);
 
 #define pcb_obj_id_del(data, obj) \
 	htip_pop(&(data)->id2obj, (obj)->ID)
+
+/* Figure object's noexport attribute vs. the current exporter and run
+   inhibit if object should not be exported. On GUI, draw the no-export mark
+   at x;y */
+#define pcb_obj_noexport(info, obj, inhibit) \
+do { \
+	if (obj->noexport) { \
+		if (info->exporting) { \
+			if (!obj->noexport_named || (pcb_attribute_get(&obj->Attributes, info->noexport_name) != NULL)) { \
+				inhibit; \
+			} \
+		} \
+		else \
+			pcb_draw_delay_label_add((pcb_any_obj_t *)obj); \
+	} \
+} while(0)
+
 
 #define pcb_hidden_floater(obj) (conf_core.editor.hide_names && PCB_FLAG_TEST(PCB_FLAG_FLOATER, (obj)))
 

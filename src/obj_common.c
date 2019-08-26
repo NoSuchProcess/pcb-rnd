@@ -175,6 +175,10 @@ void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, co
 		}
 		obj->intnoconn = cid;
 	}
+	else if (strncmp(name, "noexport", 8) == 0) {
+		obj->noexport = 1;
+		obj->noexport_named = (name[8] == ':');
+	}
 }
 
 const char *pcb_obj_id_invalid(const char *id)
