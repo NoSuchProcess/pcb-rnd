@@ -1093,6 +1093,9 @@ void pcb_poly_draw_label(pcb_draw_info_t *info, pcb_poly_t *poly)
 	if (poly->term != NULL)
 		pcb_term_label_draw(info, (poly->BoundingBox.X1 + poly->BoundingBox.X2)/2, (poly->BoundingBox.Y1 + poly->BoundingBox.Y2)/2,
 			conf_core.appearance.term_label_size, is_poly_term_vert(poly), pcb_true, (pcb_any_obj_t *)poly);
+
+	if (poly->noexport)
+		pcb_obj_noexport_mark(poly, (poly->BoundingBox.X1 + poly->BoundingBox.X2)/2, (poly->BoundingBox.Y1 + poly->BoundingBox.Y2)/2);
 }
 
 void pcb_poly_draw_annotation(pcb_draw_info_t *info, pcb_poly_t *poly)
@@ -1251,6 +1254,8 @@ static void pcb_poly_draw(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_
 	static const pcb_color_t *color;
 	pcb_color_t buf;
 	const pcb_layer_t *layer = info->layer != NULL ? info->layer : pcb_layer_get_real(polygon->parent.layer);
+
+	pcb_obj_noexport(info, polygon, return);
 
 	if (layer == NULL) /* if the layer is inbound, e.g. in preview, fall back using the layer recipe */
 		layer = polygon->parent.layer;

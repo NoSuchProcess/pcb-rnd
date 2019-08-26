@@ -1250,6 +1250,8 @@ void pcb_text_draw_label(pcb_draw_info_t *info, pcb_text_t *text)
 	if (text->term != NULL)
 		pcb_term_label_draw(info, (text->BoundingBox.X1 + text->BoundingBox.X2)/2, (text->BoundingBox.Y1 + text->BoundingBox.Y2)/2,
 			conf_core.appearance.term_label_size, is_text_term_vert(text), pcb_true, (pcb_any_obj_t *)text);
+	if (text->noexport)
+		pcb_obj_noexport_mark(text, (text->BoundingBox.X1 + text->BoundingBox.X2)/2, (text->BoundingBox.Y1 + text->BoundingBox.Y2)/2);
 }
 
 
@@ -1273,6 +1275,8 @@ static void pcb_text_draw(pcb_draw_info_t *info, pcb_text_t *text, int allow_ter
 	int min_silk_line;
 	unsigned int flg = 0;
 	const pcb_layer_t *layer = info->layer != NULL ? info->layer : pcb_layer_get_real(text->parent.layer);
+
+	pcb_obj_noexport(info, text, return);
 
 	if (layer == NULL) /* if the layer is inbound, e.g. in preview, fall back using the layer recipe */
 		layer = text->parent.layer;

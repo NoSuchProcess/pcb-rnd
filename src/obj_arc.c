@@ -910,6 +910,11 @@ void pcb_arc_draw_label(pcb_draw_info_t *info, pcb_arc_t *arc)
 		arc_label_pos(arc, &x0, &y0, &vert);
 		pcb_term_label_draw(info, x0, y0, conf_core.appearance.term_label_size, vert, pcb_true, (pcb_any_obj_t *)arc);
 	}
+	if (arc->noexport) {
+		pcb_coord_t cx, cy;
+		pcb_arc_middle(arc, &cx, &cy);
+		pcb_obj_noexport_mark(arc, cx, cy);
+	}
 }
 
 void pcb_arc_draw_(pcb_draw_info_t *info, pcb_arc_t *arc, int allow_term_gfx)
@@ -967,6 +972,8 @@ static void pcb_arc_draw(pcb_draw_info_t *info, pcb_arc_t *arc, int allow_term_g
 	const pcb_color_t *color;
 	pcb_color_t buf;
 	const pcb_layer_t *layer = info->layer != NULL ? info->layer : pcb_layer_get_real(arc->parent.layer);
+
+	pcb_obj_noexport(info, arc, return);
 
 	if (layer == NULL) /* if the layer is inbound, e.g. in preview, fall back using the layer recipe */
 		layer = arc->parent.layer;
