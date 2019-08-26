@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title> pcb-rnd user manual - attributes recognized </title>
+	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+	<link rel="stylesheet" type="text/css" href=" ../default.css">
+</head>
+<body>
+
+<h1> attributes recognized </h1>
+<p>
+Attributes are key-value pairs attached to objects. The format and content
+of both keys and values are free form. Most of the time the meaning of
+an attribute is defined by the user and the only code that process
+the attribute are user scripts.
+<p>
+However, there are a few attributes recognized and parsed by pcb-rnd. This
+document lists those attributes.
+
+<h2> Object attribute summary </h2>
+
+<table border=1 cellspacing=0>
+<tr><th>attr key <th> object
+    <th>description
+<tr><td>term <td> drawing primitives, subcircuit
+    <td><a href="#term">terminal ID</a>
+<tr><td>intconn <td> terminals (drawing primitives, subcircuit with the term attribute set)
+    <td><a href="#intconn">internal connection</a>
+<tr><td>intnoconn <td> copper objects (drawing primitives)
+    <td><a href="#intnoconn">break internal connection</a>
+<tr><td>noexport <td> drawing primitives
+    <td><a href="#noexport">do not export the object</a>
+<tr><td>refdes <td> subcircuit
+    <td>reference designator; the unique name of the subcircuit instance (also used in the netlist)
+<tr><td>extobj <td> subcircuit
+    <td>names the extended object implementation that handles the subcircuit
+<tr><td>init-invis <td> layer group
+    <td>the layer group should be inivisible after loading the board
+</table>
+
+
+
+<h2> Object attribute details </h2>
+
+<h3 id="term">term</h3>
+<p>
+Terminal ID is the unique identifier of a terminal (pin, pad, lead of a part).
+Together with the subcircuit's refdes, the terminal ID is used to identify the
+terminal on the netlist. Very often matches the datasheet's pin number.
+
+<h3 id="intconn">intconn</h3>
+<p>
+Value is a small positive integer. Terminals within the same subc sharing the
+same intconn value are connected within the package, even if terminal IDs differ.
+The connection is invisible/implied. Used to indicate in-package connections
+(e.g. zero ohm resistor used for an extra layer).
+
+
+<h3 id="intnoconn">intnoconn</h3>
+<p>
+Value is a small positive integer. Copper objects within the same subc sharing the
+same intnoconn value are assumed to have no connection with each other even if
+they overlap by geometry. Used to break unwanted connection in a subcircuit,
+e.g. to avoid shorts in a 2 terminal antenna or coil footprint.
+
+<h3 id="noexport">noexport</h3>
+<p>
+A drawing primitive that has the noexport attribute (with any value) is marked
+on the screen with an overlay X mark and is not exported to any of the
+graphical exports. A noexport:<i>exportername</i> attribute will inhibit
+the object only from the named exporter (e.g. noexport:png will make
+the object disappear from the png export but not from any other exports).
+Multiple noexport:<i>exportername</i> can be used.
+<p>
+Some side effects of the object will not disappear:
+<ul>
+	<li> clearance in nearby polygons are preserved
+	<li> the object contributes in bounding box calculation
+</ul>
+<p>
+The noexport attribute on padstacks will inhibit all shapes (including the slot)
+and the hole too.
+<p>
+Graphical exports are those that use the central draw mechanism for getting
+the drawing primitives generated. Some exporters, typically the ones that
+export data (and not drawing) will not call the draw API and thus will ignore
+the noexport attribute.
+
+
+
