@@ -257,6 +257,16 @@ do { \
 	} \
 } while(0)
 
+#define pcb_obj_noexport_mark(obj, cx, cy) \
+do { \
+	pcb_coord_t radius = PCB_MM_TO_COORD(0.2); \
+	int selected = PCB_FLAG_TEST(PCB_FLAG_SELECTED, obj); \
+	pcb_render->set_color(pcb_draw_out.fgGC, selected ? &conf_core.appearance.color.selected : &conf_core.appearance.color.subc); \
+	pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round); \
+	pcb_hid_set_line_width(pcb_draw_out.fgGC, -2); \
+	pcb_render->draw_line(pcb_draw_out.fgGC, cx-radius, cy-radius, cx+radius, cy+radius); \
+	pcb_render->draw_line(pcb_draw_out.fgGC, cx+radius, cy-radius, cx-radius, cy+radius); \
+} while(0)
 
 #define pcb_hidden_floater(obj) (conf_core.editor.hide_names && PCB_FLAG_TEST(PCB_FLAG_FLOATER, (obj)))
 
