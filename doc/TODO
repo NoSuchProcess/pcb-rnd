@@ -19,7 +19,7 @@
 - BUG: bug_files/slot1.lht: open as footprint for edit - no mech layers are created so slots won't display [report: cuvoodoo]
 - BUG: unit dialog in DAD coord spinbox: select a unit, global gets unchecked -> can not check global back in [report: Piotr]
 - BUG: open bug_files/12.lht; save as kicad legacy; closing the incompatibility warning dialog triggers valgrind invalid free/write errors [report: Igor2]
-- BUG: png exports the assy layer if the group exists, even if it is not visible on the GUI [report: Igor2]
+- BUG: png, eps (and probably other exporters) export the assy layer if the group exists, even if it is not visible on the GUI [report: Igor2]
 - DOC: finish DAD doc (doc/developer/dad/: e.g. run.html is missing) [report: Alain]
 - FEATURE: no-export attribute: cache a no-export attribute in a bitfield (e.g. flags like no-export for vector outputs, pixel outputs); exporter should set the bits in HID; core rendring should decide what to draw; use case: poly clearance to emulate keep-away on outline, and replace the old zero-width line trick [report: karl]
 - FEATURE: configure setting: library window filter shouldn't really filter if there's () in the string [report: pskibinski]
