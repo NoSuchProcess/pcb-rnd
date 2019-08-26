@@ -52,6 +52,9 @@ typedef enum {
 /* Some low level draw callback depend on this in their void *cl */
 typedef struct pcb_draw_info_s {
 	pcb_board_t *pcb;
+	int exporting;                         /* 1 if doing an export, 0 if working to screen */
+	const char *export_name;               /* name of the export plugin */
+	char noexport_name[64];                /* "noexport:" attribute name rendered for the current exporter */
 	const pcb_box_t *drawn_area;
 	pcb_xform_t *xform_caller;             /* the extra transformation the caller requested (the one who has initiated the rendering, e.g. throuh pcb_draw_everything()) */
 	pcb_xform_t *xform_exporter;           /* the extra transformation the exporter requested (e.g. because of cam) */

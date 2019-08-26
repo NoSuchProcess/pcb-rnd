@@ -753,12 +753,26 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 	info->xform = NULL;
 }
 
+static void pcb_draw_info_setup(pcb_draw_info_t *info, pcb_board_t *pcb)
+{
+	info->pcb = pcb;
+	info->exporting = (pcb_gui->exporter || pcb_gui->printer);
+	info->export_name = pcb_gui->name;
+	if (info->exporting) {
+		strcpy(info->noexport_name, "noexport:");
+		strncpy(info->noexport_name+9, info->export_name, sizeof(info->noexport_name)-10);
+		info->noexport_name[sizeof(info->noexport_name)-1] = '\0';
+	}
+	else
+		*info->noexport_name = '\0';
+}
+
 void pcb_draw_layer_noxform(pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_box_t *screen)
 {
 	pcb_draw_info_t info;
 	pcb_box_t scr2;
 
-	info.pcb = pcb;
+	pcb_draw_info_setup(&info, pcb);
 	info.drawn_area = screen;
 	info.xform_exporter = info.xform = NULL;
 
@@ -796,7 +810,7 @@ void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_
 			scr2.Y2 = scr2.Y1+1;
 	}
 
-	info.pcb = pcb;
+	pcb_draw_info_setup(&info, pcb);
 	info.drawn_area = screen;
 	info.xform_exporter = info.xform_caller = info.xform = NULL;
 
@@ -1067,7 +1081,7 @@ void pcbhl_expose_main(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx, pcb_xfo
 		pcb_xform_t xform_main_exp;
 
 		expose_begin(&save, hid);
-		info.pcb = PCB;
+		pcb_draw_info_setup(&info, PCB);
 		info.drawn_area = &ctx->view;
 		info.xform_caller = xform_caller;
 		info.xform = info.xform_exporter = NULL;
