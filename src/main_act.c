@@ -157,6 +157,7 @@ static int help_invoc(void)
 
 	u("\nGenerics:");
 	u("-c conf/path=value        set the value of a configuration item (in CFR_CLI)");
+	u("-C conffile               load config file (as CFR_CLI; after all -c's)");
 
 	return 0;
 }

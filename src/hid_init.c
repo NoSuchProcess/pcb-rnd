@@ -33,6 +33,8 @@
 #include <stdlib.h>
 #include <locale.h>
 
+#include <genvector/vts0.h>
+
 #include "hid.h"
 #include "hid_nogui.h"
 #include "event.h"
@@ -51,6 +53,7 @@
 #include "file_loaded.h"
 #include "hidlib.h"
 #include "hidlib_conf.h"
+#include "conf.h"
 
 static const char *flt_any[] = {"*", "*.*", NULL};
 
@@ -304,9 +307,21 @@ void pcb_hidlib_init1(void (*conf_core_init)(void))
 	pcb_color_init();
 }
 
+static vts0_t hidlib_conffile;
+
 void pcb_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_buildins)
 {
 	pcb_actions_init();
+
+	/* load custom config files in the order they were specified */
+	if (hidlib_conffile.used > 0) {
+		int n;
+		for(n = 0; n < hidlib_conffile.used; n++) {
+			pcb_conf_load_as(CFR_CLI, hidlib_conffile.array[n], 0);
+			free(hidlib_conffile.array[n]);
+		}
+		vts0_uninit(&hidlib_conffile);
+	}
 
 	pcb_conf_load_all(NULL, NULL);
 
@@ -483,6 +498,10 @@ int pcbhl_main_args_add(pcbhl_main_args_t *ga, char *cmd, char *arg)
 				}
 			}
 			return 1;
+		}
+		if (pcbhl_main_arg_match(cmd, "C", "-conffile")) {
+			vts0_append(&hidlib_conffile, pcb_strdup(arg));
+			return 0;
 		}
 	}
 	/* didn't handle argument, save it for the HID */
