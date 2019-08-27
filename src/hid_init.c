@@ -317,7 +317,21 @@ void pcb_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 	if (hidlib_conffile.used > 0) {
 		int n;
 		for(n = 0; n < hidlib_conffile.used; n++) {
-			pcb_conf_load_as(CFR_CLI, hidlib_conffile.array[n], 0);
+			conf_role_t role = CFR_CLI;
+			char *srole, *sep, *fn = hidlib_conffile.array[n];
+			sep = strchr(fn, ';');
+			if (sep != NULL) {
+				srole = fn;
+				*sep = '\0';
+				fn = sep+1;
+				role = pcb_conf_role_parse(srole);
+				if (role == CFR_invalid) {
+					fprintf(stderr, "Can't load -C config file '%s': invalid role '%s'\n", fn, srole);
+					free(hidlib_conffile.array[n]);
+					continue;
+				}
+			}
+			pcb_conf_load_as(role, fn, 0);
 			free(hidlib_conffile.array[n]);
 		}
 		vts0_uninit(&hidlib_conffile);
