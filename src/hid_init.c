@@ -501,7 +501,7 @@ int pcbhl_main_args_add(pcbhl_main_args_t *ga, char *cmd, char *arg)
 		}
 		if (pcbhl_main_arg_match(cmd, "C", "-conffile")) {
 			vts0_append(&hidlib_conffile, pcb_strdup(arg));
-			return 0;
+			return 1;
 		}
 	}
 	/* didn't handle argument, save it for the HID */
