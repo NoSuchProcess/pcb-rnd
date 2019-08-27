@@ -69,8 +69,9 @@ typedef struct extedit_method_s {
 } extedit_method_t;
 
 static extedit_method_t methods[] = {
-	{"pcb-rnd",         PCB_OBJ_SUBC, EEF_LIHATA, "pcb-rnd \"%f\""},
-	{"editor",          PCB_OBJ_SUBC, EEF_LIHATA, "xterm -e editor \"%f\""},
+	{"pcb-rnd",           PCB_OBJ_SUBC, EEF_LIHATA, "pcb-rnd -C \"design;%c\" \"%f\""},
+	{"pcb-rnd (no cfg)",  PCB_OBJ_SUBC, EEF_LIHATA, "pcb-rnd \"%f\""},
+	{"editor",            PCB_OBJ_SUBC, EEF_LIHATA, "xterm -e editor \"%f\""},
 	{NULL, 0, 0, NULL}
 };
 
@@ -107,7 +108,7 @@ pcb_bool extedit_fd_watch(pcb_hidval_t watch, int fd, unsigned int condition, pc
 /* Invoke the child process, display a "progress bar" or some other indication
    while it's running and wait for it to exit (preferrably keeping the gui
    refreshed, even if the process is blocking) */
-static void invoke(extedit_method_t *mth, const char *fn)
+static void invoke(extedit_method_t *mth, const char *fn, const char *fn_cfg)
 {
 	pcb_build_argfn_t subs;
 	char *cmd;
@@ -115,6 +116,7 @@ static void invoke(extedit_method_t *mth, const char *fn)
 
 	memset(&subs, 0, sizeof(subs));
 	subs.params['f' - 'a'] = fn;
+	subs.params['c' - 'a'] = fn_cfg;
 	subs.hidlib = &PCB->hidlib;
 	cmd = pcb_build_argfn(mth->command, &subs);
 
@@ -173,7 +175,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	long type;
 	void *ptr1, *ptr2, *ptr3;
 	extedit_method_t *mth = NULL;
-	char *tmp_fn;
+	char *tmp_fn, *tmp_cfg_fn;
 	int ret = 1;
 	FILE *f;
 	int bn = PCB_MAX_BUFFER - 1, load_bn = PCB_MAX_BUFFER - 1;
@@ -251,10 +253,11 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	tmp_fn = pcb_tempfile_name_new("extedit");
-	if (tmp_fn == NULL) {
+	tmp_cfg_fn = pcb_tempfile_name_new("extedit_cfg");
+	if ((tmp_fn == NULL) || (tmp_cfg_fn == NULL)) {
 		pcb_message(PCB_MSG_ERROR, "Failed to create temporary file\n");
 		ret = 1;
-		goto quit0;
+		goto quit1;
 	}
 
 	/* export */
@@ -263,6 +266,8 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			{
 				int res;
 				void *udata;
+
+				pcb_conf_save_file(&PCB->hidlib, NULL, NULL, CFR_DESIGN, tmp_cfg_fn);
 
 				f = pcb_fopen(&PCB->hidlib, tmp_fn, "w");
 				if (f == NULL) {
@@ -289,7 +294,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	/* invoke external program */
-	invoke(mth, tmp_fn);
+	invoke(mth, tmp_fn, tmp_cfg_fn);
 
 	/* load the result */
 	switch(mth->fmt) {
@@ -324,7 +329,10 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_gui->invalidate_all(pcb_gui);
 
 	quit1:;
-	pcb_tempfile_unlink(tmp_fn);
+	if (tmp_fn != NULL)
+		pcb_tempfile_unlink(tmp_fn);
+	if (tmp_cfg_fn != NULL)
+		pcb_tempfile_unlink(tmp_cfg_fn);
 	quit0:;
 	pcb_buffer_set_number(obn);
 	PCB_ACT_IRES(ret);
