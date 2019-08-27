@@ -191,10 +191,10 @@ char *pcb_tempfile_name_new(const char *name)
 	}
 
 
-	len = strlen(mytmpdir) +			/* the temp directory name */
-		1 +													/* the directory sep. */
-		strlen(name) +							/* the file name */
-		1														/* the \0 termination */
+	len = strlen(mytmpdir) +  /* the temp directory name */
+		1 +                     /* the directory sep. */
+		strlen(name) +          /* the file name */
+		1                       /* the \0 termination */
 		;
 
 	tmpfile = (char *) malloc(sizeof(char) * len);
