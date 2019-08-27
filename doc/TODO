@@ -34,7 +34,7 @@
 + FEATURE: connection check separator in log: bug_files/connreq.txt [report: keantoken]
 - FEATURE: tedax etest save (board save too)
 - FEATURE: extend the CAM job script syntax so that XY and other non-layer exporters can be called [report: celem]
-- FEATURE: extedit: when editing subc with pcb, save configuration and load it in the external pcb-rnd so that grid sizes and other settings are preserved [report: jg]
++ FEATURE: extedit: when editing subc with pcb, save configuration and load it in the external pcb-rnd so that grid sizes and other settings are preserved [report: jg]
 + FEATURE/BUG: old gtk doesn't have GDK_Key_* but GDK_* (e.g. GDK_Tab); detect this in scconfig, use a wrapper macro in gtk code [report: Ade]
 
 2. For later releases ===============================================================================
