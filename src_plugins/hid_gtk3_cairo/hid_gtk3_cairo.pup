@@ -1,7 +1,0 @@
-$class hid
-$short #GTK3 GUI, cairo render
-$long GUI: the GTK3 HID, using cairo for rendering
-$state WIP
-default disable-all
-dep lib_gtk_common
-autoload 1

@@ -27,15 +27,6 @@ put /local/pcb/mod/OBJS_C99 [@
 	$(PLUGDIR)/lib_gtk_common/glue_hid.o
 @]
 
-switch /local/pcb/hid_gtk3_cairo/controls
-	case {disable} end;
-	default
-		append /local/pcb/mod/OBJS_C99 [@
-		  $(PLUGDIR)/lib_gtk_common/wt_trunc_text.o
-		@]
-	end
-end
-
 switch /local/pcb/lib_gtk_common/controls
 	case {disable} end;
 	default

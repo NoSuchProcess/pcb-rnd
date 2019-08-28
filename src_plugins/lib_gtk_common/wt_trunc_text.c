@@ -26,6 +26,9 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+/* This widget was for the gtk3 port - gtk2 does not use it at the moment
+   so it is not compiled. A gtk4 or gtkN port may need it. */
+
 #include "wt_trunc_text.h"
 
 static gpointer gtk_trunctext_parent_class = NULL;
