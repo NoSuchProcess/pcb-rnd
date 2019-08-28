@@ -6,6 +6,9 @@ $fmt-native no
 $fmt-feature-r tEDAx netlist (any version)
 $fmt-feature-r tEDAx footprint (any version)
 $fmt-feature-w tEDAx footprint (any version)
+$fmt-feature-w tEDAx etest
+$fmt-feature-r tEDAx drc
+$fmt-feature-w tEDAx drc
 $package io-standard
 dep lib_compat_help
 dep lib_netmap
