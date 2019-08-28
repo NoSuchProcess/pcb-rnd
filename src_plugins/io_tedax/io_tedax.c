@@ -46,6 +46,7 @@
 #include "tlayer.h"
 #include "tboard.h"
 #include "tdrc.h"
+#include "tetest.h"
 #include "tnetlist.h"
 
 static const char *tedax_cookie = "tEDAx IO";
@@ -64,7 +65,7 @@ int io_tedax_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt
 }
 
 
-static const char pcb_acts_Savetedax[] = "SaveTedax(netlist|board-footprints|stackup|layer|board|drc, filename)";
+static const char pcb_acts_Savetedax[] = "SaveTedax(netlist|board-footprints|stackup|layer|board|drc|etest, filename)";
 static const char pcb_acth_Savetedax[] = "Saves the specific type of data in a tEDAx file.";
 static fgw_error_t pcb_act_Savetedax(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -100,6 +101,11 @@ static fgw_error_t pcb_act_Savetedax(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (pcb_strcasecmp(type, "drc") == 0) {
 		PCB_ACT_IRES(tedax_drc_save(PCB, NULL, fname));
+		return 0;
+	}
+
+	if (pcb_strcasecmp(type, "etest") == 0) {
+		PCB_ACT_IRES(tedax_etest_save(PCB, NULL, fname));
 		return 0;
 	}
 
