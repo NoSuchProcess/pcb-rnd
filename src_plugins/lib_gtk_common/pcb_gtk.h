@@ -130,7 +130,7 @@ struct pcb_gtk_topwin_s {
 	gdl_list_t dock[PCB_HID_DOCK_max];
 };
 
-/* needed for a type in pcb_gtk_t - DO NOT ADD .h files that are not requred for the structs! */
+/* needed for a type in pcb_gtk_t - DO NOT ADD .h files that are not required for the structs! */
 #include "../src_plugins/lib_gtk_common/dlg_topwin.h"
 
 #include "event.h"
@@ -142,7 +142,7 @@ typedef struct pcb_gtk_pixmap_s {
 	GdkPixbuf *image;         /* input image converted to gdk */
 
 	/* backend/renderer cache */
-	int h_scaled, w_scaled;  /* current scale of the chached image (for gdk) */
+	int h_scaled, w_scaled;  /* current scale of the cached image (for gdk) */
 	union {
 		GdkPixbuf *pb;         /* for gdk */
 		unsigned long int lng; /* for opengl */
@@ -177,7 +177,7 @@ struct pcb_gtk_s {
 
 	pcb_gtk_pixmap_t bg_pixmap;
 
-	int hid_active; /* 1 if the currently running hid (pcb_gui) is us */
+	int hid_active; /* 1 if the currently running hid (pcb_gui) is up */
 	int gui_is_up; /*1 if all parts of the gui is up and running */
 
 	gulong button_press_handler, button_release_handler, key_press_handler[5], key_release_handler[5];
