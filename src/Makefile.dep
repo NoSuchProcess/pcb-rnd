@@ -6623,7 +6623,9 @@ hid_dlg.o: hid_dlg.c ../config.h actions.h hid.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h hid_dad_spin.h hid_nogui.h
-hid_init.o: hid_init.c ../config.h hid.h ../src_3rd/liblihata/dom.h \
+hid_init.o: hid_init.c ../config.h ../src_3rd/genvector/vts0.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h error.h global_typedefs.h \
  pcb_bool.h attrib.h box.h math_helper.h obj_common.h flag.h \
@@ -6632,9 +6634,7 @@ hid_init.o: hid_init.c ../config.h hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h actions.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h hid_attrib.h \
- ../src_3rd/genlist/gendlist.h color.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h hid_init.h \
+ ../src_3rd/genlist/gendlist.h color.h hid_init.h \
  ../src_3rd/genvector/vtp0.h hid_dad_unit.h hid_dad.h compat_misc.h \
  pcb-printf.h ../src_3rd/genvector/gds_char.h hid_dad_spin.h compat_inc.h \
  file_loaded.h hidlib_conf.h conf.h ../src_3rd/liblihata/lihata.h \
