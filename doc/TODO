@@ -32,7 +32,6 @@
 	- CLEANUP: in ~2020: remove the hackish gerber layer suffix and auto-excellon in favor of CAM [report: Ade]
 - FEATURE: edakrill script for growing line thickness keeping the line on one side (side alignment) [report: keantoken]
 + FEATURE: connection check separator in log: bug_files/connreq.txt [report: keantoken]
-- FEATURE: tedax etest save (board save too)
 - FEATURE: extend the CAM job script syntax so that XY and other non-layer exporters can be called [report: celem]
 + FEATURE: extedit: when editing subc with pcb, save configuration and load it in the external pcb-rnd so that grid sizes and other settings are preserved [report: jg]
 + FEATURE/BUG: old gtk doesn't have GDK_Key_* but GDK_* (e.g. GDK_Tab); detect this in scconfig, use a wrapper macro in gtk code [report: Ade]
