@@ -419,14 +419,13 @@ static void calc_dialog_deps(void)
 /* Runs when things should be detected for the target system */
 int hook_detect_target()
 {
-	int need_gtklibs = 0, want_glib = 0, want_gtk, want_gtk2, want_gd, want_stroke, need_inl = 0, want_cairo, want_xml2, has_gtk2 = 0, want_gl, want_freetype2, want_fuse;
+	int need_gtklibs = 0, want_glib = 0, want_gtk, want_gtk2, want_gd, want_stroke, need_inl = 0, want_xml2, has_gtk2 = 0, want_gl, want_freetype2, want_fuse;
 	const char *host_ansi, *host_ped, *target_ansi, *target_ped, *target_pg, *target_no_pie;
 
 	want_gtk2   = plug_is_enabled("hid_gtk2_gdk") || plug_is_enabled("hid_gtk2_gl");
 	want_gtk    = want_gtk2; /* plus |gtkN */
 	want_gd     = plug_is_enabled("export_png") || plug_is_enabled("import_pxm_gd") || plug_is_enabled("export_gcode");
 	want_stroke = plug_is_enabled("stroke");
-	want_cairo  = 0;
 	want_xml2   = plug_is_enabled("io_eagle");
 	want_freetype2 = plug_is_enabled("import_ttf");
 	want_fuse = plug_is_enabled("export_vfs_fuse");
@@ -548,9 +547,6 @@ int hook_detect_target()
 			hook_custom_arg("disable-import_ttf", NULL);
 		}
 	}
-
-	if (want_cairo)
-		require("libs/gui/cairo/presents", 0, 0);
 
 	if (want_gtk2) {
 		require("libs/gui/gtk2/presents", 0, 0);
