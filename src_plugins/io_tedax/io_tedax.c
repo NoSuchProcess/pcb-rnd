@@ -250,6 +250,7 @@ int pplg_check_ver_io_tedax(int ver_needed) { return 0; }
 void pplg_uninit_io_tedax(void)
 {
 	pcb_remove_actions_by_cookie(tedax_cookie);
+	tedax_etest_uninit();
 	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_tedax);
 }
 
@@ -278,6 +279,8 @@ int pplg_init_io_tedax(void)
 	io_tedax.mime_type = "application/tEDAx";
 
 	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_tedax);
+
+	tedax_etest_init();
 
 	PCB_REGISTER_ACTIONS(tedax_action_list, tedax_cookie)
 	return 0;
