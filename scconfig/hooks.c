@@ -297,7 +297,6 @@ int hook_postinit()
 	put("/local/man1dir", "/share/man/man1");
 	put("/local/man1dir", "/share/man/man1");
 	put("/local/libarchdir", "lib");
-	put("/local/pcb/hid_gtk3_cairo/controls", sfalse); /* enable gtk3 only when explicitly requested */
 
 #undef plugin_def
 #undef plugin_header
@@ -420,15 +419,14 @@ static void calc_dialog_deps(void)
 /* Runs when things should be detected for the target system */
 int hook_detect_target()
 {
-	int need_gtklibs = 0, want_glib = 0, want_gtk, want_gtk2, want_gtk3, want_gd, want_stroke, need_inl = 0, want_cairo, want_xml2, has_gtk2 = 0, has_gtk3 = 0, want_gl, want_freetype2, want_fuse;
+	int need_gtklibs = 0, want_glib = 0, want_gtk, want_gtk2, want_gd, want_stroke, need_inl = 0, want_cairo, want_xml2, has_gtk2 = 0, want_gl, want_freetype2, want_fuse;
 	const char *host_ansi, *host_ped, *target_ansi, *target_ped, *target_pg, *target_no_pie;
 
 	want_gtk2   = plug_is_enabled("hid_gtk2_gdk") || plug_is_enabled("hid_gtk2_gl");
-	want_gtk3   = plug_is_enabled("hid_gtk3_cairo");
-	want_gtk    = want_gtk2 | want_gtk3;
+	want_gtk    = want_gtk2; /* plus |gtkN */
 	want_gd     = plug_is_enabled("export_png") || plug_is_enabled("import_pxm_gd") || plug_is_enabled("export_gcode");
 	want_stroke = plug_is_enabled("stroke");
-	want_cairo  = plug_is_enabled("hid_gtk3_cairo");
+	want_cairo  = 0;
 	want_xml2   = plug_is_enabled("io_eagle");
 	want_freetype2 = plug_is_enabled("import_ttf");
 	want_fuse = plug_is_enabled("export_vfs_fuse");
@@ -573,24 +571,6 @@ int hook_detect_target()
 		}
 	}
 
-	if (want_gtk3) {
-		if (istrue(get("libs/gui/cairo/presents"))) {
-			require("libs/gui/gtk3/presents", 0, 0);
-			if (!istrue(get("libs/gui/gtk3/presents"))) {
-				report_repeat("WARNING: Since there's no libgtk3 found, disabling hid_gtk3*...\n");
-				hook_custom_arg("disable-hid_gtk3_cairo", NULL);
-			}
-			else {
-				need_gtklibs = 1;
-				has_gtk3 = 1;
-			}
-		}
-		else {
-			report_repeat("WARNING: not going to try gtk3 because cairo is not found\n");
-			hook_custom_arg("disable-hid_gtk3_cairo", NULL);
-		}
-	}
-
 	want_gl = plug_is_enabled("hid_gtk2_gl");
 	if (want_gl) {
 		require("libs/gui/glu/presents", 0, 0);
@@ -607,19 +587,7 @@ int hook_detect_target()
 		hook_custom_arg("disable-hid_gtk2_gl", NULL);
 	}
 
-	/* gtk2 vs. gtk3 xor logic */
-	if (has_gtk2 && has_gtk3) {
-		report_repeat("Selected both gtk2 and gtk3 HIDs; gtk2 and gtk3 are incompatible, disabling gtk2 in favor of gtk3.\n");
-		hook_custom_arg("disable-hid_gtk2_gdk", NULL);
-		hook_custom_arg("disable-hid_gtk2_gl", NULL);
-		has_gtk2 = 0;
-	}
-
 	/* libs/gui/gtkx is the version-independent set of flags in the XOR model */
-	if (has_gtk3) {
-		put("/target/libs/gui/gtkx/cflags", get("/target/libs/gui/gtk3/cflags"));
-		put("/target/libs/gui/gtkx/ldflags", get("/target/libs/gui/gtk3/ldflags"));
-	}
 	if (has_gtk2) {
 		put("/target/libs/gui/gtkx/cflags", get("/target/libs/gui/gtk2/cflags"));
 		put("/target/libs/gui/gtkx/ldflags", get("/target/libs/gui/gtk2/ldflags"));
@@ -674,7 +642,6 @@ int hook_detect_target()
 				report_repeat("WARNING: Since GLIB is not found, disabling the GTK HID...\n");
 				hook_custom_arg("disable-hid_gtk2_gdk", NULL);
 				hook_custom_arg("disable-hid_gtk2_gl", NULL);
-				hook_custom_arg("disable-hid_gtk3_cairo", NULL);
 			}
 			if (plug_is_enabled("puller")) {
 				report_repeat("WARNING: Since GLIB is not found, disabling the puller...\n");
