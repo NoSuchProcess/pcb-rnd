@@ -1,3 +1,4 @@
+27401	configure	remove cairo from optional dependencies
 27296	configure	gtk: detect GDK_KEY_ prefix for supporting ~10 years old systems
 27155	configure	hidlib: pixmap support framework: new .c file in the hidlib and pnm, png, jpeg, gif loader plugin
 27100	configure	hidlib: move base64 to core for reuse in hidlib (mainly for pixmaps)
