@@ -12,7 +12,12 @@ Packaging changes between 2.1.3 and 2.1.4
 
 A. changes that probably don't need action
 
-1. removed plugin lib_gtk_hid from pcb-rnd-hid-gtk 
+1. removed plugin lib_gtk_hid from pcb-rnd-hid-gtk
+
+2. removed some non-packaged code that depended on cairo; at the moment
+   pcb-rnd has no direct cairo dependency; if cairo creeped in as direct
+   explicit dependency on any package, please remove it. (gtk2 may bring
+   it in as indirect dependency)
 
 B. changes that probably DO need action
 
