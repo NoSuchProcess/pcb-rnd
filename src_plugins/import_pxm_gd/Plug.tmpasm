@@ -2,6 +2,14 @@ put /local/pcb/mod {import_pxm_gd}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_pxm_gd/import_pxm_gd.o @]
 
 switch /local/pcb/import_pxm_gd/controls
+	case {disable} end;
+	default
+		put /local/pcb/mod/LDFLAGS         libs/gui/gd/ldflags
+		put /local/pcb/mod/CFLAGS          libs/gui/gd/cflags
+		end
+end
+
+switch /local/pcb/import_pxm_gd/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;
