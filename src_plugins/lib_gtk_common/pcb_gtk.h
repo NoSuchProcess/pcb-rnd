@@ -25,8 +25,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#ifndef PCB_HID_GTK_GHID_H
-#define PCB_HID_GTK_GHID_H
+#ifndef PCB_GTK_H
+#define PCB_GTK_H
 
 #include "hid.h"
 #include "conf.h"
@@ -187,4 +187,4 @@ struct pcb_gtk_s {
 	gdl_list_t previews; /* all widget lists */
 };
 
-#endif /* PCB_HID_GTK_GHID_GUI_H */
+#endif /* PCB_GTK_H */
