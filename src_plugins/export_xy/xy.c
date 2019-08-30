@@ -73,6 +73,11 @@ Unit of XY dimensions. Defaults to mil.
 	{"format", "file format (template)",
 	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, NULL, 0},
 #define HA_format 2
+
+	{"cam", "CAM instruction",
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_cam 3
+
 };
 
 #define NUM_OPTIONS (sizeof(xy_options)/sizeof(xy_options[0]))
@@ -791,6 +796,7 @@ static void xy_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	memset(&templ, 0, sizeof(templ));
 
+
 	gather_templates();
 
 	if (!options) {
@@ -803,6 +809,8 @@ static void xy_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	xy_filename = options[HA_xyfile].str;
 	if (!xy_filename)
 		xy_filename = "pcb-out.xy";
+
+	pcb_cam_nolayer(PCB, options[HA_cam].str, &xy_filename);
 
 	if (options[HA_unit].lng == -1)
 		xy_unit = get_unit_struct("mil");
