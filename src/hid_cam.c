@@ -361,9 +361,6 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_e
 			goto err;
 		}
 
-{
-}
-
 		curr = strip(curr);
 		if (*curr == '@') {
 			/* named layer group */
