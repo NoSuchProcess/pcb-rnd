@@ -13,7 +13,10 @@ board in different file formats using different exporter plugins. The
 interface consists of a CLI layer (each export plugin's "cam" option) and
 an optional GUI (the CAM plugin).
 
-<h3> CAM export support in other plugins </h3>
+<h3> CAM export support in multi-layer plugins </h3>
+<p>
+This section is about the syntax used by the exporters that export
+multiple layers (e.g. gerber, ps, png).
 <p id="cli">
 Each CAM-plugin-compatible exporter plugin offers an option called "cam".
 The syntax and capabilities are the same for all exporter's cam option.
@@ -93,7 +96,25 @@ layer groups in multiple files. For example:
 	     <td> export all copper layers to numbered copper-<i>N</i>.gbr files where <i>N</i> is the full name of the group being exported
 </table>
 
-<h3> CAM plugin </h3>
+<h3> CAM export support in no-layer plugins </h3>
+<p>
+This section is about the syntax used by the exporters export global digest
+of the board and not layers (e.g. XY).
+<p>
+For these exporters the above apply with only the file name specified and all
+the rest from the '=' (including the '=') omitted. For example the XY exporter
+can be used with
+<pre>
+--cam foo.xy
+</pre>
+<p>
+The --cam option in these exporters are implemented for two reasons:
+<ul>
+	<li> to provide an unified syntax for the output file name
+	<li> to allow a CAM job to use these exporters
+</ul>
+
+<h3> CAM plugin (CAM jobs) </h3>
 <p>
 The CAM plugin is a way to manage output "jobs": collections of cam export
 settings for reproducing export packages in various formats. 
