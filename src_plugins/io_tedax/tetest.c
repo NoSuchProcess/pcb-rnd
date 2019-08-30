@@ -177,6 +177,10 @@ static pcb_export_opt_t tedax_etest_options[] = {
 	{"outfile", "Name of the tedax etest output file",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_outfile 0
+
+	{"cam", "CAM instruction",
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_cam 1
 };
 
 #define NUM_OPTIONS (sizeof(tedax_etest_options)/sizeof(tedax_etest_options[0]))
@@ -199,6 +203,7 @@ static void tedax_etest_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 {
 	int i;
 	const char *name;
+	pcb_cam_t cam;
 
 	if (!options) {
 		tedax_etest_get_export_options(hid, 0);
@@ -211,10 +216,14 @@ static void tedax_etest_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (!tedax_etest_filename)
 		tedax_etest_filename = "unknown.etest.tdx";
 
+	pcb_cam_begin_nolayer(PCB, &cam, options[HA_cam].str, &tedax_etest_filename);
+
+
 	name = PCB->hidlib.name;
 	if (name == NULL) name = PCB->hidlib.filename;
 	if (name == NULL) name = "-";
 	tedax_etest_save(PCB,  name, tedax_etest_filename);
+	pcb_cam_end(&cam);
 }
 
 static int tedax_etest_usage(pcb_hid_t *hid, const char *topic)
