@@ -476,6 +476,12 @@ int pcb_cam_end(pcb_cam_t *dst)
 	return dst->exported_grps;
 }
 
+void pcb_cam_nolayer(pcb_board_t *pcb, const char *src, const char **fn_out)
+{
+	if (src != NULL)
+		*fn_out = src;
+}
+
 
 typedef struct  {
 	pcb_cam_t *cam;
