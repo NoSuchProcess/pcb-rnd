@@ -96,6 +96,10 @@ static pcb_export_opt_t dsn_options[] = {
 	 PCB_HATT_COORD, PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(100), {0, 0, 0, PCB_MIL_TO_COORD(15)}, 0,
 	 0},
 #define HA_viadrill 4
+	{"cam", "CAM instruction",
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_cam 5
+
 };
 
 #define NUM_OPTIONS (sizeof(dsn_options)/sizeof(dsn_options[0]))
@@ -580,6 +584,8 @@ static void dsn_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	dsn_filename = options[HA_dsnfile].str;
 	if (!dsn_filename)
 		dsn_filename = "pcb-out.dsn";
+
+	pcb_cam_nolayer(PCB, options[HA_cam].str, &dsn_filename);
 
 	trackwidth = options[HA_trackwidth].crd;
 	clearance = options[HA_clearance].crd;
