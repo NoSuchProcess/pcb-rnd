@@ -100,6 +100,10 @@ pcb_export_opt_t stat_attribute_list[] = {
 	 PCB_HATT_STRING, 0, 0, {0, NULL, 0}, 0, 0},
 #define HA_license 6
 
+	{"cam", "CAM instruction",
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_cam 7
+
 };
 
 #define NUM_OPTIONS (sizeof(stat_attribute_list)/sizeof(stat_attribute_list[0]))
@@ -151,6 +155,8 @@ static void stat_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	filename = options[HA_statfile].str;
 	if (!filename)
 		filename = "pcb.stat.lht";
+
+	pcb_cam_nolayer(PCB, options[HA_cam].str, &filename);
 
 	f = pcb_fopen_askovr(&PCB->hidlib, filename, "w", NULL);
 	if (!f) {
