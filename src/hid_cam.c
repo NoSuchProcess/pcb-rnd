@@ -476,24 +476,35 @@ int pcb_cam_end(pcb_cam_t *dst)
 	return dst->exported_grps;
 }
 
-void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const char **fn_out)
-{
-	memset(dst, 0, sizeof(pcb_cam_t));
-	dst->pcb = pcb;
-	if (src != NULL) {
-		if (strchr(src, '=') != NULL)
-			pcb_message(PCB_MSG_ERROR, "global exporter --cam doesn't take '=' and layers, only a file name\n");
-		*fn_out = src;
-	}
-}
-
-
 typedef struct  {
 	pcb_cam_t *cam;
 	const pcb_layergrp_t *grp;
 	const pcb_virt_layer_t *vl;
 	htsp_t *vars;
 } cam_name_ctx_t;
+static int cam_update_name_cb(void *ctx_, gds_t *s, const char **input);
+
+void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const char **fn_out)
+{
+	cam_name_ctx_t ctx;
+
+	memset(dst, 0, sizeof(pcb_cam_t));
+	dst->pcb = pcb;
+	if (src != NULL) {
+		if (strchr(src, '=') != NULL)
+			pcb_message(PCB_MSG_ERROR, "global exporter --cam doesn't take '=' and layers, only a file name\n");
+
+		dst->fn_template = pcb_strdup(src);
+
+		memset(&ctx, 0, sizeof(ctx));
+		ctx.cam = dst;
+		ctx.vars = pcb_cam_vars;
+		dst->fn = pcb_strdup_subst(dst->fn_template, cam_update_name_cb, &ctx, PCB_SUBST_HOME | PCB_SUBST_PERCENT | PCB_SUBST_CONF);
+		*fn_out = dst->fn;
+	}
+}
+
+
 
 /* convert string to integer, step input beyond the terminating % */
 static int get_tune(const char **input)
