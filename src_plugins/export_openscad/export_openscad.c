@@ -115,6 +115,11 @@ Name of the file to be exported to. Can contain a path.
 	{"drill", "enable drilling holes",
 	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_drill 5
+
+	{"cam", "CAM instruction",
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_cam 6
+
 };
 
 #define NUM_OPTIONS (sizeof(openscad_attribute_list)/sizeof(openscad_attribute_list[0]))
@@ -307,6 +312,8 @@ static void openscad_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	filename = options[HA_openscadfile].str;
 	if (!filename)
 		filename = "pcb.openscad";
+
+	pcb_cam_nolayer(PCB, options[HA_cam].str, &filename);
 
 	f = pcb_fopen_askovr(&PCB->hidlib, filename, "wb", NULL);
 	if (!f) {
