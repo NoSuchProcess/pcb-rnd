@@ -478,8 +478,11 @@ int pcb_cam_end(pcb_cam_t *dst)
 
 void pcb_cam_nolayer(pcb_board_t *pcb, const char *src, const char **fn_out)
 {
-	if (src != NULL)
+	if (src != NULL) {
+		if (strchr(src, '=') != NULL)
+			pcb_message(PCB_MSG_ERROR, "global exporter --cam doesn't take '=' and layers, only a file name\n");
 		*fn_out = src;
+	}
 }
 
 
