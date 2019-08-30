@@ -36,13 +36,6 @@ Name of the BOM output file.
 	{"bomfile", "Name of the BOM output file",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_bomfile 0
-/* %start-doc options "8 BOM Creation"
-@ftable @code
-@item --xyfile <string>
-Name of the XY output file.
-@end ftable
-%end-doc
-*/
 };
 
 #define NUM_OPTIONS (sizeof(bom_options)/sizeof(bom_options[0]))
