@@ -36,6 +36,11 @@ Name of the BOM output file.
 	{"bomfile", "Name of the BOM output file",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_bomfile 0
+
+	{"cam", "CAM instruction",
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_cam 1
+
 };
 
 #define NUM_OPTIONS (sizeof(bom_options)/sizeof(bom_options[0]))
@@ -269,6 +274,8 @@ static void bom_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	bom_filename = options[HA_bomfile].str;
 	if (!bom_filename)
 		bom_filename = "pcb-out.bom";
+
+	pcb_cam_nolayer(PCB, options[HA_cam].str, &bom_filename);
 
 	PrintBOM();
 }
