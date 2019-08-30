@@ -442,6 +442,7 @@ static void ipcd356_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	int n;
 	const char *fn;
 	FILE *f;
+	pcb_cam_t cam;
 
 	if (!options) {
 		ipcd356_get_export_options(hid, 0);
@@ -456,7 +457,7 @@ static void ipcd356_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (fn == NULL)
 		fn = "pcb-rnd-out.net";
 
-	pcb_cam_nolayer(PCB, options[HA_cam].str, &fn);
+	pcb_cam_begin_nolayer(PCB, &cam, options[HA_cam].str, &fn);
 
 	f = pcb_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
 	if (f == NULL) {
@@ -465,6 +466,7 @@ static void ipcd356_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	}
 	ipcd356_write(PCB, f);
 	fclose(f);
+	pcb_cam_end(&cam);
 }
 
 static pcb_hid_t ipcd356_hid;

@@ -263,6 +263,7 @@ static int PrintBOM(void)
 static void bom_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 {
 	int i;
+	pcb_cam_t cam;
 
 	if (!options) {
 		bom_get_export_options(hid, 0);
@@ -275,9 +276,10 @@ static void bom_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (!bom_filename)
 		bom_filename = "pcb-out.bom";
 
-	pcb_cam_nolayer(PCB, options[HA_cam].str, &bom_filename);
+	pcb_cam_begin_nolayer(PCB, &cam, options[HA_cam].str, &bom_filename);
 
 	PrintBOM();
+	pcb_cam_end(&cam);
 }
 
 static int bom_usage(pcb_hid_t *hid, const char *topic)

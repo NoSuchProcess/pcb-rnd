@@ -575,6 +575,8 @@ static int PrintSPECCTRA(void)
 static void dsn_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 {
 	int i;
+	pcb_cam_t cam;
+
 	if (!options) {
 		dsn_get_export_options(hid, 0);
 		for (i = 0; i < NUM_OPTIONS; i++)
@@ -585,13 +587,14 @@ static void dsn_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (!dsn_filename)
 		dsn_filename = "pcb-out.dsn";
 
-	pcb_cam_nolayer(PCB, options[HA_cam].str, &dsn_filename);
+	pcb_cam_begin_nolayer(PCB, &cam, options[HA_cam].str, &dsn_filename);
 
 	trackwidth = options[HA_trackwidth].crd;
 	clearance = options[HA_clearance].crd;
 	viawidth = options[HA_viawidth].crd;
 	viadrill = options[HA_viadrill].crd;
 	PrintSPECCTRA();
+	pcb_cam_end(&cam);
 }
 
 static int dsn_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)

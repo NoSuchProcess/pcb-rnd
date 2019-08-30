@@ -476,8 +476,10 @@ int pcb_cam_end(pcb_cam_t *dst)
 	return dst->exported_grps;
 }
 
-void pcb_cam_nolayer(pcb_board_t *pcb, const char *src, const char **fn_out)
+void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const char **fn_out)
 {
+	memset(dst, 0, sizeof(pcb_cam_t));
+	dst->pcb = pcb;
 	if (src != NULL) {
 		if (strchr(src, '=') != NULL)
 			pcb_message(PCB_MSG_ERROR, "global exporter --cam doesn't take '=' and layers, only a file name\n");

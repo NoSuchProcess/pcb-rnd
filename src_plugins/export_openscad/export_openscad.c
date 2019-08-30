@@ -301,6 +301,7 @@ static void openscad_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	const char *filename;
 	int save_ons[PCB_MAX_LAYER];
 	int i;
+	pcb_cam_t cam;
 
 	if (!options) {
 		openscad_get_export_options(hid, 0);
@@ -313,7 +314,7 @@ static void openscad_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (!filename)
 		filename = "pcb.openscad";
 
-	pcb_cam_nolayer(PCB, options[HA_cam].str, &filename);
+	pcb_cam_begin_nolayer(PCB, &cam, options[HA_cam].str, &filename);
 
 	f = pcb_fopen_askovr(&PCB->hidlib, filename, "wb", NULL);
 	if (!f) {
@@ -352,6 +353,7 @@ static void openscad_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	fclose(f);
 	f = NULL;
+	pcb_cam_end(&cam);
 }
 
 static int openscad_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)

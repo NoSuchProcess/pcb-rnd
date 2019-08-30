@@ -36,7 +36,7 @@ int pcb_cam_end(pcb_cam_t *dst);
 
 /* load *fn_out with the cam-requested output file name in cam mode; useful
    for non layer based exporters */
-void pcb_cam_nolayer(pcb_board_t *pcb, const char *src, const char **fn_out);
+void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const char **fn_out);
 
 
 /* Shall be the first rule in a cam capable exporter's set_layer_group()

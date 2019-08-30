@@ -793,6 +793,7 @@ static void xy_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	int i;
 	template_t templ;
 	char **tid;
+	pcb_cam_t cam;
 
 	memset(&templ, 0, sizeof(templ));
 
@@ -810,7 +811,7 @@ static void xy_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (!xy_filename)
 		xy_filename = "pcb-out.xy";
 
-	pcb_cam_nolayer(PCB, options[HA_cam].str, &xy_filename);
+	pcb_cam_begin_nolayer(PCB, &cam, options[HA_cam].str, &xy_filename);
 
 	if (options[HA_unit].lng == -1)
 		xy_unit = get_unit_struct("mil");
@@ -827,6 +828,7 @@ static void xy_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	templ.term = get_templ(*tid, "term");
 
 	PrintXY(&templ, options[HA_format].str);
+	pcb_cam_end(&cam);
 }
 
 static int xy_usage(pcb_hid_t *hid, const char *topic)

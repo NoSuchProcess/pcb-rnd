@@ -141,6 +141,7 @@ static void stat_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	int nl, phg, hp, hup, group_not_empty[PCB_MAX_LAYERGRP];
 	pcb_cardinal_t num_etop = 0, num_ebottom = 0, num_esmd = 0, num_epads = 0, num_epins = 0, num_terms = 0, num_slots = 0;
 	pcb_coord_t width, height;
+	pcb_cam_t cam;
 
 	memset(lgss, 0, sizeof(lgss));
 	memset(group_not_empty, 0, sizeof(group_not_empty));
@@ -156,7 +157,7 @@ static void stat_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (!filename)
 		filename = "pcb.stat.lht";
 
-	pcb_cam_nolayer(PCB, options[HA_cam].str, &filename);
+	pcb_cam_begin_nolayer(PCB, &cam, options[HA_cam].str, &filename);
 
 	f = pcb_fopen_askovr(&PCB->hidlib, filename, "w", NULL);
 	if (!f) {
@@ -369,6 +370,7 @@ static void stat_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	fprintf(f, "}\n");
 	fclose(f);
+	pcb_cam_end(&cam);
 }
 
 static int stat_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
