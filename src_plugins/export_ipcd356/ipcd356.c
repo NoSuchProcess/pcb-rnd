@@ -410,6 +410,11 @@ Name of the IPC-D-356 Netlist output file.
 	 PCB_HATT_STRING,
 	 0, 0, {0, 0, 0}, 0, 0},
 #define HA_ipcd356_filename 0
+
+	{"cam", "CAM instruction",
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_cam 1
+
 };
 
 #define NUM_OPTIONS (sizeof(ipcd356_options)/sizeof(ipcd356_options[0]))
@@ -450,6 +455,8 @@ static void ipcd356_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	fn = options[HA_ipcd356_filename].str;
 	if (fn == NULL)
 		fn = "pcb-rnd-out.net";
+
+	pcb_cam_nolayer(PCB, options[HA_cam].str, &fn);
 
 	f = pcb_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
 	if (f == NULL) {
