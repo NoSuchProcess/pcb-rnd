@@ -453,13 +453,13 @@ static void draw_everything(pcb_draw_info_t *info)
 		}
 	}
 
-	if (conf_core.editor.check_planes && pcb_gui->gui)
+	if (conf_core.editor.check_planes && pcb_render->gui)
 		goto finish;
 
 	/* Draw padstacks below silk */
 	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
 	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
-	if (pcb_gui->gui)
+	if (pcb_render->gui)
 		pcb_draw_ppv(info, conf_core.editor.show_solder_side ? solder : component);
 	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 
@@ -513,13 +513,13 @@ static void draw_everything(pcb_draw_info_t *info)
 	pcb_draw_boundary_mech(info);
 
 	draw_virtual_layers(info, &lvly);
-	if (pcb_gui->gui) {
+	if (pcb_render->gui) {
 		draw_rats(info->drawn_area);
 		draw_pins_and_pads(info, component, solder);
 	}
 	draw_ui_layers(info);
 
-	if (pcb_gui->gui)
+	if (pcb_render->gui)
 		draw_xor_marks(info);
 
 	finish:;
@@ -590,7 +590,7 @@ static void pcb_draw_pstk_slots(pcb_draw_info_t *info, pcb_layergrp_id_t group, 
 static void pcb_draw_ppv(pcb_draw_info_t *info, pcb_layergrp_id_t group)
 {
 	/* draw padstack holes - copper is drawn with each group */
-	if (PCB->pstk_on || !pcb_gui->gui) {
+	if (PCB->pstk_on || !pcb_render->gui) {
 		pcb_draw_pstk_holes(info, group, PCB_PHOLE_PLATED | PCB_PHOLE_UNPLATED | PCB_PHOLE_BB);
 	}
 }
@@ -601,7 +601,7 @@ static void pcb_draw_ppv(pcb_draw_info_t *info, pcb_layergrp_id_t group)
  */
 void pcb_draw_pstk_names(pcb_draw_info_t *info, pcb_layergrp_id_t group, const pcb_box_t *drawn_area)
 {
-	if (PCB->pstk_on || !pcb_gui->gui) {
+	if (PCB->pstk_on || !pcb_render->gui) {
 		size_t n;
 		for(n = 0; n < delayed_labels.used; n++)
 			pcb_draw_obj_label(info, group, delayed_labels.array[n]);
@@ -915,7 +915,7 @@ static void pcb_draw_layer_grp(pcb_draw_info_t *info, int group, int is_current)
 	}
 
 	/* this draws the holes - must be the last, so holes are drawn over everything else */
-	if (!pcb_gui->gui)
+	if (!pcb_render->gui)
 		pcb_draw_ppv(info, group);
 
 	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
@@ -1174,10 +1174,10 @@ void pcb_label_draw(pcb_draw_info_t *info, pcb_coord_t x, pcb_coord_t y, double 
 
 	pcb_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.pin_name);
 
-	if (pcb_gui->gui)
+	if (pcb_render->gui)
 		pcb_draw_force_termlab++;
 	pcb_text_draw_string(info, font, (unsigned const char *)label, x, y, scale, direction*90.0, mirror, 1, 0, 0, 0, 0, PCB_TXT_TINY_HIDE);
-	if (pcb_gui->gui)
+	if (pcb_render->gui)
 		pcb_draw_force_termlab--;
 }
 
