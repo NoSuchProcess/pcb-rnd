@@ -58,6 +58,10 @@ static pcb_cardinal_t drill_print_objs(pcb_board_t *pcb, FILE *f, pcb_drill_ctx_
 			continue;
 		if (i == 0 || pd->diam != *excellon_last_tool_dia) {
 			aperture_t *ap = find_aperture(&ctx->apr, pd->diam, ROUND);
+			if (ap == NULL) {
+				pcb_message(PCB_MSG_ERROR, "excellon: internal error: can't register ROUND aperture of dia %$mm\n", pd->diam);
+				continue;
+			}
 			fprintf(f, "T%02d\r\n", ap->dCode);
 			*excellon_last_tool_dia = pd->diam;
 		}
