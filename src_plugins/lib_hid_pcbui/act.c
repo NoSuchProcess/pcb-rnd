@@ -252,6 +252,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		switch (a[0]) {
 			case 'h': case 'H':
 				conf_toggle_heditor_("view/flip_x", view.flip_x);
+				xoffs = 0;
 				break;
 			case 'v': case 'V':
 				if (!pcbhl_conf.editor.view.flip_y)
@@ -261,6 +262,12 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				conf_toggle_heditor_("view/flip_y", view.flip_y);
 				break;
 			case 'r': case 'R':
+				xoffs = 0;
+				if (!pcbhl_conf.editor.view.flip_y)
+					yoffs = -yoffs;
+				else
+					yoffs = 0;
+
 				conf_toggle_heditor_("view/flip_x", view.flip_x);
 				conf_toggle_heditor_("view/flip_y", view.flip_y);
 				conf_toggle_editor(show_solder_side); /* Swapped back below */
