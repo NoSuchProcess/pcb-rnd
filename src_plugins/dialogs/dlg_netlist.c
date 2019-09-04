@@ -350,7 +350,7 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 					PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* right-bottom */
 						PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL);
 						PCB_DAD_TREE(netlist_ctx.dlg, 1, 0, hdr2);
-							PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL);
+							PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
 							netlist_ctx.wtermlist = PCB_DAD_CURRENT(netlist_ctx.dlg);
 							PCB_DAD_TREE_SET_CB(netlist_ctx.dlg, selected_cb, termlist_row_selected);
 							PCB_DAD_TREE_SET_CB(netlist_ctx.dlg, ctx, &netlist_ctx);
