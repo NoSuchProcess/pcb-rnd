@@ -45,6 +45,7 @@
 #include "../src/compat_fs.h"
 #include "../src/misc_util.h"
 #include "../src/safe_fs.h"
+#include "../src/file_loaded.h"
 #include "method.h"
 #include "help.h"
 #include "gsch2pcb_rnd_conf.h"
@@ -387,6 +388,7 @@ int main(int argc, char ** argv)
 
 	method_import_register();
 
+	pcb_file_loaded_init();
 	pcb_conf_init();
 	conf_core_init();
 	pcb_hidlib_conf_init();
