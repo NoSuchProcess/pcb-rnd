@@ -294,6 +294,7 @@ static void do_step(void *hid_ctx, pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t
 		case PCB_DAD_SPIN_COORD:
 			end->val.crd += step;
 			SPIN_CLAMP(end->val.crd);
+			spin->last_good_crd = end->val.crd;
 			gen_str_coord(spin, end->val.crd, buf, sizeof(buf));
 			break;
 	}
@@ -362,13 +363,17 @@ void pcb_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 			break;
 		case PCB_DAD_SPIN_COORD:
 			succ = pcb_get_value_unit(str->val.str, &absolute, 0, &d, &unit);
-			if (succ)
+			if (succ) {
 				SPIN_CLAMP(d);
-			else
+				end->val.crd = d;
+				spin->last_good_crd = d;
+			}
+			else {
 				warn = "Invalid coord value or unit - result is truncated";
+				end->val.crd = spin->last_good_crd;
+			}
 			if (!spin->no_unit_chg)
 				spin->unit = unit;
-			end->val.crd = d;
 			break;
 		default: pcb_trace("INTERNAL ERROR: spin_set_num\n");
 	}
@@ -412,8 +417,10 @@ void pcb_dad_spin_txt_enter_cb_dry(void *hid_ctx, void *caller_data, pcb_hid_att
 				pcb_gui->attr_dlg_set_value(hid_ctx, spin->wstr, &hv);
 				spin->set_writeback_lock--;
 				succ = pcb_get_value_unit(str->val.str, &absolute, 0, &d, &unit);
-				if (succ)
+				if (succ) {
 					end->val.crd = d;
+					spin->last_good_crd = d;
+				}
 				free(tmp);
 			}
 			break;
@@ -474,6 +481,7 @@ void pcb_dad_spin_set_num(pcb_hid_attribute_t *attr, long l, double d, pcb_coord
 			break;
 		case PCB_DAD_SPIN_COORD:
 			attr->val.crd = c;
+			spin->last_good_crd = c;
 			spin->unit = NULL;
 			free((char *)str->val.str);
 			str->val.str = gen_str_coord(spin, c, NULL, 0);
@@ -525,6 +533,7 @@ int pcb_dad_spin_set_value(pcb_hid_attribute_t *end, void *hid_ctx, int idx, con
 			if (val->crd == end->val.crd)
 				return 0;
 			end->val.crd = val->crd;
+			spin->last_good_crd = val->crd;
 			break;
 	}
 	do_step(hid_ctx, spin, str, end, 0); /* cheap conversion + error checks */

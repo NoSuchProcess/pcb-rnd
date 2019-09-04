@@ -43,6 +43,7 @@ typedef struct {
 	pcb_hid_attribute_t **attrs;
 	void **hid_ctx;
 	int set_writeback_lock;
+	pcb_coord_t last_good_crd;
 	enum {
 		PCB_DAD_SPIN_INT,
 		PCB_DAD_SPIN_DOUBLE,
