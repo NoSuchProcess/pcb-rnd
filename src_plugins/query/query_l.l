@@ -3,7 +3,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -97,6 +97,7 @@ nm              { qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_NM); retu
 mil             { qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_MIL); return T_UNIT; }
 inch            { qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_IN); return T_UNIT; }
 
+thus            { return T_THUS; }
 [|][|]          { return T_OR; }
 [&][&]          { return T_AND; }
 [=][=]          { return T_EQ; }

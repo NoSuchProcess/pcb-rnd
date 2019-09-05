@@ -133,6 +133,7 @@ static pcb_qry_node_t *make_flag_free(char *str)
 %token <n> T_CONST
 
 /* the usual binary operators */
+%left T_THUS
 %left T_OR
 %left T_AND
 %left T_EQ T_NEQ
@@ -200,6 +201,7 @@ expr:
 	| T_INVALID              { $$ = pcb_qry_n_alloc(PCBQ_DATA_INVALID); }
 	| '!' expr               { UNOP($$, PCBQ_OP_NOT, $2); }
 	| '(' expr ')'           { $$ = $2; }
+	| expr T_THUS expr       { BINOP($$, $1, PCBQ_OP_THUS, $3); }
 	| expr T_AND expr        { BINOP($$, $1, PCBQ_OP_AND, $3); }
 	| expr T_OR expr         { BINOP($$, $1, PCBQ_OP_OR, $3); }
 	| expr T_EQ expr         { BINOP($$, $1, PCBQ_OP_EQ, $3); }

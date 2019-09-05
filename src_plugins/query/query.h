@@ -72,6 +72,7 @@ typedef enum {
 	PCBQ_EXPR,
 	PCBQ_ITER_CTX,
 
+	PCBQ_OP_THUS,
 	PCBQ_OP_AND,
 	PCBQ_OP_OR,
 	PCBQ_OP_EQ,

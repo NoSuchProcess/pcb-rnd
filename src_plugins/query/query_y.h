@@ -69,7 +69,8 @@ extern int qry_debug;
     T_QSTR = 275,
     T_INT = 276,
     T_DBL = 277,
-    T_CONST = 278
+    T_CONST = 278,
+    T_THUS = 279
   };
 #endif
 
@@ -86,7 +87,7 @@ union YYSTYPE
 	const pcb_unit_t *u;
 	pcb_qry_node_t *n;
 
-#line 90 "query_y.h" /* yacc.c:1921  */
+#line 91 "query_y.h" /* yacc.c:1921  */
 };
 
 typedef union YYSTYPE YYSTYPE;

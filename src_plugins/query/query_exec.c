@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -274,6 +274,14 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			if (!pcb_qry_is_true(&o2))
 				PCB_QRY_RET_INT(res, 0);
 			PCB_QRY_RET_INT(res, 1);
+
+		case PCBQ_OP_THUS: /* lazy */
+			BINOPS1();
+			if (!pcb_qry_is_true(&o1))
+				PCB_QRY_RET_INV(res);
+			BINOPS2();
+			*res = o2;
+			return 0;
 
 		case PCBQ_OP_OR: /* lazy */
 			BINOPS1();
