@@ -72,6 +72,7 @@ P69  - it is a valid coordinate
 P27 (EXPR)                      change precedence
 P28 EXPR || EXPR                logical OR (result: number)
 P29 EXPR && EXPR                logical AND (result: number)
+P72 EXPR1 thus EXPR2            evaluate to EXPR2 if EXPR1 is true, else to void
 P30 EXPR + EXPR                 add (number only)
 P31 EXPR - EXPR                 subtract (number only)
 P32 EXPR * EXPR                 multiply or ... (number only)
