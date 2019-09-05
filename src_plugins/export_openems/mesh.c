@@ -511,12 +511,16 @@ static int mesh_sort(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	qsort(mesh->line[dir].edge.array, vtc0_len(&mesh->line[dir].edge), sizeof(pcb_coord_t), cmp_coord);
 	qsort(mesh->line[dir].dens.array, vtr0_len(&mesh->line[dir].dens), sizeof(pcb_range_t), cmp_range);
 
-	/* merge edges too close */
+	/* warn for edges too close */
 	for(n = 0; n < vtc0_len(&mesh->line[dir].edge)-1; n++) {
 		pcb_coord_t c1 = mesh->line[dir].edge.array[n], c2 = mesh->line[dir].edge.array[n+1];
 		if (c2 - c1 < mesh->min_space) {
-			mesh->line[dir].edge.array[n] = (c1 + c2) / 2;
-			vtc0_remove(&mesh->line[dir].edge, n+1, 1);
+			if ((c2 - c1) < PCB_MM_TO_COORD(0.1)) {
+				mesh->line[dir].edge.array[n] = (c1 + c2) / 2;
+				vtc0_remove(&mesh->line[dir].edge, n+1, 1);
+			}
+			else
+				pcb_message(PCB_MSG_ERROR, "meshing error: invalid minimum spacing (%$mm) required: forced %s edges are closer than that around %$mm..%$mm; try decreasing your minimum spacing to below %$mm\n", mesh->min_space, dir == PCB_MESH_VERTICAL ? "vertical" : "horizonal", c1, c2, c2-c1);
 		}
 	}
 
