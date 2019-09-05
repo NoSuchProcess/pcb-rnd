@@ -34,6 +34,7 @@ description
 value
 ID
 bbox
+bbox_naked
 type
 area
 refdes

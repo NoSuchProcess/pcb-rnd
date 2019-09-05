@@ -249,7 +249,8 @@ do { \
 		PCB_QRY_RET_INT(res, obj->ID); \
 	} \
  \
-	if (fh1 == query_fields_bbox) { \
+	if ((fh1 == query_fields_bbox) || (fh1 == query_fields_bbox_naked)) { \
+		pcb_box_t *bx = (fh1 == query_fields_bbox) ? &(obj)->BoundingBox : &(obj)->bbox_naked; \
 		query_fields_keys_t fh2; \
  \
 		if (!PCB_OBJ_IS_CLASS(obj->type, PCB_OBJ_CLASS_OBJ)) \
@@ -257,12 +258,12 @@ do { \
  \
 		fld2hash_req(fh2, fld, 1); \
 		switch(fh2) { \
-			case query_fields_x1:     PCB_QRY_RET_INT(res, obj->BoundingBox.X1); \
-			case query_fields_y1:     PCB_QRY_RET_INT(res, obj->BoundingBox.Y1); \
-			case query_fields_x2:     PCB_QRY_RET_INT(res, obj->BoundingBox.X2); \
-			case query_fields_y2:     PCB_QRY_RET_INT(res, obj->BoundingBox.Y2); \
-			case query_fields_width:  PCB_QRY_RET_INT(res, obj->BoundingBox.X2 - obj->BoundingBox.X1); \
-			case query_fields_height: PCB_QRY_RET_INT(res, obj->BoundingBox.Y2 - obj->BoundingBox.Y1); \
+			case query_fields_x1:     PCB_QRY_RET_INT(res, bx->X1); \
+			case query_fields_y1:     PCB_QRY_RET_INT(res, bx->Y1); \
+			case query_fields_x2:     PCB_QRY_RET_INT(res, bx->X2); \
+			case query_fields_y2:     PCB_QRY_RET_INT(res, bx->Y2); \
+			case query_fields_width:  PCB_QRY_RET_INT(res, bx->X2 - bx->X1); \
+			case query_fields_height: PCB_QRY_RET_INT(res, bx->Y2 - bx->Y1); \
 			default:; \
 		} \
 		PCB_QRY_RET_INV(res); \
