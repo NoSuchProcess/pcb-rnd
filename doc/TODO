@@ -12,6 +12,7 @@
 	- FEATURE: hidlib: render pixmap
 	- FEATURE: optional subc pixmaps from attributes
 	- DOC: pool node on how to use pixmap for breadboading
+- BUG: kicad5: bug_files/5.kicad_pcb doesn't load [report: Matt]
 - BUG: second click on mesh() generate button -> segfault on layer visibility [report: Evan]
 - BUG: ipcd356 export on 7805.lht segfaults on a rectangular poly pad [report: Igor2]
 - BUG: parametric dialog: double click dip() in the tree; close the parametric dialog; click dip() again; edit n -> the parameter string in the filter text is ruined [report: Piotr]
