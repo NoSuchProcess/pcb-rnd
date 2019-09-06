@@ -67,7 +67,7 @@ int fp_wget_open(const char *url, const char *cache_path, FILE **f, int *fctx, f
 		if (f == NULL)
 			goto error;
 		if (!fp_wget_offline)
-			*f = pcb_wget_popen(url, update);
+			*f = pcb_wget_popen(url, update, NULL);
 		if (*f == NULL)
 			goto error;
 		*fctx = FCTX_POPEN;
@@ -94,7 +94,7 @@ int fp_wget_open(const char *url, const char *cache_path, FILE **f, int *fctx, f
 		if ((!fp_wget_offline) && !(mode & FP_WGET_OFFLINE)) {
 			int res;
 			sprintf(cmd, "%s/%s", cache_path, cdir);
-			res = pcb_wget_disk(url, cmd, update);
+			res = pcb_wget_disk(url, cmd, update, NULL);
 /*			pcb_trace("------res=%d\n", res); */
 			if ((res != 0) && (res != 768)) { /* some versions of wget will return error on -c if the file doesn't need update; try to guess whether it's really an error */
 				/* when wget fails, a 0-long file might be left there - remove it so it won't block new downloads */
