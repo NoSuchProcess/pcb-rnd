@@ -14,7 +14,7 @@ static int order_dialog(void)
 	int n;
 
 	if (order_ctx.active)
-		return; /* do not open another */
+		return -1; /* do not open another */
 
 	if (pcb_order_imps.used == 0) {
 		pcb_message(PCB_MSG_ERROR, "OrderPCB(): there are no ordering plugins compiled/loaded\n");
@@ -43,4 +43,5 @@ static int order_dialog(void)
 	order_ctx.active = 1;
 
 	PCB_DAD_NEW("EDIT_THIS_ID", order_ctx.dlg, "EDIT THIS: title", &order_ctx, pcb_false, order_close_cb);
+	return 0;
 }
