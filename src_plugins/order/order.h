@@ -29,6 +29,9 @@
 
 #include <genvector/vtp0.h>
 #include "hid_dad.h"
+#include "../src_plugins/order/order_conf.h"
+
+extern conf_order_t conf_order;
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
