@@ -32,35 +32,66 @@
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "safe_fs.h"
+#include "paths.h"
+#include "../src_plugins/lib_wget/lib_wget.h"
 #include "../src_plugins/order/order.h"
 #include "order_pcbway_conf.h"
 #include "../src_plugins/order_pcbway/conf_internal.c"
 
 conf_order_pcbway_t conf_order_pcbway;
 #define ORDER_PCBWAY_CONF_FN "order_pcbway.conf"
+
 #define CFG conf_order_pcbway.plugins.order_pcbway
+#define SERVER "http://api-partner.pcbway.com"
 
 
 static int pcbway_cache_update(pcb_hidlib_t *hidlib)
 {
+	char *hdr[5];
+	pcb_wget_opts_t wopts;
 	double mt, age, now = pcb_dtime();
-	char *path;
-	path = pcb_strdup_printf("%s%cGetCountry", conf_order.plugins.order.cache, PCB_DIR_SEPARATOR_C);
+	char *cachedir, *url, *path;
+	int res = 0;
+
+	wopts.header = hdr;
+	hdr[0] = pcb_concat("api-key: ", CFG.api_key, NULL);
+	hdr[1] = "Content-Type: application/xml";
+	hdr[2] = "Accept: application/xml";
+	hdr[3] = NULL;
+
+	cachedir = pcb_build_fn(hidlib, conf_order.plugins.order.cache);
+
+	pcb_mkdir(hidlib, cachedir, 0755);
+	path = pcb_strdup_printf("%s%cGetCountry", cachedir, PCB_DIR_SEPARATOR_C);
 	mt = pcb_file_mtime(hidlib, path);
 	if ((mt < 0) || ((now - mt) > CFG.cache_update_sec)) {
+		url = SERVER "/api/Address/GetCountry";
 		if (CFG.verbose)
 			pcb_message(PCB_MSG_INFO, "pcbway: stale '%s', updating it in the cache\n", path);
+		wopts.post_file = "/dev/null";
+		if (pcb_wget_disk(url, path, 0, &wopts) != 0) {
+			pcb_message(PCB_MSG_ERROR, "pcbway: failed to download %s\n", url);
+		}
+		
 	}
 	else if (CFG.verbose)
 		pcb_message(PCB_MSG_INFO, "pcbway: '%s' from cache\n", path);
 
+	quit:;
 	free(path);
+	free(hdr[0]);
+	free(cachedir);
+	return res;
 }
 
 static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
 {
 	if (pcbway_cache_update(&PCB->hidlib) != 0) {
 		PCB_DAD_LABEL(octx->dlg, "Error: failed to update the cache.");
+		return -1;
+	}
+	if ((CFG.api_key == NULL) || (*CFG.api_key == '\0')) {
+		PCB_DAD_LABEL(octx->dlg, "Error: no api_key available.");
 		return -1;
 	}
 	PCB_DAD_LABEL(octx->dlg, "pcbway!");

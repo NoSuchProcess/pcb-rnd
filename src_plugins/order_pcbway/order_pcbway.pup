@@ -4,5 +4,6 @@ $long order from PCBWay through the Internet
 $state WIP
 #$package cloud
 dep order
+dep lib_wget
 default disable
 autoload 1
