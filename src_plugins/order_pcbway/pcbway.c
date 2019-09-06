@@ -32,11 +32,17 @@
 #include "plugins.h"
 #include "../src_plugins/order/order.h"
 
+static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
+{
+	PCB_DAD_LABEL(octx->dlg, "pcbway!");
+}
+
 static pcb_order_imp_t pcbway = {
 	"PCBWay",
 	NULL,
-	NULL
+	pcbway_populate_dad
 };
+
 
 int pplg_check_ver_order_pcbway(int ver_needed) { return 0; }
 

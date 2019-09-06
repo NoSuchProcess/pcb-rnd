@@ -1,9 +1,3 @@
-typedef struct{
-	PCB_DAD_DECL_NOINIT(dlg)
-	int active; /* already open - allow only one instance */
-	vtp0_t names;
-} order_ctx_t;
-
 order_ctx_t order_ctx;
 
 static void order_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
@@ -38,8 +32,9 @@ static int order_dialog(void)
 	PCB_DAD_BEGIN_TABBED(order_ctx.dlg, order_ctx.names.array);
 		PCB_DAD_COMPFLAG(order_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_LEFT_TAB);
 		for(n = 0; n < pcb_order_imps.used; n++) {
+			imp = pcb_order_imps.array[n];
 			PCB_DAD_BEGIN_VBOX(order_ctx.dlg);
-				PCB_DAD_LABEL(order_ctx.dlg, "TODO");
+				imp->populate_dad(pcb_order_imps.array[n], &order_ctx);
 			PCB_DAD_END(order_ctx.dlg);
 		}
 	PCB_DAD_END(order_ctx.dlg);

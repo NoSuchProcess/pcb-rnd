@@ -28,13 +28,20 @@
 #define PCB_ORDER_H
 
 #include <genvector/vtp0.h>
+#include "hid_dad.h"
+
+typedef struct{
+	PCB_DAD_DECL_NOINIT(dlg)
+	int active; /* already open - allow only one instance */
+	vtp0_t names;
+} order_ctx_t;
 
 /* order implementation - registered by an order plugin */
 typedef struct pcb_order_imp_s pcb_order_imp_t;
 struct pcb_order_imp_s {
 	const char *name;
 	int (*enabled)(pcb_order_imp_t *imp);          /* returns 1 if the plugin is enabled */
-	void (*populate_dad)(pcb_order_imp_t *imp);
+	void (*populate_dad)(pcb_order_imp_t *imp, order_ctx_t *octx);
 };
 
 extern vtp0_t pcb_order_imps; /* of (pcb_order_imp_t *) items */
