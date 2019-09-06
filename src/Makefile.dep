@@ -4947,8 +4947,12 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h hid_dad.h \
  compat_misc.h hid_attrib.h ../src_3rd/genlist/gendlist.h color.h \
  pcb-printf.h hid_dad_spin.h hid_cfg.h event.h hidlib.h \
- ../src_plugins/order/order.h ../src_3rd/genvector/vtp0.h \
- ../src_plugins/order/order_dlg.c dolists.h
+ ../src_plugins/order/order_conf.h conf.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/genvector/vtp0.h list_conf.h conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_plugins/order/conf_internal.c \
+ ../src_plugins/order/order.h ../src_plugins/order/order_dlg.c dolists.h \
+ ../src_plugins/order/order_conf_fields.h
 ../src_plugins/order_pcbway/pcbway.o: \
  ../src_plugins/order_pcbway/pcbway.c ../config.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
@@ -4962,7 +4966,12 @@
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h error.h attrib.h box.h math_helper.h obj_common.h \
  flag.h globalconst.h data_parent.h misc_util.h color.h pcb-printf.h \
- hid_dad_spin.h
+ hid_dad_spin.h ../src_plugins/order_pcbway/order_pcbway_conf.h conf.h \
+ ../src_3rd/liblihata/lihata.h list_conf.h conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h \
+ ../src_plugins/order_pcbway/conf_internal.c \
+ ../src_plugins/order_pcbway/order_pcbway_conf_fields.h
 ../src_plugins/polycombine/polycombine.o: \
  ../src_plugins/polycombine/polycombine.c ../config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h global_typedefs.h \
