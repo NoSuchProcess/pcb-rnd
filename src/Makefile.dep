@@ -3654,7 +3654,12 @@
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h ../src_plugins/io_tedax/parse.h safe_fs.h conf.h \
  pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h error.h \
- ../src_plugins/io_tedax/tetest.h rtree.h
+ ../src_plugins/io_tedax/tetest.h rtree.h obj_subc_parent.h data.h \
+ obj_pstk.h obj_pstk_inlines.h thermal.h polygon1_gen.h netlist.h \
+ plugins.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h plug_io.h hid.h \
+ hid_cam.h hid_attrib.h hid_nogui.h hid_init.h hid_attrib.h
 ../src_plugins/io_tedax/tlayer.o: ../src_plugins/io_tedax/tlayer.c \
  ../config.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/hash.h data.h globalconst.h global_typedefs.h \
@@ -4941,7 +4946,7 @@
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h hid_dad.h \
  compat_misc.h hid_attrib.h ../src_3rd/genlist/gendlist.h color.h \
- pcb-printf.h hid_dad_spin.h event.h hidlib.h \
+ pcb-printf.h hid_dad_spin.h hid_cfg.h event.h hidlib.h \
  ../src_plugins/order/order.h ../src_3rd/genvector/vtp0.h \
  ../src_plugins/order/order_dlg.c dolists.h
 ../src_plugins/order_pcbway/pcbway.o: \
@@ -4951,7 +4956,13 @@
  pcb_bool.h plugins.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h \
- ../src_plugins/order/order.h ../src_3rd/genvector/vtp0.h
+ ../src_plugins/order/order.h ../src_3rd/genvector/vtp0.h hid_dad.h \
+ compat_misc.h hid_attrib.h ../src_3rd/genlist/gendlist.h hid.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h error.h attrib.h box.h math_helper.h obj_common.h \
+ flag.h globalconst.h data_parent.h misc_util.h color.h pcb-printf.h \
+ hid_dad_spin.h
 ../src_plugins/polycombine/polycombine.o: \
  ../src_plugins/polycombine/polycombine.c ../config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h global_typedefs.h \
