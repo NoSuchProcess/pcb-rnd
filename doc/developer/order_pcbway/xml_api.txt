@@ -1,0 +1,21 @@
+The xml API has a few design choices that might be regarded as unusual.
+
+1. order of fields
+
+The quotation request, <PcbQuotationRequest>, is a flat list of mostly
+independent children. However, it is very strict about the order
+of those children. Fortunately the order matches the one in PCBWay_API.xml.
+The ruleset seems to be:
+  - divide the children into two groups: board-specific and shipping
+  - output board first, shipping next
+  - nodes within a group must be alphabetically ordered
+
+2. case sensitivity
+
+Every tag name and enum text fields are case sensitive. The parser will
+not accept "no" if the enum value is said to be "No".
+
+
+3. computer readable API spec
+
+The API is at http://api-partner.pcbway.com/xml/PCBWay_Api.xml
