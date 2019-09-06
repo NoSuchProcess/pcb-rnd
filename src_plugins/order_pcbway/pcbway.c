@@ -44,18 +44,19 @@ conf_order_pcbway_t conf_order_pcbway;
 #define CFG conf_order_pcbway.plugins.order_pcbway
 #define SERVER "http://api-partner.pcbway.com"
 
-static int pcbway_cahce_update_(pcb_hidlib_t *hidlib, char *path, pcb_wget_opts_t *wopts)
+static int pcbway_cahce_update_(pcb_hidlib_t *hidlib, const char *url, const char *path, int update, pcb_wget_opts_t *wopts)
 {
-	char *url;
 	double mt, now = pcb_dtime();
 
 	mt = pcb_file_mtime(hidlib, path);
-	if ((mt < 0) || ((now - mt) > CFG.cache_update_sec)) {
-		url = SERVER "/api/Address/GetCountry";
-		if (CFG.verbose)
-			pcb_message(PCB_MSG_INFO, "pcbway: stale '%s', updating it in the cache\n", path);
-		wopts->post_file = "/dev/null";
-		if (pcb_wget_disk(url, path, 0, wopts) != 0) {
+	if (update || (mt < 0) || ((now - mt) > CFG.cache_update_sec)) {
+		if (CFG.verbose) {
+			if (update)
+				pcb_message(PCB_MSG_INFO, "pcbway: static '%s', updating it in the cache\n", path);
+			else
+				pcb_message(PCB_MSG_INFO, "pcbway: stale '%s', updating it in the cache\n", path);
+		}
+		if (pcb_wget_disk(url, path, update, wopts) != 0) {
 			pcb_message(PCB_MSG_ERROR, "pcbway: failed to download %s\n", url);
 			return -1;
 		}
@@ -82,11 +83,20 @@ static int pcbway_cache_update(pcb_hidlib_t *hidlib)
 	cachedir = pcb_build_fn(hidlib, conf_order.plugins.order.cache);
 
 	pcb_mkdir(hidlib, cachedir, 0755);
+	wopts.post_file = "/dev/null";
 	path = pcb_strdup_printf("%s%cGetCountry", cachedir, PCB_DIR_SEPARATOR_C);
-	if (pcbway_cahce_update_(hidlib, path, &wopts) != 0) {
+	if (pcbway_cahce_update_(hidlib, SERVER "/api/Address/GetCountry", path, 0, &wopts) != 0) {
 		res = -1;
 		goto quit;
 	}
+	free(path);
+
+	path = pcb_strdup_printf("%s%cPCBWay_Api.xml", cachedir, PCB_DIR_SEPARATOR_C);
+	if (pcbway_cahce_update_(hidlib, SERVER "/xml/PCBWay_Api.xml", path, 1, NULL) != 0) {
+		res = -1;
+		goto quit;
+	}
+
 
 	quit:;
 	free(path);
