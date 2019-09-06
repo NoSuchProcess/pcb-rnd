@@ -32,6 +32,7 @@
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "hid_dad.h"
+#include "hid_cfg.h"
 #include "event.h"
 
 #include "order.h"
