@@ -1,0 +1,26 @@
+<PcbQuotationRequest xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/API.Models.Pcb">
+	<DesignInPanel>1</DesignInPanel>
+	<FR4Tg>TG130</FR4Tg>
+	<FinishedCopper>1 oz Cu</FinishedCopper>
+	<Goldfingers>No</Goldfingers>
+	<Layers>2</Layers>
+	<Length>100.0</Length>
+	<Material>FR-4</Material>
+	<MinHoleSize>0.3</MinHoleSize>
+	<MinTrackSpacing>6/6mil</MinTrackSpacing>
+	<Qty>10</Qty>
+	<Silkscreen>White</Silkscreen>
+	<SolderMask>Green</SolderMask>
+	<SurfaceFinish>HASL with lead</SurfaceFinish>
+	<Thickness>1.6</Thickness>
+	<ViaProcess>Tenting vias</ViaProcess>
+	<Width>100.0000</Width>
+
+	<City>n/a</City>
+	<Country>n/a</Country>
+	<CountryCode>GB</CountryCode>
+	<Postalcode>0</Postalcode>
+	<ShipType>DHL</ShipType>
+
+</PcbQuotationRequest>
+
