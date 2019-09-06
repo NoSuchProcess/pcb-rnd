@@ -24,6 +24,7 @@
 - BUG: png, eps (and probably other exporters) export the assy layer if the group exists, even if it is not visible on the GUI [report: Igor2]
 - DOC: finish DAD doc (doc/developer/dad/: e.g. run.html is missing) [report: Alain]
 - FEATURE: configure setting: library window filter shouldn't really filter if there's () in the string [report: pskibinski]
+- FEATURE: io_tedax: tEDAx netlist load should import and write pinname [report: Ade]
 + asm() dialog
 	+ FEATURE: Add a button to clear the done status from a component. [report: Ade]
 	+ FEATURE: Show the status message on a group when minimized to indicate whether the groups components are done, not done or partially done. [report: Ade]
