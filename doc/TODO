@@ -39,6 +39,7 @@
 + FEATURE/BUG: old gtk doesn't have GDK_Key_* but GDK_* (e.g. GDK_Tab); detect this in scconfig, use a wrapper macro in gtk code [report: Ade]
 
 2. For later releases ===============================================================================
+- CLEANUP/BUG: globalconst.h: PCB_MIN_LINESIZE shall be 1 but rather remove it alltogether; revise other minimums as well and rather update the coord spin DAD to make the limit or maybe use a double-to-coord macro that checks 0..maxcoord (or -maxcoord..maxcoord for some cases) ml:3351 [report: Matt]
 - CLEANUP: (TT) propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
