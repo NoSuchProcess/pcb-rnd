@@ -31,6 +31,11 @@
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "../src_plugins/order/order.h"
+#include "order_pcbway_conf.h"
+#include "../src_plugins/order_pcbway/conf_internal.c"
+
+conf_order_pcbway_t conf_order_pcbway;
+#define ORDER_PCBWAY_CONF_FN "order_pcbway.conf"
 
 static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
 {
@@ -48,11 +53,19 @@ int pplg_check_ver_order_pcbway(int ver_needed) { return 0; }
 
 void pplg_uninit_order_pcbway(void)
 {
+	pcb_conf_unreg_file(ORDER_PCBWAY_CONF_FN, order_pcbway_conf_internal);
+	pcb_conf_unreg_fields("plugins/order_pcbway/");
 }
 
 int pplg_init_order_pcbway(void)
 {
 	PCB_API_CHK_VER;
+
+	pcb_conf_reg_file(ORDER_PCBWAY_CONF_FN, order_pcbway_conf_internal);
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	pcb_conf_reg_field(conf_order_pcbway, field,isarray,type_name,cpath,cname,desc,flags);
+#include "order_pcbway_conf_fields.h"
+
 	pcb_order_reg(&pcbway);
 	return 0;
 }

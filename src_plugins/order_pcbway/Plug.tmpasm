@@ -1,4 +1,7 @@
 put /local/pcb/mod {order_pcbway}
+put /local/pcb/mod/CONF {$(PLUGDIR)/order_pcbway/order_pcbway_conf.h}
+put /local/pcb/mod/CONFFILE {order_pcbway.conf}
+put /local/pcb/mod/CONFVAR {order_pcbway_conf_internal}
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/order_pcbway/pcbway.o
 @]

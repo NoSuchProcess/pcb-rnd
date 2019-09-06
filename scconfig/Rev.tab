@@ -1,3 +1,4 @@
+27454	configure	order plugin config file
 27403	configure	tEDAx: new source file for etest save
 27401	configure	remove cairo from optional dependencies
 27296	configure	gtk: detect GDK_KEY_ prefix for supporting ~10 years old systems

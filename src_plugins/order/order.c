@@ -34,10 +34,15 @@
 #include "hid_dad.h"
 #include "hid_cfg.h"
 #include "event.h"
+#include "order_conf.h"
+#include "../src_plugins/order/conf_internal.c"
 
 #include "order.h"
 
 static const char *order_cookie = "order plugin";
+
+conf_order_t conf_order;
+#define ORDER_CONF_FN "order.conf"
 
 #define ANCH "@feature_plugins"
 
@@ -107,6 +112,8 @@ void pplg_uninit_order(void)
 {
 	pcb_remove_actions_by_cookie(order_cookie);
 	pcb_event_unbind_allcookie(order_cookie);
+	pcb_conf_unreg_file(ORDER_CONF_FN, order_conf_internal);
+	pcb_conf_unreg_fields("plugins/order/");
 }
 
 #include "dolists.h"
@@ -114,6 +121,12 @@ void pplg_uninit_order(void)
 int pplg_init_order(void)
 {
 	PCB_API_CHK_VER;
+
+	pcb_conf_reg_file(ORDER_CONF_FN, order_conf_internal);
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	pcb_conf_reg_field(conf_order, field,isarray,type_name,cpath,cname,desc,flags);
+#include "order_conf_fields.h"
+
 	PCB_REGISTER_ACTIONS(order_action_list, order_cookie)
 	pcb_event_bind(PCB_EVENT_GUI_INIT, order_menu_init, NULL, order_cookie);
 	return 0;
