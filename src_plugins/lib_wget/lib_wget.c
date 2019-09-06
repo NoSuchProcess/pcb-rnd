@@ -37,8 +37,33 @@ const char *wget_cmd = "wget -U 'pcb-rnd-fp_wget'";
 
 static char *pcb_wget_command(const char *url, const char *ofn, int update, const pcb_wget_opts_t *opts)
 {
-	const char *upds = update ? "-c" : "";
-	return pcb_strdup_printf("%s -O '%s' %s '%s'", wget_cmd, ofn, upds, url);
+	gds_t tmp;
+
+	gds_init(&tmp);
+	pcb_append_printf(&tmp, "%s -O '%s'", wget_cmd, ofn);
+	if (update)
+		gds_append_str(&tmp, " -c");
+
+	if (opts != NULL) {
+		const char **h;
+		for(h = opts->header; *h != NULL; h++) {
+			gds_append_str(&tmp, " --header '");
+			gds_append_str(&tmp, *h);
+			gds_append(&tmp, '\'');
+		}
+		if (opts->post_file != NULL) {
+			gds_append_str(&tmp, " '--post-file=");
+			gds_append_str(&tmp, opts->post_file);
+			gds_append(&tmp, '\'');
+		}
+
+	}
+
+	gds_append(&tmp, ' ');
+	gds_append(&tmp, '\'');
+	gds_append_str(&tmp, url);
+	gds_append(&tmp, '\'');
+	return tmp.array;
 }
 
 int pcb_wget_disk(const char *url, const char *ofn, int update, const pcb_wget_opts_t *opts)
