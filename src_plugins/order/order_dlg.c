@@ -29,14 +29,18 @@ static int order_dialog(void)
 	}
 	vtp0_set(&order_ctx.names, n, NULL);
 
-	PCB_DAD_BEGIN_TABBED(order_ctx.dlg, order_ctx.names.array);
-		PCB_DAD_COMPFLAG(order_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_LEFT_TAB);
-		for(n = 0; n < pcb_order_imps.used; n++) {
-			imp = pcb_order_imps.array[n];
-			PCB_DAD_BEGIN_VBOX(order_ctx.dlg);
-				imp->populate_dad(pcb_order_imps.array[n], &order_ctx);
-			PCB_DAD_END(order_ctx.dlg);
-		}
+	PCB_DAD_BEGIN_VBOX(order_ctx.dlg);
+		PCB_DAD_BEGIN_TABBED(order_ctx.dlg, order_ctx.names.array);
+			PCB_DAD_COMPFLAG(order_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_LEFT_TAB);
+			for(n = 0; n < pcb_order_imps.used; n++) {
+				imp = pcb_order_imps.array[n];
+				PCB_DAD_BEGIN_VBOX(order_ctx.dlg);
+					imp->populate_dad(pcb_order_imps.array[n], &order_ctx);
+				PCB_DAD_END(order_ctx.dlg);
+			}
+
+		PCB_DAD_END(order_ctx.dlg);
+		PCB_DAD_BUTTON_CLOSES(order_ctx.dlg, clbtn);
 	PCB_DAD_END(order_ctx.dlg);
 
 	/* set up the context */
