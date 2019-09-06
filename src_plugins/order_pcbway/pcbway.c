@@ -28,17 +28,41 @@
 
 #include <stdio.h>
 
+#include "board.h"
 #include "pcb-printf.h"
 #include "plugins.h"
+#include "safe_fs.h"
 #include "../src_plugins/order/order.h"
 #include "order_pcbway_conf.h"
 #include "../src_plugins/order_pcbway/conf_internal.c"
 
 conf_order_pcbway_t conf_order_pcbway;
 #define ORDER_PCBWAY_CONF_FN "order_pcbway.conf"
+#define CFG conf_order_pcbway.plugins.order_pcbway
+
+
+static int pcbway_cache_update(pcb_hidlib_t *hidlib)
+{
+	double mt, age, now = pcb_dtime();
+	char *path;
+	path = pcb_strdup_printf("%s%cGetCountry", conf_order.plugins.order.cache, PCB_DIR_SEPARATOR_C);
+	mt = pcb_file_mtime(hidlib, path);
+	if ((mt < 0) || ((now - mt) > CFG.cache_update_sec)) {
+		if (CFG.verbose)
+			pcb_message(PCB_MSG_INFO, "pcbway: stale '%s', updating it in the cache\n", path);
+	}
+	else if (CFG.verbose)
+		pcb_message(PCB_MSG_INFO, "pcbway: '%s' from cache\n", path);
+
+	free(path);
+}
 
 static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
 {
+	if (pcbway_cache_update(&PCB->hidlib) != 0) {
+		PCB_DAD_LABEL(octx->dlg, "Error: failed to update the cache.");
+		return -1;
+	}
 	PCB_DAD_LABEL(octx->dlg, "pcbway!");
 }
 
