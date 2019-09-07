@@ -1,23 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+Each subtree is an API and has a flat, _ordered_ list of fields.
+Each field may have the following properties:
+  type: integer, enum, mm, string, enum:country:code, enum:country:name
+  note: human readable explanation of what the field is for
+  default: default value to present when it is not already specified/derived
+
+When type is "enum", the node will have <Value> children listing all possible
+values. If there is no "default" specified, use the first <Value>.
+
+Types enum:country:code and enum:country:name are enums whose values are
+loaded from the list acquired using the api/Address/GetCountry API.
+-->
 <PCBWayAPI>
-    <PcbQuotationRequest note="PCB quote interface">
-        <DesignInPanel></DesignInPanel>
-        <FR4Tg>
+    <PcbQuotationRequest note="PCB quote interface" path="api/Pcb/PcbQuotation">
+        <DesignInPanel type="ingeger" default="1" note="Number of different designs in the panel)"></DesignInPanel>
+        <FR4Tg type="enum" note="Laminate glass transition temperature">
             <Value>TG130</Value>
             <Value>TG150</Value>
             <Value>TG170</Value>
         </FR4Tg>
-        <FinishedCopper>
+        <FinishedCopper type="enum" note="Finished copper thickness">
             <Value>1 oz Cu</Value>
             <Value>2 oz Cu</Value>
             <Value>3 oz Cu</Value>
             <Value>4 oz Cu</Value>
         </FinishedCopper>
-        <Goldfingers>
+        <Goldfingers type="enum" default="No" note="Whether to apply gold finish on fingers">
             <Value>Yes</Value>
             <Value>No</Value>
         </Goldfingers>
-        <Layers>
+        <Layers type="enum" default="2" note="Number of copper layers">
             <Value>1</Value>
             <Value>2</Value>
             <Value>4</Value>
@@ -27,30 +40,30 @@
             <Value>12</Value>
             <Value>14</Value>
         </Layers>
-        <Length></Length>
-        <Material>
+        <Length type="mm" note="board length"></Length>
+        <Material type="enum" default="FR-4" note="Substrate material">
             <Value>FR-4</Value>
             <Value>Aluminum board</Value>
             <Value>Rigid-Flex</Value>
         </Material>
-        <MinHoleSize>
+        <MinHoleSize type="enum" note="Diameter of the smallest hole, mm">
             <Value>0.2</Value>
             <Value>0.25</Value>
             <Value>0.3</Value>
             <Value>-1</Value>
         </MinHoleSize>
-        <MinTrackSpacing>
+        <MinTrackSpacing type="enum" note="Track width/clearance">
             <Value>4/4mil</Value>
             <Value>5/5mil</Value>
             <Value>6/6mil</Value>
         </MinTrackSpacing>
-        <Qty></Qty>
-        <Silkscreen>
+        <Qty type="integer" default="5" note="Number of copies to be fabricated"></Qty>
+        <Silkscreen type="enum" note="Color of the silkscreen graphics">
             <Value>White</Value>
             <Value>Black</Value>
             <Value>None</Value>
         </Silkscreen>
-        <SolderMask>
+        <SolderMask type="enum" note="Color of the solder mask">
             <Value>Green</Value>
             <Value>Red</Value>
             <Value>Yellow</Value>
@@ -62,7 +75,7 @@
             <Value>Matt green</Value>
             <Value>None</Value>
         </SolderMask>
-        <SurfaceFinish>
+        <SurfaceFinish type="enum">
             <Value>HASL with lead</Value>
             <Value>HASL lead free</Value>
             <Value>Immersion gold</Value>
@@ -70,7 +83,7 @@
             <Value>OSP</Value>
             <Value>None</Value>
         </SurfaceFinish>
-        <Thickness>
+        <Thickness type="enum" note="Final board thickness in mm">
             <Value>0.4</Value>
             <Value>0.6</Value>
             <Value>0.8</Value>
@@ -80,17 +93,17 @@
             <Value>2.0</Value>
             <Value>2.4</Value>
         </Thickness>
-        <ViaProcess>
+        <ViaProcess type="enum">
             <Value>Tenting vias</Value>
             <Value>Plugged vias</Value>
             <Value>Vias not covered</Value>
         </ViaProcess>
-        <Width></Width>
-        <City></City>
-        <Country></Country>
-        <CountryCode></CountryCode>
-        <Postalcode></Postalcode>
-        <ShipType>
+        <Width type="mm" note="Board width"></Width>
+        <City type="string"></City>
+        <Country type="enum:country:name"></Country>
+        <CountryCode type="enum:country:code"></CountryCode>
+        <Postalcode type="string"></Postalcode>
+        <ShipType type="enum">
             <Value>DHL</Value>
             <Value>HK_post</Value>
             <Value>SF_Express</Value>
