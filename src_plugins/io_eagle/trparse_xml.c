@@ -50,6 +50,7 @@ static int eagle_xml_load(trparse_t *pst, const char *fn)
 		pcb_message(PCB_MSG_ERROR, "can't open '%s'\n", fn);
 		return -1;
 	}
+	fclose(f);
 
 	doc = xmlReadFile(efn, NULL, 0);
 	if (doc == NULL) {
