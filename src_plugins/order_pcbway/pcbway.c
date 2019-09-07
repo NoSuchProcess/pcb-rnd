@@ -372,7 +372,8 @@ static void pcbway_quote_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 				break;
 
 			case PCB_HATT_STRING:
-				fprintf(fx, "%s", f->val.str);
+				if (f->val.str != NULL)
+					fprintf(fx, "%s", f->val.str);
 				break;
 
 			default:
