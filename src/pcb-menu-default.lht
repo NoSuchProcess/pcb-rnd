@@ -752,7 +752,7 @@ ha:{
 
 		ha:layer {
 			li:submenu {
-				ha:Layer comb. flags...             = { action=EditLayer() }
+				ha:Layer name and flags...          = { action=EditLayer() }
 				ha:Layer properties...              = { action=Propedit(layer) }
 				ha:Grouping... (layer preferences)  = { action=Preferences("layers") }
 				-
