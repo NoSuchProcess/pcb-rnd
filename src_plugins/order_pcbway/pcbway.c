@@ -233,7 +233,7 @@ static int pcbway_load_fields_(pcb_hidlib_t *hidlib, pcb_order_imp_t *imp, order
 		else if (strcmp(type, "integer") == 0) {
 			f->type = PCB_HATT_INTEGER;
 			if (dflt != NULL)
-				f->val.lng = PCB_MM_TO_COORD(atoi(dflt));
+				f->val.lng = atoi(dflt);
 		}
 		else if (strcmp(type, "mm") == 0) {
 			f->type = PCB_HATT_COORD;
