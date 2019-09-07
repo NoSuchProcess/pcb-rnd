@@ -1,3 +1,4 @@
+27468	configure	order pcbway now depends on libxml2
 27454	configure	order plugin config file
 27403	configure	tEDAx: new source file for etest save
 27401	configure	remove cairo from optional dependencies

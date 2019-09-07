@@ -27,6 +27,8 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <libxml/tree.h>
+#include <libxml/parser.h>
 
 #include "board.h"
 #include "pcb-printf.h"
@@ -105,8 +107,58 @@ static int pcbway_cache_update(pcb_hidlib_t *hidlib)
 	return res;
 }
 
+
+
+static xmlDoc *pcbway_xml_load(const char *fn)
+{
+	xmlDoc *doc;
+	FILE *f;
+	char *efn = NULL;
+
+	f = pcb_fopen_fn(NULL, fn, "r", &efn);
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "pcbway: can't open '%s' (%s) for read\n", fn, efn);
+		free(efn);
+		return -1;
+	}
+	fclose(f);
+
+	doc = xmlReadFile(efn, NULL, 0);
+	if (doc == NULL) {
+		pcb_message(PCB_MSG_ERROR, "xml parsing error on file %s (%s)\n", fn, efn);
+		free(efn);
+		return -1;
+	}
+	free(efn);
+
+	return doc;
+}
+
+static int pcbway_populate_dad_(pcb_hidlib_t *hidlib, pcb_order_imp_t *imp, order_ctx_t *octx, xmlNode *root)
+{
+	xmlNode *n;
+	for(root = root->children; (root != NULL) && (xmlStrcmp(root->name, (xmlChar *)"PcbQuotationRequest") != 0); root = root->next) ;
+
+	if (root == NULL)
+		return -1;
+
+	PCB_DAD_BEGIN_VBOX(octx->dlg);
+		PCB_DAD_COMPFLAG(octx->dlg, PCB_HATF_SCROLL | PCB_HATF_EXPFILL);
+		for(n = root->children; n != NULL; n = n->next) {
+			if (n->type == XML_TEXT_NODE)
+				continue;
+			PCB_DAD_LABEL(octx->dlg, (char *)n->name);
+		}
+	PCB_DAD_END(octx->dlg);
+	return 0;
+}
+
 static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
 {
+	char *cachedir, *path;
+	xmlDoc *doc;
+	xmlNode *root;
+
 	if ((CFG.api_key == NULL) || (*CFG.api_key == '\0')) {
 		PCB_DAD_LABEL(octx->dlg, "Error: no api_key available.");
 		return -1;
@@ -115,7 +167,22 @@ static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
 		PCB_DAD_LABEL(octx->dlg, "Error: failed to update the cache.");
 		return -1;
 	}
-	PCB_DAD_LABEL(octx->dlg, "pcbway!");
+
+	cachedir = pcb_build_fn(&PCB->hidlib, conf_order.plugins.order.cache);
+	path = pcb_strdup_printf("%s%cPCBWay_Api.xml", cachedir, PCB_DIR_SEPARATOR_C);
+	doc = pcbway_xml_load(path);
+
+	root = xmlDocGetRootElement(doc);
+	if (xmlStrcmp(root->name, (xmlChar *)"PCBWayAPI") == 0) {
+		if (pcbway_populate_dad_(&PCB->hidlib, imp, octx, root) != 0)
+			PCB_DAD_LABEL(octx->dlg, "xml error: invalid API xml\n");
+	}
+	else
+		PCB_DAD_LABEL(octx->dlg, "xml error: root is not <PCBWayAPI>\n");
+
+	xmlFreeDoc(doc);
+	free(cachedir);
+	free(path);
 }
 
 static pcb_order_imp_t pcbway = {

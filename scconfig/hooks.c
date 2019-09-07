@@ -426,7 +426,7 @@ int hook_detect_target()
 	want_gtk    = want_gtk2; /* plus |gtkN */
 	want_gd     = plug_is_enabled("export_png") || plug_is_enabled("import_pxm_gd") || plug_is_enabled("export_gcode");
 	want_stroke = plug_is_enabled("stroke");
-	want_xml2   = plug_is_enabled("io_eagle");
+	want_xml2   = plug_is_enabled("io_eagle") || plug_is_enabled("order_pcbway");
 	want_freetype2 = plug_is_enabled("import_ttf");
 	want_fuse = plug_is_enabled("export_vfs_fuse");
 
@@ -598,8 +598,9 @@ int hook_detect_target()
 		require("libs/sul/libxml2/presents", 0, 0);
 		if (!istrue(get("libs/sul/libxml2/presents"))) {
 			report("libxml2 is not available, disabling io_eagle...\n");
-			report_repeat("WARNING: Since there's no libxml2 found, disabling the Eagle IO plugin...\n");
+			report_repeat("WARNING: Since there's no libxml2 found, disabling the Eagle IO and pcbway order plugins...\n");
 			hook_custom_arg("disable-io_eagle", NULL);
+			hook_custom_arg("disable-order_pcbway", NULL);
 		}
 		put("/local/pcb/want_libxml2", strue);
 	}
