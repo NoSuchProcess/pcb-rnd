@@ -80,7 +80,7 @@ static int pcbway_cache_update(pcb_hidlib_t *hidlib)
 	char *cachedir, *path;
 	int res = 0;
 
-	wopts.header = hdr;
+	wopts.header = (const char **)hdr;
 	hdr[0] = pcb_concat("api-key: ", CFG.api_key, NULL);
 	hdr[1] = "Content-Type: application/xml";
 	hdr[2] = "Accept: application/xml";
