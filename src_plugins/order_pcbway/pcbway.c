@@ -293,8 +293,6 @@ static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
 		PCB_DAD_END(octx->dlg);
 
 	PCB_DAD_END(octx->dlg);
-	return 0;
-
 }
 
 static pcb_order_imp_t pcbway = {
