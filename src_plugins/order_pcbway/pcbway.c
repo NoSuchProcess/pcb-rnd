@@ -168,10 +168,8 @@ static int pcbway_populate_dad_(pcb_hidlib_t *hidlib, pcb_order_imp_t *imp, orde
 							continue;
 						s = pcb_strdup(v->children->content);
 						vtp0_append(&tmp, s);
-						if ((dflt != NULL) && (strcmp(s, dflt) == 0)) {
+						if ((dflt != NULL) && (strcmp(s, dflt) == 0))
 							di = i;
-							printf("enum dflt: '%s' is %d\n", dflt, di);
-						}
 						i++;
 					}
 					vtp0_append(&tmp, NULL);
