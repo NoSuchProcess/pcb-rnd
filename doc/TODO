@@ -12,6 +12,8 @@
 	- FEATURE: hidlib: render pixmap
 	- FEATURE: optional subc pixmaps from attributes
 	- DOC: pool node on how to use pixmap for breadboading
+- CLEANUP: pcb_term_add() and pcb_term_del() should not be called from undo code but from attribute change callback [report: Matt]
+	- BUG: undo_term_rename_swap() shall not require subc [report: Matt]
 - BUG: kicad5: bug_files/5.kicad_pcb doesn't load: (path /5D7245F8) [report: Matt]
 - BUG: second click on mesh() generate button -> segfault on layer visibility [report: Evan]
 - BUG: ipcd356 export on 7805.lht segfaults on a rectangular poly pad [report: Igor2]
