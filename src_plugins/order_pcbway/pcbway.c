@@ -29,6 +29,8 @@
 #include <stdio.h>
 #include <libxml/tree.h>
 #include <libxml/parser.h>
+#include <genvector/vtp0.h>
+#include <genvector/vts0.h>
 
 #include "board.h"
 #include "pcb-printf.h"
@@ -49,6 +51,7 @@ conf_order_pcbway_t conf_order_pcbway;
 
 typedef struct pcbway_form_s {
 	vtp0_t fields;   /* of pcb_order_field_t */
+	vts0_t country_codes;
 } pcbway_form_t;
 
 static int pcbway_cahce_update_(pcb_hidlib_t *hidlib, const char *url, const char *path, int update, pcb_wget_opts_t *wopts)
@@ -139,6 +142,39 @@ static xmlDoc *pcbway_xml_load(const char *fn)
 	return doc;
 }
 
+static int pcbway_load_countries(pcbway_form_t *form, const char *fn)
+{
+	xmlDoc *doc = pcbway_xml_load(fn);
+	xmlNode *root, *n, *c;
+
+	if (doc == NULL) {
+		pcb_message(PCB_MSG_ERROR, "order_pcbway: failed to parse the country xml\n");
+		return -1;
+	}
+	root = xmlDocGetRootElement(doc);
+	if ((root != NULL) && (xmlStrcmp(root->name, (xmlChar *)"Country") != 0)) {
+		pcb_message(PCB_MSG_ERROR, "order_pcbway: wrong root node in the country xml\n");
+		return -1;
+	}
+
+	for(root = root->children; (root != NULL) && (xmlStrcmp(root->name, (xmlChar *)"Countrys") != 0); root = root->next) ;
+	if (root == NULL) {
+		pcb_message(PCB_MSG_ERROR, "order_pcbway: failed to find a <Countrys> node\n");
+		return -1;
+	}
+
+	for(n = root->children; n != NULL; n = n->next) {
+		if (xmlStrcmp(n->name, (xmlChar *)"CountryModel") != 0)
+			continue;
+		for(c = n->children; c != NULL; c = c->next)
+			if ((c->children != NULL) && (c->children->type == XML_TEXT_NODE) && (xmlStrcmp(c->name, (xmlChar *)"CountryCode") == 0))
+				vts0_append(&form->country_codes, pcb_strdup(c->children->content));
+	}
+
+	xmlFreeDoc(doc);
+}
+
+
 static int pcbway_load_fields_(pcb_hidlib_t *hidlib, pcb_order_imp_t *imp, order_ctx_t *octx, xmlNode *root)
 {
 	xmlNode *n, *v;
@@ -190,6 +226,10 @@ static int pcbway_load_fields_(pcb_hidlib_t *hidlib, pcb_order_imp_t *imp, order
 			if (dflt != NULL)
 				f->val.lng = di;
 		}
+		else if (strcmp(type, "enum:country:code") == 0) {
+			f->type = PCB_HATT_ENUM;
+			f->enum_vals = form->country_codes.array;
+		}
 		else if (strcmp(type, "integer") == 0) {
 			f->type = PCB_HATT_INTEGER;
 			if (dflt != NULL)
@@ -219,7 +259,7 @@ static int pcbway_load_fields_(pcb_hidlib_t *hidlib, pcb_order_imp_t *imp, order
 
 static int pcbway_load_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
 {
-	char *cachedir, *path;
+	char *cachedir, *path, *country_fn;
 	xmlDoc *doc;
 	xmlNode *root;
 	int res = 0;
@@ -242,10 +282,14 @@ static int pcbway_load_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
 		root = xmlDocGetRootElement(doc);
 		if ((root != NULL) && (xmlStrcmp(root->name, (xmlChar *)"PCBWayAPI") == 0)) {
 			octx->odata = calloc(sizeof(pcbway_form_t), 1);
-			if (pcbway_load_fields_(&PCB->hidlib, imp, octx, root) != 0) {
+			country_fn = pcb_strdup_printf("%s%cGetCountry", cachedir, PCB_DIR_SEPARATOR_C);
+			if (pcbway_load_countries(octx->odata, country_fn) != 0)
+				res = -1;
+			else if (pcbway_load_fields_(&PCB->hidlib, imp, octx, root) != 0) {
 				pcb_message(PCB_MSG_ERROR, "order_pcbway: xml error: invalid API xml\n");
 				res = -1;
 			}
+			free(country_fn);
 		}
 		else
 			pcb_message(PCB_MSG_ERROR, "order_pcbway: xml error: root is not <PCBWayAPI>\n");
@@ -269,7 +313,10 @@ static void pcbway_free_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
 		pcb_order_free_field_data(octx, f);
 		free(f);
 	}
+	for(n = 0; n < form->country_codes.used; n++)
+		free(form->country_codes.array[n]);
 	vtp0_uninit(&form->fields);
+	vts0_uninit(&form->country_codes);
 	free(form);
 }
 
