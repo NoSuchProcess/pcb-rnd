@@ -180,6 +180,7 @@ static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
 		else
 			PCB_DAD_LABEL(octx->dlg, "xml error: root is not <PCBWayAPI>\n");
 	}
+	else
 		PCB_DAD_LABEL(octx->dlg, "xml error: failed to parse the xml\n");
 
 	xmlFreeDoc(doc);
