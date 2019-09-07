@@ -261,6 +261,15 @@ static int pcbway_load_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
 
 static void pcbway_free_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
 {
+	int n;
+	pcbway_form_t *form = octx->odata;
+	for(n = 0; n < form->fields.used; n++) {
+		pcb_order_field_t *f = form->fields.array[n];
+		pcb_order_free_field_data(octx, f);
+		free(f);
+	}
+	vtp0_uninit(&form->fields);
+	free(form);
 }
 
 static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
