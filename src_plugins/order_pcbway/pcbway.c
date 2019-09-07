@@ -272,6 +272,43 @@ static void pcbway_free_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
 	free(form);
 }
 
+static void pcbway_quote_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	order_ctx_t *octx = caller_data;
+	pcbway_form_t *form = octx->odata;
+	int n;
+	FILE *fx = stdout;
+
+	fprintf(fx, "<PcbQuotationRequest xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://schemas.datacontract.org/2004/07/API.Models.Pcb\">\n");
+	for(n = 0; n < form->fields.used; n++) {
+		pcb_order_field_t *f = form->fields.array[n];
+		fprintf(fx, " <%s>", (char *)f->name);
+
+		switch(f->type) {
+			case PCB_HATT_ENUM:
+				fprintf(fx, "%s", f->enum_vals[f->val.lng]);
+				break;
+			case PCB_HATT_INTEGER:
+				fprintf(fx, "%d", f->val.lng);
+				break;
+			case PCB_HATT_COORD:
+				pcb_fprintf(fx, "%d", f->val.crd);
+				break;
+
+			case PCB_HATT_STRING:
+				pcb_fprintf(fx, "%d", f->val.str);
+				break;
+
+			default:
+				break;
+		}
+
+		fprintf(fx, "</%s>\n", (char *)f->name);
+	}
+	fprintf(fx, "</PcbQuotationRequest>\n");
+}
+
+
 static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
 {
 	int n;
@@ -297,6 +334,7 @@ static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
 			PCB_DAD_END(octx->dlg);
 			PCB_DAD_BUTTON(octx->dlg, "Quote");
 				PCB_DAD_HELP(octx->dlg, "Generate a price quote");
+				PCB_DAD_CHANGE_CB(octx->dlg, pcbway_quote_cb);
 			PCB_DAD_BUTTON(octx->dlg, "Order");
 				PCB_DAD_HELP(octx->dlg, "Order PCB");
 		PCB_DAD_END(octx->dlg);
