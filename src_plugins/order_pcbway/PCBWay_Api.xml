@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PCBWayAPI>
+    <PcbQuotationRequest note="PCB quote interface">
+        <DesignInPanel></DesignInPanel>
+        <FR4Tg>
+            <Value>TG130</Value>
+            <Value>TG150</Value>
+            <Value>TG170</Value>
+        </FR4Tg>
+        <FinishedCopper>
+            <Value>1 oz Cu</Value>
+            <Value>2 oz Cu</Value>
+            <Value>3 oz Cu</Value>
+            <Value>4 oz Cu</Value>
+        </FinishedCopper>
+        <Goldfingers>
+            <Value>Yes</Value>
+            <Value>No</Value>
+        </Goldfingers>
+        <Layers>
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>4</Value>
+            <Value>6</Value>
+            <Value>8</Value>
+            <Value>10</Value>
+            <Value>12</Value>
+            <Value>14</Value>
+        </Layers>
+        <Length></Length>
+        <Material>
+            <Value>FR-4</Value>
+            <Value>Aluminum board</Value>
+            <Value>Rigid-Flex</Value>
+        </Material>
+        <MinHoleSize>
+            <Value>0.2</Value>
+            <Value>0.25</Value>
+            <Value>0.3</Value>
+            <Value>-1</Value>
+        </MinHoleSize>
+        <MinTrackSpacing>
+            <Value>4/4mil</Value>
+            <Value>5/5mil</Value>
+            <Value>6/6mil</Value>
+        </MinTrackSpacing>
+        <Qty></Qty>
+        <Silkscreen>
+            <Value>White</Value>
+            <Value>Black</Value>
+            <Value>None</Value>
+        </Silkscreen>
+        <SolderMask>
+            <Value>Green</Value>
+            <Value>Red</Value>
+            <Value>Yellow</Value>
+            <Value>Blue</Value>
+            <Value>White</Value>
+            <Value>Black</Value>
+            <Value>Purple</Value>
+            <Value>Matt black</Value>
+            <Value>Matt green</Value>
+            <Value>None</Value>
+        </SolderMask>
+        <SurfaceFinish>
+            <Value>HASL with lead</Value>
+            <Value>HASL lead free</Value>
+            <Value>Immersion gold</Value>
+            <Value>Hard Gold</Value>
+            <Value>OSP</Value>
+            <Value>None</Value>
+        </SurfaceFinish>
+        <Thickness>
+            <Value>0.4</Value>
+            <Value>0.6</Value>
+            <Value>0.8</Value>
+            <Value>1.0</Value>
+            <Value>1.2</Value>
+            <Value>1.6</Value>
+            <Value>2.0</Value>
+            <Value>2.4</Value>
+        </Thickness>
+        <ViaProcess>
+            <Value>Tenting vias</Value>
+            <Value>Plugged vias</Value>
+            <Value>Vias not covered</Value>
+        </ViaProcess>
+        <Width></Width>
+        <City></City>
+        <Country></Country>
+        <CountryCode></CountryCode>
+        <Postalcode></Postalcode>
+        <ShipType>
+            <Value>DHL</Value>
+            <Value>HK_post</Value>
+            <Value>SF_Express</Value>
+            <Value>Freight_Collect_Account</Value>
+            <Value>EMS</Value>
+            <Value>E_packet</Value>
+            <Value>HK_DHL</Value>
+            <Value>China_Post</Value>
+            <Value>FedEx_IP</Value>
+            <Value>FedEx_IE</Value>
+        </ShipType>
+    </PcbQuotationRequest>
+</PCBWayAPI>
