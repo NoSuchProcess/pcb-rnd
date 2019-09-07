@@ -138,73 +138,177 @@ static xmlDoc *pcbway_xml_load(const char *fn)
 	return doc;
 }
 
-static int pcbway_populate_dad_(pcb_hidlib_t *hidlib, pcb_order_imp_t *imp, order_ctx_t *octx, xmlNode *root)
+static int pcbway_load_fields_(pcb_hidlib_t *hidlib, pcb_order_imp_t *imp, order_ctx_t *octx, xmlNode *root)
 {
 	xmlNode *n, *v;
+	pcbway_form_t *form = (pcbway_form_t *)octx->odata;
 	for(root = root->children; (root != NULL) && (xmlStrcmp(root->name, (xmlChar *)"PcbQuotationRequest") != 0); root = root->next) ;
 
 	if (root == NULL)
 		return -1;
 
+	for(n = root->children; n != NULL; n = n->next) {
+		const char *type, *note, *dflt;
+		pcb_order_field_t *f;
+		if ((n->type == XML_TEXT_NODE) || (n->name == NULL))
+			continue;
+		type = (const char *)xmlGetProp(n, (const xmlChar *)"type");
+		note = (const char *)xmlGetProp(n, (const xmlChar *)"note");
+		dflt = (const char *)xmlGetProp(n, (const xmlChar *)"default");
+
+		if ((type != NULL && strlen(type) > 128) || (strlen((char *)n->name) > 128) || (note != NULL && strlen(note) > 256) || (dflt != NULL && strlen(dflt) > 128)) {
+			pcb_message(PCB_MSG_ERROR, "order_pcbway: invalid field description: too long\n");
+			return -1;
+		}
+
+		f = calloc(sizeof(pcb_order_field_t) + strlen((char *)n->name), 1);
+		strcpy(f->name, (char *)n->name);
+		if (note != NULL)
+			f->help = pcb_strdup(note);
+		if (type == NULL) {
+			f->type = PCB_HATT_LABEL;
+		}
+		else if (strcmp(type, "enum") == 0) {
+			int di = 0, i;
+			vtp0_t tmp;
+
+			f->type = PCB_HATT_ENUM;
+			vtp0_init(&tmp);
+			for(v = n->children, i = 0; v != NULL; v = v->next) {
+				char *s;
+				if ((n->type == XML_TEXT_NODE) || (xmlStrcmp(v->name, (xmlChar *)"Value") != 0) || (n->children->type != XML_TEXT_NODE))
+					continue;
+				s = pcb_strdup((char *)v->children->content);
+				vtp0_append(&tmp, s);
+				if ((dflt != NULL) && (strcmp(s, dflt) == 0))
+					di = i;
+				i++;
+			}
+			vtp0_append(&tmp, NULL);
+			f->enum_vals = (char **)tmp.array;
+			if (dflt != NULL)
+				f->val.lng = di;
+		}
+		else if (strcmp(type, "integer") == 0) {
+			f->type = PCB_HATT_INTEGER;
+			if (dflt != NULL)
+				f->val.lng = PCB_MM_TO_COORD(atoi(dflt));
+		}
+		else if (strcmp(type, "mm") == 0) {
+			f->type = PCB_HATT_COORD;
+			if (dflt != NULL)
+				f->val.crd = PCB_MM_TO_COORD(strtod(dflt, NULL));
+		}
+		else if (strcmp(type, "string") == 0) {
+			f->type = PCB_HATT_STRING;
+			if (dflt != NULL)
+				f->val.str = pcb_strdup(dflt);
+		}
+		else {
+			f->type = PCB_HATT_LABEL;
+		}
+		vtp0_append(&form->fields, f);
+		if (form->fields.used > 128) {
+			pcb_message(PCB_MSG_ERROR, "order_pcbway: too many fields for a form\n");
+			return -1;
+		}
+	}
+	return 0;
+}
+
+static int pcbway_load_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
+{
+	char *cachedir, *path;
+	xmlDoc *doc;
+	xmlNode *root;
+	int res = 0;
+
+	octx->odata = NULL;
+
+	if ((CFG.api_key == NULL) || (*CFG.api_key == '\0')) {
+		pcb_message(PCB_MSG_ERROR, "order_pcbway: no api_key available.");
+		return -1;
+	}
+	if (pcbway_cache_update(&PCB->hidlib) != 0) {
+		pcb_message(PCB_MSG_ERROR, "order_pcbway: failed to update the cache.");
+		return -1;
+	}
+
+	cachedir = pcb_build_fn(&PCB->hidlib, conf_order.plugins.order.cache);
+	path = pcb_strdup_printf("%s%cPCBWay_Api.xml", cachedir, PCB_DIR_SEPARATOR_C);
+	doc = pcbway_xml_load(path);
+	if (doc != NULL) {
+		root = xmlDocGetRootElement(doc);
+		if ((root != NULL) && (xmlStrcmp(root->name, (xmlChar *)"PCBWayAPI") == 0)) {
+			octx->odata = calloc(sizeof(pcbway_form_t), 1);
+			if (pcbway_load_fields_(&PCB->hidlib, imp, octx, root) != 0) {
+				pcb_message(PCB_MSG_ERROR, "order_pcbway: xml error: invalid API xml\n");
+				res = -1;
+			}
+		}
+		else
+			pcb_message(PCB_MSG_ERROR, "order_pcbway: xml error: root is not <PCBWayAPI>\n");
+	}
+	else
+		pcb_message(PCB_MSG_ERROR, "order_pcbway: xml error: failed to parse the xml\n");
+
+	xmlFreeDoc(doc);
+	free(cachedir);
+	free(path);
+
+	return res;
+}
+
+static void pcbway_free_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
+{
+}
+
+static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
+{
+	int n;
+	pcbway_form_t *form = octx->odata;
+
 	PCB_DAD_BEGIN_VBOX(octx->dlg);
 		PCB_DAD_COMPFLAG(octx->dlg, PCB_HATF_SCROLL | PCB_HATF_EXPFILL);
-		for(n = root->children; n != NULL; n = n->next) {
-			const char *type, *note, *dflt;
-			if (n->type == XML_TEXT_NODE)
-				continue;
-			type = (const char *)xmlGetProp(n, (const xmlChar *)"type");
-			note = (const char *)xmlGetProp(n, (const xmlChar *)"note");
-			dflt = (const char *)xmlGetProp(n, (const xmlChar *)"default");
-			if (type == NULL)
-				type = "label";
+
+		for(n = 0; n < form->fields.used; n++) {
+			pcb_order_field_t *f = form->fields.array[n];
+
 			PCB_DAD_BEGIN_HBOX(octx->dlg);
-				PCB_DAD_LABEL(octx->dlg, (char *)n->name);
+				PCB_DAD_LABEL(octx->dlg, f->name);
 				PCB_DAD_BEGIN_VBOX(octx->dlg);
 					PCB_DAD_COMPFLAG(octx->dlg, PCB_HATF_EXPFILL);
 				PCB_DAD_END(octx->dlg);
-				if (strcmp(type, "enum") == 0) {
-					int di = 0, i;
-					vtp0_t tmp;
-					vtp0_init(&tmp);
-					for(v = n->children, i = 0; v != NULL; v = v->next) {
-						char *s;
-						if ((n->type == XML_TEXT_NODE) || (xmlStrcmp(v->name, (xmlChar *)"Value") != 0) || (n->children->type != XML_TEXT_NODE))
-							continue;
-						s = pcb_strdup(v->children->content);
-						vtp0_append(&tmp, s);
-						if ((dflt != NULL) && (strcmp(s, dflt) == 0))
-							di = i;
-						i++;
-					}
-					vtp0_append(&tmp, NULL);
-					PCB_DAD_ENUM(octx->dlg, tmp.array);
-					if (dflt != NULL)
-						PCB_DAD_DEFAULT_NUM(octx->dlg, di);
-				}
-				else if (strcmp(type, "integer") == 0) {
-					PCB_DAD_INTEGER(octx->dlg, "");
-					if (dflt != NULL)
-						PCB_DAD_DEFAULT_NUM(octx->dlg, atoi(dflt));
-				}
-				else if (strcmp(type, "mm") == 0) {
-					PCB_DAD_COORD(octx->dlg, "");
-					if (dflt != NULL)
-						PCB_DAD_DEFAULT_NUM(octx->dlg, PCB_MM_TO_COORD(atoi(dflt)));
-				}
-				else if (strcmp(type, "string") == 0) {
-					PCB_DAD_STRING(octx->dlg);
-					if (dflt != NULL)
-						PCB_DAD_DEFAULT_PTR(octx->dlg, dflt);
+				switch(f->type) {
+					case PCB_HATT_ENUM:
+						PCB_DAD_ENUM(octx->dlg, f->enum_vals);
+						PCB_DAD_DEFAULT_NUM(octx->dlg, f->val.lng);
+						break;
+					case PCB_HATT_INTEGER:
+						PCB_DAD_INTEGER(octx->dlg, "");
+						PCB_DAD_DEFAULT_NUM(octx->dlg, f->val.lng);
+						break;
+					case PCB_HATT_COORD:
+						PCB_DAD_COORD(octx->dlg, "");
+						PCB_DAD_DEFAULT_NUM(octx->dlg, f->val.crd);
+						break;
+					case PCB_HATT_STRING:
+						PCB_DAD_STRING(octx->dlg);
+						PCB_DAD_DEFAULT_PTR(octx->dlg, f->val.str);
+						break;
+					case PCB_HATT_LABEL: break;
+					default:
+						PCB_DAD_LABEL(octx->dlg, "<invalid type>");
 				}
 			PCB_DAD_END(octx->dlg);
 		}
+
 
 		PCB_DAD_BEGIN_VBOX(octx->dlg);
 			PCB_DAD_COMPFLAG(octx->dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_LABEL(octx->dlg, "");
 			PCB_DAD_LABEL(octx->dlg, "");
 		PCB_DAD_END(octx->dlg);
-
 
 		PCB_DAD_BEGIN_HBOX(octx->dlg);
 			PCB_DAD_BUTTON(octx->dlg, "Update data");
@@ -220,50 +324,7 @@ static int pcbway_populate_dad_(pcb_hidlib_t *hidlib, pcb_order_imp_t *imp, orde
 
 	PCB_DAD_END(octx->dlg);
 	return 0;
-}
 
-static int pcbway_load_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
-{
-	return 0;
-}
-
-static void pcbway_free_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
-{
-}
-
-static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
-{
-	char *cachedir, *path;
-	xmlDoc *doc;
-	xmlNode *root;
-
-	if ((CFG.api_key == NULL) || (*CFG.api_key == '\0')) {
-		PCB_DAD_LABEL(octx->dlg, "Error: no api_key available.");
-		return -1;
-	}
-	if (pcbway_cache_update(&PCB->hidlib) != 0) {
-		PCB_DAD_LABEL(octx->dlg, "Error: failed to update the cache.");
-		return -1;
-	}
-
-	cachedir = pcb_build_fn(&PCB->hidlib, conf_order.plugins.order.cache);
-	path = pcb_strdup_printf("%s%cPCBWay_Api.xml", cachedir, PCB_DIR_SEPARATOR_C);
-	doc = pcbway_xml_load(path);
-	if (doc != NULL) {
-		root = xmlDocGetRootElement(doc);
-		if ((root != NULL) && (xmlStrcmp(root->name, (xmlChar *)"PCBWayAPI") == 0)) {
-			if (pcbway_populate_dad_(&PCB->hidlib, imp, octx, root) != 0)
-				PCB_DAD_LABEL(octx->dlg, "xml error: invalid API xml\n");
-		}
-		else
-			PCB_DAD_LABEL(octx->dlg, "xml error: root is not <PCBWayAPI>\n");
-	}
-	else
-		PCB_DAD_LABEL(octx->dlg, "xml error: failed to parse the xml\n");
-
-	xmlFreeDoc(doc);
-	free(cachedir);
-	free(path);
 }
 
 static pcb_order_imp_t pcbway = {
@@ -271,8 +332,7 @@ static pcb_order_imp_t pcbway = {
 	NULL,
 	pcbway_load_fields,
 	pcbway_free_fields,
-	pcbway_populate_dad,
-	NULL
+	pcbway_populate_dad
 };
 
 

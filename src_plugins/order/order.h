@@ -37,6 +37,7 @@ typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
 	vtp0_t names;
+	void *odata;                                   /* implementation-specific data of the current order */
 } order_ctx_t;
 
 /* order implementation - registered by an order plugin */
@@ -47,7 +48,6 @@ struct pcb_order_imp_s {
 	int (*load_fields)(pcb_order_imp_t *imp, order_ctx_t *octx);
 	void (*free_fields)(pcb_order_imp_t *imp, order_ctx_t *octx);
 	void (*populate_dad)(pcb_order_imp_t *imp, order_ctx_t *octx);
-	void *odata;                                   /* implementation-specific data of the current order */
 };
 
 extern vtp0_t pcb_order_imps; /* of (pcb_order_imp_t *) items */
@@ -59,6 +59,7 @@ typedef struct pcb_order_field_s {
 	pcb_hid_attr_type_t type;
 	pcb_hid_attr_val_t val;
 	char **enum_vals;
+	char *help;
 	int wid;                /* widget id, if any */
 	char name[1];           /* dynamic length */
 } pcb_order_field_t;
