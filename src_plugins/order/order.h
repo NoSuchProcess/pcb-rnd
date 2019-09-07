@@ -64,5 +64,8 @@ typedef struct pcb_order_field_s {
 	char name[1];           /* dynamic length */
 } pcb_order_field_t;
 
+/* Build a hbox from a field */
+void pcb_order_dad_field(order_ctx_t *octx, pcb_order_field_t *f);
+
 
 #endif

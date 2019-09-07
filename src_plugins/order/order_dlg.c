@@ -56,3 +56,34 @@ static int order_dialog(void)
 	PCB_DAD_NEW("EDIT_THIS_ID", order_ctx.dlg, "EDIT THIS: title", &order_ctx, pcb_false, order_close_cb);
 	return 0;
 }
+
+void pcb_order_dad_field(order_ctx_t *octx, pcb_order_field_t *f)
+{
+	PCB_DAD_BEGIN_HBOX(octx->dlg);
+		PCB_DAD_LABEL(octx->dlg, f->name);
+		PCB_DAD_BEGIN_VBOX(octx->dlg);
+			PCB_DAD_COMPFLAG(octx->dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_END(octx->dlg);
+		switch(f->type) {
+			case PCB_HATT_ENUM:
+				PCB_DAD_ENUM(octx->dlg, f->enum_vals);
+				PCB_DAD_DEFAULT_NUM(octx->dlg, f->val.lng);
+				break;
+			case PCB_HATT_INTEGER:
+				PCB_DAD_INTEGER(octx->dlg, "");
+				PCB_DAD_DEFAULT_NUM(octx->dlg, f->val.lng);
+				break;
+			case PCB_HATT_COORD:
+				PCB_DAD_COORD(octx->dlg, "");
+				PCB_DAD_DEFAULT_NUM(octx->dlg, f->val.crd);
+				break;
+			case PCB_HATT_STRING:
+				PCB_DAD_STRING(octx->dlg);
+				PCB_DAD_DEFAULT_PTR(octx->dlg, f->val.str);
+				break;
+			case PCB_HATT_LABEL: break;
+			default:
+				PCB_DAD_LABEL(octx->dlg, "<invalid type>");
+		}
+	PCB_DAD_END(octx->dlg);
+}
