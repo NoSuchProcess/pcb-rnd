@@ -25,6 +25,7 @@
 - BUG: unit dialog in DAD coord spinbox: select a unit, global gets unchecked -> can not check global back in [report: Piotr]
 - BUG: open bug_files/12.lht; save as kicad legacy; closing the incompatibility warning dialog triggers valgrind invalid free/write errors [report: Igor2]
 - BUG: png, eps (and probably other exporters) export the assy layer if the group exists, even if it is not visible on the GUI [report: Igor2]
+- BUG: "save layout as", "guess format" is on by default, change the file extension in name to lht; format: combo changes correctly. But it doesn't *actually* change the format (may need an alien format loaded first) [report: Matt]
 - DOC: finish DAD doc (doc/developer/dad/: e.g. run.html is missing) [report: Alain]
 - FEATURE: configure setting: library window filter shouldn't really filter if there's () in the string [report: pskibinski]
 - FEATURE: io_tedax: tEDAx netlist load should import and write pinname [report: Ade]
