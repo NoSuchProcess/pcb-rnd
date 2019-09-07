@@ -35,6 +35,7 @@
 #include "plugins.h"
 #include "safe_fs.h"
 #include "paths.h"
+#include "compat_fs.h"
 #include "../src_plugins/lib_wget/lib_wget.h"
 #include "../src_plugins/order/order.h"
 #include "order_pcbway_conf.h"
@@ -277,7 +278,22 @@ static void pcbway_quote_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	order_ctx_t *octx = caller_data;
 	pcbway_form_t *form = octx->odata;
 	int n;
-	FILE *fx = stdout;
+	FILE *fx;
+	char *tmpfn;
+
+	tmpfn = pcb_tempfile_name_new("pcbway_quote.xml");
+	if (tmpfn == NULL) {
+		pcb_message(PCB_MSG_ERROR, "order_pcbway: can't get temp file name\n");
+		return;
+	}
+
+	fx = pcb_fopen(&PCB->hidlib, tmpfn, "w");
+	if (fx == NULL) {
+		pcb_tempfile_unlink(tmpfn);
+		pcb_message(PCB_MSG_ERROR, "order_pcbway: can't open temp file\n");
+		return;
+	}
+
 
 	fprintf(fx, "<PcbQuotationRequest xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://schemas.datacontract.org/2004/07/API.Models.Pcb\">\n");
 	for(n = 0; n < form->fields.used; n++) {
@@ -306,6 +322,27 @@ static void pcbway_quote_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 		fprintf(fx, "</%s>\n", (char *)f->name);
 	}
 	fprintf(fx, "</PcbQuotationRequest>\n");
+	fclose(fx);
+
+	{
+		char *hdr[5];
+		pcb_wget_opts_t wopts;
+
+		wopts.header = (const char **)hdr;
+		hdr[0] = pcb_concat("api-key: ", CFG.api_key, NULL);
+		hdr[1] = "Content-Type: application/xml";
+		hdr[2] = "Accept: application/xml";
+		hdr[3] = NULL;
+		wopts.post_file = tmpfn;
+
+		if (pcb_wget_disk(SERVER "/api/Pcb/PcbQuotation", "Resp.xml", 0, &wopts) != 0) {
+			pcb_message(PCB_MSG_ERROR, "pcbway: failed to get a quote from the server\n");
+			goto err;
+		}
+	}
+
+	err:;
+	pcb_tempfile_unlink(tmpfn);
 }
 
 
