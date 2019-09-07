@@ -107,12 +107,12 @@ static int pcbway_cache_update(pcb_hidlib_t *hidlib)
 
 static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
 {
-	if (pcbway_cache_update(&PCB->hidlib) != 0) {
-		PCB_DAD_LABEL(octx->dlg, "Error: failed to update the cache.");
-		return -1;
-	}
 	if ((CFG.api_key == NULL) || (*CFG.api_key == '\0')) {
 		PCB_DAD_LABEL(octx->dlg, "Error: no api_key available.");
+		return -1;
+	}
+	if (pcbway_cache_update(&PCB->hidlib) != 0) {
+		PCB_DAD_LABEL(octx->dlg, "Error: failed to update the cache.");
 		return -1;
 	}
 	PCB_DAD_LABEL(octx->dlg, "pcbway!");
