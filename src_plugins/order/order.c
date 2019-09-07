@@ -29,10 +29,13 @@
 #include <stdio.h>
 
 #include "actions.h"
+#include "board.h"
+#include "data.h"
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "hid_dad.h"
 #include "hid_cfg.h"
+#include "layer.h"
 #include "event.h"
 #include "order_conf.h"
 #include "../src_plugins/order/conf_internal.c"
@@ -110,8 +113,84 @@ void pcb_order_free_field_data(order_ctx_t *octx, pcb_order_field_t *f)
 		f->enum_vals = NULL;
 	}
 	if (f->val.str != NULL) {
-		free(f->val.str);
+		free((char *)f->val.str);
 		f->val.str = NULL;
+	}
+}
+
+static void autoload_field_crd(order_ctx_t *octx, pcb_order_field_t *f, pcb_coord_t c)
+{
+	switch(f->type) {
+		case PCB_HATT_INTEGER: f->val.lng = c; break;
+		case PCB_HATT_COORD: f->val.crd = c; break;
+		case PCB_HATT_STRING:
+			free((char *)f->val.str);
+			f->val.str = pcb_strdup_printf("%$mm", c);
+			break;
+		default: break;
+	}
+}
+
+static void autoload_field_lng(order_ctx_t *octx, pcb_order_field_t *f, long l, int roundup)
+{
+	long tmp, best, diff;
+	int n, bestn;
+	char **s;
+
+	switch(f->type) {
+		case PCB_HATT_INTEGER: f->val.lng = l; break;
+		case PCB_HATT_COORD: f->val.crd = PCB_MM_TO_COORD(l); break;
+		case PCB_HATT_STRING:
+			free((char *)f->val.str);
+			f->val.str = pcb_strdup_printf("%ld", l);
+			break;
+		case PCB_HATT_ENUM:
+			bestn = -1;
+			/* find the closest enum value, rounding l up or down only */
+			for(n = 0, s = f->enum_vals; *s != NULL; n++,s++) {
+				tmp = strtol(*s, NULL, 10);
+				if (roundup) {
+					if (tmp < l) continue;
+				}
+				else {
+					if (tmp > l) continue;
+				}
+				diff = tmp - l;
+				if (diff < 0) diff = -diff;
+				if ((diff < best) || (bestn < 0)) {
+					bestn = n;
+					best = diff;
+				}
+			}
+			if (bestn >= 0)
+				f->val.lng = bestn;
+			break;
+		default: break;
+	}
+}
+
+void pcb_order_autoload_field(order_ctx_t *octx, pcb_order_field_t *f)
+{
+	pcb_box_t bb;
+	long l;
+	pcb_layergrp_id_t gid;
+
+	switch(f->autoload) {
+		case PCB_OAL_none: return;
+		case PCB_OAL_WIDTH:
+			pcb_data_bbox(&bb, PCB->Data, 0);
+			autoload_field_crd(octx, f, bb.X2 - bb.X1);
+			break;
+		case PCB_OAL_HEIGHT:
+			pcb_data_bbox(&bb, PCB->Data, 0);
+			autoload_field_crd(octx, f, bb.X2 - bb.X1);
+			break;
+		case PCB_OAL_LAYERS:
+			for(gid = 0, l = 0; gid < PCB->LayerGroups.len; gid++)
+				if (PCB->LayerGroups.grp[gid].ltype & PCB_LYT_COPPER)
+					l++;
+			autoload_field_lng(octx, f, l, 1);
+			break;
 	}
 }
 
