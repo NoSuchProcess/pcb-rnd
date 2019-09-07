@@ -119,7 +119,7 @@ static xmlDoc *pcbway_xml_load(const char *fn)
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "pcbway: can't open '%s' (%s) for read\n", fn, efn);
 		free(efn);
-		return -1;
+		return NULL;
 	}
 	fclose(f);
 
@@ -127,7 +127,7 @@ static xmlDoc *pcbway_xml_load(const char *fn)
 	if (doc == NULL) {
 		pcb_message(PCB_MSG_ERROR, "xml parsing error on file %s (%s)\n", fn, efn);
 		free(efn);
-		return -1;
+		return NULL;
 	}
 	free(efn);
 
@@ -171,14 +171,16 @@ static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
 	cachedir = pcb_build_fn(&PCB->hidlib, conf_order.plugins.order.cache);
 	path = pcb_strdup_printf("%s%cPCBWay_Api.xml", cachedir, PCB_DIR_SEPARATOR_C);
 	doc = pcbway_xml_load(path);
-
-	root = xmlDocGetRootElement(doc);
-	if (xmlStrcmp(root->name, (xmlChar *)"PCBWayAPI") == 0) {
-		if (pcbway_populate_dad_(&PCB->hidlib, imp, octx, root) != 0)
-			PCB_DAD_LABEL(octx->dlg, "xml error: invalid API xml\n");
+	if (doc != NULL) {
+		root = xmlDocGetRootElement(doc);
+		if ((root != NULL) && (xmlStrcmp(root->name, (xmlChar *)"PCBWayAPI") == 0)) {
+			if (pcbway_populate_dad_(&PCB->hidlib, imp, octx, root) != 0)
+				PCB_DAD_LABEL(octx->dlg, "xml error: invalid API xml\n");
+		}
+		else
+			PCB_DAD_LABEL(octx->dlg, "xml error: root is not <PCBWayAPI>\n");
 	}
-	else
-		PCB_DAD_LABEL(octx->dlg, "xml error: root is not <PCBWayAPI>\n");
+		PCB_DAD_LABEL(octx->dlg, "xml error: failed to parse the xml\n");
 
 	xmlFreeDoc(doc);
 	free(cachedir);
