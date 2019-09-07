@@ -14,7 +14,7 @@ loaded from the list acquired using the api/Address/GetCountry API.
 -->
 <PCBWayAPI>
     <PcbQuotationRequest note="PCB quote interface" path="api/Pcb/PcbQuotation">
-        <DesignInPanel type="ingeger" default="1" note="Number of different designs in the panel)"></DesignInPanel>
+        <DesignInPanel type="integer" default="1" note="Number of different designs in the panel)"></DesignInPanel>
         <FR4Tg type="enum" note="Laminate glass transition temperature">
             <Value>TG130</Value>
             <Value>TG150</Value>
