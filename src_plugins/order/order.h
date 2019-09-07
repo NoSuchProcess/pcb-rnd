@@ -55,11 +55,19 @@ extern vtp0_t pcb_order_imps; /* of (pcb_order_imp_t *) items */
 void pcb_order_reg(const pcb_order_imp_t *imp);
 
 /* Generic field handling */
+typedef enum pcb_order_autoload_e {
+	PCB_OAL_none,
+	PCB_OAL_WIDTH,
+	PCB_OAL_HEIGHT,
+	PCB_OAL_LAYERS
+} pcb_order_autoload_t;
+
 typedef struct pcb_order_field_s {
 	pcb_hid_attr_type_t type;
 	pcb_hid_attr_val_t val;
 	char **enum_vals;
 	char *help;
+	pcb_order_autoload_t autoload;
 	int wid;                /* widget id, if any */
 	char name[1];           /* dynamic length */
 } pcb_order_field_t;
