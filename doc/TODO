@@ -88,6 +88,7 @@
 	- CLEANUP: remove PCB_MIN_PINORVIA* PCB_DEFAULT_DRILLINGHOLE macros - nothing should use them anymore
 	- add text font, update the pool node text_edit [report: Igor2]
 - BUG: autorouter broke on polygons: bug_files/ara.lht, {a r a}, bisect; broke before r14572 [report: Igor2]
+- FEATURE: parametric footprint: bool parameter should display as checkbox in the library/parametric window [report: Matt]
 - FEATURE: fontsel: ttf import?
 - FEATURE/BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
 - FEATURE: view list: import sch. shouldn't select elements to be removed but put them on a drc list
