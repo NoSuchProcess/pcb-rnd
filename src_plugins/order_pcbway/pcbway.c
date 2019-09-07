@@ -320,6 +320,17 @@ static void pcbway_free_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
 	free(form);
 }
 
+static void pcbway_dlg2fields(order_ctx_t *octx, pcbway_form_t *form)
+{
+	int n;
+	for(n = 0; n < form->fields.used; n++) {
+		pcb_order_field_t *f = form->fields.array[n];
+		if (f->wid <= 0)
+			continue;
+		f->val = octx->dlg[f->wid].val;
+	}
+}
+
 static void pcbway_quote_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	order_ctx_t *octx = caller_data;
@@ -327,6 +338,8 @@ static void pcbway_quote_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	int n;
 	FILE *fx;
 	char *tmpfn;
+
+	pcbway_dlg2fields(octx, form);
 
 	tmpfn = pcb_tempfile_name_new("pcbway_quote.xml");
 	if (tmpfn == NULL) {
