@@ -35,10 +35,15 @@ static int order_dialog(void)
 			PCB_DAD_COMPFLAG(order_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_LEFT_TAB);
 			for(n = 0; n < pcb_order_imps.used; n++) {
 				imp = pcb_order_imps.array[n];
-				PCB_DAD_BEGIN_VBOX(order_ctx.dlg);
-					PCB_DAD_COMPFLAG(order_ctx.dlg, PCB_HATF_EXPFILL);
-					imp->populate_dad(pcb_order_imps.array[n], &order_ctx);
-				PCB_DAD_END(order_ctx.dlg);
+				if (imp->load_fields(pcb_order_imps.array[n], &order_ctx) == 0) {
+					PCB_DAD_BEGIN_VBOX(order_ctx.dlg);
+						PCB_DAD_COMPFLAG(order_ctx.dlg, PCB_HATF_EXPFILL);
+
+						imp->populate_dad(pcb_order_imps.array[n], &order_ctx);
+					PCB_DAD_END(order_ctx.dlg);
+				}
+				else
+					PCB_DAD_LABEL(order_ctx.dlg, "Failed to determine form fields");
 			}
 
 		PCB_DAD_END(order_ctx.dlg);

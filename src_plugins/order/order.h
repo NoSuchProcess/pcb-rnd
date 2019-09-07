@@ -44,11 +44,24 @@ typedef struct pcb_order_imp_s pcb_order_imp_t;
 struct pcb_order_imp_s {
 	const char *name;
 	int (*enabled)(pcb_order_imp_t *imp);          /* returns 1 if the plugin is enabled */
+	int (*load_fields)(pcb_order_imp_t *imp, order_ctx_t *octx);
+	void (*free_fields)(pcb_order_imp_t *imp, order_ctx_t *octx);
 	void (*populate_dad)(pcb_order_imp_t *imp, order_ctx_t *octx);
+	void *odata;                                   /* implementation-specific data of the current order */
 };
 
 extern vtp0_t pcb_order_imps; /* of (pcb_order_imp_t *) items */
 
 void pcb_order_reg(const pcb_order_imp_t *imp);
+
+/* Generic field handling */
+typedef struct pcb_order_field_s {
+	pcb_hid_attr_type_t type;
+	pcb_hid_attr_val_t val;
+	char **enum_vals;
+	int wid;                /* widget id, if any */
+	char name[1];           /* dynamic length */
+} pcb_order_field_t;
+
 
 #endif

@@ -46,6 +46,10 @@ conf_order_pcbway_t conf_order_pcbway;
 #define CFG conf_order_pcbway.plugins.order_pcbway
 #define SERVER "http://api-partner.pcbway.com"
 
+typedef struct pcbway_form_s {
+	vtp0_t fields;   /* of pcb_order_field_t */
+} pcbway_form_t;
+
 static int pcbway_cahce_update_(pcb_hidlib_t *hidlib, const char *url, const char *path, int update, pcb_wget_opts_t *wopts)
 {
 	double mt, now = pcb_dtime();
@@ -218,6 +222,15 @@ static int pcbway_populate_dad_(pcb_hidlib_t *hidlib, pcb_order_imp_t *imp, orde
 	return 0;
 }
 
+static int pcbway_load_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
+{
+	return 0;
+}
+
+static void pcbway_free_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
+{
+}
+
 static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
 {
 	char *cachedir, *path;
@@ -256,7 +269,10 @@ static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
 static pcb_order_imp_t pcbway = {
 	"PCBWay",
 	NULL,
-	pcbway_populate_dad
+	pcbway_load_fields,
+	pcbway_free_fields,
+	pcbway_populate_dad,
+	NULL
 };
 
 
