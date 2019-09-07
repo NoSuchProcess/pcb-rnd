@@ -100,6 +100,21 @@ static void order_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, 
 	pcb_gui->create_menu(pcb_gui, path, &props);
 }
 
+void pcb_order_free_field_data(order_ctx_t *octx, pcb_order_field_t *f)
+{
+	if (f->enum_vals != NULL) {
+		char **s;
+		for(s = f->enum_vals; *s != NULL; s++)
+			free(s);
+		free(f->enum_vals);
+		f->enum_vals = NULL;
+	}
+	if (f->val.str != NULL) {
+		free(f->val.str);
+		f->val.str = NULL;
+	}
+}
+
 
 static void order_menu_init(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {

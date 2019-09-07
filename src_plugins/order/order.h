@@ -68,4 +68,9 @@ typedef struct pcb_order_field_s {
 void pcb_order_dad_field(order_ctx_t *octx, pcb_order_field_t *f);
 
 
+/* Free data stored in a field, but not the field itself. Note: ->name and
+   ->type remains valid after the call */
+void pcb_order_free_field_data(order_ctx_t *octx, pcb_order_field_t *f);
+
+
 #endif
