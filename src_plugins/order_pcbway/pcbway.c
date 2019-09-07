@@ -368,11 +368,11 @@ static void pcbway_quote_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 				fprintf(fx, "%d", f->val.lng);
 				break;
 			case PCB_HATT_COORD:
-				pcb_fprintf(fx, "%d", f->val.crd);
+				pcb_fprintf(fx, "%mm", f->val.crd);
 				break;
 
 			case PCB_HATT_STRING:
-				pcb_fprintf(fx, "%d", f->val.str);
+				fprintf(fx, "%s", f->val.str);
 				break;
 
 			default:
