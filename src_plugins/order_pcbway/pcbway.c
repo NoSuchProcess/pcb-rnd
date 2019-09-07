@@ -251,7 +251,9 @@ static int pcbway_load_fields_(pcb_hidlib_t *hidlib, pcb_order_imp_t *imp, order
 		if (strcmp(f->name, "Layers") == 0)         f->autoload = PCB_OAL_LAYERS;
 		else if (strcmp(f->name, "Width") == 0)     f->autoload = PCB_OAL_WIDTH;
 		else if (strcmp(f->name, "Length") == 0)    f->autoload = PCB_OAL_HEIGHT;
-		
+
+		pcb_order_autoload_field(octx, f);
+
 		vtp0_append(&form->fields, f);
 		if (form->fields.used > 128) {
 			pcb_message(PCB_MSG_ERROR, "order_pcbway: too many fields for a form\n");
