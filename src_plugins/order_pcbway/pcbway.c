@@ -136,7 +136,7 @@ static xmlDoc *pcbway_xml_load(const char *fn)
 
 static int pcbway_populate_dad_(pcb_hidlib_t *hidlib, pcb_order_imp_t *imp, order_ctx_t *octx, xmlNode *root)
 {
-	xmlNode *n;
+	xmlNode *n, *v;
 	for(root = root->children; (root != NULL) && (xmlStrcmp(root->name, (xmlChar *)"PcbQuotationRequest") != 0); root = root->next) ;
 
 	if (root == NULL)
@@ -145,9 +145,56 @@ static int pcbway_populate_dad_(pcb_hidlib_t *hidlib, pcb_order_imp_t *imp, orde
 	PCB_DAD_BEGIN_VBOX(octx->dlg);
 		PCB_DAD_COMPFLAG(octx->dlg, PCB_HATF_SCROLL | PCB_HATF_EXPFILL);
 		for(n = root->children; n != NULL; n = n->next) {
+			const char *type, *note, *dflt;
 			if (n->type == XML_TEXT_NODE)
 				continue;
-			PCB_DAD_LABEL(octx->dlg, (char *)n->name);
+			type = (const char *)xmlGetProp(n, (const xmlChar *)"type");
+			note = (const char *)xmlGetProp(n, (const xmlChar *)"note");
+			dflt = (const char *)xmlGetProp(n, (const xmlChar *)"default");
+			if (type == NULL)
+				type = "label";
+			PCB_DAD_BEGIN_HBOX(octx->dlg);
+				PCB_DAD_LABEL(octx->dlg, (char *)n->name);
+				PCB_DAD_BEGIN_VBOX(octx->dlg);
+					PCB_DAD_COMPFLAG(octx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_END(octx->dlg);
+				if (strcmp(type, "enum") == 0) {
+					int di = 0, i;
+					vtp0_t tmp;
+					vtp0_init(&tmp);
+					for(v = n->children, i = 0; v != NULL; v = v->next) {
+						char *s;
+						if ((n->type == XML_TEXT_NODE) || (xmlStrcmp(v->name, (xmlChar *)"Value") != 0) || (n->children->type != XML_TEXT_NODE))
+							continue;
+						s = pcb_strdup(v->children->content);
+						vtp0_append(&tmp, s);
+						if ((dflt != NULL) && (strcmp(s, dflt) == 0)) {
+							di = i;
+							printf("enum dflt: '%s' is %d\n", dflt, di);
+						}
+						i++;
+					}
+					vtp0_append(&tmp, NULL);
+					PCB_DAD_ENUM(octx->dlg, tmp.array);
+					if (dflt != NULL)
+						PCB_DAD_DEFAULT_NUM(octx->dlg, di);
+				}
+				else if (strcmp(type, "integer") == 0) {
+					PCB_DAD_INTEGER(octx->dlg, "");
+					if (dflt != NULL)
+						PCB_DAD_DEFAULT_NUM(octx->dlg, atoi(dflt));
+				}
+				else if (strcmp(type, "mm") == 0) {
+					PCB_DAD_COORD(octx->dlg, "");
+					if (dflt != NULL)
+						PCB_DAD_DEFAULT_NUM(octx->dlg, PCB_MM_TO_COORD(atoi(dflt)));
+				}
+				else if (strcmp(type, "string") == 0) {
+					PCB_DAD_STRING(octx->dlg);
+					if (dflt != NULL)
+						PCB_DAD_DEFAULT_PTR(octx->dlg, dflt);
+				}
+			PCB_DAD_END(octx->dlg);
 		}
 	PCB_DAD_END(octx->dlg);
 	return 0;
