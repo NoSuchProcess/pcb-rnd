@@ -85,5 +85,6 @@ void pcb_order_dad_field(order_ctx_t *octx, pcb_order_field_t *f)
 			default:
 				PCB_DAD_LABEL(octx->dlg, "<invalid type>");
 		}
+		f->wid = PCB_DAD_CURRENT(octx->dlg);
 	PCB_DAD_END(octx->dlg);
 }
