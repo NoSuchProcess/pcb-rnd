@@ -194,6 +194,26 @@ static int pcbway_populate_dad_(pcb_hidlib_t *hidlib, pcb_order_imp_t *imp, orde
 				}
 			PCB_DAD_END(octx->dlg);
 		}
+
+		PCB_DAD_BEGIN_VBOX(octx->dlg);
+			PCB_DAD_COMPFLAG(octx->dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_LABEL(octx->dlg, "");
+			PCB_DAD_LABEL(octx->dlg, "");
+		PCB_DAD_END(octx->dlg);
+
+
+		PCB_DAD_BEGIN_HBOX(octx->dlg);
+			PCB_DAD_BUTTON(octx->dlg, "Update data");
+				PCB_DAD_HELP(octx->dlg, "Copy data from board to form");
+			PCB_DAD_BEGIN_VBOX(octx->dlg);
+				PCB_DAD_COMPFLAG(octx->dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_END(octx->dlg);
+			PCB_DAD_BUTTON(octx->dlg, "Quote");
+				PCB_DAD_HELP(octx->dlg, "Generate a price quote");
+			PCB_DAD_BUTTON(octx->dlg, "Order");
+				PCB_DAD_HELP(octx->dlg, "Order PCB");
+		PCB_DAD_END(octx->dlg);
+
 	PCB_DAD_END(octx->dlg);
 	return 0;
 }
