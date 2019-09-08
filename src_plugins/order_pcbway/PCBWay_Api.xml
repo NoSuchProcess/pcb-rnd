@@ -47,13 +47,13 @@ loaded from the list acquired using the api/Address/GetCountry API.
             <Value>Aluminum board</Value>
             <Value>Rigid-Flex</Value>
         </Material>
-        <MinHoleSize group="pcb" type="enum" note="Diameter of the smallest hole, mm">
+        <MinHoleSize group="pcb" type="enum" default="0.3" note="Diameter of the smallest hole, mm">
             <Value>0.2</Value>
             <Value>0.25</Value>
             <Value>0.3</Value>
             <Value>-1</Value>
         </MinHoleSize>
-        <MinTrackSpacing group="pcb" type="enum" note="Track width/clearance">
+        <MinTrackSpacing group="pcb" type="enum" default="6/6mil" note="Track width/clearance">
             <Value>4/4mil</Value>
             <Value>5/5mil</Value>
             <Value>6/6mil</Value>
@@ -84,7 +84,7 @@ loaded from the list acquired using the api/Address/GetCountry API.
             <Value>OSP</Value>
             <Value>None</Value>
         </SurfaceFinish>
-        <Thickness group="pcb" type="enum" note="Final board thickness in mm">
+        <Thickness group="pcb" type="enum" default="1.6" note="Final board thickness in mm">
             <Value>0.4</Value>
             <Value>0.6</Value>
             <Value>0.8</Value>
