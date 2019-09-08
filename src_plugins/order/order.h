@@ -80,5 +80,9 @@ void pcb_order_dad_field(order_ctx_t *octx, pcb_order_field_t *f);
    ->type remains valid after the call */
 void pcb_order_free_field_data(order_ctx_t *octx, pcb_order_field_t *f);
 
+/* If the field is autoloadable from board data, pick up data from board and
+   modify field value */
+void pcb_order_autoload_field(order_ctx_t *octx, pcb_order_field_t *f);
+
 
 #endif
