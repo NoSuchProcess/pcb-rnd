@@ -55,9 +55,9 @@ pcb_unit_t pcb_units[] = {
 	{"cmil", 'c', 100,      PCB_UNIT_IMPERIAL, PCB_UNIT_ALLOW_CMIL, 0},
 
 	{"Hz",   'z', 1,        PCB_UNIT_FREQ,     PCB_UNIT_ALLOW_HZ, 3},
-	{"kHz",  'Z', 1,        PCB_UNIT_FREQ,     PCB_UNIT_ALLOW_KHZ, 6},
-	{"MHz",  'M', 1,        PCB_UNIT_FREQ,     PCB_UNIT_ALLOW_MHZ, 6},
-	{"GHz",  'G', 1,        PCB_UNIT_FREQ,     PCB_UNIT_ALLOW_GHZ, 6},
+	{"kHz",  'Z', 1000,     PCB_UNIT_FREQ,     PCB_UNIT_ALLOW_KHZ, 6},
+	{"MHz",  'M', 1000000,  PCB_UNIT_FREQ,     PCB_UNIT_ALLOW_MHZ, 6},
+	{"GHz",  'G', 1000000000., PCB_UNIT_FREQ,  PCB_UNIT_ALLOW_GHZ, 6},
 
 	/* aliases - must be a block at the end */
 	{"inch",  0,  0.001,    PCB_UNIT_IMPERIAL, PCB_UNIT_ALLOW_IN, 5},
