@@ -347,6 +347,7 @@ static int pcbway_present_quote(order_ctx_t *octx, const char *respfn)
 	root = xmlDocGetRootElement(doc);
 	if ((root != NULL) && (xmlStrcmp(root->name, (xmlChar *)"PcbQuotationResponse") != 0)) {
 		pcb_message(PCB_MSG_ERROR, "order_pcbway: wrong root node on quote answer\n");
+		xmlFreeDoc(doc);
 		return -1;
 	}
 
@@ -359,12 +360,14 @@ static int pcbway_present_quote(order_ctx_t *octx, const char *respfn)
 
 	if ((status == NULL) || (status->children == NULL) || (status->children->type != XML_TEXT_NODE)) {
 		pcb_message(PCB_MSG_ERROR, "order_pcbway: missing <Status> from the quote response\n");
+		xmlFreeDoc(doc);
 		return -1;
 	}
 	if (xmlStrcmp(status->children->content, (xmlChar *)"ok") != 0) {
 		pcb_message(PCB_MSG_ERROR, "order_pcbway: server error in quote\n");
 		if ((error != NULL) && (error->children != NULL) && (error->children->type == XML_TEXT_NODE))
 			pcb_message(PCB_MSG_ERROR, "  %s\n", error->children->content);
+		xmlFreeDoc(doc);
 		return -1;
 	}
 
@@ -375,6 +378,8 @@ static int pcbway_present_quote(order_ctx_t *octx, const char *respfn)
 			val = n->children->content;
 		printf(" %s=%s\n", n->name, val);
 	}
+
+	xmlFreeDoc(doc);
 	return 0;
 }
 
