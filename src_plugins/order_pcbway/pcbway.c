@@ -418,9 +418,6 @@ static void pcbway_quote_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	FILE *fx;
 	char *tmpfn, *respfn = "Resp.xml";
 
-	pcbway_present_quote(octx, respfn);
-	return;
-
 	pcbway_dlg2fields(octx, form);
 
 	tmpfn = pcb_tempfile_name_new("pcbway_quote.xml");
@@ -483,6 +480,8 @@ static void pcbway_quote_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 			goto err;
 		}
 	}
+
+	pcbway_present_quote(octx, respfn);
 
 	err:;
 	pcb_tempfile_unlink(tmpfn);
