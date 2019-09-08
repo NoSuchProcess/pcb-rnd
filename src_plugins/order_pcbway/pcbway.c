@@ -337,10 +337,25 @@ static void pcbway_dlg2fields(order_ctx_t *octx, pcbway_form_t *form)
 	}
 }
 
+#define XML_TBL(dlg, node) \
+	do { \
+		xmlNode *__n__; \
+		for(__n__ = node->children; __n__ != NULL; __n__ = __n__->next) { \
+			char *val = NULL; \
+			if ((__n__->children != NULL) && (__n__->children->type == XML_TEXT_NODE)) \
+				val = __n__->children->content; \
+			PCB_DAD_LABEL(dlg, (char *)__n__->name); \
+			PCB_DAD_LABEL(dlg, val); \
+		} \
+	} while(0)
+
 static int pcbway_present_quote(order_ctx_t *octx, const char *respfn)
 {
 	xmlNode *root, *n, *error = NULL, *status = NULL, *ship = NULL, *prices = NULL;
 	xmlDoc *doc = pcbway_xml_load(respfn);
+	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {NULL, 0}};
+	PCB_DAD_DECL(dlg);
+
 	if (doc == NULL)
 		return -1;
 
@@ -371,13 +386,25 @@ static int pcbway_present_quote(order_ctx_t *octx, const char *respfn)
 		return -1;
 	}
 
-	printf("shipping:\n");
-	for(n = ship->children; n != NULL; n = n->next) {
-		char *val = NULL;
-		if ((n->children != NULL) && (n->children->type == XML_TEXT_NODE))
-			val = n->children->content;
-		printf(" %s=%s\n", n->name, val);
-	}
+	PCB_DAD_BEGIN_VBOX(dlg);
+		PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
+
+		PCB_DAD_BEGIN_TABLE(dlg, 2);
+			PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+			PCB_DAD_LABEL(dlg, "=== Shipping ==="); PCB_DAD_LABEL(dlg, "");
+			XML_TBL(dlg, ship);
+			for(n = prices->children; n != NULL; n = n->next) {
+				PCB_DAD_LABEL(dlg, "=== Fabbing ==="); PCB_DAD_LABEL(dlg, "");
+				XML_TBL(dlg, n);
+			}
+		PCB_DAD_END(dlg);
+
+		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
+	PCB_DAD_END(dlg);
+
+	PCB_DAD_NEW("pcbway_quote", dlg, "PCBWay: quote", NULL, pcb_true, NULL);
+	PCB_DAD_RUN(dlg);
+	PCB_DAD_FREE(dlg);
 
 	xmlFreeDoc(doc);
 	return 0;
