@@ -337,13 +337,57 @@ static void pcbway_dlg2fields(order_ctx_t *octx, pcbway_form_t *form)
 	}
 }
 
+static int pcbway_present_quote(order_ctx_t *octx, const char *respfn)
+{
+	xmlNode *root, *n, *error = NULL, *status = NULL, *ship = NULL, *prices = NULL;
+	xmlDoc *doc = pcbway_xml_load(respfn);
+	if (doc == NULL)
+		return -1;
+
+	root = xmlDocGetRootElement(doc);
+	if ((root != NULL) && (xmlStrcmp(root->name, (xmlChar *)"PcbQuotationResponse") != 0)) {
+		pcb_message(PCB_MSG_ERROR, "order_pcbway: wrong root node on quote answer\n");
+		return -1;
+	}
+
+	for(n = root->children; n != NULL; n = n->next) {
+		if (xmlStrcmp(n->name, (xmlChar *)"ErrorText") == 0) error = n;
+		else if (xmlStrcmp(n->name, (xmlChar *)"Status") == 0) status = n;
+		else if (xmlStrcmp(n->name, (xmlChar *)"Shipping") == 0) ship = n;
+		else if (xmlStrcmp(n->name, (xmlChar *)"priceList") == 0) prices = n;
+	}
+
+	if ((status == NULL) || (status->children == NULL) || (status->children->type != XML_TEXT_NODE)) {
+		pcb_message(PCB_MSG_ERROR, "order_pcbway: missing <Status> from the quote response\n");
+		return -1;
+	}
+	if (xmlStrcmp(status->children->content, (xmlChar *)"ok") != 0) {
+		pcb_message(PCB_MSG_ERROR, "order_pcbway: server error in quote\n");
+		if ((error != NULL) && (error->children != NULL) && (error->children->type == XML_TEXT_NODE))
+			pcb_message(PCB_MSG_ERROR, "  %s\n", error->children->content);
+		return -1;
+	}
+
+	printf("shipping:\n");
+	for(n = ship->children; n != NULL; n = n->next) {
+		char *val = NULL;
+		if ((n->children != NULL) && (n->children->type == XML_TEXT_NODE))
+			val = n->children->content;
+		printf(" %s=%s\n", n->name, val);
+	}
+	return 0;
+}
+
 static void pcbway_quote_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	order_ctx_t *octx = caller_data;
 	pcbway_form_t *form = octx->odata;
 	int n;
 	FILE *fx;
-	char *tmpfn;
+	char *tmpfn, *respfn = "Resp.xml";
+
+	pcbway_present_quote(octx, respfn);
+	return;
 
 	pcbway_dlg2fields(octx, form);
 
@@ -402,7 +446,7 @@ static void pcbway_quote_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 		hdr[3] = NULL;
 		wopts.post_file = tmpfn;
 
-		if (pcb_wget_disk(SERVER "/api/Pcb/PcbQuotation", "Resp.xml", 0, &wopts) != 0) {
+		if (pcb_wget_disk(SERVER "/api/Pcb/PcbQuotation", respfn, 0, &wopts) != 0) {
 			pcb_message(PCB_MSG_ERROR, "pcbway: failed to get a quote from the server\n");
 			goto err;
 		}
