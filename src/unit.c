@@ -54,10 +54,10 @@ pcb_unit_t pcb_units[] = {
 	{"dmil", 'k', 10,       PCB_UNIT_IMPERIAL, PCB_UNIT_ALLOW_DMIL, 1},/* kicad legacy decimil unit */
 	{"cmil", 'c', 100,      PCB_UNIT_IMPERIAL, PCB_UNIT_ALLOW_CMIL, 0},
 
-	{"Hz",   'z', 1,        PCB_UNIT_FREQ,     PCB_UNIT_ALLOW_HZ, 3},
-	{"kHz",  'Z', 1000,     PCB_UNIT_FREQ,     PCB_UNIT_ALLOW_KHZ, 6},
-	{"MHz",  'M', 1000000,  PCB_UNIT_FREQ,     PCB_UNIT_ALLOW_MHZ, 6},
-	{"GHz",  'G', 1000000000., PCB_UNIT_FREQ,  PCB_UNIT_ALLOW_GHZ, 6},
+	{"Hz",   'z', 1,           PCB_UNIT_FREQ,  PCB_UNIT_ALLOW_HZ, 3},
+	{"kHz",  'Z', 0.001,       PCB_UNIT_FREQ,  PCB_UNIT_ALLOW_KHZ, 6},
+	{"MHz",  'M', 0.000001,    PCB_UNIT_FREQ,  PCB_UNIT_ALLOW_MHZ, 6},
+	{"GHz",  'G', 0.000000001, PCB_UNIT_FREQ,  PCB_UNIT_ALLOW_GHZ, 6},
 
 	/* aliases - must be a block at the end */
 	{"inch",  0,  0.001,    PCB_UNIT_IMPERIAL, PCB_UNIT_ALLOW_IN, 5},
