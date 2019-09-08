@@ -135,8 +135,11 @@ static void spin_unit_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	spin_unit_t *su = (spin_unit_t *)caller_data;
 	const pcb_unit_t *unit;
 	int unum = su->dlg[su->wunit].val.lng;
+	int can_glob = su->wglob > 0;
 
-	if ((!su->dlg[su->wglob].val.lng) && (unum >= 0) && (unum < pcb_get_n_units(0)))
+	if (!can_glob)
+		unit = &pcb_units[unum];
+	else if ((!su->dlg[su->wglob].val.lng) && (unum >= 0) && (unum < pcb_get_n_units(0)))
 		unit = &pcb_units[unum];
 	else
 		unit = pcbhl_conf.editor.grid_unit;
@@ -145,7 +148,8 @@ static void spin_unit_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	hv.str = su->buf;
 	pcb_gui->attr_dlg_set_value(hid_ctx, su->wout, &hv);
 	hv.lng = 0;
-	pcb_gui->attr_dlg_set_value(hid_ctx, su->wglob, &hv);
+	if (can_glob)
+		pcb_gui->attr_dlg_set_value(hid_ctx, su->wglob, &hv);
 	su->valid = 1;
 }
 
@@ -175,25 +179,32 @@ static void spin_unit_dialog(void *spin_hid_ctx, pcb_hid_dad_spin_t *spin, pcb_h
 
 		PCB_DAD_BEGIN_TABLE(ctx.dlg, 2);
 			PCB_DAD_LABEL(ctx.dlg, "Preferred unit");
-			PCB_DAD_UNIT(ctx.dlg, PCB_UNIT_METRIC | PCB_UNIT_IMPERIAL);
+			PCB_DAD_UNIT(ctx.dlg, spin->unit_family);
 				ctx.wunit = PCB_DAD_CURRENT(ctx.dlg);
 				PCB_DAD_HELP(ctx.dlg, "Convert value to this unit and rewrite\nthe text entry field with the converted value.");
 				PCB_DAD_DEFAULT_PTR(ctx.dlg, def_unit);
 				PCB_DAD_CHANGE_CB(ctx.dlg, spin_unit_chg_cb);
+			
+			if (spin->unit_family == (PCB_UNIT_METRIC | PCB_UNIT_IMPERIAL)) {
+				PCB_DAD_LABEL(ctx.dlg, "Use the global");
+				PCB_DAD_BOOL(ctx.dlg, "");
+					PCB_DAD_HELP(ctx.dlg, "Ignore the above unit selection,\nuse the global unit (grid unit) in this spinbox,\nfollow changes of the global unit");
+					ctx.wglob = PCB_DAD_CURRENT(ctx.dlg);
+					PCB_DAD_DEFAULT_NUM(ctx.dlg, (spin->unit == NULL));
+					PCB_DAD_CHANGE_CB(ctx.dlg, spin_unit_chg_cb);
 
-			PCB_DAD_LABEL(ctx.dlg, "Use the global");
-			PCB_DAD_BOOL(ctx.dlg, "");
-				PCB_DAD_HELP(ctx.dlg, "Ignore the above unit selection,\nuse the global unit (grid unit) in this spinbox,\nfollow changes of the global unit");
-				ctx.wglob = PCB_DAD_CURRENT(ctx.dlg);
-				PCB_DAD_DEFAULT_NUM(ctx.dlg, (spin->unit == NULL));
-				PCB_DAD_CHANGE_CB(ctx.dlg, spin_unit_chg_cb);
+				PCB_DAD_LABEL(ctx.dlg, "Stick to unit");
+				PCB_DAD_BOOL(ctx.dlg, "");
+					PCB_DAD_HELP(ctx.dlg, "Upon any update from software, switch back to\the selected unit even if the user specified\na different unit in the text field.");
+					ctx.wstick = PCB_DAD_CURRENT(ctx.dlg);
+					PCB_DAD_DEFAULT_NUM(ctx.dlg, spin->no_unit_chg);
+					PCB_DAD_CHANGE_CB(ctx.dlg, spin_unit_chg_cb);
+			}
+			else {
+				ctx.wglob = -1;
+				ctx.wstick = -1;
+			}
 
-			PCB_DAD_LABEL(ctx.dlg, "Stick to unit");
-			PCB_DAD_BOOL(ctx.dlg, "");
-				PCB_DAD_HELP(ctx.dlg, "Upon any update from software, switch back to\the selected unit even if the user specified\na different unit in the text field.");
-				ctx.wstick = PCB_DAD_CURRENT(ctx.dlg);
-				PCB_DAD_DEFAULT_NUM(ctx.dlg, spin->no_unit_chg);
-				PCB_DAD_CHANGE_CB(ctx.dlg, spin_unit_chg_cb);
 		PCB_DAD_END(ctx.dlg);
 
 		PCB_DAD_BEGIN_HBOX(ctx.dlg);
@@ -209,13 +220,20 @@ static void spin_unit_dialog(void *spin_hid_ctx, pcb_hid_dad_spin_t *spin, pcb_h
 	if ((dlgfail == 0) && (ctx.valid)) {
 		pcb_hid_attr_val_t hv;
 		int unum = ctx.dlg[ctx.wunit].val.lng;
+		int can_glob = (spin->unit_family == (PCB_UNIT_METRIC | PCB_UNIT_IMPERIAL));
 
-		if ((!ctx.dlg[ctx.wglob].val.lng) && (unum >= 0) && (unum < pcb_get_n_units(0)))
-				spin->unit = &pcb_units[unum];
-			else
-				spin->unit = NULL;
+		if (!can_glob)
+			spin->unit = &pcb_units[unum];
+		else if ((!ctx.dlg[ctx.wglob].val.lng) && (unum >= 0) && (unum < pcb_get_n_units(0)))
+			spin->unit = &pcb_units[unum];
+		else
+			spin->unit = NULL;
 
-		spin->no_unit_chg = ctx.dlg[ctx.wstick].val.lng;
+		if (can_glob)
+			spin->no_unit_chg = ctx.dlg[ctx.wstick].val.lng;
+		else
+			spin->no_unit_chg = 1;
+
 		hv.str = pcb_strdup(ctx.buf);
 		pcb_gui->attr_dlg_set_value(spin_hid_ctx, spin->wstr, &hv);
 	}

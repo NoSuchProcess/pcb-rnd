@@ -39,7 +39,8 @@ typedef struct {
 	unsigned vmax_valid:1;
 	unsigned no_unit_chg:1;
 	int wall, wstr, wup, wdown, wunit, wwarn;
-	const pcb_unit_t *unit; /* for PCB_DAD_SPIN_COORD only: current unit */
+	const pcb_unit_t *unit; /* for PCB_DAD_SPIN_COORD and PCB_DAD_SPIN_FREQ only: current unit */
+	pcb_family_t unit_family;
 	pcb_hid_attribute_t **attrs;
 	void **hid_ctx;
 	int set_writeback_lock;
@@ -47,18 +48,20 @@ typedef struct {
 	enum {
 		PCB_DAD_SPIN_INT,
 		PCB_DAD_SPIN_DOUBLE,
-		PCB_DAD_SPIN_COORD
+		PCB_DAD_SPIN_COORD,
+		PCB_DAD_SPIN_FREQ
 	} type;
 	gdl_elem_t link;
 } pcb_hid_dad_spin_t;
 
-#define PCB_DAD_SPIN_INT(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_INT, 0)
-#define PCB_DAD_SPIN_DOUBLE(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_DOUBLE, 0)
-#define PCB_DAD_SPIN_COORD(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_COORD, 1)
+#define PCB_DAD_SPIN_INT(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_INT, 0, 0)
+#define PCB_DAD_SPIN_DOUBLE(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_DOUBLE, 0, 0)
+#define PCB_DAD_SPIN_COORD(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_COORD, 1, PCB_UNIT_METRIC | PCB_UNIT_IMPERIAL)
+#define PCB_DAD_SPIN_FREQ(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_FREQ, 1, PCB_UNIT_FREQ)
 
 /*** implementation ***/
 
-#define PCB_DAD_SPIN_ANY(table, typ, has_unit) \
+#define PCB_DAD_SPIN_ANY(table, typ, has_unit, unit_family_) \
 do { \
 	pcb_hid_dad_spin_t *spin = calloc(sizeof(pcb_hid_dad_spin_t), 1); \
 	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_COMPOUND); \
@@ -111,6 +114,7 @@ do { \
 	spin->type = typ; \
 	spin->attrs = &table; \
 	spin->hid_ctx = &table ## _hid_ctx; \
+	spin->unit_family = unit_family_; \
 	\
 	if (typ == PCB_DAD_SPIN_COORD) \
 		gdl_append(&pcb_dad_coord_spins, spin, link); \
