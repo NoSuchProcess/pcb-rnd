@@ -53,7 +53,7 @@ static int order_dialog(void)
 	/* set up the context */
 	order_ctx.active = 1;
 
-	PCB_DAD_NEW("EDIT_THIS_ID", order_ctx.dlg, "EDIT THIS: title", &order_ctx, pcb_false, order_close_cb);
+	PCB_DAD_NEW("order", order_ctx.dlg, "Order PCB", &order_ctx, pcb_false, order_close_cb);
 	return 0;
 }
 
