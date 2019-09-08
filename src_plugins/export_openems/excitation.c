@@ -143,6 +143,18 @@ static void ser_str(int save, int widx, const char *attrkey)
 
 static void exc_val_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 
+static pcb_bool to_hz(const char *s, double *out)
+{
+	const pcb_unit_t *u;
+	double d;
+	if (!pcb_get_value_unit(s, NULL, 0, &d, &u))
+		return pcb_false;
+	if (u->family != PCB_UNIT_FREQ)
+		return pcb_false;
+	*out = d;
+	return pcb_true;
+}
+
 /*** excitation "micro-plugins" ***/
 
 #define I_FC 0
@@ -169,13 +181,18 @@ static void exc_gaus_dad(int idx)
 	PCB_DAD_END(exc_ctx.dlg);
 }
 
+
 static char *exc_gaus_get(int idx)
 {
-	return pcb_strdup_printf(
-		"FDTD = SetGaussExcite(FDTD, %s, %s);",
-		pcb_attribute_get(&PCB->Attributes, AEPREFIX "gaussian::f0"),
-		pcb_attribute_get(&PCB->Attributes, AEPREFIX "gaussian::fc")
-	);
+	double f0 = 0, fc = 0;
+
+	if (!to_hz(pcb_attribute_get(&PCB->Attributes, AEPREFIX "gaussian::f0"), &f0))
+		pcb_message(PCB_MSG_ERROR, "Gauss excitation: unable to parse frequency gaussian::f0\n");
+
+	if (!to_hz(pcb_attribute_get(&PCB->Attributes, AEPREFIX "gaussian::fc"), &fc))
+		pcb_message(PCB_MSG_ERROR, "Gauss excitation: unable to parse frequency gaussian::fc\n");
+
+	return pcb_strdup_printf("FDTD = SetGaussExcite(FDTD, %f, %f);", fc, f0);
 }
 
 static void exc_gaus_ser(int idx, int save)
@@ -205,10 +222,12 @@ static void exc_sin_dad(int idx)
 
 static char *exc_sin_get(int idx)
 {
-	return pcb_strdup_printf(
-		"FDTD = SetSinusExcite(FDTD, %s);",
-		pcb_attribute_get(&PCB->Attributes, AEPREFIX "sinusoidal::f0")
-	);
+	double f0;
+
+	if (!to_hz(pcb_attribute_get(&PCB->Attributes, AEPREFIX "sinusoidal::f0"), &f0))
+		pcb_message(PCB_MSG_ERROR, "Sinus excitation: unable to parse frequency sinusoidal::f0\n");
+
+	return pcb_strdup_printf("FDTD = SetSinusExcite(FDTD, %f);", f0);
 }
 
 static void exc_sin_ser(int idx, int save)
@@ -243,9 +262,14 @@ static void exc_cust_dad(int idx)
 
 static char *exc_cust_get(int idx)
 {
+	double f0;
+
+	if (!to_hz(pcb_attribute_get(&PCB->Attributes, AEPREFIX "custom::f0"), &f0))
+		pcb_message(PCB_MSG_ERROR, "Custom excitation: unable to parse frequency custom::f0\n");
+
 	return pcb_strdup_printf(
-		"FDTD = SetCustomExcite(FDTD, %s, %s)",
-		pcb_attribute_get(&PCB->Attributes, AEPREFIX "custom::f0"),
+		"FDTD = SetCustomExcite(FDTD, %f, %s)",
+		f0,
 		pcb_attribute_get(&PCB->Attributes, AEPREFIX "custom::func")
 	);
 }
