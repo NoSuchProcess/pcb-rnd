@@ -94,7 +94,7 @@ loaded from the list acquired using the api/Address/GetCountry API.
             <Value>2.0</Value>
             <Value>2.4</Value>
         </Thickness>
-        <ViaProcess group="pcb" type="enum">
+        <ViaProcess group="pcb" type="enum" note="Ignored when uploading gerbers: vias are made as specified in the gerbers.">
             <Value>Tenting vias</Value>
             <Value>Plugged vias</Value>
             <Value>Vias not covered</Value>
