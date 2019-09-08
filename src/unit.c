@@ -168,15 +168,25 @@ pcb_coord_t pcb_unit_to_coord(const pcb_unit_t * unit, double x)
 	if (unit == NULL)
 		return -1;
 
-	base = unit->family == PCB_UNIT_METRIC ? PCB_MM_TO_COORD(x) : PCB_MIL_TO_COORD(x);
+	switch(unit->family) {
+		case PCB_UNIT_METRIC:   base = PCB_MM_TO_COORD(x); break;
+		case PCB_UNIT_IMPERIAL: base = PCB_MIL_TO_COORD(x); break;
+		case PCB_UNIT_FREQ:     base = x; break;
+	}
 	res = pcb_round(base/unit->scale_factor);
 
 	/* clamp */
-	if (res >= (double)COORD_MAX)
-		return COORD_MAX;
-	if (res <= -1.0 * (double)COORD_MAX)
-		return -COORD_MAX;
-
+	switch(unit->family) {
+		case PCB_UNIT_METRIC:
+		case PCB_UNIT_IMPERIAL:
+			if (res >= (double)COORD_MAX)
+				return COORD_MAX;
+			if (res <= -1.0 * (double)COORD_MAX)
+				return -COORD_MAX;
+			break;
+		case PCB_UNIT_FREQ:
+			break;
+	}
 	return res;
 }
 
