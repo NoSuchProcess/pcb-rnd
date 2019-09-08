@@ -49,6 +49,17 @@ conf_order_pcbway_t conf_order_pcbway;
 #define CFG conf_order_pcbway.plugins.order_pcbway
 #define SERVER "http://api-partner.pcbway.com"
 
+static const char *order_xpm[] = {
+"23 5 2 1",
+" 	c None",
+"+	c #000000",
+" ++  +++ +++  +++  +++ ",
+"+  + + + +  + +    + + ",
+"+  + ++  +  + ++   ++  ",
+"+  + + + +  + +    + + ",
+" ++  + + +++  +++  + + ",
+};
+
 typedef struct pcbway_form_s {
 	vtp0_t fields;   /* of pcb_order_field_t */
 	vts0_t country_codes;
@@ -337,20 +348,31 @@ static void pcbway_dlg2fields(order_ctx_t *octx, pcbway_form_t *form)
 	}
 }
 
-#define XML_TBL(dlg, node) \
+#define XML_TBL(dlg, node, price, pricetag) \
 	do { \
 		xmlNode *__n__; \
+		double __prc__; \
+		price = -1; \
 		for(__n__ = node->children; __n__ != NULL; __n__ = __n__->next) { \
 			char *val = NULL; \
 			if ((__n__->children != NULL) && (__n__->children->type == XML_TEXT_NODE)) \
 				val = __n__->children->content; \
 			PCB_DAD_LABEL(dlg, (char *)__n__->name); \
-			PCB_DAD_LABEL(dlg, val); \
+			if ((val != NULL) && (xmlStrcmp(__n__->name, (xmlChar *)pricetag) == 0)) { \
+				char *__end__, *__tmp__ = pcb_concat("$", val, NULL); \
+				PCB_DAD_LABEL(dlg, __tmp__); \
+				free(__tmp__); \
+				__prc__ = strtod(val, &__end__); \
+				if (*__end__ == '\0') price = __prc__; \
+			} \
+			else \
+				PCB_DAD_LABEL(dlg, val); \
 		} \
 	} while(0)
 
 static int pcbway_present_quote(order_ctx_t *octx, const char *respfn)
 {
+	double shipcost, cost;
 	xmlNode *root, *n, *error = NULL, *status = NULL, *ship = NULL, *prices = NULL;
 	xmlDoc *doc = pcbway_xml_load(respfn);
 	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {NULL, 0}};
@@ -392,10 +414,26 @@ static int pcbway_present_quote(order_ctx_t *octx, const char *respfn)
 		PCB_DAD_BEGIN_TABLE(dlg, 2);
 			PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
 			PCB_DAD_LABEL(dlg, "=== Shipping ==="); PCB_DAD_LABEL(dlg, "");
-			XML_TBL(dlg, ship);
+			XML_TBL(dlg, ship, shipcost, "ShipCost");
 			for(n = prices->children; n != NULL; n = n->next) {
-				PCB_DAD_LABEL(dlg, "=== Fabbing ==="); PCB_DAD_LABEL(dlg, "");
-				XML_TBL(dlg, n);
+				char tmp[128];
+				PCB_DAD_LABEL(dlg, "=== Option ==="); PCB_DAD_LABEL(dlg, "");
+				XML_TBL(dlg, n, cost, "Price");
+				if ((shipcost >= 0) && (cost >= 0))
+					sprintf(tmp, "$%.2f    ", shipcost+cost);
+				else
+					*tmp = 0;
+
+				PCB_DAD_LABEL(dlg, "    Total:");
+				PCB_DAD_COMPFLAG(dlg, PCB_HATF_TIGHT);
+
+				PCB_DAD_BEGIN_HBOX(dlg);
+					PCB_DAD_COMPFLAG(dlg, PCB_HATF_TIGHT);
+					PCB_DAD_LABEL(dlg, tmp);
+					PCB_DAD_PICBUTTON(dlg, order_xpm);
+				PCB_DAD_END(dlg);
+
+	
 			}
 		PCB_DAD_END(dlg);
 
