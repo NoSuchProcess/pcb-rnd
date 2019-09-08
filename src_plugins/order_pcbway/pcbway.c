@@ -511,11 +511,9 @@ static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
 			PCB_DAD_BEGIN_VBOX(octx->dlg);
 				PCB_DAD_COMPFLAG(octx->dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_END(octx->dlg);
-			PCB_DAD_BUTTON(octx->dlg, "Quote");
+			PCB_DAD_BUTTON(octx->dlg, "Quote & order");
 				PCB_DAD_HELP(octx->dlg, "Generate a price quote");
 				PCB_DAD_CHANGE_CB(octx->dlg, pcbway_quote_cb);
-			PCB_DAD_BUTTON(octx->dlg, "Order");
-				PCB_DAD_HELP(octx->dlg, "Order PCB");
 		PCB_DAD_END(octx->dlg);
 
 	PCB_DAD_END(octx->dlg);
