@@ -219,7 +219,7 @@ static int CoordsToString(gds_t *dest, pcb_coord_t coord[], int n_coords, const 
 	if (n == pcb_get_n_units(0)) {
 		do {
 			--n;
-		} while ((pcb_units[n].allow & allow) == 0 || pcb_units[n].family != family);
+		} while ((n>=0) && ((pcb_units[n].allow & allow) == 0 || pcb_units[n].family != family));
 	}
 
 	/* Apply scale factor */
