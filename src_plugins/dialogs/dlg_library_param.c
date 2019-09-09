@@ -67,6 +67,7 @@ static void set_attr(library_ctx_t *ctx, int pidx, char *val)
 
 	switch(a->type) {
 		case PCB_HATT_ENUM:
+			hv.lng = 0; /* fallback in case the loop doesn't find any match */
 			vlen = strlen(val);
 			for(n = 0, s = a->wdata; *s != NULL; s++,n++) {
 				desc = strstr(*s, " (");
