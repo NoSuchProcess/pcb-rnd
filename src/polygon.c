@@ -1515,7 +1515,7 @@ void pcb_poly_no_holes_dicer(pcb_poly_t *p, const pcb_box_t *clip, void (*emit)(
 	if (clip == NULL)
 		pcb_polyarea_no_holes_dicer(main_contour, 0, 0, 0, 0, emit, user_data);
 	else
-		pcb_polyarea_no_holes_dicer(main_contour, clip->X1, clip->X2, clip->Y1, clip->Y2, emit, user_data);
+		pcb_polyarea_no_holes_dicer(main_contour, clip->X1, clip->Y1, clip->X2, clip->Y2, emit, user_data);
 }
 
 /* make a polygon split into multiple parts into multiple polygons */
