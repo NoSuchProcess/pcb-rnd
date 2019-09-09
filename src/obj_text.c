@@ -1045,11 +1045,11 @@ PCB_INLINE int draw_text_cheap(pcb_font_t *font, pcb_xform_mx_t mx, const unsign
 {
 	pcb_coord_t w, h = PCB_SCALE_TEXT(font->MaxHeight, scale);
 	if (tiny == PCB_TXT_TINY_HIDE) {
-		if (h <= pcb_gui->coord_per_pix*6) /* <= 6 pixel high: unreadable */
+		if (h <= pcb_render->coord_per_pix*6) /* <= 6 pixel high: unreadable */
 			return 1;
 	}
 	else if (tiny == PCB_TXT_TINY_CHEAP) {
-		if (h <= pcb_gui->coord_per_pix*2) { /* <= 1 pixel high: draw a single line in the middle */
+		if (h <= pcb_render->coord_per_pix*2) { /* <= 1 pixel high: draw a single line in the middle */
 			w = pcb_text_width(font, scale, string);
 			if (xordraw) {
 				cheap_text_line(pcb_crosshair.GC, mx, 0, h/2, w, h/2, xordx, xordy);
@@ -1061,7 +1061,7 @@ PCB_INLINE int draw_text_cheap(pcb_font_t *font, pcb_xform_mx_t mx, const unsign
 			}
 			return 1;
 		}
-		else if (h <= pcb_gui->coord_per_pix*4) { /* <= 4 pixel high: draw a mirrored Z-shape */
+		else if (h <= pcb_render->coord_per_pix*4) { /* <= 4 pixel high: draw a mirrored Z-shape */
 			w = pcb_text_width(font, scale, string);
 			if (xordraw) {
 				h /= 4;

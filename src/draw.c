@@ -117,7 +117,7 @@ void pcb_draw_dashed_line(pcb_draw_info_t *info, pcb_hid_gc_t GC, pcb_coord_t x1
 	double dx = x2-x1, dy = y2-y1;
 	double len_mnt = PCB_ABS(dx) + PCB_ABS(dy);
 	int n;
-	pcb_coord_t minlen = pcb_gui->coord_per_pix * 8;
+	pcb_coord_t minlen = pcb_render->coord_per_pix * 8;
 
 	/* Ignore info->xform->bloat because a dashed line is always thin */
 

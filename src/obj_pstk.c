@@ -589,18 +589,18 @@ pcb_r_dir_t pcb_pstk_draw_mark_callback(const pcb_box_t *b, void *cl)
 		mark += proto->hdia/2;
 
 	mark2 = mark*2;
-	if (mark2 < pcb_gui->coord_per_pix)
+	if (mark2 < pcb_render->coord_per_pix)
 		return PCB_R_DIR_FOUND_CONTINUE;
 
 	/* draw the cross using xor */
 	set_ps_annot_color(pcb_draw_out.fgGC, ps);
 	pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
-	if (mark2 > pcb_gui->coord_per_pix*3) {
+	if (mark2 > pcb_render->coord_per_pix*3) {
 		pcb_render->draw_line(pcb_draw_out.fgGC, ps->x-mark, ps->y, ps->x+mark, ps->y);
 		pcb_render->draw_line(pcb_draw_out.fgGC, ps->x, ps->y-mark, ps->x, ps->y+mark);
 	}
 	else
-		pcb_render->draw_line(pcb_draw_out.fgGC, ps->x-pcb_gui->coord_per_pix, ps->y, ps->x+pcb_gui->coord_per_pix, ps->y);
+		pcb_render->draw_line(pcb_draw_out.fgGC, ps->x-pcb_render->coord_per_pix, ps->y, ps->x+pcb_render->coord_per_pix, ps->y);
 
 	return PCB_R_DIR_FOUND_CONTINUE;
 }

@@ -45,7 +45,7 @@ static size_t fc_alloced = 0;
 		last_x = pl->head.point[0]; \
 		last_y = pl->head.point[1]; \
 		v = pl->head.next; \
-		mindist = pcb_gui->coord_per_pix * 2; \
+		mindist = pcb_render->coord_per_pix * 2; \
 
 /* call this before drawing the next vertex */
 #define vert_opt_loop1(v, force, skip_stmt) \
@@ -88,7 +88,7 @@ static void fill_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 	vert_opt_begin();
 	do {
 		vert_opt_loop1(v, first, continue);
-		if (pcb_gui->gui)
+		if (pcb_render->gui)
 			first = 0; /* if gui, turn on optimization and start to omit vertices */
 		fc_x[i] = this_x;
 		fc_y[i++] = this_y;
