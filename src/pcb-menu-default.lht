@@ -397,9 +397,9 @@ ha:{
 		ha:Select {
 			li:submenu {
 				ha:Select all visible objects      = { a={<key>s; <key>a; <key>a;}; action=Select(All) }
-				ha:Select all connected objects    = { a={<key>s; <key>a; <key>c;}; action=Select(Connection) }
+				ha:Select all found objects        = { a={<key>s; <key>a; <key>c;}; action=Select(Connection); tip={Select all objects that have the 'found' flag set} }
 				ha:Unselect all objects            = { a={<key>s; <key>u; <key>a;}; action=Unselect(All) }
-				ha:Unselect all connected objects  = { a={<key>s; <key>u; <key>c;}; action=Unselect(Connection) }
+				ha:Unselect all found objects      = { a={<key>s; <key>u; <key>c;}; action=Unselect(Connection); tip={Unselect all objects that have the 'found' flag set} }
 				ha:Invert selection                = { a={<key>s; <key>i; }; action=Select(Invert) }
 				-
 				ha:Advanced search and select      = { a={<key>s; <key>s;} action=SearchDialog() }
