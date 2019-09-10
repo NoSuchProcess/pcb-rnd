@@ -165,9 +165,9 @@ static void exc_gaus_dad(int idx)
 {
 	PCB_DAD_BEGIN_TABLE(exc_ctx.dlg, 2);
 		PCB_DAD_LABEL(exc_ctx.dlg, "fc");
-		PCB_DAD_REAL(exc_ctx.dlg, "");
+		PCB_DAD_SPIN_FREQ(exc_ctx.dlg);
 			PCB_DAD_MINMAX(exc_ctx.dlg, 0, FREQ_MAX);
-			PCB_DAD_HELP(exc_ctx.dlg, "20db Cutoff Frequency [Hz]\nbandwidth is 2*fc");
+			PCB_DAD_HELP(exc_ctx.dlg, "20db Cutoff Frequency\nbandwidth is 2*fc");
 			PCB_DAD_CHANGE_CB(exc_ctx.dlg, exc_val_chg_cb);
 			exc_ctx.exc_data[idx].w[I_FC] = PCB_DAD_CURRENT(exc_ctx.dlg);
 

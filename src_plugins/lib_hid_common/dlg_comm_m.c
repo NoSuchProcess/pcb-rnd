@@ -212,6 +212,7 @@ fgw_error_t pcb_act_gui_FallbackColorPick(fgw_arg_t *res, int argc, fgw_arg_t *a
 
 fgw_error_t pcb_act_gui_MayOverwriteFile(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_hidlib_t *hidlib;
 	const char *fn;
 	const char *pcb_acts_gui_MayOverwriteFile = nope;
 	const char **xpm;
@@ -230,8 +231,9 @@ fgw_error_t pcb_act_gui_MayOverwriteFile(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		return 2;
 	}
 
-	PCB_ACT_CONVARG(1, FGW_STR, gui_MayOverwriteFile, fn = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_INT, gui_MayOverwriteFile, multi = argv[2].val.nat_int);
+	PCB_ACT_CONVARG(1, FGW_PTR, gui_MayOverwriteFile, hidlib = argv[1].val.ptr_void);
+	PCB_ACT_CONVARG(2, FGW_STR, gui_MayOverwriteFile, fn = argv[2].val.str);
+	PCB_ACT_CONVARG(3, FGW_INT, gui_MayOverwriteFile, multi = argv[3].val.nat_int);
 
 	PCB_DAD_BEGIN_VBOX(dlg);
 		/* icon and label */
@@ -269,7 +271,7 @@ fgw_error_t pcb_act_gui_MayOverwriteFile(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	if (dlg[wdontask].val.lng) {
 		pcb_conf_set(CFR_USER, "plugins/dialogs/file_overwrite_dialog/dont_ask", 0, "1", POL_OVERWRITE);
 		if (pcb_conf_isdirty(CFR_USER))
-			pcb_conf_save_file(&PCB->hidlib, NULL, NULL, CFR_USER, NULL);
+			pcb_conf_save_file(hidlib, NULL, NULL, CFR_USER, NULL);
 	}
 	PCB_DAD_FREE(dlg);
 

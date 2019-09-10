@@ -106,16 +106,30 @@ FILE *pcb_fopen(pcb_hidlib_t *hidlib, const char *path, const char *mode)
 FILE *pcb_fopen_askovr(pcb_hidlib_t *hidlib, const char *path, const char *mode, int *all)
 {
 	if (strchr(mode, 'w') != NULL) {
-		/* if the action does not exist, it will return error, which is non-zero, which means the old behavor: just overwrite anything */
-		if (pcb_find_action("gui_MayOverwriteFile", NULL) != NULL) {
+		fgw_func_t *fun = pcb_act_lookup("gui_mayoverwritefile");
+
+		/* if the action does not exist, use the old behavor: just overwrite anything */
+		if (fun != NULL) {
 			FILE *f = pcb_fopen(hidlib, path, "r");
 			if (f != NULL) {
 				int res = 0;
 				fclose(f);
 				if (all != NULL)
 					res = *all;
-				if (res != 2)
-					res = pcb_actionl("gui_MayOverwriteFile", path, (all != NULL) ? "1" : "0", NULL);
+				if (res != 2) {
+					fgw_arg_t ares, argv[4];
+
+					argv[0].type = FGW_FUNC; argv[0].val.func = fun;
+					argv[1].type = FGW_PTR;  argv[1].val.ptr_void = hidlib;
+					argv[2].type = FGW_STR;  argv[2].val.cstr = path;
+					argv[3].type = FGW_INT;  argv[3].val.nat_int = (all != NULL);
+					ares.type = FGW_INVALID;
+
+					if ((pcb_actionv_(fun, &ares, 4, argv) != 0) || (fgw_arg_conv(&pcb_fgw, &ares, FGW_INT) != 0))
+						res = -1;
+					else
+						res = ares.val.nat_int;
+				}
 				if (res == 0)
 					return NULL;
 				if ((all != NULL) && (res == 2)) /* remember 'overwrite all' for this session */
