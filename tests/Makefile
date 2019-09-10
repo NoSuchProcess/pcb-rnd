@@ -8,6 +8,7 @@ test:
 	cd propedit && $(MAKE) all && $(MAKE) test
 	cd remote && $(MAKE) all && $(MAKE) test
 	cd drc_pstk_hbrk && $(MAKE) all && $(MAKE) test
+	cd librnd && $(MAKE) all && $(MAKE) test
 #	cd gsch2pcb-rnd && $(MAKE) all && $(MAKE) test
 	@echo " "
 	@echo "+-------------------------------------------------+"
@@ -24,5 +25,6 @@ clean:
 	cd propedit && $(MAKE) clean
 	cd remote && $(MAKE) clean
 	cd drc_pstk_hbrk && $(MAKE) clean
+	cd librnd && $(MAKE) clean
 #	cd gsch2pcb-rnd && $(MAKE) clean
 
