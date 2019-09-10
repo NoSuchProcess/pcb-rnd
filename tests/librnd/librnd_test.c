@@ -77,6 +77,10 @@ void pcbhl_expose_preview(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 {
 }
 
+void pcb_tool_gui_init(void)
+{
+}
+
 /*** init test ***/
 
 static void poly_test()
