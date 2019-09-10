@@ -39,6 +39,7 @@
 #include "select.h"
 #include "undo.h"
 #include "event.h"
+#include "data.h"
 #include "conf_core.h"
 #include "obj_arc_op.h"
 #include "obj_line_op.h"
@@ -90,6 +91,8 @@ void *pcb_obj_rotate90(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t
 	int changed = 0;
 	pcb_opctx_t ctx;
 
+	pcb_data_clip_inhibit_inc(PCB->Data);
+
 	/* setup default  global identifiers */
 	ctx.rotate.pcb = PCB;
 	ctx.rotate.number = Steps;
@@ -106,6 +109,7 @@ void *pcb_obj_rotate90(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
+	pcb_data_clip_inhibit_dec(PCB->Data, 0);
 	return ptr2;
 }
 
@@ -114,6 +118,8 @@ void *pcb_obj_rotate(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t X
 	void *ptr2;
 	int changed = 0;
 	pcb_opctx_t ctx;
+
+	pcb_data_clip_inhibit_inc(PCB->Data);
 
 	/* setup default  global identifiers */
 	ctx.rotate.pcb = PCB;
@@ -131,6 +137,7 @@ void *pcb_obj_rotate(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t X
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
+	pcb_data_clip_inhibit_dec(PCB->Data, 0);
 	return ptr2;
 }
 
