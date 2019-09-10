@@ -1642,6 +1642,8 @@ pcb_bool pcb_subc_change_side(pcb_subc_t *subc, pcb_coord_t yoff)
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, subc))
 		return pcb_false;
 
+	pcb_data_clip_inhibit_inc(PCB->Data);
+
 	assert(subc->parent_type = PCB_PARENT_DATA);
 	data = subc->parent.data;
 	pcb = pcb_data_get_top(data);
@@ -1668,6 +1670,8 @@ pcb_bool pcb_subc_change_side(pcb_subc_t *subc, pcb_coord_t yoff)
 		pcb_r_insert_entry(data->subc_tree, (pcb_box_t *)subc);
 
 	pcb_undo_add_subc_to_otherside(PCB_OBJ_SUBC, subc, subc, subc, yoff);
+
+	pcb_data_clip_inhibit_dec(PCB->Data, 0);
 
 	return pcb_true;
 }
