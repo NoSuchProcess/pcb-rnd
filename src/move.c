@@ -140,6 +140,7 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 	ctx.move.dx = DX;
 	ctx.move.dy = DY;
 
+	pcb_data_clip_inhibit_inc(PCB->Data);
 	pcb_draw_inhibit_inc();
 
 	switch(Type) {
@@ -232,6 +233,7 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 	pcb_undo_inc_serial();
 
 	pcb_draw_inhibit_dec();
+	pcb_data_clip_inhibit_dec(PCB->Data, 0);
 	pcb_draw();
 
 	return ptr2;
