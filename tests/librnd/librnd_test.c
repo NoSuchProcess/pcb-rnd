@@ -79,7 +79,7 @@ void pcbhl_expose_preview(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 
 /*** init test ***/
 
-static void ply_test()
+static void poly_test()
 {
 	pcb_polyarea_t *pa;
 	pcb_polyarea_init(&pa);
