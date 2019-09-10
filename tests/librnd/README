@@ -1,0 +1,2 @@
+This tests whether librnd can be still linked without any dependency to
+non-librnd code.
