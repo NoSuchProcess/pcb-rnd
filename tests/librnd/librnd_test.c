@@ -6,6 +6,7 @@
 #include "compat_misc.h"
 #include "plugins.h"
 #include "hidlib.h"
+#include "polyarea.h"
 
 /*** hidlib glue ***/
 
@@ -85,7 +86,7 @@ void pcb_tool_gui_init(void)
 
 static void poly_test()
 {
-	pcb_polyarea_t *pa;
+	pcb_polyarea_t pa;
 	pcb_polyarea_init(&pa);
 	pcb_poly_valid(&pa);
 }
