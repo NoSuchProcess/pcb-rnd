@@ -304,8 +304,10 @@ static pcb_cardinal_t pcb_net_term_crawl(const pcb_board_t *pcb, pcb_net_term_t 
 /* there can be multiple terminals with the same ID, but it is enough to run find from the first: find.c will consider them all */
 	o = pcb_term_find_name(pcb, pcb->Data, PCB_LYT_COPPER, term->refdes, term->term, NULL, NULL);
 	if (o == NULL) {
-		if (missing != NULL)
+		if (missing != NULL) {
+			pcb_message(PCB_MSG_WARNING, "Netlist problem: terminal %s-%s is missing from the board but referenced from the netlist\n", term->refdes, term->term);
 			(*missing)++;
+		}
 		return 0;
 	}
 
@@ -611,6 +613,7 @@ pcb_cardinal_t pcb_net_map_subnets(pcb_short_ctx_t *sctx, pcb_rat_accuracy_t acc
 			   found, so some subnets will remain disconnected (there is no point
 			   in looping more, this won't improve) */
 			sctx->missing++;
+			pcb_message(PCB_MSG_WARNING, "Netlist problem: could not find the best rat line, rat missing (#1)\n");
 			break;
 		}
 
@@ -626,8 +629,10 @@ pcb_cardinal_t pcb_net_map_subnets(pcb_short_ctx_t *sctx, pcb_rat_accuracy_t acc
 			pcb_rat_invalidate_draw(line);
 			drawn++;
 		}
-		else
+		else {
 			sctx->missing++;
+			pcb_message(PCB_MSG_WARNING, "Netlist problem: could not find the best rat line, rat missing (#2)\n");
+		}
 		done[bestu] = 1;
 	}
 
