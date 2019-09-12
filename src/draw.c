@@ -160,7 +160,7 @@ void pcb_draw(void)
 	if (pcb_draw_inhibit)
 		return;
 	if (pcb_draw_invalidated.X1 <= pcb_draw_invalidated.X2 && pcb_draw_invalidated.Y1 <= pcb_draw_invalidated.Y2)
-		pcb_gui->invalidate_lr(pcb_gui, pcb_draw_invalidated.X1, pcb_draw_invalidated.X2, pcb_draw_invalidated.Y1, pcb_draw_invalidated.Y2);
+		pcb_render->invalidate_lr(pcb_render, pcb_draw_invalidated.X1, pcb_draw_invalidated.X2, pcb_draw_invalidated.Y1, pcb_draw_invalidated.Y2);
 
 	/* shrink the update block */
 	pcb_draw_invalidated.X1 = pcb_draw_invalidated.Y1 = COORD_MAX;
@@ -174,12 +174,12 @@ static void draw_everything_holes(pcb_draw_info_t *info, pcb_layergrp_id_t gid)
 
 	if (plated && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_PLATED_DRILL, 0, &info->xform_exporter)) {
 		pcb_draw_pstk_holes(info, gid, PCB_PHOLE_PLATED);
-		pcb_render->end_layer(pcb_gui);
+		pcb_render->end_layer(pcb_render);
 	}
 
 	if (unplated && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_UNPLATED_DRILL, 0, &info->xform_exporter)) {
 		pcb_draw_pstk_holes(info, gid, PCB_PHOLE_UNPLATED);
-		pcb_render->end_layer(pcb_gui);
+		pcb_render->end_layer(pcb_render);
 	}
 }
 
@@ -209,22 +209,22 @@ static void draw_virtual_layers(pcb_draw_info_t *info, const legacy_vlayer_t *lv
 
 	if (set_vlayer(info, lvly_drawn->top_assy, lvly_drawn->top_assy_enable, PCB_VLY_TOP_ASSY)) {
 		pcb_draw_assembly(info, PCB_LYT_TOP);
-		pcb_render->end_layer(pcb_gui);
+		pcb_render->end_layer(pcb_render);
 	}
 
 	if (set_vlayer(info, lvly_drawn->bot_assy, lvly_drawn->bot_assy_enable, PCB_VLY_BOTTOM_ASSY)) {
 		pcb_draw_assembly(info, PCB_LYT_BOTTOM);
-		pcb_render->end_layer(pcb_gui);
+		pcb_render->end_layer(pcb_render);
 	}
 
 	if (set_vlayer(info, lvly_drawn->top_fab, lvly_drawn->top_fab_enable, PCB_VLY_FAB)) {
 		pcb_stub_draw_fab(info, pcb_draw_out.fgGC, &hid_exp);
-		pcb_render->end_layer(pcb_gui);
+		pcb_render->end_layer(pcb_render);
 	}
 
 	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_CSECT, 0, &info->xform_exporter)) {
 		pcb_stub_draw_csect(pcb_draw_out.fgGC, &hid_exp);
-		pcb_render->end_layer(pcb_gui);
+		pcb_render->end_layer(pcb_render);
 	}
 }
 
@@ -249,16 +249,16 @@ static void draw_ui_layers(pcb_draw_info_t *info)
 			ly = pcb_uilayers.array[i];
 			if ((ly != NULL) && (ly->meta.real.vis)) {
 				if (!have_canvas) {
-					pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
-					pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
+					pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
+					pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 					have_canvas = 1;
 				}
 				pcb_draw_layer(info, ly);
 			}
 		}
 		if (have_canvas)
-			pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
-		pcb_render->end_layer(pcb_gui);
+			pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
+		pcb_render->end_layer(pcb_render);
 	}
 }
 
@@ -266,8 +266,8 @@ static void draw_ui_layers(pcb_draw_info_t *info)
 static void draw_xor_marks(pcb_draw_info_t *info)
 {
 	int per_side = conf_core.appearance.subc_layer_per_side;
-	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
-	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE_XOR, pcb_draw_out.direct, info->drawn_area);
+	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
+	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_POSITIVE_XOR, pcb_draw_out.direct, info->drawn_area);
 
 	pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
 	pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
@@ -286,17 +286,17 @@ static void draw_xor_marks(pcb_draw_info_t *info)
 	pcb_event(&PCB->hidlib, PCB_EVENT_GUI_DRAW_OVERLAY_XOR, "p", &pcb_draw_out.fgGC, NULL);
 
 	pcb_hid_set_draw_xor(pcb_draw_out.fgGC, 0);
-	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
+	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 }
 
 static void draw_rats(const pcb_box_t *drawn_area)
 {
 	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_RATS, 0, NULL)) {
-		pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
-		pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
+		pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
+		pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
 		pcb_draw_rats(drawn_area);
-		pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
-		pcb_render->end_layer(pcb_gui);
+		pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
+		pcb_render->end_layer(pcb_render);
 	}
 }
 
@@ -304,12 +304,12 @@ static void draw_pins_and_pads(pcb_draw_info_t *info, pcb_layergrp_id_t componen
 {
 	int per_side = conf_core.appearance.subc_layer_per_side;
 
-	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
-	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
+	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
+	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 
 	/* Draw pins' and pads' names */
-	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
-	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
+	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
+	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 	pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
 	pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
 	if (PCB->SubcOn) {
@@ -321,7 +321,7 @@ static void draw_pins_and_pads(pcb_draw_info_t *info, pcb_layergrp_id_t componen
 		pcb_draw_pstk_labels(info);
 	}
 	pcb_draw_pstk_names(info, conf_core.editor.show_solder_side ? solder : component, info->drawn_area);
-	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
+	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 }
 
 static int has_auto(pcb_layergrp_t *grp)
@@ -362,7 +362,7 @@ static void draw_everything(pcb_draw_info_t *info)
 		}
 	}
 
-	pcb_render->render_burst(pcb_gui, PCB_HID_BURST_START, info->drawn_area);
+	pcb_render->render_burst(pcb_render, PCB_HID_BURST_START, info->drawn_area);
 
 	memset(do_group, 0, sizeof(do_group));
 	lvly.top_fab = -1;
@@ -415,10 +415,10 @@ static void draw_everything(pcb_draw_info_t *info)
 		pcb_draw_silk_doc(info, side, PCB_LYT_DOC, 0, 1);
 		pcb_draw_silk_doc(info, side, PCB_LYT_SILK, 0, 1);
 
-		pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
-		pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
-		pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
-		pcb_render->end_layer(pcb_gui);
+		pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
+		pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
+		pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
+		pcb_render->end_layer(pcb_render);
 	}
 
 	/* Draw far side doc and silks */
@@ -449,7 +449,7 @@ static void draw_everything(pcb_draw_info_t *info)
 			}
 
 			pcb_draw_layer_grp(info, group, is_current);
-			pcb_render->end_layer(pcb_gui);
+			pcb_render->end_layer(pcb_render);
 		}
 	}
 
@@ -457,23 +457,23 @@ static void draw_everything(pcb_draw_info_t *info)
 		goto finish;
 
 	/* Draw padstacks below silk */
-	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
-	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
+	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
+	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 	if (pcb_render->gui)
 		pcb_draw_ppv(info, conf_core.editor.show_solder_side ? solder : component);
-	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
+	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 
 	/* Draw the solder mask if turned on */
 	gid = pcb_layergrp_get_top_mask();
 	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, 0, &info->xform_exporter))) {
 		pcb_draw_mask(info, PCB_COMPONENT_SIDE);
-		pcb_render->end_layer(pcb_gui);
+		pcb_render->end_layer(pcb_render);
 	}
 
 	gid = pcb_layergrp_get_bottom_mask();
 	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, 0, &info->xform_exporter))) {
 		pcb_draw_mask(info, PCB_SOLDER_SIDE);
-		pcb_render->end_layer(pcb_gui);
+		pcb_render->end_layer(pcb_render);
 	}
 
 	/* Draw doc and silks */
@@ -488,10 +488,10 @@ static void draw_everything(pcb_draw_info_t *info)
 	}
 
 	{ /* holes_after: draw holes after copper, silk and mask, to make sure it punches through everything. */
-		pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area); 
-		pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
+		pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area); 
+		pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 		draw_everything_holes(info, side_copper_grp);
-		pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
+		pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 	}
 
 	gid = pcb_layergrp_get_top_paste();
@@ -499,7 +499,7 @@ static void draw_everything(pcb_draw_info_t *info)
 		paste_empty = pcb_layergrp_is_empty(PCB, gid);
 	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, paste_empty, &info->xform_exporter))) {
 		pcb_draw_paste(info, PCB_COMPONENT_SIDE);
-		pcb_render->end_layer(pcb_gui);
+		pcb_render->end_layer(pcb_render);
 	}
 
 	gid = pcb_layergrp_get_bottom_paste();
@@ -507,7 +507,7 @@ static void draw_everything(pcb_draw_info_t *info)
 		paste_empty = pcb_layergrp_is_empty(PCB, gid);
 	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, paste_empty, &info->xform_exporter))) {
 		pcb_draw_paste(info, PCB_SOLDER_SIDE);
-		pcb_render->end_layer(pcb_gui);
+		pcb_render->end_layer(pcb_render);
 	}
 
 	pcb_draw_boundary_mech(info);
@@ -756,8 +756,8 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 static void pcb_draw_info_setup(pcb_draw_info_t *info, pcb_board_t *pcb)
 {
 	info->pcb = pcb;
-	info->exporting = (pcb_gui->exporter || pcb_gui->printer);
-	info->export_name = pcb_gui->name;
+	info->exporting = (pcb_render->exporter || pcb_render->printer);
+	info->export_name = pcb_render->name;
 	if (info->exporting) {
 		strcpy(info->noexport_name, "noexport:");
 		strncpy(info->noexport_name+9, info->export_name, sizeof(info->noexport_name)-10);
@@ -890,8 +890,8 @@ static void pcb_draw_layer_grp(pcb_draw_info_t *info, int group, int is_current)
 	pcb_layergrp_t *grp = pcb_get_layergrp(PCB, group);
 	unsigned int gflg = grp->ltype;
 
-	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
-	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
+	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
+	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 
 	for (i = n_entries - 1; i >= 0; i--) {
 		layernum = layers[i];
@@ -918,7 +918,7 @@ static void pcb_draw_layer_grp(pcb_draw_info_t *info, int group, int is_current)
 	if (!pcb_render->gui)
 		pcb_draw_ppv(info, group);
 
-	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
+	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 }
 
 void pcb_erase_obj(int type, void *lptr, void *ptr)
@@ -1106,11 +1106,11 @@ void pcbhl_expose_preview(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 	pcb_output_t save;
 	expose_begin(&save, hid);
 
-	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, 1, &e->view);
-	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, 1, &e->view);
+	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_RESET, 1, &e->view);
+	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_POSITIVE, 1, &e->view);
 	e->expose_cb(pcb_draw_out.fgGC, e);
-	pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, 1, &e->view);
-	pcb_render->end_layer(pcb_gui);
+	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_FLUSH, 1, &e->view);
+	pcb_render->end_layer(pcb_render);
 
 	expose_end(&save);
 }
