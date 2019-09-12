@@ -574,7 +574,7 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 
 	global.linewidth = -1;
 	/* reset static vars */
-	ps_set_layer_group(pcb_gui, -1, NULL, -1, -1, 0, -1, NULL);
+	ps_set_layer_group(pcb_render, -1, NULL, -1, -1, 0, -1, NULL);
 	use_gc(NULL);
 
 	global.exps.view.X1 = 0;
@@ -597,7 +597,7 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 
 	global.pagecount = 1;					/* Reset 'pagecount' if single file */
 	global.doing_toc = 0;
-	ps_set_layer_group(pcb_gui, -1, NULL, -1, -1, 0, -1, NULL); /* reset static vars */
+	ps_set_layer_group(pcb_render, -1, NULL, -1, -1, 0, -1, NULL); /* reset static vars */
 	pcbhl_expose_main(&ps_hid, &global.exps, NULL);
 
 	if (the_file)
