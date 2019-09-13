@@ -72,13 +72,10 @@ static void list_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 	APPEND(ctx, ps);
 }
 
-static int list_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter)
-{
-	
-	if (enter) {
-		pcb_data_t *data = subc->data;
-		APPEND(ctx, subc);
+static int list_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter);
 
+static int list_data(void *ctx, pcb_board_t *pcb, pcb_data_t *data, int enter)
+{
 		PCB_SUBC_LOOP(data);
 		{
 			list_subc_cb(ctx, pcb, subc, 1);
@@ -110,11 +107,18 @@ static int list_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter
 			list_poly_cb(ctx, pcb, layer, polygon);
 		}
 		PCB_ENDALL_LOOP;
-	}
 
 	return 0;
 }
 
+static int list_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter)
+{
+	if (enter) {
+		APPEND(ctx, subc);
+		list_data(ctx, pcb, subc->data, enter);
+	}
+	return 0;
+}
 
 void pcb_qry_list_all(pcb_qry_val_t *lst, pcb_objtype_t mask)
 {
