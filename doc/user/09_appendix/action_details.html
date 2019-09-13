@@ -2718,6 +2718,7 @@ PasteBuffer(SaveAll, Filename, [format])
 PasteBuffer(LoadAll, Filename)
 PasteBuffer(Push)
 PasteBuffer(Pop)
+PasteBuffer(GetSource, [1..PCB_MAX_BUFFER])
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
 Various operations on the paste buffer.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
@@ -2813,7 +2814,13 @@ PCB_MAX_BUFFER
 <th>
  1..PCB_MAX_BUFFER  
 <td>
- Selects the given buffer to be the current paste buffer.  
+ Selects the given buffer to be the current paste buffer.   
+<tr>
+
+<th>
+ GetSource  
+<td>
+ Returns the source file path the buffer is loaded from or nil if there       is none. The return value is a string, usable from user scripts.  
 </table>
  
 </dd></dl>
@@ -3310,6 +3317,7 @@ Save()
 Save(Layout|LayoutAs)
 Save(AllConnections|AllUnusedPins|ElementConnections)
 Save(PasteBuffer)
+Save(DialogByPattern, pcb|footprint|font|buffer, none|board|fp, prompt, [default_pattern])
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
 Save layout data to a user-selected file.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
@@ -3323,6 +3331,12 @@ This action is a GUI front-end to the core's
  is called directly. Else, the user is prompted for a filename to save, and then 
 <a href="#saveto">saveto</a>
  is called with that filename. 
+<p>
+ The DialogByPattern mode is intended for scripts and core: it presents a dialog box with format selection and listing patterns, but does not perform any real file operation just returns a 
+<i>
+filename*format
+</i>
+ string.  
 </dd></dl>
 
 <h2 id="savelib">SaveLib</h2>

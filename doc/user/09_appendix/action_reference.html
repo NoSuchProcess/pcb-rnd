@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.1.3 (svn r27237) an interactive printed circuit board editor ,  Revision: 27366
+This is pcb-rnd 2.1.3 (svn r27456) an interactive printed circuit board editor ,  Revision: 27543
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -225,7 +225,7 @@ This is pcb-rnd 2.1.3 (svn r27237) an interactive printed circuit board editor ,
 <tr><td>NetlistDialog</td><td>Open the netlist dialog.</td><td>NetlistDialog()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#new">New</a></td><td>Starts a new layout.</td><td>New([name])</td><td></td>
 <tr><td>NewGroup</td><td>Create a new layer group with a single, positive drawn layer in it</td><td>NewGroup(type [,location [, purpose[, auto|sub [,name[,grp_attribs]]]])</td><td></td>
-<tr><td>Normalize</td><td>Move all objects within the drawing area, align the drawing to 0;0</td><td>Normalize()</td><td></td>
+<tr><td>Normalize</td><td>Move all objects within the drawing area (or buffer 0;0), align the drawing to 0;0 (or set buffer grab point to 0;0)</td><td>Normalize([board|buffer[n]])</td><td></td>
 <tr><td>Oneliner</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td><a href="action_details.html#openemsexcitation">OpenemsExcitation</a></td><td>Select which openEMS excitation method should be exported and manipulate the associated parameters. When invoked without arguments a dialog box with the same functionality is presented.</td><td>OpenemsExcitation([interactive])<br>OpenemsExcitation(select, excitationname)<br>OpenemsExcitation(set, [excitationnme], paramname, paramval)<br>OpenemsExcitation(get, [excitationnme], paramname)</td><td>openems HID</td>
 <tr><td>OptAutoOnly</td><td>Toggles the optimize-only-autorouted flag.</td><td>OptAutoOnly()</td><td>oldactions plugin</td>
@@ -237,7 +237,7 @@ This is pcb-rnd 2.1.3 (svn r27237) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#pan">Pan</a></td><td>Start or stop panning (Mode = 1 to start, 0 to stop)</td><td>Pan(Mode)</td><td>lib_hid_pcbui/actions</td>
 <tr><td>paral</td><td>Draw a line perpendicular to another line</td><td>perp()</td><td>ddraft plugin</td>
 <tr><td>pas</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
-<tr><td><a href="action_details.html#pastebuffer">PasteBuffer</a></td><td>Various operations on the paste buffer.</td><td>PasteBuffer(AddSelected|Clear|1..PCB_MAX_BUFFER)<br>PasteBuffer(Rotate, 1..3)<br>PasteBuffer(Convert|Restore|Mirror)<br>PasteBuffer(ToLayout, X, Y, units)<br>PasteBuffer(ToLayout, crosshair)<br>PasteBuffer(Save, Filename, [format], [force])<br>PasteBuffer(SaveAll, Filename, [format])<br>PasteBuffer(LoadAll, Filename)<br>PasteBuffer(Push)<br>PasteBuffer(Pop)</td><td></td>
+<tr><td><a href="action_details.html#pastebuffer">PasteBuffer</a></td><td>Various operations on the paste buffer.</td><td>PasteBuffer(AddSelected|Clear|1..PCB_MAX_BUFFER)<br>PasteBuffer(Rotate, 1..3)<br>PasteBuffer(Convert|Restore|Mirror)<br>PasteBuffer(ToLayout, X, Y, units)<br>PasteBuffer(ToLayout, crosshair)<br>PasteBuffer(Save, Filename, [format], [force])<br>PasteBuffer(SaveAll, Filename, [format])<br>PasteBuffer(LoadAll, Filename)<br>PasteBuffer(Push)<br>PasteBuffer(Pop)<br>PasteBuffer(GetSource, [1..PCB_MAX_BUFFER])</td><td></td>
 <tr><td>PCBChanged</td><td>Tells the GUI that the whole PCB has changed. The optional "revert"parameter can be used as a hint to the GUI that the same design is beingreloaded, and that it might keep some viewport settings</td><td>PCBChanged([revert])</td><td>oldactions plugin</td>
 <tr><td>perl</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>perp</td><td>Draw a line perpendicular to another line</td><td>perp()</td><td>ddraft plugin</td>
@@ -301,11 +301,11 @@ This is pcb-rnd 2.1.3 (svn r27237) an interactive printed circuit board editor ,
 <tr><td>RouteStylesChanged</td><td>Tells the GUI that the routing styles have changed.</td><td>RouteStylesChanged()</td><td>oldactions plugin</td>
 <tr><td>ruby</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td><a href="action_details.html#s">s</a></td><td>Saves layout data.</td><td>s [name]<br>w [name]</td><td>shand_cmd plugin</td>
-<tr><td><a href="action_details.html#save">Save</a></td><td>Save layout data to a user-selected file.</td><td>Save()<br>Save(Layout|LayoutAs)<br>Save(AllConnections|AllUnusedPins|ElementConnections)<br>Save(PasteBuffer)</td><td>dialogs plugin</td>
+<tr><td><a href="action_details.html#save">Save</a></td><td>Save layout data to a user-selected file.</td><td>Save()<br>Save(Layout|LayoutAs)<br>Save(AllConnections|AllUnusedPins|ElementConnections)<br>Save(PasteBuffer)<br>Save(DialogByPattern, pcb|footprint|font|buffer, none|board|fp, prompt, [default_pattern])</td><td>dialogs plugin</td>
 <tr><td>SaveFontTo</td><td>Save PCB font to a file</td><td>SaveFontTo([file, id])</td><td></td>
 <tr><td><a href="action_details.html#savelib">SaveLib</a></td><td>Saves all subcircuits to a library file or directory from a board or buffer.</td><td>SaveLib(file|dir, board|buffer, [filename], [fmt])</td><td></td>
 <tr><td>SavePatch</td><td>Save netlist patch for back annotation.</td><td>SavePatch(filename)</td><td></td>
-<tr><td>SaveTedax</td><td>Saves the specific type of data in a tEDAx file.</td><td>SaveTedax(netlist|board-footprints|stackup|layer|board|drc, filename)</td><td>tEDAx IO</td>
+<tr><td>SaveTedax</td><td>Saves the specific type of data in a tEDAx file.</td><td>SaveTedax(netlist|board-footprints|stackup|layer|board|drc|etest, filename)</td><td>tEDAx IO</td>
 <tr><td><a href="action_details.html#saveto">SaveTo</a></td><td>Saves data to a file.</td><td>SaveTo(Layout|LayoutAs,filename,[fmt])<br>SaveTo(PasteBuffer,filename,[fmt])</td><td></td>
 <tr><td>ScaleBuffer</td><td>Scales the buffer by multiplying all coordinates by a floating point number.<br>If only x is given, it is also used for y and thickness too. If subc is not<br>empty, subcircuits are also scaled</td><td>ScaleBuffer(x [,y [,thickness [,subc]]])</td><td></td>
 <tr><td><a href="action_details.html#scriptcookie">ScriptCookie</a></td><td>Return a cookie specific to the current script instance during script initialization</td><td>ScriptCookie()</td><td>script plugin</td>
