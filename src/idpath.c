@@ -71,7 +71,6 @@ static int idpath_map(pcb_idpath_t *idp, pcb_any_obj_t *obj, int level, int *num
 			data = obj->parent.data;
 			recurse:;
 			switch(data->parent_type) {
-				case PCB_PARENT_INVALID:
 				case PCB_PARENT_UI:
 				case PCB_PARENT_LAYER:
 				case PCB_PARENT_DATA:
@@ -84,6 +83,9 @@ static int idpath_map(pcb_idpath_t *idp, pcb_any_obj_t *obj, int level, int *num
 						idp->data_addr = 1;
 						return 0;
 					}
+				case PCB_PARENT_INVALID:
+					if (idp == NULL)
+						return 0;
 					for(n = 0; n < PCB_MAX_BUFFER; n++) {
 						if (data == pcb_buffers[n].Data) {
 							idp->data_addr = n+2;
