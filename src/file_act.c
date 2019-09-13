@@ -175,11 +175,46 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 /* --------------------------------------------------------------------------- */
-static const char pcb_acts_normalize[] = "Normalize()";
-static const char pcb_acth_normalize[] = "Move all objects within the drawing area, align the drawing to 0;0";
+static const char pcb_acts_normalize[] = "Normalize([board|buffer[n]])";
+static const char pcb_acth_normalize[] = "Move all objects within the drawing area (or buffer 0;0), align the drawing to 0;0 (or set buffer grab point to 0;0)";
 static fgw_error_t pcb_act_normalize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_ACT_IRES(pcb_board_normalize(PCB));
+	const char *target = "board";
+
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, normalize, target = argv[1].val.str);
+	
+	if (strcmp(target, "board") == 0)
+		PCB_ACT_IRES(pcb_board_normalize(PCB));
+	else if (strncmp(target, "buffer", 6) == 0) {
+		int bn;
+		char *end;
+
+		target += 6;
+		if (*target != '\0') {
+			bn = strtol(target, &end, 10);
+			if (*end != '\0') {
+				pcb_message(PCB_MSG_ERROR, "Expected buffer number, got '%s'\n", target);
+				PCB_ACT_IRES(-1);
+			}
+			bn--;
+			if ((bn < 0) || (bn >= PCB_MAX_BUFFER)) {
+				pcb_message(PCB_MSG_ERROR, "Buffer number out of range\n");
+				PCB_ACT_IRES(-1);
+			}
+		}
+		else
+			bn = conf_core.editor.buffer_number;
+
+		if ((pcb_buffers[bn].bbox_naked.X1 != 0) || (pcb_buffers[bn].bbox_naked.Y1 != 0)) {
+			pcb_data_move(pcb_buffers[bn].Data, -pcb_buffers[bn].bbox_naked.X1, -pcb_buffers[bn].bbox_naked.Y1);
+			pcb_set_buffer_bbox(&pcb_buffers[bn]);
+		}
+
+		pcb_buffers[bn].X = pcb_buffers[bn].Y = 0;
+		PCB_ACT_IRES(0);
+	}
+	else
+		PCB_ACT_FAIL(normalize);
 	return 0;
 }
 
