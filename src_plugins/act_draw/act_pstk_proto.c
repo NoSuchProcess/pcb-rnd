@@ -139,7 +139,7 @@ static fgw_error_t pcb_act_PstkProtoTmp(fgw_arg_t *res, int argc, fgw_arg_t *arg
 }
 
 static const char pcb_acts_PstkProtoEdit[] =
-	"PstkProto([noundo,] proto, remove, layer_type\n"
+	"PstkProto([noundo,] proto, remove, layer_type)\n"
 	"PstkProto([noundo,] proto, copy, dst_layer_type, src_layer_type)\n"
 	;
 static const char pcb_acth_PstkProtoEdit[] = "Edit a padstack prototype specified by its pointer.";
