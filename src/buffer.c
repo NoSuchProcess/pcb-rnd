@@ -779,6 +779,7 @@ static const char pcb_acts_PasteBuffer[] =
 	"PasteBuffer(LoadAll, Filename)\n"
 	"PasteBuffer(Push)\n"
 	"PasteBuffer(Pop)\n"
+	"PasteBuffer(GetSource, [1..PCB_MAX_BUFFER])\n"
 	;
 static const char pcb_acth_PasteBuffer[] = "Various operations on the paste buffer.";
 /* DOC: pastebuffer.html */
@@ -972,6 +973,26 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			PCB_PASTEBUFFER->Y = pcb_round(((double)PCB_PASTEBUFFER->BoundingBox.Y1 + (double)PCB_PASTEBUFFER->BoundingBox.Y2) / 2.0);
 			pcb_crosshair_range_to_buffer();
 			break;
+
+		case F_GetSource:
+			if ((sbufnum != NULL) && (*sbufnum != '\0')) {
+				char *end;
+				number = strtol(sbufnum, &end, 10);
+				if (*end != 0) {
+					pcb_message(PCB_MSG_ERROR, "invalid buffer number '%s': should be an integer\n", sbufnum);
+					return FGW_ERR_ARG_CONV;
+				}
+				number--;
+				if ((number < 0) || (number >= PCB_MAX_BUFFER)) {
+					pcb_message(PCB_MSG_ERROR, "invalid buffer number '%d': out of range 1..%d\n", number+1, PCB_MAX_BUFFER);
+					return FGW_ERR_ARG_CONV;
+				}
+			}
+			else
+				number = conf_core.editor.buffer_number;
+			res->type = FGW_STR;
+			res->val.str = pcb_buffers[number].source_path;
+			return 0;
 
 			/* set number */
 		default:
