@@ -791,7 +791,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	pcb_bool free_name = pcb_false;
 	static int stack[32];
 	static int sp = 0;
-	int number;
+	int number, rv;
 
 	PCB_ACT_CONVARG(1, FGW_STR, PasteBuffer, tmp = argv[1].val.str);
 	number = atoi(tmp);
@@ -931,8 +931,9 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 		case F_Save:
 			name = sbufnum;
-			return pcb_actionl("SaveTo", "PasteBuffer", name, fmt, NULL);
-			break;
+			rv = pcb_actionl("SaveTo", "PasteBuffer", name, fmt, NULL);
+			pcb_notify_crosshair_change(pcb_true);
+			return rv;
 
 		case F_ToLayout:
 			{
@@ -980,11 +981,13 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				number = strtol(sbufnum, &end, 10);
 				if (*end != 0) {
 					pcb_message(PCB_MSG_ERROR, "invalid buffer number '%s': should be an integer\n", sbufnum);
+					pcb_notify_crosshair_change(pcb_true);
 					return FGW_ERR_ARG_CONV;
 				}
 				number--;
 				if ((number < 0) || (number >= PCB_MAX_BUFFER)) {
 					pcb_message(PCB_MSG_ERROR, "invalid buffer number '%d': out of range 1..%d\n", number+1, PCB_MAX_BUFFER);
+					pcb_notify_crosshair_change(pcb_true);
 					return FGW_ERR_ARG_CONV;
 				}
 			}
@@ -992,6 +995,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				number = conf_core.editor.buffer_number;
 			res->type = FGW_STR;
 			res->val.str = pcb_buffers[number].source_path;
+			pcb_notify_crosshair_change(pcb_true);
 			return 0;
 
 			/* set number */
