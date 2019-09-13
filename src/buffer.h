@@ -40,6 +40,7 @@ struct pcb_buffer_s {     /* information about the paste buffer */
 	pcb_box_t bbox_naked;
 	pcb_data_t *Data;       /* data; not all members of pcb_board_t */
 	int from_outside;       /* data is coming from outside of the current board (lib, loaded board) */
+	char *source_path;      /* when from the outside, this field may remember the full path of the original source file */
 };
 
 /* Recalculates the bounding box of the buffer; returns 0 on success */

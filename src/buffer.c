@@ -120,6 +120,7 @@ static void pcb_buffer_clear_(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_bool b
 			pcb_data_bind_board_layers(pcb, Buffer->Data, 0);
 	}
 	Buffer->from_outside = 0;
+	free(Buffer->source_path); Buffer->source_path = NULL;
 }
 
 void pcb_buffer_clear(pcb_board_t *pcb, pcb_buffer_t *Buffer)
@@ -157,6 +158,7 @@ static void pcb_buffer_toss_selected(pcb_opfunc_t *fnc, pcb_board_t *pcb, pcb_bu
 		Buffer->Y = pcb_crosshair.Y;
 	}
 	Buffer->from_outside = 0;
+	free(Buffer->source_path); Buffer->source_path = NULL;
 	pcb_notify_crosshair_change(pcb_true);
 }
 
@@ -228,6 +230,7 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 		pcb_data_binding_update(pcb, Buffer->Data);
 		pcb_board_remove(newPCB);
 		Buffer->from_outside = 1;
+		free(Buffer->source_path); Buffer->source_path = pcb_strdup(Filename);
 		PCB = orig;
 		pcb_layergrp_inhibit_dec();
 		return pcb_true;
@@ -240,6 +243,7 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 	PCB = orig;
 	pcb_layergrp_inhibit_dec();
 	Buffer->from_outside = 0;
+	free(Buffer->source_path); Buffer->source_path = NULL;
 	return pcb_false;
 }
 
@@ -749,6 +753,7 @@ pcb_bool pcb_buffer_load_footprint(pcb_buffer_t *Buffer, const char *Name, const
 		Buffer->X = 0;
 		Buffer->Y = 0;
 		Buffer->from_outside = 1;
+		free(Buffer->source_path); Buffer->source_path = pcb_strdup(Name);
 
 		if (pcb_subclist_length(&Buffer->Data->subc)) {
 			pcb_subc_t *subc = pcb_subclist_first(&Buffer->Data->subc);
