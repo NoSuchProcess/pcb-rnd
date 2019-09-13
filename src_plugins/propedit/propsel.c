@@ -651,8 +651,12 @@ int pcb_propsel_set(pcb_propedit_t *ctx, const char *prop, pcb_propset_ctx_t *sc
 	for(n = 0; n < vtl0_len(&ctx->layergrps); n++)
 		set_layergrp(sctx, pcb_get_layergrp(ctx->pcb, ctx->layergrps.array[n]));
 
-	for(idp = pcb_idpath_list_first(&ctx->objs); idp != NULL; idp = pcb_idpath_list_next(idp))
-		set_any(sctx, pcb_idpath2obj_in(ctx->data, idp));
+	for(idp = pcb_idpath_list_first(&ctx->objs); idp != NULL; idp = pcb_idpath_list_next(idp)) {
+		pcb_any_obj_t *obj = pcb_idpath2obj_in(ctx->data, idp);
+		if (obj == NULL) /* workaround: idp sometimes points into the buffer */
+			obj = pcb_idpath2obj(PCB, idp);
+		set_any(sctx, obj);
+	}
 
 	if (ctx->nets_inited) {
 		long old_set_cnt = sctx->set_cnt;
