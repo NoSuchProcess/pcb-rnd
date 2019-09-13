@@ -76,37 +76,37 @@ static int list_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter
 
 static int list_data(void *ctx, pcb_board_t *pcb, pcb_data_t *data, int enter)
 {
-		PCB_SUBC_LOOP(data);
-		{
-			list_subc_cb(ctx, pcb, subc, 1);
-		}
-		PCB_END_LOOP;
-		PCB_PADSTACK_LOOP(data);
-		{
-			list_pstk_cb(ctx, pcb, padstack);
-		}
-		PCB_END_LOOP;
+	PCB_SUBC_LOOP(data);
+	{
+		list_subc_cb(ctx, pcb, subc, 1);
+	}
+	PCB_END_LOOP;
+	PCB_PADSTACK_LOOP(data);
+	{
+		list_pstk_cb(ctx, pcb, padstack);
+	}
+	PCB_END_LOOP;
 
-		PCB_ARC_ALL_LOOP(data);
-		{
-			list_arc_cb(ctx, pcb, layer, arc);
-		}
-		PCB_ENDALL_LOOP;
-		PCB_LINE_ALL_LOOP(data);
-		{
-			list_line_cb(ctx, pcb, layer, line);
-		}
-		PCB_ENDALL_LOOP;
-		PCB_TEXT_ALL_LOOP(data);
-		{
-			list_text_cb(ctx, pcb, layer, text);
-		}
-		PCB_ENDALL_LOOP;
-		PCB_POLY_ALL_LOOP(data);
-		{
-			list_poly_cb(ctx, pcb, layer, polygon);
-		}
-		PCB_ENDALL_LOOP;
+	PCB_ARC_ALL_LOOP(data);
+	{
+		list_arc_cb(ctx, pcb, layer, arc);
+	}
+	PCB_ENDALL_LOOP;
+	PCB_LINE_ALL_LOOP(data);
+	{
+		list_line_cb(ctx, pcb, layer, line);
+	}
+	PCB_ENDALL_LOOP;
+	PCB_TEXT_ALL_LOOP(data);
+	{
+		list_text_cb(ctx, pcb, layer, text);
+	}
+	PCB_ENDALL_LOOP;
+	PCB_POLY_ALL_LOOP(data);
+	{
+		list_poly_cb(ctx, pcb, layer, polygon);
+	}
+	PCB_ENDALL_LOOP;
 
 	return 0;
 }
