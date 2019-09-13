@@ -74,39 +74,55 @@ static void list_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 
 static int list_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter);
 
-static int list_data(void *ctx, pcb_board_t *pcb, pcb_data_t *data, int enter)
+static int list_data(void *ctx, pcb_board_t *pcb, pcb_data_t *data, int enter, pcb_objtype_t mask)
 {
-	PCB_SUBC_LOOP(data);
-	{
-		list_subc_cb(ctx, pcb, subc, 1);
+	if (mask & PCB_OBJ_SUBC) {
+		PCB_SUBC_LOOP(data);
+		{
+			list_subc_cb(ctx, pcb, subc, 1);
+		}
+		PCB_END_LOOP;
 	}
-	PCB_END_LOOP;
-	PCB_PADSTACK_LOOP(data);
-	{
-		list_pstk_cb(ctx, pcb, padstack);
-	}
-	PCB_END_LOOP;
 
-	PCB_ARC_ALL_LOOP(data);
-	{
-		list_arc_cb(ctx, pcb, layer, arc);
+	if (mask & PCB_OBJ_PSTK) {
+		PCB_PADSTACK_LOOP(data);
+		{
+			list_pstk_cb(ctx, pcb, padstack);
+		}
+		PCB_END_LOOP;
 	}
-	PCB_ENDALL_LOOP;
-	PCB_LINE_ALL_LOOP(data);
-	{
-		list_line_cb(ctx, pcb, layer, line);
+
+	if (mask & PCB_OBJ_ARC) {
+		PCB_ARC_ALL_LOOP(data);
+		{
+			list_arc_cb(ctx, pcb, layer, arc);
+		}
+		PCB_ENDALL_LOOP;
 	}
-	PCB_ENDALL_LOOP;
-	PCB_TEXT_ALL_LOOP(data);
-	{
-		list_text_cb(ctx, pcb, layer, text);
+
+	if (mask & PCB_OBJ_LINE) {
+		PCB_LINE_ALL_LOOP(data);
+		{
+			list_line_cb(ctx, pcb, layer, line);
+		}
+		PCB_ENDALL_LOOP;
 	}
-	PCB_ENDALL_LOOP;
-	PCB_POLY_ALL_LOOP(data);
-	{
-		list_poly_cb(ctx, pcb, layer, polygon);
+
+	if (mask & PCB_OBJ_TEXT) {
+		PCB_TEXT_ALL_LOOP(data);
+		{
+			list_text_cb(ctx, pcb, layer, text);
+		}
+		PCB_ENDALL_LOOP;
 	}
-	PCB_ENDALL_LOOP;
+
+	if (mask & PCB_OBJ_POLY) {
+		PCB_POLY_ALL_LOOP(data);
+		{
+			list_poly_cb(ctx, pcb, layer, polygon);
+		}
+		PCB_ENDALL_LOOP;
+	}
 
 	return 0;
 }
@@ -115,7 +131,7 @@ static int list_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter
 {
 	if (enter) {
 		APPEND(ctx, subc);
-		list_data(ctx, pcb, subc->data, enter);
+		list_data(ctx, pcb, subc->data, enter, PCB_OBJ_ANY);
 	}
 	return 0;
 }
@@ -134,6 +150,13 @@ TODO(": rather do rtree search here to avoid recursion")
 		(mask & PCB_OBJ_PSTK) ? list_pstk_cb : NULL
 	);
 }
+
+void pcb_qry_list_all_data(pcb_qry_val_t *lst, pcb_data_t *data, pcb_objtype_t mask)
+{
+TODO("buffer layers are not listed here");
+	list_data(&lst->data.lst, PCB, data, 1, mask);
+}
+
 
 void pcb_qry_list_free(pcb_qry_val_t *lst_)
 {
