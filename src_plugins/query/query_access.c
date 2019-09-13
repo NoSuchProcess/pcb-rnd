@@ -120,7 +120,7 @@ static int list_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter
 	return 0;
 }
 
-void pcb_qry_list_all(pcb_qry_val_t *lst, pcb_objtype_t mask)
+void pcb_qry_list_all_pcb(pcb_qry_val_t *lst, pcb_objtype_t mask)
 {
 	assert(lst->type == PCBQ_VT_LST);
 TODO(": rather do rtree search here to avoid recursion")

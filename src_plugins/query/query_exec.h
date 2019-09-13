@@ -35,10 +35,11 @@ typedef struct pcb_qry_exec_s {
 	pcb_query_iter_t *iter;  /* current iterator */
 } pcb_qry_exec_t;
 
-void pcb_qry_init(pcb_qry_exec_t *ctx, pcb_qry_node_t *root);
+/* if bufno is -1, scope is the board, else scope is the buffer addressed by bufno */
+void pcb_qry_init(pcb_qry_exec_t *ctx, pcb_qry_node_t *root, int bufno);
 void pcb_qry_uninit(pcb_qry_exec_t *ctx);
 
-int pcb_qry_run(pcb_qry_node_t *prg, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx);
+int pcb_qry_run(pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx);
 
 int pcb_qry_is_true(pcb_qry_val_t *val);
 

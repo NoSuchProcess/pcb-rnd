@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "config.h"
+#include "conf_core.h"
 #include "actions.h"
 #include "query.h"
 #include "query_y.h"
@@ -120,9 +121,10 @@ static void append_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current
 	pcb_idpath_list_append(list, idp);
 }
 
-static int run_script(const char *script, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
+static int run_script(const char *script, const char *scope, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
 {
 	pcb_qry_node_t *prg = NULL;
+	int bufno = -1;
 
 	pcb_qry_set_input(script);
 	qry_parse(&prg);
@@ -132,12 +134,38 @@ static int run_script(const char *script, void (*cb)(void *user_ctx, pcb_qry_val
 		return -1;
 	}
 
-	return pcb_qry_run(prg, cb, user_ctx);
+	/* decode scope and set bufno */
+	if ((scope != NULL) && (*scope != '\0')) {
+		if (strcmp(scope, "board") == 0) bufno = -1;
+		else if (strncmp(scope, "buffer", 6) == 0) {
+			scope += 6;
+			if (*scope != '\0') {
+				char *end;
+				bufno = strtol(scope, &end, 10);
+				if (*end != '\0') {
+					pcb_message(PCB_MSG_ERROR, "Invalid buffer number: '%s': not an integer\n", scope);
+					return -1;
+				}
+				bufno--;
+				if ((bufno < 0) || (bufno >= PCB_MAX_BUFFER)) {
+					pcb_message(PCB_MSG_ERROR, "Invalid buffer number: '%d' out of range 1..%d\n", bufno+1, PCB_MAX_BUFFER);
+					return -1;
+				}
+			}
+			else
+				bufno = conf_core.editor.buffer_number;
+		}
+		else {
+			pcb_message(PCB_MSG_ERROR, "Invalid scope: '%s': must be board or buffer or bufferN\n", scope);
+			return -1;
+		}
+	}
+	return pcb_qry_run(prg, bufno, cb, user_ctx);
 }
 
 static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *cmd, *arg = NULL;
+	const char *cmd, *arg = NULL, *scope = NULL;
 	select_t sel;
 
 	sel.cnt = 0;
@@ -167,10 +195,11 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		eval_stat_t st;
 
 		PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
+		PCB_ACT_MAY_CONVARG(3, FGW_STR, query, scope = argv[3].val.str);
 
 		memset(&st, 0, sizeof(st));
-		printf("Script eval: '%s'\n", arg);
-		errs = run_script(arg, eval_cb, &st);
+		printf("Script eval: '%s' scope='%s'\n", arg, scope == NULL ? "" : scope);
+		errs = run_script(arg, scope, eval_cb, &st);
 
 		if (errs < 0)
 			printf("Failed to run the query\n");
@@ -184,8 +213,9 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		sel.how = PCB_CHGFLG_SET;
 
 		PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
+		PCB_ACT_MAY_CONVARG(3, FGW_STR, query, scope = argv[3].val.str);
 
-		if (run_script(arg, select_cb, &sel) < 0)
+		if (run_script(arg, scope, select_cb, &sel) < 0)
 			printf("Failed to run the query\n");
 		if (sel.cnt > 0) {
 			pcb_board_set_changed_flag(pcb_true);
@@ -199,8 +229,9 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		sel.how = PCB_CHGFLG_CLEAR;
 
 		PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
+		PCB_ACT_MAY_CONVARG(3, FGW_STR, query, scope = argv[3].val.str);
 
-		if (run_script(arg, select_cb, &sel) < 0)
+		if (run_script(arg, scope, select_cb, &sel) < 0)
 			printf("Failed to run the query\n");
 		if (sel.cnt > 0) {
 			pcb_board_set_changed_flag(pcb_true);
@@ -215,11 +246,12 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		PCB_ACT_CONVARG(2, FGW_IDPATH_LIST, query, list = fgw_idpath_list(&argv[2]));
 		PCB_ACT_MAY_CONVARG(3, FGW_STR, query, arg = argv[3].val.str);
+		PCB_ACT_MAY_CONVARG(4, FGW_STR, query, scope = argv[4].val.str);
 
 		if (!fgw_ptr_in_domain(&pcb_fgw, &argv[2], PCB_PTR_DOMAIN_IDPATH_LIST))
 			return FGW_ERR_PTR_DOMAIN;
 
-		if (run_script(arg, append_cb, list) < 0)
+		if (run_script(arg, scope, append_cb, list) < 0)
 			PCB_ACT_IRES(1);
 		else
 			PCB_ACT_IRES(0);

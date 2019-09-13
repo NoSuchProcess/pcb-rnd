@@ -34,11 +34,11 @@
 #include "query_access.h"
 #include "pcb-printf.h"
 
-void pcb_qry_init(pcb_qry_exec_t *ctx, pcb_qry_node_t *root)
+void pcb_qry_init(pcb_qry_exec_t *ctx, pcb_qry_node_t *root, int bufno)
 {
 	memset(ctx, 0, sizeof(pcb_qry_exec_t));
 	ctx->all.type = PCBQ_VT_LST;
-	pcb_qry_list_all(&ctx->all, PCB_OBJ_ANY & (~PCB_OBJ_LAYER));
+	pcb_qry_list_all_pcb(&ctx->all, PCB_OBJ_ANY & (~PCB_OBJ_LAYER));
 	ctx->root = root;
 	ctx->iter = NULL;
 }
@@ -49,13 +49,13 @@ void pcb_qry_uninit(pcb_qry_exec_t *ctx)
 TODO(": free the iterator")
 }
 
-int pcb_qry_run(pcb_qry_node_t *prg, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
+int pcb_qry_run(pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
 {
 	pcb_qry_exec_t ec;
 	pcb_qry_val_t res;
 	int errs = 0;
 
-	pcb_qry_init(&ec, prg);
+	pcb_qry_init(&ec, prg, bufno);
 	if (pcb_qry_it_reset(&ec, prg) != 0)
 		return -1;
 
