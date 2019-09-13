@@ -141,6 +141,7 @@ static fgw_error_t pcb_act_PstkProtoTmp(fgw_arg_t *res, int argc, fgw_arg_t *arg
 static const char pcb_acts_PstkProtoEdit[] =
 	"PstkProto([noundo,] proto, remove, layer_type)\n"
 	"PstkProto([noundo,] proto, copy, dst_layer_type, src_layer_type)\n"
+	"PstkProto([noundo,] proto, hdia, dia)\n"
 	;
 static const char pcb_acth_PstkProtoEdit[] = "Edit a padstack prototype specified by its pointer.";
 static fgw_error_t pcb_act_PstkProtoEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -151,6 +152,7 @@ static fgw_error_t pcb_act_PstkProtoEdit(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	pcb_layer_combining_t slyc, dlyc;
 	int src_idx, dst_idx, n;
 	pcb_pstk_tshape_t *ts;
+	pcb_coord_t crd;
 	DRAWOPTARG;
 
 	PCB_ACT_CONVARG(1+ao, FGW_PTR, PstkProtoEdit, proto = argv[1+ao].val.ptr_void);
@@ -194,6 +196,14 @@ static fgw_error_t pcb_act_PstkProtoEdit(fgw_arg_t *res, int argc, fgw_arg_t *ar
 				proto->tr.array[n].shape[dst_idx].layer_mask = dlyt;
 				proto->tr.array[n].shape[dst_idx].comb = dlyc;
 			}
+			pcb_pstk_proto_update(proto);
+			PCB_ACT_IRES(0);
+			return 0;
+
+		case act_draw_keywords_hdia:
+
+			PCB_ACT_CONVARG(3+ao, FGW_COORD, PstkProtoEdit, crd = fgw_coord(&argv[3+ao]));
+			proto->hdia = crd;
 			pcb_pstk_proto_update(proto);
 			PCB_ACT_IRES(0);
 			return 0;
