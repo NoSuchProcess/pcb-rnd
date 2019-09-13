@@ -206,9 +206,6 @@ static fgw_error_t pcb_act_PstkNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_CONVARG(5+ao, FGW_COORD, PstkNew, cl = fgw_coord(&argv[5+ao]));
 	PCB_ACT_CONVARG(6+ao, FGW_STR, PstkNew, sflg = argv[6+ao].val.str);
 
-	if (data != PCB->Data)
-		return 0;
-
 	flags = pcb_strflg_s2f(sflg, flg_error, NULL, 0);
 	pstk = pcb_pstk_new(data, -1, proto, x, y, cl, flags);
 
