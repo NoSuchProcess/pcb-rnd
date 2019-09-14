@@ -149,6 +149,7 @@ static const char pcb_acts_PstkProtoEdit[] =
 	"PstkProto([noundo,] proto, remove, layer_type)\n"
 	"PstkProto([noundo,] proto, copy, dst_layer_type, src_layer_type)\n"
 	"PstkProto([noundo,] proto, hdia, dia)\n"
+	"PstkProto([noundo,] proto, shape:line, layer_type, x1, y1, x2, y2, th, [square])\n"
 	;
 static const char pcb_acth_PstkProtoEdit[] = "Edit a padstack prototype specified by its pointer.";
 static fgw_error_t pcb_act_PstkProtoEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -214,6 +215,42 @@ static fgw_error_t pcb_act_PstkProtoEdit(fgw_arg_t *res, int argc, fgw_arg_t *ar
 			pcb_pstk_proto_update(proto);
 			PCB_ACT_IRES(0);
 			return 0;
+
+		case act_draw_keywords_shape_line:
+			{
+				pcb_coord_t x1, y1, x2, y2, th;
+				int sq = 0;
+
+				PCB_ACT_CONVARG(3+ao, FGW_STR, PstkProtoEdit, tmp = argv[3+ao].val.str);
+				PCB_ACT_CONVARG(4+ao, FGW_COORD, PstkProtoEdit, x1 = fgw_coord(&argv[4+ao]));
+				PCB_ACT_CONVARG(5+ao, FGW_COORD, PstkProtoEdit, y1 = fgw_coord(&argv[5+ao]));
+				PCB_ACT_CONVARG(6+ao, FGW_COORD, PstkProtoEdit, x2 = fgw_coord(&argv[6+ao]));
+				PCB_ACT_CONVARG(7+ao, FGW_COORD, PstkProtoEdit, y2 = fgw_coord(&argv[7+ao]));
+				PCB_ACT_CONVARG(8+ao, FGW_COORD, PstkProtoEdit, th = fgw_coord(&argv[8+ao]));
+				if (pcb_layer_typecomb_str2bits(tmp, &dlyt, &dlyc, 1) != 0)
+					return FGW_ERR_ARG_CONV;
+
+				tmp = NULL;
+				PCB_ACT_MAY_CONVARG(9+ao, FGW_STR, PstkProtoEdit, tmp = argv[9+ao].val.str);
+				if ((tmp != NULL) && (*tmp == 's'))
+					sq = 1;
+
+				pcb_pstk_proto_del_shape(proto, dlyt, dlyc);
+				for(n = 0; n < proto->tr.used; n++) {
+					pcb_pstk_shape_t *sh = pcb_pstk_alloc_append_shape(&proto->tr.array[n]);
+					memset(sh, 0, sizeof(pcb_pstk_shape_t));
+					sh->layer_mask = dlyt;
+					sh->comb = dlyc;
+					sh->shape = PCB_PSSH_LINE;
+					sh->data.line.x1 = x1;
+					sh->data.line.y1 = y1;
+					sh->data.line.x2 = x2;
+					sh->data.line.y2 = y2;
+					sh->data.line.thickness = th;
+					sh->data.line.square = sq;
+				}
+			}
+			break;
 
 		default:
 			return FGW_ERR_ARG_CONV;
