@@ -39,7 +39,10 @@
 #include "board.h"
 #include "funchash_core.h"
 
-static const char pcb_acts_Delete[] = "Delete(Object|Selected)\n" "Delete(AllRats|SelectedRats)";
+static const char pcb_acts_Delete[] = 
+	"Delete(Object [,idpath])\n"
+	"Delete(Selected)\n"
+	"Delete(AllRats|SelectedRats)";
 static const char pcb_acth_Delete[] = "Delete stuff.";
 static fgw_error_t pcb_act_Delete(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -54,11 +57,26 @@ static fgw_error_t pcb_act_Delete(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	switch(id) {
 	case F_Object:
-		pcb_hid_get_coords("Click on object to delete", &pcb_tool_note.X, &pcb_tool_note.Y, 0);
-		pcb_tool_save(&PCB->hidlib);
-		pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_REMOVE);
-		pcb_notify_mode(&PCB->hidlib);
-		pcb_tool_restore(&PCB->hidlib);
+		if (argc > 2) { /* delete by idpath */
+			pcb_idpath_t *idp;
+			pcb_any_obj_t *obj;
+			PCB_ACT_CONVARG(2, FGW_IDPATH, Delete, idp = fgw_idpath(&argv[2]));
+			if ((idp == NULL) || !fgw_ptr_in_domain(&pcb_fgw, &argv[2], PCB_PTR_DOMAIN_IDPATH))
+				return FGW_ERR_PTR_DOMAIN;
+			obj = pcb_idpath2obj(PCB, idp);
+			if ((obj == NULL) || ((obj->type & PCB_OBJ_CLASS_REAL) == 0)) {
+				PCB_ACT_IRES(-1);
+				return 0;
+			}
+			pcb_remove_object(obj->type, obj, obj, obj);
+		}
+		else { /* interactive remove */
+			pcb_hid_get_coords("Click on object to delete", &pcb_tool_note.X, &pcb_tool_note.Y, 0);
+			pcb_tool_save(&PCB->hidlib);
+			pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_REMOVE);
+			pcb_notify_mode(&PCB->hidlib);
+			pcb_tool_restore(&PCB->hidlib);
+		}
 		break;
 	case F_Selected:
 		pcb_remove_selected(pcb_false);
