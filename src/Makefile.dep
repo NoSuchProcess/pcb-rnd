@@ -102,7 +102,8 @@
  ../src_3rd/libminuid/libminuid.h rtree.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h \
  ../src_plugins/act_read/keywords_sphash.h \
- ../src_plugins/act_read/act_idpath.c dolists.h
+ ../src_plugins/act_read/act_idpath.c ../src_plugins/act_read/act_geo.c \
+ search.h dolists.h
 ../src_plugins/act_read/keywords_sphash.o: \
  ../src_plugins/act_read/keywords_sphash.c
 ../src_plugins/ar_cpcb/ar_cpcb.o: ../src_plugins/ar_cpcb/ar_cpcb.c \
