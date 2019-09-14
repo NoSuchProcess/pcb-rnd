@@ -53,7 +53,7 @@ static int flg_error(const char *msg)
 
 #define DRAWOPTARG \
 	int noundo = 0, ao = 0; \
-	if ((argv[1].type == FGW_STR) && (strcmp(argv[1].val.str, "noundo") == 0)) { \
+	if (((argv[1].type & FGW_STR) == FGW_STR) && (strcmp(argv[1].val.str, "noundo") == 0)) { \
 		noundo = 1; \
 		ao++; \
 	}
