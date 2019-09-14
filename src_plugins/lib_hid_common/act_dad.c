@@ -489,6 +489,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (pcb_strcasecmp(cmd, "get") == 0) {
 		int wid;
+		pcb_hid_attr_type_t wtype;
 
 		PCB_ACT_CONVARG(3, FGW_INT, dad, wid = argv[3].val.nat_int);
 		if ((wid < 0) || (wid >= dad->dlg_len)) {
@@ -496,7 +497,11 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return FGW_ERR_NOT_FOUND;
 		}
 
-		switch(dad->dlg[wid].type) {
+		wtype = dad->dlg[wid].type;
+		if (dad->dlg[wid].type == PCB_HATT_END) /* composite widget's end or real end - the spin macro handles both */
+			wtype = PCB_DAD_SPIN_GET_TYPE(&dad->dlg[wid]);
+
+		switch(wtype) {
 			case PCB_HATT_COORD:
 				txt = NULL;
 				PCB_ACT_MAY_CONVARG(4, FGW_STR, dad, txt = argv[4].val.str);
