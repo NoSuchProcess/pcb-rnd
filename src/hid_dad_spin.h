@@ -51,17 +51,23 @@ typedef struct {
 		PCB_DAD_SPIN_COORD,
 		PCB_DAD_SPIN_FREQ
 	} type;
+	pcb_hid_attr_type_t wtype;
 	gdl_elem_t link;
 } pcb_hid_dad_spin_t;
 
-#define PCB_DAD_SPIN_INT(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_INT, 0, 0)
-#define PCB_DAD_SPIN_DOUBLE(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_DOUBLE, 0, 0)
-#define PCB_DAD_SPIN_COORD(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_COORD, 1, PCB_UNIT_METRIC | PCB_UNIT_IMPERIAL)
-#define PCB_DAD_SPIN_FREQ(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_FREQ, 1, PCB_UNIT_FREQ)
+#define PCB_DAD_SPIN_INT(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_INT, PCB_HATT_INTEGER, 0, 0)
+#define PCB_DAD_SPIN_DOUBLE(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_DOUBLE, PCB_HATT_REAL, 0, 0)
+#define PCB_DAD_SPIN_COORD(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_COORD, PCB_HATT_COORD, 1, PCB_UNIT_METRIC | PCB_UNIT_IMPERIAL)
+#define PCB_DAD_SPIN_FREQ(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_FREQ, PCB_HATT_REAL, 1, PCB_UNIT_FREQ)
+
+/* Return the widget-type (PCB_DAD_HATT) of a spinbox at the PCB_HATT_END widget;
+   useful for dispatching what value set to use */
+#define PCB_DAD_SPIN_GET_TYPE(attr) \
+	((((attr)->type == PCB_HATT_END) && (((pcb_hid_dad_spin_t *)((attr)->wdata))->cmp.free == pcb_dad_spin_free)) ? ((pcb_hid_dad_spin_t *)((attr)->wdata))->wtype : PCB_HATT_END)
 
 /*** implementation ***/
 
-#define PCB_DAD_SPIN_ANY(table, typ, has_unit, unit_family_) \
+#define PCB_DAD_SPIN_ANY(table, typ, wtyp, has_unit, unit_family_) \
 do { \
 	pcb_hid_dad_spin_t *spin = calloc(sizeof(pcb_hid_dad_spin_t), 1); \
 	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_COMPOUND); \
@@ -112,6 +118,7 @@ do { \
 	spin->cmp.set_value = pcb_dad_spin_set_value; \
 	spin->cmp.set_help = pcb_dad_spin_set_help; \
 	spin->type = typ; \
+	spin->wtype = wtyp; \
 	spin->attrs = &table; \
 	spin->hid_ctx = &table ## _hid_ctx; \
 	spin->unit_family = unit_family_; \
