@@ -218,11 +218,13 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 
 	/* new data isn't added to the undo list */
 	if (!pcb_parse_pcb(newPCB, Filename, fmt, CFR_invalid, 0)) {
+		pcb_data_t *tmpdata;
+
 		/* clear data area and replace pointer */
 		pcb_buffer_clear(pcb, Buffer);
-		free(Buffer->Data);
+		tmpdata = Buffer->Data;
 		Buffer->Data = newPCB->Data;
-		newPCB->Data = NULL;
+		newPCB->Data = tmpdata;
 		Buffer->X = 0;
 		Buffer->Y = 0;
 		PCB_CLEAR_PARENT(Buffer->Data);
@@ -233,6 +235,7 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 		free(Buffer->source_path); Buffer->source_path = pcb_strdup(Filename);
 		PCB = orig;
 		pcb_layergrp_inhibit_dec();
+		free(tmpdata);
 		return pcb_true;
 	}
 
