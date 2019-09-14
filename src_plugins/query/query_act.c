@@ -268,7 +268,7 @@ static pcb_qry_node_t *field_comp(const char *fields)
 {
 	char fname[64], *fno;
 	const char *s;
-	int len = 1, flen = 0, idx = 0;
+	int len = 1, flen = 0, idx = 0, quote = 0;
 	pcb_qry_node_t *res;
 
 	if (*fields == '.') fields++;
@@ -291,7 +291,7 @@ static pcb_qry_node_t *field_comp(const char *fields)
 	res = calloc(sizeof(pcb_qry_node_t), len);
 	fno = fname;
 	for(s = fields;; s++) {
-		if ((*s == '.') || (*s == '\0')) {
+		if ((quote == 0) && ((*s == '.') || (*s == '\0'))) {
 			*fno = '\0';
 			if (idx > 0)
 				res[idx-1].next = &res[idx];
@@ -304,9 +304,17 @@ static pcb_qry_node_t *field_comp(const char *fields)
 			if (*s == '\0')
 				break;
 			idx++;
+			if (s[1] == '\"') {
+				quote = s[1];
+				s++;
+			}
 		}
-		else
-			*fno++ = *s;
+		else {
+			if (*s == quote)
+				quote = 0;
+			else
+				*fno++ = *s;
+		}
 	}
 
 	return res;
