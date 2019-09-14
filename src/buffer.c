@@ -230,17 +230,18 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 		PCB_CLEAR_PARENT(Buffer->Data);
 		pcb_data_make_layers_bound(newPCB, Buffer->Data);
 		pcb_data_binding_update(pcb, Buffer->Data);
-		pcb_board_remove(newPCB);
+		pcb_board_free(newPCB);
+		free(newPCB);
 		Buffer->from_outside = 1;
 		free(Buffer->source_path); Buffer->source_path = pcb_strdup(Filename);
 		PCB = orig;
 		pcb_layergrp_inhibit_dec();
-		free(tmpdata);
 		return pcb_true;
 	}
 
 	/* release unused memory */
-	pcb_board_remove(newPCB);
+	pcb_board_free(newPCB);
+	free(newPCB);
 	if (Buffer->Data != NULL)
 		PCB_CLEAR_PARENT(Buffer->Data);
 	PCB = orig;
