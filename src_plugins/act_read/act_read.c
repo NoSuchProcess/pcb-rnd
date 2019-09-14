@@ -40,6 +40,7 @@
 #include "keywords_sphash.h"
 
 #include "act_idpath.c"
+#include "act_geo.c"
 
 
 static const char pcb_acts_GetValue[] = "GetValue(input, units, relative, default_unit)";
@@ -86,7 +87,10 @@ pcb_action_t act_read_action_list[] = {
 	{"GetValue", pcb_act_GetValue, pcb_acth_GetValue, pcb_acts_GetValue},
 	{"IDPList", pcb_act_IDPList, pcb_acth_IDPList, pcb_acts_IDPList},
 	{"IDP", pcb_act_IDP, pcb_acth_IDP, pcb_acts_IDP},
-	{"GetParentData", pcb_act_GetParentData, pcb_acth_GetParentData, pcb_acts_GetParentData}
+	{"GetParentData", pcb_act_GetParentData, pcb_acth_GetParentData, pcb_acts_GetParentData},
+
+	{"IsPointOnArc", pcb_act_IsPointOnArc, pcb_acth_IsPointOnArc, pcb_acts_IsPointOnArc},
+	{"IsPointOnLine", pcb_act_IsPointOnLine, pcb_acth_IsPointOnLine, pcb_acts_IsPointOnLine}
 };
 
 static const char *act_read_cookie = "act_read";
