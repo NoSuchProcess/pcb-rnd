@@ -61,7 +61,7 @@ typedef enum pcb_hid_attr_type_e {
 	PCB_HATT_BEGIN_TABLE,         /* wdata_aux1 is the number of columns */
 	PCB_HATT_BEGIN_TABBED,        /* tabbed view (e.g. notebook); ->wdata stores the tab names and a NULL; default_val's integer value is the index of the current tab */
 	PCB_HATT_BEGIN_COMPOUND,      /* subtree emulating a single widget; (pcb_hid_compound_t *) stored in END's wdata */
-	PCB_HATT_END          /* close one level of PCB_HATT_* */
+	PCB_HATT_END                  /* close one level of PCB_HATT_* */
 } pcb_hid_attr_type_t;
 
 #define PCB_HATT_IS_COMPOSITE(type) \
