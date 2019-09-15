@@ -3516,7 +3516,8 @@ Arguments:
 <p>
 <table border=0 cellspacing=10 class=actsum>
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-Select(Object|ToggleObject)
+Select(Object, [idpath])
+Select(ToggleObject)
 Select(All|Block|Connection|Invert)
 Select(Convert)
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
@@ -3536,7 +3537,7 @@ Arguments:
 <br>
  ToggleObject  
 <td>
- Selects the object under the cursor.   
+ If second argument is present, select the object addressed by that       idpath, else selects the object under the cursor.   
 <tr>
 
 <th>
