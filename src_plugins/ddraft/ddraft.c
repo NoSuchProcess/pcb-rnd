@@ -179,6 +179,53 @@ static fgw_error_t pcb_act_trim_split(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+
+static const char pcb_acts_split_idp[] = "PcbSplit(cutting_edges, objs)";
+static const char pcb_acth_split_idp[] = "Split objects (idpath or idpath list) with cutting edges (idpath or idpath list), returning the idpath list of the newly created objects";
+static fgw_error_t pcb_act_split_idp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_idpath_t *idp;
+	pcb_idpath_list_t *idpl;
+	gdl_iterator_t it;
+	pcb_any_obj_t *obj;
+	vtp0_t edges, objs, *vect;
+	int n;
+
+	vtp0_init(&edges);
+	vtp0_init(&objs);
+
+	for(n = 1; n < 3; n++) {
+		vect = (n == 1) ? &edges : &objs;
+
+		PCB_ACT_CONVARG(n, FGW_IDPATH, split_idp, idp = fgw_idpath(&argv[n]));
+		if (idp == NULL)
+			return FGW_ERR_PTR_DOMAIN;
+		if (fgw_ptr_in_domain(&pcb_fgw, &argv[n], PCB_PTR_DOMAIN_IDPATH)) {
+			obj = pcb_idpath2obj(PCB, idp);
+			if ((obj == NULL) || ((obj->type & PCB_OBJ_CLASS_REAL) == 0))
+				return -1;
+			vtp0_append(vect, obj);
+		}
+		else if (fgw_ptr_in_domain(&pcb_fgw, &argv[n], PCB_PTR_DOMAIN_IDPATH_LIST)) {
+			idpl = (pcb_idpath_list_t *)idp;
+			pcb_idpath_list_foreach(idpl, &it, idp) {
+				obj = pcb_idpath2obj(PCB, idp);
+				if ((obj == NULL) || ((obj->type & PCB_OBJ_CLASS_REAL) == 0))
+					return -1;
+				vtp0_append(vect, obj);
+			}
+		}
+		else
+			return FGW_ERR_PTR_DOMAIN;
+	}
+
+	vtp0_uninit(&edges);
+	vtp0_uninit(&objs);
+
+	return 0;
+}
+
+
 #include "constraint_gui.c"
 
 #define load_arr(arr, ctr, msg, fgw_type_, fgw_val_) \
@@ -397,6 +444,7 @@ void ddraft_tool_draw_attached(void)
 static pcb_action_t ddraft_action_list[] = {
 	{"trim", pcb_act_trim_split, pcb_acth_trim_split, pcb_acts_trim_split},
 	{"split", pcb_act_trim_split, pcb_acth_trim_split, pcb_acts_trim_split},
+	{"pcbsplit", pcb_act_split_idp, pcb_acth_split_idp, pcb_acts_split_idp},
 	{"constraint", pcb_act_constraint, pcb_acth_constraint, pcb_acts_constraint},
 	{"perp", pcb_act_perp_paral, pcb_acth_perp_paral, pcb_acts_perp_paral},
 	{"paral", pcb_act_perp_paral, pcb_acth_perp_paral, pcb_acts_perp_paral},
