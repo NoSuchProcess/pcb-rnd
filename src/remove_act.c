@@ -68,7 +68,7 @@ static fgw_error_t pcb_act_Delete(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				PCB_ACT_IRES(-1);
 				return 0;
 			}
-			pcb_remove_object(obj->type, obj, obj, obj);
+			pcb_remove_object(obj->type, obj->parent.any, obj, obj);
 		}
 		else { /* interactive remove */
 			pcb_hid_get_coords("Click on object to delete", &pcb_tool_note.X, &pcb_tool_note.Y, 0);
