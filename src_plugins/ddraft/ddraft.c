@@ -188,22 +188,24 @@ static fgw_error_t pcb_act_split_idp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_idpath_list_t *idpl;
 	gdl_iterator_t it;
 	pcb_any_obj_t *obj;
-	vtp0_t edges, objs, *vect;
-	int n;
+	vtp0_t edges, objs, newobjs, *vect;
+	long n;
 
 	vtp0_init(&edges);
 	vtp0_init(&objs);
+	vtp0_init(&newobjs);
 
+	/* read two obj or objlist args */
 	for(n = 1; n < 3; n++) {
 		vect = (n == 1) ? &edges : &objs;
 
 		PCB_ACT_CONVARG(n, FGW_IDPATH, split_idp, idp = fgw_idpath(&argv[n]));
 		if (idp == NULL)
-			return FGW_ERR_PTR_DOMAIN;
+			goto invptr;
 		if (fgw_ptr_in_domain(&pcb_fgw, &argv[n], PCB_PTR_DOMAIN_IDPATH)) {
 			obj = pcb_idpath2obj(PCB, idp);
 			if ((obj == NULL) || ((obj->type & PCB_OBJ_CLASS_REAL) == 0))
-				return -1;
+				goto invptr;
 			vtp0_append(vect, obj);
 		}
 		else if (fgw_ptr_in_domain(&pcb_fgw, &argv[n], PCB_PTR_DOMAIN_IDPATH_LIST)) {
@@ -211,18 +213,37 @@ static fgw_error_t pcb_act_split_idp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_idpath_list_foreach(idpl, &it, idp) {
 				obj = pcb_idpath2obj(PCB, idp);
 				if ((obj == NULL) || ((obj->type & PCB_OBJ_CLASS_REAL) == 0))
-					return -1;
+					goto invptr;
 				vtp0_append(vect, obj);
 			}
 		}
 		else
-			return FGW_ERR_PTR_DOMAIN;
+			goto invptr;
+	}
+
+	/* execute the splits */
+	for(n = 0; n < vtp0_len(&objs); n++)
+		pcb_trim_split(&edges, &newobjs, objs.array[n], 0, 0, 0, 0);
+
+	/* copy over the objects to an idpath_list that is then returned */
+	idpl = calloc(sizeof(pcb_idpath_list_t), 1);
+	fgw_ptr_reg(&pcb_fgw, res, PCB_PTR_DOMAIN_IDPATH_LIST, FGW_PTR | FGW_STRUCT, idpl);
+	for(n = 0; n < vtp0_len(&newobjs); n++) {
+		idp = pcb_obj2idpath(newobjs.array[n]);
+		if (idp != NULL)
+			pcb_idpath_list_append(idpl, idp);
 	}
 
 	vtp0_uninit(&edges);
 	vtp0_uninit(&objs);
-
+	vtp0_uninit(&newobjs);
 	return 0;
+
+	invptr:;
+	vtp0_uninit(&edges);
+	vtp0_uninit(&objs);
+	vtp0_uninit(&newobjs);
+	return FGW_ERR_PTR_DOMAIN;
 }
 
 
