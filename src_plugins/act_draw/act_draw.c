@@ -58,10 +58,17 @@ static int flg_error(const char *msg)
 		ao++; \
 	}
 
+#define RET_IDPATH(obj) \
+	do { \
+		pcb_idpath_t *idp = pcb_obj2idpath((pcb_any_obj_t *)obj); \
+		res->type = FGW_IDPATH; \
+		fgw_ptr_reg(&pcb_fgw, res, PCB_PTR_DOMAIN_IDPATH, FGW_PTR | FGW_STRUCT, idp); \
+	} while(0)
+
 #include "act_pstk_proto.c"
 
 static const char pcb_acts_LineNew[] = "LineNew([noundo,] data, layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags)";
-static const char pcb_acth_LineNew[] = "Create a pcb line segment on a layer. For now data must be \"pcb\". Returns the ID of the new object or 0 on error.";
+static const char pcb_acth_LineNew[] = "Create a pcb line segment on a layer. For now data must be \"pcb\". Returns the idpath of the new object or 0 on error.";
 static fgw_error_t pcb_act_LineNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *sflg;
@@ -90,8 +97,7 @@ static fgw_error_t pcb_act_LineNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	line = pcb_line_new(layer, x1, y1, x2, y2, th, cl*2, flags);
 
 	if (line != NULL) {
-		res->type = FGW_LONG;
-		res->val.nat_long = line->ID;
+		RET_IDPATH(line);
 		if (!noundo)
 			pcb_undo_add_obj_to_create(PCB_OBJ_LINE, layer, line, line);
 	}
@@ -99,7 +105,7 @@ static fgw_error_t pcb_act_LineNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 static const char pcb_acts_ArcNew[] = "ArcNew([noundo,] data, layer, centx, centy, radiusx, radiusy, start_ang, delta_ang, thickness, clearance, flags)";
-static const char pcb_acth_ArcNew[] = "Create a pcb arc segment on a layer. For now data must be \"pcb\". Returns the ID of the new object or 0 on error.";
+static const char pcb_acth_ArcNew[] = "Create a pcb arc segment on a layer. For now data must be \"pcb\". Returns the idpath of the new object or 0 on error.";
 static fgw_error_t pcb_act_ArcNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *sflg;
@@ -131,8 +137,7 @@ static fgw_error_t pcb_act_ArcNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	arc = pcb_arc_new(layer, cx, cy, wr, hr, sa, da, th, cl*2, flags, 0);
 
 	if (arc != NULL) {
-		res->type = FGW_LONG;
-		res->val.nat_long = arc->ID;
+		RET_IDPATH(arc);
 		if (!noundo)
 			pcb_undo_add_obj_to_create(PCB_OBJ_ARC, layer, arc, arc);
 	}
@@ -140,7 +145,7 @@ static fgw_error_t pcb_act_ArcNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 static const char pcb_acts_TextNew[] = "TextNew([noundo,] data, layer, fontID, x, y, rot, scale, thickness, test_string, flags)";
-static const char pcb_acth_TextNew[] = "Create a pcb text on a layer. For now data must be \"pcb\". Font id 0 is the default font. Thickness 0 means default, calculated thickness. Scale=100 is the original font size. Returns the ID of the new object or 0 on error.";
+static const char pcb_acth_TextNew[] = "Create a pcb text on a layer. For now data must be \"pcb\". Font id 0 is the default font. Thickness 0 means default, calculated thickness. Scale=100 is the original font size. Returns the idpath of the new object or 0 on error.";
 static fgw_error_t pcb_act_TextNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *sflg, *str;
@@ -178,8 +183,7 @@ static fgw_error_t pcb_act_TextNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_message(PCB_MSG_ERROR, "NewText: font %d not found\n", fontid);
 
 	if (text != NULL) {
-		res->type = FGW_LONG;
-		res->val.nat_long = text->ID;
+		RET_IDPATH(text);
 		if (!noundo)
 			pcb_undo_add_obj_to_create(PCB_OBJ_TEXT, layer, text, text);
 	}
@@ -187,7 +191,7 @@ static fgw_error_t pcb_act_TextNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 static const char pcb_acts_PstkNew[] = "PstkNew([noundo,] data, protoID, x, y, glob_clearance, flags)";
-static const char pcb_acth_PstkNew[] = "Create a padstack. For now data must be \"pcb\". glob_clearance=0 turns off global clearance. Returns the ID of the new object or 0 on error.";
+static const char pcb_acth_PstkNew[] = "Create a padstack. For now data must be \"pcb\". glob_clearance=0 turns off global clearance. Returns the idpath of the new object or 0 on error.";
 static fgw_error_t pcb_act_PstkNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *sflg;
@@ -210,8 +214,7 @@ static fgw_error_t pcb_act_PstkNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pstk = pcb_pstk_new(data, -1, proto, x, y, cl, flags);
 
 	if (pstk != NULL) {
-		res->type = FGW_LONG;
-		res->val.nat_long = pstk->ID;
+		RET_IDPATH(pstk);
 		if (!noundo)
 			pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, data, pstk, pstk);
 	}
@@ -219,7 +222,7 @@ static fgw_error_t pcb_act_PstkNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 static const char pcb_acts_PolyNewFromRectangle[] = "PolyNewFromRectangle([noundo,] data, layer, x1, y1, x2, y2, clearance, flags)";
-static const char pcb_acth_PolyNewFromRectangle[] = "Create a rectangular polygon. For now data must be \"pcb\". Returns the ID of the new object or 0 on error.";
+static const char pcb_acth_PolyNewFromRectangle[] = "Create a rectangular polygon. For now data must be \"pcb\". Returns the idpath of the new object or 0 on error.";
 static fgw_error_t pcb_act_PolyNewFromRectangle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *sflg;
@@ -247,8 +250,7 @@ static fgw_error_t pcb_act_PolyNewFromRectangle(fgw_arg_t *res, int argc, fgw_ar
 	poly = pcb_poly_new_from_rectangle(layer, x1, y1, x2, y2, cl*2, flags);
 
 	if (poly != NULL) {
-		res->type = FGW_LONG;
-		res->val.nat_long = poly->ID;
+		RET_IDPATH(poly);
 		if (!noundo)
 			pcb_undo_add_obj_to_create(PCB_OBJ_POLY, layer, poly, poly);
 	}
@@ -291,7 +293,7 @@ static long poly_append_ptlist(pcb_poly_t *poly, const char *ptlist)
 }
 
 static const char pcb_acts_PolyNewFromPoints[] = "PolyNewFromRectangle([noundo,] data, layer, ptlist, clearance, flags)";
-static const char pcb_acth_PolyNewFromPoints[] = "Create a polygon. For now data must be \"pcb\". ptlist is a comma separated list of coordinates (untiless coordinates are treated as mm). Returns the ID of the new object or 0 on error.";
+static const char pcb_acth_PolyNewFromPoints[] = "Create a polygon. For now data must be \"pcb\". ptlist is a comma separated list of coordinates (untiless coordinates are treated as mm). Returns the idpath of the new object or 0 on error.";
 static fgw_error_t pcb_act_PolyNewFromPoints(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *sflg, *ptlist;
@@ -319,8 +321,7 @@ static fgw_error_t pcb_act_PolyNewFromPoints(fgw_arg_t *res, int argc, fgw_arg_t
 		if (poly_append_ptlist(poly, ptlist) > 2) {
 			pcb_poly_init_clip(data, layer, poly);
 			pcb_add_poly_on_layer(layer, poly);
-			res->type = FGW_LONG;
-			res->val.nat_long = poly->ID;
+			RET_IDPATH(poly);
 			if (!noundo)
 				pcb_undo_add_obj_to_create(PCB_OBJ_POLY, layer, poly, poly);
 		}
@@ -384,7 +385,7 @@ static fgw_error_t pcb_act_PolyNewPoints(fgw_arg_t *res, int argc, fgw_arg_t *ar
 }
 
 static const char pcb_acts_PolyNewEnd[] = "PolyNewEnd([noundo,] data, layer, poly)";
-static const char pcb_acth_PolyNewEnd[] = "Close and place a polygon started by PolyNew. Returns the ID of the new object or 0 on error.";
+static const char pcb_acth_PolyNewEnd[] = "Close and place a polygon started by PolyNew. Returns the idpath of the new object or 0 on error.";
 static fgw_error_t pcb_act_PolyNewEnd(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_poly_t *poly;
@@ -408,8 +409,8 @@ static fgw_error_t pcb_act_PolyNewEnd(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	pcb_poly_init_clip(data, layer, poly);
 	pcb_add_poly_on_layer(layer, poly);
-	res->type = FGW_LONG;
-	res->val.nat_long = poly->ID;
+
+	RET_IDPATH(poly);
 	if (!noundo)
 		pcb_undo_add_obj_to_create(PCB_OBJ_POLY, layer, poly, poly);
 	fgw_ptr_unreg(&pcb_fgw, &argv[1], PTR_DOMAIN_POLY);
