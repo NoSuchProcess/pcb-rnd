@@ -259,7 +259,7 @@ static pcb_arc_t *split_arcp(pcb_arc_t *arc, double offs)
 }
 
 
-static int pcb_split_line(vtp0_t *cut_edges, pcb_line_t *line, double remo_in, pcb_coord_t rem_x, pcb_coord_t rem_y)
+static int pcb_split_line(vtp0_t *cut_edges, vtp0_t *new_objs, pcb_line_t *line, double remo_in, pcb_coord_t rem_x, pcb_coord_t rem_y)
 {
 	int p, n, numsplt = 0, res;
 	double io[2];
@@ -283,9 +283,10 @@ static int pcb_split_line(vtp0_t *cut_edges, pcb_line_t *line, double remo_in, p
 				if ((io[1] != 0.0) && (io[1] != 1.0)) {
 					new_line = split_lp(line, io[1]);
 					numsplt++;
-					res = pcb_split_line(cut_edges, line, remo_in, rem_x, rem_y);
+					if (new_objs != NULL) vtp0_append(new_objs, new_line);
+					res = pcb_split_line(cut_edges, new_objs, line, remo_in, rem_x, rem_y);
 					if (res > 0) numsplt += res;
-					res = pcb_split_line(cut_edges, new_line, remo_in, rem_x, rem_y);
+					res = pcb_split_line(cut_edges, new_objs, new_line, remo_in, rem_x, rem_y);
 					if (res > 0) numsplt += res;
 					break; /* can't use the other point if we did a split here, because that changes the meaning of offsets */
 				}
@@ -293,9 +294,10 @@ static int pcb_split_line(vtp0_t *cut_edges, pcb_line_t *line, double remo_in, p
 				if ((io[0] != 0.0) && (io[0] != 1.0)) {
 					new_line = split_lp(line, io[0]);
 					numsplt++;
-					res = pcb_split_line(cut_edges, line, remo_in, rem_x, rem_y);
+					if (new_objs != NULL) vtp0_append(new_objs, new_line);
+					res = pcb_split_line(cut_edges, new_objs, line, remo_in, rem_x, rem_y);
 					if (res > 0) numsplt += res;
-					res = pcb_split_line(cut_edges, new_line, remo_in, rem_x, rem_y);
+					res = pcb_split_line(cut_edges, new_objs, new_line, remo_in, rem_x, rem_y);
 					if (res > 0) numsplt += res;
 				}
 				break;
@@ -305,7 +307,7 @@ static int pcb_split_line(vtp0_t *cut_edges, pcb_line_t *line, double remo_in, p
 	return numsplt;
 }
 
-static int pcb_split_arc(vtp0_t *cut_edges, pcb_arc_t *arc, double remo_in, pcb_coord_t rem_x, pcb_coord_t rem_y)
+static int pcb_split_arc(vtp0_t *cut_edges, vtp0_t *new_objs, pcb_arc_t *arc, double remo_in, pcb_coord_t rem_x, pcb_coord_t rem_y)
 {
 	int p, n, numsplt = 0, res;
 	double io[2];
@@ -329,9 +331,10 @@ static int pcb_split_arc(vtp0_t *cut_edges, pcb_arc_t *arc, double remo_in, pcb_
 				if ((io[1] != 0.0) && (io[1] != 1.0)) {
 					new_arc = split_arcp(arc, io[1]);
 					numsplt++;
-					res = pcb_split_arc(cut_edges, arc, remo_in, rem_x, rem_y);
+					if (new_objs != NULL) vtp0_append(new_objs, new_arc);
+					res = pcb_split_arc(cut_edges, new_objs, arc, remo_in, rem_x, rem_y);
 					if (res > 0) numsplt += res;
-					res = pcb_split_arc(cut_edges, new_arc, remo_in, rem_x, rem_y);
+					res = pcb_split_arc(cut_edges, new_objs, new_arc, remo_in, rem_x, rem_y);
 					if (res > 0) numsplt += res;
 					break; /* can't use the other point if we did a split here, because that changes the meaning of offsets */
 				}
@@ -339,9 +342,10 @@ static int pcb_split_arc(vtp0_t *cut_edges, pcb_arc_t *arc, double remo_in, pcb_
 				if ((io[0] != 0.0) && (io[0] != 1.0)) {
 					new_arc = split_arcp(arc, io[0]);
 					numsplt++;
-					res = pcb_split_arc(cut_edges, arc, remo_in, rem_x, rem_y);
+					if (new_objs != NULL) vtp0_append(new_objs, new_arc);
+					res = pcb_split_arc(cut_edges, new_objs, arc, remo_in, rem_x, rem_y);
 					if (res > 0) numsplt += res;
-					res = pcb_split_arc(cut_edges, new_arc, remo_in, rem_x, rem_y);
+					res = pcb_split_arc(cut_edges, new_objs, new_arc, remo_in, rem_x, rem_y);
 					if (res > 0) numsplt += res;
 				}
 				break;
@@ -351,7 +355,7 @@ static int pcb_split_arc(vtp0_t *cut_edges, pcb_arc_t *arc, double remo_in, pcb_
 	return numsplt;
 }
 
-int pcb_trim_split(vtp0_t *cut_edges, pcb_any_obj_t *obj, double remo, pcb_coord_t rem_x, pcb_coord_t rem_y, int trim)
+int pcb_trim_split(vtp0_t *cut_edges, vtp0_t *new_objs, pcb_any_obj_t *obj, double remo, pcb_coord_t rem_x, pcb_coord_t rem_y, int trim)
 {
 	int res = 0;
 	switch(obj->type) {
@@ -359,13 +363,13 @@ int pcb_trim_split(vtp0_t *cut_edges, pcb_any_obj_t *obj, double remo, pcb_coord
 			if (trim)
 				res = pcb_trim_line(cut_edges, (pcb_line_t *)obj, remo, rem_x, rem_y);
 			else
-				res = pcb_split_line(cut_edges, (pcb_line_t *)obj, remo, rem_x, rem_y);
+				res = pcb_split_line(cut_edges, new_objs, (pcb_line_t *)obj, remo, rem_x, rem_y);
 			break;
 		case PCB_OBJ_ARC:
 			if (trim)
 				res = pcb_trim_arc(cut_edges, (pcb_arc_t *)obj, remo, rem_x, rem_y);
 			else
-				res = pcb_split_arc(cut_edges, (pcb_arc_t *)obj, remo, rem_x, rem_y);
+				res = pcb_split_arc(cut_edges, new_objs, (pcb_arc_t *)obj, remo, rem_x, rem_y);
 			break;
 		default:
 			return -1;
