@@ -52,7 +52,8 @@
 
 
 static const char pcb_acts_Select[] =
-	"Select(Object|ToggleObject)\n"
+	"Select(Object, [idpath])\n"
+	"Select(ToggleObject)\n"
 	"Select(All|Block|Connection|Invert)\n"
 	"Select(Convert)";
 static const char pcb_acth_Select[] = "Toggles or sets the selection.";
@@ -65,10 +66,27 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	switch(op) {
 
 			/* select a single object */
-		case F_ToggleObject:
 		case F_Object:
-			if (pcb_select_object(PCB))
+			if (argc > 2) { /* select by idpath */
+				pcb_idpath_t *idp;
+				pcb_any_obj_t *obj;
+				PCB_ACT_CONVARG(2, FGW_IDPATH, Select, idp = fgw_idpath(&argv[2]));
+				if ((idp == NULL) || !fgw_ptr_in_domain(&pcb_fgw, &argv[2], PCB_PTR_DOMAIN_IDPATH))
+					return FGW_ERR_PTR_DOMAIN;
+				obj = pcb_idpath2obj(PCB, idp);
+				if ((obj == NULL) || ((obj->type & PCB_OBJ_CLASS_REAL) == 0)) {
+					PCB_ACT_IRES(-1);
+					return 0;
+				}
+				pcb_undo_add_obj_to_flag(obj);
+				PCB_FLAG_SET(PCB_FLAG_SELECTED, obj);
 				pcb_board_set_changed_flag(pcb_true);
+			}
+			else {
+		case F_ToggleObject:
+				if (pcb_select_object(PCB))
+					pcb_board_set_changed_flag(pcb_true);
+			}
 			break;
 
 			/* all objects in block */
