@@ -1006,6 +1006,23 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_MoveCursorTo[] = "Cursor(x,y)";
+static const char pcb_acth_MoveCursorTo[] = "Move the cursor to absolute coords, pan the view as needed.";
+static fgw_error_t pcb_act_MoveCursorTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_coord_t x, y;
+	pcb_box_t vbx;
+
+	PCB_ACT_CONVARG(1, FGW_COORD, Cursor, x = fgw_coord(&argv[1]));
+	PCB_ACT_CONVARG(2, FGW_COORD, Cursor, y = fgw_coord(&argv[2]));
+
+	pcb_hidlib_crosshair_move_to(x, y, 0);
+	pcb_gui->set_crosshair(pcb_gui, pcb_crosshair.X, pcb_crosshair.Y, HID_SC_PAN_VIEWPORT);
+
+	PCB_ACT_IRES(0);
+	return 0;
+}
+
 
 #define istrue(s) ((*(s) == '1') || (*(s) == 'y') || (*(s) == 'Y') || (*(s) == 't') || (*(s) == 'T'))
 
@@ -1834,6 +1851,7 @@ pcb_action_t gui_action_list[] = {
 	{"ToggleView", pcb_act_ToggleView, pcb_acth_toggleview, pcb_acts_toggleview},
 	{"ChkView", pcb_act_ChkView, pcb_acth_chkview, pcb_acts_chkview},
 	{"Cursor", pcb_act_Cursor, pcb_acth_Cursor, pcb_acts_Cursor},
+	{"MoveCursorTo", pcb_act_MoveCursorTo, pcb_acth_MoveCursorTo, pcb_acts_MoveCursorTo},
 	{"EditLayer", pcb_act_EditLayer, pcb_acth_EditLayer, pcb_acts_EditLayer},
 	{"EditGroup", pcb_act_EditGroup, pcb_acth_EditGroup, pcb_acts_EditGroup},
 	{"DelGroup",  pcb_act_DelGroup, pcb_acth_DelGroup, pcb_acts_DelGroup},
