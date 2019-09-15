@@ -287,6 +287,8 @@ void pcb_add_line_on_layer(pcb_layer_t *Layer, pcb_line_t *Line)
 	if (!Layer->line_tree)
 		Layer->line_tree = pcb_r_create_tree();
 	pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line);
+	Line->parent.layer = Layer;
+	Line->parent_type = PCB_PARENT_LAYER;
 }
 
 static void pcb_line_bbox_(const pcb_line_t *Line, pcb_box_t *dst, int mini)
