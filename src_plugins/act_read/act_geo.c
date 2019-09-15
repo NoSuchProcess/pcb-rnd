@@ -82,3 +82,26 @@ static fgw_error_t pcb_act_IsPointOnArc(fgw_arg_t *res, int argc, fgw_arg_t *arg
 }
 
 
+static const char pcb_acts_IntersectObjObj[] = "IntersectObjObj(idpath, idpath)";
+static const char pcb_acth_IntersectObjObj[] = "Returns 1 if point x;y with radius r is on the arc addressed by idpath, 0 else.";
+static fgw_error_t pcb_act_IntersectObjObj(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_coord_t x, y, r;
+	pcb_idpath_t *idp1, *idp2;
+	pcb_any_obj_t *obj1, *obj2;
+
+	PCB_ACT_CONVARG(1, FGW_IDPATH, IntersectObjObj, idp1 = fgw_idpath(&argv[1]));
+	PCB_ACT_CONVARG(2, FGW_IDPATH, IntersectObjObj, idp2 = fgw_idpath(&argv[2]));
+	if ((idp1 == NULL) || !fgw_ptr_in_domain(&pcb_fgw, &argv[1], PCB_PTR_DOMAIN_IDPATH))
+		return FGW_ERR_PTR_DOMAIN;
+	if ((idp2 == NULL) || !fgw_ptr_in_domain(&pcb_fgw, &argv[2], PCB_PTR_DOMAIN_IDPATH))
+		return FGW_ERR_PTR_DOMAIN;
+	obj1 = pcb_idpath2obj(PCB, idp1);
+	obj2 = pcb_idpath2obj(PCB, idp2);
+	if ((obj1 == NULL) || ((obj1->type & PCB_OBJ_CLASS_REAL) == 0) || (obj2 == NULL) || ((obj2->type & PCB_OBJ_CLASS_REAL) == 0))
+		return FGW_ERR_ARG_CONV;
+
+	PCB_ACT_IRES(pcb_intersect_obj_obj(obj1, obj2));
+	return 0;
+}
+
