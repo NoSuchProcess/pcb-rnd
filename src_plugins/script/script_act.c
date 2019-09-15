@@ -442,6 +442,52 @@ static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acth_pcb_math1[] = "Single-argument math functions";
+static const char pcb_acts_pcb_math1[] = "pcb_MATHFUNC(val)";
+static fgw_error_t pcb_act_pcb_math1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *actname = argv[0].val.func->name;
+	double a;
+	
+	PCB_ACT_CONVARG(1, FGW_DOUBLE, pcb_math1, a = argv[1].val.nat_double);
+	res->type = FGW_DOUBLE;
+	switch(actname[4]) {
+		case 'a':
+			switch(actname[5]) {
+				case 's': res->val.nat_double = asin(a); return 0;
+				case 'c': res->val.nat_double = acos(a); return 0;
+				case 't': res->val.nat_double = atan(a); return 0;
+			}
+			break;
+		case 's':
+			switch(actname[5]) {
+				case 'i': res->val.nat_double = sin(a); return 0;
+				case 'q': res->val.nat_double = sqrt(a); return 0;
+			}
+			break;
+		case 'c': res->val.nat_double = cos(a); return 0;
+		case 't': res->val.nat_double = tan(a); return 0;
+	}
+	return FGW_ERR_ARG_CONV;
+}
+
+static const char pcb_acth_pcb_math2[] = "Two-argument math functions";
+static const char pcb_acts_pcb_math2[] = "pcb_MATHFUNC(a,b)";
+static fgw_error_t pcb_act_pcb_math2(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *actname = argv[0].val.func->name;
+	double a, b;
+	
+	PCB_ACT_CONVARG(1, FGW_DOUBLE, pcb_math2, a = argv[1].val.nat_double);
+	PCB_ACT_CONVARG(2, FGW_DOUBLE, pcb_math2, b = argv[2].val.nat_double);
+	res->type = FGW_DOUBLE;
+	switch(actname[4]) {
+		case 'a': res->val.nat_double = atan2(a, b); return 0;
+	}
+	return FGW_ERR_ARG_CONV;
+}
+
+
 static pcb_action_t script_action_list[] = {
 	{"LoadScript", pcb_act_LoadScript, pcb_acth_LoadScript, pcb_acts_LoadScript},
 	{"UnloadScript", pcb_act_UnloadScript, pcb_acth_UnloadScript, pcb_acts_UnloadScript},
@@ -474,5 +520,16 @@ static pcb_action_t script_action_list[] = {
 	{"py",          pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
 	{"python",      pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
 #endif
-	{"Oneliner", pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner}
+	{"Oneliner", pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
+
+	/* math */
+	{"pcb_sin",     pcb_act_pcb_math1, NULL, NULL},
+	{"pcb_cos",     pcb_act_pcb_math1, NULL, NULL},
+	{"pcb_asin",    pcb_act_pcb_math1, NULL, NULL},
+	{"pcb_acos",    pcb_act_pcb_math1, NULL, NULL},
+	{"pcb_atan",    pcb_act_pcb_math1, NULL, NULL},
+	{"pcb_tan",     pcb_act_pcb_math1, NULL, NULL},
+	{"pcb_sqrt",    pcb_act_pcb_math1, NULL, NULL},
+
+	{"pcb_atan2",   pcb_act_pcb_math2, NULL, NULL}
 };
