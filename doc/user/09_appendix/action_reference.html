@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.1.3 (svn r27554) an interactive printed circuit board editor ,  Revision: 27586
+This is pcb-rnd 2.1.3 (svn r27554) an interactive printed circuit board editor ,  Revision: 27588
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -24,7 +24,7 @@ This is pcb-rnd 2.1.3 (svn r27554) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#align">align</a></td><td>Align subcircuits</td><td>Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distalign plugin</td>
 <tr><td><a href="action_details.html#aligntext">aligntext</a></td><td>Align Text Elements</td><td>AlignText(X/Y, [Lefts/Rights/Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distaligntext plugin</td>
 <tr><td><a href="action_details.html#applyvendor">ApplyVendor</a></td><td>Applies the currently loaded vendor drill table to the current design.</td><td>ApplyVendor()</td><td>vendor drill mapping</td>
-<tr><td>ArcNew</td><td>Create a pcb arc segment on a layer. For now data must be "pcb". Returns the ID of the new object or 0 on error.</td><td>ArcNew([noundo,] data, layer, centx, centy, radiusx, radiusy, start_ang, delta_ang, thickness, clearance, flags)</td><td>act_draw</td>
+<tr><td>ArcNew</td><td>Create a pcb arc segment on a layer. For now data must be "pcb". Returns the idpath of the new object or 0 on error.</td><td>ArcNew([noundo,] data, layer, centx, centy, radiusx, radiusy, start_ang, delta_ang, thickness, clearance, flags)</td><td>act_draw</td>
 <tr><td>asm</td><td>Interactive assembly assistant</td><td>asm()</td><td>asm plugin</td>
 <tr><td><a href="action_details.html#atomic">Atomic</a></td><td>Save or restore the undo serial number.</td><td>Atomic(Save|Restore|Close|Block)</td><td></td>
 <tr><td><a href="action_details.html#attributes">Attributes</a></td><td>Let the user edit the attributes of the layout, current or given<br>layer, or selected subcircuit.</td><td>Attributes(Layout|Layer|Element|Subc)<br>Attributes(Layer,layername)</td><td></td>
@@ -176,7 +176,7 @@ This is pcb-rnd 2.1.3 (svn r27554) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#le">le</a></td><td>Loads an element (subcircuit, footprint) into the current buffer.</td><td>le [name]</td><td>shand_cmd plugin</td>
 <tr><td>LibraryChanged</td><td>Tells the GUI that the libraries have changed.</td><td>LibraryChanged()</td><td>oldactions plugin</td>
 <tr><td>LibraryDialog</td><td>Open the library dialog.</td><td>libraryDialog()</td><td>dialogs plugin</td>
-<tr><td>LineNew</td><td>Create a pcb line segment on a layer. For now data must be "pcb". Returns the ID of the new object or 0 on error.</td><td>LineNew([noundo,] data, layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags)</td><td>act_draw</td>
+<tr><td>LineNew</td><td>Create a pcb line segment on a layer. For now data must be "pcb". Returns the idpath of the new object or 0 on error.</td><td>LineNew([noundo,] data, layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags)</td><td>act_draw</td>
 <tr><td>ListRotations</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#listscripts">ListScripts</a></td><td>List fungw scripts, optionally filtered wiht regex pat.</td><td>ListScripts([pat])</td><td>script plugin</td>
 <tr><td><a href="action_details.html#livescript">LiveScript</a></td><td>Manage a live script</td><td>LiveScript([new], [name])<br>LiveScript(load|save, name, [filame])<br>LiveScript(run|stop|rerun|undo, name)</td><td>script plugin</td>
@@ -212,6 +212,7 @@ This is pcb-rnd 2.1.3 (svn r27554) an interactive printed circuit board editor ,
 <tr><td>MinMaskGap</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#mode">Mode</a></td><td>Change or use the tool mode.</td><td>Mode(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)<br>Mode(Polygon|Rectangle|Remove|Rotate|Text|Thermal|Via)<br>Mode(Notify|Release|Cancel|Stroke)<br>Mode(Save|Restore)</td><td></td>
 <tr><td><a href="action_details.html#morphpolygon">MorphPolygon</a></td><td>Converts dead polygon islands into separate polygons.</td><td>pcb_poly_morph(Object|Selected)</td><td></td>
+<tr><td>MoveCursorTo</td><td>Move the cursor to absolute coords, pan the view as needed.</td><td>Cursor(x,y)</td><td></td>
 <tr><td><a href="action_details.html#movelayer">MoveLayer</a></td><td>Moves/Creates/Deletes Layers.</td><td>MoveLayer(old,new)<br>MoveLayer(lid,group,gid)</td><td></td>
 <tr><td><a href="action_details.html#moveobject">MoveObject</a></td><td>Moves the object under the crosshair.</td><td>pcb_move_obj(X,Y,[units])</td><td></td>
 <tr><td><a href="action_details.html#movetocurrentlayer">MoveToCurrentLayer</a></td><td>Moves objects to the current layer.</td><td>MoveToCurrentLayer(Object|SelectedObjects)</td><td></td>
@@ -251,9 +252,9 @@ This is pcb-rnd 2.1.3 (svn r27554) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#polygon">Polygon</a></td><td>Some polygon related stuff.</td><td>Polygon(Close|CloseHole|PreviousPoint)</td><td></td>
 <tr><td>PolyHatch</td><td>hatch the selected polygon(s) with lines of the current style; lines are drawn on the current layer; flags are h:horizontal, v:vertical, c:contour, p:poly</td><td>PolyHatch([spacing], [hvcp])<br>PolyHatch(interactive)</td><td>lib_polyhelp</td>
 <tr><td>PolyNew</td><td>Create an empty polygon. For now data must be "pcb". Use PolyNewPoint to add points. Returns a polygon pointer valid until PolyNewEnd() is called.</td><td>PolyNew([noundo,] data, layer, ptlist, clearance, flags)</td><td>act_draw</td>
-<tr><td>PolyNewEnd</td><td>Close and place a polygon started by PolyNew. Returns the ID of the new object or 0 on error.</td><td>PolyNewEnd([noundo,] data, layer, poly)</td><td>act_draw</td>
-<tr><td>PolyNewFromPoints</td><td>Create a polygon. For now data must be "pcb". ptlist is a comma separated list of coordinates (untiless coordinates are treated as mm). Returns the ID of the new object or 0 on error.</td><td>PolyNewFromRectangle([noundo,] data, layer, ptlist, clearance, flags)</td><td>act_draw</td>
-<tr><td>PolyNewFromRectangle</td><td>Create a rectangular polygon. For now data must be "pcb". Returns the ID of the new object or 0 on error.</td><td>PolyNewFromRectangle([noundo,] data, layer, x1, y1, x2, y2, clearance, flags)</td><td>act_draw</td>
+<tr><td>PolyNewEnd</td><td>Close and place a polygon started by PolyNew. Returns the idpath of the new object or 0 on error.</td><td>PolyNewEnd([noundo,] data, layer, poly)</td><td>act_draw</td>
+<tr><td>PolyNewFromPoints</td><td>Create a polygon. For now data must be "pcb". ptlist is a comma separated list of coordinates (untiless coordinates are treated as mm). Returns the idpath of the new object or 0 on error.</td><td>PolyNewFromRectangle([noundo,] data, layer, ptlist, clearance, flags)</td><td>act_draw</td>
+<tr><td>PolyNewFromRectangle</td><td>Create a rectangular polygon. For now data must be "pcb". Returns the idpath of the new object or 0 on error.</td><td>PolyNewFromRectangle([noundo,] data, layer, x1, y1, x2, y2, clearance, flags)</td><td>act_draw</td>
 <tr><td>PolyNewPoints</td><td>Add a list of points to a polygon created by PolyNew. Returns 0 on success.</td><td>PolyNewPoints([noundo,] poly, ptlist)</td><td>act_draw</td>
 <tr><td>PolyOffs</td><td>replicate the outer contour of the selected polygon(s) with growing or shrinking them by offset; the new polygon is drawn on the current layer</td><td>PolyOffs(offset)</td><td>lib_polyhelp</td>
 <tr><td><a href="action_details.html#polystitch">PolyStitch</a></td><td></td><td></td><td>polystitch plugin</td>
@@ -274,7 +275,7 @@ This is pcb-rnd 2.1.3 (svn r27554) an interactive printed circuit board editor ,
 <tr><td>propset</td><td>Change the named property of all selected objects to/by value. Scope is documented at PropEdit().</td><td>propset([scope], name, value)</td><td>propedit</td>
 <tr><td>pscalib</td><td></td><td></td><td>ps HID</td>
 <tr><td>pstklib</td><td>Present the padstack library dialog on board padstacks or the padstacks of a subcircuit</td><td>pstklib([board|subcid|object])</td><td>dialogs plugin</td>
-<tr><td>PstkNew</td><td>Create a padstack. For now data must be "pcb". glob_clearance=0 turns off global clearance. Returns the ID of the new object or 0 on error.</td><td>PstkNew([noundo,] data, protoID, x, y, glob_clearance, flags)</td><td>act_draw</td>
+<tr><td>PstkNew</td><td>Create a padstack. For now data must be "pcb". glob_clearance=0 turns off global clearance. Returns the idpath of the new object or 0 on error.</td><td>PstkNew([noundo,] data, protoID, x, y, glob_clearance, flags)</td><td>act_draw</td>
 <tr><td>PstkProtoEdit</td><td>Edit a padstack prototype specified by its pointer.</td><td>PstkProto([noundo,] proto, remove, layer_type)<br>PstkProto([noundo,] proto, copy, dst_layer_type, src_layer_type)<br>PstkProto([noundo,] proto, hdia, dia)<br>PstkProto([noundo,] proto, shape:line, layer_type, x1, y1, x2, y2, th, [square])</td><td>act_draw</td>
 <tr><td>PstkProtoTmp</td><td>Allocate, insert or free a temporary padstack prototype</td><td>PstkProto([noundo,] new)<br>PstkProto([noundo,] dup, idpath)<br>PstkProto([noundo,] dup, data, src_proto_id)<br>PstkProto([noundo,] insert, idpath|data, proto)<br>PstkProto([noundo,] insert_dup, idpath|data, proto)<br>PstkProto([noundo,] free, proto)</td><td>act_draw</td>
 <tr><td><a href="action_details.html#puller">Puller</a></td><td>Pull an arc-line junction tight.</td><td>pcb_act_Puller()</td><td>puller plugin</td>
@@ -336,7 +337,7 @@ This is pcb-rnd 2.1.3 (svn r27554) an interactive printed circuit board editor ,
 <tr><td>System</td><td>Run shell command</td><td>System(shell_cmd)</td><td></td>
 <tr><td>tang</td><td>Draw a line to be tangential to a circle</td><td>tang()</td><td>ddraft plugin</td>
 <tr><td>Teardrops</td><td></td><td></td><td>teardrops plugin</td>
-<tr><td>TextNew</td><td>Create a pcb text on a layer. For now data must be "pcb". Font id 0 is the default font. Thickness 0 means default, calculated thickness. Scale=100 is the original font size. Returns the ID of the new object or 0 on error.</td><td>TextNew([noundo,] data, layer, fontID, x, y, rot, scale, thickness, test_string, flags)</td><td>act_draw</td>
+<tr><td>TextNew</td><td>Create a pcb text on a layer. For now data must be "pcb". Font id 0 is the default font. Thickness 0 means default, calculated thickness. Scale=100 is the original font size. Returns the idpath of the new object or 0 on error.</td><td>TextNew([noundo,] data, layer, fontID, x, y, rot, scale, thickness, test_string, flags)</td><td>act_draw</td>
 <tr><td>ToggleHideName</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td>ToggleVendor</td><td>Toggles the state of automatic drill size mapping.</td><td>ToggleVendor()</td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#toggleview">ToggleView</a></td><td>Toggle the visibility of the specified layer or layer group.</td><td>ToggleView(1..MAXLAYER)<br>ToggleView(layername)<br>ToggleView(Silk|Rats|Pins|Vias|BackSide)<br>ToggleView(All, Open|Vis, Set|Clear|Toggle)</td><td></td>
