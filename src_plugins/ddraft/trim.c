@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *
  *  2d drafting plugin: trim objects
- *  pcb-rnd Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  pcb-rnd Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -258,6 +258,12 @@ static pcb_arc_t *split_arcp(pcb_arc_t *arc, double offs)
 	return new_arc;
 }
 
+static int near(double v1, double v2)
+{
+	v1 -= v2;
+	if (v1 < 0) v1 = -v1;
+	return (v1 < 0.0001);
+}
 
 static int pcb_split_line(vtp0_t *cut_edges, vtp0_t *new_objs, pcb_line_t *line, double remo_in, pcb_coord_t rem_x, pcb_coord_t rem_y)
 {
@@ -280,7 +286,7 @@ static int pcb_split_line(vtp0_t *cut_edges, vtp0_t *new_objs, pcb_line_t *line,
 		switch(p) {
 			case 0: continue; /* no intersection, skip to the next potential cutting edge */
 			case 2:
-				if ((io[1] != 0.0) && (io[1] != 1.0)) {
+				if (!near(io[1], 0.0) && !near(io[1], 1.0)) {
 					new_line = split_lp(line, io[1]);
 					numsplt++;
 					if (new_objs != NULL) vtp0_append(new_objs, new_line);
@@ -291,7 +297,7 @@ static int pcb_split_line(vtp0_t *cut_edges, vtp0_t *new_objs, pcb_line_t *line,
 					break; /* can't use the other point if we did a split here, because that changes the meaning of offsets */
 				}
 			case 1:
-				if ((io[0] != 0.0) && (io[0] != 1.0)) {
+				if (!near(io[0], 0.0) && !near(io[0], 1.0)) {
 					new_line = split_lp(line, io[0]);
 					numsplt++;
 					if (new_objs != NULL) vtp0_append(new_objs, new_line);
@@ -328,7 +334,7 @@ static int pcb_split_arc(vtp0_t *cut_edges, vtp0_t *new_objs, pcb_arc_t *arc, do
 		switch(p) {
 			case 0: continue; /* no intersection, skip to the next potential cutting edge */
 			case 2:
-				if ((io[1] != 0.0) && (io[1] != 1.0)) {
+				if (!near(io[1], 0.0) && !near(io[1], 1.0)) {
 					new_arc = split_arcp(arc, io[1]);
 					numsplt++;
 					if (new_objs != NULL) vtp0_append(new_objs, new_arc);
@@ -339,7 +345,7 @@ static int pcb_split_arc(vtp0_t *cut_edges, vtp0_t *new_objs, pcb_arc_t *arc, do
 					break; /* can't use the other point if we did a split here, because that changes the meaning of offsets */
 				}
 			case 1:
-				if ((io[0] != 0.0) && (io[0] != 1.0)) {
+				if (!near(io[0], 0.0) && !near(io[0], 1.0)) {
 					new_arc = split_arcp(arc, io[0]);
 					numsplt++;
 					if (new_objs != NULL) vtp0_append(new_objs, new_arc);
