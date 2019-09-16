@@ -128,12 +128,13 @@ TODO("print");
 	return -1;
 }
 
-static const char pcb_acts_IDP[] = "IDP([print|free], idpath)\n";
+static const char pcb_acts_IDP[] = "IDP([print|free|dup], idpath)\n";
 static const char pcb_acth_IDP[] = "Basic idpath manipulation.";
 static fgw_error_t pcb_act_IDP(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *cmd;
 	pcb_idpath_t *idp;
+	pcb_any_obj_t *obj;
 
 	PCB_ACT_CONVARG(1, FGW_STR, IDP, cmd = argv[1].val.str);
 	PCB_ACT_CONVARG(2, FGW_IDPATH, IDPList, idp = fgw_idpath(&argv[2]));
@@ -147,6 +148,13 @@ static fgw_error_t pcb_act_IDP(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			fgw_ptr_unreg(&pcb_fgw, &argv[2], PCB_PTR_DOMAIN_IDPATH);
 			free(idp);
 			PCB_ACT_IRES(0);
+			return 0;
+
+		case act_read_keywords_dup:
+			obj = pcb_idpath2obj(PCB, idp);
+			idp = pcb_obj2idpath(obj);
+			res->type = FGW_IDPATH;
+			fgw_ptr_reg(&pcb_fgw, res, PCB_PTR_DOMAIN_IDPATH, FGW_PTR | FGW_STRUCT, idp);
 			return 0;
 
 		case act_read_keywords_print:
