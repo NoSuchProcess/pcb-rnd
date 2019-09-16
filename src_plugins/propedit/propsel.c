@@ -118,6 +118,7 @@ static void map_common(void *ctx, pcb_any_obj_t *obj)
 static void map_board(pcb_propedit_t *ctx, pcb_board_t *pcb)
 {
 	map_add_prop(ctx, "p/board/name",   String, pcb->hidlib.name);
+	map_add_prop(ctx, "p/board/filename",   String, pcb->hidlib.filename);
 	map_add_prop(ctx, "p/board/width", pcb_coord_t, pcb->hidlib.size_x);
 	map_add_prop(ctx, "p/board/height", pcb_coord_t, pcb->hidlib.size_y);
 	map_attr(ctx, &pcb->Attributes);
