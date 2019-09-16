@@ -352,6 +352,12 @@ static void set_board(pcb_propset_ctx_t *st, pcb_board_t *pcb)
 		if ((strcmp(pn, "name") == 0) &&
 		    (pcb_board_change_name(pcb_strdup(st->s)))) DONE;
 
+		if ((strcmp(pn, "filename") == 0)) {
+			free(pcb->hidlib.filename);
+			pcb->hidlib.filename = pcb_strdup(st->s);
+			DONE;
+		}
+
 		if (st->c_valid && (strcmp(pn, "width") == 0) &&
 		    brd_resize(st->c, PCB->hidlib.size_y)) DONE;
 
