@@ -154,7 +154,7 @@ static void prop_scope_finish(pcb_propedit_t *pe)
 extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
 
 static const char pcb_acts_propset[] = "propset([scope], name, value)";
-static const char pcb_acth_propset[] = "Change the named property of all selected objects to/by value. Scope is documented at PropEdit().";
+static const char pcb_acth_propset[] = "Change the named property of scope or all selected objects to/by value. Scope is documented at PropEdit().";
 fgw_error_t pcb_act_propset(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *first, *name, *val;
@@ -178,6 +178,79 @@ fgw_error_t pcb_act_propset(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	prop_scope_finish(&ctx);
 	pcb_props_uninit(&ctx);
 	return 0;
+}
+
+static const char pcb_acts_propget[] = "propset([scope], name, [stattype])";
+static const char pcb_acth_propget[] = "Return the named property of scope or all selected objects to/by value. Scope is documented at PropEdit().";
+fgw_error_t pcb_act_propget(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *first, *name, *stty = "common";
+	pcb_propedit_t ctx;
+	pcb_props_t *p;
+	pcb_propval_t *out, most_common, min, max, avg;
+	htprop_entry_t *e;
+	int r;
+
+	pcb_props_init(&ctx, PCB);
+
+	PCB_ACT_CONVARG(1, FGW_STR, propget, first = argv[1].val.str);
+	if (prop_scope_add(&ctx, first, 1) == 0) {
+		PCB_ACT_CONVARG(2, FGW_STR, propget, name = argv[2].val.str);
+		PCB_ACT_MAY_CONVARG(3, FGW_STR, propget, stty = argv[3].val.str);
+	}
+	else {
+		name = first;
+		ctx.selection = 1;
+		PCB_ACT_CONVARG(2, FGW_STR, propget, stty = argv[2].val.str);
+	}
+
+	pcb_propsel_map_core(&ctx);
+
+	p = htsp_get(&ctx.props, name);
+	if (p == NULL)
+		goto error;
+
+	if (p->type == PCB_PROPT_STRING)
+		r = pcb_props_stat(&ctx, p, &most_common, NULL, NULL, NULL);
+	else
+		r = pcb_props_stat(&ctx, p, &most_common, &min, &max, &avg);
+
+	if (r != 0)
+		goto error;
+
+	if (strcmp(stty, "common") == 0) out = &most_common;
+	else if (strcmp(stty, "min") == 0) out = &min;
+	else if (strcmp(stty, "max") == 0) out = &max;
+	else if (strcmp(stty, "avg") == 0) out = &avg;
+	else goto error;
+
+	switch(p->type) {
+		case PCB_PROPT_STRING:
+			if (out != &most_common)
+				goto error;
+
+			/* get the first one for now */
+			e = htprop_first(&p->values);
+			most_common = e->key;
+			res->type = FGW_STR | FGW_DYN;
+			res->val.str = pcb_strdup(out->string == NULL ? "" : out->string);
+			break;
+		case PCB_PROPT_COORD: res->type = FGW_COORD; fgw_coord(res) = out->coord; break;
+		case PCB_PROPT_ANGLE: res->type = FGW_DOUBLE; res->val.nat_double = out->angle; break;
+		case PCB_PROPT_BOOL:
+		case PCB_PROPT_INT:   res->type = FGW_INT; res->val.nat_int = out->i; break;
+		case PCB_PROPT_COLOR: res->type = FGW_STR | FGW_DYN; res->val.str = pcb_strdup(out->clr.str); break;
+		case PCB_PROPT_invalid:
+		case PCB_PROPT_max: goto error;
+	}
+	prop_scope_finish(&ctx);
+	pcb_props_uninit(&ctx);
+	return 0;
+
+	error:;
+	prop_scope_finish(&ctx);
+	pcb_props_uninit(&ctx);
+	return FGW_ERR_ARG_CONV;
 }
 
 static const char pcb_acts_propprint[] = "PropPrint([scope])";
@@ -243,7 +316,8 @@ static const char *propedit_cookie = "propedit";
 pcb_action_t propedit_action_list[] = {
 	{"propedit", pcb_act_propedit, pcb_acth_propedit, pcb_acts_propedit},
 	{"propprint", pcb_act_propprint, pcb_acth_propprint, pcb_acts_propprint},
-	{"propset", pcb_act_propset, pcb_acth_propset, pcb_acts_propset}
+	{"propset", pcb_act_propset, pcb_acth_propset, pcb_acts_propset},
+	{"propget", pcb_act_propget, pcb_acth_propget, pcb_acts_propget}
 };
 
 PCB_REGISTER_ACTIONS(propedit_action_list, propedit_cookie)
