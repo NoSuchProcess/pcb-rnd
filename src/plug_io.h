@@ -144,7 +144,7 @@ int pcb_save_buffer_subcs(const char *, const char *fmt, long subc_idx);
 int pcb_save_buffer(const char *Filename, const char *fmt);
 void pcb_print_quoted_string_(FILE *, const char *); /* without wrapping in "" */
 void pcb_print_quoted_string(FILE *, const char *); /* with wrapping in "" */
-int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool emergency, pcb_bool subc_only, long subc_idx);
+int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool emergency, pcb_bool subc_only, long subc_idx, int askovr);
 void pcb_set_design_dir(const char *fn);
 int pcb_load_buffer(pcb_hidlib_t *hidlib, pcb_buffer_t *buff, const char *fn, const char *fmt);
 
