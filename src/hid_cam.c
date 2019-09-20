@@ -346,7 +346,7 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, cons
 	layervis_save_and_reset(dst);
 
 
-	/* Syntax: fn=layergrp,layergrp,layergrp;--opt=val;--opt=val */
+	/* Syntax: fn=layergrp,layergrp(opt=val,opt=val),layergrp */
 	/* parse: get file name name */
 	next = strchr(dst->inst, '=');
 	if (next == NULL) {
@@ -500,6 +500,7 @@ static int cam_update_name_cb(void *ctx_, gds_t *s, const char **input);
 
 void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, const char *src, const char **fn_out)
 {
+	char *eq;
 	cam_name_ctx_t ctx;
 
 	memset(dst, 0, sizeof(pcb_cam_t));
@@ -509,21 +510,36 @@ void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xf
 		cam_xform_init(dst_xform);
 
 	if (src != NULL) {
-		if (strchr(src, '=') != NULL) {
-			char *start, *end;
-			src++;
+		eq = strchr(src, '=');
+		if (eq != NULL) {
+			char *start;
+			eq++;
 			start = strchr(src, '(');
-			if ((start != src) || (start == NULL))  {
-				pcb_message(PCB_MSG_ERROR, "global exporter --cam doesn't take '=' and layers, only a file name\n");
+			if ((start != eq) || (start == NULL))  {
+				pcb_message(PCB_MSG_ERROR, "global exporter --cam doesn't take layers, only a file name and optionally global supplements\n");
 			}
 			if (start != NULL) { /* parse supplements for global xform */
-/*static void parse_layer_supplements(char **spk, char **spv, int spc,   char **purpose, pcb_xform_t **xf, pcb_xform_t *xf_)*/
+				char *tmp;
+				char *spk[64], *spv[64], *end, *purpose = NULL;
+				int spc = sizeof(spk) / sizeof(spk[0]);
+				pcb_xform_t *dummy;
+
+				tmp = pcb_strdup(start);
+				end = parse_layer(start, spk, spv, &spc);
+				if ((end != NULL) && (*end != '\0'))
+					pcb_message(PCB_MSG_ERROR, "global exporter --cam takes only one set of global supplements\n");
+				parse_layer_supplements(spk, spv, spc, &purpose, &dummy, dst_xform);
+				if (purpose != NULL)
+					pcb_message(PCB_MSG_ERROR, "global exporter --cam ignores layer purpose\n");
+				free(tmp);
 			}
 		}
 
 
-
 		dst->fn_template = pcb_strdup(src);
+		eq = strchr(dst->fn_template, '=');
+		if (eq != NULL)
+			*eq = '\0';
 
 		memset(&ctx, 0, sizeof(ctx));
 		ctx.cam = dst;
