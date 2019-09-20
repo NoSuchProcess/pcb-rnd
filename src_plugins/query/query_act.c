@@ -210,9 +210,19 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	if (strcmp(cmd, "select") == 0) {
+	if ((strcmp(cmd, "select") == 0) || (strncmp(cmd, "setflag:", 8) == 0)) {
 		sel.how = PCB_CHGFLG_SET;
 		sel.what = PCB_FLAG_SELECTED;
+
+		if (cmd[3] == 'f') {
+			pcb_flag_t flg = pcb_strflg_s2f(cmd + 8, NULL, NULL, 0);
+			sel.what = flg.f;
+			if (sel.what == 0) {
+				pcb_message(PCB_MSG_ERROR, "Invalid flag '%s'\n", cmd+8);
+				PCB_ACT_IRES(0);
+				return 0;
+			}
+		}
 
 		PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
 		PCB_ACT_MAY_CONVARG(3, FGW_STR, query, scope = argv[3].val.str);
@@ -227,8 +237,19 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	if (strcmp(cmd, "unselect") == 0) {
+	if ((strcmp(cmd, "unselect") == 0) || (strncmp(cmd, "unsetflag:", 10) == 0)) {
 		sel.how = PCB_CHGFLG_CLEAR;
+		sel.what = PCB_FLAG_SELECTED;
+
+		if (cmd[5] == 'f') {
+			pcb_flag_t flg = pcb_strflg_s2f(cmd + 10, NULL, NULL, 0);
+			sel.what = flg.f;
+			if (sel.what == 0) {
+				pcb_message(PCB_MSG_ERROR, "Invalid flag '%s'\n", cmd+8);
+				PCB_ACT_IRES(0);
+				return 0;
+			}
+		}
 
 		PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
 		PCB_ACT_MAY_CONVARG(3, FGW_STR, query, scope = argv[3].val.str);
