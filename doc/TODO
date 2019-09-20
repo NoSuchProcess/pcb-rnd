@@ -1,13 +1,21 @@
 0. old, still waiting for ack
-
-1. For the upcoming release ===============================================================================
 + CLEANUP: Vuokko's list of warnings on OpenBSD: bug_files/warn-obsd-r26600.log [report: Vuokko]
 + CLEANUP/feature: pcb_subc_smash_buffer() should really copy data so it can smash multiple subcs and subc objects end up on the layer they were bound to [report: keantoken]
 + CLEANUP: unify gui invocation option printout: pcb-rnd --help gtk_[gdk|gl] and pcb-rnd --help lesstif should use the same style printing options (even tho options will never be the same) [report:miloh]
-- FEATURE: parametric footprints: update fp2anim so the web page works again
 + FEATURE: net attributes GUI [report: Ade]
 	+ propedty editor: net scope
 	+ button from the netlist dialog
++ asm() dialog
+	+ FEATURE: Add a button to clear the done status from a component. [report: Ade]
+	+ FEATURE: Show the status message on a group when minimized to indicate whether the groups components are done, not done or partially done. [report: Ade]
+	+ FEATURE: If a component is out of view when selected then pan the view until it is visible. May need to zoom also if a group is selected. [report: Ade]
++ FEATURE: connection check separator in log: bug_files/connreq.txt [report: keantoken]
++ FEATURE: extend the CAM job script syntax so that XY and other non-layer exporters can be called [report: celem]
++ FEATURE: extedit: when editing subc with pcb, save configuration and load it in the external pcb-rnd so that grid sizes and other settings are preserved [report: jg]
++ FEATURE/BUG: old gtk doesn't have GDK_Key_* but GDK_* (e.g. GDK_Tab); detect this in scconfig, use a wrapper macro in gtk code [report: Ade]
+
+1. For the upcoming release ===============================================================================
+- FEATURE: parametric footprints: update fp2anim so the web page works again
 - FEATURE: new breadboard
 	- FEATURE: hidlib: render pixmap
 	- FEATURE: optional subc pixmaps from attributes
@@ -31,19 +39,11 @@
 - DOC: finish DAD doc (doc/developer/dad/: e.g. run.html is missing) [report: Alain]
 - FEATURE: configure setting: library window filter shouldn't really filter if there's () in the string [report: pskibinski]
 - FEATURE: io_tedax: tEDAx netlist load should import and write pinname [report: Ade]
-+ asm() dialog
-	+ FEATURE: Add a button to clear the done status from a component. [report: Ade]
-	+ FEATURE: Show the status message on a group when minimized to indicate whether the groups components are done, not done or partially done. [report: Ade]
-	+ FEATURE: If a component is out of view when selected then pan the view until it is visible. May need to zoom also if a group is selected. [report: Ade]
 - CAM:
 	- FEATURE: make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file (for support for plugged vias/filled vias) [report: Vuokko]
 	- FEATURE: invent a generic API for both the drill attrib config table
 	- CLEANUP: in ~2020: remove the hackish gerber layer suffix and auto-excellon in favor of CAM [report: Ade]
 - FEATURE: edakrill script for growing line thickness keeping the line on one side (side alignment) [report: keantoken]
-+ FEATURE: connection check separator in log: bug_files/connreq.txt [report: keantoken]
-+ FEATURE: extend the CAM job script syntax so that XY and other non-layer exporters can be called [report: celem]
-+ FEATURE: extedit: when editing subc with pcb, save configuration and load it in the external pcb-rnd so that grid sizes and other settings are preserved [report: jg]
-+ FEATURE/BUG: old gtk doesn't have GDK_Key_* but GDK_* (e.g. GDK_Tab); detect this in scconfig, use a wrapper macro in gtk code [report: Ade]
 
 2. For later releases ===============================================================================
 - CLEANUP: actions must get (hidlib *) in some way that doesn't ruin compatibility - remove TODO("#hl1:...") [report: Igor2]
