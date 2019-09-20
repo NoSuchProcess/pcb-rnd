@@ -12,10 +12,10 @@
 	- FEATURE: hidlib: render pixmap
 	- FEATURE: optional subc pixmaps from attributes
 	- DOC: pool node on how to use pixmap for breadboading
-- CLEANUP: pcb_term_add() and pcb_term_del() should not be called from undo code but from attribute change callback [report: Matt]
-	- BUG: undo_term_rename_swap() shall not require subc [report: Matt]
-- BUG: switching away from rat layer using the layer selector leaves us on the rat layer, drawing rats with no grid [report: Matt]
-- BUG: kicad5: bug_files/5.kicad_pcb doesn't load: (path /5D7245F8) [report: Matt]
+- CLEANUP: pcb_term_add() and pcb_term_del() should not be called from undo code but from attribute change callback [report: Majenko]
+	- BUG: undo_term_rename_swap() shall not require subc [report: Majenko]
+- BUG: switching away from rat layer using the layer selector leaves us on the rat layer, drawing rats with no grid [report: Majenko]
+- BUG: kicad5: bug_files/5.kicad_pcb doesn't load: (path /5D7245F8) [report: Majenko]
 - BUG: second click on mesh() generate button -> segfault on layer visibility [report: Evan]
 - BUG: ipcd356 export on 7805.lht segfaults on a rectangular poly pad [report: Igor2]
 - BUG: parametric dialog: double click dip() in the tree; close the parametric dialog; click dip() again; edit n -> the parameter string in the filter text is ruined [report: Piotr]
@@ -26,7 +26,7 @@
 - BUG: unit dialog in DAD coord spinbox: select a unit, global gets unchecked -> can not check global back in [report: Piotr]
 - BUG: open bug_files/12.lht; save as kicad legacy; closing the incompatibility warning dialog triggers valgrind invalid free/write errors [report: Igor2]
 - BUG: png, eps (and probably other exporters) export the assy layer if the group exists, even if it is not visible on the GUI [report: Igor2]
-- BUG: "save layout as", "guess format" is on by default, change the file extension in name to lht; format: combo changes correctly. But it doesn't *actually* change the format (may need an alien format loaded first) [report: Matt]
+- BUG: "save layout as", "guess format" is on by default, change the file extension in name to lht; format: combo changes correctly. But it doesn't *actually* change the format (may need an alien format loaded first) [report: Majenko]
 - BUG: export CAM job causes pcb-rnd to exit regardless of selected CAM format if padstack has no apertures, i.e. is a hole, due to attempt to create zero sized aperture "error: aperture for width 0 type ROUND is null", see bug_files/CAM_crash_holey_padstack.lht [report: Erich]
 - DOC: finish DAD doc (doc/developer/dad/: e.g. run.html is missing) [report: Alain]
 - FEATURE: configure setting: library window filter shouldn't really filter if there's () in the string [report: pskibinski]
@@ -47,7 +47,7 @@
 
 2. For later releases ===============================================================================
 - CLEANUP: actions must get (hidlib *) in some way that doesn't ruin compatibility - remove TODO("#hl1:...") [report: Igor2]
-- CLEANUP/BUG: globalconst.h: PCB_MIN_LINESIZE shall be 1 but rather remove it alltogether; revise other minimums as well and rather update the coord spin DAD to make the limit or maybe use a double-to-coord macro that checks 0..maxcoord (or -maxcoord..maxcoord for some cases) ml:3351 [report: Matt]
+- CLEANUP/BUG: globalconst.h: PCB_MIN_LINESIZE shall be 1 but rather remove it alltogether; revise other minimums as well and rather update the coord spin DAD to make the limit or maybe use a double-to-coord macro that checks 0..maxcoord (or -maxcoord..maxcoord for some cases) ml:3351 [report: Majenko]
 - CLEANUP: (TT) propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
@@ -92,7 +92,7 @@
 	- CLEANUP: remove PCB_MIN_PINORVIA* PCB_DEFAULT_DRILLINGHOLE macros - nothing should use them anymore
 	- add text font, update the pool node text_edit [report: Igor2]
 - BUG: autorouter broke on polygons: bug_files/ara.lht, {a r a}, bisect; broke before r14572 [report: Igor2]
-- FEATURE: parametric footprint: bool parameter should display as checkbox in the library/parametric window [report: Matt]
+- FEATURE: parametric footprint: bool parameter should display as checkbox in the library/parametric window [report: Majenko]
 - FEATURE: fontsel: ttf import?
 - FEATURE/BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
 - FEATURE: view list: import sch. shouldn't select elements to be removed but put them on a drc list
