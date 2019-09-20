@@ -313,6 +313,10 @@ static void parse_layer_supplements(char **spk, char **spv, int spc,   char **pu
 			else
 				pcb_message(PCB_MSG_ERROR, "CAM: ignoring invalid layer supplement value '%s' for bloat\n", val);
 		}
+		else if (strcmp(key, "partial") == 0) {
+			xf_->partial_export = 1;
+			*xf = xf_;
+		}
 		else
 			pcb_message(PCB_MSG_ERROR, "CAM: ignoring unknown layer supplement key '%s'\n", key);
 	}
