@@ -276,7 +276,7 @@ static void bom_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (!bom_filename)
 		bom_filename = "pcb-out.bom";
 
-	pcb_cam_begin_nolayer(PCB, &cam, options[HA_cam].str, &bom_filename);
+	pcb_cam_begin_nolayer(PCB, &cam, NULL, options[HA_cam].str, &bom_filename);
 
 	PrintBOM();
 	pcb_cam_end(&cam);

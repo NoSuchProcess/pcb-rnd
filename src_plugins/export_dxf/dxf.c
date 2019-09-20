@@ -211,7 +211,7 @@ static pcb_export_opt_t *dxf_get_export_options(pcb_hid_t *hid, int *n)
 	return dxf_attribute_list;
 }
 
-void dxf_hid_export_to_file(dxf_ctx_t *ctx, pcb_hid_attr_val_t * options)
+void dxf_hid_export_to_file(dxf_ctx_t *ctx, pcb_hid_attr_val_t * options, pcb_xform_t *xform)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	pcb_hid_expose_ctx_t hectx;
@@ -234,7 +234,7 @@ void dxf_hid_export_to_file(dxf_ctx_t *ctx, pcb_hid_attr_val_t * options)
 	dxf_ctx.drill_fill = options[HA_drill_fill].lng;
 	dxf_ctx.drill_contour = options[HA_drill_contour].lng;
 
-	pcbhl_expose_main(&dxf_hid, &hectx, NULL);
+	pcbhl_expose_main(&dxf_hid, &hectx, xform);
 
 	pcb_conf_update(NULL, -1); /* restore forced sets */
 }
@@ -273,6 +273,7 @@ static void dxf_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	const char *fn;
 	char *errmsg;
 	lht_err_t err;
+	pcb_xform_t xform;
 
 	if (!options) {
 		dxf_get_export_options(hid, 0);
@@ -281,7 +282,7 @@ static void dxf_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = dxf_values;
 	}
 
-	pcb_cam_begin(PCB, &dxf_cam, options[HA_cam].str, dxf_attribute_list, NUM_OPTIONS, options);
+	pcb_cam_begin(PCB, &dxf_cam, &xform, options[HA_cam].str, dxf_attribute_list, NUM_OPTIONS, options);
 
 	filename = options[HA_dxffile].str;
 	if (!filename)
@@ -326,7 +327,7 @@ static void dxf_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (!dxf_cam.active)
 		pcb_hid_save_and_show_layer_ons(save_ons);
 
-	dxf_hid_export_to_file(&dxf_ctx, options);
+	dxf_hid_export_to_file(&dxf_ctx, options, &xform);
 
 	if (!dxf_cam.active)
 		pcb_hid_restore_layer_ons(save_ons);

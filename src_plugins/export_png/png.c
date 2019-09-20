@@ -524,12 +524,11 @@ static void png_foot(void)
 		fprintf(stderr, "Error:  Invalid graphic file format." "  This is a bug.  Please report it.\n");
 }
 
-void png_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options)
+void png_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options, pcb_xform_t *xform)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	pcb_box_t tmp, region;
 	pcb_hid_expose_ctx_t ctx;
-	pcb_xform_t *xform = NULL, xform_tmp;
 
 	f = the_file;
 
@@ -573,9 +572,7 @@ void png_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options)
 
 	if (as_shown) {
 		/* disable (exporter default) hiding overlay in as_shown */
-		memset(&xform_tmp, 0, sizeof(xform_tmp));
-		xform = &xform_tmp;
-		xform_tmp.omit_overlay = 0;
+		xform->omit_overlay = 0;
 	}
 
 	ctx.view = *bounds;
@@ -608,6 +605,7 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	pcb_box_t tmp, *bbox;
 	int w, h;
 	int xmax, ymax, dpi;
+	pcb_xform_t xform;
 
 	png_free_cache();
 
@@ -618,7 +616,7 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = png_values;
 	}
 
-	pcb_cam_begin(PCB, &png_cam, options[HA_cam].str, png_attribute_list, NUM_OPTIONS, options);
+	pcb_cam_begin(PCB, &png_cam, &xform, options[HA_cam].str, png_attribute_list, NUM_OPTIONS, options);
 
 	if (options[HA_photo_mode].lng) {
 		photo_mode = 1;
@@ -755,7 +753,7 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if ((!png_cam.active) && (!options[HA_as_shown].lng))
 		pcb_hid_save_and_show_layer_ons(save_ons);
 
-	png_hid_export_to_file(f, options);
+	png_hid_export_to_file(f, options, &xform);
 
 	if ((!png_cam.active) && (!options[HA_as_shown].lng))
 		pcb_hid_restore_layer_ons(save_ons);

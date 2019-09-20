@@ -214,13 +214,12 @@ static void eps_print_footer(FILE *f)
 	fprintf(f, "%%%%EOF\n");
 }
 
-void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t *options)
+void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t *options, pcb_xform_t *xform)
 {
 	int i;
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	pcb_box_t tmp, region;
 	pcb_hid_expose_ctx_t ctx;
-	pcb_xform_t *xform = NULL, xform_tmp;
 
 	options_ = options;
 
@@ -299,9 +298,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t *options)
 
 	if (as_shown) {
 		/* disable (exporter default) hiding overlay in as_shown */
-		memset(&xform_tmp, 0, sizeof(xform_tmp));
-		xform = &xform_tmp;
-		xform_tmp.omit_overlay = 0;
+		xform->omit_overlay = 0;
 	}
 
 	ctx.view = *bounds;
@@ -318,6 +315,7 @@ static void eps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 {
 	int i;
 	int save_ons[PCB_MAX_LAYER];
+	pcb_xform_t xform;
 
 	if (!options) {
 		eps_get_export_options(hid, 0);
@@ -326,7 +324,7 @@ static void eps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = eps_values;
 	}
 
-	pcb_cam_begin(PCB, &eps_cam, options[HA_cam].str, eps_attribute_list, NUM_OPTIONS, options);
+	pcb_cam_begin(PCB, &eps_cam, &xform, options[HA_cam].str, eps_attribute_list, NUM_OPTIONS, options);
 
 	filename = options[HA_psfile].str;
 	if (!filename)
@@ -344,7 +342,7 @@ static void eps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	if ((!eps_cam.active) && (!options[HA_as_shown].lng))
 		pcb_hid_save_and_show_layer_ons(save_ons);
-	eps_hid_export_to_file(f, options);
+	eps_hid_export_to_file(f, options, &xform);
 	if ((!eps_cam.active) && (!options[HA_as_shown].lng))
 		pcb_hid_restore_layer_ons(save_ons);
 

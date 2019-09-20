@@ -209,11 +209,10 @@ static pcb_export_opt_t *svg_get_export_options(pcb_hid_t *hid, int *n)
 	return svg_attribute_list;
 }
 
-void svg_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
+void svg_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options, pcb_xform_t *xform)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	pcb_hid_expose_ctx_t ctx;
-	pcb_xform_t *xform = NULL, xform_tmp;
 
 	ctx.view.X1 = 0;
 	ctx.view.Y1 = 0;
@@ -257,9 +256,7 @@ void svg_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 
 	if (options[HA_as_shown].lng) {
 		/* disable (exporter default) hiding overlay in as_shown */
-		memset(&xform_tmp, 0, sizeof(xform_tmp));
-		xform = &xform_tmp;
-		xform_tmp.omit_overlay = 0;
+		xform->omit_overlay = 0;
 	}
 
 	pcbhl_expose_main(&svg_hid, &ctx, xform);
@@ -328,6 +325,7 @@ static void svg_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	const char *filename;
 	int save_ons[PCB_MAX_LAYER];
 	int i;
+	pcb_xform_t xform;
 
 	comp_cnt = 0;
 
@@ -338,7 +336,7 @@ static void svg_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = svg_values;
 	}
 
-	pcb_cam_begin(PCB, &svg_cam, options[HA_cam].str, svg_attribute_list, NUM_OPTIONS, options);
+	pcb_cam_begin(PCB, &svg_cam, &xform, options[HA_cam].str, svg_attribute_list, NUM_OPTIONS, options);
 
 	if (svg_cam.fn_template == NULL) {
 		filename = options[HA_svgfile].str;
@@ -358,7 +356,7 @@ static void svg_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (!svg_cam.active)
 		pcb_hid_save_and_show_layer_ons(save_ons);
 
-	svg_hid_export_to_file(f, options);
+	svg_hid_export_to_file(f, options, &xform);
 
 	if (!svg_cam.active)
 		pcb_hid_restore_layer_ons(save_ons);

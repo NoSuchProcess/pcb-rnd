@@ -28,7 +28,7 @@ typedef struct pcb_cam_s {
 	int exported_grps;
 } pcb_cam_t;
 
-int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_export_opt_t *attr_tbl, int numa, pcb_hid_attr_val_t *options);
+int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, const char *src, const pcb_export_opt_t *attr_tbl, int numa, pcb_hid_attr_val_t *options);
 
 /* Finish cam export, free all memory, mark cam export inactive and report
    the number of layer groups exported */
@@ -36,7 +36,7 @@ int pcb_cam_end(pcb_cam_t *dst);
 
 /* load *fn_out with the cam-requested output file name in cam mode; useful
    for non layer based exporters */
-void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const char **fn_out);
+void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, const char *src, const char **fn_out);
 
 
 /* Shall be the first rule in a cam capable exporter's set_layer_group()

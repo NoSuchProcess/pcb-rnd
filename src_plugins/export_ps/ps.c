@@ -521,7 +521,7 @@ static FILE *psopen(const char *base, const char *which)
 
 /* This is used by other HIDs that use a postscript format, like lpr
    or eps.  */
-void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
+void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options, pcb_xform_t *xform)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
 
@@ -592,13 +592,13 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 
 		global.doing_toc = 1;
 		global.pagecount = 1;				/* 'pagecount' is modified by pcbhl_expose_main() call */
-		pcbhl_expose_main(&ps_hid, &global.exps, NULL);
+		pcbhl_expose_main(&ps_hid, &global.exps, xform);
 	}
 
 	global.pagecount = 1;					/* Reset 'pagecount' if single file */
 	global.doing_toc = 0;
 	ps_set_layer_group(pcb_render, -1, NULL, -1, -1, 0, -1, NULL); /* reset static vars */
-	pcbhl_expose_main(&ps_hid, &global.exps, NULL);
+	pcbhl_expose_main(&ps_hid, &global.exps, xform);
 
 	if (the_file)
 		fprintf(the_file, "showpage\n");
@@ -612,6 +612,7 @@ static void ps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	FILE *fh;
 	int save_ons[PCB_MAX_LAYER];
 	int i;
+	pcb_xform_t xform;
 
 	global.ovr_all = 0;
 
@@ -622,7 +623,7 @@ static void ps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = global.ps_values;
 	}
 
-	pcb_cam_begin(PCB, &ps_cam, options[HA_cam].str, ps_attribute_list, NUM_OPTIONS, options);
+	pcb_cam_begin(PCB, &ps_cam, &xform, options[HA_cam].str, ps_attribute_list, NUM_OPTIONS, options);
 
 	global.filename = options[HA_psfile].str;
 	if (!global.filename)
@@ -651,7 +652,7 @@ static void ps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	if (!ps_cam.active)
 		pcb_hid_save_and_show_layer_ons(save_ons);
-	ps_hid_export_to_file(fh, options);
+	ps_hid_export_to_file(fh, options, &xform);
 	if (!ps_cam.active)
 		pcb_hid_restore_layer_ons(save_ons);
 

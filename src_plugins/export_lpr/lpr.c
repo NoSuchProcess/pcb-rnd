@@ -88,7 +88,7 @@ static void lpr_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		return;
 	}
 
-	ps_hid_export_to_file(f, options);
+	ps_hid_export_to_file(f, options, NULL);
 
 	pcb_pclose(f);
 }

@@ -587,7 +587,7 @@ static void dsn_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (!dsn_filename)
 		dsn_filename = "pcb-out.dsn";
 
-	pcb_cam_begin_nolayer(PCB, &cam, options[HA_cam].str, &dsn_filename);
+	pcb_cam_begin_nolayer(PCB, &cam, NULL, options[HA_cam].str, &dsn_filename);
 
 	trackwidth = options[HA_trackwidth].crd;
 	clearance = options[HA_clearance].crd;

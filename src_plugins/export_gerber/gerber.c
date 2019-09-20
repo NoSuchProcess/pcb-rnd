@@ -520,6 +520,7 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	int save_ons[PCB_MAX_LAYER];
 	pcb_hid_expose_ctx_t ctx;
+	pcb_xform_t xform;
 
 	gerber_ovr = 0;
 
@@ -549,7 +550,7 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	pcb_printf_slot[4] = gerber_cfmt->cfmt;
 	pcb_printf_slot[5] = gerber_cfmt->afmt;
 
-	pcb_cam_begin(PCB, &gerber_cam, options[HA_cam].str, gerber_options, NUM_OPTIONS, options);
+	pcb_cam_begin(PCB, &gerber_cam, &xform, options[HA_cam].str, gerber_options, NUM_OPTIONS, options);
 
 	fnbase = options[HA_gerberfile].str;
 	if (!fnbase)
@@ -592,12 +593,12 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	lastgroup = -1;
 	layer_list_idx = 0;
 	finding_apertures = 1;
-	pcbhl_expose_main(&gerber_hid, &ctx, NULL);
+	pcbhl_expose_main(&gerber_hid, &ctx, &xform);
 
 	lastgroup = -2;
 	layer_list_idx = 0;
 	finding_apertures = 0;
-	pcbhl_expose_main(&gerber_hid, &ctx, NULL);
+	pcbhl_expose_main(&gerber_hid, &ctx, &xform);
 
 	memcpy(pcb_layer_stack, saved_layer_stack, sizeof(pcb_layer_stack));
 

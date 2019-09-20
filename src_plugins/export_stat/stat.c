@@ -157,7 +157,7 @@ static void stat_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (!filename)
 		filename = "pcb.stat.lht";
 
-	pcb_cam_begin_nolayer(PCB, &cam, options[HA_cam].str, &filename);
+	pcb_cam_begin_nolayer(PCB, &cam, NULL, options[HA_cam].str, &filename);
 
 	f = pcb_fopen_askovr(&PCB->hidlib, filename, "w", NULL);
 	if (!f) {

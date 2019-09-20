@@ -457,7 +457,7 @@ static void ipcd356_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (fn == NULL)
 		fn = "pcb-rnd-out.net";
 
-	pcb_cam_begin_nolayer(PCB, &cam, options[HA_cam].str, &fn);
+	pcb_cam_begin_nolayer(PCB, &cam, NULL, options[HA_cam].str, &fn);
 
 	f = pcb_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
 	if (f == NULL) {

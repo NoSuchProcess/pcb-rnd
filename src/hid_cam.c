@@ -318,11 +318,21 @@ static void parse_layer_supplements(char **spk, char **spv, int spc,   char **pu
 	}
 }
 
-int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const pcb_export_opt_t *attr_tbl, int numa, pcb_hid_attr_val_t *options)
+static void cam_xform_init(pcb_xform_t *dst_xform)
+{
+	memset(dst_xform, 0, sizeof(pcb_xform_t));
+	dst_xform->omit_overlay = 1; /* normally exporters shouldn't draw overlays */
+}
+
+
+int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, const char *src, const pcb_export_opt_t *attr_tbl, int numa, pcb_hid_attr_val_t *options)
 {
 	char *curr, *next, *purpose;
 
 	memset(dst, 0, sizeof(pcb_cam_t));
+
+	if (dst_xform != NULL)
+		cam_xform_init(dst_xform);
 
 	if ((src == NULL) || (*src == '\0'))
 		return 0;
@@ -484,12 +494,16 @@ typedef struct  {
 } cam_name_ctx_t;
 static int cam_update_name_cb(void *ctx_, gds_t *s, const char **input);
 
-void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, const char *src, const char **fn_out)
+void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, const char *src, const char **fn_out)
 {
 	cam_name_ctx_t ctx;
 
 	memset(dst, 0, sizeof(pcb_cam_t));
 	dst->pcb = pcb;
+
+	if (dst_xform != NULL)
+		cam_xform_init(dst_xform);
+
 	if (src != NULL) {
 		if (strchr(src, '=') != NULL)
 			pcb_message(PCB_MSG_ERROR, "global exporter --cam doesn't take '=' and layers, only a file name\n");

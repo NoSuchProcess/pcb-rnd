@@ -216,7 +216,7 @@ static void tedax_etest_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (!tedax_etest_filename)
 		tedax_etest_filename = "unknown.etest.tdx";
 
-	pcb_cam_begin_nolayer(PCB, &cam, options[HA_cam].str, &tedax_etest_filename);
+	pcb_cam_begin_nolayer(PCB, &cam, NULL, options[HA_cam].str, &tedax_etest_filename);
 
 
 	name = PCB->hidlib.name;

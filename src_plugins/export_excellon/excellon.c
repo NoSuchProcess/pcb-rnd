@@ -211,6 +211,7 @@ static void excellon_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	int i;
 	int save_ons[PCB_MAX_LAYER];
 	pcb_hid_expose_ctx_t ctx;
+	pcb_xform_t xform;
 
 	conf_force_set_bool(conf_core.editor.thin_draw, 0);
 	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
@@ -227,7 +228,7 @@ static void excellon_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = excellon_values;
 	}
 
-	pcb_cam_begin(PCB, &excellon_cam, options[HA_cam].str, excellon_options, NUM_OPTIONS, options);
+	pcb_cam_begin(PCB, &excellon_cam, &xform, options[HA_cam].str, excellon_options, NUM_OPTIONS, options);
 
 	fnbase = options[HA_excellonfile].str;
 	if (!fnbase)
@@ -248,11 +249,11 @@ static void excellon_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	lastwidth = -1;
 	finding_apertures = 1;
-	pcbhl_expose_main(&excellon_hid, &ctx, NULL);
+	pcbhl_expose_main(&excellon_hid, &ctx, &xform);
 
 	lastwidth = -1;
 	finding_apertures = 0;
-	pcbhl_expose_main(&excellon_hid, &ctx, NULL);
+	pcbhl_expose_main(&excellon_hid, &ctx, &xform);
 	pcb_conf_update(NULL, -1); /* resotre forced sets */
 
 
