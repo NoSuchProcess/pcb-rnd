@@ -758,6 +758,7 @@ static void pcb_draw_info_setup(pcb_draw_info_t *info, pcb_board_t *pcb)
 	info->pcb = pcb;
 	info->exporting = (pcb_render->exporter || pcb_render->printer);
 	info->export_name = pcb_render->name;
+	info->partial_export = 0;
 	if (info->exporting) {
 		strcpy(info->noexport_name, "noexport:");
 		strncpy(info->noexport_name+9, info->export_name, sizeof(info->noexport_name)-10);

@@ -269,6 +269,7 @@ do { \
 } while(0)
 
 #define pcb_hidden_floater(obj) (conf_core.editor.hide_names && PCB_FLAG_TEST(PCB_FLAG_FLOATER, (obj)))
+#define pcb_partial_export(obj,info) ((info)->partial_export && (!PCB_FLAG_TEST(PCB_FLAG_EXPORTSEL, (obj))))
 
 /* Returns whether a subc part object is editable (not under the subc lock) */
 #define pcb_subc_part_editable(pcb, obj) \

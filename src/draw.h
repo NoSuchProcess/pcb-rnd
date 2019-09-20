@@ -53,6 +53,7 @@ typedef enum {
 typedef struct pcb_draw_info_s {
 	pcb_board_t *pcb;
 	int exporting;                         /* 1 if doing an export, 0 if working to screen */
+	int partial_export;                    /* 1 if only objects with the EXPORTSEL flag should be drawn */
 	const char *export_name;               /* name of the export plugin */
 	char noexport_name[64];                /* "noexport:" attribute name rendered for the current exporter */
 	const pcb_box_t *drawn_area;
