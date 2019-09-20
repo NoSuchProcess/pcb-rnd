@@ -758,7 +758,6 @@ static void pcb_draw_info_setup(pcb_draw_info_t *info, pcb_board_t *pcb)
 	info->pcb = pcb;
 	info->exporting = (pcb_render->exporter || pcb_render->printer);
 	info->export_name = pcb_render->name;
-	info->partial_export = 0;
 	if (info->exporting) {
 		strcpy(info->noexport_name, "noexport:");
 		strncpy(info->noexport_name+9, info->export_name, sizeof(info->noexport_name)-10);
@@ -1096,9 +1095,6 @@ void pcbhl_expose_main(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx, pcb_xfo
 			xform_main_exp.omit_overlay = 1; /* normally exporters shouldn't draw overlays */
 			info.xform_caller = &xform_main_exp;
 		}
-
-		if (xform_caller != NULL)
-			info.partial_export |= xform_caller->partial_export;
 
 		draw_everything(&info);
 		expose_end(&save);
