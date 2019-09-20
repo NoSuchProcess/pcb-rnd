@@ -90,6 +90,7 @@ static void eval_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 typedef struct {
 	pcb_cardinal_t cnt;
 	pcb_change_flag_t how;
+	pcb_flag_values_t what;
 } select_t;
 
 static void select_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
@@ -99,9 +100,9 @@ static void select_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current
 		return;
 	if (PCB_OBJ_IS_CLASS(current->type, PCB_OBJ_CLASS_OBJ)) {
 		int state_wanted = (sel->how == PCB_CHGFLG_SET);
-		int state_is     = PCB_FLAG_TEST(PCB_FLAG_SELECTED, current);
+		int state_is     = PCB_FLAG_TEST(sel->what, current);
 		if (state_wanted != state_is) {
-			PCB_FLAG_CHANGE(sel->how, PCB_FLAG_SELECTED, current);
+			PCB_FLAG_CHANGE(sel->how, sel->what, current);
 			sel->cnt++;
 		}
 	}
@@ -211,6 +212,7 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (strcmp(cmd, "select") == 0) {
 		sel.how = PCB_CHGFLG_SET;
+		sel.what = PCB_FLAG_SELECTED;
 
 		PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
 		PCB_ACT_MAY_CONVARG(3, FGW_STR, query, scope = argv[3].val.str);
