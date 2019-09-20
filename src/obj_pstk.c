@@ -630,6 +630,9 @@ pcb_r_dir_t pcb_pstk_draw_hole_callback(const pcb_box_t *b, void *cl)
 
 	pcb_obj_noexport(info, ps, return PCB_R_DIR_NOT_FOUND);
 
+	if (pcb_hidden_floater(ps) || pcb_partial_export(ps, info))
+		return PCB_R_DIR_FOUND_CONTINUE;
+
 	/* hide subc parts if requested */
 	if (!info->pcb->SubcPartsOn && pcb_gobj_parent_subc(ps->parent_type, &ps->parent))
 		return PCB_R_DIR_NOT_FOUND;
@@ -684,6 +687,9 @@ pcb_r_dir_t pcb_pstk_draw_slot_callback(const pcb_box_t *b, void *cl)
 	pcb_pstk_shape_t *shape;
 
 	pcb_obj_noexport(info, ps, return PCB_R_DIR_NOT_FOUND);
+
+	if (pcb_hidden_floater(ps) || pcb_partial_export(ps, info))
+		return PCB_R_DIR_FOUND_CONTINUE;
 
 	/* hide subc parts if requested */
 	if (!info->pcb->SubcPartsOn && pcb_gobj_parent_subc(ps->parent_type, &ps->parent))
