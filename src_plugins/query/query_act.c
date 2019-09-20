@@ -91,11 +91,11 @@ typedef struct {
 	pcb_cardinal_t cnt;
 	pcb_change_flag_t how;
 	pcb_flag_values_t what;
-} select_t;
+} flagop_t;
 
-static void select_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
+static void flagop_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 {
-	select_t *sel = (select_t *)user_ctx;
+	flagop_t *sel = (flagop_t *)user_ctx;
 	if (!pcb_qry_is_true(res))
 		return;
 	if (PCB_OBJ_IS_CLASS(current->type, PCB_OBJ_CLASS_OBJ)) {
@@ -167,7 +167,7 @@ static int run_script(const char *script, const char *scope, void (*cb)(void *us
 static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *cmd, *arg = NULL, *scope = NULL;
-	select_t sel;
+	flagop_t sel;
 
 	sel.cnt = 0;
 
@@ -217,7 +217,7 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
 		PCB_ACT_MAY_CONVARG(3, FGW_STR, query, scope = argv[3].val.str);
 
-		if (run_script(arg, scope, select_cb, &sel) < 0)
+		if (run_script(arg, scope, flagop_cb, &sel) < 0)
 			printf("Failed to run the query\n");
 		if (sel.cnt > 0) {
 			pcb_board_set_changed_flag(pcb_true);
@@ -233,7 +233,7 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
 		PCB_ACT_MAY_CONVARG(3, FGW_STR, query, scope = argv[3].val.str);
 
-		if (run_script(arg, scope, select_cb, &sel) < 0)
+		if (run_script(arg, scope, flagop_cb, &sel) < 0)
 			printf("Failed to run the query\n");
 		if (sel.cnt > 0) {
 			pcb_board_set_changed_flag(pcb_true);
