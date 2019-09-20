@@ -45,6 +45,9 @@
 
 static const char pcb_acts_query[] =
 	"query(dump, expr) - dry run: compile and dump an expression\n"
+	"query(eval, expr) - compile and evaluate an expression and print a list of results on stdout\n"
+	"query(select|unselect, expr) - select or unselect objects matching an expression\n"
+	"query(setflag:flag|unsetflag:flag, expr) - set or unset a named flag on objects matching an expression\n"
 	"query(append, idplist, expr) - compile and run expr and append the idpath of resulting objects on idplist\n"
 	;
 static const char pcb_acth_query[] = "Perform various queries on PCB data.";
