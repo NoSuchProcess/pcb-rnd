@@ -79,6 +79,7 @@ typedef enum {
 	PCB_FLAG_ONSILK       = 0x00400, /* Obsolete, old files used this to indicate lines drawn on silk. (Used by io_pcb for compatibility.) */
 	PCB_FLAG_OCTAGON      = 0x00800, /* legacy io_pcb only */
 	PCB_FLAG_DRC          = 0x01000, /* temporary, invisible */
+	PCB_FLAG_EXPORTSEL    = 0x01000, /* temporary, invisible: export selection (limit objects while CAM exporting) */
 	PCB_FLAG_LOCK         = 0x02000, /* user lock (no move, no edit) */
 	PCB_FLAG_EDGE2        = 0x04000, /* unused */
 	PCB_FLAG_VISIT        = 0x08000, /* marker to avoid re-visiting an object */

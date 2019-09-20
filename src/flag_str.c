@@ -79,6 +79,7 @@ pcb_flag_bits_t pcb_object_flagbits[] = {
 	{FN(PCB_FLAG_USETHERMAL),    N("usetherm"),      PCB_OBJ_CLASS_PIN | PCB_OBJ_LINE | PCB_OBJ_ARC, "Obsolete, indicates that pins/vias should be drawn with thermal fingers.", 0, 1},
 	{FN(PCB_FLAG_OCTAGON),       N("octagon"),       0, "Draw pins and vias as octagons.", 0, 0},
 	{FN(PCB_FLAG_DRC),           N("drc"),           PCB_OBJ_ANY, "Set for objects that fail DRC: flag like FOUND flag for DRC checking.", 0},
+	{FN(PCB_FLAG_EXPORTSEL),     N("exportsel"),     PCB_OBJ_ANY, "Set for objects that should be exported in a partial export.", 1},
 	{FN(PCB_FLAG_LOCK),          N("lock"),          PCB_OBJ_ANY, "Set for locked objects.", 0, 0},
 	{FN(PCB_FLAG_EDGE2),         N("edge2"),         PCB_OBJ_ANY, "For pads, indicates that the second point is closer to the edge.  For pins, indicates that the pin is closer to a horizontal edge and thus pinout text should be vertical. (Padr.Point2 is closer to outside edge also pinout text for pins is vertical)", 0, 1},
 	{FN(PCB_FLAG_FULLPOLY),      N("fullpoly"),      PCB_OBJ_POLY, "For polygons, the full polygon is drawn (i.e. all parts instead of only the biggest one).", 0, 0},
