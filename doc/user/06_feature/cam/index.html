@@ -52,6 +52,7 @@ Available supplements are:
 <ul>
 	<li> purpose: specify matching layer group purpose field
 	<li> bloat: bloat or shrink objects by the specified value (e.g. 1mm)
+	<li> <a href="#partial">partial</a>: only export objects with the EXPORTSEL flag set
 	<li> (TODO: supplement for inversion)
 </ul>
 <p>
@@ -101,11 +102,16 @@ layer groups in multiple files. For example:
 This section is about the syntax used by the exporters export global digest
 of the board and not layers (e.g. XY).
 <p>
-For these exporters the above apply with only the file name specified and all
-the rest from the '=' (including the '=') omitted. For example the XY exporter
-can be used with
+For these exporters the above apply with no layergrp specified. In the simplest
+for this means the '=' and the rest of the line is omitted. However, if
+supplement needs to be passed, the syntax is filename=(supplement).
+For example the XY exporter can be used with
 <pre>
 --cam foo.xy
+</pre>
+or a <a href="#partial">partial</a> excellon export can be done using:
+<pre>
+--cam foo.exc=(partial)
 </pre>
 <p>
 The --cam option in these exporters are implemented for two reasons:
@@ -113,6 +119,15 @@ The --cam option in these exporters are implemented for two reasons:
 	<li> to provide an unified syntax for the output file name
 	<li> to allow a CAM job to use these exporters
 </ul>
+
+<h3 id="partial"> partial export </h3>
+<p>
+In partial exporting the rendering code in core will draw only those object
+that have the EXPORTSEL flag set. The flag is normally set by a query() action
+using an expression.
+<p>
+A typical use of this feature is to export plugged/filled vias into a
+separate file, assuming the padstacks have a specific attribute set.
 
 <h3> CAM plugin (CAM jobs) </h3>
 <p>
@@ -170,7 +185,41 @@ the export:
 <pre>
 cam(call, doc_png)
 </pre>
-
+<p id="partial2">
+If the command <i>partial</i> appears in the job, a query() is executed
+with the expression specified in the command's argument, marking matching
+objects with the EXPORTSEL flag. The <i>full</i> command is used to remove
+the EXPORTSEL flag from all objects. Note: to export only marked objects,
+the <i>write</i> command will typically need the <i>partial</i> supplement.
+A typical use case is exporting filled vias in a separate file, using
+a custom object attribute called "process":
+<pre>
+li:pcb-rnd-conf-v1 {
+	ha:overwrite {
+		ha:plugins {
+			ha:cam {
+				li:jobs {
+					holes {
+						desc export all holes in excellon files, sorted by whether they are filled
+						plugin excellon
+						partial @.a.process == "filled"
+						write filled.exc=(partial)
+						full
+						partial @.a.process != "filled"
+						write unfilled.exc=(partial)
+						full
+						write all.exc
+					}
+				}
+			}
+		}
+	}
+}
+</pre>
+Note: the first <i>full</i> command is used to cancel the effect of the first
+<i>partial</i> command. Without <i>full</i>, at the second <i>partial</i>
+all the "filled" vias would still be marked and unfilled.exc would contain
+both filled and unfilled vias.
 
 <h3> Tips for using with various exporters </h3>
 <p>
