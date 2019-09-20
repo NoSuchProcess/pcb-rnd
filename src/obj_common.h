@@ -96,6 +96,7 @@ struct pcb_xform_s {   /* generic object transformation; all-zero means no trans
 
 	unsigned layer_faded:1;      /* draw layer colors faded */
 	unsigned omit_overlay:1;     /* do not draw overlays (which are useful on screen but normally omitted on exports, except if --as-shown is specified */
+	unsigned partial_export:1;   /* 1 if only objects with the EXPORTSEL flag should be drawn */
 	/* WARNING: After adding new fields, make sure to update pcb_xform_add() and pcb_xform_is_nop() below */
 };
 
@@ -108,8 +109,9 @@ struct pcb_xform_s {   /* generic object transformation; all-zero means no trans
 		__dst__->bloat += __src__->bloat; \
 		__dst__->layer_faded |= __src__->layer_faded; \
 		__dst__->omit_overlay |= __src__->omit_overlay; \
+		__dst__->partial_export |= __src__->partial_export; \
 	} while(0)
-#define pcb_xform_is_nop(src) (((src)->bloat == 0) && ((src)->layer_faded == 0) && ((src)->omit_overlay == 0))
+#define pcb_xform_is_nop(src) (((src)->bloat == 0) && ((src)->layer_faded == 0) && ((src)->omit_overlay == 0) && ((src)->partial_export == 0))
 
 /* Returns true if overlay drawing should be omitted */
 #define pcb_xform_omit_overlay(info) \

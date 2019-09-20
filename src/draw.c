@@ -1097,6 +1097,9 @@ void pcbhl_expose_main(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx, pcb_xfo
 			info.xform_caller = &xform_main_exp;
 		}
 
+		if (xform_caller != NULL)
+			info.partial_export |= xform_caller->partial_export;
+
 		draw_everything(&info);
 		expose_end(&save);
 	}
