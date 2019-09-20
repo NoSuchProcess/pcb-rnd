@@ -509,8 +509,19 @@ void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xf
 		cam_xform_init(dst_xform);
 
 	if (src != NULL) {
-		if (strchr(src, '=') != NULL)
-			pcb_message(PCB_MSG_ERROR, "global exporter --cam doesn't take '=' and layers, only a file name\n");
+		if (strchr(src, '=') != NULL) {
+			char *start, *end;
+			src++;
+			start = strchr(src, '(');
+			if ((start != src) || (start == NULL))  {
+				pcb_message(PCB_MSG_ERROR, "global exporter --cam doesn't take '=' and layers, only a file name\n");
+			}
+			if (start != NULL) { /* parse supplements for global xform */
+/*static void parse_layer_supplements(char **spk, char **spv, int spc,   char **purpose, pcb_xform_t **xf, pcb_xform_t *xf_)*/
+			}
+		}
+
+
 
 		dst->fn_template = pcb_strdup(src);
 
