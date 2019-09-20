@@ -77,6 +77,20 @@ static int cam_exec_inst(cam_ctx_t *ctx, pcb_cam_code_t *code)
 			/* ignore */
 			break;
 
+		case PCB_CAM_PARTIAL:
+			if (code->op.partial.arg != NULL) {
+				int ret;
+				ctx->partial = 1;
+				ret = pcb_actionl("query", "setflag:exportsel", code->op.partial.arg, NULL);
+			}
+			else {
+				if (ctx->partial) {
+					pcb_data_clear_flag(PCB->Data, PCB_FLAG_EXPORTSEL, 0, 0);
+					ctx->partial = 0;
+				}
+			}
+			break;
+
 		case PCB_CAM_WRITE:
 			if (ctx->exporter == NULL) {
 				pcb_message(PCB_MSG_ERROR, "cam: no exporter selected before write\n");
@@ -129,7 +143,10 @@ static int cam_exec(cam_ctx_t *ctx)
 {
 	int res = 0, n, have_gui, currly = INDEXOFCURRENT;
 	int save_l_ons[PCB_MAX_LAYER], save_g_ons[PCB_MAX_LAYERGRP];
-	
+
+	if (ctx->has_partial)
+		pcb_data_clear_flag(PCB->Data, PCB_FLAG_EXPORTSEL, 0, 0);
+
 	have_gui = (pcb_gui != NULL) && pcb_gui->gui;
 	if (have_gui) {
 		pcb_hid_save_and_show_layer_ons(save_l_ons);
@@ -141,6 +158,11 @@ static int cam_exec(cam_ctx_t *ctx)
 			res = 1;
 			break;
 		}
+	}
+
+	if (ctx->partial) {
+		pcb_data_clear_flag(PCB->Data, PCB_FLAG_EXPORTSEL, 0, 0);
+		ctx->partial = 0;
 	}
 
 	if (have_gui) {
@@ -162,6 +184,18 @@ static int cam_compile_line(cam_ctx_t *ctx, char *cmd, char *arg, pcb_cam_code_t
 	else if (strcmp(cmd, "write") == 0) {
 		code->inst = PCB_CAM_WRITE;
 		code->op.write.arg = pcb_strdup(arg);
+	}
+	else if (strcmp(cmd, "partial") == 0) {
+		ctx->has_partial = 1;
+		code->inst = PCB_CAM_PARTIAL;
+		if ((arg == NULL) || (*arg == '\0'))
+			code->op.partial.arg = NULL;
+		else
+			code->op.partial.arg = pcb_strdup(arg);
+	}
+	else if (strcmp(cmd, "full") == 0) {
+		code->inst = PCB_CAM_PARTIAL;
+		code->op.write.arg = NULL;
 	}
 	else if (strcmp(cmd, "plugin") == 0) {
 		char *curr, *next;

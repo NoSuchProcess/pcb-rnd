@@ -32,7 +32,8 @@
 typedef enum {
 	PCB_CAM_DESC,
 	PCB_CAM_PLUGIN,
-	PCB_CAM_WRITE
+	PCB_CAM_WRITE,
+	PCB_CAM_PARTIAL
 } pcb_cam_inst_t;
 
 typedef struct {
@@ -49,6 +50,9 @@ typedef struct {
 		struct {
 			char *arg;
 		} write;
+		struct {
+			char *arg;
+		} partial;
 		struct {
 			char *arg;
 		} prefix;
@@ -71,6 +75,9 @@ typedef struct {
 typedef struct {
 	char *prefix;            /* strdup'd file name prefix from the last prefix command */
 	pcb_hid_t *exporter;
+	unsigned partial:1;      /* when 1, there are objects marked with the EXPORTSEL flag */
+
+	unsigned has_partial:1;  /* the code has partial in it so an initial flag reset is needed */
 
 	char *args;              /* strdup'd argument string from the last plugin command - already split up */
 	char **argv;             /* [0] and [1] are for --cam; the rest point into args */
