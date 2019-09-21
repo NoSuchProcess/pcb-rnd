@@ -432,6 +432,10 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	if (sep != NULL)
 		*sep = '\0';
 
+	/* if an '(' is entered, stop new filtering, keep filter as is */
+	if (is_para)
+		goto skip_filter;
+
 	/* hide or unhide everything */
 	pcb_dad_tree_hide_all(tree, &tree->rows, have_filter_text);
 
@@ -480,6 +484,8 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 
 	pcb_dad_tree_expcoll(attr, NULL, 1, 1);
 	pcb_dad_tree_update_hide(attr);
+
+	skip_filter:;
 
 	/* parametric footprints need to be refreshed on edit */
 	if (is_para)
