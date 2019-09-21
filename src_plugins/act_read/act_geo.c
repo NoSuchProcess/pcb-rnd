@@ -86,7 +86,6 @@ static const char pcb_acts_IntersectObjObj[] = "IntersectObjObj(idpath, idpath)"
 static const char pcb_acth_IntersectObjObj[] = "Returns 1 if point x;y with radius r is on the arc addressed by idpath, 0 else.";
 static fgw_error_t pcb_act_IntersectObjObj(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_coord_t x, y, r;
 	pcb_idpath_t *idp1, *idp2;
 	pcb_any_obj_t *obj1, *obj2;
 
