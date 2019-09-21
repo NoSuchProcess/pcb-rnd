@@ -195,7 +195,6 @@ static void timed_update_preview_cb(pcb_hidval_t user_data)
 {
 	library_ctx_t *ctx = user_data.ptr;
 	const char *otext = ctx->dlg[ctx->wfilt].val.str;
-printf("otext='%s'\n", otext);
 	timed_update_preview_(ctx, otext);
 }
 
