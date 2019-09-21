@@ -1011,7 +1011,6 @@ static const char pcb_acth_MoveCursorTo[] = "Move the cursor to absolute coords,
 static fgw_error_t pcb_act_MoveCursorTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_coord_t x, y;
-	pcb_box_t vbx;
 
 	PCB_ACT_CONVARG(1, FGW_COORD, Cursor, x = fgw_coord(&argv[1]));
 	PCB_ACT_CONVARG(2, FGW_COORD, Cursor, y = fgw_coord(&argv[2]));
