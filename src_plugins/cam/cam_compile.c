@@ -293,6 +293,10 @@ static void cam_free_inst(cam_ctx_t *ctx, pcb_cam_code_t *code)
 			free(code->op.write.arg);
 			break;
 
+		case PCB_CAM_PARTIAL:
+			free(code->op.partial.arg);
+			break;
+
 		case PCB_CAM_PLUGIN:
 			for(n = 0; n < code->op.plugin.argc; n++)
 				free(code->op.plugin.argv[n]);
