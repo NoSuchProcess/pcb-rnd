@@ -256,6 +256,7 @@ static double get_step(pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end, pcb_h
 				step = 1;
 			break;
 		case PCB_DAD_SPIN_DOUBLE:
+		case PCB_DAD_SPIN_FREQ:
 			step = pow(10, floor(log10(fabs((double)end->val.dbl)) - 1.0));
 			break;
 		case PCB_DAD_SPIN_COORD:
@@ -305,6 +306,7 @@ static void do_step(void *hid_ctx, pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t
 			sprintf(buf, "%ld", end->val.lng);
 			break;
 		case PCB_DAD_SPIN_DOUBLE:
+		case PCB_DAD_SPIN_FREQ:
 			end->val.dbl += step;
 			SPIN_CLAMP(end->val.dbl);
 			sprintf(buf, "%f", end->val.dbl);
@@ -543,6 +545,7 @@ int pcb_dad_spin_set_value(pcb_hid_attribute_t *end, void *hid_ctx, int idx, con
 			end->val.lng = val->lng;
 			break;
 		case PCB_DAD_SPIN_DOUBLE:
+		case PCB_DAD_SPIN_FREQ:
 			if (val->dbl == end->val.dbl)
 				return 0;
 			end->val.dbl = val->dbl;
