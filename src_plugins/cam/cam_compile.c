@@ -79,9 +79,8 @@ static int cam_exec_inst(cam_ctx_t *ctx, pcb_cam_code_t *code)
 
 		case PCB_CAM_PARTIAL:
 			if (code->op.partial.arg != NULL) {
-				int ret;
 				ctx->partial = 1;
-				ret = pcb_actionl("query", "setflag:exportsel", code->op.partial.arg, NULL);
+				pcb_actionl("query", "setflag:exportsel", code->op.partial.arg, NULL);
 			}
 			else {
 				if (ctx->partial) {
