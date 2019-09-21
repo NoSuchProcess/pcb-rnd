@@ -13,6 +13,9 @@
 + FEATURE: extend the CAM job script syntax so that XY and other non-layer exporters can be called [report: celem]
 + FEATURE: extedit: when editing subc with pcb, save configuration and load it in the external pcb-rnd so that grid sizes and other settings are preserved [report: jg]
 + FEATURE/BUG: old gtk doesn't have GDK_Key_* but GDK_* (e.g. GDK_Tab); detect this in scconfig, use a wrapper macro in gtk code [report: Ade]
++ FEATURE: library window filter shouldn't modify filter if there's () in the string [report: pskibinski]
++ FEATURE: io_tedax: tEDAx netlist load should import and write pinname [report: Ade]
++ FEATURE: make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file (for support for plugged vias/filled vias) [report: Vuokko]
 
 1. For the upcoming release ===============================================================================
 - FEATURE: parametric footprints: update fp2anim so the web page works again
@@ -33,9 +36,6 @@
 - BUG: "save layout as", "guess format" is on by default, change the file extension in name to lht; format: combo changes correctly. But it doesn't *actually* change the format (may need an alien format loaded first) [report: Majenko]
 - BUG: export CAM job causes pcb-rnd to exit regardless of selected CAM format if padstack has no apertures, i.e. is a hole, due to attempt to create zero sized aperture "error: aperture for width 0 type ROUND is null", see bug_files/CAM_crash_holey_padstack.lht [report: Erich]
 - DOC: finish DAD doc (doc/developer/dad/: e.g. run.html is missing) [report: Alain]
-+ FEATURE: library window filter shouldn't modify filter if there's () in the string [report: pskibinski]
-+ FEATURE: io_tedax: tEDAx netlist load should import and write pinname [report: Ade]
-+ FEATURE: make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file (for support for plugged vias/filled vias) [report: Vuokko]
 - FEATURE: edakrill script for growing line thickness keeping the line on one side (side alignment) [report: keantoken]
 
 2. For later releases ===============================================================================
