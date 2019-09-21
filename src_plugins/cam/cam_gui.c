@@ -97,6 +97,7 @@ static void cam_gui_digest2dlg(cam_dlg_t *ctx)
 	for(n = 0, c = ctx->cam.code.array; n < ctx->cam.code.used; n++,c++) {
 		switch(c->inst) {
 			case PCB_CAM_DESC:
+			case PCB_CAM_PARTIAL:
 				break;
 			case PCB_CAM_PLUGIN:
 				plugin = c;
