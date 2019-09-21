@@ -35,6 +35,7 @@
 #include "misc_util.h"
 #include "idpath.h"
 #include "search.h"
+#include "find.h"
 
 static const char pcb_acts_IsPointOnLine[] = "IsPointOnLine(x, y, r, idpath)";
 static const char pcb_acth_IsPointOnLine[] = "Returns 1 if point x;y with radius r is on the line addressed by idpath, 0 else.";
