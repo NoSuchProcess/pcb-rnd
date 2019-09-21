@@ -3,5 +3,6 @@ $short cam/job based export
 $long Configurable output job based batch exporting
 $state works
 $package export
+dep query
 default buildin
 autoload 1
