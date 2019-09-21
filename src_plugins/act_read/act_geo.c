@@ -77,7 +77,7 @@ static fgw_error_t pcb_act_IsPointOnArc(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	if ((obj == NULL) || (obj->type != PCB_OBJ_ARC))
 		return FGW_ERR_ARG_CONV;
 
-	PCB_ACT_IRES(pcb_is_point_on_arc(x, y, r, (pcb_line_t *)obj));
+	PCB_ACT_IRES(pcb_is_point_on_arc(x, y, r, (pcb_arc_t *)obj));
 	return 0;
 }
 
