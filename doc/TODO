@@ -35,7 +35,7 @@
 - BUG: png, eps (and probably other exporters) export the assy layer if the group exists, even if it is not visible on the GUI [report: Igor2]
 - BUG: "save layout as", "guess format" is on by default, change the file extension in name to lht; format: combo changes correctly. But it doesn't *actually* change the format (may need an alien format loaded first) [report: Majenko]
 - BUG: export CAM job causes pcb-rnd to exit regardless of selected CAM format if padstack has no apertures, i.e. is a hole, due to attempt to create zero sized aperture "error: aperture for width 0 type ROUND is null", see bug_files/CAM_crash_holey_padstack.lht [report: Erich]
-- DOC: finish DAD doc (doc/developer/dad/: e.g. run.html is missing) [report: Alain]
+- DOC: finish DAD doc (doc/developer/dad/: e.g. run.html is missing)
 - FEATURE: edakrill script for growing line thickness keeping the line on one side (side alignment) [report: keantoken]
 
 2. For later releases ===============================================================================
@@ -141,7 +141,7 @@
 	- ind: indentation bug in inline struct therm: closing } is preceded by indentation whitespace for some reason
 	- keep numeric format: test all
 	- keep unknown subtrees
-	- doc/user/02_model/src/obj_arc.lht: Open/Save : Font section is embedded. Once manually removed, the file shows many diffs w.r.t original. Lihata V1 file. [report: Alain]
+	- doc/user/02_model/src/obj_arc.lht: Open/Save : Font section is embedded. Once manually removed, the file shows many diffs w.r.t original. Lihata V1 file.
 	- BUG: lhtpers indentation: bug_files/lhtpers_ins/; breakpoint in pers_table.c:34 and debug why the newline is getting in [report: Igor2]
 - query & advanced search
 	- FEATURE: search expr wizard should pick up the expression from the button when clicked
