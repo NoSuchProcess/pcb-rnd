@@ -33,7 +33,7 @@
 - BUG: "save layout as", "guess format" is on by default, change the file extension in name to lht; format: combo changes correctly. But it doesn't *actually* change the format (may need an alien format loaded first) [report: Majenko]
 - BUG: export CAM job causes pcb-rnd to exit regardless of selected CAM format if padstack has no apertures, i.e. is a hole, due to attempt to create zero sized aperture "error: aperture for width 0 type ROUND is null", see bug_files/CAM_crash_holey_padstack.lht [report: Erich]
 - DOC: finish DAD doc (doc/developer/dad/: e.g. run.html is missing) [report: Alain]
-- FEATURE: configure setting: library window filter shouldn't really filter if there's () in the string [report: pskibinski]
++ FEATURE: library window filter shouldn't modify filter if there's () in the string [report: pskibinski]
 + FEATURE: io_tedax: tEDAx netlist load should import and write pinname [report: Ade]
 + FEATURE: make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file (for support for plugged vias/filled vias) [report: Vuokko]
 - FEATURE: edakrill script for growing line thickness keeping the line on one side (side alignment) [report: keantoken]
