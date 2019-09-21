@@ -46,7 +46,6 @@ static int get_obj_and_data_from_idp(int argc, fgw_arg_t *argv, int aidx, pcb_an
 {
 	pcb_any_obj_t *obj;
 	pcb_idpath_t *idp;
-	int in_dom;
 
 	if (((argv[aidx].type & FGW_STR) == FGW_STR) && (argv[aidx].val.str[0] == 'b') && ((argv[aidx].val.str[1] == 'u') || (argv[aidx].val.str[1] == 'o'))) {
 		PCB_ACT_CONVARG(aidx, FGW_DATA, PstkProtoTmp, *data_out = fgw_data(&argv[aidx]));
