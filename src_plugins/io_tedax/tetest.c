@@ -245,7 +245,6 @@ static pcb_hid_t exp_tedax_etest;
 
 void tedax_etest_uninit(void)
 {
-	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &exp_tedax_etest);
 	pcb_export_remove_opts_by_cookie(tedax_etest_cookie);
 }
 
