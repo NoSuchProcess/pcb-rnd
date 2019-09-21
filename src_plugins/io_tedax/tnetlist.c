@@ -64,7 +64,7 @@ int tedax_net_fload(FILE *fn, int import_fp, const char *blk_id, int silent)
 	char line[520];
 	char *argv[16];
 	int argc;
-	htsp_t fps;
+	htsp_t fps, pinnames;
 	htsp_entry_t *e;
 
 	if (tedax_seek_hdr(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
@@ -74,6 +74,7 @@ int tedax_net_fload(FILE *fn, int import_fp, const char *blk_id, int silent)
 		return -1;
 
 	htsp_init(&fps, strhash, strkeyeq);
+	htsp_init(&pinnames, strhash, strkeyeq);
 
 	pcb_actionl("Netlist", "Freeze", NULL);
 	pcb_actionl("Netlist", "Clear", NULL);
@@ -91,6 +92,16 @@ int tedax_net_fload(FILE *fn, int import_fp, const char *blk_id, int silent)
 			char id[512];
 			sprintf(id, "%s-%s", argv[2], argv[3]);
 			pcb_actionl("Netlist", "Add",  argv[1], id, NULL);
+		}
+		else if ((argc == 4) && (strcmp(argv[0], "pinname") == 0)) {
+			char id[512];
+			sprintf(id, "%s-%s", argv[1], argv[2]);
+			e = htsp_popentry(&pinnames, id);
+			if (e != NULL) {
+				free(e->key);
+				free(e->value);
+			}
+			htsp_set(&pinnames, pcb_strdup(id), pcb_strdup(argv[3]));
 		}
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "netlist") == 0))
 			break;
@@ -118,7 +129,20 @@ int tedax_net_fload(FILE *fn, int import_fp, const char *blk_id, int silent)
 		pcb_actionl("ElementList", "Done", NULL);
 	}
 
+	for (e = htsp_first(&pinnames); e; e = htsp_next(&pinnames, e)) {
+		char *refdes = e->key, *name = e->value, *pin;
+		pin = strchr(refdes, '-');
+		if (pin != NULL) {
+			*pin = '\0';
+			pin++;
+			pcb_actionl("ChangePinName", refdes, pin, name, NULL);
+		}
+		free(e->key);
+		free(e->value);
+	}
+
 	htsp_uninit(&fps);
+	htsp_uninit(&pinnames);
 
 	return 0;
 }
