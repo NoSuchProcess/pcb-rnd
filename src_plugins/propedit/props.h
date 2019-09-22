@@ -88,6 +88,7 @@ typedef struct {
 	unsigned selection:1;      /* all selected objects on the current pcb */
 	unsigned board:1;          /* run on the board too */
 	unsigned nets_inited:1;    /* whether the ->nets hash is initialized */
+	unsigned geo:1;            /* include fields related to geometry of objects */
 } pcb_propedit_t;
 
 /* A property list (props) is a string->pcb_props_t. Each entry is a named

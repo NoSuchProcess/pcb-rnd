@@ -118,6 +118,8 @@ int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 		pe->board = 1;
 	else if (strcmp(cmd, "selection") == 0)
 		pe->selection = 1;
+	else if (strcmp(cmd, "geo") == 0)
+		pe->geo = 1;
 	else {
 		char *end;
 		pcb_idpath_t *idp = (void *)strtol(cmd, &end, 0);

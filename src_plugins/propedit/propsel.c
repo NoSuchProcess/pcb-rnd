@@ -42,6 +42,12 @@
 #include "hidlib_conf.h"
 #include "netlist.h"
 
+#include "obj_line_op.h"
+#include "obj_arc_op.h"
+#include "obj_text_op.h"
+#include "obj_pstk_op.h"
+#include "obj_subc_op.h"
+
 /*********** map ***********/
 #define type2field_String string
 #define type2field_pcb_coord_t coord
@@ -170,6 +176,12 @@ static void map_line(pcb_propedit_t *ctx, pcb_line_t *line)
 	map_add_prop(ctx, "p/trace/clearance", pcb_coord_t, line->Clearance/2);
 	map_common(ctx, (pcb_any_obj_t *)line);
 	map_attr(ctx, &line->Attributes);
+	if (ctx->geo) {
+		map_add_prop(ctx, "p/line/x1", pcb_coord_t, line->Point1.X);
+		map_add_prop(ctx, "p/line/y1", pcb_coord_t, line->Point1.Y);
+		map_add_prop(ctx, "p/line/x2", pcb_coord_t, line->Point2.X);
+		map_add_prop(ctx, "p/line/y2", pcb_coord_t, line->Point2.Y);
+	}
 }
 
 static void map_arc(pcb_propedit_t *ctx, pcb_arc_t *arc)
@@ -182,6 +194,10 @@ static void map_arc(pcb_propedit_t *ctx, pcb_arc_t *arc)
 	map_add_prop(ctx, "p/arc/angle/delta", pcb_angle_t, arc->Delta);
 	map_common(ctx, (pcb_any_obj_t *)arc);
 	map_attr(ctx, &arc->Attributes);
+	if (ctx->geo) {
+		map_add_prop(ctx, "p/arc/x", pcb_coord_t, arc->X);
+		map_add_prop(ctx, "p/arc/y", pcb_coord_t, arc->Y);
+	}
 }
 
 static void map_text(pcb_propedit_t *ctx, pcb_text_t *text)
@@ -193,6 +209,10 @@ static void map_text(pcb_propedit_t *ctx, pcb_text_t *text)
 	map_add_prop(ctx, "p/text/string", String, text->TextString);
 	map_common(ctx, (pcb_any_obj_t *)text);
 	map_attr(ctx, &text->Attributes);
+	if (ctx->geo) {
+		map_add_prop(ctx, "p/text/x", pcb_coord_t, text->X);
+		map_add_prop(ctx, "p/text/y", pcb_coord_t, text->Y);
+	}
 }
 
 static void map_poly(pcb_propedit_t *ctx, pcb_poly_t *poly)
@@ -220,6 +240,11 @@ static void map_pstk(pcb_propedit_t *ctx, pcb_pstk_t *ps)
 
 	map_attr(ctx, &ps->Attributes);
 	map_common(ctx, (pcb_any_obj_t *)ps);
+
+	if (ctx->geo) {
+		map_add_prop(ctx, "p/padstack/x", pcb_coord_t, ps->x);
+		map_add_prop(ctx, "p/padstack/y", pcb_coord_t, ps->y);
+	}
 }
 
 static void map_subc(pcb_propedit_t *ctx, pcb_subc_t *msubc)
@@ -250,6 +275,14 @@ static void map_subc(pcb_propedit_t *ctx, pcb_subc_t *msubc)
 	} PCB_END_LOOP;
 	map_attr(ctx, &msubc->Attributes);
 	map_common(ctx, (pcb_any_obj_t *)msubc);
+
+	if (ctx->geo) {
+		pcb_coord_t x, y;
+		if (pcb_subc_get_origin(msubc, &x, &y) == 0) {
+			map_add_prop(ctx, "p/subcircuit/x", pcb_coord_t, x);
+			map_add_prop(ctx, "p/subcircuit/y", pcb_coord_t, y);
+		}
+	}
 }
 
 static void map_any(pcb_propedit_t *ctx, pcb_any_obj_t *o)
@@ -450,6 +483,37 @@ static void set_line(pcb_propset_ctx_t *st, pcb_line_t *line)
 		if (st->is_trace && st->c_valid && (strcmp(pn, "clearance") == 0) &&
 		    pcb_chg_obj_clear_size(PCB_OBJ_LINE, line->parent.layer, line, NULL, st->c*2, st->c_absolute)) DONE;
 	}
+
+	if (strncmp(st->name, "p/line/", 7) == 0) {
+		pcb_opctx_t op;
+		memset(&op, 0, sizeof(op));
+		op.move.pcb = st->pcb;
+		pn = st->name + 7;
+		if (st->c_valid && (strcmp(pn, "x1") == 0)) {
+			op.move.dx = st->c - line->Point1.X;
+			pcb_undo_add_obj_to_move(PCB_OBJ_LINE_POINT, line->parent.layer, line, &line->Point1, op.move.dx, op.move.dy);
+			if (pcb_lineop_move_point(&op, line->parent.layer, line, &line->Point1) != NULL)
+				DONE;
+		}
+		if (st->c_valid && (strcmp(pn, "y1") == 0)) {
+			op.move.dy = st->c - line->Point1.Y;
+			pcb_undo_add_obj_to_move(PCB_OBJ_LINE_POINT, line->parent.layer, line, &line->Point1, op.move.dx, op.move.dy);
+			if (pcb_lineop_move_point(&op, line->parent.layer, line, &line->Point1) != NULL)
+				DONE;
+		}
+		if (st->c_valid && (strcmp(pn, "x2") == 0)) {
+			op.move.dx = st->c - line->Point2.X;
+			pcb_undo_add_obj_to_move(PCB_OBJ_LINE_POINT, line->parent.layer, line, &line->Point2, op.move.dx, op.move.dy);
+			if (pcb_lineop_move_point(&op, line->parent.layer, line, &line->Point2) != NULL)
+				DONE;
+		}
+		if (st->c_valid && (strcmp(pn, "y2") == 0)) {
+			op.move.dy = st->c - line->Point2.Y;
+			pcb_undo_add_obj_to_move(PCB_OBJ_LINE_POINT, line->parent.layer, line, &line->Point2, op.move.dx, op.move.dy);
+			if (pcb_lineop_move_point(&op, line->parent.layer, line, &line->Point2) != NULL)
+				DONE;
+		}
+	}
 }
 
 static void set_arc(pcb_propset_ctx_t *st, pcb_arc_t *arc)
@@ -485,6 +549,25 @@ static void set_arc(pcb_propset_ctx_t *st, pcb_arc_t *arc)
 		if (!st->is_trace && st->d_valid && (strcmp(pn, "angle/delta") == 0) &&
 		    pcb_chg_obj_angle(PCB_OBJ_ARC, arc->parent.layer, arc, NULL, 1, st->d, st->d_absolute)) DONE;
 	}
+
+	if (strncmp(st->name, "p/arc/", 6) == 0) {
+		pcb_opctx_t op;
+		memset(&op, 0, sizeof(op));
+		op.move.pcb = st->pcb;
+		pn = st->name + 6;
+		if (st->c_valid && (strcmp(pn, "x") == 0)) {
+			op.move.dx = st->c - arc->X;
+			pcb_undo_add_obj_to_move(PCB_OBJ_ARC, arc->parent.layer, arc, arc, op.move.dx, op.move.dy);
+			if (pcb_arcop_move(&op, arc->parent.layer, arc) != NULL)
+				DONE;
+		}
+		if (st->c_valid && (strcmp(pn, "y") == 0)) {
+			op.move.dy = st->c - arc->Y;
+			pcb_undo_add_obj_to_move(PCB_OBJ_ARC, arc->parent.layer, arc, arc, op.move.dx, op.move.dy);
+			if (pcb_arcop_move(&op, arc->parent.layer, arc) != NULL)
+				DONE;
+		}
+	}
 }
 
 static void set_text(pcb_propset_ctx_t *st, pcb_text_t *text)
@@ -500,6 +583,8 @@ static void set_text(pcb_propset_ctx_t *st, pcb_text_t *text)
 	if (set_common(st, (pcb_any_obj_t *)text)) return;
 
 	if (strncmp(st->name, "p/text/", 7) == 0) {
+		pcb_opctx_t op;
+
 		if (st->c_valid && (strcmp(pn, "scale") == 0) &&
 		    pcb_chg_obj_size(PCB_OBJ_TEXT, text->parent.layer, text, text, PCB_MIL_TO_COORD(st->c), st->c_absolute)) DONE;
 
@@ -519,6 +604,21 @@ static void set_text(pcb_propset_ctx_t *st, pcb_text_t *text)
 
 		if (st->c_valid && (strcmp(pn, "thickness") == 0) &&
 			pcb_chg_obj_2nd_size(PCB_OBJ_TEXT, text->parent.layer, text, text, st->c, st->c_absolute, pcb_true)) DONE;
+
+		memset(&op, 0, sizeof(op));
+		op.move.pcb = st->pcb;
+		if (st->c_valid && (strcmp(pn, "x") == 0)) {
+			op.move.dx = st->c - text->X;
+			pcb_undo_add_obj_to_move(PCB_OBJ_TEXT, text->parent.layer, text, text, op.move.dx, op.move.dy);
+			if (pcb_textop_move(&op, text->parent.layer, text) != NULL)
+				DONE;
+		}
+		if (st->c_valid && (strcmp(pn, "y") == 0)) {
+			op.move.dy = st->c - text->Y;
+			pcb_undo_add_obj_to_move(PCB_OBJ_TEXT, text->parent.layer, text, text, op.move.dx, op.move.dy);
+			if (pcb_textop_move(&op, text->parent.layer, text) != NULL)
+				DONE;
+		}
 	}
 }
 
@@ -558,6 +658,8 @@ static void set_pstk(pcb_propset_ctx_t *st, pcb_pstk_t *ps)
 	proto = pcb_pstk_get_proto(ps);
 
 	if (strncmp(st->name, "p/padstack/", 11) == 0) {
+		pcb_opctx_t op;
+
 		if (st->c_valid && (strcmp(pn, "clearance") == 0) &&
 		    pcb_chg_obj_clear_size(PCB_OBJ_PSTK, ps, ps, NULL, st->c*2, st->c_absolute)) DONE;
 		if (st->d_valid && (strcmp(pn, "rotation") == 0)) {
@@ -583,6 +685,21 @@ static void set_pstk(pcb_propset_ctx_t *st, pcb_pstk_t *ps)
 		    (pcb_pstk_proto_change_hole(proto, NULL, NULL, &i, NULL) == 0)) DONE;
 		if (st->c_valid && (strcmp(pn, "hbottom") == 0) &&
 		    (pcb_pstk_proto_change_hole(proto, NULL, NULL, NULL, &i) == 0)) DONE;
+
+		memset(&op, 0, sizeof(op));
+		op.move.pcb = st->pcb;
+		if (st->c_valid && (strcmp(pn, "x") == 0)) {
+			op.move.dx = st->c - ps->x;
+			pcb_undo_add_obj_to_move(PCB_OBJ_PSTK, ps->parent.data, ps, ps, op.move.dx, op.move.dy);
+			if (pcb_pstkop_move(&op, ps) != NULL)
+				DONE;
+		}
+		if (st->c_valid && (strcmp(pn, "y") == 0)) {
+			op.move.dy = st->c - ps->y;
+			pcb_undo_add_obj_to_move(PCB_OBJ_PSTK, ps->parent.data, ps, ps, op.move.dx, op.move.dy);
+			if (pcb_pstkop_move(&op, ps) != NULL)
+				DONE;
+		}
 	}
 }
 
@@ -621,6 +738,29 @@ static void set_subc(pcb_propset_ctx_t *st, pcb_subc_t *ssubc)
 	if (st->is_attr) {
 		set_attr(st, &ssubc->Attributes);
 		return;
+	}
+
+	if (strncmp(st->name, "p/subcircuit/", 13) == 0) {
+		pcb_opctx_t op;
+		pcb_coord_t x = 0, y = 0;
+		const char *pn = st->name + 13;
+
+		pcb_subc_get_origin(ssubc, &x, &y);
+		memset(&op, 0, sizeof(op));
+		op.move.pcb = st->pcb;
+		if (st->c_valid && (strcmp(pn, "x") == 0)) {
+			op.move.dx = st->c - x;
+			pcb_undo_add_obj_to_move(PCB_OBJ_SUBC, ssubc->parent.data, ssubc, ssubc, op.move.dx, op.move.dy);
+			if (pcb_subcop_move(&op, ssubc) != NULL)
+				DONE;
+		}
+		if (st->c_valid && (strcmp(pn, "y") == 0)) {
+			op.move.dy = st->c - y;
+			pcb_undo_add_obj_to_move(PCB_OBJ_SUBC, ssubc->parent.data, ssubc, ssubc, op.move.dx, op.move.dy);
+			if (pcb_subcop_move(&op, ssubc) != NULL)
+				DONE;
+		}
+
 	}
 }
 
