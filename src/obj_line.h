@@ -129,15 +129,15 @@ double pcb_drc_lines(const pcb_point_t *start, pcb_point_t *end, pcb_point_t *mi
 		pcb_line_bbox(__l__); \
 	} while(0)
 
-#define PCB_LINE_LOOP(layer) do {                                       \
-  pcb_line_t *line;                                                   \
+#define PCB_LINE_LOOP(layer) do {                                   \
+  pcb_line_t *line;                                                 \
   gdl_iterator_t __it__;                                            \
   linelist_foreach(&(layer)->Line, &__it__, line) {
 
-#define PCB_LINE_ALL_LOOP(top) do	{		\
-	pcb_cardinal_t		l;			\
-	pcb_layer_t *layer = (top)->Layer;		\
-	for (l = 0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++)	\
+#define PCB_LINE_ALL_LOOP(top) do {    \
+	pcb_cardinal_t l;                    \
+	pcb_layer_t *layer = (top)->Layer;   \
+	for (l = 0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++) \
 	{ \
 		PCB_LINE_LOOP(layer)
 
