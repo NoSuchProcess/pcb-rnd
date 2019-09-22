@@ -95,11 +95,11 @@
  rats_patch.h board.h hidlib.h data_parent.h actions.h hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h error.h ../src_3rd/libfungw/fungw.h \
- ../src_3rd/genht/htpp.h plugins.h ../src_3rd/puplug/puplug.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
- ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/error.h misc_util.h idpath.h obj_subc.h \
- ../src_3rd/libminuid/libminuid.h rtree.h \
+ ../src_3rd/genht/htpp.h crosshair.h vtonpoint.h route.h plugins.h \
+ ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h misc_util.h idpath.h \
+ obj_subc.h ../src_3rd/libminuid/libminuid.h rtree.h \
  ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h \
  ../src_plugins/act_read/keywords_sphash.h \
  ../src_plugins/act_read/act_idpath.c ../src_plugins/act_read/act_geo.c \
@@ -5131,7 +5131,8 @@
  ../src_3rd/libuundo/uundo.h undo_old.h rotate.h compat_misc.h \
  obj_pstk_inlines.h thermal.h polygon1_gen.h pcb-printf.h conf_core.h \
  conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h \
- hidlib_conf.h netlist.h
+ hidlib_conf.h netlist.h obj_line_op.h operation.h obj_arc_op.h \
+ obj_text_op.h obj_pstk_op.h obj_subc_op.h
 ../src_plugins/puller/puller.o: ../src_plugins/puller/puller.c \
  ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
