@@ -32,6 +32,7 @@
 #include "board.h"
 #include "data_parent.h"
 #include "actions.h"
+#include "crosshair.h"
 #include "plugins.h"
 #include "misc_util.h"
 #include "idpath.h"
@@ -69,6 +70,24 @@ static fgw_error_t pcb_act_GetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_GetMark[] = "GetMark(active|user_placed|x|y)";
+static const char pcb_acth_GetMark[] = "Return mark properties in numeric form.";
+static fgw_error_t pcb_act_GetMark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *cmd;
+
+	PCB_ACT_CONVARG(1, FGW_STR, GetMark, cmd = argv[1].val.str);
+	switch(*cmd) {
+		case 'a': res->type = FGW_INT; res->val.nat_int = pcb_marked.status; break;
+		case 'u': res->type = FGW_INT; res->val.nat_int = pcb_marked.user_placed; break;
+		case 'x': res->type = FGW_COORD; fgw_coord(res) = pcb_marked.X; break;
+		case 'y': res->type = FGW_COORD; fgw_coord(res) = pcb_marked.Y; break;
+		default:
+			PCB_ACT_FAIL(GetMark);
+	}
+	return 0;
+}
+
 static int flg_error(const char *msg)
 {
 	pcb_message(PCB_MSG_ERROR, "act_read flag conversion error: %s\n", msg);
@@ -88,6 +107,8 @@ pcb_action_t act_read_action_list[] = {
 	{"IDPList", pcb_act_IDPList, pcb_acth_IDPList, pcb_acts_IDPList},
 	{"IDP", pcb_act_IDP, pcb_acth_IDP, pcb_acts_IDP},
 	{"GetParentData", pcb_act_GetParentData, pcb_acth_GetParentData, pcb_acts_GetParentData},
+
+	{"GetMark", pcb_act_GetMark, pcb_acth_GetMark, pcb_acts_GetMark},
 
 	{"IsPointOnArc", pcb_act_IsPointOnArc, pcb_acth_IsPointOnArc, pcb_acts_IsPointOnArc},
 	{"IsPointOnLine", pcb_act_IsPointOnLine, pcb_acth_IsPointOnLine, pcb_acts_IsPointOnLine},
