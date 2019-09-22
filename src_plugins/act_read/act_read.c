@@ -80,8 +80,8 @@ static fgw_error_t pcb_act_GetMark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	switch(*cmd) {
 		case 'a': res->type = FGW_INT; res->val.nat_int = pcb_marked.status; break;
 		case 'u': res->type = FGW_INT; res->val.nat_int = pcb_marked.user_placed; break;
-		case 'x': res->type = FGW_COORD; fgw_coord(res) = pcb_marked.X; break;
-		case 'y': res->type = FGW_COORD; fgw_coord(res) = pcb_marked.Y; break;
+		case 'x': res->type = FGW_DOUBLE; res->val.nat_double = pcb_marked.X; break;
+		case 'y': res->type = FGW_DOUBLE; res->val.nat_double = pcb_marked.Y; break;
 		default:
 			PCB_ACT_FAIL(GetMark);
 	}
