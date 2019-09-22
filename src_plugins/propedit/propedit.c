@@ -206,6 +206,7 @@ fgw_error_t pcb_act_propget(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_CONVARG(2, FGW_STR, propget, stty = argv[2].val.str);
 	}
 
+	ctx.geo = 1;
 	pcb_propsel_map_core(&ctx);
 
 	p = htsp_get(&ctx.props, name);
