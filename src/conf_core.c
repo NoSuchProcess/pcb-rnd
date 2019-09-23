@@ -21,8 +21,6 @@ do { \
 static void conf_core_postproc(void)
 {
 	conf_clamp_to(CFT_COORD, conf_core.design.line_thickness, PCB_MIN_LINESIZE, PCB_MAX_LINESIZE, PCB_MIL_TO_COORD(10));
-	conf_clamp_to(CFT_COORD, conf_core.design.via_thickness, PCB_MIN_PINORVIASIZE, PCB_MAX_PINORVIASIZE, PCB_MIL_TO_COORD(40));
-	conf_clamp_to(CFT_COORD, conf_core.design.via_drilling_hole, 0, PCB_MAX_COORD, PCB_DEFAULT_DRILLINGHOLE * conf_core.design.via_thickness / 100);
 	conf_force_set_bool(conf_core.rc.have_regex, 1);
 	pcb_conf_ro("rc/have_regex");
 
