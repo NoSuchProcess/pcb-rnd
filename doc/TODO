@@ -30,6 +30,7 @@
 - BUG: export CAM job causes pcb-rnd to exit regardless of selected CAM format if padstack has no apertures, i.e. is a hole, due to attempt to create zero sized aperture "error: aperture for width 0 type ROUND is null", see bug_files/CAM_crash_holey_padstack.lht [report: Erich]
 - DOC: finish DAD doc (doc/developer/dad/: e.g. run.html is missing)
 - FEATURE: edakrill script for growing line thickness keeping the line on one side (side alignment) [report: keantoken]
+- BUG: bottom layer doesn't show in layer window, repro: start with 7805.lht and then load http://scififaster.net/windowcomparator.lht [report: miloh]
 
 2. For later releases ===============================================================================
 - CLEANUP: actions must get (hidlib *) in some way that doesn't ruin compatibility - remove TODO("#hl1:...") [report: Igor2]
