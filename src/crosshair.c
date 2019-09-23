@@ -477,6 +477,7 @@ void pcbhl_draw_attached(pcb_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
 		pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE_XOR, 1, NULL);
 	}
 
+	pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.crosshair);
 	pcb_tool_draw_attached();
 
 	/* an attached box does not depend on a special mode */
