@@ -105,7 +105,7 @@ extern int pcb_debug;
 
 union YYSTYPE
 {
-#line 118 "parse_y.y" /* yacc.c:1921  */
+#line 121 "parse_y.y" /* yacc.c:1921  */
 
 	int		integer;
 	double		number;

@@ -56,6 +56,9 @@
 #define PCB_GROUNDPLANEFRAME        PCB_MIL_TO_COORD(15)
 #define PCB_MASKFRAME               PCB_MIL_TO_COORD(3)
 
+/* default inner/outer ratio for pins/vias in percent */
+#define PCB_DEFAULT_DRILLINGHOLE 40
+
 static	pcb_layer_t *Layer;
 static	pcb_poly_t *Polygon;
 static	pcb_symbol_t *Symbol;
