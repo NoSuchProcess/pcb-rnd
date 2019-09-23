@@ -118,6 +118,7 @@ static void rst_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 {
 	int idx = attr - rstdlg_ctx.dlg;
 	pcb_route_style_t *rst = vtroutestyle_get(&PCB->RouteStyle, rstdlg_ctx.curr, 0);
+	pcb_hid_attr_val_t hv;
 
 	if (rst == NULL) {
 		pcb_message(PCB_MSG_ERROR, "route style does not exist");
@@ -139,10 +140,23 @@ TODO("This change is not undoable");
 		rst->texts = attr->val.crd;
 	else if (idx == rstdlg_ctx.wclr)
 		rst->Clearance = attr->val.crd;
-	else if (idx == rstdlg_ctx.wviahole)
+	else if (idx == rstdlg_ctx.wviahole) {
 		rst->Hole = attr->val.crd;
-	else if (idx == rstdlg_ctx.wviaring)
+		if (rst->Hole * 1.1 >= rstdlg_ctx.dlg[rstdlg_ctx.wviaring].val.crd) {
+			hv.crd = rst->Hole * 1.1;
+			pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wviaring, &hv);
+			rst->Diameter = hv.crd;
+		}
+	}
+	else if (idx == rstdlg_ctx.wviaring) {
 		rst->Diameter = attr->val.crd;
+		if (rst->Diameter / 1.1 <= rstdlg_ctx.dlg[rstdlg_ctx.wviahole].val.crd) {
+			hv.crd = rst->Diameter / 1.1;
+			pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wviahole, &hv);
+			rst->Hole = hv.crd;
+		}
+
+	}
 	else {
 		pcb_message(PCB_MSG_ERROR, "Internal error: route style field does not exist");
 		return;
