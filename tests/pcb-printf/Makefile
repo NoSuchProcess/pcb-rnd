@@ -17,8 +17,10 @@ test: tester.diff
 	@rm tester.stdout ; true
 
 prcli: prcli.o $(SRC)/pcb-printf.o $(SRC)/misc_util.o $(LIBPCB_BASE) $(GDS)
+	$(CC) $(LDFLAGS) -o prcli prcli.o $(SRC)/pcb-printf.o $(SRC)/misc_util.o $(LIBPCB_BASE) $(GDS) $(LDLIBS)
 
 prclimq: prclimq.o $(SRC)/pcb-printf.o $(SRC)/misc_util.o $(LIBPCB_BASE) $(GDS)
+	$(CC) $(LDFLAGS) -o prclimq prclimq.o $(SRC)/pcb-printf.o $(SRC)/misc_util.o $(LIBPCB_BASE) $(GDS) $(LDLIBS)
 
 prcli.o: prcli.c
 	$(CC) -c $(CFLAGS) prcli.c -o prcli.o
