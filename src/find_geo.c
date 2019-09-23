@@ -296,6 +296,10 @@ static pcb_bool pcb_isc_ratp_poly(pcb_point_t *Point, pcb_poly_t *polygon)
 {
 	pcb_coord_t cx, cy;
 
+	/* clipped out of existence... */
+	if (polygon->Clipped == NULL)
+		return pcb_false;
+
 	/* canonical point */
 	cx = polygon->Clipped->contours->head.point[0];
 	cy = polygon->Clipped->contours->head.point[1];
