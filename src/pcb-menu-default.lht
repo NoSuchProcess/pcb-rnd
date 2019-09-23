@@ -707,6 +707,14 @@ ha:{
 			}
 		}
 
+		ha:popup-obj-padstack-in-subc {
+			li:submenu {
+				ha:Edit properties        { action=propedit(object) }
+				ha:Edit geometry/prototype {action=padstackedit }
+				ha:Set Same Style         { action=SetSame() }
+			}
+		}
+
 		ha:popup-obj-subcircuit {
 			li:submenu {
 				ha:Edit properties        { action=propedit(object) }

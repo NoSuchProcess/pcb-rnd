@@ -36,6 +36,7 @@
 #include "hid.h"
 #include "layer_vis.h"
 #include "search.h"
+#include "obj_subc_parent.h"
 
 #include "util.h"
 #include "act.h"
@@ -358,17 +359,23 @@ fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					pcb_coord_t x, y;
 					pcb_objtype_t type;
 					void *o1, *o2, *o3;
+					pcb_any_obj_t *o;
+
 					pcb_hid_get_coords("context sensitive popup: select object", &x, &y, 0);
 					type = pcb_search_screen(x, y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &o1, &o2, &o3);
-					if (type == 0)
+					o = o2;
+					if ((type == 0) || ((o != NULL) && (pcb_gobj_parent_subc(o->parent_type, &o->parent) == NULL))) {
 						type = pcb_search_screen(x, y, PCB_OBJ_CLASS_REAL, &o1, &o2, &o3);
 
-					if (type == 0)
-						tn = "none";
-					else
-						tn = pcb_obj_type_name(type);
+						if (type == 0)
+							tn = "none";
+						else
+							tn = pcb_obj_type_name(type);
 
-					sprintf(name, "/popups/%s-%s", a0, tn);
+						sprintf(name, "/popups/%s-%s", a0, tn);
+					}
+					else
+						sprintf(name, "/popups/%s-padstack-in-subc", a0);
 					sprintf(name2, "/popups/%s-misc", a0);
 				}
 				break;
