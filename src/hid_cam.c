@@ -330,6 +330,40 @@ static void cam_xform_init(pcb_xform_t *dst_xform)
 }
 
 
+static void read_out_params(pcb_cam_t *dst, char **str)
+{
+	char *curr, *next;
+
+	if (*str == NULL)
+		return;
+	if (**str == '=') {
+		**str = '\0';
+		(*str)++;
+	}
+	if (**str != '[')
+		return;
+
+	for(curr = (*str)+1; curr != NULL; curr = next) {
+		next = strpbrk(curr, ",]");
+		if (next != NULL) {
+			if (*next == ']') {
+				*next = '\0';
+				next++;
+				while(isspace(*next)) next++;
+				*str = next;
+				next = NULL;
+			}
+			else {
+				*next = '\0';
+				next++;
+			}
+		}
+		else
+			*str = NULL;
+printf("cam GLOBAL: '%s'\n", curr);
+	}
+}
+
 int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, const char *src, const pcb_export_opt_t *attr_tbl, int numa, pcb_hid_attr_val_t *options)
 {
 	char *curr, *next, *purpose;
@@ -354,8 +388,7 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, cons
 		pcb_message(PCB_MSG_ERROR, "CAM rule missing '='\n");
 		goto err;
 	}
-	*next = '\0';
-	next++;
+	read_out_params(dst, &next);
 	dst->fn = strip(dst->inst);
 
 	if (strchr(dst->fn, '%') != NULL) {
@@ -514,7 +547,7 @@ void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xf
 		eq = strchr(src, '=');
 		if (eq != NULL) {
 			char *start;
-			eq++;
+			read_out_params(dst, &eq);
 			start = strchr(src, '(');
 			if ((start != eq) || (start == NULL))  {
 				pcb_message(PCB_MSG_ERROR, "global exporter --cam doesn't take layers, only a file name and optionally global supplements\n");
