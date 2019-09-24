@@ -62,6 +62,7 @@ typedef struct {
 	gulong destroy_handler;
 	unsigned inhibit_valchg:1;
 	unsigned freeing_gui:1;
+	unsigned being_destroyed:1;
 	unsigned modal:1;
 } attr_dlg_t;
 
@@ -864,6 +865,10 @@ void ghid_attr_dlg_close(void *hid_ctx)
 void ghid_attr_dlg_free(void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;
+
+	if (ctx->being_destroyed)
+		return;
+	ctx->being_destroyed = 1;
 
 	if ((ctx->dialog != NULL) && (!ctx->freeing_gui)) {
 		gtk_widget_destroy(ctx->dialog);
