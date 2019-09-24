@@ -780,7 +780,8 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	free(black);
 
 	if (pcb_cam_end(&png_cam) == 0)
-		pcb_message(PCB_MSG_ERROR, "png cam export for '%s' failed to produce any content\n", options[HA_cam].str);
+		if (!png_cam.okempty)
+			pcb_message(PCB_MSG_ERROR, "png cam export for '%s' failed to produce any content\n", options[HA_cam].str);
 }
 
 static int png_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)

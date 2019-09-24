@@ -337,7 +337,8 @@ static void dxf_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	fclose(dxf_ctx.f);
 
 	if (pcb_cam_end(&dxf_cam) == 0)
-		pcb_message(PCB_MSG_ERROR, "dxf cam export for '%s' failed to produce any content\n", options[HA_cam].str);
+		if (!dxf_cam.okempty)
+			pcb_message(PCB_MSG_ERROR, "dxf cam export for '%s' failed to produce any content\n", options[HA_cam].str);
 }
 
 static int dxf_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)

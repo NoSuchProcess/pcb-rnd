@@ -280,7 +280,8 @@ static void excellon_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	}
 
 	if (pcb_cam_end(&excellon_cam) == 0)
-		pcb_message(PCB_MSG_ERROR, "excellon cam export for '%s' failed to produce any content\n", options[HA_cam].str);
+		if (!excellon_cam.okempty)
+			pcb_message(PCB_MSG_ERROR, "excellon cam export for '%s' failed to produce any content\n", options[HA_cam].str);
 
 	pcb_drill_uninit(&pdrills);
 	pcb_drill_uninit(&udrills);
