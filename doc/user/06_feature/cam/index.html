@@ -23,7 +23,7 @@ The syntax and capabilities are the same for all exporter's cam option.
 <p>
 The syntax is:
 <pre>
-outfile=layergrp[,layergrp,...]
+outfile=[global-opts] layergrp[,layergrp,...]
 </pre>
 <p>
 where:
@@ -56,6 +56,13 @@ Available supplements are:
 	<li> (TODO: supplement for inversion)
 </ul>
 <p>
+The syntax for the optional global-opts is: a comma separated list of
+group-global (but per-output-file) options in [] brackets. Options supported:
+<ul>
+	<li> okempty: empty output is okay, do not warn
+</ul>
+
+<p>
 Examples:
 <table border=1 cellspacing=0>
 	<tr> <th> directive
@@ -80,6 +87,8 @@ Examples:
 	     <td> export plated drilled holes (padstack side effects, but no slots)
 	<tr> <td> unplated_drills.cnc=virtual(purpose=udrill)
 	     <td> export unplated drilled holes (padstack side effects, but no slots)
+	<tr> <td> unplated_drills.cnc=[okempty] virtual(purpose=udrill)
+	     <td> same as the previous, but do not print a warning if there was no unplated drill in the design
 </table>
 <p>
 If multiple layer groups match a layergrp specification, all matching
