@@ -736,7 +736,7 @@ int pcb_load_pcb(const char *file, const char *fmt, pcb_bool require_font, int h
 
 int pcb_revert_pcb(void)
 {
-	return real_load_pcb(PCB->hidlib.filename, NULL, pcb_true, pcb_true, 1);
+	return real_load_pcb(PCB->hidlib.filename, NULL, pcb_true, pcb_true, 0);
 }
 
 int pcb_load_buffer(pcb_hidlib_t *hidlib, pcb_buffer_t *buff, const char *fn, const char *fmt)
