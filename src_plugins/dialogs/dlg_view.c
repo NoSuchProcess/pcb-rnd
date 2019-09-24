@@ -286,7 +286,8 @@ static void view_refresh_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 
 static void view_close_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	view_close_cb(caller_data, 0);
+	view_ctx_t *ctx = caller_data;
+	PCB_DAD_FREE(ctx->dlg);
 }
 
 static void view_stepped(view_ctx_t *ctx, pcb_view_t *v)
