@@ -206,7 +206,7 @@ static pcb_export_opt_t *excellon_get_export_options(pcb_hid_t *hid, int *n)
 
 static void excellon_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 {
-	const char *fnbase, *fn, *camfn = NULL;
+	const char *fnbase, *fn;
 	char *filesuff;
 	int i;
 	int save_ons[PCB_MAX_LAYER];
@@ -228,7 +228,7 @@ static void excellon_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = excellon_values;
 	}
 
-	pcb_cam_begin_nolayer(PCB, &excellon_cam, &xform, options[HA_cam].str, &camfn);
+	pcb_cam_begin(PCB, &excellon_cam, &xform, options[HA_cam].str, excellon_options, NUM_OPTIONS, options);
 
 	fnbase = options[HA_excellonfile].str;
 	if (!fnbase)
@@ -257,8 +257,9 @@ static void excellon_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	pcb_conf_update(NULL, -1); /* resotre forced sets */
 
 
-	if (camfn != NULL) {
-		pcb_drill_export_excellon(PCB, &pdrills, conf_excellon.plugins.export_excellon.plated_g85_slot, options[HA_excellonfile_coordfmt].lng, camfn);
+	if (excellon_cam.active) {
+		fn = excellon_cam.fn;
+		pcb_drill_export_excellon(PCB, &pdrills, conf_excellon.plugins.export_excellon.plated_g85_slot, options[HA_excellonfile_coordfmt].lng, fn);
 	}
 	else {
 		if (options[HA_excellonfile_plated].str == NULL) {
