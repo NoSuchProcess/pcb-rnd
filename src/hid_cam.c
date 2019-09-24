@@ -679,7 +679,7 @@ int pcb_cam_set_layer_group_(pcb_cam_t *cam, pcb_layergrp_id_t group, const char
 			return 1;
 
 		if (cam->vxform[vid] != NULL)
-			*xform = cam->xform[vid];
+			*xform = cam->vxform[vid];
 	}
 
 	cam->exported_grps++;
